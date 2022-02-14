@@ -31,6 +31,8 @@
  *
 **/
 
+use A2billing\Table;
+
 include_once '../../lib/admin.defines.php';
 include_once '../../lib/admin.module.access.php';
 
