@@ -12,6 +12,7 @@
     "amenadiel/jpgraph": "^3.6",
     "adodb/adodb-php": "^5.20",
     "dubcanada/php-profiler": "dev-master",
+    "phpsysinfo/phpsysinfo": "^3.0",
     "smarty/smarty": "^3.0",
     "pear/soap": "^0.14",
     "ext-mcrypt": "*",
