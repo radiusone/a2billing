@@ -1,6 +1,8 @@
 <?php
 
 use A2billing\Table;
+use Amenadiel\JpGraph\Graph\PieGraph;
+use Amenadiel\JpGraph\Plot\PiePlot3D;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -34,9 +36,6 @@ use A2billing\Table;
 **/
 
 include_once (dirname(__FILE__) . "/../lib/admin.defines.php");
-include_once (dirname(__FILE__) . "/jpgraph_lib/jpgraph.php");
-include_once (dirname(__FILE__) . "/jpgraph_lib/jpgraph_pie.php");
-include_once (dirname(__FILE__) . "/jpgraph_lib/jpgraph_pie3d.php");
 include_once (dirname(__FILE__) . "/../lib/admin.module.access.php");
 
 if (!has_rights(ACX_CALL_REPORT)) {

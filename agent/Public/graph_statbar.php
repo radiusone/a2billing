@@ -1,6 +1,8 @@
 <?php
 
 use A2billing\Table;
+use Amenadiel\JpGraph\Graph\Graph;
+use Amenadiel\JpGraph\Plot\BarPlot;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -35,8 +37,6 @@ use A2billing\Table;
 
 include_once (dirname(__FILE__) . "/../lib/agent.defines.php");
 include_once (dirname(__FILE__) . "/../lib/agent.module.access.php");
-include_once (dirname(__FILE__) . "/jpgraph_lib/jpgraph.php");
-include_once (dirname(__FILE__) . "/jpgraph_lib/jpgraph_bar.php");
 
 if (!has_rights(ACX_CALL_REPORT)) {
     Header("HTTP/1.0 401 Unauthorized");
