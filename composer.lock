@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c121be7b3d27bf0754462d8b5f3cf882",
+    "content-hash": "5a78288a2ffb0f6a100521fd3580c831",
     "packages": [
         {
             "name": "adodb/adodb-php",
@@ -125,6 +125,56 @@
                 "source": "https://github.com/HuasoFoundries/jpgraph/tree/v3.6.21"
             },
             "time": "2018-10-14T21:43:30+00:00"
+        },
+        {
+            "name": "dubcanada/php-profiler",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/dubcanada/PHP-Profiler.git",
+                "reference": "3715e2176028d3c0eaf64787f9e5b27c200db11b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/dubcanada/PHP-Profiler/zipball/3715e2176028d3c0eaf64787f9e5b27c200db11b",
+                "reference": "3715e2176028d3c0eaf64787f9e5b27c200db11b",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "profiler/Profiler.php",
+                    "profiler/Console.php",
+                    "profiler/Display.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "Ryan Campbell",
+                    "role": "Original Developer"
+                },
+                {
+                    "name": "Steven Surowiec",
+                    "email": "steven.surowiec@gmail.com",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Steven Verbeek",
+                    "email": "dubcanada@gmail.com",
+                    "homepage": "http://dubcanada.net",
+                    "role": "Composer"
+                }
+            ],
+            "description": "PHP Quick Profiler Fork",
+            "support": {
+                "source": "https://github.com/dubcanada/PHP-Profiler/tree/master"
+            },
+            "time": "2013-02-22T17:04:17+00:00"
         },
         {
             "name": "pear/archive_tar",
@@ -1863,7 +1913,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "dubcanada/php-profiler": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

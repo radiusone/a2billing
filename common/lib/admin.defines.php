@@ -2,6 +2,8 @@
 
 use A2billing\A2Billing;
 use A2billing\Logger;
+use A2billing\Profiler;
+use A2billing\Query_trace;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -48,10 +50,8 @@ define ("LIBDIR", FSROOT."lib/");
 sanitize_post_get();
 
 define ("PHP_QUICK_PROFILER", false);
-// Include PHP-Quick-Profiler
-require_once 'PhpQuickProfiler.php';
-$objProf = new PhpQuickProfiler(0);
-$profiler = new PhpQuickProfiler($objProf->getMicroTime());
+$objProf = new Profiler(0);
+$profiler = new Profiler($objProf->getMicroTime());
 
 
 include_once (FSROOT."lib/interface/constants.php");

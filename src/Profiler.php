@@ -1,5 +1,10 @@
 <?php
 
+namespace A2billing;
+
+use Profiler_Console;
+use Profiler_Display;
+
 /* - - - - - - - - - - - - - - - - - - - - -
 
  Title : PHP Quick Profiler Class
@@ -15,32 +20,17 @@
 
 - - - - - - - - - - - - - - - - - - - - - */
 
-class PhpQuickProfiler
+class Profiler
 {
     public $output;
-    public $config = '';
-    public $installed = true;
-    public $modedebug = PHP_QUICK_PROFILER;
-    private	$path_qpq;
-    private	$url_css = 'pqp/';
+    private $db;
+    private $startTime;
 
-    public function __construct($startTime, $config = '/pqp/')
+    public function __construct($startTime)
     {
         $this->output = array();
 
         $this->startTime = $startTime;
-
-        // $this->path_qpq = $_SERVER['DOCUMENT_ROOT'];
-        $this->path_qpq = dirname(__FILE__);
-
-        $this->config = $this->path_qpq.$config;
-
-        // Include PHP-Quick-Profiler
-        if (file_exists ($this->config.'classes/Console.php')) {
-            require_once($this->config.'classes/Console.php');
-        } else {
-            $this -> installed = false;
-        }
     }
 
     /*-------------------------------------------
@@ -49,7 +39,7 @@ class PhpQuickProfiler
 
     public function gatherConsoleData()
     {
-        $logs = Console::getLogs();
+        $logs = Profiler_Console::getLogs();
         if ($logs['console']) {
             foreach ($logs['console'] as $key => $log) {
                 if ($log['type'] == 'log') {
@@ -214,17 +204,15 @@ class PhpQuickProfiler
          DISPLAY TO THE SCREEN -- CALL WHEN CODE TERMINATING
     -----------------------------------------------------------*/
 
-    public function display($db = '', $master_db = '')
+    public function display($db = '')
     {
         $this->db = $db;
-        $this->master_db = $master_db;
         $this->gatherConsoleData();
         $this->gatherFileData();
         $this->gatherMemoryData();
         $this->gatherQueryData();
         $this->gatherSpeedData();
-        require_once($this->config.'display.php');
-        displayPqp($this->output, $this->url_css);
+        Profiler_Display::display($this->output);
     }
 
 }
