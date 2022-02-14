@@ -1,5 +1,9 @@
 <?php
 
+use A2billing\Soap;
+use SOAP_Server;
+use SOAP_DISCO_Server;
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
@@ -31,14 +35,11 @@
  *
 **/
 
-require_once 'SOAP/Server.php';
-require_once 'SOAP/Disco.php';
-
-include '../lib/Class.SOAP-function.php';
+require_once("../../vendor/autoload.php");
 
 $server = new SOAP_Server();
 
-$webservice = new SOAP_A2Billing();
+$webservice = new Soap();
 
 $server->addObjectMap($webservice, 'http://schemas.xmlsoap.org/soap/envelope/');
 

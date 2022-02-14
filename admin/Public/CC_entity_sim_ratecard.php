@@ -1,5 +1,8 @@
 <?php
 
+use A2billing\Table;
+use A2billing\RateEngine;
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
@@ -33,7 +36,6 @@
 
 include '../lib/admin.defines.php';
 include '../lib/admin.module.access.php';
-include '../lib/Class.RateEngine.php';
 include '../lib/admin.smarty.php';
 
 if (! has_rights (ACX_RATECARD)) {

@@ -1,9 +1,8 @@
 <?php
 
-namespace Factory;
+namespace A2billing\Factory;
 
-
-use Contracts\Factory\Factory;
+use A2billing\Contracts\Factory\Factory;
 use Smarty_Security;
 
 class SmartyFactory implements Factory{

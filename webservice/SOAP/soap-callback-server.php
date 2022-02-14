@@ -1,5 +1,10 @@
 <?php
 
+use A2billing\Soap;
+use A2billing\RateEngine;
+use SOAP_Server;
+use SOAP_DISCO_Server;
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
@@ -43,9 +48,7 @@
 $disable_check_cp = true;
 include '../lib/admin.defines.php';
 include '../lib/regular_express.inc';
-include '../lib/Class.RateEngine.php';
-require_once 'SOAP/Server.php';
-require_once 'SOAP/Disco.php';
+require_once('../../vendor/autoload.php');
 
 define("LOG_CALLBACK", isset ($A2B->config["log-files"]['api_callback']) ? $A2B->config["log-files"]['api_callback'] : null);
 

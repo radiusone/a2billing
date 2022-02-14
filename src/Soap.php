@@ -1,10 +1,12 @@
 <?php
 
+namespace A2billing;
+
 $disable_check_cp = true;
 
 include (dirname(__FILE__)."/admin.defines.php");
 
-class SOAP_A2Billing
+class Soap
 {
     public $__dispatch_map = array();
 

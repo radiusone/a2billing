@@ -1,5 +1,7 @@
 <?php
 
+use A2billing\Table;
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**

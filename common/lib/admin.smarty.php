@@ -1,5 +1,7 @@
 <?php
 
+use A2billing\Factory\SmartyFactory;
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
@@ -31,22 +33,15 @@
  *
 **/
 
-
-// use Factory\SmartyFactory;
-
-
 error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
 
 define( 'FULL_PATH', dirname(__FILE__) . '/' );
 define( 'SMARTY_DIR', FULL_PATH . '../../vendor/smarty/smarty/libs/' );
 define( 'TEMPLATE_DIR',  '../Public/templates/' );
 define( 'TEMPLATE_C_DIR', '../templates_c/' );
+require_once("../../vendor/autoload.php");
 
-// $smarty = SmartyFactory::getInstance();
-#Remove the factory, for some reasons it doesnt work on PHP 5.3 / CentOs 6
-
-require_once SMARTY_DIR . 'SmartyBC.class.php';
-$smarty = new SmartyBC();
+$smarty = SmartyFactory::getInstance();
 
 $skin_name = $_SESSION["stylefile"];
 

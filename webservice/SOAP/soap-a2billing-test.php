@@ -1,5 +1,7 @@
 <?php
 
+use A2billing\Soap;
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
@@ -31,11 +33,11 @@
  *
 **/
 
-include '../lib/Class.SOAP-function.php';
+require_once("../../vendor/autoload.php");
 
 $security_key = md5(API_SECURITY_KEY);
 
-$webservice = new SOAP_A2Billing();
+$webservice = new Soap();
 
 $method = 'Reload_Asterisk_SIP_IAX';
 echo "\n\nTEST Method : $method \n\n... press key to test\n";

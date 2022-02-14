@@ -1,6 +1,6 @@
 <?php
 
-namespace Contracts\Factory;
+namespace A2billing\Contracts\Factory;
 
 
 interface Factory {

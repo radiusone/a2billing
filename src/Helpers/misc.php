@@ -1,4 +1,12 @@
 <?php
+use A2billing\A2Billing;
+use A2billing\Table;
+use A2billing\Connection;
+use A2billing\Realtime;
+use A2billing\Logger;
+use A2billing\NotificationsDAO;
+use A2billing\Notification;
+use A2billing\Mail;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 

@@ -1,5 +1,7 @@
 <?php
 
+namespace A2billing;
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
@@ -32,8 +34,6 @@
  *
  *
 **/
-
-include_once(FSROOT . "lib/Misc.php");
 
 class RateEngine
 {

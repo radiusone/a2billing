@@ -1,6 +1,9 @@
 #!/usr/bin/php -q
 <?php
 
+use A2billing\A2Billing;
+use A2billing\Table;
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
@@ -41,12 +44,8 @@ error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-include_once(dirname(__FILE__) . "/lib/Class.Table.php");
-include(dirname(__FILE__) . "/lib/Class.A2Billing.php");
-include(dirname(__FILE__) . "/lib/Class.RateEngine.php");
 include(dirname(__FILE__) . "/lib/phpagi/phpagi.php");
 include(dirname(__FILE__) . "/lib/phpagi/phpagi-asmanager.php");
-include(dirname(__FILE__) . "/lib/Misc.php");
 include(dirname(__FILE__) . "/lib/interface/constants.php");
 
 $G_startime = time();

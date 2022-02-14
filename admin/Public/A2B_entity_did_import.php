@@ -1,5 +1,7 @@
 <?php
 
+use A2billing\Table;
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
@@ -35,7 +37,6 @@
 include '../lib/admin.defines.php';
 include '../lib/admin.module.access.php';
 include '../lib/admin.smarty.php';
-//include ("../lib/Class.Table.php");
 
 set_time_limit(0);
 

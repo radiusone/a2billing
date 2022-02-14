@@ -1,5 +1,7 @@
 <?php
 
+namespace A2billing;
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
@@ -44,33 +46,7 @@
 * @since      File available since Release 1.0
 */
 
-include(dirname(__FILE__) . "/Class.MytoPg.php");
-
 $ADODB_CACHE_DIR = '/tmp';
-
-class Query_trace
-{
-    public $queryCount = 0;
-    public $queries = array();
-
-    private static $m_pInstance;
-
-    /* CONSTRUCTOR */
-    public function __construct()
-    {
-
-    }
-
-    // Query_trace::getInstance();
-    public static function getInstance()
-    {
-        if (!self::$m_pInstance) {
-            self::$m_pInstance = new Query_trace();
-        }
-
-        return self::$m_pInstance;
-    }
-}
 
 class Table
 {

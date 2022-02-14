@@ -1,5 +1,7 @@
 <?php
 
+namespace A2billing;
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
@@ -31,10 +33,6 @@
  *
  *
 **/
-
-class A2bMailException extends Exception
-{
-}
 
 class Mail
 {

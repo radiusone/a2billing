@@ -1,4 +1,7 @@
 <?php
+
+use A2billing\Table;
+
 /***************************************************************************
  *
  * Class.FormHandler.php : FormHandler - PHP : Handle, Form Generator (FG) for A2Billing
@@ -1213,7 +1216,6 @@ class FormHandler
 
 		if ( $form_action == "list" || $form_action == "edit" || $form_action == "ask-delete" ||
 			 $form_action == "ask-edit" || $form_action == "add-content" || $form_action == "del-content" || $form_action == "ask-del-confirm") {
-			include_once (FSROOT."lib/Class.Table.php");
 
 			$this->FG_ORDER = $processed['order'];
 			$this->FG_SENS = $processed['sens'];
@@ -1456,8 +1458,6 @@ class FormHandler
      */
 	function perform_add (&$form_action)
 	{
-		include_once (FSROOT."lib/Class.Table.php");
-
 		$processed = $this->getProcessed();  //$processed['firstname']
 		$this->VALID_SQL_REG_EXP = true;
 
@@ -1610,8 +1610,6 @@ class FormHandler
      */
 	function perform_edit (&$form_action)
 	{
-		include_once (FSROOT."lib/Class.Table.php");
-
 		$processed = $this->getProcessed();  //$processed['firstname']
 
 		$this->VALID_SQL_REG_EXP = true;
@@ -1743,8 +1741,6 @@ class FormHandler
      */
 	function perform_delete (&$form_action)
 	{
-		include_once (FSROOT."lib/Class.Table.php");
-
 		if (strlen($this -> FG_ADDITIONAL_FUNCTION_AFTER_DELETE) > 0)
 		$res_funct = call_user_func(array('FormBO', $this->FG_ADDITIONAL_FUNCTION_AFTER_DELETE));
 		$processed = $this->getProcessed();  //$processed['firstname']
@@ -2003,7 +1999,6 @@ class FormHandler
 	 function create_select_form()
 	 {
 	 	$processed = $this->getProcessed();
-	 	include_once (FSROOT."lib/Class.Table.php");
 		$instance_table_tariffname = new Table("cc_tariffplan", "id, tariffname");
 		$FG_TABLE_CLAUSE = "";
 		$list_tariffname = $instance_table_tariffname  -> Get_list ($this->DBHandle, $FG_TABLE_CLAUSE, "tariffname", "ASC", null, null, null, null);
@@ -2077,7 +2072,6 @@ class FormHandler
 	 function create_select_form_client($table_cluase = "")
 	 {
 	 	$processed = $this->getProcessed();
-	 	include_once (FSROOT."lib/Class.Table.php");
 		$instance_table_tariffname = new Table("cc_tariffplan, cc_tariffgroup_plan", "id, tariffname");
 		$FG_TABLE_CLAUSE = $table_cluase;
 
@@ -2165,7 +2159,6 @@ class FormHandler
 	function create_form ($form_action, $list, $id=null)
 	{
 		Console::logSpeed('Time taken to get to line '.__LINE__);
-		include_once (FSROOT."lib/Class.Table.php");
 		$processed = $this->getProcessed();
 
 		$id = $processed['id'];

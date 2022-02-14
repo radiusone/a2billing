@@ -1,5 +1,8 @@
 <?php
 
+use A2billing\A2Billing;
+use A2billing\Logger;
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
@@ -41,9 +44,6 @@ define ("WRITELOG_QUERY", false);
 define ("FSROOT", substr(dirname(__FILE__),0,-3));
 define ("LIBDIR", FSROOT."lib/");
 
-// INCLUDE MISC
-include (FSROOT."lib/Misc.php");
-
 sanitize_post_get();
 
 define ("PHP_QUICK_PROFILER", false);
@@ -56,16 +56,9 @@ define ("FSROOT", substr(dirname(__FILE__),0,-3));
 define ("LIBDIR", FSROOT."lib/");
 
 include (FSROOT."lib/interface/constants.php");
-include_once (dirname(__FILE__)."/Class.A2Billing.php");
-include_once (dirname(__FILE__)."/Class.Table.php");
-include_once (dirname(__FILE__)."/Class.Connection.php");
-include_once (dirname(__FILE__)."/Class.Realtime.php");
 
 // USE PHPMAILER
 include_once (FSROOT."lib/mail/class.phpmailer.php");
-include (dirname(__FILE__)."/Class.NotificationsDAO.php");
-include (dirname(__FILE__)."/Class.Notification.php");
-include (dirname(__FILE__)."/Class.Mail.php");
 
 session_name("UIAGENTSESSION");
 session_start();
@@ -79,7 +72,6 @@ define('CC_NUMBER_MIN_LENGTH', '15');
 $A2B = new A2Billing();
 
 define ("ENABLE_LOG", 1);
-include (FSROOT."lib/Class.Logger.php");
 $log = new Logger();
 
 // The system will not log for Public/index.php and
