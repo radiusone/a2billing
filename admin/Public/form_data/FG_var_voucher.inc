@@ -55,11 +55,11 @@ foreach($currencies_list as $key => $cur_value) {
 	$indcur++;
 }
 
-$actived_list = Constants::getActivationTrueFalseList();
-$actived_list_r = Constants::getActivationTrueFalse_Revert_List();
-$used_list = Constants::getUsedList();
-$used_list_r = Constants::getUsed_revert_List();
-$yesno = Constants::getYesNoList();
+$actived_list = getActivationTrueFalseList();
+$actived_list_r = getActivationTrueFalse_Revert_List();
+$used_list = getUsedList();
+$used_list_r = getUsed_revert_List();
+$yesno = getYesNoList();
 
 foreach($currencies_list as $key => $cur_value) {
 	$currency_list[$key]  = array( $cur_value[1].' ('.$cur_value[2].')', $key);

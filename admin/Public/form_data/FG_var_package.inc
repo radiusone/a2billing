@@ -55,8 +55,8 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/package_add.png" ;
 
 
 
-$packagetype_list = Constants::getPackagesTypeList();
-$billingtype_list = Constants::getBillingPeriodsList();
+$packagetype_list = getPackagesTypeList();
+$billingtype_list = getBillingPeriodsList();
 
 // If packagetype == NUMBER OF FREE CALL -> concat unit with "times"
 // Else concat with "sec"

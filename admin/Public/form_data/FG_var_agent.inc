@@ -68,9 +68,7 @@ $HD_Form -> FG_OTHER_BUTTON2_ALT = gettext('Add Payment to this Agent');
 
 $HD_Form -> FG_TABLE_CLAUSE = $FG_TABLE_CLAUSE;
 
-$cnts= new Constants();
-
-$language_list = $cnts->getLanguagesList();
+$language_list = getLanguagesList();
 
 
 $right_list = array();
@@ -90,7 +88,7 @@ $right_list["13"] = array( gettext("SEE CUSTOMERS CALLERID"), "4096");
 
 $len_right_list = count($right_list);
 
-$yesno = $cnts->getYesNoList();
+$yesno = getYesNoList();
 
 
 $currency_list=getCurrenciesList();

@@ -84,7 +84,7 @@ echo Display_Login_Button ($DBHandle, $id);
                     </td>
                     <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
                         <?php
-                        $list_typepaid = Constants::getPaidTypeList();
+                        $list_typepaid = getPaidTypeList();
                         echo $list_typepaid[$card['typepaid']][0];?>
                     </td>
                </tr>
@@ -134,7 +134,7 @@ echo Display_Login_Button ($DBHandle, $id);
                     </td>
                     <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
                         <?php
-                        $list_status = Constants::getCardStatus_List();
+                        $list_status = getCardStatus_List();
                         echo $list_status[$card['status']][0];?>
                     </td>
                 </tr>

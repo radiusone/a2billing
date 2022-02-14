@@ -50,7 +50,7 @@ $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_commission_agent.php?form_action=ask-add&section=".$_SESSION["menu_section"];
 $HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add Commission");
 $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/money_add.png" ;
-$com_list = Constants::getRefillType_List();
+$com_list = getRefillType_List();
 $HD_Form -> AddViewElement(gettext("ID"), "cc_agent_commission.id", "5%", "center", "sort");
 $HD_Form -> AddViewElement(gettext("ACCOUNT"), "id_card", "10%", "center", "sort", "", "30", "", "", "", "", "linktocustomer_id");
 $HD_Form -> AddViewElement(gettext("AGENT"), "id_agent", "10%", "center", "sort", "", "30", "", "", "", "", "linktoagent");

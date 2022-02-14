@@ -205,7 +205,7 @@ if ( $form_action == "list" && (!($popup_select>=1)) ) {
     $instance_table_seria = new Table("cc_card_seria"," id, name");
     $list_seria  = $instance_table_seria -> Get_list ($HD_Form ->DBHandle, $FG_TABLE_CLAUSE, "name", "ASC", null, null, null, null);
 
-    $list_refill_type = Constants::getRefillType_List();
+    $list_refill_type = getRefillType_List();
     $list_refill_type["-1"] = array("NO REFILL","-1");
 
     $instance_table_country = new Table("cc_country", " countrycode, countryname ");

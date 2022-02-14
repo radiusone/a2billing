@@ -172,7 +172,7 @@ $table_message = new Table("cc_message_agent", "*");
 $clause_message = "id_agent = $id";
 $messages = $table_message -> Get_list($DBHandle, $clause_message, 'order_display', 'ASC');
 $smarty->display('main.tpl');
-$message_types = Constants::getMsgTypeList();
+$message_types = getMsgTypeList();
 ?>
 
 <form action="<?php echo $PHP_SELF.'?id='.$id ?>" method="post" >

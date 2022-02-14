@@ -109,7 +109,7 @@ $smarty->display('main.tpl');
         </td>
         <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
             <?php
-            $list_type = Constants::getRemittanceType_List();
+            $list_type = getRemittanceType_List();
             echo $list_type[$remittance['type']][0];?>
         </td>
    </tr>
@@ -119,7 +119,7 @@ $smarty->display('main.tpl');
         </td>
         <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
             <?php
-            $list_type = Constants::getRemittanceStatus_List();
+            $list_type = getRemittanceStatus_List();
             echo $list_type[$remittance['status']][0];?>
         </td>
    </tr>

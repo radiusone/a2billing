@@ -54,13 +54,12 @@ $HD_Form -> FG_ADDITIONAL_FUNCTION_AFTER_ADD = 'add_did_use';
 $HD_Form -> FG_ADDITIONAL_FUNCTION_AFTER_DELETE = 'did_use_delete';
 $HD_Form -> FG_ADDITIONAL_FUNCTION_BEFORE_DELETE = 'is_did_in_use';
 
-$actived_list = Constants::getActivationList();
-$billingtype_list = Constants::getBillingTypeList();
+$actived_list = getActivationList();
+$billingtype_list = getBillingTypeList();
 // -- billtype: 0 = fix per month + dialoutrate, 1= fix per month, 2 = dialoutrate, 3 = free
-$billingtype_list_short = Constants::getBillingTypeShortList();
+$billingtype_list_short = getBillingTypeShortList();
 
-$cnts= new Constants();
-$yesno = $cnts->getYesNoList();
+$yesno = getYesNoList();
 
 
 $HD_Form -> AddViewElement(gettext("DID"), "did", "15%", "center", "sort");

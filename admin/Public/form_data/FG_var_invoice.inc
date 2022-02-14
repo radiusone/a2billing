@@ -90,17 +90,17 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = 
 $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/money.png" ;
 
 
-$status_list = Constants::getInvoiceStatusList();
-$paid_status_list = Constants::getInvoicePaidStatusList();
-$typepaid_list_r = Constants::getPaidTypeList_Revert_List();
-$paid_status_list_r = Constants::getInvoicePaidStatusList_Revert_List();
-$invoiceday_list = Constants::getInvoiceDay_List();
-$status_list_r = Constants::getInvoiceStatusList_Revert_List();
+$status_list = getInvoiceStatusList();
+$paid_status_list = getInvoicePaidStatusList();
+$typepaid_list_r = getPaidTypeList_Revert_List();
+$paid_status_list_r = getInvoicePaidStatusList_Revert_List();
+$invoiceday_list = getInvoiceDay_List();
+$status_list_r = getInvoiceStatusList_Revert_List();
 
 //$filter_amount_without_vat ='SUM(cc_invoice_item.price)';
 // $filter_amount_with_vat ='SUM(cc_invoice_item.price*(1+(cc_invoice_item.vat/100)))';
 $filter_amount_with_vat = "total_price";
-$list_refill_type=Constants::getRefillType_List();
+$list_refill_type=getRefillType_List();
 $HD_Form -> AddViewElement(gettext("ID"), "cc_invoice.id", "7%", "center", "sort");
 $HD_Form -> AddViewElement(gettext("REFERENCE"), "cc_invoice.reference", "10%", "center", "sort");
 $HD_Form -> AddViewElement(gettext("ACCOUNT"), "username", "10%", "center", "sort", "", "30", "", "", "", "", "linktocustomer");

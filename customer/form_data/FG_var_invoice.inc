@@ -66,7 +66,7 @@ $HD_Form -> FG_OTHER_BUTTON3 = true;
 $HD_Form -> FG_OTHER_BUTTON3_CONDITION = '|col6| == "UNPAID"';
 
 
-$status_list = Constants::getInvoicePaidStatusList();
+$status_list = getInvoicePaidStatusList();
 
 $HD_Form -> AddViewElement(gettext("REFERENCE"), "cc_invoice.reference", "10%", "center", "sort");
 $HD_Form -> AddViewElement(gettext("DATE"), "date", "15%", "center", "sort", "30", "", "", "", "", "", "display_dateformat");

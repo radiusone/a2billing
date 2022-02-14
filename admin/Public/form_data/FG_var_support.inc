@@ -86,8 +86,7 @@ $HD_Form -> FG_EDITION = true;
 $HD_Form -> FG_DELETION = true;
 $HD_Form -> FG_ADDITION = true;
 
-$cnts= new Constants();
-$language_list = $cnts->getLanguagesList();
+$language_list = getLanguagesList();
 
 $HD_Form -> AddEditElement (gettext("NAME"),
 	"name",

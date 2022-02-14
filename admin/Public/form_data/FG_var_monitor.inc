@@ -55,10 +55,9 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/map.png" ;
 
 // TODO Integrate a generic LIST to Framework
 
-$cnts = new Constants();
-$mquery_type_list = $cnts->getMonitorQueryType_List();
-$mresult_type_list = $cnts->getMonitorResultType_List();
-$actived_list = $cnts->getActivationList() ;
+$mquery_type_list = getMonitorQueryType_List();
+$mresult_type_list = getMonitorResultType_List();
+$actived_list = getActivationList() ;
 
 
 

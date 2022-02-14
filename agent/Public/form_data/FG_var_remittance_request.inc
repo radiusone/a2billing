@@ -55,8 +55,8 @@ $HD_Form -> FG_OTHER_BUTTON2_CONDITION = '|col4| == "'.gettext('WAITING').'"';
 $HD_Form -> FG_OTHER_BUTTON2_ALT = gettext("CANCEL THIS REQUEST");
 $HD_Form -> FG_VIEW_TABLE_WITDH = "70%";
 
-$status_list = Constants::getRemittanceStatus_List();
-$type_list = Constants::getRemittanceType_List();
+$status_list = getRemittanceStatus_List();
+$type_list = getRemittanceType_List();
 $HD_Form -> AddViewElement(gettext("ID"), "cc_agent_commission.id", "10%", "center", "sort");
 $HD_Form -> AddViewElement(gettext("DATE"), "date", "20%", "center", "sort", "30", "", "", "", "", "", "display_dateformat");
 $HD_Form -> AddViewElement(gettext("AMOUNT"), "amount", "15%", "center", "sort","", "", "", "", "", "", "display_money");

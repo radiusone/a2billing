@@ -93,7 +93,7 @@ if ($status >= 0) {
 	$HD_Form -> FG_TABLE_CLAUSE.=" sl.status = '$status'";
 }
 
-$cardstatus_list = Constants::getCardStatus_List();
+$cardstatus_list = getCardStatus_List();
 
 $HD_Form -> AddViewElement(gettext("ID CARD"), "id_cc_card", "10%", "center", "sort");
 $HD_Form -> AddViewElement(gettext("ACCOUNT NUMBER"), "id_cc_card", "20%", "center", "sort", "", "lie_link", "cc_card", "username,id", "id='%id'", "%1", "", "A2B_entity_card.php");

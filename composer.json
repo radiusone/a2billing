@@ -5,7 +5,7 @@
     "psr-4": {
       "A2billing\\": "src/"
     },
-    "files": ["src/Helpers/misc.php"]
+    "files": ["src/Helpers/misc.php", "src/Helpers/constants.php"]
   },
   "require": {
     "php": ">=5.3.0",

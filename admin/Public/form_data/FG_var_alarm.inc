@@ -55,10 +55,10 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/bell_add.png" ;
 
 
 // TODO Integrate a generic LIST to Framework
-$period_list = Constants::getPeriodsList();
+$period_list = getPeriodsList();
 
 
-$actived_list = Constants::getActivationList() ;
+$actived_list = getActivationList() ;
 
 
 $type_list = array();

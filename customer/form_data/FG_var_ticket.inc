@@ -51,8 +51,8 @@ $HD_Form -> FG_TABLE_CLAUSE = " cc_ticket.creator_type=0 AND cc_ticket.creator= 
 $HD_Form -> FG_TABLE_ID="cc_ticket.id";
 
 $status_list = Ticket::getAllStatusListView();
-$viewed_list = Constants::getTicketViewedList();
-$priority_list = Constants::getTicketPriorityList();
+$viewed_list = getTicketViewedList();
+$priority_list = getTicketPriorityList();
 $filter_view ='v.viewed ';
 
 

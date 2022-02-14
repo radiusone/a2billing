@@ -96,7 +96,7 @@ if(!empty($date_clause)) {
 }
 
 
-$status_list = Constants::getPaymentStateList();
+$status_list = getPaymentStateList();
 
 
 $HD_Form -> AddViewElement(gettext("Id"), "ID", "10%", "center");

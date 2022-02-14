@@ -57,7 +57,7 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_payment_agent.php?form_acti
 $HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add Payment");
 $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/money_add.png" ;
 
-$list_refill_type=Constants::getRefillType_List();
+$list_refill_type=getRefillType_List();
 $HD_Form -> AddViewElement(gettext("ID"), "cc_logpayment.id", "10%", "center", "sort");
 if (has_rights (ACX_ADMINISTRATOR)) {
 	$HD_Form -> AddViewElement(gettext("AGENT"), "agent_id", "20%", "center", "sort", "", "30", "", "", "", "", "linktoagent");

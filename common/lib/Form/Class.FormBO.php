@@ -822,7 +822,7 @@ class FormBO
 
         if ($processed['added_invoice']==1) {
             //CREATE AND UPDATE REF NUMBER
-            $list_refill_type=Constants::getRefillType_List();
+            $list_refill_type=getRefillType_List();
             $refill_type = $processed['refill_type'];
             $reference = generate_invoice_reference();
             $field_insert = "date, id_card, title ,reference, description";
@@ -917,7 +917,7 @@ class FormBO
             // Create invoice associated
 
             // CREATE AND UPDATE REF NUMBER
-            $list_refill_type=Constants::getRefillType_List();
+            $list_refill_type=getRefillType_List();
             $refill_type = $processed['payment_type'];
             $year = date("Y");
             $invoice_conf_table = new Table('cc_invoice_conf','value');

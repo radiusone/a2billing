@@ -618,7 +618,7 @@ function linktocustomer_id($id)
 
 function linkto_TC($id)
 {
-    $call_status = Constants :: getDialStatusList();
+    $call_status = getDialStatusList();
     if (!empty ($call_status[$id][0]))
         echo $call_status[$id][0];
     else

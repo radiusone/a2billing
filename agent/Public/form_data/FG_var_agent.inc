@@ -51,9 +51,9 @@ $HD_Form -> FG_TABLE_ID = "id";
 
 $HD_Form -> FG_EDITION_CLAUSE = " id = ".$_SESSION["agent_id"];
 
-$language_list = Constants::getLanguagesList();
+$language_list = getLanguagesList();
 
-$yesno = Constants::getYesNoList();
+$yesno = getYesNoList();
 
 $HD_Form -> FG_EDITION = true;
 

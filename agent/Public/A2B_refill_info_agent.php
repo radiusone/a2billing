@@ -103,7 +103,7 @@ $smarty->display('main.tpl');
         </td>
         <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
             <?php
-            $list_type = Constants::getRefillType_List();
+            $list_type = getRefillType_List();
             echo $list_type[$refill['refill_type']][0];?>
         </td>
    </tr>

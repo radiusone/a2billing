@@ -154,7 +154,7 @@ if (isset ($form_action) && $form_action == "add") {
 	$loginkey = MDP_STRING(20);
 }
 
-$language_list = Constants::getLanguagesList();
+$language_list = getLanguagesList();
 if (LANGUAGE_ENABLE)  {
 $HD_Form->AddEditElement(gettext("LANGUAGE"), "language", "", "SELECT", "", "", "", "list", "", "", "", $language_list, "%1", "", "");
 $language_editFG = "language,";

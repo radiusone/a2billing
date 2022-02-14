@@ -54,11 +54,10 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = 
 $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/lightning_add.png" ;
 
 
-$cnts = new Constants();
 
-$actived_list = $cnts->getActivationTrueFalseList();
-$status_list = $cnts->getCallbackStatusList();
-$yesno = $cnts->getYesNoList();
+$actived_list = getActivationTrueFalseList();
+$status_list = getCallbackStatusList();
+$yesno = getYesNoList();
 
 
 $HD_Form -> AddViewElement(gettext("ID"), "id", "3%", "center", "sort");

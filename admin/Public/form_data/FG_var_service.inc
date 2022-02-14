@@ -61,8 +61,7 @@ $period_list["1"]  = array( "Daily", "1");
 for ($k=2;$k<=60;$k++)
         $period_list["$k"]  = array( "every $k days", "$k");
 
-$cnts = new Constants();
-$actived_list = $cnts->getActivationList();
+$actived_list = getActivationList();
 
 $rule_list = array();
 $rule_list["3"]  = array( gettext("Apply Service every Y days"), "3");

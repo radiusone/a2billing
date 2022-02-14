@@ -62,7 +62,7 @@ class RateEngine
     /* CONSTRUCTOR */
     public function __construct()
     {
-        $this->dialstatus_rev_list = Constants::getDialStatus_Revert_List();
+        $this->dialstatus_rev_list = getDialStatus_Revert_List();
     }
 
     /* Reinit */

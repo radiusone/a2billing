@@ -58,10 +58,10 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = 
 $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/world_add.png" ;
 
 
-$actived_list = Constants::getActivationList();
+$actived_list = getActivationList();
 
 
-$billingtype_list = Constants::getBillingTypeList();
+$billingtype_list = getBillingTypeList();
 // -- billtype: 0 = fix per month + dialoutrate, 1= fix per month, 2 = dialoutrate, 3 = free
 
 $priority_list = array();

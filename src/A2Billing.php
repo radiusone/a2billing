@@ -232,7 +232,7 @@ class A2Billing
         // $this->agiconfig['debug'] = true;
         // $this->DBHandle = $DBHandle;
 
-        $this->dialstatus_rev_list = Constants::getDialStatus_Revert_List();
+        $this->dialstatus_rev_list = getDialStatus_Revert_List();
 
         if (function_exists('pcntl_signal')) {
             pcntl_signal(SIGHUP, array(&$this, "Hangupsignal"));

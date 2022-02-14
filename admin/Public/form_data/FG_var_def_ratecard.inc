@@ -115,8 +115,8 @@ if (!$popup_select) {
 }
 
 
-$musiconhold_list = Constants::getMusicOnHold_List();
-$yesno = Constants::getYesNoList();
+$musiconhold_list = getMusicOnHold_List();
+$yesno = getYesNoList();
 
 //
 if ($popup_select) $HD_Form -> AddViewElement(gettext("ID"), "id", "5%", "center", "sort");

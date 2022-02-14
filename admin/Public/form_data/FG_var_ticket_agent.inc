@@ -63,8 +63,8 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = 
 $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/note_add.png" ;
 
 
-$priority_list = Constants::getTicketPriorityList();
-$viewed_list = Constants::getTicketViewedList();
+$priority_list = getTicketPriorityList();
+$viewed_list = getTicketViewedList();
 $status_list = Ticket::getAllStatusListView();
 
 $filter_view ='v.viewed ';

@@ -65,7 +65,7 @@ $HD_Form -> FG_INFO_LINK = "A2B_receipt_view.php?id=";
 $HD_Form -> FG_INFO_ALT = "VIEW";
 $HD_Form -> FG_INFO_IMG = "info.png";
 
-$list_refill_type=Constants::getRefillType_List();
+$list_refill_type=getRefillType_List();
 $HD_Form -> AddViewElement(gettext("ID"), "cc_receipt.id", "7%", "center", "sort");
 $HD_Form -> AddViewElement(gettext("ACCOUNT"), "username", "10%", "center", "sort", "", "30", "", "", "", "", "linktocustomer");
 $HD_Form -> AddViewElement(gettext("DATE"), "date", "15%", "center", "sort", "30", "", "", "", "", "", "display_dateformat");

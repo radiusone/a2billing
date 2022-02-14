@@ -64,7 +64,7 @@ if (empty($admin)) {
 
 // #### HEADER SECTION
 $smarty->display('main.tpl');
-$lg_liste= Constants::getLanguages();
+$lg_liste= getLanguages();
 ?>
 <br/>
 <br/>

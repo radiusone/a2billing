@@ -53,10 +53,9 @@ $HD_Form -> FG_OTHER_BUTTON3_LINK = "A2B_entity_logrefill.php?form_action=ask-ad
 $HD_Form -> FG_OTHER_BUTTON3_IMG = Images_Path . "/brick_add.png";
 $HD_Form -> FG_OTHER_BUTTON3_ALT = gettext('ADD REFILL');
 
-$cnts = new Constants();
 
-$actived_list = $cnts->getActivationTrueFalseList();
-$yesno = $cnts->getYesNoList();
+$actived_list = getActivationTrueFalseList();
+$yesno = getYesNoList();
 
 $HD_Form -> AddViewElement(gettext("CALLERID"), "cid", "20%", "center", "sort");
 $HD_Form -> AddViewElement(gettext("ACCOUNT NUMBER"), "id_cc_card", "25%", "center", "sort", "", "lie_link", "cc_card", "username, id", "id='%id'", "%1", "", "A2B_entity_card.php");

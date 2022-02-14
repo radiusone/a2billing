@@ -65,8 +65,8 @@ $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 $HD_Form -> FG_TABLE_CLAUSE = " cc_ticket.creator_type=0 AND cc_card_group.id_agent=".$_SESSION['agent_id'];
 $HD_Form -> FG_TABLE_ID="cc_ticket.id";
 
-$priority_list = Constants::getTicketPriorityList();
-$viewed_list = Constants::getTicketViewedList();
+$priority_list = getTicketPriorityList();
+$viewed_list = getTicketViewedList();
 $status_list = Ticket::getAllStatusListView();
 
 $filter_view ='v.viewed ';

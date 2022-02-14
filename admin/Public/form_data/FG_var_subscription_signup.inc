@@ -57,8 +57,7 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = 
 $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/add.png" ;
 
 
-$cnts = new Constants();
-$activated_list = $cnts->getActivationList();
+$activated_list = getActivationList();
 
 $HD_Form -> AddViewElement(gettext("LABEL"), "label", "12%", "center", "sort");
 $HD_Form -> AddViewElement(gettext("ACTIVITY"), "enable", "12%", "center", "sort","", "list", $activated_list);

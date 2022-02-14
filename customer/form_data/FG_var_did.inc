@@ -50,13 +50,12 @@ $HD_Form -> FG_EDITION = true;
 $HD_Form -> FG_DELETION = true;
 $HD_Form -> FG_ADDITION = true;
 
-$cnts = new Constants();
 
-$actived_list = $cnts->getActivationList();
-$billingtype_list = $cnts->getBillingTypeList();
+$actived_list = getActivationList();
+$billingtype_list = getBillingTypeList();
 
 // -- billtype: 0 = fix per month + dialoutrate, 1= fix per month, 2 = dialoutrate, 3 = free
-$billingtype_list_short = $cnts->getBillingTypeShortList();
+$billingtype_list_short = getBillingTypeShortList();
 
 $priority_list = array();
 for ($k=1;$k<=5;$k++) {

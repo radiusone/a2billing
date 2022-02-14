@@ -51,7 +51,7 @@ $HD_Form -> FG_TABLE_ID = 'cc_agent_commission.id';
 $HD_Form -> FG_DEBUG = 0;
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
-$com_list = Constants::getRefillType_List();
+$com_list = getRefillType_List();
 $HD_Form -> AddViewElement(gettext("ID"), "cc_agent_commission.id", "5%", "center", "sort");
 $HD_Form -> AddViewElement(gettext("ACCOUNT"), "id_card", "10%", "center", "sort", "", "30", "", "", "", "", "linktocustomer_id");
 $HD_Form -> AddViewElement(gettext("AGENT"), "id_agent", "10%", "center", "sort", "", "30", "", "", "", "", "linktoagent");

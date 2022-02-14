@@ -74,7 +74,7 @@ if (($download == "file") && $file) {
     }
 }
 
-$dialstatus_list = Constants::getDialStatusList ();
+$dialstatus_list = getDialStatusList ();
 
 if (! isset ( $current_page ) || ($current_page == "")) {
     $current_page = 0;

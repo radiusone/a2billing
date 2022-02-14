@@ -621,7 +621,7 @@ class Soap
             return array("ERROR", "INVALID KEY");
         }
 
-        $language_list = Constants::getLanguagesRevertList();
+        $language_list = getLanguagesRevertList();
 
         return array(serialize($language_list), 'Get_Languages SUCCESS');
     }

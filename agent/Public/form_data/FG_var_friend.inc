@@ -73,10 +73,9 @@ if ($atmenu=='sip') {
 
 
 $HD_Form -> FG_DEBUG = 0;
-$cnts = new Constants();
-$typepaid_list = $cnts->getPaidTypeList();
-$actived_list =  $cnts->getActivationTrueFalseList();
-$yesno = $cnts->getYesNoList();
+$typepaid_list = getPaidTypeList();
+$actived_list =  getActivationTrueFalseList();
+$yesno = getYesNoList();
 
 
 

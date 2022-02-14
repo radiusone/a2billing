@@ -90,7 +90,7 @@ if ($result_nb_card[0][0] > 0) {
     $result_invoice_unpaid = $table->SQLExec($HD_Form->DBHandle, $QUERY_INVOICE_UNPAID);
     $QUERY_INVOICE_COUNT = "SELECT DATE_FORMAT(date,'%c'),COUNT(*) FROM cc_invoice WHERE cc_invoice.date >= TIMESTAMP('$checkdate') AND cc_invoice.date <= CURRENT_TIMESTAMP group by MONTH(date) ORDER BY date DESC";
     $result_invoice_count = $table->SQLExec($HD_Form->DBHandle, $QUERY_INVOICE_COUNT);
-    $list_month = Constants :: getMonth();
+    $list_month = getMonthList();
 
     $list_invoice_enough_paid = array ();
     $j = 0;
