@@ -1,5 +1,7 @@
 <?php
 
+use A2billing\Table;
+
 $processed = $this->getProcessed();
 
 if ($form_action == "ask-delete") {

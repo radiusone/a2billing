@@ -1,5 +1,7 @@
 <?php
 
+use A2billing\Table;
+
 // Hack to allow PHP4 use stripos() that is only supported in PHP5
 if (!function_exists("stripos")) {
     function stripos($str,$needle) {
