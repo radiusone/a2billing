@@ -53,9 +53,6 @@ define ("PHP_QUICK_PROFILER", false);
 $objProf = new Profiler(0);
 $profiler = new Profiler($objProf->getMicroTime());
 
-// USE PHPMAILER
-include_once (FSROOT."lib/mail/class.phpmailer.php");
-
 session_name("UIADMINSESSION");
 session_start();
 

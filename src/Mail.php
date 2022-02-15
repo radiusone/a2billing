@@ -4,6 +4,9 @@ namespace A2billing;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
+use Exception;
+use phpmailerException;
+
 /**
  * This file is part of A2Billing (http://www.a2billing.net/)
  *

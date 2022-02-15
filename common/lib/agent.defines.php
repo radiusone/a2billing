@@ -51,9 +51,6 @@ sanitize_post_get();
 define ("PHP_QUICK_PROFILER", false);
 $profiler = new Profiler(Profiler::getMicroTime());
 
-// USE PHPMAILER
-include_once (FSROOT."lib/mail/class.phpmailer.php");
-
 session_name("UIAGENTSESSION");
 session_start();
 

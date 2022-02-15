@@ -12,6 +12,7 @@
     "amenadiel/jpgraph": "^3.6",
     "adodb/adodb-php": "^5.20",
     "dubcanada/php-profiler": "dev-master",
+    "phpmailer/phpmailer": "^5.0",
     "phpsysinfo/phpsysinfo": "^3.0",
     "smarty/smarty": "^3.0",
     "welltime/phpagi": "2.20.1",

@@ -1599,8 +1599,6 @@ if ($mode != 'cid-callback' && $mode != 'all-callback') {
 if (isset($send_reminder) && $send_reminder == 1 && $A2B->agiconfig['send_reminder'] == 1) {
 
     if (strlen($A2B->cardholder_email) > 5) {
-        include_once(dirname(__FILE__) . "/lib/mail/class.phpmailer.php");
-
         try {
             $mail = new Mail(Mail::$TYPE_REMINDERCALL, $A2B->id_card);
             $mail->send();
