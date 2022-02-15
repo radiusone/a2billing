@@ -1,5 +1,9 @@
 <?php
 
+use A2billing\Table;
+use A2billing\Mail;
+use A2billing\A2bMailException;
+
 class ticket
 {
     private $id;

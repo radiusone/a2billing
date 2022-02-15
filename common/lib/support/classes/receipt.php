@@ -1,5 +1,7 @@
 <?php
 
+use A2billing\Table;
+
 class receipt
 {
     private $id;
