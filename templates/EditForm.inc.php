@@ -1,4 +1,6 @@
 <?php
+use A2billing\Table;
+
 $processed = $this->getProcessed();
 ?>
 
