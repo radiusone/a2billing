@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2f81cf08252c0c75fe39893579e02c39",
+    "content-hash": "c0573ed0ef4d915eb404e230a0a126e6",
     "packages": [
         {
             "name": "adodb/adodb-php",
@@ -803,6 +803,38 @@
                 }
             ],
             "time": "2020-10-24T10:57:07+00:00"
+        },
+        {
+            "name": "welltime/phpagi",
+            "version": "2.20.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/welltime/phpagi.git",
+                "reference": "00436062cc807e96b01050d9fdc20e2e3b07fd4f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/welltime/phpagi/zipball/00436062cc807e96b01050d9fdc20e2e3b07fd4f",
+                "reference": "00436062cc807e96b01050d9fdc20e2e3b07fd4f",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/phpagi.php",
+                    "src/phpagi-asmanager.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-2.1-or-later"
+            ],
+            "description": "PHPAGI is a PHP class for the Asterisk Gateway Interface.",
+            "support": {
+                "issues": "https://github.com/welltime/phpagi/issues",
+                "source": "https://github.com/welltime/phpagi/tree/2.20.1"
+            },
+            "time": "2019-04-15T09:13:08+00:00"
         }
     ],
     "packages-dev": [

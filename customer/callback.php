@@ -36,10 +36,7 @@ use A2billing\RateEngine;
 
 include 'lib/customer.defines.php';
 include 'lib/customer.module.access.php';
-include 'lib/Class.RateEngine.php';
 include 'lib/customer.smarty.php';
-
-include (dirname(__FILE__)."/lib/phpagi/phpagi-asmanager.php");
 
 getpost_ifset(array('callback', 'called', 'calling'));
 

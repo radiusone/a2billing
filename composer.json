@@ -14,6 +14,7 @@
     "dubcanada/php-profiler": "dev-master",
     "phpsysinfo/phpsysinfo": "^3.0",
     "smarty/smarty": "^3.0",
+    "welltime/phpagi": "2.20.1",
     "pear/soap": "^0.14",
     "ext-mcrypt": "*",
     "ext-gettext": "*",

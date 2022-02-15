@@ -1,5 +1,12 @@
 <?php
 
+use A2billing\Table;
+use A2billing\A2bMailException;
+use A2billing\Mail;
+use A2billing\Notification;
+use A2billing\NotificationsDAO;
+use A2billing\Realtime;
+
 class FormBO
 {
 /**
@@ -87,9 +94,6 @@ class FormBO
     {
         $FormHandler = FormHandler::GetInstance();
         self :: create_sipiax_friends();
-
-        // RELOAD SIP & IAX CONF
-        require_once (dirname(__FILE__)."/../phpagi/phpagi-asmanager.php");
 
         $as = new AGI_AsteriskManager();
         // && CONNECTING  connect($server=NULL, $username=NULL, $secret=NULL)

@@ -2,6 +2,8 @@
 
 namespace A2billing;
 
+use AGI_AsteriskManager;
+
 $disable_check_cp = true;
 
 include (dirname(__FILE__)."/admin.defines.php");
@@ -271,8 +273,6 @@ class Soap
         if (!$this->Check_SecurityKey ($security_key)) {
             return array("ERROR", "INVALID KEY");
         }
-
-        include (dirname(__FILE__)."/phpagi/phpagi-asmanager.php");
 
         $as = new AGI_AsteriskManager();
 

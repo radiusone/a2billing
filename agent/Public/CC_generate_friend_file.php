@@ -36,7 +36,6 @@ use A2billing\Table;
 include '../lib/agent.defines.php';
 include '../lib/agent.module.access.php';
 include '../lib/regular_express.inc';
-include '../lib/phpagi/phpagi-asmanager.php';
 include '../lib/agent.smarty.php';
 
 $FG_DEBUG =0;

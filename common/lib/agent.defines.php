@@ -51,8 +51,6 @@ sanitize_post_get();
 define ("PHP_QUICK_PROFILER", false);
 $profiler = new Profiler(Profiler::getMicroTime());
 
-include (FSROOT."lib/interface/constants.php");
-
 // USE PHPMAILER
 include_once (FSROOT."lib/mail/class.phpmailer.php");
 

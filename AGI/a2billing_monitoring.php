@@ -3,6 +3,7 @@
 
 use A2billing\A2Billing;
 use A2billing\Table;
+use A2billing\PhpAgi\Agi;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -44,12 +45,8 @@ error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-include(dirname(__FILE__) . "/lib/phpagi/phpagi.php");
-include(dirname(__FILE__) . "/lib/phpagi/phpagi-asmanager.php");
-include(dirname(__FILE__) . "/lib/interface/constants.php");
-
 $G_startime = time();
-$agi = new AGI();
+$agi = new Agi();
 
 if ($argc > 1 && is_numeric($argv[1]) && $argv[1] >= 0) {
     $idconfig = $argv[1];

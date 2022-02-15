@@ -6,6 +6,7 @@ use A2billing\Table;
 use A2billing\Mail;
 use A2billing\RateEngine;
 use A2billing\A2bMailException;
+use A2billing\PhpAgi\Agi;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -47,10 +48,6 @@ error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-include(dirname(__FILE__) . "/lib/phpagi/phpagi.php");
-include(dirname(__FILE__) . "/lib/phpagi/phpagi-asmanager.php");
-include(dirname(__FILE__) . "/lib/interface/constants.php");
-
 $charge_callback = 0;
 $G_startime = time();
 $agi_version = "A2Billing - v2.2.0";
@@ -60,7 +57,7 @@ if ($argc > 1 && ($argv[1] == '--version' || $argv[1] == '-v')) {
     exit;
 }
 
-$agi = new AGI();
+$agi = new Agi();
 
 $optconfig = array();
 if ($argc > 1 && strstr($argv[1], "+")) {
@@ -123,6 +120,8 @@ $A2B->debug(INFO, $agi, __FILE__, __LINE__, "MODE : $mode");
 
 $A2B->CC_TESTING = isset($A2B->agiconfig['debugshell']) && $A2B->agiconfig['debugshell'];
 //$A2B->CC_TESTING = true;
+
+$agi->set_play_audio($A2B->config["agi-conf$idconfig"]['play_audio']);
 
 define("DB_TYPE", isset($A2B->config["database"]['dbtype']) ? $A2B->config["database"]['dbtype'] : null);
 define("SMTP_SERVER", isset($A2B->config['global']['smtp_server']) ? $A2B->config['global']['smtp_server'] : null);

@@ -36,7 +36,6 @@ use A2billing\Realtime;
 include '../lib/admin.defines.php';
 include '../lib/admin.module.access.php';
 include '../lib/regular_express.inc';
-include '../lib/phpagi/phpagi-asmanager.php';
 include '../lib/admin.smarty.php';
 
 getpost_ifset(array('action', 'atmenu'));
