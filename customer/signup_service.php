@@ -36,7 +36,6 @@ use A2billing\Table;
 
 include './lib/customer.defines.php';
 include './lib/customer.module.access.php';
-include './lib/Form/Class.FormHandler.inc.php';
 include './lib/customer.smarty.php';
 
 if (!$A2B->config["signup"]['enable_signup']) {

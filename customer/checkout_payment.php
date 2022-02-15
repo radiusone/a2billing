@@ -36,7 +36,6 @@ use A2billing\Table;
 
 include './lib/customer.defines.php';
 include './lib/customer.module.access.php';
-include './lib/Form/Class.FormHandler.inc.php';
 include './lib/epayment/classes/payment.php';
 include './lib/epayment/classes/order.php';
 include './lib/epayment/classes/currencies.php';

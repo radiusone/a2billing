@@ -33,7 +33,6 @@
 
 include './lib/customer.defines.php';
 include './lib/customer.module.access.php';
-include './lib/Form/Class.FormHandler.inc.php';
 include './form_data/FG_var_notify.inc';
 include './lib/customer.smarty.php';
 

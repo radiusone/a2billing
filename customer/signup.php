@@ -35,7 +35,6 @@ use A2billing\Table;
 
 include './lib/customer.defines.php';
 include './lib/customer.module.access.php';
-include './lib/Form/Class.FormHandler.inc.php';
 
 if (!isset ($form_action))
     $form_action = "ask-add";
