@@ -2138,6 +2138,7 @@ class FormHandler
 	{
 		Console::logSpeed('Time taken to get to line '.__LINE__);
 		$processed = $this->getProcessed();
+        $list = null;
 
 		$cur = 0;
 		foreach ($this->FG_FILTER_SEARCH_FORM_SELECT as $select) {
@@ -2152,7 +2153,7 @@ class FormHandler
 			}
 			$cur++;
 		}
-		$this->show_search();
+		$this->show_search($processed, $list);
 	}
 
 	/**
