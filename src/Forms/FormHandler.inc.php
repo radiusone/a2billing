@@ -1,6 +1,9 @@
 <?php
 
+namespace A2billing\Forms;
+
 use A2billing\Table;
+use Profiler_Console as Console;
 
 /***************************************************************************
  *
@@ -18,7 +21,6 @@ use A2billing\Table;
  * A copy of which is available from http://www.gnu.org/copyleft/lesser.html
  *
  ****************************************************************************/
-include (dirname(__FILE__) . "/Class.FormBO.php");
 
 class FormHandler
 {
@@ -2149,7 +2151,7 @@ class FormHandler
 			}
 			$cur++;
 		}
-		include ("Class.SearchHandler.inc.php");
+		$this->show_search();
 	}
 
 	/**
@@ -2170,32 +2172,32 @@ class FormHandler
 		switch ($form_action) {
 			case "add-content":
 				$this->perform_add_content($sub_action,$id);
-				include('Class.FormHandler.EditForm.inc.php');
+                $this->show_edit_form();
 				break;
 
 			case "del-content":
 				$this->perform_del_content($sub_action,$id);
-				include('Class.FormHandler.EditForm.inc.php');
+                $this->show_edit_form();
 				break;
 
 			case "ask-edit":
 			case "edit":
-				include('Class.FormHandler.EditForm.inc.php');
+                $this->show_edit_form();
 				break;
 
 			case "ask-add":
-				include('Class.FormHandler.AddForm.inc.php');
+				$this->show_add_form();
 				break;
 
 			case "ask-delete":
             case "ask-del-confirm":
 				if (strlen($this -> FG_ADDITIONAL_FUNCTION_BEFORE_DELETE) > 0)
 			   	$res_funct = call_user_func(array('FormBO', $this->FG_ADDITIONAL_FUNCTION_BEFORE_DELETE));
-				include('Class.FormHandler.DelForm.inc.php');
+				$this->show_delete_form();
 				break;
 
 			case "list":
-				include('Class.ViewHandler.inc.php');
+				$this->show_view();
 				break;
 
 			case "delete":
@@ -2208,7 +2210,65 @@ class FormHandler
 			}
 	}
 
+    private function show_edit_form()
+    {
+        $processed = $this->getProcessed();
+        $id = $processed['id'];
+        $atmenu = $processed['atmenu'];
+        $stitle = $processed['stitle'];
+        $ratesort = $processed['ratesort'];
+        $sub_action = $processed['sub_action'];
 
+        require(__DIR__ . "/../../templates/EditForm.inc.php");
+    }
+
+    private function show_add_form()
+    {
+        $processed = $this->getProcessed();
+        $id = $processed['id'];
+        $atmenu = $processed['atmenu'];
+        $stitle = $processed['stitle'];
+        $ratesort = $processed['ratesort'];
+        $sub_action = $processed['sub_action'];
+
+        require(__DIR__ . "/../../templates/AddForm.inc.php");
+    }
+
+    private function show_delete_form()
+    {
+        $processed = $this->getProcessed();
+        $id = $processed['id'];
+        $atmenu = $processed['atmenu'];
+        $stitle = $processed['stitle'];
+        $ratesort = $processed['ratesort'];
+        $sub_action = $processed['sub_action'];
+
+        require(__DIR__ . "/../../templates/DelForm.inc.php");
+    }
+
+    private function show_view()
+    {
+        $processed = $this->getProcessed();
+        $id = $processed['id'];
+        $atmenu = $processed['atmenu'];
+        $stitle = $processed['stitle'];
+        $ratesort = $processed['ratesort'];
+        $sub_action = $processed['sub_action'];
+
+        require(__DIR__ . "/../../templates/ViewHandler.inc.php");
+    }
+
+    private function show_search()
+    {
+        $processed = $this->getProcessed();
+        $id = $processed['id'];
+        $atmenu = $processed['atmenu'];
+        $stitle = $processed['stitle'];
+        $ratesort = $processed['ratesort'];
+        $sub_action = $processed['sub_action'];
+
+        require(__DIR__ . "/../../templates/SearchHandler.inc.php");
+    }
 
 	/**
 	 * Do multi-page navigation.  Displays the prev, next and page options.

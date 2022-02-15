@@ -1,5 +1,7 @@
 <?php
 
+namespace A2billing\Forms;
+
 use A2billing\Table;
 use A2billing\A2bMailException;
 use A2billing\Mail;
