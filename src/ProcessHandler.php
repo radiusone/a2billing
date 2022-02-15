@@ -1,5 +1,7 @@
 <?php
 
+namespace A2billing;
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
@@ -33,9 +35,16 @@
 
 class ProcessHandler
 {
+    private $pidfile;
+
+    public function __construct($pidfile = null)
+    {
+        $this->pidfile = $pidfile;
+    }
+
     public function isActive()
     {
-        $pid = ProcessHandler::getPID();
+        $pid = $this->getPID();
 
         if ($pid == null) {
             $ret = false;
@@ -44,7 +53,7 @@ class ProcessHandler
         }
 
         if ($ret == false) {
-            ProcessHandler::activate();
+            $this->activate();
         }
 
         return $ret;
@@ -52,13 +61,12 @@ class ProcessHandler
 
     public function activate()
     {
-        $pidfile = PID;
-        $pid = ProcessHandler::getPID();
+        $pid = $this->getPID();
 
         if ($pid != null && $pid == getmypid()) {
             return "Already running!\n";
         } else {
-            $fp = fopen($pidfile,"w+");
+            $fp = fopen($this->pidfile,"w+");
 
             if ($fp) {
                 if (!fwrite($fp,"<"."?php\n\$pid = ".getmypid().";\n?".">")) {
@@ -74,8 +82,8 @@ class ProcessHandler
 
     public function getPID()
     {
-        if (file_exists(PID)) {
-            require(PID);
+        if (file_exists($this->pidfile)) {
+            require($this->pidfile);
 
             return $pid;
         } else {

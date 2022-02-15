@@ -1,6 +1,12 @@
 #!/usr/bin/php -q
 <?php
 
+use A2billing\A2Billing;
+use A2billing\A2bMailException;
+use A2billing\Mail;
+use A2billing\ProcessHandler;
+use A2billing\Table;
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
@@ -58,14 +64,9 @@ set_time_limit(0);
 error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
 
 include (dirname(__FILE__) . "/lib/admin.defines.php");
-include (dirname(__FILE__) . "/lib/ProcessHandler.php");
-
-if (!defined('PID')) {
-    define("PID", "/var/run/a2billing/a2billing_autorefill_pid.php");
-}
 
 // CHECK IF THE CRONT PROCESS IS ALREADY RUNNING
-$pH= new ProcessHandler();
+$pH= new ProcessHandler("/var/run/a2billing/a2billing_autorefill_pid.php");
 if ($pH->isActive()) {
     die(); // Already running!
 } else {

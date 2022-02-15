@@ -22,7 +22,9 @@
     "ext-curl": "*",
     "ext-pcntl": "*",
     "ext-json": "*",
-    "ext-gd": "*"
+    "ext-gd": "*",
+    "ext-posix": "*",
+    "ext-sqlite": "*"
   },
   "license": "AGPL",
   "authors": [

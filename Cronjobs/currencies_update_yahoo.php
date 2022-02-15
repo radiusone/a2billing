@@ -1,6 +1,10 @@
 #!/usr/bin/php -q
 <?php
 
+use A2billing\A2Billing;
+use A2billing\ProcessHandler;
+use A2billing\Table;
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
@@ -56,15 +60,10 @@ set_time_limit(120);
 error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
 
 include (dirname(__FILE__) . "/lib/admin.defines.php");
-include (dirname(__FILE__) . "/lib/ProcessHandler.php");
-
-if (!defined('PID')) {
-    define("PID", "/var/run/a2billing/currencies_update_yahoo_pid.php");
-}
 
 // CHECK IF THE CRONT PROCESS IS ALREADY RUNNING
 
-$prcHandler = new ProcessHandler();
+$prcHandler = new ProcessHandler("/var/run/a2billing/currencies_update_yahoo_pid.php");
 
 if ($prcHandler->isActive()) {
     die(); // Already running!

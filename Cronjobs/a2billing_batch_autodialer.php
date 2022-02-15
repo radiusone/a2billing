@@ -1,6 +1,11 @@
 #!/usr/bin/php -q
 <?php
 
+use A2billing\A2Billing;
+use A2billing\ProcessHandler;
+use A2billing\RateEngine;
+use A2billing\Table;
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
@@ -61,15 +66,9 @@ error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
 //dl("pgsql.so"); // remove "extension= pgsql.so !
 
 include (dirname(__FILE__) . "/lib/admin.defines.php");
-include (dirname(__FILE__) . "/lib/Class.RateEngine.php");
-include (dirname(__FILE__) . "/lib/ProcessHandler.php");
-
-if (!defined('PID')) {
-    define("PID", "/var/run/a2billing/a2billing_batch_autodialer_pid.php");
-}
 
 // CHECK IF THE CRONT PROCESS IS ALREADY RUNNING
-$pH= new ProcessHandler();
+$pH= new ProcessHandler("/var/run/a2billing/a2billing_batch_autodialer_pid.php");
 if ($pH->isActive()) {
     die(); // Already running!
 } else {
