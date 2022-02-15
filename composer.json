@@ -24,7 +24,11 @@
     "ext-json": "*",
     "ext-gd": "*",
     "ext-posix": "*",
-    "ext-sqlite": "*"
+    "ext-sqlite": "*",
+    "ext-soap": "*",
+    "ext-pgsql": "*",
+    "ext-mysql": "*",
+    "ext-iconv": "*"
   },
   "license": "AGPL",
   "authors": [

@@ -31,6 +31,8 @@
  *
 **/
 
+use A2billing\Logger;
+
 $FG_DEBUG = 0;
 error_reporting(E_ALL & ~E_NOTICE);
 

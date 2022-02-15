@@ -2,6 +2,8 @@
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
+use A2billing\Table;
+
 /**
  * This file is part of A2Billing (http://www.a2billing.net/)
  *
