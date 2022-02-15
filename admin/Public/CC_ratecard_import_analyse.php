@@ -297,7 +297,7 @@ if ($status=="ok") {
 </table>
 
 
-<br></br>
+    <br/><br>
 <table width="95%" border="0" cellspacing="2" align="center" class="records">
   <form name="myform" enctype="multipart/form-data" action="CC_ratecard_import_analyse.php" method="post" >
     <INPUT type="hidden" name="tariffplan" value="<?php echo $tariffplan?>">
@@ -338,7 +338,7 @@ if ($status=="ok") {
 
 <?php } else { ?>
 
-</br>
+<br>
 <table width="75%" border="0" cellspacing="2" align="center" class="records">
     <TR>
         <TD style="border-bottom: medium dotted #ED2525" align="center">&nbsp;</TD>
@@ -372,7 +372,7 @@ if ($status=="ok") {
 </table>
 
 <?php } ?>
-<center>
+</center>
 
 <br>
 

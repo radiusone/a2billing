@@ -36,7 +36,6 @@ use A2billing\Table;
 
 include '../lib/admin.defines.php';
 include '../lib/admin.module.access.php';
-include '../lib/Form/Class.FormHandler.inc.php';
 include '../lib/admin.smarty.php';
 
 if (!has_rights(ACX_CALL_REPORT)) {
@@ -536,10 +535,10 @@ if ($res) {
     <td class='tableBody'><?php gettext('Net Revenue');?></td>
     <td class='tableBody'><?php gettext('Margin');?></td>
     <td class='tableBody'><?php gettext('Total Profit');?></td></tr>
+    <TR>
     <?php
     $roa = array();
     $row = $res -> fetchRow();
-    echo "<TR>";
     for ($k=0; $k<18; $k++) {
         echo "<TD class='tableBody'>";
          if ($k<3) {
@@ -553,7 +552,7 @@ if ($res) {
         echo "</TD>";
     }?>
 
-    </tr><td colspan="19" class="tableDivider"><img height="1" width="1" src="../Public/templates/default/images/clear.gif"/></td>
+    </tr><tr><td colspan="19" class="tableDivider"><img height="1" width="1" src="../Public/templates/default/images/clear.gif"/></td></tr>
 </table>
 
 <?php

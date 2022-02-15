@@ -34,8 +34,6 @@
 include '../lib/admin.defines.php';
 include '../lib/admin.module.access.php';
 include '../lib/admin.smarty.php';
-include '../lib/support/classes/support_service.php';
-include '../lib/Form/Class.FormHandler.inc.php';
 include './form_data/FG_var_support_component.inc';
 
 if (!has_rights(ACX_SUPPORT)) {

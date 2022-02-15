@@ -33,7 +33,6 @@
 
 include '../lib/admin.defines.php';
 include '../lib/admin.module.access.php';
-include '../lib/Form/Class.FormHandler.inc.php';
 include '../lib/admin.smarty.php';
 
 if (!has_rights(ACX_MAINTENANCE)) {

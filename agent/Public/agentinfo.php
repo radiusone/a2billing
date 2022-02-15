@@ -123,7 +123,7 @@ $smarty->display( 'main.tpl');
             <td rowspan="2"><img src="<?php echo KICON_PATH ?>/gnome-finance.gif" class="kikipic"/></td>
             <td width="50%">
             <br><font class="fontstyle_002"><?php echo gettext("AGENT ID");?> :</font><font class="fontstyle_007"> <?php echo $agent_info[12]; ?></font>
-            <br></br>
+                <br/><br>
             </td>
             <td width="50%">
             <br/><font class="fontstyle_002"><?php echo gettext("BALANCE REMAINING");?> :</font><font class="fontstyle_007"> <?php echo $credit_cur.' '.$agent_info[1]; ?> </font>
@@ -205,7 +205,7 @@ if ($A2B->config["epayment_method"]['enable']) { ?>
 <?php
 
 } else {
-    echo '<br></br><br></br>';
+    echo '<br><br><br><br>';
 }
 ?>
 </div>

@@ -208,6 +208,7 @@ if (!$popup_select) {
   </tr>
   </thead>
   <tbody>
+    <tr>
       <td colspan="3" class="items">
         <table class="items">
           <tbody>

@@ -188,7 +188,7 @@
 
 
 </ul>
-</br>
+<br>
 <ul id="nav">
 	<li>
 	<a href="logout.php?logout=true" target="_top"><img style="vertical-align:bottom;" src="templates/{$SKIN_NAME}/images/logout.png"> <font color="#DD0000"><b>&nbsp;&nbsp;{php} echo gettext("LOGOUT");{/php}</b></font> </a>

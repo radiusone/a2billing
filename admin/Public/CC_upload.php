@@ -108,7 +108,7 @@ if ($method) {
         $uploads = false;
 
         //print_r($file_ext_allow);
-        //echo "<br>files_to_upload=$files_to_upload</br>";
+        //echo "<br>files_to_upload=$files_to_upload<br>";
 
         for ($i = 0; $i < $files_to_upload; $i++) {
             if ($_FILES['file']['name'][$i]) {
@@ -133,7 +133,7 @@ if ($method) {
                         } else {
                             $file_to_upload = $upload_dir . "/" . $_FILES['file']['name'][0];
                             move_uploaded_file($_FILES['file']['tmp_name'][0], $file_to_upload);
-                            //echo "<br>::$file_to_upload</br>";
+                            //echo "<br>::$file_to_upload<br>";
                             //chmod($file_to_upload,0777);
                             $_SESSION['message'] .= $_FILES['file']['name'][0] . " uploaded.<br>";
                         }
@@ -246,7 +246,7 @@ $smarty->display('main.tpl');
       <?php
         //When there is a message, after an action, show it
         if (session_is_registered('message')) {
-          echo "<br></br><font color='red'>" . $_SESSION['message'] . "</font>";
+          echo "<br><br><font color='red'>" . $_SESSION['message'] . "</font>";
         }
       ?>
 <br><br><table width="560" cellspacing="1" cellpadding="1" border="0">

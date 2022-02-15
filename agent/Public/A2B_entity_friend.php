@@ -37,7 +37,6 @@ use A2billing\Notification;
 
 include '../lib/agent.defines.php';
 include '../lib/agent.module.access.php';
-include '../lib/Form/Class.FormHandler.inc.php';
 include './form_data/FG_var_friend.inc';
 include '../lib/agent.smarty.php';
 

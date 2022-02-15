@@ -70,7 +70,7 @@ if ($action == "reload") {
         // && DISCONNECTING
         $as->disconnect();
     } else {
-        $error_msg= "</br><center><b><font color=red>".gettext("Cannot connect to the asterisk manager!<br>Please check your manager configuration.")."</font></b></center>";
+        $error_msg= "<br><center><b><font color=red>".gettext("Cannot connect to the asterisk manager!<br>Please check your manager configuration.")."</font></b></center>";
     }
 } else {
 

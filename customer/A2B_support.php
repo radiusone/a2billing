@@ -129,7 +129,6 @@ if ($form_action == "list") {
     $HD_Form -> create_toppage ("ask-add");
 
 ?>
-      </center>
       <center><font class="error_message"><?php echo gettext("Create support ticket"); ?></font></center>
       <center>
        <table align="center" >

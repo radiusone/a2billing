@@ -256,11 +256,10 @@ function openURL(theLINK)
             </TD>
         </TR>
       </table>
- </div>
       <?php
               } else {
       ?>
-            <br/></br>
+            <br><br>
           <table width="100%" border="0" align="center" class="bgcolor_006">
             <tr>
               <td align="center">
@@ -270,10 +269,10 @@ function openURL(theLINK)
           </table>
 
           <br/><br/>
-       </div>
       <?php
             }//end_if
       ?>
+        </div>
         </td></tr></table>
 
 <?php

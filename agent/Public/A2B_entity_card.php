@@ -35,7 +35,6 @@ use A2billing\Table;
 
 include '../lib/agent.defines.php';
 include '../lib/agent.module.access.php';
-include '../lib/Form/Class.FormHandler.inc.php';
 include './form_data/FG_var_card.inc';
 include '../lib/agent.smarty.php';
 
@@ -370,8 +369,6 @@ if ($form_action == "list" && (!($popup_select>=1))) {
                 1)&nbsp;<?php echo gettext("In use"); ?>&nbsp;:
                 <input class="form_input_text"  name="upd_inuse" size="10" maxlength="6" value="<?php if (isset($upd_inuse)) echo $upd_inuse; else echo '0';?>">
                 <br/>
-
-            </select>
           </td>
         </tr>
         <tr>

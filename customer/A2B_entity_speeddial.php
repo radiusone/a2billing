@@ -35,7 +35,6 @@ use A2billing\Table;
 
 include './lib/customer.defines.php';
 include './lib/customer.module.access.php';
-include './lib/Form/Class.FormHandler.inc.php';
 include './form_data/FG_var_speeddial.inc';
 include './lib/customer.smarty.php';
 
@@ -89,7 +88,6 @@ if ($form_action == "list") {
      if (isset($update_msg) && strlen($update_msg)>0)
          echo $update_msg;
 ?>
-      </center>
       <center><font class="error_message"><?php echo gettext("Enter the number which you wish to assign to the code here"); ?></font></center>
       <center>
        <table align="center" class="speeddial_table1">

@@ -34,8 +34,6 @@
 include '../lib/agent.defines.php';
 include '../lib/agent.module.access.php';
 include '../lib/agent.smarty.php';
-include '../lib/support/classes/support_service.php';
-include '../lib/Form/Class.FormHandler.inc.php';
 include './form_data/FG_var_ticket.inc';
 
 if (! has_rights (ACX_SUPPORT)) {

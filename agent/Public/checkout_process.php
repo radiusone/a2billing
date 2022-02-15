@@ -52,7 +52,6 @@ if ($transactionID == "") {
 }
 
 include '../lib/agent.module.access.php';
-include '../lib/Form/Class.FormHandler.inc.php';
 include '../lib/epayment/classes/payment.php';
 include '../lib/epayment/classes/order.php';
 include '../lib/epayment/classes/currencies.php';

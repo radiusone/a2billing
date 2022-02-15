@@ -61,7 +61,6 @@ include '../lib/admin.module.access.php';
                     </tr>
 
                   </tbody>
-                </form>
               </table></td>
             <td class="bgcolor_021"><img height=1 src="<?php echo Images_Path;?>/clear.gif" width=1>
             </td>

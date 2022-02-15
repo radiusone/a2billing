@@ -35,7 +35,6 @@ use A2billing\Table;
 
 include '../lib/admin.defines.php';
 include '../lib/admin.module.access.php';
-include '../lib/Form/Class.FormHandler.inc.php';
 include './form_data/FG_var_moneysituation.inc';
 include '../lib/admin.smarty.php';
 
@@ -193,7 +192,7 @@ if ($result_nb_card[0][0] > 0) {
             </td>
         </tr>
     </table>
-        <br></br>
+    <br/><br>
 <?php
 }
 // #### FOOTER SECTION

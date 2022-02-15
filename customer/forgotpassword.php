@@ -78,7 +78,7 @@ if (isset ($pr_email) && isset ($action)) {
                 list ($id_card, $username, $lastname, $firstname, $email, $uipass, $cardalias) = $recordset;
 
                 if ($FG_DEBUG == 1)
-                    echo "<br># $username, $lastname, $firstname, $email, $uipass, $credit, $cardalias #</br>";
+                    echo "<br># $username, $lastname, $firstname, $email, $uipass, $credit, $cardalias #<br>";
                 try {
                     $mail = new Mail(Mail :: $TYPE_FORGETPASSWORD, $id_card);
                     $mail -> send();

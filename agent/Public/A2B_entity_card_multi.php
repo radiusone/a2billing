@@ -35,7 +35,6 @@ use A2billing\Table;
 
 include '../lib/agent.defines.php';
 include '../lib/agent.module.access.php';
-include '../lib/Form/Class.FormHandler.inc.php';
 include './form_data/FG_var_card.inc';
 include '../lib/agent.smarty.php';
 
@@ -201,7 +200,7 @@ if ($nbcard>0 && $action=="generate" && $nb_error==0) {
         if (is_array($list_friend)) {
             $fd=fopen($buddyfile,"w");
             if (!$fd) {
-                $error_msg= "</br><center><b><font color=red>".gettext("Could not open buddy file")." ". $buddyfile."</font></b></center>";
+                $error_msg= "<br><center><b><font color=red>".gettext("Could not open buddy file")." ". $buddyfile."</font></b></center>";
             } else {
                 foreach ($list_friend as $data) {
                     $line="\n\n[".$data[1]."]\n";
@@ -242,7 +241,7 @@ if ($nbcard>0 && $action=="generate" && $nb_error==0) {
         if (is_array($list_friend)) {
             $fd=fopen($buddyfile,"w");
             if (!$fd) {
-                $error_msg= "</br><center><b><font color=red>".gettext("Could not open buddy file"). $buddyfile."</font></b></center>";
+                $error_msg= "<br><center><b><font color=red>".gettext("Could not open buddy file"). $buddyfile."</font></b></center>";
             } else {
                 foreach ($list_friend as $data) {
                     $line="\n\n[".$data[1]."]\n";

@@ -620,7 +620,7 @@ $smarty->display('main.tpl');
 
 <!-- ** ** ** ** ** Part to display the CDR ** ** ** ** ** -->
 
-<?php echo gettext("Number of call");?> : <?php  if (is_array($list) && count($list)>0) { echo $nb_record; } else {echo "0";}?></center>
+<?php echo gettext("Number of call");?> : <?php  if (is_array($list) && count($list)>0) { echo $nb_record; } else {echo "0";}?>
 
       <table width="<?php echo $FG_HTML_TABLE_WIDTH?>" border="0" align="center" cellpadding="0" cellspacing="0">
         <TR bgcolor="#ffffff">

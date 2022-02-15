@@ -35,7 +35,6 @@ use A2billing\Table;
 
 include '../lib/admin.defines.php';
 include '../lib/admin.module.access.php';
-include '../lib/Form/Class.FormHandler.inc.php';
 include '../lib/config_functions.php';
 include './form_data/FG_var_config.inc';
 include '../lib/admin.smarty.php';
@@ -141,7 +140,7 @@ function Check() {
                         <input type="radio" NAME="rbValue" value="4"> <?php echo gettext("Ends with");?>
                         </font>
                     </td>
-                </td>
+                </tr>
             </table>
             </td>
         </tr>
@@ -178,7 +177,7 @@ function Check() {
                         <input type="radio" NAME="rbKey" value="4"> <?php echo gettext("Ends with");?>
                         </font>
                     </td>
-                </td>
+                </tr>
             </table>
             </td>
         </tr>
@@ -215,7 +214,7 @@ function Check() {
                         <input type="radio" NAME="rbDesc" value="4"> <?php echo gettext("Ends with");?>
                         </font>
                     </td>
-                </td>
+                </tr>
             </table>
             </td>
         </tr>
@@ -260,7 +259,6 @@ function Check() {
         </tr>
     </table>
 </FORM>
-</center>
 
 <?php
 }

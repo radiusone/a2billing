@@ -66,7 +66,7 @@ if (SHOW_HELP) {
 
     $CC_help_generate_signup = create_help(gettext("Generate a specific crypted URL to configure signup with a customer group and call plan."));
 
-    $CC_help_list_customer = create_help(gettext("Customers are listed below by account number. Each row corresponds to one customer, along with information such as their call plan, credit remaining, etc.</br>") . gettext("The SIP and IAX buttons create SIP and IAX entries to allow direct VoIP connections to the Asterisk server without further authentication."), 'ListCustomers');
+    $CC_help_list_customer = create_help(gettext("Customers are listed below by account number. Each row corresponds to one customer, along with information such as their call plan, credit remaining, etc.<br>") . gettext("The SIP and IAX buttons create SIP and IAX entries to allow direct VoIP connections to the Asterisk server without further authentication."), 'ListCustomers');
 
     $CC_help_import_customer = create_help(gettext("Import Customers from a CSV file."), 'ImportCustomers');
 
@@ -78,12 +78,12 @@ if (SHOW_HELP) {
 
     $CC_help_generate_customer = create_help(gettext("Bulk create customers in a single step. <br> Set the properties of the batch such as initial credit, account type and currency, then click on the GENERATE CUSTOMERS button to create the batch."), 'GenerateCustomers');
 
-    $CC_help_sipfriend_list = create_help(gettext("SIP and IAX Config will create a SIP or IAX entry on the Asterisk server, so that a customer can set up a SIP or IAX client to connect directly to the asterisk server without the need to enter an account and pin each time a call is made. When done, click on the CONFIRM DATA button, then click reload to apply the changes on the Asterisk server.</br>") .
+    $CC_help_sipfriend_list = create_help(gettext("SIP and IAX Config will create a SIP or IAX entry on the Asterisk server, so that a customer can set up a SIP or IAX client to connect directly to the asterisk server without the need to enter an account and pin each time a call is made. When done, click on the CONFIRM DATA button, then click reload to apply the changes on the Asterisk server.<br>") .
     gettext("The customer must then enter the URL/IP address of the asterisk server into the SIP/IAX client, and use the Account Number and Secret word as the username and password."), 'ListSIPFriend');
 
     $CC_help_sipfriend_reload = create_help(gettext("Click reload to commit changes to Asterisk"));
 
-    $CC_help_sipfriend_edit = create_help(gettext("Each SIP/IAX client is identified by a number of parameters.</br></br>") .
+    $CC_help_sipfriend_edit = create_help(gettext("Each SIP/IAX client is identified by a number of parameters.<br><br>") .
     gettext("More details on how to configure clients are on the Wiki") . ' -> <a href="http://voip-info.org/wiki-Asterisk+config+sip.conf" target="_blank">sip.conf</a> &
 <a href="http://voip-info.org/wiki-Asterisk+config+iax.conf" target="_blank">iax.conf</a>', 'EditFriend');
 

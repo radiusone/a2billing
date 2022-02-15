@@ -385,7 +385,7 @@ if ($fullhtmlpage) { ?>
                 } else {
                     echo "<a href=\"$page_url"."letter=$x&order=$order&sens=$sens&choose_currency=$choose_currency&css_url=$css_url&page_url=$page_url_encode\">$x</a> ";
                 }
-            }?></font>
+            }?>
         </div>
         <?php } if ($FILTER_PREFIX) { ?>
         <div class="a2b_rate_searchelement"  align="left">

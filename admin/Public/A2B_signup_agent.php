@@ -176,7 +176,7 @@ echo $CC_help_generate_signup;
                                 ?>
                         </select>
                         <br>
-                        </br>
+                        <br>
 
                 </td>
                 </tr>
@@ -194,7 +194,7 @@ echo $CC_help_generate_signup;
                   <td  align="center" width="50%">
                         <input type="hidden" name="task" value="">
                       <input id="generate" type="button" value="<?php echo gettext('ADD URL KEY'); ?>" onFocus=this.select() class="form_input_button_disabled" name="submit1" onClick="submit_form(this.form);" disabled="true" />
-                       </p>
+                       <p>
                   </td>
                 </tr>
 

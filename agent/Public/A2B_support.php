@@ -39,7 +39,6 @@ use A2billing\A2bMailException;
 
 include '../lib/agent.defines.php';
 include '../lib/agent.module.access.php';
-include '../lib/Form/Class.FormHandler.inc.php';
 include './form_data/FG_var_ticket_agent.inc';
 include '../lib/agent.smarty.php';
 
@@ -116,7 +115,6 @@ if ($form_action == "list") {
     $HD_Form -> create_toppage ("ask-add");
 
 ?>
-      </center>
       <center><font class="error_message"><?php echo gettext("Create a NEW Support Ticket"); ?></font></center>
       <center>
        <table align="center" >

@@ -78,7 +78,6 @@ $error["ERR-0002"] 		= gettext("No such card number found. Please check your car
         </td>
     </tr>
 
-    </tr>
           </table>
           </div>
           </div>

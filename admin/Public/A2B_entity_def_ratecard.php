@@ -35,7 +35,6 @@ use A2billing\Table;
 
 include '../lib/admin.defines.php';
 include '../lib/admin.module.access.php';
-include '../lib/Form/Class.FormHandler.inc.php';
 include './form_data/FG_var_def_ratecard.inc';
 include '../lib/admin.smarty.php';
 
@@ -366,10 +365,7 @@ if ($form_action == "list" && !$popup_select) {
                 <br/>
             </td>
         </tr>
-
-                </font>
-            </td>
-        </tr>
+        <tr>
          <?php
            $index=0;
            foreach ($update_fields as $value) {

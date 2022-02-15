@@ -62,7 +62,7 @@ if (SHOW_HELP) {
 
     $CC_help_agent_info = create_help(gettext("Personal information.") . '<br>' . gettext("You can update your personal information here."));
 
-    $CC_help_sipfriend_list = create_help(gettext("Voip Config will create a SIP or IAX entry on the Asterisk server, so that a customer can set up a SIP or IAX client to connect directly to the asterisk server without the need to enter an account and pin each time a call is made. When done, click on the CONFIRM DATA button, then click reload to apply the changes on the Asterisk server.</br>") .
+    $CC_help_sipfriend_list = create_help(gettext("Voip Config will create a SIP or IAX entry on the Asterisk server, so that a customer can set up a SIP or IAX client to connect directly to the asterisk server without the need to enter an account and pin each time a call is made. When done, click on the CONFIRM DATA button, then click reload to apply the changes on the Asterisk server.<br>") .
     gettext("The customer must then enter the URL/IP address of the asterisk server into the SIP/IAX client and use the account number and secret as the username and password."), 'ListSIPFriend');
 
     $CC_help_sipfriend_reload = create_help(gettext("Click reload to commit changes to Asterisk"));
@@ -75,7 +75,7 @@ if (SHOW_HELP) {
 
     $CC_help_secret_change = create_help(gettext("On this page you will be able to change your Secret used to crypt your generated signup URL, You have to enter the New Secret and Confirm it."));
 
-    $CC_help_list_customer = create_help(gettext("Customers are listed below by card number. Each row corresponds to one customer, along with information such as their call plan, credit remaining, etc.</br>") .
+    $CC_help_list_customer = create_help(gettext("Customers are listed below by card number. Each row corresponds to one customer, along with information such as their call plan, credit remaining, etc.<br>") .
     gettext("The SIP and IAX buttons create SIP and IAX entries to allow direct VoIP connections to the Asterisk server without further authentication."), 'ListCustomers');
 
     $CC_help_view_payment = create_help(gettext("Payment history - The section below allows you to add payments against a customer. Note that this does not change the balance on the card. Click refill under customer list to top-up a card."), 'ViewPayments');

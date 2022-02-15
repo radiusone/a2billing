@@ -38,7 +38,6 @@ use A2billing\A2bMailException;
 
 include '../lib/admin.defines.php';
 include '../lib/admin.module.access.php';
-include '../lib/Form/Class.FormHandler.inc.php';
 include '../lib/admin.smarty.php';
 
 if (! has_rights (ACX_MAIL)) {
@@ -322,7 +321,7 @@ function loadtmpl() {
     <TR>
         <TD width="%25" valign="middle" class="form_head"><?php echo gettext("MESSAGE");?></TD>
         <TD width="%75" valign="top" class="tableBodyRight" background="../Public/templates/default/images/background_cells.gif">
-        <TEXTAREA id="msg_mail" class="form_input_textarea" name="message"  cols="80" rows="15""></textarea>
+        <TEXTAREA id="msg_mail" class="form_input_textarea" name="message"  cols="80" rows="15"></textarea>
             <span class="liens"></span>&nbsp; </TD>
      </TR>
 

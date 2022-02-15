@@ -33,7 +33,6 @@
 
 include_once '../lib/admin.defines.php';
 include_once '../lib/admin.module.access.php';
-include_once '../lib/Form/Class.FormHandler.inc.php';
 include_once '../lib/admin.smarty.php';
 include_once './form_data/FG_var_charge.inc';
 

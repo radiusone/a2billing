@@ -471,7 +471,7 @@ function CheckCountry(Source)
                 <?php
                 if ($confirm_buy_did == 2) {?><center><font color="black"><?php echo gettext("The purchase of the DID is done ")?> </font></center>
                 <?php } elseif ($confirm_buy_did == 5) {?><center><font color="red"><?php echo "<br>".gettext("The purchase of the DID cannot be done, the VoIP destination have to be a proper URI");?> </font></center>
-                <?php } else {?><center><font color="red"><?php echo "<br>".gettext("The purchase of the DID cannot be done, your credit of  ").number_format($user_credit,2,".",",")." ".BASE_CURRENCY.gettext(" is lower than Fixerate of the DID  ").number_format($rate,2,".",",")." ".BASE_CURRENCY." </br> <hr>".gettext("Please reload your account ");?> </font></center>
+                <?php } else {?><center><font color="red"><?php echo "<br>".gettext("The purchase of the DID cannot be done, your credit of  ").number_format($user_credit,2,".",",")." ".BASE_CURRENCY.gettext(" is lower than Fixerate of the DID  ").number_format($rate,2,".",",")." ".BASE_CURRENCY." <br> <hr>".gettext("Please reload your account ");?> </font></center>
                 <?php } ?>
             </td>
         </tr>

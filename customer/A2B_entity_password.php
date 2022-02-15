@@ -142,13 +142,13 @@ if ($form_action=="ask-modif") {
 </tr>
 
 </table>
-</center>
 <script language="JavaScript">
 
 document.frmPass.NewPassword.focus();
 
 </script>
 </form>
+</center>
 <br><br><br>
 
 <?php

@@ -303,7 +303,7 @@ if (!is_array($arr_purchase_amount)) {
 </table>
 
 <?php } else { ?>
-<br></br><br></br>
+    <br/><br><br/><br>
 
 <?php } ?>
 </div>

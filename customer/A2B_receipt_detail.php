@@ -172,7 +172,7 @@ function amount_convert($amount)
             <td class="two"><?php echo gettext("Total Page");" "+$page ?></td>
             <td class="three">
               <div class="inctotal inner">
-                <?php echo number_format(amount_convert($price),2)." $display_curr"; ?></div>
+                <?php echo number_format(amount_convert($price),2)." $display_curr"; ?>
               </div>
             </td>
           </tr>

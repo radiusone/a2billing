@@ -226,7 +226,7 @@ echo $CC_help_callback;
     </form>
   </table>
   <br>
-<br></br><br></br>
+<br/><br><br/><br>
 <?php
 
 $smarty->display( 'footer.tpl');

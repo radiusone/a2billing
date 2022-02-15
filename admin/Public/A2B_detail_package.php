@@ -371,7 +371,6 @@ $smarty->display('main.tpl');
               <TBODY>
                 <TR>
                   <TD><SPAN  class="fontstyle_003"><?php echo $FG_HTML_TABLE_TITLE?></SPAN></TD>
-                  </TD>
                 </TR>
               </TBODY>
             </TABLE></TD>

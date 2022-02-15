@@ -91,11 +91,11 @@ for ($i = 0; $i < $num; $i++) {
 }
 
 if ($FG_DEBUG == 1)
-    echo "</br><b>BELOW THE CARD PROPERTIES </b><hr></br>";
+    echo "<br><b>BELOW THE CARD PROPERTIES </b><hr><br>";
 
 list ($username, $lastname, $firstname, $email, $uipass, $credit, $cardalias, $loginkey) = $list[0];
 if ($FG_DEBUG == 1)
-    echo "<br># $username, $lastname, $firstname, $email, $uipass, $credit, $cardalias #</br>";
+    echo "<br># $username, $lastname, $firstname, $email, $uipass, $credit, $cardalias #<br>";
 
 try {
     $mail->send();

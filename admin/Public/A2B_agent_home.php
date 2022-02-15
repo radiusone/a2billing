@@ -218,7 +218,7 @@ $message_types = getMsgTypeList();
 <?php
 $size_msg = sizeof($messages);
 if (!is_array($messages)) { ?>
-<h3><?php echo gettext("No Message")?> </h1>
+<h3><?php echo gettext("No Message")?> </h3>
 <?php
 }?>
 </div>

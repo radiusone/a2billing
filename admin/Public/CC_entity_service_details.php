@@ -228,13 +228,12 @@ $smarty->display('main.tpl');
             </TD>
         </TR>
       </table>
- </div>
 
 <?php
     } else {
 ?>
 
-    <br/></br>
+    <br><br>
     <table width="100%" border="0" align="center" class="bgcolor_006">
         <tr>
           <td align="center">
@@ -245,10 +244,10 @@ $smarty->display('main.tpl');
 
 <br/><br/>
 
-</div>
 <?php
 }//end_if
 ?>
+</div>
 
 </td></tr></table>
 

@@ -221,7 +221,7 @@ echo $CC_help_import_ratecard;
 
 ?>
 <center>
-		<b><?php echo gettext("New rate cards have to be imported from a CSV file.");?>.</b></br></br>
+		<b><?php echo gettext("New rate cards have to be imported from a CSV file.");?>.</b><br><br>
 		<table width="95%" border="0" cellspacing="2" align="center" class="records">
 			  <form name="prefs" enctype="multipart/form-data" action="CC_ratecard_import_analyse.php" method="post">
 				<tr> 
@@ -246,8 +246,8 @@ echo $CC_help_import_ratecard;
 									<option class=input value='<?php  echo $recordset[0]?>-:-<?php  echo $recordset[1]?>' <?php if ($recordset[0]==$trunk) echo "selected";?>><?php echo $recordset[1]?></option>                        
 								<?php 	 }
 								?>
-						</select>	
-						<br></br>
+						</select>
+                      <br/><br>
 				  		  
 					<?php echo gettext("These fields are mandatory");?><br>
 

@@ -205,7 +205,7 @@ function moveSourceDown() {
 </script>
 
 <center>
-<b><?php echo gettext("New DID have to be imported from a CSV file.");?>.</b></br></br>
+<b><?php echo gettext("New DID have to be imported from a CSV file.");?>.</b><br><br>
 <table width="95%" border="0" cellspacing="2" align="center" class="records">
 
     <form name="prefs" enctype="multipart/form-data" action="A2B_entity_did_import_analyse.php" method="post">

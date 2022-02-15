@@ -121,7 +121,7 @@ function submit_form(form)
                                 ?>
                         </select>
                         <br>
-                        </br>
+                        <br>
 
                 </td>
                 </tr>
@@ -139,7 +139,7 @@ function submit_form(form)
                   <td  align="center" width="50%">
                         <input type="hidden" name="task" value="">
                       <input id="generate" type="button" value="<?php echo gettext('ADD URL KEY');?>" onFocus=this.select() class="form_input_button_disabled" name="submit1" onClick="submit_form(this.form);" disabled="true" />
-                       </p>
+                       <p>
                   </td>
                 </tr>
                 <tr>

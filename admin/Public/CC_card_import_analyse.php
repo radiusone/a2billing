@@ -279,9 +279,7 @@ function sendtoupload(form)
         </table>
 
 
-
-
-<br></br>
+    <br/><br>
         <table width="95%" border="0" cellspacing="2" align="center" class="records">
 
               <form name="myform" enctype="multipart/form-data" action="CC_card_import_analyse.php" method="post" >
@@ -319,7 +317,7 @@ function sendtoupload(form)
 
             <?php } else { ?>
 
-            </br>
+            <br>
             <table width="75%" border="0" cellspacing="2" align="center" class="records">
 
                 <TR>

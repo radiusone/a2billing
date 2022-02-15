@@ -35,7 +35,6 @@ use A2billing\Table;
 
 include '../lib/agent.defines.php';
 include '../lib/agent.module.access.php';
-include '../lib/Form/Class.FormHandler.inc.php';
 include './form_data/FG_var_remittance_request.inc';
 include '../lib/agent.smarty.php';
 

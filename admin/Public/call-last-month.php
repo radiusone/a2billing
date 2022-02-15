@@ -172,7 +172,6 @@ $smarty->display('main.tpl');
     </center>
 
 <?php  } ?>
-</center>
 
 <br><br>
 
