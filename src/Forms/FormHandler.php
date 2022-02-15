@@ -2173,32 +2173,32 @@ class FormHandler
 		switch ($form_action) {
 			case "add-content":
 				$this->perform_add_content($sub_action,$id);
-                $this->show_edit_form();
+                $this->show_edit_form($processed, $list);
 				break;
 
 			case "del-content":
 				$this->perform_del_content($sub_action,$id);
-                $this->show_edit_form();
+                $this->show_edit_form($processed, $list);
 				break;
 
 			case "ask-edit":
 			case "edit":
-                $this->show_edit_form();
+                $this->show_edit_form($processed, $list);
 				break;
 
 			case "ask-add":
-				$this->show_add_form();
+				$this->show_add_form($processed, $list);
 				break;
 
 			case "ask-delete":
             case "ask-del-confirm":
 				if (strlen($this -> FG_ADDITIONAL_FUNCTION_BEFORE_DELETE) > 0)
 			   	$res_funct = call_user_func(array('FormBO', $this->FG_ADDITIONAL_FUNCTION_BEFORE_DELETE));
-				$this->show_delete_form();
+				$this->show_delete_form($processed, $list);
 				break;
 
 			case "list":
-				$this->show_view();
+				$this->show_view($processed, $list);
 				break;
 
 			case "delete":
@@ -2211,9 +2211,8 @@ class FormHandler
 			}
 	}
 
-    private function show_edit_form()
+    private function show_edit_form($processed, $list)
     {
-        $processed = $this->getProcessed();
         $id = $processed['id'];
         $atmenu = $processed['atmenu'];
         $stitle = $processed['stitle'];
@@ -2223,9 +2222,8 @@ class FormHandler
         require(__DIR__ . "/../../templates/EditForm.inc.php");
     }
 
-    private function show_add_form()
+    private function show_add_form($processed, $list)
     {
-        $processed = $this->getProcessed();
         $id = $processed['id'];
         $atmenu = $processed['atmenu'];
         $stitle = $processed['stitle'];
@@ -2235,9 +2233,8 @@ class FormHandler
         require(__DIR__ . "/../../templates/AddForm.inc.php");
     }
 
-    private function show_delete_form()
+    private function show_delete_form($processed, $list)
     {
-        $processed = $this->getProcessed();
         $id = $processed['id'];
         $atmenu = $processed['atmenu'];
         $stitle = $processed['stitle'];
@@ -2247,9 +2244,8 @@ class FormHandler
         require(__DIR__ . "/../../templates/DelForm.inc.php");
     }
 
-    private function show_view()
+    private function show_view($processed, $list)
     {
-        $processed = $this->getProcessed();
         $id = $processed['id'];
         $atmenu = $processed['atmenu'];
         $stitle = $processed['stitle'];
@@ -2259,9 +2255,8 @@ class FormHandler
         require(__DIR__ . "/../../templates/ViewHandler.inc.php");
     }
 
-    private function show_search()
+    private function show_search($processed, $list)
     {
-        $processed = $this->getProcessed();
         $id = $processed['id'];
         $atmenu = $processed['atmenu'];
         $stitle = $processed['stitle'];
