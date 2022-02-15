@@ -10,6 +10,8 @@
   Released under the GNU General Public License
 */
 
+use A2billing\Table;
+
 Class payment {
     public $modules, $selected_module;
 

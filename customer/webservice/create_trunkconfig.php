@@ -43,6 +43,8 @@ Usage :
     http://localhost/customer/webservice/Create_TrunkConfig.php?activation_code=XXXXXXXXXXX
 */
 
+use A2billing\Table;
+
 include '../lib/customer.defines.php';
 
 getpost_ifset(array('activation_code', 'html'));

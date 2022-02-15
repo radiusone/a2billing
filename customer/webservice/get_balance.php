@@ -44,6 +44,8 @@ Usage :
     http://localhost/customer/webservice/get_balance.php?username=XXXXXXXXXXX&password=XXXXXXXXXXX&html=1
 */
 
+use A2billing\Table;
+
 include '../lib/customer.defines.php';
 
 

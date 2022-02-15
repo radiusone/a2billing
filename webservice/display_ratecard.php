@@ -63,6 +63,8 @@
 
  ****************************************************************************/
 
+use A2billing\Table;
+
 include 'lib/admin.defines.php';
 
 // The wrapper variables for security

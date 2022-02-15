@@ -2,6 +2,7 @@
 
 use A2billing\Soap;
 use A2billing\RateEngine;
+use A2billing\Table;
 use SOAP_Server;
 use SOAP_DISCO_Server;
 

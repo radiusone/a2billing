@@ -3,7 +3,9 @@
 ////
 // Class to handle currencies
 // TABLES: currencies
-  class currencies
+use A2billing\Table;
+
+class currencies
   {
     public $currencies;
 

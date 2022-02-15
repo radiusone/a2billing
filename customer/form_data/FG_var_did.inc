@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Forms\FormHandler;
+use A2billing\Notification;
 use A2billing\NotificationsDAO;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */

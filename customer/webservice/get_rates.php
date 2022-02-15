@@ -43,6 +43,8 @@ Usage :
     http://localhost/customer/webservice/Get_Rates.php?activation_code=XXXXXXXXXXX
 */
 
+use A2billing\Table;
+
 include '../lib/customer.defines.php';
 
 
