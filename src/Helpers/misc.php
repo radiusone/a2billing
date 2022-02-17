@@ -1637,3 +1637,12 @@ function Display_Login_Button ($DBHandle, $id)
 
     return $content;
 }
+
+function str_icontains (string $haystack, string $needle)
+{
+    if (function_exists("str_contains")) {
+        return str_contains(strtolower($haystack), strtolower($needle));
+    } else {
+        return stripos($haystack, $needle) !== false;
+    }
+}
