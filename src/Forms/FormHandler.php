@@ -924,18 +924,62 @@ class FormHandler
 	// 17. COMMENT ABOVE : this will insert a comment line above the edition line, useful to separate section and to provide some detailed instruction
 	 */
 
-	function AddEditElement($displayname, $fieldname, $defaultvalue, $fieldtype, $fieldproperty, $regexpr_nb, $error_message, $type_selectfield,
-		$lie_tablename, $lie_tablefield, $lie_clause, $listname, $displayformat_selectfield, $check_emptyvalue , $comment, $custom_query = null,
-		$displayinput_defaultselect = null, $comment_above = null, $field_enabled = true){
-		if( strtoupper($fieldtype)=="LABEL" && (strtoupper($_GET['form_action']) == "EDIT" ||strtoupper($_POST['form_action'])== "EDIT") ){
+	function AddEditElement(
+            $displayname,
+            $fieldname,
+            $defaultvalue,
+            $fieldtype,
+            $fieldproperty,
+            $regexpr_nb,
+            $error_message,
+            $type_selectfield,
+    		$lie_tablename,
+            $lie_tablefield,
+            $lie_clause,
+            $listname,
+            $displayformat_selectfield,
+            $check_emptyvalue ,
+            $comment,
+            $custom_query = null,
+		    $displayinput_defaultselect = null,
+            $comment_above = null,
+            $field_enabled = true
+    )
+    {
+        $fieldtype = strtoupper($fieldtype);
+		if ($fieldtype === "LABEL" && strtoupper($_REQUEST['form_action']) == "EDIT") {
 		 return;
 		}
+
 		if($field_enabled==true)
 		{
 			$cur = count($this->FG_TABLE_EDITION);
-			$this->FG_TABLE_EDITION[$cur] = array ( $displayname, $fieldname, $defaultvalue, $fieldtype, $fieldproperty, $regexpr_nb, $error_message,
-							$type_selectfield, $lie_tablename, $lie_tablefield, $lie_clause, $listname, $displayformat_selectfield, $check_emptyvalue,
-							$custom_query, $displayinput_defaultselect, $comment_above);
+			$assoc = [
+                "label" => $displayname,
+                "name" => $fieldname,
+                "default" => $defaultvalue,
+                "type" => strtoupper($fieldtype),
+                "attributes" => $fieldproperty,
+                "regex" => $regexpr_nb,
+                "error" => $error_message,
+                "select_type" => strtoupper($type_selectfield),
+                "sql_table" => $lie_tablename,
+                "sql_field" => $lie_tablefield,
+                "sql_clause" => $lie_clause,
+                "select_fields" => $listname,
+                "select_format" => $displayformat_selectfield,
+                "check_empty" => $check_emptyvalue,
+                "custom_query" => $custom_query,
+                "first_option" => $displayinput_defaultselect,
+                "section_name" => $comment_above,
+                // extra repeated values because same index is used for multiple purposes
+                "radio_options" => $lie_clause,
+                "popup_dest" => $displayformat_selectfield, //12
+                "popup_params" => $check_emptyvalue, //13
+                "popup_timeval" => $custom_query, //14
+                "custom_function" => $displayinput_defaultselect, //15
+            ];
+            $this->FG_TABLE_EDITION[$cur] = $assoc + array_values($assoc);
 			$this->FG_TABLE_COMMENT[$cur] = $comment;
 			$this->FG_TABLE_ADITION[$cur] = $this->FG_TABLE_EDITION[$cur];
 			$this->FG_NB_TABLE_ADITION = $this->FG_NB_TABLE_EDITION = count($this->FG_TABLE_EDITION);
@@ -965,7 +1009,7 @@ class FormHandler
 	 * @ $displayname , SQL or array to fill select and the name of select box
      */
 	function AddSearchElement_Select($displayname, $table = null, $fields = null, $clause = null,
-			$order = null ,$sens = null , $select_name, $sql_type = 1, $array_content = null,$search_table=null){
+			$order = null ,$sens = null , $select_name='', $sql_type = 1, $array_content = null,$search_table=null){
 
 		$cur = count($this->FG_FILTER_SEARCH_FORM_SELECT);
 
@@ -1406,9 +1450,9 @@ class FormHandler
 
 				$date_clause = '';
 
-				if ($processed[fromday] && isset($processed[fromstatsday_sday]) && isset($processed[fromstatsmonth_sday]))
+				if ($processed['fromday'] && isset($processed['fromstatsday_sday']) && isset($processed['fromstatsmonth_sday']))
 					$date_clause.=" AND ".$this->FG_FILTER_SEARCH_1_TIME_FIELD." >= TIMESTAMP('$processed[fromstatsmonth_sday]-$processed[fromstatsday_sday]')";
-				if ($processed[today] && isset($processed[tostatsday_sday]) && isset($processed[tostatsmonth_sday]))
+				if ($processed['today'] && isset($processed['tostatsday_sday']) && isset($processed['tostatsmonth_sday']))
 					$date_clause.=" AND ".$this->FG_FILTER_SEARCH_1_TIME_FIELD." <= TIMESTAMP('$processed[tostatsmonth_sday]-".sprintf("%02d",intval($processed[tostatsday_sday])/*+1*/)." 23:59:59')";
 
 
@@ -1418,15 +1462,15 @@ class FormHandler
 				}
 
 				//BIS FIELD
-				if ($processed[fromday_bis] && isset($processed[fromstatsday_sday_bis]) && isset($processed[fromstatsmonth_sday_bis]))
+				if ($processed['fromday_bis'] && isset($processed['fromstatsday_sday_bis']) && isset($processed['fromstatsmonth_sday_bis']))
 					$date_clause.=" AND ".$this->FG_FILTER_SEARCH_1_TIME_FIELD_BIS." >= TIMESTAMP('$processed[fromstatsmonth_sday_bis]-$processed[fromstatsday_sday_bis]')";
-				if ($processed[today_bis] && isset($processed[tostatsday_sday_bis]) && isset($processed[tostatsmonth_sday_bis]))
+				if ($processed['today_bis'] && isset($processed['tostatsday_sday_bis']) && isset($processed['tostatsmonth_sday_bis']))
 					$date_clause.=" AND ".$this->FG_FILTER_SEARCH_1_TIME_FIELD_BIS." <= TIMESTAMP('$processed[tostatsmonth_sday_bis]-".sprintf("%02d",intval($processed[tostatsday_sday_bis])/*+1*/)." 23:59:59')";
 
 
-				if ($processed[Period_bis]=="month_older_rad") {
-					$from_month = $processed[month_earlier_bis];
-					$date_clause .= " AND DATE_SUB(NOW(),INTERVAL $from_month MONTH) > ".$this->FG_FILTER_SEARCH_3_TIME_FIELD_BIS."";
+				if ($processed['Period_bis']=="month_older_rad") {
+					$from_month = $processed['month_earlier_bis'];
+					$date_clause .= " AND DATE_SUB(NOW(),INTERVAL $from_month MONTH) > ".$this->FG_FILTER_SEARCH_3_TIME_FIELD_BIS;
 				}
 
 
@@ -2214,12 +2258,6 @@ class FormHandler
 
     private function show_edit_form($processed, $list)
     {
-        $id = $processed['id'];
-        $atmenu = $processed['atmenu'];
-        $stitle = $processed['stitle'];
-        $ratesort = $processed['ratesort'];
-        $sub_action = $processed['sub_action'];
-
         require(__DIR__ . "/../../templates/EditForm.inc.php");
     }
 
