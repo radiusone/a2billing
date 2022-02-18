@@ -2,852 +2,485 @@
 
 use A2billing\Table;
 
-// ******************** END IF $topviewer *******************************
-
+/**
+ * @var A2billing\Forms\Formhandler $this
+ * @var array $processed
+ * @var array $list
+ * @var string $stitle
+ * @var string $letter
+ * @var string $current_page
+ * @var int $popup_select
+ */
 getpost_ifset(array('stitle', 'letter', 'current_page', 'popup_select'));
-
-$processed = $this->getProcessed();
-
-
-if( !($popup_select>=1) &&($this->FG_LIST_ADDING_BUTTON1 || $this->FG_LIST_ADDING_BUTTON2)) {
-    ?>
-    <table align="right"><tr align="right">
-        <td align="right">
-        <?php if($this->FG_LIST_ADDING_BUTTON1) {?>
-            <a href="<?php echo $this -> FG_LIST_ADDING_BUTTON_LINK1    ?>"> <?php echo $this -> FG_LIST_ADDING_BUTTON_MSG1?>&nbsp;&nbsp;<img src="<?php echo $this -> FG_LIST_ADDING_BUTTON_IMG1?>" border="0" title="<?php echo $this->FG_LIST_ADDING_BUTTON_ALT1?>" alt="<?php echo $this->FG_LIST_ADDING_BUTTON_ALT1?>"></a>
-        <?php  } //END IF ?>
-        &nbsp;
-        <?php if($this->FG_LIST_ADDING_BUTTON2) {?>
-            <a href="<?php echo $this -> FG_LIST_ADDING_BUTTON_LINK2    ?>"> <?php echo $this -> FG_LIST_ADDING_BUTTON_MSG2?>&nbsp;&nbsp;<img src="<?php echo $this -> FG_LIST_ADDING_BUTTON_IMG2?>" border="0" title="<?php echo $this->FG_LIST_ADDING_BUTTON_ALT2?>" alt="<?php echo $this->FG_LIST_ADDING_BUTTON_ALT2?>"></a>
-        <?php  } //END IF ?>
-          </td>
-     </tr></table>
-<?php  } //END IF ?>
-<br>
-<?php
-
-if ((count($list)>0) && is_array($list)){
-    $ligne_number=0;
 ?>
 
-<script language="JavaScript" type="text/JavaScript">
-function openURLFilter(theLINK) {
-    selInd = document.theFormFilter.choose_list.selectedIndex;
-    if(selInd==0){return false;}
-    goURL = document.theFormFilter.choose_list.options[selInd].value;
-    this.location.href = theLINK + goURL;
+<?php if( $popup_select < 1 && ($this->FG_LIST_ADDING_BUTTON1 || $this->FG_LIST_ADDING_BUTTON2)): ?>
+<table align="right">
+    <tr align="right">
+        <td align="right">
+        <?php if($this->FG_LIST_ADDING_BUTTON1): ?>
+            <a href="<?= $this->FG_LIST_ADDING_BUTTON_LINK1 ?>">
+                <?= $this->FG_LIST_ADDING_BUTTON_MSG1 ?>
+                &nbsp;&nbsp;
+                <img src="<?= $this->FG_LIST_ADDING_BUTTON_IMG1 ?>" border="0" title="<?= $this->FG_LIST_ADDING_BUTTON_ALT1 ?>" alt="<?= $this->FG_LIST_ADDING_BUTTON_ALT1 ?>">
+            </a>
+        <?php endif ?>
+        &nbsp;
+        <?php if($this->FG_LIST_ADDING_BUTTON2): ?>
+            <a href="<?= $this->FG_LIST_ADDING_BUTTON_LINK2 ?>">
+                <?= $this -> FG_LIST_ADDING_BUTTON_MSG2?>
+                &nbsp;&nbsp;
+                <img src="<?= $this->FG_LIST_ADDING_BUTTON_IMG2?>" border="0" title="<?= $this->FG_LIST_ADDING_BUTTON_ALT2 ?>" alt="<?= $this->FG_LIST_ADDING_BUTTON_ALT2 ?>">
+            </a>
+        <?php endif ?>
+        </td>
+    </tr>
+</table>
+<?php endif ?>
+<br/>
+
+<?php if (empty($list)): ?>
+    <br/><br/>
+    <div align="center">
+        <table width="80%" border="0" align="center">
+            <tr>
+                <td align="center">
+                    <?= $this -> CV_NO_FIELDS;?><br>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <br/><br/>
+    <?php return ?>
+<?php endif ?>
+
+<script>
+function openURLFilter(link) {
+    if(document.theFormFilter.choose_list.selectedIndex === 0){
+        return false;
+    }
+    this.location.href = link + document.theFormFilter.choose_list.options[selInd].value;
 }
 </script>
 
-<img src="<?php echo Images_Path_Main;?>/clear.gif" width="1" height="1"/>
+<img alt="" src="data:image/gif;base64,R0lGODlhAQABAIAAAOZ3fP///yH5BAEAAAEALAAAAAABAAEAAAICTAEAOw=="/>
 
 
 <div align="center" style="">
-      <table width="<?php echo $this->FG_VIEW_TABLE_WITDH; ?>" align="center" border="0" cellpadding="0" cellspacing="0">
-      <?php  IF ($this -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE){ ?>
-        <TR>
-          <TD class="tdstyle_002"><span>
-              <b><?php echo $this -> CV_TEXT_TITLE_ABOVE_TABLE?></b></span>
-          </TD>
-        </TR>
-       <?php  } //END IF ?>
-      <?php  IF ($this -> CV_DO_ARCHIVE_ALL){ ?>
-        <TR>
-            <FORM NAME="theFormFilter" action="<?php echo filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)?>">
-            <input type="hidden" name="atmenu" value="<?php echo $processed['atmenu']?>">
-            <input type="hidden" name="popup_select" value="<?php echo $processed['popup_select']?>">
-            <input type="hidden" name="popup_formname" value="<?php echo $processed['popup_formname']?>">
-            <input type="hidden" name="popup_fieldname" value="<?php echo $processed['popup_fieldname']?>">
-            <input type="hidden" name="archive" value="true">
-            <td class="viewhandler_filter_td1">
-                <input type="SUBMIT" value="<?php echo gettext("Archiving All ");?>" class="form_input_button" onclick="return confirm('This action will archive the data, Are you sure?');"/>
+    <table width="<?= $this->FG_VIEW_TABLE_WITDH ?>" align="center" border="0" cellpadding="0" cellspacing="0">
+    <?php if($this->CV_DISPLAY_LINE_TITLE_ABOVE_TABLE): ?>
+        <tr>
+            <td class="tdstyle_002"><span>
+                <b><?= $this -> CV_TEXT_TITLE_ABOVE_TABLE ?></b></span>
             </td>
-            </FORM>
-        </TR>
-       <?php  } //END IF ?>
-       <?php  IF ($this -> CV_DISPLAY_FILTER_ABOVE_TABLE){ ?>
-       <TR>
-       <FORM NAME="theFormFilter">
-            <input type="hidden" name="popup_select" value="<?php echo $processed['popup_select']?>">
-            <input type="hidden" name="popup_formname" value="<?php echo $processed['popup_formname']?>">
-            <input type="hidden" name="popup_fieldname" value="<?php echo $processed['popup_fieldname']?>">
+        </tr>
+    <?php endif ?>
+    <?php if ($this->CV_DO_ARCHIVE_ALL): ?>
+        <tr>
+            <td class="viewhandler_filter_td1">
+                <form name="theFormFilter" action="">
+                    <input type="hidden" name="atmenu" value="<?= $processed['atmenu'] ?>"/>
+                    <input type="hidden" name="popup_select" value="<?= $processed['popup_select'] ?>"/>
+                    <input type="hidden" name="popup_formname" value="<?= $processed['popup_formname'] ?>"/>
+                    <input type="hidden" name="popup_fieldname" value="<?= $processed['popup_fieldname'] ?>"/>
+                    <input type="hidden" name="archive" value="true"/>
+                    <input type="submit" value="<?= gettext("Archiving All ");?>" class="form_input_button" onclick="return confirm('This action will archive the data, Are you sure?')"/>
+                </form>
+            </td>
+        </tr>
+    <?php endif ?>
+    <?php if ($this->CV_DISPLAY_FILTER_ABOVE_TABLE): ?>
+        <tr>
+            <td class="tdstyle_002">
+                <form NAME="theFormFilter">
+                    <input type="hidden" name="popup_select" value="<?= $processed['popup_select']?>"/>
+                    <input type="hidden" name="popup_formname" value="<?= $processed['popup_formname']?>"/>
+                    <input type="hidden" name="popup_fieldname" value="<?= $processed['popup_fieldname']?>"/>
+                    <select name="choose_list" size="1" class="form_input_select" style="width: 185px;" onchange="openURLFilter('<?= $this->CV_FILTER_ABOVE_TABLE_PARAM ?>')">
+                        <option><?= gettext("Sort") ?></option>
 
-            <TD class="tdstyle_002"><SPAN>
-                <SELECT name="choose_list" size="1" class="form_input_select" style="width: 185px;" onchange="openURLFilter('<?php echo filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL).$this->CV_FILTER_ABOVE_TABLE_PARAM?>')">
-
-                <OPTION><?php echo gettext("Sort");?></OPTION>
-
-                <?php
-                    // TODO not sure for what should be used that, because exist already a filter.
-                    if (!isset($list_site)) $list_site = $list;
-                    foreach ($list_site as $recordset){
-                ?>
-                <OPTION class=input value='<?php echo $recordset[0]?>'  <?php if ($recordset[0]==$site_id) echo "selected";?>><?php echo $recordset[1]?></OPTION>
-                <?php    }
-                ?>
-                </SELECT>
-              </SPAN></TD>
-        </FORM>
-        </TR>
-        <?php  } //END IF ?>
+                    <?php foreach ($list as $recordset): ?>
+                        <option class="input" value="<?= $recordset[0]?>">
+                            <?= $recordset[1] ?>
+                        </option>
+                    <?php endforeach ?>
+                    </select>
+                </form>
+            </td>
+        </tr>
+    <?php endif ?>
 
         <tr>
-          <td class="viewhandler_table2_td3">
-            <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                <tr>
-                  <td><span class="viewhandler_span1"> - <?php echo strtoupper($this->CV_TITLE_TEXT) ?>  - </span>
-                      <span class="viewhandler_span1"> <?php echo $this -> FG_NB_RECORD.' '.gettext("Records"); ?></span>
-                  </td>
-
-                </tr>
-            </table></td>
+            <td class="viewhandler_table2_td3">
+                <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                    <tr>
+                        <td>
+                            <span class="viewhandler_span1"> - <?= strtoupper($this->CV_TITLE_TEXT) ?>  - </span>
+                            <span class="viewhandler_span1"> <?= $this->FG_NB_RECORD ?>  <?= gettext("Records") ?></span>
+                        </td>
+                    </tr>
+                </table>
+            </td>
         </tr>
 
-        <?php
-        // Add filter  FG_FILTER_APPLY , FG_FILTERFIELD and FG_FILTER_FORM_ACTION
-        if ($this -> FG_FILTER_APPLY || $this -> FG_FILTER_APPLY2){
-        ?>
-        <tr><FORM NAME="theFormFilter" action="<?php echo filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL);?>">
-            <input type="hidden" name="atmenu" value="<?php echo $processed['atmenu']?>">
-            <input type="hidden" name="popup_select" value="<?php echo $processed['popup_select']?>">
-            <input type="hidden" name="popup_formname" value="<?php echo $processed['popup_formname']?>">
-            <input type="hidden" name="popup_fieldname" value="<?php echo $processed['popup_fieldname']?>">
-            <?php
-                foreach ($processed as $key => $val) {
-                    if (strlen($key) >=1 && $key!='current_page' && $key!='id') {
-                ?>
-                   <input type="hidden" name="<?php echo $key?>" value="<?php echo $val?>">
-                <?php
-                    }
-                }
-             ?>
-            <INPUT type="hidden" name="form_action" value="<?php echo $this->FG_FILTER_FORM_ACTION ?>">
+        <?php if ($this -> FG_FILTER_APPLY || $this -> FG_FILTER_APPLY2): ?>
+        <tr>
             <td class="viewhandler_filter_td1">
-            <span >
-            <?php if ($this -> FG_FILTER_APPLY){ ?>
+            <form name="theFormFilter" action="">
+                <input type="hidden" name="atmenu" value="<?= $processed['atmenu'] ?>"/>
+                <input type="hidden" name="popup_select" value="<?= $processed['popup_select'] ?>"/>
+                <input type="hidden" name="popup_formname" value="<?= $processed['popup_formname'] ?>"/>
+                <input type="hidden" name="popup_fieldname" value="<?= $processed['popup_fieldname'] ?>"/>
+                <input type="hidden" name="form_action" value="<?= $this->FG_FILTER_FORM_ACTION ?>"/>
+                <input type="hidden" name="filterfield" value="<?= $this->FG_FILTERFIELD?>"/>
+                <?php foreach ($processed as $key => $val): ?>
+                    <?php if (!empty($key) && $key !== 'current_page' && $key !== 'id'): ?>
+                        <input type="hidden" name="<?= $key?>" value="<?= $val?>"/>
+                    <?php endif ?>
+                <?php endforeach ?>
 
-                <font class="viewhandler_filter_on"><?php echo gettext("FILTER ON ");?> <?php echo strtoupper($this->FG_FILTERFIELDNAME)?> :</font>
-                <INPUT type="text" name="filterprefix" value="<?php if(!empty($processed['filterprefix'])) echo $processed['filterprefix']; ?>" class="form_input_text">
+                <?php if ($this->FG_FILTER_APPLY): ?>
+                    <label for="filterprefix" class="viewhandler_filter_on">
+                        <?= gettext("FILTER ON ") ?>
+                        <?= strtoupper($this->FG_FILTERFIELDNAME)?> :
+                    </label>
+                    <input type="text" id="filterprefix" name="filterprefix" value="<?php if(!empty($processed['filterprefix'])) echo $processed['filterprefix']; ?>" class="form_input_text">
 
-                <INPUT type="hidden" name="filterfield" value="<?php echo $this->FG_FILTERFIELD?>">
-                <?php
-                if ($this -> FG_FILTERTYPE == 'INPUT'){
-                    // IT S OK
-                }elseif ($this -> FG_FILTERTYPE == 'POPUPVALUE'){
-                ?>
-                    <a href="#" onclick="window.open('<?php echo $this->FG_FILTERPOPUP[0]?>popup_formname=theFormFilter&popup_fieldname=filterprefix' <?php echo $this->FG_FILTERPOPUP[1]?>);"><img src="<?php echo Images_Path_Main;?>/icon_arrow_orange.gif"/></a>
-                <?php
-                }
+                    <?php if ($this -> FG_FILTERTYPE === 'POPUPVALUE'): ?>
+                    <a href="#" onclick="window.open('<?= $this->FG_FILTERPOPUP[0]?>popup_formname=theFormFilter&popup_fieldname=filterprefix' <?= $this->FG_FILTERPOPUP[1]?>);">
+                        <img alt="" src="data:image/gif;base64,R0lGODlhDwAPAMQYAP+yPf+fEv+qLP+3Tf+pKv++Xf/Gcv+mJP+tNf+tMf+kH/+/YP+oJv+wO/+jHP/Ohf/WmP+vOv/cpv+kHf+iGf+jG/////Hw7P///wAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAABgALAAAAAAPAA8AAAVjIHaNZEmKF6auLJpiEvQYxQAgiTpiMm0Tk4pigsLMag2Co8KkFA0Lm8XCbBajDcFkWnXuBlkFk1vxpgACcYVcLqbHVKaDuFNXqwxGkUK5VyYMEQhFGAGGhxQHOS4tjTsmkDshADs="/>
+                    </a>
+                    <?php endif ?>
+                <?php endif ?>
 
-            }
-
-            if ($this -> FG_FILTER_APPLY2){ ?>
-                &nbsp;&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;&nbsp;
-                <font class="viewhandler_filter_on"><?php echo gettext("FILTER ON");?><?php echo strtoupper($this->FG_FILTERFIELDNAME2)?> :</font>
-                <INPUT type="text" name="filterprefix2" value="" class="form_input_text">
-                <INPUT type="hidden" name="filterfield2"    value="<?php echo $this->FG_FILTERFIELD2?>">
-                <?php
-                if ($this -> FG_FILTERTYPE2 == 'INPUT') {
-                    // IT S OK
-                } elseif ($this -> FG_FILTERTYPE2 == 'POPUPVALUE') {
-                ?>
-                    <a href="#" onclick="window.open('<?php echo $this->FG_FILTERPOPUP2[0]?>popup_formname=theFormFilter&popup_fieldname=filterprefix2' <?php echo $this->FG_FILTERPOPUP2[1]?>);"><img src="<?php echo Images_Path_Main;?>/icon_arrow_orange.gif"/></a>
-                <?php
-                }
-            }
-            ?>
-                <input type="SUBMIT" value="<?php echo gettext("APPLY FILTER ");?>" class="form_input_button"/>
-            </span>
-            </td></FORM>
+                <?php if ($this->FG_FILTER_APPLY2): ?>
+                    &nbsp;&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;&nbsp;
+                    <label for="filterprefix2" class="viewhandler_filter_on">
+                        <?= gettext("FILTER ON");?>
+                        <?= strtoupper($this->FG_FILTERFIELDNAME2)?> :
+                    </label>
+                    <input type="text" id="filterprefix2" name="filterprefix2" value="" class="form_input_text">
+                    <input type="hidden" name="filterfield2" value="<?= $this->FG_FILTERFIELD2?>"/>
+                    <?php if ($this->FG_FILTERTYPE2 === 'POPUPVALUE'): ?>
+                    <a href="#" onclick="window.open('<?= $this->FG_FILTERPOPUP2[0]?>popup_formname=theFormFilter&popup_fieldname=filterprefix2' <?= $this->FG_FILTERPOPUP2[1]?>);">
+                        <img alt="" src="data:image/gif;base64,R0lGODlhDwAPAMQYAP+yPf+fEv+qLP+3Tf+pKv++Xf/Gcv+mJP+tNf+tMf+kH/+/YP+oJv+wO/+jHP/Ohf/WmP+vOv/cpv+kHf+iGf+jG/////Hw7P///wAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAABgALAAAAAAPAA8AAAVjIHaNZEmKF6auLJpiEvQYxQAgiTpiMm0Tk4pigsLMag2Co8KkFA0Lm8XCbBajDcFkWnXuBlkFk1vxpgACcYVcLqbHVKaDuFNXqwxGkUK5VyYMEQhFGAGGhxQHOS4tjTsmkDshADs="/>
+                    </a>
+                    <?php endif ?>
+                <?php endif ?>
+                    <input type="submit" value="<?= gettext("APPLY FILTER ") ?>" class="form_input_button"/>
+            </form>
+            </td>
         </tr>
-        <?php } ?>
+        <?php endif ?>
 
-        <TR>
-          <TD>
-            <TABLE border="0" cellPadding="2" cellSpacing="2" width="100%">
-                <TR class="form_head">
+        <tr>
+            <td>
+                <table border="0" cellPadding="2" cellSpacing="2" width="100%">
+                    <tr class="form_head">
+                    <?php foreach ($this->FG_TABLE_COL as $row): ?>
+                        <td class="tableBody" style="padding: 2px; font-weight: bold" align="center" width="<?= $row[2] ?>">
+                        <?php if (strtoupper($row[4]) === "SORT"): ?>
+                            <a style="color: #fff" href="<?= "?stitle=$stitle&atmenu=$processed[atmenu]&current_page=$current_page&letter=$letter&popup_select=$processed[popup_select]&order=$row[1]&sens=" . ($this->FG_SENS === "ASC" ? "DESC" : "ASC") . $this-> CV_FOLLOWPARAMETERS ?>">
+                        <?php endif ?>
+                                <?= $row[0] ?>
+                        <?php if ($this->FG_ORDER === $row[1] && $this->FG_SENS === "ASC"): ?>
+                                &nbsp;<img alt="asc" src="data:image/gif;base64,R0lGODlhDAAMALMPAO3y+u3x+cnX8Pf5/eDo9tTf8/f6/eHo9tTe8snW78DP7MLR7f///3+ZzAAzmf///yH5BAEAAA8ALAAAAAAMAAwAAAQ48LlJq2wq69xmY2AIds4HTiHZGEbZGYMKuE0XqMfhOgehIogdoqBKJCoJgWrBbDJVtajUIalYHxEAOw=="/>
+                        <?php elseif ($this->FG_ORDER === $row[1] && $this->FG_SENS === "DESC"): ?>
+                                &nbsp;<img alt="desc" src="data:image/gif;base64,R0lGODlhDAAMAIQMAO3y+u3x+cnX8Pf5/eDo9tTf8/f6/eHo9tTe8snW78DP7MLR7f///3+ZzAAzmf///////////////////////////////////////////////////////////////////yH5BAEKAA8ALAAAAAAMAAwAAAU84OOMZCk2aKqOzeK+bsMKSZkkstMUiC4jiFyDcPA5DgdhwIdyAIQDg9FgEDKuoyvDqu0KFeAwWCYqmR8hADs=">
+                        <?php endif ?>
+                        <?php if (strtoupper($row[4]) === "SORT"): ?>
+                            </a>
+                        <?php endif?>
+                        </td>
+                    <?php endforeach ?>
+
+                    <?php if ($this->FG_DELETION || $this->FG_INFO || $this->FG_EDITION || $this->FG_OTHER_BUTTON1 || $this->FG_OTHER_BUTTON2 || $this->FG_OTHER_BUTTON3 || $this->FG_OTHER_BUTTON4 || $this->FG_OTHER_BUTTON5): ?>
+                        <td width="<?= $this->FG_ACTION_SIZE_COLUMN?>" align="center" class="tableBody" >
+                            <strong> <?= gettext("ACTION") ?></strong>
+                        </td>
+                    <?php endif ?>
+                    </tr>
+        <?php /**********************   START BUILDING THE TABLE WITH BROWSING VALUES ************************/ ?>
+        <?php foreach ($list as $num=>$item): ?>
+                    <tr bgcolor="<?= $this->FG_TABLE_ALTERNATE_ROW_COLOR[$num % 2]?>" onmouseover="bgColor='#FFDEA6'" onmouseout="bgColor='<?= $this->FG_TABLE_ALTERNATE_ROW_COLOR[$num % 2]?>'">
+                <?php $k=0 ?>
+                <?php foreach($this->FG_TABLE_COL as $j=>$row): ?>
                 <?php
-                      for($i=0;$i<$this->FG_NB_TABLE_COL;$i++){
-                ?>
-                 <td class="tableBody" style="padding: 2px;" align="center" width="<?php echo $this->FG_TABLE_COL[$i][2]?>" >
-                        <strong>
-                        <?php  if (strtoupper($this->FG_TABLE_COL[$i][4])=="SORT"){?>
-                        <a href="<?php  echo filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?stitle=$stitle&atmenu=$atmenu&current_page=$current_page&letter=".$processed["letter"]."&popup_select=".$processed["popup_select"]."&order=".$this->FG_TABLE_COL[$i][1]."&sens="; if ($this->FG_SENS=="ASC"){echo"DESC";}else{echo"ASC";} echo $this-> CV_FOLLOWPARAMETERS;?>">
-                        <font color="#FFFFFF"><?php  } ?>
-                        <?php echo $this->FG_TABLE_COL[$i][0]?>
-                        <?php if ($this->FG_ORDER==$this->FG_TABLE_COL[$i][1] && $this->FG_SENS=="ASC"){?>
-                        &nbsp;<img src="<?php echo Images_Path_Main;?>/icon_up_12x12.GIF" border="0">
-                        <?php }elseif ($this->FG_ORDER==$this->FG_TABLE_COL[$i][1] && $this->FG_SENS=="DESC"){?>
-                        &nbsp;<img src="<?php echo Images_Path_Main;?>/icon_down_12x12.GIF" border="0">
-                        <?php }?>
-                        <?php  if (strtoupper($this->FG_TABLE_COL[$i][4])=="SORT"){?>
-                        </font></a>
-                        <?php }?>
-                        </strong></TD>
-               <?php }
-                 if ($this->FG_DELETION || $this->FG_INFO || $this->FG_EDITION || $this -> FG_OTHER_BUTTON1 || $this -> FG_OTHER_BUTTON2 || $this -> FG_OTHER_BUTTON3 || $this -> FG_OTHER_BUTTON4 ){ ?>
-                     <td width="<?php echo $this->FG_ACTION_SIZE_COLUMN?>" align="center" class="tableBody" ><strong> <?php echo gettext("ACTION");?></strong> </td>
-               <?php } ?>
-                </TR>
-        <?php
-            /**********************   START BUILDING THE TABLE WITH BROWSING VALUES ************************/
-            for ($ligne_number=0;$ligne_number<count($list);$ligne_number++){
-        ?>
-
-                <TR bgcolor="<?php echo $this->FG_TABLE_ALTERNATE_ROW_COLOR[$ligne_number%2]?>"  onmouseover="bgColor='#FFDEA6'" onMouseOut="bgColor='<?php echo $this->FG_TABLE_ALTERNATE_ROW_COLOR[$ligne_number%2]?>'">
-                <?php
-                $k=0;
-                for($i=0;$i<$this->FG_NB_TABLE_COL;$i++) {
-                    /**********************   select the mode to browse define the column value : lie, list, value, eval.... ************************/
-                    if ($this->FG_TABLE_COL[$i][6]=="lie") {
-
-                        $instance_sub_table = new Table($this->FG_TABLE_COL[$i][7], $this->FG_TABLE_COL[$i][8]);
-                        $sub_clause = str_replace("%id", $list[$ligne_number][$i-$k], $this->FG_TABLE_COL[$i][9]);
-
-                        $select_list = $instance_sub_table -> Get_list ($this->DBHandle, $sub_clause, null, null, null, null, null, null, null, 10);
-                        $field_list_sun = preg_split('/,/', $this->FG_TABLE_COL[$i][8]);
-                        $record_display = $this->FG_TABLE_COL[$i][10];
-
-                        for ($l=1;$l<=count($field_list_sun);$l++){
-                            $record_display = str_replace("%$l", $select_list[0][$l-1], $record_display);
-                        }
-
-                    } elseif($this->FG_TABLE_COL[$i][6]=="lie_link") {
-
-                        $instance_sub_table = new Table($this->FG_TABLE_COL[$i][7], $this->FG_TABLE_COL[$i][8]);
-                        $sub_clause = str_replace("%id", $list[$ligne_number][$i-$k], $this->FG_TABLE_COL[$i][9]);
-                        $select_list = $instance_sub_table -> Get_list ($this->DBHandle, $sub_clause, null, null, null, null, null, null, null, 10);
-
-                        if (is_array($select_list)) {
-                            $field_list_sun = preg_split('/,/',$this->FG_TABLE_COL[$i][8]);
-                            $record_display = $this->FG_TABLE_COL[$i][10];
-                            $link = $this->FG_TABLE_COL[$i][12];
-                            if (stripos($this->FG_TABLE_COL[$i][12],'form_action')===false) $link .= "?form_action=ask-edit&";
-                            else $link .= "?";
-                            $link.= "id=".$select_list[0][1];
-                            for ($l=1;$l<=count($field_list_sun);$l++){
-                                $val = str_replace("%$l", $select_list[0][$l-1], $record_display);
-                                $record_display = "<a href='$link'>$val</a>";
+                    if (str_starts_with($row[6], "lie")) {
+                        $options = (new Table($row[7], $row[8]))->get_list($this->DBHandle, str_replace("%id", $list[$num][$j - $k], $row[9]), null, null, null, null, null, null, null, 10);
+                        $field_list_sun = explode(",", $row[8]);
+                        $record_display = $row[10];
+                        if ($row[6] === "lie") {
+                            if (is_array($options)) {
+                                for ($l=1; $l <= count($field_list_sun); $l++) {
+                                    $record_display = str_replace("%$l", $options[0][$l - 1], $record_display);
+                                }
+                            } else {
+                                $record_display = "";
                             }
-                        } else {
-                            $record_display="";
+                        } elseif($row[6] === "lie_link") {
+                            if (is_array($options)) {
+                                $link = $row[12];
+                                if (!str_contains($row[12], 'form_action')) {
+                                    $link .= "?form_action=ask-edit&";
+                                }
+                                else {
+                                    $link .= "?";
+                                }
+                                $link .= "id=" . $options[0][1];
+                                for ($l = 1; $l <= count($field_list_sun); $l++) {
+                                    $val = str_replace("%$l", $options[0][$l - 1], $record_display);
+                                    $record_display = "<a href='$link'>$val</a>";
+                                }
+                            } else {
+                                $record_display = "";
+                            }
                         }
-                    } elseif ($this->FG_TABLE_COL[$i][6]=="eval") {
+                    } elseif ($row[6]=="eval") {
 
-                        $string_to_eval = $this->FG_TABLE_COL[$i][7]; // %4-%3
-                        for ($ll=15;$ll>=0;$ll--){
-                            if ($list[$ligne_number][$ll]=='') $list[$ligne_number][$ll]=0;
-                            $string_to_eval = str_replace("%$ll", $list[$ligne_number][$ll], $string_to_eval);
+                        $string_to_eval = $row[7]; // %4-%3
+                        for ($ll = 15; $ll >= 0; $ll--) {
+                            if ($list[$num][$ll] === '') {
+                                $list[$num][$ll] = 0;
+                            }
+                            $string_to_eval = str_replace("%$ll", $list[$num][$ll], $string_to_eval);
                         }
-                        eval("\$eval_res = $string_to_eval;");
-                        $record_display = $eval_res;
+                        // WTAF
+                        $record_display = ("return $string_to_eval;");
 
-                    } elseif ($this->FG_TABLE_COL[$i][6]=="list") {
+                    } elseif ($row[6]=="list") {
 
-                        $select_list = $this->FG_TABLE_COL[$i][7];
-                        $record_display = $select_list[$list[$ligne_number][$i-$k]][0];
+                        $select_list = $row[7];
+                        $record_display = $select_list[$list[$num][$j-$k]][0];
 
-                    } elseif ($this->FG_TABLE_COL[$i][6]=="list-conf") {
+                    } elseif ($row[6]=="list-conf") {
 
-                        $select_list = $this->FG_TABLE_COL[$i][7];
-                        $key_config =  $list[$ligne_number][$i-$k + 3];
+                        $select_list = $row[7];
+                        $key_config =  $list[$num][$j-$k + 3];
                         $record_display = $select_list[$key_config][0];
 
-                    } elseif ($this->FG_TABLE_COL[$i][6]=="value") {
+                    } elseif ($row[6]=="value") {
 
-                        $record_display = $this->FG_TABLE_COL[$i][7];
+                        $record_display = $row[7];
                         $k++;
 
                     } else {
 
-                        $record_display = $list[$ligne_number][$i-$k];
+                        $record_display = $list[$num][$j-$k];
 
                     }
 
                     /**********************   IF LENGHT OF THE VALUE IS TOO LONG IT MIGHT BE CUT ************************/
-                    if ( is_numeric($this->FG_TABLE_COL[$i][5]) && (strlen($record_display) > $this->FG_TABLE_COL[$i][5])  ){
-                        $record_display = substr($record_display, 0, $this->FG_TABLE_COL[$i][5])."";
-                    } ?>
-                    <TD vAlign="top" align="<?php echo $this->FG_TABLE_COL[$i][3]?>" class="tableBody"><?php
-                        $origlist[$ligne_number][$i-$k] = $list[$ligne_number][$i-$k];
-                        $list[$ligne_number][$i-$k] = $record_display;
-
-                        if (isset ($this->FG_TABLE_COL[$i][11]) && strlen($this->FG_TABLE_COL[$i][11])>1) {
-                            print call_user_func($this->FG_TABLE_COL[$i][11], $record_display);
-                        } else {
-                            echo stripslashes($record_display);
-                        }
-                        ?>
-                    </TD>
-
-                 <?php  } ?>
-
-                    <?php if($this->FG_EDITION  || $this->FG_INFO || $this->FG_DELETION || $this -> FG_OTHER_BUTTON1 || $this -> FG_OTHER_BUTTON2 || $this -> FG_OTHER_BUTTON3 || $this -> FG_OTHER_BUTTON4 ){?>
-                      <TD align="center" vAlign=top class=tableBodyRight>
-
-                        <?php if($this->FG_INFO){?>&nbsp; <a href="<?php echo $this->FG_INFO_LINK?><?php echo $list[$ligne_number][$this->FG_NB_TABLE_COL]?>"><img src="<?php echo Images_Path_Main;?>/<?php echo $this->FG_INFO_IMG?>" border="0" title="<?php echo $this->FG_INFO_ALT?>" alt="<?php echo $this->FG_INFO_ALT?>"></a><?php } ?>
-                        <?php if($this->FG_EDITION){
-                            $check = true;
-                            $condition_eval=$this->FG_EDITION_CONDITION;
-                            $check_eval=false;
-                            if (!empty($this->FG_EDITION_CONDITION) && (preg_match ('/col[0-9]/i', $this->FG_EDITION_CONDITION))) {
-                                $check =false;
-                                for ($h=count($list[$ligne_number]);$h>=0;$h--){
-                                    $findme = "|col$h|";
-                                    $pos = stripos($condition_eval, $findme);
-                                    if ($pos !== false) {
-                                        $condition_eval = str_replace($findme,$list[$ligne_number][$h],$condition_eval);
-                                    }
-                                }
-                                eval('$check_eval = '.$condition_eval.';');
-                            }
-                            if($check || $check_eval){
-
-                            ?>&nbsp; <a href="<?php echo $this->FG_EDITION_LINK?><?php echo $list[$ligne_number][$this->FG_NB_TABLE_COL]?>"><img src="<?php echo Images_Path_Main;?>/<?php echo $this->FG_EDITION_IMG?>" border="0" title="<?php echo $this->FG_EDIT_ALT?>" alt="<?php echo $this->FG_EDIT_ALT?>"></a>
-                        <?php }
-                            } ?>
-                        <?php if($this->FG_DELETION && !in_array($list[$ligne_number][$this->FG_NB_TABLE_COL],$this->FG_DELETION_FORBIDDEN_ID) ){
-                            $check = true;
-                            $condition_eval=$this->FG_DELETION_CONDITION;
-                            $check_eval=false;
-                            if (!empty($this->FG_DELETION_CONDITION) && (preg_match ('/col[0-9]/', $this->FG_DELETION_CONDITION))) {
-                                $check =false;
-                                for ($h=count($list[$ligne_number]);$h>=0;$h--){
-                                    $findme = "|col$h|";
-                                    $pos = stripos($condition_eval, $findme);
-                                    if ($pos !== false) {
-                                        $condition_eval = str_replace($findme,$list[$ligne_number][$h],$condition_eval);
-                                    }
-                                }
-                                eval('$check_eval = '.$condition_eval.';');
-                            }
-                            if ($check || $check_eval) {
-
-                            ?>&nbsp;  <a href="<?php echo $this->FG_DELETION_LINK?><?php echo $list[$ligne_number][$this->FG_NB_TABLE_COL]?>"><img src="<?php echo Images_Path_Main;?>/<?php echo $this->FG_DELETION_IMG?>" border="0" title="<?php echo $this->FG_DELETE_ALT?>" alt="<?php echo $this->FG_DELETE_ALT?>"></a>
-                            <?php }
-                             } ?>
-                        <?php if($this->FG_OTHER_BUTTON1){
-
-                            $check = true;
-                            $condition_eval=$this->FG_OTHER_BUTTON1_CONDITION;
-                            $check_eval=false;
-                            if (!empty($this->FG_OTHER_BUTTON1_CONDITION) && (preg_match ('/col[0-9]/i', $this->FG_OTHER_BUTTON1_CONDITION))) {
-                                $check =false;
-                                for ($h=count($list[$ligne_number]);$h>=0;$h--){
-                                    $findme = "|col$h|";
-                                    $pos = stripos($condition_eval, $findme);
-                                    if ($pos !== false) {
-                                        $condition_eval = str_replace($findme,$list[$ligne_number][$h],$condition_eval);
-                                    }
-                                }
-                                eval('$check_eval = '.$condition_eval.';');
-                            }
-                            if ($check || $check_eval) {
-                            ?>
-                            <a href="<?php
-                                $new_FG_OTHER_BUTTON1_LINK = $this -> FG_OTHER_BUTTON1_LINK;
-                                // we should depreciate |param| and only use |col|
-                                if (strpos($this -> FG_OTHER_BUTTON1_LINK,"|param|")){
-                                    $new_FG_OTHER_BUTTON1_LINK = str_replace("|param|",$list[$ligne_number][$this->FG_NB_TABLE_COL],$this -> FG_OTHER_BUTTON1_LINK);
-                                    // SHOULD DO SMTH BETTER WITH paramx and get the x number to find the value to use
-                                }
-                                if (strpos($this -> FG_OTHER_BUTTON1_LINK,"|param1|")){
-                                    $new_FG_OTHER_BUTTON1_LINK = str_replace("|param1|",$list[$ligne_number][$this->FG_NB_TABLE_COL-1],$this -> FG_OTHER_BUTTON1_LINK);
-                                }
-
-                                // REPLACE |colX|  where is a numero of the column by the column value
-                                if ((preg_match ('/col[0-9]/i', $new_FG_OTHER_BUTTON1_LINK))) {
-                                    for ($h=count($list[$ligne_number]);$h>=0;$h--) {
-                                        $findme = "|col$h|";
-                                        $pos = stripos($new_FG_OTHER_BUTTON1_LINK, $findme);
-                                        if ($pos !== false) {
-                                            $new_FG_OTHER_BUTTON1_LINK = str_replace($findme,$list[$ligne_number][$h],$new_FG_OTHER_BUTTON1_LINK);
-                                        }
-                                    }
-                                }
-
-                                // REPLACE |col_origX|  where is a numero of the column by the column value
-                                if (preg_match ('/col_orig[0-9]/i', $new_FG_OTHER_BUTTON1_LINK)) {
-                                    for ($h=count($list[$ligne_number]);$h>=0;$h--) {
-                                        $findme = "|col_orig$h|";
-                                        $pos = stripos($new_FG_OTHER_BUTTON1_LINK, $findme);
-                                        if ($pos !== false) {
-                                            $new_FG_OTHER_BUTTON1_LINK = str_replace($findme,$origlist[$ligne_number][$h],$new_FG_OTHER_BUTTON1_LINK);
-                                        }
-                                    }
-                                }
-
-                                echo $new_FG_OTHER_BUTTON1_LINK;
-
-                                $extra_html = "";
-
-                                if (!empty($this->FG_OTHER_BUTTON1_HTML_ID) && (preg_match ('/col[0-9]/i',$this->FG_OTHER_BUTTON1_HTML_ID))) {
-                                    $temp_id =$this->FG_OTHER_BUTTON1_HTML_ID;
-                                    for ($h=count($list[$ligne_number]);$h>=0;$h--) {
-                                        $findme = "|col$h|";
-                                        $pos = stripos($temp_id, $findme);
-                                        if ($pos !== false) {
-                                            $temp_id = str_replace($findme,$origlist[$ligne_number][$h],$temp_id);
-                                        }
-                                    }
-                                    $extra_html.=' id="'.$temp_id.'"';
-                                }
-
-                                if (!empty($this->FG_OTHER_BUTTON1_HTML_CLASS)) {
-                                    $extra_html.= ' class="'.$this->FG_OTHER_BUTTON1_HTML_CLASS.'" ';
-                                }
-
-                                if (substr($new_FG_OTHER_BUTTON1_LINK,-1)=='=') echo $list[$ligne_number][$this->FG_NB_TABLE_COL];
-                                if (strlen($this -> FG_OTHER_BUTTON1_IMG)==0) {
-                                    echo '"'.$extra_html.'> '.'<span class="cssbutton">'.$this->FG_OTHER_BUTTON1_ALT.'</span>';
-                                } else {
-                                    ?>"<?php echo $extra_html ?>><img src="<?php echo $this -> FG_OTHER_BUTTON1_IMG?>" border="0" title="<?php echo $this->FG_OTHER_BUTTON1_ALT?>" alt="<?php echo $this->FG_OTHER_BUTTON1_ALT?>"><?php
-                                }
-                                ?></a>
-                        <?php }
-                            }
-                        ?>
-                        <?php if($this->FG_OTHER_BUTTON2){
-
-                            $check = true;
-                            $condition_eval=$this->FG_OTHER_BUTTON2_CONDITION;
-                            $check_eval=false;
-                            if (!empty($this->FG_OTHER_BUTTON2_CONDITION) && (preg_match ('/col[0-9]/i', $this->FG_OTHER_BUTTON2_CONDITION))) {
-                                $check =false;
-                                for ($h=count($list[$ligne_number]);$h>=0;$h--){
-                                    $findme = "|col$h|";
-                                    $pos = stripos($condition_eval, $findme);
-                                    if ($pos !== false) {
-                                        $condition_eval = str_replace($findme,$list[$ligne_number][$h],$condition_eval);
-                                    }
-                                }
-                                eval('$check_eval = '.$condition_eval.';');
-                                }
-                            if($check || $check_eval){
-                            ?>
-                            <a href="<?php
-                                $new_FG_OTHER_BUTTON2_LINK = $this -> FG_OTHER_BUTTON2_LINK;
-                                if (strpos($this -> FG_OTHER_BUTTON2_LINK,"|param|")){
-                                    $new_FG_OTHER_BUTTON2_LINK = str_replace("|param|",$list[$ligne_number][$this->FG_NB_TABLE_COL],$this -> FG_OTHER_BUTTON2_LINK);
-                                    // SHOULD DO SMTH BETTER WITH paramx and get the x number to find the value to use
-                                }
-                                if (strpos($this -> FG_OTHER_BUTTON2_LINK,"|param1|")){
-                                    $new_FG_OTHER_BUTTON2_LINK = str_replace("|param1|",$list[$ligne_number][$this->FG_NB_TABLE_COL-1],$this -> FG_OTHER_BUTTON2_LINK);
-                                }
-
-                                // REPLACE |colX|  where is a numero of the column by the column value
-                                if (preg_match ('/col[0-9]/i', $new_FG_OTHER_BUTTON2_LINK)) {
-                                    for ($h=count($list[$ligne_number]);$h>=0;$h--){
-                                        $findme = "|col$h|";
-                                        $pos = stripos($new_FG_OTHER_BUTTON2_LINK, $findme);
-                                        if ($pos !== false) {
-                                            $new_FG_OTHER_BUTTON2_LINK = str_replace($findme,$list[$ligne_number][$h],$new_FG_OTHER_BUTTON2_LINK);
-                                        }
-                                    }
-                                }
-
-                                // REPLACE |col_origX|  where is a numero of the column by the column value
-                                if (preg_match ('/col_orig[0-9]/i', $new_FG_OTHER_BUTTON2_LINK)) {
-                                    for ($h=count($list[$ligne_number]);$h>=0;$h--){
-                                        $findme = "|col_orig$h|";
-                                        $pos = stripos($new_FG_OTHER_BUTTON2_LINK, $findme);
-                                        if ($pos !== false) {
-                                            $new_FG_OTHER_BUTTON2_LINK = str_replace($findme,$origlist[$ligne_number][$h],$new_FG_OTHER_BUTTON2_LINK);
-                                        }
-                                    }
-                                }
-                                echo $new_FG_OTHER_BUTTON2_LINK;
-
-                                $extra_html="";
-
-                                if(!empty($this->FG_OTHER_BUTTON2_HTML_ID) && (preg_match ('/col[0-9]/i',$this->FG_OTHER_BUTTON2_HTML_ID))){
-                                    $temp_id =$this->FG_OTHER_BUTTON2_HTML_ID;
-                                    for ($h=count($list[$ligne_number]);$h>=0;$h--){
-                                        $findme = "|col$h|";
-                                        $pos = stripos($temp_id, $findme);
-                                        if ($pos !== false) {
-                                            $temp_id = str_replace($findme,$origlist[$ligne_number][$h],$temp_id);
-                                        }
-                                    }
-                                    $extra_html.=' id="'.$temp_id.'"';
-
-                                }
-
-                                if(!empty($this->FG_OTHER_BUTTON2_HTML_CLASS) ){
-                                    $extra_html.= ' class="'.$this->FG_OTHER_BUTTON2_HTML_CLASS.'" ';
-                                }
-
-
-
-                                if (substr($new_FG_OTHER_BUTTON2_LINK,-1)=='=') echo $list[$ligne_number][$this->FG_NB_TABLE_COL];
-                                if (strlen($this -> FG_OTHER_BUTTON2_IMG)==0){
-                                    echo '"'.$extra_html.'> '.'<span class="cssbutton">'.$this->FG_OTHER_BUTTON2_ALT.'</span>';
-                                }else{
-                                    ?>" <?php echo $extra_html ?> ><img src="<?php echo $this -> FG_OTHER_BUTTON2_IMG?>" border="0" title="<?php echo $this->FG_OTHER_BUTTON2_ALT?>" alt="<?php echo $this->FG_OTHER_BUTTON2_ALT?>"><?php
-
-                                }
-                                ?></a>
-                        <?php }
-                            } ?>
-                        <?php if($this->FG_OTHER_BUTTON3){
-                            $check = true;
-                            $condition_eval=$this->FG_OTHER_BUTTON3_CONDITION;
-                            $check_eval=false;
-                            if (!empty($this->FG_OTHER_BUTTON3_CONDITION) && (preg_match ('/col[0-9]/i', $this->FG_OTHER_BUTTON3_CONDITION))) {
-                                $check =false;
-                                    for ($h=count($list[$ligne_number]);$h>=0;$h--){
-                                        $findme = "|col$h|";
-                                        $pos = stripos($condition_eval, $findme);
-                                        if ($pos !== false) {
-                                            $condition_eval = str_replace($findme,$list[$ligne_number][$h],$condition_eval);
-                                        }
-                                    }
-                            eval('$check_eval = '.$condition_eval.';');
-                                }
-                            if($check || $check_eval){
-                            ?>
-                            <a href="<?php
-                                $new_FG_OTHER_BUTTON3_LINK = $this -> FG_OTHER_BUTTON3_LINK;
-                                if (strpos($this -> FG_OTHER_BUTTON3_LINK,"|param|")){
-                                    $new_FG_OTHER_BUTTON3_LINK = str_replace("|param|",$list[$ligne_number][$this->FG_NB_TABLE_COL],$this -> FG_OTHER_BUTTON3_LINK);
-                                    // SHOULD DO SMTH BETTER WITH paramx and get the x number to find the value to use
-                                }
-                                if (strpos($this -> FG_OTHER_BUTTON3_LINK,"|param1|")){
-                                    $new_FG_OTHER_BUTTON3_LINK = str_replace("|param1|",$list[$ligne_number][$this->FG_NB_TABLE_COL-1],$this -> FG_OTHER_BUTTON3_LINK);
-                                }
-
-                                // REPLACE |colX|  where is a numero of the column by the column value
-                                if (preg_match ('/col[0-9]/i', $new_FG_OTHER_BUTTON3_LINK)) {
-                                    for ($h=0;$h<=$this->FG_NB_TABLE_COL;$h++){
-                                        $findme = "|col$h|";
-                                        $pos = stripos($new_FG_OTHER_BUTTON3_LINK, $findme);
-                                        if ($pos !== false) {
-                                            $new_FG_OTHER_BUTTON3_LINK = str_replace($findme,$list[$ligne_number][$h],$new_FG_OTHER_BUTTON3_LINK);
-                                        }
-                                    }
-                                }
-
-                                // REPLACE |col_origX|  where is a numero of the column by the column value
-                                if (preg_match ('/col_orig[0-9]/i', $new_FG_OTHER_BUTTON3_LINK)) {
-                                        for ($h=count($list[$ligne_number]);$h>=0;$h--){
-                                        $findme = "|col_orig$h|";
-                                        $pos = stripos($new_FG_OTHER_BUTTON3_LINK, $findme);
-                                        if ($pos !== false) {
-                                            $new_FG_OTHER_BUTTON3_LINK = str_replace($findme,$origlist[$ligne_number][$h],$new_FG_OTHER_BUTTON3_LINK);
-                                        }
-                                    }
-                                }
-                                echo $new_FG_OTHER_BUTTON3_LINK;
-
-                                $extra_html="";
-
-                                if(!empty($this->FG_OTHER_BUTTON3_HTML_ID) && (preg_match ('/col[0-9]/i',$this->FG_OTHER_BUTTON3_HTML_ID))){
-                                    $temp_id =$this->FG_OTHER_BUTTON3_HTML_ID;
-                                    for ($h=count($list[$ligne_number]);$h>=0;$h--){
-                                        $findme = "|col$h|";
-                                        $pos = stripos($temp_id, $findme);
-                                        if ($pos !== false) {
-                                            $temp_id = str_replace($findme,$origlist[$ligne_number][$h],$temp_id);
-                                        }
-                                    }
-                                    $extra_html.=' id="'.$temp_id.'"';
-
-                                }
-
-                                if(!empty($this->FG_OTHER_BUTTON3_HTML_CLASS) ){
-                                    $extra_html.= ' class="'.$this->FG_OTHER_BUTTON3_HTML_CLASS.'" ';
-                                }
-
-
-
-                                if (substr($new_FG_OTHER_BUTTON3_LINK,-1)=='=') echo $list[$ligne_number][$this->FG_NB_TABLE_COL];
-                                if (strlen($this -> FG_OTHER_BUTTON3_IMG)==0){
-                                    echo '"'.$extra_html.'> '.'<span class="cssbutton">'.$this->FG_OTHER_BUTTON3_ALT.'</span>';
-                                }else{
-                                    ?>" <?php echo $extra_html ?> ><img src="<?php echo $this -> FG_OTHER_BUTTON3_IMG?>" border="0" title="<?php echo $this->FG_OTHER_BUTTON3_ALT?>" alt="<?php echo $this->FG_OTHER_BUTTON3_ALT?>"><?php
-
-                                }
-                                ?></a>
-                        <?php }
-                            } ?>
-                        <?php if($this->FG_OTHER_BUTTON4){
-                            $check = true;
-                            $condition_eval=$this->FG_OTHER_BUTTON4_CONDITION;
-                            $check_eval=false;
-                            if (!empty($this->FG_OTHER_BUTTON4_CONDITION) && (preg_match ('/col[0-9]/i', $this->FG_OTHER_BUTTON4_CONDITION))) {
-                                $check =false;
-                                    for ($h=count($list[$ligne_number]);$h>=0;$h--){
-                                        $findme = "|col$h|";
-                                        $pos = stripos($condition_eval, $findme);
-                                        if ($pos !== false) {
-                                            $condition_eval = str_replace($findme,$list[$ligne_number][$h],$condition_eval);
-                                        }
-                                    }
-                            eval('$check_eval = '.$condition_eval.';');
-                                }
-                            if($check || $check_eval){
-                            ?>
-                            <a href="<?php
-                                $new_FG_OTHER_BUTTON4_LINK = $this -> FG_OTHER_BUTTON4_LINK;
-                                if (strpos($this -> FG_OTHER_BUTTON4_LINK,"|param|")){
-                                    $new_FG_OTHER_BUTTON4_LINK = str_replace("|param|",$list[$ligne_number][$this->FG_NB_TABLE_COL],$this -> FG_OTHER_BUTTON4_LINK);
-                                    // SHOULD DO SMTH BETTER WITH paramx and get the x number to find the value to use
-                                }
-                                if (strpos($this -> FG_OTHER_BUTTON4_LINK,"|param1|")){
-                                    $new_FG_OTHER_BUTTON4_LINK = str_replace("|param1|",$list[$ligne_number][$this->FG_NB_TABLE_COL-1],$this -> FG_OTHER_BUTTON4_LINK);
-                                }
-
-                                // REPLACE |colX|  where is a numero of the column by the column value
-                                if (preg_match ('/col[0-9]/i', $new_FG_OTHER_BUTTON4_LINK)) {
-                                    for ($h=0;$h<=$this->FG_NB_TABLE_COL;$h++){
-                                        $findme = "|col$h|";
-                                        $pos = stripos($new_FG_OTHER_BUTTON4_LINK, $findme);
-                                        if ($pos !== false) {
-                                            $new_FG_OTHER_BUTTON4_LINK = str_replace($findme,$list[$ligne_number][$h],$new_FG_OTHER_BUTTON4_LINK);
-                                        }
-                                    }
-                                }
-
-                                // REPLACE |col_origX|  where is a numero of the column by the column value
-                                if (preg_match ('/col_orig[0-9]/i', $new_FG_OTHER_BUTTON4_LINK)) {
-                                        for ($h=count($list[$ligne_number]);$h>=0;$h--){
-                                        $findme = "|col_orig$h|";
-                                        $pos = stripos($new_FG_OTHER_BUTTON4_LINK, $findme);
-                                        if ($pos !== false) {
-                                            $new_FG_OTHER_BUTTON4_LINK = str_replace($findme,$origlist[$ligne_number][$h],$new_FG_OTHER_BUTTON4_LINK);
-                                        }
-                                    }
-                                }
-                                echo $new_FG_OTHER_BUTTON4_LINK;
-
-                                $extra_html="";
-
-                                if(!empty($this->FG_OTHER_BUTTON4_HTML_ID) && (preg_match ('/col[0-9]/i',$this->FG_OTHER_BUTTON4_HTML_ID))){
-                                    $temp_id =$this->FG_OTHER_BUTTON4_HTML_ID;
-                                    for ($h=count($list[$ligne_number]);$h>=0;$h--){
-                                        $findme = "|col$h|";
-                                        $pos = stripos($temp_id, $findme);
-                                        if ($pos !== false) {
-                                            $temp_id = str_replace($findme,$origlist[$ligne_number][$h],$temp_id);
-                                        }
-                                    }
-                                    $extra_html.=' id="'.$temp_id.'"';
-
-                                }
-
-                                if(!empty($this->FG_OTHER_BUTTON4_HTML_CLASS) ){
-                                    $extra_html.= ' class="'.$this->FG_OTHER_BUTTON4_HTML_CLASS.'" ';
-                                }
-
-
-
-                                if (substr($new_FG_OTHER_BUTTON4_LINK,-1)=='=') echo $list[$ligne_number][$this->FG_NB_TABLE_COL];
-                                if (strlen($this -> FG_OTHER_BUTTON4_IMG)==0){
-                                    echo '"'.$extra_html.'> '.'<span class="cssbutton">'.$this->FG_OTHER_BUTTON4_ALT.'</span>';
-                                }else{
-                                    ?>" <?php echo $extra_html ?> ><img src="<?php echo $this -> FG_OTHER_BUTTON4_IMG?>" border="0" title="<?php echo $this->FG_OTHER_BUTTON4_ALT?>" alt="<?php echo $this->FG_OTHER_BUTTON4_ALT?>"><?php
-
-                                }
-                                ?></a>
-                        <?php }
-                        }
-
-                        if($this->FG_OTHER_BUTTON5){
-                            $check = true;
-                            $condition_eval=$this->FG_OTHER_BUTTON5_CONDITION;
-                            $check_eval=false;
-                            if (!empty($this->FG_OTHER_BUTTON5_CONDITION) && (preg_match ('/col[0-9]/i', $this->FG_OTHER_BUTTON5_CONDITION))) {
-                                $check =false;
-                                    for ($h=count($list[$ligne_number]);$h>=0;$h--){
-                                        $findme = "|col$h|";
-                                        $pos = stripos($condition_eval, $findme);
-                                        if ($pos !== false) {
-                                            $condition_eval = str_replace($findme,$list[$ligne_number][$h],$condition_eval);
-                                        }
-                                    }
-                            eval('$check_eval = '.$condition_eval.';');
-                                }
-                            if($check || $check_eval){
-                            ?>
-                            <a href="<?php
-                                $new_FG_OTHER_BUTTON5_LINK = $this -> FG_OTHER_BUTTON5_LINK;
-                                if (strpos($this -> FG_OTHER_BUTTON5_LINK,"|param|")){
-                                    $new_FG_OTHER_BUTTON5_LINK = str_replace("|param|",$list[$ligne_number][$this->FG_NB_TABLE_COL],$this -> FG_OTHER_BUTTON5_LINK);
-                                    // SHOULD DO SMTH BETTER WITH paramx and get the x number to find the value to use
-                                }
-                                if (strpos($this -> FG_OTHER_BUTTON5_LINK,"|param1|")){
-                                    $new_FG_OTHER_BUTTON5_LINK = str_replace("|param1|",$list[$ligne_number][$this->FG_NB_TABLE_COL-1],$this -> FG_OTHER_BUTTON5_LINK);
-                                }
-
-                                // REPLACE |colX|  where is a numero of the column by the column value
-                                if (preg_match ('/col[0-9]/i', $new_FG_OTHER_BUTTON5_LINK)) {
-                                    for ($h=0;$h<=$this->FG_NB_TABLE_COL;$h++){
-                                        $findme = "|col$h|";
-                                        $pos = stripos($new_FG_OTHER_BUTTON5_LINK, $findme);
-                                        if ($pos !== false) {
-                                            $new_FG_OTHER_BUTTON5_LINK = str_replace($findme,$list[$ligne_number][$h],$new_FG_OTHER_BUTTON5_LINK);
-                                        }
-                                    }
-                                }
-
-                                // REPLACE |col_origX|  where is a numero of the column by the column value
-                                if (preg_match ('/col_orig[0-9]/i', $new_FG_OTHER_BUTTON5_LINK)) {
-                                        for ($h=count($list[$ligne_number]);$h>=0;$h--){
-                                        $findme = "|col_orig$h|";
-                                        $pos = stripos($new_FG_OTHER_BUTTON5_LINK, $findme);
-                                        if ($pos !== false) {
-                                            $new_FG_OTHER_BUTTON5_LINK = str_replace($findme,$origlist[$ligne_number][$h],$new_FG_OTHER_BUTTON5_LINK);
-                                        }
-                                    }
-                                }
-                                echo $new_FG_OTHER_BUTTON5_LINK;
-
-                                $extra_html="";
-
-                                if(!empty($this->FG_OTHER_BUTTON5_HTML_ID) && (preg_match ('/col[0-9]/i',$this->FG_OTHER_BUTTON5_HTML_ID))){
-                                    $temp_id =$this->FG_OTHER_BUTTON5_HTML_ID;
-                                    for ($h=count($list[$ligne_number]);$h>=0;$h--){
-                                        $findme = "|col$h|";
-                                        $pos = stripos($temp_id, $findme);
-                                        if ($pos !== false) {
-                                            $temp_id = str_replace($findme,$origlist[$ligne_number][$h],$temp_id);
-                                        }
-                                    }
-                                    $extra_html.=' id="'.$temp_id.'"';
-
-                                }
-
-                                if(!empty($this->FG_OTHER_BUTTON5_HTML_CLASS) ){
-                                    $extra_html.= ' class="'.$this->FG_OTHER_BUTTON5_HTML_CLASS.'" ';
-                                }
-
-
-
-                                if (substr($new_FG_OTHER_BUTTON5_LINK,-1)=='=') echo $list[$ligne_number][$this->FG_NB_TABLE_COL];
-                                if (strlen($this -> FG_OTHER_BUTTON5_IMG)==0){
-                                    echo '"'.$extra_html.'> '.'<span class="cssbutton">'.$this->FG_OTHER_BUTTON5_ALT.'</span>';
-                                }else{
-                                    ?>" <?php echo $extra_html ?> ><img src="<?php echo $this -> FG_OTHER_BUTTON5_IMG?>" border="0" title="<?php echo $this->FG_OTHER_BUTTON5_ALT?>" alt="<?php echo $this->FG_OTHER_BUTTON5_ALT?>"><?php
-
-                                }
-                                ?></a>
-                        <?php
-                             }
-                        }
-                        ?>
-
-
-                      </TD>
-                    <?php  } ?>
-
-                    </TR>
-                <?php
-                    } //  for (ligne_number=0;ligne_number<count($list);$ligne_number++)
-                    while ($ligne_number < 7){
-                ?>
-                    <TR bgcolor="<?php echo $this->FG_TABLE_ALTERNATE_ROW_COLOR[$ligne_number%2]?>">
-                        <?php
-                            $REMOVE_COL = ($this->FG_OTHER_BUTTON1 || $this->FG_OTHER_BUTTON2 || $this->FG_OTHER_BUTTON3 || $this->FG_OTHER_BUTTON4 || $this->FG_EDITION || $this->FG_INFO || $this->FG_DELETION )? 0 : 1;
-                            for($i=0;$i<$this->FG_NB_TABLE_COL-$REMOVE_COL;$i++){
-                         ?>
-                         <TD vAlign=top class="tableBody">&nbsp;</TD>
-                         <?php  } ?>
-                         <TD align="center" vAlign=top class="tableBodyRight">&nbsp;</TD>
-                    </TR>
-
-                <?php
-                        $ligne_number++;
-                    } //END_WHILE
-                 ?>
-                <TR>
-                  <TD class="tableDivider" colSpan=<?php echo $this->FG_TOTAL_TABLE_COL?>><IMG height=1 src="<?php echo Images_Path_Main;?>/clear.gif" width=1></TD>
-                </TR>
-            </TABLE>
-
-          </TD>
-        </TR>
-        <?php if ($this->CV_DISPLAY_BROWSE_PAGE){ ?>
-        <TR >
-          <TD height=16 style="PADDING-LEFT: 5px; PADDING-RIGHT: 3px">
-            <TABLE border=0 cellPadding=0 cellSpacing=0 width="100%">
-                <TR>
-                  <TD align="right" valign="bottom"><span class="viewhandler_span2">
-                    <?php
-                    $c_url = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL).'?stitle='.$stitle.'&atmenu='.$atmenu.'&current_page=%s'."&filterprefix=".$processed['filterprefix']."&order=".$processed['order']."&sens=".$processed['sens']."&mydisplaylimit=".$processed['mydisplaylimit']."&popup_select=".$processed["popup_select"]."&letter=".$processed["letter"].$this-> CV_FOLLOWPARAMETERS;
-                    if (!is_null($letter) && ($letter!=""))   $c_url .= "&letter=".$processed['letter'];
-                    $this -> printPages($this -> CV_CURRENT_PAGE+1, $this -> FG_NB_RECORD_MAX, $c_url) ;
-                    ?>
-                    </span>
-                  </TD>
-            </TABLE></TD>
-        </TR>
-        <?php   }   ?>
-
-        <FORM name="otherForm2" action="<?php echo filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL); ?>">
-        <tr><td>
-        <?php if ($this->CV_DISPLAY_RECORD_LIMIT){ ?>
-            <?php echo gettext("DISPLAY");?>
-            <input type="hidden" name="stitle" value="<?php echo $stitle?>">
-            <input type="hidden" name="atmenu" value="<?php echo $atmenu?>">
-            <input type="hidden" name="order" value="<?php echo $processed['order']?>">
-            <input type="hidden" name="sens" value="<?php echo $processed['sens']?>">
-            <input type="hidden" name="current_page" value="0">
-            <input type="hidden" name="filterprefix" value="<?php echo $processed['filterprefix']?>">
-            <input type="hidden" name="popup_select" value="<?php echo $processed['popup_select']?>">
-            <input type="hidden" name="popup_formname" value="<?php echo $processed['popup_formname']?>">
-            <input type="hidden" name="popup_fieldname" value="<?php echo $processed['popup_fieldname']?>">
-            <input type="hidden" name="type" value="<?php echo $processed['type']?>">
-            <input type="hidden" name="id" value="<?php echo $processed['id']?>">
-            <?php
-                foreach ($processed as $key => $val) {
-                    if ($key!='current_page' && $key!='id') {
-                ?>
-                   <input type="hidden" name="<?php echo $key?>" value="<?php echo $val?>">
-                <?php
+                    if (is_numeric($row[5]) && (strlen($record_display) > $row[5])) {
+                        $record_display = substr($record_display, 0, $row[5]);
                     }
-                }
-             ?>
-            <select name="mydisplaylimit" size="1" class="form_input_select">
-            <?php $session_limit = $this->FG_TABLE_NAME."-displaylimit"; ?>
+                    ?>
+                        <td valign="top" align="<?= $row[3] ?>" class="tableBody">
+                            <?php
+                            $origlist[$num][$j-$k] = $list[$num][$j-$k];
+                            $list[$num][$j-$k] = $record_display;
 
-                <option value="10" <?php if($_SESSION[$session_limit]==10 || empty($_SESSION[$session_limit])) echo "selected" ?>>10</option>
-                <option value="50" <?php if(is_numeric($_SESSION[$session_limit]) && $_SESSION[$session_limit]==50 ) echo "selected" ?>>50</option>
-                <option value="100" <?php if( is_numeric($_SESSION[$session_limit]) && $_SESSION[$session_limit]==100 ) echo "selected" ?>>100</option>
-                <option value="ALL" <?php if( is_numeric($_SESSION[$session_limit]) && $_SESSION[$session_limit]>100 ) echo "selected" ?>>All</option>
-            </select>
-            <input class="form_input_button"  value=" <?php echo gettext("GO");?> " type="SUBMIT">
-            &nbsp; &nbsp; &nbsp;
-        <?php   }   ?>
-        <?php if ($this->FG_EXPORT_CSV){ ?>
-         - &nbsp; &nbsp; <a href="export_csv.php?var_export=<?php echo $this->FG_EXPORT_SESSION_VAR ?>&var_export_type=type_csv" target="_blank" ><img src="<?php echo Images_Path;?>/excel.gif" border="0" height="30"/><?php echo gettext("Export CSV");?></a>
+                            if (isset ($row[11]) && strlen($row[11])>1) {
+                                print call_user_func($row[11], $record_display);
+                            } else {
+                                echo stripslashes($record_display);
+                            }
+                            ?>
+                        </td>
 
-        <?php   }   ?>
-        <?php if ($this->FG_EXPORT_XML){ ?>
-         - &nbsp; &nbsp; <a href="export_csv.php?var_export=<?php echo $this->FG_EXPORT_SESSION_VAR ?>&var_export_type=type_xml" target="_blank" ><img src="<?php echo Images_Path;?>/icons_xml.gif" border="0" height="32"/><?php echo gettext("Export XML");?></a>
+                <?php endforeach //$this->FG_TABLE_COL ?>
 
-        <?php   }?>
+                <?php $extra_col = 1 ?>
+                <?php if($this->FG_EDITION  || $this->FG_INFO || $this->FG_DELETION || $this->FG_OTHER_BUTTON1 || $this->FG_OTHER_BUTTON2 || $this->FG_OTHER_BUTTON3 || $this->FG_OTHER_BUTTON4 || $this->FG_OTHER_BUTTON5): ?>
+                    <?php $extra_col = 0 ?>
+                        <td align="center" valign=top class=tableBodyRight>
+                    <?php if($this->FG_INFO): ?>
+                        &nbsp;
+                        <a href="<?= $this->FG_INFO_LINK?>
+                            <?= $list[$num][$this->FG_NB_TABLE_COL]?>">
+                            <img src="<?= Images_Path_Main;?>/<?= $this->FG_INFO_IMG?>" border="0" title="<?= $this->FG_INFO_ALT?>" alt="<?= $this->FG_INFO_ALT?>">
+                        </a>
+                    <?php endif ?>
+                    <?php if($this->FG_EDITION): ?>
+                        <?php
+                        $check = true;
+                        $condition_eval = $this->FG_EDITION_CONDITION;
+                        $check_eval = false;
+                        if (preg_match ('/col[0-9]/i', $this->FG_EDITION_CONDITION)) {
+                            $check = false;
+                            for ($h = count($list[$num]); $h >= 0; $h--) {
+                                $findme = "|col$h|";
+                                if (str_contains($condition_eval, $findme)) {
+                                    $condition_eval = str_replace($findme,$list[$num][$h], $condition_eval);
+                                }
+                            }
+                            $check_eval = eval("return $condition_eval;");
+                        }
+                        ?>
+                        <?php if($check || $check_eval): ?>
+                        &nbsp;
+                        <a href="<?= $this->FG_EDITION_LINK?><?= $list[$num][$this->FG_NB_TABLE_COL]?>">
+                            <img src="<?= Images_Path_Main;?>/<?= $this->FG_EDITION_IMG?>" border="0" title="<?= $this->FG_EDIT_ALT?>" alt="<?= $this->FG_EDIT_ALT?>">
+                        </a>
+                        <?php endif ?>
+                    <?php endif ?>
+                    <?php if($this->FG_DELETION && !in_array($list[$num][$this->FG_NB_TABLE_COL], $this->FG_DELETION_FORBIDDEN_ID)): ?>
+                        <?php
+                        $check = true;
+                        $condition_eval = $this->FG_DELETION_CONDITION;
+                        $check_eval = false;
+                        if (preg_match ('/col[0-9]/', $this->FG_DELETION_CONDITION)) {
+                            $check =false;
+                            for ($h = count($list[$num]); $h >= 0; $h--) {
+                                $findme = "|col$h|";
+                                if (str_contains($condition_eval, $findme)) {
+                                    $condition_eval = str_replace($findme,$list[$num][$h], $condition_eval);
+                                }
+                            }
+                            $check_eval = eval("return $condition_eval;");
+                        }
+                        ?>
+                        if ($check || $check_eval): ?>
+                        &nbsp;
+                        <a href="<?= $this->FG_DELETION_LINK?><?= $list[$num][$this->FG_NB_TABLE_COL]?>">
+                            <img src="<?= Images_Path_Main;?>/<?= $this->FG_DELETION_IMG?>" border="0" title="<?= $this->FG_DELETE_ALT?>" alt="<?= $this->FG_DELETE_ALT?>">
+                        </a>
+                    <?php endif ?>
+                    <?php for ($b = 1; $b <= 5; $b++):
+                        if (property_exists($this, "FG_OTHER_BUTTON$b")):
+                            $check = true;
+                            $condition_eval = $this->{"FG_OTHER_BUTTON{$b}_CONDITION"};
+                            $check_eval = false;
+                            if (preg_match ('/col[0-9]/i', $condition_eval)) {
+                                $check = false;
+                                for ($h = count($list[$num]); $h >= 0; $h--) {
+                                    $findme = "|col$h|";
+                                    if (str_contains($condition_eval, $findme)) {
+                                        $condition_eval = str_replace($findme, $list[$num][$h], $condition_eval);
+                                    }
+                                }
+                                $check_eval = ("return $condition_eval;");
+                            }
+                            $new_link = $this->{"FG_OTHER_BUTTON{$b}_LINK"};
+                            if ($check || $check_eval) {
+                                $new_link = str_replace(
+                                    ["|param|", "|param1|"],
+                                    [$list[$num][$this->FG_NB_TABLE_COL], $list[$num][$this->FG_NB_TABLE_COL - 1]],
+                                    $new_link
+                                );
+                            }
+                            for ($h = count($list[$num]); $h >= 0; $h--) {
+                                $new_link = str_replace(
+                                    ["|col$h|", "|col_orig$h|"],
+                                    [$list[$num][$h], $origlist[$num][$h]],
+                                    $new_link
+                                );
+                            }
+                            $extra_html = "";
+                            $id = $this->{"FG_OTHER_BUTTON{$b}_HTML_ID"};
+                            if (!empty($id)) {
+                                for ($h = count($list[$num]); $h >= 0; $h--) {
+                                    $id = str_replace("|col$h|", $origlist[$num][$h], $id);
+                                }
+                                $extra_html .= " id='$id' ";
+                            }
 
-        </td></tr>
-        </FORM>
-      </table>
-   </div>
-<?php
-    }else{
-?>
+                            $class = $this->{"FG_OTHER_BUTTON{$b}_HTML_CLASS"};
+                            if (!empty($class)) {
+                                $extra_html .= " class='$class' ";
+                            }
 
+                            if (substr($new_link, -1) === "=") {
+                                $link .= $list[$num][$this->FG_NB_TABLE_COL];
+                            }
 
-    <br><br>
-    <div align="center">
-    <table width="80%" border="0" align="center">
+                            $img = $this->{"FG_OTHER_BUTTON{$b}_IMG"};
+                            ?>
+                            <a href="<?= $new_link ?>" <?= $extra_html ?>>
+                                <?php if (empty($img)): ?>
+                                <span class="cssbutton"><?= $this->{"FG_OTHER_BUTTON{$b}_ALT"} ?></span>
+                                <?php else: ?>
+                                <img src="<?= $this->{"FG_OTHER_BUTTON{$b}_IMG"} ?>" border="0" title="<?= $this->{"FG_OTHER_BUTTON{$b}_ALT"} ?>" alt="<?= $this->{"FG_OTHER_BUTTON{$b}_ALT"} ?>">
+                                <?php endif ?>
+                            </a>
+                        <?php endif ?>
+                    <?php endfor ?>
+                        </td>
+                <?php endif ?>
+
+                    </tr>
+                <?php endforeach; //  for ($num=0;$num<count($list);$num++)?>
+                <?php for (; $num < 7; $num++): ?>
+                    <tr bgcolor="<?= $this->FG_TABLE_ALTERNATE_ROW_COLOR[$num % 2]?>">
+                        <?php for($j = 0; $j < $this->FG_NB_TABLE_COL - $extra_col; $j++): ?>
+                         <td valign=top class="tableBody">&nbsp;</td>
+                         <?php endfor ?>
+                         <td align="center" valign=top class="tableBodyRight">&nbsp;</td>
+                    </tr>
+                <?php endfor ?>
+                    <tr>
+                        <td class="tableDivider" colspan=<?= $this->FG_TOTAL_TABLE_COL?>>
+                            <img alt="" src="data:image/gif;base64,R0lGODlhAQABAIAAAOZ3fP///yH5BAEAAAEALAAAAAABAAEAAAICTAEAOw=="/>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <?php if ($this->CV_DISPLAY_BROWSE_PAGE): ?>
+        <tr>
+            <td height=16 style="PADDING-LEFT: 5px; PADDING-RIGHT: 3px">
+                <table border=0 cellPadding=0 cellSpacing=0 width="100%">
+                    <tr>
+                        <td align="right" valign="bottom">
+                            <span class="viewhandler_span2">
+                                <?php $this->printPages($this->CV_CURRENT_PAGE + 1, $this->FG_NB_RECORD_MAX, "?stitle=$stitle&atmenu=$processed[atmenu]&current_page=%s&filterprefix=$processed[filterprefix]&order=$processed[order]&sens=$processed[sens]&mydisplaylimit=$processed[mydisplaylimit]&popup_select=$processed[popup_select]&letter=$letter$this->CV_FOLLOWPARAMETERS") ?>
+                            </span>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <?php endif ?>
 
         <tr>
-            <td align="center">
-                <?php echo $this -> CV_NO_FIELDS;?><br>
+            <td>
+                <form name="otherForm2" action="">
+                <?php if ($this->CV_DISPLAY_RECORD_LIMIT): ?>
+                    <?= gettext("DISPLAY");?>
+                    <input type="hidden" name="id" value="<?= $processed["id"] ?>"/>
+                    <input type="hidden" name="stitle" value="<?= $stitle ?>"/>
+                    <input type="hidden" name="form_action" value="edit"/>
+                    <input type="hidden" name="current_page" value="0"/>
+                    <?php foreach ($processed as $key => $val): ?>
+                        <?php if ($key !== 'current_page' && $key !== 'id'): ?>
+                            <input type="hidden" name="<?= $key ?>" value="<?= $val ?>">
+                        <?php endif ?>
+                    <?php endforeach ?>
+                    <select name="mydisplaylimit" size="1" class="form_input_select">
+                        <option value="10" <?php if($_SESSION["$this->FG_TABLE_NAME-displaylimit"] < 50) echo "selected" ?>>10</option>
+                        <option value="50" <?php if($_SESSION["$this->FG_TABLE_NAME-displaylimit"] === 50 ) echo "selected" ?>>50</option>
+                        <option value="100" <?php if($_SESSION["$this->FG_TABLE_NAME-displaylimit"] === 100 ) echo "selected" ?>>100</option>
+                        <option value="ALL" <?php if($_SESSION["$this->FG_TABLE_NAME-displaylimit"] > 100 ) echo "selected" ?>>All</option>
+                    </select>
+                    <input class="form_input_button"  value=" <?= gettext("GO");?> " type="SUBMIT"/>
+                    &nbsp; &nbsp; &nbsp;
+                <?php endif ?>
+                <?php if ($this->FG_EXPORT_CSV): ?>
+                    - &nbsp; &nbsp;
+                    <a href="export_csv.php?var_export=<?= $this->FG_EXPORT_SESSION_VAR ?>&var_export_type=type_csv" target="_blank" >
+                        <img border="0" height="30" alt="" src="data:image/gif;base64,R0lGODlhQABFAOMIADF+VEaKY3CdgZecl8bLxuLl4vL08f///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEKAAgALAAAAABAAEUAAAT+8MhJq7046827/2BljGRpnugZdsXgvnAszzBhrFtb7Hzv/8Cdy4bLtIoZw4DAvCErx6dFWTA0pZModkI9WIlY7dY7KEi+zqd42z1f1YMxt0xBw+Vnev2NW2Pbe2ArflKAgWkghE+Gh4NxeIyNiY9ykZIeikhKNikjLYIcmUVKNDNmmJRJBgUEpxtMsLGyBHosqWesBAICAb0BBB2dJjofOrC8vsm+wBzCJrVTq0y7ytXVzCEkZyS10rrI1uHWnClcwnOuBOLr60uzsBPvsK6A6uz3yu7y8fKt6PH4Avbq508CwTT1BAbE9qeWPYXsGBZyWG2XRWsWqSmTuIjiRgr+BaohBNdL3zt+8uh5VIaIJMMB1UzOQvlOZTqMIH0JSBMyJkGas2wCtObqADJsBkguq7RS2c4sAQRQePhxTMJwDAW46jnO3Agvdc7luSluKxelyWTKAirr1AiHAOLKnSvVAlWf/djGMsMt3dy/cSVyDac2lt55JeACnlvUC9pkHEGcULwYQOS7VXGgoAz4qUEKjweK9eKsb7zKAOgFUE34p8F+VUwbrPwy6tTWeV+nTOy3M0+5Wef6KgxPd03epwEXFSDXs5cAgCNjKE1s9l+GBK5Pje6h9CrOAHaWYC7cBHngwbxXP5AdtXvUxJm4gU1iffv3+OfGJ0cw9vfe+QWiuB8J/dUHXoDuSefdCfYhGGBkCzJ4oIOLkRNhJ+t5kcsA51Eo14AjFOgJNBd402F+IH6x24iNaUALLBzyAt9BIdLH4ge0+BCLC7ugd6EwGeZQRhA9IPYjhiRqoEMJRO5wJJBJGjEAdTw8iWSLUlqppYFYYtACItts6QwPUXo5pQZiotBDmRd8QtCbcL7JpgUtlGLnnXjC0CUefPbp55+AThABADs="/>
+                        <?= gettext("Export CSV") ?>
+                    </a>
+                <?php endif ?>
+                <?php if ($this->FG_EXPORT_XML): ?>
+                    - &nbsp; &nbsp;
+                    <a href="export_csv.php?var_export=<?= $this->FG_EXPORT_SESSION_VAR ?>&var_export_type=type_xml" target="_blank" >
+                        <img border="0" height="32" alt="" src="data:image/gif;base64,R0lGODlhKgAqAOMIAPRLJHW42bOqqZ7N5vfNjtfV08/n9P///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEKAAgALAAAAAAqACoAAAT+EEl0qr34zs37rkEojuRQVF7KVUVgvEMsz0MwGJaagmQvxqHY6aDrHFovA21pCwpRRckB6OvVmq4nMXpwwZYzLPA7jCKTYFkwpLy1T2YvOv3zxr5Q1Tn5pYnaZEplenJ8bWEhBYCHglspBW6GfVQuikJKQYMekJJ8iC5HjDVPepGdh1c4oVdqcI+mp2o/bqw1rpuwsZQjaraOHZynnrIlowG3wLm6dMbIHJAHwoZpxgbHv88DFdLTTDXWzhvQFtzdYy7XpRjl3ejg2OLaFwUCBvQCigb19ZLu6a/zBAAoAKAgAH0ABL7I98JfuAnjBA40aKBgxYQHEWbM8k4dQQKcFgCALChR4UKLHE3AgyhPIsGCLw2adKmkpkp1FgoQALlzp0ifOwswvEH0oYRxFkBW2HmAZ9Od02waRYA0QwZhRBvhtMq1U9abALmKlfR1alWxVz0pmWJWHtqxMNaCxfX2LYwpvrbW7aptAL62e98CEZonWWC0fvEVBmaDmuMwhFeKuyegsuXLmDP/1bRDqOfPoEOHXrzj8N4oCCIAADs="/>
+                        <?= gettext("Export XML") ?>
+                    </a>
+                <?php endif ?>
+                </form>
             </td>
         </tr>
     </table>
-    </div>
-    <br><br>
-<?php
-    }//end_if
-?>
+</div>
