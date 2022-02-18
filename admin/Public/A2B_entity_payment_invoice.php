@@ -73,7 +73,7 @@ function sendValue(selvalue)
 // #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);
 
-$HD_Form->create_form($form_action, $list, $id = null);
+$HD_Form->create_form($form_action, $list);
 
 if (!($popup_select >= 1))
     $smarty->display('footer.tpl');

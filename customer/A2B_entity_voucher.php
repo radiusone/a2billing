@@ -127,7 +127,7 @@ $HD_Form -> create_toppage ($form_action);
 
 // #### CREATE FORM OR LIST
 
-$HD_Form -> create_form ($form_action, $list, $id=null) ;
+$HD_Form -> create_form($form_action, $list) ;
 
 // Code for the Export Functionality
 //* Query Preparation.

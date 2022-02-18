@@ -81,7 +81,7 @@ echo $CC_help_signup_agent;
 // #### TOP SECTION PAGE
 $HD_Form -> create_toppage ($form_action);
 
-$HD_Form -> create_form ($form_action, $list, $id=null) ;
+$HD_Form -> create_form($form_action, $list) ;
 
 // #### FOOTER SECTION
 $smarty->display('footer.tpl');

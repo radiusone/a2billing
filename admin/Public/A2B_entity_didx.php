@@ -157,7 +157,7 @@ if ($form_action == "purchase" || $form_action == "add") {
         // #### TOP SECTION PAGE
         $HD_Form -> create_toppage ($form_action);
 
-        $HD_Form -> create_form ($form_action, $list, $id=null) ;
+        $HD_Form -> create_form($form_action, $list) ;
     }
 } else {
     $smarty->display('main.tpl');

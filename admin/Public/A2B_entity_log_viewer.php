@@ -238,7 +238,7 @@ if ($form_action=="list") {
 
 <?php
 }
-$HD_Form -> create_form ($form_action, $list, $id=null) ;
+$HD_Form -> create_form($form_action, $list) ;
 
 // #### FOOTER SECTION
 $smarty->display('footer.tpl');

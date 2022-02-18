@@ -263,6 +263,6 @@ if (isset($archive) && !empty($archive)) {
     $HD_Form -> CV_NO_FIELDS = "";
     print "<div align=\"center\">".$archive_message."</div>";
 }
-$HD_Form -> create_form ($form_action, $list, $id=null);
+$HD_Form -> create_form($form_action, $list);
 
 $smarty->display('footer.tpl');

@@ -245,6 +245,6 @@ $HD_Form->create_toppage($form_action);
 
 <?php
 
-$HD_Form -> create_form ($form_action, $list, $id=null) ;
+$HD_Form -> create_form($form_action, $list) ;
 
 $smarty->display('footer.tpl');

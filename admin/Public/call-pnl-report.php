@@ -511,7 +511,7 @@ $list = $HD_Form -> perform_action($form_action);
 // #### TOP SECTION PAGE
 $HD_Form -> create_toppage ($form_action);
 
-$HD_Form -> create_form ($form_action, $list, $id=null) ;
+$HD_Form -> create_form($form_action, $list) ;
 
 $res = $HD_Form -> DBHandle -> Execute("select $FG_COL_QUERY_SUM from pnl_report");
 if ($res) {

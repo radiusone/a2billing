@@ -66,7 +66,7 @@ echo $CC_help_list_did_billing;
 // #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);
 
-$HD_Form->create_form($form_action, $list, $id = null);
+$HD_Form->create_form($form_action, $list);
 
 // Include other file ( TODO , find a better way to include files )
 $wantinclude = 1;

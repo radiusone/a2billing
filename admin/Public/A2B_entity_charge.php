@@ -74,7 +74,7 @@ if ($wantinclude != 1) {
 // #### TOP SECTION PAGE
 $HD_Form_c->create_toppage($form_action);
 
-$HD_Form_c->create_form($form_action, $list, $id = null);
+$HD_Form_c->create_form($form_action, $list);
 
 if ($wantinclude != 1) {
     $smarty->display('footer.tpl');

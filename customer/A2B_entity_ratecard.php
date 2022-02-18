@@ -121,7 +121,7 @@ $HD_Form -> create_toppage ($form_action);
 </center>
 <?php
 
-$HD_Form -> create_form ($form_action, $list, $id=null) ;
+$HD_Form -> create_form($form_action, $list) ;
 
 // #### CREATE SEARCH FORM
 if ($form_action == "list") {

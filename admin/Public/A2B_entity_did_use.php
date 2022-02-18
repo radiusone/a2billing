@@ -163,7 +163,7 @@ if (!isset($inuse) || $inuse=="")$inuse=1;
 
 $list = $HD_Form -> perform_action($form_action);
 
-$HD_Form -> create_form ($form_action, $list, $id=null) ;
+$HD_Form -> create_form($form_action, $list) ;
 
 }
 $smarty->display('footer.tpl');

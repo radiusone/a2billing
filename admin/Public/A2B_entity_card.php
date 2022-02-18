@@ -553,7 +553,7 @@ if ($form_action=='ask-edit') {
     echo Display_Login_Button ($HD_Form -> DBHandle, $id);
 }
 
-$HD_Form -> create_form ($form_action, $list, $id=null) ;
+$HD_Form -> create_form($form_action, $list) ;
 
 // Code for the Export Functionality
 $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR]= "SELECT ".$HD_Form -> FG_EXPORT_FIELD_LIST." FROM $HD_Form->FG_TABLE_NAME";

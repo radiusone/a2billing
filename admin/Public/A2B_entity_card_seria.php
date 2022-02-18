@@ -65,7 +65,7 @@ echo $CC_help_list_seria;
 // #### TOP SECTION PAGE
 $HD_Form -> create_toppage ($form_action);
 
-$HD_Form -> create_form ($form_action, $list, $id=null) ;
+$HD_Form -> create_form($form_action, $list) ;
 
 // #### FOOTER SECTION
 if (!$popup_select) $smarty->display('footer.tpl');

@@ -90,6 +90,6 @@ function sendValue(selvalue)
 // #### TOP SECTION PAGE
 $HD_Form -> create_toppage ($form_action);
 
-$HD_Form -> create_form ($form_action, $list, $id=null) ;
+$HD_Form -> create_form($form_action, $list) ;
 
 $smarty->display('footer.tpl');

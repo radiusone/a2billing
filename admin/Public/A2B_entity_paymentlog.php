@@ -214,7 +214,7 @@ if ($form_action=='list' && !($popup_select>=1)) {
 </FORM>
 <?php
 }
-$HD_Form -> create_form ($form_action, $list, $id=null) ;
+$HD_Form -> create_form($form_action, $list) ;
 
 // #### FOOTER SECTION
 $smarty->display('footer.tpl');
