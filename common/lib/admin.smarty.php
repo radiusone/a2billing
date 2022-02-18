@@ -104,3 +104,5 @@ $smarty->assign("adminname", $_SESSION["pr_login"]);
 $smarty->assign("A2Bconfig", $A2B->config);
 
 $smarty->assign("PAGE_SELF", $PHP_SELF);
+
+$smarty->disableSecurity();
