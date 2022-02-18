@@ -51,7 +51,7 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_ALT2 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG2 = 
 $HD_Form ->FG_LIST_ADDING_BUTTON_IMG2 = Images_Path ."/page_white_add.png" ;
 
 $HD_Form -> FG_OTHER_BUTTON3 = true;
-$HD_Form -> FG_OTHER_BUTTON3_LINK = "A2B_entity_logrefill.php?form_action=ask-add&card_id=|col_orig1|";
+$HD_Form -> FG_OTHER_BUTTON3_LINK = "A2B_entity_logrefill.php?form_action=ask-add&card_id=|col1|";
 $HD_Form -> FG_OTHER_BUTTON3_IMG = Images_Path . "/brick_add.png";
 $HD_Form -> FG_OTHER_BUTTON3_ALT = gettext('ADD REFILL');
 
@@ -129,7 +129,7 @@ $HD_Form -> FG_INTRO_TEXT_ADD = gettext("you can add easily a new")." ".$HD_Form
 
 
 $HD_Form -> FG_OTHER_BUTTON2 = true;
-$HD_Form -> FG_OTHER_BUTTON2_LINK="A2B_entity_payment.php?stitle=Payment_add&form_action=ask-add&card_id=|col_orig1|";
+$HD_Form -> FG_OTHER_BUTTON2_LINK="A2B_entity_payment.php?stitle=Payment_add&form_action=ask-add&card_id=|col1|";
 $HD_Form -> FG_OTHER_BUTTON2_IMG = Images_Path . "/money.png";
 $HD_Form -> FG_OTHER_BUTTON2_ALT = gettext('ADD PAYMENT');
 

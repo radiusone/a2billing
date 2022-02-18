@@ -64,8 +64,6 @@ $HD_Form -> FG_FK_EDITION_CLAUSE = array(" id_receipt ");
 
 $HD_Form -> FG_INFO = true;
 $HD_Form -> FG_INFO_LINK = "A2B_receipt_view.php?id=";
-$HD_Form -> FG_INFO_ALT = "VIEW";
-$HD_Form -> FG_INFO_IMG = "info.png";
 
 $list_refill_type=getRefillType_List();
 $HD_Form -> AddViewElement(gettext("ID"), "cc_receipt.id", "7%", "center", "sort");
