@@ -7,6 +7,7 @@ use A2billing\Table;
  * @var array $processed
  * @var array $list
  * @var string $wh
+ * @var bool $VALID_SQL_REG_EXP
  */
 getpost_ifset(array('wh'));
 ?>
@@ -206,7 +207,7 @@ getpost_ifset(array('wh'));
                 <label for="<?= $row["name"] ?>_<?= $rad[1] ?>"><?= $rad[0] ?></label>
                 <?php if ($processed[$row["name"]] === $rad[1]): ?>
                     <?php $check = $rad[1] ?>
-                <?php elseif ($this->VALID_SQL_REG_EXP): ?>
+                <?php elseif ($VALID_SQL_REG_EXP): ?>
                     <?php $check = $list[0][$i] ?>
                 <?php else: ?>
                     <?php $check = $processed[$row["default"]] ?>
