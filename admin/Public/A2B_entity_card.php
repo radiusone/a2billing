@@ -519,7 +519,6 @@ if (isset($update_msg) && strlen($update_msg)>0) echo $update_msg;
 $HD_Form -> create_toppage ($form_action);
 if (!$popup_select && $form_action == "ask-add") {
 ?>
-<center>
 <table width="70%" align="center" cellpadding="2" cellspacing="0">
     <script>
     function submitform()
@@ -533,6 +532,10 @@ if (!$popup_select && $form_action == "ask-add") {
         <span>
 
             <font class="viewhandler_filter_on"><?php echo gettext("Change the Account Number Length")?> :</font>
+            <?php if ($HD_Form->FG_CSRF_STATUS == true): ?>
+                <input type="hidden" name="<?= $HD_Form->FG_FORM_UNIQID_FIELD ?>" value="<?= $HD_Form->FG_FORM_UNIQID ?>" />
+                <input type="hidden" name="<?= $HD_Form->FG_CSRF_FIELD ?>" value="<?= $HD_Form->FG_CSRF_TOKEN ?>" />
+            <?php endif ?>
             <select name="cardnumberlenght_list" size="1" class="form_input_select" onChange="submitform()">
             <?php foreach ($A2B -> cardnumber_range as $value) { ?>
                 <option value='<?php echo $value ?>'
@@ -545,7 +548,6 @@ if (!$popup_select && $form_action == "ask-add") {
     </tr>
     </form>
 </table>
-</center>
 <?php
 }
 

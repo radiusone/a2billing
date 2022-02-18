@@ -527,7 +527,7 @@ $HD_Form -> create_toppage ($form_action);
 if (!$popup_select && $form_action == "ask-add") {
 ?>
 <table width="70%" align="center" cellpadding="2" cellspacing="0">
-    <script language="javascript">
+    <script>
     function submitform()
     {
         document.cardform.submit();
@@ -539,26 +539,22 @@ if (!$popup_select && $form_action == "ask-add") {
         <span>
 
             <font class="viewhandler_filter_on"><?php echo gettext("Change the Card Number Length")?> :</font>
+            <?php if ($HD_Form->FG_CSRF_STATUS == true): ?>
+                <input type="hidden" name="<?= $HD_Form->FG_FORM_UNIQID_FIELD ?>" value="<?= $HD_Form->FG_FORM_UNIQID ?>" />
+                <input type="hidden" name="<?= $HD_Form->FG_CSRF_FIELD ?>" value="<?= $HD_Form->FG_CSRF_TOKEN ?>" />
+            <?php endif ?>
             <select name="cardnumberlenght_list" size="1" class="form_input_select" onChange="submitform()">
-            <?php
-            //for ($i=CARDNUMBER_LENGTH_MIN;$i<=CARDNUMBER_LENGTH_MAX;$i++) {
-
-            foreach ($A2B -> cardnumber_range as $value) {
-            ?>
+            <?php foreach ($A2B -> cardnumber_range as $value) { ?>
                 <option value='<?php echo $value ?>'
                 <?php if ($value == $cardnumberlenght_list) echo "selected";
                 ?>> <?php echo $value." ".gettext("Digits");?> </option>
-
-            <?php
-            }
-            ?>
+            <?php } ?>
             </select>
         </span>
         </td>
     </tr>
     </form>
 </table>
-
 <?php
 }
 
