@@ -207,7 +207,7 @@ function openURLFilter(link) {
                 <?php foreach($this->FG_TABLE_COL as $j=>$row): ?>
                 <?php
                     if (str_starts_with($row[6], "lie")) {
-                        $options = (new Table($row[7], $row[8]))->get_list($this->DBHandle, str_replace("%id", $list[$num][$j - $k], $row[9]), null, null, null, null, null, null, null, 10);
+                        $options = (new Table($row[7], $row[8]))->get_list($this->DBHandle, str_replace("%id", $item[$j - $k], $row[9]), null, null, null, null, null, null, null, 10);
                         $field_list_sun = explode(",", $row[8]);
                         $record_display = $row[10];
                         if ($row[6] === "lie") {
@@ -219,6 +219,7 @@ function openURLFilter(link) {
                                 $record_display = "";
                             }
                         } elseif($row[6] === "lie_link") {
+                            $record_display = "";
                             if (is_array($options)) {
                                 $link = $row[12];
                                 if (!str_contains($row[12], 'form_action')) {
@@ -232,18 +233,16 @@ function openURLFilter(link) {
                                     $val = str_replace("%$l", $options[0][$l - 1], $record_display);
                                     $record_display = "<a href='$link'>$val</a>";
                                 }
-                            } else {
-                                $record_display = "";
                             }
                         }
                     } elseif ($row[6]=="eval") {
 
                         $string_to_eval = $row[7]; // %4-%3
                         for ($ll = 15; $ll >= 0; $ll--) {
-                            if ($list[$num][$ll] === '') {
-                                $list[$num][$ll] = 0;
+                            if ($item[$ll] === '') {
+                                $item[$ll] = 0;
                             }
-                            $string_to_eval = str_replace("%$ll", $list[$num][$ll], $string_to_eval);
+                            $string_to_eval = str_replace("%$ll", $item[$ll], $string_to_eval);
                         }
                         // WTAF
                         $record_display = ("return $string_to_eval;");
@@ -251,12 +250,12 @@ function openURLFilter(link) {
                     } elseif ($row[6]=="list") {
 
                         $select_list = $row[7];
-                        $record_display = $select_list[$list[$num][$j-$k]][0];
+                        $record_display = $select_list[$item[$j-$k]][0];
 
                     } elseif ($row[6]=="list-conf") {
 
                         $select_list = $row[7];
-                        $key_config =  $list[$num][$j-$k + 3];
+                        $key_config =  $item[$j-$k + 3];
                         $record_display = $select_list[$key_config][0];
 
                     } elseif ($row[6]=="value") {
@@ -266,7 +265,7 @@ function openURLFilter(link) {
 
                     } else {
 
-                        $record_display = $list[$num][$j-$k];
+                        $record_display = $item[$j-$k];
 
                     }
 
@@ -277,8 +276,8 @@ function openURLFilter(link) {
                     ?>
                         <td valign="top" align="<?= $row[3] ?>" class="tableBody">
                             <?php
-                            $origlist[$num][$j-$k] = $list[$num][$j-$k];
-                            $list[$num][$j-$k] = $record_display;
+                            $origlist[$num][$j-$k] = $item[$j-$k];
+                            $item[$j-$k] = $record_display;
 
                             if (isset ($row[11]) && strlen($row[11])>1) {
                                 print call_user_func($row[11], $record_display);
@@ -297,89 +296,84 @@ function openURLFilter(link) {
                     <?php if($this->FG_INFO): ?>
                         &nbsp;
                         <a href="<?= $this->FG_INFO_LINK?>
-                            <?= $list[$num][$this->FG_NB_TABLE_COL]?>">
-                            <img src="<?= Images_Path_Main;?>/<?= $this->FG_INFO_IMG?>" border="0" title="<?= $this->FG_INFO_ALT?>" alt="<?= $this->FG_INFO_ALT?>">
+                            <?= $item[$this->FG_NB_TABLE_COL]?>">
+                            <img border="0" title="<?= gettext("VIEW") ?>" alt="<?= gettext("VIEW") ?>" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJGSURBVDjLjdJLSNRBHMDx78yqLZaKS75DPdgDDaFDbdJmde5QlhCJGxgpRJfqEEKnIsJLB7skQYQKZaSmdLaopPCgEvSCShCMzR5a7oq7/3l12RVtjfzBMA/4fWZ+MyOccwBM3g8HEbIdfCEhfAFnLVapOa28Uevpjrqz/WOsERJgsu9Uq5CZQzgqrJfo9BajNd5irEYn4p3OUiFExtCLmw2tawFi4l5zUMjMIau9u7K+qxeoAcoAA0wDb2OPwmfA16LiiaOHLj1edRLpkO3WmIis7+oBDgJbgQ2AH6gC6jY19N62RkcctKeVIJAhp9QgUA3kJXdONZVcq9JxPSgQoXRAyIDRth8oAXQyKdWnoCKrTD9CBv4GMqx1WGNZkeRWJKbG2hiD1Cb9FbTnzWFdY/LCdLKlgNQ84gyNKqHm0gDjqVHnxDHgA/B9RQkpaB6YklkZl62np9KBhOqwjpKFgeY2YAz4BESBWHI8Hhs6PVVSvc3v98ye4fP7T676B845nt040ip98qpWJmI9PWiU6bfWgXGN2YHcKwU7tsuc4kpUPMbU0+f8+vKt+Pitl7PLAMDI9cNBoB0hQwICzjqUp6MZvsy8yvp95BRuQUjJ75mPvH4wYo1NlJ64Mza7DPwrhi8cCOeXl/aUB4P4c/NJxKLMvpngycCrzxVFG2v/CwAMnguF80oLe8p27cQh+fnpPV/fTc95S6piXQDAw7a9YbWkezZXFbAwMx/xPFXb1D3+Y90AQF/L7kAsri9mZ4lrTd0TcYA/Kakr+x2JSPUAAAAASUVORK5CYII=">
                         </a>
                     <?php endif ?>
                     <?php if($this->FG_EDITION): ?>
                         <?php
                         $check = true;
-                        $condition_eval = $this->FG_EDITION_CONDITION;
-                        $check_eval = false;
-                        if (preg_match ('/col[0-9]/i', $this->FG_EDITION_CONDITION)) {
-                            $check = false;
-                            for ($h = count($list[$num]); $h >= 0; $h--) {
-                                $findme = "|col$h|";
-                                if (str_contains($condition_eval, $findme)) {
-                                    $condition_eval = str_replace($findme,$list[$num][$h], $condition_eval);
-                                }
-                            }
-                            $check_eval = eval("return $condition_eval;");
-                        }
+                        $condition_eval = preg_replace_callback(
+                            "/col([0-9])/i",
+                            function ($m) use ($item, &$check) {
+                                $check = false;
+                                $tmp = str_replace("col$m[1]", $item[$m[1]], $m[0]);
+                                $check = eval("return $tmp;");
+                                return $tmp;
+                            },
+                            $this->FG_EDITION_CONDITION
+                        );
                         ?>
-                        <?php if($check || $check_eval): ?>
+                        <?php if($check): ?>
                         &nbsp;
-                        <a href="<?= $this->FG_EDITION_LINK?><?= $list[$num][$this->FG_NB_TABLE_COL]?>">
+                        <a href="<?= $this->FG_EDITION_LINK?><?= $item[$this->FG_NB_TABLE_COL]?>">
                             <img src="<?= Images_Path_Main;?>/<?= $this->FG_EDITION_IMG?>" border="0" title="<?= $this->FG_EDIT_ALT?>" alt="<?= $this->FG_EDIT_ALT?>">
                         </a>
                         <?php endif ?>
                     <?php endif ?>
-                    <?php if($this->FG_DELETION && !in_array($list[$num][$this->FG_NB_TABLE_COL], $this->FG_DELETION_FORBIDDEN_ID)): ?>
+                    <?php if($this->FG_DELETION && !in_array($item[$this->FG_NB_TABLE_COL], $this->FG_DELETION_FORBIDDEN_ID)): ?>
                         <?php
                         $check = true;
-                        $condition_eval = $this->FG_DELETION_CONDITION;
-                        $check_eval = false;
-                        if (preg_match ('/col[0-9]/', $this->FG_DELETION_CONDITION)) {
-                            $check =false;
-                            for ($h = count($list[$num]); $h >= 0; $h--) {
-                                $findme = "|col$h|";
-                                if (str_contains($condition_eval, $findme)) {
-                                    $condition_eval = str_replace($findme,$list[$num][$h], $condition_eval);
-                                }
-                            }
-                            $check_eval = eval("return $condition_eval;");
-                        }
+                        $condition_eval = preg_replace_callback(
+                            "/col([0-9])/i",
+                            function ($m) use ($item, &$check) {
+                                $check = false;
+                                $tmp = str_replace("col$m[1]", $item[$m[1]], $m[0]);
+                                $check = eval("return $tmp;");
+                                return $tmp;
+                            },
+                            $this->FG_DELETION_CONDITION
+                        );
                         ?>
-                        if ($check || $check_eval): ?>
+                        <?php if ($check): ?>
                         &nbsp;
-                        <a href="<?= $this->FG_DELETION_LINK?><?= $list[$num][$this->FG_NB_TABLE_COL]?>">
-                            <img src="<?= Images_Path_Main;?>/<?= $this->FG_DELETION_IMG?>" border="0" title="<?= $this->FG_DELETE_ALT?>" alt="<?= $this->FG_DELETE_ALT?>">
+                        <a href="<?= $this->FG_DELETION_LINK?><?= $item[$this->FG_NB_TABLE_COL]?>">
+                            <img border="0" title="<?= $this->FG_DELETE_ALT?>" alt="<?= $this->FG_DELETE_ALT?>" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAIhSURBVDjLlZPrThNRFIWJicmJz6BWiYbIkYDEG0JbBiitDQgm0PuFXqSAtKXtpE2hNuoPTXwSnwtExd6w0pl2OtPlrphKLSXhx07OZM769qy19wwAGLhM1ddC184+d18QMzoq3lfsD3LZ7Y3XbE5DL6Atzuyilc5Ciyd7IHVfgNcDYTQ2tvDr5crn6uLSvX+Av2Lk36FFpSVENDe3OxDZu8apO5rROJDLo30+Nlvj5RnTlVNAKs1aCVFr7b4BPn6Cls21AWgEQlz2+Dl1h7IdA+i97A/geP65WhbmrnZZ0GIJpr6OqZqYAd5/gJpKox4Mg7pD2YoC2b0/54rJQuJZdm6Izcgma4TW1WZ0h+y8BfbyJMwBmSxkjw+VObNanp5h/adwGhaTXF4NWbLj9gEONyCmUZmd10pGgf1/vwcgOT3tUQE0DdicwIod2EmSbwsKE1P8QoDkcHPJ5YESjgBJkYQpIEZ2KEB51Y6y3ojvY+P8XEDN7uKS0w0ltA7QGCWHCxSWWpwyaCeLy0BkA7UXyyg8fIzDoWHeBaDN4tQdSvAVdU1Aok+nsNTipIEVnkywo/FHatVkBoIhnFisOBoZxcGtQd4B0GYJNZsDSiAEadUBCkstPtN3Avs2Msa+Dt9XfxoFSNYF/Bh9gP0bOqHLAm2WUF1YQskwrVFYPWkf3h1iXwbvqGfFPSGW9Eah8HSS9fuZDnS32f71m8KFY7xs/QZyu6TH2+2+FAAAAABJRU5ErkJggg==">
                         </a>
+                        <?php endif ?>
                     <?php endif ?>
                     <?php for ($b = 1; $b <= 5; $b++):
                         if (property_exists($this, "FG_OTHER_BUTTON$b")):
                             $check = true;
-                            $condition_eval = $this->{"FG_OTHER_BUTTON{$b}_CONDITION"};
-                            $check_eval = false;
-                            if (preg_match ('/col[0-9]/i', $condition_eval)) {
-                                $check = false;
-                                for ($h = count($list[$num]); $h >= 0; $h--) {
-                                    $findme = "|col$h|";
-                                    if (str_contains($condition_eval, $findme)) {
-                                        $condition_eval = str_replace($findme, $list[$num][$h], $condition_eval);
-                                    }
-                                }
-                                $check_eval = ("return $condition_eval;");
-                            }
+                            $condition_eval = preg_replace_callback(
+                                "/col([0-9])/i",
+                                function ($m) use ($item, &$check) {
+                                    $check = false;
+                                    $tmp = str_replace("col$m[1]", $item[$m[1]], $m[0]);
+                                    $check = eval("return $tmp;");
+                                    return $tmp;
+                                },
+                                $this->{"FG_OTHER_BUTTON{$b}_CONDITION"}
+                            );
                             $new_link = $this->{"FG_OTHER_BUTTON{$b}_LINK"};
-                            if ($check || $check_eval) {
+                            if ($check) {
                                 $new_link = str_replace(
                                     ["|param|", "|param1|"],
-                                    [$list[$num][$this->FG_NB_TABLE_COL], $list[$num][$this->FG_NB_TABLE_COL - 1]],
+                                    [$item[$this->FG_NB_TABLE_COL], $item[$this->FG_NB_TABLE_COL - 1]],
                                     $new_link
                                 );
                             }
-                            for ($h = count($list[$num]); $h >= 0; $h--) {
-                                $new_link = str_replace(
-                                    ["|col$h|", "|col_orig$h|"],
-                                    [$list[$num][$h], $origlist[$num][$h]],
-                                    $new_link
-                                );
-                            }
+                            $new_link = preg_replace_callback(
+                        "/\|col([0-9])\|/i",
+                                function ($m) use ($item) {
+                                    return str_replace("col$m[1]", $item[$m[1]], $m[0]);
+                                },
+                                $new_link
+                            );
                             $extra_html = "";
                             $id = $this->{"FG_OTHER_BUTTON{$b}_HTML_ID"};
                             if (!empty($id)) {
-                                for ($h = count($list[$num]); $h >= 0; $h--) {
+                                for ($h = count($item); $h >= 0; $h--) {
                                     $id = str_replace("|col$h|", $origlist[$num][$h], $id);
                                 }
                                 $extra_html .= " id='$id' ";
@@ -391,7 +385,7 @@ function openURLFilter(link) {
                             }
 
                             if (substr($new_link, -1) === "=") {
-                                $link .= $list[$num][$this->FG_NB_TABLE_COL];
+                                $new_link .= $item[$this->FG_NB_TABLE_COL];
                             }
 
                             $img = $this->{"FG_OTHER_BUTTON{$b}_IMG"};
