@@ -521,8 +521,8 @@ if (!$popup_select && $form_action == "ask-add") {
 ?>
 <center>
 <table width="70%" align="center" cellpadding="2" cellspacing="0">
-    <script language="javascript">
-    public function submitform()
+    <script>
+    function submitform()
     {
         document.cardform.submit();
     }

@@ -210,7 +210,7 @@ getpost_ifset(array('wh'));
                 <?php elseif ($VALID_SQL_REG_EXP): ?>
                     <?php $check = $list[0][$i] ?>
                 <?php else: ?>
-                    <?php $check = $processed[$row["default"]] ?>
+                    <?php $check = $row["default"] ?>
                 <?php endif ?>
                 <input
                     id="<?= $row["name"] ?>_<?= $rad[1] ?>"
