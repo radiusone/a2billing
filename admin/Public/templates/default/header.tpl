@@ -1,37 +1,32 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<HEAD>
-	<link rel="shortcut icon" href="images/ico/a2billing-icon-32x32.ico">
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="shortcut icon" href="data:image/gif;base64,R0lGODlhIAAgAOMIAA9ztTSKwUef0Gyw2I/D4rLW6s7m8/X6/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEKAAgALAAAAAAgACAAAAT+EB1Dhrg46y0GMQeCGBZnnh1Ioiw3HEQra0U5z7ZLFDHm5RtgZleobQgVk/BC5C13y2cxeYJyAIFhcakZbDOBAGCc9Ro7XCbvIsaO34WVgJj2GgRv9ztAwQbichphfwcDeW1jAgaIBQcHeG9mbQQHBYd5O3mNj5qOhgAvBpdvFZ2PARYAm5+hiIgABK+bArOrY5Sie3kDso60vrawE6NkvY+1nqQExHlwwM+FzK/Nwou4cxOQ1Hrbxd5+3WTdqNPh1OWgKp/h2syYjpW8zaix2+iJIPAGRYDL4+YA5uSbUOPeN4CDDObpALDhtg8KHTYTEOKOxIaKJEyIkbCjx48E2CREAAA7"/>
 	<title>..:: {$CCMAINTITLE} ::..</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<link href="templates/{$SKIN_NAME}/css/main.css" rel="stylesheet" type="text/css">
-	<!--[if lt IE 7]>
-		<link rel="stylesheet" type="text/css" href="templates/{$SKIN_NAME}/css/style-ie.css" />
-	<![endif]-->
-	<link href="templates/{$SKIN_NAME}/css/menu.css" rel="stylesheet" type="text/css">
-	<link href="templates/{$SKIN_NAME}/css/style-def.css" rel="stylesheet" type="text/css">
-	<link href="templates/{$SKIN_NAME}/css/invoice.css" rel="stylesheet" type="text/css">
-	<link href="templates/{$SKIN_NAME}/css/receipt.css" rel="stylesheet" type="text/css">
-	<link href="./javascript/jquery/jquery.wysiwyg.css" rel="stylesheet" type="text/css">
-	<link href="./javascript/jquery/osx.css" rel="stylesheet" type="text/css">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<link href="templates/{$SKIN_NAME}/css/main.css" rel="stylesheet" type="text/css"/>
+	<link href="templates/{$SKIN_NAME}/css/menu.css" rel="stylesheet" type="text/css"/>
+	<link href="templates/{$SKIN_NAME}/css/style-def.css" rel="stylesheet" type="text/css"/>
+	<link href="templates/{$SKIN_NAME}/css/invoice.css" rel="stylesheet" type="text/css"/>
+	<link href="templates/{$SKIN_NAME}/css/receipt.css" rel="stylesheet" type="text/css"/>
+	<link href="./javascript/jquery/jquery.wysiwyg.css" rel="stylesheet" type="text/css"/>
+	<link href="./javascript/jquery/osx.css" rel="stylesheet" type="text/css"/>
 	{if ($popupwindow != 0)}
-		<link href="templates/{$SKIN_NAME}/css/popup.css" rel="stylesheet" type="text/css">
+		<link href="templates/{$SKIN_NAME}/css/popup.css" rel="stylesheet" type="text/css"/>
  	{/if}
-	<script type="text/javascript">	
+	<script>
 		var IMAGE_PATH = "templates/{$SKIN_NAME}/images/";
 	</script>
-	<script type="text/javascript" src="./javascript/jquery/jquery.js"></script>
-	<script type="text/javascript" src="./javascript/jquery/jquery.debug.js"></script>
-	<script type="text/javascript" src="./javascript/jquery/ilogger.js"></script>
-	<script type="text/javascript" src="./javascript/jquery/handler_jquery.js"></script>
-	<script type="text/javascript" src="./javascript/jquery/jquery.wysiwyg.js"></script>
-	<script type="text/javascript" src="./javascript/jquery/jquery.simplemodal.js"></script>
-	<script type="text/javascript" src="./javascript/jquery/osx.js"></script>
-	<!--[if IE]><script type="text/javascript" src="./javascript/jquery/excanvas.pack.js"></script><![endif]-->
-    <script type="text/javascript" src="./javascript/jquery/jquery.flot.pack.js"></script>
-	<script type="text/javascript" src="./javascript/misc.js"></script>
-</HEAD>
-<BODY leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
-<div id="page-wrap">
+	<script src="./javascript/jquery/jquery.js"></script>
+	<script src="./javascript/jquery/jquery.debug.js"></script>
+	<script src="./javascript/jquery/ilogger.js"></script>
+	<script src="./javascript/jquery/handler_jquery.js"></script>
+	<script src="./javascript/jquery/jquery.wysiwyg.js"></script>
+	<script src="./javascript/jquery/jquery.simplemodal.js"></script>
+	<script src="./javascript/jquery/osx.js"></script>
+    <script src="./javascript/jquery/jquery.flot.pack.js"></script>
+	<script src="./javascript/misc.js"></script>
+</head>
+<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+	<div id="page-wrap">
 		<div id="inside">
