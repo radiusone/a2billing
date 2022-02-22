@@ -189,7 +189,7 @@ use A2billing\Table;
                                             selected="selected"
                                         <?php endif ?>
                                     <?php else: ?>
-                                        <?php if ($list[0][$i] === $option[1]): ?>
+                                        <?php if ($list[0][$i] == $option[1]): ?>
                                             selected="selected"
                                         <?php endif ?>
                                     <?php endif ?>
@@ -199,7 +199,7 @@ use A2billing\Table;
                                             selected="selected"
                                         <?php endif ?>
                                     <?php else: ?>
-                                        <?php if ($processed[$row["name"]] === $option[1]): ?>
+                                        <?php if ($processed[$row["name"]] == $option[1]): ?>
                                             selected="selected"
                                         <?php endif ?>
                                     <?php endif ?>
@@ -237,7 +237,7 @@ use A2billing\Table;
                         type="radio"
                         name="<?= $row["name"] ?>"
                         value="<?= $rad[1] ?>"
-                        <?php if ($check === $rad[1]): ?>checked<?php endif ?>
+                        <?php if ($check == $rad[1]): ?>checked="checked"<?php endif ?>
                     />
                     <label for="<?= $row["name"] ?>_<?= $rad[1] ?>" class="form-check-label"><?= $rad[0] ?></label>
                 </div>
