@@ -394,14 +394,14 @@
 					</button>
 					<div class="collapse" id="language-collapse">
 						<ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-							<li><a class="dark-link rounded" href="PP_intro.php?ui_language=english">🇬🇧 English</a></li>
-							<li><a class="dark-link rounded" href="PP_intro.php?ui_language=brazilian">🇧🇷 Brazilian</a></li>
-							<li><a class="dark-link rounded" href="PP_intro.php?ui_language=romanian">🇷🇴 Romanian</a></li>
-							<li><a class="dark-link rounded" href="PP_intro.php?ui_language=french">🇫🇷 French</a></li>
-							<li><a class="dark-link rounded" href="PP_intro.php?ui_language=spanish">🇪🇸 Spanish</a></li>
-							<li><a class="dark-link rounded" href="PP_intro.php?ui_language=greek">🇬🇷 Greek</a></li>
-							<li><a class="dark-link rounded" href="PP_intro.php?ui_language=italian">🇮🇹 Italian</a></li>
-							<li><a class="dark-link rounded" href="PP_intro.php?ui_language=chinese">🇨🇳 Chinese</a></li>
+							<li><a class="link-dark rounded" href="PP_intro.php?ui_language=english">🇬🇧 English</a></li>
+							<li><a class="link-dark rounded" href="PP_intro.php?ui_language=brazilian">🇧🇷 Brazilian</a></li>
+							<li><a class="link-dark rounded" href="PP_intro.php?ui_language=romanian">🇷🇴 Romanian</a></li>
+							<li><a class="link-dark rounded" href="PP_intro.php?ui_language=french">🇫🇷 French</a></li>
+							<li><a class="link-dark rounded" href="PP_intro.php?ui_language=spanish">🇪🇸 Spanish</a></li>
+							<li><a class="link-dark rounded" href="PP_intro.php?ui_language=greek">🇬🇷 Greek</a></li>
+							<li><a class="link-dark rounded" href="PP_intro.php?ui_language=italian">🇮🇹 Italian</a></li>
+							<li><a class="link-dark rounded" href="PP_intro.php?ui_language=chinese">🇨🇳 Chinese</a></li>
 						</ul>
 					</div>
 				</li>
