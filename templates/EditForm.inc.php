@@ -271,8 +271,8 @@ use A2billing\Table;
                     <div class="col">
                         <strong><?= $row["label"] ?> <?= gettext("List") ?></strong><br/>
                         <?php $options = (new Table($table[2], $table[3]))->get_list($this->DBHandle, str_replace("%id", $processed["id"], $table[4]))?>
+                        <ul class="list-group">
                         <?php if (is_array($options) && count($options)): ?>
-                            <ul class="list-group">
                             <?php foreach ($options as $k=>$option): ?>
                                 <?php if (is_numeric($table[7])): ?>
                                     <?php $newopts = (new Table($option[$table[7]], $table[11]))->get_list($this->DBHandle, str_replace("%1", $option[$table[7]], $table[11]))?>
@@ -292,19 +292,18 @@ use A2billing\Table;
                                     </button>
                                 </li>
                                 <?php endforeach ?>
-                            </ul>
                         <?php else: ?>
-                            <?= gettext("No") ?> <?= $row["label"] ?>
+                            <li class="list-group-item"><?= gettext("No") ?> <?= $row["label"] ?></li>
                         <?php endif ?>
+                        </ul>
                     </div>
                 </div>
                 <div class="row mb-3">
                     <?php /* *******************   Select to ADD new instances  ****************************** */ ?>
-                    <div class="col-3">&nbsp;</div>
-                    <div class="col">
+                    <div class="col-9 offset-3">
                         <label for="<?= $table[1] ?>_ADD" class="form-label"><?= gettext("Add a new") ?> <?= $row["label"] ?></label>
                         <input name="<?= $table[1] ?>_hidden" type="hidden" value=""/>
-                        <select id="<?= $table[1] ?>_ADD" name="<?= $table[1] ?>[]" <?= $row["attributes"] ?> class="form-select">
+                        <select id="<?= $table[1] ?>_ADD" name="<?= $table[1] ?>[]" <?= $row["attributes"] ?> class="form-select form-control-sm">
                             <?php $options = (new Table($table[2], $table[3]))->get_list($this->DBHandle, $table[15], $table[13], $table[14])?>
                             <?php if (is_array($options) && count($options)): ?>
                                 <?php foreach ($options as $option): ?>
@@ -401,8 +400,7 @@ use A2billing\Table;
                 </div>
                 <div class="row mb-3">
                     <?php /* ******************   Select to ADD new instances  ***************************** */ ?>
-                    <div class="col-3">&nbsp;</div>
-                    <div class="col">
+                    <div class="col-9 offset-3">
                         <table width="300" height="50" border="0" align="center" cellpadding="0" cellspacing="0">
                             <tr>
                                 <td bgcolor="#7f99cc" colspan="3" height="16" style="padding-left: 5px; padding-right: 5px;" class="form_head">
@@ -469,8 +467,8 @@ use A2billing\Table;
                     <div class="col">
                         <strong><?= $row["label"] ?> <?= gettext("List") ?></strong><br/>
                         <?php $options = (new Table($table[0], $table[2]))->get_list($this->DBHandle, str_replace("%id", $processed["id"], $table[3]))?>
+                        <ul class="list-group">
                         <?php if (is_array($options) && count($options)): ?>
-                            <ul class="list-group">
                             <?php foreach ($options as $k=>$option): ?>
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <?php if (!empty($option[$table[7]])): ?>( <?= $option[$table[7]] ?> )<?php endif ?>
@@ -486,21 +484,20 @@ use A2billing\Table;
                                     </button>
                                 </li>
                             <?php endforeach ?>
-                            </ul>
                         <?php else: ?>
-                            <?= gettext("No") ?> <?= $row["label"] ?>
+                            <li class="list-group-item"><?= gettext("No") ?> <?= $row["label"] ?></li>
                         <?php endif ?>
+                        </ul>
                     </div>
                 </div>
                 <div class="row mb-3">
                     <?php /* ******************   Select to ADD new instances  ***************************** */ ?>
-                    <div class="col-3">&nbsp;</div>
-                    <div class="col">
+                    <div class="col-9 offset-3">
                         <label for="<?= $table[1] ?>_ADD" class="form-label"><?= gettext("Add a new") ?> <?= $row["label"] ?></label>
                         <?php if (($row["attributes"] == "multiline")): ?>
-                            <textarea id="<?= $table[1] ?>_ADD" name="<?= $col[1] ?>" class="form-control-sm" cols="40" rows="5"></textarea>
+                            <textarea id="<?= $table[1] ?>_ADD" name="<?= $col[1] ?>" class="form-control form-control-sm" cols="40" rows="5"></textarea>
                         <?php else: ?>
-                            <input id="<?= $table[1] ?>_ADD" name="<?= $col[1] ?>" class="form-control-sm" size="20" maxlength="20"/>
+                            <input id="<?= $table[1] ?>_ADD" name="<?= $col[1] ?>" class="form-control form-control-sm" size="20" maxlength="20"/>
                         <?php endif ?>
                         <button class="btn btn-sm btn-primary" onclick="sendto('add-content', '<?= $i ?>')">
                             <?= gettext("Add") ?> <?= $row["label"] ?>
