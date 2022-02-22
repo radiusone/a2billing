@@ -71,12 +71,12 @@ use A2billing\Table;
 
             <?php if (!str_contains($row["custom_query"], ":")): // SQL CUSTOM QUERY ?>
             <div class="row mb-3">
-                <label for="<?= $row["name"] ?>" class="col-2 col-lg-1 col-form-label">
+                <label for="<?= $row["name"] ?>" class="col-3 col-form-label">
                     <?php if (isset($this->FG_fit_expression[$i]) && !$this->FG_fit_expression[$i]): ?><span class="form_head_red"><?php endif?>
                     <?= $row["label"] ?>
                     <?php if (isset($this->FG_fit_expression[$i]) && !$this->FG_fit_expression[$i]): ?></span><?php endif?>
                 </label>
-                <div class="col-10 col-lg-11">
+                <div class="col">
 
                 <?php if ($this->FG_DISPLAY_SELECT && !empty($list[0][$this->FG_SELECT_FIELDNAME]) && $this->FG_CONF_VALUE_FIELDNAME === $row["name"]): ?>
                     <select id="<?= $row["name"] ?>" name="<?= $row["name"] ?>" class="form-select">
@@ -268,10 +268,10 @@ use A2billing\Table;
 
                 <?php if ($row["type"] === "SELECT"): ?>
                 <div class="row mb-3">
-                    <div class="col-2 col-lg-1">
+                    <div class="col-3">
                         <?= $row["label"] ?>
                     </div>
-                    <div class="col-10 col-lg-11">
+                    <div class="col">
                         <table class="editform_table2" cellspacing="0">
                             <tr class="editform_table2_td1">
                                 <td height="16" style="padding-left: 5px; padding-right: 3px" class="form_head">
@@ -336,8 +336,8 @@ use A2billing\Table;
                 </div>
                 <div class="row mb-3">
                     <?php /* *******************   Select to ADD new instances  ****************************** */ ?>
-                    <div class="col-2 col-lg-1">&nbsp;</div>
-                    <div class="col-10 col-lg-11">
+                    <div class="col-3">&nbsp;</div>
+                    <div class="col">
                         <table width="300" height="50" border="0" align="center" cellpadding="0" cellspacing="0">
                             <tr>
                                 <td bgcolor="#7f99cc" colspan="3" height="16" class="form_head" style="padding-left: 5px; padding-right: 5px">
@@ -411,8 +411,8 @@ use A2billing\Table;
 
                 <?php elseif ($row["type"] === "INSERT"): ?>
                 <div class="row mb-3">
-                    <div class="col-2 col-lg-1"><?= $row["label"] ?></div>
-                    <div class="col-10 col-lg-11">
+                    <div class="col-3"><?= $row["label"] ?></div>
+                    <div class="col">
                         <table cellspacing="0" class="editform_table2">
                             <tr bgcolor="#fff">
                                 <td height="16" style="padding-left: 5px; padding-right: 3px;" class="form_head">
@@ -478,8 +478,8 @@ use A2billing\Table;
                 </div>
                 <div class="row mb-3">
                     <?php /* ******************   Select to ADD new instances  ***************************** */ ?>
-                    <div class="col-2 col-lg-1">&nbsp;</div>
-                    <div class="col-10 col-lg-11">
+                    <div class="col-3">&nbsp;</div>
+                    <div class="col">
                         <table width="300" height="50" border="0" align="center" cellpadding="0" cellspacing="0">
                             <tr>
                                 <td bgcolor="#7f99cc" colspan="3" height="16" style="padding-left: 5px; padding-right: 5px;" class="form_head">
@@ -542,8 +542,8 @@ use A2billing\Table;
                 <?php elseif ($row["type"] === "HAS_MANY"): ?>
                     <?php $col = explode(",", $table[2]) ?>
                 <div class="row mb-3">
-                    <div class="col-2 col-lg-1"><?= $row["label"] ?></div>
-                    <div class="col-10 col-lg-11">
+                    <div class="col-3"><?= $row["label"] ?></div>
+                    <div class="col">
                         <table cellspacing="0" class="editform_table2">
                             <tr bgcolor="#fff">
                                 <td height="16" style="padding-left: 5px; padding-right: 3px;" class="form_head">
@@ -609,8 +609,8 @@ use A2billing\Table;
                 </div>
                 <div>
                     <?php /* ******************   Select to ADD new instances  ***************************** */ ?>
-                    <div class="col-2 col-lg-1">&nbsp;</div>
-                    <div class="col-10 col-lg-11">
+                    <div class="col-3">&nbsp;</div>
+                    <div class="col">
                         <table width="300" height="50" border="0" align="center" cellpadding="0" cellspacing="0">
                             <tr>
                                 <td bgcolor="#7f99cc" colspan="3" height="16" style="padding-left: 5px; padding-right: 5px;" class="form_head">
@@ -672,8 +672,8 @@ use A2billing\Table;
 
                 <?php elseif ($row["type"] === "CHECKBOX"): ?>
                 <div class="row mb-3">
-                    <div class="col-2 col-lg-1"><?= $row["label"] ?></div>
-                    <div class="col-10 col-lg-11">
+                    <div class="col-3"><?= $row["label"] ?></div>
+                    <div class="col">
                         <?php $options = (new Table($table[2], $table[3]))->get_list($this->DBHandle, str_replace("%id", $processed["id"], $table[4]))?>
                         <?php $table[12] = str_replace("%id", $processed["id"], $table[12]) ?>
                         <?php $options2 = (new Table($table[2], $table[3]))->get_list($this->DBHandle, $table[12])?>
