@@ -61,69 +61,47 @@ use A2billing\Table;
         <?php endforeach ?>
     <?php endif ?>
 
-    <table class="editform_table1" cellspacing="2">
-        <tbody>
         <?php foreach ($this->FG_TABLE_EDITION as $i=>$row): ?>
             <?php $options = null ?>
             <?php if (strlen($row["section_name"]) > 1): ?>
-                <tr>
-                    <td width="25%" valign="top" bgcolor="#fefeee" colspan="2" class="tableBodyRight">
-                        <i><?= $row["section_name"] ?></i>
-                    </td>
-                </tr>
+            <div class="row mb-3">
+                <h3><?= $row["section_name"] ?></h3>
+            </div>
             <?php endif ?>
 
             <?php if (!str_contains($row["custom_query"], ":")): // SQL CUSTOM QUERY ?>
-                <tr>
-                    <td
-                        width="25%"
-                        valign="middle"
-                        <?php if (isset($this->FG_fit_expression[$i]) && !$this->FG_fit_expression[$i]): ?>
-                            class="form_head_red"
-                        <?php else: ?>
-                            class="form_head"
-                        <?php endif ?>
-                    >
-                        <label for="<?= $row["name"] ?>"><?= $row["label"] ?></label>
-                    </td>
-                    <td
-                        width="75%"
-                        valign="top"
-                        class="tableBodyRight"
-                        <?php if (isset($this->FG_fit_expression[$i]) && !$this->FG_fit_expression[$i]): ?>
-                            style="background:url('data:image/gif;base64,R0lGODlhBQB6AKUlAPLi3vLi3/Pj3/Tj3/Tj4PTk4fXk4vTl4fXl4vXl4/bm4/bm5Pbn5Pfn5Pfo5fjo5fjo5vjo5/jo6Pno6Pjp6Pnq6Pnq6frq6Pvq6fvq6vvr6vzr6vzs6/3s7Pzt7P3t7P3t7f7t7f3u7v7u7f7u7v///////////////////////////////////////////////////////////////////////////////////////////////////////////yH5BAEAAD8ALAAAAAAFAHoAAAaRQIBwSCwWA0ikYMlsOgdQKGFKrRau14NWa+h2EeCwOEEmK87oNGO9XrjdjXjcQac/7neIfs+P+P+AEoKCE4WFFIiIFYuLF46OFpGRGJSUGZeXGpqaG52dm5ocoqOkHaamH6mpHqysIK+vIbKysK8it7i5I7u7JL6/wMHCw8TFxsfIycrLzM3Oz9DR0tPU1dbFQQA7')"
-                        <?php else: ?>
-                            style="background:url('data:image/gif;base64,R0lGODlhBQB6AKUBAAAAAP////7///3+/fr7+vr7+fn6+Pj59vf49fb39PT18fPz7/Ly7vj49ff39Pb28/X18vT08fLy7/v7+fn59/j49vb29PX18////v7+/f39/Pz8+/n5+PTz7/Tz8PX08v38+/z7+vr5+Pn49//+/v79/fz7+/7+/v///////////////////////////////////////////////////////////////////////////////////////////////yH5BAEAAD8ALAAAAAAFAHoAAAaVQIZwSCwWJUjkYslsOjtQqGdKrUauV4VW++l2IeCw+EImP87odGK9trjdjngcQac37veKXn/o90eAgBSDgxyGhiKJiQaMjAWPjxOSkgSVlSGYmCabmxueniChoZ+eGqanqCWqqhmtrQOwsCezsyS2trSzAru8vRi/vwHCw8TFxsfIycrLzM3Oz9DR0tPU1dbX2NnayUEAOw==')"
-                        <?php endif ?>
-                    >
-                <?php if ($this->FG_DEBUG == 1): ?>
-                    <?= $row["type"] ?>
-                <?php endif ?>
+            <div class="row mb-3">
+                <label for="<?= $row["name"] ?>" class="col-2 col-lg-1 col-form-label">
+                    <?php if (isset($this->FG_fit_expression[$i]) && !$this->FG_fit_expression[$i]): ?><span class="form_head_red"><?php endif?>
+                    <?= $row["label"] ?>
+                    <?php if (isset($this->FG_fit_expression[$i]) && !$this->FG_fit_expression[$i]): ?></span><?php endif?>
+                </label>
+                <div class="col-10 col-lg-11">
 
                 <?php if ($this->FG_DISPLAY_SELECT && !empty($list[0][$this->FG_SELECT_FIELDNAME]) && $this->FG_CONF_VALUE_FIELDNAME === $row["name"]): ?>
-                        <select id="<?= $row["name"] ?>" name="<?= $row["name"] ?>" class="form_input_select">
-                            <?php $vals = explode(",", $list[0][$this->FG_SELECT_FIELDNAME]) ?>
-                            <?php foreach ($vals as $val): ?>
-                                <option <?php if ($val == $list[0][$i]): ?>selected<?php endif ?>><?= $val ?></option>
-                            <?php endforeach ?>
-                        </select>
+                    <select id="<?= $row["name"] ?>" name="<?= $row["name"] ?>" class="form-select">
+                        <?php $vals = explode(",", $list[0][$this->FG_SELECT_FIELDNAME]) ?>
+                        <?php foreach ($vals as $val): ?>
+                            <option <?php if ($val == $list[0][$i]): ?>selected="selected"<?php endif ?>><?= $val ?></option>
+                        <?php endforeach ?>
+                    </select>
 
                 <?php elseif ($row["type"] === "INPUT"): ?>
-                        <?php if (!empty($row["custom_function"])): ?>
-                            <?php $list[0][$i] = call_user_func($row["custom_function"], $list[0][$i]) ?>
+                    <?php if (!empty($row["custom_function"])): ?>
+                        <?php $list[0][$i] = call_user_func($row["custom_function"], $list[0][$i]) ?>
+                    <?php endif ?>
+                    <input
+                        id="<?= $row["name"] ?>"
+                        class="form-control"
+                        name="<?= $row["name"] ?>"
+                        <?= $row["attributes"] ?>
+                        <?php if ($this->VALID_SQL_REG_EXP): ?>
+                            value="<?= $list[0][$i] ?>"
+                        <?php else: ?>
+                            value="<?= $processed[$row["name"]] ?>"
                         <?php endif ?>
-                        <input
-                            id="<?= $row["name"] ?>"
-                            class="form_input_text"
-                            name="<?= $row["name"] ?>"
-                            <?= $row["attributes"] ?>
-                            <?php if ($this->VALID_SQL_REG_EXP): ?>
-                                value="<?= $list[0][$i] ?>"
-                            <?php else: ?>
-                                value="<?= $processed[$row["name"]] ?>"
-                            <?php endif ?>
-                            <?php if (str_icontains($row["attributes"], "readonly")): ?>style="background-color: #ccc"<?php endif ?>
-                        />
+                        <?php if (str_icontains($row["attributes"], "readonly")): ?>style="background-color: #ccc"<?php endif ?>
+                    />
 
                 <?php elseif ($row["type"] === "LABEL"): ?>
                             <?php if (!empty($row["custom_function"])): ?>
@@ -136,17 +114,17 @@ use A2billing\Table;
                             <?php endif ?>
 
                 <?php elseif (str_starts_with($row["type"], "POPUP")): ?>
-                        <input
-                            id="<?= $row["name"] ?>"
-                            class="form_enter"
-                            name="<?= $row["name"] ?>"
-                            <?= $row["attributes"] ?>
-                            <?php if ($this->VALID_SQL_REG_EXP): ?>
-                                value="<?= $list[0][$i] ?>"
-                            <?php else: ?>
-                                value="<?= $processed[$row["name"]] ?>"
-                            <?php endif ?>
-                        />
+                    <input
+                        id="<?= $row["name"] ?>"
+                        class="form-control"
+                        name="<?= $row["name"] ?>"
+                        <?= $row["attributes"] ?>
+                        <?php if ($this->VALID_SQL_REG_EXP): ?>
+                            value="<?= $list[0][$i] ?>"
+                        <?php else: ?>
+                            value="<?= $processed[$row["name"]] ?>"
+                        <?php endif ?>
+                    />
                     <?php if ($row["type"] === "POPUPVALUE"): ?>
                         <a href="#" title="<?= gettext("SELECT")?>" onclick="window.open('<?= $row["popup_dest"] ?>popup_formname=myForm&popup_fieldname=<?= $row["name"] ?>', <?= $row["popup_params"] ?>)">
                             <img alt="" src="data:image/gif;base64,R0lGODlhDwAPAMQYAP+yPf+fEv+qLP+3Tf+pKv++Xf/Gcv+mJP+tNf+tMf+kH/+/YP+oJv+wO/+jHP/Ohf/WmP+vOv/cpv+kHf+iGf+jG/////Hw7P///wAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAABgALAAAAAAPAA8AAAVjIHaNZEmKF6auLJpiEvQYxQAgiTpiMm0Tk4pigsLMag2Co8KkFA0Lm8XCbBajDcFkWnXuBlkFk1vxpgACcYVcLqbHVKaDuFNXqwxGkUK5VyYMEQhFGAGGhxQHOS4tjTsmkDshADs="/>
@@ -170,28 +148,28 @@ use A2billing\Table;
                     <?php endif ?>
 
                 <?php elseif ($row["type"] === "TEXTAREA"): ?>
-                        <texarea
-                            id="<?= $row["name"] ?>"
-                            class="form_input_textarea"
-                            name="<?= $row["name"] ?>"
-                            <?= $row["attributes"] ?>
-                            <?php if (str_icontains($row["attributes"], "readonly")): ?>style="background-color: #ccc"<?php endif ?>
-                        >
-                            <?php if ($this->VALID_SQL_REG_EXP): ?>
-                                <?= $list[0][$i] ?>
-                            <?php else: ?>
-                                <?= $processed[$row["name"]] ?>
-                            <?php endif ?>
-                        </texarea>
+                    <texarea
+                        id="<?= $row["name"] ?>"
+                        class="form-control"
+                        name="<?= $row["name"] ?>"
+                        <?= $row["attributes"] ?>
+                        <?php if (str_icontains($row["attributes"], "readonly")): ?>style="background-color: #ccc"<?php endif ?>
+                    >
+                        <?php if ($this->VALID_SQL_REG_EXP): ?>
+                            <?= $list[0][$i] ?>
+                        <?php else: ?>
+                            <?= $processed[$row["name"]] ?>
+                        <?php endif ?>
+                    </texarea>
 
                 <?php elseif ($row["type"] === "SPAN"): ?>
-                        <span id="<?= $row["name"] ?>" name="<?= $row["name"] ?>" <?= $row["attributes"] ?>>
+                    <span id="<?= $row["name"] ?>" name="<?= $row["name"] ?>" <?= $row["attributes"] ?>>
                     <?php if ($this->VALID_SQL_REG_EXP): ?>
                         <?= $list[0][$i] ?>
                     <?php else: ?>
                         <?= $processed[$row["name"]] ?>
                     <?php endif ?>
-                        </span>
+                    </span>
 
                 <?php elseif ($row["type"] === "SELECT"): ?>
                     <?php if ($row["select_type"] === "SQL"): ?>
@@ -202,60 +180,60 @@ use A2billing\Table;
                     <?php if ($this->FG_DEBUG >= 2): ?>
                         <br/><?php print_r($options)?><br/><?php print_r($list)?><br/>#<?= $i ?>::><?= $this->VALID_SQL_REG_EXP ?><br/><br/>::><?= $list[0][$i] ?><br/><br/>::><?= $row["name"] ?>
                     <?php endif ?>
-                        <select
-                            id="<?= $row["name"] ?>"
-                            name="<?= $row["name"] ?><?php if (str_icontains($row["attributes"], "multiple")): ?>[]<?php endif ?>"
-                            class="form_input_select"
-                            <?= $row["attributes"] ?>
-                        >
-                            <?= $row["first_option"] ?>
-                            <?php if (is_array($options) && count($options)): ?>
-                                <?php foreach ($options as $option): ?>
-                                    <option
-                                            value="<?= $option[1] ?>"
-                                        <?php if ($this->VALID_SQL_REG_EXP): ?>
-                                            <?php if (str_icontains($row["attributes"], "multiple")): ?>
-                                                <?php if (intval($option[1]) & intval($list[0][$i])): ?>
-                                                    selected
-                                                <?php endif ?>
-                                            <?php else: ?>
-                                                <?php if ($list[0][$i] === $option[1]): ?>
-                                                    selected
-                                                <?php endif ?>
+                    <select
+                        id="<?= $row["name"] ?>"
+                        name="<?= $row["name"] ?><?php if (str_icontains($row["attributes"], "multiple")): ?>[]<?php endif ?>"
+                        class="form-select"
+                        <?= $row["attributes"] ?>
+                    >
+                        <?= $row["first_option"] ?>
+                        <?php if (is_array($options) && count($options)): ?>
+                            <?php foreach ($options as $option): ?>
+                                <option
+                                        value="<?= $option[1] ?>"
+                                    <?php if ($this->VALID_SQL_REG_EXP): ?>
+                                        <?php if (str_icontains($row["attributes"], "multiple")): ?>
+                                            <?php if (intval($option[1]) & intval($list[0][$i])): ?>
+                                                selected="selected"
                                             <?php endif ?>
                                         <?php else: ?>
-                                            <?php if (str_icontains($row["attributes"], "multiple")): ?>
-                                                <?php if (is_array($processed[$row["name"]]) && (intval($option[1]) & array_sum($processed[$row["name"]]))): ?>
-                                                    selected
-                                                <?php endif ?>
-                                            <?php else: ?>
-                                                <?php if ($processed[$row["name"]] === $option[1]): ?>
-                                                    selected
-                                                <?php endif ?>
+                                            <?php if ($list[0][$i] === $option[1]): ?>
+                                                selected="selected"
                                             <?php endif ?>
                                         <?php endif ?>
-                                    >
-                                        <?php if ($row["select_format"] === ""): ?>
-                                            <?= $option[0] ?>
+                                    <?php else: ?>
+                                        <?php if (str_icontains($row["attributes"], "multiple")): ?>
+                                            <?php if (is_array($processed[$row["name"]]) && (intval($option[1]) & array_sum($processed[$row["name"]]))): ?>
+                                                selected="selected"
+                                            <?php endif ?>
                                         <?php else: ?>
-                                            <?php $val = $row["select_format"] ?>
-                                            <?php for ($k = 1; $k <= count($option); $k++): ?>
-                                                <?php $val = str_replace("%$k", $option[$k -1], $val) ?>
-                                            <?php endfor ?>
-                                            <?= $val ?>
+                                            <?php if ($processed[$row["name"]] === $option[1]): ?>
+                                                selected="selected"
+                                            <?php endif ?>
                                         <?php endif ?>
-                                    </option>
-                                <?php endforeach ?>
-                            <?php else: ?>
-                                <option value=""><?= gettext("No data found!!!") ?></option>
-                            <?php endif ?>
-                        </select>
+                                    <?php endif ?>
+                                >
+                                    <?php if ($row["select_format"] === ""): ?>
+                                        <?= $option[0] ?>
+                                    <?php else: ?>
+                                        <?php $val = $row["select_format"] ?>
+                                        <?php for ($k = 1; $k <= count($option); $k++): ?>
+                                            <?php $val = str_replace("%$k", $option[$k -1], $val) ?>
+                                        <?php endfor ?>
+                                        <?= $val ?>
+                                    <?php endif ?>
+                                </option>
+                            <?php endforeach ?>
+                        <?php else: ?>
+                            <option value=""><?= gettext("No data found!!!") ?></option>
+                        <?php endif ?>
+                    </select>
 
                 <?php elseif ($row["type"] === "RADIOBUTTON"): ?>
                     <?php $vals = explode(",", $row["radio_options"]) ?>
                     <?php foreach ($vals as $v): ?>
+                    <div class="form-check">
                         <?php $rad = explode(":", $v) ?>
-                        <label for="<?= $row["name"] ?>_<?= $rad[1] ?>"><?= $rad[0] ?></label>
                         <?php if ($this->VALID_SQL_REG_EXP): ?>
                             <?php $check = $list[0][$i] ?>
                         <?php else: ?>
@@ -263,33 +241,37 @@ use A2billing\Table;
                         <?php endif ?>
                         <input
                             id="<?= $row["name"] ?>_<?= $rad[1] ?>"
-                            class="form_enter"
+                            class="form-check-input"
                             type="radio"
                             name="<?= $row["name"] ?>"
                             value="<?= $rad[1] ?>"
                             <?php if ($check === $rad[1]): ?>checked<?php endif ?>
                         />
+                        <label for="<?= $row["name"] ?>_<?= $rad[1] ?>" class="form-check-label"><?= $rad[0] ?></label>
+                    </div>
                     <?php endforeach ?>
                 <?php endif ?>
-                        <span class="liens">
-                            <?php if (isset($this->FG_fit_expression[$i]) && !$this->FG_fit_expression[$i]): ?>
-                                <br/><?= $row["error"] ?> - <?= $row["regex"][1] ?>
-                            <?php endif ?>
-                        </span>
-                        <?php if (!empty($this->FG_TABLE_COMMENT[$i])): ?>
-                            <br/><?= $this->FG_TABLE_COMMENT[$i] ?>
+                        <?php if ($this->FG_DEBUG == 1): ?>
+                            <div class="form-text"><?= $row["type"] ?></div>
                         <?php endif ?>
-                    </td>
-                </tr>
+                        <?php if (isset($this->FG_fit_expression[$i]) && !$this->FG_fit_expression[$i]): ?>
+                            <div class="form-text"><?= $row["error"] ?> - <?= $row["regex"][1] ?></div>
+                        <?php endif ?>
+                        <?php if (!empty($this->FG_TABLE_COMMENT[$i])): ?>
+                            <div class="form-text"><?= $this->FG_TABLE_COMMENT[$i] ?></div>
+                        <?php endif ?>
+                    </div>
+                </div>
 
             <?php elseif (str_contains($row["custom_query"], ":")): ?>
                 <?php $table = explode(":", $row["custom_query"]) ?>
 
                 <?php if ($row["type"] === "SELECT"): ?>
-                <tr>
-                    <td width="122" class="form_head"><?= $row["label"] ?></td>
-                    <td align="center" valign="top" class="editform_table1_td1">
-                        <br/>
+                <div class="row mb-3">
+                    <div class="col-2 col-lg-1">
+                        <?= $row["label"] ?>
+                    </div>
+                    <div class="col-10 col-lg-11">
                         <table class="editform_table2" cellspacing="0">
                             <tr class="editform_table2_td1">
                                 <td height="16" style="padding-left: 5px; padding-right: 3px" class="form_head">
@@ -350,13 +332,12 @@ use A2billing\Table;
                             </tr>
                         </table>
                         <br/>
-                    </td>
-                </tr>
-                <tr>
+                    </div>
+                </div>
+                <div class="row mb-3">
                     <?php /* *******************   Select to ADD new instances  ****************************** */ ?>
-                    <td class="form_head">&nbsp;</td>
-                    <td align="center" valign="top" class="text" style="background:url('data:image/gif;base64,R0lGODlhBQB6AKUBAAAAAP////7///3+/fr7+vr7+fn6+Pj59vf49fb39PT18fPz7/Ly7vj49ff39Pb28/X18vT08fLy7/v7+fn59/j49vb29PX18////v7+/f39/Pz8+/n5+PTz7/Tz8PX08v38+/z7+vr5+Pn49//+/v79/fz7+/7+/v///////////////////////////////////////////////////////////////////////////////////////////////yH5BAEAAD8ALAAAAAAFAHoAAAaVQIZwSCwWJUjkYslsOjtQqGdKrUauV4VW++l2IeCw+EImP87odGK9trjdjngcQac37veKXn/o90eAgBSDgxyGhiKJiQaMjAWPjxOSkgSVlSGYmCabmxueniChoZ+eGqanqCWqqhmtrQOwsCezsyS2trSzAru8vRi/vwHCw8TFxsfIycrLzM3Oz9DR0tPU1dbX2NnayUEAOw==')">
-                        <br/>
+                    <div class="col-2 col-lg-1">&nbsp;</div>
+                    <div class="col-10 col-lg-11">
                         <table width="300" height="50" border="0" align="center" cellpadding="0" cellspacing="0">
                             <tr>
                                 <td bgcolor="#7f99cc" colspan="3" height="16" class="form_head" style="padding-left: 5px; padding-right: 5px">
@@ -425,14 +406,13 @@ use A2billing\Table;
                                 </td>
                             </tr>
                         </table>
-                    </td>
-                </tr>
+                    </div>
+                </div>
 
                 <?php elseif ($row["type"] === "INSERT"): ?>
-                <tr>
-                    <td width="122" class="form_head"><?= $row["label"] ?></td>
-                    <td align="center" valign="top" style="background:url('data:image/gif;base64,R0lGODlhBQB6AKUBAAAAAP////7///3+/fr7+vr7+fn6+Pj59vf49fb39PT18fPz7/Ly7vj49ff39Pb28/X18vT08fLy7/v7+fn59/j49vb29PX18////v7+/f39/Pz8+/n5+PTz7/Tz8PX08v38+/z7+vr5+Pn49//+/v79/fz7+/7+/v///////////////////////////////////////////////////////////////////////////////////////////////yH5BAEAAD8ALAAAAAAFAHoAAAaVQIZwSCwWJUjkYslsOjtQqGdKrUauV4VW++l2IeCw+EImP87odGK9trjdjngcQac37veKXn/o90eAgBSDgxyGhiKJiQaMjAWPjxOSkgSVlSGYmCabmxueniChoZ+eGqanqCWqqhmtrQOwsCezsyS2trSzAru8vRi/vwHCw8TFxsfIycrLzM3Oz9DR0tPU1dbX2NnayUEAOw==')" class="text">
-                        <br/>
+                <div class="row mb-3">
+                    <div class="col-2 col-lg-1"><?= $row["label"] ?></div>
+                    <div class="col-10 col-lg-11">
                         <table cellspacing="0" class="editform_table2">
                             <tr bgcolor="#fff">
                                 <td height="16" style="padding-left: 5px; padding-right: 3px;" class="form_head">
@@ -494,13 +474,12 @@ use A2billing\Table;
                             </tr>
                         </table>
                         <br/>
-                    </td>
-                </tr>
-                <tr>
+                    </div>
+                </div>
+                <div class="row mb-3">
                     <?php /* ******************   Select to ADD new instances  ***************************** */ ?>
-                    <td class="form_head">&nbsp;</td>
-                    <td align="center" valign="top" style="background:url('data:image/gif;base64,R0lGODlhBQB6AKUBAAAAAP////7///3+/fr7+vr7+fn6+Pj59vf49fb39PT18fPz7/Ly7vj49ff39Pb28/X18vT08fLy7/v7+fn59/j49vb29PX18////v7+/f39/Pz8+/n5+PTz7/Tz8PX08v38+/z7+vr5+Pn49//+/v79/fz7+/7+/v///////////////////////////////////////////////////////////////////////////////////////////////yH5BAEAAD8ALAAAAAAFAHoAAAaVQIZwSCwWJUjkYslsOjtQqGdKrUauV4VW++l2IeCw+EImP87odGK9trjdjngcQac37veKXn/o90eAgBSDgxyGhiKJiQaMjAWPjxOSkgSVlSGYmCabmxueniChoZ+eGqanqCWqqhmtrQOwsCezsyS2trSzAru8vRi/vwHCw8TFxsfIycrLzM3Oz9DR0tPU1dbX2NnayUEAOw==')" class="text">
-                        <br/>
+                    <div class="col-2 col-lg-1">&nbsp;</div>
+                    <div class="col-10 col-lg-11">
                         <table width="300" height="50" border="0" align="center" cellpadding="0" cellspacing="0">
                             <tr>
                                 <td bgcolor="#7f99cc" colspan="3" height="16" style="padding-left: 5px; padding-right: 5px;" class="form_head">
@@ -557,15 +536,14 @@ use A2billing\Table;
                             </tr>
                         </table>
                         <br/>
-                    </td>
-                </tr>
+                    </div>
+                </div>
 
                 <?php elseif ($row["type"] === "HAS_MANY"): ?>
                     <?php $col = explode(",", $table[2]) ?>
-                <tr>
-                    <td width="122" class="form_head"><?= $row["label"] ?></td>
-                    <td align="center" valign="top" style="background: url('data:image/gif;base64,R0lGODlhBQB6AKUBAAAAAP////7///3+/fr7+vr7+fn6+Pj59vf49fb39PT18fPz7/Ly7vj49ff39Pb28/X18vT08fLy7/v7+fn59/j49vb29PX18////v7+/f39/Pz8+/n5+PTz7/Tz8PX08v38+/z7+vr5+Pn49//+/v79/fz7+/7+/v///////////////////////////////////////////////////////////////////////////////////////////////yH5BAEAAD8ALAAAAAAFAHoAAAaVQIZwSCwWJUjkYslsOjtQqGdKrUauV4VW++l2IeCw+EImP87odGK9trjdjngcQac37veKXn/o90eAgBSDgxyGhiKJiQaMjAWPjxOSkgSVlSGYmCabmxueniChoZ+eGqanqCWqqhmtrQOwsCezsyS2trSzAru8vRi/vwHCw8TFxsfIycrLzM3Oz9DR0tPU1dbX2NnayUEAOw==')" class="text">
-                        <br/>
+                <div class="row mb-3">
+                    <div class="col-2 col-lg-1"><?= $row["label"] ?></div>
+                    <div class="col-10 col-lg-11">
                         <table cellspacing="0" class="editform_table2">
                             <tr bgcolor="#fff">
                                 <td height="16" style="padding-left: 5px; padding-right: 3px;" class="form_head">
@@ -627,13 +605,12 @@ use A2billing\Table;
                             </tr>
                         </table>
                         <br/>
-                    </td>
-                </tr>
-                <tr>
+                    </div>
+                </div>
+                <div>
                     <?php /* ******************   Select to ADD new instances  ***************************** */ ?>
-                    <td class="form_head">&nbsp;</td>
-                    <td align="center" valign="top" style="background:url('data:image/gif;base64,R0lGODlhBQB6AKUBAAAAAP////7///3+/fr7+vr7+fn6+Pj59vf49fb39PT18fPz7/Ly7vj49ff39Pb28/X18vT08fLy7/v7+fn59/j49vb29PX18////v7+/f39/Pz8+/n5+PTz7/Tz8PX08v38+/z7+vr5+Pn49//+/v79/fz7+/7+/v///////////////////////////////////////////////////////////////////////////////////////////////yH5BAEAAD8ALAAAAAAFAHoAAAaVQIZwSCwWJUjkYslsOjtQqGdKrUauV4VW++l2IeCw+EImP87odGK9trjdjngcQac37veKXn/o90eAgBSDgxyGhiKJiQaMjAWPjxOSkgSVlSGYmCabmxueniChoZ+eGqanqCWqqhmtrQOwsCezsyS2trSzAru8vRi/vwHCw8TFxsfIycrLzM3Oz9DR0tPU1dbX2NnayUEAOw==')" class="text">
-                        <br/>
+                    <div class="col-2 col-lg-1">&nbsp;</div>
+                    <div class="col-10 col-lg-11">
                         <table width="300" height="50" border="0" align="center" cellpadding="0" cellspacing="0">
                             <tr>
                                 <td bgcolor="#7f99cc" colspan="3" height="16" style="padding-left: 5px; padding-right: 5px;" class="form_head">
@@ -690,19 +667,13 @@ use A2billing\Table;
                             </tr>
                         </table>
                         <br/>
-                    </td>
-                </tr>
+                    </div>
+                </div>
 
                 <?php elseif ($row["type"] === "CHECKBOX"): ?>
-                <tr>
-                    <td class="editform_table5_td1">
-                        <table width="100%" border="0" cellpadding="0" cellspacing="0" class="form_text">
-                            <tr>
-                                <td width="122"><?= $row["label"] ?></td>
-                            </tr>
-                        </table>
-                    </td>
-                    <td valign="top" class="editform_table5_td2">
+                <div class="row mb-3">
+                    <div class="col-2 col-lg-1"><?= $row["label"] ?></div>
+                    <div class="col-10 col-lg-11">
                         <?php $options = (new Table($table[2], $table[3]))->get_list($this->DBHandle, str_replace("%id", $processed["id"], $table[4]))?>
                         <?php $table[12] = str_replace("%id", $processed["id"], $table[12]) ?>
                         <?php $options2 = (new Table($table[2], $table[3]))->get_list($this->DBHandle, $table[12])?>
@@ -782,22 +753,17 @@ use A2billing\Table;
                         <?php else: ?>
                             <?= gettext("No data found !!!") ?>
                         <?php endif ?>
-                    </td>
-                </tr>
+                    </div>
+                </div>
                 <?php endif /*  end input type selection  */ ?>
             <?php endif /*  end check for colon in custom query  */ ?>
         <?php endforeach ?>
-        </tbody>
-    </table>
-
-    <table cellspacing="0" class="editform_table8">
-        <tr>
-            <td width="50%">
-                <span class="tableBodyRight"><?= $this->FG_BUTTON_EDITION_BOTTOM_TEXT ?></span>
-            </td>
-            <td width="50%" align="right" valign="top" class="text">
-                <input value="<?= $this->FG_EDIT_PAGE_CONFIRM_BUTTON ?>" class="form_input_button" type="submit"/>
-            </td>
-        </tr>
-    </table>
+        <div class="row mb-3">
+            <div class="col-6">
+                <?= $this->FG_BUTTON_EDITION_BOTTOM_TEXT ?>
+            </div>
+            <div class="col-6">
+                <button type="submit" class="btn btn-primary"><?= $this->FG_EDIT_PAGE_CONFIRM_BUTTON ?></button>
+            </div>
+        </div>
 </form>
