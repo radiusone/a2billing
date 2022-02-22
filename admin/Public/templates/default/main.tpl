@@ -23,8 +23,11 @@
 </svg>
 <header>
 	<div class="px-3 py-2 bg-dark text-white">
-		<div class="container">
+		<div class="container-fluid">
 			<div class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-end">
+				<span class="d-flex align-items-center my-2 my-md-0 me-md-auto text-white text-decoration-none">
+					A2Billing
+				</span>
 				<ul class="nav col-12 col-lg-auto my-2 justify-content-center my-md-0 text-small">
 					<li>
 						<a href="PP_intro.php" class="nav-link text-secondary">
