@@ -301,33 +301,39 @@ use A2billing\Table;
             <div class="row mb-3">
                 <?php /* *******************   Select to ADD new instances  ****************************** */ ?>
                 <div class="col-9 offset-3">
-                    <label for="<?= $table[1] ?>_ADD" class="form-label"><?= gettext("Add a new") ?> <?= $row["label"] ?></label>
-                    <input name="<?= $table[1] ?>_hidden" type="hidden" value=""/>
-                    <select id="<?= $table[1] ?>_ADD" name="<?= $table[1] ?>[]" <?= $row["attributes"] ?> class="form-select form-control-sm">
-                        <?php $options = (new Table($table[2], $table[3]))->get_list($this->DBHandle, $table[15], $table[13], $table[14])?>
-                        <?php if (is_array($options) && count($options)): ?>
-                            <?php foreach ($options as $option): ?>
-                                <?php if (!empty($table[6])): ?>
-                                    <?php if (is_numeric($table[7])): ?>
-                                        <?php $newopts = (new Table($option[$table[8]], $table[9]))->get_list($this->DBHandle, str_replace("%1", $option[$table[7]], $table[11]))?>
-                                        <?php $option[$table[7]] = $newopts[0][0] ?>
-                                    <?php endif ?>
-                                    <?php $val = $table[6] ?>
-                                    <?php for ($k = 1; $k <= count($option); $k++): ?>
-                                        <?php $val = str_replace("%$k", $option[$k -1], $val) ?>
-                                    <?php endfor ?>
-                                    <option value="<?= $option[1] ?>"><?= $val ?></option>
+                    <div class="row">
+                        <label for="<?= $table[1] ?>_ADD" class="col-3 col-form-label"><?= gettext("Add a new") ?> <?= $row["label"] ?></label>
+                        <div class="col-6">
+                            <input name="<?= $table[1] ?>_hidden" type="hidden" value=""/>
+                            <select id="<?= $table[1] ?>_ADD" name="<?= $table[1] ?>[]" <?= $row["attributes"] ?> class="form-select form-control-sm">
+                                <?php $options = (new Table($table[2], $table[3]))->get_list($this->DBHandle, $table[15], $table[13], $table[14])?>
+                                <?php if (is_array($options) && count($options)): ?>
+                                    <?php foreach ($options as $option): ?>
+                                        <?php if (!empty($table[6])): ?>
+                                            <?php if (is_numeric($table[7])): ?>
+                                                <?php $newopts = (new Table($option[$table[8]], $table[9]))->get_list($this->DBHandle, str_replace("%1", $option[$table[7]], $table[11]))?>
+                                                <?php $option[$table[7]] = $newopts[0][0] ?>
+                                            <?php endif ?>
+                                            <?php $val = $table[6] ?>
+                                            <?php for ($k = 1; $k <= count($option); $k++): ?>
+                                                <?php $val = str_replace("%$k", $option[$k -1], $val) ?>
+                                            <?php endfor ?>
+                                            <option value="<?= $option[1] ?>"><?= $val ?></option>
+                                        <?php else: ?>
+                                            <option value="<?= $option[1] ?>"><?= $option[0] ?></option>
+                                        <?php endif ?>
+                                    <?php endforeach ?>
                                 <?php else: ?>
-                                    <option value="<?= $option[1] ?>"><?= $option[0] ?></option>
+                                    <option value=""><?= gettext("No data found !!!") ?></option>
                                 <?php endif ?>
-                            <?php endforeach ?>
-                        <?php else: ?>
-                            <option value=""><?= gettext("No data found !!!") ?></option>
-                        <?php endif ?>
-                    </select>
-                    <button class="btn btn-sm btn-primary" onclick="sendto('add-content', '<?= $i ?>')">
-                        <?= gettext("Add") ?> <?= $row["label"] ?>
-                    </button>
+                            </select>
+                        </div>
+                        <div class="col-3">
+                            <button class="btn btn-sm btn-primary" onclick="sendto('add-content', '<?= $i ?>')">
+                                <?= gettext("Add") ?> <?= $row["label"] ?>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -493,15 +499,21 @@ use A2billing\Table;
             <div class="row mb-3">
                 <?php /* ******************   Select to ADD new instances  ***************************** */ ?>
                 <div class="col-9 offset-3">
-                    <label for="<?= $table[1] ?>_ADD" class="form-label"><?= gettext("Add a new") ?> <?= $row["label"] ?></label>
-                    <?php if (($row["attributes"] == "multiline")): ?>
-                        <textarea id="<?= $table[1] ?>_ADD" name="<?= $col[1] ?>" class="form-control form-control-sm" cols="40" rows="5"></textarea>
-                    <?php else: ?>
-                        <input id="<?= $table[1] ?>_ADD" name="<?= $col[1] ?>" class="form-control form-control-sm" size="20" maxlength="20"/>
-                    <?php endif ?>
-                    <button class="btn btn-sm btn-primary" onclick="sendto('add-content', '<?= $i ?>')">
-                        <?= gettext("Add") ?> <?= $row["label"] ?>
-                    </button>
+                    <div class="row">
+                        <label for="<?= $table[1] ?>_ADD" class="col-3 col-form-label"><?= gettext("Add a new") ?> <?= $row["label"] ?></label>
+                        <div class="col-6">
+                        <?php if (($row["attributes"] == "multiline")): ?>
+                            <textarea id="<?= $table[1] ?>_ADD" name="<?= $col[1] ?>" class="form-control form-control-sm" cols="40" rows="5"></textarea>
+                        <?php else: ?>
+                            <input id="<?= $table[1] ?>_ADD" name="<?= $col[1] ?>" class="form-control form-control-sm" size="20" maxlength="20"/>
+                        <?php endif ?>
+                        </div>
+                        <div class="col-3">
+                            <button class="btn btn-sm btn-primary" onclick="sendto('add-content', '<?= $i ?>')">
+                                <?= gettext("Add") ?> <?= $row["label"] ?>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
