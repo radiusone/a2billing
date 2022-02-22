@@ -113,7 +113,7 @@
 	{if ($ACXSUPPORT > 0)}
 		<li class="mb-1">
 			<button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#support-collapse" aria-expanded="{if ($section == "4")}true{else}false{/if}">
-				{_("")}
+				{_("Support")}
 			</button>
 			<div class="collapse {if ($section == "4")}show{/if}" id="support-collapse">
 	   			<ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
@@ -408,7 +408,7 @@
 </tr>
 </table>
 
-<div class="modal modal-sheet position-static d-block bg-secondary py-5" tabindex="-1" role="dialog" id="license-modal">
+<div class="modal hide modal-sheet position-static d-block bg-secondary py-5" tabindex="-1" role="dialog" id="license-modal" data-bs-backdrop="static" data-bs-keyboard="false" >
 	<div class="modal-dialog" role="document">
 		<div class="modal-content rounded-6 shadow">
 			<div class="modal-header border-bottom-0">

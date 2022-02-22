@@ -5,9 +5,6 @@
 	<title>..:: {$CCMAINTITLE} ::..</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<link href="../lib/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css"/>
-	<link href="templates/{$SKIN_NAME}/css/main.css" rel="stylesheet" type="text/css"/>
-	<link href="templates/{$SKIN_NAME}/css/menu.css" rel="stylesheet" type="text/css"/>
-	<link href="templates/{$SKIN_NAME}/css/style-def.css" rel="stylesheet" type="text/css"/>
 	<link href="templates/{$SKIN_NAME}/css/invoice.css" rel="stylesheet" type="text/css"/>
 	<link href="templates/{$SKIN_NAME}/css/receipt.css" rel="stylesheet" type="text/css"/>
 	<link href="./javascript/jquery/jquery.wysiwyg.css" rel="stylesheet" type="text/css"/>
