@@ -159,14 +159,9 @@ function openURLFilter(link) {
             <?php foreach ($this->FG_TABLE_COL as $row): ?>
             <th>
                 <?php if (strtoupper($row[4]) === "SORT"): ?>
-                <a href="<?= "?stitle=$stitle&atmenu=$processed[atmenu]&current_page=$current_page&letter=$letter&popup_select=$processed[popup_select]&order=$row[1]&sens=" . ($this->FG_SENS === "ASC" ? "DESC" : "ASC") . $this-> CV_FOLLOWPARAMETERS ?>">
+                <a class="sort <?= strtolower($this->FG_SENS) ?>" href="<?= "?stitle=$stitle&atmenu=$processed[atmenu]&current_page=$current_page&letter=$letter&popup_select=$processed[popup_select]&order=$row[1]&sens=" . ($this->FG_SENS === "ASC" ? "DESC" : "ASC") . $this-> CV_FOLLOWPARAMETERS ?>">
                 <?php endif ?>
                     <?= $row[0] ?>
-                <?php if ($this->FG_ORDER === $row[1] && $this->FG_SENS === "ASC"): ?>
-                    &nbsp;<img alt="asc" src="data:image/gif;base64,R0lGODlhDAAMALMPAO3y+u3x+cnX8Pf5/eDo9tTf8/f6/eHo9tTe8snW78DP7MLR7f///3+ZzAAzmf///yH5BAEAAA8ALAAAAAAMAAwAAAQ48LlJq2wq69xmY2AIds4HTiHZGEbZGYMKuE0XqMfhOgehIogdoqBKJCoJgWrBbDJVtajUIalYHxEAOw=="/>
-                <?php elseif ($this->FG_ORDER === $row[1] && $this->FG_SENS === "DESC"): ?>
-                    &nbsp;<img alt="desc" src="data:image/gif;base64,R0lGODlhDAAMAIQMAO3y+u3x+cnX8Pf5/eDo9tTf8/f6/eHo9tTe8snW78DP7MLR7f///3+ZzAAzmf///////////////////////////////////////////////////////////////////yH5BAEKAA8ALAAAAAAMAAwAAAU84OOMZCk2aKqOzeK+bsMKSZkkstMUiC4jiFyDcPA5DgdhwIdyAIQDg9FgEDKuoyvDqu0KFeAwWCYqmR8hADs=">
-                <?php endif ?>
                 <?php if (strtoupper($row[4]) === "SORT"): ?>
                 </a>
                 <?php endif?>
