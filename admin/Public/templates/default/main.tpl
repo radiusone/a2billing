@@ -313,19 +313,6 @@
 				</li>
 			{/if}
 
-			{if ($ACXPREDICTIVEDIALER  > 0)}
-				<li class="mb-1">
-					<button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#campaign-collapse" aria-expanded="{if ($section == "15")}true{else}false{/if}">
-						{_("Campaigns")}
-					</button>
-					<div class="collapse {if ($section == "15")}show{/if}" id="campaign-collapse">
-						<ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-							<li><a class="link-dark rounded" href="A2B_entity_campaign.php?section=15">{_("Autodialer")}</a></li>
-						</ul>
-					</div>
-				</li>
-			{/if}
-
 
 			{if ($ACXMAINTENANCE  > 0)}
 				<li class="mb-1">
