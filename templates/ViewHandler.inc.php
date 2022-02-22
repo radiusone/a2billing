@@ -159,7 +159,7 @@ function openURLFilter(link) {
             <?php foreach ($this->FG_TABLE_COL as $row): ?>
             <th>
                 <?php if (strtoupper($row[4]) === "SORT"): ?>
-                <a class="sort <?= strtolower($this->FG_SENS) ?>" href="<?= "?stitle=$stitle&atmenu=$processed[atmenu]&current_page=$current_page&letter=$letter&popup_select=$processed[popup_select]&order=$row[1]&sens=" . ($this->FG_SENS === "ASC" ? "DESC" : "ASC") . $this-> CV_FOLLOWPARAMETERS ?>">
+                <a class="sort <?php if ($this->FG_ORDER === $row[1]) echo strtolower($this->FG_SENS) ?>" href="<?= "?stitle=$stitle&atmenu=$processed[atmenu]&current_page=$current_page&letter=$letter&popup_select=$processed[popup_select]&order=$row[1]&sens=" . ($this->FG_SENS === "ASC" ? "DESC" : "ASC") . $this-> CV_FOLLOWPARAMETERS ?>">
                 <?php endif ?>
                     <?= $row[0] ?>
                 <?php if (strtoupper($row[4]) === "SORT"): ?>
