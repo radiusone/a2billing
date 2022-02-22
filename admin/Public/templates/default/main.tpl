@@ -24,29 +24,29 @@
 <header>
 	<div class="px-3 py-2 bg-dark text-white">
 		<div class="container">
-			<div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+			<div class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-end">
 				<ul class="nav col-12 col-lg-auto my-2 justify-content-center my-md-0 text-small">
 					<li>
 						<a href="PP_intro.php" class="nav-link text-secondary">
-							<svg class="d-block mx-auto mb-1" width="24" height="24" style="fill: currentColor"><use xlink:href="#home"></use></svg>
+							<svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="#home"></use></svg>
 							{_("Home")}
 						</a>
 					</li>
 					<li>
 						<a href="dashboard.php" class="nav-link text-white">
-							<svg class="d-block mx-auto mb-1" width="24" height="24" style="fill: currentColor"><use xlink:href="#speedometer2"></use></svg>
+							<svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="#speedometer2"></use></svg>
 							{_("Dashboard")}
 						</a>
 					</li>
 					<li>
 						<a href="A2B_notification.php" class="nav-link text-white">
-							<svg class="d-block mx-auto mb-1" width="24" height="24" style="fill: currentColor"><use xlink:href="#table"></use></svg>
+							<svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="#table"></use></svg>
 							{_("Notification")}
 						</a>
 					</li>
 					<li>
 						<a href="logout.php?logout=true" class="nav-link text-white">
-							<svg class="d-block mx-auto mb-1" width="24" height="24" style="fill: currentColor"><use xlink:href="#people-circle"></use></svg>
+							<svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="#people-circle"></use></svg>
 							{_("Logout")}
 						</a>
 					</li>
