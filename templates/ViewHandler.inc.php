@@ -15,7 +15,7 @@ getpost_ifset(array('stitle', 'letter', 'current_page', 'popup_select'));
 ?>
 
 <?php if( $popup_select < 1 && ($this->FG_LIST_ADDING_BUTTON1 || $this->FG_LIST_ADDING_BUTTON2)): ?>
-<div class="row pb-2 justify-content-end align-items-center">
+<div class="row pb-3 justify-content-end align-items-center">
     <?php if($this->FG_LIST_ADDING_BUTTON1): ?>
         <div class="flex-shrink-0 flex-grow-0 w-auto">
             <a href="<?= $this->FG_LIST_ADDING_BUTTON_LINK1 ?>" class="text-decoration-none">
@@ -41,7 +41,7 @@ getpost_ifset(array('stitle', 'letter', 'current_page', 'popup_select'));
 
 
 <?php if (empty($list)): ?>
-<div class="row pb-2 justify-content-center">
+<div class="row pb-3 justify-content-center">
     <div class="col-8">
         <?= $this -> CV_NO_FIELDS ?>
     </div>
@@ -59,13 +59,13 @@ function openURLFilter(link) {
 </script>
 
 <?php if($this->CV_DISPLAY_LINE_TITLE_ABOVE_TABLE): ?>
-<div class="row pb-2">
+<div class="row pb-3">
     <div class="col"><strong><?= $this -> CV_TEXT_TITLE_ABOVE_TABLE ?></strong></div>
 </div>
 <?php endif ?>
 
 <?php if ($this->CV_DO_ARCHIVE_ALL): ?>
-<div class="row pb-2">
+<div class="row pb-3">
     <div class="col">
         <form name="theFormFilter" action="">
             <input type="hidden" name="atmenu" value="<?= $processed['atmenu'] ?>"/>
@@ -82,7 +82,7 @@ function openURLFilter(link) {
 <?php endif ?>
 
 <?php if ($this->CV_DISPLAY_FILTER_ABOVE_TABLE): ?>
-<div class="row pb-2">
+<div class="row pb-3">
     <div class="col">
         <form name="theFormFilter" action="">
             <input type="hidden" name="popup_select" value="<?= $processed['popup_select']?>"/>
@@ -111,14 +111,14 @@ function openURLFilter(link) {
         <input type="hidden" name="<?= $key?>" value="<?= $val?>"/>
         <?php endif ?>
     <?php endforeach ?>
-    <div class="row pb-2 align-items-center">
+    <div class="row pb-3 align-items-center">
         <?php if ($this->FG_FILTER_APPLY): ?>
         <div class="col">
-            <label for="filterprefix" class="form-label">
+            <label for="filterprefix" class="form-label d-inline w-50">
                 <?= gettext("Filter on") ?>
-                <?= $this->FG_FILTERFIELDNAME ?>
+                <?= $this->FG_FILTERFIELDNAME ?>:
             </label>
-            <input type="text" id="filterprefix" name="filterprefix" value="<?= $processed['filterprefix'] ?>" class="form-control form-control-sm"/>
+            <input type="text" id="filterprefix" name="filterprefix" value="<?= $processed['filterprefix'] ?>" class="form-control form-control-sm d-inline w-50"/>
             <input type="hidden" name="filterfield" value="<?= $this->FG_FILTERFIELD?>"/>
             <?php if ($this -> FG_FILTERTYPE === 'POPUPVALUE'): ?>
                 <a href="#" onclick="window.open('<?= $this->FG_FILTERPOPUP[0]?>popup_formname=theFormFilter&popup_fieldname=filterprefix', <?= $this->FG_FILTERPOPUP[1]?>)">
@@ -130,11 +130,11 @@ function openURLFilter(link) {
 
         <?php if ($this->FG_FILTER_APPLY2): ?>
         <div class="col">
-            <label for="filterprefix2" class="form-label">
+            <label for="filterprefix2" class="form-label d-inline w-50">
                 <?= gettext("Filter on");?>
-                <?= $this->FG_FILTERFIELDNAME2 ?>
+                <?= $this->FG_FILTERFIELDNAME2 ?>:
             </label>
-            <input type="text" id="filterprefix2" name="filterprefix2" value="" class="form-control form-control-sm">
+            <input type="text" id="filterprefix2" name="filterprefix2" value="" class="form-control form-control-sm d-inline w-50">
             <input type="hidden" name="filterfield2" value="<?= $this->FG_FILTERFIELD2?>"/>
             <?php if ($this->FG_FILTERTYPE2 === 'POPUPVALUE'): ?>
                 <a href="#" onclick="window.open('<?= $this->FG_FILTERPOPUP2[0]?>popup_formname=theFormFilter&popup_fieldname=filterprefix2', <?= $this->FG_FILTERPOPUP2[1]?>)">
@@ -204,7 +204,7 @@ function openURLFilter(link) {
                         $link = $row[12] . (str_contains($row[12], 'form_action') ? "?" : "?form_action=ask-edit&") . "id=" . $options[0][1];
                         for ($l = 1; $l <= count($field_list_sun); $l++) {
                             $val = str_replace("%$l", $options[0][$l - 1], $record_display);
-                            $record_display = "<a href='$link'>$val</a>";
+                            $record_display = "<a class='text-decoration-underline' href='$link'>$val</a>";
                         }
                     }
                 }
@@ -355,14 +355,14 @@ function openURLFilter(link) {
 </table>
 
 <?php if ($this->CV_DISPLAY_BROWSE_PAGE): ?>
-<div class="row pb-2">
+<div class="row pb-3">
     <div class="col">
         <?php $this->printPages($this->CV_CURRENT_PAGE + 1, $this->FG_NB_RECORD_MAX, "?stitle=$stitle&atmenu=$processed[atmenu]&current_page=%s&filterprefix=$processed[filterprefix]&order=$processed[order]&sens=$processed[sens]&mydisplaylimit=$processed[mydisplaylimit]&popup_select=$processed[popup_select]&letter=$letter$this->CV_FOLLOWPARAMETERS") ?>
     </div>
 </div>
 <?php endif ?>
 
-<div class="row pb-2 justify-content-start align-items-center">
+<div class="row pb-3 justify-content-start align-items-center">
     <?php if ($this->CV_DISPLAY_RECORD_LIMIT): ?>
     <div class="col-4">
         <form name="otherForm2" action="">

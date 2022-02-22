@@ -79,8 +79,8 @@
 			background-color: #d2f4ea;
 		}
 
-		form label {
-			text-transform: capitalize;
+		table a {
+			text-decoration: none;
 		}
 	</style>
 </head>
