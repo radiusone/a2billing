@@ -74,11 +74,9 @@ $smarty->display('main.tpl');
             <br><a href="http://www.fsf.org/licensing/licenses/agpl-3.0.html" target="_blank"><img src="images/agplv3-88x31.png"></a>
             </center>
 
-        <div class="scroll">
-<pre>
+<textarea class="form-control" rows="20">
 <?php echo (file_get_contents("../lib/COPYING")); ?>
-</pre>
-</div>
+</textarea>
 
         </td>
     </tr>
