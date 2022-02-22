@@ -180,7 +180,7 @@ $HD_Form -> AddEditElement (gettext("ACTIVATED"),
 	"",
 	"",
 	gettext("Choose if you want to activate this card"),
-	"" , "", "", "Yes :1, - No:0", "", "", "" , "" );
+	"" , "", "", "Yes:1,No:0", "", "", "" , "" );
 
 
 $HD_Form -> AddEditElement (gettext("MONTHLY RATE"),

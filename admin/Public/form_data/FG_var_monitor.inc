@@ -156,7 +156,7 @@ $HD_Form -> AddEditElement (gettext("ENABLE"),
    "",
    "",
    "",
-   "" , "", "" , "Yes :1, - No:0", "", "" , "", "");
+   "" , "", "" , "Yes:1,No:0", "", "" , "", "");
 
 
 

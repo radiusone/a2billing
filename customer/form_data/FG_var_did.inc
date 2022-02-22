@@ -145,7 +145,7 @@ $HD_Form -> AddEditElement (gettext("ACTIVATED"),
 	"",
 	"",
 	gettext("Choose if you want to activate this card"),
-	"" , "", "", "Yes :1, - No:0",   "", "" , "", "");
+	"" , "", "", "Yes:1,No:0",   "", "" , "", "");
 
 $HD_Form -> AddEditElement (gettext("PRIORITY"),
 	"priority",
@@ -164,7 +164,7 @@ $HD_Form -> AddEditElement (gettext("VOIP_CALL"),
 	"",
 	"",
 	gettext("Choose if you want to not use the trunk and let the asterisk call directly the destination (ie, Destination : SIP/jeremy@182.212.1.45)"),
-	"" , "",  "", "Yes :1, - No:0",  "", "" , "" , "");
+	"" , "",  "", "Yes:1,No:0",  "", "" , "" , "");
 
 
 if (isset($form_action) && ($form_action=='ask-edit')) {

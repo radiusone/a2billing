@@ -94,7 +94,7 @@ $HD_Form -> AddEditElement (gettext("ACTIVATED"),
 	"",
 	"",
 	gettext("Choose if you want to activate this subscriber in the signup"),
-	"" , "", "", "Yes :1, - No:0", "", "", "" , "" );
+	"" , "", "", "Yes:1,No:0", "", "", "" , "" );
 
 $CURRENCY = strtoupper(BASE_CURRENCY);
 $HD_Form -> AddEditElement (gettext("SUBSCRIPTION OPTIONS"),

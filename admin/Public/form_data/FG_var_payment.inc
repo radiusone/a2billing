@@ -174,7 +174,7 @@ if (has_rights (ACX_MODIFY_PAYMENTS)) {
 					   "",
 					   "",
 					   gettext("Choose if you want to create a refill with this payment account"),
-					   "" , "", "" , "Yes :1, - No:0", "", "" , "", gettext("Refill card account"));
+					   "" , "", "" , "Yes:1,No:0", "", "" , "", gettext("Refill card account"));
 	}
 
 	if ($form_action!="ask-edit" && $form_action!="edit") {
@@ -185,7 +185,7 @@ if (has_rights (ACX_MODIFY_PAYMENTS)) {
 					   "",
 					   "",
 					   gettext("Choose if you want to create a commission to an agent, if this customer is managed by one"),
-					   "" , "", "" , "Yes :1, - No:0", "", "" , "", gettext("Commission for agent"));
+					   "" , "", "" , "Yes:1,No:0", "", "" , "", gettext("Commission for agent"));
 	}
 
 	$HD_Form -> AddEditElement (gettext("PAYMENT TYPE"),

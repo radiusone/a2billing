@@ -188,7 +188,7 @@ if (has_rights (ACX_MODIFY_AGENTS) && !($popup_select)) {
 		   "",
 		   "",
 		   gettext("Choose if you want to active the agent"),
-		   "" , "", "" , "Yes :1, - No:0",  "", "" , "", gettext("Enable agent"));
+		   "" , "", "" , "Yes:1,No:0",  "", "" , "", gettext("Enable agent"));
 
 	if ($form_action =="ask-add" || $form_action=="add") {
 		$balance_access = "value = '0'";

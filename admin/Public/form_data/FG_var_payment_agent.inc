@@ -157,7 +157,7 @@ if (has_rights (ACX_MODIFY_PAYMENTS)) {
 					   "",
 					   "",
 					   gettext("Choose if you want to create a refill with this payment account"),
-					   "" , "", "" , "Yes :1, - No:0", "", "" , "", gettext("Refill card account"));
+					   "" , "", "" , "Yes:1,No:0", "", "" , "", gettext("Refill card account"));
 	}
 
 	$HD_Form -> AddEditElement (gettext("REFILL TYPE"),

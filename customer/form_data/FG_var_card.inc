@@ -162,7 +162,7 @@ if (ACT_VOICEMAIL) {
 				   "",
 				   "",
 				   gettext("Customer can choose to enable the voicemail for this card"),
-				   "" , "", "", "Yes :1, - No:0", "", "" , "", gettext("Customer can enable the voicemail for this card."));
+				   "" , "", "", "Yes:1,No:0", "", "" , "", gettext("Customer can enable the voicemail for this card."));
 }
 
 $add_fields_voicemail = '';

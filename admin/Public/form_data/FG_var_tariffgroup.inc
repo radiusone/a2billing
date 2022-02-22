@@ -152,7 +152,7 @@ $HD_Form -> AddEditElement (gettext("REMOVE INTER PREFIX"),
 	"",
 	"",
 	gettext("Define if the international prefix will be removed to check the rate."),
-	"" , "", "" , "Yes :1, - No:0", "", "", "", gettext("Remove the international access prefix (00 or 011) before matching the dialled digits with the rate card. E.G. If the dialled digits were 0044 for a call to the UK, only 44 would be delivered."));
+	"" , "", "" , "Yes:1,No:0", "", "", "", gettext("Remove the international access prefix (00 or 011) before matching the dialled digits with the rate card. E.G. If the dialled digits were 0044 for a call to the UK, only 44 would be delivered."));
 
 
 

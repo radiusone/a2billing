@@ -168,7 +168,7 @@ if (has_rights (ACX_MODIFY_REFILLS)) {
 					   "",
 					   "",
 					   gettext("Choose if you want to create an invoice with this refill account"),
-					   "" , "", "" , "Yes :1, - No:0", "", "" , "", "");
+					   "" , "", "" , "Yes:1,No:0", "", "" , "", "");
 	}
 
 

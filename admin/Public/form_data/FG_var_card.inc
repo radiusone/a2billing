@@ -612,7 +612,7 @@ if (has_rights (ACX_MODIFY_CUSTOMERS) && !($popup_select>=1)) {
                    "",
                    "",
                    gettext("Choose if you want to enable the lock on this account"),
-                   "" , "", "", "Yes :1, - No:0", "", "" , "", gettext("Enable lock for this account."));
+                   "" , "", "", "Yes:1,No:0", "", "" , "", gettext("Enable lock for this account."));
 
     if ($form_action =="ask-add" || $form_action=="add") {
         $lockpin_default = "value = '0'";
@@ -645,7 +645,7 @@ if (has_rights (ACX_MODIFY_CUSTOMERS) && !($popup_select>=1)) {
                    "",
                    "",
                    gettext("Choose if you want to enable the service recurring on this account"),
-                   "" , "", "", "Yes :1, - No:0", "", "" , "", gettext("Apply recurring service to this account."));
+                   "" , "", "", "Yes:1,No:0", "", "" , "", gettext("Apply recurring service to this account."));
 
 
     $HD_Form -> AddEditElement (gettext("CREDIT LIMIT"),
@@ -678,7 +678,7 @@ if (has_rights (ACX_MODIFY_CUSTOMERS) && !($popup_select>=1)) {
                    "",
                    "",
                    gettext("Choose if you want to enable the notification by email for this account"),
-                   "" , "", "", "Yes :1, - No:0", "", "" , "", gettext("Enable the notification by mail for this account."));
+                   "" , "", "", "Yes:1,No:0", "", "" , "", gettext("Enable the notification by mail for this account."));
 
 
     $HD_Form -> AddEditElement (gettext("EMAIL NOTIFICATION"),
@@ -698,7 +698,7 @@ if (has_rights (ACX_MODIFY_CUSTOMERS) && !($popup_select>=1)) {
                        "",
                        "",
                        gettext("Choose if you want to enable the voicemail functionality for this account"),
-                       "" , "", "", "Yes :1, - No:0", "", "" , "", gettext("Enable the voicemail functionality for this account."));
+                       "" , "", "", "Yes:1,No:0", "", "" , "", gettext("Enable the voicemail functionality for this account."));
 
         $HD_Form -> AddEditElement (gettext("ACTIVE VOICEMAIL SERVICE"),
                        "voicemail_activated",
@@ -707,7 +707,7 @@ if (has_rights (ACX_MODIFY_CUSTOMERS) && !($popup_select>=1)) {
                        "",
                        "",
                        gettext("Customer can choose to enable the voicemail for this account"),
-                       "" , "", "", "Yes :1, - No:0", "", "" , "", gettext("Customer can enable the voicemail for this account."));
+                       "" , "", "", "Yes:1,No:0", "", "" , "", gettext("Customer can enable the voicemail for this account."));
     }
 
     $HD_Form -> AddEditElement (gettext("CAMPAIGN"),
@@ -779,7 +779,7 @@ if (has_rights (ACX_MODIFY_CUSTOMERS) && !($popup_select>=1)) {
                    "",
                    "",
                    gettext("Choose if you want to enable the sip account"),
-                   "" , "", "" , "Yes :1, - No:0", "", "" , "", gettext("Create the SIP config automatically"));
+                   "" , "", "" , "Yes:1,No:0", "", "" , "", gettext("Create the SIP config automatically"));
 
 
     $HD_Form -> AddEditElement (gettext("CREATE IAX CONFIG"),
@@ -789,7 +789,7 @@ if (has_rights (ACX_MODIFY_CUSTOMERS) && !($popup_select>=1)) {
                    "",
                    "",
                    gettext("Choose if you want to enable the iax account"),
-                   "" , "", "" , "Yes :1, - No:0",  "", "" , "", gettext("Create the IAX config automatically"));
+                   "" , "", "" , "Yes:1,No:0",  "", "" , "", gettext("Create the IAX config automatically"));
 
     $HD_Form -> AddEditElement (gettext("MAC ADDRESS"),
                    "mac_addr",
@@ -828,7 +828,7 @@ if (has_rights (ACX_MODIFY_CUSTOMERS) && !($popup_select>=1)) {
                    "",
                    "",
                    gettext("Choose if you want to enable the autorefill on this account"),
-                   "" , "", "", "Yes :1, - No:0", "", "" , "", gettext("Define if you want to authorize the autorefill to apply on this accout"),
+                   "" , "", "", "Yes:1,No:0", "", "" , "", gettext("Define if you want to authorize the autorefill to apply on this accout"),
                    '', '', gettext("AUTOREFILL"));
 
     $HD_Form -> AddEditElement (gettext("INITIAL BALANCE"),

@@ -105,7 +105,7 @@ $HD_Form -> AddEditElement (gettext("PERMITTED NOTIFICATIONS BY MAIL"),
 			   "",
 			   "",
 			   gettext("Choose if you want to enable the notification by email for this card"),
-			   "" , "", "", "Yes :1, - No:0", "", "" , "", gettext("Enable Email Notification"));
+			   "" , "", "", "Yes:1,No:0", "", "" , "", gettext("Enable Email Notification"));
 
 
 $HD_Form -> AddEditElement (gettext("EMAIL NOTIFICATION"),

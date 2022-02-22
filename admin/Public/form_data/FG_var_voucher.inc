@@ -169,7 +169,7 @@ $HD_Form -> AddEditElement (gettext("ACTIVATED"),
 	"",
 	"",
 	gettext("Choose if you want to activate this card"),
-	"" , "", "" ,"Yes :t, - No:f", "", "" , "" , "");
+	"" , "", "" ,"Yes:t,No:f", "", "" , "" , "");
 
 $HD_Form -> AddEditElement (gettext("CURRENCY"),
 	"currency",
