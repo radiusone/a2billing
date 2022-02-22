@@ -15,25 +15,23 @@ getpost_ifset(array('stitle', 'letter', 'current_page', 'popup_select'));
 ?>
 
 <?php if( $popup_select < 1 && ($this->FG_LIST_ADDING_BUTTON1 || $this->FG_LIST_ADDING_BUTTON2)): ?>
-<div class="row justify-content-end">
+<div class="row pb-2 justify-content-end align-items-center">
     <?php if($this->FG_LIST_ADDING_BUTTON1): ?>
-        <div class="col-3 col-lg-2">
-            <a href="<?= $this->FG_LIST_ADDING_BUTTON_LINK1 ?>">
+        <div class="flex-shrink-0 flex-grow-0 w-auto">
+            <a href="<?= $this->FG_LIST_ADDING_BUTTON_LINK1 ?>" class="text-decoration-none">
                 <?= $this->FG_LIST_ADDING_BUTTON_MSG1 ?>
                 <?php if ($this->FG_LIST_ADDING_BUTTON_IMG1): ?>
-                &nbsp;&nbsp;
-                <img src="<?= $this->FG_LIST_ADDING_BUTTON_IMG1 ?>" border="0" title="<?= $this->FG_LIST_ADDING_BUTTON_ALT1 ?>" alt="<?= $this->FG_LIST_ADDING_BUTTON_ALT1 ?>">
+                <img src="<?= $this->FG_LIST_ADDING_BUTTON_IMG1 ?>" alt="<?= $this->FG_LIST_ADDING_BUTTON_ALT1 ?>">
                 <?php endif ?>
             </a>
         </div>
     <?php endif ?>
     <?php if($this->FG_LIST_ADDING_BUTTON2): ?>
-        <div class="col-3 col-lg-2">
-            <a href="<?= $this->FG_LIST_ADDING_BUTTON_LINK2 ?>">
+        <div class="flex-shrink-0 flex-grow-0 w-auto">
+            <a href="<?= $this->FG_LIST_ADDING_BUTTON_LINK2 ?>" class="text-decoration-none">
                 <?= $this->FG_LIST_ADDING_BUTTON_MSG2 ?>
                 <?php if ($this->FG_LIST_ADDING_BUTTON_IMG2): ?>
-                    &nbsp;&nbsp;
-                    <img src="<?= $this->FG_LIST_ADDING_BUTTON_IMG2 ?>" border="0" title="<?= $this->FG_LIST_ADDING_BUTTON_ALT2 ?>" alt="<?= $this->FG_LIST_ADDING_BUTTON_ALT2 ?>">
+                    <img src="<?= $this->FG_LIST_ADDING_BUTTON_IMG2 ?>" alt="<?= $this->FG_LIST_ADDING_BUTTON_ALT2 ?>">
                 <?php endif ?>
             </a>
         </div>
@@ -43,7 +41,7 @@ getpost_ifset(array('stitle', 'letter', 'current_page', 'popup_select'));
 
 
 <?php if (empty($list)): ?>
-<div class="row justify-content-center">
+<div class="row pb-2 justify-content-center">
     <div class="col-8">
         <?= $this -> CV_NO_FIELDS ?>
     </div>
@@ -61,13 +59,13 @@ function openURLFilter(link) {
 </script>
 
 <?php if($this->CV_DISPLAY_LINE_TITLE_ABOVE_TABLE): ?>
-<div class="row">
+<div class="row pb-2">
     <div class="col"><strong><?= $this -> CV_TEXT_TITLE_ABOVE_TABLE ?></strong></div>
 </div>
 <?php endif ?>
 
 <?php if ($this->CV_DO_ARCHIVE_ALL): ?>
-<div class="row">
+<div class="row pb-2">
     <div class="col">
         <form name="theFormFilter" action="">
             <input type="hidden" name="atmenu" value="<?= $processed['atmenu'] ?>"/>
@@ -84,7 +82,7 @@ function openURLFilter(link) {
 <?php endif ?>
 
 <?php if ($this->CV_DISPLAY_FILTER_ABOVE_TABLE): ?>
-<div class="row">
+<div class="row pb-2">
     <div class="col">
         <form name="theFormFilter" action="">
             <input type="hidden" name="popup_select" value="<?= $processed['popup_select']?>"/>
@@ -102,58 +100,59 @@ function openURLFilter(link) {
 <?php endif ?>
 
 <?php if ($this -> FG_FILTER_APPLY || $this -> FG_FILTER_APPLY2): ?>
-<div class="row">
-    <div class="col">
-        <form name="theFormFilter" action="">
-            <input type="hidden" name="atmenu" value="<?= $processed['atmenu'] ?>"/>
-            <input type="hidden" name="popup_select" value="<?= $processed['popup_select'] ?>"/>
-            <input type="hidden" name="popup_formname" value="<?= $processed['popup_formname'] ?>"/>
-            <input type="hidden" name="popup_fieldname" value="<?= $processed['popup_fieldname'] ?>"/>
-            <input type="hidden" name="form_action" value="<?= $this->FG_FILTER_FORM_ACTION ?>"/>
+<form name="theFormFilter" action="">
+    <input type="hidden" name="atmenu" value="<?= $processed['atmenu'] ?>"/>
+    <input type="hidden" name="popup_select" value="<?= $processed['popup_select'] ?>"/>
+    <input type="hidden" name="popup_formname" value="<?= $processed['popup_formname'] ?>"/>
+    <input type="hidden" name="popup_fieldname" value="<?= $processed['popup_fieldname'] ?>"/>
+    <input type="hidden" name="form_action" value="<?= $this->FG_FILTER_FORM_ACTION ?>"/>
+    <?php foreach ($processed as $key => $val): ?>
+        <?php if (!empty($key) && $key !== 'current_page' && $key !== 'id'): ?>
+        <input type="hidden" name="<?= $key?>" value="<?= $val?>"/>
+        <?php endif ?>
+    <?php endforeach ?>
+    <div class="row pb-2 align-items-center">
+        <?php if ($this->FG_FILTER_APPLY): ?>
+        <div class="col">
+            <label for="filterprefix" class="form-label">
+                <?= gettext("Filter on") ?>
+                <?= $this->FG_FILTERFIELDNAME ?>
+            </label>
+            <input type="text" id="filterprefix" name="filterprefix" value="<?= $processed['filterprefix'] ?>" class="form-control form-control-sm"/>
             <input type="hidden" name="filterfield" value="<?= $this->FG_FILTERFIELD?>"/>
-            <?php foreach ($processed as $key => $val): ?>
-                <?php if (!empty($key) && $key !== 'current_page' && $key !== 'id'): ?>
-                    <input type="hidden" name="<?= $key?>" value="<?= $val?>"/>
-                <?php endif ?>
-            <?php endforeach ?>
-
-            <?php if ($this->FG_FILTER_APPLY): ?>
-                <label for="filterprefix" class="viewhandler_filter_on">
-                    <?= gettext("FILTER ON ") ?>
-                    <?= strtoupper($this->FG_FILTERFIELDNAME)?> :
-                </label>
-                <input type="text" id="filterprefix" name="filterprefix" value="<?php if(!empty($processed['filterprefix'])) echo $processed['filterprefix']; ?>" class="form_input_text">
-
-                <?php if ($this -> FG_FILTERTYPE === 'POPUPVALUE'): ?>
-                    <a href="#" onclick="window.open('<?= $this->FG_FILTERPOPUP[0]?>popup_formname=theFormFilter&popup_fieldname=filterprefix' <?= $this->FG_FILTERPOPUP[1]?>);">
-                        <img alt="" src="data:image/gif;base64,R0lGODlhDwAPAMQYAP+yPf+fEv+qLP+3Tf+pKv++Xf/Gcv+mJP+tNf+tMf+kH/+/YP+oJv+wO/+jHP/Ohf/WmP+vOv/cpv+kHf+iGf+jG/////Hw7P///wAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAABgALAAAAAAPAA8AAAVjIHaNZEmKF6auLJpiEvQYxQAgiTpiMm0Tk4pigsLMag2Co8KkFA0Lm8XCbBajDcFkWnXuBlkFk1vxpgACcYVcLqbHVKaDuFNXqwxGkUK5VyYMEQhFGAGGhxQHOS4tjTsmkDshADs="/>
-                    </a>
-                <?php endif ?>
+            <?php if ($this -> FG_FILTERTYPE === 'POPUPVALUE'): ?>
+                <a href="#" onclick="window.open('<?= $this->FG_FILTERPOPUP[0]?>popup_formname=theFormFilter&popup_fieldname=filterprefix', <?= $this->FG_FILTERPOPUP[1]?>)">
+                    <img alt="" src="data:image/gif;base64,R0lGODlhDwAPAMQYAP+yPf+fEv+qLP+3Tf+pKv++Xf/Gcv+mJP+tNf+tMf+kH/+/YP+oJv+wO/+jHP/Ohf/WmP+vOv/cpv+kHf+iGf+jG/////Hw7P///wAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAABgALAAAAAAPAA8AAAVjIHaNZEmKF6auLJpiEvQYxQAgiTpiMm0Tk4pigsLMag2Co8KkFA0Lm8XCbBajDcFkWnXuBlkFk1vxpgACcYVcLqbHVKaDuFNXqwxGkUK5VyYMEQhFGAGGhxQHOS4tjTsmkDshADs="/>
+                </a>
             <?php endif ?>
+        </div>
+        <?php endif ?>
 
-            <?php if ($this->FG_FILTER_APPLY2): ?>
-                &nbsp;&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;&nbsp;
-                <label for="filterprefix2" class="viewhandler_filter_on">
-                    <?= gettext("FILTER ON");?>
-                    <?= strtoupper($this->FG_FILTERFIELDNAME2)?> :
-                </label>
-                <input type="text" id="filterprefix2" name="filterprefix2" value="" class="form_input_text">
-                <input type="hidden" name="filterfield2" value="<?= $this->FG_FILTERFIELD2?>"/>
-                <?php if ($this->FG_FILTERTYPE2 === 'POPUPVALUE'): ?>
-                    <a href="#" onclick="window.open('<?= $this->FG_FILTERPOPUP2[0]?>popup_formname=theFormFilter&popup_fieldname=filterprefix2' <?= $this->FG_FILTERPOPUP2[1]?>);">
-                        <img alt="" src="data:image/gif;base64,R0lGODlhDwAPAMQYAP+yPf+fEv+qLP+3Tf+pKv++Xf/Gcv+mJP+tNf+tMf+kH/+/YP+oJv+wO/+jHP/Ohf/WmP+vOv/cpv+kHf+iGf+jG/////Hw7P///wAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAABgALAAAAAAPAA8AAAVjIHaNZEmKF6auLJpiEvQYxQAgiTpiMm0Tk4pigsLMag2Co8KkFA0Lm8XCbBajDcFkWnXuBlkFk1vxpgACcYVcLqbHVKaDuFNXqwxGkUK5VyYMEQhFGAGGhxQHOS4tjTsmkDshADs="/>
-                    </a>
-                <?php endif ?>
+        <?php if ($this->FG_FILTER_APPLY2): ?>
+        <div class="col">
+            <label for="filterprefix2" class="form-label">
+                <?= gettext("Filter on");?>
+                <?= $this->FG_FILTERFIELDNAME2 ?>
+            </label>
+            <input type="text" id="filterprefix2" name="filterprefix2" value="" class="form-control form-control-sm">
+            <input type="hidden" name="filterfield2" value="<?= $this->FG_FILTERFIELD2?>"/>
+            <?php if ($this->FG_FILTERTYPE2 === 'POPUPVALUE'): ?>
+                <a href="#" onclick="window.open('<?= $this->FG_FILTERPOPUP2[0]?>popup_formname=theFormFilter&popup_fieldname=filterprefix2', <?= $this->FG_FILTERPOPUP2[1]?>)">
+                    <img alt="" src="data:image/gif;base64,R0lGODlhDwAPAMQYAP+yPf+fEv+qLP+3Tf+pKv++Xf/Gcv+mJP+tNf+tMf+kH/+/YP+oJv+wO/+jHP/Ohf/WmP+vOv/cpv+kHf+iGf+jG/////Hw7P///wAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAABgALAAAAAAPAA8AAAVjIHaNZEmKF6auLJpiEvQYxQAgiTpiMm0Tk4pigsLMag2Co8KkFA0Lm8XCbBajDcFkWnXuBlkFk1vxpgACcYVcLqbHVKaDuFNXqwxGkUK5VyYMEQhFGAGGhxQHOS4tjTsmkDshADs="/>
+                </a>
             <?php endif ?>
-            <input type="submit" value="<?= gettext("APPLY FILTER ") ?>" class="form_input_button"/>
-        </form>
+        </div>
+        <?php endif ?>
+        <div class="col-2">
+            <button type="submit" class="btn btn-sm btn-primary"><?= gettext("APPLY FILTER ") ?></button>
+        </div>
     </div>
-</div>
+</form>
 <?php endif ?>
 
 <table class="table table-bordered table-striped table-hover caption-top">
     <caption>
-        <?= $this->CV_TITLE_TEXT ?> <?= $this->FG_NB_RECORD ?>  <?= gettext("Records") ?>
+        <?= $this->CV_TITLE_TEXT ?> – <?= $this->FG_NB_RECORD ?> <?= gettext("Records") ?>
     </caption>
     <thead>
         <tr>
@@ -356,18 +355,18 @@ function openURLFilter(link) {
 </table>
 
 <?php if ($this->CV_DISPLAY_BROWSE_PAGE): ?>
-<div class="row">
+<div class="row pb-2">
     <div class="col">
         <?php $this->printPages($this->CV_CURRENT_PAGE + 1, $this->FG_NB_RECORD_MAX, "?stitle=$stitle&atmenu=$processed[atmenu]&current_page=%s&filterprefix=$processed[filterprefix]&order=$processed[order]&sens=$processed[sens]&mydisplaylimit=$processed[mydisplaylimit]&popup_select=$processed[popup_select]&letter=$letter$this->CV_FOLLOWPARAMETERS") ?>
     </div>
 </div>
 <?php endif ?>
 
-<div class="row justify-content-start">
+<div class="row pb-2 justify-content-start align-items-center">
     <?php if ($this->CV_DISPLAY_RECORD_LIMIT): ?>
-    <div class="col-3">
+    <div class="col-4">
         <form name="otherForm2" action="">
-            <label for="displaylimit"><?= gettext("Display");?></label>
+            <label for="displaylimit" class="form-label d-inline"><?= gettext("Display");?></label>
             <input type="hidden" name="id" value="<?= $processed["id"] ?>"/>
             <input type="hidden" name="stitle" value="<?= $stitle ?>"/>
             <input type="hidden" name="form_action" value="edit"/>
@@ -377,21 +376,21 @@ function openURLFilter(link) {
                     <input type="hidden" name="<?= $key ?>" value="<?= $val ?>">
                 <?php endif ?>
             <?php endforeach ?>
-            <select id="displaylimit" name="mydisplaylimit" size="1" class="form_input_select">
+            <select id="displaylimit" name="mydisplaylimit" size="1" class="form-select form-select-sm d-inline w-50">
                 <option value="10" <?php if($_SESSION["$this->FG_TABLE_NAME-displaylimit"] < 50) echo "selected" ?>>10</option>
                 <option value="50" <?php if($_SESSION["$this->FG_TABLE_NAME-displaylimit"] == 50 ) echo "selected" ?>>50</option>
                 <option value="100" <?php if($_SESSION["$this->FG_TABLE_NAME-displaylimit"] == 100 ) echo "selected" ?>>100</option>
                 <option value="ALL" <?php if($_SESSION["$this->FG_TABLE_NAME-displaylimit"] > 100 ) echo "selected" ?>>All</option>
             </select>
-            <input class="form_input_button"  value=" <?= gettext("GO");?> " type="SUBMIT"/>
+            <button type="submit" class="btn btn-sm btn-primary"><?= gettext("Go") ?></button>
         </form>
     </div>
     <?php endif ?>
 
     <?php if ($this->FG_EXPORT_CSV): ?>
     <div class="col-3">
-        <a href="export_csv.php?var_export=<?= $this->FG_EXPORT_SESSION_VAR ?>&amp;var_export_type=type_csv" target="_blank" >
-            <img alt="" src="data:image/gif;base64,R0lGODlhQABFAOMIADF+VEaKY3CdgZecl8bLxuLl4vL08f///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEKAAgALAAAAABAAEUAAAT+8MhJq7046827/2BljGRpnugZdsXgvnAszzBhrFtb7Hzv/8Cdy4bLtIoZw4DAvCErx6dFWTA0pZModkI9WIlY7dY7KEi+zqd42z1f1YMxt0xBw+Vnev2NW2Pbe2ArflKAgWkghE+Gh4NxeIyNiY9ykZIeikhKNikjLYIcmUVKNDNmmJRJBgUEpxtMsLGyBHosqWesBAICAb0BBB2dJjofOrC8vsm+wBzCJrVTq0y7ytXVzCEkZyS10rrI1uHWnClcwnOuBOLr60uzsBPvsK6A6uz3yu7y8fKt6PH4Avbq508CwTT1BAbE9qeWPYXsGBZyWG2XRWsWqSmTuIjiRgr+BaohBNdL3zt+8uh5VIaIJMMB1UzOQvlOZTqMIH0JSBMyJkGas2wCtObqADJsBkguq7RS2c4sAQRQePhxTMJwDAW46jnO3Agvdc7luSluKxelyWTKAirr1AiHAOLKnSvVAlWf/djGMsMt3dy/cSVyDac2lt55JeACnlvUC9pkHEGcULwYQOS7VXGgoAz4qUEKjweK9eKsb7zKAOgFUE34p8F+VUwbrPwy6tTWeV+nTOy3M0+5Wef6KgxPd03epwEXFSDXs5cAgCNjKE1s9l+GBK5Pje6h9CrOAHaWYC7cBHngwbxXP5AdtXvUxJm4gU1iffv3+OfGJ0cw9vfe+QWiuB8J/dUHXoDuSefdCfYhGGBkCzJ4oIOLkRNhJ+t5kcsA51Eo14AjFOgJNBd402F+IH6x24iNaUALLBzyAt9BIdLH4ge0+BCLC7ugd6EwGeZQRhA9IPYjhiRqoEMJRO5wJJBJGjEAdTw8iWSLUlqppYFYYtACItts6QwPUXo5pQZiotBDmRd8QtCbcL7JpgUtlGLnnXjC0CUefPbp55+AThABADs="/>
+        <a href="export_csv.php?var_export=<?= $this->FG_EXPORT_SESSION_VAR ?>&amp;var_export_type=type_csv" target="_blank" class="text-decoration-none">
+            <img alt="" height="32" src="data:image/gif;base64,R0lGODlhQABFAOMIADF+VEaKY3CdgZecl8bLxuLl4vL08f///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEKAAgALAAAAABAAEUAAAT+8MhJq7046827/2BljGRpnugZdsXgvnAszzBhrFtb7Hzv/8Cdy4bLtIoZw4DAvCErx6dFWTA0pZModkI9WIlY7dY7KEi+zqd42z1f1YMxt0xBw+Vnev2NW2Pbe2ArflKAgWkghE+Gh4NxeIyNiY9ykZIeikhKNikjLYIcmUVKNDNmmJRJBgUEpxtMsLGyBHosqWesBAICAb0BBB2dJjofOrC8vsm+wBzCJrVTq0y7ytXVzCEkZyS10rrI1uHWnClcwnOuBOLr60uzsBPvsK6A6uz3yu7y8fKt6PH4Avbq508CwTT1BAbE9qeWPYXsGBZyWG2XRWsWqSmTuIjiRgr+BaohBNdL3zt+8uh5VIaIJMMB1UzOQvlOZTqMIH0JSBMyJkGas2wCtObqADJsBkguq7RS2c4sAQRQePhxTMJwDAW46jnO3Agvdc7luSluKxelyWTKAirr1AiHAOLKnSvVAlWf/djGMsMt3dy/cSVyDac2lt55JeACnlvUC9pkHEGcULwYQOS7VXGgoAz4qUEKjweK9eKsb7zKAOgFUE34p8F+VUwbrPwy6tTWeV+nTOy3M0+5Wef6KgxPd03epwEXFSDXs5cAgCNjKE1s9l+GBK5Pje6h9CrOAHaWYC7cBHngwbxXP5AdtXvUxJm4gU1iffv3+OfGJ0cw9vfe+QWiuB8J/dUHXoDuSefdCfYhGGBkCzJ4oIOLkRNhJ+t5kcsA51Eo14AjFOgJNBd402F+IH6x24iNaUALLBzyAt9BIdLH4ge0+BCLC7ugd6EwGeZQRhA9IPYjhiRqoEMJRO5wJJBJGjEAdTw8iWSLUlqppYFYYtACItts6QwPUXo5pQZiotBDmRd8QtCbcL7JpgUtlGLnnXjC0CUefPbp55+AThABADs="/>
             <?= gettext("Export CSV") ?>
         </a>
     </div>
@@ -399,8 +398,8 @@ function openURLFilter(link) {
 
     <?php if ($this->FG_EXPORT_XML): ?>
     <div class="col-3">
-        <a href="export_csv.php?var_export=<?= $this->FG_EXPORT_SESSION_VAR ?>&amp;var_export_type=type_xml" target="_blank" >
-            <img alt="" src="data:image/gif;base64,R0lGODlhKgAqAOMIAPRLJHW42bOqqZ7N5vfNjtfV08/n9P///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEKAAgALAAAAAAqACoAAAT+EEl0qr34zs37rkEojuRQVF7KVUVgvEMsz0MwGJaagmQvxqHY6aDrHFovA21pCwpRRckB6OvVmq4nMXpwwZYzLPA7jCKTYFkwpLy1T2YvOv3zxr5Q1Tn5pYnaZEplenJ8bWEhBYCHglspBW6GfVQuikJKQYMekJJ8iC5HjDVPepGdh1c4oVdqcI+mp2o/bqw1rpuwsZQjaraOHZynnrIlowG3wLm6dMbIHJAHwoZpxgbHv88DFdLTTDXWzhvQFtzdYy7XpRjl3ejg2OLaFwUCBvQCigb19ZLu6a/zBAAoAKAgAH0ABL7I98JfuAnjBA40aKBgxYQHEWbM8k4dQQKcFgCALChR4UKLHE3AgyhPIsGCLw2adKmkpkp1FgoQALlzp0ifOwswvEH0oYRxFkBW2HmAZ9Od02waRYA0QwZhRBvhtMq1U9abALmKlfR1alWxVz0pmWJWHtqxMNaCxfX2LYwpvrbW7aptAL62e98CEZonWWC0fvEVBmaDmuMwhFeKuyegsuXLmDP/1bRDqOfPoEOHXrzj8N4oCCIAADs="/>
+        <a href="export_csv.php?var_export=<?= $this->FG_EXPORT_SESSION_VAR ?>&amp;var_export_type=type_xml" target="_blank" class="text-decoration-none">
+            <img alt="" height="32" src="data:image/gif;base64,R0lGODlhKgAqAOMIAPRLJHW42bOqqZ7N5vfNjtfV08/n9P///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEKAAgALAAAAAAqACoAAAT+EEl0qr34zs37rkEojuRQVF7KVUVgvEMsz0MwGJaagmQvxqHY6aDrHFovA21pCwpRRckB6OvVmq4nMXpwwZYzLPA7jCKTYFkwpLy1T2YvOv3zxr5Q1Tn5pYnaZEplenJ8bWEhBYCHglspBW6GfVQuikJKQYMekJJ8iC5HjDVPepGdh1c4oVdqcI+mp2o/bqw1rpuwsZQjaraOHZynnrIlowG3wLm6dMbIHJAHwoZpxgbHv88DFdLTTDXWzhvQFtzdYy7XpRjl3ejg2OLaFwUCBvQCigb19ZLu6a/zBAAoAKAgAH0ABL7I98JfuAnjBA40aKBgxYQHEWbM8k4dQQKcFgCALChR4UKLHE3AgyhPIsGCLw2adKmkpkp1FgoQALlzp0ifOwswvEH0oYRxFkBW2HmAZ9Od02waRYA0QwZhRBvhtMq1U9abALmKlfR1alWxVz0pmWJWHtqxMNaCxfX2LYwpvrbW7aptAL62e98CEZonWWC0fvEVBmaDmuMwhFeKuyegsuXLmDP/1bRDqOfPoEOHXrzj8N4oCCIAADs="/>
             <?= gettext("Export XML") ?>
         </a>
     </div>
