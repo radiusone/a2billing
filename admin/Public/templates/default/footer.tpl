@@ -1,3 +1,6 @@
+{if $popupwindow}
+</div></div></div></body></html>
+{else}
 		</div> <!-- #main-content -->
 	</div> <!-- .row -->
 
@@ -35,4 +38,4 @@
 </body>
 </html>
 
-
+{/if}

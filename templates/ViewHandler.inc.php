@@ -88,7 +88,7 @@ function openURLFilter(link) {
             <input type="hidden" name="popup_select" value="<?= $processed['popup_select']?>"/>
             <input type="hidden" name="popup_formname" value="<?= $processed['popup_formname']?>"/>
             <input type="hidden" name="popup_fieldname" value="<?= $processed['popup_fieldname']?>"/>
-            <select name="choose_list" size="1" class="form-select" onchange="openURLFilter('<?= $this->CV_FILTER_ABOVE_TABLE_PARAM ?>')">
+            <select name="choose_list" aria-label="<?= gettext("Sort")?>" size="1" class="form-select" onchange="openURLFilter('<?= $this->CV_FILTER_ABOVE_TABLE_PARAM ?>')">
                 <option><?= gettext("Sort") ?></option>
                 <?php foreach ($list as $recordset): ?>
                 <option class="input" value="<?= $recordset[0]?>"><?= $recordset[1] ?></option>
@@ -100,7 +100,8 @@ function openURLFilter(link) {
 <?php endif ?>
 
 <?php if ($this -> FG_FILTER_APPLY || $this -> FG_FILTER_APPLY2): ?>
-<form name="theFormFilter" action="">
+<div class="row pb-3">
+<form name="theFormFilter" action="" class="col">
     <input type="hidden" name="atmenu" value="<?= $processed['atmenu'] ?>"/>
     <input type="hidden" name="popup_select" value="<?= $processed['popup_select'] ?>"/>
     <input type="hidden" name="popup_formname" value="<?= $processed['popup_formname'] ?>"/>
@@ -148,9 +149,11 @@ function openURLFilter(link) {
         </div>
     </div>
 </form>
+</div>
 <?php endif ?>
 
-<table class="table table-bordered table-striped table-hover caption-top">
+<div class="row pb-3"><div class="col">
+<table class="table table-bordered table-striped table-hover caption-top <?php if ($popup_select): ?>table-sm<?php endif ?>">
     <caption>
         <?= $this->CV_TITLE_TEXT ?> – <?= $this->FG_NB_RECORD ?> <?= gettext("Records") ?>
     </caption>
@@ -348,7 +351,7 @@ function openURLFilter(link) {
     <?php endforeach ?>
     </tbody>
 </table>
-
+</div></div>
 <?php if ($this->CV_DISPLAY_BROWSE_PAGE): ?>
 <div class="row pb-3">
     <div class="col">

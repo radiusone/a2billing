@@ -642,6 +642,4 @@ if (!empty($HD_Form->FG_ORDER) && !empty($HD_Form->FG_SENS)) {
     $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] .= " ORDER BY $HD_Form->FG_ORDER $HD_Form->FG_SENS";
 }
 
-if (!$popup_select) {
-    $smarty->display('footer.tpl');
-}
+$smarty->display('footer.tpl');

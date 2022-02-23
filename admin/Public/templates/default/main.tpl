@@ -416,7 +416,9 @@
 		<div id="main-content" class="col-md-9 col-lg-10 pt-3">
 
 {else}
-<div>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col p-1">
 {/if}
 
 {if ($LCMODAL  > 0)}
