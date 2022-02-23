@@ -418,7 +418,7 @@
 {else}
 <div class="container-fluid">
 	<div class="row">
-		<div class="col p-1">
+		<div class="col m-1">
 {/if}
 
 {if ($LCMODAL  > 0)}
