@@ -147,14 +147,11 @@ $smarty->display('main.tpl');
 
 <script>
 function sendValue(selvalue, othervalue) {
-    window.opener.document.<?php echo $popup_formname ?>.<?php echo $popup_fieldname ?>.value = selvalue;
-    if (othervalue && window.opener.document.<?php echo $popup_formname ?>.accountcode) {
-        window.opener.document.<?php echo $popup_formname ?>.accountcode.value = othervalue;
+    $("form[name=<?= $popup_formname ?>] *[name=<?= $popup_fieldname ?>]", window.opener.document).val(selvalue);
+    if (othervalue) {
+        $("form[name=<?= $popup_formname ?>] *[name=accountcode]", window.opener.document).val(othervalue);
     }
     window.close();
-}
-function submitform() {
-    document.cardform.submit();
 }
 </script>
 <script src="javascript/card.js"></script>
@@ -617,7 +614,7 @@ if (!$popup_select && $form_action === "ask-add"):?>
     <div class="col">
         <form action="?form_action=ask-add&section=1" method="post" name="cardform">
             <label for="cardnumber_length"><?= _("Change the account number length") ?></label>
-            <select name="cardnumber_lenght_list" id="cardnumber_length" onchange="submitform()">
+            <select name="cardnumber_lenght_list" id="cardnumber_length" onchange="this.form.submit()">
                 <?php foreach ($A2B->cardnumber_range as $v): ?>
                 <option value="$v" <?php if ($v == $cardnumberlenght_list): ?>selected="selected"<?php endif ?>><?= $v ?> <?= _("Digits") ?></option>
                 <?php endforeach ?>
