@@ -74,12 +74,11 @@ if ($batchupdate == 1 && is_array($check)) {
         } else {
             $SQL_REFILL_CREDIT = "(-$upd_credit) ";
         }
-        $SQL_REFILL="INSERT INTO cc_logrefill (credit,card_id,description,refill_type)
-        SELECT $SQL_REFILL_CREDIT,a.id,'$upd_description','$upd_refill_type' from  ".$HD_Form->FG_TABLE_NAME."  as a ";
+        $SQL_REFILL="INSERT INTO cc_logrefill (credit, card_id, description, refill_type) SELECT $SQL_REFILL_CREDIT, a.id, '$upd_description', '$upd_refill_type' FROM $HD_Form->FG_TABLE_NAME AS a ";
         if (strlen($HD_Form->FG_TABLE_CLAUSE) > 1) {
             $SQL_REFILL .= " WHERE $HD_Form->FG_TABLE_CLAUSE $SQL_REFILL_WHERE";
         } elseif ($SQL_REFILL_WHERE && $type["upd_credit"] == 1) {
-            $SQL_REFILL .= " WHERE $upd_credit<>credit ";
+            $SQL_REFILL .= " WHERE $upd_credit <> credit ";
         }
     }
 
@@ -116,7 +115,7 @@ if ($batchupdate == 1 && is_array($check)) {
     if ($HD_Form->FG_TABLE_CLAUSE) {
         $SQL_UPDATE .= " WHERE $HD_Form->FG_TABLE_CLAUSE";
     }
-    $update_msg_error = gettext('Could not perform the batch update!');
+    $update_msg_error = _('Could not perform the batch update!');
     $update_msg = "";
 
     if (!$HD_Form->DBHandle->Execute("begin")) {
@@ -124,14 +123,14 @@ if ($batchupdate == 1 && is_array($check)) {
     } else {
         if (isset($check['upd_credit']) && (strlen($upd_credit) > 0) && ($upd_refill_type >= 0)) {
             if (!$HD_Form->DBHandle->Execute($SQL_REFILL)) {
-                $update_msg = gettext('Could not perform refill log for the batch update!');
+                $update_msg = _('Could not perform refill log for the batch update!');
             }
         }
         if (!$HD_Form->DBHandle->Execute($SQL_UPDATE)) {
             $update_msg = $update_msg_error;
         }
         if (!$HD_Form->DBHandle->Execute("commit")) { // this looks like an error to me?
-            $update_msg = gettext('The batch update has been successfully perform!');
+            $update_msg = _('The batch update has been successfully perform!');
         }
     }
 }
@@ -164,37 +163,37 @@ function submitform() {
 
     $instance_table_tariff = new Table("cc_tariffgroup", "id, tariffgroupname");
     $FG_TABLE_CLAUSE = "";
-    $list_tariff = $instance_table_tariff -> Get_list ($HD_Form -> DBHandle, $FG_TABLE_CLAUSE, "tariffgroupname", "ASC", null, null, null, null);
+    $list_tariff = $instance_table_tariff->Get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "tariffgroupname", "ASC");
     $nb_tariff = count($list_tariff);
 
     $instance_table_group = new Table("cc_card_group"," id, name ");
-    $list_group = $instance_table_group  -> Get_list ($HD_Form ->DBHandle, $FG_TABLE_CLAUSE, "name", "ASC", null, null, null, null);
+    $list_group = $instance_table_group->Get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "name", "ASC");
 
     $instance_table_agent = new Table("cc_agent"," id, login ");
-    $list_agent = $instance_table_agent  -> Get_list ($HD_Form ->DBHandle, $FG_TABLE_CLAUSE, "login", "ASC", null, null, null, null);
+    $list_agent = $instance_table_agent->Get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "login", "ASC");
 
     $instance_table_seria = new Table("cc_card_seria"," id, name");
-    $list_seria  = $instance_table_seria -> Get_list ($HD_Form ->DBHandle, $FG_TABLE_CLAUSE, "name", "ASC", null, null, null, null);
+    $list_seria  = $instance_table_seria->Get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "name", "ASC");
 
     $list_refill_type = getRefillType_List();
     $list_refill_type["-1"] = ["NO REFILL", "-1"];
 
     $instance_table_country = new Table("cc_country", " countrycode, countryname ");
-    $list_country = $instance_table_country->Get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "countryname", "ASC", null, null, null, null);
+    $list_country = $instance_table_country->Get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "countryname", "ASC");
 
+    echo $CC_help_list_customer;
 ?>
-    <?= $CC_help_list_customer ?>
 
 <div class="row justify-content-center">
     <div class="col-auto">
         <button class="btn-link link-primary" data-bs-toggle="modal" data-bs-target="#searchModal">
-            <?= gettext("Search Customers") ?>
+            <?= _("Search Customers") ?>
         </button>
-        <?php if (!empty($_SESSION['entity_card_selection'])): ?>(<?= gettext("search activated") ?>)<?php endif ?>
+        <?php if (!empty($_SESSION['entity_card_selection'])): ?>(<?= _("search activated") ?>)<?php endif ?>
     </div>
     <div class="col-auto">
         <button class="btn-link link-primary" data-bs-toggle="modal" data-bs-target="#batchUpdateModal">
-            <?= gettext("Batch Update") ?>
+            <?= _("Batch Update") ?>
         </button>
     </div>
 </div>
@@ -203,7 +202,7 @@ function submitform() {
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modal-title-search"><?= gettext("Search Customers") ?></h5>
+                <h5 class="modal-title" id="modal-title-search"><?= _("Search Customers") ?></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -213,7 +212,7 @@ function submitform() {
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" form="searchForm" class="btn btn-primary"><?= gettext("Batch Update Cards") ?></button>
+                <button type="submit" form="searchForm" class="btn btn-primary"><?= _("Batch Update Cards") ?></button>
             </div>
         </div>
     </div>
@@ -223,7 +222,7 @@ function submitform() {
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modal-title-update"><?= gettext("Batch Update") ?></h5>
+                <h5 class="modal-title" id="modal-title-update"><?= _("Batch Update") ?></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -235,34 +234,34 @@ function submitform() {
                     <?php endif ?>
 
 
-                    <div class="row">
+                    <div class="row mb-1">
                         <div class="col">
-                            <?= $HD_Form -> FG_NB_RECORD ?> <?= gettext("cards selected!") ?>
-                            <?= gettext("Use the options below to batch update the selected cards.") ?>
+                            <?= $HD_Form->FG_NB_RECORD ?> <?= _("cards selected!") ?>
+                            <?= _("Use the options below to batch update the selected cards.") ?>
                         </div>
                     </div>
 
 
-                    <div class="row">
-                        <div class="col-1">
-                            <input name="check[upd_inuse]" type="checkbox" value="on" <?php if ($check["upd_inuse"] === "on"): ?> checked="checked"<?php endif ?> class="form-check-input"/>
+                    <div class="row mb-1">
+                        <div class="col-4">
+                            <input name="check[upd_inuse]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if ($check["upd_inuse"] === "on"): ?> checked="checked"<?php endif ?> class="form-check-input"/>
+                            <label class="form-label form-label-sm" for="upd_inuse">
+                                <?= _("In use") ?>
+                            </label>
                         </div>
-                        <label class="col-4 col-form-label col-form-label-sm" for="upd_inuse">
-                            <?= gettext("In use") ?>
-                        </label>
                         <div class="col">
                             <input type="number" name="upd_inuse" id="upd_inuse" min="0" max="1" value="<?= $upd_inuse ?? 0 ?>" class="form-control form-control-sm">
                         </div>
                     </div>
 
 
-                    <div class="row">
-                        <div class="col-1">
-                            <input name="check[upd_status]" type="checkbox" value="on" <?php if ($check["upd_status"] === "on"): ?> checked="checked"<?php endif ?> class="form-check-input"/>
+                    <div class="row mb-1">
+                        <div class="col-4">
+                            <input name="check[upd_status]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if ($check["upd_status"] === "on"): ?> checked="checked"<?php endif ?> class="form-check-input"/>
+                            <label class="form-label form-label-sm" for="upd_status">
+                                <?= _("Status") ?>
+                            </label>
                         </div>
-                        <label class="col-4 col-form-label col-form-label-sm" for="upd_status">
-                            <?= gettext("Status") ?>
-                        </label>
                         <div class="col">
                             <select name="upd_status" id="upd_status" class="form-select form-select-sm">
                                 <?php foreach ($cardstatus_list as $v): ?>
@@ -273,13 +272,13 @@ function submitform() {
                     </div>
 
 
-                    <div class="row">
-                        <div class="col-1">
-                            <input name="check[upd_language]" type="checkbox" value="on" <?php if ($check["upd_language"] === "on"): ?> checked="checked"<?php endif ?> class="form-check-input"/>
+                    <div class="row mb-1">
+                        <div class="col-4">
+                            <input name="check[upd_language]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if ($check["upd_language"] === "on"): ?> checked="checked"<?php endif ?> class="form-check-input"/>
+                            <label class="form-label form-label-sm" for="upd_language">
+                                <?= _("Language") ?>
+                            </label>
                         </div>
-                        <label class="col-4 col-form-label col-form-label-sm" for="upd_language">
-                            <?= gettext("Language") ?>
-                        </label>
                         <div class="col">
                             <select name="upd_language" id="upd_language" class="form-select form-select-sm">
                                 <?php foreach ($language_list as $v): ?>
@@ -290,13 +289,13 @@ function submitform() {
                     </div>
 
 
-                    <div class="row">
-                        <div class="col-1">
-                            <input name="check[upd_tariff]" type="checkbox" value="on" <?php if ($check["upd_tariff"] === "on"): ?> checked="checked"<?php endif ?> class="form-check-input"/>
+                    <div class="row mb-1">
+                        <div class="col-4">
+                            <input name="check[upd_tariff]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if ($check["upd_tariff"] === "on"): ?> checked="checked"<?php endif ?> class="form-check-input"/>
+                            <label class="form-label form-label-sm" for="upd_tariff">
+                                <?= _("Tariff") ?>
+                            </label>
                         </div>
-                        <label class="col-4 col-form-label col-form-label-sm" for="upd_tariff">
-                            <?= gettext("Tariff") ?>
-                        </label>
                         <div class="col">
                             <select name="upd_tariff" id="upd_tariff" class="form-select form-select-sm">
                                 <?php foreach ($list_tariff as $v): ?>
@@ -307,77 +306,81 @@ function submitform() {
                     </div>
 
 
-                    <div class="row">
-                        <div class="col-1">
-                            <input name="check[upd_credit]" type="checkbox" value="on" <?php if ($check["upd_credit"] === "on"): ?> checked="checked" <?php endif ?> class="form-check-input"/>
+                    <div class="row mb-1">
+                        <div class="col-4">
+                            <input name="check[upd_credit]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if ($check["upd_credit"] === "on"): ?> checked="checked" <?php endif ?> class="form-check-input"/>
                             <input name="mode[upd_credit]" type="hidden" value="2"/>
+                            <label class="form-label form-label-sm" for="upd_credit">
+                                <?= _("Credit") ?>
+                            </label>
                         </div>
-                        <label class="col-4 col-form-label col-form-label-sm" for="upd_credit">
-                            <?= gettext("Credit") ?>
-                        </label>
                         <div class="col-auto">
                             <input type="number" name="upd_credit" id="upd_credit" min="-100" max="100" value="<?= $upd_credit ?? 0 ?>" class="form-control form-control-sm"/>
                         </div>
                         <div class="col-auto">
                             <div class="form-check form-check-inline">
                                 <input type="radio" name="type[upd_credit]" id="type_upd_credit_1" value="1" <?php if ($type["upd_credit"] ?? 1 == 1): ?>checked="checked"<?php endif ?> class="form-check-input"/>
-                                <label class="form-check-label" for="type_upd_credit_1"><?= gettext("Equals") ?></label>
+                                <label class="form-check-label form-check-label-sm" for="type_upd_credit_1"><?= _("Equals") ?></label>
                             </div>
                             <div class="form-check form-check-inline">
                                 <input type="radio" name="type[upd_credit]" id="type_upd_credit_2" value="2" <?php if($type["upd_credit"] ?? 1 == 2): ?>checked="checked"<?php endif ?> class="form-check-input"/>
-                                <label class="form-check-label" for="type_upd_credit_2"><?= gettext("Add") ?></label>
+                                <label class="form-check-label form-check-label-sm" for="type_upd_credit_2"><?= _("Add") ?></label>
                             </div>
                             <div class="form-check form-check-inline">
                                 <input type="radio" name="type[upd_credit]" id="type_upd_credit_3" value="3" <?php if($type["upd_credit"] ?? 1 == 3): ?>checked="checked"<?php endif ?> class="form-check-input"/>
-                                <label class="form-check-label" for="type_upd_credit_3"><?= gettext("Subtract") ?></label>
+                                <label class="form-check-label form-check-label-sm" for="type_upd_credit_3"><?= _("Subtract") ?></label>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <label class="col-4 col-form-label col-form-label-sm offset-1" for="upd_refill_type">
-                            <?= gettext("Refill") ?>
-                        </label>
+                    <div class="row mb-1">
+                        <div class="col-4">
+                            <label class="form-label form-label-sm ps-3" for="upd_refill_type">
+                                <?= _("Refill") ?>
+                            </label>
+                        </div>
                         <div class="col">
-                            <select name="upd_refill_type" id="upd_refill_type">
+                            <select name="upd_refill_type" id="upd_refill_type" class="form-select form-select-sm">
                                 <?php foreach ($list_refill_type as $v): ?>
                                 <option value="<?= $v[1] ?>" <?php if ($upd_refill_type == $v[1]): ?>selected="selected"<?php endif?>><?= $v[0] ?></option>
                                 <?php endforeach ?>
                             </select>
                         </div>
                     </div>
-                    <div class="row">
-                        <label class="col-4 col-form-label col-form-label-sm offset-1" for="upd_description">
-                            <?= gettext("Description") ?>
-                        </label>
+                    <div class="row mb-1">
+                        <div class="col-4">
+                            <label class="form-label form-label-sm ps-3" for="upd_description">
+                                <?= _("Description") ?>
+                            </label>
+                        </div>
                         <div class="col">
                             <input type="text" name="upd_description" id="upd_description" value="<?= $upd_description ?? "" ?>" class="form-control form-control-sm"/>
                         </div>
                     </div>
 
 
-                    <div class="row">
-                        <div class="col-1">
-                            <input name="check[upd_simultaccess]" type="checkbox" value="on" <?php if ($check["upd_simultaccess"] === "on"): ?> checked="checked" <?php endif ?> class="form-check-input"/>
+                    <div class="row mb-1">
+                        <div class="col-4">
+                            <input name="check[upd_simultaccess]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if ($check["upd_simultaccess"] === "on"): ?> checked="checked" <?php endif ?> class="form-check-input"/>
+                            <label class="form-label form-label-sm" for="upd_simultaccess">
+                                <?= _("Access") ?>
+                            </label>
                         </div>
-                        <label class="col-4 col-form-label col-form-label-sm" for="upd_simultaccess">
-                            <?= gettext("Access") ?>
-                        </label>
                         <div class="col">
                             <select name="upd_simultaccess" id="upd_simultaccess" class="form-select form-select-sm">
-                                <option value="0" <?php if ($upd_simultaccess ?? 0 == 0): ?>selected="selected"<?php endif?>><?= gettext("Individual Access") ?></option>
-                                <option value="1" <?php if ($upd_simultaccess ?? 0 == 1): ?>selected="selected"<?php endif?>><?= gettext("Simultaneous Access") ?></option>
+                                <option value="0" <?php if ($upd_simultaccess ?? 0 == 0): ?>selected="selected"<?php endif?>><?= _("Individual Access") ?></option>
+                                <option value="1" <?php if ($upd_simultaccess ?? 0 == 1): ?>selected="selected"<?php endif?>><?= _("Simultaneous Access") ?></option>
                             </select>
                         </div>
                     </div>
 
 
-                    <div class="row">
-                        <div class="col-1">
-                            <input name="check[upd_currency]" type="checkbox" value="on" <?php if ($check["upd_currency"] === "on"): ?> checked="checked"<?php endif ?> class="form-check-input"/>
+                    <div class="row mb-1">
+                        <div class="col-4">
+                            <input name="check[upd_currency]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if ($check["upd_currency"] === "on"): ?> checked="checked"<?php endif ?> class="form-check-input"/>
+                            <label class="form-label form-label-sm" for="upd_currency">
+                                <?= _("Currency") ?>
+                            </label>
                         </div>
-                        <label class="col-4 col-form-label col-form-label-sm" for="upd_currency">
-                            <?= gettext("Currency") ?>
-                        </label>
                         <div class="col">
                             <select name="upd_currency" id="upd_currency" class="form-select form-select-sm">
                                 <?php foreach ($currencies_list as $v): ?>
@@ -388,109 +391,109 @@ function submitform() {
                     </div>
 
 
-                    <div class="row">
-                        <div class="col-1">
-                            <input name="check[upd_creditlimit]" type="checkbox" value="on" <?php if ($check["upd_creditlimit"] === "on"): ?> checked="checked" <?php endif ?> class="form-check-input"/>
+                    <div class="row mb-1">
+                        <div class="col-4">
+                            <input name="check[upd_creditlimit]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if ($check["upd_creditlimit"] === "on"): ?> checked="checked" <?php endif ?> class="form-check-input"/>
                             <input name="mode[upd_creditlimit]" type="hidden" value="2"/>
+                            <label class="form-label form-label-sm" for="upd_creditlimit">
+                                <?= _("Credit Limit") ?>
+                            </label>
                         </div>
-                        <label class="col-4 col-form-label col-form-label-sm" for="upd_creditlimit">
-                            <?= gettext("Credit Limit") ?>
-                        </label>
                         <div class="col-auto">
                             <input type="number" name="upd_creditlimit" id="upd_creditlimit" min="0" max="1000" value="<?= $upd_creditlimit ?? 0 ?>" class="form-control form-control-sm"/>
                         </div>
                         <div class="col-auto">
                             <div class="form-check form-check-inline">
                                 <input type="radio" name="type[upd_creditlimit]" id="type_upd_creditlimit_1" value="1" <?php if($type["upd_creditlimit"] ?? 1 == 1): ?>checked="checked"<?php endif ?> class="form-check-input"/>
-                                <label class="form-check-label" for="type_upd_creditlimit_1"><?= gettext("Equals") ?></label>
+                                <label class="form-check-label form-check-label-sm" for="type_upd_creditlimit_1"><?= _("Equals") ?></label>
                             </div>
                             <div class="form-check form-check-inline">
                                 <input type="radio" name="type[upd_creditlimit]" id="type_upd_creditlimit_2" value="2" <?php if($type["upd_creditlimit"] ?? 1 == 2): ?>checked="checked"<?php endif ?> class="form-check-input"/>
-                                <label class="form-check-label" for="type_upd_creditlimit_2"><?= gettext("Add") ?></label>
+                                <label class="form-check-label form-check-label-sm" for="type_upd_creditlimit_2"><?= _("Add") ?></label>
                             </div>
                             <div class="form-check form-check-inline">
                                 <input type="radio" name="type[upd_creditlimit]" id="type_upd_creditlimit_3" value="3" <?php if($type["upd_creditlimit"] ?? 1 == 3): ?>checked="checked"<?php endif ?> class="form-check-input"/>
-                                <label class="form-check-label" for="type_upd_creditlimit_3"><?= gettext("Subtract") ?></label>
+                                <label class="form-check-label form-check-label-sm" for="type_upd_creditlimit_3"><?= _("Subtract") ?></label>
                             </div>
                         </div>
                     </div>
 
 
-                    <div class="row">
-                        <div class="col-1">
-                            <input name="check[upd_enableexpire]" type="checkbox" value="on" <?php if ($check["upd_enableexpire"] === "on"): ?> checked="checked" <?php endif ?> class="form-check-input"/>
-                        </div>
-                        <div class="col-4 col-form-label col-form-label-sm" for="upd_enableexpire">
-                            <?= gettext("Access") ?>
+                    <div class="row mb-1">
+                        <div class="col-4">
+                            <input name="check[upd_enableexpire]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if ($check["upd_enableexpire"] === "on"): ?> checked="checked" <?php endif ?> class="form-check-input"/>
+                            <label class="form-label form-label-sm" for="upd_enableexpire">
+                                <?= _("Access") ?>
+                            </label>
                         </div>
                         <div class="col">
                             <select name="upd_enableexpire" id="upd_enableexpire" class="form-select form-select-sm">
-                                <option value="0" <?php if ($upd_enableexpire ?? 0 == 0): ?>selected="selected"<?php endif?>><?= gettext("No Expiry") ?></option>
-                                <option value="1" <?php if ($upd_enableexpire ?? 0 == 1): ?>selected="selected"<?php endif?>><?= gettext("Expire Date") ?></option>
-                                <option value="2" <?php if ($upd_enableexpire ?? 0 == 2): ?>selected="selected"<?php endif?>><?= gettext("Expire Days Since First Use") ?></option>
-                                <option value="3" <?php if ($upd_enableexpire ?? 0 == 3): ?>selected="selected"<?php endif?>><?= gettext("Expire Days Since Creation") ?></option>
+                                <option value="0" <?php if ($upd_enableexpire ?? 0 == 0): ?>selected="selected"<?php endif?>><?= _("No Expiry") ?></option>
+                                <option value="1" <?php if ($upd_enableexpire ?? 0 == 1): ?>selected="selected"<?php endif?>><?= _("Expire Date") ?></option>
+                                <option value="2" <?php if ($upd_enableexpire ?? 0 == 2): ?>selected="selected"<?php endif?>><?= _("Expire Days Since First Use") ?></option>
+                                <option value="3" <?php if ($upd_enableexpire ?? 0 == 3): ?>selected="selected"<?php endif?>><?= _("Expire Days Since Creation") ?></option>
                             </select>
                         </div>
                     </div>
 
 
-                    <div class="row">
-                        <div class="col-1">
-                            <input name="check[upd_expirationdate]" type="checkbox" value="on" <?php if ($check["upd_expirationdate"] === "on"): ?> checked="checked" <?php endif ?> class="form-check-input"/>
+                    <div class="row mb-1">
+                        <div class="col-4">
+                            <input name="check[upd_expirationdate]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if ($check["upd_expirationdate"] === "on"): ?> checked="checked" <?php endif ?> class="form-check-input"/>
+                            <label class="form-label form-label-sm" for="upd_expirationdate">
+                                <?= _("Expiry Date") ?>
+                            </label>
                         </div>
-                        <label class="col-4 col-form-label col-form-label-sm" for="upd_expirationdate">
-                            <?= gettext("Expiry Date") ?>
-                        </label>
                         <div class="col">
-                            <input type="datetime-local" name="upd_expirationdate" id="upd_expirationdate" value="<?= (new \DateTime("now + 10 years"))->format("Y-m-d H:i:s") ?>" class="form-control form-control-sm"/>
+                            <input type="datetime-local" name="upd_expirationdate" id="upd_expirationdate" value="<?= (new DateTime("now + 10 years"))->format("Y-m-d H:i:s") ?>" class="form-control form-control-sm"/>
                         </div>
                     </div>
 
 
-                    <div class="row">
-                        <div class="col-1">
-                            <input name="check[upd_expiredays]" type="checkbox" value="on" <?php if ($check["upd_expiredays"] === "on"): ?> checked="checked" <?php endif ?> class="form-check-input"/>
+                    <div class="row mb-1">
+                        <div class="col-4">
+                            <input name="check[upd_expiredays]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if ($check["upd_expiredays"] === "on"): ?> checked="checked" <?php endif ?> class="form-check-input"/>
+                            <label class="form-label form-label-sm" for="upd_expiredays">
+                                <?= _("Expiration Days") ?>
+                            </label>
                         </div>
-                        <label class="col-4 col-form-label col-form-label-sm" for="upd_expiredays">
-                            <?= gettext("Expiration Days") ?>
-                        </label>
                         <div class="col">
                             <input type="number" name="upd_expiredays" id="upd_expiredays" min="1" max="3650" value="<?= $upd_expiredays ?? 0 ?>" class="form-control form-control-sm"/>
                         </div>
                     </div>
 
 
-                    <div class="row">
-                        <div class="col-1">
-                            <input name="check[upd_runservice]" type="checkbox" <?php if ($check["upd_runservice"] === "on"): ?> checked="checked" <?php endif ?> class="form-check-input"/>
+                    <div class="row mb-1">
+                        <div class="col-4">
+                            <input name="check[upd_runservice]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if ($check["upd_runservice"] === "on"): ?> checked="checked" <?php endif ?> class="form-check-input"/>
                             <input name="mode[upd_runservice]" type="hidden" value="2"/>
+                            <label class="form-label form-label-sm" for="upd_runservice">
+                                <?= _("Run Service") ?>
+                            </label>
                         </div>
-                        <label class="col-4 col-form-label col-form-label-sm" for="upd_runservice">
-                            <?= gettext("Run Service") ?>
-                        </label>
                         <div class="col-auto">
                             <input type="number" name="upd_runservice" id="upd_runservice" min="0" max="1000" value="<?= $upd_runservice ?? 0 ?>" class="form-control form-control-sm"/>
                         </div>
                         <div class="col-auto">
                             <div class="form-check form-check-inline">
                                 <input type="radio" name="type[upd_runservice]" id="type_upd_runservice_1" value="1" <?php if($type["upd_runservice"] ?? 1 == 1): ?>checked="checked"<?php endif ?> class="form-check-input"/>
-                                <label class="form-check-label" for="type_upd_runservice_1"><?= gettext("Yes") ?></label>
+                                <label class="form-check-label form-check-label-sm" for="type_upd_runservice_1"><?= _("Yes") ?></label>
                             </div>
                             <div class="form-check form-check-inline">
                                 <input type="radio" name="type[upd_runservice]" id="type_upd_runservice_0" value="0" <?php if($type["upd_runservice"] ?? 1 == 0): ?>checked="checked"<?php endif ?> class="form-check-input"/>
-                                <label class="form-check-label" for="type_upd_runservice_0"><?= gettext("No") ?></label>
+                                <label class="form-check-label form-check-label-sm" for="type_upd_runservice_0"><?= _("No") ?></label>
                             </div>
                         </div>
                     </div>
 
 
-                    <div class="row">
-                        <div class="col-1">
-                            <input name="check[upd_id_group]" type="checkbox" value="on" <?php if ($check["upd_id_group"] === "on"): ?> checked="checked"<?php endif ?> class="form-check-input"/>
+                    <div class="row mb-1">
+                        <div class="col-4">
+                            <input name="check[upd_id_group]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if ($check["upd_id_group"] === "on"): ?> checked="checked"<?php endif ?> class="form-check-input"/>
+                            <label class="form-label form-label-sm" for="upd_id_group">
+                                <?= _("Group this batch belongs to") ?>
+                            </label>
                         </div>
-                        <label class="col-4 col-form-label col-form-label-sm" for="upd_id_group">
-                            <?= gettext("Group this batch belongs to") ?>
-                        </label>
                         <div class="col">
                             <select name="upd_id_group" id="upd_id_group" class="form-select form-select-sm">
                                 <?php foreach ($list_group as $v): ?>
@@ -501,13 +504,13 @@ function submitform() {
                     </div>
 
 
-                    <div class="row">
-                        <div class="col-1">
-                            <input name="check[upd_discount]" type="checkbox" value="on" <?php if ($check["upd_discount"] === "on"): ?> checked="checked" <?php endif ?> class="form-check-input"/>
+                    <div class="row mb-1">
+                        <div class="col-4">
+                            <input name="check[upd_discount]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if ($check["upd_discount"] === "on"): ?> checked="checked" <?php endif ?> class="form-check-input"/>
+                            <label class="form-label form-label-sm" for="upd_discount">
+                                <?= _("Discount") ?>
+                            </label>
                         </div>
-                        <label class="col-4 col-form-label col-form-label-sm" for="upd_discount">
-                            <?= gettext("Discount") ?>
-                        </label>
                         <div class="col input-group">
                             <input type="number" name="upd_discount" id="upd_discount" min="0" max="99" value="<?= $upd_discount ?? 0 ?>" class="form-control form-control-sm"/>
                             <span class="input-group-text">%</span>
@@ -515,13 +518,13 @@ function submitform() {
                     </div>
 
 
-                    <div class="row">
-                        <div class="col-1">
-                            <input name="check[upd_id_seria]" type="checkbox" value="on" <?php if ($check["upd_id_seria"] === "on"): ?> checked="checked"<?php endif ?> class="form-check-input"/>
+                    <div class="row mb-1">
+                        <div class="col-4">
+                            <input name="check[upd_id_seria]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if ($check["upd_id_seria"] === "on"): ?> checked="checked"<?php endif ?> class="form-check-input"/>
+                            <label class="form-label form-label-sm" for="upd_id_seria">
+                                <?= _("Move to Seria") ?> <!-- TODO: figure out WTF this means -->
+                            </label>
                         </div>
-                        <label class="col-4 col-form-label col-form-label-sm" for="upd_id_seria">
-                            <?= gettext("Move to Seria") ?> <!-- TODO: figure out WTF this means -->
-                        </label>
                         <div class="col">
                             <select name="upd_id_seria" id="upd_id_seria" class="form-select form-select-sm">
                                 <?php foreach ($list_seria as $v): ?>
@@ -532,27 +535,27 @@ function submitform() {
                     </div>
 
 
-                    <div class="row">
-                        <div class="col-1">
-                            <input name="check[upd_vat]" type="checkbox" value="on" <?php if ($check["upd_vat"] === "on"): ?> checked="checked" <?php endif ?> class="form-check-input"/>
+                    <div class="row mb-1">
+                        <div class="col-4">
+                            <input name="check[upd_vat]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if ($check["upd_vat"] === "on"): ?> checked="checked" <?php endif ?> class="form-check-input"/>
+                            <label class="form-label form-label-sm" for="upd_vat">
+                                <?= _("VAT") ?>
+                            </label>
                         </div>
-                        <label class="col-4 col-form-label col-form-label-sm" for="upd_vat">
-                            <?= gettext("VAT") ?>
-                        </label>
                         <div class="col input-group">
-                            <input type="number" name="upd_vat" id="upd_vat" min="0" max="99" value="<?= isset($upd_vat) ? $upd_vat : 0 ?>" class="form-control form-control-sm"/>
+                            <input type="number" name="upd_vat" id="upd_vat" min="0" max="99" value="<?= $upd_vat ?? 0 ?>" class="form-control form-control-sm"/>
                             <span class="input-group-text">%</span>
                         </div>
                     </div>
 
 
-                    <div class="row">
-                        <div class="col-1">
-                            <input name="check[upd_country]" type="checkbox" value="on" <?php if ($check["upd_country"] === "on"): ?> checked="checked"<?php endif ?> class="form-check-input"/>
+                    <div class="row mb-1">
+                        <div class="col-4">
+                            <input name="check[upd_country]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if ($check["upd_country"] === "on"): ?> checked="checked"<?php endif ?> class="form-check-input"/>
+                            <label class="form-label form-label-sm" for="upd_country">
+                                <?= _("Country") ?>
+                            </label>
                         </div>
-                        <label class="col-4 col-form-label col-form-label-sm" for="upd_country">
-                            <?= gettext("Country") ?>
-                        </label>
                         <div class="col">
                             <select name="upd_country" id="upd_country" class="form-select form-select-sm">
                                 <?php foreach ($list_country as $v): ?>
@@ -564,8 +567,8 @@ function submitform() {
                 </form> <!-- .container-fluid -->
             </div> <!-- .modal-body -->
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?= gettext("Close") ?></button>
-                <button type="submit" form="updateForm" class="btn btn-primary"><?= gettext("Batch Update Cards") ?></button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?= _("Close") ?></button>
+                <button type="submit" form="updateForm" class="btn btn-primary"><?= _("Batch Update Cards") ?></button>
             </div>
         </div> <!-- .modal-content -->
     </div> <!-- .modal-dialog -->
@@ -579,18 +582,18 @@ function submitform() {
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <span id="modal-title-sip"><?= gettext("Changes detected on SIP/IAX Friends") ?></span>
+                <span id="modal-title-sip"><?= _("Changes detected on SIP/IAX Friends") ?></span>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?= gettext("Close") ?></button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?= _("Close") ?></button>
                 <?php  if (!empty($_SESSION["is_sip_changed"])): ?>
                     <a class="btn btn-primary" href="CC_generate_friend_file.php?atmenu=sipfriend">
-                        <?= gettext("Generate additional_a2billing_sip.conf") ?>
+                        <?= _("Generate additional_a2billing_sip.conf") ?>
                     </a>
                 <?php endif ?>
                 <?php if (!empty($_SESSION["is_iax_changed"])): ?>
                     <a class="btn btn-primary" href="CC_generate_friend_file.php?atmenu=iaxfriend">
-                        <?= gettext("Generate additional_a2billing_iax.conf") ?>
+                        <?= _("Generate additional_a2billing_iax.conf") ?>
                     </a>
                 <?php endif ?>
             </div>
@@ -613,10 +616,10 @@ if (!$popup_select && $form_action === "ask-add"):?>
 <div class="row">
     <div class="col">
         <form action="?form_action=ask-add&section=1" method="post" name="cardform">
-            <label for="cardnumber_length"><?= gettext("Change the account number length") ?></label>
+            <label for="cardnumber_length"><?= _("Change the account number length") ?></label>
             <select name="cardnumber_lenght_list" id="cardnumber_length" onchange="submitform()">
                 <?php foreach ($A2B->cardnumber_range as $v): ?>
-                <option value="$v" <?php if ($v == $cardnumberlenght_list): ?>selected="selected"<?php endif ?>><?= $v ?> <?= gettext("Digits") ?></option>
+                <option value="$v" <?php if ($v == $cardnumberlenght_list): ?>selected="selected"<?php endif ?>><?= $v ?> <?= _("Digits") ?></option>
                 <?php endforeach ?>
             </select>
         </form>
