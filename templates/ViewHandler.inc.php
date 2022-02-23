@@ -11,6 +11,11 @@ use A2billing\Table;
  * @var string $current_page
  * @var int $popup_select
  */
+global $stitle;
+global $letter;
+global $current_page;
+global $popup_select;
+
 getpost_ifset(array('stitle', 'letter', 'current_page', 'popup_select'));
 ?>
 
