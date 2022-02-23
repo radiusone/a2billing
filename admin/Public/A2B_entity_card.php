@@ -245,9 +245,9 @@ function submitform() {
 
                     <div class="row">
                         <div class="col-1">
-                            <input name="check[upd_inuse]" type="checkbox" <?php if ($check["upd_inuse"] === "on"): ?> checked="checked"<?php endif ?>/>
+                            <input name="check[upd_inuse]" type="checkbox" value="on" <?php if ($check["upd_inuse"] === "on"): ?> checked="checked"<?php endif ?> class="form-check-input"/>
                         </div>
-                        <label class="col-5 col-form-label col-form-label-sm" for="upd_inuse">
+                        <label class="col-4 col-form-label col-form-label-sm" for="upd_inuse">
                             <?= gettext("In use") ?>
                         </label>
                         <div class="col">
@@ -258,9 +258,9 @@ function submitform() {
 
                     <div class="row">
                         <div class="col-1">
-                            <input name="check[upd_status]" type="checkbox" <?php if ($check["upd_status"] === "on"): ?> checked="checked"<?php endif ?>/>
+                            <input name="check[upd_status]" type="checkbox" value="on" <?php if ($check["upd_status"] === "on"): ?> checked="checked"<?php endif ?> class="form-check-input"/>
                         </div>
-                        <label class="col-5 col-form-label col-form-label-sm" for="upd_status">
+                        <label class="col-4 col-form-label col-form-label-sm" for="upd_status">
                             <?= gettext("Status") ?>
                         </label>
                         <div class="col">
@@ -275,9 +275,9 @@ function submitform() {
 
                     <div class="row">
                         <div class="col-1">
-                            <input name="check[upd_language]" type="checkbox" <?php if ($check["upd_language"] === "on"): ?> checked="checked"<?php endif ?>/>
+                            <input name="check[upd_language]" type="checkbox" value="on" <?php if ($check["upd_language"] === "on"): ?> checked="checked"<?php endif ?> class="form-check-input"/>
                         </div>
-                        <label class="col-5 col-form-label col-form-label-sm" for="upd_language">
+                        <label class="col-4 col-form-label col-form-label-sm" for="upd_language">
                             <?= gettext("Language") ?>
                         </label>
                         <div class="col">
@@ -292,9 +292,9 @@ function submitform() {
 
                     <div class="row">
                         <div class="col-1">
-                            <input name="check[upd_tariff]" type="checkbox" <?php if ($check["upd_tariff"] === "on"): ?> checked="checked"<?php endif ?>/>
+                            <input name="check[upd_tariff]" type="checkbox" value="on" <?php if ($check["upd_tariff"] === "on"): ?> checked="checked"<?php endif ?> class="form-check-input"/>
                         </div>
-                        <label class="col-5 col-form-label col-form-label-sm" for="upd_tariff">
+                        <label class="col-4 col-form-label col-form-label-sm" for="upd_tariff">
                             <?= gettext("Tariff") ?>
                         </label>
                         <div class="col">
@@ -309,26 +309,32 @@ function submitform() {
 
                     <div class="row">
                         <div class="col-1">
-                            <input name="check[upd_credit]" type="checkbox" <?php if ($check["upd_credit"] === "on"): ?> checked="checked" <?php endif ?>/>
+                            <input name="check[upd_credit]" type="checkbox" value="on" <?php if ($check["upd_credit"] === "on"): ?> checked="checked" <?php endif ?> class="form-check-input"/>
                             <input name="mode[upd_credit]" type="hidden" value="2"/>
                         </div>
-                        <label class="col-5 col-form-label col-form-label-sm" for="upd_credit">
+                        <label class="col-4 col-form-label col-form-label-sm" for="upd_credit">
                             <?= gettext("Credit") ?>
                         </label>
                         <div class="col-auto">
                             <input type="number" name="upd_credit" id="upd_credit" min="-100" max="100" value="<?= $upd_credit ?? 0 ?>" class="form-control form-control-sm"/>
                         </div>
-                        <div class="col-auto form-check form-check-inline">
-                            <input type="radio" name="type[upd_credit]" id="type_upd_credit_1" value="1" <?php if ($type["upd_credit"] ?? 1 == 1): ?>checked="checked"<?php endif ?> class="form-check-input"/>
-                            <label class="form-check-label" for="type_upd_credit_1"><?= gettext("Equals") ?></label>
-                            <input type="radio" name="type[upd_credit]" id="type_upd_credit_2" value="2" <?php if($type["upd_credit"] ?? 1 == 2): ?>checked="checked"<?php endif ?> class="form-check-input"/>
-                            <label class="form-check-label" for="type_upd_credit_2"><?= gettext("Add") ?></label>
-                            <input type="radio" name="type[upd_credit]" id="type_upd_credit_3" value="3" <?php if($type["upd_credit"] ?? 1 == 3): ?>checked="checked"<?php endif ?> class="form-check-input"/>
-                            <label class="form-check-label" for="type_upd_credit_3"><?= gettext("Subtract") ?></label>
+                        <div class="col-auto">
+                            <div class="form-check form-check-inline">
+                                <input type="radio" name="type[upd_credit]" id="type_upd_credit_1" value="1" <?php if ($type["upd_credit"] ?? 1 == 1): ?>checked="checked"<?php endif ?> class="form-check-input"/>
+                                <label class="form-check-label" for="type_upd_credit_1"><?= gettext("Equals") ?></label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input type="radio" name="type[upd_credit]" id="type_upd_credit_2" value="2" <?php if($type["upd_credit"] ?? 1 == 2): ?>checked="checked"<?php endif ?> class="form-check-input"/>
+                                <label class="form-check-label" for="type_upd_credit_2"><?= gettext("Add") ?></label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input type="radio" name="type[upd_credit]" id="type_upd_credit_3" value="3" <?php if($type["upd_credit"] ?? 1 == 3): ?>checked="checked"<?php endif ?> class="form-check-input"/>
+                                <label class="form-check-label" for="type_upd_credit_3"><?= gettext("Subtract") ?></label>
+                            </div>
                         </div>
                     </div>
                     <div class="row">
-                        <label class="col-5 col-form-label col-form-label-sm offset-1" for="upd_refill_type">
+                        <label class="col-4 col-form-label col-form-label-sm offset-1" for="upd_refill_type">
                             <?= gettext("Refill") ?>
                         </label>
                         <div class="col">
@@ -340,7 +346,7 @@ function submitform() {
                         </div>
                     </div>
                     <div class="row">
-                        <label class="col-5 col-form-label col-form-label-sm offset-1" for="upd_description">
+                        <label class="col-4 col-form-label col-form-label-sm offset-1" for="upd_description">
                             <?= gettext("Description") ?>
                         </label>
                         <div class="col">
@@ -351,9 +357,9 @@ function submitform() {
 
                     <div class="row">
                         <div class="col-1">
-                            <input name="check[upd_simultaccess]" type="checkbox" <?php if ($check["upd_simultaccess"] === "on"): ?> checked="checked" <?php endif ?>/>
+                            <input name="check[upd_simultaccess]" type="checkbox" value="on" <?php if ($check["upd_simultaccess"] === "on"): ?> checked="checked" <?php endif ?> class="form-check-input"/>
                         </div>
-                        <label class="col-5 col-form-label col-form-label-sm" for="upd_simultaccess">
+                        <label class="col-4 col-form-label col-form-label-sm" for="upd_simultaccess">
                             <?= gettext("Access") ?>
                         </label>
                         <div class="col">
@@ -367,9 +373,9 @@ function submitform() {
 
                     <div class="row">
                         <div class="col-1">
-                            <input name="check[upd_currency]" type="checkbox" <?php if ($check["upd_currency"] === "on"): ?> checked="checked"<?php endif ?>/>
+                            <input name="check[upd_currency]" type="checkbox" value="on" <?php if ($check["upd_currency"] === "on"): ?> checked="checked"<?php endif ?> class="form-check-input"/>
                         </div>
-                        <label class="col-5 col-form-label col-form-label-sm" for="upd_currency">
+                        <label class="col-4 col-form-label col-form-label-sm" for="upd_currency">
                             <?= gettext("Currency") ?>
                         </label>
                         <div class="col">
@@ -384,31 +390,37 @@ function submitform() {
 
                     <div class="row">
                         <div class="col-1">
-                            <input name="check[upd_creditlimit]" type="checkbox" <?php if ($check["upd_creditlimit"] === "on"): ?> checked="checked" <?php endif ?>/>
+                            <input name="check[upd_creditlimit]" type="checkbox" value="on" <?php if ($check["upd_creditlimit"] === "on"): ?> checked="checked" <?php endif ?> class="form-check-input"/>
                             <input name="mode[upd_creditlimit]" type="hidden" value="2"/>
                         </div>
-                        <label class="col-5 col-form-label col-form-label-sm" for="upd_creditlimit">
+                        <label class="col-4 col-form-label col-form-label-sm" for="upd_creditlimit">
                             <?= gettext("Credit Limit") ?>
                         </label>
                         <div class="col-auto">
                             <input type="number" name="upd_creditlimit" id="upd_creditlimit" min="0" max="1000" value="<?= $upd_creditlimit ?? 0 ?>" class="form-control form-control-sm"/>
                         </div>
-                        <div class="col-auto form-check form-check-inline">
-                            <input type="radio" name="type[upd_creditlimit]" id="type_upd_creditlimit_1" value="1" <?php if($type["upd_creditlimit"] ?? 1 == 1): ?>checked="checked"<?php endif ?> class="form-check-input"/>
-                            <label class="form-check-label" for="type_upd_creditlimit_1"><?= gettext("Equals") ?></label>
-                            <input type="radio" name="type[upd_creditlimit]" id="type_upd_creditlimit_2" value="2" <?php if($type["upd_creditlimit"] ?? 1 == 2): ?>checked="checked"<?php endif ?> class="form-check-input"/>
-                            <label class="form-check-label" for="type_upd_creditlimit_2"><?= gettext("Add") ?></label>
-                            <input type="radio" name="type[upd_creditlimit]" id="type_upd_creditlimit_3" value="3" <?php if($type["upd_creditlimit"] ?? 1 == 3): ?>checked="checked"<?php endif ?> class="form-check-input"/>
-                            <label class="form-check-label" for="type_upd_creditlimit_3"><?= gettext("Subtract") ?></label>
+                        <div class="col-auto">
+                            <div class="form-check form-check-inline">
+                                <input type="radio" name="type[upd_creditlimit]" id="type_upd_creditlimit_1" value="1" <?php if($type["upd_creditlimit"] ?? 1 == 1): ?>checked="checked"<?php endif ?> class="form-check-input"/>
+                                <label class="form-check-label" for="type_upd_creditlimit_1"><?= gettext("Equals") ?></label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input type="radio" name="type[upd_creditlimit]" id="type_upd_creditlimit_2" value="2" <?php if($type["upd_creditlimit"] ?? 1 == 2): ?>checked="checked"<?php endif ?> class="form-check-input"/>
+                                <label class="form-check-label" for="type_upd_creditlimit_2"><?= gettext("Add") ?></label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input type="radio" name="type[upd_creditlimit]" id="type_upd_creditlimit_3" value="3" <?php if($type["upd_creditlimit"] ?? 1 == 3): ?>checked="checked"<?php endif ?> class="form-check-input"/>
+                                <label class="form-check-label" for="type_upd_creditlimit_3"><?= gettext("Subtract") ?></label>
+                            </div>
                         </div>
                     </div>
 
 
                     <div class="row">
                         <div class="col-1">
-                            <input name="check[upd_enableexpire]" type="checkbox" <?php if ($check["upd_enableexpire"] === "on"): ?> checked="checked" <?php endif ?>/>
+                            <input name="check[upd_enableexpire]" type="checkbox" value="on" <?php if ($check["upd_enableexpire"] === "on"): ?> checked="checked" <?php endif ?> class="form-check-input"/>
                         </div>
-                        <div class="col-5 col-form-label col-form-label-sm" for="upd_enableexpire">
+                        <div class="col-4 col-form-label col-form-label-sm" for="upd_enableexpire">
                             <?= gettext("Access") ?>
                         </div>
                         <div class="col">
@@ -424,9 +436,9 @@ function submitform() {
 
                     <div class="row">
                         <div class="col-1">
-                            <input name="check[upd_expirationdate]" type="checkbox" <?php if ($check["upd_expirationdate"] === "on"): ?> checked="checked" <?php endif ?>/>
+                            <input name="check[upd_expirationdate]" type="checkbox" value="on" <?php if ($check["upd_expirationdate"] === "on"): ?> checked="checked" <?php endif ?> class="form-check-input"/>
                         </div>
-                        <label class="col-5 col-form-label col-form-label-sm" for="upd_expirationdate">
+                        <label class="col-4 col-form-label col-form-label-sm" for="upd_expirationdate">
                             <?= gettext("Expiry Date") ?>
                         </label>
                         <div class="col">
@@ -437,9 +449,9 @@ function submitform() {
 
                     <div class="row">
                         <div class="col-1">
-                            <input name="check[upd_expiredays]" type="checkbox" <?php if ($check["upd_expiredays"] === "on"): ?> checked="checked" <?php endif ?>/>
+                            <input name="check[upd_expiredays]" type="checkbox" value="on" <?php if ($check["upd_expiredays"] === "on"): ?> checked="checked" <?php endif ?> class="form-check-input"/>
                         </div>
-                        <label class="col-5 col-form-label col-form-label-sm" for="upd_expiredays">
+                        <label class="col-4 col-form-label col-form-label-sm" for="upd_expiredays">
                             <?= gettext("Expiration Days") ?>
                         </label>
                         <div class="col">
@@ -450,29 +462,33 @@ function submitform() {
 
                     <div class="row">
                         <div class="col-1">
-                            <input name="check[upd_runservice]" type="checkbox" <?php if ($check["upd_runservice"] === "on"): ?> checked="checked" <?php endif ?>/>
+                            <input name="check[upd_runservice]" type="checkbox" <?php if ($check["upd_runservice"] === "on"): ?> checked="checked" <?php endif ?> class="form-check-input"/>
                             <input name="mode[upd_runservice]" type="hidden" value="2"/>
                         </div>
-                        <label class="col-5 col-form-label col-form-label-sm" for="upd_runservice">
+                        <label class="col-4 col-form-label col-form-label-sm" for="upd_runservice">
                             <?= gettext("Run Service") ?>
                         </label>
                         <div class="col-auto">
                             <input type="number" name="upd_runservice" id="upd_runservice" min="0" max="1000" value="<?= $upd_runservice ?? 0 ?>" class="form-control form-control-sm"/>
                         </div>
-                        <div class="col-auto form-check form-check-inline">
-                            <input type="radio" name="type[upd_runservice]" id="type_upd_runservice_1" value="1" <?php if($type["upd_runservice"] ?? 1 == 1): ?>checked="checked"<?php endif ?> class="form-check-input"/>
-                            <label class="form-check-label" for="type_upd_runservice_1"><?= gettext("Yes") ?></label>
-                            <input type="radio" name="type[upd_runservice]" id="type_upd_runservice_0" value="0" <?php if($type["upd_runservice"] ?? 1 == 0): ?>checked="checked"<?php endif ?> class="form-check-input"/>
-                            <label class="form-check-label" for="type_upd_runservice_0"><?= gettext("No") ?></label>
+                        <div class="col-auto">
+                            <div class="form-check form-check-inline">
+                                <input type="radio" name="type[upd_runservice]" id="type_upd_runservice_1" value="1" <?php if($type["upd_runservice"] ?? 1 == 1): ?>checked="checked"<?php endif ?> class="form-check-input"/>
+                                <label class="form-check-label" for="type_upd_runservice_1"><?= gettext("Yes") ?></label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input type="radio" name="type[upd_runservice]" id="type_upd_runservice_0" value="0" <?php if($type["upd_runservice"] ?? 1 == 0): ?>checked="checked"<?php endif ?> class="form-check-input"/>
+                                <label class="form-check-label" for="type_upd_runservice_0"><?= gettext("No") ?></label>
+                            </div>
                         </div>
                     </div>
 
 
                     <div class="row">
                         <div class="col-1">
-                            <input name="check[upd_id_group]" type="checkbox" <?php if ($check["upd_id_group"] === "on"): ?> checked="checked"<?php endif ?>/>
+                            <input name="check[upd_id_group]" type="checkbox" value="on" <?php if ($check["upd_id_group"] === "on"): ?> checked="checked"<?php endif ?> class="form-check-input"/>
                         </div>
-                        <label class="col-5 col-form-label col-form-label-sm" for="upd_id_group">
+                        <label class="col-4 col-form-label col-form-label-sm" for="upd_id_group">
                             <?= gettext("Group this batch belongs to") ?>
                         </label>
                         <div class="col">
@@ -487,9 +503,9 @@ function submitform() {
 
                     <div class="row">
                         <div class="col-1">
-                            <input name="check[upd_discount]" type="checkbox" <?php if ($check["upd_discount"] === "on"): ?> checked="checked" <?php endif ?>/>
+                            <input name="check[upd_discount]" type="checkbox" value="on" <?php if ($check["upd_discount"] === "on"): ?> checked="checked" <?php endif ?> class="form-check-input"/>
                         </div>
-                        <label class="col-5 col-form-label col-form-label-sm" for="upd_discount">
+                        <label class="col-4 col-form-label col-form-label-sm" for="upd_discount">
                             <?= gettext("Discount") ?>
                         </label>
                         <div class="col input-group">
@@ -501,9 +517,9 @@ function submitform() {
 
                     <div class="row">
                         <div class="col-1">
-                            <input name="check[upd_id_seria]" type="checkbox" <?php if ($check["upd_id_seria"] === "on"): ?> checked="checked"<?php endif ?>/>
+                            <input name="check[upd_id_seria]" type="checkbox" value="on" <?php if ($check["upd_id_seria"] === "on"): ?> checked="checked"<?php endif ?> class="form-check-input"/>
                         </div>
-                        <label class="col-5 col-form-label col-form-label-sm" for="upd_id_seria">
+                        <label class="col-4 col-form-label col-form-label-sm" for="upd_id_seria">
                             <?= gettext("Move to Seria") ?> <!-- TODO: figure out WTF this means -->
                         </label>
                         <div class="col">
@@ -518,9 +534,9 @@ function submitform() {
 
                     <div class="row">
                         <div class="col-1">
-                            <input name="check[upd_vat]" type="checkbox" <?php if ($check["upd_vat"] === "on"): ?> checked="checked" <?php endif ?>/>
+                            <input name="check[upd_vat]" type="checkbox" value="on" <?php if ($check["upd_vat"] === "on"): ?> checked="checked" <?php endif ?> class="form-check-input"/>
                         </div>
-                        <label class="col-5 col-form-label col-form-label-sm" for="upd_vat">
+                        <label class="col-4 col-form-label col-form-label-sm" for="upd_vat">
                             <?= gettext("VAT") ?>
                         </label>
                         <div class="col input-group">
@@ -532,9 +548,9 @@ function submitform() {
 
                     <div class="row">
                         <div class="col-1">
-                            <input name="check[upd_country]" type="checkbox" <?php if ($check["upd_country"] === "on"): ?> checked="checked"<?php endif ?>/>
+                            <input name="check[upd_country]" type="checkbox" value="on" <?php if ($check["upd_country"] === "on"): ?> checked="checked"<?php endif ?> class="form-check-input"/>
                         </div>
-                        <label class="col-5 col-form-label col-form-label-sm" for="upd_country">
+                        <label class="col-4 col-form-label col-form-label-sm" for="upd_country">
                             <?= gettext("Country") ?>
                         </label>
                         <div class="col">
