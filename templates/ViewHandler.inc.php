@@ -294,7 +294,7 @@ function openURLFilter(link) {
                     <?php endif ?>
                 <?php endif ?>
                 <?php for ($b = 1; $b <= 5; $b++):
-                    if (property_exists($this, "FG_OTHER_BUTTON$b")):
+                    if (property_exists($this, "FG_OTHER_BUTTON$b") && !empty($this->{"FG_OTHER_BUTTON$b"})):
                         $check = true;
                         $condition_eval = preg_replace_callback(
                             "/col([0-9])/i",
