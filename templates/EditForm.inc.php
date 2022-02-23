@@ -369,11 +369,11 @@ use A2billing\Table;
             <?php endif /*  end input type selection  */ ?>
         <?php endif /*  end check for colon in custom query  */ ?>
     <?php endforeach ?>
-    <div class="row mb-3">
-        <div class="col-6">
+    <div class="row my-4 justify-content-between">
+        <div class="col-auto">
             <?= $this->FG_BUTTON_EDITION_BOTTOM_TEXT ?>
         </div>
-        <div class="col-6">
+        <div class="col-auto">
             <button type="submit" class="btn btn-primary"><?= $this->FG_EDIT_PAGE_CONFIRM_BUTTON ?></button>
         </div>
     </div>
