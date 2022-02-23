@@ -17,7 +17,7 @@ getpost_ifset(array('stitle', 'letter', 'current_page', 'popup_select'));
 <?php if( $popup_select < 1 && ($this->FG_LIST_ADDING_BUTTON1 || $this->FG_LIST_ADDING_BUTTON2)): ?>
 <div class="row pb-3 justify-content-end align-items-center">
     <?php if($this->FG_LIST_ADDING_BUTTON1): ?>
-        <div class="flex-shrink-0 flex-grow-0 w-auto">
+        <div class="col-auto">
             <a href="<?= $this->FG_LIST_ADDING_BUTTON_LINK1 ?>" class="text-decoration-none">
                 <?= $this->FG_LIST_ADDING_BUTTON_MSG1 ?>
                 <?php if ($this->FG_LIST_ADDING_BUTTON_IMG1): ?>
@@ -27,7 +27,7 @@ getpost_ifset(array('stitle', 'letter', 'current_page', 'popup_select'));
         </div>
     <?php endif ?>
     <?php if($this->FG_LIST_ADDING_BUTTON2): ?>
-        <div class="flex-shrink-0 flex-grow-0 w-auto">
+        <div class="col-auto">
             <a href="<?= $this->FG_LIST_ADDING_BUTTON_LINK2 ?>" class="text-decoration-none">
                 <?= $this->FG_LIST_ADDING_BUTTON_MSG2 ?>
                 <?php if ($this->FG_LIST_ADDING_BUTTON_IMG2): ?>
@@ -113,7 +113,7 @@ function openURLFilter(link) {
     <?php endforeach ?>
     <div class="row pb-3 align-items-center">
         <?php if ($this->FG_FILTER_APPLY): ?>
-        <div class="col">
+        <div class="col-auto">
             <label for="filterprefix" class="form-label d-inline w-50">
                 <?= gettext("Filter on") ?>
                 <?= $this->FG_FILTERFIELDNAME ?>:
@@ -129,7 +129,7 @@ function openURLFilter(link) {
         <?php endif ?>
 
         <?php if ($this->FG_FILTER_APPLY2): ?>
-        <div class="col">
+        <div class="col-auto">
             <label for="filterprefix2" class="form-label d-inline w-50">
                 <?= gettext("Filter on");?>
                 <?= $this->FG_FILTERFIELDNAME2 ?>:
@@ -143,7 +143,7 @@ function openURLFilter(link) {
             <?php endif ?>
         </div>
         <?php endif ?>
-        <div class="col-2">
+        <div class="col-auto">
             <button type="submit" class="btn btn-sm btn-primary"><?= gettext("APPLY FILTER ") ?></button>
         </div>
     </div>
@@ -383,7 +383,7 @@ function openURLFilter(link) {
     <?php endif ?>
 
     <?php if ($this->FG_EXPORT_CSV): ?>
-    <div class="col-3">
+    <div class="col-auto">
         <a href="export_csv.php?var_export=<?= $this->FG_EXPORT_SESSION_VAR ?>&amp;var_export_type=type_csv" target="_blank" class="text-decoration-none">
             <img alt="" height="32" src="data:image/gif;base64,R0lGODlhQABFAOMIADF+VEaKY3CdgZecl8bLxuLl4vL08f///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEKAAgALAAAAABAAEUAAAT+8MhJq7046827/2BljGRpnugZdsXgvnAszzBhrFtb7Hzv/8Cdy4bLtIoZw4DAvCErx6dFWTA0pZModkI9WIlY7dY7KEi+zqd42z1f1YMxt0xBw+Vnev2NW2Pbe2ArflKAgWkghE+Gh4NxeIyNiY9ykZIeikhKNikjLYIcmUVKNDNmmJRJBgUEpxtMsLGyBHosqWesBAICAb0BBB2dJjofOrC8vsm+wBzCJrVTq0y7ytXVzCEkZyS10rrI1uHWnClcwnOuBOLr60uzsBPvsK6A6uz3yu7y8fKt6PH4Avbq508CwTT1BAbE9qeWPYXsGBZyWG2XRWsWqSmTuIjiRgr+BaohBNdL3zt+8uh5VIaIJMMB1UzOQvlOZTqMIH0JSBMyJkGas2wCtObqADJsBkguq7RS2c4sAQRQePhxTMJwDAW46jnO3Agvdc7luSluKxelyWTKAirr1AiHAOLKnSvVAlWf/djGMsMt3dy/cSVyDac2lt55JeACnlvUC9pkHEGcULwYQOS7VXGgoAz4qUEKjweK9eKsb7zKAOgFUE34p8F+VUwbrPwy6tTWeV+nTOy3M0+5Wef6KgxPd03epwEXFSDXs5cAgCNjKE1s9l+GBK5Pje6h9CrOAHaWYC7cBHngwbxXP5AdtXvUxJm4gU1iffv3+OfGJ0cw9vfe+QWiuB8J/dUHXoDuSefdCfYhGGBkCzJ4oIOLkRNhJ+t5kcsA51Eo14AjFOgJNBd402F+IH6x24iNaUALLBzyAt9BIdLH4ge0+BCLC7ugd6EwGeZQRhA9IPYjhiRqoEMJRO5wJJBJGjEAdTw8iWSLUlqppYFYYtACItts6QwPUXo5pQZiotBDmRd8QtCbcL7JpgUtlGLnnXjC0CUefPbp55+AThABADs="/>
             <?= gettext("Export CSV") ?>
@@ -392,7 +392,7 @@ function openURLFilter(link) {
     <?php endif ?>
 
     <?php if ($this->FG_EXPORT_XML): ?>
-    <div class="col-3">
+    <div class="col-auto">
         <a href="export_csv.php?var_export=<?= $this->FG_EXPORT_SESSION_VAR ?>&amp;var_export_type=type_xml" target="_blank" class="text-decoration-none">
             <img alt="" height="32" src="data:image/gif;base64,R0lGODlhKgAqAOMIAPRLJHW42bOqqZ7N5vfNjtfV08/n9P///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEKAAgALAAAAAAqACoAAAT+EEl0qr34zs37rkEojuRQVF7KVUVgvEMsz0MwGJaagmQvxqHY6aDrHFovA21pCwpRRckB6OvVmq4nMXpwwZYzLPA7jCKTYFkwpLy1T2YvOv3zxr5Q1Tn5pYnaZEplenJ8bWEhBYCHglspBW6GfVQuikJKQYMekJJ8iC5HjDVPepGdh1c4oVdqcI+mp2o/bqw1rpuwsZQjaraOHZynnrIlowG3wLm6dMbIHJAHwoZpxgbHv88DFdLTTDXWzhvQFtzdYy7XpRjl3ejg2OLaFwUCBvQCigb19ZLu6a/zBAAoAKAgAH0ABL7I98JfuAnjBA40aKBgxYQHEWbM8k4dQQKcFgCALChR4UKLHE3AgyhPIsGCLw2adKmkpkp1FgoQALlzp0ifOwswvEH0oYRxFkBW2HmAZ9Od02waRYA0QwZhRBvhtMq1U9abALmKlfR1alWxVz0pmWJWHtqxMNaCxfX2LYwpvrbW7aptAL62e98CEZonWWC0fvEVBmaDmuMwhFeKuyegsuXLmDP/1bRDqOfPoEOHXrzj8N4oCCIAADs="/>
             <?= gettext("Export XML") ?>
