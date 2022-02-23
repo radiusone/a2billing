@@ -25,9 +25,9 @@
 	<div class="px-3 py-2 bg-dark text-white">
 		<div class="container-fluid">
 			<div class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-end">
-				<span class="d-flex align-items-center my-2 my-md-0 me-md-auto text-white text-decoration-none">
+				<h4 class="d-flex align-items-center my-2 my-md-0 me-md-auto text-white text-decoration-none">
 					A2Billing
-				</span>
+				</h4>
 				<ul class="nav col-12 col-lg-auto my-2 justify-content-center my-md-0 text-small">
 					<li>
 						<a href="PP_intro.php" class="nav-link text-secondary">
@@ -413,7 +413,7 @@
 				</li>
 			</ul>
 		</nav>
-		<div id="main-content" class="col-md-9 col-lg-10">
+		<div id="main-content" class="col-md-9 col-lg-10 pt-3">
 
 {else}
 <div>

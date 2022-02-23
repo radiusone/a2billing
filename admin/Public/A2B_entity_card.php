@@ -186,13 +186,13 @@ function submitform() {
 
 <div class="row justify-content-center">
     <div class="col-auto">
-        <button class="btn-link link-primary" data-bs-toggle="modal" data-bs-target="#searchModal">
+        <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#searchModal">
             <?= _("Search Customers") ?>
         </button>
         <?php if (!empty($_SESSION['entity_card_selection'])): ?>(<?= _("search activated") ?>)<?php endif ?>
     </div>
     <div class="col-auto">
-        <button class="btn-link link-primary" data-bs-toggle="modal" data-bs-target="#batchUpdateModal">
+        <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#batchUpdateModal">
             <?= _("Batch Update") ?>
         </button>
     </div>
@@ -320,15 +320,15 @@ function submitform() {
                         <div class="col-auto">
                             <div class="form-check form-check-inline">
                                 <input type="radio" name="type[upd_credit]" id="type_upd_credit_1" value="1" <?php if ($type["upd_credit"] ?? 1 == 1): ?>checked="checked"<?php endif ?> class="form-check-input"/>
-                                <label class="form-check-label form-check-label-sm" for="type_upd_credit_1"><?= _("Equals") ?></label>
+                                <label class="form-check-label form-check-label-sm" for="type_upd_credit_1"><abbr title="<?= _("Equals") ?>">=</abbr></label>
                             </div>
                             <div class="form-check form-check-inline">
                                 <input type="radio" name="type[upd_credit]" id="type_upd_credit_2" value="2" <?php if($type["upd_credit"] ?? 1 == 2): ?>checked="checked"<?php endif ?> class="form-check-input"/>
-                                <label class="form-check-label form-check-label-sm" for="type_upd_credit_2"><?= _("Add") ?></label>
+                                <label class="form-check-label form-check-label-sm" for="type_upd_credit_2"><abbr title="<?= _("Add") ?>">+</abbr></label>
                             </div>
                             <div class="form-check form-check-inline">
                                 <input type="radio" name="type[upd_credit]" id="type_upd_credit_3" value="3" <?php if($type["upd_credit"] ?? 1 == 3): ?>checked="checked"<?php endif ?> class="form-check-input"/>
-                                <label class="form-check-label form-check-label-sm" for="type_upd_credit_3"><?= _("Subtract") ?></label>
+                                <label class="form-check-label form-check-label-sm" for="type_upd_credit_3"><abbr title="<?= _("Subtract") ?>">-</abbr></label>
                             </div>
                         </div>
                     </div>
@@ -405,15 +405,15 @@ function submitform() {
                         <div class="col-auto">
                             <div class="form-check form-check-inline">
                                 <input type="radio" name="type[upd_creditlimit]" id="type_upd_creditlimit_1" value="1" <?php if($type["upd_creditlimit"] ?? 1 == 1): ?>checked="checked"<?php endif ?> class="form-check-input"/>
-                                <label class="form-check-label form-check-label-sm" for="type_upd_creditlimit_1"><?= _("Equals") ?></label>
+                                <label class="form-check-label form-check-label-sm" for="type_upd_creditlimit_1"><abbr title="<?= _("Equals") ?>">=</abbr></label>
                             </div>
                             <div class="form-check form-check-inline">
                                 <input type="radio" name="type[upd_creditlimit]" id="type_upd_creditlimit_2" value="2" <?php if($type["upd_creditlimit"] ?? 1 == 2): ?>checked="checked"<?php endif ?> class="form-check-input"/>
-                                <label class="form-check-label form-check-label-sm" for="type_upd_creditlimit_2"><?= _("Add") ?></label>
+                                <label class="form-check-label form-check-label-sm" for="type_upd_creditlimit_2"><abbr title="<?= _("Add") ?>">+</abbr></label>
                             </div>
                             <div class="form-check form-check-inline">
                                 <input type="radio" name="type[upd_creditlimit]" id="type_upd_creditlimit_3" value="3" <?php if($type["upd_creditlimit"] ?? 1 == 3): ?>checked="checked"<?php endif ?> class="form-check-input"/>
-                                <label class="form-check-label form-check-label-sm" for="type_upd_creditlimit_3"><?= _("Subtract") ?></label>
+                                <label class="form-check-label form-check-label-sm" for="type_upd_creditlimit_3"><abbr title="<?= _("Subtract") ?>">-</abbr></label>
                             </div>
                         </div>
                     </div>
