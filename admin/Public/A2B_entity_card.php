@@ -64,7 +64,7 @@ if ($batchupdate == 1 && is_array($check)) {
 
     if (!empty($upd_expirationdate)) {
         // html datetime input sends as 2022-02-21T13:40
-        $upd_expirationdate = str_replace("T", "", $upd_expirationdate) . ":00";
+        $upd_expirationdate = str_replace("T", " ", $upd_expirationdate) . ":00";
     }
     if (isset($check['upd_credit']) && strlen($upd_credit) > 0) {
         //set to refill
