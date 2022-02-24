@@ -62,6 +62,10 @@ if ($batchupdate == 1 && is_array($check)) {
     $SQL_REFILL="";
     $HD_Form->prepare_list_subselection('list');
 
+    if (!empty($upd_expirationdate)) {
+        // html datetime input sends as 2022-02-21T13:40
+        $upd_expirationdate = str_replace("T", "", $upd_expirationdate) . ":00";
+    }
     if (isset($check['upd_credit']) && strlen($upd_credit) > 0) {
         //set to refill
         $SQL_REFILL_CREDIT="";
@@ -223,7 +227,7 @@ function sendValue(selvalue, othervalue) {
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form class="container-fluid" name="updateForm" id="updateForm" action="" method="post">
+                <form class="container-fluid form-striped" name="updateForm" id="updateForm" action="" method="post">
                     <input type="hidden" name="batchupdate" value="1"/>
                     <?php if ($HD_Form->FG_CSRF_STATUS == true): ?>
                     <input type="hidden" name="<?= $HD_Form->FG_FORM_UNIQID_FIELD ?>" value="<?= $HD_Form->FG_FORM_UNIQID ?>" />
@@ -296,7 +300,7 @@ function sendValue(selvalue, othervalue) {
                         <div class="col">
                             <select name="upd_tariff" id="upd_tariff" class="form-select form-select-sm">
                                 <?php foreach ($list_tariff as $v): ?>
-                                    <option value="<?= $v[1] ?>" <?php if ($upd_tariff == $v[1]): ?>selected="selected"<?php endif ?>><?= $v[0] ?></option>
+                                    <option value="<?= $v[0] ?>" <?php if ($upd_tariff == $v[0]): ?>selected="selected"<?php endif ?>><?= $v[1] ?></option>
                                 <?php endforeach ?>
                             </select>
                         </div>
@@ -420,7 +424,7 @@ function sendValue(selvalue, othervalue) {
                         <div class="col-4">
                             <input name="check[upd_enableexpire]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if ($check["upd_enableexpire"] === "on"): ?> checked="checked" <?php endif ?> class="form-check-input"/>
                             <label class="form-label form-label-sm" for="upd_enableexpire">
-                                <?= _("Access") ?>
+                                <?= _("Enable Expire") ?>
                             </label>
                         </div>
                         <div class="col">
@@ -442,7 +446,7 @@ function sendValue(selvalue, othervalue) {
                             </label>
                         </div>
                         <div class="col">
-                            <input type="datetime-local" name="upd_expirationdate" id="upd_expirationdate" value="<?= (new DateTime("now + 10 years"))->format("Y-m-d H:i:s") ?>" class="form-control form-control-sm"/>
+                            <input type="datetime-local" name="upd_expirationdate" id="upd_expirationdate" value="<?= $upd_expirationdate ?? (new DateTime("now + 10 years"))->format("Y-m-d\TH:i") ?>" class="form-control form-control-sm"/>
                         </div>
                     </div>
 
@@ -641,5 +645,18 @@ if (strlen($HD_Form->FG_TABLE_CLAUSE)>1) {
 if (!empty($HD_Form->FG_ORDER) && !empty($HD_Form->FG_SENS)) {
     $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] .= " ORDER BY $HD_Form->FG_ORDER $HD_Form->FG_SENS";
 }
+?>
 
-$smarty->display('footer.tpl');
+<script>
+function toggleUpdateField(el) {
+    // convert check[foo] into foo
+    let elname = el.getAttribute("name").slice(6, -1);
+    $(`[name='${elname}']`).closest('.row').find("[name]:not([name^='check'])").attr("disabled", !el.checked);
+}
+$("#batchUpdateModal input[type='checkbox'][name^='check']")
+    .each((i, el) => toggleUpdateField(el))
+    .live('change', ev => toggleUpdateField(ev.target));
+
+</script>
+
+<?php $smarty->display('footer.tpl');
