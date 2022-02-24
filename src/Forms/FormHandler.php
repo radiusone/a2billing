@@ -25,55 +25,55 @@ use Profiler_Console as Console;
 class FormHandler
 {
     private static $Instance;
-    var $_action = '';
-    var $_vars = null;
-    var $_processed = [];
-    var $DBHandle;
-    var $VALID_SQL_REG_EXP = true;
-    var $RESULT_QUERY = false;
+    public $_action = '';
+    public $_vars = null;
+    public $_processed = [];
+    public $DBHandle;
+    public $VALID_SQL_REG_EXP = true;
+    public $RESULT_QUERY = false;
 
-    var $pqp;
+    public $pqp;
 
 
     /* CONFIG THE VIEWER : CV */
-    var $CV_TOPVIEWER = '';
-    var $CV_NO_FIELDS = "THERE IS NO RECORD !";
-    var $CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = true;
-    var $CV_TITLE_TEXT = '';
-    var $CV_TEXT_TITLE_ABOVE_TABLE = "DIRECTORY";
-    var $CV_DISPLAY_FILTER_ABOVE_TABLE = true;
-    var $CV_FILTER_ABOVE_TABLE_PARAM = "?id=";
-    var $CV_FOLLOWPARAMETERS = '';
-    var $CV_DO_ARCHIVE_ALL = false;
+    public $CV_TOPVIEWER = '';
+    public $CV_NO_FIELDS = "THERE IS NO RECORD !";
+    public $CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = true;
+    public $CV_TITLE_TEXT = '';
+    public $CV_TEXT_TITLE_ABOVE_TABLE = "DIRECTORY";
+    public $CV_DISPLAY_FILTER_ABOVE_TABLE = true;
+    public $CV_FILTER_ABOVE_TABLE_PARAM = "?id=";
+    public $CV_FOLLOWPARAMETERS = '';
+    public $CV_DO_ARCHIVE_ALL = false;
 
 
-    var $CV_DISPLAY_RECORD_LIMIT = true;
-    var $CV_DISPLAY_BROWSE_PAGE = true;
+    public $CV_DISPLAY_RECORD_LIMIT = true;
+    public $CV_DISPLAY_BROWSE_PAGE = true;
 
-    var $CV_CURRENT_PAGE = 0;
+    public $CV_CURRENT_PAGE = 0;
 
-    var $FG_VIEW_TABLE_WITDH = '100%';
-    var $FG_ACTION_SIZE_COLUMN = '25%';
+    public $FG_VIEW_TABLE_WITDH = '100%';
+    public $FG_ACTION_SIZE_COLUMN = '25%';
     /**
      * Sets the debug output (1 = low, 2 = Normal, 3 = High). Default value is "0" .
      *
      * @public    -    @type integer
      */
-    var $FG_DEBUG = 0;
+    public $FG_DEBUG = 0;
 
     /**
      * Sets the table name.
      *
      * @public    -    @type string
      */
-    var $FG_TABLE_NAME = "";
+    public $FG_TABLE_NAME = "";
 
     /**
      * Sets the table name used for count.
      *
      * @public    -    @type string
      */
-    var $FG_TABLE_NAME_COUNT = "";
+    public $FG_TABLE_NAME_COUNT = "";
 
 
     /**
@@ -81,43 +81,43 @@ class FormHandler
      *
      * @public    -    @type string
      */
-    var $FG_INSTANCE_NAME = "";
+    public $FG_INSTANCE_NAME = "";
 
     /**
      * Sets the main clause - Clause to execute on the table
      *
      * @public    -    @type string
      */
-    var $FG_TABLE_CLAUSE = "";
+    public $FG_TABLE_CLAUSE = "";
 
     /**
      * Sets the table list you will need to feed the SELECT from element
      *
      * @public    -    @type array - ( String to display, value to save)
      */
-    var $tablelist = [];
+    public $tablelist = [];
 
     /**
      * ARRAY with the list of element to display in the ViewData page
      *
      * @public    -    @type array
      */
-    var $FG_TABLE_COL = [];
+    public $FG_TABLE_COL = [];
 
     /**
      * Sets the fieldname of the SQL query to display in the ViewData page, ie: "id, name, mail"
      *
      * @public    -    @type string
      */
-    var $FG_COL_QUERY = "";
+    public $FG_COL_QUERY = "";
 
     /**
      * Keep the number of column  -  Number of column in the html table
      *
      * @public    -    @type integer
      */
-    var $FG_NB_TABLE_COL = 0;
-    var $FG_TOTAL_TABLE_COL = 0;
+    public $FG_NB_TABLE_COL = 0;
+    public $FG_TOTAL_TABLE_COL = 0;
 
 
     /**
@@ -125,31 +125,31 @@ class FormHandler
      *
      * @public    -    @type string
      */
-    var $FG_TABLE_ID = 'id';
+    public $FG_TABLE_ID = 'id';
 
     /*
 	 * Adding record button in list view
 	 */
-    var $FG_LIST_ADDING_BUTTON = false;
-    var $FG_LIST_ADDING_BUTTON_LINK = '';
-    var $FG_LIST_ADDING_BUTTON_IMG = '';
-    var $FG_LIST_ADDING_BUTTON_MSG = '';
-    var $FG_LIST_ADDING_BUTTON_ALT = '';
+    public $FG_LIST_ADDING_BUTTON = false;
+    public $FG_LIST_ADDING_BUTTON_LINK = '';
+    public $FG_LIST_ADDING_BUTTON_IMG = '';
+    public $FG_LIST_ADDING_BUTTON_MSG = '';
+    public $FG_LIST_ADDING_BUTTON_ALT = '';
 
     /**
      * Sets if we want a colum "ACTION" to EDIT or to DELETE
      *
      * @public    -    @type boolean
      */
-    var $FG_ADDITION = false;
-    var $FG_DELETION = false;
-    var $FG_INFO = false;
-    var $FG_EDITION = false;
-    var $FG_OTHER_BUTTON1 = false;
-    var $FG_OTHER_BUTTON2 = false;
-    var $FG_OTHER_BUTTON3 = false;
-    var $FG_OTHER_BUTTON4 = false;
-    var $FG_OTHER_BUTTON5 = false;
+    public $FG_ADDITION = false;
+    public $FG_DELETION = false;
+    public $FG_INFO = false;
+    public $FG_EDITION = false;
+    public $FG_OTHER_BUTTON1 = false;
+    public $FG_OTHER_BUTTON2 = false;
+    public $FG_OTHER_BUTTON3 = false;
+    public $FG_OTHER_BUTTON4 = false;
+    public $FG_OTHER_BUTTON5 = false;
 
 
     /**
@@ -157,76 +157,76 @@ class FormHandler
      *
      * @public    -    @type string
      */
-    var $FG_EDITION_LINK = '';
-    var $FG_DELETION_LINK = '';
-    var $FG_DELETION_FORBIDDEN_ID = [];
-    var $FG_INFO_LINK = '';
-    var $FG_OTHER_BUTTON1_LINK = '';
-    var $FG_OTHER_BUTTON2_LINK = '';
-    var $FG_OTHER_BUTTON3_LINK = '';
-    var $FG_OTHER_BUTTON4_LINK = '';
-    var $FG_OTHER_BUTTON5_LINK = '';
+    public $FG_EDITION_LINK = '';
+    public $FG_DELETION_LINK = '';
+    public $FG_DELETION_FORBIDDEN_ID = [];
+    public $FG_INFO_LINK = '';
+    public $FG_OTHER_BUTTON1_LINK = '';
+    public $FG_OTHER_BUTTON2_LINK = '';
+    public $FG_OTHER_BUTTON3_LINK = '';
+    public $FG_OTHER_BUTTON4_LINK = '';
+    public $FG_OTHER_BUTTON5_LINK = '';
 
-    var $FG_EDITION_IMG = 'edit.png';
+    public $FG_EDITION_IMG = 'edit.png';
 
-    var $FG_OTHER_BUTTON1_IMG = '';
-    var $FG_OTHER_BUTTON2_IMG = '';
-    var $FG_OTHER_BUTTON3_IMG = '';
-    var $FG_OTHER_BUTTON4_IMG = '';
-    var $FG_OTHER_BUTTON5_IMG = '';
+    public $FG_OTHER_BUTTON1_IMG = '';
+    public $FG_OTHER_BUTTON2_IMG = '';
+    public $FG_OTHER_BUTTON3_IMG = '';
+    public $FG_OTHER_BUTTON4_IMG = '';
+    public $FG_OTHER_BUTTON5_IMG = '';
 
-    var $FG_OTHER_BUTTON1_FORBIDDEN_KEY = [];
-    var $FG_OTHER_BUTTON2_FORBIDDEN_KEY = [];
-    var $FG_OTHER_BUTTON3_FORBIDDEN_KEY = [];
-    var $FG_OTHER_BUTTON4_FORBIDDEN_KEY = [];
-    var $FG_OTHER_BUTTON5_FORBIDDEN_KEY = [];
+    public $FG_OTHER_BUTTON1_FORBIDDEN_KEY = [];
+    public $FG_OTHER_BUTTON2_FORBIDDEN_KEY = [];
+    public $FG_OTHER_BUTTON3_FORBIDDEN_KEY = [];
+    public $FG_OTHER_BUTTON4_FORBIDDEN_KEY = [];
+    public $FG_OTHER_BUTTON5_FORBIDDEN_KEY = [];
 
-    var $FG_EDIT_PAGE_CONFIRM_BUTTON = '';
-    var $FG_DELETE_PAGE_CONFIRM_BUTTON = '';
-    var $FG_ADD_PAGE_CONFIRM_BUTTON = '';
+    public $FG_EDIT_PAGE_CONFIRM_BUTTON = '';
+    public $FG_DELETE_PAGE_CONFIRM_BUTTON = '';
+    public $FG_ADD_PAGE_CONFIRM_BUTTON = '';
 
     /**
      * Sets the number of record to show by page
      *
      * @public    -    @type integer
      */
-    var $FG_LIMITE_DISPLAY = 10;
-    var $SQL_GROUP = null;
+    public $FG_LIMITE_DISPLAY = 10;
+    public $SQL_GROUP = null;
 
     /**
      * Sets the variable to control the View Module
      *
      * @public    -    @type integer
      */
-    var $FG_STITLE = '';
-    var $FG_CURRENT_PAGE = 0;
-    var $FG_ORDER = '';
-    var $FG_SENS = '';
+    public $FG_STITLE = '';
+    public $FG_CURRENT_PAGE = 0;
+    public $FG_ORDER = '';
+    public $FG_SENS = '';
 
-    var $FG_NB_RECORD_MAX = 0;
-    var $FG_NB_RECORD = 0;
+    public $FG_NB_RECORD_MAX = 0;
+    public $FG_NB_RECORD = 0;
 
     /**
      * Sets the variables to control the Apply filter
      *
      * @public  - @type string
      */
-    var $FG_FILTER_FORM_ACTION = 'list';
+    public $FG_FILTER_FORM_ACTION = 'list';
 
-    var $FG_FILTER_APPLY = false;
-    var $FG_FILTERTYPE = 'INPUT'; // INPUT :: SELECT :: POPUPVALUE
-    var $FG_FILTERFIELD = '';
-    var $FG_FILTERFIELDNAME = '';
-    var $FG_FILTERPOPUP = [
+    public $FG_FILTER_APPLY = false;
+    public $FG_FILTERTYPE = 'INPUT'; // INPUT :: SELECT :: POPUPVALUE
+    public $FG_FILTERFIELD = '';
+    public $FG_FILTERFIELDNAME = '';
+    public $FG_FILTERPOPUP = [
         'CC_entity_card.php?popup_select=1&', ", 'CardNumberSelection','width=550,height=350,top=20,left=100'",
     ];
 
     // SECOND FILTER
-    var $FG_FILTER_APPLY2 = false;
-    var $FG_FILTERTYPE2 = 'INPUT'; // INPUT :: SELECT :: POPUPVALUE
-    var $FG_FILTERFIELD2 = '';
-    var $FG_FILTERFIELDNAME2 = '';
-    var $FG_FILTERPOPUP2 = [];
+    public $FG_FILTER_APPLY2 = false;
+    public $FG_FILTERTYPE2 = 'INPUT'; // INPUT :: SELECT :: POPUPVALUE
+    public $FG_FILTERFIELD2 = '';
+    public $FG_FILTERFIELDNAME2 = '';
+    public $FG_FILTERPOPUP2 = [];
 
 
     /**
@@ -234,27 +234,27 @@ class FormHandler
      *
      * @public  - @type boolean , array , string
      */
-    var $FG_FILTER_SEARCH_FORM = false;
+    public $FG_FILTER_SEARCH_FORM = false;
 
-    var $FG_FILTER_SEARCH_1_TIME = false;
-    var $FG_FILTER_SEARCH_1_TIME_TEXT = '';
-    var $FG_FILTER_SEARCH_1_TIME_FIELD = 'creationdate';
+    public $FG_FILTER_SEARCH_1_TIME = false;
+    public $FG_FILTER_SEARCH_1_TIME_TEXT = '';
+    public $FG_FILTER_SEARCH_1_TIME_FIELD = 'creationdate';
 
-    var $FG_FILTER_SEARCH_1_TIME_BIS = false;
-    var $FG_FILTER_SEARCH_1_TIME_TEXT_BIS = '';
-    var $FG_FILTER_SEARCH_1_TIME_FIELD_BIS = '';
+    public $FG_FILTER_SEARCH_1_TIME_BIS = false;
+    public $FG_FILTER_SEARCH_1_TIME_TEXT_BIS = '';
+    public $FG_FILTER_SEARCH_1_TIME_FIELD_BIS = '';
 
-    var $FG_FILTER_SEARCH_3_TIME = false;
-    var $FG_FILTER_SEARCH_3_TIME_TEXT = '';
-    var $FG_FILTER_SEARCH_3_TIME_FIELD = 'creationdate';
+    public $FG_FILTER_SEARCH_3_TIME = false;
+    public $FG_FILTER_SEARCH_3_TIME_TEXT = '';
+    public $FG_FILTER_SEARCH_3_TIME_FIELD = 'creationdate';
 
-    var $FG_FILTER_SEARCH_FORM_1C = [];
-    var $FG_FILTER_SEARCH_FORM_2C = [];
-    var $FG_FILTER_SEARCH_FORM_SELECT = [];
-    var $FG_FILTER_SEARCH_FORM_SELECT_TEXT = '';
-    var $FG_FILTER_SEARCH_TOP_TEXT = "";
-    var $FG_FILTER_SEARCH_SESSION_NAME = '';
-    var $FG_FILTER_SEARCH_DELETE_ALL = true;
+    public $FG_FILTER_SEARCH_FORM_1C = [];
+    public $FG_FILTER_SEARCH_FORM_2C = [];
+    public $FG_FILTER_SEARCH_FORM_SELECT = [];
+    public $FG_FILTER_SEARCH_FORM_SELECT_TEXT = '';
+    public $FG_FILTER_SEARCH_TOP_TEXT = "";
+    public $FG_FILTER_SEARCH_SESSION_NAME = '';
+    public $FG_FILTER_SEARCH_DELETE_ALL = true;
 
 
     /**
@@ -264,38 +264,38 @@ class FormHandler
      * ie : the value of a splitable field might be something like 12-14 or 15;16;17 and it will make multiple insert
      * according to the values/ranges defined.
      */
-    var $FG_SPLITABLE_FIELD = '';
+    public $FG_SPLITABLE_FIELD = '';
 
     /**
      * Sets the variables to control the top search filter
      *
      * @public  - @type void , string
      */
-    var $FG_TOP_FILTER_VALUE = 0;
-    var $FG_TOP_FILTER_NAME = '';
+    public $FG_TOP_FILTER_VALUE = 0;
+    public $FG_TOP_FILTER_NAME = '';
 
     /**
      * Sets the variables to control the CSV export
      *
      * @public  - @type boolean
      */
-    var $FG_EXPORT_CSV = false;
-    var $FG_EXPORT_XML = false;
-    var $FG_EXPORT_SESSION_VAR = '';
+    public $FG_EXPORT_CSV = false;
+    public $FG_EXPORT_XML = false;
+    public $FG_EXPORT_SESSION_VAR = '';
 
     /**
      * Sets the fieldname of the SQL query for Export e.g:name, mail"
      *
      * @public    -    @type string
      */
-    var $FG_EXPORT_FIELD_LIST = "";
+    public $FG_EXPORT_FIELD_LIST = "";
 
     /**
      * Sets the TEXT to display above the records displayed
      *
      * @public   -  @string
      */
-    var $FG_INTRO_TEXT = "You can browse through our #FG_INSTANCE_NAME# and modify their different properties<br>";
+    public $FG_INTRO_TEXT = "You can browse through our #FG_INSTANCE_NAME# and modify their different properties<br>";
 
 
     /**
@@ -304,34 +304,34 @@ class FormHandler
      * @public   -  @string
      */
 
-    var $FG_DELETE_ALT = "Delete this record";
-    var $FG_EDIT_ALT = "Edit this record";
-    var $FG_OTHER_BUTTON1_ALT = '';
-    var $FG_OTHER_BUTTON2_ALT = '';
-    var $FG_OTHER_BUTTON3_ALT = '';
-    var $FG_OTHER_BUTTON4_ALT = '';
-    var $FG_OTHER_BUTTON5_ALT = '';
+    public $FG_DELETE_ALT = "Delete this record";
+    public $FG_EDIT_ALT = "Edit this record";
+    public $FG_OTHER_BUTTON1_ALT = '';
+    public $FG_OTHER_BUTTON2_ALT = '';
+    public $FG_OTHER_BUTTON3_ALT = '';
+    public $FG_OTHER_BUTTON4_ALT = '';
+    public $FG_OTHER_BUTTON5_ALT = '';
 
-    var $FG_OTHER_BUTTON1_HTML_CLASS = '';
-    var $FG_OTHER_BUTTON2_HTML_CLASS = '';
-    var $FG_OTHER_BUTTON3_HTML_CLASS = '';
-    var $FG_OTHER_BUTTON4_HTML_CLASS = '';
-    var $FG_OTHER_BUTTON5_HTML_CLASS = '';
+    public $FG_OTHER_BUTTON1_HTML_CLASS = '';
+    public $FG_OTHER_BUTTON2_HTML_CLASS = '';
+    public $FG_OTHER_BUTTON3_HTML_CLASS = '';
+    public $FG_OTHER_BUTTON4_HTML_CLASS = '';
+    public $FG_OTHER_BUTTON5_HTML_CLASS = '';
 
-    var $FG_OTHER_BUTTON1_HTML_ID = '';
-    var $FG_OTHER_BUTTON2_HTML_ID = '';
-    var $FG_OTHER_BUTTON3_HTML_ID = '';
-    var $FG_OTHER_BUTTON4_HTML_ID = '';
-    var $FG_OTHER_BUTTON5_HTML_ID = '';
+    public $FG_OTHER_BUTTON1_HTML_ID = '';
+    public $FG_OTHER_BUTTON2_HTML_ID = '';
+    public $FG_OTHER_BUTTON3_HTML_ID = '';
+    public $FG_OTHER_BUTTON4_HTML_ID = '';
+    public $FG_OTHER_BUTTON5_HTML_ID = '';
 
-    var $FG_OTHER_BUTTON1_CONDITION = '';
-    var $FG_OTHER_BUTTON2_CONDITION = '';
-    var $FG_OTHER_BUTTON3_CONDITION = '';
-    var $FG_OTHER_BUTTON4_CONDITION = '';
-    var $FG_OTHER_BUTTON5_CONDITION = '';
+    public $FG_OTHER_BUTTON1_CONDITION = '';
+    public $FG_OTHER_BUTTON2_CONDITION = '';
+    public $FG_OTHER_BUTTON3_CONDITION = '';
+    public $FG_OTHER_BUTTON4_CONDITION = '';
+    public $FG_OTHER_BUTTON5_CONDITION = '';
 
-    var $FG_EDITION_CONDITION = '';
-    var $FG_DELETION_CONDITION = '';
+    public $FG_EDITION_CONDITION = '';
+    public $FG_DELETION_CONDITION = '';
 
     //	-------------------- DATA FOR THE EDITION --------------------
 
@@ -340,37 +340,37 @@ class FormHandler
      *
      * @public    -    @type array
      */
-    var $FG_TABLE_EDITION = [];
-    var $FG_TABLE_ADITION = [];
+    public $FG_TABLE_EDITION = [];
+    public $FG_TABLE_ADITION = [];
 
     /**
      * ARRAY with the comment below each fields
      *
      * @public    -    @type array
      */
-    var $FG_TABLE_COMMENT = [];
+    public $FG_TABLE_COMMENT = [];
 
     /**
      * ARRAY with the regular expression to check the form
      *
      * @public    -    @type array
      */
-    var $FG_regular = [];
+    public $FG_regular = [];
 
     /**
      * Array that will contain the field where the regularexpression check have found errors
      *
      * @public    -    @type array
      */
-    var $FG_fit_expression = [];
+    public $FG_fit_expression = [];
 
     /**
      * Set the fields  for the EDIT/ADD query
      *
      * @public    -    @type string
      */
-    var $FG_QUERY_EDITION = '';
-    var $FG_QUERY_ADITION = '';
+    public $FG_QUERY_EDITION = '';
+    public $FG_QUERY_ADITION = '';
 
 
     /**
@@ -378,15 +378,15 @@ class FormHandler
      *
      * @public    -    @type string
      */
-    var $FG_TABLE_EDITION_WIDTH = '122';
+    public $FG_TABLE_EDITION_WIDTH = '122';
 
     /**
      * Keep the number of the column into EDIT FORM
      *
      * @public    -    @type integer
      */
-    var $FG_NB_TABLE_EDITION = 0;
-    var $FG_NB_TABLE_ADITION = 0;
+    public $FG_NB_TABLE_EDITION = 0;
+    public $FG_NB_TABLE_ADITION = 0;
 
 
     /**
@@ -394,7 +394,7 @@ class FormHandler
      *
      * @public    -    @type string
      */
-    var $FG_EDITION_CLAUSE = " id='%id' ";
+    public $FG_EDITION_CLAUSE = " id='%id' ";
 
     /**
      * Set the HIDDED VALUE for the edition/addition
@@ -407,23 +407,23 @@ class FormHandler
      *
      * @public    -    @type string
      */
-    var $FG_QUERY_EDITION_HIDDEN_FIELDS = '';
-    var $FG_QUERY_EDITION_HIDDEN_VALUE = '';
-    var $FG_QUERY_ADITION_HIDDEN_FIELDS = '';
-    var $FG_QUERY_ADITION_HIDDEN_VALUE = '';
-    var $FG_QUERY_SQL_HIDDEN = '';
+    public $FG_QUERY_EDITION_HIDDEN_FIELDS = '';
+    public $FG_QUERY_EDITION_HIDDEN_VALUE = '';
+    public $FG_QUERY_ADITION_HIDDEN_FIELDS = '';
+    public $FG_QUERY_ADITION_HIDDEN_VALUE = '';
+    public $FG_QUERY_SQL_HIDDEN = '';
 
-    var $FG_EDITION_HIDDEN_PARAM = '';
-    var $FG_EDITION_HIDDEN_PARAM_VALUE = '';
-    var $FG_ADITION_HIDDEN_PARAM = '';
-    var $FG_ADITION_HIDDEN_PARAM_VALUE = '';
+    public $FG_EDITION_HIDDEN_PARAM = '';
+    public $FG_EDITION_HIDDEN_PARAM_VALUE = '';
+    public $FG_ADITION_HIDDEN_PARAM = '';
+    public $FG_ADITION_HIDDEN_PARAM_VALUE = '';
 
     /**
      * Set the EXTRA HIDDED VALUES for the edition/addition
      *
      * @public    -    @type array
      */
-    var $FG_QUERY_EXTRA_HIDDED = '';
+    public $FG_QUERY_EXTRA_HIDDED = '';
 
     /**
      * Set the Hidden value for the edition/addition
@@ -433,7 +433,7 @@ class FormHandler
      * into the POST data.
      */
 
-    var $FG_QUERY_ADITION_SIP_IAX_VALUE = '';
+    public $FG_QUERY_ADITION_SIP_IAX_VALUE = '';
 
 
     /**
@@ -441,10 +441,10 @@ class FormHandler
      *
      * @public    -    @type string
      */
-    var $FG_GO_LINK_AFTER_ACTION;
-    var $FG_GO_LINK_AFTER_ACTION_ADD;
-    var $FG_GO_LINK_AFTER_ACTION_DELETE;
-    var $FG_GO_LINK_AFTER_ACTION_EDIT;
+    public $FG_GO_LINK_AFTER_ACTION;
+    public $FG_GO_LINK_AFTER_ACTION_ADD;
+    public $FG_GO_LINK_AFTER_ACTION_DELETE;
+    public $FG_GO_LINK_AFTER_ACTION_EDIT;
 
 
     /** ####################################################
@@ -454,113 +454,113 @@ class FormHandler
      * @public   -  @string
      */
 
-    var $FG_ADITION_GO_EDITION = "no";
+    public $FG_ADITION_GO_EDITION = "no";
 
-    var $FG_ADITION_GO_EDITION_MESSAGE = "The document has been created correctly. Now, you can define the different tariff that you want to associate.";
+    public $FG_ADITION_GO_EDITION_MESSAGE = "The document has been created correctly. Now, you can define the different tariff that you want to associate.";
 
 
     // ------------------- ## MESSAGE SECTION  ## -------------------
 
-    var $FG_INTRO_TEXT_EDITION = "You can modify, through the following form, the different properties of your #FG_INSTANCE_NAME#<br>";
+    public $FG_INTRO_TEXT_EDITION = "You can modify, through the following form, the different properties of your #FG_INSTANCE_NAME#<br>";
 
-    var $FG_INTRO_TEXT_ASK_DELETION = "If you really want remove this #FG_INSTANCE_NAME#, click on the delete button.";
+    public $FG_INTRO_TEXT_ASK_DELETION = "If you really want remove this #FG_INSTANCE_NAME#, click on the delete button.";
 
-    var $FG_INTRO_TEXT_DELETION = "A #FG_INSTANCE_NAME# has been deleted!";
+    public $FG_INTRO_TEXT_DELETION = "A #FG_INSTANCE_NAME# has been deleted!";
 
-    var $FG_INTRO_TEXT_ADD = "you can add easily a new #FG_INSTANCE_NAME#.<br>Fill the following fields and confirm by clicking on the button add.";
+    public $FG_INTRO_TEXT_ADD = "you can add easily a new #FG_INSTANCE_NAME#.<br>Fill the following fields and confirm by clicking on the button add.";
 
-    var $FG_INTRO_TEXT_ADITION = "Add a \"#FG_INSTANCE_NAME#\" now.";
+    public $FG_INTRO_TEXT_ADITION = "Add a \"#FG_INSTANCE_NAME#\" now.";
 
-    var $FG_TEXT_ADITION_CONFIRMATION = "Your new #FG_INSTANCE_NAME# has been inserted. <br>";
+    public $FG_TEXT_ADITION_CONFIRMATION = "Your new #FG_INSTANCE_NAME# has been inserted. <br>";
 
-    var $FG_TEXT_ADITION_ERROR = '<font color="Red"> Your new #FG_INSTANCE_NAME# has not been inserted. </font><br> ';
+    public $FG_TEXT_ADITION_ERROR = '<font color="Red"> Your new #FG_INSTANCE_NAME# has not been inserted. </font><br> ';
 
-    var $FG_TEXT_ERROR_DUPLICATION = "You cannot choose more than one !";
+    public $FG_TEXT_ERROR_DUPLICATION = "You cannot choose more than one !";
 
 
     // ------------------- ## BUTTON/IMAGE SECTION  ## -------------------
-    var $FG_BUTTON_ADITION_SRC = "Images_Path/en/continue_boton.gif";
-    var $FG_BUTTON_EDITION_SRC = "Images_Path/en/continue_boton.gif";
+    public $FG_BUTTON_ADITION_SRC = "Images_Path/en/continue_boton.gif";
+    public $FG_BUTTON_EDITION_SRC = "Images_Path/en/continue_boton.gif";
 
-    var $FG_BUTTON_ADITION_BOTTOM_TEXT = "";
+    public $FG_BUTTON_ADITION_BOTTOM_TEXT = "";
 
-    var $FG_BUTTON_EDITION_BOTTOM_TEXT = "";
+    public $FG_BUTTON_EDITION_BOTTOM_TEXT = "";
 
-    var $FG_ADDITIONAL_FUNCTION_BEFORE_ADD = '';
-    var $FG_ADDITIONAL_FUNCTION_AFTER_ADD = '';
-    var $FG_ADDITIONAL_FUNCTION_BEFORE_DELETE = '';
-    var $FG_ADDITIONAL_FUNCTION_AFTER_DELETE = '';
-    var $FG_ADDITIONAL_FUNCTION_BEFORE_EDITION = '';
-    var $FG_ADDITIONAL_FUNCTION_AFTER_EDITION = '';
+    public $FG_ADDITIONAL_FUNCTION_BEFORE_ADD = '';
+    public $FG_ADDITIONAL_FUNCTION_AFTER_ADD = '';
+    public $FG_ADDITIONAL_FUNCTION_BEFORE_DELETE = '';
+    public $FG_ADDITIONAL_FUNCTION_AFTER_DELETE = '';
+    public $FG_ADDITIONAL_FUNCTION_BEFORE_EDITION = '';
+    public $FG_ADDITIONAL_FUNCTION_AFTER_EDITION = '';
 
-    var $FG_TABLE_ALTERNATE_ROW_COLOR = [];
+    public $FG_TABLE_ALTERNATE_ROW_COLOR = [];
 
-    var $FG_TABLE_DEFAULT_ORDER = "id";
-    var $FG_TABLE_DEFAULT_SENS = "ASC";
+    public $FG_TABLE_DEFAULT_ORDER = "id";
+    public $FG_TABLE_DEFAULT_SENS = "ASC";
 
     // Delete Foreign Keys or not
     // if it is set to true and confirm flag is true confirm box will be showed.
-    var $FG_FK_DELETE_ALLOWED = false;
+    public $FG_FK_DELETE_ALLOWED = false;
 
     // if it is set to true and Allowed flag is true all dependent records will be deleted.
-    var $FG_FK_DELETE = false;
+    public $FG_FK_DELETE = false;
 
     // Foreign Key Tables
-    var $FG_FK_TABLENAMES = [];
+    public $FG_FK_TABLENAMES = [];
 
     //Foreign Key Field Names
-    var $FG_FK_EDITION_CLAUSE = [];
+    public $FG_FK_EDITION_CLAUSE = [];
 
     //Foreign Key Delete Message Display, it will display the confirm delete dialog if there is some
     //some detail table exists. depends on the values of FG_FK_DELETE_ALLOWED
-    var $FG_FK_DELETE_CONFIRM = false;
+    public $FG_FK_DELETE_CONFIRM = false;
 
     //Foreign Key Records Count
-    var $FG_FK_RECORDS_COUNT = 0;
+    public $FG_FK_RECORDS_COUNT = 0;
 
     //Foreign Key Exists so Warn only not to delete ,,Boolean
-    var $FG_FK_WARNONLY = false;
+    public $FG_FK_WARNONLY = false;
 
     //is Child Records exists
-    var $FG_ISCHILDS = true;
+    public $FG_ISCHILDS = true;
 
     // Delete Message for FK
-    var $FG_FK_DELETE_MESSAGE = "Are you sure to delete all records connected to this instance.";
+    public $FG_FK_DELETE_MESSAGE = "Are you sure to delete all records connected to this instance.";
 
     //To enable Disable Selection List
-    var $FG_DISPLAY_SELECT = false;
+    public $FG_DISPLAY_SELECT = false;
 
     //Selection List Field Name to get from Database
-    var $FG_SELECT_FIELDNAME = "";
+    public $FG_SELECT_FIELDNAME = "";
 
     // Configuration Key value Field Name
-    var $FG_CONF_VALUE_FIELDNAME = "";
+    public $FG_CONF_VALUE_FIELDNAME = "";
 
     // For Pre Selected Delete
     // Pre Selected Records Count
-    var $FG_PRE_COUNT = 0;
+    public $FG_PRE_COUNT = 0;
 
     //*****************************
     //This variable define the width of the HTML table
-    var $FG_HTML_TABLE_WIDTH = "95%";
+    public $FG_HTML_TABLE_WIDTH = "95%";
 
     // text for multi-page navigation.
-    var $lang = [
+    public $lang = [
         'strfirst' => '&lt;&lt; First', 'strprev' => '&lt; Prev', 'strnext' => 'Next &gt;',
         'strlast' => 'Last &gt;&gt;',
     ];
 
-    var $logger = null;
+    public $logger = null;
 
-    var $FG_ENABLE_LOG = ENABLE_LOG;
+    public $FG_ENABLE_LOG = ENABLE_LOG;
 
     // CSRF TOKEN
-    var $FG_CSRF_STATUS = true;
-    var $FG_CSRF_TOKEN_SALT = CSRF_SALT;
-    var $FG_CSRF_TOKEN_KEY = null;
-    var $FG_CSRF_TOKEN = null;
-    var $FG_CSRF_FIELD = 'csrf_token';
-    var $FG_FORM_UNIQID_FIELD = 'form_id';
+    public $FG_CSRF_STATUS = true;
+    public $FG_CSRF_TOKEN_SALT = CSRF_SALT;
+    public $FG_CSRF_TOKEN_KEY = null;
+    public $FG_CSRF_TOKEN = null;
+    public $FG_CSRF_FIELD = 'csrf_token';
+    public $FG_FORM_UNIQID_FIELD = 'form_id';
 
 
     // ----------------------------------------------
@@ -569,8 +569,33 @@ class FormHandler
     //	@returns void
     //	@ $tablename + $instance_name
     // ----------------------------------------------
+    public $Host;
+    /**
+     * @var string
+     */
+    public $FG_FORM_UNIQID;
+    /**
+     * @var mixed
+     */
+    public $FG_FORM_RECEIVED_UNIQID;
+    /**
+     * @var mixed
+     */
+    public $FG_FORM_RECEIVED_TOKEN;
+    public $FG_CLAUSE;
+    public $FG_FILTER_SEARCH_3_TIME_FIELD_BIS;
+    public $FG_TOP_FILTER_VALUE2;
+    /**
+     * @var mixed
+     */
+    public $FG_CSRF_RECEIVED_TOKEN;
+    public $FG_CSRF_RECEIVED_FIELD;
+    /**
+     * @var bool
+     */
+    private $alarm_db_error_duplication;
 
-    function __construct($tablename = null, $instance_name = null, $action = null, $tablename_count = null)
+    public function __construct($tablename = null, $instance_name = null, $action = null, $tablename_count = null)
     {
         Console::log('Construct FormHandler');
         Console::logMemory($this, 'FormHandler Class : Line ' . __LINE__);
@@ -581,12 +606,12 @@ class FormHandler
         $this->FG_TABLE_NAME_COUNT = $tablename_count;
 
         if ($this->FG_DEBUG) {
-            echo "" . $this->Host . "";
+            echo $this->Host;
         }
 
         $this->set_regular_expression();
 
-        $this->_action = $action ? $action : filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL);
+        $this->_action = $action ?: filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL);
 
         // If anti CSRF protection is enabled
         if ($this->FG_CSRF_STATUS == true) {
@@ -627,7 +652,7 @@ class FormHandler
             }
         }
 
-        $this->_vars = array_merge((array)$_GET, (array)$_POST);
+        $this->_vars = array_merge($_GET, $_POST);
 
         $this->def_list();
 
@@ -665,7 +690,7 @@ class FormHandler
     /*
     * Generate a csrf token
     */
-    private function genCsrfTokenKey()
+    private function genCsrfTokenKey(): string
     {
         $token1 = microtime();
         $token2 = uniqid(null, true);
@@ -675,16 +700,12 @@ class FormHandler
         return base64_encode($token1 . $token2 . $token3 . $token4);
     }
 
-    static function GetInstance()
+    public static function GetInstance(): FormHandler
     {
-        if (empty (self:: $Instance)) {
-            $Instance = null;
-        }
-
         return self:: $Instance;
     }
 
-    function setDBHandler($DBHandle = null)
+    public function setDBHandler($DBHandle = null)
     {
         Console::log('FormHandler -> setDBHandler');
         Console::logMemory($this, 'FormHandler -> setDBHandler : Line ' . __LINE__);
@@ -698,7 +719,7 @@ class FormHandler
      *
      * @public
      */
-    function init()
+    public function init()
     {
         $processed = $this->getProcessed();
 
@@ -712,8 +733,6 @@ class FormHandler
         if ($processed['section'] != "") {
             $section = $processed['section'];
             $_SESSION["menu_section"] = intval($section);
-        } else {
-            $section = intval($_SESSION["menu_section"]);
         }
         $ext_link = '';
         if (is_numeric($processed['current_page'])) {
@@ -752,7 +771,7 @@ class FormHandler
      *
      * @public
      */
-    function def_list()
+    public function def_list()
     {
         Console::log('FormHandler -> def_list');
         Console::logMemory($this, 'FormHandler -> def_list : Line ' . __LINE__);
@@ -764,7 +783,7 @@ class FormHandler
         $this->tablelist['status_list']["4"] = [gettext("FREE"), "4"];
     }
 
-    function &getProcessed()
+    public function &getProcessed(): array
     {
         foreach ($this->_vars as $key => $value) {
             if (!$this->_processed[$key] or empty($this->_processed[$key])) {
@@ -783,18 +802,16 @@ class FormHandler
         return $this->_processed;
     }
 
-    function sanitize_tag($input)
+    public function sanitize_tag($input)
     {
         $search = [
             '@<script[^>]*?>.*?</script>@si',   // Strip out javascript
-            '@<[\/\!]*?[^<>]*?>@si',            // Strip out HTML tags
+            '@<[/!]*?[^<>]*?>@si',            // Strip out HTML tags
             '@<style[^>]*?>.*?</style>@siU',    // Strip style tags properly
             '@<![\s\S]*?--[ \t\n\r]*>@'         // Strip multi-line comments
         ];
 
-        $output = preg_replace($search, '', $input);
-
-        return $output;
+        return preg_replace($search, '', $input);
     }
 
     // ----------------------------------------------
@@ -821,7 +838,7 @@ class FormHandler
      * @ 12. $function render
      */
 
-    function AddViewElement($displayname, $fieldname, $colpercentage, $textalign = 'center', $sort = 'sort', $char_limit = null, $lie_type = null, $lie_with = null, $lie_fieldname = null, $lie_clause = null, $lie_display = null, $myfunc = null, $link_file = null)
+    public function AddViewElement($displayname, $fieldname, $colpercentage, $textalign = 'center', $sort = 'sort', $char_limit = null, $lie_type = null, $lie_with = null, $lie_fieldname = null, $lie_clause = null, $lie_display = null, $myfunc = null, $link_file = null)
     {
         $cur = count($this->FG_TABLE_COL);
 
@@ -842,7 +859,7 @@ class FormHandler
 
     */
 
-    function FieldExportElement($fieldname)
+    public function FieldExportElement($fieldname)
     {
         if (strlen($fieldname) > 0) {
             $this->FG_EXPORT_FIELD_LIST = $fieldname;
@@ -857,7 +874,7 @@ class FormHandler
      * @ $col_query    , option to append id ( by default )
      */
 
-    function FieldViewElement($fieldname, $add_id = 1)
+    public function FieldViewElement($fieldname, $add_id = 1)
     {
         $this->FG_COL_QUERY = $fieldname;
         // For each query we need to have the ID at the lenght FG_NB_TABLE_COL
@@ -867,17 +884,17 @@ class FormHandler
     }
 
 
-    function Is_EDITION()
+    public function Is_EDITION()
     {
         $this->FG_EDITION = true;
     }
 
-    function Is_DELETION()
+    public function Is_DELETION()
     {
         $this->FG_DELETION = true;
     }
 
-    function Is_INFO()
+    public function Is_INFO()
     {
         $this->FG_INFO = true;
     }
@@ -887,7 +904,7 @@ class FormHandler
      *
      * @public   -  @string
      */
-    function set_toptext($text = null)
+    public function set_toptext($text = null)
     {
         if (isset($text)) {
             $this->FG_INTRO_TEXT = gettext("You can browse through our ") . $text . gettext(" and modify their different properties<br>");
@@ -902,7 +919,7 @@ class FormHandler
      *
      * @public   -  @string
      */
-    function set_hidden_value($query_adition_hidden_fields, $query_adition_hidden_value, $query_sql_hidden)
+    public function set_hidden_value($query_adition_hidden_fields, $query_adition_hidden_value, $query_sql_hidden)
     {
         $this->FG_QUERY_ADITION_HIDDEN_FIELDS = $query_adition_hidden_fields;
         $this->FG_QUERY_ADITION_HIDDEN_VALUE = $query_adition_hidden_value;
@@ -914,7 +931,7 @@ class FormHandler
      *
      * @public   -  @string
      */
-    function set_alttext($alttext_edit = null, $alttext_delete = null)
+    public function set_alttext($alttext_edit = null, $alttext_delete = null)
     {
         if (isset($alttext_edit)) {
             $this->FG_EDIT_ALT = gettext("Edit this ") . $this->FG_INSTANCE_NAME;
@@ -984,7 +1001,7 @@ class FormHandler
 	// 17. COMMENT ABOVE : this will insert a comment line above the edition line, useful to separate section and to provide some detailed instruction
 	 */
 
-    function AddEditElement(
+    public function AddEditElement(
         $displayname,
         $fieldname,
         $defaultvalue,
@@ -1051,13 +1068,13 @@ class FormHandler
      * @public
      * @ $displayname , $fieldname, $fieldvar
      */
-    function AddSearchElement_C1($displayname, $fieldname, $fieldvar)
+    public function AddSearchElement_C1($displayname, $fieldname, $fieldvar)
     {
         $cur = count($this->FG_FILTER_SEARCH_FORM_1C);
         $this->FG_FILTER_SEARCH_FORM_1C[$cur] = [$displayname, $fieldname, $fieldvar];
     }
 
-    function AddSearchElement_C2($displayname, $fieldname1, $fielvar1, $fieldname2, $fielvar2, $sqlfield)
+    public function AddSearchElement_C2($displayname, $fieldname1, $fielvar1, $fieldname2, $fielvar2, $sqlfield)
     {
         $cur = count($this->FG_FILTER_SEARCH_FORM_2C);
         $this->FG_FILTER_SEARCH_FORM_2C[$cur] = [
@@ -1071,8 +1088,8 @@ class FormHandler
      * @public
      * @ $displayname , SQL or array to fill select and the name of select box
      */
-    function AddSearchElement_Select($displayname, $table = null, $fields = null, $clause = null,
-                                     $order = null, $sens = null, $select_name = '', $sql_type = 1, $array_content = null, $search_table = null)
+    public function AddSearchElement_Select($displayname, $table = null, $fields = null, $clause = null,
+                                            $order = null, $sens = null, $select_name = '', $sql_type = 1, $array_content = null, $search_table = null)
     {
 
         $cur = count($this->FG_FILTER_SEARCH_FORM_SELECT);
@@ -1092,7 +1109,7 @@ class FormHandler
      * @public
      * @ $col_query
      */
-    function FieldEditElement($fieldname)
+    public function FieldEditElement($fieldname)
     {
         if ($this->FG_DISPLAY_SELECT == true) {
             if (strlen($this->FG_SELECT_FIELDNAME) > 0) {
@@ -1104,7 +1121,7 @@ class FormHandler
     }
 
 
-    function set_regular_expression()
+    public function set_regular_expression()
     {
         // 0.  A STRING WITH EXACTLY 3 CHARACTERS.
         $this->FG_regular[] = [
@@ -1244,7 +1261,7 @@ class FormHandler
     // FUNCTION FOR THE FORM
     // ----------------------------------------------
 
-    function do_field_duration($sql, $fld, $fldsql)
+    public function do_field_duration($sql, $fld, $fldsql)
     {
         $processed = $this->getProcessed();
 
@@ -1283,7 +1300,7 @@ class FormHandler
         return $sql;
     }
 
-    function do_field($sql, $fld, $simple = 0, $processed = null, $search_table = null)
+    public function do_field($sql, $fld, $simple = 0, $processed = null, $search_table = null)
     {
         $fldtype = $fld . 'type';
         if (empty($processed)) {
@@ -1340,22 +1357,22 @@ class FormHandler
      *
      * @public
      */
-    function perform_action(&$form_action)
+    public function perform_action(&$form_action)
     {
         //security check
-
+        $list = [];
         switch ($form_action) {
             case "ask-add":
             case "add":
                 if (!$this->FG_ADDITION) {
-                    Header("Location: " . filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL));
+                    header("Location: " . filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL));
                     die();
                 }
                 break;
             case "ask-edit":
             case "edit":
                 if (!$this->FG_EDITION) {
-                    Header("Location: " . filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL));
+                    header("Location: " . filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL));
                     die();
                 }
                 break;
@@ -1363,7 +1380,7 @@ class FormHandler
             case "ask-delete":
             case "delete":
                 if (!$this->FG_DELETION) {
-                    Header("Location: " . filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL));
+                    header("Location: " . filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL));
                     die();
                 }
                 break;
@@ -1376,7 +1393,7 @@ class FormHandler
                 $this->perform_edit($form_action);
                 break;
             case "delete":
-                $this->perform_delete($form_action);
+                $this->perform_delete();
                 break;
         }
 
@@ -1384,9 +1401,9 @@ class FormHandler
 
         if ($form_action == "ask-delete" && in_array($processed['id'], $this->FG_DELETION_FORBIDDEN_ID)) {
             if (!empty($this->FG_GO_LINK_AFTER_ACTION_DELETE)) {
-                Header("Location: " . $this->FG_GO_LINK_AFTER_ACTION_DELETE . $processed['id']);
+                header("Location: " . $this->FG_GO_LINK_AFTER_ACTION_DELETE . $processed['id']);
             } else {
-                Header("Location: " . filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL));
+                header("Location: " . filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL));
             }
             die();
         }
@@ -1404,16 +1421,10 @@ class FormHandler
             }
 
             /* Add CSRF protection */
-            if ($this->FG_CSRF_STATUS == true) {
-                switch ($form_action) {
-                    case 'add':
-                    case 'edit':
-                    case 'delete':
-                        if ($this->_processed[$this->FG_CSRF_RECEIVED_FIELD] != $this->FG_CSRF_RECEIVED_TOKEN) {
-                            Header("Location: " . filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL));
-                            die();
-                        }
-                        break;
+            if ($this->FG_CSRF_STATUS && $form_action === 'edit') {
+                if ($this->_processed[$this->FG_CSRF_RECEIVED_FIELD] != $this->FG_CSRF_RECEIVED_TOKEN) {
+                    header("Location: " . filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL));
+                    die();
                 }
             }
 
@@ -1461,7 +1472,7 @@ class FormHandler
                 if (DB_TYPE == "postgres") {
                     $this->FG_NB_RECORD = $instance_table->Table_count($this->DBHandle, $this->FG_TABLE_CLAUSE);
                 } else {
-                    $res_count = $instance_table->SQLExec($this->DBHandle, "SELECT FOUND_ROWS() as count", 1);
+                    $res_count = $instance_table->SQLExec($this->DBHandle, "SELECT FOUND_ROWS() as count");
                     $this->FG_NB_RECORD = $res_count[0][0];
                 }
 
@@ -1516,7 +1527,7 @@ class FormHandler
      *
      * @public
      */
-    function prepare_list_subselection($form_action)
+    public function prepare_list_subselection($form_action)
     {
 
         $processed = $this->getProcessed();
@@ -1554,10 +1565,10 @@ class FormHandler
             // Search Form On
             if (($processed['posted_search'] == 1)) {
 
-                $this->_processed[fromstatsday_sday] = normalize_day_of_month($processed[fromstatsday_sday], $processed[fromstatsmonth_sday], 1);
-                $this->_processed[tostatsday_sday] = normalize_day_of_month($processed[tostatsday_sday], $processed[tostatsmonth_sday], 1);
-                $this->_processed[fromstatsday_sday_bis] = normalize_day_of_month($processed[fromstatsday_sday_bis], $processed[fromstatsmonth_sday_bis], 1);
-                $this->_processed[tostatsday_sday_bis] = normalize_day_of_month($processed[tostatsday_sday_bis], $processed[tostatsmonth_sday_bis], 1);
+                $this->_processed["fromstatsday_sday"] = normalize_day_of_month($processed["fromstatsday_sday"], $processed["fromstatsmonth_sday"], 1);
+                $this->_processed["tostatsday_sday"] = normalize_day_of_month($processed["tostatsday_sday"], $processed["tostatsmonth_sday"], 1);
+                $this->_processed["fromstatsday_sday_bis"] = normalize_day_of_month($processed["fromstatsday_sday_bis"], $processed["fromstatsmonth_sday_bis"], 1);
+                $this->_processed["tostatsday_sday_bis"] = normalize_day_of_month($processed["tostatsday_sday_bis"], $processed["tostatsmonth_sday_bis"], 1);
 
                 $SQLcmd = '';
 
@@ -1595,13 +1606,13 @@ class FormHandler
                     $date_clause .= " AND " . $this->FG_FILTER_SEARCH_1_TIME_FIELD . " >= TIMESTAMP('$processed[fromstatsmonth_sday]-$processed[fromstatsday_sday]')";
                 }
                 if ($processed['today'] && isset($processed['tostatsday_sday']) && isset($processed['tostatsmonth_sday'])) {
-                    $date_clause .= " AND " . $this->FG_FILTER_SEARCH_1_TIME_FIELD . " <= TIMESTAMP('$processed[tostatsmonth_sday]-" . sprintf("%02d", intval($processed[tostatsday_sday])/*+1*/) . " 23:59:59')";
+                    $date_clause .= " AND " . $this->FG_FILTER_SEARCH_1_TIME_FIELD . " <= TIMESTAMP('$processed[tostatsmonth_sday]-" . sprintf("%02d", intval($processed["tostatsday_sday"])/*+1*/) . " 23:59:59')";
                 }
 
 
-                if ($processed[Period] == "month_older_rad") {
-                    $from_month = $processed[month_earlier];
-                    $date_clause .= " AND DATE_SUB(NOW(),INTERVAL $from_month MONTH) > " . $this->FG_FILTER_SEARCH_3_TIME_FIELD . "";
+                if ($processed["Period"] == "month_older_rad") {
+                    $from_month = $processed["month_earlier"];
+                    $date_clause .= " AND DATE_SUB(NOW(),INTERVAL $from_month MONTH) > " . $this->FG_FILTER_SEARCH_3_TIME_FIELD;
                 }
 
                 //BIS FIELD
@@ -1609,7 +1620,7 @@ class FormHandler
                     $date_clause .= " AND " . $this->FG_FILTER_SEARCH_1_TIME_FIELD_BIS . " >= TIMESTAMP('$processed[fromstatsmonth_sday_bis]-$processed[fromstatsday_sday_bis]')";
                 }
                 if ($processed['today_bis'] && isset($processed['tostatsday_sday_bis']) && isset($processed['tostatsmonth_sday_bis'])) {
-                    $date_clause .= " AND " . $this->FG_FILTER_SEARCH_1_TIME_FIELD_BIS . " <= TIMESTAMP('$processed[tostatsmonth_sday_bis]-" . sprintf("%02d", intval($processed[tostatsday_sday_bis])/*+1*/) . " 23:59:59')";
+                    $date_clause .= " AND " . $this->FG_FILTER_SEARCH_1_TIME_FIELD_BIS . " <= TIMESTAMP('$processed[tostatsmonth_sday_bis]-" . sprintf("%02d", intval($processed["tostatsday_sday_bis"])/*+1*/) . " 23:59:59')";
                 }
 
 
@@ -1638,12 +1649,12 @@ class FormHandler
      * Function to delete all pre selected records,
      * This Function Gets the selected records and delete them from DB
      ******************************************/
-    function Delete_Selected()
+    public function Delete_Selected()
     {
         //if ( $form_action == "list" && $this->FG_FILTER_SEARCH_FORM)
         {
             $instance_table = new Table($this->FG_TABLE_NAME, $this->FG_COL_QUERY);
-            $result = $instance_table->Delete_Selected($this->DBHandle, $this->FG_TABLE_CLAUSE, $this->FG_ORDER, $this->FG_SENS, null, null,
+            $instance_table->Delete_Selected($this->DBHandle, $this->FG_TABLE_CLAUSE, $this->FG_ORDER, $this->FG_SENS, null, null,
                 $this->FG_LIMITE_DISPLAY, $this->CV_CURRENT_PAGE * $this->FG_LIMITE_DISPLAY, $this->SQL_GROUP);
         }
     }
@@ -1653,10 +1664,13 @@ class FormHandler
      *
      * @public
      */
-    function perform_add(&$form_action)
+    public function perform_add(&$form_action)
     {
         $processed = $this->getProcessed();  //$processed['firstname']
         $this->VALID_SQL_REG_EXP = true;
+        $param_add_fields = "";
+        $param_add_value = "";
+        $arr_value_to_import = [];
 
         for ($i = 0; $i < $this->FG_NB_TABLE_ADITION; $i++) {
 
@@ -1793,7 +1807,7 @@ class FormHandler
         // CALL DEFINED FUNCTION BEFORE THE ADDITION
 
         if (strlen($this->FG_ADDITIONAL_FUNCTION_BEFORE_ADD) > 0 && ($this->VALID_SQL_REG_EXP)) {
-            $res_funct = call_user_func(['FormBO', $this->FG_ADDITIONAL_FUNCTION_BEFORE_ADD]);
+            $res_funct = call_user_func([FormBO::class, $this->FG_ADDITIONAL_FUNCTION_BEFORE_ADD]);
         }
 
         if ($res_funct) {
@@ -1807,17 +1821,15 @@ class FormHandler
                         $this->RESULT_QUERY = $instance_table->Add_table($this->DBHandle, $param_add_value_replaced, null, null, $this->FG_TABLE_ID);
                     }
                 }
-            } else {
-                if ($this->VALID_SQL_REG_EXP) {
-                    $this->RESULT_QUERY = $instance_table->Add_table($this->DBHandle, $param_add_value, null, null, $this->FG_TABLE_ID);
-                }
+            } elseif ($this->VALID_SQL_REG_EXP) {
+                $this->RESULT_QUERY = $instance_table->Add_table($this->DBHandle, $param_add_value, null, null, $this->FG_TABLE_ID);
             }
             if ($this->FG_ENABLE_LOG == 1) {
                 $this->logger->insertLog_Add($_SESSION["admin_id"], 2, "NEW " . strtoupper($this->FG_INSTANCE_NAME) . " CREATED", "User added a new record in database", $this->FG_TABLE_NAME, $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI'], $param_add_fields, $param_add_value);
             }
             // CALL DEFINED FUNCTION AFTER THE ACTION ADDITION
             if (strlen($this->FG_ADDITIONAL_FUNCTION_AFTER_ADD) > 0 && ($this->VALID_SQL_REG_EXP)) {
-                $res_funct = call_user_func(['FormBO', $this->FG_ADDITIONAL_FUNCTION_AFTER_ADD]);
+                call_user_func([FormBO::class, $this->FG_ADDITIONAL_FUNCTION_AFTER_ADD]);
             }
             if ($this->FG_ADITION_GO_EDITION == "yes") {
                 $form_action = "ask-edit";
@@ -1829,7 +1841,7 @@ class FormHandler
                     echo "<br> GOTO ; " . $this->FG_GO_LINK_AFTER_ACTION_ADD . $id;
                 }
                 //echo "<br> GOTO ; ".$this->FG_GO_LINK_AFTER_ACTION_ADD.$id;
-                Header("Location: " . $this->FG_GO_LINK_AFTER_ACTION_ADD . $id);
+                header("Location: " . $this->FG_GO_LINK_AFTER_ACTION_ADD . $id);
             }
         }
     }
@@ -1840,15 +1852,16 @@ class FormHandler
      *
      * @public
      */
-    function perform_edit(&$form_action)
+    public function perform_edit(&$form_action)
     {
+        $param_update = "";
         $processed = $this->getProcessed();  //$processed['firstname']
 
         $this->VALID_SQL_REG_EXP = true;
 
         $instance_table = new Table($this->FG_TABLE_NAME, $this->FG_QUERY_EDITION);
 
-        if ($processed['id'] != "" || !is_null($processed['id'])) {
+        if (!empty($processed['id'])) {
             $this->FG_EDITION_CLAUSE = str_replace("%id", $processed['id'], $this->FG_EDITION_CLAUSE);
         }
 
@@ -1895,44 +1908,40 @@ class FormHandler
                     }
                     if (empty($processed[$fields_name]) && strtoupper(substr($this->FG_TABLE_ADITION[$i][13], 3, 4)) == "NULL") {
                         $param_update .= $fields_name . " = NULL ";
-                    } else {
-                        if ($this->FG_TABLE_EDITION[$i][3] != "SPAN") {
-                            $param_update .= $fields_name . " = '" . addslashes(trim($processed[$fields_name])) . "' ";
-                        }
+                    } elseif ($this->FG_TABLE_EDITION[$i][3] != "SPAN") {
+                        $param_update .= $fields_name . " = '" . addslashes(trim($processed[$fields_name])) . "' ";
                     }
                 }
 
-            } else {
-                if (strtoupper($this->FG_TABLE_EDITION[$i][3]) == strtoupper("CHECKBOX")) {
-                    $table_split = preg_split("/:/", $this->FG_TABLE_EDITION[$i][1]);
-                    $checkbox_data = $table_split[0];    //doc_tariff
-                    $instance_sub_table = new Table($table_split[0], $table_split[1] . ", " . $table_split[5]);
-                    $SPLIT_FG_DELETE_CLAUSE = $table_split[5] . "='" . trim($processed['id']) . "'";
-                    $instance_sub_table->Delete_table($this->DBHandle, $SPLIT_FG_DELETE_CLAUSE, $func_table = null);
+            } elseif (strtoupper($this->FG_TABLE_EDITION[$i][3]) == strtoupper("CHECKBOX")) {
+                $table_split = preg_split("/:/", $this->FG_TABLE_EDITION[$i][1]);
+                $checkbox_data = $table_split[0];    //doc_tariff
+                $instance_sub_table = new Table($table_split[0], $table_split[1] . ", " . $table_split[5]);
+                $SPLIT_FG_DELETE_CLAUSE = $table_split[5] . "='" . trim($processed['id']) . "'";
+                $instance_sub_table->Delete_table($this->DBHandle, $SPLIT_FG_DELETE_CLAUSE);
 
-                    if (!is_array($processed[$checkbox_data])) {
-                        $snum = 0;
-                        $this->VALID_SQL_REG_EXP = false;
-                        $this->FG_fit_expression[$i] = false;
-                    } else {
-                        $snum = count($processed[$checkbox_data]);
-                    }
+                if (!is_array($processed[$checkbox_data])) {
+                    $snum = 0;
+                    $this->VALID_SQL_REG_EXP = false;
+                    $this->FG_fit_expression[$i] = false;
+                } else {
+                    $snum = count($processed[$checkbox_data]);
+                }
 
-                    $checkbox_data_tab = $processed[$checkbox_data];
-                    for ($j = 0; $j < $snum; $j++) {
-                        $this->RESULT_QUERY = $instance_sub_table->Add_table($this->DBHandle, "'" . addslashes(trim($checkbox_data_tab[$j])) . "', '" . addslashes(trim($processed['id'])) . "'", null, null);
-                        if (!$this->RESULT_QUERY) {
-                            $findme = 'duplicate';
-                            $pos_find = strpos($instance_sub_table->errstr, $findme);
+                $checkbox_data_tab = $processed[$checkbox_data];
+                for ($j = 0; $j < $snum; $j++) {
+                    $this->RESULT_QUERY = $instance_sub_table->Add_table($this->DBHandle, "'" . addslashes(trim($checkbox_data_tab[$j])) . "', '" . addslashes(trim($processed['id'])) . "'");
+                    if (!$this->RESULT_QUERY) {
+                        $findme = 'duplicate';
+                        $pos_find = strpos($instance_sub_table->errstr, $findme);
 
-                            // Note our use of ===.  Simply == would not work as expected
-                            // because the position of 'a' was the 0th (first) character.
-                            if ($pos_find === false) {
-                                echo $instance_sub_table->errstr;
-                            } else {
-                                //echo $FG_TEXT_ERROR_DUPLICATION;
-                                $alarm_db_error_duplication = true;
-                            }
+                        // Note our use of ===.  Simply == would not work as expected
+                        // because the position of 'a' was the 0th (first) character.
+                        if ($pos_find === false) {
+                            echo $instance_sub_table->errstr;
+                        } else {
+                            //echo $FG_TEXT_ERROR_DUPLICATION;
+                            $this->alarm_db_error_duplication = true;
                         }
                     }
                 }
@@ -1951,7 +1960,7 @@ class FormHandler
         }
 
         if (strlen($this->FG_ADDITIONAL_FUNCTION_BEFORE_EDITION) > 0 && ($this->VALID_SQL_REG_EXP)) {
-            $res_funct = call_user_func(['FormBO', $this->FG_ADDITIONAL_FUNCTION_BEFORE_EDITION]);
+            call_user_func([FormBO::class, $this->FG_ADDITIONAL_FUNCTION_BEFORE_EDITION]);
         }
 
         if ($this->FG_DEBUG == 1) {
@@ -1959,7 +1968,7 @@ class FormHandler
         }
 
         if ($this->VALID_SQL_REG_EXP) {
-            $this->RESULT_QUERY = $instance_table->Update_table($this->DBHandle, $param_update, $this->FG_EDITION_CLAUSE, $func_table = null);
+            $this->RESULT_QUERY = $instance_table->Update_table($this->DBHandle, $param_update, $this->FG_EDITION_CLAUSE);
         }
 
         if ($this->FG_ENABLE_LOG == 1) {
@@ -1971,7 +1980,7 @@ class FormHandler
         }
         // CALL DEFINED FUNCTION AFTER THE ACTION ADDITION
         if (strlen($this->FG_ADDITIONAL_FUNCTION_AFTER_EDITION) > 0 && ($this->VALID_SQL_REG_EXP)) {
-            $res_funct = call_user_func(['FormBO', $this->FG_ADDITIONAL_FUNCTION_AFTER_EDITION]);
+            call_user_func([FormBO::class, $this->FG_ADDITIONAL_FUNCTION_AFTER_EDITION]);
         }
 
         if (($this->VALID_SQL_REG_EXP) && (isset($this->FG_GO_LINK_AFTER_ACTION_EDIT))) {
@@ -1985,7 +1994,7 @@ class FormHandler
             if (!empty($processed['order']) && !empty($processed['sens'])) {
                 $ext_link .= "&order=" . $processed['order'] . "&sens=" . $processed['sens'];
             }
-            Header("Location: " . $this->FG_GO_LINK_AFTER_ACTION_EDIT . $processed['id'] . $ext_link);
+            header("Location: " . $this->FG_GO_LINK_AFTER_ACTION_EDIT . $processed['id'] . $ext_link);
         }
     }
 
@@ -1995,10 +2004,10 @@ class FormHandler
      *
      * @public
      */
-    function perform_delete(&$form_action)
+    public function perform_delete()
     {
         if (strlen($this->FG_ADDITIONAL_FUNCTION_AFTER_DELETE) > 0) {
-            $res_funct = call_user_func(['FormBO', $this->FG_ADDITIONAL_FUNCTION_AFTER_DELETE]);
+            call_user_func([FormBO::class, $this->FG_ADDITIONAL_FUNCTION_AFTER_DELETE]);
         }
         $processed = $this->getProcessed();  //$processed['firstname']
         $this->VALID_SQL_REG_EXP = true;
@@ -2008,21 +2017,21 @@ class FormHandler
         $clauseCount = count($this->FG_FK_EDITION_CLAUSE);
 
         if (($tableCount == $clauseCount) && $clauseCount > 0 && $this->FG_FK_DELETE_ALLOWED) {
-            if ($processed['id'] != "" || !is_null($processed['id'])) {
+            if (!empty($processed['id'])) {
                 $instance_table = new Table($this->FG_TABLE_NAME, $this->FG_QUERY_EDITION, $this->FG_FK_TABLENAMES, $this->FG_FK_EDITION_CLAUSE, $processed['id'], $this->FG_FK_WARNONLY);
             }
         } else {
             $instance_table = new Table($this->FG_TABLE_NAME, $this->FG_QUERY_EDITION);
         }
-        $instance_table->FK_DELETE = ($this->FG_FK_WARNONLY ? false : true);
+        $instance_table->FK_DELETE = !$this->FG_FK_WARNONLY;
 
-        if ($processed['id'] != "" || !is_null($processed['id'])) {
+        if (!empty($processed['id'])) {
             $this->FG_EDITION_CLAUSE = str_replace("%id", $processed['id'], $this->FG_EDITION_CLAUSE);
         }
 
-        $this->RESULT_QUERY = $instance_table->Delete_table($this->DBHandle, $this->FG_EDITION_CLAUSE, $func_table = null);
+        $this->RESULT_QUERY = $instance_table->Delete_table($this->DBHandle, $this->FG_EDITION_CLAUSE);
         if ($this->FG_ENABLE_LOG == 1) {
-            $this->logger->insertLog($_SESSION["admin_id"], 3, "A " . strtoupper($this->FG_INSTANCE_NAME) . " DELETED", "A RECORD IS DELETED, EDITION CLAUSE USED IS " . $this->FG_EDITION_CLAUSE, $this->FG_TABLE_NAME, $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI'], $param_update);
+            $this->logger->insertLog($_SESSION["admin_id"], 3, "A " . strtoupper($this->FG_INSTANCE_NAME) . " DELETED", "A RECORD IS DELETED, EDITION CLAUSE USED IS " . $this->FG_EDITION_CLAUSE, $this->FG_TABLE_NAME, $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI']);
         }
         if (!$this->RESULT_QUERY) {
             echo gettext("error deletion");
@@ -2043,9 +2052,9 @@ class FormHandler
                     $ext_link .= "&order=" . $processed['order'] . "&sens=" . $processed['sens'];
                 }
                 if (substr($this->FG_GO_LINK_AFTER_ACTION_DELETE, -3) == "id=") {
-                    Header("Location: " . $this->FG_GO_LINK_AFTER_ACTION_DELETE . $processed['id'] . $ext_link);
+                    header("Location: " . $this->FG_GO_LINK_AFTER_ACTION_DELETE . $processed['id'] . $ext_link);
                 } else {
-                    Header("Location: " . $this->FG_GO_LINK_AFTER_ACTION_DELETE . $ext_link);
+                    header("Location: " . $this->FG_GO_LINK_AFTER_ACTION_DELETE . $ext_link);
                 }
             }
         }
@@ -2055,7 +2064,7 @@ class FormHandler
     /*
       Function to check for the Dependent Data
     */
-    function isFKDataExists()
+    public function isFKDataExists(): bool
     {
         $processed = $this->getProcessed();
         $tableCount = count($this->FG_FK_TABLENAMES);
@@ -2063,7 +2072,7 @@ class FormHandler
         $rowcount = 0;
         if (($tableCount == $clauseCount) && $clauseCount > 0) {
             for ($i = 0; $i < $tableCount; $i++) {
-                if ($processed['id'] != "" || !is_null($processed['id'])) {
+                if (!empty($processed['id'])) {
                     $instance_table = new Table($this->FG_FK_TABLENAMES[$i]);
                     $rowcount = $rowcount + $instance_table->Table_count($this->DBHandle, $this->FG_FK_EDITION_CLAUSE[$i], $processed['id']);
                 }
@@ -2079,7 +2088,7 @@ class FormHandler
      *
      * @public
      */
-    function perform_add_content($sub_action, $id)
+    public function perform_add_content($sub_action, $id)
     {
         $processed = $this->getProcessed();
         $table_split = preg_split("/:/", $this->FG_TABLE_EDITION[$sub_action][14]);
@@ -2089,7 +2098,7 @@ class FormHandler
             foreach ($processed[$table_split[1]] as $value) {
                 if (empty($table_split[12]) || preg_match('/' . $this->FG_regular[$table_split[12]][0] . '/', $value)) {
                     // RESPECT REGULAR EXPRESSION
-                    $result_query = $instance_sub_table->Add_table($this->DBHandle, "'" . addslashes(trim($value)) . "', '" . addslashes(trim($id)) . "'", null, null);
+                    $result_query = $instance_sub_table->Add_table($this->DBHandle, "'" . addslashes(trim($value)) . "', '" . addslashes(trim($id)) . "'");
 
                     if (!$result_query) {
                         $findme = 'duplicate';
@@ -2098,7 +2107,7 @@ class FormHandler
                         if ($pos_find === false) {
                             echo $instance_sub_table->errstr;
                         } else {
-                            $alarm_db_error_duplication = true;
+                            $this->alarm_db_error_duplication = true;
                         }
                     }
                 }
@@ -2107,7 +2116,7 @@ class FormHandler
             $value = $processed[$table_split[1]];
             if (empty($table_split[12]) || preg_match('/' . $this->FG_regular[$table_split[12]][0] . '/', $value)) {
                 // RESPECT REGULAR EXPRESSION
-                $result_query = $instance_sub_table->Add_table($this->DBHandle, "'" . addslashes(trim($value)) . "', '" . addslashes(trim($id)) . "'", null, null);
+                $result_query = $instance_sub_table->Add_table($this->DBHandle, "'" . addslashes(trim($value)) . "', '" . addslashes(trim($id)) . "'");
 
                 if (!$result_query) {
 
@@ -2117,11 +2126,11 @@ class FormHandler
                     if ($pos_find === false) {
                         echo $instance_sub_table->errstr;
                     } else {
-                        $alarm_db_error_duplication = true;
+                        $this->alarm_db_error_duplication = true;
                     }
                 }
             }
-        };
+        }
     }
 
 
@@ -2130,7 +2139,7 @@ class FormHandler
      *
      * @public
      */
-    function perform_del_content($sub_action, $id)
+    public function perform_del_content($sub_action, $id)
     {
         $processed = $this->getProcessed();
         $table_split = preg_split("/:/", $this->FG_TABLE_EDITION[$sub_action][14]);
@@ -2141,7 +2150,7 @@ class FormHandler
         }
         $instance_sub_table = new Table($table_split[0], $table_split[1] . ", " . $table_split[5]);
         $SPLIT_FG_DELETE_CLAUSE = $table_split[1] . "='" . $value . "' AND " . $table_split[5] . "='" . trim($id) . "'";
-        $instance_sub_table->Delete_table($this->DBHandle, $SPLIT_FG_DELETE_CLAUSE, $func_table = null);
+        $instance_sub_table->Delete_table($this->DBHandle, $SPLIT_FG_DELETE_CLAUSE);
     }
 
 
@@ -2150,9 +2159,8 @@ class FormHandler
      *
      * @public
      */
-    function create_toppage($form_action)
+    public function create_toppage($form_action)
     {
-        $processed = $this->getProcessed();
         if ($form_action == "ask-edit" || $form_action == "edit" || $form_action == "add-content" ||
             $form_action == "del-content") { ?>
             <table class="toppage_maintable">
@@ -2163,7 +2171,7 @@ class FormHandler
                             if ($this->FG_ADITION_GO_EDITION == "yes-done") {
                                 echo '<font class="toppage_maintable_editmsg">' . $this->FG_ADITION_GO_EDITION_MESSAGE . '</font><br><br>';
                             }
-                            if ($alarm_db_error_duplication) {
+                            if ($this->alarm_db_error_duplication) {
                                 echo '<font class="toppage_maintable_editmsg">' . gettext("ERROR_DUPLICATION") . ' ::' . $this->FG_TEXT_ERROR_DUPLICATION . '</font>';
                             } else {
                                 echo $this->FG_INTRO_TEXT_EDITION;
@@ -2200,9 +2208,8 @@ class FormHandler
      *
      * @public
      */
-    function create_actionfinish($form_action)
+    public function create_actionfinish($form_action)
     {
-        $processed = $this->getProcessed();
         ?>
         <TABLE cellSpacing=2 class="toppage_actionfinish">
             <TR>
@@ -2247,9 +2254,8 @@ class FormHandler
      *
      * @public        TODO : maybe is better to allow use a string as parameter
      */
-    function create_custom($form_action)
+    public function create_custom($form_action)
     {
-        $processed = $this->getProcessed();
         ?>
 
         <TABLE width="85%" class="toppage_customaction">
@@ -2279,16 +2285,13 @@ class FormHandler
      *
      * @public        TODO : maybe is better to allow use a string as parameter
      */
-    function create_select_form()
+    public function create_select_form()
     {
         $processed = $this->getProcessed();
-        $instance_table_tariffname = new Table("cc_tariffplan", "id, tariffname");
-        $FG_TABLE_CLAUSE = "";
-        $list_tariffname = $instance_table_tariffname->Get_list($this->DBHandle, $FG_TABLE_CLAUSE, "tariffname", "ASC", null, null, null, null);
 
         $instance_table_tariffgroup = new Table("cc_tariffgroup", "id, tariffgroupname, lcrtype");
-        $FG_TABLE_CLAUSE = "";
-        $list_tariffgroup = $instance_table_tariffgroup->Get_list($this->DBHandle, $FG_TABLE_CLAUSE, "tariffgroupname", "ASC", null, null, null, null);
+
+        $list_tariffgroup = $instance_table_tariffgroup->Get_list($this->DBHandle, "", "tariffgroupname", "ASC");
 
         ?>
         <center>
@@ -2300,9 +2303,9 @@ class FormHandler
             <!-- ** ** ** ** ** Part for the select form  ** ** ** ** ** -->
             <FORM METHOD="POST" ACTION="<?php
             echo filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL) ?>?s=1&t=0&order=<?php
-            echo $order ?>&sens=<?php
-            echo $sens ?>&current_page=<?php
-            echo $current_page ?>">
+            echo $processed['order'] ?>&sens=<?php
+            echo $processed['sens'] ?>&current_page=<?php
+            echo $processed['current_page'] ?>">
                 <INPUT TYPE="hidden" NAME="posted" value="1">
                 <INPUT TYPE="hidden" NAME="current_page" value="0">
                 <?php
@@ -2378,13 +2381,13 @@ class FormHandler
      *
      * @public        TODO : maybe is better to allow use a string as parameter
      */
-    function create_select_form_client($table_cluase = "")
+    public function create_select_form_client($table_cluase = "")
     {
         $processed = $this->getProcessed();
         $instance_table_tariffname = new Table("cc_tariffplan, cc_tariffgroup_plan", "id, tariffname");
         $FG_TABLE_CLAUSE = $table_cluase;
 
-        $list_tariffname = $instance_table_tariffname->Get_list($this->DBHandle, $FG_TABLE_CLAUSE, "tariffname", "ASC", null, null, null, null);
+        $list_tariffname = $instance_table_tariffname->Get_list($this->DBHandle, $FG_TABLE_CLAUSE, "tariffname", "ASC");
 
         ?>
         <center>
@@ -2398,9 +2401,9 @@ class FormHandler
             <table class="form_selectform">
                 <FORM METHOD="POST" ACTION="<?php
                 echo filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL) ?>?s=1&t=0&order=<?php
-                echo $order ?>&sens=<?php
-                echo $sens ?>&current_page=<?php
-                echo $current_page ?>">
+                echo $processed['order'] ?>&sens=<?php
+                echo $processed['sens'] ?>&current_page=<?php
+                echo $processed['current_page'] ?>">
                     <INPUT TYPE="hidden" NAME="posted" value="1">
                     <INPUT TYPE="hidden" NAME="current_page" value="0">
 
@@ -2489,6 +2492,7 @@ class FormHandler
      * Function to create the form
      *
      * @public
+     * @noinspection PhpUnusedParameterInspection
      */
     public function create_form($form_action, $list)
     {
@@ -2524,7 +2528,7 @@ class FormHandler
             case "ask-delete":
             case "ask-del-confirm":
                 if (strlen($this->FG_ADDITIONAL_FUNCTION_BEFORE_DELETE) > 0) {
-                    $res_funct = call_user_func(['FormBO', $this->FG_ADDITIONAL_FUNCTION_BEFORE_DELETE]);
+                    $res_funct = call_user_func([FormBO::class, $this->FG_ADDITIONAL_FUNCTION_BEFORE_DELETE]);
                 }
                 require(__DIR__ . "/../../templates/DelForm.inc.php");
                 break;
@@ -2543,6 +2547,7 @@ class FormHandler
         }
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     private function show_search($processed, $list)
     {
         $id = $processed['id'];
@@ -2562,10 +2567,9 @@ class FormHandler
      * @param string $url the url to refer to with the page number inserted
      * @param int $max_width the number of pages to make available at any one time (default = 20)
      */
-    function printPages($page, $pages, $url, $max_width = 20)
+    public function printPages(int $page, int $pages, string $url, int $max_width = 20)
     {
         Console::logSpeed('Time taken to get to line ' . __LINE__);
-        global $lang;
         $window = 8;
 
         if ($page < 0 || $page > $pages) {
@@ -2582,15 +2586,15 @@ class FormHandler
             //echo "<center><p>\n";
             if ($page != 1) {
                 $temp = str_replace('%s', 1 - 1, $url);
-                echo "<a class=\"pagenav\" href=\"{$temp}\">{$this->lang['strfirst']}</a>\n";
+                echo "<a class=\"pagenav\" href=\"$temp\">{$this->lang['strfirst']}</a>\n";
                 $temp = str_replace('%s', $page - 1 - 1, $url);
-                echo "<a class=\"pagenav\" href=\"{$temp}\">{$this->lang['strprev']}</a>\n";
+                echo "<a class=\"pagenav\" href=\"$temp\">{$this->lang['strprev']}</a>\n";
             }
 
             if ($page <= $window) {
                 $min_page = 1;
                 $max_page = min(2 * $window, $pages);
-            } elseif ($page > $window && $pages >= $page + $window) {
+            } elseif ($pages >= $page + $window) {
                 $min_page = ($page - $window) + 1;
                 $max_page = $page + $window;
             } else {
@@ -2606,16 +2610,16 @@ class FormHandler
             for ($i = $min_page; $i <= $max_page; $i++) {
                 $temp = str_replace('%s', $i - 1, $url);
                 if ($i != $page) {
-                    echo "<a class=\"pagenav\" href=\"{$temp}\">$i</a>\n";
+                    echo "<a class=\"pagenav\" href=\"$temp\">$i</a>\n";
                 } else {
                     echo "$i\n";
                 }
             }
             if ($page != $pages) {
                 $temp = str_replace('%s', $page + 1 - 1, $url);
-                echo "<a class=\"pagenav\" href=\"{$temp}\">{$this->lang['strnext']}</a>\n";
+                echo "<a class=\"pagenav\" href=\"$temp\">{$this->lang['strnext']}</a>\n";
                 $temp = str_replace('%s', $pages - 1, $url);
-                echo "<a class=\"pagenav\" href=\"{$temp}\">{$this->lang['strlast']}</a>\n";
+                echo "<a class=\"pagenav\" href=\"$temp\">{$this->lang['strlast']}</a>\n";
             }
         }
     }
