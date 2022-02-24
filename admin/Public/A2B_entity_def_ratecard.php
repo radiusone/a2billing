@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Forms\FormHandler;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -33,26 +34,28 @@ use A2billing\Table;
  *
 **/
 
+/** @var FormHandler $HD_Form */
+
 include '../lib/admin.defines.php';
 include '../lib/admin.module.access.php';
 include './form_data/FG_var_def_ratecard.inc';
 include '../lib/admin.smarty.php';
 
 if (!has_rights(ACX_RATECARD)) {
-    Header("HTTP/1.0 401 Unauthorized");
-    Header("Location: PP_error.php?c=accessdenied");
+    header("HTTP/1.0 401 Unauthorized");
+    header("Location: PP_error.php?c=accessdenied");
     die();
 }
 
-getpost_ifset(array('package','popup_select', 'popup_formname', 'popup_fieldname','posted', 'Period', 'frommonth', 'fromstatsmonth', 'tomonth', 'tostatsmonth', 'fromday', 'fromstatsday_sday', 'fromstatsmonth_sday', 'today', 'tostatsday_sday', 'tostatsmonth_sday', 'current_page', 'removeallrate', 'removetariffplan', 'definecredit', 'IDCust', 'mytariff_id', 'destination', 'dialprefix', 'buyrate1', 'buyrate2', 'buyrate1type', 'buyrate2type', 'rateinitial1', 'rateinitial2', 'rateinitial1type', 'rateinitial2type', 'id_trunk', "check", "type", "mode"));
+getpost_ifset(['package','popup_select', 'popup_formname', 'popup_fieldname','posted', 'Period', 'frommonth', 'fromstatsmonth', 'tomonth', 'tostatsmonth', 'fromday', 'fromstatsday_sday', 'fromstatsmonth_sday', 'today', 'tostatsday_sday', 'tostatsmonth_sday', 'current_page', 'removeallrate', 'removetariffplan', 'definecredit', 'IDCust', 'mytariff_id', 'destination', 'dialprefix', 'buyrate1', 'buyrate2', 'buyrate1type', 'buyrate2type', 'rateinitial1', 'rateinitial2', 'rateinitial1type', 'rateinitial2type', 'id_trunk', "check", "type", "mode"]);
 
 /********************************* BATCH UPDATE ***********************************/
-getpost_ifset(array ( 'batchupdate', 'upd_id_trunk', 'upd_idtariffplan', 'upd_id_outbound_cidgroup', 'upd_tag', 'upd_inuse', 'upd_activated', 'upd_language',
+getpost_ifset(['batchupdate', 'upd_id_trunk', 'upd_idtariffplan', 'upd_id_outbound_cidgroup', 'upd_tag', 'upd_inuse', 'upd_activated', 'upd_language',
     'upd_tariff', 'upd_credit', 'upd_credittype', 'upd_simultaccess', 'upd_currency', 'upd_typepaid', 'upd_creditlimit', 'upd_enableexpire', 'upd_expirationdate',
     'upd_expiredays', 'upd_runservice', 'filterprefix', 'filterfield'
-));
+]);
 
-$update_fields = array (
+$update_fields = [
     "upd_buyrate",
     "upd_buyrateinitblock",
     "upd_buyrateincrement",
@@ -65,8 +68,8 @@ $update_fields = array (
     "upd_rounding_threshold",
     "upd_additional_block_charge",
     "upd_additional_block_charge_time"
-);
-$update_fields_info = array (
+];
+$update_fields_info = [
     "BUYING RATE",
     "BUYRATE MIN DURATION",
     "BUYRATE BILLING BLOCK",
@@ -79,11 +82,11 @@ $update_fields_info = array (
     "ROUNDING THRESHOLD",
     "ADDITIONAL BLOCK CHARGE",
     "ADDITIONAL BLOCK CHARGE TIME"
-);
-$charges_abc = array ();
-$charges_abc_info = array ();
+];
+$charges_abc = [];
+$charges_abc_info = [];
 if (ADVANCED_MODE) {
-    $charges_abc = array (
+    $charges_abc = [
         "upd_stepchargea",
         "upd_chargea",
         "upd_timechargea",
@@ -94,8 +97,9 @@ if (ADVANCED_MODE) {
         "upd_chargec",
         "upd_timechargec",
         "upd_announce_time_correction"
-    );
-    $charges_abc_info = array (
+    ];
+    getpost_ifset($charges_abc);
+    $charges_abc_info = [
         "ENTRANCE CHARGE A",
         "COST A",
         "TIME FOR A",
@@ -106,14 +110,10 @@ if (ADVANCED_MODE) {
         "COST C",
         "TIME FOR C",
         "ANNOUNCE TIME CORRECTION"
-    );
-};
+    ];
+}
 
 getpost_ifset($update_fields);
-
-if (ADVANCED_MODE) {
-    getpost_ifset($charges_abc);
-};
 
 /***********************************************************************************/
 
@@ -128,14 +128,14 @@ if ($batchupdate == 1 && is_array($check)) {
     $HD_Form->prepare_list_subselection('list');
 
     // Array ( [upd_simultaccess] => on [upd_currency] => on )
-    $loop_pass = 0;
+    $i = 0;
     $SQL_UPDATE = '';
     $PREFIX_FIELD = 'cc_ratecard.';
 
     foreach ($check as $ind_field => $ind_val) {
         //echo "<br>::> $ind_field -";
         $myfield = substr($ind_field, 4);
-        if ($loop_pass != 0)
+        if ($i != 0)
             $SQL_UPDATE .= ',';
 
         // Standard update mode
@@ -147,28 +147,24 @@ if ($batchupdate == 1 && is_array($check)) {
             }
             // Mode 2 - Equal - Add - Substract
         } elseif ($mode["$ind_field"] == 2) {
-            if (!isset ($type["$ind_field"])) {
+            if ($type["$ind_field"] ?? 1 == 1) {
                 $SQL_UPDATE .= " $PREFIX_FIELD$myfield='" . $$ind_field . "'";
-            } else {
-                if ($type["$ind_field"] == 1) {
-                    $SQL_UPDATE .= " $PREFIX_FIELD$myfield='" . $$ind_field . "'";
-                } elseif ($type["$ind_field"] == 2) {
-                    if (substr($$ind_field, -1) == "%") {
-                        $SQL_UPDATE .= " $PREFIX_FIELD$myfield = ROUND($PREFIX_FIELD$myfield + (($PREFIX_FIELD$myfield * " . substr($$ind_field, 0, -1) . ") / 100)+0.00005,4)";
-                    } else {
-                        $SQL_UPDATE .= " $PREFIX_FIELD$myfield = $PREFIX_FIELD$myfield +'" . $$ind_field . "'";
-                    }
+            } elseif ($type["$ind_field"] == 2) {
+                if (substr($$ind_field, -1) == "%") {
+                    $SQL_UPDATE .= " $PREFIX_FIELD$myfield = ROUND($PREFIX_FIELD$myfield + (($PREFIX_FIELD$myfield * " . substr($$ind_field, 0, -1) . ") / 100) + 0.00005, 4)";
                 } else {
-                    if (substr($$ind_field, -1) == "%") {
-                        $SQL_UPDATE .= " $PREFIX_FIELD$myfield = ROUND($PREFIX_FIELD$myfield - (($PREFIX_FIELD$myfield * " . substr($$ind_field, 0, -1) . ") / 100)+0.00005,4)";
-                    } else {
-                        $SQL_UPDATE .= " $PREFIX_FIELD$myfield = $PREFIX_FIELD$myfield -'" . $$ind_field . "'";
-                    }
+                    $SQL_UPDATE .= " $PREFIX_FIELD$myfield = $PREFIX_FIELD$myfield +'" . $$ind_field . "'";
+                }
+            } elseif ($type["$ind_field"] == 3) {
+                if (substr($$ind_field, -1) == "%") {
+                    $SQL_UPDATE .= " $PREFIX_FIELD$myfield = ROUND($PREFIX_FIELD$myfield - (($PREFIX_FIELD$myfield * " . substr($$ind_field, 0, -1) . ") / 100) + 0.00005, 4)";
+                } else {
+                    $SQL_UPDATE .= " $PREFIX_FIELD$myfield = $PREFIX_FIELD$myfield -'" . $$ind_field . "'";
                 }
             }
         }
 
-        $loop_pass++;
+        $i++;
     }
 
     $SQL_UPDATE = "UPDATE $HD_Form->FG_TABLE_NAME SET $SQL_UPDATE";
@@ -186,21 +182,25 @@ if ($batchupdate == 1 && is_array($check)) {
 }
 /********************************* END BATCH UPDATE ***********************************/
 
-if ($id != "" || !is_null($id)) {
-    $HD_Form->FG_EDITION_CLAUSE = str_replace("%id", "$id", $HD_Form->FG_EDITION_CLAUSE);
+if (!empty($id)) {
+    $HD_Form->FG_EDITION_CLAUSE = str_replace("%id", $id, $HD_Form->FG_EDITION_CLAUSE);
 }
 
-if (!isset ($form_action))
-    $form_action = "list"; //ask-add
-if (!isset ($action))
-    $action = $form_action;
+$form_action = $form_action ?? "list"; //ask-add
 
 if ($form_action != "list") {
     check_demo_mode();
+} elseif ($HD_Form->FG_FILTER_SEARCH_FORM && $_POST['posted_search'] == 1 && is_numeric($mytariffgroup_id)) {
+    if (!empty ($HD_Form->FG_TABLE_CLAUSE)) {
+        $HD_Form->FG_TABLE_CLAUSE .= ' AND ';
+    }
+
+    $HD_Form->FG_TABLE_CLAUSE .= "idtariffplan='$mytariff_id'";
 }
 
-if (is_string($tariffgroup) && strlen(trim($tariffgroup)) > 0) {
-    list ($mytariffgroup_id, $mytariffgroupname, $mytariffgrouplcrtype) = preg_split('/-:-/', $tariffgroup);
+
+if (substr_count($tariffgroup ?? "", "-:-") === 2) {
+    [$mytariffgroup_id, $mytariffgroupname, $mytariffgrouplcrtype] = explode('/-:-/', $tariffgroup);
     $_SESSION["mytariffgroup_id"] = $mytariffgroup_id;
     $_SESSION["mytariffgroupname"] = $mytariffgroupname;
     $_SESSION["tariffgrouplcrtype"] = $mytariffgrouplcrtype;
@@ -210,406 +210,342 @@ if (is_string($tariffgroup) && strlen(trim($tariffgroup)) > 0) {
     $mytariffgrouplcrtype = $_SESSION["tariffgrouplcrtype"];
 }
 
-if (($form_action == "list") && ($HD_Form->FG_FILTER_SEARCH_FORM) && ($_POST['posted_search'] == 1) && is_numeric($mytariffgroup_id)) {
-    if (!empty ($HD_Form->FG_TABLE_CLAUSE))
-        $HD_Form->FG_TABLE_CLAUSE .= ' AND ';
-
-    $HD_Form->FG_TABLE_CLAUSE = "idtariffplan='$mytariff_id'";
-}
-
 $list = $HD_Form->perform_action($form_action);
+
+$list_tariffname = (new Table("cc_tariffplan", "id, tariffname"))->Get_list($HD_Form->DBHandle, "", "tariffname", "ASC");
+$list_trunk = (new Table("cc_trunk", "id_trunk, trunkcode, providerip"))->Get_list($HD_Form->DBHandle, "", "trunkcode", "ASC");
+$list_cid_group = (new Table("cc_outbound_cid_group", "id, group_name"))->Get_list($HD_Form->DBHandle, "", "group_name", "ASC");
 
 // #### HEADER SECTION
 $smarty->display('main.tpl');
 
 // #### HELP SECTION
 if (!$popup_select) {
-    if (($form_action == 'ask-add') || ($form_action == 'ask-edit'))
-        echo $CC_help_rate;
-    else
-        echo $CC_help_def_ratecard;
+    echo ($form_action === 'ask-add' || $form_action === 'ask-edit') ? $CC_help_rate : $CC_help_def_ratecard;
 }
 
 // DISPLAY THE UPDATE MESSAGE
-if (isset ($update_msg) && strlen($update_msg) > 0)
-    echo $update_msg;
-
-if ($popup_select && empty($package) && !is_numeric($package) ) {
-?>
-<SCRIPT LANGUAGE="javascript">
-function sendValue(selvalue) {
-    window.opener.document.<?php echo $popup_formname ?>.<?php echo $popup_fieldname ?>.value = selvalue;
-    window.close();
-}
-</script>
-<?php
-
-}
-
-if ($popup_select && is_numeric($package)) {
-$HD_Form-> CV_FOLLOWPARAMETERS .= "&package=".$package;
-?>
-<SCRIPT LANGUAGE="javascript">
-function sendValue(selvalue)
-{
-     // redirect browser to the grabbed value (hopefully a URL)
-    window.opener.location.href= <?php echo '"A2B_package_manage_rates.php?id='.$package.'&addrate="'; ?>+selvalue;
-}
-</script>
-<?php
-}
-
-if (!$popup_select) {
-    // #### CREATE SEARCH FORM
-    if ($form_action == "list") {
-        $HD_Form->create_search_form();
-    }
-}
+echo $update_msg ?? "";
 
 /********************************* BATCH UPDATE ***********************************/
-if ($form_action == "list" && !$popup_select) {
+// if $_SESSION['def_ratecard_tariffgroup'] is filled, disable batch update for LCR export
+if ($form_action === "list" && !$popup_select):
+    if (empty($_SESSION['def_ratecard_tariffgroup'])): ?>
 
-    $instance_table = new Table("cc_tariffplan", "id, tariffname");
-    $FG_TABLE_CLAUSE = "";
-    $list_tariffname = $instance_table->Get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "tariffname", "ASC", null, null, null, null);
-    $nb_tariffname = count($list_tariffname);
-
-    $instance_table = new Table("cc_trunk", "id_trunk, trunkcode, providerip");
-    $FG_TABLE_CLAUSE = "";
-    $list_trunk = $instance_table->Get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "trunkcode", "ASC", null, null, null, null);
-    $nb_trunk = count($list_trunk);
-
-    $instance_table = new Table("cc_outbound_cid_group", "id, group_name");
-    $FG_TABLE_CLAUSE = "";
-    $list_cid_group = $instance_table->Get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "group_name", "ASC", null, null, null, null);
-    $nb_cid_group = count($list_cid_group);
-
-    // disable Batch update if LCR Export
-    if (empty($_SESSION['def_ratecard_tariffgroup'])) {
-
-?>
-
-<!-- ** ** ** ** ** Part for the Update ** ** ** ** ** -->
-<div class="toggle_hide2show">
-<center><a href="#" target="_self" class="toggle_menu"><img class="toggle_hide2show" src="<?php echo KICON_PATH; ?>/toggle_hide2show.png" onmouseover="this.style.cursor='hand';" HEIGHT="16"> <font class="fontstyle_002"><?php echo gettext("BATCH UPDATE");?> </font></a></center>
-    <div class="tohide" style="display:none;">
-<center>
-
-<b>&nbsp;<?php echo $HD_Form -> FG_NB_RECORD ?> <?php echo gettext("rates selected!"); ?>&nbsp;<?php echo gettext("Use the options below to batch update the selected rates.");?></b>
-<table align="center" border="0" width="65%"  cellspacing="1" cellpadding="2">
-    <FORM name="updateForm" action="<?php echo filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)?>" method="post">
-        <INPUT type="hidden" name="batchupdate" value="1">
-        <INPUT type="hidden" name="atmenu" value="<?php echo $atmenu?>">
-        <INPUT type="hidden" name="popup_select" value="<?php echo $popup_select?>">
-        <INPUT type="hidden" name="popup_formname" value="<?php echo $popup_formname?>">
-        <INPUT type="hidden" name="popup_fieldname" value="<?php echo $popup_fieldname?>">
-        <INPUT type="hidden" name="form_action" value="<?php echo $form_action?>">
-        <INPUT type="hidden" name="filterprefix" value="<?php echo $filterprefix?>">
-        <INPUT type="hidden" name="filterfield" value="<?php echo $filterfield?>">
-        <?php
-            if ($HD_Form->FG_CSRF_STATUS == true) {
-        ?>
-            <INPUT type="hidden" name="<?php echo $HD_Form->FG_FORM_UNIQID_FIELD ?>" value="<?php echo $HD_Form->FG_FORM_UNIQID; ?>" />
-            <INPUT type="hidden" name="<?php echo $HD_Form->FG_CSRF_FIELD ?>" value="<?php echo $HD_Form->FG_CSRF_TOKEN; ?>" />
-        <?php
-            }
-        ?>
-        <tr>
-          <td align="left" class="bgcolor_001">
-                  <input name="check[upd_id_trunk]" type="checkbox" <?php if ($check["upd_id_trunk"]=="on") echo "checked"?>>
-          </td>
-          <td align="left"  class="bgcolor_001">
-                <font class="fontstyle_009">1) <?php echo gettext("TRUNK");?> :</font>
-                <select NAME="upd_id_trunk" size="1" class="form_enter" >
-                    <OPTION  value="-1" selected><?php echo gettext("NOT DEFINED");?></OPTION>
-                    <?php
-                     foreach ($list_trunk as $recordset) {
-                    ?>
-                        <option class=input value='<?php echo $recordset[0]?>'  <?php if ($upd_id_trunk==$recordset[0]) echo 'selected="selected"'?>><?php echo $recordset[1].' ('.$recordset[2].')'?></option>
-                    <?php } ?>
-                </select>
-            </td>
-        </tr>
-        <tr>
-          <td align="left"  class="bgcolor_001">
-              <input name="check[upd_idtariffplan]" type="checkbox" <?php if ($check["upd_idtariffplan"]=="on") echo "checked"?> >
-          </td>
-          <td align="left"  class="bgcolor_001">
-              <font class="fontstyle_009">	2) <?php echo gettext("RATECARD");?> :</font>
-                <select NAME="upd_idtariffplan" size="1" class="form_enter" >
-                    <?php
-                       foreach ($list_tariffname as $recordset) {
-                    ?>
-                        <option class=input value='<?php echo $recordset[0]?>'  <?php if ($upd_idtariffplan==$recordset[0]) echo 'selected="selected"'?>><?php echo $recordset[1]?></option>
-                    <?php 	 }
-                    ?>
-                </select>
-                <br/>
-            </td>
-        </tr>
-        <tr>
-          <td align="left"  class="bgcolor_001">
-              <input name="check[upd_id_outbound_cidgroup]" type="checkbox" <?php if ($check["upd_id_outbound_cidgroup"]=="on") echo "checked"?> >
-          </td>
-          <td align="left"  class="bgcolor_001">
-              <font class="fontstyle_009">	3) <?php echo gettext("CIDGroup");?> :</font>
-                <select NAME="upd_id_outbound_cidgroup" size="1" class="form_enter" >
-                    <OPTION  value="-1" selected><?php echo gettext("NOT DEFINED");?></OPTION>
-                    <?php
-                       foreach ($list_cid_group as $recordset) {
-                    ?>
-                        <option class=input value='<?php echo $recordset[0]?>'  <?php if ($upd_id_outbound_cidgroup==$recordset[0]) echo 'selected="selected"'?>><?php echo $recordset[1]?></option>
-                    <?php 	 }
-                    ?>
-                </select>
-                <br/>
-            </td>
-        </tr>
-        <tr>
-         <?php
-           $index=0;
-           foreach ($update_fields as $value) {
-           ?>
-          <td align="left" class="bgcolor_001">
-                <input name="check[<?php echo $value;?>]" type="checkbox" <?php if ($check[$value]=="on") echo "checked"?>>
-                <input name="mode[<?php echo $value;?>]" type="hidden" value="2">
-              </td>
-              <td align="left"  class="bgcolor_001">
-                  <font class="fontstyle_009"><?php echo ($index + 4).") ".gettext($update_fields_info[$index]);?> :</font>
-                            <input class="form_input_text" name="<?php echo $value;?>" size="10" maxlength="10"  value="<?php if (isset(${$value})) echo ${$value}; else echo '0';?>" >
-                  <font class="version">
-                    <input type="radio" NAME="type[<?php echo $value;?>]" value="1" <?php if ((!isset($type[$value]))|| ($type[$value]==1) ) {?>checked<?php }?>> <?php echo gettext("Equal");?>
-                    <input type="radio" NAME="type[<?php echo $value;?>]" value="2" <?php if ($type[$value]==2) {?>checked<?php }?>> <?php echo gettext("Add");?>
-                    <input type="radio" NAME="type[<?php echo $value;?>]" value="3" <?php if ($type[$value]==3) {?>checked<?php }?>> <?php echo gettext("Subtract");?>
-                  </font>
-                </td>
-            </tr>
-            <?php $index=$index+1;
-            }?>
-        <tr>
-          <td align="left" class="bgcolor_001">
-                  <input name="check[upd_tag]" type="checkbox" <?php if ($check["upd_tag"]=="on") echo "checked"?>>
-                <input name="mode[upd_tag]" type="hidden" value="2">
-          </td>
-          <td align="left"  class="bgcolor_001">
-
-                <font class="fontstyle_009">15) <?php echo gettext("TAG");?> :</font>
-                     <input class="form_input_text" name="upd_tag" size="20"  value="<?php if (isset($upd_tag)) echo $upd_tag; else echo '';?>" >
-            </td>
-        </tr>
-
-        <tr>
-            <?php
-            $index=0;
-            foreach ($charges_abc as $value) {
-            ?>
-          <td align="left" class="bgcolor_001">
-              <input name="check[<?php echo $value;?>]" type="checkbox" <?php if ($check[$value]=="on") echo "checked"?>>
-              <input name="mode[<?php echo $value;?>]" type="hidden" value="2">
-          </td>
-              <td align="left"  class="bgcolor_001">
-                <font class="fontstyle_009"><?php echo ($index+16).") ".gettext($charges_abc_info[$index]);?> :</font>
-                    <input class="form_input_text" name="<?php echo $value;?>" size="10" maxlength="10"  value="<?php if (isset(${$value})) echo ${$value}; else echo '0';?>" >
-                <font class="version">
-                <input type="radio" NAME="type[<?php echo $value;?>]" value="1" <?php if ((!isset($type[$value]))|| ($type[$value]==1) ) {?>checked<?php }?>> <?php echo gettext("Equal");?>
-                <input type="radio" NAME="type[<?php echo $value;?>]" value="2" <?php if ($type[$value]==2) {?>checked<?php }?>> <?php echo gettext("Add");?>
-                <input type="radio" NAME="type[<?php echo $value;?>]" value="3" <?php if ($type[$value]==3) {?>checked<?php }?>> <?php echo gettext("Subtract");?>
-                </font>
-              </td>
-              </tr>
-              <?php $index=$index+1;
-            }?>
-        <tr>
-            <td align="right" class="bgcolor_001">
-            </td>
-             <td align="right"  class="bgcolor_001">
-                <input class="form_input_button"  value=" <?php echo gettext("BATCH UPDATE RATECARD");?> " type="submit">
-            </td>
-        </tr>
-    </form>
-</table>
-</center>
-<!-- ** ** ** ** ** Part for the Update ** ** ** ** ** -->
+<div class="row justify-content-center">
+    <div class="col-auto">
+        <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#searchModal">
+            <?= _("Search Rates") ?>
+        </button>
+        <?php if (!empty($_SESSION['entity_card_selection'])): ?>(<?= _("search activated") ?>)<?php endif ?>
+    </div>
+    <div class="col-auto">
+        <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#batchUpdateModal">
+            <?= _("Batch Update") ?>
+        </button>
     </div>
 </div>
 
+<div class="modal" id="searchModal" aria-labelledby="modal-title-search" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-title-search"><?= _("Search Rates") ?></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <?php $HD_Form->create_search_form() ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="batchUpdateModal" aria-labelledby="modal-title-udpate" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-title-update"><?= _("Batch Update") ?></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="container-fluid form-striped" name="updateForm" id="updateForm" action="" method="post">
+                    <input type="hidden" name="batchupdate" value="1"/>
+                    <input type="hidden" name="atmenu" value="<?php echo $atmenu?>"/>
+                    <input type="hidden" name="popup_select" value="<?php echo $popup_select?>"/>
+                    <input type="hidden" name="popup_formname" value="<?php echo $popup_formname?>"/>
+                    <input type="hidden" name="popup_fieldname" value="<?php echo $popup_fieldname?>"/>
+                    <input type="hidden" name="form_action" value="<?php echo $form_action?>"/>
+                    <input type="hidden" name="filterprefix" value="<?php echo $filterprefix?>"/>
+                    <input type="hidden" name="filterfield" value="<?php echo $filterfield?>"/>
+                    <?php if ($HD_Form->FG_CSRF_STATUS == true): ?>
+                        <input type="hidden" name="<?= $HD_Form->FG_FORM_UNIQID_FIELD ?>" value="<?= $HD_Form->FG_FORM_UNIQID ?>" />
+                        <input type="hidden" name="<?= $HD_Form->FG_CSRF_FIELD ?>" value="<?= $HD_Form->FG_CSRF_TOKEN ?>" />
+                    <?php endif ?>
+
+
+                    <div class="row mb-1">
+                        <div class="col">
+                            <?= $HD_Form->FG_NB_RECORD ?> <?= _("rates selected!") ?>
+                            <?= _("Use the options below to batch update the selected rates.") ?>
+                        </div>
+                    </div>
+
+                    <div class="row mb-1">
+                        <div class="col-4">
+                            <input name="check[upd_id_trunk]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if ($check["upd_id_trunk"] === "on"): ?> checked="checked"<?php endif ?> class="form-check-input"/>
+                            <label class="form-label form-label-sm" for="upd_id_trunk">
+                                <?= _("Trunk") ?>
+                            </label>
+                        </div>
+                        <div class="col">
+                            <select name="upd_id_trunk" id="upd_id_trunk" class="form-select form-select-sm">
+                                <option value="-1"><?= _("Not Defined") ?></option>
+                                <?php foreach ($list_trunk as $v): ?>
+                                    <option value="<?= $v[0] ?>" <?php if ($upd_id_trunk == $v[0]): ?>selected="selected"<?php endif ?>><?= $v[1] ?> (<?= $v[2] ?>)</option>
+                                <?php endforeach ?>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-1">
+                        <div class="col-4">
+                            <input name="check[upd_idtariffplan]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if ($check["upd_idtariffplan"] === "on"): ?> checked="checked"<?php endif ?> class="form-check-input"/>
+                            <label class="form-label form-label-sm" for="upd_idtariffplan">
+                                <?= _("Ratecard") ?>
+                            </label>
+                        </div>
+                        <div class="col">
+                            <select name="upd_idtariffplan" id="upd_idtariffplan" class="form-select form-select-sm">
+                                <?php foreach ($list_tariffname as $v): ?>
+                                    <option value="<?= $v[0] ?>" <?php if ($upd_idtariffplan == $v[0]): ?>selected="selected"<?php endif ?>><?= $v[1] ?></option>
+                                <?php endforeach ?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mb-1">
+                        <div class="col-4">
+                            <input name="check[upd_id_outbound_cidgroup]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if ($check["upd_id_outbound_cidgroup"] === "on"): ?> checked="checked"<?php endif ?> class="form-check-input"/>
+                            <label class="form-label form-label-sm" for="upd_id_outbound_cidgroup">
+                                <?= _("Ratecard") ?>
+                            </label>
+                        </div>
+                        <div class="col">
+                            <select name="upd_id_outbound_cidgroup" id="upd_id_outbound_cidgroup" class="form-select form-select-sm">
+                                <?php foreach ($list_cid_group as $v): ?>
+                                    <option value="<?= $v[0] ?>" <?php if ($upd_id_outbound_cidgroup == $v[0]): ?>selected="selected"<?php endif ?>><?= $v[1] ?></option>
+                                <?php endforeach ?>
+                            </select>
+                        </div>
+                    </div>
+
+                <?php foreach (array_merge($update_fields, $charges_abc) as $k => $v):?>
+                    <div class="row mb-1">
+                        <div class="col-4">
+                            <input name="check[<?= $v ?>]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if ($check[$v] === "on"): ?> checked="checked"<?php endif ?> class="form-check-input"/>
+                            <input type="hidden" name="mode[<?= $v ?>]" value="2"/>
+                            <label class="form-label form-label-sm" for="<?= $v ?>">
+                                <?php if ($k > count($update_fields) + 1): ?>
+                                <?= _($charges_abc_info[$k]) ?>
+                                <?php else: ?>
+                                <?= _($update_fields_info[$k]) ?>
+                                <?php endif ?>
+                            </label>
+                        </div>
+                        <div class="col-3">
+                            <select name="type[<?= $v ?>]" id="type[<?= $v ?>]" aria-label="select the operation to perform with the entered value" class="form-select form-select-sm">
+                                <option value="1" <?php if ($type[$v] ?? 1 == 1): ?>selected="selected"<?php endif ?>><?= _("Set equal to") ?></option>
+                                <option value="2" <?php if ($type[$v] ?? 1 == 2): ?>selected="selected"<?php endif ?>><?= _("Add to") ?></option>
+                                <option value="3" <?php if ($type[$v] ?? 1 == 3): ?>selected="selected"<?php endif ?>><?= _("Subtract from") ?></option>
+                            </select>
+                        </div>
+                        <div class="col">
+                            <input type="number" name="<?= $v ?>" id="<?= $v ?>" value="<?= $v ?? 0 ?>" class="form-control form-control-sm"/>
+                        </div>
+                    </div>
+                <?php endforeach ?>
+                    
+                    <div class="row mb-1">
+                        <div class="col-4">
+                            <input name="check[upd_tag]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if ($check["upd_tag"] === "on"): ?> checked="checked" <?php endif ?> class="form-check-input"/>
+                            <label class="form-label form-label-sm" for="upd_tag">
+                                <?= _("Tag") ?>
+                            </label>
+                        </div>
+                        <div class="col">
+                            <input type="text" name="upd_tag" id="upd_tag" value="<?= $upd_tag ?? "" ?>" class="form-control form-control-sm"/>
+                        </div>
+                    </div>
+                </form> <!-- .container-fluid -->
+            </div> <!-- .modal-body -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?= _("Close") ?></button>
+                <button type="submit" form="updateForm" class="btn btn-primary"><?= _("Batch Update Ratecard") ?></button>
+            </div>
+        </div> <!-- .modal-content -->
+    </div> <!-- .modal-dialog -->
+</div> <!-- .modal -->
+
 <?php
-
-    } // disable Batch update if LCR Export
-
-} // END if ($form_action == "list")
+    endif;
+    // Weird hack to create a select form
+    $HD_Form -> create_select_form();
+endif; // END if ($form_action == "list")
 
 /********************************* BATCH ASSIGNED ***********************************/
-if ($popup_select) {
-
-    $instance_table = new Table("cc_prefix GROUP BY destination", "destination");
-    $FG_TABLE_CLAUSE = "";
-    $list_destination = $instance_table->Get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, null, "ASC", null, null, null, null);
-    $destination = $list_destination[0];
-
-    $instance_table = new Table("cc_tariffplan", "id, tariffname");
-    $FG_TABLE_CLAUSE = "";
-    $list_tariffname = $instance_table->Get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "tariffname", "ASC", null, null, null, null);
-    $nb_tariffname = count($list_tariffname);
-
-    $instance_table = new Table("cc_trunk", "id_trunk, trunkcode, providerip");
-    $FG_TABLE_CLAUSE = "";
-    $list_trunk = $instance_table->Get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "trunkcode", "ASC", null, null, null, null);
-    $nb_trunk = count($list_trunk);
-
-    $instance_table = new Table("cc_outbound_cid_group", "id, group_name");
-    $FG_TABLE_CLAUSE = "";
-    $list_cid_group = $instance_table->Get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "group_name", "ASC", null, null, null, null);
-    $nb_cid_group = count($list_cid_group);
-
-?>
-
-<!-- ** ** ** ** ** Part for the Update ** ** ** ** ** -->
-<div class="toggle_hide2show">
-<center>
-    <a href="#" target="_self" class="toggle_menu">
-    <img class="toggle_hide2show" src="<?php echo KICON_PATH; ?>/toggle_hide2show.png" onmouseover="this.style.cursor='hand';" HEIGHT="16">
-    <font class="fontstyle_002"><?php echo gettext("BATCH ASSIGNED");?> </font></a></center>
-    <div class="tohide" style="display:none;">
-<center>
-
-<b>&nbsp;<?php echo $HD_Form -> FG_NB_RECORD ?> <?php echo gettext("rates selected!"); ?>&nbsp;<?php echo gettext("Use the options below to batch update the selected rates.");?></b>
-<table align="center" border="0" width="65%"  cellspacing="1" cellpadding="2">
-    <FORM name="assignForm" action="javascript:;" method="post">
-        <INPUT type="hidden" name="batchupdate" value="1">
-        <INPUT type="hidden" name="atmenu" value="<?php echo $atmenu?>">
-        <INPUT type="hidden" name="popup_select" value="<?php echo $popup_select?>">
-        <INPUT type="hidden" name="popup_formname" value="<?php echo $popup_formname?>">
-        <INPUT type="hidden" name="popup_fieldname" value="<?php echo $popup_fieldname?>">
-        <INPUT type="hidden" name="form_action" value="<?php echo $form_action?>">
-        <INPUT type="hidden" name="filterprefix" value="<?php echo $filterprefix?>">
-        <INPUT type="hidden" name="filterfield" value="<?php echo $filterfield?>">
-        <INPUT type="hidden" name="addbatchrate" value="1">
-
-        <?php
-            if ($HD_Form->FG_CSRF_STATUS == true) {
-        ?>
-            <INPUT type="hidden" name="<?php echo $HD_Form->FG_FORM_UNIQID_FIELD ?>" value="<?php echo $HD_Form->FG_FORM_UNIQID; ?>" />
-            <INPUT type="hidden" name="<?php echo $HD_Form->FG_CSRF_FIELD ?>" value="<?php echo $HD_Form->FG_CSRF_TOKEN; ?>" />
-        <?php
-            }
-        ?>
-
-        <tr>
-          <td align="left" class="bgcolor_001">
-                  <input name="check" type="checkbox">
-          </td>
-          <td align="left"  class="bgcolor_001">
-                <font class="fontstyle_009">1) <?php echo gettext("TRUNK");?> :</font>
-                <select NAME="assign_id_trunk" size="1" class="form_enter" >
-                    <?php
-                     foreach ($list_trunk as $recordset) {
-                    ?>
-                        <option class=input value='<?php echo $recordset[0]?>'><?php echo $recordset[1].' ('.$recordset[2].')'?></option>
-                    <?php } ?>
-                </select>
-            </td>
-        </tr>
-        <tr>
-          <td align="left"  class="bgcolor_001">
-              <input name="check" type="checkbox">
-          </td>
-          <td align="left"  class="bgcolor_001">
-              <font class="fontstyle_009">	2) <?php echo gettext("RATECARD");?> :</font>
-                <select NAME="assign_idtariffplan" size="1" class="form_enter" >
-                    <?php
-                       foreach ($list_tariffname as $recordset) {
-                    ?>
-                        <option class=input value='<?php echo $recordset[0]?>'><?php echo $recordset[1]?></option>
-                    <?php 	 }
-                    ?>
-                </select>
-                <br/>
-            </td>
-        </tr>
-
-        <tr>
-          <td align="left" class="bgcolor_001">
-                  <input name="check" type="checkbox">
-                <input name="mode[upd_tag]" type="hidden" value="2">
-          </td>
-          <td align="left"  class="bgcolor_001">
-
-                <font class="fontstyle_009">3) <?php echo gettext("TAG");?> :</font>
-                <input class="form_input_text" name="assign_tag" size="20">
-          </td>
-        </tr>
-
-        <tr>
-          <td align="left" valign="top" class="bgcolor_001">
-                <input name="check" type="checkbox">
-                <input name="mode" type="hidden" value="2">
-          </td>
-          <td align="left"  class="bgcolor_001">
-                <font class="fontstyle_009">4) <?php echo gettext("PREFIX");?> :</font>
-                        <input class="form_input_text" name="assign_prefix" size="20"><br />
-                <font class="version">
-                <input type="radio" NAME="rbPrefix" value="1" checked> <?php echo gettext("Exact");?>
-                <input type="radio" NAME="rbPrefix" value="2"> <?php echo gettext("Begins with");?>
-                <input type="radio" NAME="rbPrefix" value="3"> <?php echo gettext("Contains");?>
-                <input type="radio" NAME="rbPrefix" value="4"> <?php echo gettext("Ends with");?>
-                <input type="radio" NAME="rbPrefix" value="5"> <?php echo gettext("Expression");?>
-                </font>
-                <br />
-                <font class="fontstyle_009">
-                    <?php echo gettext("With 'Expression' you can define a range of prefixes. '32484-32487' adds all prefixes between 32484 and 32487. '32484,32386,32488' would add only the individual prefixes listed.");?>
-                </font>
-            </td>
-        </tr>
-        <tr>
-            <td align="right" class="bgcolor_001">
-            </td>
-             <td align="right"  class="bgcolor_001">
-                <input onclick="javascript:sendOpener();" class="form_input_button"  value=" <?php echo gettext("BATCH ASSIGNED");?> " type="submit">
-            </td>
-        </tr>
-    </form>
-</table>
-</center>
-
-<script language="javascript">
-function sendOpener() {
-    if (document.assignForm.check[0].checked==true) {
-        var id_trunk = document.assignForm.assign_id_trunk.options[document.assignForm.assign_id_trunk.selectedIndex].value;
-    }
-
-    if (document.assignForm.check[1].checked==true) {
-        var id_tariffplan = document.assignForm.assign_idtariffplan.options[document.assignForm.assign_idtariffplan.selectedIndex].value;
-    }
-
-    if (document.assignForm.check[2].checked==true) {
-        var tag = document.assignForm.assign_tag.value;
-    }
-
-    if (document.assignForm.check[3].checked==true) {
-        for (var j=0;j<document.assignForm.rbPrefix.length;j++) {
-           if (document.assignForm.rbPrefix[j].checked)
-              break;
-        }
-        var prefix = document.assignForm.assign_prefix.value+"&rbPrefix="+document.assignForm.rbPrefix[j].value;
-    }
-    window.opener.location.href = "A2B_package_manage_rates.php?id=<?php echo $package;?>&addbatchrate=true"+((id_trunk)? ('&id_trunk='+id_trunk):'')+((id_tariffplan)?('&id_tariffplan='+id_tariffplan):'')+((tag)? ('&tag='+tag):'')+((prefix)? ('&prefix='+prefix):'');
-}
-</script>
-<!-- ** ** ** ** ** Part for the Update ** ** ** ** ** -->
+if ($popup_select): ?>
+<div class="row justify-content-center">
+    <div class="col-auto">
+        <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#batchAssignModal">
+            <?= _("Batch Assigned") ?>
+        </button>
     </div>
 </div>
 
+<div class="modal" id="batchAssignModal" aria-labelledby="modal-title-udpate" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-title-update"><?= _("Batch Update") ?></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="container-fluid form-striped" name="assignForm" id="assignForm" action="" method="post">
+                    <input type="hidden" name="batchupdate" value="1"/>
+                    <input type="hidden" name="atmenu" value="<?php echo $atmenu?>"/>
+                    <input type="hidden" name="popup_select" value="<?php echo $popup_select?>"/>
+                    <input type="hidden" name="popup_formname" value="<?php echo $popup_formname?>"/>
+                    <input type="hidden" name="popup_fieldname" value="<?php echo $popup_fieldname?>"/>
+                    <input type="hidden" name="form_action" value="<?php echo $form_action?>"/>
+                    <input type="hidden" name="filterprefix" value="<?php echo $filterprefix?>"/>
+                    <input type="hidden" name="filterfield" value="<?php echo $filterfield?>"/>
+                    <input type="hidden" name="addbatchrate" value="1"/>
+                    <?php if ($HD_Form->FG_CSRF_STATUS == true): ?>
+                        <input type="hidden" name="<?= $HD_Form->FG_FORM_UNIQID_FIELD ?>" value="<?= $HD_Form->FG_FORM_UNIQID ?>" />
+                        <input type="hidden" name="<?= $HD_Form->FG_CSRF_FIELD ?>" value="<?= $HD_Form->FG_CSRF_TOKEN ?>" />
+                    <?php endif ?>
+
+
+                    <div class="row mb-1">
+                        <div class="col">
+                            <?= $HD_Form->FG_NB_RECORD ?> <?= _("rates selected!") ?>
+                            <?= _("Use the options below to batch update the selected rates.") ?>
+                        </div>
+                    </div>
+
+                    <div class="row mb-1">
+                        <div class="col-4">
+                            <input id="check[assign_id_trunk]" type="checkbox" value="on" aria-label="check to enable assignates to this field" <?php if ($check["assign_id_trunk"] === "on"): ?> checked="checked"<?php endif ?> class="form-check-input"/>
+                            <label class="form-label form-label-sm" for="assign_id_trunk">
+                                <?= _("Trunk") ?>
+                            </label>
+                        </div>
+                        <div class="col">
+                            <select id="assign_id_trunk" class="form-select form-select-sm">
+                                <option value="-1"><?= _("Not Defined") ?></option>
+                                <?php foreach ($list_trunk as $v): ?>
+                                    <option value="<?= $v[0] ?>"><?= $v[1] ?> (<?= $v[2] ?>)</option>
+                                <?php endforeach ?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mb-1">
+                        <div class="col-4">
+                            <input id="check[assign_idtariffplan]" type="checkbox" value="on" aria-label="check to enable assignates to this field" <?php if ($check["assign_idtariffplan"] === "on"): ?> checked="checked"<?php endif ?> class="form-check-input"/>
+                            <label class="form-label form-label-sm" for="assign_idtariffplan">
+                                <?= _("Ratecard") ?>
+                            </label>
+                        </div>
+                        <div class="col">
+                            <select id="assign_idtariffplan" class="form-select form-select-sm">
+                                <?php foreach ($list_tariffname as $v): ?>
+                                    <option value="<?= $v[0] ?>"><?= $v[1] ?></option>
+                                <?php endforeach ?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mb-1">
+                        <div class="col-4">
+                            <input id="check[assign_tag]" type="checkbox" value="on" aria-label="check to enable assignates to this field" <?php if ($check["assign_tag"] === "on"): ?> checked="checked" <?php endif ?> class="form-check-input"/>
+                            <label class="form-label form-label-sm" for="assign_tag">
+                                <?= _("Tag") ?>
+                            </label>
+                        </div>
+                        <div class="col">
+                            <input type="text" id="assign_tag" value="" class="form-control form-control-sm"/>
+                        </div>
+                    </div>
+
+                    <div class="row mb-1">
+                        <div class="col-4">
+                            <input id="check[assign_prefix]" type="checkbox" value="on" aria-label="check to enable assignates to this field" <?php if ($check["assign_prefix"] === "on"): ?> checked="checked" <?php endif ?> class="form-check-input"/>
+                            <label class="form-label form-label-sm" for="assign_prefix">
+                                <?= _("Prefix") ?>
+                            </label>
+                        </div>
+                        <div class="col-4">
+                            <input type="text" id="assign_prefix" value="" class="form-control form-control-sm"/>
+                        </div>
+                        <div class="col">
+                            <select name="rbPrefix" id="rbPrefix" class="form-select form-select-sm">
+                                <option value="1"><?= _("Exact") ?></option>
+                                <option value="2"><?= _("Begins with") ?></option>
+                                <option value="3"><?= _("Contains") ?></option>
+                                <option value="4"><?= _("Ends with") ?></option>
+                                <option value="5"><?= _("Expression") ?></option>
+                            </select>
+                        </div>
+                    </div>
+                </form> <!-- .container-fluid -->
+            </div> <!-- .modal-body -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?= _("Close") ?></button>
+                <button class="btn btn-primary" onclick="sendOpener()"><?= _("Batch Assigned") ?></button>
+            </div>
+        </div> <!-- .modal-content -->
+    </div> <!-- .modal-dialog -->
+</div> <!-- .modal -->
+
+<script>
+function sendOpener() {
+    let id_trunk = "";
+    let id_tariffplan = "";
+    let tag = "";
+    let prefix = "";
+    let package = '<?= $package ?>';
+
+    if (document.getElementById("check[assign_id_trunk]").checked) {
+        id_trunk = document.getElementById("assign_id_trunk").value;
+    }
+
+    if (document.getElementById("check[assign_idtariffplan]").checked) {
+        id_tariffplan = document.getElementById("assign_idtariffplan").value;
+    }
+
+    if (document.getElementById("check[assign_tag]").checked) {
+        tag = document.getElementById("assign_tag").value;
+    }
+
+    if (document.getElementById("check[assign_prefix]").checked) {
+        let val = document.getElementById("rbPrefix").value;
+        prefix = `${document.assignForm.assign_prefix.value}&rbPrefix=${val}`;
+    }
+    window.opener.location.href = `A2B_package_manage_rates.php?id=${package}&addbatchrate=true&id_trunk=${id_trunk}&id_tariffplan=${id_tariffplan}&tag=${tag}&prefix=${prefix}`;
+}
+</script>
+
 <?php
-} // disable Batch update if not popup
+if (!empty($package) &&is_numeric($package)) {
+    $HD_Form->CV_FOLLOWPARAMETERS .= "&package=$package";
+}
+endif; // is popup
 /********************************* END BATCH ASSIGNED ***********************************/
 
 ?>
 
 <?php
-
-// Weird hack to create a select form
-if ($form_action == "list" && !$popup_select) $HD_Form -> create_select_form();
 
 // #### TOP SECTION PAGE
 $HD_Form -> create_toppage ($form_action);
@@ -617,15 +553,17 @@ $HD_Form -> create_toppage ($form_action);
 $HD_Form -> create_form($form_action, $list) ;
 
 // Code for the Export Functionality
-$_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR]= "SELECT ".$HD_Form -> FG_EXPORT_FIELD_LIST." FROM $HD_Form->FG_TABLE_NAME";
-if (strlen($HD_Form->FG_TABLE_CLAUSE)>1)
+$_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR]= "SELECT $HD_Form->FG_EXPORT_FIELD_LIST FROM $HD_Form->FG_TABLE_NAME";
+if (strlen($HD_Form->FG_TABLE_CLAUSE) > 1) {
     $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] .= " WHERE $HD_Form->FG_TABLE_CLAUSE ";
-if (!is_null($HD_Form->SQL_GROUP) && ($HD_Form->SQL_GROUP != ''))
+}
+if (!empty($HD_Form->SQL_GROUP)) {
     $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] .= " $HD_Form->SQL_GROUP ";
-if (!is_null ($HD_Form->FG_ORDER) && ($HD_Form->FG_ORDER!='') && !is_null ($HD_Form->FG_SENS) && ($HD_Form->FG_SENS!=''))
+}
+if (!empty($HD_Form->FG_ORDER) && !empty($HD_Form->FG_SENS)) {
     $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR].= " ORDER BY $HD_Form->FG_ORDER $HD_Form->FG_SENS";
-
-if (strpos($_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR], 'cc_callplan_lcr')===false) {
+}
+if (!str_contains($_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR], 'cc_callplan_lcr')) {
     $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] = str_replace('destination,', 'cc_prefix.destination,', $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR]);
 }
 
