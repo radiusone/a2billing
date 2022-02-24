@@ -204,7 +204,7 @@ function create_date_options($target)
     <div class="row pb-1">
         <?php foreach (array_chunk($this->FG_FILTER_SEARCH_FORM_SELECT, 4) as $chunk): ?>
             <?php foreach ($chunk as $i => $item): ?>
-            <div class="col-2 <?php if ($i === 0): ?>offset-4<?php endif ?>">
+            <div class="col-3">
                 <select name="<?= $item[2] ?>" aria-label="<?= $item[0] ?>" class="form-select form-select-sm">
                     <option value=""><?= $item[0] ?></option>
                     <?php foreach ($item[1] as $opt): ?>
