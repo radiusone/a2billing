@@ -95,7 +95,7 @@
 			font-size: 0.875rem;
 		}
 
-		form.form-striped > row:nth-of-type(2n + 1) {
+		form.form-striped > div.row:nth-of-type(2n + 1) {
 			background-color: var(--bs-table-striped-bg);
 		}
 	</style>

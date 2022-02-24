@@ -203,14 +203,14 @@ function sendValue(selvalue, othervalue) {
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form class="container-fluid" name="searchForm" id="searchForm" action="" method="post">
-                    <?php $HD_Form->create_search_form() ?>
-                </form>
+                <?php $HD_Form->create_search_form() ?>
             </div>
+<!-- buttons are in the form
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" form="searchForm" class="btn btn-primary"><?= _("Batch Update Cards") ?></button>
+                <button type="submit" form="searchForm" class="btn btn-primary"><?= _("Search") ?></button>
             </div>
+-->
         </div>
     </div>
 </div>

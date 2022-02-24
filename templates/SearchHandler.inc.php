@@ -31,7 +31,7 @@ function create_date_options($target)
     </div>
 </div>
 
-<form method="post" class="form-striped" action="<?= "?s=$processed[s]&t=$processed[t]&order=$processed[order]&sens=$processed[sens]&current_page=$processed[current_page]" ?>">
+<form method="post" name="searchForm" id="searchForm" class="container-fluid form-striped" action="<?= "?s=$processed[s]&t=$processed[t]&order=$processed[order]&sens=$processed[sens]&current_page=$processed[current_page]" ?>">
     <input type="hidden" name="posted_search" value="1"/>
     <input type="hidden" name="current_page" value="0"/>
     <?php if ($this->FG_CSRF_STATUS): ?>
@@ -40,7 +40,7 @@ function create_date_options($target)
     <?php endif ?>
 
 <?php if ($this -> FG_FILTER_SEARCH_1_TIME): ?>
-    <div class="row">
+    <div class="row pb-1">
         <label class="col-4 col-form-label col-form-label-sm">
             <?= $this->FG_FILTER_SEARCH_1_TIME_TEXT ?>
         </label>
@@ -86,7 +86,7 @@ function create_date_options($target)
 <?php endif ?>
 
 <?php if ($this->FG_FILTER_SEARCH_1_TIME_BIS): ?>
-    <div class="row">
+    <div class="row pb-1">
         <label class="col-4 col-form-label col-form-label-sm">
             <?= $this->FG_FILTER_SEARCH_1_TIME_TEXT_BIS ?>
         </label>
@@ -128,7 +128,7 @@ function create_date_options($target)
 <?php endif ?>
 
 <?php if ($this->FG_FILTER_SEARCH_3_TIME): // this is only used by A2B_data_archiving.php ?>
-    <div class="row">
+    <div class="row pb-1">
         <label class="col-4 col-form-label col-form-label-sm" for="month_earlier">
             <?php echo $this-> FG_FILTER_SEARCH_3_TIME_TEXT?>
         </label>
@@ -143,7 +143,7 @@ function create_date_options($target)
 <?php endif ?>
 
 <?php foreach ($this->FG_FILTER_SEARCH_FORM_1C as $item): ?>
-    <div class="row">
+    <div class="row pb-1">
         <label class="col-4 col-form-label col-form-label-sm" for="<?= $item[1] ?>">
             <?= $item[0] ?>
         </label>
@@ -162,7 +162,7 @@ function create_date_options($target)
 <?php endforeach ?>
 
 <?php foreach ($this->FG_FILTER_SEARCH_FORM_2C as $item): ?>
-    <div class="row">
+    <div class="row pb-1">
         <label class="col-4 col-form-label col-form-label-sm" for="<?= $item[1] ?>">
             <?= $item[0] ?>
         </label>
@@ -201,14 +201,14 @@ function create_date_options($target)
 <?php endforeach ?>
 
 <?php if (is_array($this->FG_FILTER_SEARCH_FORM_SELECT) && count($this->FG_FILTER_SEARCH_FORM_SELECT)): ?>
-    <div class="row">
+    <div class="row pb-1">
         <?php foreach (array_chunk($this->FG_FILTER_SEARCH_FORM_SELECT, 4) as $chunk): ?>
             <?php foreach ($chunk as $i => $item): ?>
             <div class="col-2 <?php if ($i === 0): ?>offset-4<?php endif ?>">
                 <select name="<?= $item[2] ?>" aria-label="<?= $item[0] ?>" class="form-select form-select-sm">
                     <option value=""><?= $item[0] ?></option>
                     <?php foreach ($item[1] as $opt): ?>
-                    <option value="<?= $opt[0] ?>" <?php if ($processed[$item[2]] ?? 0 == $opt[0]): ?>selected="selected"<?php endif ?>>
+                    <option value="<?= $opt[0] ?>" <?php if ($processed[$item[2]] ?? "" == $opt[0]): ?>selected="selected"<?php endif ?>>
                         <?= $opt[1] ?>
                     </option>
                     <?php endforeach ?>
@@ -219,8 +219,8 @@ function create_date_options($target)
     </div>
 <?php endif ?>
 
-    <div class="row justify-content-end">
-        <div class="col-2 text-end">
+    <div class="row justify-content-end border-top pt-2">
+        <div class="col text-end">
             <?php if ($this->FG_FILTER_SEARCH_DELETE_ALL): ?>
             <a class="btn btn-danger btn-sm" href="?deleteselected=true" onclick="return confirm('<?= "Are you sure to delete " . $this->FG_NB_RECORD . " selected records?" ?>')"><?= _("Delete") ?></a>
             <?php endif ?>
