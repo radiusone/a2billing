@@ -96,7 +96,7 @@
 		}
 
 		form.form-striped > div.row:nth-of-type(2n + 1) {
-			background-color: var(--bs-table-striped-bg);
+			background-color: rgba(0, 0, 0, 0.05);
 		}
 	</style>
 </head>
