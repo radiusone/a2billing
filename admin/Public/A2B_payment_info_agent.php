@@ -53,7 +53,7 @@ $DBHandle  = DbConnect();
 
 $payment_table = new Table('cc_logpayment_agent','*');
 $payment_clause = "id = ".$id;
-$payment_result = $payment_table -> Get_list($DBHandle, $payment_clause, 0);
+$payment_result = $payment_table -> get_list($DBHandle, $payment_clause);
 $payment = $payment_result[0];
 
 if (empty($payment)) {

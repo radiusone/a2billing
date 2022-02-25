@@ -53,7 +53,7 @@ $DBHandle  = DbConnect();
 
 $remittance_table = new Table('cc_remittance_request','*');
 $remittance_clause = "id = ".$id;
-$remittance_result = $remittance_table -> Get_list($DBHandle, $remittance_clause, 0);
+$remittance_result = $remittance_table -> get_list($DBHandle, $remittance_clause);
 $remittance = $remittance_result[0];
 
 if (empty($remittance)) {

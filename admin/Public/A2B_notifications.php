@@ -76,7 +76,7 @@ $DBHandle  = DbConnect();
 $instance_config_table = new Table("cc_config", "id, config_value");
 $QUERY = " config_key = '".$key."' ";
 $return = null;
-$return = $instance_config_table -> Get_list($DBHandle, $QUERY, 0);
+$return = $instance_config_table -> get_list($DBHandle, $QUERY);
 $id_config = $return[0]["id"];
 
 if (!is_null($return)&& (!empty($return)>0)) {
@@ -116,7 +116,7 @@ $DBHandle  = DbConnect();
 $instance_config_table = new Table("cc_config", "id, config_value");
 $QUERY = " config_key = '".$key."' ";
 $return = null;
-$return = $instance_config_table -> Get_list($DBHandle, $QUERY, 0);
+$return = $instance_config_table -> get_list($DBHandle, $QUERY);
 $id_config = $return[0]["id"];
 
 if (!is_null($return)&& (!empty($return)>0) ) {
@@ -157,7 +157,7 @@ $DBHandle  = DbConnect();
 $instance_config_table = new Table("cc_config", "id, config_value");
 $QUERY = " config_key = '".$key."' ";
 $return = null;
-$return = $instance_config_table -> Get_list($DBHandle, $QUERY, 0);
+$return = $instance_config_table -> get_list($DBHandle, $QUERY);
 $id_config = $return[0]["id"];
 
 if (!is_null($return)&& (!empty($return)>0)) {

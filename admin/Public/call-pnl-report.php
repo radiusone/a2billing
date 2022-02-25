@@ -415,7 +415,7 @@ function linktonext_1($value) {
     $handle = DbConnect();
         $inst_table = new Table("cc_card_group", "id");
         $FG_TABLE_CLAUSE = "name = '$value'";
-        $list_group = $inst_table -> Get_list ($handle, $FG_TABLE_CLAUSE, "", "", "", "", "", "", "", 10);
+        $list_group = $inst_table -> get_list ($handle, $FG_TABLE_CLAUSE, "", "", "", "", "", 10);
         $id = $list_group[0][0];
     if ($id > 0) {
         echo "<a href=\"call-pnl-report.php?group_id=$id&report_type=1\">$value</a>";
@@ -428,7 +428,7 @@ function linktonext_2($value) {
         $handle = DbConnect();
         $inst_table = new Table("cc_tariffgroup", "id");
         $FG_TABLE_CLAUSE = "tariffgroupname = '$value'";
-        $list_group = $inst_table -> Get_list ($handle, $FG_TABLE_CLAUSE, "", "", "", "", "", "", "", 10);
+        $list_group = $inst_table -> get_list ($handle, $FG_TABLE_CLAUSE, "", "", "", "", "", 10);
         $id = $list_group[0][0];
     if ($id > 0) {
         echo "<a href=\"call-pnl-report.php?group_id=$id&report_type=2\">$value</a>";

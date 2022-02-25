@@ -108,13 +108,13 @@ if (!empty($HD_Form -> FG_TABLE_CLAUSE)) {
     if ($_REQUEST['id']!=null) {
         $HD_Form -> FG_TABLE_CLAUSE .= " AND id = '".$_REQUEST['id']."'";
     }
-    $list_customer = $instance_cus_table -> Get_list ($HD_Form -> DBHandle, $HD_Form -> FG_TABLE_CLAUSE, null, null, null, null, $limit_massmail, 0);
+    $list_customer = $instance_cus_table -> get_list ($HD_Form->DBHandle, $HD_Form->FG_TABLE_CLAUSE, null, null, $limit_massmail);
 } else {
     $sql_clause = "email <> ''";
     if ($_REQUEST['id']!=null) {
         $sql_clause .= " AND id = '".$_REQUEST['id']."'";
     }
-    $list_customer = $instance_cus_table -> Get_list ($HD_Form -> DBHandle, $sql_clause, null, null, null, null, $limit_massmail, 0);
+    $list_customer = $instance_cus_table -> get_list ($HD_Form->DBHandle, $sql_clause, null, null, $limit_massmail);
 }
 
 $nb_customer = sizeof($list_customer);

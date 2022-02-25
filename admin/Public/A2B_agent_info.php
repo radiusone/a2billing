@@ -53,7 +53,7 @@ $DBHandle  = DbConnect();
 
 $agent_table = new Table('cc_agent','*');
 $agent_clause = "id = ".$id;
-$agent_result = $agent_table -> Get_list($DBHandle, $agent_clause, 0);
+$agent_result = $agent_table -> get_list($DBHandle, $agent_clause);
 $agent = $agent_result[0];
 
 if (empty($agent)) {

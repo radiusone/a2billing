@@ -144,7 +144,7 @@ if ( (isset ($id_cc_card) && (is_numeric($id_cc_card)  != "")) && ( $form_action
     }
 
     $instance_table_friend = new Table($TABLE_BUDDY,'*');
-    $list_friend = $instance_table_friend -> Get_list ($HD_Form -> DBHandle, "id_cc_card='$id_cc_card'", null, null, null, null);
+    $list_friend = $instance_table_friend -> get_list ($HD_Form->DBHandle, "id_cc_card='$id_cc_card'");
 
     if (is_array($list_friend) && count($list_friend)>0) { Header ("Location: ".$HD_Form->FG_GO_LINK_AFTER_ACTION); exit();}
 

@@ -50,7 +50,7 @@ if (isset($id)) {
     if (!empty($id)&& $id>0) {
         $table_agent_security = new Table("cc_card LEFT JOIN cc_card_group ON cc_card.id_group=cc_card_group.id ", " cc_card_group.id_agent");
         $clause_agent_security = "cc_card.id= ".$id;
-        $result_security= $table_agent_security -> Get_list ($DBHandle, $clause_agent_security, null, null, null, null, null, null);
+        $result_security= $table_agent_security -> get_list ($DBHandle, $clause_agent_security);
         if ($result_security[0][0] !=$_SESSION['agent_id']) {
             Header ("HTTP/1.0 401 Unauthorized");
             Header ("Location: PP_error.php?c=accessdenied");
@@ -65,7 +65,7 @@ if (empty($id)) {
 
 $card_table = new Table('cc_card','*');
 $card_clause = "id = ".$id;
-$card_result = $card_table -> Get_list($DBHandle, $card_clause, 0);
+$card_result = $card_table -> get_list($DBHandle, $card_clause);
 $card = $card_result[0];
 
 if (empty($card)) {
@@ -443,7 +443,7 @@ echo Display_Login_Button ($DBHandle, $id);
         <?php
         $callerid_table = new Table('cc_callerid','*');
         $callerid_clause = "id_cc_card  = ".$id;
-        $callerid_result = $callerid_table -> Get_list($DBHandle, $callerid_clause, 0);
+        $callerid_result = $callerid_table -> get_list($DBHandle, $callerid_clause);
         $callerid = $callerid_result[0];
         if (sizeof($callerid_result)>0 && $callerid_result[0]!=null) {
         ?>
@@ -491,7 +491,7 @@ echo Display_Login_Button ($DBHandle, $id);
         <?php
         $speeddial_table = new Table('cc_speeddial','*');
         $speeddial_clause = "id_cc_card  = ".$id;
-        $speeddial_result = $speeddial_table -> Get_list($DBHandle, $speeddial_clause, 0);
+        $speeddial_result = $speeddial_table -> get_list($DBHandle, $speeddial_clause);
         $speeddial = $speeddial_result[0];
         if (sizeof($speeddial_result)>0 && $speeddial_result[0]!=null) {
         ?>
@@ -552,7 +552,7 @@ echo Display_Login_Button ($DBHandle, $id);
         <?php
         $sip_buddies_table = new Table('cc_sip_buddies','*');
         $sip_buddies_clause = "id_cc_card  = ".$id;
-        $sip_buddies_result = $sip_buddies_table -> Get_list($DBHandle, $sip_buddies_clause, 0);
+        $sip_buddies_result = $sip_buddies_table -> get_list($DBHandle, $sip_buddies_clause);
         $sip_buddies = $sip_buddies_result[0];
         if (sizeof($sip_buddies_result)>0 && $sip_buddies_result[0]!=null) {
         ?>
@@ -599,7 +599,7 @@ echo Display_Login_Button ($DBHandle, $id);
         <?php
         $iax_buddies_table = new Table('cc_iax_buddies','*');
         $iax_buddies_clause = "id_cc_card  = ".$id;
-        $iax_buddies_result = $iax_buddies_table -> Get_list($DBHandle, $iax_buddies_clause, 0);
+        $iax_buddies_result = $iax_buddies_table -> get_list($DBHandle, $iax_buddies_clause);
         $iax_buddies = $iax_buddies_result[0];
         if (sizeof($iax_buddies_result)>0 && $iax_buddies_result[0]!=null) {
         ?>
@@ -656,7 +656,7 @@ echo Display_Login_Button ($DBHandle, $id);
 
 $payment_table = new Table('cc_logpayment','*');
 $payment_clause = "card_id = ".$id;
-$payment_result = $payment_table -> Get_list($DBHandle, $payment_clause, 'date', 'DESC', NULL, NULL, 10, 0);
+$payment_result = $payment_table -> get_list($DBHandle, $payment_clause, 'date', 'DESC', 10);
 if (sizeof($payment_result)>0 && $payment_result[0]!=null) {
 ?>
 <table class="toppage_maintable">
@@ -728,7 +728,7 @@ if (sizeof($payment_result)>0 && $payment_result[0]!=null) {
 
 $refill_table = new Table('cc_logrefill','*');
 $refill_clause = "card_id = ".$id;
-$refill_result = $refill_table -> Get_list($DBHandle, $refill_clause, 'date', 'DESC', NULL, NULL, 10, 0);
+$refill_result = $refill_table -> get_list($DBHandle, $refill_clause, 'date', 'DESC', 10);
 
 if (sizeof($refill_result)>0 && $refill_result[0]!=null) {
 ?>
@@ -794,7 +794,7 @@ if (sizeof($refill_result)>0 && $refill_result[0]!=null) {
 
 $call_table = new Table('cc_call,cc_prefix','*');
 $call_clause = "card_id = ".$id." AND cc_call.destination = cc_prefix.prefix";
-$call_result = $call_table -> Get_list($DBHandle, $call_clause, 'starttime', 'DESC', NULL, NULL, 10, 0);
+$call_result = $call_table -> get_list($DBHandle, $call_clause, 'starttime', 'DESC', 10);
 
 if (sizeof($call_result)>0 && $call_result[0]!=null) {
 ?>
@@ -884,7 +884,7 @@ if (sizeof($call_result)>0 && $call_result[0]!=null) {
 <?php
 $did_destination_table = new Table('cc_did_destination,cc_did ','*');
 $did_destination_clause = " cc_did_destination.id_cc_did = cc_did.id and cc_did_destination.id_cc_card  = ".$id;
-$did_destination_result = $did_destination_table -> Get_list($DBHandle, $did_destination_clause, 0);
+$did_destination_result = $did_destination_table -> get_list($DBHandle, $did_destination_clause);
 $did_destination = $did_destination_result[0];
 if (sizeof($did_destination_result)>0 && $did_destination_result[0]!=null) {
 ?>

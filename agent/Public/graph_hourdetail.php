@@ -151,7 +151,7 @@ if (strpos($SQLcmd, 'WHERE') > 0) {
 
 if ($FG_DEBUG == 3) echo $FG_TABLE_CLAUSE;
 
-$list_total = $instance_table_graph -> Get_list ($DBHandle, $FG_TABLE_CLAUSE, 't1.starttime', 'ASC', null, null, null, null);
+$list_total = $instance_table_graph -> get_list ($DBHandle, $FG_TABLE_CLAUSE, 't1.starttime');
 
 //print_r($list_total);
 /**************************************/

@@ -177,10 +177,10 @@ if (strpos($SQLcmd, 'WHERE') > 0) {
 }
 
 if ($posted==1) {
-    $list = $instance_table -> Get_list ($DBHandle, $FG_TABLE_CLAUSE, $order, $sens, null, null, $FG_LIMITE_DISPLAY, $current_page*$FG_LIMITE_DISPLAY);
+    $list = $instance_table -> get_list ($DBHandle, $FG_TABLE_CLAUSE, $order, $sens, $FG_LIMITE_DISPLAY, $current_page * $FG_LIMITE_DISPLAY);
 
     $instance_table_graph = new Table($FG_TABLE_NAME, $FG_COL_QUERY_GRAPH);
-    $list_total = $instance_table_graph -> Get_list ($DBHandle, $FG_TABLE_CLAUSE, null, null, null, null, null, null);
+    $list_total = $instance_table_graph -> get_list ($DBHandle, $FG_TABLE_CLAUSE);
 }
 
 $nb_record = count($list_total);

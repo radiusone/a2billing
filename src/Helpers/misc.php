@@ -593,7 +593,7 @@ function linktocustomer($value)
     $handle = DbConnect();
     $inst_table = new Table("cc_card", "id");
     $FG_TABLE_CLAUSE = "username = '$value'";
-    $list_customer = $inst_table->Get_list($handle, $FG_TABLE_CLAUSE, "", "", "", "", "", "", "", 10);
+    $list_customer = $inst_table->get_list($handle, $FG_TABLE_CLAUSE, "", "", "", "", "", 10);
     $id = $list_customer[0][0];
     if ($id > 0) {
         echo "<a href=\"A2B_entity_card.php?form_action=ask-edit&id=$id\">$value</a>";
@@ -607,7 +607,7 @@ function linktocustomer_id($id)
     $handle = DbConnect();
     $inst_table = new Table("cc_card", "username");
     $FG_TABLE_CLAUSE = "id = '$id'";
-    $list_customer = $inst_table->Get_list($handle, $FG_TABLE_CLAUSE, "", "", "", "", "", "", "", 10);
+    $list_customer = $inst_table->get_list($handle, $FG_TABLE_CLAUSE, "", "", "", "", "", 10);
     $value = $list_customer[0][0];
     if ($id > 0) {
         echo "<a href=\"A2B_entity_card.php?form_action=ask-edit&id=$id\">$value</a>";
@@ -630,7 +630,7 @@ function infocustomer_id($id)
     $handle = DbConnect();
     $inst_table = new Table("cc_card", "username,firstname,lastname");
     $FG_TABLE_CLAUSE = "id = '$id'";
-    $list_customer = $inst_table->Get_list($handle, $FG_TABLE_CLAUSE, "", "", "", "", "", "", "", 10);
+    $list_customer = $inst_table->get_list($handle, $FG_TABLE_CLAUSE, "", "", "", "", "", 10);
     if (is_array($list_customer))
         $value = $list_customer[0][1] . " " . $list_customer[0][2] . " (" . $list_customer[0][0] . ")";
     else
@@ -652,7 +652,7 @@ function getnameofadmin($id)
     $handle = DbConnect();
     $inst_table = new Table("cc_ui_authen", "login,name");
     $FG_TABLE_CLAUSE = "userid = '$id'";
-    $list_admin = $inst_table->Get_list($handle, $FG_TABLE_CLAUSE, "", "", "", "", "", "", "", 10);
+    $list_admin = $inst_table->get_list($handle, $FG_TABLE_CLAUSE, "", "", "", "", "", 10);
     if (is_array($list_admin))
         $value = $list_admin[0][1] . " (" . $list_admin[0][0] . ")";
     else
@@ -671,7 +671,7 @@ function getnameofcustomer_id($id)
     $handle = DbConnect();
     $inst_table = new Table("cc_card", "username,firstname,lastname");
     $FG_TABLE_CLAUSE = "id = '$id'";
-    $list_customer = $inst_table->Get_list($handle, $FG_TABLE_CLAUSE, "", "", "", "", "", "", "", 10);
+    $list_customer = $inst_table->get_list($handle, $FG_TABLE_CLAUSE, "", "", "", "", "", 10);
     if (is_array($list_customer))
         $value = $list_customer[0][1] . " " . $list_customer[0][2] . " (" . $list_customer[0][0] . ")";
     else
@@ -685,7 +685,7 @@ function linktoagent($id)
     $handle = DbConnect();
     $inst_table = new Table("cc_agent", "login,firstname,lastname");
     $FG_TABLE_CLAUSE = "id = '$id'";
-    $list_agent = $inst_table->Get_list($handle, $FG_TABLE_CLAUSE, "", "", "", "", "", "", "", 10);
+    $list_agent = $inst_table->get_list($handle, $FG_TABLE_CLAUSE, "", "", "", "", "", 10);
     if (is_array($list_agent))
         $value = $list_agent[0][1] . " " . $list_agent[0][2] . " (" . $list_agent[0][0] . ")";
     else
@@ -706,7 +706,7 @@ function getnameofagent($id)
     $handle = DbConnect();
     $inst_table = new Table("cc_agent", "login,firstname,lastname");
     $FG_TABLE_CLAUSE = "id = '$id'";
-    $list_agent = $inst_table->Get_list($handle, $FG_TABLE_CLAUSE, "", "", "", "", "", "", "", 10);
+    $list_agent = $inst_table->get_list($handle, $FG_TABLE_CLAUSE, "", "", "", "", "", 10);
     if (is_array($list_agent))
         $value = $list_agent[0][1] . " " . $list_agent[0][2] . " ( login: " . $list_agent[0][0] . ")";
     else
@@ -1377,7 +1377,7 @@ function generate_invoice_reference()
     $year = date("Y");
     $invoice_conf_table = new Table('cc_invoice_conf', 'value');
     $conf_clause = "key_val = 'count_$year'";
-    $result = $invoice_conf_table->Get_list($handle, $conf_clause, 0);
+    $result = $invoice_conf_table->get_list($handle, $conf_clause);
 
     if (is_array($result) && !empty ($result[0][0])) {
         $count = $result[0][0];
@@ -1461,7 +1461,7 @@ function normalize_day_of_month(&$day, $year_month, $inplace=0)
 function mt_get()
 {
     global $mt_time;
-    list($usec, $sec) = explode(" ", microtime());
+    [$usec, $sec] = explode(" ", microtime());
 
     return ((float) $usec + (float) $sec);
 }
@@ -1615,7 +1615,7 @@ function Display_Login_Button ($DBHandle, $id)
 {
     $inst_table = new Table("cc_card", "useralias, uipass");
     $FG_TABLE_CLAUSE = "id = $id";
-    $list_card_info = $inst_table -> Get_list ($DBHandle, $FG_TABLE_CLAUSE);
+    $list_card_info = $inst_table -> get_list($DBHandle, $FG_TABLE_CLAUSE);
     $username = $list_card_info[0][0];
     $password = $list_card_info[0][1];
     $link = CUSTOMER_UI_URL;

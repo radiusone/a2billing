@@ -81,7 +81,7 @@ $commision_bal_cur = round($commision_bal_cur, 3);
 
 $threshold_cur = $agent_info['threshold_remittance'] / $mycur;
 $threshold_cur = round($threshold_cur, 3);
-$result_remittance = $table_remittance->Get_list($DBHandle_max, $remittance_clause);
+$result_remittance = $table_remittance->get_list($DBHandle_max, $remittance_clause);
 
 if (is_array($result_remittance) && sizeof($result_remittance) >= 1) {
     $remittance_in_progress = true;

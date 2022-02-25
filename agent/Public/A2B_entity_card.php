@@ -67,7 +67,7 @@ if ($form_action != "list" && isset($id)) {
     if (!empty($id)&& $id>0) {
         $table_agent_security = new Table("cc_card LEFT JOIN cc_card_group ON cc_card.id_group=cc_card_group.id ", " cc_card_group.id_agent");
         $clause_agent_security = "cc_card.id= ".$id;
-        $result_security= $table_agent_security -> Get_list ($HD_Form -> DBHandle, $clause_agent_security, null, null, null, null, null, null);
+        $result_security= $table_agent_security -> get_list ($HD_Form->DBHandle, $clause_agent_security);
         if ($result_security[0][0] != $_SESSION['agent_id']) {
             Header ("Location: A2B_entity_card.php?section=1");
             die();
@@ -143,7 +143,7 @@ if (($form_action == "addcredit") && ($addcredit > 0) && ($id > 0 || $cardnumber
     if ($cardnumber>0) {
         /* CHECK IF THE CARDNUMBER IS ON THE DATABASE */
         $FG_TABLE_CLAUSE_card = "username='".$cardnumber."'";
-        $list_tariff_card = $instance_table -> Get_list ($HD_Form -> DBHandle, $FG_TABLE_CLAUSE_card, null, null, null, null, null, null);
+        $list_tariff_card = $instance_table -> get_list ($HD_Form->DBHandle, $FG_TABLE_CLAUSE_card);
         if ($cardnumber == $list_tariff_card[0][0]) $id = $list_tariff_card[0][1];
     }
 
@@ -151,13 +151,13 @@ if (($form_action == "addcredit") && ($addcredit > 0) && ($id > 0 || $cardnumber
 
         $instance_check_card_agent = new Table("cc_card LEFT JOIN cc_card_group ON cc_card.id_group=cc_card_group.id", " cc_card_group.id_agent");
         $FG_TABLE_CLAUSE_check = "cc_card.id= ".$id;
-        $list_check= $instance_check_card_agent -> Get_list ($HD_Form -> DBHandle, $FG_TABLE_CLAUSE_check, null, null, null, null, null, null);
+        $list_check= $instance_check_card_agent -> get_list ($HD_Form->DBHandle, $FG_TABLE_CLAUSE_check);
         if ($list_check[0][0] == $_SESSION['agent_id']) {
 
             //check if enought credit
             $instance_table_agent = new Table("cc_agent", "credit, currency");
             $FG_TABLE_CLAUSE_AGENT = "id = ".$_SESSION['agent_id'] ;
-            $agent_info = $instance_table_agent -> Get_list ($HD_Form -> DBHandle, $FG_TABLE_CLAUSE_AGENT, null, null, null, null, null, null);
+            $agent_info = $instance_table_agent -> get_list ($HD_Form->DBHandle, $FG_TABLE_CLAUSE_AGENT);
             $credit_agent = $agent_info[0][0];
             if ($credit_agent >= $addcredit) {
                //Substract credit for agent
@@ -184,7 +184,7 @@ if (($form_action == "addcredit") && ($addcredit > 0) && ($id > 0 || $cardnumber
                 $agent_table = new Table("cc_agent", "commission");
 
                 $agent_clause = "id = ".$id_agent;
-                $result_agent= $agent_table -> Get_list($HD_Form -> DBHandle,$agent_clause);
+                $result_agent= $agent_table -> get_list($HD_Form->DBHandle, $agent_clause);
 
                 if (is_array($result_agent) && is_numeric($result_agent[0]['commission']) && $result_agent[0]['commission']>0) {
                     $field_insert = "id_payment, id_card, amount,description,id_agent";

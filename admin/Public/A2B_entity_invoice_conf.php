@@ -106,51 +106,51 @@ $smarty->display( 'main.tpl');
 
 $table_invoice_conf= new Table("cc_invoice_conf","value");
 $clause_update_conf = "key_val = 'company_name'";
-$result=$table_invoice_conf -> Get_list($DBHandle, $clause_update_conf);
+$result=$table_invoice_conf -> get_list($DBHandle, $clause_update_conf);
 $company_name=$result[0][0];
 
 $clause_update_conf = "key_val = 'address'";
-$result=$table_invoice_conf -> Get_list($DBHandle, $clause_update_conf);
+$result=$table_invoice_conf -> get_list($DBHandle, $clause_update_conf);
 $address=$result[0][0];
 
 $clause_update_conf = "key_val = 'zipcode'";
-$result=$table_invoice_conf -> Get_list($DBHandle, $clause_update_conf);
+$result=$table_invoice_conf -> get_list($DBHandle, $clause_update_conf);
 $zipcode=$result[0][0];
 
 $clause_update_conf = "key_val = 'country'";
-$result=$table_invoice_conf -> Get_list($DBHandle, $clause_update_conf);
+$result=$table_invoice_conf -> get_list($DBHandle, $clause_update_conf);
 $country=$result[0][0];
 
 $clause_update_conf = "key_val = 'city'";
-$result=$table_invoice_conf -> Get_list($DBHandle, $clause_update_conf);
+$result=$table_invoice_conf -> get_list($DBHandle, $clause_update_conf);
 $city=$result[0][0];
 
 $clause_update_conf = "key_val = 'phone'";
-$result=$table_invoice_conf -> Get_list($DBHandle, $clause_update_conf);
+$result=$table_invoice_conf -> get_list($DBHandle, $clause_update_conf);
 $phone=$result[0][0];
 
 $clause_update_conf = "key_val = 'fax'";
-$result=$table_invoice_conf -> Get_list($DBHandle, $clause_update_conf);
+$result=$table_invoice_conf -> get_list($DBHandle, $clause_update_conf);
 $fax=$result[0][0];
 
 $clause_update_conf = "key_val = 'phone'";
-$result=$table_invoice_conf -> Get_list($DBHandle, $clause_update_conf);
+$result=$table_invoice_conf -> get_list($DBHandle, $clause_update_conf);
 $phone=$result[0][0];
 
 $clause_update_conf = "key_val = 'email'";
-$result=$table_invoice_conf -> Get_list($DBHandle, $clause_update_conf);
+$result=$table_invoice_conf -> get_list($DBHandle, $clause_update_conf);
 $email=$result[0][0];
 
 $clause_update_conf = "key_val = 'vat'";
-$result=$table_invoice_conf -> Get_list($DBHandle, $clause_update_conf);
+$result=$table_invoice_conf -> get_list($DBHandle, $clause_update_conf);
 $vat=$result[0][0];
 
 $clause_update_conf = "key_val = 'web'";
-$result=$table_invoice_conf -> Get_list($DBHandle, $clause_update_conf);
+$result=$table_invoice_conf -> get_list($DBHandle, $clause_update_conf);
 $web=$result[0][0];
 
 $clause_update_conf = "key_val = 'display_account'";
-$result=$table_invoice_conf -> Get_list($DBHandle, $clause_update_conf);
+$result=$table_invoice_conf -> get_list($DBHandle, $clause_update_conf);
 $display_account=$result[0][0];
 
 ?>

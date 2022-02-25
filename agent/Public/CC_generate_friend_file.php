@@ -96,7 +96,7 @@ restrictcid, rtptimeout, rtpholdtimeout, musiconhold, regseconds, ipaddr, cancal
     $list_names = explode(",",$FG_QUERY_EDITION);
 
     $instance_table_friend = new Table($TABLE_BUDDY,'id, '.$FG_QUERY_EDITION);
-    $list_friend = $instance_table_friend -> Get_list ($DBHandle, 'id > 0', null, null, null, null);
+    $list_friend = $instance_table_friend -> get_list ($DBHandle, 'id > 0');
 
     if (!is_array($list_friend) || count($list_friend)==0) {
         $error_msg= "<br><center><b><font color=red>".gettext("There is no ").$atmenu." ! </font></b></center>";

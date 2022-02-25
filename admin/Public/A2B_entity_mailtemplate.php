@@ -51,7 +51,7 @@ if ($action=="load") {
     if (!empty($id) && is_numeric($id)) {
         $instance_table_mail = new Table("cc_templatemail","messagetext, fromemail, fromname, subject");
         $clause_mail = " id ='$id'";
-        $result=$instance_table_mail-> Get_list($DBHandle, $clause_mail);
+        $result=$instance_table_mail-> get_list($DBHandle, $clause_mail);
         echo json_encode($result[0]);
     }
     die();

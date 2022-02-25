@@ -159,7 +159,7 @@ if ($form_action == "list") {
 if ($form_action == "list" && (!($popup_select>=1))	) {
     $instance_table_tariff = new Table("cc_tariffgroup", "id, tariffgroupname");
     $FG_TABLE_CLAUSE = "";
-    $list_tariff = $instance_table_tariff -> Get_list ($HD_Form -> DBHandle, $FG_TABLE_CLAUSE, "tariffgroupname", "ASC", null, null, null, null);
+    $list_tariff = $instance_table_tariff -> get_list ($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "tariffgroupname");
     $nb_tariff = count($list_tariff);
 
 ?>

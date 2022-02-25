@@ -212,10 +212,10 @@ if (substr_count($tariffgroup ?? "", "-:-") === 2) {
 
 $list = $HD_Form->perform_action($form_action);
 
-$list_tariffname = (new Table("cc_tariffplan", "id, tariffname"))->Get_list($HD_Form->DBHandle, "", "tariffname", "ASC");
-$list_trunk = (new Table("cc_trunk", "id_trunk, trunkcode, providerip"))->Get_list($HD_Form->DBHandle, "", "trunkcode", "ASC");
-$list_cid_group = (new Table("cc_outbound_cid_group", "id, group_name"))->Get_list($HD_Form->DBHandle, "", "group_name", "ASC");
-$list_tariffgroup = (new Table("cc_tariffgroup", "id, tariffgroupname, lcrtype"))->Get_list($HD_Form->DBHandle, "", "tariffgroupname", "ASC");
+$list_tariffname = (new Table("cc_tariffplan", "id, tariffname"))->get_list($HD_Form->DBHandle, "", "tariffname");
+$list_trunk = (new Table("cc_trunk", "id_trunk, trunkcode, providerip"))->get_list($HD_Form->DBHandle, "", "trunkcode");
+$list_cid_group = (new Table("cc_outbound_cid_group", "id, group_name"))->get_list($HD_Form->DBHandle, "", "group_name");
+$list_tariffgroup = (new Table("cc_tariffgroup", "id, tariffgroupname, lcrtype"))->get_list($HD_Form->DBHandle, "", "tariffgroupname");
 
 // #### HEADER SECTION
 $smarty->display('main.tpl');

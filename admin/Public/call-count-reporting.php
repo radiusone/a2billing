@@ -133,7 +133,7 @@ if ($terminatecauseid=="ANSWER") {
 $instance_table = new Table($FG_TABLE_NAME, $FG_COL_QUERY);
 
 if (!$nodisplay) {
-    $list = $instance_table -> Get_list ($DBHandle, $FG_TABLE_CLAUSE, $order, $sens, null, null,$inputtopvar , 0,$SQL_GROUP);
+    $list = $instance_table -> get_list ($DBHandle, $FG_TABLE_CLAUSE, $order, $sens, $inputtopvar, 0, $SQL_GROUP);
 }
 
 $smarty->display('main.tpl');

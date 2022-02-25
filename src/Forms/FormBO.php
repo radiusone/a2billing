@@ -147,7 +147,7 @@ class FormBO
         //check if enought credit
         $instance_table_agent = new Table("cc_agent", "credit, currency");
         $FG_TABLE_CLAUSE_AGENT = "id = ".$_SESSION['agent_id'] ;
-        $agent_info = $instance_table_agent -> Get_list ($FormHandler -> DBHandle, $FG_TABLE_CLAUSE_AGENT, null, null, null, null, null, null);
+        $agent_info = $instance_table_agent -> get_list ($FormHandler->DBHandle, $FG_TABLE_CLAUSE_AGENT);
         $credit_agent = $agent_info[0][0];
 
         if ($credit_agent >= $credit) {
@@ -181,7 +181,7 @@ class FormBO
         $component_id = $processed['id_component'];
         $table_card =new Table("cc_card", "username,firstname,lastname,language,email");
         $card_clause = "id = ".$card_id;
-        $result=$table_card ->Get_list($FormHandler->DBHandle, $card_clause);
+        $result=$table_card ->get_list($FormHandler->DBHandle, $card_clause);
 
         $owner = $result[0]['username']." (".$result[0]['firstname']." ".$result[0]['lastname'].")";
 
@@ -200,7 +200,7 @@ class FormBO
 
         $component_table = new Table('cc_support_component LEFT JOIN cc_support ON id_support = cc_support.id', "email,language");
         $component_clause = "cc_support_component.id = ".$component_id;
-        $result= $component_table -> Get_list($FormHandler->DBHandle, $component_clause);
+        $result= $component_table -> get_list($FormHandler->DBHandle, $component_clause);
 
         try {
             $mail = new Mail(Mail::$TYPE_TICKET_NEW, null, $result[0]['language']);
@@ -229,7 +229,7 @@ class FormBO
         $component_id = $processed['id_component'];
         $table_agent =new Table("cc_agent", "login,firstname,lastname,language,email");
         $agent_clause = "id = ".$agent_id;
-        $result=$table_agent ->Get_list($FormHandler->DBHandle, $agent_clause);
+        $result=$table_agent ->get_list($FormHandler->DBHandle, $agent_clause);
 
         $owner = $result[0]['username']." (".$result[0]['firstname']." ".$result[0]['lastname'].")";
 
@@ -248,7 +248,7 @@ class FormBO
 
         $component_table = new Table('cc_support_component LEFT JOIN cc_support ON id_support = cc_support.id', "email,language");
         $component_clause = "cc_support_component.id = ".$component_id;
-        $result= $component_table -> Get_list($FormHandler->DBHandle, $component_clause);
+        $result= $component_table -> get_list($FormHandler->DBHandle, $component_clause);
 
         try {
             $mail = new Mail(Mail::$TYPE_TICKET_NEW, null, $result[0]['language']);
@@ -304,7 +304,7 @@ class FormBO
         $card_id = $processed['id'];
         $card_table = new Table('cc_card','credit');
         $card_clause = "id = ".$card_id;
-        $card_result = $card_table -> Get_list($FormHandler->DBHandle, $card_clause, 0);
+        $card_result = $card_table -> get_list($FormHandler->DBHandle, $card_clause);
 
         $credit = $card_result[0][0];
 
@@ -333,7 +333,7 @@ class FormBO
                     $id_agent = $result_agent[0]['id_agent'];
                     $agent_table = new Table("cc_agent", "commission");
                     $agent_clause = "id = ".$id_agent;
-                    $result_agent= $agent_table -> Get_list($FormHandler->DBHandle,$agent_clause);
+                    $result_agent= $agent_table -> get_list($FormHandler->DBHandle, $agent_clause);
 
                     if (is_array($result_agent) && is_numeric($result_agent[0]['commission']) && $result_agent[0]['commission']>0) {
                         $field_insert = "id_payment, id_card, amount,description,id_agent";
@@ -392,7 +392,7 @@ class FormBO
         $subscriber = $processed['subscriber_signup'];
         $table_subscription = new Table("cc_subscription_service","*");
         $subscription_clause = "id = ".$subscriber;
-        $result_sub = $table_subscription->Get_list($FormHandler->DBHandle, $subscription_clause);
+        $result_sub = $table_subscription->get_list($FormHandler->DBHandle, $subscription_clause);
 
         if (is_numeric($subscriber) && is_array($result_sub) && $result_sub[0]['fee'] > 0) {
 
@@ -481,7 +481,7 @@ class FormBO
             //update record with agent commission
             $table_agent = new Table('cc_agent','commission');
             $agent_clause = "id = ".$id_agent;
-            $agent_result = $table_agent -> Get_list($FormHandler->DBHandle, $agent_clause, 0);
+            $agent_result = $table_agent -> get_list($FormHandler->DBHandle, $agent_clause);
             $agent_com = $agent_result[0][0];
             if (empty($agent_com) ) {
                 $table_commission = new Table("cc_agent_commission");
@@ -647,7 +647,7 @@ class FormBO
         //GET VAT
         $card_table = new Table('cc_card', 'vat, typepaid, credit');
         $card_clause = "id = ".$card_id;
-        $card_result = $card_table -> Get_list($FormHandler->DBHandle, $card_clause, 0);
+        $card_result = $card_table -> get_list($FormHandler->DBHandle, $card_clause);
 
         if(!is_array($card_result)||empty($card_result[0]['vat'])||!is_numeric($card_result[0]['vat']))
             $vat=0;
@@ -657,7 +657,7 @@ class FormBO
         // FIND THE LAST BILLING
         $billing_table = new Table('cc_billing_customer','id,date');
         $clause_last_billing = "id_card = $card_id AND id != ".$FormHandler -> RESULT_QUERY;
-        $result = $billing_table -> Get_list($FormHandler->DBHandle, $clause_last_billing,"date","desc");
+        $result = $billing_table -> get_list($FormHandler->DBHandle, $clause_last_billing, "date", "desc");
         $call_table = new Table('cc_call',' COALESCE(SUM(sessionbill),0)' );
         $clause_call_billing ="card_id = $card_id AND ";
         $clause_charge = "id_cc_card = $card_id AND ";
@@ -680,7 +680,7 @@ class FormBO
         $query_table .= "LEFT JOIN (SELECT st1.id_invoice, TRUNCATE(SUM(st1.price),2) as total_price FROM cc_invoice_item AS st1 WHERE st1.type_ext ='POSTPAID' GROUP BY st1.id_invoice ) as items ON items.id_invoice = cc_invoice.id";
         $invoice_table = new Table($query_table,'SUM( items.total_price) as total');
         $lastinvoice_clause = "cc_billing_customer.id_card = $card_id AND cc_invoice.paid_status=0 AND cc_billing_customer.id != ".$FormHandler -> RESULT_QUERY;
-        $result_lastinvoice = $invoice_table ->Get_list($FormHandler->DBHandle, $lastinvoice_clause);
+        $result_lastinvoice = $invoice_table ->get_list($FormHandler->DBHandle, $lastinvoice_clause);
         if (is_array($result_lastinvoice)&& !empty($result_lastinvoice[0][0])) {
             $lastpostpaid_amount = $result_lastinvoice [0][0];
         }
@@ -688,7 +688,7 @@ class FormBO
         $clause_charge .= "creationdate < '$date_bill' ";
 
 
-        $result =  $call_table -> Get_list($FormHandler->DBHandle, $clause_call_billing);
+        $result =  $call_table -> get_list($FormHandler->DBHandle, $clause_call_billing);
         // COMMON BEHAVIOUR FOR PREPAID AND POSTPAID ... GENERATE A RECEIPT FOR THE CALLS OF THE MONTH
         if (is_array($result) && is_numeric($result[0][0])) {
             $amount_calls = $result[0][0];
@@ -711,7 +711,7 @@ class FormBO
         }
         // GENERATE RECEIPT FOR CHARGE ALREADY CHARGED
         $table_charge = new Table("cc_charge", "*");
-        $result =  $table_charge -> Get_list($FormHandler->DBHandle, $clause_charge." AND charged_status = 1");
+        $result =  $table_charge -> get_list($FormHandler->DBHandle, $clause_charge . " AND charged_status = 1");
         if (is_array($result)) {
             $field_insert = "date, id_card, title, description,status";
             $title = gettext("SUMMARY OF CHARGE");
@@ -735,7 +735,7 @@ class FormBO
         $total_vat =0;
         // GENERATE INVOICE FOR CHARGE NOT YET CHARGED
         $table_charge = new Table("cc_charge", "*");
-        $result =  $table_charge -> Get_list($FormHandler->DBHandle, $clause_charge." AND charged_status = 0 AND invoiced_status = 0");
+        $result =  $table_charge -> get_list($FormHandler->DBHandle, $clause_charge . " AND charged_status = 0 AND invoiced_status = 0");
         $last_invoice = null;
         if (is_array($result) && sizeof($result)>0) {
             $reference = generate_invoice_reference();
@@ -852,7 +852,7 @@ class FormBO
                 $description = $processed['description'];
                 $card_table = new Table('cc_card','vat');
                 $card_clause = "id = ".$card_id;
-                $card_result = $card_table -> Get_list($FormHandler->DBHandle, $card_clause, 0);
+                $card_result = $card_table -> get_list($FormHandler->DBHandle, $card_clause);
                 if(!is_array($card_result)||empty($card_result[0][0])||!is_numeric($card_result[0][0])) $vat=0;
                 else $vat = $card_result[0][0];
                 $field_insert = "date, id_invoice ,price,vat, description";
@@ -900,7 +900,7 @@ class FormBO
             $description = $processed['description'];
             $card_table = new Table('cc_card','vat');
             $card_clause = "id = ".$card_id;
-            $card_result = $card_table -> Get_list($FormHandler->DBHandle, $card_clause, 0);
+            $card_result = $card_table -> get_list($FormHandler->DBHandle, $card_clause);
             if(!is_array($card_result)||empty($card_result[0][0])||!is_numeric($card_result[0][0])) {
                 $vat=0;
             } else {
@@ -930,7 +930,7 @@ class FormBO
             $year = date("Y");
             $invoice_conf_table = new Table('cc_invoice_conf','value');
             $conf_clause = "key_val = 'count_$year'";
-            $result = $invoice_conf_table -> Get_list($FormHandler->DBHandle, $conf_clause, 0);
+            $result = $invoice_conf_table -> get_list($FormHandler->DBHandle, $conf_clause);
             if (is_array($result) && !empty($result[0][0])) {
                 // update count
                 $count =$result[0][0];
@@ -993,7 +993,7 @@ class FormBO
 
                 $agent_table = new Table("cc_agent", "commission");
                 $agent_clause = "id = ".$id_agent;
-                $result_agent= $agent_table -> Get_list($FormHandler->DBHandle,$agent_clause);
+                $result_agent= $agent_table -> get_list($FormHandler->DBHandle, $agent_clause);
 
                 if (is_array($result_agent) && is_numeric($result_agent[0]['commission']) && $result_agent[0]['commission']>0) {
                     $field_insert = "id_payment, id_card, amount,description,id_agent";
@@ -1110,7 +1110,7 @@ class FormBO
         $processed = $FormHandler->getProcessed();
         $instance_sub_table = new Table("cc_card", "block");
         $FG_TABLE_CLAUSE_CARD = "id = ".$processed['id'];
-        $card_info = $instance_sub_table -> Get_list ($FormHandler -> DBHandle, $FG_TABLE_CLAUSE_CARD, null, null, null, null, null, null);
+        $card_info = $instance_sub_table -> get_list ($FormHandler->DBHandle, $FG_TABLE_CLAUSE_CARD);
         if (is_array($result) && !empty($result[0][0])) {
             $card_lock_info = $card_info[0][0];
 

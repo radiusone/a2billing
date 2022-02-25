@@ -63,7 +63,7 @@ if (strlen($description)>0  && is_numeric($priority) && strlen($title)>0  && is_
         NotificationsDAO::AddNotification("ticket_added_agent",Notification::$MEDIUM,Notification::$AGENT,$_SESSION['agent_id'],Notification::$LINK_TICKET_AGENT,$id_ticket);
         $table_agent =new Table("cc_agent", "firstname,lastname,language,email");
         $agent_clause = "id = ".$_SESSION["agent_id"];
-        $result=$table_agent ->Get_list($HD_Form -> DBHandle, $agent_clause);
+        $result=$table_agent ->get_list($HD_Form->DBHandle, $agent_clause);
         $owner = $_SESSION["pr_login"]." (".$result[0]['firstname']." ".$result[0]['lastname'].")";
         try {
             $mail = new Mail(Mail::$TYPE_TICKET_NEW, null, $result[0]['language']);
@@ -79,7 +79,7 @@ if (strlen($description)>0  && is_numeric($priority) && strlen($title)>0  && is_
         }
         $component_table = new Table('cc_support_component LEFT JOIN cc_support ON id_support = cc_support.id', "email");
         $component_clause = "cc_support_component.id = ".$component;
-        $result= $component_table -> Get_list($HD_Form -> DBHandle, $component_clause);
+        $result= $component_table -> get_list($HD_Form->DBHandle, $component_clause);
 
         try {
             $mail = new Mail(Mail::$TYPE_TICKET_NEW, null, $result[0]['language']);
@@ -152,7 +152,7 @@ if ($form_action == "list") {
                     $instance_sub_table = new Table("cc_support_component", "*");
                  $QUERY = " activated = 1 AND (type_user = 1 OR type_user = 2)";
                  $return = null;
-                 $return = $instance_sub_table -> Get_list($DBHandle, $QUERY, 0);
+                 $return = $instance_sub_table -> get_list($DBHandle, $QUERY);
                      foreach ($return as $value) {
 
                         echo	'<option class=input value=" '. $value["id"].'"  > ' . $value["name"]. '  </option>' ;

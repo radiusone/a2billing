@@ -51,7 +51,7 @@ if (empty($id)) {
 
 $table_pack = new Table("cc_package_offer ","*");
 $pack_clauses = "id = $id";
-$result_pack=$table_pack ->Get_list(DbConnect(), $pack_clauses);
+$result_pack=$table_pack ->get_list(DbConnect(), $pack_clauses);
 
 if (!is_array($result_pack)|| sizeof($result_pack)!=1) {
     Header ("Location: A2B_entity_package.php?atmenu=package&section=12");
@@ -149,7 +149,7 @@ $DBHandle = DbConnect();
 
 $table_rates = new Table("cc_package_rate JOIN cc_ratecard ON cc_ratecard.id = cc_package_rate.rate_id LEFT JOIN cc_prefix ON cc_prefix.prefix = cc_ratecard.destination ","DISTINCT cc_ratecard.id,cc_prefix.destination, cc_ratecard.dialprefix");
 $rates_clauses = " cc_package_rate.package_id = $id";
-$result_rates=$table_rates ->Get_list(DbConnect(), $rates_clauses);
+$result_rates=$table_rates ->get_list(DbConnect(), $rates_clauses);
 
 echo $CC_help_offer_package;
 

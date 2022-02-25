@@ -189,7 +189,7 @@ function add_clause(& $sqlclause, $addclause)
 */
 if ($lcr) {
     $field_to_display = "t7.destination, t1.dialprefix, min(t1.rateinitial)";
-    $sql_group = ' GROUP BY t1.dialprefix';
+    $sql_group = 't1.dialprefix';
 } else {
     $field_to_display = "t7.destination, t1.dialprefix, t1.rateinitial";
     $sql_group = null;
@@ -298,7 +298,7 @@ if (is_null($order) || is_null($sens)) {
 }
 
 $instance_table = new Table($FG_TABLE_NAME, $FG_COL_QUERY);
-$list = $instance_table->Get_list($DBHandle, $FG_TABLE_CLAUSE, $order, $sens, null, null, $FG_LIMITE_DISPLAY, $current_page * $FG_LIMITE_DISPLAY, $sql_group, $caching_query);
+$list = $instance_table->get_list($DBHandle, $FG_TABLE_CLAUSE, $order, $sens, $FG_LIMITE_DISPLAY, $current_page * $FG_LIMITE_DISPLAY, $sql_group, $caching_query);
 
 if ($FILTER_COUNTRY) {
     $QUERY = 'SELECT DISTINCT destination FROM cc_prefix ORDER BY destination LIMIT 0, 1000';

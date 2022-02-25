@@ -70,7 +70,7 @@ if (!empty($action)) {
              if (!empty($idc) && is_numeric($idc)) {
                 $DBHandle = DbConnect();
                 $instance_sub_table = new Table("cc_receipt_item", "*");
-                $result=$instance_sub_table -> Get_list($DBHandle, "id = $idc" );
+                $result=$instance_sub_table -> get_list($DBHandle, "id = $idc");
                 if (!is_array($result) || (sizeof($result)==0)) {
                      Header ("Location: A2B_receipt_edit.php?"."id=".$id);
                 } else {

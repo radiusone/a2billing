@@ -232,7 +232,7 @@ if ($form_action == "delete") {
 if ($form_action == "edit" || $form_action == "ask-delete" || $form_action == "ask-edit" || $form_action == "add-content" || $form_action == "del-content") {
 
     if ($FG_DEBUG >= 2) { echo "FG_EDITION_CLAUSE:$FG_EDITION_CLAUSE"; }
-    $list = $instance_table -> Get_list ($DBHandle, $FG_EDITION_CLAUSE, null, null, null, null, 1, 0);
+    $list = $instance_table -> get_list ($DBHandle, $FG_EDITION_CLAUSE, null, null, 1);
     if ($FG_DEBUG >= 2) { echo "<br>"; print_r ($list);}
 
 }
@@ -331,7 +331,7 @@ function sendtolittle(direction)
                                         if (strtoupper ($FG_TABLE_EDITION[$i][7])==strtoupper ("SQL")) {
 
                                                 $instance_sub_table = new Table($FG_TABLE_EDITION[$i][8], $FG_TABLE_EDITION[$i][9]);
-                                                $select_list = $instance_sub_table -> Get_list ($DBHandle, $FG_TABLE_EDITION[$i][10], null, null, null, null, null, null);
+                                                $select_list = $instance_sub_table -> get_list ($DBHandle, $FG_TABLE_EDITION[$i][10]);
 
                                                 if ($FG_DEBUG >= 2) { echo "<br>"; print_r($select_list);}
 
@@ -457,7 +457,7 @@ function sendtolittle(direction)
             $SPLIT_CLAUSE2 = str_replace("%id", "$id", $table_split[12]);
 
             $instance_sub_table = new Table($table_split[2], $table_split[3]);
-            $split_select_list = $instance_sub_table -> Get_list ($DBHandle, $SPLIT_CLAUSE, null, null, null, null, null, null);
+            $split_select_list = $instance_sub_table -> get_list ($DBHandle, $SPLIT_CLAUSE);
 
     if (!is_array($split_select_list)) {
         $num=0;
@@ -471,7 +471,7 @@ function sendtolittle(direction)
 
                     $instance_sub_sub_table = new Table($table_split[8], $table_split[9]);
                     $SUB_TABLE_SPLIT_CLAUSE = str_replace("%1", $split_select_list[$j][$table_split[7]], $table_split[11] );
-                    $sub_table_split_select_list = $instance_sub_sub_table -> Get_list ($DBHandle, $SUB_TABLE_SPLIT_CLAUSE, null, null, null, null, null, null);
+                    $sub_table_split_select_list = $instance_sub_sub_table -> get_list ($DBHandle, $SUB_TABLE_SPLIT_CLAUSE);
                     $split_select_list[$j][$table_split[7]] = $sub_table_split_select_list[0][0];
             }
 
@@ -515,7 +515,7 @@ function sendtolittle(direction)
 </TD>
                     </TR>
                     <?php
-                        $split_select_list = $instance_sub_table -> Get_list ($DBHandle, $SPLIT_CLAUSE2, null, null, null, null, null, null);
+                        $split_select_list = $instance_sub_table -> get_list ($DBHandle, $SPLIT_CLAUSE2);
                         if (count($split_select_list)>0) {
                     ?>
                     <TR>
@@ -565,7 +565,7 @@ function sendtolittle(direction)
                                                                 //print_r($select_recordset);
 
                                                                 $SUB_TABLE_SPLIT_CLAUSE = str_replace("%1", $select_recordset[$table_split[7]], $table_split[11] );
-                                                                $sub_table_split_select_list = $instance_sub_sub_table -> Get_list ($DBHandle, $SUB_TABLE_SPLIT_CLAUSE, null, null, null, null, null, null);
+                                                                $sub_table_split_select_list = $instance_sub_sub_table -> get_list ($DBHandle, $SUB_TABLE_SPLIT_CLAUSE);
                                                                 //print_r($sub_table_split_select_list);
 
                                                                 $select_recordset[$table_split[7]] = $sub_table_split_select_list[0][0];
@@ -655,7 +655,7 @@ function sendtolittle(direction)
                                   <?php
             $SPLIT_CLAUSE = str_replace("%id", "$id", $table_split[4]);
             $instance_sub_table = new Table($table_split[2], $table_split[3]);
-            $split_select_list = $instance_sub_table -> Get_list ($DBHandle, $SPLIT_CLAUSE, null, null, null, null, null, null);
+            $split_select_list = $instance_sub_table -> get_list ($DBHandle, $SPLIT_CLAUSE);
 
     if (!is_array($split_select_list)) {
         $num=0;
@@ -802,7 +802,7 @@ function sendtolittle(direction)
     $SPLIT_CLAUSE = str_replace("%id", "$id", $table_split[4]);
 
     $instance_sub_table = new Table($table_split[2], $table_split[3]);
-    $split_select_list = $instance_sub_table -> Get_list ($DBHandle, $SPLIT_CLAUSE, null, null, null, null, null, null);
+    $split_select_list = $instance_sub_table -> get_list ($DBHandle, $SPLIT_CLAUSE);
 
     if (!is_array($split_select_list)) {
         $num=0;
@@ -812,7 +812,7 @@ function sendtolittle(direction)
 
      ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-     $split_select_list_tariff = $instance_sub_table -> Get_list ($DBHandle, null, null, null, null, null, null, null);
+     $split_select_list_tariff = $instance_sub_table -> get_list ($DBHandle);
 
      if (count($split_select_list_tariff)>0) {
              $select_number=0;
@@ -847,7 +847,7 @@ function sendtolittle(direction)
 
                             $instance_sub_sub_table = new Table($table_split[8], $table_split[9]);
                             $SUB_TABLE_SPLIT_CLAUSE = str_replace("%1", $select_recordset[$table_split[7]], $table_split[11] );
-                            $sub_table_split_select_list_tariff = $instance_sub_sub_table -> Get_list ($DBHandle, $SUB_TABLE_SPLIT_CLAUSE, null, null, null, null, null, null);
+                            $sub_table_split_select_list_tariff = $instance_sub_sub_table -> get_list ($DBHandle, $SUB_TABLE_SPLIT_CLAUSE);
 
                             $select_recordset[$table_split[7]] = $sub_table_split_select_list_tariff[0][0];
                         }
@@ -973,7 +973,7 @@ function sendtolittle(direction)
 
                                                 $instance_sub_table = new Table($FG_TABLE_ADITION[$i][8], $FG_TABLE_ADITION[$i][9]);
                                                 //echo "---".$FG_TABLE_ADITION[$i][13];
-                                                $select_list = $instance_sub_table -> Get_list ($DBHandle, $FG_TABLE_ADITION[$i][10], $FG_TABLE_ADITION[$i][13], $FG_TABLE_ADITION[$i][14], null, null, null, null);
+                                                $select_list = $instance_sub_table -> get_list ($DBHandle, $FG_TABLE_ADITION[$i][10], $FG_TABLE_ADITION[$i][13], $FG_TABLE_ADITION[$i][14]);
 
                                                 if ($FG_DEBUG >= 2) { echo "<br>"; print_r($select_list);}
 
@@ -1113,7 +1113,7 @@ function sendtolittle(direction)
                                             if (strtoupper ($FG_TABLE_EDITION[$i][7])==strtoupper ("SQL")) {
 
                                                 $instance_sub_table = new Table($FG_TABLE_EDITION[$i][8], $FG_TABLE_EDITION[$i][9]);
-                                                $select_list = $instance_sub_table -> Get_list ($DBHandle, $FG_TABLE_EDITION[$i][10], null, null, null, null, null, null);
+                                                $select_list = $instance_sub_table -> get_list ($DBHandle, $FG_TABLE_EDITION[$i][10]);
 
                                                 if ($FG_DEBUG >= 2) { echo "<br>"; print_r($select_list);}
 

@@ -38,7 +38,7 @@ class ticket
         $instance_sub_table = new Table("cc_ticket", "*");
         $QUERY = " id = " . $id;
         $return = null;
-        $return = $instance_sub_table->Get_list($DBHandle, $QUERY, 0);
+        $return = $instance_sub_table->get_list($DBHandle, $QUERY);
 
         $value = $return[0];
         if (!is_null($value)) {
@@ -62,7 +62,7 @@ class ticket
                 case 0:	$instance_sub_table = new Table("cc_card", "lastname, firstname,username,language,email");
                     $QUERY = " id = " . $this->creatorid;
                     $subreturn = null;
-                    $subreturn = $instance_sub_table->Get_list($DBHandle, $QUERY, 0);
+                    $subreturn = $instance_sub_table->get_list($DBHandle, $QUERY);
                     $subvalue = $subreturn[0];
                     if (!is_null($subvalue)) {
                         $this->creatorname= $subvalue["lastname"] . " " . $subvalue["firstname"];
@@ -76,7 +76,7 @@ class ticket
                 case 1: $instance_sub_table = new Table("cc_agent", "lastname, firstname,login,language,email");
                     $QUERY = " id = " . $this->creatorid;
                     $subreturn = null;
-                    $subreturn = $instance_sub_table->Get_list($DBHandle, $QUERY, 0);
+                    $subreturn = $instance_sub_table->get_list($DBHandle, $QUERY);
                     $subvalue = $subreturn[0];
                     if (!is_null($subvalue)) {
                         $this->creatorname= gettext("(AGENT)") . " " . $subvalue["firstname"] . " " . $subvalue["lastname"];
@@ -95,7 +95,7 @@ class ticket
             $component_table = new Table('cc_support_component LEFT JOIN cc_support ON id_support = cc_support.id', "cc_support_component.name,email,language");
             $component_clause = "cc_support_component.id = ".$this->componentid;
             $return = null;
-            $return = $component_table->Get_list($DBHandle, $component_claus);
+            $return = $component_table->get_list($DBHandle, $component_clause);
 
             if (is_array($return)) {
 
@@ -202,7 +202,7 @@ class ticket
             $instance_sub_table = new Table("cc_ticket_comment", "*");
             $QUERY = " id_ticket = " . $this->id;
             $return = null;
-            $return = $instance_sub_table->Get_list($DBHandle, $QUERY, "date", "ASC");
+            $return = $instance_sub_table->get_list($DBHandle, $QUERY, "date");
             $i = 0;
             foreach ($return as $value) {
                 $comment = new Comment($value['id'], $value['description'], $value['date'], $value["viewed_cust"], $value["viewed_agent"], $value["viewed_admin"]);
@@ -214,7 +214,7 @@ class ticket
                         $instance_sub_table = new Table("cc_ui_authen", "*");
                         $QUERY = " userid = " . $creatorid;
                         $subreturn = null;
-                        $subreturn = $instance_sub_table->Get_list($DBHandle, $QUERY, 0);
+                        $subreturn = $instance_sub_table->get_list($DBHandle, $QUERY);
                         $subvalue = $subreturn[0];
                         if (!is_null($subvalue)) {
                             $comment->setCreatorname(gettext("(ADMINISTRATOR) ") . $subvalue["name"]);
@@ -224,7 +224,7 @@ class ticket
                         $instance_sub_table = new Table("cc_card", "lastname, firstname");
                         $QUERY = " id = " . $creatorid;
                         $subreturn = null;
-                        $subreturn = $instance_sub_table->Get_list($DBHandle, $QUERY, 0);
+                        $subreturn = $instance_sub_table->get_list($DBHandle, $QUERY);
                         $subvalue = $subreturn[0];
                         if (!is_null($subvalue)) {
                             $comment->setCreatorname($subvalue["lastname"] . " " . $subvalue["firstname"]);
@@ -234,7 +234,7 @@ class ticket
                         $instance_sub_table = new Table("cc_agent", "lastname, firstname");
                         $QUERY = " id = " . $creatorid;
                         $subreturn = null;
-                        $subreturn = $instance_sub_table->Get_list($DBHandle, $QUERY, 0);
+                        $subreturn = $instance_sub_table->get_list($DBHandle, $QUERY);
                         $subvalue = $subreturn[0];
                         if (!is_null($subvalue)) {
                             $comment->setCreatorname(gettext("(AGENT)") . " " . $subvalue["firstname"] . " " . $subvalue["lastname"]);
@@ -284,7 +284,7 @@ class ticket
             case 0: $instance_sub_table = new Table("cc_card", "lastname, firstname");
                 $QUERY = " id = " . $creator;
                 $subreturn = null;
-                $subreturn = $instance_sub_table->Get_list($DBHandle, $QUERY, 0);
+                $subreturn = $instance_sub_table->get_list($DBHandle, $QUERY);
                 $subvalue = $subreturn[0];
                 if (!is_null($subvalue)) {
                     $owner_comment=$subvalue["lastname"] . " " . $subvalue["firstname"];
@@ -293,7 +293,7 @@ class ticket
             case 1: $instance_sub_table = new Table("cc_ui_authen", "*");
                 $QUERY = " userid = " . $creator;
                 $subreturn = null;
-                $subreturn = $instance_sub_table->Get_list($DBHandle, $QUERY, 0);
+                $subreturn = $instance_sub_table->get_list($DBHandle, $QUERY);
                 $subvalue = $subreturn[0];
                 if (!is_null($subvalue)) {
                    $owner_comment="(ADMINISTRATOR) " . $subvalue["login"];
@@ -302,7 +302,7 @@ class ticket
             case 2: $instance_sub_table = new Table("cc_agent", "lastname, firstname,login");
                 $QUERY = " id = " . $creator;
                 $subreturn = null;
-                $subreturn = $instance_sub_table->Get_list($DBHandle, $QUERY, 0);
+                $subreturn = $instance_sub_table->get_list($DBHandle, $QUERY);
                 $subvalue = $subreturn[0];
                 if (!is_null($subvalue)) {
                     $owner_comment="(AGENT) " .$subvalue["login"]. " - " . $subvalue["firstname"] . " " . $subvalue["lastname"];

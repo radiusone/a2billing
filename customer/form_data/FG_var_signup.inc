@@ -63,14 +63,14 @@ elseif (!empty ($_SESSION["key"])) {
 
 if (!empty ($agentkey)) {
 	$table_key = new Table("cc_agent_signup", "*");
-	$data = $table_key->Get_list($HD_Form->DBHandle, "code= '" . $agentkey . "'");
+	$data = $table_key->get_list($HD_Form->DBHandle, "code= '" . $agentkey . "'");
 	if (is_array($data)) {
 		$groupid = $data[0]['id_group'];
 		$tariffid = $data[0]['id_tariffgroup'];
 		$agentid = $data[0]['id_agent'];
 		// check if groupid and tarif in already in this agent
 		$instance_table_agent_check = new Table("cc_agent JOIN cc_agent_tariffgroup ON cc_agent_tariffgroup.id_agent =  cc_agent.id JOIN cc_card_group ON cc_card_group.id_agent =  cc_agent.id  ", "cc_agent.id");
-		$list_agent_check = $instance_table_agent_check->Get_list($HD_Form->DBHandle, "cc_agent.id= $agentid AND cc_agent_tariffgroup.id_tariffgroup = $tariffid  AND cc_card_group.id = $groupid", "cc_agent.id", "ASC", null, null, null, null);
+		$list_agent_check = $instance_table_agent_check->get_list($HD_Form->DBHandle, "cc_agent.id= $agentid AND cc_agent_tariffgroup.id_tariffgroup = $tariffid  AND cc_card_group.id = $groupid", "cc_agent.id");
 		if (is_array($list_agent_check)) {
 			if (!empty ($groupid) && is_numeric($groupid) && !empty ($tariffid) && is_numeric($tariffid)) {
 				$agent_conf = true;
@@ -89,7 +89,7 @@ if (!$agent_conf) {
 		exit ("No Call Plan Defined.");
 	}
 	$call_table = new Table("cc_tariffgroup", "tariffgroupname,id");
-	$callPlan_list = $call_table->Get_list($HD_Form->DBHandle, "id in ($callPlan_idlist)");
+	$callPlan_list = $call_table->get_list($HD_Form->DBHandle, "id in ($callPlan_idlist)");
 
 	if (!is_array($callPlan_list) && count($callPlan_list) <= 0) {
 		exit (gettext("No Call Plan id are defined"));
@@ -412,7 +412,7 @@ if (!is_numeric($subscriber_signup)) {
 if (is_numeric($subscriber_signup)) {
 
 	$table_subscribe = new Table("cc_subscription_signup", "id_callplan");
-	$data = $table_subscribe->Get_list($HD_Form->DBHandle, "id='" . $subscriber_signup . "'");
+	$data = $table_subscribe->get_list($HD_Form->DBHandle, "id='" . $subscriber_signup . "'");
 	if (is_array($data)) {
 		$id_callplan = $data[0]['id_callplan'];
 		$HD_Form->FG_QUERY_ADITION_HIDDEN_FIELDS .= ", tariff";

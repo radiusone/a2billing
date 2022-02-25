@@ -57,7 +57,7 @@ $DBHandle  = DbConnect();
 
 $card_table = new Table('cc_card','vat,typepaid,credit');
 $card_clause = "id = ".$_SESSION["card_id"];
-$card_result = $card_table -> Get_list($DBHandle, $card_clause, 0);
+$card_result = $card_table -> get_list($DBHandle, $card_clause);
 
 if(!is_array($card_result)||empty($card_result[0]['vat'])||!is_numeric($card_result[0]['vat'])) $vat=0;
     else $vat = $card_result[0][0];
@@ -69,7 +69,7 @@ if(!is_array($card_result)||empty($card_result[0]['credit'])||!is_numeric($card_
 
 $billing_table = new Table('cc_billing_customer','id,date');
 $clause_last_billing = "id_card = ".$_SESSION["card_id"];
-$result = $billing_table -> Get_list($DBHandle, $clause_last_billing,"date","desc");
+$result = $billing_table -> get_list($DBHandle, $clause_last_billing, "date", "desc");
 $call_table = new Table('cc_call','COALESCE(SUM(sessionbill),0)' );
 $clause_call_billing ="card_id = ".$_SESSION["card_id"]." AND ";
 $clause_charge = "id_cc_card = ".$_SESSION["card_id"]." AND ";
@@ -87,7 +87,7 @@ if (is_array($result) && !empty($result[0][0])) {
 }
 $clause_call_billing .= "stoptime < NOW() ";
 $clause_charge .= "creationdate < NOW() ";
-$result_calls =  $call_table -> Get_list($DBHandle, $clause_call_billing);
+$result_calls =  $call_table -> get_list($DBHandle, $clause_call_billing);
 $receipt_items = array();
 
 // COMMON BEHAVIOUR FOR PREPAID AND POSTPAID ... GENERATE A RECEIPT FOR THE CALLS OF THE MONTH
@@ -99,7 +99,7 @@ if (is_array($result_calls)) {
 // GENERATE RECEIPT FOR CHARGE ALREADY CHARGED
 
 $table_charge = new Table("cc_charge", "*");
-$result =  $table_charge -> Get_list($DBHandle, $clause_charge." AND charged_status = 1");
+$result =  $table_charge -> get_list($DBHandle, $clause_charge . " AND charged_status = 1");
     if (is_array($result)) {
         foreach ($result as $charge) {
         $item = new ReceiptItem(null, gettext("CHARGE :").$charge['description'], $charge['creationdate'], $charge['amount'], 'CHARGE');
@@ -108,7 +108,7 @@ $result =  $table_charge -> Get_list($DBHandle, $clause_charge." AND charged_sta
     }
  // GENERATE RECEIPT FOR CHARGE NOT CHARGED YET
  $table_charge = new Table("cc_charge", "*");
- $result =  $table_charge -> Get_list($DBHandle, $clause_charge." AND charged_status = 0 AND invoiced_status = 0");
+ $result =  $table_charge -> get_list($DBHandle, $clause_charge . " AND charged_status = 0 AND invoiced_status = 0");
     if (is_array($result) && sizeof($result)>0) {
         foreach ($result as $charge) {
             $item = new InvoiceItem(null, gettext("CHARGE :").$charge['description'], $charge['creationdate'], $charge['amount'],$vat, 'CHARGE');

@@ -76,7 +76,7 @@ else $mycur = $currencies_list[strtoupper($customer_info [1])][2];
 $instance_config_table = new Table("cc_config", "id, config_value");
 $QUERY = " config_key = 'values_notifications' ";
 $return = null;
-$return = $instance_config_table -> Get_list($DBHandle, $QUERY, 0);
+$return = $instance_config_table -> get_list($DBHandle, $QUERY);
 $values = explode(":",$return[0]["config_value"]);
 $limits_notify = array();
 $idx =0;

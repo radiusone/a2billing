@@ -53,7 +53,7 @@ $DBHandle  = DbConnect();
 
 $log_table = new Table('cc_system_log','*');
 $log_clause = "id = ".$id;
-$log_result = $log_table -> Get_list($DBHandle, $log_clause, 0);
+$log_result = $log_table -> get_list($DBHandle, $log_clause);
 $log = $log_result[0];
 
 if (empty($log)) {

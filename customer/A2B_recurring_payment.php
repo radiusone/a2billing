@@ -97,7 +97,7 @@ fclose($fp);
 $DBHandle = DbConnect();
 $table_card = new Table("cc_card", "username,useralias,UNIX_TIMESTAMP(creationdate) creationdate,vat,firstname,lastname");
 $card_clause = "id = $id";
-$result = $table_card->Get_list($DBHandle, $card_clause);
+$result = $table_card->get_list($DBHandle, $card_clause);
 
 if (!is_array($result)) {
     write_log(LOGFILE_EPAYMENT, basename(__FILE__) . ' line:' . __LINE__ . "-PAYPAL Reccurring Payment Failed : card id( $id ) not found");
@@ -187,7 +187,7 @@ if (is_array($result_agent) && !is_null($result_agent[0]['id_agent']) && $result
     $id_agent = $result_agent[0]['id_agent'];
     $agent_table = new Table("cc_agent", "commission");
     $agent_clause = "id = " . $id_agent;
-    $result_agent = $agent_table->Get_list($DBHandle, $agent_clause);
+    $result_agent = $agent_table->get_list($DBHandle, $agent_clause);
 
     if (is_array($result_agent) && is_numeric($result_agent[0]['commission']) && $result_agent[0]['commission'] > 0) {
         $field_insert = "id_payment, id_card, amount,description,id_agent";

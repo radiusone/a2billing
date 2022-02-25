@@ -139,7 +139,7 @@ if ($called && $id_cc_card) {
 
 $instance_table_tariffname = new Table("cc_tariffplan", "id, tariffname");
 $FG_TABLE_CLAUSE = "";
-$list_tariffname = $instance_table_tariffname->Get_list($DBHandle, $FG_TABLE_CLAUSE, "tariffname", "ASC", null, null, null, null);
+$list_tariffname = $instance_table_tariffname->get_list($DBHandle, $FG_TABLE_CLAUSE, "tariffname");
 $nb_tariffname = count($list_tariffname);
 
 $smarty->display('main.tpl');

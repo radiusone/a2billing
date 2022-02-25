@@ -69,7 +69,7 @@ $value_list["2"] = array( gettext("no"), 0);
 $yesno = array();
 
 $instance_config_table = new Table("cc_config", "config_value, config_valuetype, id");
-$config_list = $instance_config_table -> Get_list ($handle, "", "id", "ASC");
+$config_list = $instance_config_table -> get_list ($handle, "", "id");
 
 foreach($config_list as $key => $cur_value) {
 	if($cur_value[1] != '1') {

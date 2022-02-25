@@ -69,7 +69,7 @@ if (!isset($currencies_list[strtoupper($agent_info [1])][2]) || !is_numeric($cur
 $credit_cur = $agent_info[0] / $mycur;
 $credit_cur = round($credit_cur,3);
 
-$result_remittance = $table_remittance -> Get_list($DBHandle_max,$remittance_clause);
+$result_remittance = $table_remittance -> get_list($DBHandle_max, $remittance_clause);
 if (is_array($result_remittance) && sizeof($result_remittance)>=1 ) {
     $remittance_in_progress=true;
     $remittance_value = $result_remittance[0]['amount'];

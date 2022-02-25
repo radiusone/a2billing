@@ -167,7 +167,7 @@ $smarty->display('main.tpl');
 
                                     $instance_sub_table = new Table($FG_TABLE_COL[$i][7], $FG_TABLE_COL[$i][8]);
                                     $sub_clause = str_replace("%id", $recordset[$i], $FG_TABLE_COL[$i][9]);
-                                    $select_list = $instance_sub_table -> Get_list ($DBHandle, $sub_clause, null, null, null, null, null, null);
+                                    $select_list = $instance_sub_table -> get_list ($DBHandle, $sub_clause);
 
                                     $field_list_sun = preg_split('/,/',$FG_TABLE_COL[$i][8]);
                                     $record_display = $FG_TABLE_COL[$i][10];

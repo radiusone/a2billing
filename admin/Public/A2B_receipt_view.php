@@ -57,7 +57,7 @@ $items = $receipt->loadItems();
 $DBHandle  = DbConnect();
 $card_table = new Table('cc_card','*');
 $card_clause = "id = ".$receipt->getCard();
-$card_result = $card_table -> Get_list($DBHandle, $card_clause, 0);
+$card_result = $card_table -> get_list($DBHandle, $card_clause);
 $card = $card_result[0];
 
 if (empty($card)) {
@@ -68,47 +68,47 @@ $smarty->display('main.tpl');
 //Load invoice conf
 $invoice_conf_table = new Table('cc_invoice_conf','value');
 $conf_clause = "key_val = 'company_name'";
-$result = $invoice_conf_table -> Get_list($DBHandle, $conf_clause, 0);
+$result = $invoice_conf_table -> get_list($DBHandle, $conf_clause);
 $company_name = $result[0][0];
 
 $conf_clause = "key_val = 'address'";
-$result = $invoice_conf_table -> Get_list($DBHandle, $conf_clause, 0);
+$result = $invoice_conf_table -> get_list($DBHandle, $conf_clause);
 $address = $result[0][0];
 
 $conf_clause = "key_val = 'zipcode'";
-$result = $invoice_conf_table -> Get_list($DBHandle, $conf_clause, 0);
+$result = $invoice_conf_table -> get_list($DBHandle, $conf_clause);
 $zipcode = $result[0][0];
 
 $conf_clause = "key_val = 'city'";
-$result = $invoice_conf_table -> Get_list($DBHandle, $conf_clause, 0);
+$result = $invoice_conf_table -> get_list($DBHandle, $conf_clause);
 $city = $result[0][0];
 
 $conf_clause = "key_val = 'country'";
-$result = $invoice_conf_table -> Get_list($DBHandle, $conf_clause, 0);
+$result = $invoice_conf_table -> get_list($DBHandle, $conf_clause);
 $country = $result[0][0];
 
 $conf_clause = "key_val = 'web'";
-$result = $invoice_conf_table -> Get_list($DBHandle, $conf_clause, 0);
+$result = $invoice_conf_table -> get_list($DBHandle, $conf_clause);
 $web = $result[0][0];
 
 $conf_clause = "key_val = 'phone'";
-$result = $invoice_conf_table -> Get_list($DBHandle, $conf_clause, 0);
+$result = $invoice_conf_table -> get_list($DBHandle, $conf_clause);
 $phone = $result[0][0];
 
 $conf_clause = "key_val = 'fax'";
-$result = $invoice_conf_table -> Get_list($DBHandle, $conf_clause, 0);
+$result = $invoice_conf_table -> get_list($DBHandle, $conf_clause);
 $fax = $result[0][0];
 
 $conf_clause = "key_val = 'email'";
-$result = $invoice_conf_table -> Get_list($DBHandle, $conf_clause, 0);
+$result = $invoice_conf_table -> get_list($DBHandle, $conf_clause);
 $email = $result[0][0];
 
 $conf_clause = "key_val = 'vat'";
-$result = $invoice_conf_table -> Get_list($DBHandle, $conf_clause, 0);
+$result = $invoice_conf_table -> get_list($DBHandle, $conf_clause);
 $vat_invoice = $result[0][0];
 
 $conf_clause = "key_val = 'display_account'";
-$result = $invoice_conf_table -> Get_list($DBHandle, $conf_clause, 0);
+$result = $invoice_conf_table -> get_list($DBHandle, $conf_clause);
 $display_account = $result[0][0];
 
 //Currencies check

@@ -67,7 +67,7 @@ $QUERY = " id = %u";
 $QUERY = sprintf($QUERY, $paymentMethodID);
 
 $DBHandle = DbConnect();
-$return = $instance_sub_table->Get_list($DBHandle, $QUERY, 0);
+$return = $instance_sub_table->get_list($DBHandle, $QUERY);
 $paymentMethod = substr($return[0][0], 0, strrpos($return[0][0], '.'));
 
 $instance_sub_table = new Table("cc_configuration", "payment_filename");
@@ -103,7 +103,7 @@ $instance_sub_table = new Table("cc_configuration", "configuration_title, config
 
 for ($j = 0, $k = sizeof($module_keys); $j < $k; $j++) {
     $QUERY_CLAUSE = " configuration_key = '" . $module_keys[$j] . "'";
-    $key_value = $instance_sub_table->Get_list($DBHandle, $QUERY_CLAUSE, 0);
+    $key_value = $instance_sub_table->get_list($DBHandle, $QUERY_CLAUSE);
     $keys_extra[$module_keys[$j]]['title'] = $key_value[0]['configuration_title'];
     $keys_extra[$module_keys[$j]]['value'] = $key_value[0]['configuration_value'];
     $keys_extra[$module_keys[$j]]['description'] = $key_value[0]['configuration_description'];

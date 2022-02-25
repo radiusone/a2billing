@@ -107,7 +107,7 @@ if (isset($entercustomer)  &&  ($entercustomer>0)) {
 }
 
 if (!$nodisplay) {
-    $list = $instance_table -> Get_list ($DBHandle, $FG_TABLE_CLAUSE, $order, $sens, null, null, $FG_LIMITE_DISPLAY, $current_page*$FG_LIMITE_DISPLAY);
+    $list = $instance_table -> get_list ($DBHandle, $FG_TABLE_CLAUSE, $order, $sens, $FG_LIMITE_DISPLAY, $current_page * $FG_LIMITE_DISPLAY);
     $nb_record = $instance_table -> Table_count ($DBHandle, $FG_TABLE_CLAUSE);
 }
 

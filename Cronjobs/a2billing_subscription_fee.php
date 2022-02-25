@@ -226,7 +226,7 @@ for ($page = 0; $page < $nbpagemax; $page++) {
                 //select card
                 $table_card = new Table('cc_card','*');
                 $card_clause = "id = ".$subscription['card_id'];
-                $result_card = $table_card -> Get_list($A2B->DBHandle, $card_clause);
+                $result_card = $table_card -> get_list($A2B->DBHandle, $card_clause);
 
                 if (!is_array($result_card))
                     break;

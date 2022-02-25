@@ -1301,7 +1301,7 @@ class FormHandler
                     echo "CV_CURRENT_PAGE = " . $this->CV_CURRENT_PAGE . "<br>";
                 }
 
-                $list = $instance_table->Get_list($this->DBHandle, $this->FG_TABLE_CLAUSE, $this->FG_ORDER, $this->FG_SENS, null, null,
+                $list = $instance_table->get_list($this->DBHandle, $this->FG_TABLE_CLAUSE, $this->FG_ORDER, $this->FG_SENS,
                     $this->FG_LIMITE_DISPLAY, $this->CV_CURRENT_PAGE * $this->FG_LIMITE_DISPLAY, $this->SQL_GROUP);
                 if ($this->FG_DEBUG == 3) {
                     echo "<br>Clause : " . $this->FG_TABLE_CLAUSE;
@@ -1333,7 +1333,7 @@ class FormHandler
             } else {
 
                 $instance_table = new Table($this->FG_TABLE_NAME, $this->FG_QUERY_EDITION);
-                $list = $instance_table->Get_list($this->DBHandle, $this->FG_EDITION_CLAUSE, null, null, null, null, 1, 0);
+                $list = $instance_table->get_list($this->DBHandle, $this->FG_EDITION_CLAUSE, null, null, 1);
 
                 //PATCH TO CLEAN THE IMPORT OF PASSWORD FROM THE DATABASE
                 if (substr_count($this->FG_QUERY_EDITION, "pwd_encoded") > 0) {
@@ -2046,7 +2046,7 @@ class FormHandler
             // 	If is a sql_type
             if ($select[1]) {
                 $instance_table = new Table($select[1][0], $select[1][1]);
-                $list = $instance_table->Get_list($this->DBHandle, $select[1][2], $select[1][3], $select[1][4]);
+                $list = $instance_table->get_list($this->DBHandle, $select[1][2], $select[1][3], $select[1][4]);
                 $this->FG_FILTER_SEARCH_FORM_SELECT[$cur][1] = $list;
             } else {
                 $this->FG_FILTER_SEARCH_FORM_SELECT[$cur][1] = $select[3];

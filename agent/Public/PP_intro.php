@@ -47,7 +47,7 @@ $smarty->display('main.tpl');
 $DBHandle = DbConnect();
 $table_message = new Table("cc_message_agent", "*");
 $clause_message = "id_agent = ".$_SESSION['agent_id'];
-$messages = $table_message -> Get_list($DBHandle, $clause_message, 'order_display', 'ASC');
+$messages = $table_message -> get_list($DBHandle, $clause_message, 'order_display');
 $message_types = getMsgTypeList();
 ?>
 <br/><br/>

@@ -326,7 +326,7 @@ if (empty($item_type)) {
     //Check amount
     $table_invoice_item = new Table("cc_invoice_item","COALESCE(SUM(price*(1+(vat/100))),0)");
     $clause_invoice_item = "id_invoice = ".$item_id;
-    $result= $table_invoice_item -> Get_list($DBHandle,$clause_invoice_item);
+    $result= $table_invoice_item -> get_list($DBHandle, $clause_invoice_item);
     $inv_amount = ceil($result[0][0] * 100) / 100;
     $inv_vat_amount= $inv_amount * $VAT / 100;
     $inv_total_amount = $inv_amount + ($inv_amount * $VAT / 100);
@@ -350,7 +350,7 @@ if ($customer_info[0] > 0 && $orderStatus == 2) {
     /* CHECK IF THE CARDNUMBER IS ON THE DATABASE */
     $instance_table_card = new Table("cc_card", "username, id");
     $FG_TABLE_CLAUSE_card = " username='".$customer_info[0]."'";
-    $list_tariff_card = $instance_table_card -> Get_list ($DBHandle, $FG_TABLE_CLAUSE_card, null, null, null, null, null, null);
+    $list_tariff_card = $instance_table_card -> get_list ($DBHandle, $FG_TABLE_CLAUSE_card);
     if ($customer_info[0] == $list_tariff_card[0][0]) {
         $id = $list_tariff_card[0][1];
     }
@@ -426,7 +426,7 @@ if ($id > 0) {
             //test if the agent exist and get its commission
             $agent_table = new Table("cc_agent", "commission");
             $agent_clause = "id = ".$id_agent;
-            $result_agent= $agent_table -> Get_list($DBHandle,$agent_clause);
+            $result_agent= $agent_table -> get_list($DBHandle, $agent_clause);
             if (is_array($result_agent) && is_numeric($result_agent[0]['commission']) && $result_agent[0]['commission']>0) {
 
                 $field_insert = "id_payment, id_card, amount,description,id_agent,commission_percent,commission_type";
@@ -457,7 +457,7 @@ if ($id > 0) {
         if ($item_id > 0) {
             $invoice_table = new Table('cc_invoice','reference');
             $invoice_clause = "id = ".$item_id;
-            $result_invoice = $invoice_table->Get_list($DBHandle,$invoice_clause);
+            $result_invoice = $invoice_table->get_list($DBHandle, $invoice_clause);
 
             if (is_array($result_invoice) && sizeof($result_invoice)==1) {
                 $reference =$result_invoice[0][0];
@@ -484,7 +484,7 @@ if ($id > 0) {
                         write_log(LOGFILE_EPAYMENT, basename(__FILE__).' line:'.__LINE__."- Type SUBSCR");
                         $table_subsc = new Table('cc_card_subscription','paid_status');
                         $subscr_clause = "id = ".$item -> getExtId();
-                        $result_subscr = $table_subsc -> Get_list($DBHandle,$subscr_clause);
+                        $result_subscr = $table_subsc -> get_list($DBHandle, $subscr_clause);
                         if (is_array($result_subscr)) {
                             $subscription = $result_subscr[0];
                             write_log(LOGFILE_EPAYMENT, basename(__FILE__).' line:'.__LINE__."- cc_card_subscription paid_status : ".$subscription['paid_status']);

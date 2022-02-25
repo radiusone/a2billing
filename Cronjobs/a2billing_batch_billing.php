@@ -164,7 +164,7 @@ for ($page = 0; $page < $nbpagemax; $page++) {
             // FIND THE LAST BILLING
             $billing_table = new Table('cc_billing_customer', 'id, date, id_invoice');
             $clause_last_billing = "id_card = " . $card_id;
-            $result = $billing_table->Get_list($A2B->DBHandle, $clause_last_billing, "date", "desc");
+            $result = $billing_table->get_list($A2B->DBHandle, $clause_last_billing, "date", "desc");
 
             $call_table = new Table('cc_call', ' COALESCE(SUM(sessionbill),0)');
             $clause_call_billing = "card_id = " . $card_id . " AND ";
@@ -194,7 +194,7 @@ for ($page = 0; $page < $nbpagemax; $page++) {
             $query_table .= "LEFT JOIN (SELECT st1.id_invoice, TRUNCATE(SUM(st1.price),2) as total_price FROM cc_invoice_item AS st1 WHERE st1.type_ext ='POSTPAID' GROUP BY st1.id_invoice ) as items ON items.id_invoice = cc_invoice.id";
             $invoice_table = new Table($query_table,'SUM( items.total_price) as total');
             $lastinvoice_clause = "cc_billing_customer.id_card = $card_id AND cc_invoice.paid_status=0";
-            $result_lastinvoice = $invoice_table ->Get_list($A2B->DBHandle, $lastinvoice_clause);
+            $result_lastinvoice = $invoice_table ->get_list($A2B->DBHandle, $lastinvoice_clause);
             if (is_array($result_lastinvoice) && !empty($result_lastinvoice[0][0])) {
                 $lastpostpaid_amount = $result_lastinvoice [0][0];
             }
@@ -213,7 +213,7 @@ for ($page = 0; $page < $nbpagemax; $page++) {
 
             $clause_call_billing .= "stoptime < '" . $date_now . "' ";
             $clause_charge .= "creationdate < '" . $date_now . "' ";
-            $result = $call_table->Get_list($A2B->DBHandle, $clause_call_billing);
+            $result = $call_table->get_list($A2B->DBHandle, $clause_call_billing);
 
             // COMMON BEHAVIOUR FOR PREPAID AND POSTPAID -> GENERATE A RECEIPT FOR THE CALLS OF THE LAST PERIOD
             if (is_array($result) && is_numeric($result[0][0])) {
@@ -242,7 +242,7 @@ for ($page = 0; $page < $nbpagemax; $page++) {
 
             // GENERATE RECEIPT FOR CHARGE ALREADY PAID
             $table_charge = new Table("cc_charge", "*");
-            $result = $table_charge->Get_list($A2B->DBHandle, $clause_charge . " AND charged_status = 1");
+            $result = $table_charge->get_list($A2B->DBHandle, $clause_charge . " AND charged_status = 1");
             if (is_array($result)) {
                 $field_insert = " id_card, title, description, status";
                 $title = gettext("SUMMARY OF CHARGE");
@@ -270,7 +270,7 @@ for ($page = 0; $page < $nbpagemax; $page++) {
             $total_vat =0;
             // GENERATE INVOICE FOR CHARGE NOT YET CHARGED
             $table_charge = new Table("cc_charge", "*");
-            $result = $table_charge->Get_list($A2B->DBHandle, $clause_charge . " AND charged_status = 0 AND invoiced_status = 0");
+            $result = $table_charge->get_list($A2B->DBHandle, $clause_charge . " AND charged_status = 0 AND invoiced_status = 0");
             $last_invoice = null;
             if (is_array($result) && sizeof($result) > 0) {
                 $reference = generate_invoice_reference();

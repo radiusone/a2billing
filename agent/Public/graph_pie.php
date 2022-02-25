@@ -160,7 +160,7 @@ for ($i = 0; $i < $months_compare +1; $i++) {
     }
 
     $FG_TABLE_CLAUSE = $SQLcmd . $date_clause;
-    $list_total = $instance_table_graph->Get_list($DBHandle, $FG_TABLE_CLAUSE, null, null, null, null, null, null);
+    $list_total = $instance_table_graph->get_list($DBHandle, $FG_TABLE_CLAUSE);
     if ($graphtype == 1) {
         // Traffic
         $data[] = $list_total[0][0];

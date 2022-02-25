@@ -74,7 +74,7 @@ if (!empty($action)) {
              if (!empty($idc) && is_numeric($idc)) {
                 $DBHandle = DbConnect();
                 $instance_sub_table = new Table("cc_invoice_item", "*");
-                $result=$instance_sub_table -> Get_list($DBHandle, "id = $idc" );
+                $result=$instance_sub_table -> get_list($DBHandle, "id = $idc");
                 if (!is_array($result) || (sizeof($result)==0)) {
                      Header ("Location: A2B_invoice_edit.php?"."id=".$id);
                 } else {
@@ -118,7 +118,7 @@ if (!empty($action)) {
 
 $invoice = new invoice($id);
 $table_card = new Table("cc_card","vat");
-$result_vat = $table_card->Get_list(DbConnect(),"id=".$invoice->getCard());
+$result_vat = $table_card->get_list(DbConnect(), "id=" . $invoice->getCard());
 $card_vat =  $result_vat[0][0];
 $items = $invoice->loadItems();
 

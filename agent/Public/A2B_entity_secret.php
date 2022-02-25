@@ -59,7 +59,7 @@ if ($form_action=="ask-modif") {
 }
 
 $instance_table_agent_secret = new Table("cc_agent ", "secret");
-$list_agent_secret = $instance_table_agent_secret  -> Get_list ($DBHandle, "id=".$_SESSION['agent_id'], "id", "ASC", null, null, null, null);
+$list_agent_secret = $instance_table_agent_secret  -> get_list ($DBHandle, "id=" . $_SESSION['agent_id'], "id");
 $secret = $list_agent_secret[0][0];
 
 // #### HEADER SECTION

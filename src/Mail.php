@@ -149,7 +149,7 @@ class Mail
             } elseif (!is_null($id_card) && is_numeric($id_card)) {
                 $card_table = new Table("cc_card", "*, IF((typepaid=1) AND (creditlimit IS NOT NULL), credit + creditlimit, credit) AS real_credit");
                 $card_clause = " id = " . $id_card;
-                $result_card = $card_table->Get_list($DBHandle, $card_clause, 0);
+                $result_card = $card_table->get_list($DBHandle, $card_clause);
                 if (is_array($result_card) && sizeof($result_card) > 0)
                     $card = $result_card[0];
                 $language = $card['language'];
@@ -163,7 +163,7 @@ class Mail
                     }
                 }
             }
-            $result_tmpl = $tmpl_table->Get_list($DBHandle, $tmpl_clause, $order_field, $order);
+            $result_tmpl = $tmpl_table->get_list($DBHandle, $tmpl_clause, $order_field, $order);
             if (is_array($result_tmpl) && sizeof($result_tmpl) > 0) {
                 $mail_tmpl = $result_tmpl[0];
                 $this->message = $mail_tmpl['messagetext'];
@@ -185,7 +185,7 @@ class Mail
                 if (is_null($card)) {
                     $card_table = new Table("cc_card", "*, IF((typepaid=1) AND (creditlimit IS NOT NULL), credit + creditlimit, credit) AS real_credit");
                     $card_clause = " id = " . $id_card;
-                    $result_card = $card_table->Get_list($DBHandle, $card_clause, 0);
+                    $result_card = $card_table->get_list($DBHandle, $card_clause);
                     if (is_array($result_card) && sizeof($result_card) > 0)
                         $card = $result_card[0];
                 }

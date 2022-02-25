@@ -151,7 +151,7 @@ if (isset($enter_packageid)  &&  ($enter_packageid>0)) {
 $FG_TABLE_CLAUSE_GROUP = $FG_TABLE_CLAUSE." GROUP BY t1.id_cc_card, t1.id_cc_package_offer ";
 
 if (!$nodisplay) {
-    $list = $instance_table -> Get_list ($DBHandle, $FG_TABLE_CLAUSE_GROUP, null, null, null, null, $FG_LIMITE_DISPLAY, $current_page*$FG_LIMITE_DISPLAY);
+    $list = $instance_table -> get_list ($DBHandle, $FG_TABLE_CLAUSE_GROUP, null, null, $FG_LIMITE_DISPLAY, $current_page * $FG_LIMITE_DISPLAY);
 }
 $_SESSION["pr_sql_export"]="SELECT $FG_COL_QUERY FROM $FG_TABLE_NAME WHERE $FG_TABLE_CLAUSE_GROUP";
 
@@ -184,7 +184,7 @@ if ($nb_record<=$FG_LIMITE_DISPLAY) {
 
 $instance_table_tariff = new Table("cc_package_offer", "id, label");
 $FG_TABLE_CLAUSE = "";
-$list_package = $instance_table_tariff -> Get_list ($DBHandle, $FG_TABLE_CLAUSE, "label", "ASC", null, null, null, null);
+$list_package = $instance_table_tariff -> get_list ($DBHandle, $FG_TABLE_CLAUSE, "label");
 $nb_package = count($list_package);
 
 $smarty->display('main.tpl');
@@ -427,7 +427,7 @@ $smarty->display('main.tpl');
 
                                     $instance_sub_table = new Table($FG_TABLE_COL[$i][7], $FG_TABLE_COL[$i][8]);
                                     $sub_clause = str_replace("%id", $recordset[$i], $FG_TABLE_COL[$i][9]);
-                                    $select_list = $instance_sub_table -> Get_list ($DBHandle, $sub_clause, null, null, null, null, null, null);
+                                    $select_list = $instance_sub_table -> get_list ($DBHandle, $sub_clause);
 
                                     $field_list_sun = preg_split('/,/',$FG_TABLE_COL[$i][8]);
                                     $record_display = $FG_TABLE_COL[$i][10];

@@ -69,7 +69,7 @@ if (isset ($choose_did_rate) && strlen($choose_did_rate) != 0) {
     // LIST FREE DID TO ADD PHONENUMBER
     $instance_table_did = new Table("cc_did", "DISTINCT cc_did.id, did, fixrate, connection_charge, selling_rate, aleg_retail_connect_charge, aleg_retail_cost_min");
     $FG_TABLE_CLAUSE = "id_cc_country=$choose_country and id_cc_didgroup='" . $_SESSION["id_didgroup"] . "' AND reserved=0 AND cc_did.id='" . $choose_did . "'";
-    $list_did = $instance_table_did->Get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "did", "ASC", null, null, null, null);
+    $list_did = $instance_table_did->get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "did");
     if ($list_did){
         $choose_did = $list_did[0][0];
         $rate = $list_did[0][2];
@@ -244,7 +244,7 @@ if (!isset ($action_release) || $action_release == "confirm_release" || $action_
 
     $instance_table = new Table($HD_Form->FG_TABLE_NAME, $HD_Form->FG_COL_QUERY);
     $instance_table_phonenumberdid = new Table($HD_Form->FG_TABLE_NAME, $HD_Form->FG_COL_QUERY);
-    $list_phonenumberdid = $instance_table_phonenumberdid->Get_list($HD_Form->DBHandle, $HD_Form->FG_TABLE_CLAUSE, $order, $sens, null, null, $limite, $current_record);
+    $list_phonenumberdid = $instance_table_phonenumberdid->get_list($HD_Form->DBHandle, $HD_Form->FG_TABLE_CLAUSE, $order, $sens, $limite, $current_record);
     $nb_record = count($list_phonenumberdid);
 
     $nb_record = $instance_table->Table_count($HD_Form->DBHandle, $HD_Form->FG_TABLE_CLAUSE);
@@ -261,7 +261,7 @@ if (!isset ($action_release) || $action_release == "confirm_release" || $action_
 
     $instance_table_country = new Table("cc_country, cc_did", "cc_country.id, countryname");
     $FG_TABLE_CLAUSE = "id_cc_country=cc_country.id and cc_did.reserved=0 group by cc_country.id, countryname ";
-    $list_country = $instance_table_country->Get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "countryname", "ASC", null, null, null, null);
+    $list_country = $instance_table_country->get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "countryname");
     $nb_country = count($list_country);
 
     if (!isset ($new_did_page) || ($new_did_page == "")) {
@@ -275,14 +275,14 @@ if (!isset ($action_release) || $action_release == "confirm_release" || $action_
         // LIST FREE DID TO ADD PHONENUMBER
         $instance_table_did = new Table("cc_did", "DISTINCT cc_did.id, did, fixrate, connection_charge, selling_rate, aleg_retail_connect_charge, aleg_retail_cost_min");
         $FG_TABLE_CLAUSE = "id_cc_country=$choose_country and id_cc_didgroup='" . $_SESSION["id_didgroup"] . "' and reserved=0";
-        $list_did = $instance_table_did->Get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "did", "ASC", null, null, null, null);
+        $list_did = $instance_table_did->get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "did");
         $nb_did = count($list_did);
     } elseif ($assign >= 2) {
         // LIST USED DID TO ADD PHONENUMBER
         $instance_table_did = new Table("cc_did LEFT JOIN cc_did_use ON id_did=cc_did.id", "cc_did.id, did, fixrate");
         $FG_TABLE_CLAUSE = "id_cc_didgroup='" . $_SESSION["id_didgroup"] . "' and id_cc_card='" . $_SESSION["card_id"] . "' and cc_did_use.activated=1 AND ( releasedate IS NULL OR releasedate < '1984-01-01 00:00:00')  GROUP BY cc_did.id, did, fixrate ";
         //$instance_table_did -> debug_st = 1;
-        $list_did = $instance_table_did->Get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "did", "ASC", null, null, null, null);
+        $list_did = $instance_table_did->get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "did");
         $nb_did = count($list_did);
     }
 ?>

@@ -67,7 +67,7 @@ class NotificationsDAO
       {
           $DBHandle = DbConnect();
         $table = new Table("cc_notification", "count(*)");
-        $return = $table->Get_list($DBHandle, "", "", "");
+        $return = $table->get_list($DBHandle);
 
           return $return[0][0];
       }
@@ -77,7 +77,7 @@ class NotificationsDAO
         $DBHandle = DbConnect();
         $table = new Table("cc_notification LEFT JOIN cc_notification_admin ON id = id_notification", "*");
         $clause = "id_admin = $id";
-        $return = $table->Get_list($DBHandle, $clause, "date", "DESC");
+        $return = $table->get_list($DBHandle, $clause, "date", "DESC");
         $list = array();
         $i=0;
         foreach ($return as $record) {
@@ -96,7 +96,7 @@ class NotificationsDAO
           $DBHandle = DbConnect();
         $table = new Table("cc_notification LEFT JOIN cc_notification_admin ON id = id_notification AND id_admin =$id", "count(*)");
         $clause = "viewed != 1 OR viewed IS NULL";
-        $return = $table->Get_list($DBHandle,$clause, "", "");
+        $return = $table->get_list($DBHandle, $clause);
         if($return[0][0]==0)return false;
         else return true;
       }
@@ -105,7 +105,7 @@ class NotificationsDAO
     {
           $DBHandle = DbConnect();
         $table = new Table("cc_notification LEFT JOIN cc_notification_admin ON id = id_notification AND id_admin =$id", "*");
-        $return = $table->Get_list($DBHandle, "", "date", "DESC",null,null,$nb,$current);
+        $return = $table->get_list($DBHandle, "", "date", "DESC", $nb, $current);
         $i=0;
         foreach ($return as $record) {
             if($record['viewed']!=0 && !is_null($record['viewed']))$new = false;

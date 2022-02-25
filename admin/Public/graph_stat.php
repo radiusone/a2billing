@@ -179,7 +179,7 @@ if (strpos($SQLcmd, 'WHERE') > 0) {
     $FG_TABLE_CLAUSE = substr($date_clause, 5);
 }
 
-$list_total = $instance_table_graph->Get_list($DBHandle, $FG_TABLE_CLAUSE, 't1.starttime', 'ASC', null, null, null, null);
+$list_total = $instance_table_graph->get_list($DBHandle, $FG_TABLE_CLAUSE, 't1.starttime');
 
 /**************************************/
 

@@ -57,7 +57,7 @@ if ($called  && ($id_cc_card > 0 || $username > 0)) {
         $instance_table_cardnum = new Table("cc_card", "username, id");
         /* CHECK IF THE CARDNUMBER IS ON THE DATABASE */
         $FG_TABLE_CLAUSE_card = "username='".$username."'";
-        $list_tariff_card = $instance_table_cardnum -> Get_list ($A2B -> DBHandle, $FG_TABLE_CLAUSE_card, null, null, null, null, null, null);
+        $list_tariff_card = $instance_table_cardnum -> get_list ($A2B->DBHandle, $FG_TABLE_CLAUSE_card);
         if ($username == $list_tariff_card[0][0]) $id_cc_card = $list_tariff_card[0][1];
     }
 
@@ -272,7 +272,7 @@ $FG_TABLE_ALTERNATE_ROW_COLOR[1]='#EEE9E9';
             <?php for ($i=0;$i<count($arr_ratecard);$i++) {
                 if ($arr_ratecard[$i]=='destination') {
                     $instance_table_cardnum = new Table("cc_prefix", "destination");
-                    $list_prefix = $instance_table_cardnum -> Get_list ($A2B -> DBHandle, "prefix=".$RateEngine->ratecard_obj[$j][$arr_ratecard_i[$i]], null, null, null, null, null, null);
+                    $list_prefix = $instance_table_cardnum -> get_list ($A2B->DBHandle, "prefix=" . $RateEngine->ratecard_obj[$j][$arr_ratecard_i[$i]]);
                     if (is_array($list_prefix)) {
             ?>
             <tr>

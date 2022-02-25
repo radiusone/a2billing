@@ -20,7 +20,7 @@ class invoice
         $instance_sub_table = new Table("cc_invoice", "*");
         $QUERY = " id = " . $id;
         $return = null;
-        $return = $instance_sub_table->Get_list($DBHandle, $QUERY, 0);
+        $return = $instance_sub_table->get_list($DBHandle, $QUERY);
 
         $value = $return[0];
         if (!is_null($value)) {
@@ -38,7 +38,7 @@ class invoice
             $instance_sub_table = new Table("cc_card", "lastname, firstname,username");
             $QUERY = " id = " . $this->card;
             $return = null;
-            $return = $instance_sub_table->Get_list($DBHandle, $QUERY, 0);
+            $return = $instance_sub_table->get_list($DBHandle, $QUERY);
             $value = $return[0];
 
             if (!is_null($value)) {
@@ -107,7 +107,7 @@ class invoice
             $instance_sub_table = new Table("cc_invoice_item", "*");
             $QUERY = " id_invoice = " . $this->id;
             $return = null;
-            $return = $instance_sub_table->Get_list($DBHandle, $QUERY, "date", "ASC");
+            $return = $instance_sub_table->get_list($DBHandle, $QUERY, "date");
             $i = 0;
             foreach ($return as $value) {
                 $comment = new InvoiceItem($value['id'], $value['description'], $value['date'], $value["price"], $value["VAT"],$value["type_ext"],$value["id_ext"]);
@@ -129,21 +129,21 @@ class invoice
             $instance_sub_table = new Table("cc_invoice_item", "*");
             $QUERY = " id_invoice = " . $this->id;
             $return = null;
-            $return = $instance_sub_table->Get_list($DBHandle, $QUERY, "date", "ASC");
+            $return = $instance_sub_table->get_list($DBHandle, $QUERY, "date");
             $i = 0;
             foreach ($return as $value) {
                 if ($value['id_ext'] && $value['type_ext'] == "CALLS") {
 
                     $billing_table = new Table("cc_billing_customer", "date,start_date");
                     $billing_clause = "id = " . $value['id_ext'];
-                    $result_billing = $billing_table->Get_list($DBHandle, $billing_clause);
+                    $result_billing = $billing_table->get_list($DBHandle, $billing_clause);
                     if (is_array($result_billing) && !empty ($result_billing[0]['date'])) {
                         $call_table = new Table("cc_call", "*");
                         $call_clause = " card_id = " . $this->card . " AND stoptime< '" . $result_billing[0]['date'] . "'";
                         if (!empty ($result_billing[0]['start_date'])) {
                             $call_clause .= " AND stoptime >= '" . $result_billing[0]['start_date'] . "'";
                         }
-                        $return_calls = $call_table->Get_list($DBHandle, $call_clause);
+                        $return_calls = $call_table->get_list($DBHandle, $call_clause);
                         foreach ($return_calls as $call) {
                             $min = floor($call['sessiontime'] / 60);
                             $sec = $call['sessiontime'] % 60;
@@ -171,7 +171,7 @@ class invoice
             $instance_sub_table = new Table("cc_invoice_payment,cc_logpayment", "*");
             $CLAUSE = " id_invoice = " . $this->id . " AND id_payment = cc_logpayment.id";
             $result = null;
-            $result = $instance_sub_table->Get_list($DBHandle, $CLAUSE, "date", "ASC");
+            $result = $instance_sub_table->get_list($DBHandle, $CLAUSE, "date");
             return $result;
         } else {
             return null;

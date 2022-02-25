@@ -15,7 +15,7 @@ class currencies
       $this->currencies = array();
       $currenciesTable= new Table("cc_currencies"," * ");
       $DBHandle = DBConnect();
-      $return = $currenciesTable -> Get_list($DBHandle,"",0);
+      $return = $currenciesTable -> get_list($DBHandle);
       $this->currencies = array();
       foreach ($return as $value) {
         $this->currencies[$value['currency']] = array('currency' => $value['currency'],

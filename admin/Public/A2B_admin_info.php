@@ -55,7 +55,7 @@ $DBHandle  = DbConnect();
 
 $admin_table = new Table('cc_ui_authen','*');
 $admin_clause = "userid = ".$id;
-$admin_result = $admin_table -> Get_list($DBHandle, $admin_clause, 0);
+$admin_result = $admin_table -> get_list($DBHandle, $admin_clause);
 $admin = $admin_result[0];
 
 if (empty($admin)) {

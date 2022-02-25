@@ -56,7 +56,7 @@ if ($form_action == "ask-modif") {
     $table_old_pwd = new Table("cc_ui_authen", " login");
     $OldPwd_encoded = hash('whirlpool', $OldPassword);
     $clause_old_pwd = "login = '" . $_SESSION["pr_login"] . "' AND pwd_encoded = '" . $OldPwd_encoded . "'";
-    $result_old_pwd = $table_old_pwd->Get_list($DBHandle, $clause_old_pwd, null, null, null, null, null, null);
+    $result_old_pwd = $table_old_pwd->get_list($DBHandle, $clause_old_pwd);
 
     if (!empty ($result_old_pwd)) {
         $instance_sub_table = new Table('cc_ui_authen');

@@ -209,22 +209,22 @@ echo $CC_help_generate_customer;
 
 $instance_table_tariff = new Table("cc_tariffgroup", "id, tariffgroupname");
 $FG_TABLE_CLAUSE = "";
-$list_tariff = $instance_table_tariff->Get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "tariffgroupname", "ASC", null, null, null, null);
+$list_tariff = $instance_table_tariff->get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "tariffgroupname");
 $nb_tariff = count($list_tariff);
 $instance_table_group = new Table("cc_card_group", " id, name ");
-$list_group = $instance_table_group->Get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "name", "ASC", null, null, null, null);
+$list_group = $instance_table_group->get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "name");
 
 $instance_table_agent = new Table("cc_agent", " id, login ");
-$list_agent = $instance_table_agent->Get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "login", "ASC", null, null, null, null);
+$list_agent = $instance_table_agent->get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "login");
 
 $instance_table_seria = new Table("cc_card_seria", " id, name ");
-$list_seria = $instance_table_seria->Get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "name", "ASC", null, null, null, null);
+$list_seria = $instance_table_seria->get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "name");
 
 $instance_table_didgroup = new Table("cc_didgroup", " id, didgroupname ");
-$list_didgroup = $instance_table_didgroup->Get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "didgroupname", "ASC", null, null, null, null);
+$list_didgroup = $instance_table_didgroup->get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "didgroupname");
 
 $instance_table_country = new Table("cc_country", " countrycode, countryname ");
-$list_country = $instance_table_country->Get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "countryname", "ASC", null, null, null, null);
+$list_country = $instance_table_country->get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "countryname");
 
 // FORM FOR THE GENERATION
 ?>

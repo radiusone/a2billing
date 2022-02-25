@@ -59,7 +59,7 @@ if (!empty($action)) {
             $DBHandle = DbConnect();
             $instance_table = new Table("cc_message_agent","COUNT(*)");
             $clause="id_agent = $id";
-            $result=$instance_table -> Get_list($DBHandle, $clause);
+            $result=$instance_table -> get_list($DBHandle, $clause);
             if (is_array($result) && sizeof($result)>0) {
                 $count = $result[0][0];
                 $fields="id_agent,type,message,order_display,logo";
@@ -79,7 +79,7 @@ if (!empty($action)) {
                 $DBHandle = DbConnect();
                 $clause = "id = $id_msg";
                 $instance_table = new Table("cc_message_agent","*");
-                $result=$instance_table -> Get_list($DBHandle, $clause);
+                $result=$instance_table -> get_list($DBHandle, $clause);
                 if (is_array($result) && sizeof($result)>0) {
                 $message = stripslashes($result[0]['message']);
                 $logo =$result[0]['message'];
@@ -110,7 +110,7 @@ if (!empty($action)) {
                 $DBHandle = DbConnect();
                 $instance_table = new Table("cc_message_agent","*");
                 $clause = "id = $id_msg";
-                $result=$instance_table -> Get_list($DBHandle, $clause);
+                $result=$instance_table -> get_list($DBHandle, $clause);
                 if (is_array($result) && sizeof($result)>0) {
                 $order = $result[0]['order_display'];
                 $instance_table -> Delete_table($DBHandle, $clause);
@@ -129,7 +129,7 @@ if (!empty($action)) {
                 $DBHandle = DbConnect();
                 $clause = "id = $id_msg";
                 $instance_table = new Table("cc_message_agent","*");
-                $result=$instance_table -> Get_list($DBHandle, $clause);
+                $result=$instance_table -> get_list($DBHandle, $clause);
                 if (is_array($result) && sizeof($result)>0) {
                 $order = $result[0]['order_display'];
                 $instance_table->Update_table($DBHandle, "order_display = order_display + 1", "id_agent = '".$id."' AND order_display =".($order-1));
@@ -148,7 +148,7 @@ if (!empty($action)) {
                 $DBHandle = DbConnect();
                 $clause = "id = $id_msg";
                 $instance_table = new Table("cc_message_agent","*");
-                $result=$instance_table -> Get_list($DBHandle, $clause);
+                $result=$instance_table -> get_list($DBHandle, $clause);
                 if (is_array($result) && sizeof($result)>0) {
                 $order = $result[0]['order_display'];
                 $instance_table->Update_table($DBHandle, "order_display = order_display - 1", "id_agent = '".$id."' AND order_display =".($order+1));
@@ -170,7 +170,7 @@ if(empty($action)) $action="add";
 
 $table_message = new Table("cc_message_agent", "*");
 $clause_message = "id_agent = $id";
-$messages = $table_message -> Get_list($DBHandle, $clause_message, 'order_display', 'ASC');
+$messages = $table_message -> get_list($DBHandle, $clause_message, 'order_display');
 $smarty->display('main.tpl');
 $message_types = getMsgTypeList();
 ?>

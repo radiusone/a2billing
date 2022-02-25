@@ -71,6 +71,7 @@ class Table
     public $FK_ID_VALUE           = 0;
 
     public $query_handler         = null;
+    public $db_type               = 'mysql';
 
     /* CONSTRUCTOR */
     public function __construct($table = null, $liste_fields = null, $fk_Tables = [], $fk_Fields = [], $id_Value = null, $fk_del_upd = true, $table_count = null)
@@ -80,6 +81,9 @@ class Table
         $this->table_count = $table_count;
         $this->fields = $liste_fields;
         $this->mytopg = new MytoPg(0); // debug level 0 logs only >30ms CPU hogs
+        if (DB_TYPE === "postgres") {
+            $this->db_type = "postgres";
+        }
 
         if ((count($fk_Tables) == count($fk_Fields)) && (count($fk_Fields) > 0)) {
             $this->FK_TABLES         = $fk_Tables;
@@ -90,6 +94,12 @@ class Table
 
         $this->query_handler = Query_trace::getInstance();
 
+    }
+
+    public function quote_identifier(string $identifier): string
+    {
+        $q = $this->db_type === "mysql" ? "`" : "\"";
+        return $q . str_replace($q, "", $identifier) . $q;
     }
 
     /* MODIFY PROPRIETY*/
@@ -117,9 +127,6 @@ class Table
         if ($A2B->config["database"]['dbtype'] == 'postgres') {
             // convert MySQLisms to be Postgres compatible
             $this->mytopg->My_to_Pg($QUERY);
-        } else {
-            // the MySQL schema takes care of case-insensitivity
-            $QUERY = preg_replace('/([[:space:]]+)I(LIKE[[:space:]]+)/i', '\1\2', $QUERY);
         }
 
         if ($this->debug_st) echo $this->start_message_debug . $QUERY . $this->end_message_debug;
@@ -182,45 +189,41 @@ class Table
         return true;
     }
 
-    public function Get_list($DBHandle, $clause = NULL, $order = NULL, $sens = NULL, $field_order_letter = NULL, $letters = NULL, $limite = NULL, $current_record = NULL, $sql_group= NULL, $cache = 0)
+    public function get_list($DBHandle, $clause = null, $order = "", $sens = "ASC", $limite = 0, $current_record = 0, $sql_group= "", $cache = 0)
     {
-        $sql = 'SELECT ' . $this->fields.' FROM ' . trim($this->table);
-        $sql_clause = '';
-        if ($clause != '') {
-            $sql_clause = ' WHERE ' . $clause;
+        $sql = "SELECT $this->fields FROM $this->table";
+
+        $sql_clause = "";
+        if (!empty($clause)) {
+            $sql_clause = " WHERE $clause";
         }
 
-        $sqlletters = "";
-        if (!is_null($letters) && (preg_match("/^[A-Za-z]+$/", $letters)) && !is_null($field_order_letter) && ($field_order_letter != '')) {
-            $sql_letters= ' (".$field_order_letter." LIKE \'' . strtolower($letters) . '%\') ';
-
-            if ($sql_clause != "") {
-                $sql_clause .= " AND ";
-            } else {
-                $sql_clause .= " WHERE ";
-            }
-        }
-
-        $sql_orderby = '';
-        if (!is_null($order) && ($order != '') && !is_null($sens) && ($sens != '') ) {
+        $sql_orderby = "";
+        $sens = strtoupper($sens ?? "ASC");
+        if (!empty($order) && ($sens === "ASC" || $sens === "DESC")) {
+            $order = $this->quote_identifier($order);
             $sql_orderby = " ORDER BY $order $sens";
         }
 
-        $sql_limit = '';
-        if (!is_null($limite) && (is_numeric($limite)) && !is_null($current_record) && (is_numeric($current_record))) {
-            if (DB_TYPE == "postgres") $sql_limit = " LIMIT $limite OFFSET $current_record";
-            else $sql_limit = " LIMIT $current_record, $limite";
+        $sql_limit = "";
+        if (is_numeric($limite) && $limite > 0 && is_numeric($current_record)) {
+            $sql_limit = " LIMIT $limite OFFSET $current_record";
+        }
+
+        if (!empty($sql_group)) {
+            $sql_group = $this->quote_identifier($sql_group);
+            $sql_group = " GROUP BY $sql_group";
         }
 
         $QUERY = $sql . $sql_clause . $sql_group;
 
-        if (strpos($QUERY, '%ORDER%') === false) {
+        if (str_contains($QUERY, '%ORDER%')) {
             $QUERY .= $sql_orderby;
         } else {
             $QUERY = str_replace("%ORDER%", $sql_orderby, $QUERY);
         }
 
-        if (strpos($QUERY, '%LIMIT%') === false) {
+        if (str_contains($QUERY, '%LIMIT%')) {
             $QUERY .= $sql_limit;
         } else {
             $QUERY = str_replace("%LIMIT%", $sql_limit, $QUERY);
@@ -241,25 +244,19 @@ class Table
         return($row);
     }
 
-    public function Table_count($DBHandle, $clause = null, $id_Value = null, $cache = 0)
+    public function Table_count($DBHandle, $clause = "", $compare = null, $cache = 0)
     {
         if (!is_null($this->table_count))
-            $sql = 'SELECT count(*) FROM ' . trim($this->table_count);
+            $sql = "SELECT count(*) FROM $this->table_count";
         else
-            $sql = 'SELECT count(*) FROM ' . trim($this->table);
+            $sql = "SELECT count(*) FROM $this->table";
 
         $sql_clause = '';
-        if ($clause != '') {
-            if ($id_Value == null || $id_Value == '') {
-                $sql_clause = ' WHERE ' . $clause;
-            } else {
-                $sql_clause = ' WHERE ' . $clause . " = " . $id_Value;
-            }
+        if (!empty($clause)) {
+            $sql_clause = empty($compare) ? " WHERE $clause" : " WHERE $clause = $compare";
         }
 
         $QUERY = $sql . $sql_clause;
-
-        if (preg_replace("/[ ]+group[ ]+by[ ]+/i", $sql_clause)) $QUERY = "SELECT count(*) FROM (" . $QUERY . ") as tmp";
 
         $res = $this->ExecuteQuery($DBHandle, $QUERY, $cache);
         if (!$res) return false;

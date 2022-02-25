@@ -339,7 +339,7 @@ class A2Billing
         $this->idconfig = $idconfig;
         $config_table = new Table("cc_config", "config_key as cfgkey, config_value as cfgvalue, config_group_title as cfggname, config_valuetype as cfgtype");
         $this->DbConnect();
-        $config_res = $config_table->Get_list($this->DBHandle, "");
+        $config_res = $config_table->get_list($this->DBHandle);
         if (!$config_res) {
             echo 'Error : cannot load conf : load_conf_db';
             return false;

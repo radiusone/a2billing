@@ -22,7 +22,7 @@ Class payment {
       $instance_sub_table = new Table("cc_payment_methods", "payment_filename");
       $DBHandle  = DbConnect();
       $return = null;
-      $return = $instance_sub_table -> Get_list($DBHandle, $QUERY, 0);
+      $return = $instance_sub_table -> get_list($DBHandle, $QUERY);
       $this ->modules = array();
 
       if (is_array($return)) {

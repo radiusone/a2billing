@@ -274,7 +274,7 @@ if (isset ($FG_TABLE_CLAUSE) && strlen($FG_TABLE_CLAUSE)>0) {
 $FG_TABLE_CLAUSE .= ' cc_card_group.id_agent = '.$_SESSION['agent_id'] ;
 
 if (! $nodisplay) {
-    $list = $instance_table->Get_list ( $DBHandle, $FG_TABLE_CLAUSE, $order, $sens, null, null, $FG_LIMITE_DISPLAY, $current_page * $FG_LIMITE_DISPLAY );
+    $list = $instance_table->get_list ($DBHandle, $FG_TABLE_CLAUSE, $order, $sens, $FG_LIMITE_DISPLAY, $current_page * $FG_LIMITE_DISPLAY);
 }
 
 // EXPORT
@@ -1007,7 +1007,7 @@ class=tableBody><?php echo $ligne_number + $current_page * $FG_LIMITE_DISPLAY . 
 
                     $instance_sub_table = new Table ( $FG_TABLE_COL [$i] [7], $FG_TABLE_COL [$i] [8] );
                     $sub_clause = str_replace ( "%id", $recordset [$i], $FG_TABLE_COL [$i] [9] );
-                    $select_list = $instance_sub_table->Get_list ( $DBHandle, $sub_clause, null, null, null, null, null, null );
+                    $select_list = $instance_sub_table->get_list ($DBHandle, $sub_clause);
 
                     $field_list_sun = preg_split( '/,/', $FG_TABLE_COL [$i] [8] );
                     $record_display = $FG_TABLE_COL [$i] [10];

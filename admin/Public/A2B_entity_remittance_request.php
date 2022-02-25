@@ -57,7 +57,7 @@ if ($action == "accept") {
         $clause_update_remittance = " id ='$id'";
         $instance_table_remittance->Update_table($DBHandle, $param_update_remittance, $clause_update_remittance, $func_table = null);
         // load
-        $result=$instance_table_remittance -> Get_list($DBHandle,$clause_update_remittance);
+        $result=$instance_table_remittance -> get_list($DBHandle, $clause_update_remittance);
         $type = $result[0]['type'];
         $agent_id = $result[0]['id_agent'];
         $credit = $result[0]['amount'];

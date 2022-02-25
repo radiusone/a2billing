@@ -50,7 +50,7 @@ if (isset ($id)) {
     if (!empty ($id) && $id > 0) {
         $table_agent_security = new Table("cc_card LEFT JOIN cc_card_group ON cc_card.id_group=cc_card_group.id ", " cc_card_group.id_agent");
         $clause_agent_security = "cc_card.id= " . $id;
-        $result_security = $table_agent_security->Get_list($DBHandle, $clause_agent_security, null, null, null, null, null, null);
+        $result_security = $table_agent_security->get_list($DBHandle, $clause_agent_security);
         if ($result_security[0][0] != $_SESSION['agent_id']) {
             Header("Location: A2B_entity_moneysituation.php?section=10");
             die();

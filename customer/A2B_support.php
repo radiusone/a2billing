@@ -68,7 +68,7 @@ if ((strlen($description) > 0 || strlen($title) > 0) && is_numeric($priority) &&
     NotificationsDAO::AddNotification("ticket_added_cust", Notification::$LOW, Notification::$CUST, $_SESSION['card_id'], Notification::$LINK_TICKET_CUST, $id_ticket);
     $table_card =new Table("cc_card", "firstname, lastname, language, email");
     $card_clause = "id = ".$_SESSION["card_id"];
-    $result=$table_card -> Get_list($HD_Form -> DBHandle, $card_clause);
+    $result=$table_card -> get_list($HD_Form->DBHandle, $card_clause);
     $owner = $_SESSION["pr_login"]." (".$result[0]['firstname']." ".$result[0]['lastname'].")";
 
     try {
@@ -85,7 +85,7 @@ if ((strlen($description) > 0 || strlen($title) > 0) && is_numeric($priority) &&
     }
     $component_table = new Table('cc_support_component LEFT JOIN cc_support ON id_support = cc_support.id', "email");
     $component_clause = "cc_support_component.id = ".$component;
-    $result= $component_table -> Get_list($HD_Form -> DBHandle, $component_clause);
+    $result= $component_table -> get_list($HD_Form->DBHandle, $component_clause);
 
     try {
         $mail = new Mail(Mail::$TYPE_TICKET_NEW, null, $result[0]['language']);
@@ -165,7 +165,7 @@ if ($form_action == "list") {
                     $instance_sub_table = new Table("cc_support_component", "*");
                  $QUERY = " activated = 1 AND (type_user = 0 OR type_user = 2)";
                  $return = null;
-                 $return = $instance_sub_table -> Get_list($DBHandle, $QUERY, 0);
+                 $return = $instance_sub_table -> get_list($DBHandle, $QUERY);
                      foreach ($return as $value) {
                         echo	'<option class=input value=" '. $value["id"].'"  > ' . $value["name"]. '  </option>' ;
                      }

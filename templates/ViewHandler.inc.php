@@ -190,7 +190,7 @@ function openURLFilter(link) {
             <?php foreach($this->FG_TABLE_COL as $j=>$row): ?>
             <?php
             if (str_starts_with($row[6], "lie")) {
-                $options = (new Table($row[7], $row[8]))->get_list($this->DBHandle, str_replace("%id", $item[$j - $k], $row[9]), null, null, null, null, null, null, null, 10);
+                $options = (new Table($row[7], $row[8]))->get_list($this->DBHandle, str_replace("%id", $item[$j - $k], $row[9]), null, null, null, null, null, 10);
                 $field_list_sun = explode(",", $row[8]);
                 $record_display = $row[10];
                 if ($row[6] === "lie") {

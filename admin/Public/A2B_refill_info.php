@@ -53,7 +53,7 @@ $DBHandle  = DbConnect();
 
 $refill_table = new Table('cc_logrefill','*');
 $refill_clause = "id = ".$id;
-$refill_result = $refill_table -> Get_list($DBHandle, $refill_clause, 0);
+$refill_result = $refill_table -> get_list($DBHandle, $refill_clause);
 $refill = $refill_result[0];
 
 if (empty($refill)) {

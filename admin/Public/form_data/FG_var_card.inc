@@ -989,7 +989,7 @@ if (has_rights (ACX_MODIFY_CUSTOMERS) && !($popup_select>=1)) {
 
     if ($form_action == "ask-edit") {
         $table_card = new Table("cc_card","status");
-        $result_card = $table_card ->Get_list(DbConnect(),"id=$id");
+        $result_card = $table_card ->get_list(DbConnect(), "id=$id");
         $HD_Form -> FG_EDITION_HIDDEN_PARAM = "oldstatus";
         $HD_Form -> FG_EDITION_HIDDEN_PARAM_VALUE = "".$result_card[0][0];
     }
@@ -1015,7 +1015,7 @@ if (has_rights (ACX_MODIFY_CUSTOMERS) && !($popup_select>=1)) {
     if (isset($form_action) && $form_action=='delete' && USE_REALTIME) {
         $card_table = new Table('cc_card','sip_buddy,iax_buddy');
         $card_clause = "id = ".$id;
-        $card_result = $card_table -> Get_list(DbConnect(), $card_clause, 0);
+        $card_result = $card_table -> get_list(DbConnect(), $card_clause);
         $sip_buddy = $card_result[0]['sip_buddy'];
         $iax_buddy = $card_result[0]['iax_buddy'];
         if(($sip_buddy == 1) && ($iax_buddy == 1))
