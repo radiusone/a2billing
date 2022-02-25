@@ -17,21 +17,20 @@ use A2billing\Table;
     }
 
     function sendto(action, record, field_inst, instance) {
-        document.myForm.form_action.value = action;
-        document.myForm.sub_action.value = record;
-        if (field_inst != null) {
-            document.myForm.elements[field_inst].value = instance;
+        $("form#editForm input[name=form_action]").value(action);
+        $("form#editForm input[name=sub_action]").value(record);
+        if (field_inst) {
+            $(`form#editForm [name=${field_inst}]`).value(instance);
         }
-        document.myForm.submit();
+        $("form#editForm").submit();
     }
 
     function sendtolittle(direction) {
-        document.myForm.action=direction;
-        document.myForm.submit();
+        $("form#editForm").attr("action", direction).submit();
     }
 </script>
 
-<form action="" method="post" name="myForm" id="myForm">
+<form action="" method="post" name="myForm" id="editForm">
     <input type="hidden" name="id" value="<?= $processed["id"] ?>"/>
     <input type="hidden" name="form_action" value="edit"/>
     <input type="hidden" name="sub_action" value=""/>
@@ -348,7 +347,7 @@ use A2billing\Table;
                         <li class="list-group-item"><?= gettext("No") ?> <?= $row["label"] ?></li>
                     <?php endif ?>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <div>
+                            <div class="flex-grow-1 me-3">
                                 <label for="<?= $table[1] ?>_ADD" class="form-label"><?= gettext("Add a new") ?> <?= $row["label"] ?></label>
                                 <?php if (($row["attributes"] == "multiline")): ?>
                                     <textarea id="<?= $table[1] ?>_ADD" name="<?= $col[0] ?>" class="form-control form-control-sm" cols="40" rows="5"></textarea>
