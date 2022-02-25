@@ -76,12 +76,14 @@ class Table
     /* CONSTRUCTOR */
     public function __construct($table = null, $liste_fields = null, $fk_Tables = [], $fk_Fields = [], $id_Value = null, $fk_del_upd = true, $table_count = null)
     {
+        global $A2B;
+
         $this->writelog = defined('WRITELOG_QUERY') ? WRITELOG_QUERY : false;
         $this->table = $table;
         $this->table_count = $table_count;
         $this->fields = $liste_fields;
         $this->mytopg = new MytoPg(0); // debug level 0 logs only >30ms CPU hogs
-        if (DB_TYPE === "postgres") {
+        if ($A2B->config["database"]['dbtype'] == 'postgres') {
             $this->db_type = "postgres";
         }
 
