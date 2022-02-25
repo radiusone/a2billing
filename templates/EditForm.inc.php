@@ -11,11 +11,6 @@ use A2billing\Table;
 
 <script src="javascript/calonlydays.js"></script>
 <script>
-
-    function MM_openBrWindow(theURL,winName,features) {
-        window.open(theURL,winName,features);
-    }
-
     function sendto(action, record, field_inst, instance) {
         $("form#editForm input[name=form_action]").value(action);
         $("form#editForm input[name=sub_action]").value(record);

@@ -161,7 +161,7 @@ var win= null;
 function addrate(selvalue)
 {
     //test si win est encore ouvert et close ou refresh
-    win=MM_openBrWindow('A2B_entity_def_ratecard.php?popup_select=1&package=<?php echo $id ?>','','scrollbars=yes,resizable=yes,width=700,height=500');
+    win=window.open('A2B_entity_def_ratecard.php?popup_select=1&package=<?php echo $id ?>','','scrollbars=yes,resizable=yes,width=700,height=500');
 }
 function delrate()
 {

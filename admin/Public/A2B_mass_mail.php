@@ -193,7 +193,7 @@ if (!isset($submit)) {
 var win= null;
 function loadtmpl() {
     //test if windows is still open and close on refresh
-    win=MM_openBrWindow('A2B_entity_mailtemplate.php?popup_select=1','','scrollbars=yes,resizable=yes,width=700,height=500');
+    win=window.open('A2B_entity_mailtemplate.php?popup_select=1','','scrollbars=yes,resizable=yes,width=700,height=500');
 }
 </script>
 <script language="JavaScript" src="javascript/card.js"></script>

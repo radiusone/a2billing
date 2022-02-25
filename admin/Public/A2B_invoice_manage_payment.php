@@ -94,7 +94,7 @@ foreach ($payments as $payment) {
 var win= null;
 function addpayment(selvalue) {
     //test si win est encore ouvert et close ou refresh
-    win=MM_openBrWindow('A2B_entity_payment_invoice.php?popup_select=1&invoice=<?php echo $id ?>&card=<?php echo $invoice->getCard() ?>','','scrollbars=yes,resizable=yes,width=700,height=500');
+    win=window.open('A2B_entity_payment_invoice.php?popup_select=1&invoice=<?php echo $id ?>&card=<?php echo $invoice->getCard() ?>','','scrollbars=yes,resizable=yes,width=700,height=500');
 }
 function delpayment() {
     //test si val is not null & numeric
@@ -116,7 +116,7 @@ function changeStatus() {
     </tr>
     <tr>
         <td colspan="2" align="right">
-            <a href="javascript:;" onClick="MM_openBrWindow('A2B_invoice_view.php?popup_select=1&id=<?php echo $id ?>','','scrollbars=yes,resizable=yes,width=700,height=500')" > <img src="../Public/templates/default/images/page_white_text.png" title="Print" alt="Print" border="0"></a>
+            <a href="javascript:;" onClick="window.open('A2B_invoice_view.php?popup_select=1&id=<?php echo $id ?>','','scrollbars=yes,resizable=yes,width=700,height=500')" > <img src="../Public/templates/default/images/page_white_text.png" title="Print" alt="Print" border="0"></a>
         </td>
     </tr>
     <tr>

@@ -146,7 +146,7 @@ function amount_convert($amount)
   <tr class="one">
     <td class="one">
      <h1><?php echo gettext("PREVIEW NEXT RECEIPT"); ?>
-     <a href="javascript:;" onClick="MM_openBrWindow('A2B_receipt_preview_detail.php?popup_select=1','','scrollbars=yes,resizable=yes,width=700,height=500')" > <img src="./templates/default/images/info.png" title="Details" alt="Details" border="0"></a>
+     <a href="javascript:;" onClick="window.open('A2B_receipt_preview_detail.php?popup_select=1','','scrollbars=yes,resizable=yes,width=700,height=500')" > <img src="./templates/default/images/info.png" title="Details" alt="Details" border="0"></a>
      </h1>
    </td>
   </tr>

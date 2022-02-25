@@ -130,10 +130,6 @@ $smarty->display( 'main.tpl');
 
 <script language="JavaScript" type="text/JavaScript">
 <!--
-function MM_openBrWindow(theURL,winName,features) {
-  window.open(theURL,winName,features);
-}
-
 function sendto(action, record, field_inst, instance)
 {
   document.myForm.form_action.value = action;
