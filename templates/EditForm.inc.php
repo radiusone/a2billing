@@ -351,9 +351,9 @@ use A2billing\Table;
                             <div>
                                 <label for="<?= $table[1] ?>_ADD" class="form-label"><?= gettext("Add a new") ?> <?= $row["label"] ?></label>
                                 <?php if (($row["attributes"] == "multiline")): ?>
-                                    <textarea id="<?= $table[1] ?>_ADD" name="<?= $col[1] ?>" class="form-control form-control-sm" cols="40" rows="5"></textarea>
+                                    <textarea id="<?= $table[1] ?>_ADD" name="<?= $col[0] ?>" class="form-control form-control-sm" cols="40" rows="5"></textarea>
                                 <?php else: ?>
-                                    <input id="<?= $table[1] ?>_ADD" name="<?= $col[1] ?>" class="form-control form-control-sm" size="20" maxlength="20"/>
+                                    <input id="<?= $table[1] ?>_ADD" name="<?= $col[0] ?>" class="form-control form-control-sm" size="20" maxlength="20"/>
                                 <?php endif ?>
                             </div>
                             <button class="btn btn-sm btn-primary" onclick="sendto('add-content', '<?= $i ?>')">
