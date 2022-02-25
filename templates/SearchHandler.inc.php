@@ -219,15 +219,15 @@ function create_date_options($target)
     </div>
 <?php endif ?>
 
-    <div class="row justify-content-end border-top pt-2">
+    <div class="row justify-content-end border-top pt-3 mt-3 bg-transparent">
         <div class="col text-end">
             <?php if (strlen($_SESSION[$this->FG_FILTER_SEARCH_SESSION_NAME] ?? "") > 10): ?>
                 <?php if ($this->FG_FILTER_SEARCH_DELETE_ALL): ?>
-                    <a class="btn btn-danger btn-sm" href="?deleteselected=true" onclick="return confirm('<?= "Are you sure to delete " . $this->FG_NB_RECORD . " selected records?" ?>')"><?= _("Delete") ?></a>
+                    <a class="btn btn-danger" href="?deleteselected=true" onclick="return confirm('<?= "Are you sure to delete " . $this->FG_NB_RECORD . " selected records?" ?>')"><?= _("Delete") ?></a>
                 <?php endif ?>
-            <a class="btn btn-secondary btn-sm" href="?cancelsearch=true"><?= _("Cancel") ?></a>
+            <a class="btn btn-secondary" href="?cancelsearch=true"><?= _("Cancel") ?></a>
             <?php endif ?>
-            <button type="submit" class="btn btn-primary btn-sm"><?= _("Search") ?></button>
+            <button type="submit" class="btn btn-primary"><?= _("Search") ?></button>
         </div>
     </div>
 
