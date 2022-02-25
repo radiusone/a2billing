@@ -410,10 +410,10 @@ if ($form_action === "list" && !$popup_select): ?>
                     <?php endif ?>
                     <div class="row">
                         <div class="col">
-                            <select name="tariffgroup" id="tariffgroup" class="form-select form-select-sm">
+                            <select name="tariffgroup" id="tariffgroup" aria-label="<?= _("Choose a call plan") ?>" class="form-select form-select-sm">
                                 <option value=""><?= _("Choose a call plan") ?></option>
                                 <?php foreach ($list_tariffgroup as $v): ?>
-                                <option value="<?= implode("-:-", $v) ?>" <?php if ($this->FG_TOP_FILTER_VALUE2 == $v[0]): ?>selected="selected" <?php endif?>>
+                                <option value="<?= implode("-:-", $v) ?>" <?php if ($HD_Form->FG_TOP_FILTER_VALUE2 ?? null == $v[0]): ?>selected="selected" <?php endif?>>
                                     <?= $v[1] ?>
                                 </option>
                                 <?php endforeach ?>
@@ -479,7 +479,7 @@ if ($popup_select): ?>
 
                     <div class="row mb-1">
                         <div class="col-4">
-                            <input id="check[assign_id_trunk]" type="checkbox" value="on" aria-label="check to enable assignates to this field" <?php if ($check["assign_id_trunk"] === "on"): ?> checked="checked"<?php endif ?> class="form-check-input"/>
+                            <input id="check[assign_id_trunk]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if ($check["assign_id_trunk"] === "on"): ?> checked="checked"<?php endif ?> class="form-check-input"/>
                             <label class="form-label form-label-sm" for="assign_id_trunk">
                                 <?= _("Trunk") ?>
                             </label>
@@ -496,7 +496,7 @@ if ($popup_select): ?>
 
                     <div class="row mb-1">
                         <div class="col-4">
-                            <input id="check[assign_idtariffplan]" type="checkbox" value="on" aria-label="check to enable assignates to this field" <?php if ($check["assign_idtariffplan"] === "on"): ?> checked="checked"<?php endif ?> class="form-check-input"/>
+                            <input id="check[assign_idtariffplan]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if ($check["assign_idtariffplan"] === "on"): ?> checked="checked"<?php endif ?> class="form-check-input"/>
                             <label class="form-label form-label-sm" for="assign_idtariffplan">
                                 <?= _("Ratecard") ?>
                             </label>
@@ -512,7 +512,7 @@ if ($popup_select): ?>
 
                     <div class="row mb-1">
                         <div class="col-4">
-                            <input id="check[assign_tag]" type="checkbox" value="on" aria-label="check to enable assignates to this field" <?php if ($check["assign_tag"] === "on"): ?> checked="checked" <?php endif ?> class="form-check-input"/>
+                            <input id="check[assign_tag]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if ($check["assign_tag"] === "on"): ?> checked="checked" <?php endif ?> class="form-check-input"/>
                             <label class="form-label form-label-sm" for="assign_tag">
                                 <?= _("Tag") ?>
                             </label>
@@ -524,7 +524,7 @@ if ($popup_select): ?>
 
                     <div class="row mb-1">
                         <div class="col-4">
-                            <input id="check[assign_prefix]" type="checkbox" value="on" aria-label="check to enable assignates to this field" <?php if ($check["assign_prefix"] === "on"): ?> checked="checked" <?php endif ?> class="form-check-input"/>
+                            <input id="check[assign_prefix]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if ($check["assign_prefix"] === "on"): ?> checked="checked" <?php endif ?> class="form-check-input"/>
                             <label class="form-label form-label-sm" for="assign_prefix">
                                 <?= _("Prefix") ?>
                             </label>
