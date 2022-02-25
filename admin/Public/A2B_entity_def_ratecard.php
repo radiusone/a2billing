@@ -231,7 +231,6 @@ echo $update_msg ?? "";
 // if $_SESSION['def_ratecard_tariffgroup'] is filled, disable batch update for LCR export
 if ($form_action === "list" && !$popup_select):
     if (empty($_SESSION['def_ratecard_tariffgroup'])): ?>
-
 <div class="row justify-content-center">
     <div class="col-auto">
         <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#searchModal">
@@ -245,7 +244,7 @@ if ($form_action === "list" && !$popup_select):
         </button>
     </div>
 </div>
-
+    <?php endif ?>
 <div class="modal" id="searchModal" aria-labelledby="modal-title-search" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
@@ -259,7 +258,7 @@ if ($form_action === "list" && !$popup_select):
         </div>
     </div>
 </div>
-
+    <?php if (empty($_SESSION['def_ratecard_tariffgroup'])): ?>
 <div class="modal" id="batchUpdateModal" aria-labelledby="modal-title-udpate" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
@@ -387,7 +386,7 @@ if ($form_action === "list" && !$popup_select):
 </div> <!-- .modal -->
 
 <?php
-    endif;
+    endif; // session check
     // Weird hack to create a select form
     $HD_Form -> create_select_form();
 endif; // END if ($form_action == "list")
