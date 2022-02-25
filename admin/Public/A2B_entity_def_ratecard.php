@@ -215,6 +215,7 @@ $list = $HD_Form->perform_action($form_action);
 $list_tariffname = (new Table("cc_tariffplan", "id, tariffname"))->Get_list($HD_Form->DBHandle, "", "tariffname", "ASC");
 $list_trunk = (new Table("cc_trunk", "id_trunk, trunkcode, providerip"))->Get_list($HD_Form->DBHandle, "", "trunkcode", "ASC");
 $list_cid_group = (new Table("cc_outbound_cid_group", "id, group_name"))->Get_list($HD_Form->DBHandle, "", "group_name", "ASC");
+$list_tariffgroup = (new Table("cc_tariffgroup", "id, tariffgroupname, lcrtype"))->Get_list($this->DBHandle, "", "tariffgroupname", "ASC")
 
 // #### HEADER SECTION
 $smarty->display('main.tpl');
@@ -229,8 +230,7 @@ echo $update_msg ?? "";
 
 /********************************* BATCH UPDATE ***********************************/
 // if $_SESSION['def_ratecard_tariffgroup'] is filled, disable batch update for LCR export
-if ($form_action === "list" && !$popup_select):
-    if (empty($_SESSION['def_ratecard_tariffgroup'])): ?>
+if ($form_action === "list" && !$popup_select): ?>
 <div class="row justify-content-center">
     <div class="col-auto">
         <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#searchModal">
@@ -238,13 +238,20 @@ if ($form_action === "list" && !$popup_select):
         </button>
         <?php if (!empty($_SESSION['entity_card_selection'])): ?>(<?= _("search activated") ?>)<?php endif ?>
     </div>
+    <?php if (empty($_SESSION['def_ratecard_tariffgroup'])): ?>
     <div class="col-auto">
         <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#batchUpdateModal">
             <?= _("Batch Update") ?>
         </button>
     </div>
-</div>
     <?php endif ?>
+    <div class="col-auto">
+        <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exportModal">
+            <?= _("Export Call Plan with LCR") ?>
+        </button>
+    </div>
+</div>
+
 <div class="modal" id="searchModal" aria-labelledby="modal-title-search" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
@@ -385,11 +392,49 @@ if ($form_action === "list" && !$popup_select):
     </div> <!-- .modal-dialog -->
 </div> <!-- .modal -->
 
-<?php
-    endif; // session check
-    // Weird hack to create a select form
-    $HD_Form -> create_select_form();
-endif; // END if ($form_action == "list")
+    <?php endif // session check ?>
+<div class="modal" id="exportModal" aria-labelledby="modal-title-export" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-title-export"><?= _("Export Call Plan with LCR") ?></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="container-fluid" name="exportForm" id="exportForm" action="?s=1&amp;t=0&amp;order=<?= $order ?>&amp;sens=<?= $sens ?>&amp;current_page=<?= $current_page ?>" method="post">
+                    <input type="hidden" name="posted" value="1"/>
+                    <input type="hidden" name="current_page" value="0"/>
+                    <?php if ($HD_Form->FG_CSRF_STATUS == true): ?>
+                        <input type="hidden" name="<?= $HD_Form->FG_FORM_UNIQID_FIELD ?>" value="<?= $HD_Form->FG_FORM_UNIQID ?>" />
+                        <input type="hidden" name="<?= $HD_Form->FG_CSRF_FIELD ?>" value="<?= $HD_Form->FG_CSRF_TOKEN ?>" />
+                    <?php endif ?>
+                    <div class="row">
+                        <div class="col">
+                            <select name="tariffgroup" id="tariffgroup" class="form-select form-select-sm">
+                                <option value=""><?= _("Choose a call plan") ?></option>
+                                <?php foreach ($list_tariffgroup as $v): ?>
+                                <option value="<?= implode("-:-", $v) ?>" <?php if ($this->FG_TOP_FILTER_VALUE2 == $v[0]): ?>selected="selected" <?php endif?>>
+                                    <?= $v[1] ?>
+                                </option>
+                                <?php endforeach ?>
+                            </select>
+                        </div>
+                    </div>
+                </form> <!-- .container-fluid -->
+            </div> <!-- .modal-body -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?= _("Close") ?></button>
+                <?php if (!empty($_SESSION['def_ratecard_tariffgroup'])): ?>
+                <a class="btn btn-secondary" href="?cancelsearch_callplanlcr=true"><?= _("Cancel Search") ?></a>
+                <?php endif ?>
+                <button type="submit" form="exportForm" class="btn btn-primary"><?= _("Search") ?></button>
+            </div>
+        </div> <!-- .modal-content -->
+    </div> <!-- .modal-dialog -->
+</div> <!-- .modal -->
+
+
+<?php endif; // END if ($form_action == "list")
 
 /********************************* BATCH ASSIGNED ***********************************/
 if ($popup_select): ?>
@@ -401,11 +446,11 @@ if ($popup_select): ?>
     </div>
 </div>
 
-<div class="modal" id="batchAssignModal" aria-labelledby="modal-title-udpate" aria-hidden="true">
+<div class="modal" id="batchAssignModal" aria-labelledby="modal-title-assign" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modal-title-update"><?= _("Batch Update") ?></h5>
+                <h5 class="modal-title" id="modal-title-assign"><?= _("Batch Assign") ?></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
