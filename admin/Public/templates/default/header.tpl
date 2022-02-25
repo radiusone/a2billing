@@ -7,18 +7,10 @@
 	<link href="../lib/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css"/>
 	<link href="templates/{$SKIN_NAME}/css/invoice.css" rel="stylesheet" type="text/css"/>
 	<link href="templates/{$SKIN_NAME}/css/receipt.css" rel="stylesheet" type="text/css"/>
-	{if ($popupwindow != 0)}
-		<link href="templates/{$SKIN_NAME}/css/popup.css" rel="stylesheet" type="text/css"/>
- 	{/if}
-	<script>
-		var IMAGE_PATH = "templates/{$SKIN_NAME}/images/";
-	</script>
 	<script src="../lib/bootstrap/js/bootstrap.js"></script>
 	<script src="./javascript/jquery/jquery.js"></script>
 	<script src="./javascript/jquery/jquery.debug.js"></script>
 	<script src="./javascript/jquery/ilogger.js"></script>
-	<script src="./javascript/jquery/handler_jquery.js"></script>
-	<script src="./javascript/jquery/jquery.simplemodal.js"></script>
     <script src="./javascript/jquery/jquery.flot.pack.js"></script>
 
 	<style>
