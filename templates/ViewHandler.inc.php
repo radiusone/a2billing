@@ -207,7 +207,7 @@ function openURLFilter(link) {
                         $link = $row[12] . (str_contains($row[12], 'form_action') ? "?" : "?form_action=ask-edit&") . "id=" . $options[0][1];
                         for ($l = 1; $l <= count($field_list_sun); $l++) {
                             $val = str_replace("%$l", $options[0][$l - 1], $record_display);
-                            $record_display = "<a class='text-decoration-underline' href='$link'>$val</a>";
+                            $record_display = $popup_select ? $val : "<a class='text-decoration-underline' href='$link'>$val</a>";
                         }
                     }
                 }
