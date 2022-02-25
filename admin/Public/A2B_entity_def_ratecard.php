@@ -233,10 +233,14 @@ echo $update_msg ?? "";
 if ($form_action === "list" && !$popup_select): ?>
 <div class="row justify-content-center">
     <div class="col-auto">
-        <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#searchModal">
+        <button
+            class="btn btn-sm <?= empty($_SESSION[$this->FG_FILTER_SEARCH_SESSION_NAME]) ? "btn-outline-primary" : "btn-primary" ?>"
+            data-bs-toggle="modal"
+            data-bs-target="#searchModal"
+            title="<?= _("Search Customers") ?> <?= empty($_SESSION[$this->FG_FILTER_SEARCH_SESSION_NAME]) ? "" : "(" . _("search activated") . ")" ?>"
+        >
             <?= _("Search Rates") ?>
         </button>
-        <?php if (!empty($_SESSION['entity_card_selection'])): ?>(<?= _("search activated") ?>)<?php endif ?>
     </div>
     <?php if (empty($_SESSION['def_ratecard_tariffgroup'])): ?>
     <div class="col-auto">
