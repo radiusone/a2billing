@@ -94,14 +94,7 @@ if (is_array($result)) {
 <FORM name="theForm" action="<?php echo filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL) ?>" METHOD="POST">
 <INPUT name="mailtype" value="<?php echo $mailtype; ?>" type="hidden">
 
-<?php
-    if ($HD_Form->FG_CSRF_STATUS == true) {
-?>
-    <INPUT type="hidden" name="<?php echo $HD_Form->FG_FORM_UNIQID_FIELD ?>" value="<?php echo $HD_Form->FG_FORM_UNIQID; ?>" />
-    <INPUT type="hidden" name="<?php echo $HD_Form->FG_CSRF_FIELD ?>" value="<?php echo $HD_Form->FG_CSRF_TOKEN; ?>" />
-<?php
-    }
-?>
+<?= $HD_Form->csrf_inputs() ?>
 
 <table cellspacing="2" class="addform_table1">
     <TBODY>

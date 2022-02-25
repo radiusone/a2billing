@@ -173,14 +173,7 @@ if ($form_action == "list" && (!($popup_select>=1))	) {
     <table align="center" border="0" width="65%"  cellspacing="1" cellpadding="2">
         <tbody>
         <form name="updateForm" action="<?php echo filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)?>" method="post">
-        <?php
-            if ($HD_Form->FG_CSRF_STATUS == true) {
-        ?>
-            <INPUT type="hidden" name="<?php echo $HD_Form->FG_FORM_UNIQID_FIELD ?>" value="<?php echo $HD_Form->FG_FORM_UNIQID; ?>" />
-            <INPUT type="hidden" name="<?php echo $HD_Form->FG_CSRF_FIELD ?>" value="<?php echo $HD_Form->FG_CSRF_TOKEN; ?>" />
-        <?php
-            }
-        ?>
+        <?= $HD_Form->csrf_inputs() ?>
         <INPUT type="hidden" name="batchupdate" value="1">
         <tr>
           <td align="left" class="bgcolor_001" >

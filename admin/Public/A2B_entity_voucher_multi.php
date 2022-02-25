@@ -102,14 +102,7 @@ echo $CC_help_generate_voucher;
 <table align="center" class="bgcolor_001" border="0" width="65%">
 <tbody><tr>
 <form name="theForm" action="<?php echo filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL) ?>">
-    <?php
-        if ($HD_Form->FG_CSRF_STATUS == true) {
-    ?>
-        <INPUT type="hidden" name="<?php echo $HD_Form->FG_FORM_UNIQID_FIELD ?>" value="<?php echo $HD_Form->FG_FORM_UNIQID; ?>" />
-        <INPUT type="hidden" name="<?php echo $HD_Form->FG_CSRF_FIELD ?>" value="<?php echo $HD_Form->FG_CSRF_TOKEN; ?>" />
-    <?php
-        }
-    ?>
+    <?= $HD_Form->csrf_inputs() ?>
     <td align="left" width="75%">
         <strong>1)</strong>
         <select name="choose_list" size="1" class="form_input_select">

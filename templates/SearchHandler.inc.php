@@ -34,10 +34,7 @@ function create_date_options($target)
 <form method="post" name="searchForm" id="searchForm" class="container-fluid form-striped" action="<?= "?s=$processed[s]&t=$processed[t]&order=$processed[order]&sens=$processed[sens]&current_page=$processed[current_page]" ?>">
     <input type="hidden" name="posted_search" value="1"/>
     <input type="hidden" name="current_page" value="0"/>
-    <?php if ($this->FG_CSRF_STATUS): ?>
-    <input type="hidden" name="<?= $this->FG_FORM_UNIQID_FIELD ?>" value="<?= $this->FG_FORM_UNIQID ?>"/>
-    <input type="hidden" name="<?= $this->FG_CSRF_FIELD ?>" value="<?= $this->FG_CSRF_TOKEN ?>"/>
-    <?php endif ?>
+    <?= $this->csrf_inputs() ?>
 
 <?php if ($this -> FG_FILTER_SEARCH_1_TIME): ?>
     <div class="row pb-1">

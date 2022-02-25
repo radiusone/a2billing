@@ -82,14 +82,7 @@ echo $CC_help_currency;
 <table align="center" border="0" width="65%"  cellspacing="1" cellpadding="2">
     <FORM name="updateForm" action="<?php echo filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)?>" method="post">
     <INPUT type="hidden" name="updatecurrency" value="1">
-    <?php
-        if ($HD_Form->FG_CSRF_STATUS == true) {
-    ?>
-        <INPUT type="hidden" name="<?php echo $HD_Form->FG_FORM_UNIQID_FIELD ?>" value="<?php echo $HD_Form->FG_FORM_UNIQID; ?>" />
-        <INPUT type="hidden" name="<?php echo $HD_Form->FG_CSRF_FIELD ?>" value="<?php echo $HD_Form->FG_CSRF_TOKEN; ?>" />
-    <?php
-        }
-    ?>
+    <?= $HD_Form->csrf_inputs() ?>
     <tr>
       <td align="center"  class="bgcolor_001">
         &nbsp;<?php echo gettext("THE CURRENCY LIST IS BASED FROM YAHOO FINANCE"); ?>&nbsp;:

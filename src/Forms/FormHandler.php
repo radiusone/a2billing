@@ -557,18 +557,11 @@ class FormHandler
             $this->FG_CSRF_TOKEN = $this->FG_CSRF_TOKEN_SALT . $this->FG_CSRF_TOKEN_KEY;
             $this->FG_CSRF_TOKEN = hash('SHA256', $this->FG_CSRF_TOKEN);
             $this->FG_FORM_UNIQID = uniqid();
-            // print $this -> FG_FORM_UNIQID;
-            // echo "<br/>------_POST-------<br/>";
-            // print_r($_POST);
-            // echo "<br/>-------_SESSION------<br/>";
-            // print_r($_SESSION);
 
             $this->FG_FORM_RECEIVED_UNIQID = $_POST[$this->FG_FORM_UNIQID_FIELD];
             $this->FG_FORM_RECEIVED_TOKEN = $_POST[$this->FG_CSRF_FIELD];
             $this->FG_CSRF_RECEIVED_TOKEN = $_SESSION['CSRF_TOKEN'][$this->FG_FORM_RECEIVED_UNIQID];
             $_SESSION['CSRF_TOKEN'][$this->FG_FORM_UNIQID] = $this->FG_CSRF_TOKEN;
-            // echo "<br/>------_SESSION::-------<br/>";
-            // print_r($_SESSION);
 
             if ($this->FG_DEBUG) {
                 echo 'FG_FORM_UNIQID : ' . $this->FG_FORM_UNIQID . '<br />';
@@ -583,7 +576,6 @@ class FormHandler
                     exit();
                 } else {
                     //Remove key from the session
-                    // echo "Remove key from the session";
                     unset($_SESSION['CSRF_TOKEN'][$this->FG_FORM_RECEIVED_UNIQID]);
                 }
             }
@@ -2209,5 +2201,15 @@ class FormHandler
                 echo "<a class=\"pagenav\" href=\"$temp\">{$this->lang['strlast']}</a>\n";
             }
         }
+    }
+
+    public function csrf_inputs(): string
+    {
+        $html = "";
+        if ($this->FG_CSRF_STATUS) {
+            $html = "<input type='hidden' name='$this->FG_FORM_UNIQID_FIELD' value='$this->FG_FORM_UNIQID'/>";
+            $html .= "<input type='hidden' name='$this->FG_CSRF_FIELD' value='$this->FG_CSRF_TOKEN'/>";
+        }
+        return $html;
     }
 }

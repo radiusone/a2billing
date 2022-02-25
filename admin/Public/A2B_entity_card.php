@@ -233,10 +233,7 @@ function sendValue(selvalue, othervalue) {
             <div class="modal-body">
                 <form class="container-fluid form-striped" name="updateForm" id="updateForm" action="" method="post">
                     <input type="hidden" name="batchupdate" value="1"/>
-                    <?php if ($HD_Form->FG_CSRF_STATUS == true): ?>
-                    <input type="hidden" name="<?= $HD_Form->FG_FORM_UNIQID_FIELD ?>" value="<?= $HD_Form->FG_FORM_UNIQID ?>" />
-                    <input type="hidden" name="<?= $HD_Form->FG_CSRF_FIELD ?>" value="<?= $HD_Form->FG_CSRF_TOKEN ?>" />
-                    <?php endif ?>
+                    <?= $HD_Form->csrf_inputs() ?>
 
 
                     <div class="row mb-1">

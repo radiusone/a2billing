@@ -151,14 +151,7 @@ if ($form_action=='list') {
             <TR><TD style="border-bottom: medium dotted #ED2525" align="center"> <?php echo gettext("Changes detected on SIP/IAX Friends")?></TD></TR>
             <TR>
                 <FORM NAME="sipfriend">
-                <?php
-                    if ($HD_Form->FG_CSRF_STATUS == true) {
-                ?>
-                    <INPUT type="hidden" name="<?php echo $HD_Form->FG_FORM_UNIQID_FIELD ?>" value="<?php echo $HD_Form->FG_FORM_UNIQID; ?>" />
-                    <INPUT type="hidden" name="<?php echo $HD_Form->FG_CSRF_FIELD ?>" value="<?php echo $HD_Form->FG_CSRF_TOKEN; ?>" />
-                <?php
-                    }
-                ?>
+                <?= $HD_Form->csrf_inputs() ?>
                 <td height="31" style="padding-left: 5px; padding-right: 3px;" align="center" class="bgcolor_013">
                 <font color=white><b>
                 <?php  if ( isset($_SESSION["is_sip_changed"]) && $_SESSION["is_sip_changed"] ) { ?>
@@ -185,14 +178,7 @@ if ($form_action=='list') {
       <td  class="bgcolor_021">
       <table width="100%" border="0" cellspacing="1" cellpadding="0">
           <form name="form1" method="post" action="">
-          <?php
-            if ($HD_Form->FG_CSRF_STATUS == true) {
-          ?>
-            <INPUT type="hidden" name="<?php echo $HD_Form->FG_FORM_UNIQID_FIELD ?>" value="<?php echo $HD_Form->FG_FORM_UNIQID; ?>" />
-            <INPUT type="hidden" name="<?php echo $HD_Form->FG_CSRF_FIELD ?>" value="<?php echo $HD_Form->FG_CSRF_TOKEN; ?>" />
-          <?php
-            }
-          ?>
+          <?= $HD_Form->csrf_inputs() ?>
           <tr>
             <td bgcolor="#FFFFFF" class="fontstyle_006" width="100%">&nbsp;<?php echo gettext("CONFIGURATION TYPE")?> </td>
             <td bgcolor="#FFFFFF" class="fontstyle_006" align="center">

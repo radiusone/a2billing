@@ -287,10 +287,7 @@ if ($form_action === "list" && !$popup_select): ?>
                     <input type="hidden" name="form_action" value="<?php echo $form_action?>"/>
                     <input type="hidden" name="filterprefix" value="<?php echo $filterprefix?>"/>
                     <input type="hidden" name="filterfield" value="<?php echo $filterfield?>"/>
-                    <?php if ($HD_Form->FG_CSRF_STATUS == true): ?>
-                        <input type="hidden" name="<?= $HD_Form->FG_FORM_UNIQID_FIELD ?>" value="<?= $HD_Form->FG_FORM_UNIQID ?>" />
-                        <input type="hidden" name="<?= $HD_Form->FG_CSRF_FIELD ?>" value="<?= $HD_Form->FG_CSRF_TOKEN ?>" />
-                    <?php endif ?>
+                    <?= $HD_Form->csrf_inputs() ?>
 
 
                     <div class="row mb-1">
@@ -408,10 +405,7 @@ if ($form_action === "list" && !$popup_select): ?>
                 <form class="container-fluid" name="exportForm" id="exportForm" action="?s=1&amp;t=0&amp;order=<?= $order ?>&amp;sens=<?= $sens ?>&amp;current_page=<?= $current_page ?>" method="post">
                     <input type="hidden" name="posted" value="1"/>
                     <input type="hidden" name="current_page" value="0"/>
-                    <?php if ($HD_Form->FG_CSRF_STATUS == true): ?>
-                        <input type="hidden" name="<?= $HD_Form->FG_FORM_UNIQID_FIELD ?>" value="<?= $HD_Form->FG_FORM_UNIQID ?>" />
-                        <input type="hidden" name="<?= $HD_Form->FG_CSRF_FIELD ?>" value="<?= $HD_Form->FG_CSRF_TOKEN ?>" />
-                    <?php endif ?>
+                    <?= $HD_Form->csrf_inputs() ?>
                     <div class="row">
                         <div class="col">
                             <?php if (!empty($FG_TOP_FILTER_NAME)): ?>
@@ -471,10 +465,7 @@ if ($popup_select): ?>
                     <input type="hidden" name="filterprefix" value="<?php echo $filterprefix?>"/>
                     <input type="hidden" name="filterfield" value="<?php echo $filterfield?>"/>
                     <input type="hidden" name="addbatchrate" value="1"/>
-                    <?php if ($HD_Form->FG_CSRF_STATUS == true): ?>
-                        <input type="hidden" name="<?= $HD_Form->FG_FORM_UNIQID_FIELD ?>" value="<?= $HD_Form->FG_FORM_UNIQID ?>" />
-                        <input type="hidden" name="<?= $HD_Form->FG_CSRF_FIELD ?>" value="<?= $HD_Form->FG_CSRF_TOKEN ?>" />
-                    <?php endif ?>
+                    <?= $HD_Form->csrf_inputs() ?>
 
 
                     <div class="row mb-1">

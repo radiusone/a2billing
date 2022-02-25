@@ -31,10 +31,7 @@ function sendto(action, record, field_inst, instance) {
     <input type="hidden" name="current_page" value="<?= $processed['current_page'] ?>">
     <input type="hidden" name="order" value="<?= $processed['order'] ?>">
     <input type="hidden" name="sens" value="<?= $processed['sens'] ?>">
-<?php if ($this->FG_CSRF_STATUS == true): ?>
-    <input type="hidden" name="<?= $this->FG_FORM_UNIQID_FIELD ?>" value="<?= $this->FG_FORM_UNIQID ?>" />
-    <input type="hidden" name="<?= $this->FG_CSRF_FIELD ?>" value="<?= $this->FG_CSRF_TOKEN ?>" />
-<?php endif ?>
+    <?= $this->csrf_inputs() ?>
 
 <?php if ($this->FG_FK_DELETE_CONFIRM && $form_action == "ask-del-confirm" && $this-> FG_FK_DELETE_ALLOWED): ?>
 

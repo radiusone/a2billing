@@ -62,14 +62,7 @@ $smarty->display('signup_header.tpl');
 <br/><br/>
 <form id="myForm" method="post" name="myForm" action="signup.php">
 
-<?php
-    if ($HD_Form->FG_CSRF_STATUS == true) {
-?>
-    <INPUT type="hidden" name="<?php echo $HD_Form->FG_FORM_UNIQID_FIELD ?>" value="<?php echo $HD_Form->FG_FORM_UNIQID; ?>" />
-    <INPUT type="hidden" name="<?php echo $HD_Form->FG_CSRF_FIELD ?>" value="<?php echo $HD_Form->FG_CSRF_TOKEN; ?>" />
-<?php
-    }
-?>
+<?= $HD_Form->csrf_inputs() ?>
 
 <div align="center">
 <table  style="width : 80%;" class="editform_table1">

@@ -222,14 +222,7 @@ function removeSource()
 <div align="center">
         <table width="95%" border="0" cellspacing="2" align="center" class="editform_table1">
               <form name="prefs" action="<?php echo filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)?>" method="post">
-                <?php
-                    if ($HD_Form->FG_CSRF_STATUS == true) {
-                ?>
-                    <INPUT type="hidden" name="<?php echo $HD_Form->FG_FORM_UNIQID_FIELD ?>" value="<?php echo $HD_Form->FG_FORM_UNIQID; ?>" />
-                    <INPUT type="hidden" name="<?php echo $HD_Form->FG_CSRF_FIELD ?>" value="<?php echo $HD_Form->FG_CSRF_TOKEN; ?>" />
-                <?php
-                    }
-                ?>
+                <?= $HD_Form->csrf_inputs() ?>
 
                 <?php if ($posted) {?>
                 <tr>

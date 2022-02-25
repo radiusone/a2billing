@@ -319,14 +319,7 @@ $list_group = $instance_table_group  -> Get_list ($HD_Form ->DBHandle, $FG_TABLE
 <?php }?>
 <table align="center"  class="bgcolor_001" border="0" width="65%">
 <form name="theForm" action="<?php echo filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL) ?>" method="POST">
-<?php
-    if ($HD_Form->FG_CSRF_STATUS == true) {
-?>
-    <INPUT type="hidden" name="<?php echo $HD_Form->FG_FORM_UNIQID_FIELD ?>" value="<?php echo $HD_Form->FG_FORM_UNIQID; ?>" />
-    <INPUT type="hidden" name="<?php echo $HD_Form->FG_CSRF_FIELD ?>" value="<?php echo $HD_Form->FG_CSRF_TOKEN; ?>" />
-<?php
-    }
-?>
+<?= $HD_Form->csrf_inputs() ?>
 <tr>
     <td align="left" width="100%">
     <strong>1)</strong> <?php echo gettext("Length of card number :");?>

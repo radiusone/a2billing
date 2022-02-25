@@ -73,14 +73,7 @@ if ($form_action == 'list' && !($popup_select >= 1)) {
 <FORM METHOD=POST name="myForm" ACTION="<?php echo $PHP_SELF?>?s=1&t=0&order=<?php echo $order?>&sens=<?php echo $sens?>&current_page=<?php echo $current_page?>">
     <INPUT TYPE="hidden" NAME="posted" value="1">
     <INPUT TYPE="hidden" NAME="current_page" value="0">
-    <?php
-        if ($HD_Form->FG_CSRF_STATUS == true) {
-    ?>
-        <INPUT type="hidden" name="<?php echo $HD_Form->FG_FORM_UNIQID_FIELD ?>" value="<?php echo $HD_Form->FG_FORM_UNIQID; ?>" />
-        <INPUT type="hidden" name="<?php echo $HD_Form->FG_CSRF_FIELD ?>" value="<?php echo $HD_Form->FG_CSRF_TOKEN; ?>" />
-    <?php
-        }
-    ?>
+    <?= $HD_Form->csrf_inputs() ?>
     <table class="bar-status" width="85%" border="0" cellspacing="1" cellpadding="2" align="center">
         <tbody>
         <tr>

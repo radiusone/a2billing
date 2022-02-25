@@ -19,10 +19,7 @@ getpost_ifset(array('wh'));
     <input type="hidden" name="wh" value="<?= $wh ?>"/>
     <input type="hidden" name="atmenu" value="<?= $processed["atmenu"]?>">
 
-<?php if ($this->FG_CSRF_STATUS == true): ?>
-    <input type="hidden" name="<?= $this->FG_FORM_UNIQID_FIELD ?>" value="<?= $this->FG_FORM_UNIQID ?>" />
-    <input type="hidden" name="<?= $this->FG_CSRF_FIELD ?>" value="<?= $this->FG_CSRF_TOKEN ?>" />
-<?php endif ?>
+    <?= $this->csrf_inputs() ?>
 <?php if (!empty($this->FG_QUERY_ADITION_HIDDEN_FIELDS)): ?>
     <?php $fields = explode(",",trim($this->FG_QUERY_ADITION_HIDDEN_FIELDS))?>
     <?php $values = explode(",",trim($this->FG_QUERY_ADITION_HIDDEN_VALUE))?>
