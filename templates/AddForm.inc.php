@@ -98,7 +98,7 @@ getpost_ifset(array('wh'));
                         value="<?= $processed[$row["name"]] ?>"
                     <?php endif ?>
                 />
-                <a href="#" title="<?= gettext("SELECT")?>" onclick="window.open('<?= $row["popup_dest"] ?>popup_formname=myForm&popup_fieldname=<?= $row["name"] ?>', <?= $row["popup_params"] ?>)">
+                <a href="#" title="<?= gettext("SELECT")?>" onclick="window.open('<?= $row["popup_dest"] ?>popup_formname=myForm&popup_fieldname=<?= $row["name"] ?>', <?= trim($row["popup_params"], ", ") ?>)">
                     <img alt="" src="data:image/gif;base64,R0lGODlhDwAPAMQYAP+yPf+fEv+qLP+3Tf+pKv++Xf/Gcv+mJP+tNf+tMf+kH/+/YP+oJv+wO/+jHP/Ohf/WmP+vOv/cpv+kHf+iGf+jG/////Hw7P///wAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAABgALAAAAAAPAA8AAAVjIHaNZEmKF6auLJpiEvQYxQAgiTpiMm0Tk4pigsLMag2Co8KkFA0Lm8XCbBajDcFkWnXuBlkFk1vxpgACcYVcLqbHVKaDuFNXqwxGkUK5VyYMEQhFGAGGhxQHOS4tjTsmkDshADs="/>
                 </a>
 
@@ -130,7 +130,7 @@ getpost_ifset(array('wh'));
                     <?php endif ?>
                 />
             <?php if ($row["type"] === "POPUPVALUETIME"): ?>
-                <a href="#" title="<?= gettext("SELECT")?>" onclick="window.open('<?= $row["popup_timeval"] ?>popup_formname=myForm&popup_fieldname=<?= $row["name"] ?>', <?= $row["popup_timeval"] ?>)">
+                <a href="#" title="<?= gettext("SELECT")?>" onclick="window.open('<?= $row["popup_timeval"] ?>popup_formname=myForm&popup_fieldname=<?= $row["name"] ?>', <?= trim($row["popup_timeval"], ", ") ?>)">
                     <img alt="" src="data:image/gif;base64,R0lGODlhDwAPAMQYAP+yPf+fEv+qLP+3Tf+pKv++Xf/Gcv+mJP+tNf+tMf+kH/+/YP+oJv+wO/+jHP/Ohf/WmP+vOv/cpv+kHf+iGf+jG/////Hw7P///wAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAABgALAAAAAAPAA8AAAVjIHaNZEmKF6auLJpiEvQYxQAgiTpiMm0Tk4pigsLMag2Co8KkFA0Lm8XCbBajDcFkWnXuBlkFk1vxpgACcYVcLqbHVKaDuFNXqwxGkUK5VyYMEQhFGAGGhxQHOS4tjTsmkDshADs="/>
                 </a>
             <?php elseif ($row["type"] === "POPUPDATETIME"): ?>
