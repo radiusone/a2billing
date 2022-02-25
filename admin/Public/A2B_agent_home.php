@@ -64,7 +64,7 @@ if (!empty($action)) {
                 $count = $result[0][0];
                 $fields="id_agent,type,message,order_display,logo";
                 if(empty($logo))$logo=0;
-                $values="$id,$type,$message,$count,$logo";
+                $values="$id,$type,'$message',$count,$logo";
                 $return=$instance_table->Add_table($DBHandle, $values, $fields);
                 if($return)$result_param ="success";
                 else $result_param ="faild";
@@ -245,9 +245,6 @@ $smarty->display('footer.tpl');
 
 <script type="text/javascript">
 var id_agent= <?php echo $id; ?> ;
-$(function() {
-    $('#wysiwyg').wysiwyg();
-});
 
 $(document).ready(function () {
     $('.msg_info , .msg_success , .msg_warning , .msg_error').mouseover(function () {
