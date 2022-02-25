@@ -77,10 +77,10 @@ if (isset($posted) && !$popup_select) {
 		$HD_Form -> SQL_GROUP = " GROUP BY dialprefix ";
 
 		$tariffgroup = explode('-:-',$tariffgroup);
-		$HD_Form->FG_TOP_FILTER_NAME = gettext("EXPORTED LCR CALL PLAN").' : <b>'.str_replace ("-:-","",$tariffgroup[1]).'</b>';
-		$HD_Form->FG_TOP_FILTER_VALUE2 = $tariffgroup[0];
+		$FG_TOP_FILTER_NAME = gettext("EXPORTED LCR CALL PLAN").' : <b>'.str_replace ("-:-","",$tariffgroup[1]).'</b>';
+		$FG_TOP_FILTER_VALUE = $tariffgroup[0];
 
-		$HD_Form -> FG_TABLE_CLAUSE = "tariffgroup_id= '$HD_Form->FG_TOP_FILTER_VALUE2'";
+		$HD_Form -> FG_TABLE_CLAUSE = "tariffgroup_id= '$FG_TOP_FILTER_VALUE'";
 
 		$rateinitial_field = "MIN(rateinitial) as rateinitial";
 

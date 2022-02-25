@@ -410,10 +410,13 @@ if ($form_action === "list" && !$popup_select): ?>
                     <?php endif ?>
                     <div class="row">
                         <div class="col">
+                            <?php if (!empty($FG_TOP_FILTER_NAME)): ?>
+                                <strong><?= $FG_TOP_FILTER_NAME ?></strong><br/>
+                            <?php endif ?>
                             <select name="tariffgroup" id="tariffgroup" aria-label="<?= _("Choose a call plan") ?>" class="form-select form-select-sm">
                                 <option value=""><?= _("Choose a call plan") ?></option>
                                 <?php foreach ($list_tariffgroup as $v): ?>
-                                <option value="<?= implode("-:-", $v) ?>" <?php if ($HD_Form->FG_TOP_FILTER_VALUE2 ?? null == $v[0]): ?>selected="selected" <?php endif?>>
+                                <option value="<?= implode("-:-", $v) ?>" <?php if ($FG_TOP_FILTER_VALUE ?? null == $v[0]): ?>selected="selected" <?php endif?>>
                                     <?= $v[1] ?>
                                 </option>
                                 <?php endforeach ?>

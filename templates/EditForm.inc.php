@@ -374,7 +374,7 @@ use A2billing\Table;
             <?= $this->FG_BUTTON_EDITION_BOTTOM_TEXT ?>
         </div>
         <div class="col-auto">
-            <button type="submit" class="btn btn-primary"><?= $this->FG_EDIT_PAGE_CONFIRM_BUTTON ?></button>
+            <button type="submit" class="btn btn-primary"><?= _("Confirm Data") ?></button>
         </div>
     </div>
 </form>

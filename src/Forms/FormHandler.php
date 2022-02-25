@@ -32,11 +32,7 @@ class FormHandler
     public $VALID_SQL_REG_EXP = true;
     public $RESULT_QUERY = false;
 
-    public $pqp;
-
-
     /* CONFIG THE VIEWER : CV */
-    public $CV_TOPVIEWER = '';
     public $CV_NO_FIELDS = "THERE IS NO RECORD !";
     public $CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = true;
     public $CV_TITLE_TEXT = '';
@@ -127,15 +123,6 @@ class FormHandler
      */
     public $FG_TABLE_ID = 'id';
 
-    /*
-	 * Adding record button in list view
-	 */
-    public $FG_LIST_ADDING_BUTTON = false;
-    public $FG_LIST_ADDING_BUTTON_LINK = '';
-    public $FG_LIST_ADDING_BUTTON_IMG = '';
-    public $FG_LIST_ADDING_BUTTON_MSG = '';
-    public $FG_LIST_ADDING_BUTTON_ALT = '';
-
     /**
      * Sets if we want a colum "ACTION" to EDIT or to DELETE
      *
@@ -167,22 +154,12 @@ class FormHandler
     public $FG_OTHER_BUTTON4_LINK = '';
     public $FG_OTHER_BUTTON5_LINK = '';
 
-    public $FG_EDITION_IMG = 'edit.png';
-
     public $FG_OTHER_BUTTON1_IMG = '';
     public $FG_OTHER_BUTTON2_IMG = '';
     public $FG_OTHER_BUTTON3_IMG = '';
     public $FG_OTHER_BUTTON4_IMG = '';
     public $FG_OTHER_BUTTON5_IMG = '';
 
-    public $FG_OTHER_BUTTON1_FORBIDDEN_KEY = [];
-    public $FG_OTHER_BUTTON2_FORBIDDEN_KEY = [];
-    public $FG_OTHER_BUTTON3_FORBIDDEN_KEY = [];
-    public $FG_OTHER_BUTTON4_FORBIDDEN_KEY = [];
-    public $FG_OTHER_BUTTON5_FORBIDDEN_KEY = [];
-
-    public $FG_EDIT_PAGE_CONFIRM_BUTTON = '';
-    public $FG_DELETE_PAGE_CONFIRM_BUTTON = '';
     public $FG_ADD_PAGE_CONFIRM_BUTTON = '';
 
     /**
@@ -198,7 +175,6 @@ class FormHandler
      *
      * @public    -    @type integer
      */
-    public $FG_STITLE = '';
     public $FG_CURRENT_PAGE = 0;
     public $FG_ORDER = '';
     public $FG_SENS = '';
@@ -267,14 +243,6 @@ class FormHandler
     public $FG_SPLITABLE_FIELD = '';
 
     /**
-     * Sets the variables to control the top search filter
-     *
-     * @public  - @type void , string
-     */
-    public $FG_TOP_FILTER_VALUE = 0;
-    public $FG_TOP_FILTER_NAME = '';
-
-    /**
      * Sets the variables to control the CSV export
      *
      * @public  - @type boolean
@@ -304,8 +272,6 @@ class FormHandler
      * @public   -  @string
      */
 
-    public $FG_DELETE_ALT = "Delete this record";
-    public $FG_EDIT_ALT = "Edit this record";
     public $FG_OTHER_BUTTON1_ALT = '';
     public $FG_OTHER_BUTTON2_ALT = '';
     public $FG_OTHER_BUTTON3_ALT = '';
@@ -372,14 +338,6 @@ class FormHandler
     public $FG_QUERY_EDITION = '';
     public $FG_QUERY_ADITION = '';
 
-
-    /**
-     * Set the width  of the column to the EDIT FORM
-     *
-     * @public    -    @type string
-     */
-    public $FG_TABLE_EDITION_WIDTH = '122';
-
     /**
      * Keep the number of the column into EDIT FORM
      *
@@ -403,7 +361,6 @@ class FormHandler
      * FG_QUERY_EDITION_HIDDEN_VALUE = "value1, value2"
      * FG_QUERY_ADITION_HIDDEN_FIELDS = "field1, field2"
      * FG_QUERY_ADITION_HIDDEN_VALUE = "value1, value2"
-     * FG_QUERY_SQL_HIDDEN = ',field1, field2';
      *
      * @public    -    @type string
      */
@@ -411,7 +368,6 @@ class FormHandler
     public $FG_QUERY_EDITION_HIDDEN_VALUE = '';
     public $FG_QUERY_ADITION_HIDDEN_FIELDS = '';
     public $FG_QUERY_ADITION_HIDDEN_VALUE = '';
-    public $FG_QUERY_SQL_HIDDEN = '';
 
     public $FG_EDITION_HIDDEN_PARAM = '';
     public $FG_EDITION_HIDDEN_PARAM_VALUE = '';
@@ -424,17 +380,6 @@ class FormHandler
      * @public    -    @type array
      */
     public $FG_QUERY_EXTRA_HIDDED = '';
-
-    /**
-     * Set the Hidden value for the edition/addition
-     * It helps to generate the values for the sip and iax account
-     * if this variable is set from the calling file, then framwork will not build values for it.
-     * Set its length to 0 if you want framework to generate the values and provide required values
-     * into the POST data.
-     */
-
-    public $FG_QUERY_ADITION_SIP_IAX_VALUE = '';
-
 
     /**
      * Sets the link where to go after an ACTION (EDIT/DELETE/ADD)
@@ -502,9 +447,6 @@ class FormHandler
     // if it is set to true and confirm flag is true confirm box will be showed.
     public $FG_FK_DELETE_ALLOWED = false;
 
-    // if it is set to true and Allowed flag is true all dependent records will be deleted.
-    public $FG_FK_DELETE = false;
-
     // Foreign Key Tables
     public $FG_FK_TABLENAMES = [];
 
@@ -535,10 +477,6 @@ class FormHandler
 
     // Configuration Key value Field Name
     public $FG_CONF_VALUE_FIELDNAME = "";
-
-    // For Pre Selected Delete
-    // Pre Selected Records Count
-    public $FG_PRE_COUNT = 0;
 
     //*****************************
     //This variable define the width of the HTML table
@@ -584,7 +522,6 @@ class FormHandler
     public $FG_FORM_RECEIVED_TOKEN;
     public $FG_CLAUSE;
     public $FG_FILTER_SEARCH_3_TIME_FIELD_BIS;
-    public $FG_TOP_FILTER_VALUE2;
     /**
      * @var mixed
      */
@@ -662,8 +599,6 @@ class FormHandler
         $this->CV_TITLE_TEXT = $instance_name . ' ' . gettext("list");
         $this->FG_FILTER_SEARCH_TOP_TEXT = gettext("Define criteria to make a precise search");
         $this->FG_INTRO_TEXT = gettext("You can browse through our") . " #FG_INSTANCE_NAME# " . gettext("and modify their different properties") . '<br>';
-        $this->FG_DELETE_ALT = gettext("Delete this record");
-        $this->FG_EDIT_ALT = gettext("Edit this record");
         $this->FG_ADITION_GO_EDITION_MESSAGE = gettext("The document has been created correctly. Now, you can define the different tariff that you want to associate.");
         $this->FG_INTRO_TEXT_EDITION = gettext("You can modify, through the following form, the different properties of your") . " #FG_INSTANCE_NAME#" . '<br>';
         $this->FG_INTRO_TEXT_ASK_DELETION = gettext("If you really want remove this") . " #FG_INSTANCE_NAME#, " . gettext("Click on the delete button.");
@@ -677,9 +612,8 @@ class FormHandler
 
         $this->FG_FK_DELETE_MESSAGE = gettext("Are you sure to delete all records connected to this instance.");
 
-        $this->FG_EDIT_PAGE_CONFIRM_BUTTON = gettext("CONFIRM DATA");
-        $this->FG_DELETE_PAGE_CONFIRM_BUTTON = gettext('DELETE');
-        $this->FG_ADD_PAGE_CONFIRM_BUTTON = gettext('CONFIRM DATA');
+        /* used once in admin/FG_var_signup.inc */
+        $this->FG_ADD_PAGE_CONFIRM_BUTTON = gettext('Confirm Data');
 
         if ($this->FG_ENABLE_LOG == 1) {
             $this->logger = new Logger();
@@ -727,25 +661,15 @@ class FormHandler
         Console::logMemory($this, 'FormHandler -> init : Line ' . __LINE__);
         Console::logSpeed('FormHandler -> init : Line ' . __LINE__);
 
-        global $_SERVER;
-
-
         if ($processed['section'] != "") {
             $section = $processed['section'];
             $_SESSION["menu_section"] = intval($section);
         }
-        $ext_link = '';
-        if (is_numeric($processed['current_page'])) {
-            $ext_link .= "&current_page=" . $processed['current_page'];
-        }
-        if (!empty($processed['order']) && !empty($processed['sens'])) {
-            $ext_link .= "&order=" . $processed['order'] . "&sens=" . $processed['sens'];
-        }
+        $ext_link = '&current_page=' . $processed['current_page'] ?? ''
+            . '&order=' . $processed['order'] ?? ''
+            . '&sens=' . $processed['sens'] ?? '';
         $this->FG_EDITION_LINK = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL) . "?form_action=ask-edit" . $ext_link . "&id=";
         $this->FG_DELETION_LINK = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL) . "?form_action=ask-delete" . $ext_link . "&id=";
-
-        $this->FG_DELETE_ALT = gettext("Delete this ") . $this->FG_INSTANCE_NAME;
-        $this->FG_EDIT_ALT = gettext("Edit this ") . $this->FG_INSTANCE_NAME;
 
         $this->FG_INTRO_TEXT = str_replace('#FG_INSTANCE_NAME#', $this->FG_INSTANCE_NAME, $this->FG_INTRO_TEXT);
         $this->FG_INTRO_TEXT_EDITION = str_replace('#FG_INSTANCE_NAME#', $this->FG_INSTANCE_NAME, $this->FG_INTRO_TEXT_EDITION);
@@ -882,73 +806,6 @@ class FormHandler
             $this->FG_COL_QUERY .= ", " . $this->FG_TABLE_ID;
         }
     }
-
-
-    public function Is_EDITION()
-    {
-        $this->FG_EDITION = true;
-    }
-
-    public function Is_DELETION()
-    {
-        $this->FG_DELETION = true;
-    }
-
-    public function Is_INFO()
-    {
-        $this->FG_INFO = true;
-    }
-
-    /**
-     * Sets the TEXT to display above the records displayed
-     *
-     * @public   -  @string
-     */
-    public function set_toptext($text = null)
-    {
-        if (isset($text)) {
-            $this->FG_INTRO_TEXT = gettext("You can browse through our ") . $text . gettext(" and modify their different properties<br>");
-        } else {
-            $this->FG_INTRO_TEXT = gettext("You can browse through our ") . $this->FG_INSTANCE_NAME . gettext(" and modify their different properties<br>");
-        }
-    }
-
-
-    /**
-     * Sets the HIDDEN value for the FORM
-     *
-     * @public   -  @string
-     */
-    public function set_hidden_value($query_adition_hidden_fields, $query_adition_hidden_value, $query_sql_hidden)
-    {
-        $this->FG_QUERY_ADITION_HIDDEN_FIELDS = $query_adition_hidden_fields;
-        $this->FG_QUERY_ADITION_HIDDEN_VALUE = $query_adition_hidden_value;
-        $this->FG_QUERY_SQL_HIDDEN = $query_sql_hidden;
-    }
-
-    /**
-     * Sets the ALT of the button view
-     *
-     * @public   -  @string
-     */
-    public function set_alttext($alttext_edit = null, $alttext_delete = null)
-    {
-        if (isset($alttext_edit)) {
-            $this->FG_EDIT_ALT = gettext("Edit this ") . $this->FG_INSTANCE_NAME;
-        } else {
-            $this->FG_EDIT_ALT = $alttext_edit;
-        }
-
-        if (isset($alttext_delete)) {
-            $this->FG_DELETE_ALT = gettext("Delete this ") . $this->FG_INSTANCE_NAME;
-        } else {
-            $this->FG_DELETE_ALT = $alttext_delete;
-        }
-    }
-
-
-
-
 
     // ----------------------------------------------
     // METHOD FOR THE EDITION
@@ -1540,7 +1397,7 @@ class FormHandler
 
             // RETRIEVE THE CONTENT OF THE SEARCH SESSION AND
             if (strlen($_SESSION[$this->FG_FILTER_SEARCH_SESSION_NAME]) > 5 && ($processed['posted_search'] != 1)) {
-                $element_arr = preg_split("/\|/", $_SESSION[$this->FG_FILTER_SEARCH_SESSION_NAME]);
+                $element_arr = explode("|", $_SESSION[$this->FG_FILTER_SEARCH_SESSION_NAME]);
                 foreach ($element_arr as $val_element_arr) {
                     $pos = strpos($val_element_arr, '=');
                     if ($pos !== false) {
@@ -1552,9 +1409,9 @@ class FormHandler
             }
 
             if (($processed['posted_search'] != 1 && isset($_SESSION[$this->FG_FILTER_SEARCH_SESSION_NAME]) && strlen($_SESSION[$this->FG_FILTER_SEARCH_SESSION_NAME]) > 10)) {
-                $arr_session_var = preg_split("/\|/", $_SESSION[$this->FG_FILTER_SEARCH_SESSION_NAME]);
+                $arr_session_var = explode("|", $_SESSION[$this->FG_FILTER_SEARCH_SESSION_NAME]);
                 foreach ($arr_session_var as $arr_val) {
-                    [$namevar, $valuevar] = preg_split("/=/", $arr_val);
+                    [$namevar, $valuevar] = explode("=", $arr_val);
                     $this->_processed[$namevar] = $valuevar;
                     $processed[$namevar] = $valuevar;
                     $_POST[$namevar] = $valuevar;
@@ -1786,7 +1643,7 @@ class FormHandler
             if ($i > 0) {
                 $param_add_value .= ", ";
             }
-            $split_hidden_fields_value = preg_split("/,/", trim($this->FG_QUERY_ADITION_HIDDEN_VALUE));
+            $split_hidden_fields_value = explode(",", trim($this->FG_QUERY_ADITION_HIDDEN_VALUE));
             for ($cur_hidden = 0; $cur_hidden < count($split_hidden_fields_value); $cur_hidden++) {
                 $param_add_value .= "'" . trim($split_hidden_fields_value[$cur_hidden]) . "'";
                 if ($cur_hidden < count($split_hidden_fields_value) - 1) {
@@ -1914,7 +1771,7 @@ class FormHandler
                 }
 
             } elseif (strtoupper($this->FG_TABLE_EDITION[$i][3]) == strtoupper("CHECKBOX")) {
-                $table_split = preg_split("/:/", $this->FG_TABLE_EDITION[$i][1]);
+                $table_split = explode(":", $this->FG_TABLE_EDITION[$i][1]);
                 $checkbox_data = $table_split[0];    //doc_tariff
                 $instance_sub_table = new Table($table_split[0], $table_split[1] . ", " . $table_split[5]);
                 $SPLIT_FG_DELETE_CLAUSE = $table_split[5] . "='" . trim($processed['id']) . "'";
@@ -1950,8 +1807,8 @@ class FormHandler
 
         if (!is_null($this->FG_QUERY_EDITION_HIDDEN_FIELDS) && $this->FG_QUERY_EDITION_HIDDEN_FIELDS != "") {
 
-            $table_split_field = preg_split("/,/", $this->FG_QUERY_EDITION_HIDDEN_FIELDS);
-            $table_split_value = preg_split("/,/", $this->FG_QUERY_EDITION_HIDDEN_VALUE);
+            $table_split_field = explode(",", $this->FG_QUERY_EDITION_HIDDEN_FIELDS);
+            $table_split_value = explode(",", $this->FG_QUERY_EDITION_HIDDEN_VALUE);
 
             for ($k = 0; $k < count($table_split_field); $k++) {
                 $param_update .= ", ";
@@ -2091,35 +1948,16 @@ class FormHandler
     public function perform_add_content($sub_action, $id)
     {
         $processed = $this->getProcessed();
-        $table_split = preg_split("/:/", $this->FG_TABLE_EDITION[$sub_action][14]);
+        $table_split = explode(":", $this->FG_TABLE_EDITION[$sub_action][14]);
         $instance_sub_table = new Table($table_split[0], $table_split[1] . ", " . $table_split[5]);
 
-        if (is_array($processed[$table_split[1]])) {
-            foreach ($processed[$table_split[1]] as $value) {
-                if (empty($table_split[12]) || preg_match('/' . $this->FG_regular[$table_split[12]][0] . '/', $value)) {
-                    // RESPECT REGULAR EXPRESSION
-                    $result_query = $instance_sub_table->Add_table($this->DBHandle, "'" . addslashes(trim($value)) . "', '" . addslashes(trim($id)) . "'");
-
-                    if (!$result_query) {
-                        $findme = 'duplicate';
-                        $pos_find = strpos($instance_sub_table->errstr, $findme);
-
-                        if ($pos_find === false) {
-                            echo $instance_sub_table->errstr;
-                        } else {
-                            $this->alarm_db_error_duplication = true;
-                        }
-                    }
-                }
-            }
-        } else {
-            $value = $processed[$table_split[1]];
+        $arr = is_array($processed[$table_split[1]]) ? $processed[$table_split[1]] : [$processed[$table_split[1]]];
+        foreach ($arr as $value) {
             if (empty($table_split[12]) || preg_match('/' . $this->FG_regular[$table_split[12]][0] . '/', $value)) {
                 // RESPECT REGULAR EXPRESSION
                 $result_query = $instance_sub_table->Add_table($this->DBHandle, "'" . addslashes(trim($value)) . "', '" . addslashes(trim($id)) . "'");
 
                 if (!$result_query) {
-
                     $findme = 'duplicate';
                     $pos_find = strpos($instance_sub_table->errstr, $findme);
 
@@ -2142,7 +1980,7 @@ class FormHandler
     public function perform_del_content($sub_action, $id)
     {
         $processed = $this->getProcessed();
-        $table_split = preg_split("/:/", $this->FG_TABLE_EDITION[$sub_action][14]);
+        $table_split = explode(":", $this->FG_TABLE_EDITION[$sub_action][14]);
         if (array_key_exists($table_split[1] . '_hidden', $processed)) {
             $value = trim($processed[$table_split[1] . '_hidden']);
         } else {
@@ -2161,92 +1999,43 @@ class FormHandler
      */
     public function create_toppage($form_action)
     {
-        if ($form_action == "ask-edit" || $form_action == "edit" || $form_action == "add-content" ||
-            $form_action == "del-content") { ?>
-            <table class="toppage_maintable">
-                <tr>
-                    <td height="20" align="center">
-                        <font class="toppage_maintable_text">
-                            <?php
-                            if ($this->FG_ADITION_GO_EDITION == "yes-done") {
-                                echo '<font class="toppage_maintable_editmsg">' . $this->FG_ADITION_GO_EDITION_MESSAGE . '</font><br><br>';
-                            }
-                            if ($this->alarm_db_error_duplication) {
-                                echo '<font class="toppage_maintable_editmsg">' . gettext("ERROR_DUPLICATION") . ' ::' . $this->FG_TEXT_ERROR_DUPLICATION . '</font>';
-                            } else {
-                                echo $this->FG_INTRO_TEXT_EDITION;
-                            }
-                            ?>
-                            <br>
-                        </font>
-                    </td>
-                </tr>
-            </table>
-            <?php
-        } elseif ($form_action == "ask-add") {
-            if (strlen($this->FG_INTRO_TEXT_ADITION) > 1) {
-                ?>
-                <table class="toppage_askedit">
-                    <tr>
-                        <td height="40">
-                        <td height="48" align="center" valign="middle" class="textnegrita"><p>
-                                <font class="fontstyle_002">
-                                    <?php
-                                    echo $this->FG_INTRO_TEXT_ADITION ?> </font></p></td>
-                    </tr>
-                </table>
-                <?php
-            } else {
-                echo '<br>';
+        $html = '';
+        $msg = '';
+        if ($form_action === "ask-edit" || $form_action === "edit" || $form_action === "add-content" || $form_action === "del-content") {
+            if ($this->FG_ADITION_GO_EDITION == "yes-done") {
+                $msg = "<p class=\"danger\">$this->FG_ADITION_GO_EDITION_MESSAGE</p>";
             }
+            if ($this->alarm_db_error_duplication) {
+                $msg .= "<p class=\"danger\">$this->FG_TEXT_ERROR_DUPLICATION</p>";
+            } else {
+                $msg .= $this->FG_INTRO_TEXT_EDITION;
+            }
+            $html = "<div class='row pb-3 align-items-center'><div class='col'>$msg</div></div>";
+        } elseif ($form_action == "ask-add" && !empty($this->FG_INTRO_TEXT_ADITION) > 1) {
+            $html = "<div class='row pb-3 align-items-center'><div class='col'>$this->FG_INTRO_TEXT_ADITION</div></div>";
         }
+        echo $html;
     }
 
 
     /**
      * CREATE_ACTIONFINISH : Function to display result
-     *
+     * I think the only time this is used is if there is a database error when adding from A2B_entity_friend.php ???
      * @public
      */
     public function create_actionfinish($form_action)
     {
-        ?>
-        <TABLE cellSpacing=2 class="toppage_actionfinish">
-            <TR>
-                <TD class="form_head">
-                    <?php
-                    if ($form_action == "delete") { ?>
-                        <?php
-                        echo $this->FG_INSTANCE_NAME ?> Deletion
-                        <?php
-                    } elseif ($form_action == "add") { ?>
-                        INSERT NEW <?php
-                        echo $this->FG_INSTANCE_NAME ?>
-                        <?php
-                    } ?>
-                </TD>
-            </TR>
-            <TR>
-                <TD width="516" valign="top" class="tdstyle_001"><br>
-                    <div align="center"><strong>
-                            <?php
-                            if ($form_action == "delete") {
-                                echo $this->FG_INTRO_TEXT_DELETION;
-                            } elseif ($form_action == "add") {
-                                if (!empty($this->RESULT_QUERY)) {
-                                    echo $this->FG_TEXT_ADITION_CONFIRMATION;
-                                } else {
-                                    echo $this->FG_TEXT_ADITION_ERROR;
-                                }
-                            }
-                            ?>
-                        </strong></div>
-                    <br>
-                </TD>
-            </TR>
-        </TABLE>
-        <br><br><br><br><br>
-        <?php
+        if ($form_action === "delete") {
+            $msg1 = "$this->FG_INSTANCE_NAME " . _("Deletion");
+            $msg2 = $this->FG_INTRO_TEXT_DELETION;
+        } elseif ($form_action === "add") {
+            $msg1 = _("Insert New ") . $this->FG_INSTANCE_NAME;
+            $msg2 = empty($this->RESULT_QUERY) ? "<span class='danger'>$this->FG_TEXT_ADITION_ERROR</span>" : $this->FG_INTRO_TEXT_ADITION;
+        } else {
+            return;
+        }
+        $html = "<div class='row pb-3'><div class='col'><p>$msg1</p><p>$msg2</p></div></div>";
+        echo $html;
     }
 
     /**
@@ -2256,27 +2045,9 @@ class FormHandler
      */
     public function create_custom($form_action)
     {
-        ?>
-
-        <TABLE width="85%" class="toppage_customaction">
-            <TBODY>
-            <TR>
-                <TD class="form_head">
-                </TD>
-            </TR>
-            <TR>
-                <TD width="516" valign="top" class="tdstyle_001"><br>
-                    <div align="center"><strong><?php
-                            echo $form_action ?><?php
-                            echo gettext("Done"); ?>
-                        </strong></div>
-                    <br>
-                </TD>
-            </TR>
-            </TBODY>
-        </TABLE>
-        <br><br><br><br><br>
-        <?php
+        $msg = "$form_action " . _("Done");
+        $html = "<div class='row pb-3 align-items-center'><div class='col'><strong>$msg</strong></div></div>";
+        echo $html;
     }
 
     /**
@@ -2400,11 +2171,10 @@ class FormHandler
         }
 
         if ($pages > 1) {
-            //echo "<center><p>\n";
             if ($page != 1) {
-                $temp = str_replace('%s', 1 - 1, $url);
+                $temp = str_replace('%s', 0, $url);
                 echo "<a class=\"pagenav\" href=\"$temp\">{$this->lang['strfirst']}</a>\n";
-                $temp = str_replace('%s', $page - 1 - 1, $url);
+                $temp = str_replace('%s', $page - 2, $url);
                 echo "<a class=\"pagenav\" href=\"$temp\">{$this->lang['strprev']}</a>\n";
             }
 
@@ -2433,14 +2203,11 @@ class FormHandler
                 }
             }
             if ($page != $pages) {
-                $temp = str_replace('%s', $page + 1 - 1, $url);
+                $temp = str_replace('%s', $page, $url);
                 echo "<a class=\"pagenav\" href=\"$temp\">{$this->lang['strnext']}</a>\n";
                 $temp = str_replace('%s', $pages - 1, $url);
                 echo "<a class=\"pagenav\" href=\"$temp\">{$this->lang['strlast']}</a>\n";
             }
         }
     }
-
 }
-
-

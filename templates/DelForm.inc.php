@@ -208,7 +208,7 @@ function sendto(action, record, field_inst, instance) {
 		    <td width="50%" align="right" class="text">
 				<a href="#" onclick="sendto('delete');" class="cssbutton_big" title="<?= gettext("Remove this ");?> <?= $this->FG_INSTANCE_NAME; ?>">
 				    <img alt="" src="data:image/gif;base64,R0lGODlhDwAPAMQYAP+yPf+fEv+qLP+3Tf+pKv++Xf/Gcv+mJP+tNf+tMf+kH/+/YP+oJv+wO/+jHP/Ohf/WmP+vOv/cpv+kHf+iGf+jG/////Hw7P///wAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAABgALAAAAAAPAA8AAAVjIHaNZEmKF6auLJpiEvQYxQAgiTpiMm0Tk4pigsLMag2Co8KkFA0Lm8XCbBajDcFkWnXuBlkFk1vxpgACcYVcLqbHVKaDuFNXqwxGkUK5VyYMEQhFGAGGhxQHOS4tjTsmkDshADs="/>
-				    <?= $this->FG_DELETE_PAGE_CONFIRM_BUTTON; ?>
+				    <?= _("Delete") ?>
 				</a>
 			</td>
 		</tr>
