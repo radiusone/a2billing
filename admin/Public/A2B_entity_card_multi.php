@@ -47,7 +47,7 @@ if (!has_rights(ACX_CUSTOMER)) {
 
 getpost_ifset(array('nb_to_create', 'creditlimit', 'cardnum', 'addcredit', 'choose_tariff', 'gen_id', 'cardnum', 'choose_simultaccess',
     'choose_currency', 'choose_typepaid', 'creditlimit', 'enableexpire', 'expirationdate', 'expiredays', 'runservice', 'sip', 'iax',
-    'cardnumberlenght_list', 'tag', 'id_group', 'discount', 'id_seria', 'id_didgroup', 'vat', 'id_country'));
+    'cardnumberlength_list', 'tag', 'id_group', 'discount', 'id_seria', 'id_didgroup', 'vat', 'id_country'));
 
 $HD_Form->FG_FILTER_SEARCH_FORM = false;
 $HD_Form->FG_EDITION = false;
@@ -146,7 +146,7 @@ if ($nbcard > 0 && $action == "generate" && $nb_error == 0) {
     $instance_refill_table = new Table("cc_logrefill", $field_insert_refill);
 
     for ($k = 0; $k < $nbcard; $k++) {
-        $arr_card_alias = gen_card_with_alias("cc_card", 0, $cardnumberlenght_list);
+        $arr_card_alias = gen_card_with_alias("cc_card", 0, $cardnumberlength_list);
         $accountnumber = $arr_card_alias[0];
         $useralias = $arr_card_alias[1];
         if (!is_numeric($addcredit))
@@ -240,12 +240,12 @@ $list_country = $instance_table_country->get_list($HD_Form->DBHandle, $FG_TABLE_
 <tr>
     <td align="left" width="100%">
     <strong>1)</strong> <?php echo gettext("Length of card number :");?>
-    <select name="cardnumberlenght_list" size="1" class="form_input_select">
+    <select name="cardnumberlength_list" size="1" class="form_input_select">
     <?php
     foreach ($A2B -> cardnumber_range as $value) {
     ?>
         <option value='<?php echo $value ?>'
-        <?php if ($value == $cardnumberlenght_list) echo "selected";
+        <?php if ($value == $cardnumberlength_list) echo "selected";
         ?>> <?php echo $value." ".gettext("Digits");?> </option>
 
     <?php

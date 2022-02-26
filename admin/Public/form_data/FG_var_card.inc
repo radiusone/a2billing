@@ -47,7 +47,7 @@ getpost_ifset(array('id', 'username', 'useralias', 'uipass', 'credit', 'language
     'id_didgroup','id_campaign', 'callback', 'simultaccess', 'currency','typepaid', 'creditlimit',
     'lastname', 'firstname', 'email', 'address','city', 'state', 'country', 'zipcode', 'phone', 'fax', 'inuse',
     'max_concurrent', 'cid', 'runservice', 'firstusedate','expirationdate', 'enableexpire', 'expiredays', 'sip_buddy',
-    'iax_buddy','popup_select', 'vat', 'autorefill', 'initialbalance', 'mac_addr', 'cardnumberlenght_list',
+    'iax_buddy','popup_select', 'vat', 'autorefill', 'initialbalance', 'mac_addr', 'cardnumberlength_list',
     'status', 'block', 'lock_pin', 'template_invoice', 'template_outstanding', 'description', 'voicemail_activated',
     'voicemail_permitted','email_notification','credit_notification','notify_email', 'id_seria',
     'company_name' , 'company_website' , 'vat_rn' , 'traffic' , 'traffic_target','discount','restriction' ));
@@ -324,8 +324,8 @@ if (has_rights (ACX_MODIFY_CUSTOMERS) && !($popup_select>=1)) {
     $maxi3  = '';
 
     if (isset($form_action) && $form_action=="ask-add") {
-        if (!is_numeric($cardnumberlenght_list))    $cardnumberlenght_list = LEN_CARDNUMBER;
-        $array_card_generated  = gen_card_with_alias("cc_card", 0, $cardnumberlenght_list);
+        if (!is_numeric($cardnumberlength_list))    $cardnumberlength_list = LEN_CARDNUMBER;
+        $array_card_generated  = gen_card_with_alias("cc_card", 0, $cardnumberlength_list);
         $maxi = "value='".$array_card_generated[0]."'";
         $maxi2 = "value='".$array_card_generated[1]."'";
         $pass = MDP_NUMERIC(5).MDP_STRING(15);

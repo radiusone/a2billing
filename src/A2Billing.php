@@ -378,7 +378,7 @@ class A2Billing
             define("CARDNUMBER_LENGTH_MAX", $this->cardnumber_range[count($this->cardnumber_range) - 1]);
             define("LEN_CARDNUMBER", CARDNUMBER_LENGTH_MIN);
         } else {
-            echo gettext("Invalid card number lenght defined in configuration.");
+            echo gettext("Invalid card number length defined in configuration.");
             exit;
         }
         if (!isset($this->config['global']['len_aliasnumber']))     $this->config['global']['len_aliasnumber'] = 15;

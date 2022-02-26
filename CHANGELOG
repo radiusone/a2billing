@@ -1667,7 +1667,7 @@ option in a2billing.conf
 jump_voucher_if_min_credit = yes or no
 
 
-#### MANAGE MULTI LENGHT CARD NUMBER
+#### MANAGE MULTI LENGTH CARD NUMBER
 ********************************************************************
 New parameter :
 [global]
@@ -1677,14 +1677,14 @@ New parameter :
 interval_len_cardnumber = 10-15
 
 
-We will support more than 1 lenght for the cardnumber.
+We will support more than 1 length for the cardnumber.
 Admin Web interface :
 - Create customer :
-	Add a drop-down button in the top page (below the help) to select the lenght for the card creation
-	-> if the drop-down is selected the page will refresh with the new value for the card lenght
+	Add a drop-down button in the top page (below the help) to select the length for the card creation
+	-> if the drop-down is selected the page will refresh with the new value for the card length
 	by default we will use the minimum value of interval_len_cardnumber
 - Generate Customer :
-	Add a point 13) as a drop-down button, select the card lenght but no refresh needed here
+	Add a point 13) as a drop-down button, select the card length but no refresh needed here
 - AGI
 
 #### EXEC_SETLANGUAGE

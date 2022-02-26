@@ -2130,7 +2130,7 @@ msgid "NO DISCOUNT"
 msgstr "FARA DISCOUNT"
 
 #: lib/Class.A2Billing.php:386
-msgid "Invalid card number lenght defined in configuration."
+msgid "Invalid card number length defined in configuration."
 msgstr "lungimea numarului caractere card invalid in configurare"
 
 #: lib/Class.A2Billing.php:3418

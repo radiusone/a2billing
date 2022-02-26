@@ -781,7 +781,7 @@ class FormHandler
     public function FieldViewElement($fieldname, $add_id = 1)
     {
         $this->FG_COL_QUERY = $fieldname;
-        // For each query we need to have the ID at the lenght FG_NB_TABLE_COL
+        // For each query we need to have the ID at the length FG_NB_TABLE_COL
         if ($add_id) {
             $this->FG_COL_QUERY .= ", " . $this->FG_TABLE_ID;
         }

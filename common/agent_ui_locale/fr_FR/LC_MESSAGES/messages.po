@@ -1328,7 +1328,7 @@ msgid "NO DISCOUNT"
 msgstr "AUCUNE REMISE"
 
 #: lib/Class.A2Billing.php:386
-msgid "Invalid card number lenght defined in configuration."
+msgid "Invalid card number length defined in configuration."
 msgstr "Longueur de numéro de carte définis dans la configuration invalide."
 
 #: lib/Class.A2Billing.php:3376

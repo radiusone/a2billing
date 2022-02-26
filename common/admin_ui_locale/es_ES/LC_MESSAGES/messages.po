@@ -2126,7 +2126,7 @@ msgid "NO DISCOUNT"
 msgstr "SIN DESCUENTO"
 
 #: lib/Class.A2Billing.php:386
-msgid "Invalid card number lenght defined in configuration."
+msgid "Invalid card number length defined in configuration."
 msgstr "Longitud del número inválido de tarjeta definidos en la configuración."
 
 #: lib/Class.A2Billing.php:3418

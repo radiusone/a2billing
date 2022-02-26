@@ -619,9 +619,9 @@ if (!$popup_select && $form_action === "ask-add"):?>
     <div class="col">
         <form action="?form_action=ask-add&section=1" method="post" name="cardform">
             <label for="cardnumber_length"><?= _("Change the account number length") ?></label>
-            <select name="cardnumber_lenght_list" id="cardnumber_length" onchange="this.form.submit()">
+            <select name="cardnumber_length_list" id="cardnumber_length" onchange="this.form.submit()">
                 <?php foreach ($A2B->cardnumber_range as $v): ?>
-                <option value="$v" <?php if ($v == $cardnumberlenght_list): ?>selected="selected"<?php endif ?>><?= $v ?> <?= _("Digits") ?></option>
+                <option value="$v" <?php if ($v == $cardnumberlength_list): ?>selected="selected"<?php endif ?>><?= $v ?> <?= _("Digits") ?></option>
                 <?php endforeach ?>
             </select>
         </form>

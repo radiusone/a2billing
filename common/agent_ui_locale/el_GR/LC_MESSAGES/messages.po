@@ -1319,7 +1319,7 @@ msgid "NO DISCOUNT"
 msgstr "ΧΩΡΙΣ ΕΚΠΤΩΣΗ"
 
 #: lib/Class.A2Billing.php:386
-msgid "Invalid card number lenght defined in configuration."
+msgid "Invalid card number length defined in configuration."
 msgstr "Εχει οριστεί λανθασμένο μήκος κάρτας στις ρυθμίσεις"
 
 #: lib/Class.A2Billing.php:3376

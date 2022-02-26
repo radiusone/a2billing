@@ -1318,7 +1318,7 @@ msgid "NO DISCOUNT"
 msgstr "没有折扣"
 
 #: lib/Class.A2Billing.php:386
-msgid "Invalid card number lenght defined in configuration."
+msgid "Invalid card number length defined in configuration."
 msgstr "在配置中定义无效卡号长度"
 
 #: lib/Class.A2Billing.php:3376

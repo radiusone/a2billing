@@ -55,12 +55,12 @@ INSERT INTO cc_config (config_title, config_key, config_value, config_descriptio
 
 
 
--- Change lenght of field for provisioning system
+-- Change length of field for provisioning system
 ALTER TABLE cc_card_group ALTER COLUMN name TYPE varchar(50);
 ALTER TABLE cc_trunk ALTER COLUMN trunkcode TYPE varchar(50);
 
 
--- change lenght on Notification
+-- change length on Notification
 ALTER TABLE cc_notification ALTER COLUMN key_value TYPE VARCHAR(255);
 
 

@@ -540,10 +540,10 @@ if (!$popup_select && $form_action == "ask-add") {
 
             <font class="viewhandler_filter_on"><?php echo gettext("Change the Card Number Length")?> :</font>
             <?= $HD_Form->csrf_inputs() ?>
-            <select name="cardnumberlenght_list" size="1" class="form_input_select" onChange="submitform()">
+            <select name="cardnumberlength_list" size="1" class="form_input_select" onChange="submitform()">
             <?php foreach ($A2B -> cardnumber_range as $value) { ?>
                 <option value='<?php echo $value ?>'
-                <?php if ($value == $cardnumberlenght_list) echo "selected";
+                <?php if ($value == $cardnumberlength_list) echo "selected";
                 ?>> <?php echo $value." ".gettext("Digits");?> </option>
             <?php } ?>
             </select>

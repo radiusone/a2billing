@@ -2302,7 +2302,7 @@ msgid "NO DISCOUNT"
 msgstr " TIDAK DISKON"
 
 #: lib/Class.A2Billing.php:386
-msgid "Invalid card number lenght defined in configuration."
+msgid "Invalid card number length defined in configuration."
 msgstr "Panjang nomor kartu tidak benar ditetapkan dalam konfigurasi."
 
 #: lib/Class.A2Billing.php:3418

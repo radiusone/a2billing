@@ -2450,7 +2450,7 @@ msgid "NO DISCOUNT"
 msgstr "Немає SIP аккаунта"
 
 #: lib/Class.A2Billing.php:386
-msgid "Invalid card number lenght defined in configuration."
+msgid "Invalid card number length defined in configuration."
 msgstr "В конфігурації визначена неправильна довжина номера картки."
 
 #: lib/Class.A2Billing.php:3418
