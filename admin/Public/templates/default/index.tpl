@@ -5,7 +5,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<link href="../lib/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css"/>
 	<script src="../lib/bootstrap/js/bootstrap.js"></script>
-	<script src="./javascript/jquery/jquery-1.2.6.min.js"></script>
+	<script src="./javascript/jquery/jquery.js"></script>
 	<title>{$CCMAINTITLE}</title>
 </head>
 <body>
