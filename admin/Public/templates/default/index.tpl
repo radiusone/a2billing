@@ -1,111 +1,69 @@
-<HTML>
-<HEAD>
-	<link rel="shortcut icon" href="images/ico/a2billing-icon-32x32.ico">
-	<title>..:: {$CCMAINTITLE} ::..</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		{if ($CSS_NAME!="" && $CSS_NAME!="default")}
-			   <link href="templates/default/css/{$CSS_NAME}.css" rel="stylesheet" type="text/css">
-		{else}
-			   <link href="templates/default/css/main.css" rel="stylesheet" type="text/css">
-			   <link href="templates/default/css/menu.css" rel="stylesheet" type="text/css">
-			   <link href="templates/default/css/style-def.css" rel="stylesheet" type="text/css">
-		{/if}
-        <script type="text/javascript" src="./javascript/jquery/jquery-1.2.6.min.js"></script>
-</HEAD>
-
-<BODY leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
-
-
-{literal}
-<script LANGUAGE="JavaScript">
-<!--
-	function test()
-	{
-		if(document.form.pr_login.value=="" || document.form.pr_password.value=="")
-		{
-			alert("You must enter an user and a password!");
-			return false;
-		}
-		else
-		{
-			return true;
-		}
-	}
--->
-</script>
-
-{/literal}
-
-	<form name="form" method="POST" action="PP_intro.php" onsubmit="return test()">
-	<input type="hidden" name="done" value="submit_log">
-
-
-	<div id="login-wrapper" class="login-border-up">
-	<div class="login-border-down">
-	<div class="login-border-center">
-	<center>
-	<table border="0" cellpadding="3" cellspacing="12">
-	<tr>
-		<td class="login-title" colspan="2">
-			 {php} echo gettext("AUTHENTICATION");{/php}
-		</td>
-	</tr>
-	<tr>
-		<td ><img src="templates/{$SKIN_NAME}/images/kicons/lock_bg.png"></td>
-		<td align="center" style="padding-right: 10px">
-			<table width="90%">
-			<tr align="center">
-				<td align="left"><font size="2" face="Arial, Helvetica, Sans-Serif"><b>{php} echo gettext("User");{/php}:</b></font></td>
-				<td><input class="form_input_text" type="text" name="pr_login" size="15"></td>
-			</tr>
-			<tr align="center">
-				<td align="left"><font face="Arial, Helvetica, Sans-Serif" size="2"><b>{php} echo gettext("Password");{/php}:</b></font></td>
-				<td><input class="form_input_text" type="password" name="pr_password" size="15"></td>
-			</tr>
-            <tr >
-                <td colspan="2"> &nbsp;</td>
-            </tr>
-			<tr align="right" >
-            <td>
-                <select name="ui_language"  id="ui_language" class="icon-menu form_input_select">
-                    <option style="background-image:url(templates/{$SKIN_NAME}/images/flags/gb.gif);" value="english" {php} if(LANGUAGE=="english") echo "selected";{/php} >English</option>
-                    <option style="background-image:url(templates/{$SKIN_NAME}/images/flags/br.gif);" value="brazilian" {php} if(LANGUAGE=="brazilian") echo "selected";{/php}>Brazilian</option>
-                    <option style="background-image:url(templates/{$SKIN_NAME}/images/flags/ro.gif);" value="romanian" {php} if(LANGUAGE=="romanian") echo "selected";{/php} >Romanian</option>
-                    <option style="background-image:url(templates/{$SKIN_NAME}/images/flags/fr.gif);" value="french" {php} if(LANGUAGE=="french") echo "selected";{/php} >French</option>
-                    <option style="background-image:url(templates/{$SKIN_NAME}/images/flags/gr.gif);" value="greek" {php} if(LANGUAGE=="greek") echo "selected";{/php} >Greek</option>
-                </select>
-            </td>
-			<td><input type="submit" name="submit" value="{php} echo gettext("LOGIN");{/php}" class="form_input_button"></td>
-			</tr>
-
-			</table>
-		</td>
-	</tr>
-  	</table>
-  	</center>
-  	</div>
-  	</div>
-
-  	<div style="color:#BC2222;font-family:Arial,Helvetica,sans-serif;font-size:11px;font-weight:bold;padding-left:10px;" >
-  	{if ($error == 1)}
-			{php} echo gettext("AUTHENTICATION REFUSED, please check your user/password!");{/php}
-    {elseif ($error==2)}
-			{php} echo gettext("INACTIVE ACCOUNT, Please activate your account!");{/php}
-    {elseif ($error==3)}
-			{php} echo gettext("BLOCKED ACCOUNT, Please contact the administrator!");{/php}
-    {/if}
-    </div>
-
-    <div id="footer_index"><div style=" border: solid 1px #F4F4F4; text-align:center;">{$COPYRIGHT}</div></div>
-
-  	</div>
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="shortcut icon" href="data:image/gif;base64,R0lGODlhIAAgAOMIAA9ztTSKwUef0Gyw2I/D4rLW6s7m8/X6/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEKAAgALAAAAAAgACAAAAT+EB1Dhrg46y0GMQeCGBZnnh1Ioiw3HEQra0U5z7ZLFDHm5RtgZleobQgVk/BC5C13y2cxeYJyAIFhcakZbDOBAGCc9Ro7XCbvIsaO34WVgJj2GgRv9ztAwQbichphfwcDeW1jAgaIBQcHeG9mbQQHBYd5O3mNj5qOhgAvBpdvFZ2PARYAm5+hiIgABK+bArOrY5Sie3kDso60vrawE6NkvY+1nqQExHlwwM+FzK/Nwou4cxOQ1Hrbxd5+3WTdqNPh1OWgKp/h2syYjpW8zaix2+iJIPAGRYDL4+YA5uSbUOPeN4CDDObpALDhtg8KHTYTEOKOxIaKJEyIkbCjx48E2CREAAA7"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<link href="../lib/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css"/>
+	<script src="../lib/bootstrap/js/bootstrap.js"></script>
+	<script src="./javascript/jquery/jquery-1.2.6.min.js"></script>
+	<title>{$CCMAINTITLE}</title>
+</head>
+<body>
+	<form method="post" action="PP_intro.php">
+		<input type="hidden" name="done" value="submit_log"/>
+		<div class="modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="authTitle" aria-hidden="false">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h3 class="modal-title" id="authTitle">{_("Authentication")}</h3>
+					</div>
+					<div class="modal-body">
+						<div class="container-fluid">
+							{if !empty($error)}
+							<div class="row pb-3 bg-danger">
+								{if $error == 1}
+									{_("AUTHENTICATION REFUSED, please check your user/password!")}
+								{elseif $error == 2}
+									{_("INACTIVE ACCOUNT, Please activate your account!")}
+								{elseif $error == 3}
+									{_("BLOCKED ACCOUNT, Please contact the administrator!")}
+								{/if}
+							</div>
+							{/if}
+							<div class="row pb-3">
+								<label class="col-4 col-form-label" for="pr_login">{_("User")}</label>
+								<div class="col">
+									<input type="text" name="pr_login" id="pr_login" autofocus="autofocus" autocomplete="on" class="form-control"/>
+								</div>
+							</div>
+							<div class="row pb-3">
+								<label class="col-4 col-form-label" for="pr_password">{_("Password")}</label>
+								<div class="col">
+									<input type="password" name="pr_password" id="pr_password" class="form-control"/>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer justify-content-between">
+						<select name="ui_language" id="ui_language" class="form-select">
+							<option value="english" {if LANGUAGE === "english"}selected="selected"{/if}>🇬🇧 {_("English")}</option>
+							<option value="brazilian" {if LANGUAGE === "brazilian"}selected="selected"{/if}>🇧🇷 {_("Brazilian")}</option>
+							<option value="romanian" {if LANGUAGE === "romanian"}selected="selected"{/if}>🇷🇴 {_("Romanian")}</option>
+							<option value="french" {if LANGUAGE === "french"}selected="selected"{/if}>🇫🇷 {_("French")}</option>
+							<option value="spanish" {if LANGUAGE === "spanish"}selected="selected"{/if}>🇪🇸 {_("Spanish")}</option>
+							<option value="greek" {if LANGUAGE === "greek"}selected="selected"{/if}>🇬🇷 {_("Greek")}</option>
+							<option value="italian" {if LANGUAGE === "italian"}selected="selected"{/if}>🇮🇹 {_("Italian")}</option>
+							<option value="chinese" {if LANGUAGE === "chinese"}selected="selected"{/if}>🇨🇳 {_("Chinese")}</option>
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
 	</form>
-
-{literal}
-<script LANGUAGE="JavaScript">
-	document.form.pr_login.focus();
-        $("#ui_language").change(function () {
-          self.location.href= "index.php?ui_language="+$("#ui_language option:selected").val();
-        });
-</script>
-{/literal}
+	<script>
+		$("#ui_language").live("change", function () {
+			self.location.href = "?ui_language=" + $("#ui_language option:selected").val();
+		});
+	</script>
+</body>
+</html>
