@@ -11,7 +11,7 @@
 <body>
 	<form method="post" action="PP_intro.php">
 		<input type="hidden" name="done" value="submit_log"/>
-		<div class="modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="authTitle" aria-hidden="false">
+		<div class="modal show" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="authTitle" aria-hidden="false">
 			<div class="modal-dialog modal-dialog-centered">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -55,6 +55,7 @@
 							<option value="italian" {if LANGUAGE === "italian"}selected="selected"{/if}>🇮🇹 {_("Italian")}</option>
 							<option value="chinese" {if LANGUAGE === "chinese"}selected="selected"{/if}>🇨🇳 {_("Chinese")}</option>
 						</select>
+						<button type="submit" class="btn btn-primary">{_("Log In")}</button>
 					</div>
 				</div>
 			</div>
