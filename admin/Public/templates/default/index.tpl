@@ -11,7 +11,7 @@
 <body>
 	<form method="post" action="PP_intro.php">
 		<input type="hidden" name="done" value="submit_log"/>
-		<div class="modal show d-block" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="authTitle" aria-hidden="false">
+		<div class="modal show d-block shadow" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="authTitle" aria-hidden="false">
 			<div class="modal-dialog modal-dialog-centered">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -20,7 +20,9 @@
 					<div class="modal-body">
 						<div class="container-fluid">
 							{if !empty($error)}
-							<div class="row pb-3 bg-danger">
+							<div class="row pb-3">
+								<div class="col p-3 bg-danger bg-gradient text-white">
+									<strong>
 								{if $error == 1}
 									{_("AUTHENTICATION REFUSED, please check your user/password!")}
 								{elseif $error == 2}
@@ -28,6 +30,8 @@
 								{elseif $error == 3}
 									{_("BLOCKED ACCOUNT, Please contact the administrator!")}
 								{/if}
+									</strong>
+								</div>
 							</div>
 							{/if}
 							<div class="row pb-3">
