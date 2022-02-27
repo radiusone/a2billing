@@ -203,7 +203,7 @@ class Table
         $sql_orderby = "";
         $sens = strtoupper($sens ?? "ASC");
         if (!empty($order) && ($sens === "ASC" || $sens === "DESC")) {
-            $order = $this->quote_identifier($order);
+            $order = $this->quote_identifier(trim($order));
             $sql_orderby = " ORDER BY $order $sens";
         }
 
@@ -213,7 +213,7 @@ class Table
         }
 
         if (!empty($sql_group)) {
-            $sql_group = $this->quote_identifier($sql_group);
+            $sql_group = $this->quote_identifier(trim($sql_group));
             $sql_group = " GROUP BY $sql_group";
         }
 
