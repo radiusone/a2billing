@@ -102,7 +102,6 @@ $HD_Form -> AddSearchElement_C1(gettext("FIRSTNAME"),'firstname','firstnametype'
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO")." ".strtoupper($HD_Form->FG_INSTANCE_NAME)." ".gettext("CREATED!");
 $HD_Form -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
 $HD_Form -> CV_TEXT_TITLE_ABOVE_TABLE = '';
-$HD_Form -> CV_DISPLAY_FILTER_ABOVE_TABLE = false;
 
 $HD_Form -> FG_OTHER_BUTTON1 = true;
 $HD_Form -> FG_EDITION = true;

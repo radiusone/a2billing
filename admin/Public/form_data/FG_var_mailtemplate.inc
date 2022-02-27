@@ -113,7 +113,6 @@ $HD_Form -> FieldViewElement ('id, mailtype, fromemail, subject');
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO ".strtoupper($HD_Form->FG_INSTANCE_NAME)." CREATED!");
 $HD_Form -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
 $HD_Form -> CV_TEXT_TITLE_ABOVE_TABLE = '';
-$HD_Form -> CV_DISPLAY_FILTER_ABOVE_TABLE = false;
 
 if ($popup_select >= 1) {
     $HD_Form -> FG_OTHER_BUTTON1 = true;

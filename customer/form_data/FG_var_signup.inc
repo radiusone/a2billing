@@ -134,7 +134,6 @@ foreach ($currencies_list as $key => $cur_value) {
 
 $HD_Form->CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
 $HD_Form->CV_TEXT_TITLE_ABOVE_TABLE = '';
-$HD_Form->CV_DISPLAY_FILTER_ABOVE_TABLE = false;
 $HD_Form->FG_LIMITE_DISPLAY = 10;
 if (!($popup_select >= 1))
 	$HD_Form->FG_EXPORT_CSV = true;

@@ -92,7 +92,6 @@ $HD_Form -> FieldViewElement ('name, periode, type, `maxvalue`, minvalue, status
 $HD_Form -> CV_NO_FIELDS  = gettext("There are no Alarms Created");
 $HD_Form -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
 $HD_Form -> CV_TEXT_TITLE_ABOVE_TABLE = '';
-$HD_Form -> CV_DISPLAY_FILTER_ABOVE_TABLE = false;
 
 
 $HD_Form -> FG_EDITION = true;

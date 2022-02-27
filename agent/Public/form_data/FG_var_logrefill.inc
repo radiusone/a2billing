@@ -68,7 +68,6 @@ $HD_Form -> FieldViewElement ('cc_logrefill.id, username, date, cc_logrefill.des
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO ".strtoupper($HD_Form->FG_INSTANCE_NAME)." CREATED!");
 $HD_Form -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
 $HD_Form -> CV_TEXT_TITLE_ABOVE_TABLE = '';
-$HD_Form -> CV_DISPLAY_FILTER_ABOVE_TABLE = false;
 $HD_Form -> FG_FILTER_APPLY = true;
 $HD_Form -> FG_FILTERFIELD = 'cardnumber';
 $HD_Form -> FG_FILTERFIELDNAME = 'Account number';

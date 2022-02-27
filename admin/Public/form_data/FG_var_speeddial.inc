@@ -76,7 +76,6 @@ $HD_Form -> FieldViewElement ('cc_speeddial.speeddial, cc_speeddial.phone, cc_sp
 $HD_Form -> CV_NO_FIELDS  = gettext("NO SPEED DIALS HAVE BEEN CREATED!");
 $HD_Form -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
 $HD_Form -> CV_TEXT_TITLE_ABOVE_TABLE = '';
-$HD_Form -> CV_DISPLAY_FILTER_ABOVE_TABLE = false;
 
 
 $HD_Form -> FG_EDITION = true;

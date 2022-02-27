@@ -98,7 +98,6 @@ $HD_Form -> FieldViewElement ('id_did, id_did, id_cc_card, id_cc_card, reservati
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO DID IN USE!");
 $HD_Form -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
 $HD_Form -> CV_TEXT_TITLE_ABOVE_TABLE = '';
-$HD_Form -> CV_DISPLAY_FILTER_ABOVE_TABLE = false;
 $HD_Form -> CV_FOLLOWPARAMETERS ="&posted=$posted&did=$did&inuse=$inuse";
 
 $HD_Form -> FG_ADDITION = false;

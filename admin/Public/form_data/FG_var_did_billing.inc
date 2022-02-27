@@ -72,7 +72,6 @@ $HD_Form -> SQL_GROUP = " GROUP BY cc_card.username, cc_did.did, date ";
 $HD_Form -> CV_NO_FIELDS  = gettext("NO DID BILLING HAS BEEN CREATED!");
 $HD_Form -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
 $HD_Form -> CV_TEXT_TITLE_ABOVE_TABLE = '';
-$HD_Form -> CV_DISPLAY_FILTER_ABOVE_TABLE = false;
 
 
 $HD_Form -> FG_EDITION = false;

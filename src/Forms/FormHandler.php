@@ -37,8 +37,6 @@ class FormHandler
     public $CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = true; // TODO: I don't think this is actually used anywhere
     public $CV_TITLE_TEXT = '';
     public $CV_TEXT_TITLE_ABOVE_TABLE = "DIRECTORY"; // TODO: I don't think this is actually used anywhere
-    public $CV_DISPLAY_FILTER_ABOVE_TABLE = true;
-    public $CV_FILTER_ABOVE_TABLE_PARAM = "?id=";
     public $CV_FOLLOWPARAMETERS = '';
     public $CV_DO_ARCHIVE_ALL = false;
 

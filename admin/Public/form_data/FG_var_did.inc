@@ -82,7 +82,6 @@ $HD_Form -> FieldViewElement ('did, iduser, billingtype, startingdate, id_cc_did
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE ARE NO ".strtoupper($HD_Form->FG_INSTANCE_NAME)." CREATED!");
 $HD_Form -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
 $HD_Form -> CV_TEXT_TITLE_ABOVE_TABLE = '';
-$HD_Form -> CV_DISPLAY_FILTER_ABOVE_TABLE = false;
 
 $HD_Form -> FG_ADDITION = true;
 $HD_Form -> FG_EDITION = true;

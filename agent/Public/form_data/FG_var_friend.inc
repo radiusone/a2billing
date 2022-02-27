@@ -106,8 +106,6 @@ $HD_Form -> FieldViewElement ("id_cc_card, $table_name.name, accountcode, secret
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO ".strtoupper($HD_Form->FG_INSTANCE_NAME)." CREATED!");
 $HD_Form -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
 $HD_Form -> CV_TEXT_TITLE_ABOVE_TABLE = '';
-$HD_Form -> CV_DISPLAY_FILTER_ABOVE_TABLE = false;
-$HD_Form -> CV_FILTER_ABOVE_TABLE_PARAM = "?friend_id=";
 $HD_Form -> FG_LIMITE_DISPLAY = 10;
 
 if (isset($friend_id)  &&  (strlen($friend_id)>0)){

@@ -60,7 +60,6 @@ $HD_Form -> FG_TABLE_CLAUSE = "usedcardnumber='".$_SESSION["pr_login"]."'";
 $HD_Form -> CV_NO_FIELDS  = gettext("No vouchers have been used!");
 $HD_Form -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
 $HD_Form -> CV_TEXT_TITLE_ABOVE_TABLE = '';
-$HD_Form -> CV_DISPLAY_FILTER_ABOVE_TABLE = false;
 $HD_Form -> FG_EXPORT_CSV = false;
 
 $HD_Form -> FG_EDITION = false;

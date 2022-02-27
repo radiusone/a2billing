@@ -89,7 +89,6 @@ $HD_Form_c -> FieldViewElement ('id_cc_card, username, cc_charge.creationdate, a
 $HD_Form_c -> CV_NO_FIELDS  = gettext("THERE IS NO ".strtoupper($HD_Form_c->FG_INSTANCE_NAME)." CREATED!");
 $HD_Form_c -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
 $HD_Form_c -> CV_TEXT_TITLE_ABOVE_TABLE = '';
-$HD_Form_c -> CV_DISPLAY_FILTER_ABOVE_TABLE = false;
 
 
 $HD_Form_c -> FG_EDITION = true;

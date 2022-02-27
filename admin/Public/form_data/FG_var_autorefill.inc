@@ -61,7 +61,6 @@ $HD_Form->FieldViewElement('daterun, totalcardperform, totalcredit');
 $HD_Form->CV_NO_FIELDS = gettext("THERE IS NO AUTOREFILL REPORT CREATED!");
 $HD_Form->CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
 $HD_Form->CV_TEXT_TITLE_ABOVE_TABLE = '';
-$HD_Form->CV_DISPLAY_FILTER_ABOVE_TABLE = false;
 
 $HD_Form->FG_EDITION = false;
 $HD_Form->FG_DELETION = false;
