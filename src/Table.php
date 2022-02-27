@@ -205,11 +205,11 @@ class Table
         if (!empty($order) && ($sens === "ASC" || $sens === "DESC")) {
             $order_columns = explode(",", $order);
             foreach ($order_columns as &$col) {
-                if (str_contains($col, ".")) {
-                    [$table, $column] = explode(".", $col);
-                    $col = $this->quote_identifier(trim($table)) . "." . $this->quote_identifier(trim($column));
-                }
-                $col = $this->quote_identifier($col);
+                $col = str_replace(
+                    ".",
+                    $this->quote_identifier("."),
+                    $this->quote_identifier(trim($col))
+                );
             }
             $order = implode(",", $order_columns);
             $sql_orderby = " ORDER BY $order $sens";
