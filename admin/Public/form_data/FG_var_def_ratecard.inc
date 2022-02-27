@@ -188,14 +188,6 @@ $HD_Form->FG_TABLE_DEFAULT_SENS = "ASC";
 
 $HD_Form->FG_FILTER_SEARCH_SESSION_NAME = 'entity_ratecard_selection';
 
-if (!$popup_select) {
-    $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
-    $HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_def_ratecard.php?form_action=ask-add&atmenu=ratecard&section=" . $_SESSION["menu_section"];
-    $HD_Form->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add Rate");
-    $HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path . "/world_add.png";
-}
-
-
 $musiconhold_list = getMusicOnHold_List();
 $yesno = getYesNoList();
 
@@ -219,6 +211,10 @@ if (!$popup_select) {
     } else {
         $HD_Form->FieldViewElement('cc_prefix.destination, cc_ratecard.dialprefix, cc_ratecard.buyrate, cc_ratecard.rateinitial, cc_ratecard.startdate, cc_ratecard.stopdate, cc_ratecard.initblock, cc_ratecard.connectcharge, cc_ratecard.id_trunk , cc_ratecard.idtariffplan ');
     }
+    $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
+    $HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_def_ratecard.php?form_action=ask-add&atmenu=ratecard&section=" . $_SESSION["menu_section"];
+    $HD_Form->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add Rate");
+    $HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path . "/world_add.png";
 } else {
     $HD_Form->FG_LIMITE_DISPLAY = 7;
     $HD_Form->CV_FOLLOWPARAMETERS = "&popup_select=" . $popup_select . "&popup_formname=" . $popup_formname . "&popup_fieldname=" . $popup_fieldname;

@@ -219,13 +219,13 @@ class Table
 
         $QUERY = $sql . $sql_clause . $sql_group;
 
-        if (str_contains($QUERY, '%ORDER%')) {
+        if (!str_contains($QUERY, '%ORDER%')) {
             $QUERY .= $sql_orderby;
         } else {
             $QUERY = str_replace("%ORDER%", $sql_orderby, $QUERY);
         }
 
-        if (str_contains($QUERY, '%LIMIT%')) {
+        if (!str_contains($QUERY, '%LIMIT%')) {
             $QUERY .= $sql_limit;
         } else {
             $QUERY = str_replace("%LIMIT%", $sql_limit, $QUERY);
