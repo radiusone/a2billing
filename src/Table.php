@@ -211,7 +211,7 @@ class Table
                 }
                 $col = $this->quote_identifier($col);
             }
-            $order = $this->quote_identifier(trim($order));
+            $order = implode(",", $order_columns);
             $sql_orderby = " ORDER BY $order $sens";
         }
 
@@ -228,7 +228,7 @@ class Table
                     [$table, $column] = explode(".", $col);
                     $col = $this->quote_identifier(trim($table)) . "." . $this->quote_identifier(trim($column));
                 }
-                $col = $this->quote_identifier($col);
+                $col = $this->quote_identifier(trim($col));
             }
             $sql_group = implode(",", $group_columns);
             $sql_group = " GROUP BY $sql_group";
