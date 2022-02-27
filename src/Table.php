@@ -203,6 +203,14 @@ class Table
         $sql_orderby = "";
         $sens = strtoupper($sens ?? "ASC");
         if (!empty($order) && ($sens === "ASC" || $sens === "DESC")) {
+            $order_columns = explode(",", $order);
+            foreach ($order_columns as &$col) {
+                if (str_contains($col, ".")) {
+                    [$table, $column] = explode(".", $col);
+                    $col = $this->quote_identifier(trim($table)) . "." . $this->quote_identifier(trim($column));
+                }
+                $col = $this->quote_identifier($col);
+            }
             $order = $this->quote_identifier(trim($order));
             $sql_orderby = " ORDER BY $order $sens";
         }
@@ -213,7 +221,16 @@ class Table
         }
 
         if (!empty($sql_group)) {
-            $sql_group = $this->quote_identifier(trim($sql_group));
+            $sql_group = str_ireplace("GROUP BY ", "", $sql_group);
+            $group_columns = explode(",", $sql_group);
+            foreach($group_columns as &$col) {
+                if (str_contains($col, ".")) {
+                    [$table, $column] = explode(".", $col);
+                    $col = $this->quote_identifier(trim($table)) . "." . $this->quote_identifier(trim($column));
+                }
+                $col = $this->quote_identifier($col);
+            }
+            $sql_group = implode(",", $group_columns);
             $sql_group = " GROUP BY $sql_group";
         }
 
