@@ -66,7 +66,7 @@ for ($k=0;$k<=9;$k++)
 $HD_Form -> AddViewElement(gettext("SPEED DIAL"), "cc_speeddial.speeddial", "10%", "center", "sort", "26");
 $HD_Form -> AddViewElement(gettext("PHONE NUMBER"), "cc_speeddial.phone", "20%", "center", "sort", "26");
 $HD_Form -> AddViewElement(gettext("NAME"), "cc_speeddial.name", "10%", "center", "sort", "26");
-$HD_Form -> AddViewElement(gettext("ACCOUNT"), " cc_speeddial.id_cc_card", "15%", "center", "sort", "", "30", "", "", "", "", "linktocustomer_id");
+$HD_Form -> AddViewElement(gettext("ACCOUNT"), " cc_speeddial.id_cc_card", "15%", "center", "sort", "", "30", "", "", "", "", "display_customer_id_link");
 $HD_Form -> AddViewElement(gettext("DATE"), "cc_speeddial.creationdate", "20%", "center", "sort", "16", "", "", "", "", "", "display_dateformat");
 
 

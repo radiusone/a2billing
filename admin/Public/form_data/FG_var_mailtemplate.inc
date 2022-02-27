@@ -2,6 +2,7 @@
 
 use A2billing\Forms\FormHandler;
 use A2billing\Mail;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -43,14 +44,17 @@ if (! has_rights (ACX_ADMINISTRATOR)) {
 getpost_ifset(array('id', 'IDCust', 'mailtype', 'fromemail', 'fromname', 'subject', 'messagetext', 'languages','id_language'));
 
 
-// Get Latest id from the table
-$latest_id = mailtemplate_latest_id();
-
 $HD_Form = new FormHandler("cc_templatemail", gettext("mail template"));
 
 $HD_Form -> FG_DEBUG = 0;
 $HD_Form -> FG_TABLE_ID = "id";
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "id";
+
+// Get Latest id from the table
+$instance_table = new Table();
+$QUERY = "SELECT max(id) as latest_id from cc_templatemail where id_language = 'en'";
+$result = $instance_table->SQLExec($HD_Form->DBHandle, $QUERY);
+$latest_id = $result[0][0] + 1;
 
 
 if ($languages != '') {

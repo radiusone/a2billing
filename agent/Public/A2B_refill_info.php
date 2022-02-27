@@ -80,9 +80,9 @@ $smarty->display('main.tpl');
         <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
             <?php
             if ( has_rights (ACX_CUSTOMER)) {
-                echo infocustomer_id($refill['card_id']);
+                echo get_infocustomer_id($refill['card_id']);
             } else {
-                echo nameofcustomer_id($refill['card_id']);
+                echo get_nameofcustomer_id($refill['card_id']);
             }
             ?>
         </td>

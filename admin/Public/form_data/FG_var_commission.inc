@@ -54,8 +54,8 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = 
 $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/money_add.png" ;
 $com_list = getRefillType_List();
 $HD_Form -> AddViewElement(gettext("ID"), "cc_agent_commission.id", "5%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("ACCOUNT"), "id_card", "10%", "center", "sort", "", "30", "", "", "", "", "linktocustomer_id");
-$HD_Form -> AddViewElement(gettext("AGENT"), "id_agent", "10%", "center", "sort", "", "30", "", "", "", "", "linktoagent");
+$HD_Form -> AddViewElement(gettext("ACCOUNT"), "id_card", "10%", "center", "sort", "", "30", "", "", "", "", "display_customer_id_link");
+$HD_Form -> AddViewElement(gettext("AGENT"), "id_agent", "10%", "center", "sort", "", "30", "", "", "", "", "display_linktoagent");
 $HD_Form -> AddViewElement(gettext("PAYMENT DATE"), "date", "15%", "center", "sort", "30", "", "", "", "", "", "display_dateformat");
 $HD_Form -> AddViewElement(gettext("AMOUNT"), "amount", "10%", "center", "sort");
 $HD_Form -> AddViewElement(gettext("PAID STATUS"),"paid_status", "10%", "center", "sort", "", "list", $com_list);

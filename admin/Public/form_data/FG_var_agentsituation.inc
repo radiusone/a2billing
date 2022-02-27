@@ -46,7 +46,7 @@ $HD_Form -> FG_DEBUG = 0;
 $HD_Form -> FG_LIMITE_DISPLAY = 10;
 
 $HD_Form -> AddViewElement(gettext("ID"), "id", "7%", "center", "sort", "");
-$HD_Form -> AddViewElement(gettext("Agent"), "username", "7%", "center", "sort", "", "30", "", "", "", "", "linktoagent");
+$HD_Form -> AddViewElement(gettext("Agent"), "username", "7%", "center", "sort", "", "30", "", "", "", "", "display_linktoagent");
 $HD_Form -> AddViewElement(gettext("CREDIT"), "credit", "7%", "center", "sort",  "", "", "", "", "", "", "display_2bill");
 $HD_Form -> AddViewElement(gettext("COMMISSION BAL"), "com_balance", "7%", "center", "sort",  "", "", "", "", "", "", "display_2bill");
 $HD_Form -> AddViewElement(gettext("TOTAL COM. ACCRUED"), "com_accrued", "10%", "center", "sort", "15", "lie", "cc_agent_commission as t2", "TRUNCATE(SUM(t2.amount),2)", "t2.id_agent='%id'  ", "%1");

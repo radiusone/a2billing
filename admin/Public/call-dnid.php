@@ -145,8 +145,8 @@ if ($posted==1) {
 }
 
 $date_clause='';
-normalize_day_of_month($fromstatsday_sday, $fromstatsmonth_sday, 1);
-normalize_day_of_month($tostatsday_sday, $tostatsmonth_sday, 1);
+normalize_day_of_month($fromstatsday_sday, $fromstatsmonth_sday);
+normalize_day_of_month($tostatsday_sday, $tostatsmonth_sday);
 if ($fromday && isset($fromstatsday_sday) && isset($fromstatsmonth_sday)) {
     if ($fromtime) {
         $date_clause.=" AND UNIX_TIMESTAMP(t1.starttime) >= UNIX_TIMESTAMP('$fromstatsmonth_sday-$fromstatsday_sday $fromstatsday_hour:$fromstatsday_min')";
@@ -854,28 +854,28 @@ foreach ($asr_cic_list1 as $asr_cic_data) {
         </tr></tbody></table></td>
         <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$i]?>" align="right" nowrap="nowrap"><font class="fontstyle_006"><?php echo $data[3]?></font></td>
         <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$i]?>" align="right" nowrap="nowrap"><font class="fontstyle_006"><?php echo $tmc?> </font></td>
-        <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$i]?>" align="right" nowrap="nowrap"><font class="fontstyle_006"><?php display_2dec ($asr_cic_list1[$j][1]/($data[3]))?> </font></td>
+        <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$i]?>" align="right" nowrap="nowrap"><font class="fontstyle_006"><?php echo number_format ($asr_cic_list1[$j][1]/($data[3]), 2)?> </font></td>
         <!-- SELL -->
         <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$i]?>" align="right" nowrap="nowrap"><font class="fontstyle_006"><?php
-        display_2bill($data[2])
+        echo get_2bill($data[2])
         ?>
         </font></td>
         <!-- BUY -->
         <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$i]?>" align="right" nowrap="nowrap"><font class="fontstyle_006"><?php
-        display_2bill($data[4])
+        echo get_2bill($data[4])
         ?>
         </font></td>
         <!-- PROFIT -->
         <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$i]?>" align="right" nowrap="nowrap"><font class="fontstyle_006"><?php
-        display_2bill($data[2]-$data[4])
+        echo get_2bill($data[2]-$data[4])
         ?>
         </font></td>
         <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$i]?>" align="right" nowrap="nowrap"><font class="fontstyle_006"><?php
-        if ($data[2]!=0) { display_2dec_percentage((($data[2]-$data[4])/$data[2])*100); } else { echo "NULL";}
+        if ($data[2]!=0) { echo get_2dec_percentage((($data[2]-$data[4])/$data[2])*100); } else { echo "NULL";}
         ?>
         </font></td>
         <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$i]?>" align="right" nowrap="nowrap"><font class="fontstyle_006"><?php
-        if ($data[4]!=0) { display_2dec_percentage((($data[2]-$data[4])/$data[4])*100); } else { echo "NULL";}
+        if ($data[4]!=0) { echo get_2dec_percentage((($data[2]-$data[4])/$data[4])*100); } else { echo "NULL";}
         ?>
         </font></td>
      <?php 	 $j++;}
@@ -899,12 +899,12 @@ foreach ($asr_cic_list1 as $asr_cic_data) {
         <td align="center" nowrap="nowrap" colspan="2"><font class="fontstyle_003"><?php echo $totalminutes?> </font></td>
         <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php echo $totalcall?></font></td>
         <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php echo $total_tmc?></font></td>
-            <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php display_2dec($totalsuccess/$totalcall)?> </font></td>
-        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php display_2bill($totalcost) ?></font></td>
-        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php display_2bill($totalbuycost) ?></font></td>
-        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php display_2bill($totalcost - $totalbuycost) ?></font></td>
-        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php if ($totalcost!=0) { display_2dec_percentage((($totalcost - $totalbuycost)/$totalcost)*100); } else { echo "NULL";} ?></font></td>
-        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php if ($totalbuycost!=0) { display_2dec_percentage((($totalcost - $totalbuycost)/$totalbuycost)*100);  } else { echo "NULL";} ?></font></td>
+            <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php echo number_format($totalsuccess/$totalcall, 2)?> </font></td>
+        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php echo get_2bill($totalcost) ?></font></td>
+        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php echo get_2bill($totalbuycost) ?></font></td>
+        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php echo get_2bill($totalcost - $totalbuycost) ?></font></td>
+        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php if ($totalcost!=0) { echo get_2dec_percentage((($totalcost - $totalbuycost)/$totalcost)*100); } else { echo "NULL";} ?></font></td>
+        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php if ($totalbuycost!=0) { echo get_2dec_percentage((($totalcost - $totalbuycost)/$totalbuycost)*100);  } else { echo "NULL";} ?></font></td>
     </tr>
     <!-- END TOTAL -->
 

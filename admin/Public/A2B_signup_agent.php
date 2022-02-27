@@ -63,7 +63,7 @@ if (!empty($agentid) && is_numeric($agentid)) {
 }
 
 if ($task=="generate" && !empty($agentid) && !empty($tariffplan) && !empty($group)) {
-    $code = gen_card('cc_agent_signup',10,'code');
+    $code = generate_unique_value('cc_agent_signup',10,'code');
     $table_signup = new Table('cc_agent_signup');
     $fields = "code,id_agent,id_tariffgroup,id_group";
     $values =  "'$code','$agentid', '$tariffplan','$group'";

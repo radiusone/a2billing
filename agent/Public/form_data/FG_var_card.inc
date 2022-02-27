@@ -143,7 +143,7 @@ foreach ($show_list_temp as $i => $value) {
 $show_fields=array();
 $show_fields['id']=array(gettext("ID"), "cc_card.id", "3%", "center", "sort","", "", "", "", "", "", "");
 
-$show_fields['username']=array("Account Number", "username", "14%", "center", "sort", "", "30", "", "", "", "", "linktocustomer");
+$show_fields['username']=array("Account Number", "username", "14%", "center", "sort", "", "30", "", "", "", "", "display_customer_link");
 if (!($popup_select>=1))
  $show_fields['useralias']=array("<acronym title=\"WEB UI LOGIN\">".gettext("LOGIN")."</acronym>", "useralias", "12%", "center", "sort","", "", "", "", "", "", "");
 
@@ -332,7 +332,7 @@ $maxi3	= '';
 
 if (isset($form_action) && $form_action=="ask-add") {
 	if (!is_numeric($cardnumberlength_list)) 	$cardnumberlength_list = LEN_CARDNUMBER;
-	$array_card_generated  = gen_card_with_alias("cc_card", 0, $cardnumberlength_list);
+	$array_card_generated  = gen_card_with_alias("cc_card", $cardnumberlength_list);
 	$maxi = "value='".$array_card_generated[0]."'";
 	$maxi2 = "value='".$array_card_generated[1]."'";
 	$pass = MDP_NUMERIC(10);

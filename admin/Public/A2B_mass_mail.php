@@ -5,6 +5,30 @@ use A2billing\Table;
 use A2billing\Mail;
 use A2billing\A2bMailException;
 
+/**
+ * starts the microtime counter
+ */
+function mt_start(): float
+{
+    global $mt_time;
+    [$usec, $sec] = explode(" ", microtime());
+    $mt_time = (float)$usec + (float)$sec;
+
+    return $mt_time;
+}
+
+/**
+ * calculates the elapsed time
+ */
+function mt_end($len = 4): float
+{
+    global $mt_time;
+    [$usec, $sec] = explode(" ", microtime());
+    $time_end = (float)$usec + (float)$sec;
+
+    return round($time_end - $mt_time, $len);
+}
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
@@ -122,6 +146,7 @@ $DBHandle  = DbConnect();
 $instance_table = new Table();
 
 if (isset($submit)) {
+    mt_start();
 
     check_demo_mode();
 

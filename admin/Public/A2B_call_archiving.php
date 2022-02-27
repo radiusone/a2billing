@@ -69,10 +69,10 @@ $HD_Form -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
 $HD_Form -> CV_DO_ARCHIVE_ALL = true;
 $HD_Form -> AddViewElement(gettext("ID"), "id", "3%", "center", "sort");
 $HD_Form -> AddViewElement(gettext("Calldate"), "starttime", "15%", "center", "SORT", "19", "", "", "", "", "", "display_dateformat");
-$HD_Form -> AddViewElement(gettext("CalledNumber"), "calledstation", "15%", "center", "SORT", "30", "", "", "", "", "", "remove_prefix");
-$HD_Form -> AddViewElement(gettext("Destination"), "destination", "15%", "center", "SORT", "30", "", "", "", "", "", "remove_prefix");
+$HD_Form -> AddViewElement(gettext("CalledNumber"), "calledstation", "15%", "center", "SORT", "30", "", "", "", "", "", "display_without_prefix");
+$HD_Form -> AddViewElement(gettext("Destination"), "destination", "15%", "center", "SORT", "30", "", "", "", "", "", "display_without_prefix");
 $HD_Form -> AddViewElement(gettext("Duration"), "sessiontime", "7%", "center", "SORT", "30", "", "", "", "", "", "display_minute");
-$HD_Form -> AddViewElement(gettext("CardUsed"), "username", "11%", "center", "SORT", "", "30", "", "", "", "", "linktocustomer");
+$HD_Form -> AddViewElement(gettext("CardUsed"), "username", "11%", "center", "SORT", "", "30", "", "", "", "", "display_customer_link");
 $HD_Form -> AddViewElement(gettext("terminatecauseid"), "terminatecauseid", "10%", "center", "SORT", "30");
 $HD_Form -> AddViewElement(gettext("IAX/SIP"), "sipiax", "6%", "center", "SORT",  "", "list", $yesno);
 $HD_Form -> AddViewElement(gettext("InitialRate"), "calledrate", "10%", "center", "SORT", "30", "", "", "", "", "", "display_2dec");
@@ -95,8 +95,8 @@ if (DB_TYPE == "postgres") {
     $UNIX_TIMESTAMP = "UNIX_TIMESTAMP";
 }
 $lastdayofmonth = date("t", strtotime($tostatsmonth.'-01'));
-normalize_day_of_month($fromstatsday_sday, $fromstatsmonth_sday, 1);
-normalize_day_of_month($tostatsday_sday, $tostatsmonth_sday, 1);
+normalize_day_of_month($fromstatsday_sday, $fromstatsmonth_sday);
+normalize_day_of_month($tostatsday_sday, $tostatsmonth_sday);
 if ($Period=="Month") {
     if ($frommonth && isset($fromstatsmonth)) $date_clause.=" AND $UNIX_TIMESTAMP(starttime) >= $UNIX_TIMESTAMP('$fromstatsmonth-01')";
     if ($tomonth && isset($tostatsmonth)) $date_clause.=" AND $UNIX_TIMESTAMP(starttime) <= $UNIX_TIMESTAMP('".$tostatsmonth."-$lastdayofmonth 23:59:59')";

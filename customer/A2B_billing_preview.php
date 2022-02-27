@@ -79,11 +79,11 @@ $start_date =null;
 if (is_array($result) && !empty($result[0][0])) {
     $clause_call_billing .= "stoptime >= '" .$result[0][1]."' AND ";
     $clause_charge .= "creationdate >= '".$result[0][1]."' AND  ";
-    $desc_billing = gettext("Cost of calls between the "). display_GMT($result[0][1], $_SESSION["gmtoffset"], 1) ." and ". display_GMT(gmdate("Y/m/d H:i:s"), $_SESSION["gmtoffset"], 1) ;
+    $desc_billing = gettext("Cost of calls between the "). get_date_with_offset($result[0][1], $_SESSION["gmtoffset"]) ." and ". get_date_with_offset(gmdate("Y/m/d H:i:s"), $_SESSION["gmtoffset"]) ;
     $desc_billing_postpaid="Amount for periode between the ".date("Y-m-d",strptime($result[0][1]))." and $date_bill";
     $start_date = $result[0][1];
 } else {
-    $desc_billing = gettext("Cost of calls before the "). display_GMT(gmdate("Y/m/d H:i:s"), $_SESSION["gmtoffset"], 1) ;
+    $desc_billing = gettext("Cost of calls before the "). get_date_with_offset(gmdate("Y/m/d H:i:s"), $_SESSION["gmtoffset"]) ;
 }
 $clause_call_billing .= "stoptime < NOW() ";
 $clause_charge .= "creationdate < NOW() ";

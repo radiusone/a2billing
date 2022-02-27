@@ -65,7 +65,7 @@ $smarty->display('main.tpl');
 
 echo $CC_help_info_customer;
 
-echo Display_Login_Button ($DBHandle, $id);
+echo get_login_button ($DBHandle, $id);
 
 ?>
 

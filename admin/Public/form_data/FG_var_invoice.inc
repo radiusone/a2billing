@@ -103,7 +103,7 @@ $filter_amount_with_vat = "total_price";
 $list_refill_type=getRefillType_List();
 $HD_Form -> AddViewElement(gettext("ID"), "cc_invoice.id", "7%", "center", "sort");
 $HD_Form -> AddViewElement(gettext("REFERENCE"), "cc_invoice.reference", "10%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("ACCOUNT"), "username", "10%", "center", "sort", "", "30", "", "", "", "", "linktocustomer");
+$HD_Form -> AddViewElement(gettext("ACCOUNT"), "username", "10%", "center", "sort", "", "30", "", "", "", "", "display_customer_link");
 $HD_Form -> AddViewElement(gettext("DATE"), "date", "15%", "center", "sort", "30", "", "", "", "", "", "display_dateformat");
 $HD_Form -> AddViewElement(gettext("TITLE"), "title", "21%", "center", "sort");
 $HD_Form -> AddViewElement(gettext("PAID STATUS"), "status", "7%", "center", "sort", "", "list", $paid_status_list);

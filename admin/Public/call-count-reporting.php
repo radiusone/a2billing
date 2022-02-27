@@ -74,7 +74,7 @@ switch ($topsearch) {
         break;
     case "topuser":
     default:
-        $FG_TABLE_COL[]=array (gettext("Account Used"), 'card_id', "25%", "center","SORT", "", "30", "", "", "", "", "linktocustomer_id");
+        $FG_TABLE_COL[]=array (gettext("Account Used"), 'card_id', "25%", "center","SORT", "", "30", "", "", "", "", "display_customer_id_link");
         $on_field1 = $on_field2 = "card_id";
         $FG_TABLE_DEFAULT_ORDER = "card_id";
         $FG_TABLE_NAME="cc_call";
@@ -111,8 +111,8 @@ if ( empty ($order) || empty($sens) || ( $order == 'card_id' && $topsearch == 't
 }
 
 $date_clause='';
-normalize_day_of_month($fromstatsday_sday, $fromstatsmonth_sday, 1);
-normalize_day_of_month($tostatsday_sday, $tostatsmonth_sday, 1);
+normalize_day_of_month($fromstatsday_sday, $fromstatsmonth_sday);
+normalize_day_of_month($tostatsday_sday, $tostatsmonth_sday);
 
 if ($fromday && isset($fromstatsday_sday) && isset($fromstatsmonth_sday)) $date_clause.=" AND UNIX_TIMESTAMP(starttime) >= UNIX_TIMESTAMP('$fromstatsmonth_sday-$fromstatsday_sday') ";
 if ($today && isset($tostatsday_sday) && isset($tostatsmonth_sday)) $date_clause.=" AND UNIX_TIMESTAMP(starttime) <= UNIX_TIMESTAMP('$tostatsmonth_sday-".sprintf("%02d",intval($tostatsday_sday)/*+1*/)." 23:59:59') ";

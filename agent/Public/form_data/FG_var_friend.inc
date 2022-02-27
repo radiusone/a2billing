@@ -82,7 +82,7 @@ $yesno = getYesNoList();
 
 
 $HD_Form -> AddViewElement(gettext("CARDHOLDER"), "id_cc_card", "17%", "center", "sort", "25", "lie", "cc_card", "lastname, firstname", "id='%id'", "%1 %2");
-$HD_Form -> AddViewElement(gettext("USERNAME"), "username", "15%", "center", "sort", "", "30", "", "", "", "", "linktocustomer");
+$HD_Form -> AddViewElement(gettext("USERNAME"), "username", "15%", "center", "sort", "", "30", "", "", "", "", "display_customer_link");
 $HD_Form -> AddViewElement(gettext("ACCOUNTCODE"), "accountcode", "12%", "center", "sort");
 $HD_Form -> AddViewElement(gettext("SECRET"), "secret", "12%", "center", "sort");
 $HD_Form -> AddViewElement(gettext("CALLERID"), "callerid", "15%", "center", "sort");
@@ -127,7 +127,7 @@ $HD_Form -> FG_DELETION = true;
 
 $maxi='';
 if ($form_action=="ask-add") {
-	$card_gen = gen_card($HD_Form->FG_TABLE_NAME);
+	$card_gen = generate_unique_value($HD_Form->FG_TABLE_NAME);
 	$maxi = "value='".$card_gen."'";
 	$pass =  MDP(6);
 	$pass_secret = "value='".$pass."'";

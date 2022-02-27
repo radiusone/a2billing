@@ -60,7 +60,7 @@ if (has_rights (ACX_MODIFY_PAYMENTS)) {
 
 $list_refill_type = getRefillType_List();
 $HD_Form -> AddViewElement(gettext("ID"), "cc_logpayment.id", "10%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("ACCOUNT"), "username", "17%", "center", "sort", "", "30", "", "", "", "", "linktocustomer_id");
+$HD_Form -> AddViewElement(gettext("ACCOUNT"), "username", "17%", "center", "sort", "", "30", "", "", "", "", "display_customer_id_link");
 $HD_Form -> AddViewElement(gettext("PAYMENT DATE"), "date", "17%", "center", "sort", "30", "", "", "", "", "", "display_dateformat");
 $HD_Form -> AddViewElement(gettext("PAYMENT AMOUNT"), "payment", "15%", "center", "sort","", "", "", "", "", "", "display_money");
 $HD_Form -> AddViewElement(gettext("PAYMENT TYPE"),"payment_type", "13%", "center", "sort", "", "list", $list_refill_type);

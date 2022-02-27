@@ -60,11 +60,36 @@ $instance_table = new Table();
 $smarty->display('main.tpl');
 
 if (isset ($translate_data) && $translate_data == 'translate') {
-    //print check_translated($id, $languages);
-    if (check_translated($id, $languages, $mailtype)) {
-        update_translation($id, $languages, $subject, $mailtext, $mailtype);
+    $check = false;
+    $QUERY = "SELECT id FROM cc_templatemail WHERE mailtype = '$mailtype' AND id_language = '$languages'";
+    $result = $instance_table->SQLExec($handle, $QUERY);
+    if (is_array($result) && count($result) > 0) {
+        $check = true;
+    }
+
+    if ($check) {
+        $param_update = "subject = '$subject', messagetext = '$mailtext'";
+        $clause = "mailtype = '$mailtype' AND id_language = '$languages'";
+        $func_table = 'cc_templatemail';
+        $instance_table->Update_table($handle, $param_update, $clause, $func_table);
     } else {
-        insert_translation($id, $languages, $subject, $mailtext, $mailtype);
+        $fromemail = '';
+        $fromname = '';
+        $QUERY = "SELECT fromemail, fromname, mailtype FROM cc_templatemail WHERE mailtype = '$mailtype' AND id_language = 'en'";
+        $result = $instance_table->SQLExec($handle, $QUERY);
+        if (is_array($result)) {
+            if (count($result) > 0) {
+                $fromemail = $result[0][0];
+                $fromname = $result[0][1];
+                $mailtype = $result[0][2];
+            }
+        }
+
+        $value = "'$languages', '$subject', '$mailtext', '$mailtype','$fromemail','$fromname'";
+        $func_fields = "id_language, subject, messagetext, mailtype, fromemail, fromname";
+        $func_table = 'cc_templatemail';
+        $id_name = "id";
+        $instance_table->Add_table($handle, $value, $func_fields, $func_table, $id_name);
     }
 }
 

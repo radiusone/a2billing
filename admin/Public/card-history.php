@@ -58,7 +58,7 @@ $FG_TABLE_ALTERNATE_ROW_COLOR[] = "#FCFBFB";
 
 $DBHandle  = DbConnect();
 $FG_TABLE_COL = array();
-$FG_TABLE_COL[]=array (gettext("Account Number"), "username", "15%", "center", "sort", "", "30", "", "", "", "", "linktocustomer");
+$FG_TABLE_COL[]=array (gettext("Account Number"), "username", "15%", "center", "sort", "", "30", "", "", "", "", "display_customer_link");
 $FG_TABLE_COL[]=array (gettext("Date"), "datecreated", "20%", "center", "SORT");
 $FG_TABLE_COL[]=array (gettext("Description"), "description", "60%", "center", "SORT");
 
@@ -85,8 +85,8 @@ if (DB_TYPE == "postgres") {
 } else {
         $UNIX_TIMESTAMP = "UNIX_TIMESTAMP";
 }
-normalize_day_of_month($fromstatsday_sday, $fromstatsmonth_sday, 1);
-normalize_day_of_month($tostatsday_sday, $tostatsmonth_sday, 1);
+normalize_day_of_month($fromstatsday_sday, $fromstatsmonth_sday);
+normalize_day_of_month($tostatsday_sday, $tostatsmonth_sday);
 if ($fromday && isset($fromstatsday_sday) && isset($fromstatsmonth_sday)) $date_clause.=" AND $UNIX_TIMESTAMP(ch.datecreated) >= $UNIX_TIMESTAMP('$fromstatsmonth_sday-$fromstatsday_sday')";
 if ($today && isset($tostatsday_sday) && isset($tostatsmonth_sday)) $date_clause.=" AND $UNIX_TIMESTAMP(ch.datecreated) <= $UNIX_TIMESTAMP('$tostatsmonth_sday-".sprintf("%02d",intval($tostatsday_sday)/*+1*/)." 23:59:59')";
 
@@ -268,7 +268,7 @@ $smarty->display( 'main.tpl');
                        $ligne_number=0;
                        foreach ($list as $recordset) {
                          $ligne_number++;
-                         $recordset[1] = display_GMT($recordset[1], $_SESSION["gmtoffset"], 1);
+                         $recordset[1] = get_date_with_offset($recordset[1], $_SESSION["gmtoffset"]);
                 ?>
 
                         <TR bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$ligne_number%2]?>"  onmouseover="bgColor='#FFDEA6'" onMouseOut="bgColor='<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$ligne_number%2]?>'">
@@ -277,7 +277,7 @@ $smarty->display( 'main.tpl');
                               <TD vAlign=top align="<?php echo $FG_TABLE_COL[$i][3]?>" class=tableBody>
                         <?php
                                     $record_display = $recordset[$i];
-                                    if($FG_TABLE_COL[$i][11] == "linktocustomer") echo linktocustomer(stripslashes($record_display));
+                                    if($FG_TABLE_COL[$i][11] == "display_customer_link") echo get_customer_link(stripslashes($record_display));
                                     else echo stripslashes($record_display);	?>
                             </TD>
                         <?php } ?>

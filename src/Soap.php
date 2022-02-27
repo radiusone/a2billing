@@ -834,7 +834,7 @@ class Soap
         $arr_account = array();
 
         for ($k = 0; $k < $units; $k++) {
-            $arr_card_alias = gen_card_with_alias("cc_card", 0, $accountnumber_len);
+            $arr_card_alias = gen_card_with_alias("cc_card", $accountnumber_len);
             $accountnumber = $arr_card_alias[0];
             $useralias = $arr_card_alias[1];
             if (!is_numeric($balance))
@@ -1007,7 +1007,7 @@ class Soap
             return array("ERROR", "INVALID KEY");
         }
 
-        $content = open_url ($provisioning_uri);
+        $content = file_get_contents ($provisioning_uri);
 
         $arr_provisioning = array();
         $content_exp = explode("\n", $content);
@@ -1043,7 +1043,7 @@ class Soap
         $id_group = $arr_check;
 
         $add_param = "?activation_code=$activation_code";
-        $content = open_url ($uri_trunk.$add_param);
+        $content = file_get_contents ($uri_trunk.$add_param);
 
         $pos_error = strpos($content, 'ERROR');
         if ($pos_error !== false) {
@@ -1190,7 +1190,7 @@ class Soap
         }
 
         $full_uri_rate = "$uri_rate?activation_code=$activation_code";
-        $content = open_url ($full_uri_rate);
+        $content = file_get_contents ($full_uri_rate);
 
         $pos_error = strpos($content, 'ERROR');
         if ($pos_error !== false) {

@@ -57,6 +57,41 @@ getpost_ifset(['popup_select', 'popup_formname', 'popup_fieldname', 'upd_inuse',
               'upd_id_group','upd_discount','upd_refill_type','upd_description','upd_id_seria', 'upd_vat',
               'upd_country']);
 
+/**
+ * @var string $popup_select
+ * @var string $popup_formname
+ * @var string $popup_fieldname
+ * @var string $upd_inuse
+ * @var string $upd_status
+ * @var string $upd_language
+ * @var string $upd_tariff
+ * @var string $upd_credit
+ * @var string $upd_credittype
+ * @var string $upd_simultaccess
+ * @var string $upd_currency
+ * @var string $upd_typepaid
+ * @var string $upd_creditlimit
+ * @var string $upd_enableexpire
+ * @var string $upd_expirationdate
+ * @var string $upd_expiredays
+ * @var string $upd_runservice
+ * @var string $upd_runservice
+ * @var string $batchupdate
+ * @var array $check
+ * @var array $type
+ * @var array $mode
+ * @var string $addcredit
+ * @var string $cardnumber
+ * @var string $description
+ * @var string $upd_id_group
+ * @var string $upd_discount
+ * @var string $upd_refill_type
+ * @var string $upd_description
+ * @var string $upd_id_seria
+ * @var string $upd_vat
+
+'upd_country'
+ */
 // CHECK IF REQUEST OF BATCH UPDATE
 if ($batchupdate == 1 && is_array($check)) {
     $SQL_REFILL="";
@@ -94,22 +129,23 @@ if ($batchupdate == 1 && is_array($check)) {
         if ($i != 0) {
             $SQL_UPDATE.=',';
         }
+        $val = $$ind_field;
 
         // Standard update mode
         if ($mode[$ind_field] ?? 1 == 1) {
             if (!isset($type[$ind_field])) {
-                $SQL_UPDATE .= " $myfield='" . $$ind_field . "'";
+                $SQL_UPDATE .= " $myfield='$val'";
             } else {
-                $SQL_UPDATE .= " $myfield='" . $type["$ind_field"] . "'";
+                $SQL_UPDATE .= " $myfield='$type[$ind_field]'";
             }
         // Mode 2 - Equal - Add - Subtract
-        } elseif ($mode["$ind_field"] == 2) {
-            if ($type["$ind_field"] ?? 1 == 1) {
-                $SQL_UPDATE .= " $myfield='" . $$ind_field . "'";
-            } elseif ($type["$ind_field"] == 2) {
-                $SQL_UPDATE .= " $myfield = $myfield +'" . $$ind_field . "'";
-            } else {
-                $SQL_UPDATE .= " $myfield = $myfield -'" . $$ind_field . "'";
+        } elseif ($mode[$ind_field] == 2) {
+            if ($type[$ind_field] ?? 1 == 1) {
+                $SQL_UPDATE .= " $myfield='$val'";
+            } elseif ($type[$ind_field] == 2) {
+                $SQL_UPDATE .= " $myfield = $myfield + '$val'";
+            } elseif ($type[$ind_field] == 3) {
+                $SQL_UPDATE .= " $myfield = $myfield - '$val'";
             }
         }
         $i++;
@@ -631,7 +667,7 @@ if (!$popup_select && $form_action === "ask-add"):?>
 <?php endif;
 
 if ($form_action === "ask-edit") {
-    echo Display_Login_Button($HD_Form->DBHandle, $id);
+    echo get_login_button($HD_Form->DBHandle, $id);
 }
 
 $HD_Form->create_form($form_action, $list);

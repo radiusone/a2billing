@@ -229,7 +229,7 @@ $FG_TABLE_ALTERNATE_ROW_COLOR[1]='#EEE9E9';
                     <b><?php echo gettext("CallTime available");?></b>
                 </td>
                 <td height="15" bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[1]?>" style="padding-left: 5px;">
-                    <?php echo display_minute($RateEngine->ratecard_obj[$j]['timeout']);?> <?php echo gettext("Minutes");?>
+                    <?php echo get_minute($RateEngine->ratecard_obj[$j]['timeout']);?> <?php echo gettext("Minutes");?>
                 </td>
             </tr>
 

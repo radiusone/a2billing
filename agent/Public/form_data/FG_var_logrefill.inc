@@ -57,7 +57,7 @@ $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
 $list_refill_type=getRefillType_List();
 $HD_Form -> AddViewElement(gettext("ID"), "cc_logrefill.id", "7%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("ACCOUNT"), "username", "15%", "center", "sort", "", "30", "", "", "", "", "linktocustomer");
+$HD_Form -> AddViewElement(gettext("ACCOUNT"), "username", "15%", "center", "sort", "", "30", "", "", "", "", "display_customer_link");
 $HD_Form -> AddViewElement(gettext("REFILL DATE"), "date", "15%", "center", "sort", "30", "", "", "", "", "", "display_dateformat");
 $HD_Form -> AddViewElement(gettext("DESCRIPTION"), "description", "35%", "center", "sort");
 $HD_Form -> AddViewElement(gettext("REFILL TYPE"),"refill_type", "14%", "center", "sort", "", "list", $list_refill_type);

@@ -140,11 +140,11 @@ Class Notification {
     {
         $display = "";
         switch ($this->from_type) {
-            case 0: $display.= "ADMIN: ".getnameofadmin($this->from_id);
+            case 0: $display.= "ADMIN: ".get_nameofadmin($this->from_id);
                     break;
-            case 1: $display.= "AGENT: ".getnameofagent($this->from_id);
+            case 1: $display.= "AGENT: ".get_nameofagent($this->from_id);
                     break;
-            case 2: $display.= "CUST: ".getnameofcustomer_id($this->from_id);
+            case 2: $display.= "CUST: ".get_nameofcustomer_id($this->from_id);
                     break;
             case 3: $display.= gettext("BATCH");
                     break;

@@ -58,7 +58,7 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = 
 $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/time_add.png" ;
 
 $HD_Form -> AddViewElement(gettext("ID"), "cc_billing_customer.id", "10%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("ACCOUNT"), "username", "15%", "center", "sort", "", "30", "", "", "", "", "linktocustomer");
+$HD_Form -> AddViewElement(gettext("ACCOUNT"), "username", "15%", "center", "sort", "", "30", "", "", "", "", "display_customer_link");
 $HD_Form -> AddViewElement(gettext("BILLING DATE"), "cc_billing_customer.date", "20%", "center", "sort", "30", "", "", "", "", "", "display_dateformat");
 $HD_Form -> FieldViewElement ('cc_billing_customer.id, username, cc_billing_customer.date');
 

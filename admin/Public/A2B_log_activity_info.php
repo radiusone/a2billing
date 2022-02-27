@@ -85,7 +85,7 @@ $smarty->display('main.tpl');
             <?php echo gettext("USER") ?> :
         </td>
         <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
-            <?php echo nameofadmin($log['iduser']);?>
+            <?php echo get_nameofadmin($log['iduser']);?>
         </td>
    </tr>
        <tr height="20px">

@@ -11,9 +11,9 @@
 <body>
 	<form method="post" action="PP_intro.php">
 		<input type="hidden" name="done" value="submit_log"/>
-		<div class="modal show d-block shadow" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="authTitle" aria-hidden="false">
+		<div class="modal show d-block" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="authTitle" aria-hidden="false">
 			<div class="modal-dialog modal-dialog-centered">
-				<div class="modal-content">
+				<div class="modal-content shadow">
 					<div class="modal-header">
 						<h3 class="modal-title" id="authTitle">{_("Authentication")}</h3>
 					</div>

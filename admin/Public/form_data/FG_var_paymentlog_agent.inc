@@ -57,8 +57,8 @@ if (DB_TYPE == "postgres") {
 		$UNIX_TIMESTAMP = "UNIX_TIMESTAMP";
 }
 $lastdayofmonth = date("t", strtotime($tostatsmonth.'-01'));
-normalize_day_of_month($fromstatsday_sday, $fromstatsmonth_sday, 1);
-normalize_day_of_month($tostatsday_sday, $tostatsmonth_sday, 1);
+normalize_day_of_month($fromstatsday_sday, $fromstatsmonth_sday);
+normalize_day_of_month($tostatsday_sday, $tostatsmonth_sday);
 if ($Period=="Month"){
 	if ($frommonth && isset($fromstatsmonth)) $date_clause.=" $UNIX_TIMESTAMP(creationdate) >= $UNIX_TIMESTAMP('$fromstatsmonth-01')";
 	if ($tomonth && isset($tostatsmonth))
@@ -107,7 +107,7 @@ $HD_Form -> AddViewElement(gettext("Status"), "status", "15%", "center", "sort",
 $HD_Form -> AddViewElement(gettext("Owner"), "cc_owner", "15%", "center");
 $HD_Form -> AddViewElement(gettext("Amount"), "amount", "10%", "center");
 $HD_Form -> AddViewElement(gettext("Agent ID"), "cardid", "10%", "center");
-$HD_Form -> AddViewElement(gettext("Agent LOGIN"), "cardid", "25%", "center", "sort", "", "30", "", "", "", "", "linktoagent");
+$HD_Form -> AddViewElement(gettext("Agent LOGIN"), "cardid", "25%", "center", "sort", "", "30", "", "", "", "", "display_linktoagent");
 
 // added a parameter to append  FG_TABLE_ID  ( by default ) or disable 0.
 $HD_Form -> FieldViewElement ('id, creationdate, paymentmethod, status, cc_owner, amount, agent_id, agent_id ');

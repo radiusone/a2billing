@@ -115,7 +115,6 @@ $CURRENT_DATETIME = date("Y-m-d H:i:s");
 
 // Store script start time
 $_START_TIME = time();
-mt_start();
 
 // A2BILLING COPYRIGHT & CONTACT
 define ("TEXTCONTACT", gettext("This software has been created by Areski Belaid under AGPL licence. For futher information, feel free to contact me:"));

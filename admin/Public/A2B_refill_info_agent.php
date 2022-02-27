@@ -80,9 +80,9 @@ $smarty->display('main.tpl');
         <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
             <?php
             if (has_rights (ACX_ADMINISTRATOR)) {
-                echo linktoagent($refill['agent_id']);
+                echo get_linktoagent($refill['agent_id']);
             } else {
-                echo nameofagent($refill['agent_id']);
+                echo get_nameofagent($refill['agent_id']);
             }
             ?>
         </td>

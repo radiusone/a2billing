@@ -114,8 +114,8 @@ if (DB_TYPE == "postgres") {
         $UNIX_TIMESTAMP = "UNIX_TIMESTAMP";
 }
 $lastdayofmonth = date("t", strtotime($tostatsmonth.'-01'));
-normalize_day_of_month($fromstatsday_sday, $fromstatsmonth_sday, 1);
-normalize_day_of_month($tostatsday_sday, $tostatsmonth_sday, 1);
+normalize_day_of_month($fromstatsday_sday, $fromstatsmonth_sday);
+normalize_day_of_month($tostatsday_sday, $tostatsmonth_sday);
 if ($Period=="Month") {
     if ($frommonth && isset($fromstatsmonth)) $date_clause.=" AND $UNIX_TIMESTAMP(ch.datecreated) >= $UNIX_TIMESTAMP('$fromstatsmonth-01')";
     if ($tomonth && isset($tostatsmonth)) $date_clause.=" AND $UNIX_TIMESTAMP(ch.datecreated) <= $UNIX_TIMESTAMP('".$tostatsmonth."-$lastdayofmonth 23:59:59')";
@@ -352,7 +352,7 @@ if ($FG_DEBUG == 3) echo "<br>Nb_record_max : $nb_record_max";
                        $ligne_number=0;
                        foreach ($list as $recordset) {
                          $ligne_number++;
-                         $recordset[1] = display_GMT($recordset[1], $_SESSION["gmtoffset"], 1);
+                         $recordset[1] = get_date_with_offset($recordset[1], $_SESSION["gmtoffset"]);
                 ?>
 
                         <TR bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$ligne_number%2]?>"  onMouseOver="bgColor='#C4FFD7'" onMouseOut="bgColor='<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$ligne_number%2]?>'">

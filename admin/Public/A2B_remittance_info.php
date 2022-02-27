@@ -80,9 +80,9 @@ $smarty->display('main.tpl');
         <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
             <?php
             if (has_rights (ACX_ADMINISTRATOR)) {
-                echo linktoagent($remittance['id_agent']);
+                echo get_linktoagent($remittance['id_agent']);
             } else {
-                echo nameofagent($remittance['id_agent']);
+                echo get_nameofagent($remittance['id_agent']);
             }
             ?>
         </td>

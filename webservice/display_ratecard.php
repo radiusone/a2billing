@@ -36,7 +36,7 @@
 
     Usage :
 
-        open_url ("http://localhost/webservice/display_ratecard.php?key=0951aa29a67836b860b0865bc495225c&page_url=localhost/index.php&field_to_display=t1.destination,t1.dialprefix,t1.rateinitial&column_name=Destination,Prefix,Rate/Min&field_type=,,money&".$_SERVER['QUERY_STRING']);
+        file_get_contents ("http://localhost/webservice/display_ratecard.php?key=0951aa29a67836b860b0865bc495225c&page_url=localhost/index.php&field_to_display=t1.destination,t1.dialprefix,t1.rateinitial&column_name=Destination,Prefix,Rate/Min&field_type=,,money&".$_SERVER['QUERY_STRING']);
 
         see attached example : sample_display_ratecard.php
 
@@ -486,4 +486,73 @@ if ($fullhtmlpage) { ?>
 </html>
 
 <?php
+}
+
+/**
+ * Do multi-page navigation.  Displays the prev, next and page options.
+ *
+ * @param $page the page currently viewed
+ * @param $pages the maximum number of pages
+ * @param $url the url to refer to with the page number inserted
+ * @param $max_width the number of pages to make available at any one time (default = 20)
+ */
+function printPages($page, $pages, $url, $max_width = 20)
+{
+    $lang['strfirst'] = '&lt;&lt; ' . gettext('First');
+    $lang['strprev'] = '&lt; ' . gettext('Prev');
+    $lang['strnext'] = gettext('Next') . ' &gt;';
+    $lang['strlast'] = gettext('Last') . ' &gt;&gt;';
+
+    $window = 8;
+
+    if ($page < 0 || $page > $pages) {
+        return;
+    }
+    if ($pages < 0) {
+        return;
+    }
+    if ($max_width <= 0) {
+        return;
+    }
+
+    if ($pages > 1) {
+        //echo "<center><p>\n";
+        if ($page != 1) {
+            $temp = str_replace('%s', 1 - 1, $url);
+            echo "<a class=\"pagenav\" href=\"{$temp}\">{$lang['strfirst']}</a>\n";
+            $temp = str_replace('%s', $page - 1 - 1, $url);
+            echo "<a class=\"pagenav\" href=\"{$temp}\">{$lang['strprev']}</a>\n";
+        }
+
+        if ($page <= $window) {
+            $min_page = 1;
+            $max_page = min(2 * $window, $pages);
+        } elseif ($page > $window && $pages >= $page + $window) {
+            $min_page = ($page - $window) + 1;
+            $max_page = $page + $window;
+        } else {
+            $min_page = ($page - (2 * $window - ($pages - $page))) + 1;
+            $max_page = $pages;
+        }
+
+        // Make sure min_page is always at least 1
+        // and max_page is never greater than $pages
+        $min_page = max($min_page, 1);
+        $max_page = min($max_page, $pages);
+
+        for ($i = $min_page; $i <= $max_page; $i++) {
+            $temp = str_replace('%s', $i - 1, $url);
+            if ($i != $page) {
+                echo "<a class=\"pagenav\" href=\"{$temp}\">$i</a>\n";
+            } else {
+                echo "$i\n";
+            }
+        }
+        if ($page != $pages) {
+            $temp = str_replace('%s', $page + 1 - 1, $url);
+            echo "<a class=\"pagenav\" href=\"{$temp}\">{$lang['strnext']}</a>\n";
+            $temp = str_replace('%s', $pages - 1, $url);
+            echo "<a class=\"pagenav\" href=\"{$temp}\">{$lang['strlast']}</a>\n";
+        }
+    }
 }

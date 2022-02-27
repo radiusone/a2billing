@@ -76,7 +76,7 @@ $chargetype_list["4"] = array( gettext("Extra charge"), "4");
 
 
 $HD_Form_c -> AddViewElement(gettext("ACCOUNT HOLDER"), "id_cc_card", "10%", "center", "sort", "25", "lie", "cc_card", "lastname, firstname", "id='%id'", "%1 %2");
-$HD_Form_c -> AddViewElement(gettext("ACCOUNT NUMBER"), "username", "12%", "center", "sort", "", "30", "", "", "", "", "linktocustomer");
+$HD_Form_c -> AddViewElement(gettext("ACCOUNT NUMBER"), "username", "12%", "center", "sort", "", "30", "", "", "", "", "display_customer_link");
 $HD_Form_c -> AddViewElement(gettext("DATE"), "cc_charge.creationdate", "10%", "center", "sort", "16", "", "", "", "", "", "display_dateformat");
 $HD_Form_c -> AddViewElement(gettext("AMOUNT"), "amount", "7%", "center", "sort");
 $HD_Form_c -> AddViewElement(gettext("CHARGE TYPE"), "chargetype", "20%", "center", "sort", "30", "list", $chargetype_list);

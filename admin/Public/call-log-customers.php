@@ -129,11 +129,11 @@ $FG_TABLE_COL [] = array (gettext ( "Margin" ), "margin", "7%", "center", "SORT"
 $FG_TABLE_COL [] = array (gettext ( "Markup" ), "markup", "7%", "center", "SORT", "30", "", "", "", "", "", "display_2dec_percentage" );
 
 if (LINK_AUDIO_FILE) {
-    $FG_TABLE_COL [] = array ("", "uniqueid", "1%", "center", "", "30", "", "", "", "", "", "linkonmonitorfile" );
+    $FG_TABLE_COL [] = array ("", "uniqueid", "1%", "center", "", "30", "", "", "", "", "", "display_monitorfile_link" );
 }
 
 if (has_rights (ACX_DELETE_CDR)) {
-    $FG_TABLE_COL [] = array ("", "id", "1%", "center", "", "30", "", "", "", "", "", "linkdelete_cdr" );
+    $FG_TABLE_COL [] = array ("", "id", "1%", "center", "", "30", "", "", "", "", "", "display_cdr_deletelink" );
 }
 
 // This Variable store the argument for the SQL query
@@ -173,8 +173,8 @@ if ($posted == 1) {
 
 $date_clause = '';
 
-normalize_day_of_month($fromstatsday_sday, $fromstatsmonth_sday, 1);
-normalize_day_of_month($tostatsday_sday, $tostatsmonth_sday, 1);
+normalize_day_of_month($fromstatsday_sday, $fromstatsmonth_sday);
+normalize_day_of_month($tostatsday_sday, $tostatsmonth_sday);
 // Date Clause
 if ($fromday && isset ( $fromstatsday_sday ) && isset ( $fromstatsmonth_sday )) {
     if ($fromtime) {
@@ -1275,23 +1275,23 @@ if ($profit > 500 && $rand_num==4 && SHOW_DONATION) {
                         <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR [$i]?>"
                             align="right" nowrap="nowrap"><font class="fontstyle_006"><?php echo $tmc?> </font></td>
                         <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR [$i]?>"
-                            align="right" nowrap="nowrap"><font class="fontstyle_006"><?php display_2dec_percentage ( $data [5] * 100/ ($data [3]) )?> </font></td>
+                            align="right" nowrap="nowrap"><font class="fontstyle_006"><?php echo get_2dec_percentage ( $data [5] * 100/ ($data [3]) )?> </font></td>
                         <!-- SELL -->
                         <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR [$i]?>"
-                            align="right" nowrap="nowrap"><font class="fontstyle_006"><?php display_2bill ( $data [2] )?>
+                            align="right" nowrap="nowrap"><font class="fontstyle_006"><?php echo get_2bill ( $data [2] )?>
                         </font></td>
                         <!-- BUY -->
                         <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR [$i]?>"
-                            align="right" nowrap="nowrap"><font class="fontstyle_006"><?php display_2bill ( $data [4] )?>
+                            align="right" nowrap="nowrap"><font class="fontstyle_006"><?php echo get_2bill ( $data [4] )?>
                         </font></td>
                         <!-- PROFIT -->
                         <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR [$i]?>"
-                            align="right" nowrap="nowrap"><font class="fontstyle_006"><?php display_2bill ( $data [2] - $data [4] )?>
+                            align="right" nowrap="nowrap"><font class="fontstyle_006"><?php echo get_2bill ( $data [2] - $data [4] )?>
                         </font></td>
                         <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR [$i]?>"
                             align="right" nowrap="nowrap"><font class="fontstyle_006"><?php
                             if ($data [2] != 0) {
-                                display_2dec_percentage ( (($data [2] - $data [4]) / $data [2]) * 100 );
+                                echo get_2dec_percentage ( (($data [2] - $data [4]) / $data [2]) * 100 );
                             } else {
                                 echo "NULL";
                             }
@@ -1300,7 +1300,7 @@ if ($profit > 500 && $rand_num==4 && SHOW_DONATION) {
                         <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR [$i]?>"
                             align="right" nowrap="nowrap"><font class="fontstyle_006"><?php
                             if ($data [4] != 0) {
-                                display_2dec_percentage ( (($data [2] - $data [4]) / $data [4]) * 100 );
+                                echo get_2dec_percentage ( (($data [2] - $data [4]) / $data [4]) * 100 );
                             } else {
                                 echo "NULL";
                             }
@@ -1332,20 +1332,20 @@ if ($profit > 500 && $rand_num==4 && SHOW_DONATION) {
                             class="fontstyle_003"><?php echo $totalminutes?> </font></td>
                         <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php echo $totalcall?></font></td>
                         <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php echo $total_tmc?></font></td>
-                        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php display_2dec_percentage ( $totalsuccess*100 / $totalcall )?> </font></td>
-                        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php display_2bill ( $totalcost )?></font></td>
-                        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php display_2bill ( $totalbuycost )?></font></td>
-                        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php display_2bill ( $totalcost - $totalbuycost )?></font></td>
+                        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php echo get_2dec_percentage ( $totalsuccess*100 / $totalcall )?> </font></td>
+                        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php echo get_2bill ( $totalcost )?></font></td>
+                        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php echo get_2bill ( $totalbuycost )?></font></td>
+                        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php echo get_2bill ( $totalcost - $totalbuycost )?></font></td>
                         <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php
                             if ($totalcost != 0) {
-                                display_2dec_percentage ( (($totalcost - $totalbuycost) / $totalcost) * 100 );
+                                echo get_2dec_percentage ( (($totalcost - $totalbuycost) / $totalcost) * 100 );
                             } else {
                                 echo "NULL";
                             }
                             ?></font></td>
                         <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php
                             if ($totalbuycost != 0) {
-                                display_2dec_percentage ( (($totalcost - $totalbuycost) / $totalbuycost) * 100 );
+                                echo get_2dec_percentage ( (($totalcost - $totalbuycost) / $totalbuycost) * 100 );
                             } else {
                                 echo "NULL";
                             }

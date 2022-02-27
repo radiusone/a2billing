@@ -61,8 +61,8 @@ $from_to = '';
 $bool = false;
 
 //     Generating WHERE CLAUSE		///////////////////////////////
-normalize_day_of_month($fromstatsday_sday, $fromstatsmonth_sday, 1);
-normalize_day_of_month($tostatsday_sday, $tostatsmonth_sday, 1);
+normalize_day_of_month($fromstatsday_sday, $fromstatsmonth_sday);
+normalize_day_of_month($tostatsday_sday, $tostatsmonth_sday);
 
 if ($Period=="Time" && $lst_time != "") {
     if (strlen($condition)>0) $condition.=" AND ";

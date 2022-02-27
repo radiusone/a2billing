@@ -47,7 +47,7 @@ $HD_Form -> FG_DEBUG = 0;
 $HD_Form -> FG_LIMITE_DISPLAY = 10;
 
 $HD_Form -> AddViewElement(gettext("ID"), "cc_card.id", "7%", "center", "sort", "");
-$HD_Form -> AddViewElement(gettext("CardNumber"), "username", "7%", "center", "sort", "", "30", "", "", "", "", "linktocustomer");
+$HD_Form -> AddViewElement(gettext("CardNumber"), "username", "7%", "center", "sort", "", "30", "", "", "", "", "display_customer_link");
 $HD_Form -> AddViewElement(gettext("FIRSTNAME"), "firstname", "10%", "center", "sort", "15");
 $HD_Form -> AddViewElement(gettext("LASTNAME"), "lastname", "10%", "center", "sort", "15");
 

@@ -531,6 +531,46 @@ class FormHandler
      * @var bool
      */
     private $alarm_db_error_duplication;
+    /**
+     * @var bool
+     */
+    public $FG_LIST_ADDING_BUTTON1;
+    /**
+     * @var string
+     */
+    public $FG_LIST_ADDING_BUTTON_LINK1;
+    /**
+     * @var string
+     */
+    public $FG_LIST_ADDING_BUTTON_ALT1;
+    /**
+     * @var string
+     */
+    public $FG_LIST_ADDING_BUTTON_IMG1;
+    /**
+     * @var bool
+     */
+    public $FG_LIST_ADDING_BUTTON2;
+    /**
+     * @var string
+     */
+    public $FG_LIST_ADDING_BUTTON_LINK2;
+    /**
+     * @var string
+     */
+    public $FG_LIST_ADDING_BUTTON_ALT2;
+    /**
+     * @var string
+     */
+    public $FG_LIST_ADDING_BUTTON_IMG2;
+    /**
+     * @var string
+     */
+    public $FG_LIST_ADDING_BUTTON_MSG1;
+    /**
+     * @var string
+     */
+    public $FG_LIST_ADDING_BUTTON_MSG2;
 
     public function __construct($tablename = null, $instance_name = null, $action = null, $tablename_count = null)
     {
@@ -1402,10 +1442,10 @@ class FormHandler
             // Search Form On
             if (($processed['posted_search'] == 1)) {
 
-                $this->_processed["fromstatsday_sday"] = normalize_day_of_month($processed["fromstatsday_sday"], $processed["fromstatsmonth_sday"], 1);
-                $this->_processed["tostatsday_sday"] = normalize_day_of_month($processed["tostatsday_sday"], $processed["tostatsmonth_sday"], 1);
-                $this->_processed["fromstatsday_sday_bis"] = normalize_day_of_month($processed["fromstatsday_sday_bis"], $processed["fromstatsmonth_sday_bis"], 1);
-                $this->_processed["tostatsday_sday_bis"] = normalize_day_of_month($processed["tostatsday_sday_bis"], $processed["tostatsmonth_sday_bis"], 1);
+                $this->_processed["fromstatsday_sday"] = normalize_day_of_month($processed["fromstatsday_sday"], $processed["fromstatsmonth_sday"]);
+                $this->_processed["tostatsday_sday"] = normalize_day_of_month($processed["tostatsday_sday"], $processed["tostatsmonth_sday"]);
+                $this->_processed["fromstatsday_sday_bis"] = normalize_day_of_month($processed["fromstatsday_sday_bis"], $processed["fromstatsmonth_sday_bis"]);
+                $this->_processed["tostatsday_sday_bis"] = normalize_day_of_month($processed["tostatsday_sday_bis"], $processed["tostatsmonth_sday_bis"]);
 
                 $SQLcmd = '';
 

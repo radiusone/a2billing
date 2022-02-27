@@ -79,9 +79,9 @@ $smarty->display('main.tpl');
         <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
             <?php
             if (has_rights (ACX_ADMINISTRATOR)) {
-                echo linktoagent($payment['agent_id']);
+                echo get_linktoagent($payment['agent_id']);
             } else {
-                echo nameofagent($payment['agent_id']);
+                echo get_nameofagent($payment['agent_id']);
             }
             ?>
         </td>

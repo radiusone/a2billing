@@ -54,7 +54,7 @@ $HD_Form -> AddViewElement(gettext("ORDER DATE"), "date_purchased", "10%", "cent
 $HD_Form -> AddViewElement(gettext("CARDID"), "customers_id", "7%", "center", "sort");
 $HD_Form -> AddViewElement(gettext("NAME"), "customers_name", "10%", "center", "sort");
 $HD_Form -> AddViewElement(gettext("ITEM NAME"), "item_name", "10%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("ITEM ID"), "item_id", "10%", "center", "sort", "", "30", "", "", "", "", "linktocustomer");
+$HD_Form -> AddViewElement(gettext("ITEM ID"), "item_id", "10%", "center", "sort", "", "30", "", "", "", "", "display_customer_link");
 $HD_Form -> AddViewElement(gettext("METHOD"), "payment_method", "9%", "center", "sort");
 $HD_Form -> AddViewElement(gettext("CC NUMBER"), "cc_number", "10%", "center", "sort");
 $HD_Form -> AddViewElement(gettext("STATUS"), "orders_status", "7%", "center", "sort","15","lie","cc_payments_status","status_name","status_id='%id'","%1");

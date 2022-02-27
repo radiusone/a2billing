@@ -77,7 +77,7 @@ $smarty->display('main.tpl');
 
 echo $CC_help_info_customer;
 
-echo Display_Login_Button ($DBHandle, $id);
+echo get_login_button ($DBHandle, $id);
 ?>
 
 <table width="95%">
@@ -858,16 +858,16 @@ if (sizeof($call_result)>0 && $call_result[0]!=null) {
                   <?php echo $call['destination']; ?>
                 </td>
                 <td class="tableBody"  align="center">
-                  <?php echo display_minute($call['sessiontime']); ?>
+                  <?php echo get_minute($call['sessiontime']); ?>
                 </td>
                 <td class="tableBody"  align="center">
                   <?php echo $dialstatus_list[$call['terminatecauseid']][0]; ?>
                 </td>
                 <td class="tableBody"  align="center">
-                  <?php echo display_2bill($call['buycost']); ?>
+                  <?php echo echo get_2bill($call['buycost']); ?>
                 </td>
                 <td class="tableBody"  align="center">
-                  <?php echo display_2bill($call['sessionbill']); ?>
+                  <?php echo echo get_2bill($call['sessionbill']); ?>
                 </td>
                 <td class="tableBody"  align="center">
                     <?php if (!empty($call['id_ratecard'])) { ?>

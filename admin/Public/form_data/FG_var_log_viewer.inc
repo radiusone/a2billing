@@ -51,8 +51,8 @@ $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
 $condition_ary = array();
 $lastdayofmonth = date("t", strtotime($tostatsmonth.'-01'));
-normalize_day_of_month($fromstatsday_sday, $fromstatsmonth_sday, 1);
-normalize_day_of_month($tostatsday_sday, $tostatsmonth_sday, 1);
+normalize_day_of_month($fromstatsday_sday, $fromstatsmonth_sday);
+normalize_day_of_month($tostatsday_sday, $tostatsmonth_sday);
 if ($Period=="Month"){
 	if ($frommonth && isset($fromstatsmonth)) $condition_ary[] = "UNIX_TIMESTAMP(csl.creationdate) >= UNIX_TIMESTAMP('$fromstatsmonth-01')";
 	if ($tomonth && isset($tostatsmonth))

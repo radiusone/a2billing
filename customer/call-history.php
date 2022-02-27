@@ -133,8 +133,8 @@ if ($posted==1) {
 
 $date_clause = '';
 
-normalize_day_of_month($fromstatsday_sday, $fromstatsmonth_sday, 1);
-normalize_day_of_month($tostatsday_sday, $tostatsmonth_sday, 1);
+normalize_day_of_month($fromstatsday_sday, $fromstatsmonth_sday);
+normalize_day_of_month($tostatsday_sday, $tostatsmonth_sday);
 if ($fromday && isset($fromstatsday_sday) && isset($fromstatsmonth_sday)) $date_clause.=" AND t1.starttime >= ('$fromstatsmonth_sday-$fromstatsday_sday')";
 if ($today && isset($tostatsday_sday) && isset($tostatsmonth_sday)) $date_clause.=" AND t1.starttime <= ('$tostatsmonth_sday-".sprintf("%02d",intval($tostatsday_sday)/*+1*/)." 23:59:59')";
 
@@ -412,7 +412,7 @@ echo $CC_help_balance_customer;
                        $ligne_number=0;
                        foreach ($list as $recordset) {
                          $ligne_number++;
-                         $recordset[0] = display_GMT($recordset[0], $_SESSION["gmtoffset"], 1);
+                         $recordset[0] = get_date_with_offset($recordset[0], $_SESSION["gmtoffset"]);
                 ?>
 
                         <TR bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$ligne_number%2]?>"  onMouseOver="bgColor='#C4FFD7'" onMouseOut="bgColor='<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$ligne_number%2]?>'">
@@ -577,7 +577,7 @@ foreach ($list_total_day as $data) {
             </td>
             <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$i]?>" align="right" nowrap="nowrap" class="fontstyle_001"><?php echo $data[3]?></td>
             <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$i]?>" align="right" nowrap="nowrap" class="fontstyle_001" ><?php echo $tmc?> </td>
-            <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$i]?>" align="right" nowrap="nowrap" class="fontstyle_001"><?php  display_2bill($data[2]) ?></td>
+            <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$i]?>" align="right" nowrap="nowrap" class="fontstyle_001"><?php  echo get_2bill($data[2]) ?></td>
          <?php
          }
 
@@ -597,7 +597,7 @@ foreach ($list_total_day as $data) {
         <td align="center" nowrap="nowrap" colspan="2" class="callhistory_td4"><?php echo $totalminutes?> </td>
         <td align="center" nowrap="nowrap" class="callhistory_td4"><?php echo $totalcall?></td>
         <td align="center" nowrap="nowrap" class="callhistory_td4"><?php echo $total_tmc?></td>
-        <td align="center" nowrap="nowrap" class="callhistory_td4"><?php  display_2bill($totalcost) ?></td>
+        <td align="center" nowrap="nowrap" class="callhistory_td4"><?php  echo get_2bill($totalcost) ?></td>
     </tr>
 
     </table>

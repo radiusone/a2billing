@@ -126,7 +126,7 @@ $FG_TABLE_COL [] = array (gettext ( "CallType" ), "sipiax", "10%", "center", "SO
 $FG_TABLE_COL [] = array (gettext ( "Sell" ), "sessionbill", "10%", "center", "SORT", "30", "", "", "", "", "", "display_2bill" );
 
 if (LINK_AUDIO_FILE) {
-    $FG_TABLE_COL [] = array ("", "uniqueid", "1%", "center", "", "30", "", "", "", "", "", "linkonmonitorfile" );
+    $FG_TABLE_COL [] = array ("", "uniqueid", "1%", "center", "", "30", "", "", "", "", "", "display_monitorfile_link" );
 }
 
 if ( has_rights ( ACX_SEE_CUSTOMERS_CALLERID )) {
@@ -165,8 +165,8 @@ if ($posted == 1) {
 
 $date_clause = '';
 
-normalize_day_of_month($fromstatsday_sday, $fromstatsmonth_sday, 1);
-normalize_day_of_month($tostatsday_sday, $tostatsmonth_sday, 1);
+normalize_day_of_month($fromstatsday_sday, $fromstatsmonth_sday);
+normalize_day_of_month($tostatsday_sday, $tostatsmonth_sday);
 // Date Clause
 if ($fromday && isset ( $fromstatsday_sday ) && isset ( $fromstatsmonth_sday )) {
     if ($fromtime) {
@@ -1264,10 +1264,10 @@ if (is_array ( $list_total_day ) && count ( $list_total_day ) > 0) {
                         <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR [$i]?>"
                             align="right" nowrap="nowrap"><font class="fontstyle_006"><?php echo $tmc?> </font></td>
                         <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR [$i]?>"
-                            align="right" nowrap="nowrap"><font class="fontstyle_006"><?php display_2dec_percentage ( $data [5] * 100/ ($data [3]) )?> </font></td>
+                            align="right" nowrap="nowrap"><font class="fontstyle_006"><?php echo get_2dec_percentage ( $data [5] * 100/ ($data [3]) )?> </font></td>
                         <!-- SELL -->
                         <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR [$i]?>"
-                            align="right" nowrap="nowrap"><font class="fontstyle_006"><?php display_2bill ( $data [2] )?>
+                            align="right" nowrap="nowrap"><font class="fontstyle_006"><?php echo get_2bill ( $data [2] )?>
                         </font></td>
 
      <?php
@@ -1296,8 +1296,8 @@ if (is_array ( $list_total_day ) && count ( $list_total_day ) > 0) {
                             class="fontstyle_003"><?php echo $totalminutes?> </font></td>
                         <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php echo $totalcall?></font></td>
                         <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php echo $total_tmc?></font></td>
-                        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php display_2dec_percentage ( $totalsuccess*100 / $totalcall )?> </font></td>
-                        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php display_2bill ( $totalcost )?></font></td>
+                        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php echo get_2dec_percentage ( $totalsuccess*100 / $totalcall )?> </font></td>
+                        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php echo get_2bill ( $totalcost )?></font></td>
                     </tr>
                     <!-- END TOTAL -->
 

@@ -47,13 +47,131 @@ if (!has_rights(ACX_RATECARD)) {
     die();
 }
 
-getpost_ifset(['package','popup_select', 'popup_formname', 'popup_fieldname','posted', 'Period', 'frommonth', 'fromstatsmonth', 'tomonth', 'tostatsmonth', 'fromday', 'fromstatsday_sday', 'fromstatsmonth_sday', 'today', 'tostatsday_sday', 'tostatsmonth_sday', 'current_page', 'removeallrate', 'removetariffplan', 'definecredit', 'IDCust', 'mytariff_id', 'destination', 'dialprefix', 'buyrate1', 'buyrate2', 'buyrate1type', 'buyrate2type', 'rateinitial1', 'rateinitial2', 'rateinitial1type', 'rateinitial2type', 'id_trunk', "check", "type", "mode"]);
-
-/********************************* BATCH UPDATE ***********************************/
-getpost_ifset(['batchupdate', 'upd_id_trunk', 'upd_idtariffplan', 'upd_id_outbound_cidgroup', 'upd_tag', 'upd_inuse', 'upd_activated', 'upd_language',
-    'upd_tariff', 'upd_credit', 'upd_credittype', 'upd_simultaccess', 'upd_currency', 'upd_typepaid', 'upd_creditlimit', 'upd_enableexpire', 'upd_expirationdate',
-    'upd_expiredays', 'upd_runservice', 'filterprefix', 'filterfield'
+getpost_ifset([
+    'package',
+    'popup_select',
+    'popup_formname',
+    'popup_fieldname',
+    'posted',
+    'Period',
+    'frommonth',
+    'fromstatsmonth',
+    'tomonth',
+    'tostatsmonth',
+    'fromday',
+    'fromstatsday_sday',
+    'fromstatsmonth_sday',
+    'today',
+    'tostatsday_sday',
+    'tostatsmonth_sday',
+    'current_page',
+    'removeallrate',
+    'removetariffplan',
+    'definecredit',
+    'IDCust',
+    'mytariff_id',
+    'destination',
+    'dialprefix',
+    'buyrate1',
+    'buyrate2',
+    'buyrate1type',
+    'buyrate2type',
+    'rateinitial1',
+    'rateinitial2',
+    'rateinitial1type',
+    'rateinitial2type',
+    'id_trunk',
+    "check",
+    "type",
+    "mode",
 ]);
+/**
+ * @var string $package
+ * @var string $popup_select
+ * @var string $popup_formname
+ * @var string $popup_fieldname
+ * @var string $posted
+ * @var string $Period
+ * @var string $frommonth
+ * @var string $fromstatsmonth
+ * @var string $tomonth
+ * @var string $tostatsmonth
+ * @var string $fromday
+ * @var string $fromstatsday_sday
+ * @var string $fromstatsmonth_sday
+ * @var string $today
+ * @var string $tostatsday_sday
+ * @var string $tostatsmonth_sday
+ * @var string $current_page
+ * @var string $removeallrate
+ * @var string $removetariffplan
+ * @var string $definecredit
+ * @var string $IDCust
+ * @var string $mytariff_id
+ * @var string $destination
+ * @var string $dialprefix
+ * @var string $buyrate1
+ * @var string $buyrate2
+ * @var string $buyrate1type
+ * @var string $buyrate2type
+ * @var string $rateinitial1
+ * @var string $rateinitial2
+ * @var string $rateinitial1type
+ * @var string $rateinitial2type
+ * @var string $id_trunk
+ * @var array $check
+ * @var array $type
+ * @var array $mode
+
+ */
+/********************************* BATCH UPDATE ***********************************/
+getpost_ifset([
+    'batchupdate',
+    'upd_id_trunk',
+    'upd_idtariffplan',
+    'upd_id_outbound_cidgroup',
+    'upd_tag',
+    'upd_inuse',
+    'upd_activated',
+    'upd_language',
+    'upd_tariff',
+    'upd_credit',
+    'upd_credittype',
+    'upd_simultaccess',
+    'upd_currency',
+    'upd_typepaid',
+    'upd_creditlimit',
+    'upd_enableexpire',
+    'upd_expirationdate',
+    'upd_expiredays',
+    'upd_runservice',
+    'filterprefix',
+    'filterfield'
+]);
+
+/**
+ * @var string $batchupdate
+ * @var string $upd_id_trunk
+ * @var string $upd_idtariffplan
+ * @var string $upd_id_outbound_cidgroup
+ * @var string $upd_tag
+ * @var string $upd_inuse
+ * @var string $upd_activated
+ * @var string $upd_language
+ * @var string $upd_tariff
+ * @var string $upd_credit
+ * @var string $upd_credittype
+ * @var string $upd_simultaccess
+ * @var string $upd_currency
+ * @var string $upd_typepaid
+ * @var string $upd_creditlimit
+ * @var string $upd_enableexpire
+ * @var string $upd_expirationdate
+ * @var string $upd_expiredays
+ * @var string $upd_runservice
+ * @var string $filterprefix
+ * @var string $filterfield
+ */
 
 $update_fields = [
     "upd_buyrate",
@@ -135,32 +253,32 @@ if ($batchupdate == 1 && is_array($check)) {
     foreach ($check as $ind_field => $ind_val) {
         //echo "<br>::> $ind_field -";
         $myfield = substr($ind_field, 4);
-        if ($i != 0)
+        if ($i != 0) {
             $SQL_UPDATE .= ',';
+        }
+        $val = $$ind_field;
 
         // Standard update mode
-        if (!isset ($mode["$ind_field"]) || $mode["$ind_field"] == 1) {
-            if (!isset ($type["$ind_field"])) {
-                $SQL_UPDATE .= " $PREFIX_FIELD$myfield='" . $$ind_field . "'";
+        if ($mode["$ind_field"] ?? 1 == 1) {
+            if (!isset($type["$ind_field"])) {
+                $SQL_UPDATE .= " $PREFIX_FIELD$myfield = '$val'";
             } else {
-                $SQL_UPDATE .= " $PREFIX_FIELD$myfield='" . $type["$ind_field"] . "'";
+                $SQL_UPDATE .= " $PREFIX_FIELD$myfield = '$type[$ind_field]'";
             }
             // Mode 2 - Equal - Add - Substract
         } elseif ($mode["$ind_field"] == 2) {
             if ($type["$ind_field"] ?? 1 == 1) {
-                $SQL_UPDATE .= " $PREFIX_FIELD$myfield='" . $$ind_field . "'";
+                $SQL_UPDATE .= " $PREFIX_FIELD$myfield = '$val'";
+            } elseif ($type["$ind_field"] == 2 && str_ends_with($val, "%")) {
+                $val = substr($val, 0, -1);
+                $SQL_UPDATE .= " $PREFIX_FIELD$myfield = ROUND($PREFIX_FIELD$myfield + (($PREFIX_FIELD$myfield * $val) / 100) + 0.00005, 4)";
             } elseif ($type["$ind_field"] == 2) {
-                if (substr($$ind_field, -1) == "%") {
-                    $SQL_UPDATE .= " $PREFIX_FIELD$myfield = ROUND($PREFIX_FIELD$myfield + (($PREFIX_FIELD$myfield * " . substr($$ind_field, 0, -1) . ") / 100) + 0.00005, 4)";
-                } else {
-                    $SQL_UPDATE .= " $PREFIX_FIELD$myfield = $PREFIX_FIELD$myfield +'" . $$ind_field . "'";
-                }
+                $SQL_UPDATE .= " $PREFIX_FIELD$myfield = $PREFIX_FIELD$myfield + '$val'";
+            } elseif ($type["$ind_field"] == 3 && str_ends_with($val, "%")) {
+                $val = substr($val, 0, -1);
+                $SQL_UPDATE .= " $PREFIX_FIELD$myfield = ROUND($PREFIX_FIELD$myfield - (($PREFIX_FIELD$myfield * $val) / 100) + 0.00005, 4)";
             } elseif ($type["$ind_field"] == 3) {
-                if (substr($$ind_field, -1) == "%") {
-                    $SQL_UPDATE .= " $PREFIX_FIELD$myfield = ROUND($PREFIX_FIELD$myfield - (($PREFIX_FIELD$myfield * " . substr($$ind_field, 0, -1) . ") / 100) + 0.00005, 4)";
-                } else {
-                    $SQL_UPDATE .= " $PREFIX_FIELD$myfield = $PREFIX_FIELD$myfield -'" . $$ind_field . "'";
-                }
+                $SQL_UPDATE .= " $PREFIX_FIELD$myfield = $PREFIX_FIELD$myfield - '$val'";
             }
         }
 
@@ -188,7 +306,7 @@ if (!empty($id)) {
 
 $form_action = $form_action ?? "list"; //ask-add
 
-if ($form_action != "list") {
+if ($form_action !== "list") {
     check_demo_mode();
 } elseif ($HD_Form->FG_FILTER_SEARCH_FORM && $_POST['posted_search'] == 1 && is_numeric($mytariffgroup_id)) {
     if (!empty ($HD_Form->FG_TABLE_CLAUSE)) {
@@ -280,13 +398,13 @@ if ($form_action === "list" && !$popup_select): ?>
             <div class="modal-body">
                 <form class="container-fluid form-striped" name="updateForm" id="updateForm" action="" method="post">
                     <input type="hidden" name="batchupdate" value="1"/>
-                    <input type="hidden" name="atmenu" value="<?php echo $atmenu?>"/>
-                    <input type="hidden" name="popup_select" value="<?php echo $popup_select?>"/>
-                    <input type="hidden" name="popup_formname" value="<?php echo $popup_formname?>"/>
-                    <input type="hidden" name="popup_fieldname" value="<?php echo $popup_fieldname?>"/>
-                    <input type="hidden" name="form_action" value="<?php echo $form_action?>"/>
-                    <input type="hidden" name="filterprefix" value="<?php echo $filterprefix?>"/>
-                    <input type="hidden" name="filterfield" value="<?php echo $filterfield?>"/>
+                    <input type="hidden" name="atmenu" value="<?= $atmenu?>"/>
+                    <input type="hidden" name="popup_select" value="<?= $popup_select?>"/>
+                    <input type="hidden" name="popup_formname" value="<?= $popup_formname?>"/>
+                    <input type="hidden" name="popup_fieldname" value="<?= $popup_fieldname?>"/>
+                    <input type="hidden" name="form_action" value="<?= $form_action?>"/>
+                    <input type="hidden" name="filterprefix" value="<?= $filterprefix?>"/>
+                    <input type="hidden" name="filterfield" value="<?= $filterfield?>"/>
                     <?= $HD_Form->csrf_inputs() ?>
 
 
@@ -457,13 +575,13 @@ if ($popup_select): ?>
             <div class="modal-body">
                 <form class="container-fluid form-striped" name="assignForm" id="assignForm" action="" method="post">
                     <input type="hidden" name="batchupdate" value="1"/>
-                    <input type="hidden" name="atmenu" value="<?php echo $atmenu?>"/>
-                    <input type="hidden" name="popup_select" value="<?php echo $popup_select?>"/>
-                    <input type="hidden" name="popup_formname" value="<?php echo $popup_formname?>"/>
-                    <input type="hidden" name="popup_fieldname" value="<?php echo $popup_fieldname?>"/>
-                    <input type="hidden" name="form_action" value="<?php echo $form_action?>"/>
-                    <input type="hidden" name="filterprefix" value="<?php echo $filterprefix?>"/>
-                    <input type="hidden" name="filterfield" value="<?php echo $filterfield?>"/>
+                    <input type="hidden" name="atmenu" value="<?= $atmenu?>"/>
+                    <input type="hidden" name="popup_select" value="<?= $popup_select?>"/>
+                    <input type="hidden" name="popup_formname" value="<?= $popup_formname?>"/>
+                    <input type="hidden" name="popup_fieldname" value="<?= $popup_fieldname?>"/>
+                    <input type="hidden" name="form_action" value="<?= $form_action?>"/>
+                    <input type="hidden" name="filterprefix" value="<?= $filterprefix?>"/>
+                    <input type="hidden" name="filterfield" value="<?= $filterfield?>"/>
                     <input type="hidden" name="addbatchrate" value="1"/>
                     <?= $HD_Form->csrf_inputs() ?>
 
@@ -531,7 +649,7 @@ if ($popup_select): ?>
                             <input type="text" id="assign_prefix" value="" class="form-control form-control-sm"/>
                         </div>
                         <div class="col">
-                            <select name="rbPrefix" id="rbPrefix" class="form-select form-select-sm">
+                            <select name="rbPrefix" id="rbPrefix" aria-label="select a comparison to apply to the field" class="form-select form-select-sm">
                                 <option value="1"><?= _("Exact") ?></option>
                                 <option value="2"><?= _("Begins with") ?></option>
                                 <option value="3"><?= _("Contains") ?></option>
@@ -556,7 +674,7 @@ function sendOpener() {
     let id_tariffplan = "";
     let tag = "";
     let prefix = "";
-    let package = '<?= $package ?>';
+    let pack = '<?= $package ?>';
 
     if (document.getElementById("check[assign_id_trunk]").checked) {
         id_trunk = document.getElementById("assign_id_trunk").value;
@@ -574,7 +692,7 @@ function sendOpener() {
         let val = document.getElementById("rbPrefix").value;
         prefix = `${document.assignForm.assign_prefix.value}&rbPrefix=${val}`;
     }
-    window.opener.location.href = `A2B_package_manage_rates.php?id=${package}&addbatchrate=true&id_trunk=${id_trunk}&id_tariffplan=${id_tariffplan}&tag=${tag}&prefix=${prefix}`;
+    window.opener.location.href = `A2B_package_manage_rates.php?id=${pack}&addbatchrate=true&id_trunk=${id_trunk}&id_tariffplan=${id_tariffplan}&tag=${tag}&prefix=${prefix}`;
 }
 </script>
 
