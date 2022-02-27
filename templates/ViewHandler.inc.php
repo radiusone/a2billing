@@ -318,6 +318,11 @@ function openURLFilter(link) {
                             $new_link .= $item["id"];
                         }
 
+                        $class = $this->{"FG_OTHER_BUTTON{$b}_HTML_CLASS"};
+                        if (!empty($class)) {
+                            $extra_html .= " class='$class' ";
+                        }
+
                         $img = $this->{"FG_OTHER_BUTTON{$b}_IMG"};
                         ?>
                         <a href="<?= $new_link ?>" <?= $extra_html ?>>
