@@ -224,11 +224,11 @@ class Table
             $sql_group = str_ireplace("GROUP BY ", "", $sql_group);
             $group_columns = explode(",", $sql_group);
             foreach($group_columns as &$col) {
-                if (str_contains($col, ".")) {
-                    [$table, $column] = explode(".", $col);
-                    $col = $this->quote_identifier(trim($table)) . "." . $this->quote_identifier(trim($column));
-                }
-                $col = $this->quote_identifier(trim($col));
+                $col = str_replace(
+                    ".",
+                    $this->quote_identifier("."),
+                    $this->quote_identifier(trim($col))
+                );
             }
             $sql_group = implode(",", $group_columns);
             $sql_group = " GROUP BY $sql_group";
