@@ -44,8 +44,6 @@ class FormHandler
 
     public $CV_CURRENT_PAGE = 0;
 
-    public $FG_VIEW_TABLE_WITDH = '100%';
-    public $FG_ACTION_SIZE_COLUMN = '25%';
     /**
      * Sets the debug output (1 = low, 2 = Normal, 3 = High). Default value is "0" .
      *
@@ -104,15 +102,6 @@ class FormHandler
     public $FG_COL_QUERY = "";
 
     /**
-     * Keep the number of column  -  Number of column in the html table
-     *
-     * @public    -    @type integer
-     */
-    public $FG_NB_TABLE_COL = 0;
-    public $FG_TOTAL_TABLE_COL = 0;
-
-
-    /**
      * Keep the ID of the table
      *
      * @public    -    @type string
@@ -128,12 +117,6 @@ class FormHandler
     public $FG_DELETION = false;
     public $FG_INFO = false;
     public $FG_EDITION = false;
-    public $FG_OTHER_BUTTON1 = false;
-    public $FG_OTHER_BUTTON2 = false;
-    public $FG_OTHER_BUTTON3 = false;
-    public $FG_OTHER_BUTTON4 = false;
-    public $FG_OTHER_BUTTON5 = false;
-
 
     /**
      * Keep the link for the action (EDIT & DELETE)
@@ -144,17 +127,6 @@ class FormHandler
     public $FG_DELETION_LINK = '';
     public $FG_DELETION_FORBIDDEN_ID = [];
     public $FG_INFO_LINK = '';
-    public $FG_OTHER_BUTTON1_LINK = '';
-    public $FG_OTHER_BUTTON2_LINK = '';
-    public $FG_OTHER_BUTTON3_LINK = '';
-    public $FG_OTHER_BUTTON4_LINK = '';
-    public $FG_OTHER_BUTTON5_LINK = '';
-
-    public $FG_OTHER_BUTTON1_IMG = '';
-    public $FG_OTHER_BUTTON2_IMG = '';
-    public $FG_OTHER_BUTTON3_IMG = '';
-    public $FG_OTHER_BUTTON4_IMG = '';
-    public $FG_OTHER_BUTTON5_IMG = '';
 
     public $FG_ADD_PAGE_CONFIRM_BUTTON = '';
 
@@ -267,6 +239,24 @@ class FormHandler
      *
      * @public   -  @string
      */
+
+    public $FG_OTHER_BUTTON1 = false;
+    public $FG_OTHER_BUTTON2 = false;
+    public $FG_OTHER_BUTTON3 = false;
+    public $FG_OTHER_BUTTON4 = false;
+    public $FG_OTHER_BUTTON5 = false;
+
+    public $FG_OTHER_BUTTON1_LINK = '';
+    public $FG_OTHER_BUTTON2_LINK = '';
+    public $FG_OTHER_BUTTON3_LINK = '';
+    public $FG_OTHER_BUTTON4_LINK = '';
+    public $FG_OTHER_BUTTON5_LINK = '';
+
+    public $FG_OTHER_BUTTON1_IMG = '';
+    public $FG_OTHER_BUTTON2_IMG = '';
+    public $FG_OTHER_BUTTON3_IMG = '';
+    public $FG_OTHER_BUTTON4_IMG = '';
+    public $FG_OTHER_BUTTON5_IMG = '';
 
     public $FG_OTHER_BUTTON1_ALT = '';
     public $FG_OTHER_BUTTON2_ALT = '';
@@ -708,11 +698,6 @@ class FormHandler
 
         $this->FG_TABLE_ALTERNATE_ROW_COLOR[] = "#F2F2EE";
         $this->FG_TABLE_ALTERNATE_ROW_COLOR[] = "#FCFBFB";
-
-        $this->FG_TOTAL_TABLE_COL = $this->FG_NB_TABLE_COL;
-        if ($this->FG_DELETION || $this->FG_INFO || $this->FG_EDITION || $this->FG_OTHER_BUTTON1 || $this->FG_OTHER_BUTTON2 || $this->FG_OTHER_BUTTON3 || $this->FG_OTHER_BUTTON4 || $this->FG_OTHER_BUTTON5) {
-            $this->FG_TOTAL_TABLE_COL++;
-        }
     }
 
     /**
@@ -783,8 +768,6 @@ class FormHandler
             $displayname, $fieldname, $colpercentage, $textalign, $sort, $char_limit, $lie_type, $lie_with,
             $lie_fieldname, $lie_clause, $lie_display, $myfunc, $link_file,
         ];
-
-        $this->FG_NB_TABLE_COL = count($this->FG_TABLE_COL);
     }
 
     //----------------------------------------------------
@@ -814,7 +797,7 @@ class FormHandler
     public function FieldViewElement($fieldname, $add_id = 1)
     {
         $this->FG_COL_QUERY = $fieldname;
-        // For each query we need to have the ID at the length FG_NB_TABLE_COL
+        // We need to have the ID as the last column
         if ($add_id) {
             $this->FG_COL_QUERY .= ", " . $this->FG_TABLE_ID;
         }
