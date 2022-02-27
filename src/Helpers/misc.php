@@ -1084,14 +1084,15 @@ function check_demo_mode_intro()
  * Checks the day of month for date related forms and reduces the day to the last valid day of the month if too large.
  *
  * @param int|string &$day day from '01' to '31'
- * @param string $year_month: 'xxxx-mm'
+ * @param null|string $year_month: 'xxxx-mm'
  * @return int normalized day
  */
-function normalize_day_of_month(&$day, string $year_month): int
+function normalize_day_of_month(&$day, ?string $year_month = ""): int
 {
-    $check_date = DateTime::createFromFormat("Y-m-d", "$year_month-01");
-    $day = min($day, $check_date->format("t"));
-
+    if (!empty($year_month)) {
+        $check_date = DateTime::createFromFormat("Y-m-d", "$year_month-01");
+        $day = min($day, $check_date->format("t"));
+    }
     return $day;
 }
 
