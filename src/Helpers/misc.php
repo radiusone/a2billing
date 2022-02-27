@@ -1171,7 +1171,8 @@ function get_login_button($DBHandle, $id): string
         <form action="' . $link . '" method="POST" target="_blank">
             <input type="hidden" name="done" value="submit_log"/>
             <input type="hidden" name="pr_login" value="' . $username . '"/>
-            <input type="hidden" name="pr_password" value="' . $password . ').submit();" > \'' . gettext("GO TO CUSTOMER ACCOUNT") . '</a>
+            <input type="hidden" name="pr_password" value="'.$password.'"/>
+            <a href="javascript:;" onclick="javascript:$(\'form\').submit();" > '.gettext("GO TO CUSTOMER ACCOUNT").'</a>
         </form>
     </div>';
 }
