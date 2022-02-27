@@ -17,6 +17,13 @@ global $current_page;
 global $popup_select;
 
 getpost_ifset(array('stitle', 'letter', 'current_page', 'popup_select'));
+/**
+ * @var string $stitle
+ * @var string $letter
+ * @var string $current_page
+ * @var int $popup_select
+ */
+$hasActionButtons = ($this->FG_DELETION || $this->FG_INFO || $this->FG_EDITION || $this->FG_OTHER_BUTTON1 || $this->FG_OTHER_BUTTON2 || $this->FG_OTHER_BUTTON3 || $this->FG_OTHER_BUTTON4 || $this->FG_OTHER_BUTTON5);
 ?>
 
 <?php if( $popup_select < 1 && ($this->FG_LIST_ADDING_BUTTON1 || $this->FG_LIST_ADDING_BUTTON2)): ?>
@@ -175,7 +182,7 @@ function openURLFilter(link) {
                 <?php endif?>
             </th>
             <?php endforeach ?>
-            <?php if ($this->FG_DELETION || $this->FG_INFO || $this->FG_EDITION || $this->FG_OTHER_BUTTON1 || $this->FG_OTHER_BUTTON2 || $this->FG_OTHER_BUTTON3 || $this->FG_OTHER_BUTTON4 || $this->FG_OTHER_BUTTON5): ?>
+            <?php if ($hasActionButtons): ?>
             <th width="<?= $this->FG_ACTION_SIZE_COLUMN?>" align="center" class="tableBody" >
                 <strong> <?= gettext("Action") ?></strong>
             </th>
@@ -251,7 +258,7 @@ function openURLFilter(link) {
                 <?php endif ?>
             </td>
             <?php endforeach ?>
-            <?php if($this->FG_EDITION || $this->FG_INFO || $this->FG_DELETION || $this->FG_OTHER_BUTTON1 || $this->FG_OTHER_BUTTON2 || $this->FG_OTHER_BUTTON3 || $this->FG_OTHER_BUTTON4 || $this->FG_OTHER_BUTTON5): ?>
+            <?php if ($hasActionButtons): ?>
             <td>
                 <?php if($this->FG_INFO): ?>
                     <a href="<?= $this->FG_INFO_LINK?><?= $item[$this->FG_NB_TABLE_COL] ?>">

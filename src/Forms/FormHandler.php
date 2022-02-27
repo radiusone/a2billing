@@ -571,6 +571,7 @@ class FormHandler
      * @var string
      */
     public $FG_LIST_ADDING_BUTTON_MSG2;
+    public $FG_INFO_ALT;
 
     public function __construct($tablename = null, $instance_name = null, $action = null, $tablename_count = null)
     {
