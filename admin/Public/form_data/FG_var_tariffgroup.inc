@@ -87,11 +87,7 @@ if (!$popup_select) {
 	$HD_Form -> FieldViewElement ('id, tariffgroupname, lcrtype,id_cc_package_offer, removeinterprefix');
 }
 
-
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO")." ".strtoupper($HD_Form->FG_INSTANCE_NAME)." ".gettext("CREATED!");
-$HD_Form -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
-$HD_Form -> CV_TEXT_TITLE_ABOVE_TABLE = '';
-
 
 if ($popup_select) {
 	$HD_Form -> FG_LIMITE_DISPLAY = 7;

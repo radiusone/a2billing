@@ -34,9 +34,7 @@ class FormHandler
 
     /* CONFIG THE VIEWER : CV */
     public $CV_NO_FIELDS = "THERE IS NO RECORD !";
-    public $CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = true; // TODO: I don't think this is actually used anywhere
     public $CV_TITLE_TEXT = '';
-    public $CV_TEXT_TITLE_ABOVE_TABLE = "DIRECTORY"; // TODO: I don't think this is actually used anywhere
     public $CV_FOLLOWPARAMETERS = '';
     public $CV_DO_ARCHIVE_ALL = false;
 
@@ -623,7 +621,6 @@ class FormHandler
 
         //initializing variables with gettext
         $this->CV_NO_FIELDS = gettext("No data found!");
-        $this->CV_TEXT_TITLE_ABOVE_TABLE = gettext("DIRECTORY");
         $this->CV_TITLE_TEXT = $instance_name . ' ' . gettext("list");
         $this->FG_FILTER_SEARCH_TOP_TEXT = gettext("Define criteria to make a precise search");
         $this->FG_INTRO_TEXT = gettext("You can browse through our") . " #FG_INSTANCE_NAME# " . gettext("and modify their different properties") . '<br>';

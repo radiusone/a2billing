@@ -71,11 +71,7 @@ $HD_Form -> AddViewElement(gettext("DESCRIPTION"), "description", "40%", "center
 $HD_Form -> AddViewElement(gettext("SEQUENCE NUMBER"), "value", "15%", "center", "SORT", "40");
 $HD_Form -> FieldViewElement ( 'id, name, description, value');
 
-
 $HD_Form -> CV_NO_FIELDS  = gettext("NO SERIES CREATED!");
-$HD_Form -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
-$HD_Form -> CV_TEXT_TITLE_ABOVE_TABLE = '';
-
 
 $HD_Form -> FG_ADDITION = true;
 $HD_Form -> FG_EDITION = true;

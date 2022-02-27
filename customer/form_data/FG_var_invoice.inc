@@ -77,10 +77,3 @@ $HD_Form -> FieldViewElement ("cc_invoice.reference, cc_invoice.date, title, cc_
 
 
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO INVOICE CREATED!");
-$HD_Form -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
-$HD_Form -> CV_TEXT_TITLE_ABOVE_TABLE = '';
-
-
-
-
-

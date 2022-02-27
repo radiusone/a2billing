@@ -72,15 +72,11 @@ $HD_Form -> AddViewElement(gettext("ENABLE"), "enable", "6%", "center", "sort", 
 
 $HD_Form -> FieldViewElement ('label, dial_code, description, text_intro, enable');
 
-
 $HD_Form -> CV_NO_FIELDS  = gettext("There are no monitoring created!");
-$HD_Form -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
-$HD_Form -> CV_TEXT_TITLE_ABOVE_TABLE = '';
 
 $HD_Form -> FG_EDITION = true;
 $HD_Form -> FG_DELETION = true;
 $HD_Form -> FG_ADDITION = true;
-
 
 $HD_Form -> AddEditElement (gettext("LABEL"),
 	"label",

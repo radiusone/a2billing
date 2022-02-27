@@ -74,14 +74,10 @@ $HD_Form -> AddViewElement(gettext("REFILL AMOUNT"), "credit", "15%", "center", 
 
 $HD_Form -> FieldViewElement ('cc_logrefill_agent.id, agent_id, date, cc_logrefill_agent.refill_type as refill_type, cc_logrefill_agent.credit');
 
-
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO AGENT REFILL CREATED!");
-$HD_Form -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
-$HD_Form -> CV_TEXT_TITLE_ABOVE_TABLE = '';
 $HD_Form -> FG_INFO = true;
 $HD_Form -> FG_INFO_LINK = "A2B_refill_info_agent.php?id=";
 $HD_Form -> FG_ADDITION = true;
-
 
 if (!($popup_select>=1))	 $HD_Form -> FG_FILTER_SEARCH_FORM = true;
 $HD_Form -> FG_FILTER_SEARCH_SESSION_NAME = 'refill_agent_selection';

@@ -60,12 +60,8 @@ $HD_Form -> AddViewElement(gettext("CREATIONDATE"), "creationdate", "20%", "cent
 $HD_Form -> AddViewElement(gettext("DESCRIPTION"), "description", "30%", "center", "sort", "30");
 $HD_Form -> FieldViewElement (($popup_select ? 'id,' : '') . 'provider_name, creationdate, description');
 
-
 $HD_Form -> CV_NO_FIELDS  = gettext("NO PROVIDERS CREATED!");
-$HD_Form -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
-$HD_Form -> CV_TEXT_TITLE_ABOVE_TABLE = '';
 $HD_Form -> FG_VIEW_TABLE_WITDH = '70%';
-
 
 if ($popup_select) {
 	$HD_Form -> FG_LIMITE_DISPLAY = 7;

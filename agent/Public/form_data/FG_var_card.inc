@@ -216,10 +216,7 @@ $FG_COL_QUERY_FIELD=substr_replace($FG_COL_QUERY_FIELD,"cc_card.",$pos,0);
 $HD_Form -> FieldViewElement ($FG_COL_QUERY.' '.$FG_COL_QUERY_FIELD);
 
 $HD_Form -> CV_NO_FIELDS  = gettext("NO CARDS HAVE BEEN CREATED!");
-$HD_Form -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
-$HD_Form -> CV_TEXT_TITLE_ABOVE_TABLE = '';
 $HD_Form -> FG_LIMITE_DISPLAY = 10;
-
 
 // Code here for adding the fields in the Export File
 $HD_Form -> FieldExportElement(CARD_EXPORT_FIELD_LIST);

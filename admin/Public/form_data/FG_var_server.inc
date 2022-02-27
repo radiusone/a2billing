@@ -62,10 +62,7 @@ $HD_Form -> AddViewElement(gettext("LASTTIME USED"), "lasttime_used", "15%", "ce
 
 $HD_Form -> FieldViewElement ('id_group, id_group, server_ip, manager_host, manager_username, lasttime_used');
 
-
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO")." ".strtoupper($HD_Form->FG_INSTANCE_NAME)." ".gettext("CREATED!");
-$HD_Form -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
-$HD_Form -> CV_TEXT_TITLE_ABOVE_TABLE = '';
 $HD_Form -> FG_LIMITE_DISPLAY = 10;
 
 $HD_Form -> FG_ADDITION = true;

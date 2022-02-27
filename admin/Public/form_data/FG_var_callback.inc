@@ -79,16 +79,12 @@ $HD_Form -> AddViewElement(gettext("SERVER"), "id_server", "5%", "center", "sort
 
 $HD_Form -> FieldViewElement ('id, uniqueid, entry_time, status, server_ip, num_attempt, manager_result, callback_time, last_attempt_time, channel, context, id_server');
 
-
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO CALLBACK CREATED!");
-$HD_Form -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
-$HD_Form -> CV_TEXT_TITLE_ABOVE_TABLE = '';
 $HD_Form -> FG_LIMITE_DISPLAY = 10;
 
 $HD_Form -> FG_ADDITION = true;
 $HD_Form -> FG_EDITION = true;
 $HD_Form -> FG_DELETION = true;
-
 
 $HD_Form -> AddEditElement (gettext("SERVER GROUP"),
 	"id_server_group",

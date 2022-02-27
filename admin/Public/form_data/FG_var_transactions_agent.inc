@@ -64,10 +64,7 @@ $HD_Form -> AddViewElement(gettext("VALUE"), "currency_value", "5%", "center", "
 
 $HD_Form -> FieldViewElement ('id, date_purchased, agent_id, agent_name, item_name, item_id, payment_method, cc_number, orders_status, orders_amount, currency, currency_value');
 
-
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE ARE NO")." ".strtoupper($HD_Form->FG_INSTANCE_NAME)." ".gettext("CREATED!");
-$HD_Form -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
-$HD_Form -> CV_TEXT_TITLE_ABOVE_TABLE = '';
 
 $HD_Form -> FG_ADDITION = false;
 $HD_Form -> FG_EDITION = false;

@@ -60,11 +60,8 @@ $HD_Form -> FieldViewElement ('cid, activated');
 
 $HD_Form -> CV_TITLE_TEXT = gettext("CallerID list");
 $HD_Form -> CV_NO_FIELDS  = gettext("There are no Caller IDs created");
-$HD_Form -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
-$HD_Form -> CV_TEXT_TITLE_ABOVE_TABLE = '';
 $HD_Form -> FG_LIMITE_DISPLAY = 10;
 $HD_Form -> FG_VIEW_TABLE_WITDH = '70%';
-
 
 // My Code for Where Cluase
 if (strlen($HD_Form -> FG_TABLE_CLAUSE)>0)

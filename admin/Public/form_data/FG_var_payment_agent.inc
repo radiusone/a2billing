@@ -73,14 +73,10 @@ $HD_Form -> AddViewElement(gettext("REFILL"), "id_logrefill", "17%", "center", "
 
 $HD_Form -> FieldViewElement ('cc_logpayment_agent.id, agent_id, date, payment ,payment_type,id_logrefill');
 
-
 $HD_Form -> CV_NO_FIELDS = gettext("THERE IS NO AGENT PAYMENT CREATED!");
-$HD_Form -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
-$HD_Form -> CV_TEXT_TITLE_ABOVE_TABLE = '';
 $HD_Form -> FG_INFO = true;
 $HD_Form -> FG_INFO_LINK = "A2B_payment_info_agent.php?id=";
 $HD_Form -> FG_ADDITION = true;
-
 
 if (!($popup_select>=1))	 $HD_Form -> FG_FILTER_SEARCH_FORM = true;
 $HD_Form -> FG_FILTER_SEARCH_SESSION_NAME = 'payment_agent_selection';

@@ -93,10 +93,4 @@ $HD_Form -> AddSearchElement_C1(gettext("FIRSTNAME"),'firstname','firstnametype'
 $HD_Form -> AddSearchElement_Select(gettext("SELECT REQUEST TYPE"), null, null, null, null, null, "type", 0, $type_revert_list);
 $HD_Form -> AddSearchElement_Select(gettext("SELECT REQUEST STATUS"), null, null, null, null, null, "status", 0, $status_revert_list);
 
-
-
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE ARE NO REMITTANCE REQUEST CREATED!");
-$HD_Form -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
-$HD_Form -> CV_TEXT_TITLE_ABOVE_TABLE = '';
-
-

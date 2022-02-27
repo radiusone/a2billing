@@ -64,10 +64,7 @@ $HD_Form -> AddViewElement(gettext("LINK TO PAYMENT"), "id_payment", "10%", "cen
 
 $HD_Form -> FieldViewElement ('cc_agent_commission.id, id_card, id_agent, date, amount, commission_type , description, id_payment');
 
-
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE ARE NO COMMISSION AGENTS CREATED!");
-$HD_Form -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
-$HD_Form -> CV_TEXT_TITLE_ABOVE_TABLE = '';
 
 $HD_Form -> FG_ADDITION = true;
 //$HD_Form -> FG_EDITION = true;

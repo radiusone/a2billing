@@ -112,11 +112,7 @@ $HD_Form -> AddSearchElement_Select (gettext("SELECT STATUS"), null, null, null,
 $HD_Form -> AddSearchElement_Select (gettext("SELECT USED"), null, null, null, null,null , "used", 0, $used_list_r);
 $HD_Form -> AddSearchElement_Select (gettext("SELECT CURRENCY"), null, null, null, null, null, "currency", 0, $currency_list_r);
 
-
-
 $HD_Form -> CV_NO_FIELDS  = gettext("NO")." ".strtoupper($HD_Form->FG_INSTANCE_NAME)." ".gettext("HAVE BEEN CREATED.");
-$HD_Form -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
-$HD_Form -> CV_TEXT_TITLE_ABOVE_TABLE = '';
 $HD_Form -> FG_EXPORT_SESSION_VAR = "pr_export_entity_voucher";
 $HD_Form -> FG_EXPORT_FIELD_LIST = VOUCHER_EXPORT_FIELD_LIST;
 $HD_Form -> FG_EXPORT_CSV = true;

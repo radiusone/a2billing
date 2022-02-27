@@ -96,15 +96,11 @@ $HD_Form -> AddViewElement(gettext("STATUS"), "status", "7%", "center", "sort", 
 $HD_Form -> AddViewElement(gettext("AMOUNT INCL VAT"), "total_price", "10%", "center", "sort","", "", "", "", "", "", "display_2bill");
 $HD_Form -> FieldViewElement ("cc_receipt.id, username, cc_receipt.date,title,cc_receipt.status,$filter_amount_with_vat");
 
-
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO ".strtoupper($HD_Form->FG_INSTANCE_NAME)." CREATED!");
-$HD_Form -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
-$HD_Form -> CV_TEXT_TITLE_ABOVE_TABLE = '';
 
 $HD_Form -> FG_ADDITION = true;
 $HD_Form -> FG_EDITION = true;
 $HD_Form -> FG_DELETION = true;
-
 
 $HD_Form -> AddEditElement (gettext("ID CUSTOMER"),
 			   "id_card",

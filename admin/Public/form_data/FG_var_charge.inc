@@ -85,16 +85,11 @@ $HD_Form_c -> AddViewElement(gettext("DESCRIPTION"), "description", "25%", "cent
 // added a parameter to append  FG_TABLE_ID  ( by default ) or disable 0.
 $HD_Form_c -> FieldViewElement ('id_cc_card, username, cc_charge.creationdate, amount, chargetype, description');
 
-
 $HD_Form_c -> CV_NO_FIELDS  = gettext("THERE IS NO ".strtoupper($HD_Form_c->FG_INSTANCE_NAME)." CREATED!");
-$HD_Form_c -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
-$HD_Form_c -> CV_TEXT_TITLE_ABOVE_TABLE = '';
-
 
 $HD_Form_c -> FG_EDITION = true;
 $HD_Form_c -> FG_DELETION = true;
 $HD_Form_c -> FG_ADDITION = true;
-
 
 // TODO integrate in Framework
 if ($form_action=='ask-add'){

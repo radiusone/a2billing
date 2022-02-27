@@ -486,8 +486,6 @@ $HD_Form -> FG_FK_DELETE_ALLOWED = true;
 $HD_Form -> FieldViewElement($FG_COL_QUERY);
 
 $HD_Form -> CV_NO_FIELDS  = gettext("NO INFO!");
-$HD_Form -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
-$HD_Form -> CV_TEXT_TITLE_ABOVE_TABLE = '';
 
 // Code here for adding the fields in the Export File
 $HD_Form -> FieldExportElement($FG_COL_QUERY);

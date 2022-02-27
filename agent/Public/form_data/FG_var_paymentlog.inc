@@ -114,8 +114,6 @@ $HD_Form -> AddViewElement(gettext("Cardnumber"), "cardid", "20%", "center", "so
 $HD_Form -> FieldViewElement ('cc_epayment_log.id, cc_epayment_log.creationdate, paymentmethod, cc_epayment_log.status, cc_owner, amount, cardid, cardid ');
 
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE ARE NO ".strtoupper($HD_Form->FG_INSTANCE_NAME)." CREATED!");
-$HD_Form -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
-$HD_Form -> CV_TEXT_TITLE_ABOVE_TABLE = '';
 $HD_Form -> FG_LIMITE_DISPLAY = 25;
 
 $HD_Form -> FG_EDITION = true;

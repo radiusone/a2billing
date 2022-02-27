@@ -128,7 +128,6 @@ $invoiceday_list = array();
 for ($k=0;$k<=28;$k++)
     $invoiceday_list["$k"]  = array( "$k", "$k");
 
-$HD_Form -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
 $HD_Form -> CV_DO_ARCHIVE_ALL = true;
 $HD_Form -> AddViewElement(gettext("ID"), "id", "3%", "center", "sort");
 $HD_Form -> AddViewElement(gettext("ACCOUNT NUMBER"), "username", "20%", "center", "sort", "", "30", "", "", "", "", "display_customer_link");

@@ -66,14 +66,10 @@ $HD_Form -> AddViewElement(gettext("PAYMENT TYPE"),"payment_type", "7%", "center
 
 $HD_Form -> FieldViewElement ('cc_logpayment_agent.id, agent_id, agent_id, date, payment,description ,payment_type');
 
-
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO ".strtoupper($HD_Form->FG_INSTANCE_NAME)." CREATED!");
-$HD_Form -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
-$HD_Form -> CV_TEXT_TITLE_ABOVE_TABLE = '';
 
 $HD_Form -> FG_INFO = true;
 $HD_Form -> FG_INFO_LINK = "A2B_payment_info_agent.php?id=";
-
 
 if (!($popup_select>=1))	 $HD_Form -> FG_FILTER_SEARCH_FORM = true;
 $HD_Form -> FG_FILTER_SEARCH_SESSION_NAME = 'payment_agent_selection';

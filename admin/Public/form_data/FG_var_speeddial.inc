@@ -72,11 +72,7 @@ $HD_Form -> AddViewElement(gettext("DATE"), "cc_speeddial.creationdate", "20%", 
 
 $HD_Form -> FieldViewElement ('cc_speeddial.speeddial, cc_speeddial.phone, cc_speeddial.name, cc_speeddial.id_cc_card, cc_speeddial.creationdate');
 
-
 $HD_Form -> CV_NO_FIELDS  = gettext("NO SPEED DIALS HAVE BEEN CREATED!");
-$HD_Form -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
-$HD_Form -> CV_TEXT_TITLE_ABOVE_TABLE = '';
-
 
 $HD_Form -> FG_EDITION = true;
 $HD_Form -> FG_DELETION = true;

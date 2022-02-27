@@ -63,12 +63,7 @@ $HD_Form -> AddViewElement(gettext("GROUP"), "id_group", "20%", "center", "sort"
 
 $HD_Form -> FieldViewElement ('code, id_agent, id_tariffgroup ,id_group');
 
-
-
-
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO ".strtoupper($HD_Form->FG_INSTANCE_NAME)." CREATED!");
-$HD_Form -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
-$HD_Form -> CV_TEXT_TITLE_ABOVE_TABLE = '';
 $HD_Form -> FG_OTHER_BUTTON1 = true;
 $HD_Form -> FG_OTHER_BUTTON1_ALT = 'URL';
 $HD_Form -> FG_OTHER_BUTTON1_IMG = Images_Path ."/link.png";

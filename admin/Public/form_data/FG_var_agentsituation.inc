@@ -64,18 +64,12 @@ $HD_Form -> AddSearchElement_C1(gettext("LOGIN"), 'login','logintype');
 $HD_Form -> AddSearchElement_C1(gettext("LASTNAME"),'lastname','lastnametype');
 $HD_Form -> AddSearchElement_C1(gettext("FIRSTNAME"),'firstname','firstnametype');
 
-
-
 $HD_Form -> FG_ACTION_SIZE_COLUMN = '15%';
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO").strtoupper($HD_Form->FG_INSTANCE_NAME)." ".gettext("CREATED!");
-$HD_Form -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
-$HD_Form -> CV_TEXT_TITLE_ABOVE_TABLE = '';
-
 
 $HD_Form -> FG_EDITION = false;
 $HD_Form -> FG_DELETION = false;
 $HD_Form -> FG_ADDITION = false;
-
 
 $HD_Form -> FG_INTRO_TEXT_EDITION= gettext("You can modify, through the following form, the different properties of your")." ".$HD_Form->FG_INSTANCE_NAME;
 $HD_Form -> FG_INTRO_TEXT_ASK_DELETION = gettext("If you really want remove this")." ".$HD_Form->FG_INSTANCE_NAME.", ".gettext("click on the delete button.");

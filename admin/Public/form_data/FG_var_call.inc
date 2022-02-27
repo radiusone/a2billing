@@ -52,11 +52,7 @@ $HD_Form -> AddViewElement(gettext("ACCOUNT NUMBER"), "card_id", "25%", "center"
 
 $HD_Form -> FieldViewElement ('id, calledstation, card_id, id');
 
-
-
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO CALL CREATED!");
-$HD_Form -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
-$HD_Form -> CV_TEXT_TITLE_ABOVE_TABLE = '';
 $HD_Form -> FG_LIMITE_DISPLAY = 10;
 
 $HD_Form -> FG_ADDITION = false;

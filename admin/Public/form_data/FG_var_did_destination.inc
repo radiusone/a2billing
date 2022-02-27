@@ -92,16 +92,11 @@ $HD_Form -> FieldViewElement ('destination, cc_did_destination.creationdate, cc_
 
 $HD_Form -> FG_ACTION_SIZE_COLUMN = '15%';
 
-
 $HD_Form -> CV_NO_FIELDS  = gettext("NO DID DESTINATIONS HAVE BEEN CREATED!");
-$HD_Form -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
-$HD_Form -> CV_TEXT_TITLE_ABOVE_TABLE = '';
-
 
 $HD_Form -> FG_EDITION = true;
 $HD_Form -> FG_DELETION = true;
 $HD_Form -> FG_ADDITION = true;
-
 
 // TODO integrate in Framework
 if ($form_action=="ask-add"){

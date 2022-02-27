@@ -72,10 +72,7 @@ $HD_Form -> AddViewElement(gettext("CREATION DATE"), "creationdate", "20%", "cen
 // added a parameter to append  FG_TABLE_ID  ( by default ) or disable 0.
 $HD_Form -> FieldViewElement ('id, didgroupname, creationdate');
 
-
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO")." ".strtoupper($HD_Form->FG_INSTANCE_NAME)." ".gettext("CREATED!");
-$HD_Form -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
-$HD_Form -> CV_TEXT_TITLE_ABOVE_TABLE = '';
 
 $HD_Form -> FG_EDITION = true;
 $HD_Form -> FG_DELETION = true;

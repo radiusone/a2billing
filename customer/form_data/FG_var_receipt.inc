@@ -74,5 +74,3 @@ $HD_Form -> AddViewElement(gettext("AMOUNT INCL VAT"), "price", "10%", "center",
 $HD_Form -> FieldViewElement ("cc_receipt.id, username, cc_receipt.date,title,total_price");
 
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO RECEIPT CREATED!");
-$HD_Form -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
-$HD_Form -> CV_TEXT_TITLE_ABOVE_TABLE = '';

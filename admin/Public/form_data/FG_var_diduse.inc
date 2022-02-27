@@ -94,15 +94,10 @@ $HD_Form -> AddViewElement(gettext("STATUS"), "activated", "5%", "center", "sort
 // added a parameter to append  FG_TABLE_ID  ( by default ) or disable 0.
 $HD_Form -> FieldViewElement ('id_did, id_did, id_cc_card, id_cc_card, reservationdate, releasedate, activated');
 
-
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO DID IN USE!");
-$HD_Form -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
-$HD_Form -> CV_TEXT_TITLE_ABOVE_TABLE = '';
 $HD_Form -> CV_FOLLOWPARAMETERS ="&posted=$posted&did=$did&inuse=$inuse";
 
 $HD_Form -> FG_ADDITION = false;
 $HD_Form -> FG_EDITION = false;
 $HD_Form -> FG_DELETION = false;
 $HD_Form -> FG_FILTER_APPLY = false;
-
-

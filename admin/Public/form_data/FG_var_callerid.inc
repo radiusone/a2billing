@@ -66,16 +66,12 @@ $HD_Form -> AddViewElement(gettext("ACTIVATED"), "activated", "15%", "center", "
 
 $HD_Form -> FieldViewElement ('cid, id_cc_card, id_cc_card, cc_callerid.activated, cc_callerid.id');
 
-
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO ").strtoupper($HD_Form->FG_INSTANCE_NAME).gettext(" CREATED!");
-$HD_Form -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
-$HD_Form -> CV_TEXT_TITLE_ABOVE_TABLE = '';
 $HD_Form -> FG_LIMITE_DISPLAY = 10;
 
 $HD_Form -> FG_ADDITION = true;
 $HD_Form -> FG_EDITION = true;
 $HD_Form -> FG_DELETION = true;
-
 
 $HD_Form -> AddEditElement (gettext("CALLERID"),
 			   "cid",

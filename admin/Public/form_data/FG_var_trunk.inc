@@ -124,9 +124,6 @@ $HD_Form -> AddSearchElement_Select(gettext("SELECT STATUS"), null, null, null, 
 
 $HD_Form -> FG_ACTION_SIZE_COLUMN = '15%';
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO ".strtoupper($HD_Form->FG_INSTANCE_NAME)." CREATED!");
-$HD_Form -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
-$HD_Form -> CV_TEXT_TITLE_ABOVE_TABLE = '';
-
 
 if ($popup_select) {
 	$HD_Form -> FG_LIMITE_DISPLAY = 7;

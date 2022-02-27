@@ -101,10 +101,7 @@ $HD_Form -> AddViewElement(gettext("TOTALCREDIT"), "totalcredit", "10%", "center
 // added a parameter to append  FG_TABLE_ID  ( by default ) or disable 0.
 $HD_Form -> FieldViewElement ('name, amount, period, status, numberofrun, datelastrun, totalcardperform, totalcredit');
 
-
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO")." ".strtoupper($HD_Form->FG_INSTANCE_NAME)." ".gettext("CREATED!");
-$HD_Form -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
-$HD_Form -> CV_TEXT_TITLE_ABOVE_TABLE = '';
 
 $HD_Form -> FG_ADDITION = true;
 $HD_Form -> FG_EDITION = true;

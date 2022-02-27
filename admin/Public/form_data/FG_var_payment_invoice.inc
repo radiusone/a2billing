@@ -60,11 +60,7 @@ $HD_Form -> AddViewElement(gettext("PAYMENT TYPE"),"payment_type", "7%", "center
 
 $HD_Form -> FieldViewElement ('cc_logpayment.id, date, payment,description ,payment_type');
 
-
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO ".strtoupper($HD_Form->FG_INSTANCE_NAME)." CREATED!");
-$HD_Form -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
-$HD_Form -> CV_TEXT_TITLE_ABOVE_TABLE = '';
-
 
 if (($popup_select>=1)) {
 

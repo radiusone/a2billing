@@ -111,10 +111,7 @@ $HD_Form -> AddViewElement(gettext("STATUS"), "cc_invoice_status", "7%", "center
 $HD_Form -> AddViewElement(gettext("AMOUNT INCL VAT"), "total_price", "10%", "center", "sort","", "", "", "", "", "", "display_2bill");
 $HD_Form -> FieldViewElement ("cc_invoice.id, cc_invoice.reference, username, cc_invoice.date,title, cc_invoice.paid_status, cc_invoice.status as cc_invoice_status,$filter_amount_with_vat");
 
-
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO ".strtoupper($HD_Form->FG_INSTANCE_NAME)." CREATED!");
-$HD_Form -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
-$HD_Form -> CV_TEXT_TITLE_ABOVE_TABLE = '';
 
 if (!($popup_select>=1)) $HD_Form -> FG_FILTER_SEARCH_FORM = true;
 if (!($popup_select>=1)) $HD_Form -> FG_FILTER_SEARCH_DELETE_ALL = false;

@@ -122,11 +122,6 @@ if ($popup_select) {
 	$HD_Form -> FieldViewElement ('id, datecreation, login, passwd, firstname, lastname, credit, com_balance, currency, active');
 }
 
-
-$HD_Form -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
-$HD_Form -> CV_TEXT_TITLE_ABOVE_TABLE = '';
-
-
 if ($popup_select) {
 	$HD_Form -> FG_LIMITE_DISPLAY = 7;
 	$HD_Form -> CV_FOLLOWPARAMETERS = "&popup_select=" . $popup_select . "&popup_formname=" . $popup_formname . "&popup_fieldname=" . $popup_fieldname;

@@ -70,12 +70,6 @@ function openURLFilter(link) {
 }
 </script>
 
-<?php if($this->CV_DISPLAY_LINE_TITLE_ABOVE_TABLE): ?>
-<div class="row pb-3">
-    <div class="col"><strong><?= $this -> CV_TEXT_TITLE_ABOVE_TABLE ?></strong></div>
-</div>
-<?php endif ?>
-
 <?php if ($this->CV_DO_ARCHIVE_ALL): ?>
 <div class="row pb-3">
     <div class="col">
