@@ -135,7 +135,7 @@ if (DELETE_FK_CARD) {
     $HD_Form->FG_FK_DELETE_MESSAGE = gettext("You are going to remove a card that have SIP/IAX accounts and/or CallerIDs attached to it ! Please confirm that you really want to remove this card ? ");
 }
 
-if (!($popup_select >= 1)) {
+if (!$popup_select) {
     $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
     $HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_card_multi.php?stitle=Card&section=" . $_SESSION["menu_section"];
     $HD_Form->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Generate Customers");
@@ -187,9 +187,9 @@ foreach ($show_list_temp as $i => $value) {
     if (str_contains($a, ":")) {
         $temp_ar = explode(':', $a);
         $b = $temp_ar[1];
-        $a2 = strtolower(trim($temp_ar[0]));
-        if (strlen($a2) > 1) {
-            $show_list_sizes[$a2] = $b;
+        $a = strtolower(trim($temp_ar[0]));
+        if (strlen($a) > 1) {
+            $show_list_sizes[$a] = $b;
         }
     }
     if (strlen($a) > 1) {
@@ -264,30 +264,31 @@ $FG_COL_QUERY = 'DISTINCT ';
 $FG_COL_QUERY_FIELD = '';
 $index = 0;
 foreach ($show_list as $i => $value) {
-    if (array_key_exists($i, $show_fields)) {
-        $param = $show_fields[$i];
-        $param = $param + ["", "", "", "", "", ""];#expand array to max length
-        $size = "*";
-        $param7 = $param[7];
-        if ($param[6] == "eval") {
-            $param7 = str_replace('%C', '%' . $index, $param7);//because of dynamic nature need set current field for eval
-        }
-        if (array_key_exists($i, $show_list_sizes)) {
-            if ((strlen(trim($show_list_sizes[$i]) == 0)) && (strlen(trim($param[2]) > 0))) {
-                $size = $param[2];
-            } else {
-                $size = $show_list_sizes[$i];
-            }
-        }
-        $HD_Form->AddViewElement($param[0], $param[1], $size, $param[3], $param[4], $param[5], $param[6], $param7, $param[8],
-            $param[9], $param[10], $param[11], $param[12]);
-        if ($value == 'callerid') {
-            $FG_COL_QUERY_FIELD = $FG_COL_QUERY_FIELD . ', (select GROUP_CONCAT(cid SEPARATOR \'<br>\') from cc_callerid where id_cc_card=cc_card.id) as callerid';
-        } else {
-            $FG_COL_QUERY_FIELD = $FG_COL_QUERY_FIELD . ', ' . $value;
-        }
-        $index = $index + 1;
+    if (!array_key_exists($i, $show_fields)) {
+        continue;
     }
+    $param = $show_fields[$i];
+    $param = $param + ["", "", "", "", "", ""];#expand array to max length
+    $size = "*";
+    $param7 = $param[7];
+    if ($param[6] == "eval") {
+        $param7 = str_replace('%C', '%' . $index, $param7);//because of dynamic nature need set current field for eval
+    }
+    if (array_key_exists($i, $show_list_sizes)) {
+        if ((strlen(trim($show_list_sizes[$i]) == 0)) && (strlen(trim($param[2]) > 0))) {
+            $size = $param[2];
+        } else {
+            $size = $show_list_sizes[$i];
+        }
+    }
+    $HD_Form->AddViewElement($param[0], $param[1], $size, $param[3], $param[4], $param[5], $param[6], $param7, $param[8],
+        $param[9], $param[10], $param[11], $param[12]);
+    if ($value == 'callerid') {
+        $FG_COL_QUERY_FIELD = $FG_COL_QUERY_FIELD . ', (select GROUP_CONCAT(cid SEPARATOR \'<br>\') from cc_callerid where id_cc_card=cc_card.id) as callerid';
+    } else {
+        $FG_COL_QUERY_FIELD = $FG_COL_QUERY_FIELD . ', ' . $value;
+    }
+    $index = $index + 1;
 }
 if (strlen($FG_COL_QUERY_FIELD) > 2) {
     $FG_COL_QUERY_FIELD = substr($FG_COL_QUERY_FIELD, 2);
