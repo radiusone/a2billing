@@ -58,12 +58,6 @@ $HD_Form -> AddViewElement(gettext("TOTAL_DURATION"), "t_time", "15%", "center",
 $HD_Form -> AddViewElement(gettext("TOTAL_COST"), "t_cost", "15%", "center", "nosort");
 $HD_Form -> AddViewElement(gettext("CARDNUMBER"), "username", "15%", "center", "nosort");
 
-$HD_Form -> FG_OTHER_BUTTON1 = true;
-$HD_Form -> FG_OTHER_BUTTON1_LINK = 'CC_entity_edit_charge.php?form_action=ask-add&atmenu=charge&stitle=Charge&username=|param1|&id_did=|param|&';
-$HD_Form -> FG_OTHER_BUTTON1_ALT = '<font color="red">BILL</font>';
-$HD_Form -> FG_OTHER_BUTTON1_IMG = '';
-
-
 // added a parameter to append  FG_TABLE_ID  ( by default ) or disable 0.
 $HD_Form -> FieldViewElement ("DATE(starttime) as date, cc_did.did, count(*) as nb_call, sum(sessiontime) as t_time, sum(sessionbill) as t_cost, username ", 0 );
 
