@@ -216,7 +216,6 @@ $HD_Form -> FG_INTRO_TEXT_ADD = gettext("you can add easily a new")." ".$HD_Form
 $HD_Form -> FG_INTRO_TEXT_ADITION = gettext("Add a new mail template");
 $HD_Form -> FG_TEXT_ADITION_CONFIRMATION = gettext("Your new")." ".$HD_Form->FG_INSTANCE_NAME." ".gettext("has been inserted.")."<br>";
 
-$HD_Form -> FG_BUTTON_EDITION_SRC = $HD_Form -> FG_BUTTON_ADITION_SRC  = "";
 $HD_Form -> FG_BUTTON_ADITION_BOTTOM_TEXT = gettext("The followings tags will be replaced in the message by the value in the database.").'<br/>';
 
 $HD_Form -> FG_BUTTON_ADITION_BOTTOM_TEXT .= '<u>'.gettext('Tags used for EPayment Warning email').': </u><br/> ' .

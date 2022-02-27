@@ -190,7 +190,6 @@ $HD_Form_c -> FG_INTRO_TEXT_ADITION = '';
 $HD_Form_c -> FG_TEXT_ADITION_CONFIRMATION = gettext("Your new")." ".$HD_Form_c->FG_INSTANCE_NAME." ".gettext("has been inserted.")." <br>";
 
 
-$HD_Form_c -> FG_BUTTON_EDITION_SRC = $HD_Form_c -> FG_BUTTON_ADITION_SRC  = "";
 $HD_Form_c -> FG_BUTTON_EDITION_BOTTOM_TEXT = $HD_Form_c -> FG_BUTTON_ADITION_BOTTOM_TEXT = gettext("Click 'Confirm Data' to continue");
 
 

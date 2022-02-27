@@ -424,9 +424,6 @@ class FormHandler
 
 
     // ------------------- ## BUTTON/IMAGE SECTION  ## -------------------
-    public $FG_BUTTON_ADITION_SRC = "Images_Path/en/continue_boton.gif";
-    public $FG_BUTTON_EDITION_SRC = "Images_Path/en/continue_boton.gif";
-
     public $FG_BUTTON_ADITION_BOTTOM_TEXT = "";
 
     public $FG_BUTTON_EDITION_BOTTOM_TEXT = "";
