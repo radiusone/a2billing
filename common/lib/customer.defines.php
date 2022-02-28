@@ -96,44 +96,16 @@ define ("TRAFFIC_TARGET_ENABLE", $A2B->config["signup"]['field_traffic_target'] 
 
 // For ePayment Modules
 const PULL_DOWN_DEFAULT = 'Please Select';
-const TYPE_BELOW = 'Type Below';
 define('TEXT_CCVAL_ERROR_INVALID_DATE', gettext('The expiry date entered for the credit card is invalid.')."<br>".gettext('Please check the date and try again.'));
 define('TEXT_CCVAL_ERROR_INVALID_NUMBER', gettext('The credit card number entered is invalid.')."<br>".gettext('Please check the number and try again.'));
 define('TEXT_CCVAL_ERROR_UNKNOWN_CARD', gettext('The first four digits of the number entered are').": %s<br>".gettext('If that number is correct, we do not accept that type of credit card.')."<br>".gettext('If it is wrong, please try again.'));
 
-const REVIEW_TEXT_MIN_LENGTH = '10';
 const CC_OWNER_MIN_LENGTH = '2';
 const CC_NUMBER_MIN_LENGTH = '15';
 
 // javascript messages
 define('JS_ERROR', gettext('Errors have occured during the process of your form.')."\n\n".gettext('Please make the following corrections:\n\n'));
-define('JS_REVIEW_TEXT', gettext('* The \'Review Text\' must have at least').' ' . REVIEW_TEXT_MIN_LENGTH .' '. gettext('characters').'.\n');
-define('JS_REVIEW_RATING', '* '.gettext('You must rate the product for your review.').'\n');
 define('JS_ERROR_NO_PAYMENT_MODULE_SELECTED', '* '.gettext('Please select a payment method for your order.').'\n');
-define('JS_ERROR_SUBMITTED', gettext('This form has already been submitted. Please press Ok and wait for this process to be completed.'));
-define('ERROR_NO_PAYMENT_MODULE_SELECTED', gettext('Please select a payment method for your order.'));
-//CC
-define('MODULE_PAYMENT_CC_TEXT_TITLE', gettext('Credit Card'));
-define('MODULE_PAYMENT_CC_TEXT_DESCRIPTION', gettext('Credit Card Test Info').':<br><br>CC#: 4111111111111111<br>'.gettext('Expiry: Any'));
-define('MODULE_PAYMENT_CC_TEXT_CREDIT_CARD_TYPE', gettext('Credit Card Type').':');
-define('MODULE_PAYMENT_CC_TEXT_CREDIT_CARD_OWNER', gettext('Credit Card Owner').':');
-define('MODULE_PAYMENT_CC_TEXT_CREDIT_CARD_NUMBER', gettext('Credit Card Number').':');
-define('MODULE_PAYMENT_CC_TEXT_CREDIT_CARD_EXPIRES', gettext('Credit Card Expiry Date').':');
-define('MODULE_PAYMENT_CC_TEXT_JS_CC_OWNER', gettext('* The owner\'s name of the credit card must be at least').' '. CC_OWNER_MIN_LENGTH .' '.gettext('characters').'.\n');
-define('MODULE_PAYMENT_CC_TEXT_JS_CC_NUMBER', gettext('* The credit card number must be at least').' ' . CC_NUMBER_MIN_LENGTH . ' '.gettext('characters').'.\n');
-define('MODULE_PAYMENT_CC_TEXT_ERROR', gettext('Credit Card Error!'));
-//IPAY
-const MODULE_PAYMENT_IPAYMENT_TEXT_TITLE = 'iPayment';
-define('MODULE_PAYMENT_IPAYMENT_TEXT_DESCRIPTION', gettext('Credit Card Test Info').':<br><br>CC#: 4111111111111111<br>'.gettext('Expiry: Any'));
-define('IPAYMENT_ERROR_HEADING', gettext('There has been an error processing your credit card'));
-define('IPAYMENT_ERROR_MESSAGE', gettext('Please check your credit card details!'));
-define('MODULE_PAYMENT_IPAYMENT_TEXT_CREDIT_CARD_OWNER', gettext('Credit Card Owner:'));
-define('MODULE_PAYMENT_IPAYMENT_TEXT_CREDIT_CARD_NUMBER', gettext('Credit Card Number:'));
-define('MODULE_PAYMENT_IPAYMENT_TEXT_CREDIT_CARD_EXPIRES', gettext('Credit Card Expiry Date:'));
-define('MODULE_PAYMENT_IPAYMENT_TEXT_CREDIT_CARD_CHECKNUMBER', gettext('Credit Card Checknumber:'));
-define('MODULE_PAYMENT_IPAYMENT_TEXT_CREDIT_CARD_CHECKNUMBER_LOCATION', gettext('(located at the back of the credit card)'));
-define('MODULE_PAYMENT_IPAYMENT_TEXT_JS_CC_OWNER', gettext('* The owner\'s name of the credit card must be at least').' ' . CC_OWNER_MIN_LENGTH . ' '.gettext('characters.').'\n');
-define('MODULE_PAYMENT_IPAYMENT_TEXT_JS_CC_NUMBER', gettext('* The credit card number must be at least').' ' . CC_NUMBER_MIN_LENGTH .' '.gettext('characters').'\n');
 
 define ("EPAYMENT_PURCHASE_AMOUNT", $A2B->config['epayment_method']['purchase_amount'] ?? null);
 
@@ -142,7 +114,6 @@ define ("EMAIL_ADMIN", $A2B->config['webui']['email_admin'] ?? null);
 define ("NUM_MUSICONHOLD_CLASS", $A2B->config['webui']['num_musiconhold_class'] ?? null);
 define ("SHOW_HELP", $A2B->config['webui']['show_help'] ?? null);
 define ("MY_MAX_FILE_SIZE_IMPORT", $A2B->config['webui']['my_max_file_size_import'] ?? null);
-define ("MY_MAX_FILE_SIZE", $A2B->config['webui']['my_max_file_size'] ?? null);
 define ("DIR_STORE_MOHMP3", $A2B->config['webui']['dir_store_mohmp3'] ?? null);
 define ("DIR_STORE_AUDIO", $A2B->config['webui']['dir_store_audio'] ?? null);
 define ("MY_MAX_FILE_SIZE_AUDIO", $A2B->config['webui']['my_max_file_size_audio'] ?? null);
@@ -150,23 +121,7 @@ $file_ext_allow = $A2B->config['webui']['file_ext_allow'] ?? null;
 $file_ext_allow_musiconhold = $A2B->config['webui']['file_ext_allow_musiconhold'] ?? null;
 define ("LINK_AUDIO_FILE", $A2B->config['webui']['link_audio_file'] ?? null);
 define ("MONITOR_PATH", $A2B->config['webui']['monitor_path'] ?? null);
-define ("MONITOR_FORMATFILE", $A2B->config['webui']['monitor_formatfile'] ?? null);
-define ("SHOW_ICON_INVOICE", $A2B->config['webui']['show_icon_invoice'] ?? null);
-define ("SHOW_TOP_FRAME", $A2B->config['webui']['show_top_frame'] ?? null);
 define ("ADVANCED_MODE", $A2B->config['webui']['advanced_mode'] ?? null);
-define ("CURRENCY_CHOOSE", $A2B->config['webui']['currency_choose'] ?? null);
-
-// PAYPAL
-define ("PAYPAL_EMAIL", $A2B->config['paypal']['paypal_email'] ?? null);
-define ("PAYPAL_FROM_EMAIL", $A2B->config['paypal']['from_email'] ?? null);
-define ("PAYPAL_FROM_NAME", $A2B->config['paypal']['from_name'] ?? null);
-define ("PAYPAL_COMPANY_NAME", $A2B->config['paypal']['company_name'] ?? null);
-define ("PAYPAL_ERROR_EMAIL", $A2B->config['paypal']['error_email'] ?? null);
-define ("PAYPAL_ITEM_NAME", $A2B->config['paypal']['item_name'] ?? null);
-define ("PAYPAL_CURRENCY_CODE", $A2B->config['paypal']['currency_code'] ?? null);
-define ("PAYPAL_NOTIFY_URL", $A2B->config['paypal']['notify_url'] ?? null);
-define ("PAYPAL_PURCHASE_AMOUNT", $A2B->config['paypal']['purchase_amount'] ?? null);
-define ("PAYPAL_LOGFILE", $A2B->config['paypal']['paypal_logfile'] ?? null);
 
 define ("RETURN_URL_DISTANT_LOGIN", $A2B->config["webcustomerui"]['return_url_distant_login'] ?? null);
 define ("RETURN_URL_DISTANT_FORGETPASSWORD", $A2B->config["webcustomerui"]['return_url_distant_forgetpassword'] ?? null);
@@ -213,8 +168,6 @@ define ("HTTP_SERVER", $A2B->config["epayment_method"]['http_server'] ?? null);
 define ("HTTPS_SERVER", $A2B->config["epayment_method"]['https_server'] ?? null);
 define ("HTTP_COOKIE_DOMAIN", $A2B->config["epayment_method"]['http_cookie_domain'] ?? null);
 define ("HTTPS_COOKIE_DOMAIN", $A2B->config["epayment_method"]['https_cookie_domain'] ?? null);
-define ("HTTP_COOKIE_PATH", $A2B->config["epayment_method"]['http_cookie_path'] ?? null);
-define ("HTTPS_COOKIE_PATH", $A2B->config["epayment_method"]['https_cookie_path'] ?? null);
 define ("DIR_WS_HTTP_CATALOG", $A2B->config["epayment_method"]['dir_ws_http_catalog'] ?? null);
 define ("DIR_WS_HTTPS_CATALOG", $A2B->config["epayment_method"]['dir_ws_https_catalog'] ?? null);
 define ("ENABLE_SSL", $A2B->config["epayment_method"]['enable_ssl'] ?? null);
@@ -237,7 +190,6 @@ define ("Images_Path","./templates/".$_SESSION["stylefile"]."/images");
 define ("Images_Path_Main","./templates/".$_SESSION["stylefile"]."/images");
 define ("KICON_PATH","./templates/".$_SESSION["stylefile"]."/images/kicons");
 const DIR_WS_IMAGES = Images_Path . '/';
-define ("INVOICE_IMAGE", $A2B->config["global"]['invoice_image'] ?? null);
 define ("ADMIN_EMAIL", $A2B->config["global"]['admin_email'] ?? null);
 
 // INCLUDE HELP

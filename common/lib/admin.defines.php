@@ -112,27 +112,11 @@ $file_ext_allow = is_array($A2B->config['webui']['file_ext_allow'])?$A2B->config
 $file_ext_allow_musiconhold = is_array($A2B->config['webui']['file_ext_allow_musiconhold'])?$A2B->config['webui']['file_ext_allow_musiconhold']:null;
 define ("LINK_AUDIO_FILE", $A2B->config['webui']['link_audio_file'] ?? null);
 define ("MONITOR_PATH", $A2B->config['webui']['monitor_path'] ?? null);
-define ("MONITOR_FORMATFILE", $A2B->config['webui']['monitor_formatfile'] ?? null);
-define ("SHOW_ICON_INVOICE", $A2B->config['webui']['show_icon_invoice'] ?? null);
-define ("SHOW_TOP_FRAME", $A2B->config['webui']['show_top_frame'] ?? null);
 define ("ADVANCED_MODE", $A2B->config['webui']['advanced_mode'] ?? null);
-define ("CURRENCY_CHOOSE", $A2B->config['webui']['currency_choose'] ?? null);
 define ("DELETE_FK_CARD", $A2B->config['webui']['delete_fk_card'] ?? null);
 define ("CARD_EXPORT_FIELD_LIST", $A2B->config['webui']['card_export_field_list'] ?? null);
 define ("RATE_EXPORT_FIELD_LIST", $A2B->config['webui']['rate_export_field_list'] ?? null);
 define ("VOUCHER_EXPORT_FIELD_LIST", $A2B->config['webui']['voucher_export_field_list'] ?? null);
-
-// PAYPAL
-define ("PAYPAL_EMAIL", $A2B->config['paypal']['paypal_email'] ?? null);
-define ("PAYPAL_FROM_EMAIL", $A2B->config['paypal']['from_email'] ?? null);
-define ("PAYPAL_FROM_NAME", $A2B->config['paypal']['from_name'] ?? null);
-define ("PAYPAL_COMPANY_NAME", $A2B->config['paypal']['company_name'] ?? null);
-define ("PAYPAL_ERROR_EMAIL", $A2B->config['paypal']['error_email'] ?? null);
-define ("PAYPAL_ITEM_NAME", $A2B->config['paypal']['item_name'] ?? null);
-define ("PAYPAL_CURRENCY_CODE", $A2B->config['paypal']['currency_code'] ?? null);
-define ("PAYPAL_NOTIFY_URL", $A2B->config['paypal']['notify_url'] ?? null);
-define ("PAYPAL_PURCHASE_AMOUNT", $A2B->config['paypal']['purchase_amount'] ?? null);
-define ("PAYPAL_FEES", $A2B->config['paypal']['paypal_fees'] ?? null);
 
 // BACKUP
 define ("BACKUP_PATH", $A2B->config['backup']['backup_path'] ?? null);
@@ -198,7 +182,6 @@ if (!isset($_SESSION["stylefile"]) || $_SESSION["stylefile"]=='') {
 define ("Images_Path","../Public/templates/".$_SESSION["stylefile"]."/images");
 define ("Images_Path_Main","../Public/templates/".$_SESSION["stylefile"]."/images");
 define ("KICON_PATH","../Public/templates/".$_SESSION["stylefile"]."/images/kicons");
-define ("INVOICE_IMAGE", $A2B->config["global"]['invoice_image'] ?? null);
 
 // INCLUDE HELP
 include (dirname(__FILE__) . "/admin.help.php");

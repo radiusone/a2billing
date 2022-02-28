@@ -9,8 +9,6 @@
 
     define('HTTP_COOKIE_DOMAIN', $A2B->config["epayment_method"]["http_domain"]);
     define('HTTPS_COOKIE_DOMAIN', $A2B->config["epayment_method"]["http_domain"]);
-    define('HTTP_COOKIE_PATH', $A2B->config["epayment_method"]["dir_ws_http"]);
-    define('HTTPS_COOKIE_PATH', $A2B->config["epayment_method"]["dir_ws_http"]);
     define('DIR_WS_HTTP_CATALOG', $A2B->config["epayment_method"]["dir_ws_http"]);
     define('DIR_WS_HTTPS_CATALOG', $A2B->config["epayment_method"]["dir_ws_http"]);
 
