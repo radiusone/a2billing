@@ -33,12 +33,13 @@ use A2billing\Logger;
  *
 **/
 require_once __DIR__ . "/common.defines.php";
+require_once __DIR__ . "/agent.module.access.php";
 require_once __DIR__ . "/agent.help.php";
 
 session_name("UIAGENTSESSION");
 session_start();
 
-const BINDTEXTDOMAIN = '../../common/agent_ui_locale';
+const BINDTEXTDOMAIN = __DIR__ . '/../common/agent_ui_locale';
 SetLocalLanguage();
 
 //Enable Disable, list of values on page A2B_entity_config.php?form_action=ask-edit&id=1

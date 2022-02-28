@@ -32,13 +32,14 @@ use A2billing\Logger;
  *
  *
 **/
-require_once __DIR__ . '/common.defines.php';
+require_once __DIR__ . "/common.defines.php";
+require_once __DIR__ . "admin.module.access.php";
 require_once __DIR__ . "/admin.help.php";
 
 session_name("UIADMINSESSION");
 session_start();
 
-const BINDTEXTDOMAIN = '../../common/admin_ui_locale';
+const BINDTEXTDOMAIN = __DIR__ . "/../admin_ui_locale";
 SetLocalLanguage();
 
 // Parameter to enable/disable the update of list of value in Config Edition
@@ -53,7 +54,7 @@ define ("Images_Path_Main","../Public/templates/$_SESSION[stylefile]/images");
 define ("KICON_PATH","../Public/templates/$_SESSION[stylefile]/images/kicons");
 
 // COPYRIGHT
-if (!isset($disable_check_cp) || $disable_check_cp != true) {
+if (empty($disable_check_cp)) {
     define("LCMODAL", check_cp());
 }
 

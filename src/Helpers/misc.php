@@ -1174,7 +1174,7 @@ function get_login_button($DBHandle, $id): string
             <input type="hidden" name="done" value="submit_log"/>
             <input type="hidden" name="pr_login" value="' . $username . '"/>
             <input type="hidden" name="pr_password" value="'.$password.'"/>
-            <a href="javascript:;" onclick="javascript:$(\'form\').submit();" > '.gettext("GO TO CUSTOMER ACCOUNT").'</a>
+            <a href="#" onclick="$(\'form\').submit();" > '.gettext("GO TO CUSTOMER ACCOUNT").'</a>
         </form>
     </div>';
 }
@@ -1191,4 +1191,104 @@ function str_icontains(string $haystack, string $needle): bool
 function DbConnect(): ADOConnection
 {
     return Connection::GetDBHandler();
+}
+
+function SetLocalLanguage(): void
+{
+    switch ($_SESSION["ui_language"] ?? "") {
+        case "brazilian":
+            $languageEncoding = "pt_BR.UTF-8";
+            $slectedLanguage = "pt_BR";
+            $charEncoding = "UTF-8";
+            break;
+        case "chinese":
+            $languageEncoding = "zh_CN.UTF-8";
+            $slectedLanguage = "zh_CN";
+            $charEncoding = "UTF-8";
+            break;
+        case "spanish":
+            $languageEncoding = "es_ES.iso88591";
+            $slectedLanguage = "es_ES";
+            $charEncoding = "UTF-8";
+            break;
+        case "french":
+            $languageEncoding = "fr_FR.iso88591";
+            $slectedLanguage = "fr_FR";
+            $charEncoding = "iso-8859-1";
+            break;
+        case "german":
+            $languageEncoding = "de_DE.iso88591";
+            $slectedLanguage = "de_DE";
+            $charEncoding = "iso-8859-1";
+            break;
+        case "italian":
+            $languageEncoding = "it_IT.iso8859-1";
+            $slectedLanguage = "it_IT";
+            $charEncoding = "iso88591";
+            break;
+        case "polish":
+            $languageEncoding = "pt_PT.iso88591";
+            $slectedLanguage = "pl_PL";
+            $charEncoding = "iso88591";
+            break;
+        case "romanian":
+            $languageEncoding = "ro_RO.iso88591";
+            $slectedLanguage = "ro_RO";
+            $charEncoding = "iso88591";
+            break;
+        case "russian":
+            $languageEncoding = "ru_RU.UTF-8";
+            $slectedLanguage = "ru_RU";
+            $charEncoding = "UTF-8";
+            break;
+        case "turkish":
+            // issues with Turkish
+            // http://forum.elxis.org/index.php?action=printpage%3Btopic=3090.0
+            // http://bugs.php.net/bug.php?id=39993
+            $languageEncoding = "tr_TR.UTF-8";
+            $slectedLanguage = "tr_TR.UTF-8";
+            $charEncoding = "UTF-8";
+            break;
+        case "urdu":
+            $languageEncoding = "ur.UTF-8";
+            $slectedLanguage = "ur_PK";
+            $charEncoding = "UTF-8";
+            break;
+        case "ukrainian": // provided by Oleh Miniv  email: oleg-min@ukr.net
+            $languageEncoding = "uk_UA.UTF8";
+            $slectedLanguage = "uk_UA";
+            $charEncoding = "UTF8";
+            break;
+        case "farsi":
+            $languageEncoding = "fa_IR.UTF-8";
+            $slectedLanguage = "fa_IR";
+            $charEncoding = "UTF-8";
+            break;
+        case "greek":
+            $languageEncoding = "el_GR.UTF-8";
+            $slectedLanguage = "el_GR";
+            $charEncoding = "UTF-8";
+            break;
+        case "indonesian":
+            $languageEncoding = "id_ID.iso88591";
+            $slectedLanguage = "id_ID";
+            $charEncoding = "iso88591";
+            break;
+        default:
+            $languageEncoding = "en_US.iso88591";
+            $slectedLanguage = "en_US";
+            $charEncoding = "iso88591";
+            break;
+    }
+
+    @setlocale(LC_TIME, $languageEncoding);
+    putenv("LANG=$slectedLanguage");
+    putenv("LANGUAGE=$slectedLanguage");
+    setlocale(LC_ALL, $slectedLanguage);
+    setlocale(LC_MESSAGES, $languageEncoding);
+
+    textdomain("messages");
+    bindtextdomain("messages", BINDTEXTDOMAIN);
+    bind_textdomain_codeset("messages", $charEncoding);
+    define("CHARSET", $charEncoding);
 }

@@ -31,12 +31,13 @@
  *
 **/
 require_once __DIR__ . "/common.defines.php";
+require_once __DIR__ . "customer.module.access.php";
 require_once __DIR__ . "/customer.help.php";
 
 session_name("UICSESSION");
 session_start();
 
-const BINDTEXTDOMAIN = '../common/cust_ui_locale';
+const BINDTEXTDOMAIN = __DIR__ . '/../cust_ui_locale';
 SetLocalLanguage();
 
 //Enable Disable Captcha

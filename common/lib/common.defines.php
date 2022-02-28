@@ -213,15 +213,8 @@ if (isset($ui_language)) {
     $_SESSION["ui_language"] = $ui_language;
     setcookie("ui_language", $ui_language);
 } elseif (!isset($_SESSION["ui_language"])) {
-    if(!isset($_COOKIE["ui_language"])) {
-        $_SESSION["ui_language"] = 'english';
-    } else {
-        $_SESSION["ui_language"] = $_COOKIE["ui_language"];
-    }
+    $_SESSION["ui_language"] = $_COOKIE["ui_language"] ?? "english";
 }
-
-define ("LANGUAGE", $_SESSION["ui_language"]);
-require_once __DIR__ . '/languageSettings.php';
 
 // Open menu
 if (!empty($section)) {
