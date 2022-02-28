@@ -36,57 +36,44 @@ use A2billing\Logger;
 $FG_DEBUG = 0;
 error_reporting(E_ALL & ~E_NOTICE);
 
-// Zone strings
-define ("MODULE_ACCESS_DOMAIN",		"A2Billing - VoIP Billing Software");
-define ("MODULE_ACCESS_DENIED",		"./Access_denied.htm");
-
-define ("ACX_CUSTOMER",					1);
-define ("ACX_BILLING",					2);			// 1 << 1
-define ("ACX_RATECARD",					4);			// 1 << 2
-define ("ACX_CALL_REPORT",   			8);			// 1 << 3
-define ("ACX_MYACCOUNT",				16);
-define ("ACX_SUPPORT",					32);
-define ("ACX_CREATE_CUSTOMER",			64);
-define ("ACX_EDIT_CUSTOMER",			128);
-define ("ACX_DELETE_CUSTOMER",			256);
-define ("ACX_GENERATE_CUSTOMER",		512);
-define ("ACX_SIGNUP",					1024);
-define ("ACX_VOIPCONF",					2048);
-define ("ACX_SEE_CUSTOMERS_CALLERID",	4096);
+const ACX_CUSTOMER = 1;
+const ACX_BILLING = 2;            // 1 << 1
+const ACX_RATECARD = 4;            // 1 << 2
+const ACX_CALL_REPORT = 8;            // 1 << 3
+const ACX_MYACCOUNT = 16;
+const ACX_SUPPORT = 32;
+const ACX_CREATE_CUSTOMER = 64;
+const ACX_EDIT_CUSTOMER = 128;
+const ACX_DELETE_CUSTOMER = 256;
+const ACX_GENERATE_CUSTOMER = 512;
+const ACX_SIGNUP = 1024;
+const ACX_VOIPCONF = 2048;
+const ACX_SEE_CUSTOMERS_CALLERID = 4096;
 
 header("Expires: Sat, Jan 01 2000 01:01:01 GMT");
 
-if (isset($_GET["logout"]) && $_GET["logout"]=="true") {
-    $log = new Logger();
-    $log -> insertLogAgent($admin_id, 1, "AGENT LOGGED OUT", "User Logged out from website", '', $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI'],'');
-    $log = null;
+if (($_GET["logout"] ?? "") === "true") {
+    (new Logger())->insertLogAgent($_SESSION["agent_id"], 1, "AGENT LOGGED OUT", "User Logged out from website", '', $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI']);
     session_destroy();
-    $rights=0;
-    Header ("HTTP/1.0 401 Unauthorized");
-    Header ("Location: index.php");
+    header ("HTTP/1.0 401 Unauthorized");
+    header ("Location: index.php");
     die();
 }
 
-getpost_ifset (array('pr_login', 'pr_password'));
+getpost_ifset (['pr_login', 'pr_password']);
+/**
+ * @var string $pr_login
+ * @var string $pr_password
+ */
 
-if ((!isset($_SESSION['pr_login']) || !isset($_SESSION['pr_password']) || !isset($_SESSION['rights']) || (isset($_POST["done"]) && $_POST["done"]=="submit_log") )) {
-
-    if ($FG_DEBUG == 1) echo "<br>0. HERE WE ARE";
-
-    if ($_POST["done"]=="submit_log") {
-
-        $DBHandle  = DbConnect();
-
-        if ($FG_DEBUG == 1) echo "<br>1. ".$pr_login." - ".$pr_password;
+if (!isset($_SESSION['pr_login']) || !isset($_SESSION['pr_password']) || !isset($_SESSION['rights']) || ($_POST["done"] ?? "") === "submit_log") {
+    if (($_POST["done"] ?? "") === "submit_log") {
 
         $return = login ($pr_login, $pr_password);
 
-        if ($FG_DEBUG == 1) print_r($return);
-        if ($FG_DEBUG == 1) echo "==>".$return[1];
-
-        if (!is_array($return) ) {
+        if (!is_array($return)) {
             header ("HTTP/1.0 401 Unauthorized");
-            Header ("Location: index.php?error=1");
+            header ("Location: index.php?error=1");
             die();
         }
 
@@ -94,65 +81,56 @@ if ((!isset($_SESSION['pr_login']) || !isset($_SESSION['pr_password']) || !isset
         $rights = $return[1];
 
         if ($pr_login) {
-
-            if ($FG_DEBUG == 1) echo "<br>3. $pr_login-$pr_password-$rights-$conf_addcust";
-            $_SESSION["pr_login"]=$pr_login;
-            $_SESSION["pr_password"]=$pr_password;
-            $_SESSION["rights"]=$rights;
+            $_SESSION["pr_login"] = $pr_login;
+            $_SESSION["pr_password"] = $pr_password;
+            $_SESSION["rights"] = $rights;
             $_SESSION["agent_id"] = $agent_id;
             $_SESSION["user_type"] = "AGENT";
-            $_SESSION["currency"]=$return["currency"];
-            $_SESSION["vat"]=$return["vat"];
-            $log = new Logger();
-            $log -> insertLogAgent($agent_id, 1, "Agent Logged In", "Agent Logged in to website", '', $_SERVER['REMOTE_ADDR'], 'PP_Intro.php','');
-            $log = null;
+            $_SESSION["currency"] = $return["currency"];
+            $_SESSION["vat"] = $return["vat"];
+            (new Logger())->insertLogAgent($agent_id, 1, "Agent Logged In", "Agent Logged in to website", '', $_SERVER['REMOTE_ADDR'], 'PP_Intro.php');
         }
-
     } else {
-        $rights=0;
-
+        $_SESSION["rights"] = 0;
     }
-
 }
 
 // 					FUNCTIONS
 //////////////////////////////////////////////////////////////////////////////
 
-function login ($user, $pass)
+function login (?string $user, ?string $pass)
 {
-    global $DBHandle;
-
     $user = trim($user);
     $pass = trim($pass);
     $user = filter_var($user, FILTER_SANITIZE_STRING);
     $pass = filter_var($pass, FILTER_SANITIZE_STRING);
 
-    if (strlen($user)==0 || strlen($user)>=50 || strlen($pass)==0 || strlen($pass)>=50) return false;
+    if (empty($user) || strlen($user) >= 50 || empty($pass) || strlen($pass) >= 50) {
+        return false;
+    }
     $QUERY = "SELECT id, perms, active,currency,vat FROM cc_agent WHERE login = '".$user."' AND passwd = '".$pass."'";
 
-    $res = $DBHandle -> Execute($QUERY);
+    $DBHandle = DbConnect();
+    $res = $DBHandle->Execute($QUERY);
 
     if (!$res) {
-        $errstr = $DBHandle->ErrorMsg();
-
-        return (false);
+        return false;
     }
 
-    $row [] =$res -> fetchRow();
-
-    if ($row [0][2] != "t" && $row [0][2] != "1") {
-        return -1;
+    $row = $res -> fetchRow();
+    if ($row[2] !== "t" && $row[2] != "1") {
+        return false;
     }
 
-    return ($row[0]);
+    return $row;
 }
 
-function has_rights ($condition)
+function has_rights ($condition): int
 {
     return ($_SESSION["rights"] & $condition);
 }
 
-$ACXACCESS 					= ($_SESSION["rights"] > 0) ? true : false;
+$ACXACCESS 					= $_SESSION["rights"] > 0;
 $ACXSIGNUP 					= has_rights (ACX_SIGNUP);
 $ACXCUSTOMER 				= has_rights (ACX_CUSTOMER);
 $ACXBILLING 				= has_rights (ACX_BILLING);
