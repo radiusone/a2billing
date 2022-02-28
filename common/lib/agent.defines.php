@@ -35,6 +35,7 @@ use A2billing\Logger;
 require_once __DIR__ . "/common.defines.php";
 require_once __DIR__ . "/agent.module.access.php";
 require_once __DIR__ . "/agent.help.php";
+require_once __DIR__ . "/agent.smarty.php";
 
 session_name("UIAGENTSESSION");
 session_start();

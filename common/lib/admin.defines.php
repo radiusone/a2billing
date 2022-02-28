@@ -35,6 +35,7 @@ use A2billing\Logger;
 require_once __DIR__ . "/common.defines.php";
 require_once __DIR__ . "admin.module.access.php";
 require_once __DIR__ . "/admin.help.php";
+require_once __DIR__ . "/admin.smarty.php";
 
 session_name("UIADMINSESSION");
 session_start();
