@@ -31,7 +31,7 @@
  *
 **/
 require_once __DIR__ . "/common.defines.php";
-require_once __DIR__ . "customer.module.access.php";
+require_once __DIR__ . "/customer.module.access.php";
 require_once __DIR__ . "/customer.help.php";
 require_once __DIR__ . "/customer.smarty.php";
 
