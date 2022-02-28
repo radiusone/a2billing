@@ -325,15 +325,6 @@ class FormHandler
     public $FG_QUERY_ADITION = '';
 
     /**
-     * Keep the number of the column into EDIT FORM
-     *
-     * @public    -    @type integer
-     */
-    public $FG_NB_TABLE_EDITION = 0;
-    public $FG_NB_TABLE_ADITION = 0;
-
-
-    /**
      * Set the SQL Clause for the edition
      *
      * @public    -    @type string
@@ -365,7 +356,7 @@ class FormHandler
      *
      * @public    -    @type array
      */
-    public $FG_QUERY_EXTRA_HIDDED = '';
+    public $FG_QUERY_EXTRA_HIDDEN = '';
 
     /**
      * Sets the link where to go after an ACTION (EDIT/DELETE/ADD)
@@ -420,8 +411,6 @@ class FormHandler
     public $FG_ADDITIONAL_FUNCTION_AFTER_DELETE = '';
     public $FG_ADDITIONAL_FUNCTION_BEFORE_EDITION = '';
     public $FG_ADDITIONAL_FUNCTION_AFTER_EDITION = '';
-
-    public $FG_TABLE_ALTERNATE_ROW_COLOR = [];
 
     public $FG_TABLE_DEFAULT_ORDER = "id";
     public $FG_TABLE_DEFAULT_SENS = "ASC";
@@ -695,9 +684,6 @@ class FormHandler
         $this->FG_TEXT_ADITION_CONFIRMATION = str_replace('#FG_INSTANCE_NAME#', $this->FG_INSTANCE_NAME, $this->FG_TEXT_ADITION_CONFIRMATION);
         $this->FG_TEXT_ADITION_ERROR = str_replace('#FG_INSTANCE_NAME#', $this->FG_INSTANCE_NAME, $this->FG_TEXT_ADITION_ERROR);
         $this->FG_FILTER_SEARCH_TOP_TEXT = gettext("Define criteria to make a precise search");
-
-        $this->FG_TABLE_ALTERNATE_ROW_COLOR[] = "#F2F2EE";
-        $this->FG_TABLE_ALTERNATE_ROW_COLOR[] = "#FCFBFB";
     }
 
     /**
@@ -884,25 +870,26 @@ class FormHandler
         if ($field_enabled == true) {
             $cur = count($this->FG_TABLE_EDITION);
             $assoc = [
-                "label" => $displayname,
-                "name" => $fieldname,
-                "default" => $defaultvalue,
-                "type" => strtoupper($fieldtype),
-                "attributes" => $fieldproperty,
-                "regex" => $regexpr_nb,
-                "error" => $error_message,
-                "select_type" => strtoupper($type_selectfield),
-                "sql_table" => $lie_tablename,
-                "sql_field" => $lie_tablefield,
-                "sql_clause" => $lie_clause,
-                "select_fields" => $listname,
-                "select_format" => $displayformat_selectfield,
-                "check_empty" => $check_emptyvalue,
-                "custom_query" => $custom_query,
-                "first_option" => $displayinput_defaultselect,
-                "section_name" => $comment_above,
+                "label" => $displayname, // 0
+                "name" => $fieldname, // 1
+                "default" => $defaultvalue, // 2
+                "type" => strtoupper($fieldtype), // 3
+                "attributes" => $fieldproperty, // 4
+                "regex" => $regexpr_nb, // 5
+                "error" => $error_message, // 6
+                "select_type" => strtoupper($type_selectfield), // 7
+                "sql_table" => $lie_tablename, // 8
+                "sql_field" => $lie_tablefield, // 9
+                "sql_clause" => $lie_clause, // 10
+                "select_fields" => $listname, // 11
+                "select_format" => $displayformat_selectfield, // 12
+                "check_empty" => $check_emptyvalue, // 13
+                "custom_query" => $custom_query, // 14
+                "first_option" => $displayinput_defaultselect, // 15
+                "section_name" => $comment_above, // 16
+
                 // extra repeated values because same index is used for multiple purposes
-                "radio_options" => $lie_clause,
+                "radio_options" => $lie_clause, // 10
                 "popup_dest" => $displayformat_selectfield, //12
                 "popup_params" => $check_emptyvalue, //13
                 "popup_timeval" => $custom_query, //14
@@ -911,7 +898,6 @@ class FormHandler
             $this->FG_TABLE_EDITION[$cur] = $assoc + array_values($assoc);
             $this->FG_TABLE_COMMENT[$cur] = $comment;
             $this->FG_TABLE_ADITION[$cur] = $this->FG_TABLE_EDITION[$cur];
-            $this->FG_NB_TABLE_ADITION = $this->FG_NB_TABLE_EDITION = count($this->FG_TABLE_EDITION);
         }
     }
 
@@ -1525,18 +1511,13 @@ class FormHandler
         $param_add_value = "";
         $arr_value_to_import = [];
 
-        for ($i = 0; $i < $this->FG_NB_TABLE_ADITION; $i++) {
+        foreach ($this->FG_TABLE_ADITION as $i => $row) {
 
-            $pos = strpos($this->FG_TABLE_ADITION[$i][14], ":"); // SQL CUSTOM QUERY
-            $pos_mul = strpos($this->FG_TABLE_ADITION[$i][4], "multiple");
+            if (!str_contains($row["custom_query"], ":")) {
+                $fields_name = $row["name"];
+                $regexp = $row["regex"];
 
-            if (!$pos) {
-
-                $fields_name = $this->FG_TABLE_ADITION[$i][1];
-                $regexp = $this->FG_TABLE_ADITION[$i][5];
-
-                // FIND THE MULTIPLE SELECT
-                if ($pos_mul && is_array($processed[$fields_name])) {
+                if (str_contains($row["attributes"], "multiple") && is_array($processed[$fields_name])) {
                     $total_mult_select = 0;
                     foreach ($processed[$fields_name] as $value) {
                         $total_mult_select += $value;
@@ -1545,7 +1526,6 @@ class FormHandler
                     if ($this->FG_DEBUG == 1) {
                         echo "<br>$fields_name : " . $total_mult_select;
                     }
-
                     if ($i > 0) {
                         $param_add_fields .= ", ";
                     }
@@ -1556,28 +1536,27 @@ class FormHandler
                     $param_add_value .= "'" . addslashes(trim($total_mult_select)) . "'";
 
                 } else {
-                    // NO MULTIPLE SELECT
-
                     // CHECK ACCORDING TO THE REGULAR EXPRESSION DEFINED
-                    if (is_numeric($regexp) && !(strtoupper(substr($this->FG_TABLE_ADITION[$i][13], 0, 2)) == "NO" && $processed[$fields_name] == "")) {
+                    if (is_numeric($regexp) && !(str_starts_with(strtoupper($row["check_empty"]), "NO") && $processed[$fields_name] === "")) {
                         $this->FG_fit_expression[$i] = preg_match('/' . $this->FG_regular[$regexp][0] . '/', $processed[$fields_name]);
                         if ($this->FG_DEBUG == 1) {
                             echo "<br>->  $fields_name => " . $this->FG_regular[$regexp][0] . " , " . $processed[$fields_name];
                         }
                         if (!$this->FG_fit_expression[$i]) {
                             $this->VALID_SQL_REG_EXP = false;
+                            if ($this->FG_DEBUG == 1) {
+                                echo "<br>-> $i) Error Match";
+                            }
                             $form_action = "ask-add";
                         }
-                    } elseif ($regexp == "check_select") {
+                    } elseif ($regexp === "check_select" && $processed[$fields_name] == -1) {
                         // FOR SELECT FIELD WE HAVE THE check_select THAT WILL ENSURE WE DEFINE A VALUE FOR THE SELECTABLE FIELD
-                        if ($processed[$fields_name] == -1) {
-                            $this->FG_fit_expression[$i] = false;
-                            $this->VALID_SQL_REG_EXP = false;
-                            $form_action = "ask-add";
-                        }
+                        $this->FG_fit_expression[$i] = false;
+                        $this->VALID_SQL_REG_EXP = false;
+                        $form_action = "ask-add";
                     }
                     // CHECK IF THIS IS A SPLITABLE FIELD LIKE 012-014 OR 15;16;17
-                    if ($fields_name == $this->FG_SPLITABLE_FIELD && substr($processed[$fields_name], 0, 1) != '_') {
+                    if ($fields_name == $this->FG_SPLITABLE_FIELD && !str_starts_with($processed[$fields_name], '_')) {
                         $splitable_value = $processed[$fields_name];
                         $arr_splitable_value = explode(",", $splitable_value);
                         foreach ($arr_splitable_value as $arr_value) {
@@ -1600,11 +1579,11 @@ class FormHandler
                             }
                         }
 
-                        if (!is_null($processed[$fields_name]) && ($processed[$fields_name] != "") && ($this->FG_TABLE_ADITION[$i][4] != "disabled")) {
+                        if (!empty($processed[$fields_name]) && !str_contains($row["attributes"], "disabled")) {
                             if ($i > 0) {
                                 $param_add_fields .= ", ";
                             }
-                            $param_add_fields .= str_replace('myfrom_', '', $fields_name);
+                            $param_add_fields .= $fields_name;
                             if ($i > 0) {
                                 $param_add_value .= ", ";
                             }
@@ -1614,17 +1593,15 @@ class FormHandler
                         if ($this->FG_DEBUG == 1) {
                             echo "<br>$fields_name : " . $processed[$fields_name];
                         }
-                        if (!is_null($processed[$fields_name]) && ($processed[$fields_name] != "") && ($this->FG_TABLE_ADITION[$i][4] != "disabled")) {
-                            if (strtoupper($this->FG_TABLE_ADITION[$i][3]) != strtoupper("CAPTCHAIMAGE")) {
-                                if ($i > 0) {
-                                    $param_add_fields .= ", ";
-                                }
-                                $param_add_fields .= str_replace('myfrom_', '', $fields_name);
-                                if ($i > 0) {
-                                    $param_add_value .= ", ";
-                                }
-                                $param_add_value .= "'" . addslashes(trim($processed[$fields_name])) . "'";
+                        if (!empty($processed[$fields_name]) && !str_contains($row["attributes"], "disabled") && $row["type"] !== "CAPTCHAIMAGE") {
+                            if ($i > 0) {
+                                $param_add_fields .= ", ";
                             }
+                            $param_add_fields .= $fields_name;
+                            if ($i > 0) {
+                                $param_add_value .= ", ";
+                            }
+                            $param_add_value .= "'" . addslashes(trim($processed[$fields_name])) . "'";
                         }
                     }
                 }
@@ -1718,15 +1695,13 @@ class FormHandler
             $this->FG_EDITION_CLAUSE = str_replace("%id", $processed['id'], $this->FG_EDITION_CLAUSE);
         }
 
-        for ($i = 0; $i < $this->FG_NB_TABLE_EDITION; $i++) {
+        foreach ($this->FG_TABLE_EDITION as $i => $row) {
 
-            $pos = strpos($this->FG_TABLE_EDITION[$i][14], ":"); // SQL CUSTOM QUERY
-            $pos_mul = strpos($this->FG_TABLE_EDITION[$i][4], "multiple");
-            if (!$pos) {
-                $fields_name = $this->FG_TABLE_EDITION[$i][1];
-                $regexp = $this->FG_TABLE_EDITION[$i][5];
+            if (!str_contains($row["custom_query"], ":")) {
+                $fields_name = $row["name"];
+                $regexp = $row["regex"];
 
-                if ($pos_mul && is_array($processed[$fields_name])) {
+                if (str_contains($row["attributes"], "multiple") && is_array($processed[$fields_name])) {
                     $total_mult_select = 0;
                     foreach ($processed[$fields_name] as $value) {
                         $total_mult_select += $value;
@@ -1739,10 +1714,10 @@ class FormHandler
                     }
                     $param_update .= "$fields_name = '" . addslashes(trim($total_mult_select)) . "'";
                 } else {
-                    if (is_numeric($regexp) && !(strtoupper(substr($this->FG_TABLE_ADITION[$i][13], 0, 2)) == "NO" && $processed[$fields_name] == "")) {
+                    if (is_numeric($regexp) && !(str_starts_with(strtoupper($row["check_empty"]), "NO") && $processed[$fields_name] === "")) {
                         $this->FG_fit_expression[$i] = preg_match('/' . $this->FG_regular[$regexp][0] . '/', $processed[$fields_name]);
                         if ($this->FG_DEBUG == 1) {
-                            echo "<br>-> $i)  " . $this->FG_regular[$regexp][0] . " , " . $processed[$fields_name];
+                            echo "<br>->  $fields_name => " . $this->FG_regular[$regexp][0] . " , " . $processed[$fields_name];
                         }
                         if (!$this->FG_fit_expression[$i]) {
                             $this->VALID_SQL_REG_EXP = false;
@@ -1756,18 +1731,18 @@ class FormHandler
                     if ($this->FG_DEBUG == 1) {
                         echo "<br>$fields_name : " . $processed[$fields_name];
                     }
-                    if ($i > 0 && $this->FG_TABLE_EDITION[$i][3] != "SPAN") {
+                    if ($i > 0 && $row["type"] !== "SPAN") {
                         $param_update .= ", ";
                     }
-                    if (empty($processed[$fields_name]) && strtoupper(substr($this->FG_TABLE_ADITION[$i][13], 3, 4)) == "NULL") {
+                    if (empty($processed[$fields_name]) && strtoupper(substr($row["check_empty"], 3, 4)) === "NULL") {
                         $param_update .= $fields_name . " = NULL ";
-                    } elseif ($this->FG_TABLE_EDITION[$i][3] != "SPAN") {
+                    } elseif ($row["type"] !== "SPAN") {
                         $param_update .= $fields_name . " = '" . addslashes(trim($processed[$fields_name])) . "' ";
                     }
                 }
 
-            } elseif (strtoupper($this->FG_TABLE_EDITION[$i][3]) == strtoupper("CHECKBOX")) {
-                $table_split = explode(":", $this->FG_TABLE_EDITION[$i][1]);
+            } elseif ($row["type"] == "CHECKBOX") {
+                $table_split = explode(":", $row["name"]);
                 $checkbox_data = $table_split[0];    //doc_tariff
                 $instance_sub_table = new Table($table_split[0], $table_split[1] . ", " . $table_split[5]);
                 $SPLIT_FG_DELETE_CLAUSE = $table_split[5] . "='" . trim($processed['id']) . "'";

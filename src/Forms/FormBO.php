@@ -1064,10 +1064,10 @@ class FormBO
         $iax = stripslashes($processed['iax_buddy']);
 
         // $FormHandler -> FG_QUERY_EXTRA_HIDDED - username, useralias, uipass, loginkey
-        if (strlen($FormHandler -> FG_QUERY_EXTRA_HIDDED[0])>0) {
-            $username 	= $FormHandler -> FG_QUERY_EXTRA_HIDDED[0];
-            $uipass 	= $FormHandler -> FG_QUERY_EXTRA_HIDDED[2];
-            $useralias 	= $FormHandler -> FG_QUERY_EXTRA_HIDDED[1];
+        if (strlen($FormHandler -> FG_QUERY_EXTRA_HIDDEN[0])>0) {
+            $username 	= $FormHandler -> FG_QUERY_EXTRA_HIDDEN[0];
+            $uipass 	= $FormHandler -> FG_QUERY_EXTRA_HIDDEN[2];
+            $useralias 	= $FormHandler -> FG_QUERY_EXTRA_HIDDEN[1];
         } else {
             $username 	= $processed['username'];
             $uipass 	= $processed['uipass'];

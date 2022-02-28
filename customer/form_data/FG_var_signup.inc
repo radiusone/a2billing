@@ -388,7 +388,7 @@ if ($agent_conf) {
 }
 
 // username, useralias, uipass, loginkey
-$HD_Form->FG_QUERY_EXTRA_HIDDED = array (
+$HD_Form->FG_QUERY_EXTRA_HIDDEN = array (
 	$maxi,
 	$maxi2,
 	$pass,
