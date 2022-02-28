@@ -37,7 +37,7 @@ error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
 
 const SMARTY_DIR = __DIR__ . '../../vendor/smarty/smarty/libs/';
 const TEMPLATE_DIR = __DIR__ . '/../../admin/Public/templates/';
-const TEMPLATE_C_DIR = __DIR__ . '../../admin/templates_c/';
+const TEMPLATE_C_DIR = __DIR__ . '/../../admin/templates_c/';
 require_once("../../vendor/autoload.php");
 
 $smarty = SmartyFactory::getInstance();
