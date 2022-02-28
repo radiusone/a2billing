@@ -146,13 +146,13 @@ getpost_ifset(array('wh'));
             <?php endif ?>
 
         <?php elseif ($row["type"] === "TEXTAREA"): ?>
-                <texarea
+                <textarea
                     id="<?= $row["name"] ?>"
                     class="form_input_textarea"
                     name="<?= $row["name"] ?>"
                     <?= $row["attributes"] ?>
                 >
-                </texarea>
+                </textarea>
 
         <?php elseif ($row["type"] === "SELECT"): ?>
             <?php if ($row["select_type"] === "SQL"): ?>
