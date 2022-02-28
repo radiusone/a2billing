@@ -33,19 +33,6 @@ use A2billing\Table;
  *
 **/
 
-function create_help($text)
-{
-    $help = '
-    <div class="toggle_show2hide">
-    <div class="tohide" style="display:visible;">
-    <div class="msg_info">' . $text . '
-    <a href="#" target="_self" class="hide_help" style="float:right;"><img class="toggle_show2hide" src="' . Images_Path . '/toggle_hide2show_on.png" onmouseover="this.style.cursor=\'hand\';" HEIGHT="16"> </a>
-    </div></div></div>';
-
-    return $help;
-
-}
-
 if (SHOW_HELP) {
 
     $CC_help_webphone = create_help(gettext("From here, you can use the web based screen phone. You need microphone and speakers on your PC."));

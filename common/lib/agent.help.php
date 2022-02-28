@@ -33,29 +33,6 @@ use A2billing\Table;
  *
 **/
 
-function help_wiki_link($wiki_article_name)
-{
-    #return gettext("For further information please consult") . ' <a target="_blank" href="http://trac.asterisk2billing.org/cgi-bin/trac.cgi/wiki/1-4-' . $wiki_article_name . '">' . gettext("the online documention") . '</a>.<br/>';
-    return gettext("For further information please consult") . ' <a target="_blank" href="http://www.asterisk2billing.org/documentation/agents/">' . gettext("the online documention") . '</a>.<br/>';
-}
-
-function create_help($text, $wiki = null)
-{
-    if (!empty ($wiki))
-        $wiki_text = help_wiki_link($wiki);
-    else
-        $wiki_text = "";
-    $help = '
-    <div class="toggle_show2hide">
-    <div class="tohide" style="display:visible;">
-    <div class="msg_info">' . $text . '
-    <br/>' . $wiki_text . '<a href="#" target="_self" class="hide_help" style="float:right;"><img class="toggle_show2hide" src="' . KICON_PATH . '/toggle_hide2show_on.png" onmouseover="this.style.cursor=\'hand\';" HEIGHT="16"> </a>
-    </div></div></div>';
-
-    return $help;
-
-}
-
 if (SHOW_HELP) {
 
     $CC_help_agent = create_help(gettext("Agent list who have access to the Agent interface."), 'ShowAgent');
@@ -104,12 +81,8 @@ if (!isset ($disable_load_conf) || !($disable_load_conf)) {
     for ($index = 0; $index < sizeof($payment_methods); $index++) {
         if ($payment_methods[$index][0] == "MODULE_PAYMENT_PAYPAL_STATUS") {
             $show_logo .= '<a href="https://www.paypal.com/en/mrb/pal=PGSJEXAEXKTBU" target="_blank"><img src="' . KICON_PATH . '/paypal_logo.gif" alt="Paypal"/></a> &nbsp; ';
-            //} elseif ($payment_methods[$index][0] == "MODULE_PAYMENT_AUTHORIZENET_STATUS") {
-            //	$show_logo .= '<a href="http://authorize.net/" target="_blank"><img src="'.KICON_PATH.'/authorize.gif" alt="Authorize.net"/></a> &nbsp; ';
         } elseif ($payment_methods[$index][0] == "MODULE_PAYMENT_MONEYBOOKERS_STATUS") {
             $show_logo .= '<a href="https://www.moneybookers.com/app/?rid=811621" target="_blank"><img src="' . KICON_PATH . '/moneybookers.gif" alt="Moneybookers"/></a> &nbsp; ';
-            //} elseif ($payment_methods[$index][0] == "MODULE_PAYMENT_WORLDPAY_STATUS") {
-            //	$show_logo .= '<a href="http://www.worldpay.com/" target="_blank"><img src="'.KICON_PATH.'/worldpay.gif" alt="worldpay.com"/></a> &nbsp; ';
         } elseif ($payment_methods[$index][0] == "MODULE_PAYMENT_PLUGNPAY_STATUS") {
             $show_logo .= '<a href="http://www.plugnpay.com/" target="_blank"><img src="' . KICON_PATH . '/plugnpay.png" alt="plugnpay.com"/></a> &nbsp; ';
         }

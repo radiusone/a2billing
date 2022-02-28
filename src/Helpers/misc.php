@@ -1292,3 +1292,24 @@ function SetLocalLanguage(): void
     bind_textdomain_codeset("messages", $charEncoding);
     define("CHARSET", $charEncoding);
 }
+
+function create_help($text, $wiki = ""): string
+{
+    if (!empty($wiki)) {
+        $wiki = gettext("For further information please consult") . ' <a target="_blank" href="http://www.asterisk2billing.org/documentation/">' . gettext("the online documention") . '</a>.<br/>';
+    }
+    $help = <<< HTML
+<div class="toggle_show2hide">
+    <div class="tohide" style="display:visible;">
+        <div class="msg_info">
+            $text<br/>$wiki
+            <a href="#" target="_self" class="hide_help" style="float:right;">
+                <img class="toggle_show2hide" src="' . Images_Path . '/toggle_hide2show_on.png" onmouseover="this.style.cursor=\'hand\';" HEIGHT="16">
+            </a>
+        </div>
+    </div>
+</div>
+HTML;
+
+    return $help;
+}

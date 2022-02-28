@@ -31,29 +31,6 @@
  *
 **/
 
-function help_wiki_link($wiki_article_name)
-{
-    #return gettext("For further information please consult") . ' <a target="_blank" href="http://trac.asterisk2billing.org/cgi-bin/trac.cgi/wiki/1-4-' . $wiki_article_name . '">' . gettext("the online documention") . '</a>.<br/>';
-    return gettext("For further information please consult") . ' <a target="_blank" href="http://www.asterisk2billing.org/documentation/admin/">' . gettext("the online documention") . '</a>.<br/>';
-}
-
-function create_help($text, $wiki = null)
-{
-    if (!empty ($wiki))
-        $wiki_text = help_wiki_link($wiki);
-    else
-        $wiki_text = "";
-    $help = '
-    <div class="toggle_show2hide">
-    <div class="tohide" style="display:visible;">
-    <div class="msg_info">' . $text . '
-    <br/>' . $wiki_text . '<a href="#" target="_self" class="hide_help" style="float:right;"><img class="toggle_show2hide" src="' . KICON_PATH . '/toggle_hide2show_on.png" onmouseover="this.style.cursor=\'hand\';" HEIGHT="16"> </a>
-    </div></div></div>';
-
-    return $help;
-
-}
-
 if (SHOW_HELP) {
 
     $CC_help_mail_notifications = create_help(gettext("The Notification component is responsible for informing the Customer, via e-mail, that the account has reached a minimum credit."), 'Notification');
@@ -315,18 +292,3 @@ $PAYMENT_METHOD = '
         </td>
     </tr>
 </table>';
-
-$CALL_LABS = '
-<div align="center">
-<table width="70%" align="center">
-    <tr>
-        <TD width="%75" valign="top" align="center" class="tableBodyRight" background="' . Images_Path . '/background_cells.gif" >
-                Global VoIP termination (A-Z)  to over 400 worldwide destinations!<br>
-                Visit Call-Labs at <a href="http://www.call-labs.com/" target="_blank">http://www.call-labs.com/</a><br/>
-        </TD>
-        <TD width="%25" valign="middle" align="center" class="tableBodyRight" background="' . Images_Path . '/background_cells.gif" >
-                <a href="http://www.call-labs.com/" target="_blank"><img src="' . Images_Path . '/call-labs.com.png" alt="call-labs"/></a>
-        </TD>
-    </tr>
-</table>
-</div>';
