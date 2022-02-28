@@ -35,10 +35,9 @@ use A2billing\Factory\SmartyFactory;
 
 error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
 
-define( 'FULL_PATH', dirname(__FILE__) . '/' );
-define( 'SMARTY_DIR', FULL_PATH . '../../vendor/smarty/smarty/libs/' );
-define( 'TEMPLATE_DIR',  '../Public/templates/' );
-define( 'TEMPLATE_C_DIR', '../templates_c/' );
+const SMARTY_DIR = __DIR__ . '/../../vendor/smarty/smarty/libs/';
+const TEMPLATE_DIR = __DIR__ . '/../../agent/Public/templates/';
+const TEMPLATE_C_DIR = __DIR__ . '/../../agent/templates_c/';
 require_once("../../vendor/autoload.php");
 
 $smarty = SmartyFactory::getInstance();
@@ -61,10 +60,8 @@ if (!is_numeric($popup_select)) {
 }
 $smarty->assign("popupwindow", $popup_select);
 
-if (!empty($msg)) {
-    switch ($msg) {
-        case "nodemo": 	$smarty->assign("MAIN_MSG", '<center><b><font color="red">'.gettext("This option is not available on the Demo!").'</font></b></center><br>');
-    }
+if (($msg ?? "") === "nodemo") {
+    $smarty->assign("MAIN_MSG", '<center><b><font color="red">'.gettext("This option is not available on the Demo!").'</font></b></center><br>');
 }
 
 // for menu
@@ -79,7 +76,7 @@ $smarty->assign("ACXVOIPCONF", $ACXVOIPCONF);
 
 $smarty->assign("LCMODAL", LCMODAL);
 
-getpost_ifset(array('section'));
+getpost_ifset(['section']);
 
 if (!empty($section)) {
     $_SESSION["menu_section"] = $section;

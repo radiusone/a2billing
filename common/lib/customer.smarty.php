@@ -35,10 +35,9 @@ use A2billing\Factory\SmartyFactory;
 
 error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
 
-define( 'FULL_PATH', dirname(__FILE__) . '/' );
-define( 'SMARTY_DIR', FULL_PATH . '../../vendor/smarty/smarty/libs/' );
-define( 'TEMPLATE_DIR',  './templates/' );
-define( 'TEMPLATE_C_DIR', './templates_c/' );
+const SMARTY_DIR = __DIR__ . '/../../vendor/smarty/smarty/libs/';
+const TEMPLATE_DIR = __DIR__ . '/../../customer/templates/';
+const TEMPLATE_C_DIR = __DIR__ . '/../../customer/templates_c/';
 require_once("../../vendor/autoload.php");
 
 $smarty = SmartyFactory::getInstance();
@@ -53,7 +52,6 @@ $smarty->assign("TEXTCONTACT", TEXTCONTACT);
 $smarty->assign("EMAILCONTACT", EMAILCONTACT);
 $smarty->assign("COPYRIGHT", COPYRIGHT);
 $smarty->assign("CCMAINTITLE", CCMAINTITLE);
-$smarty->assign("SIGNUPLINK", SIGNUP_LINK);
 
 $smarty->assign("ACXPASSWORD", $ACXPASSWORD);
 $smarty->assign("ACXSIP_IAX", $ACXSIP_IAX);
@@ -79,7 +77,7 @@ if ($exporttype != "" && $exporttype != "html") {
     $smarty->assign("EXPORT", 0);
 }
 
-getpost_ifset(array('section'));
+getpost_ifset(['section']);
 
 if (!empty($section)) {
     $_SESSION["menu_section"] = intval($section);
@@ -96,10 +94,8 @@ if (!is_numeric($popup_select)) {
 // for menu
 $smarty->assign("popupwindow", $popup_select);
 
-if (!empty($msg)) {
-    switch ($msg) {
-        case "nodemo": 	$smarty->assign("MAIN_MSG", '<center><b><font color="red">'.gettext("This option is not available on the Demo!").'</font></b></center><br>');
-    }
+if (($msg ?? "") === "nodemo") {
+    $smarty->assign("MAIN_MSG", '<center><b><font color="red">'.gettext("This option is not available on the Demo!").'</font></b></center><br>');
 }
 
 // OPTION FOR THE MENU

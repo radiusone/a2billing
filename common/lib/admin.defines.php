@@ -32,13 +32,13 @@ use A2billing\Logger;
  *
  *
 **/
+session_name("UIADMINSESSION");
+session_start();
+
 require_once __DIR__ . "/common.defines.php";
 require_once __DIR__ . "/admin.module.access.php";
 require_once __DIR__ . "/admin.help.php";
 require_once __DIR__ . "/admin.smarty.php";
-
-session_name("UIADMINSESSION");
-session_start();
 
 const BINDTEXTDOMAIN = __DIR__ . "/../admin_ui_locale";
 SetLocalLanguage();
