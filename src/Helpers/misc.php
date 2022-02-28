@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Connection;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -1185,4 +1186,9 @@ function str_icontains(string $haystack, string $needle): bool
     } else {
         return stripos($haystack, $needle) !== false;
     }
+}
+
+function DbConnect(): ADOConnection
+{
+    return Connection::GetDBHandler();
 }

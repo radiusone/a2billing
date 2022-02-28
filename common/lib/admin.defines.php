@@ -1,9 +1,6 @@
 <?php
 
-use A2billing\A2Billing;
 use A2billing\Logger;
-use A2billing\Profiler;
-use A2billing\Query_trace;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -35,170 +32,31 @@ use A2billing\Query_trace;
  *
  *
 **/
-require_once __DIR__ . '/../../vendor/autoload.php';
-
-const WRITELOG_QUERY = false;
-define ("FSROOT", substr(dirname(__FILE__),0,-3));
-const LIBDIR = FSROOT . "lib/";
-
-sanitize_post_get();
-
-$profiler = new Profiler();
+require_once __DIR__ . '/common.defines.php';
+require_once __DIR__ . "/admin.help.php";
 
 session_name("UIADMINSESSION");
 session_start();
 
-// Control Session Time
-if (isset($_SESSION['startTime'])) {
-    $timeDiff = time() - $_SESSION['startTime'];
-
-    //destroy session
-    if ($timeDiff > 3600) { // 60 minutes
-        //echo "You've been logged in too long. ($timeDiff)";
-        $_SESSION = [];
-        session_destroy();
-        setcookie('PHPSESSID', '', time()-3600, '/', '', 0,0);
-    }
-} else {
-  $_SESSION['startTime'] = time();
-}
-
-$G_instance_Query_trace = Query_trace::getInstance();
-
-// A2B INSTANCE
-$A2B = new A2Billing();
-
-// The system will not log for Public/index.php and signup/index.php
-$URI = $_SERVER['REQUEST_URI'] ?? '';
-// Enable UI Logger
-const ENABLE_LOG = 1;
-$log = new Logger();
-
-// LOAD THE CONFIGURATION
-//if (stripos($URI, "Public/index.php") === FALSE) {
-$res_load_conf = $A2B -> load_conf($agi, A2B_CONFIG_DIR."a2billing.conf", 1);
-if (!$res_load_conf) exit;
-//}
+const BINDTEXTDOMAIN = '../../common/admin_ui_locale';
+SetLocalLanguage();
 
 // Parameter to enable/disable the update of list of value in Config Edition
 const LIST_OF_VALUES = false;
 
-// Define a demo mode
-const DEMO_MODE = false;
-
 // Parameter to show link to Asterisk GUI
 const ASTERISK_GUI_LINK = false;
 
-define ("LEN_ALIASNUMBER", $A2B->config['global']['len_aliasnumber'] ?? null);
-define ("LEN_VOUCHER", $A2B->config['global']['len_voucher'] ?? null);
-define ("BASE_CURRENCY", $A2B->config['global']['base_currency'] ?? null);
-define ("MANAGER_HOST", $A2B->config['global']['manager_host'] ?? null);
-define ("MANAGER_USERNAME", $A2B->config['global']['manager_username'] ?? null);
-define ("MANAGER_SECRET", $A2B->config['global']['manager_secret'] ?? null);
-define ("SERVER_GMT", $A2B->config['global']['server_GMT'] ?? null);
-define ("CUSTOMER_UI_URL", $A2B->config['global']['customer_ui_url'] ?? null);
-
-define ("API_SECURITY_KEY", $A2B->config['webui']['api_security_key'] ?? null);
-
-// WEB DEFINE FROM THE A2BILLING.CONF FILE
-define ("EMAIL_ADMIN", $A2B->config['webui']['email_admin'] ?? 'root@localhost');
-define ("NUM_MUSICONHOLD_CLASS", $A2B->config['webui']['num_musiconhold_class'] ?? null);
-define ("SHOW_HELP", $A2B->config['webui']['show_help'] ?? null);
-define ("MY_MAX_FILE_SIZE_IMPORT", $A2B->config['webui']['my_max_file_size_import'] ?? null);
-define ("DIR_STORE_MOHMP3", $A2B->config['webui']['dir_store_mohmp3'] ?? null);
-define ("DIR_STORE_AUDIO", $A2B->config['webui']['dir_store_audio'] ?? null);
-define ("MY_MAX_FILE_SIZE_AUDIO", $A2B->config['webui']['my_max_file_size_audio'] ?? null);
-$file_ext_allow = is_array($A2B->config['webui']['file_ext_allow'])?$A2B->config['webui']['file_ext_allow']:null;
-$file_ext_allow_musiconhold = is_array($A2B->config['webui']['file_ext_allow_musiconhold'])?$A2B->config['webui']['file_ext_allow_musiconhold']:null;
-define ("LINK_AUDIO_FILE", $A2B->config['webui']['link_audio_file'] ?? null);
-define ("MONITOR_PATH", $A2B->config['webui']['monitor_path'] ?? null);
-define ("ADVANCED_MODE", $A2B->config['webui']['advanced_mode'] ?? null);
-define ("DELETE_FK_CARD", $A2B->config['webui']['delete_fk_card'] ?? null);
-define ("CARD_EXPORT_FIELD_LIST", $A2B->config['webui']['card_export_field_list'] ?? null);
-define ("RATE_EXPORT_FIELD_LIST", $A2B->config['webui']['rate_export_field_list'] ?? null);
-define ("VOUCHER_EXPORT_FIELD_LIST", $A2B->config['webui']['voucher_export_field_list'] ?? null);
-
-// BACKUP
-define ("BACKUP_PATH", $A2B->config['backup']['backup_path'] ?? null);
-define ("GZIP_EXE", $A2B->config['backup']['gzip_exe'] ?? null);
-define ("GUNZIP_EXE", $A2B->config['backup']['gunzip_exe'] ?? null);
-define ("MYSQLDUMP", $A2B->config['backup']['mysqldump'] ?? null);
-define ("PG_DUMP", $A2B->config['backup']['pg_dump'] ?? null);
-define ("MYSQL", $A2B->config['backup']['mysql'] ?? null);
-define ("PSQL", $A2B->config['backup']['psql'] ?? null);
-
-//SIP/IAX Info
-define ("SIP_IAX_INFO_TRUNKNAME", $A2B->config['sip-iax-info']['sip_iax_info_trunkname'] ?? null);
-define ("SIP_IAX_INFO_ALLOWCODEC", $A2B->config['sip-iax-info']['sip_iax_info_allowcodec'] ?? null);
-define ("SIP_IAX_INFO_HOST", $A2B->config['sip-iax-info']['sip_iax_info_host'] ?? null);
-define ("IAX_ADDITIONAL_PARAMETERS", $A2B->config['sip-iax-info']['iax_additional_parameters'] ?? null);
-define ("SIP_ADDITIONAL_PARAMETERS", $A2B->config['sip-iax-info']['sip_additional_parameters'] ?? null);
-
-// GLOBAL POST/GET VARIABLE
-getpost_ifset(['form_action', 'atmenu', 'action', 'stitle', 'sub_action', 'IDmanager', 'current_page', 'order', 'sens', 'mydisplaylimit', 'filterprefix', 'cssname', 'popup_select', 'popup_formname', 'popup_fieldname', 'ui_language', 'msg', 'section']);
-
-// Language Selection
-if (isset($ui_language)) {
-    $_SESSION["ui_language"] = $ui_language;
-    setcookie  ("ui_language", $ui_language);
-} elseif (!isset($_SESSION["ui_language"])) {
-    if(!isset($_COOKIE["ui_language"])) {
-        $_SESSION["ui_language"] = 'english';
-    } else {
-        $_SESSION["ui_language"] = $_COOKIE["ui_language"];
-    }
-}
-
-define ("LANGUAGE", $_SESSION["ui_language"]);
-const BINDTEXTDOMAIN = '../../common/admin_ui_locale';
-require 'languageSettings.php';
-SetLocalLanguage();
-
-// Open menu
-if (!empty($section)) {
-    $_SESSION["menu_section"] = intval($section);
-}
-
-getpost_ifset(['cssname']);
-
-if (isset($cssname) && $cssname != "") {
-    $_SESSION["stylefile"] = $cssname;
-}
-
-if (isset($cssname) && $cssname != "") {
-    if ($_SESSION["stylefile"]!=$cssname) {
-        foreach (glob("./templates_c/*.*") as $filename) {
-            unlink($filename);
-        }
-    }
-    $_SESSION["stylefile"] = $cssname;
-}
-
-if (!isset($_SESSION["stylefile"]) || $_SESSION["stylefile"]=='') {
-    $_SESSION["stylefile"]='default';
-}
-
 //Images Path
-define ("Images_Path","../Public/templates/".$_SESSION["stylefile"]."/images");
-define ("Images_Path_Main","../Public/templates/".$_SESSION["stylefile"]."/images");
-define ("KICON_PATH","../Public/templates/".$_SESSION["stylefile"]."/images/kicons");
-
-// INCLUDE HELP
-include (dirname(__FILE__) . "/admin.help.php");
-
-include (dirname(__FILE__) . "/common.defines.php");
+define ("Images_Path","../Public/templates/$_SESSION[stylefile]/images");
+define ("Images_Path_Main","../Public/templates/$_SESSION[stylefile]/images");
+define ("KICON_PATH","../Public/templates/$_SESSION[stylefile]/images/kicons");
 
 // COPYRIGHT
-if (!isset($disable_check_cp) || $disable_check_cp != true)
-    define ("LCMODAL", check_cp());
-
-define ("RELOAD_ASTERISK_IF_SIPIAX_CREATED", $A2B->config["signup"]['reload_asterisk_if_sipiax_created'] ?? 0);
-
-if ((stripos($URI, "Public/index.php") === FALSE) && isset($_SESSION["admin_id"])) {
-    // Insert Log
-    $log -> insertLog($_SESSION["admin_id"], 1, "Page Visit", "User Visited the Page", '', $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI']);
-    $log = null;
+if (!isset($disable_check_cp) || $disable_check_cp != true) {
+    define("LCMODAL", check_cp());
 }
 
-//SQLi
-$DBHandle  = DbConnect();
+if (!str_contains($_SERVER['REQUEST_URI'], "Public/index.php") && !empty($_SESSION["admin_id"])) {
+    (new Logger())->insertLog($_SESSION["admin_id"], 1, "Page Visit", "User Visited the Page", '', $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI']);
+}

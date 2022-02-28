@@ -1,6 +1,8 @@
 <?php
 
-use A2billing\Connection;
+use A2billing\A2Billing;
+use A2billing\Profiler;
+use A2billing\Query_trace;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -32,6 +34,54 @@ use A2billing\Connection;
  *
  *
 **/
+
+require_once __DIR__ . '/../../vendor/autoload.php';
+
+const LIBDIR = __DIR__;
+
+const WRITELOG_QUERY = false;
+
+sanitize_post_get();
+
+$profiler = new Profiler();
+$G_instance_Query_trace = Query_trace::getInstance();
+
+// LOAD THE CONFIGURATION
+$A2B = new A2Billing();
+$res_load_conf = $A2B -> load_conf($agi, A2B_CONFIG_DIR."a2billing.conf", 1);
+if (!$res_load_conf) {
+    exit;
+}
+
+// Define a demo mode
+const DEMO_MODE = false;
+
+// GLOBAL POST/GET VARIABLE
+getpost_ifset (['form_action', 'atmenu', 'action', 'stitle', 'sub_action', 'IDmanager', 'current_page', 'order', 'sens', 'mydisplaylimit', 'filterprefix', 'cssname', 'popup_select', 'popup_formname', 'popup_fieldname', 'ui_language', 'msg', 'section', 'exporttype']);
+/**
+ * @var string $form_action
+ * @var string $atmenu
+ * @var string $action
+ * @var string $stitle
+ * @var string $sub_action
+ * @var string $IDmanager
+ * @var string $current_page
+ * @var string $order
+ * @var string $sens
+ * @var string $mydisplaylimit
+ * @var string $filterprefix
+ * @var string $cssname
+ * @var string $popup_select
+ * @var string $popup_formname
+ * @var string $popup_fieldname
+ * @var string $ui_language
+ * @var string $msg
+ * @var string $section
+ * @var string $exporttype
+ */
+
+// Enable UI Logger
+const ENABLE_LOG = 1;
 
 // SETTINGS FOR DATABASE CONNECTION
 define ("HOST", $A2B->config['database']['hostname'] ?? null);
@@ -76,14 +126,74 @@ define ("API_LOGFILE", $A2B->config['webui']['api_logfile'] ?? "/var/log/a2billi
 define ("BUDDY_SIP_FILE", $A2B->config['webui']['buddy_sip_file'] ?? null);
 define ("BUDDY_IAX_FILE", $A2B->config['webui']['buddy_iax_file'] ?? null);
 
+// BACKUP
+define ("BACKUP_PATH", $A2B->config['backup']['backup_path'] ?? null);
+define ("GZIP_EXE", $A2B->config['backup']['gzip_exe'] ?? null);
+define ("GUNZIP_EXE", $A2B->config['backup']['gunzip_exe'] ?? null);
+define ("MYSQLDUMP", $A2B->config['backup']['mysqldump'] ?? null);
+define ("PG_DUMP", $A2B->config['backup']['pg_dump'] ?? null);
+define ("MYSQL", $A2B->config['backup']['mysql'] ?? null);
+define ("PSQL", $A2B->config['backup']['psql'] ?? null);
+
+define ("LEN_ALIASNUMBER", $A2B->config['global']['len_aliasnumber'] ?? null);
+define ("LEN_VOUCHER", $A2B->config['global']['len_voucher'] ?? null);
+define ("BASE_CURRENCY", $A2B->config['global']['base_currency'] ?? null);
+define ("MANAGER_HOST", $A2B->config['global']['manager_host'] ?? null);
+define ("MANAGER_USERNAME", $A2B->config['global']['manager_username'] ?? null);
+define ("MANAGER_SECRET", $A2B->config['global']['manager_secret'] ?? null);
+define ("SERVER_GMT", $A2B->config['global']['server_GMT'] ?? null);
+define ("CUSTOMER_UI_URL", $A2B->config['global']['customer_ui_url'] ?? null);
+
+define ("API_SECURITY_KEY", $A2B->config['webui']['api_security_key'] ?? null);
+
+// EPayment Module Settings
+define ("HTTP_SERVER", $A2B->config["epayment_method"]['http_server_agent'] ?? null);
+define ("HTTPS_SERVER", $A2B->config["epayment_method"]['https_server_agent'] ?? null);
+define ("HTTP_COOKIE_DOMAIN", $A2B->config["epayment_method"]['http_cookie_domain_agent'] ?? null);
+define ("HTTPS_COOKIE_DOMAIN", $A2B->config["epayment_method"]['https_cookie_domain_agent'] ?? null);
+define ("DIR_WS_HTTP_CATALOG", $A2B->config["epayment_method"]['dir_ws_http_catalog_agent'] ?? null);
+define ("DIR_WS_HTTPS_CATALOG", $A2B->config["epayment_method"]['dir_ws_https_catalog_agent'] ?? null);
+define ("ENABLE_SSL", $A2B->config["epayment_method"]['enable_ssl'] ?? null);
+define ("EPAYMENT_TRANSACTION_KEY", $A2B->config["epayment_method"]['transaction_key'] ?? null);
+define ("PAYPAL_VERIFY_URL", $A2B->config["epayment_method"]['paypal_verify_url'] ?? null);
+define ("MONEYBOOKERS_SECRETWORD", $A2B->config["epayment_method"]['moneybookers_secretword'] ?? null);
+define ("EPAYMENT_PURCHASE_AMOUNT", $A2B->config['epayment_method']['purchase_amount_agent'] ?? null);
+
+const CC_OWNER_MIN_LENGTH = '2';
+const CC_NUMBER_MIN_LENGTH = '15';
+
+//SIP/IAX Info
+define ("SIP_IAX_INFO_TRUNKNAME", $A2B->config['sip-iax-info']['sip_iax_info_trunkname'] ?? null);
+define ("SIP_IAX_INFO_ALLOWCODEC", $A2B->config['sip-iax-info']['sip_iax_info_allowcodec'] ?? null);
+define ("SIP_IAX_INFO_HOST", $A2B->config['sip-iax-info']['sip_iax_info_host'] ?? null);
+define ("IAX_ADDITIONAL_PARAMETERS", $A2B->config['sip-iax-info']['iax_additional_parameters'] ?? null);
+define ("SIP_ADDITIONAL_PARAMETERS", $A2B->config['sip-iax-info']['sip_additional_parameters'] ?? null);
+
 // VOICEMAIL
 const ACT_VOICEMAIL = false;
 
-// SHOW DONATION
-const SHOW_DONATION = true;
-
 // AGI
 define ("ASTERISK_VERSION", $A2B->config['agi-conf1']['asterisk_version'] ?? '1_4');
+
+// WEB DEFINE FROM THE A2BILLING.CONF FILE
+define ("EMAIL_ADMIN", $A2B->config['webui']['email_admin'] ?? 'root@localhost');
+define ("NUM_MUSICONHOLD_CLASS", $A2B->config['webui']['num_musiconhold_class'] ?? null);
+define ("SHOW_HELP", $A2B->config['webui']['show_help'] ?? null);
+define ("MY_MAX_FILE_SIZE_IMPORT", $A2B->config['webui']['my_max_file_size_import'] ?? null);
+define ("DIR_STORE_MOHMP3", $A2B->config['webui']['dir_store_mohmp3'] ?? null);
+define ("DIR_STORE_AUDIO", $A2B->config['webui']['dir_store_audio'] ?? null);
+define ("MY_MAX_FILE_SIZE_AUDIO", $A2B->config['webui']['my_max_file_size_audio'] ?? null);
+$file_ext_allow = is_array($A2B->config['webui']['file_ext_allow'])?$A2B->config['webui']['file_ext_allow']:null;
+$file_ext_allow_musiconhold = is_array($A2B->config['webui']['file_ext_allow_musiconhold'])?$A2B->config['webui']['file_ext_allow_musiconhold']:null;
+define ("LINK_AUDIO_FILE", $A2B->config['webui']['link_audio_file'] ?? null);
+define ("MONITOR_PATH", $A2B->config['webui']['monitor_path'] ?? null);
+define ("ADVANCED_MODE", $A2B->config['webui']['advanced_mode'] ?? null);
+define ("DELETE_FK_CARD", $A2B->config['webui']['delete_fk_card'] ?? null);
+define ("CARD_EXPORT_FIELD_LIST", $A2B->config['webui']['card_export_field_list'] ?? null);
+define ("RATE_EXPORT_FIELD_LIST", $A2B->config['webui']['rate_export_field_list'] ?? null);
+define ("VOUCHER_EXPORT_FIELD_LIST", $A2B->config['webui']['voucher_export_field_list'] ?? null);
+
+define ("RELOAD_ASTERISK_IF_SIPIAX_CREATED", $A2B->config["signup"]['reload_asterisk_if_sipiax_created'] ?? 0);
 
 # define the amount of emails you want to send per period. If 0, batch processing
 # is disabled and messages are sent out as fast as possible
@@ -98,29 +208,38 @@ const MAILQUEUE_BATCH_PERIOD = 3600;
 # value is in seconds (or you can play with the autothrottle below)
 const MAILQUEUE_THROTTLE = 0;
 
+// Language Selection
+if (isset($ui_language)) {
+    $_SESSION["ui_language"] = $ui_language;
+    setcookie("ui_language", $ui_language);
+} elseif (!isset($_SESSION["ui_language"])) {
+    if(!isset($_COOKIE["ui_language"])) {
+        $_SESSION["ui_language"] = 'english';
+    } else {
+        $_SESSION["ui_language"] = $_COOKIE["ui_language"];
+    }
+}
+
+define ("LANGUAGE", $_SESSION["ui_language"]);
+require_once __DIR__ . '/languageSettings.php';
+
+// Open menu
+if (!empty($section)) {
+    $_SESSION["menu_section"] = intval($section);
+}
+
 /*
  *		GLOBAL USED VARIABLE
  */
 $PHP_SELF = $_SERVER["PHP_SELF"];
-
-$CURRENT_DATETIME = date("Y-m-d H:i:s");
-
-// Store script start time
-$_START_TIME = time();
 
 // A2BILLING COPYRIGHT & CONTACT
 define ("TEXTCONTACT", gettext("This software has been created by Areski Belaid under AGPL licence. For futher information, feel free to contact me:"));
 const EMAILCONTACT = "sales@star2billing.com";
 
 // A2BILLING INFO
-const COPYRIGHT = "A2Billing v2.2.0 is a " . '<a href="http://www.star2billing.com/solutions/voip-billing/" target="_blank">voip billing software</a>' . " licensed under the " . '<a href="http://www.fsf.org/licensing/licenses/agpl-3.0.html" target="_blank">AGPL 3</a>' . ". <br/>" . "Copyright (C) 2004-2015 - Star2billing S.L. <a href=\"http://www.star2billing.com\" target=\"_blank\">http://www.star2billing.com/</a>";
+const COPYRIGHT = "A2Billing v2.2.0 is licensed under the <a href=\"http://www.fsf.org/licensing/licenses/agpl-3.0.html\" target=\"_blank\">AGPL 3</a><br/>Copyright (C) 2004-2015 <a href=\"http://www.star2billing.com\" target=\"_blank\">Star2billing S.L.</a>";
 
 define ("CCMAINTITLE", gettext("A2Billing Portal"));
 
-/*
- *		CONNECT / DISCONNECT DATABASE
- */
-function DbConnect(): ADOConnection
-{
-    return Connection::GetDBHandler();
-}
+$DBHandle = DbConnect();
