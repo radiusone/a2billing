@@ -539,6 +539,7 @@ $_SESSION["p_module"] = null;
 $_SESSION["p_module"] = null;
 
 //Update the Transaction Status to 1 (Proceed 1)
+//TODO: SQL injection
 $QUERY = "UPDATE cc_epayment_log SET status = 1, transaction_detail ='".addslashes($transaction_detail)."' WHERE id = ".$transactionID;
 write_log(LOGFILE_EPAYMENT, basename(__FILE__).' line:'.__LINE__."- QUERY = $QUERY");
 $paymentTable->SQLExec ($DBHandle_max, $QUERY);

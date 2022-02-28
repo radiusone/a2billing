@@ -67,6 +67,7 @@ if ($form_action == "add-content") {
     $table_split = preg_split("/:/",$FG_TABLE_EDITION[$sub_action][1]);
 
     $instance_sub_table = new Table($table_split[0], $table_split[1].", ".$table_split[5]);
+    //TODO: SQL injection
     $result_query = $instance_sub_table -> Add_table ($DBHandle, "'$voip_prefix".addslashes(trim($$table_split[1]))."', '".addslashes(trim($id))."'", null, null);
     if (!$result_query) {
 

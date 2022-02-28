@@ -57,7 +57,7 @@ $smarty->display('main.tpl');
 function sendtofield(form)
 {
     if (form.listemail.value.length < 5) {
-        alert ('<?php echo addslashes(gettext("Insert emails on the Field!")); ?>');
+        alert (<?= json_encode(gettext("Insert emails on the Field!")); ?>);
         form.listemail.focus ();
 
         return (false);
@@ -69,7 +69,7 @@ function sendtofield(form)
 function sendtoupload(form)
 {
     if (form.the_file.value.length < 2) {
-        alert ('<?php echo addslashes(gettext("Please, you must first select a file !")); ?>');
+        alert (<?= json_encode(gettext("Please, you must first select a file !")); ?>);
         form.the_file.focus ();
 
         return false;
