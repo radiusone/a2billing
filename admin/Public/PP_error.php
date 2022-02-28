@@ -33,10 +33,17 @@
 
 include '../lib/admin.defines.php';
 session_destroy();
-getpost_ifset(array('err_type','c'));
+getpost_ifset(['err_type','c']);
+/**
+ * @var int $err_type
+ * @var string $c
+ */
 
 if (!isset($err_type)) {
     $err_type = 0;
+}
+if (!isset($c))	{
+    $c = 0;
 }
 
 //Error Type == 0 Mean Critical Error dont need to show left menu.
@@ -49,8 +56,6 @@ if ($err_type == 0) {
     $smarty->display('main.tpl');
 }
 
-if (!isset($c))	$c="0";
-
 $error["0"] 			= gettext("ERROR : ACCESS REFUSED");
 $error["syst"] 			= gettext("Sorry a problem occur on our system, please try later!");
 $error["errorpage"] 	= gettext("There is an error on this page!");
@@ -60,39 +65,25 @@ $error["ERR-0002"] 		= gettext("No such card number found. Please check your car
 
 ?>
 
-<div id="login-wrapper" class="login-border-up">
-    <div class="login-border-down">
-    <div class="login-border-center">
-    <table>
-    <tr>
-        <td class="login-title" colspan="2">
-            <font size="3"> <?php echo gettext("ERROR PAGE");?> </font>
-        </td>
-    </tr>
-    <tr>
-        <td width="70px" align="center">
-            <img src="<?php echo KICON_PATH;?>/system-config-rootpassword.png">
-        </td>
-        <td align="center">
-            <b><font size="2"><?php echo $error[$c]?></font></b>
-        </td>
-    </tr>
-
-          </table>
-          </div>
-          </div>
-          <div style="text-align:right;padding-right:10px;" >
-              <a href="index.php" ><?php echo gettext("GO TO LOGIN PAGE"); ?>&nbsp;<img src="<?php echo Images_Path; ?>/key_go.png"> </a>
-          </div>
+<div class="modal show d-block" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="authTitle" aria-hidden="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow">
+            <div class="modal-header">
+                <h3 class="modal-title" id="authTitle"><?= _("Error Page") ?></h3>
+            </div>
+            <div class="modal-body">
+                <strong> <?= $error[$c] ?></strong>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="submit" class="btn btn-primary"><?= _("Go to Login Page") ?></button>
+            </div>
+        </div>
     </div>
+</div>
 
 <?php
 if ($err_type == 0) {
-?>
-    </div>
-    </div>
-<?php
-
+    echo '</body></html>';
 } else {
     $smarty->display('footer.tpl');
 }
