@@ -149,10 +149,10 @@ function create_date_options($target)
         </div>
         <div class="col-4">
             <select name="<?= $item[2] ?>" id="<?= $item[2] ?>" class="form-select form-select-sm">
-                <option value="1" <?php if ($processed[$item[2]] ?? 1 == 1): ?>selected="selected"<?php endif ?>><?= _("Exact") ?></option>
-                <option value="2" <?php if ($processed[$item[2]] ?? 1 == 2): ?>selected="selected"<?php endif ?>><?= _("Begins with") ?></option>
-                <option value="3" <?php if ($processed[$item[2]] ?? 1 == 3): ?>selected="selected"<?php endif ?>><?= _("Contains") ?></option>
-                <option value="4" <?php if ($processed[$item[2]] ?? 1 == 4): ?>selected="selected"<?php endif ?>><?= _("Ends with") ?></option>
+                <option value="1" <?php if (($processed[$item[2]] ?? 1) == 1): ?>selected="selected"<?php endif ?>><?= _("Exact") ?></option>
+                <option value="2" <?php if (($processed[$item[2]] ?? 1) == 2): ?>selected="selected"<?php endif ?>><?= _("Begins with") ?></option>
+                <option value="3" <?php if (($processed[$item[2]] ?? 1) == 3): ?>selected="selected"<?php endif ?>><?= _("Contains") ?></option>
+                <option value="4" <?php if (($processed[$item[2]] ?? 1) == 4): ?>selected="selected"<?php endif ?>><?= _("Ends with") ?></option>
             </select>
         </div>
     </div>
@@ -167,11 +167,11 @@ function create_date_options($target)
             <div class="row">
                 <div class="col-2">
                     <select name="<?= item[2] ?>" class="form-select form-select-sm">
-                        <option value="4" <?php if ($processed[$item[2]] ?? 1 == 4): ?> selected="selected"<?php endif ?>>&gt;</option>
-                        <option value="5" <?php if ($processed[$item[2]] ?? 1 == 5): ?> selected="selected"<?php endif ?>>&gt;=</option>
-                        <option value="1" <?php if ($processed[$item[2]] ?? 1 == 1): ?> selected="selected"<?php endif ?>>=</option>
-                        <option value="2" <?php if ($processed[$item[2]] ?? 1 == 2): ?> selected="selected"<?php endif ?>>&lt;=</option>
-                        <option value="3" <?php if ($processed[$item[2]] ?? 1 == 3): ?> selected="selected"<?php endif ?>>&lt;</option>
+                        <option value="4" <?php if (($processed[$item[2]] ?? 1) == 4): ?> selected="selected"<?php endif ?>>&gt;</option>
+                        <option value="5" <?php if (($processed[$item[2]] ?? 1) == 5): ?> selected="selected"<?php endif ?>>&gt;=</option>
+                        <option value="1" <?php if (($processed[$item[2]] ?? 1) == 1): ?> selected="selected"<?php endif ?>>=</option>
+                        <option value="2" <?php if (($processed[$item[2]] ?? 1) == 2): ?> selected="selected"<?php endif ?>>&lt;=</option>
+                        <option value="3" <?php if (($processed[$item[2]] ?? 1) == 3): ?> selected="selected"<?php endif ?>>&lt;</option>
                     </select>
                 </div>
                 <div class="col-3">
@@ -183,10 +183,10 @@ function create_date_options($target)
                 <div class="col-2">
                     <select name="<?= item[4] ?>" class="form-select form-select-sm">
                         <option></option>
-                        <option value="4" <?php if ($processed[$item[4]] ?? 1 == 4): ?> selected="selected"<?php endif ?>>&gt;</option>
-                        <option value="5" <?php if ($processed[$item[4]] ?? 1 == 5): ?> selected="selected"<?php endif ?>>&gt;=</option>
-                        <option value="2" <?php if ($processed[$item[4]] ?? 1 == 2): ?> selected="selected"<?php endif ?>>&lt;=</option>
-                        <option value="3" <?php if ($processed[$item[4]] ?? 1 == 3): ?> selected="selected"<?php endif ?>>&lt;</option>
+                        <option value="4" <?php if (($processed[$item[4]] ?? 1) == 4): ?> selected="selected"<?php endif ?>>&gt;</option>
+                        <option value="5" <?php if (($processed[$item[4]] ?? 1) == 5): ?> selected="selected"<?php endif ?>>&gt;=</option>
+                        <option value="2" <?php if (($processed[$item[4]] ?? 1) == 2): ?> selected="selected"<?php endif ?>>&lt;=</option>
+                        <option value="3" <?php if (($processed[$item[4]] ?? 1) == 3): ?> selected="selected"<?php endif ?>>&lt;</option>
                     </select>
                 </div>
                 <div class="col-3">
@@ -205,7 +205,7 @@ function create_date_options($target)
                 <select name="<?= $item[2] ?>" aria-label="<?= $item[0] ?>" class="form-select form-select-sm">
                     <option value=""><?= $item[0] ?></option>
                     <?php foreach ($item[1] as $opt): ?>
-                    <option value="<?= $opt[0] ?>" <?php if ($processed[$item[2]] ?? "" == $opt[0]): ?>selected="selected"<?php endif ?>>
+                    <option value="<?= $opt[0] ?>" <?php if (($processed[$item[2]] ?? "") == $opt[0]): ?>selected="selected"<?php endif ?>>
                         <?= $opt[1] ?>
                     </option>
                     <?php endforeach ?>

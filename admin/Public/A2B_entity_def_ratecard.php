@@ -259,7 +259,7 @@ if ($batchupdate == 1 && is_array($check)) {
         $val = $$ind_field;
 
         // Standard update mode
-        if ($mode["$ind_field"] ?? 1 == 1) {
+        if (($mode["$ind_field"] ?? 1) == 1) {
             if (!isset($type["$ind_field"])) {
                 $SQL_UPDATE .= " $PREFIX_FIELD$myfield = '$val'";
             } else {
@@ -267,7 +267,7 @@ if ($batchupdate == 1 && is_array($check)) {
             }
             // Mode 2 - Equal - Add - Substract
         } elseif ($mode["$ind_field"] == 2) {
-            if ($type["$ind_field"] ?? 1 == 1) {
+            if (($type["$ind_field"] ?? 1) == 1) {
                 $SQL_UPDATE .= " $PREFIX_FIELD$myfield = '$val'";
             } elseif ($type["$ind_field"] == 2 && str_ends_with($val, "%")) {
                 $val = substr($val, 0, -1);
@@ -479,9 +479,9 @@ if ($form_action === "list" && !$popup_select): ?>
                         </div>
                         <div class="col-3">
                             <select name="type[<?= $v ?>]" id="type[<?= $v ?>]" aria-label="select the operation to perform with the entered value" class="form-select form-select-sm">
-                                <option value="1" <?php if ($type[$v] ?? 1 == 1): ?>selected="selected"<?php endif ?>><?= _("Set equal to") ?></option>
-                                <option value="2" <?php if ($type[$v] ?? 1 == 2): ?>selected="selected"<?php endif ?>><?= _("Add to") ?></option>
-                                <option value="3" <?php if ($type[$v] ?? 1 == 3): ?>selected="selected"<?php endif ?>><?= _("Subtract from") ?></option>
+                                <option value="1" <?php if (($type[$v] ?? 1) == 1): ?>selected="selected"<?php endif ?>><?= _("Set equal to") ?></option>
+                                <option value="2" <?php if (($type[$v] ?? 1) == 2): ?>selected="selected"<?php endif ?>><?= _("Add to") ?></option>
+                                <option value="3" <?php if (($type[$v] ?? 1) == 3): ?>selected="selected"<?php endif ?>><?= _("Subtract from") ?></option>
                             </select>
                         </div>
                         <div class="col">
@@ -532,7 +532,7 @@ if ($form_action === "list" && !$popup_select): ?>
                             <select name="tariffgroup" id="tariffgroup" aria-label="<?= _("Choose a call plan") ?>" class="form-select form-select-sm">
                                 <option value=""><?= _("Choose a call plan") ?></option>
                                 <?php foreach ($list_tariffgroup as $v): ?>
-                                <option value="<?= implode("-:-", $v) ?>" <?php if ($FG_TOP_FILTER_VALUE ?? null == $v[0]): ?>selected="selected" <?php endif?>>
+                                <option value="<?= implode("-:-", $v) ?>" <?php if (($FG_TOP_FILTER_VALUE ?? null) == $v[0]): ?>selected="selected" <?php endif?>>
                                     <?= $v[1] ?>
                                 </option>
                                 <?php endforeach ?>

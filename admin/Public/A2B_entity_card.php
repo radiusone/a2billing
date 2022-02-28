@@ -132,7 +132,7 @@ if ($batchupdate == 1 && is_array($check)) {
         $val = $$ind_field;
 
         // Standard update mode
-        if ($mode[$ind_field] ?? 1 == 1) {
+        if (($mode[$ind_field] ?? 1) == 1) {
             if (!isset($type[$ind_field])) {
                 $SQL_UPDATE .= " $myfield='$val'";
             } else {
@@ -140,7 +140,7 @@ if ($batchupdate == 1 && is_array($check)) {
             }
         // Mode 2 - Equal - Add - Subtract
         } elseif ($mode[$ind_field] == 2) {
-            if ($type[$ind_field] ?? 1 == 1) {
+            if (($type[$ind_field] ?? 1) == 1) {
                 $SQL_UPDATE .= " $myfield='$val'";
             } elseif ($type[$ind_field] == 2) {
                 $SQL_UPDATE .= " $myfield = $myfield + '$val'";
@@ -357,15 +357,15 @@ function sendValue(selvalue, othervalue) {
                         </div>
                         <div class="col-auto">
                             <div class="form-check form-check-inline">
-                                <input type="radio" name="type[upd_credit]" id="type_upd_credit_1" value="1" <?php if ($type["upd_credit"] ?? 1 == 1): ?>checked="checked"<?php endif ?> class="form-check-input"/>
+                                <input type="radio" name="type[upd_credit]" id="type_upd_credit_1" value="1" <?php if (($type["upd_credit"] ?? 1) == 1): ?>checked="checked"<?php endif ?> class="form-check-input"/>
                                 <label class="form-check-label form-check-label-sm" for="type_upd_credit_1"><abbr title="<?= _("Equals") ?>">=</abbr></label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input type="radio" name="type[upd_credit]" id="type_upd_credit_2" value="2" <?php if($type["upd_credit"] ?? 1 == 2): ?>checked="checked"<?php endif ?> class="form-check-input"/>
+                                <input type="radio" name="type[upd_credit]" id="type_upd_credit_2" value="2" <?php if(($type["upd_credit"] ?? 1) == 2): ?>checked="checked"<?php endif ?> class="form-check-input"/>
                                 <label class="form-check-label form-check-label-sm" for="type_upd_credit_2"><abbr title="<?= _("Add") ?>">+</abbr></label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input type="radio" name="type[upd_credit]" id="type_upd_credit_3" value="3" <?php if($type["upd_credit"] ?? 1 == 3): ?>checked="checked"<?php endif ?> class="form-check-input"/>
+                                <input type="radio" name="type[upd_credit]" id="type_upd_credit_3" value="3" <?php if(($type["upd_credit"] ?? 1) == 3): ?>checked="checked"<?php endif ?> class="form-check-input"/>
                                 <label class="form-check-label form-check-label-sm" for="type_upd_credit_3"><abbr title="<?= _("Subtract") ?>">-</abbr></label>
                             </div>
                         </div>
@@ -405,8 +405,8 @@ function sendValue(selvalue, othervalue) {
                         </div>
                         <div class="col">
                             <select name="upd_simultaccess" id="upd_simultaccess" class="form-select form-select-sm">
-                                <option value="0" <?php if ($upd_simultaccess ?? 0 == 0): ?>selected="selected"<?php endif?>><?= _("Individual Access") ?></option>
-                                <option value="1" <?php if ($upd_simultaccess ?? 0 == 1): ?>selected="selected"<?php endif?>><?= _("Simultaneous Access") ?></option>
+                                <option value="0" <?php if (($upd_simultaccess ?? 0) == 0): ?>selected="selected"<?php endif?>><?= _("Individual Access") ?></option>
+                                <option value="1" <?php if (($upd_simultaccess ?? 0) == 1): ?>selected="selected"<?php endif?>><?= _("Simultaneous Access") ?></option>
                             </select>
                         </div>
                     </div>
@@ -442,15 +442,15 @@ function sendValue(selvalue, othervalue) {
                         </div>
                         <div class="col-auto">
                             <div class="form-check form-check-inline">
-                                <input type="radio" name="type[upd_creditlimit]" id="type_upd_creditlimit_1" value="1" <?php if($type["upd_creditlimit"] ?? 1 == 1): ?>checked="checked"<?php endif ?> class="form-check-input"/>
+                                <input type="radio" name="type[upd_creditlimit]" id="type_upd_creditlimit_1" value="1" <?php if(($type["upd_creditlimit"] ?? 1) == 1): ?>checked="checked"<?php endif ?> class="form-check-input"/>
                                 <label class="form-check-label form-check-label-sm" for="type_upd_creditlimit_1"><abbr title="<?= _("Equals") ?>">=</abbr></label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input type="radio" name="type[upd_creditlimit]" id="type_upd_creditlimit_2" value="2" <?php if($type["upd_creditlimit"] ?? 1 == 2): ?>checked="checked"<?php endif ?> class="form-check-input"/>
+                                <input type="radio" name="type[upd_creditlimit]" id="type_upd_creditlimit_2" value="2" <?php if(($type["upd_creditlimit"] ?? 1) == 2): ?>checked="checked"<?php endif ?> class="form-check-input"/>
                                 <label class="form-check-label form-check-label-sm" for="type_upd_creditlimit_2"><abbr title="<?= _("Add") ?>">+</abbr></label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input type="radio" name="type[upd_creditlimit]" id="type_upd_creditlimit_3" value="3" <?php if($type["upd_creditlimit"] ?? 1 == 3): ?>checked="checked"<?php endif ?> class="form-check-input"/>
+                                <input type="radio" name="type[upd_creditlimit]" id="type_upd_creditlimit_3" value="3" <?php if(($type["upd_creditlimit"] ?? 1) == 3): ?>checked="checked"<?php endif ?> class="form-check-input"/>
                                 <label class="form-check-label form-check-label-sm" for="type_upd_creditlimit_3"><abbr title="<?= _("Subtract") ?>">-</abbr></label>
                             </div>
                         </div>
@@ -466,10 +466,10 @@ function sendValue(selvalue, othervalue) {
                         </div>
                         <div class="col">
                             <select name="upd_enableexpire" id="upd_enableexpire" class="form-select form-select-sm">
-                                <option value="0" <?php if ($upd_enableexpire ?? 0 == 0): ?>selected="selected"<?php endif?>><?= _("No Expiry") ?></option>
-                                <option value="1" <?php if ($upd_enableexpire ?? 0 == 1): ?>selected="selected"<?php endif?>><?= _("Expire Date") ?></option>
-                                <option value="2" <?php if ($upd_enableexpire ?? 0 == 2): ?>selected="selected"<?php endif?>><?= _("Expire Days Since First Use") ?></option>
-                                <option value="3" <?php if ($upd_enableexpire ?? 0 == 3): ?>selected="selected"<?php endif?>><?= _("Expire Days Since Creation") ?></option>
+                                <option value="0" <?php if (($upd_enableexpire ?? 0) == 0): ?>selected="selected"<?php endif?>><?= _("No Expiry") ?></option>
+                                <option value="1" <?php if (($upd_enableexpire ?? 0) == 1): ?>selected="selected"<?php endif?>><?= _("Expire Date") ?></option>
+                                <option value="2" <?php if (($upd_enableexpire ?? 0) == 2): ?>selected="selected"<?php endif?>><?= _("Expire Days Since First Use") ?></option>
+                                <option value="3" <?php if (($upd_enableexpire ?? 0) == 3): ?>selected="selected"<?php endif?>><?= _("Expire Days Since Creation") ?></option>
                             </select>
                         </div>
                     </div>
@@ -514,11 +514,11 @@ function sendValue(selvalue, othervalue) {
                         </div>
                         <div class="col-auto">
                             <div class="form-check form-check-inline">
-                                <input type="radio" name="type[upd_runservice]" id="type_upd_runservice_1" value="1" <?php if($type["upd_runservice"] ?? 1 == 1): ?>checked="checked"<?php endif ?> class="form-check-input"/>
+                                <input type="radio" name="type[upd_runservice]" id="type_upd_runservice_1" value="1" <?php if(($type["upd_runservice"] ?? 1) == 1): ?>checked="checked"<?php endif ?> class="form-check-input"/>
                                 <label class="form-check-label form-check-label-sm" for="type_upd_runservice_1"><?= _("Yes") ?></label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input type="radio" name="type[upd_runservice]" id="type_upd_runservice_0" value="0" <?php if($type["upd_runservice"] ?? 1 == 0): ?>checked="checked"<?php endif ?> class="form-check-input"/>
+                                <input type="radio" name="type[upd_runservice]" id="type_upd_runservice_0" value="0" <?php if(($type["upd_runservice"] ?? 1) == 0): ?>checked="checked"<?php endif ?> class="form-check-input"/>
                                 <label class="form-check-label form-check-label-sm" for="type_upd_runservice_0"><?= _("No") ?></label>
                             </div>
                         </div>
