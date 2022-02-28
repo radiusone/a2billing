@@ -864,10 +864,10 @@ if (sizeof($call_result)>0 && $call_result[0]!=null) {
                   <?php echo $dialstatus_list[$call['terminatecauseid']][0]; ?>
                 </td>
                 <td class="tableBody"  align="center">
-                  <?php echo echo get_2bill($call['buycost']); ?>
+                  <?php echo get_2bill($call['buycost']); ?>
                 </td>
                 <td class="tableBody"  align="center">
-                  <?php echo echo get_2bill($call['sessionbill']); ?>
+                  <?php echo get_2bill($call['sessionbill']); ?>
                 </td>
                 <td class="tableBody"  align="center">
                     <?php if (!empty($call['id_ratecard'])) { ?>

@@ -26,11 +26,11 @@ class Profiler
     private $db;
     private $startTime;
 
-    public function __construct($startTime)
+    public function __construct($startTime = null)
     {
         $this->output = array();
 
-        $this->startTime = $startTime;
+        $this->startTime = $startTime ?? $this->getMicroTime();
     }
 
     /*-------------------------------------------
