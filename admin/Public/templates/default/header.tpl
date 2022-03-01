@@ -7,7 +7,7 @@
 	<link href="../lib/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css"/>
 	<link href="templates/{$SKIN_NAME}/css/invoice.css" rel="stylesheet" type="text/css"/>
 	<link href="templates/{$SKIN_NAME}/css/receipt.css" rel="stylesheet" type="text/css"/>
-	<script src="../lib/bootstrap/js/bootstrap.js"></script>
+	<script src="../lib/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<script src="./javascript/jquery/jquery.js"></script>
 	<script src="./javascript/jquery/jquery.debug.js"></script>
 	<script src="./javascript/jquery/ilogger.js"></script>
