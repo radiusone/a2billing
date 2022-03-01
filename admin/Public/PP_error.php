@@ -74,7 +74,7 @@ $error["ERR-0002"] 		= gettext("No such card number found. Please check your car
             <div class="modal-body">
                 <?= $error[$c] ?>
             </div>
-            <div class="modal-footer justify-content-between">
+            <div class="modal-footer">
                 <a class="btn btn-primary" href="index.php"><?= _("Go to Login Page") ?></a>
             </div>
         </div>
