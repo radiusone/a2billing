@@ -33,10 +33,8 @@ use A2billing\Realtime;
  *
 **/
 
-include '../lib/admin.defines.php';
-include '../lib/admin.module.access.php';
+require_once "../../common/lib/admin.defines.php";
 include '../lib/regular_express.inc';
-include '../lib/admin.smarty.php';
 
 getpost_ifset(array('action', 'atmenu'));
 

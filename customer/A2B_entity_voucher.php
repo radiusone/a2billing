@@ -33,10 +33,8 @@ use A2billing\Table;
  *
 **/
 
-include './lib/customer.defines.php';
-include './lib/customer.module.access.php';
+require_once "../common/lib/customer.defines.php";
 include './form_data/FG_var_voucher.inc';
-include './lib/customer.smarty.php';
 
 if (! has_rights (ACX_VOUCHER)) {
     Header ("HTTP/1.0 401 Unauthorized");

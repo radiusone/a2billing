@@ -32,9 +32,7 @@ use A2billing\Table;
  *
 **/
 
-include '../lib/agent.defines.php';
-include '../lib/agent.module.access.php';
-include '../lib/agent.smarty.php';
+require_once "../../common/lib/agent.defines.php";
 include '../lib/support/classes/ticket.php';
 include '../lib/support/classes/comment.php';
 include '../lib/epayment/includes/general.php';

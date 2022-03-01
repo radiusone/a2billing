@@ -34,10 +34,7 @@ use A2billing\RateEngine;
  *
 **/
 
-include 'lib/customer.defines.php';
-include 'lib/customer.module.access.php';
-include 'lib/Class.RateEngine.php';
-include 'lib/customer.smarty.php';
+require_once "../common/lib/customer.defines.php";
 
 if (!has_rights(ACX_SIMULATOR)) {
     Header("HTTP/1.0 401 Unauthorized");

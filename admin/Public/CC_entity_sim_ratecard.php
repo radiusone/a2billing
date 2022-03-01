@@ -34,9 +34,7 @@ use A2billing\RateEngine;
  *
 **/
 
-include '../lib/admin.defines.php';
-include '../lib/admin.module.access.php';
-include '../lib/admin.smarty.php';
+require_once "../../common/lib/admin.defines.php";
 
 if (! has_rights (ACX_RATECARD)) {
     Header ("HTTP/1.0 401 Unauthorized");

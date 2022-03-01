@@ -31,7 +31,6 @@
  *
 **/
 
-include 'lib/customer.defines.php';
-include 'lib/customer.module.access.php';
+require_once "../common/lib/customer.defines.php";
 
  Header ("Location: index.php");

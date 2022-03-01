@@ -31,9 +31,7 @@
  *
 **/
 
-include 'lib/customer.defines.php';
-include 'lib/customer.module.access.php';
-include 'lib/customer.smarty.php';
+require_once "../common/lib/customer.defines.php";
 include './form_data/FG_var_payment.inc';
 
 if (!has_rights(ACX_PAYMENT_HISTORY)) {

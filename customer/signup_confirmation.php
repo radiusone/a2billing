@@ -34,8 +34,7 @@ use A2billing\A2bMailException;
  *
 **/
 
-include './lib/customer.defines.php';
-include './lib/customer.smarty.php';
+require_once "../common/lib/customer.defines.php";
 
 if (!$A2B->config["signup"]['enable_signup']) {
     echo ("No Signup page!");

@@ -31,7 +31,7 @@
  *
 **/
 
-include '../lib/agent.defines.php';
+require_once "../../common/lib/agent.defines.php";
 session_destroy();
 getpost_ifset(array('err_type','c'));
 
@@ -41,12 +41,10 @@ if (!isset($err_type)) {
 
 //Error Type == 0 Mean Critical Error dont need to show left menu.
 //Error Type == 1 Mean User generated error.and it will show menu to him too.
-include '../lib/agent.smarty.php';
 if ($err_type == 0) {
     $smarty->display('header.tpl');
 } else {
-    include '../lib/agent.module.access.php';
-    $smarty->display('main.tpl');
+        $smarty->display('main.tpl');
 }
 
 if (!isset($c))	$c="0";

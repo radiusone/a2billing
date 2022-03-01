@@ -34,10 +34,8 @@ use A2billing\Table;
  *
 **/
 
-require('../../common/lib/admin.defines.php');
-require('../../common/lib/admin.module.access.php');
+require_once "../../common/lib/admin.defines.php";
 require('./form_data/FG_var_card.inc');
-require('../../common/lib/admin.smarty.php');
 
 if (!has_rights(ACX_CUSTOMER)) {
     header("HTTP/1.0 401 Unauthorized");

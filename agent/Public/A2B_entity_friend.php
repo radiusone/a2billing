@@ -35,10 +35,8 @@ use A2billing\Notification;
  *
 **/
 
-include '../lib/agent.defines.php';
-include '../lib/agent.module.access.php';
+require_once "../../common/lib/agent.defines.php";
 include './form_data/FG_var_friend.inc';
-include '../lib/agent.smarty.php';
 
 if (! has_rights (ACX_CUSTOMER)) {
     Header ("HTTP/1.0 401 Unauthorized");

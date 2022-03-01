@@ -35,9 +35,7 @@ use A2billing\Notification;
  *
 **/
 
-include '../lib/agent.defines.php';
-include '../lib/agent.module.access.php';
-include '../lib/agent.smarty.php';
+require_once "../../common/lib/agent.defines.php";
 
 if (! has_rights (ACX_ACCESS)) {
     Header ("HTTP/1.0 401 Unauthorized");

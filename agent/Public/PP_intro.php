@@ -33,9 +33,7 @@ use A2billing\Table;
  *
 **/
 
-include '../lib/agent.defines.php';
-include_once '../lib/agent.module.access.php';
-include '../lib/agent.smarty.php';
+require_once '../../common/lib/agent.defines.php';
 
 if (!$ACXACCESS) {
     Header ("HTTP/1.0 401 Unauthorized");

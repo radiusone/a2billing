@@ -31,13 +31,11 @@
  *
 **/
 
-include './lib/customer.defines.php';
-include './lib/customer.module.access.php';
+require_once "../common/lib/customer.defines.php";
 include './lib/epayment/includes/general.php';
 include './lib/epayment/includes/configure.php';
 include './lib/epayment/includes/html_output.php';
 $popup_select = 1;
-include './lib/customer.smarty.php';
 
 getpost_ifset(array('errcode'));
 

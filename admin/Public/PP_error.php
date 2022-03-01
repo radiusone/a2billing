@@ -31,7 +31,8 @@
  *
 **/
 
-include '../lib/admin.defines.php';
+require_once "../../common/lib/admin.defines.php";
+
 session_destroy();
 getpost_ifset(['err_type','c']);
 /**
@@ -48,11 +49,9 @@ if (!isset($c))	{
 
 //Error Type == 0 Mean Critical Error dont need to show left menu.
 //Error Type == 1 Mean User generated error.and it will show menu to him too.
-include '../lib/admin.smarty.php';
 if ($err_type == 0) {
     $smarty->display('header.tpl');
 } else {
-    include '../lib/admin.module.access.php';
     $smarty->display('main.tpl');
 }
 

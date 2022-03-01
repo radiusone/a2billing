@@ -34,10 +34,8 @@ use A2billing\Realtime;
  *
 **/
 
-include '../lib/admin.defines.php';
-include '../lib/admin.module.access.php';
+require_once "../../common/lib/admin.defines.php";
 include './form_data/FG_var_card.inc';
-include '../lib/admin.smarty.php';
 
 if (!has_rights(ACX_CUSTOMER)) {
     Header("HTTP/1.0 401 Unauthorized");

@@ -34,8 +34,7 @@ use A2billing\Table;
  *
 **/
 
-include './lib/customer.defines.php';
-include './lib/customer.module.access.php';
+require_once "../common/lib/customer.defines.php";
 include './lib/epayment/classes/payment.php';
 include './lib/epayment/classes/order.php';
 include './lib/epayment/classes/currencies.php';
@@ -43,7 +42,6 @@ include './lib/epayment/includes/general.php';
 include './lib/epayment/includes/html_output.php';
 include './lib/epayment/includes/loadconfiguration.php';
 include './lib/epayment/includes/configure.php';
-include './lib/customer.smarty.php';
 
 if (! has_rights (ACX_ACCESS)) {
     Header ("HTTP/1.0 401 Unauthorized");

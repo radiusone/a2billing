@@ -30,14 +30,13 @@
  *
  *
 **/
+//TODO: why is this including the customer config file? Copy/paste error?
 
-include './lib/customer.defines.php';
-include './lib/customer.module.access.php';
+require_once "../common/lib/customer.defines.php";
 include './lib/epayment/includes/general.php';
 include './lib/epayment/includes/configure.php';
 include './lib/epayment/includes/html_output.php';
 $popup_select = 1;
-include './lib/customer.smarty.php';
 //include("./lib/epayment/includes/PP_header.php");
 
 getpost_ifset(array('errcode'));

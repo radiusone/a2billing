@@ -32,9 +32,7 @@
 **/
 
 // Common includes
-include '../lib/admin.defines.php';
-include '../lib/admin.module.access.php';
-include '../lib/admin.smarty.php';
+require_once "../../common/lib/admin.defines.php";
 
 set_time_limit(0);
 

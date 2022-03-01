@@ -33,10 +33,8 @@ use A2billing\Table;
  *
 **/
 
-include '../lib/agent.defines.php';
-include '../lib/agent.module.access.php';
+require_once "../../common/lib/agent.defines.php";
 include '../lib/regular_express.inc';
-include '../lib/agent.smarty.php';
 
 $FG_DEBUG =0;
 

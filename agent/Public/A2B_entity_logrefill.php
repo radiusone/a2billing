@@ -31,10 +31,8 @@
  *
 **/
 
-include '../lib/agent.defines.php';
-include '../lib/agent.module.access.php';
+require_once "../../common/lib/agent.defines.php";
 include './form_data/FG_var_logrefill.inc';
-include '../lib/agent.smarty.php';
 
 if (! has_rights (ACX_BILLING)) {
     Header ("HTTP/1.0 401 Unauthorized");

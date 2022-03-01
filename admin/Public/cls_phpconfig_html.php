@@ -23,9 +23,7 @@
  */
 
 // add for a2billing
-include_once '../lib/admin.defines.php';
-include_once '../lib/admin.module.access.php';
-include_once '../lib/admin.smarty.php';
+require_once "../../common/lib/admin.defines.php";
 
 if (! has_rights (ACX_ADMINISTRATOR)) {
     Header ("HTTP/1.0 401 Unauthorized");

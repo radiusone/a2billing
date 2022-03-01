@@ -33,9 +33,7 @@ use A2billing\Table;
  *
 **/
 
-include '../lib/admin.defines.php';
-include '../lib/admin.module.access.php';
-include '../lib/admin.smarty.php';
+require_once "../../common/lib/admin.defines.php";
 include '../lib/support/classes/receipt.php';
 include '../lib/support/classes/receiptItem.php';
 

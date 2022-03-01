@@ -33,10 +33,8 @@ use A2billing\Table;
  *
 **/
 
-include './lib/customer.defines.php';
-include './lib/customer.module.access.php';
+require_once "../common/lib/customer.defines.php";
 include './form_data/FG_var_callerid.inc';
-include 'lib/customer.smarty.php';
 
 if (! has_rights (ACX_CALLER_ID)) {
     Header ("HTTP/1.0 401 Unauthorized");

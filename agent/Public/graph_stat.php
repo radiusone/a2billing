@@ -35,8 +35,7 @@ use Amenadiel\JpGraph\Plot\LinePlot;
  *
 **/
 
-include_once (dirname(__FILE__) . "/../lib/agent.defines.php");
-include_once (dirname(__FILE__) . "/../lib/agent.module.access.php");
+require_once "/../../common/lib/agent.defines.php";
 
 if (!has_rights(ACX_CALL_REPORT)) {
     Header("HTTP/1.0 401 Unauthorized");

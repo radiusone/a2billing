@@ -37,8 +37,7 @@ use A2billing\A2bMailException;
 // session_name("FORGOT");
 // session_start();
 
-include 'lib/customer.defines.php';
-include 'lib/customer.smarty.php';
+require_once "../common/lib/customer.defines.php";
 
 getpost_ifset(array ('pr_email', 'action'));
 

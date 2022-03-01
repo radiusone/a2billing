@@ -33,10 +33,8 @@ use A2billing\Table;
  *
 **/
 
-include './lib/customer.defines.php';
-include './lib/customer.module.access.php';
+require_once "../common/lib/customer.defines.php";
 include './form_data/FG_var_speeddial.inc';
-include './lib/customer.smarty.php';
 
 if (!has_rights(ACX_SPEED_DIAL)) {
     Header("HTTP/1.0 401 Unauthorized");

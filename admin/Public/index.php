@@ -31,8 +31,7 @@
  *
 **/
 
-include '../lib/admin.defines.php';
-include '../lib/admin.smarty.php';
+include "../../common/lib/admin.defines.php";
 
 getpost_ifset(array (
     'error'

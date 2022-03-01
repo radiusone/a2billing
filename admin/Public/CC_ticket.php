@@ -31,9 +31,7 @@
  *
 **/
 
-include '../lib/admin.defines.php';
-include '../lib/admin.module.access.php';
-include '../lib/admin.smarty.php';
+require_once "../../common/lib/admin.defines.php";
 include './form_data/FG_var_ticket.inc';
 
 if (!has_rights(ACX_SUPPORT)) {

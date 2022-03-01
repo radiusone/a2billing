@@ -31,8 +31,7 @@
  *
 **/
 
-include 'lib/customer.defines.php';
-include 'lib/customer.module.access.php';
+require_once "../common/lib/customer.defines.php";
 
 if (! has_rights (ACX_ACCESS)) {
     Header ("HTTP/1.0 401 Unauthorized");

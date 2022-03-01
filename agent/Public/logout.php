@@ -31,8 +31,7 @@
  *
 **/
 
-include '../lib/agent.defines.php';
-include '../lib/agent.module.access.php';
+require_once "../../common/lib/agent.defines.php";
 
 ?>
 <html>

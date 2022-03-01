@@ -33,11 +33,9 @@ use A2billing\Table;
  *
 **/
 
-include 'lib/customer.defines.php';
-include 'lib/customer.module.access.php';
+require_once "../common/lib/customer.defines.php";
 include 'frontoffice_data/CC_var_did_destination.inc';
 include 'lib/regular_express.inc';
-include 'lib/customer.smarty.php';
 
 if (! has_rights (ACX_DID)) {
        Header ("HTTP/1.0 401 Unauthorized");

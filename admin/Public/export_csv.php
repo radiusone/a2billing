@@ -33,9 +33,8 @@ use A2billing\Logger;
  *
 **/
 
-include '../lib/admin.defines.php';
+require_once "../../common/lib/admin.defines.php";
 require_once '../lib/iam_csvdump.php';
-include '../lib/admin.module.access.php';
 
 if (!has_rights(ACX_CALL_REPORT) && !has_rights(ACX_CUSTOMER)) {
     Header("HTTP/1.0 401 Unauthorized");

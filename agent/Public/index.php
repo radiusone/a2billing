@@ -33,8 +33,7 @@
 
 $disable_load_conf = true;
 
-include '../lib/agent.defines.php';
-include '../lib/agent.smarty.php';
+require_once "../../common/lib/agent.defines.php";
 
 getpost_ifset(array (
     'error'

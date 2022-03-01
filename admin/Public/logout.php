@@ -31,8 +31,7 @@
  *
 **/
 
-include '../lib/admin.defines.php';
-include '../lib/admin.module.access.php';
+require_once "../../common/lib/admin.defines.php";
 
 ?>
 <html>

@@ -31,9 +31,7 @@
  *
 **/
 
-include 'lib/customer.defines.php';
-
-include 'lib/customer.smarty.php';
+require_once "../common/lib/customer.defines.php";
 
 $smarty->display('header.tpl');
 session_destroy();

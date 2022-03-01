@@ -33,9 +33,7 @@ use A2billing\Table;
  *
 **/
 
-include_once(dirname(__FILE__) . "/../lib/admin.defines.php");
-include_once(dirname(__FILE__) . "/../lib/admin.module.access.php");
-include '../lib/admin.smarty.php';
+require_once "../../common/lib/admin.defines.php";
 
 if (! has_rights (ACX_CALL_REPORT)) {
     Header ("HTTP/1.0 401 Unauthorized");

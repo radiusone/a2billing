@@ -33,9 +33,7 @@ use A2billing\Table;
  *
 **/
 
-include_once '../lib/admin.defines.php';
-include_once '../lib/admin.module.access.php';
-include_once '../lib/admin.smarty.php';
+require_once "../../common/lib/admin.defines.php";
 include_once './form_data/FG_var_diduse.inc';
 
 if (!has_rights(ACX_DID)) {

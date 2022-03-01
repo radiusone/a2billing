@@ -33,10 +33,8 @@ use A2billing\Table;
  *
 **/
 
-include '../lib/agent.defines.php';
-include '../lib/agent.module.access.php';
+require_once "../../common/lib/agent.defines.php";
 include './form_data/FG_var_card.inc';
-include '../lib/agent.smarty.php';
 
 if (! has_rights (ACX_CUSTOMER)) {
     Header ("HTTP/1.0 401 Unauthorized");

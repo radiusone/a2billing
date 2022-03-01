@@ -33,9 +33,7 @@ use A2billing\Table;
  *
 **/
 
-include 'lib/customer.defines.php';
-include 'lib/customer.module.access.php';
-include 'lib/customer.smarty.php';
+require_once "../common/lib/customer.defines.php";
 include 'lib/epayment/includes/configure.php';
 include 'lib/epayment/includes/html_output.php';
 include './lib/epayment/includes/general.php';

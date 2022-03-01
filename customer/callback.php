@@ -34,9 +34,7 @@ use A2billing\RateEngine;
  *
 **/
 
-include 'lib/customer.defines.php';
-include 'lib/customer.module.access.php';
-include 'lib/customer.smarty.php';
+require_once "../common/lib/customer.defines.php";
 
 getpost_ifset(array('callback', 'called', 'calling'));
 

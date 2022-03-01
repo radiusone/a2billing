@@ -37,10 +37,8 @@ use A2billing\Notification;
  *
 **/
 
-include './lib/customer.defines.php';
-include './lib/customer.module.access.php';
+require_once "../common/lib/customer.defines.php";
 include './form_data/FG_var_ticket.inc';
-include './lib/customer.smarty.php';
 
 if (!has_rights(ACX_SUPPORT)) {
     Header("HTTP/1.0 401 Unauthorized");
