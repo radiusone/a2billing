@@ -47,11 +47,20 @@
 							{_("Notification")}
 						</a>
 					</li>
-					<li>
-						<a href="logout.php?logout=true" class="nav-link text-white">
+					<li class="dropdown">
+						<a href="#" id="dropdownUser" class="nav-link text-white dropdown-toggle" data-bs-toggle="dropdown">
 							<svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="#people-circle"></use></svg>
-							{_("Logout")}
+							{_("Account")}
 						</a>
+						<ul class="dropdown-menu shadow" aria-labelledby="dropdownUser">
+							<li>
+								<a href="A2B_entity_password.php?atmenu=password&amp;form_action=ask-edit" class="dropdown-item">
+									{_("Change Password")}
+								</a>
+							</li>
+							<li><hr class="dropdown-divider"></li>
+							<li><a class="dropdown-item" href="logout.php?logout=true">{_("Logout")}</a></li>
+						</ul>
 					</li>
 				</ul>
 			</div>
@@ -404,12 +413,6 @@
 							<li><a class="link-dark rounded" href="PP_intro.php?ui_language=chinese">🇨🇳 Chinese</a></li>
 						</ul>
 					</div>
-				</li>
-				<li class="border-top my-3"></li>
-				<li class="mb-1">
-					<a href="A2B_entity_password.php?atmenu=password&amp;form_action=ask-edit" class="btn btn-sm rounded">
-						{_("Change Password")}
-					</a>
 				</li>
 			</ul>
 		</nav>
