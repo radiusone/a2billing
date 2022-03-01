@@ -69,13 +69,13 @@ $error["ERR-0002"] 		= gettext("No such card number found. Please check your car
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content shadow">
             <div class="modal-header">
-                <h3 class="modal-title" id="authTitle"><?= _("Error Page") ?></h3>
+                <h4 class="modal-title" id="authTitle"><?= _("Error Page") ?></h4>
             </div>
             <div class="modal-body">
-                <strong> <?= $error[$c] ?></strong>
+                <?= $error[$c] ?>
             </div>
             <div class="modal-footer justify-content-between">
-                <button type="submit" class="btn btn-primary"><?= _("Go to Login Page") ?></button>
+                <a class="btn btn-primary" href="index.php"><?= _("Go to Login Page") ?></a>
             </div>
         </div>
     </div>
