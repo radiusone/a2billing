@@ -221,6 +221,19 @@ if (!empty($section)) {
     $_SESSION["menu_section"] = intval($section);
 }
 
+if (!empty($cssname)) {
+    if ($_SESSION["stylefile"] !== $cssname) {
+        foreach (glob("./templates_c/*.*") as $filename) {
+            unlink($filename);
+        }
+    }
+    $_SESSION["stylefile"] = $cssname;
+}
+
+if (empty($_SESSION["stylefile"])) {
+    $_SESSION["stylefile"] = "default";
+}
+
 /*
  *		GLOBAL USED VARIABLE
  */
