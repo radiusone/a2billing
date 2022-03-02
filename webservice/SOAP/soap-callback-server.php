@@ -48,7 +48,6 @@ use SOAP_DISCO_Server;
 
 $disable_check_cp = true;
 include '../lib/admin.defines.php';
-include '../lib/regular_express.inc';
 
 define("LOG_CALLBACK", isset ($A2B->config["log-files"]['api_callback']) ? $A2B->config["log-files"]['api_callback'] : null);
 

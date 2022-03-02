@@ -34,7 +34,6 @@ use A2billing\Table;
 **/
 
 require_once "../../common/lib/agent.defines.php";
-include '../lib/regular_express.inc';
 
 $FG_DEBUG =0;
 

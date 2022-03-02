@@ -34,7 +34,6 @@ use A2billing\Realtime;
 **/
 
 require_once "../../common/lib/admin.defines.php";
-include '../lib/regular_express.inc';
 
 getpost_ifset(array('action', 'atmenu'));
 
