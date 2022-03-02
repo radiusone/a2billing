@@ -34,7 +34,6 @@ use A2billing\Table;
 **/
 
 require_once "../../common/lib/admin.defines.php";
-include '../lib/config_functions.php';
 include './form_data/FG_var_config.inc';
 
 if (! has_rights (ACX_ACXSETTING)) {
