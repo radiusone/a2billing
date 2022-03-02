@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b771c45d9a536958fa203dadbc75ee0f",
+    "content-hash": "cfb3b24a25ffae7bb3a91b42a1d63131",
     "packages": [
         {
             "name": "adodb/adodb-php",
@@ -125,6 +125,55 @@
                 "source": "https://github.com/HuasoFoundries/jpgraph/tree/v3.6.21"
             },
             "time": "2018-10-14T21:43:30+00:00"
+        },
+        {
+            "name": "components/jquery",
+            "version": "3.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/components/jquery.git",
+                "reference": "6cf38ee1fd04b6adf8e7dda161283aa35be818c3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/components/jquery/zipball/6cf38ee1fd04b6adf8e7dda161283aa35be818c3",
+                "reference": "6cf38ee1fd04b6adf8e7dda161283aa35be818c3",
+                "shasum": ""
+            },
+            "type": "component",
+            "extra": {
+                "component": {
+                    "scripts": [
+                        "jquery.js"
+                    ],
+                    "files": [
+                        "jquery.min.js",
+                        "jquery.min.map",
+                        "jquery.slim.js",
+                        "jquery.slim.min.js",
+                        "jquery.slim.min.map"
+                    ]
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "JS Foundation and other contributors"
+                }
+            ],
+            "description": "jQuery JavaScript Library",
+            "homepage": "http://jquery.com",
+            "support": {
+                "forum": "http://forum.jquery.com",
+                "irc": "irc://irc.freenode.org/jquery",
+                "issues": "https://github.com/jquery/jquery/issues",
+                "source": "https://github.com/jquery/jquery",
+                "wiki": "http://docs.jquery.com/"
+            },
+            "time": "2021-03-20T19:13:42+00:00"
         },
         {
             "name": "dubcanada/php-profiler",
@@ -829,6 +878,46 @@
                 "source": "https://github.com/smarty-php/smarty/tree/v3.1.44"
             },
             "time": "2022-01-17T23:12:04+00:00"
+        },
+        {
+            "name": "softcommerce/jquery-flot",
+            "version": "v1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/iddqdidkfa/jquery-flot.git",
+                "reference": "d7ac221019fb962732e578be0d5bfb379dbe55d1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/iddqdidkfa/jquery-flot/zipball/d7ac221019fb962732e578be0d5bfb379dbe55d1",
+                "reference": "d7ac221019fb962732e578be0d5bfb379dbe55d1",
+                "shasum": ""
+            },
+            "type": "jquery-library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Oleg Ilyushyn",
+                    "email": "oleg@softcommerce.com.ua",
+                    "homepage": "http://softcommerce.com.ua"
+                }
+            ],
+            "description": "jQuery Flot charting library with plugins",
+            "keywords": [
+                "chart",
+                "flot",
+                "jquery",
+                "plot",
+                "plugin"
+            ],
+            "support": {
+                "issues": "https://github.com/iddqdidkfa/jquery-flot/issues",
+                "source": "https://github.com/iddqdidkfa/jquery-flot/tree/master"
+            },
+            "time": "2014-06-18T09:52:37+00:00"
         },
         {
             "name": "symfony/dotenv",

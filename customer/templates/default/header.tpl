@@ -26,10 +26,7 @@
 		var IMAGE_PATH = "templates/{$SKIN_NAME}/images/";
 	</script>
 	<script type="text/javascript" src="./javascript/jquery/jquery-1.2.6.min.js"></script>
-	<script type="text/javascript" src="./javascript/jquery/jquery.debug.js"></script>
-	<script type="text/javascript" src="./javascript/jquery/ilogger.js"></script>
 	<script type="text/javascript" src="./javascript/jquery/handler_jquery.js"></script>
-	<script language="javascript" type="text/javascript" src="./javascript/misc.js"></script>
 </HEAD>
 
 <BODY leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
