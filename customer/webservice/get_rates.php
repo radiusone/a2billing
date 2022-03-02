@@ -45,8 +45,7 @@ Usage :
 
 use A2billing\Table;
 
-include '../lib/customer.defines.php';
-
+require_once "../../common/lib/customer.defines.php";
 
 getpost_ifset(array('activation_code', 'html'));
 

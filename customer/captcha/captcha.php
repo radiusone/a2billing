@@ -1,6 +1,6 @@
 <?php
 
-include '../lib/customer.defines.php';
+require_once "../../common/lib/customer.defines.php";
 
 $code = MDP_STRING(6);
 $_SESSION["captcha_code"] = $code;

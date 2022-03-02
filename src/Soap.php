@@ -6,7 +6,7 @@ use AGI_AsteriskManager;
 
 $disable_check_cp = true;
 
-include (dirname(__FILE__)."/admin.defines.php");
+require_once __DIR__ . "/admin.defines.php";
 
 class Soap
 {

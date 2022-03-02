@@ -36,7 +36,7 @@
  */
 
 $disable_check_cp = true;
-include '../lib/admin.defines.php';
+require_once "../../common/lib/admin.defines.php";
 require 'SOAP/Client.php';
 
 $security_key = API_SECURITY_KEY;

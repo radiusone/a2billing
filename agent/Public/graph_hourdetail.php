@@ -37,7 +37,7 @@ use Amenadiel\JpGraph\Util\RGB;
  *
 **/
 
-require_once "/../../common/lib/agent.defines.php";
+require_once "../../common/lib/agent.defines.php";
 
 if (! has_rights (ACX_CALL_REPORT)) {
        Header ("HTTP/1.0 401 Unauthorized");

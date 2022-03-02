@@ -32,6 +32,7 @@
 **/
 
 require_once "../../common/lib/agent.defines.php";
+
 session_destroy();
 getpost_ifset(array('err_type','c'));
 
