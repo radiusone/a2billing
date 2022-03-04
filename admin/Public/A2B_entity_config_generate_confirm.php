@@ -144,8 +144,7 @@ foreach ($config as $values) {
     <tr>
         <td align="right">
         <form name="theform">
-        <input class="form_input_button"
-                TYPE="button" VALUE="<?php echo $group_title;?>" onClick="window.open('<?php echo $link?>')">
+            <a class="btn btn-primary" href="<?= $link ?>"><?php echo $group_title;?></a>
         </form></td>
     </tr>
 </table>

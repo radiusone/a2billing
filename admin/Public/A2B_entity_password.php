@@ -69,31 +69,36 @@ if ($form_action == "ask-modif") {
 // #### HEADER SECTION
 $smarty->display('main.tpl');
 ?>
-<script language="JavaScript">
-function CheckPassword()
-{
-    if (document.frmPass.NewPassword.value =='') {
-        alert('<?php echo gettext("No value in New Password entered")?>');
-        document.frmPass.NewPassword.focus();
-        return false;
-    }
-    if (document.frmPass.CNewPassword.value =='') {
-        alert('<?php echo gettext("No Value in Confirm New Password entered")?>');
-        document.frmPass.CNewPassword.focus();
-        return false;
-    }
-    if (document.frmPass.NewPassword.value.length < 5) {
-        alert('<?php echo gettext("Password length should be greater than or equal to 5")?>');
-        document.frmPass.NewPassword.focus();
-        return false;
-    }
-    if (document.frmPass.CNewPassword.value != document.frmPass.NewPassword.value) {
-        alert('<?php echo gettext("Value mismatch, New Password should be equal to Confirm New Password")?>');
-        document.frmPass.NewPassword.focus();
-        return false;
-    }
-    return true;
-}
+<script>
+$(function() {
+    $("#checkpassword").on('click', function () {
+        var np = $("#NewPassword");
+        var cnp = $("#CNewPassword");
+
+        if (!np.val()) {
+            alert('<?php echo gettext("No value in New Password entered")?>');
+            np.focus();
+            return false;
+        }
+        if (!cnp.val()) {
+            alert('<?php echo gettext("No Value in Confirm New Password entered")?>');
+            cnp.focus();
+            return false;
+        }
+        if (np.val().length < 5) {
+            alert('<?php echo gettext("Password length should be greater than or equal to 5")?>');
+            np.focus();
+            return false;
+        }
+        if (np.val() !== cnp.val()) {
+            alert('<?php echo gettext("Value mismatch, New Password should be equal to Confirm New Password")?>');
+            np.focus();
+            return false;
+        }
+        return true;
+    });
+    $("#NewPassword").focus();
+});
 </script>
 
 <?php
@@ -134,21 +139,21 @@ alert("<?php echo gettext("System is failed to update your password.")?>");
 </tr>
 <tr>
     <td align=right><font class="fontstyle_002"><?php echo gettext("Old Password")?>&nbsp; :</font></td>
-    <td align=left><input name="OldPassword" type="password" class="form_input_text" ></td>
+    <td align=left><input id="OldPassword" name="OldPassword" type="password" class="form_input_text" ></td>
 </tr>
 <tr>
     <td align=right><font class="fontstyle_002"><?php echo gettext("New Password")?>&nbsp; :</font></td>
-    <td align=left><input name="NewPassword" type="password" class="form_input_text" ></td>
+    <td align=left><input id="NewPassword" name="NewPassword" type="password" class="form_input_text" ></td>
 </tr>
 <tr>
     <td align=right><font class="fontstyle_002"><?php echo gettext("Confirm Password")?>&nbsp; :</font></td>
-    <td align=left><input name="CNewPassword" type="password" class="form_input_text" ></td>
+    <td align=left><input id="CNewPassword" name="CNewPassword" type="password" class="form_input_text" ></td>
 </tr>
 <tr>
     <td align=left colspan=2>&nbsp;</td>
 </tr>
 <tr>
-    <td align=center colspan=2 ><input type="submit" name="submitPassword" value="&nbsp;<?php echo gettext("Save")?>&nbsp;" class="form_input_button" onclick="return CheckPassword();" >&nbsp;&nbsp;<input type="reset" name="resetPassword" value="&nbsp;Reset&nbsp;" class="form_input_button" > </td>
+    <td align=center colspan=2 ><input type="submit" id="checkpassword" name="submitPassword" value="&nbsp;<?php echo gettext("Save")?>&nbsp;" class="form_input_button">&nbsp;&nbsp;<input type="reset" name="resetPassword" value="&nbsp;Reset&nbsp;" class="form_input_button" > </td>
 </tr>
 <tr>
     <td align=left colspan=2>&nbsp;</td>
@@ -156,9 +161,6 @@ alert("<?php echo gettext("System is failed to update your password.")?>");
 
 </table>
 </center>
-<script language="JavaScript">
-    document.frmPass.NewPassword.focus();
-</script>
 </form>
 
 <br><br><br>

@@ -123,25 +123,22 @@ function amount_convert($amount)
 
 if (!$popup_select) {
 ?>
-<a href="javascript:;" onClick="window.open('<?php echo $PHP_SELF ?>?popup_select=1&id=<?php echo $id ?><?php if(!empty($curr)) echo "&curr=".$curr; ?>','','scrollbars=yes,resizable=yes,width=700,height=500')" > <img src="../Public/templates/default/images/printer.png" title="Print" alt="Print" border="0"></a>
+<a id="rv_popupselect" href="#"> <img src="../Public/templates/default/images/printer.png" title="Print" alt="Print" border="0"></a>
 &nbsp;&nbsp;
 <?php if (strtoupper(BASE_CURRENCY)!=strtoupper($card['currency'])) { ?>
 
-    <select id="currency" class="form_input_select" name="curr" onChange="openURL('<?php echo filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=$id"?>')">
+    <select id="currency" class="form_input_select" name="curr">
         <option value="<?php echo BASE_CURRENCY;?>" <?php if(BASE_CURRENCY==$curr) echo "selected";?>  ><?php echo gettext('SYSTEM CURRENCY')." : ".strtoupper(BASE_CURRENCY); ?> </option>
         <option value="<?php echo $card['currency'];?>" <?php if($card['currency']==$curr) echo "selected";?>   ><?php echo gettext('CUSTOMER CURRENCY')." : ".strtoupper($card['currency']); ?></option>
     </select>
 
-<script language="JavaScript" type="text/JavaScript">
-<!--
-
-function openURL(theLINK)
-{
-      // redirect browser to the grabbed value (hopefully a URL)
-      self.location.href = theLINK + "&curr="+$('#currency').val();
-}
-
-//-->
+<script>
+$( function() {
+    var id = <?= json_encode($id) ?>;
+    var curr = <?= json_encode($curr ?? "") ?>;
+    $("#currency").on("change", () => self.location.href = `?id=${id}&curr=${$(this).val())}`);
+    $("a#rv_popupselect").on("click", () => window.open(`?popup_select=1&id=${id}&curr=${curr}`, '', 'scrollbars=yes,resizable=yes,width=700,height=500'));
+})
 </script>
 
 <?php

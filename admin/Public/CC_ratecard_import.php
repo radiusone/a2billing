@@ -61,170 +61,91 @@ $nb_trunk = count($list_trunk);
 
 $smarty->display('main.tpl');
 
-?>
-
-<script language="JavaScript" type="text/javascript">
-<!--
-
-function sendtoupload(form){
-	if (form.tariffplan.value.length < 1){
-		alert (<?= json_encode(gettext("Please, you must first select a ratecard !")); ?>);
-		form.tariffplan.focus ();
-		return (false);
-	}
-	if (form.the_file.value.length < 2){
-		alert (<?= json_encode(gettext("Please, you must first select a file !")); ?>);
-		form.the_file.focus ();
-		return (false);
-	}
-	
-    document.forms["prefs"].elements["task"].value = "upload";	
-	document.prefs.submit();
-}
-
-function deselectHeaders()
-{
-    document.prefs.unselected_search_sources[0].selected = false;
-    document.prefs.selected_search_sources[0].selected = false;
-}
-
-function resetHidden()
-{
-    var tmp = '';
-    for (i = 1; i < document.prefs.selected_search_sources.length; i++) {
-        tmp += document.prefs.selected_search_sources[i].value;
-        if (i < document.prefs.selected_search_sources.length - 1)
-            tmp += "\t";
-    }
-
-    document.prefs.search_sources.value = tmp;
-}
-
-function addSource()
-{
-    for (i = 1; i < document.prefs.unselected_search_sources.length; i++) {
-        if (document.prefs.unselected_search_sources[i].selected) {
-            document.prefs.selected_search_sources[document.prefs.selected_search_sources.length] = new Option(document.prefs.unselected_search_sources[i].text, document.prefs.unselected_search_sources[i].value);
-            document.prefs.unselected_search_sources[i] = null;
-            i--;
-        }
-    }
-
-    resetHidden();
-}
-
-function removeSource()
-{
-    for (i = 1; i < document.prefs.selected_search_sources.length; i++) {
-        if (document.prefs.selected_search_sources[i].selected) {
-            document.prefs.unselected_search_sources[document.prefs.unselected_search_sources.length] = new Option(document.prefs.selected_search_sources[i].text, document.prefs.selected_search_sources[i].value)
-            document.prefs.selected_search_sources[i] = null;
-            i--;
-        }
-    }
-
-    resetHidden();
-}
-
-function moveSourceUp()
-{
-    var sel = document.prefs.selected_search_sources.selectedIndex;
-	//var sel = document.prefs["selected_search_sources[]"].selectedIndex;
-	
-    if (sel == -1 || document.prefs.selected_search_sources.length <= 2) return;
-
-    // deselect everything but the first selected item
-    document.prefs.selected_search_sources.selectedIndex = sel;
-
-    if (sel == 1) {
-        tmp = document.prefs.selected_search_sources[sel];
-        document.prefs.selected_search_sources[sel] = null;
-        document.prefs.selected_search_sources[document.prefs.selected_search_sources.length] = tmp;
-        document.prefs.selected_search_sources.selectedIndex = document.prefs.selected_search_sources.length - 1;
-    } else {
-        tmp = new Array();
-
-        for (i = 1; i < document.prefs.selected_search_sources.length; i++) {
-            tmp[i - 1] = new Option(document.prefs.selected_search_sources[i].text, document.prefs.selected_search_sources[i].value)
-        }
-
-        for (i = 0; i < tmp.length; i++) {
-            if (i + 1 == sel - 1) {
-                document.prefs.selected_search_sources[i + 1] = tmp[i + 1];
-            } else if (i + 1 == sel) {
-                document.prefs.selected_search_sources[i + 1] = tmp[i - 1];
-            } else {
-                document.prefs.selected_search_sources[i + 1] = tmp[i];
-            }
-        }
-
-        document.prefs.selected_search_sources.selectedIndex = sel - 1;
-    }
-
-    resetHidden();
-}
-
-function moveSourceDown()
-{
-    var sel = document.prefs.selected_search_sources.selectedIndex;
-
-    if (sel == -1 || document.prefs.selected_search_sources.length <= 2) return;
-
-    // deselect everything but the first selected item
-    document.prefs.selected_search_sources.selectedIndex = sel;
-
-    if (sel == document.prefs.selected_search_sources.length - 1) {
-        tmp = new Array();
-
-        for (i = 1; i < document.prefs.selected_search_sources.length; i++) {
-            tmp[i - 1] = new Option(document.prefs.selected_search_sources[i].text, document.prefs.selected_search_sources[i].value)
-        }
-
-        document.prefs.selected_search_sources[1] = tmp[tmp.length - 1];
-        for (i = 0; i < tmp.length - 1; i++) {
-            document.prefs.selected_search_sources[i + 2] = tmp[i];
-        }
-
-        document.prefs.selected_search_sources.selectedIndex = 1;
-    } else {
-        tmp = new Array();
-
-        for (i = 1; i < document.prefs.selected_search_sources.length; i++) {
-            tmp[i - 1] = new Option(document.prefs.selected_search_sources[i].text, document.prefs.selected_search_sources[i].value)
-        }
-
-        for (i = 0; i < tmp.length; i++) {
-            if (i + 1 == sel) {
-                document.prefs.selected_search_sources[i + 1] = tmp[i + 1];
-            } else if (i + 1 == sel + 1) {
-                document.prefs.selected_search_sources[i + 1] = tmp[i - 1];
-            } else {
-                document.prefs.selected_search_sources[i + 1] = tmp[i];
-            }
-        }
-
-        document.prefs.selected_search_sources.selectedIndex = sel + 1;
-    }
-
-    resetHidden();
-}
-
-// -->
-</script>
-
-<?php
-
 echo $CC_help_import_ratecard;
 
 ?>
+<script>
+$(function() {
+    $("a#addsource").on('click', function () {
+        $("#unselected_search_sources option:selected").appendTo($("#selected_search_sources"));
+        resetHidden();
+    });
+
+    $("a#removesource").on('click', function () {
+        $("#selected_search_sources option:selected").appendTo($("#unselected_search_sources"));
+        resetHidden();
+    });
+
+    $("input#sendtoupload").on('click', function() {
+        var file = $("#the_file");
+        if (file.value().length < 2) {
+            alert (<?= json_encode(gettext("Please, you must first select a file !")); ?>);
+            file.focus();
+            return false;
+        }
+        var tp = $("#tariffplan");
+        if (tp.value().length < 1) {
+            alert (<?= json_encode(gettext("Please, you must first select a ratecard !")); ?>);
+            tp.focus();
+            return false;
+        }
+        $("#task").val("upload");
+        $("#prefs").submit()
+        return true;
+    }
+
+    $("#selected_search_sources, #unselected_search_sources").on('change', function() {
+        $("#selected_search_sources option:first, #unselected_search_sources option:first").prop("selected", false);
+    });
+
+    $("#movesourceup").on("click", function () {
+        var select = $("#selected_search_sources");
+        var options = select.children("option");
+        var selectedOption = options.filter(":selected").first();
+        var prev = selectedOption.prev("option");
+
+        if (selectedOption.length && options.length >= 2) {
+            if (prev.length) {
+                selectedOption.insertBefore(prev);
+            } else {
+                selectedOption.appendTo(select);
+            }
+            resetHidden();
+        }
+    });
+
+    $("#movesourcedown").on("click", function () {
+        var select = $("#selected_search_sources");
+        var options = select.children("option");
+        var selectedOption = options.filter(":selected").first();
+        var next = selectedOption.next("option");
+
+        if (selectedOption.length && options.length >= 2) {
+            if (next.length) {
+                selectedOption.insertAfter(next);
+            } else {
+                selectedOption.prependTo(select);
+            }
+            resetHidden();
+        }
+    });
+
+    function resetHidden() {
+        var tmp = [];
+        $("#selected_search_sources option").each(() => tmp.push(this.value));
+        $("#search_sources").val(tmp.join("\t"));
+    }
+});
+</script>
+
 <center>
 		<b><?php echo gettext("New rate cards have to be imported from a CSV file.");?>.</b><br><br>
 		<table width="95%" border="0" cellspacing="2" align="center" class="records">
-			  <form name="prefs" enctype="multipart/form-data" action="CC_ratecard_import_analyse.php" method="post">
+			  <form id="prefs" name="prefs" enctype="multipart/form-data" action="CC_ratecard_import_analyse.php" method="post">
 				<tr> 
                   <td colspan="2" align=center> 
 				  <?php echo gettext("Choose the ratecard to import");?> :
-				  <select NAME="tariffplan" size="1"  style="width=250" class="form_input_select">
+				  <select id="tariffplan" NAME="tariffplan" size="1"  style="width=250" class="form_input_select">
 								<option value=''><?php echo gettext("Choose a ratecard");?></option>
 								<?php					 
 								 foreach ($list_tariffname as $recordset){ 						 
@@ -235,7 +156,7 @@ echo $CC_help_import_ratecard;
 						</select>	
 						<br><br>
 				   <?php echo gettext("Choose the trunk to use");?> :
-						  <select NAME="trunk" size="1"  style="width=250" class="form_input_select">
+						  <select id="trunk" NAME="trunk" size="1"  style="width=250" class="form_input_select">
 						  		<OPTION  value="-1" selected><?php echo gettext("NOT DEFINED");?></OPTION>
 								<?php					 
 								 foreach ($list_trunk as $recordset){
@@ -248,7 +169,7 @@ echo $CC_help_import_ratecard;
 				  		  
 					<?php echo gettext("These fields are mandatory");?><br>
 
-					<select  name="bydefault" multiple="multiple" size="4" width="40" class="form_input_select">
+					<select id="bydefault" name="bydefault" multiple="multiple" size="4" width="40" class="form_input_select">
 						<option value="bb1"><?php echo gettext("dialprefix");?></option>
 						<option value="bb2"><?php echo gettext("destination");?></option>
 						<option value="bb3"><?php echo gettext("selling rate");?></option>
@@ -261,7 +182,7 @@ echo $CC_help_import_ratecard;
 					<table>
 					    <tbody><tr>
 					        <td>
-					            <select name="unselected_search_sources" multiple="multiple" size="9" width="50" onchange="deselectHeaders()" class="form_input_select">
+					            <select id="unselected_search_sources" name="unselected_search_sources" multiple="multiple" size="9" width="50" class="form_input_select">
 									<option value=""><?php echo gettext("Unselected Fields...");?></option>
 									<option value="buyrate"><?php echo gettext("buyrate");?></option>
 									<option value="buyrateinitblock"><?php echo gettext("buyrate min duration");?></option>
@@ -307,20 +228,20 @@ echo $CC_help_import_ratecard;
 					        </td>
 					
 					        <td>
-					            <a href="" onclick="addSource(); return false;"><img src="<?php echo Images_Path;?>/forward.png" alt="add source" title="add source" border="0"></a>
+					            <a id="addsource" href="#"><img src="<?php echo Images_Path;?>/forward.png" alt="add source" title="add source" border="0"></a>
 					            <br>
-					            <a href="" onclick="removeSource(); return false;"><img src="<?php echo Images_Path;?>/back.png" alt="remove source" title="remove source" border="0"></a>
+					            <a id="removesource" href="#"><img src="<?php echo Images_Path;?>/back.png" alt="remove source" title="remove source" border="0"></a>
 					        </td>
 					        <td>
-					            <select name="selected_search_sources" multiple="multiple" size="9" width="50" onchange="deselectHeaders();" class="form_input_select">
+					            <select id="selected_search_sources" name="selected_search_sources" multiple="multiple" size="9" width="50" class="form_input_select">
 									<option value=""><?php echo gettext("Selected Fields...");?></option>
 								</select>
 					        </td>
 					
 					        <td>
-					            <a href="" onclick="moveSourceUp(); return false;"><img src="<?php echo Images_Path;?>/up_black.png" alt="move up" title="move up" border="0"></a>
+					            <a id="movesourceup" href="#"><img src="<?php echo Images_Path;?>/up_black.png" alt="move up" title="move up" border="0"></a>
 					            <br>
-					            <a href="" onclick="moveSourceDown(); return false;"><img src="<?php echo Images_Path;?>/down_black.png" alt="move down" title="move down" border="0"></a>
+					            <a id="movesourcedown" href="#"><img src="<?php echo Images_Path;?>/down_black.png" alt="move down" title="move down" border="0"></a>
 					        </td>
 					    </tr>
 					</tbody></table>
@@ -371,9 +292,9 @@ echo $CC_help_import_ratecard;
                       <?php echo $my_max_file_size / 1024?>
                       KB </span><br>
                       <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo $my_max_file_size?>">
-                      <input type="hidden" name="task" value="upload">
-                      <input name="the_file" type="file" size="50" onFocus=this.select() class="saisie1">
-					  <input type="button" value="Import RateCard" onFocus=this.select() class="form_input_button" name="submit1" onClick="sendtoupload(this.form);">
+                      <input type="hidden" id="task" name="task" value="upload">
+                      <input id="the_file" name="the_file" type="file" size="50" class="saisie1">
+					  <input id="sendtoupload" type="button" value="Import RateCard" class="form_input_button" name="submit1">
 					   </p>     
                   </td>
                 </tr>

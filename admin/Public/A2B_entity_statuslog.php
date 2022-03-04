@@ -83,7 +83,7 @@ $HD_Form->create_toppage($form_action);
             <table width="100%" border="0" cellspacing="0" cellpadding="0"><tr>
                 <td class="fontstyle_searchoptions" >
                 <INPUT TYPE="text" NAME="id_cc_card" value="<?php echo $id_cc_card?>" class="form_input_text">
-                <a href="#" onclick="window.open('A2B_entity_card.php?popup_select=1&popup_formname=myForm&popup_fieldname=id_cc_card' , 'CardNumberSelection','width=550,height=330,top=20,left=100,scrollbars=1');"><img src="<?php echo Images_Path;?>/icon_arrow_orange.gif"></a>
+                    <a href="A2B_entity_card.php" class="badge bg-primary popup_trigger" aria-label="open a popup to select an item">&gt;</a>
                 </td>
             </tr></table></td>
         </tr>

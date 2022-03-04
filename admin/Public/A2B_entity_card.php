@@ -185,9 +185,11 @@ $smarty->display('main.tpl');
 
 <script>
 function sendValue(selvalue, othervalue) {
-    $("form[name=<?= $popup_formname ?>] *[name=<?= $popup_fieldname ?>]", window.opener.document).val(selvalue);
+    var formname = <?= json_encode($popup_formname ?? "") ?>;
+    var fieldname = <?= json_encode($popup_fieldname ?? "") ?>;
+    $(`form[name=${formname}] [name=${fieldname}]`, window.opener.document).val(selvalue);
     if (othervalue) {
-        $("form[name=<?= $popup_formname ?>] *[name=accountcode]", window.opener.document).val(othervalue);
+        $(`form[name=${formname}] [name=accountcode]`, window.opener.document).val(othervalue);
     }
     window.close();
 }
@@ -690,7 +692,7 @@ function toggleUpdateField(el) {
 }
 $("#batchUpdateModal input[type='checkbox'][name^='check']")
     .each((i, el) => toggleUpdateField(el))
-    .live('change', ev => toggleUpdateField(ev.target));
+    .on('change', ev => toggleUpdateField(ev.target));
 
 </script>
 

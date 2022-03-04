@@ -87,26 +87,23 @@ foreach ($payments as $payment) {
 
 ?>
 
-<SCRIPT LANGUAGE="javascript">
-<!--
-var win= null;
-function addpayment(selvalue) {
-    //test si win est encore ouvert et close ou refresh
-    win=window.open('A2B_entity_payment_invoice.php?popup_select=1&invoice=<?php echo $id ?>&card=<?php echo $invoice->getCard() ?>','','scrollbars=yes,resizable=yes,width=700,height=500');
-}
-function delpayment() {
-    //test si val is not null & numeric
-    if ($('#payment').val()!=null) {
-        self.location.href= "A2B_invoice_manage_payment.php?id=<?php echo $id; ?>&delpayment="+$('#payment').val();
-    }
-}
-
-function changeStatus() {
-    self.location.href= "A2B_invoice_manage_payment.php?id=<?php echo $id; ?>&status=<?php echo ($invoice->getPaidStatus()+1)%2; ?>";
-}
-// -->
-
+<script>
+var win = null;
+$(function() {
+    var id = <?= json_encode($id) ?>;
+    var card = <?= json_encode($invoice->getCard()) ?>;
+    var status = <?= ($invoice->getPaidStatus() + 1) % 2 ?>;
+    $("a#addpayment").on('click', () => win = window.open(`A2B_entity_payment_invoice.php?popup_select=1&invoice=${id}&card=${card}`, '', 'scrollbars=yes,resizable=yes,width=700,height=500'));
+    $("a#delpayment").on('click', function() {
+        if (var p = $('#payment').val()) {
+            self.location.href= `A2B_invoice_manage_payment.php?id=${id}&delpayment=${p}`;
+        }
+    });
+    $("button#changestatus").on('click', () => self.location.href= `A2B_invoice_manage_payment.php?id=${id}&status=${status}`);
+    $("a#imp_popupselect").on('click', () => window.open(`A2B_invoice_view.php?popup_select=1&id=${id}`, '', 'scrollbars=yes,resizable=yes,width=700,height=500'))
+});
 </script>
+
 <table class="invoice_table" >
     <tr class="form_invoice_head">
         <td width="75%"><font color="#FFFFFF"><?php echo gettext("INVOICE: "); ?></font><font color="#FFFFFF"><b><?php echo $invoice->getTitle();  ?></b></font></td>
@@ -114,7 +111,7 @@ function changeStatus() {
     </tr>
     <tr>
         <td colspan="2" align="right">
-            <a href="javascript:;" onClick="window.open('A2B_invoice_view.php?popup_select=1&id=<?php echo $id ?>','','scrollbars=yes,resizable=yes,width=700,height=500')" > <img src="../Public/templates/default/images/page_white_text.png" title="Print" alt="Print" border="0"></a>
+            <a id="imp_popupselect" href="#"> <img src="../Public/templates/default/images/page_white_text.png" title="Print" alt="Print" border="0"></a>
         </td>
     </tr>
     <tr>
@@ -160,8 +157,8 @@ function changeStatus() {
                 </tr>
                 <tr>
                     <td align="center">
-                        <a href="javascript:;" onClick="addpayment()" > <img src="../Public/templates/default/images/add.png" title="Add Payment" alt="Add Payment" border="0"></a>
-                        <a href="javascript:;" onClick="delpayment()" > <img src="../Public/templates/default/images/del.png" title="Del Payment" alt="Del Payment" border="0"></a>
+                        <a id="addpayment" href="#"> <img src="../Public/templates/default/images/add.png" title="Add Payment" alt="Add Payment" border="0"></a>
+                        <a id="delpayment" href="#"> <img src="../Public/templates/default/images/del.png" title="Del Payment" alt="Del Payment" border="0"></a>
                     </td>
                 </tr>
             </table>
@@ -173,7 +170,7 @@ function changeStatus() {
         <?php if($invoice->getPaidStatus()==0) $color="color:#EE6564;";
                 else $color="color:#5FA631;"    ?>
          <font style="font-weight:bold;" ><?php echo gettext("PAID STATUS : "); ?></font> <font style="<?php echo $color; ?>" > <?php echo $invoice->getPaidStatusDisplay($invoice->getPaidStatus());  ?> </font>
-         &nbsp;&nbsp;<input class="form_input_button" type="button" onClick="changeStatus();" value="<?php echo gettext("CHANGE STATUS") ?>"/>
+         &nbsp;&nbsp;<input id="changestatus" class="form_input_button" type="button" value="<?php echo gettext("CHANGE STATUS") ?>"/>
         </td>
     </tr>
 </table>

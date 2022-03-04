@@ -115,10 +115,9 @@
   	</div>
 	</form>
 {literal}
-<script LANGUAGE="JavaScript">
-	//document.form.pr_login.focus();
-        $("#ui_language").change(function () {
-          self.location.href= "index.php?ui_language="+$("#ui_language option:selected").val();
-        });
+<script>
+$(function() {
+	$("#ui_language").change(e => self.location.href = "index.php?ui_language=" + $("#ui_language option:selected").val());
+});
 </script>
 {/literal}

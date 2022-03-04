@@ -254,52 +254,57 @@ $list_notifications = NotificationsDAO::getNotifications($_SESSION['admin_id'],(
 <?php
 }
 
-$js_id_array_json = json_encode($js_id_array);
-
 $smarty->display( 'footer.tpl');
 
 ?>
-<script type="text/javascript">
-var page = <?php echo $page?>;
-var ids = "<?php echo $js_id_array_json?>";
-$(document).ready(function () {
-
-    $('.newrecord').click(function () {
-        $.get("A2B_notification.php", { id: ""+ this.id, action: "view" },
-              function(data){
-                if(data=="true") location.reload(true);
-              });
-        });
-
-    $('#viewall').click(function () {
-        $.get("A2B_notification.php", { page: ""+ page, action: "viewall", ids : ids },
-              function(data){
-                if(data=="true") location.reload(true);
-              });
-        });
-
-    $('.delete').click(function () {
-            if (confirm("<?php echo gettext("Do you want delete this notification ?") ?>")) {
-                $.get("A2B_notification.php", { id: ""+ this.id, action: "delete" },
-                      function(data){
-                          location.reload(true);
-                      });
+<script>
+var page = <?= $page?>;
+var ids = <?= json_encode($js_id_array) ?>;
+$(function () {
+    $('.newrecord').on('click', function () {
+        $.get(
+            "A2B_notification.php",
+            {id: this.id, action: "view"},
+            function(data){
+                if(data) {
+                    location.reload(true);
+                }
             }
-        });
-    $('.view_comment_icon').click(function () {
-          $("#"+this.id+":checkbox").attr("checked", true);
-          $("#action").val('view_comment')
-          $("#idc").val(this.id);
-          $('form').submit();
-        });
-    $('.view_ticket').click(function () {
+        );
+    });
+
+    $('#viewall').on('click', function () {
+        $.get(
+            "A2B_notification.php",
+            {page: page, action: "viewall", ids: ids},
+            function(data) {
+                if(data) {
+                    location.reload(true);
+                }
+            }
+        );
+    });
+
+    $('.delete').on('click', function () {
+        if (confirm(<?php echo json_encode(gettext("Do you want delete this notification ?")) ?>)) {
+            $.get("A2B_notification.php", {id: this.id, action: "delete"}, () => location.reload());
+        }
+    });
+
+    $('.view_comment_icon').on('click', function () {
+        $(`#${this.id}[type=checkbox]`).prop("checked", true);
+        $("#action").val('view_comment');
+        $("#idc").val(this.id);
+        $('form').submit();
+    });
+    $('.view_ticket').on('click', function () {
+        $("#action").val('view_ticket');
+        $('form').submit();
+    });
+    $('.view_ticket_icon').on('click', function () {
+        $('.view_ticket').prop("checked", true);
         $("#action").val('view_ticket')
         $('form').submit();
-        });
-    $('.view_ticket_icon').click(function () {
-          $('.view_ticket').attr("checked", true);
-          $("#action").val('view_ticket')
-          $('form').submit();
-        });
+    });
 });
 </script>

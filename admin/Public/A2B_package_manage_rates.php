@@ -154,25 +154,16 @@ echo $CC_help_offer_package;
 ?>
 <br/>
 
-<SCRIPT LANGUAGE="javascript">
-var win= null;
-function addrate(selvalue)
-{
-    //test si win est encore ouvert et close ou refresh
-    win=window.open('A2B_entity_def_ratecard.php?popup_select=1&package=<?php echo $id ?>','','scrollbars=yes,resizable=yes,width=700,height=500');
-}
-function delrate()
-{
-    //test si val is not null & numeric
-    if ($('#rate').val()!=null) {
-        self.location.href= "A2B_package_manage_rates.php?id=<?php echo $id; ?>&delrate="+$('#rate').val();
+<script>
+var win = null;
+$("#addrate").on("click", e => win = window.open('A2B_entity_def_ratecard.php?popup_select=1&package=<?= $id ?>','','scrollbars=yes,resizable=yes,width=700,height=500'));
+$("#delrate").on("click", function() {
+    if ($('#rate').val()) {
+        self.location.href= "A2B_package_manage_rates.php?id=<?= $id ?>&delrate=" + parseInt($('#rate').val());
     }
-}
-function delallrate()
-{
-    self.location.href= "A2B_package_manage_rates.php?id=<?php echo $id; ?>&delallrate=true";
-}
-</SCRIPT>
+});
+$("#delall").on("click", e => self.location.href= "A2B_package_manage_rates.php?id=<?= $id ?>&delallrate=true");
+</script>
 
 <TABLE class="invoice_table" >
     <tr class="form_invoice_head">
@@ -210,9 +201,9 @@ function delallrate()
                 </tr>
                 <tr>
                     <td align="center">
-                        <a href="javascript:;" onClick="addrate()" > <img src="../Public/templates/default/images/add.png" alt="<?php echo gettext("Add Rate"); ?>" border="0"></a>
-                        <a href="javascript:;" onClick="delrate()" > <img src="../Public/templates/default/images/del.png" alt="<?php echo gettext("Del Rate"); ?>" border="0"></a>
-                        <a href="javascript:;" onClick="delallrate()" > <img src="../Public/templates/default/images/delete.png" alt="<?php echo gettext("Del All Rate"); ?>" border="0"></a>
+                        <a id="addrate" href="#"> <img src="../Public/templates/default/images/add.png" alt="<?php echo gettext("Add Rate"); ?>" border="0"></a>
+                        <a id="delrate" href="#"> <img src="../Public/templates/default/images/del.png" alt="<?php echo gettext("Del Rate"); ?>" border="0"></a>
+                        <a id="delall" href="#"> <img src="../Public/templates/default/images/delete.png" alt="<?php echo gettext("Del All Rate"); ?>" border="0"></a>
                     </td>
                 </tr>
             </table>

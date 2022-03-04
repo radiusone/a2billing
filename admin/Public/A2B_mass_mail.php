@@ -212,12 +212,14 @@ $tags_help .=    '<b>$base_currency$</b>: '.gettext('base currency of system').'
 if (!isset($submit)) {
 ?>
 
-<SCRIPT LANGUAGE="javascript">
-var win= null;
-function loadtmpl() {
-    //test if windows is still open and close on refresh
-    win=window.open('A2B_entity_mailtemplate.php?popup_select=1','','scrollbars=yes,resizable=yes,width=700,height=500');
-}
+<script>
+var win = null;
+$(function() {
+    $("#loadtmp").on('click', function () {
+        //test if windows is still open and close on refresh
+        win = window.open('A2B_entity_mailtemplate.php?popup_select=1', '', 'scrollbars=yes,resizable=yes,width=700,height=500');
+    });
+});
 </script>
 <script language="JavaScript" src="javascript/card.js"></script>
 
@@ -313,7 +315,7 @@ function loadtmpl() {
     <TR>
         <TD width="%25" valign="middle" class="form_head">&nbsp;</TD>
         <TD width="%75" valign="top" class="tableBodyRight" background="../Public/templates/default/images/background_cells.gif" >
-            <input class="form_input_button" onClick="loadtmpl()"   style="vertical-align:top" TYPE="button" VALUE=" <?php echo gettext("LOAD TEMPLATE");?> " />
+            <input id="loadtmpl" class="form_input_button" style="vertical-align:top" TYPE="button" VALUE=" <?php echo gettext("LOAD TEMPLATE");?> " />
          </TD>
     </TR>
     <TR>

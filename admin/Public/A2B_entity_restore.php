@@ -134,27 +134,22 @@ $HD_Form -> create_form($form_action, $list) ;
 
 if ($form_action == "list") {
 ?>
-<script language="JavaScript" type="text/JavaScript">
-<!--
-function CheckForm()
-{
-    var test = document.Dupload.databasebackup.value;
-    if (test != "") document.Dupload.submit();
-}
-
-//-->
+<script>
+$(function() {
+    $("#dupload").on("submit", () => $("#databasebackup").val() !== "");
+});
 </script>
 <table width="85%" border="0" align="center" cellpadding="0" cellspacing="0">
-<form name="Dupload" enctype="multipart/form-data" action="A2B_entity_restore.php" method="POST">
+<form name="Dupload" id="dupload" enctype="multipart/form-data" action="A2B_entity_restore.php" method="POST">
     <?= $HD_Form->csrf_inputs() ?>
     <TR valign="middle">
         <TD align="center">
-            <?php echo gettext("Upload a database backup")?>&nbsp;<input type="file" name="databasebackup" value="">
+            <?php echo gettext("Upload a database backup")?>&nbsp;<input type="file" id="databasebackup" name="databasebackup" value="">
         <img src="<?php echo Images_Path;?>/clear.gif">
         <input type="hidden" name="MAX_FILE_SIZE" value="8000">
         <input type="hidden" name="form_action" value="upload">
         <input type="hidden" name="atmenu" value="upload">
-        <input type="button" value="Upload" onclick="CheckForm()" class="form_input_button">
+        <input type="submit" value="Upload" class="form_input_button">
         </TD>
     </TR>
 </form>

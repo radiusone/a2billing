@@ -86,13 +86,10 @@ $HD_Form->create_form($form_action, $list);
 // #### FOOTER SECTION
 $smarty->display('footer.tpl');
 ?>
-<script type="text/javascript">
-$(document).ready(function () {
-    $('.cancel_click').click(function () {
-        $.get("A2B_entity_remittance_request.php", { id: ""+ this.id, action: "cancel" },
-              function(data){
-                location.reload(true);
-              });
-        });
+<script>
+$(function () {
+    $('.cancel_click').on('click', function () {
+        $.get("A2B_entity_remittance_request.php", { id: this.id, action: "cancel" }, data => location.reload(true));
+    });
 });
 </script>

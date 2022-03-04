@@ -66,6 +66,6 @@ $HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO ".strtoupper($HD_Form->FG_INSTA
 $HD_Form -> FG_OTHER_BUTTON1 = true;
 $HD_Form -> FG_OTHER_BUTTON1_ALT = '<font color="red">URL</font>';
 $HD_Form -> FG_OTHER_BUTTON1_IMG = '';
-$HD_Form -> FG_OTHER_BUTTON1_LINK = "javascript:elegantBOX('".$A2B->config['signup']['urlcustomerinterface']."signup.php?key=|col0|',400);";
+$HD_Form -> FG_OTHER_BUTTON1_LINK = "javascript:alert(".json_encode($A2B->config['signup']['urlcustomerinterface'])." + 'signup.php?key=|col0|',400);";
 
 $HD_Form -> FG_GO_LINK_AFTER_ACTION_DELETE = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL);

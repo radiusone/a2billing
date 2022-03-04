@@ -70,10 +70,8 @@ $HD_Form->create_form($form_action, $list);
 $smarty->display('footer.tpl');
 ?>
 
-<script type="text/javascript">
-$(document).ready(function () {
-    $('.lock').click(function () {
-            alert(this.id);
-            });
+<script>
+$(function () {
+    $('.lock').on('click', e => alert(this.id));
 });
 </script>

@@ -87,6 +87,7 @@ getpost_ifset(array('wh'));
                 <?= $row[4]?>
 
         <?php elseif ($row["type"] === "POPUPVALUE"): ?>
+            <?php $pu = explode(",", trim($row["popup_params"], ", ")) ?>
                 <input
                     id="<?= $row["name"] ?>"
                     class="form_input_text"
@@ -97,10 +98,7 @@ getpost_ifset(array('wh'));
                     <?php else: ?>
                         value="<?= $processed[$row["name"]] ?>"
                     <?php endif ?>
-                />
-                <a href="#" title="<?= gettext("SELECT")?>" onclick="window.open('<?= $row["popup_dest"] ?>popup_formname=myForm&popup_fieldname=<?= $row["name"] ?>', <?= trim($row["popup_params"], ", ") ?>)">
-                    <img alt="" src="data:image/gif;base64,R0lGODlhDwAPAMQYAP+yPf+fEv+qLP+3Tf+pKv++Xf/Gcv+mJP+tNf+tMf+kH/+/YP+oJv+wO/+jHP/Ohf/WmP+vOv/cpv+kHf+iGf+jG/////Hw7P///wAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAABgALAAAAAAPAA8AAAVjIHaNZEmKF6auLJpiEvQYxQAgiTpiMm0Tk4pigsLMag2Co8KkFA0Lm8XCbBajDcFkWnXuBlkFk1vxpgACcYVcLqbHVKaDuFNXqwxGkUK5VyYMEQhFGAGGhxQHOS4tjTsmkDshADs="/>
-                </a>
+                />&nbsp;<a href="<?= $row["popup_dest"] ?>" data-window-name="<?= trim($pu[0], "'\" ") ?>" data-popup-options="<?= trim($pu[1], "'\" ") ?>" class="badge bg-primary popup_trigger" aria-label="open a popup to select an item" >&gt;</a>
 
         <?php elseif ($row["type"] === "CAPTCHAIMAGE"): ?>
                 <table cellpadding="2" cellspacing="0" border="0" width="100%">

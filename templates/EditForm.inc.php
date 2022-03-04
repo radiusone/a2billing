@@ -12,10 +12,10 @@ use A2billing\Table;
 <script src="javascript/calonlydays.js"></script>
 <script>
     function sendto(action, record, field_inst, instance) {
-        $("form#editForm input[name=form_action]").value(action);
-        $("form#editForm input[name=sub_action]").value(record);
+        $("form#editForm input[name=form_action]").val(action);
+        $("form#editForm input[name=sub_action]").val(record);
         if (field_inst) {
-            $(`form#editForm [name=${field_inst}]`).value(instance);
+            $(`form#editForm [name=${field_inst}]`).val(instance);
         }
         $("form#editForm").submit();
     }
@@ -102,7 +102,8 @@ use A2billing\Table;
                         <?php endif ?>
 
             <?php elseif (str_starts_with($row["type"], "POPUP")): ?>
-                <input
+                <?php $pu = explode(",", trim($row["popup_params"], ", ")) ?>
+            <input
                     id="<?= $row["name"] ?>"
                     class="form-control <?php if (isset($this->FG_fit_expression[$i]) && !$this->FG_fit_expression[$i]): ?>is-invalid<?php endif?>"
                     name="<?= $row["name"] ?>"
@@ -112,12 +113,7 @@ use A2billing\Table;
                     <?php else: ?>
                         value="<?= $processed[$row["name"]] ?>"
                     <?php endif ?>
-                />
-                <?php if ($row["type"] === "POPUPVALUE"): ?>
-                    <a href="#" title="<?= gettext("SELECT")?>" onclick="window.open('<?= $row["popup_dest"] ?>popup_formname=myForm&popup_fieldname=<?= $row["name"] ?>', <?= trim($row["popup_params"], ", ") ?>)">
-                        <img alt="" src="data:image/gif;base64,R0lGODlhDwAPAMQYAP+yPf+fEv+qLP+3Tf+pKv++Xf/Gcv+mJP+tNf+tMf+kH/+/YP+oJv+wO/+jHP/Ohf/WmP+vOv/cpv+kHf+iGf+jG/////Hw7P///wAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAABgALAAAAAAPAA8AAAVjIHaNZEmKF6auLJpiEvQYxQAgiTpiMm0Tk4pigsLMag2Co8KkFA0Lm8XCbBajDcFkWnXuBlkFk1vxpgACcYVcLqbHVKaDuFNXqwxGkUK5VyYMEQhFGAGGhxQHOS4tjTsmkDshADs="/>
-                    </a>
-
+                /><?php if ($row["type"] === "POPUPVALUE"): ?>&nbsp;<a href="<?= $row["popup_dest"] ?>" data-window-name="<?= trim($pu[0], "'\" ") ?>" data-popup-options="<?= trim($pu[1], "'\" ") ?>" class="badge bg-primary popup_trigger" aria-label="open a popup to select an item" >&gt;</a>
                 <?php elseif ($row["type"] === "POPUPDATETIME"): //minutes since monday 00:00, used 2x in FG_var_def_ratecard.inc ?>
                     <a href="#" title="<?= gettext("SELECT")?>" onclick="cal<?= $row["name"] ?>.popup()">
                         <img width="16" height="16" border="0" title="Click Here to Pick up the date" alt="Click Here to Pick up the date" src="data:image/gif;base64,R0lGODlhEAAQAKIAAKVNSkpNpUpNSqWmpdbT1v///////wAAACH5BAEAAAYALAAAAAAQABAAAANEaLrcNjDKKUa4OExYM95DVRTEWJLmKKLseVZELMdADcSrOwK7OqQsXkEIm8lsN0IOqCssW8Cicar8Qa/P5kvA7Xq/ggQAOw=="/>

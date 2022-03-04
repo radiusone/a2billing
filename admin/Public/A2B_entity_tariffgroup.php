@@ -58,22 +58,21 @@ $list = $HD_Form->perform_action($form_action);
 
 // #### HEADER SECTION
 $smarty->display('main.tpl');
-?>
-<SCRIPT LANGUAGE="javascript">
-<!--
-function sendValue(selvalue) {
-    window.opener.document.<?php echo $popup_formname ?>.<?php echo $popup_fieldname ?>.value = selvalue;
-    window.close();
-}
-// -->
-</script>
-<?php
 
 // #### HELP SECTION
-if ($form_action == 'list') {
+if ($form_action === 'list') {
     if (!$popup_select) {
         echo $CC_help_list_tariffgroup;
+    } else {?>
+<script>
+    function sendValue(selvalue) {
+        var formname = <?= json_encode($popup_formname ?? "") ?>;
+        var fieldname = <?= json_encode($popup_fieldname ?? "") ?>;
+        $(`form[name=${formname}] [name=${fieldname}]`, window.opener.document).val(selvalue);
+        window.close();
     }
+</script>
+    <?php }
 } else {
     echo $CC_help_list_tariffgroup;
 }

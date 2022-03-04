@@ -660,14 +660,14 @@ if ($popup_select): ?>
             </div> <!-- .modal-body -->
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?= _("Close") ?></button>
-                <button class="btn btn-primary" onclick="sendOpener()"><?= _("Batch Assigned") ?></button>
+                <button id="sendopener" class="btn btn-primary"><?= _("Batch Assigned") ?></button>
             </div>
         </div> <!-- .modal-content -->
     </div> <!-- .modal-dialog -->
 </div> <!-- .modal -->
 
 <script>
-function sendOpener() {
+$("#sendopener").on('click', function () {
     let id_trunk = "";
     let id_tariffplan = "";
     let tag = "";
@@ -691,7 +691,7 @@ function sendOpener() {
         prefix = `${document.assignForm.assign_prefix.value}&rbPrefix=${val}`;
     }
     window.opener.location.href = `A2B_package_manage_rates.php?id=${pack}&addbatchrate=true&id_trunk=${id_trunk}&id_tariffplan=${id_tariffplan}&tag=${tag}&prefix=${prefix}`;
-}
+});
 </script>
 
 <?php

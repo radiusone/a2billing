@@ -102,34 +102,38 @@ function openURLFilter(link) {
     <?php endforeach ?>
     <div class="row pb-3 align-items-center">
         <?php if ($this->FG_FILTER_APPLY): ?>
+            <?php $pu = explode(",", trim($this->FG_FILTERPOPUP[1] ?? "", ", ")) ?>
         <div class="col-auto">
             <label for="filterprefix" class="form-label d-inline w-50">
                 <?= gettext("Filter on") ?>
                 <?= $this->FG_FILTERFIELDNAME ?>:
             </label>
-            <input type="text" id="filterprefix" name="filterprefix" value="<?= $processed['filterprefix'] ?>" class="form-control form-control-sm d-inline w-50"/>
             <input type="hidden" name="filterfield" value="<?= $this->FG_FILTERFIELD?>"/>
-            <?php if ($this -> FG_FILTERTYPE === 'POPUPVALUE'): ?>
-                <a href="#" onclick="window.open('<?= $this->FG_FILTERPOPUP[0]?>popup_formname=theFormFilter&popup_fieldname=filterprefix', <?= trim( $this->FG_FILTERPOPUP[1], ", ") ?>)">
-                    <img alt="" src="data:image/gif;base64,R0lGODlhDwAPAMQYAP+yPf+fEv+qLP+3Tf+pKv++Xf/Gcv+mJP+tNf+tMf+kH/+/YP+oJv+wO/+jHP/Ohf/WmP+vOv/cpv+kHf+iGf+jG/////Hw7P///wAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAABgALAAAAAAPAA8AAAVjIHaNZEmKF6auLJpiEvQYxQAgiTpiMm0Tk4pigsLMag2Co8KkFA0Lm8XCbBajDcFkWnXuBlkFk1vxpgACcYVcLqbHVKaDuFNXqwxGkUK5VyYMEQhFGAGGhxQHOS4tjTsmkDshADs="/>
-                </a>
-            <?php endif ?>
+            <input
+                type="text"
+                id="filterprefix"
+                name="filterprefix"
+                value="<?= $processed['filterprefix'] ?>"
+                class="form-control form-control-sm d-inline w-50"
+            /><?php if ($this -> FG_FILTERTYPE === 'POPUPVALUE'): ?>&nbsp;<a href="<?= $this->FG_FILTERPOPUP[0] ?>" data-window-name="<?= trim($pu[0], "'\" ") ?>" data-popup-options="<?= trim($pu[1], "'\" ") ?>" class="badge bg-primary popup_trigger" aria-label="open a popup to select an item" >&gt;</a><?php endif ?>
         </div>
         <?php endif ?>
 
         <?php if ($this->FG_FILTER_APPLY2): ?>
+            <?php $pu = explode(",", trim($this->FG_FILTERPOPUP2[1] ?? "", ", ")) ?>
         <div class="col-auto">
             <label for="filterprefix2" class="form-label d-inline w-50">
                 <?= gettext("Filter on");?>
                 <?= $this->FG_FILTERFIELDNAME2 ?>:
             </label>
-            <input type="text" id="filterprefix2" name="filterprefix2" value="" class="form-control form-control-sm d-inline w-50">
             <input type="hidden" name="filterfield2" value="<?= $this->FG_FILTERFIELD2?>"/>
-            <?php if ($this->FG_FILTERTYPE2 === 'POPUPVALUE'): ?>
-                <a href="#" onclick="window.open('<?= $this->FG_FILTERPOPUP2[0]?>popup_formname=theFormFilter&popup_fieldname=filterprefix2', <?= trim( $this->FG_FILTERPOPUP2[1], ", ") ?>)">
-                    <img alt="" src="data:image/gif;base64,R0lGODlhDwAPAMQYAP+yPf+fEv+qLP+3Tf+pKv++Xf/Gcv+mJP+tNf+tMf+kH/+/YP+oJv+wO/+jHP/Ohf/WmP+vOv/cpv+kHf+iGf+jG/////Hw7P///wAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAABgALAAAAAAPAA8AAAVjIHaNZEmKF6auLJpiEvQYxQAgiTpiMm0Tk4pigsLMag2Co8KkFA0Lm8XCbBajDcFkWnXuBlkFk1vxpgACcYVcLqbHVKaDuFNXqwxGkUK5VyYMEQhFGAGGhxQHOS4tjTsmkDshADs="/>
-                </a>
-            <?php endif ?>
+            <input
+                type="text"
+                id="filterprefix2"
+                name="filterprefix2"
+                value=""
+                class="form-control form-control-sm d-inline w-50"
+            /><?php if ($this->FG_FILTERTYPE2 === 'POPUPVALUE'): ?>&nbsp;<a href="<?= $this->FG_FILTERPOPUP2[0] ?>" data-window-name="<?= trim($pu[0], "'\" ") ?>" data-popup-options="<?= trim($pu[1], "'\" ") ?>" class="badge bg-primary popup_trigger" aria-label="open a popup to select an item" >&gt;</a><?php endif ?>
         </div>
         <?php endif ?>
         <div class="col-auto">

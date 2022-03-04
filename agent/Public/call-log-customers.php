@@ -359,16 +359,15 @@ $smarty->display ( 'main.tpl' );
             echo gettext ( "Enter the customer ID" );
             ?>: <INPUT TYPE="text"
                     NAME="entercustomer" value="<?php echo $entercustomer?>"
-                    class="form_input_text"> <a href="#"
-                    onclick="window.open('A2B_entity_card.php?popup_select=1&popup_formname=myForm&popup_fieldname=entercustomer' , 'CardNumberSelection','scrollbars=1,width=550,height=330,top=20,left=100,scrollbars=1');"><img
-                    src="<?php echo Images_Path; ?>/icon_arrow_orange.gif"></a></td>
+                    class="form_input_text">&nbsp;<a href="A2B_entity_card.php" class="badge bg-primary popup_trigger" aria-label="open a popup to select an item">&gt;</a>
+                </td>
                 <td width="50%">
                 <table width="100%" border="0" cellspacing="0" cellpadding="0">
                     <tr>
                         <td align="left" class="fontstyle_searchoptions"><?php echo gettext ( "CallPlan" ); ?> :</td>
                         <td align="left" class="fontstyle_searchoptions"><INPUT TYPE="text" NAME="entertariffgroup" value="<?php
-            echo $entertariffgroup?>" size="4" class="form_input_text">&nbsp;<a href="#" onclick="window.open('A2B_entity_tariffgroup.php?popup_select=2&popup_formname=myForm&popup_fieldname=entertariffgroup' , 'CallPlanSelection','scrollbars=1,width=550,height=330,top=20,left=100');"><img
-                            src="<?php echo Images_Path; ?>/icon_arrow_orange.gif"></a></td>
+            echo $entertariffgroup?>" size="4" class="form_input_text">&nbsp;<a href="A2B_entity_tariffgroup.php" data-select="2" class="badge bg-primary popup_trigger" aria-label="open a popup to select an item">&gt;</a>
+                        </td>
                         <td align="left" class="fontstyle_searchoptions"><?php
             echo gettext ( "Rate" );
             ?> :</td>
@@ -376,11 +375,8 @@ $smarty->display ( 'main.tpl' );
                             TYPE="text" NAME="enterratecard"
                             value="<?php
             echo $enterratecard?>" size="4"
-                            class="form_input_text">&nbsp;<a href="#"
-                            onclick="window.open('A2B_entity_def_ratecard.php?popup_select=2&popup_formname=myForm&popup_fieldname=enterratecard' , 'RatecardSelection','scrollbars=1,width=550,height=330,top=20,left=100');"><img
-                            src="<?php
-            echo Images_Path;
-            ?>/icon_arrow_orange.gif"></a></td>
+                            class="form_input_text">&nbsp;<a href="A2B_entity_def_ratecard.php" data-select="2" class="badge bg-primary popup_trigger" aria-label="open a popup to select an item">&gt;</a>
+                        </td>
 
                     </tr>
                 </table>

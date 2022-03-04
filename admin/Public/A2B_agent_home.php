@@ -225,12 +225,12 @@ foreach ($messages as $message) {
     ?>
     <div id="msg" class="<?php echo $message_types[$message['type']][2];?>" style="margin-top:0px;position:relative;<?php if($message['logo']==0)echo 'background-image:none;padding-left:10px;'; ?>" >
         <?php if ($message['order_display']>0) { ?>
-            <img id="<?php echo $message['id']; ?>" onmouseover="this.style.cursor='pointer'" class="up" src="<?php echo Images_Path ?>/arrow_up.png"  border="0" style="position:absolute;right:60px;top:0;display:none"/>
+            <img id="<?php echo $message['id']; ?>" class="up" src="<?php echo Images_Path ?>/arrow_up.png"  border="0" style="position:absolute;right:60px;top:0;display:none;cursor:pointer"/>
          <?php } ?>
-        <img id="<?php echo $message['id']; ?>" onmouseover="this.style.cursor='pointer'" class="delete" src="<?php echo Images_Path ?>/delete.png"  border="0" style="position:absolute;right:40px;top:0;display:none"/>
-            <img id="<?php echo $message['id']; ?>" onmouseover="this.style.cursor='pointer'" class="edit" src="<?php echo Images_Path ?>/edit.png"  border="0" style="position:absolute;right:20px;top:0;display:none"/>
+        <img id="<?php echo $message['id']; ?>" class="delete" src="<?php echo Images_Path ?>/delete.png"  border="0" style="position:absolute;right:40px;top:0;display:none;cursor:pointer"/>
+            <img id="<?php echo $message['id']; ?>" class="edit" src="<?php echo Images_Path ?>/edit.png"  border="0" style="position:absolute;right:20px;top:0;display:none;cursor:pointer"/>
          <?php if ($message['order_display']<$size_msg-1) { ?>
-            <img id="<?php echo $message['id']; ?>" onmouseover="this.style.cursor='pointer'" class="down" src="<?php echo Images_Path ?>/arrow_down.png"  border="0" style="position:absolute;right:0px;top:0;display:none" />
+            <img id="<?php echo $message['id']; ?>" class="down" src="<?php echo Images_Path ?>/arrow_down.png"  border="0" style="position:absolute;right:0px;top:0;display:none;cursor:pointer" />
          <?php } ?>
         <?php echo stripslashes($message['message']); ?>
     </div>
@@ -241,38 +241,46 @@ foreach ($messages as $message) {
 $smarty->display('footer.tpl');
 ?>
 
-<script type="text/javascript">
-var id_agent= <?php echo $id; ?> ;
+<script>
+var id_agent = <?= json_encode($id) ?>;
 
-$(document).ready(function () {
-    $('.msg_info , .msg_success , .msg_warning , .msg_error').mouseover(function () {
-        $(this).children(".up,.down,.delete,.edit").show();
-         });
-    $('.msg_info , .msg_success , .msg_warning , .msg_error').mouseout(function () {
-        $(this).children(".up,.down,.delete,.edit").hide();
-         });
-    $('.delete').click(function () {
-        if (confirm("<?php echo gettext("Do you want delete this message ?") ?>")) {
-            $.get("A2B_agent_home.php", { id : id_agent ,id_msg: ""+ this.id, action: "delete" },
-                  function(data){
-                      if(data)window.location= "A2B_agent_home.php?id="+id_agent+"&result=success";
-                  });
+$(function () {
+    $('.msg_info, .msg_success, .msg_warning, .msg_error')
+        .on('mouseover', e => $(this).children(".up,.down,.delete,.edit").show())
+        .on('mouseout', e => $(this).children(".up,.down,.delete,.edit").hide());
+    $('.delete').on('click', function () {
+        if (confirm(<?php echo json_encode(gettext("Do you want delete this message ?")) ?>)) {
+            $.get(
+                "A2B_agent_home.php",
+                {id: id_agent, id_msg: this.id, action: "delete"},
+                function(data) {
+                    if(data) {
+                        window.location= "A2B_agent_home.php?id=" + id_agent + "&result=success";
+                    }
+                }
+            );
         }
+    });
+    $('.up').on('click', function () {
+        $.get(
+            "A2B_agent_home.php",
+            {id : id_agent, id_msg: this.id, action: "up"},
+            function(data) {
+                if(data) {
+                    window.location = "A2B_agent_home.php?id=" + id_agent;
+                }
+            });
         });
-    $('.up').click(function () {
-        $.get("A2B_agent_home.php", { id : id_agent ,id_msg: ""+ this.id, action: "up" },
-              function(data){
-                  if(data)window.location= "A2B_agent_home.php?id="+id_agent;
-              });
+    $('.down').on('click', function () {
+        $.get(
+            "A2B_agent_home.php",
+            {id: id_agent, id_msg: this.id, action: "down"},
+            function(data) {
+                if(data) {
+                    window.location= "A2B_agent_home.php?id="+id_agent;
+                }
+            });
         });
-    $('.down').click(function () {
-        $.get("A2B_agent_home.php", { id : id_agent ,id_msg: ""+ this.id, action: "down" },
-              function(data){
-                  if(data)window.location= "A2B_agent_home.php?id="+id_agent;
-              });
-        });
-    $('.edit').click(function () {
-        window.location= "A2B_agent_home.php?id="+id_agent+"&id_msg="+this.id+"&action=askedit";
-        });
+    $('.edit').on('click', e => window.location= "A2B_agent_home.php?id=" + id_agent + "&id_msg=" + this.id + "&action=askedit");
 });
 </script>

@@ -214,10 +214,8 @@ if ($form_action=='list') {
                 <?= $HD_Form->csrf_inputs() ?>
                 <td height="31" style="padding-left: 5px; padding-right: 3px;" align="center" >
                 <b>
-                SIP : <input class="form_input_button"  TYPE="button" VALUE=" <?php echo gettext("GENERATE ADDITIONAL_A2BILLING_SIP.CONF"); ?> "
-                onClick="self.location.href='./CC_generate_friend_file.php?atmenu=sipfriend';">
-                IAX : <input class="form_input_button"  TYPE="button" VALUE=" <?php echo gettext("GENERATE ADDITIONAL_A2BILLING_IAX.CONF"); ?> "
-                onClick="self.location.href='./CC_generate_friend_file.php?atmenu=iaxfriend';">
+                SIP : <input id="sipfriend" class="form_input_button"  TYPE="button" VALUE=" <?php echo gettext("GENERATE ADDITIONAL_A2BILLING_SIP.CONF"); ?> ">
+                IAX : <input id="iaxfriend" class="form_input_button"  TYPE="button" VALUE=" <?php echo gettext("GENERATE ADDITIONAL_A2BILLING_IAX.CONF"); ?> ">
                 </b></td></FORM>
             </TR>
            </table>
@@ -304,7 +302,11 @@ if ($form_action=='list') {
   </div>
 </div>
 <!-- ** ** ** ** ** Part for the Update ** ** ** ** ** -->
-
+<script>
+$(function() {
+    $("#sipfriend, #iaxfriend").on("click", () => self.location.href='./CC_generate_friend_file.php?atmenu=' + this.id);
+})
+</script>
 <?php
 }
 

@@ -99,10 +99,13 @@
   	</div>
 	</form>
 {literal}
-<script LANGUAGE="JavaScript">
+
+<script>
+$(function() {
 	document.form.pr_login.focus();
-        $("#ui_language").change(function () {
-          self.location.href= "index.php?ui_language="+$("#ui_language option:selected").val();
-        });
+	$("#ui_language").on('change', function () {
+		self.location.href = "index.php?ui_language=" + $("#ui_language option:selected").val();
+	});
+});
 </script>
 {/literal}

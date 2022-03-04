@@ -10,6 +10,7 @@
 	<script src="../lib/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<script src="../lib/jquery/jquery.min.js"></script>
     <script src="../lib/flot/jquery.flot.min.js"></script>
+	<script src="../lib/common.js"></script>
 
 	<style>
 		.bi {

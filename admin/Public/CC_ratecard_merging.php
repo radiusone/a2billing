@@ -159,67 +159,39 @@ $list_tariffname = $instance_table_tariffname  -> get_list ($HD_Form->DBHandle, 
 
 $nb_tariffname = count($list_tariffname);
 
-?>
-<?php
 $smarty->display('main.tpl');
 
-?>
-<script language="JavaScript" type="text/javascript">
-<!--
-function deselectHeaders()
-{
-    document.prefs.unselected_search_sources[0].selected = false;
-    document.prefs.selected_search_sources[0].selected = false;
-}
-
-function resetHidden()
-{
-    var tmp = '';
-    for (i = 1; i < document.prefs.selected_search_sources.length; i++) {
-        tmp += document.prefs.selected_search_sources[i].value;
-        if (i < document.prefs.selected_search_sources.length - 1)
-            tmp += "\t";
-    }
-
-    document.prefs.search_sources.value = tmp;
-}
-
-function addSource()
-{
-    for (i = 1; i < document.prefs.unselected_search_sources.length; i++) {
-        if (document.prefs.unselected_search_sources[i].selected) {
-            document.prefs.selected_search_sources[document.prefs.selected_search_sources.length] = new Option(document.prefs.unselected_search_sources[i].text, document.prefs.unselected_search_sources[i].value);
-            document.prefs.unselected_search_sources[i] = null;
-            i--;
-        }
-    }
-
-    resetHidden();
-}
-
-function removeSource()
-{
-    for (i = 1; i < document.prefs.selected_search_sources.length; i++) {
-        if (document.prefs.selected_search_sources[i].selected) {
-            document.prefs.unselected_search_sources[document.prefs.unselected_search_sources.length] = new Option(document.prefs.selected_search_sources[i].text, document.prefs.selected_search_sources[i].value)
-            document.prefs.selected_search_sources[i] = null;
-            i--;
-        }
-    }
-
-    resetHidden();
-}
-// -->
-</script>
-
-<?php //echo $CC_help_import_ratecard;
+//echo $CC_help_import_ratecard;
 // #### CREATE SEARCH FORM
     $HD_Form -> create_search_form();
 ?>
+<script>
+$(function() {
+    $("a#addsource").on('click', function () {
+        $("#unselected_search_sources option:selected").appendTo($("#selected_search_sources"));
+        resetHidden();
+    });
+
+    $("a#removesource").on('click', function () {
+        $("#selected_search_sources option:selected").appendTo($("#unselected_search_sources"));
+        resetHidden();
+    });
+
+    $("#selected_search_sources, #unselected_search_sources").on('change', function() {
+        $("#selected_search_sources option:first, #unselected_search_sources option:first").prop("selected", false);
+    });
+
+    function resetHidden() {
+        var tmp = [];
+        $("#selected_search_sources option").each(() => tmp.push(this.value));
+        $("#search_sources").val(tmp.join("\t"));
+    }
+});
+</script>
 <br/>
 <div align="center">
         <table width="95%" border="0" cellspacing="2" align="center" class="editform_table1">
-              <form name="prefs" action="<?php echo filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)?>" method="post">
+              <form name="prefs" action="" method="post">
                 <?= $HD_Form->csrf_inputs() ?>
 
                 <?php if ($posted) {?>
@@ -237,7 +209,7 @@ function removeSource()
                 <tr>
                     <td width="30%" valign="middle" class="form_head"><?php echo gettext("RATECARD SOURCE");?> :</td>
                       <td width="70%" valign="top" class="tableBodyRight">
-                          <select NAME="ratecard_source" size="1"  style="width=250" class="form_input_select">
+                          <select id="ratecard_source" NAME="ratecard_source" size="1"  style="width=250" class="form_input_select">
                             <option value=''><?php echo gettext("SOURCE RATECARD");?></option>
                             <?php foreach ($list_tariffname as $recordset) {?>
                                 <option class=input value='<?php  echo $recordset[0]?>' <?php if ($recordset[0]==$tariffplan) echo "selected";?>><?php echo $recordset[1]?></option>
@@ -248,7 +220,7 @@ function removeSource()
                 <tr>
                     <td width="30%" valign="middle" class="form_head"><?php echo gettext("RATECARD TO UPDATE");?> :</td>
                       <td width="70%" valign="top" class="tableBodyRight">
-                          <select NAME="ratecard_destination" size="1"  style="width=250" class="form_input_select">
+                          <select id="ratecard_destination" NAME="ratecard_destination" size="1"  style="width=250" class="form_input_select">
                             <option value=''><?php echo gettext("DESTINATION RATECARD");?></option>
                             <?php foreach ($list_tariffname as $recordset) {?>
                                 <option class=input value='<?php  echo $recordset[0]?>' <?php if ($recordset[0]==$tariffplan) echo "selected";?>><?php echo $recordset[1]?></option>
@@ -260,11 +232,11 @@ function removeSource()
                 <tr>
                     <td width="30%" valign="middle" class="form_head"><?php echo gettext("Choose fields to merge");?> :</td>
                     <td width="70%" valign="top" class="tableBodyRight">
-                        <input name="search_sources" value="nochange" type="hidden">
+                        <input id="search_sources" name="search_sources" value="nochange" type="hidden">
                         <table>
                             <tbody><tr>
                                 <td>
-                                    <select name="unselected_search_sources" multiple="multiple" size="9" width="50" onchange="deselectHeaders()" class="form_input_select">
+                                    <select id="unselected_search_sources" name="unselected_search_sources" multiple="multiple" size="9" width="50" class="form_input_select">
                                         <option value=""><?php echo gettext("Unselected Fields...");?></option>
                                         <option value="destination"><?php echo gettext("destination");?></option>
                                         <option value="buyrate"><?php echo gettext("buyrate");?></option>
@@ -305,12 +277,12 @@ function removeSource()
                                 </td>
 
                                 <td>
-                                    <a href="" onclick="addSource(); return false;"><img src="<?php echo Images_Path;?>/forward.png" alt="add source" title="add source" border="0"></a>
+                                    <a id="addsource" href="#"><img src="<?php echo Images_Path;?>/forward.png" alt="add source" title="add source" border="0"></a>
                                     <br>
-                                    <a href="" onclick="removeSource(); return false;"><img src="<?php echo Images_Path;?>/back.png" alt="remove source" title="remove source" border="0"></a>
+                                    <a id="removesource" href="#"><img src="<?php echo Images_Path;?>/back.png" alt="remove source" title="remove source" border="0"></a>
                                 </td>
                                 <td>
-                                    <select name="selected_search_sources" multiple="multiple" size="9" width="50" onchange="deselectHeaders();" class="form_input_select">
+                                    <select id="selected_search_sources" name="selected_search_sources" multiple="multiple" size="9" width="50" class="form_input_select">
                                         <option value=""><?php echo gettext("Selected Fields...");?></option>
                                     </select>
                                 </td>

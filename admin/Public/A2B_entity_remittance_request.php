@@ -123,19 +123,13 @@ $HD_Form->create_form($form_action, $list);
 // #### FOOTER SECTION
 $smarty->display('footer.tpl');
 ?>
-<script type="text/javascript">
-$(document).ready(function () {
-    $('.accept_click').click(function () {
-        $.get("A2B_entity_remittance_request.php", { id: ""+ this.id, action: "accept" },
-              function(data){
-                location.reload(true);
-              });
-        });
-    $('.refuse_click').click(function () {
-        $.get("A2B_entity_remittance_request.php", { id: ""+ this.id, action: "refuse" },
-              function(data){
-                location.reload(true);
-              });
-        });
+<script>
+$(function () {
+    $('.accept_click').on('click', function () {
+        $.get("A2B_entity_remittance_request.php", {id: this.id, action: "accept"}, () => location.reload);
+    });
+    $('.refuse_click').on('click', function () {
+        $.get("A2B_entity_remittance_request.php", {id: this.id, action: "refuse"}, () => location.reload);
+    });
 });
 </script>

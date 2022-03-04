@@ -69,19 +69,16 @@ if ($popup_select == "") {
 }
 
 if ($popup_select != "") {
-
 ?>
-
-<SCRIPT LANGUAGE="javascript">
-<!-- Begin
+<script>
 function sendValue(selvalue)
 {
-    window.opener.document.<?php echo $popup_formname ?>.<?php echo $popup_fieldname ?>.value = selvalue;
+    var formname = <?= json_encode($popup_formname ?? "") ?>;
+    var fieldname = <?= json_encode($popup_fieldname ?? "") ?>;
+    $(`form[name=${formname}] [name=${fieldname}]`, window.opener.document).val(selvalue);
     window.close();
 }
-// End -->
 </script>
-
 <?php
 }
 

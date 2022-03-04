@@ -69,50 +69,30 @@ if ($task=="generate" && !empty($agentid) && !empty($tariffplan) && !empty($grou
     if($result_insert)$URL = $A2B->config['signup']['urlcustomerinterface']."signup.php?key=$code";
 }
 
-?>
-<?php
 $smarty->display('main.tpl');
 
 ?>
-<script type="text/javascript">
-<!--
-function submit_form(form)
-{
-    if ((form.tariffplan.value.length < 1)||(form.group.value.length < 1)||(form.agentid.value.length < 1)) {
-        return (false);
-    }
-
-    document.forms["form"].elements["task"].value = "generate";
-    document.form.submit();
-}
-
-function checkgenerate()
-{
- var test = true;
-  test = test && ($('#tariff').val().length>0);
-  test = test && ($('#group').val().length>0);
-  if (test) {
-       $('#generate').removeAttr("disabled");
-       $('#generate').attr("class","form_input_button");
-   } else {
-      $('#generate').attr("disabled", true);
-      $('#generate').attr("class","form_input_button_disabled");
-      }
-}
-
-$(document).ready(function () {
-    $('#selectagent').change(function () {
-              document.form.method="GET";
-              $('form').submit();
-            });
-    $('#group').change(function () {
-               checkgenerate();
-               $('#result').empty();
-            });
-    $('#tariff').change(function () {
-               checkgenerate();
-               $('#result').empty();
-            });
+<script>
+$(function () {
+    $('#selectagent').on('change', function () {
+        document.form.method = "GET";
+        $('form').submit();
+    });
+    $('#group').on('change', function () {
+        $('#generate').prop("disabled", !($('#tariff').val().length && $(this).val().length));
+        $('#result').empty();
+    });
+    $('#tariff').on('change', function () {
+        $('#generate').prop("disabled", !($(this).val().length && $('#group').val().length));
+        $('#result').empty();
+    });
+    $("input#generate").on('click', function() {
+        var form = this.form;
+        if ($("[name=tariffplan]", form).val().length && $("[name=group]", form).val().length && $("[name=agentid]", form).val().length) {
+            $("[name=task]", form).val("generate");
+            form.submit();
+        }
+    })
 });
 </script>
 
@@ -121,10 +101,10 @@ echo $CC_help_generate_signup;
 ?>
 <center>
         <b><?php echo gettext("Create signup url for a specific agent, customer group and Call Plan.");?>.</b><br/><br/>
+    <form name="form" enctype="multipart/form-data" action="A2B_signup_agent.php" method="post">
 
         <table width="95%" border="0" cellspacing="2" align="center" class="records">
 
-              <form name="form" enctype="multipart/form-data" action="A2B_signup_agent.php" method="post">
                 <tr>
                       <td colspan="2" align=center>
                           <?php echo gettext ( "Select Agent" );?>:
@@ -138,9 +118,7 @@ echo $CC_help_generate_signup;
                                 <?php 	 }
                                 ?>
                            </select>
-                           <a href="#"
-                    onclick="window.open('A2B_entity_agent.php?popup_select=1&popup_formname=form&popup_fieldname=agentid' , 'CardNumberSelection','scrollbars=1,width=550,height=330,top=20,left=100,scrollbars=1');"><img
-                    src="<?php echo Images_Path; ?>/icon_arrow_orange.gif"></a>
+                          <a href="A2B_entity_agent.php" class="badge bg-primary popup_trigger" aria-label="open a popup to select an item">&gt;</a>
 
                       </td>
                   </tr>
@@ -191,7 +169,7 @@ echo $CC_help_generate_signup;
                   </td>
                   <td  align="center" width="50%">
                         <input type="hidden" name="task" value="">
-                      <input id="generate" type="button" value="<?php echo gettext('ADD URL KEY'); ?>" onFocus=this.select() class="form_input_button_disabled" name="submit1" onClick="submit_form(this.form);" disabled="true" />
+                      <input id="generate" type="button" value="<?php echo gettext('ADD URL KEY'); ?>" onFocus=this.select() class="form_input_button_disabled" name="submit1" disabled="true" />
                        <p>
                   </td>
                 </tr>
@@ -221,8 +199,8 @@ echo $CC_help_generate_signup;
                   </td>
                 </tr>
 
-              </form>
             </table>
+    </form>
 </center>
 
 <?php

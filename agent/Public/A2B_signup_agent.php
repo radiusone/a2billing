@@ -173,34 +173,28 @@ function submit_form(form)
     $smarty->display('footer.tpl');
 ?>
 
-<script type="text/javascript">
-
+<script>
 function checkgenerate()
 {
- var test = true;
-  test = test && ($('#tariff').val().length>0);
-  test = test && ($('#group').val().length>0);
-  if (test) {
-       $('#generate').removeAttr("disabled");
-       $('#generate').attr("class","form_input_button");
+  if ($('#tariff').val().length && $('#group').val().length) {
+       $('#generate').prop("disabled", false).addCLass("form_input_button");
    } else {
-      $('#generate').attr("disabled", true);
-      $('#generate').attr("class","form_input_button_disabled");
-      }
+      $('#generate').prop("disabled", true).removeClass("form_input_button_disabled");
+  }
 }
 
-$(document).ready(function () {
-    $('#selectagent').change(function () {
-              document.form.method="GET";
-              $('form').submit();
-            });
-    $('#group').change(function () {
-               checkgenerate();
-               $('#result').empty();
-            });
-    $('#tariff').change(function () {
-               checkgenerate();
-               $('#result').empty();
-            });
+$(function () {
+    $('#selectagent').on('change', function () {
+        document.form.method="GET";
+        $('form').submit();
+    });
+    $('#group').on('change', function () {
+        checkgenerate();
+        $('#result').empty();
+    });
+    $('#tariff').on('change', function () {
+        checkgenerate();
+        $('#result').empty();
+    });
 });
 </script>

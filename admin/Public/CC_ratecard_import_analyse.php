@@ -223,10 +223,14 @@ if ($task == 'upload') {
 
 $smarty->display('main.tpl');
 
+if ($status=="ok") {
+    echo $CC_help_import_ratecard_confirm;
+} else {
+    echo $CC_help_import_ratecard_analyse;
+}
 ?>
 
-<style type="text/css">
-<!--
+<style>
 div.myscroll {
     align: left;
     height: 100px;
@@ -236,27 +240,16 @@ div.myscroll {
     background-color: #FFFFFF;
     padding: 5px;
 }
--->
 </style>
 
-<script type="text/javascript">
-<!--
-function sendtoupload(form)
-{
-    document.forms["myform"].elements["task"].value = "upload";
-    document.forms["myform"].submit();
-}
-//-->
+<script>
+$(function() {
+    $("#sendtoupload").on('click', function () {
+        $("#task").val("upload");
+        return true;
+    });
+});
 </script>
-
-
-<?php
-if ($status=="ok") {
-    echo $CC_help_import_ratecard_confirm;
-} else {
-    echo $CC_help_import_ratecard_analyse;
-}
-?>
 
 <center>
 <?php  if ($status!="ok") { ?>
@@ -297,7 +290,7 @@ if ($status=="ok") {
 
     <br/><br>
 <table width="95%" border="0" cellspacing="2" align="center" class="records">
-  <form name="myform" enctype="multipart/form-data" action="CC_ratecard_import_analyse.php" method="post" >
+  <form id="myform" name="myform" enctype="multipart/form-data" action="CC_ratecard_import_analyse.php" method="post" >
     <INPUT type="hidden" name="tariffplan" value="<?php echo $tariffplan?>">
     <INPUT type="hidden" name="trunk" value="<?php echo $trunk?>">
     <INPUT type="hidden" name="currencytype" value="<?php echo $currencytype?>">
@@ -315,11 +308,11 @@ if ($status=="ok") {
       <td colspan="2">
         <p align="center">
           <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo $my_max_file_size?>">
-          <input type="hidden" name="task" value="upload">
+          <input type="hidden" id="task" name="task" value="upload">
           <input type="hidden" name="status" value="ok">
           <input type="hidden" name="uploadedfile_name" value="<?php echo $new_filename?>">
           <input type="hidden" name="uploadedfile_type" value="<?php echo $the_file_type?>">
-          <input type="submit"  value="Continue to Import the RateCard" onFocus=this.select() class="form_input_button" name="submit1" onClick="sendtoupload(this.form);">
+          <input type="submit" value="Continue to Import the RateCard" class="form_input_button" id="sendtoupload" name="submit1">
           <br>
           &nbsp; </p>
       </td>

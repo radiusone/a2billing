@@ -128,7 +128,7 @@ function amount_convert($amount)
 
 if (!$popup_select) {
 ?>
-<a href="javascript:;" onClick="window.open('<?php echo $PHP_SELF ?>?popup_select=1&id=<?php echo $id ?><?php if(!empty($curr)) echo "&curr=".$curr; ?>','','scrollbars=yes,resizable=yes,width=700,height=500')" > <img src="../Public/templates/default/images/printer.png" title="Print" alt="Print" border="0"></a>
+<a id="iv_popupselect" href="#"> <img src="../Public/templates/default/images/printer.png" title="Print" alt="Print" border="0"></a>
 &nbsp;&nbsp;
 <?php if (strtoupper(BASE_CURRENCY)!=strtoupper($card['currency'])) { ?>
 
@@ -297,3 +297,11 @@ if (!$popup_select) {
     </tr>
   </tfoot>
   </table></div>
+
+<script>
+$(function() {
+    var id = <?= json_encode($id) ?? "" ?>;
+    var curr = <?= json_encode($curr ?? "") ?>;
+    $("iv_popupselect").on('click', () => window.open(`?popup_select=1&id=${id}&curr=${curr}`, '', 'scrollbars=yes,resizable=yes,width=700,height=500'));
+})
+</script>
