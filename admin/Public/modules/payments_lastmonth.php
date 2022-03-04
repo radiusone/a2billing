@@ -105,6 +105,7 @@ if (!empty($type) && !empty($view_type)) {
             value="count"
             checked="checked"
             data-graph="#payments_graph"
+            data-uri="modules/payments_lastmonth.php"
     />&nbsp;<label for="payments_amount"><?= _("Payment Amount") ?></label>&nbsp;<input
             id="payments_amount"
             type="radio"
@@ -112,6 +113,7 @@ if (!empty($type) && !empty($view_type)) {
             class="update_graph"
             value="amount"
             data-graph="#payments_graph"
+            data-uri="modules/payments_lastmonth.php"
     />
 </div>
 <div id="payments_graph" class="dashgraph"></div>

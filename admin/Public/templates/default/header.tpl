@@ -9,7 +9,8 @@
 	<link href="templates/{$SKIN_NAME}/css/receipt.css" rel="stylesheet" type="text/css"/>
 	<script src="../lib/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<script src="../lib/jquery/jquery.min.js"></script>
-    <script src="../lib/flot/jquery.flot.min.js"></script>
+	<script src="../lib/flot/js/jquery.flot.min.js"></script>
+	<script src="../lib/flot/js/plugins/jquery.flot.time.min.js"></script>
 	<script src="../lib/common.js"></script>
 
 	<style>

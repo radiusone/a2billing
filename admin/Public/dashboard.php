@@ -107,7 +107,7 @@ const curr = <?= json_encode($A2B->config["global"]["base_currency"]) ?>;
 $(function () {
     $(".dashgraph")
         .width(() => Math.min($(this).parent("div").width(), $(this).parent("div").innerWidth) - 10)
-        .height(Math.floor(width / 2))
+        .height(() => Math.floor($(this).width() / 2))
         .on("plothover", function (event, pos, item) {
             if (item) {
                 if (previousPoint !== item.datapoint) {
@@ -138,7 +138,7 @@ $(function () {
     $('.update_graph').on('click', function() {
         const graph = $($(this).data("graph"));
         $.getJSON(
-            $(this).data("url"),
+            $(this).data("uri"),
             {type: this.id, view_type: graph.data("period")},
             function(data) {
                 const graph_max = data.max;
