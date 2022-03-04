@@ -33,7 +33,7 @@ use A2billing\Table;
  *
 **/
 
-require_once '../../lib/admin.defines.php';
+require_once __DIR__ . "/../../lib/admin.defines.php";
 
 if (!has_rights(ACX_DASHBOARD)) {
     Header("HTTP/1.0 401 Unauthorized");
