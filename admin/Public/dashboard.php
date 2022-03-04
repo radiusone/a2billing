@@ -135,7 +135,7 @@ $(function () {
     $('.update_graph').on('click', function() {
         const graph = $($(this).data("graph"));
         $.getJSON(
-            $(this).data("uri"),
+            $(this).data("uri") + "?t=" + Date.now(),
             {type: this.id, view_type: graph.data("period")},
             function(data) {
                 const graph_max = data.max;
