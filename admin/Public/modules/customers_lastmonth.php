@@ -52,17 +52,20 @@ if (!empty($type) && !empty($view_type)) {
     $max = 0;
     $data = [];
 
+    $checkdate_month = (new DateTime('midnight first day of this month -6 months 15 days'))->format("Y-m-d");
+    $checkdate_day = (new DateTime('midnight -10 days'))->format("Y-m-d");
+
     $ck_dt = $view_type === "month" ? $checkdate_month : $checkdate_day;
     $dt_fmt = $view_type === "month" ? "%Y-%m-01" : "%Y-%m-%d";
     switch ($type) {
         case "card_creation":
-            $query = "SELECT UNIX_TIMESTAMP(DATE_FORMAT(creationdate,'$dt_fmt')) * 1000 AS period, COUNT(*) FROM cc_card WHERE creationdate >= TIMESTAMP('$ck_dt') AND creationdate <= CURRENT_TIMESTAMP GROUP BY period ORDER BY period";
+            $query = "SELECT UNIX_TIMESTAMP(DATE_FORMAT(creationdate,'$dt_fmt')) * 1000 AS period, COUNT(*) FROM cc_card WHERE creationdate >= '$ck_dt' AND creationdate <= CURRENT_TIMESTAMP GROUP BY period ORDER BY period";
             break;
         case "card_expiration":
-            $query = "SELECT UNIX_TIMESTAMP(DATE_FORMAT(expirationdate,'$dt_fmt')) * 1000 AS period, COUNT(*) FROM cc_card WHERE expirationdate >= TIMESTAMP('$ck_dt') AND expirationdate <= CURRENT_TIMESTAMP GROUP BY period ORDER BY period";
+            $query = "SELECT UNIX_TIMESTAMP(DATE_FORMAT(expirationdate,'$dt_fmt')) * 1000 AS period, COUNT(*) FROM cc_card WHERE expirationdate >= '$ck_dt' AND expirationdate <= CURRENT_TIMESTAMP GROUP BY period ORDER BY period";
             break;
         case "card_firstuse":
-            $query = "SELECT UNIX_TIMESTAMP(DATE_FORMAT(firstusedate,'$dt_fmt')) * 1000 AS period, COUNT(*) FROM cc_card WHERE firstusedate >= TIMESTAMP('$ck_dt') AND firstusedate <= CURRENT_TIMESTAMP GROUP BY period ORDER BY period";
+            $query = "SELECT UNIX_TIMESTAMP(DATE_FORMAT(firstusedate,'$dt_fmt')) * 1000 AS period, COUNT(*) FROM cc_card WHERE firstusedate >= '$ck_dt' AND firstusedate <= CURRENT_TIMESTAMP GROUP BY period ORDER BY period";
             break;
         default:
             die();
@@ -70,7 +73,7 @@ if (!empty($type) && !empty($view_type)) {
 
 
     $result = (new Table())->SQLExec(DbConnect(), $query);
-    if (is_array($result_graph)) {
+    if (is_array($result)) {
         foreach ($result as $row) {
             $max = max($max, $row[1]);
             $data[] = [$row[0], floatval($row[1])];

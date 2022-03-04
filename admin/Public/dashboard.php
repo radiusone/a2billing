@@ -78,9 +78,6 @@ if ( !empty($A2B->config["dashboard"]["call_info_enabled"]) && $A2B->config["das
 if ( !empty($A2B->config["dashboard"]["system_info_enable"]) && $A2B->config["dashboard"]["system_info_enable"]!="NONE") {
     put_display($A2B->config["dashboard"]["system_info_enable"], gettext("SYSTEM INFO"), ["./modules/system_info.php"], $boxes);
 }
-if ( !empty($A2B->config["dashboard"]["news_enabled"]) && $A2B->config["dashboard"]["news_enabled"]!="NONE") {
-    put_display($A2B->config["dashboard"]["news_enabled"], gettext("LATEST NEWS"), ["./modules/news.php"], $boxes);
-}
 
 $smarty->display('main.tpl');
 
@@ -156,7 +153,7 @@ $(function () {
         const graph = $($(this).data("graph"));
         graph.data("period", $(this).val());
         graph.data("xformat", $(this).val() === "month" ? "%b" : "%d-%m");
-        $(".update_graph").filter(":checked").click();
+        $(".update_graph", graph.parent()).filter(":checked").click();
     });
 
     $(".period_graph[value=day]").click().change();
