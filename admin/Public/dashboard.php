@@ -103,8 +103,8 @@ const curr = <?= json_encode($A2B->config["global"]["base_currency"]) ?>;
 
 $(function () {
     $(".dashgraph")
-        .width(() => Math.min($(this).parent("div").width(), $(this).parent("div").innerWidth) - 10)
-        .height(() => Math.floor($(this).width() / 2))
+        .width(function() {return Math.min($(this).parent("div").width(), $(this).parent("div").innerWidth) - 10;})
+        .height(function() {return Math.floor($(this).width() / 2);})
         .on("plothover", function (event, pos, item) {
             if (item) {
                 if (previousPoint !== item.datapoint) {
