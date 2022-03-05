@@ -40,7 +40,7 @@ if (!has_rights(ACX_DASHBOARD)) {
 }
 
 //month view
-$st = new DateTime('midnight first day of this month -6 months 15 days');
+$st = (new DateTime('midnight first day of this month'))->modify('-6 months -15 days');
 $checkdate_month = $st->format("Y-m-d");
 $mingraph_month = $st->format("U");
 $maxgraph_month = (new DateTime('midnight first day of next month'))->format("U");
