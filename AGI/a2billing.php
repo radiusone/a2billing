@@ -59,7 +59,7 @@ if ($argc > 1 && ($argv[1] == '--version' || $argv[1] == '-v')) {
 
 $agi = new Agi();
 
-$optconfig = array();
+$optconfig = [];
 if ($argc > 1 && strstr($argv[1], "+")) {
     /*
     This change allows some configuration overrides on the AGI command-line by allowing the user to add them after the configuration number, like so:
@@ -123,11 +123,11 @@ $A2B->CC_TESTING = isset($A2B->agiconfig['debugshell']) && $A2B->agiconfig['debu
 
 $agi->set_play_audio($A2B->config["agi-conf$idconfig"]['play_audio']);
 
-define("DB_TYPE", isset($A2B->config["database"]['dbtype']) ? $A2B->config["database"]['dbtype'] : null);
-define("SMTP_SERVER", isset($A2B->config['global']['smtp_server']) ? $A2B->config['global']['smtp_server'] : null);
-define("SMTP_HOST", isset($A2B->config['global']['smtp_host']) ? $A2B->config['global']['smtp_host'] : null);
-define("SMTP_USERNAME", isset($A2B->config['global']['smtp_username']) ? $A2B->config['global']['smtp_username'] : null);
-define("SMTP_PASSWORD", isset($A2B->config['global']['smtp_password']) ? $A2B->config['global']['smtp_password'] : null);
+define("DB_TYPE", $A2B->config["database"]['dbtype'] ?? null);
+define("SMTP_SERVER", $A2B->config['global']['smtp_server'] ?? null);
+define("SMTP_HOST", $A2B->config['global']['smtp_host'] ?? null);
+define("SMTP_USERNAME", $A2B->config['global']['smtp_username'] ?? null);
+define("SMTP_PASSWORD", $A2B->config['global']['smtp_password'] ?? null);
 
 // Print header
 $A2B->debug(DEBUG, $agi, __FILE__, __LINE__, "AGI Request:\n" . print_r($agi->request, true));
@@ -141,7 +141,7 @@ if (!$A2B->DbConnect()) {
     exit;
 }
 
-define("WRITELOG_QUERY", true);
+const WRITELOG_QUERY = true;
 $instance_table = new Table();
 $A2B->set_instance_table($instance_table);
 
@@ -152,7 +152,7 @@ $result = $A2B->instance_table->SQLExec($A2B->DBHandle, $QUERY, 1, 300);
 if (is_array($result)) {
     $num_cur = count($result);
     for ($i = 0; $i < $num_cur; $i++) {
-        $currencies_list[$result[$i][1]] = array(1=>$result[$i][2], 2=>$result[$i][3]);
+        $currencies_list[$result[$i][1]] = [1=>$result[$i][2], 2=>$result[$i][3]];
     }
 }
 
@@ -210,7 +210,7 @@ if ($mode == 'standard') {
             }
 
             if ($A2B->agiconfig['ivr_enable_locking_option'] == 1) {
-                $QUERY = "SELECT block, lock_pin FROM cc_card WHERE username = '{$A2B->username}'";
+                $QUERY = "SELECT block, lock_pin FROM cc_card WHERE username = '$A2B->username'";
                 $A2B->debug(DEBUG, $agi, __FILE__, __LINE__, "[QUERY] : " . $QUERY);
                 $result = $A2B->instance_table->SQLExec($A2B->DBHandle, $QUERY);
 
@@ -219,7 +219,7 @@ if ($mode == 'standard') {
                     $try = 0;
                     do {
                         $return = FALSE;
-                        $res_dtmf = $agi->get_data('prepaid-enter-pin-lock', 3000, 10, '#'); //Please enter your locking code
+                        $res_dtmf = $agi->get_data('prepaid-enter-pin-lock', 3000, 10); //Please enter your locking code
                         if ($res_dtmf['result'] != $result[0][1]) {
                             $agi->say_digits($res_dtmf['result']);
                             if (strlen($res_dtmf['result']) > 0)
@@ -253,12 +253,12 @@ if ($mode == 'standard') {
 
             if ($A2B->agiconfig['ivr_enable_account_information'] == 1) {
                 $A2B->debug(DEBUG, $agi, __FILE__, __LINE__, " [GET ACCOUNT INFORMATION]");
-                $res_dtmf = $agi->get_data('prepaid-press4-info', 5000, 1, '#'); //Press 4 to get information about your account
+                $res_dtmf = $agi->get_data('prepaid-press4-info', 5000, 1); //Press 4 to get information about your account
                 if ($res_dtmf['result'] == "4") {
 
                     $QUERY = "SELECT UNIX_TIMESTAMP(c.lastuse) as lastuse, UNIX_TIMESTAMP(c.lock_date) as lock_date, UNIX_TIMESTAMP(c.firstusedate) as firstuse
                                 FROM cc_card c
-                                WHERE username = '{$A2B->username}'
+                                WHERE username = '$A2B->username'
                                 LIMIT 1";
                     $result = $A2B->instance_table->SQLExec($A2B->DBHandle, $QUERY);
                     $card_info = $result[0];
@@ -283,7 +283,7 @@ if ($mode == 'standard') {
                             switch ($res_dtmf) {
                             case 1 :
                                 $QUERY = "SELECT starttime FROM cc_call
-                                    WHERE card_id = {$A2B->id_card} ORDER BY starttime DESC LIMIT 1";
+                                    WHERE card_id = $A2B->id_card ORDER BY starttime DESC LIMIT 1";
                                 $result = $A2B->instance_table->SQLExec($A2B->DBHandle, $QUERY);
                                 $lastcall_info = $result[0];
                                 if (is_array($lastcall_info)) {
@@ -313,7 +313,6 @@ if ($mode == 'standard') {
                                 $return = TRUE;
                                 break;
                             case 9 :
-                                $return = FALSE;
                                 break;
                             case '*' :
                                 $agi->stream_file('prepaid-final', '#');
@@ -332,11 +331,11 @@ if ($mode == 'standard') {
                 $A2B->debug(DEBUG, $agi, __FILE__, __LINE__, "[LOCKING OPTION]");
 
                 $return = FALSE;
-                $res_dtmf = $agi->get_data('prepaid-press5-lock', 5000, 1, '#'); //Press 5 to lock your account
+                $res_dtmf = $agi->get_data('prepaid-press5-lock', 5000, 1); //Press 5 to lock your account
 
                 if ($res_dtmf['result'] == 5) {
                     for ($ind_lock = 0; $ind_lock <= 3; $ind_lock++) {
-                        $res_dtmf = $agi->get_data('prepaid-enter-code-lock-account', 3000, 10, '#'); //Please, Enter the code you want to use to lock your
+                        $res_dtmf = $agi->get_data('prepaid-enter-code-lock-account', 3000, 10); //Please, Enter the code you want to use to lock your
                         $A2B->debug(DEBUG, $agi, __FILE__, __LINE__, "[res_dtmf = " . $res_dtmf['result'] . "]");
 
                         if (strlen($res_dtmf['result']) > 0 && is_int(intval($res_dtmf['result']))) {
@@ -361,14 +360,13 @@ if ($mode == 'standard') {
 
                             switch ($res_dtmf) {
                             case 1 :
-                                $QUERY = "UPDATE cc_card SET block = 1, lock_pin = '{$lock_pin}', lock_date = NOW() WHERE username = '{$A2B->username}'";
+                                $QUERY = "UPDATE cc_card SET block = 1, lock_pin = '$lock_pin', lock_date = NOW() WHERE username = '$A2B->username'";
                                 $A2B->instance_table->SQLExec($A2B->DBHandle, $QUERY);
                                 $A2B->debug(DEBUG, $agi, __FILE__, __LINE__, "[QUERY]:[$QUERY]");
                                 $agi->stream_file('prepaid-locking-accepted', '#'); // Your locking code has been accepted
                                 $return = TRUE;
                                 break;
                             case 9 :
-                                $return = FALSE;
                                 break;
                             case '*' :
                                 $agi->stream_file('prepaid-final', '#');
@@ -450,7 +448,7 @@ if ($mode == 'standard') {
                                 $action = 'insert';
                                 $QUERY = "SELECT cc_speeddial.phone, cc_speeddial.id
                                             FROM cc_speeddial, cc_card WHERE cc_speeddial.id_cc_card = cc_card.id
-                                            AND cc_card.id = " . $A2B->id_card . " AND cc_speeddial.speeddial = " . $speeddial_number . "";
+                                            AND cc_card.id = " . $A2B->id_card . " AND cc_speeddial.speeddial = " . $speeddial_number;
                                 $A2B->debug(DEBUG, $agi, __FILE__, __LINE__, $QUERY);
                                 $result = $A2B->instance_table->SQLExec($A2B->DBHandle, $QUERY);
                                 $id_speeddial = $result[0][1];
@@ -470,13 +468,13 @@ if ($mode == 'standard') {
                                 do {
                                     $try_phonenumber++;
                                     $return_phonenumber = FALSE;
-                                    $res_dtmf = $agi->get_data("prepaid-phonenumber-to-speeddial", 5000, 30, "#"); //Please enter the phone number followed by the pound key
+                                    $res_dtmf = $agi->get_data("prepaid-phonenumber-to-speeddial", 5000, 30); //Please enter the phone number followed by the pound key
                                     $A2B->debug(DEBUG, $agi, __FILE__, __LINE__, "PHONENUMBER TO SPEEDDIAL DTMF : " . $res_dtmf['result']);
 
                                     if (!empty($res_dtmf["result"]) && is_numeric($res_dtmf["result"]) && $res_dtmf["result"] > 0) break;
 
                                     if ($try_phonenumber < 3) $return_phonenumber = TRUE;
-                                    else $return_mainmenu;
+                                    else $return_mainmenu = true; // ???
 
                                 } while ($return_phonenumber);
 
@@ -490,10 +488,11 @@ if ($mode == 'standard') {
                                     $res_dtmf = $agi->get_data("prepaid-press1-add-speeddial", 3000, 1); //If you want to proceed please press 1 or press an other key to cancel ?
                                     if ($res_dtmf['result'] == 1) {
                                         $A2B->debug(DEBUG, $agi, __FILE__, __LINE__, "ACTION : " . $action);
-                                        if ($action == 'insert')
+                                        if ($action == 'insert') {
                                             $QUERY = "INSERT INTO cc_speeddial (id_cc_card, phone, speeddial) VALUES (" . $A2B->id_card . ", " . $assigned_number . ", '" . $speeddial_number . "')";
-                                        elseif ($action == 'update')
+                                        } else {
                                             $QUERY = "UPDATE cc_speeddial SET phone = '" . $assigned_number . "' WHERE id = " . $id_speeddial;
+                                        }
 
                                         $A2B->debug(DEBUG, $agi, __FILE__, __LINE__, $QUERY);
                                         $result = $A2B->instance_table->SQLExec($A2B->DBHandle, $QUERY);
@@ -802,12 +801,8 @@ if ($mode == 'standard') {
                                     }
                                 } while ($res_dtmf["result"] != '1' && $res_dtmf["result"] != '2');
 
-                                // Check the result
-                                if ($res_dtmf["result"] == '1') {
-                                    $return = TRUE;
-                                } elseif ($res_dtmf["result"] == '2') {
-                                    $return = FALSE;
-                                }
+                                // Check the result, it has to be 1 or 2 now
+                                $return = ($res_dtmf["result"] == '1');
 
                                 $A2B->debug(DEBUG, $agi, __FILE__, __LINE__, "[TRY : $try]");
                             } else {
@@ -855,12 +850,10 @@ if ($mode == 'standard') {
 
                     if ($pos_dialingnumber !== false) {
                         $dialstr = "$tech/$ipaddress";
+                    } elseif ($A2B->agiconfig['switchdialcommand'] == 1) {
+                        $dialstr = "$tech/$prefix$destination@$ipaddress";
                     } else {
-                        if ($A2B->agiconfig['switchdialcommand'] == 1) {
-                            $dialstr = "$tech/$prefix$destination@$ipaddress";
-                        } else {
-                            $dialstr = "$tech/$ipaddress/$prefix$destination";
-                        }
+                        $dialstr = "$tech/$ipaddress/$prefix$destination";
                     }
 
                     //ADDITIONAL PARAMETER %dialingnumber%, %cardnumber%
@@ -999,12 +992,10 @@ if ($mode == 'standard') {
 
                     if ($pos_dialingnumber !== false) {
                         $dialstr = "$tech/$ipaddress";
+                    } elseif ($A2B->agiconfig['switchdialcommand'] == 1) {
+                        $dialstr = "$tech/$prefix$destination@$ipaddress";
                     } else {
-                        if ($A2B->agiconfig['switchdialcommand'] == 1) {
-                            $dialstr = "$tech/$prefix$destination@$ipaddress";
-                        } else {
-                            $dialstr = "$tech/$ipaddress/$prefix$destination";
-                        }
+                        $dialstr = "$tech/$ipaddress/$prefix$destination";
                     }
 
                     //ADDITIONAL PARAMETER %dialingnumber%, %cardnumber%
@@ -1187,7 +1178,6 @@ if ($mode == 'standard') {
                     $A2B->fct_say_balance($agi, $A2B->credit);
                 }
 
-                $charge_callback = 1;
                 if ($RateEngine->dialstatus == "ANSWER") {
                     $callback_been_connected = 1;
                 }
@@ -1343,12 +1333,10 @@ if ($mode == 'standard') {
 
                         if ($pos_dialingnumber !== false) {
                             $dialstr = "$tech/$ipaddress";
+                        } elseif ($A2B->agiconfig['switchdialcommand'] == 1) {
+                            $dialstr = "$tech/$prefix$destination@$ipaddress";
                         } else {
-                            if ($A2B->agiconfig['switchdialcommand'] == 1) {
-                                $dialstr = "$tech/$prefix$destination@$ipaddress";
-                            } else {
-                                $dialstr = "$tech/$ipaddress/$prefix$destination";
-                            }
+                            $dialstr = "$tech/$ipaddress/$prefix$destination";
                         }
 
                         //ADDITIONAL PARAMETER %dialingnumber%, %cardnumber%
@@ -1360,7 +1348,7 @@ if ($mode == 'standard') {
 
                         $channel= $dialstr;
                         $exten = $inst_pn_member;
-                        $context = 'a2billing-conference-member';;
+                        $context = 'a2billing-conference-member';
                         $id_server_group = $A2B->config["callback"]['id_server_group'];
                         $callerid = $called_party;
                         $priority = 1;
@@ -1408,8 +1396,6 @@ if ($mode == 'standard') {
 
             $A2B->debug(INFO, $agi, __FILE__, __LINE__, "DIAL $dialstr");
             $myres = $A2B->run_dial($agi, $dialstr);
-
-            $charge_callback = 1;
 
         }//END FOR
 
@@ -1515,9 +1501,6 @@ if ($mode == 'standard') {
 
             $A2B->debug(INFO, $agi, __FILE__, __LINE__, "DIAL $dialstr");
             $myres = $A2B->run_dial($agi, $dialstr);
-
-
-            $charge_callback = 1;
 
         }//END FOR
 

@@ -2,6 +2,9 @@
 
 namespace A2billing\PhpAgi;
 
+/**
+ * @method array|string get_variable($variable, $getvalue = false)
+ */
 class Agi extends \AGI
 {
     public $play_audio = true;
