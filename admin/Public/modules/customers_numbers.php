@@ -43,10 +43,10 @@ if (!has_rights(ACX_DASHBOARD)) {
 
 $QUERY_COUNT_CARD_ALL = "SELECT status, COUNT(*) FROM cc_card GROUP BY status";
 
-$result = (new Table())->SQLExec(DbConnect(), $QUERY_COUNT_CARD_ALL);
+$result = DbConnect()->Execute($QUERY_COUNT_CARD_ALL);
 $count_total = 0;
 $states = [];
-foreach ($result as $row) {
+while ($row = $result->FetchRow()) {
     $count_total += $row[1];
     $states[$row[0]] = $row[1];
     // 0 = cancelled, 1 = active, 2 = new, 3 = waiting, 4 = reserved, 5 = expired, 6|7 = suspended

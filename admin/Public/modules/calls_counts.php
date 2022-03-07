@@ -45,37 +45,37 @@ $QUERY_COUNT_CALL_ALL = "select terminatecauseid, COUNT(*) from cc_call WHERE st
 $QUERY_COUNT_CALL_BILL = "SELECT SUM(sessiontime), SUM(sessionbill), SUM(buycost) FROM cc_call WHERE starttime >= DATE(NOW())";
 
 $DBHandle = DbConnect();
-$table = new Table('cc_call', '*');
-$result = $table->SQLExec($DBHandle, $QUERY_COUNT_CALL_ALL);
+$result = $DBHandle->Execute($QUERY_COUNT_CALL_ALL);
 
 $count_total = 0;
 $counts = [];
-foreach ($result as $row) {
+while ($row = $result->FetchRow()) {
     $count_total += $row[1];
     $counts[$row[0]] = $row[1];
     // 1 = answered, 2= no answer, 3 = cancelled, 4 = congested, 5 = busy, 6 = chanunavil
 }
 
-$result = $table->SQLExec($DBHandle, $QUERY_COUNT_CALL_BILL);
-$call_times = $result[0][0];
-$call_sell = a2b_round($result[0][1]);
-$call_buy = a2b_round($result[0][2]);
+$result = $DBHandle->Execute($QUERY_COUNT_CALL_BILL);
+$row = $result->FetchRow();
+$call_times = $row[0];
+$call_sell = a2b_round($row[1]);
+$call_buy = a2b_round($row[2]);
 $call_profit = $call_sell - $call_buy;
-$curr = $A2B->config["global"]["base_currency"];
+$curr = strtoupper($A2B->config["global"]["base_currency"]);
 ?>
 
 <div class="card-text small">
-    <?= _("Total Calls") ?>&nbsp;:&nbsp;<?= $count_total ?>
-    <?= _("Answered") ?>&nbsp;:&nbsp;<?= $counts[1] ?? 0 ?>
-    <?= _("Busy") ?>&nbsp;:&nbsp;<?= $counts[5] ?? 0 ?>
-    <?= _("Unanswered") ?>&nbsp;:&nbsp;<?= $counts[2] ?? 0 ?>
-    <?= _("Cancelled") ?>&nbsp;:&nbsp;<?= $counts[3] ?? 0 ?>
-    <?= _("Congestion") ?>&nbsp;:&nbsp;<?= $counts[4] ?? 0 ?>
-    <?= _("Unavailable") ?>&nbsp;:&nbsp;<?= $counts[6] ?? 0 ?>
+    <strong><?= _("Total Calls") ?>:</strong>&nbsp;<?= $count_total ?>
+    <strong><?= _("Answered") ?>:</strong>&nbsp;<?= $counts[1] ?? 0 ?>
+    <strong><?= _("Busy") ?>:</strong>&nbsp;<?= $counts[5] ?? 0 ?>
+    <strong><?= _("Unanswered") ?>:</strong>&nbsp;<?= $counts[2] ?? 0 ?>
+    <strong><?= _("Cancelled") ?>:</strong>&nbsp;<?= $counts[3] ?? 0 ?>
+    <strong><?= _("Congestion") ?>:</strong>&nbsp;<?= $counts[4] ?? 0 ?>
+    <strong><?= _("Unavailable") ?>:</strong>&nbsp;<?= $counts[6] ?? 0 ?>
 </div>
 <div class="card-text small">
-    <?= _("Sell") ?>&nbsp;:&nbsp;<?= $call_sell ?? 0 ?>&nbsp;<?= $curr ?>
-    <?= _("Cost") ?>&nbsp;:&nbsp;<?= $call_buy ?? 0 ?>&nbsp;<?= $curr ?>
-    <?= _("Profit") ?>&nbsp;:&nbsp;<?= $call_profit ?? 0 ?>&nbsp;<?= $curr ?>
-    <?= _("Duration") ?>&nbsp;:&nbsp;<?= $call_times ?? 0 ?>&nbsp;<?= _("sec") ?>
+    <strong><?= _("Sell") ?>:</strong>&nbsp;<?= $call_sell ?? 0 ?>&nbsp;<?= $curr ?>
+    <strong><?= _("Cost") ?>:</strong>&nbsp;<?= $call_buy ?? 0 ?>&nbsp;<?= $curr ?>
+    <strong><?= _("Profit") ?>:</strong>&nbsp;<?= $call_profit ?? 0 ?>&nbsp;<?= $curr ?>
+    <strong><?= _("Duration") ?>:</strong>&nbsp;<?= $call_times ?? 0 ?>&nbsp;<?= _("sec") ?>
 </div>
