@@ -86,7 +86,7 @@ $smarty->display('main.tpl');
 <?php foreach ($boxes as $col): ?>
     <div class="col-4">
         <?php foreach ($col as $box): ?>
-        <div class="card">
+        <div class="card mb-3">
             <h5 class="card-header text-center"><?= $box["title"] ?></h5>
             <div class="card-body">
                 <?php foreach ($box["links"] as $link) require_once $link ?>
