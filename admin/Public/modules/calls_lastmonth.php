@@ -95,7 +95,7 @@ if (!empty($type) && !empty($view_type)) {
     die();
 }
 ?>
-<div class="card-text small">
+<div class="card-text">
     <strong><?= _("Report by") ?>:</strong>&nbsp;<label for="view_call_day"><?= _("Days") ?></label>&nbsp;<input id="view_call_day" type="radio" class="period_graph" name="view_call" checked="checked" value="day" data-graph="#call_graph"/>&nbsp;<label for="view_call_month"><?= _("Months") ?></label>&nbsp;<input id="view_call_month" type="radio" class="period_graph" name="view_call" value="month" data-graph="#call_graph"/>
 </div>
 <div class="card-text">

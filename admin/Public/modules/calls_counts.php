@@ -64,7 +64,7 @@ $call_profit = $call_sell - $call_buy;
 $curr = $A2B->config["global"]["base_currency"];
 ?>
 
-<div class="card-text">
+<div class="card-text small">
     <?= _("Total Calls") ?>&nbsp;:&nbsp;<?= $count_total ?>
     <?= _("Answered") ?>&nbsp;:&nbsp;<?= $counts[1] ?? 0 ?>
     <?= _("Busy") ?>&nbsp;:&nbsp;<?= $counts[5] ?? 0 ?>
@@ -73,7 +73,7 @@ $curr = $A2B->config["global"]["base_currency"];
     <?= _("Congestion") ?>&nbsp;:&nbsp;<?= $counts[4] ?? 0 ?>
     <?= _("Unavailable") ?>&nbsp;:&nbsp;<?= $counts[6] ?? 0 ?>
 </div>
-<div class="card-text">
+<div class="card-text small">
     <?= _("Sell") ?>&nbsp;:&nbsp;<?= $call_sell ?? 0 ?>&nbsp;<?= $curr ?>
     <?= _("Cost") ?>&nbsp;:&nbsp;<?= $call_buy ?? 0 ?>&nbsp;<?= $curr ?>
     <?= _("Profit") ?>&nbsp;:&nbsp;<?= $call_profit ?? 0 ?>&nbsp;<?= $curr ?>
