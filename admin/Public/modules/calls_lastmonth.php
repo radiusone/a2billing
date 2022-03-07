@@ -95,11 +95,11 @@ if (!empty($type) && !empty($view_type)) {
     die();
 }
 ?>
-<div class="card-text">
+<div class="card-text small">
     <strong><?= _("Report by") ?>:</strong>&nbsp;<label for="view_call_day"><?= _("Days") ?></label>&nbsp;<input id="view_call_day" type="radio" class="period_graph" name="view_call" checked="checked" value="day" data-graph="#call_graph"/>&nbsp;<label for="view_call_month"><?= _("Months") ?></label>&nbsp;<input id="view_call_month" type="radio" class="period_graph" name="view_call" value="month" data-graph="#call_graph"/>
 </div>
 <div class="card-text">
     <strong><?= _("Report Type") ?>:</strong>&nbsp;<label for="call_answer"><?= _("Answered") ?></label>&nbsp;<input id="call_answer" type="radio" class="update_graph" name="mode_call" value="answered" data-graph="#call_graph" data-uri="modules/calls_lastmonth.php"/>&nbsp;<label for="call_incomplet"><?= _("Incomplete") ?></label>&nbsp;<input id="call_incomplet" type="radio" class="update_graph" name="mode_call" value="incomplet" data-graph="#call_graph" data-uri="modules/calls_lastmonth.php"/>&nbsp;<label for="call_times"><?= _("Duration") ?></label>&nbsp;<input id="call_times" type="radio" class="update_graph" name="mode_call" value="times" data-graph="#call_graph" data-uri="modules/calls_lastmonth.php"/>
-    <label for="call_sell"><?= _("Sell") ?></label>&nbsp;<input id="call_sell" type="radio" class="update_graph" name="mode_call" value="sell" data-graph="#call_graph" data-uri="modules/calls_lastmonth.php"/>&nbsp;<label for="call_buy"><?= _("Cost") ?></label>&nbsp;<input id="call_buy" type="radio" class="update_graph" name="mode_call" value="buy" data-graph="#call_graph" data-uri="modules/calls_lastmonth.php"/>&nbsp;<label for="call_profit"><?= _("Profit") ?></label>&nbsp;<input id="call_profit" type="radio" class="update_graph" name="mode_call" value="profit" checked="checked" data-graph="#call_graph" data-uri="modules/calls_lastmonth.php"/>
+    <label for="call_sell"><?= _("Sell") ?></label>&nbsp;<input id="call_sell" type="radio" class="update_graph" name="mode_call" value="sell" checked="checked" data-graph="#call_graph" data-uri="modules/calls_lastmonth.php"/>&nbsp;<label for="call_buy"><?= _("Cost") ?></label>&nbsp;<input id="call_buy" type="radio" class="update_graph" name="mode_call" value="buy" data-graph="#call_graph" data-uri="modules/calls_lastmonth.php"/>&nbsp;<label for="call_profit"><?= _("Profit") ?></label>&nbsp;<input id="call_profit" type="radio" class="update_graph" name="mode_call" value="profit" data-graph="#call_graph" data-uri="modules/calls_lastmonth.php"/>
 </div>
 <div id="call_graph" class="dashgraph"></div>

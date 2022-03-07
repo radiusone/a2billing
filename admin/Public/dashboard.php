@@ -64,19 +64,19 @@ function put_display($position, $title, $links, &$boxes)
 }
 
 if ( !empty($A2B->config["dashboard"]["customer_info_enabled"]) && $A2B->config["dashboard"]["customer_info_enabled"]!="NONE") {
-    put_display($A2B->config["dashboard"]["customer_info_enabled"], gettext("ACCOUNTS INFO"), ["./modules/customers_numbers.php", "./modules/customers_lastmonth.php"], $boxes);
+    put_display($A2B->config["dashboard"]["customer_info_enabled"], gettext("Accounts"), ["./modules/customers_numbers.php", "./modules/customers_lastmonth.php"], $boxes);
 }
 if ( !empty($A2B->config["dashboard"]["refill_info_enabled"]) && $A2B->config["dashboard"]["refill_info_enabled"]!="NONE") {
-    put_display($A2B->config["dashboard"]["refill_info_enabled"], gettext("REFILLS INFO"), ["./modules/refills_lastmonth.php"], $boxes);
+    put_display($A2B->config["dashboard"]["refill_info_enabled"], gettext("Refills"), ["./modules/refills_lastmonth.php"], $boxes);
 }
 if ( !empty($A2B->config["dashboard"]["payment_info_enabled"]) && $A2B->config["dashboard"]["payment_info_enabled"]!="NONE") {
-    put_display($A2B->config["dashboard"]["payment_info_enabled"], gettext("PAYMENTS INFO"), ["./modules/payments_lastmonth.php"], $boxes);
+    put_display($A2B->config["dashboard"]["payment_info_enabled"], gettext("Payments"), ["./modules/payments_lastmonth.php"], $boxes);
 }
 if ( !empty($A2B->config["dashboard"]["call_info_enabled"]) && $A2B->config["dashboard"]["call_info_enabled"]!="NONE") {
-    put_display($A2B->config["dashboard"]["call_info_enabled"], gettext("CALLS INFO TODAY"), ["./modules/calls_counts.php", "./modules/calls_lastmonth.php"], $boxes);
+    put_display($A2B->config["dashboard"]["call_info_enabled"], gettext("Calls"), ["./modules/calls_counts.php", "./modules/calls_lastmonth.php"], $boxes);
 }
 if ( !empty($A2B->config["dashboard"]["system_info_enable"]) && $A2B->config["dashboard"]["system_info_enable"]!="NONE") {
-    put_display($A2B->config["dashboard"]["system_info_enable"], gettext("SYSTEM INFO"), ["./modules/system_info.php"], $boxes);
+    put_display($A2B->config["dashboard"]["system_info_enable"], gettext("System"), ["./modules/system_info.php"], $boxes);
 }
 
 $smarty->display('main.tpl');
@@ -87,8 +87,8 @@ $smarty->display('main.tpl');
     <div class="col-4">
         <?php foreach ($col as $box): ?>
         <div class="card">
+            <h5 class="card-header text-center"><?= $box["title"] ?></h5>
             <div class="card-body">
-                <h4 class="card-title"><?= $box["title"] ?></h4>
                 <?php foreach ($box["links"] as $link) require_once $link ?>
             </div>
         </div>

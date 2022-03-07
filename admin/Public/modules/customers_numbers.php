@@ -53,8 +53,8 @@ foreach ($result as $row) {
 }
 ?>
 <div class="card-text small">
-    <?= _("Total Number of Accounts") ?>&nbsp;:&nbsp;<?= $count_total ?><br/>
-    <strong><?php if ($states[1]): ?><?= _("Total Number of Active Accounts") ?>:</strong>&nbsp;<?= $states[1] ?><br/><?php endif ?>
+    <strong><?= _("Total Number of Accounts") ?>:</strong>&nbsp;<?= $count_total ?><br/>
+    <?php if ($states[1]): ?><strong><?= _("Total Number of Active Accounts") ?>:</strong>&nbsp;<?= $states[1] ?><br/><?php endif ?>
     <?php if ($states[0]): ?><strong><?= _("Cancelled Accounts") ?>:</strong>&nbsp;<?= $states[0] ?><br/><?php endif ?>
     <?php if ($states[2]): ?><strong><?= _("New Accounts") ?>:</strong>&nbsp;<?= $states[2] ?><br/><?php endif ?>
     <?php if ($states[3]): ?><strong><?= _("Account not yet Activated") ?>:</strong>&nbsp;<?= $states[3] ?><br/><?php endif ?>
