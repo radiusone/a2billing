@@ -83,7 +83,7 @@ if (!empty($type) && !empty($view_type)) {
 }
 ?>
 <div class="card-text">
-    <strong><?= _("Report by") ?>:</strong>&nbsp;<label for="view_customer_day"><?= _("Days") ?></label>&nbsp;<input id="view_customer_day" type="radio" class="period_graph" name="view_cust" checked="checked" value="day" data-graph="#cust_graph"><label for="view_customer_month"><?= _("Months") ?></label>&nbsp;<input id="view_customer_month" type="radio" class="period_graph" name="view_cust" value="month" data-graph="#cust_graph">
+    <strong><?= _("Report by") ?>:</strong>&nbsp;<label for="view_customer_day"><?= _("Days") ?></label>&nbsp;<input id="view_customer_day" type="radio" class="period_graph" name="view_cust" checked="checked" value="day" data-graph="#cust_graph">&nbsp;<label for="view_customer_month"><?= _("Months") ?></label>&nbsp;<input id="view_customer_month" type="radio" class="period_graph" name="view_cust" value="month" data-graph="#cust_graph">
 </div>
 <div class="card-text">
     <strong><?= _("Report Type") ?>:</strong>&nbsp;<label for="card_creation"><?= _("Creation") ?></label>&nbsp;<input id="card_creation" type="radio" class="update_graph" name="mode_cust" value="CreationDate" checked="checked" data-graph="#cust_graph" data-uri="modules/customers_lastmonth.php">&nbsp;<label for="card_expiration"><?= _("Expiration") ?></label>&nbsp;<input id="card_expiration" type="radio" class="update_graph" name="mode_cust" value="ExpirationDate" data-graph="#cust_graph" data-uri="modules/customers_lastmonth.php"><label for="card_firstuse"><?= _("First Use") ?></label>&nbsp;<input id="card_firstuse" type="radio" class="update_graph" name="mode_cust" value="FirstUse" data-graph="#cust_graph" data-uri="modules/customers_lastmonth.php">

@@ -81,7 +81,7 @@ if (!empty($type) && !empty($view_type)) {
 }
 ?>
 <div class="card-text">
-    <strong><?= _("Report by") ?>:</strong>&nbsp;<label for="view_refill_day"><?= _("Days") ?></label>&nbsp;<input id="view_refill_day" type="radio" class="period_graph" name="view_refill" value="day" checked="checked" data-graph="#refills_graph"/><label for="view_refill_month"><?= _("Months") ?></label>&nbsp;<input id="view_refill_month" type="radio" class="period_graph" name="view_refill" value="month" data-graph="#refills_graph"/>
+    <strong><?= _("Report by") ?>:</strong>&nbsp;<label for="view_refill_day"><?= _("Days") ?></label>&nbsp;<input id="view_refill_day" type="radio" class="period_graph" name="view_refill" value="day" checked="checked" data-graph="#refills_graph"/>&nbsp;<label for="view_refill_month"><?= _("Months") ?></label>&nbsp;<input id="view_refill_month" type="radio" class="period_graph" name="view_refill" value="month" data-graph="#refills_graph"/>
 </div>
 <div class="card-text">
     <strong><?= _("Report Type") ?>:</strong>&nbsp;<label for="refills_count"><?= _("Refill Count") ?></label>&nbsp;<input id="refills_count" type="radio" name="mode_refill" class="update_graph" value="count" checked="checked" data-graph="#refills_graph" data-uri="modules/refills_lastmonth.php"/><label for="refills_amount"><?= _("Refill Amount") ?></label>&nbsp;<input id="refills_amount" type="radio" name="mode_refill" class="update_graph" value="amount" data-graph="#refills_graph" data-uri="modules/refills_lastmonth.php"/>
