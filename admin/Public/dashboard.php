@@ -42,13 +42,13 @@ if (!has_rights(ACX_DASHBOARD)) {
 //month view
 $st = (new DateTime('midnight first day of this month'))->modify('-6 months -15 days');
 $checkdate_month = $st->format("Y-m-d");
-$mingraph_month = $st->format("U");
-$maxgraph_month = (new DateTime('midnight first day of next month'))->format("U");
+$mingraph_month = $st;
+$maxgraph_month = (new DateTime('midnight first day of next month'));
 
 //day view
 $checkdate_day = (new DateTime('midnight -10 days'))->format("Y-m-d");
-$mingraph_day = (new DateTime('midnight -10 days -12 hours'))->format("U");
-$maxgraph_day = (new DateTime('midnight +1 day'))->format("U");
+$mingraph_day = (new DateTime('midnight -10 days -12 hours'));
+$maxgraph_day = (new DateTime('midnight +1 day'));
 
 $boxes = ["left" => [], "center" => [], "right" => []];
 
@@ -109,7 +109,7 @@ $(function () {
             if (item) {
                 if (previousPoint !== item.datapoint) {
                     let y;
-                    const format = $(this).data("dataFormat");
+                    const format = $(this).data("tooltipFormat");
                     previousPoint = item.datapoint;
                     $("#tooltip").remove();
                     if (format === "time") {
@@ -139,11 +139,8 @@ $(function () {
             {type: this.id, view_type: graph.data("period")},
             function(data) {
                 const graph_max = data.max;
-                const graph_data = [];
-                for (let i = 0; i < data.data.length; i++) {
-                    graph_data[i] = [parseInt(data.data[i][0]), data.data[i][1]];
-                }
-                graph.data("dataFormat", data.format);
+                const graph_data = data.data;
+                graph.data("tooltipFormat", data.format);
                 plot_graph(graph_data, graph_max, graph);
             }
         );
@@ -152,24 +149,32 @@ $(function () {
     $('.period_graph').on('change', function () {
         const graph = $($(this).data("graph"));
         graph.data("period", $(this).val());
-        graph.data("xformat", $(this).val() === "month" ? "%b" : "%d-%m");
         $(".update_graph", graph.parent()).filter(":checked").click();
     });
 
-    $(".period_graph[value=day]").click().change();
+    $(".dashgraph").data("period", "day").data("xformat", "%d-%m");
     $(".update_graph[checked=checked]").click();
 
     function plot_graph(data, max, graph) {
         const d = data;
         const period_val = graph.data("period");
         const max_data = (max + 5 - (max % 5));
-        const min_month = <?= $mingraph_month * 1000 ?>;
-        const max_month = <?= $maxgraph_month * 1000 ?>;
-        const min_day = <?= $mingraph_day * 1000 ?>;
-        const max_day = <?= $maxgraph_day * 1000 ?>;
-        const min_graph = period_val === "month" ? min_day : min_month;
-        const max_graph = period_val === "month" ? max_day : max_month;
-        const bar_width = period_val === "month" ? 28 * 24 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000;
+
+        const min_month = <?= $mingraph_month->format("U") ?> * 1000; // <?= $mingraph_month->format("Y-m-d H:i:s") ?>
+        const max_month = <?= $maxgraph_month->format("U") ?> * 1000; // <?= $maxgraph_month->format("Y-m-d H:i:s") ?>
+        const min_day = <?= $mingraph_day->format("U") ?> * 1000; // <?= $mingraph_day->format("Y-m-d H:i:s") ?>
+        const max_day = <?= $maxgraph_day->format("U") ?> * 1000; // <?= $maxgraph_day->format("Y-m-d H:i:s") ?>
+
+        const min_graph = min_day;
+        const max_graph = max_day;
+        const bar_width = 24 * 60 * 60 * 1000;
+        const time_format = "%d-%m";
+        if (period_val === "month") {
+            min_graph = min_month;
+            max_graph = max_month;
+            bar_width *= 28;
+            time_format = "%b";
+        }
 
         $.plot(
             graph,
@@ -178,7 +183,7 @@ $(function () {
                 bars: {show: true, barWidth: bar_width, align: "centered"}
             }],
             {
-                xaxis: {mode: "time", timeformat: graph.data("xformat"), ticks: 6, min: min_graph, max: max_graph},
+                xaxis: {autoscale: "none", mode: "time", timeformat: time_format, ticks: 6, min: min_graph, max: max_graph, timeBase: "milliseconds"},
                 yaxis: {max: max_data, minTickSize: 1, tickDecimals: 0},
                 selection: {mode: "y"},
                 grid: {hoverable: true, clickable: true}

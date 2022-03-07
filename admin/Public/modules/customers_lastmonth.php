@@ -76,7 +76,7 @@ if (!empty($type) && !empty($view_type)) {
     if (is_array($result)) {
         foreach ($result as $row) {
             $max = max($max, $row[1]);
-            $data[] = [$row[0], floatval($row[1])];
+            $data[] = [intval($row[0]), floatval($row[1])];
         }
     }
     $response = ["max" => floatval($max), "data" => $data , "format" => $format];
