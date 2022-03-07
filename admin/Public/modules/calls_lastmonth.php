@@ -59,37 +59,35 @@ if (!empty($type) && !empty($view_type)) {
     $dt_fmt = $view_type === "month" ? "%Y-%m-01" : "%Y-%m-%d";
     switch ($type) {
         case "call_answer":
-            $query = "SELECT UNIX_TIMESTAMP(DATE_FORMAT(starttime,'$dt_fmt')) * 1000 AS period, COUNT(*) FROM cc_call WHERE starttime >= '$ck_dt' AND starttime <= CURRENT_TIMESTAMP AND terminatecauseid = 1 GROUP BY period ORDER BY period";
+            $query = "SELECT UNIX_TIMESTAMP(DATE_FORMAT(starttime, ?)) * 1000 AS period, COUNT(*) FROM cc_call WHERE starttime >= ? AND starttime <= CURRENT_TIMESTAMP AND terminatecauseid = 1 GROUP BY period ORDER BY period";
             break;
         case "call_incomplet":
-            $query = "SELECT UNIX_TIMESTAMP(DATE_FORMAT(starttime,'$dt_fmt')) * 1000 AS period, COUNT(*) FROM cc_call WHERE starttime >= '$ck_dt' AND starttime <= CURRENT_TIMESTAMP AND terminatecauseid != 1 GROUP BY period ORDER BY period";
+            $query = "SELECT UNIX_TIMESTAMP(DATE_FORMAT(starttime, ?)) * 1000 AS period, COUNT(*) FROM cc_call WHERE starttime >= ? AND starttime <= CURRENT_TIMESTAMP AND terminatecauseid != 1 GROUP BY period ORDER BY period";
             break;
         case "call_times":
-            $query = "SELECT UNIX_TIMESTAMP(DATE_FORMAT(starttime,'$dt_fmt')) * 1000 AS period, SUM(sessiontime) FROM cc_call WHERE starttime >= '$ck_dt' AND starttime <= CURRENT_TIMESTAMP GROUP BY period ORDER BY period";
+            $query = "SELECT UNIX_TIMESTAMP(DATE_FORMAT(starttime, ?)) * 1000 AS period, SUM(sessiontime) FROM cc_call WHERE starttime >= ? AND starttime <= CURRENT_TIMESTAMP GROUP BY period ORDER BY period";
             $format = "time";
             break;
         case "call_sell":
-            $query = "SELECT UNIX_TIMESTAMP(DATE_FORMAT(starttime,'$dt_fmt')) * 1000 AS period, SUM(sessionbill) FROM cc_call WHERE starttime >= '$ck_dt' AND starttime <= CURRENT_TIMESTAMP GROUP BY period ORDER BY period";
+            $query = "SELECT UNIX_TIMESTAMP(DATE_FORMAT(starttime, ?)) * 1000 AS period, SUM(sessionbill) FROM cc_call WHERE starttime >= ? AND starttime <= CURRENT_TIMESTAMP GROUP BY period ORDER BY period";
             $format = "money";
             break;
         case "call_buy":
-            $query = "SELECT UNIX_TIMESTAMP(DATE_FORMAT(starttime,'$dt_fmt')) * 1000 AS period, SUM(buycost) FROM cc_call WHERE starttime >= '$ck_dt' AND starttime <= CURRENT_TIMESTAMP GROUP BY period ORDER BY period";
+            $query = "SELECT UNIX_TIMESTAMP(DATE_FORMAT(starttime, ?)) * 1000 AS period, SUM(buycost) FROM cc_call WHERE starttime >= ? AND starttime <= CURRENT_TIMESTAMP GROUP BY period ORDER BY period";
             $format = "money";
             break;
         case "call_profit":
-            $query = "SELECT UNIX_TIMESTAMP(DATE_FORMAT(starttime,'$dt_fmt')) * 1000 AS period, SUM(sessionbill) - SUM(buycost) FROM cc_call WHERE starttime >= '$ck_dt' AND starttime <= CURRENT_TIMESTAMP GROUP BY period ORDER BY period";
+            $query = "SELECT UNIX_TIMESTAMP(DATE_FORMAT(starttime, ?)) * 1000 AS period, SUM(sessionbill) - SUM(buycost) FROM cc_call WHERE starttime >= ? AND starttime <= CURRENT_TIMESTAMP GROUP BY period ORDER BY period";
             $format = "money";
             break;
         default:
             die();
     }
 
-    $result = (new Table())->SQLExec(DbConnect(), $query);
-    if (is_array($result)) {
-        foreach ($result as $row) {
-            $max = max($max, $row[1]);
-            $data[] = [intval($row[0]), floatval($row[1])];
-        }
+    $result = DbConnect()->Execute($query, [$dt_fmt, $ck_dt]);
+    while ($row = $result->FetchRow()) {
+        $max = max($max, $row[1]);
+        $data[] = [intval($row[0]), floatval($row[1])];
     }
     $response = ["max" => floatval($max), "data" => $data , "format" => $format];
     header("Content-Type: application/json");

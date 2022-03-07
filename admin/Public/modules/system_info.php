@@ -64,13 +64,13 @@ $php = phpversion();
 $server_name = $_SERVER['SERVER_NAME'];
 
 ?>
-<div class="card-text">
-<?= _("Operation System Version") ?>&nbsp;:&nbsp;<?= $OS ?><br/>
-<?= _("Asterisk Version") ?>&nbsp;:&nbsp;<?= $asterisk ?><br/>
-<?= _("PHP Version") ?>&nbsp;:&nbsp;<?= $php ?><br/>
-<?= _("A2B Database Version") ?>&nbsp;:&nbsp;<?= $database ?><br/>
-<?= _("User Interface") ?>&nbsp;:&nbsp;<?= $UI ?><br/>
-<?= _("User Interface Path") ?>&nbsp;:&nbsp;<?= $UI_path ?><br/><br/>
-<?= _("Server Name") ?>&nbsp;:&nbsp;<?= $server_name ?><br/>
-<?= _("Database") ?>&nbsp;:&nbsp;<?= $mysql ?><br/>
+<div class="card-text small">
+    <strong><?= _("Operation System Version") ?>:</strong>&nbsp;<?= $OS ?><br/>
+    <strong><?= _("Asterisk Version") ?>:</strong>&nbsp;<?= $asterisk ?><br/>
+    <strong><?= _("PHP Version") ?>:</strong>&nbsp;<?= $php ?><br/>
+    <strong><?= _("A2B Database Version") ?>:</strong>&nbsp;<?= $database ?><br/>
+    <strong><?= _("User Interface") ?>:</strong>&nbsp;<?= $UI ?><br/>
+    <strong><?= _("User Interface Path") ?>:</strong>&nbsp;<?= $UI_path ?><br/><br/>
+    <strong><?= _("Server Name") ?>:</strong>&nbsp;<?= $server_name ?><br/>
+    <strong><?= _("Database") ?>:</strong>&nbsp;<?= $mysql ?><br/>
 </div>

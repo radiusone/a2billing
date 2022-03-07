@@ -59,22 +59,20 @@ if (!empty($type) && !empty($view_type)) {
     $dt_fmt = $view_type === "month" ? "%Y-%m-01" : "%Y-%m-%d";
     switch ($type) {
         case "payments_count":
-            $query = "SELECT UNIX_TIMESTAMP(DATE_FORMAT(date, '$dt_fmt')) * 1000 AS period, COUNT(*) FROM cc_logpayment WHERE date >= '$ck_dt' AND date <= CURRENT_TIMESTAMP GROUP BY period ORDER BY period";
+            $query = "SELECT UNIX_TIMESTAMP(DATE_FORMAT(date, ?)) * 1000 AS period, COUNT(*) FROM cc_logpayment WHERE date >= ? AND date <= CURRENT_TIMESTAMP GROUP BY period ORDER BY period";
             break;
         case 'payments_amount':
-            $query = "SELECT UNIX_TIMESTAMP(DATE_FORMAT(date, '$dt_fmt')) * 1000 AS period, SUM(payment) FROM cc_logpayment WHERE date >= '$ck_dt' AND date <= CURRENT_TIMESTAMP GROUP BY period ORDER BY period";
+            $query = "SELECT UNIX_TIMESTAMP(DATE_FORMAT(date, ?)) * 1000 AS period, SUM(payment) FROM cc_logpayment WHERE date >= ? AND date <= CURRENT_TIMESTAMP GROUP BY period ORDER BY period";
             $format='money';
             break;
         default:
             die();
     }
 
-    $result = (new Table())->SQLExec(DbConnect(), $query);
-    if (is_array($result)) {
-        foreach ($result as $row) {
-            $max = max($max, $row[1]);
-            $data[] = [intval($row[0]), floatval($row[1])];
-        }
+    $result = DbConnect()->Execute($query, [$dt_fmt, $ck_dt]);
+    while ($row = $result->FetchRow()) {
+        $max = max($max, $row[1]);
+        $data[] = [intval($row[0]), floatval($row[1])];
     }
     $response = ["max" => floatval($max), "data" => $data , "format" => $format];
     header("Content-Type: application/json");

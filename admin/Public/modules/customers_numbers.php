@@ -52,13 +52,13 @@ foreach ($result as $row) {
     // 0 = cancelled, 1 = active, 2 = new, 3 = waiting, 4 = reserved, 5 = expired, 6|7 = suspended
 }
 ?>
-<div class="card-text">
+<div class="card-text small">
     <?= _("Total Number of Accounts") ?>&nbsp;:&nbsp;<?= $count_total ?><br/>
-    <?php if ($states[1]): ?><?= _("Total Number of Active Accounts") ?>&nbsp;:&nbsp;<?= $states[1] ?><br/><?php endif ?>
-    <?php if ($states[0]): ?><?= _("Cancelled Accounts") ?>&nbsp;:&nbsp;<?= $states[0] ?><br/><?php endif ?>
-    <?php if ($states[2]): ?><?= _("New Accounts") ?>&nbsp;:&nbsp;<?= $states[2] ?><br/><?php endif ?>
-    <?php if ($states[3]): ?><?= _("Account not yet Activated") ?>&nbsp;:&nbsp;<?= $states[3] ?><br/><?php endif ?>
-    <?php if ($states[4]): ?><?= _("Accounts Reserved") ?>&nbsp;:&nbsp;<?= $states[4] ?><br/><?php endif ?>
-    <?php if ($states[5]): ?><?= _("Accounts Expired") ?>&nbsp;:&nbsp;<?= $states[5] ?><br/><?php endif ?>
-    <?php if ($states[6] + $states[7]): ?><?= _("Accounts Suspended") ?>&nbsp;:&nbsp;<?= $states[6] + $states[7] ?><br/><?php endif ?>
+    <strong><?php if ($states[1]): ?><?= _("Total Number of Active Accounts") ?>:</strong>&nbsp;<?= $states[1] ?><br/><?php endif ?>
+    <?php if ($states[0]): ?><strong><?= _("Cancelled Accounts") ?>:</strong>&nbsp;<?= $states[0] ?><br/><?php endif ?>
+    <?php if ($states[2]): ?><strong><?= _("New Accounts") ?>:</strong>&nbsp;<?= $states[2] ?><br/><?php endif ?>
+    <?php if ($states[3]): ?><strong><?= _("Account not yet Activated") ?>:</strong>&nbsp;<?= $states[3] ?><br/><?php endif ?>
+    <?php if ($states[4]): ?><strong><?= _("Accounts Reserved") ?>:</strong>&nbsp;<?= $states[4] ?><br/><?php endif ?>
+    <?php if ($states[5]): ?><strong><?= _("Accounts Expired") ?>:</strong>&nbsp;<?= $states[5] ?><br/><?php endif ?>
+    <?php if ($states[6] + $states[7]): ?><strong><?= _("Accounts Suspended") ?>:</strong>&nbsp;<?= $states[6] + $states[7] ?><br/><?php endif ?>
 </div>
