@@ -98,7 +98,7 @@ if (!empty($type) && !empty($view_type)) {
 }
 ?>
 <div class="card-text">
-    <strong><?= _("Report by") ?>:</strong>&nbsp;<label for="view_call_day"><?= _("Days") ?></label>&nbsp;<input id="view_call_day" type="radio" class="period_graph" name="view_call" value="day" data-graph="#call_graph"/>&nbsp;<label for="view_call_month"><?= _("Months") ?></label>&nbsp;<input id="view_call_month" type="radio" class="period_graph" name="view_call" value="month" data-graph="#call_graph"/>
+    <strong><?= _("Report by") ?>:</strong>&nbsp;<label for="view_call_day"><?= _("Days") ?></label>&nbsp;<input id="view_call_day" type="radio" class="period_graph" name="view_call" checked="checked" value="day" data-graph="#call_graph"/>&nbsp;<label for="view_call_month"><?= _("Months") ?></label>&nbsp;<input id="view_call_month" type="radio" class="period_graph" name="view_call" value="month" data-graph="#call_graph"/>
 </div>
 <div class="card-text">
     <strong><?= _("Report Type") ?>:</strong>&nbsp;<label for="call_answer"><?= _("Answered") ?></label>&nbsp;<input id="call_answer" type="radio" class="update_graph" name="mode_call" value="answered" data-graph="#call_graph" data-uri="modules/calls_lastmonth.php"/>&nbsp;<label for="call_incomplet"><?= _("Incomplete") ?></label>&nbsp;<input id="call_incomplet" type="radio" class="update_graph" name="mode_call" value="incomplet" data-graph="#call_graph" data-uri="modules/calls_lastmonth.php"/>&nbsp;<label for="call_times"><?= _("Duration") ?></label>&nbsp;<input id="call_times" type="radio" class="update_graph" name="mode_call" value="times" data-graph="#call_graph" data-uri="modules/calls_lastmonth.php"/>

@@ -38,52 +38,39 @@ if (!has_rights(ACX_DASHBOARD)) {
     die();
 }
 
-exec("lsb_release -d 2> /dev/null", $output);
+exec("uname -a 2> /dev/null", $output);
 
 $distro_info = $output[0];
-$info_tmp = preg_split('/:/', $distro_info, 2);
-$OS = trim($info_tmp[1]);
-$OS_img = preg_split('/ /', $OS);
+$info_tmp = explode(' ', $distro_info, 4);
+$OS = $info_tmp[0] . ' ' . $info_tmp[2];
 
-$info_tmp = preg_split("/ - /", COPYRIGHT);
-$UI = $info_tmp[0].' '.$info_tmp[1];
+$info_tmp = explode(" - ", COPYRIGHT);
+$UI = $info_tmp[0] . ' ' . $info_tmp[1];
 
-$UI_path = '';
-$info_tmp = preg_split('#//#', $_SERVER["SCRIPT_FILENAME"]);
-foreach ($info_tmp as $value) {
-    if($value != 'admin')
-        $UI_path .= $value . '/';
-    else
-        break;
-}
+$UI_path = substr(__DIR__, 0, strpos(__DIR__, "/admin"));
 
 $DBHandle = DbConnect();
-$rs = $DBHandle -> Execute('SELECT VERSION();');
-$rs = $rs -> FetchRow();
-$info_tmp = preg_split('/-/', $rs[0], 2);
-$mysql = $info_tmp[0];
+$rs = $DBHandle->Execute('SELECT VERSION()');
+$rs = $rs->FetchRow();
+$info_tmp = explode('-', $rs[0]);
+$mysql = $info_tmp[1] . ' ' . $info_tmp[0];
 
-$rs = $DBHandle -> Execute('SELECT * FROM cc_version;');
-$rs = $rs -> FetchRow();
+$rs = $DBHandle->Execute('SELECT * FROM cc_version');
+$rs = $rs->FetchRow();
 $database = $rs[0];
 
 $asterisk = str_replace('_','.',ASTERISK_VERSION);
 $php = phpversion();
-$ip_address = $_SERVER['REMOTE_ADDR'];
-$server_ip_address = $_SERVER['SERVER_ADDR'];
 $server_name = $_SERVER['SERVER_NAME'];
 
 ?>
-
-<?php echo gettext("Operation System Version");?>&nbsp;:&nbsp;<img height="15" src="templates/default/images/OSicon/<?php echo $OS_img[0]; ?>.png">&nbsp;<?php echo $OS; ?><br/>
-<?php echo gettext("Asterisk Version");?>&nbsp;:&nbsp;<?php echo $asterisk; ?><br/>
-<?php echo gettext("PHP Version");?>&nbsp;:&nbsp;<?php echo $php; ?><br/>
-
-<?php echo gettext("A2B DataBase Version");?>&nbsp;:&nbsp;<?php echo $database; ?><br/>
-<?php echo gettext("User Interface");?>&nbsp;:&nbsp;<img height="15" src="templates/default/images/favicon.ico">&nbsp;<?php echo $UI; ?><br/>
-<?php echo gettext("User Interface Path");?>&nbsp;:&nbsp;<?php echo $UI_path; ?><br/><br/>
-<?php echo gettext("Server Name");?>&nbsp;:&nbsp;<font style="text-decoration: underline"><?php echo $server_name; ?></font><br/>
-<?php echo gettext("Server Ip Address");?>&nbsp;:&nbsp;<font style="text-decoration: underline"><?php echo $server_ip_address; ?></font><br/>
-<?php echo gettext("You Ip Address");?>&nbsp;:&nbsp;<font style="text-decoration: underline"><?php echo $ip_address; ?></font><br/>
-
-<?php echo gettext("MYSQL");?>&nbsp;:&nbsp;<?php echo $mysql; ?><br/>
+<div class="card-text">
+<?= _("Operation System Version") ?>&nbsp;:&nbsp;<?= $OS ?><br/>
+<?= _("Asterisk Version") ?>&nbsp;:&nbsp;<?= $asterisk ?><br/>
+<?= _("PHP Version") ?>&nbsp;:&nbsp;<?= $php ?><br/>
+<?= _("A2B Database Version") ?>&nbsp;:&nbsp;<?= $database ?><br/>
+<?= _("User Interface") ?>&nbsp;:&nbsp;<?= $UI ?><br/>
+<?= _("User Interface Path") ?>&nbsp;:&nbsp;<?= $UI_path ?><br/><br/>
+<?= _("Server Name") ?>&nbsp;:&nbsp;<?= $server_name ?><br/>
+<?= _("Database") ?>&nbsp;:&nbsp;<?= $mysql ?><br/>
+</div>

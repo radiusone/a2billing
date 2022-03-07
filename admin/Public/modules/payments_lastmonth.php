@@ -89,6 +89,7 @@ if (!empty($type) && !empty($view_type)) {
             class="period_graph"
             name="view_payment"
             value="day"
+            checked="checked"
             data-graph="#payments_graph"/
     >&nbsp;<label for="view_payment_month"><?= _("Months") ?></label>&nbsp;<input
             id="view_payment_month"

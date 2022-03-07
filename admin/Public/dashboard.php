@@ -170,12 +170,12 @@ $(function () {
 
         let min_graph = min_day;
         let max_graph = max_day;
-        let bar_width = 24 * 60 * 60 * 1000;
-        let time_format = "%d-%m";
+        let bar_width = 22 * 60 * 60 * 1000;
+        let time_format = "%d\n%b";
         if (period_val === "month") {
             min_graph = min_month;
             max_graph = max_month;
-            bar_width *= 28;
+            bar_width *= 24;
             time_format = "%b";
         }
 
