@@ -94,7 +94,7 @@ class A2Billing
     /**
     * DBHandle variables
     *
-    * @var object
+    * @var \ADOConnection
     */
     public $DBHandle;
 

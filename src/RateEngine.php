@@ -52,7 +52,7 @@ class RateEngine
     public $lastbuycost         = 0;
     public $answeredtime        = 0;
     public $real_answeredtime   = 0;
-    public $dialstatus          = 0;
+    public $dialstatus          = "";
     public $usedratecard        = 0;
     public $webui               = 1;
     public $usedtrunk           = 0;
@@ -74,10 +74,10 @@ class RateEngine
         $this->answeredtime = 0;
         $this->real_answeredtime = 0;
         $this->dialstatus = '';
-        $this->usedratecard = '';
-        $this->usedtrunk = '';
-        $this->lastcost = '';
-        $this->lastbuycost = '';
+        $this->usedratecard = 0;
+        $this->usedtrunk = 0;
+        $this->lastcost = 0;
+        $this->lastbuycost = 0;
 
     }
 
