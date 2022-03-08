@@ -77,7 +77,7 @@ define("SMTP_USERNAME", isset($A2B->config['global']['smtp_username']) ? $A2B->c
 define("SMTP_PASSWORD", isset($A2B->config['global']['smtp_password']) ? $A2B->config['global']['smtp_password'] : null);
 
 // Print header
-$A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "AGI Request:\n" . print_r($agi->request, true));
+$A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "AGI Request:\n" . json_encode($agi->request));
 
 /* GET THE AGI PARAMETER */
 $A2B->get_agi_request_parameter($agi);

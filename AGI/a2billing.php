@@ -114,7 +114,7 @@ define("SMTP_USERNAME", $A2B->config['global']['smtp_username'] ?? null);
 define("SMTP_PASSWORD", $A2B->config['global']['smtp_password'] ?? null);
 
 // Print header
-$A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "AGI Request:\n" . print_r($agi->request, true));
+$A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "AGI Request:\n" . json_encode($agi->request));
 $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[INFO : $agi_version]");
 
 /* GET THE AGI PARAMETER */
@@ -1307,7 +1307,7 @@ function insert_callback(A2Billing $A2B, Agi $agi, string $uniqueid, string $cha
         $caller_id,
         $timeout,
     ];
-    $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[CALLBACK-ALL : INSERT CALLBACK REQUEST IN SPOOL : QUERY=$query, PARAMS=". print_r($params, 1) . "]");
+    $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[CALLBACK-ALL : INSERT CALLBACK REQUEST IN SPOOL : QUERY=$query, PARAMS=". json_encode($params) . "]");
     $res = $A2B->DBHandle->Execute($query, $params);
 
     if (!$res) {

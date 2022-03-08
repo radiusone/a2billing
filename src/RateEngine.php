@@ -210,10 +210,10 @@ class RateEngine
             $myresult = array();
             $myresult = $result;
             $mysearchvalue = array();
-            if ($this->webui) $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[rate-engine: MYRESULT before sort \n" . print_r($myresult, true));
+            if ($this->webui) $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[rate-engine: MYRESULT before sort \n" . json_encode($myresult));
             // 3 - tariff plan, 5 - dialprefix
             $myresult = $this->array_csort($myresult, '3', SORT_NUMERIC, '5', SORT_NUMERIC, SORT_DESC);
-            if ($this->webui) $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[rate-engine: MYRESULT after sort \n" . print_r($myresult, true));
+            if ($this->webui) $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[rate-engine: MYRESULT after sort \n" . json_encode($myresult));
             $countdelete = 0;
             $resultcount = 0;
             $mysearchvalue[$resultcount] = $myresult[0];
@@ -221,12 +221,12 @@ class RateEngine
                 $mysearchvalue[$resultcount] = $myresult[$ii];
                 if ($this->webui) {
                     $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[rate-engine: Begin for ii value " . $ii . "]");
-                    $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[rate-engine: MYSEARCHCVALUE \n" . print_r($mysearchvalue, true) . "]");
+                    $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[rate-engine: MYSEARCHCVALUE \n" . json_encode($mysearchvalue) . "]");
                 };
                 if (count($myresult) > 0) {
                     foreach ($myresult as $j=>$i) {
                         if ($this->webui) {
-                            $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[rate-engine: foreach J=" . print_r($j, true));
+                            $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[rate-engine: foreach J=" . json_encode($j));
                             $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[rate-engine:mysearchvalue[4]=" . $mysearchvalue[$resultcount][4]);
                             $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[rate-engine:i[4]=" . $i[4]);
                             $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[rate-engine:mysearchvalue[3]=" . $mysearchvalue[$resultcount][3]);
@@ -246,7 +246,7 @@ class RateEngine
                         }
                     } //end foreach
                     $myresult = array_values($myresult);
-                    $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[rate-engine: MYRESULT  after foreach \n" . print_r($myresult, true));
+                    $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[rate-engine: MYRESULT  after foreach \n" . json_encode($myresult));
                     $resultcount++;
                     if ($this->webui) {
                         $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[rate-engine: Count MYRESULT after foreach=" . count($myresult) . "]");
@@ -257,7 +257,7 @@ class RateEngine
             }  //end for
             if ($this->webui) {
                 $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[rate-engine: COUNTDELETE=" . $countdelete . "]");
-                $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[rate-engine: MYRESULT  before unset \n" . print_r($myresult, true));
+                $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[rate-engine: MYRESULT  before unset \n" . json_encode($myresult));
             };
             if (count($result) > 1 and $countdelete != 0) {
                 if ($this->webui) $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[rate-engine: LAST UNSET");
@@ -272,15 +272,15 @@ class RateEngine
             };
             if ($this->webui) {
                 $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[rate-engine: RESULTCOUNT" . $resultcount . "]");
-                $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[rate-engine: MYRESULT  after delete \n" . print_r($myresult, true));
-                $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[rate-engine: MYSEARCHVALUE after delete \n" . print_r($mysearchvalue, true));
+                $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[rate-engine: MYRESULT  after delete \n" . json_encode($myresult));
+                $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[rate-engine: MYSEARCHVALUE after delete \n" . json_encode($mysearchvalue));
                 $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[rate-engine: Count Total result after 4 " . count($myresult) . "]");
             };
             if (count($result) > 1 and $countdelete != 0) {
                 $result = $mysearchvalue;
             };
             unset($mysearchvalue);
-            if ($this->webui) $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[rate-engine: RESULT  after delete \n" . print_r($result, true));
+            if ($this->webui) $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[rate-engine: RESULT  after delete \n" . json_encode($result));
         }
 
         //2) TAKE THE VALUE OF LCTYPE

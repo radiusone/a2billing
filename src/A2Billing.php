@@ -589,7 +589,7 @@ class A2Billing
 
         // Print out on CLI for debug purpose
         if (!$webui) $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, 'A2Billing AGI internal configuration:');
-        if (!$webui) $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, print_r($this->agiconfig, true));
+        if (!$webui) $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, json_encode($this->agiconfig));
         return true;
     }
 
@@ -1146,7 +1146,7 @@ class A2Billing
         $card_alias = $this->destination;
         $QUERY = "SELECT name, cc_card.username FROM cc_sip_buddies, cc_card WHERE cc_sip_buddies.id_cc_card = cc_card.id AND useralias = '" . $this->destination . "'";
         $result = $this->instance_table->SQLExec($this->DBHandle, $QUERY);
-        $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "RESULT : " . print_r($result, true));
+        $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "RESULT : " . json_encode($result));
 
         if (is_array($result) && count($result) > 0) {
             $sip_buddies = 1;
@@ -2303,7 +2303,7 @@ class A2Billing
         $QUERY = "SELECT voucher, credit, activated, tag, currency, expirationdate FROM cc_voucher WHERE expirationdate >= CURRENT_TIMESTAMP AND activated = 't' AND voucher = '" . $this->vouchernumber . "'";
 
         $result = $this->instance_table->SQLExec($this->DBHandle, $QUERY);
-        $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[VOUCHER SELECT: $QUERY]\n" . print_r($result, true));
+        $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[VOUCHER SELECT: $QUERY]\n" . json_encode($result));
 
         if ($result[0][0] == $this->vouchernumber) {
             if (!isset($currencies_list[strtoupper($result[0][4])][2])) {
@@ -2516,7 +2516,7 @@ class A2Billing
                 " WHERE (cc_callerid.activated = 1 OR cc_callerid.activated = 't') AND cc_card.username = '" . $this->username . "' ";
             $QUERY .= "ORDER BY 1";
             $result1 = $this->instance_table->SQLExec($this->DBHandle, $QUERY);
-            $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, print_r($result1, true));
+            $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, json_encode($result1));
         }
 
         $QUERY = "";
@@ -2532,14 +2532,14 @@ class A2Billing
                 " AND cc_did_destination.validated = 1";
             $QUERY .= " ORDER BY 1";
             $result2 = $this->instance_table->SQLExec($this->DBHandle, $QUERY);
-            $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, print_r($result2, true));
+            $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, json_encode($result2));
         }
 
         if (count($result1) > 0 || count($result2) > 0) {
             $result = array_merge((array) $result1, (array) $result2);
         }
 
-        $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "RESULT MERGE->" . print_r($result, true));
+        $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "RESULT MERGE->" . json_encode($result));
 
         if (!is_array($result)) {
             $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[CID_SANITIZE - CID: NO DATA]");
@@ -2690,7 +2690,7 @@ class A2Billing
                     " LEFT JOIN cc_country ON cc_card.country = cc_country.countrycode " .
                     " WHERE cc_callerid.cid = '" . $this->CallerID . "'";
             $result = $this->instance_table->SQLExec($this->DBHandle, $QUERY);
-            $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, print_r($result, true));
+            $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, json_encode($result));
 
             if (!is_array($result)) {
 
@@ -3126,7 +3126,7 @@ class A2Billing
                     " WHERE username = '" . $this->cardnumber . "'";
 
                 $result = $this->instance_table->SQLExec($this->DBHandle, $QUERY);
-                $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, print_r($result, true));
+                $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, json_encode($result));
 
                 if (!is_array($result)) {
                     $prompt = "prepaid-auth-fail";
@@ -3145,7 +3145,7 @@ class A2Billing
                             " WHERE cc_callerid.cid = '" . $this->CallerID .
                             "' AND cc_callerid.id_cc_card = '" . $result[0][23] . "'";
                         $result_check_cid = $this->instance_table->SQLExec($this->DBHandle, $QUERY);
-                        $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, print_r($result_check_cid, true));
+                        $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, json_encode($result_check_cid));
 
                         if (!is_array($result_check_cid)) {
                             $prompt = "prepaid-auth-fail";
@@ -3449,7 +3449,7 @@ class A2Billing
 
         $QUERY = "SELECT sum(sessiontime), count(*) FROM cc_call WHERE card_id = '" . $this->id_card . "'";
         $result = $this->instance_table->SQLExec($this->DBHandle, $QUERY);
-        $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[DECK SWITCH - Start]" . print_r($result, true));
+        $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[DECK SWITCH - Start]" . json_encode($result));
         $sessiontime_for_card = $result[0][0];
         $calls_for_card = $result[0][1];
 
