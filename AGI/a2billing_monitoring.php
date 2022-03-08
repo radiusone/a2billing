@@ -68,7 +68,7 @@ $A2B = new A2Billing();
 $A2B->load_conf($agi, NULL, 0, $idconfig);
 $A2B->agiconfig['verbosity_level'] = 4;
 $A2B->agiconfig['logging_level'] = 0;
-$A2B->debug(INFO, $agi, __FILE__, __LINE__, "START MORNITORING");
+$A2B->debug(A2Billing::INFO, $agi, __FILE__, __LINE__, "START MORNITORING");
 
 define("DB_TYPE", isset($A2B->config["database"]['dbtype']) ? $A2B->config["database"]['dbtype'] : null);
 define("SMTP_SERVER", isset($A2B->config['global']['smtp_server']) ? $A2B->config['global']['smtp_server'] : null);
@@ -77,7 +77,7 @@ define("SMTP_USERNAME", isset($A2B->config['global']['smtp_username']) ? $A2B->c
 define("SMTP_PASSWORD", isset($A2B->config['global']['smtp_password']) ? $A2B->config['global']['smtp_password'] : null);
 
 // Print header
-$A2B->debug(DEBUG, $agi, __FILE__, __LINE__, "AGI Request:\n" . print_r($agi->request, true));
+$A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "AGI Request:\n" . print_r($agi->request, true));
 
 /* GET THE AGI PARAMETER */
 $A2B->get_agi_request_parameter($agi);
@@ -97,7 +97,7 @@ if ($mode == 'standard') {
 
     //GET MONITORING SETTINGS
     $QUERY = "SELECT dial_code, label, text_intro, query_type, query, result_type FROM cc_monitor WHERE enable=1";
-    $A2B->debug(DEBUG, $agi, __FILE__, __LINE__, "QUERY : $QUERY");
+    $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "QUERY : $QUERY");
     $result = $A2B->instance_table->SQLExec($A2B->DBHandle, $QUERY, 1, 0); // 300 ?
 
     foreach ($result as $res_monitor) {
@@ -109,24 +109,24 @@ if ($mode == 'standard') {
     }
 
     if (!is_array($arr_monitor)) {
-        $A2B->debug(DEBUG, $agi, __FILE__, __LINE__, "No monitoring configuration found!");
+        $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "No monitoring configuration found!");
         $agi->stream_file('prepaid-final', '#');
         exit;
     }
 
     for ($i = 0; $i < 10; $i++) {
         $res_dtmf = $agi->get_data('prepaid-enter-dialcode', 6000, 3);
-        $A2B->debug(DEBUG, $agi, __FILE__, __LINE__, "RES DTMF : " . $res_dtmf["result"]);
+        $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "RES DTMF : " . $res_dtmf["result"]);
         $dial_code = $res_dtmf["result"];
 
-        $A2B->debug(DEBUG, $agi, __FILE__, __LINE__, "Dial code : $dial_code");
+        $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "Dial code : $dial_code");
         if (!intval($dial_code)) {
             continue;
         }
 
         if (!is_array($arr_monitor[$dial_code])) {
             $agi->stream_file('prepaid-no-dialcode', '#');
-            $A2B->debug(DEBUG, $agi, __FILE__, __LINE__, "Dial code : $dial_code not configured in monitoring");
+            $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "Dial code : $dial_code not configured in monitoring");
             continue;
         }
 
@@ -137,11 +137,11 @@ if ($mode == 'standard') {
             // SQL QUERY
 
             $QUERY = $arr_monitor[$dial_code]["query"];
-            $A2B->debug(DEBUG, $agi, __FILE__, __LINE__, "QUERY : $QUERY");
+            $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "QUERY : $QUERY");
             $result = $A2B->instance_table->SQLExec($A2B->DBHandle, $QUERY, 1, 10);
             $get_result = $result[0][0];
 
-            $A2B->debug(DEBUG, $agi, __FILE__, __LINE__, "SAYING RESULT");
+            $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "SAYING RESULT");
 
         } elseif ($arr_monitor[$dial_code]["query_type"] == "2") {
             // SHELL SCRIPT
@@ -149,15 +149,15 @@ if ($mode == 'standard') {
 
             // check for bad hack
             if (preg_match("/[:'`\/]|\.\./", $shellscript)) {
-                $A2B->debug(DEBUG, $agi, __FILE__, __LINE__, "WRONG SHELL SCRIPT : $shellscript");
+                $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "WRONG SHELL SCRIPT : $shellscript");
             }
-            $A2B->debug(DEBUG, $agi, __FILE__, __LINE__, "RUNNING SHELL SCRIPT : $shellscript");
-            exec(SCRIPT_CONFIG_DIR . $shellscript . " 2> /dev/null", $output);
+            $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "RUNNING SHELL SCRIPT : $shellscript");
+            exec(A2Billing::SCRIPT_CONFIG_DIR . $shellscript . " 2> /dev/null", $output);
 
             $get_result = $output[0];
         }
 
-        $A2B->debug(DEBUG, $agi, __FILE__, __LINE__, "SAY RESULT (" . $arr_monitor[$dial_code]["result_type"] . "): $get_result");
+        $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "SAY RESULT (" . $arr_monitor[$dial_code]["result_type"] . "): $get_result");
 
         # result_type : 1 Text2Speech, 2 Date, 3 Number, 4 Digits
         if ($arr_monitor[$dial_code]["result_type"] == "1") {
@@ -186,7 +186,7 @@ if ($mode == 'standard') {
     $accountcode = $agi->request['agi_accountcode'];
 
     $QUERY = "SELECT did FROM cc_did LEFT JOIN cc_card ON cc_card.id=cc_did.iduser WHERE cc_card.username='$accountcode'";
-    $A2B->debug(DEBUG, $agi, __FILE__, __LINE__, "QUERY : $QUERY");
+    $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "QUERY : $QUERY");
     $result = $A2B->instance_table->SQLExec($A2B->DBHandle, $QUERY, 1, 0); // 300 ?
 
     if (!is_array($result) or strlen($result[0][0]) == 0) {

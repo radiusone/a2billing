@@ -73,7 +73,7 @@ if ($prcHandler->isActive()) {
 
 $FG_DEBUG = 0;
 $A2B = new A2Billing();
-$A2B -> load_conf($agi, DEFAULT_A2BILLING_CONFIG, 1);
+$A2B -> load_conf($agi, A2Billing::DEFAULT_A2BILLING_CONFIG, 1);
 
 // DEFINE FOR THE DATABASE CONNECTION
 define ("BASE_CURRENCY", strtoupper($A2B->config["global"]['base_currency']));
