@@ -386,7 +386,7 @@ if ($mode === 'standard') {
                     $A2B->agiconfig['cid_auto_assign_card_to_cid'] = 0;
                     $A2B->accountcode = '';
                     $A2B->username = '';
-                    $A2B->ask_other_cardnumber = 1;
+                    $A2B->ask_other_cardnumber = true;
 
                     $cia_res = $A2B->callingcard_ivr_authenticate($agi);
                     $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[NOTENOUGHCREDIT_CARDNUMBER - TRY : callingcard_ivr_authenticate]");
@@ -411,8 +411,7 @@ if ($mode === 'standard') {
             if ($A2B->agiconfig['ivr_voucher'] == 1) {
                 $res_dtmf = $agi->get_data('prepaid-refill_card_with_voucher', 5000, 1);
                 $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "RES REFILL CARD VOUCHER DTMF : " . $res_dtmf["result"]);
-                $A2B->ivr_voucher = $res_dtmf["result"] ?? null;
-                if ($A2B->ivr_voucher == $A2B->agiconfig['ivr_voucher_prefixe']) {
+                if (($res_dtmf["result"] ?? null) == $A2B->agiconfig['ivr_voucher_prefixe']) {
                     $vou_res = $A2B->refill_card_with_voucher($agi, $i);
                 }
             }
