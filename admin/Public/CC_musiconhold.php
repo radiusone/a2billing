@@ -48,7 +48,7 @@ $smarty->display('main.tpl');
     <TR>
         <TD style="border-bottom: medium dotted #EEEEEE" colspan=2>&nbsp; </TD>
     </TR>
-    <?php  for ($i=1;$i<=NUM_MUSICONHOLD_CLASS;$i++) { ?>
+    <?php  for ($i=1;$i<=$A2B->config['webui']['num_musiconhold_class'];$i++) { ?>
     <tr>
         <td class="bgcolor_006" height="31" align="center">
             <img src="<?php echo KICON_PATH; ?>/stock-panel-multimedia.gif"/>

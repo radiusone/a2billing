@@ -93,10 +93,10 @@ if (has_rights (ACX_CREATE_CUSTOMER)) {
 }
 
 $language_list = getLanguagesList();
-$language_list_r = getLanguagesRevertList();
-$discount_list  = getDiscount_List();
+$language_list_r = array_map("array_reverse", $language_list);
+$discount_list = getDiscount_List();
 $simultaccess_list = getCardAccess_List();
-$simultaccess_list_r = getCardAccess_Revert_List();
+$simultaccess_list_r = array_map("array_reverse", $simultaccess_list);
 $limits_notify_list = getLimitNotify_List($A2B);
 
 $currency_list = array();
@@ -112,7 +112,7 @@ foreach($currencies_list as $key => $cur_value) {
 
 $restriction_list = getRestrictionList();
 $cardstatus_list = getCardStatus_List();
-$cardstatus_list_r = getCardStatus_Revert_List();
+$cardstatus_list_r = array_map("array_reverse", $cardstatus_list);
 $cardstatus_list_acronym = getCardStatus_Acronym_List();
 $typepaid_list = getPaidTypeList();
 $expire_list = getCardExpire_List();

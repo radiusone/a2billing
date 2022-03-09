@@ -91,11 +91,11 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/money.png" ;
 
 
 $status_list = getInvoiceStatusList();
+$status_list_r = array_map("array_reverse", $status_list);
 $paid_status_list = getInvoicePaidStatusList();
-$typepaid_list_r = getPaidTypeList_Revert_List();
-$paid_status_list_r = getInvoicePaidStatusList_Revert_List();
+$paid_status_list_r = array_map("array_reverse", $paid_status_list);
+$typepaid_list_r = array_map("array_reverse", getPaidTypeList());
 $invoiceday_list = getInvoiceDay_List();
-$status_list_r = getInvoiceStatusList_Revert_List();
 
 //$filter_amount_without_vat ='SUM(cc_invoice_item.price)';
 // $filter_amount_with_vat ='SUM(cc_invoice_item.price*(1+(cc_invoice_item.vat/100)))';

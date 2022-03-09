@@ -58,7 +58,7 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/lightning_add.png" ;
 
 
 $actived_list = getActivationTrueFalseList();
-$status_list = getCallbackStatusList();
+$status_list = ["PENDING" => [_("PENDING"), "PENDING"], "SENT" => [_("SENT"), "SENT"], "ERROR" => [_("ERROR"), "ERROR"],];
 $yesno = getYesNoList();
 
 

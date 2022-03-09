@@ -57,8 +57,8 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/map.png" ;
 
 // TODO Integrate a generic LIST to Framework
 
-$mquery_type_list = getMonitorQueryType_List();
-$mresult_type_list = getMonitorResultType_List();
+$mquery_type_list = [[], [_("SQL"), "1"], [_("SHELL SCRIPT"), "2"]];
+$mresult_type_list = [[], [_("TEXT2SPEECH"), "1"], [_("UNIXTIME"), "2"], [_("NUMBER"), "3"], [_("DIGIT"), "4"]];
 $actived_list = getActivationList() ;
 
 

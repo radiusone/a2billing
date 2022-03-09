@@ -177,7 +177,6 @@ define ("ASTERISK_VERSION", $A2B->config['agi-conf1']['asterisk_version'] ?? '1_
 
 // WEB DEFINE FROM THE A2BILLING.CONF FILE
 define ("EMAIL_ADMIN", $A2B->config['webui']['email_admin'] ?? 'root@localhost');
-define ("NUM_MUSICONHOLD_CLASS", $A2B->config['webui']['num_musiconhold_class'] ?? null);
 define ("SHOW_HELP", $A2B->config['webui']['show_help'] ?? null);
 define ("MY_MAX_FILE_SIZE_IMPORT", $A2B->config['webui']['my_max_file_size_import'] ?? null);
 define ("DIR_STORE_MOHMP3", $A2B->config['webui']['dir_store_mohmp3'] ?? null);

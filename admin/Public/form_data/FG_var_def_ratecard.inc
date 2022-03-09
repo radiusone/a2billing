@@ -188,7 +188,7 @@ $HD_Form->FG_TABLE_DEFAULT_SENS = "ASC";
 
 $HD_Form->FG_FILTER_SEARCH_SESSION_NAME = 'entity_ratecard_selection';
 
-$musiconhold_list = getMusicOnHold_List();
+$musiconhold_list = getMusicOnHold_List($A2B);
 $yesno = getYesNoList();
 
 //

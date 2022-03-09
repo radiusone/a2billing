@@ -64,11 +64,7 @@ $HD_Form -> FG_FILTER_SEARCH_SESSION_NAME = 'entity_ratecard_selection';
 
 $HD_Form -> SQL_GROUP = " GROUP BY dialprefix ";
 
-$musiconhold_list = array();
-$musiconhold_list[] = array( "No MusicOnHold", "");
-for ($i=1;$i<=NUM_MUSICONHOLD_CLASS;$i++){
-	$musiconhold_list[]  = array( "MUSICONHOLD CLASS ACC_$i", "acc_$i");
-}
+$musiconhold_list = getMusicOnHold_List($A2B);
 $yesno = getYesNoList();
 
 if ($popup_select) $HD_Form -> AddViewElement(gettext("ID"), "id", "5%", "center", "sort");

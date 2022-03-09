@@ -57,7 +57,7 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/bell_add.png" ;
 
 
 // TODO Integrate a generic LIST to Framework
-$period_list = getPeriodsList();
+$period_list = [1 => ["Hourly", "1"], 2 => ["Daily", "2"], 3 => ["Weekly", "3"], 4 => ["Monthly", "4"]];
 
 
 $actived_list = getActivationList() ;

@@ -148,10 +148,10 @@ if (!$popup_select) {
 }
 
 $language_list = getLanguagesList();
-$language_list_r = getLanguagesRevertList();
+$language_list_r = array_map("array_reverse", $language_list);
 $discount_list = getDiscount_List();
 $simultaccess_list = getCardAccess_List();
-$simultaccess_list_r = getCardAccess_Revert_List();
+$simultaccess_list_r = array_map("array_reverse", $simultaccess_list);
 $limits_notify_list = getLimitNotify_List($A2B);
 
 $currency_list = [];
@@ -167,10 +167,10 @@ foreach ($currencies_list as $key => $cur_value) {
 
 $restriction_list = getRestrictionList();
 $cardstatus_list = getCardStatus_List();
-$cardstatus_list_r = getCardStatus_Revert_List();
+$cardstatus_list_r = array_map("array_reverse", $cardstatus_list);
 $cardstatus_list_acronym = getCardStatus_Acronym_List();
 $typepaid_list = getPaidTypeList();
-$typepaid_list_r = getPaidTypeList_Revert_List();
+$typepaid_list_r = array_map("array_reverse", $typepaid_list);
 $expire_list = getCardExpire_List();
 $yesno = getYesNoList();
 $invoiceday_list = getInvoiceDay_List();

@@ -58,13 +58,9 @@ class RateEngine
     public $usedtrunk           = 0;
     public $freetimetocall_used = 0;
 
-    // List of dialstatus
-    public $dialstatus_rev_list;
-
     /* CONSTRUCTOR */
     public function __construct()
     {
-        $this->dialstatus_rev_list = getDialStatus_Revert_List();
     }
 
     /* Reinit */
@@ -1024,13 +1020,8 @@ class RateEngine
         $additional_grace_time = $this->ratecard_obj[$K][58];
         $id_card_package_offer = null;
 
-        if ($A2B->CC_TESTING) {
-            $sessiontime = 120;
-            $dialstatus = 'ANSWER';
-        } else {
-            $sessiontime = $this->answeredtime;
-            $dialstatus = $this->dialstatus;
-        }
+        $sessiontime = $this->answeredtime;
+        $dialstatus = $this->dialstatus;
 
         // add grace time if the call is Answered
         if ($this->dialstatus == "ANSWER" && $additional_grace_time > 0) {
@@ -1115,11 +1106,8 @@ class RateEngine
 
         $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[CC_RATE_ENGINE_UPDATESYSTEM: usedratecard K=$K - (sessiontime=$sessiontime :: dialstatus=$dialstatus :: buycost=$buycost :: cost=$cost : signe_cc_call=$signe_cc_call: signe=$signe)]");
 
-        if (strlen($this->dialstatus_rev_list[$dialstatus]) > 0) {
-            $terminatecauseid = $this->dialstatus_rev_list[$dialstatus];
-        } else {
-            $terminatecauseid = 0;
-        }
+        $dialstatus_rev_list = ["ANSWER" => 1, "BUSY" => 2, "NOANSWER" => 3, "CANCEL" => 4, "CONGESTION" => 5, "CHANUNAVAIL" => 6, "DONTCALL" => 7, "TORTURE" => 8, "INVALIDARGS" => 9];
+        $terminatecauseid = $dialstatus_rev_list[$dialstatus] ?? 0;
 
         // CALLTYPE -  0 = NORMAL CALL ; 1 = VOIP CALL (SIP/IAX) ; 2= DIDCALL + TRUNK ; 3 = VOIP CALL DID ; 4 = CALLBACK call
         if ($didcall) {

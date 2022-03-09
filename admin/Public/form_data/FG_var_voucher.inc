@@ -58,9 +58,9 @@ foreach($currencies_list as $key => $cur_value) {
 }
 
 $actived_list = getActivationTrueFalseList();
-$actived_list_r = getActivationTrueFalse_Revert_List();
-$used_list = getUsedList();
-$used_list_r = getUsed_revert_List();
+$actived_list_r = array_map("array_reverse", $actived_list);
+$used_list = [[_("NOT USED"), "0"], [_("USED"), "1"]];
+$used_list_r = array_map("array_reverse", $used_list);
 $yesno = getYesNoList();
 
 foreach($currencies_list as $key => $cur_value) {
