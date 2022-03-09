@@ -460,14 +460,13 @@ function display_2bill($var, $currency = BASE_CURRENCY): void
 
 function get_2bill($var, $currency = BASE_CURRENCY): string
 {
-    global $currencies_list, $choose_currency;
+    global $choose_currency;
 
     if (isset ($choose_currency) && strlen($choose_currency) == 3) {
         $currency = $choose_currency;
     }
-    if ((!isset ($currencies_list)) || (!is_array($currencies_list))) {
-        $currencies_list = get_currencies();
-    }
+    $currencies_list = get_currencies();
+
     $var = $var / $currencies_list[strtoupper($currency)][2];
 
     return number_format($var, 3) . ' ' . strtoupper($currency);

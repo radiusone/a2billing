@@ -226,7 +226,7 @@ if ($form_action == "list" && (!($popup_select>=1))	) {
                 4)&nbsp;<?php echo gettext("CURRENCY");?>&nbsp;:
                 <select NAME="upd_currency" size="1" class="form_input_select">
                 <?php
-                    foreach ($currencies_list as $key => $cur_value) {
+                    foreach (get_currencies() as $key => $cur_value) {
                 ?>
                     <option value='<?php echo $key ?>'  <?php if ($upd_currency==$key) echo 'selected="selected"'?>><?php echo $cur_value[1].' ('.$cur_value[2].')' ?></option>
                 <?php } ?>
