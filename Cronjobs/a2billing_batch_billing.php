@@ -80,12 +80,13 @@ $oneday = 24 * 60 * 60;
 
 $A2B = new A2Billing();
 $A2B->load_conf($agi, null, $idconfig);
+$cron_logfile = $A2B->config['log-files']['cront_invoice'] ?? "/tmp/a2billing_cront_invoice_log";
 
-write_log (LOGFILE_CRONT_INVOICE, basename(__FILE__) . ' line:' . __LINE__ . "[#### CRONT BILLING BEGIN ####]");
+write_log ($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . "[#### CRONT BILLING BEGIN ####]");
 
 if (!$A2B->DbConnect()) {
     echo "[Cannot connect to the database]\n";
-    write_log (LOGFILE_CRONT_INVOICE, basename(__FILE__) . ' line:' . __LINE__ . "[Cannot connect to the database]");
+    write_log ($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . "[Cannot connect to the database]");
     exit;
 }
 
@@ -104,13 +105,13 @@ if ($verbose_level >= 1)
 if (!($nb_card > 0)) {
     if ($verbose_level >= 1)
         echo "[No card to run the Invoice Billing Service]\n";
-    write_log (LOGFILE_CRONT_INVOICE, basename(__FILE__) . ' line:' . __LINE__ . "[No card to run the Invoice Billing service]");
+    write_log ($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . "[No card to run the Invoice Billing service]");
     exit ();
 }
 
 if ($verbose_level >= 1)
     echo ("[Invoice Billing Service analyze cards on which to apply billing]");
-write_log (LOGFILE_CRONT_INVOICE, basename(__FILE__) . ' line:' . __LINE__ . "[Invoice Billing Service analyze cards on which to apply billing]");
+write_log ($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . "[Invoice Billing Service analyze cards on which to apply billing]");
 
 for ($page = 0; $page < $nbpagemax; $page++) {
     if ($verbose_level >= 1)
@@ -136,7 +137,7 @@ for ($page = 0; $page < $nbpagemax; $page++) {
     if ($numrow == 0) {
         if ($verbose_level >= 1)
             echo "\n[No card to run the Invoice Billing Service]\n";
-        write_log (LOGFILE_CRONT_INVOICE, basename(__FILE__) . ' line:' . __LINE__ . "[No card to run the Invoice Billing service]");
+        write_log ($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . "[No card to run the Invoice Billing service]");
         exit ();
 
     } else {
@@ -375,4 +376,4 @@ for ($page = 0; $page < $nbpagemax; $page++) {
 if ($verbose_level >= 1)
     echo "------- CRONT BILLING END ------- \n";
 
-write_log(LOGFILE_CRONT_INVOICE, basename(__FILE__) . ' line:' . __LINE__ . "------- CRONT BILLING END -------");
+write_log($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . "------- CRONT BILLING END -------");

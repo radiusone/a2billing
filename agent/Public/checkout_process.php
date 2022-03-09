@@ -38,16 +38,17 @@ use A2billing\A2bMailException;
 require_once "../../common/lib/agent.defines.php";
 
 getpost_ifset(array('transactionID', 'sess_id', 'key', 'mc_currency', 'currency', 'md5sig', 'merchant_id', 'mb_amount', 'status', 'mb_currency', 'transaction_id', 'mc_fee', 'card_number'));
+$epayment_logfile = $A2B->config['log-files']['epayment'] ?? "/tmp/a2billing_epayment_log";
 
-write_log(LOGFILE_EPAYMENT, basename(__FILE__).' line:'.__LINE__."EPAYMENT : transactionID=$transactionID - transactionKey=$key \n -POST Var \n".print_r($_POST, true));
+write_log($epyament_logfile, basename(__FILE__).' line:'.__LINE__."EPAYMENT : transactionID=$transactionID - transactionKey=$key \n -POST Var \n".print_r($_POST, true));
 
 if ($sess_id =="") {
-    write_log(LOGFILE_EPAYMENT, basename(__FILE__).' line:'.__LINE__."-transactionID=$transactionID"." ERROR NO SESSION ID PROVIDED IN RETURN URL TO PAYMENT MODULE");
+    write_log($epyament_logfile, basename(__FILE__).' line:'.__LINE__."-transactionID=$transactionID"." ERROR NO SESSION ID PROVIDED IN RETURN URL TO PAYMENT MODULE");
     exit();
 }
 
 if ($transactionID == "") {
-    write_log(LOGFILE_EPAYMENT, basename(__FILE__).' line:'.__LINE__."-transactionID=$transactionID"." NO TRANSACTION ID PROVIDED IN REQUEST");
+    write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."-transactionID=$transactionID"." NO TRANSACTION ID PROVIDED IN REQUEST");
     exit();
 }
 
@@ -77,15 +78,15 @@ $amount = $transaction_data[0][2];
 
 //Update the Transaction Status to 1
 $QUERY = "UPDATE cc_epayment_log_agent SET status = 2 WHERE id = ".$transactionID;
-write_log(LOGFILE_EPAYMENT, basename(__FILE__).' line:'.__LINE__."- QUERY = $QUERY");
+write_log($epyament_logfile, basename(__FILE__).' line:'.__LINE__."- QUERY = $QUERY");
 $paymentTable->SQLExec ($DBHandle_max, $QUERY);
 
 if (!is_array($transaction_data) && count($transaction_data) == 0) {
-    write_log(LOGFILE_EPAYMENT, basename(__FILE__).
+    write_log($epayment_logfile, basename(__FILE__).
         ' line:'.__LINE__."- transactionID=$transactionID"." ERROR INVALID TRANSACTION ID PROVIDED, TRANSACTION ID =".$transactionID);
     exit();
 } else {
-    write_log(LOGFILE_EPAYMENT, basename(__FILE__).
+    write_log($epayment_logfile, basename(__FILE__).
         ' line:'.__LINE__."- transactionID=$transactionID"." EPAYMENT RESPONSE: TRANSACTIONID = ".$transactionID.
         " FROM ".$transaction_data[0][4]."; FOR CUSTOMER ID ".$transaction_data[0][1]."; OF AMOUNT ".$transaction_data[0][2]);
 }
@@ -112,7 +113,7 @@ switch ($transaction_data[0][4]) {
 
         // Check amount is correct
         if (intval($amount) != intval($_POST['mc_gross'])){
-            write_log(LOGFILE_EPAYMENT, basename(__FILE__).' line:'.__LINE__." -Amount Paypal is not matching");
+            write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__." -Amount Paypal is not matching");
             $security_verify = false;
             sleep(3);
         }
@@ -123,17 +124,17 @@ switch ($transaction_data[0][4]) {
         $header .= "Host: www.paypal.com\r\n";
         $header .= "Content-Length: " . strlen ($req) . "\r\n\r\n";
         for ($i = 1; $i <=3; $i++) {
-            write_log(LOGFILE_EPAYMENT, basename(__FILE__).' line:'.__LINE__."-OPENDING HTTP CONNECTION TO ".PAYPAL_VERIFY_URL);
+            write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."-OPENDING HTTP CONNECTION TO ".PAYPAL_VERIFY_URL);
             $fp = fsockopen (PAYPAL_VERIFY_URL, 443, $errno, $errstr, 30);
             if ($fp) {
                 break;
             } else {
-                write_log(LOGFILE_EPAYMENT, basename(__FILE__).' line:'.__LINE__." -Try#".$i." Failed to open HTTP Connection : ".$errstr.". Error Code: ".$errno);
+                write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__." -Try#".$i." Failed to open HTTP Connection : ".$errstr.". Error Code: ".$errno);
                 sleep(3);
             }
         }
         if (!$fp) {
-            write_log(LOGFILE_EPAYMENT, basename(__FILE__).' line:'.__LINE__."-Failed to open HTTP Connection: ".$errstr.". Error Code: ".$errno);
+            write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."-Failed to open HTTP Connection: ".$errstr.". Error Code: ".$errno);
             exit();
         } else {
             fputs ($fp, $header . $req);
@@ -141,12 +142,12 @@ switch ($transaction_data[0][4]) {
             while (!feof($fp)) {
                 $res = fgets ($fp, 1024);
                 if (strcmp ($res, "VERIFIED") == 0) {
-                    write_log(LOGFILE_EPAYMENT, basename(__FILE__).' line:'.__LINE__."-PAYPAL Transaction Verification Status: Verified ");
+                    write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."-PAYPAL Transaction Verification Status: Verified ");
                     $flag_ver = 1;
                 }
             }
             if ($flag_ver == 0) {
-                write_log(LOGFILE_EPAYMENT, basename(__FILE__).' line:'.__LINE__."-PAYPAL Transaction Verification Status: Failed ");
+                write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."-PAYPAL Transaction Verification Status: Failed ");
                 $security_verify = false;
             }
         }
@@ -159,9 +160,9 @@ switch ($transaction_data[0][4]) {
         $sig_string = strtoupper(md5($sec_string));
 
         if ($sig_string == $md5sig) {
-            write_log(LOGFILE_EPAYMENT, basename(__FILE__).' line:'.__LINE__."-MoneyBookers Transaction Verification Status: Verified | md5sig =".$md5sig." Reproduced Signature = ".$sig_string." Generated String = ".$sec_string);
+            write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."-MoneyBookers Transaction Verification Status: Verified | md5sig =".$md5sig." Reproduced Signature = ".$sig_string." Generated String = ".$sec_string);
         } else {
-            write_log(LOGFILE_EPAYMENT, basename(__FILE__).' line:'.__LINE__."-MoneyBookers Transaction Verification Status: Failed | md5sig =".$md5sig." Reproduced Signature = ".$sig_string." Generated String = ".$sec_string);
+            write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."-MoneyBookers Transaction Verification Status: Failed | md5sig =".$md5sig." Reproduced Signature = ".$sig_string." Generated String = ".$sec_string);
             $security_verify = false;
         }
         $currCurrency = $currency;
@@ -175,7 +176,7 @@ switch ($transaction_data[0][4]) {
     case "plugnpay":
 
         if (substr($card_number,0,4) != substr($transaction_data[0][6],0,4)) {
-            write_log(LOGFILE_EPAYMENT, basename(__FILE__).' line:'.__LINE__."- PlugNPay Error : First 4digits of the card doesn't match with the one stored.");
+            write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."- PlugNPay Error : First 4digits of the card doesn't match with the one stored.");
         }
 
         $currCurrency 		= BASE_CURRENCY;
@@ -200,7 +201,7 @@ switch ($transaction_data[0][4]) {
             'card-exp'       => $transaction_data[0][7],
             'cc-cvv'         => $transaction_data[0][10]
         );
-        write_log(LOGFILE_EPAYMENT, basename(__FILE__).' line:'.__LINE__."- PlugNPay Value Sent : \n\n".print_r($pnp_post_values, true));
+        write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."- PlugNPay Value Sent : \n\n".print_r($pnp_post_values, true));
 
         // init curl handle
         $pnp_ch = curl_init(PLUGNPAY_PAYMENT_URL);
@@ -213,8 +214,8 @@ switch ($transaction_data[0][4]) {
         $pnp_result_page = curl_exec($pnp_ch);
         parse_str( $pnp_result_page, $pnp_transaction_array );
 
-        write_log(LOGFILE_EPAYMENT, basename(__FILE__).' line:'.__LINE__."- PlugNPay Result : \n\n".print_r($pnp_transaction_array, true));
-        write_log(LOGFILE_EPAYMENT, basename(__FILE__).' line:'.__LINE__."- RESULT : ".$pnp_transaction_array['FinalStatus']);
+        write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."- PlugNPay Result : \n\n".print_r($pnp_transaction_array, true));
+        write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."- RESULT : ".$pnp_transaction_array['FinalStatus']);
 
         // $pnp_transaction_array['FinalStatus'] = 'badcard';
         //echo "<pre>".print_r ($pnp_transaction_array, true)."</pre>";
@@ -223,7 +224,7 @@ switch ($transaction_data[0][4]) {
         break;
 
     default:
-        write_log(LOGFILE_EPAYMENT, basename(__FILE__).' line:'.__LINE__."-NO SUCH EPAYMENT FOUND");
+        write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."-NO SUCH EPAYMENT FOUND");
         exit();
 }
 
@@ -233,18 +234,18 @@ if (empty($transaction_data[0]['vat']) || !is_numeric($transaction_data[0]['vat'
     $VAT = $transaction_data[0]['vat'];
 }
 
-write_log(LOGFILE_EPAYMENT, basename(__FILE__).' line:'.__LINE__."curr amount $currAmount $currCurrency BASE_CURRENCY=".BASE_CURRENCY);
+write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."curr amount $currAmount $currCurrency BASE_CURRENCY=".BASE_CURRENCY);
 $amount_paid = convert_currency($currencies_list, $currAmount, $currCurrency, BASE_CURRENCY);
 $amount_without_vat = $amount_paid / (1+$VAT/100);
 
 //If security verification fails then send an email to administrator as it may be a possible attack on epayment security.
 if ($security_verify == false) {
-    write_log(LOGFILE_EPAYMENT, basename(__FILE__).' line:'.__LINE__."- security_verify == False | END");
+    write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."- security_verify == False | END");
     try {
         //TODO: create mail class for agent
         $mail = new Mail('epaymentverify',null);
     } catch (A2bMailException $e) {
-        write_log(LOGFILE_EPAYMENT, basename(__FILE__).' line:'.__LINE__."-transactionID=$transactionID"." ERROR NO EMAIL TEMPLATE FOUND");
+        write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."-transactionID=$transactionID"." ERROR NO EMAIL TEMPLATE FOUND");
         exit();
     }
     $mail->replaceInEmail(Mail::$TIME_KEY,date("y-m-d H:i:s"));
@@ -259,12 +260,12 @@ if ($security_verify == false) {
 
 $newkey = securitykey(EPAYMENT_TRANSACTION_KEY, $transaction_data[0][8]."^".$transactionID."^".$transaction_data[0][2]."^".$transaction_data[0][1]);
 if ($newkey == $key) {
-    write_log(LOGFILE_EPAYMENT, basename(__FILE__).' line:'.__LINE__."----------- Transaction Key Verified ------------");
+    write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."----------- Transaction Key Verified ------------");
 } else {
-    write_log(LOGFILE_EPAYMENT, basename(__FILE__).' line:'.__LINE__."----NEW KEY =".$newkey." OLD KEY= ".$key." ------- Transaction Key Verification Failed:".$transaction_data[0][8]."^".$transactionID."^".$transaction_data[0][2]."^".$transaction_data[0][1]." ------------\n");
+    write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."----NEW KEY =".$newkey." OLD KEY= ".$key." ------- Transaction Key Verification Failed:".$transaction_data[0][8]."^".$transactionID."^".$transaction_data[0][2]."^".$transaction_data[0][1]." ------------\n");
     exit();
 }
-write_log(LOGFILE_EPAYMENT, basename(__FILE__).' line:'.__LINE__."-transactionID=$transactionID"." ---------- TRANSACTION INFO ------------\n".print_r($transaction_data,1));
+write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."-transactionID=$transactionID"." ---------- TRANSACTION INFO ------------\n".print_r($transaction_data,1));
 $payment_modules = new payment($transaction_data[0][4]);
 // load the before_process function from the payment modules
 //$payment_modules->before_process();
@@ -275,7 +276,7 @@ $resmax = $DBHandle_max -> Execute($QUERY);
 if ($resmax) {
     $numrow = $resmax -> RecordCount();
 } else {
-    write_log(LOGFILE_EPAYMENT, basename(__FILE__).' line:'.__LINE__."-transactionID=$transactionID"." ERROR NO SUCH CUSTOMER EXISTS, CUSTOMER ID = ".$transaction_data[0][1]);
+    write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."-transactionID=$transactionID"." ERROR NO SUCH CUSTOMER EXISTS, CUSTOMER ID = ".$transaction_data[0][1]);
     exit(gettext("No Such Customer exists."));
 }
 $customer_info = $resmax -> fetchRow();
@@ -301,19 +302,19 @@ if ($id > 0) {
     $param_update .= " credit = credit + '".$amount_without_vat."'";
     $FG_EDITION_CLAUSE = " id='$id'";
     $instance_table -> Update_table ($DBHandle, $param_update, $FG_EDITION_CLAUSE, $func_table = null);
-    write_log(LOGFILE_EPAYMENT, basename(__FILE__).' line:'.__LINE__."-transactionID=$transactionID"." Update_table cc_card : $param_update - CLAUSE : $FG_EDITION_CLAUSE");
+    write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."-transactionID=$transactionID"." Update_table cc_card : $param_update - CLAUSE : $FG_EDITION_CLAUSE");
 
     $field_insert = "date, credit, agent_id, description";
     $value_insert = "'$nowDate', '".$amount_without_vat."', '$id', '".$transaction_data[0][4]."'";
     $instance_sub_table = new Table("cc_logrefill_agent", $field_insert);
     $id_logrefill = $instance_sub_table -> Add_table ($DBHandle, $value_insert, null, null, 'id');
-    write_log(LOGFILE_EPAYMENT, basename(__FILE__).' line:'.__LINE__."-transactionID=$transactionID"." Add_table cc_logrefill : $field_insert - VALUES $value_insert");
+    write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."-transactionID=$transactionID"." Add_table cc_logrefill : $field_insert - VALUES $value_insert");
 
     $field_insert = "date, payment, agent_id, id_logrefill, description";
     $value_insert = "'$nowDate', '".$amount_paid."', '$id', '$id_logrefill', '".$transaction_data[0][4]."'";
     $instance_sub_table = new Table("cc_logpayment_agent", $field_insert);
     $id_payment = $instance_sub_table -> Add_table ($DBHandle, $value_insert, null, null,"id");
-    write_log(LOGFILE_EPAYMENT, basename(__FILE__).' line:'.__LINE__."-transactionID=$transactionID"." Add_table cc_logpayment : $field_insert - VALUES $value_insert");
+    write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."-transactionID=$transactionID"." Add_table cc_logpayment : $field_insert - VALUES $value_insert");
 }
 
 $_SESSION["p_amount"] = null;
@@ -327,7 +328,7 @@ $_SESSION["p_module"] = null;
 // TODO: SQL injection
 $QUERY = "UPDATE cc_epayment_log_agent SET status=1, transaction_detail='".addslashes($transaction_detail)."' WHERE id = ".$transactionID;
 $paymentTable->SQLExec ($DBHandle_max, $QUERY);
-write_log(LOGFILE_EPAYMENT, basename(__FILE__).' line:'.__LINE__."- QUERY = $QUERY");
+write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."- QUERY = $QUERY");
 
 switch ($orderStatus) {
     case -2:
@@ -352,12 +353,12 @@ if ( ($orderStatus != 2) && ($transaction_data[0][4]=='plugnpay')) {
     die();
 }
 
-write_log(LOGFILE_EPAYMENT, basename(__FILE__).' line:'.__LINE__."-transactionID=$transactionID"." EPAYMENT ORDER STATUS  = ".$statusmessage);
+write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."-transactionID=$transactionID"." EPAYMENT ORDER STATUS  = ".$statusmessage);
 
 // load the after_process function from the payment modules
 $payment_modules->after_process();
-write_log(LOGFILE_EPAYMENT, basename(__FILE__).' line:'.__LINE__."-transactionID=$transactionID"." EPAYMENT ORDER STATUS ID = ".$orderStatus." ".$statusmessage);
-write_log(LOGFILE_EPAYMENT, basename(__FILE__).' line:'.__LINE__."-transactionID=$transactionID"." ----EPAYMENT TRANSACTION END----");
+write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."-transactionID=$transactionID"." EPAYMENT ORDER STATUS ID = ".$orderStatus." ".$statusmessage);
+write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."-transactionID=$transactionID"." ----EPAYMENT TRANSACTION END----");
 
 if ($transaction_data[0][4]=='plugnpay') {
     Header ("Location: agentinfo.php");

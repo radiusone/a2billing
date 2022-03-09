@@ -78,12 +78,13 @@ $groupcard = 5000;
 
 $A2B = new A2Billing();
 $A2B->load_conf($agi, null, $idconfig);
+$logfile_cront_autorefill = $A2B->config['log-files']['cront_autorefill'] ?? "/tmp/a2billing_cront_autorefill_log";
 
-write_log(LOGFILE_CRONT_AUTOREFILL, basename(__FILE__) . ' line:' . __LINE__ . "[#### BATCH BEGIN ####]");
+write_log($logfile_cront_autorefill, basename(__FILE__) . ' line:' . __LINE__ . "[#### BATCH BEGIN ####]");
 
 if (!$A2B->DbConnect()) {
     echo "[Cannot connect to the database]\n";
-    write_log(LOGFILE_CRONT_AUTOREFILL, basename(__FILE__) . ' line:' . __LINE__ . "[Cannot connect to the database]");
+    write_log($logfile_cront_autorefill, basename(__FILE__) . ' line:' . __LINE__ . "[Cannot connect to the database]");
     exit;
 }
 //$A2B -> DBHandle
@@ -101,7 +102,7 @@ if ($verbose_level >= 1)
 if (!($nb_card > 0)) {
     if ($verbose_level >= 1)
         echo "[No card to run the Auto Refill]\n";
-    write_log(LOGFILE_CRONT_AUTOREFILL, basename(__FILE__) . ' line:' . __LINE__ . "[No card to run the Auto Refill]");
+    write_log($logfile_cront_autorefill, basename(__FILE__) . ' line:' . __LINE__ . "[No card to run the Auto Refill]");
     exit ();
 }
 
@@ -111,12 +112,12 @@ if ($A2B->config["database"]['dbtype'] == "postgres") {
     $UNIX_TIMESTAMP = "UNIX_TIMESTAMP(";
 }
 
-write_log(LOGFILE_CRONT_AUTOREFILL, basename(__FILE__) . ' line:' . __LINE__ . "[Number of card found : $nb_card]");
+write_log($logfile_cront_autorefill, basename(__FILE__) . ' line:' . __LINE__ . "[Number of card found : $nb_card]");
 
 $totalcardperform = 0;
 $totalcredit = 0;
 
-write_log(LOGFILE_CRONT_AUTOREFILL, basename(__FILE__) . ' line:' . __LINE__ . "[Analyze cards to apply Auto Refill]");
+write_log($logfile_cront_autorefill, basename(__FILE__) . ' line:' . __LINE__ . "[Analyze cards to apply Auto Refill]");
 
 // BROWSE THROUGH THE CARD TO APPLY THE AUTO REFILL
 for ($page = 0; $page < $nbpagemax; $page++) {
@@ -158,7 +159,7 @@ for ($page = 0; $page < $nbpagemax; $page++) {
     sleep(15);
 }
 
-write_log(LOGFILE_CRONT_AUTOREFILL, basename(__FILE__) . ' line:' . __LINE__ . "[Auto Refill finish]");
+write_log($logfile_cront_autorefill, basename(__FILE__) . ' line:' . __LINE__ . "[Auto Refill finish]");
 
 // INSERT REPORT SERVICE INTO THE DATABASE
 $QUERY = "INSERT INTO cc_autorefill_report (totalcardperform, totalcredit, daterun) " .
@@ -167,7 +168,7 @@ $result_insert = $instance_table->SQLExec($A2B->DBHandle, $QUERY, 0);
 if ($verbose_level >= 1)
     echo "==> INSERT SERVICE REPORT QUERY=$QUERY\n";
 
-write_log(LOGFILE_CRONT_AUTOREFILL, basename(__FILE__) . ' line:' . __LINE__ . "[Service report : 'totalcardperform=$totalcardperform', 'totalcredit=$totalcredit']");
+write_log($logfile_cront_autorefill, basename(__FILE__) . ' line:' . __LINE__ . "[Service report : 'totalcardperform=$totalcardperform', 'totalcredit=$totalcredit']");
 
 // SEND REPORT
 if (strlen($A2B->config["webui"]["email_admin"]) > 4 && preg_match("/^[[:alnum:]][a-z0-9_.-]*@[a-z0-9.-]+\.[a-z]{2,4}$/i", $A2B->config["webui"]["email_admin"])) {
@@ -185,10 +186,10 @@ if (strlen($A2B->config["webui"]["email_admin"]) > 4 && preg_match("/^[[:alnum:]
     } catch (A2bMailException $e) {
         if ($verbose_level >= 1)
             echo "[Sent mail failed : $e]";
-        write_log(LOGFILE_CRONT_AUTOREFILL, basename(__FILE__) . ' line:' . __LINE__ . "[Sent mail failed : $e]");
+        write_log($logfile_cront_autorefill, basename(__FILE__) . ' line:' . __LINE__ . "[Sent mail failed : $e]");
     }
 }
 
 if ($verbose_level >= 1)
     echo "#### END AUTO REFILL \n";
-write_log(LOGFILE_CRONT_AUTOREFILL, basename(__FILE__) . ' line:' . __LINE__ . "[#### AUTO REFILL PROCESS END ####]");
+write_log($logfile_cront_autorefill, basename(__FILE__) . ' line:' . __LINE__ . "[#### AUTO REFILL PROCESS END ####]");

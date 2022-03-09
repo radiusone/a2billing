@@ -41,6 +41,8 @@ $popup_select = 1;
 
 getpost_ifset(array('errcode'));
 
+$epayment_logfile = $A2B->config['log-files']['epayment'] ?? "/tmp/a2billing_epayment_log";
+
 // #### HEADER SECTION
 $smarty->display( 'main.tpl');
 ?>
@@ -62,23 +64,23 @@ $smarty->display( 'main.tpl');
     <?php
       switch ($errcode) {
           case -2:
-              write_log(LOGFILE_EPAYMENT, basename(__FILE__).' line:'.__LINE__." ERROR TRANSACTION FAILED");
+              write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__." ERROR TRANSACTION FAILED");
             echo gettext("We are sorry your transaction is failed. Please try later or check your provided information.");
           break;
           case -1:
-              write_log(LOGFILE_EPAYMENT, basename(__FILE__).' line:'.__LINE__." ERROR TRANSACTION DENIED");
+              write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__." ERROR TRANSACTION DENIED");
             echo gettext("We are sorry your transaction is denied. Please try later or check your provided information.");
           break;
           case 0:
-              write_log(LOGFILE_EPAYMENT, basename(__FILE__).' line:'.__LINE__." ERROR TRANSACTION PENDING");
+              write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__." ERROR TRANSACTION PENDING");
             echo gettext("We are sorry your transaction is pending.");
           break;
           case 1:
-              write_log(LOGFILE_EPAYMENT, basename(__FILE__).' line:'.__LINE__." ERROR TRANSACTION INPROGRESS");
+              write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__." ERROR TRANSACTION INPROGRESS");
             echo gettext("Your transaction is in progress.");
           break;
           case 2:
-              write_log(LOGFILE_EPAYMENT, basename(__FILE__).' line:'.__LINE__." TRANSACTION SUCCESSFUL");
+              write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__." TRANSACTION SUCCESSFUL");
             echo gettext("Your transaction was successful.");
           break;
       }

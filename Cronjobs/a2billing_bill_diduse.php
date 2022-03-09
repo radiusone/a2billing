@@ -79,17 +79,19 @@ $groupcard = 5000;
 $A2B = new A2Billing();
 $A2B->load_conf($agi, null, $idconfig);
 
+$logfile_cront_billdid = $A2B->config['log-files']['cront_bill_diduse'] ?? "/tmp/a2billing_cront_billdid_log";
+
 if ($A2B->config["database"]['dbtype'] == "postgres") {
     $UNIX_TIMESTAMP = "date_part('epoch',";
 } else {
     $UNIX_TIMESTAMP = "UNIX_TIMESTAMP(";
 }
 
-write_log(LOGFILE_CRONT_BILL_DIDUSE, basename(__FILE__) . ' line:' . __LINE__ . "[#### BATCH DIDUSE BEGIN ####]");
+write_log($logfile_cront_billdid, basename(__FILE__) . ' line:' . __LINE__ . "[#### BATCH DIDUSE BEGIN ####]");
 
 if (!$A2B->DbConnect()) {
     echo "[Cannot connect to the database]\n";
-    write_log(LOGFILE_CRONT_BILL_DIDUSE, basename(__FILE__) . ' line:' . __LINE__ . "[Cannot connect to the database]");
+    write_log($logfile_cront_billdid, basename(__FILE__) . ' line:' . __LINE__ . "[Cannot connect to the database]");
     exit;
 }
 //$A2B -> DBHandle
@@ -111,7 +113,7 @@ if ($verbose_level >= 1)
 if (!is_array($result)) {
     if ($verbose_level >= 1)
         echo "[No DID in use to run the DIDBilling recurring service]\n";
-    write_log(LOGFILE_CRONT_BILL_DIDUSE, basename(__FILE__) . ' line:' . __LINE__ . "[No DID in use to run the DIDBilling recurring service]");
+    write_log($logfile_cront_billdid, basename(__FILE__) . ' line:' . __LINE__ . "[No DID in use to run the DIDBilling recurring service]");
     exit ();
 }
 
@@ -286,14 +288,14 @@ foreach ($result as $mydids) {
         } catch (A2bMailException $e) {
             if ($verbose_level >= 1)
                 echo "[Sent mail failed : $e]";
-            write_log(LOGFILE_CRONT_BILL_DIDUSE, basename(__FILE__) . ' line:' . __LINE__ . "[Sent mail failed : $e]");
+            write_log($logfile_cront_billdid, basename(__FILE__) . ' line:' . __LINE__ . "[Sent mail failed : $e]");
         }
     }
 
 }
-write_log(LOGFILE_CRONT_BILL_DIDUSE, basename(__FILE__) . ' line:' . __LINE__ . "[Service DIDUSE finish]");
+write_log($logfile_cront_billdid, basename(__FILE__) . ' line:' . __LINE__ . "[Service DIDUSE finish]");
 
 if ($verbose_level >= 1)
     echo "#### END RECURRING SERVICES \n";
 
-write_log(LOGFILE_CRONT_BILL_DIDUSE, basename(__FILE__) . ' line:' . __LINE__ . "[#### BATCH DIDUSE  PROCESS END ####]");
+write_log($logfile_cront_billdid, basename(__FILE__) . ' line:' . __LINE__ . "[#### BATCH DIDUSE  PROCESS END ####]");

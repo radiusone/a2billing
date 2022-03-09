@@ -80,12 +80,13 @@ $groupcard = 5000;
 
 $A2B = new A2Billing();
 $A2B->load_conf($agi, null, $idconfig);
+$cron_logfile = $A2B->config['log-files']['cront_check_account'] ?? "/tmp/a2billing_cront_checkaccount_log";
 
-write_log(LOGFILE_CRONT_CHECKACCOUNT, basename(__FILE__) . ' line:' . __LINE__ . "[#### BATCH BEGIN ####]");
+write_log($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . "[#### BATCH BEGIN ####]");
 
 if (!$A2B->DbConnect()) {
     echo "[Cannot connect to the database]\n";
-    write_log(LOGFILE_CRONT_CHECKACCOUNT, basename(__FILE__) . ' line:' . __LINE__ . "[Cannot connect to the database]");
+    write_log($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . "[Cannot connect to the database]");
     exit;
 }
 
@@ -130,11 +131,11 @@ if ($verbose_level >= 1)
 if (!($nb_card > 0)) {
     if ($verbose_level >= 1)
         echo "[No card to run the Recurring service]\n";
-    write_log(LOGFILE_CRONT_CHECKACCOUNT, basename(__FILE__) . ' line:' . __LINE__ . "[No card to run the check account service]");
+    write_log($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . "[No card to run the check account service]");
     exit ();
 }
 
-write_log(LOGFILE_CRONT_CHECKACCOUNT, basename(__FILE__) . ' line:' . __LINE__ . "[Number of card found : $nb_card]");
+write_log($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . "[Number of card found : $nb_card]");
 
 // GET the currencies to define the email
 $currencies_list = get_currencies($A2B->DBHandle);
@@ -171,7 +172,7 @@ for ($page = 0; $page < $nbpagemax; $page++) {
             } catch (Exception $e) {
                 if ($verbose_level >= 1)
                     echo "[Cannot find a template mail for reminder]\n";
-                write_log(LOGFILE_CRONT_CHECKACCOUNT, basename(__FILE__) . ' line:' . __LINE__ . "[Cannot find a template mail for reminder]");
+                write_log($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . "[Cannot find a template mail for reminder]");
                 exit;
             }
 
@@ -198,7 +199,7 @@ for ($page = 0; $page < $nbpagemax; $page++) {
                 $error_msg = $e->getMessage();
                 if ($verbose_level >= 1)
                     echo "$error_msg\n";
-                write_log(LOGFILE_CRONT_CHECKACCOUNT, basename(__FILE__) . ' line:' . __LINE__ . $mycard['email_notification']." - $error_msg");
+                write_log($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . $mycard['email_notification']." - $error_msg");
             }
 
         } //endif check the email not null
@@ -210,4 +211,4 @@ for ($page = 0; $page < $nbpagemax; $page++) {
 if ($verbose_level >= 1)
     echo "#### END RECURRING CHECK ACCOUNT \n";
 
-write_log(LOGFILE_CRONT_CHECKACCOUNT, basename(__FILE__) . ' line:' . __LINE__ . "[#### BATCH PROCESS END ####]");
+write_log($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . "[#### BATCH PROCESS END ####]");

@@ -71,12 +71,13 @@ if ($pH->isActive()) {
 
 $A2B = new A2Billing();
 $A2B->load_conf($agi, null, $idconfig);
+$logfile_cront_archive = $A2B->config['log-files']['cront_archive_data'] ?? "/tmp/a2billing_cront_archive_log";
 
-write_log(LOGFILE_CRONT_ARCHIVE_DATA, basename(__FILE__) . ' line:' . __LINE__ . "[#### ARCHIVING DATA BEGIN ####]");
+write_log($logfile_cront_archive, basename(__FILE__) . ' line:' . __LINE__ . "[#### ARCHIVING DATA BEGIN ####]");
 
 if (!$A2B->DbConnect()) {
     echo "[Cannot connect to the database]\n";
-    write_log(LOGFILE_CRONT_ARCHIVE_DATA, basename(__FILE__) . ' line:' . __LINE__ . "[Cannot connect to the database]");
+    write_log($logfile_cront_archive, basename(__FILE__) . ' line:' . __LINE__ . "[Cannot connect to the database]");
     exit;
 }
 
@@ -102,4 +103,4 @@ $result = $instance_table->Add_table($A2B->DBHandle, $value, $func_fields, $func
 
 $fun_table = "cc_call";
 $result = $instance_table->Delete_table($A2B->DBHandle, $condition, $fun_table);
-write_log(LOGFILE_CRONT_ARCHIVE_DATA, basename(__FILE__) . ' line:' . __LINE__ . "[#### ARCHIVING DATA END ####]");
+write_log($logfile_cront_archive, basename(__FILE__) . ' line:' . __LINE__ . "[#### ARCHIVING DATA END ####]");

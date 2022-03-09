@@ -47,7 +47,9 @@ foreach ($_POST as $vkey => $Value) {
     $log .= $vkey . " = " . $Value . "\n";
 }
 
-write_log(LOGFILE_EPAYMENT, basename(__FILE__) . ' line:' . __LINE__ . "$log");
+$epayment_logfile = $A2B->config['log-files']['epayment'] ?? "/tmp/a2billing_epayment_log";
+
+write_log($epayment_logfile, basename(__FILE__) . ' line:' . __LINE__ . "$log");
 
 if ($payment_status != "Completed" || $txn_type != "subscr_payment") {
     die();
@@ -63,18 +65,18 @@ $header .= "Content-Type: application/x-www-form-urlencoded\r\n";
 $header .= "Content-Length: " . strlen($req) . "\r\n\r\n";
 
 for ($i = 1; $i <= 3; $i++) {
-    write_log(LOGFILE_EPAYMENT, basename(__FILE__) . ' line:' . __LINE__ . "-OPENDING HTTP CONNECTION TO " . PAYPAL_VERIFY_URL);
+    write_log($epayment_logfile, basename(__FILE__) . ' line:' . __LINE__ . "-OPENDING HTTP CONNECTION TO " . PAYPAL_VERIFY_URL);
     $fp = fsockopen(PAYPAL_VERIFY_URL, 443, $errno, $errstr, 30);
     if ($fp) {
         break;
     } else {
-        write_log(LOGFILE_EPAYMENT, basename(__FILE__) . ' line:' . __LINE__ . " -Try#" . $i . " Failed to open HTTP Connection : " . $errstr . ". Error Code: " . $errno);
+        write_log($epayment_logfile, basename(__FILE__) . ' line:' . __LINE__ . " -Try#" . $i . " Failed to open HTTP Connection : " . $errstr . ". Error Code: " . $errno);
         sleep(3);
     }
 }
 
 if (!$fp) {
-    write_log(LOGFILE_EPAYMENT, basename(__FILE__) . ' line:' . __LINE__ . "-Failed to open HTTP Connection: " . $errstr . ". Error Code: " . $errno);
+    write_log($epayment_logfile, basename(__FILE__) . ' line:' . __LINE__ . "-Failed to open HTTP Connection: " . $errstr . ". Error Code: " . $errno);
     exit ();
 } else {
     fputs($fp, $header . $req);
@@ -83,13 +85,13 @@ if (!$fp) {
         $res = fgets($fp, 1024);
         $gather_res .= $res;
         if (strcmp($res, "VERIFIED") == 0) {
-            write_log(LOGFILE_EPAYMENT, basename(__FILE__) . ' line:' . __LINE__ . "-PAYPAL Transaction Verification Status: Verified ");
+            write_log($epayment_logfile, basename(__FILE__) . ' line:' . __LINE__ . "-PAYPAL Transaction Verification Status: Verified ");
             $flag_ver = 1;
         }
     }
     write_log("/var/log/a2billing/test.log", "\nREQUEST:\n$gather_res");
     if ($flag_ver == 0) {
-        write_log(LOGFILE_EPAYMENT, basename(__FILE__) . ' line:' . __LINE__ . "-PAYPAL Transaction Verification Status: Failed \nreq=$req\n$gather_res");
+        write_log($epayment_logfile, basename(__FILE__) . ' line:' . __LINE__ . "-PAYPAL Transaction Verification Status: Failed \nreq=$req\n$gather_res");
         $security_verify = false;
     }
 }
@@ -100,7 +102,7 @@ $card_clause = "id = $id";
 $result = $table_card->get_list($DBHandle, $card_clause);
 
 if (!is_array($result)) {
-    write_log(LOGFILE_EPAYMENT, basename(__FILE__) . ' line:' . __LINE__ . "-PAYPAL Reccurring Payment Failed : card id( $id ) not found");
+    write_log($epayment_logfile, basename(__FILE__) . ' line:' . __LINE__ . "-PAYPAL Reccurring Payment Failed : card id( $id ) not found");
     die();
 }
 
@@ -115,9 +117,9 @@ $email = $result[0]['email'];
 $newkey = securitykey(EPAYMENT_TRANSACTION_KEY, $username . "^" . $id . "^" . $useralias . "^" . $creationdate);
 
 if ($newkey == $key) {
-    write_log(LOGFILE_EPAYMENT, basename(__FILE__) . ' line:' . __LINE__ . "----------- Transaction Key Verified ------------");
+    write_log($epayment_logfile, basename(__FILE__) . ' line:' . __LINE__ . "----------- Transaction Key Verified ------------");
 } else {
-    write_log(LOGFILE_EPAYMENT, basename(__FILE__) . ' line:' . __LINE__ . "----NEW KEY =" . $newkey . " OLD KEY= " . $key . " ------- Transaction Key Verification Failed:" . $transaction_data[0][8] . "^" . $transactionID . "^" . $transaction_data[0][2] . "^" . $transaction_data[0][1] . " ------------\n");
+    write_log($epayment_logfile, basename(__FILE__) . ' line:' . __LINE__ . "----NEW KEY =" . $newkey . " OLD KEY= " . $key . " ------- Transaction Key Verification Failed:" . $transaction_data[0][8] . "^" . $transactionID . "^" . $transaction_data[0][2] . "^" . $transaction_data[0][1] . " ------------\n");
     exit ();
 }
 
@@ -135,19 +137,19 @@ $instance_table = new Table("cc_card", "username, id");
 $param_update = " credit = credit+'" . $amount_without_vat . "'";
 $FG_EDITION_CLAUSE = " id='$id'";
 $instance_table->Update_table($DBHandle, $param_update, $FG_EDITION_CLAUSE, $func_table = null);
-write_log(LOGFILE_EPAYMENT, basename(__FILE__) . ' line:' . __LINE__ . "-Recurring payment" . " Update_table cc_card : $param_update - CLAUSE : $FG_EDITION_CLAUSE");
+write_log($epayment_logfile, basename(__FILE__) . ' line:' . __LINE__ . "-Recurring payment" . " Update_table cc_card : $param_update - CLAUSE : $FG_EDITION_CLAUSE");
 
 $field_insert = "date, credit, card_id, description";
 $value_insert = "'$nowDate', '" . $amount_without_vat . "', '$id', '" . gettext("Reccurring payment : automated refill") . "'";
 $instance_sub_table = new Table("cc_logrefill", $field_insert);
 $id_logrefill = $instance_sub_table->Add_table($DBHandle, $value_insert, null, null, 'id');
-write_log(LOGFILE_EPAYMENT, basename(__FILE__) . ' line:' . __LINE__ . "-Recurring payment" . " Add_table cc_logrefill : $field_insert - VALUES $value_insert");
+write_log($epayment_logfile, basename(__FILE__) . ' line:' . __LINE__ . "-Recurring payment" . " Add_table cc_logrefill : $field_insert - VALUES $value_insert");
 
 $field_insert = "date, payment, card_id, id_logrefill, description";
 $value_insert = "'$nowDate', '" . $amount_paid . "', '$id', '$id_logrefill', '" . gettext("Reccurring payment : automated refill") . "'";
 $instance_sub_table = new Table("cc_logpayment", $field_insert);
 $id_payment = $instance_sub_table->Add_table($DBHandle, $value_insert, null, null, "id");
-write_log(LOGFILE_EPAYMENT, basename(__FILE__) . ' line:' . __LINE__ . "-Recurring payment" . " Add_table cc_logpayment : $field_insert - VALUES $value_insert");
+write_log($epayment_logfile, basename(__FILE__) . ' line:' . __LINE__ . "-Recurring payment" . " Add_table cc_logpayment : $field_insert - VALUES $value_insert");
 
 //ADD an INVOICE
 $reference = generate_invoice_reference();

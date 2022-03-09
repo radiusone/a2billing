@@ -75,12 +75,12 @@ $groupcard = 5000;
 
 $A2B = new A2Billing();
 $A2B->load_conf($agi, null, $idconfig);
-
-write_log(LOGFILE_CRONT_ALARM, basename(__FILE__) . ' line:' . __LINE__ . "[#### BATCH BEGIN ####]");
+$cron_logfile = $A2B->config['log-files']['cront_alarm'] ?? "/tmp/a2billing_cront_alarm_log";
+write_log($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . "[#### BATCH BEGIN ####]");
 
 if (!$A2B->DbConnect()) {
     echo "[Cannot connect to the database]\n";
-    write_log(LOGFILE_CRONT_ALARM, basename(__FILE__) . ' line:' . __LINE__ . "[Cannot connect to the database]");
+    write_log($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . "[Cannot connect to the database]");
     exit;
 }
 //$A2B -> DBHandle
@@ -97,7 +97,7 @@ if ($verbose_level >= 1)
 
 if (!is_array($result)) {
     echo "[No Alarm to run]\n";
-    write_log(LOGFILE_CRONT_ALARM, basename(__FILE__) . ' line:' . __LINE__ . "[ No Alarm to run]");
+    write_log($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . "[ No Alarm to run]");
     exit ();
 }
 // 0 id, 1 name, 2 period, 3 type, 4 maxvalue, 5 minvalue, 6 id_trunk, 7 status, 8 numberofrun, 9 datecreate, 10 datelastrun, 11 emailreport
@@ -165,7 +165,7 @@ foreach ($result as $myalarm) {
 
         if (isset ($myalarm[6]) && $myalarm[6] != "")
             $SQL_CLAUSE .= " AND id_trunk = '" . $myalarm[6] . "'";
-        write_log(LOGFILE_CRONT_ALARM, basename(__FILE__) . ' line:' . __LINE__ . "[Alarm : " . $myalarm[1] . " ]");
+        write_log($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . "[Alarm : " . $myalarm[1] . " ]");
 
         $QUERY = "SELECT COUNT(*) FROM cc_call $SQL_CLAUSE";
         if ($verbose_level >= 1)
@@ -179,7 +179,7 @@ foreach ($result as $myalarm) {
         if (!($nb_card > 0)) {
             if ($verbose_level >= 1)
                 echo "[No call to run the Alarm Service]\n";
-            write_log(LOGFILE_CRONT_ALARM, basename(__FILE__) . ' line:' . __LINE__ . "[No call to run the Alarm service]");
+            write_log($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . "[No call to run the Alarm service]");
             exit ();
         }
 
@@ -260,14 +260,14 @@ foreach ($result as $myalarm) {
         }
         if ($verbose_level >= 1)
             echo "content = $content\n";
-        write_log(LOGFILE_CRONT_ALARM, basename(__FILE__) . ' line:' . __LINE__ . "[Alarm finish]");
+        write_log($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . "[Alarm finish]");
         // INSERT REPORT ALARM INTO THE DATABASE
         $QUERY = "INSERT INTO cc_alarm_report (cc_alarm_id, calculatedvalue, daterun) " . "VALUES ('$myalarm[0]', '$value', now())";
         $result_insert = $instance_table->SQLExec($A2B->DBHandle, $QUERY, 0);
         if ($verbose_level >= 1)
             echo "\n\n ==> INSERT ALARM REPORT QUERY=$QUERY\n";
 
-        write_log(LOGFILE_CRONT_ALARM, basename(__FILE__) . ' line:' . __LINE__ . "[Alarm report : 'Alarm name=$myalarm[1]', 'Alarm type=$myalarm[3]', 'Calculated value=$value']");
+        write_log($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . "[Alarm report : 'Alarm name=$myalarm[1]', 'Alarm type=$myalarm[3]', 'Calculated value=$value']");
 
         // UPDATE THE ALARM
         if ($send_alarm)
@@ -292,7 +292,7 @@ foreach ($result as $myalarm) {
             } catch (A2bMailException $e) {
                 if ($verbose_level >= 1)
                     echo "[Sent mail failed : $e]";
-                write_log(LOGFILE_CRONT_ALARM, basename(__FILE__) . ' line:' . __LINE__ . "[Sent mail failed : $e]");
+                write_log($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . "[Sent mail failed : $e]");
             }
         }
 
@@ -302,4 +302,4 @@ foreach ($result as $myalarm) {
 
 if ($verbose_level >= 1)
     echo "#### END ALARMS \n";
-write_log(LOGFILE_CRONT_ALARM, basename(__FILE__) . ' line:' . __LINE__ . "[#### ALARM END ####]");
+write_log($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . "[#### ALARM END ####]");

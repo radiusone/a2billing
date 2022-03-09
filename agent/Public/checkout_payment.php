@@ -159,7 +159,8 @@ echo tep_draw_form('checkout_amount', $form_action_url, 'post', 'onsubmit="check
     <table width="80%" cellspacing="0" cellpadding="2" align=center>
     <?php
     if (isset($payment_error) && is_object(${$payment_error}) && ($error = ${$payment_error}->get_error())) {
-          write_log(LOGFILE_EPAYMENT, basename(__FILE__).' line:'.__LINE__." ERROR ".$error['title']." ".$error['error']);
+    $epayment_logfile = $A2B->config['log-files']['epayment'] ?? "/tmp/a2billing_epayment_log";
+    write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__." ERROR ".$error['title']." ".$error['error']);
     ?>
 
       <tr>

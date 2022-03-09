@@ -317,9 +317,8 @@ class A2Billing
 
         if (is_array($this->cardnumber_range)) {
             sort($this->cardnumber_range);
-            define("CARDNUMBER_LENGTH_MIN", min($this->cardnumber_range));
-            define("CARDNUMBER_LENGTH_MAX", max($this->cardnumber_range));
-            define("LEN_CARDNUMBER", CARDNUMBER_LENGTH_MIN);
+            // TODO: get rid of this
+            define("LEN_CARDNUMBER", min($this->cardnumber_range));
         } else {
             echo gettext("Invalid card number length list defined in configuration.");
             exit;
@@ -437,22 +436,6 @@ class A2Billing
             $this->config['webui']['api_ip_auth'] = explode(";", $this->config['webui']['api_ip_auth']);
         }
 
-        define("LOGFILE_CRONT_ALARM", $this->config['log-files']['cront_alarm'] ?? null);
-        define("LOGFILE_CRONT_AUTOREFILL", $this->config['log-files']['cront_autorefill'] ?? null);
-        define("LOGFILE_CRONT_BATCH_PROCESS", $this->config['log-files']['cront_batch_process'] ?? null);
-        define("LOGFILE_CRONT_ARCHIVE_DATA", $this->config['log-files']['cront_archive_data'] ?? null);
-        define("LOGFILE_CRONT_BILL_DIDUSE", $this->config['log-files']['cront_bill_diduse'] ?? null);
-        define("LOGFILE_CRONT_SUBSCRIPTIONFEE", $this->config['log-files']['cront_subscriptionfee'] ?? null);
-        define("LOGFILE_CRONT_CURRENCY_UPDATE", $this->config['log-files']['cront_currency_update'] ?? null);
-        define("LOGFILE_CRONT_INVOICE", $this->config['log-files']['cront_invoice'] ?? null);
-        define("LOGFILE_CRONT_CHECKACCOUNT", $this->config['log-files']['cront_check_account'] ?? null);
-
-        define("LOGFILE_API_ECOMMERCE", $this->config['log-files']['api_ecommerce'] ?? null);
-        define("LOGFILE_API_CALLBACK", $this->config['log-files']['api_callback'] ?? null);
-        define("LOGFILE_PAYPAL", $this->config['log-files']['paypal'] ?? null);
-        define("LOGFILE_EPAYMENT", $this->config['log-files']['epayment'] ?? null);
-
-
         // conf for the AGI
         $default["play_audio"] = 1;
 
@@ -558,8 +541,10 @@ class A2Billing
         define("PLAY_AUDIO", $this->config["agi-conf$idconfig"]['play_audio']);
 
         // Print out on CLI for debug purpose
-        if (!$webui) $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, 'A2Billing AGI internal configuration:');
-        if (!$webui) $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, json_encode($this->agiconfig));
+        if (!$webui) {
+            $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, 'A2Billing AGI internal configuration:');
+            $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, json_encode($this->agiconfig));
+        }
         return true;
     }
 
@@ -3011,8 +2996,8 @@ class A2Billing
                     break;
                 }
                 $res = 0;
-                $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "CARDNUMBER_LENGTH_MAX " . CARDNUMBER_LENGTH_MAX);
-                $res_dtmf = $agi->get_data($prompt_entercardnum, 6000, CARDNUMBER_LENGTH_MAX);
+                $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "CARDNUMBER_LENGTH_MAX " . max($this->cardnumber_range));
+                $res_dtmf = $agi->get_data($prompt_entercardnum, 6000, max($this->cardnumber_range));
                 $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "RES DTMF : " . $res_dtmf["result"]);
                 $this->cardnumber = $res_dtmf["result"];
 
@@ -3024,7 +3009,7 @@ class A2Billing
                     continue;
                 }
 
-                if (strlen($this->cardnumber) > CARDNUMBER_LENGTH_MAX || strlen($this->cardnumber) < CARDNUMBER_LENGTH_MIN) {
+                if (strlen($this->cardnumber) > max($this->cardnumber_range) || strlen($this->cardnumber) < min($this->cardnumber_range)) {
                     $prompt = "prepaid-invalid-digits";
                     $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, strtoupper($prompt));
                     continue;

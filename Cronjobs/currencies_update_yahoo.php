@@ -79,12 +79,13 @@ $A2B -> load_conf($agi, A2Billing::DEFAULT_A2BILLING_CONFIG);
 define ("BASE_CURRENCY", strtoupper($A2B->config["global"]['base_currency']));
 
 $A2B -> load_conf($agi, null, $idconfig);
+$cron_logfile = $A2B->config['log-files']['cront_currency_update'] ?? "/tmp/a2billing_cront_currency_log";
 
-write_log(LOGFILE_CRONT_CURRENCY_UPDATE, basename(__FILE__).' line:'.__LINE__."[#### START CURRENCY UPDATE ####]");
+write_log($cron_logfile, basename(__FILE__).' line:'.__LINE__."[#### START CURRENCY UPDATE ####]");
 
 if (!$A2B -> DbConnect()) {
     echo "[Cannot connect to the database]\n";
-    write_log(LOGFILE_CRONT_CURRENCY_UPDATE, basename(__FILE__).' line:'.__LINE__."[Cannot connect to the database]");
+    write_log($cron_logfile, basename(__FILE__).' line:'.__LINE__."[Cannot connect to the database]");
     exit;
 }
 
@@ -92,6 +93,6 @@ $instance_table = new Table();
 $A2B -> set_table ($instance_table);
 
 $return = currencies_update_yahoo($A2B -> DBHandle, $A2B -> table);
-write_log(LOGFILE_CRONT_CURRENCY_UPDATE, basename(__FILE__).' line:'.__LINE__.$return, 0);
+write_log($cron_logfile, basename(__FILE__).' line:'.__LINE__.$return, 0);
 
 die();

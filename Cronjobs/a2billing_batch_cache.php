@@ -83,13 +83,14 @@ $wait_time = 10;
 
 $A2B = new A2Billing();
 $A2B->load_conf($agi, null, $idconfig);
+$logfile_cront_batch = $A2B->config['log-files']['cront_batch_process'] ?? "/tmp/a2billing_cront_batch_log";
 
-write_log(LOGFILE_CRONT_BATCH_PROCESS, basename(__FILE__) . ' line:' . __LINE__ . "[#### IMPORT CACHE CRONT START ####]");
+write_log($logfile_cront_batch, basename(__FILE__) . ' line:' . __LINE__ . "[#### IMPORT CACHE CRONT START ####]");
 
 if (!$A2B->DbConnect()) {
     if ($verbose_level >= 1)
         echo "[Cannot connect to the database]\n";
-    write_log(LOGFILE_CRONT_BATCH_PROCESS, basename(__FILE__) . ' line:' . __LINE__ . "[Cannot connect to the database]");
+    write_log($logfile_cront_batch, basename(__FILE__) . ' line:' . __LINE__ . "[Cannot connect to the database]");
     exit;
 }
 
@@ -100,7 +101,7 @@ if ($A2B->config["global"]['cache_enabled']) {
         if ($verbose_level >= 1)
             echo "[Path to the cache is not defined]\n";
 
-        write_log(LOGFILE_CRONT_BATCH_PROCESS, basename(__FILE__) . ' line:' . __LINE__ . "[Path to the cache is not defined]");
+        write_log($logfile_cront_batch, basename(__FILE__) . ' line:' . __LINE__ . "[Path to the cache is not defined]");
         exit;
     }
 
@@ -108,7 +109,7 @@ if ($A2B->config["global"]['cache_enabled']) {
         if ($verbose_level >= 1)
             echo "[File doesn't exist or permission denied]\n";
 
-        write_log(LOGFILE_CRONT_BATCH_PROCESS, basename(__FILE__) . ' line:' . __LINE__ . "[File doesn't exist or permission denied]");
+        write_log($logfile_cront_batch, basename(__FILE__) . ' line:' . __LINE__ . "[File doesn't exist or permission denied]");
         exit;
     }
 
@@ -168,7 +169,7 @@ if ($A2B->config["global"]['cache_enabled']) {
     } else {
         if ($verbose_level >= 1)
             echo "[Error to connect to cache : $sqliteerror]\n";
-        write_log(LOGFILE_CRONT_BATCH_PROCESS, basename(__FILE__) . ' line:' . __LINE__ . "[Error to connect to cache : $sqliteerror]\n");
+        write_log($logfile_cront_batch, basename(__FILE__) . ' line:' . __LINE__ . "[Error to connect to cache : $sqliteerror]\n");
     }
 
 }
@@ -176,4 +177,4 @@ if ($A2B->config["global"]['cache_enabled']) {
 if ($verbose_level >= 1)
     echo "#### END RECURRING SERVICES \n";
 
-write_log(LOGFILE_CRONT_BATCH_PROCESS, basename(__FILE__) . ' line:' . __LINE__ . "[#### BATCH PROCESS END ####]");
+write_log($logfile_cront_batch, basename(__FILE__) . ' line:' . __LINE__ . "[#### BATCH PROCESS END ####]");

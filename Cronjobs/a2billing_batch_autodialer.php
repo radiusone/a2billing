@@ -83,12 +83,13 @@ $group = 20;
 
 $A2B = new A2Billing();
 $A2B->load_conf($agi, null, $idconfig);
+$logfile_cront_batch = $A2B->config['log-files']['cront_batch_process'] ?? "/tmp/a2billing_cront_batch_log";
 
-write_log(LOGFILE_CRONT_BATCH_PROCESS, basename(__FILE__) . ' line:' . __LINE__ . "[#### BATCH BEGIN ####]");
+write_log($logfile_cront_batch, basename(__FILE__) . ' line:' . __LINE__ . "[#### BATCH BEGIN ####]");
 
 if (!$A2B->DbConnect()) {
     echo "[Cannot connect to the database]\n";
-    write_log(LOGFILE_CRONT_BATCH_PROCESS, basename(__FILE__) . ' line:' . __LINE__ . "[Cannot connect to the database]");
+    write_log($logfile_cront_batch, basename(__FILE__) . ' line:' . __LINE__ . "[Cannot connect to the database]");
     exit;
 }
 
@@ -131,7 +132,7 @@ if ($verbose_level >= 1)
 if ($result_count_phonenumbers[0][0] == 0) {
     if ($verbose_level >= 1)
         echo "[No phonenumbers to call now]\n";
-    write_log(LOGFILE_CRONT_BATCH_PROCESS, basename(__FILE__) . ' line:' . __LINE__ . "[No phonenumbers to call now]");
+    write_log($logfile_cront_batch, basename(__FILE__) . ' line:' . __LINE__ . "[No phonenumbers to call now]");
     exit ();
 }
 
@@ -174,14 +175,14 @@ for ($page = 0; $page < $nbpage; $page++) {
 
         if ($result_balance) {
             if ($result_balance[0][1] < $result_balance[0][0]) {
-                write_log(LOGFILE_CRONT_BATCH_PROCESS, basename(__FILE__) . ' line:' . __LINE__ . "[ user $phone[8] don't have engouh credit ]");
+                write_log($logfile_cront_batch, basename(__FILE__) . ' line:' . __LINE__ . "[ user $phone[8] don't have engouh credit ]");
                 if ($verbose_level >= 1)
                     echo "\n[ Error : Can't send callback -> user $phone[8] don't have enough credit ]";
                 continue;
             }
 
         } else {
-            write_log(LOGFILE_CRONT_BATCH_PROCESS, basename(__FILE__) . ' line:' . __LINE__ . "[ user $phone[8] don't have a group correctly defined ]");
+            write_log($logfile_cront_batch, basename(__FILE__) . ' line:' . __LINE__ . "[ user $phone[8] don't have a group correctly defined ]");
             if ($verbose_level >= 1)
                 echo "\n[ Error : Can't send callback -> user $phone[8] don't have a group correctly defined ]";
             continue;

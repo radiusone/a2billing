@@ -66,7 +66,8 @@ function Service_Get_Balance($accountnumber, $password)
     $table_instance = new Table();
 
     if (!$DBHandle) {
-        write_log(LOGFILE_API_CALLBACK, basename(__FILE__).' line:'.__LINE__." ERROR CONNECT DB");
+        $cron_logfile = $A2B->config['log-files']['api_callback'] ?? "/tmp/a2billing_api_callback_log";
+        write_log($cron_logfile, basename(__FILE__).' line:'.__LINE__." ERROR CONNECT DB");
 
         return array('500', ' ERROR - CONNECT DB ');
     }

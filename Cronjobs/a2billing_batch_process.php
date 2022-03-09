@@ -83,12 +83,13 @@ $run = 1; // set to 0 if u want to just report, no updates. must be set to 1 on 
 
 $A2B = new A2Billing();
 $A2B->load_conf($agi, null, $idconfig);
+$logfile_cront_batch = $A2B->config['log-files']['cront_batch_process'] ?? "/tmp/a2billing_cront_batch_log";
 
-write_log(LOGFILE_CRONT_BATCH_PROCESS, basename(__FILE__) . ' line:' . __LINE__ . "[#### BATCH BEGIN ####]");
+write_log($logfile_cront_batch, basename(__FILE__) . ' line:' . __LINE__ . "[#### BATCH BEGIN ####]");
 
 if (!$A2B->DbConnect()) {
     echo "[Cannot connect to the database]\n";
-    write_log(LOGFILE_CRONT_BATCH_PROCESS, basename(__FILE__) . ' line:' . __LINE__ . "[Cannot connect to the database]");
+    write_log($logfile_cront_batch, basename(__FILE__) . ' line:' . __LINE__ . "[Cannot connect to the database]");
     exit;
 }
 
@@ -111,14 +112,14 @@ if ($verbose_level >= 1)
 
 if (!is_array($result)) {
     echo "[No Recurring service to run]\n";
-    write_log(LOGFILE_CRONT_BATCH_PROCESS, basename(__FILE__) . ' line:' . __LINE__ . "[ No Recurring service to run]");
+    write_log($logfile_cront_batch, basename(__FILE__) . ' line:' . __LINE__ . "[ No Recurring service to run]");
     exit ();
 }
 
 // 0 id, 1 name, 2 amount, 3 period, 4 rule, 5 daynumber, 6 stopmode,  7 maxnumbercycle, 8 status, 9 numberofrun,
 // 10 datecreate, 11 datelastrun, 12 emailreport, 13 totalcredit, 14 totalcardperform, 15 dialplan 16 operate_mode
 
-write_log(LOGFILE_CRONT_BATCH_PROCESS, basename(__FILE__) . ' line:' . __LINE__ . "[Number of card found : $nb_card]");
+write_log($logfile_cront_batch, basename(__FILE__) . ' line:' . __LINE__ . "[Number of card found : $nb_card]");
 
 // mail variable for user notification
 
@@ -129,7 +130,7 @@ foreach ($result as $myservice) {
     $totalcredit = 0;
     $timestamp_lastsend = $myservice[11]; // 4 aug 1PM
 
-    write_log(LOGFILE_CRONT_BATCH_PROCESS, basename(__FILE__) . ' line:' . __LINE__ . "[Service : " . $myservice[1] . " ]");
+    write_log($logfile_cront_batch, basename(__FILE__) . ' line:' . __LINE__ . "[Service : " . $myservice[1] . " ]");
     $filters 		= '';
     $service_name 	= $myservice[1];
     $period 		= $myservice[3];
@@ -248,7 +249,7 @@ foreach ($result as $myservice) {
 
     $instance_table->SQLExec($A2B->DBHandle, "commit");
 
-    write_log(LOGFILE_CRONT_BATCH_PROCESS, basename(__FILE__) . ' line:' . __LINE__ . "[Service finish]");
+    write_log($logfile_cront_batch, basename(__FILE__) . ' line:' . __LINE__ . "[Service finish]");
 
     // INSERT REPORT SERVICE INTO THE DATABASE
     $QUERY = "INSERT INTO cc_service_report (cc_service_id, totalcardperform, totalcredit, daterun) " .
@@ -259,7 +260,7 @@ foreach ($result as $myservice) {
     if ($verbose_level >= 1)
         echo "==> INSERT SERVICE REPORT QUERY=$QUERY\n";
 
-    write_log(LOGFILE_CRONT_BATCH_PROCESS, basename(__FILE__) . ' line:' . __LINE__ . "[Service report : 'totalcardperform=$totalcardperform', 'totalcredit=$totalcredit']");
+    write_log($logfile_cront_batch, basename(__FILE__) . ' line:' . __LINE__ . "[Service report : 'totalcardperform=$totalcardperform', 'totalcredit=$totalcredit']");
 
     // UPDATE THE SERVICE
     $QUERY = "UPDATE cc_service SET datelastrun=now(), numberofrun=numberofrun+1, totalcardperform=totalcardperform+" . $totalcardperform .
@@ -285,7 +286,7 @@ foreach ($result as $myservice) {
         } catch (A2bMailException $e) {
             if ($verbose_level >= 1)
                 echo "[Sent mail failed : $e]";
-            write_log(LOGFILE_CRONT_BATCH_PROCESS, basename(__FILE__) . ' line:' . __LINE__ . "[Sent mail failed : $e]");
+            write_log($logfile_cront_batch, basename(__FILE__) . ' line:' . __LINE__ . "[Sent mail failed : $e]");
         }
     }
 
@@ -294,4 +295,4 @@ foreach ($result as $myservice) {
 if ($verbose_level >= 1)
     echo "#### END RECURRING SERVICES \n";
 
-write_log(LOGFILE_CRONT_BATCH_PROCESS, basename(__FILE__) . ' line:' . __LINE__ . "[#### BATCH PROCESS END ####]");
+write_log($logfile_cront_batch, basename(__FILE__) . ' line:' . __LINE__ . "[#### BATCH PROCESS END ####]");

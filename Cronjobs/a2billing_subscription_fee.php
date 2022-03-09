@@ -80,12 +80,13 @@ $groupcard = 5000;
 
 $A2B = new A2Billing();
 $A2B->load_conf($agi, null, $idconfig);
+$logfile_cront_subfee = $A2B->config['log-files']['cront_subscriptionfee'] ?? "/tmp/a2billing_cront_subfee_log";
 
-write_log(LOGFILE_CRONT_SUBSCRIPTIONFEE, basename(__FILE__) . ' line:' . __LINE__ . "[#### BATCH BEGIN ####]");
+write_log($logfile_cront_subfee, basename(__FILE__) . ' line:' . __LINE__ . "[#### BATCH BEGIN ####]");
 
 if (!$A2B->DbConnect()) {
     echo "[Cannot connect to the database]\n";
-    write_log(LOGFILE_CRONT_SUBSCRIPTIONFEE, basename(__FILE__) . ' line:' . __LINE__ . "[Cannot connect to the database]");
+    write_log($logfile_cront_subfee, basename(__FILE__) . ' line:' . __LINE__ . "[Cannot connect to the database]");
     exit;
 }
 
@@ -112,7 +113,7 @@ if ($verbose_level >= 1)
 if (!($nb_card > 0)) {
     if ($verbose_level >= 1)
         echo "[No card to run the Subscription service]\n";
-    write_log(LOGFILE_CRONT_SUBSCRIPTIONFEE, basename(__FILE__) . ' line:' . __LINE__ . "[No card to run the Subscription Feeservice]");
+    write_log($logfile_cront_subfee, basename(__FILE__) . ' line:' . __LINE__ . "[No card to run the Subscription Feeservice]");
     exit ();
 }
 
@@ -266,7 +267,7 @@ for ($page = 0; $page < $nbpagemax; $page++) {
                     } catch (A2bMailException $e) {
                         if ($verbose_level >= 1)
                             echo "[Sent mail failed : $e]";
-                        write_log(LOGFILE_CRONT_SUBSCRIPTIONFEE, basename(__FILE__) . ' line:' . __LINE__ . "[Sent mail failed : $e]");
+                        write_log($logfile_cront_subfee, basename(__FILE__) . ' line:' . __LINE__ . "[Sent mail failed : $e]");
                     }
 
                 } else {
@@ -320,7 +321,7 @@ for ($page = 0; $page < $nbpagemax; $page++) {
                     } catch (A2bMailException $e) {
                         if ($verbose_level >= 1)
                             echo "[Sent mail failed : $e]";
-                        write_log(LOGFILE_CRONT_SUBSCRIPTIONFEE, basename(__FILE__) . ' line:' . __LINE__ . "[Sent mail failed : $e]");
+                        write_log($logfile_cront_subfee, basename(__FILE__) . ' line:' . __LINE__ . "[Sent mail failed : $e]");
                     }
                 }
                 $QUERY = "UPDATE cc_card_subscription SET last_run = '$last_run', next_billing_date = '$next_bill_date', limit_pay_date = '$limite_pay_date' WHERE id=" . $subscription['card_subscription_id'];
@@ -352,7 +353,7 @@ for ($page = 0; $page < $nbpagemax; $page++) {
                 } catch (A2bMailException $e) {
                     if ($verbose_level >= 1)
                         echo "[Sent mail failed : $e]";
-                    write_log(LOGFILE_CRONT_SUBSCRIPTIONFEE, basename(__FILE__) . ' line:' . __LINE__ . "[Sent mail failed : $e]");
+                    write_log($logfile_cront_subfee, basename(__FILE__) . ' line:' . __LINE__ . "[Sent mail failed : $e]");
                 }
                 break;
         }
@@ -372,4 +373,4 @@ foreach ($service_array as $key => $value) {
 if ($verbose_level >= 1)
     echo "#### END SUBSCRIPTION SERVICES \n";
 
-write_log(LOGFILE_CRONT_SUBSCRIPTIONFEE, basename(__FILE__) . ' line:' . __LINE__ . "[#### BATCH PROCESS END ####]");
+write_log($logfile_cront_subfee, basename(__FILE__) . ' line:' . __LINE__ . "[#### BATCH PROCESS END ####]");
