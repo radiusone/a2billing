@@ -60,21 +60,19 @@ if ($argc > 1 && ($argv[1] == '--version' || $argv[1] == '-v')) {
 $agi = new Agi();
 
 $optconfig = [];
-if ($argc > 1 && strstr($argv[1], "+")) {
+if (str_contains($argv[1] ?? "", "+")) {
     /*
     This change allows some configuration overrides on the AGI command-line by allowing the user to add them after the configuration number, like so:
     exten => 0312345678, 3, AGI(a2billing.php, "1+use_dnid=0&extracharge_did=12345")
     */
     //check for configuration overrides in the first argument
-    $idconfig = substr($argv[1], 0, strpos($argv[1], "+"));
-    $configstring = substr($argv[1], strpos($argv[1], "+") + 1);
+    [$idconfig, $configstring] = explode("+", $argv[1], 2);
 
     foreach (explode("&", $configstring) as $conf) {
-        $var = substr($conf, 0, strpos($conf, "="));
-        $val = substr($conf, strpos($conf, "=") + 1);
+        [$var, $val] = explode("=", $conf);
         $optconfig[$var] = $val;
     }
-} elseif ($argc > 1 && is_numeric($argv[1]) && $argv[1] >= 0) {
+} elseif ((int)($argv[1] ?? 0) > 0) {
     $idconfig = $argv[1];
 } else {
     $idconfig = 1;
@@ -90,14 +88,14 @@ $mode = $argv[2] ?? "standard";
 $caller_areacode = $argv[3] ?? null;
 
 $A2B = new A2Billing();
-$A2B->load_conf($agi, null, 0, $idconfig, $optconfig);
+$A2B->load_conf($agi, null, $idconfig, $optconfig);
 $A2B->mode = $mode;
 $A2B->G_startime = $G_startime;
 
 $groupid = $argv[4] ?? null;
 if ($groupid) {
     $A2B->group_mode = true;
-    $A2B->group_id = $groupid;
+    $A2B->group_id = (int)$groupid;
 }
 
 $cid_1st_leg_tariff_id = $argv[5] ?? null;
@@ -135,7 +133,7 @@ $called_party = null;
 $calling_party = null;
 $status_channel = 0;
 
-$A2B->set_instance_table(new Table());
+$A2B->set_table(new Table());
 
 $RateEngine = new RateEngine();
 
@@ -185,9 +183,9 @@ if ($mode === 'standard') {
             // CHECK IF THE CHANNEL IS UP
             if ($A2B->agiconfig['answer_call'] == 1 && $stat_channel["result"] != $status_channel) {
                 if ($A2B->set_inuse) {
-                    $A2B->callingcard_acct_start_inuse($agi, 0);
+                    $A2B->callingcard_acct_start_inuse($agi);
                 }
-                $A2B->write_log("[STOP - EXIT]", 0);
+                $A2B->write_log("[STOP - EXIT]");
                 exit();
             }
 
@@ -199,7 +197,7 @@ if ($mode === 'standard') {
             if ($A2B->agiconfig['ivr_enable_locking_option'] == 1) {
                 $QUERY = "SELECT block, lock_pin FROM cc_card WHERE username = '$A2B->username'";
                 $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[QUERY] : " . $QUERY);
-                $result = $A2B->instance_table->SQLExec($A2B->DBHandle, $QUERY);
+                $result = $A2B->table->SQLExec($A2B->DBHandle, $QUERY);
 
                 // Check if the locking option is enabled for this account
                 if ($result[0][0] == 1 && strlen($result[0][1]) > 0) {
@@ -217,7 +215,7 @@ if ($mode === 'standard') {
                         }
                         if ($try > 3) {
                             if ($A2B->set_inuse) {
-                                $A2B->callingcard_acct_start_inuse($agi, 0);
+                                $A2B->callingcard_acct_start_inuse($agi);
                             }
                             $agi->hangup();
                             exit();
@@ -249,7 +247,7 @@ if ($mode === 'standard') {
                                 FROM cc_card c
                                 WHERE username = '$A2B->username'
                                 LIMIT 1";
-                    $result = $A2B->instance_table->SQLExec($A2B->DBHandle, $QUERY);
+                    $result = $A2B->table->SQLExec($A2B->DBHandle, $QUERY);
                     $card_info = $result[0] ?? null;
                     $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[QUERY] : " . $QUERY);
 
@@ -273,7 +271,7 @@ if ($mode === 'standard') {
                                 case 1 :
                                     $QUERY = "SELECT starttime FROM cc_call
                                     WHERE card_id = $A2B->id_card ORDER BY starttime DESC LIMIT 1";
-                                    $result = $A2B->instance_table->SQLExec($A2B->DBHandle, $QUERY);
+                                    $result = $A2B->table->SQLExec($A2B->DBHandle, $QUERY);
                                     $lastcall_info = $result[0] ?? null;
                                     if (is_array($lastcall_info)) {
                                         $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[INFORMATION MENU]:[OPTION 1]");
@@ -306,7 +304,7 @@ if ($mode === 'standard') {
                                 case '*' :
                                     $agi->stream_file('prepaid-final', '#');
                                     if ($A2B->set_inuse) {
-                                        $A2B->callingcard_acct_start_inuse($agi, 0);
+                                        $A2B->callingcard_acct_start_inuse($agi);
                                     }
                                     $agi->hangup();
                                     exit();
@@ -350,7 +348,7 @@ if ($mode === 'standard') {
                         switch ($res_dtmf) {
                             case 1 :
                                 $QUERY = "UPDATE cc_card SET block = 1, lock_pin = '$lock_pin', lock_date = NOW() WHERE username = '$A2B->username'";
-                                $A2B->instance_table->SQLExec($A2B->DBHandle, $QUERY);
+                                $A2B->table->SQLExec($A2B->DBHandle, $QUERY);
                                 $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[QUERY]:[$QUERY]");
                                 $agi->stream_file('prepaid-locking-accepted', '#'); // Your locking code has been accepted
                                 $return = true;
@@ -360,7 +358,7 @@ if ($mode === 'standard') {
                             case '*' :
                                 $agi->stream_file('prepaid-final', '#');
                                 if ($A2B->set_inuse) {
-                                    $A2B->callingcard_acct_start_inuse($agi, 0);
+                                    $A2B->callingcard_acct_start_inuse($agi);
                                 }
                                 $agi->hangup();
                                 exit();
@@ -380,7 +378,7 @@ if ($mode === 'standard') {
                 if (($A2B->agiconfig['notenoughcredit_cardnumber'] == 1) && (($i + 1) < $A2B->agiconfig['number_try'])) {
 
                     if ($A2B->set_inuse) {
-                        $A2B->callingcard_acct_start_inuse($agi, 0);
+                        $A2B->callingcard_acct_start_inuse($agi);
                     }
 
                     $A2B->agiconfig['cid_enable'] = 0;
@@ -397,7 +395,7 @@ if ($mode === 'standard') {
                     }
 
                     $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[NOTENOUGHCREDIT_CARDNUMBER - callingcard_acct_start_inuse]");
-                    $A2B->callingcard_acct_start_inuse($agi, 1);
+                    $A2B->callingcard_acct_start_inuse($agi, true);
                     continue;
 
                 } else {
@@ -441,7 +439,7 @@ if ($mode === 'standard') {
                                             FROM cc_speeddial, cc_card WHERE cc_speeddial.id_cc_card = cc_card.id
                                             AND cc_card.id = " . $A2B->id_card . " AND cc_speeddial.speeddial = " . $speeddial_number;
                                 $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, $QUERY);
-                                $result = $A2B->instance_table->SQLExec($A2B->DBHandle, $QUERY);
+                                $result = $A2B->table->SQLExec($A2B->DBHandle, $QUERY);
                                 $id_speeddial = $result[0][1];
                                 if (is_array($result)) {
                                     $agi->say_number($speeddial_number);
@@ -491,7 +489,7 @@ if ($mode === 'standard') {
                                         }
 
                                         $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, $QUERY);
-                                        $result = $A2B->instance_table->SQLExec($A2B->DBHandle, $QUERY);
+                                        $result = $A2B->table->SQLExec($A2B->DBHandle, $QUERY);
                                         $agi->stream_file("prepaid-speeddial-saved"); //The speed dial number has been successfully saved.
                                         $return_mainmenu = true;
                                         break;
@@ -558,9 +556,9 @@ if ($mode === 'standard') {
                 $ans = $A2B->callingcard_ivr_authorize($agi, $RateEngine, $i, true);
                 $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, 'ANSWER fct callingcard_ivr authorize:> ' . $ans);
 
-                if ($ans == 1) {
+                if ($ans === 1) {
                     attempt_call($A2B, $RateEngine, $agi);
-                } elseif ($ans == "2DID") {
+                } elseif ($ans === 2) {
 
                     $A2B->debug(A2Billing::INFO, $agi, __FILE__, __LINE__, "[ CALL OF THE SYSTEM - [DID=" . $A2B->destination . "]");
 
@@ -583,13 +581,13 @@ if ($mode === 'standard') {
                     $QUERY .= ") ORDER BY priority ASC";
 
                     $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, $QUERY);
-                    $result = $A2B->instance_table->SQLExec($A2B->DBHandle, $QUERY);
+                    $result = $A2B->table->SQLExec($A2B->DBHandle, $QUERY);
 
                     if (is_array($result)) {
                         //On Net
                         $A2B->call_2did($agi, $RateEngine, $result);
                         if ($A2B->set_inuse) {
-                            $A2B->callingcard_acct_start_inuse($agi, 0);
+                            $A2B->callingcard_acct_start_inuse($agi);
                         }
                     }
                 }
@@ -641,14 +639,14 @@ if ($mode === 'standard') {
         $QUERY .= ") ORDER BY priority ASC";
 
         $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, $QUERY);
-        $result = $A2B->instance_table->SQLExec($A2B->DBHandle, $QUERY);
+        $result = $A2B->table->SQLExec($A2B->DBHandle, $QUERY);
         $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, $result);
 
         if (is_array($result)) {
             //Off Net
             $A2B->call_did($agi, $RateEngine, $result);
             if ($A2B->set_inuse) {
-                $A2B->callingcard_acct_start_inuse($agi, 0);
+                $A2B->callingcard_acct_start_inuse($agi);
             }
         }
     }
@@ -681,9 +679,9 @@ if ($mode === 'standard') {
 
     $agi->hangup();
     if ($A2B->set_inuse) {
-        $A2B->callingcard_acct_start_inuse($agi, 0);
+        $A2B->callingcard_acct_start_inuse($agi);
     }
-    $A2B->write_log("[STOP - EXIT]", 0);
+    $A2B->write_log("[STOP - EXIT]");
     exit();
 
 // MODE CAMPAIGN-CALLBACK
@@ -768,7 +766,7 @@ if ($mode === 'standard') {
                                     $res_dtmf = $agi->get_data('prepaid-re-enter-press1-confirm', 4000, 1);
                                     if ($subtry >= 3) {
                                         if ($A2B->set_inuse) {
-                                            $A2B->callingcard_acct_start_inuse($agi, 0);
+                                            $A2B->callingcard_acct_start_inuse($agi);
                                         }
                                         $agi->hangup();
                                         exit();
@@ -786,7 +784,7 @@ if ($mode === 'standard') {
 
                         if (!strlen($outbound_destination)) {
                             if ($A2B->set_inuse) {
-                                $A2B->callingcard_acct_start_inuse($agi, 0);
+                                $A2B->callingcard_acct_start_inuse($agi);
                             }
                             $agi->hangup();
                             exit();
@@ -990,7 +988,7 @@ if ($mode === 'standard') {
                 $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[CALLBACK]:[STOP STREAM FILE $prompt]");
             }
 
-            if ($A2B->callingcard_ivr_authorize($agi, $RateEngine, $i) == 1) {
+            if ($A2B->callingcard_ivr_authorize($agi, $RateEngine, $i) === 1) {
                 // PERFORM THE CALL
                 attempt_call($A2B, $RateEngine, $agi);
 
@@ -1003,7 +1001,7 @@ if ($mode === 'standard') {
         }//END FOR
 
         if ($A2B->set_inuse) {
-            $A2B->callingcard_acct_start_inuse($agi, 0);
+            $A2B->callingcard_acct_start_inuse($agi);
         }
 
     } else {
@@ -1054,12 +1052,12 @@ if ($mode === 'standard') {
     if ($error_settings) {
         $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[CALLBACK : Error settings accountcode or phonenumber_member]");
         $agi->hangup();
-        $A2B->write_log("[STOP - EXIT]", 0);
+        $A2B->write_log("[STOP - EXIT]");
         exit();
     }
 
     $A2B->username = $A2B->accountcode = $accountcode;
-    $A2B->callingcard_acct_start_inuse($agi, 1);
+    $A2B->callingcard_acct_start_inuse($agi, true);
 
     if ($callback_mode === 'CONF-MODERATOR') {
         $charge_callback = 1;
@@ -1148,7 +1146,7 @@ if ($mode === 'standard') {
         }//END FOR
 
         if ($A2B->set_inuse) {
-            $A2B->callingcard_acct_start_inuse($agi, 0);
+            $A2B->callingcard_acct_start_inuse($agi);
         }
 
     } else {
@@ -1232,11 +1230,11 @@ if ($send_reminder && $A2B->agiconfig['send_reminder'] && $A2B->cardholder_email
 }
 
 if ($A2B->set_inuse) {
-    $A2B->callingcard_acct_start_inuse($agi, 0);
+    $A2B->callingcard_acct_start_inuse($agi);
 }
 
 # End
-$A2B->write_log("[exit]", 0);
+$A2B->write_log("[exit]");
 
 function get_dialstring(array $ratecard, A2Billing $A2B, RateEngine $RateEngine): string
 {

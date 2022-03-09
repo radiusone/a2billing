@@ -77,7 +77,7 @@ $verbose_level = 0;
 $groupcard = 5000;
 
 $A2B = new A2Billing();
-$A2B->load_conf($agi, NULL, 0, $idconfig);
+$A2B->load_conf($agi, null, $idconfig);
 
 if ($A2B->config["database"]['dbtype'] == "postgres") {
     $UNIX_TIMESTAMP = "date_part('epoch',";

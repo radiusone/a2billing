@@ -171,8 +171,8 @@ class RateEngine
         AND (calleridprefix = SUBSTRING('$mycallerid', 1, length(calleridprefix)) OR (calleridprefix = 'all' $CID_SUB_QUERY))
         ORDER BY LENGTH(dialprefix) DESC";
 
-        $A2B->instance_table = new Table();
-        $result = $A2B->instance_table->SQLExec($A2B->DBHandle, $QUERY);
+        $A2B->table = new Table();
+        $result = $A2B->table->SQLExec($A2B->DBHandle, $QUERY);
 
 
         if (!is_array($result) || count($result) == 0) return 0; // NO RATE FOR THIS NUMBER
@@ -1070,7 +1070,7 @@ class RateEngine
 
                 $QUERY_FIELS = 'id_cc_card, id_cc_package_offer, used_secondes';
                 $QUERY_VALUES = "'" . $A2B->id_card . "', '$id_package_offer', '$this->freetimetocall_used'";
-                $id_card_package_offer = $A2B->instance_table->Add_table($A2B->DBHandle, $QUERY_VALUES, $QUERY_FIELS, 'cc_card_package_offer', 'id');
+                $id_card_package_offer = $A2B->table->Add_table($A2B->DBHandle, $QUERY_VALUES, $QUERY_FIELS, 'cc_card_package_offer', 'id');
                 $A2B->debug(A2Billing::INFO, $agi, __FILE__, __LINE__, ":[ID_CARD_PACKAGE_OFFER CREATED : $id_card_package_offer]:[$QUERY_VALUES]\n\n\n\n");
 
             } else {
@@ -1172,7 +1172,7 @@ class RateEngine
                 $A2B->debug(A2Billing::ERROR, $agi, __FILE__, __LINE__, "[Error to connect to cache : $sqliteerror]\n");
             }
         } else {
-            $result = $A2B->instance_table->SQLExec($A2B->DBHandle, $QUERY, 0);
+            $result = $A2B->table->SQLExec($A2B->DBHandle, $QUERY, 0);
             $A2B->debug(A2Billing::INFO, $agi, __FILE__, __LINE__, "[CC_asterisk_stop : SQL: DONE : result=" . $result . "]");
             $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[CC_asterisk_stop : SQL: $QUERY]");
         }
@@ -1199,15 +1199,15 @@ class RateEngine
             }
 
             $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[CC_asterisk_stop 1.2: SQL: $QUERY]");
-            $result = $A2B->instance_table->SQLExec($A2B->DBHandle, $QUERY, 0);
+            $result = $A2B->table->SQLExec($A2B->DBHandle, $QUERY, 0);
 
             $QUERY = "UPDATE cc_trunk SET secondusedreal = secondusedreal + $sessiontime WHERE id_trunk = '" . $this->usedtrunk . "'";
             $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, $QUERY);
-            $result = $A2B->instance_table->SQLExec($A2B->DBHandle, $QUERY, 0);
+            $result = $A2B->table->SQLExec($A2B->DBHandle, $QUERY, 0);
 
             $QUERY = "UPDATE cc_tariffplan SET secondusedreal = secondusedreal + $sessiontime WHERE id = $id_tariffplan";
             $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, $QUERY);
-            $result = $A2B->instance_table->SQLExec($A2B->DBHandle, $QUERY, 0);
+            $result = $A2B->table->SQLExec($A2B->DBHandle, $QUERY, 0);
         }
     }
 
@@ -1316,8 +1316,8 @@ class RateEngine
 
             $QUERY = "SELECT cid FROM cc_outbound_cid_list WHERE activated = 1 AND outbound_cid_group = $cidgroupid ORDER BY RAND() LIMIT 1";
 
-            $A2B->instance_table = new Table();
-            $cidresult = $A2B->instance_table->SQLExec($A2B->DBHandle, $QUERY);
+            $A2B->table = new Table();
+            $cidresult = $A2B->table->SQLExec($A2B->DBHandle, $QUERY);
             $outcid = 0;
             if (is_array($cidresult) && count($cidresult) > 0) {
                 $outcid = $cidresult[0][0];
@@ -1376,8 +1376,8 @@ class RateEngine
                 $destination = $old_destination;
 
                 $QUERY = "SELECT trunkprefix, providertech, providerip, removeprefix, failover_trunk, status, inuse, maxuse, if_max_use FROM cc_trunk WHERE id_trunk = '$failover_trunk'";
-                $A2B->instance_table = new Table();
-                $result = $A2B->instance_table->SQLExec($A2B->DBHandle, $QUERY);
+                $A2B->table = new Table();
+                $result = $A2B->table->SQLExec($A2B->DBHandle, $QUERY);
 
                 if (is_array($result) && count($result) > 0) {
 

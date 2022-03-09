@@ -65,7 +65,7 @@ if ($argc > 2 && strlen($argv[2]) > 0 && $argv[2] == 'saydid') {
 }
 
 $A2B = new A2Billing();
-$A2B->load_conf($agi, NULL, 0, $idconfig);
+$A2B->load_conf($agi, null, $idconfig);
 $A2B->agiconfig['verbosity_level'] = 4;
 $A2B->agiconfig['logging_level'] = 0;
 $A2B->debug(A2Billing::INFO, $agi, __FILE__, __LINE__, "START MORNITORING");
@@ -89,7 +89,7 @@ if (!$A2B->DbConnect()) {
 
 define("WRITELOG_QUERY", false);
 $instance_table = new Table();
-$A2B->set_instance_table($instance_table);
+$A2B->set_table($instance_table);
 
 $agi->answer();
 
@@ -98,7 +98,7 @@ if ($mode == 'standard') {
     //GET MONITORING SETTINGS
     $QUERY = "SELECT dial_code, label, text_intro, query_type, query, result_type FROM cc_monitor WHERE enable=1";
     $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "QUERY : $QUERY");
-    $result = $A2B->instance_table->SQLExec($A2B->DBHandle, $QUERY, 1, 0); // 300 ?
+    $result = $A2B->table->SQLExec($A2B->DBHandle, $QUERY, 1, 0); // 300 ?
 
     foreach ($result as $res_monitor) {
         $arr_monitor[$res_monitor[0]] = array("label" => $res_monitor[1],
@@ -138,7 +138,7 @@ if ($mode == 'standard') {
 
             $QUERY = $arr_monitor[$dial_code]["query"];
             $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "QUERY : $QUERY");
-            $result = $A2B->instance_table->SQLExec($A2B->DBHandle, $QUERY, 1, 10);
+            $result = $A2B->table->SQLExec($A2B->DBHandle, $QUERY, 1, 10);
             $get_result = $result[0][0];
 
             $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "SAYING RESULT");
@@ -187,7 +187,7 @@ if ($mode == 'standard') {
 
     $QUERY = "SELECT did FROM cc_did LEFT JOIN cc_card ON cc_card.id=cc_did.iduser WHERE cc_card.username='$accountcode'";
     $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "QUERY : $QUERY");
-    $result = $A2B->instance_table->SQLExec($A2B->DBHandle, $QUERY, 1, 0); // 300 ?
+    $result = $A2B->table->SQLExec($A2B->DBHandle, $QUERY, 1, 0); // 300 ?
 
     if (!is_array($result) or strlen($result[0][0]) == 0) {
         $agi->espeak('There is No Phone number provisioned.', '#');

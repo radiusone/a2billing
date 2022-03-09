@@ -77,7 +77,7 @@ $verbose_level = 0;
 $groupcard = 5000;
 
 $A2B = new A2Billing();
-$A2B->load_conf($agi, NULL, 0, $idconfig);
+$A2B->load_conf($agi, null, $idconfig);
 
 write_log(LOGFILE_CRONT_AUTOREFILL, basename(__FILE__) . ' line:' . __LINE__ . "[#### BATCH BEGIN ####]");
 

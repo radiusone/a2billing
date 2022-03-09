@@ -70,7 +70,7 @@ if ($pH->isActive()) {
 }
 
 $A2B = new A2Billing();
-$A2B->load_conf($agi, NULL, 0, $idconfig);
+$A2B->load_conf($agi, null, $idconfig);
 
 write_log(LOGFILE_CRONT_ARCHIVE_DATA, basename(__FILE__) . ' line:' . __LINE__ . "[#### ARCHIVING DATA BEGIN ####]");
 
@@ -81,7 +81,7 @@ if (!$A2B->DbConnect()) {
 }
 
 $A2B = new A2Billing();
-$A2B->load_conf($agi, NULL, 0, $idconfig);
+$A2B->load_conf($agi, null, $idconfig);
 
 $instance_table = new Table();
 

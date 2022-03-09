@@ -63,7 +63,7 @@ if ($called  && ($id_cc_card > 0 || $username > 0)) {
 
     if ( strlen($calling)>=1 && is_numeric($calling)) {
         $instance_table = new Table();
-        $A2B -> set_instance_table ($instance_table);
+        $A2B -> set_table ($instance_table);
         $num = 0;
         $QUERY = "SELECT username, tariff, credit FROM cc_card where id='$id_cc_card'";
         $resmax = $DBHandle -> Execute($QUERY);

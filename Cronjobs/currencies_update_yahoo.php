@@ -73,12 +73,12 @@ if ($prcHandler->isActive()) {
 
 $FG_DEBUG = 0;
 $A2B = new A2Billing();
-$A2B -> load_conf($agi, A2Billing::DEFAULT_A2BILLING_CONFIG, 1);
+$A2B -> load_conf($agi, A2Billing::DEFAULT_A2BILLING_CONFIG);
 
 // DEFINE FOR THE DATABASE CONNECTION
 define ("BASE_CURRENCY", strtoupper($A2B->config["global"]['base_currency']));
 
-$A2B -> load_conf($agi, NULL, 0, $idconfig);
+$A2B -> load_conf($agi, null, $idconfig);
 
 write_log(LOGFILE_CRONT_CURRENCY_UPDATE, basename(__FILE__).' line:'.__LINE__."[#### START CURRENCY UPDATE ####]");
 
@@ -89,9 +89,9 @@ if (!$A2B -> DbConnect()) {
 }
 
 $instance_table = new Table();
-$A2B -> set_instance_table ($instance_table);
+$A2B -> set_table ($instance_table);
 
-$return = currencies_update_yahoo($A2B -> DBHandle, $A2B -> instance_table);
+$return = currencies_update_yahoo($A2B -> DBHandle, $A2B -> table);
 write_log(LOGFILE_CRONT_CURRENCY_UPDATE, basename(__FILE__).' line:'.__LINE__.$return, 0);
 
 die();

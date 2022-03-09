@@ -88,10 +88,10 @@ if ($called && $id_cc_card) {
 
         $A2B->DBHandle = DbConnect();
         $instance_table = new Table();
-        $A2B->set_instance_table($instance_table);
+        $A2B->set_table($instance_table);
         $num = 0;
 
-        $result = $A2B->instance_table->SQLExec($A2B->DBHandle, "SELECT username, tariff FROM cc_card where id='$customer_info[15]'");
+        $result = $A2B->table->SQLExec($A2B->DBHandle, "SELECT username, tariff FROM cc_card where id='$customer_info[15]'");
         if (!is_array($result) || count($result) == 0) {
             echo gettext("Error card !!!");
             exit ();
@@ -205,7 +205,7 @@ $FG_TABLE_ALTERNATE_ROW_COLOR[1]='#EEE9E9';
         <?php
         for ($j=0;$j<count($RateEngine->ratecard_obj);$j++) {
 
-            $result = $A2B->instance_table -> SQLExec ($A2B -> DBHandle,
+            $result = $A2B->table -> SQLExec ($A2B -> DBHandle,
                 "SELECT destination FROM cc_prefix where prefix='".$RateEngine->ratecard_obj[$j][5]."'");
             if (is_array($result)){
                 $destination = $result[0][0];

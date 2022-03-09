@@ -191,7 +191,7 @@ class Callback
         }
         $A2B->DBHandle = $DBHandle;
         $instance_table = new Table();
-        $A2B->set_instance_table($instance_table);
+        $A2B->set_table($instance_table);
 
         $A2B->credit = 1000;
         $A2B->tariff = $A2B->config["callback"]['all_callback_tariff'];

@@ -72,7 +72,7 @@ if ($callback) {
 
         $A2B -> DBHandle = DbConnect();
         $instance_table = new Table();
-        $A2B -> set_instance_table ($instance_table);
+        $A2B -> set_table ($instance_table);
         $A2B -> cardnumber = $_SESSION["pr_login"];
 
         if ($A2B -> callingcard_ivr_authenticate_light ($error_msg)) {

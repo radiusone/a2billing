@@ -82,7 +82,7 @@ $time_checks = 20; // number of minute to check with. i.e if time1-time2< $time_
 $run = 1; // set to 0 if u want to just report, no updates. must be set to 1 on productional
 
 $A2B = new A2Billing();
-$A2B->load_conf($agi, NULL, 0, $idconfig);
+$A2B->load_conf($agi, null, $idconfig);
 
 write_log(LOGFILE_CRONT_BATCH_PROCESS, basename(__FILE__) . ' line:' . __LINE__ . "[#### BATCH BEGIN ####]");
 

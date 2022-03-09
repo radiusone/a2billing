@@ -82,7 +82,7 @@ $timing = 6;
 $group = 20;
 
 $A2B = new A2Billing();
-$A2B->load_conf($agi, NULL, 0, $idconfig);
+$A2B->load_conf($agi, null, $idconfig);
 
 write_log(LOGFILE_CRONT_BATCH_PROCESS, basename(__FILE__) . ' line:' . __LINE__ . "[#### BATCH BEGIN ####]");
 
@@ -215,7 +215,7 @@ for ($page = 0; $page < $nbpage; $page++) {
         }
 
         // Search Road...
-        $A2B->set_instance_table($instance_table);
+        $A2B->set_table($instance_table);
         $A2B->cardnumber = $phone["username"];
         $error_msg = '';
 

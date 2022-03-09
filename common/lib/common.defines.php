@@ -48,7 +48,7 @@ $G_instance_Query_trace = Query_trace::getInstance();
 
 // LOAD THE CONFIGURATION
 $A2B = new A2Billing();
-$res_load_conf = $A2B -> load_conf($agi, A2Billing::DEFAULT_A2BILLING_CONFIG, 1);
+$res_load_conf = $A2B -> load_conf($agi, A2Billing::DEFAULT_A2BILLING_CONFIG);
 if (!$res_load_conf) {
     exit;
 }
