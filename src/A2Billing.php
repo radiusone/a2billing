@@ -190,7 +190,6 @@ class A2Billing
         if (function_exists('pcntl_signal')) {
             pcntl_signal(SIGHUP, [$this, "Hangupsignal"]);
         }
-        $this->currencies_list = $this->get_currencies();
     }
 
     /* Init */
@@ -290,6 +289,7 @@ class A2Billing
         $this->idconfig = $idconfig;
         $config_table = new Table("cc_config", "config_key, config_value, config_group_title, config_valuetype");
         $this->DbConnect();
+        $this->currencies_list = $this->get_currencies();
         $config_res = $config_table->get_list($this->DBHandle);
         if (!$config_res) {
             echo 'Error : cannot load conf : load_conf_db';
@@ -3303,6 +3303,9 @@ class A2Billing
         if ($this->config['database']['dbtype'] == "mysql") {
             $this->DBHandle->Execute('SET AUTOCOMMIT = 1');
         }
+        if (empty($this->table)) {
+            $this->table = new Table();
+        }
         return true;
     }
 
@@ -3339,6 +3342,9 @@ class A2Billing
             if ($this->config['database']['dbtype'] == "mysql") {
                 $this->DBHandle->Execute('SET AUTOCOMMIT = 1');
             }
+            if (empty($this->table)) {
+                $this->table = new Table();
+            }
 
             $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[NO DB CONNECTION] - RECONNECT OK]");
 
@@ -3354,16 +3360,15 @@ class A2Billing
     */
     public function DbDisconnect()
     {
-        $this->DBHandle->disconnect();
+        $this->DBHandle->Disconnect();
     }
-
 
     /*
     * function splitable_data
     * used by parameter like interval_len_cardnumber : 8-10, 12-18, 20
     * it will build an array with the different interval
     */
-    public function splitable_data($splitable_value)
+    public function splitable_data($splitable_value): array
     {
         $arr_splitable_value = explode(",", $splitable_value);
         foreach ($arr_splitable_value as $arr_value) {
