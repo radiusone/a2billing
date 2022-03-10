@@ -214,7 +214,7 @@ class RateEngine
             $resultcount = 0;
             $mysearchvalue[$resultcount] = $myresult[0];
             for ($ii = 0; $ii < count($result) - 1; $ii++) {
-                $mysearchvalue[$resultcount] = $myresult[$ii];
+                $mysearchvalue[$resultcount] = $myresult[$ii] ?? null;
                 if ($this->webui) {
                     $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[rate-engine: Begin for ii value " . $ii . "]");
                     $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[rate-engine: MYSEARCHCVALUE \n" . json_encode($mysearchvalue) . "]");
@@ -264,7 +264,6 @@ class RateEngine
                     }
                 }
                 $mysearchvalue = array_values($mysearchvalue);
-                unset($myresult);
             };
             if ($this->webui) {
                 $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[rate-engine: RESULTCOUNT" . $resultcount . "]");
@@ -275,7 +274,6 @@ class RateEngine
             if (count($result) > 1 and $countdelete != 0) {
                 $result = $mysearchvalue;
             };
-            unset($mysearchvalue);
             if ($this->webui) $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[rate-engine: RESULT  after delete \n" . json_encode($result));
         }
 
@@ -1211,7 +1209,7 @@ class RateEngine
         }
 
         $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[TRUNK STATUS UPDATE : $QUERY]");
-        if (!$A2B->CC_TESTING) $result = $A2B->instance_table->SQLExec($A2B->DBHandle, $QUERY, 0);
+        $A2B->table->SQLExec($A2B->DBHandle, $QUERY, 0);
         return 0;
     }
 
