@@ -548,7 +548,7 @@ if ($mode === 'standard') {
             if (strlen($A2B->sip_iax_buddy) > 0 || ($A2B->sip_iax_buddy == $A2B->agiconfig['sip_iax_pstn_direct_call_prefix'])) {
 
                 $A2B->debug(A2Billing::INFO, $agi, __FILE__, __LINE__, 'CALL SIP_IAX_BUDDY');
-                $cia_res = $A2B->call_sip_iax_buddy($agi, $RateEngine, $i);
+                $cia_res = $A2B->call_sip_iax_buddy($agi);
 
             } else {
 
@@ -620,6 +620,7 @@ if ($mode === 'standard') {
     if (strlen($mydnid) > 0) {
         $A2B->debug(A2Billing::INFO, $agi, __FILE__, __LINE__, "[DID CALL - [CallerID=" . $A2B->CallerID . "]:[DID=" . $mydnid . "]");
 
+        // we only use first 8 columns of this result?
         $QUERY = "SELECT cc_did.id, cc_did_destination.id, billingtype, tariff, destination, voip_call, username, useralias, connection_charge, " .
             " selling_rate, did, aleg_carrier_connect_charge, aleg_carrier_cost_min, aleg_retail_connect_charge, aleg_retail_cost_min, " .
             " aleg_carrier_initblock, aleg_carrier_increment, aleg_retail_initblock, aleg_retail_increment, " .
@@ -1194,10 +1195,10 @@ if ($charge_callback) {
                 //(ST) replace above code with the code below to store CDR for all callbacks and to only charge for the callback if requested
                 if ($callback_been_connected == 1 || ($A2B->agiconfig['callback_bill_1stleg_ifcall_notconnected'] == 1)) {
                     //(ST) this is called if we need to bill the user
-                    $RateEngine->rate_engine_updatesystem($A2B, $agi, $A2B->destination, 1, 0, 1);
+                    $RateEngine->rate_engine_updatesystem($A2B, $agi, $A2B->destination, true, 0, 1);
                 } else {
                     //(ST) this is called if we don't bill ther user but to keep track of call costs
-                    $RateEngine->rate_engine_updatesystem($A2B, $agi, $A2B->destination, 0, 0, 1);
+                    $RateEngine->rate_engine_updatesystem($A2B, $agi, $A2B->destination, false, 0, 1);
                 }
 
             } else {

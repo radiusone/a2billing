@@ -1011,7 +1011,7 @@ class RateEngine
      * RATE ENGINE - UPDATE SYSTEM (DURATIONCALL)
      * Calcul the duration allowed for the caller to this number
      */
-    public function rate_engine_updatesystem(A2Billing &$A2B, Agi &$agi, $calledstation, $doibill = 1, $didcall = 0, $callback = 0)
+    public function rate_engine_updatesystem(A2Billing &$A2B, Agi &$agi, $calledstation, $doibill = true, $didcall = 0, $callback = 0)
     {
         $K = $this->usedratecard;
 
@@ -1085,7 +1085,7 @@ class RateEngine
         $id_ratecard     = $this->ratecard_obj[$K][6];
 
         $buycost = 0;
-        if ($doibill == 0 || $sessiontime < $A2B->agiconfig['min_duration_2bill']) {
+        if (!$doibill || $sessiontime < $A2B->agiconfig['min_duration_2bill']) {
             $cost = 0;
             $buycost = abs($this->lastbuycost);
         } else {
