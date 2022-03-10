@@ -190,7 +190,7 @@ class A2Billing
         if (function_exists('pcntl_signal')) {
             pcntl_signal(SIGHUP, [$this, "Hangupsignal"]);
         }
-        $this->currencies_list = get_currencies();
+        $this->currencies_list = $this->get_currencies();
     }
 
     /* Init */
@@ -3619,4 +3619,15 @@ class A2Billing
         return $output;
     }
 
+    private function get_currencies(): array
+    {
+        $list = [];
+        $result = $this->table->SQLExec($this->DBHandle, "SELECT currency, name, value FROM cc_currencies");
+        if (is_array($result)) {
+            foreach ($result as $val) {
+                $list[$val[1]] = [1 => $val[2], 2 => $val[3]];
+            }
+        }
+        return $list;
+    }
 };
