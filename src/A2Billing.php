@@ -211,12 +211,19 @@ class A2Billing
     *
     * usage : $A2B->debug(self::INFO, $agi, __FILE__, __LINE__, $buffer_debug);
     */
-    public function debug($level, $agi, $file, $line, $buffer_debug)
+    public function debug(int $level, Agi $agi, string $file, int $line, string $buffer_debug)
     {
         $file = basename($file);
         // VERBOSE
         if ($this->agiconfig['verbosity_level'] >= $level && $agi) {
-            $agi->verbose("$file:$line [$this->uniqueid] $buffer_debug");
+            $chunks = str_split($buffer_debug, 1024);
+            foreach ($chunks as $key => $chunk) {
+                $part = " $key/" . count($chunks);
+                if ($part === " 1/1") {
+                    $part = "";
+                }
+                $agi->verbose("$file:$line [$this->uniqueid]$part $chunk");
+            }
         }
         // LOG INTO FILE
         if ($this->agiconfig['logging_level'] >= $level) {
@@ -3284,12 +3291,6 @@ class A2Billing
     */
     public function DbConnect()
     {
-        if($this->DBHandle instanceof ADOConnection)  {
-            return true;
-        }
-        $ADODB_CACHE_DIR = '/tmp';
-        /* $ADODB_FETCH_MODE = ADODB_FETCH_ASSOC; */
-
         if ($this->config['database']['dbtype'] == "postgres") {
             $datasource = 'pgsql://' . $this->config['database']['user'] . ':' . $this->config['database']['password'] . '@' . $this->config['database']['hostname'] . '/' . $this->config['database']['dbname'];
         } else {
