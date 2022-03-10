@@ -167,7 +167,7 @@ if ($mode === 'standard') {
     $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[TRY : callingcard_ivr_authenticate]");
 
     // CALL AUTHENTICATE AND WE HAVE ENOUGH CREDIT TO GO AHEAD
-    if ($cia_res == 0) {
+    if ($cia_res) {
         // RE-SET THE CALLERID
         $A2B->callingcard_auto_setcallerid($agi);
 
@@ -230,8 +230,7 @@ if ($mode === 'standard') {
             if (!$A2B->enough_credit_to_call() && $A2B->agiconfig['jump_voucher_if_min_credit'] == 1) {
 
                 $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[NOTENOUGHCREDIT - Refill with vouchert]");
-                $vou_res = $A2B->refill_card_with_voucher($agi, 2);
-                if ($vou_res == 1) {
+                if ($A2B->refill_card_with_voucher($agi)) {
                     $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[ADDED CREDIT - refill_card_withvoucher Success] ");
                 } else {
                     $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[NOTENOUGHCREDIT - refill_card_withvoucher fail] ");
@@ -390,7 +389,7 @@ if ($mode === 'standard') {
 
                     $cia_res = $A2B->callingcard_ivr_authenticate($agi);
                     $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[NOTENOUGHCREDIT_CARDNUMBER - TRY : callingcard_ivr_authenticate]");
-                    if ($cia_res != 0) {
+                    if (!$cia_res) {
                         break;
                     }
 
@@ -412,7 +411,7 @@ if ($mode === 'standard') {
                 $res_dtmf = $agi->get_data('prepaid-refill_card_with_voucher', 5000, 1);
                 $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "RES REFILL CARD VOUCHER DTMF : " . $res_dtmf["result"]);
                 if (($res_dtmf["result"] ?? null) == $A2B->agiconfig['ivr_voucher_prefixe']) {
-                    $vou_res = $A2B->refill_card_with_voucher($agi, $i);
+                    $A2B->refill_card_with_voucher($agi);
                 }
             }
 
@@ -662,9 +661,8 @@ if ($mode === 'standard') {
     // CALL AUTHENTICATE AND WE HAVE ENOUGH CREDIT TO GO AHEAD
     if ($A2B->id_card > 0) {
         for ($k = 0; $k < 3; $k++) {
-            $vou_res = $A2B->refill_card_with_voucher($agi, null);
-            $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "VOUCHER RESULT = $vou_res");
-            if ($vou_res == 1) {
+            if ($A2B->refill_card_with_voucher($agi)) {
+                $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "VOUCHER RESULT = SUCCESS");
                 break;
             } else {
                 $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[NOTENOUGHCREDIT - refill_card_withvoucher fail] ");
@@ -712,7 +710,7 @@ if ($mode === 'standard') {
         /* WE START ;) */
         $cia_res = $A2B->callingcard_ivr_authenticate($agi);
         $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[TRY : callingcard_ivr_authenticate]");
-        if ($cia_res == 0) {
+        if ($cia_res) {
 
             $RateEngine = new RateEngine();
 
@@ -954,7 +952,7 @@ if ($mode === 'standard') {
     /* WE START ;) */
     $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[CALLBACK]:[TRY : callingcard_ivr_authenticate]");
     $cia_res = $A2B->callingcard_ivr_authenticate($agi);
-    if ($cia_res == 0) {
+    if ($cia_res) {
 
         $charge_callback = 1; // EVEN FOR ALL CALLBACK
         $callback_leg = $A2B->username;
@@ -1077,7 +1075,7 @@ if ($mode === 'standard') {
     /* WE START ;) */
     $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[CALLBACK]:[TRY : callingcard_ivr_authenticate]");
     $cia_res = $A2B->callingcard_ivr_authenticate($agi);
-    if ($cia_res == 0) {
+    if ($cia_res) {
 
         $charge_callback = 1; // EVEN FOR ALL CALLBACK
         $callback_leg = $A2B->username;
@@ -1141,7 +1139,7 @@ if ($mode === 'standard') {
             $dialstr = "local/$room_number@a2billing-conference-room";
 
             $A2B->debug(A2Billing::INFO, $agi, __FILE__, __LINE__, "DIAL $dialstr");
-            $myres = $A2B->run_dial($agi, $dialstr);
+            $myres = $agi->exec("DIAL $dialstr");
 
         }//END FOR
 
@@ -1173,7 +1171,7 @@ if ($charge_callback) {
         $A2B->tariff = $callback_tariff;
     }
 
-    if ($cia_res == 0) {
+    if ($cia_res) {
 
         $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[CALLBACK 1ST LEG]:[MAKE BILLING FOR THE 1ST LEG - TARIFF:" . $A2B->tariff . ";CALLED=$called_party]");
         $A2B->agiconfig['use_dnid'] = 1;

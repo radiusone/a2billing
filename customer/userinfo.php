@@ -142,7 +142,7 @@ $smarty->display('main.tpl');
             </td>
             <?php
                 if ($customer_info[15] > 0) {
-                    $freetimetocall_used = $A2B->FT2C_used_seconds($DBHandle, $customer_info[21], $customer_info[20], $customer_info[18], $customer_info[19]);?>
+                    $freetimetocall_used = $A2B->free_calls_used((int)$customer_info[21], (int)$customer_info[20], (int)$customer_info[18], (int)$customer_info[19], "time");?>
             </tr><tr><td /><td width="50%">
             <font class="fontstyle_002"><?php echo gettext("CALLING PACKAGE");?> :</font><br><font class="fontstyle_007"> <?php echo $customer_info[16]; ?> </font>
             </td>

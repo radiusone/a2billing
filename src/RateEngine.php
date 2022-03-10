@@ -421,11 +421,11 @@ class RateEngine
 
                 while (!$package_selected && $idx_pack < count($result_packages)) {
 
-                    $freetimetocall      = $result_packages[$idx_pack]["freetimetocall"];
-                    $packagetype         = $result_packages[$idx_pack]["packagetype"];
-                    $billingtype         = $result_packages[$idx_pack]["billingtype"];
-                    $startday            = $result_packages[$idx_pack]["startday"];
-                    $id_cc_package_offer = $result_packages[$idx_pack][0];
+                    $freetimetocall      = (int)$result_packages[$idx_pack]["freetimetocall"];
+                    $packagetype         = (int)$result_packages[$idx_pack]["packagetype"];
+                    $billingtype         = (int)$result_packages[$idx_pack]["billingtype"];
+                    $startday            = (int)$result_packages[$idx_pack]["startday"];
+                    $id_cc_package_offer = (int)$result_packages[$idx_pack][0];
 
                     $A2B->debug(A2Billing::INFO, $agi, __FILE__, __LINE__, "[ID PACKAGE  TO APPLY=$id_cc_package_offer - packagetype=$packagetype]");
                     switch ($packagetype) {
@@ -440,7 +440,7 @@ class RateEngine
                         //IF PACKAGE IS "NUMBER OF FREE CALLS"  AND WE CAN USE IT ELSE WE CHECK THE OTHERS PACKAGE LIKE FREE TIMES
                         case 1 :
                             if ($freetimetocall > 0) {
-                                $number_calls_used =$A2B->number_free_calls_used($A2B->DBHandle, $A2B->id_card, $id_cc_package_offer, $billingtype, $startday);
+                                $number_calls_used =$A2B->free_calls_used($A2B->id_card, $id_cc_package_offer, $billingtype, $startday, "count");
                                 if ($number_calls_used < $freetimetocall) {
                                     $this->freecall[$K] = true;
                                     $package_selected = true;
@@ -454,7 +454,7 @@ class RateEngine
                             // CHECK IF WE HAVE A FREETIME THAT CAN APPLY FOR THIS DESTINATION
                             if ($freetimetocall > 0) {
                                 // WE NEED TO RETRIEVE THE AMOUNT OF USED MINUTE FOR THIS CUSTOMER ACCORDING TO BILLINGTYPE (Monthly ; Weekly) & STARTDAY
-                                $this->freetimetocall_used = $A2B->FT2C_used_seconds($A2B->DBHandle, $A2B->id_card, $id_cc_package_offer, $billingtype, $startday);
+                                $this->freetimetocall_used = $A2B->free_calls_used($A2B->id_card, $id_cc_package_offer, $billingtype, $startday);
                                 $this->freetimetocall_left[$K] = $freetimetocall - $this->freetimetocall_used;
                                 if ($this->freetimetocall_left[$K] < 0) $this->freetimetocall_left[$K] = 0;
                                 if ($this->freetimetocall_left[$K] > 0) {
@@ -1264,8 +1264,7 @@ class RateEngine
             }
 
             if ($A2B->agiconfig['record_call'] == 1) {
-                $command_mixmonitor = "MixMonitor {$A2B->uniqueid}.{$A2B->agiconfig['monitor_formatfile']}|b";
-                $command_mixmonitor = $A2B->format_parameters($command_mixmonitor);
+                $command_mixmonitor = "MixMonitor {$A2B->uniqueid}.{$A2B->agiconfig['monitor_formatfile']},b";
                 $myres = $agi->exec($command_mixmonitor);
                 $A2B->debug(A2Billing::INFO, $agi, __FILE__, __LINE__, $command_mixmonitor);
             }
@@ -1318,7 +1317,7 @@ class RateEngine
                 // Count this call on the trunk
                 $this->trunk_start_inuse($agi, $A2B, 1);
 
-                $myres = $A2B->run_dial($agi, $dialstr);
+                $agi->exec("DIAL $dialstr");
                 //exec('Dial', trim("$type/$identifier|$timeout|$options|$url", '|'));
 
                 $A2B->debug(A2Billing::INFO, $agi, __FILE__, __LINE__, "DIAL $dialstr");
@@ -1426,7 +1425,7 @@ class RateEngine
                     // Count this call on the trunk
                     $this->trunk_start_inuse($agi, $A2B, 1);
 
-                    $myres = $A2B->run_dial($agi, $dialstr);
+                    $agi->exec("DIAL $dialstr");
                     $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "DIAL FAILOVER $dialstr");
 
                     // check connection after dial(long pause)
