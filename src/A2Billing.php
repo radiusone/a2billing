@@ -3364,9 +3364,6 @@ class A2Billing
     */
     public function splitable_data($splitable_value)
     {
-        if (!str_contains($splitable_value, ",")) {
-            return $splitable_value;
-        }
         $arr_splitable_value = explode(",", $splitable_value);
         foreach ($arr_splitable_value as $arr_value) {
             $arr_value = trim($arr_value);
