@@ -30,7 +30,8 @@
     "ext-posix": "*",
     "ext-soap": "*",
     "ext-iconv": "*",
-    "ext-sqlite": "*"
+    "ext-pdo_sqlite": "*",
+    "ext-pdo": "*"
   },
   "license": "AGPL",
   "authors": [
