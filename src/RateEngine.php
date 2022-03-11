@@ -313,10 +313,8 @@ class RateEngine
 
         // Thanks for the fix from the wiki :D next time email me, lol
         if ($LCtype == 0) {
-            //$result = $this->array_csort($result, '6', SORT_ASC); GOTTYA!
             $result = $this->array_csort($result, '9', SORT_ASC); //1
         } else {
-            //$result = $this->array_csort($result, '9', SORT_ASC); GOTTYA!
             $result = $this->array_csort($result, '12', SORT_ASC); //1
         }
 
@@ -327,26 +325,17 @@ class RateEngine
 
         // 3) REMOVE THOSE THAT USE THE SAME TRUNK - MAKE A DISTINCT
         //    AND THOSE THAT ARE DISABLED.
-        $mylistoftrunk = [];
         $distinct_result = [];
-        for ($i = 0; $i < count($result); $i++) {
-
-            if ($result[$i][34] == -1) {
-                $status = $result[$i][46];
-                // what is this?
-                $mylistoftrunk_next[] = $mycurrenttrunk = $result[$i][29];
+        foreach ($result as $row) {
+            if ($row[34] == -1) {
+                $status = $row[46];
             } else {
-                $status = $result[$i][47];
-                $mylistoftrunk_next[] = $mycurrenttrunk = $result[$i][34];
+                $status = $row[47];
             }
 
             // Check if we already have the same trunk in the ratecard
-            if (($i == 0 || !in_array($mycurrenttrunk, $mylistoftrunk)) && $status == 1) {
-                $distinct_result[] = $result[$i];
-            }
-
-            if ($status == 1) {
-                $mylistoftrunk[] = $mycurrenttrunk;
+            if ($i === 0 && $status == 1) {
+                $distinct_result[] = $row;
             }
         }
 
