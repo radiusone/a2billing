@@ -29,7 +29,8 @@
     "ext-gd": "*",
     "ext-posix": "*",
     "ext-soap": "*",
-    "ext-iconv": "*"
+    "ext-iconv": "*",
+    "ext-sqlite": "*"
   },
   "license": "AGPL",
   "authors": [

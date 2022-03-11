@@ -78,7 +78,7 @@ if ($callback) {
         if ($A2B -> callingcard_ivr_authenticate_light ($error_msg)) {
 
             $RateEngine = new RateEngine();
-            $RateEngine -> webui = 0;
+            $RateEngine -> webui = false;
             // LOOKUP RATE : FIND A RATE FOR THIS DESTINATION
 
             $A2B -> agiconfig['accountcode'] = $_SESSION["pr_login"];
@@ -86,7 +86,7 @@ if ($callback) {
             $A2B -> agiconfig['say_timetocall'] = 0;
             $A2B -> extension = $A2B -> dnid = $A2B -> destination = $called;
 
-            $resfindrate = $RateEngine->rate_engine_findrates($A2B, $called, $_SESSION["tariff"]);
+            $resfindrate = $RateEngine->rate_engine_findrates($A2B, $called, (int)$_SESSION["tariff"]);
 
             // IF FIND RATE
             if ($resfindrate!=0) {

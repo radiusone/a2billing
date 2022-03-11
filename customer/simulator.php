@@ -104,10 +104,10 @@ if ($called && $id_cc_card) {
 
         if ($A2B->callingcard_ivr_authenticate_light($error_msg)) {
             if ($FG_DEBUG == 1)
-                $RateEngine->debug_st = 1;
+                $RateEngine->debug_st = true;
 
             $RateEngine = new RateEngine();
-            $RateEngine->webui = 1;
+            $RateEngine->webui = true;
 
             $A2B->agiconfig['accountcode'] = $A2B->cardnumber;
             $A2B->agiconfig['use_dnid'] = 1;
@@ -116,7 +116,7 @@ if ($called && $id_cc_card) {
             if ($A2B->removeinterprefix)
                 $A2B->destination = $A2B->apply_rules($A2B->destination);
 
-            $resfindrate = $RateEngine->rate_engine_findrates($A2B, $A2B->destination, $result[0][1]);
+            $resfindrate = $RateEngine->rate_engine_findrates($A2B, $A2B->destination, (int)$result[0][1]);
             if ($FG_DEBUG == 1)
                 echo "resfindrate=$resfindrate";
 

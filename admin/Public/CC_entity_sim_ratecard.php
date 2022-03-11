@@ -82,10 +82,10 @@ if ($called  && ($id_cc_card > 0 || $username > 0)) {
         if ($FG_DEBUG == 1) echo "cardnumber = ".$row[0][0] ."<br>";
 
         if ($A2B -> callingcard_ivr_authenticate_light ($error_msg, $balance)) {
-            if ($FG_DEBUG == 1) $RateEngine -> debug_st = 1;
+            if ($FG_DEBUG == 1) $RateEngine -> debug_st = true;
 
             $RateEngine = new RateEngine();
-            $RateEngine -> webui = 0;
+            $RateEngine -> webui = false;
 
             // LOOKUP RATE : FIND A RATE FOR THIS DESTINATION
             $A2B ->agiconfig['accountcode'] = $A2B -> cardnumber ;
@@ -95,7 +95,7 @@ if ($called  && ($id_cc_card > 0 || $username > 0)) {
 
             if ($A2B->removeinterprefix) $A2B->destination = $A2B -> apply_rules ($A2B->destination);
 
-            $resfindrate = $RateEngine->rate_engine_findrates($A2B, $A2B->destination, $row[0][1]);
+            $resfindrate = $RateEngine->rate_engine_findrates($A2B, $A2B->destination, (int)$row[0][1]);
             if ($FG_DEBUG == 1) echo "resfindrate=$resfindrate";
 
             // IF FIND RATE
