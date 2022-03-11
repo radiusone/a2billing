@@ -82,7 +82,7 @@ $timing = 6;
 $group = 20;
 
 $A2B = new A2Billing();
-$A2B->load_conf($agi, null, $idconfig);
+$A2B->load_conf(null, $idconfig);
 $logfile_cront_batch = $A2B->config['log-files']['cront_batch_process'] ?? "/tmp/a2billing_cront_batch_log";
 
 write_log($logfile_cront_batch, basename(__FILE__) . ' line:' . __LINE__ . "[#### BATCH BEGIN ####]");
@@ -223,7 +223,7 @@ for ($page = 0; $page < $nbpage; $page++) {
         if ($A2B->callingcard_ivr_authenticate_light($error_msg)) {
 
             $RateEngine = new RateEngine();
-            $RateEngine->webui = 0;
+            $RateEngine->webui = false;
             // LOOKUP RATE : FIND A RATE FOR THIS DESTINATION
 
             $A2B->agiconfig['accountcode'] = $phone["username"];
@@ -232,7 +232,7 @@ for ($page = 0; $page < $nbpage; $page++) {
 
             $A2B->dnid = $A2B->destination = $phone["number"];
 
-            $resfindrate = $RateEngine->rate_engine_findrates($A2B, $phone["number"], $phone["tariff"]);
+            $resfindrate = $RateEngine->rate_engine_findrates($A2B, $phone["number"], (int)$phone["tariff"]);
 
             // IF FIND RATE
             if ($resfindrate != 0) {

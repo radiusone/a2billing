@@ -77,7 +77,7 @@ $verbose_level = 0;
 $groupcard = 5000;
 
 $A2B = new A2Billing();
-$A2B->load_conf($agi, null, $idconfig);
+$A2B->load_conf(null, $idconfig);
 
 $logfile_cront_billdid = $A2B->config['log-files']['cront_bill_diduse'] ?? "/tmp/a2billing_cront_billdid_log";
 

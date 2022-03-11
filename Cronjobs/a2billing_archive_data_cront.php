@@ -70,7 +70,7 @@ if ($pH->isActive()) {
 }
 
 $A2B = new A2Billing();
-$A2B->load_conf($agi, null, $idconfig);
+$A2B->load_conf(null, $idconfig);
 $logfile_cront_archive = $A2B->config['log-files']['cront_archive_data'] ?? "/tmp/a2billing_cront_archive_log";
 
 write_log($logfile_cront_archive, basename(__FILE__) . ' line:' . __LINE__ . "[#### ARCHIVING DATA BEGIN ####]");
@@ -82,7 +82,7 @@ if (!$A2B->DbConnect()) {
 }
 
 $A2B = new A2Billing();
-$A2B->load_conf($agi, null, $idconfig);
+$A2B->load_conf(null, $idconfig);
 
 $instance_table = new Table();
 

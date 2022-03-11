@@ -50,139 +50,140 @@ class A2Billing
     public const DEFAULT_A2BILLING_CONFIG = "/etc/a2billing.conf";
 
     /** @var array */
-    public $config;
+    public array $config;
 
     /** @var array */
-    public $agiconfig;
+    public array $agiconfig;
 
     /** @var int */
-    public $idconfig = 1;
+    public int $idconfig = 1;
 
-    /** @var int */
-    public $hangupdetected = false;
-
-    /** @var string */
-    public $cardnumber;
-    /** @var string */
-    public $CallerID;
+    /** @var bool */
+    public bool $hangupdetected = false;
 
     /** @var string */
-    public $BUFFER;
+    public string $cardnumber;
+    /** @var string */
+    public string $CallerID;
 
-    /** @var ADOConnection */
+    /** @var string */
+    public string $BUFFER;
+
+    /** @var bool|ADOConnection */
     public $DBHandle;
 
     /** @var Table */
-    public $table;
+    public Table $table;
 
     /** @var string the file name to store the logs */
-    public $log_file = '';
+    public string $log_file = '';
 
     /** @var string value of agi_channel */
-    public $channel;
+    public string $channel;
     /** @var string value of agi_uniqueid */
-    public $uniqueid;
+    public string $uniqueid;
     /** @var string value of agi_accountcode unless overridden by configured default account code */
-    public $accountcode;
+    public string $accountcode;
     /** @var string value of agi_extension ???? */
-    public $dnid;
+    public string $dnid;
     /** @var string value of agi_dnid */
-    public $orig_dnid;
+    public string $orig_dnid;
     /** @var string value of agi_extension */
-    public $orig_ext;
+    public string $orig_ext;
     /** @var string not sure? */
-    public $extension;
+    public string $extension;
 
     /** @var string the call destination */
-    public $destination;
+    public string $destination;
     /** @var string */
-    public $early_destination = '';
+    public string $early_destination = '';
     /** @var string */
-    public $sip_iax_buddy;
+    public string $sip_iax_buddy;
     /** @var int credit on the account */
-    public $credit;
-    public $tariff;
-    public $active;
+    public int $credit;
+    public int $tariff;
+    public string $active;
     /** @var int card status; 1=active 5=expired */
-    public $status;
+    public int $status;
     /** @var string seems to always be blank */
-    public $hostname = '';
-    public $currency = 'usd';
+    public string $hostname = '';
+    public string $currency = 'usd';
 
-    public $group_mode = false;
-    public $group_id = 0;
-    public $mode = '';
-    public $timeout;
-    public $tech;
-    public $prefix;
-    public $username;
+    public bool $group_mode = false;
+    public int $group_id = 0;
+    public string $mode = '';
+    public int $timeout;
+    public string $tech;
+    public string $prefix;
+    public string $username;
 
     /** @var int type of card; 0=prepaid 1=postpaid */
-    public $typepaid = 0;
+    public int $typepaid = 0;
     /** @var bool whether to remove the idd prefix before making the call */
-    public $removeinterprefix = true;
+    public bool $removeinterprefix = true;
     /** @var int restriction type; 0=no restriction 1=deny numbers in list 2=only allow numbers in list */
-    public $restriction = 1;
+    public int $restriction = 1;
     /** @var string the last dialled number */
-    public $redial = "";
+    public string $redial = "";
     /** @var int how many times the card has been used */
-    public $nbused = 0;
+    public int $nbused = 0;
 
     /** @var int card expiry type: 1=$expirationdate 2=$expiredays since $firstusedate 3=$expiredays since $creationdate */
-    public $enableexpire = 0;
+    public int $enableexpire = 0;
     /** @var int expiration date as timestamp */
-    public $expirationdate = 0;
+    public int $expirationdate = 0;
     /** @var int number of days before expiring */
-    public $expiredays = 0;
+    public int $expiredays = 0;
     /** @var int first use date as timestamp */
-    public $firstusedate = 0;
+    public int $firstusedate = 0;
     /** @var int creation date as timestamp */
-    public $creationdate = 0;
+    public int $creationdate = 0;
 
     /** @var int postpaid card credit limit */
-    public $creditlimit = 0;
+    public int $creditlimit = 0;
 
     /** @var int */
-    public $languageselected = 0;
-    public $current_language = "en";
+    public int $languageselected = 0;
+    public string $current_language = "en";
 
-    public $cardholder_lastname;
-    public $cardholder_firstname;
-    public $cardholder_email;
-    public $cardholder_uipass;
-    public $id_campaign;
-    public $id_card;
-    public $useralias;
-    public $countryprefix;
+    public string $cardholder_lastname;
+    public string $cardholder_firstname;
+    public string $cardholder_email;
+    public string $cardholder_uipass;
+    /** @var int seems this is never read, only set */
+    public int $id_campaign;
+    public int $id_card;
+    public string $useralias;
+    public string $countryprefix;
 
     /** @var int start time of the script */
-    public $G_startime = 0;
+    public int $G_startime = 0;
 
     /** @var bool Enable voicemail for this card. For DID and SIP/IAX call */
-    public $voicemail = false;
+    public bool $voicemail = false;
 
     /** @var bool whether to prompt for another cardnumber when needed (e.g. if not enough credit to call) */
-    public $ask_other_cardnumber = false;
+    public bool $ask_other_cardnumber = false;
     /** @var bool if another card is applied, whether to update the cc_callerid table as well? not sure */
-    public $update_callerid = false;
+    public bool $update_callerid = false;
 
     /** @var int[]|null valid card number lengths */
-    public $cardnumber_range;
+    public ?array $cardnumber_range;
 
     /** @var bool $set_inuse Define if we have changed the status of the card */
-    public $set_inuse = false;
+    public bool $set_inuse = false;
 
     /** @var bool */
-    public $callback_beep_to_enter_destination = false;
+    public bool $callback_beep_to_enter_destination = false;
 
     /** @var string either empty string or ", a2b_custom1, a2b_custom2" to be added to cc_call insert query */
-    public $CDR_CUSTOM_SQL = '';
+    public string $CDR_CUSTOM_SQL = '';
     /** @var string values pulled from A2B_CUSTOM1 and A2B_CUSTOM2 AGI variables */
-    public $CDR_CUSTOM_VAL = '';
+    public string $CDR_CUSTOM_VAL = '';
 
-    public $dialstatus_rev_list = ["ANSWER" => 1, "BUSY" => 2, "NOANSWER" => 3, "CANCEL" => 4, "CONGESTION" => 5, "CHANUNAVAIL" => 6, "DONTCALL" => 7, "TORTURE" => 8, "INVALIDARGS" => 9];
+    public array $dialstatus_rev_list = ["ANSWER" => 1, "BUSY" => 2, "NOANSWER" => 3, "CANCEL" => 4, "CONGESTION" => 5, "CHANUNAVAIL" => 6, "DONTCALL" => 7, "TORTURE" => 8, "INVALIDARGS" => 9];
 
-    public $currencies_list = [];
+    public array $currencies_list = [];
 
     /* CONSTRUCTOR */
     public function __construct()
@@ -210,11 +211,11 @@ class A2Billing
     *
     * usage : $A2B->debug(self::INFO, $agi, __FILE__, __LINE__, $buffer_debug);
     */
-    public function debug(int $level, Agi $agi, string $file, int $line, string $buffer_debug)
+    public function debug(int $level, ?Agi $agi, string $file, int $line, string $buffer_debug)
     {
         $file = basename($file);
         // VERBOSE
-        if ($this->agiconfig['verbosity_level'] >= $level) {
+        if ($agi && $this->agiconfig['verbosity_level'] >= $level) {
             $chunks = str_split($buffer_debug, 1024);
             foreach ($chunks as $key => $chunk) {
                 $part = " " . ($key + 1) . "/" . count($chunks);
@@ -257,7 +258,7 @@ class A2Billing
     /*
     * load_conf
     */
-    public function load_conf($agi, $config = null, $idconfig = 1, $optconfig = [])
+    public function load_conf($config = null, $idconfig = 1, $optconfig = [])
     {
         $config = $config ?? self::DEFAULT_A2BILLING_CONFIG;
 
@@ -278,13 +279,13 @@ class A2Billing
             "dbtype" => "postgres",
         ];
         $this->config["database"] = array_merge($default, $this->config["database"]);
-        return $this->load_conf_db($agi, 0, $idconfig, $optconfig);
+        return $this->load_conf_db(0, $idconfig, $optconfig);
     }
 
     /*
     * Load config from Database
     */
-    public function load_conf_db($agi, $webui = 0, $idconfig = 1, $optconfig = [])
+    public function load_conf_db($webui = 0, $idconfig = 1, $optconfig = [])
     {
         $this->idconfig = $idconfig;
         $config_table = new Table("cc_config", "config_key, config_value, config_group_title, config_valuetype");
@@ -539,16 +540,12 @@ class A2Billing
         // Define the agiconfig property
         $this->agiconfig = $this->config["agi-conf$idconfig"];
 
-        if (isset($this->config["agi-conf$idconfig"]['debugshell']) && $this->config["agi-conf$idconfig"]['debugshell'] == 1 && isset($agi)) {
-            $agi->nlinetoread = 0;
-        }
-
         define("PLAY_AUDIO", $this->config["agi-conf$idconfig"]['play_audio']);
 
         // Print out on CLI for debug purpose
         if (!$webui) {
-            $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, 'A2Billing AGI internal configuration:');
-            $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, json_encode($this->agiconfig));
+            $this->debug(self::DEBUG, null, __FILE__, __LINE__, 'A2Billing AGI internal configuration:');
+            $this->debug(self::DEBUG, null, __FILE__, __LINE__, json_encode($this->agiconfig));
         }
         return true;
     }
@@ -1401,7 +1398,6 @@ class A2Billing
         $username = $this->username;
         $useralias = $this->useralias;
         $set_inuse = $this->set_inuse;
-        $my_id_card = $this->id_card;
 
         foreach ($listdestination as $dest) {
             $callcount++;
@@ -1409,11 +1405,11 @@ class A2Billing
 
             $this->agiconfig['cid_enable'] = 0;
             $this->accountcode = $dest[6];
-            $this->tariff      = $dest[3];
+            $this->tariff      = (int)$dest[3];
             $this->destination = $dest[10];
             $new_username      = $dest[6];
             $this->useralias   = $dest[7];
-            $this->id_card     = $dest[28];
+            $this->id_card     = (int)$dest[28];
 
             // CHECK IF DESTINATION IS SET
             if (strlen($dest[4]) === 0) {
@@ -1528,7 +1524,7 @@ class A2Billing
                         /* CDR A-LEG OF DID CALL */
                         $cdr_dest = $listdestination[0][10];
                     }
-                    $QUERY = "INSERT INTO cc_call (uniqueid, sessionid, card_id, nasipaddress, starttime, sessiontime, calledstation, terminatecauseid, stoptime, sessionbill, id_tariffgroup, id_tariffplan, id_ratecard, id_trunk, src, sipiax $this->CDR_CUSTOM_SQL) VALUES ('" . $this->uniqueid . "', '" . $this->channel . "', '" . $my_id_card . "', '" . $this->hostname . "', CURRENT_TIMESTAMP - INTERVAL $answeredtime SECOND, '$answeredtime', '" . $cdr_dest . "', '$terminatecauseid', now(), '$cost', '0', '0', '0', '0', '$this->CallerID', '3' $this->CDR_CUSTOM_VAL)";
+                    $QUERY = "INSERT INTO cc_call (uniqueid, sessionid, card_id, nasipaddress, starttime, sessiontime, calledstation, terminatecauseid, stoptime, sessionbill, id_tariffgroup, id_tariffplan, id_ratecard, id_trunk, src, sipiax $this->CDR_CUSTOM_SQL) VALUES ('" . $this->uniqueid . "', '" . $this->channel . "', '" . $this->id_card . "', '" . $this->hostname . "', CURRENT_TIMESTAMP - INTERVAL $answeredtime SECOND, '$answeredtime', '" . $cdr_dest . "', '$terminatecauseid', now(), '$cost', '0', '0', '0', '0', '$this->CallerID', '3' $this->CDR_CUSTOM_VAL)";
                     $result = $this->table->SQLExec($this->DBHandle, $QUERY, 0);
                     $this->debug(self::INFO, $agi, __FILE__, __LINE__, "[DID CALL - LOG CC_CALL: SQL: $QUERY]:[result:$result]");
 
@@ -1611,7 +1607,7 @@ class A2Billing
                         /* CDR A-LEG OF DID CALL */
                         $cdr_dest = $listdestination[0][10];
                     }
-                    $QUERY = "INSERT INTO cc_call (uniqueid, sessionid, card_id, nasipaddress, starttime, sessiontime, calledstation, terminatecauseid, stoptime, sessionbill, id_tariffgroup, id_tariffplan, id_ratecard, id_trunk, src, sipiax $this->CDR_CUSTOM_SQL) VALUES " . "('" . $this->uniqueid . "', '" . $this->channel . "', '" . $my_id_card . "', '" . $this->hostname . "', CURRENT_TIMESTAMP - INTERVAL $answeredtime SECOND, '$answeredtime', '". $cdr_dest . "', '$terminatecauseid', now(), '$cost', '0', '0', '0', '0', '$this->CallerID', '3' $this->CDR_CUSTOM_VAL)";
+                    $QUERY = "INSERT INTO cc_call (uniqueid, sessionid, card_id, nasipaddress, starttime, sessiontime, calledstation, terminatecauseid, stoptime, sessionbill, id_tariffgroup, id_tariffplan, id_ratecard, id_trunk, src, sipiax $this->CDR_CUSTOM_SQL) VALUES " . "('" . $this->uniqueid . "', '" . $this->channel . "', '" . $this->id_card . "', '" . $this->hostname . "', CURRENT_TIMESTAMP - INTERVAL $answeredtime SECOND, '$answeredtime', '". $cdr_dest . "', '$terminatecauseid', now(), '$cost', '0', '0', '0', '0', '$this->CallerID', '3' $this->CDR_CUSTOM_VAL)";
                     $result = $this->table->SQLExec($this->DBHandle, $QUERY, 0);
                     $this->debug(self::INFO, $agi, __FILE__, __LINE__, "[DID CALL - LOG CC_CALL: SQL: $QUERY]:[result:$result]");
 
@@ -1640,7 +1636,6 @@ class A2Billing
         $this->username = $username;
         $this->useralias = $useralias;
         $this->set_inuse = $set_inuse;
-        $this->id_card = $my_id_card;
     }
 
     /*
@@ -2557,8 +2552,8 @@ class A2Billing
                 $this->cardholder_firstname = $row[22];
                 $this->cardholder_email     = $row[23];
                 $this->cardholder_uipass    = $row[24];
-                $this->id_campaign          = $row[25];
-                $this->id_card              = $row[26];
+                $this->id_campaign          = (int)$row[25];
+                $this->id_card              = (int)$row[26];
                 $this->useralias            = $row[27];
                 $this->status               = (int)$row[28];
                 $this->voicemail            = $row[29] && $row[30];
@@ -2726,8 +2721,8 @@ class A2Billing
                     $this->cardholder_firstname = $result[0][18];
                     $this->cardholder_email     = $result[0][19];
                     $this->cardholder_uipass    = $result[0][20];
-                    $this->id_campaign          = $result[0][21];
-                    $this->id_card              = $result[0][22];
+                    $this->id_campaign          = (int)$result[0][21];
+                    $this->id_card              = (int)$result[0][22];
                     $this->useralias            = $result[0][23];
                     $this->status               = (int)$result[0][24];
                     $this->voicemail            = $result[0][25] && $result[0][26];
@@ -2917,8 +2912,8 @@ class A2Billing
                 $this->cardholder_email     = $result[0][19];
                 $this->cardholder_uipass    = $result[0][20];
                 $the_card_id                = $result[0][21];
-                $this->id_campaign          = $result[0][22];
-                $this->id_card              = $result[0][23];
+                $this->id_campaign          = (int)$result[0][22];
+                $this->id_card              = (int)$result[0][23];
                 $this->useralias            = $result[0][24];
                 $this->status               = (int)$result[0][25];
                 $this->voicemail            = $result[0][26] && $result[0][27];
@@ -3081,7 +3076,7 @@ class A2Billing
         $this->cardholder_firstname = $row[18];
         $this->cardholder_email     = $row[19];
         $this->cardholder_uipass    = $row[20];
-        $this->id_campaign          = $row[21];
+        $this->id_campaign          = (int)$row[21];
         $this->status               = (int)$row[22];
         $this->voicemail            = $row[23] && $row[24];
         $this->restriction          = (int)$row[25];
@@ -3255,7 +3250,7 @@ class A2Billing
             $sleep = 1;
             do {
                 $this->DBHandle = NewADOConnection($datasource);
-                if ($this->DBHandle) {
+                if ($this->DBHandle !== false) {
                     break;
                 }
                 $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[DB CONNECTION LOST]- RECONNECT FAILED ,ATTEMPT $count sleep for $sleep ");
@@ -3263,7 +3258,7 @@ class A2Billing
                 $count++;
                 $sleep *= 2;
             } while ($count < 5);
-            if (!$this->DBHandle) {
+            if ($this->DBHandle === false) {
                 $this->debug(self::FATAL, $agi, __FILE__, __LINE__, "[DB CONNECTION LOST] CDR NOT POSTED");
                 return false;
             }
