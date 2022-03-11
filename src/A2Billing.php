@@ -214,6 +214,7 @@ class A2Billing
     public function debug(int $level, ?Agi $agi, string $file, int $line, string $buffer_debug)
     {
         $file = basename($file);
+        $u = $this->uniqueid ?? "";
         // VERBOSE
         if ($agi && $this->agiconfig['verbosity_level'] >= $level) {
             $chunks = str_split($buffer_debug, 1024);
@@ -222,28 +223,26 @@ class A2Billing
                 if ($part === " 1/1") {
                     $part = "";
                 }
-                $agi->verbose("$file:$line [$this->uniqueid]$part $chunk");
+                $agi->verbose("$file:$line [$u]$part $chunk");
             }
         }
         // LOG INTO FILE
         if ($this->agiconfig['logging_level'] >= $level) {
-            $this->write_log($buffer_debug, true, "$file:$line [UID:$this->uniqueid]");
+            $this->write_log($buffer_debug, "$file:$line [$u]");
         }
     }
 
     /*
     * Write log into file
     */
-    public function write_log(string $output, bool $tobuffer = false, string $line_file_info = '')
+    public function write_log(string $output, string $line_file_info = '')
     {
-        if (strlen($this->log_file) > 1) {
+        if (!empty($this->log_file) && is_writable($this->log_file)) {
             $date = date("Y-m-d H:i:s");
-            $string_log = "[$date] $line_file_info [CID:$this->CallerID]:[CN:$this->cardnumber] $output\n";
-            $this->BUFFER .= $string_log;
-            if (!$tobuffer) {
-                error_log($this->BUFFER, 3, $this->log_file);
-                $this->BUFFER = '';
-            }
+            $cid = $this->CallerID ?? "n/a";
+            $cn = $this->cardnumber ?? "n/a";
+            $string_log = "[$date] $line_file_info [CID:$cid]:[CN:$cn] $output\n";
+            error_log($string_log, 3, $this->log_file);
         }
     }
 
@@ -3515,7 +3514,7 @@ class A2Billing
     private function get_currencies(): array
     {
         $list = [];
-        $result = $this->table->SQLExec($this->DBHandle, "SELECT currency, name, value FROM cc_currencies");
+        $result = $this->table->SQLExec($this->DBHandle, "SELECT id, currency, name, value FROM cc_currencies");
         if (is_array($result)) {
             foreach ($result as $val) {
                 $list[$val[1]] = [1 => $val[2], 2 => $val[3]];

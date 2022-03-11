@@ -7,7 +7,7 @@ namespace A2billing\PhpAgi;
  */
 class Agi extends \AGI
 {
-    public $play_audio = true;
+    public bool $play_audio = true;
 
     public function __construct()
     {
@@ -19,44 +19,44 @@ class Agi extends \AGI
         $this->play_audio = (bool)$bool;
     }
 
-    public function say_digits($digits, $escape_digits = '')
+    public function say_digits($digits, $escape_digits = ''): ?array
     {
         return $this->play_audio ? parent::say_digits($digits, $escape_digits) : null;
     }
 
-    public function say_number($number, $escape_digits = '')
+    public function say_number($number, $escape_digits = ''): ?array
     {
         return $this->play_audio ? parent::say_number($number, $escape_digits) : null;
     }
 
-    public function say_phonetic($text, $escape_digits = '')
+    public function say_phonetic($text, $escape_digits = ''): ?array
     {
         return $this->play_audio ? parent::say_phonetic($text, $escape_digits) : null;
     }
 
-    public function say_time($time = null, $escape_digits = '')
+    public function say_time($time = null, $escape_digits = ''): ?array
     {
         return $this->play_audio ? parent::say_time($time, $escape_digits) : null;
     }
 
-    public function stream_file($filename, $escape_digits = '', $offset = 0)
+    public function stream_file($filename, $escape_digits = '', $offset = 0): ?array
     {
         return $this->play_audio ? parent::stream_file($filename, $escape_digits, $offset) : null;
     }
 
-    public function exec($application, $options = array())
+    public function exec($application, $options = []): array
     {
         return parent::exec($application, $options);
     }
 
     public function espeak($text, $escape_digits = '', $frequency = 8000, $voice = null)
     {
-        if(is_null($voice)) {
+        if (is_null($voice)) {
             $voice = "-vf2";
         }
 
         $text = trim($text);
-        if($text == '') {
+        if ($text == '') {
             return true;
         }
 
@@ -74,8 +74,8 @@ class Agi extends \AGI
             }
             shell_exec("{$this->config['espeak']['espeak']} $voice -f $fname.txt -w $fname" . "_orig.wav ");
 
-            shell_exec("{$this->config['sox']['sox']} $fname"."_orig.wav -r $frequency -c1 $fname.wav ");
-            unlink("$fname"."_orig.wav");
+            shell_exec("{$this->config['sox']['sox']} $fname" . "_orig.wav -r $frequency -c1 $fname.wav ");
+            unlink("$fname" . "_orig.wav");
         }
 
         // stream it
@@ -83,7 +83,7 @@ class Agi extends \AGI
 
         // clean up old files
         $delete = time() - 2592000; // 1 month
-        foreach(glob($this->config['phpagi']['tempdir'] . DIRECTORY_SEPARATOR . 'espeak_*') as $file) {
+        foreach (glob($this->config['phpagi']['tempdir'] . DIRECTORY_SEPARATOR . 'espeak_*') as $file) {
             if (filemtime($file) < $delete) {
                 unlink($file);
             }
