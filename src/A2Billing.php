@@ -66,9 +66,6 @@ class A2Billing
     /** @var string */
     public string $CallerID;
 
-    /** @var string */
-    public string $BUFFER;
-
     /** @var bool|ADOConnection */
     public $DBHandle;
 
@@ -191,16 +188,20 @@ class A2Billing
         if (function_exists('pcntl_signal')) {
             pcntl_signal(SIGHUP, [$this, "Hangupsignal"]);
         }
+        // populate the configuration object
+        $this->load_conf();
+        // populate the $DBHandle property
+        $this->DbConnect();
     }
 
     /* Init */
-    public function Reinit()
+    public function Reinit(): void
     {
         $this->destination = '';
     }
 
     /* Hangupsignal */
-    public function Hangupsignal()
+    public function Hangupsignal(): void
     {
         $this->hangupdetected = true;
         $this->debug(self::INFO, null, __FILE__, __LINE__, "HANGUP DETECTED!\n");
@@ -211,12 +212,15 @@ class A2Billing
     *
     * usage : $A2B->debug(self::INFO, $agi, __FILE__, __LINE__, $buffer_debug);
     */
-    public function debug(int $level, ?Agi $agi, string $file, int $line, string $buffer_debug)
+    public function debug(int $level, ?Agi $agi, string $file, int $line, $buffer_debug): void
     {
         $file = basename($file);
         $u = $this->uniqueid ?? "";
         // VERBOSE
         if ($agi && $this->agiconfig['verbosity_level'] >= $level) {
+            if (!is_string($buffer_debug)) {
+                $buffer_debug = json_encode($buffer_debug);
+            }
             $chunks = str_split($buffer_debug, 1024);
             foreach ($chunks as $key => $chunk) {
                 $part = " " . ($key + 1) . "/" . count($chunks);
@@ -235,7 +239,7 @@ class A2Billing
     /*
     * Write log into file
     */
-    public function write_log(string $output, string $line_file_info = '')
+    public function write_log(string $output, string $line_file_info = ''): void
     {
         if (!empty($this->log_file) && is_writable($this->log_file)) {
             $date = date("Y-m-d H:i:s");
@@ -249,7 +253,7 @@ class A2Billing
     /*
     * set_instance_table
     */
-    public function set_table($table)
+    public function set_table($table): void
     {
         $this->table = $table;
     }
@@ -257,9 +261,9 @@ class A2Billing
     /*
     * load_conf
     */
-    public function load_conf($config = null, $idconfig = 1, $optconfig = [])
+    public function load_conf(int $idconfig = 1, array $optconfig = []): bool
     {
-        $config = $config ?? self::DEFAULT_A2BILLING_CONFIG;
+        $config = self::DEFAULT_A2BILLING_CONFIG;
 
         if (!is_readable($config)) {
             echo "Error : A2Billing configuration file $config is missing!";
@@ -278,25 +282,16 @@ class A2Billing
             "dbtype" => "postgres",
         ];
         $this->config["database"] = array_merge($default, $this->config["database"]);
-        return $this->load_conf_db(0, $idconfig, $optconfig);
-    }
 
-    /*
-    * Load config from Database
-    */
-    public function load_conf_db($webui = 0, $idconfig = 1, $optconfig = [])
-    {
-        $this->idconfig = $idconfig;
-        $config_table = new Table("cc_config", "config_key, config_value, config_group_title, config_valuetype");
         $this->DbConnect();
         $this->currencies_list = $this->get_currencies();
-        $config_res = $config_table->get_list($this->DBHandle);
-        if (!$config_res) {
+        $config_res = $this->DBHandle->Execute("SELECT config_key, config_value, config_group_title, config_valuetype FROM cc_config");
+        if (!$config_res || $config_res->RowCount() === 0) {
             echo 'Error : cannot load conf : load_conf_db';
             return false;
         }
 
-        foreach ($config_res as $conf) {
+        while ($conf = $config_res->FetchRow()) {
             $type = $conf["config_valuetype"];
             $group = $conf["config_group_title"];
             $key = $conf["config_key"];
@@ -542,17 +537,16 @@ class A2Billing
         define("PLAY_AUDIO", $this->config["agi-conf$idconfig"]['play_audio']);
 
         // Print out on CLI for debug purpose
-        if (!$webui) {
-            $this->debug(self::DEBUG, null, __FILE__, __LINE__, 'A2Billing AGI internal configuration:');
-            $this->debug(self::DEBUG, null, __FILE__, __LINE__, json_encode($this->agiconfig));
-        }
+        $this->debug(self::DEBUG, null, __FILE__, __LINE__, 'A2Billing AGI internal configuration:');
+        $this->debug(self::DEBUG, null, __FILE__, __LINE__, json_encode($this->agiconfig));
+
         return true;
     }
 
     /*
     * Function to create a menu to select the language
     */
-    public function play_menulanguage($agi): void
+    public function play_menulanguage(Agi $agi): void
     {
         // MENU LANGUAGE
         if ($this->agiconfig['play_menulanguage'] == 1) {
@@ -561,7 +555,7 @@ class A2Billing
             $res_dtmf = null;
             foreach ($list_prompt_menulang as $lg_value) {
                 $res_dtmf = $agi->get_data("menu_" . $lg_value, 500, 1);
-                if (!empty($res_dtmf["result"]) && is_numeric($res_dtmf["result"]) && $res_dtmf["result"] > 0) {
+                if (!empty($res_dtmf["result"]) && is_numeric($res_dtmf["result"])) {
                     break;
                 }
 
@@ -571,7 +565,7 @@ class A2Billing
                     $res_dtmf = $agi->get_data("num_" . $lg_value . "_" . $i, 1000, 1);
                 }
 
-                if (!empty($res_dtmf["result"]) && is_numeric($res_dtmf["result"]) && $res_dtmf["result"] > 0) {
+                if (!empty($res_dtmf["result"]) && is_numeric($res_dtmf["result"])) {
                     break;
                 }
                 $i++;
@@ -608,7 +602,7 @@ class A2Billing
     /*
      * function sanitize_agi_data
      */
-    public function sanitize_agi_data($input)
+    public function sanitize_agi_data(string $input): string
     {
         // Remove whitespaces (not a must though)
         $input = trim($input);
@@ -636,13 +630,7 @@ class A2Billing
         $input = str_ireplace('TRUE', '', $input);
         $input = str_ireplace('FALSE', '', $input);
 
-        if (!(stripos($input, ' or 1') === FALSE)) {
-            return false;
-        }
-        if (!(stripos($input, ' or true') === FALSE)) {
-            return false;
-        }
-        if (strlen($input) >= 30) {
+        if (preg_match("/ or (1|true)/i", $input) || strlen($input) >= 30) {
             return false;
         }
 
@@ -652,7 +640,7 @@ class A2Billing
     /*
     * intialize evironement variables from the agi values
     */
-    public function get_agi_request_parameter($agi)
+    public function get_agi_request_parameter(Agi $agi): void
     {
         $A2B_CUSTOM1 = substr($agi->get_variable("A2B_CUSTOM1", true), 0, 20);
         $A2B_CUSTOM2 = substr($agi->get_variable("A2B_CUSTOM2", true), 0, 20);
@@ -684,18 +672,17 @@ class A2Billing
     /*
     * function to find the cid number
     */
-    public function isolate_cid()
+    public function isolate_cid(): void
     {
         if (preg_match("/<(.+?)>/", $this->CallerID, $matches)) {
             $this->CallerID = $matches[1];
         }
     }
 
-
     /*
     * function would set when the card is used or when it release
     */
-    public function callingcard_acct_start_inuse(Agi $agi, bool $inuse = false)
+    public function callingcard_acct_start_inuse(Agi $agi, bool $inuse = false): void
     {
         $upd_balance = 0;
         if (is_numeric($this->agiconfig['dial_balance_reservation'])) {
@@ -704,13 +691,13 @@ class A2Billing
 
         $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[CARD STATUS UPDATE]");
         if ($inuse) {
-            $QUERY = "UPDATE cc_card SET inuse = inuse + 1, credit = credit - $upd_balance WHERE username = '" . $this->username . "'";
+            $QUERY = "UPDATE cc_card SET inuse = inuse + 1, credit = credit - ? WHERE username = ?";
             $this->set_inuse = true;
         } else {
-            $QUERY = "UPDATE cc_card SET inuse = inuse - 1, credit = credit + $upd_balance WHERE username = '" . $this->username . "'";
+            $QUERY = "UPDATE cc_card SET inuse = inuse - 1, credit = credit + ? WHERE username = ?";
             $this->set_inuse = false;
         }
-        $this->table->SQLExec($this->DBHandle, $QUERY, 0);
+        $this->DBHandle->Execute($QUERY, [$upd_balance, $this->username]);
         $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[QUERY USING CARD UPDATE::> " . $QUERY . "]");
     }
 
@@ -726,15 +713,11 @@ class A2Billing
                 return true;
             }
         } elseif ($this->credit <= -$this->creditlimit) {
-            $QUERY = "SELECT id_cc_package_offer FROM cc_tariffgroup WHERE id = " . $this->tariff ;
-            $result = $this->table->SQLExec($this->DBHandle, $QUERY);
-            if (!empty($result[0][0])) {
-                $id_package_groupe = $result[0][0];
-                if ($id_package_groupe > 0) {
-                    return true;
-                } else {
-                    return false;
-                }
+            $QUERY = "SELECT id_cc_package_offer FROM cc_tariffgroup WHERE id = ?";
+            $result = $this->DBHandle->Execute($QUERY, [$this->tariff]);
+            $row = $result ? $result->FetchRow() : [0];
+            if (!empty($row[0])) {
+                return $row[0] > 0;
             } else {
                 return false;
             }
@@ -788,10 +771,10 @@ class A2Billing
         }
 
         if (strlen($this->destination) <= 2 && is_numeric($this->destination) && $this->destination >= 0) {
-            $QUERY = "SELECT phone FROM cc_speeddial WHERE id_cc_card = '" . $this->id_card . "' AND speeddial = '" . $this->destination . "'";
-            $result = $this->table->SQLExec($this->DBHandle, $QUERY);
-            if (is_array($result)) {
-                $this->destination = $result[0][0];
+            $QUERY = "SELECT phone FROM cc_speeddial WHERE id_cc_card = ? AND speeddial = ?";
+            $result = $this->DBHandle->Execute($QUERY, [$this->id_card, $this->destination]);
+            if ($result && $row = $result->FetchRow()) {
+                $this->destination = $row[0];
             }
             $this->debug(self::INFO, $agi, __FILE__, __LINE__, "SPEEDIAL REPLACE DESTINATION ::> " . $this->destination);
         }
@@ -801,14 +784,15 @@ class A2Billing
 
             $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[ACCOUNT WITH RESTRICTION]");
 
-            $QUERY = "SELECT * FROM cc_restricted_phonenumber WHERE id_card = '" . $this->id_card . "' AND '" . $this->destination . "' LIKE number";
+            $QUERY = "SELECT * FROM cc_restricted_phonenumber WHERE id_card = ? AND ? LIKE number";
             if ($this->removeinterprefix) {
-                $QUERY .= " OR '". $this->apply_rules($this->destination) . "' LIKE number";
+                $QUERY .= " OR ? LIKE number";
             }
             $QUERY .= " LIMIT 1";
-            $result = $this->table->SQLExec($this->DBHandle, $QUERY);
+            $params = [$this->id_card, $this->destination, $this->apply_rules($this->destination)];
+            $result = $this->DBHandle->Execute($QUERY, $params);
 
-            if (($this->restriction === 1 && is_array($result)) || ($this->restriction === 2 && !is_array($result))) {
+            if (($this->restriction === 1 && $result && $result->RowCount()) || ($this->restriction === 2 && (!$result || $result->RowCount() === 0))) {
                 $this->debug(self::INFO, $agi, __FILE__, __LINE__, "[NUMBER NOT AUHTORIZED - RESTRICTION POLICY $this->restriction]");
                 $agi->stream_file('prepaid-not-authorized-phonenumber', '#');
 
@@ -823,16 +807,18 @@ class A2Billing
             $this->debug(self::INFO, $agi, __FILE__, __LINE__, "[CALL 2 DID]");
             $QUERY = "SELECT cc_did.id, iduser" .
                     " FROM cc_did, cc_card " .
-                    " WHERE cc_card.status=1 and cc_card.id = iduser and cc_did.activated = 1 and did = '$this->destination' " .
+                    " WHERE cc_card.status=1 and cc_card.id = iduser and cc_did.activated = 1 and did = ? " .
                     " AND cc_did.startingdate<= CURRENT_TIMESTAMP AND (cc_did.expirationdate > CURRENT_TIMESTAMP OR cc_did.expirationdate IS NULL";
             if ($this->config["database"]['dbtype'] != "postgres") {
                 $QUERY .= " OR cc_did.expirationdate = '0000-00-00 00:00:00'";
             }
             $QUERY .= ")";
             $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, $QUERY);
-            $result_did = $this->table->SQLExec($this->DBHandle, $QUERY);
-            if (is_array($result_did) && !empty($result_did[0][0]) && !empty($result_did[0][1])) {
-                $iscall2did = true;
+            $result_did = $this->DBHandle->Execute($QUERY, [$this->destination]);
+            if ($result_did && $row = $result_did->FetchRow()) {
+                if (!empty($row[0]) && !empty($row[1])) {
+                    $iscall2did = true;
+                }
             }
         }
 
@@ -846,7 +832,9 @@ class A2Billing
         }
         $this->destination = $this->apply_add_countryprefixto($this->destination);
 
-        if ($this->removeinterprefix) $this->destination = $this->apply_rules($this->destination);
+        if ($this->removeinterprefix) {
+            $this->destination = $this->apply_rules($this->destination);
+        }
 
         $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "RULES APPLY ON DESTINATION ::> " . $this->destination);
 
@@ -865,10 +853,9 @@ class A2Billing
             $QUERY = "SELECT freetimetocall, packagetype, billingtype, startday, id_cc_package_offer " .
                     "FROM cc_card RIGHT JOIN cc_tariffgroup ON cc_tariffgroup.id = cc_card.tariff " .
                     "RIGHT JOIN cc_package_offer ON cc_package_offer.id = cc_tariffgroup.id_cc_package_offer " .
-                    "WHERE cc_card.id = '" . $this->id_card . "'";
-            $result = $this->table->SQLExec($this->DBHandle, $QUERY);
-            $row = $result[0] ?? [0];
-            if ($row[0] > 0) {
+                    "WHERE cc_card.id = ?";
+            $result = $this->DBHandle->Execute($QUERY, [$this->id_card]);
+            if ($result && $row = $result->FetchRow()) {
                 [$freetime, $packagetype, $billingtype, $startday, $id_cc_package_offer] = $row;
                 $freetimetocall_used = $this->free_calls_used($this->id_card, (int)$id_cc_package_offer, (int)$billingtype, (int)$startday, "time");
 
@@ -1034,25 +1021,24 @@ class A2Billing
         $dialstatus = null;
         $dest_username = "";
 
-        $QUERY = "SELECT name, cc_card.username FROM cc_iax_buddies, cc_card WHERE cc_iax_buddies.id_cc_card = cc_card.id AND useralias = '" . $this->destination . "'";
-        $result = $this->table->SQLExec($this->DBHandle, $QUERY);
-        $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, $result);
+        $QUERY = "SELECT name, cc_card.username FROM cc_iax_buddies, cc_card WHERE cc_iax_buddies.id_cc_card = cc_card.id AND useralias = ?";
+        $result = $this->DBHandle->Execute($QUERY, [$this->destination]);
 
-        if (is_array($result) && count($result)) {
+        if ($result && $row = $result->FetchRow()) {
             $iax_buddies = 1;
-            $destiax = $result[0][0];
-            $dest_username = $result[0][1];
+            $destiax = $row[0];
+            $dest_username = $row[1];
         }
 
         $card_alias = $this->destination;
-        $QUERY = "SELECT name, cc_card.username FROM cc_sip_buddies, cc_card WHERE cc_sip_buddies.id_cc_card = cc_card.id AND useralias = '" . $this->destination . "'";
-        $result = $this->table->SQLExec($this->DBHandle, $QUERY);
+        $QUERY = "SELECT name, cc_card.username FROM cc_sip_buddies, cc_card WHERE cc_sip_buddies.id_cc_card = cc_card.id AND useralias = ?";
+        $result = $this->DBHandle->Execute($QUERY, [$this->destination]);
         $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "RESULT : " . json_encode($result));
 
-        if (is_array($result) && count($result)) {
+        if ($result && $row = $result->FetchRow()) {
             $sip_buddies = 1;
-            $destsip = $result[0][0];
-            $dest_username = $result[0][1];
+            $destsip = $row[0];
+            $dest_username = $row[1];
         }
 
         if (!$sip_buddies && !$iax_buddies) {
@@ -1120,8 +1106,9 @@ class A2Billing
                 $agi->stream_file($prompt, '#');
             }
 
-            if (($dialstatus === "CHANUNAVAIL") || ($dialstatus === "CONGESTION"))
+            if ($dialstatus === "CHANUNAVAIL" || $dialstatus === "CONGESTION") {
                 continue;
+            }
 
             if (strlen($this->dialstatus_rev_list[$dialstatus] ?? 0) > 0) {
                 $terminatecauseid = $this->dialstatus_rev_list[$dialstatus];
@@ -1132,9 +1119,9 @@ class A2Billing
             if ($answeredtime > 0) {
                 $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[CC_RATE_ENGINE_UPDATESYSTEM: (answeredtime=$answeredtime :: dialstatus=$dialstatus)]");
 
-                $QUERY = "INSERT INTO cc_call (uniqueid, sessionid, card_id, nasipaddress, starttime, sessiontime, calledstation, terminatecauseid, stoptime, sessionbill, id_tariffplan, id_ratecard, id_trunk, src, sipiax $this->CDR_CUSTOM_SQL) VALUES ('" . $this->uniqueid . "', '" . $this->channel . "', '" . $this->id_card . "', '" . $this->hostname . "', CURRENT_TIMESTAMP - INTERVAL $answeredtime SECOND, '$answeredtime', '" . $card_alias . "', '$terminatecauseid', now(), '0', '0', '0', '0', '$this->CallerID', '1' $this->CDR_CUSTOM_VAL)";
-
-                $this->table->SQLExec($this->DBHandle, $QUERY, 0);
+                $QUERY = "INSERT INTO cc_call (uniqueid, sessionid, card_id, nasipaddress, starttime, sessiontime, calledstation, terminatecauseid, stoptime, sessionbill, id_tariffplan, id_ratecard, id_trunk, src, sipiax $this->CDR_CUSTOM_SQL) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP - INTERVAL ? SECOND, ?, ?, ?, now(), '0', '0', '0', '0', ?, '1' $this->CDR_CUSTOM_VAL)";
+                $params = [$this->uniqueid, $this->channel, $this->id_card, $this->hostname, $answeredtime, $answeredtime, $card_alias, $terminatecauseid, $this->CallerID];
+                $this->DBHandle->Execute($QUERY, $params);
 
                 return 1;
             }
@@ -1222,7 +1209,7 @@ class A2Billing
                 $this->debug(self::INFO, $agi, __FILE__, __LINE__, "DIAL $dialstr");
 
                 $answeredtime = $agi->get_variable("ANSWEREDTIME");
-                $answeredtime = $answeredtime['data'];
+                $answeredtime = (int)$answeredtime['data'];
                 $dialstatus = $agi->get_variable("DIALSTATUS");
                 $dialstatus = $dialstatus['data'];
 
@@ -1275,19 +1262,20 @@ class A2Billing
 
                     $QUERY = "INSERT INTO cc_call (uniqueid, sessionid, card_id, nasipaddress, starttime, sessiontime, calledstation, " .
                         " terminatecauseid, stoptime, sessionbill, id_tariffgroup, id_tariffplan, id_ratecard, id_trunk, src, sipiax $this->CDR_CUSTOM_SQL) VALUES " .
-                        "('" . $this->uniqueid . "', '" . $this->channel . "', '" . $this->id_card . "', '" . $this->hostname . "', CURRENT_TIMESTAMP - INTERVAL $answeredtime SECOND, '$answeredtime', '" . $dest[4] . "', '$terminatecauseid', now(), '0', '0', '0', '0', '0', '$this->CallerID', '3' $this->CDR_CUSTOM_VAL)";
+                        "(?, ?, ?, ?, CURRENT_TIMESTAMP - INTERVAL ? SECOND, ?, ?, ?, now(), '0', '0', '0', '0', '0', ?, '3' $this->CDR_CUSTOM_VAL)";
 
-                    $result = $this->table->SQLExec($this->DBHandle, $QUERY, 0);
-                    $this->debug(self::INFO, $agi, __FILE__, __LINE__, "[DID CALL - LOG CC_CALL: SQL: $QUERY]:[result:$result]");
+                    $params = [$this->uniqueid, $this->channel, $this->id_card, $this->hostname, $answeredtime, $answeredtime, $dest[4], $terminatecauseid, $this->CallerID];
+                    $this->DBHandle->Execute($QUERY, $params);
+                    $this->debug(self::INFO, $agi, __FILE__, __LINE__, "[DID CALL - LOG CC_CALL: SQL: $QUERY]");
 
                     // CC_DID & CC_DID_DESTINATION - cc_did.id, cc_did_destination.id
-                    $QUERY = "UPDATE cc_did SET secondusedreal = secondusedreal + $answeredtime WHERE id = '" . $dest[0] . "'";
-                    $result = $this->table->SQLExec($this->DBHandle, $QUERY, 0);
-                    $this->debug(self::INFO, $agi, __FILE__, __LINE__, "[UPDATE DID]:[result:$result]");
+                    $QUERY = "UPDATE cc_did SET secondusedreal = secondusedreal + ? WHERE id = ?";
+                    $this->DBHandle->Execute($QUERY, [$answeredtime, $dest[0]]);
+                    $this->debug(self::INFO, $agi, __FILE__, __LINE__, "UPDATE DID");
 
-                    $QUERY = "UPDATE cc_did_destination SET secondusedreal = secondusedreal + $answeredtime WHERE id = '" . $dest[1] . "'";
-                    $result = $this->table->SQLExec($this->DBHandle, $QUERY, 0);
-                    $this->debug(self::INFO, $agi, __FILE__, __LINE__, "[UPDATE DID_DESTINATION]:[result:$result]");
+                    $QUERY = "UPDATE cc_did_destination SET secondusedreal = secondusedreal + ? WHERE id = ?";
+                    $this->DBHandle->Execute($QUERY, [$answeredtime, $dest[1]]);
+                    $this->debug(self::INFO, $agi, __FILE__, __LINE__, "UPDATE DID_DESTINATION");
 
                     $this->bill_did_aleg($agi, $dest, $answeredtime);
 
@@ -1313,25 +1301,24 @@ class A2Billing
                     }
 
                     $dialstatus = $RateEngine->dialstatus;
-                    if (($RateEngine->dialstatus == "NOANSWER") ||
-                        ($RateEngine->dialstatus == "BUSY") ||
-                        ($RateEngine->dialstatus == "CHANUNAVAIL") ||
-                        ($RateEngine->dialstatus == "CONGESTION"))
+                    if ($RateEngine->dialstatus === "NOANSWER" || $RateEngine->dialstatus === "BUSY" || $RateEngine->dialstatus === "CHANUNAVAIL" || $RateEngine->dialstatus === "CONGESTION") {
                         continue;
+                    }
 
-                    if ($RateEngine->dialstatus == "CANCEL")
+                    if ($RateEngine->dialstatus === "CANCEL") {
                         break;
+                    }
 
                     // INSERT CDR & UPDATE SYSTEM
                     $RateEngine->rate_engine_updatesystem($this, $agi, $this->destination, $doibill, 1);
                     // CC_DID & CC_DID_DESTINATION - cc_did.id, cc_did_destination.id
-                    $QUERY = "UPDATE cc_did SET secondusedreal = secondusedreal + " . $RateEngine->answeredtime . " WHERE id = '" . $dest[0] . "'";
-                    $result = $this->table->SQLExec($this->DBHandle, $QUERY, 0);
-                    $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[UPDATE DID]:[result:$result]");
+                    $QUERY = "UPDATE cc_did SET secondusedreal = secondusedreal + ? WHERE id = ?";
+                    $this->DBHandle->Execute($QUERY, [$RateEngine->answeredtime, $dest[0]]);
+                    $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "UPDATE DID");
 
-                    $QUERY = "UPDATE cc_did_destination SET secondusedreal = secondusedreal + " . $RateEngine->answeredtime . " WHERE id = '" . $dest[1] . "'";
-                    $result = $this->table->SQLExec($this->DBHandle, $QUERY, 0);
-                    $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[UPDATE DID_DESTINATION]:[result:$result]");
+                    $QUERY = "UPDATE cc_did_destination SET secondusedreal = secondusedreal + ? WHERE id = ?";
+                    $this->DBHandle->Execute($QUERY, [$RateEngine->answeredtime, $dest[1]]);
+                    $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "UPDATE DID_DESTINATION");
 
                     $this->bill_did_aleg($agi, $dest, $RateEngine->answeredtime);
 
@@ -1351,7 +1338,7 @@ class A2Billing
         }
     }
 
-    public function call_2did($agi, $RateEngine, $listdestination)
+    public function call_2did(Agi $agi, RateEngine $RateEngine, array $listdestination)
     {
         $card_number = $this->username; // username of the caller
         $nbused = $this->nbused;
@@ -1460,7 +1447,7 @@ class A2Billing
                 }
 
                 $answeredtime = $agi->get_variable("ANSWEREDTIME");
-                $answeredtime = $answeredtime['data'];
+                $answeredtime = (int)$answeredtime['data'];
                 $dialstatus = $agi->get_variable("DIALSTATUS");
                 $dialstatus = $dialstatus['data'];
 
@@ -1523,24 +1510,26 @@ class A2Billing
                         /* CDR A-LEG OF DID CALL */
                         $cdr_dest = $listdestination[0][10];
                     }
-                    $QUERY = "INSERT INTO cc_call (uniqueid, sessionid, card_id, nasipaddress, starttime, sessiontime, calledstation, terminatecauseid, stoptime, sessionbill, id_tariffgroup, id_tariffplan, id_ratecard, id_trunk, src, sipiax $this->CDR_CUSTOM_SQL) VALUES ('" . $this->uniqueid . "', '" . $this->channel . "', '" . $this->id_card . "', '" . $this->hostname . "', CURRENT_TIMESTAMP - INTERVAL $answeredtime SECOND, '$answeredtime', '" . $cdr_dest . "', '$terminatecauseid', now(), '$cost', '0', '0', '0', '0', '$this->CallerID', '3' $this->CDR_CUSTOM_VAL)";
-                    $result = $this->table->SQLExec($this->DBHandle, $QUERY, 0);
-                    $this->debug(self::INFO, $agi, __FILE__, __LINE__, "[DID CALL - LOG CC_CALL: SQL: $QUERY]:[result:$result]");
+                    $QUERY = "INSERT INTO cc_call (uniqueid, sessionid, card_id, nasipaddress, starttime, sessiontime, calledstation, terminatecauseid, stoptime, sessionbill, id_tariffgroup, id_tariffplan, id_ratecard, id_trunk, src, sipiax $this->CDR_CUSTOM_SQL) " .
+                        "VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP - INTERVAL ? SECOND, ?, ?, ?, now(), ?, '0', '0', '0', '0', ?, '3' $this->CDR_CUSTOM_VAL)";
+                    $params = [$this->uniqueid, $this->channel, $this->id_card, $this->hostname, $answeredtime, $answeredtime, $cdr_dest, $terminatecauseid, $cost, $this->CallerID];
+                    $this->DBHandle->Execute($QUERY, $params);
+                    $this->debug(self::INFO, $agi, __FILE__, __LINE__, "[DID CALL - LOG CC_CALL: SQL: $QUERY]");
 
                     // Update the account
                     $firstuse = $nbused ? "" : "firstusedate = now(),";
-                    $QUERY = "UPDATE cc_card SET credit= credit - " . a2b_round(abs($cost)) . " , lastuse = now(), $firstuse nbused = nbused + 1 WHERE username = '" . $card_number . "'";
-                    $result = $this->table->SQLExec($this->DBHandle, $QUERY, 0);
-                    $this->debug(self::INFO, $agi, __FILE__, __LINE__, "[DID CALL - UPDATE CARD: SQL: $QUERY]:[result:$result]");
+                    $QUERY = "UPDATE cc_card SET credit= credit - ?, lastuse = now(), $firstuse nbused = nbused + 1 WHERE username = ?";
+                    $this->DBHandle->Execute($QUERY, [a2b_round(abs($cost)), $card_number]);
+                    $this->debug(self::INFO, $agi, __FILE__, __LINE__, "[DID CALL - UPDATE CARD SQL: $QUERY]");
 
                     // CC_DID & CC_DID_DESTINATION - cc_did.id, cc_did_destination.id
-                    $QUERY = "UPDATE cc_did SET secondusedreal = secondusedreal + $answeredtime WHERE id = '" . $dest[0] . "'";
-                    $result = $this->table->SQLExec($this->DBHandle, $QUERY, 0);
-                    $this->debug(self::INFO, $agi, __FILE__, __LINE__, "[UPDATE DID]:[result:$result]");
+                    $QUERY = "UPDATE cc_did SET secondusedreal = secondusedreal + ? WHERE id = ?";
+                    $this->DBHandle->Execute($QUERY, [$answeredtime, $dest[0]]);
+                    $this->debug(self::INFO, $agi, __FILE__, __LINE__, "[UPDATE DID SQL: $QUERY]");
 
-                    $QUERY = "UPDATE cc_did_destination SET secondusedreal = secondusedreal + $answeredtime WHERE id = '" . $dest[1] . "'";
-                    $result = $this->table->SQLExec($this->DBHandle, $QUERY, 0);
-                    $this->debug(self::INFO, $agi, __FILE__, __LINE__, "[UPDATE DID_DESTINATION]:[result:$result]");
+                    $QUERY = "UPDATE cc_did_destination SET secondusedreal = secondusedreal + ? WHERE id = ?";
+                    $this->DBHandle->Execute($QUERY, [$answeredtime, $dest[1]]);
+                    $this->debug(self::INFO, $agi, __FILE__, __LINE__, "[UPDATE DID_DESTINATION SQL: $QUERY]");
 
                     #This is a call from user to DID
                     #we will change the B-Leb using the did bill_did_aleg function
@@ -1580,16 +1569,16 @@ class A2Billing
                     $RateEngine->rate_engine_updatesystem($this, $agi, $this->destination, $doibill, 1);
 
                     // CC_DID & CC_DID_DESTINATION - cc_did.id, cc_did_destination.id
-                    $QUERY = "UPDATE cc_did SET secondusedreal = secondusedreal + " . $RateEngine->answeredtime . " WHERE id = '" . $dest[0] . "'";
-                    $result = $this->table->SQLExec($this->DBHandle, $QUERY, 0);
-                    $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[UPDATE DID]:[result:$result]");
+                    $QUERY = "UPDATE cc_did SET secondusedreal = secondusedreal + ? WHERE id = ?";
+                    $this->DBHandle->Execute($QUERY, [$RateEngine->answeredtime, $dest[0]]);
+                    $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[UPDATE DID]");
 
-                    $QUERY = "UPDATE cc_did_destination SET secondusedreal = secondusedreal + " . $RateEngine->answeredtime . " WHERE id = '" . $dest[1] . "'";
-                    $result = $this->table->SQLExec($this->DBHandle, $QUERY, 0);
-                    $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[UPDATE DID_DESTINATION]:[result:$result]");
+                    $QUERY = "UPDATE cc_did_destination SET secondusedreal = secondusedreal + ? WHERE id = ?";
+                    $this->DBHandle->Execute($QUERY, [$RateEngine->answeredtime, $dest[1]]);
+                    $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[UPDATE DID_DESTINATION]");
 
                     $answeredtime = $agi->get_variable("ANSWEREDTIME");
-                    $answeredtime = $answeredtime['data'];
+                    $answeredtime = (int)$answeredtime['data'];
                     $dialstatus = $agi->get_variable("DIALSTATUS");
                     $dialstatus = $dialstatus['data'];
 
@@ -1606,14 +1595,16 @@ class A2Billing
                         /* CDR A-LEG OF DID CALL */
                         $cdr_dest = $listdestination[0][10];
                     }
-                    $QUERY = "INSERT INTO cc_call (uniqueid, sessionid, card_id, nasipaddress, starttime, sessiontime, calledstation, terminatecauseid, stoptime, sessionbill, id_tariffgroup, id_tariffplan, id_ratecard, id_trunk, src, sipiax $this->CDR_CUSTOM_SQL) VALUES " . "('" . $this->uniqueid . "', '" . $this->channel . "', '" . $this->id_card . "', '" . $this->hostname . "', CURRENT_TIMESTAMP - INTERVAL $answeredtime SECOND, '$answeredtime', '". $cdr_dest . "', '$terminatecauseid', now(), '$cost', '0', '0', '0', '0', '$this->CallerID', '3' $this->CDR_CUSTOM_VAL)";
-                    $result = $this->table->SQLExec($this->DBHandle, $QUERY, 0);
-                    $this->debug(self::INFO, $agi, __FILE__, __LINE__, "[DID CALL - LOG CC_CALL: SQL: $QUERY]:[result:$result]");
+                    $QUERY = "INSERT INTO cc_call (uniqueid, sessionid, card_id, nasipaddress, starttime, sessiontime, calledstation, terminatecauseid, stoptime, sessionbill, id_tariffgroup, id_tariffplan, id_ratecard, id_trunk, src, sipiax $this->CDR_CUSTOM_SQL) " .
+                        "VALUES " . "(?, ?, ?, ?, CURRENT_TIMESTAMP - INTERVAL ? SECOND, ?, ?, ?, now(), ?, '0', '0', '0', '0', ?, '3' $this->CDR_CUSTOM_VAL)";
+                    $params = [$this->uniqueid, $this->channel, $this->id_card, $this->hostname, $answeredtime, $answeredtime, $cdr_dest, $terminatecauseid, $cost, $this->CallerID];
+                    $this->DBHandle->Execute($QUERY, $params);
+                    $this->debug(self::INFO, $agi, __FILE__, __LINE__, "[DID CALL - LOG CC_CALL: SQL: $QUERY]");
 
                     $firstuse = $nbused ? "" : "firstusedate = now(),";
-                    $QUERY = "UPDATE cc_card SET credit= credit - " . a2b_round(abs($cost)) . " , lastuse = now(), $firstuse nbused = nbused + 1 WHERE username = '" . $card_number . "'";
-                    $result = $this->table->SQLExec($this->DBHandle, $QUERY, 0);
-                    $this->debug(self::INFO, $agi, __FILE__, __LINE__, "[DID CALL - UPDATE CARD: SQL: $QUERY]:[result:$result]");
+                    $QUERY = "UPDATE cc_card SET credit= credit - ? , lastuse = now(), $firstuse nbused = nbused + 1 WHERE username = ?";
+                    $this->DBHandle->Execute($QUERY, [a2b_round(abs($cost)), $card_number]);
+                    $this->debug(self::INFO, $agi, __FILE__, __LINE__, "[DID CALL - UPDATE CARD: SQL: $QUERY]");
 
                     #This is a call from user to DID, we dont want to charge the A-leg
                     $this->bill_did_aleg($agi, $listdestination[0], $answeredtime);
@@ -1640,12 +1631,12 @@ class A2Billing
     /*
     * Function to bill the A-Leg on DID Calls
     */
-    public function bill_did_aleg($agi, $dest, $b_leg_answeredtime = 0)
+    public function bill_did_aleg(Agi $agi, array $dest, int $b_leg_answeredtime = 0)
     {
 
         $start_time = $this->G_startime;
         $stop_time = time();
-        $timeinterval = $dest[19];
+        $timeinterval = (int)$dest[19];
         $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[bill_did_aleg]: START TIME peak=" . $this->calculate_time_condition($start_time, $timeinterval, "peak") . " ,offpeak=" . $this->calculate_time_condition($start_time, $timeinterval, "offpeak") . " ");
         $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[bill_did_aleg]: STOP TIME peak=" . $this->calculate_time_condition($stop_time, $timeinterval, "peak") . " ,offpeak=" . $this->calculate_time_condition($stop_time, $timeinterval, "offpeak") . " ");
 
@@ -1658,15 +1649,15 @@ class A2Billing
         ) {
             # We have PEAK time
             $this->debug(self::INFO, $agi, __FILE__, __LINE__, "[bill_did_aleg]: We have PEAK time.");
-            $aleg_carrier_connect_charge = $dest[11];
-            $aleg_carrier_cost_min = $dest[12];
-            $aleg_retail_connect_charge = $dest[13];
-            $aleg_retail_cost_min = $dest[14];
+            $aleg_carrier_connect_charge = (float)$dest[11];
+            $aleg_carrier_cost_min = (float)$dest[12];
+            $aleg_retail_connect_charge = (float)$dest[13];
+            $aleg_retail_cost_min = (float)$dest[14];
 
-            $aleg_carrier_initblock = $dest[15];
-            $aleg_carrier_increment = $dest[16];
-            $aleg_retail_initblock = $dest[17];
-            $aleg_retail_increment = $dest[18];
+            $aleg_carrier_initblock = (int)$dest[15];
+            $aleg_carrier_increment = (int)$dest[16];
+            $aleg_retail_initblock = (int)$dest[17];
+            $aleg_retail_increment = (int)$dest[18];
             #TODO use the above variables to define the time2call
         } else {
             #We have OFF-PEAK time
@@ -1726,7 +1717,9 @@ class A2Billing
 
             if (($aleg_retail_increment > 0) && ($aleg_retail_callduration > $aleg_retail_initblock)) {
                 $mod_sec = $aleg_retail_callduration % $aleg_retail_increment; // 12 = 30 % 18
-                if ($mod_sec > 0) $aleg_retail_callduration += ($aleg_retail_increment - $mod_sec); // 30 += 18 - 12
+                if ($mod_sec > 0) {
+                    $aleg_retail_callduration += ($aleg_retail_increment - $mod_sec);
+                } // 30 += 18 - 12
             }
 
             $aleg_carrier_cost = 0;
@@ -1736,68 +1729,40 @@ class A2Billing
             $aleg_retail_cost = 0;
             $aleg_retail_cost += $aleg_retail_connect_charge;
             $aleg_retail_cost += ($aleg_retail_callduration / 60) * $aleg_retail_cost_min;
-
-            $QUERY_COLUMN = " uniqueid, sessionid, card_id, nasipaddress, starttime, sessiontime, real_sessiontime, calledstation, terminatecauseid, stoptime, sessionbill, id_tariffgroup, id_tariffplan, id_ratecard, id_trunk, src, sipiax, buycost, dnid";
-            $calltype = '7'; // DID-ALEG
-            $QUERY = "INSERT INTO cc_call ($QUERY_COLUMN $this->CDR_CUSTOM_SQL) VALUES (" .
-                        "'" . $this->uniqueid . "', " .
-                        "'" . $this->channel . "'," .
-                        "'" . $this->id_card . "'," .
-                        "'" . $this->hostname . "'," .
-                        "SUBDATE(CURRENT_TIMESTAMP, INTERVAL $aleg_answeredtime SECOND), " .
-                        "'$aleg_answeredtime', " .
-                        "'$aleg_answeredtime', " .
-                        "'" . $dest[10] . "', " . // just a guess, this used to be undefined var $listdestination[0][10]
-                        "$terminatecauseid, " .
-                        "now(), " .
-                        "'" . a2b_round($aleg_retail_cost) . "', " .
-                        "'0', " .
-                        "'0', " .
-                        "'0', " .
-                        "'0', " .
-                        "'" . $this->CallerID . "', " .
-                        "'$calltype', " .
-                        "'$aleg_carrier_cost', " .
-                        "'" . $this->dnid . "'" .
-                        "$this->CDR_CUSTOM_VAL)";
-
             if ($aleg_retail_cost) {
                 // update card
-                $cardquery = "UPDATE cc_card SET credit= credit - " . a2b_round($aleg_retail_cost) . " WHERE username = '" . $this->username . "'";
-                $cardresult = $this->table->SQLExec($this->DBHandle, $cardquery, 0);
-                $this->debug(self::INFO, $agi, __FILE__, __LINE__, "[DID CALL - (id_card=$this->id_card) UPDATE CARD: SQL: $cardquery]:[result:$cardresult]");
+                $cardquery = "UPDATE cc_card SET credit= credit - ? WHERE username = ?";
+                $this->DBHandle->Execute($cardquery, [a2b_round($aleg_retail_cost), $this->username]);
+                $this->debug(self::INFO, $agi, __FILE__, __LINE__, "[DID CALL - (id_card=$this->id_card) UPDATE CARD: SQL: $cardquery]");
             }
         } else {
             // Zero on rate
             $aleg_carrier_cost = 0;
-
-            $QUERY_COLUMN = " uniqueid, sessionid, card_id, nasipaddress, starttime, sessiontime, real_sessiontime, calledstation, terminatecauseid, stoptime, sessionbill, id_tariffgroup, id_tariffplan, id_ratecard,  id_trunk, src, sipiax, buycost, dnid";
-
-            $calltype = '7'; // DID-ALEG
-            $QUERY = "INSERT INTO cc_call ($QUERY_COLUMN $this->CDR_CUSTOM_SQL) VALUES (" .
-                        "'" . $this->uniqueid . "', " .
-                        "'" . $this->channel . "'," .
-                        "'" . $this->id_card . "'," .
-                        "'" . $this->hostname . "'," .
-                        "SUBDATE(CURRENT_TIMESTAMP, INTERVAL $aleg_answeredtime SECOND), " .
-                        "'$aleg_answeredtime', " .
-                        "'$aleg_answeredtime', " .
-                        "'" . $dest[10] . "', " . // just a guess, this used to be undefined var $listdestination[0][10]
-                        "$terminatecauseid, " .
-                        "now(), " .
-                        "'0', " .
-                        "'0', " .
-                        "'0', " .
-                        "'0', " .
-                        "'0', " .
-                        "'" . $this->CallerID . "', " .
-                        "'$calltype', " .
-                        "'$aleg_carrier_cost', " .
-                        "'" . $this->dnid . "'" .
-                        "$this->CDR_CUSTOM_VAL )";
+            $aleg_retail_cost = 0;
         }
-        $result = $this->table->SQLExec($this->DBHandle, $QUERY, 0);
-        $this->debug(self::INFO, $agi, __FILE__, __LINE__, "[DID CALL ZERO - LOG CC_CALL: SQL: $QUERY]:[result:$result]");
+        $QUERY_COLUMN = " uniqueid, sessionid, card_id, nasipaddress, starttime, sessiontime, real_sessiontime, calledstation, terminatecauseid, stoptime, sessionbill, id_tariffgroup, id_tariffplan, id_ratecard, id_trunk, src, sipiax, buycost, dnid";
+        $calltype = '7'; // DID-ALEG
+        $QUERY = "INSERT INTO cc_call ($QUERY_COLUMN $this->CDR_CUSTOM_SQL) " .
+            "VALUES (?, ?, ?, ?, NOW() - INTERVAL ? SECOND, ?, ?, ?, ?, NOW(), ?, 0, 0, 0, 0, ?, ?, ?, ? $this->CDR_CUSTOM_VAL)";
+        $params = [
+            $this->uniqueid,
+            $this->channel,
+            $this->id_card,
+            $this->hostname,
+            $aleg_answeredtime,
+            $aleg_answeredtime,
+            $aleg_answeredtime,
+            $dest[10],
+            $terminatecauseid,
+            a2b_round($aleg_retail_cost),
+            $this->CallerID,
+            $calltype,
+            $aleg_carrier_cost,
+            $this->dnid
+        ];
+
+        $this->DBHandle->Execute($QUERY, $params);
+        $this->debug(self::INFO, $agi, __FILE__, __LINE__, "[DID CALL ZERO - LOG CC_CALL: SQL: $QUERY]");
     }
 
 
@@ -2112,32 +2077,31 @@ class A2Billing
 
         $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "VOUCHER NUMBER : " . $vouchernumber);
 
-        $QUERY = "SELECT voucher, credit, activated, tag, currency, expirationdate FROM cc_voucher WHERE expirationdate >= CURRENT_TIMESTAMP AND activated = 't' AND voucher = '" . $vouchernumber . "'";
+        $QUERY = "SELECT voucher, credit, activated, tag, currency, expirationdate FROM cc_voucher WHERE expirationdate >= CURRENT_TIMESTAMP AND activated = 't' AND voucher = ?";
 
-        $result = $this->table->SQLExec($this->DBHandle, $QUERY);
-        $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[VOUCHER SELECT: $QUERY]\n" . json_encode($result));
-
-        if ($result[0][0] == $vouchernumber) {
-            if (!isset($this->currencies_list[strtoupper($result[0][4])][2])) {
+        $result = $this->DBHandle->Execute($QUERY, [$vouchernumber]);
+        $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[VOUCHER SELECT: $QUERY] " . json_encode($result));
+        $row = $result ? $result->FetchRow() : [0];
+        if ($row && $row[0] == $vouchernumber) {
+            if (!isset($this->currencies_list[strtoupper($row[4])][2])) {
                 $this->debug(self::ERROR, $agi, __FILE__, __LINE__, "System Error : No currency table complete !!!");
 
                 return false;
             } else {
                 // DISABLE THE VOUCHER
-                $add_credit = $result[0][1] * $this->currencies_list[strtoupper($result[0][4])][2];
-                $QUERY = "UPDATE cc_voucher SET activated = 'f', usedcardnumber = '" . $this->accountcode . "', used = 1, usedate = now() WHERE voucher = '" . $vouchernumber . "'";
+                $add_credit = $row[1] * $this->currencies_list[strtoupper($row[4])][2];
+                $QUERY = "UPDATE cc_voucher SET activated = 'f', usedcardnumber = ?, used = 1, usedate = now() WHERE voucher = ?";
+                $this->DBHandle->Execute($QUERY, [$this->accountcode, $vouchernumber]);
                 $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "QUERY UPDATE VOUCHER: $QUERY");
-                $this->table->SQLExec($this->DBHandle, $QUERY, 0);
 
                 // UPDATE THE CARD AND THE CREDIT PROPERTY OF THE CLASS
-                $QUERY = "UPDATE cc_card SET credit = credit + '" . $add_credit . "' WHERE username = '" . $this->accountcode . "'";
-                $this->table->SQLExec($this->DBHandle, $QUERY, 0);
+                $QUERY = "UPDATE cc_card SET credit = credit + ? WHERE username = ?";
+                $this->DBHandle->Execute($QUERY, [$add_credit, $this->accountcode]);
                 $this->credit += $add_credit;
 
                 $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "QUERY UPDATE CARD: $QUERY");
                 $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, ' The Voucher ' . $vouchernumber . ' has been used, We added ' . $add_credit/$mycur . ' ' . strtoupper($this->currency) . ' of credit on your account!');
                 $this->fct_say_balance($agi, $add_credit, true);
-                $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[VOUCHER REFILL CARD: $QUERY]");
             }
         } else {
             $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[VOUCHER REFILL ERROR: " . $vouchernumber . " Voucher not avaible or dosn't exist]");
@@ -2154,7 +2118,7 @@ class A2Billing
     /*
     * Function to generate a cardnumber
     */
-    public function MDP($chrs = 10): string
+    public function MDP(int $chrs = 10): string
     {
         $pwd = "";
         mt_srand((double) microtime() * 1000000);
@@ -2192,7 +2156,8 @@ class A2Billing
             }
 
             $yearmonth = sprintf("%s-%02d", $year_month, $startday);
-            $CLAUSE_DATE = " date_consumption >= '$yearmonth'";
+            $CLAUSE_DATE = " date_consumption >= ?";
+            $clause_param = $yearmonth;
         } else {
             // PROCESSING FOR WEEKLY
             $startday = $startday % 7;
@@ -2204,12 +2169,14 @@ class A2Billing
                 $dayofweek = $dayofweek + 7;
             }
             $diffday = $dayofweek - $startday;
-            $CLAUSE_DATE = "date_consumption >= NOW() - INTERVAL $diffday DAY ";
+            $CLAUSE_DATE = "date_consumption >= NOW() - INTERVAL ? DAY ";
+            $clause_param = $diffday;
         }
         $QUERY = "SELECT COUNT(*), SUM(used_secondes) FROM cc_card_package_offer " .
-                "WHERE $CLAUSE_DATE AND id_cc_card = '$id_cc_card' AND id_cc_package_offer = '$id_cc_package_offer'";
-        $pack_result = $this->DBHandle->Execute($QUERY);
-        if ($pack_result && ($pack_result->RecordCount() > 0)) {
+                "WHERE $CLAUSE_DATE AND id_cc_card = ? AND id_cc_package_offer = ?";
+        $params = [$clause_param, $id_cc_card, $id_cc_package_offer];
+        $pack_result = $this->DBHandle->Execute($QUERY, $params);
+        if ($pack_result && $pack_result->RecordCount() > 0) {
             $result = $pack_result->fetchRow();
             $number_calls_used = intval($result[0]);
             $freetimetocall_used = intval($result[1]);
@@ -2230,7 +2197,7 @@ class A2Billing
     /*
     * Function apply_rules to the phonenumber : Remove internation prefix
     */
-    public function apply_rules($phonenumber)
+    public function apply_rules(string $phonenumber)
     {
         if (is_array($this->agiconfig['international_prefixes']) && (count($this->agiconfig['international_prefixes']) > 0)) {
             foreach ($this->agiconfig['international_prefixes'] as $testprefix) {
@@ -2259,7 +2226,7 @@ class A2Billing
     * Function callingcard_cid_sanitize : Ensure the caller is allowed to use their claimed CID.
     * Returns: clean CID value, possibly empty.
     */
-    public function callingcard_cid_sanitize($agi): string
+    public function callingcard_cid_sanitize(Agi $agi): string
     {
         $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[CID_SANITIZE - CID:" . $this->CallerID . "]");
 
@@ -2275,9 +2242,10 @@ class A2Billing
             $QUERY = "SELECT cc_callerid.cid " .
                 " FROM cc_callerid " .
                 " JOIN cc_card ON cc_callerid.id_cc_card = cc_card.id " .
-                " WHERE (cc_callerid.activated = 1 OR cc_callerid.activated = 't') AND cc_card.username = '" . $this->username . "' ";
-            $QUERY .= "ORDER BY 1";
-            $result1 = $this->table->SQLExec($this->DBHandle, $QUERY);
+                " WHERE (cc_callerid.activated = 1 OR cc_callerid.activated = 't') AND cc_card.username = ?" .
+                "ORDER BY 1";
+            $result1 = $this->DBHandle->Execute($QUERY, [$this->username]);
+            $result1 = $result1 ? $result1->GetAll() : [];
             $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, json_encode($result1));
         }
 
@@ -2289,24 +2257,21 @@ class A2Billing
                 " WHERE (cc_did.activated = 1 OR cc_did.activated = 't') AND " .
                 " cc_did_destination.activated = 1 AND cc_did.startingdate <= NOW() " .
                 " AND cc_did.expirationdate >= NOW()" .
-                " AND cc_card.username = '" . $this->username . "' " .
-                " AND cc_did_destination.validated = 1";
-            $QUERY .= " ORDER BY 1";
-            $result2 = $this->table->SQLExec($this->DBHandle, $QUERY);
+                " AND cc_card.username = ?" .
+                " AND cc_did_destination.validated = 1" .
+                " ORDER BY 1";
+            $result2 = $this->DBHandle->Execute($QUERY, [$this->username]);
+            $result2 = $result2 ? $result2->GetAll() : [];
             $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, json_encode($result2));
         }
 
-        $result = [];
-        if (count($result1) > 0 || count($result2) > 0) {
-            $result = array_merge((array) $result1, (array) $result2);
-        }
-
-        $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "RESULT MERGE->" . json_encode($result));
-
-        if (count($result) === 0) {
+        if (count($result1) === 0 && count($result2) === 0) {
             $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[CID_SANITIZE - CID: NO DATA]");
             return '';
         }
+        $result = array_merge($result1, $result2);
+        $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "RESULT MERGE->" . json_encode($result));
+
         foreach ($result as $res) {
             $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[CID_SANITIZE - CID COMPARING: " . substr($res[0], strlen($this->CallerID) * -1) . " to " . $this->CallerID . "]");
             if (substr($res[0], strlen($this->CallerID) * -1) === $this->CallerID) {
@@ -2320,7 +2285,7 @@ class A2Billing
     }
 
 
-    public function callingcard_auto_setcallerid($agi)
+    public function callingcard_auto_setcallerid(Agi $agi)
     {
         // AUTO SetCallerID
         $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[AUTO SetCallerID]");
@@ -2376,7 +2341,7 @@ class A2Billing
         }
     }
 
-    public function update_callback_campaign($agi)
+    public function update_callback_campaign(Agi $agi)
     {
         $now = time();
         $username = $agi->get_variable("USERNAME", true);
@@ -2386,15 +2351,15 @@ class A2Billing
         $campaign_id= $agi->get_variable("CAMPAIGN_ID", true);
         $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[MODE CAMPAIGN CALLBACK: USERNAME=$username USERID=$userid ]");
 
-        $query_rate = "SELECT cc_campaign_config.flatrate, cc_campaign_config.context FROM cc_card,cc_card_group,cc_campaignconf_cardgroup,cc_campaign_config , cc_campaign WHERE cc_card.id = $userid AND cc_card.id_group = cc_card_group.id AND cc_campaignconf_cardgroup.id_card_group = cc_card_group.id AND cc_campaignconf_cardgroup.id_campaign_config = cc_campaign_config.id AND cc_campaign.id = $campaign_id AND cc_campaign.id_campaign_config = cc_campaign_config.id";
+        $query_rate = "SELECT cc_campaign_config.flatrate, cc_campaign_config.context FROM cc_card,cc_card_group,cc_campaignconf_cardgroup,cc_campaign_config , cc_campaign WHERE cc_card.id = ? AND cc_card.id_group = cc_card_group.id AND cc_campaignconf_cardgroup.id_card_group = cc_card_group.id AND cc_campaignconf_cardgroup.id_campaign_config = cc_campaign_config.id AND cc_campaign.id = ? AND cc_campaign.id_campaign_config = cc_campaign_config.id";
         $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[QUERY SEARCH CAMPAIGN CONFIG : " . $query_rate);
 
-        $result_rate = $this->table->SQLExec($this->DBHandle, $query_rate);
+        $result_rate = $this->DBHandle->Execute($query_rate, [$userid, $campaign_id]);
 
         $cost = 0;
-        if ($result_rate) {
-            $cost = $result_rate[0][0];
-            $context = $result_rate[0][1];
+        if ($result_rate && $row = $result_rate->FetchRow()) {
+            $cost = $row[0];
+            $context = $row[1];
         }
 
         if (empty($context)) {
@@ -2402,9 +2367,9 @@ class A2Billing
         }
 
         //update balance
-        $QUERY = "UPDATE cc_card SET credit = credit + " . a2b_round($cost) . ", lastuse = now() WHERE username = '" . $username . "'";
+        $QUERY = "UPDATE cc_card SET credit = credit + ?, lastuse = now() WHERE username = ?";
+        $this->DBHandle->Execute($QUERY, [a2b_round($cost), $username]);
         $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[UPDATE CARD : " . $QUERY);
-        $this->table->SQLExec($this->DBHandle, $QUERY);
 
         //dial other context
         $agi->set_variable('CALLERID(name)', $phonenumber_id . ',' . $campaign_id);
@@ -2413,10 +2378,19 @@ class A2Billing
 
         $duration = time() - $now;
         ///create campaign cdr
-        $QUERY_CALL = "INSERT INTO cc_call (uniqueid, sessionid, card_id, calledstation, sipiax, sessionbill, sessiontime, stoptime, starttime $this->CDR_CUSTOM_SQL) VALUES ('" . $this->uniqueid . "', '" . $this->channel . "', '" . $userid . "','" . $called . "',6, " . $cost . ", " . $duration . " , CURRENT_TIMESTAMP , DATE_SUB(CURRENT_TIMESTAMP, INTERVAL $duration SECOND) $this->CDR_CUSTOM_VAL)";
-
+        $QUERY_CALL = "INSERT INTO cc_call (uniqueid, sessionid, card_id, calledstation, sipiax, sessionbill, sessiontime, stoptime, starttime $this->CDR_CUSTOM_SQL)" .
+            " VALUES (?, ?, ?, ?, 6, ?, ?, CURRENT_TIMESTAMP , NOW() - INTERVAL ? SECOND $this->CDR_CUSTOM_VAL)";
+        $params = [
+            $this->uniqueid,
+            $this->channel,
+            $userid,
+            $called,
+            $cost,
+            $duration,
+            $duration,
+        ];
         $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[INSERT CAMPAIGN CALL : " . $QUERY_CALL);
-        $this->table->SQLExec($this->DBHandle, $QUERY_CALL);
+        $this->DBHandle->Execute($QUERY_CALL, $params);
     }
 
     public function callingcard_ivr_authenticate(Agi $agi): bool
@@ -2445,11 +2419,11 @@ class A2Billing
                     " LEFT JOIN cc_card ON cc_callerid.id_cc_card = cc_card.id " .
                     " LEFT JOIN cc_tariffgroup ON cc_card.tariff = cc_tariffgroup.id " .
                     " LEFT JOIN cc_country ON cc_card.country = cc_country.countrycode " .
-                    " WHERE cc_callerid.cid = '" . $this->CallerID . "'";
-            $result = $this->table->SQLExec($this->DBHandle, $QUERY);
+                    " WHERE cc_callerid.cid = ?";
+            $result = $this->DBHandle->Execute($QUERY, [$this->CallerID]);
             $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, json_encode($result));
 
-            if (!is_array($result)) {
+            if (!$result || $result->RowCount() === 0) {
 
                 $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[CID_CONTROL - NO CALLERID]");
 
@@ -2465,12 +2439,11 @@ class A2Billing
                         }
                         $card_gen = $this->MDP($this->agiconfig['cid_auto_create_card_len']);
                         $card_alias = $this->MDP($this->agiconfig['cid_auto_create_card_len']);
-                        $cardexist_query = "SELECT username, useralias FROM cc_card WHERE username = '$card_gen' OR useralias = '$card_alias'";
-
-                        $resmax = $this->table->SQLExec($this->DBHandle, $cardexist_query);
-                        if (!is_array($resmax)) {
+                        $cardexist_query = "SELECT username, useralias FROM cc_card WHERE username = ? OR useralias = ?";
+                        $resmax = $this->DBHandle->Execute($cardexist_query, [$card_gen, $card_alias]);
+                        if (!$resmax || $resmax->RowCount() === 0) {
                             $this->debug(self::INFO, $agi, __FILE__, __LINE__, "[CN:$card_gen|CA:$card_alias|Query:$cardexist_query][resmax:$resmax] Not Card found...");
-                        } elseif (count($resmax) > 0) {
+                        } else {
                             $this->debug(self::INFO, $agi, __FILE__, __LINE__, "[CN:$card_gen|CA:$card_alias|Query:$cardexist_query] Found similar account! Continue...");
                             continue;
                         }
@@ -2481,25 +2454,26 @@ class A2Billing
 
                     //CREATE A CARD
                     $QUERY_FIELS = 'username, useralias, uipass, credit, language, tariff, activated, typepaid, creditlimit, inuse, status, currency';
-                    $QUERY_VALUES = "'$card_gen', '$card_alias', '$uipass', '" . $this->agiconfig['cid_auto_create_card_credit'] . "', 'en', '" . $this->agiconfig['cid_auto_create_card_tariffgroup'] . "', 't','$typepaid', '" . $this->agiconfig['cid_auto_create_card_credit_limit'] . "', '0', '1', '" . $this->config['global']['base_currency'] . "'";
+                    $QUERY_VALUES = "?, ?, ?, ?, 'en', ?, 't', ?, ?, 0, 1, ?";
+                    $query_params = [$card_gen, $card_alias, $uipass, $this->agiconfig['cid_auto_create_card_credit'], $this->agiconfig['cid_auto_create_card_tariffgroup'], $typepaid, $this->agiconfig['cid_auto_create_card_credit_limit'], $this->config['global']['base_currency']];
 
                     if ($this->group_mode) {
                         $QUERY_FIELS .= ", id_group";
-                        $QUERY_VALUES .= " , '$this->group_id'";
+                        $QUERY_VALUES .= " , ?";
+                        $query_params[] = $this->group_id;
                     }
 
-                    $result = $this->table->Add_table($this->DBHandle, $QUERY_VALUES, $QUERY_FIELS, 'cc_card', 'id');
+                    $this->DBHandle->Execute("INSERT INTO cc_card $QUERY_FIELS VALUES($QUERY_VALUES)", $query_params);
+                    $result = $this->DBHandle->Insert_ID();
                     $this->debug(self::INFO, $agi, __FILE__, __LINE__, "[CARDNUMBER:$card_gen]:[CREATED:$result]:[QUERY_VALUES:$QUERY_VALUES]");
 
                     //CREATE A CARD AND AN INSTANCE IN CC_CALLERID
-                    $QUERY_FIELS = 'cid, id_cc_card';
-                    $QUERY_VALUES = "'" . $this->CallerID . "','$result'";
-
-                    $result = $this->table->Add_table($this->DBHandle, $QUERY_VALUES, $QUERY_FIELS, 'cc_callerid');
+                    $query_params = [$this->CallerID, $result];
+                    $this->DBHandle->Execute("INSERT INTO cc_callerid cid, id_cc_card VALUES(?, ?)", $query_params);
+                    $result = $this->DBHandle->Insert_ID();
                     if (!$result) {
                         $this->debug(self::ERROR, $agi, __FILE__, __LINE__, "[CALLERID CREATION ERROR TABLE cc_callerid]");
-                        $prompt = "prepaid-auth-fail";
-                        $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, strtoupper($prompt));
+                        $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "prepaid-auth-fail");
                         $agi->stream_file($prompt, '#');
                         return false;
                     }
@@ -2526,7 +2500,7 @@ class A2Billing
 
             } else {
                 // authenticate OK using the callerID
-                $row                        = $result[0];
+                $row                        = $result->FetchRow();
                 $cid_active                 = $row[2];
                 $this->credit               = $row[3];
                 $this->tariff               = $row[4];
@@ -2605,9 +2579,9 @@ class A2Billing
                     if ($date_will_expire < time()) {
                         $prompt = "prepaid-card-expired";
                         $this->status = 5;
-                        $QUERY = "UPDATE cc_card SET status = '5' WHERE id = '" . $this->id_card . "'";
+                        $QUERY = "UPDATE cc_card SET status = '5' WHERE id = ?";
+                        $this->DBHandle->Execute($QUERY, [$this->id_card]);
                         $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[QUERY UPDATE : $QUERY]");
-                        $this->table->SQLExec($this->DBHandle, $QUERY, 0);
                     }
                 }
 
@@ -2658,9 +2632,7 @@ class A2Billing
         if (strlen($this->accountcode) >= 1 && !$authentication) {
             $this->username = $this->cardnumber = $this->accountcode;
             for ($i = 0; $i <= 0; $i++) {
-
                 if ($callerID_enable != 1 || !is_numeric($this->CallerID) || $this->CallerID <= 0) {
-
                     $QUERY = "SELECT credit, tariff, activated, inuse, simultaccess, typepaid, creditlimit, " .
                         " language, removeinterprefix, redial, enableexpire, " .
                         " UNIX_TIMESTAMP(expirationdate), expiredays, nbused, UNIX_TIMESTAMP(firstusedate), " .
@@ -2670,11 +2642,11 @@ class A2Billing
                         " FROM cc_card " .
                         " LEFT JOIN cc_tariffgroup ON tariff = cc_tariffgroup.id " .
                         " LEFT JOIN cc_country ON cc_card.country = cc_country.countrycode " .
-                        " WHERE username = '" . $this->cardnumber . "'";
-                    $result = $this->table->SQLExec($this->DBHandle, $QUERY);
+                        " WHERE username = ?";
+                    $result = $this->DBHandle->Execute($QUERY, [$this->cardnumber]);
                     $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, ' - Retrieve account info SQL ::> ' . $QUERY);
 
-                    if (!is_array($result)) {
+                    if (!$result || $result->RowCount() === 0) {
                         $prompt = "prepaid-auth-fail";
                         $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, strtoupper($prompt));
                         $res = -2;
@@ -2685,13 +2657,11 @@ class A2Billing
                             $res = -2;
                             break;
                         }
-                        $QUERY = " SELECT cid, id_cc_card, activated FROM cc_callerid " .
-                            " WHERE cc_callerid.cid = '" . $this->CallerID .
-                            "' AND cc_callerid.id_cc_card = '" . $result[0][22] . "'";
-                        $result_check_cid = $this->table->SQLExec($this->DBHandle, $QUERY);
-                        $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, $result_check_cid);
+                        $QUERY = " SELECT cid, id_cc_card, activated FROM cc_callerid WHERE cc_callerid.cid = ? AND cc_callerid.id_cc_card = ?";
+                        $result_check_cid = $this->DBHandle->Execute($QUERY, [$this->CallerID, $result[0][22]]);
+                        $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, $result_check_cid[0]);
 
-                        if (!is_array($result_check_cid)) {
+                        if (!$result_check_cid || $result_check_cid->RowCount() === 0) {
                             $prompt = "prepaid-auth-fail";
                             $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, strtoupper($prompt));
                             $res = -2;
@@ -2699,34 +2669,35 @@ class A2Billing
                         }
                     }
 
-                    $this->credit               = $result[0][0];
-                    $this->tariff               = $result[0][1];
-                    $this->active               = $result[0][2];
-                    $isused                     = $result[0][3];
-                    $simultaccess               = (int)$result[0][4];
-                    $this->typepaid             = $result[0][5];
-                    $this->creditlimit          = (int)$result[0][6];
-                    $language                   = $result[0][7];
-                    $this->removeinterprefix    = (bool)$result[0][8];
-                    $this->redial               = $result[0][9];
-                    $this->enableexpire         = (int)$result[0][10];
-                    $this->expirationdate       = (int)$result[0][11];
-                    $this->expiredays           = (int)$result[0][12];
-                    $this->nbused               = (int)$result[0][13];
-                    $this->firstusedate         = (int)$result[0][14];
-                    $this->creationdate         = (int)$result[0][15];
-                    $this->currency             = $result[0][16];
-                    $this->cardholder_lastname  = $result[0][17];
-                    $this->cardholder_firstname = $result[0][18];
-                    $this->cardholder_email     = $result[0][19];
-                    $this->cardholder_uipass    = $result[0][20];
-                    $this->id_campaign          = (int)$result[0][21];
-                    $this->id_card              = (int)$result[0][22];
-                    $this->useralias            = $result[0][23];
-                    $this->status               = (int)$result[0][24];
-                    $this->voicemail            = $result[0][25] && $result[0][26];
-                    $this->restriction          = (int)$result[0][27];
-                    $this->countryprefix        = $result[0][28];
+                    $row                        = $result->FetchRow();
+                    $this->credit               = $row[0];
+                    $this->tariff               = $row[1];
+                    $this->active               = $row[2];
+                    $isused                     = $row[3];
+                    $simultaccess               = (int)$row[4];
+                    $this->typepaid             = $row[5];
+                    $this->creditlimit          = (int)$row[6];
+                    $language                   = $row[7];
+                    $this->removeinterprefix    = (bool)$row[8];
+                    $this->redial               = $row[9];
+                    $this->enableexpire         = (int)$row[10];
+                    $this->expirationdate       = (int)$row[11];
+                    $this->expiredays           = (int)$row[12];
+                    $this->nbused               = (int)$row[13];
+                    $this->firstusedate         = (int)$row[14];
+                    $this->creationdate         = (int)$row[15];
+                    $this->currency             = $row[16];
+                    $this->cardholder_lastname  = $row[17];
+                    $this->cardholder_firstname = $row[18];
+                    $this->cardholder_email     = $row[19];
+                    $this->cardholder_uipass    = $row[20];
+                    $this->id_campaign          = (int)$row[21];
+                    $this->id_card              = (int)$row[22];
+                    $this->useralias            = $row[23];
+                    $this->status               = (int)$row[24];
+                    $this->voicemail            = $row[25] && $row[26];
+                    $this->restriction          = (int)$row[27];
+                    $this->countryprefix        = $row[28];
 
                     if ($this->typepaid == 1) {
                         $this->credit = $this->credit + $this->creditlimit;
@@ -2739,7 +2710,7 @@ class A2Billing
                     $this->current_language = $language;
                 }
 
-                $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[credit=" . $this->credit . " :: tariff=" . $this->tariff . " :: status=" . $this->status . " :: isused=$isused :: simultaccess=$simultaccess :: typepaid=" . $this->typepaid . " :: creditlimit=$this->creditlimit :: language=$language]");
+                $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[credit=$this->credit :: tariff=$this->tariff :: status=$this->status :: isused=$isused :: simultaccess=$simultaccess :: typepaid=$this->typepaid :: creditlimit=$this->creditlimit :: language=$language]");
 
                 $prompt = '';
                 // CHECK credit > min_credit_2call / you have zero balance
@@ -2763,7 +2734,6 @@ class A2Billing
                     } elseif ($this->enableexpire === 2 && $this->firstusedate !== 0 && $this->expiredays > 0) {
                         // expire days since first use
                         $date_will_expire = $this->firstusedate + (60 * 60 * 24 * $this->expiredays);
-
                     } elseif ($this->enableexpire === 3 && $this->creationdate !== 0 && $this->expiredays > 0) {
                         // expire days since creation
                         $date_will_expire = $this->creationdate + (60 * 60 * 24 * $this->expiredays);
@@ -2773,17 +2743,16 @@ class A2Billing
                     if ($date_will_expire < time()) {
                         $prompt = "prepaid-card-expired";
                         $this->status = 5;
-                        $QUERY = "UPDATE cc_card SET status = '5' WHERE id = '" . $this->id_card . "'";
+                        $QUERY = "UPDATE cc_card SET status = '5' WHERE id = ?";
+                        $this->DBHandle->Execute($QUERY, [$this->id_card]);
                         $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[QUERY UPDATE : $QUERY]");
-                        $this->table->SQLExec($this->DBHandle, $QUERY, 0);
                     }
-
                 }
 
-                if (strlen($prompt)) {
+                if (!empty($prompt)) {
 
                     $agi->stream_file($prompt, '#'); // Added because was missing the prompt
-                    $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[ERROR CHECK CARD : $prompt (cardnumber:" . $this->cardnumber . ")]");
+                    $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[ERROR CHECK CARD : $prompt (cardnumber:$this->cardnumber)]");
 
                     if ($this->agiconfig['jump_voucher_if_min_credit'] == 1 && !$this->enough_credit_to_call()) {
 
@@ -2795,16 +2764,16 @@ class A2Billing
                         }
                     }
 
-                    if ($prompt == "prepaid-no-enough-credit-stop" && $this->agiconfig['notenoughcredit_cardnumber'] == 1) {
+                    if ($prompt === "prepaid-no-enough-credit-stop" && $this->agiconfig['notenoughcredit_cardnumber']) {
                         $this->accountcode = '';
                         $callerID_enable = 0;
                         $this->agiconfig['cid_auto_assign_card_to_cid'] = 0;
 
-                        if ($this->agiconfig['notenoughcredit_assign_newcardnumber_cid'] == 1) {
+                        if ($this->agiconfig['notenoughcredit_assign_newcardnumber_cid']) {
                             $this->ask_other_cardnumber = true;
                             $this->update_callerid = true;
                         }
-                    } elseif ($prompt == "prepaid-card-expired") {
+                    } elseif ($prompt === "prepaid-card-expired") {
                         $this->accountcode = '';
                         $callerID_enable = 0;
                         $this->ask_other_cardnumber = true;
@@ -2822,10 +2791,9 @@ class A2Billing
 
             // IF NOT PREVIOUS WE WILL ASK THE CARDNUMBER AND AUTHENTICATE ACCORDINGLY
             for ($retries = 0; $retries < 3; $retries++) {
-
-                if (($retries > 0) && (strlen($prompt) > 0)) {
+                if ($retries > 0 && !empty($prompt)) {
                     $agi->stream_file($prompt, '#');
-                    $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "Streamfile : " . strtoupper($prompt));
+                    $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "Streamfile : $prompt");
                 }
                 if ($res < 0) {
                     $res = -1;
@@ -2834,20 +2802,18 @@ class A2Billing
                 $res = 0;
                 $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "CARDNUMBER_LENGTH_MAX " . max($this->cardnumber_range));
                 $res_dtmf = $agi->get_data($prompt_entercardnum, 6000, max($this->cardnumber_range));
-                $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "RES DTMF : " . $res_dtmf["result"]);
+                $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "RES DTMF : $res_dtmf[result]");
                 $this->cardnumber = $res_dtmf["result"];
 
-                $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "CARDNUMBER ::> " . $this->cardnumber);
+                $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "CARDNUMBER ::> $this->cardnumber");
 
                 if (!isset($this->cardnumber) || strlen($this->cardnumber) == 0) {
-                    $prompt = "prepaid-no-card-entered";
-                    $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, strtoupper($prompt));
+                    $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "prepaid-no-card-entered");
                     continue;
                 }
 
                 if (strlen($this->cardnumber) > max($this->cardnumber_range) || strlen($this->cardnumber) < min($this->cardnumber_range)) {
-                    $prompt = "prepaid-invalid-digits";
-                    $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, strtoupper($prompt));
+                    $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "prepaid-invalid-digits");
                     continue;
                 }
                 $this->accountcode = $this->username = $this->cardnumber;
@@ -2859,65 +2825,66 @@ class A2Billing
                     " voicemail_activated, cc_card.restriction, cc_country.countryprefix " .
                     " FROM cc_card LEFT JOIN cc_tariffgroup ON tariff = cc_tariffgroup.id " .
                     " LEFT JOIN cc_country ON cc_card.country = cc_country.countrycode " .
-                    " WHERE username = '" . $this->cardnumber . "'";
+                    " WHERE username = ?";
 
-                $result = $this->table->SQLExec($this->DBHandle, $QUERY);
+                $result = $this->DBHandle->Execute($QUERY, [$this->cardnumber]);
                 $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, json_encode($result));
 
-                if (!is_array($result)) {
+                if (!$result || $result->RowCount() === 0) {
                     $prompt = "prepaid-auth-fail";
                     $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, strtoupper($prompt));
                     continue;
-                } elseif ($this->agiconfig['callerid_authentication_over_cardnumber'] == 1) {
+                } elseif ($this->agiconfig['callerid_authentication_over_cardnumber']) {
                     // WE ARE GOING TO CHECK IF THE CALLERID IS CORRECT FOR THIS CARD
 
                     if (!is_numeric($this->CallerID) && $this->CallerID <= 0) {
-                        $prompt = "prepaid-auth-fail";
-                        $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, strtoupper($prompt));
+                        $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "prepaid-auth-fail");
                         continue;
                     }
-                    $QUERY = " SELECT cid, id_cc_card, activated FROM cc_callerid " .
-                        " WHERE cc_callerid.cid = '" . $this->CallerID .
-                        "' AND cc_callerid.id_cc_card = '" . $result[0][23] . "'";
-                    $result_check_cid = $this->table->SQLExec($this->DBHandle, $QUERY);
+                    $QUERY = " SELECT cid, id_cc_card, activated FROM cc_callerid WHERE cc_callerid.cid = ? AND cc_callerid.id_cc_card = ?";
+                    $result_check_cid = $this->DBHandle->Execute($QUERY, [$this->CallerID, $result[0][23]]);
+                    if ($result_check_cid) {
+                        $result_check_cid = $result_check_cid->FetchRow();
+                    }
                     $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, json_encode($result_check_cid));
 
-                    if (!is_array($result_check_cid)) {
+                    if (!$result_check_cid) {
                         $prompt = "prepaid-auth-fail";
                         $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, strtoupper($prompt));
                         continue;
                     }
                 }
 
-                $this->credit               = $result[0][0];
-                $this->tariff               = $result[0][1];
-                $this->active               = $result[0][2];
-                $isused                     = $result[0][3];
-                $simultaccess               = (int)$result[0][4];
-                $this->typepaid             = $result[0][5];
-                $this->creditlimit          = (int)$result[0][6];
-                $language                   = $result[0][7];
-                $this->removeinterprefix    = (bool)$result[0][8];
-                $this->redial               = $result[0][9];
-                $this->enableexpire         = (int)$result[0][10];
-                $this->expirationdate       = (int)$result[0][11];
-                $this->expiredays           = (int)$result[0][12];
-                $this->nbused               = (int)$result[0][13];
-                $this->firstusedate         = (int)$result[0][14];
-                $this->creationdate         = (int)$result[0][15];
-                $this->currency             = $result[0][16];
-                $this->cardholder_lastname  = $result[0][17];
-                $this->cardholder_firstname = $result[0][18];
-                $this->cardholder_email     = $result[0][19];
-                $this->cardholder_uipass    = $result[0][20];
-                $the_card_id                = $result[0][21];
-                $this->id_campaign          = (int)$result[0][22];
-                $this->id_card              = (int)$result[0][23];
-                $this->useralias            = $result[0][24];
-                $this->status               = (int)$result[0][25];
-                $this->voicemail            = $result[0][26] && $result[0][27];
-                $this->restriction          = (int)$result[0][28];
-                $this->countryprefix        = $result[0][29];
+                $row                        = $result->FetchRow();
+                $this->credit               = $row[0];
+                $this->tariff               = $row[1];
+                $this->active               = $row[2];
+                $isused                     = $row[3];
+                $simultaccess               = (int)$row[4];
+                $this->typepaid             = (int)$row[5];
+                $this->creditlimit          = (int)$row[6];
+                $language                   = $row[7];
+                $this->removeinterprefix    = (bool)$row[8];
+                $this->redial               = $row[9];
+                $this->enableexpire         = (int)$row[10];
+                $this->expirationdate       = (int)$row[11];
+                $this->expiredays           = (int)$row[12];
+                $this->nbused               = (int)$row[13];
+                $this->firstusedate         = (int)$row[14];
+                $this->creationdate         = (int)$row[15];
+                $this->currency             = $row[16];
+                $this->cardholder_lastname  = $row[17];
+                $this->cardholder_firstname = $row[18];
+                $this->cardholder_email     = $row[19];
+                $this->cardholder_uipass    = $row[20];
+                $the_card_id                = $row[21];
+                $this->id_campaign          = (int)$row[22];
+                $this->id_card              = (int)$row[23];
+                $this->useralias            = $row[24];
+                $this->status               = (int)$row[25];
+                $this->voicemail            = $row[26] && $row[27];
+                $this->restriction          = (int)$row[28];
+                $this->countryprefix        = $row[29];
 
                 if ($this->typepaid == 1) {
                     $this->credit = $this->credit + $this->creditlimit;
@@ -2971,20 +2938,17 @@ class A2Billing
                 }
 
                 //CREATE AN INSTANCE IN CC_CALLERID
-                if ($this->agiconfig['cid_enable'] == 1 && $this->agiconfig['cid_auto_assign_card_to_cid'] == 1 && is_numeric($this->CallerID) && $this->CallerID > 0 && !$this->ask_other_cardnumber && !$this->update_callerid) {
+                if ($this->agiconfig['cid_enable'] && $this->agiconfig['cid_auto_assign_card_to_cid'] && is_numeric($this->CallerID) && $this->CallerID > 0 && !$this->ask_other_cardnumber && !$this->update_callerid) {
 
-                    $QUERY = "SELECT count(*) FROM cc_callerid WHERE id_cc_card = '$the_card_id'";
-                    $result = $this->table->SQLExec($this->DBHandle, $QUERY);
+                    $QUERY = "SELECT count(*) FROM cc_callerid WHERE id_cc_card = ?";
+                    $result = $this->DBHandle->Execute($QUERY, [$the_card_id]);
+                    $row = $result ? $result->FetchRow() : false;
 
                     // CHECK IF THE AMOUNT OF CALLERID IS LESS THAN THE LIMIT
-                    if ($result[0][0] < $this->config["webcustomerui"]['limit_callerid']) {
-
-                        $QUERY_FIELS = 'cid, id_cc_card';
-                        $QUERY_VALUES = "'" . $this->CallerID . "','$the_card_id'";
-
-                        $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[CREATE AN INSTANCE IN CC_CALLERID -  QUERY_VALUES:$QUERY_VALUES, QUERY_FIELS:$QUERY_FIELS]");
-                        $result = $this->table->Add_table($this->DBHandle, $QUERY_VALUES, $QUERY_FIELS, 'cc_callerid');
-
+                    if ($row && $row[0] < $this->config["webcustomerui"]['limit_callerid']) {
+                        $query = "INSERT INTO cc_callerid cid, id_cc_card VALUES(?, ?)";
+                        $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[CREATE AN INSTANCE IN CC_CALLERID -  QUERY: $query]");
+                        $result = $this->DBHandle->Execute($query, [$this->CallerID, $the_card_id]);
                         if (!$result) {
                             $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[CALLERID CREATION ERROR TABLE cc_callerid]");
                             $prompt = "prepaid-auth-fail";
@@ -3001,9 +2965,9 @@ class A2Billing
                 //UPDATE THE CARD ASSIGN TO THIS CC_CALLERID
                 if ($this->update_callerid && strlen($this->CallerID) > 1 && $this->ask_other_cardnumber) {
                     $this->ask_other_cardnumber = false;
-                    $QUERY = "UPDATE cc_callerid SET id_cc_card = '$the_card_id' WHERE cid = '" . $this->CallerID . "'";
+                    $QUERY = "UPDATE cc_callerid SET id_cc_card = ? WHERE cid = ?";
                     $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[QUERY UPDATE : $QUERY]");
-                    $this->table->SQLExec($this->DBHandle, $QUERY, 0);
+                    $this->DBHandle->Execute($QUERY, [$the_card_id, $this->CallerID]);
                 }
 
                 if ($prompt) {
@@ -3033,7 +2997,7 @@ class A2Billing
         return $res >= 0;
     }
 
-    public function callingcard_ivr_authenticate_light(&$error_msg, $simbalance): bool
+    public function callingcard_ivr_authenticate_light(string &$error_msg, int $simbalance = 0): bool
     {
         $QUERY = "SELECT credit, tariff, activated, inuse, simultaccess, typepaid, creditlimit, language, removeinterprefix, redial, enableexpire, " .
                     " UNIX_TIMESTAMP(expirationdate), expiredays, nbused, UNIX_TIMESTAMP(firstusedate), UNIX_TIMESTAMP(cc_card.creationdate), " .
@@ -3041,11 +3005,11 @@ class A2Billing
                     " voicemail_permitted, voicemail_activated, cc_card.restriction, cc_country.countryprefix " .
                     " FROM cc_card LEFT JOIN cc_tariffgroup ON tariff = cc_tariffgroup.id " .
                     " LEFT JOIN cc_country ON cc_card.country = cc_country.countrycode " .
-                    " WHERE username = '" . $this->cardnumber . "'";
-        $result = $this->table->SQLExec($this->DBHandle, $QUERY);
+                    " WHERE username = ?";
+        $result = $this->DBHandle->Execute($QUERY, [$this->cardnumber]);
 
-        if (!is_array($result)) {
-            $error_msg = '<font face="Arial, Helvetica, sans-serif" size="2" color="red"><b>' . gettext("Error : Authentication Failed !!!") . '</b></font><br>';
+        if (!$result || $result->RowCount() === 0) {
+            $error_msg = gettext("Error : Authentication Failed !!!");
 
             return false;
         }
@@ -3055,13 +3019,13 @@ class A2Billing
         } else {
             $this->credit = $result[0][0];
         }
-        $row                        = $result[0];
-        $this->tariff               = $row[1];
+        $row                        = $result->FetchRow();
+        $this->tariff               = (int)$row[1];
         $this->active               = $row[2];
         $isused                     = $row[3];
         $simultaccess               = $row[4];
-        $this->typepaid             = $row[5];
-        $this->creditlimit          = $row[6];
+        $this->typepaid             = (int)$row[5];
+        $this->creditlimit          = (int)$row[6];
         $this->removeinterprefix    = (bool)$row[8];
         $this->redial               = $row[9];
         $this->enableexpire         = (int)$row[10];
@@ -3081,29 +3045,24 @@ class A2Billing
         $this->restriction          = (int)$row[25];
         $this->countryprefix        = $row[26];
 
+        $error_msg = "";
         if ($this->typepaid == 1) {
             $this->credit = $this->credit + $this->creditlimit;
         }
 
         // CHECK IF ENOUGH CREDIT TO CALL
         if (!$this->enough_credit_to_call()) {
-            $error_msg = '<font face="Arial, Helvetica, sans-serif" size="2" color="red"><b>' . gettext("Error : Not enough credit to call !!!") . '</b></font><br>';
-
-            return false;
+            $error_msg = gettext("Error : Not enough credit to call !!!");
         }
 
         // CHECK activated=t / CARD NOT ACTIVE, CONTACT CUSTOMER SUPPORT
         if ($this->status != "1") {
-            $error_msg = '<font face="Arial, Helvetica, sans-serif" size="2" color="red"><b>' . gettext("Error : Card is not active!!!") . '</b></font><br>';
-
-            return false;
+            $error_msg = gettext("Error : Card is not active!!!");
         }
 
         // CHECK IF THE CARD IS USED
         if ($isused && $simultaccess !== 1) {
-            $error_msg = '<font face="Arial, Helvetica, sans-serif" size="2" color="red"><b>' . gettext("Error : Card is actually in use!!!") . '</b></font><br>';
-
-            return false;
+            $error_msg = gettext("Error : Card is actually in use!!!");
         }
 
         // CHECK FOR EXPIRATION  -  enableexpire ( 0 : none, 1 : expire date, 2 : expire days since first use, 3 : expire days since creation)
@@ -3121,14 +3080,11 @@ class A2Billing
                 $date_will_expire = 0;
             }
             if ($date_will_expire < time()) {
-                $error_msg = '<font face="Arial, Helvetica, sans-serif" size="2" color="red"><b>' . gettext("Error : Card have expired!!!") . '</b></font><br>';
-
-                return false;
+                $error_msg = gettext("Error : Card have expired!!!");
             }
-
         }
 
-        return true;
+        return empty($error_msg);
     }
 
 
@@ -3137,13 +3093,14 @@ class A2Billing
     * to switch the Callplan from a customer : callplan_deck_minute_threshold
     *
     */
-    public function deck_switch($agi): bool
+    public function deck_switch(Agi $agi): bool
     {
-        if (!str_contains($this->agiconfig['callplan_deck_minute_threshold'], ',')) {
+        $thresh = $this->agiconfig['callplan_deck_minute_threshold'] ?? "";
+        if (!str_contains($thresh, ',')) {
             return false;
         }
 
-        $arr_splitable_deck = explode(",", $this->agiconfig['callplan_deck_minute_threshold']);
+        $arr_splitable_deck = explode(",", $thresh);
         $arr_value_deck_callplan = [];
         $arr_value_deck_minute = [];
 
@@ -3152,31 +3109,36 @@ class A2Billing
             $arr_value_explode = explode(":", $arr_value, 2);
             if (count($arr_value_explode) > 1) {
                 if (is_numeric($arr_value_explode[0]) && is_numeric($arr_value_explode[1])) {
-                    $arr_value_deck_callplan[] = $arr_value_explode[0];
-                    $arr_value_deck_minute[] = $arr_value_explode[1];
+                    $arr_value_deck_callplan[] = (int)$arr_value_explode[0];
+                    $arr_value_deck_minute[] = (int)$arr_value_explode[1];
                 }
             } elseif (is_numeric($arr_value)) {
-                $arr_value_deck_callplan[] = $arr_value;
+                $arr_value_deck_callplan[] = (int)$arr_value;
                 $arr_value_deck_minute[] = 0;
             }
         }
         // We have $arr_value_deck_callplan with 1, 2, 3 & we have $arr_value_deck_minute with 5, 1, 0
-        if (count($arr_value_deck_callplan) == 0)
+        if (count($arr_value_deck_callplan) === 0) {
             return false;
+        }
 
-        $QUERY = "SELECT sum(sessiontime), count(*) FROM cc_call WHERE card_id = '" . $this->id_card . "'";
-        $result = $this->table->SQLExec($this->DBHandle, $QUERY);
-        $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[DECK SWITCH - Start]" . json_encode($result));
-        $sessiontime_for_card = $result[0][0];
-        $calls_for_card = $result[0][1];
+        $QUERY = "SELECT sum(sessiontime), count(*) FROM cc_call WHERE card_id = ?";
+        $result = $this->DBHandle->Execute($QUERY, [$this->id_card]);
+        $row = $result ? $result->FetchRow() : false;
+        $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[DECK SWITCH - Start]" . json_encode($row));
+        if (!$row) {
+            return false;
+        }
+        $sessiontime_for_card = $row[0];
+        $calls_for_card = $row[1];
 
         $find_deck = false;
         $accumul_seconds = 0;
         for ($ind_deck = 0; $ind_deck < count($arr_value_deck_callplan); $ind_deck++) {
             $accumul_seconds += $arr_value_deck_minute[$ind_deck] ?? 0;
 
-            if ($arr_value_deck_callplan[$ind_deck] == $this->tariff) {
-                $find_deck = is_numeric($arr_value_deck_callplan[$ind_deck + 1]);
+            if ($arr_value_deck_callplan[$ind_deck] === $this->tariff) {
+                $find_deck = is_numeric($arr_value_deck_callplan[$ind_deck + 1] ?? null);
                 break;
             }
         }
@@ -3187,9 +3149,9 @@ class A2Billing
             if (($sessiontime_for_card > $accumul_seconds) && ($calls_for_card > $ind_deck)) {
                 // UPDATE CARD
                 $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[DECK SWITCH] : UPDATE CARD TO CALLPLAN ID = " . $arr_value_deck_callplan[$ind_deck]);
-                $QUERY = "UPDATE cc_card SET tariff = '" . $arr_value_deck_callplan[$ind_deck] . "' WHERE id = '" . $this->id_card . "'";
-                $this->table->SQLExec($this->DBHandle, $QUERY, 0);
-
+                $QUERY = "UPDATE cc_card SET tariff = ? WHERE id = ?";
+                $params = [$arr_value_deck_callplan[$ind_deck], $this->id_card];
+                $this->DBHandle->Execute($QUERY, $params);
                 $this->tariff = $arr_value_deck_callplan[$ind_deck];
             }
         }
@@ -3261,7 +3223,7 @@ class A2Billing
                 $this->debug(self::FATAL, $agi, __FILE__, __LINE__, "[DB CONNECTION LOST] CDR NOT POSTED");
                 return false;
             }
-            if ($this->config['database']['dbtype'] == "mysql") {
+            if ($this->config['database']['dbtype'] === "mysql") {
                 $this->DBHandle->Execute('SET AUTOCOMMIT = 1');
             }
             if (empty($this->table)) {
@@ -3314,12 +3276,12 @@ class A2Billing
         if ($this->mode === 'did' || $this->mode === 'callback') {
             return;
         }
-        $QUERY = "UPDATE cc_card SET redial = '$number' WHERE username = '$this->accountcode'";
-        $result = $this->table->SQLExec($this->DBHandle, $QUERY, 0);
+        $QUERY = "UPDATE cc_card SET redial = ? WHERE username = ?";
+        $result = $this->DBHandle->Execute($QUERY, [$number, $this->accountcode]);
         $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[SAVING DESTINATION FOR REDIAL: SQL: $QUERY]:[result: $result]");
     }
 
-    public function calculate_time_condition($now, $timeinterval, $type): int
+    public function calculate_time_condition(int $now, int $timeinterval, string $type): int
     {
         $week_range = [
             'mon' => 1,
@@ -3387,7 +3349,9 @@ class A2Billing
                     case 0:
                         $i = 0;
                         foreach ($conditions[0] as $condition) {
-                            if ($i > 0) $conditions[0][$i] = strtotime($condition);
+                            if ($i > 0) {
+                                $conditions[0][$i] = strtotime($condition);
+                            }
                             $i++;
                         }
                         if ($now >= $conditions[0][1] && $now <= $conditions[0][2]) {
@@ -3397,7 +3361,9 @@ class A2Billing
                     case 1:
                     case 2:
                         array_splice($conditions[0], 0, 1);
-                        if (in_array(date("G:i", $now), $conditions[0])) $cond_result[$x] = $cond_result[$x] + 1;
+                        if (in_array(date("G:i", $now), $conditions[0])) {
+                            $cond_result[$x] = $cond_result[$x] + 1;
+                        }
                         break;
                     case 3:
                         $cond_result[$x] = $cond_result[$x] + 1;
@@ -3483,29 +3449,25 @@ class A2Billing
         return $final_result_set;
     }
 
-    public function extract_cond_values($value): array
+    public function extract_cond_values(string $value): array
     {
         $output = [];
         $rows = explode("\n", $value);
-        $i = 0;
-        foreach ($rows as $row) {
+        foreach ($rows as $i => $row) {
             $items = explode("|", trim($row));
-            $x = 0;
             foreach ($items as $item) {
-                if (preg_match('/^([[:alnum:]]+|\d+:\d+)-([[:alnum:]]+|\d+:\d+)$/', $item, $intvals)) {
-                    $output[$i][$x] = [0, $intvals[1], $intvals[2]];
-                } elseif (preg_match('/^([[:alnum:]]+|\d+:\d+)(,[[:alnum:]]+|,\d+:\d+)+$/', $item)) {
-                    $output[$i][$x] = array_merge([1], explode(',', $item));
-                } elseif (preg_match('/^([[:alnum:]]+|\d+:\d+)$/', $item)) {
-                    $output[$i][$x] = [2, $item];
-                } elseif (preg_match('/^\*$/', $item)) {
-                    $output[$i][$x] = [3];
+                if (preg_match('/^([0-9a-z]+|\d+:\d+)-([0-9a-z]+|\d+:\d+)$/i', $item, $intvals)) {
+                    $output[$i][] = [0, $intvals[1], $intvals[2]];
+                } elseif (preg_match('/^([0-9a-z]+|\d+:\d+)(,[0-9a-z]+|,\d+:\d+)+$/i', $item)) {
+                    $output[$i][] = array_merge([1], explode(',', $item));
+                } elseif (preg_match('/^([0-9a-z]+|\d+:\d+)$/i', $item)) {
+                    $output[$i][] = [2, $item];
+                } elseif ($item === "*") {
+                    $output[$i][] = [3];
                 } else {
-                    $output[$i][$x] = [-1];
+                    $output[$i][] = [-1];
                 }
-            $x++;
             }
-        $i++;
         }
 
         return $output;
@@ -3514,9 +3476,9 @@ class A2Billing
     private function get_currencies(): array
     {
         $list = [];
-        $result = $this->table->SQLExec($this->DBHandle, "SELECT id, currency, name, value FROM cc_currencies");
-        if (is_array($result)) {
-            foreach ($result as $val) {
+        $result = $this->DBHandle->Execute("SELECT id, currency, name, value FROM cc_currencies");
+        if ($result && $data = $result->GetAll()) {
+            foreach ($data as $val) {
                 $list[$val[1]] = [1 => $val[2], 2 => $val[3]];
             }
         }

@@ -88,7 +88,7 @@ $mode = $argv[2] ?? "standard";
 $caller_areacode = $argv[3] ?? null;
 
 $A2B = new A2Billing();
-$A2B->load_conf(null, $idconfig, $optconfig);
+$A2B->load_conf((int)$idconfig, $optconfig);
 $A2B->mode = $mode;
 $A2B->G_startime = $G_startime;
 

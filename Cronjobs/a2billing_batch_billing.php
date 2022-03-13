@@ -79,7 +79,7 @@ $groupcard = 5000;
 $oneday = 24 * 60 * 60;
 
 $A2B = new A2Billing();
-$A2B->load_conf(null, $idconfig);
+$A2B->load_conf($idconfig);
 $cron_logfile = $A2B->config['log-files']['cront_invoice'] ?? "/tmp/a2billing_cront_invoice_log";
 
 write_log ($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . "[#### CRONT BILLING BEGIN ####]");

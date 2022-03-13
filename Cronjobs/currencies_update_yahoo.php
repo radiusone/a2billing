@@ -73,12 +73,12 @@ if ($prcHandler->isActive()) {
 
 $FG_DEBUG = 0;
 $A2B = new A2Billing();
-$A2B -> load_conf(A2Billing::DEFAULT_A2BILLING_CONFIG);
+$A2B -> load_conf();
 
 // DEFINE FOR THE DATABASE CONNECTION
 define ("BASE_CURRENCY", strtoupper($A2B->config["global"]['base_currency']));
 
-$A2B -> load_conf(null, $idconfig);
+$A2B -> load_conf($idconfig);
 $cron_logfile = $A2B->config['log-files']['cront_currency_update'] ?? "/tmp/a2billing_cront_currency_log";
 
 write_log($cron_logfile, basename(__FILE__).' line:'.__LINE__."[#### START CURRENCY UPDATE ####]");
