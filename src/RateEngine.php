@@ -179,7 +179,6 @@ class RateEngine
         $A2B->table = new Table();
         $result = $A2B->table->SQLExec($A2B->DBHandle, $QUERY);
 
-
         if (!is_array($result) || count($result) == 0) {
             return 0; // NO RATE FOR THIS NUMBER
         }
@@ -209,7 +208,6 @@ class RateEngine
         } else {
             $result_defaultprefix = [];
         }
-
 
         if ($A2B->agiconfig['lcr_mode'] == 0) {
             //1) REMOVE THOSE THAT HAVE A SMALLER DIALPREFIX
@@ -253,7 +251,7 @@ class RateEngine
                             $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[rate-engine:i[7]=" . $i[7]);
                         }
                         if ($mysearchvalue[$resultcount][3] == $i[3]) {
-                            if (strlen($mysearchvalue[$resultcount][7]) != strlen($i[7])) {
+                            if (strlen($mysearchvalue[$resultcount][7]) !== strlen($i[7])) {
                                 unset($myresult[$j]);
                                 $countdelete = $countdelete + 1;
                                 if ($this->webui) {
@@ -285,11 +283,12 @@ class RateEngine
                 }
                 unset($mysearchvalue[$resultcount]);
                 foreach ($mysearchvalue as $key => $value) {
-                    if (is_null($value) or $value == "") {
+                    if (is_null($value) or $value === "") {
                         unset($mysearchvalue[$key]);
                     }
                 }
                 $mysearchvalue = array_values($mysearchvalue);
+                unset($myresult);
             }
             if ($this->webui) {
                 $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[rate-engine: RESULTCOUNT" . $resultcount . "]");
@@ -326,16 +325,23 @@ class RateEngine
         // 3) REMOVE THOSE THAT USE THE SAME TRUNK - MAKE A DISTINCT
         //    AND THOSE THAT ARE DISABLED.
         $distinct_result = [];
+        $mylistoftrunk = [];
         foreach ($result as $row) {
             if ($row[34] == -1) {
-                $status = $row[46];
+                $status = (int)$row[46];
+                $mycurrenttrunk = $result[$i][29];
             } else {
-                $status = $row[47];
+                $status = (int)$row[47];
+                $mycurrenttrunk = $result[$i][34];
             }
 
             // Check if we already have the same trunk in the ratecard
-            if ($i === 0 && $status == 1) {
+            if (($i === 0 || !in_array($mycurrenttrunk, $mylistoftrunk)) && $status === 1) {
                 $distinct_result[] = $row;
+            }
+
+            if ($status === 1) {
+                $mylistoftrunk[] = $mycurrenttrunk;
             }
         }
 
@@ -361,8 +367,6 @@ class RateEngine
         }
         if ($this->webui) {
             $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[CC_asterisk_rate-engine: Count Total result " . count($distinct_result) . "]");
-        }
-        if ($this->webui) {
             $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[CC_asterisk_rate-engine: number_trunk " . $this->number_trunk . "]");
         }
         return 1;

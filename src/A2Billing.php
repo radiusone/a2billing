@@ -95,7 +95,7 @@ class A2Billing
     /** @var string */
     public string $early_destination = '';
     /** @var string */
-    public string $sip_iax_buddy;
+    public string $sip_iax_buddy = "";
     /** @var int credit on the account */
     public int $credit;
     public int $tariff;
@@ -3278,7 +3278,7 @@ class A2Billing
         }
         $QUERY = "UPDATE cc_card SET redial = ? WHERE username = ?";
         $result = $this->DBHandle->Execute($QUERY, [$number, $this->accountcode]);
-        $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[SAVING DESTINATION FOR REDIAL: SQL: $QUERY]:[result: $result]");
+        $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[SAVING DESTINATION FOR REDIAL: SQL: $QUERY]");
     }
 
     public function calculate_time_condition(int $now, int $timeinterval, string $type): int
