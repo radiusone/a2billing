@@ -168,10 +168,10 @@
 					<div class="collapse {if ($section == "6")}show{/if}" id="rate-collapse">
 						<ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
 							<li><a class="link-dark rounded" href="A2B_entity_tariffgroup.php?atmenu=tariffgroup&amp;section=6">{_("Call Plan")}</a></li>
-							<li><a class="link-dark rounded" href="A2B_entity_tariffplan.php?atmenu=tariffplan&amp;section=6">{_("RateCards")}</a></li>
 							<li>
-								<a class="link-dark rounded" href="CC_ratecard_import.php?atmenu=ratecard&amp;section=6">{_("Import")}</a>
+								<a class="link-dark rounded" href="A2B_entity_tariffplan.php?atmenu=tariffplan&amp;section=6">{_("RateCards")}</a>
 								<ul class="list-unstyled fw-normal ps-3 pb-1">
+									<li><a class="link-dark rounded" href="CC_ratecard_import.php?atmenu=ratecard&amp;section=6">{_("Import")}</a>
 									<li><a class="link-dark rounded" href="CC_ratecard_merging.php?atmenu=ratecard&amp;section=6">{_("Merge")}</a></li>
 									<li><a class="link-dark rounded" href="CC_entity_sim_ratecard.php?atmenu=ratecard&amp;section=6">{_("Simulator")}</a></li>
 								</ul>
