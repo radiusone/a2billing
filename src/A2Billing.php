@@ -64,7 +64,7 @@ class A2Billing
     /** @var string */
     public string $cardnumber;
     /** @var string */
-    public string $CallerID;
+    public string $CallerID = "";
 
     /** @var bool|ADOConnection */
     public $DBHandle;
@@ -82,7 +82,7 @@ class A2Billing
     /** @var string value of agi_accountcode unless overridden by configured default account code */
     public string $accountcode;
     /** @var string value of agi_extension ???? */
-    public string $dnid;
+    public string $dnid = "";
     /** @var string value of agi_dnid */
     public string $orig_dnid;
     /** @var string value of agi_extension */
@@ -2997,7 +2997,7 @@ class A2Billing
         return $res >= 0;
     }
 
-    public function callingcard_ivr_authenticate_light(string &$error_msg, int $simbalance = 0): bool
+    public function callingcard_ivr_authenticate_light(?string &$error_msg, int $simbalance = 0): bool
     {
         $QUERY = "SELECT credit, tariff, activated, inuse, simultaccess, typepaid, creditlimit, language, removeinterprefix, redial, enableexpire, " .
                     " UNIX_TIMESTAMP(expirationdate), expiredays, nbused, UNIX_TIMESTAMP(firstusedate), UNIX_TIMESTAMP(cc_card.creationdate), " .

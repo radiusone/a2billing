@@ -148,7 +148,7 @@ class RateEngine
         buyrateinitblock, buyrateincrement, rateinitial, initblock, billingblock,
         connectcharge, disconnectcharge, stepchargea, chargea, timechargea,
         billingblocka, stepchargeb, chargeb, timechargeb, billingblockb,
-        stepchargec, chargec, timechargec, billingblockc, cc_tariffplan.id_trunk AS tp_id_trunk, --29
+        stepchargec, chargec, timechargec, billingblockc, cc_tariffplan.id_trunk AS tp_id_trunk,
         tp_trunk.trunkprefix AS tp_trunkprefix, tp_trunk.providertech AS tp_providertech, tp_trunk.providerip AS tp_providerip, tp_trunk.removeprefix AS tp_removeprefix, cc_ratecard.id_trunk AS rc_id_trunk,
         rt_trunk.trunkprefix AS rc_trunkprefix, rt_trunk.providertech AS rc_providertech, rt_trunk.providerip AS rc_providerip, rt_trunk.removeprefix AS rc_removeprefix, musiconhold,
         tp_trunk.failover_trunk AS tp_failover_trunk, rt_trunk.failover_trunk AS rt_failover_trunk, tp_trunk.addparameter AS tp_addparameter_trunk, rt_trunk.addparameter AS rt_addparameter_trunk, id_outbound_cidgroup,
