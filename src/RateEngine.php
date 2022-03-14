@@ -1038,7 +1038,7 @@ class RateEngine
         $this->lastbuycost = $buyratecost;
     }
 
-    /* WTAF???
+    /* WTAF??? TODO: sort out this mess
         SORT_ASC : Tri en ordre ascendant
         SORT_DESC : Tri en ordre descendant
     */
