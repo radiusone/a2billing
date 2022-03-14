@@ -1191,13 +1191,8 @@ if ($charge_callback) {
                 $A2B->debug(A2Billing::INFO, $agi, __FILE__, __LINE__, "[CALLBACK]:[RateEngine->answeredtime=" . $RateEngine->answeredtime . "]");
 
                 //(ST) replace above code with the code below to store CDR for all callbacks and to only charge for the callback if requested
-                if ($callback_been_connected == 1 || ($A2B->agiconfig['callback_bill_1stleg_ifcall_notconnected'] == 1)) {
-                    //(ST) this is called if we need to bill the user
-                    $RateEngine->rate_engine_updatesystem($A2B, $agi, $A2B->destination, true, 0, 1);
-                } else {
-                    //(ST) this is called if we don't bill ther user but to keep track of call costs
-                    $RateEngine->rate_engine_updatesystem($A2B, $agi, $A2B->destination, false, 0, 1);
-                }
+                $dobill = $callback_been_connected == 1 || $A2B->agiconfig['callback_bill_1stleg_ifcall_notconnected'] == 1;
+                $RateEngine->rate_engine_updatesystem($A2B, $agi, $A2B->destination, $dobill, false, true);
 
             } else {
                 $A2B->debug(A2Billing::ERROR, $agi, __FILE__, __LINE__, "[CALLBACK 1ST LEG]:[ERROR - BILLING FOR THE 1ST LEG - rate_engine_all_calcultimeout: CALLED=$called_party]");
@@ -1318,7 +1313,7 @@ function insert_callback(A2Billing $A2B, Agi $agi, string $uniqueid, string $cha
 function attempt_call(A2Billing $A2B, RateEngine $RateEngine, Agi $agi)
 {
     // PERFORM THE CALL
-    $result_callperf = $RateEngine->rate_engine_performcall($agi, $A2B->destination, $A2B);
+    $result_callperf = $RateEngine->rate_engine_performcall($agi, $A2B, $A2B->destination);
 
     if (!$result_callperf) {
         $prompt = "prepaid-dest-unreachable";

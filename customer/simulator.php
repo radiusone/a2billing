@@ -64,7 +64,7 @@ getpost_ifset(array('posted', 'tariffplan', 'balance', 'id_cc_card', 'called'));
 
 $id_cc_card = $customer_info[15];
 $tariffplan = $customer_info[16];
-$balance = $customer_info[1];
+$balance = (int)$customer_info[1];
 $currency = $customer_info[17];
 $QUERY = "SELECT value from cc_currencies where currency='$currency'";
 $DBHandle_max = DbConnect();

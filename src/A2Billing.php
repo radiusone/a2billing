@@ -1293,7 +1293,7 @@ class A2Billing
                 if ($this->callingcard_ivr_authorize($agi, $RateEngine, 0) === 1) {
 
                     // PERFORM THE CALL
-                    $result_callperf = $RateEngine->rate_engine_performcall($agi, $this->destination, $this);
+                    $result_callperf = $RateEngine->rate_engine_performcall($agi, $this, $this->destination);
                     if (!$result_callperf) {
                         $prompt = "prepaid-callfollowme";
                         $agi->stream_file($prompt, '#');
@@ -1310,7 +1310,7 @@ class A2Billing
                     }
 
                     // INSERT CDR & UPDATE SYSTEM
-                    $RateEngine->rate_engine_updatesystem($this, $agi, $this->destination, $doibill, 1);
+                    $RateEngine->rate_engine_updatesystem($this, $agi, $this->destination, $doibill, true);
                     // CC_DID & CC_DID_DESTINATION - cc_did.id, cc_did_destination.id
                     $QUERY = "UPDATE cc_did SET secondusedreal = secondusedreal + ? WHERE id = ?";
                     $this->DBHandle->Execute($QUERY, [$RateEngine->answeredtime, $dest[0]]);
@@ -1551,7 +1551,7 @@ class A2Billing
                     $this->fct_say_time_2_call($agi, $this->timeout, $selling_rate);
 
                     // PERFORM THE CALL
-                    $result_callperf = $RateEngine->rate_engine_performcall($agi, $this->destination, $this);
+                    $result_callperf = $RateEngine->rate_engine_performcall($agi, $this, $this->destination);
                     if (!$result_callperf) {
                         $prompt = "prepaid-callfollowme";
                         $agi->stream_file($prompt, '#');
@@ -1566,7 +1566,7 @@ class A2Billing
                     }
 
                     // INSERT CDR & UPDATE SYSTEM
-                    $RateEngine->rate_engine_updatesystem($this, $agi, $this->destination, $doibill, 1);
+                    $RateEngine->rate_engine_updatesystem($this, $agi, $this->destination, $doibill, true);
 
                     // CC_DID & CC_DID_DESTINATION - cc_did.id, cc_did_destination.id
                     $QUERY = "UPDATE cc_did SET secondusedreal = secondusedreal + ? WHERE id = ?";
@@ -2478,8 +2478,8 @@ class A2Billing
                         return false;
                     }
 
-                    $this->credit = $this->agiconfig['cid_auto_create_card_credit'];
-                    $this->tariff = $this->agiconfig['cid_auto_create_card_tariffgroup'];
+                    $this->credit = (int)$this->agiconfig['cid_auto_create_card_credit'];
+                    $this->tariff = (int)$this->agiconfig['cid_auto_create_card_tariffgroup'];
                     $this->active = 1;
                     $this->status = 1;
                     $this->typepaid = $typepaid;
@@ -2502,12 +2502,12 @@ class A2Billing
                 // authenticate OK using the callerID
                 $row                        = $result->FetchRow();
                 $cid_active                 = $row[2];
-                $this->credit               = $row[3];
-                $this->tariff               = $row[4];
+                $this->credit               = (int)$row[3];
+                $this->tariff               = (int)$row[4];
                 $this->active               = $row[5];
                 $isused                     = $row[6];
                 $simultaccess               = (int)$row[7];
-                $this->typepaid             = $row[8];
+                $this->typepaid             = (int)$row[8];
                 $this->creditlimit          = (int)$row[9];
                 $language                   = $row[10];
                 $this->accountcode          = $row[11];
@@ -2670,12 +2670,12 @@ class A2Billing
                     }
 
                     $row                        = $result->FetchRow();
-                    $this->credit               = $row[0];
-                    $this->tariff               = $row[1];
+                    $this->credit               = (int)$row[0];
+                    $this->tariff               = (int)$row[1];
                     $this->active               = $row[2];
                     $isused                     = $row[3];
                     $simultaccess               = (int)$row[4];
-                    $this->typepaid             = $row[5];
+                    $this->typepaid             = (int)$row[5];
                     $this->creditlimit          = (int)$row[6];
                     $language                   = $row[7];
                     $this->removeinterprefix    = (bool)$row[8];
@@ -2856,8 +2856,8 @@ class A2Billing
                 }
 
                 $row                        = $result->FetchRow();
-                $this->credit               = $row[0];
-                $this->tariff               = $row[1];
+                $this->credit               = (int)$row[0];
+                $this->tariff               = (int)$row[1];
                 $this->active               = $row[2];
                 $isused                     = $row[3];
                 $simultaccess               = (int)$row[4];

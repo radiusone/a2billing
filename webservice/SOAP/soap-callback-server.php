@@ -202,7 +202,7 @@ class Callback
             $card_data = $instance_table->SQLExec($DBHandle, $QUERY);
             if (is_array($card_data)) {
 
-                $A2B->credit = $card_data[0]['credit'];
+                $A2B->credit = (int)$card_data[0]['credit'];
 
                 if ($card_data[0]['typepaid']==1) {
                     $A2B->credit = $A2B->credit + $card_data[0]['creditlimit'];
@@ -230,7 +230,7 @@ class Callback
 
             if (is_array($card_data)) {
 
-                $A2B->credit = $card_data[0]['credit'];
+                $A2B->credit = (int)$card_data[0]['credit'];
 
                 if ($card_data[0]['typepaid']==1) {
                     $A2B->credit = $A2B->credit + $card_data[0]['creditlimit'];
