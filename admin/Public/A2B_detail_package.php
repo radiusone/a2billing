@@ -84,6 +84,7 @@ $FG_TABLE_DEFAULT_ORDER = "t1.date_consumption";
 $FG_TABLE_DEFAULT_SENS = "DESC";
 
 $FG_COL_QUERY=' t1.id_cc_card, t1.id_cc_card, t1.id_cc_package_offer, sum(t1.used_secondes) AS used_secondes, count(*) as nbperf ';
+$FG_COL_QUERY_GRAPH = 't1.callstart, t1.duration';
 
 $FG_LIMITE_DISPLAY=25;
 $FG_NB_TABLE_COL=count($FG_TABLE_COL);

@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Forms\FormHandler;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -101,34 +102,34 @@ getpost_ifset ([
  * @var string $file
  */
 $current_page = (int)($current_page ?? 0);
+$nodisplay = (bool)($_REQUEST["nodisplay"] ?? 0);
+$posted = $posted ?? "0";
 
-if ($download === "file" && $file) {
+if (($download ?? "") === "file" && !empty($file)) {
 
     $value_de = base64_decode($file);
-    if (str_contains($file, '/') || $value_de === false) {
+    if (str_contains($file, '/') || $value_de === false || str_contains($value_de, '..')) {
         exit;
     }
 
-    if (!str_contains($value_de, "..")) {
-        $dl_full = MONITOR_PATH . "/" . $value_de;
+    $dl_full = MONITOR_PATH . "/" . $value_de;
 
-        if (!is_readable($dl_full)) {
-            echo _("ERROR: Cannot download file $dl_full, it does not exist.");
-            exit ();
-        }
-
-        header("Content-Type: application/octet-stream");
-        header("Content-Disposition: attachment; filename=$value_de");
-        header("Content-Length: " . filesize($dl_full));
-        header("Accept-Ranges: bytes");
-        header("Pragma: no-cache");
-        header("Expires: 0");
-        header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-        header("Content-transfer-encoding: binary");
-
-        readfile($dl_full);
+    if (!is_readable($dl_full)) {
+        echo _("ERROR: Cannot download file $dl_full, it does not exist.");
         exit ();
     }
+
+    header("Content-Type: application/octet-stream");
+    header("Content-Disposition: attachment; filename=$value_de");
+    header("Content-Length: " . filesize($dl_full));
+    header("Accept-Ranges: bytes");
+    header("Pragma: no-cache");
+    header("Expires: 0");
+    header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+    header("Content-transfer-encoding: binary");
+
+    readfile($dl_full);
+    exit ();
 }
 
 $dialstatus_list = getDialStatusList();
@@ -141,46 +142,39 @@ $FG_TABLE_NAME = "cc_call t1 LEFT OUTER JOIN cc_trunk t3 ON t1.id_trunk = t3.id_
 // This Variable store the argument for the SQL query
 $FG_COL_QUERY = 't1.starttime, t1.src, t1.dnid, t1.calledstation, t1.destination AS dest, t4.buyrate, t4.rateinitial, t1.sessiontime, t1.card_id, t3.trunkcode, t1.terminatecauseid, t1.sipiax, t1.buycost, t1.sessionbill, case when t1.sessionbill!=0 then ((t1.sessionbill-t1.buycost)/t1.sessionbill)*100 else NULL end as margin,case when t1.buycost!=0 then ((t1.sessionbill-t1.buycost)/t1.buycost)*100 else NULL end as markup';
 
-// THIS VARIABLE DEFINE THE COLOR OF THE HEAD TABLE
-$FG_TABLE_ALTERNATE_ROW_COLOR [] = "#FFFFFF";
-$FG_TABLE_ALTERNATE_ROW_COLOR [] = "#F2F8FF";
-
 $yesno = getYesNoList();
 
 // 0 = NORMAL CALL ; 1 = VOIP CALL (SIP/IAX) ; 2= DIDCALL + TRUNK ; 3 = VOIP CALL DID ; 4 = CALLBACK call
 $list_calltype = [
-    [gettext("STANDARD"), "0"],
-    [gettext("SIP/IAX"), "1"],
-    [gettext("DIDCALL"), "2"],
-    [gettext("DID_VOIP"), "3"],
-    [gettext("CALLBACK"), "4"],
-    [gettext("PREDICT"), "5"],
-    [gettext("AUTO DIALER"), "6"],
-    [gettext("DID-ALEG"), "7"],
+    [_("STANDARD"), "0"],
+    [_("SIP/IAX"), "1"],
+    [_("DIDCALL"), "2"],
+    [_("DID_VOIP"), "3"],
+    [_("CALLBACK"), "4"],
+    [_("PREDICT"), "5"],
+    [_("AUTO DIALER"), "6"],
+    [_("DID-ALEG"), "7"],
 ];
-
-$FG_TABLE_DEFAULT_ORDER = "t1.starttime";
-$FG_TABLE_DEFAULT_SENS = "DESC";
 
 $DBHandle = DbConnect ();
 
 $FG_TABLE_COL = [
-    [gettext ( "Date" ), "starttime", "10%", "center", "SORT", "19", "", "", "", "", "", "display_dateformat"],
-    [gettext ( "CallerID" ), "src", "7%", "center", "SORT", "30"],
-    [gettext ( "DNID" ), "dnid", "7%", "center", "SORT", "30"],
-    [gettext ( "Phone Number" ), "calledstation", "10%", "center", "SORT", "30", "", "", "", "", "", ""],
-    [gettext ( "Destination" ), "dest","10%", "center", "SORT", "15", "lie", "cc_prefix", "destination,prefix", "prefix='%id'", "%1"],
-    [gettext ( "Buy Rate" ), "buyrate", "6%", "center", "SORT", "30", "", "", "", "", "", "display_2bill"],
-    [gettext ( "Sell Rate" ), "rateinitial", "6%", "center", "SORT", "30", "", "", "", "", "", "display_2bill"],
-    [gettext ( "Duration" ), "sessiontime", "5%", "center", "SORT", "30", "", "", "", "", "", "display_minute"],
-    [gettext ( "Account" ), "card_id", "6%", "center", "sort", "", "lie_link", "cc_card", "username,id", "id='%id'", "%1", "", "A2B_entity_card.php"],
-    [gettext ( "Trunk" ), "trunkcode", "6%", "center", "SORT", "30"],
-    ['<acronym title="' . gettext ( "Terminate Cause" ) . '">' . gettext ( "TC" ) . '</acronym>', "terminatecauseid", "7%", "center", "SORT", "", "list", $dialstatus_list],
-    [gettext ( "CallType" ), "sipiax", "6%", "center", "SORT", "", "list", $list_calltype],
-    [gettext ( "Buy" ), "buycost", "7%", "center", "SORT", "30", "", "", "", "", "", "display_2bill"],
-    [gettext ( "Sell" ), "sessionbill", "7%", "center", "SORT", "30", "", "", "", "", "", "display_2bill"],
-    [gettext ( "Margin" ), "margin", "7%", "center", "SORT", "30", "", "", "", "", "", "display_2dec_percentage"],
-    [gettext ( "Markup" ), "markup", "7%", "center", "SORT", "30", "", "", "", "", "", "display_2dec_percentage"],
+    [_( "Date" ), "starttime", "10%", "center", "SORT", "19", "", "", "", "", "", "display_dateformat"],
+    [_( "CallerID" ), "src", "7%", "center", "SORT", "30"],
+    [_( "DNID" ), "dnid", "7%", "center", "SORT", "30"],
+    [_( "Phone Number" ), "calledstation", "10%", "center", "SORT", "30", "", "", "", "", "", ""],
+    [_( "Destination" ), "dest","10%", "center", "SORT", "15", "lie", "cc_prefix", "destination,prefix", "prefix='%id'", "%1"],
+    [_( "Buy Rate" ), "buyrate", "6%", "center", "SORT", "30", "", "", "", "", "", "display_2bill"],
+    [_( "Sell Rate" ), "rateinitial", "6%", "center", "SORT", "30", "", "", "", "", "", "display_2bill"],
+    [_( "Duration" ), "sessiontime", "5%", "center", "SORT", "30", "", "", "", "", "", "display_minute"],
+    [_( "Account" ), "card_id", "6%", "center", "sort", "", "lie_link", "cc_card", "username,id", "id='%id'", "%1", "", "A2B_entity_card.php"],
+    [_( "Trunk" ), "trunkcode", "6%", "center", "SORT", "30"],
+    ['<acronym title="' . _( "Terminate Cause" ) . '">' . _( "TC" ) . '</acronym>', "terminatecauseid", "7%", "center", "SORT", "", "list", $dialstatus_list],
+    [_( "CallType" ), "sipiax", "6%", "center", "SORT", "", "list", $list_calltype],
+    [_( "Buy" ), "buycost", "7%", "center", "SORT", "30", "", "", "", "", "", "display_2bill"],
+    [_( "Sell" ), "sessionbill", "7%", "center", "SORT", "30", "", "", "", "", "", "display_2bill"],
+    [_( "Margin" ), "margin", "7%", "center", "SORT", "30", "", "", "", "", "", "display_2dec_percentage"],
+    [_( "Markup" ), "markup", "7%", "center", "SORT", "30", "", "", "", "", "", "display_2dec_percentage"],
 ];
 
 if (LINK_AUDIO_FILE) {
@@ -193,24 +187,22 @@ if (has_rights (ACX_DELETE_CDR)) {
     $FG_COL_QUERY .= ', t1.id';
 }
 
-$FG_COL_QUERY_GRAPH = 't1.callstart, t1.duration';
-
 $FG_LIMITE_DISPLAY = 25;
 $FG_NB_TABLE_COL = count ( $FG_TABLE_COL );
 $FG_EDITION = true;
 $FG_TOTAL_TABLE_COL = $FG_NB_TABLE_COL + 1;
 
-$FG_HTML_TABLE_TITLE = gettext ( " - Call Logs - " );
+$FG_HTML_TABLE_TITLE = _( " - Call Logs - " );
 $FG_HTML_TABLE_WIDTH = '98%';
 
 $instance_table = new Table ( $FG_TABLE_NAME, $FG_COL_QUERY );
 
-if (is_null($order) || is_null($sens)) {
-    $order = $FG_TABLE_DEFAULT_ORDER;
-    $sens = $FG_TABLE_DEFAULT_SENS;
+if (empty($order) || empty($sens)) {
+    $order = "t1.starttime";
+    $sens = "DESC";
 }
 
-if ($posted == 1) {
+if ($posted) {
     $SQLcmd = '';
     $SQLcmd = do_field ( $SQLcmd, 'src', 'src' );
     $SQLcmd = do_field ( $SQLcmd, 'dst', 'calledstation' );
@@ -362,8 +354,8 @@ $FG_EXPORT_SESSION_VAR = "pr_export_entity_call";
 // Query Preparation for the Export Functionality
 $_SESSION [$FG_EXPORT_SESSION_VAR] = "SELECT $FG_COL_QUERY FROM $FG_TABLE_NAME WHERE $FG_TABLE_CLAUSE";
 
-if (! is_null ( $order ) && ($order != '') && ! is_null ( $sens ) && ($sens != '')) {
-    $_SESSION [$FG_EXPORT_SESSION_VAR] .= " ORDER BY $order $sense";
+if (!empty($order) && !empty($sens)) {
+    $_SESSION [$FG_EXPORT_SESSION_VAR] .= " ORDER BY $order $sens";
 }
 
 /************************/
@@ -426,33 +418,31 @@ $smarty->display ( 'main.tpl' );
             ?>
         <tr>
         <td align="left" valign="top" class="bgcolor_004"><font
-            class="fontstyle_003">&nbsp;&nbsp;<?php
-            echo gettext ( "CUSTOMERS" );
-            ?></font>
+            class="fontstyle_003">&nbsp;&nbsp;<?= _( "CUSTOMERS" ) ?></font>
         </td>
         <td class="bgcolor_005" align="left">
         <table width="100%" border="0" cellspacing="0" cellpadding="0">
             <tr>
                 <td class="fontstyle_searchoptions" width="700" valign="top">
-                    <?php echo gettext("Enter the customer ID");?>: <INPUT TYPE="text" NAME="entercustomer" value="<?php echo $entercustomer?>" class="form_input_text">
+                    <?= _("Enter the customer ID") ?>: <INPUT TYPE="text" NAME="entercustomer" value="<?= $entercustomer ?>" class="form_input_text">
                     <a href="A2B_entity_card.php" class="badge bg-primary popup_trigger" aria-label="open a popup to select an item">&gt;</a>
                  <BR> OR <br>
-                    <?php echo gettext("Enter the customer number");?>: <INPUT TYPE="text" NAME="entercustomer_num" value="<?php echo $entercustomer_num?>" class="form_input_text">
+                    <?= _("Enter the customer number") ?>: <INPUT TYPE="text" NAME="entercustomer_num" value="<?= $entercustomer_num ?>" class="form_input_text">
                     <a href="A2B_entity_card.php" data-select="2" class="badge bg-primary popup_trigger" aria-label="open a popup to select an item">&gt;</a>
                 </td>
                 <td width="50%">
                     <table width="100%" border="0" cellspacing="0" cellpadding="0">
                         <tr>
-                            <td align="left" class="fontstyle_searchoptions"><?php echo gettext("CallPlan");?> :</td>
-                            <td align="left" class="fontstyle_searchoptions"><INPUT TYPE="text" NAME="entertariffgroup" value="<?php echo $entertariffgroup?>" size="4" class="form_input_text">&nbsp;<a href="A2B_entity_tariffgroup.php" data-select="2" class="badge bg-primary popup_trigger" aria-label="open a popup to select an item">&gt;</a></td>
-                            <td align="left" class="fontstyle_searchoptions"><?php echo gettext("Provider");?> :
-                            <td align="left" class="fontstyle_searchoptions"><INPUT TYPE="text" NAME="enterprovider" value="<?php echo $enterprovider?>" size="4" class="form_input_text">&nbsp;<a href="A2B_entity_provider.php" data-select="2" class="badge bg-primary popup_trigger" aria-label="open a popup to select an item">&gt;</a></td>
+                            <td align="left" class="fontstyle_searchoptions"><?= _("CallPlan") ?> :</td>
+                            <td align="left" class="fontstyle_searchoptions"><INPUT TYPE="text" NAME="entertariffgroup" value="<?= $entertariffgroup ?>" size="4" class="form_input_text">&nbsp;<a href="A2B_entity_tariffgroup.php" data-select="2" class="badge bg-primary popup_trigger" aria-label="open a popup to select an item">&gt;</a></td>
+                            <td align="left" class="fontstyle_searchoptions"><?= _("Provider") ?> :
+                            <td align="left" class="fontstyle_searchoptions"><INPUT TYPE="text" NAME="enterprovider" value="<?= $enterprovider ?>" size="4" class="form_input_text">&nbsp;<a href="A2B_entity_provider.php" data-select="2" class="badge bg-primary popup_trigger" aria-label="open a popup to select an item">&gt;</a></td>
                         </tr>
                         <tr>
-                            <td align="left" class="fontstyle_searchoptions"><?php echo gettext("Trunk");?> :</td>
-                            <td align="left" class="fontstyle_searchoptions"><INPUT TYPE="text" NAME="entertrunk" value="<?php echo $entertrunk?>" size="4" class="form_input_text">&nbsp;<a href="A2B_entity_trunk.php" data-select="2" class="badge bg-primary popup_trigger" aria-label="open a popup to select an item">&gt;</a></td>
-                            <td align="left" class="fontstyle_searchoptions"><?php echo gettext("Rate");?> :</td>
-                            <td align="left" class="fontstyle_searchoptions"><INPUT TYPE="text" NAME="enterratecard" value="<?php echo $enterratecard?>" size="4" class="form_input_text">&nbsp;<a href="A2B_entity_def_ratecard.php" data-select="2" class="badge bg-primary popup_trigger" aria-label="open a popup to select an item">&gt;</a></td>
+                            <td align="left" class="fontstyle_searchoptions"><?= _("Trunk") ?> :</td>
+                            <td align="left" class="fontstyle_searchoptions"><INPUT TYPE="text" NAME="entertrunk" value="<?= $entertrunk ?>" size="4" class="form_input_text">&nbsp;<a href="A2B_entity_trunk.php" data-select="2" class="badge bg-primary popup_trigger" aria-label="open a popup to select an item">&gt;</a></td>
+                            <td align="left" class="fontstyle_searchoptions"><?= _("Rate") ?> :</td>
+                            <td align="left" class="fontstyle_searchoptions"><INPUT TYPE="text" NAME="enterratecard" value="<?= $enterratecard ?>" size="4" class="form_input_text">&nbsp;<a href="A2B_entity_def_ratecard.php" data-select="2" class="badge bg-primary popup_trigger" aria-label="open a popup to select an item">&gt;</a></td>
                         </tr>
                     </table>
                 </td>
@@ -465,7 +455,7 @@ $smarty->display ( 'main.tpl' );
         }
         ?>
     <tr>
-        <td align="left" class="bgcolor_004"><font class="fontstyle_003">&nbsp;&nbsp;<?php echo gettext ( "DATE" ); ?></font>
+        <td align="left" class="bgcolor_004"><font class="fontstyle_003">&nbsp;&nbsp;<?= _( "DATE" ) ?></font>
         </td>
         <td align="left" class="bgcolor_005">
         <table width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -476,9 +466,7 @@ $smarty->display ( 'main.tpl' );
                         ?> checked
                     <?php
                     }
-                    ?>> <?php
-                    echo gettext ( "From" );
-                    ?> :
+                    ?>> <?= _( "From" ) ?> :
                 <select name="fromstatsday_sday" class="form_input_select">
                     <?php
                     for ($i = 1; $i <= 31; $i ++) {
@@ -495,7 +483,7 @@ $smarty->display ( 'main.tpl' );
                     class="form_input_select">
                 <?php
                 $year_actual = date ( "Y" );
-                $monthname = [gettext ( "January" ), gettext ( "February" ), gettext ( "March" ), gettext ( "April" ), gettext ( "May" ), gettext ( "June" ), gettext ( "July" ), gettext ( "August" ), gettext ( "September" ), gettext ( "October" ), gettext ( "November" ), gettext ( "December" )];
+                $monthname = [_( "January" ), _( "February" ), _( "March" ), _( "April" ), _( "May" ), _( "June" ), _( "July" ), _( "August" ), _( "September" ), _( "October" ), _( "November" ), _( "December" )];
 
                 for ($i = $year_actual; $i >= $year_actual - 1; $i --) {
                     if ($year_actual == $i) {
@@ -522,8 +510,7 @@ $smarty->display ( 'main.tpl' );
                         ?> checked <?php
                     }
                     ?>>
-                <?php
-                echo gettext ( "Time :" )?>
+                <?= _( "Time :" ) ?>
                 <select name="fromstatsday_hour" class="form_input_select">
                 <?php
                 for ($i = 0; $i <= 23; $i ++) {
@@ -554,9 +541,7 @@ $smarty->display ( 'main.tpl' );
                         ?> checked <?php
                     }
                     ?>>
-                <?php
-                echo gettext ( "To" );
-                ?>  :
+                <?= _( "To" ) ?>  :
                 <select name="tostatsday_sday" class="form_input_select">
                 <?php
                 for ($i = 1; $i <= 31; $i ++) {
@@ -596,8 +581,7 @@ $smarty->display ( 'main.tpl' );
                         ?> checked <?php
                     }
                     ?>>
-                <?php
-                echo gettext ( "Time :" )?>
+                <?= _( "Time :" ) ?>
                 <select name="tostatsday_hour" class="form_input_select">
                 <?php
                 for ($i = 0; $i <= 23; $i ++) {
@@ -626,157 +610,122 @@ $smarty->display ( 'main.tpl' );
         </td>
     </tr>
     <tr>
-        <td class="bgcolor_002" align="left"><font class="fontstyle_003">&nbsp;&nbsp;<?php
-        echo gettext ( "PHONENUMBER" );
-        ?></font>
+        <td class="bgcolor_002" align="left"><font class="fontstyle_003">&nbsp;&nbsp;<?= _( "PHONENUMBER" ) ?></font>
         </td>
         <td class="bgcolor_003" align="left">
         <table width="100%" border="0" cellspacing="0" cellpadding="0">
             <tr>
                 <td>&nbsp;&nbsp;<INPUT TYPE="text" NAME="dst"
-                    value="<?php
-                    echo $dst?>" class="form_input_text"></td>
+                    value="<?= $dst ?>" class="form_input_text"></td>
                 <td class="fontstyle_searchoptions" align="center"><input
                     type="radio" NAME="dsttype" value="1"
                     <?php
                     if ((! isset ( $dsttype )) || ($dsttype == 1)) {
                         ?> checked <?php
                     }
-                    ?>><?php
-                    echo gettext ( "Exact" );
-                    ?></td>
+                    ?>><?= _( "Exact" ) ?></td>
                 <td class="fontstyle_searchoptions" align="center"><input
                     type="radio" NAME="dsttype" value="2" <?php
                     if ($dsttype == 2) {
                         ?>
                     checked <?php
                     }
-                    ?>><?php
-                    echo gettext ( "Begins with" );
-                    ?></td>
+                    ?>><?= _( "Begins with" ) ?></td>
                 <td class="fontstyle_searchoptions" align="center"><input
                     type="radio" NAME="dsttype" value="3" <?php
                     if ($dsttype == 3) {
                         ?>
                     checked <?php
                     }
-                    ?>><?php
-                    echo gettext ( "Contains" );
-                    ?></td>
+                    ?>><?= _( "Contains" ) ?></td>
                 <td class="fontstyle_searchoptions" align="center"><input
                     type="radio" NAME="dsttype" value="4" <?php
                     if ($dsttype == 4) {
                         ?>
                     checked <?php
                     }
-                    ?>><?php
-                    echo gettext ( "Ends with" );
-                    ?></td>
+                    ?>><?= _( "Ends with" ) ?></td>
             </tr>
         </table>
         </td>
     </tr>
     <tr>
-        <td align="left" class="bgcolor_004"><font class="fontstyle_003">&nbsp;&nbsp;<?php
-        echo gettext ( "CALLERID" );
-        ?></font>
+        <td align="left" class="bgcolor_004"><font class="fontstyle_003">&nbsp;&nbsp;<?= _( "CALLERID" ) ?></font>
         </td>
         <td class="bgcolor_005" align="left">
         <table width="100%" border="0" cellspacing="0" cellpadding="0">
             <tr>
                 <td>&nbsp;&nbsp;<INPUT TYPE="text" NAME="src"
-                    value="<?php
-                    echo "$src";
-                    ?>" class="form_input_text"></td>
+                    value="<?= "$src" ?>" class="form_input_text"></td>
                 <td class="fontstyle_searchoptions" align="center"><input
                     type="radio" NAME="srctype" value="1"
                     <?php
                     if ((! isset ( $srctype )) || ($srctype == 1)) {
                         ?> checked <?php
                     }
-                    ?>><?php
-                    echo gettext ( "Exact" );
-                    ?></td>
+                    ?>><?= _( "Exact" ) ?></td>
                 <td class="fontstyle_searchoptions" align="center"><input
                     type="radio" NAME="srctype" value="2" <?php
                     if ($srctype == 2) {
                         ?>
                     checked <?php
                     }
-                    ?>><?php
-                    echo gettext ( "Begins with" );
-                    ?></td>
+                    ?>><?= _( "Begins with" ) ?></td>
                 <td class="fontstyle_searchoptions" align="center"><input
                     type="radio" NAME="srctype" value="3" <?php
                     if ($srctype == 3) {
                         ?>
                     checked <?php
                     }
-                    ?>><?php
-                    echo gettext ( "Contains" );
-                    ?></td>
+                    ?>><?= _( "Contains" ) ?></td>
                 <td class="fontstyle_searchoptions" align="center"><input
                     type="radio" NAME="srctype" value="4" <?php
                     if ($srctype == 4) {
                         ?>
                     checked <?php
                     }
-                    ?>><?php
-                    echo gettext ( "Ends with" );
-                    ?></td>
+                    ?>><?= _( "Ends with" ) ?></td>
             </tr>
         </table>
         </td>
     </tr>
 
     <tr>
-        <td align="left" class="bgcolor_004"><font class="fontstyle_003">&nbsp;&nbsp;<?php
-        echo gettext ( "DNID" );
-        ?></font>
+        <td align="left" class="bgcolor_004"><font class="fontstyle_003">&nbsp;&nbsp;<?= _( "DNID" ) ?></font>
         </td>
         <td class="bgcolor_005" align="left">
         <table width="100%" border="0" cellspacing="0" cellpadding="0">
             <tr>
                 <td>&nbsp;&nbsp;<INPUT TYPE="text" NAME="dnid"
-                    value="<?php
-                    echo "$dnid";
-                    ?>" class="form_input_text"></td>
+                    value="<?= "$dnid" ?>" class="form_input_text"></td>
                 <td class="fontstyle_searchoptions" align="center"><input
                     type="radio" NAME="dnidtype" value="1"
                     <?php
                     if ((! isset ( $dnidtype )) || ($dnidtype == 1)) {
                         ?> checked <?php
                     }
-                    ?>><?php
-                    echo gettext ( "Exact" );
-                    ?></td>
+                    ?>><?= _( "Exact" ) ?></td>
                 <td class="fontstyle_searchoptions" align="center"><input
                     type="radio" NAME="dnidtype" value="2" <?php
                     if ($dnidtype == 2) {
                         ?>
                     checked <?php
                     }
-                    ?>><?php
-                    echo gettext ( "Begins with" );
-                    ?></td>
+                    ?>><?= _( "Begins with" ) ?></td>
                 <td class="fontstyle_searchoptions" align="center"><input
                     type="radio" NAME="dnidtype" value="3" <?php
                     if ($dnidtype == 3) {
                         ?>
                     checked <?php
                     }
-                    ?>><?php
-                    echo gettext ( "Contains" );
-                    ?></td>
+                    ?>><?= _( "Contains" ) ?></td>
                 <td class="fontstyle_searchoptions" align="center"><input
                     type="radio" NAME="dnidtype" value="4" <?php
                     if ($dnidtype == 4) {
                         ?>
                     checked <?php
                     }
-                    ?>><?php
-                    echo gettext ( "Ends with" );
-                    ?></td>
+                    ?>><?= _( "Ends with" ) ?></td>
             </tr>
         </table>
         </td>
@@ -784,9 +733,7 @@ $smarty->display ( 'main.tpl' );
 
     <!-- Select Calltype: -->
     <tr>
-        <td class="bgcolor_002" align="left"><font class="fontstyle_003">&nbsp;&nbsp;<?php
-        echo gettext ( "CALL TYPE" );
-        ?></font></td>
+        <td class="bgcolor_002" align="left"><font class="fontstyle_003">&nbsp;&nbsp;<?= _( "CALL TYPE" ) ?></font></td>
         <td class="bgcolor_003" align="center">
         <table width="100%" border="0" cellspacing="0" cellpadding="0">
             <tr>
@@ -798,20 +745,17 @@ $smarty->display ( 'main.tpl' );
                             ?>
                         selected <?php
                         }
-                        ?>><?php
-                        echo gettext ( 'ALL CALLS' )?>
+                        ?>><?= _( 'ALL CALLS' ) ?>
                                 </option>
                             <?php
                             foreach ($list_calltype as $key => $cur_value) {
                                 ?>
-                                <option value='<?php
-                                echo $cur_value [1]?>'
+                                <option value='<?= $cur_value [1] ?>'
                         <?php
                                 if ($choose_calltype == $cur_value [1]) {
                                     ?> selected <?php
                                 }
-                                ?>><?php
-                                echo gettext ( $cur_value [0] )?>
+                                ?>><?= _( $cur_value [0] ) ?>
                                 </option>
                             <?php
                             }
@@ -824,18 +768,14 @@ $smarty->display ( 'main.tpl' );
 
     <!-- Select Option : to show just the Answered Calls or all calls, Result type, currencies... -->
     <tr>
-        <td class="bgcolor_002" align="left"><font class="fontstyle_003">&nbsp;&nbsp;<?php
-        echo gettext ( "OPTIONS" );
-        ?></font></td>
+        <td class="bgcolor_002" align="left"><font class="fontstyle_003">&nbsp;&nbsp;<?= _( "OPTIONS" ) ?></font></td>
         <td class="bgcolor_003" align="center">
         <div align="left">
 
         <table width="100%" border="0" cellspacing="0" cellpadding="0">
             <tr>
                 <td width="20%" class="fontstyle_searchoptions">
-                    <?php
-                    echo gettext ( "SHOW CALLS" );
-                    ?> :
+                    <?= _( "SHOW CALLS" ) ?> :
                </td>
                 <td width="80%" class="fontstyle_searchoptions"><select
                     NAME="terminatecauseid" size="1" class="form_input_select">
@@ -845,8 +785,7 @@ $smarty->display ( 'main.tpl' );
                             ?>
                         selected <?php
                         }
-                        ?>><?php
-                        echo gettext ( 'ANSWERED' )?>
+                        ?>><?= _( 'ANSWERED' ) ?>
                             </option>
 
                     <option value='ALL' <?php
@@ -854,8 +793,7 @@ $smarty->display ( 'main.tpl' );
                         ?> selected
                         <?php
                     }
-                    ?>><?php
-                        echo gettext ( 'ALL' )?>
+                    ?>><?= _( 'ALL' ) ?>
                             </option>
 
                     <option value='INCOMPLET'
@@ -863,8 +801,7 @@ $smarty->display ( 'main.tpl' );
                         if ($terminatecauseid == "INCOMPLET") {
                             ?> selected <?php
                         }
-                        ?>><?php
-                        echo gettext ( 'NOT COMPLETED' )?>
+                        ?>><?= _( 'NOT COMPLETED' ) ?>
                             </option>
 
                     <option value='CONGESTION'
@@ -872,8 +809,7 @@ $smarty->display ( 'main.tpl' );
                         if ($terminatecauseid == "CONGESTION") {
                             ?> selected <?php
                         }
-                        ?>><?php
-                        echo gettext ( 'CONGESTIONED' )?>
+                        ?>><?= _( 'CONGESTIONED' ) ?>
                             </option>
 
                     <option value='BUSY' <?php
@@ -881,8 +817,7 @@ $smarty->display ( 'main.tpl' );
                         ?>
                         selected <?php
                     }
-                    ?>><?php
-                        echo gettext ( 'BUSIED' )?>
+                    ?>><?= _( 'BUSIED' ) ?>
                             </option>
 
                     <option value='NOANSWER'
@@ -890,8 +825,7 @@ $smarty->display ( 'main.tpl' );
                         if ($terminatecauseid == "NOANSWER") {
                             ?> selected <?php
                         }
-                        ?>><?php
-                        echo gettext ( 'NOT ANSWERED' )?>
+                        ?>><?= _( 'NOT ANSWERED' ) ?>
                             </option>
 
                     <option value='CHANUNAVAIL'
@@ -899,8 +833,7 @@ $smarty->display ( 'main.tpl' );
                         if ($terminatecauseid == "CHANUNAVAIL") {
                             ?> selected <?php
                         }
-                        ?>><?php
-                        echo gettext ( 'CHANNEL UNAVAILABLE' )?>
+                        ?>><?= _( 'CHANNEL UNAVAILABLE' ) ?>
                             </option>
 
                     <option value='CANCEL' <?php
@@ -908,30 +841,24 @@ $smarty->display ( 'main.tpl' );
                         ?>
                         selected <?php
                     }
-                    ?>><?php
-                        echo gettext ( 'CANCELED' )?>
+                    ?>><?= _( 'CANCELED' ) ?>
                             </option>
 
                 </select></td>
             </tr>
             <tr class="bgcolor_005">
                 <td class="fontstyle_searchoptions">
-                    <?php
-                    echo gettext ( "RESULT" );
-                    ?> :
+                    <?= _( "RESULT" ) ?> :
                </td>
                 <td class="fontstyle_searchoptions">
-                    <?php
-                    echo gettext ( "mins" );
-                    ?><input type="radio" NAME="resulttype"
+                    <?= _( "mins" ) ?><input type="radio" NAME="resulttype"
                     value="min"
                     <?php
                     if ((! isset ( $resulttype )) || ($resulttype == "min")) {
                         ?> checked
                     <?php
                     }
-                    ?>> - <?php
-                    echo gettext ( "secs" )?> <input type="radio"
+                    ?>> - <?= _( "secs" ) ?> <input type="radio"
                     NAME="resulttype" value="sec" <?php
                     if ($resulttype == "sec") {
                         ?>
@@ -941,9 +868,7 @@ $smarty->display ( 'main.tpl' );
             </tr>
             <tr>
                 <td class="fontstyle_searchoptions">
-                    <?php
-                    echo gettext ( "CURRENCY" );
-                    ?> :
+                    <?= _( "CURRENCY" ) ?> :
                 </td>
                 <td class="fontstyle_searchoptions"><select NAME="choose_currency"
                     size="1" class="form_input_select">
@@ -951,15 +876,13 @@ $smarty->display ( 'main.tpl' );
                         $currencies_list = get_currencies ();
                         foreach ($currencies_list as $key => $cur_value) {
                             ?>
-                            <option value='<?php
-                            echo $key?>'
+                            <option value='<?= $key ?>'
                         <?php
                             if (($choose_currency == $key) || (! isset ( $choose_currency ) && $key == strtoupper ( BASE_CURRENCY ))) {
                                 ?>
                         selected <?php
                             }
-                            ?>><?php
-                            echo $cur_value [1] . ' (' . $cur_value [2] . ')'?>
+                            ?>><?= $cur_value [1] . ' (' . $cur_value [2] . ')' ?>
                             </option>
                         <?php
                         }
@@ -976,9 +899,7 @@ $smarty->display ( 'main.tpl' );
         <td class="bgcolor_004" align="left"></td>
         <td class="bgcolor_005" align="center"><input type="image"
             name="image16" align="top" border="0"
-            src="<?php
-            echo Images_Path;
-            ?>/button-search.gif" /></td>
+            src="<?= Images_Path ?>/button-search.gif" /></td>
     </tr>
 </table>
 </FORM>
@@ -986,9 +907,7 @@ $smarty->display ( 'main.tpl' );
 
 <!-- ** ** ** ** ** Part to display the CDR ** ** ** ** ** -->
 
-<center><?php
-echo gettext ( "Number of call" );
-?> : <?php
+<center><?= _( "Number of call" ) ?> : <?php
 if (is_array ( $list ) && count ( $list ) > 0) {
     echo $nb_record;
 } else {
@@ -996,12 +915,12 @@ if (is_array ( $list ) && count ( $list ) > 0) {
 }
 ?></center>
 
-<table width="<?php echo $FG_HTML_TABLE_WIDTH?>" border="0" align="center" cellpadding="0" cellspacing="0">
+<table width="<?= $FG_HTML_TABLE_WIDTH ?>" border="0" align="center" cellpadding="0" cellspacing="0">
     <TR bgcolor="#ffffff">
         <TD class="bgcolor_021" height=16 style="PADDING-LEFT: 5px; PADDING-RIGHT: 3px">
         <TABLE border=0 cellPadding=0 cellSpacing=0 width="100%">
             <TR>
-                <TD><SPAN class="fontstyle_003"><?php echo $FG_HTML_TABLE_TITLE?></SPAN></TD>
+                <TD><SPAN class="fontstyle_003"><?= $FG_HTML_TABLE_TITLE ?></SPAN></TD>
             </TR>
         </TABLE>
         </TD>
@@ -1010,18 +929,18 @@ if (is_array ( $list ) && count ( $list ) > 0) {
         <TD>
         <TABLE border=0 cellPadding=0 cellSpacing=0 width="100%">
             <TR class="bgcolor_008">
-                <TD width="<?php echo $FG_ACTION_SIZE_COLUMN?>" align=center class="tableBodyRight" style="PADDING-BOTTOM: 2px; PADDING-LEFT: 2px; PADDING-RIGHT: 2px; PADDING-TOP: 2px"></TD>
+                <TD width="<?= $FG_ACTION_SIZE_COLUMN ?>" align=center class="tableBodyRight" style="PADDING-BOTTOM: 2px; PADDING-LEFT: 2px; PADDING-RIGHT: 2px; PADDING-TOP: 2px"></TD>
 
                   <?php
                         if (is_array ( $list ) && count ( $list ) > 0) {
 
                             for ($i = 0; $i < $FG_NB_TABLE_COL; $i ++) {
                                 ?>
-                    <TD width="<?php echo $FG_TABLE_COL [$i] [2]?>" align=middle class="tableBody" style="PADDING-BOTTOM: 2px; PADDING-LEFT: 2px; PADDING-RIGHT: 2px; PADDING-TOP: 2px">
+                    <TD width="<?= $FG_TABLE_COL [$i] [2] ?>" align=middle class="tableBody" style="PADDING-BOTTOM: 2px; PADDING-LEFT: 2px; PADDING-RIGHT: 2px; PADDING-TOP: 2px">
                         <center><strong>
                         <?php if (strtoupper ( $FG_TABLE_COL [$i] [4] ) == "SORT") { ?>
                         <a href="<?php
-                                echo $PHP_SELF . "?entercustomer_num=$entercustomer_num&s=1&t=0&stitle=$stitle&atmenu=$atmenu&current_page=$current_page&order=" . $FG_TABLE_COL [$i] [1] . "&sens=";
+                                echo "?entercustomer_num=$entercustomer_num&s=1&t=0&stitle=$stitle&atmenu=$atmenu&current_page=$current_page&order=" . $FG_TABLE_COL [$i] [1] . "&sens=";
                                 if ($sens == "ASC") {
                                     echo "DESC";
                                 } else {
@@ -1032,22 +951,20 @@ if (is_array ( $list ) && count ( $list ) > 0) {
 <span class="liens"><?php
                                 }
                                 ?>
-<?php echo $FG_TABLE_COL [$i] [0]?>
+<?= $FG_TABLE_COL [$i] [0] ?>
 <?php if ($order == $FG_TABLE_COL [$i] [1] && $sens == "ASC") { ?>
-&nbsp;<img src="<?php echo Images_Path; ?>/icon_up_12x12.GIF" width="12"
+&nbsp;<img src="<?= Images_Path ?>/icon_up_12x12.GIF" width="12"
 height="12" border="0">
 <?php
  } elseif ($order == $FG_TABLE_COL [$i] [1] && $sens == "DESC") {
 ?>
-&nbsp;<img src="<?php echo Images_Path; ?>/icon_down_12x12.GIF" width="12" height="12" border="0">
+&nbsp;<img src="<?= Images_Path ?>/icon_down_12x12.GIF" width="12" height="12" border="0">
 <?php } ?>
 <?php if (strtoupper ( $FG_TABLE_COL [$i] [4] ) == "SORT") { ?>
 </span></a>
 <?php } ?>
 </strong></center>
 </TD>
-   <?php } ?>
-   <?php if ($FG_DELETION || $FG_EDITION) { ?>
    <?php } ?>
 </TR>
 <?php
@@ -1058,8 +975,8 @@ foreach ($list as $recordset) {
     $ligne_number ++;
     ?>
 
-<TR bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR [$ligne_number % 2]?>" onMouseOver="bgColor='#C4FFD7'" onMouseOut="bgColor='<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR [$ligne_number % 2]?>'">
-<TD vAlign=top align="<?php echo $FG_TABLE_COL [$i] [3]?>" class=tableBody><?php echo $ligne_number + $current_page * $FG_LIMITE_DISPLAY . ".&nbsp;"; ?></TD>
+<TR>
+<TD vAlign=top align="<?= $FG_TABLE_COL [$i] [3] ?>" class=tableBody><?= $ligne_number + $current_page * $FG_LIMITE_DISPLAY . ".&nbsp;" ?></TD>
 
 <?php for ($i = 0; $i < $FG_NB_TABLE_COL; $i ++) { ?>
 
@@ -1108,7 +1025,7 @@ foreach ($list as $recordset) {
                 }
 
                 ?>
-        <TD vAlign=top align="<?php echo $FG_TABLE_COL [$i] [3]?>" class=tableBody><?php
+        <TD vAlign=top align="<?= $FG_TABLE_COL [$i] [3] ?>" class=tableBody><?php
             if (isset ( $FG_TABLE_COL [$i] [11] ) && strlen ( $FG_TABLE_COL [$i] [11] ) > 1) {
                 call_user_func ( $FG_TABLE_COL [$i] [11], $record_display );
             } elseif (strlen($record_display)>0) {
@@ -1127,8 +1044,7 @@ foreach ($list as $recordset) {
         while ($ligne_number < $ligne_number_end) {
             $ligne_number ++;
             ?>
-        <TR
-        bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR [$ligne_number % 2]?>">
+        <TR>
         <?php for ($i = 0; $i < $FG_NB_TABLE_COL; $i ++) { ?>
          <TD vAlign=top class=tableBody>&nbsp;</TD>
          <?php } ?>
@@ -1138,7 +1054,7 @@ foreach ($list as $recordset) {
         <?php } //END_WHILE
 
                 } else {
-                    echo gettext ( "No data found !!!" );
+                    echo _( "No data found !!!" );
                 } //end_if
         ?>
         </TABLE>
@@ -1150,7 +1066,7 @@ foreach ($list as $recordset) {
 $params = compact( "current_page", "order", "sens", "letter", "entercustomer_num", "posted", "Period", "frommonth", "fromstatsmonth", "tomonth", "tostatsmonth", "fromday", "fromstatsday_sday", "fromstatsmonth_sday", "today", "tostatsday_sday", "tostatsmonth_sday", "dsttype", "srctype", "clidtype", "channel", "resulttype", "dst", "src", "clid", "terminatecauseid", "choose_calltype", "entercustomer", "enterprovider", "entertrunk");
 $params = array_filter($params, fn ($v) => $v !== "");
 $params["current_page"] = "%s";
-echo \A2billing\Forms\FormHandler::printPages($current_page + 1, $nb_record_max, "?s=1&amp;t=0&amp;" . http_build_query($params, "", "&amp;"));
+echo FormHandler::printPages($current_page + 1, $nb_record_max, "?s=1&amp;t=0&amp;" . http_build_query($params, "", "&amp;"));
 ?>
 <!-- ** ** ** ** ** Part to display the GRAPHIC ** ** ** ** ** -->
 <br>
@@ -1187,23 +1103,23 @@ if (is_array ( $list_total_day ) && count ( $list_total_day ) > 0) {
                     <tr>
                         <td align="center" class="bgcolor_019"></td>
                         <td class="bgcolor_020" align="center" colspan="10"><font
-                            class="fontstyle_003"><?php echo gettext ( "TRAFFIC SUMMARY" ); ?></font></td>
+                            class="fontstyle_003"><?= _( "TRAFFIC SUMMARY" ) ?></font></td>
                     </tr>
                     <tr class="bgcolor_019">
-                        <td align="center" class="bgcolor_020"><font class="fontstyle_003"><?php echo gettext ( "DATE" ); ?></font></td>
+                        <td align="center" class="bgcolor_020"><font class="fontstyle_003"><?= _( "DATE" ) ?></font></td>
                         <td align="center"><font class="fontstyle_003"><acronym
-                            title="<?php echo gettext ( "DURATION" ); ?>"><?php	echo gettext ( "DUR" );	?></acronym></font></td>
-                        <td align="center"><font class="fontstyle_003"><?php echo gettext ( "GRAPHIC" ); ?></font></td>
-                        <td align="center"><font class="fontstyle_003"><?php echo gettext ( "CALLS" ); ?></font></td>
+                            title="<?= _( "DURATION" ) ?>"><?= _( "DUR" ) ?></acronym></font></td>
+                        <td align="center"><font class="fontstyle_003"><?= _( "GRAPHIC" ) ?></font></td>
+                        <td align="center"><font class="fontstyle_003"><?= _( "CALLS" ) ?></font></td>
                         <td align="center"><font class="fontstyle_003"><acronym
-                            title="<?php echo gettext ( "AVERAGE LENGTH OF CALL" );	?>"><?php echo gettext ( "ALOC" );	?></acronym></font></td>
+                            title="<?= _( "AVERAGE LENGTH OF CALL" ) ?>"><?= _( "ALOC" ) ?></acronym></font></td>
                         <td align="center"><font class="fontstyle_003"><acronym
-                            title="<?php echo gettext ( "ANSWER SEIZE RATIO" );	?>"><?php echo gettext ( "ASR" ); ?></acronym></font></td>
-                        <td align="center"><font class="fontstyle_003"><?php echo gettext ( "SELL" );	?></font></td>
-                        <td align="center"><font class="fontstyle_003"><?php echo gettext ( "BUY" );	?></font></td>
-                        <td align="center"><font class="fontstyle_003"><?php echo gettext ( "PROFIT" );	?></font></td>
-                        <td align="center"><font class="fontstyle_003"><?php echo gettext ( "MARGIN" );	?></font></td>
-                        <td align="center"><font class="fontstyle_003"><?php echo gettext ( "MARKUP" );	?></font></td>
+                            title="<?= _( "ANSWER SEIZE RATIO" ) ?>"><?= _( "ASR" ) ?></acronym></font></td>
+                        <td align="center"><font class="fontstyle_003"><?= _( "SELL" ) ?></font></td>
+                        <td align="center"><font class="fontstyle_003"><?= _( "BUY" ) ?></font></td>
+                        <td align="center"><font class="fontstyle_003"><?= _( "PROFIT" ) ?></font></td>
+                        <td align="center"><font class="fontstyle_003"><?= _( "MARGIN" ) ?></font></td>
+                        <td align="center"><font class="fontstyle_003"><?= _( "MARKUP" ) ?></font></td>
 
                         <!-- LOOP -->
     <?php
@@ -1232,47 +1148,40 @@ if (is_array ( $list_total_day ) && count ( $list_total_day ) > 0) {
         </tr>
                     <tr>
                         <td align="right" class="sidenav" nowrap="nowrap"><font
-                            class="fontstyle_003"><?php
-        echo $data [0]?></font></td>
-                        <td bgcolor="<?php
-        echo $FG_TABLE_ALTERNATE_ROW_COLOR [$i]?>"
-                            align="right" nowrap="nowrap"><font class="fontstyle_006"><?php
-        echo $minutes?> </font></td>
-                        <td bgcolor="<?php
-        echo $FG_TABLE_ALTERNATE_ROW_COLOR [$i]?>"
-                            align="left" nowrap="nowrap" width="<?php
-        echo $widthbar + 40?>">
+                            class="fontstyle_003"><?= $data [0] ?></font></td>
+                        <td
+                            align="right" nowrap="nowrap"><font class="fontstyle_006"><?= $minutes ?> </font></td>
+                        <td
+                            align="left" nowrap="nowrap" width="<?= $widthbar + 40 ?>">
                         <table cellspacing="0" cellpadding="0">
                             <tbody>
                                 <tr>
                                     <td bgcolor="#e22424"><img
-                                        src="<?php
-        echo Images_Path;
-        ?>/spacer.gif"
-                                        width="<?php echo $widthbar?>" height="6"></td>
+                                        src="<?= Images_Path ?>/spacer.gif"
+                                        width="<?= $widthbar ?>" height="6"></td>
                                 </tr>
                             </tbody>
                         </table>
                         </td>
-                        <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR [$i]?>"
-                            align="right" nowrap="nowrap"><font class="fontstyle_006"><?php echo $data [3]?></font></td>
-                        <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR [$i]?>"
-                            align="right" nowrap="nowrap"><font class="fontstyle_006"><?php echo $tmc?> </font></td>
-                        <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR [$i]?>"
-                            align="right" nowrap="nowrap"><font class="fontstyle_006"><?php echo get_2dec_percentage ( $data [5] * 100/ ($data [3]) )?> </font></td>
+                        <td
+                            align="right" nowrap="nowrap"><font class="fontstyle_006"><?= $data [3] ?></font></td>
+                        <td
+                            align="right" nowrap="nowrap"><font class="fontstyle_006"><?= $tmc ?> </font></td>
+                        <td
+                            align="right" nowrap="nowrap"><font class="fontstyle_006"><?= get_2dec_percentage ( $data [5] * 100/ ($data [3]) ) ?> </font></td>
                         <!-- SELL -->
-                        <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR [$i]?>"
-                            align="right" nowrap="nowrap"><font class="fontstyle_006"><?php echo get_2bill ( $data [2] )?>
+                        <td
+                            align="right" nowrap="nowrap"><font class="fontstyle_006"><?= get_2bill ( $data [2] ) ?>
                         </font></td>
                         <!-- BUY -->
-                        <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR [$i]?>"
-                            align="right" nowrap="nowrap"><font class="fontstyle_006"><?php echo get_2bill ( $data [4] )?>
+                        <td
+                            align="right" nowrap="nowrap"><font class="fontstyle_006"><?= get_2bill ( $data [4] ) ?>
                         </font></td>
                         <!-- PROFIT -->
-                        <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR [$i]?>"
-                            align="right" nowrap="nowrap"><font class="fontstyle_006"><?php echo get_2bill ( $data [2] - $data [4] )?>
+                        <td
+                            align="right" nowrap="nowrap"><font class="fontstyle_006"><?= get_2bill ( $data [2] - $data [4] ) ?>
                         </font></td>
-                        <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR [$i]?>"
+                        <td
                             align="right" nowrap="nowrap"><font class="fontstyle_006"><?php
                             if ($data [2] != 0) {
                                 echo get_2dec_percentage ( (($data [2] - $data [4]) / $data [2]) * 100 );
@@ -1281,7 +1190,7 @@ if (is_array ( $list_total_day ) && count ( $list_total_day ) > 0) {
                             }
                             ?>
                         </font></td>
-                        <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR [$i]?>"
+                        <td
                             align="right" nowrap="nowrap"><font class="fontstyle_006"><?php
                             if ($data [4] != 0) {
                                 echo get_2dec_percentage ( (($data [2] - $data [4]) / $data [4]) * 100 );
@@ -1309,17 +1218,15 @@ if (is_array ( $list_total_day ) && count ( $list_total_day ) > 0) {
 
                     <!-- TOTAL -->
                     <tr bgcolor="bgcolor_019">
-                        <td align="right" nowrap="nowrap"><font class="fontstyle_003"><?php
-                        echo gettext ( "TOTAL" );
-                        ?></font></td>
+                        <td align="right" nowrap="nowrap"><font class="fontstyle_003"><?= _( "TOTAL" ) ?></font></td>
                         <td align="center" nowrap="nowrap" colspan="2"><font
-                            class="fontstyle_003"><?php echo $totalminutes?> </font></td>
-                        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php echo $totalcall?></font></td>
-                        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php echo $total_tmc?></font></td>
-                        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php echo get_2dec_percentage ( $totalsuccess*100 / $totalcall )?> </font></td>
-                        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php echo get_2bill ( $totalcost )?></font></td>
-                        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php echo get_2bill ( $totalbuycost )?></font></td>
-                        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php echo get_2bill ( $totalcost - $totalbuycost )?></font></td>
+                            class="fontstyle_003"><?= $totalminutes ?> </font></td>
+                        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?= $totalcall ?></font></td>
+                        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?= $total_tmc ?></font></td>
+                        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?= get_2dec_percentage ( $totalsuccess*100 / $totalcall ) ?> </font></td>
+                        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?= get_2bill ( $totalcost ) ?></font></td>
+                        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?= get_2bill ( $totalbuycost ) ?></font></td>
+                        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?= get_2bill ( $totalcost - $totalbuycost ) ?></font></td>
                         <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php
                             if ($totalcost != 0) {
                                 echo get_2dec_percentage ( (($totalcost - $totalbuycost) / $totalcost) * 100 );
@@ -1346,13 +1253,13 @@ if (is_array ( $list_total_day ) && count ( $list_total_day ) > 0) {
 
 <br>
 <!-- SECTION EXPORT //--> &nbsp; &nbsp;
-<a href="export_csv.php?var_export=<?php echo $FG_EXPORT_SESSION_VAR?>&var_export_type=type_csv" target="_blank"><img src="<?php echo Images_Path; ?>/excel.gif" border="0" height="30" /><?php echo gettext ( "Export CSV" ); ?></a>
+<a href="export_csv.php?var_export=<?= $FG_EXPORT_SESSION_VAR ?>&var_export_type=type_csv" target="_blank"><img src="<?= Images_Path ?>/excel.gif" border="0" height="30" /><?= _( "Export CSV" ) ?></a>
 - &nbsp; &nbsp;
-<a href="export_csv.php?var_export=<?php echo $FG_EXPORT_SESSION_VAR?>&var_export_type=type_xml" target="_blank"><img src="<?php echo Images_Path; ?>/icons_xml.gif" border="0" height="32" /><?php echo gettext ( "Export XML" ); ?></a>
+<a href="export_csv.php?var_export=<?= $FG_EXPORT_SESSION_VAR ?>&var_export_type=type_xml" target="_blank"><img src="<?= Images_Path ?>/icons_xml.gif" border="0" height="32" /><?= _( "Export XML" ) ?></a>
 
 <?php } else { ?>
 <center>
-<h3><?php echo gettext ( "No calls in your selection");?>.</h3>
+<h3><?= _( "No calls in your selection") ?>.</h3>
 <?php  } ?>
 </center>
 <script>
