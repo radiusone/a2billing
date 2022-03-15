@@ -36,45 +36,104 @@ use A2billing\Table;
 require_once "../../common/lib/admin.defines.php";
 
 if (! has_rights ( ACX_CALL_REPORT )) {
-    Header ( "HTTP/1.0 401 Unauthorized" );
-    Header ( "Location: PP_error.php?c=accessdenied" );
+    header ( "HTTP/1.0 401 Unauthorized" );
+    header ( "Location: PP_error.php?c=accessdenied" );
     die ();
 }
 
-getpost_ifset ( array ('customer', 'sellrate', 'buyrate', 'entercustomer','entercustomer_num', 'enterprovider', 'entertariffgroup', 'entertrunk', 'enterratecard', 'posted', 'Period', 'frommonth', 'fromstatsmonth', 'tomonth', 'tostatsmonth', 'fromday', 'fromstatsday_sday', 'fromstatsmonth_sday', 'today', 'tostatsday_sday', 'tostatsmonth_sday', 'fromtime', 'totime', 'fromstatsday_hour', 'tostatsday_hour', 'fromstatsday_min', 'tostatsday_min', 'dsttype', 'srctype', 'dnidtype', 'clidtype', 'channel', 'resulttype', 'stitle', 'atmenu', 'current_page', 'order', 'sens', 'dst', 'src', 'dnid', 'clid', 'choose_currency', 'terminatecauseid', 'choose_calltype', 'download', 'file') );
+global $letter;
 
-if (($download == "file") && $file) {
+getpost_ifset ([
+    'customer', 'sellrate', 'buyrate', 'entercustomer','entercustomer_num', 'enterprovider', 'entertariffgroup',
+    'entertrunk', 'enterratecard', 'posted', 'Period', 'frommonth', 'fromstatsmonth', 'tomonth', 'tostatsmonth',
+    'fromday', 'fromstatsday_sday', 'fromstatsmonth_sday', 'today', 'tostatsday_sday', 'tostatsmonth_sday', 
+    'fromtime', 'totime', 'fromstatsday_hour', 'tostatsday_hour', 'fromstatsday_min', 'tostatsday_min', 'dsttype',
+    'srctype', 'dnidtype', 'clidtype', 'channel', 'resulttype', 'stitle', 'atmenu', 'current_page', 'order', 'sens',
+    'dst', 'src', 'dnid', 'clid', 'choose_currency', 'terminatecauseid', 'choose_calltype', 'download', 'file',
+]);
+/**
+ * @var string $customer
+ * @var string $sellrate
+ * @var string $buyrate
+ * @var string $entercustomer
+ * @var string $entercustomer_num
+ * @var string $enterprovider
+ * @var string $entertariffgroup
+ * @var string $entertrunk
+ * @var string $enterratecard
+ * @var string $posted
+ * @var string $Period
+ * @var string $frommonth
+ * @var string $fromstatsmonth
+ * @var string $tomonth
+ * @var string $tostatsmonth
+ * @var string $fromday
+ * @var string $fromstatsday_sday
+ * @var string $fromstatsmonth_sday
+ * @var string $today
+ * @var string $tostatsday_sday
+ * @var string $tostatsmonth_sday
+ * @var string $fromtime
+ * @var string $totime
+ * @var string $fromstatsday_hour
+ * @var string $tostatsday_hour
+ * @var string $fromstatsday_min
+ * @var string $tostatsday_min
+ * @var string $dsttype
+ * @var string $srctype
+ * @var string $dnidtype
+ * @var string $clidtype
+ * @var string $channel
+ * @var string $resulttype
+ * @var string $stitle
+ * @var string $atmenu
+ * @var string $current_page
+ * @var string $order
+ * @var string $sens
+ * @var string $dst
+ * @var string $src
+ * @var string $dnid
+ * @var string $clid
+ * @var string $choose_currency
+ * @var string $terminatecauseid
+ * @var string $choose_calltype
+ * @var string $download
+ * @var string $file
+ */
+$current_page = (int)($current_page ?? 0);
 
-    if (strpos($file, '/') !== false) exit;
+if ($download === "file" && $file) {
 
-    $value_de = base64_decode ( $file );
-    $pos = strpos($value_de, '../');
-    if ($pos === false) {
+    $value_de = base64_decode($file);
+    if (str_contains($file, '/') || $value_de === false) {
+        exit;
+    }
+
+    if (!str_contains($value_de, "..")) {
         $dl_full = MONITOR_PATH . "/" . $value_de;
-        $dl_name = $value_de;
 
-        if (!file_exists ($dl_full)) {
-            echo gettext ("ERROR: Cannot download file " . $dl_full . ", it does not exist.<br>");
+        if (!is_readable($dl_full)) {
+            echo _("ERROR: Cannot download file $dl_full, it does not exist.");
             exit ();
         }
 
-        header ( "Content-Type: application/octet-stream" );
-        header ( "Content-Disposition: attachment; filename=$dl_name" );
-        header ( "Content-Length: " . filesize ( $dl_full ) );
-        header ( "Accept-Ranges: bytes" );
-        header ( "Pragma: no-cache" );
-        header ( "Expires: 0" );
-        header ( "Cache-Control: must-revalidate, post-check=0, pre-check=0" );
-        header ( "Content-transfer-encoding: binary" );
+        header("Content-Type: application/octet-stream");
+        header("Content-Disposition: attachment; filename=$value_de");
+        header("Content-Length: " . filesize($dl_full));
+        header("Accept-Ranges: bytes");
+        header("Pragma: no-cache");
+        header("Expires: 0");
+        header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+        header("Content-transfer-encoding: binary");
 
-        @readfile ( $dl_full );
+        readfile($dl_full);
         exit ();
     }
 }
 
-$dialstatus_list = getDialStatusList ();
+$dialstatus_list = getDialStatusList();
 
-if (! isset ( $current_page ) || ($current_page == "")) {
+if (empty($current_page)) {
     $current_page = 0;
 }
 
@@ -83,81 +142,74 @@ $FG_DEBUG = 0;
 
 // The variable FG_TABLE_NAME define the table name to use
 $FG_TABLE_NAME = "cc_call t1 LEFT OUTER JOIN cc_trunk t3 ON t1.id_trunk = t3.id_trunk LEFT OUTER JOIN cc_ratecard t4 ON t1.id_ratecard = t4.id";
+// This Variable store the argument for the SQL query
+$FG_COL_QUERY = 't1.starttime, t1.src, t1.dnid, t1.calledstation, t1.destination AS dest, t4.buyrate, t4.rateinitial, t1.sessiontime, t1.card_id, t3.trunkcode, t1.terminatecauseid, t1.sipiax, t1.buycost, t1.sessionbill, case when t1.sessionbill!=0 then ((t1.sessionbill-t1.buycost)/t1.sessionbill)*100 else NULL end as margin,case when t1.buycost!=0 then ((t1.sessionbill-t1.buycost)/t1.buycost)*100 else NULL end as markup';
 
 // THIS VARIABLE DEFINE THE COLOR OF THE HEAD TABLE
 $FG_TABLE_ALTERNATE_ROW_COLOR [] = "#FFFFFF";
 $FG_TABLE_ALTERNATE_ROW_COLOR [] = "#F2F8FF";
 
-$yesno = array ();
-$yesno ["1"] = array ("Yes", "1" );
-$yesno ["0"] = array ("No", "0" );
+$yesno = getYesNoList();
 
 // 0 = NORMAL CALL ; 1 = VOIP CALL (SIP/IAX) ; 2= DIDCALL + TRUNK ; 3 = VOIP CALL DID ; 4 = CALLBACK call
-$list_calltype = array ();
-$list_calltype ["0"] = array (gettext("STANDARD"), "0" );
-$list_calltype ["1"] = array (gettext("SIP/IAX"), "1" );
-$list_calltype ["2"] = array (gettext("DIDCALL"), "2" );
-$list_calltype ["3"] = array (gettext("DID_VOIP"), "3" );
-$list_calltype ["4"] = array (gettext("CALLBACK"), "4" );
-$list_calltype ["5"] = array (gettext("PREDICT"), "5" );
-$list_calltype ["6"] = array (gettext("AUTO DIALER"), "6" );
-$list_calltype ["7"] = array (gettext("DID-ALEG"), "7" );
+$list_calltype = [
+    [gettext("STANDARD"), "0"],
+    [gettext("SIP/IAX"), "1"],
+    [gettext("DIDCALL"), "2"],
+    [gettext("DID_VOIP"), "3"],
+    [gettext("CALLBACK"), "4"],
+    [gettext("PREDICT"), "5"],
+    [gettext("AUTO DIALER"), "6"],
+    [gettext("DID-ALEG"), "7"],
+];
 
 $FG_TABLE_DEFAULT_ORDER = "t1.starttime";
 $FG_TABLE_DEFAULT_SENS = "DESC";
 
 $DBHandle = DbConnect ();
 
-$FG_TABLE_COL = array ();
-$FG_TABLE_COL [] = array (gettext ( "Date" ), "starttime", "10%", "center", "SORT", "19", "", "", "", "", "", "display_dateformat" );
-$FG_TABLE_COL [] = array (gettext ( "CallerID" ), "src", "7%", "center", "SORT", "30" );
-$FG_TABLE_COL [] = array (gettext ( "DNID" ), "dnid", "7%", "center", "SORT", "30" );
-$FG_TABLE_COL [] = array (gettext ( "Phone Number" ), "calledstation", "10%", "center", "SORT", "30", "", "", "", "", "", "" );
-$FG_TABLE_COL [] = array (gettext ( "Destination" ), "dest","10%", "center", "SORT", "15", "lie", "cc_prefix", "destination,prefix", "prefix='%id'", "%1" );
-$FG_TABLE_COL [] = array (gettext ( "Buy Rate" ), "buyrate", "6%", "center", "SORT", "30", "", "", "", "", "", "display_2bill" );
-$FG_TABLE_COL [] = array (gettext ( "Sell Rate" ), "rateinitial", "6%", "center", "SORT", "30", "", "", "", "", "", "display_2bill" );
-$FG_TABLE_COL [] = array (gettext ( "Duration" ), "sessiontime", "5%", "center", "SORT", "30", "", "", "", "", "", "display_minute" );
-$FG_TABLE_COL [] = array (gettext ( "Account" ), "card_id", "6%", "center", "sort", "", "lie_link", "cc_card", "username,id", "id='%id'", "%1", "", "A2B_entity_card.php" );
-$FG_TABLE_COL [] = array (gettext ( "Trunk" ), "trunkcode", "6%", "center", "SORT", "30" );
-$FG_TABLE_COL [] = array ('<acronym title="' . gettext ( "Terminate Cause" ) . '">' . gettext ( "TC" ) . '</acronym>', "terminatecauseid", "7%", "center", "SORT", "", "list", $dialstatus_list );
-$FG_TABLE_COL [] = array (gettext ( "CallType" ), "sipiax", "6%", "center", "SORT", "", "list", $list_calltype );
-$FG_TABLE_COL [] = array (gettext ( "Buy" ), "buycost", "7%", "center", "SORT", "30", "", "", "", "", "", "display_2bill" );
-$FG_TABLE_COL [] = array (gettext ( "Sell" ), "sessionbill", "7%", "center", "SORT", "30", "", "", "", "", "", "display_2bill" );
-$FG_TABLE_COL [] = array (gettext ( "Margin" ), "margin", "7%", "center", "SORT", "30", "", "", "", "", "", "display_2dec_percentage" );
-$FG_TABLE_COL [] = array (gettext ( "Markup" ), "markup", "7%", "center", "SORT", "30", "", "", "", "", "", "display_2dec_percentage" );
+$FG_TABLE_COL = [
+    [gettext ( "Date" ), "starttime", "10%", "center", "SORT", "19", "", "", "", "", "", "display_dateformat"],
+    [gettext ( "CallerID" ), "src", "7%", "center", "SORT", "30"],
+    [gettext ( "DNID" ), "dnid", "7%", "center", "SORT", "30"],
+    [gettext ( "Phone Number" ), "calledstation", "10%", "center", "SORT", "30", "", "", "", "", "", ""],
+    [gettext ( "Destination" ), "dest","10%", "center", "SORT", "15", "lie", "cc_prefix", "destination,prefix", "prefix='%id'", "%1"],
+    [gettext ( "Buy Rate" ), "buyrate", "6%", "center", "SORT", "30", "", "", "", "", "", "display_2bill"],
+    [gettext ( "Sell Rate" ), "rateinitial", "6%", "center", "SORT", "30", "", "", "", "", "", "display_2bill"],
+    [gettext ( "Duration" ), "sessiontime", "5%", "center", "SORT", "30", "", "", "", "", "", "display_minute"],
+    [gettext ( "Account" ), "card_id", "6%", "center", "sort", "", "lie_link", "cc_card", "username,id", "id='%id'", "%1", "", "A2B_entity_card.php"],
+    [gettext ( "Trunk" ), "trunkcode", "6%", "center", "SORT", "30"],
+    ['<acronym title="' . gettext ( "Terminate Cause" ) . '">' . gettext ( "TC" ) . '</acronym>', "terminatecauseid", "7%", "center", "SORT", "", "list", $dialstatus_list],
+    [gettext ( "CallType" ), "sipiax", "6%", "center", "SORT", "", "list", $list_calltype],
+    [gettext ( "Buy" ), "buycost", "7%", "center", "SORT", "30", "", "", "", "", "", "display_2bill"],
+    [gettext ( "Sell" ), "sessionbill", "7%", "center", "SORT", "30", "", "", "", "", "", "display_2bill"],
+    [gettext ( "Margin" ), "margin", "7%", "center", "SORT", "30", "", "", "", "", "", "display_2dec_percentage"],
+    [gettext ( "Markup" ), "markup", "7%", "center", "SORT", "30", "", "", "", "", "", "display_2dec_percentage"],
+];
 
 if (LINK_AUDIO_FILE) {
-    $FG_TABLE_COL [] = array ("", "uniqueid", "1%", "center", "", "30", "", "", "", "", "", "display_monitorfile_link" );
-}
-
-if (has_rights (ACX_DELETE_CDR)) {
-    $FG_TABLE_COL [] = array ("", "id", "1%", "center", "", "30", "", "", "", "", "", "display_cdr_deletelink" );
-}
-
-// This Variable store the argument for the SQL query
-$FG_COL_QUERY = 't1.starttime, t1.src, t1.dnid, t1.calledstation, t1.destination AS dest, t4.buyrate, t4.rateinitial, t1.sessiontime, t1.card_id, t3.trunkcode, t1.terminatecauseid, t1.sipiax, t1.buycost, t1.sessionbill, case when t1.sessionbill!=0 then ((t1.sessionbill-t1.buycost)/t1.sessionbill)*100 else NULL end as margin,case when t1.buycost!=0 then ((t1.sessionbill-t1.buycost)/t1.buycost)*100 else NULL end as markup';
-
-if (LINK_AUDIO_FILE) {
+    $FG_TABLE_COL [] = ["", "uniqueid", "1%", "center", "", "30", "", "", "", "", "", "display_monitorfile_link"];
     $FG_COL_QUERY .= ', t1.uniqueid';
 }
+
 if (has_rights (ACX_DELETE_CDR)) {
+    $FG_TABLE_COL [] = ["", "id", "1%", "center", "", "30", "", "", "", "", "", "display_cdr_deletelink"];
     $FG_COL_QUERY .= ', t1.id';
 }
+
 $FG_COL_QUERY_GRAPH = 't1.callstart, t1.duration';
 
 $FG_LIMITE_DISPLAY = 25;
 $FG_NB_TABLE_COL = count ( $FG_TABLE_COL );
 $FG_EDITION = true;
-$FG_TOTAL_TABLE_COL = $FG_NB_TABLE_COL;
-if ($FG_DELETION || $FG_EDITION)
-    $FG_TOTAL_TABLE_COL ++;
+$FG_TOTAL_TABLE_COL = $FG_NB_TABLE_COL + 1;
 
 $FG_HTML_TABLE_TITLE = gettext ( " - Call Logs - " );
 $FG_HTML_TABLE_WIDTH = '98%';
 
 $instance_table = new Table ( $FG_TABLE_NAME, $FG_COL_QUERY );
 
-if (is_null ( $order ) || is_null ( $sens )) {
+if (is_null($order) || is_null($sens)) {
     $order = $FG_TABLE_DEFAULT_ORDER;
     $sens = $FG_TABLE_DEFAULT_SENS;
 }
@@ -201,50 +253,57 @@ if (! isset ( $FG_TABLE_CLAUSE ) || strlen ( $FG_TABLE_CLAUSE ) == 0) {
 }
 
 if (isset ( $customer ) && ($customer > 0)) {
-    if (strlen ( $FG_TABLE_CLAUSE ) > 0)
+    if (strlen ( $FG_TABLE_CLAUSE ) > 0) {
         $FG_TABLE_CLAUSE .= " AND ";
+    }
     $FG_TABLE_CLAUSE .= "t1.card_id='$customer'";
-} else {
-    if (isset ( $entercustomer ) && ($entercustomer > 0)) {
-        if (strlen ( $FG_TABLE_CLAUSE ) > 0)
-            $FG_TABLE_CLAUSE .= " AND ";
-        $FG_TABLE_CLAUSE .= "t1.card_id='$entercustomer'";
-    } elseif (isset ( $entercustomer_num ) && ($entercustomer_num > 0)) {
-        $res = $DBHandle -> Execute ("select id from cc_card where username=".$entercustomer_num);
-        if ($res) {
-            if ($res->RecordCount ()) {
-                $row =$res -> fetchRow();
-                if (strlen ( $FG_TABLE_CLAUSE ) > 0)	$FG_TABLE_CLAUSE .= " AND ";
-                $FG_TABLE_CLAUSE .= "t1.card_id='$row[0]'";
+} elseif (isset ( $entercustomer ) && ($entercustomer > 0)) {
+    if (strlen ( $FG_TABLE_CLAUSE ) > 0) {
+        $FG_TABLE_CLAUSE .= " AND ";
+    }
+    $FG_TABLE_CLAUSE .= "t1.card_id='$entercustomer'";
+} elseif (isset ( $entercustomer_num ) && ($entercustomer_num > 0)) {
+    $res = $DBHandle -> Execute ("select id from cc_card where username=".$entercustomer_num);
+    if ($res) {
+        if ($res->RecordCount ()) {
+            $row =$res -> fetchRow();
+            if (strlen ( $FG_TABLE_CLAUSE ) > 0) {
+                $FG_TABLE_CLAUSE .= " AND ";
             }
+            $FG_TABLE_CLAUSE .= "t1.card_id='$row[0]'";
         }
     }
 }
 
 if (isset ( $enterprovider ) && $enterprovider > 0) {
-    if (strlen ( $FG_TABLE_CLAUSE ) > 0)
+    if (strlen ( $FG_TABLE_CLAUSE ) > 0) {
         $FG_TABLE_CLAUSE .= " AND ";
+    }
     $FG_TABLE_CLAUSE .= "t3.id_provider = '$enterprovider'";
 }
 if (isset ( $entertrunk ) && $entertrunk > 0) {
-    if (strlen ( $FG_TABLE_CLAUSE ) > 0)
+    if (strlen ( $FG_TABLE_CLAUSE ) > 0) {
         $FG_TABLE_CLAUSE .= " AND ";
+    }
     $FG_TABLE_CLAUSE .= "t3.id_trunk = '$entertrunk'";
 }
 if (isset ( $entertariffgroup ) && $entertariffgroup > 0) {
-    if (strlen ( $FG_TABLE_CLAUSE ) > 0)
+    if (strlen ( $FG_TABLE_CLAUSE ) > 0) {
         $FG_TABLE_CLAUSE .= " AND ";
+    }
     $FG_TABLE_CLAUSE .= "t1.id_tariffgroup = '$entertariffgroup'";
 }
 if (isset ( $enterratecard ) && $enterratecard > 0) {
-    if (strlen ( $FG_TABLE_CLAUSE ) > 0)
+    if (strlen ( $FG_TABLE_CLAUSE ) > 0) {
         $FG_TABLE_CLAUSE .= " AND ";
+    }
     $FG_TABLE_CLAUSE .= "t1.id_ratecard = '$enterratecard'";
 }
 
 if (isset ( $choose_calltype ) && ($choose_calltype != - 1)) {
-    if (strlen ( $FG_TABLE_CLAUSE ) > 0)
+    if (strlen ( $FG_TABLE_CLAUSE ) > 0) {
         $FG_TABLE_CLAUSE .= " AND ";
+    }
     $FG_TABLE_CLAUSE .= " t1.sipiax='$choose_calltype' ";
 }
 
@@ -255,38 +314,45 @@ if (! isset ( $terminatecauseid )) {
     $terminatecauseid = "ANSWER";
 }
 if ($terminatecauseid == "ANSWER") {
-    if (strlen ( $FG_TABLE_CLAUSE ) > 0)
+    if (strlen ( $FG_TABLE_CLAUSE ) > 0) {
         $FG_TABLE_CLAUSE .= " AND ";
+    }
     $FG_TABLE_CLAUSE .= " (t1.terminatecauseid=1) ";
 }
 if ($terminatecauseid == "INCOMPLET") {
-    if (strlen ( $FG_TABLE_CLAUSE ) > 0)
+    if (strlen ( $FG_TABLE_CLAUSE ) > 0) {
         $FG_TABLE_CLAUSE .= " AND ";
+    }
     $FG_TABLE_CLAUSE .= " (t1.terminatecauseid !=1) ";
 }
 if ($terminatecauseid == "CONGESTION") {
-    if (strlen ( $FG_TABLE_CLAUSE ) > 0)
+    if (strlen ( $FG_TABLE_CLAUSE ) > 0) {
         $FG_TABLE_CLAUSE .= " AND ";
+    }
     $FG_TABLE_CLAUSE .= " (t1.terminatecauseid=5) ";
 }
 if ($terminatecauseid == "NOANSWER") {
-    if (strlen ( $FG_TABLE_CLAUSE ) > 0)
+    if (strlen ( $FG_TABLE_CLAUSE ) > 0) {
         $FG_TABLE_CLAUSE .= " AND ";
+    }
     $FG_TABLE_CLAUSE .= " (t1.terminatecauseid=3) ";
 }
 if ($terminatecauseid == "BUSY") {
-    if (strlen ( $FG_TABLE_CLAUSE ) > 0)
+    if (strlen ( $FG_TABLE_CLAUSE ) > 0) {
         $FG_TABLE_CLAUSE .= " AND ";
+    }
     $FG_TABLE_CLAUSE .= " (t1.terminatecauseid=2) ";
 }
 if ($terminatecauseid == "CHANUNAVAIL") {
-    if (strlen ( $FG_TABLE_CLAUSE ) > 0)
+    if (strlen ( $FG_TABLE_CLAUSE ) > 0) {
         $FG_TABLE_CLAUSE .= " AND ";
+    }
     $FG_TABLE_CLAUSE .= " (t1.terminatecauseid=6) ";
 }
 if ($terminatecauseid == "CANCEL") {
-    if (strlen ( $FG_TABLE_CLAUSE ) > 0)
+    if (strlen ( $FG_TABLE_CLAUSE ) > 0) {
         $FG_TABLE_CLAUSE .= " AND ";
+    }
     $FG_TABLE_CLAUSE .= " (t1.terminatecauseid=4) ";
 }
 
@@ -318,29 +384,31 @@ if (! $nodisplay) {
         }
     }
 
-    if ($FG_DEBUG == 3)
+    if ($FG_DEBUG == 3) {
         echo "<br>Clause : $FG_TABLE_CLAUSE";
+    }
 
     $nb_record = $instance_table->Table_count ( $DBHandle, $FG_TABLE_CLAUSE );
-    if ($FG_DEBUG >= 1)
-        var_dump ( $list );
+    if ($FG_DEBUG >= 1) {
+        var_dump($list);
+    }
 
 }
 
 if ($nb_record <= $FG_LIMITE_DISPLAY) {
     $nb_record_max = 1;
+} elseif ($nb_record % $FG_LIMITE_DISPLAY == 0) {
+    $nb_record_max = (intval ( $nb_record / $FG_LIMITE_DISPLAY ));
 } else {
-    if ($nb_record % $FG_LIMITE_DISPLAY == 0) {
-        $nb_record_max = (intval ( $nb_record / $FG_LIMITE_DISPLAY ));
-    } else {
-        $nb_record_max = (intval ( $nb_record / $FG_LIMITE_DISPLAY ) + 1);
-    }
+    $nb_record_max = (intval ( $nb_record / $FG_LIMITE_DISPLAY ) + 1);
 }
 
-if ($FG_DEBUG == 3)
+if ($FG_DEBUG == 3) {
     echo "<br>Nb_record : $nb_record";
-if ($FG_DEBUG == 3)
+}
+if ($FG_DEBUG == 3) {
     echo "<br>Nb_record_max : $nb_record_max";
+}
 
 $smarty->display ( 'main.tpl' );
 
@@ -422,10 +490,12 @@ $smarty->display ( 'main.tpl' );
                 <select name="fromstatsday_sday" class="form_input_select">
                     <?php
                     for ($i = 1; $i <= 31; $i ++) {
-                        if ($fromstatsday_sday == sprintf ( "%02d", $i ))
+                        if ($fromstatsday_sday == sprintf ( "%02d", $i )) {
                             $selected = "selected";
-                        else
+                        }
+                        else {
                             $selected = "";
+                        }
                         echo '<option value="' . sprintf ( "%02d", $i ) . "\"$selected>" . sprintf ( "%02d", $i ) . '</option>';
                     }
                     ?>
@@ -433,7 +503,7 @@ $smarty->display ( 'main.tpl' );
                     class="form_input_select">
                 <?php
                 $year_actual = date ( "Y" );
-                $monthname = array (gettext ( "January" ), gettext ( "February" ), gettext ( "March" ), gettext ( "April" ), gettext ( "May" ), gettext ( "June" ), gettext ( "July" ), gettext ( "August" ), gettext ( "September" ), gettext ( "October" ), gettext ( "November" ), gettext ( "December" ) );
+                $monthname = [gettext ( "January" ), gettext ( "February" ), gettext ( "March" ), gettext ( "April" ), gettext ( "May" ), gettext ( "June" ), gettext ( "July" ), gettext ( "August" ), gettext ( "September" ), gettext ( "October" ), gettext ( "November" ), gettext ( "December" )];
 
                 for ($i = $year_actual; $i >= $year_actual - 1; $i --) {
                     if ($year_actual == $i) {
@@ -443,10 +513,12 @@ $smarty->display ( 'main.tpl' );
                     }
                     for ($j = $monthnumber; $j >= 0; $j --) {
                         $month_formated = sprintf ( "%02d", $j + 1 );
-                        if ($fromstatsmonth_sday == "$i-$month_formated")
+                        if ($fromstatsmonth_sday == "$i-$month_formated") {
                             $selected = "selected";
-                        else
+                        }
+                        else {
                             $selected = "";
+                        }
                         echo "<OPTION value=\"$i-$month_formated\" $selected> $monthname[$j]-$i </option>";
                     }
                 }
@@ -515,10 +587,12 @@ $smarty->display ( 'main.tpl' );
                     }
                     for ($j = $monthnumber; $j >= 0; $j --) {
                         $month_formated = sprintf ( "%02d", $j + 1 );
-                        if ($tostatsmonth_sday == "$i-$month_formated")
+                        if ($tostatsmonth_sday == "$i-$month_formated") {
                             $selected = "selected";
-                        else
+                        }
+                        else {
                             $selected = "";
+                        }
                         echo "<OPTION value=\"$i-$month_formated\" $selected> $monthname[$j]-$i </option>";
                     }
                 }
@@ -1055,8 +1129,9 @@ foreach ($list as $recordset) {
 
     </TR>
     <?php } //foreach ($list as $recordset)
-        if ($ligne_number < $FG_LIMITE_DISPLAY)
+        if ($ligne_number < $FG_LIMITE_DISPLAY) {
             $ligne_number_end = $ligne_number + 2;
+        }
         while ($ligne_number < $ligne_number_end) {
             $ligne_number ++;
             ?>
@@ -1077,35 +1152,14 @@ foreach ($list as $recordset) {
         </TABLE>
         </td>
     </tr>
-    <TR bgcolor="#ffffff">
-        <TD class="bgcolor_005" height="16" style="PADDING-LEFT: 5px; PADDING-RIGHT: 3px">
-            <TABLE border=0 cellPadding=0 cellSpacing=0 width="100%">
-                <TR>
-                    <TD align="right"><SPAN class="fontstyle_003">
-                    <?php if ($current_page > 0) { ?>
-                    <img src="<?php echo Images_Path; ?>/fleche-g.gif"
-                    width="5" height="10"> <a href="<?php echo $PHP_SELF?>?s=1&t=0&order=<?php echo $order?>&sens=<?php echo $sens?>&current_page=<?php echo ($current_page - 1)?><?php
-                                    if (! is_null ( $letter ) && ($letter != "")) {
-                                        echo "&letter=$letter";
-                                    }
-                                    echo "&entercustomer_num=$entercustomer_num&posted=$posted&Period=$Period&frommonth=$frommonth&fromstatsmonth=$fromstatsmonth&tomonth=$tomonth&tostatsmonth=$tostatsmonth&fromday=$fromday&fromstatsday_sday=$fromstatsday_sday&fromstatsmonth_sday=$fromstatsmonth_sday&today=$today&tostatsday_sday=$tostatsday_sday&tostatsmonth_sday=$tostatsmonth_sday&dsttype=$dsttype&srctype=$srctype&clidtype=$clidtype&channel=$channel&resulttype=$resulttype&dst=$dst&src=$src&clid=$clid&terminatecauseid=$terminatecauseid&choose_calltype=$choose_calltype&entercustomer=$entercustomer&enterprovider=$enterprovider&entertrunk=$entertrunk";
-                                    ?>">
-                    <?php echo gettext ( "Previous" ); ?> </a> - <?php } ?><?php echo ($current_page + 1); ?> / <?php echo $nb_record_max; ?>
-                    <?php if ($current_page < $nb_record_max - 1) { ?>
-                    - <a href="<?php echo $PHP_SELF?>?s=1&t=0&order=<?php echo $order?>&sens=<?php echo $sens?>&current_page=<?php echo ($current_page + 1)?><?php
-                                    if (! is_null ( $letter ) && ($letter != "")) {
-                                        echo "&letter=$letter";
-                                    }
-                                    echo "&entercustomer_num=$entercustomer_num&posted=$posted&Period=$Period&frommonth=$frommonth&fromstatsmonth=$fromstatsmonth&tomonth=$tomonth&tostatsmonth=$tostatsmonth&fromday=$fromday&fromstatsday_sday=$fromstatsday_sday&fromstatsmonth_sday=$fromstatsmonth_sday&today=$today&tostatsday_sday=$tostatsday_sday&tostatsmonth_sday=$tostatsmonth_sday&dsttype=$dsttype&srctype=$srctype&clidtype=$clidtype&channel=$channel&resulttype=$resulttype&dst=$dst&src=$src&clid=$clid&terminatecauseid=$terminatecauseid&choose_calltype=$choose_calltype&entercustomer=$entercustomer&enterprovider=$enterprovider&entertrunk=$entertrunk";
-                                    ?>">
-                    <?php echo gettext ( "Next" ); ?></a> <img src="<?php echo Images_Path; ?>/fleche-d.gif" width="5" height="10"> </SPAN>
-                    <?php } ?>
-                  </TD>
-        </TABLE>
-        </TD>
-    </TR>
 </table>
 
+<?php
+$params = compact( "current_page", "order", "sens", "letter", "entercustomer_num", "posted", "Period", "frommonth", "fromstatsmonth", "tomonth", "tostatsmonth", "fromday", "fromstatsday_sday", "fromstatsmonth_sday", "today", "tostatsday_sday", "tostatsmonth_sday", "dsttype", "srctype", "clidtype", "channel", "resulttype", "dst", "src", "clid", "terminatecauseid", "choose_calltype", "entercustomer", "enterprovider", "entertrunk");
+$params = array_filter($params, fn ($v) => $v !== "");
+$params["current_page"] = "%s";
+echo \A2billing\Forms\FormHandler::printPages($current_page, $nb_record_max, "?s=1&amp;t=0&amp;" . http_build_query($params, "", "&amp;"));
+?>
 <!-- ** ** ** ** ** Part to display the GRAPHIC ** ** ** ** ** -->
 <br>
 
@@ -1113,13 +1167,14 @@ foreach ($list as $recordset) {
 if (is_array ( $list_total_day ) && count ( $list_total_day ) > 0) {
 
     $mmax = 0;
-    $totalcall == 0;
+    $totalcall = 0;
     $totalminutes = 0;
     $totalsuccess = 0;
     $totalfail = 0;
     foreach ($list_total_day as $data) {
-        if ($mmax < $data [1])
+        if ($mmax < $data [1]) {
             $mmax = $data [1];
+        }
         $totalcall += $data [3];
         $totalminutes += $data [1];
         $totalcost += $data [2];
@@ -1167,19 +1222,20 @@ if (is_array ( $list_total_day ) && count ( $list_total_day ) > 0) {
         $tmc = $data [1] / $data [3];
 
         if ((! isset ( $resulttype )) || ($resulttype == "min")) {
-            $tmc = sprintf ( "%02d", intval ( $tmc / 60 ) ) . ":" . sprintf ( "%02d", intval ( $tmc % 60 ) );
+            $tmc = sprintf ( "%02d", intval ( $tmc / 60 ) ) . ":" . sprintf ( "%02d", $tmc % 60);
         } else {
 
             $tmc = intval ( $tmc );
         }
 
         if ((! isset ( $resulttype )) || ($resulttype == "min")) {
-            $minutes = sprintf ( "%02d", intval ( $data [1] / 60 ) ) . ":" . sprintf ( "%02d", intval ( $data [1] % 60 ) );
+            $minutes = sprintf ( "%02d", intval ( $data [1] / 60 ) ) . ":" . sprintf ( "%02d", $data [1] % 60);
         } else {
             $minutes = $data [1];
         }
-        if ($mmax > 0)
-            $widthbar = intval ( ($data [1] / $mmax) * 150 );
+        if ($mmax > 0) {
+            $widthbar = intval(($data [1] / $mmax) * 150);
+        }
         ?>
         </tr>
                     <tr>
@@ -1247,8 +1303,8 @@ if (is_array ( $list_total_day ) && count ( $list_total_day ) > 0) {
                 }
 
                 if ((! isset ( $resulttype )) || ($resulttype == "min")) {
-                    $total_tmc = sprintf ( "%02d", intval ( ($totalminutes / $totalcall) / 60 ) ) . ":" . sprintf ( "%02d", intval ( ($totalminutes / $totalcall) % 60 ) );
-                    $totalminutes = sprintf ( "%02d", intval ( $totalminutes / 60 ) ) . ":" . sprintf ( "%02d", intval ( $totalminutes % 60 ) );
+                    $total_tmc = sprintf ( "%02d", intval ( ($totalminutes / $totalcall) / 60 ) ) . ":" . sprintf ( "%02d", ($totalminutes / $totalcall) % 60);
+                    $totalminutes = sprintf ( "%02d", intval ( $totalminutes / 60 ) ) . ":" . sprintf ( "%02d", $totalminutes % 60);
                 } else {
                     $total_tmc = intval ( $totalminutes / $totalcall );
                 }
