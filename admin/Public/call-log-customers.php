@@ -133,10 +133,6 @@ if ($download === "file" && $file) {
 
 $dialstatus_list = getDialStatusList();
 
-if (empty($current_page)) {
-    $current_page = 0;
-}
-
 // this variable specifie the debug type (0 => nothing, 1 => sql result, 2 => boucle checking, 3 other value checking)
 $FG_DEBUG = 0;
 
@@ -417,11 +413,7 @@ $smarty->display ( 'main.tpl' );
 <!-- ** ** ** ** ** Part for the research ** ** ** ** ** -->
 <center>
 <FORM METHOD=POST name="myForm"
-    ACTION="<?php
-    echo $PHP_SELF?>?s=1&t=0&order=<?php
-    echo $order?>&sens=<?php
-    echo $sens?>&current_page=<?php
-    echo $current_page?>">
+    ACTION="?s=1&t=0&order=<?= $order?>&sens=<?= $sens?>&current_page=<?= $current_page?>">
 <INPUT TYPE="hidden" NAME="posted" value=1> <INPUT TYPE="hidden"
     NAME="current_page" value=0>
 <TABLE class="bar-status" width="85%" border="0" cellspacing="1"
@@ -1158,7 +1150,7 @@ foreach ($list as $recordset) {
 $params = compact( "current_page", "order", "sens", "letter", "entercustomer_num", "posted", "Period", "frommonth", "fromstatsmonth", "tomonth", "tostatsmonth", "fromday", "fromstatsday_sday", "fromstatsmonth_sday", "today", "tostatsday_sday", "tostatsmonth_sday", "dsttype", "srctype", "clidtype", "channel", "resulttype", "dst", "src", "clid", "terminatecauseid", "choose_calltype", "entercustomer", "enterprovider", "entertrunk");
 $params = array_filter($params, fn ($v) => $v !== "");
 $params["current_page"] = "%s";
-echo \A2billing\Forms\FormHandler::printPages($current_page, $nb_record_max, "?s=1&amp;t=0&amp;" . http_build_query($params, "", "&amp;"));
+echo \A2billing\Forms\FormHandler::printPages($current_page + 1, $nb_record_max, "?s=1&amp;t=0&amp;" . http_build_query($params, "", "&amp;"));
 ?>
 <!-- ** ** ** ** ** Part to display the GRAPHIC ** ** ** ** ** -->
 <br>

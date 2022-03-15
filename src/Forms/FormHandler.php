@@ -2131,13 +2131,11 @@ class FormHandler
         $url = rawurldecode($url);
         $prevlink = str_replace("%s", $page - 2, $url);
         $prevlabel = _("Previous");
-        $prevdis = $page === 0 ? "disabled" : "";
+        $prevdis = $page === 1 ? "disabled" : "";
         $firstlink = str_replace("%s", 0, $url);
-        $firstact = $page === 0 ? "active" : "";
         $firstlabel = _("First");
         $lastlink = str_replace("%s", $pages - 1, $url);
         $lastlabel = _("Last");
-        $lastact = $page === $pages ? "active" : "";
         $nextlink = str_replace("%s", $page, $url);
         $nextlabel = _("Next");
         $nextdis = $page >= $pages;
@@ -2145,7 +2143,7 @@ class FormHandler
         $ret = <<< HTML
         <nav aria-label="page navigation">
             <ul class="pagination justify-content-center">
-                <li class="page-item $firstact">
+                <li class="page-item">
                     <a class="page-link" href="$firstlink"><span aria-hidden="true">&lt;&lt;&nbsp;</span>$firstlabel</a>
                 </li>
                 <li class="page-item $prevdis">
@@ -2155,14 +2153,14 @@ class FormHandler
         HTML;
 
         if ($page <= $window) {
-            $min_page = 2;
-            $max_page = min(2 * $window, $pages) - 2;
+            $min_page = 1;
+            $max_page = min(2 * $window, $pages) - 1;
         } elseif ($pages >= $page + $window) {
             $min_page = ($page - $window) + 1;
             $max_page = $page + $window;
         } else {
             $min_page = ($page - (2 * $window - ($pages - $page))) + 1;
-            $max_page = $pages - 2;
+            $max_page = $pages - 1;
         }
 
         // Make sure min_page is always at least 1
@@ -2186,7 +2184,7 @@ class FormHandler
                 <li class="page-item $nextdis">
                     <a class="page-link" href="$nextlink"><span aria-hidden="true">&gt;&nbsp;</span>$nextlabel</a>
                 </li>
-                <li class="page-item $lastact">
+                <li class="page-item">
                     <a class="page-link" href="$lastlink"><span aria-hidden="true">&gt;&gt;&nbsp;</span>$lastlabel</a>
                 </li>
             </ul>
