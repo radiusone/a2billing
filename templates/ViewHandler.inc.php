@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Forms\FormHandler;
 use A2billing\Table;
 
 /**
@@ -348,7 +349,7 @@ function openURLFilter(link) {
 <?php if ($this->CV_DISPLAY_BROWSE_PAGE): ?>
 <div class="row pb-3">
     <div class="col">
-        <?php $this->printPages($this->CV_CURRENT_PAGE + 1, $this->FG_NB_RECORD_MAX, "?stitle=$stitle&atmenu=$processed[atmenu]&current_page=%s&filterprefix=$processed[filterprefix]&order=$processed[order]&sens=$processed[sens]&mydisplaylimit=$processed[mydisplaylimit]&popup_select=$processed[popup_select]&letter=$letter$this->CV_FOLLOWPARAMETERS") ?>
+        <?= FormHandler::printPages($this->CV_CURRENT_PAGE + 1, $this->FG_NB_RECORD_MAX, "?stitle=$stitle&atmenu=$processed[atmenu]&current_page=%s&filterprefix=$processed[filterprefix]&order=$processed[order]&sens=$processed[sens]&mydisplaylimit=$processed[mydisplaylimit]&popup_select=$processed[popup_select]&letter=$letter$this->CV_FOLLOWPARAMETERS") ?>
     </div>
 </div>
 <?php endif ?>

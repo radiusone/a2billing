@@ -83,7 +83,7 @@ class Table
         $this->table_count = $table_count;
         $this->fields = $liste_fields;
         $this->mytopg = new MytoPg(0); // debug level 0 logs only >30ms CPU hogs
-        if ($A2B->config["database"]['dbtype'] == 'postgres') {
+        if ($A2B && $A2B->config["database"]['dbtype'] == 'postgres') {
             $this->db_type = "postgres";
         }
 

@@ -454,12 +454,6 @@ class FormHandler
     //This variable define the width of the HTML table
     public $FG_HTML_TABLE_WIDTH = "95%";
 
-    // text for multi-page navigation.
-    public $lang = [
-        'strfirst' => '&lt;&lt; First', 'strprev' => '&lt; Prev', 'strnext' => 'Next &gt;',
-        'strlast' => 'Last &gt;&gt;',
-    ];
-
     public $logger = null;
 
     public $FG_ENABLE_LOG = ENABLE_LOG;
@@ -2126,60 +2120,80 @@ class FormHandler
      * @param string $url the url to refer to with the page number inserted
      * @param int $max_width the number of pages to make available at any one time (default = 20)
      */
-    public function printPages(int $page, int $pages, string $url, int $max_width = 20)
+    public static function printPages(int $page, int $pages, string $url, int $max_width = 12): string
     {
-        Console::logSpeed('Time taken to get to line ' . __LINE__);
-        $window = 8;
+        $window = intdiv($max_width, 2);
 
-        if ($page < 0 || $page > $pages) {
-            return;
-        }
-        if ($pages < 0) {
-            return;
-        }
-        if ($max_width <= 0) {
-            return;
+        if ($page < 0 || $page > $pages || $pages <= 1 || $max_width <= 0) {
+            return "";
         }
 
-        if ($pages > 1) {
-            if ($page != 1) {
-                $temp = str_replace('%s', 0, $url);
-                echo "<a class=\"pagenav\" href=\"$temp\">{$this->lang['strfirst']}</a>\n";
-                $temp = str_replace('%s', $page - 2, $url);
-                echo "<a class=\"pagenav\" href=\"$temp\">{$this->lang['strprev']}</a>\n";
-            }
+        $prevlink = str_replace("%s", $page - 2, $url);
+        $prevlabel = _("Previous");
+        $prevdis = $page === 0 ? "disabled" : "";
+        $firstlink = str_replace("%s", 0, $url);
+        $firstact = $page === 0 ? "active" : "";
+        $firstlabel = _("First");
+        $lastlink = str_replace("%s", $pages - 1, $url);
+        $lastlabel = _("Last");
+        $lastact = $page === $pages ? "active" : "";
+        $nextlink = str_replace("%s", $page, $url);
+        $nextlabel = _("Next");
+        $nextdis = $page >= $pages;
 
-            if ($page <= $window) {
-                $min_page = 1;
-                $max_page = min(2 * $window, $pages);
-            } elseif ($pages >= $page + $window) {
-                $min_page = ($page - $window) + 1;
-                $max_page = $page + $window;
-            } else {
-                $min_page = ($page - (2 * $window - ($pages - $page))) + 1;
-                $max_page = $pages;
-            }
+        $ret = <<< HTML
+        <nav aria-label="page navigation">
+            <ul class="pagination justify-content-center">
+                <li class="page-item $firstact">
+                    <a class="page-link" href="$firstlink"><span aria-hidden="true">&lt;&lt;&nbsp;</span>$firstlabel</a>
+                </li>
+                <li class="page-item $prevdis">
+                    <a class="page-link" href="$prevlink"><span aria-hidden="true">&lt;&nbsp;</span>$prevlabel</a>
+                </li>
 
-            // Make sure min_page is always at least 1
-            // and max_page is never greater than $pages
-            $min_page = max($min_page, 1);
-            $max_page = min($max_page, $pages);
+        HTML;
 
-            for ($i = $min_page; $i <= $max_page; $i++) {
-                $temp = str_replace('%s', $i - 1, $url);
-                if ($i != $page) {
-                    echo "<a class=\"pagenav\" href=\"$temp\">$i</a>\n";
-                } else {
-                    echo "$i\n";
-                }
-            }
-            if ($page != $pages) {
-                $temp = str_replace('%s', $page, $url);
-                echo "<a class=\"pagenav\" href=\"$temp\">{$this->lang['strnext']}</a>\n";
-                $temp = str_replace('%s', $pages - 1, $url);
-                echo "<a class=\"pagenav\" href=\"$temp\">{$this->lang['strlast']}</a>\n";
-            }
+        if ($page <= $window) {
+            $min_page = 2;
+            $max_page = min(2 * $window, $pages) - 2;
+        } elseif ($pages >= $page + $window) {
+            $min_page = ($page - $window) + 1;
+            $max_page = $page + $window;
+        } else {
+            $min_page = ($page - (2 * $window - ($pages - $page))) + 1;
+            $max_page = $pages - 2;
         }
+
+        // Make sure min_page is always at least 1
+        // and max_page is never greater than $pages
+        $min_page = max($min_page, 1);
+        $max_page = min($max_page, $pages);
+
+        for ($i = $min_page; $i <= $max_page; $i++) {
+            $link = str_replace('%s', $i - 1, $url);
+            $aria = $act = "";
+            if ($i === $page) {
+                $act = "active";
+                $aria = 'aria-current="page"';
+            }
+            $ret .= <<< HTML
+                    <li class="page-item $act" $aria><a class="page-link" href="$link">$i</a></li>
+
+            HTML;
+        }
+        $ret .= <<< HTML
+                <li class="page-item $nextdis">
+                    <a class="page-link" href="$nextlink"><span aria-hidden="true">&gt;&nbsp;</span>$nextlabel</a>
+                </li>
+                <li class="page-item $lastact">
+                    <a class="page-link" href="$lastlink"><span aria-hidden="true">&gt;&gt;&nbsp;</span>$lastlabel</a>
+                </li>
+            </ul>
+        </nav>
+
+        HTML;
+
+        return $ret;
     }
 
     public function csrf_inputs(): string
