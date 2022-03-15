@@ -2128,6 +2128,7 @@ class FormHandler
             return "";
         }
 
+        $url = rawurldecode($url);
         $prevlink = str_replace("%s", $page - 2, $url);
         $prevlabel = _("Previous");
         $prevdis = $page === 0 ? "disabled" : "";
@@ -2170,7 +2171,7 @@ class FormHandler
         $max_page = min($max_page, $pages);
 
         for ($i = $min_page; $i <= $max_page; $i++) {
-            $link = str_replace('%s', $i - 1, $url);
+            $link = str_replace("%s", $i - 1, $url);
             $aria = $act = "";
             if ($i === $page) {
                 $act = "active";
