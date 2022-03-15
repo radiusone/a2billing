@@ -139,6 +139,20 @@ function create_date_options($target)
     </div>
 <?php endif ?>
 
+<?php foreach ($this->FG_FILTER_SEARCH_FORM_POPUP as $item): ?>
+    <div class="row pb-1">
+        <label class="col-4 col-form-label col-form-label-sm" for="<?= $item["name"] ?>">
+            <?= $item["label"] ?>
+        </label>
+        <div class="col-6">
+            <input name="<?= $item["name"] ?>" id="<?= $item["name"] ?>" value="<?= $processed[$item["name"]] ?>" class="form-control form-control-sm"/>
+        </div>
+        <div class="col-2">
+            <a href="<?= $item["href"] ?>" data-window-name="<?= $item["windowname"] ?? "popup" ?>" data-popup-options="<?= $item["windowoptions"] ?? "width=550,height=330,top=20,left=100,scrollbars=1" ?>" class="badge bg-primary popup_trigger" aria-label="open a popup to select an item" >&gt;</a>
+        </div>
+    </div>
+<?php endforeach ?>
+
 <?php foreach ($this->FG_FILTER_SEARCH_FORM_1C as $item): ?>
     <div class="row pb-1">
         <label class="col-4 col-form-label col-form-label-sm" for="<?= $item[1] ?>">

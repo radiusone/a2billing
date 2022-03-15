@@ -195,6 +195,7 @@ class FormHandler
     public $FG_FILTER_SEARCH_FORM_1C = [];
     public $FG_FILTER_SEARCH_FORM_2C = [];
     public $FG_FILTER_SEARCH_FORM_SELECT = [];
+    public $FG_FILTER_SEARCH_FORM_POPUP = [];
     public $FG_FILTER_SEARCH_FORM_SELECT_TEXT = '';
     public $FG_FILTER_SEARCH_TOP_TEXT = "";
     public $FG_FILTER_SEARCH_SESSION_NAME = '';
