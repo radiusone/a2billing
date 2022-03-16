@@ -667,28 +667,36 @@ if ($popup_select): ?>
 </div> <!-- .modal -->
 
 <script>
+function sendValue(selvalue) {
+    const formname = <?= json_encode($popup_formname ?? "") ?>;
+    const fieldname = <?= json_encode($popup_fieldname ?? "") ?>;
+    $(`form[name=${formname}] [name=${fieldname}]`, window.opener.document).val(selvalue);
+    window.close();
+}
+
 $("#sendopener").on('click', function () {
     let id_trunk = "";
     let id_tariffplan = "";
     let tag = "";
     let prefix = "";
-    let pack = '<?= $package ?>';
+    const pack = '<?= $package ?>';
 
-    if (document.getElementById("check[assign_id_trunk]").checked) {
-        id_trunk = document.getElementById("assign_id_trunk").value;
+    if ($("#check[assign_id_trunk]:checked")) {
+        id_trunk = $("#assign_id_trunk").val();
     }
 
-    if (document.getElementById("check[assign_idtariffplan]").checked) {
-        id_tariffplan = document.getElementById("assign_idtariffplan").value;
+    if ($("#check[assign_idtariffplan]:checked").length) {
+        id_tariffplan = $("#assign_idtariffplan").val();
     }
 
-    if (document.getElementById("check[assign_tag]").checked) {
-        tag = document.getElementById("assign_tag").value;
+    if ($("#check[assign_tag]:checked").length) {
+        tag = $("#assign_tag").val();
     }
 
-    if (document.getElementById("check[assign_prefix]").checked) {
-        let val = document.getElementById("rbPrefix").value;
-        prefix = `${document.assignForm.assign_prefix.value}&rbPrefix=${val}`;
+    if ($("#check[assign_prefix]:checked").length) {
+        const rb_prefix = $("#rbPrefix").val();
+        const assign_prefix = $("form[name=assignForm] *[name=assign_prefix]").val();
+        prefix = `${assign_prefix}&rbPrefix=${rb_prefix}`;
     }
     window.opener.location.href = `A2B_package_manage_rates.php?id=${pack}&addbatchrate=true&id_trunk=${id_trunk}&id_tariffplan=${id_tariffplan}&tag=${tag}&prefix=${prefix}`;
 });
