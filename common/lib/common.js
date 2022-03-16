@@ -26,10 +26,10 @@ $(function() {
                 el = $(this).prev("input");
                 id = el.attr("name");
             }
-            if (!el) {
+            if (!el.length) {
                 return;
             }
-            calendars[id] = new calendaronlyminutes(el);
+            calendars[id] = new calendaronlyminutes(el[0]);
             calendars[id].year_scroll = false;
             calendars[id].time_comp = true;
             calendars[id].formatpgsql = true;
