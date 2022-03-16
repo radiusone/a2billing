@@ -159,24 +159,23 @@ $HD_Form->FG_COL_QUERY = 'cc_call.starttime, cc_call.src, cc_call.dnid, cc_call.
 
 $DBHandle = DbConnect ();
 
-$HD_Form->FG_TABLE_COL = [
-    [_( "Date" ), "starttime", "10%", "center", "SORT", "19", "", "", "", "", "", "display_dateformat"],
-    [_( "CallerID" ), "src", "7%", "center", "SORT", "30"],
-    [_( "DNID" ), "dnid", "7%", "center", "SORT", "30"],
-    [_( "Phone Number" ), "calledstation", "10%", "center", "SORT", "30", "", "", "", "", "", ""],
-    [_( "Destination" ), "dest","10%", "center", "SORT", "15", "lie", "cc_prefix", "destination,prefix", "prefix='%id'", "%1"],
-    [_( "Buy Rate" ), "buyrate", "6%", "center", "SORT", "30", "", "", "", "", "", "display_2bill"],
-    [_( "Sell Rate" ), "rateinitial", "6%", "center", "SORT", "30", "", "", "", "", "", "display_2bill"],
-    [_( "Duration" ), "sessiontime", "5%", "center", "SORT", "30", "", "", "", "", "", "display_minute"],
-    [_( "Account" ), "card_id", "6%", "center", "sort", "", "lie_link", "cc_card", "username,id", "id='%id'", "%1", "", "A2B_entity_card.php"],
-    [_( "Trunk" ), "trunkcode", "6%", "center", "SORT", "30"],
-    ['<acronym title="' . _( "Terminate Cause" ) . '">' . _( "TC" ) . '</acronym>', "terminatecauseid", "7%", "center", "SORT", "", "list", $dialstatus_list],
-    [_( "CallType" ), "sipiax", "6%", "center", "SORT", "", "list", $calltype_list],
-    [_( "Buy" ), "buycost", "7%", "center", "SORT", "30", "", "", "", "", "", "display_2bill"],
-    [_( "Sell" ), "sessionbill", "7%", "center", "SORT", "30", "", "", "", "", "", "display_2bill"],
-    [_( "Margin" ), "margin", "7%", "center", "SORT", "30", "", "", "", "", "", "display_2dec_percentage"],
-    [_( "Markup" ), "markup", "7%", "center", "SORT", "30", "", "", "", "", "", "display_2dec_percentage"],
-];
+$HD_Form->AddViewElement(_("Date"), "starttime", "10%", "center", "SORT", "19", "", "", "", "", "", "display_dateformat");
+$HD_Form->AddViewElement(_("CallerID"), "src", "7%", "center", "SORT", "30");
+$HD_Form->AddViewElement(_("DNID"), "dnid", "7%", "center", "SORT", "30");
+$HD_Form->AddViewElement(_("Phone Number"), "calledstation", "10%", "center", "SORT", "30", "", "", "", "", "", "");
+$HD_Form->AddViewElement(_("Destination"), "dest","10%", "center", "SORT", "15", "lie", "cc_prefix", "destination,prefix", "prefix='%id'", "%1");
+$HD_Form->AddViewElement(_("Buy Rate"), "buyrate", "6%", "center", "SORT", "30", "", "", "", "", "", "display_2bill");
+$HD_Form->AddViewElement(_("Sell Rate"), "rateinitial", "6%", "center", "SORT", "30", "", "", "", "", "", "display_2bill");
+$HD_Form->AddViewElement(_("Duration"), "sessiontime", "5%", "center", "SORT", "30", "", "", "", "", "", "display_minute");
+$HD_Form->AddViewElement(_("Account"), "card_id", "6%", "center", "sort", "", "lie_link", "cc_card", "username,id", "id='%id'", "%1", "", "A2B_entity_card.php");
+$HD_Form->AddViewElement(_("Trunk"), "trunkcode", "6%", "center", "SORT", "30");
+$HD_Form->AddViewElement(_("Disposition"), "terminatecauseid", "7%", "center", "SORT", "", "list", $dialstatus_list);
+$HD_Form->AddViewElement(_("CallType"), "sipiax", "6%", "center", "SORT", "", "list", $calltype_list);
+$HD_Form->AddViewElement(_("Buy"), "buycost", "7%", "center", "SORT", "30", "", "", "", "", "", "display_2bill");
+$HD_Form->AddViewElement(_("Sell"), "sessionbill", "7%", "center", "SORT", "30", "", "", "", "", "", "display_2bill");
+$HD_Form->AddViewElement(_("Margin"), "margin", "7%", "center", "SORT", "30", "", "", "", "", "", "display_2dec_percentage");
+$HD_Form->AddViewElement(_("Markup"), "markup", "7%", "center", "SORT", "30", "", "", "", "", "", "display_2dec_percentage");
+
 $HD_Form->FG_DELETION = true;
 $HD_Form->FG_DELETION_LINK = "A2B_entity_call.php?form_action=ask-delete&id=";
 
@@ -270,9 +269,9 @@ $HD_Form->FG_FILTER_SEARCH_FORM_SELECT[] = [_("Time unit"), false, "choose_timeu
  */
 $HD_Form->FG_FILTER_SEARCH_DELETE_ALL = false;
 
+$form_action = $form_action ?? "list";
 if (!$nodisplay) {
     $HD_Form->prepare_list_subselection('list');
-    $form_action = $form_action ?? "list";
     $list = $HD_Form->perform_action($form_action);
 }
 
@@ -320,8 +319,10 @@ $smarty->display ( 'main.tpl' );
 
 <!-- ** ** ** ** ** Part to display the CDR ** ** ** ** ** -->
 <?php
-$HD_Form->create_toppage ($form_action);
-$HD_Form->create_form("list", $list);
+if (!$nodisplay) {
+    $HD_Form->create_toppage($form_action);
+    $HD_Form->create_form("list", $list);
+}
 ?>
 <!-- ** ** ** ** ** Part to display the GRAPHIC ** ** ** ** ** -->
 
