@@ -186,17 +186,16 @@ function openURLFilter(link) {
                         for ($l=1; $l <= count($field_list_sun); $l++) {
                             $record_display = str_replace("%$l", $options[0][$l - 1], $record_display);
                         }
-                    } else {
-                        $record_display = "";
                     }
                 } elseif($row[6] === "lie_link") {
-                    $record_display = "";
                     if (is_array($options)) {
                         $link = $row[12] . (str_contains($row[12], 'form_action') ? "?" : "?form_action=ask-edit&") . "id=" . $options[0][1];
                         for ($l = 1; $l <= count($field_list_sun); $l++) {
                             $val = str_replace("%$l", $options[0][$l - 1], $record_display);
                             $record_display = $popup_select ? $val : "<a class='text-decoration-underline' href='$link'>$val</a>";
                         }
+                    } else {
+                        $record_display = "";
                     }
                 }
             } elseif ($row[6]=="eval") {

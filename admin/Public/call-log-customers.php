@@ -191,8 +191,8 @@ $HD_Form->FG_LIMITE_DISPLAY = 25;
 $HD_Form->CV_TITLE_TEXT = _("Call Logs");
 $HD_Form->CV_CURRENT_PAGE = $current_page;
 
-$order = $HD_Form->FG_ORDER = $order ?? "cc_call.starttime";
-$sens = $HD_Form->FG_SENS = $sens ?? "DESC";
+$order = $HD_Form->FG_TABLE_DEFAULT_ORDER = $order ?? "cc_call.starttime";
+$sens = $HD_Form->FG_TABLE_DEFAULT_SENS = $sens ?? "DESC";
 
 // EXPORT
 $HD_Form->FG_EXPORT_CSV = true;
