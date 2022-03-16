@@ -168,15 +168,16 @@ use A2billing\A2Billing;
     function getDialStatusList(): array
     {
         return [
-            1 => [_("ANSWER"), "1"],
-            2 => [_("BUSY"), "2"],
-            3 => [_("NOANSWER"), "3"],
-            4 => [_("CANCEL"), "4"],
-            5 => [_("CONGESTION"), "5"],
-            6 => [_("CHANUNAVAIL"), "6"],
-            7 => [_("DONTCALL"), "7"],
-            8 => [_("TORTURE"), "8"],
-            9 => [_("INVALIDARGS"), "9"],
+            [_("UNKNOWN"), "0"],
+            [_("ANSWER"), "1"],
+            [_("BUSY"), "2"],
+            [_("NOANSWER"), "3"],
+            [_("CANCEL"), "4"],
+            [_("CONGESTION"), "5"],
+            [_("CHANUNAVAIL"), "6"],
+            [_("DONTCALL"), "7"],
+            [_("TORTURE"), "8"],
+            [_("INVALIDARGS"), "9"],
         ];
     }
 
