@@ -156,6 +156,7 @@ function create_date_options($target)
                     href="<?= $item["href"] ?>"
                     data-window-name="<?= $item["windowname"] ?? "popup" ?>"
                     data-popup-options="<?= $item["windowoptions"] ?? "width=550,height=330,top=20,left=100,scrollbars=1" ?>"
+                    data-select="<?= $item["select"] ?? 1 ?>"
                     class="badge bg-primary popup_trigger"
                     aria-label="open a popup to select an item"
                 >&gt;</a>
@@ -226,7 +227,7 @@ function create_date_options($target)
     <div class="row pb-1">
         <?php foreach (array_chunk($this->FG_FILTER_SEARCH_FORM_SELECT, 4) as $chunk): ?>
             <?php foreach ($chunk as $i => $item): ?>
-            <div class="col-3">
+            <div class="col">
                 <select name="<?= $item[2] ?>" aria-label="<?= $item[0] ?>" class="form-select form-select-sm">
                     <option value=""><?= $item[0] ?></option>
                     <?php foreach ($item[1] as $opt): ?>
