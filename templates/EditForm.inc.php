@@ -103,43 +103,39 @@ use A2billing\Table;
 
             <?php elseif (str_starts_with($row["type"], "POPUP")): ?>
                 <?php $pu = explode(",", trim($row["popup_params"], ", ")) ?>
-            <input
-                    id="<?= $row["name"] ?>"
-                    class="form-control <?php if (isset($this->FG_fit_expression[$i]) && !$this->FG_fit_expression[$i]): ?>is-invalid<?php endif?>"
-                    name="<?= $row["name"] ?>"
-                    <?= $row["attributes"] ?>
-                    <?php if ($this->VALID_SQL_REG_EXP): ?>
-                        value="<?= $list[0][$i] ?>"
-                    <?php else: ?>
-                        value="<?= $processed[$row["name"]] ?>"
-                    <?php endif ?>
-                /><?php if ($row["type"] === "POPUPVALUE"): ?>&nbsp;<a href="<?= $row["popup_dest"] ?>" data-window-name="<?= trim($pu[0], "'\" ") ?>" data-popup-options="<?= trim($pu[1], "'\" ") ?>" class="badge bg-primary popup_trigger" aria-label="open a popup to select an item" >&gt;</a>
-                <?php elseif ($row["type"] === "POPUPDATETIME"): //minutes since monday 00:00, used 2x in FG_var_def_ratecard.inc ?>
-                    <a href="#" title="<?= gettext("SELECT")?>" onclick="cal<?= $row["name"] ?>.popup()">
-                        <img width="16" height="16" border="0" title="Click Here to Pick up the date" alt="Click Here to Pick up the date" src="data:image/gif;base64,R0lGODlhEAAQAKIAAKVNSkpNpUpNSqWmpdbT1v///////wAAACH5BAEAAAYALAAAAAAQABAAAANEaLrcNjDKKUa4OExYM95DVRTEWJLmKKLseVZELMdADcSrOwK7OqQsXkEIm8lsN0IOqCssW8Cicar8Qa/P5kvA7Xq/ggQAOw=="/>
+                <div class="input-group">
+                    <input
+                        id="<?= $row["name"] ?>"
+                        class="form-control <?php if (isset($this->FG_fit_expression[$i]) && !$this->FG_fit_expression[$i]): ?>is-invalid<?php endif?>"
+                        name="<?= $row["name"] ?>"
+                        <?= $row["attributes"] ?>
+                        <?php if ($this->VALID_SQL_REG_EXP): ?>
+                            value="<?= $list[0][$i] ?>"
+                        <?php else: ?>
+                            value="<?= $processed[$row["name"]] ?>"
+                        <?php endif ?>
+                    />
+                    <?php if ($row["type"] === "POPUPVALUE"): ?>
+                    <a
+                        href="<?= $row["popup_dest"] ?>"
+                        data-window-name="<?= trim($pu[0], "'\" ") ?>"
+                        data-popup-options="<?= trim($pu[1], "'\" ") ?>"
+                        class="btn btn-primary popup_trigger"
+                        aria-label="open a popup to select an item"
+                    >&gt;</a>
+                    <?php elseif ($row["type"] === "POPUPDATETIME"): //minutes since monday 00:00, used 2x in FG_var_def_ratecard.inc ?>
+                    <a href="#" class="btn btn-primary calendar_trigger">
+                        <img width="16" height="16" alt="Click Here to Pick up the date" src="data:image/gif;base64,R0lGODlhEAAQAKIAAKVNSkpNpUpNSqWmpdbT1v///////wAAACH5BAEAAAYALAAAAAAQABAAAANEaLrcNjDKKUa4OExYM95DVRTEWJLmKKLseVZELMdADcSrOwK7OqQsXkEIm8lsN0IOqCssW8Cicar8Qa/P5kvA7Xq/ggQAOw=="/>
                     </a>
-                    <script>
-                        var cal<?= $row["name"] ?> = new calendaronlyminutes(document.forms['myForm'].elements['<?= $row["name"] ?>']);
-                        cal<?= $row["name"] ?>.year_scroll = false;
-                        cal<?= $row["name"] ?>.time_comp = true;
-                        cal<?= $row["name"] ?>.formatpgsql = true;
-                    </script>
-                <?php endif ?>
-
+                    <?php endif ?>
+                </div>
             <?php elseif ($row["type"] === "TEXTAREA"): ?>
                 <textarea
                     id="<?= $row["name"] ?>"
                     class="form-control <?php if (isset($this->FG_fit_expression[$i]) && !$this->FG_fit_expression[$i]): ?>is-invalid<?php endif?>"
                     name="<?= $row["name"] ?>"
                     <?= $row["attributes"] ?>
-                    <?php if (str_icontains($row["attributes"], "readonly")): ?>style="background-color: #ccc"<?php endif ?>
-                >
-                    <?php if ($this->VALID_SQL_REG_EXP): ?>
-                        <?= $list[0][$i] ?>
-                    <?php else: ?>
-                        <?= $processed[$row["name"]] ?>
-                    <?php endif ?>
-                </textarea>
+                ><?= $this->VALID_SQL_REG_EXP ? $list[0][$i] : $processed[$row["name"]] ?></textarea>
 
             <?php elseif ($row["type"] === "SPAN"): //used once in FG_var_config.inc ?>
                 <span id="<?= $row["name"] ?>" name="<?= $row["name"] ?>" <?= $row["attributes"] ?>>

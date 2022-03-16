@@ -145,12 +145,21 @@ function create_date_options($target)
             <?= $item["label"] ?>
         </label>
         <div class="col-8">
-            <input
-                name="<?= $item["name"] ?>"
-                id="<?= $item["name"] ?>"
-                value="<?= $processed[$item["name"]] ?>"
-                class="form-control form-control-sm"
-            />&nbsp;<a href="<?= $item["href"] ?>" data-window-name="<?= $item["windowname"] ?? "popup" ?>" data-popup-options="<?= $item["windowoptions"] ?? "width=550,height=330,top=20,left=100,scrollbars=1" ?>" class="badge bg-primary popup_trigger" aria-label="open a popup to select an item" >&gt;</a>
+            <div class="input-group">
+                <input
+                    name="<?= $item["name"] ?>"
+                    id="<?= $item["name"] ?>"
+                    value="<?= $processed[$item["name"]] ?>"
+                    class="form-control form-control-sm"
+                />
+                <a
+                    href="<?= $item["href"] ?>"
+                    data-window-name="<?= $item["windowname"] ?? "popup" ?>"
+                    data-popup-options="<?= $item["windowoptions"] ?? "width=550,height=330,top=20,left=100,scrollbars=1" ?>"
+                    class="badge bg-primary popup_trigger"
+                    aria-label="open a popup to select an item"
+                >&gt;</a>
+            </div>
         </div>
     </div>
 <?php endforeach ?>
