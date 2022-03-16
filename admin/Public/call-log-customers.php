@@ -1,7 +1,6 @@
 <?php
 
 use A2billing\Forms\FormHandler;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -35,6 +34,9 @@ use A2billing\Table;
 **/
 
 require_once "../../common/lib/admin.defines.php";
+/**
+ * @var SmartyBC $smarty
+ */
 
 if (! has_rights ( ACX_CALL_REPORT )) {
     header ( "HTTP/1.0 401 Unauthorized" );
@@ -132,33 +134,32 @@ if (($download ?? "") === "file" && !empty($file)) {
     exit ();
 }
 
+$HD_Form = new FormHandler("cc_call", gettext("CDR"));
+$HD_Form->setDBHandler(DbConnect());
+$HD_Form->init();
+
+$currencies_list = array_map(fn ($v) => array_reverse($v), getCurrenciesList());
 $dialstatus_list = getDialStatusList();
-
-// this variable specifie the debug type (0 => nothing, 1 => sql result, 2 => boucle checking, 3 other value checking)
-$FG_DEBUG = 0;
-
-// The variable FG_TABLE_NAME define the table name to use
-$FG_TABLE_NAME = "cc_call t1 LEFT OUTER JOIN cc_trunk t3 ON t1.id_trunk = t3.id_trunk LEFT OUTER JOIN cc_ratecard t4 ON t1.id_ratecard = t4.id";
-// This Variable store the argument for the SQL query
-$FG_COL_QUERY = 't1.starttime, t1.src, t1.dnid, t1.calledstation, t1.destination AS dest, t4.buyrate, t4.rateinitial, t1.sessiontime, t1.card_id, t3.trunkcode, t1.terminatecauseid, t1.sipiax, t1.buycost, t1.sessionbill, case when t1.sessionbill!=0 then ((t1.sessionbill-t1.buycost)/t1.sessionbill)*100 else NULL end as margin,case when t1.buycost!=0 then ((t1.sessionbill-t1.buycost)/t1.buycost)*100 else NULL end as markup';
-
+$dialstatus_list_r = array_map(fn ($v) => array_reverse($v), $dialstatus_list);
 $yesno = getYesNoList();
-
-// 0 = NORMAL CALL ; 1 = VOIP CALL (SIP/IAX) ; 2= DIDCALL + TRUNK ; 3 = VOIP CALL DID ; 4 = CALLBACK call
-$list_calltype = [
-    [_("STANDARD"), "0"],
-    [_("SIP/IAX"), "1"],
-    [_("DIDCALL"), "2"],
-    [_("DID_VOIP"), "3"],
-    [_("CALLBACK"), "4"],
-    [_("PREDICT"), "5"],
-    [_("AUTO DIALER"), "6"],
-    [_("DID-ALEG"), "7"],
+$calltype_list = [
+    [0, _("STANDARD")],
+    [1, _("SIP/IAX")],
+    [2, _("DIDCALL")],
+    [3, _("DID_VOIP")],
+    [4, _("CALLBACK")],
+    [5, _("PREDICT")],
+    [6, _("AUTO DIALER")],
+    [7, _("DID-ALEG")],
 ];
+
+$HD_Form->FG_DEBUG = 0;
+$HD_Form->FG_TABLE_NAME = "cc_call LEFT OUTER JOIN cc_trunk ON cc_call.id_trunk = cc_trunk.id_trunk LEFT OUTER JOIN cc_ratecard ON cc_call.id_ratecard = cc_ratecard.id LEFT OUTER JOIN cc_card ON cc_call.card_id = cc_card.id";
+$HD_Form->FG_COL_QUERY = 'cc_call.starttime, cc_call.src, cc_call.dnid, cc_call.calledstation, cc_call.destination AS dest, cc_ratecard.buyrate, cc_ratecard.rateinitial, cc_call.sessiontime, cc_call.card_id, cc_trunk.trunkcode, cc_call.terminatecauseid, cc_call.sipiax, cc_call.buycost, cc_call.sessionbill, CASE WHEN cc_call.sessionbill != 0 THEN ((cc_call.sessionbill - cc_call.buycost) / cc_call.sessionbill) * 100 ELSE NULL END AS margin, CASE WHEN cc_call.buycost != 0 THEN ((cc_call.sessionbill - cc_call.buycost) / cc_call.buycost) * 100 ELSE NULL END AS markup, cc_call.id, cc_trunk.id_provider, cc_trunk.id_trunk AS trunk_id';
 
 $DBHandle = DbConnect ();
 
-$FG_TABLE_COL = [
+$HD_Form->FG_TABLE_COL = [
     [_( "Date" ), "starttime", "10%", "center", "SORT", "19", "", "", "", "", "", "display_dateformat"],
     [_( "CallerID" ), "src", "7%", "center", "SORT", "30"],
     [_( "DNID" ), "dnid", "7%", "center", "SORT", "30"],
@@ -170,231 +171,113 @@ $FG_TABLE_COL = [
     [_( "Account" ), "card_id", "6%", "center", "sort", "", "lie_link", "cc_card", "username,id", "id='%id'", "%1", "", "A2B_entity_card.php"],
     [_( "Trunk" ), "trunkcode", "6%", "center", "SORT", "30"],
     ['<acronym title="' . _( "Terminate Cause" ) . '">' . _( "TC" ) . '</acronym>', "terminatecauseid", "7%", "center", "SORT", "", "list", $dialstatus_list],
-    [_( "CallType" ), "sipiax", "6%", "center", "SORT", "", "list", $list_calltype],
+    [_( "CallType" ), "sipiax", "6%", "center", "SORT", "", "list", $calltype_list],
     [_( "Buy" ), "buycost", "7%", "center", "SORT", "30", "", "", "", "", "", "display_2bill"],
     [_( "Sell" ), "sessionbill", "7%", "center", "SORT", "30", "", "", "", "", "", "display_2bill"],
     [_( "Margin" ), "margin", "7%", "center", "SORT", "30", "", "", "", "", "", "display_2dec_percentage"],
     [_( "Markup" ), "markup", "7%", "center", "SORT", "30", "", "", "", "", "", "display_2dec_percentage"],
 ];
+$HD_Form->FG_DELETION = true;
+$HD_Form->FG_DELETION_LINK = "A2B_entity_call.php?form_action=ask-delete&id=";
 
 if (LINK_AUDIO_FILE) {
-    $FG_TABLE_COL [] = ["", "uniqueid", "1%", "center", "", "30", "", "", "", "", "", "display_monitorfile_link"];
-    $FG_COL_QUERY .= ', t1.uniqueid';
+    // TODO: figure out how this works, move it into this file with custom button
+    $HD_Form->FG_TABLE_COL [] = ["", "uniqueid", "1%", "center", "", "30", "", "", "", "", "", "display_monitorfile_link"];
+    $HD_Form->FG_COL_QUERY .= ', cc_call.uniqueid';
 }
 
-if (has_rights (ACX_DELETE_CDR)) {
-    $FG_TABLE_COL [] = ["", "id", "1%", "center", "", "30", "", "", "", "", "", "display_cdr_deletelink"];
-    $FG_COL_QUERY .= ', t1.id';
-}
+$HD_Form->FG_LIMITE_DISPLAY = 25;
 
-$FG_LIMITE_DISPLAY = 25;
-$FG_NB_TABLE_COL = count ( $FG_TABLE_COL );
-$FG_EDITION = true;
-$FG_TOTAL_TABLE_COL = $FG_NB_TABLE_COL + 1;
+$HD_Form->CV_TITLE_TEXT = _("Call Logs");
+$HD_Form->CV_CURRENT_PAGE = $current_page;
 
-$FG_HTML_TABLE_TITLE = _( " - Call Logs - " );
-$FG_HTML_TABLE_WIDTH = '98%';
-
-$instance_table = new Table ( $FG_TABLE_NAME, $FG_COL_QUERY );
-
-if (empty($order) || empty($sens)) {
-    $order = "t1.starttime";
-    $sens = "DESC";
-}
-
-if ($posted) {
-    $SQLcmd = '';
-    $SQLcmd = do_field ( $SQLcmd, 'src', 'src' );
-    $SQLcmd = do_field ( $SQLcmd, 'dst', 'calledstation' );
-    $SQLcmd = do_field ( $SQLcmd, 'dnid', 'dnid' );
-}
-
-$date_clause = '';
-
-normalize_day_of_month($fromstatsday_sday, $fromstatsmonth_sday);
-normalize_day_of_month($tostatsday_sday, $tostatsmonth_sday);
-// Date Clause
-if ($fromday && isset ( $fromstatsday_sday ) && isset ( $fromstatsmonth_sday )) {
-    if ($fromtime) {
-        $date_clause .= " AND t1.starttime >= ('$fromstatsmonth_sday-$fromstatsday_sday $fromstatsday_hour:$fromstatsday_min')";
-    } else {
-        $date_clause .= " AND t1.starttime >= ('$fromstatsmonth_sday-$fromstatsday_sday')";
-    }
-}
-if ($today && isset ( $tostatsday_sday ) && isset ( $tostatsmonth_sday )) {
-    if ($totime) {
-        $date_clause .= " AND t1.starttime <= ('$tostatsmonth_sday-" . sprintf ( "%02d", intval ( $tostatsday_sday )/*+1*/) . " $tostatsday_hour:$tostatsday_min:59')";
-    } else {
-        $date_clause .= " AND t1.starttime <= ('$tostatsmonth_sday-" . sprintf ( "%02d", intval ( $tostatsday_sday )/*+1*/) . " 23:59:59')";
-    }
-}
-
-if (strpos ( $SQLcmd, 'WHERE' ) > 0) {
-    $FG_TABLE_CLAUSE = substr ( $SQLcmd, 6 ) . $date_clause;
-} elseif (strpos ( $date_clause, 'AND' ) > 0) {
-    $FG_TABLE_CLAUSE = substr ( $date_clause, 5 );
-}
-
-if (! isset ( $FG_TABLE_CLAUSE ) || strlen ( $FG_TABLE_CLAUSE ) == 0) {
-    $cc_yearmonth = sprintf ( "%04d-%02d-%02d", date ( "Y" ), date ( "n" ), date ( "d" ) );
-    $FG_TABLE_CLAUSE = " t1.starttime >= ('$cc_yearmonth')";
-}
-
-if (isset ( $customer ) && ($customer > 0)) {
-    if (strlen ( $FG_TABLE_CLAUSE ) > 0) {
-        $FG_TABLE_CLAUSE .= " AND ";
-    }
-    $FG_TABLE_CLAUSE .= "t1.card_id='$customer'";
-} elseif (isset ( $entercustomer ) && ($entercustomer > 0)) {
-    if (strlen ( $FG_TABLE_CLAUSE ) > 0) {
-        $FG_TABLE_CLAUSE .= " AND ";
-    }
-    $FG_TABLE_CLAUSE .= "t1.card_id='$entercustomer'";
-} elseif (isset ( $entercustomer_num ) && ($entercustomer_num > 0)) {
-    $res = $DBHandle -> Execute ("select id from cc_card where username=".$entercustomer_num);
-    if ($res) {
-        if ($res->RecordCount ()) {
-            $row =$res -> fetchRow();
-            if (strlen ( $FG_TABLE_CLAUSE ) > 0) {
-                $FG_TABLE_CLAUSE .= " AND ";
-            }
-            $FG_TABLE_CLAUSE .= "t1.card_id='$row[0]'";
-        }
-    }
-}
-
-if (isset ( $enterprovider ) && $enterprovider > 0) {
-    if (strlen ( $FG_TABLE_CLAUSE ) > 0) {
-        $FG_TABLE_CLAUSE .= " AND ";
-    }
-    $FG_TABLE_CLAUSE .= "t3.id_provider = '$enterprovider'";
-}
-if (isset ( $entertrunk ) && $entertrunk > 0) {
-    if (strlen ( $FG_TABLE_CLAUSE ) > 0) {
-        $FG_TABLE_CLAUSE .= " AND ";
-    }
-    $FG_TABLE_CLAUSE .= "t3.id_trunk = '$entertrunk'";
-}
-if (isset ( $entertariffgroup ) && $entertariffgroup > 0) {
-    if (strlen ( $FG_TABLE_CLAUSE ) > 0) {
-        $FG_TABLE_CLAUSE .= " AND ";
-    }
-    $FG_TABLE_CLAUSE .= "t1.id_tariffgroup = '$entertariffgroup'";
-}
-if (isset ( $enterratecard ) && $enterratecard > 0) {
-    if (strlen ( $FG_TABLE_CLAUSE ) > 0) {
-        $FG_TABLE_CLAUSE .= " AND ";
-    }
-    $FG_TABLE_CLAUSE .= "t1.id_ratecard = '$enterratecard'";
-}
-
-if (isset ( $choose_calltype ) && ($choose_calltype != - 1)) {
-    if (strlen ( $FG_TABLE_CLAUSE ) > 0) {
-        $FG_TABLE_CLAUSE .= " AND ";
-    }
-    $FG_TABLE_CLAUSE .= " t1.sipiax='$choose_calltype' ";
-}
-
-$FG_ASR_CIC_CLAUSE = $FG_TABLE_CLAUSE;
-
-//To select just terminatecauseid=ANSWER
-if (! isset ( $terminatecauseid )) {
-    $terminatecauseid = "ANSWER";
-}
-if ($terminatecauseid == "ANSWER") {
-    if (strlen ( $FG_TABLE_CLAUSE ) > 0) {
-        $FG_TABLE_CLAUSE .= " AND ";
-    }
-    $FG_TABLE_CLAUSE .= " (t1.terminatecauseid=1) ";
-}
-if ($terminatecauseid == "INCOMPLET") {
-    if (strlen ( $FG_TABLE_CLAUSE ) > 0) {
-        $FG_TABLE_CLAUSE .= " AND ";
-    }
-    $FG_TABLE_CLAUSE .= " (t1.terminatecauseid !=1) ";
-}
-if ($terminatecauseid == "CONGESTION") {
-    if (strlen ( $FG_TABLE_CLAUSE ) > 0) {
-        $FG_TABLE_CLAUSE .= " AND ";
-    }
-    $FG_TABLE_CLAUSE .= " (t1.terminatecauseid=5) ";
-}
-if ($terminatecauseid == "NOANSWER") {
-    if (strlen ( $FG_TABLE_CLAUSE ) > 0) {
-        $FG_TABLE_CLAUSE .= " AND ";
-    }
-    $FG_TABLE_CLAUSE .= " (t1.terminatecauseid=3) ";
-}
-if ($terminatecauseid == "BUSY") {
-    if (strlen ( $FG_TABLE_CLAUSE ) > 0) {
-        $FG_TABLE_CLAUSE .= " AND ";
-    }
-    $FG_TABLE_CLAUSE .= " (t1.terminatecauseid=2) ";
-}
-if ($terminatecauseid == "CHANUNAVAIL") {
-    if (strlen ( $FG_TABLE_CLAUSE ) > 0) {
-        $FG_TABLE_CLAUSE .= " AND ";
-    }
-    $FG_TABLE_CLAUSE .= " (t1.terminatecauseid=6) ";
-}
-if ($terminatecauseid == "CANCEL") {
-    if (strlen ( $FG_TABLE_CLAUSE ) > 0) {
-        $FG_TABLE_CLAUSE .= " AND ";
-    }
-    $FG_TABLE_CLAUSE .= " (t1.terminatecauseid=4) ";
-}
-
-if (! $nodisplay) {
-    $list = $instance_table->get_list ($DBHandle, $FG_TABLE_CLAUSE, $order, $sens, $FG_LIMITE_DISPLAY, $current_page * $FG_LIMITE_DISPLAY);
-}
+$order = $HD_Form->FG_ORDER = $order ?? "cc_call.starttime";
+$sens = $HD_Form->FG_SENS = $sens ?? "DESC";
 
 // EXPORT
-$FG_EXPORT_SESSION_VAR = "pr_export_entity_call";
+$HD_Form->FG_EXPORT_CSV = true;
+$HD_Form->FG_EXPORT_XML = true;
+$HD_Form->FG_EXPORT_SESSION_VAR = "pr_export_entity_call";
+$_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] = "SELECT $HD_Form->FG_COL_QUERY FROM $HD_Form->FG_TABLE_NAME WHERE $HD_Form->FG_TABLE_CLAUSE ORDER BY $HD_Form->FG_ORDER $HD_Form->FG_SENS";
 
-// Query Preparation for the Export Functionality
-$_SESSION [$FG_EXPORT_SESSION_VAR] = "SELECT $FG_COL_QUERY FROM $FG_TABLE_NAME WHERE $FG_TABLE_CLAUSE";
-
-if (!empty($order) && !empty($sens)) {
-    $_SESSION [$FG_EXPORT_SESSION_VAR] .= " ORDER BY $order $sens";
-}
+$nb_record = $HD_Form->FG_NB_RECORD;
 
 /************************/
-$QUERY = "SELECT DATE(t1.starttime) AS day, sum(t1.sessiontime) AS calltime, sum(t1.sessionbill) AS cost, count(*) as nbcall,
-            sum(t1.buycost) AS buy, sum(case when t1.sessiontime>0 then 1 else 0 end) as success_calls
-            FROM $FG_TABLE_NAME WHERE $FG_TABLE_CLAUSE GROUP BY day ORDER BY day"; //extract(DAY from calldate)
 
-if (! $nodisplay) {
-    $res = $DBHandle->Execute ( $QUERY );
-    if ($res) {
-        $num = $res->RecordCount ();
-        for ($i = 0; $i < $num; $i ++) {
-            $list_total_day [] = $res->fetchRow ();
-        }
-    }
-
-    if ($FG_DEBUG == 3) {
-        echo "<br>Clause : $FG_TABLE_CLAUSE";
-    }
-
-    $nb_record = $instance_table->Table_count ( $DBHandle, $FG_TABLE_CLAUSE );
-    if ($FG_DEBUG >= 1) {
-        var_dump($list);
-    }
-
-}
-
-if ($nb_record <= $FG_LIMITE_DISPLAY) {
+if ($nb_record <= $HD_Form->FG_LIMITE_DISPLAY) {
     $nb_record_max = 1;
-} elseif ($nb_record % $FG_LIMITE_DISPLAY == 0) {
-    $nb_record_max = (intval ( $nb_record / $FG_LIMITE_DISPLAY ));
+} elseif ($nb_record % $HD_Form->FG_LIMITE_DISPLAY === 0) {
+    $nb_record_max = (intval ( $nb_record / $HD_Form->FG_LIMITE_DISPLAY ));
 } else {
-    $nb_record_max = (intval ( $nb_record / $FG_LIMITE_DISPLAY ) + 1);
+    $nb_record_max = (intval ( $nb_record / $HD_Form->FG_LIMITE_DISPLAY ) + 1);
 }
 
-if ($FG_DEBUG == 3) {
-    echo "<br>Nb_record : $nb_record";
+$HD_Form->FG_FILTER_SEARCH_FORM = true;
+$HD_Form->FG_FILTER_SEARCH_SESSION_NAME = 'call_log_selection';
+$HD_Form->FG_FILTER_SEARCH_TOP_TEXT = gettext('Define specific criteria to search for call records');
+$HD_Form->FG_FILTER_SEARCH_1_TIME = true;
+$HD_Form->FG_FILTER_SEARCH_1_TIME_TEXT = _('DATE');
+$HD_Form->FG_FILTER_SEARCH_1_TIME_FIELD = "cc_call.starttime";
+
+$HD_Form->FG_FILTER_SEARCH_FORM_POPUP[] = [
+    "name" => "card_id",
+    "label" => _("Enter the customer ID"),
+    "href" => "A2B_entity_card.php",
+];
+$HD_Form->FG_FILTER_SEARCH_FORM_POPUP[] = [
+    "name" => "username",
+    "label" => _("Enter the customer number"),
+    "href" => "A2B_entity_card.php",
+    "select" => 2,
+];
+$HD_Form->FG_FILTER_SEARCH_FORM_POPUP[] = [
+    "name" => "id_tariffgroup",
+    "label" => _("Call Plan"),
+    "href" => "A2B_entity_tariffgroup.php",
+    "select" => 2,
+];
+$HD_Form->FG_FILTER_SEARCH_FORM_POPUP[] = [
+    "name" => "id_provider",
+    "label" => _("Provider"),
+    "href" => "A2B_entity_provider.php",
+    "select" => 2,
+];
+$HD_Form->FG_FILTER_SEARCH_FORM_POPUP[] = [
+    "name" => "cc_call.id_trunk",
+    "label" => _("Trunk"),
+    "href" => "A2B_entity_trunk.php",
+    "select" => 2,
+];
+$HD_Form->FG_FILTER_SEARCH_FORM_POPUP[] = [
+    "name" => "id_ratecard",
+    "label" => _("Rate"),
+    "href" => "A2B_entity_def_ratecard.php",
+    "select" => 2,
+];
+if ($_SESSION ["pr_groupID"] == 2 && is_numeric($_SESSION ["pr_IDCust"])) {
+    $HD_Form->FG_FILTER_SEARCH_FORM_POPUP = [];
 }
-if ($FG_DEBUG == 3) {
+
+$HD_Form->AddSearchElement_C1(_("Phone number"), "destination", "dsttype");
+$HD_Form->AddSearchElement_C1(_("Caller ID"), "src", "srctype");
+$HD_Form->AddSearchElement_C1(_("DNID"), "dnid", "dnidtype");
+
+$HD_Form->FG_FILTER_SEARCH_FORM_SELECT[] = [_("Disposition"), false, "terminatecauseid", $dialstatus_list_r];
+$HD_Form->FG_FILTER_SEARCH_FORM_SELECT[] = [_("Call type"), false, "sipiax", $calltype_list];
+/** TODO: find some way to intercept display of records to apply these options
+$HD_Form->FG_FILTER_SEARCH_FORM_SELECT[] = [_("Currency"), false, "choose_currency", $currencies_list];
+$HD_Form->FG_FILTER_SEARCH_FORM_SELECT[] = [_("Time unit"), false, "choose_timeunit", [["min", _("Minutes")], ["sec", _("Seconds")]]];
+ */
+$HD_Form->FG_FILTER_SEARCH_DELETE_ALL = false;
+
+if (!$nodisplay) {
+    $HD_Form->prepare_list_subselection('list');
+    $form_action = $form_action ?? "list";
+    $list = $HD_Form->perform_action($form_action);
+}
+
+if ($HD_Form->FG_DEBUG == 3) {
+    echo "<br>Nb_record : $nb_record";
     echo "<br>Nb_record_max : $nb_record_max";
 }
 
@@ -403,682 +286,76 @@ $smarty->display ( 'main.tpl' );
 ?>
 
 <!-- ** ** ** ** ** Part for the research ** ** ** ** ** -->
-<center>
-<FORM METHOD=POST name="myForm"
-    ACTION="?s=1&t=0&order=<?= $order?>&sens=<?= $sens?>&current_page=<?= $current_page?>">
-<INPUT TYPE="hidden" NAME="posted" value=1> <INPUT TYPE="hidden"
-    NAME="current_page" value=0>
-<TABLE class="bar-status" width="85%" border="0" cellspacing="1"
-    cellpadding="2" align="center">
-        <?php
-        if ($_SESSION ["pr_groupID"] == 2 && is_numeric ( $_SESSION ["pr_IDCust"] )) {
-            ?>
-        <?php
-        } else {
-            ?>
-        <tr>
-        <td align="left" valign="top" class="bgcolor_004"><font
-            class="fontstyle_003">&nbsp;&nbsp;<?= _( "CUSTOMERS" ) ?></font>
-        </td>
-        <td class="bgcolor_005" align="left">
-        <table width="100%" border="0" cellspacing="0" cellpadding="0">
-            <tr>
-                <td class="fontstyle_searchoptions" width="700" valign="top">
-                    <?= _("Enter the customer ID") ?>: <INPUT TYPE="text" NAME="entercustomer" value="<?= $entercustomer ?>" class="form_input_text">
-                    <a href="A2B_entity_card.php" class="badge bg-primary popup_trigger" aria-label="open a popup to select an item">&gt;</a>
-                 <BR> OR <br>
-                    <?= _("Enter the customer number") ?>: <INPUT TYPE="text" NAME="entercustomer_num" value="<?= $entercustomer_num ?>" class="form_input_text">
-                    <a href="A2B_entity_card.php" data-select="2" class="badge bg-primary popup_trigger" aria-label="open a popup to select an item">&gt;</a>
-                </td>
-                <td width="50%">
-                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                        <tr>
-                            <td align="left" class="fontstyle_searchoptions"><?= _("CallPlan") ?> :</td>
-                            <td align="left" class="fontstyle_searchoptions"><INPUT TYPE="text" NAME="entertariffgroup" value="<?= $entertariffgroup ?>" size="4" class="form_input_text">&nbsp;<a href="A2B_entity_tariffgroup.php" data-select="2" class="badge bg-primary popup_trigger" aria-label="open a popup to select an item">&gt;</a></td>
-                            <td align="left" class="fontstyle_searchoptions"><?= _("Provider") ?> :
-                            <td align="left" class="fontstyle_searchoptions"><INPUT TYPE="text" NAME="enterprovider" value="<?= $enterprovider ?>" size="4" class="form_input_text">&nbsp;<a href="A2B_entity_provider.php" data-select="2" class="badge bg-primary popup_trigger" aria-label="open a popup to select an item">&gt;</a></td>
-                        </tr>
-                        <tr>
-                            <td align="left" class="fontstyle_searchoptions"><?= _("Trunk") ?> :</td>
-                            <td align="left" class="fontstyle_searchoptions"><INPUT TYPE="text" NAME="entertrunk" value="<?= $entertrunk ?>" size="4" class="form_input_text">&nbsp;<a href="A2B_entity_trunk.php" data-select="2" class="badge bg-primary popup_trigger" aria-label="open a popup to select an item">&gt;</a></td>
-                            <td align="left" class="fontstyle_searchoptions"><?= _("Rate") ?> :</td>
-                            <td align="left" class="fontstyle_searchoptions"><INPUT TYPE="text" NAME="enterratecard" value="<?= $enterratecard ?>" size="4" class="form_input_text">&nbsp;<a href="A2B_entity_def_ratecard.php" data-select="2" class="badge bg-primary popup_trigger" aria-label="open a popup to select an item">&gt;</a></td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-
-        </table>
-        </td>
-    </tr>
-        <?php
-        }
-        ?>
-    <tr>
-        <td align="left" class="bgcolor_004"><font class="fontstyle_003">&nbsp;&nbsp;<?= _( "DATE" ) ?></font>
-        </td>
-        <td align="left" class="bgcolor_005">
-        <table width="100%" border="0" cellspacing="0" cellpadding="0">
-            <tr>
-                <td class="fontstyle_searchoptions"><input type="checkbox"
-                    name="fromday" value="true" <?php
-                    if ($fromday) {
-                        ?> checked
-                    <?php
-                    }
-                    ?>> <?= _( "From" ) ?> :
-                <select name="fromstatsday_sday" class="form_input_select">
-                    <?php
-                    for ($i = 1; $i <= 31; $i ++) {
-                        if ($fromstatsday_sday == sprintf ( "%02d", $i )) {
-                            $selected = "selected";
-                        }
-                        else {
-                            $selected = "";
-                        }
-                        echo '<option value="' . sprintf ( "%02d", $i ) . "\"$selected>" . sprintf ( "%02d", $i ) . '</option>';
-                    }
-                    ?>
-                </select> <select name="fromstatsmonth_sday"
-                    class="form_input_select">
-                <?php
-                $year_actual = date ( "Y" );
-                $monthname = [_( "January" ), _( "February" ), _( "March" ), _( "April" ), _( "May" ), _( "June" ), _( "July" ), _( "August" ), _( "September" ), _( "October" ), _( "November" ), _( "December" )];
-
-                for ($i = $year_actual; $i >= $year_actual - 1; $i --) {
-                    if ($year_actual == $i) {
-                        $monthnumber = date ( "n" ) - 1; // Month number without lead 0.
-                    } else {
-                        $monthnumber = 11;
-                    }
-                    for ($j = $monthnumber; $j >= 0; $j --) {
-                        $month_formated = sprintf ( "%02d", $j + 1 );
-                        if ($fromstatsmonth_sday == "$i-$month_formated") {
-                            $selected = "selected";
-                        }
-                        else {
-                            $selected = "";
-                        }
-                        echo "<OPTION value=\"$i-$month_formated\" $selected> $monthname[$j]-$i </option>";
-                    }
-                }
-                ?>
-                </select> <br />
-                <input type="checkbox" name="fromtime" value="true"
-                    <?php
-                    if ($fromtime) {
-                        ?> checked <?php
-                    }
-                    ?>>
-                <?= _( "Time :" ) ?>
-                <select name="fromstatsday_hour" class="form_input_select">
-                <?php
-                for ($i = 0; $i <= 23; $i ++) {
-                    if ($fromstatsday_hour == sprintf ( "%02d", $i )) {
-                        $selected = "selected";
-                    } else {
-                        $selected = "";
-                    }
-                    echo '<option value="' . sprintf ( "%02d", $i ) . "\"$selected>" . sprintf ( "%02d", $i ) . '</option>';
-                }
-                ?>
-                </select> : <select name="fromstatsday_min"
-                    class="form_input_select">
-                <?php
-                for ($i = 0; $i < 60; $i = $i + 5) {
-                    if ($fromstatsday_min == sprintf ( "%02d", $i )) {
-                        $selected = "selected";
-                    } else {
-                        $selected = "";
-                    }
-                    echo '<option value="' . sprintf ( "%02d", $i ) . "\"$selected>" . sprintf ( "%02d", $i ) . '</option>';
-                }
-                ?>
-                </select></td>
-                <td class="fontstyle_searchoptions"><input type="checkbox"
-                    name="today" value="true" <?php
-                    if ($today) {
-                        ?> checked <?php
-                    }
-                    ?>>
-                <?= _( "To" ) ?>  :
-                <select name="tostatsday_sday" class="form_input_select">
-                <?php
-                for ($i = 1; $i <= 31; $i ++) {
-                    if ($tostatsday_sday == sprintf ( "%02d", $i )) {
-                        $selected = "selected";
-                    } else {
-                        $selected = "";
-                    }
-                    echo '<option value="' . sprintf ( "%02d", $i ) . "\"$selected>" . sprintf ( "%02d", $i ) . '</option>';
-                }
-                ?>
-                </select> <select name="tostatsmonth_sday" class="form_input_select">
-                <?php
-                $year_actual = date ( "Y" );
-                for ($i = $year_actual; $i >= $year_actual - 1; $i --) {
-                    if ($year_actual == $i) {
-                        $monthnumber = date ( "n" ) - 1; // Month number without lead 0.
-                    } else {
-                        $monthnumber = 11;
-                    }
-                    for ($j = $monthnumber; $j >= 0; $j --) {
-                        $month_formated = sprintf ( "%02d", $j + 1 );
-                        if ($tostatsmonth_sday == "$i-$month_formated") {
-                            $selected = "selected";
-                        }
-                        else {
-                            $selected = "";
-                        }
-                        echo "<OPTION value=\"$i-$month_formated\" $selected> $monthname[$j]-$i </option>";
-                    }
-                }
-                ?>
-                </select> <br />
-                <input type="checkbox" name="totime" value="true"
-                    <?php
-                    if ($totime) {
-                        ?> checked <?php
-                    }
-                    ?>>
-                <?= _( "Time :" ) ?>
-                <select name="tostatsday_hour" class="form_input_select">
-                <?php
-                for ($i = 0; $i <= 23; $i ++) {
-                    if ($tostatsday_hour == sprintf ( "%02d", $i )) {
-                        $selected = "selected";
-                    } else {
-                        $selected = "";
-                    }
-                    echo '<option value="' . sprintf ( "%02d", $i ) . "\"$selected>" . sprintf ( "%02d", $i ) . '</option>';
-                }
-                ?>
-                </select> : <select name="tostatsday_min" class="form_input_select">
-                <?php
-                for ($i = 0; $i < 60; $i = $i + 5) {
-                    if ($tostatsday_min == sprintf ( "%02d", $i )) {
-                        $selected = "selected";
-                    } else {
-                        $selected = "";
-                    }
-                    echo '<option value="' . sprintf ( "%02d", $i ) . "\"$selected>" . sprintf ( "%02d", $i ) . '</option>';
-                }
-                ?>
-                </select></td>
-            </tr>
-        </table>
-        </td>
-    </tr>
-    <tr>
-        <td class="bgcolor_002" align="left"><font class="fontstyle_003">&nbsp;&nbsp;<?= _( "PHONENUMBER" ) ?></font>
-        </td>
-        <td class="bgcolor_003" align="left">
-        <table width="100%" border="0" cellspacing="0" cellpadding="0">
-            <tr>
-                <td>&nbsp;&nbsp;<INPUT TYPE="text" NAME="dst"
-                    value="<?= $dst ?>" class="form_input_text"></td>
-                <td class="fontstyle_searchoptions" align="center"><input
-                    type="radio" NAME="dsttype" value="1"
-                    <?php
-                    if ((! isset ( $dsttype )) || ($dsttype == 1)) {
-                        ?> checked <?php
-                    }
-                    ?>><?= _( "Exact" ) ?></td>
-                <td class="fontstyle_searchoptions" align="center"><input
-                    type="radio" NAME="dsttype" value="2" <?php
-                    if ($dsttype == 2) {
-                        ?>
-                    checked <?php
-                    }
-                    ?>><?= _( "Begins with" ) ?></td>
-                <td class="fontstyle_searchoptions" align="center"><input
-                    type="radio" NAME="dsttype" value="3" <?php
-                    if ($dsttype == 3) {
-                        ?>
-                    checked <?php
-                    }
-                    ?>><?= _( "Contains" ) ?></td>
-                <td class="fontstyle_searchoptions" align="center"><input
-                    type="radio" NAME="dsttype" value="4" <?php
-                    if ($dsttype == 4) {
-                        ?>
-                    checked <?php
-                    }
-                    ?>><?= _( "Ends with" ) ?></td>
-            </tr>
-        </table>
-        </td>
-    </tr>
-    <tr>
-        <td align="left" class="bgcolor_004"><font class="fontstyle_003">&nbsp;&nbsp;<?= _( "CALLERID" ) ?></font>
-        </td>
-        <td class="bgcolor_005" align="left">
-        <table width="100%" border="0" cellspacing="0" cellpadding="0">
-            <tr>
-                <td>&nbsp;&nbsp;<INPUT TYPE="text" NAME="src"
-                    value="<?= "$src" ?>" class="form_input_text"></td>
-                <td class="fontstyle_searchoptions" align="center"><input
-                    type="radio" NAME="srctype" value="1"
-                    <?php
-                    if ((! isset ( $srctype )) || ($srctype == 1)) {
-                        ?> checked <?php
-                    }
-                    ?>><?= _( "Exact" ) ?></td>
-                <td class="fontstyle_searchoptions" align="center"><input
-                    type="radio" NAME="srctype" value="2" <?php
-                    if ($srctype == 2) {
-                        ?>
-                    checked <?php
-                    }
-                    ?>><?= _( "Begins with" ) ?></td>
-                <td class="fontstyle_searchoptions" align="center"><input
-                    type="radio" NAME="srctype" value="3" <?php
-                    if ($srctype == 3) {
-                        ?>
-                    checked <?php
-                    }
-                    ?>><?= _( "Contains" ) ?></td>
-                <td class="fontstyle_searchoptions" align="center"><input
-                    type="radio" NAME="srctype" value="4" <?php
-                    if ($srctype == 4) {
-                        ?>
-                    checked <?php
-                    }
-                    ?>><?= _( "Ends with" ) ?></td>
-            </tr>
-        </table>
-        </td>
-    </tr>
-
-    <tr>
-        <td align="left" class="bgcolor_004"><font class="fontstyle_003">&nbsp;&nbsp;<?= _( "DNID" ) ?></font>
-        </td>
-        <td class="bgcolor_005" align="left">
-        <table width="100%" border="0" cellspacing="0" cellpadding="0">
-            <tr>
-                <td>&nbsp;&nbsp;<INPUT TYPE="text" NAME="dnid"
-                    value="<?= "$dnid" ?>" class="form_input_text"></td>
-                <td class="fontstyle_searchoptions" align="center"><input
-                    type="radio" NAME="dnidtype" value="1"
-                    <?php
-                    if ((! isset ( $dnidtype )) || ($dnidtype == 1)) {
-                        ?> checked <?php
-                    }
-                    ?>><?= _( "Exact" ) ?></td>
-                <td class="fontstyle_searchoptions" align="center"><input
-                    type="radio" NAME="dnidtype" value="2" <?php
-                    if ($dnidtype == 2) {
-                        ?>
-                    checked <?php
-                    }
-                    ?>><?= _( "Begins with" ) ?></td>
-                <td class="fontstyle_searchoptions" align="center"><input
-                    type="radio" NAME="dnidtype" value="3" <?php
-                    if ($dnidtype == 3) {
-                        ?>
-                    checked <?php
-                    }
-                    ?>><?= _( "Contains" ) ?></td>
-                <td class="fontstyle_searchoptions" align="center"><input
-                    type="radio" NAME="dnidtype" value="4" <?php
-                    if ($dnidtype == 4) {
-                        ?>
-                    checked <?php
-                    }
-                    ?>><?= _( "Ends with" ) ?></td>
-            </tr>
-        </table>
-        </td>
-    </tr>
-
-    <!-- Select Calltype: -->
-    <tr>
-        <td class="bgcolor_002" align="left"><font class="fontstyle_003">&nbsp;&nbsp;<?= _( "CALL TYPE" ) ?></font></td>
-        <td class="bgcolor_003" align="center">
-        <table width="100%" border="0" cellspacing="0" cellpadding="0">
-            <tr>
-                <td class="fontstyle_searchoptions"><select NAME="choose_calltype"
-                    size="1" class="form_input_select">
-                    <option value='-1'
-                        <?php
-                        if (($choose_calltype == - 1) || (! isset ( $choose_calltype ))) {
-                            ?>
-                        selected <?php
-                        }
-                        ?>><?= _( 'ALL CALLS' ) ?>
-                                </option>
-                            <?php
-                            foreach ($list_calltype as $key => $cur_value) {
-                                ?>
-                                <option value='<?= $cur_value [1] ?>'
-                        <?php
-                                if ($choose_calltype == $cur_value [1]) {
-                                    ?> selected <?php
-                                }
-                                ?>><?= _( $cur_value [0] ) ?>
-                                </option>
-                            <?php
-                            }
-                            ?>
-                        </select></td>
-            </tr>
-        </table>
-        </td>
-    </tr>
-
-    <!-- Select Option : to show just the Answered Calls or all calls, Result type, currencies... -->
-    <tr>
-        <td class="bgcolor_002" align="left"><font class="fontstyle_003">&nbsp;&nbsp;<?= _( "OPTIONS" ) ?></font></td>
-        <td class="bgcolor_003" align="center">
-        <div align="left">
-
-        <table width="100%" border="0" cellspacing="0" cellpadding="0">
-            <tr>
-                <td width="20%" class="fontstyle_searchoptions">
-                    <?= _( "SHOW CALLS" ) ?> :
-               </td>
-                <td width="80%" class="fontstyle_searchoptions"><select
-                    NAME="terminatecauseid" size="1" class="form_input_select">
-                    <option value='ANSWER'
-                        <?php
-                        if ((! isset ( $terminatecauseid )) || ($terminatecauseid == "ANSWER")) {
-                            ?>
-                        selected <?php
-                        }
-                        ?>><?= _( 'ANSWERED' ) ?>
-                            </option>
-
-                    <option value='ALL' <?php
-                    if ($terminatecauseid == "ALL") {
-                        ?> selected
-                        <?php
-                    }
-                    ?>><?= _( 'ALL' ) ?>
-                            </option>
-
-                    <option value='INCOMPLET'
-                        <?php
-                        if ($terminatecauseid == "INCOMPLET") {
-                            ?> selected <?php
-                        }
-                        ?>><?= _( 'NOT COMPLETED' ) ?>
-                            </option>
-
-                    <option value='CONGESTION'
-                        <?php
-                        if ($terminatecauseid == "CONGESTION") {
-                            ?> selected <?php
-                        }
-                        ?>><?= _( 'CONGESTIONED' ) ?>
-                            </option>
-
-                    <option value='BUSY' <?php
-                    if ($terminatecauseid == "BUSY") {
-                        ?>
-                        selected <?php
-                    }
-                    ?>><?= _( 'BUSIED' ) ?>
-                            </option>
-
-                    <option value='NOANSWER'
-                        <?php
-                        if ($terminatecauseid == "NOANSWER") {
-                            ?> selected <?php
-                        }
-                        ?>><?= _( 'NOT ANSWERED' ) ?>
-                            </option>
-
-                    <option value='CHANUNAVAIL'
-                        <?php
-                        if ($terminatecauseid == "CHANUNAVAIL") {
-                            ?> selected <?php
-                        }
-                        ?>><?= _( 'CHANNEL UNAVAILABLE' ) ?>
-                            </option>
-
-                    <option value='CANCEL' <?php
-                    if ($terminatecauseid == "CANCEL") {
-                        ?>
-                        selected <?php
-                    }
-                    ?>><?= _( 'CANCELED' ) ?>
-                            </option>
-
-                </select></td>
-            </tr>
-            <tr class="bgcolor_005">
-                <td class="fontstyle_searchoptions">
-                    <?= _( "RESULT" ) ?> :
-               </td>
-                <td class="fontstyle_searchoptions">
-                    <?= _( "mins" ) ?><input type="radio" NAME="resulttype"
-                    value="min"
-                    <?php
-                    if ((! isset ( $resulttype )) || ($resulttype == "min")) {
-                        ?> checked
-                    <?php
-                    }
-                    ?>> - <?= _( "secs" ) ?> <input type="radio"
-                    NAME="resulttype" value="sec" <?php
-                    if ($resulttype == "sec") {
-                        ?>
-                    checked <?php
-                    }
-                    ?>></td>
-            </tr>
-            <tr>
-                <td class="fontstyle_searchoptions">
-                    <?= _( "CURRENCY" ) ?> :
-                </td>
-                <td class="fontstyle_searchoptions"><select NAME="choose_currency"
-                    size="1" class="form_input_select">
-                        <?php
-                        $currencies_list = get_currencies ();
-                        foreach ($currencies_list as $key => $cur_value) {
-                            ?>
-                            <option value='<?= $key ?>'
-                        <?php
-                            if (($choose_currency == $key) || (! isset ( $choose_currency ) && $key == strtoupper ( BASE_CURRENCY ))) {
-                                ?>
-                        selected <?php
-                            }
-                            ?>><?= $cur_value [1] . ' (' . $cur_value [2] . ')' ?>
-                            </option>
-                        <?php
-                        }
-                        ?>
-                    </select></td>
-            </tr>
-        </table>
-
-        </td>
-    </tr>
-    <!-- Select Option : to show just the Answered Calls or all calls, Result type, currencies... -->
-
-    <tr>
-        <td class="bgcolor_004" align="left"></td>
-        <td class="bgcolor_005" align="center"><input type="image"
-            name="image16" align="top" border="0"
-            src="<?= Images_Path ?>/button-search.gif" /></td>
-    </tr>
-</table>
-</FORM>
-</center>
+<div class="row justify-content-center">
+    <div class="col-auto">
+        <button
+                class="btn btn-sm <?= empty($_SESSION[$HD_Form->FG_FILTER_SEARCH_SESSION_NAME]) ? "btn-outline-primary" : "btn-primary" ?>"
+                data-bs-toggle="modal"
+                data-bs-target="#searchModal"
+                title="<?= _("Search Calls") ?> <?= empty($_SESSION[$HD_Form->FG_FILTER_SEARCH_SESSION_NAME]) ? "" : "(" . _("search activated") . ")" ?>"
+        >
+            <?= _("Search Calls") ?>
+        </button>
+    </div>
+</div>
+    <div class="modal" id="searchModal" aria-labelledby="modal-title-search" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-title-search"><?= _("Search Customers") ?></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <?php $HD_Form->create_search_form() ?>
+                </div>
+                <!-- buttons are in the form
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" form="searchForm" class="btn btn-primary"><?= _("Search") ?></button>
+                </div>
+                -->
+            </div>
+        </div>
+    </div>
 
 <!-- ** ** ** ** ** Part to display the CDR ** ** ** ** ** -->
-
-<center><?= _( "Number of call" ) ?> : <?php
-if (is_array ( $list ) && count ( $list ) > 0) {
-    echo $nb_record;
-} else {
-    echo "0";
-}
-?></center>
-
-<table width="<?= $FG_HTML_TABLE_WIDTH ?>" border="0" align="center" cellpadding="0" cellspacing="0">
-    <TR bgcolor="#ffffff">
-        <TD class="bgcolor_021" height=16 style="PADDING-LEFT: 5px; PADDING-RIGHT: 3px">
-        <TABLE border=0 cellPadding=0 cellSpacing=0 width="100%">
-            <TR>
-                <TD><SPAN class="fontstyle_003"><?= $FG_HTML_TABLE_TITLE ?></SPAN></TD>
-            </TR>
-        </TABLE>
-        </TD>
-    </TR>
-    <TR>
-        <TD>
-        <TABLE border=0 cellPadding=0 cellSpacing=0 width="100%">
-            <TR class="bgcolor_008">
-                <TD width="<?= $FG_ACTION_SIZE_COLUMN ?>" align=center class="tableBodyRight" style="PADDING-BOTTOM: 2px; PADDING-LEFT: 2px; PADDING-RIGHT: 2px; PADDING-TOP: 2px"></TD>
-
-                  <?php
-                        if (is_array ( $list ) && count ( $list ) > 0) {
-
-                            for ($i = 0; $i < $FG_NB_TABLE_COL; $i ++) {
-                                ?>
-                    <TD width="<?= $FG_TABLE_COL [$i] [2] ?>" align=middle class="tableBody" style="PADDING-BOTTOM: 2px; PADDING-LEFT: 2px; PADDING-RIGHT: 2px; PADDING-TOP: 2px">
-                        <center><strong>
-                        <?php if (strtoupper ( $FG_TABLE_COL [$i] [4] ) == "SORT") { ?>
-                        <a href="<?php
-                                echo "?entercustomer_num=$entercustomer_num&s=1&t=0&stitle=$stitle&atmenu=$atmenu&current_page=$current_page&order=" . $FG_TABLE_COL [$i] [1] . "&sens=";
-                                if ($sens == "ASC") {
-                                    echo "DESC";
-                                } else {
-                                    echo "ASC";
-                                }
-                                echo "&entercustomer=$entercustomer&enterprovider=$enterprovider&entertrunk=$entertrunk&posted=$posted&Period=$Period&frommonth=$frommonth&fromstatsmonth=$fromstatsmonth&tomonth=$tomonth&tostatsmonth=$tostatsmonth&fromday=$fromday&fromstatsday_sday=$fromstatsday_sday&fromstatsmonth_sday=$fromstatsmonth_sday&today=$today&tostatsday_sday=$tostatsday_sday&tostatsmonth_sday=$tostatsmonth_sday&dsttype=$dsttype&srctype=$srctype&clidtype=$clidtype&channel=$channel&resulttype=$resulttype&dst=$dst&src=$src&clid=$clid&terminatecauseid=$terminatecauseid&choose_calltype=$choose_calltype";
-                                    ?>">
-<span class="liens"><?php
-                                }
-                                ?>
-<?= $FG_TABLE_COL [$i] [0] ?>
-<?php if ($order == $FG_TABLE_COL [$i] [1] && $sens == "ASC") { ?>
-&nbsp;<img src="<?= Images_Path ?>/icon_up_12x12.GIF" width="12"
-height="12" border="0">
 <?php
- } elseif ($order == $FG_TABLE_COL [$i] [1] && $sens == "DESC") {
-?>
-&nbsp;<img src="<?= Images_Path ?>/icon_down_12x12.GIF" width="12" height="12" border="0">
-<?php } ?>
-<?php if (strtoupper ( $FG_TABLE_COL [$i] [4] ) == "SORT") { ?>
-</span></a>
-<?php } ?>
-</strong></center>
-</TD>
-   <?php } ?>
-</TR>
-<?php
-
-$ligne_number = 0;
-//print_r($list);
-foreach ($list as $recordset) {
-    $ligne_number ++;
-    ?>
-
-<TR>
-<TD vAlign=top align="<?= $FG_TABLE_COL [$i] [3] ?>" class=tableBody><?= $ligne_number + $current_page * $FG_LIMITE_DISPLAY . ".&nbsp;" ?></TD>
-
-<?php for ($i = 0; $i < $FG_NB_TABLE_COL; $i ++) { ?>
-
-    <?php if ($FG_TABLE_COL [$i] [6] == "lie") {
-
-                    $instance_sub_table = new Table ( $FG_TABLE_COL [$i] [7], $FG_TABLE_COL [$i] [8] );
-                    $sub_clause = str_replace ( "%id", $recordset [$i], $FG_TABLE_COL [$i] [9] );
-                    $select_list = $instance_sub_table->get_list ($DBHandle, $sub_clause, null, null, null, null, null, 10);
-
-                    $field_list_sun = preg_split('/,/', $FG_TABLE_COL [$i] [8] );
-                    $record_display = $FG_TABLE_COL [$i] [10];
-
-                    if (is_array($select_list)) {
-                        for ($l = 1; $l <= count ( $field_list_sun ); $l ++) {
-                            $record_display = str_replace ( "%$l", $select_list [0] [$l - 1], $record_display );
-                        }
-                    } else {
-                        $record_display = $recordset [$i];
-                    }
-                } elseif ($FG_TABLE_COL[$i][6]=="lie_link") {
-                    $instance_sub_table = new Table($FG_TABLE_COL[$i][7], $FG_TABLE_COL[$i][8]);
-                    $sub_clause = str_replace ( "%id", $recordset [$i], $FG_TABLE_COL [$i] [9] );
-                    $select_list = $instance_sub_table -> get_list ($DBHandle, $sub_clause, null, null, null, null, null, 10);
-                    if (is_array($select_list)) {
-                        $field_list_sun = preg_split('/,/',$FG_TABLE_COL[$i][8]);
-                        $record_display = $FG_TABLE_COL[$i][10];
-                        $link = $FG_TABLE_COL[$i][12]."?form_action=ask-edit&id=".$select_list[0][1];
-                        for ($l=1;$l<=count($field_list_sun);$l++) {
-                            $val = str_replace("%$l", $select_list[0][$l-1], $record_display);
-                            $record_display = "<a href='$link'>$val</a>";
-                        }
-                    } else {
-                        $record_display="";
-                    }
-                } elseif ($FG_TABLE_COL [$i] [6] == "list") {
-                    $select_list = $FG_TABLE_COL [$i] [7];
-                    $record_display = $select_list [$recordset [$i]] [0];
-
-                } else {
-                    $record_display = $recordset [$i];
-                }
-
-                if (is_numeric ( $FG_TABLE_COL [$i] [5] ) && (strlen ( $record_display ) > $FG_TABLE_COL [$i] [5])) {
-                    $record_display = substr ( $record_display, 0, $FG_TABLE_COL [$i] [5] - 3 ) . "";
-
-                }
-
-                ?>
-        <TD vAlign=top align="<?= $FG_TABLE_COL [$i] [3] ?>" class=tableBody><?php
-            if (isset ( $FG_TABLE_COL [$i] [11] ) && strlen ( $FG_TABLE_COL [$i] [11] ) > 1) {
-                call_user_func ( $FG_TABLE_COL [$i] [11], $record_display );
-            } elseif (strlen($record_display)>0) {
-                echo stripslashes ( $record_display );
-            } else {
-                echo '&nbsp;';
-            }
-        ?></TD>
-     <?php } ?>
-
-    </TR>
-    <?php } //foreach ($list as $recordset)
-        if ($ligne_number < $FG_LIMITE_DISPLAY) {
-            $ligne_number_end = $ligne_number + 2;
-        }
-        while ($ligne_number < $ligne_number_end) {
-            $ligne_number ++;
-            ?>
-        <TR>
-        <?php for ($i = 0; $i < $FG_NB_TABLE_COL; $i ++) { ?>
-         <TD vAlign=top class=tableBody>&nbsp;</TD>
-         <?php } ?>
-         <TD align="center" vAlign=top class=tableBodyRight>&nbsp;</TD>
-        </TR>
-
-        <?php } //END_WHILE
-
-                } else {
-                    echo _( "No data found !!!" );
-                } //end_if
-        ?>
-        </TABLE>
-        </td>
-    </tr>
-</table>
-
-<?php
-$params = compact( "current_page", "order", "sens", "letter", "entercustomer_num", "posted", "Period", "frommonth", "fromstatsmonth", "tomonth", "tostatsmonth", "fromday", "fromstatsday_sday", "fromstatsmonth_sday", "today", "tostatsday_sday", "tostatsmonth_sday", "dsttype", "srctype", "clidtype", "channel", "resulttype", "dst", "src", "clid", "terminatecauseid", "choose_calltype", "entercustomer", "enterprovider", "entertrunk");
-$params = array_filter($params, fn ($v) => $v !== "");
-$params["current_page"] = "%s";
-echo FormHandler::printPages($current_page + 1, $nb_record_max, "?s=1&amp;t=0&amp;" . http_build_query($params, "", "&amp;"));
+$HD_Form->create_toppage ($form_action);
+$HD_Form->create_form("list", $list);
 ?>
 <!-- ** ** ** ** ** Part to display the GRAPHIC ** ** ** ** ** -->
+
 <br>
 
 <?php
-if (is_array ( $list_total_day ) && count ( $list_total_day ) > 0) {
+$list_total_day = [];
+if (!$nodisplay) {
+    $QUERY = "SELECT DATE(cc_call.starttime) AS day, SUM(cc_call.sessiontime) AS calltime, SUM(cc_call.sessionbill) AS cost, COUNT(*) as nbcall,
+            SUM(cc_call.buycost) AS buy, SUM(CASE WHEN cc_call.sessiontime > 0 THEN 1 ELSE 0 END) AS success_calls
+            FROM $HD_Form->FG_TABLE_NAME WHERE $HD_Form->FG_TABLE_CLAUSE GROUP BY day ORDER BY day";
+
+    $res = $HD_Form->DBHandle->Execute ( $QUERY );
+    if ($res) {
+        $list_total_day = $res->GetAll();
+    }
+
+    if ($HD_Form->FG_DEBUG >= 1) {
+        if ($HD_Form->FG_DEBUG == 3) {
+            echo "<br>Clause : $HD_Form->FG_TABLE_CLAUSE";
+        }
+        var_dump($list);
+    }
+}
+
+if (count($list_total_day)) {
 
     $mmax = 0;
     $totalcall = 0;
     $totalminutes = 0;
     $totalsuccess = 0;
     $totalfail = 0;
+    $totalcost = 0;
+    $totalbuycost = 0;
     foreach ($list_total_day as $data) {
         if ($mmax < $data [1]) {
             $mmax = $data [1];
@@ -1250,12 +527,6 @@ if (is_array ( $list_total_day ) && count ( $list_total_day ) > 0) {
         </tr>
     </tbody>
 </table>
-
-<br>
-<!-- SECTION EXPORT //--> &nbsp; &nbsp;
-<a href="export_csv.php?var_export=<?= $FG_EXPORT_SESSION_VAR ?>&var_export_type=type_csv" target="_blank"><img src="<?= Images_Path ?>/excel.gif" border="0" height="30" /><?= _( "Export CSV" ) ?></a>
-- &nbsp; &nbsp;
-<a href="export_csv.php?var_export=<?= $FG_EXPORT_SESSION_VAR ?>&var_export_type=type_xml" target="_blank"><img src="<?= Images_Path ?>/icons_xml.gif" border="0" height="32" /><?= _( "Export XML" ) ?></a>
 
 <?php } else { ?>
 <center>
