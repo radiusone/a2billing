@@ -68,7 +68,7 @@ if ($form_action === 'list') {
     function sendValue(selvalue) {
         var formname = <?= json_encode($popup_formname ?? "") ?>;
         var fieldname = <?= json_encode($popup_fieldname ?? "") ?>;
-        $(`form[name=${formname}] [name=${fieldname}]`, window.opener.document).val(selvalue);
+        $(`form[name='${formname}'] [name='${fieldname}']`, window.opener.document).val(selvalue);
         window.close();
     }
 </script>

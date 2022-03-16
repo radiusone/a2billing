@@ -187,7 +187,7 @@ $smarty->display('main.tpl');
 function sendValue(selvalue, othervalue) {
     var formname = <?= json_encode($popup_formname ?? "") ?>;
     var fieldname = <?= json_encode($popup_fieldname ?? "") ?>;
-    $(`form[name=${formname}] [name=${fieldname}]`, window.opener.document).val(selvalue);
+    $(`form[name='${formname}'] [name='${fieldname}']`, window.opener.document).val(selvalue);
     if (othervalue) {
         $(`form[name=${formname}] [name=accountcode]`, window.opener.document).val(othervalue);
     }

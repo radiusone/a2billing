@@ -670,7 +670,7 @@ if ($popup_select): ?>
 function sendValue(selvalue) {
     const formname = <?= json_encode($popup_formname ?? "") ?>;
     const fieldname = <?= json_encode($popup_fieldname ?? "") ?>;
-    $(`form[name=${formname}] [name=${fieldname}]`, window.opener.document).val(selvalue);
+    $(`form[name='${formname}'] [name='${fieldname}']`, window.opener.document).val(selvalue);
     window.close();
 }
 
