@@ -68,7 +68,7 @@
 			background-color: #d2f4ea;
 		}
 
-		table a {
+		table a, div.input-group a {
 			text-decoration: none;
 		}
 

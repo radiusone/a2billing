@@ -1,5 +1,5 @@
 $(function() {
-    let calendars;
+    const calendars = {};
     $("a.popup_trigger").on("click", function(e) {
         e.preventDefault();
         e.stopPropagation();
