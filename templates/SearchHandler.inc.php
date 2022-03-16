@@ -231,7 +231,7 @@ function create_date_options($target)
                 <select name="<?= $item[2] ?>" aria-label="<?= $item[0] ?>" class="form-select form-select-sm">
                     <option value=""><?= $item[0] ?></option>
                     <?php foreach ($item[1] as $opt): ?>
-                    <option value="<?= $opt[0] ?>" <?php if (($processed[$item[2]] ?? "") == $opt[0]): ?>selected="selected"<?php endif ?>>
+                    <option value="<?= $opt[0] ?>" <?php if (strcmp($processed[$item[2]] ?? "zzzzzz", $opt[0]) === 0): ?>selected="selected"<?php endif ?>>
                         <?= $opt[1] ?>
                     </option>
                     <?php endforeach ?>
