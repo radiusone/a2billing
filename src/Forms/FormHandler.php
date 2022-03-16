@@ -1432,6 +1432,11 @@ class FormHandler
                     $SQLcmd = $this->do_field($SQLcmd, $r[2], 1, null, $r[4]);
                 }
 
+                foreach ($this->FG_FILTER_SEARCH_FORM_POPUP as $r) {
+                    $search_parameters .= "|$r[name]=" . $processed[$r["name"]];
+                    $SQLcmd = $this->do_field($SQLcmd, $r["name"], 1, null);
+                }
+
                 $_SESSION[$this->FG_FILTER_SEARCH_SESSION_NAME] = $search_parameters;
 
                 $date_clause = '';
