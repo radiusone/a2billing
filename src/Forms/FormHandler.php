@@ -701,6 +701,7 @@ class FormHandler
     public function &getProcessed(): array
     {
         foreach ($this->_vars as $key => $value) {
+            $key = str_replace("^^", ".", $key);
             if (!$this->_processed[$key] or empty($this->_processed[$key])) {
                 $this->_processed[$key] = sanitize_data($value);
                 if ($key == 'username') {

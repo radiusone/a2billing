@@ -147,13 +147,14 @@ function create_date_options($target)
         <div class="col-8">
             <div class="input-group">
                 <input
-                    name="<?= $item["name"] ?>"
+                    name="<?= str_replace(".", "^^", $item["name"]) ?>"
                     id="<?= $item["name"] ?>"
                     value="<?= $processed[$item["name"]] ?>"
                     class="form-control form-control-sm"
                 />
                 <a
                     href="<?= $item["href"] ?>"
+                    data-field-name="<?= $item["fieldname"] ?? str_replace(".", "^^", $item["name"]) ?>"
                     data-window-name="<?= $item["windowname"] ?? "popup" ?>"
                     data-popup-options="<?= $item["windowoptions"] ?? "width=550,height=330,top=20,left=100,scrollbars=1" ?>"
                     data-select="<?= $item["select"] ?? 1 ?>"
@@ -171,10 +172,10 @@ function create_date_options($target)
             <?= $item[0] ?>
         </label>
         <div class="col-4">
-            <input name="<?= $item[1] ?>" id="<?= $item[1] ?>" value="<?= $processed[$item[1]] ?? "" ?>" class="form-control form-control-sm"/>
+            <input name="<?= str_replace(".", "^^", $item[1]) ?>" id="<?= $item[1] ?>" value="<?= $processed[$item[1]] ?? "" ?>" class="form-control form-control-sm"/>
         </div>
         <div class="col-4">
-            <select name="<?= $item[2] ?>" id="<?= $item[2] ?>" class="form-select form-select-sm">
+            <select name="<?= str_replace(".", "^^", $item[2]) ?>" id="<?= $item[2] ?>" class="form-select form-select-sm">
                 <option value="1" <?php if (($processed[$item[2]] ?? 1) == 1): ?>selected="selected"<?php endif ?>><?= _("Exact") ?></option>
                 <option value="2" <?php if (($processed[$item[2]] ?? 1) == 2): ?>selected="selected"<?php endif ?>><?= _("Begins with") ?></option>
                 <option value="3" <?php if (($processed[$item[2]] ?? 1) == 3): ?>selected="selected"<?php endif ?>><?= _("Contains") ?></option>
@@ -192,7 +193,7 @@ function create_date_options($target)
         <div class="col">
             <div class="row">
                 <div class="col-2">
-                    <select name="<?= item[2] ?>" class="form-select form-select-sm">
+                    <select name="<?= str_replace(".", "^^", $item[2]) ?>" class="form-select form-select-sm">
                         <option value="4" <?php if (($processed[$item[2]] ?? 1) == 4): ?> selected="selected"<?php endif ?>>&gt;</option>
                         <option value="5" <?php if (($processed[$item[2]] ?? 1) == 5): ?> selected="selected"<?php endif ?>>&gt;=</option>
                         <option value="1" <?php if (($processed[$item[2]] ?? 1) == 1): ?> selected="selected"<?php endif ?>>=</option>
@@ -207,7 +208,7 @@ function create_date_options($target)
                     <?= gettext("AND") ?>
                 </div>
                 <div class="col-2">
-                    <select name="<?= item[4] ?>" class="form-select form-select-sm">
+                    <select name="<?= str_replace(".", "^^", $item[4]) ?>" class="form-select form-select-sm">
                         <option></option>
                         <option value="4" <?php if (($processed[$item[4]] ?? 1) == 4): ?> selected="selected"<?php endif ?>>&gt;</option>
                         <option value="5" <?php if (($processed[$item[4]] ?? 1) == 5): ?> selected="selected"<?php endif ?>>&gt;=</option>
@@ -216,7 +217,7 @@ function create_date_options($target)
                     </select>
                 </div>
                 <div class="col-3">
-                    <input type="text" name="<?= $item[3] ?>" id="<?= $item[3] ?>" value="<?= $processed[$item[3]] ?? "" ?>" class="form-control form-control-sm"/>
+                    <input type="text" name="<?= str_replace(".", "^^", $item[3]) ?>" id="<?= $item[3] ?>" value="<?= $processed[$item[3]] ?? "" ?>" class="form-control form-control-sm"/>
                 </div>
             </div>
         </div>
@@ -228,7 +229,7 @@ function create_date_options($target)
         <?php foreach (array_chunk($this->FG_FILTER_SEARCH_FORM_SELECT, 4) as $chunk): ?>
             <?php foreach ($chunk as $i => $item): ?>
             <div class="col">
-                <select name="<?= $item[2] ?>" aria-label="<?= $item[0] ?>" class="form-select form-select-sm">
+                <select name="<?= str_replace(".", "^^", $item[2]) ?>" aria-label="<?= $item[0] ?>" class="form-select form-select-sm">
                     <option value=""><?= $item[0] ?></option>
                     <?php foreach ($item[1] as $opt): ?>
                     <option value="<?= $opt[0] ?>" <?php if (strcmp($processed[$item[2]] ?? "zzzzzz", $opt[0]) === 0): ?>selected="selected"<?php endif ?>>
