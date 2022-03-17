@@ -428,11 +428,5 @@
 		<div class="col m-1">
 {/if}
 
-{if ($LCMODAL  > 0)}
-<script>
-    new bootstrap.Modal(document.getElementById("license-modal")).show();
-</script>
-{/if}
-
 {$MAIN_MSG}
 

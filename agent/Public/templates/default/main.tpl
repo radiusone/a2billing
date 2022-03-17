@@ -239,11 +239,5 @@
 <div>
 {/if}
 
-{if ($LCMODAL  > 0)}
-<script type="text/javascript">
-    loadLicenceModal();
-</script>
-{/if}
-
 {$MAIN_MSG}
 

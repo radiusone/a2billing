@@ -50,8 +50,6 @@ $smarty->setTemplateDir(TEMPLATE_DIR . $skin_name.'/');
 $smarty->setCompileDir(TEMPLATE_C_DIR);
 $smarty->setPluginsDir("./plugins/");
 
-$smarty->assign("TEXTCONTACT", TEXTCONTACT);
-$smarty->assign("EMAILCONTACT", EMAILCONTACT);
 $smarty->assign("COPYRIGHT", COPYRIGHT);
 $smarty->assign("CCMAINTITLE", CCMAINTITLE);
 
@@ -90,8 +88,6 @@ $smarty->assign("NEW_NOTIFICATION", $NEW_NOTIFICATION);
 
 $smarty->assign("HTTP_HOST", $_SERVER['HTTP_HOST']);
 $smarty->assign("ASTERISK_GUI_LINK", ASTERISK_GUI_LINK);
-
-$smarty->assign("LCMODAL", LCMODAL);
 
 $section = $_SESSION["menu_section"];
 

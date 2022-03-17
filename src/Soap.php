@@ -4,8 +4,6 @@ namespace A2billing;
 
 use AGI_AsteriskManager;
 
-$disable_check_cp = true;
-
 require_once __DIR__ . "/admin.defines.php";
 
 class Soap

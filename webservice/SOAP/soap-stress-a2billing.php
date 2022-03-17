@@ -37,7 +37,6 @@
  * 	USAGE : http://localhost/webservice/SOAP/test-callbackexec.php
  */
 
-$disable_check_cp = true;
 include '../lib/admin.defines.php';
 require 'SOAP/Client.php';
 

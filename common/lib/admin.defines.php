@@ -56,11 +56,6 @@ define ("Images_Path","../Public/templates/$_SESSION[stylefile]/images");
 define ("Images_Path_Main","../Public/templates/$_SESSION[stylefile]/images");
 define ("KICON_PATH","../Public/templates/$_SESSION[stylefile]/images/kicons");
 
-// COPYRIGHT
-if (empty($disable_check_cp)) {
-    define("LCMODAL", check_cp());
-}
-
 if (!str_contains($_SERVER['REQUEST_URI'], "Public/index.php") && !empty($_SESSION["admin_id"])) {
     (new Logger())->insertLog($_SESSION["admin_id"], 1, "Page Visit", "User Visited the Page", '', $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI']);
 }

@@ -51,9 +51,6 @@ const LIST_OF_VALUES = true;
 //Enable Disable Captcha
 define ("CAPTCHA_ENABLE", $A2B->config["signup"]['enable_captcha'] ?? 0);
 
-// COPYRIGHT
-define ("LCMODAL", check_cp());
-
 //Images Path
 define ("Images_Path", "../Public/templates/$_SESSION[stylefile]/images");
 define ("Images_Path_Main", "../Public/templates/$_SESSION[stylefile]/images");

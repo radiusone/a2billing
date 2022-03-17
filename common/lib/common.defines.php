@@ -240,13 +240,11 @@ if (empty($_SESSION["stylefile"])) {
  */
 $PHP_SELF = $_SERVER["PHP_SELF"];
 
-// A2BILLING COPYRIGHT & CONTACT
-define ("TEXTCONTACT", gettext("This software has been created by Areski Belaid under AGPL licence. For futher information, feel free to contact me:"));
-const EMAILCONTACT = "sales@star2billing.com";
-
 // A2BILLING INFO
-const COPYRIGHT = "A2Billing v2.2.0 is licensed under the <a href=\"http://www.fsf.org/licensing/licenses/agpl-3.0.html\" target=\"_blank\">AGPL 3</a><br/>Copyright (C) 2004-2015 <a href=\"http://www.star2billing.com\" target=\"_blank\">Star2billing S.L.</a>";
-
+const COPYRIGHT = <<< HTML
+A2Billing v2.2.0 is licensed under the <a href="https://www.gnu.org/licenses/agpl-3.0.en.html" target="_blank">AGPL 3</a><br/>
+Copyright © 2004-2015 Star2billing SL, © 2022 RadiusOne Inc.
+HTML;
 define ("CCMAINTITLE", gettext("A2Billing Portal"));
 
 $DBHandle = DbConnect();

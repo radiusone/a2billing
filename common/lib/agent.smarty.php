@@ -50,8 +50,6 @@ $smarty->setTemplateDir(TEMPLATE_DIR . $skin_name.'/');
 $smarty->setCompileDir(TEMPLATE_C_DIR);
 $smarty->setPluginsDir("./plugins/");
 
-$smarty->assign("TEXTCONTACT", TEXTCONTACT);
-$smarty->assign("EMAILCONTACT", EMAILCONTACT);
 $smarty->assign("COPYRIGHT", COPYRIGHT);
 $smarty->assign("CCMAINTITLE", CCMAINTITLE);
 
@@ -75,8 +73,6 @@ $smarty->assign("ACXMYACCOUNT", $ACXMYACCOUNT);
 $smarty->assign("ACXSUPPORT", $ACXSUPPORT);
 $smarty->assign("ACXSIGNUP", $ACXSIGNUP);
 $smarty->assign("ACXVOIPCONF", $ACXVOIPCONF);
-
-$smarty->assign("LCMODAL", LCMODAL);
 
 getpost_ifset(['section']);
 

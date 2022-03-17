@@ -1085,41 +1085,6 @@ function normalize_day_of_month(&$day, ?string $year_month = "")
     return $day;
 }
 
-/*
- * function
- */
-function check_cp(): int
-{
-    $randn = rand(1, 10);
-    $ret_val = ($randn == 5) ? 1 : 0;
-
-    $pos_star = strpos(COPYRIGHT, 'star2billing');
-    if ($pos_star === false) {
-        return $ret_val;
-    }
-    $pageURL = sprintf(
-        "http%s://%s:%d%s",
-        $_SERVER["HTTPS"] == "on" ? "s" : "",
-        $_SERVER["SERVER_NAME"],
-        $_SERVER["SERVER_PORT"],
-        $_SERVER["REQUEST_URI"]
-    );
-    if (str_contains($pageURL, "?")) {
-        $pageURL = substr($pageURL, 0, strpos($pageURL, '?'));
-    }
-    $pos = strpos($pageURL, 'phpsysinfo');
-
-    if ($pos === false) {
-        $footer_content = file_get_contents("templates/default/footer.tpl");
-        $pos_copyright = strpos($footer_content, '$COPYRIGHT');
-        if ($pos_copyright === false) {
-            return $ret_val;
-        }
-    }
-
-    return 0;
-}
-
 /**
  * Get the last day of the month
  *
