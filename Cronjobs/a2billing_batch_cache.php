@@ -13,8 +13,10 @@ use A2billing\Table;
  * A2Billing, Commercial Open Source Telecom Billing platform,
  * powered by Star2billing S.L. <http://www.star2billing.com/>
  *
- * @copyright   Copyright (C) 2004-2015 - Star2billing S.L.
+ * @copyright   Copyright © 2004-2015 - Star2billing S.L.
+ * @copyright   Copyright © 2022 RadiusOne Inc.
  * @author      Belaid Arezqui <areski@gmail.com>
+ * @author      Michael Newton <mnewton@goradiusone.com>
  * @license     http://www.fsf.org/licensing/licenses/agpl-3.0.html
  * @package     A2Billing
  *

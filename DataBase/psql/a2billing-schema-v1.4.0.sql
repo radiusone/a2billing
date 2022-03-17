@@ -8,6 +8,7 @@
  *
  * @copyright   Copyright (C) 2004-2010 - Star2billing S.L.
  * @author      Belaid Arezqui <areski@gmail.com>
+ * @author      Michael Newton <mnewton@goradiusone.com>
  * @license     http://www.fsf.org/licensing/licenses/agpl-3.0.html
  * @package     A2Billing
  *
