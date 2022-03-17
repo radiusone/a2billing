@@ -45,7 +45,7 @@ getpost_ifset(array('id', 'displayheader', 'type','popup_select','popup_formname
 
 
 // type : refill or payment
-$HD_Form->FG_DEBUG = 0;
+$HD_Form->no_debug();
 
 if ($type == 'payment') {
 	$HD_Form = new FormHandler("cc_logpayment as t2 LEFT JOIN cc_card ON cc_card.id=t2.card_id LEFT JOIN cc_card_group ON cc_card_group.id = cc_card.id_group ", "Payment");
@@ -77,7 +77,7 @@ if ($type == 'payment') {
 $HD_Form->CV_NO_FIELDS = gettext("THERE IS NO") . strtoupper($HD_Form->FG_INSTANCE_NAME) . " " . gettext("CREATED!");
 
 $HD_Form->CV_FOLLOWPARAMETERS = "&popup_select=" . $popup_select . "&id=$id&type=$type";
-$HD_Form->FG_EDITION = false;
-$HD_Form->FG_DELETION = false;
-$HD_Form->FG_ADDITION = false;
+$HD_Form->FG_ENABLE_EDIT_BUTTON = false;
+$HD_Form->FG_ENABLE_DELETE_BUTTON = false;
+$HD_Form->FG_ENABLE_ADD_BUTTON = false;
 

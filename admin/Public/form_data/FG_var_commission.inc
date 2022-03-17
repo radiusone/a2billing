@@ -42,11 +42,11 @@ if (! has_rights (ACX_ADMINISTRATOR)) {
 
 getpost_ifset(array('id', 'card_id', 'date', 'payment','description','added_refill','refill_type'));
 
-$HD_Form = new FormHandler("cc_agent_commission","Commission Agent");
+$HD_Form = new FormHandler("cc_agent_commission", "Commission Agent");
 
 $HD_Form -> FG_TABLE_ID = 'cc_agent_commission.id';
 
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
@@ -67,7 +67,7 @@ $HD_Form -> FieldViewElement ('cc_agent_commission.id, id_card, id_agent, date, 
 
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE ARE NO COMMISSION AGENTS CREATED!");
 
-$HD_Form -> FG_ADDITION = true;
+$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 //$HD_Form -> FG_EDITION = true;
 //$HD_Form -> FG_DELETION = true;
 

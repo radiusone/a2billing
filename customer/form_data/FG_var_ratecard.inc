@@ -47,7 +47,7 @@ $HD_Form = new FormHandler("cc_callplan_lcr", "Rates");
 $HD_Form -> FG_TABLE_ID = 'ratecard_id';
 
 
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "destination";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "ASC";
 $HD_Form -> FG_VIEW_TABLE_WITDH = "65%";

@@ -43,9 +43,9 @@ if (! has_rights (ACX_ACCESS)) {
 getpost_ifset(array('id', 'lastname', 'firstname', 'email', 'address','city', 'state', 'country', 'zipcode','id_timezone', 'phone', 'fax','message', 'voicemail_activated'));
 
 
-$HD_Form = new FormHandler("cc_card","Card");
+$HD_Form = new FormHandler("cc_card", "Card");
 
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_ID="id";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "ASC";
 $HD_Form -> FG_HTML_TABLE_WIDTH = "60%";
@@ -53,8 +53,8 @@ $HD_Form -> FG_EDITION_CLAUSE = " id = ".$_SESSION["card_id"];
 
 $HD_Form -> FG_INTRO_TEXT_EDITION = '';
 
-$HD_Form -> FG_EDITION = true;
-$HD_Form -> FG_ADDITION = false;
+$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form -> FG_ENABLE_ADD_BUTTON = false;
 
 
 $HD_Form -> AddEditElement (gettext("LASTNAME"),

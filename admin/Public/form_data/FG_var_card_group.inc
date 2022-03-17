@@ -44,9 +44,9 @@ if (! has_rights (ACX_ADMINISTRATOR)) {
 getpost_ifset(array('id', 'name ','id_agent','users_perms', 'description'));
 
 
-$HD_Form = new FormHandler("cc_card_group","Customer Group");
+$HD_Form = new FormHandler("cc_card_group", "Customer Group");
 
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 
 
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "name";
@@ -76,9 +76,9 @@ $HD_Form -> FieldViewElement ( 'name, description');
 
 $HD_Form -> CV_NO_FIELDS  = gettext("NO CUSTOMER GROUP CREATED!");
 
-$HD_Form -> FG_ADDITION = true;
-$HD_Form -> FG_EDITION = true;
-$HD_Form -> FG_DELETION = true;
+$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
+$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form -> FG_DELETION_FORBIDDEN_ID = array(1);
 
 $right_list = array();

@@ -47,9 +47,9 @@ getpost_ifset(array('id', 'message', 'location', 'id_tariffgroup', 'options', 'c
 
 
 $FG_INSTANCE_NAME = gettext("Agent");
-$HD_Form = new FormHandler("cc_agent",$FG_INSTANCE_NAME);
+$HD_Form = new FormHandler("cc_agent", $FG_INSTANCE_NAME);
 
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_ID = "id";
 
 $HD_Form -> FG_EDITION_CLAUSE = " id = ".$_SESSION["agent_id"];
@@ -58,7 +58,7 @@ $language_list = getLanguagesList();
 
 $yesno = getYesNoList();
 
-$HD_Form -> FG_EDITION = true;
+$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 
 $HD_Form -> AddEditElement (gettext("LAST NAME"),
 		"lastname",

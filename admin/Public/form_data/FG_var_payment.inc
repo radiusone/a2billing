@@ -43,13 +43,13 @@ if (! has_rights (ACX_ADMINISTRATOR)) {
 getpost_ifset(array('id', 'card_id', 'date', 'payment','description','added_refill','refill_type'));
 
 if (!isset($form_action) || $form_action=="list") {
-	$HD_Form = new FormHandler("cc_logpayment LEFT JOIN cc_card ON cc_card.id=card_id","Payment");
+	$HD_Form = new FormHandler("cc_logpayment LEFT JOIN cc_card ON cc_card.id=card_id", "Payment");
 } else {
-	$HD_Form = new FormHandler("cc_logpayment","Payment");
+	$HD_Form = new FormHandler("cc_logpayment", "Payment");
 }
 
 $HD_Form -> FG_TABLE_ID = 'cc_logpayment.id';
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
 if (has_rights (ACX_MODIFY_PAYMENTS)) {
@@ -70,7 +70,7 @@ $HD_Form -> AddViewElement(gettext("REFILL"), "id_logrefill", true, "", "", "lie
 $HD_Form -> FieldViewElement ('cc_logpayment.id, card_id, date, payment ,payment_type,id_logrefill');
 
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO ".strtoupper($HD_Form->FG_INSTANCE_NAME)." CREATED!");
-$HD_Form -> FG_INFO = true;
+$HD_Form -> FG_ENABLE_INFO_BUTTON = true;
 $HD_Form -> FG_INFO_LINK = "A2B_payment_info.php?id=";
 
 $HD_Form -> FG_FILTER_SEARCH_TOP_TEXT = gettext('Define specific criteria to search for payments created.');
@@ -108,9 +108,9 @@ if (isset($filterprefix)  &&  (strlen($filterprefix)>0)) {
 
 if (has_rights (ACX_MODIFY_PAYMENTS)) {
 
-	$HD_Form -> FG_ADDITION = true;
-	$HD_Form -> FG_EDITION = true;
-	$HD_Form -> FG_DELETION = true;
+	$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
+	$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
+	$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 
 	if ($form_action=="ask-add" && !empty($card_id)) {
 		$id_val = "value='$card_id'";

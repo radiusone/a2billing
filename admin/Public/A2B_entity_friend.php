@@ -164,7 +164,7 @@ if ( (isset ($id_cc_card) && (is_numeric($id_cc_card)  != "")) && ( $form_action
     $_POST['secret'] = MDP_NUMERIC(5).MDP_STRING(10).MDP_NUMERIC(5);
 
     // for the getProcessed var
-    $HD_Form->_vars = array_merge((array) $_GET, (array) $_POST);
+    $HD_Form->init();
 }
 
 $HD_Form -> FG_EDITION_LINK = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?form_action=ask-edit&atmenu=$atmenu&id=";

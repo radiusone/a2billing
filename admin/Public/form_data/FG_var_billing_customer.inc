@@ -43,14 +43,14 @@ if (! has_rights (ACX_ADMINISTRATOR)) {
 getpost_ifset(array('id', 'id_card', 'date'));
 
 if (!isset($form_action) || $form_action=="list") {
-    $HD_Form = new FormHandler("cc_billing_customer LEFT JOIN cc_card ON cc_card.id=id_card  ","Billing");
+    $HD_Form = new FormHandler("cc_billing_customer LEFT JOIN cc_card ON cc_card.id=id_card  ", "Billing");
 } else {
-    $HD_Form = new FormHandler("cc_billing_customer","Billing");
+    $HD_Form = new FormHandler("cc_billing_customer", "Billing");
 }
 
 $HD_Form -> FG_TABLE_ID = 'cc_billing_customer.id';
 
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
@@ -65,8 +65,8 @@ $HD_Form -> FieldViewElement ('cc_billing_customer.id, username, cc_billing_cust
 
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO ".strtoupper($HD_Form->FG_INSTANCE_NAME)." CREATED!");
 
-$HD_Form -> FG_ADDITION = true;
-$HD_Form -> FG_DELETION = true;
+$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
+$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 
 $HD_Form -> AddEditElement (gettext("ID CUSTOMER"),
     "id_card",

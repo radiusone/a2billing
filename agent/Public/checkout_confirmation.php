@@ -72,7 +72,7 @@ getpost_ifset(array('item_id','item_type'));
 $vat_amount= $amount*$vat/100;
 $total_amount = $amount+($amount*$vat/100);
 
-$HD_Form = new FormHandler("cc_payment_methods","payment_method");
+$HD_Form = new FormHandler("cc_payment_methods", "payment_method");
 
 $HD_Form -> setDBHandler (DbConnect());
 $HD_Form -> init();

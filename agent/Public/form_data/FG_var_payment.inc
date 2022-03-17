@@ -46,17 +46,17 @@ getpost_ifset(array('id', 'card_id', 'date', 'payment','description','added_refi
 
 
 if (!isset($form_action) || $form_action=="list"){
-	$HD_Form = new FormHandler("cc_logpayment LEFT JOIN cc_card ON cc_card.id=cc_logpayment.card_id LEFT JOIN cc_card_group ON cc_card.id_group=cc_card_group.id","payment");
+	$HD_Form = new FormHandler("cc_logpayment LEFT JOIN cc_card ON cc_card.id=cc_logpayment.card_id LEFT JOIN cc_card_group ON cc_card.id_group=cc_card_group.id", "payment");
 	$HD_Form -> FG_TABLE_CLAUSE = " cc_card_group.id_agent=".$_SESSION['agent_id'] ;
 }else{
-	$HD_Form = new FormHandler("cc_logpayment","payment");
+	$HD_Form = new FormHandler("cc_logpayment", "payment");
 }
 
 
 
 $HD_Form -> FG_TABLE_ID = 'cc_logpayment.id';
 
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
 $list_refill_type=getRefillType_List();
@@ -72,7 +72,7 @@ $HD_Form -> FieldViewElement ('cc_logpayment.id, username, date, payment, cc_log
 
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO ".strtoupper($HD_Form->FG_INSTANCE_NAME)." CREATED!");
 
-$HD_Form -> FG_INFO = true;
+$HD_Form -> FG_ENABLE_INFO_BUTTON = true;
 $HD_Form -> FG_INFO_LINK = "A2B_payment_info.php?id=";
 
 $HD_Form -> FG_FILTER_APPLY = true;

@@ -43,8 +43,8 @@ if (! has_rights (ACX_ADMINISTRATOR)) {
 getpost_ifset(array('id', 'name', 'description'));
 
 
-$HD_Form = new FormHandler("cc_card_seria","Card series");
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form = new FormHandler("cc_card_seria", "Card series");
+$HD_Form->no_debug();
 
 
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "name";
@@ -74,9 +74,9 @@ $HD_Form -> FieldViewElement ( 'id, name, description, value');
 
 $HD_Form -> CV_NO_FIELDS  = gettext("NO SERIES CREATED!");
 
-$HD_Form -> FG_ADDITION = true;
-$HD_Form -> FG_EDITION = true;
-$HD_Form -> FG_DELETION = false;
+$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
+$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form -> FG_ENABLE_DELETE_BUTTON = false;
 
 $HD_Form -> AddEditElement ( gettext("NAME"),
 				"name",	'$value',

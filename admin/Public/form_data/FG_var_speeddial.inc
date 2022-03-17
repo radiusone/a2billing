@@ -44,11 +44,11 @@ if (! has_rights (ACX_ADMINISTRATOR)) {
 getpost_ifset(array('id', 'speeddial', 'id_cc_card', 'name', 'phone','popup_select','popup_formname','popup_fieldname'));
 
 if (!isset($form_action) || $form_action=="list") {
-	$HD_Form = new FormHandler("cc_speeddial LEFT JOIN cc_card ON cc_card.id = cc_speeddial.id_cc_card","speed dial");
+	$HD_Form = new FormHandler("cc_speeddial LEFT JOIN cc_card ON cc_card.id = cc_speeddial.id_cc_card", "speed dial");
 }else{
-	$HD_Form = new FormHandler("cc_speeddial ","speed dial");
+	$HD_Form = new FormHandler("cc_speeddial ", "speed dial");
 }
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "cc_speeddial.creationdate";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 $HD_Form -> FG_TABLE_ID="cc_speeddial.id";
@@ -75,9 +75,9 @@ $HD_Form -> FieldViewElement ('cc_speeddial.speeddial, cc_speeddial.phone, cc_sp
 
 $HD_Form -> CV_NO_FIELDS  = gettext("NO SPEED DIALS HAVE BEEN CREATED!");
 
-$HD_Form -> FG_EDITION = true;
-$HD_Form -> FG_DELETION = true;
-$HD_Form -> FG_ADDITION = true;
+$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 
 $HD_Form -> AddEditElement (gettext("SPEED DIAL"),
 			   "speeddial",

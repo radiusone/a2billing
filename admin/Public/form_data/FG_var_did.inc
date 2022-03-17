@@ -88,7 +88,7 @@ getpost_ifset([
  * @var string $aleg_retail_increment_offp
  */
 
-$HD_Form = new FormHandler("cc_did","did");
+$HD_Form = new FormHandler("cc_did", "did");
 
 $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_did.php?form_action=ask-add&section=".$_SESSION["menu_section"];
@@ -127,9 +127,9 @@ $HD_Form->FieldViewElement ('did, iduser, billingtype, startingdate, id_cc_didgr
 
 $HD_Form->CV_NO_FIELDS  = _("THERE ARE NO ".strtoupper($HD_Form->FG_INSTANCE_NAME)." CREATED!");
 
-$HD_Form->FG_ADDITION = true;
-$HD_Form->FG_EDITION = true;
-$HD_Form->FG_DELETION = true;
+$HD_Form->FG_ENABLE_ADD_BUTTON = true;
+$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form->FG_SPLITABLE_FIELD = 'did';
 
 

@@ -43,9 +43,9 @@ if (! has_rights (ACX_ADMINISTRATOR)) {
 
 getpost_ifset(array('id', 'label', 'packagetype', 'billingtype','startday', 'freetimetocall'));
 
-$HD_Form = new FormHandler("cc_package_offer","OFFER PACKAGE");
+$HD_Form = new FormHandler("cc_package_offer", "OFFER PACKAGE");
 
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = " label";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
@@ -80,9 +80,9 @@ $HD_Form -> FieldViewElement ('label, creationdate, packagetype, billingtype, st
 $HD_Form -> FG_ACTION_SIZE_COLUMN='15%';
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO")." ".strtoupper($HD_Form->FG_INSTANCE_NAME)." ".gettext("CREATED!");
 
-$HD_Form -> FG_ADDITION = true;
-$HD_Form -> FG_EDITION = true;
-$HD_Form -> FG_DELETION = true;
+$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
+$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form -> FG_OTHER_BUTTON1 = true;
 $HD_Form -> FG_OTHER_BUTTON1_ALT = gettext("Add rates");
 $HD_Form -> FG_OTHER_BUTTON1_IMG = "";

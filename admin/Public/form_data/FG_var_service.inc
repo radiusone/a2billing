@@ -44,9 +44,9 @@ if (! has_rights (ACX_ADMINISTRATOR)) {
 getpost_ifset(array('id', 'name', 'amount', 'period', 'rule', 'daynumber', 'stopmode', 'maxnumbercycle', 'status', 'emailreport'));
 
 
-$HD_Form = new FormHandler("cc_service","Service");
+$HD_Form = new FormHandler("cc_service", "Service");
 
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "id";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
@@ -104,9 +104,9 @@ $HD_Form -> FieldViewElement ('name, amount, period, status, numberofrun, datela
 
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO")." ".strtoupper($HD_Form->FG_INSTANCE_NAME)." ".gettext("CREATED!");
 
-$HD_Form -> FG_ADDITION = true;
-$HD_Form -> FG_EDITION = true;
-$HD_Form -> FG_DELETION = true;
+$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
+$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 // View Details
 $HD_Form -> FG_OTHER_BUTTON1 = true;
 // |param| will be replace by id .

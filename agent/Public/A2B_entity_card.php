@@ -166,11 +166,9 @@ if (($form_action == "addcredit") && ($addcredit > 0) && ($id > 0 || $cardnumber
 
                // Add credit to Customer
                 $param_update .= "credit = credit + '".$addcredit."'";
-                if ($HD_Form->FG_DEBUG == 1)  echo "<br><hr> $param_update";
 
                 $FG_EDITION_CLAUSE = " id='$id'" ; // AND id_agent=".$_SESSION['agent_id'];
 
-                if ($HD_Form->FG_DEBUG == 1)  echo "<br>-----<br>$param_update<br>$FG_EDITION_CLAUSE";
                 $instance_table = new Table("cc_card", "username, id");
                 $instance_table -> Update_table ($HD_Form -> DBHandle, $param_update, $FG_EDITION_CLAUSE, $func_table = null);
 

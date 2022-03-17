@@ -57,7 +57,7 @@ $HD_Form = new FormHandler("cc_callplan_lcr LEFT JOIN cc_agent_tariffgroup ON ta
 
 $HD_Form -> FG_TABLE_ID = 'id';
 $HD_Form -> FG_TABLE_CLAUSE = "cc_agent_tariffgroup.id_agent=".$_SESSION['agent_id'];
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = " dialprefix";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "ASC";
 

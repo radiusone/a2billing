@@ -42,9 +42,9 @@ if (! has_rights (ACX_ADMINISTRATOR)) {
 
 getpost_ifset(array('IDCust', 'id', 'cid', 'activated'));
 
-$HD_Form = new FormHandler("cc_callerid","CallerID");
+$HD_Form = new FormHandler("cc_callerid", "CallerID");
 
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 
 $HD_Form ->FG_LIST_ADDING_BUTTON2 = true;
 $HD_Form ->FG_LIST_ADDING_BUTTON_LINK2 = "A2B_entity_callerid.php?form_action=ask-add&section=".$_SESSION["menu_section"];
@@ -70,9 +70,9 @@ $HD_Form -> FieldViewElement ('cid, id_cc_card, id_cc_card, cc_callerid.activate
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO ").strtoupper($HD_Form->FG_INSTANCE_NAME).gettext(" CREATED!");
 $HD_Form -> FG_LIMITE_DISPLAY = 10;
 
-$HD_Form -> FG_ADDITION = true;
-$HD_Form -> FG_EDITION = true;
-$HD_Form -> FG_DELETION = true;
+$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
+$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 
 $HD_Form -> AddEditElement (gettext("CALLERID"),
 			   "cid",

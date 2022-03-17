@@ -44,11 +44,11 @@ if (! has_rights (ACX_ADMINISTRATOR)) {
 getpost_ifset(array('card', 'invoice'));
 
 
-$HD_Form = new FormHandler("cc_logpayment","Payment");
+$HD_Form = new FormHandler("cc_logpayment", "Payment");
 
 $HD_Form -> FG_TABLE_ID = 'cc_logpayment.id';
 
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
 

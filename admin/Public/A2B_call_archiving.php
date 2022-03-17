@@ -50,12 +50,12 @@ getpost_ifset(array('customer', 'entercustomer', 'enterprovider', 'entertariffgr
 if (!isset ($current_page) || ($current_page == "")) {
     $current_page=0;
 }
-$HD_Form = new FormHandler("cc_call t1 LEFT OUTER JOIN cc_trunk t3 ON t1.id_trunk = t3.id_trunk","Calls");
+$HD_Form = new FormHandler("cc_call t1 LEFT OUTER JOIN cc_trunk t3 ON t1.id_trunk = t3.id_trunk", "Calls");
 
 $HD_Form -> setDBHandler (DbConnect());
 $HD_Form -> init();
 
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "starttime";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 $HD_Form -> FG_LIMITE_DISPLAY=30;

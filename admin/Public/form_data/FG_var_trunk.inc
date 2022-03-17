@@ -47,7 +47,7 @@ getpost_ifset(array('id', 'trunkcode', 'trunkprefix', 'removeprefix', 'providert
 $DBHandle  = DbConnect();
 $instance_table = new Table();
 
-$HD_Form = new FormHandler("cc_trunk","trunk");
+$HD_Form = new FormHandler("cc_trunk", "trunk");
 
 
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
@@ -56,7 +56,7 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = 
 $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/add.png" ;
 
 
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_ID = " id_trunk";
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = " id_trunk";
 $HD_Form -> FG_EDITION_CLAUSE = " id_trunk='%id' ";
@@ -140,9 +140,9 @@ if ($popup_select) {
 	elseif ($popup_select == 2)
 		$HD_Form -> FG_OTHER_BUTTON1_LINK = "javascript:sendValue('|col0|');";
 } else {
-	$HD_Form -> FG_EDITION = true;
-	$HD_Form -> FG_DELETION = true;
-	$HD_Form -> FG_ADDITION = true;
+	$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
+	$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
+	$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 }
 
 $def_value_inuse = '';

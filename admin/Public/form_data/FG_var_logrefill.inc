@@ -44,14 +44,14 @@ if (! has_rights (ACX_ADMINISTRATOR)) {
 getpost_ifset(array('id', 'card_id', 'date', 'credit','description,added_invoice'));
 
 if (!isset($form_action) || $form_action=="list") {
-	$HD_Form = new FormHandler("cc_logrefill LEFT JOIN cc_card ON cc_card.id=card_id","Refill");
+	$HD_Form = new FormHandler("cc_logrefill LEFT JOIN cc_card ON cc_card.id=card_id", "Refill");
 } else {
-	$HD_Form = new FormHandler("cc_logrefill","Refill");
+	$HD_Form = new FormHandler("cc_logrefill", "Refill");
 }
 
 $HD_Form -> FG_TABLE_ID = 'cc_logrefill.id';
 
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
 if (has_rights (ACX_MODIFY_REFILLS)) {
@@ -85,7 +85,7 @@ $HD_Form -> AddSearchElement_C1(gettext("FIRSTNAME"),'firstname','firstnametype'
 $HD_Form -> FG_FILTER_SEARCH_DELETE_ALL =false;
 
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO ".strtoupper($HD_Form->FG_INSTANCE_NAME)." CREATED!");
-$HD_Form -> FG_INFO = true;
+$HD_Form -> FG_ENABLE_INFO_BUTTON = true;
 $HD_Form -> FG_INFO_LINK = "A2B_refill_info.php?id=";
 $HD_Form -> FG_FILTER_APPLY = true;
 $HD_Form -> FG_FILTERFIELD = 'cardnumber';
@@ -97,11 +97,11 @@ if (isset($filterprefix)  &&  (strlen($filterprefix)>0)) {
 	$HD_Form -> FG_TABLE_CLAUSE.="username like '$filterprefix%'";
 }
 
-$HD_Form -> FG_ADDITION = true;
+$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 if (has_rights (ACX_MODIFY_REFILLS)) {
 
-	$HD_Form -> FG_EDITION = true;
-	$HD_Form -> FG_DELETION = true;
+	$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
+	$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 
 	if ($form_action=="ask-add" && !empty($card_id)) {
 		$id_val = "value='$card_id'";

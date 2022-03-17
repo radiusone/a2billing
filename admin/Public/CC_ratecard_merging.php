@@ -49,7 +49,7 @@ if (! has_rights (ACX_RATECARD)) {
 $HD_Form = new FormHandler();
 $HD_Form -> setDBHandler (DbConnect());
 $HD_Form -> init();
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_ID="id";
 $HD_Form -> FG_FILTER_SEARCH_SESSION_NAME = 'entity_ratecard_selection';
 

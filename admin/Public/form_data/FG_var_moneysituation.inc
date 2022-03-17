@@ -40,9 +40,9 @@ if (! has_rights (ACX_ADMINISTRATOR)) {
     die();
 }
 
-$HD_Form = new FormHandler("cc_card","Card");
+$HD_Form = new FormHandler("cc_card", "Card");
 
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 $HD_Form -> FG_LIMITE_DISPLAY = 10;
 
 $HD_Form -> AddViewElement(gettext("ID"), "id");
@@ -61,9 +61,9 @@ $HD_Form -> FieldViewElement ('id, username, useralias, firstname, lastname, cre
 $HD_Form -> FG_ACTION_SIZE_COLUMN = '15%';
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO").strtoupper($HD_Form->FG_INSTANCE_NAME)." ".gettext("CREATED!");
 
-$HD_Form -> FG_EDITION = false;
-$HD_Form -> FG_DELETION = false;
-$HD_Form -> FG_ADDITION = false;
+$HD_Form -> FG_ENABLE_EDIT_BUTTON = false;
+$HD_Form -> FG_ENABLE_DELETE_BUTTON = false;
+$HD_Form -> FG_ENABLE_ADD_BUTTON = false;
 
 $HD_Form -> FG_OTHER_BUTTON1 = true;
 $HD_Form -> FG_OTHER_BUTTON2 = true;

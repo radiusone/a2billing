@@ -48,13 +48,13 @@ if (!isset($form_action) || $form_action=="list") {
 	$list_query = "cc_invoice LEFT JOIN cc_card ON cc_card.id=id_card ";
 	$list_query .= "LEFT JOIN (SELECT st1.id_invoice, TRUNCATE(SUM(st1.price*(1+(st1.vat/100))),2) as total_price " .
 	               "FROM cc_invoice_item AS st1 GROUP BY st1.id_invoice ) as items ON items.id_invoice = cc_invoice.id ";
-	$HD_Form = new FormHandler($list_query,"Invoice");
+	$HD_Form = new FormHandler($list_query, "Invoice");
 } else {
-	$HD_Form = new FormHandler("cc_invoice","Invoice");
+	$HD_Form = new FormHandler("cc_invoice", "Invoice");
 }
 
 $HD_Form -> FG_TABLE_ID = 'cc_invoice.id';
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
 $HD_Form -> FG_FK_DELETE_ALLOWED = true;
@@ -63,7 +63,7 @@ $HD_Form -> FG_FK_WARNONLY = true;
 $HD_Form -> FG_FK_TABLENAMES = array("cc_invoice_item");
 $HD_Form -> FG_FK_EDITION_CLAUSE = array(" id_invoice ");
 
-$HD_Form -> FG_INFO = true;
+$HD_Form -> FG_ENABLE_INFO_BUTTON = true;
 $HD_Form -> FG_INFO_LINK = "A2B_invoice_view.php?id=";
 
 $HD_Form -> FG_OTHER_BUTTON1_LINK = "A2B_invoice_edit.php?id=";
@@ -83,8 +83,8 @@ $HD_Form -> FG_OTHER_BUTTON3_IMG = Images_Path."/money.png";
 $HD_Form -> FG_OTHER_BUTTON3 = true;
 $HD_Form -> FG_OTHER_BUTTON3_CONDITION = '|col6| == "'.gettext('CLOSE').'"';
 $HD_Form -> FG_OTHER_BUTTON3_ALT = gettext("Manage payments");
-$HD_Form -> FG_EDITION_CONDITION = '|col6| == "'.gettext('OPEN').'"';
-$HD_Form -> FG_DELETION_CONDITION = '|col6| == "'.gettext('OPEN').'"';
+$HD_Form -> FG_EDIT_BUTTON_CONDITION = '|col6| == "'.gettext('OPEN').'"';
+$HD_Form -> FG_DELETE_BUTTON_CONDITION = '|col6| == "'.gettext('OPEN').'"';
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_invoice.php?form_action=ask-add&section=".$_SESSION["menu_section"];
 $HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add Invoice");
@@ -134,9 +134,9 @@ $HD_Form -> AddSearchElement_Select(gettext("INVOICE DAY"), null, null, null, nu
 $HD_Form -> AddSearchElement_Select(gettext("PAID STATUS"), null, null, null, null,null , "paid_status", 0, $paid_status_list_r);
 
 
-$HD_Form -> FG_EDITION = true;
-$HD_Form -> FG_DELETION = true;
-$HD_Form -> FG_ADDITION = true;
+$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 
 $HD_Form -> AddEditElement (gettext("ID CUSTOMER"),
 			   "id_card",

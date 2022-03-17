@@ -55,7 +55,7 @@ $QUERY = '';
 $from_to = '';
 $bool = false;
 
-$HD_Form = new FormHandler("pnl_report","PNL Report");
+$HD_Form = new FormHandler("pnl_report", "PNL Report");
 
 $HD_Form -> setDBHandler (DbConnect());
 $HD_Form -> init();
@@ -475,7 +475,7 @@ $FG_COL_QUERY_SUM=str_replace('sum(discount)','(1-sum(net_revenue)/sum(term_tota
 $FG_COL_QUERY_SUM=str_replace('sum(margin)','sum(profit)/sum(net_revenue)*100',$FG_COL_QUERY_SUM);
 $FG_COL_QUERY_SUM=str_replace('name)',"'TOTAL'",$FG_COL_QUERY_SUM);
 
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 $HD_Form -> FG_HTML_TABLE_WIDTH ="90%";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "ASC";
 $HD_Form -> FG_FILTER_SEARCH_SESSION_NAME = 'pnl_selection';

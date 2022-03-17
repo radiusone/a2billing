@@ -44,7 +44,7 @@ getpost_ifset(array('id', 'calledstation', 'id_cc_card'));
 
 $HD_Form = new FormHandler("cc_call", "Call");
 
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 
 
 $HD_Form -> AddViewElement(gettext("ID"), "id");
@@ -56,9 +56,9 @@ $HD_Form -> FieldViewElement ('id, calledstation, card_id, id');
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO CALL CREATED!");
 $HD_Form -> FG_LIMITE_DISPLAY = 10;
 
-$HD_Form -> FG_ADDITION = false;
-$HD_Form -> FG_EDITION = false;
-$HD_Form -> FG_DELETION = true;
+$HD_Form -> FG_ENABLE_ADD_BUTTON = false;
+$HD_Form -> FG_ENABLE_EDIT_BUTTON = false;
+$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 
 $HD_Form -> AddEditElement (gettext("CALL ID"),
          "id",

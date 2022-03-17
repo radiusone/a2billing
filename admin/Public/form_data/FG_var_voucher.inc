@@ -43,9 +43,9 @@ if (! has_rights (ACX_ADMINISTRATOR)) {
 
 getpost_ifset(array('id', 'creationdate', 'usedate', 'expirationdate', 'voucher', 'tag', 'credit', 'activated', 'used', 'currency'));
 
-$HD_Form = new FormHandler("cc_voucher","Voucher");
+$HD_Form = new FormHandler("cc_voucher", "Voucher");
 
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 
 
 $currency_list = array();
@@ -119,9 +119,9 @@ $HD_Form -> FG_EXPORT_FIELD_LIST = VOUCHER_EXPORT_FIELD_LIST;
 $HD_Form -> FG_EXPORT_CSV = true;
 $HD_Form -> FG_EXPORT_XML = true;
 
-$HD_Form -> FG_EDITION = true;
-$HD_Form -> FG_DELETION = true;
-$HD_Form -> FG_ADDITION = true;
+$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 
 if ($form_action=="ask-add") {
 	$card_gen = generate_unique_value($HD_Form->FG_TABLE_NAME, LEN_VOUCHER, "voucher");

@@ -45,15 +45,15 @@ if (! has_rights (ACX_ACCESS)) {
 getpost_ifset(array('id', 'billingtype', 'did', 'startingdate', 'expirationdate', 'id_cc_didgroup', 'id_cc_country', 'activated', 'fixrate', 'id_trunk', 'choose_country', 'choose_did', 'assign', 'countrycode', 'arecode', 'phonenumber', 'voip_call', 'destination', 'choose_did_rate', 'new_did_page', 'confirm_buy_did', 'action_release'));
 
 
-$HD_Form = new FormHandler("cc_did_destination","destination");
+$HD_Form = new FormHandler("cc_did_destination", "destination");
 
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "did";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
-$HD_Form -> FG_EDITION = true;
-$HD_Form -> FG_DELETION = true;
-$HD_Form -> FG_ADDITION = true;
+$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 
 
 $actived_list = getActivationList();
@@ -116,12 +116,12 @@ if (isset($form_action) && ($form_action=='ask-edit' || $form_action=='edit')) {
 	$validated = 0;
 }
 
-$HD_Form -> FG_COL_QUERY = 'destination, id_cc_did, t1.activated, priority, t1.secondusedreal,'. $country_field .'  t1.validated, t1.id ';
+$HD_Form -> FG_QUERY_COLUMN_LIST = 'destination, id_cc_did, t1.activated, priority, t1.secondusedreal,'. $country_field .'  t1.validated, t1.id ';
 
 $HD_Form -> CV_NO_FIELDS  = gettext("There are no destinations created");
 
-$HD_Form -> FG_EDITION = true;
-$HD_Form -> FG_DELETION = true;
+$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form -> FG_VIEW_TABLE_WITDH = '80%';
 
 if (isset($form_action) && ($form_action=='ask-edit')) {

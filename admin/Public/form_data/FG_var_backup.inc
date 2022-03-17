@@ -42,9 +42,9 @@ if (! has_rights (ACX_ADMINISTRATOR)) {
 
 getpost_ifset(array('name','path','creationdate'));
 
-$HD_Form = new FormHandler("cc_backup","Backup");
+$HD_Form = new FormHandler("cc_backup", "Backup");
 
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 
 if ($form_action!='ask-add')
     check_demo_mode();
@@ -90,9 +90,9 @@ if ($form_action == 'add'){
 
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO")." ".strtoupper($HD_Form->FG_INSTANCE_NAME)." ".gettext("CREATED!");
 
-$HD_Form -> FG_EDITION = false;
-$HD_Form -> FG_DELETION = false;
-$HD_Form -> FG_ADDITION = true;
+$HD_Form -> FG_ENABLE_EDIT_BUTTON = false;
+$HD_Form -> FG_ENABLE_DELETE_BUTTON = false;
+$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 
 $default_path = "value='".BACKUP_PATH."/db_". DBNAME . "-" . date('YmdHis') . ".sql.gz'";
 

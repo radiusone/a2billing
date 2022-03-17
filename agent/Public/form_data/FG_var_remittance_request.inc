@@ -42,11 +42,11 @@ if (! has_rights (ACX_ACCESS)) {
 
 getpost_ifset(array('id','id_agent','date', 'amount,type', 'status'));
 
-$HD_Form = new FormHandler("cc_remittance_request","Remittance Request Agent");
+$HD_Form = new FormHandler("cc_remittance_request", "Remittance Request Agent");
 $HD_Form -> FG_TABLE_CLAUSE = "id_agent=".$_SESSION['agent_id'] ;
 $HD_Form -> FG_TABLE_ID = 'cc_remittance_request.id';
 
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
 $HD_Form -> FG_OTHER_BUTTON2_LINK = "javascript:;";

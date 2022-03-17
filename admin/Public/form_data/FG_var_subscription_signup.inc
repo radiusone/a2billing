@@ -44,9 +44,9 @@ if (! has_rights (ACX_ADMINISTRATOR)) {
 getpost_ifset(array('id', 'label ','id_subscription','enable'));
 
 
-$HD_Form = new FormHandler("cc_subscription_signup","Subscription in Signup");
+$HD_Form = new FormHandler("cc_subscription_signup", "Subscription in Signup");
 
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 
 
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "id";
@@ -71,9 +71,9 @@ $HD_Form -> FieldViewElement ( 'label, enable, description, id_subscription, id_
 
 $HD_Form -> CV_NO_FIELDS  = gettext("NO SUBSCRIPTION IN SIGNUP CREATED!");
 
-$HD_Form -> FG_ADDITION = true;
-$HD_Form -> FG_EDITION = true;
-$HD_Form -> FG_DELETION = true;
+$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
+$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 
 $HD_Form -> AddEditElement ( gettext("LABEL"),
 		"label",	'$value',

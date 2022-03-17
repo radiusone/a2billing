@@ -41,9 +41,9 @@ if (! has_rights (ACX_ADMINISTRATOR)) {
 }
 
 getpost_ifset(array('id'));
-$HD_Form = new FormHandler("cc_currencies","Currencies");
+$HD_Form = new FormHandler("cc_currencies", "Currencies");
 
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = " currency";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "ASC";
 $HD_Form -> FG_TABLE_ID = "id";
@@ -63,9 +63,9 @@ $HD_Form -> FieldViewElement ('currency,name,value');
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO ".strtoupper($HD_Form->FG_INSTANCE_NAME)." CREATED!");
 $HD_Form -> FG_VIEW_TABLE_WITDH = '70%';
 
-$HD_Form -> FG_EDITION = true;
-$HD_Form -> FG_DELETION = true;
-$HD_Form -> FG_ADDITION = true;
+$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 
 $HD_Form -> AddEditElement (gettext("Name"),
 	"name",

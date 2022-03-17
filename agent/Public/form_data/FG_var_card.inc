@@ -53,13 +53,13 @@ getpost_ifset(array('id', 'username', 'useralias', 'uipass', 'credit', 'language
 'company_name' , 'company_website' , 'vat_rn' , 'traffic' , 'traffic_target','discount','restriction' ));
 
 if (!isset($form_action) || $form_action=="list" || $form_action=="addcredit") {
-	$HD_Form = new FormHandler("cc_card LEFT JOIN cc_card_group ON cc_card.id_group=cc_card_group.id ","Card");
+	$HD_Form = new FormHandler("cc_card LEFT JOIN cc_card_group ON cc_card.id_group=cc_card_group.id ", "Card");
 	$HD_Form -> FG_TABLE_CLAUSE = " cc_card_group.id_agent=".$_SESSION['agent_id'] ;
 } else {
-	$HD_Form = new FormHandler("cc_card","Card");
+	$HD_Form = new FormHandler("cc_card", "Card");
 }
 
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_ID="cc_card.id";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "ASC";
 $HD_Form -> FG_FILTER_SEARCH_SESSION_NAME = 'entity_card_selection';
@@ -86,7 +86,7 @@ if (has_rights (ACX_GENERATE_CUSTOMER)) {
 }
 
 if (has_rights (ACX_CREATE_CUSTOMER)) {
-	$HD_Form -> FG_ADDITION = true;
+	$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 	$HD_Form ->FG_LIST_ADDING_BUTTON2 = true;
 	$HD_Form ->FG_LIST_ADDING_BUTTON_LINK2 = "A2B_entity_card.php?form_action=ask-add&atmenu=card&stitle=Card&section=".$_SESSION["menu_section"];
 	$HD_Form ->FG_LIST_ADDING_BUTTON_ALT2 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG2 = gettext("Add Customer");
@@ -280,14 +280,14 @@ if (($popup_select>=1)) {
 } else {
 
 	if (has_rights (ACX_EDIT_CUSTOMER)) {
-		$HD_Form -> FG_EDITION = true;
+		$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 	}
 
-	$HD_Form -> FG_INFO = true;
+	$HD_Form -> FG_ENABLE_INFO_BUTTON = true;
 	$HD_Form -> FG_INFO_LINK = "A2B_card_info.php?id=";
 
 	if (has_rights (ACX_DELETE_CUSTOMER)) {
-		$HD_Form -> FG_DELETION = true;
+		$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 	}
 
 	$FN_COLUMN_ID="col".($FG_COL_QUERY_COUNT);//get numbers of rows for needed fields
@@ -320,8 +320,8 @@ if (isset($filterprefix)  &&  (strlen($filterprefix)>0)) {
 	$HD_Form -> FG_TABLE_CLAUSE.="username like '$filterprefix%'";
 }
 
-$HD_Form -> FG_EDITION = true;
-$HD_Form -> FG_DELETION = true;
+$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 
 $maxi	= '';
 $maxi2	= '';

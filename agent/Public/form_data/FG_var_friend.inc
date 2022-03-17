@@ -54,10 +54,10 @@ getpost_ifset(array('defaultuser', 'subscribemwi', 'vmexten', 'cid_number', 'cal
 
 if ($atmenu=='sip') {
 	if (!isset($form_action) || $form_action=="list") {
-		$HD_Form = new FormHandler("cc_sip_buddies LEFT JOIN cc_card ON cc_card.id=cc_sip_buddies.id_cc_card LEFT JOIN cc_card_group ON cc_card.id_group=cc_card_group.id","SIP Friend");
+		$HD_Form = new FormHandler("cc_sip_buddies LEFT JOIN cc_card ON cc_card.id=cc_sip_buddies.id_cc_card LEFT JOIN cc_card_group ON cc_card.id_group=cc_card_group.id", "SIP Friend");
 		$HD_Form -> FG_TABLE_CLAUSE = " cc_card_group.id_agent=".$_SESSION['agent_id'] ;
 	} else {
-		$HD_Form = new FormHandler("cc_sip_buddies","SIP Friend");
+		$HD_Form = new FormHandler("cc_sip_buddies", "SIP Friend");
 	}
 	$HD_Form -> FG_TABLE_ID = 'cc_sip_buddies.id';
 	$table_name = "cc_sip_buddies";
@@ -65,17 +65,17 @@ if ($atmenu=='sip') {
 } else {
 
 	if (!isset($form_action) || $form_action=="list") {
-		$HD_Form = new FormHandler("cc_iax_buddies LEFT JOIN cc_card ON cc_card.id=cc_iax_buddies.id_cc_card LEFT JOIN cc_card_group ON cc_card.id_group=cc_card_group.id","IAX Friend");
+		$HD_Form = new FormHandler("cc_iax_buddies LEFT JOIN cc_card ON cc_card.id=cc_iax_buddies.id_cc_card LEFT JOIN cc_card_group ON cc_card.id_group=cc_card_group.id", "IAX Friend");
 		$HD_Form -> FG_TABLE_CLAUSE = " cc_card_group.id_agent=".$_SESSION['agent_id'] ;
 	} else {
-		$HD_Form = new FormHandler("cc_iax_buddies","IAX Friend");
+		$HD_Form = new FormHandler("cc_iax_buddies", "IAX Friend");
 	}
 	$HD_Form -> FG_TABLE_ID = 'cc_iax_buddies.id';
 	$table_name = "cc_iax_buddies";
 }
 
 
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 $typepaid_list = getPaidTypeList();
 $actived_list =  getActivationTrueFalseList();
 $yesno = getYesNoList();
@@ -114,9 +114,9 @@ if (isset($friend_id)  &&  (strlen($friend_id)>0)){
 }
 
 
-$HD_Form -> FG_ADDITION = true;
-$HD_Form -> FG_EDITION = true;
-$HD_Form -> FG_DELETION = true;
+$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
+$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 
 
 

@@ -46,12 +46,12 @@ if (! has_rights (ACX_ACCESS)) {
 getpost_ifset(array('id', 'card_id', 'date', 'payment','description','added_refill','refill_type'));
 
 
-$HD_Form = new FormHandler("cc_agent_commission","Commission");
+$HD_Form = new FormHandler("cc_agent_commission", "Commission");
 
 $HD_Form -> FG_TABLE_CLAUSE = " cc_agent_commission.id_agent=".$_SESSION['agent_id'] ;
 $HD_Form -> FG_TABLE_ID = 'cc_agent_commission.id';
 
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
 $com_list = getRefillType_List();
@@ -68,6 +68,6 @@ $HD_Form -> FieldViewElement ('cc_agent_commission.id, id_card, id_agent, date, 
 
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO ".strtoupper($HD_Form->FG_INSTANCE_NAME)." CREATED!");
 
-$HD_Form -> FG_EDITION = false;
-$HD_Form -> FG_DELETION = false;
-$HD_Form -> FG_ADDITION = false;
+$HD_Form -> FG_ENABLE_EDIT_BUTTON = false;
+$HD_Form -> FG_ENABLE_DELETE_BUTTON = false;
+$HD_Form -> FG_ENABLE_ADD_BUTTON = false;

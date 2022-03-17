@@ -52,7 +52,7 @@ use A2billing\Table;
         <?php endforeach ?>
     <?php endif ?>
 
-    <?php foreach ($this->FG_TABLE_EDITION as $i=>$row): ?>
+    <?php foreach ($this->FG_EDIT_FORM_ELEMENTS as $i=> $row): ?>
         <?php $options = null ?>
         <?php if (strlen($row["section_name"]) > 1): ?>
         <div class="row mb-3">
@@ -86,7 +86,7 @@ use A2billing\Table;
                     <?= $row["attributes"] ?>
                     <?php if ($this->VALID_SQL_REG_EXP): /* what is VALID_SQL_REG_EXP */ ?>
                         value="<?= $list[0][$i] ?>"
-                    <?php else: /* this doesn't make sense; did they mean defaultvalue – formerly index 4 – instead? */ ?>
+                    <?php else: /* this doesn't make sense; did they mean defaultvalue – formerly index 2 – instead? */ ?>
                         value="<?= $processed[$row["name"]] ?>"
                     <?php endif ?>
                 />

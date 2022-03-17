@@ -47,13 +47,13 @@ getpost_ifset(array('id', 'id_card', 'date','title','description'));
 if (!isset($form_action) || $form_action=="list") {
 	$list_query = "cc_receipt LEFT JOIN cc_card ON cc_card.id=id_card";
 	$list_query .= " LEFT JOIN ( SELECT st1.id_receipt, SUM(st1.price) as total_price FROM cc_receipt_item AS st1 GROUP BY st1.id_receipt) as items ON items.id_receipt = cc_receipt.id ";
-	$HD_Form = new FormHandler($list_query,"Receipt");
+	$HD_Form = new FormHandler($list_query, "Receipt");
 } else {
-	$HD_Form = new FormHandler("cc_receipt","Receipt");
+	$HD_Form = new FormHandler("cc_receipt", "Receipt");
 }
 
 $HD_Form -> FG_TABLE_ID = 'cc_receipt.id';
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
 $HD_Form -> FG_FK_DELETE_ALLOWED = true;
@@ -62,7 +62,7 @@ $HD_Form -> FG_FK_WARNONLY = true;
 $HD_Form -> FG_FK_TABLENAMES = array("cc_receipt_item");
 $HD_Form -> FG_FK_EDITION_CLAUSE = array(" id_receipt ");
 
-$HD_Form -> FG_INFO = true;
+$HD_Form -> FG_ENABLE_INFO_BUTTON = true;
 $HD_Form -> FG_INFO_LINK = "A2B_receipt_view.php?id=";
 
 $HD_Form -> FG_OTHER_BUTTON1_LINK = "A2B_receipt_edit.php?id=";
@@ -77,7 +77,7 @@ $HD_Form -> FG_OTHER_BUTTON2_HTML_CLASS = "lock";
 $HD_Form -> FG_OTHER_BUTTON2_HTML_ID = "|col0|";
 $HD_Form -> FG_OTHER_BUTTON2_CONDITION = '|col4| == "OPEN"';
 $HD_Form -> FG_OTHER_BUTTON2_ALT = gettext("Close this receipt");
-$HD_Form -> FG_EDITION_CONDITION = '|col4| == "OPEN"';
+$HD_Form -> FG_EDIT_BUTTON_CONDITION = '|col4| == "OPEN"';
 
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_receipt.php?form_action=ask-add&section=".$_SESSION["menu_section"];
@@ -99,9 +99,9 @@ $HD_Form -> FieldViewElement ("cc_receipt.id, username, cc_receipt.date,title,cc
 
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO ".strtoupper($HD_Form->FG_INSTANCE_NAME)." CREATED!");
 
-$HD_Form -> FG_ADDITION = true;
-$HD_Form -> FG_EDITION = true;
-$HD_Form -> FG_DELETION = true;
+$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
+$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 
 $HD_Form -> AddEditElement (gettext("ID CUSTOMER"),
 			   "id_card",
