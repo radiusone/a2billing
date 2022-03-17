@@ -289,7 +289,7 @@ function openURLFilter(link) {
                     if (property_exists($this, "FG_OTHER_BUTTON$b") && !empty($this->{"FG_OTHER_BUTTON$b"})):
                         $check = true;
                         $condition_eval = preg_replace_callback(
-                            "/\|col([0-9])\|/i",
+                            "/\|col([0-9]+)\|/i",
                             function ($m) use ($item, &$check) {
                                 $check = false;
                                 $tmp = str_replace("|col$m[1]|", $item[$m[1]], $m[0]);
@@ -303,7 +303,7 @@ function openURLFilter(link) {
                             $new_link = str_replace("|param|", $item["id"], $new_link);
                         }
                         $new_link = preg_replace_callback(
-                            "/\|col([0-9])\|/i",
+                            "/\|col([0-9]+)\|/i",
                             function ($m) use ($item) {
                                 return str_replace("|col$m[1]|", $item[$m[1]], $m[0]);
                             },
