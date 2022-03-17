@@ -33,43 +33,36 @@
  *
 **/
 
+use A2billing\Forms\FormHandler;
+
 require_once "../../common/lib/admin.defines.php";
 include './form_data/FG_var_did.inc';
+/**
+ * @var FormHandler $HD_Form
+ * @var SmartyBC $smarty
+ * @var string $CC_help_list_did
+ * @var string $CC_help_edit_did
+ */
 
 if (!has_rights(ACX_DID)) {
-    Header("HTTP/1.0 401 Unauthorized");
-    Header("Location: PP_error.php?c=accessdenied");
+    header("HTTP/1.0 401 Unauthorized");
+    header("Location: PP_error.php?c=accessdenied");
     die();
 }
 
 $HD_Form->setDBHandler(DbConnect());
 $HD_Form->init();
 
-if ($id != "" || !is_null($id)) {
+if (!empty($id)) {
     $HD_Form->FG_EDITION_CLAUSE = str_replace("%id", "$id", $HD_Form->FG_EDITION_CLAUSE);
 }
 
-if (!isset ($form_action))
-    $form_action = "list"; //ask-add
-
-if (!isset ($action))
-    $action = $form_action;
+$form_action = $form_action ?? "list"; //ask-add
+$action = $action ?? $form_action;
 
 $list = $HD_Form->perform_action($form_action);
-
-// #### HEADER SECTION
 $smarty->display('main.tpl');
-
-// #### HELP SECTION
-if ($form_action == 'list')
-    echo $CC_help_list_did;
-else
-    echo $CC_help_edit_did;
-
-// #### TOP SECTION PAGE
+echo $form_action === 'list' ? $CC_help_list_did : $CC_help_edit_did;
 $HD_Form->create_toppage($form_action);
-
 $HD_Form->create_form($form_action, $list);
-
-// #### FOOTER SECTION
 $smarty->display('footer.tpl');
