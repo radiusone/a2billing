@@ -333,7 +333,7 @@ function openURLFilter(link) {
                             <?php if (empty($img)): ?>
                                 <?= $this->{"FG_OTHER_BUTTON{$b}_ALT"} ?>
                             <?php else: ?>
-                                <img src="<?= $this->{"FG_OTHER_BUTTON{$b}_IMG"} ?>" alt="<?= $this->{"FG_OTHER_BUTTON{$b}_ALT"} ?>">
+                                <img src="<?= $this->{"FG_OTHER_BUTTON{$b}_IMG"} ?>" alt="<?= $this->{"FG_OTHER_BUTTON{$b}_ALT"} ?>" title="<?= $this->{"FG_OTHER_BUTTON{$b}_ALT"} ?>">
                             <?php endif ?>
                         </a>
                     <?php endif ?>
