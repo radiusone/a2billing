@@ -229,12 +229,13 @@ function openURLFilter(link) {
             }
             $origlist[$num][$j - $k] = $item[$j - $k];
             $item[$j - $k] = $record_display;
-            if (!empty($row["function"]) && function_exists($row["function"])) {
-                $record_display = call_user_func($row["function"], $record_display);
-            }
             ?>
             <td>
+            <?php if (!empty($row["function"]) && function_exists($row["function"])): ?>
+                <?php call_user_func($row["function"], $record_display) ?>
+            <?php else: ?>
                 <?= $record_display ?>
+            <?php endif ?>
             </td>
             <?php endforeach ?>
             <?php if ($hasActionButtons): ?>
