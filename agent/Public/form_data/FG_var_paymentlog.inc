@@ -43,9 +43,9 @@ if (! has_rights (ACX_ACCESS)) {
 
 getpost_ifset(array('id', 'status', 'Period', 'frommonth', 'fromstatsmonth', 'tomonth', 'tostatsmonth', 'fromday', 'fromstatsday_sday', 'fromstatsmonth_sday', 'today', 'tostatsday_sday', 'tostatsmonth_sday', 'stitle', 'atmenu', 'current_page', 'order', 'sens','popup_select'));
 
-$HD_Form = new FormHandler("cc_epayment_log,cc_card LEFT JOIN cc_card_group ON cc_card.id_group=cc_card_group.id","Payment");
+$HD_Form = new FormHandler("cc_epayment_log,cc_card LEFT JOIN cc_card_group ON cc_card.id_group=cc_card_group.id", "Payment");
 
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_ID = "cc_epayment_log.id";
 //CLause to filter by agent
 $HD_Form -> FG_TABLE_CLAUSE = "cc_card.id=cc_epayment_log.cardid AND cc_card_group.id_agent=".$_SESSION['agent_id'] ;
@@ -117,9 +117,9 @@ $HD_Form -> FieldViewElement ('cc_epayment_log.id, cc_epayment_log.creationdate,
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE ARE NO ".strtoupper($HD_Form->FG_INSTANCE_NAME)." CREATED!");
 $HD_Form -> FG_LIMITE_DISPLAY = 25;
 
-$HD_Form -> FG_EDITION = true;
-$HD_Form -> FG_DELETION = true;
-$HD_Form -> FG_ADDITION = false;
+$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form -> FG_ENABLE_ADD_BUTTON = false;
 
 $HD_Form -> AddEditElement (gettext("ID"),
 			   "id",

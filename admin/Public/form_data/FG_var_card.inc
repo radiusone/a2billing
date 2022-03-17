@@ -126,7 +126,7 @@ getpost_ifset([
  */
 $HD_Form = new FormHandler("cc_card", _("Card"));
 
-$HD_Form->FG_DEBUG = 0;
+$HD_Form->no_debug();
 $HD_Form->FG_TABLE_ID = "id";
 $HD_Form->FG_TABLE_DEFAULT_SENS = "ASC";
 $HD_Form->FG_FILTER_SEARCH_SESSION_NAME = 'entity_card_selection';
@@ -269,7 +269,7 @@ if (isset($filterprefix) && $filterprefix !== "") {
     $HD_Form->FG_TABLE_CLAUSE .= "username like '$filterprefix%'";
 }
 
-$HD_Form->FG_ADDITION = true;
+$HD_Form->FG_ENABLE_ADD_BUTTON = true;
 $form_action = $form_action ?? "list";
 
 if (!$popup_select) {
@@ -312,7 +312,7 @@ if (!$popup_select) {
     $HD_Form->AddSearchElement_Select(_("SELECT LANGUAGE"), null, null, null, null, null, "language", 0, $language_list_r);
     $HD_Form->AddSearchElement_Select(_("SELECT PAYMENT TYPE"), null, null, null, null, null, "typepaid", 0, $typepaid_list_r);
 
-    $HD_Form->FG_INFO = true;
+    $HD_Form->FG_ENABLE_INFO_BUTTON = true;
     $HD_Form->FG_OTHER_BUTTON1 = !empty($A2B->config["webui"]['buddy_sip_file']);
     $HD_Form->FG_OTHER_BUTTON2 = !empty($A2B->config["webui"]['buddy_iax_file']);
     $HD_Form->FG_OTHER_BUTTON3 = true;
@@ -339,8 +339,8 @@ if (!$popup_select) {
     $HD_Form->FG_OTHER_BUTTON5_ALT = _('Email to this Customer');
 
     if (has_rights(ACX_MODIFY_CUSTOMERS)) {
-        $HD_Form->FG_EDITION = true;
-        $HD_Form->FG_DELETION = true;
+        $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
+        $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 
         $maxi = $maxi2 = $maxi3 = $default_initbalance = "";
 
@@ -750,23 +750,27 @@ if (!$popup_select) {
             _("Insert the number of days after which the account will expire"),
             "", "", "", "", "", "", "", _("The number of days after which the account will expire."));
 
-        $HD_Form->AddEditElement(_("CREATE SIP CONFIG"),
-            "sip_buddy",
-            '1',
-            "RADIOBUTTON",
-            "",
-            "",
-            _("Choose if you want to enable the sip account"),
-            "", "", "", "Yes:1,No:0", "", "", "", _("Create the SIP config automatically"));
+        if (!empty($A2B->config["webui"]['buddy_sip_file'])) {
+            $HD_Form->AddEditElement(_("CREATE SIP CONFIG"),
+                "sip_buddy",
+                '1',
+                "RADIOBUTTON",
+                "",
+                "",
+                _("Choose if you want to enable the sip account"),
+                "", "", "", "Yes:1,No:0", "", "", "", _("Create the SIP config automatically"));
+        }
 
-        $HD_Form->AddEditElement(_("CREATE IAX CONFIG"),
-            "iax_buddy",
-            '1',
-            "RADIOBUTTON",
-            "",
-            "",
-            _("Choose if you want to enable the iax account"),
-            "", "", "", "Yes:1,No:0", "", "", "", _("Create the IAX config automatically"));
+        if (!empty($A2B->config["webui"]['buddy_iax_file'])) {
+            $HD_Form->AddEditElement(_("CREATE IAX CONFIG"),
+                "iax_buddy",
+                '1',
+                "RADIOBUTTON",
+                "",
+                "",
+                _("Choose if you want to enable the iax account"),
+                "", "", "", "Yes:1,No:0", "", "", "", _("Create the IAX config automatically"));
+        }
 
         $HD_Form->AddEditElement(_("MAC ADDRESS"),
             "mac_addr",

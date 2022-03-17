@@ -45,11 +45,11 @@ if (! has_rights (ACX_MAINTENANCE)) {
 
 check_demo_mode();
 
-$HD_Form = new FormHandler("cc_card","Customer");
+$HD_Form = new FormHandler("cc_card", "Customer");
 $HD_Form -> setDBHandler (DbConnect());
 $HD_Form -> init();
 
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_ID="id";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "ASC";
 $HD_Form -> FG_FILTER_SEARCH_SESSION_NAME = 'entity_archiving_selection';

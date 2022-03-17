@@ -44,10 +44,10 @@ getpost_ifset(array('id', 'displayheader', 'type','popup_select','popup_formname
 
 
 // type : refill or payment
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 
 if ($type=='payment'){
-	$HD_Form = new FormHandler("cc_logpayment as t2","Payment");
+	$HD_Form = new FormHandler("cc_logpayment as t2", "Payment");
 	$HD_Form -> FG_TABLE_CLAUSE = "t2.card_id = $id";
 	$HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
@@ -61,7 +61,7 @@ if ($type=='payment'){
 	$list_sql = "cc_invoice ".
 	            "LEFT JOIN ( SELECT st1.id_invoice, SUM(st1.price*(1+(st1.vat/100))) AS total_price FROM cc_invoice_item AS st1 GROUP BY st1.id_invoice) " .
 	            "AS items ON items.id_invoice=cc_invoice.id ";
-	$HD_Form = new FormHandler($list_sql,"Invoice");
+	$HD_Form = new FormHandler($list_sql, "Invoice");
 	$HD_Form -> FG_TABLE_ID = 'cc_invoice.id';
 	$HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 	$HD_Form -> FG_TABLE_CLAUSE = "cc_invoice.id_card = $id";
@@ -75,6 +75,6 @@ if ($type=='payment'){
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO").strtoupper($HD_Form->FG_INSTANCE_NAME)." ".gettext("CREATED!");
 
 $HD_Form -> CV_FOLLOWPARAMETERS = "&popup_select=".$popup_select."&id=$id&type=$type";
-$HD_Form -> FG_EDITION = false;
-$HD_Form -> FG_DELETION = false;
-$HD_Form -> FG_ADDITION = false;
+$HD_Form -> FG_ENABLE_EDIT_BUTTON = false;
+$HD_Form -> FG_ENABLE_DELETE_BUTTON = false;
+$HD_Form -> FG_ENABLE_ADD_BUTTON = false;

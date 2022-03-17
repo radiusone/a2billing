@@ -47,7 +47,7 @@ getpost_ifset(array('id', 'IDCust', 'mailtype', 'fromemail', 'fromname', 'subjec
 
 $HD_Form = new FormHandler("cc_templatemail", gettext("mail template"));
 
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_ID = "id";
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "id";
 
@@ -127,9 +127,9 @@ if ($popup_select >= 1) {
     $HD_Form -> FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add MAIL TEMPLATE");
     $HD_Form -> FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/email_add.png" ;
 
-    $HD_Form -> FG_ADDITION = true;
-    $HD_Form -> FG_EDITION = true;
-    $HD_Form -> FG_DELETION = true;
+    $HD_Form -> FG_ENABLE_ADD_BUTTON = true;
+    $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
+    $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 
     // Translation
     $HD_Form -> FG_OTHER_BUTTON2 = true;

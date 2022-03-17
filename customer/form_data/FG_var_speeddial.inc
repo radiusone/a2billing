@@ -43,9 +43,9 @@ if (! has_rights (ACX_ACCESS)) {
 
 getpost_ifset(array('id', 'speeddial', 'id_cc_card', 'name', 'phone','popup_select','popup_formname','popup_fieldname'));
 
-$HD_Form = new FormHandler("cc_speeddial","speeddial");
+$HD_Form = new FormHandler("cc_speeddial", "speeddial");
 
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 // FAQ
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = " creationdate";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
@@ -78,8 +78,8 @@ if (strlen($HD_Form -> FG_EDITION_CLAUSE)>0)
 
 //end My Code for Where Clause
 
-$HD_Form -> FG_EDITION = true;
-$HD_Form -> FG_DELETION = true;
+$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 
 
 $HD_Form -> AddEditElement (gettext("SPEEDDIAL"),

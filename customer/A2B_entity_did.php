@@ -242,8 +242,8 @@ if (!isset ($action_release) || $action_release == "confirm_release" || $action_
     // #### TOP SECTION PAGE
     $HD_Form->create_toppage($form_action);
 
-    $instance_table = new Table($HD_Form->FG_TABLE_NAME, $HD_Form->FG_COL_QUERY);
-    $instance_table_phonenumberdid = new Table($HD_Form->FG_TABLE_NAME, $HD_Form->FG_COL_QUERY);
+    $instance_table = new Table($HD_Form->FG_TABLE_NAME, $HD_Form->FG_QUERY_COLUMN_LIST);
+    $instance_table_phonenumberdid = new Table($HD_Form->FG_TABLE_NAME, $HD_Form->FG_QUERY_COLUMN_LIST);
     $list_phonenumberdid = $instance_table_phonenumberdid->get_list($HD_Form->DBHandle, $HD_Form->FG_TABLE_CLAUSE, $order, $sens, $limite, $current_record);
     $nb_record = count($list_phonenumberdid);
 

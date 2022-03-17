@@ -50,11 +50,11 @@ if (!isset($form_action) || $form_action=="list"){
 	( SELECT aa.id, CASE WHEN MAX(aa.viewed_admin)=1 OR SUM(bb.viewed_admin)>0 THEN 1 ELSE 0 END as viewed FROM cc_ticket aa LEFT JOIN cc_ticket_comment bb ON aa.id = bb.id_ticket	WHERE  aa.creator_type = 0 GROUP BY aa.id ) AS v ON cc_ticket.id = v.id
 	LEFT JOIN cc_agent ON cc_agent.id = cc_ticket.creator", "Ticket");
 }else {
-	$HD_Form = new FormHandler("cc_ticket","Ticket");
+	$HD_Form = new FormHandler("cc_ticket", "Ticket");
 }
 
 
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = " cc_ticket.id";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 $HD_Form -> FG_TABLE_CLAUSE = " cc_ticket.creator_type = 1 ";
@@ -103,9 +103,9 @@ $HD_Form -> AddSearchElement_C1(gettext("FIRSTNAME"),'firstname','firstnametype'
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO")." ".strtoupper($HD_Form->FG_INSTANCE_NAME)." ".gettext("CREATED!");
 
 $HD_Form -> FG_OTHER_BUTTON1 = true;
-$HD_Form -> FG_EDITION = true;
-$HD_Form -> FG_DELETION = true;
-$HD_Form -> FG_ADDITION = true;
+$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 
 $HD_Form -> AddEditElement (gettext("AGENT"),
    "creator",

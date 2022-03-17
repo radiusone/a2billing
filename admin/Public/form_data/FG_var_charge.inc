@@ -45,14 +45,14 @@ getpost_ifset(array('id', 'amount', 'id_cc_card', 'chargetype', 'description', '
 
 
 if (($form_action=='ask-edit') || ($form_action=='ask-add') || ($form_action=='add') || ($form_action=='edit') || ($form_action=='ask-delete') || ($form_action=='delete')){
-	if ($wantinclude==1) $HD_Form_c = new FormHandler("cc_charge","charge","A2B_entity_charge.php");
-	else $HD_Form_c = new FormHandler("cc_charge","charge");
+	if ($wantinclude==1) $HD_Form_c = new FormHandler("cc_charge", "charge");
+	else $HD_Form_c = new FormHandler("cc_charge", "charge");
 }else {
-	if ($wantinclude==1) $HD_Form_c = new FormHandler("cc_charge, cc_card", "charge", "A2B_entity_charge.php");
+	if ($wantinclude==1) $HD_Form_c = new FormHandler("cc_charge, cc_card", "charge");
 	else $HD_Form_c = new FormHandler("cc_charge, cc_card", "charge");
 }
 
-$HD_Form_c -> FG_DEBUG = 0;
+$HD_Form_c->no_debug();
 if ($wantinclude==1) $HD_Form_c -> FG_TABLE_DEFAULT_ORDER = $order;
 else $HD_Form_c -> FG_TABLE_DEFAULT_ORDER = "id_cc_card";
 
@@ -88,9 +88,9 @@ $HD_Form_c -> FieldViewElement ('id_cc_card, username, cc_charge.creationdate, a
 
 $HD_Form_c -> CV_NO_FIELDS  = gettext("THERE IS NO ".strtoupper($HD_Form_c->FG_INSTANCE_NAME)." CREATED!");
 
-$HD_Form_c -> FG_EDITION = true;
-$HD_Form_c -> FG_DELETION = true;
-$HD_Form_c -> FG_ADDITION = true;
+$HD_Form_c -> FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form_c -> FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form_c -> FG_ENABLE_ADD_BUTTON = true;
 
 // TODO integrate in Framework
 if ($form_action=='ask-add'){

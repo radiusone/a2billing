@@ -38,16 +38,16 @@ getpost_ifset(array('wh'));
 
     <table cellspacing="2" class="addform_table1">
          <tbody>
-<?php foreach ($this->FG_TABLE_ADITION as $i=>$row):?>
-    <?php if (!empty($this->FG_TABLE_ADITION[$i][16]) && strtoupper ($this->FG_TABLE_ADITION[$i][3])!=("HAS_MANY")): ?>
+<?php foreach ($this->FG_ADD_FORM_ELEMENTS as $i=>$row):?>
+    <?php if (!empty($this->FG_ADD_FORM_ELEMENTS[$i][16]) && strtoupper ($this->FG_ADD_FORM_ELEMENTS[$i][3])!=("HAS_MANY")): ?>
             <tr>
                 <td width="%25" valign="top" bgcolor="#FEFEEE" colspan="2" class="tableBodyRight">
-                    <i><?= $this->FG_TABLE_EDITION[$i][16] ?></i>
+                    <i><?= $this->FG_EDIT_FORM_ELEMENTS[$i][16] ?></i>
                 </td>
             </tr>
     <?php endif ?>
 
-    <?php if (!str_contains($this->FG_TABLE_ADITION[$i][14], ":")): ?>
+    <?php if (!str_contains($this->FG_ADD_FORM_ELEMENTS[$i][14], ":")): ?>
             <tr>
                 <td
                     width="25%"

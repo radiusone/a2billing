@@ -46,15 +46,15 @@ if (! has_rights (ACX_ACCESS)) {
 getpost_ifset(array('id', 'email_notification','credit_notification','notify_email', 'message'));
 
 
-$HD_Form = new FormHandler("cc_card","Card");
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form = new FormHandler("cc_card", "Card");
+$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_ID="id";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "ASC";
 $HD_Form -> FG_HTML_TABLE_WIDTH = "60%";
 $HD_Form -> FG_EDITION_CLAUSE = " id = ".$_SESSION["card_id"];
 $HD_Form -> FG_INTRO_TEXT_EDITION = '';
 
-$HD_Form -> FG_EDITION= true;
+$HD_Form -> FG_ENABLE_EDIT_BUTTON= true;
 $QUERY = "SELECT status, currency FROM cc_card  WHERE username = '".$_SESSION["pr_login"]."' AND uipass = '".$_SESSION["pr_password"]."'";
 $DBHandle  = DbConnect();
 $numrow = 0;

@@ -44,7 +44,7 @@ getpost_ifset(array('id'));
 
 $HD_Form = new FormHandler("cc_autorefill_report", "AutoRefill Report");
 
-$HD_Form->FG_DEBUG = 0;
+$HD_Form->no_debug();
 
 $HD_Form->FG_VIEW_TABLE_WITDH = '70%';
 
@@ -61,6 +61,6 @@ $HD_Form->FieldViewElement('daterun, totalcardperform, totalcredit');
 
 $HD_Form->CV_NO_FIELDS = gettext("THERE IS NO AUTOREFILL REPORT CREATED!");
 
-$HD_Form->FG_EDITION = false;
-$HD_Form->FG_DELETION = false;
-$HD_Form->FG_ADDITION = false;
+$HD_Form->FG_ENABLE_EDIT_BUTTON = false;
+$HD_Form->FG_ENABLE_DELETE_BUTTON = false;
+$HD_Form->FG_ENABLE_ADD_BUTTON = false;

@@ -24,7 +24,7 @@ getpost_ifset(['stitle', 'letter', 'current_page', 'popup_select']);
  * @var string $current_page
  * @var int $popup_select
  */
-$hasActionButtons = ($this->FG_DELETION || $this->FG_INFO || $this->FG_EDITION || $this->FG_OTHER_BUTTON1 || $this->FG_OTHER_BUTTON2 || $this->FG_OTHER_BUTTON3 || $this->FG_OTHER_BUTTON4 || $this->FG_OTHER_BUTTON5);
+$hasActionButtons = ($this->FG_ENABLE_DELETE_BUTTON || $this->FG_ENABLE_INFO_BUTTON || $this->FG_ENABLE_EDIT_BUTTON || $this->FG_OTHER_BUTTON1 || $this->FG_OTHER_BUTTON2 || $this->FG_OTHER_BUTTON3 || $this->FG_OTHER_BUTTON4 || $this->FG_OTHER_BUTTON5);
 ?>
 
 <?php if( $popup_select < 1 && ($this->FG_LIST_ADDING_BUTTON1 || $this->FG_LIST_ADDING_BUTTON2)): ?>
@@ -143,7 +143,7 @@ $hasActionButtons = ($this->FG_DELETION || $this->FG_INFO || $this->FG_EDITION |
     </caption>
     <thead>
         <tr>
-            <?php foreach ($this->FG_TABLE_COL as $row): ?>
+            <?php foreach ($this->FG_LIST_TABLE_CELLS as $row): ?>
             <th>
                 <?php if ($row["sortable"]): ?>
                 <a class="sort <?= $this->FG_ORDER === $row["field"] ? strtolower($this->FG_SENS) : "" ?>" href="<?= "?stitle=$stitle&atmenu=$processed[atmenu]&current_page=$current_page&letter=$letter&popup_select=$processed[popup_select]&order=$row[field]&sens=" . ($this->FG_SENS === "ASC" ? "DESC" : "ASC") . $this-> CV_FOLLOWPARAMETERS ?>">
@@ -166,7 +166,7 @@ $hasActionButtons = ($this->FG_DELETION || $this->FG_INFO || $this->FG_EDITION |
     <?php foreach ($list as $num=>$item): ?>
         <tr>
             <?php $k=0 ?>
-            <?php foreach($this->FG_TABLE_COL as $j=>$row): ?>
+            <?php foreach($this->FG_LIST_TABLE_CELLS as $j=> $row): ?>
             <?php
             if (str_starts_with($row["type"], "lie")) {
                 $options = (new Table($row["sql_table"], $row["sql_columns"]))->get_list($this->DBHandle, str_replace("%id", $item[$j - $k], $row["sql_clause"]), null, null, null, null, null, 10);
@@ -227,12 +227,12 @@ $hasActionButtons = ($this->FG_DELETION || $this->FG_INFO || $this->FG_EDITION |
             <?php endforeach ?>
             <?php if ($hasActionButtons): ?>
             <td>
-                <?php if($this->FG_INFO): ?>
+                <?php if($this->FG_ENABLE_INFO_BUTTON): ?>
                     <a href="<?= $this->FG_INFO_LINK?><?= $item["id"] ?>">
                         <img alt="<?= $this->FG_INFO_ALT ?>" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJGSURBVDjLjdJLSNRBHMDx78yqLZaKS75DPdgDDaFDbdJmde5QlhCJGxgpRJfqEEKnIsJLB7skQYQKZaSmdLaopPCgEvSCShCMzR5a7oq7/3l12RVtjfzBMA/4fWZ+MyOccwBM3g8HEbIdfCEhfAFnLVapOa28Uevpjrqz/WOsERJgsu9Uq5CZQzgqrJfo9BajNd5irEYn4p3OUiFExtCLmw2tawFi4l5zUMjMIau9u7K+qxeoAcoAA0wDb2OPwmfA16LiiaOHLj1edRLpkO3WmIis7+oBDgJbgQ2AH6gC6jY19N62RkcctKeVIJAhp9QgUA3kJXdONZVcq9JxPSgQoXRAyIDRth8oAXQyKdWnoCKrTD9CBv4GMqx1WGNZkeRWJKbG2hiD1Cb9FbTnzWFdY/LCdLKlgNQ84gyNKqHm0gDjqVHnxDHgA/B9RQkpaB6YklkZl62np9KBhOqwjpKFgeY2YAz4BESBWHI8Hhs6PVVSvc3v98ye4fP7T676B845nt040ip98qpWJmI9PWiU6bfWgXGN2YHcKwU7tsuc4kpUPMbU0+f8+vKt+Pitl7PLAMDI9cNBoB0hQwICzjqUp6MZvsy8yvp95BRuQUjJ75mPvH4wYo1NlJ64Mza7DPwrhi8cCOeXl/aUB4P4c/NJxKLMvpngycCrzxVFG2v/CwAMnguF80oLe8p27cQh+fnpPV/fTc95S6piXQDAw7a9YbWkezZXFbAwMx/xPFXb1D3+Y90AQF/L7kAsri9mZ4lrTd0TcYA/Kakr+x2JSPUAAAAASUVORK5CYII=">
                     </a>
                 <?php endif ?>
-                <?php if($this->FG_EDITION): ?>
+                <?php if($this->FG_ENABLE_EDIT_BUTTON): ?>
                     <?php
                     $check = true;
                     $condition_eval = preg_replace_callback(
@@ -243,7 +243,8 @@ $hasActionButtons = ($this->FG_DELETION || $this->FG_INFO || $this->FG_EDITION |
                             $check = eval("return $tmp;");
                             return $tmp;
                         },
-                        $this->FG_EDITION_CONDITION
+                        // only used in FG_var_invoice.inc and FG_var_receipt.inc
+                        $this->FG_EDIT_BUTTON_CONDITION
                     );
                     ?>
                     <?php if($check): ?>
@@ -252,7 +253,7 @@ $hasActionButtons = ($this->FG_DELETION || $this->FG_INFO || $this->FG_EDITION |
                         </a>
                     <?php endif ?>
                 <?php endif ?>
-                <?php if($this->FG_DELETION && !in_array($item["id"], $this->FG_DELETION_FORBIDDEN_ID)): ?>
+                <?php if($this->FG_ENABLE_DELETE_BUTTON && !in_array($item["id"], $this->FG_DELETION_FORBIDDEN_ID)): ?>
                     <?php
                     $check = true;
                     $condition_eval = preg_replace_callback(
@@ -263,7 +264,7 @@ $hasActionButtons = ($this->FG_DELETION || $this->FG_INFO || $this->FG_EDITION |
                             $check = eval("return $tmp;");
                             return $tmp;
                         },
-                        $this->FG_DELETION_CONDITION
+                        $this->FG_DELETE_BUTTON_CONDITION
                     );
                     ?>
                     <?php if ($check): ?>

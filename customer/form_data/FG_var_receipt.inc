@@ -47,14 +47,14 @@ if (!isset($form_action) || $form_action=="list") {
 	$list_sql = "cc_receipt LEFT JOIN cc_card ON cc_card.id=id_card " .
 	            "LEFT JOIN ( SELECT st1.id_receipt, SUM(st1.price) as total_price FROM cc_receipt_item AS st1 GROUP BY st1.id_receipt ) ".
 	            "as items ON items.id_receipt = cc_receipt.id ";
-	$HD_Form = new FormHandler($list_sql,"Receipt");
+	$HD_Form = new FormHandler($list_sql, "Receipt");
 } else {
-	$HD_Form = new FormHandler("cc_receipt","Receipt");
+	$HD_Form = new FormHandler("cc_receipt", "Receipt");
 }
 
 $HD_Form -> FG_TABLE_ID = 'cc_receipt.id';
 $HD_Form -> FG_TABLE_CLAUSE = " id_card = ".$_SESSION["card_id"];
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
 $HD_Form -> FG_FK_DELETE_ALLOWED = true;
@@ -63,7 +63,7 @@ $HD_Form -> FG_FK_WARNONLY = true;
 $HD_Form -> FG_FK_TABLENAMES = array("cc_receipt_item");
 $HD_Form -> FG_FK_EDITION_CLAUSE = array(" id_receipt ");
 
-$HD_Form -> FG_INFO = true;
+$HD_Form -> FG_ENABLE_INFO_BUTTON = true;
 $HD_Form -> FG_INFO_LINK = "A2B_receipt_view.php?id=";
 
 $list_refill_type=getRefillType_List();

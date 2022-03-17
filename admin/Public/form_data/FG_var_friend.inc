@@ -59,7 +59,7 @@ if ($atmenu=='sip') {
 }
 
 
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 $typepaid_list = getPaidTypeList();
 $actived_list =  getActivationTrueFalseList();
 $yesno = getYesNoList();
@@ -101,9 +101,9 @@ if (isset($friend_id)  &&  (strlen($friend_id)>0)) {
 
 
 
-$HD_Form -> FG_EDITION = true;
-$HD_Form -> FG_DELETION = true;
-$HD_Form -> FG_ADDITION = true;
+$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 
 $maxi='';
 if ($form_action=="ask-add") {

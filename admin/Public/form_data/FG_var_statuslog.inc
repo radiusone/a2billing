@@ -46,7 +46,7 @@ getpost_ifset(array('id', 'status', 'id_cc_card', 'updated_date', 'Period', 'fro
 
 $HD_Form = new FormHandler("cc_status_log sl LEFT JOIN cc_card ON cc_card.id = sl.id_cc_card", gettext("Status Log"));
 
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_ID = "sl.id";
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "updated_date";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
@@ -108,9 +108,9 @@ $HD_Form -> FieldViewElement ('sl.id_cc_card, id_cc_card, id_cc_card, sl.status,
 
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO STATUS LOG AVAILABLE!");
 $HD_Form -> FG_INTRO_TEXT_EDITION = "";
-$HD_Form -> FG_EDITION = false;
-$HD_Form -> FG_DELETION = false;
-$HD_Form -> FG_ADDITION = false;
+$HD_Form -> FG_ENABLE_EDIT_BUTTON = false;
+$HD_Form -> FG_ENABLE_DELETE_BUTTON = false;
+$HD_Form -> FG_ENABLE_ADD_BUTTON = false;
 
 $HD_Form -> FG_FILTER_APPLY = true;
 $HD_Form -> FG_FILTERFIELD = 'cardnumber';

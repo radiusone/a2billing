@@ -44,9 +44,9 @@ if (! has_rights (ACX_ADMINISTRATOR)) {
 getpost_ifset(array('id', 'name', 'path', 'creationdate'));
 
 
-$HD_Form = new FormHandler("cc_backup","restore");
+$HD_Form = new FormHandler("cc_backup", "restore");
 
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = " name";
 $HD_Form -> FG_EDITION_CLAUSE = " id='%id' ";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
@@ -61,9 +61,9 @@ $HD_Form -> FieldViewElement ('id, name, path, creationdate');
 
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO")." ".strtoupper($HD_Form->FG_INSTANCE_NAME)." ".gettext("CREATED!");
 
-$HD_Form -> FG_ADDITION = true;
-$HD_Form -> FG_EDITION = true;
-$HD_Form -> FG_DELETION = true;
+$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
+$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 // Restore and Download
 $HD_Form -> FG_OTHER_BUTTON1 = true;
 $HD_Form -> FG_OTHER_BUTTON2 = true;

@@ -44,9 +44,9 @@ if (! has_rights (ACX_ADMINISTRATOR)) {
 getpost_ifset(array('id', 'displayheader', 'displayfooter'));
 
 
-$HD_Form = new FormHandler("cc_service","service_details");
+$HD_Form = new FormHandler("cc_service", "service_details");
 
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "id";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 $HD_Form -> FG_TABLE_CLAUSE = " id='$id'";
@@ -66,9 +66,9 @@ $HD_Form -> FieldViewElement ('name, numberofrun, datelastrun, totalcredit, tota
 
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO")." ".strtoupper($HD_Form->FG_INSTANCE_NAME)." ".gettext("CREATED!");
 
-$HD_Form -> FG_ADDITION = false;
-$HD_Form -> FG_EDITION = false;
-$HD_Form -> FG_DELETION = false;
+$HD_Form -> FG_ENABLE_ADD_BUTTON = false;
+$HD_Form -> FG_ENABLE_EDIT_BUTTON = false;
+$HD_Form -> FG_ENABLE_DELETE_BUTTON = false;
 
 $HD_Form -> FG_INTRO_TEXT_EDITION= gettext("You can modify, through the following form, the different properties of your")." ".$HD_Form->FG_INSTANCE_NAME;
 $HD_Form -> FG_INTRO_TEXT_ASK_DELETION = gettext("If you really want remove this")." ".$HD_Form->FG_INSTANCE_NAME.", ".gettext("click on the delete button.");

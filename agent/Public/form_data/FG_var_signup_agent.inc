@@ -43,17 +43,17 @@ if (! has_rights (ACX_ACCESS)) {
 getpost_ifset(array('id', 'id_agent', 'id_tariff_group', 'code','id_group'));
 
 
-$HD_Form = new FormHandler("cc_agent_signup","SIGNUP KEY");
+$HD_Form = new FormHandler("cc_agent_signup", "SIGNUP KEY");
 
 $HD_Form -> FG_TABLE_ID = 'cc_agent_signup.id';
 $HD_Form -> FG_TABLE_CLAUSE = "id_agent = ".$_SESSION['agent_id'];
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_signup_agent.php?atmenu=user&section=".$_SESSION["menu_section"];
 $HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add Signup KEY");
 $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/key_add.png" ;
-$HD_Form -> FG_DELETION = true;
+$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 
 
 $HD_Form -> AddViewElement(gettext("KEY"), "code");

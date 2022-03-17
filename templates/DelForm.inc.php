@@ -104,7 +104,7 @@ function sendto(action, record, field_inst, instance) {
     <?php endif ?>
 
 	<table cellspacing="2" class="tablestyle_001">
-		<?php foreach($this->FG_TABLE_EDITION as $i=>$row): ?>
+		<?php foreach($this->FG_EDIT_FORM_ELEMENTS as $i=> $row): ?>
 		<tr>
 			<td width="25%" valign="middle" class="form_head">
 				<label for="<?= $row["name"] ?>"><?= $row["label"] ?></label>

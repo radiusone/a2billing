@@ -65,7 +65,7 @@ if ( !isset($currencies_list[strtoupper($_SESSION['currency'])][2]) || !is_numer
         $two_currency=true;
 }
 
-$HD_Form = new FormHandler("cc_payment_methods","payment_method");
+$HD_Form = new FormHandler("cc_payment_methods", "payment_method");
 
 getpost_ifset(array('item_id','item_type'));
 $DBHandle =DbConnect();

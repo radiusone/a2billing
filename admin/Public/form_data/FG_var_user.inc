@@ -58,10 +58,10 @@ if ($groupID=="0") {
 	$FG_INSTANCE_NAME="Users";
 }
 
-$HD_Form = new FormHandler("cc_ui_authen",$FG_INSTANCE_NAME);
+$HD_Form = new FormHandler("cc_ui_authen", $FG_INSTANCE_NAME);
 
 
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_ID = " userid";
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = " datecreation";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "ASC";
@@ -118,14 +118,14 @@ $HD_Form -> FieldViewElement ('userid, datecreation, login');
 $HD_Form -> CV_NO_FIELDS  = gettext("NO")." ".strtoupper($HD_Form->FG_INSTANCE_NAME)." ".gettext("HAVE BEEN CREATED!");
 
 if (!$popup_select) {
-	$HD_Form -> FG_ADDITION = true;
-	$HD_Form -> FG_INFO = true;
+	$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
+	$HD_Form -> FG_ENABLE_INFO_BUTTON = true;
 	$HD_Form -> FG_INFO_LINK = "A2B_admin_info.php?groupID=$groupID&id=";
 }
 
 if (has_rights (ACX_MODIFY_ADMINS) && !($popup_select)) {
-	$HD_Form -> FG_DELETION = true;
-	$HD_Form -> FG_EDITION = true;
+	$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
+	$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 
 	if ($form_action!="ask-add" && $form_action!="add") {
 		$HD_Form -> AddEditElement (gettext("USERID"),

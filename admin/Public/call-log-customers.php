@@ -155,9 +155,9 @@ $calltype_list = [
     [7, _("DID-ALEG")],
 ];
 
-$HD_Form->FG_DEBUG = 0;
+$HD_Form->no_debug();
 $HD_Form->FG_TABLE_NAME = "cc_call LEFT OUTER JOIN cc_trunk ON cc_call.id_trunk = cc_trunk.id_trunk LEFT OUTER JOIN cc_ratecard ON cc_call.id_ratecard = cc_ratecard.id LEFT OUTER JOIN cc_card ON cc_call.card_id = cc_card.id";
-$HD_Form->FG_COL_QUERY = 'cc_call.starttime, cc_call.src, cc_call.dnid, cc_call.calledstation, cc_call.destination AS dest, cc_ratecard.buyrate, cc_ratecard.rateinitial, cc_call.sessiontime, cc_call.card_id, cc_trunk.trunkcode, cc_call.terminatecauseid, cc_call.sipiax, cc_call.buycost, cc_call.sessionbill, CASE WHEN cc_call.sessionbill != 0 THEN ((cc_call.sessionbill - cc_call.buycost) / cc_call.sessionbill) * 100 ELSE NULL END AS margin, CASE WHEN cc_call.buycost != 0 THEN ((cc_call.sessionbill - cc_call.buycost) / cc_call.buycost) * 100 ELSE NULL END AS markup, cc_call.id, cc_trunk.id_provider, cc_trunk.id_trunk AS trunk_id';
+$HD_Form->FG_QUERY_COLUMN_LIST = 'cc_call.starttime, cc_call.src, cc_call.dnid, cc_call.calledstation, cc_call.destination AS dest, cc_ratecard.buyrate, cc_ratecard.rateinitial, cc_call.sessiontime, cc_call.card_id, cc_trunk.trunkcode, cc_call.terminatecauseid, cc_call.sipiax, cc_call.buycost, cc_call.sessionbill, CASE WHEN cc_call.sessionbill != 0 THEN ((cc_call.sessionbill - cc_call.buycost) / cc_call.sessionbill) * 100 ELSE NULL END AS margin, CASE WHEN cc_call.buycost != 0 THEN ((cc_call.sessionbill - cc_call.buycost) / cc_call.buycost) * 100 ELSE NULL END AS markup, cc_call.id, cc_trunk.id_provider, cc_trunk.id_trunk AS trunk_id';
 
 $DBHandle = DbConnect ();
 
@@ -178,19 +178,18 @@ $HD_Form->AddViewElement(_("Sell"), "sessionbill", true, "30", "display_2bill");
 $HD_Form->AddViewElement(_("Margin"), "margin", true, "30", "display_2dec_percentage");
 $HD_Form->AddViewElement(_("Markup"), "markup", true, "30", "display_2dec_percentage");
 
-$HD_Form->FG_DELETION = true;
+$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form->FG_DELETION_LINK = "A2B_entity_call.php?form_action=ask-delete&id=";
 
 if (LINK_AUDIO_FILE) {
     // TODO: figure out how this works, move it into this file with custom button
     $HD_Form->AddViewElement("", "uniqueid", false, "30", "display_monitorfile_link", "", "", "", "", "");
-    $HD_Form->FG_COL_QUERY .= ', cc_call.uniqueid';
+    $HD_Form->FG_QUERY_COLUMN_LIST .= ', cc_call.uniqueid';
 }
 
 $HD_Form->FG_LIMITE_DISPLAY = 25;
 
 $HD_Form->CV_TITLE_TEXT = _("Call Logs");
-$HD_Form->CV_CURRENT_PAGE = $current_page;
 
 $order = $HD_Form->FG_TABLE_DEFAULT_ORDER = $order ?? "cc_call.starttime";
 $sens = $HD_Form->FG_TABLE_DEFAULT_SENS = $sens ?? "DESC";
@@ -199,7 +198,7 @@ $sens = $HD_Form->FG_TABLE_DEFAULT_SENS = $sens ?? "DESC";
 $HD_Form->FG_EXPORT_CSV = true;
 $HD_Form->FG_EXPORT_XML = true;
 $HD_Form->FG_EXPORT_SESSION_VAR = "pr_export_entity_call";
-$_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] = "SELECT $HD_Form->FG_COL_QUERY FROM $HD_Form->FG_TABLE_NAME WHERE $HD_Form->FG_TABLE_CLAUSE ORDER BY $HD_Form->FG_ORDER $HD_Form->FG_SENS";
+$_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] = "SELECT $HD_Form->FG_QUERY_COLUMN_LIST FROM $HD_Form->FG_TABLE_NAME WHERE $HD_Form->FG_TABLE_CLAUSE ORDER BY $HD_Form->FG_ORDER $HD_Form->FG_SENS";
 
 $nb_record = $HD_Form->FG_NB_RECORD;
 
@@ -277,11 +276,6 @@ if (!$nodisplay) {
     $list = $HD_Form->perform_action($form_action);
 }
 
-if ($HD_Form->FG_DEBUG == 3) {
-    echo "<br>Nb_record : $nb_record";
-    echo "<br>Nb_record_max : $nb_record_max";
-}
-
 $smarty->display ( 'main.tpl' );
 
 ?>
@@ -340,13 +334,6 @@ if (!$nodisplay) {
     $res = $HD_Form->DBHandle->Execute ( $QUERY );
     if ($res) {
         $list_total_day = $res->GetAll();
-    }
-
-    if ($HD_Form->FG_DEBUG >= 1) {
-        if ($HD_Form->FG_DEBUG == 3) {
-            echo "<br>Clause : $HD_Form->FG_TABLE_CLAUSE";
-        }
-        var_dump($list);
     }
 }
 

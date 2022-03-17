@@ -59,9 +59,9 @@ if ( !empty($groupdelete) && substr($groupdelete,0,8) == "agi-conf" && $groupdel
 }
 
 
-$HD_Form = new FormHandler("cc_config_group","configuration group");
+$HD_Form = new FormHandler("cc_config_group", "configuration group");
 
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_ID="id";
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "id";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "ASC";
@@ -76,9 +76,9 @@ $HD_Form -> FieldViewElement ('group_title, group_description');
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE ARE NO ".strtoupper($HD_Form->FG_INSTANCE_NAME)." CREATED!");
 $HD_Form -> FG_LIMITE_DISPLAY = 15;
 
-$HD_Form -> FG_EDITION = false;
-$HD_Form -> FG_ADDITION = false;
-$HD_Form -> FG_DELETION = false;
+$HD_Form -> FG_ENABLE_EDIT_BUTTON = false;
+$HD_Form -> FG_ENABLE_ADD_BUTTON = false;
+$HD_Form -> FG_ENABLE_DELETE_BUTTON = false;
 
 $HD_Form -> FG_OTHER_BUTTON1 = true;
 $HD_Form -> FG_OTHER_BUTTON1_LINK = "A2B_entity_config.php?groupselect=|col0|";

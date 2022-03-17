@@ -43,9 +43,9 @@ if (! has_rights (ACX_ADMINISTRATOR)) {
 
 getpost_ifset(array('id', 'tariffgroupname', 'lcrtype', 'removeinterprefix', 'idtariffplan', 'idtariffplan_hidden', 'id_cc_package_offer', 'popup_select'));
 
-$HD_Form = new FormHandler("cc_tariffgroup","Call Plan");
+$HD_Form = new FormHandler("cc_tariffgroup", "Call Plan");
 
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = " tariffgroupname";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
@@ -104,9 +104,9 @@ if ($popup_select) {
 	elseif ($popup_select == 2)
 		$HD_Form -> FG_OTHER_BUTTON1_LINK = "javascript:sendValue('|col0|');";
 } else {
-	$HD_Form -> FG_EDITION = true;
-	$HD_Form -> FG_DELETION = true;
-	$HD_Form -> FG_ADDITION = true;
+	$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
+	$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
+	$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 }
 
 

@@ -43,9 +43,9 @@ if (! has_rights (ACX_ACCESS)) {
 getpost_ifset(array('voucher'));
 
 
-$HD_Form = new FormHandler("cc_voucher","Voucher");
+$HD_Form = new FormHandler("cc_voucher", "Voucher");
 
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 
 $HD_Form -> FG_VIEW_TABLE_WITDH = "65%";
 
@@ -61,9 +61,9 @@ $HD_Form -> FG_TABLE_CLAUSE = "usedcardnumber='".$_SESSION["pr_login"]."'";
 $HD_Form -> CV_NO_FIELDS  = gettext("No vouchers have been used!");
 $HD_Form -> FG_EXPORT_CSV = false;
 
-$HD_Form -> FG_EDITION = false;
-$HD_Form -> FG_DELETION = false;
-$HD_Form -> FG_ADDITION = false;
+$HD_Form -> FG_ENABLE_EDIT_BUTTON = false;
+$HD_Form -> FG_ENABLE_DELETE_BUTTON = false;
+$HD_Form -> FG_ENABLE_ADD_BUTTON = false;
 
 // Set the filter variables
 $HD_Form -> FG_FILTER_APPLY = false;

@@ -45,14 +45,14 @@ getpost_ifset(array('id', 'agent_id', 'date', 'payment','description','added_ref
 
 
 if (!isset($form_action) || $form_action=="list") {
-	$HD_Form = new FormHandler("cc_logpayment_agent LEFT JOIN cc_agent ON cc_agent.id=agent_id","Payment Agent");
+	$HD_Form = new FormHandler("cc_logpayment_agent LEFT JOIN cc_agent ON cc_agent.id=agent_id", "Payment Agent");
 } else {
-	$HD_Form = new FormHandler("cc_logpayment_agent","Agent Payment");
+	$HD_Form = new FormHandler("cc_logpayment_agent", "Agent Payment");
 }
 
 $HD_Form -> FG_TABLE_ID = 'cc_logpayment_agent.id';
 
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
@@ -75,9 +75,9 @@ $HD_Form -> AddViewElement(gettext("REFILL"), "id_logrefill", true, "", "", "lie
 $HD_Form -> FieldViewElement ('cc_logpayment_agent.id, agent_id, date, payment ,payment_type,id_logrefill');
 
 $HD_Form -> CV_NO_FIELDS = gettext("THERE IS NO AGENT PAYMENT CREATED!");
-$HD_Form -> FG_INFO = true;
+$HD_Form -> FG_ENABLE_INFO_BUTTON = true;
 $HD_Form -> FG_INFO_LINK = "A2B_payment_info_agent.php?id=";
-$HD_Form -> FG_ADDITION = true;
+$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 
 if (!($popup_select>=1))	 $HD_Form -> FG_FILTER_SEARCH_FORM = true;
 $HD_Form -> FG_FILTER_SEARCH_SESSION_NAME = 'payment_agent_selection';
@@ -91,8 +91,8 @@ $HD_Form -> AddSearchElement_C1(gettext("LASTNAME"),'lastname','lastnametype');
 $HD_Form -> AddSearchElement_C1(gettext("FIRSTNAME"),'firstname','firstnametype');
 
 if (has_rights (ACX_MODIFY_PAYMENTS)) {
-	$HD_Form -> FG_EDITION = true;
-	$HD_Form -> FG_DELETION = true;
+	$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
+	$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 
 	if ($form_action=="ask-add" && !empty($agent_id)) {
 		$id_val = "value='$agent_id'";

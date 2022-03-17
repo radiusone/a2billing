@@ -43,14 +43,14 @@ if (! has_rights (ACX_ADMINISTRATOR)) {
 getpost_ifset(array('id','id_agent','date', 'amount,type', 'status'));
 
 if (!isset($form_action) || $form_action=="list") {
-	$HD_Form = new FormHandler("cc_remittance_request LEFT JOIN cc_agent ON cc_agent.id=id_agent","Remittance Request Agent");
+	$HD_Form = new FormHandler("cc_remittance_request LEFT JOIN cc_agent ON cc_agent.id=id_agent", "Remittance Request Agent");
 } else {
-	$HD_Form = new FormHandler("cc_remittance_request","Remittance Request Agent");
+	$HD_Form = new FormHandler("cc_remittance_request", "Remittance Request Agent");
 }
 
 $HD_Form -> FG_TABLE_ID = 'cc_remittance_request.id';
 
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
 $HD_Form -> FG_OTHER_BUTTON1_LINK = "javascript:;";

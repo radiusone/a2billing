@@ -86,7 +86,7 @@ foreach($config_list as $key => $cur_value) {
 	}
 }
 $HD_Form = new FormHandler("cc_config", gettext("Configuration"));
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_ID="id";
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "config_group_title";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "ASC";
@@ -167,9 +167,9 @@ $HD_Form -> FieldViewElement ('config_title, config_key, config_value, config_de
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE ARE NO ".strtoupper($HD_Form->FG_INSTANCE_NAME)." CREATED!");
 $HD_Form -> FG_LIMITE_DISPLAY = 25;
 
-$HD_Form -> FG_EDITION = true;
-$HD_Form -> FG_DELETION = false;
-$HD_Form -> FG_ADDITION = false;
+$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form -> FG_ENABLE_DELETE_BUTTON = false;
+$HD_Form -> FG_ENABLE_ADD_BUTTON = false;
 if(!$setbool) {
 	$HD_Form -> FG_DISPLAY_SELECT = true;
 	$HD_Form -> FG_SELECT_FIELDNAME = "config_listvalues";

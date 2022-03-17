@@ -183,7 +183,7 @@ if (isset($posted) && !$popup_select) {
     $rateinitial_field = "MIN(rateinitial) as rateinitial";
 }
 
-$HD_Form->FG_DEBUG = 0;
+$HD_Form->no_debug();
 $HD_Form->FG_TABLE_DEFAULT_ORDER = " dialprefix";
 $HD_Form->FG_TABLE_DEFAULT_SENS = "ASC";
 
@@ -220,9 +220,9 @@ if (!$popup_select) {
     $HD_Form -> FG_EXPORT_CSV = true;
     $HD_Form -> FG_EXPORT_XML = true;
     $HD_Form -> FG_EXPORT_SESSION_VAR = "pr_export_entity_rates";
-    $HD_Form -> FG_EDITION = true;
-    $HD_Form -> FG_DELETION = true;
-    $HD_Form -> FG_ADDITION = true;
+    $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
+    $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
+    $HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 } else {
     $HD_Form->FG_LIMITE_DISPLAY = 7;
     $HD_Form->CV_FOLLOWPARAMETERS = "&popup_select=" . $popup_select . "&popup_formname=" . $popup_formname . "&popup_fieldname=" . $popup_fieldname;

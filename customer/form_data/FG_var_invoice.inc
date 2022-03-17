@@ -46,19 +46,19 @@ if (!isset($form_action) || $form_action=="list") {
 	$list_query = "cc_invoice " .
 	              "LEFT JOIN (SELECT st1.id_invoice, TRUNCATE(SUM(st1.price*(1+(st1.vat/100))),2) as total_price " .
 	              "FROM cc_invoice_item AS st1 GROUP BY st1.id_invoice ) as items ON items.id_invoice = cc_invoice.id ";
-	$HD_Form = new FormHandler($list_query,"Invoice");
+	$HD_Form = new FormHandler($list_query, "Invoice");
 } else {
-	$HD_Form = new FormHandler("cc_invoice","Invoice");
+	$HD_Form = new FormHandler("cc_invoice", "Invoice");
 }
 
 $HD_Form -> FG_TABLE_ID = 'cc_invoice.id';
 $HD_Form -> FG_TABLE_CLAUSE = " id_card = ".$_SESSION["card_id"]." AND status = 1";
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
 
 
-$HD_Form -> FG_INFO = true;
+$HD_Form -> FG_ENABLE_INFO_BUTTON = true;
 $HD_Form -> FG_INFO_LINK = "A2B_invoice_view.php?id=";
 
 $HD_Form -> FG_OTHER_BUTTON3_LINK = "checkout_payment.php?item_type=invoice&item_id=";

@@ -44,9 +44,9 @@ if (! has_rights (ACX_ADMINISTRATOR)) {
 getpost_ifset(array('id', 'customers_id', 'customers_name', 'customers_email_address', 'item_name', 'item_id', 'item_quantity', 'payment_method','cc_type', 'cc_owner','cc_number', 'cc_expires', 'orders_status', 'last_modified', 'date_purchased','orders_date_finished', 'orders_amount', 'currency', 'currency_value'));
 
 
-$HD_Form = new FormHandler("cc_payments","Transactions");
+$HD_Form = new FormHandler("cc_payments", "Transactions");
 
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "id";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
@@ -67,9 +67,9 @@ $HD_Form -> FieldViewElement ('id, date_purchased, customers_id, customers_name,
 
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE ARE NO")." ".strtoupper($HD_Form->FG_INSTANCE_NAME)." ".gettext("CREATED!");
 
-$HD_Form -> FG_ADDITION = false;
-$HD_Form -> FG_EDITION = false;
-$HD_Form -> FG_DELETION = true;
+$HD_Form -> FG_ENABLE_ADD_BUTTON = false;
+$HD_Form -> FG_ENABLE_EDIT_BUTTON = false;
+$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 
 // Set the filter variables
 $HD_Form -> FG_FILTER_APPLY = true;

@@ -47,7 +47,7 @@ $HD_Form = new FormHandler("cc_logpayment", gettext("payment"));
 
 $HD_Form -> FG_TABLE_ID = 'cc_logpayment.id';
 $HD_Form -> FG_TABLE_CLAUSE="card_id=".$_SESSION["card_id"];
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
 $HD_Form -> AddViewElement(gettext("ID"), "cc_logpayment.id");
@@ -60,6 +60,6 @@ $HD_Form -> FieldViewElement ('cc_logpayment.id, date, payment,description ');
 $HD_Form -> CV_TITLE_TEXT = gettext("Payment list");
 $HD_Form -> CV_NO_FIELDS  = gettext("No payments have been made!");
 
-$HD_Form -> FG_EDITION = false;
-$HD_Form -> FG_DELETION = false;
-$HD_Form -> FG_ADDITION = false;
+$HD_Form -> FG_ENABLE_EDIT_BUTTON = false;
+$HD_Form -> FG_ENABLE_DELETE_BUTTON = false;
+$HD_Form -> FG_ENABLE_ADD_BUTTON = false;

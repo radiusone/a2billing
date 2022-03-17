@@ -47,9 +47,9 @@ getpost_ifset(array('id', 'login', 'passwd', 'active', 'location', 'id_tariffgro
 
 
 $FG_INSTANCE_NAME = gettext("Agent");
-$HD_Form = new FormHandler("cc_agent",$FG_INSTANCE_NAME);
+$HD_Form = new FormHandler("cc_agent", $FG_INSTANCE_NAME);
 
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_ID = " id";
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = " datecreation";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "ASC";
@@ -138,15 +138,15 @@ if ($popup_select) {
 		$HD_Form -> FG_OTHER_BUTTON1_LINK = "javascript:sendValue('|col0|');";
 
 } else {
-	$HD_Form -> FG_INFO = true;
+	$HD_Form -> FG_ENABLE_INFO_BUTTON = true;
 	$HD_Form -> FG_INFO_LINK = "A2B_agent_info.php?id=";
 }
 
 if (has_rights (ACX_MODIFY_AGENTS) && !($popup_select)) {
 
-	$HD_Form -> FG_EDITION = true;
-	$HD_Form -> FG_ADDITION = true;
-	$HD_Form -> FG_DELETION = true;
+	$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
+	$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
+	$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 
 
 	$HD_Form -> AddEditElement (gettext("LOGIN"),

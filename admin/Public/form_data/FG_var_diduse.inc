@@ -45,7 +45,7 @@ getpost_ifset(array('did', 'inuse', 'actionbtn', 'atmenu', 'stitle', 'order', 's
 
 $HD_Form = new FormHandler("cc_did_use", "DID in use");
 
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 if ($posted){
 
 	if (isset($did) && strlen($did)>0) {
@@ -98,7 +98,7 @@ $HD_Form -> FieldViewElement ('id_did, id_did, id_cc_card, id_cc_card, reservati
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO DID IN USE!");
 $HD_Form -> CV_FOLLOWPARAMETERS ="&posted=$posted&did=$did&inuse=$inuse";
 
-$HD_Form -> FG_ADDITION = false;
-$HD_Form -> FG_EDITION = false;
-$HD_Form -> FG_DELETION = false;
+$HD_Form -> FG_ENABLE_ADD_BUTTON = false;
+$HD_Form -> FG_ENABLE_EDIT_BUTTON = false;
+$HD_Form -> FG_ENABLE_DELETE_BUTTON = false;
 $HD_Form -> FG_FILTER_APPLY = false;

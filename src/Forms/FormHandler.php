@@ -4,6 +4,7 @@ namespace A2billing\Forms;
 
 use A2billing\Logger;
 use A2billing\Table;
+use ADOConnection;
 use Profiler_Console as Console;
 
 /***************************************************************************
@@ -24,39 +25,38 @@ use Profiler_Console as Console;
  ****************************************************************************/
 class FormHandler
 {
-    private static $Instance;
-    public $_action = '';
-    public $_vars = null;
-    public $_processed = [];
-    public $DBHandle;
-    public $VALID_SQL_REG_EXP = true;
+    private static self $Instance;
+    private array $_vars = [];
+    private array $_processed = [];
+
+    public ADOConnection $DBHandle;
+    public bool $VALID_SQL_REG_EXP = true;
+    /** @var mixed The result of a non-select query (insert, update, delete) */
     public $RESULT_QUERY = false;
 
     /* CONFIG THE VIEWER : CV */
-    public $CV_NO_FIELDS = "THERE IS NO RECORD !";
-    public $CV_TITLE_TEXT = '';
-    public $CV_FOLLOWPARAMETERS = '';
-    public $CV_DO_ARCHIVE_ALL = false;
+    /** @var string Message to display if there's no data found for list view */
+    public string $CV_NO_FIELDS = "THERE IS NO RECORD !";
+    public string $CV_TITLE_TEXT = '';
+    /** @var string Parameters to add to the URL of the list view sorting/pagination buttons */
+    public string $CV_FOLLOWPARAMETERS = '';
+    /** @var bool Whether to enable an archive row in list view. Used only by A2B_data_archiving.php and A2B_call_archiving.php */
+    public bool $CV_DO_ARCHIVE_ALL = false;
+    /** @var bool Whether to display the records-per-page dropdown. Never set to false anywhere... */
+    public bool $CV_DISPLAY_RECORD_LIMIT = true;
+    /** @var bool Whether to display the pagination controls. Never set to false anywhere... */
+    public bool $CV_DISPLAY_BROWSE_PAGE = true;
+    /** @var int Tracks the current page for pagination and DB queries */
+    private int $CV_CURRENT_PAGE = 0;
 
-
-    public $CV_DISPLAY_RECORD_LIMIT = true;
-    public $CV_DISPLAY_BROWSE_PAGE = true;
-
-    public $CV_CURRENT_PAGE = 0;
-
-    /**
-     * Sets the debug output (1 = low, 2 = Normal, 3 = High). Default value is "0" .
-     *
-     * @public    -    @type integer
-     */
-    public $FG_DEBUG = 0;
+    private int $FG_DEBUG = 0;
 
     /**
      * Sets the table name.
      *
      * @public    -    @type string
      */
-    public $FG_TABLE_NAME = "";
+    public string $FG_TABLE_NAME = "";
 
     /**
      * Sets the table name used for count.
@@ -92,31 +92,23 @@ class FormHandler
      *
      * @public    -    @type array
      */
-    public $FG_TABLE_COL = [];
+    public array $FG_LIST_TABLE_CELLS = [];
 
-    /**
-     * Sets the fieldname of the SQL query to display in the ViewData page, ie: "id, name, mail"
-     *
-     * @public    -    @type string
-     */
-    public $FG_COL_QUERY = "";
+    /** Comma separated list of columns from the SQL query to display in the list */
+    public string $FG_QUERY_COLUMN_LIST = "";
 
-    /**
-     * Keep the ID of the table
-     *
-     * @public    -    @type string
-     */
-    public $FG_TABLE_ID = 'id';
+    /** The primary key column of the table */
+    public string $FG_TABLE_ID = 'id';
 
     /**
      * Sets if we want a colum "ACTION" to EDIT or to DELETE
      *
      * @public    -    @type boolean
      */
-    public $FG_ADDITION = false;
-    public $FG_DELETION = false;
-    public $FG_INFO = false;
-    public $FG_EDITION = false;
+    public bool $FG_ENABLE_ADD_BUTTON = false;
+    public bool $FG_ENABLE_DELETE_BUTTON = false;
+    public bool $FG_ENABLE_INFO_BUTTON = false;
+    public bool $FG_ENABLE_EDIT_BUTTON = false;
 
     /**
      * Keep the link for the action (EDIT & DELETE)
@@ -127,6 +119,10 @@ class FormHandler
     public $FG_DELETION_LINK = '';
     public $FG_DELETION_FORBIDDEN_ID = [];
     public $FG_INFO_LINK = '';
+
+    public string $FG_EDIT_BUTTON_CONDITION = '';
+    public string $FG_DELETE_BUTTON_CONDITION = '';
+
 
     public $FG_ADD_PAGE_CONFIRM_BUTTON = '';
 
@@ -283,9 +279,6 @@ class FormHandler
     public $FG_OTHER_BUTTON4_CONDITION = '';
     public $FG_OTHER_BUTTON5_CONDITION = '';
 
-    public $FG_EDITION_CONDITION = '';
-    public $FG_DELETION_CONDITION = '';
-
     //	-------------------- DATA FOR THE EDITION --------------------
 
     /**
@@ -293,8 +286,8 @@ class FormHandler
      *
      * @public    -    @type array
      */
-    public $FG_TABLE_EDITION = [];
-    public $FG_TABLE_ADITION = [];
+    public array $FG_EDIT_FORM_ELEMENTS = [];
+    public array $FG_ADD_FORM_ELEMENTS = [];
 
     /**
      * ARRAY with the comment below each fields
@@ -540,7 +533,7 @@ class FormHandler
     public $FG_LIST_ADDING_BUTTON_MSG2;
     public $FG_INFO_ALT;
 
-    public function __construct($tablename = null, $instance_name = null, $action = null, $tablename_count = null)
+    public function __construct(?string $tablename = null, ?string $instance_name = null, $tablename_count = null)
     {
         Console::log('Construct FormHandler');
         Console::logMemory($this, 'FormHandler Class : Line ' . __LINE__);
@@ -555,8 +548,6 @@ class FormHandler
         }
 
         $this->set_regular_expression();
-
-        $this->_action = $action ?: filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL);
 
         // If anti CSRF protection is enabled
         if ($this->FG_CSRF_STATUS == true) {
@@ -654,6 +645,8 @@ class FormHandler
      */
     public function init()
     {
+        $this->_vars = array_merge($_GET, $_POST);
+
         $processed = $this->getProcessed();
 
         Console::log('FormHandler -> init');
@@ -664,9 +657,9 @@ class FormHandler
             $section = $processed['section'];
             $_SESSION["menu_section"] = intval($section);
         }
-        $ext_link = '&current_page=' . $processed['current_page'] ?? ''
-            . '&order=' . $processed['order'] ?? ''
-            . '&sens=' . $processed['sens'] ?? '';
+        $ext_link = '&current_page=' . ($processed['current_page'] ?? '')
+            . '&order=' . ($processed['order'] ?? '')
+            . '&sens=' . ($processed['sens'] ?? '');
         $this->FG_EDITION_LINK = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL) . "?form_action=ask-edit" . $ext_link . "&id=";
         $this->FG_DELETION_LINK = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL) . "?form_action=ask-delete" . $ext_link . "&id=";
 
@@ -752,7 +745,7 @@ class FormHandler
         ?string $destination = ""
     ): void
     {
-        $this->FG_TABLE_COL[] = [
+        $this->FG_LIST_TABLE_CELLS[] = [
             "header" => $displayname,
             "field" => $fieldname,
             "sortable" => $sortable,
@@ -796,10 +789,10 @@ class FormHandler
 
     public function FieldViewElement($fieldname, $add_id = 1)
     {
-        $this->FG_COL_QUERY = $fieldname;
+        $this->FG_QUERY_COLUMN_LIST = $fieldname;
         // We need to have the ID as the last column
         if ($add_id) {
-            $this->FG_COL_QUERY .= ", " . $this->FG_TABLE_ID;
+            $this->FG_QUERY_COLUMN_LIST .= ", " . $this->FG_TABLE_ID;
         }
     }
 
@@ -882,7 +875,7 @@ class FormHandler
         }
 
         if ($field_enabled == true) {
-            $cur = count($this->FG_TABLE_EDITION);
+            $cur = count($this->FG_EDIT_FORM_ELEMENTS);
             $assoc = [
                 "label" => $displayname, // 0
                 "name" => $fieldname, // 1
@@ -909,9 +902,9 @@ class FormHandler
                 "popup_timeval" => $custom_query, //14
                 "custom_function" => $displayinput_defaultselect, //15
             ];
-            $this->FG_TABLE_EDITION[$cur] = $assoc + array_values($assoc);
+            $this->FG_EDIT_FORM_ELEMENTS[$cur] = $assoc + array_values($assoc);
             $this->FG_TABLE_COMMENT[$cur] = $comment;
-            $this->FG_TABLE_ADITION[$cur] = $this->FG_TABLE_EDITION[$cur];
+            $this->FG_ADD_FORM_ELEMENTS[$cur] = $this->FG_EDIT_FORM_ELEMENTS[$cur];
         }
     }
 
@@ -1217,14 +1210,14 @@ class FormHandler
         switch ($form_action) {
             case "ask-add":
             case "add":
-                if (!$this->FG_ADDITION) {
+                if (!$this->FG_ENABLE_ADD_BUTTON) {
                     header("Location: " . filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL));
                     die();
                 }
                 break;
             case "ask-edit":
             case "edit":
-                if (!$this->FG_EDITION) {
+                if (!$this->FG_ENABLE_EDIT_BUTTON) {
                     header("Location: " . filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL));
                     die();
                 }
@@ -1232,7 +1225,7 @@ class FormHandler
             case "ask-del-confirm":
             case "ask-delete":
             case "delete":
-                if (!$this->FG_DELETION) {
+                if (!$this->FG_ENABLE_DELETE_BUTTON) {
                     header("Location: " . filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL));
                     die();
                 }
@@ -1266,7 +1259,7 @@ class FormHandler
 
             $this->FG_ORDER = $processed['order'];
             $this->FG_SENS = $processed['sens'];
-            $this->CV_CURRENT_PAGE = $processed['current_page'];
+            $this->CV_CURRENT_PAGE = (int)$processed['current_page'];
 
             $session_limit = $this->FG_TABLE_NAME . "-displaylimit";
             if (isset($_SESSION[$session_limit]) && is_numeric($_SESSION[$session_limit])) {
@@ -1300,7 +1293,7 @@ class FormHandler
                 if (DB_TYPE != "postgres") {
                     $sql_calc_found_rows = 'SQL_CALC_FOUND_ROWS';
                 }
-                $instance_table = new Table($this->FG_TABLE_NAME, "$sql_calc_found_rows " . $this->FG_COL_QUERY, null, null, null, true, $this->FG_TABLE_NAME_COUNT);
+                $instance_table = new Table($this->FG_TABLE_NAME, "$sql_calc_found_rows " . $this->FG_QUERY_COLUMN_LIST, null, null, null, true, $this->FG_TABLE_NAME_COUNT);
 
                 $this->prepare_list_subselection($form_action);
 
@@ -1319,7 +1312,7 @@ class FormHandler
 
                 $list = $instance_table->get_list($this->DBHandle, $this->FG_TABLE_CLAUSE, $this->FG_ORDER, $this->FG_SENS,
                     $this->FG_LIMITE_DISPLAY, $this->CV_CURRENT_PAGE * $this->FG_LIMITE_DISPLAY, $this->SQL_GROUP);
-                if ($this->FG_DEBUG == 3) {
+                if ($this->FG_DEBUG === 3) {
                     echo "<br>Clause : " . $this->FG_TABLE_CLAUSE;
                 }
                 if (DB_TYPE == "postgres") {
@@ -1339,10 +1332,10 @@ class FormHandler
                     $this->FG_NB_RECORD_MAX = ceil($this->FG_NB_RECORD / $this->FG_LIMITE_DISPLAY);
                 }
 
-                if ($this->FG_DEBUG == 3) {
+                if ($this->FG_DEBUG === 3) {
                     echo "<br>Nb_record : " . $this->FG_NB_RECORD;
                 }
-                if ($this->FG_DEBUG == 3) {
+                if ($this->FG_DEBUG === 3) {
                     echo "<br>Nb_record_max : " . $this->FG_NB_RECORD_MAX;
                 }
 
@@ -1511,7 +1504,7 @@ class FormHandler
     {
         //if ( $form_action == "list" && $this->FG_FILTER_SEARCH_FORM)
         {
-            $instance_table = new Table($this->FG_TABLE_NAME, $this->FG_COL_QUERY);
+            $instance_table = new Table($this->FG_TABLE_NAME, $this->FG_QUERY_COLUMN_LIST);
             $instance_table->Delete_Selected($this->DBHandle, $this->FG_TABLE_CLAUSE, $this->FG_ORDER, $this->FG_SENS, null, null,
                 $this->FG_LIMITE_DISPLAY, $this->CV_CURRENT_PAGE * $this->FG_LIMITE_DISPLAY, $this->SQL_GROUP);
         }
@@ -1530,7 +1523,7 @@ class FormHandler
         $param_add_value = "";
         $arr_value_to_import = [];
 
-        foreach ($this->FG_TABLE_ADITION as $i => $row) {
+        foreach ($this->FG_ADD_FORM_ELEMENTS as $i => $row) {
 
             if (!str_contains($row["custom_query"], ":")) {
                 $fields_name = $row["name"];
@@ -1714,7 +1707,7 @@ class FormHandler
             $this->FG_EDITION_CLAUSE = str_replace("%id", $processed['id'], $this->FG_EDITION_CLAUSE);
         }
 
-        foreach ($this->FG_TABLE_EDITION as $i => $row) {
+        foreach ($this->FG_EDIT_FORM_ELEMENTS as $i => $row) {
 
             if (!str_contains($row["custom_query"], ":")) {
                 $fields_name = $row["name"];
@@ -1938,7 +1931,7 @@ class FormHandler
     public function perform_add_content($sub_action, $id)
     {
         $processed = $this->getProcessed();
-        $table_split = explode(":", $this->FG_TABLE_EDITION[$sub_action][14]);
+        $table_split = explode(":", $this->FG_EDIT_FORM_ELEMENTS[$sub_action][14]);
         $instance_sub_table = new Table($table_split[0], $table_split[1] . ", " . $table_split[5]);
 
         $arr = is_array($processed[$table_split[1]]) ? $processed[$table_split[1]] : [$processed[$table_split[1]]];
@@ -1970,7 +1963,7 @@ class FormHandler
     public function perform_del_content($sub_action, $id)
     {
         $processed = $this->getProcessed();
-        $table_split = explode(":", $this->FG_TABLE_EDITION[$sub_action][14]);
+        $table_split = explode(":", $this->FG_EDIT_FORM_ELEMENTS[$sub_action][14]);
         if (array_key_exists($table_split[1] . '_hidden', $processed)) {
             $value = trim($processed[$table_split[1] . '_hidden']);
         } else {
@@ -2228,5 +2221,15 @@ class FormHandler
             $html .= "<input type='hidden' name='$this->FG_CSRF_FIELD' value='$this->FG_CSRF_TOKEN'/>";
         }
         return $html;
+    }
+
+    public function set_debug(int $level = 1): void
+    {
+        $this->FG_DEBUG = $level;
+    }
+
+    public function no_debug(): void
+    {
+        $this->FG_DEBUG = 0;
     }
 }

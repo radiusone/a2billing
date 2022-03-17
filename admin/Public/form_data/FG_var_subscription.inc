@@ -43,9 +43,9 @@ if (! has_rights (ACX_ADMINISTRATOR)) {
 
 getpost_ifset(array('id', 'label', 'fee', 'status', 'emailreport'));
 
-$HD_Form = new FormHandler("cc_subscription_service","Subscription Service");
+$HD_Form = new FormHandler("cc_subscription_service", "Subscription Service");
 
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "id";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
@@ -82,9 +82,9 @@ $HD_Form -> FieldViewElement ('label, fee, status,startdate,stopdate, numberofru
 
 $HD_Form -> CV_NO_FIELDS  = gettext("There are no subscriptions created!");
 
-$HD_Form -> FG_EDITION = true;
-$HD_Form -> FG_DELETION = true;
-$HD_Form -> FG_ADDITION = true;
+$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 // View Details
 // $HD_Form -> FG_OTHER_BUTTON1 = true;
 // |param| will be replace by id .

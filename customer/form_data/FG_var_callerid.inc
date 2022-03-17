@@ -46,7 +46,7 @@ getpost_ifset(array('IDCust', 'id', 'id_cc_card', 'cid', 'activated'));
 
 $HD_Form = new FormHandler("cc_callerid", gettext("CallerID"));
 
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 
 
 $actived_list = getActivationTrueFalseList();
@@ -76,9 +76,9 @@ if (strlen($HD_Form -> FG_EDITION_CLAUSE)>0)
 $HD_Form -> FG_EDITION_CLAUSE.="id_cc_card =".$_SESSION["card_id"];
 
 
-$HD_Form -> FG_ADDITION = true;
-$HD_Form -> FG_EDITION = true;
-$HD_Form -> FG_DELETION = true;
+$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
+$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form -> FG_OTHER_BUTTON1 = false;
 
 

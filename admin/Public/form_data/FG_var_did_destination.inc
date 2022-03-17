@@ -44,12 +44,12 @@ if (! has_rights (ACX_ADMINISTRATOR)) {
 getpost_ifset(array('id', 'destination', 'id_cc_card', 'id_cc_did', 'activated', 'priority', 'id_trunk', 'voip_call'));
 
 if ( (empty($form_action) || $form_action=="list")) {
-	$HD_Form = new FormHandler("cc_did_destination LEFT JOIN cc_did ON cc_did.id = cc_did_destination.id_cc_did","Did Destination");
+	$HD_Form = new FormHandler("cc_did_destination LEFT JOIN cc_did ON cc_did.id = cc_did_destination.id_cc_did", "Did Destination");
 } else {
 	$HD_Form = new FormHandler("cc_did_destination");
 }
 
-$HD_Form -> FG_DEBUG = 0;
+$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "destination";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
@@ -95,9 +95,9 @@ $HD_Form -> FG_ACTION_SIZE_COLUMN = '15%';
 
 $HD_Form -> CV_NO_FIELDS  = gettext("NO DID DESTINATIONS HAVE BEEN CREATED!");
 
-$HD_Form -> FG_EDITION = true;
-$HD_Form -> FG_DELETION = true;
-$HD_Form -> FG_ADDITION = true;
+$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 
 // TODO integrate in Framework
 if ($form_action=="ask-add"){
