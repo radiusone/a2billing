@@ -84,9 +84,9 @@ use A2billing\Table;
                     class="form-control <?php if (isset($this->FG_fit_expression[$i]) && !$this->FG_fit_expression[$i]): ?>is-invalid<?php endif?>"
                     name="<?= $row["name"] ?>"
                     <?= $row["attributes"] ?>
-                    <?php if ($this->VALID_SQL_REG_EXP): ?>
+                    <?php if ($this->VALID_SQL_REG_EXP): /* what is VALID_SQL_REG_EXP */ ?>
                         value="<?= $list[0][$i] ?>"
-                    <?php else: ?>
+                    <?php else: /* this doesn't make sense; did they mean defaultvalue – formerly index 4 – instead? */ ?>
                         value="<?= $processed[$row["name"]] ?>"
                     <?php endif ?>
                 />

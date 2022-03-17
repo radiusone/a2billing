@@ -723,42 +723,50 @@ class FormHandler
     // ----------------------------------------------
 
     /**
-     * Adds a "element" to the FG_TABLE_COL.  Returns void.
+     * Adds a table cell to the list view
      *
-     * @public
-     * @ 1. $displayname
-     * @ 2. $fieldname
-     * @ 3. $colpercentage
-     * @ 4. $textalign
-     * @ 5 .$sort
-     * @ 6. $char_limit
-     * @ 7. $lie_type ("lie", "list") , where lie is used for sql. ( TODO : any reason to keep lie instead of sql ?.)
-     * @ 8. $lie_with (SQL query with the tag '%1' || a defined list: $tablelist["nbcode"] )
-     * OLD
-     * @ 8. $lie_with tablename
-     * @ 9. $lie_fieldname
-     * @ 10. $lie_clause
-     * @ 11. $lie_display
-     * @ 12. $function render
+     * @param string $displayname
+     * @param string $fieldname
+     * @param bool $sortable
+     * @param int|string $char_limit string is trimmed to this size before applying callbacks; 0 = no limit
+     * @param callable $callback
+     * @param string|null $type the cell data type
+     * @param string|array|null $sql_table when type=sql|sql-link, the table to search; when type=eval, the code to evaluate; when type=list|list-conf, an array of select options
+     * @param string|null $sql_cols the columns to retrieve
+     * @param string|null $sql_where the condition to apply to the query; placeholder %id is replaced with the value being searched
+     * @param string|null $sql_display the result field to display; one-based placeholder %n is replaced with zero-based column n from the result
+     * @param string|null $destination when type=sql-link, the destination; result will be appended as query string, $sql_display will be used as link text
      */
 
-    public function AddViewElement(string $displayname, string $fieldname, bool $sort = true, $char_limit = 0, $myfunc = "", ?string $lie_type = "", $lie_with = "", ?string $lie_fieldname = "", ?string $lie_clause = "", ?string $lie_display = "", ?string $link_file = "")
+    public function AddViewElement(
+        string  $displayname,
+        string  $fieldname,
+        bool    $sortable = true,
+                $char_limit = 0,
+                $callback = "",
+        ?string $type = "",
+                $sql_table = "",
+        ?string $sql_cols = "",
+        ?string $sql_where = "",
+        ?string $sql_display = "",
+        ?string $destination = ""
+    ): void
     {
         $this->FG_TABLE_COL[] = [
             "header" => $displayname,
             "field" => $fieldname,
-            "sortable" => $sort,
+            "sortable" => $sortable,
             "maxsize" => (int)$char_limit,
-            "type" => $lie_type,
-            "sql_table" => $lie_with, // when type = lie or type = lie_link
-            "code" => $lie_with, // when type = eval
-            "options" => $lie_with, // when type = list or type = list-conf
-            "value" => $lie_with, // when type = value
-            "sql_columns" => $lie_fieldname, // when type = lie or type = lie_link
-            "sql_clause" => $lie_clause, // when type = lie or type = lie_link
-            "sql_display" => $lie_display, // when type = lie or type = lie_link
-            "function" => $myfunc,
-            "href" => $link_file, // when type = lie_link
+            "type" => $type,
+            "sql_table" => $sql_table, // when type = lie or type = lie_link
+            "code" => $sql_table, // when type = eval
+            "options" => $sql_table, // when type = list or type = list-conf
+            "value" => $sql_table, // when type = value
+            "sql_columns" => $sql_cols, // when type = lie or type = lie_link
+            "sql_clause" => $sql_where, // when type = lie or type = lie_link
+            "sql_display" => $sql_display, // when type = lie or type = lie_link
+            "function" => $callback,
+            "href" => $destination, // when type = lie_link
         ];
     }
 
