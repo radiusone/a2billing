@@ -172,46 +172,43 @@ $hasActionButtons = ($this->FG_DELETION || $this->FG_INFO || $this->FG_EDITION |
                 $options = (new Table($row["sql_table"], $row["sql_columns"]))->get_list($this->DBHandle, str_replace("%id", $item[$j - $k], $row["sql_clause"]), null, null, null, null, null, 10);
                 $field_list_sun = explode(",", $row["sql_columns"]);
                 $record_display = $row["sql_display"];
-                if ($row["type"] === "lie") {
-                    if (is_array($options)) {
-                        for ($l=1; $l <= count($field_list_sun); $l++) {
-                            $record_display = str_replace("%$l", $options[0][$l - 1], $record_display);
-                        }
+                $record_display = preg_replace_callback("/%([0-9]+)/", function ($m) use ($options) {
+                    if (is_array($options) && isset($options[0][$m[1] - 1])) {
+                        return str_replace("%$m[1]", $options[0][$m[1] - 1], $m[0]);
+                    } else {
+                        return str_replace("%$m[1]", "", $m[0]);
                     }
-                } elseif($row["type"] === "lie_link") {
+                }, $record_display);
+                if (trim($record_display) === "") {
+                    $record_display = $item[$j - $k] ?: "n/a";
+                }
+                if ($row["type"] === "lie_link") {
                     if (is_array($options)) {
                         $link = $row["href"] . (str_contains($row["href"], 'form_action') ? "?" : "?form_action=ask-edit&") . "id=" . $options[0][1];
-                        for ($l = 1; $l <= count($field_list_sun); $l++) {
-                            $val = str_replace("%$l", $options[0][$l - 1], $record_display);
-                            $record_display = $popup_select ? $val : "<a class='text-decoration-underline' href='$link'>$val</a>";
+                        if (!$popup_select) {
+                            $record_display = "<a class='text-decoration-underline' href='$link'>$record_display</a>";
                         }
-                    } else {
-                        $record_display = "";
                     }
                 }
             } elseif ($row["type"] === "eval") {
-                $string_to_eval = $row["code"]; // %4-%3
-                for ($ll = 15; $ll >= 0; $ll--) {
-                    if ($item[$ll] === '') {
-                        $item[$ll] = 0;
-                    }
-                    $string_to_eval = str_replace("%$ll", $item[$ll], $string_to_eval);
-                }
-                // WTAF
+                // this exists only so that FG_var_card.inc.php can left pad a card number with zeroes
+                $string_to_eval = preg_replace_callback("/%([0-9]+)/", function ($m) use ($item) {
+                    return str_replace("%$m[1]", empty($item[$m[1]]) ? 0 : $item[$m[1]], $m[0]);
+                }, $row["code"]);
                 $record_display = ("return $string_to_eval;");
             } elseif ($row["type"] === "list") {
                 $select_list = $row["options"];
-                $record_display = $select_list[$item[$j-$k]][0];
+                $record_display = $select_list[$item[$j - $k]][0];
             } elseif ($row["type"] === "list-conf") {
                 $select_list = $row["options"];
-                $key_config =  $item[$j-$k + 3];
+                $key_config =  $item[$j - $k + 3];
                 $record_display = $select_list[$key_config][0];
 
             } elseif ($row["type"] === "value") {
                 $record_display = $row["value"];
                 $k++;
             } else {
-                $record_display = $item[$j-$k];
+                $record_display = $item[$j - $k];
             }
 
             /**********************   IF LENGTH OF THE VALUE IS TOO LONG IT MIGHT BE CUT ************************/
@@ -222,7 +219,7 @@ $hasActionButtons = ($this->FG_DELETION || $this->FG_INFO || $this->FG_EDITION |
             $item[$j - $k] = $record_display;
             ?>
             <td>
-            <?php if (!empty($row["function"]) && function_exists($row["function"])): ?>
+            <?php if (!empty($row["function"]) && is_callable($row["function"])): ?>
                 <?php call_user_func($row["function"], $record_display) ?>
             <?php else: ?>
                 <?= $record_display ?>
