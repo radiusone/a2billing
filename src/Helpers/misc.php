@@ -317,31 +317,32 @@ function sanitize_post_get()
 /*
  * function getpost_ifset
  */
-function getpost_ifset($test_vars)
+function getpost_ifset(array $test_vars, ?array &$data = null)
 {
-    if (!is_array($test_vars)) {
-        $test_vars = [
-            $test_vars,
-        ];
-    }
     foreach ($test_vars as $test_var) {
-        if (isset($_REQUEST[$test_var])) {
-            global $$test_var;
-            $$test_var = sanitize_data($_REQUEST[$test_var]);
+        if (!isset($_REQUEST[$test_var])) {
+            continue;
+        }
+        $val = sanitize_data($_REQUEST[$test_var]);
+        //rebuild the search parameter to filter character to format card number
+        if ($test_var == 'username' || $test_var == 'filterprefix') {
             //rebuild the search parameter to filter character to format card number
-            if ($test_var == 'username' || $test_var == 'filterprefix') {
-                //rebuild the search parameter to filter character to format card number
-                $filtered_char = [
-                    " ",
-                    "-",
-                    "_",
-                    "(",
-                    ")",
-                    "/",
-                    "\\",
-                ];
-                $$test_var = str_replace($filtered_char, "", $$test_var);
-            }
+            $filtered_char = [
+                " ",
+                "-",
+                "_",
+                "(",
+                ")",
+                "/",
+                "\\",
+            ];
+            $val = str_replace($filtered_char, "", $val);
+        }
+        if (!is_null($data)) {
+            $data[$test_var] = $val;
+        } else {
+            global $$test_var;
+            $$test_var = $val;
         }
     }
 }
