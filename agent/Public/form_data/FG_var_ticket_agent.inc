@@ -67,13 +67,13 @@ $priority_list =getTicketPriorityList();
 $filter_view ='v.viewed ';
 
 
-$HD_Form -> AddViewElement(gettext("ID"), "id", "5%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("TITLE"), "title", "20%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("CREATIONDATE"), "creationdate", "15%", "center", "sort", "19", "", "", "", "", "", "display_dateformat");
-$HD_Form -> AddViewElement(gettext("COMPONENT"), "id_component", "10%", "center", "sort", "15", "lie", "cc_support_component", "name", "id='%id'", "%1");
-$HD_Form -> AddViewElement(gettext("PRIORITY"), "priority", "10%", "center", "sort", "", "list", $priority_list);
-$HD_Form -> AddViewElement(gettext("TO SEE?"), "viewed_agent", "10%", "center", "sort", "", "list", $viewed_list);
-$HD_Form -> AddViewElement(gettext("STATUS"), "status", "10%", "center", "sort", "", "list", $status_list);
+$HD_Form -> AddViewElement(gettext("ID"), "id");
+$HD_Form -> AddViewElement(gettext("TITLE"), "title");
+$HD_Form -> AddViewElement(gettext("CREATIONDATE"), "creationdate", true, "19", "display_dateformat");
+$HD_Form -> AddViewElement(gettext("COMPONENT"), "id_component", true, "15", null, "lie", "cc_support_component", "name", "id='%id'", "%1");
+$HD_Form -> AddViewElement(gettext("PRIORITY"), "priority", true, "", null, "list", $priority_list);
+$HD_Form -> AddViewElement(gettext("TO SEE?"), "viewed_agent", true, "", null, "list", $viewed_list);
+$HD_Form -> AddViewElement(gettext("STATUS"), "status", true, "", null, "list", $status_list);
 
 $HD_Form -> FieldViewElement ("cc_ticket.id, title, cc_ticket.creationdate, id_component , priority, $filter_view, cc_ticket.status");
 

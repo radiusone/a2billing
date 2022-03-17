@@ -73,10 +73,10 @@ $HD_Form -> FG_FK_DELETE_MESSAGE = gettext("You have some components using this 
 
 
 
-$HD_Form -> AddViewElement(gettext("ID"), "id", "10%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("NAME"), "name", "20%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("EMAIL"), "email", "30%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("LANGUAGE"), "language", "10%", "center", "sort");
+$HD_Form -> AddViewElement(gettext("ID"), "id");
+$HD_Form -> AddViewElement(gettext("NAME"), "name");
+$HD_Form -> AddViewElement(gettext("EMAIL"), "email");
+$HD_Form -> AddViewElement(gettext("LANGUAGE"), "language");
 $HD_Form -> FieldViewElement ('id,name,email,language');
 
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO")." ".strtoupper($HD_Form->FG_INSTANCE_NAME)." ".gettext("CREATED!");

@@ -54,9 +54,9 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/server_add.png" ;
 
 
 
-$HD_Form -> AddViewElement("ID", "id", "10%", "center", "sort");
-$HD_Form -> AddViewElement("NAME", "name", "20%", "center", "sort");
-$HD_Form -> AddViewElement("DESCRIPTION", "description", "40%", "center", "sort", "25");
+$HD_Form -> AddViewElement("ID", "id");
+$HD_Form -> AddViewElement("NAME", "name");
+$HD_Form -> AddViewElement("DESCRIPTION", "description");
 
 $HD_Form -> FieldViewElement ('id, name, description');
 

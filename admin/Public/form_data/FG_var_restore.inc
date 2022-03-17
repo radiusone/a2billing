@@ -50,10 +50,10 @@ $HD_Form -> FG_TABLE_DEFAULT_ORDER = " name";
 $HD_Form -> FG_EDITION_CLAUSE = " id='%id' ";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
-$HD_Form -> AddViewElement(gettext("ID"), "id", "5%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("NAME"), "name", "5%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("FILE"), "path", "20%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("CREATIONDATE"), "creationdate", "20%", "center", "sort", "19", "", "", "", "", "", "display_dateformat");
+$HD_Form -> AddViewElement(gettext("ID"), "id");
+$HD_Form -> AddViewElement(gettext("NAME"), "name");
+$HD_Form -> AddViewElement(gettext("FILE"), "path");
+$HD_Form -> AddViewElement(gettext("CREATIONDATE"), "creationdate", true, "19", "display_dateformat");
 
 
 $HD_Form -> FieldViewElement ('id, name, path, creationdate');

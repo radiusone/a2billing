@@ -96,21 +96,21 @@ $HD_Form -> FG_FK_DELETE_MESSAGE = gettext("You have some rates attached to this
 
 
 if ($popup_select) {
-	$HD_Form -> AddViewElement(gettext("ID"), "id_trunk", "7%", "center", "sort");
-	$HD_Form -> AddViewElement(gettext("LABEL"), "trunkcode", "15%", "center", "sort");
-	$HD_Form -> AddViewElement(gettext("PROVIDER"), "id_provider" ,"10%", "center", "sort", "15", "lie", "cc_provider", "provider_name", "id='%id'", "%1");
+	$HD_Form -> AddViewElement(gettext("ID"), "id_trunk");
+	$HD_Form -> AddViewElement(gettext("LABEL"), "trunkcode");
+	$HD_Form -> AddViewElement(gettext("PROVIDER"), "id_provider", true, "15", null, "lie", "cc_provider", "provider_name", "id='%id'", "%1");
 
 	$HD_Form -> FieldViewElement ('id_trunk, trunkcode, id_provider');
 } else {
-	$HD_Form -> AddViewElement(gettext("LABEL"), "trunkcode", "14%", "center", "sort");
-	$HD_Form -> AddViewElement(gettext("ADD_PREFIX"), "trunkprefix", "6%", "center", "sort");
-	$HD_Form -> AddViewElement(gettext("REMOVE_PREFIX"), "removeprefix", "6%", "center", "sort");
-	$HD_Form -> AddViewElement(gettext("TECH"), "providertech", "6%", "center", "sort");
-	$HD_Form -> AddViewElement(gettext("IP/HOST"), "providerip" , "14%", "center", "sort");
-	$HD_Form -> AddViewElement(gettext("PROVIDER"), "id_provider" ,"9%", "center", "sort", "15", "lie", "cc_provider", "provider_name", "id='%id'", "%1");
-	$HD_Form -> AddViewElement(gettext("MINUTES USED"), "secondusedreal", "%9", "center", "SORT", "30", "", "", "", "", "", "display_minute");
-	$HD_Form -> AddViewElement(gettext("STATUS"), "status", "7%", "center", "sort", "", "list", $actived_list);
-	$HD_Form -> AddViewElement(gettext("MAXUSE"), "maxuse" , "5%", "center", "sort");
+	$HD_Form -> AddViewElement(gettext("LABEL"), "trunkcode");
+	$HD_Form -> AddViewElement(gettext("ADD_PREFIX"), "trunkprefix");
+	$HD_Form -> AddViewElement(gettext("REMOVE_PREFIX"), "removeprefix");
+	$HD_Form -> AddViewElement(gettext("TECH"), "providertech");
+	$HD_Form -> AddViewElement(gettext("IP/HOST"), "providerip");
+	$HD_Form -> AddViewElement(gettext("PROVIDER"), "id_provider", true, "15", null, "lie", "cc_provider", "provider_name", "id='%id'", "%1");
+	$HD_Form -> AddViewElement(gettext("MINUTES USED"), "secondusedreal", true, "30", "display_minute");
+	$HD_Form -> AddViewElement(gettext("STATUS"), "status", true, "", null, "list", $actived_list);
+	$HD_Form -> AddViewElement(gettext("MAXUSE"), "maxuse");
 
 	$HD_Form -> FieldViewElement ('trunkcode, trunkprefix, removeprefix, providertech, providerip, id_provider, secondusedreal, status, maxuse');
 }

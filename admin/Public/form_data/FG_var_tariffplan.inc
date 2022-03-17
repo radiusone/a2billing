@@ -64,14 +64,14 @@ $HD_Form -> FG_FK_EDITION_CLAUSE = array(" idtariffplan ");
 $HD_Form -> FG_FK_DELETE_MESSAGE = gettext("You are going as well to remove all the rates attached to this ratecard! Please comfirm that you really want to remove this ratecard and those rates ? ");
 
 
-$HD_Form -> AddViewElement(gettext("ID"), "id", "4%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("TARIFFNAME"), "tariffname", "18%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("START DATE"), "startingdate", "13%", "center", "sort", "16", "", "", "", "", "", "display_dateformat");
-$HD_Form -> AddViewElement(gettext("EXPIRY DATE"), "expirationdate", "13%", "center", "sort", "16", "", "", "", "", "", "display_dateformat");
-$HD_Form -> AddViewElement(gettext("TRUNK"), "id_trunk", "11%", "center", "sort", "15", "lie", "cc_trunk", "trunkcode", "id_trunk='%id'", "%1");
-$HD_Form -> AddViewElement(gettext("MINUTES USED"), "secondusedreal", "9%", "center", "SORT", "30", "", "", "", "", "", "display_minute");
-$HD_Form -> AddViewElement(gettext("DNID PREFIX"), "dnidprefix", "8%", "center", "SORT", "30");
-$HD_Form -> AddViewElement(gettext("CID PREFIX"), "calleridprefix", "8%", "center", "SORT", "30");
+$HD_Form -> AddViewElement(gettext("ID"), "id");
+$HD_Form -> AddViewElement(gettext("TARIFFNAME"), "tariffname");
+$HD_Form -> AddViewElement(gettext("START DATE"), "startingdate", true, "16", "display_dateformat");
+$HD_Form -> AddViewElement(gettext("EXPIRY DATE"), "expirationdate", true, "16", "display_dateformat");
+$HD_Form -> AddViewElement(gettext("TRUNK"), "id_trunk", true, "15", null, "lie", "cc_trunk", "trunkcode", "id_trunk='%id'", "%1");
+$HD_Form -> AddViewElement(gettext("MINUTES USED"), "secondusedreal", true, "30", "display_minute");
+$HD_Form -> AddViewElement(gettext("DNID PREFIX"), "dnidprefix");
+$HD_Form -> AddViewElement(gettext("CID PREFIX"), "calleridprefix");
 
 $HD_Form -> FieldViewElement ('id, tariffname, startingdate, expirationdate, id_trunk, secondusedreal, dnidprefix, calleridprefix');
 

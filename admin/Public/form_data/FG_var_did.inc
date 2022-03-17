@@ -64,17 +64,17 @@ $billingtype_list_short = getBillingTypeShortList();
 $yesno = getYesNoList();
 
 
-$HD_Form -> AddViewElement(gettext("DID"), "did", "15%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("CUSTOMER"), "iduser", "10%", "center", "sort", "", "lie_link", "cc_card", "lastname, id, firstname", "id='%id'", "%1 %3", "", "A2B_entity_card.php");
-$HD_Form -> AddViewElement(gettext("BILLING"), "billingtype", "10%", "center", "sort", "", "list", $billingtype_list_short);
-$HD_Form -> AddViewElement(gettext("START DATE"), "startingdate", "14%", "center", "sort", "19", "", "", "", "",  "display_dateformat");
-$HD_Form -> AddViewElement(gettext("DIDGROUP"), "id_cc_didgroup", "8%", "center", "sort", "15", "lie", "cc_didgroup", "didgroupname", "id='%id'", "%1");
-$HD_Form -> AddViewElement(gettext("COUNTRY"), "id_cc_country", "8%", "center", "sort", "15", "lie", "cc_country", "countryname", "id='%id'", "%1");
-$HD_Form -> AddViewElement("<acronym title=\"".gettext("ACTIVATED")."\">".gettext("ACT")."</acronym>", "activated", "5%", "center", "sort", "", "list", $actived_list);
-$HD_Form -> AddViewElement("<acronym title=\"".gettext("MINUTES USED")."\">".gettext("MU")."</acronym>", "secondusedreal", "5%", "center", "SORT", "30", "", "", "", "", "", "display_minute");
-$HD_Form -> AddViewElement("<acronym title=\"".gettext("RESERVED")."\">".gettext("RES")."</acronym>", "reserved", "5%", "center", "SORT", "", "list", $yesno);
-$HD_Form -> AddViewElement("<acronym title=\"".gettext("MONTHLY RATE")."\">".gettext("MR")."</acronym>", "fixrate", "5%", "center", "SORT", "30");
-$HD_Form -> AddViewElement("<acronym title=\"".gettext("SELLING RATE")."\">".gettext("SR")."</acronym>", "selling_rate", "5%", "center", "SORT", "30");
+$HD_Form -> AddViewElement(gettext("DID"), "did");
+$HD_Form -> AddViewElement(gettext("CUSTOMER"), "iduser", true, "", "", "lie_link", "cc_card", "lastname, id, firstname", "id='%id'", "%1 %3", "A2B_entity_card.php");
+$HD_Form -> AddViewElement(gettext("BILLING"), "billingtype", true, "", null, "list", $billingtype_list_short);
+$HD_Form -> AddViewElement(gettext("START DATE"), "startingdate", true, "19", null, "", "", "", "", "display_dateformat");
+$HD_Form -> AddViewElement(gettext("DIDGROUP"), "id_cc_didgroup", true, "15", null, "lie", "cc_didgroup", "didgroupname", "id='%id'", "%1");
+$HD_Form -> AddViewElement(gettext("COUNTRY"), "id_cc_country", true, "15", null, "lie", "cc_country", "countryname", "id='%id'", "%1");
+$HD_Form -> AddViewElement("<acronym title=\"" . gettext("ACTIVATED") . "\">" . gettext("ACT") . "</acronym>", "activated", true, "", null, "list", $actived_list);
+$HD_Form -> AddViewElement("<acronym title=\"" . gettext("MINUTES USED") . "\">" . gettext("MU") . "</acronym>", "secondusedreal", true, "30", "display_minute");
+$HD_Form -> AddViewElement("<acronym title=\"" . gettext("RESERVED") . "\">" . gettext("RES") . "</acronym>", "reserved", true, "", null, "list", $yesno);
+$HD_Form -> AddViewElement("<acronym title=\"" . gettext("MONTHLY RATE") . "\">" . gettext("MR") . "</acronym>", "fixrate");
+$HD_Form -> AddViewElement("<acronym title=\"" . gettext("SELLING RATE") . "\">" . gettext("SR") . "</acronym>", "selling_rate");
 
 $HD_Form -> FieldViewElement ('did, iduser, billingtype, startingdate, id_cc_didgroup, id_cc_country, activated, secondusedreal, reserved, fixrate, selling_rate');
 

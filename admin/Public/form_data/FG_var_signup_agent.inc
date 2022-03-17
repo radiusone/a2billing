@@ -56,10 +56,10 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/key_add.png" ;
 $HD_Form -> FG_DELETION = true;
 
 
-$HD_Form -> AddViewElement(gettext("KEY"), "code", "25%", "center", "sort", "","", "", "", "", "", "");
-$HD_Form -> AddViewElement(gettext("AGENT"), "id_agent", "25%", "center", "sort", "", "lie", "cc_agent", "firstname, lastname , login", "id='%id'", "%1 %2 (%3)","");
-$HD_Form -> AddViewElement(gettext("CALL PLAN"), "id_tariffgroup","20%","center", "sort", "", "lie", "cc_tariffgroup", "tariffgroupname", "id='%id'", "%1","");
-$HD_Form -> AddViewElement(gettext("GROUP"), "id_group", "20%", "center", "sort", "", "lie", "cc_card_group", "name", "id='%id'", "%1","");
+$HD_Form -> AddViewElement(gettext("KEY"), "code");
+$HD_Form -> AddViewElement(gettext("AGENT"), "id_agent", true, "", "", "lie", "cc_agent", "firstname, lastname , login", "id='%id'", "%1 %2 (%3)");
+$HD_Form -> AddViewElement(gettext("CALL PLAN"), "id_tariffgroup", true, "", "", "lie", "cc_tariffgroup", "tariffgroupname", "id='%id'", "%1");
+$HD_Form -> AddViewElement(gettext("GROUP"), "id_group", true, "", "", "lie", "cc_card_group", "name", "id='%id'", "%1");
 
 $HD_Form -> FieldViewElement ('code, id_agent, id_tariffgroup ,id_group');
 

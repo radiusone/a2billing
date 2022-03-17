@@ -195,8 +195,8 @@ foreach ($show_list as $i => $value) {
 				$size=$show_list_sizes[$i];
 			}
 		}
-		$HD_Form -> AddViewElement($param[0],$param[1],$size,$param[3],$param[4],$param[5],$param[6],$param7,$param[8],
-						$param[9],$param[10],$param[11],$param[12]);
+		$HD_Form -> AddViewElement($param[0], $param[1], $param[4], $param[5], $param[11], $param[6], $param7,
+            $param[8], $param[9], $param[10], $param[12]);
 		if ($value=='callerid') {
 			$FG_COL_QUERY_FIELD = $FG_COL_QUERY_FIELD .', (select GROUP_CONCAT(cid SEPARATOR \'<br>\') from cc_callerid where id_cc_card=cc_card.id) as callerid';
 		} else {

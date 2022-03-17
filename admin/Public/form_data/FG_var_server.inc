@@ -52,12 +52,12 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = 
 $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/server_add.png" ;
 
 
-$HD_Form -> AddViewElement(gettext("ID GROUP"), "id_group", "8%", "center", "sort", "15");
-$HD_Form -> AddViewElement(gettext("GROUP"), "id_group", "12%", "center", "sort", "15", "lie", "cc_server_group", "name", "id='%id'", "%1");
-$HD_Form -> AddViewElement(gettext("SERVER HOSTNAME"), "server_ip", "16%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("MANAGER HOST"), "manager_host", "16%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("MANAGER USERNAME"), "manager_username", "16%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("LASTTIME USED"), "lasttime_used", "15%", "center", "sort", "19", "", "", "", "", "", "display_dateformat");
+$HD_Form -> AddViewElement(gettext("ID GROUP"), "id_group", true, "15");
+$HD_Form -> AddViewElement(gettext("GROUP"), "id_group", true, "15", null, "lie", "cc_server_group", "name", "id='%id'", "%1");
+$HD_Form -> AddViewElement(gettext("SERVER HOSTNAME"), "server_ip");
+$HD_Form -> AddViewElement(gettext("MANAGER HOST"), "manager_host");
+$HD_Form -> AddViewElement(gettext("MANAGER USERNAME"), "manager_username");
+$HD_Form -> AddViewElement(gettext("LASTTIME USED"), "lasttime_used", true, "19", "display_dateformat");
 
 
 $HD_Form -> FieldViewElement ('id_group, id_group, server_ip, manager_host, manager_username, lasttime_used');

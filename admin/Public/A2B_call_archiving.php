@@ -65,16 +65,16 @@ $yesno["0"] = array( gettext("No"), "0");
 $HD_Form -> CV_DISPLAY_FILTER_ABOVE_TABLE = FALSE;
 $HD_Form -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
 $HD_Form -> CV_DO_ARCHIVE_ALL = true;
-$HD_Form -> AddViewElement(gettext("ID"), "id", "3%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("Calldate"), "starttime", "15%", "center", "SORT", "19", "", "", "", "", "", "display_dateformat");
-$HD_Form -> AddViewElement(gettext("CalledNumber"), "calledstation", "15%", "center", "SORT", "30", "", "", "", "", "", "display_without_prefix");
-$HD_Form -> AddViewElement(gettext("Destination"), "destination", "15%", "center", "SORT", "30", "", "", "", "", "", "display_without_prefix");
-$HD_Form -> AddViewElement(gettext("Duration"), "sessiontime", "7%", "center", "SORT", "30", "", "", "", "", "", "display_minute");
-$HD_Form -> AddViewElement(gettext("CardUsed"), "username", "11%", "center", "SORT", "", "30", "", "", "", "", "display_customer_link");
-$HD_Form -> AddViewElement(gettext("terminatecauseid"), "terminatecauseid", "10%", "center", "SORT", "30");
-$HD_Form -> AddViewElement(gettext("IAX/SIP"), "sipiax", "6%", "center", "SORT",  "", "list", $yesno);
-$HD_Form -> AddViewElement(gettext("InitialRate"), "calledrate", "10%", "center", "SORT", "30", "", "", "", "", "", "display_2dec");
-$HD_Form -> AddViewElement(gettext("Cost"), "sessionbill", "10%", "center", "SORT", "30", "", "", "", "", "", "display_2bill");
+$HD_Form -> AddViewElement(gettext("ID"), "id");
+$HD_Form -> AddViewElement(gettext("Calldate"), "starttime", true, "19", "display_dateformat");
+$HD_Form -> AddViewElement(gettext("CalledNumber"), "calledstation", true, "30", "display_without_prefix");
+$HD_Form -> AddViewElement(gettext("Destination"), "destination", true, "30", "display_without_prefix");
+$HD_Form -> AddViewElement(gettext("Duration"), "sessiontime", true, "30", "display_minute");
+$HD_Form -> AddViewElement(gettext("CardUsed"), "username", true, "", "display_customer_link", "30");
+$HD_Form -> AddViewElement(gettext("terminatecauseid"), "terminatecauseid");
+$HD_Form -> AddViewElement(gettext("IAX/SIP"), "sipiax", true, "", null, "list", $yesno);
+$HD_Form -> AddViewElement(gettext("InitialRate"), "calledrate", true, "30", "display_2dec");
+$HD_Form -> AddViewElement(gettext("Cost"), "sessionbill", true, "30", "display_2bill");
 
 $FG_COL_QUERY='id, starttime, calledstation, destination, real_sessiontime, card_id, terminatecauseid, sipiax, buycost, sessionbill';
 

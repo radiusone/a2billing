@@ -54,10 +54,10 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/world_add.png" ;
 
 
 if ($popup_select)
-	$HD_Form -> AddViewElement(gettext("ID"), "id", "15%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("PROVIDER NAME"), "provider_name", "25%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("CREATIONDATE"), "creationdate", "20%", "center", "sort", "19", "", "", "", "", "", "display_dateformat");
-$HD_Form -> AddViewElement(gettext("DESCRIPTION"), "description", "30%", "center", "sort", "30");
+	$HD_Form -> AddViewElement(gettext("ID"), "id");
+$HD_Form -> AddViewElement(gettext("PROVIDER NAME"), "provider_name");
+$HD_Form -> AddViewElement(gettext("CREATIONDATE"), "creationdate", true, "19", "display_dateformat");
+$HD_Form -> AddViewElement(gettext("DESCRIPTION"), "description");
 $HD_Form -> FieldViewElement (($popup_select ? 'id,' : '') . 'provider_name, creationdate, description');
 
 $HD_Form -> CV_NO_FIELDS  = gettext("NO PROVIDERS CREATED!");

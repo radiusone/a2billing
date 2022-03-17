@@ -71,11 +71,11 @@ $HD_Form -> FG_FK_DELETE_MESSAGE = gettext("You have some tickets using this Sup
 $user_type = [[_("CUSTOMERS"), "0"], [_("AGENTS"), "1"], [_("CUSTOMERS AND AGENTS"),  "2"],];
 $activated_list = getActivationList();
 
-$HD_Form -> AddViewElement(gettext("ID"), "id", "5%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("NAME"), "name", "20%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("ACTIVATED"), "activated", "15%", "center", "sort", "", "list", $activated_list);
-$HD_Form -> AddViewElement(gettext("USER TYPE"), "activated", "25%", "center", "sort", "", "list", $user_type);
-$HD_Form -> AddViewElement(gettext("SUPPORT BOX"), "id_support", "10%", "center", "sort", "15", "lie", "cc_support", "name", "id='%id'", "%1");
+$HD_Form -> AddViewElement(gettext("ID"), "id");
+$HD_Form -> AddViewElement(gettext("NAME"), "name");
+$HD_Form -> AddViewElement(gettext("ACTIVATED"), "activated", true, "", null, "list", $activated_list);
+$HD_Form -> AddViewElement(gettext("USER TYPE"), "activated", true, "", null, "list", $user_type);
+$HD_Form -> AddViewElement(gettext("SUPPORT BOX"), "id_support", true, "15", null, "lie", "cc_support", "name", "id='%id'", "%1");
 
 $HD_Form -> FieldViewElement ('id, name, activated,type_user, id_support ');
 

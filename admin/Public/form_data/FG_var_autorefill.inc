@@ -50,9 +50,9 @@ $HD_Form->FG_VIEW_TABLE_WITDH = '70%';
 $HD_Form->FG_TABLE_DEFAULT_ORDER = "id";
 $HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
 
-$HD_Form->AddViewElement(gettext("DATE RUN"), "daterun", "25%", "center", "sort");
-$HD_Form->AddViewElement(gettext("TOTALCARD PERFORM"), "totalcardperform", "20", "center", "sort");
-$HD_Form->AddViewElement(gettext("TOTALCREDIT"), "totalcredit", "20%", "center", "sort");
+$HD_Form->AddViewElement(gettext("DATE RUN"), "daterun");
+$HD_Form->AddViewElement(gettext("TOTALCARD PERFORM"), "totalcardperform");
+$HD_Form->AddViewElement(gettext("TOTALCREDIT"), "totalcredit");
 ;
 
 // added a parameter to append  FG_TABLE_ID  ( by default ) or disable 0.

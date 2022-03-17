@@ -127,17 +127,17 @@ for ($k=0;$k<=28;$k++)
     $invoiceday_list["$k"]  = array( "$k", "$k");
 
 $HD_Form -> CV_DO_ARCHIVE_ALL = true;
-$HD_Form -> AddViewElement(gettext("ID"), "id", "3%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("ACCOUNT NUMBER"), "username", "20%", "center", "sort", "", "30", "", "", "", "", "display_customer_link");
-$HD_Form -> AddViewElement("<acronym title=\"".gettext("BALANCE")."\">".gettext("BA")."</acronym>", "credit", "5%", "center", "sort", "", "", "", "", "", "", "display_2dec");
-$HD_Form -> AddViewElement(gettext("LASTNAME"), "lastname", "10%", "center", "sort", "15");
-$HD_Form -> AddViewElement(gettext("STATUS"), "status", "8%", "center", "sort", "", "list", $cardstatus_list_acronym);
-$HD_Form -> AddViewElement(gettext("LG"), "language", "10%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("USE"), "inuse", "8%", "center", "sort");
-$HD_Form -> AddViewElement("<acronym title=\"".gettext("CURRENCY")."\">".gettext("CUR")."</acronym>", "currency", "8%", "center", "sort", "", "list", $currency_list_key);
-$HD_Form -> AddViewElement(gettext("SIP"), "sip_buddy", "10%", "center", "sort", "", "list", $yesno);
-$HD_Form -> AddViewElement(gettext("IAX"), "iax_buddy", "10%", "center", "sort", "", "list", $yesno);
-$HD_Form -> AddViewElement("<acronym title=\"AMOUNT OF CALL DONE\">".gettext("ACD")."</acronym>", "nbused", "10%", "center", "sort");
+$HD_Form -> AddViewElement(gettext("ID"), "id");
+$HD_Form -> AddViewElement(gettext("ACCOUNT NUMBER"), "username", true, "", "display_customer_link", "30");
+$HD_Form -> AddViewElement("<acronym title=\"" . gettext("BALANCE") . "\">" . gettext("BA") . "</acronym>", "credit", true, "", "display_2dec");
+$HD_Form -> AddViewElement(gettext("LASTNAME"), "lastname", true, "15");
+$HD_Form -> AddViewElement(gettext("STATUS"), "status", true, "", null, "list", $cardstatus_list_acronym);
+$HD_Form -> AddViewElement(gettext("LG"), "language");
+$HD_Form -> AddViewElement(gettext("USE"), "inuse");
+$HD_Form -> AddViewElement("<acronym title=\"" . gettext("CURRENCY") . "\">" . gettext("CUR") . "</acronym>", "currency", true, "", null, "list", $currency_list_key);
+$HD_Form -> AddViewElement(gettext("SIP"), "sip_buddy", true, "", null, "list", $yesno);
+$HD_Form -> AddViewElement(gettext("IAX"), "iax_buddy", true, "", null, "list", $yesno);
+$HD_Form -> AddViewElement("<acronym title=\"AMOUNT OF CALL DONE\">" . gettext("ACD") . "</acronym>", "nbused");
 $FG_COL_QUERY='id, username, credit, lastname, status, language, inuse, currency, sip_buddy, iax_buddy, nbused';
 
 $HD_Form -> FieldViewElement ($FG_COL_QUERY);

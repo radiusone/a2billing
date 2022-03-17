@@ -65,9 +65,9 @@ $HD_Form -> FG_FK_EDITION_CLAUSE = array(" id_didgroup ");
 $HD_Form -> FG_FK_DELETE_MESSAGE = gettext("You have some cards using this DID Group! Please comfirm that you really want to remove this DID Group ? ");
 
 
-$HD_Form -> AddViewElement(gettext("ID"), "id", "10%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("NAME"), "didgroupname", "20%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("CREATION DATE"), "creationdate", "20%", "center", "sort", "30", "", "", "", "", "display_dateformat");
+$HD_Form -> AddViewElement(gettext("ID"), "id");
+$HD_Form -> AddViewElement(gettext("NAME"), "didgroupname");
+$HD_Form -> AddViewElement(gettext("CREATION DATE"), "creationdate", true, "30", "display_dateformat");
 
 // added a parameter to append  FG_TABLE_ID  ( by default ) or disable 0.
 $HD_Form -> FieldViewElement ('id, didgroupname, creationdate');

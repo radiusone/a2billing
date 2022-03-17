@@ -52,9 +52,9 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = 
 $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/world_add.png" ;
 
 
-$HD_Form -> AddViewElement(gettext("CURRENCY"), "currency", "15%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("DETAIL"), "name", "20%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("VALUE"), "value", "15%", "center", "sort");
+$HD_Form -> AddViewElement(gettext("CURRENCY"), "currency");
+$HD_Form -> AddViewElement(gettext("DETAIL"), "name");
+$HD_Form -> AddViewElement(gettext("VALUE"), "value");
 
 $HD_Form -> FieldViewElement ('currency,name,value');
 

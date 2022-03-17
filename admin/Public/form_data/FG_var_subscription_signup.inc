@@ -61,11 +61,11 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/add.png" ;
 
 $activated_list = getActivationList();
 
-$HD_Form -> AddViewElement(gettext("LABEL"), "label", "12%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("ACTIVITY"), "enable", "12%", "center", "sort","", "list", $activated_list);
-$HD_Form -> AddViewElement(gettext("DESCRIPTION"), "description", "35%", "center", "SORT", "150");
-$HD_Form -> AddViewElement(gettext("SERVICE"), "id_subscription", "12%", "center", "sort", "15", "lie", "cc_subscription_service", "label", "id='%id'", "%1");
-$HD_Form -> AddViewElement("<acronym title=\"".gettext("CALL PLAN")."\">".gettext('PLAN')."</acronym>", "id_callplan", "12%", "center", "sort", "20", "lie", "cc_tariffgroup", "tariffgroupname", "id='%id'", "%1");
+$HD_Form -> AddViewElement(gettext("LABEL"), "label");
+$HD_Form -> AddViewElement(gettext("ACTIVITY"), "enable", true, "", null, "list", $activated_list);
+$HD_Form -> AddViewElement(gettext("DESCRIPTION"), "description", true, "150");
+$HD_Form -> AddViewElement(gettext("SERVICE"), "id_subscription", true, "15", null, "lie", "cc_subscription_service", "label", "id='%id'", "%1");
+$HD_Form -> AddViewElement("<acronym title=\"" . gettext("CALL PLAN") . "\">" . gettext('PLAN') . "</acronym>", "id_callplan", true, "20", null, "lie", "cc_tariffgroup", "tariffgroupname", "id='%id'", "%1");
 $HD_Form -> FieldViewElement ( 'label, enable, description, id_subscription, id_callplan');
 
 $HD_Form -> CV_NO_FIELDS  = gettext("NO SUBSCRIPTION IN SIGNUP CREATED!");

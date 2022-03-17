@@ -73,14 +73,14 @@ $daynumber_list = array();
 for ($k=1;$k<=20;$k++) {
 		$daynumber_list["$k"]  = array( "$k", "$k");
 }
-$HD_Form -> AddViewElement(gettext("NAME"), "name", "12%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("PERIOD"), "periode", "10%", "center", "sort", "", "list", $period_list);
-$HD_Form -> AddViewElement(gettext("TYPE"), "type", "20%", "center", "sort", "", "list", $type_list);
-$HD_Form -> AddViewElement(gettext("MAX"), "maxvalue", "7%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("MIN"), "minvalue", "7%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("STATUS"), "status", "6%", "center", "sort", "", "list", $actived_list);
-$HD_Form -> AddViewElement(gettext("TRUNK"), "id_trunk", "12%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("CREATION DATE"), "datecreate", "12%", "center", "sort", "22", "", "", "", "", "", "display_dateformat");
+$HD_Form -> AddViewElement(gettext("NAME"), "name");
+$HD_Form -> AddViewElement(gettext("PERIOD"), "periode", true, "", null, "list", $period_list);
+$HD_Form -> AddViewElement(gettext("TYPE"), "type", true, "", null, "list", $type_list);
+$HD_Form -> AddViewElement(gettext("MAX"), "maxvalue");
+$HD_Form -> AddViewElement(gettext("MIN"), "minvalue");
+$HD_Form -> AddViewElement(gettext("STATUS"), "status", true, "", null, "list", $actived_list);
+$HD_Form -> AddViewElement(gettext("TRUNK"), "id_trunk");
+$HD_Form -> AddViewElement(gettext("CREATION DATE"), "datecreate", true, "22", "display_dateformat");
 
 
 

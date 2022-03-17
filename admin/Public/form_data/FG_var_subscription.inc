@@ -65,15 +65,15 @@ for ($k=1;$k<=20;$k++)
 
 
 
-$HD_Form -> AddViewElement(gettext("LABEL"), "label", "15%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("FEE"), "fee", "5%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("STATUS"), "status", "7%", "center", "sort", "", "list", $actived_list);
-$HD_Form -> AddViewElement(gettext("DATE START"), "startdate", "12%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("DATE STOP"), "stopdate", "12%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("NBRUN"), "numberofrun", "6%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("DATE LASTRUN"), "datelastrun", "12%", "center", "sort", "16");
-$HD_Form -> AddViewElement(gettext("ACC PERFORM"), "totalcardperform", "10%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("TOTAL CREDIT"), "totalcredit", "10%", "center", "sort");
+$HD_Form -> AddViewElement(gettext("LABEL"), "label");
+$HD_Form -> AddViewElement(gettext("FEE"), "fee");
+$HD_Form -> AddViewElement(gettext("STATUS"), "status", true, "", null, "list", $actived_list);
+$HD_Form -> AddViewElement(gettext("DATE START"), "startdate");
+$HD_Form -> AddViewElement(gettext("DATE STOP"), "stopdate");
+$HD_Form -> AddViewElement(gettext("NBRUN"), "numberofrun");
+$HD_Form -> AddViewElement(gettext("DATE LASTRUN"), "datelastrun", true, "16");
+$HD_Form -> AddViewElement(gettext("ACC PERFORM"), "totalcardperform");
+$HD_Form -> AddViewElement(gettext("TOTAL CREDIT"), "totalcredit");
 
 
 // added a parameter to append  FG_TABLE_ID  ( by default ) or disable 0.

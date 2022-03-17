@@ -62,19 +62,18 @@ $status_list = ["PENDING" => [_("PENDING"), "PENDING"], "SENT" => [_("SENT"), "S
 $yesno = getYesNoList();
 
 
-$HD_Form -> AddViewElement(gettext("ID"), "id", "3%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("UNIQUEID"), "uniqueid", "10%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("ENTRY TIME"), "entry_time", "12%", "center", "sort", "19", "", "", "", "", "", "display_dateformat");
-$HD_Form -> AddViewElement(gettext("STATUS"), "status", "5%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("SERVER IP"), "server_ip", "5%", "center", "sort");
-$HD_Form -> AddViewElement("<acronym title=\"".gettext("NUMBER OF ATTEMPT")."\">NA</acronym>", "num_attempt", "5%", "center", "sort");
-//$HD_Form -> AddViewElement("<acronym title=\"".gettext("MANAGER RESULT")."\">MR</acronym>", "manager_result", "10%", "center", "sort", "15");
-$HD_Form -> AddViewElement("<acronym title=\"".gettext("AGI RESULT")."\">AR</acronym>", "agi_result", "5%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("CALLBACK TIME"), "callback_time", "12%", "center", "sort", "19", "", "", "", "", "", "display_dateformat");
-$HD_Form -> AddViewElement(gettext("LAST_ATTEMPT"), "last_attempt_time", "10%", "center", "sort", "19", "", "", "", "", "", "display_dateformat");
-$HD_Form -> AddViewElement(gettext("CHANNEL"), "channel", "10%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("CONTEXT"), "context", "10%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("SERVER"), "id_server", "5%", "center", "sort", "15", "lie", "server_manager", "server_ip", "id='%id'", "%1");
+$HD_Form -> AddViewElement(gettext("ID"), "id");
+$HD_Form -> AddViewElement(gettext("UNIQUEID"), "uniqueid");
+$HD_Form -> AddViewElement(gettext("ENTRY TIME"), "entry_time", true, "19", "display_dateformat");
+$HD_Form -> AddViewElement(gettext("STATUS"), "status");
+$HD_Form -> AddViewElement(gettext("SERVER IP"), "server_ip");
+$HD_Form -> AddViewElement("<acronym title=\"" . gettext("NUMBER OF ATTEMPT") . "\">NA</acronym>", "num_attempt");
+$HD_Form -> AddViewElement("<acronym title=\"" . gettext("AGI RESULT") . "\">AR</acronym>", "agi_result");
+$HD_Form -> AddViewElement(gettext("CALLBACK TIME"), "callback_time", true, "19", "display_dateformat");
+$HD_Form -> AddViewElement(gettext("LAST_ATTEMPT"), "last_attempt_time", true, "19", "display_dateformat");
+$HD_Form -> AddViewElement(gettext("CHANNEL"), "channel");
+$HD_Form -> AddViewElement(gettext("CONTEXT"), "context");
+$HD_Form -> AddViewElement(gettext("SERVER"), "id_server", true, "15", null, "lie", "server_manager", "server_ip", "id='%id'", "%1");
 
 
 $HD_Form -> FieldViewElement ('id, uniqueid, entry_time, status, server_ip, num_attempt, manager_result, callback_time, last_attempt_time, channel, context, id_server');

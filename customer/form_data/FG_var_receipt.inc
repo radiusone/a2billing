@@ -66,11 +66,11 @@ $HD_Form -> FG_INFO = true;
 $HD_Form -> FG_INFO_LINK = "A2B_receipt_view.php?id=";
 
 $list_refill_type=getRefillType_List();
-$HD_Form -> AddViewElement(gettext("ID"), "cc_receipt.id", "7%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("ACCOUNT"), "username", "10%", "center", "sort", "", "30", "", "", "", "", "display_customer_link");
-$HD_Form -> AddViewElement(gettext("DATE"), "date", "15%", "center", "sort", "30", "", "", "", "", "", "display_dateformat");
-$HD_Form -> AddViewElement(gettext("TITLE"), "title", "21%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("AMOUNT INCL VAT"), "price", "10%", "center", "sort","", "", "", "", "", "", "display_2bill");
+$HD_Form -> AddViewElement(gettext("ID"), "cc_receipt.id");
+$HD_Form -> AddViewElement(gettext("ACCOUNT"), "username", true, "30", "display_customer_link");
+$HD_Form -> AddViewElement(gettext("DATE"), "date", true, "30", "display_dateformat");
+$HD_Form -> AddViewElement(gettext("TITLE"), "title");
+$HD_Form -> AddViewElement(gettext("AMOUNT INCL VAT"), "price", true, "30", "display_2bill");
 $HD_Form -> FieldViewElement ("cc_receipt.id, username, cc_receipt.date,title,total_price");
 
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO RECEIPT CREATED!");

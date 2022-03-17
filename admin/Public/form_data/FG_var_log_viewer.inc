@@ -83,16 +83,15 @@ $HD_Form -> FG_TABLE_CLAUSE = implode(' AND ', $condition_ary);
 
 //$HD_Form -> FG_EDITION_CLAUSE = " id = $id";
 
-$HD_Form -> AddViewElement(gettext("ID"), "id", "5%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("LOGIN"), "login", "8%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("LOGLEVEL"), "loglevel", "10%", "center");
-$HD_Form -> AddViewElement(gettext("ACTION"), "action", "15%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("description"), "description", "15%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("TABLENAME"), "tablename", "12%", "center", "sort", "15");
-$HD_Form -> AddViewElement(gettext("PAGENAME"), "pagename", "5%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("IPADDRESS"), "ipaddress", "4%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("DATE"), "creationdate", "14%", "center", "sort", "16");
-//$HD_Form -> AddViewElement(gettext("DATA"), "data", "8%", "center", "SORT");
+$HD_Form -> AddViewElement(gettext("ID"), "id");
+$HD_Form -> AddViewElement(gettext("LOGIN"), "login");
+$HD_Form -> AddViewElement(gettext("LOGLEVEL"), "loglevel");
+$HD_Form -> AddViewElement(gettext("ACTION"), "action");
+$HD_Form -> AddViewElement(gettext("description"), "description");
+$HD_Form -> AddViewElement(gettext("TABLENAME"), "tablename", true, "15");
+$HD_Form -> AddViewElement(gettext("PAGENAME"), "pagename");
+$HD_Form -> AddViewElement(gettext("IPADDRESS"), "ipaddress");
+$HD_Form -> AddViewElement(gettext("DATE"), "creationdate", true, "16");
 
 // added a parameter to append  FG_TABLE_ID  ( by default ) or disable 0.
 $HD_Form -> FieldViewElement ('id, cua.login, loglevel, action, description, tablename, pagename, ipaddress, creationdate');

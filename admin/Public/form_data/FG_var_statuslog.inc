@@ -97,11 +97,11 @@ if ($status >= 0) {
 
 $cardstatus_list = getCardStatus_List();
 
-$HD_Form -> AddViewElement(gettext("ID CARD"), "id_cc_card", "10%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("ACCOUNT NUMBER"), "id_cc_card", "20%", "center", "sort", "", "lie_link", "cc_card", "username,id", "id='%id'", "%1", "", "A2B_entity_card.php");
-$HD_Form -> AddViewElement(gettext("LAST NAME"), "id_cc_card", "20%", "center", "sort", "15", "lie", "cc_card", "lastname", "id='%id'", "%1");
-$HD_Form -> AddViewElement(gettext("STATUS"), "status", "20%", "center", "sort", "", "list", $cardstatus_list);
-$HD_Form -> AddViewElement(gettext("DATE"), "updated_date", "20%", "center", "sort", "16");
+$HD_Form -> AddViewElement(gettext("ID CARD"), "id_cc_card");
+$HD_Form -> AddViewElement(gettext("ACCOUNT NUMBER"), "id_cc_card", true, "", "", "lie_link", "cc_card", "username,id", "id='%id'", "%1", "A2B_entity_card.php");
+$HD_Form -> AddViewElement(gettext("LAST NAME"), "id_cc_card", true, "15", null, "lie", "cc_card", "lastname", "id='%id'", "%1");
+$HD_Form -> AddViewElement(gettext("STATUS"), "status", true, "", null, "list", $cardstatus_list);
+$HD_Form -> AddViewElement(gettext("DATE"), "updated_date", true, "16");
 
 $HD_Form -> FieldViewElement ('sl.id_cc_card, id_cc_card, id_cc_card, sl.status, sl.updated_date');
 

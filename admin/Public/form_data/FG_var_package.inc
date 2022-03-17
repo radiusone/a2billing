@@ -67,12 +67,12 @@ if ($A2B->config["database"]['dbtype'] == 'postgres') // Postgres doesn't like d
 else // And I don't know if mysql likes them single.
 	$filter_unit = 'CASE packagetype WHEN 1 THEN CONCAT( freetimetocall, " times" ) WHEN 0 THEN "ALL" ELSE CONCAT( freetimetocall, " sec" ) END ';
 
-$HD_Form -> AddViewElement(gettext("LABEL"), "label", "18%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("CREATION DATE"), "creationdate", "15%", "center", "sort", "19", "", "", "", "", "", "display_dateformat");
-$HD_Form -> AddViewElement(gettext("PACKAGE TYPE"), "packagetype", "10%", "center", "sort","","list",$packagetype_list);
-$HD_Form -> AddViewElement(gettext("BILLING TYPE"), "billingtype", "10%", "center", "sort","","list",$billingtype_list);
-$HD_Form -> AddViewElement(gettext("STARTING DAY"), "startday", "12%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("FREE"), "freetimetocall", "17%", "center", "sort", "30", "", "", "", "", "", "");
+$HD_Form -> AddViewElement(gettext("LABEL"), "label");
+$HD_Form -> AddViewElement(gettext("CREATION DATE"), "creationdate", true, "19", "display_dateformat");
+$HD_Form -> AddViewElement(gettext("PACKAGE TYPE"), "packagetype", true, "", null, "list", $packagetype_list);
+$HD_Form -> AddViewElement(gettext("BILLING TYPE"), "billingtype", true, "", null, "list", $billingtype_list);
+$HD_Form -> AddViewElement(gettext("STARTING DAY"), "startday");
+$HD_Form -> AddViewElement(gettext("FREE"), "freetimetocall");
 
 $HD_Form -> FieldViewElement ('label, creationdate, packagetype, billingtype, startday, '.$filter_unit);
 

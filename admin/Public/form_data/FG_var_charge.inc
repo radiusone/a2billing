@@ -75,12 +75,12 @@ $chargetype_list["4"] = array( gettext("Extra charge"), "4");
 
 
 
-$HD_Form_c -> AddViewElement(gettext("ACCOUNT HOLDER"), "id_cc_card", "10%", "center", "sort", "25", "lie", "cc_card", "lastname, firstname", "id='%id'", "%1 %2");
-$HD_Form_c -> AddViewElement(gettext("ACCOUNT NUMBER"), "username", "12%", "center", "sort", "", "30", "", "", "", "", "display_customer_link");
-$HD_Form_c -> AddViewElement(gettext("DATE"), "cc_charge.creationdate", "10%", "center", "sort", "16", "", "", "", "", "", "display_dateformat");
-$HD_Form_c -> AddViewElement(gettext("AMOUNT"), "amount", "7%", "center", "sort");
-$HD_Form_c -> AddViewElement(gettext("CHARGE TYPE"), "chargetype", "20%", "center", "sort", "30", "list", $chargetype_list);
-$HD_Form_c -> AddViewElement(gettext("DESCRIPTION"), "description", "25%", "center", "SORT", "40");
+$HD_Form_c -> AddViewElement(gettext("ACCOUNT HOLDER"), "id_cc_card", true, "25", null, "lie", "cc_card", "lastname, firstname", "id='%id'", "%1 %2");
+$HD_Form_c -> AddViewElement(gettext("ACCOUNT NUMBER"), "username", true, "30", "display_customer_link");
+$HD_Form_c -> AddViewElement(gettext("DATE"), "cc_charge.creationdate", true, "16", "display_dateformat");
+$HD_Form_c -> AddViewElement(gettext("AMOUNT"), "amount");
+$HD_Form_c -> AddViewElement(gettext("CHARGE TYPE"), "chargetype", true, "30", null, "list", $chargetype_list);
+$HD_Form_c -> AddViewElement(gettext("DESCRIPTION"), "description");
 
 // added a parameter to append  FG_TABLE_ID  ( by default ) or disable 0.
 $HD_Form_c -> FieldViewElement ('id_cc_card, username, cc_charge.creationdate, amount, chargetype, description');

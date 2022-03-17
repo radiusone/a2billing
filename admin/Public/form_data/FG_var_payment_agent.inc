@@ -60,16 +60,16 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = 
 $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/money_add.png" ;
 
 $list_refill_type=getRefillType_List();
-$HD_Form -> AddViewElement(gettext("ID"), "cc_logpayment.id", "10%", "center", "sort");
+$HD_Form -> AddViewElement(gettext("ID"), "cc_logpayment.id");
 if (has_rights (ACX_ADMINISTRATOR)) {
-	$HD_Form -> AddViewElement(gettext("AGENT"), "agent_id", "20%", "center", "sort", "", "30", "", "", "", "", "display_linktoagent");
+	$HD_Form -> AddViewElement(gettext("AGENT"), "agent_id", true, "30", "display_linktoagent");
 } else {
-	$HD_Form -> AddViewElement(gettext("AGENT"), "agent_id", "20%", "center", "sort", "", "30", "", "", "", "", "display_nameofagent");
+	$HD_Form -> AddViewElement(gettext("AGENT"), "agent_id", true, "30", "display_nameofagent");
 }
-$HD_Form -> AddViewElement(gettext("PAYMENT DATE"), "date", "17%", "center", "sort", "30", "", "", "", "", "", "display_dateformat");
-$HD_Form -> AddViewElement(gettext("PAYMENT AMOUNT"), "payment", "15%", "center", "sort","", "", "", "", "", "", "display_money");
-$HD_Form -> AddViewElement(gettext("PAYMENT TYPE"),"payment_type", "13%", "center", "sort", "", "list", $list_refill_type);
-$HD_Form -> AddViewElement(gettext("REFILL"), "id_logrefill", "17%", "center", "sort", "", "lie_link", "cc_logrefill_agent", "TRUNCATE(credit,2), id", "id='%id'", "%1 ".strtoupper(BASE_CURRENCY)." (id:%2)", "", "A2B_refill_info_agent.php");
+$HD_Form -> AddViewElement(gettext("PAYMENT DATE"), "date", true, "30", "display_dateformat");
+$HD_Form -> AddViewElement(gettext("PAYMENT AMOUNT"), "payment", true, "", "display_money");
+$HD_Form -> AddViewElement(gettext("PAYMENT TYPE"), "payment_type", true, "", null, "list", $list_refill_type);
+$HD_Form -> AddViewElement(gettext("REFILL"), "id_logrefill", true, "", "", "lie_link", "cc_logrefill_agent", "TRUNCATE(credit,2), id", "id='%id'", "%1 " . strtoupper(BASE_CURRENCY) . " (id:%2)", "A2B_refill_info_agent.php");
 
 $HD_Form -> FieldViewElement ('cc_logpayment_agent.id, agent_id, date, payment ,payment_type,id_logrefill');
 

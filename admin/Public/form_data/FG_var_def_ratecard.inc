@@ -193,19 +193,19 @@ $yesno = getYesNoList();
 
 //
 if ($popup_select) {
-    $HD_Form->AddViewElement(gettext("ID"), "id", "5%");
+    $HD_Form->AddViewElement(gettext("ID"), "id");
 }
-$HD_Form->AddViewElement(gettext("DESTINATION"), "destination", "17%", "center", "", "15");
-$HD_Form->AddViewElement("<acronym title=\"DIALING PREFIX\">" . gettext("PREFIX") . "</acronym>", "dialprefix", "10%", "center", "sort", "");
-$HD_Form->AddViewElement("<acronym title=\"BUYING RATE\">" . gettext("BR") . "</acronym>", "buyrate", "4%");
-$HD_Form->AddViewElement("<acronym title=\"SELLING RATE\">" . gettext("SR") . "</acronym>", "rateinitial", "4%");
+$HD_Form->AddViewElement(gettext("DESTINATION"), "destination", false, "15");
+$HD_Form->AddViewElement("<acronym title=\"DIALING PREFIX\">" . gettext("PREFIX") . "</acronym>", "dialprefix");
+$HD_Form->AddViewElement("<acronym title=\"BUYING RATE\">" . gettext("BR") . "</acronym>", "buyrate");
+$HD_Form->AddViewElement("<acronym title=\"SELLING RATE\">" . gettext("SR") . "</acronym>", "rateinitial");
 if (!$popup_select) {
-    $HD_Form->AddViewElement(gettext("START-DATE"), "startdate", "13%", "center", "sort", "19", "", "", "", "", "", "display_dateformat");
-    $HD_Form->AddViewElement(gettext("STOP-DATE"), "stopdate", "13%", "center", "sort", "19", "", "", "", "", "", "display_dateformat");
-    $HD_Form->AddViewElement("<acronym title=\"INITBLOCK\">" . gettext("INITB") . "</acronym>", "initblock", "4%");
-    $HD_Form->AddViewElement("<acronym title=\"CONNECT CHARGE\">" . gettext("CC") . "</acronym>", "connectcharge", "4%");
-    $HD_Form->AddViewElement(gettext("TRUNK"), "id_trunk", "10%", "center", "sort", "15", "lie", "cc_trunk", "trunkcode", "id_trunk='%id'", "%1");
-    $HD_Form->AddViewElement(gettext("RATE CARD"), "idtariffplan", "12%", "center", "sort", "15", "lie", "cc_tariffplan", "tariffname", "id='%id'", "%1");
+    $HD_Form->AddViewElement(gettext("START-DATE"), "startdate", true, "19", "display_dateformat");
+    $HD_Form->AddViewElement(gettext("STOP-DATE"), "stopdate", true, "19", "display_dateformat");
+    $HD_Form->AddViewElement("<acronym title=\"INITBLOCK\">" . gettext("INITB") . "</acronym>", "initblock");
+    $HD_Form->AddViewElement("<acronym title=\"CONNECT CHARGE\">" . gettext("CC") . "</acronym>", "connectcharge");
+    $HD_Form->AddViewElement(gettext("TRUNK"), "id_trunk", true, "15", null, "lie", "cc_trunk", "trunkcode", "id_trunk='%id'", "%1");
+    $HD_Form->AddViewElement(gettext("RATE CARD"), "idtariffplan", true, "15", null, "lie", "cc_tariffplan", "tariffname", "id='%id'", "%1");
     if ($use_lcr_callplan) {
         $HD_Form->FieldViewElement('destination, dialprefix, buyrate, ' . $rateinitial_field . ', startdate, stopdate, initblock, connectcharge, id_trunk , idtariffplan ');
     } else {

@@ -45,14 +45,14 @@ $HD_Form = new FormHandler("cc_agent","Agent");
 $HD_Form -> FG_DEBUG = 0;
 $HD_Form -> FG_LIMITE_DISPLAY = 10;
 
-$HD_Form -> AddViewElement(gettext("ID"), "id", "7%", "center", "sort", "");
-$HD_Form -> AddViewElement(gettext("Agent"), "username", "7%", "center", "sort", "", "30", "", "", "", "", "display_linktoagent");
-$HD_Form -> AddViewElement(gettext("CREDIT"), "credit", "7%", "center", "sort",  "", "", "", "", "", "", "display_2bill");
-$HD_Form -> AddViewElement(gettext("COMMISSION BAL"), "com_balance", "7%", "center", "sort",  "", "", "", "", "", "", "display_2bill");
-$HD_Form -> AddViewElement(gettext("TOTAL COM. ACCRUED"), "com_accrued", "10%", "center", "sort", "15", "lie", "cc_agent_commission as t2", "TRUNCATE(SUM(t2.amount),2)", "t2.id_agent='%id'  ", "%1");
-$HD_Form -> AddViewElement(gettext("CUSTOMER REFILL BY AGENT"), "refill", "10%", "center", "sort", "15", "lie", "cc_logrefill as t2", "TRUNCATE(SUM(t2.credit),2)", "t2.agent_id='%id' AND t2.refill_type=3 ", "%1");
-$HD_Form -> AddViewElement(gettext("AGENT REFILL"), "refill", "10%", "center", "sort", "15", "lie", "cc_logrefill_agent as t2", "TRUNCATE(SUM(t2.credit),2)", "t2.agent_id='%id' ", "%1");
-$HD_Form -> AddViewElement(gettext("AGENT PAYMENT"), "payment", "7%", "center", "sort", "15", "lie", "cc_logpayment_agent as t2", "TRUNCATE(SUM(t2.payment),2)", "t2.agent_id='%id' ", "%1");
+$HD_Form -> AddViewElement(gettext("ID"), "id");
+$HD_Form -> AddViewElement(gettext("Agent"), "username", true, "30", "display_linktoagent");
+$HD_Form -> AddViewElement(gettext("CREDIT"), "credit", true, "", "display_2bill");
+$HD_Form -> AddViewElement(gettext("COMMISSION BAL"), "com_balance", true, "", "display_2bill");
+$HD_Form -> AddViewElement(gettext("TOTAL COM. ACCRUED"), "com_accrued", true, "15", null, "lie", "cc_agent_commission as t2", "TRUNCATE(SUM(t2.amount),2)", "t2.id_agent='%id'  ", "%1");
+$HD_Form -> AddViewElement(gettext("CUSTOMER REFILL BY AGENT"), "refill", true, "15", null, "lie", "cc_logrefill as t2", "TRUNCATE(SUM(t2.credit),2)", "t2.agent_id='%id' AND t2.refill_type=3 ", "%1");
+$HD_Form -> AddViewElement(gettext("AGENT REFILL"), "refill", true, "15", null, "lie", "cc_logrefill_agent as t2", "TRUNCATE(SUM(t2.credit),2)", "t2.agent_id='%id' ", "%1");
+$HD_Form -> AddViewElement(gettext("AGENT PAYMENT"), "payment", true, "15", null, "lie", "cc_logpayment_agent as t2", "TRUNCATE(SUM(t2.payment),2)", "t2.agent_id='%id' ", "%1");
 
 $HD_Form -> FieldViewElement ('id, id, credit,com_balance,id,id, id, id');
 

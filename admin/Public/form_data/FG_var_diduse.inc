@@ -82,14 +82,14 @@ $actived_list = array();
 $actived_list["1"] = array( gettext("Reserved"), "1");
 $actived_list["0"] = array( gettext("Free"), "0");
 
-$HD_Form -> AddViewElement(gettext("ID DID"), "id_did", "6%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("DID"), "id_did", "6%", "center", "sort", "25", "lie", "cc_did", "did", "id='%id'", "%1");
-$HD_Form -> AddViewElement(gettext("ID card"), "id_cc_card", "6%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("CARDNUMBER"), "id_cc_card", "6%", "center", "sort", "25", "lie", "cc_card", "username", "id='%id'", "%1");
+$HD_Form -> AddViewElement(gettext("ID DID"), "id_did");
+$HD_Form -> AddViewElement(gettext("DID"), "id_did", true, "25", null, "lie", "cc_did", "did", "id='%id'", "%1");
+$HD_Form -> AddViewElement(gettext("ID card"), "id_cc_card");
+$HD_Form -> AddViewElement(gettext("CARDNUMBER"), "id_cc_card", true, "25", null, "lie", "cc_card", "username", "id='%id'", "%1");
 
-$HD_Form -> AddViewElement(gettext("RESERVATION DATE"), "reservationdate", "20%", "center", "sort", "", "", "", "", "", "", "");
-$HD_Form -> AddViewElement(gettext("LIBERATION DATE"), "releasedate", "20%", "center", "sort", "", "", "", "", "", "", "");
-$HD_Form -> AddViewElement(gettext("STATUS"), "activated", "5%", "center", "sort", "", "list", $actived_list);
+$HD_Form -> AddViewElement(gettext("RESERVATION DATE"), "reservationdate");
+$HD_Form -> AddViewElement(gettext("LIBERATION DATE"), "releasedate");
+$HD_Form -> AddViewElement(gettext("STATUS"), "activated", true, "", null, "list", $actived_list);
 
 // added a parameter to append  FG_TABLE_ID  ( by default ) or disable 0.
 $HD_Form -> FieldViewElement ('id_did, id_did, id_cc_card, id_cc_card, reservationdate, releasedate, activated');

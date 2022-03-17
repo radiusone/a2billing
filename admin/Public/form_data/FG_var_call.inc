@@ -46,9 +46,9 @@ $HD_Form = new FormHandler("cc_call", "Call");
 $HD_Form -> FG_DEBUG = 0;
 
 
-$HD_Form -> AddViewElement(gettext("ID"), "id", "25%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("CALLEDSTATION"), "calledstation", "25%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("ACCOUNT NUMBER"), "card_id", "25%", "center", "sort", "", "lie_link", "cc_card", "username,id", "id='%id'", "%1", "", "A2B_entity_card.php");
+$HD_Form -> AddViewElement(gettext("ID"), "id");
+$HD_Form -> AddViewElement(gettext("CALLEDSTATION"), "calledstation");
+$HD_Form -> AddViewElement(gettext("ACCOUNT NUMBER"), "card_id", true, "", "", "lie_link", "cc_card", "username,id", "id='%id'", "%1", "A2B_entity_card.php");
 
 $HD_Form -> FieldViewElement ('id, calledstation, card_id, id');
 

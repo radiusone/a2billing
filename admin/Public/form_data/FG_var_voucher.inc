@@ -82,16 +82,16 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_ALT2 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG2 = 
 $HD_Form ->FG_LIST_ADDING_BUTTON_IMG2 = Images_Path ."/add.png" ;
 
 
-$HD_Form -> AddViewElement(gettext("ID"), "id", "4%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("VOUCHER"), "voucher", "12%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("CREDIT"), "credit", "6%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("TAG"), "tag", "13%", "center", "sort", "30");
-$HD_Form -> AddViewElement(gettext("ACTIVATED"), "activated", "6%", "center", "sort", "", "list", $actived_list);
-$HD_Form -> AddViewElement(gettext("USED"), "used", "6%", "center", "sort", "", "list", $used_list);
-$HD_Form -> AddViewElement(gettext("ACCOUNT USED"), "usedcardnumber", "12%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("CREATED DATE"), "creationdate", "12%", "center", "sort", "16");
-$HD_Form -> AddViewElement(gettext("USED DATE"), "usedate", "13%", "center", "sort", "16");
-$HD_Form -> AddViewElement(gettext("CURRENCY"), "currency", "6%", "center", "sort", "", "list", $currency_list_key);
+$HD_Form -> AddViewElement(gettext("ID"), "id");
+$HD_Form -> AddViewElement(gettext("VOUCHER"), "voucher");
+$HD_Form -> AddViewElement(gettext("CREDIT"), "credit");
+$HD_Form -> AddViewElement(gettext("TAG"), "tag");
+$HD_Form -> AddViewElement(gettext("ACTIVATED"), "activated", true, "", null, "list", $actived_list);
+$HD_Form -> AddViewElement(gettext("USED"), "used", true, "", null, "list", $used_list);
+$HD_Form -> AddViewElement(gettext("ACCOUNT USED"), "usedcardnumber");
+$HD_Form -> AddViewElement(gettext("CREATED DATE"), "creationdate", true, "16");
+$HD_Form -> AddViewElement(gettext("USED DATE"), "usedate", true, "16");
+$HD_Form -> AddViewElement(gettext("CURRENCY"), "currency", true, "", null, "list", $currency_list_key);
 
 $HD_Form -> FieldViewElement ('id, voucher, credit, tag, activated, used, usedcardnumber, creationdate, usedate, currency');
 

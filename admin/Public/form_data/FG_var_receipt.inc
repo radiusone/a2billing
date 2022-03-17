@@ -88,12 +88,12 @@ $status_list = getInvoiceStatusList();
 
 $filter_amount_with_vat ='total_price';
 $list_refill_type=getRefillType_List();
-$HD_Form -> AddViewElement(gettext("ID"), "cc_receipt.id", "7%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("ACCOUNT"), "username", "10%", "center", "sort", "", "30", "", "", "", "", "display_customer_link");
-$HD_Form -> AddViewElement(gettext("DATE"), "date", "15%", "center", "sort", "30", "", "", "", "", "", "display_dateformat");
-$HD_Form -> AddViewElement(gettext("TITLE"), "title", "21%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("STATUS"), "status", "7%", "center", "sort", "", "list", $status_list);
-$HD_Form -> AddViewElement(gettext("AMOUNT INCL VAT"), "total_price", "10%", "center", "sort","", "", "", "", "", "", "display_2bill");
+$HD_Form -> AddViewElement(gettext("ID"), "cc_receipt.id");
+$HD_Form -> AddViewElement(gettext("ACCOUNT"), "username", true, "30", "display_customer_link");
+$HD_Form -> AddViewElement(gettext("DATE"), "date", true, "30", "display_dateformat");
+$HD_Form -> AddViewElement(gettext("TITLE"), "title");
+$HD_Form -> AddViewElement(gettext("STATUS"), "status", true, "", null, "list", $status_list);
+$HD_Form -> AddViewElement(gettext("AMOUNT INCL VAT"), "total_price", true, "", "display_2bill");
 $HD_Form -> FieldViewElement ("cc_receipt.id, username, cc_receipt.date,title,cc_receipt.status,$filter_amount_with_vat");
 
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO ".strtoupper($HD_Form->FG_INSTANCE_NAME)." CREATED!");

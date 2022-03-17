@@ -62,15 +62,15 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/time_add.png" ;
 
 
 $list_refill_type=getRefillType_List();
-$HD_Form -> AddViewElement(gettext("ID"), "cc_logrefill_agent.id", "10%", "center", "sort");
+$HD_Form -> AddViewElement(gettext("ID"), "cc_logrefill_agent.id");
 if (has_rights (ACX_ADMINISTRATOR)) {
-	$HD_Form -> AddViewElement(gettext("AGENT"), "agent_id", "20%", "center", "sort", "", "30", "", "", "", "", "display_linktoagent");
+	$HD_Form -> AddViewElement(gettext("AGENT"), "agent_id", true, "30", "display_linktoagent");
 }else{
-	$HD_Form -> AddViewElement(gettext("AGENT"), "agent_id", "20%", "center", "sort", "", "30", "", "", "", "", "display_nameofagent");
+	$HD_Form -> AddViewElement(gettext("AGENT"), "agent_id", true, "30", "display_nameofagent");
 }
-$HD_Form -> AddViewElement(gettext("REFILL DATE"), "date", "15%", "center", "sort", "30", "", "", "", "", "", "display_dateformat");
-$HD_Form -> AddViewElement(gettext("REFILL TYPE"),"refill_type", "10%", "center", "sort", "", "list", $list_refill_type);
-$HD_Form -> AddViewElement(gettext("REFILL AMOUNT"), "credit", "15%", "center", "sort","", "", "", "", "", "", "display_money");
+$HD_Form -> AddViewElement(gettext("REFILL DATE"), "date", true, "30", "display_dateformat");
+$HD_Form -> AddViewElement(gettext("REFILL TYPE"), "refill_type", true, "", null, "list", $list_refill_type);
+$HD_Form -> AddViewElement(gettext("REFILL AMOUNT"), "credit", true, "", "display_money");
 
 $HD_Form -> FieldViewElement ('cc_logrefill_agent.id, agent_id, date, cc_logrefill_agent.refill_type as refill_type, cc_logrefill_agent.credit');
 

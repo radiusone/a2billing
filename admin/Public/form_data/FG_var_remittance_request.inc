@@ -71,12 +71,12 @@ $status_list = getRemittanceStatus_List();
 $status_revert_list = array_map("array_reverse", $status_list);
 $type_list = getRemittanceType_List();
 $type_revert_list = array_map("array_reverse", $type_list);
-$HD_Form -> AddViewElement(gettext("ID"), "cc_agent_commission.id", "10%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("AGENT"), "id_agent", "15%", "center", "sort", "", "30", "", "", "", "", "display_linktoagent");
-$HD_Form -> AddViewElement(gettext("DATE"), "date", "15%", "center", "sort", "30", "", "", "", "", "", "display_dateformat");
-$HD_Form -> AddViewElement(gettext("AMOUNT"), "amount", "15%", "center", "sort","", "", "", "", "", "", "display_money");
-$HD_Form -> AddViewElement(gettext("TYPE"),"type", "10%", "center", "sort", "", "list", $type_list);
-$HD_Form -> AddViewElement(gettext("STATUS"),"status", "10%", "center", "sort", "", "list", $status_list);
+$HD_Form -> AddViewElement(gettext("ID"), "cc_agent_commission.id");
+$HD_Form -> AddViewElement(gettext("AGENT"), "id_agent", true, "30", "display_linktoagent");
+$HD_Form -> AddViewElement(gettext("DATE"), "date", true, "30", "display_dateformat");
+$HD_Form -> AddViewElement(gettext("AMOUNT"), "amount", true, "", "display_money");
+$HD_Form -> AddViewElement(gettext("TYPE"), "type", true, "", null, "list", $type_list);
+$HD_Form -> AddViewElement(gettext("STATUS"), "status", true, "", null, "list", $status_list);
 
 $HD_Form -> FieldViewElement ('cc_remittance_request.id, id_agent, date, amount,type, status ');
 

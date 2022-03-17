@@ -55,9 +55,9 @@ for ($k=0;$k<=9;$k++)
 	$speeddial_list["$k"]  = array( "$k", "$k");
 
 
-$HD_Form -> AddViewElement(gettext("SPEEDDIAL"), "speeddial", "20%", "center", "sort", "26");
-$HD_Form -> AddViewElement(gettext("PHONE"), "phone", "20%", "center", "sort", "26");
-$HD_Form -> AddViewElement(gettext("NAME"), "name", "20%", "center", "sort", "26");
+$HD_Form -> AddViewElement(gettext("SPEEDDIAL"), "speeddial");
+$HD_Form -> AddViewElement(gettext("PHONE"), "phone");
+$HD_Form -> AddViewElement(gettext("NAME"), "name");
 $HD_Form -> FieldViewElement ('speeddial, phone, name');
 
 

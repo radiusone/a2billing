@@ -66,8 +66,8 @@ $HD_Form -> FG_TABLE_DEFAULT_ORDER = "id";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "ASC";
 
 
-$HD_Form -> AddViewElement(gettext("TITLE"), "group_title", "20%", "center");
-$HD_Form -> AddViewElement(gettext("DESCRIPTION"), "group_description", "60%", "left");
+$HD_Form -> AddViewElement(gettext("TITLE"), "group_title");
+$HD_Form -> AddViewElement(gettext("DESCRIPTION"), "group_description");
 
 
 $HD_Form -> FieldViewElement ('group_title, group_description');

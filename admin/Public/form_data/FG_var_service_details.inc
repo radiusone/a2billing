@@ -52,11 +52,11 @@ $HD_Form -> FG_TABLE_CLAUSE = " id='$id'";
 $HD_Form -> FG_LIMITE_DISPLAY = 1;
 
 
-$HD_Form -> AddViewElement(gettext("NAME"), "name", "50%", "center");
-$HD_Form -> AddViewElement(gettext("NUMBEROFRUN"),"numberofrun","50%", "center");
-$HD_Form -> AddViewElement(gettext("DATE"), "date", "50%", "center", "sort", "30", "", "", "", "", "", "display_dateformat");
-$HD_Form -> AddViewElement(gettext("TOTALCREDIT"), "totalcredit", "20%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("TOTALCARDPERFORM"), "totalcardperform", "20%", "center", "sort");
+$HD_Form -> AddViewElement(gettext("NAME"), "name");
+$HD_Form -> AddViewElement(gettext("NUMBEROFRUN"), "numberofrun");
+$HD_Form -> AddViewElement(gettext("DATE"), "date", true, "30", "display_dateformat");
+$HD_Form -> AddViewElement(gettext("TOTALCREDIT"), "totalcredit");
+$HD_Form -> AddViewElement(gettext("TOTALCARDPERFORM"), "totalcardperform");
 
 
 

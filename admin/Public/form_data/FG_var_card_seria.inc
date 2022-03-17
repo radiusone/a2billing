@@ -65,10 +65,10 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = 
 $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/page_white_add.png" ;
 
 
-$HD_Form -> AddViewElement(gettext("ID"), "id", "10%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("NAME"), "name", "25%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("DESCRIPTION"), "description", "40%", "center", "SORT", "40");
-$HD_Form -> AddViewElement(gettext("SEQUENCE NUMBER"), "value", "15%", "center", "SORT", "40");
+$HD_Form -> AddViewElement(gettext("ID"), "id");
+$HD_Form -> AddViewElement(gettext("NAME"), "name");
+$HD_Form -> AddViewElement(gettext("DESCRIPTION"), "description", true, "40");
+$HD_Form -> AddViewElement(gettext("SEQUENCE NUMBER"), "value", true, "40");
 $HD_Form -> FieldViewElement ( 'id, name, description, value');
 
 $HD_Form -> CV_NO_FIELDS  = gettext("NO SERIES CREATED!");

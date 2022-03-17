@@ -154,11 +154,11 @@ function openURLFilter(link) {
         <tr>
             <?php foreach ($this->FG_TABLE_COL as $row): ?>
             <th>
-                <?php if (strtoupper($row[4]) === "SORT"): ?>
-                <a class="sort <?php if ($this->FG_ORDER === $row[1]) echo strtolower($this->FG_SENS) ?>" href="<?= "?stitle=$stitle&atmenu=$processed[atmenu]&current_page=$current_page&letter=$letter&popup_select=$processed[popup_select]&order=$row[1]&sens=" . ($this->FG_SENS === "ASC" ? "DESC" : "ASC") . $this-> CV_FOLLOWPARAMETERS ?>">
+                <?php if ($row["sortable"]): ?>
+                <a class="sort <?= $this->FG_ORDER === $row["field"] ? strtolower($this->FG_SENS) : "" ?>" href="<?= "?stitle=$stitle&atmenu=$processed[atmenu]&current_page=$current_page&letter=$letter&popup_select=$processed[popup_select]&order=$row[field]&sens=" . ($this->FG_SENS === "ASC" ? "DESC" : "ASC") . $this-> CV_FOLLOWPARAMETERS ?>">
                 <?php endif ?>
-                    <?= $row[0] ?>
-                <?php if (strtoupper($row[4]) === "SORT"): ?>
+                    <?= $row["header"] ?>
+                <?php if ($row["sortable"]): ?>
                 </a>
                 <?php endif?>
             </th>
@@ -177,19 +177,19 @@ function openURLFilter(link) {
             <?php $k=0 ?>
             <?php foreach($this->FG_TABLE_COL as $j=>$row): ?>
             <?php
-            if (str_starts_with($row[6], "lie")) {
-                $options = (new Table($row[7], $row[8]))->get_list($this->DBHandle, str_replace("%id", $item[$j - $k], $row[9]), null, null, null, null, null, 10);
-                $field_list_sun = explode(",", $row[8]);
-                $record_display = $row[10];
-                if ($row[6] === "lie") {
+            if (str_starts_with($row["type"], "lie")) {
+                $options = (new Table($row["sql_table"], $row["sql_columns"]))->get_list($this->DBHandle, str_replace("%id", $item[$j - $k], $row["sql_clause"]), null, null, null, null, null, 10);
+                $field_list_sun = explode(",", $row["sql_columns"]);
+                $record_display = $row["sql_display"];
+                if ($row["type"] === "lie") {
                     if (is_array($options)) {
                         for ($l=1; $l <= count($field_list_sun); $l++) {
                             $record_display = str_replace("%$l", $options[0][$l - 1], $record_display);
                         }
                     }
-                } elseif($row[6] === "lie_link") {
+                } elseif($row["type"] === "lie_link") {
                     if (is_array($options)) {
-                        $link = $row[12] . (str_contains($row[12], 'form_action') ? "?" : "?form_action=ask-edit&") . "id=" . $options[0][1];
+                        $link = $row["href"] . (str_contains($row["href"], 'form_action') ? "?" : "?form_action=ask-edit&") . "id=" . $options[0][1];
                         for ($l = 1; $l <= count($field_list_sun); $l++) {
                             $val = str_replace("%$l", $options[0][$l - 1], $record_display);
                             $record_display = $popup_select ? $val : "<a class='text-decoration-underline' href='$link'>$val</a>";
@@ -198,8 +198,8 @@ function openURLFilter(link) {
                         $record_display = "";
                     }
                 }
-            } elseif ($row[6]=="eval") {
-                $string_to_eval = $row[7]; // %4-%3
+            } elseif ($row["type"] === "eval") {
+                $string_to_eval = $row["code"]; // %4-%3
                 for ($ll = 15; $ll >= 0; $ll--) {
                     if ($item[$ll] === '') {
                         $item[$ll] = 0;
@@ -208,34 +208,33 @@ function openURLFilter(link) {
                 }
                 // WTAF
                 $record_display = ("return $string_to_eval;");
-            } elseif ($row[6]=="list") {
-                $select_list = $row[7];
+            } elseif ($row["type"] === "list") {
+                $select_list = $row["options"];
                 $record_display = $select_list[$item[$j-$k]][0];
-            } elseif ($row[6]=="list-conf") {
-                $select_list = $row[7];
+            } elseif ($row["type"] === "list-conf") {
+                $select_list = $row["options"];
                 $key_config =  $item[$j-$k + 3];
                 $record_display = $select_list[$key_config][0];
 
-            } elseif ($row[6]=="value") {
-                $record_display = $row[7];
+            } elseif ($row["type"] === "value") {
+                $record_display = $row["value"];
                 $k++;
             } else {
                 $record_display = $item[$j-$k];
             }
 
             /**********************   IF LENGTH OF THE VALUE IS TOO LONG IT MIGHT BE CUT ************************/
-            if (is_numeric($row[5]) && (strlen($record_display) > $row[5])) {
-                $record_display = substr($record_display, 0, $row[5]);
+            if ($row["maxsize"] > 0 && strlen($record_display) > $row["maxsize"]) {
+                $record_display = substr($record_display, 0, $row["maxsize"]) . "…";
             }
             $origlist[$num][$j - $k] = $item[$j - $k];
             $item[$j - $k] = $record_display;
+            if (!empty($row["function"]) && function_exists($row["function"])) {
+                $record_display = call_user_func($row["function"], $record_display);
+            }
             ?>
             <td>
-                <?php if (isset ($row[11]) && strlen($row[11])>1): ?>
-                    <?= call_user_func($row[11], $record_display) ?>
-                <?php else: ?>
-                    <?= $record_display ?>
-                <?php endif ?>
+                <?= $record_display ?>
             </td>
             <?php endforeach ?>
             <?php if ($hasActionButtons): ?>

@@ -51,12 +51,12 @@ $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 $HD_Form -> FG_TABLE_CLAUSE = "( sipiax = 2 OR sipiax = 3) ";
 
 
-$HD_Form -> AddViewElement(gettext("DATE"), "starttime", "15%", "center", "nosort");
-$HD_Form -> AddViewElement(gettext("DID"), "cc_did.did", "15%", "center", "nosort");
-$HD_Form -> AddViewElement(gettext("NB_CALL"), "nb_call", "15%", "center", "nosort");
-$HD_Form -> AddViewElement(gettext("TOTAL_DURATION"), "t_time", "15%", "center", "nosort");
-$HD_Form -> AddViewElement(gettext("TOTAL_COST"), "t_cost", "15%", "center", "nosort");
-$HD_Form -> AddViewElement(gettext("CARDNUMBER"), "username", "15%", "center", "nosort");
+$HD_Form -> AddViewElement(gettext("DATE"), "starttime", false);
+$HD_Form -> AddViewElement(gettext("DID"), "cc_did.did", false);
+$HD_Form -> AddViewElement(gettext("NB_CALL"), "nb_call", false);
+$HD_Form -> AddViewElement(gettext("TOTAL_DURATION"), "t_time", false);
+$HD_Form -> AddViewElement(gettext("TOTAL_COST"), "t_cost", false);
+$HD_Form -> AddViewElement(gettext("CARDNUMBER"), "username", false);
 
 // added a parameter to append  FG_TABLE_ID  ( by default ) or disable 0.
 $HD_Form -> FieldViewElement ("DATE(starttime) as date, cc_did.did, count(*) as nb_call, sum(sessiontime) as t_time, sum(sessionbill) as t_cost, username ", 0 );

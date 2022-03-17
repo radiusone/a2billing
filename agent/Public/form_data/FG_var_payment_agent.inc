@@ -56,13 +56,13 @@ $HD_Form -> FG_DEBUG = 0;
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
 $list_refill_type=getRefillType_List();
-$HD_Form -> AddViewElement(gettext("ID"), "cc_logpayment_agent.id", "10%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("AGENT"), "creator", "10%", "center", "sort", "25", "lie", "cc_agent", "lastname, firstname", "id='%id'", "%1 %2");
-$HD_Form -> AddViewElement(gettext("LOGIN"), "login", "10%", "center", "sort", "25", "lie", "cc_agent", "login", "id='%id'", "%1");
-$HD_Form -> AddViewElement(gettext("PAYMENT DATE"), "date", "20%", "center", "sort", "30", "", "", "", "", "", "display_dateformat");
-$HD_Form -> AddViewElement(gettext("PAYMENT AMOUNT"), "payment", "10%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("DESCRIPTION"), "description", "23%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("PAYMENT TYPE"),"payment_type", "7%", "center", "sort", "", "list", $list_refill_type);
+$HD_Form -> AddViewElement(gettext("ID"), "cc_logpayment_agent.id");
+$HD_Form -> AddViewElement(gettext("AGENT"), "creator", true, "25", null, "lie", "cc_agent", "lastname, firstname", "id='%id'", "%1 %2");
+$HD_Form -> AddViewElement(gettext("LOGIN"), "login", true, "25", null, "lie", "cc_agent", "login", "id='%id'", "%1");
+$HD_Form -> AddViewElement(gettext("PAYMENT DATE"), "date", true, "30", "display_dateformat");
+$HD_Form -> AddViewElement(gettext("PAYMENT AMOUNT"), "payment");
+$HD_Form -> AddViewElement(gettext("DESCRIPTION"), "description");
+$HD_Form -> AddViewElement(gettext("PAYMENT TYPE"), "payment_type", true, "", null, "list", $list_refill_type);
 
 $HD_Form -> FieldViewElement ('cc_logpayment_agent.id, agent_id, agent_id, date, payment,description ,payment_type');
 

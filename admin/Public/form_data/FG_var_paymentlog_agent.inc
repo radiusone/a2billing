@@ -100,14 +100,14 @@ if($date_clause != "")
 $status_list = getPaymentStateList();
 
 
-$HD_Form -> AddViewElement(gettext("Id"), "ID", "10%", "center");
-$HD_Form -> AddViewElement(gettext("Created At"), "creationdate", "15%", "center");
-$HD_Form -> AddViewElement(gettext("Payment Method"), "paymentmethod", "15%", "center");
-$HD_Form -> AddViewElement(gettext("Status"), "status", "15%", "center", "sort", "", "list", $status_list);
-$HD_Form -> AddViewElement(gettext("Owner"), "cc_owner", "15%", "center");
-$HD_Form -> AddViewElement(gettext("Amount"), "amount", "10%", "center");
-$HD_Form -> AddViewElement(gettext("Agent ID"), "cardid", "10%", "center");
-$HD_Form -> AddViewElement(gettext("Agent LOGIN"), "cardid", "25%", "center", "sort", "", "30", "", "", "", "", "display_linktoagent");
+$HD_Form -> AddViewElement(gettext("Id"), "ID");
+$HD_Form -> AddViewElement(gettext("Created At"), "creationdate");
+$HD_Form -> AddViewElement(gettext("Payment Method"), "paymentmethod");
+$HD_Form -> AddViewElement(gettext("Status"), "status", true, "", null, "list", $status_list);
+$HD_Form -> AddViewElement(gettext("Owner"), "cc_owner");
+$HD_Form -> AddViewElement(gettext("Amount"), "amount");
+$HD_Form -> AddViewElement(gettext("Agent ID"), "cardid");
+$HD_Form -> AddViewElement(gettext("Agent LOGIN"), "cardid", true, "30", "display_linktoagent");
 
 // added a parameter to append  FG_TABLE_ID  ( by default ) or disable 0.
 $HD_Form -> FieldViewElement ('id, creationdate, paymentmethod, status, cc_owner, amount, agent_id, agent_id ');

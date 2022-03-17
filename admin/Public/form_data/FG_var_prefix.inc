@@ -56,8 +56,8 @@ $HD_Form -> FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 =
 $HD_Form -> FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/world_add.png" ;
 
 
-$HD_Form -> AddViewElement(gettext("Prefix"), "prefix", "10%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("Destination"), "destination", "40%", "center", "sort");
+$HD_Form -> AddViewElement(gettext("Prefix"), "prefix");
+$HD_Form -> AddViewElement(gettext("Destination"), "destination");
 
 
 $HD_Form -> FieldViewElement ('prefix, destination');

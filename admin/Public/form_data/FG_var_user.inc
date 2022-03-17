@@ -108,9 +108,9 @@ $right_list["25"] = array( gettext("EDIT/DELETE AGENT"), "16777216");
 $len_right_list = count($right_list);
 
 
-$HD_Form -> AddViewElement(gettext("USERID"), "UserID", "14%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("DATE"), "datecreation", "24%", "center", "sort", "19", "", "", "", "", "", "display_dateformat");
-$HD_Form -> AddViewElement(gettext("LOGIN"), "login", "24%", "center", "sort");
+$HD_Form -> AddViewElement(gettext("USERID"), "UserID");
+$HD_Form -> AddViewElement(gettext("DATE"), "datecreation", true, "19", "display_dateformat");
+$HD_Form -> AddViewElement(gettext("LOGIN"), "login");
 
 $HD_Form -> FieldViewElement ('userid, datecreation, login');
 

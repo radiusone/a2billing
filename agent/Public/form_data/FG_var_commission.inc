@@ -54,14 +54,14 @@ $HD_Form -> FG_DEBUG = 0;
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
 $com_list = getRefillType_List();
-$HD_Form -> AddViewElement(gettext("ID"), "cc_agent_commission.id", "5%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("ACCOUNT"), "id_card", "10%", "center", "sort", "", "30", "", "", "", "", "display_customer_id_link");
-$HD_Form -> AddViewElement(gettext("AGENT"), "id_agent", "10%", "center", "sort", "", "30", "", "", "", "", "display_linktoagent");
-$HD_Form -> AddViewElement(gettext("PAYMENT DATE"), "date", "15%", "center", "sort", "30", "", "", "", "", "", "display_dateformat");
-$HD_Form -> AddViewElement(gettext("AMOUNT"), "amount", "10%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("PAID STATUS"),"paid_status", "10%", "center", "sort", "", "list", $com_list);
-$HD_Form -> AddViewElement(gettext("DESCRIPTION"), "description", "20%", "center", "sort", 50);
-$HD_Form -> AddViewElement(gettext("LINK TO PAYMENT"), "id_payment", "10%", "center", "sort", "", "lie_link", "cc_logpayment", "payment, id", "id='%id'", "%1 ".BASE_CURRENCY." (id:%2)", "", "A2B_entity_payment.php");
+$HD_Form -> AddViewElement(gettext("ID"), "cc_agent_commission.id");
+$HD_Form -> AddViewElement(gettext("ACCOUNT"), "id_card", true, "", "display_customer_id_link");
+$HD_Form -> AddViewElement(gettext("AGENT"), "id_agent", true, "", "display_linktoagent");
+$HD_Form -> AddViewElement(gettext("PAYMENT DATE"), "date", true, "30", "display_dateformat");
+$HD_Form -> AddViewElement(gettext("AMOUNT"), "amount");
+$HD_Form -> AddViewElement(gettext("PAID STATUS"), "paid_status", true, "", null, "list", $com_list);
+$HD_Form -> AddViewElement(gettext("DESCRIPTION"), "description", true, 50);
+$HD_Form -> AddViewElement(gettext("LINK TO PAYMENT"), "id_payment", true, "", "", "lie_link", "cc_logpayment", "payment, id", "id='%id'", "%1 " . BASE_CURRENCY . " (id:%2)", "A2B_entity_payment.php");
 
 $HD_Form -> FieldViewElement ('cc_agent_commission.id, id_card, id_agent, date, amount, commission_type , description, id_payment');
 

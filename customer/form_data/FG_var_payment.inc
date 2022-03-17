@@ -49,10 +49,10 @@ $HD_Form -> FG_TABLE_CLAUSE="card_id=".$_SESSION["card_id"];
 $HD_Form -> FG_DEBUG = 0;
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
-$HD_Form -> AddViewElement(gettext("ID"), "cc_logpayment.id", "10%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("PAYMENT DATE"), "date", "20%", "center", "sort", "30", "", "", "", "", "", "display_dateformat");
-$HD_Form -> AddViewElement(gettext("PAYMENT AMOUNT"), "payment", "10%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("DESCRIPTION"), "description", "30%", "center", "sort");
+$HD_Form -> AddViewElement(gettext("ID"), "cc_logpayment.id");
+$HD_Form -> AddViewElement(gettext("PAYMENT DATE"), "date", true, "30", "display_dateformat");
+$HD_Form -> AddViewElement(gettext("PAYMENT AMOUNT"), "payment");
+$HD_Form -> AddViewElement(gettext("DESCRIPTION"), "description");
 
 $HD_Form -> FieldViewElement ('cc_logpayment.id, date, payment,description ');
 

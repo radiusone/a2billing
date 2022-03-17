@@ -65,13 +65,13 @@ $yesno = getYesNoList();
 
 
 
-$HD_Form -> AddViewElement(gettext("CARDHOLDER"), "id_cc_card", "17%", "center", "sort", "25", "lie", "cc_card", "lastname, firstname", "id='%id'", "%1 %2");
-$HD_Form -> AddViewElement(gettext("USERNAME"), "username", "15%", "center", "sort", "", "30", "", "", "", "", "display_customer_link");
-$HD_Form -> AddViewElement(gettext("ACCOUNTCODE"), "accountcode", "12%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("SECRET"), "secret", "12%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("CALLERID"), "callerid", "15%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("CONTEXT"), "context", "10%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("DEFAULTIP"), "defaultip", "10%", "center", "sort");
+$HD_Form -> AddViewElement(gettext("CARDHOLDER"), "id_cc_card", true, "25", "", "lie", "cc_card", "lastname, firstname", "id='%id'", "%1 %2");
+$HD_Form -> AddViewElement(gettext("USERNAME"), "username", true, "30", "display_customer_link");
+$HD_Form -> AddViewElement(gettext("ACCOUNTCODE"), "accountcode");
+$HD_Form -> AddViewElement(gettext("SECRET"), "secret");
+$HD_Form -> AddViewElement(gettext("CALLERID"), "callerid");
+$HD_Form -> AddViewElement(gettext("CONTEXT"), "context");
+$HD_Form -> AddViewElement(gettext("DEFAULTIP"), "defaultip");
 
 
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;

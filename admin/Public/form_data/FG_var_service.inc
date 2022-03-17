@@ -88,14 +88,14 @@ $usegroup_list = array();
 $usegroup_list["0"] = array(gettext("List of groups below"),"0");
 $usegroup_list["1"] = array(gettext("Any group"),"1");
 
-$HD_Form -> AddViewElement(gettext("NAME"), "name", "15%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("AMOUNT"), "amount", "7%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("PERIOD"), "period", "7%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("STATUS"), "status", "7%", "center", "sort", "", "list", $actived_list);
-$HD_Form -> AddViewElement(gettext("NBRUN"), "numberofrun", "6%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("DATELASTRUN"), "datelastrun", "12%", "center", "sort", "16");
-$HD_Form -> AddViewElement(gettext("CARDPERFORM"), "totalcardperform", "10%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("TOTALCREDIT"), "totalcredit", "10%", "center", "sort");
+$HD_Form -> AddViewElement(gettext("NAME"), "name");
+$HD_Form -> AddViewElement(gettext("AMOUNT"), "amount");
+$HD_Form -> AddViewElement(gettext("PERIOD"), "period");
+$HD_Form -> AddViewElement(gettext("STATUS"), "status", true, "", null, "list", $actived_list);
+$HD_Form -> AddViewElement(gettext("NBRUN"), "numberofrun");
+$HD_Form -> AddViewElement(gettext("DATELASTRUN"), "datelastrun", true, "16");
+$HD_Form -> AddViewElement(gettext("CARDPERFORM"), "totalcardperform");
+$HD_Form -> AddViewElement(gettext("TOTALCREDIT"), "totalcredit");
 
 
 // added a parameter to append  FG_TABLE_ID  ( by default ) or disable 0.

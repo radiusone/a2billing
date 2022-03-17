@@ -742,13 +742,23 @@ class FormHandler
      * @ 12. $function render
      */
 
-    public function AddViewElement($displayname, $fieldname, $colpercentage, $textalign = 'center', $sort = 'sort', $char_limit = null, $lie_type = null, $lie_with = null, $lie_fieldname = null, $lie_clause = null, $lie_display = null, $myfunc = null, $link_file = null)
+    public function AddViewElement(string $displayname, string $fieldname, bool $sort = true, $char_limit = 0, $myfunc = "", string $lie_type = "", $lie_with = "", string $lie_fieldname = "", string $lie_clause = "", string $lie_display = "", string $link_file = "")
     {
-        $cur = count($this->FG_TABLE_COL);
-
-        $this->FG_TABLE_COL[$cur] = [
-            $displayname, $fieldname, $colpercentage, $textalign, $sort, $char_limit, $lie_type, $lie_with,
-            $lie_fieldname, $lie_clause, $lie_display, $myfunc, $link_file,
+        $this->FG_TABLE_COL[] = [
+            "header" => $displayname,
+            "field" => $fieldname,
+            "sortable" => $sort,
+            "maxsize" => (int)$char_limit,
+            "type" => $lie_type,
+            "sql_table" => $lie_with, // when type = lie or type = lie_link
+            "code" => $lie_with, // when type = eval
+            "options" => $lie_with, // when type = list or type = list-conf
+            "value" => $lie_with, // when type = value
+            "sql_columns" => $lie_fieldname, // when type = lie or type = lie_link
+            "sql_clause" => $lie_clause, // when type = lie or type = lie_link
+            "sql_display" => $lie_display, // when type = lie or type = lie_link
+            "function" => $myfunc,
+            "href" => $link_file, // when type = lie_link
         ];
     }
 

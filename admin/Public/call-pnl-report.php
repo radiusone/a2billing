@@ -437,30 +437,30 @@ function linktonext_2($value) {
 
 if (!isset($group_id)) {
     if ($report_type==1) {
-      $HD_Form -> AddViewElement(gettext("Group"), "name", "*", "center", "SORT", "19","", "", "", "", "", "linktonext_1");
+      $HD_Form -> AddViewElement(gettext("Group"), "name", true, "19", "linktonext_1");
     } elseif ($report_type==2) {
-     $HD_Form -> AddViewElement(gettext("Callplan"),"name", "*", "center", "SORT", "19","", "", "", "", "", "linktonext_2");
+     $HD_Form -> AddViewElement(gettext("Callplan"), "name", true, "19", "linktonext_2");
     }
 } else {
- $HD_Form -> AddViewElement(gettext("Country"), "name", "*", "center", "SORT", "19","", "", "", "", "", "");
+ $HD_Form -> AddViewElement(gettext("Country"), "name");
 }
-$HD_Form -> AddViewElement(gettext("CallCount"), "call_count", "*", "center", "SORT", "30");
-$HD_Form -> AddViewElement(gettext("Minutes"), "time_minutes", "*", "center", "SORT", "30");
-$HD_Form -> AddViewElement(gettext("Toll Free Cost"), "tall_free_buy_cost", "*", "center", "SORT", "30","", "", "", "", "", "display_2dec");
-$HD_Form -> AddViewElement(gettext("Pay Phone Cost"), "pay_phone_buy_cost", "*", "center", "SORT",30,"", "", "", "", "", "display_2dec" );
-$HD_Form -> AddViewElement(gettext("Origination Cost"), "orig_only", "*", "center", "SORT", "30","", "", "", "", "", "display_2dec");
-$HD_Form -> AddViewElement(gettext("Credits"), "credits", "*", "center", "SORT", "30","", "", "", "", "", "display_2dec");
-$HD_Form -> AddViewElement(gettext("Total Cost"),"orig_total", "*", "center", "SORT", "30","", "", "", "", "", "display_2dec");
-$HD_Form -> AddViewElement(gettext("Toll Free Revenu"),"tall_free_sell_cost","*", "center", "SORT", "30","", "", "", "", "", "display_2dec");
-$HD_Form -> AddViewElement(gettext("Pay Phone Revenu"),"pay_phone_sell_cost","*", "center", "SORT", "30","", "", "", "", "", "display_2dec");
-$HD_Form -> AddViewElement(gettext("Termination Revenu"),"term_only","*", "center", "SORT", "30","", "", "", "", "", "display_2dec");
-$HD_Form -> AddViewElement(gettext("Extra Charges"),"charges","*", "center", "SORT", "30","", "", "", "", "", "display_2dec");
-$HD_Form -> AddViewElement(gettext("Total Revenue"),"term_total","*", "center", "SORT", "30","", "", "", "", "", "display_2dec");
-$HD_Form -> AddViewElement(gettext("First Use"),"first_use","*", "center", "SORT", "30");
-$HD_Form -> AddViewElement(gettext("Avg Discount"),"discount","*", "center", "SORT", "30","", "", "", "", "", "display_2dec_percentage");
-$HD_Form -> AddViewElement(gettext("Net Revenue"),"net_revenue","*", "center", "SORT", "30","", "", "", "", "", "display_2dec");
-$HD_Form -> AddViewElement(gettext("Margin"),"margin","*", "center", "SORT", "30","", "", "", "", "", "display_2dec_percentage");
-$HD_Form -> AddViewElement(gettext("Total Profit"),"profit","*", "center", "SORT", "30","", "", "", "", "", "display_2dec");
+$HD_Form -> AddViewElement(gettext("CallCount"), "call_count");
+$HD_Form -> AddViewElement(gettext("Minutes"), "time_minutes");
+$HD_Form -> AddViewElement(gettext("Toll Free Cost"), "tall_free_buy_cost", true, "30", "display_2dec");
+$HD_Form -> AddViewElement(gettext("Pay Phone Cost"), "pay_phone_buy_cost", true, 30, "display_2dec");
+$HD_Form -> AddViewElement(gettext("Origination Cost"), "orig_only", true, "30", "display_2dec");
+$HD_Form -> AddViewElement(gettext("Credits"), "credits", true, "30", "display_2dec");
+$HD_Form -> AddViewElement(gettext("Total Cost"), "orig_total", true, "30", "display_2dec");
+$HD_Form -> AddViewElement(gettext("Toll Free Revenu"), "tall_free_sell_cost", true, "30", "display_2dec");
+$HD_Form -> AddViewElement(gettext("Pay Phone Revenu"), "pay_phone_sell_cost", true, "30", "display_2dec");
+$HD_Form -> AddViewElement(gettext("Termination Revenu"), "term_only", true, "30", "display_2dec");
+$HD_Form -> AddViewElement(gettext("Extra Charges"), "charges", true, "30", "display_2dec");
+$HD_Form -> AddViewElement(gettext("Total Revenue"), "term_total", true, "30", "display_2dec");
+$HD_Form -> AddViewElement(gettext("First Use"), "first_use");
+$HD_Form -> AddViewElement(gettext("Avg Discount"), "discount", true, "30", "display_2dec_percentage");
+$HD_Form -> AddViewElement(gettext("Net Revenue"), "net_revenue", true, "30", "display_2dec");
+$HD_Form -> AddViewElement(gettext("Margin"), "margin", true, "30", "display_2dec_percentage");
+$HD_Form -> AddViewElement(gettext("Total Profit"), "profit", true, "30", "display_2dec");
 
 $FG_COL_QUERY="name,call_count,time_minutes,tall_free_buy_cost,pay_phone_buy_cost,orig_only,credits,orig_total,
         tall_free_sell_cost,pay_phone_sell_cost,term_only,charges,term_total,   first_use,discount,

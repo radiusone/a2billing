@@ -67,13 +67,13 @@ $HD_Form -> SQL_GROUP = " GROUP BY dialprefix ";
 $musiconhold_list = getMusicOnHold_List($A2B);
 $yesno = getYesNoList();
 
-if ($popup_select) $HD_Form -> AddViewElement(gettext("ID"), "id", "5%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("DESTINATION"), "destination", "17%", "center", "sort", "20");
-$HD_Form -> AddViewElement("<acronym title=\"DIALING PREFIX\">".gettext("PREFIX")."</acronym>", "dialprefix", "10%", "center", "sort", "");
-$HD_Form -> AddViewElement("<acronym title=\"SELLING RATE\">".gettext("SR")."</acronym>", "rateinitial", "4%", "center", "sort");
-if (!$popup_select) $HD_Form -> AddViewElement(gettext("START-DATE"), "startdate", "13%", "center", "sort", "19", "", "", "", "", "", "display_dateformat");
-if (!$popup_select) $HD_Form -> AddViewElement(gettext("STOP-DATE"), "stopdate", "13%", "center", "sort", "19", "", "", "", "", "", "display_dateformat");
-if (!$popup_select) $HD_Form -> AddViewElement("<acronym title=\"CONNECT CHARGE\">".gettext("CC")."</acronym>", "connectcharge", "4%", "center", "sort");
+if ($popup_select) $HD_Form -> AddViewElement(gettext("ID"), "id");
+$HD_Form -> AddViewElement(gettext("DESTINATION"), "destination", true, "20");
+$HD_Form -> AddViewElement("<acronym title=\"DIALING PREFIX\">" . gettext("PREFIX") . "</acronym>", "dialprefix");
+$HD_Form -> AddViewElement("<acronym title=\"SELLING RATE\">" . gettext("SR") . "</acronym>", "rateinitial");
+if (!$popup_select) $HD_Form -> AddViewElement(gettext("START-DATE"), "startdate", true, "19", "display_dateformat");
+if (!$popup_select) $HD_Form -> AddViewElement(gettext("STOP-DATE"), "stopdate", true, "19", "display_dateformat");
+if (!$popup_select) $HD_Form -> AddViewElement("<acronym title=\"CONNECT CHARGE\">" . gettext("CC") . "</acronym>", "connectcharge");
 
 if (!$popup_select) {
 	$HD_Form -> FieldViewElement ('destination, dialprefix, MIN(rateinitial) as rateinitial, startdate, stopdate, connectcharge');

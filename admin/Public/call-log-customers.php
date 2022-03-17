@@ -159,29 +159,29 @@ $HD_Form->FG_COL_QUERY = 'cc_call.starttime, cc_call.src, cc_call.dnid, cc_call.
 
 $DBHandle = DbConnect ();
 
-$HD_Form->AddViewElement(_("Date"), "starttime", "10%", "center", "SORT", "19", "", "", "", "", "", "display_dateformat");
-$HD_Form->AddViewElement(_("CallerID"), "src", "7%", "center", "SORT", "30");
-$HD_Form->AddViewElement(_("DNID"), "dnid", "7%", "center", "SORT", "30");
-$HD_Form->AddViewElement(_("Phone Number"), "calledstation", "10%", "center", "SORT", "30", "", "", "", "", "", "");
-$HD_Form->AddViewElement(_("Destination"), "dest","10%", "center", "SORT", "15", "lie", "cc_prefix", "destination,prefix", "prefix='%id'", "%1");
-$HD_Form->AddViewElement(_("Buy Rate"), "buyrate", "6%", "center", "SORT", "30", "", "", "", "", "", "display_2bill");
-$HD_Form->AddViewElement(_("Sell Rate"), "rateinitial", "6%", "center", "SORT", "30", "", "", "", "", "", "display_2bill");
-$HD_Form->AddViewElement(_("Duration"), "sessiontime", "5%", "center", "SORT", "30", "", "", "", "", "", "display_minute");
-$HD_Form->AddViewElement(_("Account"), "card_id", "6%", "center", "sort", "", "lie_link", "cc_card", "username,id", "id='%id'", "%1", "", "A2B_entity_card.php");
-$HD_Form->AddViewElement(_("Trunk"), "trunkcode", "6%", "center", "SORT", "30");
-$HD_Form->AddViewElement(_("Disposition"), "terminatecauseid", "7%", "center", "SORT", "", "list", $dialstatus_list);
-$HD_Form->AddViewElement(_("CallType"), "sipiax", "6%", "center", "SORT", "", "list", $calltype_list);
-$HD_Form->AddViewElement(_("Buy"), "buycost", "7%", "center", "SORT", "30", "", "", "", "", "", "display_2bill");
-$HD_Form->AddViewElement(_("Sell"), "sessionbill", "7%", "center", "SORT", "30", "", "", "", "", "", "display_2bill");
-$HD_Form->AddViewElement(_("Margin"), "margin", "7%", "center", "SORT", "30", "", "", "", "", "", "display_2dec_percentage");
-$HD_Form->AddViewElement(_("Markup"), "markup", "7%", "center", "SORT", "30", "", "", "", "", "", "display_2dec_percentage");
+$HD_Form->AddViewElement(_("Date"), "starttime", true, "19", "display_dateformat");
+$HD_Form->AddViewElement(_("CallerID"), "src");
+$HD_Form->AddViewElement(_("DNID"), "dnid");
+$HD_Form->AddViewElement(_("Phone Number"), "calledstation");
+$HD_Form->AddViewElement(_("Destination"), "dest", true, "15", null, "lie", "cc_prefix", "destination,prefix", "prefix='%id'", "%1");
+$HD_Form->AddViewElement(_("Buy Rate"), "buyrate", true, "30", "display_2bill");
+$HD_Form->AddViewElement(_("Sell Rate"), "rateinitial", true, "30", "display_2bill");
+$HD_Form->AddViewElement(_("Duration"), "sessiontime", true, "30", "display_minute");
+$HD_Form->AddViewElement(_("Account"), "card_id", true, "", "", "lie_link", "cc_card", "username,id", "id='%id'", "%1", "A2B_entity_card.php");
+$HD_Form->AddViewElement(_("Trunk"), "trunkcode");
+$HD_Form->AddViewElement(_("Disposition"), "terminatecauseid", true, "", null, "list", $dialstatus_list);
+$HD_Form->AddViewElement(_("CallType"), "sipiax", true, "", null, "list", $calltype_list);
+$HD_Form->AddViewElement(_("Buy"), "buycost", true, "30", "display_2bill");
+$HD_Form->AddViewElement(_("Sell"), "sessionbill", true, "30", "display_2bill");
+$HD_Form->AddViewElement(_("Margin"), "margin", true, "30", "display_2dec_percentage");
+$HD_Form->AddViewElement(_("Markup"), "markup", true, "30", "display_2dec_percentage");
 
 $HD_Form->FG_DELETION = true;
 $HD_Form->FG_DELETION_LINK = "A2B_entity_call.php?form_action=ask-delete&id=";
 
 if (LINK_AUDIO_FILE) {
     // TODO: figure out how this works, move it into this file with custom button
-    $HD_Form->FG_TABLE_COL [] = ["", "uniqueid", "1%", "center", "", "30", "", "", "", "", "", "display_monitorfile_link"];
+    $HD_Form->AddViewElement("", "uniqueid", false, "30", "display_monitorfile_link", "", "", "", "", "");
     $HD_Form->FG_COL_QUERY .= ', cc_call.uniqueid';
 }
 

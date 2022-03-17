@@ -101,10 +101,10 @@ $typemail_list["subscription_paid"] = array( gettext("Subscription Paid"), Mail:
 $typemail_list["subscription_unpaid"]   = array( gettext("Subscription Unpaid"), Mail::$TYPE_SUBSCRIPTION_UNPAID);
 $typemail_list["subscription_disable_card"] = array( gettext("Subscription Disable Card"), Mail::$TYPE_SUBSCRIPTION_DISABLE_CARD);
 
-$HD_Form -> AddViewElement(gettext("ID MAIL"), "id", "10%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("MAILTYPE"), "mailtype", "14%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("FROMEMAIL"), "fromemail", "25%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("SUBJECT"), "subject", "30%", "center", "sort");
+$HD_Form -> AddViewElement(gettext("ID MAIL"), "id");
+$HD_Form -> AddViewElement(gettext("MAILTYPE"), "mailtype");
+$HD_Form -> AddViewElement(gettext("FROMEMAIL"), "fromemail");
+$HD_Form -> AddViewElement(gettext("SUBJECT"), "subject");
 
 
 $HD_Form -> FieldViewElement ('id, mailtype, fromemail, subject');

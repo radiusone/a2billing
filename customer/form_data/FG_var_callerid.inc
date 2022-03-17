@@ -52,8 +52,8 @@ $actived_list = getActivationTrueFalseList();
 $yesno = getYesNoList();
 
 
-$HD_Form -> AddViewElement(gettext("CALLERID"), "cid", "25%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("ACTIVATED"), "activated", "25%", "center", "sort", "26");
+$HD_Form -> AddViewElement(gettext("CALLERID"), "cid");
+$HD_Form -> AddViewElement(gettext("ACTIVATED"), "activated");
 
 
 $HD_Form -> FieldViewElement ('cid, activated');

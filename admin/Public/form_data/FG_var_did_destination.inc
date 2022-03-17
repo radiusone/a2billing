@@ -75,15 +75,15 @@ $validated_list["0"] = array( gettext("Pending"), "0");
 $validated_list["1"] = array( gettext("Validated"), "1");
 
 
-$HD_Form -> AddViewElement(gettext("DESTINATION"), "destination", "15%", "center", "sort");
-$HD_Form -> AddViewElement(gettext("CREATION DATE"), "creationdate", "15%", "center", "sort", "16", "", "", "", "", "", "display_dateformat");
-$HD_Form -> AddViewElement(gettext("DID"), "did", "12%", "center", "sort", "15");
-$HD_Form -> AddViewElement(gettext("ACCOUNT NUMBER"), "id_cc_card", "15%", "center", "sort", "", "lie_link", "cc_card", "username,id", "id='%id'", "%1", "", "A2B_entity_card.php");
-$HD_Form -> AddViewElement(gettext("ACTIVE"), "activated", "5%", "center", "sort", "", "list", $actived_list);
-$HD_Form -> AddViewElement(gettext("VOIP"), "voip_call", "5%", "center", "sort", "", "list", $actived_list);
-$HD_Form -> AddViewElement(gettext("PRIOR"), "priority", "5%", "center", "sort", "", "list", $priority_list);
-$HD_Form -> AddViewElement(gettext("MINUTES USED"), "secondusedreal", "10%", "center", "SORT", "30", "", "", "", "", "", "display_minute");
-$HD_Form -> AddViewElement(gettext("VALIDATED"), "validated", "10%", "center", "sort", "", "list", $validated_list);
+$HD_Form -> AddViewElement(gettext("DESTINATION"), "destination");
+$HD_Form -> AddViewElement(gettext("CREATION DATE"), "creationdate", true, "16", "display_dateformat");
+$HD_Form -> AddViewElement(gettext("DID"), "did", true, "15");
+$HD_Form -> AddViewElement(gettext("ACCOUNT NUMBER"), "id_cc_card", true, "", "", "lie_link", "cc_card", "username,id", "id='%id'", "%1", "A2B_entity_card.php");
+$HD_Form -> AddViewElement(gettext("ACTIVE"), "activated", true, "", null, "list", $actived_list);
+$HD_Form -> AddViewElement(gettext("VOIP"), "voip_call", true, "", null, "list", $actived_list);
+$HD_Form -> AddViewElement(gettext("PRIOR"), "priority", true, "", null, "list", $priority_list);
+$HD_Form -> AddViewElement(gettext("MINUTES USED"), "secondusedreal", true, "30", "display_minute");
+$HD_Form -> AddViewElement(gettext("VALIDATED"), "validated", true, "", null, "list", $validated_list);
 
 
 
