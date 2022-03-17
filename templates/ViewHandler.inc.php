@@ -170,7 +170,6 @@ $hasActionButtons = ($this->FG_DELETION || $this->FG_INFO || $this->FG_EDITION |
             <?php
             if (str_starts_with($row["type"], "lie")) {
                 $options = (new Table($row["sql_table"], $row["sql_columns"]))->get_list($this->DBHandle, str_replace("%id", $item[$j - $k], $row["sql_clause"]), null, null, null, null, null, 10);
-                $field_list_sun = explode(",", $row["sql_columns"]);
                 $record_display = $row["sql_display"];
                 $record_display = preg_replace_callback("/%([0-9]+)/", function ($m) use ($options) {
                     if (is_array($options) && isset($options[0][$m[1] - 1])) {
@@ -195,7 +194,7 @@ $hasActionButtons = ($this->FG_DELETION || $this->FG_INFO || $this->FG_EDITION |
                 $string_to_eval = preg_replace_callback("/%([0-9]+)/", function ($m) use ($item) {
                     return str_replace("%$m[1]", empty($item[$m[1]]) ? 0 : $item[$m[1]], $m[0]);
                 }, $row["code"]);
-                $record_display = ("return $string_to_eval;");
+                $record_display = eval("return $string_to_eval;");
             } elseif ($row["type"] === "list") {
                 $select_list = $row["options"];
                 $record_display = $select_list[$item[$j - $k]][0];
