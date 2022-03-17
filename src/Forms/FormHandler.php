@@ -742,7 +742,7 @@ class FormHandler
      * @ 12. $function render
      */
 
-    public function AddViewElement(string $displayname, string $fieldname, bool $sort = true, $char_limit = 0, $myfunc = "", string $lie_type = "", $lie_with = "", string $lie_fieldname = "", string $lie_clause = "", string $lie_display = "", string $link_file = "")
+    public function AddViewElement(string $displayname, string $fieldname, bool $sort = true, $char_limit = 0, $myfunc = "", ?string $lie_type = "", $lie_with = "", ?string $lie_fieldname = "", ?string $lie_clause = "", ?string $lie_display = "", ?string $link_file = "")
     {
         $this->FG_TABLE_COL[] = [
             "header" => $displayname,
