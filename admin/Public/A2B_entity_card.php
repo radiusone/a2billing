@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\A2Billing;
 use A2billing\Forms\FormHandler;
 use A2billing\Table;
 
@@ -38,6 +39,16 @@ use A2billing\Table;
 
 require_once "../../common/lib/admin.defines.php";
 require('./form_data/FG_var_card.inc');
+/**
+ * @var A2Billing $A2B
+ * @var SmartyBC $smarty
+ * @var FormHandler $HD_Form
+ * @var string $CC_help_list_customer
+ * @var string $CC_help_create_customer
+ * @var array $cardstatus_list
+ * @var array $language_list
+ * @var array $cardnumberlength_list
+ */
 
 if (!has_rights(ACX_CUSTOMER)) {
     header("HTTP/1.0 401 Unauthorized");
@@ -45,7 +56,6 @@ if (!has_rights(ACX_CUSTOMER)) {
     die();
 }
 
-/** @var FormHandler $HD_Form */
 $HD_Form->setDBHandler (DbConnect());
 $HD_Form->init();
 
@@ -89,9 +99,9 @@ getpost_ifset(['popup_select', 'popup_formname', 'popup_fieldname', 'upd_inuse',
  * @var string $upd_description
  * @var string $upd_id_seria
  * @var string $upd_vat
-
-'upd_country'
+ * @var string $upd_country
  */
+
 // CHECK IF REQUEST OF BATCH UPDATE
 if ($batchupdate == 1 && is_array($check)) {
     $SQL_REFILL="";
@@ -175,6 +185,7 @@ if ($batchupdate == 1 && is_array($check)) {
     }
 }
 
+$id = $id ?? 0;
 if (!empty($id)) {
     $HD_Form->FG_EDITION_CLAUSE = str_replace("%id", "$id", $HD_Form->FG_EDITION_CLAUSE);
 }
@@ -187,8 +198,8 @@ $smarty->display('main.tpl');
 
 <script>
 function sendValue(selvalue, othervalue) {
-    var formname = <?= json_encode($popup_formname ?? "") ?>;
-    var fieldname = <?= json_encode($popup_fieldname ?? "") ?>;
+    const formname = <?= json_encode($popup_formname ?? "") ?>;
+    const fieldname = <?= json_encode($popup_fieldname ?? "") ?>;
     $(`form[name='${formname}'] [name='${fieldname}']`, window.opener.document).val(selvalue);
     if (othervalue) {
         $(`form[name=${formname}] [name=accountcode]`, window.opener.document).val(othervalue);

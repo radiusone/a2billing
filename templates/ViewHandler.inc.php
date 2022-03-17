@@ -17,7 +17,7 @@ global $letter;
 global $current_page;
 global $popup_select;
 
-getpost_ifset(array('stitle', 'letter', 'current_page', 'popup_select'));
+getpost_ifset(['stitle', 'letter', 'current_page', 'popup_select']);
 /**
  * @var string $stitle
  * @var string $letter
@@ -61,15 +61,6 @@ $hasActionButtons = ($this->FG_DELETION || $this->FG_INFO || $this->FG_EDITION |
 </div>
 <?php return ?>
 <?php endif ?>
-
-<script>
-function openURLFilter(link) {
-    if(document.theFormFilter.choose_list.selectedIndex === 0){
-        return false;
-    }
-    this.location.href = link + document.theFormFilter.choose_list.options[selInd].value;
-}
-</script>
 
 <?php if ($this->CV_DO_ARCHIVE_ALL): ?>
 <div class="row pb-3">
@@ -311,7 +302,7 @@ function openURLFilter(link) {
                         );
                         $extra_html = "";
                         $id = $this->{"FG_OTHER_BUTTON{$b}_HTML_ID"};
-                        if (!empty($id)) {
+                        if (!empty($id) && !empty($origlist[$num])) {
                             for ($h = count($item); $h >= 0; $h--) {
                                 $id = str_replace("|col$h|", $origlist[$num][$h], $id);
                             }
@@ -356,7 +347,7 @@ function openURLFilter(link) {
 <div class="row pb-3 justify-content-start align-items-center">
     <?php if ($this->CV_DISPLAY_RECORD_LIMIT): ?>
     <div class="col-4">
-        <form name="otherForm2" action="">
+        <form id="displaylimit_form" action="">
             <label for="displaylimit" class="form-label d-inline"><?= gettext("Display");?></label>
             <input type="hidden" name="id" value="<?= $processed["id"] ?>"/>
             <input type="hidden" name="stitle" value="<?= $stitle ?>"/>
@@ -368,12 +359,11 @@ function openURLFilter(link) {
                 <?php endif ?>
             <?php endforeach ?>
             <select id="displaylimit" name="mydisplaylimit" size="1" class="form-select form-select-sm d-inline w-50">
-                <option value="10" <?php if($_SESSION["$this->FG_TABLE_NAME-displaylimit"] < 50) echo "selected" ?>>10</option>
-                <option value="50" <?php if($_SESSION["$this->FG_TABLE_NAME-displaylimit"] == 50 ) echo "selected" ?>>50</option>
-                <option value="100" <?php if($_SESSION["$this->FG_TABLE_NAME-displaylimit"] == 100 ) echo "selected" ?>>100</option>
-                <option value="ALL" <?php if($_SESSION["$this->FG_TABLE_NAME-displaylimit"] > 100 ) echo "selected" ?>>All</option>
+                <option value="10" <?= $_SESSION["$this->FG_TABLE_NAME-displaylimit"] < 50 ? 'selected="selected"' : "" ?>>10</option>
+                <option value="50" <?= $_SESSION["$this->FG_TABLE_NAME-displaylimit"] == 50 ? 'selected="selected"' : "" ?>>50</option>
+                <option value="100" <?= $_SESSION["$this->FG_TABLE_NAME-displaylimit"] == 100 ? 'selected="selected"' : "" ?>>100</option>
+                <option value="ALL" <?= $_SESSION["$this->FG_TABLE_NAME-displaylimit"] > 100 ? 'selected="selected"' : "" ?>>All</option>
             </select>
-            <button type="submit" class="btn btn-sm btn-primary"><?= gettext("Go") ?></button>
         </form>
     </div>
     <?php endif ?>
@@ -396,3 +386,9 @@ function openURLFilter(link) {
     </div>
     <?php endif ?>
 </div>
+
+<script>
+$(function() {
+    $("#displaylimit").on("change", () => $("#displaylimit_form").trigger("submit"));
+});
+</script>
