@@ -65,8 +65,8 @@ if (!isset($form_action) || $form_action=="list"){
 $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = " cc_ticket.id";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
-$HD_Form -> FG_TABLE_CLAUSE = " cc_ticket.creator_type=0 AND cc_card_group.id_agent=".$_SESSION['agent_id'];
-$HD_Form -> FG_TABLE_ID="cc_ticket.id";
+$HD_Form -> FG_QUERY_WHERE_CLAUSE = " cc_ticket.creator_type=0 AND cc_card_group.id_agent=".$_SESSION['agent_id'];
+$HD_Form -> FG_QUERY_PRIMARY_KEY="cc_ticket.id";
 
 $priority_list = getTicketPriorityList();
 $viewed_list = getTicketViewedList();
@@ -91,7 +91,6 @@ $HD_Form -> FieldViewElement ("cc_ticket.id, cc_ticket.creator, username, cc_tic
 $HD_Form -> FG_OTHER_BUTTON1_LINK = "A2B_ticket_view.php?id=";
 $HD_Form -> FG_OTHER_BUTTON1_IMG = Images_Path."/icon-viewdetails.gif";
 
-$HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO")." ".strtoupper($HD_Form->FG_INSTANCE_NAME)." ".gettext("CREATED!");
 
 $HD_Form -> FG_OTHER_BUTTON1 = true;
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;

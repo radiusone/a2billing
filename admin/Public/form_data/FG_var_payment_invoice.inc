@@ -46,7 +46,7 @@ getpost_ifset(array('card', 'invoice'));
 
 $HD_Form = new FormHandler("cc_logpayment", "Payment");
 
-$HD_Form -> FG_TABLE_ID = 'cc_logpayment.id';
+$HD_Form -> FG_QUERY_PRIMARY_KEY = 'cc_logpayment.id';
 
 $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
@@ -60,8 +60,6 @@ $HD_Form -> AddViewElement(gettext("DESCRIPTION"), "description");
 $HD_Form -> AddViewElement(gettext("PAYMENT TYPE"), "payment_type", true, "30", null, "list", $list_refill_type);
 
 $HD_Form -> FieldViewElement ('cc_logpayment.id, date, payment,description ,payment_type');
-
-$HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO ".strtoupper($HD_Form->FG_INSTANCE_NAME)." CREATED!");
 
 if (($popup_select>=1)) {
 

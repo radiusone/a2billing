@@ -46,7 +46,6 @@ $HD_Form = new FormHandler("cc_currencies", "Currencies");
 $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = " currency";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "ASC";
-$HD_Form -> FG_TABLE_ID = "id";
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_currencies.php?form_action=ask-add&section=".$_SESSION["menu_section"];
 $HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add Rate");
@@ -59,8 +58,6 @@ $HD_Form -> AddViewElement(gettext("VALUE"), "value");
 
 $HD_Form -> FieldViewElement ('currency,name,value');
 
-
-$HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO ".strtoupper($HD_Form->FG_INSTANCE_NAME)." CREATED!");
 $HD_Form -> FG_VIEW_TABLE_WITDH = '70%';
 
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
@@ -97,15 +94,15 @@ $HD_Form -> AddEditElement (gettext("VALUE"),
 
 
 // Set the filter variables
-$HD_Form -> FG_FILTER_APPLY = true;
-$HD_Form -> FG_FILTERFIELD = 'currency';
-$HD_Form -> FG_FILTERFIELDNAME = 'currency';
+$HD_Form -> FG_FILTER_ENABLE = true;
+$HD_Form -> FG_FILTER_COLUMN = 'currency';
+$HD_Form -> FG_FILTER_LABEL = 'currency';
 
 
 if (isset($filterprefix)  &&  (strlen($filterprefix)>0)) {
 	$filterprefix = strtoupper($filterprefix);
-	if (strlen($HD_Form -> FG_TABLE_CLAUSE)>0) $HD_Form -> FG_TABLE_CLAUSE.=" AND ";
-	$HD_Form -> FG_TABLE_CLAUSE.="currency like '$filterprefix%'";
+	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
+	$HD_Form -> FG_QUERY_WHERE_CLAUSE.="currency like '$filterprefix%'";
 }
 
 

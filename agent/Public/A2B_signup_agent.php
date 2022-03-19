@@ -47,13 +47,13 @@ $instance_table_tariffname = new Table("cc_tariffgroup LEFT JOIN cc_agent_tariff
 
 $FG_TABLE_CLAUSE = "id_agent = ".$_SESSION['agent_id'];
 
-$list_tariffname = $instance_table_tariffname  -> get_list ($DBHandle, $FG_TABLE_CLAUSE, "tariffgroupname");
+$list_tariffname = $instance_table_tariffname  -> get_list ($DBHandle, $FG_TABLE_CLAUSE, ["tariffgroupname"]);
 
 $instance_table_group = new Table("cc_card_group", "id, name");
 
 $FG_TABLE_CLAUSE = "id_agent = ".$_SESSION['agent_id'];
 
-$list_group = $instance_table_group -> get_list ($DBHandle, $FG_TABLE_CLAUSE, "id");
+$list_group = $instance_table_group -> get_list ($DBHandle, $FG_TABLE_CLAUSE, ["id"]);
 
 $disabled =false;
 

@@ -49,13 +49,13 @@ $HD_Form->no_debug();
 if ($posted){
 
 	if (isset($did) && strlen($did)>0) {
-		if (strlen($HD_Form -> FG_TABLE_CLAUSE)>0) $HD_Form -> FG_TABLE_CLAUSE.=" AND ";
-		$HD_Form -> FG_TABLE_CLAUSE.="id_did = '$did'";
+		if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
+		$HD_Form -> FG_QUERY_WHERE_CLAUSE.="id_did = '$did'";
 	}
 
 	if ($inuse) {
-		if (strlen($HD_Form -> FG_TABLE_CLAUSE)>0) $HD_Form -> FG_TABLE_CLAUSE.=" AND ";
-		$HD_Form -> FG_TABLE_CLAUSE.=" (releasedate IS NULL OR releasedate < '1984-01-01 00:00:00') and activated=1";
+		if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
+		$HD_Form -> FG_QUERY_WHERE_CLAUSE.=" (releasedate IS NULL OR releasedate < '1984-01-01 00:00:00') and activated=1";
 		$HD_Form -> FG_OTHER_BUTTON1 = true;
 		$HD_Form -> FG_OTHER_BUTTON1_LINK="A2B_entity_did_use.php?posted=$posted&order=$order&sens=$sens&current_page=$current_page&did=$did&inuse=$inuse&atmenu=document&stitle=Document&actionbtn=release_did&did=|col0|";
 		$HD_Form -> FG_OTHER_BUTTON1_IMG =Images_Path . "/icon-release.gif";
@@ -66,8 +66,8 @@ if ($posted){
 		$HD_Form -> FG_OTHER_BUTTON1 = false;
 	}
 } else {
-	if (strlen($HD_Form -> FG_TABLE_CLAUSE)>0) $HD_Form -> FG_TABLE_CLAUSE.=" AND ";
-	$HD_Form -> FG_TABLE_CLAUSE.=" (releasedate IS NULL OR releasedate < '1984-01-01 00:00:00') and activated=1";
+	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
+	$HD_Form -> FG_QUERY_WHERE_CLAUSE.=" (releasedate IS NULL OR releasedate < '1984-01-01 00:00:00') and activated=1";
 	$HD_Form -> FG_TABLE_DEFAULT_ORDER = "id_did";
 	$HD_Form -> FG_TABLE_DEFAULT_SENS = "ASC";
 	$HD_Form -> FG_OTHER_BUTTON1 = true;
@@ -77,7 +77,7 @@ if ($posted){
 }
 
 
-$HD_Form -> FG_TABLE_ID="cc_did_use.id";
+$HD_Form -> FG_QUERY_PRIMARY_KEY="cc_did_use.id";
 
 $actived_list = array();
 $actived_list["1"] = array( gettext("Reserved"), "1");
@@ -101,4 +101,4 @@ $HD_Form -> CV_FOLLOWPARAMETERS ="&posted=$posted&did=$did&inuse=$inuse";
 $HD_Form -> FG_ENABLE_ADD_BUTTON = false;
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = false;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = false;
-$HD_Form -> FG_FILTER_APPLY = false;
+$HD_Form -> FG_FILTER_ENABLE = false;

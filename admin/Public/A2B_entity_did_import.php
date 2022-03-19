@@ -52,10 +52,10 @@ $my_max_file_size = (int) MY_MAX_FILE_SIZE_IMPORT;
 
 $instance_table_tariffname = new Table("cc_didgroup", "id, didgroupname");
 $FG_TABLE_CLAUSE = "";
-$list_tariffname = $instance_table_tariffname  -> get_list ($DBHandle, $FG_TABLE_CLAUSE, "didgroupname");
+$list_tariffname = $instance_table_tariffname  -> get_list ($DBHandle, $FG_TABLE_CLAUSE, ["didgroupname"]);
 $nb_tariffname = count($list_tariffname);
 $instance_table_country = new Table("cc_country", "id, countryname");
-$list_countryname = $instance_table_country  -> get_list ($DBHandle, $FG_TABLE_CLAUSE, "countryname");
+$list_countryname = $instance_table_country  -> get_list ($DBHandle, $FG_TABLE_CLAUSE, ["countryname"]);
 $nb_countryname = count($list_countryname);
 
 $smarty->display('main.tpl');

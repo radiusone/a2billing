@@ -72,7 +72,6 @@ $HD_Form -> AddViewElement(gettext("DESCRIPTION"), "description", true, "40");
 $HD_Form -> AddViewElement(gettext("SEQUENCE NUMBER"), "value", true, "40");
 $HD_Form -> FieldViewElement ( 'id, name, description, value');
 
-$HD_Form -> CV_NO_FIELDS  = gettext("NO SERIES CREATED!");
 
 $HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;

@@ -300,7 +300,8 @@ if (is_null($order) || is_null($sens)) {
 }
 
 $instance_table = new Table($FG_TABLE_NAME, $FG_COL_QUERY);
-$list = $instance_table->get_list($DBHandle, $FG_TABLE_CLAUSE, $order, $sens, $FG_LIMITE_DISPLAY, $current_page * $FG_LIMITE_DISPLAY, $sql_group, $caching_query);
+$ord_arr = explode(",", $order ?? "");
+$list = $instance_table->get_list($DBHandle, $FG_TABLE_CLAUSE, $ord_arr, $sens, $FG_LIMITE_DISPLAY, $current_page * $FG_LIMITE_DISPLAY, [$sql_group], $caching_query);
 
 if ($FILTER_COUNTRY) {
     $QUERY = 'SELECT DISTINCT destination FROM cc_prefix ORDER BY destination LIMIT 0, 1000';

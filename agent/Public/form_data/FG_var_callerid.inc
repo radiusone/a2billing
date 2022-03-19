@@ -46,8 +46,8 @@ getpost_ifset(array('IDCust', 'id', 'cid', 'activated'));
 
 if (!isset($form_action) || $form_action=="list") {
 	$HD_Form = new FormHandler("cc_callerid LEFT JOIN cc_card ON cc_card.id=cc_callerid.id_cc_card LEFT JOIN cc_card_group ON cc_card.id_group=cc_card_group.id", "CallerID");
-	$HD_Form -> FG_TABLE_CLAUSE = " cc_card_group.id_agent=".$_SESSION['agent_id'] ;
-	$HD_Form -> FG_TABLE_ID = 'cc_callerid.id';
+	$HD_Form -> FG_QUERY_WHERE_CLAUSE = " cc_card_group.id_agent=".$_SESSION['agent_id'] ;
+	$HD_Form -> FG_QUERY_PRIMARY_KEY = 'cc_callerid.id';
 } else {
 	$HD_Form = new FormHandler("cc_callerid", "CallerID");
 }
@@ -69,8 +69,7 @@ $HD_Form -> AddViewElement(gettext("ACTIVATED"), "activated", true, "", null, "l
 
 $HD_Form -> FieldViewElement ('cid, id_cc_card, id_cc_card, cc_callerid.activated, cc_callerid.id');
 
-$HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO ").strtoupper($HD_Form->FG_INSTANCE_NAME).gettext(" CREATED!");
-$HD_Form -> FG_LIMITE_DISPLAY = 10;
+$HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 10;
 
 $HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
@@ -112,13 +111,13 @@ $HD_Form -> FieldEditElement ('cid, activated, id_cc_card');
 
 
 // Set the filter variables
-$HD_Form -> FG_FILTER_APPLY = true;
-$HD_Form -> FG_FILTERFIELD = 'callerid';
-$HD_Form -> FG_FILTERFIELDNAME = gettext('CALLERID');
+$HD_Form -> FG_FILTER_ENABLE = true;
+$HD_Form -> FG_FILTER_COLUMN = 'callerid';
+$HD_Form -> FG_FILTER_LABEL = gettext('CALLERID');
 
 if (isset($filterprefix)  &&  (strlen($filterprefix)>0)){
-	if (strlen($HD_Form -> FG_TABLE_CLAUSE)>0) $HD_Form -> FG_TABLE_CLAUSE.=" AND ";
-	$HD_Form -> FG_TABLE_CLAUSE.="cid like '$filterprefix%'";
+	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
+	$HD_Form -> FG_QUERY_WHERE_CLAUSE.="cid like '$filterprefix%'";
 }
 
 

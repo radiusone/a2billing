@@ -56,7 +56,7 @@ $HD_Form -> AddViewElement(gettext(CURRENCY), "currency");
 
 $HD_Form -> FieldViewElement ('voucher, credit, currency');
 
-$HD_Form -> FG_TABLE_CLAUSE = "usedcardnumber='".$_SESSION["pr_login"]."'";
+$HD_Form -> FG_QUERY_WHERE_CLAUSE = "usedcardnumber='".$_SESSION["pr_login"]."'";
 
 $HD_Form -> CV_NO_FIELDS  = gettext("No vouchers have been used!");
 $HD_Form -> FG_EXPORT_CSV = false;
@@ -66,11 +66,10 @@ $HD_Form -> FG_ENABLE_DELETE_BUTTON = false;
 $HD_Form -> FG_ENABLE_ADD_BUTTON = false;
 
 // Set the filter variables
-$HD_Form -> FG_FILTER_APPLY = false;
-$HD_Form -> FG_FILTERFIELD = 'voucher';
-$HD_Form -> FG_FILTERFIELDNAME = 'voucher';
+$HD_Form -> FG_FILTER_COLUMN = 'voucher';
+$HD_Form -> FG_FILTER_LABEL = 'voucher';
 
 if (isset($filterprefix)  &&  (strlen($filterprefix)>0)){
-	if (strlen($HD_Form -> FG_TABLE_CLAUSE)>0) $HD_Form -> FG_TABLE_CLAUSE.=" AND ";
-	$HD_Form -> FG_TABLE_CLAUSE.="voucher like '$filterprefix%'";
+	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
+	$HD_Form -> FG_QUERY_WHERE_CLAUSE.="voucher like '$filterprefix%'";
 }

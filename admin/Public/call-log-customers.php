@@ -156,7 +156,7 @@ $calltype_list = [
 ];
 
 $HD_Form->no_debug();
-$HD_Form->FG_TABLE_NAME = "cc_call LEFT OUTER JOIN cc_trunk ON cc_call.id_trunk = cc_trunk.id_trunk LEFT OUTER JOIN cc_ratecard ON cc_call.id_ratecard = cc_ratecard.id LEFT OUTER JOIN cc_card ON cc_call.card_id = cc_card.id";
+$HD_Form->FG_QUERY_TABLE_NAME = "cc_call LEFT OUTER JOIN cc_trunk ON cc_call.id_trunk = cc_trunk.id_trunk LEFT OUTER JOIN cc_ratecard ON cc_call.id_ratecard = cc_ratecard.id LEFT OUTER JOIN cc_card ON cc_call.card_id = cc_card.id";
 $HD_Form->FG_QUERY_COLUMN_LIST = 'cc_call.starttime, cc_call.src, cc_call.dnid, cc_call.calledstation, cc_call.destination AS dest, cc_ratecard.buyrate, cc_ratecard.rateinitial, cc_call.sessiontime, cc_call.card_id, cc_trunk.trunkcode, cc_call.terminatecauseid, cc_call.sipiax, cc_call.buycost, cc_call.sessionbill, CASE WHEN cc_call.sessionbill != 0 THEN ((cc_call.sessionbill - cc_call.buycost) / cc_call.sessionbill) * 100 ELSE NULL END AS margin, CASE WHEN cc_call.buycost != 0 THEN ((cc_call.sessionbill - cc_call.buycost) / cc_call.buycost) * 100 ELSE NULL END AS markup, cc_call.id, cc_trunk.id_provider, cc_trunk.id_trunk AS trunk_id';
 
 $DBHandle = DbConnect ();
@@ -179,7 +179,7 @@ $HD_Form->AddViewElement(_("Margin"), "margin", true, "30", "display_2dec_percen
 $HD_Form->AddViewElement(_("Markup"), "markup", true, "30", "display_2dec_percentage");
 
 $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
-$HD_Form->FG_DELETION_LINK = "A2B_entity_call.php?form_action=ask-delete&id=";
+$HD_Form->FG_DELETE_BUTTON_LINK = "A2B_entity_call.php?form_action=ask-delete&id=";
 
 if (LINK_AUDIO_FILE) {
     // TODO: figure out how this works, move it into this file with custom button
@@ -187,7 +187,7 @@ if (LINK_AUDIO_FILE) {
     $HD_Form->FG_QUERY_COLUMN_LIST .= ', cc_call.uniqueid';
 }
 
-$HD_Form->FG_LIMITE_DISPLAY = 25;
+$HD_Form->FG_LIST_VIEW_PAGE_SIZE = 25;
 
 $HD_Form->CV_TITLE_TEXT = _("Call Logs");
 
@@ -198,19 +198,10 @@ $sens = $HD_Form->FG_TABLE_DEFAULT_SENS = $sens ?? "DESC";
 $HD_Form->FG_EXPORT_CSV = true;
 $HD_Form->FG_EXPORT_XML = true;
 $HD_Form->FG_EXPORT_SESSION_VAR = "pr_export_entity_call";
-$_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] = "SELECT $HD_Form->FG_QUERY_COLUMN_LIST FROM $HD_Form->FG_TABLE_NAME WHERE $HD_Form->FG_TABLE_CLAUSE ORDER BY $HD_Form->FG_ORDER $HD_Form->FG_SENS";
-
-$nb_record = $HD_Form->FG_NB_RECORD;
+$ord = implode(",", $HD_Form->FG_QUERY_ORDERBY_COLUMNS);
+$_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] = "SELECT $HD_Form->FG_QUERY_COLUMN_LIST FROM $HD_Form->FG_QUERY_TABLE_NAME WHERE $HD_Form->FG_QUERY_WHERE_CLAUSE ORDER BY $ord $HD_Form->FG_QUERY_DIRECTION";
 
 /************************/
-
-if ($nb_record <= $HD_Form->FG_LIMITE_DISPLAY) {
-    $nb_record_max = 1;
-} elseif ($nb_record % $HD_Form->FG_LIMITE_DISPLAY === 0) {
-    $nb_record_max = (intval ( $nb_record / $HD_Form->FG_LIMITE_DISPLAY ));
-} else {
-    $nb_record_max = (intval ( $nb_record / $HD_Form->FG_LIMITE_DISPLAY ) + 1);
-}
 
 $HD_Form->FG_FILTER_SEARCH_FORM = true;
 $HD_Form->FG_FILTER_SEARCH_SESSION_NAME = 'call_log_selection';
@@ -219,51 +210,21 @@ $HD_Form->FG_FILTER_SEARCH_1_TIME = true;
 $HD_Form->FG_FILTER_SEARCH_1_TIME_TEXT = _('DATE');
 $HD_Form->FG_FILTER_SEARCH_1_TIME_FIELD = "cc_call.starttime";
 
-$HD_Form->FG_FILTER_SEARCH_FORM_POPUP[] = [
-    "name" => "card_id",
-    "label" => _("Enter the customer ID"),
-    "href" => "A2B_entity_card.php",
-];
-$HD_Form->FG_FILTER_SEARCH_FORM_POPUP[] = [
-    "name" => "username",
-    "label" => _("Enter the customer number"),
-    "href" => "A2B_entity_card.php",
-    "select" => 2,
-];
-$HD_Form->FG_FILTER_SEARCH_FORM_POPUP[] = [
-    "name" => "id_tariffgroup",
-    "label" => _("Call Plan"),
-    "href" => "A2B_entity_tariffgroup.php",
-    "select" => 2,
-];
-$HD_Form->FG_FILTER_SEARCH_FORM_POPUP[] = [
-    "name" => "id_provider",
-    "label" => _("Provider"),
-    "href" => "A2B_entity_provider.php",
-    "select" => 2,
-];
-$HD_Form->FG_FILTER_SEARCH_FORM_POPUP[] = [
-    "name" => "cc_call.id_trunk",
-    "label" => _("Trunk"),
-    "href" => "A2B_entity_trunk.php",
-    "select" => 2,
-];
-$HD_Form->FG_FILTER_SEARCH_FORM_POPUP[] = [
-    "name" => "id_ratecard",
-    "label" => _("Rate"),
-    "href" => "A2B_entity_def_ratecard.php",
-    "select" => 2,
-];
-if ($_SESSION ["pr_groupID"] == 2 && is_numeric($_SESSION ["pr_IDCust"])) {
-    $HD_Form->FG_FILTER_SEARCH_FORM_POPUP = [];
+if ($_SESSION ["pr_groupID"] != 2 || !is_numeric($_SESSION ["pr_IDCust"])) {
+    $HD_Form->AddSearchPopupInput("card_id", _("Enter the customer ID"), "A2B_entity_card.php");
+    $HD_Form->AddSearchPopupInput("username", _("Enter the customer number"), "A2B_entity_card.php", 2);
+    $HD_Form->AddSearchPopupInput("id_tariffgroup", _("Call Plan"), "A2B_entity_tariffgroup.php", 2);
+    $HD_Form->AddSearchPopupInput("id_provider", _("Provider"), "A2B_entity_provider.php", 2);
+    $HD_Form->AddSearchPopupInput("cc_call.id_trunk", _("Trunk"), "A2B_entity_trunk.php", 2);
+    $HD_Form->AddSearchPopupInput("id_ratecard", _("Rate"), "A2B_entity_def_ratecard.php", 2);
 }
 
-$HD_Form->AddSearchElement_C1(_("Phone number"), "destination", "dsttype");
-$HD_Form->AddSearchElement_C1(_("Caller ID"), "src", "srctype");
-$HD_Form->AddSearchElement_C1(_("DNID"), "dnid", "dnidtype");
+$HD_Form->AddSearchTextInput(_("Phone number"), "destination", "dsttype");
+$HD_Form->AddSearchTextInput(_("Caller ID"), "src", "srctype");
+$HD_Form->AddSearchTextInput(_("DNID"), "dnid", "dnidtype");
 
-$HD_Form->FG_FILTER_SEARCH_FORM_SELECT[] = [_("Disposition"), false, "terminatecauseid", $dialstatus_list_r];
-$HD_Form->FG_FILTER_SEARCH_FORM_SELECT[] = [_("Call type"), false, "sipiax", $calltype_list];
+$HD_Form->AddSearchSelectInput(_("Disposition"), "terminatecauseid", $dialstatus_list_r);
+$HD_Form->AddSearchSelectInput(_("Call type"), "sipiax", $calltype_list);
 /** TODO: find some way to intercept display of records to apply these options
 $HD_Form->FG_FILTER_SEARCH_FORM_SELECT[] = [_("Currency"), false, "choose_currency", $currencies_list];
 $HD_Form->FG_FILTER_SEARCH_FORM_SELECT[] = [_("Time unit"), false, "choose_timeunit", [["min", _("Minutes")], ["sec", _("Seconds")]]];
@@ -329,7 +290,7 @@ $list_total_day = [];
 if (!$nodisplay) {
     $QUERY = "SELECT DATE(cc_call.starttime) AS day, SUM(cc_call.sessiontime) AS calltime, SUM(cc_call.sessionbill) AS cost, COUNT(*) as nbcall,
             SUM(cc_call.buycost) AS buy, SUM(CASE WHEN cc_call.sessiontime > 0 THEN 1 ELSE 0 END) AS success_calls
-            FROM $HD_Form->FG_TABLE_NAME WHERE $HD_Form->FG_TABLE_CLAUSE GROUP BY day ORDER BY day";
+            FROM $HD_Form->FG_QUERY_TABLE_NAME WHERE $HD_Form->FG_QUERY_WHERE_CLAUSE GROUP BY day ORDER BY day";
 
     $res = $HD_Form->DBHandle->Execute ( $QUERY );
     if ($res) {

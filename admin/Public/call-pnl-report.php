@@ -415,7 +415,7 @@ function linktonext_1($value) {
     $handle = DbConnect();
         $inst_table = new Table("cc_card_group", "id");
         $FG_TABLE_CLAUSE = "name = '$value'";
-        $list_group = $inst_table -> get_list ($handle, $FG_TABLE_CLAUSE, "", "", "", "", "", 10);
+        $list_group = $inst_table -> get_list ($handle, $FG_TABLE_CLAUSE, [], "", 0, "", [], 10);
         $id = $list_group[0][0];
     if ($id > 0) {
         echo "<a href=\"call-pnl-report.php?group_id=$id&report_type=1\">$value</a>";
@@ -428,7 +428,7 @@ function linktonext_2($value) {
         $handle = DbConnect();
         $inst_table = new Table("cc_tariffgroup", "id");
         $FG_TABLE_CLAUSE = "tariffgroupname = '$value'";
-        $list_group = $inst_table -> get_list ($handle, $FG_TABLE_CLAUSE, "", "", "", "", "", 10);
+        $list_group = $inst_table -> get_list ($handle, $FG_TABLE_CLAUSE, [], "", 0, "", [], 10);
         $id = $list_group[0][0];
     if ($id > 0) {
         echo "<a href=\"call-pnl-report.php?group_id=$id&report_type=2\">$value</a>";
@@ -486,7 +486,7 @@ $HD_Form -> FieldViewElement($FG_COL_QUERY);
 $HD_Form -> CV_NO_FIELDS  = gettext("NO INFO!");
 
 // Code here for adding the fields in the Export File
-$HD_Form -> FieldExportElement($FG_COL_QUERY);
+$HD_Form -> FieldExportElement(explode(",", $FG_COL_QUERY));
 if (!($popup_select>=1)) $HD_Form -> FG_EXPORT_CSV = true;
 if (!($popup_select>=1)) $HD_Form -> FG_EXPORT_XML = true;
 $HD_Form -> FG_EXPORT_SESSION_VAR = "pr_export_pnl_report";
@@ -551,9 +551,11 @@ if ($res) {
 // Code for the Export Functionality
 //* Query Preparation.
 $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR]= $QUERY;
-if (strlen($HD_Form->FG_TABLE_CLAUSE)>1)
-        $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] .= " WHERE $HD_Form->FG_TABLE_CLAUSE ";
-if (!is_null ($HD_Form->FG_ORDER) && ($HD_Form->FG_ORDER!='') && !is_null ($HD_Form->FG_SENS) && ($HD_Form->FG_SENS!=''))
-        $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR].= " ORDER BY $HD_Form->FG_ORDER $HD_Form->FG_SENS";
+if (strlen($HD_Form->FG_QUERY_WHERE_CLAUSE)>1)
+        $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] .= " WHERE $HD_Form->FG_QUERY_WHERE_CLAUSE ";
+if (!empty($HD_Form->FG_QUERY_ORDERBY_COLUMNS) && !empty($HD_Form->FG_QUERY_DIRECTION)) {
+    $ord = implode(",", $HD_Form->FG_QUERY_ORDERBY_COLUMNS);
+    $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] .= " ORDER BY $ord $HD_Form->FG_QUERY_DIRECTION";
+}
 
 $smarty->display('footer.tpl');

@@ -166,7 +166,7 @@ function create_date_options($target)
     </div>
 <?php endforeach ?>
 
-<?php foreach ($this->FG_FILTER_SEARCH_FORM_1C as $item): ?>
+<?php foreach ($this->FG_FILTER_SEARCH_FORM_TEXT_INPUTS as $item): ?>
     <div class="row pb-1">
         <label class="col-4 col-form-label col-form-label-sm" for="<?= $item[1] ?>">
             <?= $item[0] ?>
@@ -185,7 +185,7 @@ function create_date_options($target)
     </div>
 <?php endforeach ?>
 
-<?php foreach ($this->FG_FILTER_SEARCH_FORM_2C as $item): ?>
+<?php foreach ($this->FG_FILTER_SEARCH_FORM_COMPARE_INPUTS as $item): ?>
     <div class="row pb-1">
         <label class="col-4 col-form-label col-form-label-sm" for="<?= $item[1] ?>">
             <?= $item[0] ?>
@@ -247,7 +247,7 @@ function create_date_options($target)
         <div class="col text-end">
             <?php if (strlen($_SESSION[$this->FG_FILTER_SEARCH_SESSION_NAME] ?? "") > 10): ?>
                 <?php if ($this->FG_FILTER_SEARCH_DELETE_ALL): ?>
-                    <a class="btn btn-danger" href="?deleteselected=true" onclick="return confirm('<?= "Are you sure to delete " . $this->FG_NB_RECORD . " selected records?" ?>')"><?= _("Delete") ?></a>
+                    <a class="btn btn-danger" href="?deleteselected=true" onclick="return confirm('<?= "Are you sure to delete " . $this->FG_LIST_VIEW_ROW_COUNT . " selected records?" ?>')"><?= _("Delete") ?></a>
                 <?php endif ?>
             <a class="btn btn-secondary" href="?cancelsearch=true"><?= _("Cancel") ?></a>
             <?php endif ?>

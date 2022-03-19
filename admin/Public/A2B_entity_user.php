@@ -45,8 +45,8 @@ if (! has_rights (ACX_ADMINISTRATOR)) {
 $HD_Form -> setDBHandler (DbConnect());
 $HD_Form -> init();
 
-$HD_Form -> FG_EDITION_LINK= $_SERVER[PHP_SELF]."?form_action=ask-edit&groupID=$groupID&id=";
-$HD_Form -> FG_DELETION_LINK= $_SERVER[PHP_SELF]."?form_action=ask-delete&groupID=$groupID&id=";
+$HD_Form -> FG_EDIT_BUTTON_LINK= $_SERVER[PHP_SELF]."?form_action=ask-edit&groupID=$groupID&id=";
+$HD_Form -> FG_DELETE_BUTTON_LINK= $_SERVER[PHP_SELF]."?form_action=ask-delete&groupID=$groupID&id=";
 
 if ($id!="" || !is_null($id)) {
     $HD_Form -> FG_EDITION_CLAUSE = str_replace("%id", "$id", $HD_Form -> FG_EDITION_CLAUSE);

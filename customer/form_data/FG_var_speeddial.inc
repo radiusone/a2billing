@@ -61,15 +61,13 @@ $HD_Form -> AddViewElement(gettext("PHONE"), "phone");
 $HD_Form -> AddViewElement(gettext("NAME"), "name");
 $HD_Form -> FieldViewElement ('speeddial, phone, name');
 
-
-$HD_Form -> CV_NO_FIELDS  = gettext("There are no speed dials created.");
 $HD_Form -> FG_VIEW_TABLE_WITDH = '70%';
 
 // My Code for Where Cluase
 
-if (strlen($HD_Form -> FG_TABLE_CLAUSE)>0)
-    $HD_Form -> FG_TABLE_CLAUSE.=" AND ";
-	$HD_Form -> FG_TABLE_CLAUSE.="id_cc_card =".$_SESSION["card_id"];
+if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0)
+    $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
+	$HD_Form -> FG_QUERY_WHERE_CLAUSE.="id_cc_card =".$_SESSION["card_id"];
 
 if (strlen($HD_Form -> FG_EDITION_CLAUSE)>0)
     $HD_Form -> FG_EDITION_CLAUSE.=" AND ";
@@ -115,8 +113,8 @@ $HD_Form -> FieldEditElement ('speeddial, name, phone');
 
 
 if (isset($filterprefix)  &&  (strlen($filterprefix)>0)) {
-	if (strlen($HD_Form -> FG_TABLE_CLAUSE)>0) $HD_Form -> FG_TABLE_CLAUSE.=" AND ";
-	$HD_Form -> FG_TABLE_CLAUSE.="id_cc_card like '$filterprefix'";
+	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
+	$HD_Form -> FG_QUERY_WHERE_CLAUSE.="id_cc_card like '$filterprefix'";
 }
 
 $HD_Form -> FG_INTRO_TEXT_EDITION= gettext("You can modify, through the following form, the different properties of your")." ".$HD_Form->FG_INSTANCE_NAME;

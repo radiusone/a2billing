@@ -55,22 +55,22 @@ getpost_ifset(array('defaultuser', 'subscribemwi', 'vmexten', 'cid_number', 'cal
 if ($atmenu=='sip') {
 	if (!isset($form_action) || $form_action=="list") {
 		$HD_Form = new FormHandler("cc_sip_buddies LEFT JOIN cc_card ON cc_card.id=cc_sip_buddies.id_cc_card LEFT JOIN cc_card_group ON cc_card.id_group=cc_card_group.id", "SIP Friend");
-		$HD_Form -> FG_TABLE_CLAUSE = " cc_card_group.id_agent=".$_SESSION['agent_id'] ;
+		$HD_Form -> FG_QUERY_WHERE_CLAUSE = " cc_card_group.id_agent=".$_SESSION['agent_id'] ;
 	} else {
 		$HD_Form = new FormHandler("cc_sip_buddies", "SIP Friend");
 	}
-	$HD_Form -> FG_TABLE_ID = 'cc_sip_buddies.id';
+	$HD_Form -> FG_QUERY_PRIMARY_KEY = 'cc_sip_buddies.id';
 	$table_name = "cc_sip_buddies";
 
 } else {
 
 	if (!isset($form_action) || $form_action=="list") {
 		$HD_Form = new FormHandler("cc_iax_buddies LEFT JOIN cc_card ON cc_card.id=cc_iax_buddies.id_cc_card LEFT JOIN cc_card_group ON cc_card.id_group=cc_card_group.id", "IAX Friend");
-		$HD_Form -> FG_TABLE_CLAUSE = " cc_card_group.id_agent=".$_SESSION['agent_id'] ;
+		$HD_Form -> FG_QUERY_WHERE_CLAUSE = " cc_card_group.id_agent=".$_SESSION['agent_id'] ;
 	} else {
 		$HD_Form = new FormHandler("cc_iax_buddies", "IAX Friend");
 	}
-	$HD_Form -> FG_TABLE_ID = 'cc_iax_buddies.id';
+	$HD_Form -> FG_QUERY_PRIMARY_KEY = 'cc_iax_buddies.id';
 	$table_name = "cc_iax_buddies";
 }
 
@@ -103,13 +103,12 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/telephone_add.png" ;
 
 $HD_Form -> FieldViewElement ("id_cc_card, $table_name.name, accountcode, secret, callerid, context, defaultip");
 
-$HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO ".strtoupper($HD_Form->FG_INSTANCE_NAME)." CREATED!");
-$HD_Form -> FG_LIMITE_DISPLAY = 10;
+$HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 10;
 
 if (isset($friend_id)  &&  (strlen($friend_id)>0)){
 	if ($friend_id!='all'){
-		if (strlen($HD_Form ->FG_TABLE_CLAUSE)>0) $HD_Form ->FG_TABLE_CLAUSE.=" AND ";
-		$HD_Form ->FG_TABLE_CLAUSE.="name='$friend_id'";
+		if (strlen($HD_Form ->FG_QUERY_WHERE_CLAUSE)>0) $HD_Form ->FG_QUERY_WHERE_CLAUSE.=" AND ";
+		$HD_Form ->FG_QUERY_WHERE_CLAUSE.="name='$friend_id'";
 	}
 }
 
@@ -123,7 +122,7 @@ $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 
 $maxi='';
 if ($form_action=="ask-add") {
-	$card_gen = generate_unique_value($HD_Form->FG_TABLE_NAME);
+	$card_gen = generate_unique_value($HD_Form->FG_QUERY_TABLE_NAME);
 	$maxi = "value='".$card_gen."'";
 	$pass =  MDP(6);
 	$pass_secret = "value='".$pass."'";
@@ -915,15 +914,14 @@ if ($atmenu=='sip') {
 $HD_Form -> FieldEditElement ($field_list_edit);
 
 
-$HD_Form -> FG_FILTER_APPLY = true;
-$HD_Form -> FG_FILTERFIELD = 'username';
-$HD_Form -> FG_FILTERFIELDNAME = 'username';
-$HD_Form -> FG_FILTER_FORM_ACTION = 'list';
+$HD_Form -> FG_FILTER_ENABLE = true;
+$HD_Form -> FG_FILTER_COLUMN = 'username';
+$HD_Form -> FG_FILTER_LABEL = 'username';
 
 
 if (isset($filterprefix)  &&  (strlen($filterprefix)>0)){
-	if (strlen($HD_Form -> FG_TABLE_CLAUSE)>0) $HD_Form -> FG_TABLE_CLAUSE.=" AND ";
-	$HD_Form -> FG_TABLE_CLAUSE.="name like '$filterprefix%'";
+	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
+	$HD_Form -> FG_QUERY_WHERE_CLAUSE.="name like '$filterprefix%'";
 }
 
 $HD_Form -> FG_INTRO_TEXT_EDITION= '';

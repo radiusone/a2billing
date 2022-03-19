@@ -52,8 +52,8 @@ if (!isset($form_action) || $form_action=="list") {
 	$HD_Form = new FormHandler("cc_receipt", "Receipt");
 }
 
-$HD_Form -> FG_TABLE_ID = 'cc_receipt.id';
-$HD_Form -> FG_TABLE_CLAUSE = " id_card = ".$_SESSION["card_id"];
+$HD_Form -> FG_QUERY_PRIMARY_KEY = 'cc_receipt.id';
+$HD_Form -> FG_QUERY_WHERE_CLAUSE = " id_card = ".$_SESSION["card_id"];
 $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
@@ -64,7 +64,7 @@ $HD_Form -> FG_FK_TABLENAMES = array("cc_receipt_item");
 $HD_Form -> FG_FK_EDITION_CLAUSE = array(" id_receipt ");
 
 $HD_Form -> FG_ENABLE_INFO_BUTTON = true;
-$HD_Form -> FG_INFO_LINK = "A2B_receipt_view.php?id=";
+$HD_Form -> FG_INFO_BUTTON_LINK = "A2B_receipt_view.php?id=";
 
 $list_refill_type=getRefillType_List();
 $HD_Form -> AddViewElement(gettext("ID"), "cc_receipt.id");
@@ -73,5 +73,3 @@ $HD_Form -> AddViewElement(gettext("DATE"), "date", true, "30", "display_datefor
 $HD_Form -> AddViewElement(gettext("TITLE"), "title");
 $HD_Form -> AddViewElement(gettext("AMOUNT INCL VAT"), "price", true, "30", "display_2bill");
 $HD_Form -> FieldViewElement ("cc_receipt.id, username, cc_receipt.date,title,total_price");
-
-$HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO RECEIPT CREATED!");

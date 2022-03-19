@@ -71,7 +71,7 @@ if (!empty ($agentkey)) {
 		$agentid = $data[0]['id_agent'];
 		// check if groupid and tarif in already in this agent
 		$instance_table_agent_check = new Table("cc_agent JOIN cc_agent_tariffgroup ON cc_agent_tariffgroup.id_agent =  cc_agent.id JOIN cc_card_group ON cc_card_group.id_agent =  cc_agent.id  ", "cc_agent.id");
-		$list_agent_check = $instance_table_agent_check->get_list($HD_Form->DBHandle, "cc_agent.id= $agentid AND cc_agent_tariffgroup.id_tariffgroup = $tariffid  AND cc_card_group.id = $groupid", "cc_agent.id");
+		$list_agent_check = $instance_table_agent_check->get_list($HD_Form->DBHandle, "cc_agent.id= $agentid AND cc_agent_tariffgroup.id_tariffgroup = $tariffid  AND cc_card_group.id = $groupid", ["cc_agent.id"]);
 		if (is_array($list_agent_check)) {
 			if (!empty ($groupid) && is_numeric($groupid) && !empty ($tariffid) && is_numeric($tariffid)) {
 				$agent_conf = true;
@@ -133,14 +133,14 @@ foreach ($currencies_list as $key => $cur_value) {
 	$currency_list_key[$key][0] = $key;
 }
 
-$HD_Form->FG_LIMITE_DISPLAY = 10;
+$HD_Form->FG_LIST_VIEW_PAGE_SIZE = 10;
 if (!($popup_select >= 1))
 	$HD_Form->FG_EXPORT_CSV = true;
 if (!($popup_select >= 1))
 	$HD_Form->FG_EXPORT_XML = true;
 
 if (($popup_select >= 1))
-	$HD_Form->FG_LIMITE_DISPLAY = 7;
+	$HD_Form->FG_LIST_VIEW_PAGE_SIZE = 7;
 
 $HD_Form->CV_FOLLOWPARAMETERS = "&popup_select=" . $popup_select . "&popup_formname=" . $popup_formname . "&popup_fieldname=" . $popup_fieldname;
 
@@ -422,10 +422,9 @@ if (is_numeric($subscriber_signup)) {
 	$HD_Form->FG_ADITION_HIDDEN_PARAM_VALUE = "$subscriber_signup";
 }
 
-$HD_Form->FG_FILTER_APPLY = true;
-$HD_Form->FG_FILTERFIELD = 'cardnumber';
-$HD_Form->FG_FILTERFIELDNAME = 'cardnumber';
-$HD_Form->FG_FILTER_FORM_ACTION = 'list';
+$HD_Form->FG_FILTER_ENABLE = true;
+$HD_Form->FG_FILTER_COLUMN = 'cardnumber';
+$HD_Form->FG_FILTER_LABEL = 'cardnumber';
 
 $HD_Form->FG_INTRO_TEXT_EDITION = gettext("You can modify, through the following form, the different properties of your " . $HD_Form->FG_INSTANCE_NAME);
 $HD_Form->FG_INTRO_TEXT_ASK_DELETION = gettext("If you really want remove this " . $HD_Form->FG_INSTANCE_NAME . ", click on the delete button.");
@@ -434,7 +433,7 @@ $HD_Form->FG_INTRO_TEXT_ADD = gettext("you can add easily a new " . $HD_Form->FG
 $HD_Form->FG_INTRO_TEXT_ADITION = '';
 $HD_Form->FG_TEXT_ADITION_CONFIRMATION = "<font>" . gettext("Thanks for registering with us.<br>A email with your information has been sent to your account ") . $_POST["email"] . "<br><br><b>" . gettext("Your card number is ") . $maxi . "</b><br><b>" . gettext("Your password is ") . $pass . "</b></font>";
 
-$HD_Form->FG_ADD_PAGE_CONFIRM_BUTTON = gettext("SIGNUP");
+$HD_Form->FG_ADD_PAGE_SAVE_BUTTON_TEXT = gettext("SIGNUP");
 
 $HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = 'processing_card_signup';
 

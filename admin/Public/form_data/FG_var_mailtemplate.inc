@@ -48,7 +48,6 @@ getpost_ifset(array('id', 'IDCust', 'mailtype', 'fromemail', 'fromname', 'subjec
 $HD_Form = new FormHandler("cc_templatemail", gettext("mail template"));
 
 $HD_Form->no_debug();
-$HD_Form -> FG_TABLE_ID = "id";
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "id";
 
 // Get Latest id from the table
@@ -63,7 +62,7 @@ if ($languages != '') {
         $_SESSION["Langfilter"]=$languages;
     }
     if (isset($_SESSION["Langfilter"])) {
-        $HD_Form -> FG_TABLE_CLAUSE = "id_language='".$_SESSION["Langfilter"]."'";
+        $HD_Form -> FG_QUERY_WHERE_CLAUSE = "id_language='".$_SESSION["Langfilter"]."'";
     }
 } else {
     if (isset($_SESSION["Langfilter"])) {
@@ -71,8 +70,8 @@ if ($languages != '') {
     }
 }
 $id_language = $languages;
-$HD_Form -> FG_EDITION_LINK = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?form_action=ask-edit&id_language=$languages&id=";
-$HD_Form -> FG_DELETION_LINK = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?form_action=ask-delete&id_language=$languages&id=";
+$HD_Form -> FG_EDIT_BUTTON_LINK = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?form_action=ask-edit&id_language=$languages&id=";
+$HD_Form -> FG_DELETE_BUTTON_LINK = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?form_action=ask-delete&id_language=$languages&id=";
 
 
 $typemail_list = array();
@@ -110,8 +109,6 @@ $HD_Form -> AddViewElement(gettext("SUBJECT"), "subject");
 
 $HD_Form -> FieldViewElement ('id, mailtype, fromemail, subject');
 
-
-$HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO ".strtoupper($HD_Form->FG_INSTANCE_NAME)." CREATED!");
 
 if ($popup_select >= 1) {
     $HD_Form -> FG_OTHER_BUTTON1 = true;

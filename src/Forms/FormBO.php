@@ -61,7 +61,7 @@ class FormBO
         $FG_TABLE_DID_USE_NAME = "cc_did_use";
         $FG_QUERY_ADITION_DID_USE_FIELDS = 'id_did';
         $instance_did_use_table = new Table($FG_TABLE_DID_USE_NAME, $FG_QUERY_ADITION_DID_USE_FIELDS);
-        $id = $FormHandler -> RESULT_QUERY;
+        $id = $FormHandler -> QUERY_RESULT;
         $result_query= $instance_did_use_table -> Add_table ($FormHandler->DBHandle, $id, null, null, null);
     }
 
@@ -76,8 +76,8 @@ class FormBO
         $status = $processed['status'];
         $oldstatus = $processed['oldstatus'];
         if ($oldstatus != $status) {
-            if ($FormHandler -> RESULT_QUERY && !(is_object($FormHandler -> RESULT_QUERY)) )
-                $id = $FormHandler -> RESULT_QUERY; // DEFINED BEFORE FG_ADDITIONAL_FUNCTION_AFTER_ADD
+            if ($FormHandler -> QUERY_RESULT && !(is_object($FormHandler -> QUERY_RESULT)) )
+                $id = $FormHandler -> QUERY_RESULT; // DEFINED BEFORE FG_ADDITIONAL_FUNCTION_AFTER_ADD
             else
                 $id = $processed['id']; // DEFINED BEFORE FG_ADDITIONAL_FUNCTION_AFTER_ADD
 
@@ -172,7 +172,7 @@ class FormBO
     {
         global $A2B;
         $FormHandler = FormHandler::GetInstance();
-        $id_ticket = $FormHandler -> RESULT_QUERY;
+        $id_ticket = $FormHandler -> QUERY_RESULT;
         $processed = $FormHandler->getProcessed();
         $title = $processed['title'];
         $card_id = $processed['creator'];
@@ -220,7 +220,7 @@ class FormBO
     {
         global $A2B;
         $FormHandler = FormHandler::GetInstance();
-        $id_ticket = $FormHandler -> RESULT_QUERY;
+        $id_ticket = $FormHandler -> QUERY_RESULT;
         $processed = $FormHandler->getProcessed();
         $title = $processed['title'];
         $agent_id = $processed['creator'];
@@ -287,7 +287,7 @@ class FormBO
 
         if ($credit>0) {
             $field_insert = " credit, card_id, description";
-            $card_id = $FormHandler -> RESULT_QUERY;
+            $card_id = $FormHandler -> QUERY_RESULT;
             $description = gettext("CREATION CARD REFILL");
             $value_insert = "'$credit', '$card_id', '$description' ";
             $instance_refill_table = new Table("cc_logrefill", $field_insert);
@@ -363,7 +363,7 @@ class FormBO
 
         if ($credit>0) {
             $field_insert = " credit,agent_id, description";
-            $agent_id = $FormHandler -> RESULT_QUERY;
+            $agent_id = $FormHandler -> QUERY_RESULT;
             $description = gettext("CREATION AGENT REFILL");
             $value_insert = "'$credit', '$agent_id', '$description' ";
             $instance_refill_table = new Table("cc_logrefill_agent", $field_insert);
@@ -419,7 +419,7 @@ class FormBO
             $next_bill_date = date("Y-m-d",strtotime("$next_limite_pay_date - $billdaybefor_anniversery day")) ;
 
             $field_insert = " id_cc_card, id_subscription_fee, product_name, paid_status, startdate, next_billing_date, limit_pay_date, last_run";
-            $card_id = $FormHandler -> RESULT_QUERY;
+            $card_id = $FormHandler -> QUERY_RESULT;
 
             $instance_table = new Table("cc_card", "");
             $QUERY = "UPDATE cc_card SET status=8 WHERE id=$card_id";
@@ -475,7 +475,7 @@ class FormBO
         $FormHandler = FormHandler::GetInstance();
         $processed = $FormHandler->getProcessed();
         $id_agent = $processed['id_agent'];
-        $id = $FormHandler -> RESULT_QUERY;
+        $id = $FormHandler -> QUERY_RESULT;
         $type_com =  $processed['commission_type'];
         if (!empty($id_agent)) {
             //update record with agent commission
@@ -656,8 +656,8 @@ class FormBO
 
         // FIND THE LAST BILLING
         $billing_table = new Table('cc_billing_customer','id,date');
-        $clause_last_billing = "id_card = $card_id AND id != ".$FormHandler -> RESULT_QUERY;
-        $result = $billing_table -> get_list($FormHandler->DBHandle, $clause_last_billing, "date", "desc");
+        $clause_last_billing = "id_card = $card_id AND id != ".$FormHandler -> QUERY_RESULT;
+        $result = $billing_table -> get_list($FormHandler->DBHandle, $clause_last_billing, ["date"], "desc");
         $call_table = new Table('cc_call',' COALESCE(SUM(sessionbill),0)' );
         $clause_call_billing ="card_id = $card_id AND ";
         $clause_charge = "id_cc_card = $card_id AND ";
@@ -679,7 +679,7 @@ class FormBO
         $query_table = "cc_billing_customer LEFT JOIN cc_invoice ON cc_billing_customer.id_invoice = cc_invoice.id ";
         $query_table .= "LEFT JOIN (SELECT st1.id_invoice, TRUNCATE(SUM(st1.price),2) as total_price FROM cc_invoice_item AS st1 WHERE st1.type_ext ='POSTPAID' GROUP BY st1.id_invoice ) as items ON items.id_invoice = cc_invoice.id";
         $invoice_table = new Table($query_table,'SUM( items.total_price) as total');
-        $lastinvoice_clause = "cc_billing_customer.id_card = $card_id AND cc_invoice.paid_status=0 AND cc_billing_customer.id != ".$FormHandler -> RESULT_QUERY;
+        $lastinvoice_clause = "cc_billing_customer.id_card = $card_id AND cc_invoice.paid_status=0 AND cc_billing_customer.id != ".$FormHandler -> QUERY_RESULT;
         $result_lastinvoice = $invoice_table ->get_list($FormHandler->DBHandle, $lastinvoice_clause);
         if (is_array($result_lastinvoice)&& !empty($result_lastinvoice[0][0])) {
             $lastpostpaid_amount = $result_lastinvoice [0][0];
@@ -705,7 +705,7 @@ class FormBO
                 $description = $desc_billing;
                 $field_insert = "date, id_receipt,price,description,id_ext,type_ext";
                 $instance_table = new Table("cc_receipt_item", $field_insert);
-                $value_insert = " '$date' , '$id_receipt', '$amount_calls','$description','".$FormHandler -> RESULT_QUERY."','CALLS'";
+                $value_insert = " '$date' , '$id_receipt', '$amount_calls','$description','".$FormHandler -> QUERY_RESULT."','CALLS'";
                 $instance_table -> Add_table ($FormHandler->DBHandle, $value_insert, null, null,"id");
             }
         }
@@ -792,13 +792,13 @@ class FormBO
                 $total_vat =$total_vat + round($amount *(1+($vat/100)),2);
                 $field_insert = "date, id_invoice,price,vat,description,id_ext,type_ext";
                 $instance_table = new Table("cc_invoice_item", $field_insert);
-                $value_insert = " '$date' , '$id_invoice', '$amount','$vat','$description','".$FormHandler -> RESULT_QUERY."','POSTPAID'";
+                $value_insert = " '$date' , '$id_invoice', '$amount','$vat','$description','".$FormHandler -> QUERY_RESULT."','POSTPAID'";
                 $instance_table -> Add_table ($FormHandler->DBHandle, $value_insert, null, null,"id");
             }
         }
         if (!empty($last_invoice)) {
             $param_update_billing = "id_invoice = '".$last_invoice."'";
-            $clause_update_billing = " id= ".$FormHandler -> RESULT_QUERY;
+            $clause_update_billing = " id= ".$FormHandler -> QUERY_RESULT;
             $billing_table ->Update_table($FormHandler->DBHandle,$param_update_billing,$clause_update_billing);
         }
         //Send a mail for invoice to pay
@@ -816,7 +816,7 @@ class FormBO
         //Update billing ...
         if (!empty($start_date)) {
                 $param_update_billing = "start_date = '".$start_date."'";
-                $clause_update_billing = " id= ".$FormHandler -> RESULT_QUERY;
+                $clause_update_billing = " id= ".$FormHandler -> QUERY_RESULT;
                 $billing_table ->Update_table($FormHandler->DBHandle,$param_update_billing,$clause_update_billing);
         }
     }
@@ -869,7 +869,7 @@ class FormBO
         global $A2B;
         $FormHandler = FormHandler::GetInstance();
         $processed = $FormHandler->getProcessed();
-        $id_invoice = $FormHandler -> RESULT_QUERY;
+        $id_invoice = $FormHandler -> QUERY_RESULT;
         //CREATE AND UPDATE REF NUMBER
         $reference = generate_invoice_reference();
         $instance_table_invoice = new Table("cc_invoice");
@@ -890,7 +890,7 @@ class FormBO
         $FormHandler = FormHandler::GetInstance();
         $processed = $FormHandler->getProcessed();
         if ($processed['added_refill'] == 1) {
-            $id_payment = $FormHandler -> RESULT_QUERY;
+            $id_payment = $FormHandler -> QUERY_RESULT;
             // CREATE REFILL
             $field_insert = "date, credit, card_id ,refill_type, description";
             $date = $processed['date'];
@@ -1022,7 +1022,7 @@ class FormBO
         $processed = $FormHandler->getProcessed();
 
         if ($processed['added_refill']==1) {
-            $id_payment = $FormHandler -> RESULT_QUERY;
+            $id_payment = $FormHandler -> QUERY_RESULT;
 
             //CREATE REFILL
             $field_insert = "date, credit, agent_id ,refill_type, description";
@@ -1059,7 +1059,7 @@ class FormBO
         global $A2B;
         $FormHandler = FormHandler::GetInstance();
         $processed = $FormHandler->getProcessed();
-        $id = $FormHandler -> RESULT_QUERY; // DEFINED BEFORE FG_ADDITIONAL_FUNCTION_AFTER_ADD
+        $id = $FormHandler -> QUERY_RESULT; // DEFINED BEFORE FG_ADDITIONAL_FUNCTION_AFTER_ADD
         $sip = stripslashes($processed['sip_buddy']);
         $iax = stripslashes($processed['iax_buddy']);
 
@@ -1094,7 +1094,7 @@ class FormBO
         global $A2B;
         $FormHandler = FormHandler::GetInstance();
         $processed = $FormHandler->getProcessed();
-        $id = $FormHandler -> RESULT_QUERY;
+        $id = $FormHandler -> QUERY_RESULT;
         if ($processed['block'] == 1) {
             $instance_sub_table = new Table("cc_card");
             $param_update_card = "lock_date = NOW()";
@@ -1130,7 +1130,7 @@ class FormBO
     {
         global $A2B;
         $FormHandler = FormHandler::GetInstance();
-        $id_card = $FormHandler -> RESULT_QUERY;
+        $id_card = $FormHandler -> QUERY_RESULT;
         NotificationsDAO::AddNotification("added_new_signup",Notification::$MEDIUM,Notification::$CUST,$id_card,Notification::$LINK_CARD,$id_card);
     }
 }

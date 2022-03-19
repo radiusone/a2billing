@@ -93,7 +93,7 @@ if (!isset ($action))
     $action = $form_action;
 
 if (is_string($tariffgroup) && strlen(trim($tariffgroup)) > 0) {
-    list ($mytariffgroup_id, $mytariffgroupname, $mytariffgrouplcrtype) = preg_split('/-:-/', $tariffgroup);
+    [$mytariffgroup_id, $mytariffgroupname, $mytariffgrouplcrtype] = preg_split('/-:-/', $tariffgroup);
     $_SESSION["mytariffgroup_id"] = $mytariffgroup_id;
     $_SESSION["mytariffgroupname"] = $mytariffgroupname;
     $_SESSION["tariffgrouplcrtype"] = $mytariffgrouplcrtype;
@@ -104,11 +104,11 @@ if (is_string($tariffgroup) && strlen(trim($tariffgroup)) > 0) {
 }
 
 if (($form_action == "list") && ($HD_Form->FG_FILTER_SEARCH_FORM) && ($_POST['posted_search'] == 1) && is_numeric($mytariffgroup_id)) {
-    if (!empty ($HD_Form->FG_TABLE_CLAUSE)) {
-        $HD_Form->FG_TABLE_CLAUSE .= ' AND ';
+    if (!empty ($HD_Form->FG_QUERY_WHERE_CLAUSE)) {
+        $HD_Form->FG_QUERY_WHERE_CLAUSE .= ' AND ';
     }
 
-    $HD_Form->FG_TABLE_CLAUSE = "idtariffplan='$mytariff_id'";
+    $HD_Form->FG_QUERY_WHERE_CLAUSE = "idtariffplan='$mytariff_id'";
 
     /*
     SELECT t1.destination, min(t1.rateinitial), t1.dialprefix FROM cc_ratecard t1, cc_tariffplan t4, cc_tariffgroup t5,
@@ -166,13 +166,15 @@ $HD_Form->create_toppage($form_action);
 $HD_Form->create_form($form_action, $list);
 
 // Code for the Export Functionality
-$_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] = "SELECT " . $HD_Form->FG_EXPORT_FIELD_LIST . " FROM $HD_Form->FG_TABLE_NAME";
-if (strlen($HD_Form->FG_TABLE_CLAUSE) > 1)
-    $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] .= " WHERE $HD_Form->FG_TABLE_CLAUSE ";
-if (!is_null($HD_Form->SQL_GROUP) && ($HD_Form->SQL_GROUP != ''))
-    $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] .= " $HD_Form->SQL_GROUP ";
-if (!is_null($HD_Form->FG_ORDER) && ($HD_Form->FG_ORDER != '') && !is_null($HD_Form->FG_SENS) && ($HD_Form->FG_SENS != ''))
-    $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] .= " ORDER BY $HD_Form->FG_ORDER $HD_Form->FG_SENS";
+$_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] = "SELECT " . implode(",", $HD_Form -> FG_EXPORT_FIELD_LIST) . " FROM $HD_Form->FG_QUERY_TABLE_NAME";
+if (strlen($HD_Form->FG_QUERY_WHERE_CLAUSE) > 1)
+    $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] .= " WHERE $HD_Form->FG_QUERY_WHERE_CLAUSE ";
+if (!is_null($HD_Form->FG_QUERY_GROUPBY_COLUMNS) && ($HD_Form->FG_QUERY_GROUPBY_COLUMNS != ''))
+    $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] .= " $HD_Form->FG_QUERY_GROUPBY_COLUMNS ";
+if (!empty($HD_Form->FG_QUERY_ORDERBY_COLUMNS) && !empty($HD_Form->FG_QUERY_DIRECTION)) {
+    $ord = implode(",", $HD_Form->FG_QUERY_ORDERBY_COLUMNS);
+    $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] .= " ORDER BY $ord $HD_Form->FG_QUERY_DIRECTION";
+}
 
 if (strpos($_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR], 'cc_callplan_lcr')===false) {
     $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] = str_replace('destination,', 'cc_prefix.destination,', $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR]);

@@ -51,7 +51,7 @@ if (!isset($form_action) || $form_action=="list") {
 $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "cc_speeddial.creationdate";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
-$HD_Form -> FG_TABLE_ID="cc_speeddial.id";
+$HD_Form -> FG_QUERY_PRIMARY_KEY="cc_speeddial.id";
 
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_speeddial.php?form_action=ask-add&atmenu=speeddial&section=".$_SESSION["menu_section"];
@@ -72,8 +72,6 @@ $HD_Form -> AddViewElement(gettext("DATE"), "cc_speeddial.creationdate", true, "
 
 
 $HD_Form -> FieldViewElement ('cc_speeddial.speeddial, cc_speeddial.phone, cc_speeddial.name, cc_speeddial.id_cc_card, cc_speeddial.creationdate');
-
-$HD_Form -> CV_NO_FIELDS  = gettext("NO SPEED DIALS HAVE BEEN CREATED!");
 
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
@@ -124,15 +122,14 @@ $HD_Form -> AddEditElement (gettext("ID CARD"),
 $HD_Form -> FieldEditElement ('cc_speeddial.speeddial, cc_speeddial.name, cc_speeddial.phone, cc_speeddial.id_cc_card');
 
 
-$HD_Form -> FG_FILTER_APPLY = true;
-$HD_Form -> FG_FILTERFIELD = 'username';
-$HD_Form -> FG_FILTERFIELDNAME = gettext('Account Number');
-$HD_Form -> FG_FILTER_FORM_ACTION = 'list';
+$HD_Form -> FG_FILTER_ENABLE = true;
+$HD_Form -> FG_FILTER_COLUMN = 'username';
+$HD_Form -> FG_FILTER_LABEL = gettext('Account Number');
 
 
 if (isset($filterprefix)  &&  (strlen($filterprefix)>0)){
-	if (strlen($HD_Form -> FG_TABLE_CLAUSE)>0) $HD_Form -> FG_TABLE_CLAUSE.=" AND ";
-	$HD_Form -> FG_TABLE_CLAUSE.="username like '$filterprefix%'";
+	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
+	$HD_Form -> FG_QUERY_WHERE_CLAUSE.="username like '$filterprefix%'";
 }
 
 

@@ -241,7 +241,7 @@ getpost_ifset(array('wh'));
             <td width="50%" align="right" valign="top" class="text">
                 <a href="#" onclick="document.myForm.submit()" class="cssbutton_big" title="<?= gettext("Create a new ") ?><?= $this->FG_INSTANCE_NAME ?>">
                     <img style="vertical-align:middle" alt="" src="data:image/gif;base64,R0lGODlhDwAPAMQYAP+yPf+fEv+qLP+3Tf+pKv++Xf/Gcv+mJP+tNf+tMf+kH/+/YP+oJv+wO/+jHP/Ohf/WmP+vOv/cpv+kHf+iGf+jG/////Hw7P///wAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAABgALAAAAAAPAA8AAAVjIHaNZEmKF6auLJpiEvQYxQAgiTpiMm0Tk4pigsLMag2Co8KkFA0Lm8XCbBajDcFkWnXuBlkFk1vxpgACcYVcLqbHVKaDuFNXqwxGkUK5VyYMEQhFGAGGhxQHOS4tjTsmkDshADs="/>
-                    <?= $this->FG_ADD_PAGE_CONFIRM_BUTTON ?>
+                    <?= $this->FG_ADD_PAGE_SAVE_BUTTON_TEXT ?>
                 </a>
             </td>
         </tr>

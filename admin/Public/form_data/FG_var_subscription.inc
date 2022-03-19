@@ -80,8 +80,6 @@ $HD_Form -> AddViewElement(gettext("TOTAL CREDIT"), "totalcredit");
 // added a parameter to append  FG_TABLE_ID  ( by default ) or disable 0.
 $HD_Form -> FieldViewElement ('label, fee, status,startdate,stopdate, numberofrun, datelastrun, totalcardperform, totalcredit');
 
-$HD_Form -> CV_NO_FIELDS  = gettext("There are no subscriptions created!");
-
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form -> FG_ENABLE_ADD_BUTTON = true;

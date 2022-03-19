@@ -79,8 +79,7 @@ $HD_Form -> AddViewElement(gettext("SERVER"), "id_server", true, "15", null, "li
 
 $HD_Form -> FieldViewElement ('id, uniqueid, entry_time, status, server_ip, num_attempt, manager_result, callback_time, last_attempt_time, channel, context, id_server');
 
-$HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO CALLBACK CREATED!");
-$HD_Form -> FG_LIMITE_DISPLAY = 10;
+$HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 10;
 
 $HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
@@ -301,14 +300,14 @@ $HD_Form -> FieldEditElement ('id_server_group, uniqueid, status, server_ip, num
 
 
 // Set the filter variables
-$HD_Form -> FG_FILTER_APPLY = true;
-$HD_Form -> FG_FILTERFIELD = 'uniqueid';
-$HD_Form -> FG_FILTERFIELDNAME = gettext('uniqueid');
+$HD_Form -> FG_FILTER_ENABLE = true;
+$HD_Form -> FG_FILTER_COLUMN = 'uniqueid';
+$HD_Form -> FG_FILTER_LABEL = gettext('uniqueid');
 
 
 if (isset($filterprefix)  &&  (strlen($filterprefix)>0)) {
-	if (strlen($HD_Form -> FG_TABLE_CLAUSE)>0) $HD_Form -> FG_TABLE_CLAUSE.=" AND ";
-	$HD_Form -> FG_TABLE_CLAUSE.=" uniqueid like '$filterprefix%'";
+	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
+	$HD_Form -> FG_QUERY_WHERE_CLAUSE.=" uniqueid like '$filterprefix%'";
 }
 
 $HD_Form -> FG_INTRO_TEXT_EDITION= gettext("Modify the properties of the")." ".$HD_Form->FG_INSTANCE_NAME.".";

@@ -63,8 +63,7 @@ $HD_Form -> AddViewElement(gettext("LASTTIME USED"), "lasttime_used", true, "19"
 
 $HD_Form -> FieldViewElement ('id_group, id_group, server_ip, manager_host, manager_username, lasttime_used');
 
-$HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO")." ".strtoupper($HD_Form->FG_INSTANCE_NAME)." ".gettext("CREATED!");
-$HD_Form -> FG_LIMITE_DISPLAY = 10;
+$HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 10;
 
 $HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
@@ -120,14 +119,14 @@ $HD_Form -> FieldEditElement ('id_group, server_ip, manager_host, manager_userna
 
 
 // Set the filter variables
-$HD_Form -> FG_FILTER_APPLY = true;
-$HD_Form -> FG_FILTERFIELD = 'id_group';
-$HD_Form -> FG_FILTERFIELDNAME = 'Server ID Group';
+$HD_Form -> FG_FILTER_ENABLE = true;
+$HD_Form -> FG_FILTER_COLUMN = 'id_group';
+$HD_Form -> FG_FILTER_LABEL = 'Server ID Group';
 
 
 if (isset($filterprefix)  &&  (strlen($filterprefix)>0)){
-	if (strlen($HD_Form -> FG_TABLE_CLAUSE)>0) $HD_Form -> FG_TABLE_CLAUSE.=" AND ";
-	$HD_Form -> FG_TABLE_CLAUSE.=" id_group like '$filterprefix%'";
+	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
+	$HD_Form -> FG_QUERY_WHERE_CLAUSE.=" id_group like '$filterprefix%'";
 }
 
 

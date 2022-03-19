@@ -47,7 +47,7 @@ getpost_ifset(array('id', 'status', 'id_cc_card', 'updated_date', 'Period', 'fro
 $HD_Form = new FormHandler("cc_status_log sl LEFT JOIN cc_card ON cc_card.id = sl.id_cc_card", gettext("Status Log"));
 
 $HD_Form->no_debug();
-$HD_Form -> FG_TABLE_ID = "sl.id";
+$HD_Form -> FG_QUERY_PRIMARY_KEY = "sl.id";
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "updated_date";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
@@ -80,20 +80,20 @@ if ($Period=="Month"){
 }
 
 if($date_clause != "") {
-	$HD_Form -> FG_TABLE_CLAUSE.=" ".$date_clause;
+	$HD_Form -> FG_QUERY_WHERE_CLAUSE.=" ".$date_clause;
 }
 
 if ($id_cc_card != "") {
-	if (strlen($HD_Form -> FG_TABLE_CLAUSE)>0)
-		$HD_Form -> FG_TABLE_CLAUSE.=" AND ";
-	$HD_Form -> FG_TABLE_CLAUSE.=" sl.id_cc_card = '$id_cc_card'";
+	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0)
+		$HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
+	$HD_Form -> FG_QUERY_WHERE_CLAUSE.=" sl.id_cc_card = '$id_cc_card'";
 }
 
 if ($status >= 0) {
-	if (strlen($HD_Form -> FG_TABLE_CLAUSE)>0)
-		$HD_Form -> FG_TABLE_CLAUSE.=" AND ";
+	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0)
+		$HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
 
-	$HD_Form -> FG_TABLE_CLAUSE.=" sl.status = '$status'";
+	$HD_Form -> FG_QUERY_WHERE_CLAUSE.=" sl.status = '$status'";
 }
 
 $cardstatus_list = getCardStatus_List();
@@ -112,13 +112,12 @@ $HD_Form -> FG_ENABLE_EDIT_BUTTON = false;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = false;
 $HD_Form -> FG_ENABLE_ADD_BUTTON = false;
 
-$HD_Form -> FG_FILTER_APPLY = true;
-$HD_Form -> FG_FILTERFIELD = 'cardnumber';
-$HD_Form -> FG_FILTERFIELDNAME = 'Account number';
-$HD_Form -> FG_FILTER_FORM_ACTION = 'list';
+$HD_Form -> FG_FILTER_ENABLE = true;
+$HD_Form -> FG_FILTER_COLUMN = 'cardnumber';
+$HD_Form -> FG_FILTER_LABEL = 'Account number';
 
 if (isset($filterprefix)  &&  (strlen($filterprefix)>0)) {
-	if (strlen($HD_Form -> FG_TABLE_CLAUSE)>0) $HD_Form -> FG_TABLE_CLAUSE.=" AND ";
-	$HD_Form -> FG_TABLE_CLAUSE.="username like '$filterprefix%'";
+	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
+	$HD_Form -> FG_QUERY_WHERE_CLAUSE.="username like '$filterprefix%'";
 }
 

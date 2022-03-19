@@ -50,7 +50,6 @@ $FG_INSTANCE_NAME = gettext("Agent");
 $HD_Form = new FormHandler("cc_agent", $FG_INSTANCE_NAME);
 
 $HD_Form->no_debug();
-$HD_Form -> FG_TABLE_ID = "id";
 
 $HD_Form -> FG_EDITION_CLAUSE = " id = ".$_SESSION["agent_id"];
 

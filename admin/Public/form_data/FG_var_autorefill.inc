@@ -59,8 +59,6 @@ $HD_Form->AddViewElement(gettext("TOTALCREDIT"), "totalcredit");
 // added a parameter to append  FG_TABLE_ID  ( by default ) or disable 0.
 $HD_Form->FieldViewElement('daterun, totalcardperform, totalcredit');
 
-$HD_Form->CV_NO_FIELDS = gettext("THERE IS NO AUTOREFILL REPORT CREATED!");
-
 $HD_Form->FG_ENABLE_EDIT_BUTTON = false;
 $HD_Form->FG_ENABLE_DELETE_BUTTON = false;
 $HD_Form->FG_ENABLE_ADD_BUTTON = false;

@@ -54,13 +54,13 @@ getpost_ifset(array('id', 'username', 'useralias', 'uipass', 'credit', 'language
 
 if (!isset($form_action) || $form_action=="list" || $form_action=="addcredit") {
 	$HD_Form = new FormHandler("cc_card LEFT JOIN cc_card_group ON cc_card.id_group=cc_card_group.id ", "Card");
-	$HD_Form -> FG_TABLE_CLAUSE = " cc_card_group.id_agent=".$_SESSION['agent_id'] ;
+	$HD_Form -> FG_QUERY_WHERE_CLAUSE = " cc_card_group.id_agent=".$_SESSION['agent_id'] ;
 } else {
 	$HD_Form = new FormHandler("cc_card", "Card");
 }
 
 $HD_Form->no_debug();
-$HD_Form -> FG_TABLE_ID="cc_card.id";
+$HD_Form -> FG_QUERY_PRIMARY_KEY="cc_card.id";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "ASC";
 $HD_Form -> FG_FILTER_SEARCH_SESSION_NAME = 'entity_card_selection';
 $HD_Form -> FG_FK_DELETE_CONFIRM = true;
@@ -216,17 +216,16 @@ $pos = strpos($FG_COL_QUERY_FIELD, "id");
 $FG_COL_QUERY_FIELD=substr_replace($FG_COL_QUERY_FIELD,"cc_card.",$pos,0);
 $HD_Form -> FieldViewElement ($FG_COL_QUERY.' '.$FG_COL_QUERY_FIELD);
 
-$HD_Form -> CV_NO_FIELDS  = gettext("NO CARDS HAVE BEEN CREATED!");
-$HD_Form -> FG_LIMITE_DISPLAY = 10;
+$HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 10;
 
 // Code here for adding the fields in the Export File
-$HD_Form -> FieldExportElement(CARD_EXPORT_FIELD_LIST);
+$HD_Form -> FieldExportElement(explode(",", $A2B->config['webui']['card_export_field_list']));
 if (!($popup_select>=1)) $HD_Form -> FG_EXPORT_CSV = false;
 if (!($popup_select>=1)) $HD_Form -> FG_EXPORT_XML = false;
 $HD_Form -> FG_EXPORT_SESSION_VAR = "pr_export_entity_card";
 
 
-if (($popup_select>=1))	$HD_Form ->FG_LIMITE_DISPLAY = 7;
+if (($popup_select>=1))	$HD_Form ->FG_LIST_VIEW_PAGE_SIZE = 7;
 
 
 $HD_Form -> CV_FOLLOWPARAMETERS= "&popup_select=".$popup_select."&popup_formname=".$popup_formname."&popup_fieldname=".$popup_fieldname;
@@ -243,24 +242,23 @@ $HD_Form -> FG_FILTER_SEARCH_1_TIME_TEXT_BIS = gettext('FIRST USE DATE');
 $HD_Form -> FG_FILTER_SEARCH_1_TIME_FIELD_BIS = 'firstusedate';
 
 
-$HD_Form -> AddSearchElement_C1(gettext("ACCOUNT NUMBER"), 'username','usernametype');
-$HD_Form -> AddSearchElement_C1(gettext("EMAIL"), 'email','emailtype');
-$HD_Form -> AddSearchElement_C1(gettext("LASTNAME"),'lastname','lastnametype');
-$HD_Form -> AddSearchElement_C1(gettext("LOGIN"),'useralias','useraliastype');
-$HD_Form -> AddSearchElement_C1(gettext("MACADDRESS"),'mac_addr','macaddresstype');
-$HD_Form -> AddSearchElement_C2(gettext("CUSTOMER ID"),'id1','id1type','id2','id2type','cc_card.id');
-$HD_Form -> AddSearchElement_C2(gettext("SERIAL"),'serial1','serial1type','serial2','serial2type','serial');
-$HD_Form -> AddSearchElement_C2(gettext("CREDIT"),'credit1','credit1type','credit2','credit2type','credit');
-$HD_Form -> AddSearchElement_C2(gettext("INUSE"),'inuse1','inuse1type','inuse2','inuse2type','inuse');
+$HD_Form -> AddSearchTextInput(gettext("ACCOUNT NUMBER"), 'username','usernametype');
+$HD_Form -> AddSearchTextInput(gettext("EMAIL"), 'email','emailtype');
+$HD_Form -> AddSearchTextInput(gettext("LASTNAME"),'lastname','lastnametype');
+$HD_Form -> AddSearchTextInput(gettext("LOGIN"),'useralias','useraliastype');
+$HD_Form -> AddSearchTextInput(gettext("MACADDRESS"),'mac_addr','macaddresstype');
+$HD_Form -> AddSearchComparisonInput(gettext("CUSTOMER ID"),'id1','id1type','id2','id2type','cc_card.id');
+$HD_Form -> AddSearchComparisonInput(gettext("SERIAL"),'serial1','serial1type','serial2','serial2type','serial');
+$HD_Form -> AddSearchComparisonInput(gettext("CREDIT"),'credit1','credit1type','credit2','credit2type','credit');
+$HD_Form -> AddSearchComparisonInput(gettext("INUSE"),'inuse1','inuse1type','inuse2','inuse2type','inuse');
 
-$HD_Form -> FG_FILTER_SEARCH_FORM_SELECT_TEXT = '';
-$HD_Form -> AddSearchElement_Select(gettext("SELECT SERIA"),"cc_card_seria","id, name", "", "name", "ASC", "id_seria");
-$HD_Form -> AddSearchElement_Select(gettext("SELECT LANGUAGE"), null, null, null, null, null, "language", 0, $language_list_r);
-$HD_Form -> AddSearchElement_Select(gettext("SELECT TARIFF"), "cc_tariffgroup", "id, tariffgroupname", "", "tariffgroupname", "ASC", "tariff");
-$HD_Form -> AddSearchElement_Select(gettext("SELECT STATUS"), null, null, null, null,null , "status", 0, $cardstatus_list_r);
-$HD_Form -> AddSearchElement_Select(gettext("SELECT ACCESS"), null, null, null, null, null, "simultaccess", 0, $simultaccess_list_r);
-$HD_Form -> AddSearchElement_Select(gettext("SELECT GROUP"), "cc_card_group", "id, name", "", "name", "ASC", "id_group");
-$HD_Form -> AddSearchElement_Select(gettext("SELECT CURRENCY"), null, null, null, null, null, "currency", 0, $currency_list_r);
+$HD_Form -> AddSearchSqlSelectInput(gettext("SELECT SERIA"),"cc_card_seria","id, name", "", "name", "ASC", "id_seria");
+$HD_Form -> AddSearchSelectInput(gettext("SELECT LANGUAGE"), "language", $language_list_r);
+$HD_Form -> AddSearchSqlSelectInput(gettext("SELECT TARIFF"), "cc_tariffgroup", "id, tariffgroupname", "", "tariffgroupname", "ASC", "tariff");
+$HD_Form -> AddSearchSelectInput(gettext("SELECT STATUS"), "status", $cardstatus_list_r);
+$HD_Form -> AddSearchSelectInput(gettext("SELECT ACCESS"), "simultaccess", $simultaccess_list_r);
+$HD_Form -> AddSearchSqlSelectInput(gettext("SELECT GROUP"), "cc_card_group", "id, name", "", "name", "ASC", "id_group");
+$HD_Form -> AddSearchSelectInput(gettext("SELECT CURRENCY"), "currency", $currency_list_r);
 
 
 if (($popup_select>=1)) {
@@ -284,7 +282,7 @@ if (($popup_select>=1)) {
 	}
 
 	$HD_Form -> FG_ENABLE_INFO_BUTTON = true;
-	$HD_Form -> FG_INFO_LINK = "A2B_card_info.php?id=";
+	$HD_Form -> FG_INFO_BUTTON_LINK = "A2B_card_info.php?id=";
 
 	if (has_rights (ACX_DELETE_CUSTOMER)) {
 		$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
@@ -309,15 +307,14 @@ if (($popup_select>=1)) {
 	}
 }
 
-$HD_Form -> FG_FILTER_APPLY = true;
-$HD_Form -> FG_FILTERFIELD = 'cardnumber';
-$HD_Form -> FG_FILTERFIELDNAME = 'account number';
-$HD_Form -> FG_FILTER_FORM_ACTION = 'list';
+$HD_Form -> FG_FILTER_ENABLE = true;
+$HD_Form -> FG_FILTER_COLUMN = 'cardnumber';
+$HD_Form -> FG_FILTER_LABEL = 'account number';
 
 
 if (isset($filterprefix)  &&  (strlen($filterprefix)>0)) {
-	if (strlen($HD_Form -> FG_TABLE_CLAUSE)>0) $HD_Form -> FG_TABLE_CLAUSE.=" AND ";
-	$HD_Form -> FG_TABLE_CLAUSE.="username like '$filterprefix%'";
+	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
+	$HD_Form -> FG_QUERY_WHERE_CLAUSE.="username like '$filterprefix%'";
 }
 
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;

@@ -80,8 +80,6 @@ $HD_Form -> AddViewElement(gettext("SUPPORT BOX"), "id_support", true, "15", nul
 
 $HD_Form -> FieldViewElement ('id, name, activated,type_user, id_support ');
 
-$HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO")." ".strtoupper($HD_Form->FG_INSTANCE_NAME)." ".gettext("CREATED!");
-
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form -> FG_ENABLE_ADD_BUTTON = true;

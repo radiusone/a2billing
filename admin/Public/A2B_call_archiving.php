@@ -58,7 +58,7 @@ $HD_Form -> init();
 $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "starttime";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
-$HD_Form -> FG_LIMITE_DISPLAY=30;
+$HD_Form -> FG_LIST_VIEW_PAGE_SIZE=30;
 
 $yesno = array();
 $yesno["1"] = array( gettext("Yes"), "1");
@@ -115,41 +115,41 @@ if ($Period=="month_older_rad") {
 }
 
 if (strpos($SQLcmd, 'WHERE') > 0) {
-    $HD_Form -> FG_TABLE_CLAUSE = substr($SQLcmd,6).$date_clause;
+    $HD_Form -> FG_QUERY_WHERE_CLAUSE = substr($SQLcmd,6).$date_clause;
 } elseif (strpos($date_clause, 'AND') > 0) {
-    $HD_Form -> FG_TABLE_CLAUSE = substr($date_clause,5);
+    $HD_Form -> FG_QUERY_WHERE_CLAUSE = substr($date_clause,5);
 }
 
-if (!isset ($HD_Form -> FG_TABLE_CLAUSE) || strlen($HD_Form -> FG_TABLE_CLAUSE)==0) {
+if (!isset ($HD_Form -> FG_QUERY_WHERE_CLAUSE) || strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)==0) {
     $cc_yearmonth = sprintf("%04d-%02d-%02d",date("Y"),date("n"),date("d"));
-    $HD_Form -> FG_TABLE_CLAUSE=" $UNIX_TIMESTAMP(starttime) >= $UNIX_TIMESTAMP('$cc_yearmonth')";
+    $HD_Form -> FG_QUERY_WHERE_CLAUSE=" $UNIX_TIMESTAMP(starttime) >= $UNIX_TIMESTAMP('$cc_yearmonth')";
 }
 
 if (isset($customer)  &&  ($customer>0)) {
-    if (strlen($HD_Form -> FG_TABLE_CLAUSE)>0) $HD_Form -> FG_TABLE_CLAUSE.=" AND ";
-    $HD_Form -> FG_TABLE_CLAUSE.="username='$customer'";
+    if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
+    $HD_Form -> FG_QUERY_WHERE_CLAUSE.="username='$customer'";
 } else {
     if (isset($entercustomer)  &&  ($entercustomer>0)) {
-        if (strlen($HD_Form -> FG_TABLE_CLAUSE)>0) $HD_Form -> FG_TABLE_CLAUSE.=" AND ";
-        $HD_Form -> FG_TABLE_CLAUSE.="username='$entercustomer'";
+        if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
+        $HD_Form -> FG_QUERY_WHERE_CLAUSE.="username='$entercustomer'";
     }
 }
 if ($_SESSION["is_admin"] == 1) {
     if (isset($enterprovider) && $enterprovider > 0) {
-        if (strlen($HD_Form -> FG_TABLE_CLAUSE) > 0) $HD_Form -> FG_TABLE_CLAUSE .= " AND ";
-        $HD_Form -> FG_TABLE_CLAUSE .= "t3.id_provider = '$enterprovider'";
+        if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE) > 0) $HD_Form -> FG_QUERY_WHERE_CLAUSE .= " AND ";
+        $HD_Form -> FG_QUERY_WHERE_CLAUSE .= "t3.id_provider = '$enterprovider'";
     }
     if (isset($entertrunk) && $entertrunk > 0) {
-        if (strlen($HD_Form -> FG_TABLE_CLAUSE) > 0) $HD_Form -> FG_TABLE_CLAUSE .= " AND ";
-        $HD_Form -> FG_TABLE_CLAUSE .= "t3.id_trunk = '$entertrunk'";
+        if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE) > 0) $HD_Form -> FG_QUERY_WHERE_CLAUSE .= " AND ";
+        $HD_Form -> FG_QUERY_WHERE_CLAUSE .= "t3.id_trunk = '$entertrunk'";
     }
     if (isset($entertariffgroup) && $entertariffgroup > 0) {
-        if (strlen($HD_Form -> FG_TABLE_CLAUSE) > 0) $HD_Form -> FG_TABLE_CLAUSE .= " AND ";
-        $HD_Form -> FG_TABLE_CLAUSE .= "id_tariffgroup = '$entertariffgroup'";
+        if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE) > 0) $HD_Form -> FG_QUERY_WHERE_CLAUSE .= " AND ";
+        $HD_Form -> FG_QUERY_WHERE_CLAUSE .= "id_tariffgroup = '$entertariffgroup'";
     }
     if (isset($enterratecard) && $enterratecard > 0) {
-        if (strlen($HD_Form -> FG_TABLE_CLAUSE) > 0) $HD_Form -> FG_TABLE_CLAUSE .= " AND ";
-        $HD_Form -> FG_TABLE_CLAUSE .= "id_ratecard = '$enterratecard'";
+        if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE) > 0) $HD_Form -> FG_QUERY_WHERE_CLAUSE .= " AND ";
+        $HD_Form -> FG_QUERY_WHERE_CLAUSE .= "id_ratecard = '$enterratecard'";
     }
 
 }
@@ -159,13 +159,13 @@ if (!isset($terminatecauseid)) {
     $terminatecauseid="ANSWER";
 }
 if ($terminatecauseid=="ANSWER") {
-    if (strlen($HD_Form -> FG_TABLE_CLAUSE)>0) $HD_Form -> FG_TABLE_CLAUSE.=" AND ";
-    $HD_Form -> FG_TABLE_CLAUSE .= " (terminatecauseid=1) ";
+    if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
+    $HD_Form -> FG_QUERY_WHERE_CLAUSE .= " (terminatecauseid=1) ";
 }
 
 if ($posted == 1) {
     $_SESSION['ss_calllist'] = '';
-    $_SESSION['ss_calllist'] = $HD_Form -> FG_TABLE_CLAUSE;
+    $_SESSION['ss_calllist'] = $HD_Form -> FG_QUERY_WHERE_CLAUSE;
 }
 if (isset($archive) && !empty($archive)) {
     $condition = $_SESSION['ss_calllist'];

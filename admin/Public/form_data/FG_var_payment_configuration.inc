@@ -58,8 +58,6 @@ $HD_Form->FG_OTHER_BUTTON1_LINK = "A2B_entity_payment_settings.php?id=";
 $HD_Form->FG_OTHER_BUTTON1_IMG = Images_Path . "/icon-viewdetails.gif";
 $HD_Form->FG_OTHER_BUTTON1_ALT = gettext("VIEW DETAILS");
 
-$HD_Form->CV_NO_FIELDS = gettext("THERE ARE NO " . strtoupper($HD_Form->FG_INSTANCE_NAME) . " CREATED!");
-
 $HD_Form->FG_ENABLE_EDIT_BUTTON = false;
 $HD_Form->FG_ENABLE_DELETE_BUTTON = false;
 $HD_Form->FG_ENABLE_ADD_BUTTON = false;

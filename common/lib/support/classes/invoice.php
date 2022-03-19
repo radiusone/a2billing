@@ -107,7 +107,7 @@ class invoice
             $instance_sub_table = new Table("cc_invoice_item", "*");
             $QUERY = " id_invoice = " . $this->id;
             $return = null;
-            $return = $instance_sub_table->get_list($DBHandle, $QUERY, "date");
+            $return = $instance_sub_table->get_list($DBHandle, $QUERY, ["date"]);
             $i = 0;
             foreach ($return as $value) {
                 $comment = new InvoiceItem($value['id'], $value['description'], $value['date'], $value["price"], $value["VAT"],$value["type_ext"],$value["id_ext"]);
@@ -129,7 +129,7 @@ class invoice
             $instance_sub_table = new Table("cc_invoice_item", "*");
             $QUERY = " id_invoice = " . $this->id;
             $return = null;
-            $return = $instance_sub_table->get_list($DBHandle, $QUERY, "date");
+            $return = $instance_sub_table->get_list($DBHandle, $QUERY, ["date"]);
             $i = 0;
             foreach ($return as $value) {
                 if ($value['id_ext'] && $value['type_ext'] == "CALLS") {
@@ -171,7 +171,7 @@ class invoice
             $instance_sub_table = new Table("cc_invoice_payment,cc_logpayment", "*");
             $CLAUSE = " id_invoice = " . $this->id . " AND id_payment = cc_logpayment.id";
             $result = null;
-            $result = $instance_sub_table->get_list($DBHandle, $CLAUSE, "date");
+            $result = $instance_sub_table->get_list($DBHandle, $CLAUSE, ["date"]);
             return $result;
         } else {
             return null;

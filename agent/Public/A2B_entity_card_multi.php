@@ -44,15 +44,6 @@ if (! has_rights (ACX_CUSTOMER)) {
     die();
 }
 
-$HD_Form -> FG_FILTER_SEARCH_FORM = false;
-$HD_Form -> FG_ENABLE_EDIT_BUTTON = false;
-$HD_Form -> FG_ENABLE_DELETE_BUTTON = false;
-$HD_Form -> FG_OTHER_BUTTON1 = false;
-$HD_Form -> FG_OTHER_BUTTON2 = false;
-$HD_Form -> FG_FILTER_APPLY = false;
-$HD_Form -> FG_LIST_ADDING_BUTTON1 = false;
-$HD_Form -> FG_LIST_ADDING_BUTTON2 = false;
-
 getpost_ifset(array('nb_to_create', 'creditlimit', 'cardnum', 'choose_tariff', 'gen_id', 'cardnum', 'choose_simultaccess',
     'choose_currency', 'choose_typepaid', 'creditlimit', 'enableexpire', 'expirationdate', 'expiredays', 'runservice', 'sip', 'iax',
     'cardnumberlength_list', 'tag', 'id_group', 'discount', 'id_seria'));
@@ -161,7 +152,7 @@ if ($nbcard>0 && $action=="generate" && $nb_error==0) {
         if (isset($sip)) $FG_ADITION_SECOND_ADD_VALUE .= ", 1";
         if (isset($iax)) $FG_ADITION_SECOND_ADD_VALUE .= ", 1";
 
-        $id_cc_card = $instance_sub_table -> Add_table ($HD_Form -> DBHandle, $FG_ADITION_SECOND_ADD_VALUE, null, null, $HD_Form -> FG_TABLE_ID);
+        $id_cc_card = $instance_sub_table -> Add_table ($HD_Form -> DBHandle, $FG_ADITION_SECOND_ADD_VALUE, null, null, $HD_Form -> FG_QUERY_PRIMARY_KEY);
         //create refill for each cards
 
         if ($addcredit > 0) {
@@ -275,7 +266,7 @@ if ($nbcard>0 && $action=="generate" && $nb_error==0) {
 }
 if (!isset($_SESSION["IDfilter"])) $_SESSION["IDfilter"]='NODEFINED';
 
-$HD_Form -> FG_TABLE_CLAUSE = " lastname='".$_SESSION["IDfilter"]."'";
+$HD_Form -> FG_QUERY_WHERE_CLAUSE = " lastname='".$_SESSION["IDfilter"]."'";
 
 // END GENERATE CARDS
 
@@ -298,11 +289,11 @@ echo $CC_help_generate_customer;
 
 $instance_table_tariff = new Table("cc_tariffgroup LEFT JOIN cc_agent_tariffgroup ON cc_agent_tariffgroup.id_tariffgroup = cc_tariffgroup.id ", "id, tariffgroupname");
 $FG_TABLE_CLAUSE = "cc_agent_tariffgroup.id_agent = ".$_SESSION['agent_id'];
-$list_tariff = $instance_table_tariff -> get_list ($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "tariffgroupname");
+$list_tariff = $instance_table_tariff -> get_list ($HD_Form->DBHandle, $FG_TABLE_CLAUSE, ["tariffgroupname"]);
 $nb_tariff = count($list_tariff);
 $FG_TABLE_CLAUSE =  "cc_card_group.id_agent=".$_SESSION['agent_id'] ;
 $instance_table_group=  new Table("cc_card_group"," id, name ");
-$list_group = $instance_table_group  -> get_list ($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "name");
+$list_group = $instance_table_group  -> get_list ($HD_Form->DBHandle, $FG_TABLE_CLAUSE, ["name"]);
 
 // FORM FOR THE GENERATION
 ?>
@@ -471,11 +462,13 @@ $HD_Form -> create_toppage ($form_action);
 
 $HD_Form -> create_form($form_action, $list) ;
 
-$_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR]= "SELECT ".$HD_Form -> FG_EXPORT_FIELD_LIST." FROM $HD_Form->FG_TABLE_NAME";
-if (strlen($HD_Form->FG_TABLE_CLAUSE)>1)
-    $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] .= " WHERE $HD_Form->FG_TABLE_CLAUSE ";
-if (!is_null ($HD_Form->FG_ORDER) && ($HD_Form->FG_ORDER!='') && !is_null ($HD_Form->FG_SENS) && ($HD_Form->FG_SENS!=''))
-    $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR].= " ORDER BY $HD_Form->FG_ORDER $HD_Form->FG_SENS";
+$_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR]= "SELECT ". implode(",", $HD_Form -> FG_EXPORT_FIELD_LIST) ." FROM $HD_Form->FG_QUERY_TABLE_NAME";
+if (strlen($HD_Form->FG_QUERY_WHERE_CLAUSE)>1)
+    $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] .= " WHERE $HD_Form->FG_QUERY_WHERE_CLAUSE ";
+if (!empty($HD_Form->FG_QUERY_ORDERBY_COLUMNS) && !empty($HD_Form->FG_QUERY_DIRECTION)) {
+    $ord = implode(",", $HD_Form->FG_QUERY_ORDERBY_COLUMNS);
+    $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] .= " ORDER BY $ord $HD_Form->FG_QUERY_DIRECTION";
+}
 
 // #### FOOTER SECTION
 $smarty->display('footer.tpl');

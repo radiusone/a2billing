@@ -91,10 +91,10 @@ if ($batchupdate == 1 && is_array($check)) {
         $loop_pass++;
     }
 
-    $SQL_UPDATE = "UPDATE $HD_Form->FG_TABLE_NAME SET $SQL_UPDATE";
-    if (strlen($HD_Form->FG_TABLE_CLAUSE)>1) {
+    $SQL_UPDATE = "UPDATE $HD_Form->FG_QUERY_TABLE_NAME SET $SQL_UPDATE";
+    if (strlen($HD_Form->FG_QUERY_WHERE_CLAUSE)>1) {
         $SQL_UPDATE .= ' WHERE ';
-        $SQL_UPDATE .= $HD_Form->FG_TABLE_CLAUSE;
+        $SQL_UPDATE .= $HD_Form->FG_QUERY_WHERE_CLAUSE;
     }
     $update_msg_error = '<center><font color="red"><b>'.gettext('Could not perform the batch update!').'</b></font></center>';
 
@@ -167,8 +167,8 @@ if ( (isset ($id_cc_card) && (is_numeric($id_cc_card)  != "")) && ( $form_action
     $HD_Form->init();
 }
 
-$HD_Form -> FG_EDITION_LINK = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?form_action=ask-edit&atmenu=$atmenu&id=";
-$HD_Form -> FG_DELETION_LINK = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?form_action=ask-delete&atmenu=$atmenu&id=";
+$HD_Form -> FG_EDIT_BUTTON_LINK = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?form_action=ask-edit&atmenu=$atmenu&id=";
+$HD_Form -> FG_DELETE_BUTTON_LINK = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?form_action=ask-delete&atmenu=$atmenu&id=";
 
 if ($id != "" || !is_null($id)) {
     $HD_Form -> FG_EDITION_CLAUSE = str_replace("%id", "$id", $HD_Form -> FG_EDITION_CLAUSE);
@@ -265,7 +265,7 @@ if ($form_action=='list') {
     <div class="tohide" style="display:none;">
 
 <center>
-<b>&nbsp;<?php echo $HD_Form -> FG_NB_RECORD ?> <?php echo gettext("cards selected!"); ?>&nbsp;<?php echo gettext("Use the options below to batch update the selected cards.");?></b>
+<b>&nbsp;<?php echo $HD_Form -> FG_LIST_VIEW_ROW_COUNT ?> <?php echo gettext("cards selected!"); ?>&nbsp;<?php echo gettext("Use the options below to batch update the selected cards.");?></b>
     <table align="center" border="0" width="65%"  cellspacing="1" cellpadding="2">
     <tbody>
     <form name="updateForm" action="<?php echo filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)?>" method="post">

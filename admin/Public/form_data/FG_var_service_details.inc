@@ -49,8 +49,8 @@ $HD_Form = new FormHandler("cc_service", "service_details");
 $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "id";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
-$HD_Form -> FG_TABLE_CLAUSE = " id='$id'";
-$HD_Form -> FG_LIMITE_DISPLAY = 1;
+$HD_Form -> FG_QUERY_WHERE_CLAUSE = " id='$id'";
+$HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 1;
 
 
 $HD_Form -> AddViewElement(gettext("NAME"), "name");
@@ -63,8 +63,6 @@ $HD_Form -> AddViewElement(gettext("TOTALCARDPERFORM"), "totalcardperform");
 
 // added a parameter to append  FG_TABLE_ID  ( by default ) or disable 0.
 $HD_Form -> FieldViewElement ('name, numberofrun, datelastrun, totalcredit, totalcardperform',0);
-
-$HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO")." ".strtoupper($HD_Form->FG_INSTANCE_NAME)." ".gettext("CREATED!");
 
 $HD_Form -> FG_ENABLE_ADD_BUTTON = false;
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = false;

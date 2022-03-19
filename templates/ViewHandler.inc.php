@@ -79,53 +79,51 @@ $hasActionButtons = ($this->FG_ENABLE_DELETE_BUTTON || $this->FG_ENABLE_INFO_BUT
 </div>
 <?php endif ?>
 
-<?php if ($this -> FG_FILTER_APPLY || $this -> FG_FILTER_APPLY2): ?>
+<?php if ($this -> FG_FILTER_ENABLE || $this -> FG_FILTER2_ENABLE): ?>
 <div class="row pb-3">
 <form name="theFormFilter" action="" class="col">
     <input type="hidden" name="atmenu" value="<?= $processed['atmenu'] ?>"/>
     <input type="hidden" name="popup_select" value="<?= $processed['popup_select'] ?>"/>
     <input type="hidden" name="popup_formname" value="<?= $processed['popup_formname'] ?>"/>
     <input type="hidden" name="popup_fieldname" value="<?= $processed['popup_fieldname'] ?>"/>
-    <input type="hidden" name="form_action" value="<?= $this->FG_FILTER_FORM_ACTION ?>"/>
+    <input type="hidden" name="form_action" value="list"/>
     <?php foreach ($processed as $key => $val): ?>
         <?php if (!empty($key) && $key !== 'current_page' && $key !== 'id'): ?>
         <input type="hidden" name="<?= $key?>" value="<?= $val?>"/>
         <?php endif ?>
     <?php endforeach ?>
     <div class="row pb-3 align-items-center">
-        <?php if ($this->FG_FILTER_APPLY): ?>
-            <?php $pu = explode(",", trim($this->FG_FILTERPOPUP[1] ?? "", ", ")) ?>
+        <?php if ($this->FG_FILTER_ENABLE): ?>
         <div class="col-auto">
             <label for="filterprefix" class="form-label d-inline w-50">
                 <?= gettext("Filter on") ?>
-                <?= $this->FG_FILTERFIELDNAME ?>:
+                <?= $this->FG_FILTER_LABEL ?>:
             </label>
-            <input type="hidden" name="filterfield" value="<?= $this->FG_FILTERFIELD?>"/>
+            <input type="hidden" name="filterfield" value="<?= $this->FG_FILTER_COLUMN?>"/>
             <input
                 type="text"
                 id="filterprefix"
                 name="filterprefix"
                 value="<?= $processed['filterprefix'] ?>"
                 class="form-control form-control-sm d-inline w-50"
-            /><?php if ($this -> FG_FILTERTYPE === 'POPUPVALUE'): ?>&nbsp;<a href="<?= $this->FG_FILTERPOPUP[0] ?>" data-window-name="<?= trim($pu[0], "'\" ") ?>" data-popup-options="<?= trim($pu[1], "'\" ") ?>" class="badge bg-primary popup_trigger" aria-label="open a popup to select an item" >&gt;</a><?php endif ?>
+            />
         </div>
         <?php endif ?>
 
-        <?php if ($this->FG_FILTER_APPLY2): ?>
-            <?php $pu = explode(",", trim($this->FG_FILTERPOPUP2[1] ?? "", ", ")) ?>
+        <?php if ($this->FG_FILTER2_ENABLE): ?>
         <div class="col-auto">
             <label for="filterprefix2" class="form-label d-inline w-50">
                 <?= gettext("Filter on");?>
-                <?= $this->FG_FILTERFIELDNAME2 ?>:
+                <?= $this->FG_FILTER2_LABEL ?>:
             </label>
-            <input type="hidden" name="filterfield2" value="<?= $this->FG_FILTERFIELD2?>"/>
+            <input type="hidden" name="filterfield2" value="<?= $this->FG_FILTER2_COLUMN?>"/>
             <input
                 type="text"
                 id="filterprefix2"
                 name="filterprefix2"
                 value=""
                 class="form-control form-control-sm d-inline w-50"
-            /><?php if ($this->FG_FILTERTYPE2 === 'POPUPVALUE'): ?>&nbsp;<a href="<?= $this->FG_FILTERPOPUP2[0] ?>" data-window-name="<?= trim($pu[0], "'\" ") ?>" data-popup-options="<?= trim($pu[1], "'\" ") ?>" class="badge bg-primary popup_trigger" aria-label="open a popup to select an item" >&gt;</a><?php endif ?>
+            />
         </div>
         <?php endif ?>
         <div class="col-auto">
@@ -139,14 +137,14 @@ $hasActionButtons = ($this->FG_ENABLE_DELETE_BUTTON || $this->FG_ENABLE_INFO_BUT
 <div class="row pb-3"><div class="col">
 <table class="table table-bordered table-striped table-hover caption-top <?php if ($popup_select): ?>table-sm<?php endif ?>">
     <caption>
-        <?= $this->CV_TITLE_TEXT ?> – <?= $this->FG_NB_RECORD ?> <?= gettext("Records") ?>
+        <?= $this->CV_TITLE_TEXT ?> – <?= $this->FG_LIST_VIEW_ROW_COUNT ?> <?= gettext("Records") ?>
     </caption>
     <thead>
         <tr>
             <?php foreach ($this->FG_LIST_TABLE_CELLS as $row): ?>
             <th>
                 <?php if ($row["sortable"]): ?>
-                <a class="sort <?= $this->FG_ORDER === $row["field"] ? strtolower($this->FG_SENS) : "" ?>" href="<?= "?stitle=$stitle&atmenu=$processed[atmenu]&current_page=$current_page&letter=$letter&popup_select=$processed[popup_select]&order=$row[field]&sens=" . ($this->FG_SENS === "ASC" ? "DESC" : "ASC") . $this-> CV_FOLLOWPARAMETERS ?>">
+                <a class="sort <?= $this->FG_QUERY_ORDERBY_COLUMNS[0] === $row["field"] ? strtolower($this->FG_QUERY_DIRECTION) : "" ?>" href="<?= "?stitle=$stitle&atmenu=$processed[atmenu]&current_page=$current_page&letter=$letter&popup_select=$processed[popup_select]&order=$row[field]&sens=" . ($this->FG_QUERY_DIRECTION === "ASC" ? "DESC" : "ASC") . $this-> CV_FOLLOWPARAMETERS ?>">
                 <?php endif ?>
                     <?= $row["header"] ?>
                 <?php if ($row["sortable"]): ?>
@@ -169,7 +167,7 @@ $hasActionButtons = ($this->FG_ENABLE_DELETE_BUTTON || $this->FG_ENABLE_INFO_BUT
             <?php foreach($this->FG_LIST_TABLE_CELLS as $j=> $row): ?>
             <?php
             if (str_starts_with($row["type"], "lie")) {
-                $options = (new Table($row["sql_table"], $row["sql_columns"]))->get_list($this->DBHandle, str_replace("%id", $item[$j - $k], $row["sql_clause"]), null, null, null, null, null, 10);
+                $options = (new Table($row["sql_table"], $row["sql_columns"]))->get_list($this->DBHandle, str_replace("%id", $item[$j - $k], $row["sql_clause"]), [], "ASC", 0, 0, [], 10);
                 $record_display = $row["sql_display"];
                 $record_display = preg_replace_callback("/%([0-9]+)/", function ($m) use ($options) {
                     if (is_array($options) && isset($options[0][$m[1] - 1])) {
@@ -228,8 +226,8 @@ $hasActionButtons = ($this->FG_ENABLE_DELETE_BUTTON || $this->FG_ENABLE_INFO_BUT
             <?php if ($hasActionButtons): ?>
             <td>
                 <?php if($this->FG_ENABLE_INFO_BUTTON): ?>
-                    <a href="<?= $this->FG_INFO_LINK?><?= $item["id"] ?>">
-                        <img alt="<?= $this->FG_INFO_ALT ?>" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJGSURBVDjLjdJLSNRBHMDx78yqLZaKS75DPdgDDaFDbdJmde5QlhCJGxgpRJfqEEKnIsJLB7skQYQKZaSmdLaopPCgEvSCShCMzR5a7oq7/3l12RVtjfzBMA/4fWZ+MyOccwBM3g8HEbIdfCEhfAFnLVapOa28Uevpjrqz/WOsERJgsu9Uq5CZQzgqrJfo9BajNd5irEYn4p3OUiFExtCLmw2tawFi4l5zUMjMIau9u7K+qxeoAcoAA0wDb2OPwmfA16LiiaOHLj1edRLpkO3WmIis7+oBDgJbgQ2AH6gC6jY19N62RkcctKeVIJAhp9QgUA3kJXdONZVcq9JxPSgQoXRAyIDRth8oAXQyKdWnoCKrTD9CBv4GMqx1WGNZkeRWJKbG2hiD1Cb9FbTnzWFdY/LCdLKlgNQ84gyNKqHm0gDjqVHnxDHgA/B9RQkpaB6YklkZl62np9KBhOqwjpKFgeY2YAz4BESBWHI8Hhs6PVVSvc3v98ye4fP7T676B845nt040ip98qpWJmI9PWiU6bfWgXGN2YHcKwU7tsuc4kpUPMbU0+f8+vKt+Pitl7PLAMDI9cNBoB0hQwICzjqUp6MZvsy8yvp95BRuQUjJ75mPvH4wYo1NlJ64Mza7DPwrhi8cCOeXl/aUB4P4c/NJxKLMvpngycCrzxVFG2v/CwAMnguF80oLe8p27cQh+fnpPV/fTc95S6piXQDAw7a9YbWkezZXFbAwMx/xPFXb1D3+Y90AQF/L7kAsri9mZ4lrTd0TcYA/Kakr+x2JSPUAAAAASUVORK5CYII=">
+                    <a href="<?= $this->FG_INFO_BUTTON_LINK?><?= $item["id"] ?>">
+                        <img alt="<?= _("About this ") . $this->FG_INSTANCE_NAME ?>" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJGSURBVDjLjdJLSNRBHMDx78yqLZaKS75DPdgDDaFDbdJmde5QlhCJGxgpRJfqEEKnIsJLB7skQYQKZaSmdLaopPCgEvSCShCMzR5a7oq7/3l12RVtjfzBMA/4fWZ+MyOccwBM3g8HEbIdfCEhfAFnLVapOa28Uevpjrqz/WOsERJgsu9Uq5CZQzgqrJfo9BajNd5irEYn4p3OUiFExtCLmw2tawFi4l5zUMjMIau9u7K+qxeoAcoAA0wDb2OPwmfA16LiiaOHLj1edRLpkO3WmIis7+oBDgJbgQ2AH6gC6jY19N62RkcctKeVIJAhp9QgUA3kJXdONZVcq9JxPSgQoXRAyIDRth8oAXQyKdWnoCKrTD9CBv4GMqx1WGNZkeRWJKbG2hiD1Cb9FbTnzWFdY/LCdLKlgNQ84gyNKqHm0gDjqVHnxDHgA/B9RQkpaB6YklkZl62np9KBhOqwjpKFgeY2YAz4BESBWHI8Hhs6PVVSvc3v98ye4fP7T676B845nt040ip98qpWJmI9PWiU6bfWgXGN2YHcKwU7tsuc4kpUPMbU0+f8+vKt+Pitl7PLAMDI9cNBoB0hQwICzjqUp6MZvsy8yvp95BRuQUjJ75mPvH4wYo1NlJ64Mza7DPwrhi8cCOeXl/aUB4P4c/NJxKLMvpngycCrzxVFG2v/CwAMnguF80oLe8p27cQh+fnpPV/fTc95S6piXQDAw7a9YbWkezZXFbAwMx/xPFXb1D3+Y90AQF/L7kAsri9mZ4lrTd0TcYA/Kakr+x2JSPUAAAAASUVORK5CYII=">
                     </a>
                 <?php endif ?>
                 <?php if($this->FG_ENABLE_EDIT_BUTTON): ?>
@@ -248,7 +246,7 @@ $hasActionButtons = ($this->FG_ENABLE_DELETE_BUTTON || $this->FG_ENABLE_INFO_BUT
                     );
                     ?>
                     <?php if($check): ?>
-                        <a href="<?= $this->FG_EDITION_LINK?><?= $item["id"]?>">
+                        <a href="<?= $this->FG_EDIT_BUTTON_LINK?><?= $item["id"]?>">
                             <img alt="<?= _("Edit this ") . $this->FG_INSTANCE_NAME ?>" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAFUSURBVDjLrZM/SAJxGIZdWwuDlnCplkAEm1zkaIiGFFpyMIwGK5KGoK2lphDKkMDg3LLUSIJsSKhIi+684CokOtTiMizCGuzEU5K3vOEgKvtBDe/2Pc8H3x8NAM1fQlx4H9M3pcOWp6TXWmM8A7j0629v1nraiAVC0IrrwATKIgs5xyG5QiE+Z4iQdoeU2oAsnqCSO1NSTu+D9VhqRLD8nIB8F0Q2MgmJDyipCzjvYJkIfpN2UBLG8MpP4dxvQ3ZzGuyyBQ2H+AnOOCBd9aL6soh81A5hyYSGWyCFvxUcerqI4S+CvYVOFPMHxLAq8I3qdHVY5LbBhJzEsCrwutpRFBlUHy6wO2tEYtWAzLELPN2P03kjfj3luqDycV2F8AgefWbEnVqEHa2IznSD6BdsVDNStB0lfh0FPoQjdx8RrAqGzC0YprSgxzsUMOY2bf37N/6Ud1Vc9yYcH50CAAAAAElFTkSuQmCC">
                         </a>
                     <?php endif ?>
@@ -268,7 +266,7 @@ $hasActionButtons = ($this->FG_ENABLE_DELETE_BUTTON || $this->FG_ENABLE_INFO_BUT
                     );
                     ?>
                     <?php if ($check): ?>
-                        <a href="<?= $this->FG_DELETION_LINK?><?= $item["id"]?>">
+                        <a href="<?= $this->FG_DELETE_BUTTON_LINK?><?= $item["id"]?>">
                             <img alt="<?= _("Delete this ") . $this->FG_INSTANCE_NAME ?>" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAIhSURBVDjLlZPrThNRFIWJicmJz6BWiYbIkYDEG0JbBiitDQgm0PuFXqSAtKXtpE2hNuoPTXwSnwtExd6w0pl2OtPlrphKLSXhx07OZM769qy19wwAGLhM1ddC184+d18QMzoq3lfsD3LZ7Y3XbE5DL6Atzuyilc5Ciyd7IHVfgNcDYTQ2tvDr5crn6uLSvX+Av2Lk36FFpSVENDe3OxDZu8apO5rROJDLo30+Nlvj5RnTlVNAKs1aCVFr7b4BPn6Cls21AWgEQlz2+Dl1h7IdA+i97A/geP65WhbmrnZZ0GIJpr6OqZqYAd5/gJpKox4Mg7pD2YoC2b0/54rJQuJZdm6Izcgma4TW1WZ0h+y8BfbyJMwBmSxkjw+VObNanp5h/adwGhaTXF4NWbLj9gEONyCmUZmd10pGgf1/vwcgOT3tUQE0DdicwIod2EmSbwsKE1P8QoDkcHPJ5YESjgBJkYQpIEZ2KEB51Y6y3ojvY+P8XEDN7uKS0w0ltA7QGCWHCxSWWpwyaCeLy0BkA7UXyyg8fIzDoWHeBaDN4tQdSvAVdU1Aok+nsNTipIEVnkywo/FHatVkBoIhnFisOBoZxcGtQd4B0GYJNZsDSiAEadUBCkstPtN3Avs2Msa+Dt9XfxoFSNYF/Bh9gP0bOqHLAm2WUF1YQskwrVFYPWkf3h1iXwbvqGfFPSGW9Eah8HSS9fuZDnS32f71m8KFY7xs/QZyu6TH2+2+FAAAAABJRU5ErkJggg==">
                         </a>
                     <?php endif ?>
@@ -336,7 +334,7 @@ $hasActionButtons = ($this->FG_ENABLE_DELETE_BUTTON || $this->FG_ENABLE_INFO_BUT
 <?php if ($this->CV_DISPLAY_BROWSE_PAGE): ?>
 <div class="row pb-3">
     <div class="col">
-        <?= FormHandler::printPages($this->CV_CURRENT_PAGE + 1, $this->FG_NB_RECORD_MAX, "?stitle=$stitle&atmenu=$processed[atmenu]&current_page=%s&filterprefix=$processed[filterprefix]&order=$processed[order]&sens=$processed[sens]&mydisplaylimit=$processed[mydisplaylimit]&popup_select=$processed[popup_select]&letter=$letter$this->CV_FOLLOWPARAMETERS") ?>
+        <?= FormHandler::printPages($this->CV_CURRENT_PAGE + 1, $this->FG_LIST_VIEW_PAGE_COUNT, "?stitle=$stitle&atmenu=$processed[atmenu]&current_page=%s&filterprefix=$processed[filterprefix]&order=$processed[order]&sens=$processed[sens]&mydisplaylimit=$processed[mydisplaylimit]&popup_select=$processed[popup_select]&letter=$letter$this->CV_FOLLOWPARAMETERS") ?>
     </div>
 </div>
 <?php endif ?>
@@ -356,10 +354,10 @@ $hasActionButtons = ($this->FG_ENABLE_DELETE_BUTTON || $this->FG_ENABLE_INFO_BUT
                 <?php endif ?>
             <?php endforeach ?>
             <select id="displaylimit" name="mydisplaylimit" size="1" class="form-select form-select-sm d-inline w-50">
-                <option value="10" <?= $_SESSION["$this->FG_TABLE_NAME-displaylimit"] < 50 ? 'selected="selected"' : "" ?>>10</option>
-                <option value="50" <?= $_SESSION["$this->FG_TABLE_NAME-displaylimit"] == 50 ? 'selected="selected"' : "" ?>>50</option>
-                <option value="100" <?= $_SESSION["$this->FG_TABLE_NAME-displaylimit"] == 100 ? 'selected="selected"' : "" ?>>100</option>
-                <option value="ALL" <?= $_SESSION["$this->FG_TABLE_NAME-displaylimit"] > 100 ? 'selected="selected"' : "" ?>>All</option>
+                <option value="10" <?= $_SESSION["$this->FG_QUERY_TABLE_NAME-displaylimit"] < 50 ? 'selected="selected"' : "" ?>>10</option>
+                <option value="50" <?= $_SESSION["$this->FG_QUERY_TABLE_NAME-displaylimit"] == 50 ? 'selected="selected"' : "" ?>>50</option>
+                <option value="100" <?= $_SESSION["$this->FG_QUERY_TABLE_NAME-displaylimit"] == 100 ? 'selected="selected"' : "" ?>>100</option>
+                <option value="ALL" <?= $_SESSION["$this->FG_QUERY_TABLE_NAME-displaylimit"] > 100 ? 'selected="selected"' : "" ?>>All</option>
             </select>
         </form>
     </div>

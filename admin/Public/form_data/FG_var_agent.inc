@@ -50,7 +50,6 @@ $FG_INSTANCE_NAME = gettext("Agent");
 $HD_Form = new FormHandler("cc_agent", $FG_INSTANCE_NAME);
 
 $HD_Form->no_debug();
-$HD_Form -> FG_TABLE_ID = " id";
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = " datecreation";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "ASC";
 
@@ -69,7 +68,7 @@ $HD_Form -> FG_OTHER_BUTTON2_LINK="A2B_entity_payment_agent.php?form_action=ask-
 $HD_Form -> FG_OTHER_BUTTON2_IMG = Images_Path . "/money.png";
 $HD_Form -> FG_OTHER_BUTTON2_ALT = gettext('Add Payment to this Agent');
 
-$HD_Form -> FG_TABLE_CLAUSE = $FG_TABLE_CLAUSE;
+$HD_Form -> FG_QUERY_WHERE_CLAUSE = $FG_TABLE_CLAUSE;
 
 $language_list = getLanguagesList();
 
@@ -124,7 +123,7 @@ if ($popup_select) {
 }
 
 if ($popup_select) {
-	$HD_Form -> FG_LIMITE_DISPLAY = 7;
+	$HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 7;
 	$HD_Form -> CV_FOLLOWPARAMETERS = "&popup_select=" . $popup_select . "&popup_formname=" . $popup_formname . "&popup_fieldname=" . $popup_fieldname;
 
 	$HD_Form -> FG_OTHER_BUTTON1 = true;
@@ -139,7 +138,7 @@ if ($popup_select) {
 
 } else {
 	$HD_Form -> FG_ENABLE_INFO_BUTTON = true;
-	$HD_Form -> FG_INFO_LINK = "A2B_agent_info.php?id=";
+	$HD_Form -> FG_INFO_BUTTON_LINK = "A2B_agent_info.php?id=";
 }
 
 if (has_rights (ACX_MODIFY_AGENTS) && !($popup_select)) {

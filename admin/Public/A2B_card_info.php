@@ -638,7 +638,7 @@ echo get_login_button ($DBHandle, $id);
 // We need to list all required columns as both tables have an 'id' column
 $subscription_table = new Table('cc_card_subscription,cc_subscription_service','cc_card_subscription.id,id_cc_card,startdate,product_name,fee');
 $subscription_clause = "id_cc_card = ".$id." AND cc_card_subscription.id_subscription_fee = cc_subscription_service.id";
-$subscription_result = $subscription_table -> get_list($DBHandle, $subscription_clause, 'startdate', 'DESC', 10);
+$subscription_result = $subscription_table -> get_list($DBHandle, $subscription_clause, ['startdate'], 'DESC', 10);
 if (sizeof($subscription_result)>0 && $subscription_result[0]!=null) {
 ?>
 <table class="toppage_maintable">
@@ -710,7 +710,7 @@ if (sizeof($subscription_result)>0 && $subscription_result[0]!=null) {
 
 $payment_table = new Table('cc_logpayment','*');
 $payment_clause = "card_id = ".$id;
-$payment_result = $payment_table -> get_list($DBHandle, $payment_clause, 'date', 'DESC', 10);
+$payment_result = $payment_table -> get_list($DBHandle, $payment_clause, ['date'], 'DESC', 10);
 if (sizeof($payment_result)>0 && $payment_result[0]!=null) {
 ?>
 <table class="toppage_maintable">
@@ -779,7 +779,7 @@ if (sizeof($payment_result)>0 && $payment_result[0]!=null) {
 
 $refill_table = new Table('cc_logrefill','*');
 $refill_clause = "card_id = ".$id;
-$refill_result = $refill_table -> get_list($DBHandle, $refill_clause, 'date', 'DESC', 10);
+$refill_result = $refill_table -> get_list($DBHandle, $refill_clause, ['date'], 'DESC', 10);
 
 if (sizeof($refill_result)>0 && $refill_result[0]!=null) {
 ?>

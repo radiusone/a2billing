@@ -46,7 +46,6 @@ getpost_ifset(array('id', 'status', 'Period', 'frommonth', 'fromstatsmonth', 'to
 $HD_Form = new FormHandler("cc_epayment_log_agent");
 
 $HD_Form->no_debug();
-$HD_Form -> FG_TABLE_ID = "id";
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "creationdate";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
@@ -80,21 +79,21 @@ if ($Period=="Month"){
 	}
 }
 
-if (strlen($HD_Form -> FG_TABLE_CLAUSE)>0 && strlen($enteradmin)>0) $HD_Form -> FG_TABLE_CLAUSE.=" AND ";
+if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0 && strlen($enteradmin)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
 if($enteradmin != "")
 {
-	$HD_Form -> FG_TABLE_CLAUSE.=" iduser = '$enteradmin'";
+	$HD_Form -> FG_QUERY_WHERE_CLAUSE.=" iduser = '$enteradmin'";
 }
-if (strlen($enteradmin)>0 && strlen($loglevel)>0 && $loglevel > 0) $HD_Form -> FG_TABLE_CLAUSE.=" AND ";
+if (strlen($enteradmin)>0 && strlen($loglevel)>0 && $loglevel > 0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
 if($status >= 0 && $status != '')
 {
-	$HD_Form -> FG_TABLE_CLAUSE.=" status = '$status'";
+	$HD_Form -> FG_QUERY_WHERE_CLAUSE.=" status = '$status'";
 }
-if (strlen($loglevel)>0 && strlen($date_clause)>0) $HD_Form -> FG_TABLE_CLAUSE.=" AND ";
+if (strlen($loglevel)>0 && strlen($date_clause)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
 if($date_clause != "")
 {
-	if (strlen($HD_Form -> FG_TABLE_CLAUSE)>0) $date_clause =" AND ".$date_clause;
-	$HD_Form -> FG_TABLE_CLAUSE.=" ".$date_clause;
+	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $date_clause =" AND ".$date_clause;
+	$HD_Form -> FG_QUERY_WHERE_CLAUSE.=" ".$date_clause;
 }
 
 
@@ -113,8 +112,7 @@ $HD_Form -> AddViewElement(gettext("Agent LOGIN"), "cardid", true, "30", "displa
 // added a parameter to append  FG_TABLE_ID  ( by default ) or disable 0.
 $HD_Form -> FieldViewElement ('id, creationdate, paymentmethod, status, cc_owner, amount, agent_id, agent_id ');
 
-$HD_Form -> CV_NO_FIELDS  = gettext("THERE ARE NO ".strtoupper($HD_Form->FG_INSTANCE_NAME)." CREATED!");
-$HD_Form -> FG_LIMITE_DISPLAY = 25;
+$HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 25;
 
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
@@ -197,14 +195,13 @@ $HD_Form -> AddEditElement (gettext("ID AGENT"),
 $HD_Form -> FieldEditElement ('id, creationdate, paymentmethod, status, cc_owner, amount, id_agent ');
 
 
-$HD_Form -> FG_FILTER_APPLY = true;
-$HD_Form -> FG_FILTERFIELD = 'agent_id';
-$HD_Form -> FG_FILTERFIELDNAME = 'agent_id';
-$HD_Form -> FG_FILTER_FORM_ACTION = 'list';
+$HD_Form -> FG_FILTER_ENABLE = true;
+$HD_Form -> FG_FILTER_COLUMN = 'agent_id';
+$HD_Form -> FG_FILTER_LABEL = 'agent_id';
 
 if (isset($filterprefix)  &&  (strlen($filterprefix)>0)){
-	if (strlen($HD_Form -> FG_TABLE_CLAUSE)>0) $HD_Form -> FG_TABLE_CLAUSE.=" AND ";
-	$HD_Form -> FG_TABLE_CLAUSE.="agent_id like '$filterprefix%'";
+	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
+	$HD_Form -> FG_QUERY_WHERE_CLAUSE.="agent_id like '$filterprefix%'";
 }
 
 

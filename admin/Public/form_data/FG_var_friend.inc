@@ -89,13 +89,12 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/telephone_add.png" ;
 
 $HD_Form -> FieldViewElement ('id_cc_card, username, accountcode, secret, callerid, context, defaultip');
 
-$HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO ".strtoupper($HD_Form->FG_INSTANCE_NAME)." CREATED!");
-$HD_Form -> FG_LIMITE_DISPLAY = 10;
+$HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 10;
 
 if (isset($friend_id)  &&  (strlen($friend_id)>0)) {
 	if ($friend_id!='all') {
-		if (strlen($HD_Form ->FG_TABLE_CLAUSE)>0) $HD_Form ->FG_TABLE_CLAUSE.=" AND ";
-		$HD_Form ->FG_TABLE_CLAUSE.="name='$friend_id'";
+		if (strlen($HD_Form ->FG_QUERY_WHERE_CLAUSE)>0) $HD_Form ->FG_QUERY_WHERE_CLAUSE.=" AND ";
+		$HD_Form ->FG_QUERY_WHERE_CLAUSE.="name='$friend_id'";
 	}
 }
 
@@ -107,7 +106,7 @@ $HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 
 $maxi='';
 if ($form_action=="ask-add") {
-	$card_gen = generate_unique_value($HD_Form->FG_TABLE_NAME);
+	$card_gen = generate_unique_value($HD_Form->FG_QUERY_TABLE_NAME);
 	$maxi = "value='".$card_gen."'";
 	$pass =  MDP_NUMERIC(5).MDP_STRING(10).MDP_NUMERIC(5);
 	$pass_secret = "value='".$pass."'";
@@ -930,15 +929,14 @@ if ($atmenu=='sip') {
 
 $HD_Form -> FieldEditElement ($field_list_edit);
 
-$HD_Form -> FG_FILTER_APPLY = true;
-$HD_Form -> FG_FILTERFIELD = 'username';
-$HD_Form -> FG_FILTERFIELDNAME = gettext('username');
-$HD_Form -> FG_FILTER_FORM_ACTION = 'list';
+$HD_Form -> FG_FILTER_ENABLE = true;
+$HD_Form -> FG_FILTER_COLUMN = 'username';
+$HD_Form -> FG_FILTER_LABEL = gettext('username');
 
 
 if (isset($filterprefix)  &&  (strlen($filterprefix)>0)){
-	if (strlen($HD_Form -> FG_TABLE_CLAUSE)>0) $HD_Form -> FG_TABLE_CLAUSE.=" AND ";
-	$HD_Form -> FG_TABLE_CLAUSE.="name like '$filterprefix%'";
+	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
+	$HD_Form -> FG_QUERY_WHERE_CLAUSE.="name like '$filterprefix%'";
 }
 
 $HD_Form -> FG_INTRO_TEXT_EDITION= '';

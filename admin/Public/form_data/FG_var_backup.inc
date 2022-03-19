@@ -88,8 +88,6 @@ if ($form_action == 'add'){
     }
 }
 
-$HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO")." ".strtoupper($HD_Form->FG_INSTANCE_NAME)." ".gettext("CREATED!");
-
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = false;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = false;
 $HD_Form -> FG_ENABLE_ADD_BUTTON = true;

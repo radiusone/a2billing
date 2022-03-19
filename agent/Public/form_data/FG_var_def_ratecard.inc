@@ -55,15 +55,14 @@ if ($_POST["destination"]) {
 $HD_Form = new FormHandler("cc_callplan_lcr LEFT JOIN cc_agent_tariffgroup ON tariffgroup_id=cc_agent_tariffgroup.id_tariffgroup", "Rates");
 
 
-$HD_Form -> FG_TABLE_ID = 'id';
-$HD_Form -> FG_TABLE_CLAUSE = "cc_agent_tariffgroup.id_agent=".$_SESSION['agent_id'];
+$HD_Form -> FG_QUERY_WHERE_CLAUSE = "cc_agent_tariffgroup.id_agent=".$_SESSION['agent_id'];
 $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = " dialprefix";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "ASC";
 
 $HD_Form -> FG_FILTER_SEARCH_SESSION_NAME = 'entity_ratecard_selection';
 
-$HD_Form -> SQL_GROUP = " GROUP BY dialprefix ";
+$HD_Form -> FG_QUERY_GROUPBY_COLUMNS = ["dialprefix"];
 
 $musiconhold_list = getMusicOnHold_List($A2B);
 $yesno = getYesNoList();
@@ -83,7 +82,7 @@ if (!$popup_select) {
 }
 
 if ($popup_select) {
-	$HD_Form -> FG_LIMITE_DISPLAY = 7;
+	$HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 7;
 	$HD_Form -> CV_FOLLOWPARAMETERS = "&popup_select=" . $popup_select . "&popup_formname=" . $popup_formname . "&popup_fieldname=" . $popup_fieldname;
 
 	$HD_Form -> FG_OTHER_BUTTON1 = true;
@@ -97,25 +96,23 @@ if ($popup_select) {
 		$HD_Form -> FG_OTHER_BUTTON1_LINK = "javascript:sendValue('|col0|');";
 	}
 } else {
-	$HD_Form -> FieldExportElement (RATE_EXPORT_FIELD_LIST);
+	$HD_Form -> FieldExportElement (explode(",", $A2B->config['webui']['rate_export_field_list']));
 	$HD_Form -> FG_EXPORT_CSV = false;
 	$HD_Form -> FG_EXPORT_XML = false;
 	$HD_Form -> FG_EXPORT_SESSION_VAR = "pr_export_entity_rates";
 }
 
-$HD_Form -> CV_NO_FIELDS  = gettext("NO")." ".strtoupper($HD_Form->FG_INSTANCE_NAME)." ".gettext("HAVE BEEN CREATED.");
-
+_
 // Search form
 $HD_Form -> FG_FILTER_SEARCH_FORM = true;
-$HD_Form -> FG_FILTER_SEARCH_TOP_TEXT = gettext("Define the criteria to search");
 $HD_Form -> FG_FILTER_SEARCH_1_TIME = true;
 $HD_Form -> FG_FILTER_SEARCH_1_TIME_TEXT = gettext("START DATE");
 $HD_Form -> FG_FILTER_SEARCH_1_TIME_FIELD = 'startdate';
 
-$HD_Form -> AddSearchElement_C1(gettext("PREFIX"),'dialprefix','dialprefixtype');
-$HD_Form -> AddSearchElement_C2(gettext("RATE INITIAL"),'rateinitial1','rateinitial1type','rateinitial2','rateinitial2type','rateinitial');
+$HD_Form -> AddSearchTextInput(gettext("PREFIX"),'dialprefix','dialprefixtype');
+$HD_Form -> AddSearchComparisonInput(gettext("RATE INITIAL"),'rateinitial1','rateinitial1type','rateinitial2','rateinitial2type','rateinitial');
 
-$HD_Form -> AddSearchElement_Select('SELECT CALLPLAN',"cc_tariffgroup,cc_agent_tariffgroup",
+$HD_Form -> AddSearchSqlSelectInput('SELECT CALLPLAN',"cc_tariffgroup,cc_agent_tariffgroup",
 	"cc_tariffgroup.id, cc_tariffgroup.tariffgroupname",
 	"cc_tariffgroup.id = cc_agent_tariffgroup.id_tariffgroup AND cc_agent_tariffgroup.id_agent=".$_SESSION['agent_id'],
 	"tariffgroupname","ASC","tariffgroup_id",1,null);
@@ -129,14 +126,13 @@ $HD_Form -> FG_TEXT_ADITION_CONFIRMATION = gettext("Your new")." ".$HD_Form->FG_
 
 $HD_Form -> FG_BUTTON_EDITION_BOTTOM_TEXT = $HD_Form -> FG_BUTTON_ADITION_BOTTOM_TEXT = gettext("Click 'Confirm Data' to continue.");
 
-$HD_Form -> FG_FILTER_APPLY = true;
-$HD_Form -> FG_FILTERFIELD = 'dialprefix';
-$HD_Form -> FG_FILTERFIELDNAME = 'dialprefix';
-$HD_Form -> FG_FILTER_FORM_ACTION = 'list';
+$HD_Form -> FG_FILTER_ENABLE = true;
+$HD_Form -> FG_FILTER_COLUMN = 'dialprefix';
+$HD_Form -> FG_FILTER_LABEL = 'dialprefix';
 
 if (isset($filterprefix)  &&  (strlen($filterprefix)>0)) {
-	if (strlen($HD_Form -> FG_TABLE_CLAUSE) > 0) {
-        $HD_Form -> FG_TABLE_CLAUSE.=" AND ";
+	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE) > 0) {
+        $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
     }
-	$HD_Form -> FG_TABLE_CLAUSE.="dialprefix like '$filterprefix%'";
+	$HD_Form -> FG_QUERY_WHERE_CLAUSE.="dialprefix like '$filterprefix%'";
 }

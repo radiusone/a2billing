@@ -170,7 +170,7 @@ if(empty($action)) $action="add";
 
 $table_message = new Table("cc_message_agent", "*");
 $clause_message = "id_agent = $id";
-$messages = $table_message -> get_list($DBHandle, $clause_message, 'order_display');
+$messages = $table_message -> get_list($DBHandle, $clause_message, ['order_display']);
 $smarty->display('main.tpl');
 $message_types = getMsgTypeList();
 ?>

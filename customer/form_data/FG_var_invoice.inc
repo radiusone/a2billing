@@ -51,15 +51,15 @@ if (!isset($form_action) || $form_action=="list") {
 	$HD_Form = new FormHandler("cc_invoice", "Invoice");
 }
 
-$HD_Form -> FG_TABLE_ID = 'cc_invoice.id';
-$HD_Form -> FG_TABLE_CLAUSE = " id_card = ".$_SESSION["card_id"]." AND status = 1";
+$HD_Form -> FG_QUERY_PRIMARY_KEY = 'cc_invoice.id';
+$HD_Form -> FG_QUERY_WHERE_CLAUSE = " id_card = ".$_SESSION["card_id"]." AND status = 1";
 $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
 
 
 $HD_Form -> FG_ENABLE_INFO_BUTTON = true;
-$HD_Form -> FG_INFO_LINK = "A2B_invoice_view.php?id=";
+$HD_Form -> FG_INFO_BUTTON_LINK = "A2B_invoice_view.php?id=";
 
 $HD_Form -> FG_OTHER_BUTTON3_LINK = "checkout_payment.php?item_type=invoice&item_id=";
 $HD_Form -> FG_OTHER_BUTTON3_IMG = Images_Path."/money.png";
@@ -75,6 +75,3 @@ $HD_Form -> AddViewElement(gettext("TITLE"), "title");
 $HD_Form -> AddViewElement(gettext("STATUS"), "paid_status", true, "", null, "list", $status_list);
 $HD_Form -> AddViewElement(gettext("AMOUNT INCL VAT"), "price", true, "", "display_2bill");
 $HD_Form -> FieldViewElement ("cc_invoice.reference, cc_invoice.date, title, cc_invoice.paid_status, total_price, id, cc_invoice.paid_status");
-
-
-$HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO INVOICE CREATED!");

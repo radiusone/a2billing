@@ -46,7 +46,7 @@ getpost_ifset(array('id', 'id_agent', 'id_tariff_group', 'code','id_group'));
 
 $HD_Form = new FormHandler("cc_agent_signup", "SIGNUP KEY");
 
-$HD_Form -> FG_TABLE_ID = 'cc_agent_signup.id';
+$HD_Form -> FG_QUERY_PRIMARY_KEY = 'cc_agent_signup.id';
 
 $HD_Form->no_debug();
 
@@ -64,7 +64,6 @@ $HD_Form -> AddViewElement(gettext("GROUP"), "id_group", true, "", "", "lie", "c
 
 $HD_Form -> FieldViewElement ('code, id_agent, id_tariffgroup ,id_group');
 
-$HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO ".strtoupper($HD_Form->FG_INSTANCE_NAME)." CREATED!");
 $HD_Form -> FG_OTHER_BUTTON1 = true;
 $HD_Form -> FG_OTHER_BUTTON1_ALT = 'URL';
 $HD_Form -> FG_OTHER_BUTTON1_IMG = Images_Path ."/link.png";

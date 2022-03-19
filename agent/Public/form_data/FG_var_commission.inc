@@ -48,8 +48,8 @@ getpost_ifset(array('id', 'card_id', 'date', 'payment','description','added_refi
 
 $HD_Form = new FormHandler("cc_agent_commission", "Commission");
 
-$HD_Form -> FG_TABLE_CLAUSE = " cc_agent_commission.id_agent=".$_SESSION['agent_id'] ;
-$HD_Form -> FG_TABLE_ID = 'cc_agent_commission.id';
+$HD_Form -> FG_QUERY_WHERE_CLAUSE = " cc_agent_commission.id_agent=".$_SESSION['agent_id'] ;
+$HD_Form -> FG_QUERY_PRIMARY_KEY = 'cc_agent_commission.id';
 
 $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
@@ -66,7 +66,6 @@ $HD_Form -> AddViewElement(gettext("LINK TO PAYMENT"), "id_payment", true, "", "
 
 $HD_Form -> FieldViewElement ('cc_agent_commission.id, id_card, id_agent, date, amount, commission_type , description, id_payment');
 
-$HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO ".strtoupper($HD_Form->FG_INSTANCE_NAME)." CREATED!");
 
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = false;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = false;

@@ -45,8 +45,8 @@ getpost_ifset(array('id', 'card_id', 'date', 'payment','description','added_refi
 
 $HD_Form = new FormHandler("cc_logpayment", gettext("payment"));
 
-$HD_Form -> FG_TABLE_ID = 'cc_logpayment.id';
-$HD_Form -> FG_TABLE_CLAUSE="card_id=".$_SESSION["card_id"];
+$HD_Form -> FG_QUERY_PRIMARY_KEY = 'cc_logpayment.id';
+$HD_Form -> FG_QUERY_WHERE_CLAUSE="card_id=".$_SESSION["card_id"];
 $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 

@@ -74,8 +74,6 @@ $HD_Form -> AddViewElement(gettext("NAME"), "name");
 $HD_Form -> AddViewElement(gettext("DESCRIPTION"), "description", true, "150");
 $HD_Form -> FieldViewElement ( 'name, description');
 
-$HD_Form -> CV_NO_FIELDS  = gettext("NO CUSTOMER GROUP CREATED!");
-
 $HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;

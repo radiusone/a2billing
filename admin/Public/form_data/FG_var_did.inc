@@ -95,7 +95,6 @@ $HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_did.php?form_action=ask-add&
 $HD_Form->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form->FG_LIST_ADDING_BUTTON_MSG1 = _("Add DID");
 $HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/telephone_add.png" ;
 
-$HD_Form->FG_TABLE_ID = "id";
 $HD_Form->FG_TABLE_DEFAULT_ORDER = "did";
 $HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
 $HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = 'add_did_use';
@@ -124,13 +123,10 @@ $HD_Form->AddViewElement("<acronym title=\"" . _("SELLING RATE") . "\">" . _("SR
 
 $HD_Form->FieldViewElement ('did, iduser, billingtype, startingdate, id_cc_didgroup, id_cc_country, activated, secondusedreal, reserved, fixrate, selling_rate');
 
-
-$HD_Form->CV_NO_FIELDS  = _("THERE ARE NO ".strtoupper($HD_Form->FG_INSTANCE_NAME)." CREATED!");
-
 $HD_Form->FG_ENABLE_ADD_BUTTON = true;
 $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
-$HD_Form->FG_SPLITABLE_FIELD = 'did';
+$HD_Form->FG_SPLITABLE_FIELDS[] = 'did';
 
 
 // TODO integrate in Framework
@@ -440,15 +436,15 @@ $HD_Form->FieldEditElement('did, billingtype, startingdate, expirationdate, id_c
 
 
 // Set the filter variables
-$HD_Form->FG_FILTER_APPLY = true;
-$HD_Form->FG_FILTERFIELD = 'did';
-$HD_Form->FG_FILTERFIELDNAME = 'did';
+$HD_Form->FG_FILTER_ENABLE = true;
+$HD_Form->FG_FILTER_COLUMN = 'did';
+$HD_Form->FG_FILTER_LABEL = 'did';
 
 if (isset($filterprefix)  &&  (strlen($filterprefix)>0)) {
-	if (strlen($HD_Form->FG_TABLE_CLAUSE)>0) {
-        $HD_Form->FG_TABLE_CLAUSE .= " AND ";
+	if (strlen($HD_Form->FG_QUERY_WHERE_CLAUSE)>0) {
+        $HD_Form->FG_QUERY_WHERE_CLAUSE .= " AND ";
     }
-	$HD_Form->FG_TABLE_CLAUSE.="did like '$filterprefix%'";
+	$HD_Form->FG_QUERY_WHERE_CLAUSE.="did like '$filterprefix%'";
 }
 
 $HD_Form->FG_INTRO_TEXT_EDITION= '';

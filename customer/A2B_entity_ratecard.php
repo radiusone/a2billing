@@ -47,7 +47,7 @@ getpost_ifset(array('letter', 'posted_search'));
 $HD_Form -> setDBHandler (DbConnect());
 $HD_Form -> init();
 
-if (strlen($letter)==1) $HD_Form -> FG_TABLE_CLAUSE .= " AND (SUBSTRING(destination,1,1)='".strtolower($letter)."' OR SUBSTRING(destination,1,1)='".$letter."')"; // sort by first letter
+if (strlen($letter)==1) $HD_Form -> FG_QUERY_WHERE_CLAUSE .= " AND (SUBSTRING(destination,1,1)='".strtolower($letter)."' OR SUBSTRING(destination,1,1)='".$letter."')"; // sort by first letter
 
 $FG_LIMITE_DISPLAY=10;
 if (isset($mydisplaylimit) && (is_numeric($mydisplaylimit) || ($mydisplaylimit=='ALL'))) {
@@ -66,7 +66,7 @@ if (!isset($form_action))  $form_action="list"; //ask-add
 if (!isset($action)) $action = $form_action;
 
 if ( ($form_action == "list") &&  ($HD_Form->FG_FILTER_SEARCH_FORM) && ($posted_search == 1 ) && isset($mytariff_id) ) {
-    $HD_Form->FG_TABLE_CLAUSE = "idtariffplan='$mytariff_id'";
+    $HD_Form->FG_QUERY_WHERE_CLAUSE = "idtariffplan='$mytariff_id'";
 }
 
 $list = $HD_Form -> perform_action($form_action);

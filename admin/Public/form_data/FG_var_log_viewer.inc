@@ -46,7 +46,6 @@ getpost_ifset(array('id', 'loglevel', 'enteradmin', 'Period', 'frommonth', 'from
 $HD_Form = new FormHandler("cc_system_log csl LEFT JOIN cc_ui_authen cua ON csl.iduser = cua.userid", "Log");
 
 $HD_Form->no_debug();
-$HD_Form -> FG_TABLE_ID = "id";
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "creationdate";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
@@ -80,7 +79,7 @@ if($loglevel != "" && $loglevel > 0)
 	$condition_ary[] = " csl.loglevel = '$loglevel'";
 }
 
-$HD_Form -> FG_TABLE_CLAUSE = implode(' AND ', $condition_ary);
+$HD_Form -> FG_QUERY_WHERE_CLAUSE = implode(' AND ', $condition_ary);
 
 //$HD_Form -> FG_EDITION_CLAUSE = " id = $id";
 
@@ -102,4 +101,4 @@ $HD_Form -> FG_ENABLE_EDIT_BUTTON = false;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = false;
 $HD_Form -> FG_ENABLE_ADD_BUTTON = false;
 $HD_Form -> FG_ENABLE_INFO_BUTTON = true;
-$HD_Form -> FG_INFO_LINK = "A2B_log_activity_info.php?id=";
+$HD_Form -> FG_INFO_BUTTON_LINK = "A2B_log_activity_info.php?id=";

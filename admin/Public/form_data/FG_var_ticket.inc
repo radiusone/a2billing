@@ -57,8 +57,8 @@ if (!isset($form_action) || $form_action=="list") {
 $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = " cc_ticket.id";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
-$HD_Form -> FG_TABLE_CLAUSE = " cc_ticket.creator_type= 0 ";
-$HD_Form -> FG_TABLE_ID="cc_ticket.id";
+$HD_Form -> FG_QUERY_WHERE_CLAUSE = " cc_ticket.creator_type= 0 ";
+$HD_Form -> FG_QUERY_PRIMARY_KEY="cc_ticket.id";
 
 $HD_Form -> FG_FK_DELETE_ALLOWED = true;
 $HD_Form -> FG_FK_DELETE_CONFIRM = true;
@@ -96,7 +96,6 @@ $HD_Form -> FG_OTHER_BUTTON1_LINK = "CC_ticket_view.php?id=";
 $HD_Form -> FG_OTHER_BUTTON1_IMG = Images_Path."/icon-viewdetails.gif";
 $HD_Form -> FG_OTHER_BUTTON1_ALT = gettext("VIEW DETAILS");
 
-$HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO")." ".strtoupper($HD_Form->FG_INSTANCE_NAME)." ".gettext("CREATED!");
 
 if (!($popup_select>=1))	 $HD_Form -> FG_FILTER_SEARCH_FORM = true;
 $HD_Form -> FG_FILTER_SEARCH_DELETE_ALL =false;
@@ -106,7 +105,7 @@ $HD_Form -> FG_FILTER_SEARCH_1_TIME = true;
 $HD_Form -> FG_FILTER_SEARCH_1_TIME_TEXT = gettext('DATE');
 $HD_Form -> FG_FILTER_SEARCH_1_TIME_FIELD = 'cc_ticket.creationdate';
 
-$HD_Form -> AddSearchElement_C1(gettext("ACCOUNT NUMBER"), 'username','usernametype');
+$HD_Form -> AddSearchTextInput(gettext("ACCOUNT NUMBER"), 'username','usernametype');
 
 $HD_Form -> FG_OTHER_BUTTON1 = true;
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
@@ -180,13 +179,13 @@ $HD_Form -> AddEditElement (gettext("DESCRIPTION"),
 $HD_Form -> FieldEditElement (' creator, title, id_component, priority, description');
 
 // Set the filter variables
-$HD_Form -> FG_FILTER_APPLY = true;
-$HD_Form -> FG_FILTERFIELD = 'username';
-$HD_Form -> FG_FILTERFIELDNAME = gettext('ACCOUNT NUMBER');
+$HD_Form -> FG_FILTER_ENABLE = true;
+$HD_Form -> FG_FILTER_COLUMN = 'username';
+$HD_Form -> FG_FILTER_LABEL = gettext('ACCOUNT NUMBER');
 
 if (isset($filterprefix)  &&  (strlen($filterprefix)>0)){
-	if (strlen($HD_Form -> FG_TABLE_CLAUSE)>0) $HD_Form -> FG_TABLE_CLAUSE.=" AND ";
-	$HD_Form -> FG_TABLE_CLAUSE.="username like '$filterprefix%'";
+	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
+	$HD_Form -> FG_QUERY_WHERE_CLAUSE.="username like '$filterprefix%'";
 }
 
 

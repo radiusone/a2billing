@@ -57,8 +57,8 @@ if ($wantinclude==1) $HD_Form_c -> FG_TABLE_DEFAULT_ORDER = $order;
 else $HD_Form_c -> FG_TABLE_DEFAULT_ORDER = "id_cc_card";
 
 $HD_Form_c -> FG_TABLE_DEFAULT_SENS = "DESC";
-$HD_Form_c -> FG_TABLE_CLAUSE = " cc_card.id=id_cc_card ";
-$HD_Form_c -> FG_TABLE_ID="cc_charge.id";
+$HD_Form_c -> FG_QUERY_WHERE_CLAUSE = " cc_card.id=id_cc_card ";
+$HD_Form_c -> FG_QUERY_PRIMARY_KEY="cc_charge.id";
 
 
 $HD_Form_c -> FG_LIST_ADDING_BUTTON1 = true;
@@ -85,8 +85,6 @@ $HD_Form_c -> AddViewElement(gettext("DESCRIPTION"), "description");
 
 // added a parameter to append  FG_TABLE_ID  ( by default ) or disable 0.
 $HD_Form_c -> FieldViewElement ('id_cc_card, username, cc_charge.creationdate, amount, chargetype, description');
-
-$HD_Form_c -> CV_NO_FIELDS  = gettext("THERE IS NO ".strtoupper($HD_Form_c->FG_INSTANCE_NAME)." CREATED!");
 
 $HD_Form_c -> FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form_c -> FG_ENABLE_DELETE_BUTTON = true;
@@ -165,13 +163,13 @@ $HD_Form_c -> FieldEditElement ('id_cc_card, amount, chargetype, description');
 
 // Set the filter variables
 
-$HD_Form_c -> FG_FILTER_APPLY = true;
-$HD_Form_c -> FG_FILTERFIELD = 'cardnumber';
-$HD_Form_c -> FG_FILTERFIELDNAME = 'account number';
+$HD_Form_c -> FG_FILTER_ENABLE = true;
+$HD_Form_c -> FG_FILTER_COLUMN = 'cardnumber';
+$HD_Form_c -> FG_FILTER_LABEL = 'account number';
 
 if (isset($filterprefix)  &&  (strlen($filterprefix)>0)){
-	if (strlen($HD_Form_c -> FG_TABLE_CLAUSE)>0) $HD_Form_c -> FG_TABLE_CLAUSE.=" AND ";
-	$HD_Form_c -> FG_TABLE_CLAUSE.="username like '$filterprefix%'";
+	if (strlen($HD_Form_c -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form_c -> FG_QUERY_WHERE_CLAUSE.=" AND ";
+	$HD_Form_c -> FG_QUERY_WHERE_CLAUSE.="username like '$filterprefix%'";
 }
 
 

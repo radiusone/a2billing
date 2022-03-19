@@ -50,7 +50,6 @@ $HD_Form -> setDBHandler (DbConnect());
 $HD_Form -> init();
 
 $HD_Form->no_debug();
-$HD_Form -> FG_TABLE_ID="id";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "ASC";
 $HD_Form -> FG_FILTER_SEARCH_SESSION_NAME = 'entity_archiving_selection';
 $language_list = array();
@@ -145,7 +144,7 @@ $FG_COL_QUERY='id, username, credit, lastname, status, language, inuse, currency
 $HD_Form -> FieldViewElement ($FG_COL_QUERY);
 
 $HD_Form -> CV_NO_FIELDS  = gettext("NO CUSTOMER SEARCHED!");
-$HD_Form -> FG_LIMITE_DISPLAY = 30;
+$HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 30;
 
 $HD_Form -> FG_FILTER_SEARCH_FORM = true;
 $HD_Form -> FG_FILTER_SEARCH_TOP_TEXT = gettext('Define specific criteria to search for cards created.');
@@ -161,26 +160,24 @@ $HD_Form -> FG_FILTER_SEARCH_3_TIME_TEXT = gettext('Select customer created more
 $HD_Form -> FG_FILTER_SEARCH_3_TIME_FIELD = 'creationdate';
 
 //Select card older than : 3 Months, 4 Months, 5.... 12 Months
-$HD_Form -> AddSearchElement_C1(gettext("ACCOUNT NUMBER"), 'username','usernametype');
-$HD_Form -> AddSearchElement_C1(gettext("LASTNAME"),'lastname','lastnametype');
-$HD_Form -> AddSearchElement_C1(gettext("LOGIN"),'useralias','useraliastype');
-$HD_Form -> AddSearchElement_C1(gettext("MACADDRESS"),'mac_addr','macaddresstype');
-$HD_Form -> AddSearchElement_C1(gettext("EMAIL"),'email','emailtype');
-$HD_Form -> AddSearchElement_C2(gettext("CUSTOMER ID (SERIAL)"),'id1','id1type','id2','id2type','id');
-$HD_Form -> AddSearchElement_C2(gettext("CREDIT"),'credit1','credit1type','credit2','credit2type','credit');
-$HD_Form -> AddSearchElement_C2(gettext("INUSE"),'inuse1','inuse1type','inuse2','inuse2type','inuse');
+$HD_Form -> AddSearchTextInput(gettext("ACCOUNT NUMBER"), 'username','usernametype');
+$HD_Form -> AddSearchTextInput(gettext("LASTNAME"),'lastname','lastnametype');
+$HD_Form -> AddSearchTextInput(gettext("LOGIN"),'useralias','useraliastype');
+$HD_Form -> AddSearchTextInput(gettext("MACADDRESS"),'mac_addr','macaddresstype');
+$HD_Form -> AddSearchTextInput(gettext("EMAIL"),'email','emailtype');
+$HD_Form -> AddSearchComparisonInput(gettext("CUSTOMER ID (SERIAL)"),'id1','id1type','id2','id2type','id');
+$HD_Form -> AddSearchComparisonInput(gettext("CREDIT"),'credit1','credit1type','credit2','credit2type','credit');
+$HD_Form -> AddSearchComparisonInput(gettext("INUSE"),'inuse1','inuse1type','inuse2','inuse2type','inuse');
 
-$HD_Form -> FG_FILTER_SEARCH_FORM_SELECT_TEXT = '';
-$HD_Form -> AddSearchElement_Select(gettext("SELECT LANGUAGE"), null, null, null, null, null, "language", 0, $language_list_r);
-$HD_Form -> AddSearchElement_Select(gettext("SELECT TARIFF"), "cc_tariffgroup", "id, tariffgroupname, id", "", "tariffgroupname", "ASC", "tariff");
-$HD_Form -> AddSearchElement_Select(gettext("SELECT STATUS"), null, null, null, null,null , "status", 0, $cardstatus_list_r);
-$HD_Form -> AddSearchElement_Select(gettext("SELECT ACCESS"), null, null, null, null, null, "simultaccess", 0, $simultaccess_list_r);
-$HD_Form -> AddSearchElement_Select(gettext("SELECT GROUP"), "cc_card_group", "id, name", "", "name", "ASC", "id_group");
-$HD_Form -> AddSearchElement_Select(gettext("SELECT CURRENCY"), null, null, null, null, null, "currency", 0, $currency_list_r);
-$HD_Form -> AddSearchElement_Select(gettext("SELECT LANGUAGE"), null, null, null, null, null, "language", 0, $language_list_r);
+$HD_Form -> AddSearchSelectInput(gettext("SELECT LANGUAGE"), "language", $language_list_r);
+$HD_Form -> AddSearchSqlSelectInput(gettext("SELECT TARIFF"), "cc_tariffgroup", "id, tariffgroupname, id", "", "tariffgroupname", "ASC", "tariff");
+$HD_Form -> AddSearchSelectInput(gettext("SELECT STATUS"), "status", $cardstatus_list_r);
+$HD_Form -> AddSearchSelectInput(gettext("SELECT ACCESS"), "simultaccess", $simultaccess_list_r);
+$HD_Form -> AddSearchSqlSelectInput(gettext("SELECT GROUP"), "cc_card_group", "id, name", "", "name", "ASC", "id_group");
+$HD_Form -> AddSearchSelectInput(gettext("SELECT CURRENCY"), "currency", $currency_list_r);
+$HD_Form -> AddSearchSelectInput(gettext("SELECT LANGUAGE"), "language", $language_list_r);
 
 $HD_Form -> prepare_list_subselection('list');
-$HD_Form -> FG_TABLE_ID="id";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "ASC";
 
 $nb_customer = 0;
@@ -189,7 +186,7 @@ $nb_customer = 0;
 getpost_ifset(array('archive', 'id'));
 
 if (isset($archive) && !empty($archive)) {
-    $condition = $HD_Form -> FG_TABLE_CLAUSE;
+    $condition = $HD_Form -> FG_QUERY_WHERE_CLAUSE;
     if (strlen($condition) && strpos($condition,'WHERE') === false) {
         $condition = " WHERE $condition";
     }

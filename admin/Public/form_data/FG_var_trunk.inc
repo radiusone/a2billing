@@ -57,7 +57,7 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/add.png" ;
 
 
 $HD_Form->no_debug();
-$HD_Form -> FG_TABLE_ID = " id_trunk";
+$HD_Form -> FG_QUERY_PRIMARY_KEY = " id_trunk";
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = " id_trunk";
 $HD_Form -> FG_EDITION_CLAUSE = " id_trunk='%id' ";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "ASC";
@@ -118,16 +118,12 @@ if ($popup_select) {
 
 $HD_Form -> FG_FILTER_SEARCH_FORM = true;
 $HD_Form -> FG_FILTER_SEARCH_TOP_TEXT = gettext("Search");
-$HD_Form -> AddSearchElement_C1(gettext("IP/HOST"),'providerip','provideriptype');
-$HD_Form -> FG_FILTER_SEARCH_FORM_SELECT_TEXT = '';
-$HD_Form -> AddSearchElement_Select(gettext("SELECT PROVIDER"), null, null, null, null, null, "id_provider", 0, $provider_list_result);
-$HD_Form -> AddSearchElement_Select(gettext("SELECT STATUS"), null, null, null, null, null, "status", 0, $trunk_actived_list);
-
-$HD_Form -> FG_ACTION_SIZE_COLUMN = '15%';
-$HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO ".strtoupper($HD_Form->FG_INSTANCE_NAME)." CREATED!");
+$HD_Form -> AddSearchTextInput(gettext("IP/HOST"),'providerip','provideriptype');
+$HD_Form -> AddSearchSelectInput(gettext("SELECT PROVIDER"), "id_provider", $provider_list_result);
+$HD_Form -> AddSearchSelectInput(gettext("SELECT STATUS"), "status", $trunk_actived_list);
 
 if ($popup_select) {
-	$HD_Form -> FG_LIMITE_DISPLAY = 7;
+	$HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 7;
 	$HD_Form -> CV_FOLLOWPARAMETERS = "&popup_select=" . $popup_select . "&popup_formname=" . $popup_formname . "&popup_fieldname=" . $popup_fieldname;
 
 	$HD_Form -> FG_OTHER_BUTTON1 = true;

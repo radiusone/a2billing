@@ -53,7 +53,7 @@ $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "destination";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
-$HD_Form -> FG_TABLE_ID = 'cc_did_destination.id';
+$HD_Form -> FG_QUERY_PRIMARY_KEY = 'cc_did_destination.id';
 
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_did_destination.php?form_action=ask-add&section=".$_SESSION["menu_section"];
@@ -90,10 +90,6 @@ $HD_Form -> AddViewElement(gettext("VALIDATED"), "validated", true, "", null, "l
 
 // added a parameter to append  FG_TABLE_ID  ( by default ) or disable 0.
 $HD_Form -> FieldViewElement ('destination, cc_did_destination.creationdate, cc_did.did, id_cc_card, cc_did_destination.activated, voip_call, priority, cc_did_destination.secondusedreal, validated');
-
-$HD_Form -> FG_ACTION_SIZE_COLUMN = '15%';
-
-$HD_Form -> CV_NO_FIELDS  = gettext("NO DID DESTINATIONS HAVE BEEN CREATED!");
 
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
@@ -188,13 +184,13 @@ if ($form_action!='ask-edit' && $form_action!='edit') {
 }
 
 // Set the filter variables
-$HD_Form -> FG_FILTER_APPLY = true;
-$HD_Form -> FG_FILTERFIELD = 'did';
-$HD_Form -> FG_FILTERFIELDNAME = 'did';
+$HD_Form -> FG_FILTER_ENABLE = true;
+$HD_Form -> FG_FILTER_COLUMN = 'did';
+$HD_Form -> FG_FILTER_LABEL = 'did';
 
 if (isset($filterprefix)  &&  (strlen($filterprefix)>0)) {
-	if (strlen($HD_Form -> FG_TABLE_CLAUSE)>0) $HD_Form -> FG_TABLE_CLAUSE.=" AND ";
-	$HD_Form -> FG_TABLE_CLAUSE .= "cc_did.did like '$filterprefix%'";
+	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
+	$HD_Form -> FG_QUERY_WHERE_CLAUSE .= "cc_did.did like '$filterprefix%'";
 }
 
 

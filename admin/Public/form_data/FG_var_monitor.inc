@@ -73,8 +73,6 @@ $HD_Form -> AddViewElement(gettext("ENABLE"), "enable", true, "30", null, "list"
 
 $HD_Form -> FieldViewElement ('label, dial_code, description, text_intro, enable');
 
-$HD_Form -> CV_NO_FIELDS  = gettext("There are no monitoring created!");
-
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form -> FG_ENABLE_ADD_BUTTON = true;

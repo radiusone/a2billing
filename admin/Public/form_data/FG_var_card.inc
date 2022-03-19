@@ -127,7 +127,6 @@ getpost_ifset([
 $HD_Form = new FormHandler("cc_card", _("Card"));
 
 $HD_Form->no_debug();
-$HD_Form->FG_TABLE_ID = "id";
 $HD_Form->FG_TABLE_DEFAULT_SENS = "ASC";
 $HD_Form->FG_FILTER_SEARCH_SESSION_NAME = 'entity_card_selection';
 $HD_Form->FG_FK_DELETE_CONFIRM = true;
@@ -252,21 +251,18 @@ $FG_COL_QUERY_FIELD = implode(", ", $FG_COL_QUERY_FIELDS);
 $FG_COL_QUERY_FIELD = "DISTINCT $FG_COL_QUERY_FIELD, id as id_, username as username_, useralias as alias_ ";
 $HD_Form->FieldViewElement($FG_COL_QUERY_FIELD);
 
-$HD_Form->CV_NO_FIELDS = _("NO CARDS HAVE BEEN CREATED!");
-
 $HD_Form->CV_FOLLOWPARAMETERS = "&popup_select=$popup_select&popup_formname=$popup_formname&popup_fieldname=$popup_fieldname";
 
-$HD_Form->FG_FILTER_APPLY = true;
-$HD_Form->FG_FILTERFIELD = 'cardnumber';
-$HD_Form->FG_FILTERFIELDNAME = _('Account Number');
-$HD_Form->FG_FILTER_FORM_ACTION = 'list';
+$HD_Form->FG_FILTER_ENABLE = true;
+$HD_Form->FG_FILTER_COLUMN = 'cardnumber';
+$HD_Form->FG_FILTER_LABEL = _('Account Number');
 
 if (isset($filterprefix) && $filterprefix !== "") {
-    if (strlen($HD_Form->FG_TABLE_CLAUSE)) {
+    if (strlen($HD_Form->FG_QUERY_WHERE_CLAUSE)) {
         // there might be an active search...
-        $HD_Form->FG_TABLE_CLAUSE .= " AND ";
+        $HD_Form->FG_QUERY_WHERE_CLAUSE .= " AND ";
     }
-    $HD_Form->FG_TABLE_CLAUSE .= "username like '$filterprefix%'";
+    $HD_Form->FG_QUERY_WHERE_CLAUSE .= "username like '$filterprefix%'";
 }
 
 $HD_Form->FG_ENABLE_ADD_BUTTON = true;
@@ -277,8 +273,8 @@ if (!$popup_select) {
     $HD_Form->FG_EXPORT_CSV = true;
     $HD_Form->FG_EXPORT_XML = true;
     // Code here for adding the fields in the Export File
-    $HD_Form->FieldExportElement(CARD_EXPORT_FIELD_LIST);
-    $HD_Form->FG_LIMITE_DISPLAY = 10;
+    $HD_Form->FieldExportElement(explode(",", $A2B->config['webui']['card_export_field_list']));
+    $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 10;
     $HD_Form->FG_FILTER_SEARCH_FORM = true;
 
     $HD_Form->FG_FILTER_SEARCH_TOP_TEXT = _('Define specific criteria to search for cards created.');
@@ -289,28 +285,27 @@ if (!$popup_select) {
     $HD_Form->FG_FILTER_SEARCH_1_TIME_TEXT_BIS = _('FIRST USE DATE');
     $HD_Form->FG_FILTER_SEARCH_1_TIME_FIELD_BIS = 'firstusedate';
 
-    $HD_Form->AddSearchElement_C1(_("ACCOUNT NUMBER"), 'username', 'usernametype');
-    $HD_Form->AddSearchElement_C1(_("EMAIL"), 'email', 'emailtype');
-    $HD_Form->AddSearchElement_C1(_("LASTNAME"), 'lastname', 'lastnametype');
-    $HD_Form->AddSearchElement_C1(_("FIRSTNAME"), 'firstname', 'firstnametype');
-    $HD_Form->AddSearchElement_C1(_("LOGIN"), 'useralias', 'useraliastype');
-    $HD_Form->AddSearchElement_C1(_("MACADDRESS"), 'mac_addr', 'macaddresstype');
-    $HD_Form->AddSearchElement_C1(_("COMPANY NAME"), 'company_name', 'company_nametype');
-    $HD_Form->AddSearchElement_C2(_("CUSTOMER ID"), 'id1', 'id1type', 'id2', 'id2type', 'id');
-    $HD_Form->AddSearchElement_C2(_("SERIAL"), 'serial1', 'serial1type', 'serial2', 'serial2type', 'serial');
-    $HD_Form->AddSearchElement_C2(_("CREDIT"), 'credit1', 'credit1type', 'credit2', 'credit2type', 'credit');
-    $HD_Form->AddSearchElement_C2(_("INUSE"), 'inuse1', 'inuse1type', 'inuse2', 'inuse2type', 'inuse');
+    $HD_Form->AddSearchTextInput(_("ACCOUNT NUMBER"), 'username', 'usernametype');
+    $HD_Form->AddSearchTextInput(_("EMAIL"), 'email', 'emailtype');
+    $HD_Form->AddSearchTextInput(_("LASTNAME"), 'lastname', 'lastnametype');
+    $HD_Form->AddSearchTextInput(_("FIRSTNAME"), 'firstname', 'firstnametype');
+    $HD_Form->AddSearchTextInput(_("LOGIN"), 'useralias', 'useraliastype');
+    $HD_Form->AddSearchTextInput(_("MACADDRESS"), 'mac_addr', 'macaddresstype');
+    $HD_Form->AddSearchTextInput(_("COMPANY NAME"), 'company_name', 'company_nametype');
+    $HD_Form->AddSearchComparisonInput(_("CUSTOMER ID"), 'id1', 'id1type', 'id2', 'id2type', 'id');
+    $HD_Form->AddSearchComparisonInput(_("SERIAL"), 'serial1', 'serial1type', 'serial2', 'serial2type', 'serial');
+    $HD_Form->AddSearchComparisonInput(_("CREDIT"), 'credit1', 'credit1type', 'credit2', 'credit2type', 'credit');
+    $HD_Form->AddSearchComparisonInput(_("INUSE"), 'inuse1', 'inuse1type', 'inuse2', 'inuse2type', 'inuse');
 
-    $HD_Form->FG_FILTER_SEARCH_FORM_SELECT_TEXT = '';
-    $HD_Form->AddSearchElement_Select(_("SELECT SERIE"), "cc_card_seria", "id, name", "", "name", "ASC", "id_seria");
-    $HD_Form->AddSearchElement_Select(_("SELECT LANGUAGE"), null, null, null, null, null, "language", 0, $language_list_r);
-    $HD_Form->AddSearchElement_Select(_("SELECT TARIFF"), "cc_tariffgroup", "id, tariffgroupname", "", "tariffgroupname", "ASC", "tariff");
-    $HD_Form->AddSearchElement_Select(_("SELECT STATUS"), null, null, null, null, null, "status", 0, $cardstatus_list_r);
-    $HD_Form->AddSearchElement_Select(_("SELECT ACCESS"), null, null, null, null, null, "simultaccess", 0, $simultaccess_list_r);
-    $HD_Form->AddSearchElement_Select(_("SELECT GROUP"), "cc_card_group", "id, name", "", "name", "ASC", "id_group");
-    $HD_Form->AddSearchElement_Select(_("SELECT CURRENCY"), null, null, null, null, null, "currency", 0, $currency_list_r);
-    $HD_Form->AddSearchElement_Select(_("SELECT LANGUAGE"), null, null, null, null, null, "language", 0, $language_list_r);
-    $HD_Form->AddSearchElement_Select(_("SELECT PAYMENT TYPE"), null, null, null, null, null, "typepaid", 0, $typepaid_list_r);
+    $HD_Form->AddSearchSqlSelectInput(_("SELECT SERIE"), "cc_card_seria", "id, name", "", "name", "ASC", "id_seria");
+    $HD_Form->AddSearchSelectInput(_("SELECT LANGUAGE"), "language", $language_list_r);
+    $HD_Form->AddSearchSqlSelectInput(_("SELECT TARIFF"), "cc_tariffgroup", "id, tariffgroupname", "", "tariffgroupname", "ASC", "tariff");
+    $HD_Form->AddSearchSelectInput(_("SELECT STATUS"), "status", $cardstatus_list_r);
+    $HD_Form->AddSearchSelectInput(_("SELECT ACCESS"), "simultaccess", $simultaccess_list_r);
+    $HD_Form->AddSearchSqlSelectInput(_("SELECT GROUP"), "cc_card_group", "id, name", "", "name", "ASC", "id_group");
+    $HD_Form->AddSearchSelectInput(_("SELECT CURRENCY"), "currency", $currency_list_r);
+    $HD_Form->AddSearchSelectInput(_("SELECT LANGUAGE"), "language", $language_list_r);
+    $HD_Form->AddSearchSelectInput(_("SELECT PAYMENT TYPE"), "typepaid", $typepaid_list_r);
 
     $HD_Form->FG_ENABLE_INFO_BUTTON = true;
     $HD_Form->FG_OTHER_BUTTON1 = !empty($A2B->config["webui"]['buddy_sip_file']);
@@ -326,7 +321,7 @@ if (!$popup_select) {
     $HD_Form->FG_OTHER_BUTTON3_LINK = "A2B_entity_payment.php?form_action=ask-add&card_id=|$FN_COLUMN_ID|";
     $HD_Form->FG_OTHER_BUTTON4_LINK = "A2B_entity_subscriber.php?form_action=ask-add&id=|$FN_COLUMN_ID|";
     $HD_Form->FG_OTHER_BUTTON5_LINK = "A2B_mass_mail.php?form_action=ask-add&id=|$FN_COLUMN_ID|";
-    $HD_Form->FG_INFO_LINK = "A2B_card_info.php?id=";
+    $HD_Form->FG_INFO_BUTTON_LINK = "A2B_card_info.php?id=";
     $HD_Form->FG_OTHER_BUTTON1_IMG = "data:image/gif;base64,R0lGODlhFwALAKEDAAAAAJycnPPZ3f///yH5BAEAAAMALAAAAAAXAAsAAAItXI6pa+IPozyyWgqBFhrwDWGPNzoe+YgmSHaRWnJmBbs2HVh6mO97YFgIhYMCADs=";
     $HD_Form->FG_OTHER_BUTTON2_IMG = "data:image/gif;base64,R0lGODlhFwALAKEDAAAAAJycnNnz4f///yH5BAEAAAMALAAAAAAXAAsAAAIvXI6pa+IPozyyWgqBFhrwD2GZ45XgIz4et51oIK2mGcLZNrtCavV8XwkYFkTioAAAOw==";
     $HD_Form->FG_OTHER_BUTTON3_IMG = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJ0SURBVDjLlZPdT9JRGMe5qFu2Lrt1a63LWv9ATRdN5xvLsnLRipzZpIVpigjyIs3XAOUHgopoWkggP5QXSRJwJQmtm/IlAWtt3XXTfubS+nZ+P1eby6ldPGdn5+zzfb7Pc57DA8DbL9rjrYxuVsXf7W5fuC2mYawpE7QRJZpDDfz/EngYVTN9qR4EPvlgXjCiKVCPWvou/0ACxDJjSbIwDefqMPxrEzC87IDUW4Pq8Vv8PQVaX7Qw5qQRgY9ePP0wDMeSFfWTUkxmPeiI61DlFOP6SAV/VwFtRMFQCwb4CdwW10IbVcK+aMHgohmPlwdBZ11oCctx1X5p/R8B9Uzzuum1ntj1Iv1tGRtb3zH2dgSa2eZtOOOCMizD5cGyzR0lGBNdx1TP5T96E4+4WttiWg6mYr3Ifk1DF1PBmxmHYlrGZkbFUDku2oSHOAFjolOuIpZ65rs5+MmKg9hWcJlZWB1UbsOhRjYz5r/MoSn4AKWWQg0nwFoyzndhijRobGWIq3XgPQU1sa2LqjCRHoc81IBK9w0OnvscRWQtBGFfEc4b8o7wNDMKOwnY3lDwZZ+h1idB/zsThpf6CezkstVN3yNwHFMrNGqCVRvlA2UQ6POkud1nTvE0EcVR1gU7JNSCnrPrWLRtw+RM7BKBXnJDP9eOYqogVNAj0Av0uTk7mtjov2+1p2yQ0hIYXnXCs+qEzF+HC9YSyIiIsK84XWTKP5tvPHdi11GupSXHW8JNW+FMAHdclSCCKDEX/iKdDgotRY17jTu31LhvHybT5RGPin5K3NWs1c0yW+lp0umc/T7b383NUdHJa44rSfJU+Qf54n/iNzi8zBtL0z1zAAAAAElFTkSuQmCC";
@@ -1003,7 +998,7 @@ if (!$popup_select) {
 
 } else {
     // popup window
-    $HD_Form->FG_LIMITE_DISPLAY = 6;
+    $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 6;
     $HD_Form->FG_OTHER_BUTTON1 = true;
     $HD_Form->FG_OTHER_BUTTON1_ALT = '<font color="red">&lt;select&gt;</font>';
     $HD_Form->FG_OTHER_BUTTON1_IMG = '';

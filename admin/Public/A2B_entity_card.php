@@ -123,9 +123,9 @@ if ($batchupdate == 1 && is_array($check)) {
         } else {
             $SQL_REFILL_CREDIT = "(-$upd_credit) ";
         }
-        $SQL_REFILL="INSERT INTO cc_logrefill (credit, card_id, description, refill_type) SELECT $SQL_REFILL_CREDIT, a.id, '$upd_description', '$upd_refill_type' FROM $HD_Form->FG_TABLE_NAME AS a ";
-        if (strlen($HD_Form->FG_TABLE_CLAUSE) > 1) {
-            $SQL_REFILL .= " WHERE $HD_Form->FG_TABLE_CLAUSE $SQL_REFILL_WHERE";
+        $SQL_REFILL="INSERT INTO cc_logrefill (credit, card_id, description, refill_type) SELECT $SQL_REFILL_CREDIT, a.id, '$upd_description', '$upd_refill_type' FROM $HD_Form->FG_QUERY_TABLE_NAME AS a ";
+        if (strlen($HD_Form->FG_QUERY_WHERE_CLAUSE) > 1) {
+            $SQL_REFILL .= " WHERE $HD_Form->FG_QUERY_WHERE_CLAUSE $SQL_REFILL_WHERE";
         } elseif ($SQL_REFILL_WHERE && $type["upd_credit"] == 1) {
             $SQL_REFILL .= " WHERE $upd_credit <> credit ";
         }
@@ -161,9 +161,9 @@ if ($batchupdate == 1 && is_array($check)) {
         $i++;
     }
 
-    $SQL_UPDATE = "UPDATE $HD_Form->FG_TABLE_NAME SET $SQL_UPDATE";
-    if ($HD_Form->FG_TABLE_CLAUSE) {
-        $SQL_UPDATE .= " WHERE $HD_Form->FG_TABLE_CLAUSE";
+    $SQL_UPDATE = "UPDATE $HD_Form->FG_QUERY_TABLE_NAME SET $SQL_UPDATE";
+    if ($HD_Form->FG_QUERY_WHERE_CLAUSE) {
+        $SQL_UPDATE .= " WHERE $HD_Form->FG_QUERY_WHERE_CLAUSE";
     }
     $update_msg_error = _('Could not perform the batch update!');
     $update_msg = "";
@@ -213,23 +213,23 @@ function sendValue(selvalue, othervalue) {
 
     $instance_table_tariff = new Table("cc_tariffgroup", "id, tariffgroupname");
     $FG_TABLE_CLAUSE = "";
-    $list_tariff = $instance_table_tariff->get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "tariffgroupname");
+    $list_tariff = $instance_table_tariff->get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, ["tariffgroupname"]);
     $nb_tariff = count($list_tariff);
 
     $instance_table_group = new Table("cc_card_group"," id, name ");
-    $list_group = $instance_table_group->get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "name");
+    $list_group = $instance_table_group->get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, ["name"]);
 
     $instance_table_agent = new Table("cc_agent"," id, login ");
-    $list_agent = $instance_table_agent->get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "login");
+    $list_agent = $instance_table_agent->get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, ["login"]);
 
     $instance_table_seria = new Table("cc_card_seria"," id, name");
-    $list_seria  = $instance_table_seria->get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "name");
+    $list_seria  = $instance_table_seria->get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, ["name"]);
 
     $list_refill_type = getRefillType_List();
     $list_refill_type["-1"] = ["NO REFILL", "-1"];
 
     $instance_table_country = new Table("cc_country", " countrycode, countryname ");
-    $list_country = $instance_table_country->get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "countryname");
+    $list_country = $instance_table_country->get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, ["countryname"]);
 
     echo $CC_help_list_customer;
 ?>
@@ -287,7 +287,7 @@ function sendValue(selvalue, othervalue) {
 
                     <div class="row mb-1">
                         <div class="col">
-                            <?= $HD_Form->FG_NB_RECORD ?> <?= _("cards selected!") ?>
+                            <?= $HD_Form->FG_LIST_VIEW_ROW_COUNT ?> <?= _("cards selected!") ?>
                             <?= _("Use the options below to batch update the selected cards.") ?>
                         </div>
                     </div>
@@ -686,14 +686,15 @@ if ($form_action === "ask-edit") {
 $HD_Form->create_form($form_action, $list);
 
 // Code for the Export Functionality
-$_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] = "SELECT $HD_Form->FG_EXPORT_FIELD_LIST FROM $HD_Form->FG_TABLE_NAME";
+$_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] = "SELECT " . implode(",", $HD_Form -> FG_EXPORT_FIELD_LIST) . " FROM $HD_Form->FG_QUERY_TABLE_NAME";
 
-if (strlen($HD_Form->FG_TABLE_CLAUSE)>1) {
-    $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] .= " WHERE $HD_Form->FG_TABLE_CLAUSE ";
+if (strlen($HD_Form->FG_QUERY_WHERE_CLAUSE)>1) {
+    $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] .= " WHERE $HD_Form->FG_QUERY_WHERE_CLAUSE ";
 }
 
-if (!empty($HD_Form->FG_ORDER) && !empty($HD_Form->FG_SENS)) {
-    $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] .= " ORDER BY $HD_Form->FG_ORDER $HD_Form->FG_SENS";
+if (!empty($HD_Form->FG_QUERY_ORDERBY_COLUMNS) && !empty($HD_Form->FG_QUERY_DIRECTION)) {
+    $ord = implode(",", $HD_Form->FG_QUERY_ORDERBY_COLUMNS);
+    $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] .= " ORDER BY $ord $HD_Form->FG_QUERY_DIRECTION";
 }
 ?>
 

@@ -192,7 +192,7 @@ class Table
         return true;
     }
 
-    public function get_list($DBHandle, $clause = null, $order = "", $sens = "ASC", $limite = 0, $current_record = 0, $sql_group= "", $cache = 0)
+    public function get_list($DBHandle, ?string $clause = "", array $orderby = [], $sens = "ASC", $limite = 0, $current_record = 0, array $groupby = [], $cache = 0)
     {
         $sql = "SELECT $this->fields FROM $this->table";
 
@@ -202,18 +202,25 @@ class Table
         }
 
         $sql_orderby = "";
-        $sens = strtoupper($sens ?? "ASC");
-        if (!empty($order) && ($sens === "ASC" || $sens === "DESC")) {
-            $order_columns = explode(",", $order);
-            foreach ($order_columns as &$col) {
+        $sens = strtoupper($sens);
+        if ($sens !== "ASC" && $sens !== "DESC") {
+            $sens = "ASC";
+        }
+        array_filter($orderby);
+        if (count($orderby)) {
+            foreach ($orderby as &$col) {
+                if (str_contains($col, "(")) {
+                    // don't want to parse function calls
+                    continue;
+                }
                 $col = str_replace(
                     ".",
                     $this->quote_identifier("."),
                     $this->quote_identifier(trim($col))
                 );
             }
-            $order = implode(",", $order_columns);
-            $sql_orderby = " ORDER BY $order $sens";
+            $orderby = implode(",", $orderby);
+            $sql_orderby = " ORDER BY $orderby $sens";
         }
 
         $sql_limit = "";
@@ -221,18 +228,21 @@ class Table
             $sql_limit = " LIMIT $limite OFFSET $current_record";
         }
 
-        if (!empty($sql_group)) {
-            $sql_group = str_ireplace("GROUP BY ", "", $sql_group);
-            $group_columns = explode(",", $sql_group);
-            foreach($group_columns as &$col) {
+        $sql_group = "";
+        array_filter($groupby);
+        if (count($groupby)) {
+            foreach($groupby as &$col) {
+                if (str_contains($col, "(")) {
+                    // don't want to parse function calls
+                    continue;
+                }
                 $col = str_replace(
                     ".",
                     $this->quote_identifier("."),
                     $this->quote_identifier(trim($col))
                 );
             }
-            $sql_group = implode(",", $group_columns);
-            $sql_group = " GROUP BY $sql_group";
+            $sql_group = "GROUP BY " . implode(",", $groupby);
         }
 
         $QUERY = $sql . $sql_clause . $sql_group;
@@ -373,31 +383,14 @@ class Table
         return($res);
     }
 
-    public function Delete_Selected($DBHandle, $clause = null, $order = null, $sens = null, $field_order_letter = null, $letters = null, $limite = null, $current_record = NULL, $sql_group = NULL)
+    public function Delete_Selected($DBHandle, $clause = null)
     {
-        $sql = 'DELETE FROM ' . trim($this->table);
-
-        $sql_clause = '';
-        if ($clause != '') {
-            $sql_clause = ' WHERE ' . $clause;
+        $QUERY = 'DELETE FROM ' . $this->quote_identifier($this->table);
+        if ($clause) {
+            $QUERY .= "WHERE $clause";
         }
 
-        $sqlletters = "";
-        if (!is_null($letters) && (preg_match("/^[A-Za-z]+$/", $letters)) && !is_null($field_order_letter) && ($field_order_letter != '')) {
-            $sql_letters= ' (".$field_order_letter." LIKE \'' . strtolower($letters) . '%\') ';
-
-            if ($sql_clause != "") {
-                $sql_clause .= " AND ";
-            } else {
-                $sql_clause .= " WHERE ";
-            }
-        }
-
-        $QUERY = $sql . $sql_clause;
-
-        $res = $this->ExecuteQuery($DBHandle, $QUERY, 0);
-
-        return($res);
+        return $this->ExecuteQuery($DBHandle, $QUERY, 0);
     }
 
     public function logQuery($sql, $start)

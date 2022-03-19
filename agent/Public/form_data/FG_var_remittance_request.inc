@@ -43,8 +43,8 @@ if (! has_rights (ACX_ACCESS)) {
 getpost_ifset(array('id','id_agent','date', 'amount,type', 'status'));
 
 $HD_Form = new FormHandler("cc_remittance_request", "Remittance Request Agent");
-$HD_Form -> FG_TABLE_CLAUSE = "id_agent=".$_SESSION['agent_id'] ;
-$HD_Form -> FG_TABLE_ID = 'cc_remittance_request.id';
+$HD_Form -> FG_QUERY_WHERE_CLAUSE = "id_agent=".$_SESSION['agent_id'] ;
+$HD_Form -> FG_QUERY_PRIMARY_KEY = 'cc_remittance_request.id';
 
 $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";

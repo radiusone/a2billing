@@ -121,10 +121,10 @@ if ($batchupdate == 1 && is_array($check)) {
         $loop_pass++;
     }
 
-    $SQL_UPDATE = "UPDATE $HD_Form->FG_TABLE_NAME SET $SQL_UPDATE";
-    if (strlen($HD_Form->FG_TABLE_CLAUSE)>1) {
+    $SQL_UPDATE = "UPDATE $HD_Form->FG_QUERY_TABLE_NAME SET $SQL_UPDATE";
+    if (strlen($HD_Form->FG_QUERY_WHERE_CLAUSE)>1) {
         $SQL_UPDATE .= ' WHERE ';
-        $SQL_UPDATE .= $HD_Form->FG_TABLE_CLAUSE;
+        $SQL_UPDATE .= $HD_Form->FG_QUERY_WHERE_CLAUSE;
     }
 
     if (! $res = $HD_Form -> DBHandle -> Execute($SQL_UPDATE)) {
@@ -354,7 +354,7 @@ if ($form_action == "list" && (!($popup_select>=1))) {
     <div class="tohide" style="display:none;">
 
 <center>
-<b>&nbsp;<?php echo $HD_Form -> FG_NB_RECORD ?> <?php echo gettext("cards selected!"); ?>&nbsp;<?php echo gettext("Use the options below to batch update the selected cards.");?></b>
+<b>&nbsp;<?php echo $HD_Form -> FG_LIST_VIEW_ROW_COUNT ?> <?php echo gettext("cards selected!"); ?>&nbsp;<?php echo gettext("Use the options below to batch update the selected cards.");?></b>
        <table align="center" border="0" width="65%"  cellspacing="1" cellpadding="2">
         <tbody>
         <form name="updateForm" action="<?php echo filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)?>" method="post">
@@ -561,11 +561,13 @@ $HD_Form -> create_form($form_action, $list) ;
 
 
 // Code for the Export Functionality
-$_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR]= "SELECT ".$HD_Form -> FG_EXPORT_FIELD_LIST." FROM $HD_Form->FG_TABLE_NAME";
-if (strlen($HD_Form->FG_TABLE_CLAUSE)>1)
-    $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] .= " WHERE $HD_Form->FG_TABLE_CLAUSE ";
-if (!is_null ($HD_Form->FG_ORDER) && ($HD_Form->FG_ORDER!='') && !is_null ($HD_Form->FG_SENS) && ($HD_Form->FG_SENS!=''))
-    $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR].= " ORDER BY $HD_Form->FG_ORDER $HD_Form->FG_SENS";
+$_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR]= "SELECT ". implode(",", $HD_Form -> FG_EXPORT_FIELD_LIST) ." FROM $HD_Form->FG_QUERY_TABLE_NAME";
+if (strlen($HD_Form->FG_QUERY_WHERE_CLAUSE)>1)
+    $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] .= " WHERE $HD_Form->FG_QUERY_WHERE_CLAUSE ";
+if (!empty($HD_Form->FG_QUERY_ORDERBY_COLUMNS) && !empty($HD_Form->FG_QUERY_DIRECTION)) {
+    $ord = implode(",", $HD_Form->FG_QUERY_ORDERBY_COLUMNS);
+    $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] .= " ORDER BY $ord $HD_Form->FG_QUERY_DIRECTION";
+}
 
 
 

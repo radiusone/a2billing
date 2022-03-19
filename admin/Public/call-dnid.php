@@ -262,7 +262,8 @@ if ($terminatecauseid == "CANCEL") {
 }
 
 if (!$nodisplay) {
-    $list = $instance_table -> get_list ($DBHandle, $FG_TABLE_CLAUSE, $order, $sens, $FG_LIMITE_DISPLAY, $current_page * $FG_LIMITE_DISPLAY, "dnid");
+    $ord_arr = explode(",", $order ?? "");
+    $list = $instance_table -> get_list ($DBHandle, $FG_TABLE_CLAUSE, $ord_arr, $sens, $FG_LIMITE_DISPLAY, $current_page * $FG_LIMITE_DISPLAY, ["dnid"]);
 }
 
 // EXPORT

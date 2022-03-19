@@ -49,8 +49,8 @@ $HD_Form->no_debug();
 
 if ($type == 'payment') {
 	$HD_Form = new FormHandler("cc_logpayment as t2 LEFT JOIN cc_card ON cc_card.id=t2.card_id LEFT JOIN cc_card_group ON cc_card_group.id = cc_card.id_group ", "Payment");
-	$HD_Form->FG_TABLE_CLAUSE = "t2.card_id = $id AND cc_card_group.id_agent = " . $_SESSION['agent_id'];
-	$HD_Form->FG_TABLE_ID = 't2.id';
+	$HD_Form->FG_QUERY_WHERE_CLAUSE = "t2.card_id = $id AND cc_card_group.id_agent = " . $_SESSION['agent_id'];
+	$HD_Form->FG_QUERY_PRIMARY_KEY = 't2.id';
 	$HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
 	//SELECT t3.date, t3.credit, t3.reseller_id from cc_logrefill as t3 WHERE t3.card_id='1'
 	//SELECT t2.date, t2.payment, t2.reseller_id from cc_logpayment as t2 WHERE t2.card_id='1'
@@ -64,17 +64,15 @@ if ($type == 'payment') {
 	"LEFT JOIN ( SELECT st1.id_invoice, SUM(st1.price*(1+(st1.vat/100))) AS total_price FROM cc_invoice_item AS st1 GROUP BY st1.id_invoice) " .
 	"AS items ON items.id_invoice=cc_invoice.id ";
 	$HD_Form = new FormHandler($list_sql, "Invoice");
-	$HD_Form->FG_TABLE_ID = 'cc_invoice.id';
+	$HD_Form->FG_QUERY_PRIMARY_KEY = 'cc_invoice.id';
 	$HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
-	$HD_Form->FG_TABLE_CLAUSE = "cc_invoice.id_card = $id AND cc_card_group.id_agent = " . $_SESSION['agent_id'] . " ";
+	$HD_Form->FG_QUERY_WHERE_CLAUSE = "cc_invoice.id_card = $id AND cc_card_group.id_agent = " . $_SESSION['agent_id'] . " ";
 	//SELECT t3.date, t3.credit, t3.reseller_id from cc_logrefill as t3 WHERE t3.card_id='1'
 	//SELECT t2.date, t2.payment, t2.reseller_id from cc_logpayment as t2 WHERE t2.card_id='1'
 	$HD_Form->AddViewElement(gettext("DATE"), "date", true, "30", "display_dateformat");
 	$HD_Form->AddViewElement(gettext("AMOUNT INCL VAT"), "total_price", true, "30", "display_2bill");
 	$HD_Form->FieldViewElement("cc_invoice.date, total_price");
 }
-
-$HD_Form->CV_NO_FIELDS = gettext("THERE IS NO") . strtoupper($HD_Form->FG_INSTANCE_NAME) . " " . gettext("CREATED!");
 
 $HD_Form->CV_FOLLOWPARAMETERS = "&popup_select=" . $popup_select . "&id=$id&type=$type";
 $HD_Form->FG_ENABLE_EDIT_BUTTON = false;

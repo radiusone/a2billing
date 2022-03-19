@@ -48,7 +48,7 @@ if (!isset($form_action) || $form_action=="list") {
     $HD_Form = new FormHandler("cc_billing_customer", "Billing");
 }
 
-$HD_Form -> FG_TABLE_ID = 'cc_billing_customer.id';
+$HD_Form -> FG_QUERY_PRIMARY_KEY = 'cc_billing_customer.id';
 
 $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
@@ -62,8 +62,6 @@ $HD_Form -> AddViewElement(gettext("ID"), "cc_billing_customer.id");
 $HD_Form -> AddViewElement(gettext("ACCOUNT"), "username", true, "30", "display_customer_link");
 $HD_Form -> AddViewElement(gettext("BILLING DATE"), "cc_billing_customer.date", true, "30", "display_dateformat");
 $HD_Form -> FieldViewElement ('cc_billing_customer.id, username, cc_billing_customer.date');
-
-$HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO ".strtoupper($HD_Form->FG_INSTANCE_NAME)." CREATED!");
 
 $HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
@@ -92,14 +90,13 @@ $HD_Form -> AddEditElement (gettext("BILLING DATE"),
 
 $HD_Form -> FieldEditElement ('id_card, date');
 
-$HD_Form -> FG_FILTER_APPLY = true;
-$HD_Form -> FG_FILTERFIELD = 'cardnumber';
-$HD_Form -> FG_FILTERFIELDNAME = 'Account number';
-$HD_Form -> FG_FILTER_FORM_ACTION = 'list';
+$HD_Form -> FG_FILTER_ENABLE = true;
+$HD_Form -> FG_FILTER_COLUMN = 'cardnumber';
+$HD_Form -> FG_FILTER_LABEL = 'Account number';
 
 if (isset($filterprefix)  &&  (strlen($filterprefix)>0)){
-    if (strlen($HD_Form -> FG_TABLE_CLAUSE)>0) $HD_Form -> FG_TABLE_CLAUSE.=" AND ";
-    $HD_Form -> FG_TABLE_CLAUSE.="username like '$filterprefix%'";
+    if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
+    $HD_Form -> FG_QUERY_WHERE_CLAUSE.="username like '$filterprefix%'";
 }
 
 $HD_Form -> FG_INTRO_TEXT_ASK_DELETION = gettext("If you really want remove this ".$HD_Form->FG_INSTANCE_NAME.", click on the delete button.");

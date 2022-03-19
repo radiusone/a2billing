@@ -48,7 +48,7 @@ if (!isset($form_action) || $form_action=="list") {
 	$HD_Form = new FormHandler("cc_remittance_request", "Remittance Request Agent");
 }
 
-$HD_Form -> FG_TABLE_ID = 'cc_remittance_request.id';
+$HD_Form -> FG_QUERY_PRIMARY_KEY = 'cc_remittance_request.id';
 
 $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
@@ -88,10 +88,10 @@ $HD_Form -> FG_FILTER_SEARCH_1_TIME = true;
 $HD_Form -> FG_FILTER_SEARCH_1_TIME_TEXT = gettext('DATE');
 $HD_Form -> FG_FILTER_SEARCH_1_TIME_FIELD = 'date';
 $HD_Form -> FG_FILTER_SEARCH_DELETE_ALL =false;
-$HD_Form -> AddSearchElement_C1(gettext("LOGIN"), 'login','logintype');
-$HD_Form -> AddSearchElement_C1(gettext("LASTNAME"),'lastname','lastnametype');
-$HD_Form -> AddSearchElement_C1(gettext("FIRSTNAME"),'firstname','firstnametype');
-$HD_Form -> AddSearchElement_Select(gettext("SELECT REQUEST TYPE"), null, null, null, null, null, "type", 0, $type_revert_list);
-$HD_Form -> AddSearchElement_Select(gettext("SELECT REQUEST STATUS"), null, null, null, null, null, "status", 0, $status_revert_list);
+$HD_Form -> AddSearchTextInput(gettext("LOGIN"), 'login','logintype');
+$HD_Form -> AddSearchTextInput(gettext("LASTNAME"),'lastname','lastnametype');
+$HD_Form -> AddSearchTextInput(gettext("FIRSTNAME"),'firstname','firstnametype');
+$HD_Form -> AddSearchSelectInput(gettext("SELECT REQUEST TYPE"), "type", $type_revert_list);
+$HD_Form -> AddSearchSelectInput(gettext("SELECT REQUEST STATUS"), "status", $status_revert_list);
 
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE ARE NO REMITTANCE REQUEST CREATED!");

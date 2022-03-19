@@ -76,9 +76,6 @@ $HD_Form -> AddViewElement(gettext("CID PREFIX"), "calleridprefix");
 
 $HD_Form -> FieldViewElement ('id, tariffname, startingdate, expirationdate, id_trunk, secondusedreal, dnidprefix, calleridprefix');
 
-$HD_Form -> FG_ACTION_SIZE_COLUMN = '12%';
-$HD_Form -> CV_NO_FIELDS = gettext("THERE IS NO")." ".strtoupper($HD_Form->FG_INSTANCE_NAME)." ".gettext("CREATED!");
-
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form -> FG_ENABLE_ADD_BUTTON = true;

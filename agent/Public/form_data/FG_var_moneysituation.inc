@@ -42,10 +42,10 @@ if (! has_rights (ACX_ACCESS)) {
 
 
 $HD_Form = new FormHandler("cc_card LEFT JOIN cc_card_group ON cc_card.id_group=cc_card_group.id ", "Card");
-$HD_Form -> FG_TABLE_CLAUSE = " cc_card_group.id_agent=".$_SESSION['agent_id'] ;
-$HD_Form -> FG_TABLE_ID="cc_card.id";
+$HD_Form -> FG_QUERY_WHERE_CLAUSE = " cc_card_group.id_agent=".$_SESSION['agent_id'] ;
+$HD_Form -> FG_QUERY_PRIMARY_KEY="cc_card.id";
 $HD_Form->no_debug();
-$HD_Form -> FG_LIMITE_DISPLAY = 10;
+$HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 10;
 
 $HD_Form -> AddViewElement(gettext("ID"), "cc_card.id");
 $HD_Form -> AddViewElement(gettext("CardNumber"), "username", true, "30", "display_customer_link");
@@ -59,9 +59,6 @@ $HD_Form -> AddViewElement(gettext("PAYMENT"), "payment", true, "15", null, "lie
 $HD_Form -> AddViewElement(gettext("TO PAY"), "to pay", true, "", null, "eval", '(%7 - %6 )'); //abs
 
 $HD_Form -> FieldViewElement ('cc_card.id, username, firstname, lastname, credit,cc_card.id,cc_card.id, cc_card.id, cc_card.id');
-
-$HD_Form -> FG_ACTION_SIZE_COLUMN = '15%';
-$HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO").strtoupper($HD_Form->FG_INSTANCE_NAME)." ".gettext("CREATED!");
 
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = false;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = false;
@@ -83,14 +80,13 @@ $HD_Form -> FG_INTRO_TEXT_ASK_DELETION = gettext("If you really want remove this
 $HD_Form -> FG_INTRO_TEXT_ADD = gettext("you can add easily a new")." ".$HD_Form->FG_INSTANCE_NAME.".<br>".gettext("Fill the following fields and confirm by clicking on the button add.");
 
 
-$HD_Form -> FG_FILTER_APPLY = true;
-$HD_Form -> FG_FILTERFIELD = 'cardnumber';
-$HD_Form -> FG_FILTERFIELDNAME = 'cardnumber';
-$HD_Form -> FG_FILTER_FORM_ACTION = 'list';
+$HD_Form -> FG_FILTER_ENABLE = true;
+$HD_Form -> FG_FILTER_COLUMN = 'cardnumber';
+$HD_Form -> FG_FILTER_LABEL = 'cardnumber';
 
 if (isset($filterprefix)  &&  (strlen($filterprefix)>0)){
-	if (strlen($HD_Form -> FG_TABLE_CLAUSE)>0) $HD_Form -> FG_TABLE_CLAUSE.=" AND ";
-	$HD_Form -> FG_TABLE_CLAUSE.="username like '$filterprefix%'";
+	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
+	$HD_Form -> FG_QUERY_WHERE_CLAUSE.="username like '$filterprefix%'";
 }
 
 

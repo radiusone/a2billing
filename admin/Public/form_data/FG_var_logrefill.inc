@@ -49,7 +49,7 @@ if (!isset($form_action) || $form_action=="list") {
 	$HD_Form = new FormHandler("cc_logrefill", "Refill");
 }
 
-$HD_Form -> FG_TABLE_ID = 'cc_logrefill.id';
+$HD_Form -> FG_QUERY_PRIMARY_KEY = 'cc_logrefill.id';
 
 $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
@@ -79,22 +79,20 @@ $HD_Form -> FG_FILTER_SEARCH_1_TIME_TEXT = gettext('DATE');
 $HD_Form -> FG_FILTER_SEARCH_1_TIME_FIELD = 'date';
 
 
-$HD_Form -> AddSearchElement_C1(gettext("ACCOUNT NUMBER"), 'username','usernametype');
-$HD_Form -> AddSearchElement_C1(gettext("LASTNAME"),'lastname','lastnametype');
-$HD_Form -> AddSearchElement_C1(gettext("FIRSTNAME"),'firstname','firstnametype');
+$HD_Form -> AddSearchTextInput(gettext("ACCOUNT NUMBER"), 'username','usernametype');
+$HD_Form -> AddSearchTextInput(gettext("LASTNAME"),'lastname','lastnametype');
+$HD_Form -> AddSearchTextInput(gettext("FIRSTNAME"),'firstname','firstnametype');
 $HD_Form -> FG_FILTER_SEARCH_DELETE_ALL =false;
 
-$HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO ".strtoupper($HD_Form->FG_INSTANCE_NAME)." CREATED!");
 $HD_Form -> FG_ENABLE_INFO_BUTTON = true;
-$HD_Form -> FG_INFO_LINK = "A2B_refill_info.php?id=";
-$HD_Form -> FG_FILTER_APPLY = true;
-$HD_Form -> FG_FILTERFIELD = 'cardnumber';
-$HD_Form -> FG_FILTERFIELDNAME = 'Account number';
-$HD_Form -> FG_FILTER_FORM_ACTION = 'list';
+$HD_Form -> FG_INFO_BUTTON_LINK = "A2B_refill_info.php?id=";
+$HD_Form -> FG_FILTER_ENABLE = true;
+$HD_Form -> FG_FILTER_COLUMN = 'cardnumber';
+$HD_Form -> FG_FILTER_LABEL = 'Account number';
 
 if (isset($filterprefix)  &&  (strlen($filterprefix)>0)) {
-	if (strlen($HD_Form -> FG_TABLE_CLAUSE)>0) $HD_Form -> FG_TABLE_CLAUSE.=" AND ";
-	$HD_Form -> FG_TABLE_CLAUSE.="username like '$filterprefix%'";
+	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
+	$HD_Form -> FG_QUERY_WHERE_CLAUSE.="username like '$filterprefix%'";
 }
 
 $HD_Form -> FG_ENABLE_ADD_BUTTON = true;

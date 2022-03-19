@@ -50,7 +50,6 @@ $HD_Form = new FormHandler();
 $HD_Form -> setDBHandler (DbConnect());
 $HD_Form -> init();
 $HD_Form->no_debug();
-$HD_Form -> FG_TABLE_ID="id";
 $HD_Form -> FG_FILTER_SEARCH_SESSION_NAME = 'entity_ratecard_selection';
 
 getpost_ifset(array('posted' ,'ratecard_source' ,'ratecard_destination', 'search_sources'));
@@ -137,19 +136,17 @@ if ($posted == 1) {
 }
 
 $HD_Form -> FG_FILTER_SEARCH_FORM = true;
-$HD_Form -> FG_FILTER_SEARCH_TOP_TEXT = gettext("Define the search criteria");
 $HD_Form -> FG_FILTER_SEARCH_1_TIME_TEXT = gettext("Start Date / Month");
 $HD_Form -> FG_FILTER_SEARCH_2_TIME_TEXT = gettext("Start Date / Day");
 $HD_Form -> FG_FILTER_SEARCH_2_TIME_FIELD = 'startdate';
-$HD_Form -> AddSearchElement_C1(gettext("TAG"), 'tag','tagtype');
-$HD_Form -> AddSearchElement_C1(gettext("DESTINATION"), 'destination','destinationtype');
-$HD_Form -> AddSearchElement_C1(gettext("PREFIX"),'dialprefix','dialprefixtype');
-$HD_Form -> AddSearchElement_C2(gettext("BUYRATE"),'buyrate1','buyrate1type','buyrate2','buyrate2type','buyrate');
-$HD_Form -> AddSearchElement_C2(gettext("RATE INITIAL"),'rateinitial1','rateinitial1type','rateinitial2','rateinitial2type','rateinitial');
+$HD_Form -> AddSearchTextInput(gettext("TAG"), 'tag','tagtype');
+$HD_Form -> AddSearchTextInput(gettext("DESTINATION"), 'destination','destinationtype');
+$HD_Form -> AddSearchTextInput(gettext("PREFIX"),'dialprefix','dialprefixtype');
+$HD_Form -> AddSearchComparisonInput(gettext("BUYRATE"),'buyrate1','buyrate1type','buyrate2','buyrate2type','buyrate');
+$HD_Form -> AddSearchComparisonInput(gettext("RATE INITIAL"),'rateinitial1','rateinitial1type','rateinitial2','rateinitial2type','rateinitial');
 $HD_Form -> prepare_list_subselection('list');
-$HD_Form -> FG_FILTER_SEARCH_FORM_SELECT_TEXT = 'TRUNK';
-$HD_Form -> AddSearchElement_Select('SELECT TRUNK',"cc_trunk","id_trunk, trunkcode, providerip","","trunkcode","ASC","id_trunk");
-$_SESSION['search_ratecard'] = $HD_Form -> FG_TABLE_CLAUSE;
+$HD_Form -> AddSearchSqlSelectInput('SELECT TRUNK',"cc_trunk","id_trunk, trunkcode, providerip","","trunkcode","ASC","id_trunk");
+$_SESSION['search_ratecard'] = $HD_Form -> FG_QUERY_WHERE_CLAUSE;
 
 /*************************************************************/
 
@@ -157,7 +154,7 @@ $instance_table_tariffname = new Table("cc_tariffplan", "id, tariffname");
 
 $con = "";
 
-$list_tariffname = $instance_table_tariffname  -> get_list ($HD_Form->DBHandle, $con, "tariffname");
+$list_tariffname = $instance_table_tariffname  -> get_list ($HD_Form->DBHandle, $con, ["tariffname"]);
 
 $nb_tariffname = count($list_tariffname);
 

@@ -48,15 +48,6 @@ getpost_ifset(array('choose_list', 'addcredit', 'gen_id', 'cardnum', 'choose_cur
 
 $HD_Form -> setDBHandler (DbConnect());
 
-$HD_Form -> FG_FILTER_SEARCH_FORM = false;
-$HD_Form -> FG_ENABLE_EDIT_BUTTON = false;
-$HD_Form -> FG_ENABLE_DELETE_BUTTON = false;
-$HD_Form -> FG_OTHER_BUTTON1 = false;
-$HD_Form -> FG_OTHER_BUTTON2 = false;
-$HD_Form -> FG_FILTER_APPLY = false;
-$HD_Form -> FG_LIST_ADDING_BUTTON1 = false;
-$HD_Form -> FG_LIST_ADDING_BUTTON2 = false;
-
 $nbvoucher = $choose_list;
 
 if ($nbvoucher>0) {
@@ -79,7 +70,7 @@ if ($nbvoucher>0) {
 }
 
 if (!isset($_SESSION["IDfilter"])) $_SESSION["IDfilter"]='NODEFINED';
-$HD_Form -> FG_TABLE_CLAUSE = "tag='".$_SESSION["IDfilter"]."'";
+$HD_Form -> FG_QUERY_WHERE_CLAUSE = "tag='".$_SESSION["IDfilter"]."'";
 
 $HD_Form -> init();
 
@@ -158,12 +149,13 @@ $HD_Form -> create_toppage ($form_action);
 
 $HD_Form -> create_form($form_action, $list) ;
 
-$_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR]= "SELECT ".$HD_Form -> FG_EXPORT_FIELD_LIST." FROM $HD_Form->FG_TABLE_NAME";
-if (strlen($HD_Form->FG_TABLE_CLAUSE)>1) {
-    $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] .= " WHERE $HD_Form->FG_TABLE_CLAUSE ";
+$_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR]= "SELECT ". implode(",", $HD_Form -> FG_EXPORT_FIELD_LIST) ." FROM $HD_Form->FG_QUERY_TABLE_NAME";
+if (strlen($HD_Form->FG_QUERY_WHERE_CLAUSE)>1) {
+    $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] .= " WHERE $HD_Form->FG_QUERY_WHERE_CLAUSE ";
 }
-if (!is_null ($HD_Form->FG_ORDER) && ($HD_Form->FG_ORDER!='') && !is_null ($HD_Form->FG_SENS) && ($HD_Form->FG_SENS!='')) {
-    $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR].= " ORDER BY $HD_Form->FG_ORDER $HD_Form->FG_SENS";
+if (!empty($HD_Form->FG_QUERY_ORDERBY_COLUMNS) && !empty($HD_Form->FG_QUERY_DIRECTION)) {
+    $ord = implode(",", $HD_Form->FG_QUERY_ORDERBY_COLUMNS);
+    $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR].= " ORDER BY $ord $HD_Form->FG_QUERY_DIRECTION";
 }
 
 // #### FOOTER SECTION

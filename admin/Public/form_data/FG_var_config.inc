@@ -70,7 +70,7 @@ $value_list["2"] = array( gettext("no"), 0);
 $yesno = array();
 
 $instance_config_table = new Table("cc_config", "config_value, config_valuetype, id");
-$config_list = $instance_config_table -> get_list ($handle, "", "id");
+$config_list = $instance_config_table -> get_list ($handle, "", ["id"]);
 
 foreach($config_list as $key => $cur_value) {
 	if($cur_value[1] != '1') {
@@ -87,14 +87,12 @@ foreach($config_list as $key => $cur_value) {
 }
 $HD_Form = new FormHandler("cc_config", gettext("Configuration"));
 $HD_Form->no_debug();
-$HD_Form -> FG_TABLE_ID="id";
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "config_group_title";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "ASC";
 
 if ($groupselect != "-1" && $groupselect != "") {
-	$HD_Form -> FG_TABLE_ID = "id";
-	$HD_Form -> FG_TABLE_CLAUSE = " config_group_title = '$groupselect'";
-	$_SESSION['ss_groupselect'] = $HD_Form -> FG_TABLE_CLAUSE;
+		$HD_Form -> FG_QUERY_WHERE_CLAUSE = " config_group_title = '$groupselect'";
+	$_SESSION['ss_groupselect'] = $HD_Form -> FG_QUERY_WHERE_CLAUSE;
 	$_SESSION['grpselect'] = $groupselect;
 }
 
@@ -110,7 +108,7 @@ if (!empty($filterKey)) {
 	if ( ($groupselect != "-1") ) {
 		$OPL = 'AND';
 	}
-	$HD_Form -> FG_TABLE_CLAUSE .= " $OPL config_key $filterKey";
+	$HD_Form -> FG_QUERY_WHERE_CLAUSE .= " $OPL config_key $filterKey";
 }
 if (!empty($filterDescription)) {
 	switch ($rbDesc) {
@@ -124,7 +122,7 @@ if (!empty($filterDescription)) {
 	if ( ($groupselect != "-1") || !empty($filterKey) ) {
 		$OPL = 'AND';
 	}
-	$HD_Form -> FG_TABLE_CLAUSE .= " $OPL config_description $filterDescription";
+	$HD_Form -> FG_QUERY_WHERE_CLAUSE .= " $OPL config_description $filterDescription";
 }
 
 if (!empty($filterValue)) {
@@ -139,20 +137,20 @@ if (!empty($filterValue)) {
 	if ( ($groupselect != "-1") || !empty($filterKey) || !empty($filterDescription) ) {
 		$OPL = 'AND';
 	}
-	$HD_Form -> FG_TABLE_CLAUSE .= " $OPL config_value $filterValue";
+	$HD_Form -> FG_QUERY_WHERE_CLAUSE .= " $OPL config_value $filterValue";
 }
 
 if (isset($posted)) {
 	$_SESSION['ss_groupselect'] = '';
 	$_SESSION['groupselect'] = '';
-	$_SESSION['ss_groupselect'] = $HD_Form -> FG_TABLE_CLAUSE;
+	$_SESSION['ss_groupselect'] = $HD_Form -> FG_QUERY_WHERE_CLAUSE;
 }
 
 if($form_action == "list") {
 	$_SESSION['ss_groupselect'] = '';
 	$_SESSION['groupselect'] = '';
 } else {
-	$HD_Form -> FG_TABLE_CLAUSE = $_SESSION['ss_groupselect'];
+	$HD_Form -> FG_QUERY_WHERE_CLAUSE = $_SESSION['ss_groupselect'];
 }
 
 $HD_Form -> FG_EDITION_CLAUSE = "id = %id";
@@ -164,8 +162,7 @@ $HD_Form -> AddViewElement(gettext("GROUP"), "config_group_title");
 
 $HD_Form -> FieldViewElement ('config_title, config_key, config_value, config_description, config_group_title');
 
-$HD_Form -> CV_NO_FIELDS  = gettext("THERE ARE NO ".strtoupper($HD_Form->FG_INSTANCE_NAME)." CREATED!");
-$HD_Form -> FG_LIMITE_DISPLAY = 25;
+$HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 25;
 
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = false;

@@ -138,7 +138,7 @@ class Mail
             $tmpl_table = new Table("cc_templatemail", "*");
             $tmpl_clause = " mailtype = '$type'";
             $order = null;
-            $order_field = null;
+            $order_field = "";
             if (!empty ($lg)) {
                 $tmpl_clause .= " AND ( id_language = '$lg' OR  id_language = 'en' )";
                 $order_field = 'id_language';
@@ -164,7 +164,8 @@ class Mail
                     }
                 }
             }
-            $result_tmpl = $tmpl_table->get_list($DBHandle, $tmpl_clause, $order_field, $order);
+            $ord_arr = explode(",", $order_field ?? "");
+            $result_tmpl = $tmpl_table->get_list($DBHandle, $tmpl_clause, $ord_arr, $order);
             if (is_array($result_tmpl) && sizeof($result_tmpl) > 0) {
                 $mail_tmpl = $result_tmpl[0];
                 $this->message = $mail_tmpl['messagetext'];

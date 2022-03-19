@@ -44,7 +44,7 @@ if (! has_rights (ACX_ADMINISTRATOR)) {
 $HD_Form = new FormHandler("cc_agent", "Agent");
 
 $HD_Form->no_debug();
-$HD_Form -> FG_LIMITE_DISPLAY = 10;
+$HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 10;
 
 $HD_Form -> AddViewElement(gettext("ID"), "id");
 $HD_Form -> AddViewElement(gettext("Agent"), "username", true, "30", "display_linktoagent");
@@ -61,12 +61,9 @@ $HD_Form -> FG_FILTER_SEARCH_FORM = true;
 $HD_Form -> FG_FILTER_SEARCH_SESSION_NAME = 'agent_situation';
 $HD_Form -> FG_FILTER_SEARCH_TOP_TEXT = gettext('Define specific criteria to search for agent infos.');
 $HD_Form -> FG_FILTER_SEARCH_DELETE_ALL =false;
-$HD_Form -> AddSearchElement_C1(gettext("LOGIN"), 'login','logintype');
-$HD_Form -> AddSearchElement_C1(gettext("LASTNAME"),'lastname','lastnametype');
-$HD_Form -> AddSearchElement_C1(gettext("FIRSTNAME"),'firstname','firstnametype');
-
-$HD_Form -> FG_ACTION_SIZE_COLUMN = '15%';
-$HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO").strtoupper($HD_Form->FG_INSTANCE_NAME)." ".gettext("CREATED!");
+$HD_Form -> AddSearchTextInput(gettext("LOGIN"), 'login','logintype');
+$HD_Form -> AddSearchTextInput(gettext("LASTNAME"),'lastname','lastnametype');
+$HD_Form -> AddSearchTextInput(gettext("FIRSTNAME"),'firstname','firstnametype');
 
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = false;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = false;

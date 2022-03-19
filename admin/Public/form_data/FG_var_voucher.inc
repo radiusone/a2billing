@@ -103,19 +103,17 @@ $HD_Form -> FG_FILTER_SEARCH_TOP_TEXT = gettext('Define specific criteria to sea
 $HD_Form -> FG_FILTER_SEARCH_1_TIME_TEXT = gettext('Creation date / Month');
 $HD_Form -> FG_FILTER_SEARCH_2_TIME_TEXT = gettext('Creation date / Day');
 $HD_Form -> FG_FILTER_SEARCH_2_TIME_FIELD = 'creationdate';
-$HD_Form -> AddSearchElement_C1 (gettext("VOUCHER"), 'voucher','vouchertype');
-$HD_Form -> AddSearchElement_C1 (gettext("ACCOUNT NUMBER"),'usedcardnumber','usedcardnumbertype');
-$HD_Form -> AddSearchElement_C1 (gettext("TAG"),'tag','tagtype');
-$HD_Form -> AddSearchElement_C2 (gettext("CREDIT"),'credit1','credit1type','credit2','credit2type','credit');
+$HD_Form -> AddSearchTextInput (gettext("VOUCHER"), 'voucher','vouchertype');
+$HD_Form -> AddSearchTextInput (gettext("ACCOUNT NUMBER"),'usedcardnumber','usedcardnumbertype');
+$HD_Form -> AddSearchTextInput (gettext("TAG"),'tag','tagtype');
+$HD_Form -> AddSearchComparisonInput (gettext("CREDIT"),'credit1','credit1type','credit2','credit2type','credit');
 
-$HD_Form -> FG_FILTER_SEARCH_FORM_SELECT_TEXT = '';
-$HD_Form -> AddSearchElement_Select (gettext("SELECT STATUS"), null, null, null, null,null , "activated", 0, $actived_list_r);
-$HD_Form -> AddSearchElement_Select (gettext("SELECT USED"), null, null, null, null,null , "used", 0, $used_list_r);
-$HD_Form -> AddSearchElement_Select (gettext("SELECT CURRENCY"), null, null, null, null, null, "currency", 0, $currency_list_r);
+$HD_Form -> AddSearchSelectInput (gettext("SELECT STATUS"), "activated", $actived_list_r);
+$HD_Form -> AddSearchSelectInput (gettext("SELECT USED"), "used", $used_list_r);
+$HD_Form -> AddSearchSelectInput (gettext("SELECT CURRENCY"), "currency", $currency_list_r);
 
-$HD_Form -> CV_NO_FIELDS  = gettext("NO")." ".strtoupper($HD_Form->FG_INSTANCE_NAME)." ".gettext("HAVE BEEN CREATED.");
 $HD_Form -> FG_EXPORT_SESSION_VAR = "pr_export_entity_voucher";
-$HD_Form -> FG_EXPORT_FIELD_LIST = VOUCHER_EXPORT_FIELD_LIST;
+$HD_Form -> FG_EXPORT_FIELD_LIST = explode(",", $A2B->config['webui']['voucher_export_field_list']);
 $HD_Form -> FG_EXPORT_CSV = true;
 $HD_Form -> FG_EXPORT_XML = true;
 
@@ -124,7 +122,7 @@ $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 
 if ($form_action=="ask-add") {
-	$card_gen = generate_unique_value($HD_Form->FG_TABLE_NAME, LEN_VOUCHER, "voucher");
+	$card_gen = generate_unique_value($HD_Form->FG_QUERY_TABLE_NAME, LEN_VOUCHER, "voucher");
 	$maxi = "value='".$card_gen."'";
 }
 
@@ -199,13 +197,13 @@ $HD_Form -> FieldEditElement ('voucher, credit, tag, activated, currency, expira
 
 
 // Set the filter variables
-$HD_Form -> FG_FILTER_APPLY = true;
-$HD_Form -> FG_FILTERFIELD = 'voucher';
-$HD_Form -> FG_FILTERFIELDNAME = 'voucher';
+$HD_Form -> FG_FILTER_ENABLE = true;
+$HD_Form -> FG_FILTER_COLUMN = 'voucher';
+$HD_Form -> FG_FILTER_LABEL = 'voucher';
 
 if (isset($filterprefix)  &&  (strlen($filterprefix)>0)) {
-	if (strlen($HD_Form -> FG_TABLE_CLAUSE)>0) $HD_Form -> FG_TABLE_CLAUSE.=" AND ";
-	$HD_Form -> FG_TABLE_CLAUSE.="voucher like '$filterprefix%'";
+	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
+	$HD_Form -> FG_QUERY_WHERE_CLAUSE.="voucher like '$filterprefix%'";
 }
 
 

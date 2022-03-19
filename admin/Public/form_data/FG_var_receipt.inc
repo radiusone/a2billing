@@ -52,7 +52,7 @@ if (!isset($form_action) || $form_action=="list") {
 	$HD_Form = new FormHandler("cc_receipt", "Receipt");
 }
 
-$HD_Form -> FG_TABLE_ID = 'cc_receipt.id';
+$HD_Form -> FG_QUERY_PRIMARY_KEY = 'cc_receipt.id';
 $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
@@ -63,7 +63,7 @@ $HD_Form -> FG_FK_TABLENAMES = array("cc_receipt_item");
 $HD_Form -> FG_FK_EDITION_CLAUSE = array(" id_receipt ");
 
 $HD_Form -> FG_ENABLE_INFO_BUTTON = true;
-$HD_Form -> FG_INFO_LINK = "A2B_receipt_view.php?id=";
+$HD_Form -> FG_INFO_BUTTON_LINK = "A2B_receipt_view.php?id=";
 
 $HD_Form -> FG_OTHER_BUTTON1_LINK = "A2B_receipt_edit.php?id=";
 $HD_Form -> FG_OTHER_BUTTON1_IMG = Images_Path."/page_white_gear.png";
@@ -96,8 +96,6 @@ $HD_Form -> AddViewElement(gettext("TITLE"), "title");
 $HD_Form -> AddViewElement(gettext("STATUS"), "status", true, "", null, "list", $status_list);
 $HD_Form -> AddViewElement(gettext("AMOUNT INCL VAT"), "total_price", true, "", "display_2bill");
 $HD_Form -> FieldViewElement ("cc_receipt.id, username, cc_receipt.date,title,cc_receipt.status,$filter_amount_with_vat");
-
-$HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO ".strtoupper($HD_Form->FG_INSTANCE_NAME)." CREATED!");
 
 $HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
@@ -151,14 +149,13 @@ $HD_Form -> FieldEditElement ('id_card, date,title, description');
 
 
 
-$HD_Form -> FG_FILTER_APPLY = true;
-$HD_Form -> FG_FILTERFIELD = 'cardnumber';
-$HD_Form -> FG_FILTERFIELDNAME = 'Account number';
-$HD_Form -> FG_FILTER_FORM_ACTION = 'list';
+$HD_Form -> FG_FILTER_ENABLE = true;
+$HD_Form -> FG_FILTER_COLUMN = 'cardnumber';
+$HD_Form -> FG_FILTER_LABEL = 'Account number';
 
 if (isset($filterprefix)  &&  (strlen($filterprefix)>0)) {
-	if (strlen($HD_Form -> FG_TABLE_CLAUSE)>0) $HD_Form -> FG_TABLE_CLAUSE.=" AND ";
-	$HD_Form -> FG_TABLE_CLAUSE.="username like '$filterprefix%'";
+	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
+	$HD_Form -> FG_QUERY_WHERE_CLAUSE.="username like '$filterprefix%'";
 }
 
 

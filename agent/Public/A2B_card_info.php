@@ -656,7 +656,7 @@ echo get_login_button ($DBHandle, $id);
 
 $payment_table = new Table('cc_logpayment','*');
 $payment_clause = "card_id = ".$id;
-$payment_result = $payment_table -> get_list($DBHandle, $payment_clause, 'date', 'DESC', 10);
+$payment_result = $payment_table -> get_list($DBHandle, $payment_clause, ['date'], 'DESC', 10);
 if (sizeof($payment_result)>0 && $payment_result[0]!=null) {
 ?>
 <table class="toppage_maintable">
@@ -728,7 +728,7 @@ if (sizeof($payment_result)>0 && $payment_result[0]!=null) {
 
 $refill_table = new Table('cc_logrefill','*');
 $refill_clause = "card_id = ".$id;
-$refill_result = $refill_table -> get_list($DBHandle, $refill_clause, 'date', 'DESC', 10);
+$refill_result = $refill_table -> get_list($DBHandle, $refill_clause, ['date'], 'DESC', 10);
 
 if (sizeof($refill_result)>0 && $refill_result[0]!=null) {
 ?>
@@ -794,7 +794,7 @@ if (sizeof($refill_result)>0 && $refill_result[0]!=null) {
 
 $call_table = new Table('cc_call,cc_prefix','*');
 $call_clause = "card_id = ".$id." AND cc_call.destination = cc_prefix.prefix";
-$call_result = $call_table -> get_list($DBHandle, $call_clause, 'starttime', 'DESC', 10);
+$call_result = $call_table -> get_list($DBHandle, $call_clause, ['starttime'], 'DESC', 10);
 
 if (sizeof($call_result)>0 && $call_result[0]!=null) {
 ?>

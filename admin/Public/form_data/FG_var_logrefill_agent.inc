@@ -50,7 +50,7 @@ if (!isset($form_action) || $form_action=="list") {
 	$HD_Form = new FormHandler("cc_logrefill_agent", "Agent Refill");
 }
 
-$HD_Form -> FG_TABLE_ID = 'cc_logrefill_agent.id';
+$HD_Form -> FG_QUERY_PRIMARY_KEY = 'cc_logrefill_agent.id';
 
 $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
@@ -75,9 +75,8 @@ $HD_Form -> AddViewElement(gettext("REFILL AMOUNT"), "credit", true, "", "displa
 
 $HD_Form -> FieldViewElement ('cc_logrefill_agent.id, agent_id, date, cc_logrefill_agent.refill_type as refill_type, cc_logrefill_agent.credit');
 
-$HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO AGENT REFILL CREATED!");
 $HD_Form -> FG_ENABLE_INFO_BUTTON = true;
-$HD_Form -> FG_INFO_LINK = "A2B_refill_info_agent.php?id=";
+$HD_Form -> FG_INFO_BUTTON_LINK = "A2B_refill_info_agent.php?id=";
 $HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 
 if (!($popup_select>=1))	 $HD_Form -> FG_FILTER_SEARCH_FORM = true;
@@ -87,9 +86,9 @@ $HD_Form -> FG_FILTER_SEARCH_1_TIME = true;
 $HD_Form -> FG_FILTER_SEARCH_1_TIME_TEXT = gettext('DATE');
 $HD_Form -> FG_FILTER_SEARCH_1_TIME_FIELD = 'date';
 $HD_Form -> FG_FILTER_SEARCH_DELETE_ALL =false;
-$HD_Form -> AddSearchElement_C1(gettext("LOGIN"), 'login','logintype');
-$HD_Form -> AddSearchElement_C1(gettext("LASTNAME"),'lastname','lastnametype');
-$HD_Form -> AddSearchElement_C1(gettext("FIRSTNAME"),'firstname','firstnametype');
+$HD_Form -> AddSearchTextInput(gettext("LOGIN"), 'login','logintype');
+$HD_Form -> AddSearchTextInput(gettext("LASTNAME"),'lastname','lastnametype');
+$HD_Form -> AddSearchTextInput(gettext("FIRSTNAME"),'firstname','firstnametype');
 
 
 if (has_rights (ACX_MODIFY_REFILLS)) {

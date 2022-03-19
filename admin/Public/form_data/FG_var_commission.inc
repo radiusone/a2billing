@@ -44,7 +44,7 @@ getpost_ifset(array('id', 'card_id', 'date', 'payment','description','added_refi
 
 $HD_Form = new FormHandler("cc_agent_commission", "Commission Agent");
 
-$HD_Form -> FG_TABLE_ID = 'cc_agent_commission.id';
+$HD_Form -> FG_QUERY_PRIMARY_KEY = 'cc_agent_commission.id';
 
 $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
@@ -64,8 +64,6 @@ $HD_Form -> AddViewElement(gettext("DESCRIPTION"), "description", true, 50);
 $HD_Form -> AddViewElement(gettext("LINK TO PAYMENT"), "id_payment", true, "", "", "lie_link", "cc_logpayment", "payment, id", "id='%id'", "%1 " . BASE_CURRENCY . " (id:%2)", "A2B_entity_payment.php");
 
 $HD_Form -> FieldViewElement ('cc_agent_commission.id, id_card, id_agent, date, amount, commission_type , description, id_payment');
-
-$HD_Form -> CV_NO_FIELDS  = gettext("THERE ARE NO COMMISSION AGENTS CREATED!");
 
 $HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 //$HD_Form -> FG_EDITION = true;

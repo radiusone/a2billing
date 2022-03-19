@@ -53,7 +53,7 @@ if (!isset($form_action) || $form_action=="list") {
 	$HD_Form = new FormHandler("cc_invoice", "Invoice");
 }
 
-$HD_Form -> FG_TABLE_ID = 'cc_invoice.id';
+$HD_Form -> FG_QUERY_PRIMARY_KEY = 'cc_invoice.id';
 $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
@@ -64,7 +64,7 @@ $HD_Form -> FG_FK_TABLENAMES = array("cc_invoice_item");
 $HD_Form -> FG_FK_EDITION_CLAUSE = array(" id_invoice ");
 
 $HD_Form -> FG_ENABLE_INFO_BUTTON = true;
-$HD_Form -> FG_INFO_LINK = "A2B_invoice_view.php?id=";
+$HD_Form -> FG_INFO_BUTTON_LINK = "A2B_invoice_view.php?id=";
 
 $HD_Form -> FG_OTHER_BUTTON1_LINK = "A2B_invoice_edit.php?id=";
 $HD_Form -> FG_OTHER_BUTTON1_IMG = Images_Path."/page_white_gear.png";
@@ -112,8 +112,6 @@ $HD_Form -> AddViewElement(gettext("STATUS"), "cc_invoice_status", true, "", nul
 $HD_Form -> AddViewElement(gettext("AMOUNT INCL VAT"), "total_price", true, "", "display_2bill");
 $HD_Form -> FieldViewElement ("cc_invoice.id, cc_invoice.reference, username, cc_invoice.date,title, cc_invoice.paid_status, cc_invoice.status as cc_invoice_status,$filter_amount_with_vat");
 
-$HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO ".strtoupper($HD_Form->FG_INSTANCE_NAME)." CREATED!");
-
 if (!($popup_select>=1)) $HD_Form -> FG_FILTER_SEARCH_FORM = true;
 if (!($popup_select>=1)) $HD_Form -> FG_FILTER_SEARCH_DELETE_ALL = false;
 
@@ -121,17 +119,17 @@ $HD_Form -> FG_FILTER_SEARCH_TOP_TEXT = gettext('Define specific criteria to sea
 $HD_Form -> FG_FILTER_SEARCH_1_TIME = true;
 $HD_Form -> FG_FILTER_SEARCH_1_TIME_TEXT = gettext('CREATION DATE');
 
-$HD_Form -> AddSearchElement_C1(gettext("FIRSTNAME"),'firstname','firstnametype');
-$HD_Form -> AddSearchElement_C1(gettext("LASTNAME"),'lastname','lastnametype');
-$HD_Form -> AddSearchElement_C1(gettext("REFERENCE"), 'reference','referencetype');
-$HD_Form -> AddSearchElement_C1(gettext("TITLE"), 'title','titletype');
+$HD_Form -> AddSearchTextInput(gettext("FIRSTNAME"),'firstname','firstnametype');
+$HD_Form -> AddSearchTextInput(gettext("LASTNAME"),'lastname','lastnametype');
+$HD_Form -> AddSearchTextInput(gettext("REFERENCE"), 'reference','referencetype');
+$HD_Form -> AddSearchTextInput(gettext("TITLE"), 'title','titletype');
 
-$HD_Form -> AddSearchElement_C2(gettext("AMOUNT INCL VAT"),'total_price1','total_price1type','total_price2','total_price2type','total_price');
+$HD_Form -> AddSearchComparisonInput(gettext("AMOUNT INCL VAT"),'total_price1','total_price1type','total_price2','total_price2type','total_price');
 
-$HD_Form -> AddSearchElement_Select(gettext("PAYMENT TYPE"), null, null, null, null,null , "typepaid", 0, $typepaid_list_r);
-$HD_Form -> AddSearchElement_Select(gettext("CALL PLAN"), "cc_tariffgroup", "id, tariffgroupname", "", "tariffgroupname", "ASC", "tariff");
-$HD_Form -> AddSearchElement_Select(gettext("INVOICE DAY"), null, null, null, null,null , "invoiceday", 0, $invoiceday_list);
-$HD_Form -> AddSearchElement_Select(gettext("PAID STATUS"), null, null, null, null,null , "paid_status", 0, $paid_status_list_r);
+$HD_Form -> AddSearchSelectInput(gettext("PAYMENT TYPE"), "typepaid", $typepaid_list_r);
+$HD_Form -> AddSearchSqlSelectInput(gettext("CALL PLAN"), "cc_tariffgroup", "id, tariffgroupname", "", "tariffgroupname", "ASC", "tariff");
+$HD_Form -> AddSearchSelectInput(gettext("INVOICE DAY"), "invoiceday", $invoiceday_list);
+$HD_Form -> AddSearchSelectInput(gettext("PAID STATUS"), "paid_status", $paid_status_list_r);
 
 
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
@@ -186,14 +184,13 @@ $HD_Form -> FieldEditElement ('id_card, date,title, description');
 
 
 
-$HD_Form -> FG_FILTER_APPLY = true;
-$HD_Form -> FG_FILTERFIELD = 'cardnumber';
-$HD_Form -> FG_FILTERFIELDNAME = 'Account number';
-$HD_Form -> FG_FILTER_FORM_ACTION = 'list';
+$HD_Form -> FG_FILTER_ENABLE = true;
+$HD_Form -> FG_FILTER_COLUMN = 'cardnumber';
+$HD_Form -> FG_FILTER_LABEL = 'Account number';
 
 if (isset($filterprefix)  &&  (strlen($filterprefix)>0)){
-	if (strlen($HD_Form -> FG_TABLE_CLAUSE)>0) $HD_Form -> FG_TABLE_CLAUSE.=" AND ";
-	$HD_Form -> FG_TABLE_CLAUSE.="username like '$filterprefix%'";
+	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
+	$HD_Form -> FG_QUERY_WHERE_CLAUSE.="username like '$filterprefix%'";
 }
 
 

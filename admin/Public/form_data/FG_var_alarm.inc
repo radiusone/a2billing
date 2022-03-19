@@ -89,8 +89,6 @@ $HD_Form -> AddViewElement(gettext("CREATION DATE"), "datecreate", true, "22", "
 // added a parameter to append  FG_TABLE_ID  ( by default ) or disable 0.
 $HD_Form -> FieldViewElement ('name, periode, type, `maxvalue`, minvalue, status, id_trunk, datecreate');
 
-$HD_Form -> CV_NO_FIELDS  = gettext("There are no Alarms Created");
-
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form -> FG_ENABLE_ADD_BUTTON = true;

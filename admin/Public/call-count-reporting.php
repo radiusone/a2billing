@@ -92,10 +92,10 @@ if ((isset($inputtopvar)) && ($inputtopvar!="") && (isset($topsearch)) && ($tops
 
 if ($grouped) {
     $FG_COL_QUERY=$on_field1.', sum(sessiontime) AS calltime, sum(sessionbill) as cost, sum(buycost) as buy,DATE(starttime) AS day, count(*) as nbcall';
-    $SQL_GROUP=" GROUP BY ".$on_field2.",DATE(starttime) ";
+    $SQL_GROUP=$on_field2.",DATE(starttime)";
 } else {
     $FG_COL_QUERY=$on_field1.', sum(sessiontime) AS calltime, sum(sessionbill) as cost, sum(buycost) as buy, count(*) as nbcall';
-    $SQL_GROUP=" GROUP BY ".$on_field2." ";
+    $SQL_GROUP=$on_field2;
 }
 
 $FG_TABLE_DEFAULT_SENS = "DESC";
@@ -133,7 +133,9 @@ if ($terminatecauseid=="ANSWER") {
 $instance_table = new Table($FG_TABLE_NAME, $FG_COL_QUERY);
 
 if (!$nodisplay) {
-    $list = $instance_table -> get_list ($DBHandle, $FG_TABLE_CLAUSE, $order, $sens, $inputtopvar, 0, $SQL_GROUP);
+    $ord_arr = explode(",", $order ?? "");
+    $grp_arr = explode(",", $SQL_GROUP ?? "");
+    $list = $instance_table -> get_list ($DBHandle, $FG_TABLE_CLAUSE, $ord_arr, $sens, $inputtopvar, 0, $grp_arr);
 }
 
 $smarty->display('main.tpl');

@@ -202,7 +202,7 @@ class ticket
             $instance_sub_table = new Table("cc_ticket_comment", "*");
             $QUERY = " id_ticket = " . $this->id;
             $return = null;
-            $return = $instance_sub_table->get_list($DBHandle, $QUERY, "date");
+            $return = $instance_sub_table->get_list($DBHandle, $QUERY, ["date"]);
             $i = 0;
             foreach ($return as $value) {
                 $comment = new Comment($value['id'], $value['description'], $value['date'], $value["viewed_cust"], $value["viewed_agent"], $value["viewed_admin"]);

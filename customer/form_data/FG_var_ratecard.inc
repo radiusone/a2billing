@@ -44,7 +44,7 @@ getpost_ifset(array('destination', 'dialprefix', 'rateinitial','posted','tariffp
 
 
 $HD_Form = new FormHandler("cc_callplan_lcr", "Rates");
-$HD_Form -> FG_TABLE_ID = 'ratecard_id';
+$HD_Form -> FG_QUERY_PRIMARY_KEY = 'ratecard_id';
 
 
 $HD_Form->no_debug();
@@ -56,8 +56,8 @@ $HD_Form -> FG_FILTER_SEARCH_SESSION_NAME = 'entity_ratecard_selection';
 
 
 
-$HD_Form -> FG_TABLE_CLAUSE = "tariffgroup_id = '".$_SESSION["tariff"]."' ";
-$HD_Form -> SQL_GROUP = "GROUP BY dialprefix";
+$HD_Form -> FG_QUERY_WHERE_CLAUSE = "tariffgroup_id = '".$_SESSION["tariff"]."' ";
+$HD_Form -> FG_QUERY_GROUPBY_COLUMNS = ["dialprefix"];
 
 $HD_Form -> AddViewElement("<acronym title=\"DIALING PREFIX\">" . gettext("PREFIX") . "</acronym>", "dialprefix");
 $HD_Form -> AddViewElement(gettext("DESTINATION"), "destination");

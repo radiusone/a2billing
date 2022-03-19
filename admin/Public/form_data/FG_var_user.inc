@@ -62,7 +62,7 @@ $HD_Form = new FormHandler("cc_ui_authen", $FG_INSTANCE_NAME);
 
 
 $HD_Form->no_debug();
-$HD_Form -> FG_TABLE_ID = " userid";
+$HD_Form -> FG_QUERY_PRIMARY_KEY = "userid";
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = " datecreation";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "ASC";
 
@@ -77,7 +77,7 @@ if (is_numeric($groupID)) {
 }
 //else select all
 
-$HD_Form -> FG_TABLE_CLAUSE = $FG_TABLE_CLAUSE;
+$HD_Form -> FG_QUERY_WHERE_CLAUSE = $FG_TABLE_CLAUSE;
 
 $right_list = array();
 $right_list["1"] = array( gettext("CUSTOMERS"), "1");
@@ -115,12 +115,10 @@ $HD_Form -> AddViewElement(gettext("LOGIN"), "login");
 
 $HD_Form -> FieldViewElement ('userid, datecreation, login');
 
-$HD_Form -> CV_NO_FIELDS  = gettext("NO")." ".strtoupper($HD_Form->FG_INSTANCE_NAME)." ".gettext("HAVE BEEN CREATED!");
-
 if (!$popup_select) {
 	$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 	$HD_Form -> FG_ENABLE_INFO_BUTTON = true;
-	$HD_Form -> FG_INFO_LINK = "A2B_admin_info.php?groupID=$groupID&id=";
+	$HD_Form -> FG_INFO_BUTTON_LINK = "A2B_admin_info.php?groupID=$groupID&id=";
 }
 
 if (has_rights (ACX_MODIFY_ADMINS) && !($popup_select)) {

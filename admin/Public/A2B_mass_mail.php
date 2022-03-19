@@ -105,40 +105,38 @@ $HD_Form -> FG_FILTER_SEARCH_TOP_TEXT = gettext('Define specific criteria to sea
 $HD_Form -> FG_FILTER_SEARCH_1_TIME_TEXT = gettext('Creation date / Month');
 $HD_Form -> FG_FILTER_SEARCH_2_TIME_TEXT = gettext('Creation date / Day');
 $HD_Form -> FG_FILTER_SEARCH_2_TIME_FIELD = 'creationdate';
-$HD_Form -> AddSearchElement_C1(gettext("ACCOUNT NUMBER"), 'username','usernametype');
-$HD_Form -> AddSearchElement_C1(gettext("LASTNAME"),'lastname','lastnametype');
-$HD_Form -> AddSearchElement_C1(gettext("LOGIN"),'useralias','useraliastype');
-$HD_Form -> AddSearchElement_C1(gettext("MACADDRESS"),'mac_addr','macaddresstype');
-$HD_Form -> AddSearchElement_C1(gettext("EMAIL"),'email','emailtype');
-$HD_Form -> AddSearchElement_C2(gettext("CUSTOMER ID (SERIAL)"),'id1','id1type','id2','id2type','id');
-$HD_Form -> AddSearchElement_C2(gettext("CREDIT"),'credit1','credit1type','credit2','credit2type','credit');
-$HD_Form -> AddSearchElement_C2(gettext("INUSE"),'inuse1','inuse1type','inuse2','inuse2type','inuse');
+$HD_Form -> AddSearchTextInput(gettext("ACCOUNT NUMBER"), 'username','usernametype');
+$HD_Form -> AddSearchTextInput(gettext("LASTNAME"),'lastname','lastnametype');
+$HD_Form -> AddSearchTextInput(gettext("LOGIN"),'useralias','useraliastype');
+$HD_Form -> AddSearchTextInput(gettext("MACADDRESS"),'mac_addr','macaddresstype');
+$HD_Form -> AddSearchTextInput(gettext("EMAIL"),'email','emailtype');
+$HD_Form -> AddSearchComparisonInput(gettext("CUSTOMER ID (SERIAL)"),'id1','id1type','id2','id2type','id');
+$HD_Form -> AddSearchComparisonInput(gettext("CREDIT"),'credit1','credit1type','credit2','credit2type','credit');
+$HD_Form -> AddSearchComparisonInput(gettext("INUSE"),'inuse1','inuse1type','inuse2','inuse2type','inuse');
 
-$HD_Form -> FG_FILTER_SEARCH_FORM_SELECT_TEXT = '';
-$HD_Form -> AddSearchElement_Select(gettext("SELECT LANGUAGE"), null, null, null, null, null, "language", 0, $language_list_r);
-$HD_Form -> AddSearchElement_Select(gettext("SELECT TARIFF"), "cc_tariffgroup", "id, tariffgroupname, id", "", "tariffgroupname", "ASC", "tariff");
-$HD_Form -> AddSearchElement_Select(gettext("SELECT STATUS"), null, null, null, null,null , "status", 0, $cardstatus_list_r);
-$HD_Form -> AddSearchElement_Select(gettext("SELECT ACCESS"), null, null, null, null, null, "simultaccess", 0, $simultaccess_list_r);
-$HD_Form -> AddSearchElement_Select(gettext("SELECT CURRENCY"), null, null, null, null, null, "currency", 0, $currency_list_r);
+$HD_Form -> AddSearchSelectInput(gettext("SELECT LANGUAGE"), "language", $language_list_r);
+$HD_Form -> AddSearchSqlSelectInput(gettext("SELECT TARIFF"), "cc_tariffgroup", "id, tariffgroupname, id", "", "tariffgroupname", "ASC", "tariff");
+$HD_Form -> AddSearchSelectInput(gettext("SELECT STATUS"), "status", $cardstatus_list_r);
+$HD_Form -> AddSearchSelectInput(gettext("SELECT ACCESS"), "simultaccess", $simultaccess_list_r);
+$HD_Form -> AddSearchSelectInput(gettext("SELECT CURRENCY"), "currency", $currency_list_r);
 $HD_Form -> prepare_list_subselection('list');
-$HD_Form -> FG_TABLE_ID="id";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "ASC";
 $nb_customer = 0;
 
 $limit_massmail = 2000;
 
-if (!empty($HD_Form -> FG_TABLE_CLAUSE)) {
-    $HD_Form -> FG_TABLE_CLAUSE .= " AND email <> ''";
+if (!empty($HD_Form -> FG_QUERY_WHERE_CLAUSE)) {
+    $HD_Form -> FG_QUERY_WHERE_CLAUSE .= " AND email <> ''";
     if ($_REQUEST['id']!=null) {
-        $HD_Form -> FG_TABLE_CLAUSE .= " AND id = '".$_REQUEST['id']."'";
+        $HD_Form -> FG_QUERY_WHERE_CLAUSE .= " AND id = '".$_REQUEST['id']."'";
     }
-    $list_customer = $instance_cus_table -> get_list ($HD_Form->DBHandle, $HD_Form->FG_TABLE_CLAUSE, null, null, $limit_massmail);
+    $list_customer = $instance_cus_table -> get_list ($HD_Form->DBHandle, $HD_Form->FG_QUERY_WHERE_CLAUSE, [], "ASC", $limit_massmail);
 } else {
     $sql_clause = "email <> ''";
     if ($_REQUEST['id']!=null) {
         $sql_clause .= " AND id = '".$_REQUEST['id']."'";
     }
-    $list_customer = $instance_cus_table -> get_list ($HD_Form->DBHandle, $sql_clause, null, null, $limit_massmail);
+    $list_customer = $instance_cus_table -> get_list ($HD_Form->DBHandle, $sql_clause, [], "ASC", $limit_massmail);
 }
 
 $nb_customer = sizeof($list_customer);

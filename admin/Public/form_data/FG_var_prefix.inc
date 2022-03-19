@@ -46,7 +46,7 @@ getpost_ifset(array('id', 'destination','prefix','popup_select','popup_formname'
 $HD_Form = new FormHandler("cc_prefix", "prefix");
 
 $HD_Form->no_debug();
-$HD_Form -> FG_TABLE_ID = "prefix";
+$HD_Form -> FG_QUERY_PRIMARY_KEY = "prefix";
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "destination";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "ASC";
 
@@ -63,10 +63,8 @@ $HD_Form -> AddViewElement(gettext("Destination"), "destination");
 
 $HD_Form -> FieldViewElement ('prefix, destination');
 
-$HD_Form -> CV_NO_FIELDS  = gettext("THERE ARE NO")." ".strtoupper($HD_Form->FG_INSTANCE_NAME)." ".gettext("CREATED!");
-
 if ($popup_select) {
-	$HD_Form -> FG_LIMITE_DISPLAY = 7;
+	$HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 7;
 	$HD_Form -> CV_FOLLOWPARAMETERS = "&popup_select=" . $popup_select . "&popup_formname=" . $popup_formname . "&popup_fieldname=" . $popup_fieldname;
 
 	$HD_Form -> FG_OTHER_BUTTON1 = true;
@@ -110,15 +108,14 @@ $HD_Form -> FieldEditElement ('prefix, destination');
 $HD_Form -> FG_EDITION_CLAUSE = " prefix='%id'";
 
 
-$HD_Form -> FG_FILTER_APPLY = true;
-$HD_Form -> FG_FILTERFIELD = 'prefix';
-$HD_Form -> FG_FILTERFIELDNAME = 'prefix';
-$HD_Form -> FG_FILTER_FORM_ACTION = 'list';
+$HD_Form -> FG_FILTER_ENABLE = true;
+$HD_Form -> FG_FILTER_COLUMN = 'prefix';
+$HD_Form -> FG_FILTER_LABEL = 'prefix';
 
 if (isset($filterprefix)  &&  (strlen($filterprefix)>0)) {
-	if (strlen($HD_Form -> FG_TABLE_CLAUSE)>0) $HD_Form -> FG_TABLE_CLAUSE.=" AND ";
+	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
 	$filterprefix = strtoupper(substr($filterprefix,0,1)).substr($filterprefix,1);
-	$HD_Form -> FG_TABLE_CLAUSE .= "prefix like '$filterprefix%'";
+	$HD_Form -> FG_QUERY_WHERE_CLAUSE .= "prefix like '$filterprefix%'";
 }
 
 

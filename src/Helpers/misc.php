@@ -102,7 +102,7 @@ function get_currencies($handle = null): array
     }
     $currencies_list = [];
     $instance_table = new Table("cc_currencies", "id,currency,name,value");
-    $result = $instance_table->get_list($handle, null, "id", null, null, null, null, 300);
+    $result = $instance_table->get_list($handle, null, ["id"], "ASC", 0, 0, [], 300);
 
     if (is_array($result)) {
         foreach ($result as $row) {
@@ -538,7 +538,7 @@ function get_customer_link($value): string
     $handle = DbConnect();
     $inst_table = new Table("cc_card", "id");
     $FG_TABLE_CLAUSE = "username = '$value'";
-    $list_customer = $inst_table->get_list($handle, $FG_TABLE_CLAUSE, "", "", "", "", "", 10);
+    $list_customer = $inst_table->get_list($handle, $FG_TABLE_CLAUSE, [], "ASC", 0, 0, [], 10);
     $id = $list_customer[0][0];
     if ($id > 0) {
         return "<a href=\"A2B_entity_card.php?form_action=ask-edit&id=$id\">$value</a>";
@@ -558,7 +558,7 @@ function display_customer_id_link($id)
     $handle = DbConnect();
     $inst_table = new Table("cc_card", "username");
     $FG_TABLE_CLAUSE = "id = '$id'";
-    $list_customer = $inst_table->get_list($handle, $FG_TABLE_CLAUSE, "", "", "", "", "", 10);
+    $list_customer = $inst_table->get_list($handle, $FG_TABLE_CLAUSE, [], "ASC", 0, 0, [], 10);
     $value = $list_customer[0][0];
     if ($id > 0) {
         echo "<a href=\"A2B_entity_card.php?form_action=ask-edit&id=$id\">$value</a>";
@@ -572,7 +572,7 @@ function get_infocustomer_id($id): string
     $handle = DbConnect();
     $inst_table = new Table("cc_card", "username,firstname,lastname");
     $FG_TABLE_CLAUSE = "id = '$id'";
-    $list_customer = $inst_table->get_list($handle, $FG_TABLE_CLAUSE, "", "", "", "", "", 10);
+    $list_customer = $inst_table->get_list($handle, $FG_TABLE_CLAUSE, [], "ASC", 0, 0, [], 10);
     if (is_array($list_customer)) {
         $value = $list_customer[0][1] . " " . $list_customer[0][2] . " (" . $list_customer[0][0] . ")";
     } else {
@@ -590,7 +590,7 @@ function get_nameofadmin($id): string
     $handle = DbConnect();
     $inst_table = new Table("cc_ui_authen", "login,name");
     $FG_TABLE_CLAUSE = "userid = '$id'";
-    $list_admin = $inst_table->get_list($handle, $FG_TABLE_CLAUSE, "", "", "", "", "", 10);
+    $list_admin = $inst_table->get_list($handle, $FG_TABLE_CLAUSE, [], "ASC", 0, 0, [], 10);
     if (is_array($list_admin)) {
         $value = $list_admin[0][1] . " (" . $list_admin[0][0] . ")";
     } else {
@@ -605,7 +605,7 @@ function get_nameofcustomer_id($id): string
     $handle = DbConnect();
     $inst_table = new Table("cc_card", "username,firstname,lastname");
     $FG_TABLE_CLAUSE = "id = '$id'";
-    $list_customer = $inst_table->get_list($handle, $FG_TABLE_CLAUSE, "", "", "", "", "", 10);
+    $list_customer = $inst_table->get_list($handle, $FG_TABLE_CLAUSE, [], "ASC", 0, 0, [], 10);
     if (is_array($list_customer)) {
         $value = $list_customer[0][1] . " " . $list_customer[0][2] . " (" . $list_customer[0][0] . ")";
     } else {
@@ -631,7 +631,7 @@ function get_linktoagent($id): string
     $handle = DbConnect();
     $inst_table = new Table("cc_agent", "login,firstname,lastname");
     $FG_TABLE_CLAUSE = "id = '$id'";
-    $list_agent = $inst_table->get_list($handle, $FG_TABLE_CLAUSE, "", "", "", "", "", 10);
+    $list_agent = $inst_table->get_list($handle, $FG_TABLE_CLAUSE, [], "ASC", 0, 0, [], 10);
     if (is_array($list_agent)) {
         $value = $list_agent[0][1] . " " . $list_agent[0][2] . " (" . $list_agent[0][0] . ")";
     } else {
@@ -660,7 +660,7 @@ function get_nameofagent($id): string
     $handle = DbConnect();
     $inst_table = new Table("cc_agent", "login,firstname,lastname");
     $FG_TABLE_CLAUSE = "id = '$id'";
-    $list_agent = $inst_table->get_list($handle, $FG_TABLE_CLAUSE, "", "", "", "", "", 10);
+    $list_agent = $inst_table->get_list($handle, $FG_TABLE_CLAUSE, [], "ASC", 0, 0, [], 10);
     if (is_array($list_agent)) {
         $value = $list_agent[0][1] . " " . $list_agent[0][2] . " ( login: " . $list_agent[0][0] . ")";
     } else {

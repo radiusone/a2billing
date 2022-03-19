@@ -53,8 +53,7 @@ $HD_Form -> AddViewElement(gettext("ACCOUNT NUMBER"), "card_id", true, "", "", "
 
 $HD_Form -> FieldViewElement ('id, calledstation, card_id, id');
 
-$HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO CALL CREATED!");
-$HD_Form -> FG_LIMITE_DISPLAY = 10;
+$HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 10;
 
 $HD_Form -> FG_ENABLE_ADD_BUTTON = false;
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = false;
@@ -124,13 +123,13 @@ $HD_Form -> FieldEditElement ('id, card_id, calledstation, src, dnid, sessiontim
 
 
 // Set the filter variables
-$HD_Form -> FG_FILTER_APPLY = true;
-$HD_Form -> FG_FILTERFIELD = 'id';
-$HD_Form -> FG_FILTERFIELDNAME = 'call ID';
+$HD_Form -> FG_FILTER_ENABLE = true;
+$HD_Form -> FG_FILTER_COLUMN = 'id';
+$HD_Form -> FG_FILTER_LABEL = 'call ID';
 
 if (isset($filterprefix) && (strlen($filterprefix)>0)){
-  if (strlen($HD_Form -> FG_TABLE_CLAUSE)>0) $HD_Form -> FG_TABLE_CLAUSE.=" AND ";
-  $HD_Form -> FG_TABLE_CLAUSE.="id like '$filterprefix%'";
+  if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
+  $HD_Form -> FG_QUERY_WHERE_CLAUSE.="id like '$filterprefix%'";
 }
 
 

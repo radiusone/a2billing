@@ -84,7 +84,7 @@ if ($form_action == "add") {
     unset ($_SESSION["cardnumber_signup"]);
     $_SESSION["language_code"] = $_POST["language"];
     $_SESSION["cardnumber_signup"] = $maxi;
-    $_SESSION["id_signup"] = $HD_Form->RESULT_QUERY;
+    $_SESSION["id_signup"] = $HD_Form->QUERY_RESULT;
     Header("Location: signup_confirmation.php");
 }
 

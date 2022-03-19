@@ -46,12 +46,12 @@ getpost_ifset(array('id', 'agent_id', 'date', 'credit','description'));
 
 if (!isset($form_action) || $form_action=="list") {
 	$HD_Form = new FormHandler("cc_logrefill_agent LEFT JOIN cc_agent ON cc_agent.id=agent_id", "Refill Agent");
-	$HD_Form -> FG_TABLE_CLAUSE = " cc_agent.id =".$_SESSION['agent_id'] ;
+	$HD_Form -> FG_QUERY_WHERE_CLAUSE = " cc_agent.id =".$_SESSION['agent_id'] ;
 } else {
 	$HD_Form = new FormHandler("cc_logrefill_agent", "Refill Agent");
 }
 
-$HD_Form -> FG_TABLE_ID = 'cc_logrefill_agent.id';
+$HD_Form -> FG_QUERY_PRIMARY_KEY = 'cc_logrefill_agent.id';
 
 $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
@@ -68,10 +68,9 @@ $HD_Form -> AddViewElement(gettext("REFILL AMOUNT"), "cc_logrefill.credit");
 
 $HD_Form -> FieldViewElement ('cc_logrefill_agent.id, agent_id,agent_id, date, description, cc_logrefill_agent.refill_type as refill_type, cc_logrefill_agent.credit');
 
-$HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO ".strtoupper($HD_Form->FG_INSTANCE_NAME)." CREATED!");
 
 $HD_Form -> FG_ENABLE_INFO_BUTTON = true;
-$HD_Form -> FG_INFO_LINK = "A2B_refill_info_agent.php?id=";
+$HD_Form -> FG_INFO_BUTTON_LINK = "A2B_refill_info_agent.php?id=";
 
 if (!($popup_select>=1))	 $HD_Form -> FG_FILTER_SEARCH_FORM = true;
 $HD_Form -> FG_FILTER_SEARCH_SESSION_NAME = 'refill_agent_selection';

@@ -45,7 +45,6 @@ getpost_ifset(array('id', 'cid', 'outbound_cid_group', 'activated'));
 $HD_Form = new FormHandler("cc_outbound_cid_list", "cid");
 
 $HD_Form->no_debug();
-$HD_Form -> FG_TABLE_ID="id";
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "cid";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
@@ -62,12 +61,10 @@ $HD_Form -> AddViewElement(gettext("STATUS"), "activated", true, "30", null, "li
 
 $HD_Form -> FieldViewElement ('cid, outbound_cid_group, activated');
 
-$HD_Form -> CV_NO_FIELDS  = gettext("THERE ARE NO")." ".strtoupper($HD_Form->FG_INSTANCE_NAME)." ".gettext("CREATED!");
-
 $HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
-$HD_Form -> FG_SPLITABLE_FIELD = 'cid';
+$HD_Form -> FG_SPLITABLE_FIELDS[] = 'cid';
 
 // TODO integrate in Framework
 if ($form_action=="ask-add") {

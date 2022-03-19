@@ -49,7 +49,7 @@ $HD_Form = new FormHandler("cc_call INNER JOIN cc_did ON cc_did.id = cc_call.id_
 $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "date";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
-$HD_Form -> FG_TABLE_CLAUSE = "( sipiax = 2 OR sipiax = 3) ";
+$HD_Form -> FG_QUERY_WHERE_CLAUSE = "( sipiax = 2 OR sipiax = 3) ";
 
 
 $HD_Form -> AddViewElement(gettext("DATE"), "starttime", false);
@@ -62,33 +62,29 @@ $HD_Form -> AddViewElement(gettext("CARDNUMBER"), "username", false);
 // added a parameter to append  FG_TABLE_ID  ( by default ) or disable 0.
 $HD_Form -> FieldViewElement ("DATE(starttime) as date, cc_did.did, count(*) as nb_call, sum(sessiontime) as t_time, sum(sessionbill) as t_cost, username ", 0 );
 
-$HD_Form -> SQL_GROUP = " GROUP BY cc_card.username, cc_did.did, date ";
-
-$HD_Form -> CV_NO_FIELDS  = gettext("NO DID BILLING HAS BEEN CREATED!");
+$HD_Form -> FG_QUERY_GROUPBY_COLUMNS = ["cc_card.username","cc_did.did","date"];
 
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = false;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = false;
 $HD_Form -> FG_ENABLE_ADD_BUTTON = false;
 
-$HD_Form -> FG_FILTER_APPLY = true;
-$HD_Form -> FG_FILTERFIELD = 'cardnumber';
-$HD_Form -> FG_FILTERFIELDNAME = 'cardnumber';
-$HD_Form -> FG_FILTER_FORM_ACTION = 'list';
+$HD_Form -> FG_FILTER_ENABLE = true;
+$HD_Form -> FG_FILTER_COLUMN = 'cardnumber';
+$HD_Form -> FG_FILTER_LABEL = 'cardnumber';
 
 if (isset($filterprefix)  &&  (strlen($filterprefix)>0)){
-	if (strlen($HD_Form -> FG_TABLE_CLAUSE)>0) $HD_Form -> FG_TABLE_CLAUSE.=" AND ";
-	$HD_Form -> FG_TABLE_CLAUSE.="username like '$filterprefix%'";
+	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
+	$HD_Form -> FG_QUERY_WHERE_CLAUSE.="username like '$filterprefix%'";
 }
 
 
-$HD_Form -> FG_FILTER_APPLY2 = true;
-$HD_Form -> FG_FILTERFIELD2 = 'did';
-$HD_Form -> FG_FILTERFIELDNAME2 = 'did';
-$HD_Form -> FG_FILTER_FORM_ACTION2 = 'list';
+$HD_Form -> FG_FILTER2_ENABLE = true;
+$HD_Form -> FG_FILTER2_COLUMN = 'did';
+$HD_Form -> FG_FILTER2_LABEL = 'did';
 
 if (isset($filterprefix2)  &&  (strlen($filterprefix2)>0)){
-	if (strlen($HD_Form -> FG_TABLE_CLAUSE)>0) $HD_Form -> FG_TABLE_CLAUSE.=" AND ";
-	$HD_Form -> FG_TABLE_CLAUSE .= "cc_did.did like '$filterprefix2%'";
+	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
+	$HD_Form -> FG_QUERY_WHERE_CLAUSE .= "cc_did.did like '$filterprefix2%'";
 }
 
 

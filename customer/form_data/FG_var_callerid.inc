@@ -60,15 +60,14 @@ $HD_Form -> AddViewElement(gettext("ACTIVATED"), "activated");
 $HD_Form -> FieldViewElement ('cid, activated');
 
 $HD_Form -> CV_TITLE_TEXT = gettext("CallerID list");
-$HD_Form -> CV_NO_FIELDS  = gettext("There are no Caller IDs created");
-$HD_Form -> FG_LIMITE_DISPLAY = 10;
+$HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 10;
 $HD_Form -> FG_VIEW_TABLE_WITDH = '70%';
 
 // My Code for Where Cluase
-if (strlen($HD_Form -> FG_TABLE_CLAUSE)>0)
-    $HD_Form -> FG_TABLE_CLAUSE.=" AND ";
+if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0)
+    $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
 
-$HD_Form -> FG_TABLE_CLAUSE.="id_cc_card =".$_SESSION["card_id"];
+$HD_Form -> FG_QUERY_WHERE_CLAUSE.="id_cc_card =".$_SESSION["card_id"];
 
 if (strlen($HD_Form -> FG_EDITION_CLAUSE)>0)
     $HD_Form -> FG_EDITION_CLAUSE.=" AND ";
@@ -79,7 +78,6 @@ $HD_Form -> FG_EDITION_CLAUSE.="id_cc_card =".$_SESSION["card_id"];
 $HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
-$HD_Form -> FG_OTHER_BUTTON1 = false;
 
 
 $HD_Form -> AddEditElement (gettext("CALLERID"),
@@ -108,10 +106,10 @@ $HD_Form -> FieldEditElement ('cid, activated');
 
 
 if (isset($filterprefix)  &&  (strlen($filterprefix)>0)) {
-    if (strlen($HD_Form -> FG_TABLE_CLAUSE)>0)
-        $HD_Form -> FG_TABLE_CLAUSE.=" AND ";
+    if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0)
+        $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
 
-    $HD_Form -> FG_TABLE_CLAUSE.="cid like '$filterprefix%'";
+    $HD_Form -> FG_QUERY_WHERE_CLAUSE.="cid like '$filterprefix%'";
 }
 
 

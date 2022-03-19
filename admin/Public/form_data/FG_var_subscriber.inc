@@ -61,12 +61,9 @@ $HD_Form -> AddViewElement(gettext("SERVICE"), "id_subscription_fee", true, "15"
 $HD_Form -> AddViewElement(gettext("DATE START"), "startdate");
 $HD_Form -> AddViewElement(gettext("DATE STOP"), "stopdate");
 $HD_Form -> AddViewElement(gettext("PRODUCT"), "product_name", true, "50");
-$HD_Form -> FG_ACTION_SIZE_COLUMN = '15%';
 
 // added a parameter to append  FG_TABLE_ID  ( by default ) or disable 0.
 $HD_Form -> FieldViewElement ('id_cc_card, id_subscription_fee, startdate, stopdate, product_name');
-
-$HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO ".strtoupper($HD_Form->FG_INSTANCE_NAME)." MADE!");
 
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
