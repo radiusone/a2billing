@@ -43,6 +43,11 @@ class Connection
 
     private function __construct()
     {
+        self::initDB();
+    }
+
+    private static function initDB(): void
+    {
         if (DB_TYPE == "postgres") {
             $datasource = 'pgsql://' . USER . ':' . PASS . '@' . HOST . '/' . DBNAME;
         } else {
@@ -64,6 +69,9 @@ class Connection
 
     public static function GetDBHandler(): ADOConnection
     {
+        if (empty(self::$DBHandler)) {
+            self::initDB();
+        }
         return self::$DBHandler;
     }
 
@@ -80,6 +88,6 @@ class Connection
             self::$MytoPgklass->My_to_Pg($QUERY);
         }
 
-        return $connection -> Execute($QUERY);
+        return $connection->Execute($QUERY);
     }
 }
