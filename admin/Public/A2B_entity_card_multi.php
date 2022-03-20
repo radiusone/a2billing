@@ -105,8 +105,6 @@ if ($action == "generate") {
 $nbcard = $nb_to_create;
 if ($nbcard > 0 && $action == "generate" && $nb_error == 0) {
 
-    check_demo_mode();
-
     $instance_realtime = new Realtime();
 
     $FG_ADITION_SECOND_ADD_TABLE = "cc_card";

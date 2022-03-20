@@ -315,13 +315,9 @@ class A2Billing
         // add default values to config for uninitialized values
         //Card Number Length Code
         $card_length_range = $this->config['global']['interval_len_cardnumber'] ?? null;
-        $this->cardnumber_range = $this->split_data($card_length_range);
+        $this->cardnumber_range = split_data($card_length_range);
 
-        if (count($this->cardnumber_range)) {
-            sort($this->cardnumber_range);
-            // TODO: get rid of this
-            define("LEN_CARDNUMBER", min($this->cardnumber_range));
-        } else {
+        if (!count($this->cardnumber_range)) {
             echo gettext("Invalid card number length list defined in configuration.");
             exit;
         }
@@ -3247,30 +3243,6 @@ class A2Billing
     public function DbDisconnect()
     {
         $this->DBHandle->Disconnect();
-    }
-
-    /*
-    * function splitable_data
-    * used by parameter like interval_len_cardnumber : 8-10, 12-18, 20
-    * it will build an array with the different interval
-    */
-    public function split_data(?string $values): array
-    {
-        $return = [];
-        $values_array = explode(",", $values);
-        foreach ($values_array as $value) {
-            $minmax = explode("-", trim($value), 2);
-            $minmax = array_filter($minmax, 'is_numeric');
-            sort($minmax);
-            if (count($minmax) > 1) {
-                $return = array_merge($return, range($minmax[0], $minmax[1]));
-            } else {
-                $return[] = $minmax[0];
-            }
-        }
-        sort($return);
-
-        return array_unique($return);
     }
 
     public function save_redial_number(Agi $agi, string $number): void

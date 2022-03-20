@@ -41,8 +41,6 @@ if (!has_rights(ACX_MAINTENANCE)) {
     die();
 }
 
-check_demo_mode();
-
 getpost_ifset(array ('acc', 'method', 'file', 'to'));
 
 //Show the number of files to upload

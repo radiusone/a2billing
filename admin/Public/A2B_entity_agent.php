@@ -55,10 +55,6 @@ if (!isset ($form_action))
 if (!isset ($action))
     $action = $form_action;
 
-if ($form_action != "list") {
-    check_demo_mode();
-}
-
 $list = $HD_Form->perform_action($form_action);
 
 // #### HEADER SECTION

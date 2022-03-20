@@ -36,6 +36,52 @@ use A2billing\Table;
  *
  **/
 
+function get_cardlength(): int
+{
+    static $cardlength;
+
+    if (!empty($cardlength)) {
+        return $cardlength;
+    }
+
+    $db = DbConnect();
+
+    $result = $db
+        ->Execute("SELECT config_value FROM cc_config WHERE config_key = 'interval_len_cardnumber' LIMIT 1");
+    if ($result && $row = $result->FetchRow()) {
+        $len = min(split_data($row[0]));
+    } else {
+        $len = 10;
+    }
+    $cardlength = $len;
+
+    return $len;
+}
+
+/*
+* function splitable_data
+* used by parameter like interval_len_cardnumber : 8-10, 12-18, 20
+* it will build an array with the different interval
+*/
+function split_data(?string $values): array
+{
+    $return = [];
+    $values_array = explode(",", $values);
+    foreach ($values_array as $value) {
+        $minmax = explode("-", trim($value), 2);
+        $minmax = array_filter($minmax, 'is_numeric');
+        sort($minmax);
+        if (count($minmax) > 1) {
+            $return = array_merge($return, range($minmax[0], $minmax[1]));
+        } else {
+            $return[] = $minmax[0];
+        }
+    }
+    sort($return);
+
+    return empty($return) ? [10] : array_unique($return);
+}
+
 /*
  * a2b_round: specific function to use the same precision everywhere
  */
@@ -673,8 +719,12 @@ function get_nameofagent($id): string
 /*
  * function MDP_STRING
  */
-function MDP_STRING($chrs = LEN_CARDNUMBER): string
+function MDP_STRING($chrs = 0): string
 {
+    if (empty($chrs)) {
+        $chrs = get_cardlength();
+    }
+
     $pwd = "";
     mt_srand((double)microtime() * 1000000);
     while (strlen($pwd) < $chrs) {
@@ -690,8 +740,12 @@ function MDP_STRING($chrs = LEN_CARDNUMBER): string
 /*
  * function MDP_NUMERIC
  */
-function MDP_NUMERIC($chrs = LEN_CARDNUMBER): string
+function MDP_NUMERIC($chrs = 0): string
 {
+    if (empty($chrs)) {
+        $chrs = get_cardlength();
+    }
+
     $myrand = "";
     for ($i = 0; $i < $chrs; $i++) {
         $myrand .= mt_rand(0, 9);
@@ -703,17 +757,25 @@ function MDP_NUMERIC($chrs = LEN_CARDNUMBER): string
 /*
  * function MDP
  */
-function MDP($chrs = LEN_CARDNUMBER): string
+function MDP($chrs = 0): string
 {
+    if (empty($chrs)) {
+        $chrs = get_cardlength();
+    }
+
     return MDP_NUMERIC($chrs);
 }
 
 /*
  * function generate_unique_value
  */
-function generate_unique_value($table = "cc_card", $len = LEN_CARDNUMBER, $field = "username")
+function generate_unique_value($table = "cc_card", $len = 0, $field = "username")
 {
     $DBHandle_max = DbConnect();
+    if (empty($len)) {
+        $len = get_cardlength();
+    }
+
     for ($k = 0; $k <= 200; $k++) {
         $card_gen = MDP($len);
 
@@ -723,16 +785,20 @@ function generate_unique_value($table = "cc_card", $len = LEN_CARDNUMBER, $field
             return $card_gen;
         }
     }
-    echo "ERROR : Impossible to generate a $field not yet used!<br>Perhaps check the LEN_CARDNUMBER (value:" . LEN_CARDNUMBER . ")";
+    echo "ERROR : Impossible to generate a $field not yet used!";
     exit ();
 }
 
 /*
  * function gen_card_with_alias
  */
-function gen_card_with_alias($table = "cc_card", $length_cardnumber = LEN_CARDNUMBER)
+function gen_card_with_alias($table = "cc_card", $length_cardnumber = 0)
 {
     $DBHandle = DbConnect();
+
+    if (empty($length_cardnumber)) {
+        $length_cardnumber = get_cardlength();
+    }
 
     for ($k = 0; $k <= 200; $k++) {
         $card_gen = MDP($length_cardnumber);
@@ -747,7 +813,7 @@ function gen_card_with_alias($table = "cc_card", $length_cardnumber = LEN_CARDNU
             return $arr_val;
         }
     }
-    echo "ERROR : Impossible to generate a Cardnumber & Aliasnumber not yet used!<br>Perhaps check the LEN_CARDNUMBER  (value:" . LEN_CARDNUMBER . ") & LEN_ALIASNUMBER (value:" . LEN_ALIASNUMBER . ")";
+    echo "ERROR : Impossible to generate a Cardnumber & Aliasnumber not yet used!";
     exit();
 }
 
@@ -1047,27 +1113,6 @@ function generate_invoice_reference(): string
     }
 
     return $year . sprintf("%08d", $count);
-}
-
-function check_demo_mode()
-{
-    if (DEMO_MODE) {
-        if (strpos($_SERVER['HTTP_REFERER'], '?') === false) {
-            header("Location: " . $_SERVER['HTTP_REFERER'] . "?msg=nodemo");
-        } else {
-            header("Location: " . $_SERVER['HTTP_REFERER'] . "&msg=nodemo");
-        }
-
-        die();
-    }
-}
-
-function check_demo_mode_intro()
-{
-    if (DEMO_MODE) {
-        header("Location: PP_intro.php?msg=nodemo");
-        die();
-    }
 }
 
 /**

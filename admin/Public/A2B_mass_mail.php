@@ -146,8 +146,6 @@ $instance_table = new Table();
 if (isset($submit)) {
     mt_start();
 
-    check_demo_mode();
-
     $error_msg = '';
     $sent = 0;
     $err_sent = 0;

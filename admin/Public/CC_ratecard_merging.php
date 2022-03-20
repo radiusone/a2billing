@@ -56,8 +56,6 @@ getpost_ifset(array('posted' ,'ratecard_source' ,'ratecard_destination', 'search
 
 if ($posted == 1) {
 
-    check_demo_mode();
-
     $instance_table = new Table();
     $bool = false;
     $ratecard_src_val = $ratecard_source;

@@ -46,7 +46,6 @@ getpost_ifset(array('id', 'config_title', 'config_key', 'config_value', 'config_
 // This will generate agi-confx
 // agi-confx is duplication of Global configuration and list of configurations of : agi-conf1
 if ($agi_conf) {
-	check_demo_mode();
 	$groupselect = add_agi_confx();
 	unset($agi_conf);
 }
@@ -219,7 +218,6 @@ if ($setbool) {
 		"" , "", "", "", "", "", "", gettext("Insert the Value"));
 }
 
-if (LIST_OF_VALUES) {
 	$HD_Form -> AddEditElement (gettext("LIST OF VALUES"),
 		"config_listvalues",
 		'$value',
@@ -228,7 +226,6 @@ if (LIST_OF_VALUES) {
 		"",
 		"",
 		"" , "", "", "", "", "", "", gettext("Insert the List of values, comma separated"));
-}
 
 $HD_Form -> AddEditElement (gettext("DESCRIPTION"),
 	"config_description",
@@ -240,11 +237,7 @@ $HD_Form -> AddEditElement (gettext("DESCRIPTION"),
 	"" , "", "", "", "" , "", "", "");
 
 
-if (LIST_OF_VALUES) {
-	$HD_Form -> FieldEditElement ('config_group_title, config_title, config_key, config_value ,config_listvalues, config_description');
-} else {
-	$HD_Form -> FieldEditElement ('config_group_title, config_title, config_key, config_value ,config_description');
-}
+$HD_Form -> FieldEditElement ('config_group_title, config_title, config_key, config_value ,config_listvalues, config_description');
 
 
 $HD_Form -> FG_INTRO_TEXT_EDITION= '';

@@ -232,8 +232,8 @@ use A2billing\Table;
             <?php if ($this->FG_DEBUG == 1): ?>
                 <div class="form-text"><?= $row["type"] ?></div>
             <?php endif ?>
-            <?php if (!empty($this->FG_TABLE_COMMENT[$i])): ?>
-                <div class="form-text"><?= $this->FG_TABLE_COMMENT[$i] ?></div>
+            <?php if (!empty($row["comment"])): ?>
+                <div class="form-text"><?= $row["comment"] ?></div>
             <?php endif ?>
             </div>
         </div>

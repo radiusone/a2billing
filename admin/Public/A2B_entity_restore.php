@@ -44,9 +44,6 @@ if (! has_rights (ACX_MAINTENANCE)) {
     die();
 }
 
-if (!empty($form_action))
-    check_demo_mode();
-
 $HD_Form -> setDBHandler (DbConnect());
 $HD_Form -> init();
 

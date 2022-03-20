@@ -41,8 +41,6 @@ if (! has_rights (ACX_MAINTENANCE)) {
     die();
 }
 
-check_demo_mode_intro();
-
 // #### HEADER SECTION
 $smarty->display('main.tpl');
 

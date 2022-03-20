@@ -37,16 +37,10 @@ use A2billing\Logger;
 session_name("UIADMINSESSION");
 session_start();
 
+const BINDTEXTDOMAIN = __DIR__ . "/../admin_ui_locale";
+
 require_once __DIR__ . "/common.defines.php";
 require_once __DIR__ . "/admin.module.access.php";
-require_once __DIR__ . "/admin.help.php";
-require_once __DIR__ . "/admin.smarty.php";
-
-const BINDTEXTDOMAIN = __DIR__ . "/../admin_ui_locale";
-SetLocalLanguage();
-
-// Parameter to enable/disable the update of list of value in Config Edition
-const LIST_OF_VALUES = false;
 
 // Parameter to show link to Asterisk GUI
 const ASTERISK_GUI_LINK = false;
@@ -59,3 +53,6 @@ define ("KICON_PATH","../Public/templates/$_SESSION[stylefile]/images/kicons");
 if (!str_contains($_SERVER['REQUEST_URI'], "Public/index.php") && !empty($_SESSION["admin_id"])) {
     (new Logger())->insertLog($_SESSION["admin_id"], 1, "Page Visit", "User Visited the Page", '', $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI']);
 }
+
+require_once __DIR__ . "/admin.help.php";
+require_once __DIR__ . "/admin.smarty.php";

@@ -35,13 +35,10 @@
 session_name("UICSESSION");
 session_start();
 
+const BINDTEXTDOMAIN = __DIR__ . '/../cust_ui_locale';
+
 require_once __DIR__ . "/common.defines.php";
 require_once __DIR__ . "/customer.module.access.php";
-require_once __DIR__ . "/customer.help.php";
-require_once __DIR__ . "/customer.smarty.php";
-
-const BINDTEXTDOMAIN = __DIR__ . '/../cust_ui_locale';
-SetLocalLanguage();
 
 //Enable Disable Captcha
 define ("CAPTCHA_ENABLE", $A2B->config["signup"]['enable_captcha'] ?? 0);
@@ -86,3 +83,6 @@ const DIR_WS_IMAGES = Images_Path . '/';
 define ("ADMIN_EMAIL", $A2B->config["global"]['admin_email'] ?? null);
 
 const ENABLE_LOG = 0;
+
+require_once __DIR__ . "/customer.help.php";
+require_once __DIR__ . "/customer.smarty.php";

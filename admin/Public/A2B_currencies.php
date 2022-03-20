@@ -53,8 +53,6 @@ $HD_Form -> init();
 $A2B -> DBHandle = $HD_Form -> DBHandle;
 
 if ($updatecurrency == 1) {
-    // Check demo mode
-    check_demo_mode();
     // Update Currencies
     $instance_table = new Table();
     $A2B -> set_table ($instance_table);

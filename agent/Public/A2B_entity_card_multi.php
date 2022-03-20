@@ -93,8 +93,6 @@ if ($action=="generate") {
 $nbcard = $nb_to_create;
 if ($nbcard>0 && $action=="generate" && $nb_error==0) {
 
-    check_demo_mode();
-
     $FG_ADITION_SECOND_ADD_TABLE  = "cc_card";
     $FG_ADITION_SECOND_ADD_FIELDS = "username, useralias, credit, tariff, activated, lastname, firstname, email, address, city, state, country, zipcode, phone, simultaccess, currency, typepaid , creditlimit, enableexpire, expirationdate, expiredays, uipass, runservice, tag,id_group, discount, id_seria";
 

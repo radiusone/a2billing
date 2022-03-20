@@ -63,15 +63,15 @@ class FormHandler
     /** The primary key column of the table */
     public string $FG_QUERY_PRIMARY_KEY = 'id';
     /** @var string Comma separated list of columns from the SQL query to display in the list */
-    public string $FG_QUERY_COLUMN_LIST = "";
+    public string $FG_QUERY_COLUMN_LIST = ""; // TODO: change this to an array
     /** @var string A condition to add to the list query */
-    public string $FG_QUERY_WHERE_CLAUSE = "";
+    public ?string $FG_QUERY_WHERE_CLAUSE = "";
     /** @var string List of columns for the list display query to be grouped by */
     public array $FG_QUERY_GROUPBY_COLUMNS = [];
     /** @var array List of columns for the list display query to be ordered by */
     public array $FG_QUERY_ORDERBY_COLUMNS = [];
     /** @var string Direction (ASC or DESC) for the list display query ordering */
-    public string $FG_QUERY_DIRECTION = '';
+    public ?string $FG_QUERY_DIRECTION = '';
 
     /** @var array Data used to build the list view table */
     private array $FG_LIST_TABLE_CELLS = [];
@@ -255,13 +255,6 @@ class FormHandler
 
     /** @var array A list of field names considered "splittable" during create or edit (values like e.g. 12-14 or 15;16;17) */
     public array $FG_SPLITABLE_FIELDS = [];
-
-    /**
-     * ARRAY with the comment below each fields
-     *
-     * @public    -    @type array
-     */
-    private array $FG_TABLE_COMMENT = [];
 
     /**
      * ARRAY with the regular expression to check the form
@@ -856,9 +849,9 @@ class FormHandler
                 "popup_params" => $check_emptyvalue, //13
                 "popup_timeval" => $custom_query, //14
                 "custom_function" => $displayinput_defaultselect, //15
+                "comment" => $comment,
             ];
             $this->FG_EDIT_FORM_ELEMENTS[$cur] = $assoc + array_values($assoc);
-            $this->FG_TABLE_COMMENT[$cur] = $comment;
             $this->FG_ADD_FORM_ELEMENTS[$cur] = $this->FG_EDIT_FORM_ELEMENTS[$cur];
         }
     }
@@ -1240,7 +1233,7 @@ class FormHandler
             }
 
             if (empty($this->FG_QUERY_ORDERBY_COLUMNS) || empty($this->FG_QUERY_DIRECTION)) {
-                $this->FG_QUERY_ORDERBY_COLUMNS = $this->FG_TABLE_DEFAULT_ORDER;
+                $this->FG_QUERY_ORDERBY_COLUMNS = [$this->FG_TABLE_DEFAULT_ORDER];
                 $this->FG_QUERY_DIRECTION = $this->FG_TABLE_DEFAULT_SENS;
             }
 

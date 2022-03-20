@@ -61,7 +61,7 @@ $rs = $DBHandle->Execute('SELECT * FROM cc_version');
 $rs = $rs->FetchRow();
 $database = $rs[0];
 
-$asterisk = str_replace('_','.',ASTERISK_VERSION);
+$asterisk = str_replace("Asterisk ", "", `asterisk -V`);
 $php = phpversion();
 $server_name = $_SERVER['SERVER_NAME'];
 

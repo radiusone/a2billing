@@ -46,8 +46,6 @@ if (! has_rights (ACX_DID)) {
     die();
 }
 
-check_demo_mode();
-
 getpost_ifset(array('didgroup', 'search_sources', 'task', 'status','countryID','uploadedfile_name'));
 
 $didgroupval= preg_split('/-:-/', $didgroup);

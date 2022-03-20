@@ -60,10 +60,6 @@ if (!is_numeric($popup_select)) {
 }
 $smarty->assign("popupwindow", $popup_select);
 
-if (($msg ?? "") === "nodemo") {
-    $smarty->assign("MAIN_MSG", '<center><b><font color="red">'.gettext("This option is not available on the Demo!").'</font></b></center><br>');
-}
-
 $smarty->assign("ACXACCESS", $ACXACCESS);
 $smarty->assign("ACXDASHBOARD", $ACXDASHBOARD);
 $smarty->assign("ACXCUSTOMER", $ACXCUSTOMER);

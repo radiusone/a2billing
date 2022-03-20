@@ -223,8 +223,8 @@ getpost_ifset(array('wh'));
                         <br/><?= $row["error"] ?> - <?= $row["regex"][1] ?>
                     <?php endif ?>
                 </span>
-                <?php if (!empty($this->FG_TABLE_COMMENT[$i])): ?>
-                    <br/><?= $this->FG_TABLE_COMMENT[$i] ?>
+                <?php if (!empty($row["comment"])): ?>
+                    <br/><?= $row["comment"] ?>
                 <?php endif ?>
 
     <?php endif ?>

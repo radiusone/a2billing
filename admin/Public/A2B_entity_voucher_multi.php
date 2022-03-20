@@ -52,8 +52,6 @@ $nbvoucher = $choose_list;
 
 if ($nbvoucher>0) {
 
-        check_demo_mode();
-
         $FG_ADITION_SECOND_ADD_TABLE  = "cc_voucher";
         $FG_ADITION_SECOND_ADD_FIELDS = "voucher, credit, activated, tag, currency, expirationdate";
         $instance_sub_table = new Table($FG_ADITION_SECOND_ADD_TABLE, $FG_ADITION_SECOND_ADD_FIELDS);

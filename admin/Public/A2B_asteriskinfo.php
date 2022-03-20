@@ -41,8 +41,6 @@ if (! has_rights (ACX_MAINTENANCE)) {
     die();
 }
 
-check_demo_mode_intro();
-
 // #### HEADER SECTION
 $smarty->display('main.tpl');
 
@@ -135,19 +133,6 @@ $arr_subscriptions = array(
 $arr_voicemail = array(
     "Voicemail users" => "voicemail show users",
 );
-
-if (ASTERISK_VERSION == '1_4'|| ASTERISK_VERSION == '1_6') {
-    $arr_all["Uptime"]="core show uptime";
-    $arr_all["Active Channel(s)"]="core show channels";
-    $arr_all["Subscribe/Notify"]="core show hints";
-    $arr_all["Voicemail users"]="voicemail show users";
-    $arr_all["Codecs"]="core show translation";
-    $arr_codecs["Codecs"]="core show translation";
-    $arr_channels["Active Channel(s)"]="core show channels";
-    $arr_subscriptions["Subscribe/Notify"]="core show hints";
-    $arr_voicemail["Voicemail users"]="voicemail show users";
-}
-
 ?>
 
 <div class="rnav"><ul>
@@ -350,7 +335,7 @@ function buildAsteriskInfo()
     global $astver;
 
     $arr = array(
-        "Uptime" => "show uptime",
+        "Uptime" => "core show uptime",
         "Active SIP Channel(s)" => "sip show channels",
         "Active IAX2 Channel(s)" => "iax2 show channels",
         "Sip Registry" => "sip show registry",
@@ -358,10 +343,6 @@ function buildAsteriskInfo()
         "Sip Peers" => "sip show peers",
         "IAX2 Peers" => "iax2 show peers",
     );
-
-    if (ASTERISK_VERSION == '1_4'|| ASTERISK_VERSION == '1_6') {
-        $arr['Uptime'] = 'core show uptime';
-    }
 
     $htmlOutput = '<div style="color:#000000;font-size:12px;margin:10px;">';
     $htmlOutput .= '<table border="1" cellpadding="10">';

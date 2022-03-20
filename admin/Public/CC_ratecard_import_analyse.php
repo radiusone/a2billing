@@ -45,8 +45,6 @@ if (!has_rights(ACX_RATECARD)) {
     die();
 }
 
-check_demo_mode();
-
 getpost_ifset(array ('tariffplan', 'trunk', 'search_sources', 'task', 'status', 'currencytype', 'uploadedfile_name', 'uploadedfile_name'));
 
 $tariffplanval = preg_split('/-:-/', $tariffplan);

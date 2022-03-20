@@ -241,8 +241,6 @@ $HD_Form->init();
 // CHECK IF REQUEST OF BATCH UPDATE
 if ($batchupdate == 1 && is_array($check)) {
 
-    check_demo_mode();
-
     $HD_Form->prepare_list_subselection('list');
 
     // Array ( [upd_simultaccess] => on [upd_currency] => on )
@@ -306,9 +304,7 @@ if (!empty($id)) {
 
 $form_action = $form_action ?? "list"; //ask-add
 
-if ($form_action !== "list") {
-    check_demo_mode();
-} elseif ($HD_Form->FG_FILTER_SEARCH_FORM && $_POST['posted_search'] == 1 && is_numeric($mytariffgroup_id)) {
+if ($form_action === "list" && $HD_Form->FG_FILTER_SEARCH_FORM && $_POST['posted_search'] == 1 && is_numeric($mytariffgroup_id)) {
     if (!empty ($HD_Form->FG_QUERY_WHERE_CLAUSE)) {
         $HD_Form->FG_QUERY_WHERE_CLAUSE .= ' AND ';
     }

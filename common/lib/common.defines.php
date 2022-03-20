@@ -39,6 +39,8 @@ use A2billing\Query_trace;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
+SetLocalLanguage();
+
 const LIBDIR = __DIR__;
 
 const WRITELOG_QUERY = false;
@@ -54,9 +56,6 @@ $res_load_conf = $A2B -> load_conf();
 if (!$res_load_conf) {
     exit;
 }
-
-// Define a demo mode
-const DEMO_MODE = false;
 
 // GLOBAL POST/GET VARIABLE
 getpost_ifset (['form_action', 'atmenu', 'action', 'stitle', 'sub_action', 'IDmanager', 'current_page', 'order', 'sens', 'mydisplaylimit', 'filterprefix', 'cssname', 'popup_select', 'popup_formname', 'popup_fieldname', 'ui_language', 'msg', 'section', 'exporttype']);
@@ -173,9 +172,6 @@ define ("SIP_ADDITIONAL_PARAMETERS", $A2B->config['sip-iax-info']['sip_additiona
 
 // VOICEMAIL
 const ACT_VOICEMAIL = false;
-
-// AGI
-define ("ASTERISK_VERSION", $A2B->config['agi-conf1']['asterisk_version'] ?? '1_4');
 
 // WEB DEFINE FROM THE A2BILLING.CONF FILE
 define ("EMAIL_ADMIN", $A2B->config['webui']['email_admin'] ?? 'root@localhost');

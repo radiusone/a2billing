@@ -49,8 +49,6 @@ $DBHandle  = DbConnect();
 
 if ($form_action=="ask-modif") {
 
-    check_demo_mode();
-
     $instance_sub_table = new Table('cc_agent',"id");
     $check_old_pwd = "id = '".$_SESSION["agent_id"]."' AND passwd = '$OldPassword'";
     $result_check=$instance_sub_table -> get_list ($DBHandle, $check_old_pwd);

@@ -55,10 +55,6 @@ if ($id!="" || !is_null($id)) {
 if (!isset($form_action))  $form_action="list"; //ask-add
 if (!isset($action)) $action = $form_action;
 
-if ($form_action!="list") {
-    check_demo_mode();
-}
-
 $list = $HD_Form -> perform_action($form_action);
 
 // #### HEADER SECTION

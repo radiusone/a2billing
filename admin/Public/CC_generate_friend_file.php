@@ -45,8 +45,6 @@ if (! has_rights (ACX_CUSTOMER)) {
     die();
 }
 
-check_demo_mode();
-
 $DBHandle  = DbConnect();
 
 if ($action == "reload") {

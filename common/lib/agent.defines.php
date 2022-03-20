@@ -37,16 +37,10 @@ use A2billing\Logger;
 session_name("UIAGENTSESSION");
 session_start();
 
+const BINDTEXTDOMAIN = __DIR__ . '/../common/agent_ui_locale';
+
 require_once __DIR__ . "/common.defines.php";
 require_once __DIR__ . "/agent.module.access.php";
-require_once __DIR__ . "/agent.help.php";
-require_once __DIR__ . "/agent.smarty.php";
-
-const BINDTEXTDOMAIN = __DIR__ . '/../common/agent_ui_locale';
-SetLocalLanguage();
-
-//Enable Disable, list of values on page A2B_entity_config.php?form_action=ask-edit&id=1
-const LIST_OF_VALUES = true;
 
 //Enable Disable Captcha
 define ("CAPTCHA_ENABLE", $A2B->config["signup"]['enable_captcha'] ?? 0);
@@ -59,3 +53,6 @@ define ("KICON_PATH", "../Public/templates/$_SESSION[stylefile]/images/kicons");
 if (!str_contains($_SERVER['REQUEST_URI'], "Public/index.php") && !empty($_SESSION["agent_id"])) {
     (new Logger())->insertLogAgent($_SESSION["agent_id"], 1, "Page Visit", "Agent Visited the Page", '', $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI']);
 }
+
+require_once __DIR__ . "/agent.help.php";
+require_once __DIR__ . "/agent.smarty.php";
