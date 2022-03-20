@@ -33,8 +33,6 @@
  *
 **/
 
-if (SHOW_HELP) {
-
     $CC_help_mail_notifications = create_help(gettext("The Notification component is responsible for informing the Customer, via e-mail, that the account has reached a minimum credit."), 'Notification');
 
     $CC_help_notifications = create_help(gettext("Notification: You can see below all notifications received about some event."), 'Notificationbox');
@@ -268,8 +266,6 @@ Browse here the pending and completed callbacks. You will see that different par
     $CC_help_agent = create_help(gettext("Agents - this shows a list of all of the Agents who have access to the Agent interface"), 'ShowAgent');
 
     $CC_help_signup_agent = create_help(gettext("This shows a list of all signup key create for the Agents, this key is used to identify the default paramater for the subscription on the signup page"));
-
-} //ENDIF SHOW_HELP
 
 $SPOT['PAYPAL'] = '<a href="https://www.paypal.com/en/mrb/pal=PGSJEXAEXKTBU" target="_blank"><img src="' . KICON_PATH . '/paypal_logo.gif" alt="Paypal"/></a>';
 $SPOT['MONEYBOOKERS'] = '<a href="https://www.moneybookers.com/app/?rid=811621" target="_blank"><img src="' . KICON_PATH . '/moneybookers.gif" alt="Moneybookers"/></a>';

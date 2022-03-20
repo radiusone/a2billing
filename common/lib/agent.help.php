@@ -35,8 +35,6 @@ use A2billing\Table;
  *
 **/
 
-if (SHOW_HELP) {
-
     $CC_help_agent = create_help(gettext("Agent list who have access to the Agent interface."), 'ShowAgent');
 
     $CC_help_agent_info = create_help(gettext("Personal information.") . '<br>' . gettext("You can update your personal information here."));
@@ -70,8 +68,6 @@ if (SHOW_HELP) {
     $CC_help_signup_agent = create_help(gettext("This shows a list of all signup key create for this agent, this key is used to identify the default paramater for the subscription on the signup page"));
 
     $CC_help_callerid_list = create_help(gettext("Set the caller ID so that the customer calling in is authenticated on the basis of the callerID rather than with the account number"), 'ListCallerID');
-
-} //ENDIF SHOW_HELP
 
 if (!isset ($disable_load_conf) || !($disable_load_conf)) {
 

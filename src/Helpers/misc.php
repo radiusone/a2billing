@@ -1294,6 +1294,24 @@ function SetLocalLanguage(): void
 
 function create_help($text, $wiki = ""): string
 {
+    static $showhelp;
+
+    if (!isset($showhelp)) {
+        $db = DbConnect();
+        $result = $db->Execute("SELECT config_value FROM cc_config WHERE config_key = 'show_help'");
+        if ($result && $row = $result->FetchRow()) {
+            if (empty($row[0])) {
+                $showhelp = false;
+                return "";
+            } else {
+                $showhelp = true;
+            }
+        }
+    }
+    if (!$showhelp) {
+        return "";
+    }
+
     if (!empty($wiki)) {
         $wiki = gettext("For further information please consult") . ' <a target="_blank" href="http://www.asterisk2billing.org/documentation/">' . gettext("the online documention") . '</a>.<br/>';
     }

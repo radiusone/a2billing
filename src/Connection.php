@@ -2,6 +2,8 @@
 
 namespace A2billing;
 
+use ADOConnection;
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
@@ -36,14 +38,11 @@ namespace A2billing;
 
 class Connection
 {
-    private static $DBHandler;
-    private static $MytoPgklass;
+    private static ADOConnection $DBHandler;
+    private static MytoPg $MytoPgklass;
 
     private function __construct()
     {
-        $ADODB_CACHE_DIR = '/tmp';
-        /*	$ADODB_FETCH_MODE = ADODB_FETCH_ASSOC;	*/
-
         if (DB_TYPE == "postgres") {
             $datasource = 'pgsql://' . USER . ':' . PASS . '@' . HOST . '/' . DBNAME;
         } else {
@@ -51,40 +50,36 @@ class Connection
         }
 
         $DBHandle = NewADOConnection($datasource);
-        if (!$DBHandle)
+        if (!$DBHandle) {
             die("Connection failed");
+        }
 
-        if (DB_TYPE == "mysql") {
+        if (DB_TYPE === "mysql") {
             $DBHandle->Execute('SET AUTOCOMMIT=1');
             $DBHandle->Execute("SET NAMES 'UTF8'");
         }
 
-        self :: $DBHandler = $DBHandle;
+        self::$DBHandler = $DBHandle;
     }
 
-    public static function GetDBHandler()
+    public static function GetDBHandler(): ADOConnection
     {
-        if (empty (self :: $DBHandler)) {
-            $connection = new Connection();
-        }
-        return self :: $DBHandler;
+        return self::$DBHandler;
     }
 
     public static function CleanExecute($QUERY)
     {
-        if (empty (self :: $DBHandler)) {
-            $connection = new Connection();
-        } else {
-            $connection = self :: $DBHandler;
-        }
-        if (DB_TYPE == "postgres") {
-            if (empty (self :: $MytoPgklass)) {
-                self :: $MytoPgklass = new MytoPg(0);
+        $connection = self::$DBHandler;
+
+        if (DB_TYPE === "postgres") {
+            if (empty(self::$MytoPgklass)) {
+                self::$MytoPgklass = new MytoPg(0);
             }
 
             // convert MySQLisms to be Postgres compatible
-            self :: $MytoPgklass -> My_to_Pg($QUERY);
+            self::$MytoPgklass->My_to_Pg($QUERY);
         }
+
         return $connection -> Execute($QUERY);
     }
 }

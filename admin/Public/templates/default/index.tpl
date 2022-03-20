@@ -5,7 +5,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<link href="../lib/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css"/>
 	<script src="../lib/bootstrap/js/bootstrap.js"></script>
-	<script src="./javascript/jquery/jquery.js"></script>
+	<script src="../lib/jquery/jquery.min.js"></script>
 	<title>{$CCMAINTITLE}</title>
 </head>
 <body>
@@ -66,7 +66,7 @@
 		</div>
 	</form>
 	<script>
-		$("#ui_language").live("change", function () {
+		$("#ui_language").on("change", function () {
 			self.location.href = "?ui_language=" + $("#ui_language option:selected").val();
 		});
 	</script>

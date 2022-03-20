@@ -35,8 +35,6 @@ use A2billing\Table;
  *
 **/
 
-if (SHOW_HELP) {
-
     $CC_help_webphone = create_help(gettext("From here, you can use the web based screen phone. You need microphone and speakers on your PC."));
 
     $CC_help_balance_customer = create_help(gettext("All calls are listed below. Search by month, day or status. Additionally, you can check the rate and price."));
@@ -80,8 +78,6 @@ if (SHOW_HELP) {
     $CC_help_speeddial = create_help(gettext("Map single digit to your most dialed numbers."));
 
     $CC_help_callback = create_help(gettext("Callback : Entre your phone number and the phone number you wish to call."));
-
-} //ENDIF SHOW_HELP
 
 if (!isset ($disable_load_conf) || !($disable_load_conf)) {
 
