@@ -82,7 +82,7 @@ getpost_ifset (['form_action', 'atmenu', 'action', 'stitle', 'sub_action', 'IDma
  */
 
 // Enable UI Logger
-const ENABLE_LOG = 1;
+const ENABLE_LOG = true;
 
 // SETTINGS FOR DATABASE CONNECTION
 define ("HOST", $A2B->config['database']['hostname'] ?? null);

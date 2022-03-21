@@ -321,128 +321,79 @@ class FormHandler
     /** @var string Static method of FormBO class executed after editing */
     public string $FG_ADDITIONAL_FUNCTION_AFTER_EDITION = '';
 
-    // Delete Foreign Keys or not
-    // if it is set to true and confirm flag is true confirm box will be showed.
-    public $FG_FK_DELETE_ALLOWED = false;
+    /** @var bool not sure what this means, but I'm confident it would go away with proper foreign keys */
+    public bool $FG_FK_DELETE_ALLOWED = false;
 
     // Foreign Key Tables
-    public $FG_FK_TABLENAMES = [];
+    public array $FG_FK_TABLENAMES = [];
 
     //Foreign Key Field Names
-    public $FG_FK_EDITION_CLAUSE = [];
+    public array $FG_FK_EDITION_CLAUSE = [];
 
     //Foreign Key Delete Message Display, it will display the confirm delete dialog if there is some
     //some detail table exists. depends on the values of FG_FK_DELETE_ALLOWED
-    public $FG_FK_DELETE_CONFIRM = false;
+    public bool $FG_FK_DELETE_CONFIRM = false;
 
     //Foreign Key Records Count
-    public $FG_FK_RECORDS_COUNT = 0;
+    private int $FG_FK_RECORDS_COUNT = 0;
 
     //Foreign Key Exists so Warn only not to delete ,,Boolean
-    public $FG_FK_WARNONLY = false;
-
-    //is Child Records exists
-    public $FG_ISCHILDS = true;
+    public bool $FG_FK_WARNONLY = false;
 
     // Delete Message for FK
-    public $FG_FK_DELETE_MESSAGE = "Are you sure to delete all records connected to this instance.";
+    public string $FG_FK_DELETE_MESSAGE = "Are you sure to delete all records connected to this instance.";
+
+    // TODO: this is only used by config page, surely it could be done there
+    // seems to just be fetching an SQL value and then exploding it on comma
 
     //To enable Disable Selection List
-    public $FG_DISPLAY_SELECT = false;
-
+    public bool $FG_DISPLAY_SELECT = false;
     //Selection List Field Name to get from Database
-    public $FG_SELECT_FIELDNAME = "";
-
+    public string $FG_SELECT_FIELDNAME = "";
     // Configuration Key value Field Name
-    public $FG_CONF_VALUE_FIELDNAME = "";
+    public string $FG_CONF_VALUE_FIELDNAME = "";
 
-    //*****************************
-    //This variable define the width of the HTML table
-    public $FG_HTML_TABLE_WIDTH = "95%";
+    public Logger $logger;
 
-    public $logger = null;
-
-    public $FG_ENABLE_LOG = ENABLE_LOG;
+    private bool $FG_ENABLE_LOG = ENABLE_LOG;
 
     // CSRF TOKEN
-    public $FG_CSRF_STATUS = true;
-    public $FG_CSRF_TOKEN_SALT = CSRF_SALT;
-    public $FG_CSRF_TOKEN_KEY = null;
-    public $FG_CSRF_TOKEN = null;
-    public $FG_CSRF_FIELD = 'csrf_token';
-    public $FG_FORM_UNIQID_FIELD = 'form_id';
+    // TODO: figure out wtf this stuff is actually doing
+    public bool $FG_CSRF_STATUS = true;
+    public ?string $FG_CSRF_TOKEN_SALT = CSRF_SALT;
+    public ?string $FG_CSRF_TOKEN_KEY = null;
+    public ?string $FG_CSRF_TOKEN = null;
+    public string $FG_CSRF_FIELD = 'csrf_token';
+    public string $FG_FORM_UNIQID_FIELD = 'form_id';
 
+    public string $FG_FORM_UNIQID;
+    public string $FG_FORM_RECEIVED_UNIQID;
+    public string $FG_FORM_RECEIVED_TOKEN;
+    public string $FG_CSRF_RECEIVED_TOKEN;
+    public string $FG_CSRF_RECEIVED_FIELD;
 
-    // ----------------------------------------------
-    // CLASS CONSTRUCTOR : FormHandler
-    //	@public
-    //	@returns void
-    //	@ $tablename + $instance_name
-    // ----------------------------------------------
-    public $Host;
-    /**
-     * @var string
-     */
-    public $FG_FORM_UNIQID;
-    /**
-     * @var mixed
-     */
-    public $FG_FORM_RECEIVED_UNIQID;
-    /**
-     * @var mixed
-     */
-    public $FG_FORM_RECEIVED_TOKEN;
-    public $FG_CLAUSE;
-    public $FG_FILTER_SEARCH_3_TIME_FIELD_BIS;
-    /**
-     * @var mixed
-     */
-    public $FG_CSRF_RECEIVED_TOKEN;
-    public $FG_CSRF_RECEIVED_FIELD;
-    /**
-     * @var bool
-     */
-    private $alarm_db_error_duplication;
-    /**
-     * @var bool
-     */
-    public $FG_LIST_ADDING_BUTTON1 = false;
-    /**
-     * @var string
-     */
-    public $FG_LIST_ADDING_BUTTON_LINK1;
-    /**
-     * @var string
-     */
-    public $FG_LIST_ADDING_BUTTON_ALT1;
-    /**
-     * @var string
-     */
-    public $FG_LIST_ADDING_BUTTON_IMG1;
-    /**
-     * @var bool
-     */
-    public $FG_LIST_ADDING_BUTTON2 = false;
-    /**
-     * @var string
-     */
-    public $FG_LIST_ADDING_BUTTON_LINK2;
-    /**
-     * @var string
-     */
-    public $FG_LIST_ADDING_BUTTON_ALT2;
-    /**
-     * @var string
-     */
-    public $FG_LIST_ADDING_BUTTON_IMG2;
-    /**
-     * @var string
-     */
-    public $FG_LIST_ADDING_BUTTON_MSG1;
-    /**
-     * @var string
-     */
-    public $FG_LIST_ADDING_BUTTON_MSG2;
+    private bool $alarm_db_error_duplication;
+
+    /** @var string */
+    public bool $FG_LIST_ADDING_BUTTON1 = false;
+    /** @var string */
+    public string $FG_LIST_ADDING_BUTTON_LINK1;
+    /** @var string */
+    public string $FG_LIST_ADDING_BUTTON_ALT1;
+    /** @var string */
+    public string $FG_LIST_ADDING_BUTTON_IMG1;
+    /** @var string */
+    public string $FG_LIST_ADDING_BUTTON_MSG1;
+
+    public bool $FG_LIST_ADDING_BUTTON2 = false;
+    /** @var string */
+    public string $FG_LIST_ADDING_BUTTON_LINK2;
+    /** @var string */
+    public string $FG_LIST_ADDING_BUTTON_ALT2;
+    /** @var string */
+    public string $FG_LIST_ADDING_BUTTON_IMG2;
+    /** @var string */
+    public string $FG_LIST_ADDING_BUTTON_MSG2;
 
     public function __construct(?string $tablename = null, ?string $instance_name = null)
     {
@@ -453,12 +404,6 @@ class FormHandler
         $this->FG_QUERY_TABLE_NAME = $tablename;
         $this->FG_INSTANCE_NAME = $instance_name;
 
-        if ($this->FG_DEBUG) {
-            echo $this->Host;
-        }
-
-        $this->set_regular_expression();
-
         // If anti CSRF protection is enabled
         if ($this->FG_CSRF_STATUS == true) {
             // Initializing anti csrf token (Generate a key, concat it with salt and hash it)
@@ -467,8 +412,8 @@ class FormHandler
             $this->FG_CSRF_TOKEN = hash('SHA256', $this->FG_CSRF_TOKEN);
             $this->FG_FORM_UNIQID = uniqid();
 
-            $this->FG_FORM_RECEIVED_UNIQID = $_POST[$this->FG_FORM_UNIQID_FIELD];
-            $this->FG_FORM_RECEIVED_TOKEN = $_POST[$this->FG_CSRF_FIELD];
+            $this->FG_FORM_RECEIVED_UNIQID = $_POST[$this->FG_FORM_UNIQID_FIELD] ?? "";
+            $this->FG_FORM_RECEIVED_TOKEN = $_POST[$this->FG_CSRF_FIELD] ?? "";
             $this->FG_CSRF_RECEIVED_TOKEN = $_SESSION['CSRF_TOKEN'][$this->FG_FORM_RECEIVED_UNIQID];
             $_SESSION['CSRF_TOKEN'][$this->FG_FORM_UNIQID] = $this->FG_CSRF_TOKEN;
 
@@ -514,7 +459,7 @@ class FormHandler
         /* used once in admin/FG_var_signup.inc */
         $this->FG_ADD_PAGE_SAVE_BUTTON_TEXT = gettext('Confirm Data');
 
-        if ($this->FG_ENABLE_LOG == 1) {
+        if ($this->FG_ENABLE_LOG) {
             $this->logger = new Logger();
         }
     }
@@ -709,7 +654,7 @@ class FormHandler
      * @.2 $defaultvalue - value of the field
      * @.3 $fieldtype - type of edition (INPUT / SELECT / TEXTAREA / RADIOBUTTON/ CHECKBOX/ SUBFORM /...)        ##
      * @.4 $fieldproperty - property of the field (ie: "size=6 maxlength=6")
-     * @.5 $regexpr_nb the regexp number (check set_regular_expression function), used to this is this match with the value introduced
+     * @.5 $regexpr_nb the regexp number, used to this is this match with the value introduced
      * @.6 $error_message - set the error message
      * @.7 $type_selectfield - if the fieldtype = SELECT, set the type of field feed  (LIST or SQL)
      * @.8 $feed_selectfield - if the fieldtype = SELECT, [define a sql to feed it] OR [define a array to use]
@@ -1063,7 +1008,7 @@ class FormHandler
                 $this->FG_LIST_VIEW_PAGE_SIZE = (int)$_SESSION[$session_limit];
             }
 
-            /* Add CSRF protection */
+            /* Add CSRF protection (or not, since $this->FG_CSRF_RECEIVED_FIELD is never written to) */
             if ($this->FG_CSRF_STATUS && $form_action === 'edit') {
                 if ($this->_processed[$this->FG_CSRF_RECEIVED_FIELD] != $this->FG_CSRF_RECEIVED_TOKEN) {
                     header("Location: " . filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL));
@@ -1100,7 +1045,6 @@ class FormHandler
                 }
 
                 if ($this->FG_DEBUG >= 2) {
-                    echo "FG_CLAUSE:$this->FG_CLAUSE";
                     echo "FG_ORDER = " . $this->FG_QUERY_ORDERBY_COLUMNS . "<br>";
                     echo "FG_SENS = " . $this->FG_QUERY_DIRECTION . "<br>";
                     echo "FG_LIMITE_DISPLAY = " . $this->FG_LIST_VIEW_PAGE_SIZE . "<br>";
@@ -1270,13 +1214,6 @@ class FormHandler
                 if ($processed['today_bis'] && isset($processed['tostatsday_sday_bis']) && isset($processed['tostatsmonth_sday_bis'])) {
                     $date_clause .= " AND " . $this->FG_FILTER_SEARCH_1_TIME_FIELD_BIS . " <= TIMESTAMP('$processed[tostatsmonth_sday_bis]-" . sprintf("%02d", intval($processed["tostatsday_sday_bis"])/*+1*/) . " 23:59:59')";
                 }
-
-
-                if ($processed['Period_bis'] == "month_older_rad") {
-                    $from_month = $processed['month_earlier_bis'];
-                    $date_clause .= " AND DATE_SUB(NOW(),INTERVAL $from_month MONTH) > " . $this->FG_FILTER_SEARCH_3_TIME_FIELD_BIS;
-                }
-
 
                 if (strpos($SQLcmd, 'WHERE') > 0) {
                     if (strlen($this->FG_QUERY_WHERE_CLAUSE) > 0) {
@@ -1459,7 +1396,7 @@ class FormHandler
             } elseif ($this->VALID_SQL_REG_EXP) {
                 $this->QUERY_RESULT = $instance_table->Add_table($this->DBHandle, $param_add_value, null, null, $this->FG_QUERY_PRIMARY_KEY);
             }
-            if ($this->FG_ENABLE_LOG == 1) {
+            if ($this->FG_ENABLE_LOG) {
                 $this->logger->insertLog_Add($_SESSION["admin_id"], 2, "NEW " . strtoupper($this->FG_INSTANCE_NAME) . " CREATED", "User added a new record in database", $this->FG_QUERY_TABLE_NAME, $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI'], $param_add_fields, $param_add_value);
             }
             // CALL DEFINED FUNCTION AFTER THE ACTION ADDITION
@@ -1593,7 +1530,7 @@ class FormHandler
             $this->QUERY_RESULT = $instance_table->Update_table($this->DBHandle, $param_update, $this->FG_EDIT_QUERY_CONDITION);
         }
 
-        if ($this->FG_ENABLE_LOG == 1) {
+        if ($this->FG_ENABLE_LOG) {
             $this->logger->insertLog_Update($_SESSION["admin_id"], 3, "A " . strtoupper($this->FG_INSTANCE_NAME) . " UPDATED", "A RECORD IS UPDATED, EDITION CALUSE USED IS " . $this->FG_EDIT_QUERY_CONDITION, $this->FG_QUERY_TABLE_NAME, $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI'], $param_update);
         }
 
@@ -1652,7 +1589,7 @@ class FormHandler
         }
 
         $this->QUERY_RESULT = $instance_table->Delete_table($this->DBHandle, $this->FG_EDIT_QUERY_CONDITION);
-        if ($this->FG_ENABLE_LOG == 1) {
+        if ($this->FG_ENABLE_LOG) {
             $this->logger->insertLog($_SESSION["admin_id"], 3, "A " . strtoupper($this->FG_INSTANCE_NAME) . " DELETED", "A RECORD IS DELETED, EDITION CLAUSE USED IS " . $this->FG_EDIT_QUERY_CONDITION, $this->FG_QUERY_TABLE_NAME, $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI']);
         }
         if (!$this->QUERY_RESULT) {

@@ -82,7 +82,7 @@ define ("KICON_PATH", "./templates/$_SESSION[stylefile]/images/kicons");
 const DIR_WS_IMAGES = Images_Path . '/';
 define ("ADMIN_EMAIL", $A2B->config["global"]['admin_email'] ?? null);
 
-const ENABLE_LOG = 0;
+const ENABLE_LOG = false;
 
 require_once __DIR__ . "/customer.help.php";
 require_once __DIR__ . "/customer.smarty.php";

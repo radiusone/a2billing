@@ -12,7 +12,7 @@ use A2billing\Table;
 if ($form_action === "ask-delete") {
     if (!$this->isFKDataExists()) {
         $this->FG_FK_DELETE_ALLOWED = false;
-        $this->FG_ISCHILDS = false;
+        $FG_ISCHILDS = false;
         $this->FG_FK_WARNONLY = false;
         $this->FG_FK_DELETE_CONFIRM = false;
     }
@@ -89,7 +89,7 @@ function sendto(action, record, field_inst, instance) {
     </table>
 
     <input type="hidden" name="fkCount" value="<?= $this -> FG_FK_RECORDS_COUNT ?>">
-    <?php if ($this->FG_FK_DELETE_CONFIRM && $this-> FG_FK_DELETE_ALLOWED && $this -> FG_ISCHILDS): ?>
+    <?php if ($this->FG_FK_DELETE_CONFIRM && $this-> FG_FK_DELETE_ALLOWED && $FG_ISCHILDS): ?>
 	<input type="hidden" name="form_action" value="ask-del-confirm">
     <?php else: ?>
     <input type="hidden" name="form_action" value="delete">

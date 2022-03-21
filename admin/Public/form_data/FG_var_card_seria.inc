@@ -52,9 +52,7 @@ $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
 // Code Here for Deleting the Dependent Records
 // Dependent Tables
-$HD_Form -> FG_FK_DELETE_ALLOWED = false;
 $HD_Form -> FG_FK_DELETE_CONFIRM = true;
-$HD_Form -> FG_FK_WARNONLY = false;
 $HD_Form -> FG_FK_TABLENAMES = array("cc_card");
 $HD_Form -> FG_FK_EDITION_CLAUSE = array(" id_seria ");
 $HD_Form -> FG_FK_DELETE_MESSAGE = gettext("You have some cards using this Seria! Please comfirm that you really want to remove this seria ? ");

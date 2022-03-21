@@ -59,7 +59,6 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/table_multiple.png" ;
 // Dependent Tables
 $HD_Form -> FG_FK_DELETE_ALLOWED = true;
 $HD_Form -> FG_FK_DELETE_CONFIRM = true;
-$HD_Form -> FG_FK_WARNONLY = false;
 $HD_Form -> FG_FK_TABLENAMES = array("cc_ratecard");
 $HD_Form -> FG_FK_EDITION_CLAUSE = array(" idtariffplan ");
 $HD_Form -> FG_FK_DELETE_MESSAGE = gettext("You are going as well to remove all the rates attached to this ratecard! Please comfirm that you really want to remove this ratecard and those rates ? ");

@@ -47,7 +47,6 @@ $HD_Form = new FormHandler("cc_card", "Card");
 
 $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "ASC";
-$HD_Form -> FG_HTML_TABLE_WIDTH = "60%";
 $HD_Form -> FG_EDIT_QUERY_CONDITION = " id = ".$_SESSION["card_id"];
 
 $HD_Form -> FG_INTRO_TEXT_EDITION = '';

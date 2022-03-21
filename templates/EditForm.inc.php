@@ -7,6 +7,8 @@ use A2billing\Table;
  * @var array $processed
  * @var array $list
  */
+
+$db_data = $list[0];
 ?>
 
 <script src="javascript/calonlydays.js"></script>
@@ -17,11 +19,11 @@ use A2billing\Table;
         if (field_inst) {
             $(`form#editForm [name=${field_inst}]`).val(instance);
         }
-        $("form#editForm").submit();
+        $("form#editForm").trigger("submit");
     }
 
     function sendtolittle(direction) {
-        $("form#editForm").attr("action", direction).submit();
+        $("form#editForm").attr("action", direction).trigger("submit");
     }
 </script>
 
@@ -59,17 +61,17 @@ use A2billing\Table;
             </label>
             <div class="col">
 
-            <?php if ($this->FG_DISPLAY_SELECT && !empty($list[0][$this->FG_SELECT_FIELDNAME]) && $this->FG_CONF_VALUE_FIELDNAME === $row["name"]): ?>
+            <?php if ($this->FG_DISPLAY_SELECT && !empty($db_data[$this->FG_SELECT_FIELDNAME]) && $this->FG_CONF_VALUE_FIELDNAME === $row["name"]): ?>
                 <select id="<?= $row["name"] ?>" name="<?= $row["name"] ?>" class="form-select">
-                    <?php $vals = explode(",", $list[0][$this->FG_SELECT_FIELDNAME]) ?>
+                    <?php $vals = explode(",", $db_data[$this->FG_SELECT_FIELDNAME]) ?>
                     <?php foreach ($vals as $val): ?>
-                        <option <?php if ($val == $list[0][$i]): ?>selected="selected"<?php endif ?>><?= $val ?></option>
+                        <option <?php if ($val == $db_data[$i]): ?>selected="selected"<?php endif ?>><?= $val ?></option>
                     <?php endforeach ?>
                 </select>
 
             <?php elseif ($row["type"] === "INPUT"): ?>
                 <?php if (!empty($row["custom_function"])): ?>
-                    <?php $list[0][$i] = call_user_func($row["custom_function"], $list[0][$i]) ?>
+                    <?php $db_data[$i] = call_user_func($row["custom_function"], $db_data[$i]) ?>
                 <?php endif ?>
                 <input
                     id="<?= $row["name"] ?>"
@@ -77,7 +79,7 @@ use A2billing\Table;
                     name="<?= $row["name"] ?>"
                     <?= $row["attributes"] ?>
                     <?php if ($this->VALID_SQL_REG_EXP): /* what is VALID_SQL_REG_EXP */ ?>
-                        value="<?= $list[0][$i] ?>"
+                        value="<?= $db_data[$i] ?>"
                     <?php else: /* this doesn't make sense; did they mean defaultvalue – formerly index 2 – instead? */ ?>
                         value="<?= $processed[$row["name"]] ?>"
                     <?php endif ?>
@@ -85,10 +87,10 @@ use A2billing\Table;
 
             <?php elseif ($row["type"] === "LABEL"): ?>
                         <?php if (!empty($row["custom_function"])): ?>
-                            <?php $list[0][$i] = call_user_func($row["custom_function"], $list[0][$i]) ?>
+                            <?php $db_data[$i] = call_user_func($row["custom_function"], $db_data[$i]) ?>
                         <?php endif ?>
                         <?php if ($this->VALID_SQL_REG_EXP): ?>
-                            <?= $list[0][$i] ?>
+                            <?= $db_data[$i] ?>
                         <?php else: ?>
                             <?= $processed[$row["name"]] ?>
                         <?php endif ?>
@@ -102,7 +104,7 @@ use A2billing\Table;
                         name="<?= $row["name"] ?>"
                         <?= $row["attributes"] ?>
                         <?php if ($this->VALID_SQL_REG_EXP): ?>
-                            value="<?= $list[0][$i] ?>"
+                            value="<?= $db_data[$i] ?>"
                         <?php else: ?>
                             value="<?= $processed[$row["name"]] ?>"
                         <?php endif ?>
@@ -127,12 +129,12 @@ use A2billing\Table;
                     class="form-control <?php if (!$row["isvalid"]): ?>is-invalid<?php endif?>"
                     name="<?= $row["name"] ?>"
                     <?= $row["attributes"] ?>
-                ><?= $this->VALID_SQL_REG_EXP ? $list[0][$i] : $processed[$row["name"]] ?></textarea>
+                ><?= $this->VALID_SQL_REG_EXP ? $db_data[$i] : $processed[$row["name"]] ?></textarea>
 
             <?php elseif ($row["type"] === "SPAN"): //used once in FG_var_config.inc ?>
                 <span id="<?= $row["name"] ?>" name="<?= $row["name"] ?>" <?= $row["attributes"] ?>>
                 <?php if ($this->VALID_SQL_REG_EXP): ?>
-                    <?= $list[0][$i] ?>
+                    <?= $db_data[$i] ?>
                 <?php else: ?>
                     <?= $processed[$row["name"]] ?>
                 <?php endif ?>
@@ -145,7 +147,7 @@ use A2billing\Table;
                     <?php $options = $row["select_fields"] ?>
                 <?php endif ?>
                 <?php if ($this->FG_DEBUG >= 2): ?>
-                    <br/><?php print_r($options)?><br/><?php print_r($list)?><br/>#<?= $i ?>::><?= $this->VALID_SQL_REG_EXP ?><br/><br/>::><?= $list[0][$i] ?><br/><br/>::><?= $row["name"] ?>
+                    <br/><?php print_r($options)?><br/><?php print_r($db_data)?><br/>#<?= $i ?>::><?= $this->VALID_SQL_REG_EXP ?><br/><br/>::><?= $db_data[$i] ?><br/><br/>::><?= $row["name"] ?>
                 <?php endif ?>
                 <select
                     id="<?= $row["name"] ?>"
@@ -160,11 +162,11 @@ use A2billing\Table;
                                     value="<?= $option[1] ?>"
                                 <?php if ($this->VALID_SQL_REG_EXP): ?>
                                     <?php if (str_icontains($row["attributes"], "multiple")): ?>
-                                        <?php if (intval($option[1]) & intval($list[0][$i])): ?>
+                                        <?php if (intval($option[1]) & intval($db_data[$i])): ?>
                                             selected="selected"
                                         <?php endif ?>
                                     <?php else: ?>
-                                        <?php if ($list[0][$i] == $option[1]): ?>
+                                        <?php if ($db_data[$i] == $option[1]): ?>
                                             selected="selected"
                                         <?php endif ?>
                                     <?php endif ?>
@@ -202,7 +204,7 @@ use A2billing\Table;
                 <div class="form-check">
                     <?php $rad = explode(":", $v) ?>
                     <?php if ($this->VALID_SQL_REG_EXP): ?>
-                        <?php $check = $list[0][$i] ?>
+                        <?php $check = $db_data[$i] ?>
                     <?php else: ?>
                         <?php $check = $processed[$row["name"]] ?>
                     <?php endif ?>

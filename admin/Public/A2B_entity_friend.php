@@ -203,7 +203,7 @@ if ($form_action=='list') {
 
     if (!USE_REALTIME) {
     ?>
-          <table width="<?php echo $HD_Form -> FG_HTML_TABLE_WIDTH?>" border="0" align="center" cellpadding="0" cellspacing="0" >
+          <table  border="0" align="center" cellpadding="0" cellspacing="0" >
             <TR>
                 <TD  align="center"> <?php echo gettext("Link to Generate on SIP/IAX Friends")?> &nbsp;:&nbsp;</TD>
             </TR>

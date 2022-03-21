@@ -476,7 +476,6 @@ $FG_COL_QUERY_SUM=str_replace('sum(margin)','sum(profit)/sum(net_revenue)*100',$
 $FG_COL_QUERY_SUM=str_replace('name)',"'TOTAL'",$FG_COL_QUERY_SUM);
 
 $HD_Form->no_debug();
-$HD_Form -> FG_HTML_TABLE_WIDTH ="90%";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "ASC";
 $HD_Form -> FG_FILTER_SEARCH_SESSION_NAME = 'pnl_selection';
 $HD_Form -> FG_FK_DELETE_CONFIRM = true;
