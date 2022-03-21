@@ -81,7 +81,7 @@ use A2billing\Table;
                 <?php endif ?>
                 <input
                     id="<?= $row["name"] ?>"
-                    class="form-control <?php if (isset($this->FG_fit_expression[$i]) && !$this->FG_fit_expression[$i]): ?>is-invalid<?php endif?>"
+                    class="form-control <?php if (!$row["isvalid"]): ?>is-invalid<?php endif?>"
                     name="<?= $row["name"] ?>"
                     <?= $row["attributes"] ?>
                     <?php if ($this->VALID_SQL_REG_EXP): /* what is VALID_SQL_REG_EXP */ ?>
@@ -106,7 +106,7 @@ use A2billing\Table;
                 <div class="input-group">
                     <input
                         id="<?= $row["name"] ?>"
-                        class="form-control <?php if (isset($this->FG_fit_expression[$i]) && !$this->FG_fit_expression[$i]): ?>is-invalid<?php endif?>"
+                        class="form-control <?php if (!$row["isvalid"]): ?>is-invalid<?php endif?>"
                         name="<?= $row["name"] ?>"
                         <?= $row["attributes"] ?>
                         <?php if ($this->VALID_SQL_REG_EXP): ?>
@@ -132,7 +132,7 @@ use A2billing\Table;
             <?php elseif ($row["type"] === "TEXTAREA"): ?>
                 <textarea
                     id="<?= $row["name"] ?>"
-                    class="form-control <?php if (isset($this->FG_fit_expression[$i]) && !$this->FG_fit_expression[$i]): ?>is-invalid<?php endif?>"
+                    class="form-control <?php if (!$row["isvalid"]): ?>is-invalid<?php endif?>"
                     name="<?= $row["name"] ?>"
                     <?= $row["attributes"] ?>
                 ><?= $this->VALID_SQL_REG_EXP ? $list[0][$i] : $processed[$row["name"]] ?></textarea>
@@ -158,7 +158,7 @@ use A2billing\Table;
                 <select
                     id="<?= $row["name"] ?>"
                     name="<?= $row["name"] ?><?php if (str_icontains($row["attributes"], "multiple")): ?>[]<?php endif ?>"
-                    class="form-select <?php if (isset($this->FG_fit_expression[$i]) && !$this->FG_fit_expression[$i]): ?>is-invalid<?php endif?>"
+                    class="form-select <?php if (!$row["isvalid"]): ?>is-invalid<?php endif?>"
                     <?= $row["attributes"] ?>
                 >
                     <?= $row["first_option"] ?>
@@ -216,7 +216,7 @@ use A2billing\Table;
                     <?php endif ?>
                     <input
                         id="<?= $row["name"] ?>_<?= $rad[1] ?>"
-                        class="form-check-input <?php if (isset($this->FG_fit_expression[$i]) && !$this->FG_fit_expression[$i]): ?>is-invalid<?php endif?>"
+                        class="form-check-input <?php if (!$row["isvalid"]): ?>is-invalid<?php endif?>"
                         type="radio"
                         name="<?= $row["name"] ?>"
                         value="<?= $rad[1] ?>"
@@ -226,7 +226,7 @@ use A2billing\Table;
                 </div>
                 <?php endforeach ?>
             <?php endif ?>
-            <?php if (isset($this->FG_fit_expression[$i]) && !$this->FG_fit_expression[$i]): ?>
+            <?php if (!$row["isvalid"]): ?>
                 <div class="form-text invalid-feedback"><?= $row["error"] ?> - <?= $row["regex"][1] ?></div>
             <?php endif ?>
             <?php if ($this->FG_DEBUG == 1): ?>

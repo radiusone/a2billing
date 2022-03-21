@@ -52,7 +52,7 @@ getpost_ifset(array('wh'));
                 <td
                     width="25%"
                     valign="middle"
-                    <?php if (isset($this->FG_fit_expression[$i]) && !$this->FG_fit_expression[$i]): ?>
+                    <?php if (!$row["isvalid"]): ?>
                         class="form_head_red"
                     <?php else: ?>
                         class="form_head"
@@ -64,7 +64,7 @@ getpost_ifset(array('wh'));
                     width="75%"
                     valign="top"
                     class="tableBodyRight"
-                    <?php if (isset($this->FG_fit_expression[$i]) && !$this->FG_fit_expression[$i]): ?>
+                    <?php if (!$row["isvalid"]): ?>
                         style="background:url('data:image/gif;base64,R0lGODlhBQB6AKUlAPLi3vLi3/Pj3/Tj3/Tj4PTk4fXk4vTl4fXl4vXl4/bm4/bm5Pbn5Pfn5Pfo5fjo5fjo5vjo5/jo6Pno6Pjp6Pnq6Pnq6frq6Pvq6fvq6vvr6vzr6vzs6/3s7Pzt7P3t7P3t7f7t7f3u7v7u7f7u7v///////////////////////////////////////////////////////////////////////////////////////////////////////////yH5BAEAAD8ALAAAAAAFAHoAAAaRQIBwSCwWA0ikYMlsOgdQKGFKrRau14NWa+h2EeCwOEEmK87oNGO9XrjdjXjcQac/7neIfs+P+P+AEoKCE4WFFIiIFYuLF46OFpGRGJSUGZeXGpqaG52dm5ocoqOkHaamH6mpHqysIK+vIbKysK8it7i5I7u7JL6/wMHCw8TFxsfIycrLzM3Oz9DR0tPU1dbFQQA7')"
                     <?php else: ?>
                         style="background:url('data:image/gif;base64,R0lGODlhBQB6AKUBAAAAAP////7///3+/fr7+vr7+fn6+Pj59vf49fb39PT18fPz7/Ly7vj49ff39Pb28/X18vT08fLy7/v7+fn59/j49vb29PX18////v7+/f39/Pz8+/n5+PTz7/Tz8PX08v38+/z7+vr5+Pn49//+/v79/fz7+/7+/v///////////////////////////////////////////////////////////////////////////////////////////////yH5BAEAAD8ALAAAAAAFAHoAAAaVQIZwSCwWJUjkYslsOjtQqGdKrUauV4VW++l2IeCw+EImP87odGK9trjdjngcQac37veKXn/o90eAgBSDgxyGhiKJiQaMjAWPjxOSkgSVlSGYmCabmxueniChoZ+eGqanqCWqqhmtrQOwsCezsyS2trSzAru8vRi/vwHCw8TFxsfIycrLzM3Oz9DR0tPU1dbX2NnayUEAOw==')"
@@ -219,7 +219,7 @@ getpost_ifset(array('wh'));
         <?php endif ?>
 
                 <span class="liens">
-                    <?php if (isset($this->FG_fit_expression[$i]) && !$this->FG_fit_expression[$i]): ?>
+                    <?php if (!$row["isvalid"]): ?>
                         <br/><?= $row["error"] ?> - <?= $row["regex"][1] ?>
                     <?php endif ?>
                 </span>

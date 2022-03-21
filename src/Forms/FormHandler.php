@@ -5,6 +5,7 @@ namespace A2billing\Forms;
 use A2billing\Logger;
 use A2billing\Table;
 use ADOConnection;
+use DateTime;
 use Profiler_Console as Console;
 
 /***************************************************************************
@@ -255,20 +256,6 @@ class FormHandler
 
     /** @var array A list of field names considered "splittable" during create or edit (values like e.g. 12-14 or 15;16;17) */
     public array $FG_SPLITABLE_FIELDS = [];
-
-    /**
-     * ARRAY with the regular expression to check the form
-     *
-     * @public    -    @type array
-     */
-    public $FG_regular = [];
-
-    /**
-     * Array that will contain the field where the regularexpression check have found errors
-     *
-     * @public    -    @type array
-     */
-    public $FG_fit_expression = [];
 
     /**
      * Set the fields  for the EDIT/ADD query
@@ -916,139 +903,35 @@ class FormHandler
     }
 
 
-    public function set_regular_expression()
+    public function validate_field($rule_number, string $value): bool
     {
-        // 0.  A STRING WITH EXACTLY 3 CHARACTERS.
-        $this->FG_regular[] = [
-            "^.{3}",
-            gettext("(at least 3 characters)"),
-        ];
+        switch ($rule_number) {
+            case 0: return strlen($value) >= 3;
+            case 1: return (bool)filter_var($value, FILTER_VALIDATE_EMAIL);
+            case 2:
+            case 8: return strlen($value) >= 5;
+            case 3: return strlen($value) >= 4;
+            case 4: $pattern = "/^[0-9]+$/"; break;
+            case 5: $pattern = "/^[0-9]{4}([- /.])(?:0[1-9]|1[012])\1(?:0[1-9]|[12][0-9]|3[01])$/"; break;
+            case 6: $pattern = "/^[0-9]{8,}$/"; break;
+            case 7: $pattern = "/^[0-9][0-9. \/-]{6,}[0-9]$/"; break;
+            case 9: return strlen($value) >= 1;
+            case 10: $pattern = "/^[0-9]{4}([- /.])(?:0[1-9]|1[012])\1(?:0[1-9]|[12][0-9]|3[01]) (?:[01][0-9]|2[0-3]):(?:[0-5][0-9]):(?:[0-5][0-9])$/"; break;
+            case 11: return strlen($value) >= 2;
+            case 12: $pattern = "/^-?[0-9]+(\.?[0-9]+)?$/"; break;
+            // case 13: regex pattern ^(defaultprefix|[-,0-9]+|_[-[.[.][.].]0-9XZN(){}|.,_]+)$ was not valid, presumably this isn't used
+            case 14: $pattern = "/^all|[0-9]+$/"; break;
+            case 15: $pattern = "/^[0-9]{2}:[0-9]{2}$/"; break; // is this a duration or should time check be proper?
+            case 16: return strlen($value) >= 15;
+            case 17: return strlen($value) >= 8;
+            case 18: $pattern = "/^\+[0-9]+$/"; break;
+            case 19: $pattern = "/^$_SESSION[captcha_code]$/"; break;
+            case 20: $pattern = "/^[0-9]{2}:[0-9]{2}:[0-9]{2}$/"; break;  // is this a duration or should time check be proper?
+            case 21: return $value >= 0 && $value <= 100;
+            default: return false;
+        }
 
-        // 1.  EMAIL ADRESSE
-        $this->FG_regular[] = [
-            "^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$",
-            gettext("(must match email structure. Example : name@domain.com)"),
-        ];
-
-        // 2 . IF AT LEAST FIVE SUCCESSIVE CHARACTERS APPEAR AT THE END OF THE STRING.
-        $this->FG_regular[] = [
-            ".{5}$",
-            gettext("(at least 5 successive characters appear at the end of this string)"),
-        ];
-
-        // 3. IF AT LEAST 4 CHARACTERS
-        $this->FG_regular[] = [
-            ".{4}",
-            gettext("(at least 4 characters)"),
-        ];
-
-        // 4
-        $this->FG_regular[] = [
-            "^[0-9]+$",
-            gettext("(number format)"),
-        ];
-
-        // 5
-        $this->FG_regular[] = [
-            "^([0-9]{4})[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$",
-            "(YYYY-MM-DD)",
-        ];
-
-        // 6
-        $this->FG_regular[] = [
-            "^[0-9]{8,}$",
-            gettext("(only number with more that 8 digits)"),
-        ];
-
-        // 7
-        $this->FG_regular[] = [
-            "^[0-9][ .0-9\/\-]{6,}[0-9]$",
-            gettext("(at least 8 digits using . or - or the space key)"),
-        ];
-
-        // 8
-        $this->FG_regular[] = [
-            ".{5}",
-            gettext("network adress format"),
-        ];
-
-        // 9
-        $this->FG_regular[] = [
-            "^.{1}",
-            gettext("at least 1 character"),
-        ];
-
-        // 10
-        $this->FG_regular[] = [
-            "^([0-9]{4})-([0-9]{2})-([0-9]{2}) ([0-9]{2}):([0-9]{2}):([0-9]{2})$",
-            "(YYYY-MM-DD HH:MM:SS)",
-        ];
-
-        // 11
-        $this->FG_regular[] = [
-            "^.{2}",
-            gettext("(AT LEAST 2 CARACTERS)"),
-        ];
-
-        // 12
-        $this->FG_regular[] = [
-            "^(-){0,1}[0-9]+(\.){0,1}[0-9]*$",
-            gettext("(NUMBER FORMAT WITH/WITHOUT DECIMAL, use '.' for decimal)"),
-        ];
-
-        // 13  - RATECARD
-        $this->FG_regular[] = [
-            "^(defaultprefix|[-,0-9]+|_[-[.[.][.].]0-9XZN(){}|.,_]+)$",
-            "(NUMBER FORMAT OR 'defaultprefix' OR ASTERISK/POSIX REGEX FORMAT)",
-        ];
-
-        // 14  - DNID PREFIX FOR RATECARD
-        $this->FG_regular[] = [
-            "^(all|[0-9]+)$",
-            "(NUMBER FORMAT OR 'all')",
-        ];
-
-        // 15 - RATECARD TIME
-        $this->FG_regular[] = [
-            "^([0-9]{2}):([0-9]{2})$",
-            "(HH:MM)",
-        ];
-
-        // 16  TEXT > 15 caract
-        $this->FG_regular[] = [
-            ".{15}",
-            gettext("You must write something."),
-        ];
-
-        // 17  TEXT > 15 caract
-        $this->FG_regular[] = [
-            ".{8}",
-            gettext("8 characters alphanumeric"),
-        ];
-
-        // 18 - CALLERID - PhoneNumber
-        $this->FG_regular[] = [
-            "^(\+|[0-9]{1})[0-9]+$",
-            "Phone Number format",
-        ];
-        // 19 - CAPTCHAIMAGE - Alpahnumeric
-        $this->FG_regular[] = [
-            "^(" . strtoupper($_SESSION["captcha_code"]) . ")|(" . strtolower($_SESSION["captcha_code"]) . ")$",
-            gettext("(at least 6 Alphanumeric characters)"),
-        ];
-        //20 TIME
-        $this->FG_regular[] = [
-            "^([0-9]{2}):([0-9]{2}):([0-9]{2})$",
-            "(HH:MM:SS)",
-        ];
-        // check_select
-        // TO check if a select have a value different -1
-        // 21 -> Check percent more of 0 and under 100
-        $this->FG_regular[] = [
-            "^100$|^(([0-9]){0,2})((\.)([0-9]*))?$",
-            gettext("(PERCENT FORMAT WITH/WITHOUT DECIMAL, use '.' for decimal and don't use '%' character. e.g.: 12.4 )"),
-        ];
-
+        return (bool)preg_match($pattern, $value);
     }
 
 
@@ -1470,9 +1353,10 @@ class FormHandler
         $param_add_fields = "";
         $param_add_value = "";
         $arr_value_to_import = [];
+        $i = 0;
 
-        foreach ($this->FG_ADD_FORM_ELEMENTS as $i => $row) {
-
+        foreach ($this->FG_ADD_FORM_ELEMENTS as $i => &$row) {
+            $row["isvalid"] = true;
             if (!str_contains($row["custom_query"], ":")) {
                 $fields_name = $row["name"];
                 $regexp = $row["regex"];
@@ -1498,11 +1382,8 @@ class FormHandler
                 } else {
                     // CHECK ACCORDING TO THE REGULAR EXPRESSION DEFINED
                     if (is_numeric($regexp) && !(str_starts_with(strtoupper($row["check_empty"]), "NO") && $processed[$fields_name] === "")) {
-                        $this->FG_fit_expression[$i] = preg_match('/' . $this->FG_regular[$regexp][0] . '/', $processed[$fields_name]);
-                        if ($this->FG_DEBUG == 1) {
-                            echo "<br>->  $fields_name => " . $this->FG_regular[$regexp][0] . " , " . $processed[$fields_name];
-                        }
-                        if (!$this->FG_fit_expression[$i]) {
+                        $row["isvalid"] = $this->validate_field($regexp, $processed[$fields_name]);
+                        if (!$row["isvalid"]) {
                             $this->VALID_SQL_REG_EXP = false;
                             if ($this->FG_DEBUG == 1) {
                                 echo "<br>-> $i) Error Match";
@@ -1511,7 +1392,7 @@ class FormHandler
                         }
                     } elseif ($regexp === "check_select" && $processed[$fields_name] == -1) {
                         // FOR SELECT FIELD WE HAVE THE check_select THAT WILL ENSURE WE DEFINE A VALUE FOR THE SELECTABLE FIELD
-                        $this->FG_fit_expression[$i] = false;
+                        $row["isvalid"] = false;
                         $this->VALID_SQL_REG_EXP = false;
                         $form_action = "ask-add";
                     }
@@ -1566,9 +1447,10 @@ class FormHandler
                     }
                 }
             }
-        }
+        } // endforeach with reference
+        unset ($row);
 
-        if (!is_null($this->FG_QUERY_ADITION_HIDDEN_FIELDS) && $this->FG_QUERY_ADITION_HIDDEN_FIELDS != "") {
+        if (!empty($this->FG_QUERY_ADITION_HIDDEN_FIELDS)) {
             if ($i > 0) {
                 $param_add_fields .= ", ";
             }
@@ -1646,17 +1528,16 @@ class FormHandler
     {
         $param_update = "";
         $processed = $this->getProcessed();  //$processed['firstname']
-
         $this->VALID_SQL_REG_EXP = true;
-
         $instance_table = new Table($this->FG_QUERY_TABLE_NAME, $this->FG_QUERY_EDITION);
+        $i = 0;
 
         if (!empty($processed['id'])) {
             $this->FG_EDITION_CLAUSE = str_replace("%id", $processed['id'], $this->FG_EDITION_CLAUSE);
         }
 
-        foreach ($this->FG_EDIT_FORM_ELEMENTS as $i => $row) {
-
+        foreach ($this->FG_EDIT_FORM_ELEMENTS as $i => &$row) {
+            $row["isvalid"] = true;
             if (!str_contains($row["custom_query"], ":")) {
                 $fields_name = $row["name"];
                 $regexp = $row["regex"];
@@ -1675,11 +1556,8 @@ class FormHandler
                     $param_update .= "$fields_name = '" . addslashes(trim($total_mult_select)) . "'";
                 } else {
                     if (is_numeric($regexp) && !(str_starts_with(strtoupper($row["check_empty"]), "NO") && $processed[$fields_name] === "")) {
-                        $this->FG_fit_expression[$i] = preg_match('/' . $this->FG_regular[$regexp][0] . '/', $processed[$fields_name]);
-                        if ($this->FG_DEBUG == 1) {
-                            echo "<br>->  $fields_name => " . $this->FG_regular[$regexp][0] . " , " . $processed[$fields_name];
-                        }
-                        if (!$this->FG_fit_expression[$i]) {
+                        $row["isvalid"] = $this->validate_field($regexp, $processed[$fields_name]);
+                        if (!$row["isvalid"]) {
                             $this->VALID_SQL_REG_EXP = false;
                             if ($this->FG_DEBUG == 1) {
                                 echo "<br>-> $i) Error Match";
@@ -1711,7 +1589,7 @@ class FormHandler
                 if (!is_array($processed[$checkbox_data])) {
                     $snum = 0;
                     $this->VALID_SQL_REG_EXP = false;
-                    $this->FG_fit_expression[$i] = false;
+                    $row["isvalid"] = false;
                 } else {
                     $snum = count($processed[$checkbox_data]);
                 }
@@ -1734,9 +1612,10 @@ class FormHandler
                     }
                 }
             }
-        }
+        } // end foreach with reference
+        unset($row);
 
-        if (!is_null($this->FG_QUERY_EDITION_HIDDEN_FIELDS) && $this->FG_QUERY_EDITION_HIDDEN_FIELDS != "") {
+        if (!empty($this->FG_QUERY_EDITION_HIDDEN_FIELDS)) {
 
             $table_split_field = explode(",", $this->FG_QUERY_EDITION_HIDDEN_FIELDS);
             $table_split_value = explode(",", $this->FG_QUERY_EDITION_HIDDEN_VALUE);
@@ -1884,7 +1763,7 @@ class FormHandler
 
         $arr = is_array($processed[$table_split[1]]) ? $processed[$table_split[1]] : [$processed[$table_split[1]]];
         foreach ($arr as $value) {
-            if (empty($table_split[12]) || preg_match('/' . $this->FG_regular[$table_split[12]][0] . '/', $value)) {
+            if (empty($table_split[12]) || $this->validate_field($table_split[12][0], $value)) {
                 // RESPECT REGULAR EXPRESSION
                 $result_query = $instance_sub_table->Add_table($this->DBHandle, "'" . addslashes(trim($value)) . "', '" . addslashes(trim($id)) . "'");
 
