@@ -435,7 +435,7 @@ $HD_Form->FG_FILTER_LABEL = 'cardnumber';
 
 $HD_Form->FG_INTRO_TEXT_ADITION = '';
 $HD_Form->FG_TEXT_ADITION_CONFIRMATION = gettext("Thanks for registering with us.<br>A email with your information has been sent to your account ") . $_POST["email"] . "<br><br><b>" . gettext("Your card number is ") . $maxi . "</b><br><b>" . gettext("Your password is ") . $pass . "</b>";
-
+$HD_Form->FG_ADD_PAGE_BOTTOM_TEXT = gettext("Click 'SIGNUP' to continue");
 $HD_Form->FG_ADD_PAGE_SAVE_BUTTON_TEXT = gettext("SIGNUP");
 
 $HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = 'processing_card_signup';

@@ -684,7 +684,6 @@ if (ADVANCED_MODE) {
 $HD_Form->FG_SPLITABLE_FIELDS[] = 'dialprefix';
 
 $HD_Form->FG_INTRO_TEXT_ADITION = $HD_Form->FG_INTRO_TEXT_EDITION = gettext("Rates must be entered in the currency base : ") . strtoupper(BASE_CURRENCY);
-$HD_Form->FG_BUTTON_EDITION_BOTTOM_TEXT = $HD_Form->FG_BUTTON_ADITION_BOTTOM_TEXT = gettext("Click 'Confirm Data' to continue.");
 
 $HD_Form->FG_FILTER_ENABLE = true;
 $HD_Form->FG_FILTER_COLUMN = 'dialprefix';

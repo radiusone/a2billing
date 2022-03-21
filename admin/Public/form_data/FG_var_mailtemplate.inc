@@ -205,29 +205,29 @@ $HD_Form -> FG_EDIT_QUERY_CONDITION = "id ='%id' ";
 
 $HD_Form -> FG_INTRO_TEXT_ADITION = gettext("Add a new mail template");
 
-$HD_Form -> FG_BUTTON_ADITION_BOTTOM_TEXT = gettext("The followings tags will be replaced in the message by the value in the database.").'<br/>';
+$HD_Form -> FG_ADD_PAGE_BOTTOM_TEXT = gettext("The followings tags will be replaced in the message by the value in the database.").'<br/>';
 
-$HD_Form -> FG_BUTTON_ADITION_BOTTOM_TEXT .= '<u>'.gettext('Tags used for EPayment Warning email').': </u><br/> ' .
+$HD_Form -> FG_ADD_PAGE_BOTTOM_TEXT .= '<u>'.gettext('Tags used for EPayment Warning email').': </u><br/> ' .
         '<b>$time$</b> : time of payment <br/>' .
         '<b>$paymentgateway$</b>: '.gettext('display payment gateway').'<br/>' .
         '<b>$itemAmount$</b>: '.gettext('amount of payment').'<br/>';
-$HD_Form -> FG_BUTTON_ADITION_BOTTOM_TEXT .= '<u>'.gettext('Tags used for Payment email').': </u><br/> ' .
+$HD_Form -> FG_ADD_PAGE_BOTTOM_TEXT .= '<u>'.gettext('Tags used for Payment email').': </u><br/> ' .
         '<b>$itemName$</b>: '.gettext('name of item paid').'<br/> ' .
         '<b>$itemID$</b> : '.gettext('id of customer').'<br/> ' .
         '<b>$paymentMethod$</b> : '.gettext('methode of payment').'<br/> ' .
         '<b>$paymentStatus$</b> : '.gettext('status of payment').'<br/>' .
         '<b>$itemAmount$</b>: '.gettext('amount of payment').'<br/>';
-$HD_Form -> FG_BUTTON_ADITION_BOTTOM_TEXT .= '<u>'.gettext('Tags used for Signup').': </u><br/> ' .
+$HD_Form -> FG_ADD_PAGE_BOTTOM_TEXT .= '<u>'.gettext('Tags used for Signup').': </u><br/> ' .
         '<b>$loginkey$</b>: '.gettext('key created to validate the signup').'<br/> ';
-$HD_Form -> FG_BUTTON_ADITION_BOTTOM_TEXT .= '<u>'.gettext('Tag used for Did Payment confirmation email').': </u><br/> ' .
+$HD_Form -> FG_ADD_PAGE_BOTTOM_TEXT .= '<u>'.gettext('Tag used for Did Payment confirmation email').': </u><br/> ' .
         '<b>$balance_remaining$</b>: '.gettext('balance after payment').'<br/> ';
-$HD_Form -> FG_BUTTON_ADITION_BOTTOM_TEXT .= '<u>'.gettext('Tag used for Did not payment warning email').': </u><br/> ' .
+$HD_Form -> FG_ADD_PAGE_BOTTOM_TEXT .= '<u>'.gettext('Tag used for Did not payment warning email').': </u><br/> ' .
         '<b>$days_remaining$</b>: '.gettext('number of day before release of the did').'<br/> '.
         '<b>$invoice_ref$</b>: '.gettext('invoice reference to pay for the did').'<br/> ';
-$HD_Form -> FG_BUTTON_ADITION_BOTTOM_TEXT .= '<u>'.gettext('Tag used for DID').': </u><br/> ' .
+$HD_Form -> FG_ADD_PAGE_BOTTOM_TEXT .= '<u>'.gettext('Tag used for DID').': </u><br/> ' .
         '<b>$did$</b>: '.gettext('did number').'<br/> '.
         '<b>$did_cost$</b>: '.gettext('cost of the did').'<br/> ';
-$HD_Form -> FG_BUTTON_ADITION_BOTTOM_TEXT .= '<u>'.gettext('Tag used for Support Ticket').': </u><br/> ' .
+$HD_Form -> FG_ADD_PAGE_BOTTOM_TEXT .= '<u>'.gettext('Tag used for Support Ticket').': </u><br/> ' .
         '<b>$ticket_id$</b>: '.gettext('Ticket Id').'<br/> '.
         '<b>$ticket_owner$</b>: '.gettext('Ticket Owner').'<br/> '.
         '<b>$ticket_priority$</b>: '.gettext('Ticket Priority').'<br/> '.
@@ -236,7 +236,7 @@ $HD_Form -> FG_BUTTON_ADITION_BOTTOM_TEXT .= '<u>'.gettext('Tag used for Support
         '<b>$ticket_description$</b>: '.gettext('Ticket Description').'<br/> '.
         '<b>$comment_creator$</b>: '.gettext('Comment Creator').'<br/> '.
         '<b>$comment_description$</b>: '.gettext('Comment Description').'<br/> ';
-$HD_Form -> FG_BUTTON_ADITION_BOTTOM_TEXT .= '<u>'.gettext('Tags used in all emails').': </u><br/> ' .
+$HD_Form -> FG_ADD_PAGE_BOTTOM_TEXT .= '<u>'.gettext('Tags used in all emails').': </u><br/> ' .
         '<b>$email$</b>: '.gettext('email of the customer').'<br/>' .
         '<b>$firstname$</b>: '.gettext('firstname of the customer').'<br/>' .
         '<b>$lastname$</b>: '.gettext('lastname of the customer').'<br/>' .
@@ -249,7 +249,7 @@ $HD_Form -> FG_BUTTON_ADITION_BOTTOM_TEXT .= '<u>'.gettext('Tags used in all ema
         '<b>$credit_notification$</b>: '.gettext('credit notification of the customer').'<br/>' .
         '<b>$base_currency$</b>: '.gettext('base currency of system').'<br/>';
 
-$HD_Form -> FG_BUTTON_EDITION_BOTTOM_TEXT = $HD_Form -> FG_BUTTON_ADITION_BOTTOM_TEXT ;
+$HD_Form -> FG_EDIT_PAGE_BOTTOM_TEXT = $HD_Form -> FG_ADD_PAGE_BOTTOM_TEXT ;
 
 
 $HD_Form -> FG_LOCATION_AFTER_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&stitle=Document&wh=AC&languages=en&id=";

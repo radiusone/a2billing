@@ -945,9 +945,6 @@ if (!$popup_select) {
         }
 
         $HD_Form->FG_INTRO_TEXT_ADITION = '';
-
-        $HD_Form->FG_BUTTON_EDITION_BOTTOM_TEXT = $HD_Form->FG_BUTTON_ADITION_BOTTOM_TEXT = _("Once you have completed the form above, click on Confirm Data");
-
         $HD_Form->FG_ADDITIONAL_FUNCTION_BEFORE_EDITION = 'change_card_lock';
 
         $HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = 'processing_card_add';

@@ -73,6 +73,11 @@ class FormHandler
     public array $FG_QUERY_ORDERBY_COLUMNS = [];
     /** @var string Direction (ASC or DESC) for the list display query ordering */
     public ?string $FG_QUERY_DIRECTION = '';
+    /** @var string Default sort order */
+    public string $FG_TABLE_DEFAULT_ORDER = "id";
+    /** @var string Default sort direction */
+    public string $FG_TABLE_DEFAULT_SENS = "ASC";
+
 
     /** @var array Data used to build the list view table */
     private array $FG_LIST_TABLE_CELLS = [];
@@ -101,9 +106,6 @@ class FormHandler
     /** @var string Code which is eval'd to decide whether to show the edit button */
     public string $FG_EDIT_BUTTON_CONDITION = '';
 
-    /** @var string Label for the "save" button when creating a new item */
-    public string $FG_ADD_PAGE_SAVE_BUTTON_TEXT = '';
-
     /** @var int Size of pages for the list view */
     public int $FG_LIST_VIEW_PAGE_SIZE = 10;
     /** @var int Number of pages in the current list view */
@@ -126,12 +128,8 @@ class FormHandler
     public string $FG_FILTER2_LABEL = '';
 
 
-    /**
-     * Sets the variables to control the search filter
-     *
-     * @public  - @type boolean , array , string
-     */
-    public $FG_FILTER_SEARCH_FORM = false;
+    /** @var bool Whether to show a search popup at the top of the list view */
+    public bool $FG_FILTER_SEARCH_FORM = false;
 
     public bool $FG_FILTER_SEARCH_1_TIME = false;
     public string $FG_FILTER_SEARCH_1_TIME_TEXT = '';
@@ -303,20 +301,25 @@ class FormHandler
     public string $FG_TEXT_ERROR_DUPLICATION = "You cannot choose more than one !";
 
 
-    // ------------------- ## BUTTON/IMAGE SECTION  ## -------------------
-    public $FG_BUTTON_ADITION_BOTTOM_TEXT = "";
+    /** @var string Text telling you to click the button */
+    public string $FG_ADD_PAGE_BOTTOM_TEXT = "Click 'Confirm Data' to continue";
+    /** @var string Label for the "save" button when creating a new item */
+    public string $FG_ADD_PAGE_SAVE_BUTTON_TEXT = 'Confirm Data';
+    /** @var string Text telling you to click the button */
+    public string $FG_EDIT_PAGE_BOTTOM_TEXT = "Click 'Confirm Data' to continue";
 
-    public $FG_BUTTON_EDITION_BOTTOM_TEXT = "";
-
-    public $FG_ADDITIONAL_FUNCTION_BEFORE_ADD = '';
-    public $FG_ADDITIONAL_FUNCTION_AFTER_ADD = '';
-    public $FG_ADDITIONAL_FUNCTION_BEFORE_DELETE = '';
-    public $FG_ADDITIONAL_FUNCTION_AFTER_DELETE = '';
-    public $FG_ADDITIONAL_FUNCTION_BEFORE_EDITION = '';
-    public $FG_ADDITIONAL_FUNCTION_AFTER_EDITION = '';
-
-    public $FG_TABLE_DEFAULT_ORDER = "id";
-    public $FG_TABLE_DEFAULT_SENS = "ASC";
+    /** @var string Static method of FormBO class executed before creating */
+    public string $FG_ADDITIONAL_FUNCTION_BEFORE_ADD = '';
+    /** @var string Static method of FormBO class executed after creating */
+    public string $FG_ADDITIONAL_FUNCTION_AFTER_ADD = '';
+    /** @var string Static method of FormBO class executed before deleting */
+    public string $FG_ADDITIONAL_FUNCTION_BEFORE_DELETE = '';
+    /** @var string Static method of FormBO class executed after deleting */
+    public string $FG_ADDITIONAL_FUNCTION_AFTER_DELETE = '';
+    /** @var string Static method of FormBO class executed before editing */
+    public string $FG_ADDITIONAL_FUNCTION_BEFORE_EDITION = '';
+    /** @var string Static method of FormBO class executed after editing */
+    public string $FG_ADDITIONAL_FUNCTION_AFTER_EDITION = '';
 
     // Delete Foreign Keys or not
     // if it is set to true and confirm flag is true confirm box will be showed.
@@ -502,6 +505,9 @@ class FormHandler
         $this->FG_TEXT_ADITION_CONFIRMATION = gettext("Your new") . " #FG_INSTANCE_NAME# " . gettext("has been inserted.");
         $this->FG_TEXT_ADITION_ERROR = gettext("Your new") . " #FG_INSTANCE_NAME# " . gettext("hasn't been inserted.");
         $this->FG_TEXT_ERROR_DUPLICATION = gettext("You cannot choose more than one !");
+
+        $this->FG_ADD_PAGE_BOTTOM_TEXT = gettext("Click 'Confirm Data' to continue");
+        $this->FG_EDIT_PAGE_BOTTOM_TEXT = gettext("Click 'Confirm Data' to continue");
 
         $this->FG_FK_DELETE_MESSAGE = gettext("Are you sure to delete all records connected to this instance.");
 

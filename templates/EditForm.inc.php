@@ -347,7 +347,7 @@ use A2billing\Table;
     <?php endforeach ?>
     <div class="row my-4 justify-content-between">
         <div class="col-auto">
-            <?= $this->FG_BUTTON_EDITION_BOTTOM_TEXT ?>
+            <?= $this->FG_EDIT_PAGE_BOTTOM_TEXT ?>
         </div>
         <div class="col-auto">
             <button type="submit" class="btn btn-primary"><?= _("Confirm Data") ?></button>

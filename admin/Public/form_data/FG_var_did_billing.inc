@@ -94,7 +94,6 @@ if (isset($filterprefix2)  &&  (strlen($filterprefix2)>0)){
 
 
 
-$HD_Form -> FG_BUTTON_EDITION_BOTTOM_TEXT = $HD_Form -> FG_BUTTON_ADITION_BOTTOM_TEXT = gettext("Once you have completed the form above, click on the CONTINUE button.");
 
 
 

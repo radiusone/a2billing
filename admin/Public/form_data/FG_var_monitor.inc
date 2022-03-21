@@ -161,7 +161,6 @@ $HD_Form -> FieldEditElement ('label, dial_code, description, text_intro, query_
 $HD_Form -> FG_INTRO_TEXT_ADITION = gettext("Add the Monitoring below");
 
 
-$HD_Form -> FG_BUTTON_EDITION_BOTTOM_TEXT = $HD_Form -> FG_BUTTON_ADITION_BOTTOM_TEXT = gettext("Click 'Confirm Data' to continue");
 
 
 

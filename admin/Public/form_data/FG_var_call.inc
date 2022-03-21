@@ -134,7 +134,6 @@ if (isset($filterprefix) && (strlen($filterprefix)>0)){
 
 
 
-$HD_Form -> FG_BUTTON_EDITION_BOTTOM_TEXT = $HD_Form -> FG_BUTTON_ADITION_BOTTOM_TEXT = gettext("Click Confirm Data to apply your changes");
 
 
 $HD_Form -> FG_LOCATION_AFTER_DELETE = 'call-log-customers.php?nodisplay=1&posted=1';

@@ -130,7 +130,6 @@ $HD_Form -> FG_OTHER_BUTTON3_ALT = gettext('ADD REFILL');
 
 
 
-$HD_Form -> FG_BUTTON_EDITION_BOTTOM_TEXT = $HD_Form -> FG_BUTTON_ADITION_BOTTOM_TEXT = gettext("Click Confirm Data to apply your changes");
 
 
 

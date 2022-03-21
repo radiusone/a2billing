@@ -139,11 +139,7 @@ $HD_Form -> AddEditElement (gettext("FREE UNITS"),
 
 $HD_Form -> FieldEditElement ('label, packagetype, billingtype, startday, freetimetocall');
 
-
-
 $HD_Form -> FG_INTRO_TEXT_ADITION = '';
-
-$HD_Form -> FG_BUTTON_EDITION_BOTTOM_TEXT = $HD_Form -> FG_BUTTON_ADITION_BOTTOM_TEXT = gettext("Setup those values to create the new")." ".$HD_Form->FG_INSTANCE_NAME;
 
 $HD_Form -> FG_LOCATION_AFTER_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&stitle=Document&wh=AC&id=";
 $HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&stitle=Document&wh=AC&id=";

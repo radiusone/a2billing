@@ -199,7 +199,6 @@ if (isset($filterprefix)  &&  (strlen($filterprefix)>0)) {
 $HD_Form -> FG_INTRO_TEXT_ADITION = '';
 
 
-$HD_Form -> FG_BUTTON_EDITION_BOTTOM_TEXT = $HD_Form -> FG_BUTTON_ADITION_BOTTOM_TEXT = gettext("Click 'Confirm Data' to continue");
 
 $HD_Form -> FG_ADDITIONAL_FUNCTION_AFTER_ADD = 'did_destination_add';
 $HD_Form -> FG_ADDITIONAL_FUNCTION_AFTER_DELETE = 'did_destination_del';

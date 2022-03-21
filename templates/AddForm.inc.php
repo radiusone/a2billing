@@ -228,7 +228,7 @@ getpost_ifset(array('wh'));
     <table cellspacing="0" class="editform_table8">
         <tr>
             <td width="50%" class="text_azul">
-                <span class="tableBodyRight"><?= $this->FG_BUTTON_ADITION_BOTTOM_TEXT ?></span>
+                <span class="tableBodyRight"><?= $this->FG_ADD_PAGE_BOTTOM_TEXT ?></span>
             </td>
             <td width="50%" align="right" valign="top" class="text">
                 <a href="#" onclick="document.myForm.submit()" class="cssbutton_big" title="<?= gettext("Create a new ") ?><?= $this->FG_INSTANCE_NAME ?>">
