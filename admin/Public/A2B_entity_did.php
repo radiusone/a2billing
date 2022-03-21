@@ -54,7 +54,7 @@ $HD_Form->setDBHandler(DbConnect());
 $HD_Form->init();
 
 if (!empty($id)) {
-    $HD_Form->FG_EDITION_CLAUSE = str_replace("%id", "$id", $HD_Form->FG_EDITION_CLAUSE);
+    $HD_Form->FG_EDIT_QUERY_CONDITION = str_replace("%id", "$id", $HD_Form->FG_EDIT_QUERY_CONDITION);
 }
 
 $form_action = $form_action ?? "list"; //ask-add

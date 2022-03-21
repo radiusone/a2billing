@@ -152,7 +152,7 @@ if($form_action == "list") {
 	$HD_Form -> FG_QUERY_WHERE_CLAUSE = $_SESSION['ss_groupselect'];
 }
 
-$HD_Form -> FG_EDITION_CLAUSE = "id = %id";
+$HD_Form -> FG_EDIT_QUERY_CONDITION = "id = %id";
 $HD_Form -> AddViewElement(gettext("TITLE"), "config_title");
 $HD_Form -> AddViewElement(gettext("KEY"), "config_key");
 $HD_Form -> AddViewElement(gettext("VALUE"), "config_value", false, "", null, "list-conf", $yesno);
@@ -243,7 +243,7 @@ $HD_Form -> FieldEditElement ('config_group_title, config_title, config_key, con
 $HD_Form -> FG_INTRO_TEXT_EDITION= '';
 $HD_Form -> FG_BUTTON_EDITION_BOTTOM_TEXT = $HD_Form -> FG_BUTTON_ADITION_BOTTOM_TEXT = gettext("Click 'Confirm Data' to continue");
 
-$HD_Form -> FG_GO_LINK_AFTER_ACTION_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&stitle=Document&wh=AC&id=";
+$HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&stitle=Document&wh=AC&id=";
 
 
 /*

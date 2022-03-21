@@ -36,21 +36,13 @@ use A2billing\Table;
     <input type="hidden" name="sens" value="<?= $processed["sens"] ?>"/>
     <?= $this->csrf_inputs() ?>
 
-    <?php if (!empty($this->FG_QUERY_EDITION_HIDDEN_FIELDS)): ?>
-        <?php $fields = explode(",",trim($this->FG_QUERY_EDITION_HIDDEN_FIELDS))?>
-        <?php $values = explode(",",trim($this->FG_QUERY_EDITION_HIDDEN_VALUE))?>
-        <?php foreach ($fields as $k=>$v): ?>
-        <input type="hidden" name="<?= trim($v) ?>" value="<?= trim($values[$k]) ?>"/>
-        <?php endforeach ?>
-    <?php endif ?>
+    <?php foreach ($this->FG_EDIT_QUERY_HIDDEN_INPUTS as $name => $value): ?>
+        <input type="hidden" name="<?= htmlspecialchars($name) ?>" value="<?= htmlspecialchars($value) ?>"/>
+    <?php endforeach ?>
 
-    <?php if (!empty($this->FG_EDITION_HIDDEN_PARAM)): ?>
-        <?php $fields = explode(",",trim($this->FG_EDITION_HIDDEN_PARAM))?>
-        <?php $values = explode(",",trim($this->FG_EDITION_HIDDEN_PARAM_VALUE))?>
-        <?php foreach ($fields as $k=>$v): ?>
-        <input type="hidden" name="<?= trim($v) ?>" value="<?= trim($values[$k]) ?>"/>
-        <?php endforeach ?>
-    <?php endif ?>
+    <?php foreach ($this->FG_EDIT_FORM_HIDDEN_INPUTS as $name => $value): ?>
+        <input type="hidden" name="<?= htmlspecialchars($name) ?>" value="<?= htmlspecialchars($value) ?>"/>
+    <?php endforeach ?>
 
     <?php foreach ($this->FG_EDIT_FORM_ELEMENTS as $i=> $row): ?>
         <?php $options = null ?>

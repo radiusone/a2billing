@@ -262,52 +262,30 @@ class FormHandler
      *
      * @public    -    @type string
      */
-    public $FG_QUERY_EDITION = '';
-    public $FG_QUERY_ADITION = '';
+    public string $FG_QUERY_EDITION = '';
+    public string $FG_QUERY_ADITION = '';
 
-    /**
-     * Set the SQL Clause for the edition
-     *
-     * @public    -    @type string
-     */
-    public $FG_EDITION_CLAUSE = " id='%id' ";
+    /** @var string A condition that will be applied to the edit query; %id is replaced within the page code */
+    public string $FG_EDIT_QUERY_CONDITION = " id='%id' ";
 
-    /**
-     * Set the HIDDED VALUE for the edition/addition
-     * to insert some values that you do not want to display into the Form but as an hidden field
-     * FG_QUERY_EDITION_HIDDEN_FIELDS = "field1, field2"
-     * FG_QUERY_EDITION_HIDDEN_VALUE = "value1, value2"
-     * FG_QUERY_ADITION_HIDDEN_FIELDS = "field1, field2"
-     * FG_QUERY_ADITION_HIDDEN_VALUE = "value1, value2"
-     *
-     * @public    -    @type string
-     */
-    public $FG_QUERY_EDITION_HIDDEN_FIELDS = '';
-    public $FG_QUERY_EDITION_HIDDEN_VALUE = '';
-    public $FG_QUERY_ADITION_HIDDEN_FIELDS = '';
-    public $FG_QUERY_ADITION_HIDDEN_VALUE = '';
+    /** @var array list of key/value pairs that will be added to the edit form as hidden inputs */
+    public array $FG_EDIT_FORM_HIDDEN_INPUTS = [];
+    /** @var array list of key/value pairs that will be added to the add form as hidden inputs */
+    public array $FG_ADD_FORM_HIDDEN_INPUTS = [];
+    /** @var array list of key/value pairs that will be added to the edit form AND the SQL query */
+    public array $FG_EDIT_QUERY_HIDDEN_INPUTS = [];
+    /** @var array list of key/value pairs that will be added to the add form AND the SQL query */
+    public array $FG_ADD_QUERY_HIDDEN_INPUTS = [];
 
-    public $FG_EDITION_HIDDEN_PARAM = '';
-    public $FG_EDITION_HIDDEN_PARAM_VALUE = '';
-    public $FG_ADITION_HIDDEN_PARAM = '';
-    public $FG_ADITION_HIDDEN_PARAM_VALUE = '';
+    /** @var array used only in FG_var_signup.inc, should figure a way to get rid of this */
+    public array $REALTIME_SIP_IAX_INFO = [];
 
-    /**
-     * Set the EXTRA HIDDED VALUES for the edition/addition
-     *
-     * @public    -    @type array
-     */
-    public $FG_QUERY_EXTRA_HIDDEN = '';
-
-    /**
-     * Sets the link where to go after an ACTION (EDIT/DELETE/ADD)
-     *
-     * @public    -    @type string
-     */
-    public $FG_GO_LINK_AFTER_ACTION;
-    public $FG_GO_LINK_AFTER_ACTION_ADD;
-    public $FG_GO_LINK_AFTER_ACTION_DELETE;
-    public $FG_GO_LINK_AFTER_ACTION_EDIT;
+    /** @var string Where to redirect the user after adding a record */
+    public string $FG_LOCATION_AFTER_ADD;
+    /** @var string Where to redirect the user after deleting a record */
+    public string $FG_LOCATION_AFTER_DELETE;
+    /** @var string Where to redirect the user after editing a record */
+    public string $FG_LOCATION_AFTER_EDIT;
 
 
     /** ####################################################
@@ -1078,8 +1056,8 @@ class FormHandler
         $processed = $this->getProcessed();  //$processed['firstname']
 
         if ($form_action == "ask-delete" && in_array($processed['id'], $this->FG_DELETION_FORBIDDEN_ID)) {
-            if (!empty($this->FG_GO_LINK_AFTER_ACTION_DELETE)) {
-                header("Location: " . $this->FG_GO_LINK_AFTER_ACTION_DELETE . $processed['id']);
+            if (!empty($this->FG_LOCATION_AFTER_DELETE)) {
+                header("Location: " . $this->FG_LOCATION_AFTER_DELETE . $processed['id']);
             } else {
                 header("Location: " . filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL));
             }
@@ -1174,7 +1152,7 @@ class FormHandler
             } else {
 
                 $instance_table = new Table($this->FG_QUERY_TABLE_NAME, $this->FG_QUERY_EDITION);
-                $list = $instance_table->get_list($this->DBHandle, $this->FG_EDITION_CLAUSE, [], "ASC", 1);
+                $list = $instance_table->get_list($this->DBHandle, $this->FG_EDIT_QUERY_CONDITION, [], "ASC", 1);
 
                 //PATCH TO CLEAN THE IMPORT OF PASSWORD FROM THE DATABASE
                 if (substr_count($this->FG_QUERY_EDITION, "pwd_encoded") > 0) {
@@ -1354,6 +1332,7 @@ class FormHandler
         $param_add_value = "";
         $arr_value_to_import = [];
         $i = 0;
+        $instance_table = new Table($this->FG_QUERY_TABLE_NAME);
 
         foreach ($this->FG_ADD_FORM_ELEMENTS as $i => &$row) {
             $row["isvalid"] = true;
@@ -1450,21 +1429,18 @@ class FormHandler
         } // endforeach with reference
         unset ($row);
 
-        if (!empty($this->FG_QUERY_ADITION_HIDDEN_FIELDS)) {
+        foreach ($this->FG_EDIT_QUERY_HIDDEN_INPUTS as $name => $value) {
+            $name = $instance_table->quote_identifier($name);
+            // TODO: change to fully parameterized statements
+            if ($value !== "now()") {
+                $value = $this->DBHandle->qStr($value);
+            }
             if ($i > 0) {
                 $param_add_fields .= ", ";
-            }
-            $param_add_fields .= $this->FG_QUERY_ADITION_HIDDEN_FIELDS;
-            if ($i > 0) {
                 $param_add_value .= ", ";
             }
-            $split_hidden_fields_value = explode(",", trim($this->FG_QUERY_ADITION_HIDDEN_VALUE));
-            for ($cur_hidden = 0; $cur_hidden < count($split_hidden_fields_value); $cur_hidden++) {
-                $param_add_value .= "'" . trim($split_hidden_fields_value[$cur_hidden]) . "'";
-                if ($cur_hidden < count($split_hidden_fields_value) - 1) {
-                    $param_add_value .= ",";
-                }
-            }
+            $param_add_fields .= $name;
+            $param_add_value .= $value;
         }
 
         if ($this->FG_DEBUG == 1) {
@@ -1508,12 +1484,12 @@ class FormHandler
                 $this->FG_ADITION_GO_EDITION = "yes-done";
             }
             $id = $this->QUERY_RESULT;
-            if (!empty($id) && ($this->VALID_SQL_REG_EXP) && (isset($this->FG_GO_LINK_AFTER_ACTION_ADD))) {
+            if (!empty($id) && ($this->VALID_SQL_REG_EXP) && (isset($this->FG_LOCATION_AFTER_ADD))) {
                 if ($this->FG_DEBUG == 1) {
-                    echo "<br> GOTO ; " . $this->FG_GO_LINK_AFTER_ACTION_ADD . $id;
+                    echo "<br> GOTO ; " . $this->FG_LOCATION_AFTER_ADD . $id;
                 }
                 //echo "<br> GOTO ; ".$this->FG_GO_LINK_AFTER_ACTION_ADD.$id;
-                header("Location: " . $this->FG_GO_LINK_AFTER_ACTION_ADD . $id);
+                header("Location: " . $this->FG_LOCATION_AFTER_ADD . $id);
             }
         }
     }
@@ -1533,7 +1509,7 @@ class FormHandler
         $i = 0;
 
         if (!empty($processed['id'])) {
-            $this->FG_EDITION_CLAUSE = str_replace("%id", $processed['id'], $this->FG_EDITION_CLAUSE);
+            $this->FG_EDIT_QUERY_CONDITION = str_replace("%id", $processed['id'], $this->FG_EDIT_QUERY_CONDITION);
         }
 
         foreach ($this->FG_EDIT_FORM_ELEMENTS as $i => &$row) {
@@ -1615,15 +1591,11 @@ class FormHandler
         } // end foreach with reference
         unset($row);
 
-        if (!empty($this->FG_QUERY_EDITION_HIDDEN_FIELDS)) {
-
-            $table_split_field = explode(",", $this->FG_QUERY_EDITION_HIDDEN_FIELDS);
-            $table_split_value = explode(",", $this->FG_QUERY_EDITION_HIDDEN_VALUE);
-
-            for ($k = 0; $k < count($table_split_field); $k++) {
-                $param_update .= ", ";
-                $param_update .= "$table_split_field[$k] = '" . addslashes(trim($table_split_value[$k])) . "'";
-            }
+        foreach ($this->FG_EDIT_QUERY_HIDDEN_INPUTS as $name => $value) {
+            $name = $instance_table->quote_identifier($name);
+            // TODO: change to fully parameterized statements
+            $value = $this->DBHandle->qStr($value);
+            $param_update .= ", $name = $value";
         }
 
         if (strlen($this->FG_ADDITIONAL_FUNCTION_BEFORE_EDITION) > 0 && ($this->VALID_SQL_REG_EXP)) {
@@ -1631,15 +1603,15 @@ class FormHandler
         }
 
         if ($this->FG_DEBUG == 1) {
-            echo "<br><hr> PARAM_UPDATE: $param_update<br>" . $this->FG_EDITION_CLAUSE;
+            echo "<br><hr> PARAM_UPDATE: $param_update<br>" . $this->FG_EDIT_QUERY_CONDITION;
         }
 
         if ($this->VALID_SQL_REG_EXP) {
-            $this->QUERY_RESULT = $instance_table->Update_table($this->DBHandle, $param_update, $this->FG_EDITION_CLAUSE);
+            $this->QUERY_RESULT = $instance_table->Update_table($this->DBHandle, $param_update, $this->FG_EDIT_QUERY_CONDITION);
         }
 
         if ($this->FG_ENABLE_LOG == 1) {
-            $this->logger->insertLog_Update($_SESSION["admin_id"], 3, "A " . strtoupper($this->FG_INSTANCE_NAME) . " UPDATED", "A RECORD IS UPDATED, EDITION CALUSE USED IS " . $this->FG_EDITION_CLAUSE, $this->FG_QUERY_TABLE_NAME, $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI'], $param_update);
+            $this->logger->insertLog_Update($_SESSION["admin_id"], 3, "A " . strtoupper($this->FG_INSTANCE_NAME) . " UPDATED", "A RECORD IS UPDATED, EDITION CALUSE USED IS " . $this->FG_EDIT_QUERY_CONDITION, $this->FG_QUERY_TABLE_NAME, $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI'], $param_update);
         }
 
         if ($this->FG_DEBUG == 1) {
@@ -1650,9 +1622,9 @@ class FormHandler
             call_user_func([FormBO::class, $this->FG_ADDITIONAL_FUNCTION_AFTER_EDITION]);
         }
 
-        if (($this->VALID_SQL_REG_EXP) && (isset($this->FG_GO_LINK_AFTER_ACTION_EDIT))) {
+        if ($this->VALID_SQL_REG_EXP && !empty($this->FG_LOCATION_AFTER_EDIT)) {
             if ($this->FG_DEBUG == 1) {
-                echo "<br> GOTO ; " . $this->FG_GO_LINK_AFTER_ACTION_EDIT . $processed['id'];
+                echo "<br> GOTO ; " . $this->FG_LOCATION_AFTER_EDIT . $processed['id'];
             }
             $ext_link = '';
             if (is_numeric($processed['current_page'])) {
@@ -1661,7 +1633,7 @@ class FormHandler
             if (!empty($processed['order']) && !empty($processed['sens'])) {
                 $ext_link .= "&order=" . $processed['order'] . "&sens=" . $processed['sens'];
             }
-            header("Location: " . $this->FG_GO_LINK_AFTER_ACTION_EDIT . $processed['id'] . $ext_link);
+            header("Location: " . $this->FG_LOCATION_AFTER_EDIT . $processed['id'] . $ext_link);
         }
     }
 
@@ -1693,12 +1665,12 @@ class FormHandler
         $instance_table->FK_DELETE = !$this->FG_FK_WARNONLY;
 
         if (!empty($processed['id'])) {
-            $this->FG_EDITION_CLAUSE = str_replace("%id", $processed['id'], $this->FG_EDITION_CLAUSE);
+            $this->FG_EDIT_QUERY_CONDITION = str_replace("%id", $processed['id'], $this->FG_EDIT_QUERY_CONDITION);
         }
 
-        $this->QUERY_RESULT = $instance_table->Delete_table($this->DBHandle, $this->FG_EDITION_CLAUSE);
+        $this->QUERY_RESULT = $instance_table->Delete_table($this->DBHandle, $this->FG_EDIT_QUERY_CONDITION);
         if ($this->FG_ENABLE_LOG == 1) {
-            $this->logger->insertLog($_SESSION["admin_id"], 3, "A " . strtoupper($this->FG_INSTANCE_NAME) . " DELETED", "A RECORD IS DELETED, EDITION CLAUSE USED IS " . $this->FG_EDITION_CLAUSE, $this->FG_QUERY_TABLE_NAME, $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI']);
+            $this->logger->insertLog($_SESSION["admin_id"], 3, "A " . strtoupper($this->FG_INSTANCE_NAME) . " DELETED", "A RECORD IS DELETED, EDITION CLAUSE USED IS " . $this->FG_EDIT_QUERY_CONDITION, $this->FG_QUERY_TABLE_NAME, $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI']);
         }
         if (!$this->QUERY_RESULT) {
             echo gettext("error deletion");
@@ -1706,26 +1678,23 @@ class FormHandler
 
         $this->FG_INTRO_TEXT_DELETION = str_replace("%id", $processed['id'], $this->FG_INTRO_TEXT_DELETION);
         $this->FG_INTRO_TEXT_DELETION = str_replace("%table", $this->FG_QUERY_TABLE_NAME, $this->FG_INTRO_TEXT_DELETION);
-        if (isset($this->FG_GO_LINK_AFTER_ACTION_DELETE)) {
+        if (!empty($this->FG_LOCATION_AFTER_DELETE)) {
             if ($this->FG_DEBUG == 1) {
-                echo "<br> GOTO ; " . $this->FG_GO_LINK_AFTER_ACTION_DELETE . $processed['id'];
+                echo "<br> GOTO ; " . $this->FG_LOCATION_AFTER_DELETE . $processed['id'];
             }
-            if ($this->FG_GO_LINK_AFTER_ACTION_DELETE) {
-                $ext_link = '';
-                if (is_numeric($processed['current_page'])) {
-                    $ext_link = "&current_page=" . $processed['current_page'];
-                }
-                if (!empty($processed['order']) && !empty($processed['sens'])) {
-                    $ext_link .= "&order=" . $processed['order'] . "&sens=" . $processed['sens'];
-                }
-                if (substr($this->FG_GO_LINK_AFTER_ACTION_DELETE, -3) == "id=") {
-                    header("Location: " . $this->FG_GO_LINK_AFTER_ACTION_DELETE . $processed['id'] . $ext_link);
-                } else {
-                    header("Location: " . $this->FG_GO_LINK_AFTER_ACTION_DELETE . $ext_link);
-                }
+            $ext_link = '';
+            if (is_numeric($processed['current_page'])) {
+                $ext_link = "&current_page=" . $processed['current_page'];
+            }
+            if (!empty($processed['order']) && !empty($processed['sens'])) {
+                $ext_link .= "&order=" . $processed['order'] . "&sens=" . $processed['sens'];
+            }
+            if (str_ends_with($this->FG_LOCATION_AFTER_DELETE, "id=")) {
+                header("Location: " . $this->FG_LOCATION_AFTER_DELETE . $processed['id'] . $ext_link);
+            } else {
+                header("Location: " . $this->FG_LOCATION_AFTER_DELETE . $ext_link);
             }
         }
-
     }
 
     /*

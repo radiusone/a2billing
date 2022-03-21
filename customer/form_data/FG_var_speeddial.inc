@@ -69,9 +69,9 @@ if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0)
     $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
 	$HD_Form -> FG_QUERY_WHERE_CLAUSE.="id_cc_card =".$_SESSION["card_id"];
 
-if (strlen($HD_Form -> FG_EDITION_CLAUSE)>0)
-    $HD_Form -> FG_EDITION_CLAUSE.=" AND ";
-	$HD_Form -> FG_EDITION_CLAUSE.="id_cc_card =".$_SESSION["card_id"];
+if (strlen($HD_Form -> FG_EDIT_QUERY_CONDITION)>0)
+    $HD_Form -> FG_EDIT_QUERY_CONDITION.=" AND ";
+	$HD_Form -> FG_EDIT_QUERY_CONDITION.="id_cc_card =".$_SESSION["card_id"];
 
 
 //end My Code for Where Clause
@@ -130,7 +130,7 @@ $HD_Form -> FG_TEXT_ADITION_CONFIRMATION = gettext("Your new")." ".$HD_Form->FG_
 $HD_Form -> FG_BUTTON_EDITION_BOTTOM_TEXT = $HD_Form -> FG_BUTTON_ADITION_BOTTOM_TEXT = gettext("Once you have completed the form above, click on the CONTINUE button.");
 
 
-$HD_Form -> FG_GO_LINK_AFTER_ACTION_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&stitle=Document&wh=AC&id=";
-$HD_Form -> FG_GO_LINK_AFTER_ACTION_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&stitle=Document&wh=AC&id=";
-$HD_Form -> FG_GO_LINK_AFTER_ACTION_DELETE = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&stitle=Document&wh=AC&id=";
+$HD_Form -> FG_LOCATION_AFTER_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&stitle=Document&wh=AC&id=";
+$HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&stitle=Document&wh=AC&id=";
+$HD_Form -> FG_LOCATION_AFTER_DELETE = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&stitle=Document&wh=AC&id=";
 

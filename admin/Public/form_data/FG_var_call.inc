@@ -144,6 +144,6 @@ $HD_Form -> FG_TEXT_ADITION_CONFIRMATION = gettext("Your new")." ".$HD_Form->FG_
 $HD_Form -> FG_BUTTON_EDITION_BOTTOM_TEXT = $HD_Form -> FG_BUTTON_ADITION_BOTTOM_TEXT = gettext("Click Confirm Data to apply your changes");
 
 
-$HD_Form -> FG_GO_LINK_AFTER_ACTION_DELETE = 'call-log-customers.php?nodisplay=1&posted=1';
-$HD_Form -> FG_GO_LINK_AFTER_ACTION_ADD = $HD_Form -> FG_GO_LINK_AFTER_ACTION_DELETE;
-$HD_Form -> FG_GO_LINK_AFTER_ACTION_EDIT = $HD_Form -> FG_GO_LINK_AFTER_ACTION_DELETE;
+$HD_Form -> FG_LOCATION_AFTER_DELETE = 'call-log-customers.php?nodisplay=1&posted=1';
+$HD_Form -> FG_LOCATION_AFTER_ADD = $HD_Form -> FG_LOCATION_AFTER_DELETE;
+$HD_Form -> FG_LOCATION_AFTER_EDIT = $HD_Form -> FG_LOCATION_AFTER_DELETE;

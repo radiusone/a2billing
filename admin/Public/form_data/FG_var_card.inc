@@ -941,8 +941,7 @@ if (!$popup_select) {
         if ($form_action === "ask-edit") {
             $table_card = new Table("cc_card", "status");
             $result_card = $table_card->get_list(DbConnect(), "id=$id");
-            $HD_Form->FG_EDITION_HIDDEN_PARAM = "oldstatus";
-            $HD_Form->FG_EDITION_HIDDEN_PARAM_VALUE = "" . $result_card[0][0];
+            $HD_Form->FG_EDIT_FORM_HIDDEN_INPUTS["oldstatus"] = $result_card[0][0];
         }
 
 
@@ -991,9 +990,9 @@ if (!$popup_select) {
             NotificationsDAO::AddNotification($key, Notification::$HIGH, $who, $who_id);
         }
 
-        $HD_Form->FG_GO_LINK_AFTER_ACTION_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL) . "?section=" . $_SESSION["menu_section"] . "&id=";
-        $HD_Form->FG_GO_LINK_AFTER_ACTION_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL) . "?section=" . $_SESSION["menu_section"] . "&id=";
-        $HD_Form->FG_GO_LINK_AFTER_ACTION_DELETE = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL) . "?section=" . $_SESSION["menu_section"] . "&id=";
+        $HD_Form->FG_LOCATION_AFTER_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL) . "?section=" . $_SESSION["menu_section"] . "&id=";
+        $HD_Form->FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL) . "?section=" . $_SESSION["menu_section"] . "&id=";
+        $HD_Form->FG_LOCATION_AFTER_DELETE = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL) . "?section=" . $_SESSION["menu_section"] . "&id=";
     }
 
 } else {

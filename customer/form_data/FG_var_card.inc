@@ -48,7 +48,7 @@ $HD_Form = new FormHandler("cc_card", "Card");
 $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "ASC";
 $HD_Form -> FG_HTML_TABLE_WIDTH = "60%";
-$HD_Form -> FG_EDITION_CLAUSE = " id = ".$_SESSION["card_id"];
+$HD_Form -> FG_EDIT_QUERY_CONDITION = " id = ".$_SESSION["card_id"];
 
 $HD_Form -> FG_INTRO_TEXT_EDITION = '';
 
@@ -177,7 +177,7 @@ $HD_Form -> FG_INTRO_TEXT_ADD = gettext("you can add easily update your informat
 $HD_Form -> FG_INTRO_TEXT_ADITION = '';
 $HD_Form -> FG_TEXT_ADITION_CONFIRMATION = gettext("Your record has been updated.")."<br>";
 
-$HD_Form -> FG_GO_LINK_AFTER_ACTION_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?message=success";
+$HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?message=success";
 
 
 

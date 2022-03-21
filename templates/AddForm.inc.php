@@ -20,21 +20,13 @@ getpost_ifset(array('wh'));
     <input type="hidden" name="atmenu" value="<?= $processed["atmenu"]?>">
 
     <?= $this->csrf_inputs() ?>
-<?php if (!empty($this->FG_QUERY_ADITION_HIDDEN_FIELDS)): ?>
-    <?php $fields = explode(",",trim($this->FG_QUERY_ADITION_HIDDEN_FIELDS))?>
-    <?php $values = explode(",",trim($this->FG_QUERY_ADITION_HIDDEN_VALUE))?>
-    <?php foreach ($fields as $k=>$v): ?>
-        <input type="hidden" name="<?= trim($v) ?>" value="<?= trim($values[$k]) ?>"/>
-    <?php endforeach ?>
-<?php endif ?>
+<?php foreach ($this->FG_ADD_QUERY_HIDDEN_INPUTS as $name => $value): ?>
+    <input type="hidden" name="<?= htmlspecialchars($name) ?>" value="<?= htmlspecialchars($value) ?>"/>
+<?php endforeach ?>
 
-<?php if (!empty($this->FG_ADITION_HIDDEN_PARAM)): ?>
-    <?php $fields = explode(",",trim($this->FG_ADITION_HIDDEN_PARAM))?>
-    <?php $values = explode(",",trim($this->FG_ADITION_HIDDEN_PARAM_VALUE))?>
-    <?php foreach ($fields as $k=>$v): ?>
-        <input type="hidden" name="<?= trim($v) ?>" value="<?= trim($values[$k]) ?>"/>
-    <?php endforeach ?>
-<?php endif ?>
+<?php foreach ($this->FG_ADD_FORM_HIDDEN_INPUTS as $name => $value): ?>
+    <input type="hidden" name="<?= htmlspecialchars($name) ?>" value="<?= htmlspecialchars($value) ?>"/>
+<?php endforeach ?>
 
     <table cellspacing="2" class="addform_table1">
          <tbody>

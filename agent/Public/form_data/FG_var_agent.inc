@@ -51,7 +51,7 @@ $HD_Form = new FormHandler("cc_agent", $FG_INSTANCE_NAME);
 
 $HD_Form->no_debug();
 
-$HD_Form -> FG_EDITION_CLAUSE = " id = ".$_SESSION["agent_id"];
+$HD_Form -> FG_EDIT_QUERY_CONDITION = " id = ".$_SESSION["agent_id"];
 
 $language_list = getLanguagesList();
 
@@ -167,6 +167,6 @@ $HD_Form -> FieldEditElement ($FG_QUERY_EDITION);
 
 $HD_Form -> FG_INTRO_TEXT_EDITION= gettext("Modify your informations");
 $HD_Form -> FG_BUTTON_EDITION_BOTTOM_TEXT = $HD_Form -> FG_BUTTON_ADITION_BOTTOM_TEXT = gettext("Click 'Confirm Data' to continue");
-$HD_Form -> FG_GO_LINK_AFTER_ACTION_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?message=success";
+$HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?message=success";
 
 

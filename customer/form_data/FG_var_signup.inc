@@ -380,16 +380,27 @@ if ($A2B->config["signup"]['activated']) {
 	$status = $A2B->config["signup"]['activatedbyuser'] ? '2' : '3';
 }
 
-$HD_Form->FG_QUERY_ADITION_HIDDEN_FIELDS = "iax_buddy, sip_buddy, expiredays, expirationdate, typepaid, enableexpire, runservice, simultaccess, credit, username, useralias, uipass, loginkey, status";
-$HD_Form->FG_QUERY_ADITION_HIDDEN_VALUE = "$iax_account, $sip_account, $myexpiredays, $myexpirationdate, $mytypepaid, $myenableexpire, $myrunservice, $mysimultaccess, $mycredit, $maxi, $maxi2, $pass, $loginkey, $status";
+$HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["iax_buddy"] = $iax_account;
+$HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["sip_buddy"] = $sip_account;
+$HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["expiredays"] = $myexpiredays;
+$HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["expirationdate"] = $myexpirationdate;
+$HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["typepaid"] = $mytypepaid;
+$HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["enableexpire"] = $myenableexpire;
+$HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["runservice"] = $myrunservice;
+$HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["simultaccess"] = $mysimultaccess;
+$HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["credit"] = $mycredit;
+$HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["username"] = $maxi;
+$HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["useralias"] = $maxi2;
+$HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["uipass"] = $pass;
+$HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["loginkey"] = $loginkey;
+$HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["status"] = $status;
 
 if ($agent_conf) {
-	$HD_Form->FG_QUERY_ADITION_HIDDEN_FIELDS .= ",id_group";
-	$HD_Form->FG_QUERY_ADITION_HIDDEN_VALUE .= ",$groupid";
+    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["id_group"] = $groupid;
 }
 
 // username, useralias, uipass, loginkey
-$HD_Form->FG_QUERY_EXTRA_HIDDEN = array (
+$HD_Form->REALTIME_SIP_IAX_INFO = array (
 	$maxi,
 	$maxi2,
 	$pass,
@@ -398,11 +409,9 @@ $HD_Form->FG_QUERY_EXTRA_HIDDEN = array (
 
 if (!is_numeric($subscriber_signup)) {
 	if (!$agent_conf && strpos($callPlan_idlist, ',') === false) {
-		$HD_Form->FG_QUERY_ADITION_HIDDEN_FIELDS .= ", tariff";
-		$HD_Form->FG_QUERY_ADITION_HIDDEN_VALUE .= ", $mytariff";
+        $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["tariff"] = $mytariff;
 	} elseif ($agent_conf) {
-		$HD_Form->FG_QUERY_ADITION_HIDDEN_FIELDS .= ", tariff";
-		$HD_Form->FG_QUERY_ADITION_HIDDEN_VALUE .= ", $tariffid";
+        $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["tariff"] = $tariffid;
 	}
 }
 
@@ -413,13 +422,11 @@ if (is_numeric($subscriber_signup)) {
 	$data = $table_subscribe->get_list($HD_Form->DBHandle, "id='" . $subscriber_signup . "'");
 	if (is_array($data)) {
 		$id_callplan = $data[0]['id_callplan'];
-		$HD_Form->FG_QUERY_ADITION_HIDDEN_FIELDS .= ", tariff";
-		$HD_Form->FG_QUERY_ADITION_HIDDEN_VALUE .= ", $id_callplan";
+        $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["tariff"] = $id_callplan;
 	}
 
 	// HIDDEN VALUE
-	$HD_Form->FG_ADITION_HIDDEN_PARAM = 'subscriber_signup';
-	$HD_Form->FG_ADITION_HIDDEN_PARAM_VALUE = "$subscriber_signup";
+    $HD_Form->FG_ADD_FORM_HIDDEN_INPUTS["subscriber_signup"] = $subscriber_signup;
 }
 
 $HD_Form->FG_FILTER_ENABLE = true;
@@ -437,7 +444,7 @@ $HD_Form->FG_ADD_PAGE_SAVE_BUTTON_TEXT = gettext("SIGNUP");
 
 $HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = 'processing_card_signup';
 
-$HD_Form->FG_GO_LINK_AFTER_ACTION_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL) . "?atmenu=document&stitle=Document&wh=AC&id=";
-$HD_Form->FG_GO_LINK_AFTER_ACTION_DELETE = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL) . "?atmenu=document&stitle=Document&wh=AC&id=";
+$HD_Form->FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL) . "?atmenu=document&stitle=Document&wh=AC&id=";
+$HD_Form->FG_LOCATION_AFTER_DELETE = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL) . "?atmenu=document&stitle=Document&wh=AC&id=";
 
 

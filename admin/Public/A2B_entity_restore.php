@@ -48,7 +48,7 @@ $HD_Form -> setDBHandler (DbConnect());
 $HD_Form -> init();
 
 if ($id!="" || !is_null($id)) {
-    $HD_Form -> FG_EDITION_CLAUSE = str_replace("%id", "$id", $HD_Form -> FG_EDITION_CLAUSE);
+    $HD_Form -> FG_EDIT_QUERY_CONDITION = str_replace("%id", "$id", $HD_Form -> FG_EDIT_QUERY_CONDITION);
 }
 
 if (!isset($form_action))  $form_action="list"; //ask-add
@@ -56,7 +56,7 @@ if (!isset($action)) $action = $form_action;
 
 if ($form_action == "delete") {
     $instance_table = new Table($HD_Form -> FG_QUERY_TABLE_NAME, null);
-    $res_delete = $instance_table -> Delete_table ($HD_Form -> DBHandle, $HD_Form ->FG_EDITION_CLAUSE, null);
+    $res_delete = $instance_table -> Delete_table ($HD_Form -> DBHandle, $HD_Form ->FG_EDIT_QUERY_CONDITION, null);
     if (!$res_delete) {
         echo "error deletion";
         } else {
@@ -66,7 +66,7 @@ if ($form_action == "delete") {
 
 if ($form_action == "restore") {
     $instance_table_backup = new Table($HD_Form -> FG_QUERY_TABLE_NAME,$HD_Form -> FG_QUERY_EDITION);
-    $list = $instance_table_backup -> get_list ($HD_Form->DBHandle, $HD_Form->FG_EDITION_CLAUSE, [], "", 1);
+    $list = $instance_table_backup -> get_list ($HD_Form->DBHandle, $HD_Form->FG_EDIT_QUERY_CONDITION, [], "", 1);
     $path = $list[0][1];
 
     if (substr($path,-3)=='.gz') {
@@ -88,7 +88,7 @@ if ($form_action == "restore") {
 
 if ($form_action == "download") {
     $instance_table_backup = new Table($HD_Form -> FG_QUERY_TABLE_NAME,$HD_Form -> FG_QUERY_EDITION);
-    $list = $instance_table_backup -> get_list ($HD_Form->DBHandle, $HD_Form->FG_EDITION_CLAUSE, [], "", 1);
+    $list = $instance_table_backup -> get_list ($HD_Form->DBHandle, $HD_Form->FG_EDIT_QUERY_CONDITION, [], "", 1);
     $path = $list[0][1];
     $filename = basename($path);
     $len = filesize($path);

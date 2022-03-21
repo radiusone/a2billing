@@ -192,13 +192,11 @@ $HD_Form -> AddEditElement (gettext("MESSAGE TEXT"),
 
 $HD_Form -> FieldEditElement ('mailtype, id_language, fromemail, fromname, subject, messagetext');
 
-$HD_Form -> FG_QUERY_ADITION_HIDDEN_FIELDS = "id, id_language";
-$HD_Form -> FG_QUERY_ADITION_HIDDEN_VALUE  = "$latest_id, $id_language";
+$HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["id"] = $latest_id;
+$HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["id_language"] = $id_language;
+$HD_Form->FG_EDIT_QUERY_HIDDEN_INPUTS["id_language"] = $id_language;
 
-$HD_Form -> FG_QUERY_EDITION_HIDDEN_FIELDS = "id_language";
-$HD_Form -> FG_QUERY_EDITION_HIDDEN_VALUE  = "$id_language";
-
-$HD_Form -> FG_EDITION_CLAUSE = "id ='%id' ";
+$HD_Form -> FG_EDIT_QUERY_CONDITION = "id ='%id' ";
 
 // if ($id_language != '' || !is_null($id_language)) {
 //     $HD_Form -> FG_EDITION_CLAUSE .= "AND id_language = '$id_language'";
@@ -258,6 +256,6 @@ $HD_Form -> FG_BUTTON_ADITION_BOTTOM_TEXT .= '<u>'.gettext('Tags used in all ema
 $HD_Form -> FG_BUTTON_EDITION_BOTTOM_TEXT = $HD_Form -> FG_BUTTON_ADITION_BOTTOM_TEXT ;
 
 
-$HD_Form -> FG_GO_LINK_AFTER_ACTION_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&stitle=Document&wh=AC&languages=en&id=";
-$HD_Form -> FG_GO_LINK_AFTER_ACTION_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&stitle=Document&wh=AC&languages=en&id=";
-$HD_Form -> FG_GO_LINK_AFTER_ACTION_DELETE = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&stitle=Document&wh=AC&languages=en&id=";
+$HD_Form -> FG_LOCATION_AFTER_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&stitle=Document&wh=AC&languages=en&id=";
+$HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&stitle=Document&wh=AC&languages=en&id=";
+$HD_Form -> FG_LOCATION_AFTER_DELETE = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&stitle=Document&wh=AC&languages=en&id=";

@@ -218,16 +218,16 @@ if (!isset ($action_release) || $action_release == "confirm_release" || $action_
 
     if ($id != "" || !is_null($id)) {
         if (isset ($form_action) && ($form_action == 'ask-edit' || $form_action == 'edit')) {
-            $HD_Form->FG_EDITION_CLAUSE = " id = " . $id;
+            $HD_Form->FG_EDIT_QUERY_CONDITION = " id = " . $id;
         } else {
-            $HD_Form->FG_EDITION_CLAUSE = $HD_Form->FG_QUERY_WHERE_CLAUSE . " AND t1.id = " . $id;
+            $HD_Form->FG_EDIT_QUERY_CONDITION = $HD_Form->FG_QUERY_WHERE_CLAUSE . " AND t1.id = " . $id;
         }
     }
 
     // TODO integrate in Framework
     if ($form_action == "delete") {
         $HD_Form->FG_QUERY_TABLE_NAME = "cc_did_destination";
-        $HD_Form->FG_EDITION_CLAUSE = "id_cc_card='" . $_SESSION["card_id"] . "' AND id = " . $id;
+        $HD_Form->FG_EDIT_QUERY_CONDITION = "id_cc_card='" . $_SESSION["card_id"] . "' AND id = " . $id;
     }
     $list = $HD_Form->perform_action($form_action);
 

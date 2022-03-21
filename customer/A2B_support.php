@@ -108,7 +108,7 @@ if ((strlen($description) > 0 || strlen($title) > 0) && is_numeric($priority) &&
 }
 
 if ($id != "" || !is_null($id)) {
-    $HD_Form->FG_EDITION_CLAUSE = str_replace("%id", "$id", $HD_Form->FG_EDITION_CLAUSE);
+    $HD_Form->FG_EDIT_QUERY_CONDITION = str_replace("%id", "$id", $HD_Form->FG_EDIT_QUERY_CONDITION);
 }
 
 if (!isset ($form_action))

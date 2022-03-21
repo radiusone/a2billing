@@ -285,25 +285,18 @@ if (has_rights (ACX_MODIFY_ADMINS) && !($popup_select)) {
 
 	$HD_Form -> FieldEditElement ($FG_QUERY_EDITION);
 
-	$HD_Form -> FG_EDITION_CLAUSE = " userid='%id'";
+	$HD_Form -> FG_EDIT_QUERY_CONDITION = " userid='%id'";
 
 	if (is_numeric($groupID)) {
-		$HD_Form -> FG_QUERY_ADITION_HIDDEN_FIELDS .= "groupID";
-		$HD_Form -> FG_QUERY_ADITION_HIDDEN_VALUE  .= "$groupID";
-
-		$HD_Form -> FG_QUERY_EDITION_HIDDEN_FIELDS  = "groupID";
-		$HD_Form -> FG_QUERY_EDITION_HIDDEN_VALUE   = "$groupID";
+        $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["groupID"] = $groupID;
+        $HD_Form->FG_EDIT_QUERY_HIDDEN_INPUTS["groupID"] = $groupID;
 
 		if ($groupID=="0") {
-			$HD_Form -> FG_QUERY_ADITION_HIDDEN_FIELDS .= ", perms";
-			$HD_Form -> FG_QUERY_ADITION_HIDDEN_VALUE  .= ", 5242879";
-
-			$HD_Form -> FG_QUERY_EDITION_HIDDEN_FIELDS .= ", perms";
-			$HD_Form -> FG_QUERY_EDITION_HIDDEN_VALUE  .= ", 5242879";
+            $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["perms"] = 5242879;
+            $HD_Form->FG_EDIT_QUERY_HIDDEN_INPUTS["perms"] = 5242879;
 		}
 	} else {
-		$HD_Form -> FG_QUERY_ADITION_HIDDEN_FIELDS .= "groupID";
-		$HD_Form -> FG_QUERY_ADITION_HIDDEN_VALUE  .= "1";
+        $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["groupID"] = 1;
 	}
 
 	if (($popup_select>=1)){
@@ -328,9 +321,8 @@ if (has_rights (ACX_MODIFY_ADMINS) && !($popup_select)) {
 		$HD_Form -> FG_BUTTON_EDITION_BOTTOM_TEXT = $HD_Form -> FG_BUTTON_ADITION_BOTTOM_TEXT = gettext("Click 'Confirm Data' to continue");
 
 
-	$HD_Form -> FG_GO_LINK_AFTER_ACTION = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=user&groupID=$groupID&stitle=Administrator+management&id=";
-	$HD_Form -> FG_GO_LINK_AFTER_ACTION_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=user&groupID=$groupID&stitle=Administrator+management&id=";
-	$HD_Form -> FG_GO_LINK_AFTER_ACTION_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=user&groupID=$groupID&stitle=Administrator+management&id=";
-	$HD_Form -> FG_GO_LINK_AFTER_ACTION_DELETE = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=user&groupID=$groupID&stitle=Administrator+management&id=";
+	$HD_Form -> FG_LOCATION_AFTER_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=user&groupID=$groupID&stitle=Administrator+management&id=";
+	$HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=user&groupID=$groupID&stitle=Administrator+management&id=";
+	$HD_Form -> FG_LOCATION_AFTER_DELETE = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=user&groupID=$groupID&stitle=Administrator+management&id=";
 }
 

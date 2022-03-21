@@ -95,13 +95,9 @@ function sendto(action, record, field_inst, instance) {
     <input type="hidden" name="form_action" value="delete">
     <?php endif ?>
 
-    <?php if (!empty($this->FG_QUERY_EDITION_HIDDEN_FIELDS)): ?>
-        <?php $fields = explode(",",trim($this->FG_QUERY_EDITION_HIDDEN_FIELDS))?>
-        <?php $values = explode(",",trim($this->FG_QUERY_EDITION_HIDDEN_VALUE))?>
-        <?php foreach ($fields as $k=>$v): ?>
-            <input type="hidden" name="<?= trim($v) ?>" value="<?= trim($values[$k]) ?>"/>
-        <?php endforeach ?>
-    <?php endif ?>
+    <?php foreach ($this->FG_EDIT_QUERY_HIDDEN_INPUTS as $name => $value): ?>
+        <input type="hidden" name="<?= htmlspecialchars($name) ?>" value="<?= htmlspecialchars($value) ?>"/>
+    <?php endforeach ?>
 
 	<table cellspacing="2" class="tablestyle_001">
 		<?php foreach($this->FG_EDIT_FORM_ELEMENTS as $i=> $row): ?>

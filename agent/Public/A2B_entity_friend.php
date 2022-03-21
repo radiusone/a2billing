@@ -62,8 +62,6 @@ getpost_ifset(array("id_cc_card", "cardnumber", "useralias"));
 
 if ( (isset ($id_cc_card) && (is_numeric($id_cc_card)  != "")) && ( $form_action == "add_sip" || $form_action == "add_iax") ) {
 
-    $HD_Form -> FG_GO_LINK_AFTER_ACTION = "A2B_entity_card.php?atmenu=card&stitle=Customers_Card&id=";
-
     if ($form_action == "add_sip") {
         $friend_param_update=" sip_buddy='1' ";
         if (!USE_REALTIME) {
@@ -93,7 +91,7 @@ if ( (isset ($id_cc_card) && (is_numeric($id_cc_card)  != "")) && ( $form_action
     $list_friend = $instance_table_friend -> get_list ($HD_Form->DBHandle, "id_cc_card='$id_cc_card'");
 
     if (is_array($list_friend) && count($list_friend)>0) {
-        Header ("Location: ".$HD_Form->FG_GO_LINK_AFTER_ACTION); exit();
+        Header ("Location: A2B_entity_card.php?atmenu=card&stitle=Customers_Card&id="); exit();
     }
 
     $form_action = "add";
@@ -119,7 +117,7 @@ $HD_Form -> FG_EDIT_BUTTON_LINK	= filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_
 $HD_Form -> FG_DELETE_BUTTON_LINK = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?form_action=ask-delete&atmenu=$atmenu&id=";
 
 if ($id!="" || !is_null($id)) {
-    $HD_Form -> FG_EDITION_CLAUSE = str_replace("%id", "$id", $HD_Form -> FG_EDITION_CLAUSE);
+    $HD_Form -> FG_EDIT_QUERY_CONDITION = str_replace("%id", "$id", $HD_Form -> FG_EDIT_QUERY_CONDITION);
 }
 
 if (!isset($form_action))  $form_action="list"; //ask-add
