@@ -119,9 +119,6 @@ $HD_Form -> AddEditElement (gettext("EMAIL NOTIFICATION"),
 
 $HD_Form -> FieldEditElement ('credit_notification, notify_email, email_notification');
 
-
-$HD_Form -> FG_INTRO_TEXT_ADD = gettext("you can add easily update your information clicking on the button.");
-
 $HD_Form -> FG_INTRO_TEXT_ADITION = '';
 $HD_Form -> FG_TEXT_ADITION_CONFIRMATION = gettext("Your record has been updated.")."<br>";
 

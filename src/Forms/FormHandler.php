@@ -287,36 +287,20 @@ class FormHandler
     /** @var string Where to redirect the user after editing a record */
     public string $FG_LOCATION_AFTER_EDIT;
 
-
-    /** ####################################################
-     * if yes that allow your form to edit the form after added succesfully a instance
-     * in the case if you don't have the same option in the edition and the adding option
-     *
-     * @public   -  @string
-     */
-
-    public $FG_ADITION_GO_EDITION = "no";
-
-    public $FG_ADITION_GO_EDITION_MESSAGE = "The document has been created correctly. Now, you can define the different tariff that you want to associate.";
-
-
-    // ------------------- ## MESSAGE SECTION  ## -------------------
-
-    public $FG_INTRO_TEXT_EDITION = "You can modify, through the following form, the different properties of your #FG_INSTANCE_NAME#<br>";
-
-    public $FG_INTRO_TEXT_ASK_DELETION = "If you really want remove this #FG_INSTANCE_NAME#, click on the delete button.";
-
-    public $FG_INTRO_TEXT_DELETION = "A #FG_INSTANCE_NAME# has been deleted!";
-
-    public $FG_INTRO_TEXT_ADD = "you can add easily a new #FG_INSTANCE_NAME#.<br>Fill the following fields and confirm by clicking on the button add.";
-
-    public $FG_INTRO_TEXT_ADITION = "Add a \"#FG_INSTANCE_NAME#\" now.";
-
-    public $FG_TEXT_ADITION_CONFIRMATION = "Your new #FG_INSTANCE_NAME# has been inserted. <br>";
-
-    public $FG_TEXT_ADITION_ERROR = '<font color="Red"> Your new #FG_INSTANCE_NAME# has not been inserted. </font><br> ';
-
-    public $FG_TEXT_ERROR_DUPLICATION = "You cannot choose more than one !";
+    /** @var string Message text for the edit page */
+    public string $FG_INTRO_TEXT_EDITION = "You can modify, through the following form, the different properties of your #FG_INSTANCE_NAME#<br>";
+    /** @var string Message text for the delete page */
+    public string $FG_INTRO_TEXT_ASK_DELETION = "If you really want to remove this #FG_INSTANCE_NAME#, click on the delete button.";
+    /** @var string Result text for the delete page */
+    public string $FG_INTRO_TEXT_DELETION = "One #FG_INSTANCE_NAME# has been deleted!";
+    /** @var string Message text for the add page */
+    public string $FG_INTRO_TEXT_ADITION = "Add a \"#FG_INSTANCE_NAME#\" now.";
+    /** @var string Result text for the add page */
+    public string $FG_TEXT_ADITION_CONFIRMATION = "Your new #FG_INSTANCE_NAME# has been inserted.";
+    /** @var string Error text for the add page */
+    public string $FG_TEXT_ADITION_ERROR = 'Your new #FG_INSTANCE_NAME# has not been inserted.';
+    /** @var string Error text for the add page */
+    public string $FG_TEXT_ERROR_DUPLICATION = "You cannot choose more than one !";
 
 
     // ------------------- ## BUTTON/IMAGE SECTION  ## -------------------
@@ -510,15 +494,13 @@ class FormHandler
         //initializing variables with gettext
         $this->CV_NO_FIELDS = sprintf(_("No %s has been created"), $this->FG_INSTANCE_NAME);
         $this->CV_TITLE_TEXT = $instance_name . ' ' . gettext("list");
-        $this->FG_ADITION_GO_EDITION_MESSAGE = gettext("The document has been created correctly. Now, you can define the different tariff that you want to associate.");
         $this->FG_INTRO_TEXT_EDITION = gettext("You can modify, through the following form, the different properties of your") . " #FG_INSTANCE_NAME#" . '<br>';
-        $this->FG_INTRO_TEXT_ASK_DELETION = gettext("If you really want remove this") . " #FG_INSTANCE_NAME#, " . gettext("Click on the delete button.");
+        $this->FG_INTRO_TEXT_ASK_DELETION = gettext("If you really want to remove this") . " #FG_INSTANCE_NAME#, " . gettext("click on the delete button.");
         $this->FG_INTRO_TEXT_DELETION = gettext("One") . " #FG_INSTANCE_NAME# " . gettext("has been deleted!");
 
-        $this->FG_INTRO_TEXT_ADD = gettext("you can add easily a new") . " #FG_INSTANCE_NAME#.<br>" . gettext("Fill the following fields and confirm by clicking on the button add.");
         $this->FG_INTRO_TEXT_ADITION = gettext("Add a") . " \"#FG_INSTANCE_NAME#\" " . gettext("now.");
-        $this->FG_TEXT_ADITION_CONFIRMATION = gettext("Your new") . " #FG_INSTANCE_NAME# " . gettext("has been inserted." . '<br>');
-        $this->FG_TEXT_ADITION_ERROR = '<font color="Red">' . gettext("Your new") . " #FG_INSTANCE_NAME# " . gettext("hasn't been inserted.") . '<br>' . "</font>";
+        $this->FG_TEXT_ADITION_CONFIRMATION = gettext("Your new") . " #FG_INSTANCE_NAME# " . gettext("has been inserted.");
+        $this->FG_TEXT_ADITION_ERROR = gettext("Your new") . " #FG_INSTANCE_NAME# " . gettext("hasn't been inserted.");
         $this->FG_TEXT_ERROR_DUPLICATION = gettext("You cannot choose more than one !");
 
         $this->FG_FK_DELETE_MESSAGE = gettext("Are you sure to delete all records connected to this instance.");
@@ -585,7 +567,6 @@ class FormHandler
         $this->FG_INTRO_TEXT_EDITION = str_replace('#FG_INSTANCE_NAME#', $this->FG_INSTANCE_NAME, $this->FG_INTRO_TEXT_EDITION);
         $this->FG_INTRO_TEXT_ASK_DELETION = str_replace('#FG_INSTANCE_NAME#', $this->FG_INSTANCE_NAME, $this->FG_INTRO_TEXT_ASK_DELETION);
         $this->FG_INTRO_TEXT_DELETION = str_replace('#FG_INSTANCE_NAME#', $this->FG_INSTANCE_NAME, $this->FG_INTRO_TEXT_DELETION);
-        $this->FG_INTRO_TEXT_ADD = str_replace('#FG_INSTANCE_NAME#', $this->FG_INSTANCE_NAME, $this->FG_INTRO_TEXT_ADD);
         $this->FG_INTRO_TEXT_ADITION = str_replace('#FG_INSTANCE_NAME#', $this->FG_INSTANCE_NAME, $this->FG_INTRO_TEXT_ADITION);
         $this->FG_TEXT_ADITION_CONFIRMATION = str_replace('#FG_INSTANCE_NAME#', $this->FG_INSTANCE_NAME, $this->FG_TEXT_ADITION_CONFIRMATION);
         $this->FG_TEXT_ADITION_ERROR = str_replace('#FG_INSTANCE_NAME#', $this->FG_INSTANCE_NAME, $this->FG_TEXT_ADITION_ERROR);
@@ -1479,10 +1460,6 @@ class FormHandler
             if (strlen($this->FG_ADDITIONAL_FUNCTION_AFTER_ADD) > 0 && ($this->VALID_SQL_REG_EXP)) {
                 call_user_func([FormBO::class, $this->FG_ADDITIONAL_FUNCTION_AFTER_ADD]);
             }
-            if ($this->FG_ADITION_GO_EDITION == "yes") {
-                $form_action = "ask-edit";
-                $this->FG_ADITION_GO_EDITION = "yes-done";
-            }
             $id = $this->QUERY_RESULT;
             if (!empty($id) && ($this->VALID_SQL_REG_EXP) && (isset($this->FG_LOCATION_AFTER_ADD))) {
                 if ($this->FG_DEBUG == 1) {
@@ -1676,8 +1653,6 @@ class FormHandler
             echo gettext("error deletion");
         }
 
-        $this->FG_INTRO_TEXT_DELETION = str_replace("%id", $processed['id'], $this->FG_INTRO_TEXT_DELETION);
-        $this->FG_INTRO_TEXT_DELETION = str_replace("%table", $this->FG_QUERY_TABLE_NAME, $this->FG_INTRO_TEXT_DELETION);
         if (!empty($this->FG_LOCATION_AFTER_DELETE)) {
             if ($this->FG_DEBUG == 1) {
                 echo "<br> GOTO ; " . $this->FG_LOCATION_AFTER_DELETE . $processed['id'];
@@ -1778,21 +1753,17 @@ class FormHandler
      */
     public function create_toppage($form_action)
     {
-        $html = '';
         $msg = '';
         if ($form_action === "ask-edit" || $form_action === "edit" || $form_action === "add-content" || $form_action === "del-content") {
-            if ($this->FG_ADITION_GO_EDITION == "yes-done") {
-                $msg = "<p class=\"danger\">$this->FG_ADITION_GO_EDITION_MESSAGE</p>";
-            }
             if ($this->alarm_db_error_duplication) {
-                $msg .= "<p class=\"danger\">$this->FG_TEXT_ERROR_DUPLICATION</p>";
+                $msg = "<p class=\"danger\">$this->FG_TEXT_ERROR_DUPLICATION</p>";
             } else {
-                $msg .= $this->FG_INTRO_TEXT_EDITION;
+                $msg = $this->FG_INTRO_TEXT_EDITION;
             }
-            $html = "<div class='row pb-3 align-items-center'><div class='col'>$msg</div></div>";
-        } elseif ($form_action == "ask-add" && !empty($this->FG_INTRO_TEXT_ADITION) > 1) {
-            $html = "<div class='row pb-3 align-items-center'><div class='col'>$this->FG_INTRO_TEXT_ADITION</div></div>";
+        } elseif ($form_action == "ask-add") {
+            $msg = $this->FG_INTRO_TEXT_ADITION;
         }
+        $html = "<div class='row pb-3 align-items-center'><div class='col'>$msg</div></div>";
         echo $html;
     }
 

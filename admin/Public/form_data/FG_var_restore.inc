@@ -98,8 +98,6 @@ if ($form_action=="ask-restore") {
 
 
 $HD_Form -> FG_INTRO_TEXT_EDITION= '';
-$HD_Form -> FG_INTRO_TEXT_ASK_DELETION = gettext("If you really want remove this")." ".$HD_Form->FG_INSTANCE_NAME.", ".gettext("click on the delete button.");
-$HD_Form -> FG_INTRO_TEXT_ADD = gettext("you can add easily a new")." ".$HD_Form->FG_INSTANCE_NAME.".<br>".gettext("Fill the following fields and confirm by clicking on the button add.");
 
 
 $HD_Form -> FG_OTHER_BUTTON1_LINK = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?form_action=restore&atmenu=$HD_Form->FG_INSTANCE_NAME&id=";
@@ -110,8 +108,6 @@ $HD_Form -> FG_OTHER_BUTTON2_LINK = filter_input(INPUT_SERVER, 'PHP_SELF', FILTE
 $HD_Form -> FG_OTHER_BUTTON2_IMG = Images_Path . "/dl.gif";
 $HD_Form -> FG_OTHER_BUTTON2_ALT = gettext("Download");
 
-$HD_Form -> FG_INTRO_TEXT_ADITION = gettext("Add a")." ". $HD_Form->FG_INSTANCE_NAME." ".gettext("now.");
-$HD_Form -> FG_TEXT_ADITION_CONFIRMATION = gettext("Your new")." ".$HD_Form->FG_INSTANCE_NAME." ".gettext("has been inserted.")."<br>";
 
 
 $HD_Form -> FG_BUTTON_EDITION_BOTTOM_TEXT = $HD_Form -> FG_BUTTON_ADITION_BOTTOM_TEXT = gettext("Once you have completed the form above, click on the CONTINUE button.");
