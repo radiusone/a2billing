@@ -75,7 +75,7 @@ $db_data = $list[0];
                 <?php endif ?>
                 <input
                     id="<?= $row["name"] ?>"
-                    class="form-control <?php if (!$row["isvalid"]): ?>is-invalid<?php endif?>"
+                    class="form-control <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
                     name="<?= $row["name"] ?>"
                     <?= $row["attributes"] ?>
                     <?php if ($this->VALID_SQL_REG_EXP): /* what is VALID_SQL_REG_EXP */ ?>
@@ -100,7 +100,7 @@ $db_data = $list[0];
                 <div class="input-group">
                     <input
                         id="<?= $row["name"] ?>"
-                        class="form-control <?php if (!$row["isvalid"]): ?>is-invalid<?php endif?>"
+                        class="form-control <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
                         name="<?= $row["name"] ?>"
                         <?= $row["attributes"] ?>
                         <?php if ($this->VALID_SQL_REG_EXP): ?>
@@ -126,7 +126,7 @@ $db_data = $list[0];
             <?php elseif ($row["type"] === "TEXTAREA"): ?>
                 <textarea
                     id="<?= $row["name"] ?>"
-                    class="form-control <?php if (!$row["isvalid"]): ?>is-invalid<?php endif?>"
+                    class="form-control <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
                     name="<?= $row["name"] ?>"
                     <?= $row["attributes"] ?>
                 ><?= $this->VALID_SQL_REG_EXP ? $db_data[$i] : $processed[$row["name"]] ?></textarea>
@@ -152,7 +152,7 @@ $db_data = $list[0];
                 <select
                     id="<?= $row["name"] ?>"
                     name="<?= $row["name"] ?><?php if (str_icontains($row["attributes"], "multiple")): ?>[]<?php endif ?>"
-                    class="form-select <?php if (!$row["isvalid"]): ?>is-invalid<?php endif?>"
+                    class="form-select <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
                     <?= $row["attributes"] ?>
                 >
                     <?= $row["first_option"] ?>
@@ -210,7 +210,7 @@ $db_data = $list[0];
                     <?php endif ?>
                     <input
                         id="<?= $row["name"] ?>_<?= $rad[1] ?>"
-                        class="form-check-input <?php if (!$row["isvalid"]): ?>is-invalid<?php endif?>"
+                        class="form-check-input <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
                         type="radio"
                         name="<?= $row["name"] ?>"
                         value="<?= $rad[1] ?>"
@@ -220,8 +220,8 @@ $db_data = $list[0];
                 </div>
                 <?php endforeach ?>
             <?php endif ?>
-            <?php if (!$row["isvalid"]): ?>
-                <div class="form-text invalid-feedback"><?= $row["error"] ?> - <?= $row["regex"][1] ?></div>
+            <?php if ($row["validation_err"] !== true): ?>
+                <div class="form-text invalid-feedback"><?= $row["error"] ?> - <?= $row["validation_err"] ?></div>
             <?php endif ?>
             <?php if ($this->FG_DEBUG == 1): ?>
                 <div class="form-text"><?= $row["type"] ?></div>

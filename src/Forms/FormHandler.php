@@ -368,11 +368,11 @@ class FormHandler
 
     public string $FG_FORM_UNIQID;
     public string $FG_FORM_RECEIVED_UNIQID;
-    public string $FG_FORM_RECEIVED_TOKEN;
-    public string $FG_CSRF_RECEIVED_TOKEN;
+    public ?string $FG_FORM_RECEIVED_TOKEN;
+    public ?string $FG_CSRF_RECEIVED_TOKEN;
     public string $FG_CSRF_RECEIVED_FIELD;
 
-    private bool $alarm_db_error_duplication;
+    private bool $alarm_db_error_duplication = false;
 
     /** @var string */
     public bool $FG_LIST_ADDING_BUTTON1 = false;
@@ -414,7 +414,7 @@ class FormHandler
 
             $this->FG_FORM_RECEIVED_UNIQID = $_POST[$this->FG_FORM_UNIQID_FIELD] ?? "";
             $this->FG_FORM_RECEIVED_TOKEN = $_POST[$this->FG_CSRF_FIELD] ?? "";
-            $this->FG_CSRF_RECEIVED_TOKEN = $_SESSION['CSRF_TOKEN'][$this->FG_FORM_RECEIVED_UNIQID];
+            $this->FG_CSRF_RECEIVED_TOKEN = $_SESSION['CSRF_TOKEN'][$this->FG_FORM_RECEIVED_UNIQID] ?? "";
             $_SESSION['CSRF_TOKEN'][$this->FG_FORM_UNIQID] = $this->FG_CSRF_TOKEN;
 
             if ($this->FG_DEBUG) {
@@ -747,6 +747,8 @@ class FormHandler
                 "popup_timeval" => $custom_query, //14
                 "custom_function" => $displayinput_defaultselect, //15
                 "comment" => $comment,
+
+                "validation_err" => true,
             ];
             $this->FG_EDIT_FORM_ELEMENTS[$cur] = $assoc + array_values($assoc);
             $this->FG_ADD_FORM_ELEMENTS[$cur] = $this->FG_EDIT_FORM_ELEMENTS[$cur];
@@ -813,35 +815,70 @@ class FormHandler
     }
 
 
-    public function validate_field($rule_number, string $value): bool
+    /**
+     * @param $rule_number
+     * @param string $value
+     * @return bool|string
+     */
+    public function validate_field($rule_number, string $value)
     {
+        $messages = [
+            gettext("(at least 3 characters)"),
+            gettext("(must match email structure. Example : name@domain.com)"),
+            gettext("(at least 5 successive characters appear at the end of this string)"),
+            gettext("(at least 4 characters)"),
+            gettext("(number format)"),
+            "(YYYY-MM-DD)",
+            gettext("(only number with more that 8 digits)"),
+            gettext("(at least 8 digits using . or - or the space key)"),
+            gettext("network adress format"),
+            gettext("at least 1 character"),
+            "(YYYY-MM-DD HH:MM:SS)",
+            gettext("(AT LEAST 2 CARACTERS)"),
+            gettext("(NUMBER FORMAT WITH/WITHOUT DECIMAL, use '.' for decimal)"),
+            "(NUMBER FORMAT OR 'defaultprefix' OR ASTERISK/POSIX REGEX FORMAT)",
+            "(NUMBER FORMAT OR 'all')",
+            "(HH:MM)",
+            gettext("You must write something."),
+            gettext("8 characters alphanumeric"),
+            "Phone Number format",
+            gettext("(at least 6 Alphanumeric characters)"),
+            "(HH:MM:SS)",
+            gettext("(PERCENT FORMAT WITH/WITHOUT DECIMAL, use '.' for decimal and don't use '%' character. e.g.: 12.4 )"),
+            "default" => "A validation error occurred.",
+        ];
+
+        $result = null;
         switch ($rule_number) {
-            case 0: return strlen($value) >= 3;
-            case 1: return (bool)filter_var($value, FILTER_VALIDATE_EMAIL);
-            case 2:
-            case 8: return strlen($value) >= 5;
-            case 3: return strlen($value) >= 4;
+            case 0: $result = strlen($value) >= 3; break;
+            case 1: $result = (bool)filter_var($value, FILTER_VALIDATE_EMAIL); break;
+            case 2: $pattern = "/(.)\1{4}$/"; break;
+            case 3: $result = strlen($value) >= 4; break;
             case 4: $pattern = "/^[0-9]+$/"; break;
             case 5: $pattern = "/^[0-9]{4}([- /.])(?:0[1-9]|1[012])\1(?:0[1-9]|[12][0-9]|3[01])$/"; break;
             case 6: $pattern = "/^[0-9]{8,}$/"; break;
             case 7: $pattern = "/^[0-9][0-9. \/-]{6,}[0-9]$/"; break;
-            case 9: return strlen($value) >= 1;
+            case 8: $result = strlen($value) >= 5; break;
+            case 9: $result = strlen($value) >= 1; break;
             case 10: $pattern = "/^[0-9]{4}([- /.])(?:0[1-9]|1[012])\1(?:0[1-9]|[12][0-9]|3[01]) (?:[01][0-9]|2[0-3]):(?:[0-5][0-9]):(?:[0-5][0-9])$/"; break;
-            case 11: return strlen($value) >= 2;
+            case 11: $result = strlen($value) >= 2; break;
             case 12: $pattern = "/^-?[0-9]+(\.?[0-9]+)?$/"; break;
             // case 13: regex pattern ^(defaultprefix|[-,0-9]+|_[-[.[.][.].]0-9XZN(){}|.,_]+)$ was not valid, presumably this isn't used
             case 14: $pattern = "/^all|[0-9]+$/"; break;
             case 15: $pattern = "/^[0-9]{2}:[0-9]{2}$/"; break; // is this a duration or should time check be proper?
-            case 16: return strlen($value) >= 15;
-            case 17: return strlen($value) >= 8;
+            case 16: $result = strlen($value) >= 15; break;
+            case 17: $result = strlen($value) >= 8; break;
             case 18: $pattern = "/^\+[0-9]+$/"; break;
             case 19: $pattern = "/^$_SESSION[captcha_code]$/"; break;
             case 20: $pattern = "/^[0-9]{2}:[0-9]{2}:[0-9]{2}$/"; break;  // is this a duration or should time check be proper?
-            case 21: return $value >= 0 && $value <= 100;
-            default: return false;
+            case 21: $result = $value >= 0 && $value <= 100; break;
+            default: return $messages["default"];
+        }
+        if (is_null($result) && isset($pattern)) {
+            $result = preg_match($pattern, $value);
         }
 
-        return (bool)preg_match($pattern, $value);
+        return $result ?: $messages[$rule_number];
     }
 
 
@@ -1045,7 +1082,7 @@ class FormHandler
                 }
 
                 if ($this->FG_DEBUG >= 2) {
-                    echo "FG_ORDER = " . $this->FG_QUERY_ORDERBY_COLUMNS . "<br>";
+                    echo "FG_ORDER = " . $this->FG_QUERY_ORDERBY_COLUMNS[0] . "<br>";
                     echo "FG_SENS = " . $this->FG_QUERY_DIRECTION . "<br>";
                     echo "FG_LIMITE_DISPLAY = " . $this->FG_LIST_VIEW_PAGE_SIZE . "<br>";
                     echo "CV_CURRENT_PAGE = " . $this->CV_CURRENT_PAGE . "<br>";
@@ -1259,7 +1296,6 @@ class FormHandler
         $instance_table = new Table($this->FG_QUERY_TABLE_NAME);
 
         foreach ($this->FG_ADD_FORM_ELEMENTS as $i => &$row) {
-            $row["isvalid"] = true;
             if (!str_contains($row["custom_query"], ":")) {
                 $fields_name = $row["name"];
                 $regexp = $row["regex"];
@@ -1285,8 +1321,8 @@ class FormHandler
                 } else {
                     // CHECK ACCORDING TO THE REGULAR EXPRESSION DEFINED
                     if (is_numeric($regexp) && !(str_starts_with(strtoupper($row["check_empty"]), "NO") && $processed[$fields_name] === "")) {
-                        $row["isvalid"] = $this->validate_field($regexp, $processed[$fields_name]);
-                        if (!$row["isvalid"]) {
+                        $row["validation_err"] = $this->validate_field($regexp, $processed[$fields_name]);
+                        if ($row["validation_err"] !== true) {
                             $this->VALID_SQL_REG_EXP = false;
                             if ($this->FG_DEBUG == 1) {
                                 echo "<br>-> $i) Error Match";
@@ -1295,7 +1331,7 @@ class FormHandler
                         }
                     } elseif ($regexp === "check_select" && $processed[$fields_name] == -1) {
                         // FOR SELECT FIELD WE HAVE THE check_select THAT WILL ENSURE WE DEFINE A VALUE FOR THE SELECTABLE FIELD
-                        $row["isvalid"] = false;
+                        $row["validation_err"] = _("Validation error");
                         $this->VALID_SQL_REG_EXP = false;
                         $form_action = "ask-add";
                     }
@@ -1433,7 +1469,6 @@ class FormHandler
         }
 
         foreach ($this->FG_EDIT_FORM_ELEMENTS as $i => &$row) {
-            $row["isvalid"] = true;
             if (!str_contains($row["custom_query"], ":")) {
                 $fields_name = $row["name"];
                 $regexp = $row["regex"];
@@ -1452,8 +1487,8 @@ class FormHandler
                     $param_update .= "$fields_name = '" . addslashes(trim($total_mult_select)) . "'";
                 } else {
                     if (is_numeric($regexp) && !(str_starts_with(strtoupper($row["check_empty"]), "NO") && $processed[$fields_name] === "")) {
-                        $row["isvalid"] = $this->validate_field($regexp, $processed[$fields_name]);
-                        if (!$row["isvalid"]) {
+                        $row["validation_err"] = $this->validate_field($regexp, $processed[$fields_name]);
+                        if ($row["validation_err"] !== true) {
                             $this->VALID_SQL_REG_EXP = false;
                             if ($this->FG_DEBUG == 1) {
                                 echo "<br>-> $i) Error Match";
@@ -1485,7 +1520,7 @@ class FormHandler
                 if (!is_array($processed[$checkbox_data])) {
                     $snum = 0;
                     $this->VALID_SQL_REG_EXP = false;
-                    $row["isvalid"] = false;
+                    $row["validation_err"] = _("Validation error");
                 } else {
                     $snum = count($processed[$checkbox_data]);
                 }
