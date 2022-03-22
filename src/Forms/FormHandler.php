@@ -852,25 +852,25 @@ class FormHandler
         switch ($rule_number) {
             case 0: $result = strlen($value) >= 3; break;
             case 1: $result = (bool)filter_var($value, FILTER_VALIDATE_EMAIL); break;
-            case 2: $pattern = "/(.)\1{4}$/"; break;
+            case 2: $pattern = "/(.)\\1{4}$/"; break;
             case 3: $result = strlen($value) >= 4; break;
             case 4: $pattern = "/^[0-9]+$/"; break;
-            case 5: $pattern = "/^[0-9]{4}([- /.])(?:0[1-9]|1[012])\1(?:0[1-9]|[12][0-9]|3[01])$/"; break;
+            case 5: $pattern = "/^(?:20|19)[0-9]{2}([- \\/.])(?:0[1-9]|1[012])\\1(?:0[1-9]|[12][0-9]|3[01])$/"; break;
             case 6: $pattern = "/^[0-9]{8,}$/"; break;
-            case 7: $pattern = "/^[0-9][0-9. \/-]{6,}[0-9]$/"; break;
+            case 7: $pattern = "/^[0-9][0-9. \\/-]{6,}[0-9]$/"; break;
             case 8: $result = strlen($value) >= 5; break;
             case 9: $result = strlen($value) >= 1; break;
-            case 10: $pattern = "/^[0-9]{4}([- /.])(?:0[1-9]|1[012])\1(?:0[1-9]|[12][0-9]|3[01]) (?:[01][0-9]|2[0-3]):(?:[0-5][0-9]):(?:[0-5][0-9])$/"; break;
+            case 10: $pattern = "/^(?:20|19)[0-9]{2}([- \\/.])(?:0[1-9]|1[012])\\1(?:0[1-9]|[12][0-9]|3[01]) (?:[01][0-9]|2[0-3])(?::[0-5][0-9]){2}$/"; break;
             case 11: $result = strlen($value) >= 2; break;
-            case 12: $pattern = "/^-?[0-9]+(\.?[0-9]+)?$/"; break;
+            case 12: $pattern = "/^-?[0-9]+(\\.?[0-9]+)?$/"; break;
             // case 13: regex pattern ^(defaultprefix|[-,0-9]+|_[-[.[.][.].]0-9XZN(){}|.,_]+)$ was not valid, presumably this isn't used
             case 14: $pattern = "/^all|[0-9]+$/"; break;
             case 15: $pattern = "/^[0-9]{2}:[0-9]{2}$/"; break; // is this a duration or should time check be proper?
             case 16: $result = strlen($value) >= 15; break;
             case 17: $result = strlen($value) >= 8; break;
-            case 18: $pattern = "/^\+[0-9]+$/"; break;
+            case 18: $pattern = "/^\\+[0-9]+$/"; break;
             case 19: $pattern = "/^$_SESSION[captcha_code]$/"; break;
-            case 20: $pattern = "/^[0-9]{2}:[0-9]{2}:[0-9]{2}$/"; break;  // is this a duration or should time check be proper?
+            case 20: $pattern = "/^[0-9]{2}(?::[0-9]{2}){2}$/"; break;  // is this a duration or should time check be proper?
             case 21: $result = $value >= 0 && $value <= 100; break;
             default: return $messages["default"];
         }
