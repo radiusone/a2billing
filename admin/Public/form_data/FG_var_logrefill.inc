@@ -64,10 +64,10 @@ if (has_rights (ACX_MODIFY_REFILLS)) {
 $list_refill_type = getRefillType_List();
 
 $HD_Form -> AddViewElement(gettext("ID"), "cc_logrefill.id");
-$HD_Form -> AddViewElement(gettext("ACCOUNT"), "username", true, "30", "display_customer_id_link");
-$HD_Form -> AddViewElement(gettext("REFILL DATE"), "cc_logrefill.date", true, "30", "display_dateformat");
-$HD_Form -> AddViewElement(gettext("REFILL AMOUNT"), "credit", true, "", "display_money");
-$HD_Form -> AddViewElement(gettext("REFILL TYPE"), "refill_type", true, "", null, "list", $list_refill_type);
+$HD_Form -> AddViewElement(gettext("ACCOUNT"), "username", true, 30, "display_customer_id_link");
+$HD_Form -> AddViewElement(gettext("REFILL DATE"), "cc_logrefill.date", true, 30, "display_dateformat");
+$HD_Form -> AddViewElement(gettext("REFILL AMOUNT"), "credit", true, 0, "display_money");
+$HD_Form -> AddViewElement(gettext("REFILL TYPE"), "refill_type", true, 0, "", "list", $list_refill_type);
 
 $HD_Form -> FieldViewElement ('cc_logrefill.id, cc_logrefill.card_id, cc_logrefill.date, cc_logrefill.credit , cc_logrefill.refill_type');
 

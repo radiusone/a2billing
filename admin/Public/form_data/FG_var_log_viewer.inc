@@ -88,10 +88,10 @@ $HD_Form -> AddViewElement(gettext("LOGIN"), "login");
 $HD_Form -> AddViewElement(gettext("LOGLEVEL"), "loglevel");
 $HD_Form -> AddViewElement(gettext("ACTION"), "action");
 $HD_Form -> AddViewElement(gettext("description"), "description");
-$HD_Form -> AddViewElement(gettext("TABLENAME"), "tablename", true, "15");
+$HD_Form -> AddViewElement(gettext("TABLENAME"), "tablename", true, 15);
 $HD_Form -> AddViewElement(gettext("PAGENAME"), "pagename");
 $HD_Form -> AddViewElement(gettext("IPADDRESS"), "ipaddress");
-$HD_Form -> AddViewElement(gettext("DATE"), "creationdate", true, "16");
+$HD_Form -> AddViewElement(gettext("DATE"), "creationdate", true, 16);
 
 // added a parameter to append  FG_TABLE_ID  ( by default ) or disable 0.
 $HD_Form -> FieldViewElement ('id, cua.login, loglevel, action, description, tablename, pagename, ipaddress, creationdate');

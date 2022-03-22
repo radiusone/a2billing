@@ -73,14 +73,14 @@ $status_list = Ticket::getAllStatusListView();
 $filter_view ='v.viewed ';
 
 $HD_Form -> AddViewElement(gettext("ID"), "id");
-$HD_Form -> AddViewElement(gettext("AGENT"), "creator", true, "25", null, "lie", "cc_agent", "lastname, firstname", "id='%id'", "%1 %2");
+$HD_Form -> AddViewElement(gettext("AGENT"), "creator", true, 25, "", "lie", "cc_agent", "lastname, firstname", "id='%id'", "%1 %2");
 $HD_Form -> AddViewElement(gettext("LOGIN"), " cc_agent.login");
 $HD_Form -> AddViewElement(gettext("TITLE"), "title");
-$HD_Form -> AddViewElement(gettext("CREATIONDATE"), "creationdate", true, "19", "display_dateformat");
-$HD_Form -> AddViewElement(gettext("COMPONENT"), "id_component", true, "15", null, "lie", "cc_support_component", "name", "id='%id'", "%1");
-$HD_Form -> AddViewElement(gettext("PRIORITY"), "priority", true, "", null, "list", $priority_list);
-$HD_Form -> AddViewElement(gettext("VIEWED"), "viewed_admin", false, "", null, "list", $viewed_list);
-$HD_Form -> AddViewElement(gettext("STATUS"), "status", true, "", null, "list", $status_list);
+$HD_Form -> AddViewElement(gettext("CREATIONDATE"), "creationdate", true, 19, "display_dateformat");
+$HD_Form -> AddViewElement(gettext("COMPONENT"), "id_component", true, 15, "", "lie", "cc_support_component", "name", "id='%id'", "%1");
+$HD_Form -> AddViewElement(gettext("PRIORITY"), "priority", true, 0, "", "list", $priority_list);
+$HD_Form -> AddViewElement(gettext("VIEWED"), "viewed_admin", false, 0, "", "list", $viewed_list);
+$HD_Form -> AddViewElement(gettext("STATUS"), "status", true, 0, "", "list", $status_list);
 
 $HD_Form -> FieldViewElement ("cc_ticket.id, cc_ticket.creator, cc_agent.login, title, cc_ticket.creationdate, id_component , priority , $filter_view , cc_ticket.status");
 

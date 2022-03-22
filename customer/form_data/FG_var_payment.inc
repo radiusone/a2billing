@@ -51,7 +51,7 @@ $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
 $HD_Form -> AddViewElement(gettext("ID"), "cc_logpayment.id");
-$HD_Form -> AddViewElement(gettext("PAYMENT DATE"), "date", true, "30", "display_dateformat");
+$HD_Form -> AddViewElement(gettext("PAYMENT DATE"), "date", true, 30, "display_dateformat");
 $HD_Form -> AddViewElement(gettext("PAYMENT AMOUNT"), "payment");
 $HD_Form -> AddViewElement(gettext("DESCRIPTION"), "description");
 

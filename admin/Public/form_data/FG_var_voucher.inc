@@ -87,12 +87,12 @@ $HD_Form -> AddViewElement(gettext("ID"), "id");
 $HD_Form -> AddViewElement(gettext("VOUCHER"), "voucher");
 $HD_Form -> AddViewElement(gettext("CREDIT"), "credit");
 $HD_Form -> AddViewElement(gettext("TAG"), "tag");
-$HD_Form -> AddViewElement(gettext("ACTIVATED"), "activated", true, "", null, "list", $actived_list);
-$HD_Form -> AddViewElement(gettext("USED"), "used", true, "", null, "list", $used_list);
+$HD_Form -> AddViewElement(gettext("ACTIVATED"), "activated", true, 0, "", "list", $actived_list);
+$HD_Form -> AddViewElement(gettext("USED"), "used", true, 0, "", "list", $used_list);
 $HD_Form -> AddViewElement(gettext("ACCOUNT USED"), "usedcardnumber");
-$HD_Form -> AddViewElement(gettext("CREATED DATE"), "creationdate", true, "16");
-$HD_Form -> AddViewElement(gettext("USED DATE"), "usedate", true, "16");
-$HD_Form -> AddViewElement(gettext("CURRENCY"), "currency", true, "", null, "list", $currency_list_key);
+$HD_Form -> AddViewElement(gettext("CREATED DATE"), "creationdate", true, 16);
+$HD_Form -> AddViewElement(gettext("USED DATE"), "usedate", true, 16);
+$HD_Form -> AddViewElement(gettext("CURRENCY"), "currency", true, 0, "", "list", $currency_list_key);
 
 $HD_Form -> FieldViewElement ('id, voucher, credit, tag, activated, used, usedcardnumber, creationdate, usedate, currency');
 

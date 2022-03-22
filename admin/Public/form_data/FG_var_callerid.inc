@@ -61,9 +61,9 @@ $actived_list = getActivationTrueFalseList();
 $yesno = getYesNoList();
 
 $HD_Form -> AddViewElement(gettext("CALLERID"), "cid");
-$HD_Form -> AddViewElement(gettext("ACCOUNT NUMBER"), "id_cc_card", true, "", "", "lie_link", "cc_card", "username, id", "id='%id'", "%1", "A2B_entity_card.php");
-$HD_Form -> AddViewElement(gettext("CUSTOMER NAME"), "id_cc_card", true, "", "", "lie_link", "cc_card", "lastname, id, firstname", "id='%id'", "%1 %3", "A2B_entity_card.php");
-$HD_Form -> AddViewElement(gettext("ACTIVATED"), "activated", true, "", null, "list", $actived_list);
+$HD_Form -> AddViewElement(gettext("ACCOUNT NUMBER"), "id_cc_card", true, 0, "", "lie_link", "cc_card", "username, id", "id='%id'", "%1", "A2B_entity_card.php");
+$HD_Form -> AddViewElement(gettext("CUSTOMER NAME"), "id_cc_card", true, 0, "", "lie_link", "cc_card", "lastname, id, firstname", "id='%id'", "%1 %3", "A2B_entity_card.php");
+$HD_Form -> AddViewElement(gettext("ACTIVATED"), "activated", true, 0, "", "list", $actived_list);
 
 $HD_Form -> FieldViewElement ('cid, id_cc_card, id_cc_card, cc_callerid.activated, cc_callerid.id');
 

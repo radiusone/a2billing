@@ -75,13 +75,13 @@ for ($k=1;$k<=20;$k++) {
 		$daynumber_list["$k"]  = array( "$k", "$k");
 }
 $HD_Form -> AddViewElement(gettext("NAME"), "name");
-$HD_Form -> AddViewElement(gettext("PERIOD"), "periode", true, "", null, "list", $period_list);
-$HD_Form -> AddViewElement(gettext("TYPE"), "type", true, "", null, "list", $type_list);
+$HD_Form -> AddViewElement(gettext("PERIOD"), "periode", true, 0, "", "list", $period_list);
+$HD_Form -> AddViewElement(gettext("TYPE"), "type", true, 0, "", "list", $type_list);
 $HD_Form -> AddViewElement(gettext("MAX"), "maxvalue");
 $HD_Form -> AddViewElement(gettext("MIN"), "minvalue");
-$HD_Form -> AddViewElement(gettext("STATUS"), "status", true, "", null, "list", $actived_list);
+$HD_Form -> AddViewElement(gettext("STATUS"), "status", true, 0, "", "list", $actived_list);
 $HD_Form -> AddViewElement(gettext("TRUNK"), "id_trunk");
-$HD_Form -> AddViewElement(gettext("CREATION DATE"), "datecreate", true, "22", "display_dateformat");
+$HD_Form -> AddViewElement(gettext("CREATION DATE"), "datecreate", true, 22, "display_dateformat");
 
 
 

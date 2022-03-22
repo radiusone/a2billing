@@ -66,9 +66,9 @@ $actived_list = getActivationList() ;
 
 $HD_Form -> AddViewElement(gettext("LABEL"), "label");
 $HD_Form -> AddViewElement(gettext("DIAL CODE"), "dial_code");
-$HD_Form -> AddViewElement(gettext("DESCRIPTION"), "description", true, "70");
-$HD_Form -> AddViewElement(gettext("TEXT"), "text_intro", true, "70");
-$HD_Form -> AddViewElement(gettext("ENABLE"), "enable", true, "30", null, "list", $actived_list);
+$HD_Form -> AddViewElement(gettext("DESCRIPTION"), "description", true, 70);
+$HD_Form -> AddViewElement(gettext("TEXT"), "text_intro", true, 70);
+$HD_Form -> AddViewElement(gettext("ENABLE"), "enable", true, 30, "", "list", $actived_list);
 
 
 $HD_Form -> FieldViewElement ('label, dial_code, description, text_intro, enable');

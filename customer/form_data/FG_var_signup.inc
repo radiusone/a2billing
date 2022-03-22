@@ -157,15 +157,15 @@ if (isset ($form_action) && $form_action == "add") {
 
 $language_list = getLanguagesList();
 if (LANGUAGE_ENABLE)  {
-$HD_Form->AddEditElement(gettext("LANGUAGE"), "language", "", "SELECT", "", "", "", "list", "", "", "", $language_list, "%1", "", "");
+$HD_Form->AddEditElement(gettext("LANGUAGE"), "language", "", "SELECT", "", null, "", "list", "", "", "", $language_list, "%1", "", "");
 $language_editFG = "language,";
 }
 if (CURRENCY_ENABLE)  {
-$HD_Form->AddEditElement("CURRENCY", "currency", "", "SELECT", "", "", "", "list", "", "", "", $currency_list, "%1", "", "");
+$HD_Form->AddEditElement("CURRENCY", "currency", "", "SELECT", "", null, "", "list", "", "", "", $currency_list, "%1", "", "");
 $currency_editFG = "currency,";
 }
 if (!$agent_conf && strpos($callPlan_idlist, ',') !== false && !($subscriber_signup>0)) {
-	$HD_Form->AddEditElement(gettext("CALL PLAN"), "tariff", "", "SELECT", "", "", "", "list", "", "", "", $callPlan_list, "%1", "", "");
+	$HD_Form->AddEditElement(gettext("CALL PLAN"), "tariff", "", "SELECT", "", null, "", "list", "", "", "", $callPlan_list, "%1", "", "");
 }
 $comp_zero = $comp_date_plus = '';
 if (isset ($form_action) && $form_action == "ask-add") {

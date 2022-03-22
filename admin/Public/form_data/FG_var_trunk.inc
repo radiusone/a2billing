@@ -99,7 +99,7 @@ $HD_Form -> FG_FK_DELETE_MESSAGE = gettext("You have some rates attached to this
 if ($popup_select) {
 	$HD_Form -> AddViewElement(gettext("ID"), "id_trunk");
 	$HD_Form -> AddViewElement(gettext("LABEL"), "trunkcode");
-	$HD_Form -> AddViewElement(gettext("PROVIDER"), "id_provider", true, "15", null, "lie", "cc_provider", "provider_name", "id='%id'", "%1");
+	$HD_Form -> AddViewElement(gettext("PROVIDER"), "id_provider", true, 15, "", "lie", "cc_provider", "provider_name", "id='%id'", "%1");
 
 	$HD_Form -> FieldViewElement ('id_trunk, trunkcode, id_provider');
 } else {
@@ -108,9 +108,9 @@ if ($popup_select) {
 	$HD_Form -> AddViewElement(gettext("REMOVE_PREFIX"), "removeprefix");
 	$HD_Form -> AddViewElement(gettext("TECH"), "providertech");
 	$HD_Form -> AddViewElement(gettext("IP/HOST"), "providerip");
-	$HD_Form -> AddViewElement(gettext("PROVIDER"), "id_provider", true, "15", null, "lie", "cc_provider", "provider_name", "id='%id'", "%1");
-	$HD_Form -> AddViewElement(gettext("MINUTES USED"), "secondusedreal", true, "30", "display_minute");
-	$HD_Form -> AddViewElement(gettext("STATUS"), "status", true, "", null, "list", $actived_list);
+	$HD_Form -> AddViewElement(gettext("PROVIDER"), "id_provider", true, 15, "", "lie", "cc_provider", "provider_name", "id='%id'", "%1");
+	$HD_Form -> AddViewElement(gettext("MINUTES USED"), "secondusedreal", true, 30, "display_minute");
+	$HD_Form -> AddViewElement(gettext("STATUS"), "status", true, 0, "", "list", $actived_list);
 	$HD_Form -> AddViewElement(gettext("MAXUSE"), "maxuse");
 
 	$HD_Form -> FieldViewElement ('trunkcode, trunkprefix, removeprefix, providertech, providerip, id_provider, secondusedreal, status, maxuse');

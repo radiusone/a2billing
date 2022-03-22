@@ -70,8 +70,8 @@ $HD_Form -> FG_OTHER_BUTTON3_CONDITION = '|col6| == "UNPAID"';
 $status_list = getInvoicePaidStatusList();
 
 $HD_Form -> AddViewElement(gettext("REFERENCE"), "cc_invoice.reference");
-$HD_Form -> AddViewElement(gettext("DATE"), "date", true, "30", "display_dateformat");
+$HD_Form -> AddViewElement(gettext("DATE"), "date", true, 30, "display_dateformat");
 $HD_Form -> AddViewElement(gettext("TITLE"), "title");
-$HD_Form -> AddViewElement(gettext("STATUS"), "paid_status", true, "", null, "list", $status_list);
-$HD_Form -> AddViewElement(gettext("AMOUNT INCL VAT"), "price", true, "", "display_2bill");
+$HD_Form -> AddViewElement(gettext("STATUS"), "paid_status", true, 0, "", "list", $status_list);
+$HD_Form -> AddViewElement(gettext("AMOUNT INCL VAT"), "price", true, 0, "display_2bill");
 $HD_Form -> FieldViewElement ("cc_invoice.reference, cc_invoice.date, title, cc_invoice.paid_status, total_price, id, cc_invoice.paid_status");

@@ -111,13 +111,13 @@ $yesno = getYesNoList();
 
 $HD_Form->AddViewElement(_("DID"), "did");
 $HD_Form->AddViewElement(_("CUSTOMER"), "iduser", true, 0, "", "lie_link", "cc_card", "lastname, id, firstname", "id='%id'", "%1 %3", "A2B_entity_card.php");
-$HD_Form->AddViewElement(_("BILLING"), "billingtype", true, 0, null, "list", $billingtype_list_short);
+$HD_Form->AddViewElement(_("BILLING"), "billingtype", true, 0, "", "list", $billingtype_list_short);
 $HD_Form->AddViewElement(_("START DATE"), "startingdate", true, 19, "display_dateformat");
-$HD_Form->AddViewElement(_("DIDGROUP"), "id_cc_didgroup", true, 15, null, "lie", "cc_didgroup", "didgroupname", "id='%id'", "%1");
-$HD_Form->AddViewElement(_("COUNTRY"), "id_cc_country", true, 15, null, "lie", "cc_country", "countryname", "id='%id'", "%1");
-$HD_Form->AddViewElement("<acronym title=\"" . _("ACTIVATED") . "\">" . _("ACT") . "</acronym>", "activated", true, 0, null, "list", $actived_list);
+$HD_Form->AddViewElement(_("DIDGROUP"), "id_cc_didgroup", true, 15, "", "lie", "cc_didgroup", "didgroupname", "id='%id'", "%1");
+$HD_Form->AddViewElement(_("COUNTRY"), "id_cc_country", true, 15, "", "lie", "cc_country", "countryname", "id='%id'", "%1");
+$HD_Form->AddViewElement("<acronym title=\"" . _("ACTIVATED") . "\">" . _("ACT") . "</acronym>", "activated", true, 0, "", "list", $actived_list);
 $HD_Form->AddViewElement("<acronym title=\"" . _("MINUTES USED") . "\">" . _("MU") . "</acronym>", "secondusedreal", true, 30, "display_minute");
-$HD_Form->AddViewElement("<acronym title=\"" . _("RESERVED") . "\">" . _("RES") . "</acronym>", "reserved", true, 0, null, "list", $yesno);
+$HD_Form->AddViewElement("<acronym title=\"" . _("RESERVED") . "\">" . _("RES") . "</acronym>", "reserved", true, 0, "", "list", $yesno);
 $HD_Form->AddViewElement("<acronym title=\"" . _("MONTHLY RATE") . "\">" . _("MR") . "</acronym>", "fixrate");
 $HD_Form->AddViewElement("<acronym title=\"" . _("SELLING RATE") . "\">" . _("SR") . "</acronym>", "selling_rate");
 

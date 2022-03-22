@@ -71,7 +71,7 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/group_add.png" ;
 
 
 $HD_Form -> AddViewElement(gettext("NAME"), "name");
-$HD_Form -> AddViewElement(gettext("DESCRIPTION"), "description", true, "150");
+$HD_Form -> AddViewElement(gettext("DESCRIPTION"), "description", true, 150);
 $HD_Form -> FieldViewElement ( 'name, description');
 
 $HD_Form -> FG_ENABLE_ADD_BUTTON = true;

@@ -69,9 +69,9 @@ else // And I don't know if mysql likes them single.
 	$filter_unit = 'CASE packagetype WHEN 1 THEN CONCAT( freetimetocall, " times" ) WHEN 0 THEN "ALL" ELSE CONCAT( freetimetocall, " sec" ) END ';
 
 $HD_Form -> AddViewElement(gettext("LABEL"), "label");
-$HD_Form -> AddViewElement(gettext("CREATION DATE"), "creationdate", true, "19", "display_dateformat");
-$HD_Form -> AddViewElement(gettext("PACKAGE TYPE"), "packagetype", true, "", null, "list", $packagetype_list);
-$HD_Form -> AddViewElement(gettext("BILLING TYPE"), "billingtype", true, "", null, "list", $billingtype_list);
+$HD_Form -> AddViewElement(gettext("CREATION DATE"), "creationdate", true, 19, "display_dateformat");
+$HD_Form -> AddViewElement(gettext("PACKAGE TYPE"), "packagetype", true, 0, "", "list", $packagetype_list);
+$HD_Form -> AddViewElement(gettext("BILLING TYPE"), "billingtype", true, 0, "", "list", $billingtype_list);
 $HD_Form -> AddViewElement(gettext("STARTING DAY"), "startday");
 $HD_Form -> AddViewElement(gettext("FREE"), "freetimetocall");
 

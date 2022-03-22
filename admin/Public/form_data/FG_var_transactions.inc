@@ -51,14 +51,14 @@ $HD_Form -> FG_TABLE_DEFAULT_ORDER = "id";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
 $HD_Form -> AddViewElement(gettext("ID"), "id");
-$HD_Form -> AddViewElement(gettext("ORDER DATE"), "date_purchased", true, "19", "display_dateformat");
+$HD_Form -> AddViewElement(gettext("ORDER DATE"), "date_purchased", true, 19, "display_dateformat");
 $HD_Form -> AddViewElement(gettext("CARDID"), "customers_id");
 $HD_Form -> AddViewElement(gettext("NAME"), "customers_name");
 $HD_Form -> AddViewElement(gettext("ITEM NAME"), "item_name", "sort");
-$HD_Form -> AddViewElement(gettext("ITEM ID"), "item_id", true, "30", "display_customer_link");
+$HD_Form -> AddViewElement(gettext("ITEM ID"), "item_id", true, 30, "display_customer_link");
 $HD_Form -> AddViewElement(gettext("METHOD"), "payment_method");
 $HD_Form -> AddViewElement(gettext("CC NUMBER"), "cc_number");
-$HD_Form -> AddViewElement(gettext("STATUS"), "orders_status", true, "15", null, "lie", "cc_payments_status", "status_name", "status_id='%id'", "%1");
+$HD_Form -> AddViewElement(gettext("STATUS"), "orders_status", true, 15, "", "lie", "cc_payments_status", "status_name", "status_id='%id'", "%1");
 $HD_Form -> AddViewElement(gettext("AMOUNT"), "orders_amount");
 $HD_Form -> AddViewElement("<acronym title=\"" . gettext("CURRENCY") . "\">" . gettext("CUR") . "</acronym>", "currency");
 $HD_Form -> AddViewElement(gettext("VALUE"), "currency_value");

@@ -66,8 +66,8 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/page_white_add.png" ;
 
 $HD_Form -> AddViewElement(gettext("ID"), "id");
 $HD_Form -> AddViewElement(gettext("NAME"), "name");
-$HD_Form -> AddViewElement(gettext("DESCRIPTION"), "description", true, "40");
-$HD_Form -> AddViewElement(gettext("SEQUENCE NUMBER"), "value", true, "40");
+$HD_Form -> AddViewElement(gettext("DESCRIPTION"), "description", true, 40);
+$HD_Form -> AddViewElement(gettext("SEQUENCE NUMBER"), "value", true, 40);
 $HD_Form -> FieldViewElement ( 'id, name, description, value');
 
 

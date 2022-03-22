@@ -66,10 +66,10 @@ $HD_Form -> FG_FK_DELETE_MESSAGE = gettext("You are going as well to remove all 
 
 $HD_Form -> AddViewElement(gettext("ID"), "id");
 $HD_Form -> AddViewElement(gettext("TARIFFNAME"), "tariffname");
-$HD_Form -> AddViewElement(gettext("START DATE"), "startingdate", true, "16", "display_dateformat");
-$HD_Form -> AddViewElement(gettext("EXPIRY DATE"), "expirationdate", true, "16", "display_dateformat");
-$HD_Form -> AddViewElement(gettext("TRUNK"), "id_trunk", true, "15", null, "lie", "cc_trunk", "trunkcode", "id_trunk='%id'", "%1");
-$HD_Form -> AddViewElement(gettext("MINUTES USED"), "secondusedreal", true, "30", "display_minute");
+$HD_Form -> AddViewElement(gettext("START DATE"), "startingdate", true, 16, "display_dateformat");
+$HD_Form -> AddViewElement(gettext("EXPIRY DATE"), "expirationdate", true, 16, "display_dateformat");
+$HD_Form -> AddViewElement(gettext("TRUNK"), "id_trunk", true, 15, "", "lie", "cc_trunk", "trunkcode", "id_trunk='%id'", "%1");
+$HD_Form -> AddViewElement(gettext("MINUTES USED"), "secondusedreal", true, 30, "display_minute");
 $HD_Form -> AddViewElement(gettext("DNID PREFIX"), "dnidprefix");
 $HD_Form -> AddViewElement(gettext("CID PREFIX"), "calleridprefix");
 

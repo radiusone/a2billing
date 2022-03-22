@@ -104,12 +104,12 @@ $filter_amount_with_vat = "total_price";
 $list_refill_type=getRefillType_List();
 $HD_Form -> AddViewElement(gettext("ID"), "cc_invoice.id");
 $HD_Form -> AddViewElement(gettext("REFERENCE"), "cc_invoice.reference");
-$HD_Form -> AddViewElement(gettext("ACCOUNT"), "username", true, "30", "display_customer_link");
-$HD_Form -> AddViewElement(gettext("DATE"), "date", true, "30", "display_dateformat");
+$HD_Form -> AddViewElement(gettext("ACCOUNT"), "username", true, 30, "display_customer_link");
+$HD_Form -> AddViewElement(gettext("DATE"), "date", true, 30, "display_dateformat");
 $HD_Form -> AddViewElement(gettext("TITLE"), "title");
-$HD_Form -> AddViewElement(gettext("PAID STATUS"), "status", true, "", null, "list", $paid_status_list);
-$HD_Form -> AddViewElement(gettext("STATUS"), "cc_invoice_status", true, "", null, "list", $status_list);
-$HD_Form -> AddViewElement(gettext("AMOUNT INCL VAT"), "total_price", true, "", "display_2bill");
+$HD_Form -> AddViewElement(gettext("PAID STATUS"), "status", true, 0, "", "list", $paid_status_list);
+$HD_Form -> AddViewElement(gettext("STATUS"), "cc_invoice_status", true, 0, "", "list", $status_list);
+$HD_Form -> AddViewElement(gettext("AMOUNT INCL VAT"), "total_price", true, 0, "display_2bill");
 $HD_Form -> FieldViewElement ("cc_invoice.id, cc_invoice.reference, username, cc_invoice.date,title, cc_invoice.paid_status, cc_invoice.status as cc_invoice_status,$filter_amount_with_vat");
 
 if (!($popup_select>=1)) $HD_Form -> FG_FILTER_SEARCH_FORM = true;

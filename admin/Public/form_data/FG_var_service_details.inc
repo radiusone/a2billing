@@ -55,7 +55,7 @@ $HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 1;
 
 $HD_Form -> AddViewElement(gettext("NAME"), "name");
 $HD_Form -> AddViewElement(gettext("NUMBEROFRUN"), "numberofrun");
-$HD_Form -> AddViewElement(gettext("DATE"), "date", true, "30", "display_dateformat");
+$HD_Form -> AddViewElement(gettext("DATE"), "date", true, 30, "display_dateformat");
 $HD_Form -> AddViewElement(gettext("TOTALCREDIT"), "totalcredit");
 $HD_Form -> AddViewElement(gettext("TOTALCARDPERFORM"), "totalcardperform");
 

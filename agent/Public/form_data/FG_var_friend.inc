@@ -82,8 +82,8 @@ $yesno = getYesNoList();
 
 
 
-$HD_Form -> AddViewElement(gettext("CARDHOLDER"), "id_cc_card", true, "25", null, "lie", "cc_card", "lastname, firstname", "id='%id'", "%1 %2");
-$HD_Form -> AddViewElement(gettext("USERNAME"), "username", true, "30", "display_customer_link");
+$HD_Form -> AddViewElement(gettext("CARDHOLDER"), "id_cc_card", true, 25, "", "lie", "cc_card", "lastname, firstname", "id='%id'", "%1 %2");
+$HD_Form -> AddViewElement(gettext("USERNAME"), "username", true, 30, "display_customer_link");
 $HD_Form -> AddViewElement(gettext("ACCOUNTCODE"), "accountcode");
 $HD_Form -> AddViewElement(gettext("SECRET"), "secret");
 $HD_Form -> AddViewElement(gettext("CALLERID"), "callerid");

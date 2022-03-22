@@ -103,11 +103,11 @@ $status_list = getPaymentStateList();
 $HD_Form -> AddViewElement(gettext("Id"), "ID");
 $HD_Form -> AddViewElement(gettext("Created At"), "creationdate");
 $HD_Form -> AddViewElement(gettext("Payment Method"), "paymentmethod");
-$HD_Form -> AddViewElement(gettext("Status"), "status", true, "", null, "list", $status_list);
+$HD_Form -> AddViewElement(gettext("Status"), "status", true, 0, "", "list", $status_list);
 $HD_Form -> AddViewElement(gettext("Owner"), "cc_owner");
 $HD_Form -> AddViewElement(gettext("Amount"), "amount");
 $HD_Form -> AddViewElement(gettext("Agent ID"), "cardid");
-$HD_Form -> AddViewElement(gettext("Agent LOGIN"), "cardid", true, "30", "display_linktoagent");
+$HD_Form -> AddViewElement(gettext("Agent LOGIN"), "cardid", true, 30, "display_linktoagent");
 
 // added a parameter to append  FG_TABLE_ID  ( by default ) or disable 0.
 $HD_Form -> FieldViewElement ('id, creationdate, paymentmethod, status, cc_owner, amount, agent_id, agent_id ');

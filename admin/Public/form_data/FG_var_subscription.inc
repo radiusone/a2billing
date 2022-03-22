@@ -68,11 +68,11 @@ for ($k=1;$k<=20;$k++)
 
 $HD_Form -> AddViewElement(gettext("LABEL"), "label");
 $HD_Form -> AddViewElement(gettext("FEE"), "fee");
-$HD_Form -> AddViewElement(gettext("STATUS"), "status", true, "", null, "list", $actived_list);
+$HD_Form -> AddViewElement(gettext("STATUS"), "status", true, 0, "", "list", $actived_list);
 $HD_Form -> AddViewElement(gettext("DATE START"), "startdate");
 $HD_Form -> AddViewElement(gettext("DATE STOP"), "stopdate");
 $HD_Form -> AddViewElement(gettext("NBRUN"), "numberofrun");
-$HD_Form -> AddViewElement(gettext("DATE LASTRUN"), "datelastrun", true, "16");
+$HD_Form -> AddViewElement(gettext("DATE LASTRUN"), "datelastrun", true, 16);
 $HD_Form -> AddViewElement(gettext("ACC PERFORM"), "totalcardperform");
 $HD_Form -> AddViewElement(gettext("TOTAL CREDIT"), "totalcredit");
 

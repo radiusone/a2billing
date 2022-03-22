@@ -46,15 +46,15 @@ $HD_Form->no_debug();
 $HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 10;
 
 $HD_Form -> AddViewElement(gettext("ID"), "id");
-$HD_Form -> AddViewElement(gettext("CardNumber"), "username", true, "30", "display_customer_link");
+$HD_Form -> AddViewElement(gettext("CardNumber"), "username", true, 30, "display_customer_link");
 $HD_Form -> AddViewElement(gettext("<acronym title=\"CARDALIAS\">ALIAS</acronym>"), "useralias");
-$HD_Form -> AddViewElement(gettext("FIRSTNAME"), "firstname", true, "15");
-$HD_Form -> AddViewElement(gettext("LASTNAME"), "lastname", true, "15");
+$HD_Form -> AddViewElement(gettext("FIRSTNAME"), "firstname", true, 15);
+$HD_Form -> AddViewElement(gettext("LASTNAME"), "lastname", true, 15);
 
 $HD_Form -> AddViewElement(gettext("CREDIT"), "credit", true, "", "display_2bill");
-$HD_Form -> AddViewElement(gettext("INVOICE"), "invoice", true, "15", null, "lie", "cc_invoice LEFT JOIN cc_invoice_item ON cc_invoice_item.id_invoice=cc_invoice.id", "TRUNCATE(SUM(CEIL(cc_invoice_item.price*(1+(cc_invoice_item.vat/100))*100)/100),2)", "cc_invoice.id_card='%id' GROUP BY cc_invoice.id_card", "%1");
-$HD_Form -> AddViewElement(gettext("PAYMENT"), "payment", true, "15", null, "lie", "cc_logpayment as t2", "TRUNCATE(SUM(t2.payment),2),t2.card_id", "t2.card_id='%id' GROUP BY t2.card_id", "%1");
-$HD_Form -> AddViewElement(gettext("TO PAY"), "to pay", true, "", null, "eval", '(%7 - %6 )'); //abs
+$HD_Form -> AddViewElement(gettext("INVOICE"), "invoice", true, 15, "", "lie", "cc_invoice LEFT JOIN cc_invoice_item ON cc_invoice_item.id_invoice=cc_invoice.id", "TRUNCATE(SUM(CEIL(cc_invoice_item.price*(1+(cc_invoice_item.vat/100))*100)/100),2)", "cc_invoice.id_card='%id' GROUP BY cc_invoice.id_card", "%1");
+$HD_Form -> AddViewElement(gettext("PAYMENT"), "payment", true, 15, "", "lie", "cc_logpayment as t2", "TRUNCATE(SUM(t2.payment),2),t2.card_id", "t2.card_id='%id' GROUP BY t2.card_id", "%1");
+$HD_Form -> AddViewElement(gettext("TO PAY"), "to pay", true, 0, "", "eval", '(%7 - %6 )'); //abs
 
 $HD_Form -> FieldViewElement ('id, username, useralias, firstname, lastname, credit, id, id, id');
 

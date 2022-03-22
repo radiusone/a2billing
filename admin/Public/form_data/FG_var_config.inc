@@ -155,7 +155,7 @@ if($form_action == "list") {
 $HD_Form -> FG_EDIT_QUERY_CONDITION = "id = %id";
 $HD_Form -> AddViewElement(gettext("TITLE"), "config_title");
 $HD_Form -> AddViewElement(gettext("KEY"), "config_key");
-$HD_Form -> AddViewElement(gettext("VALUE"), "config_value", false, "", null, "list-conf", $yesno);
+$HD_Form -> AddViewElement(gettext("VALUE"), "config_value", false, 0, "", "list-conf", $yesno);
 $HD_Form -> AddViewElement(gettext("DESCRIPTION"), "config_description");
 $HD_Form -> AddViewElement(gettext("GROUP"), "config_group_title");
 

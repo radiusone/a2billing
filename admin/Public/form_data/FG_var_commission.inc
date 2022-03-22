@@ -55,13 +55,13 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = 
 $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/money_add.png" ;
 $com_list = getRefillType_List();
 $HD_Form -> AddViewElement(gettext("ID"), "cc_agent_commission.id");
-$HD_Form -> AddViewElement(gettext("ACCOUNT"), "id_card", true, "30", "display_customer_id_link");
-$HD_Form -> AddViewElement(gettext("AGENT"), "id_agent", true, "30", "display_linktoagent");
-$HD_Form -> AddViewElement(gettext("PAYMENT DATE"), "date", true, "30", "display_dateformat");
+$HD_Form -> AddViewElement(gettext("ACCOUNT"), "id_card", true, 30, "display_customer_id_link");
+$HD_Form -> AddViewElement(gettext("AGENT"), "id_agent", true, 30, "display_linktoagent");
+$HD_Form -> AddViewElement(gettext("PAYMENT DATE"), "date", true, 30, "display_dateformat");
 $HD_Form -> AddViewElement(gettext("AMOUNT"), "amount");
-$HD_Form -> AddViewElement(gettext("PAID STATUS"), "paid_status", true, "", null, "list", $com_list);
+$HD_Form -> AddViewElement(gettext("PAID STATUS"), "paid_status", true, 0, "", "list", $com_list);
 $HD_Form -> AddViewElement(gettext("DESCRIPTION"), "description", true, 50);
-$HD_Form -> AddViewElement(gettext("LINK TO PAYMENT"), "id_payment", true, "", "", "lie_link", "cc_logpayment", "payment, id", "id='%id'", "%1 " . BASE_CURRENCY . " (id:%2)", "A2B_entity_payment.php");
+$HD_Form -> AddViewElement(gettext("LINK TO PAYMENT"), "id_payment", true, 0, "", "lie_link", "cc_logpayment", "payment, id", "id='%id'", "%1 " . BASE_CURRENCY . " (id:%2)", "A2B_entity_payment.php");
 
 $HD_Form -> FieldViewElement ('cc_agent_commission.id, id_card, id_agent, date, amount, commission_type , description, id_payment');
 

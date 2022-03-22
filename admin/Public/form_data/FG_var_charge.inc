@@ -76,11 +76,11 @@ $chargetype_list["4"] = array( gettext("Extra charge"), "4");
 
 
 
-$HD_Form_c -> AddViewElement(gettext("ACCOUNT HOLDER"), "id_cc_card", true, "25", null, "lie", "cc_card", "lastname, firstname", "id='%id'", "%1 %2");
-$HD_Form_c -> AddViewElement(gettext("ACCOUNT NUMBER"), "username", true, "30", "display_customer_link");
-$HD_Form_c -> AddViewElement(gettext("DATE"), "cc_charge.creationdate", true, "16", "display_dateformat");
+$HD_Form_c -> AddViewElement(gettext("ACCOUNT HOLDER"), "id_cc_card", true, 25, "", "lie", "cc_card", "lastname, firstname", "id='%id'", "%1 %2");
+$HD_Form_c -> AddViewElement(gettext("ACCOUNT NUMBER"), "username", true, 30, "display_customer_link");
+$HD_Form_c -> AddViewElement(gettext("DATE"), "cc_charge.creationdate", true, 16, "display_dateformat");
 $HD_Form_c -> AddViewElement(gettext("AMOUNT"), "amount");
-$HD_Form_c -> AddViewElement(gettext("CHARGE TYPE"), "chargetype", true, "30", null, "list", $chargetype_list);
+$HD_Form_c -> AddViewElement(gettext("CHARGE TYPE"), "chargetype", true, 30, "", "list", $chargetype_list);
 $HD_Form_c -> AddViewElement(gettext("DESCRIPTION"), "description");
 
 // added a parameter to append  FG_TABLE_ID  ( by default ) or disable 0.

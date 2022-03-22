@@ -74,9 +74,9 @@ $activated_list = getActivationList();
 
 $HD_Form -> AddViewElement(gettext("ID"), "id");
 $HD_Form -> AddViewElement(gettext("NAME"), "name");
-$HD_Form -> AddViewElement(gettext("ACTIVATED"), "activated", true, "", null, "list", $activated_list);
-$HD_Form -> AddViewElement(gettext("USER TYPE"), "activated", true, "", null, "list", $user_type);
-$HD_Form -> AddViewElement(gettext("SUPPORT BOX"), "id_support", true, "15", null, "lie", "cc_support", "name", "id='%id'", "%1");
+$HD_Form -> AddViewElement(gettext("ACTIVATED"), "activated", true, 0, "", "list", $activated_list);
+$HD_Form -> AddViewElement(gettext("USER TYPE"), "activated", true, 0, "", "list", $user_type);
+$HD_Form -> AddViewElement(gettext("SUPPORT BOX"), "id_support", true, 15, "", "lie", "cc_support", "name", "id='%id'", "%1");
 
 $HD_Form -> FieldViewElement ('id, name, activated,type_user, id_support ');
 

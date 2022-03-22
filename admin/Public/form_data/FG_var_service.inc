@@ -92,9 +92,9 @@ $usegroup_list["1"] = array(gettext("Any group"),"1");
 $HD_Form -> AddViewElement(gettext("NAME"), "name");
 $HD_Form -> AddViewElement(gettext("AMOUNT"), "amount");
 $HD_Form -> AddViewElement(gettext("PERIOD"), "period");
-$HD_Form -> AddViewElement(gettext("STATUS"), "status", true, "", null, "list", $actived_list);
+$HD_Form -> AddViewElement(gettext("STATUS"), "status", true, 0, "", "list", $actived_list);
 $HD_Form -> AddViewElement(gettext("NBRUN"), "numberofrun");
-$HD_Form -> AddViewElement(gettext("DATELASTRUN"), "datelastrun", true, "16");
+$HD_Form -> AddViewElement(gettext("DATELASTRUN"), "datelastrun", true, 16);
 $HD_Form -> AddViewElement(gettext("CARDPERFORM"), "totalcardperform");
 $HD_Form -> AddViewElement(gettext("TOTALCREDIT"), "totalcredit");
 

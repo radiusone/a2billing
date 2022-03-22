@@ -110,7 +110,7 @@ $len_right_list = count($right_list);
 
 
 $HD_Form -> AddViewElement(gettext("USERID"), "UserID");
-$HD_Form -> AddViewElement(gettext("DATE"), "datecreation", true, "19", "display_dateformat");
+$HD_Form -> AddViewElement(gettext("DATE"), "datecreation", true, 19, "display_dateformat");
 $HD_Form -> AddViewElement(gettext("LOGIN"), "login");
 
 $HD_Form -> FieldViewElement ('userid, datecreation, login');

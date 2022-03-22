@@ -56,11 +56,11 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = 
 $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/text_signature.png" ;
 
 
-$HD_Form -> AddViewElement(gettext("ACCOUNT NUMBER"), "id_cc_card", true, "15", null, "lie", "cc_card", "username", "id='%id'", "%1");
-$HD_Form -> AddViewElement(gettext("SERVICE"), "id_subscription_fee", true, "15", null, "lie", "cc_subscription_service", "label", "id='%id'", "%1");
+$HD_Form -> AddViewElement(gettext("ACCOUNT NUMBER"), "id_cc_card", true, 15, "", "lie", "cc_card", "username", "id='%id'", "%1");
+$HD_Form -> AddViewElement(gettext("SERVICE"), "id_subscription_fee", true, 15, "", "lie", "cc_subscription_service", "label", "id='%id'", "%1");
 $HD_Form -> AddViewElement(gettext("DATE START"), "startdate");
 $HD_Form -> AddViewElement(gettext("DATE STOP"), "stopdate");
-$HD_Form -> AddViewElement(gettext("PRODUCT"), "product_name", true, "50");
+$HD_Form -> AddViewElement(gettext("PRODUCT"), "product_name", true, 50);
 
 // added a parameter to append  FG_TABLE_ID  ( by default ) or disable 0.
 $HD_Form -> FieldViewElement ('id_cc_card, id_subscription_fee, startdate, stopdate, product_name');

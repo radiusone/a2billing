@@ -77,10 +77,12 @@ $inter_prefix_list_short["1"] = array( gettext("Remove prefix"), "1");
 
 $HD_Form -> AddViewElement(gettext("ID"), "id");
 $HD_Form -> AddViewElement(gettext("NAME"), "tariffgroupname");
-if (!$popup_select) $HD_Form -> AddViewElement(gettext("CREATIONDATE"), "creationdate", true, "19", "display_dateformat");
-$HD_Form -> AddViewElement(gettext("LC TYPE"), "lcrtype", true, "", null, "list", $lcrtype_list_short);
-$HD_Form -> AddViewElement(gettext("PACKAGE"), "id_cc_package_offer", true, "15", null, "lie", "cc_package_offer", "label", "id='%id'", "%1");
-$HD_Form -> AddViewElement(gettext("INTER PREFIX"), "removeinterprefix", true, "", null, "list", $inter_prefix_list_short);
+if (!$popup_select) {
+    $HD_Form->AddViewElement(gettext("CREATIONDATE"), "creationdate", true, 19, "display_dateformat");
+}
+$HD_Form -> AddViewElement(gettext("LC TYPE"), "lcrtype", true, 0, "", "list", $lcrtype_list_short);
+$HD_Form -> AddViewElement(gettext("PACKAGE"), "id_cc_package_offer", true, 15, "", "lie", "cc_package_offer", "label", "id='%id'", "%1");
+$HD_Form -> AddViewElement(gettext("INTER PREFIX"), "removeinterprefix", true, 0, "", "list", $inter_prefix_list_short);
 
 if (!$popup_select) {
 	$HD_Form -> FieldViewElement ('id, tariffgroupname, creationdate, lcrtype,id_cc_package_offer, removeinterprefix');

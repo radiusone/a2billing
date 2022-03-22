@@ -61,10 +61,10 @@ $HD_Form -> FG_VIEW_TABLE_WITDH = "70%";
 $status_list = getRemittanceStatus_List();
 $type_list = getRemittanceType_List();
 $HD_Form -> AddViewElement(gettext("ID"), "cc_agent_commission.id");
-$HD_Form -> AddViewElement(gettext("DATE"), "date", true, "30", "display_dateformat");
-$HD_Form -> AddViewElement(gettext("AMOUNT"), "amount", true, "", "display_money");
-$HD_Form -> AddViewElement(gettext("TYPE"), "type", true, "", null, "list", $type_list);
-$HD_Form -> AddViewElement(gettext("STATUS"), "status", true, "", null, "list", $status_list);
+$HD_Form -> AddViewElement(gettext("DATE"), "date", true, 30, "display_dateformat");
+$HD_Form -> AddViewElement(gettext("AMOUNT"), "amount", true, 0, "display_money");
+$HD_Form -> AddViewElement(gettext("TYPE"), "type", true, 0, "", "list", $type_list);
+$HD_Form -> AddViewElement(gettext("STATUS"), "status", true, 0, "", "list", $status_list);
 
 $HD_Form -> FieldViewElement ('cc_remittance_request.id, date, amount,type, status ');
 

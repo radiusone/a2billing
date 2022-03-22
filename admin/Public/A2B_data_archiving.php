@@ -127,15 +127,15 @@ for ($k=0;$k<=28;$k++)
 
 $HD_Form -> CV_DO_ARCHIVE_ALL = true;
 $HD_Form -> AddViewElement(gettext("ID"), "id");
-$HD_Form -> AddViewElement(gettext("ACCOUNT NUMBER"), "username", true, "", "display_customer_link", "30");
+$HD_Form -> AddViewElement(gettext("ACCOUNT NUMBER"), "username", true, 30, "display_customer_link");
 $HD_Form -> AddViewElement("<acronym title=\"" . gettext("BALANCE") . "\">" . gettext("BA") . "</acronym>", "credit", true, "", "display_2dec");
-$HD_Form -> AddViewElement(gettext("LASTNAME"), "lastname", true, "15");
-$HD_Form -> AddViewElement(gettext("STATUS"), "status", true, "", null, "list", $cardstatus_list_acronym);
+$HD_Form -> AddViewElement(gettext("LASTNAME"), "lastname", true, 15);
+$HD_Form -> AddViewElement(gettext("STATUS"), "status", true, 0, "", "list", $cardstatus_list_acronym);
 $HD_Form -> AddViewElement(gettext("LG"), "language");
 $HD_Form -> AddViewElement(gettext("USE"), "inuse");
-$HD_Form -> AddViewElement("<acronym title=\"" . gettext("CURRENCY") . "\">" . gettext("CUR") . "</acronym>", "currency", true, "", null, "list", $currency_list_key);
-$HD_Form -> AddViewElement(gettext("SIP"), "sip_buddy", true, "", null, "list", $yesno);
-$HD_Form -> AddViewElement(gettext("IAX"), "iax_buddy", true, "", null, "list", $yesno);
+$HD_Form -> AddViewElement("<acronym title=\"" . gettext("CURRENCY") . "\">" . gettext("CUR") . "</acronym>", "currency", true, 0, "", "list", $currency_list_key);
+$HD_Form -> AddViewElement(gettext("SIP"), "sip_buddy", true, 0, "", "list", $yesno);
+$HD_Form -> AddViewElement(gettext("IAX"), "iax_buddy", true, 0, "", "list", $yesno);
 $HD_Form -> AddViewElement("<acronym title=\"AMOUNT OF CALL DONE\">" . gettext("ACD") . "</acronym>", "nbused");
 $FG_COL_QUERY='id, username, credit, lastname, status, language, inuse, currency, sip_buddy, iax_buddy, nbused';
 

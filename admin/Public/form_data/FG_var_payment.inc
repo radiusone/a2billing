@@ -61,11 +61,11 @@ if (has_rights (ACX_MODIFY_PAYMENTS)) {
 
 $list_refill_type = getRefillType_List();
 $HD_Form -> AddViewElement(gettext("ID"), "cc_logpayment.id");
-$HD_Form -> AddViewElement(gettext("ACCOUNT"), "username", true, "30", "display_customer_id_link");
-$HD_Form -> AddViewElement(gettext("PAYMENT DATE"), "date", true, "30", "display_dateformat");
-$HD_Form -> AddViewElement(gettext("PAYMENT AMOUNT"), "payment", true, "", "display_money");
-$HD_Form -> AddViewElement(gettext("PAYMENT TYPE"), "payment_type", true, "", null, "list", $list_refill_type);
-$HD_Form -> AddViewElement(gettext("REFILL"), "id_logrefill", true, "", "", "lie_link", "cc_logrefill", "TRUNCATE(credit,2), id", "id='%id'", "%1 " . BASE_CURRENCY . " (id:%2)", "A2B_refill_info.php");
+$HD_Form -> AddViewElement(gettext("ACCOUNT"), "username", true, 30, "display_customer_id_link");
+$HD_Form -> AddViewElement(gettext("PAYMENT DATE"), "date", true, 30, "display_dateformat");
+$HD_Form -> AddViewElement(gettext("PAYMENT AMOUNT"), "payment", true, 0, "display_money");
+$HD_Form -> AddViewElement(gettext("PAYMENT TYPE"), "payment_type", true, 0, "", "list", $list_refill_type);
+$HD_Form -> AddViewElement(gettext("REFILL"), "id_logrefill", true, 0, "", "lie_link", "cc_logrefill", "TRUNCATE(credit,2), id", "id='%id'", "%1 " . BASE_CURRENCY . " (id:%2)", "A2B_refill_info.php");
 
 $HD_Form -> FieldViewElement ('cc_logpayment.id, card_id, date, payment ,payment_type,id_logrefill');
 

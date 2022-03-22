@@ -68,11 +68,11 @@ $musiconhold_list = getMusicOnHold_List($A2B);
 $yesno = getYesNoList();
 
 if ($popup_select) $HD_Form -> AddViewElement(gettext("ID"), "id");
-$HD_Form -> AddViewElement(gettext("DESTINATION"), "destination", true, "20");
+$HD_Form -> AddViewElement(gettext("DESTINATION"), "destination", true, 20);
 $HD_Form -> AddViewElement("<acronym title=\"DIALING PREFIX\">" . gettext("PREFIX") . "</acronym>", "dialprefix");
 $HD_Form -> AddViewElement("<acronym title=\"SELLING RATE\">" . gettext("SR") . "</acronym>", "rateinitial");
-if (!$popup_select) $HD_Form -> AddViewElement(gettext("START-DATE"), "startdate", true, "19", "display_dateformat");
-if (!$popup_select) $HD_Form -> AddViewElement(gettext("STOP-DATE"), "stopdate", true, "19", "display_dateformat");
+if (!$popup_select) $HD_Form -> AddViewElement(gettext("START-DATE"), "startdate", true, 19, "display_dateformat");
+if (!$popup_select) $HD_Form -> AddViewElement(gettext("STOP-DATE"), "stopdate", true, 19, "display_dateformat");
 if (!$popup_select) $HD_Form -> AddViewElement("<acronym title=\"CONNECT CHARGE\">" . gettext("CC") . "</acronym>", "connectcharge");
 
 if (!$popup_select) {

@@ -75,12 +75,12 @@ $validated_list["0"] = array( gettext("Pending"), "0");
 $validated_list["1"] = array( gettext("Validated"), "1");
 
 $HD_Form -> AddViewElement(gettext("DESTINATION"), "destination");
-$HD_Form -> AddViewElement(gettext("DID"), "id_cc_did", true, "15", null, "lie", "cc_did", "did", "id='%id'", "%1");
-$HD_Form -> AddViewElement(gettext("ACTIVATED"), "t1.activated", true, "", null, "list", $actived_list);
-$HD_Form -> AddViewElement(gettext("PRIORITY"), "priority", true, "", null, "list", $priority_list);
-$HD_Form -> AddViewElement(gettext("USED MINUTE"), "t1.secondusedreal", true, "30", "display_minute");
-$HD_Form -> AddViewElement(gettext("COUNTRY"), "id_cc_country", true, "15", null, "lie", "cc_country", "countryname", "id='%id'", "%1");
-$HD_Form -> AddViewElement(gettext("VALIDATED"), "validated", true, "", null, "list", $validated_list);
+$HD_Form -> AddViewElement(gettext("DID"), "id_cc_did", true, 15, "", "lie", "cc_did", "did", "id='%id'", "%1");
+$HD_Form -> AddViewElement(gettext("ACTIVATED"), "t1.activated", true, 0, "", "list", $actived_list);
+$HD_Form -> AddViewElement(gettext("PRIORITY"), "priority", true, 0, "", "list", $priority_list);
+$HD_Form -> AddViewElement(gettext("USED MINUTE"), "t1.secondusedreal", true, 30, "display_minute");
+$HD_Form -> AddViewElement(gettext("COUNTRY"), "id_cc_country", true, 15, "", "lie", "cc_country", "countryname", "id='%id'", "%1");
+$HD_Form -> AddViewElement(gettext("VALIDATED"), "validated", true, 0, "", "list", $validated_list);
 
 
 if (isset($form_action) && ($form_action=='ask-edit' || $form_action=='edit')) {
