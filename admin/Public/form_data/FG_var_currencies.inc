@@ -65,32 +65,32 @@ $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 
 $HD_Form -> AddEditElement (gettext("Name"),
-	"name",
-	"$value",
-	"INPUT",
-	"size=35 maxlength=30",
-	"3",
-	gettext("Insert the currency name"),
-	"" , "", "", "", "" , "" , "" , "");
+    "name",
+    "$value",
+    "",
+    "",
+    "INPUT",
+    "size=35 maxlength=30",
+    3, gettext("Insert the currency name"), "", "", "", "", "", "", "");
 
 $HD_Form -> AddEditElement (gettext("LABEL"),
-	"currency",
-	"$value",
-	"INPUT",
-	"size=3 maxlength=3",
-	"0",
-	gettext("Insert the currency label"),
-	"" , "", "", "", "" , "" , "" , "");
+    "currency",
+    "$value",
+    "",
+    "",
+    "INPUT",
+    "size=3 maxlength=3",
+    0, gettext("Insert the currency label"), "", "", "", "", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("VALUE"),
-	"value",
-	'$value',
-	"INPUT",
-	"size=30 maxlength=30",
-	"12",
-	gettext("Insert the fee amount."),
-	"" , "", "", "", "" , "", "", gettext("Set the value of this currency in your base currency that the user have to pay per month.")." ".gettext("Base currency :")." ".strtoupper(BASE_CURRENCY));
+    "value",
+    '$value',
+    gettext("Set the value of this currency in your base currency that the user have to pay per month.") . " " . gettext("Base currency :") . " " . strtoupper(BASE_CURRENCY),
+    "",
+    "INPUT",
+    "size=30 maxlength=30",
+    12, gettext("Insert the fee amount."), "", "", "", "", "", "", "");
 
 
 // Set the filter variables

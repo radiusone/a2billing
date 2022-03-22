@@ -147,290 +147,286 @@ $did_regexpress = '9';
 
 
 $HD_Form->AddEditElement(_("DID"),
-	"did",
-	'$value',
-	"INPUT",
-	"size=40 maxlength=60 $didval",
-	"$did_regexpress",
-	_("Insert the DID"),
-	"" , "", "", "", "" , "", "" ,
-	_("Define the DID's. If you ADD a new DID, NOT an EDIT, you can define a range of DID. <br>80412340210-80412340218 would add all DID's between the range, whereas DIDs separated by a comma e.g. 80412340210,80412340212,80412340214 would only add the individual DID listed."));
+    "did",
+    '$value',
+    _("Define the DID's. If you ADD a new DID, NOT an EDIT, you can define a range of DID. <br>80412340210-80412340218 would add all DID's between the range, whereas DIDs separated by a comma e.g. 80412340210,80412340212,80412340214 would only add the individual DID listed."),
+    "",
+    "INPUT",
+    "size=40 maxlength=60 $didval",
+    "$did_regexpress", _("Insert the DID"), "", "", "", "", "",
+    "", "");
 
 
 $HD_Form->AddEditElement(_("BILLING"),
-	"billingtype",
-	"",
-	"SELECT",
-	"",
-	"",
-	"",
-	"list" , "", "",  "", $billingtype_list, "%1" , "", "");
+    "billingtype",
+    "",
+    "",
+    "",
+    "SELECT",
+    "",
+    null, "", "list", "", "", "", $billingtype_list, "%1", "");
 
 
 $HD_Form->AddEditElement(_("START DATE"),
-	"startingdate",
-	'$value',
-	"INPUT",
-	"size=40 maxlength=40  $comp_date",
-	"10",
-	_("Insert the starting date"),
-	"" , "", "", "", "", "", "res_display_dateformat", _("Format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'") );
+    "startingdate",
+    '$value',
+    _("Format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
+    "",
+    "INPUT",
+    "size=40 maxlength=40  $comp_date",
+    10, _("Insert the starting date"), "", "", "", "", "", "", "res_display_dateformat");
 
 
 $HD_Form->AddEditElement(_("EXPIRY DATE"),
-	"expirationdate",
-	'$value',
-	"INPUT",
-	"size=40 maxlength=40  $comp_date_plus",
-	"10",
-	_("Insert the expiration date"),
-	"" , "", "", "", "", "", "res_display_dateformat", _("Format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'") );
+    "expirationdate",
+    '$value',
+    _("Format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
+    "",
+    "INPUT",
+    "size=40 maxlength=40  $comp_date_plus",
+    10, _("Insert the expiration date"), "", "", "", "", "", "", "res_display_dateformat");
 
 
 $HD_Form->AddEditElement(_("DIDGROUP"),
-	"id_cc_didgroup",
-	'$value',
-	"SELECT",
-	"", "", "",
-	"sql",
-	"cc_didgroup",
-	"didgroupname, id",
-	"", "", "%1","", "");
+    "id_cc_didgroup",
+    '$value',
+    "",
+    "", "SELECT", "",
+    null,
+    "",
+    "sql",
+    "cc_didgroup", "didgroupname, id", "", "", "%1", "");
 
 
 $HD_Form->AddEditElement(_("COUNTRY"),
-	"id_cc_country",
-	'$value',
-	"SELECT",
-	"", "", "",
-	"sql",
-	"cc_country",
-	"countryname, id",
-	"", "", "%1", "", "");
+    "id_cc_country",
+    '$value',
+    "",
+    "", "SELECT", "",
+    null,
+    "",
+    "sql",
+    "cc_country", "countryname, id", "", "", "%1", "");
 
 
 $HD_Form->AddEditElement(_("ACTIVATED"),
-	"activated",
-	'1',
-	"RADIOBUTTON",
-	"",
-	"",
-	_("Choose if you want to activate this card"),
-	"" , "", "", "Yes:1,No:0", "", "", "" , "" );
+    "activated",
+    '1',
+    "",
+    "",
+    "RADIOBUTTON",
+    "",
+    null, _("Choose if you want to activate this card"), "", "", "", "Yes:1,No:0", "", "", "");
 
 
 $HD_Form->AddEditElement(_("MONTHLY RATE"),
-	"fixrate",
-	'$value',
-	"INPUT",
-	"size=20  maxlength=20 $fixval",
-	"12",
-	_("Insert the monthly rate"),
-	"" , "", "", "", "", "", "", _("currency : ").strtoupper(BASE_CURRENCY),
-	null, null, _("Define the renting cost for the customers.") );
+    "fixrate",
+    '$value',
+    _("currency : ") . strtoupper(BASE_CURRENCY),
+    _("Define the renting cost for the customers."),
+    "INPUT",
+    "size=20  maxlength=20 $fixval",
+    12, _("Insert the monthly rate"));
 
 
 $HD_Form->AddEditElement(_("CONNECT CHARGE"),
-   "connection_charge",
-   '$value',
-   "INPUT",
-   "size=30 maxlength=20 $fixval",
-   "12",
-   _("Insert the connect charge"),
-   "" , "", "",	"", "", "" , "NO", _("Apply a connection charge to connect DID together"),
-   null, null, _("DID On Net Charges") );
+    "connection_charge",
+    '$value',
+    _("Apply a connection charge to connect DID together"),
+    _("DID On Net Charges"),
+    "INPUT",
+    "size=30 maxlength=20 $fixval",
+    12, _("Insert the connect charge"), "", "", "", "", "", "",
+    "NO");
    // On Net Charges is where one customer calls another customer without any external carrier being involved in the call
 
 $HD_Form->AddEditElement(_("SELLING RATE"),
-   "selling_rate",
-   '$value',
-   "INPUT",
-   "size=30 maxlength=20 $fixval",
-   "12",
-   _("Insert the rate"),
-   "" , "", "",	"", "" , "", "", _("The retail rate; or the cost per minute to apply to the customer to connect DID together, e.g. 0.02"));
+    "selling_rate",
+    '$value',
+    _("The retail rate; or the cost per minute to apply to the customer to connect DID together, e.g. 0.02"),
+    "",
+    "INPUT",
+    "size=30 maxlength=20 $fixval",
+    12, _("Insert the rate"), "", "", "", "", "", "", "");
 
 $HD_Form->AddEditElement(_("TIME INTERVAL"),
-   "aleg_timeinterval",
-   '$value',
-   "TEXTAREA",
-   "cols=50 rows=4",
-   "",
-   _("Insert time definition for peak and off peak time intervals."),
-   "" , "", "", "", "" , "", "", _("The format is \"start_time;day_of_week;day_of_month;month;time_interval_type\" e.g. 7:00-19:00|mon-fri|*|*|p for peak hours or *|*|24|dec|o for off peak during Xmas day and so on. The last character indicates time interval type where \"p\" means PEAK and \"o\" OFF-PEAK. More definition one per line are supported. If there are PEAK and OFF-PEAK time interval definitions overlaps, than the OFF-PEAK is used."),
-   null, null, _("Peak / Off Peak Time definition") );
+    "aleg_timeinterval",
+    '$value',
+    _("The format is \"start_time;day_of_week;day_of_month;month;time_interval_type\" e.g. 7:00-19:00|mon-fri|*|*|p for peak hours or *|*|24|dec|o for off peak during Xmas day and so on. The last character indicates time interval type where \"p\" means PEAK and \"o\" OFF-PEAK. More definition one per line are supported. If there are PEAK and OFF-PEAK time interval definitions overlaps, than the OFF-PEAK is used."),
+    _("Peak / Off Peak Time definition"),
+    "TEXTAREA",
+    "cols=50 rows=4",
+    null, _("Insert time definition for peak and off peak time intervals."));
 
 
 $HD_Form->AddEditElement(_("CARRIER CONNECTION CHARGE"),
-   "aleg_carrier_connect_charge",
-   '$value',
-   "INPUT",
-   "size=30 maxlength=20 $fixval",
-   "12",
-   _("Insert a rate"),
-   "" , "", "",	"", "" , "", "", _("The connection charge can be negative or positive"),
-   null, null, _("DID Ingress Charges Peak") );
+    "aleg_carrier_connect_charge",
+    '$value',
+    _("The connection charge can be negative or positive"),
+    _("DID Ingress Charges Peak"),
+    "INPUT",
+    "size=30 maxlength=20 $fixval",
+    12, _("Insert a rate"));
 
 
 $HD_Form->AddEditElement(_("CARRIER COST PER MINUTE"),
-   "aleg_carrier_cost_min",
-   '$value',
-   "INPUT",
-   "size=30 maxlength=20 $fixval",
-   "12",
-   _("Insert the connect cost"),
-   "" , "", "",	"", "", "" , "NO", _("The cost can be negative for Non geographic calls where there is an out-payment"));
+    "aleg_carrier_cost_min",
+    '$value',
+    _("The cost can be negative for Non geographic calls where there is an out-payment"),
+    "",
+    "INPUT",
+    "size=30 maxlength=20 $fixval",
+    12, _("Insert the connect cost"), "", "", "", "", "", "", "NO");
 
 
 $HD_Form->AddEditElement(_("CARRIER MIN DURATION"),
-   "aleg_carrier_initblock",
-   '$value',
-   "INPUT",
-   "size=30 maxlength=20",
-   "4",
-   _("Insert the buyrate init block"),
-   "" , "", "",	"", "", "" , "NO", _("Set the minimum duration charged by the carrier. (i.e. 30 secs)"));
+    "aleg_carrier_initblock",
+    '$value',
+    _("Set the minimum duration charged by the carrier. (i.e. 30 secs)"),
+    "",
+    "INPUT",
+    "size=30 maxlength=20",
+    4, _("Insert the buyrate init block"), "", "", "", "", "", "", "NO");
 
 
 $HD_Form->AddEditElement(_("CARRIER BILLING BLOCK"),
-   "aleg_carrier_increment",
-   '$value',
-   "INPUT",
-   "size=30 maxlength=20",
-   "4",
-   _("Insert the billing block"),
-   "" , "", "",	"", "", "" , "NO", _("Set the billing increment, in seconds (billing block), that the carrier applies. (ie 30 secs)"));
+    "aleg_carrier_increment",
+    '$value',
+    _("Set the billing increment, in seconds (billing block), that the carrier applies. (ie 30 secs)"),
+    "",
+    "INPUT",
+    "size=30 maxlength=20",
+    4, _("Insert the billing block"), "", "", "", "", "", "", "NO");
 
 
 $HD_Form->AddEditElement(_("RETAIL CONNECTION CHARGE"),
-   "aleg_retail_connect_charge",
-   '$value',
-   "INPUT",
-   "size=30 maxlength=20 $fixval",
-   "12",
-   _("Insert a rate"),
-   "" , "", "",	"", "" , "", "", _("The connection charge can be negative or positive"));
+    "aleg_retail_connect_charge",
+    '$value',
+    _("The connection charge can be negative or positive"),
+    "",
+    "INPUT",
+    "size=30 maxlength=20 $fixval",
+    12, _("Insert a rate"), "", "", "", "", "", "", "");
 
 
 $HD_Form->AddEditElement(_("RETAIL COST PER MINUTE"),
-   "aleg_retail_cost_min",
-   '$value',
-   "INPUT",
-   "size=30 maxlength=20 $fixval",
-   "12",
-   _("Insert the connect cost"),
-   "" , "", "",	"", "", "" , "NO", _("The cost can be negative where there is an out payment, or more usually, positive"));
+    "aleg_retail_cost_min",
+    '$value',
+    _("The cost can be negative where there is an out payment, or more usually, positive"),
+    "",
+    "INPUT",
+    "size=30 maxlength=20 $fixval",
+    12, _("Insert the connect cost"), "", "", "", "", "", "", "NO");
 
 
 $HD_Form->AddEditElement(_("RETAIL MIN DURATION"),
-   "aleg_retail_initblock",
-   '$value',
-   "INPUT",
-   "size=30 maxlength=20",
-   "4",
-   _("Insert the init block"),
-   "" , "", "",	"", "", "", "NO", _("Set the minimum duration to charge the customer (ie 60 seconds)"));
+    "aleg_retail_initblock",
+    '$value',
+    _("Set the minimum duration to charge the customer (ie 60 seconds)"),
+    "",
+    "INPUT",
+    "size=30 maxlength=20",
+    4, _("Insert the init block"), "", "", "", "", "", "", "NO");
 
 
 $HD_Form->AddEditElement(_("RETAIL BILLING BLOCK"),
-   "aleg_retail_increment",
-   '$value',
-   "INPUT",
-   "size=30 maxlength=20",
-   "4",
-   _("Insert the billing block"),
-   "" , "", "",	"", "", "", "NO", _("Set the billing increment in seconds to bill your customer."));
+    "aleg_retail_increment",
+    '$value',
+    _("Set the billing increment in seconds to bill your customer."),
+    "",
+    "INPUT",
+    "size=30 maxlength=20",
+    4, _("Insert the billing block"), "", "", "", "", "", "", "NO");
 
 
 $HD_Form->AddEditElement(_("CARRIER CONNECTION CHARGE OFF PEAK"),
-   "aleg_carrier_connect_charge_offp",
-   '$value',
-   "INPUT",
-   "size=30 maxlength=20 $fixval",
-   "12",
-   _("Insert a rate"),
-   "" , "", "",	"", "" , "", "", _("The connection charge can be negative or positive"),
-   null, null, _("DID Ingress Charges Off Peak") );
+    "aleg_carrier_connect_charge_offp",
+    '$value',
+    _("The connection charge can be negative or positive"),
+    _("DID Ingress Charges Off Peak"),
+    "INPUT",
+    "size=30 maxlength=20 $fixval",
+    12, _("Insert a rate"));
 
 
 $HD_Form->AddEditElement(_("CARRIER COST PER MINUTE OFF PEAK"),
-   "aleg_carrier_cost_min_offp",
-   '$value',
-   "INPUT",
-   "size=30 maxlength=20 $fixval",
-   "12",
-   _("Insert the connect cost"),
-   "" , "", "",	"", "", "" , "NO", _("The cost can be negative for Non geographic calls where there is an out-payment"));
+    "aleg_carrier_cost_min_offp",
+    '$value',
+    _("The cost can be negative for Non geographic calls where there is an out-payment"),
+    "",
+    "INPUT",
+    "size=30 maxlength=20 $fixval",
+    12, _("Insert the connect cost"), "", "", "", "", "", "", "NO");
 
 
 $HD_Form->AddEditElement(_("CARRIER MIN DURATION OFF PEAK"),
-   "aleg_carrier_initblock_offp",
-   '$value',
-   "INPUT",
-   "size=30 maxlength=20",
-   "4",
-   _("Insert the buyrate init block"),
-   "" , "", "",	"", "", "" , "NO", _("Set the minimum duration charged by the carrier. (i.e. 30 secs)"));
+    "aleg_carrier_initblock_offp",
+    '$value',
+    _("Set the minimum duration charged by the carrier. (i.e. 30 secs)"),
+    "",
+    "INPUT",
+    "size=30 maxlength=20",
+    4, _("Insert the buyrate init block"), "", "", "", "", "", "", "NO");
 
 
 $HD_Form->AddEditElement(_("CARRIER BILLING BLOCK OFF PEAK"),
-   "aleg_carrier_increment_offp",
-   '$value',
-   "INPUT",
-   "size=30 maxlength=20",
-   "4",
-   _("Insert the billing block"),
-   "" , "", "",	"", "", "" , "NO", _("Set the billing increment, in seconds (billing block), that the carrier applies. (ie 30 secs)"));
+    "aleg_carrier_increment_offp",
+    '$value',
+    _("Set the billing increment, in seconds (billing block), that the carrier applies. (ie 30 secs)"),
+    "",
+    "INPUT",
+    "size=30 maxlength=20",
+    4, _("Insert the billing block"), "", "", "", "", "", "", "NO");
 
 
 $HD_Form->AddEditElement(_("RETAIL CONNECTION CHARGE OFF PEAK"),
-   "aleg_retail_connect_charge_offp",
-   '$value',
-   "INPUT",
-   "size=30 maxlength=20 $fixval",
-   "12",
-   _("Insert a rate"),
-   "" , "", "",	"", "" , "", "", _("The connection charge can be negative or positive"));
+    "aleg_retail_connect_charge_offp",
+    '$value',
+    _("The connection charge can be negative or positive"),
+    "",
+    "INPUT",
+    "size=30 maxlength=20 $fixval",
+    12, _("Insert a rate"), "", "", "", "", "", "", "");
 
 
 $HD_Form->AddEditElement(_("RETAIL COST PER MINUTE OFF PEAK"),
-   "aleg_retail_cost_min_offp",
-   '$value',
-   "INPUT",
-   "size=30 maxlength=20 $fixval",
-   "12",
-   _("Insert the connect cost"),
-   "" , "", "",	"", "", "" , "NO", _("The cost can be negative where there is an out payment, or more usually, positive"));
+    "aleg_retail_cost_min_offp",
+    '$value',
+    _("The cost can be negative where there is an out payment, or more usually, positive"),
+    "",
+    "INPUT",
+    "size=30 maxlength=20 $fixval",
+    12, _("Insert the connect cost"), "", "", "", "", "", "", "NO");
 
 
 $HD_Form->AddEditElement(_("RETAIL MIN DURATION OFF PEAK"),
-   "aleg_retail_initblock_offp",
-   '$value',
-   "INPUT",
-   "size=30 maxlength=20",
-   "4",
-   _("Insert the init block"),
-   "" , "", "",	"", "", "", "NO", _("Set the minimum duration to charge the customer (ie 60 seconds)"));
+    "aleg_retail_initblock_offp",
+    '$value',
+    _("Set the minimum duration to charge the customer (ie 60 seconds)"),
+    "",
+    "INPUT",
+    "size=30 maxlength=20",
+    4, _("Insert the init block"), "", "", "", "", "", "", "NO");
 
 
 $HD_Form->AddEditElement(_("RETAIL BILLING BLOCK OFF PEAK"),
-   "aleg_retail_increment_offp",
-   '$value',
-   "INPUT",
-   "size=30 maxlength=20",
-   "4",
-   _("Insert the billing block"),
-   "" , "", "",	"", "", "", "NO", _("Set the billing increment in seconds to bill your customer."));
+    "aleg_retail_increment_offp",
+    '$value',
+    _("Set the billing increment in seconds to bill your customer."),
+    "",
+    "INPUT",
+    "size=30 maxlength=20",
+    4, _("Insert the billing block"), "", "", "", "", "", "", "NO");
 
 
 $HD_Form->AddEditElement(_("MAX CONCURRENT CALLS"),
-   "max_concurrent",
-   '$value',
-   "INPUT",
-   "size=5 maxlength=5",
-   "",
-   "",
-   "" , "", "",   "", "", "", "NO", _("Max concurrent calls (Feature not implemented)") );
+    "max_concurrent",
+    '$value',
+    _("Max concurrent calls (Feature not implemented)"),
+    "",
+    "INPUT",
+    "size=5 maxlength=5",
+    null, "", "", "", "", "", "", "", "NO");
 
 $HD_Form->FieldEditElement('did, billingtype, startingdate, expirationdate, id_cc_didgroup, id_cc_country, activated, fixrate, connection_charge, selling_rate, aleg_timeinterval, aleg_carrier_connect_charge, aleg_carrier_cost_min, aleg_carrier_initblock, aleg_carrier_increment, aleg_retail_connect_charge, aleg_retail_cost_min, aleg_retail_initblock, aleg_retail_increment, aleg_carrier_connect_charge_offp, aleg_carrier_cost_min_offp, aleg_carrier_initblock_offp, aleg_carrier_increment_offp, aleg_retail_connect_charge_offp, aleg_retail_cost_min_offp, aleg_retail_initblock_offp, aleg_retail_increment_offp, max_concurrent');
 

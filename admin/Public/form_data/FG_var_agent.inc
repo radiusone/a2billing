@@ -149,40 +149,36 @@ if (has_rights (ACX_MODIFY_AGENTS) && !($popup_select)) {
 
 
 	$HD_Form -> AddEditElement (gettext("LOGIN"),
-			"login",
-			'$value',
-			"INPUT",
-			"size=30 maxlength=12",
-			"3",
-			gettext("Insert the login"),
-			"" , "", "", "", "" , "", "", "");
+        "login",
+        '$value',
+        "",
+        "",
+        "INPUT", "size=30 maxlength=12", 3, gettext("Insert the login"));
 
 	$HD_Form -> AddEditElement (gettext("PASSWORD"),
-			"passwd",
-			'$value',
-			"INPUT",
-			"size=30 maxlength=15",
-			"3",
-			gettext("Insert the password"),
-			"" , "", "", "", "", "", "", "");
+        "passwd",
+        '$value',
+        "",
+        "",
+        "INPUT",
+        "size=30 maxlength=15", 3, gettext("Insert the password"));
 
 	$HD_Form -> AddEditElement (gettext("PERMISSION"),
-			"perms",
-			'$value',
-			"SELECT",
-			"size=\"$len_right_list\" multiple=\"multiple\"",
-			"", "",
-			"list", "", "description, id", "", $right_list, "%1" , "",
-			gettext("To select several rights in the above ListBox, hold the CTRL key down while clicking the items") );
+        "perms",
+        '$value',
+        gettext("To select several rights in the above ListBox, hold the CTRL key down while clicking the items"),
+        "",
+        "SELECT", "size=\"$len_right_list\" multiple=\"multiple\"",
+        null, null, "list", "", "description, id", "", $right_list, "%1");
 
 	$HD_Form -> AddEditElement (gettext("ACTIVE"),
-		   "active",
-		   '1',
-		   "RADIOBUTTON",
-		   "",
-		   "",
-		   gettext("Choose if you want to active the agent"),
-		   "" , "", "" , "Yes:1,No:0",  "", "" , "", gettext("Enable agent"));
+        "active",
+        '1',
+        gettext("Enable agent"),
+        "",
+        "RADIOBUTTON",
+        "",
+        null, gettext("Choose if you want to active the agent"), "", "", "", "Yes:1,No:0");
 
 	if ($form_action =="ask-add" || $form_action=="add") {
 		$balance_access = "value = '0'";
@@ -192,173 +188,173 @@ if (has_rights (ACX_MODIFY_AGENTS) && !($popup_select)) {
 	}
 
 	$HD_Form -> AddEditElement (gettext("BALANCE"),
-		   "credit",
-		   "",
-		   "INPUT",
-		   "size=30 maxlength=30 $balance_access",
-		   "12",
-		   gettext("amount of credit"),
-		   "" , "", "", "", "", "", "", gettext("currency : ").strtoupper(BASE_CURRENCY) );
+        "credit",
+        "",
+        gettext("currency : ") . strtoupper(BASE_CURRENCY),
+        "",
+        "INPUT",
+        "size=30 maxlength=30 $balance_access",
+        12, gettext("amount of credit"));
 
 	$HD_Form -> AddEditElement (gettext("COMMISSION BALANCE"),
-		   "com_balance",
-		   "",
-		   "LABEL",
-		   "$default_label_value",
-		   "",
-		   gettext("amount of commission"),
-		   "" , "", "", "", "", "", "", gettext("currency : ").strtoupper(BASE_CURRENCY) );
+        "com_balance",
+        "",
+        gettext("currency : ") . strtoupper(BASE_CURRENCY),
+        "",
+        "LABEL",
+        "$default_label_value",
+        null, gettext("amount of commission"));
 
 	$HD_Form -> AddEditElement (gettext("CURRENCY"),
-		   "currency",
-		   "",
-		   "SELECT",
-		   "",
-		   "", "", "list" , "", "",	"", $currency_list, "%1", "", gettext("Currency used at the customer end.") );
+        "currency",
+        "",
+        gettext("Currency used at the customer end."),
+        "",
+        "SELECT", "", null, "", "list", "", "", "", $currency_list, "%1");
 
 	$HD_Form -> AddEditElement (gettext("COMMISSION PERCENTAGE"),
-		   "commission",
-		   "",
-		   "INPUT",
-		   "size=20 maxlength=20",
-		   "21",
-		   gettext("Insert the commision"),
-		   "" , "", "",	"", "", "", "NO-NULL", gettext("Commission in percent"));
+        "commission",
+        "",
+        gettext("Commission in percent"),
+        "",
+        "INPUT",
+        "size=20 maxlength=20",
+        21, gettext("Insert the commision"), "", "", "", "", "", "", "NO-NULL");
 
     $HD_Form -> AddEditElement (gettext("THRESHOLD REMITTANCE"),
-		   "threshold_remittance",
-		   "",
-		   "INPUT",
-		   "size=20 maxlength=20",
-		   "12",
-		   gettext("treshold remittance"),
-		   "" , "", "", "", "", "", "", gettext("currency : ").strtoupper(BASE_CURRENCY) );
+        "threshold_remittance",
+        "",
+        gettext("currency : ") . strtoupper(BASE_CURRENCY),
+        "",
+        "INPUT",
+        "size=20 maxlength=20",
+        12, gettext("treshold remittance"));
 
 	$HD_Form -> AddEditElement (gettext("VAT"),
-		   "vat",
-		   "",
-		   "INPUT",
-		   "size=20 maxlength=20",
-		   "12",
-		   gettext("Insert the VAT"),
-		   "" , "", "",	"", "", "", "NO-NULL", gettext("VAT"));
+        "vat",
+        "",
+        gettext("VAT"),
+        "",
+        "INPUT",
+        "size=20 maxlength=20",
+        12, gettext("Insert the VAT"), "", "", "", "", "", "", "NO-NULL");
 
 	$HD_Form -> AddEditElement (gettext("LANGUAGE"),
-		   "language",
-		   "",
-		   "SELECT",
-		   "",
-		   "",
-		   "",
-		   "list" , "", "",	"", $language_list, "%1", "", "" );
+        "language",
+        "",
+        "",
+        "",
+        "SELECT",
+        "",
+        null, "", "list", "", "", "", $language_list, "%1");
 
 	$HD_Form -> AddEditElement (gettext("COMPANY"),
-			"company",
-			'$value',
-			"INPUT",
-			"size=60 maxlength=50",
-			"",
-			gettext("Insert the company"),
-			"" , "", "", "", "", "", "", "");
+        "company",
+        '$value',
+        "",
+        "",
+        "INPUT",
+        "size=60 maxlength=50",
+        null, gettext("Insert the company"));
 
 	$HD_Form -> AddEditElement (gettext("LAST NAME"),
-			"lastname",
-			'$value',
-			"INPUT",
-			"size=60 maxlength=50",
-			"",
-			gettext("Insert the lastname"),
-			"" , "", "", "", "", "", "", "");
+        "lastname",
+        '$value',
+        "",
+        "",
+        "INPUT",
+        "size=60 maxlength=50",
+        null, gettext("Insert the lastname"));
 
 	$HD_Form -> AddEditElement (gettext("FIRST NAME"),
-			"firstname",
-			'$value',
-			"INPUT",
-			"size=60 maxlength=50",
-			"",
-			gettext("Insert the firstname"),
-			"" , "", "", "", "", "", "", "");
+        "firstname",
+        '$value',
+        "",
+        "",
+        "INPUT",
+        "size=60 maxlength=50",
+        null, gettext("Insert the firstname"));
 
 	$HD_Form -> AddEditElement (gettext("ADDRESS"),
-			"address",
-			'$value',
-			"INPUT",
-			"size=60 maxlength=250",
-			"",
-			gettext("Insert the address"),
-			"" , "", "", "", "", "", "", "");
+        "address",
+        '$value',
+        "",
+        "",
+        "INPUT",
+        "size=60 maxlength=250",
+        null, gettext("Insert the address"));
 
 	$HD_Form -> AddEditElement (gettext("CITY"),
-			"city",
-			'$value',
-			"INPUT",
-			"size=20 maxlength=20",
-			"",
-			gettext("Insert the city"),
-			"" , "", "", "", "", "", "", "");
+        "city",
+        '$value',
+        "",
+        "",
+        "INPUT",
+        "size=20 maxlength=20",
+        null, gettext("Insert the city"));
 
 	$HD_Form -> AddEditElement (gettext("STATE"),
-			"state",
-			'$value',
-			"INPUT",
-			"size=20 maxlength=40",
-			"",
-			gettext("Insert the state"),
-			"" , "", "", "", "", "", "", "");
+        "state",
+        '$value',
+        "",
+        "",
+        "INPUT",
+        "size=20 maxlength=40",
+        null, gettext("Insert the state"));
 
 	$HD_Form -> AddEditElement (gettext("COUNTRY"),
-			"country",
-			'$value',
-			"INPUT",
-			"size=20 maxlength=40",
-			"",
-			gettext("Insert the country"),
-			"" , "", "", "", "", "", "", "");
+        "country",
+        '$value',
+        "",
+        "",
+        "INPUT",
+        "size=20 maxlength=40",
+        null, gettext("Insert the country"));
 
 	$HD_Form -> AddEditElement (gettext("ZIPCODE"),
-			"zipcode",
-			'$value',
-			"INPUT",
-			"size=10 maxlength=7",
-			"",
-			gettext("Insert the zip code"),
-			"" , "", "", "", "", "", "", "");
+        "zipcode",
+        '$value',
+        "",
+        "",
+        "INPUT",
+        "size=10 maxlength=7",
+        null, gettext("Insert the zip code"));
 
 	$HD_Form -> AddEditElement (gettext("EMAIL"),
-			"email",
-			'$value',
-			"INPUT",
-			"size=30 maxlength=70",
-			"1",
-			gettext("Insert the email"),
-			"" , "", "", "", "" , "", "NO", "");
+        "email",
+        '$value',
+        "",
+        "",
+        "INPUT",
+        "size=30 maxlength=70",
+        1, gettext("Insert the email"), "", "", "", "", "", "", "NO");
 
 	$HD_Form -> AddEditElement (gettext("PHONE"),
-			"phone",
-			'$value',
-			"INPUT",
-			"size=30 maxlength=20",
-			"",
-			gettext("Insert the telephone number"),
-			"" , "", "", "", "" , "", "", "");
+        "phone",
+        '$value',
+        "",
+        "",
+        "INPUT",
+        "size=30 maxlength=20",
+        null, gettext("Insert the telephone number"));
 
 	$HD_Form -> AddEditElement (gettext("FAX"),
-			"fax",
-			'$value',
-			"INPUT",
-			"size=30 maxlength=20",
-			"",
-			gettext("Insert the fax number"),
-			"" , "", "", "", "" , "", "", "");
+        "fax",
+        '$value',
+        "",
+        "",
+        "INPUT",
+        "size=30 maxlength=20",
+        null, gettext("Insert the fax number"));
 
 	$HD_Form -> AddEditElement (gettext("BANK INFO"),
-					"bank_info",
-					'',
-					"TEXTAREA",
-					"cols=50 rows=4",
-					"",
-					gettext("Insert the bank info of this agent"),
-					"" , "", "", "", "" , "", "", "");
+        "bank_info",
+        '',
+        "",
+        "",
+        "TEXTAREA",
+        "cols=50 rows=4",
+        null, gettext("Insert the bank info of this agent"));
 
 
 	$DBHandle_max  = DbConnect();
@@ -369,16 +365,16 @@ if (has_rights (ACX_MODIFY_AGENTS) && !($popup_select)) {
 
 	if ($numrow > 0) {
 		$HD_Form -> AddEditElement (gettext("CALL PLAN USABLE"),
-			"tariffgroup",
-			'$value',
-			"SELECT",
-			'size="10" multiple="multiple"',
-			"",
-			"",
-			"sql",
-			"cc_agent_tariffgroup",
-			"label, id",
-			"", "", "%1 : (%2)", "", "", "cc_agent_tariffgroup:id_tariffgroup:cc_tariffgroup LEFT JOIN cc_agent_tariffgroup ON cc_tariffgroup.id=cc_agent_tariffgroup.id_tariffgroup:DISTINCT cc_tariffgroup.tariffgroupname, cc_tariffgroup.id: cc_agent_tariffgroup.id_agent = %id:id_agent:%2 - (%1)::::%1:id='%1'");
+            "tariffgroup",
+            '$value',
+            "",
+            "",
+            "SELECT",
+            'size="10" multiple="multiple"',
+            null,
+            "",
+            "sql",
+            "cc_agent_tariffgroup", "label, id", "", "", "%1 : (%2)", "", "cc_agent_tariffgroup:id_tariffgroup:cc_tariffgroup LEFT JOIN cc_agent_tariffgroup ON cc_tariffgroup.id=cc_agent_tariffgroup.id_tariffgroup:DISTINCT cc_tariffgroup.tariffgroupname, cc_tariffgroup.id: cc_agent_tariffgroup.id_agent = %id:id_agent:%2 - (%1)::::%1:id='%1'");
 	}
 
 

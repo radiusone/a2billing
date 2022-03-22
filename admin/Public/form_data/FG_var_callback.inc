@@ -86,24 +86,24 @@ $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 
 $HD_Form -> AddEditElement (gettext("SERVER GROUP"),
-	"id_server_group",
-	'$value',
-	"SELECT",
-	"", "", "",
-	"sql",
-	"cc_server_group",
-	"name, id",
-	"", "", "%1","", "");
+    "id_server_group",
+    '$value',
+    "",
+    "", "SELECT", "",
+    null,
+    "",
+    "sql",
+    "cc_server_group", "name, id", "", "", "%1", "");
 
 
 $HD_Form -> AddEditElement (gettext("UNIQUEID"),
-	"uniqueid",
-	'$value',
-	"INPUT",
-	"size=20 maxlength=30",
-	"3",
-	gettext("Insert the uniqueid"),
-	"" , "", "",	"", "" , "", "", gettext("This is an identifier to cross check the callback's request.").gettext("(useful if you have requests coming from an other platform through the API))") );
+    "uniqueid",
+    '$value',
+    gettext("This is an identifier to cross check the callback's request.") . gettext("(useful if you have requests coming from an other platform through the API))"),
+    "",
+    "INPUT",
+    "size=20 maxlength=30",
+    3, gettext("Insert the uniqueid"), "", "", "", "", "", "", "");
 
 
 if ($form_action=="ask-add") {
@@ -118,182 +118,182 @@ if ($form_action=="ask-add") {
 }
 
 $HD_Form -> AddEditElement (gettext("STATUS"),
-	"status",
-	'$value',
-	"SELECT",
-	"",
-	"",
-	"",
-	"list" , "", "",	"", $status_list, "%1", "", "" );
+    "status",
+    '$value',
+    "",
+    "",
+    "SELECT",
+    "",
+    null, "", "list", "", "", "", $status_list, "%1", "");
 
 
 $HD_Form -> AddEditElement (gettext("IP SERVER"),
-	"server_ip",
-	'$value',
-	"INPUT",
-	"size=20 maxlength=30 $def_ipserver",
-	"11",
-	gettext("Insert the Ip Server"),
-	"" , "", "",	"", "", "" , "", "");
+    "server_ip",
+    '$value',
+    "",
+    "",
+    "INPUT",
+    "size=20 maxlength=30 $def_ipserver",
+    11, gettext("Insert the Ip Server"), "", "", "", "", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("NUMBER ATTEMPTS"),
-	"num_attempt",
-	'$value',
-	"INPUT",
-	"size=5 maxlength=10 $def_nbattempt",
-	"4",
-	gettext("Insert the number of attempts"),
-	"" , "", "",	"", "", "", "", "");
+    "num_attempt",
+    '$value',
+    "",
+    "",
+    "INPUT",
+    "size=5 maxlength=10 $def_nbattempt",
+    4, gettext("Insert the number of attempts"), "", "", "", "", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("MANAGER RESULT"),
-	"manager_result",
-	'$value',
-	"INPUT",
-	"size=50 maxlength=80",
-	"11",
-	gettext("Insert the manager result"),
-	"" , "", "",	"", "", "" , "NO", "");
+    "manager_result",
+    '$value',
+    "",
+    "",
+    "INPUT",
+    "size=50 maxlength=80",
+    11, gettext("Insert the manager result"), "", "", "", "", "", "", "NO");
 
 
 $HD_Form -> AddEditElement (gettext("AGI RESULT"),
-	"agi_result",
-	'$value',
-	"INPUT",
-	"size=50 maxlength=80",
-	"11",
-	gettext("Insert the agi result"),
-	"" , "", "",	"", "", "" , "NO", "");
+    "agi_result",
+    '$value',
+    "",
+    "",
+    "INPUT",
+    "size=50 maxlength=80",
+    11, gettext("Insert the agi result"), "", "", "", "", "", "", "NO");
 
 
 $HD_Form -> AddEditElement (gettext("CALLBACK DATE"),
-	"callback_time",
-	'$value',
-	"INPUT",
-	"size=20 maxlength=20  $comp_date",
-	"10",
-	"Insert the callback time",
-	"" , "", "",	"", "", "", "NO-NULL", gettext("please use the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"), "", "res_display_dateformat");
+    "callback_time",
+    '$value',
+    gettext("please use the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
+    "",
+    "INPUT",
+    "size=20 maxlength=20  $comp_date",
+    10, "Insert the callback time", "", "", "", "", "", "", "NO-NULL", "", "res_display_dateformat");
 
 
 $HD_Form -> AddEditElement (gettext("CHANNEL"),
-	"channel",
-	'$value',
-	"INPUT",
-	"size=60 maxlength=70",
-	"11",
-	gettext("Insert the channel"),
-	"" , "", "",	"", "", "", "", gettext("Channel on which to originate the call (SIP/123@1.1.1.4)"), null, null, gettext("Define all the information requested by asterisk to generate the callback"));
+    "channel",
+    '$value',
+    gettext("Channel on which to originate the call (SIP/123@1.1.1.4)"),
+    gettext("Define all the information requested by asterisk to generate the callback"),
+    "INPUT",
+    "size=60 maxlength=70",
+    11, gettext("Insert the channel"), "", "", "", "", "", "", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("EXTENSION"),
-	"exten",
-	'$value',
-	"INPUT",
-	"size=15 maxlength=30",
-	"11",
-	gettext("Insert the channel"),
-	"" , "", "",	"", "", "", "", gettext("Extension to use on connect (must use Context & Priority with it)") );
+    "exten",
+    '$value',
+    gettext("Extension to use on connect (must use Context & Priority with it)"),
+    "",
+    "INPUT",
+    "size=15 maxlength=30",
+    11, gettext("Insert the channel"), "", "", "", "", "", "", "");
 
 $HD_Form -> AddEditElement (gettext("CONTEXT"),
-	"context",
-	'$value',
-	"INPUT",
-	"size=30 maxlength=50",
-	"11",
-	gettext("Insert the context"),
-	"" , "", "",	"", "", "", "", gettext("Context to use on connect (must use Exten & Priority with it)") );
+    "context",
+    '$value',
+    gettext("Context to use on connect (must use Exten & Priority with it)"),
+    "",
+    "INPUT",
+    "size=30 maxlength=50",
+    11, gettext("Insert the context"), "", "", "", "", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("PRIORITY"),
-	"priority",
-	'$value',
-	"INPUT",
-	"size=10 maxlength=10",
-	"4",
-	gettext("Insert the priority"),
-	"" , "", "",	"", "", "", "", gettext("Priority to use on connect (must use Context & Exten with it)") );
+    "priority",
+    '$value',
+    gettext("Priority to use on connect (must use Context & Exten with it)"),
+    "",
+    "INPUT",
+    "size=10 maxlength=10",
+    4, gettext("Insert the priority"), "", "", "", "", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("APPLICATION"),
-	"application",
-	'$value',
-	"INPUT",
-	"size=20 maxlength=30",
-	"11",
-	gettext("Insert the application"),
-	"" , "", "",	"", "", "", "NO", gettext("Application to use on connect : meetme or other (use Data for parameters)") );
+    "application",
+    '$value',
+    gettext("Application to use on connect : meetme or other (use Data for parameters)"),
+    "",
+    "INPUT",
+    "size=20 maxlength=30",
+    11, gettext("Insert the application"), "", "", "", "", "", "", "NO");
 
 
 $HD_Form -> AddEditElement (gettext("DATA"),
-	"data",
-	'$value',
-	"INPUT",
-	"size=30 maxlength=30",
-	"11",
-	gettext("Insert the data"),
-	"" , "", "",	"", "", "", "NO", gettext("Data if Application parameter is used") );
+    "data",
+    '$value',
+    gettext("Data if Application parameter is used"),
+    "",
+    "INPUT",
+    "size=30 maxlength=30",
+    11, gettext("Insert the data"), "", "", "", "", "", "", "NO");
 
 
 $HD_Form -> AddEditElement (gettext("TIMEOUT"),
-	"timeout",
-	'$value',
-	"INPUT",
-	"size=10 maxlength=15",
-	"11",
-	gettext("Insert the timeout"),
-	"" , "", "",	"", "", "", "NO", gettext("Timeout for the connection to happen (30000)") );
+    "timeout",
+    '$value',
+    gettext("Timeout for the connection to happen (30000)"),
+    "",
+    "INPUT",
+    "size=10 maxlength=15",
+    11, gettext("Insert the timeout"), "", "", "", "", "", "", "NO");
 
 
 $HD_Form -> AddEditElement (gettext("CALLERID"),
-	"callerid",
-	'$value',
-	"INPUT",
-	"size=20 maxlength=30",
-	"11",
-	gettext("Insert the callerid"),
-	"" , "", "",	"", "", "", "NO", gettext("CallerID to use for the call") );
+    "callerid",
+    '$value',
+    gettext("CallerID to use for the call"),
+    "",
+    "INPUT",
+    "size=20 maxlength=30",
+    11, gettext("Insert the callerid"), "", "", "", "", "", "", "NO");
 
 
 $HD_Form -> AddEditElement (gettext("variable"),
-	"variable",
-	'$value',
-	"INPUT",
-	"size=80 maxlength=300",
-	"11",
-	gettext("Insert the variable"),
-	"" , "", "",	"", "", "", "NO", gettext("Callback info for Asterisk (variable list to transfer to the channel) var1=23|var2=24|var3=25") );
+    "variable",
+    '$value',
+    gettext("Callback info for Asterisk (variable list to transfer to the channel) var1=23|var2=24|var3=25"),
+    "",
+    "INPUT",
+    "size=80 maxlength=300",
+    11, gettext("Insert the variable"), "", "", "", "", "", "", "NO");
 
 
 $HD_Form -> AddEditElement (gettext("account"),
-	"account",
-	'$value',
-	"INPUT",
-	"size=20 maxlength=30",
-	"11",
-	gettext("Insert the account"),
-	"" , "", "",	"", "", "", "NO", gettext("Account code for the call for billing purpose") );
+    "account",
+    '$value',
+    gettext("Account code for the call for billing purpose"),
+    "",
+    "INPUT",
+    "size=20 maxlength=30",
+    11, gettext("Insert the account"), "", "", "", "", "", "", "NO");
 
 
 $HD_Form -> AddEditElement (gettext("async"),
-	"async",
-	'$value',
-	"INPUT",
-	"size=10 maxlength=10",
-	"11",
-	gettext("Insert the async"),
-	"" , "", "",	"", "", "", "NO", gettext("For the origination to be asynchronous (allows multiple calls to be generated without waiting for a response)") );
+    "async",
+    '$value',
+    gettext("For the origination to be asynchronous (allows multiple calls to be generated without waiting for a response)"),
+    "",
+    "INPUT",
+    "size=10 maxlength=10",
+    11, gettext("Insert the async"), "", "", "", "", "", "", "NO");
 
 
 $HD_Form -> AddEditElement (gettext("actionid"),
-	"actionid",
-	'$value',
-	"INPUT",
-	"size=20 maxlength=30",
-	"11",
-	gettext("Insert the actionid"),
-	"" , "", "",	"", "", "", "NO", gettext("The request identifier. It allows you to identify the response to this request. You may use a number or a string. <br> Useful when you make several simultaneous requests. ActionID: ABC45678901234567890 ") );
+    "actionid",
+    '$value',
+    gettext("The request identifier. It allows you to identify the response to this request. You may use a number or a string. <br> Useful when you make several simultaneous requests. ActionID: ABC45678901234567890 "),
+    "",
+    "INPUT",
+    "size=20 maxlength=30",
+    11, gettext("Insert the actionid"), "", "", "", "", "", "", "NO");
 
 
 $HD_Form -> FieldEditElement ('id_server_group, uniqueid, status, server_ip, num_attempt, manager_result, agi_result, callback_time, channel, exten, context, priority, application, data, timeout, callerid, variable, account, async, actionid');

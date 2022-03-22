@@ -87,29 +87,29 @@ $HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 $language_list = getLanguagesList();
 
 $HD_Form -> AddEditElement (gettext("NAME"),
-	"name",
-	'$value',
-	"INPUT",
-	"size=30 maxlength=20",
-	"9",
-	gettext("Insert the Support Box name "),
-	"" , "", "", "", "", "", "", "" );
+    "name",
+    '$value',
+    "",
+    "",
+    "INPUT",
+    "size=30 maxlength=20",
+    9, gettext("Insert the Support Box name "), "", "", "", "", "", "", "");
 $HD_Form -> AddEditElement (gettext("LANGUAGE"),
-       "language",
-       "",
-       "SELECT",
-       "",
-       "",
-       "",
-       "list" , "", "",	"", $language_list, "%1", "", "" );
+    "language",
+    "",
+    "",
+    "",
+    "SELECT",
+    "",
+    null, "", "list", "", "", "", $language_list, "%1", "");
 $HD_Form -> AddEditElement (gettext("EMAIL"),
-	"email",
-	'$value',
-	"INPUT",
-	"size=30 maxlength=70",
-	"1",
-	gettext("Insert the email"),
-	"" , "", "", "", "" , "", "NO", "");
+    "email",
+    '$value',
+    "",
+    "",
+    "INPUT",
+    "size=30 maxlength=70",
+    1, gettext("Insert the email"), "", "", "", "", "", "", "NO");
 
 $HD_Form -> FieldEditElement ('name,language,email');
 

@@ -104,60 +104,60 @@ if (isset($form_action) && $form_action=="ask-add") {
 }
 
 $HD_Form -> AddEditElement (gettext("LABEL"),
-	"label",
-	"$value",
-	"INPUT",
-	"size=35 maxlength=30",
-	"3",
-	gettext("Insert the service label"),
-	"" , "", "", "", "" , "" , "" , "");
+    "label",
+    "$value",
+    "",
+    "",
+    "INPUT",
+    "size=35 maxlength=30",
+    3, gettext("Insert the service label"), "", "", "", "", "", "", "");
 
 $HD_Form -> AddEditElement (gettext("FEE"),
-	"fee",
-	'$value',
-	"INPUT",
-	"size=30 maxlength=30",
-	"12",
-	gettext("Insert the fee amount."),
-	"" , "", "", "", "" , "", "", gettext("Set the fee amount that the user have to pay per month."));
+    "fee",
+    '$value',
+    gettext("Set the fee amount that the user have to pay per month."),
+    "",
+    "INPUT",
+    "size=30 maxlength=30",
+    12, gettext("Insert the fee amount."), "", "", "", "", "", "", "");
 
 
 $HD_Form -> AddEditElement ("STATUS",
-	"status",
-	'$value',
-	"SELECT",
-	"",
-	"",
-	"",
-	"list" , "", "", "", $actived_list, "%1" , "", "");
+    "status",
+    '$value',
+    "",
+    "",
+    "SELECT",
+    "",
+    null, "", "list", "", "", "", $actived_list, "%1", "");
 
 $HD_Form -> AddEditElement (gettext("START DATE"),
-				"startdate",
-				'$value',
-				"INPUT",
-				"size=40 maxlength=40  $comp_date",
-				"10",
-				gettext("Insert the start date"),
-				"" , "", "",	"", "", "", "NO-NULL", gettext("please use the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"), "", "res_display_dateformat");
+    "startdate",
+    '$value',
+    gettext("please use the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
+    "",
+    "INPUT",
+    "size=40 maxlength=40  $comp_date",
+    10, gettext("Insert the start date"), "", "", "", "", "", "", "NO-NULL", "", "res_display_dateformat");
 
 $HD_Form -> AddEditElement (gettext("STOP DATE"),
-				"stopdate",
-				'$value',
-				"INPUT",
-				"size=40 maxlength=40  $comp_date_plus",
-				"10",
-				gettext("Insert the stop date"),
-				"" , "", "",	"", "", "", "NO-NULL", gettext("please use the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"), "", "res_display_dateformat");
+    "stopdate",
+    '$value',
+    gettext("please use the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
+    "",
+    "INPUT",
+    "size=40 maxlength=40  $comp_date_plus",
+    10, gettext("Insert the stop date"), "", "", "", "", "", "", "NO-NULL", "", "res_display_dateformat");
 
 
 $HD_Form -> AddEditElement (gettext("EMAIL TO SEND REPORT"),
-	"emailreport",
-	'$value',
-	"INPUT",
-	"size=30 maxlength=30",
-	"1",
-	gettext("Insert the email to send the report"),
-	"" , "", "", "", "", "" , "NO-NULL", "");
+    "emailreport",
+    '$value',
+    "",
+    "",
+    "INPUT",
+    "size=30 maxlength=30",
+    1, gettext("Insert the email to send the report"), "", "", "", "", "", "", "NO-NULL");
 
 
 

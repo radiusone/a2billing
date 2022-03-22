@@ -78,46 +78,46 @@ $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 
 $HD_Form -> AddEditElement (gettext("SPEED DIAL"),
-			   "speeddial",
-			   "",
-			   "SELECT",
-			   "",
-			   "",
-			   "",
-			   "list" , "", "",	"", $speeddial_list, "%1", "", "" );
+    "speeddial",
+    "",
+    "",
+    "",
+    "SELECT",
+    "",
+    null, "", "list", "", "", "", $speeddial_list, "%1", "");
 
 
 $HD_Form -> AddEditElement (gettext("NAME"),
-			   "name",
-			   '$value',
-			   "INPUT",
-			   "size=40 maxlength=50",
-			   "0",
-			   gettext("Insert the name"),
-			   "" , "", "",	"", "", "",	"", gettext("Enter the name or label that will identify this speed dial") );
+    "name",
+    '$value',
+    gettext("Enter the name or label that will identify this speed dial"),
+    "",
+    "INPUT",
+    "size=40 maxlength=50",
+    0, gettext("Insert the name"), "", "", "", "", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("PHONE"),
-			   "phone",
-			   '$value',
-			   "INPUT",
-			   "size=30 maxlength=50",
-			   "4",
-			   gettext("Insert the phone"),
-			   "" , "", "",	"", "", "",	"", gettext("Enter the phone number for the speed dial.") );
+    "phone",
+    '$value',
+    gettext("Enter the phone number for the speed dial."),
+    "",
+    "INPUT",
+    "size=30 maxlength=50",
+    4, gettext("Insert the phone"), "", "", "", "", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("ID CARD"),
-			   "id_cc_card",
-			   "$value",
-			   "POPUPVALUE",
-			   "size=30 maxlength=50",
-			   "4",
-			   gettext("Insert the Id CardNumber"),
-			    "" , "", "", "", "",
-				"A2B_entity_card.php?popup_select=1&"
-				, ", 'CardNumberSelection','width=550,height=330,top=20,left=100,scrollbars=1'" ,
-				gettext("Define the card number ID to use."));
+    "id_cc_card",
+    "$value",
+    gettext("Define the card number ID to use."),
+    "",
+    "POPUPVALUE",
+    "size=30 maxlength=50",
+    4, gettext("Insert the Id CardNumber"), "", "", "",
+    ""
+				, "",
+    "A2B_entity_card.php?popup_select=1&", ", 'CardNumberSelection','width=550,height=330,top=20,left=100,scrollbars=1'");
 
 $HD_Form -> FieldEditElement ('cc_speeddial.speeddial, cc_speeddial.name, cc_speeddial.phone, cc_speeddial.id_cc_card');
 

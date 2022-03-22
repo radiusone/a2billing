@@ -96,12 +96,12 @@ if (has_rights (ACX_MODIFY_REFILLS)) {
 	$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 
 	$HD_Form -> AddEditElement (gettext("ID AGENT"),
-				   "agent_id",
-				   "$value", "POPUPVALUE", "size=30 maxlength=50",
-				   "4",	gettext("Insert the Customer ID"),
-				    "" , "", "", "", "",
-					"A2B_entity_agent.php?popup_select=1&", ", 'AgentSelection','width=550,height=330,top=20,left=100,scrollbars=1'" ,
-					gettext("Select the Agent ID"));
+        "agent_id",
+        "$value", gettext("Select the Agent ID"), "",
+        "POPUPVALUE", "size=30 maxlength=50",
+        4, gettext("Insert the Customer ID"), null, "", "",
+        "", "",
+        "A2B_entity_agent.php?popup_select=1&", ", 'AgentSelection','width=550,height=330,top=20,left=100,scrollbars=1'");
 
 	if ($form_action=="ask-add") {
 		$begin_date = date("Y");
@@ -111,40 +111,40 @@ if (has_rights (ACX_MODIFY_REFILLS)) {
 	}
 
 	$HD_Form -> AddEditElement (gettext("REFILL DATE"),
-				   "date",
-				   '$value',
-				   "INPUT",
-				   "size=40 maxlength=40  $comp_date",
-				   "10",
-				   gettext("Insert the current date"),
-				   "" , "", "",	"", "", "", "", "" );
+        "date",
+        '$value',
+        "",
+        "",
+        "INPUT",
+        "size=40 maxlength=40  $comp_date",
+        10, gettext("Insert the current date"), "", "", "", "", "", "", "");
 
 	$HD_Form -> AddEditElement (gettext("REFILL AMOUNT"),
-				   "credit",
-				   '$value',
-				   "INPUT",
-				   "size=60 maxlength=10",
-				   "12",
-				   gettext("Insert the credit amount"),
-				   "" , "", "",	"", "" , "", "", gettext("Enter the amount in the currency base : ").BASE_CURRENCY );
+        "credit",
+        '$value',
+        gettext("Enter the amount in the currency base : ") . BASE_CURRENCY,
+        "",
+        "INPUT",
+        "size=60 maxlength=10",
+        12, gettext("Insert the credit amount"), "", "", "", "", "", "", "");
 
 	$HD_Form -> AddEditElement (gettext("DESCRIPTION"),
-					"description",
-					'',
-					"TEXTAREA",
-					"cols=50 rows=4",
-					"",
-					gettext("Insert the description"),
-					"" , "", "", "", "" , "", "", "");
+        "description",
+        '',
+        "",
+        "",
+        "TEXTAREA",
+        "cols=50 rows=4",
+        null, gettext("Insert the description"), "", "", "", "", "", "", "");
 
 	$HD_Form -> AddEditElement (gettext("REFILL TYPE"),
-	               "refill_type",
-	               '$value',
-	               "SELECT",
-	               "",
-	               "",
-	               "",
-	               "list" , "", "",     "", $list_refill_type, "%1", "", gettext("Define type for payment and refill,if created.") );
+        "refill_type",
+        '$value',
+        gettext("Define type for payment and refill,if created."),
+        "",
+        "SELECT",
+        null,
+        "", "", "list", "", "", "", $list_refill_type, "%1", "");
 
 	$HD_Form -> FieldEditElement ('agent_id, date, credit, description, refill_type');
 

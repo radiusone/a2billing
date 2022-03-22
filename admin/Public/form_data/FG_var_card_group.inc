@@ -102,42 +102,42 @@ $right_list["19"] = array( gettext("SEE RECORDING"), "262144");
 $len_right_list = count($right_list);
 
 
-$HD_Form -> AddEditElement ( gettext("NAME"),
-		"name",	'$value',
-		"INPUT",
-		"size=30 maxlength=40",
-		"0",
-		gettext("Insert the provider name"),
-		"" , "", "",	"", "", "", "", "" );
+$HD_Form -> AddEditElement (gettext("NAME"),
+    "name", '$value',
+    "",
+    "",
+    "INPUT",
+    "size=30 maxlength=40",
+    0, gettext("Insert the provider name"), "", "", "", "", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("DESCRIPTION"),
-		"description",
-		'',
-		"TEXTAREA",
-		"cols=50 rows=4",
-		"",
-		gettext("Insert the description"),
-		"" , "", "", "", "" , "", "", "");
+    "description",
+    '',
+    "",
+    "",
+    "TEXTAREA",
+    "cols=50 rows=4",
+    null, gettext("Insert the description"), "", "", "", "", "", "", "");
 
 $HD_Form -> AddEditElement (gettext("AGENT"),
-	   "id_agent",
-	   "",
-	   "SELECT",
-	   "", "", "",
-	   "sql",
-	   "cc_agent",
-	   "login,id,firstname,lastname",
-	   "", "", "%1 - %3 %4 (%2)", "", "", "", '<OPTION  value="-1" selected>'.gettext("NONE").'</OPTION>' );
+    "id_agent",
+    "",
+    "",
+    "", "SELECT", "",
+    null,
+    "",
+    "sql",
+    "cc_agent", "login,id,firstname,lastname", "", "", "%1 - %3 %4 (%2)", "", "", '<OPTION  value="-1" selected>' . gettext("NONE") . '</OPTION>');
 
 $HD_Form -> AddEditElement (gettext("PERMISSION USER INTERFACE"),
-		"users_perms",
-		'$value',
-		"SELECT",
-		"size=\"$len_right_list\" multiple=\"multiple\"",
-		"", "",
-		"list", "", "description, id", "", $right_list, "%1" , "",
-		gettext("To select several rights in the above ListBox, hold the CTRL key down while clicking the items") );
+    "users_perms",
+    '$value',
+    gettext("To select several rights in the above ListBox, hold the CTRL key down while clicking the items"),
+    "",
+    "SELECT", "size=\"$len_right_list\" multiple=\"multiple\"",
+    null, "", "list", "", "description, id", "", $right_list,
+    "%1", "");
 
 
 $HD_Form -> FieldEditElement ('name, description, id_agent, users_perms');

@@ -82,53 +82,53 @@ if (isset($form_action) && $form_action=="ask-add") {
 }
 
 $HD_Form -> AddEditElement (gettext("ACCOUNT ID"),
-				"id_cc_card",
-				'',
-				"POPUPVALUE",
-				"size=30 maxlength=50 $idd",
-				"4",
-				gettext("Insert the Customer ID"),
-				"" , "", "", "", "",
-				"A2B_entity_card.php?popup_select=1&"
-				, ", 'CardNumberSelection','width=550,height=350,top=20,left=100,scrollbars=1'" ,
-				gettext("Set the Customer ID."));
+    "id_cc_card",
+    '',
+    gettext("Set the Customer ID."),
+    "",
+    "POPUPVALUE",
+    "size=30 maxlength=50 $idd",
+    4, gettext("Insert the Customer ID"), "", "", "",
+    ""
+				, "",
+    "A2B_entity_card.php?popup_select=1&", ", 'CardNumberSelection','width=550,height=350,top=20,left=100,scrollbars=1'");
 
 $HD_Form -> AddEditElement (gettext("ID SUBSCRIPTION SERVICE"),
-				"id_subscription_fee",
-				"",
-				"SELECT",
-				"", "", "",
-				"sql",
-				"cc_subscription_service",
-				"label, id",
-				"", "", "%1", "", "", "", '<OPTION  value="-1" selected>'.gettext("NOT DEFINED").'</OPTION>' );
+    "id_subscription_fee",
+    "",
+    "",
+    "", "SELECT", "",
+    null,
+    "",
+    "sql",
+    "cc_subscription_service", "label, id", "", "", "%1", "", "", '<OPTION  value="-1" selected>' . gettext("NOT DEFINED") . '</OPTION>');
 
 $HD_Form -> AddEditElement (gettext("START DATE"),
-				"startdate",
-				'$value',
-				"INPUT",
-				"size=40 maxlength=40  $comp_date",
-				"10",
-				gettext("Insert the start date"),
-				"" , "", "",	"", "", "", "NO-NULL", gettext("please use the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"), "", "res_display_dateformat");
+    "startdate",
+    '$value',
+    gettext("please use the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
+    "",
+    "INPUT",
+    "size=40 maxlength=40  $comp_date",
+    10, gettext("Insert the start date"), "", "", "", "", "", "", "NO-NULL", "", "res_display_dateformat");
 
 $HD_Form -> AddEditElement (gettext("STOP DATE"),
-				"stopdate",
-				'$value',
-				"INPUT",
-				"size=40 maxlength=40  $comp_date_plus",
-				"10",
-				gettext("Insert the stop date"),
-				"" , "", "",	"", "", "", "NO-NULL", gettext("please use the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"), "", "res_display_dateformat");
+    "stopdate",
+    '$value',
+    gettext("please use the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
+    "",
+    "INPUT",
+    "size=40 maxlength=40  $comp_date_plus",
+    10, gettext("Insert the stop date"), "", "", "", "", "", "", "NO-NULL", "", "res_display_dateformat");
 
 $HD_Form -> AddEditElement (gettext("PRODUCT LABEL"),
-				"product_name",
-				'',
-				"TEXTAREA",
-				"cols=50 rows=4",
-				"",
-				gettext("Enter the name of the product wich is subscribed"),
-				"" , "", "",	"", "" , "", "", "");
+    "product_name",
+    '',
+    "",
+    "",
+    "TEXTAREA",
+    "cols=50 rows=4",
+    null, gettext("Enter the name of the product wich is subscribed"), "", "", "", "", "", "", "");
 
 $HD_Form -> FieldEditElement ('id_cc_card, id_subscription_fee, startdate, stopdate, product_name');
 

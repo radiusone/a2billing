@@ -86,41 +86,41 @@ $HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 
 
 $HD_Form -> AddEditElement (gettext("NAME"),
-	"name",
-	'$value',
-	"INPUT",
-	"size=30 maxlength=20",
-	"9",
-	gettext("Insert the Support Box name "),
-	"" , "", "", "", "", "", "", "" );
+    "name",
+    '$value',
+    "",
+    "",
+    "INPUT",
+    "size=30 maxlength=20",
+    9, gettext("Insert the Support Box name "), "", "", "", "", "", "", "");
 
 $HD_Form -> AddEditElement (gettext("ACTIVATED"),
-	"activated",
-	'1',
-	"RADIOBUTTON",
-	"",
-	"",
-	gettext("Choose if you want to activate this component"),
-	"" , "", "", "Yes:1,No:0", "", "", "" , "" );
+    "activated",
+    '1',
+    "",
+    "",
+    "RADIOBUTTON",
+    "",
+    null, gettext("Choose if you want to activate this component"), "", "", "", "Yes:1,No:0", "", "", "");
 
 $HD_Form -> AddEditElement (gettext("Support Box"),
-   "id_support",
-   "",
-   "SELECT",
-   "", "", "",
-   "sql",
-   "cc_support",
-   "name, id",
-   "", "", "%1", "", "");
+    "id_support",
+    "",
+    "",
+    "", "SELECT", "",
+    null,
+    "",
+    "sql",
+    "cc_support", "name, id", "", "", "%1", "");
 
 $HD_Form -> AddEditElement (gettext("USER TYPE"),
-	               "type_user",
-	               '$value',
-	               "SELECT",
-	               "",
-	               "",
-	               "",
-	               "list" , "", "",     "", $user_type, "%1", "", gettext("Define who can use this component.") );
+    "type_user",
+    '$value',
+    gettext("Define who can use this component."),
+    "",
+    "SELECT",
+    "",
+    null, "", "list", "", "", "", $user_type, "%1", "");
 
 $HD_Form -> FieldEditElement ('name, activated, id_support,type_user');
 

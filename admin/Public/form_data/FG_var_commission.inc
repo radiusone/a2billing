@@ -74,28 +74,28 @@ if ($form_action=="ask-add" && !empty($id_card)) {
 }
 
 $HD_Form -> AddEditElement (gettext("CUSTOMER ID"),
-			   "id_card",
-			   "$value",
-			   "POPUPVALUE",
-			   "size=30 maxlength=50 ".$id_val,
-			   "4",
-			   gettext("Insert the Customer ID "),
-			    "" , "", "", "", "",
-				"A2B_entity_card.php?popup_select=1&"
-				, ", 'CardNumberSelection','width=550,height=330,top=20,left=100,scrollbars=1'" ,
-				gettext("Select the Customer ID"));
+    "id_card",
+    "$value",
+    gettext("Select the Customer ID"),
+    "",
+    "POPUPVALUE",
+    "size=30 maxlength=50 " . $id_val,
+    4, gettext("Insert the Customer ID "), "", "", "",
+    ""
+				, "",
+    "A2B_entity_card.php?popup_select=1&", ", 'CardNumberSelection','width=550,height=330,top=20,left=100,scrollbars=1'");
 
 $HD_Form -> AddEditElement (gettext("AGENT ID"),
-			   "id_agent",
-			   "$value",
-			   "POPUPVALUE",
-			   "size=30 maxlength=50 ".$id_val,
-			   "4",
-			   gettext("Insert the AGENT ID "),
-			    "" , "", "", "", "",
-				"A2B_entity_agent.php?popup_select=1&"
-				, ", 'AgentSelection','width=550,height=330,top=20,left=100,scrollbars=1'" ,
-				gettext("Select the Agent ID"));
+    "id_agent",
+    "$value",
+    gettext("Select the Agent ID"),
+    "",
+    "POPUPVALUE",
+    "size=30 maxlength=50 " . $id_val,
+    4, gettext("Insert the AGENT ID "), "", "", "",
+    ""
+				, "",
+    "A2B_entity_agent.php?popup_select=1&", ", 'AgentSelection','width=550,height=330,top=20,left=100,scrollbars=1'");
 
 if ($form_action=="ask-add") {
 	$begin_date = date("Y");
@@ -105,53 +105,53 @@ if ($form_action=="ask-add") {
 }
 
 $HD_Form -> AddEditElement (gettext("PAYMENT DATE"),
-			   "date",
-			   '$value',
-			   "INPUT",
-			   "size=40 READONLY maxlength=40  $comp_date",
-			   "10",
-			   gettext("Insert the current date"),
-			   "" , "", "",	"", "", "", "", "" );
+    "date",
+    '$value',
+    "",
+    "",
+    "INPUT",
+    "size=40 READONLY maxlength=40  $comp_date",
+    10, gettext("Insert the current date"), "", "", "", "", "", "", "");
 
 $HD_Form -> AddEditElement (gettext("COMMISSION AMOUNT"),
-			   "amount",
-			   '$value',
-			   "INPUT",
-			   "size=60 maxlength=10",
-			   "12",
-			   gettext("Insert the commission amount"),
-			   "" , "", "",	"", "" , "", "", gettext("Enter the amount in the currency base : ").BASE_CURRENCY );
+    "amount",
+    '$value',
+    gettext("Enter the amount in the currency base : ") . BASE_CURRENCY,
+    "",
+    "INPUT",
+    "size=60 maxlength=10",
+    12, gettext("Insert the commission amount"), "", "", "", "", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("DESCRIPTION"),
-				"description",
-				'',
-				"TEXTAREA",
-				"cols=50 rows=4",
-				"",
-				gettext("Insert the description"),
-				"" , "", "", "", "" , "", "", "");
+    "description",
+    '',
+    "",
+    "",
+    "TEXTAREA",
+    "cols=50 rows=4",
+    null, gettext("Insert the description"), "", "", "", "", "", "", "");
 
 $HD_Form -> AddEditElement (gettext("PAYMENT ID"),
-			   "id_payment",
-			   "$value",
-			   "POPUPVALUE",
-			   "size=30 maxlength=50 ".$id_val,
-			   "4",
-			   gettext("Insert the Payment ID "),
-			    "" , "", "", "", "",
-				"A2B_entity_payment.php?popup_select=1&"
-				, ", 'PaymentSelection','width=550,height=330,top=20,left=100,scrollbars=1'" ,
-				gettext("Select the Payment ID"));
+    "id_payment",
+    "$value",
+    gettext("Select the Payment ID"),
+    "",
+    "POPUPVALUE",
+    "size=30 maxlength=50 " . $id_val,
+    4, gettext("Insert the Payment ID "), "", "", "",
+    ""
+				, "",
+    "A2B_entity_payment.php?popup_select=1&", ", 'PaymentSelection','width=550,height=330,top=20,left=100,scrollbars=1'");
 
 $HD_Form -> AddEditElement (gettext("COMMISSION TYPE"),
-               "commission_type",
-               '$value',
-               "SELECT",
-               "",
-               "",
-               "",
-               "list" , "", "",     "", $com_list, "%1", "", gettext("Define the type of this commission.") );
+    "commission_type",
+    '$value',
+    gettext("Define the type of this commission."),
+    "",
+    "SELECT",
+    "",
+    null, "", "list", "", "", "", $com_list, "%1", "");
 
 $HD_Form -> FieldEditElement ('id_card, id_agent, date, amount, description, id_payment, commission_type');
 

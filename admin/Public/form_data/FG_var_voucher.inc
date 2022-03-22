@@ -127,52 +127,52 @@ if ($form_action=="ask-add") {
 }
 
 $HD_Form -> AddEditElement (gettext("VOUCHER"),
-   "voucher",
-   "$value",
-   "INPUT",
-	"size=20 $maxi readonly maxlength=40",
-   "4",
-   gettext("Insert the voucher"),
-   "" , "", "",	"", "" , "", "", "");
+    "voucher",
+    "$value",
+    "",
+    "",
+    "INPUT",
+    "size=20 $maxi readonly maxlength=40",
+    4, gettext("Insert the voucher"), "", "", "", "", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("AMOUNT"),
-   "credit",
-   '$value',
-   "INPUT",
-   "size=30 maxlength=30",
-   "12",
-   gettext("Insert the number of credit"),
-   "" , "", "",	"", "", "",	"", "" );
+    "credit",
+    '$value',
+    "",
+    "",
+    "INPUT",
+    "size=30 maxlength=30",
+    12, gettext("Insert the number of credit"), "", "", "", "", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("TAG"),
-   "tag",
-   '$value',
-   "INPUT",
-   "size=30 maxlength=30",
-   "11",
-   gettext("Insert the tag"),
-   "" , "", "",	"", "", "", "NO-NULL", "" );
+    "tag",
+    '$value',
+    "",
+    "",
+    "INPUT",
+    "size=30 maxlength=30",
+    11, gettext("Insert the tag"), "", "", "", "", "", "", "NO-NULL");
 
 
 $HD_Form -> AddEditElement (gettext("ACTIVATED"),
-	"activated",
-	't',
-	"RADIOBUTTON",
-	"",
-	"",
-	gettext("Choose if you want to activate this card"),
-	"" , "", "" ,"Yes:t,No:f", "", "" , "" , "");
+    "activated",
+    't',
+    "",
+    "",
+    "RADIOBUTTON",
+    "",
+    null, gettext("Choose if you want to activate this card"), "", "", "", "Yes:t,No:f", "", "", "");
 
 $HD_Form -> AddEditElement (gettext("CURRENCY"),
-	"currency",
-	'$value',
-	"SELECT",
-	"",
-	"",
-	"",
-	"list" , "", "",	"", $currency_list, "%1", "", "" );
+    "currency",
+    '$value',
+    "",
+    "",
+    "SELECT",
+    "",
+    null, "", "list", "", "", "", $currency_list, "%1", "");
 
 
 if ($form_action=="ask-add") {
@@ -185,13 +185,13 @@ if ($form_action=="ask-add") {
 }
 
 $HD_Form -> AddEditElement (gettext("EXPIRY DATE"),
-	"expirationdate",
-	'$value',
-	"INPUT",
-	"size=40 maxlength=40  $comp_date_plus",
-	"10",
-	gettext("Insert the expiration date"),
-	"" , "", "",	"", "", "", "", gettext("Format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"), null, "res_display_dateformat" );
+    "expirationdate",
+    '$value',
+    gettext("Format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
+    "",
+    "INPUT",
+    "size=40 maxlength=40  $comp_date_plus",
+    10, gettext("Insert the expiration date"), "", "", "", "", "", "", "", "", "res_display_dateformat");
 
 $HD_Form -> FieldEditElement ('voucher, credit, tag, activated, currency, expirationdate ');
 

@@ -67,22 +67,22 @@ $HD_Form -> FG_OTHER_BUTTON1 = true;
 $HD_Form -> FG_OTHER_BUTTON2 = true;
 
 $HD_Form -> AddEditElement (gettext("Name "),
-	"name",
-	"",
-	"INPUT",
-	"size=50 maxlength=50",
-	"",
-	gettext("Insert the name of backup"),
-	"" , "", "", "", "", "", "", gettext("Name of the backup"));
+    "name",
+    "",
+    gettext("Name of the backup"),
+    "",
+    "INPUT",
+    "size=50 maxlength=50",
+    null, gettext("Insert the name of backup"), "", "", "", "", "", "", "");
 
 $HD_Form -> AddEditElement ("PATH",
-	"path",
-	'',
-	"INPUT",
-	"size=100 maxlength=200 readonly",
-	"",
-	"the backup file",
-	"" , "", "", "", "", "", "", gettext("The backup file name"));
+    "path",
+    '',
+    gettext("The backup file name"),
+    "",
+    "INPUT",
+    "size=100 maxlength=200 readonly",
+    null, "the backup file", "", "", "", "", "", "", "");
 
 
 

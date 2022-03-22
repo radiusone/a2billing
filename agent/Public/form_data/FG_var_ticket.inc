@@ -113,53 +113,53 @@ if ($form_action=='ask-add'){
 }
 
 $HD_Form -> AddEditElement (gettext("CREATOR"),
-	"creator",
-	'',
-	"POPUPVALUE",
-	"size=30 maxlength=50 $val_default",
-	"4",
-	gettext("Insert the Customer ID"),
-	"" , "", "", "", "",
-	"A2B_entity_card.php?popup_select=1&"
-	, ", 'CardNumberSelection','width=550,height=350,top=20,left=100,scrollbars=1'" ,
-	gettext("Set the Customer ID"));
+    "creator",
+    '',
+    gettext("Set the Customer ID"),
+    "",
+    "POPUPVALUE",
+    "size=30 maxlength=50 $val_default",
+    4, gettext("Insert the Customer ID"), "", "", "",
+    ""
+	, "",
+    "A2B_entity_card.php?popup_select=1&", ", 'CardNumberSelection','width=550,height=350,top=20,left=100,scrollbars=1'");
 
 
 $HD_Form -> AddEditElement (gettext("TITLE"),
-	"title",
-	'$value',
-	"INPUT",
-	"size=60 maxlength=50",
-	"9",
-	gettext("Insert the Title of ticket "),
-	"" , "", "", "", "", "", "", "" );
+    "title",
+    '$value',
+    "",
+    "",
+    "INPUT",
+    "size=60 maxlength=50",
+    9, gettext("Insert the Title of ticket "), "", "", "", "", "", "", "");
 $HD_Form -> AddEditElement (gettext("COMPONENT"),
-			   "id_component",
-			   "",
-			   "SELECT",
-			   "", "", "",
-			   "sql",
-			   "cc_support_component",
-			   "name, id",
-			   "", "", "%1", "", "");
+    "id_component",
+    "",
+    "",
+    "", "SELECT", "",
+    "",
+    "",
+    "sql",
+    "cc_support_component", "name, id", "", "", "%1", "");
 
 $HD_Form -> AddEditElement (gettext("PRIORITY"),
-	"priority",
-	'$value',
-	"SELECT",
-	"",
-	"",
-	"",
-	"list" , "", "", "", $priority_list, "%1", "", "");
+    "priority",
+    '$value',
+    "",
+    "",
+    "SELECT",
+    "",
+    "", "", "list", "", "", "", $priority_list, "%1", "");
 
 $HD_Form -> AddEditElement (gettext("DESCRIPTION"),
-	"description",
-	'',
-	"TEXTAREA",
-	"cols=50 rows=4",
-	"",
-	gettext("Insert the description"),
-	"" , "", "", "", "" , "", "", "");
+    "description",
+    '',
+    "",
+    "",
+    "TEXTAREA",
+    "cols=50 rows=4",
+    "", gettext("Insert the description"), "", "", "", "", "", "", "");
 
 
 

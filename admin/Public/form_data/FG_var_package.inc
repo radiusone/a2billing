@@ -85,54 +85,54 @@ $HD_Form -> FG_OTHER_BUTTON1_ALT = gettext("Add rates");
 $HD_Form -> FG_OTHER_BUTTON1_IMG = "";
 $HD_Form -> FG_OTHER_BUTTON1_LINK = "A2B_package_manage_rates.php?id=|param|";
 $HD_Form -> AddEditElement (gettext("LABEL"),
-	"label",
-	'$value',
-	"INPUT",
-	"size=30 maxlength=30",
-	"0",
-	gettext("Insert the package label"),
-	"" , "", "",	"", "", "", "",	"");
+    "label",
+    '$value',
+    "",
+    "",
+    "INPUT",
+    "size=30 maxlength=30",
+    0, gettext("Insert the package label"), "", "", "", "", "", "", "");
 
 $HD_Form -> AddEditElement (gettext("PACKAGE TYPE"),
-	"packagetype",
-	'$value',
-	"SELECT",
-	"",
-	"",
-	"",
-	"list" , "", "", "", $packagetype_list, "%1", "", "");
+    "packagetype",
+    '$value',
+    "",
+    "",
+    "SELECT",
+    "",
+    null, "", "list", "", "", "", $packagetype_list, "%1", "");
 
 $HD_Form -> AddEditElement (gettext("BILLING TYPE"),
-	"billingtype",
-	'$value',
-	"SELECT",
-	"",
-	"",
-	"",
-	"list" , "", "", "", $billingtype_list, "%1", "", "");
+    "billingtype",
+    '$value',
+    "",
+    "",
+    "SELECT",
+    "",
+    null, "", "list", "", "", "", $billingtype_list, "%1", "");
 
 if (isset($form_action) && $form_action=="ask-add") {
 	$default_init = "value='1'";
 }
 
 $HD_Form -> AddEditElement (gettext("STARTING DAY"),
-   "startday",
-   '$value',
-   "INPUT",
-   "size=10 $default_init maxlength=5",
-   "4",
-   gettext("Insert the start day"),
-   "" , "", "",	"", "", "", "", gettext("The value will be related to billing type ; if monthly accepted value are 1-31 ; if Weekly accepted value 1-7 (Monday to Sunday) "));
+    "startday",
+    '$value',
+    gettext("The value will be related to billing type ; if monthly accepted value are 1-31 ; if Weekly accepted value 1-7 (Monday to Sunday) "),
+    "",
+    "INPUT",
+    "size=10 $default_init maxlength=5",
+    4, gettext("Insert the start day"), "", "", "", "", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("FREE UNITS"),
-   "freetimetocall",
-   '$value',
-   "INPUT",
-   "size=10 maxlength=10",
-   "4",
-   gettext("Insert the amount of free time to call (seconds)"),
-   "" , "", "",	"", "", "", "", gettext("Insert the amount of free units, in seconds,for the FREE SECONDS mode. For NUMBER OF FREE CALLS insert the number of free calls"));
+    "freetimetocall",
+    '$value',
+    gettext("Insert the amount of free units, in seconds,for the FREE SECONDS mode. For NUMBER OF FREE CALLS insert the number of free calls"),
+    "",
+    "INPUT",
+    "size=10 maxlength=10",
+    4, gettext("Insert the amount of free time to call (seconds)"), "", "", "", "", "", "", "");
 
 
 

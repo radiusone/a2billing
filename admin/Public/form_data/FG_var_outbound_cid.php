@@ -76,33 +76,33 @@ if ($form_action=="ask-add") {
 }
 
 $HD_Form -> AddEditElement (gettext("CID"),
-                "cid",
-                '$value',
-               "TEXTAREA",
-               "cols=50 rows=4",
-                "",  //CID Regular Expression
-                gettext("Insert the CID"),
-                "" , "", "", "", "" , "", "",
-                gettext("Define the CallerID's. If you ADD a new CID, NOT an EDIT, you can define a range of CallerID. <br>80412340210-80412340218 would add all CID's between the range, whereas CIDs separated by a comma e.g. 80412340210,80412340212,80412340214 would only add the individual CID listed."));
+    "cid",
+    '$value',
+    gettext("Define the CallerID's. If you ADD a new CID, NOT an EDIT, you can define a range of CallerID. <br>80412340210-80412340218 would add all CID's between the range, whereas CIDs separated by a comma e.g. 80412340210,80412340212,80412340214 would only add the individual CID listed."),
+    "",
+    "TEXTAREA",  //CID Regular Expression
+    "cols=50 rows=4",
+    "", gettext("Insert the CID"), "", "", "", "", "",
+    "", "");
 
 $HD_Form -> AddEditElement (gettext("CIDGROUP"),
-                "outbound_cid_group",
-                '$value',
-                "SELECT",
-                "", "", "",
-                "sql",
-                "cc_outbound_cid_group",
-                "group_name, id",
-                "", "", "%1","", "");
+    "outbound_cid_group",
+    '$value',
+    "",
+    "", "SELECT", "",
+    null,
+    "",
+    "sql",
+    "cc_outbound_cid_group", "group_name, id", "", "", "%1", "");
 
 $HD_Form -> AddEditElement (gettext("ACTIVATED"),
-                "activated",
-                '1',
-                "RADIOBUTTON",
-                "",
-                "",
-                gettext("Choose if you want to activate this CallerID"),
-                "" , "", "", "Yes:1,No:0", "", "", "" , "" );
+    "activated",
+    '1',
+    "",
+    "",
+    "RADIOBUTTON",
+    "",
+    null, gettext("Choose if you want to activate this CallerID"), "", "", "", "Yes:1,No:0", "", "", "");
 
 $HD_Form -> FieldEditElement ('cid, outbound_cid_group, activated');
 

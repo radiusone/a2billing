@@ -117,44 +117,44 @@ if ($form_action=='ask-add'){
 
 
 $HD_Form_c -> AddEditElement (gettext("CUSTOMER ID"),
-	"id_cc_card",
-	'',
-	"POPUPVALUE",
-	"size=30 maxlength=50 $val_default",
-	"4",
-	gettext("Insert the Customer ID"),
-	"" , "", "", "", "",
-	"A2B_entity_card.php?popup_select=1&"
-	, ", 'CardNumberSelection','width=550,height=350,top=20,left=100,scrollbars=1'" ,
-	gettext("Set the Customer ID"));
+    "id_cc_card",
+    '',
+    gettext("Set the Customer ID"),
+    "",
+    "POPUPVALUE",
+    "size=30 maxlength=50 $val_default",
+    4, gettext("Insert the Customer ID"), "", "", "",
+    ""
+	, "",
+    "A2B_entity_card.php?popup_select=1&", ", 'CardNumberSelection','width=550,height=350,top=20,left=100,scrollbars=1'");
 
 $HD_Form_c -> AddEditElement (gettext("AMOUNT"),
-	"amount",
-	'$value',
-	"INPUT",
-	"size=20  maxlength=20 $val_default_fixrate",
-	"12",
-	gettext("Insert the amount"),
-	"" , "", "", "", "" , "", "" ,"");
+    "amount",
+    '$value',
+    "",
+    "",
+    "INPUT",
+    "size=20  maxlength=20 $val_default_fixrate",
+    12, gettext("Insert the amount"), "", "", "", "", "", "", "");
 
 
 $HD_Form_c -> AddEditElement (gettext("CHARGE TYPE"),
-	"chargetype",
-	"",
-	"SELECT",
-	"",
-	"",
-	"",
-	"list" , "", "",  "", $chargetype_list, "%1" , "" , "");
+    "chargetype",
+    "",
+    "",
+    "",
+    "SELECT",
+    "",
+    null, "", "list", "", "", "", $chargetype_list, "%1", "");
 
 $HD_Form_c -> AddEditElement (gettext("DESCRIPTION"),
-	"description",
-	'',
-	"TEXTAREA",
-	"cols=50 rows=4",
-	"",
-	gettext("Insert the description"),
-	"" , "", "", "", "" , "", "", "");
+    "description",
+    '',
+    "",
+    "",
+    "TEXTAREA",
+    "cols=50 rows=4",
+    null, gettext("Insert the description"), "", "", "", "", "", "", "");
 
 
 $HD_Form_c -> FieldEditElement ('id_cc_card, amount, chargetype, description');

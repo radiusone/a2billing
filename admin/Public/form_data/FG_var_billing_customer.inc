@@ -68,11 +68,11 @@ $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 
 $HD_Form -> AddEditElement (gettext("ID CUSTOMER"),
     "id_card",
-    "$value", "POPUPVALUE", "size=30 maxlength=50",
-    "4",    gettext("Insert the Customer ID"),
-    "" , "", "", "", "",
-    "A2B_entity_card.php?popup_select=1&", ", 'CardNumberSelection','width=550,height=330,top=20,left=100,scrollbars=1'" ,
-    gettext("Select the Customer ID"));
+    "$value", gettext("Select the Customer ID"), "",
+    "POPUPVALUE", "size=30 maxlength=50",
+    4, gettext("Insert the Customer ID"), null, "", "",
+    "", "",
+    "A2B_entity_card.php?popup_select=1&", ", 'CardNumberSelection','width=550,height=330,top=20,left=100,scrollbars=1'");
 
 if ($form_action=="ask-add"){
     $comp_date = date("Y-m-d");
@@ -82,11 +82,11 @@ if ($form_action=="ask-add"){
 $HD_Form -> AddEditElement (gettext("BILLING DATE"),
     "date",
     '$value',
+    "",
+    "",
     "INPUT",
     "size=40 maxlength=40 $comp_date",
-    "8",
-    gettext("Insert the current date (YYYY-MM-DD)"),
-    "" , "", "",    "", "", "", "", "" );
+    8, gettext("Insert the current date (YYYY-MM-DD)"), "", "", "", "", "", "", "");
 
 $HD_Form -> FieldEditElement ('id_card, date');
 

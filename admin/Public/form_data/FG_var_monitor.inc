@@ -78,78 +78,78 @@ $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 
 $HD_Form -> AddEditElement (gettext("LABEL"),
-	"label",
-	"$value",
-	"INPUT",
-	"size=30 maxlength=50",
-	"3",
-	gettext("Insert the label"),
-	"" , "", "", "", "" , "" , "yes" , "");
+    "label",
+    "$value",
+    "",
+    "",
+    "INPUT",
+    "size=30 maxlength=50",
+    3, gettext("Insert the label"), "", "", "", "", "", "", "yes");
 
 
 $HD_Form -> AddEditElement (gettext("DIAL CODE"),
-	"dial_code",
-	"$value",
-	"INPUT",
-	"size=5 maxlength=3",
-	"4",
-	gettext("Insert the dial code"),
-	"" , "", "", "", "" , "" , "yes" , "");
+    "dial_code",
+    "$value",
+    "",
+    "",
+    "INPUT",
+    "size=5 maxlength=3",
+    4, gettext("Insert the dial code"), "", "", "", "", "", "", "yes");
 
 
 $HD_Form -> AddEditElement (gettext("DESCRIPTION"),
-	"description",
-	'',
-	"TEXTAREA",
-	"cols=60 rows=2",
-	"",
-	gettext("Insert the description"),
-	"" , "", "", "", "" , "", "", "");
+    "description",
+    '',
+    "",
+    "",
+    "TEXTAREA",
+    "cols=60 rows=2",
+    null, gettext("Insert the description"), "", "", "", "", "", "", "");
 
 $HD_Form -> AddEditElement (gettext("TEXT INTRO"),
-	"text_intro",
-	"$value",
-	"INPUT",
-	"size=30 maxlength=50",
-	"3",
-	gettext("Insert the text intro"),
-	"" , "", "", "", "" , "" , "yes" , "");
+    "text_intro",
+    "$value",
+    "",
+    "",
+    "INPUT",
+    "size=30 maxlength=50",
+    3, gettext("Insert the text intro"), "", "", "", "", "", "", "yes");
 
 $HD_Form -> AddEditElement (gettext("QUERY TYPE"),
-   "query_type",
-   '$value',
-   "SELECT",
-   "",
-   "",
-   "",
-   "list", "", "", "", $mquery_type_list, "%1", "", gettext("Define type of the query that will be performed.") );
+    "query_type",
+    '$value',
+    gettext("Define type of the query that will be performed."),
+    "",
+    "SELECT",
+    "",
+    null, "", "list", "", "", "", $mquery_type_list, "%1", "");
 
 $HD_Form -> AddEditElement (gettext("QUERY / SHELL SCRIPT"),
-	"query",
-	'',
-	"TEXTAREA",
-	"cols=80 rows=4",
-	"",
-	gettext("Insert the description"),
-	"" , "", "", "", "" , "", "", gettext("Shell Script need to be copied into the directory").SCRIPT_CONFIG_DIR."<br>".gettext("Do not specify the path here."));
+    "query",
+    '',
+    gettext("Shell Script need to be copied into the directory") . SCRIPT_CONFIG_DIR . "<br>" . gettext("Do not specify the path here."),
+    "",
+    "TEXTAREA",
+    "cols=80 rows=4",
+    null, gettext("Insert the description"), "", "", "", "", "", "", "");
 
 $HD_Form -> AddEditElement (gettext("SAY RESULT AS"),
-   "result_type",
-   '$value',
-   "SELECT",
-   "",
-   "",
-   "",
-   "list", "", "", "", $mresult_type_list, "%1", "", gettext("Define type of result.") );
+    "result_type",
+    '$value',
+    gettext("Define type of result."),
+    "",
+    "SELECT",
+    "",
+    null, "", "list", "", "", "", $mresult_type_list, "%1", "");
 
 $HD_Form -> AddEditElement (gettext("ENABLE"),
-   "enable",
-   '0',
-   "RADIOBUTTON",
-   "",
-   "",
-   "",
-   "" , "", "" , "Yes:1,No:0", "", "" , "", "");
+    "enable",
+    '0',
+    "",
+    "",
+    "RADIOBUTTON",
+    "",
+    null, "", "", "", "", "Yes:1,No:0", "", "", "");
 
 
 

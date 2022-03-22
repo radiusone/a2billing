@@ -111,44 +111,44 @@ if ($popup_select) {
 
 
 $HD_Form -> AddEditElement (gettext("NAME"),
-	"tariffgroupname",
-	'$value',
-	"INPUT",
-	"size=30 maxlength=20",
-	"9",
-	gettext("Insert the Call Plan name "),
-	"" , "", "", "", "", "", "", "" );
+    "tariffgroupname",
+    '$value',
+    "",
+    "",
+    "INPUT",
+    "size=30 maxlength=20",
+    9, gettext("Insert the Call Plan name "), "", "", "", "", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("LC TYPE"),
-	"lcrtype",
-	'$value',
-	"SELECT",
-	"",
-	"",
-	"",
-	"list" , "", "", "", $lcrtype_list, "%1", "", "");
+    "lcrtype",
+    '$value',
+    "",
+    "",
+    "SELECT",
+    "",
+    null, "", "list", "", "", "", $lcrtype_list, "%1", "");
 
 
 $HD_Form -> AddEditElement(gettext("PACKAGE"),
-	"id_cc_package_offer",
-	'$value',
-	"SELECT",
-	"", "", "",
-	"sql",
-	"cc_package_offer",
-	"label, id",
-	"", "", "%1", "", gettext("Set the Package Group offer if you wish to use one with this Call Plan"), '', '<OPTION  value="-1" selected>NO PACKAGE OFFER</OPTION>');
+    "id_cc_package_offer",
+    '$value',
+    gettext("Set the Package Group offer if you wish to use one with this Call Plan"),
+    "", "SELECT", "",
+    null,
+    "",
+    "sql",
+    "cc_package_offer", "label, id", "", "", "%1", "", "", '<OPTION  value="-1" selected>NO PACKAGE OFFER</OPTION>');
 
 
 $HD_Form -> AddEditElement (gettext("REMOVE INTER PREFIX"),
-	"removeinterprefix",
-	'0',
-	"RADIOBUTTON",
-	"",
-	"",
-	gettext("Define if the international prefix will be removed to check the rate."),
-	"" , "", "" , "Yes:1,No:0", "", "", "", gettext("Remove the international access prefix (00 or 011) before matching the dialled digits with the rate card. E.G. If the dialled digits were 0044 for a call to the UK, only 44 would be delivered."));
+    "removeinterprefix",
+    '0',
+    gettext("Remove the international access prefix (00 or 011) before matching the dialled digits with the rate card. E.G. If the dialled digits were 0044 for a call to the UK, only 44 would be delivered."),
+    "",
+    "RADIOBUTTON",
+    null,
+    "", gettext("Define if the international prefix will be removed to check the rate."), "", "", "", "Yes:1,No:0", "", "", "");
 
 
 
@@ -160,16 +160,16 @@ if ( $resmax )
 
 if ($numrow>0){
 	$HD_Form -> AddEditElement (gettext("RATECARD"),
-		"tariffplan",
-		'$value',
-		"SELECT",
-		'size="10" multiple="multiple"',
-		"",
-		"",
-		"sql",
-		"cc_tariffgroup_plan",
-		"label, id",
-		"", "", "%1 : (%2)", "", "", "cc_tariffgroup_plan:idtariffplan:cc_tariffplan LEFT JOIN cc_tariffgroup_plan ON cc_tariffplan.id=cc_tariffgroup_plan.idtariffplan:DISTINCT cc_tariffplan.tariffname, cc_tariffplan.id: cc_tariffgroup_plan.idtariffgroup = %id:idtariffgroup:%2 - (%1)::::%1:id='%1'");
+        "tariffplan",
+        '$value',
+        "",
+        "",
+        "SELECT",
+        'size="10" multiple="multiple"',
+        null,
+        "",
+        "sql",
+        "cc_tariffgroup_plan", "label, id", "", "", "%1 : (%2)", "", "cc_tariffgroup_plan:idtariffplan:cc_tariffplan LEFT JOIN cc_tariffgroup_plan ON cc_tariffplan.id=cc_tariffgroup_plan.idtariffplan:DISTINCT cc_tariffplan.tariffname, cc_tariffplan.id: cc_tariffgroup_plan.idtariffgroup = %id:idtariffgroup:%2 - (%1)::::%1:id='%1'");
 
 }
 

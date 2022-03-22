@@ -68,22 +68,22 @@ $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 
 $HD_Form -> AddEditElement ("NAME",
-			   "name",
-			   '$value',
-			   "INPUT",
-			   "size=20 maxlength=30",
-			   "3",
-			   gettext("Insert the name"),
-			   "" , "", "",	"", "" , "", "", "");
+    "name",
+    '$value',
+    "",
+    "",
+    "INPUT",
+    "size=20 maxlength=30",
+    3, gettext("Insert the name"), "", "", "", "", "", "", "");
 
 $HD_Form -> AddEditElement (gettext("DESCRIPTION"),
-			   "description",
-			   '',
-			   "TEXTAREA",
-			   "cols=50 rows=4",
-			   "",
-			   gettext("Insert the description"),
-			   "" , "", "",	"", "" , "", "", "");
+    "description",
+    '',
+    "",
+    "",
+    "TEXTAREA",
+    "cols=50 rows=4",
+    null, gettext("Insert the description"), "", "", "", "", "", "", "");
 
 
 

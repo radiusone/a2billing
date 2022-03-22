@@ -81,33 +81,33 @@ $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 
 
 $HD_Form -> AddEditElement (gettext("SPEEDDIAL"),
-				   "speeddial",
-				   "",
-				   "SELECT",
-				   "",
-				   "",
-				   "",
-				   "list" , "", "",	"", $speeddial_list, "%1", "", "" );
+    "speeddial",
+    "",
+    "",
+    "",
+    "SELECT",
+    "",
+    "", "", "list", "", "", "", $speeddial_list, "%1", "");
 
 
 $HD_Form -> AddEditElement (gettext("NAME"),
-			   "name",
-			   '$value',
-			   "INPUT",
-			   "size=40 maxlength=50",
-			   "0",
-			   gettext("Insert the name"),
-			   "" , "", "",	"", "", "",	"", gettext("Enter here the name/label that will identify this speed dial") );
+    "name",
+    '$value',
+    gettext("Enter here the name/label that will identify this speed dial"),
+    "",
+    "INPUT",
+    "size=40 maxlength=50",
+    0, gettext("Insert the name"), "", "", "", "", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("PHONE"),
-			   "phone",
-			   '$value',
-			   "INPUT",
-			   "size=30 maxlength=50",
-			   "4",
-			   gettext("Insert the phone"),
-			   "" , "", "",	"", "", "",	"", gettext("Enter here the phonenumber you want to call for this speed dial") );
+    "phone",
+    '$value',
+    gettext("Enter here the phonenumber you want to call for this speed dial"),
+    "",
+    "INPUT",
+    "size=30 maxlength=50",
+    4, gettext("Insert the phone"), "", "", "", "", "", "", "");
 
 $HD_Form -> FieldEditElement ('speeddial, name, phone');
 

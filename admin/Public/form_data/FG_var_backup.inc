@@ -94,20 +94,20 @@ $default_path = "value='".BACKUP_PATH."/db_". DBNAME . "-" . date('YmdHis') . ".
 $HD_Form -> AddEditElement (gettext("Name"),
     "name",
     "",
+    gettext("Name for the backup"),
+    "",
     "INPUT",
     "size=50 maxlength=50",
-    "",
-    gettext("Insert the name of backup"),
-    "" , "", "", "", "", "", "", gettext("Name for the backup"));
+    null, gettext("Insert the name of backup"), "", "", "", "", "", "", "");
 
 $HD_Form -> AddEditElement (gettext("PATH"),
     "path",
     '',
+    gettext("Path for the backup file or leave the default path set in a2billing.conf"),
+    "",
     "INPUT",
     "size=100 maxlength=200 $default_path",
-    "",
-    gettext("Insert the patch for the backup file or leave the default path"),
-    "" , "", "", "", "", "", "", gettext("Path for the backup file or leave the default path set in a2billing.conf") );
+    null, gettext("Insert the patch for the backup file or leave the default path"), "", "", "", "", "", "", "");
 
 
 $HD_Form -> FieldEditElement ('name, path, creationdate');

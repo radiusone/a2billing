@@ -60,62 +60,62 @@ $HD_Form -> FG_ENABLE_EDIT_BUTTON = false;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 
 $HD_Form -> AddEditElement (gettext("CALL ID"),
-         "id",
-         '$value',
-         "INPUT",
-         "size=10 maxlength=10",
-         "18",
-         "",
-         "" , "", "", "", "" , "", "", "");
+    "id",
+    '$value',
+    "",
+    "",
+    "INPUT",
+    "size=10 maxlength=10",
+    18, "", "", "", "", "", "", "", "");
 
 $HD_Form -> AddEditElement (gettext("ID CARD"),
-         "card_id",
-         "$value",
-         "POPUPVALUE",
-         "size=30 maxlength=50",
-         "4",
-         gettext("Insert the Id CardNumber"),
-          "" , "", "", "", "",
-        "A2B_entity_card.php?popup_select=1&"
-        , ", 'CardNumberSelection','width=550,height=330,top=20,left=100,scrollbars=1'" ,
-        gettext("Define the card number ID to use."));
+    "card_id",
+    "$value",
+    gettext("Define the card number ID to use."),
+    "",
+    "POPUPVALUE",
+    "size=30 maxlength=50",
+    4, gettext("Insert the Id CardNumber"), "", "", "",
+    ""
+        , "",
+    "A2B_entity_card.php?popup_select=1&", ", 'CardNumberSelection','width=550,height=330,top=20,left=100,scrollbars=1'");
 
 $HD_Form -> AddEditElement (gettext("CALLED NUMBER"),
-         "calledstation",
-         '$value',
-         "INPUT",
-         "size=40 maxlength=30",
-         "18",
-         "",
-         "" , "", "", "", "" , "", "", "");
+    "calledstation",
+    '$value',
+    "",
+    "",
+    "INPUT",
+    "size=40 maxlength=30",
+    18, "", "", "", "", "", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("Source"),
-         "src",
-         '$value',
-         "INPUT",
-         "size=40 maxlength=30",
-         "18",
-         "",
-         "" , "", "", "", "" , "", "", "");
+    "src",
+    '$value',
+    "",
+    "",
+    "INPUT",
+    "size=40 maxlength=30",
+    18, "", "", "", "", "", "", "", "");
 
 $HD_Form -> AddEditElement (gettext("Dnid"),
-         "dnid",
-         '$value',
-         "INPUT",
-         "size=40 maxlength=30",
-         "18",
-         "",
-         "" , "", "", "", "" , "", "", "");
+    "dnid",
+    '$value',
+    "",
+    "",
+    "INPUT",
+    "size=40 maxlength=30",
+    18, "", "", "", "", "", "", "", "");
 
 $HD_Form -> AddEditElement (gettext("Duration"),
-         "sessiontime",
-         '$value',
-         "INPUT",
-         "size=40 maxlength=30",
-         "18",
-         "",
-         "" , "", "", "", "" , "", "", "");
+    "sessiontime",
+    '$value',
+    "",
+    "",
+    "INPUT",
+    "size=40 maxlength=30",
+    18, "", "", "", "", "", "", "", "");
 
 
 

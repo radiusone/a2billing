@@ -104,75 +104,75 @@ $HD_Form -> FG_OTHER_BUTTON1_ALT = gettext("View details");
 
 
 $HD_Form -> AddEditElement (gettext("NAME"),
-	"name",
-	"$value",
-	"INPUT",
-	"",
-	"3",
-	gettext("Insert the alarm name"),
-	"" , "", "", "", "" , "" , "yes" , "");
+    "name",
+    "$value",
+    "",
+    "",
+    "INPUT",
+    "",
+    3, gettext("Insert the alarm name"), "", "", "", "", "", "", "yes");
 
 $HD_Form -> AddEditElement (gettext("PERIOD"),
-	"periode",
-	'$value',
-	"SELECT",
-	"",
-	"",
-	"",
-	"list" , "", "", "", $period_list, "%1" , "" , gettext("Interval to apply alarm"));
+    "periode",
+    '$value',
+    gettext("Interval to apply alarm"),
+    "",
+    "SELECT",
+    "",
+    null, "", "list", "", "", "", $period_list, "%1", "");
 
 $HD_Form -> AddEditElement (gettext("TYPE"),
-	"type",
-	'$value',
-	"SELECT",
-	"",
-	"",
-	"",
-	"list" , "", "", "", $type_list, "%1", "", gettext("ALOC (average length of call) ; ASR (answer seize ratio) ; CIC (Consecutive Incomplete Calls)"));
+    "type",
+    '$value',
+    gettext("ALOC (average length of call) ; ASR (answer seize ratio) ; CIC (Consecutive Incomplete Calls)"),
+    "",
+    "SELECT",
+    "",
+    null, "", "list", "", "", "", $type_list, "%1", "");
 
 $HD_Form -> AddEditElement (gettext("MAX VALUE"),
-	"`maxvalue`",
-	"$value",
-	"INPUT",
-	"",
-	"",
-	gettext("Insert the maximu value in") ,
-	"" , "", "", "yes", "", "", "", gettext("Input the maximum value (between 0 and 1 for ASR ; > 0 for ALOC in sec ; > 0 for CIC)"));
+    "`maxvalue`",
+    "$value",
+    gettext("Input the maximum value (between 0 and 1 for ASR ; > 0 for ALOC in sec ; > 0 for CIC)"),
+    "",
+    "INPUT",
+    "",
+    null, gettext("Insert the maximu value in"), "", "", "", "yes", "", "", "");
 
 $HD_Form -> AddEditElement (gettext("MIN VALUE"),
-	"minvalue",
-	'$value',
-	"INPUT",
-	"",
-	"",
-	"",
-	"" , "", "", "", "", "", "", gettext("Input the minimum value (between 0 and 1 for ASR ; >= 0 for ALOC in sec ; not used by CIC) or leave it empty"));
+    "minvalue",
+    '$value',
+    gettext("Input the minimum value (between 0 and 1 for ASR ; >= 0 for ALOC in sec ; not used by CIC) or leave it empty"),
+    "",
+    "INPUT",
+    "",
+    null, "", "", "", "", "", "", "", "");
 $HD_Form -> AddEditElement(gettext("TRUNK"),
-   "id_trunk",
-   '$value',
-   "POPUPVALUE",
-   "",
-   "",
-   "",
-   "" , "", "",	"", "" , "A2B_entity_trunk.php?popup_select=1&", ", 'id_trunk','width=550,height=340,top=20,left=100,scrollbars=1'", gettext("Set if you want to apply the alarm on a specific trunk or leave empty for all trunk."));
+    "id_trunk",
+    '$value',
+    gettext("Set if you want to apply the alarm on a specific trunk or leave empty for all trunk."),
+    "",
+    "POPUPVALUE",
+    "",
+    null, "", "", "", "", "", "", "A2B_entity_trunk.php?popup_select=1&", ", 'id_trunk','width=550,height=340,top=20,left=100,scrollbars=1'");
 
 $HD_Form -> AddEditElement (gettext("STATUS"),
-	"status",
-	'$value',
-	"SELECT",
-	"",
-	"",
-	"",
-	"list" , "", "", "", $actived_list, "%1" , "", "");
+    "status",
+    '$value',
+    "",
+    "",
+    "SELECT",
+    "",
+    null, "", "list", "", "", "", $actived_list, "%1", "");
 
 $HD_Form -> AddEditElement (gettext("EMAIL TO SEND ALARM"),
-	"emailreport",
-	'$value',
-	"INPUT",
-	"size=40 maxlength=40",
-	"1",
-	gettext("Insert the email to send the alarm"),
-	"" , "", "", "", "", "" , "yes", "");
+    "emailreport",
+    '$value',
+    "",
+    "",
+    "INPUT",
+    "size=40 maxlength=40",
+    1, gettext("Insert the email to send the alarm"), "", "", "", "", "", "", "yes");
 
 
 

@@ -149,114 +149,114 @@ if (isset($form_action) && $form_action=="ask-add"){
 }
 
 $HD_Form -> AddEditElement (gettext("VOIP-PROVIDER"),
-	"id_provider",
-	'$value',
-	"SELECT",
-	"", "", "",
-	"sql",
-	"cc_provider",
-	"provider_name, id",
-	"", "", "%1","", "", '', '<OPTION  value="-1" selected>NOT DEFINED</OPTION>');
+    "id_provider",
+    '$value',
+    "",
+    "", "SELECT", "",
+    null,
+    "",
+    "sql",
+    "cc_provider", "provider_name, id", "", "", "%1", "", "", '<OPTION  value="-1" selected>NOT DEFINED</OPTION>');
 
 $HD_Form -> AddEditElement (gettext("LABEL"),
-	"trunkcode",
-	"$value",
-	"INPUT",
-	"size=45 maxlength=40",
-	"3",
-	gettext("Insert the trunkcode"),
-	"" , "", "", "", "" , "" , "", gettext("Unique and friendly name for the trunk"));
+    "trunkcode",
+    "$value",
+    gettext("Unique and friendly name for the trunk"),
+    "",
+    "INPUT",
+    "size=45 maxlength=40",
+    3, gettext("Insert the trunkcode"), "", "", "", "", "", "", "");
 
 $HD_Form -> AddEditElement (gettext("ADD PREFIX"),
-	"trunkprefix",
-	"$value",
-	"INPUT",
-	"size=30 maxlength=20",
-	"",
-	gettext("Insert the trunkprefix"),
-	"" , "", "", "", "" , "" , "", gettext("Add a prefix to the dialled digits."));
+    "trunkprefix",
+    "$value",
+    gettext("Add a prefix to the dialled digits."),
+    "",
+    "INPUT",
+    "size=30 maxlength=20",
+    null, gettext("Insert the trunkprefix"), "", "", "", "", "", "", "");
 
 $HD_Form -> AddEditElement (gettext("REMOVE PREFIX"),
-	"removeprefix",
-	"$value",
-	"INPUT",
-	"size=30 maxlength=20",
-	"",
-	gettext("Insert the removeprefix"),
-	"" , "", "", "", "" , "" , "", gettext("Remove prefix from the dialed digits."));
+    "removeprefix",
+    "$value",
+    gettext("Remove prefix from the dialed digits."),
+    "",
+    "INPUT",
+    "size=30 maxlength=20",
+    null, gettext("Insert the removeprefix"), "", "", "", "", "", "", "");
 
 $HD_Form -> AddEditElement (gettext("PROVIDER TECH"),
-	"providertech",
-	"$value",
-	"INPUT",
-	"size=20 maxlength=15",
-	"0",
-	gettext("Insert the providertech"),
-	"" , "", "", "", "" , "" , "", gettext("Technology used on the trunk (SIP,IAX2,ZAP,H323)"));
+    "providertech",
+    "$value",
+    gettext("Technology used on the trunk (SIP,IAX2,ZAP,H323)"),
+    "",
+    "INPUT",
+    "size=20 maxlength=15",
+    0, gettext("Insert the providertech"), "", "", "", "", "", "", "");
 
 $HD_Form -> AddEditElement (gettext("PROVIDER IP"),
-	"providerip",
-	"$value",
-	"INPUT",
-	"size=80 maxlength=140",
-	"9",
-	gettext("Insert the providerip"),
-	"" , "", "", "", "" , "" , "", gettext("Set the IP or URL of the VoIP provider. Alternatively, put in the name of a previously defined trunk in Asterisk or FreePBX. (MyVoiPTrunk, ZAP4G etc.) You can use the following tags to as variables: %dialingnumber%, %cardnumber%. ie g2/1644787890wwwwwwwwww%dialingnumber%"));
+    "providerip",
+    "$value",
+    gettext("Set the IP or URL of the VoIP provider. Alternatively, put in the name of a previously defined trunk in Asterisk or FreePBX. (MyVoiPTrunk, ZAP4G etc.) You can use the following tags to as variables: %dialingnumber%, %cardnumber%. ie g2/1644787890wwwwwwwwww%dialingnumber%"),
+    "",
+    "INPUT",
+    "size=80 maxlength=140",
+    9, gettext("Insert the providerip"), "", "", "", "", "", "", "");
 
 $HD_Form -> AddEditElement (gettext("ADDITIONAL PARAMETER"),
-	"addparameter",
-	"$value",
-	"INPUT",
-	"size=60 maxlength=100",
-	"",
-	gettext("Insert Additional parameters"),
-	"" , "", "", "", "" , "" , "", gettext("Define any additional parameters that will be used when running the Dial Command in Asterisk. Use the following tags as variables  %dialingnumber%, %cardnumber%. ie 'D(ww%cardnumber%wwwwwwwwww%dialingnumber%)'"));
+    "addparameter",
+    "$value",
+    gettext("Define any additional parameters that will be used when running the Dial Command in Asterisk. Use the following tags as variables  %dialingnumber%, %cardnumber%. ie 'D(ww%cardnumber%wwwwwwwwww%dialingnumber%)'"),
+    "",
+    "INPUT",
+    "size=60 maxlength=100",
+    null, gettext("Insert Additional parameters"), "", "", "", "", "", "", "");
 
 $HD_Form -> AddEditElement (gettext("FAILOVER TRUNK"),
-	"failover_trunk",
-	'$value',
-	"SELECT",
-	"", "", "",
-	"sql",
-	"cc_trunk",
-	"trunkcode, id_trunk",
-	"", "", "%1", "", gettext("You can define another trunk in case of failover!"), '', '<OPTION  value="-1" selected>NOT DEFINED</OPTION>');
+    "failover_trunk",
+    '$value',
+    gettext("You can define another trunk in case of failover!"),
+    "", "SELECT", "",
+    null,
+    "",
+    "sql",
+    "cc_trunk", "trunkcode, id_trunk", "", "", "%1", "", "", '<OPTION  value="-1" selected>NOT DEFINED</OPTION>');
 
 $HD_Form -> AddEditElement (gettext("CURRENT CONNECTIONS"),
-	"inuse",
-	"",
-	"INPUT",
-	"size=30 $def_value_inuse maxlength=30",
-	"12",
-	gettext("Number of current connections"),
-	"" , "", "", "", "", "", "", gettext("Updated to show the number of channels currently in use on this trunk.If there are no channels in use, and the system shows that there are, manually reset this field back to zero.") );
+    "inuse",
+    "",
+    gettext("Updated to show the number of channels currently in use on this trunk.If there are no channels in use, and the system shows that there are, manually reset this field back to zero."),
+    "",
+    "INPUT",
+    "size=30 $def_value_inuse maxlength=30",
+    12, gettext("Number of current connections"), "", "", "", "", "", "", "");
 
 $HD_Form -> AddEditElement (gettext("MAXIMUM CONNECTIONS"),
-	"maxuse",
-	"",
-	"INPUT",
-	"size=30 $def_value_maxuse maxlength=30",
-	"12",
-	gettext("Number of maximum simultaneous connections"),
-	"" , "", "", "", "", "", "", gettext("The maximum number of channels available to this trunk. Set to -1 to have an unlimited number of channels") );
+    "maxuse",
+    "",
+    gettext("The maximum number of channels available to this trunk. Set to -1 to have an unlimited number of channels"),
+    "",
+    "INPUT",
+    "size=30 $def_value_maxuse maxlength=30",
+    12, gettext("Number of maximum simultaneous connections"), "", "", "", "", "", "", "");
 
 $HD_Form -> AddEditElement ("IFMAXUSED",
-	"if_max_use",
-	'$value',
-	"SELECT",
-	"",
-	"",
-	"",
-	"list" , "", "", "", $maxuse_behaviour_list, "%1" , "", gettext("Specifies which trunk to use when the maximum number of connections is reached"));
+    "if_max_use",
+    '$value',
+    gettext("Specifies which trunk to use when the maximum number of connections is reached"),
+    "",
+    "SELECT",
+    "",
+    null, "", "list", "", "", "", $maxuse_behaviour_list, "%1", "");
 
 $HD_Form -> AddEditElement ("STATUS",
-	"status",
-	'$value',
-	"SELECT",
-	"",
-	"",
-	"",
-	"list" , "", "", "", $actived_list, "%1" , "", gettext("Define if this trunk is active or not"));
+    "status",
+    '$value',
+    gettext("Define if this trunk is active or not"),
+    "",
+    "SELECT",
+    "",
+    null, "", "list", "", "", "", $actived_list, "%1", "");
 
 
 $HD_Form -> FieldEditElement ('id_provider, trunkcode, trunkprefix, removeprefix, providertech, providerip, addparameter, failover_trunk, inuse, maxuse, if_max_use, status');

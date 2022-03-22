@@ -88,33 +88,33 @@ $val_display = $val / $mycur;
 
 
 $HD_Form -> AddEditElement (gettext("LIMIT CREDIT NOTIFICATION"),
-			   "credit_notification",
-			   '',
-			   "SELECT",
-			   "",
-			   "",
-			   gettext("Insert the number of credit when the customer receive a notification"),
-			   "list" , "", "", "", $limits_notify , "%1", "", gettext("currency : ").strtoupper(BASE_CURRENCY),"", '<OPTION  value="-1" selected>'.gettext("NOT DEFINED").'</OPTION>'  );
+    "credit_notification",
+    '',
+    gettext("currency : ") . strtoupper(BASE_CURRENCY),
+    "",
+    "SELECT",
+    "",
+    "", gettext("Insert the number of credit when the customer receive a notification"), "list", "", "", "", $limits_notify, "%1", "", "", '<OPTION  value="-1" selected>' . gettext("NOT DEFINED") . '</OPTION>');
 
 
 $HD_Form -> AddEditElement (gettext("PERMITTED NOTIFICATIONS BY MAIL"),
-			   "notify_email",
-			   '0',
-			   "RADIOBUTTON",
-			   "",
-			   "",
-			   gettext("Choose if you want to enable the notification by email for this card"),
-			   "" , "", "", "Yes:1,No:0", "", "" , "", gettext("Enable Email Notification"));
+    "notify_email",
+    '0',
+    gettext("Enable Email Notification"),
+    "",
+    "RADIOBUTTON",
+    "",
+    "", gettext("Choose if you want to enable the notification by email for this card"), "", "", "", "Yes:1,No:0", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("EMAIL NOTIFICATION"),
-			   "email_notification",
-			   '$value',
-			   "INPUT",
-			   "size=30 maxlength=70",
-			   "1",
-			   gettext("Insert the email to notify the customers"),
-			   "" , "", "",	"", "", "" , "NO", "");
+    "email_notification",
+    '$value',
+    "",
+    "",
+    "INPUT",
+    "size=30 maxlength=70",
+    1, gettext("Insert the email to notify the customers"), "", "", "", "", "", "", "NO");
 
 $HD_Form -> FieldEditElement ('credit_notification, notify_email, email_notification');
 

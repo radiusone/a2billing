@@ -693,25 +693,25 @@ class FormHandler
 	 */
 
     public function AddEditElement(
-        $displayname,
-        $fieldname,
-        $defaultvalue,
-        $fieldtype,
-        $fieldproperty,
-        $regexpr_nb,
-        $error_message,
-        $type_selectfield,
-        $lie_tablename,
-        $lie_tablefield,
-        $lie_clause,
-        $listname,
-        $displayformat_selectfield,
-        $check_emptyvalue,
-        $comment,
-        $custom_query = null,
-        $displayinput_defaultselect = null,
-        $comment_above = null,
-        $field_enabled = true
+        string $displayname,
+        string $fieldname,
+               $defaultvalue, // I don't think this is actually used?
+        string $label_text,
+        string $toplabel_text = "",
+        string $fieldtype,
+        string $fieldproperty,
+        ?int   $regexpr_nb = null,
+        string $error_message = "",
+        string $type_selectfield = "",
+        string $lie_tablename = "",
+        string $lie_tablefield = "",
+        string $lie_clause = "",
+        string $listname = "",
+        string $displayformat_selectfield = "",
+        string $check_emptyvalue = "",
+        string $custom_query = "",
+        string $displayinput_defaultselect = "",
+        bool $field_enabled = true
     )
     {
         $fieldtype = strtoupper($fieldtype);
@@ -735,10 +735,10 @@ class FormHandler
                 "sql_clause" => $lie_clause, // 10
                 "select_fields" => $listname, // 11
                 "select_format" => $displayformat_selectfield, // 12
-                "check_empty" => $check_emptyvalue, // 13
+                "check_empty" => strtoupper($check_emptyvalue), // 13
                 "custom_query" => $custom_query, // 14
                 "first_option" => $displayinput_defaultselect, // 15
-                "section_name" => $comment_above, // 16
+                "section_name" => $toplabel_text, // 16
 
                 // extra repeated values because same index is used for multiple purposes
                 "radio_options" => $lie_clause, // 10
@@ -746,7 +746,7 @@ class FormHandler
                 "popup_params" => $check_emptyvalue, //13
                 "popup_timeval" => $custom_query, //14
                 "custom_function" => $displayinput_defaultselect, //15
-                "comment" => $comment,
+                "comment" => $label_text,
 
                 "validation_err" => true,
             ];
@@ -1320,7 +1320,7 @@ class FormHandler
 
                 } else {
                     // CHECK ACCORDING TO THE REGULAR EXPRESSION DEFINED
-                    if (is_numeric($regexp) && !(str_starts_with(strtoupper($row["check_empty"]), "NO") && $processed[$fields_name] === "")) {
+                    if (is_numeric($regexp) && !(str_starts_with($row["check_empty"], "NO") && $processed[$fields_name] === "")) {
                         $row["validation_err"] = $this->validate_field($regexp, $processed[$fields_name]);
                         if ($row["validation_err"] !== true) {
                             $this->VALID_SQL_REG_EXP = false;
@@ -1486,7 +1486,7 @@ class FormHandler
                     }
                     $param_update .= "$fields_name = '" . addslashes(trim($total_mult_select)) . "'";
                 } else {
-                    if (is_numeric($regexp) && !(str_starts_with(strtoupper($row["check_empty"]), "NO") && $processed[$fields_name] === "")) {
+                    if (is_numeric($regexp) && !(str_starts_with($row["check_empty"], "NO") && $processed[$fields_name] === "")) {
                         $row["validation_err"] = $this->validate_field($regexp, $processed[$fields_name]);
                         if ($row["validation_err"] !== true) {
                             $this->VALID_SQL_REG_EXP = false;
@@ -1503,7 +1503,7 @@ class FormHandler
                     if ($i > 0 && $row["type"] !== "SPAN") {
                         $param_update .= ", ";
                     }
-                    if (empty($processed[$fields_name]) && strtoupper(substr($row["check_empty"], 3, 4)) === "NULL") {
+                    if (empty($processed[$fields_name]) && str_ends_with($row["check_empty"], "NULL")) {
                         $param_update .= $fields_name . " = NULL ";
                     } elseif ($row["type"] !== "SPAN") {
                         $param_update .= $fields_name . " = '" . addslashes(trim($processed[$fields_name])) . "' ";

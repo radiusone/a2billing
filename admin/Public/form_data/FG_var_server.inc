@@ -70,50 +70,50 @@ $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 
 $HD_Form -> AddEditElement (gettext("SERVER GROUP"),
-				"id_group",
-				'$value',
-				"SELECT",
-				"", "", "",
-				"sql",
-				"cc_server_group",
-				"name, id",
-				"", "", "%1","", "");
+    "id_group",
+    '$value',
+    "",
+    "", "SELECT", "",
+    null,
+    "",
+    "sql",
+    "cc_server_group", "name, id", "", "", "%1", "");
 
 $HD_Form -> AddEditElement (gettext("SERVER HOSTNAME"),
-			   "server_ip",
-			   '$value',
-			   "INPUT",
-			   "size=30 maxlength=40",
-			   "3",
-			   gettext("Insert the server hostname"),
-			   "" , "", "",	"", "" , "", "", "");
+    "server_ip",
+    '$value',
+    "",
+    "",
+    "INPUT",
+    "size=30 maxlength=40",
+    3, gettext("Insert the server hostname"), "", "", "", "", "", "", "");
 
 $HD_Form -> AddEditElement (gettext("MANAGER HOST"),
-			   "manager_host",
-			   '$value',
-			   "INPUT",
-			   "size=30 maxlength=40",
-			   "9",
-			   gettext("Insert the manager host"),
-			   "" , "", "",	"", "" , "", "", "");
+    "manager_host",
+    '$value',
+    "",
+    "",
+    "INPUT",
+    "size=30 maxlength=40",
+    9, gettext("Insert the manager host"), "", "", "", "", "", "", "");
 
 $HD_Form -> AddEditElement (gettext("MANAGER USERNAME"),
-			   "manager_username",
-			   '$value',
-			   "INPUT",
-			   "size=30 maxlength=40",
-			   "9",
-			   gettext("Insert the manager username"),
-			   "" , "", "",	"", "" , "", "", "");
+    "manager_username",
+    '$value',
+    "",
+    "",
+    "INPUT",
+    "size=30 maxlength=40",
+    9, gettext("Insert the manager username"), "", "", "", "", "", "", "");
 
 $HD_Form -> AddEditElement (gettext("MANAGER SECRET"),
-			   "manager_secret",
-			   '$value',
-			   "INPUT",
-			   "size=30 maxlength=40",
-			   "",
-			   gettext("Insert the manager secret"),
-			   "" , "", "",	"", "" , "", "", "");
+    "manager_secret",
+    '$value',
+    "",
+    "",
+    "INPUT",
+    "size=30 maxlength=40",
+    null, gettext("Insert the manager secret"), "", "", "", "", "", "", "");
 
 $HD_Form -> FieldEditElement ('id_group, server_ip, manager_host, manager_username, manager_secret');
 

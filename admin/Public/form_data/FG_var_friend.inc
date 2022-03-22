@@ -130,788 +130,788 @@ if ($form_action=="ask-add" || $form_action == "add_sip" || $form_action == "add
 
 
 $HD_Form -> AddEditElement (gettext("ID CARD"),
-							"id_cc_card",
-							'',
-							"POPUPVALUE",
-							"size=30 maxlength=50",
-							"4",
-							gettext("Insert the Id CardNumber"),
-							"", "", "", "", "",
-							"A2B_entity_card.php?popup_select=1&"
-							, ", 'CardNumberSelection','width=590,height=350,top=20,left=100,scrollbars=1'",
-							gettext("Insert the card ID."));
+    "id_cc_card",
+    '',
+    gettext("Insert the card ID."),
+    "",
+    "POPUPVALUE",
+    "size=30 maxlength=50",
+    4, gettext("Insert the Id CardNumber"), "", "", "",
+    ""
+							, "",
+    "A2B_entity_card.php?popup_select=1&", ", 'CardNumberSelection','width=590,height=350,top=20,left=100,scrollbars=1'");
 
 
 $HD_Form -> AddEditElement (gettext("NAME"),
-						   "name",
-						   "$value",
-						   "INPUT",
-							"size=40 $maxi maxlength=40",
-						   "9",
-						   gettext("Insert the name"),
-						   "", "", "",	"", "", "",	"", "" );
+    "name",
+    "$value",
+    "",
+    "",
+    "INPUT",
+    "size=40 $maxi maxlength=40",
+    9, gettext("Insert the name"), "", "", "", "", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("ACCOUNTCODE"),
-                           "accountcode",
-                           '',
-                           "INPUT",
-                           "size=20 $maxi maxlength=50",
-                           "",
-                           gettext("Insert the accountcode"),
-                           "", "", "", "", "", "",	"", "" );
+    "accountcode",
+    '',
+    "",
+    "",
+    "INPUT",
+    "size=20 $maxi maxlength=50",
+    null, gettext("Insert the accountcode"), "", "", "", "", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("REGEXTEN"),
-                           "regexten",
-                           '',
-                           "INPUT",
-                           "size=20 maxlength=20",
-                           "",
-                           gettext("Insert the regexten"),
-                           "", "", "", "", "", "",	"", "" );
+    "regexten",
+    '',
+    "",
+    "",
+    "INPUT",
+    "size=20 maxlength=20",
+    null, gettext("Insert the regexten"), "", "", "", "", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("CALLERID"),
-                           "callerid",
-                           '',
-                           "INPUT",
-                           "size=40 maxlength=60",
-                           "",
-                           gettext("Insert the callerid"),
-                           "", "", "", "", "", "",	"", "" );
+    "callerid",
+    '',
+    "",
+    "",
+    "INPUT",
+    "size=40 maxlength=60",
+    null, gettext("Insert the callerid"), "", "", "", "", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("CID NUMBER"),
-                           "cid_number",
-                           '',
-                           "INPUT",
-                           "size=40 maxlength=40",
-                           "",
-                           gettext("Insert the cid number"),
-                           "", "", "", "", "", "",	"", "" );
+    "cid_number",
+    '',
+    "",
+    "",
+    "INPUT",
+    "size=40 maxlength=40",
+    null, gettext("Insert the cid number"), "", "", "", "", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("AMAFLAGS"),
-						   "amaflags",
-						   '',
-						   "INPUT",
-						   "size=10 maxlength=7 $AMAFLAGS_default",
-						   "",
-						   gettext("Insert the amaflags"),
-						   "", "", "",	"", "", "",	"", "(default : billing)" );
+    "amaflags",
+    '',
+    "(default : billing)",
+    "",
+    "INPUT",
+    "size=10 maxlength=7 $AMAFLAGS_default",
+    null, gettext("Insert the amaflags"), "", "", "", "", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("SECRET"),
-                           "secret",
-                           '',
-                           "INPUT",
-                           "size=40 maxlength=40 $pass_secret",
-                           "",
-                           gettext("Insert the secret"),
-                           "", "", "", "", "", "",	"", "" );
+    "secret",
+    '',
+    "",
+    "",
+    "INPUT",
+    "size=40 maxlength=40 $pass_secret",
+    null, gettext("Insert the secret"), "", "", "", "", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("QUALIFY"),
-                           "qualify",
-                           '',
-                           "INPUT",
-                           "size=8 maxlength=7",
-                           "",
-                           gettext("Insert the qualify"),
-                           "", "", "", "", "", "",	"", "" );
+    "qualify",
+    '',
+    "",
+    "",
+    "INPUT",
+    "size=8 maxlength=7",
+    null, gettext("Insert the qualify"), "", "", "", "", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("DISALLOW"),
-                           "disallow",
-                           '',
-                           "INPUT",
-                           "size=50 maxlength=40 $DISALLOW_default",
-                           "",
-                           gettext("Insert the disallow"),
-                           "", "", "", "", "", "",	"", gettext("need to disallow=all before we can use allow. ( default : all )"));
+    "disallow",
+    '',
+    gettext("need to disallow=all before we can use allow. ( default : all )"),
+    "",
+    "INPUT",
+    "size=50 maxlength=40 $DISALLOW_default",
+    null, gettext("Insert the disallow"), "", "", "", "", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("ALLOW"),
-                           "allow",
-                           '',
-                           "INPUT",
-                           "size=50 maxlength=40 $ALLOW_default",
-                           "",
-                           gettext("Insert the allow"),
-                           "", "", "", "", "", "",	"", gettext("Set allow codecs separated by a comma, e.g. gsm,alaw,ulaw ( default : ulaw,alaw,gsm,g729)"));
+    "allow",
+    '',
+    gettext("Set allow codecs separated by a comma, e.g. gsm,alaw,ulaw ( default : ulaw,alaw,gsm,g729)"),
+    "",
+    "INPUT",
+    "size=50 maxlength=40 $ALLOW_default",
+    null, gettext("Insert the allow"), "", "", "", "", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("HOST"),
-                           "host",
-                           '',
-                           "INPUT",
-                           "size=40 maxlength=31 $HOST_default",
-                           "",
-                           gettext("Insert the host"),
-                           "", "", "", "", "", "",	"", gettext("Use dynamic or set an IP ( default : dynamic )"));
+    "host",
+    '',
+    gettext("Use dynamic or set an IP ( default : dynamic )"),
+    "",
+    "INPUT",
+    "size=40 maxlength=31 $HOST_default",
+    null, gettext("Insert the host"), "", "", "", "", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("CONTEXT"),
-						   "context",
-						   '',
-						   "INPUT",
-						   "size=40 maxlength=40 $CONTEXT_default",
-						   "",
-						   gettext("Insert the context"),
-						   "", "", "",	"", "", "",	"", gettext("set the context for this user (default : a2billing )"));
+    "context",
+    '',
+    gettext("set the context for this user (default : a2billing )"),
+    "",
+    "INPUT",
+    "size=40 maxlength=40 $CONTEXT_default",
+    null, gettext("Insert the context"), "", "", "", "", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("DEFAULTIP"),
-						   "defaultip",
-						   '',
-						   "INPUT",
-						   "size=20 maxlength=15",
-						   "",
-						   gettext("Insert the defaultip"),
-						   "", "", "",	"", "", "",	"", "" );
+    "defaultip",
+    '',
+    "",
+    "",
+    "INPUT",
+    "size=20 maxlength=15",
+    null, gettext("Insert the defaultip"), "", "", "", "", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("LANGUAGE"),
-						   "language",
-						   '',
-						   "INPUT",
-						   "size=10 maxlength=4",
-						   "",
-						   gettext("Insert the language"),
-						   "", "", "",	"", "", "",	"", "" );
+    "language",
+    '',
+    "",
+    "",
+    "INPUT",
+    "size=10 maxlength=4",
+    null, gettext("Insert the language"), "", "", "", "", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("PORT"),
-						   "port",
-						   '',
-						   "INPUT",
-						   "size=10 maxlength=5",
-						   "",
-						   gettext("Insert the port"),
-						   "", "", "",	"", "", "",	"", "" );
+    "port",
+    '',
+    "",
+    "",
+    "INPUT",
+    "size=10 maxlength=5",
+    null, gettext("Insert the port"), "", "", "", "", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("REGSECONDS"),
-						   "regseconds",
-						   '4',
-						   "INPUT",
-						   "size=50 maxlength=40 $REGSECONDS_default",
-						   "",
-						   gettext("Insert the regseconds"),
-						   "", "", "",	"", "", "",	"", "" );
+    "regseconds",
+    '4',
+    "",
+    "",
+    "INPUT",
+    "size=50 maxlength=40 $REGSECONDS_default",
+    null, gettext("Insert the regseconds"), "", "", "", "", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("IPADDR"),
-						   "ipaddr",
-						   '',
-						   "INPUT",
-						   "size=20 maxlength=15",
-						   "",
-						   gettext("Insert the ipaddr"),
-						   "", "", "",	"", "", "",	"", "" );
+    "ipaddr",
+    '',
+    "",
+    "",
+    "INPUT",
+    "size=20 maxlength=15",
+    null, gettext("Insert the ipaddr"), "", "", "", "", "", "", "");
 
 $HD_Form -> AddEditElement (gettext("MOHSUGGEST"),
-						   "mohsuggest",
-						   '',
-						   "INPUT",
-						   "size=20 maxlength=20",
-						   "",
-						   gettext("Insert the mohsuggest"),
-						   "", "", "",	"", "", "",	"", "" );
+    "mohsuggest",
+    '',
+    "",
+    "",
+    "INPUT",
+    "size=20 maxlength=20",
+    null, gettext("Insert the mohsuggest"), "", "", "", "", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("AUTH"),
-						   "auth",
-						   '',
-						   "INPUT",
-						   "size=20 maxlength=20",
-						   "",
-						   gettext("Insert the auth"),
-						   "", "", "",	"", "", "",	"", "" );
+    "auth",
+    '',
+    "",
+    "",
+    "INPUT",
+    "size=20 maxlength=20",
+    null, gettext("Insert the auth"), "", "", "", "", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("SETVAR"),
-						   "setvar",
-						   '',
-						   "INPUT",
-						   "size=60 maxlength=200",
-						   "",
-						   gettext("Insert the setvar"),
-						   "", "", "",	"", "", "",	"", "" );
+    "setvar",
+    '',
+    "",
+    "",
+    "INPUT",
+    "size=60 maxlength=200",
+    null, gettext("Insert the setvar"), "", "", "", "", "", "", "");
 
 $HD_Form -> AddEditElement (gettext("TYPE"),
-                           "type",
-                           '',
-                           "INPUT",
-                           "size=10 maxlength=6 $TYPE_default",
-                           "",
-                           gettext("Insert the type"),
-                           "", "", "", "", "", "", "", gettext("type = friend | peer | user ( default : friend )"));
+    "type",
+    '',
+    gettext("type = friend | peer | user ( default : friend )"),
+    "",
+    "INPUT",
+    "size=10 maxlength=6 $TYPE_default",
+    null, gettext("Insert the type"), "", "", "", "", "", "", "");
 
 $HD_Form -> AddEditElement (gettext("DENY"),
-						   "deny",
-						   '',
-						   "INPUT",
-						   "size=60 maxlength=50",
-						   "",
-						   gettext("Insert the deny"),
-						   "", "", "",	"", "", "",	"", "" );
+    "deny",
+    '',
+    "",
+    "",
+    "INPUT",
+    "size=60 maxlength=50",
+    null, gettext("Insert the deny"), "", "", "", "", "", "", "");
 
 $HD_Form -> AddEditElement (gettext("PERMIT"),
-						   "permit",
-						   '',
-						   "INPUT",
-						   "size=60 maxlength=50",
-						   "",
-						   gettext("Insert the permit"),
-						   "", "", "",	"", "", "",	"", "" );
+    "permit",
+    '',
+    "",
+    "",
+    "INPUT",
+    "size=60 maxlength=50",
+    null, gettext("Insert the permit"), "", "", "", "", "", "", "");
 
 if ($atmenu=='sip') {
 
 
 	$HD_Form -> AddEditElement (gettext("USERNAME"),
-	                           "username",
-	                           '',
-	                           "INPUT",
-	                           "size=50 $maxi maxlength=40",
-	                           "",
-	                           gettext("Insert the username"),
-	                           "", "", "", "", "", "",	"", "" );
+        "username",
+        '',
+        "",
+        "",
+        "INPUT",
+        "size=50 $maxi maxlength=40",
+        null, gettext("Insert the username"), "", "", "", "", "", "", "");
 
 
 	$HD_Form -> AddEditElement (gettext("MD5SECRET"),
-	                           "md5secret",
-	                           '',
-	                           "INPUT",
-	                           "size=60 maxlength=50",
-	                           "",
-	                           gettext("Insert the md5secret"),
-	                           "", "", "", "", "", "",	"", "" );
+        "md5secret",
+        '',
+        "",
+        "",
+        "INPUT",
+        "size=60 maxlength=50",
+        null, gettext("Insert the md5secret"), "", "", "", "", "", "", "");
 
 
 	$HD_Form -> AddEditElement (gettext("NAT"),
-	                           "nat",
-	                           '4',
-	                           "INPUT",
-	                           "size=60 maxlength=50 $NAT_default",
-	                           "",
-	                           gettext("Insert the nat"),
-	                           "", "", "", "", "", "",	"", gettext("nat = yes | no | never | route ( default : yes )") );
+        "nat",
+        '4',
+        gettext("nat = yes | no | never | route ( default : yes )"),
+        "",
+        "INPUT",
+        "size=60 maxlength=50 $NAT_default",
+        null, gettext("Insert the nat"), "", "", "", "", "", "", "");
 
 
 	$HD_Form -> AddEditElement (gettext("DTMFMODE"),
-	                           "dtmfmode",
-	                           '',
-	                           "INPUT",
-	                           "size=10 maxlength=7 $DTMFMODE_default",
-	                           "",
-	                           gettext("Insert the dtmfmode"),
-	                           "", "", "", "", "", "",	"", gettext("dtmfmode = RFC2833 | INFO | INBAND | AUTO ( default : RFC2833 )"));
+        "dtmfmode",
+        '',
+        gettext("dtmfmode = RFC2833 | INFO | INBAND | AUTO ( default : RFC2833 )"),
+        "",
+        "INPUT",
+        "size=10 maxlength=7 $DTMFMODE_default",
+        null, gettext("Insert the dtmfmode"), "", "", "", "", "", "", "");
 
 
 
 	$HD_Form -> AddEditElement (gettext("CANREINVITE"),
-	                           "canreinvite",
-	                           '',
-	                           "INPUT",
-	                           "size=20 maxlength=10 $CANREINVITE_default",
-	                           "",
-	                           gettext("Insert the canreinvite"),
-	                           "", "", "", "", "", "",	"", gettext("canreinvite : yes | no ( default : yes )"));
+        "canreinvite",
+        '',
+        gettext("canreinvite : yes | no ( default : yes )"),
+        "",
+        "INPUT",
+        "size=20 maxlength=10 $CANREINVITE_default",
+        null, gettext("Insert the canreinvite"), "", "", "", "", "", "", "");
 
 
 
 
 	$HD_Form -> AddEditElement (gettext("CALLGROUP"),
-							   "callgroup",
-							   '',
-							   "INPUT",
-							   "size=10 maxlength=10",
-							   "",
-							   gettext("Insert the callgroup"),
-							   "", "", "",	"", "", "",	"", "" );
+        "callgroup",
+        '',
+        "",
+        "",
+        "INPUT",
+        "size=10 maxlength=10",
+        null, gettext("Insert the callgroup"), "", "", "", "", "", "", "");
 
 
 
 
 	$HD_Form -> AddEditElement (gettext("FROMUSER"),
-							   "fromuser",
-							   '',
-							   "INPUT",
-							   "size=40 maxlength=40",
-							   "",
-							   gettext("Insert the fromuser"),
-							   "", "", "",	"", "", "",	"", "" );
+        "fromuser",
+        '',
+        "",
+        "",
+        "INPUT",
+        "size=40 maxlength=40",
+        null, gettext("Insert the fromuser"), "", "", "", "", "", "", "");
 
 
 	$HD_Form -> AddEditElement (gettext("FROMDOMAIN"),
-							   "fromdomain",
-							   '',
-							   "INPUT",
-							   "size=40 maxlength=40",
-							   "",
-							   gettext("Insert the fromdomain"),
-							   "", "", "",	"", "", "",	"", "" );
+        "fromdomain",
+        '',
+        "",
+        "",
+        "INPUT",
+        "size=40 maxlength=40",
+        null, gettext("Insert the fromdomain"), "", "", "", "", "", "", "");
 
 
 	$HD_Form -> AddEditElement (gettext("INSECURE"),
-							   "insecure",
-							   '',
-							   "INPUT",
-							   "size=20 maxlength=30",
-							   "",
-							   gettext("Insert the insecure"),
-							   "", "", "",	"", "", "",	"", "" );
+        "insecure",
+        '',
+        "",
+        "",
+        "INPUT",
+        "size=20 maxlength=30",
+        null, gettext("Insert the insecure"), "", "", "", "", "", "", "");
 
 
 	$HD_Form -> AddEditElement (gettext("MAILBOX"),
-							   "mailbox",
-							   '',
-							   "INPUT",
-							   "size=60 maxlength=50",
-							   "",
-							   gettext("Insert the mailbox"),
-							   "", "", "",	"", "", "",	"", "" );
+        "mailbox",
+        '',
+        "",
+        "",
+        "INPUT",
+        "size=60 maxlength=50",
+        null, gettext("Insert the mailbox"), "", "", "", "", "", "", "");
 
 
 
 	$HD_Form -> AddEditElement (gettext("MASK"),
-							   "mask",
-							   '',
-							   "INPUT",
-							   "size=60 maxlength=50",
-							   "",
-							   gettext("Insert the mask"),
-							   "", "", "",	"", "", "",	"", "" );
+        "mask",
+        '',
+        "",
+        "",
+        "INPUT",
+        "size=60 maxlength=50",
+        null, gettext("Insert the mask"), "", "", "", "", "", "", "");
 
 
 	$HD_Form -> AddEditElement (gettext("PICKUPGROUP"),
-							   "pickupgroup",
-							   '',
-							   "INPUT",
-							   "size=15 maxlength=10",
-							   "",
-							   gettext("Insert the pickupgroup"),
-							   "", "", "",	"", "", "", "", "");
+        "pickupgroup",
+        '',
+        "",
+        "",
+        "INPUT",
+        "size=15 maxlength=10",
+        null, gettext("Insert the pickupgroup"), "", "", "", "", "", "", "");
 
 
 	$HD_Form -> AddEditElement (gettext("RESTRICTCID"),
-							   "restrictcid",
-							   '',
-							   "INPUT",
-							   "size=7 maxlength=1",
-							   "",
-							   gettext("Insert the restrictcid"),
-							   "", "", "",	"", "", "",	"", "" );
+        "restrictcid",
+        '',
+        "",
+        "",
+        "INPUT",
+        "size=7 maxlength=1",
+        null, gettext("Insert the restrictcid"), "", "", "", "", "", "", "");
 
 
 	$HD_Form -> AddEditElement (gettext("RTPTIMEOUT"),
-							   "rtptimeout",
-							   '',
-							   "INPUT",
-							   "size=7 maxlength=3",
-							   "",
-							   gettext("Insert the rtptimeout"),
-							   "", "", "",	"", "", "",	"", "" );
+        "rtptimeout",
+        '',
+        "",
+        "",
+        "INPUT",
+        "size=7 maxlength=3",
+        null, gettext("Insert the rtptimeout"), "", "", "", "", "", "", "");
 
 
 	$HD_Form -> AddEditElement (gettext("RTPHOLDTIMEOUT"),
-							   "rtpholdtimeout",
-							   '',
-							   "INPUT",
-							   "size=7 maxlength=3",
-							   "",
-							   gettext("Insert the rtpholdtimeout"),
-							   "", "", "",	"", "", "",	"", "" );
+        "rtpholdtimeout",
+        '',
+        "",
+        "",
+        "INPUT",
+        "size=7 maxlength=3",
+        null, gettext("Insert the rtpholdtimeout"), "", "", "", "", "", "", "");
 
 
 	$HD_Form -> AddEditElement (gettext("MUSICONHOLD"),
-							   "musiconhold",
-							   '',
-							   "INPUT",
-							   "size=50 maxlength=40",
-							   "",
-							   gettext("Insert the musiconhold"),
-							   "", "", "",	"", "", "",	"", "" );
+        "musiconhold",
+        '',
+        "",
+        "",
+        "INPUT",
+        "size=50 maxlength=40",
+        null, gettext("Insert the musiconhold"), "", "", "", "", "", "", "");
 
 
 	$HD_Form -> AddEditElement (gettext("CANCALLFORWARD"),
-							   "cancallforward",
-							   '',
-							   "INPUT",
-							   "size=7 maxlength=3 $CANCALLFORWARD_default",
-							   "",
-							   gettext("Insert the cancallforward"),
-							   "", "", "",	"", "", "",	"", gettext("cancallforward = yes | no ( default : yes )"));
+        "cancallforward",
+        '',
+        gettext("cancallforward = yes | no ( default : yes )"),
+        "",
+        "INPUT",
+        "size=7 maxlength=3 $CANCALLFORWARD_default",
+        null, gettext("Insert the cancallforward"), "", "", "", "", "", "", "");
 
 
 	$HD_Form -> AddEditElement (gettext("DEFAULTUSER"),
-							   "defaultuser",
-							   '',
-							   "INPUT",
-							   "size=10 maxlength=10",
-							   "",
-							   "",
-							   "", "", "",	"", "", "",	"", "" );
+        "defaultuser",
+        '',
+        "",
+        "",
+        "INPUT",
+        "size=10 maxlength=10",
+        null, "", "", "", "", "", "", "", "");
 
 
 	$HD_Form -> AddEditElement (gettext("SUBSCRIBEMWI"),
-							   "subscribemwi",
-							   '',
-							   "INPUT",
-							   "size=10 maxlength=10",
-							   "",
-							   "",
-							   "", "", "",	"", "", "",	"", "" );
+        "subscribemwi",
+        '',
+        "",
+        "",
+        "INPUT",
+        "size=10 maxlength=10",
+        null, "", "", "", "", "", "", "", "");
 
 
 	$HD_Form -> AddEditElement (gettext("VMEXTEN"),
-							   "vmexten",
-							   '',
-							   "INPUT",
-							   "size=20 maxlength=20",
-							   "",
-							   "",
-							   "", "", "",	"", "", "",	"", "" );
+        "vmexten",
+        '',
+        "",
+        "",
+        "INPUT",
+        "size=20 maxlength=20",
+        null, "", "", "", "", "", "", "", "");
 
 
 	$HD_Form -> AddEditElement (gettext("CALLINGPRES"),
-							   "callingpres",
-							   '',
-							   "INPUT",
-							   "size=20 maxlength=20",
-							   "",
-							   "",
-							   "", "", "",	"", "", "",	"", "" );
+        "callingpres",
+        '',
+        "",
+        "",
+        "INPUT",
+        "size=20 maxlength=20",
+        null, "", "", "", "", "", "", "", "");
 
 
 	$HD_Form -> AddEditElement (gettext("USEREQPHONE"),
-							   "usereqphone",
-							   '',
-							   "INPUT",
-							   "size=10 maxlength=10",
-							   "",
-							   "",
-							   "", "", "",	"", "", "",	"", "" );
+        "usereqphone",
+        '',
+        "",
+        "",
+        "INPUT",
+        "size=10 maxlength=10",
+        null, "", "", "", "", "", "", "", "");
 
 
 	$HD_Form -> AddEditElement (gettext("INCOMINGLIMIT"),
-							   "incominglimit",
-							   '',
-							   "INPUT",
-							   "size=10 maxlength=10",
-							   "",
-							   "",
-							   "", "", "",	"", "", "",	"", "" );
+        "incominglimit",
+        '',
+        "",
+        "",
+        "INPUT",
+        "size=10 maxlength=10",
+        null, "", "", "", "", "", "", "", "");
 
 
 	$HD_Form -> AddEditElement (gettext("SUBSCRIBECONTEXT"),
-							   "subscribecontext",
-							   '',
-							   "INPUT",
-							   "size=40 maxlength=40",
-							   "",
-							   "",
-							   "", "", "",	"", "", "",	"", "" );
+        "subscribecontext",
+        '',
+        "",
+        "",
+        "INPUT",
+        "size=40 maxlength=40",
+        null, "", "", "", "", "", "", "", "");
 
 
 	$HD_Form -> AddEditElement (gettext("MUSICCLASS"),
-							   "musicclass",
-							   '',
-							   "INPUT",
-							   "size=20 maxlength=20",
-							   "",
-							   "",
-							   "", "", "",	"", "", "",	"", "" );
+        "musicclass",
+        '',
+        "",
+        "",
+        "INPUT",
+        "size=20 maxlength=20",
+        null, "", "", "", "", "", "", "", "");
 
 
 	$HD_Form -> AddEditElement (gettext("ALLOWTRANSFER"),
-							   "allowtransfer",
-							   '',
-							   "INPUT",
-							   "size=20 maxlength=20",
-							   "",
-							   "",
-							   "", "", "",	"", "", "",	"", "" );
+        "allowtransfer",
+        '',
+        "",
+        "",
+        "INPUT",
+        "size=20 maxlength=20",
+        null, "", "", "", "", "", "", "", "");
 
 
 	$HD_Form -> AddEditElement (gettext("AUTOFRAMING"),
-							   "autoframing",
-							   '',
-							   "INPUT",
-							   "size=10 maxlength=10",
-							   "",
-							   "",
-							   "", "", "",	"", "", "",	"", "" );
+        "autoframing",
+        '',
+        "",
+        "",
+        "INPUT",
+        "size=10 maxlength=10",
+        null, "", "", "", "", "", "", "", "");
 
 
 	$HD_Form -> AddEditElement (gettext("MAXCALLBITRATE"),
-							   "maxcallbitrate",
-							   '',
-							   "INPUT",
-							   "size=15 maxlength=15",
-							   "",
-							   "",
-							   "", "", "",	"", "", "",	"", "" );
+        "maxcallbitrate",
+        '',
+        "",
+        "",
+        "INPUT",
+        "size=15 maxlength=15",
+        null, "", "", "", "", "", "", "", "");
 
 
 	$HD_Form -> AddEditElement (gettext("OUTBOUNDPROXY"),
-							   "outboundproxy",
-							   '',
-							   "INPUT",
-							   "size=40 maxlength=40",
-							   "",
-							   "",
-							   "", "", "",	"", "", "",	"", "" );
+        "outboundproxy",
+        '',
+        "",
+        "",
+        "INPUT",
+        "size=40 maxlength=40",
+        null, "", "", "", "", "", "", "", "");
 
 
 	$HD_Form -> AddEditElement (gettext("REGSERVER"),
-							   "regserver",
-							   '',
-							   "INPUT",
-							   "size=20 maxlength=20",
-							   "",
-							   "",
-							   "", "", "",	"", "", "",	"", "" );
+        "regserver",
+        '',
+        "",
+        "",
+        "INPUT",
+        "size=20 maxlength=20",
+        null, "", "", "", "", "", "", "", "");
 
 
 	$HD_Form -> AddEditElement (gettext("RTPKEEPALIVE"),
-							   "rtpkeepalive",
-							   '',
-							   "INPUT",
-							   "size=15 maxlength=15",
-							   "",
-							   "",
-							   "", "", "",	"", "", "",	"", "" );
+        "rtpkeepalive",
+        '',
+        "",
+        "",
+        "INPUT",
+        "size=15 maxlength=15",
+        null, "", "", "", "", "", "", "", "");
 
 } else {
 
 	$HD_Form -> AddEditElement (gettext("TRUNK"),
-							   "trunk",
-							   '',
-							   "INPUT",
-							   "size=7 maxlength=3 $TRUNK_default",
-							   "",
-							   gettext("Define the iax trunking"),
-							   "", "", "",	"", "", "",	"", gettext("iax trunking = yes | no ( default : yes )"));
+        "trunk",
+        '',
+        gettext("iax trunking = yes | no ( default : yes )"),
+        "",
+        "INPUT",
+        "size=7 maxlength=3 $TRUNK_default",
+        null, gettext("Define the iax trunking"), "", "", "", "", "", "", "");
 
 
 	$HD_Form -> AddEditElement (gettext("DBSECRET"),
-							   "dbsecret",
-							   '',
-							   "INPUT",
-							   "size=40 maxlength=40",
-							   "",
-							   "",
-							   "", "", "",	"", "", "",	"", "" );
+        "dbsecret",
+        '',
+        "",
+        "",
+        "INPUT",
+        "size=40 maxlength=40",
+        null, "", "", "", "", "", "", "", "");
 
 
 	$HD_Form -> AddEditElement (gettext("REGCONTEXT"),
-							   "regcontext",
-							   '',
-							   "INPUT",
-							   "size=40 maxlength=40",
-							   "",
-							   "",
-							   "", "", "",	"", "", "",	"", "" );
+        "regcontext",
+        '',
+        "",
+        "",
+        "INPUT",
+        "size=40 maxlength=40",
+        null, "", "", "", "", "", "", "", "");
 
 
 	$HD_Form -> AddEditElement (gettext("SOURCEADDRESS"),
-							   "sourceaddress",
-							   '',
-							   "INPUT",
-							   "size=20 maxlength=10",
-							   "",
-							   "",
-							   "", "", "",	"", "", "",	"", "" );
+        "sourceaddress",
+        '',
+        "",
+        "",
+        "INPUT",
+        "size=20 maxlength=10",
+        null, "", "", "", "", "", "", "", "");
 
 	$HD_Form -> AddEditElement (gettext("MOHINTERPRET"),
-							   "mohinterpret",
-							   '',
-							   "INPUT",
-							   "size=20 maxlength=20",
-							   "",
-							   "",
-							   "", "", "",	"", "", "",	"", "" );
+        "mohinterpret",
+        '',
+        "",
+        "",
+        "INPUT",
+        "size=20 maxlength=20",
+        null, "", "", "", "", "", "", "", "");
 
 
 	$HD_Form -> AddEditElement (gettext("INKEYS"),
-							   "inkeys",
-							   '',
-							   "INPUT",
-							   "size=40 maxlength=40",
-							   "",
-							   "",
-							   "", "", "",	"", "", "",	"", "" );
+        "inkeys",
+        '',
+        "",
+        "",
+        "INPUT",
+        "size=40 maxlength=40",
+        null, "", "", "", "", "", "", "", "");
 
 
 	$HD_Form -> AddEditElement (gettext("OUTKEY"),
-							   "outkey",
-							   '',
-							   "INPUT",
-							   "size=40 maxlength=40",
-							   "",
-							   "",
-							   "", "", "",	"", "", "",	"", "" );
+        "outkey",
+        '',
+        "",
+        "",
+        "INPUT",
+        "size=40 maxlength=40",
+        null, "", "", "", "", "", "", "", "");
 
 	$HD_Form -> AddEditElement (gettext("SENDANI"),
-							   "sendani",
-							   '',
-							   "INPUT",
-							   "size=10 maxlength=10",
-							   "",
-							   "",
-							   "", "", "",	"", "", "",	"", "" );
+        "sendani",
+        '',
+        "",
+        "",
+        "INPUT",
+        "size=10 maxlength=10",
+        null, "", "", "", "", "", "", "", "");
 
 	$HD_Form -> AddEditElement (gettext("FULLNAME"),
-							   "fullname",
-							   '',
-							   "INPUT",
-							   "size=40 maxlength=40",
-							   "",
-							   "",
-							   "", "", "",	"", "", "",	"", "" );
+        "fullname",
+        '',
+        "",
+        "",
+        "INPUT",
+        "size=40 maxlength=40",
+        null, "", "", "", "", "", "", "", "");
 
 
 	$HD_Form -> AddEditElement (gettext("MAXAUTHREQ"),
-							   "maxauthreq",
-							   '',
-							   "INPUT",
-							   "size=15 maxlength=15",
-							   "",
-							   "",
-							   "", "", "",	"", "", "",	"", "" );
+        "maxauthreq",
+        '',
+        "",
+        "",
+        "INPUT",
+        "size=15 maxlength=15",
+        null, "", "", "", "", "", "", "", "");
 
 
 	$HD_Form -> AddEditElement (gettext("ENCRYPTION"),
-							   "encryption",
-							   '',
-							   "INPUT",
-							   "size=20 maxlength=20",
-							   "",
-							   "",
-							   "", "", "",	"", "", "",	"", "" );
+        "encryption",
+        '',
+        "",
+        "",
+        "INPUT",
+        "size=20 maxlength=20",
+        null, "", "", "", "", "", "", "", "");
 
 
 	$HD_Form -> AddEditElement (gettext("TRANSFER"),
-							   "transfer",
-							   '',
-							   "INPUT",
-							   "size=10 maxlength=10",
-							   "",
-							   "",
-							   "", "", "",	"", "", "",	"", "" );
+        "transfer",
+        '',
+        "",
+        "",
+        "INPUT",
+        "size=10 maxlength=10",
+        null, "", "", "", "", "", "", "", "");
 
 
 	$HD_Form -> AddEditElement (gettext("JITTERBUFFER"),
-							   "jitterbuffer",
-							   '',
-							   "INPUT",
-							   "size=10 maxlength=10",
-							   "",
-							   "",
-							   "", "", "",	"", "", "",	"", "" );
+        "jitterbuffer",
+        '',
+        "",
+        "",
+        "INPUT",
+        "size=10 maxlength=10",
+        null, "", "", "", "", "", "", "", "");
 
 
 	$HD_Form -> AddEditElement (gettext("FORCEJITTERBUFFER"),
-							   "forcejitterbuffer",
-							   '',
-							   "INPUT",
-							   "size=10 maxlength=10",
-							   "",
-							   "",
-							   "", "", "",	"", "", "",	"", "" );
+        "forcejitterbuffer",
+        '',
+        "",
+        "",
+        "INPUT",
+        "size=10 maxlength=10",
+        null, "", "", "", "", "", "", "", "");
 
 
 	$HD_Form -> AddEditElement (gettext("CODECPRIORITY"),
-							   "codecpriority",
-							   '',
-							   "INPUT",
-							   "size=40 maxlength=40",
-							   "",
-							   "",
-							   "", "", "",	"", "", "",	"", "" );
+        "codecpriority",
+        '',
+        "",
+        "",
+        "INPUT",
+        "size=40 maxlength=40",
+        null, "", "", "", "", "", "", "", "");
 
 
 	$HD_Form -> AddEditElement (gettext("QUALIFYSMOOTHING"),
-							   "qualifysmoothing",
-							   '',
-							   "INPUT",
-							   "size=10 maxlength=10",
-							   "",
-							   "",
-							   "", "", "",	"", "", "",	"", "" );
+        "qualifysmoothing",
+        '',
+        "",
+        "",
+        "INPUT",
+        "size=10 maxlength=10",
+        null, "", "", "", "", "", "", "", "");
 
 
 	$HD_Form -> AddEditElement (gettext("QUALIFYFREQOK"),
-							   "qualifyfreqok",
-							   '',
-							   "INPUT",
-							   "size=10 maxlength=10",
-							   "",
-							   "",
-							   "", "", "",	"", "", "",	"", "" );
+        "qualifyfreqok",
+        '',
+        "",
+        "",
+        "INPUT",
+        "size=10 maxlength=10",
+        null, "", "", "", "", "", "", "", "");
 
 
 	$HD_Form -> AddEditElement (gettext("QUALIFYFREQNOTOK"),
-							   "qualifyfreqnotok",
-							   '',
-							   "INPUT",
-							   "size=10 maxlength=10",
-							   "",
-							   "",
-							   "", "", "",	"", "", "",	"", "" );
+        "qualifyfreqnotok",
+        '',
+        "",
+        "",
+        "INPUT",
+        "size=10 maxlength=10",
+        null, "", "", "", "", "", "", "", "");
 
 
 	$HD_Form -> AddEditElement (gettext("TIMEZONE"),
-							   "timezone",
-							   '',
-							   "INPUT",
-							   "size=20 maxlength=20",
-							   "",
-							   "",
-							   "", "", "",	"", "", "",	"", "" );
+        "timezone",
+        '',
+        "",
+        "",
+        "INPUT",
+        "size=20 maxlength=20",
+        null, "", "", "", "", "", "", "", "");
 
 
 	$HD_Form -> AddEditElement (gettext("ADSI"),
-							   "adsi",
-							   '',
-							   "INPUT",
-							   "size=10 maxlength=10",
-							   "",
-							   "",
-							   "", "", "",	"", "", "",	"", "" );
+        "adsi",
+        '',
+        "",
+        "",
+        "INPUT",
+        "size=10 maxlength=10",
+        null, "", "", "", "", "", "", "", "");
 
 
 	$HD_Form -> AddEditElement (gettext("REQUIRE CALL TOKEN"),
-							   "requirecalltoken",
-							   '',
-							   "INPUT",
-							   "size=15 maxlength=20",
-							   "",
-							   "",
-							   "", "", "",	"", "", "",	"", gettext("No supported by Realtime") );
+        "requirecalltoken",
+        '',
+        gettext("No supported by Realtime"),
+        "",
+        "INPUT",
+        "size=15 maxlength=20",
+        null, "", "", "", "", "", "", "", "");
 
 
 	$HD_Form -> AddEditElement (gettext("MAX CALL NUMBERS"),
-							   "maxcallnumbers",
-							   '',
-							   "INPUT",
-							   "size=10 maxlength=10",
-							   "",
-							   "",
-							   "", "", "",	"", "", "",	"", gettext("No supported by Realtime") );
+        "maxcallnumbers",
+        '',
+        gettext("No supported by Realtime"),
+        "",
+        "INPUT",
+        "size=10 maxlength=10",
+        null, "", "", "", "", "", "", "", "");
 
 
 	$HD_Form -> AddEditElement (gettext("MAX CALL NUMBERS NON VALIDATED"),
-							   "maxcallnumbers_nonvalidated",
-							   '',
-							   "INPUT",
-							   "size=10 maxlength=10",
-							   "",
-							   "",
-							   "", "", "",	"", "", "",	"", gettext("No supported by Realtime") );
+        "maxcallnumbers_nonvalidated",
+        '',
+        gettext("No supported by Realtime"),
+        "",
+        "INPUT",
+        "size=10 maxlength=10",
+        null, "", "", "", "", "", "", "", "");
 }
 
 

@@ -125,42 +125,42 @@ $HD_Form -> FG_VIEW_TABLE_WITDH = '80%';
 if (isset($form_action) && ($form_action=='ask-edit')) {
 
     $HD_Form -> AddEditElement (gettext("DESTINATION"),
-	    "destination",
-	    '$value',
-	    "INPUT",
-	    "size=50 maxlength=120",
-	    "0",
-	    "Insert the Destination",
-	    "" , "", "", "", "" , "", "", gettext("Enter here the phonenumber you want to call or the SIP/IAX/H323 peer to reach (ie: 347894999 or SIP/jeremy@182.212.1.45). To call SIP/IAX/H323 peer, you need to enable the voip_call below (voip_call = Yes) "));
+        "destination",
+        '$value',
+        gettext("Enter here the phonenumber you want to call or the SIP/IAX/H323 peer to reach (ie: 347894999 or SIP/jeremy@182.212.1.45). To call SIP/IAX/H323 peer, you need to enable the voip_call below (voip_call = Yes) "),
+        "",
+        "INPUT",
+        "size=50 maxlength=120",
+        0, "Insert the Destination", "", "", "", "", "", "", "");
 }
 
 $HD_Form -> AddEditElement (gettext("ACTIVATED"),
-	"activated",
-	'1',
-	"RADIOBUTTON",
-	"",
-	"",
-	gettext("Choose if you want to activate this card"),
-	"" , "", "", "Yes:1,No:0",   "", "" , "", "");
+    "activated",
+    '1',
+    "",
+    "",
+    "RADIOBUTTON",
+    "",
+    "", gettext("Choose if you want to activate this card"), "", "", "", "Yes:1,No:0", "", "", "");
 
 $HD_Form -> AddEditElement (gettext("PRIORITY"),
-	"priority",
-	"",
-	"SELECT",
-	"",
-	"",
-	"",
-	"list" , "", "",  "", $priority_list, "%1" , "" , "");
+    "priority",
+    "",
+    "",
+    "",
+    "SELECT",
+    "",
+    "", "", "list", "", "", "", $priority_list, "%1", "");
 
 
 $HD_Form -> AddEditElement (gettext("VOIP_CALL"),
-	"voip_call",
-	'1',
-	"RADIOBUTTON",
-	"",
-	"",
-	gettext("Choose if you want to not use the trunk and let the asterisk call directly the destination (ie, Destination : SIP/jeremy@182.212.1.45)"),
-	"" , "",  "", "Yes:1,No:0",  "", "" , "" , "");
+    "voip_call",
+    '1',
+    "",
+    "",
+    "RADIOBUTTON",
+    "",
+    "", gettext("Choose if you want to not use the trunk and let the asterisk call directly the destination (ie, Destination : SIP/jeremy@182.212.1.45)"), "", "", "", "Yes:1,No:0", "", "", "");
 
 
 if (isset($form_action) && ($form_action=='ask-edit')) {

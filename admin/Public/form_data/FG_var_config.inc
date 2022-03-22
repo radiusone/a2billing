@@ -173,68 +173,68 @@ if(!$setbool) {
 }
 
 $HD_Form -> AddEditElement (gettext("GROUP"),
-	"config_group_title",
-	'$value',
-	"INPUT",
-	"size=30 readonly",
-	"",
-	gettext("This is the group of the configuration. Not editable!"),
-	"" , "", "", "", "", "", "", gettext("Group Name of the configuration variable"));
+    "config_group_title",
+    '$value',
+    gettext("Group Name of the configuration variable"),
+    "",
+    "INPUT",
+    "size=30 readonly",
+    null, gettext("This is the group of the configuration. Not editable!"), "", "", "", "", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("TITLE"),
-	"config_title",
-	'$value',
-	"INPUT",
-	"size=40 maxlength=100 readonly",
-	"",
-	gettext("Insert the TITLE"),
-	"" , "", "", "", "" , "", "" ,gettext("Title of the configuration variable"));
+    "config_title",
+    '$value',
+    gettext("Title of the configuration variable"),
+    "",
+    "INPUT",
+    "size=40 maxlength=100 readonly",
+    null, gettext("Insert the TITLE"), "", "", "", "", "", "", "");
 
 $HD_Form -> AddEditElement (gettext("KEY"),
-	"config_key",
-	'$value',
-	"INPUT",
-	"size=60 maxlength=100 readonly",
-	"",
-	gettext("Insert the TITLE"),
-	"" , "", "", "", "" , "", "" ,gettext("Key name of the configuration variable"));
+    "config_key",
+    '$value',
+    gettext("Key name of the configuration variable"),
+    "",
+    "INPUT",
+    "size=60 maxlength=100 readonly",
+    null, gettext("Insert the TITLE"), "", "", "", "", "", "", "");
 
 if ($setbool) {
 	$HD_Form -> AddEditElement (gettext("VALUE"),
-	   "config_value",
-	   "",
-	   "SELECT",
-	   "","","",
-	   "list" , "", "",	"", $value_list, "%1", "", "" );
+        "config_value",
+        "",
+        "",
+        "", "SELECT", "",
+        null, "", "list", "", "", "", $value_list, "%1", "");
 
 } else {
 	$HD_Form -> AddEditElement (gettext("VALUE"),
-		"config_value",
-		'$value',
-		"INPUT",
-		"size=100 maxlength=200",
-		"","",
-		"" , "", "", "", "", "", "", gettext("Insert the Value"));
+        "config_value",
+        '$value',
+        gettext("Insert the Value"),
+        "",
+        "INPUT", "size=100 maxlength=200",
+        null, "", "", "", "", "", "", "", "");
 }
 
 	$HD_Form -> AddEditElement (gettext("LIST OF VALUES"),
-		"config_listvalues",
-		'$value',
-		"INPUT",
-		"size=40 ",
-		"",
-		"",
-		"" , "", "", "", "", "", "", gettext("Insert the List of values, comma separated"));
+        "config_listvalues",
+        '$value',
+        gettext("Insert the List of values, comma separated"),
+        "",
+        "INPUT",
+        "size=40 ",
+        null, "", "", "", "", "", "", "", "");
 
 $HD_Form -> AddEditElement (gettext("DESCRIPTION"),
-	"config_description",
-	'',
-	"SPAN",
-	"cols=80 rows=10",
-	"",
-	gettext("Insert the Description"),
-	"" , "", "", "", "" , "", "", "");
+    "config_description",
+    '',
+    "",
+    "",
+    "SPAN",
+    "cols=80 rows=10",
+    null, gettext("Insert the Description"), "", "", "", "", "", "", "");
 
 
 $HD_Form -> FieldEditElement ('config_group_title, config_title, config_key, config_value ,config_listvalues, config_description');

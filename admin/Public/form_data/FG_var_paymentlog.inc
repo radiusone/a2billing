@@ -119,77 +119,77 @@ $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 
 $HD_Form -> AddEditElement (gettext("ID"),
-			   "id",
-			   "$value",
-			   "INPUT",
-			   "size=10 READONLY maxlength=10",
-			   "4",
-			   gettext("Insert the Id "),
-			    "" , "", "", "", "", "", "",
-				gettext("Select the ID"));
+    "id",
+    "$value",
+    gettext("Select the ID"),
+    "",
+    "INPUT",
+    "size=10 READONLY maxlength=10",
+    4, gettext("Insert the Id "), "", "", "", "", "",
+    "", "");
 
 
 $HD_Form -> AddEditElement (gettext("DATE"),
-			   "creationdate",
-			   '$value',
-			   "INPUT",
-			   "size=40 READONLY maxlength=40 ",
-			   "10",
-			   gettext("Insert the creation date"),
-			   "" , "", "",	"", "", "", "", "" );
+    "creationdate",
+    '$value',
+    "",
+    "",
+    "INPUT",
+    "size=40 READONLY maxlength=40 ",
+    10, gettext("Insert the creation date"), "", "", "", "", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("PAYMENT METHOD"),
-			   "paymentmethod",
-			   '$value',
-			   "INPUT",
-			   "size=30 maxlength=30",
-			   "12",
-			   gettext("Insert the payment method"),
-			   "" , "", "",	"", "" , "", "", gettext("Enter the payment method ") );
+    "paymentmethod",
+    '$value',
+    gettext("Enter the payment method "),
+    "",
+    "INPUT",
+    "size=30 maxlength=30",
+    12, gettext("Insert the payment method"), "", "", "", "", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("STATUS"),
-				"status",
-				'$value',
-				"SELECT",
-				"",
-				"",
-				"",
-				"list" , "", "",	"", $status_list, "%1", "", "" );
+    "status",
+    '$value',
+    "",
+    "",
+    "SELECT",
+    "",
+    null, "", "list", "", "", "", $status_list, "%1", "");
 
 $HD_Form -> AddEditElement (gettext("OWNER"),
-			   "cc_owner",
-			   '$value',
-			   "INPUT",
-			   "size=30 maxlength=30",
-			   "12",
-			   gettext("Insert the owner"),
-			   "" , "", "",	"", "" , "", "", gettext("Enter the owner") );
+    "cc_owner",
+    '$value',
+    gettext("Enter the owner"),
+    "",
+    "INPUT",
+    "size=30 maxlength=30",
+    12, gettext("Insert the owner"), "", "", "", "", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("AMOUNT"),
-			   "amount",
-			   '$value',
-			   "INPUT",
-			   "size=30 maxlength=30",
-			   "12",
-			   gettext("Insert the amount"),
-			   "" , "", "",	"", "" , "", "", gettext("Enter the amount ") );
+    "amount",
+    '$value',
+    gettext("Enter the amount "),
+    "",
+    "INPUT",
+    "size=30 maxlength=30",
+    12, gettext("Insert the amount"), "", "", "", "", "", "", "");
 
 
 
 $HD_Form -> AddEditElement (gettext("ID CARD"),
-			   "card_id",
-			   "$value",
-			   "POPUPVALUE",
-			   "size=30 maxlength=50",
-			   "4",
-			   gettext("Insert the Id CardNumber"),
-			    "" , "", "", "", "",
-				"A2B_entity_card.php?popup_select=1&"
-				, ", 'CardNumberSelection','width=550,height=330,top=20,left=100,scrollbars=1'" ,
-				gettext("Select the Card Number ID"));
+    "card_id",
+    "$value",
+    gettext("Select the Card Number ID"),
+    "",
+    "POPUPVALUE",
+    "size=30 maxlength=50",
+    4, gettext("Insert the Id CardNumber"), "", "", "",
+    ""
+				, "",
+    "A2B_entity_card.php?popup_select=1&", ", 'CardNumberSelection','width=550,height=330,top=20,left=100,scrollbars=1'");
 
 
 $HD_Form -> FieldEditElement ('id, creationdate, paymentmethod, status, cc_owner, amount, cardid ');

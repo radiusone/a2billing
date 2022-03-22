@@ -81,23 +81,23 @@ $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 
 
 $HD_Form -> AddEditElement (gettext("CALLERID"),
-			   "cid",
-			   '$value',
-			   "INPUT",
-			   "size=20 maxlength=30",
-			   "18",
-			   gettext("Insert the CallerID"),
-			   "" , "", "",	"", "" , "", "", "");
+    "cid",
+    '$value',
+    "",
+    "",
+    "INPUT",
+    "size=20 maxlength=30",
+    18, gettext("Insert the CallerID"), "", "", "", "", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("ACTIVATED"),
-			   "activated",
-			   't',
-			   "RADIOBUTTON",
-			   "",
-			   "",
-			   gettext("Choose if you want to activate this card"),
-			   "" , "", "", "Yes:t,No:f", "", "", "", "" );
+    "activated",
+    't',
+    "",
+    "",
+    "RADIOBUTTON",
+    "",
+    "", gettext("Choose if you want to activate this card"), "", "", "", "Yes:t,No:f", "", "", "");
 
 
 

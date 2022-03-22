@@ -116,113 +116,113 @@ $HD_Form -> FG_OTHER_BUTTON1_ALT = gettext("VIEW DETAILS");
 
 
 $HD_Form -> AddEditElement (gettext("NAME"),
-	"name",
-	"$value",
-	"INPUT",
-	"size=35 maxlength=30",
-	"3",
-	gettext("Insert the service name"),
-	"" , "", "", "", "" , "" , "" , "");
+    "name",
+    "$value",
+    "",
+    "",
+    "INPUT",
+    "size=35 maxlength=30",
+    3, gettext("Insert the service name"), "", "", "", "", "", "", "");
 
 $HD_Form -> AddEditElement (gettext("AMOUNT CREDIT"),
-	"amount",
-	'$value',
-	"INPUT",
-	"size=30 maxlength=30",
-	"12",
-	gettext("Insert the number of credit to remove from the cards."),
-	"" , "", "", "", "" , "", "", gettext("Set the amount of credit to remove from the card. 0 will remove all credit from the card use -1 for DID recurrent service."));
+    "amount",
+    '$value',
+    gettext("Set the amount of credit to remove from the card. 0 will remove all credit from the card use -1 for DID recurrent service."),
+    "",
+    "INPUT",
+    "size=30 maxlength=30",
+    12, gettext("Insert the number of credit to remove from the cards."), "", "", "", "", "", "", "");
 
 $HD_Form -> AddEditElement (gettext("RULE"),
-	"rule",
-	'$value',
-	"SELECT",
-	"",
-	"",
-	"",
-	"list" , "", "", "", $rule_list, "%1", "", gettext("where X - day number (X) in days <br>	and Y = number set in period field"));
+    "rule",
+    '$value',
+    gettext("where X - day number (X) in days <br>	and Y = number set in period field"),
+    "",
+    "SELECT",
+    "",
+    null, "", "list", "", "", "", $rule_list, "%1", "");
 
 $HD_Form -> AddEditElement ("DAY NUMBER (X)",
-	"daynumber",
-	"$value",
-	"INPUT",
-	"size=20 maxlength=3",
-	"4",
-	gettext("Insert the daynumber"),
-	"" , "", "", "", "", "" , "NO", gettext("Set the number of days to apply to the rule above."));
+    "daynumber",
+    "$value",
+    gettext("Set the number of days to apply to the rule above."),
+    "",
+    "INPUT",
+    "size=20 maxlength=3",
+    4, gettext("Insert the daynumber"), "", "", "", "", "", "", "NO");
 
 $HD_Form -> AddEditElement (gettext("PERIOD (Y)"),
-	"period",
-	'$value',
-	"SELECT",
-	"",
-	"",
-	"",
-	"list" , "", "", "", $period_list, "%1" , "" , gettext("Interval to apply service"));
+    "period",
+    '$value',
+    gettext("Interval to apply service"),
+    "",
+    "SELECT",
+    "",
+    null, "", "list", "", "", "", $period_list, "%1", "");
 
 $HD_Form -> AddEditElement ("STOP MODE",
-	"stopmode",
-	'$value',
-	"SELECT",
-	"",
-	"",
-	"",
-	"list" , "", "", "", $stopmode_list, "%1" , "", "");
+    "stopmode",
+    '$value',
+    "",
+    "",
+    "SELECT",
+    "",
+    null, "", "list", "", "", "", $stopmode_list, "%1", "");
 
 $HD_Form -> AddEditElement ("MAX NUMBER OF CYCLES BY CARD",
-	"maxnumbercycle",
-	"$value",
-	"INPUT",
-	"size=20 maxlength=3",
-	"4",
-	gettext("Insert the max number of cycle"),
-	"" , "", "", "", "", "" , "NO-NULL", gettext("Set the maximum number of times that the service should be applied."));
+    "maxnumbercycle",
+    "$value",
+    gettext("Set the maximum number of times that the service should be applied."),
+    "",
+    "INPUT",
+    "size=20 maxlength=3",
+    4, gettext("Insert the max number of cycle"), "", "", "", "", "", "", "NO-NULL");
 
 $HD_Form -> AddEditElement ("STATUS",
-	"status",
-	'$value',
-	"SELECT",
-	"",
-	"",
-	"",
-	"list" , "", "", "", $actived_list, "%1" , "", "");
+    "status",
+    '$value',
+    "",
+    "",
+    "SELECT",
+    "",
+    null, "", "list", "", "", "", $actived_list, "%1", "");
 
 $HD_Form -> AddEditElement (gettext("EMAIL TO SEND REPORT"),
-	"emailreport",
-	'$value',
-	"INPUT",
-	"size=30 maxlength=30",
-	"1",
-	gettext("Insert the email to send the report"),
-	"" , "", "", "", "", "" , "NO-NULL", "");
+    "emailreport",
+    '$value',
+    "",
+    "",
+    "INPUT",
+    "size=30 maxlength=30",
+    1, gettext("Insert the email to send the report"), "", "", "", "", "", "", "NO-NULL");
 
 $HD_Form -> AddEditElement (gettext("CALL PLAN"),
-       "dialplan",
-       "",
-       "SELECT",
-       "", "", "",
-       "sql",
-       "cc_tariffgroup union select '--ANY--',0",
-       "tariffgroupname, id",
-       "", "", "%1", "", "");
+    "dialplan",
+    "",
+    "",
+    "", "SELECT", "",
+    null,
+    "",
+    "sql",
+    "cc_tariffgroup union select '--ANY--',0", "tariffgroupname, id", "", "", "%1", "");
 
 $HD_Form -> AddEditElement (gettext("OPERATE MODE"),
-        "operate_mode",
-        '$value',
-        "SELECT",
-        "",
-        "",
-        "",
-        "list" , "", "", "", $operatemode_list, "%1", "", gettext("If you want to charge only part of sum in case if current balance less then amount, select second option. Will be charged only part of amount, cause balance to be 0.0"));
+    "operate_mode",
+    '$value',
+    gettext("If you want to charge only part of sum in case if current balance less then amount, select second option. Will be charged only part of amount, cause balance to be 0.0"),
+    "",
+    "SELECT",
+    null,
+    "", "", "list", "", "", "", $operatemode_list, "%1", "");
 
 $HD_Form -> AddEditElement (gettext("SKIP GROUP"),
-        "use_group",
-        '$value',
-        "SELECT",
-        "",
-        "",
-        "",
-        "list" , "", "", "", $usegroup_list, "%1", "", gettext("Select first option(default) to manualy select groups or select second option to use service for any group, discarding list below"));
+    "use_group",
+    '$value',
+    gettext("Select first option(default) to manualy select groups or select second option to use service for any group, discarding list below"),
+    "",
+    "SELECT",
+    null,
+    "", "", "list", "", "", "", $usegroup_list, "%1", "");
 
 $DBHandle_max  = DbConnect();
 $numrow = 0;
@@ -232,16 +232,16 @@ if ( $resmax )
 
 if ($numrow > 0) {
 	$HD_Form -> AddEditElement (gettext("CARD GROUP"),
-		"service",
-		'$value',
-		"SELECT",
-		'size="10" multiple="multiple"',
-		"",
-		"",
-		"sql",
-		"cards_services",
-		"name, id",
-		"", "", "%1 : (%2)", "", "", "cc_cardgroup_service:id_card_group:cc_card_group LEFT JOIN cc_cardgroup_service ON cc_card_group.id=cc_cardgroup_service.id_card_group:DISTINCT cc_card_group.name, cc_card_group.id: cc_cardgroup_service.id_service = %id:id_service:%2 - (%1)::::%1:id='%1'");
+        "service",
+        '$value',
+        "",
+        "",
+        "SELECT",
+        'size="10" multiple="multiple"',
+        null,
+        "",
+        "sql",
+        "cards_services", "name, id", "", "", "%1 : (%2)", "", "cc_cardgroup_service:id_card_group:cc_card_group LEFT JOIN cc_cardgroup_service ON cc_card_group.id=cc_cardgroup_service.id_card_group:DISTINCT cc_card_group.name, cc_card_group.id: cc_cardgroup_service.id_service = %id:id_service:%2 - (%1)::::%1:id='%1'");
 }
 
 $HD_Form->FieldEditElement('name, amount, rule, daynumber, period, stopmode, maxnumbercycle, status, emailreport, dialplan, operate_mode, use_group');

@@ -138,57 +138,57 @@ if ($popup_select >= 1) {
 $HD_Form -> AddEditElement (gettext("MAIL TYPE"),
     "mailtype",
     '$value',
+    "",
+    "",
     "SELECT",
     "",
-    "",
-    "",
-    "list" , "", "", "", $typemail_list, "%1", "", "");
+    null, "", "list", "", "", "", $typemail_list, "%1", "");
 
 $HD_Form -> AddEditElement (gettext("LANGUAGE"),
     "id_language",
     '',
+    "",
+    "",
     "INPUT",
     "size=30 maxlength=60",
-    "",
-    gettext("Insert the mail id language"),
-    "" , "", "", "", "" , "", "", "");
+    null, gettext("Insert the mail id language"), "", "", "", "", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("FROM EMAIL"),
     "fromemail",
     '',
+    "",
+    "",
     "INPUT",
     "size=30 maxlength=60",
-    "1",
-    gettext("Insert the user fromemail"),
-    "" , "", "", "", "" , "", "", "");
+    1, gettext("Insert the user fromemail"), "", "", "", "", "", "", "");
 
 $HD_Form -> AddEditElement (gettext("FROM NAME"),
     "fromname",
     '',
+    "",
+    "",
     "INPUT",
     "size=30 maxlength=60",
-    "",
-    gettext("Insert the user fromname"),
-    "" , "", "", "", "" , "", "", "");
+    null, gettext("Insert the user fromname"), "", "", "", "", "", "", "");
 
 $HD_Form -> AddEditElement (gettext("SUBJECT"),
     "subject",
     '',
+    "",
+    "",
     "INPUT",
     "size=30 maxlength=80",
-    "",
-    gettext("Insert the user subject"),
-    "" , "", "", "", "" , "", "", "");
+    null, gettext("Insert the user subject"), "", "", "", "", "", "", "");
 
 $HD_Form -> AddEditElement (gettext("MESSAGE TEXT"),
     "messagetext",
     '',
+    "",
+    "",
     "TEXTAREA",
     "cols=70 rows=10",
-    "",
-    gettext("Insert the user subject"),
-    "" , "", "", "", "" , "", "", "");
+    null, gettext("Insert the user subject"), "", "", "", "", "", "", "");
 
 $HD_Form -> FieldEditElement ('mailtype, id_language, fromemail, fromname, subject, messagetext');
 

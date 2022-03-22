@@ -335,213 +335,213 @@ if (isset($form_action) && $form_action=="ask-add") {
 }
 
 $HD_Form -> AddEditElement (gettext("ACCOUNT NUMBER"),
-			   "username",
-			   "",
-			   "INPUT",
-			    "size=30 $maxi readonly  maxlength=40",
-			   "4",
-			   gettext("Insert the account number"),
-			   "" , "", "",	"", "" , "", "", '', null, null, gettext("Customer Information"));
+    "username",
+    "",
+    '',
+    gettext("Customer Information"),
+    "INPUT",
+    "size=30 $maxi readonly  maxlength=40",
+    4, gettext("Insert the account number"), "", "", "", "", "", "", "", null, null);
 
 
 $HD_Form -> AddEditElement (gettext("WEBUI LOGIN"),
-			   "useralias",
-			   "",
-			   "INPUT",
-			    "size=20 $maxi2 maxlength=40",
-			   "4",
-			   gettext("Insert the webui login"),
-			   "" , "", "",	"", "" , "", "", "");
+    "useralias",
+    "",
+    "",
+    "",
+    "INPUT",
+    "size=20 $maxi2 maxlength=40",
+    4, gettext("Insert the webui login"), "", "", "", "", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("WEBUI PASSWORD"),
-			   "uipass",
-			   '',
-			   "INPUT",
-			   "size=20 $maxi3 maxlength=20",
-			   "",
-			   gettext("Insert the password"),
-			   "" , "", "",	"", "", "",	"", gettext("Password for customer to access to the web interface and view the balance.") );
+    "uipass",
+    '',
+    gettext("Password for customer to access to the web interface and view the balance."),
+    "",
+    "INPUT",
+    "size=20 $maxi3 maxlength=20",
+    "", gettext("Insert the password"), "", "", "", "", "", "", "");
 
 
 $balance_delete="";
 if (isset($form_action) && $form_action=="ask-delete") {
 	$HD_Form -> AddEditElement (gettext("BALANCE"),
-			   "credit",
-			   "",
-			   "INPUT",
-			   "size=30 maxlength=30 ",
-			   "12",
-			   gettext("Insert the number of credit"),
-			   "" , "", "", "", "", "", "", gettext("currency : ").strtoupper(BASE_CURRENCY) );
+        "credit",
+        "",
+        gettext("currency : ") . strtoupper(BASE_CURRENCY),
+        "",
+        "INPUT",
+        "size=30 maxlength=30 ",
+        12, gettext("Insert the number of credit"), "", "", "", "", "", "", "");
 
 	$balance_delete = ",credit";
 }
 
 
 $HD_Form -> AddEditElement (gettext("CUSTOMER GROUP"),
-			   "id_group",
-			   "",
-			   "SELECT",
-			   "", "", "",
-			   "sql",
-			   "cc_card_group ",
-			   "name, id",
-			   " cc_card_group.id_agent=".$_SESSION['agent_id'] , "", "%1", "", "", "", '', "");
+    "id_group",
+    "",
+    "",
+    "", "SELECT", "",
+    "",
+    "",
+    "sql",
+    "cc_card_group ", "name, id", " cc_card_group.id_agent=" . $_SESSION['agent_id'], "", "%1", "", "", '');
 
 
 $HD_Form -> AddEditElement (gettext("SERIA"),
-               "id_seria",
-               "",
-               "SELECT",
-               "", "", "",
-               "sql",
-               "cc_card_seria",
-               "name, id",
-               "", "", "%1", "", "", "", '<OPTION  value="-1" selected>'.gettext("NOT DEFINED").'</OPTION>' );
+    "id_seria",
+    "",
+    "",
+    "", "SELECT", "",
+    "",
+    "",
+    "sql",
+    "cc_card_seria", "name, id", "", "", "%1", "", "", '<OPTION  value="-1" selected>' . gettext("NOT DEFINED") . '</OPTION>');
 
 
 $HD_Form -> AddEditElement (gettext("LAST NAME"),
-			   "lastname",
-			   '$value',
-			   "INPUT",
-			   "size=30 maxlength=50",
-			   "11",
-			   gettext("Insert the lastname of the customers"),
-			   "" , "", "",	"", "", "" , "NO", "", null, null, gettext("Personal Information"));
+    "lastname",
+    '$value',
+    "",
+    gettext("Personal Information"),
+    "INPUT",
+    "size=30 maxlength=50",
+    11, gettext("Insert the lastname of the customers"), "", "", "", "", "", "", "NO", null, null);
 
 $HD_Form -> AddEditElement (gettext("FIRST NAME"),
-			   "firstname",
-			   '$value',
-			   "INPUT",
-			   "size=30 maxlength=50",
-			   "11",
-			   gettext("Insert the firstname of the customers"),
-			   "" , "", "",	"", "", "" , "NO", "");
+    "firstname",
+    '$value',
+    "",
+    "",
+    "INPUT",
+    "size=30 maxlength=50",
+    11, gettext("Insert the firstname of the customers"), "", "", "", "", "", "", "NO");
 
 
 $HD_Form -> AddEditElement (gettext("EMAIL"),
-			   "email",
-			   '$value',
-			   "INPUT",
-			   "size=30 maxlength=70",
-			   "1",
-			   gettext("Insert the email"),
-			   "" , "", "",	"", "", "" , "NO", "");
+    "email",
+    '$value',
+    "",
+    "",
+    "INPUT",
+    "size=30 maxlength=70",
+    1, gettext("Insert the email"), "", "", "", "", "", "", "NO");
 
 
 $HD_Form -> AddEditElement (gettext("ADDRESS"),
-			   "address",
-			   '$value',
-			   "INPUT",
-			   "size=30 maxlength=100",
-			   "0",
-			   gettext("Insert the address of the customers"),
-			   "" , "", "",	"", "", "" , "NO", "");
+    "address",
+    '$value',
+    "",
+    "",
+    "INPUT",
+    "size=30 maxlength=100",
+    0, gettext("Insert the address of the customers"), "", "", "", "", "", "", "NO");
 
 
 $HD_Form -> AddEditElement (gettext("CITY"),
-			   "city",
-			   '$value',
-			   "INPUT",
-			   "size=30 maxlength=40",
-			   "0",
-			   gettext("Insert the city"),
-			   "" , "", "",	"", "", "" , "NO", "");
+    "city",
+    '$value',
+    "",
+    "",
+    "INPUT",
+    "size=30 maxlength=40",
+    0, gettext("Insert the city"), "", "", "", "", "", "", "NO");
 
 
 $HD_Form -> AddEditElement (gettext("STATE/PROVINCE"),
-			   "state",
-			   '$value',
-			   "INPUT",
-			   "size=30 maxlength=40",
-			   "11",
-			   gettext("Insert the state"),
-			   "" , "", "",	"", "", "" , "NO", "");
+    "state",
+    '$value',
+    "",
+    "",
+    "INPUT",
+    "size=30 maxlength=40",
+    11, gettext("Insert the state"), "", "", "", "", "", "", "NO");
 
 $HD_Form -> AddEditElement (gettext("COUNTRY"),
-			   "country",
-			   "",
-			   "SELECT",
-			   "", "", "",
-			   "sql",
-			   "cc_country",
-			   "countryname, countrycode",
-			   "", "", "%1", "", "", "", '' );
+    "country",
+    "",
+    "",
+    "", "SELECT", "",
+    "",
+    "",
+    "sql",
+    "cc_country", "countryname, countrycode", "", "", "%1", "", "", '');
 
 $HD_Form -> AddEditElement (gettext("ZIP/POSTAL CODE"),
-			   "zipcode",
-			   '$value',
-			   "INPUT",
-			   "size=30 maxlength=20",
-			   "0",
-			   gettext("Insert the zipcode"),
-			   "" , "", "",	"", "", "" , "NO", "");
+    "zipcode",
+    '$value',
+    "",
+    "",
+    "INPUT",
+    "size=30 maxlength=20",
+    0, gettext("Insert the zipcode"), "", "", "", "", "", "", "NO");
 
 
 $HD_Form -> AddEditElement (gettext("PHONE NUMBER"),
-			   "phone",
-			   '$value',
-			   "INPUT",
-			   "size=30 maxlength=20",
-			   "7",
-			   gettext("Insert the phone number of the customers"),
-			   "" , "", "",	"", "", "" , "NO", "");
+    "phone",
+    '$value',
+    "",
+    "",
+    "INPUT",
+    "size=30 maxlength=20",
+    7, gettext("Insert the phone number of the customers"), "", "", "", "", "", "", "NO");
 
 
 $HD_Form -> AddEditElement (gettext("FAX NUMBER"),
-			   "fax",
-			   '$value',
-			   "INPUT",
-			   "size=30 maxlength=20",
-			   "",
-			   gettext("Insert the fax number of the customers"),
-			   "" , "", "",	"", "", "" , "NO", "");
+    "fax",
+    '$value',
+    "",
+    "",
+    "INPUT",
+    "size=30 maxlength=20",
+    "", gettext("Insert the fax number of the customers"), "", "", "", "", "", "", "NO");
 
 $HD_Form -> AddEditElement (gettext("COMPANY NAME"),
-			   "company_name",
-			   '$value',
-			   "INPUT",
-			   "size=40 maxlength=50",
-			   "",
-			   gettext("Insert Company name of this customer"),
-			   "" , "", "",	"", "", "" , "NO", "");
+    "company_name",
+    '$value',
+    "",
+    "",
+    "INPUT",
+    "size=40 maxlength=50",
+    "", gettext("Insert Company name of this customer"), "", "", "", "", "", "", "NO");
 
 
 $HD_Form -> AddEditElement (gettext("COMPANY WEBSITE"),
-			   "company_website",
-			   '$value',
-			   "INPUT",
-			   "size=40 maxlength=60",
-			   "",
-			   gettext("Insert the company website of this customer"),
-			   "" , "", "",	"", "", "" , "NO", "");
+    "company_website",
+    '$value',
+    "",
+    "",
+    "INPUT",
+    "size=40 maxlength=60",
+    "", gettext("Insert the company website of this customer"), "", "", "", "", "", "", "NO");
 
 
 $callplan_add = "";
 if (isset($form_action) && ($form_action=="ask-add" || $form_action=="add")) {
 	$HD_Form -> AddEditElement (gettext("CALL PLAN"),
-				   "tariff",
-				   "",
-				   "SELECT",
-				   "", "", "",
-				   "sql",
-				   "cc_tariffgroup, cc_agent_tariffgroup",
-				   "tariffgroupname, id",
-				   "cc_tariffgroup.id = cc_agent_tariffgroup.id_tariffgroup AND cc_agent_tariffgroup.id_agent = ".$_SESSION['agent_id'] , "", "%1", "", "");
+        "tariff",
+        "",
+        "",
+        "", "SELECT", "",
+        "",
+        "",
+        "sql",
+        "cc_tariffgroup, cc_agent_tariffgroup", "tariffgroupname, id", "cc_tariffgroup.id = cc_agent_tariffgroup.id_tariffgroup AND cc_agent_tariffgroup.id_agent = " . $_SESSION['agent_id'], "", "%1", "");
 
 	$callplan_add = ",tariff";
 }
 
 $HD_Form -> AddEditElement (gettext("DIDGROUP"),
-			   "id_didgroup",
-			   "",
-			   "SELECT",
-			   "", "", "",
-			   "sql",
-			   "cc_didgroup",
-			   "didgroupname, id",
-			   "", "", "%1", "", "", "", '<OPTION  value="-1" selected>'.gettext("NOT DEFINED").'</OPTION>' );
+    "id_didgroup",
+    "",
+    "",
+    "", "SELECT", "",
+    "",
+    "",
+    "sql",
+    "cc_didgroup", "didgroupname, id", "", "", "%1", "", "", '<OPTION  value="-1" selected>' . gettext("NOT DEFINED") . '</OPTION>');
 
 $timezone_list = get_timezones();
 foreach($timezone_list as $key => $cur_value) {
@@ -554,164 +554,164 @@ foreach($timezone_list as $key => $cur_value) {
 
 
 $HD_Form -> AddEditElement (gettext("TIMEZONE"),
-			   "id_timezone",
-			   "",
-			   "SELECT",
-			   "","","",
-			   "list" , "", "",	"", $timezone_list, "%1", "", "" );
+    "id_timezone",
+    "",
+    "",
+    "", "SELECT", "",
+    "", "", "list", "", "", "", $timezone_list, "%1", "");
 
 
 $HD_Form -> AddEditElement (gettext("LANGUAGE"),
-			   "language",
-			   "",
-			   "SELECT",
-			   "",
-			   "",
-			   "",
-			   "list" , "", "",	"", $language_list, "%1", "", "" );
+    "language",
+    "",
+    "",
+    "",
+    "SELECT",
+    "",
+    "", "", "list", "", "", "", $language_list, "%1", "");
 
 
 $HD_Form -> AddEditElement (gettext("CURRENCY"),
-			   "currency",
-			   "",
-			   "SELECT",
-			   "",
-			   "", "", "list" , "", "",	"", $currency_list, "%1", "", gettext("Currency used at the customer end.") );
+    "currency",
+    "",
+    gettext("Currency used at the customer end."),
+    "",
+    "SELECT", "", "", "", "list", "", "", "", $currency_list, "%1", "");
 
 
 
 $HD_Form -> AddEditElement (gettext("STATUS"),
-			   "status",
-			   "",
-			   "SELECT",
-			   "",
-			   "",
-			   "",
-			   "list" , "", "",	"", $cardstatus_list, "%1", "", "" );
+    "status",
+    "",
+    "",
+    "",
+    "SELECT",
+    "",
+    "", "", "list", "", "", "", $cardstatus_list, "%1", "");
 
 	$HD_Form -> AddEditElement (gettext("LOCK"),
-				   "block",
-				   '0',
-				   "RADIOBUTTON",
-				   "",
-				   "",
-				   gettext("Choose if you want to enable the lock on this account"),
-				   "" , "", "", "Yes:1,No:0", "", "" , "", gettext("Enable lock for this account."));
+        "block",
+        '0',
+        gettext("Enable lock for this account."),
+        "",
+        "RADIOBUTTON",
+        "",
+        "", gettext("Choose if you want to enable the lock on this account"), "", "", "", "Yes:1,No:0", "", "", "");
 
 	if ($form_action =="ask-add" || $form_action=="add") {
 		$lockpin_default = "value = '0'";
 	}
 
 	$HD_Form -> AddEditElement (gettext("LOCK PIN"),
-				   "lock_pin",
-				   '$value',
-				   "INPUT",
-				   "size=20 maxlength=10 $lockpin_default",
-				   "4",
-				   "",
-				   "" , "", "",	"", "", "", "NO", gettext("Code required to make the call if the lock is active."));
+        "lock_pin",
+        '$value',
+        gettext("Code required to make the call if the lock is active."),
+        "",
+        "INPUT",
+        "size=20 maxlength=10 $lockpin_default",
+        4, "", "", "", "", "", "", "", "NO");
 
 $HD_Form -> AddEditElement (gettext("SIMULTANEOUS ACCESS"),
-			   "simultaccess",
-			   "1",
-			   "SELECT",
-			   "",
-			   "",
-			   "",
-			   "list" , "", "",	"", $simultaccess_list, "%1", "", "" );
+    "simultaccess",
+    "1",
+    "",
+    "",
+    "SELECT",
+    "",
+    "", "", "list", "", "", "", $simultaccess_list, "%1", "");
 
 
 $HD_Form -> AddEditElement (gettext("RUN SERVICE"),
-			   "runservice",
-			   '0',
-			   "RADIOBUTTON",
-			   "",
-			   "",
-			   gettext("Choose if you want to enable the service recurring on this account"),
-			   "" , "", "", "Yes:1,No:0", "", "" , "", gettext("Apply recurring service to this account."));
+    "runservice",
+    '0',
+    gettext("Apply recurring service to this account."),
+    "",
+    "RADIOBUTTON",
+    "",
+    "", gettext("Choose if you want to enable the service recurring on this account"), "", "", "", "Yes:1,No:0", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("CREDIT LIMIT NOTIFICATION"),
-			   "credit_notification",
-			   '',
-			   "SELECT",
-			   "",
-			   "",
-			   "",
-			   "list" , "", "", "", $limits_notify_list , "%1", "",
-			   gettext("currency : ").strtoupper(BASE_CURRENCY).'<BR>'.gettext("Low credit limit to alert the customer"),
-			   "", '<OPTION  value="-1" selected>'.gettext("NOT DEFINED").'</OPTION>');
+    "credit_notification",
+    '',
+    gettext("currency : ") . strtoupper(BASE_CURRENCY) . '<BR>' . gettext("Low credit limit to alert the customer"),
+    "",
+    "SELECT",
+    "",
+    "", "", "list", "", "", "", $limits_notify_list,
+    "%1",
+    "", "", '<OPTION  value="-1" selected>' . gettext("NOT DEFINED") . '</OPTION>');
 
 
 $HD_Form -> AddEditElement (gettext("PERMITTED NOTIFICATIONS BY MAIL"),
-			   "notify_email",
-			   '0',
-			   "RADIOBUTTON",
-			   "",
-			   "",
-			   gettext("Choose if you want to enable the notification by email for this account"),
-			   "" , "", "", "Yes:1,No:0", "", "" , "", gettext("Enable the notification by mail for this account."));
+    "notify_email",
+    '0',
+    gettext("Enable the notification by mail for this account."),
+    "",
+    "RADIOBUTTON",
+    "",
+    "", gettext("Choose if you want to enable the notification by email for this account"), "", "", "", "Yes:1,No:0", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("EMAIL NOTIFICATION"),
-			   "email_notification",
-			   '$value',
-			   "INPUT",
-			   "size=30 maxlength=70",
-			   "1",
-			   gettext("Insert the email to notify this customer"),
-			   "" , "", "",	"", "", "" , "NO", "");
+    "email_notification",
+    '$value',
+    "",
+    "",
+    "INPUT",
+    "size=30 maxlength=70",
+    1, gettext("Insert the email to notify this customer"), "", "", "", "", "", "", "NO");
 
 
 if (ACT_VOICEMAIL) {
 	$HD_Form -> AddEditElement (gettext("PERMITTED VOICEMAIL"),
-				   "voicemail_permitted",
-				   '1',
-				   "RADIOBUTTON",
-				   "",
-				   "",
-				   gettext("Choose if you want to enable the voicemail functionality for this account"),
-				   "" , "", "", "Yes:1,No:0", "", "" , "", gettext("Enable the voicemail functionality for this account."));
+        "voicemail_permitted",
+        '1',
+        gettext("Enable the voicemail functionality for this account."),
+        "",
+        "RADIOBUTTON",
+        "",
+        "", gettext("Choose if you want to enable the voicemail functionality for this account"), "", "", "", "Yes:1,No:0", "", "", "");
 
 	$HD_Form -> AddEditElement (gettext("ACTIVE VOICEMAIL SERVICE"),
-				   "voicemail_activated",
-				   '0',
-				   "RADIOBUTTON",
-				   "",
-				   "",
-				   gettext("Customer can choose to enable the voicemail for this account"),
-				   "" , "", "", "Yes:1,No:0", "", "" , "", gettext("Customer can enable the voicemail for this account."));
+        "voicemail_activated",
+        '0',
+        gettext("Customer can enable the voicemail for this account."),
+        "",
+        "RADIOBUTTON",
+        "",
+        "", gettext("Customer can choose to enable the voicemail for this account"), "", "", "", "Yes:1,No:0", "", "", "");
 }
 
 $HD_Form -> AddEditElement (gettext("CAMPAIGN"),
-			   "id_campaign",
-			   "",
-			   "SELECT",
-			   "", "", "",
-			   "sql",
-			   "cc_campaign",
-			   "name, id",
-			   "", "", "%1", "", "", "", '<OPTION  value="-1" selected>'.gettext("NOT DEFINED").'</OPTION>' );
+    "id_campaign",
+    "",
+    "",
+    "", "SELECT", "",
+    "",
+    "",
+    "sql",
+    "cc_campaign", "name, id", "", "", "%1", "", "", '<OPTION  value="-1" selected>' . gettext("NOT DEFINED") . '</OPTION>');
 
 
 $HD_Form -> AddEditElement (gettext("FIRST USE DATE"),
-			   "firstusedate",
-			   "",
-			   "INPUT",
-			   "size=40 maxlength=40 readonly",
-			   "",
-			   "the first use date",
-			   "" , "" , "", "", "", "", "NO-NULL", "", "", "res_display_dateformat");
+    "firstusedate",
+    "",
+    "",
+    "",
+    "INPUT",
+    "size=40 maxlength=40 readonly",
+    "", "the first use date", "", "", "", "", "", "", "NO-NULL", "", "res_display_dateformat");
 
 
 $HD_Form -> AddEditElement (gettext("ENABLE EXPIRY"),
-			   "enableexpire",
-			   "",
-			   "SELECT",
-			   "",
-			   "",
-			   "",
-			   "list" , "", "",	"", $expire_list, "%1", "", gettext("Select method of expiry for the account.") );
+    "enableexpire",
+    "",
+    gettext("Select method of expiry for the account."),
+    "",
+    "SELECT",
+    "",
+    "", "", "list", "", "", "", $expire_list, "%1", "");
 
 
 $comp_zero = $comp_date_plus='';
@@ -725,196 +725,196 @@ if (isset($form_action) && $form_action=="ask-add") {
 }
 
 $HD_Form -> AddEditElement (gettext("EXPIRY DATE"),
-			   "expirationdate",
-			   '$value',
-			   "INPUT",
-			   "size=40 maxlength=40  $comp_date_plus",
-			   "10",
-			   gettext("Insert the expiration date"),
-			   "" , "", "",	"", "", "", "NO-NULL", gettext("please respect the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"), "", "res_display_dateformat");
+    "expirationdate",
+    '$value',
+    gettext("please respect the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
+    "",
+    "INPUT",
+    "size=40 maxlength=40  $comp_date_plus",
+    10, gettext("Insert the expiration date"), "", "", "", "", "", "", "NO-NULL", "", "res_display_dateformat");
 
 
 
 $HD_Form -> AddEditElement (gettext("EXPIRY DAYS"),
-			   "expiredays",
-			   "",
-			   "INPUT",
-			    "size=10 maxlength=6 $comp_zero",
-			   "4",
-			   gettext("Insert the number of days after which the account will expire"),
-			   "" , "", "",	"", "", "", "", gettext("The number of days after which the account will expire."));
+    "expiredays",
+    "",
+    gettext("The number of days after which the account will expire."),
+    "",
+    "INPUT",
+    "size=10 maxlength=6 $comp_zero",
+    4, gettext("Insert the number of days after which the account will expire"), "", "", "", "", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("CREATE SIP CONFIG"),
-			   "sip_buddy",
-			   '1',
-			   "RADIOBUTTON",
-			   "",
-			   "",
-			   gettext("Choose if you want to enable the sip account"),
-			   "" , "", "" , "Yes:1,No:0", "", "" , "", gettext("Create the SIP config automatically"));
+    "sip_buddy",
+    '1',
+    gettext("Create the SIP config automatically"),
+    "",
+    "RADIOBUTTON",
+    "",
+    "", gettext("Choose if you want to enable the sip account"), "", "", "", "Yes:1,No:0", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("CREATE IAX CONFIG"),
-			   "iax_buddy",
-			   '1',
-			   "RADIOBUTTON",
-			   "",
-			   "",
-			   gettext("Choose if you want to enable the iax account"),
-			   "" , "", "" , "Yes:1,No:0",  "", "" , "", gettext("Create the IAX config automatically"));
+    "iax_buddy",
+    '1',
+    gettext("Create the IAX config automatically"),
+    "",
+    "RADIOBUTTON",
+    "",
+    "", gettext("Choose if you want to enable the iax account"), "", "", "", "Yes:1,No:0", "", "", "");
 
 $HD_Form -> AddEditElement (gettext("MAC ADDRESS"),
-			   "mac_addr",
-			   '$value',
-			   "INPUT",
-			   "size=20 maxlength=17",
-			   "",
-			   gettext("Insert the MAC address customers' device"),
-			   "" , "", "",	"", "", "" , "NO", gettext("FORMAT: 00-08-74-4C-7F-1D"));
+    "mac_addr",
+    '$value',
+    gettext("FORMAT: 00-08-74-4C-7F-1D"),
+    "",
+    "INPUT",
+    "size=20 maxlength=17",
+    "", gettext("Insert the MAC address customers' device"), "", "", "", "", "", "", "NO");
 
 
 $HD_Form -> AddEditElement (gettext("IN USE"),
-			   "inuse",
-			   '$value',
-			   "INPUT",
-			   "size=5 maxlength=5",
-			   "",
-			   "",
-			   "" , "", "",	"", "", "", "NO", gettext("Updated to show the number of concurrent calls in use by this customer. If there are no currently no calls, and the system shows that there are, manually reset this field back to zero.") );
+    "inuse",
+    '$value',
+    gettext("Updated to show the number of concurrent calls in use by this customer. If there are no currently no calls, and the system shows that there are, manually reset this field back to zero."),
+    "",
+    "INPUT",
+    "size=5 maxlength=5",
+    "", "", "", "", "", "", "", "", "NO");
 
 $HD_Form -> AddEditElement (gettext("AUTOREFILL"),
-			   "autorefill",
-			   '0',
-			   "RADIOBUTTON",
-			   "",
-			   "",
-			   gettext("Choose if you want to enable the autorefill on this account"),
-			   "" , "", "", "Yes:1,No:0", "", "" , "", gettext("Define if you want to authorize the autorefill to apply on this accout"),
-			   '', '', gettext("AUTOREFILL"));
+    "autorefill",
+    '0',
+    gettext("Define if you want to authorize the autorefill to apply on this accout"),
+    gettext("AUTOREFILL"),
+    "RADIOBUTTON",
+    "",
+    "", gettext("Choose if you want to enable the autorefill on this account"), "", "", "", "Yes:1,No:0", "", "",
+    "", '', '');
 
 $HD_Form -> AddEditElement (gettext("INITIAL BALANCE"),
-			   "initialbalance",
-			   "",
-			   "INPUT",
-			   "size=30 $default_initbalance maxlength=30",
-			   "12",
-			   gettext("Insert the amount of the initial balance"),
-			   "" , "", "",	"", "", "",	"", gettext("The initial balance is used by autorefill to reset the current balance to this amount"));
+    "initialbalance",
+    "",
+    gettext("The initial balance is used by autorefill to reset the current balance to this amount"),
+    "",
+    "INPUT",
+    "size=30 $default_initbalance maxlength=30",
+    12, gettext("Insert the amount of the initial balance"), "", "", "", "", "", "", "");
 
 
 
 $HD_Form -> AddEditElement (gettext("INVOICE DAY"),
-			   "invoiceday",
-			   '$value',
-			   "SELECT",
-			   "",
-			   "",
-			   "",
-			   "list" , "", "",	"", $invoiceday_list, "%1", "", gettext("Define the day of the month when the system will generate the customer invoice."),
-			   '', '', gettext("Invoice Status"));
+    "invoiceday",
+    '$value',
+    gettext("Define the day of the month when the system will generate the customer invoice."),
+    gettext("Invoice Status"),
+    "SELECT",
+    "",
+    "", "", "list", "", "", "", $invoiceday_list, "%1",
+    "", '', '');
 
 
 $HD_Form -> AddEditElement (gettext("VAT"),
-			   "vat",
-			   "",
-			   "INPUT",
-			   "size=10 maxlength=6 value=0",
-			   "12",
-			   gettext("Insert the number for the VAT"),
-			   "" , "", "",	"", "", "", "" , gettext("VAT to add on the invoice of this customer. it should be a decimal value '21' this will be for 21% of VAT!"));
+    "vat",
+    "",
+    gettext("VAT to add on the invoice of this customer. it should be a decimal value '21' this will be for 21% of VAT!"),
+    "",
+    "INPUT",
+    "size=10 maxlength=6 value=0",
+    12, gettext("Insert the number for the VAT"), "", "", "", "", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("VAT REGISTRATION NUMBER "),
-			   "vat_rn",
-			   '$value',
-			   "INPUT",
-			   "size=40 maxlength=40",
-			   "",
-			   gettext("Insert the VAT registration number of this customer"),
-			   "" , "", "",	"", "", "" , "NO", "");
+    "vat_rn",
+    '$value',
+    "",
+    "",
+    "INPUT",
+    "size=40 maxlength=40",
+    "", gettext("Insert the VAT registration number of this customer"), "", "", "", "", "", "", "NO");
 
 
 $HD_Form -> AddEditElement (gettext("DISCOUNT"),
-               "discount",
-               "",
-               "SELECT",
-               "",
-               "",
-               "",
-               "list" , "", "",     "", $discount_list, "%1", "", "");
+    "discount",
+    "",
+    "",
+    "",
+    "SELECT",
+    "",
+    "", "", "list", "", "", "", $discount_list, "%1", "");
 
 
 $HD_Form -> AddEditElement (gettext("TRAFFIC PER MONTH"),
-			   "traffic",
-			   '$value',
-			   "INPUT",
-			   "size=30 maxlength=20",
-			   "",
-			   gettext("Insert the traffic per month for this customer"),
-			   "" , "", "",	"", "", "" , "NO", "",
-			   '', '', gettext("TARGET TRAFFIC"));
+    "traffic",
+    '$value',
+    "",
+    gettext("TARGET TRAFFIC"),
+    "INPUT",
+    "size=30 maxlength=20",
+    "", gettext("Insert the traffic per month for this customer"), "", "", "", "", "", "",
+    "NO", '', '');
 
 $HD_Form -> AddEditElement (gettext("TARGET TRAFFIC"),
-				"traffic_target",
-				'',
-				"TEXTAREA",
-				"cols=50 rows=4",
-				"",
-				gettext("Insert the target traffic description"),
-				"" , "", "", "", "" , "", "", "");
+    "traffic_target",
+    '',
+    "",
+    "",
+    "TEXTAREA",
+    "cols=50 rows=4",
+    "", gettext("Insert the target traffic description"), "", "", "", "", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("RESTRICTION"),
-			   "restriction",
-			   "0",
-			   "SELECT",
-			   "",
-			   "",
-			   "",
-			   "list" , "", "",	"", $restriction_list, "%1", "", "",
-			   '', '', gettext("RESTRICTED NUMBERS"));
+    "restriction",
+    "0",
+    "",
+    gettext("RESTRICTED NUMBERS"),
+    "SELECT",
+    "",
+    "", "", "list", "", "", "", $restriction_list, "%1",
+    "", '', '');
 
 $HD_Form -> AddEditElement (gettext("RESTRICTED NUMBERS"),
-			   "restrictednumber",
-			   '$value',
-			   "HAS_MANY",
-			   "",
-			   "",
-			   gettext("Insert numbers that restrict the customer"),
-			   "",
-			   "",
-			   "",
-			   "", "", "", "", "", "cc_restricted_phonenumber:number:number, id_card:id_card = %id::id_card:::::::0");
+    "restrictednumber",
+    '$value',
+    "",
+    "",
+    "HAS_MANY",
+    "",
+    "",
+    gettext("Insert numbers that restrict the customer"),
+    "",
+    "", "", "", "", "", "", "cc_restricted_phonenumber:number:number, id_card:id_card = %id::id_card:::::::0");
 
 
 
 $HD_Form -> AddEditElement (gettext("CALLERID"),
-			   "callerid",
-			   '$value',
-			   "HAS_MANY",
-			   "",
-			   "",
-			   "",
-			   "",
-			   "",
-			   "",
-			   "", "", "", "", "", "cc_callerid:cid:cid, cid, id_cc_card:id_cc_card = %id::id_cc_card:::::::0",
-			   '', gettext("CALLERID / CUSTOMER HISTORY"));
+    "callerid",
+    '$value',
+    "",
+    gettext("CALLERID / CUSTOMER HISTORY"),
+    "HAS_MANY",
+    "",
+    "",
+    "",
+    "",
+    "", "", "", "", "", "",
+    "cc_callerid:cid:cid, cid, id_cc_card:id_cc_card = %id::id_cc_card:::::::0", '');
 
 
 
 $HD_Form -> AddEditElement (gettext("CUSTOMER HISTORY"),
-			   "description",
-			   '$value',
-			   "HAS_MANY",
-			   "multiline",
-			   "",
-			   "",
-			   "",
-			   "",
-			   "",
-			   "", "", "", "", "", "cc_card_history:description:description,id_cc_card,datecreated:id_cc_card = %id::id_cc_card::2:::::0");
+    "description",
+    '$value',
+    "",
+    "",
+    "HAS_MANY",
+    "multiline",
+    "",
+    "",
+    "",
+    "", "", "", "", "", "", "cc_card_history:description:description,id_cc_card,datecreated:id_cc_card = %id::id_cc_card::2:::::0");
 
 			   // cc_card_history:description:description,id_cc_card:id_cc_card = %id::id_cc_card
 			   // Above function will provid Has Many functionality

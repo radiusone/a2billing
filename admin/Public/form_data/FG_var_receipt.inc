@@ -102,12 +102,12 @@ $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 
 $HD_Form -> AddEditElement (gettext("ID CUSTOMER"),
-			   "id_card",
-			   "$value", "POPUPVALUE", "size=30 maxlength=50",
-			   "4",	gettext("Insert the Customer ID"),
-			    "" , "", "", "", "",
-				"A2B_entity_card.php?popup_select=1&", ", 'CardNumberSelection','width=550,height=330,top=20,left=100,scrollbars=1'" ,
-				gettext("Select the Customer ID"));
+    "id_card",
+    "$value", gettext("Select the Customer ID"), "",
+    "POPUPVALUE", "size=30 maxlength=50",
+    4, gettext("Insert the Customer ID"), null, "", "",
+    "", "",
+    "A2B_entity_card.php?popup_select=1&", ", 'CardNumberSelection','width=550,height=330,top=20,left=100,scrollbars=1'");
 
 if ($form_action=="ask-add"){
 	$begin_date = date("Y");
@@ -117,32 +117,32 @@ if ($form_action=="ask-add"){
 }
 
 $HD_Form -> AddEditElement (gettext("INVOICE DATE"),
-			   "date",
-			   '$value',
-			   "INPUT",
-			   "size=40 READONLY maxlength=40  $comp_date",
-			   "10",
-			   gettext("Insert the current date"),
-			   "" , "", "",	"", "", "", "", "" );
+    "date",
+    '$value',
+    "",
+    "",
+    "INPUT",
+    "size=40 READONLY maxlength=40  $comp_date",
+    10, gettext("Insert the current date"), "", "", "", "", "", "", "");
 
 
-$HD_Form -> AddEditElement ( gettext("TITLE"),
-				"title",	'$value',
-				"INPUT",
-				"size=30 maxlength=50",
-				"0",
-				gettext("Insert the title of invoice, if you need one"),
-				"" , "", "",	"", "", "", "", "" );
+$HD_Form -> AddEditElement (gettext("TITLE"),
+    "title", '$value',
+    "",
+    "",
+    "INPUT",
+    "size=30 maxlength=50",
+    0, gettext("Insert the title of invoice, if you need one"), "", "", "", "", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("DESCRIPTION"),
-				"description",
-				'',
-				"TEXTAREA",
-				"cols=50 rows=4",
-				"",
-				gettext("Insert the description"),
-				"" , "", "", "", "" , "", "", "");
+    "description",
+    '',
+    "",
+    "",
+    "TEXTAREA",
+    "cols=50 rows=4",
+    null, gettext("Insert the description"), "", "", "", "", "", "", "");
 
 
 $HD_Form -> FieldEditElement ('id_card, date,title, description');
