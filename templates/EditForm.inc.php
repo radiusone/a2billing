@@ -9,6 +9,7 @@ use A2billing\Table;
  */
 
 $db_data = $list[0];
+$options = null
 ?>
 
 <script src="javascript/calonlydays.js"></script>
@@ -47,8 +48,7 @@ $db_data = $list[0];
     <?php endforeach ?>
 
     <?php foreach ($this->FG_EDIT_FORM_ELEMENTS as $i=> $row): ?>
-        <?php $options = null ?>
-        <?php if (strlen($row["section_name"]) > 1): ?>
+        <?php if (!empty($row["section_name"])): ?>
         <div class="row mb-3">
             <h4><?= $row["section_name"] ?></h4>
         </div>
@@ -84,16 +84,6 @@ $db_data = $list[0];
                         value="<?= $processed[$row["name"]] ?>"
                     <?php endif ?>
                 />
-
-            <?php elseif ($row["type"] === "LABEL"): ?>
-                        <?php if (!empty($row["custom_function"])): ?>
-                            <?php $db_data[$i] = call_user_func($row["custom_function"], $db_data[$i]) ?>
-                        <?php endif ?>
-                        <?php if ($this->VALID_SQL_REG_EXP): ?>
-                            <?= $db_data[$i] ?>
-                        <?php else: ?>
-                            <?= $processed[$row["name"]] ?>
-                        <?php endif ?>
 
             <?php elseif (str_starts_with($row["type"], "POPUP")): ?>
                 <?php $pu = explode(",", trim($row["popup_params"], ", ")) ?>
@@ -158,43 +148,43 @@ $db_data = $list[0];
                     <?= $row["first_option"] ?>
                     <?php if (is_array($options) && count($options)): ?>
                         <?php foreach ($options as $option): ?>
-                            <option
-                                    value="<?= $option[1] ?>"
-                                <?php if ($this->VALID_SQL_REG_EXP): ?>
-                                    <?php if (str_icontains($row["attributes"], "multiple")): ?>
-                                        <?php if (intval($option[1]) & intval($db_data[$i])): ?>
-                                            selected="selected"
-                                        <?php endif ?>
-                                    <?php else: ?>
-                                        <?php if ($db_data[$i] == $option[1]): ?>
-                                            selected="selected"
-                                        <?php endif ?>
+                    <option
+                        value="<?= $option[1] ?>"
+                            <?php if ($this->VALID_SQL_REG_EXP): ?>
+                                <?php if (str_icontains($row["attributes"], "multiple")): ?>
+                                    <?php if (intval($option[1]) & intval($db_data[$i])): ?>
+                        selected="selected"
                                     <?php endif ?>
                                 <?php else: ?>
-                                    <?php if (str_icontains($row["attributes"], "multiple")): ?>
-                                        <?php if (is_array($processed[$row["name"]]) && (intval($option[1]) & array_sum($processed[$row["name"]]))): ?>
-                                            selected="selected"
-                                        <?php endif ?>
-                                    <?php else: ?>
-                                        <?php if ($processed[$row["name"]] == $option[1]): ?>
-                                            selected="selected"
-                                        <?php endif ?>
+                                    <?php if ($db_data[$i] == $option[1]): ?>
+                        selected="selected"
                                     <?php endif ?>
                                 <?php endif ?>
-                            >
-                                <?php if ($row["select_format"] === ""): ?>
-                                    <?= $option[0] ?>
+                            <?php else: ?>
+                                <?php if (str_icontains($row["attributes"], "multiple")): ?>
+                                    <?php if (is_array($processed[$row["name"]]) && (intval($option[1]) & array_sum($processed[$row["name"]]))): ?>
+                        selected="selected"
+                                    <?php endif ?>
                                 <?php else: ?>
-                                    <?php $val = $row["select_format"] ?>
-                                    <?php for ($k = 1; $k <= count($option); $k++): ?>
-                                        <?php $val = str_replace("%$k", $option[$k -1], $val) ?>
-                                    <?php endfor ?>
-                                    <?= $val ?>
+                                    <?php if ($processed[$row["name"]] == $option[1]): ?>
+                        selected="selected"
+                                    <?php endif ?>
                                 <?php endif ?>
-                            </option>
+                            <?php endif ?>
+                    >
+                            <?php if ($row["select_format"] === ""): ?>
+                        <?= $option[0] ?>
+                            <?php else: ?>
+                                <?php $val = $row["select_format"] ?>
+                                <?php for ($k = 1; $k <= count($option); $k++): ?>
+                                    <?php $val = str_replace("%$k", $option[$k -1], $val) ?>
+                                <?php endfor ?>
+                        <?= $val ?>
+                            <?php endif ?>
+                    </option>
                         <?php endforeach ?>
                     <?php else: ?>
-                        <option value=""><?= gettext("No data found!!!") ?></option>
+                    <option value=""><?= gettext("No data found!!!") ?></option>
                     <?php endif ?>
                 </select>
 
