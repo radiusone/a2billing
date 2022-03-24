@@ -122,7 +122,7 @@ $HD_Form -> AddEditElement (gettext("NAME"),
     "",
     "INPUT",
     "size=35 maxlength=30",
-    3, gettext("Insert the service name"), "", "", "", "", "", "", "");
+    3, gettext("Insert the service name"));
 
 $HD_Form -> AddEditElement (gettext("AMOUNT CREDIT"),
     "amount",
@@ -131,7 +131,7 @@ $HD_Form -> AddEditElement (gettext("AMOUNT CREDIT"),
     "",
     "INPUT",
     "size=30 maxlength=30",
-    12, gettext("Insert the number of credit to remove from the cards."), "", "", "", "", "", "", "");
+    12, gettext("Insert the number of credit to remove from the cards."));
 
 $HD_Form -> AddEditElement (gettext("RULE"),
     "rule",
@@ -140,7 +140,7 @@ $HD_Form -> AddEditElement (gettext("RULE"),
     "",
     "SELECT",
     "",
-    null, "", "list", "", "", "", $rule_list, "%1", "");
+    null, "", "list", "", "", "", $rule_list, "%1");
 
 $HD_Form -> AddEditElement ("DAY NUMBER (X)",
     "daynumber",
@@ -158,7 +158,7 @@ $HD_Form -> AddEditElement (gettext("PERIOD (Y)"),
     "",
     "SELECT",
     "",
-    null, "", "list", "", "", "", $period_list, "%1", "");
+    null, "", "list", "", "", "", $period_list, "%1");
 
 $HD_Form -> AddEditElement ("STOP MODE",
     "stopmode",
@@ -167,7 +167,7 @@ $HD_Form -> AddEditElement ("STOP MODE",
     "",
     "SELECT",
     "",
-    null, "", "list", "", "", "", $stopmode_list, "%1", "");
+    null, "", "list", "", "", "", $stopmode_list, "%1");
 
 $HD_Form -> AddEditElement ("MAX NUMBER OF CYCLES BY CARD",
     "maxnumbercycle",
@@ -185,7 +185,7 @@ $HD_Form -> AddEditElement ("STATUS",
     "",
     "SELECT",
     "",
-    null, "", "list", "", "", "", $actived_list, "%1", "");
+    null, "", "list", "", "", "", $actived_list, "%1");
 
 $HD_Form -> AddEditElement (gettext("EMAIL TO SEND REPORT"),
     "emailreport",
@@ -204,7 +204,7 @@ $HD_Form -> AddEditElement (gettext("CALL PLAN"),
     null,
     "",
     "sql",
-    "cc_tariffgroup union select '--ANY--',0", "tariffgroupname, id", "", "", "%1", "");
+    "cc_tariffgroup union select '--ANY--',0", "tariffgroupname, id", "", "", "%1");
 
 $HD_Form -> AddEditElement (gettext("OPERATE MODE"),
     "operate_mode",
@@ -213,7 +213,7 @@ $HD_Form -> AddEditElement (gettext("OPERATE MODE"),
     "",
     "SELECT",
     null,
-    "", "", "list", "", "", "", $operatemode_list, "%1", "");
+    "", "", "list", "", "", "", $operatemode_list, "%1");
 
 $HD_Form -> AddEditElement (gettext("SKIP GROUP"),
     "use_group",

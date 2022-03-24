@@ -81,7 +81,7 @@ $HD_Form -> AddEditElement (gettext("NAME"),
     "",
     "INPUT",
     "size=30 maxlength=40",
-    0, gettext("Insert the Seria name"), "", "", "", "", "", "", "");
+    0, gettext("Insert the Seria name"));
 
 
 $HD_Form -> AddEditElement (gettext("DESCRIPTION"),
@@ -91,7 +91,7 @@ $HD_Form -> AddEditElement (gettext("DESCRIPTION"),
     "",
     "TEXTAREA",
     "cols=50 rows=4",
-    null, gettext("Insert the description"), "", "", "", "", "", "", "");
+    null, gettext("Insert the description"));
 
 $HD_Form -> FieldEditElement ('name, description');
 

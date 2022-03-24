@@ -83,7 +83,7 @@ $HD_Form -> AddEditElement (gettext("CALLERID"),
     "",
     "INPUT",
     "size=20 maxlength=30",
-    18, gettext("Insert the CallerID"), "", "", "", "", "", "", "");
+    18, gettext("Insert the CallerID"));
 
 $HD_Form -> AddEditElement (gettext("ACTIVATED"),
     "activated",
@@ -92,7 +92,7 @@ $HD_Form -> AddEditElement (gettext("ACTIVATED"),
     "",
     "RADIOBUTTON",
     "",
-    "", gettext("Choose if you want to activate this card"), "", "", "", "Yes:t,No:f", "", "", "");
+    null, gettext("Choose if you want to activate this card"), "", "", "", "Yes:t,No:f", "", "", "");
 
 $HD_Form -> AddEditElement (gettext("ID CARD"),
     "id_cc_card",
@@ -102,8 +102,7 @@ $HD_Form -> AddEditElement (gettext("ID CARD"),
     "POPUPVALUE",
     "size=30 maxlength=50",
     4, gettext("Insert the Id CardNumber"), "", "", "",
-    ""
-				, "",
+    "", "",
     "A2B_entity_card.php?popup_select=1&", ", 'CardNumberSelection','width=550,height=330,top=20,left=100,scrollbars=1'");
 
 

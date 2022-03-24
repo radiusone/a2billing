@@ -158,7 +158,7 @@ $HD_Form -> AddEditElement (gettext("INVOICE DATE"),
     "",
     "INPUT",
     "size=40 READONLY maxlength=40  $comp_date",
-    10, gettext("Insert the current date"), "", "", "", "", "", "", "");
+    10, gettext("Insert the current date"));
 
 
 $HD_Form -> AddEditElement (gettext("TITLE"),
@@ -167,7 +167,7 @@ $HD_Form -> AddEditElement (gettext("TITLE"),
     "",
     "INPUT",
     "size=30 maxlength=50",
-    0, gettext("Insert the title of invoice, if you need one"), "", "", "", "", "", "", "");
+    0, gettext("Insert the title of invoice, if you need one"));
 
 
 $HD_Form -> AddEditElement (gettext("DESCRIPTION"),
@@ -177,7 +177,7 @@ $HD_Form -> AddEditElement (gettext("DESCRIPTION"),
     "",
     "TEXTAREA",
     "cols=50 rows=4",
-    null, gettext("Insert the description"), "", "", "", "", "", "", "");
+    null, gettext("Insert the description"));
 
 
 $HD_Form -> FieldEditElement ('id_card, date,title, description');

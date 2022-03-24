@@ -89,8 +89,7 @@ $HD_Form -> AddEditElement (gettext("ACCOUNT ID"),
     "POPUPVALUE",
     "size=30 maxlength=50 $idd",
     4, gettext("Insert the Customer ID"), "", "", "",
-    ""
-				, "",
+    "", "",
     "A2B_entity_card.php?popup_select=1&", ", 'CardNumberSelection','width=550,height=350,top=20,left=100,scrollbars=1'");
 
 $HD_Form -> AddEditElement (gettext("ID SUBSCRIPTION SERVICE"),
@@ -128,7 +127,7 @@ $HD_Form -> AddEditElement (gettext("PRODUCT LABEL"),
     "",
     "TEXTAREA",
     "cols=50 rows=4",
-    null, gettext("Enter the name of the product wich is subscribed"), "", "", "", "", "", "", "");
+    null, gettext("Enter the name of the product wich is subscribed"));
 
 $HD_Form -> FieldEditElement ('id_cc_card, id_subscription_fee, startdate, stopdate, product_name');
 

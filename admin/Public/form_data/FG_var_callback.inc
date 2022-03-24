@@ -93,7 +93,7 @@ $HD_Form -> AddEditElement (gettext("SERVER GROUP"),
     null,
     "",
     "sql",
-    "cc_server_group", "name, id", "", "", "%1", "");
+    "cc_server_group", "name, id", "", "", "%1");
 
 
 $HD_Form -> AddEditElement (gettext("UNIQUEID"),
@@ -103,7 +103,7 @@ $HD_Form -> AddEditElement (gettext("UNIQUEID"),
     "",
     "INPUT",
     "size=20 maxlength=30",
-    3, gettext("Insert the uniqueid"), "", "", "", "", "", "", "");
+    3, gettext("Insert the uniqueid"));
 
 
 if ($form_action=="ask-add") {
@@ -124,7 +124,7 @@ $HD_Form -> AddEditElement (gettext("STATUS"),
     "",
     "SELECT",
     "",
-    null, "", "list", "", "", "", $status_list, "%1", "");
+    null, "", "list", "", "", "", $status_list, "%1");
 
 
 $HD_Form -> AddEditElement (gettext("IP SERVER"),
@@ -134,7 +134,7 @@ $HD_Form -> AddEditElement (gettext("IP SERVER"),
     "",
     "INPUT",
     "size=20 maxlength=30 $def_ipserver",
-    11, gettext("Insert the Ip Server"), "", "", "", "", "", "", "");
+    11, gettext("Insert the Ip Server"));
 
 
 $HD_Form -> AddEditElement (gettext("NUMBER ATTEMPTS"),
@@ -144,7 +144,7 @@ $HD_Form -> AddEditElement (gettext("NUMBER ATTEMPTS"),
     "",
     "INPUT",
     "size=5 maxlength=10 $def_nbattempt",
-    4, gettext("Insert the number of attempts"), "", "", "", "", "", "", "");
+    4, gettext("Insert the number of attempts"));
 
 
 $HD_Form -> AddEditElement (gettext("MANAGER RESULT"),
@@ -184,7 +184,7 @@ $HD_Form -> AddEditElement (gettext("CHANNEL"),
     gettext("Define all the information requested by asterisk to generate the callback"),
     "INPUT",
     "size=60 maxlength=70",
-    11, gettext("Insert the channel"), "", "", "", "", "", "", "", "", "");
+    11, gettext("Insert the channel"));
 
 
 $HD_Form -> AddEditElement (gettext("EXTENSION"),
@@ -194,7 +194,7 @@ $HD_Form -> AddEditElement (gettext("EXTENSION"),
     "",
     "INPUT",
     "size=15 maxlength=30",
-    11, gettext("Insert the channel"), "", "", "", "", "", "", "");
+    11, gettext("Insert the channel"));
 
 $HD_Form -> AddEditElement (gettext("CONTEXT"),
     "context",
@@ -203,7 +203,7 @@ $HD_Form -> AddEditElement (gettext("CONTEXT"),
     "",
     "INPUT",
     "size=30 maxlength=50",
-    11, gettext("Insert the context"), "", "", "", "", "", "", "");
+    11, gettext("Insert the context"));
 
 
 $HD_Form -> AddEditElement (gettext("PRIORITY"),
@@ -213,7 +213,7 @@ $HD_Form -> AddEditElement (gettext("PRIORITY"),
     "",
     "INPUT",
     "size=10 maxlength=10",
-    4, gettext("Insert the priority"), "", "", "", "", "", "", "");
+    4, gettext("Insert the priority"));
 
 
 $HD_Form -> AddEditElement (gettext("APPLICATION"),

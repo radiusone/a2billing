@@ -109,10 +109,10 @@ $HD_Form -> AddEditElement (gettext("COUNTRY"),
     "",
     "",
     "", "SELECT", "",
-    "",
+    null,
     "",
     "sql",
-    "cc_country", "countryname, countrycode", "", "", "%1", "", "", '');
+    "cc_country", "countryname, countrycode", "", "", "%1");
 
 
 $HD_Form -> AddEditElement (gettext("ZIP/POSTAL CODE"),
@@ -129,10 +129,10 @@ $HD_Form -> AddEditElement (gettext("TIMEZONE"),
     '',
     "",
     "", "SELECT", "",
-    "",
+    null,
     "",
     "sql",
-    "cc_timezone", "gmtzone, id", "", "", "%1", "", "", "");
+    "cc_timezone", "gmtzone, id", "", "", "%1");
 
 $HD_Form -> AddEditElement (gettext("PHONE NUMBER"),
     "phone",
@@ -151,7 +151,7 @@ $HD_Form -> AddEditElement (gettext("FAX NUMBER"),
     "",
     "INPUT",
     "size=30 maxlength=20",
-    "", gettext("Insert the fax number of the customers"), "", "", "", "", "", "", "NO");
+    null, gettext("Insert the fax number of the customers"), "", "", "", "", "", "", "NO");
 
 if (ACT_VOICEMAIL) {
 	$HD_Form -> AddEditElement (gettext("ACTIVE VOICEMAIL SERVICE"),
@@ -161,7 +161,7 @@ if (ACT_VOICEMAIL) {
         "",
         "RADIOBUTTON",
         "",
-        "", gettext("Customer can choose to enable the voicemail for this card"), "", "", "", "Yes:1,No:0", "", "", "");
+        null, gettext("Customer can choose to enable the voicemail for this card"), "", "", "", "Yes:1,No:0");
 }
 
 $add_fields_voicemail = '';

@@ -82,8 +82,7 @@ $HD_Form -> AddEditElement (gettext("CID"),
     "",
     "TEXTAREA",  //CID Regular Expression
     "cols=50 rows=4",
-    "", gettext("Insert the CID"), "", "", "", "", "",
-    "", "");
+    null, gettext("Insert the CID"));
 
 $HD_Form -> AddEditElement (gettext("CIDGROUP"),
     "outbound_cid_group",
@@ -93,7 +92,7 @@ $HD_Form -> AddEditElement (gettext("CIDGROUP"),
     null,
     "",
     "sql",
-    "cc_outbound_cid_group", "group_name, id", "", "", "%1", "");
+    "cc_outbound_cid_group", "group_name, id", "", "", "%1");
 
 $HD_Form -> AddEditElement (gettext("ACTIVATED"),
     "activated",
@@ -102,7 +101,7 @@ $HD_Form -> AddEditElement (gettext("ACTIVATED"),
     "",
     "RADIOBUTTON",
     "",
-    null, gettext("Choose if you want to activate this CallerID"), "", "", "", "Yes:1,No:0", "", "", "");
+    null, gettext("Choose if you want to activate this CallerID"), "", "", "", "Yes:1,No:0");
 
 $HD_Form -> FieldEditElement ('cid, outbound_cid_group, activated');
 

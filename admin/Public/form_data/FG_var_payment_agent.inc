@@ -105,8 +105,7 @@ if (has_rights (ACX_MODIFY_PAYMENTS)) {
         "POPUPVALUE",
         "size=30 maxlength=50 " . $id_val,
         4, gettext("Insert the Agent ID "), "", "", "",
-        ""
-					, "",
+        "", "",
         "A2B_entity_agent.php?popup_select=1&", ", 'AgentSelection','width=550,height=330,top=20,left=100,scrollbars=1'");
 
 	if ($form_action=="ask-add") {
@@ -123,7 +122,7 @@ if (has_rights (ACX_MODIFY_PAYMENTS)) {
         "",
         "INPUT",
         "size=40 maxlength=40  $comp_date",
-        10, gettext("Insert the current date"), "", "", "", "", "", "", "");
+        10, gettext("Insert the current date"));
 
 	$HD_Form -> AddEditElement (gettext("PAYMENT AMOUNT"),
         "payment",
@@ -132,7 +131,7 @@ if (has_rights (ACX_MODIFY_PAYMENTS)) {
         "",
         "INPUT",
         "size=60 maxlength=10",
-        12, gettext("Insert the payment amount"), "", "", "", "", "", "", "");
+        12, gettext("Insert the payment amount"));
 
 
 	$HD_Form -> AddEditElement (gettext("DESCRIPTION"),
@@ -142,7 +141,7 @@ if (has_rights (ACX_MODIFY_PAYMENTS)) {
         "",
         "TEXTAREA",
         "cols=50 rows=4",
-        null, gettext("Insert the description"), "", "", "", "", "", "", "");
+        null, gettext("Insert the description"));
 
 	if ($form_action!="ask-edit" && $form_action!="edit") {
 		$HD_Form -> AddEditElement (gettext("CREATE ASSOCIATE REFILL"),
@@ -152,7 +151,7 @@ if (has_rights (ACX_MODIFY_PAYMENTS)) {
             "",
             "RADIOBUTTON",
             "",
-            null, gettext("Choose if you want to create a refill with this payment account"), "", "", "", "Yes:1,No:0", "", "", "");
+            null, gettext("Choose if you want to create a refill with this payment account"), "", "", "", "Yes:1,No:0");
 	}
 
 	$HD_Form -> AddEditElement (gettext("REFILL TYPE"),
@@ -162,7 +161,7 @@ if (has_rights (ACX_MODIFY_PAYMENTS)) {
         "",
         "SELECT",
         null,
-        "", "", "list", "", "", "", $list_refill_type, "%1", "");
+        null, "", "list", "", "", "", $list_refill_type, "%1");
 
 
 	if ($form_action!="ask-edit" && $form_action!="edit") {

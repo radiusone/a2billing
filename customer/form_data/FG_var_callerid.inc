@@ -87,7 +87,7 @@ $HD_Form -> AddEditElement (gettext("CALLERID"),
     "",
     "INPUT",
     "size=20 maxlength=30",
-    18, gettext("Insert the CallerID"), "", "", "", "", "", "", "");
+    18, gettext("Insert the CallerID"));
 
 
 $HD_Form -> AddEditElement (gettext("ACTIVATED"),
@@ -97,7 +97,7 @@ $HD_Form -> AddEditElement (gettext("ACTIVATED"),
     "",
     "RADIOBUTTON",
     "",
-    "", gettext("Choose if you want to activate this card"), "", "", "", "Yes:t,No:f", "", "", "");
+    null, gettext("Choose if you want to activate this card"), "", "", "", "Yes:t,No:f");
 
 
 

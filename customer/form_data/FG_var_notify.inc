@@ -94,7 +94,7 @@ $HD_Form -> AddEditElement (gettext("LIMIT CREDIT NOTIFICATION"),
     "",
     "SELECT",
     "",
-    "", gettext("Insert the number of credit when the customer receive a notification"), "list", "", "", "", $limits_notify, "%1", "", "", '<OPTION  value="-1" selected>' . gettext("NOT DEFINED") . '</OPTION>');
+    null, gettext("Insert the number of credit when the customer receive a notification"), "list", "", "", "", $limits_notify, "%1", "", "", '<OPTION  value="-1" selected>' . gettext("NOT DEFINED") . '</OPTION>');
 
 
 $HD_Form -> AddEditElement (gettext("PERMITTED NOTIFICATIONS BY MAIL"),
@@ -104,7 +104,7 @@ $HD_Form -> AddEditElement (gettext("PERMITTED NOTIFICATIONS BY MAIL"),
     "",
     "RADIOBUTTON",
     "",
-    "", gettext("Choose if you want to enable the notification by email for this card"), "", "", "", "Yes:1,No:0", "", "", "");
+    null, gettext("Choose if you want to enable the notification by email for this card"), "", "", "", "Yes:1,No:0", "", "", "");
 
 
 $HD_Form -> AddEditElement (gettext("EMAIL NOTIFICATION"),

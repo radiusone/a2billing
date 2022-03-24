@@ -123,7 +123,7 @@ $HD_Form -> AddEditElement (gettext("TITLE"),
     "",
     "INPUT",
     "size=60 maxlength=50",
-    9, gettext("Insert the Title of ticket "), "", "", "", "", "", "", "");
+    9, gettext("Insert the Title of ticket "));
 
 $HD_Form -> AddEditElement (gettext("COMPONENT"),
     "id_component",
@@ -133,7 +133,7 @@ $HD_Form -> AddEditElement (gettext("COMPONENT"),
     null,
     "",
     "sql",
-    "cc_support_component", "name, id", "", "", "%1", "");
+    "cc_support_component", "name, id", "", "", "%1");
 
 $HD_Form -> AddEditElement (gettext("PRIORITY"),
     "priority",
@@ -142,7 +142,7 @@ $HD_Form -> AddEditElement (gettext("PRIORITY"),
     "",
     "SELECT",
     "",
-    null, "", "list", "", "", "", $priority_list, "%1", "");
+    null, "", "list", "", "", "", $priority_list, "%1");
 
 $HD_Form -> AddEditElement (gettext("DESCRIPTION"),
     "description",

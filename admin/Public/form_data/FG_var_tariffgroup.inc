@@ -117,7 +117,7 @@ $HD_Form -> AddEditElement (gettext("NAME"),
     "",
     "INPUT",
     "size=30 maxlength=20",
-    9, gettext("Insert the Call Plan name "), "", "", "", "", "", "", "");
+    9, gettext("Insert the Call Plan name "));
 
 
 $HD_Form -> AddEditElement (gettext("LC TYPE"),
@@ -127,7 +127,7 @@ $HD_Form -> AddEditElement (gettext("LC TYPE"),
     "",
     "SELECT",
     "",
-    null, "", "list", "", "", "", $lcrtype_list, "%1", "");
+    null, "", "list", "", "", "", $lcrtype_list, "%1");
 
 
 $HD_Form -> AddEditElement(gettext("PACKAGE"),
@@ -148,7 +148,7 @@ $HD_Form -> AddEditElement (gettext("REMOVE INTER PREFIX"),
     "",
     "RADIOBUTTON",
     null,
-    "", gettext("Define if the international prefix will be removed to check the rate."), "", "", "", "Yes:1,No:0", "", "", "");
+    "", gettext("Define if the international prefix will be removed to check the rate."), "", "", "", "Yes:1,No:0");
 
 
 

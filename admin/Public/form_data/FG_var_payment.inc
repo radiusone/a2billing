@@ -122,8 +122,7 @@ if (has_rights (ACX_MODIFY_PAYMENTS)) {
         "POPUPVALUE",
         "size=30 maxlength=50 " . $id_val,
         4, gettext("Insert the Customer ID "), "", "", "",
-        ""
-					, "",
+        "", "",
         "A2B_entity_card.php?popup_select=1&", ", 'CardNumberSelection','width=550,height=330,top=20,left=100,scrollbars=1'");
 
 	if ($form_action=="ask-add"){
@@ -140,7 +139,7 @@ if (has_rights (ACX_MODIFY_PAYMENTS)) {
         "",
         "INPUT",
         "size=40 maxlength=40  $comp_date",
-        10, gettext("Insert the current date"), "", "", "", "", "", "", "");
+        10, gettext("Insert the current date"));
 
 	$HD_Form -> AddEditElement (gettext("PAYMENT AMOUNT"),
         "payment",
@@ -149,7 +148,7 @@ if (has_rights (ACX_MODIFY_PAYMENTS)) {
         "",
         "INPUT",
         "size=60 maxlength=10",
-        12, gettext("Insert the payment amount"), "", "", "", "", "", "", "");
+        12, gettext("Insert the payment amount"));
 
 
 	$HD_Form -> AddEditElement (gettext("DESCRIPTION"),
@@ -159,7 +158,7 @@ if (has_rights (ACX_MODIFY_PAYMENTS)) {
         "",
         "TEXTAREA",
         "cols=50 rows=4",
-        null, gettext("Insert the description"), "", "", "", "", "", "", "");
+        null, gettext("Insert the description"));
 
 	if ($form_action!="ask-edit" && $form_action!="edit") {
 		$HD_Form -> AddEditElement (gettext("CREATE ASSOCIATE REFILL"),
@@ -169,7 +168,7 @@ if (has_rights (ACX_MODIFY_PAYMENTS)) {
             "",
             "RADIOBUTTON",
             "",
-            null, gettext("Choose if you want to create a refill with this payment account"), "", "", "", "Yes:1,No:0", "", "", "");
+            null, gettext("Choose if you want to create a refill with this payment account"), "", "", "", "Yes:1,No:0");
 	}
 
 	if ($form_action!="ask-edit" && $form_action!="edit") {
@@ -180,7 +179,7 @@ if (has_rights (ACX_MODIFY_PAYMENTS)) {
             "",
             "RADIOBUTTON",
             "",
-            null, gettext("Choose if you want to create a commission to an agent, if this customer is managed by one"), "", "", "", "Yes:1,No:0", "", "", "");
+            null, gettext("Choose if you want to create a commission to an agent, if this customer is managed by one"), "", "", "", "Yes:1,No:0");
 	}
 
 	$HD_Form -> AddEditElement (gettext("PAYMENT TYPE"),
@@ -190,7 +189,7 @@ if (has_rights (ACX_MODIFY_PAYMENTS)) {
         "",
         "SELECT",
         null,
-        "", "", "list", "", "", "", $list_refill_type, "%1", "");
+        "", "", "list", "", "", "", $list_refill_type, "%1");
 
 	if ($form_action!="ask-edit" && $form_action!="edit") {
 		$HD_Form -> FieldEditElement ('card_id, date, payment, description,payment_type');

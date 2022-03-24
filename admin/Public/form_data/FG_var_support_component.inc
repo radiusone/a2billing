@@ -92,7 +92,7 @@ $HD_Form -> AddEditElement (gettext("NAME"),
     "",
     "INPUT",
     "size=30 maxlength=20",
-    9, gettext("Insert the Support Box name "), "", "", "", "", "", "", "");
+    9, gettext("Insert the Support Box name "));
 
 $HD_Form -> AddEditElement (gettext("ACTIVATED"),
     "activated",
@@ -101,7 +101,7 @@ $HD_Form -> AddEditElement (gettext("ACTIVATED"),
     "",
     "RADIOBUTTON",
     "",
-    null, gettext("Choose if you want to activate this component"), "", "", "", "Yes:1,No:0", "", "", "");
+    null, gettext("Choose if you want to activate this component"), "", "", "", "Yes:1,No:0");
 
 $HD_Form -> AddEditElement (gettext("Support Box"),
     "id_support",
@@ -111,7 +111,7 @@ $HD_Form -> AddEditElement (gettext("Support Box"),
     null,
     "",
     "sql",
-    "cc_support", "name, id", "", "", "%1", "");
+    "cc_support", "name, id", "", "", "%1");
 
 $HD_Form -> AddEditElement (gettext("USER TYPE"),
     "type_user",
@@ -120,7 +120,7 @@ $HD_Form -> AddEditElement (gettext("USER TYPE"),
     "",
     "SELECT",
     "",
-    null, "", "list", "", "", "", $user_type, "%1", "");
+    null, "", "list", "", "", "", $user_type, "%1");
 
 $HD_Form -> FieldEditElement ('name, activated, id_support,type_user');
 

@@ -87,7 +87,7 @@ $HD_Form -> AddEditElement (gettext("SPEEDDIAL"),
     "",
     "SELECT",
     "",
-    "", "", "list", "", "", "", $speeddial_list, "%1", "");
+    null, "", "list", "", "", "", $speeddial_list, "%1");
 
 
 $HD_Form -> AddEditElement (gettext("NAME"),
@@ -97,7 +97,7 @@ $HD_Form -> AddEditElement (gettext("NAME"),
     "",
     "INPUT",
     "size=40 maxlength=50",
-    0, gettext("Insert the name"), "", "", "", "", "", "", "");
+    0, gettext("Insert the name"));
 
 
 $HD_Form -> AddEditElement (gettext("PHONE"),
@@ -107,7 +107,7 @@ $HD_Form -> AddEditElement (gettext("PHONE"),
     "",
     "INPUT",
     "size=30 maxlength=50",
-    4, gettext("Insert the phone"), "", "", "", "", "", "", "");
+    4, gettext("Insert the phone"));
 
 $HD_Form -> FieldEditElement ('speeddial, name, phone');
 
@@ -117,13 +117,7 @@ if (isset($filterprefix)  &&  (strlen($filterprefix)>0)) {
 	$HD_Form -> FG_QUERY_WHERE_CLAUSE.="id_cc_card like '$filterprefix'";
 }
 
-
-
-
 $HD_Form -> FG_INTRO_TEXT_ADITION = '';
-
-
-
 
 $HD_Form -> FG_LOCATION_AFTER_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&stitle=Document&wh=AC&id=";
 $HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&stitle=Document&wh=AC&id=";

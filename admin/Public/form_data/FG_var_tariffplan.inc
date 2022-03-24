@@ -86,7 +86,7 @@ $HD_Form -> AddEditElement (gettext("TARIFFNAME"),
     "",
     "INPUT",
     "size=40 maxlength=30",
-    3, gettext("Insert the tariff name "), "", "", "", "", "", "", "");
+    3, gettext("Insert the tariff name "));
 
 if ($form_action=="ask-add"){
 	$begin_date = date("Y");
@@ -103,7 +103,7 @@ $HD_Form -> AddEditElement (gettext("START DATE"),
     "",
     "INPUT",
     "size=40 maxlength=40 $comp_date",
-    10, gettext("Insert the starting date"), "", "", "", "", "", "", "res_display_dateformat");
+    10, gettext("Insert the starting date"), "", "", "", "", "", "", "", "", "res_display_dateformat");
 
 $HD_Form -> AddEditElement (gettext("EXPIRY DATE"),
     "expirationdate",
@@ -122,7 +122,7 @@ $HD_Form -> AddEditElement (gettext("TRUNK"),
     null,
     "",
     "sql",
-    "cc_trunk", "trunkcode, id_trunk", "", "", "%1", "");
+    "cc_trunk", "trunkcode, id_trunk", "", "", "%1");
 
 $HD_Form -> AddEditElement (gettext("DESCRIPTION"),
     "description",
@@ -131,7 +131,7 @@ $HD_Form -> AddEditElement (gettext("DESCRIPTION"),
     "",
     "TEXTAREA",
     "cols=50 rows=4",
-    null, gettext("Insert the description"), "", "", "", "", "", "", "");
+    null, gettext("Insert the description"));
 
 if ($form_action=="ask-add"){
 	$val_dnidprefix = "value='all'";
@@ -145,7 +145,7 @@ $HD_Form -> AddEditElement (gettext("DNID PREFIX"),
     "",
     "INPUT",
     "size=20 $val_dnidprefix maxlength=20",
-    14, gettext("Insert the dnid prefix"), "", "", "", "", "", "", "");
+    14, gettext("Insert the dnid prefix"));
 
 
 $HD_Form -> AddEditElement (gettext("CALLERID PREFIX"),
@@ -155,7 +155,7 @@ $HD_Form -> AddEditElement (gettext("CALLERID PREFIX"),
     "",
     "INPUT",
     "size=20 $val_calleridprefix maxlength=20",
-    14, gettext("Insert the dnid prefix"), "", "", "", "", "", "", "");
+    14, gettext("Insert the dnid prefix"));
 
 
 $HD_Form -> FieldEditElement ('tariffname, startingdate, expirationdate, id_trunk, description, dnidprefix, calleridprefix');

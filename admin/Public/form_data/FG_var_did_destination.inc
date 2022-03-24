@@ -113,7 +113,7 @@ $HD_Form -> AddEditElement (gettext("DESTINATION"),
     "",
     "INPUT",
     "size=50 maxlength=120",
-    0, gettext("Insert the DID"), "", "", "", "", "", "", "");
+    0, gettext("Insert the DID"));
 
 if ($form_action!='ask-edit' && $form_action!='edit') {
 
@@ -125,8 +125,7 @@ if ($form_action!='ask-edit' && $form_action!='edit') {
         "POPUPVALUE",
         "size=30 maxlength=50",
         4, gettext("Insert the Id Customer ID"), "", "", "",
-        ""
-		, "",
+        "", "",
         "A2B_entity_card.php?popup_select=1&", ", 'CardNumberSelection','width=550,height=350,top=20,left=100,scrollbars=1'");
 
 
@@ -138,7 +137,7 @@ if ($form_action!='ask-edit' && $form_action!='edit') {
         null,
         "",
         "sql",
-        "cc_did", "did, id", "", "", "%1", "");
+        "cc_did", "did, id", "", "", "%1");
 }
 
 $HD_Form -> AddEditElement (gettext("ACTIVATED"),
@@ -148,7 +147,7 @@ $HD_Form -> AddEditElement (gettext("ACTIVATED"),
     "",
     "RADIOBUTTON",
     "",
-    null, gettext("Choose if you want to activate this card"), "", "", "", "Yes:1,No:0", "", "", "");
+    null, gettext("Choose if you want to activate this card"), "", "", "", "Yes:1,No:0");
 
 $HD_Form -> AddEditElement (gettext("VALIDATED"),
     "validated",
@@ -157,7 +156,7 @@ $HD_Form -> AddEditElement (gettext("VALIDATED"),
     "",
     "SELECT",
     "",
-    null, "", "list", "", "", "", $validated_list, "%1", "");
+    null, "", "list", "", "", "", $validated_list, "%1");
 
 $HD_Form -> AddEditElement (gettext("PRIORITY"),
     "priority",
@@ -166,7 +165,7 @@ $HD_Form -> AddEditElement (gettext("PRIORITY"),
     "",
     "SELECT",
     "",
-    null, "", "list", "", "", "", $priority_list, "%1", "");
+    null, "", "list", "", "", "", $priority_list, "%1");
 
 $HD_Form -> AddEditElement (gettext("VOIP_CALL"),
     "voip_call",
@@ -175,7 +174,7 @@ $HD_Form -> AddEditElement (gettext("VOIP_CALL"),
     "",
     "RADIOBUTTON",
     "",
-    null, gettext("Choose if you want to not use the trunk and let the asterisk call directly the destination (ie, Destination : SIP/jeremy@182.212.1.45)"), "", "", "", "Yes:1,No:0", "", "", "");
+    null, gettext("Choose if you want to not use the trunk and let the asterisk call directly the destination (ie, Destination : SIP/jeremy@182.212.1.45)"), "", "", "", "Yes:1,No:0");
 
 if ($form_action!='ask-edit' && $form_action!='edit') {
 	$HD_Form -> FieldEditElement ('destination, id_cc_card, id_cc_did, activated, validated, priority, voip_call');

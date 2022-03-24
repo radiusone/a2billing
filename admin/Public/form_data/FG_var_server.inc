@@ -77,7 +77,7 @@ $HD_Form -> AddEditElement (gettext("SERVER GROUP"),
     null,
     "",
     "sql",
-    "cc_server_group", "name, id", "", "", "%1", "");
+    "cc_server_group", "name, id", "", "", "%1");
 
 $HD_Form -> AddEditElement (gettext("SERVER HOSTNAME"),
     "server_ip",
@@ -86,7 +86,7 @@ $HD_Form -> AddEditElement (gettext("SERVER HOSTNAME"),
     "",
     "INPUT",
     "size=30 maxlength=40",
-    3, gettext("Insert the server hostname"), "", "", "", "", "", "", "");
+    3, gettext("Insert the server hostname"));
 
 $HD_Form -> AddEditElement (gettext("MANAGER HOST"),
     "manager_host",
@@ -95,7 +95,7 @@ $HD_Form -> AddEditElement (gettext("MANAGER HOST"),
     "",
     "INPUT",
     "size=30 maxlength=40",
-    9, gettext("Insert the manager host"), "", "", "", "", "", "", "");
+    9, gettext("Insert the manager host"));
 
 $HD_Form -> AddEditElement (gettext("MANAGER USERNAME"),
     "manager_username",
@@ -104,7 +104,7 @@ $HD_Form -> AddEditElement (gettext("MANAGER USERNAME"),
     "",
     "INPUT",
     "size=30 maxlength=40",
-    9, gettext("Insert the manager username"), "", "", "", "", "", "", "");
+    9, gettext("Insert the manager username"));
 
 $HD_Form -> AddEditElement (gettext("MANAGER SECRET"),
     "manager_secret",
@@ -113,7 +113,7 @@ $HD_Form -> AddEditElement (gettext("MANAGER SECRET"),
     "",
     "INPUT",
     "size=30 maxlength=40",
-    null, gettext("Insert the manager secret"), "", "", "", "", "", "", "");
+    null, gettext("Insert the manager secret"));
 
 $HD_Form -> FieldEditElement ('id_group, server_ip, manager_host, manager_username, manager_secret');
 

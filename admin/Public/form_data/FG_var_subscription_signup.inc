@@ -81,7 +81,7 @@ $HD_Form -> AddEditElement (gettext("LABEL"),
     "",
     "INPUT",
     "size=30 maxlength=40",
-    0, gettext("Insert the provider name"), "", "", "", "", "", "", "");
+    0, gettext("Insert the provider name"));
 
 $HD_Form -> AddEditElement (gettext("ACTIVATED"),
     "enable",
@@ -90,7 +90,7 @@ $HD_Form -> AddEditElement (gettext("ACTIVATED"),
     "",
     "RADIOBUTTON",
     "",
-    null, gettext("Choose if you want to activate this subscriber in the signup"), "", "", "", "Yes:1,No:0", "", "", "");
+    null, gettext("Choose if you want to activate this subscriber in the signup"), "", "", "", "Yes:1,No:0");
 
 $CURRENCY = strtoupper(BASE_CURRENCY);
 $HD_Form -> AddEditElement (gettext("SUBSCRIPTION OPTIONS"),
@@ -111,7 +111,7 @@ $HD_Form -> AddEditElement (gettext("DESCRIPTION"),
     "",
     "TEXTAREA",
     "cols=50 rows=4",
-    null, gettext("Insert the description"), "", "", "", "", "", "", "");
+    null, gettext("Insert the description"));
 
 
 $HD_Form -> AddEditElement (gettext("CALL PLAN"),
@@ -122,7 +122,7 @@ $HD_Form -> AddEditElement (gettext("CALL PLAN"),
     null,
     "",
     "sql",
-    "cc_tariffgroup", "tariffgroupname, id", "", "", "%1", "");
+    "cc_tariffgroup", "tariffgroupname, id", "", "", "%1");
 
 
 $HD_Form -> FieldEditElement ('label,enable,id_subscription, description, id_callplan');

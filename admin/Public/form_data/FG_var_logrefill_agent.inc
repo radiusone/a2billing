@@ -117,7 +117,7 @@ if (has_rights (ACX_MODIFY_REFILLS)) {
         "",
         "INPUT",
         "size=40 maxlength=40  $comp_date",
-        10, gettext("Insert the current date"), "", "", "", "", "", "", "");
+        10, gettext("Insert the current date"));
 
 	$HD_Form -> AddEditElement (gettext("REFILL AMOUNT"),
         "credit",
@@ -126,7 +126,7 @@ if (has_rights (ACX_MODIFY_REFILLS)) {
         "",
         "INPUT",
         "size=60 maxlength=10",
-        12, gettext("Insert the credit amount"), "", "", "", "", "", "", "");
+        12, gettext("Insert the credit amount"));
 
 	$HD_Form -> AddEditElement (gettext("DESCRIPTION"),
         "description",
@@ -135,7 +135,7 @@ if (has_rights (ACX_MODIFY_REFILLS)) {
         "",
         "TEXTAREA",
         "cols=50 rows=4",
-        null, gettext("Insert the description"), "", "", "", "", "", "", "");
+        null, gettext("Insert the description"));
 
 	$HD_Form -> AddEditElement (gettext("REFILL TYPE"),
         "refill_type",
@@ -144,7 +144,7 @@ if (has_rights (ACX_MODIFY_REFILLS)) {
         "",
         "SELECT",
         null,
-        "", "", "list", "", "", "", $list_refill_type, "%1", "");
+        "", "", "list", "", "", "", $list_refill_type, "%1");
 
 	$HD_Form -> FieldEditElement ('agent_id, date, credit, description, refill_type');
 

@@ -695,18 +695,18 @@ class FormHandler
     public function AddEditElement(
         string $displayname,
         string $fieldname,
-               $defaultvalue, // I don't think this is actually used?
-        string $label_text,
+               $defaultvalue, // only used for radio buttons
+        string $label_text = "",
         string $toplabel_text = "",
-        string $fieldtype,
-        string $fieldproperty,
+        string $fieldtype = "INPUT",
+        string $fieldproperty = "",
         ?int   $regexpr_nb = null,
         string $error_message = "",
-        string $type_selectfield = "",
+        string $select_type = "",
         string $lie_tablename = "",
         string $lie_tablefield = "",
-        string $lie_clause = "",
-        string $listname = "",
+               $lie_clause = "",
+               $listname = "",
         string $displayformat_selectfield = "",
         string $check_emptyvalue = "",
         string $custom_query = "",
@@ -715,11 +715,8 @@ class FormHandler
     )
     {
         $fieldtype = strtoupper($fieldtype);
-        if ($fieldtype === "LABEL" && strtoupper($_REQUEST['form_action']) == "EDIT") {
-            return;
-        }
 
-        if ($field_enabled == true) {
+        if ($field_enabled === true) {
             $cur = count($this->FG_EDIT_FORM_ELEMENTS);
             $assoc = [
                 "label" => $displayname, // 0
@@ -729,7 +726,7 @@ class FormHandler
                 "attributes" => $fieldproperty, // 4
                 "regex" => $regexpr_nb, // 5
                 "error" => $error_message, // 6
-                "select_type" => strtoupper($type_selectfield), // 7
+                "select_type" => strtoupper($select_type), // 7
                 "sql_table" => $lie_tablename, // 8
                 "sql_field" => $lie_tablefield, // 9
                 "sql_clause" => $lie_clause, // 10
@@ -753,6 +750,123 @@ class FormHandler
             $this->FG_EDIT_FORM_ELEMENTS[$cur] = $assoc + array_values($assoc);
             $this->FG_ADD_FORM_ELEMENTS[$cur] = $this->FG_EDIT_FORM_ELEMENTS[$cur];
         }
+    }
+
+    /**
+     * @param string $fieldname
+     * @param string $label_text
+     * @param string $sql_table
+     * @param string $sql_column
+     * @param string $sql_where
+     * @param string $form_text_bottom
+     * @param string $section_name
+     * @param string $html_attributes
+     * @param int|null $regexpr_nb
+     * @param string $error_message
+     * @param string $display_format
+     * @param string $check_emptyvalue
+     * @param string $custom_query
+     * @param string $first_option
+     * @param bool $field_enabled
+     * @return void
+     */
+    public function AddEditSqlSelect(
+        string $fieldname,
+        string $label_text,
+        string $sql_table,
+        string $sql_column,
+        string $sql_where = "",
+        string $form_text_bottom = "",
+        string $section_name = "",
+        string $html_attributes = "",
+        ?int   $regexpr_nb = null,
+        string $error_message = "",
+        string $display_format = "",
+        string $check_emptyvalue = "",
+        string $custom_query = "",
+        string $first_option = "",
+        bool   $field_enabled = true
+    ): void
+    {
+        if ($field_enabled === false) {
+            return;
+        }
+        $cur = count($this->FG_EDIT_FORM_ELEMENTS);
+        $data = [
+            "label" => $label_text,
+            "name" => $fieldname,
+            "type" => "SELECT",
+            "attributes" => $html_attributes,
+            "regex" => $regexpr_nb,
+            "error" => $error_message,
+            "select_type" => "SQL",
+            "sql_table" => $sql_table,
+            "sql_field" => $sql_column,
+            "sql_clause" => $sql_where,
+            "select_format" => $display_format,
+            "check_empty" => strtoupper($check_emptyvalue),
+            "custom_query" => $custom_query,
+            "first_option" => $first_option,
+            "section_name" => $section_name,
+            "comment" => $form_text_bottom,
+            "validation_err" => true,
+        ];
+        $this->FG_EDIT_FORM_ELEMENTS[$cur] = $data;
+        $this->FG_ADD_FORM_ELEMENTS[$cur] = $data;
+    }
+
+    /**
+     * @param string $fieldname
+     * @param array $options
+     * @param string $label_text
+     * @param string $first_option
+     * @param string $form_text_bottom
+     * @param string $section_name
+     * @param string $html_attributes
+     * @param int|null $regexpr_nb
+     * @param string $error_message
+     * @param string $display_format
+     * @param string $check_emptyvalue
+     * @param bool $field_enabled
+     * @return void
+     */
+    public function addEditSelect(
+        string $fieldname,
+        array  $options,
+        string $label_text,
+        string $first_option = "",
+        string $form_text_bottom = "",
+        string $section_name = "",
+        string $html_attributes = "",
+        ?int   $regexpr_nb = null,
+        string $error_message = "",
+        string $display_format = "",
+        string $check_emptyvalue = "",
+        bool   $field_enabled = true
+    ): void
+    {
+        if ($field_enabled === false) {
+            return;
+        }
+        $cur = count($this->FG_EDIT_FORM_ELEMENTS);
+        $data = [
+            "label" => $label_text,
+            "name" => $fieldname,
+            "type" => "SELECT",
+            "attributes" => $html_attributes,
+            "regex" => $regexpr_nb,
+            "error" => $error_message,
+            "select_type" => "LIST",
+            "select_fields" => $options,
+            "select_format" => $display_format,
+            "check_empty" => strtoupper($check_emptyvalue),
+            "first_option" => $first_option,
+            "section_name" => $section_name,
+            "comment" => $form_text_bottom,
+            "validation_err" => true,
+        ];
+        $this->FG_EDIT_FORM_ELEMENTS[$cur] = $data;
+        $this->FG_ADD_FORM_ELEMENTS[$cur] = $data;
     }
 
     /**

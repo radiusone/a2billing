@@ -66,7 +66,7 @@ $HD_Form -> AddEditElement (gettext("LAST NAME"),
     "",
     "INPUT",
     "size=60 maxlength=50",
-    "", gettext("Insert the lastname"), "", "", "", "", "", "", "");
+    null, gettext("Insert the lastname"));
 
 $HD_Form -> AddEditElement (gettext("FIRST NAME"),
     "firstname",
@@ -75,7 +75,7 @@ $HD_Form -> AddEditElement (gettext("FIRST NAME"),
     "",
     "INPUT",
     "size=60 maxlength=50",
-    "", gettext("Insert the firstname"), "", "", "", "", "", "", "");
+    null, gettext("Insert the firstname"));
 
 $HD_Form -> AddEditElement (gettext("ADDRESS"),
     "address",
@@ -84,7 +84,7 @@ $HD_Form -> AddEditElement (gettext("ADDRESS"),
     "",
     "INPUT",
     "size=60 maxlength=250",
-    "", gettext("Insert the address"), "", "", "", "", "", "", "");
+    null, gettext("Insert the address"));
 
 $HD_Form -> AddEditElement (gettext("CITY"),
     "city",
@@ -93,7 +93,7 @@ $HD_Form -> AddEditElement (gettext("CITY"),
     "",
     "INPUT",
     "size=20 maxlength=20",
-    "", gettext("Insert the city"), "", "", "", "", "", "", "");
+    null, gettext("Insert the city"));
 
 $HD_Form -> AddEditElement (gettext("STATE"),
     "state",
@@ -102,7 +102,7 @@ $HD_Form -> AddEditElement (gettext("STATE"),
     "",
     "INPUT",
     "size=20 maxlength=40",
-    "", gettext("Insert the state"), "", "", "", "", "", "", "");
+    null, gettext("Insert the state"));
 
 $HD_Form -> AddEditElement (gettext("COUNTRY"),
     "country",
@@ -111,7 +111,7 @@ $HD_Form -> AddEditElement (gettext("COUNTRY"),
     "",
     "INPUT",
     "size=20 maxlength=40",
-    "", gettext("Insert the country"), "", "", "", "", "", "", "");
+    null, gettext("Insert the country"));
 
 $HD_Form -> AddEditElement (gettext("ZIPCODE"),
     "zipcode",
@@ -120,7 +120,7 @@ $HD_Form -> AddEditElement (gettext("ZIPCODE"),
     "",
     "INPUT",
     "size=10 maxlength=7",
-    "", gettext("Insert the zip code"), "", "", "", "", "", "", "");
+    null, gettext("Insert the zip code"));
 
 $HD_Form -> AddEditElement (gettext("EMAIL"),
     "email",
@@ -138,7 +138,7 @@ $HD_Form -> AddEditElement (gettext("PHONE"),
     "",
     "INPUT",
     "size=30 maxlength=20",
-    "", gettext("Insert the telephone number"), "", "", "", "", "", "", "");
+    null, gettext("Insert the telephone number"));
 
 $HD_Form -> AddEditElement (gettext("FAX"),
     "fax",
@@ -147,7 +147,7 @@ $HD_Form -> AddEditElement (gettext("FAX"),
     "",
     "INPUT",
     "size=30 maxlength=20",
-    "", gettext("Insert the fax number"), "", "", "", "", "", "", "");
+    null, gettext("Insert the fax number"));
 
 
 $HD_Form -> AddEditElement (gettext("COMPANY"),
@@ -157,7 +157,7 @@ $HD_Form -> AddEditElement (gettext("COMPANY"),
     "",
     "INPUT",
     "size=60 maxlength=50",
-    "", gettext("Insert the company"), "", "", "", "", "", "", "");
+    null, gettext("Insert the company"));
 
 $FG_QUERY_EDITION = ' lastname, firstname, address, city, state, country, zipcode, email, phone,  fax, company';
 

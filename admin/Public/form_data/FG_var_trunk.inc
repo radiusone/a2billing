@@ -165,7 +165,7 @@ $HD_Form -> AddEditElement (gettext("LABEL"),
     "",
     "INPUT",
     "size=45 maxlength=40",
-    3, gettext("Insert the trunkcode"), "", "", "", "", "", "", "");
+    3, gettext("Insert the trunkcode"));
 
 $HD_Form -> AddEditElement (gettext("ADD PREFIX"),
     "trunkprefix",
@@ -174,7 +174,7 @@ $HD_Form -> AddEditElement (gettext("ADD PREFIX"),
     "",
     "INPUT",
     "size=30 maxlength=20",
-    null, gettext("Insert the trunkprefix"), "", "", "", "", "", "", "");
+    null, gettext("Insert the trunkprefix"));
 
 $HD_Form -> AddEditElement (gettext("REMOVE PREFIX"),
     "removeprefix",
@@ -183,7 +183,7 @@ $HD_Form -> AddEditElement (gettext("REMOVE PREFIX"),
     "",
     "INPUT",
     "size=30 maxlength=20",
-    null, gettext("Insert the removeprefix"), "", "", "", "", "", "", "");
+    null, gettext("Insert the removeprefix"));
 
 $HD_Form -> AddEditElement (gettext("PROVIDER TECH"),
     "providertech",
@@ -192,7 +192,7 @@ $HD_Form -> AddEditElement (gettext("PROVIDER TECH"),
     "",
     "INPUT",
     "size=20 maxlength=15",
-    0, gettext("Insert the providertech"), "", "", "", "", "", "", "");
+    0, gettext("Insert the providertech"));
 
 $HD_Form -> AddEditElement (gettext("PROVIDER IP"),
     "providerip",
@@ -201,7 +201,7 @@ $HD_Form -> AddEditElement (gettext("PROVIDER IP"),
     "",
     "INPUT",
     "size=80 maxlength=140",
-    9, gettext("Insert the providerip"), "", "", "", "", "", "", "");
+    9, gettext("Insert the providerip"));
 
 $HD_Form -> AddEditElement (gettext("ADDITIONAL PARAMETER"),
     "addparameter",
@@ -210,7 +210,7 @@ $HD_Form -> AddEditElement (gettext("ADDITIONAL PARAMETER"),
     "",
     "INPUT",
     "size=60 maxlength=100",
-    null, gettext("Insert Additional parameters"), "", "", "", "", "", "", "");
+    null, gettext("Insert Additional parameters"));
 
 $HD_Form -> AddEditElement (gettext("FAILOVER TRUNK"),
     "failover_trunk",
@@ -229,7 +229,7 @@ $HD_Form -> AddEditElement (gettext("CURRENT CONNECTIONS"),
     "",
     "INPUT",
     "size=30 $def_value_inuse maxlength=30",
-    12, gettext("Number of current connections"), "", "", "", "", "", "", "");
+    12, gettext("Number of current connections"));
 
 $HD_Form -> AddEditElement (gettext("MAXIMUM CONNECTIONS"),
     "maxuse",
@@ -238,7 +238,7 @@ $HD_Form -> AddEditElement (gettext("MAXIMUM CONNECTIONS"),
     "",
     "INPUT",
     "size=30 $def_value_maxuse maxlength=30",
-    12, gettext("Number of maximum simultaneous connections"), "", "", "", "", "", "", "");
+    12, gettext("Number of maximum simultaneous connections"));
 
 $HD_Form -> AddEditElement ("IFMAXUSED",
     "if_max_use",
@@ -247,7 +247,7 @@ $HD_Form -> AddEditElement ("IFMAXUSED",
     "",
     "SELECT",
     "",
-    null, "", "list", "", "", "", $maxuse_behaviour_list, "%1", "");
+    null, "", "list", "", "", "", $maxuse_behaviour_list, "%1");
 
 $HD_Form -> AddEditElement ("STATUS",
     "status",
@@ -256,7 +256,7 @@ $HD_Form -> AddEditElement ("STATUS",
     "",
     "SELECT",
     "",
-    null, "", "list", "", "", "", $actived_list, "%1", "");
+    null, "", "list", "", "", "", $actived_list, "%1");
 
 
 $HD_Form -> FieldEditElement ('id_provider, trunkcode, trunkprefix, removeprefix, providertech, providerip, addparameter, failover_trunk, inuse, maxuse, if_max_use, status');

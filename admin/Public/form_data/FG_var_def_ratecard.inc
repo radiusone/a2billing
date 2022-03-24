@@ -264,7 +264,7 @@ $HD_Form->AddEditElement(gettext("RATECARD"),
     null,
     "",
     "sql",
-    "cc_tariffplan", "tariffname, id", "", "", "%1", "");
+    "cc_tariffplan", "tariffname, id", "", "", "%1");
 
 
 $HD_Form->AddEditElement(gettext("DIALPREFIX"),
@@ -274,8 +274,7 @@ $HD_Form->AddEditElement(gettext("DIALPREFIX"),
     "",
     "INPUT",
     "size=50 maxlength=80",
-    9, gettext("Insert the dialing prefix, such as for UK '44' or for US '1' "), "", "", "", "", "",
-    "", "");
+    9, gettext("Insert the dialing prefix, such as for UK '44' or for US '1' "));
 
 
 $HD_Form->AddEditElement(gettext("Destination Prefix"),
@@ -564,7 +563,7 @@ $HD_Form->AddEditElement(gettext("START TIME"),
     "",
     "POPUPDATETIME",
     "size=8 maxlength=8 $comp_time",
-    4, gettext("Insert the start time"), "", "", "", "", "", "", "");
+    4, gettext("Insert the start time"));
 
 
 $HD_Form->AddEditElement(gettext("END TIME"),
@@ -574,7 +573,7 @@ $HD_Form->AddEditElement(gettext("END TIME"),
     "",
     "POPUPDATETIME",
     "size=8 maxlength=8 $comp_time_plus",
-    4, gettext("Insert the end time"), "", "", "", "", "", "", "");
+    4, gettext("Insert the end time"));
 
 
 $HD_Form->AddEditElement(gettext("ROUNDING CALLTIME"),
@@ -584,7 +583,7 @@ $HD_Form->AddEditElement(gettext("ROUNDING CALLTIME"),
     "",
     "INPUT",
     "size=40 maxlength=40",
-    null, gettext("Insert the rounding calltime"), "", "", "", "", "", "", "");
+    null, gettext("Insert the rounding calltime"));
 
 
 $HD_Form->AddEditElement(gettext("ROUNDING THRESHOLD"),
@@ -594,7 +593,7 @@ $HD_Form->AddEditElement(gettext("ROUNDING THRESHOLD"),
     "",
     "INPUT",
     "size=40 maxlength=40",
-    null, gettext("Insert the rounding threshold"), "", "", "", "", "", "", "");
+    null, gettext("Insert the rounding threshold"));
 
 
 $HD_Form->AddEditElement(gettext("ADDITIONAL BLOCK CHARGE"),
@@ -604,7 +603,7 @@ $HD_Form->AddEditElement(gettext("ADDITIONAL BLOCK CHARGE"),
     "",
     "INPUT",
     "size=40 maxlength=40",
-    null, gettext("Insert the additional block charge"), "", "", "", "", "", "", "");
+    null, gettext("Insert the additional block charge"));
 
 
 $HD_Form->AddEditElement(gettext("ADDITIONAL BLOCK CHARGE TIME"),
@@ -614,7 +613,7 @@ $HD_Form->AddEditElement(gettext("ADDITIONAL BLOCK CHARGE TIME"),
     "",
     "INPUT",
     "size=40 maxlength=40",
-    null, gettext("Insert the additional block charge time"), "", "", "", "", "", "", "");
+    null, gettext("Insert the additional block charge time"));
 
 
 $HD_Form->AddEditElement(gettext("ADDITIONAL GRACE TIME"),
@@ -624,15 +623,15 @@ $HD_Form->AddEditElement(gettext("ADDITIONAL GRACE TIME"),
     "",
     "INPUT",
     "size=40 maxlength=40",
-    null, gettext("Insert the additional grace time in sec"), "", "", "", "", "", "", "");
+    null, gettext("Insert the additional grace time in sec"));
 
 
 $HD_Form->AddEditElement(gettext("TRUNK"),
     "id_trunk",
     '$value',
     gettext("Set the trunk to use for this destination, or NOT DEFINED to use the rate card trunk."),
-    "", "SELECT", null,
-    "",
+    "", "SELECT", "",
+    null,
     "",
     "sql",
     "cc_trunk", "trunkcode, id_trunk", "", "", "%1", "", '', '<OPTION  value="-1" selected>' . gettext("NOT DEFINED") . '</OPTION>');
@@ -642,8 +641,8 @@ $HD_Form->AddEditElement(gettext("CIDGroup"),
     "id_outbound_cidgroup",
     '$value',
     gettext("Set the Outgoing CID Group to use for this destination, or NOT DEFINED to use the rate card trunk."),
-    "", "SELECT", null,
-    "",
+    "", "SELECT", "",
+    null,
     "",
     "sql",
     "cc_outbound_cid_group", "group_name, id", "", "", "%1", "", '', '<OPTION  value="-1" selected>' . gettext("NOT DEFINED") . '</OPTION>');

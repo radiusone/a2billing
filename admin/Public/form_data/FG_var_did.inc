@@ -143,9 +143,6 @@ if ($form_action === "ask-add" || $form_action === "purchase") {
     }
 }
 
-$did_regexpress = '9';
-
-
 $HD_Form->AddEditElement(_("DID"),
     "did",
     '$value',
@@ -153,8 +150,7 @@ $HD_Form->AddEditElement(_("DID"),
     "",
     "INPUT",
     "size=40 maxlength=60 $didval",
-    "$did_regexpress", _("Insert the DID"), "", "", "", "", "",
-    "", "");
+    9, _("Insert the DID"));
 
 
 $HD_Form->AddEditElement(_("BILLING"),
@@ -164,7 +160,7 @@ $HD_Form->AddEditElement(_("BILLING"),
     "",
     "SELECT",
     "",
-    null, "", "list", "", "", "", $billingtype_list, "%1", "");
+    null, "", "list", "", "", "", $billingtype_list, "%1");
 
 
 $HD_Form->AddEditElement(_("START DATE"),
@@ -195,7 +191,7 @@ $HD_Form->AddEditElement(_("DIDGROUP"),
     null,
     "",
     "sql",
-    "cc_didgroup", "didgroupname, id", "", "", "%1", "");
+    "cc_didgroup", "didgroupname, id", "", "", "%1");
 
 
 $HD_Form->AddEditElement(_("COUNTRY"),
@@ -206,7 +202,7 @@ $HD_Form->AddEditElement(_("COUNTRY"),
     null,
     "",
     "sql",
-    "cc_country", "countryname, id", "", "", "%1", "");
+    "cc_country", "countryname, id", "", "", "%1");
 
 
 $HD_Form->AddEditElement(_("ACTIVATED"),
@@ -216,7 +212,7 @@ $HD_Form->AddEditElement(_("ACTIVATED"),
     "",
     "RADIOBUTTON",
     "",
-    null, _("Choose if you want to activate this card"), "", "", "", "Yes:1,No:0", "", "", "");
+    null, _("Choose if you want to activate this card"), "", "", "", "Yes:1,No:0");
 
 
 $HD_Form->AddEditElement(_("MONTHLY RATE"),
@@ -247,7 +243,7 @@ $HD_Form->AddEditElement(_("SELLING RATE"),
     "",
     "INPUT",
     "size=30 maxlength=20 $fixval",
-    12, _("Insert the rate"), "", "", "", "", "", "", "");
+    12, _("Insert the rate"));
 
 $HD_Form->AddEditElement(_("TIME INTERVAL"),
     "aleg_timeinterval",
@@ -306,7 +302,7 @@ $HD_Form->AddEditElement(_("RETAIL CONNECTION CHARGE"),
     "",
     "INPUT",
     "size=30 maxlength=20 $fixval",
-    12, _("Insert a rate"), "", "", "", "", "", "", "");
+    12, _("Insert a rate"));
 
 
 $HD_Form->AddEditElement(_("RETAIL COST PER MINUTE"),
@@ -386,7 +382,7 @@ $HD_Form->AddEditElement(_("RETAIL CONNECTION CHARGE OFF PEAK"),
     "",
     "INPUT",
     "size=30 maxlength=20 $fixval",
-    12, _("Insert a rate"), "", "", "", "", "", "", "");
+    12, _("Insert a rate"));
 
 
 $HD_Form->AddEditElement(_("RETAIL COST PER MINUTE OFF PEAK"),
