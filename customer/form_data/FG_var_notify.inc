@@ -87,15 +87,16 @@ $val_display = $val / $mycur;
 }
 
 
-$HD_Form -> AddEditElement (gettext("LIMIT CREDIT NOTIFICATION"),
+$HD_Form->AddEditSelect(
     "credit_notification",
-    '',
+    $limits_notify,
+    gettext("LIMIT CREDIT NOTIFICATION"),
     gettext("currency : ") . strtoupper(BASE_CURRENCY),
+    '<option value="-1" selected="selected">' . gettext("NOT DEFINED") . '</option>',
     "",
-    "SELECT",
     "",
-    null, gettext("Insert the number of credit when the customer receive a notification"), "list", "", "", "", $limits_notify, "%1", "", "", '<OPTION  value="-1" selected>' . gettext("NOT DEFINED") . '</OPTION>');
-
+    gettext("Insert the number of credit when the customer receive a notification")
+);
 
 $HD_Form -> AddEditElement (gettext("PERMITTED NOTIFICATIONS BY MAIL"),
     "notify_email",

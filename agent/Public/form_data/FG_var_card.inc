@@ -553,41 +553,13 @@ foreach($timezone_list as $key => $cur_value) {
 }
 
 
-$HD_Form -> AddEditElement (gettext("TIMEZONE"),
-    "id_timezone",
-    "",
-    "",
-    "", "SELECT", "",
-    null, "", "list", "", "", "", $timezone_list, "%1");
+$HD_Form->AddEditSelect("id_timezone", $timezone_list, gettext("TIMEZONE"));
 
+$HD_Form->AddEditSelect("language", $language_list, gettext("LANGUAGE"));
 
-$HD_Form -> AddEditElement (gettext("LANGUAGE"),
-    "language",
-    "",
-    "",
-    "",
-    "SELECT",
-    "",
-    null, "", "list", "", "", "", $language_list, "%1");
+$HD_Form->AddEditSelect("currency", $currency_list, gettext("CURRENCY"), gettext("Currency used at the customer end."));
 
-
-$HD_Form -> AddEditElement (gettext("CURRENCY"),
-    "currency",
-    "",
-    gettext("Currency used at the customer end."),
-    "",
-    "SELECT", "", null, "", "list", "", "", "", $currency_list, "%1");
-
-
-
-$HD_Form -> AddEditElement (gettext("STATUS"),
-    "status",
-    "",
-    "",
-    "",
-    "SELECT",
-    "",
-    null, "", "list", "", "", "", $cardstatus_list, "%1");
+$HD_Form->AddEditSelect("status", $cardstatus_list, gettext("STATUS"));
 
 	$HD_Form -> AddEditElement (gettext("LOCK"),
         "block",
@@ -611,15 +583,7 @@ $HD_Form -> AddEditElement (gettext("STATUS"),
         "size=20 maxlength=10 $lockpin_default",
         4, "", "", "", "", "", "", "", "NO");
 
-$HD_Form -> AddEditElement (gettext("SIMULTANEOUS ACCESS"),
-    "simultaccess",
-    "1",
-    "",
-    "",
-    "SELECT",
-    "",
-    null, "", "list", "", "", "", $simultaccess_list, "%1");
-
+$HD_Form->AddEditSelect("simultaccess", $simultaccess_list, gettext("SIMULTANEOUS ACCESS"));
 
 $HD_Form -> AddEditElement (gettext("RUN SERVICE"),
     "runservice",
@@ -630,18 +594,13 @@ $HD_Form -> AddEditElement (gettext("RUN SERVICE"),
     "",
     null, gettext("Choose if you want to enable the service recurring on this account"), "", "", "", "Yes:1,No:0");
 
-
-$HD_Form -> AddEditElement (gettext("CREDIT LIMIT NOTIFICATION"),
+$HD_Form->AddEditSelect(
     "credit_notification",
-    '',
+    $limits_notify_list,
+    gettext("CREDIT LIMIT NOTIFICATION"),
     gettext("currency : ") . strtoupper(BASE_CURRENCY) . '<BR>' . gettext("Low credit limit to alert the customer"),
-    "",
-    "SELECT",
-    "",
-    null, "", "list", "", "", "", $limits_notify_list,
-    "%1",
-    "", "", '<OPTION  value="-1" selected>' . gettext("NOT DEFINED") . '</OPTION>');
-
+    '<option value="-1" selected="selected">' . gettext("NOT DEFINED") . '</option>'
+);
 
 $HD_Form -> AddEditElement (gettext("PERMITTED NOTIFICATIONS BY MAIL"),
     "notify_email",
@@ -704,15 +663,7 @@ $HD_Form -> AddEditElement (gettext("FIRST USE DATE"),
     null, "the first use date", "", "", "", "", "", "", "NO-NULL", "", "res_display_dateformat");
 
 
-$HD_Form -> AddEditElement (gettext("ENABLE EXPIRY"),
-    "enableexpire",
-    "",
-    gettext("Select method of expiry for the account."),
-    "",
-    "SELECT",
-    "",
-    null, "", "list", "", "", "", $expire_list, "%1");
-
+$HD_Form->AddEditSelect("enableexpire", $expire_list, gettext("ENABLE EXPIRY"), gettext("Select method of expiry for the account."));
 
 $comp_zero = $comp_date_plus='';
 if (isset($form_action) && $form_action=="ask-add") {
@@ -803,15 +754,15 @@ $HD_Form -> AddEditElement (gettext("INITIAL BALANCE"),
 
 
 
-$HD_Form -> AddEditElement (gettext("INVOICE DAY"),
+$HD_Form->AddEditSelect(
     "invoiceday",
-    '$value',
+    $invoiceday_list,
+    gettext("INVOICE DAY"),
     gettext("Define the day of the month when the system will generate the customer invoice."),
-    gettext("Invoice Status"),
-    "SELECT",
     "",
-    null, "", "list", "", "", "", $invoiceday_list, "%1");
-
+    "",
+    gettext("Invoice Status")
+);
 
 $HD_Form -> AddEditElement (gettext("VAT"),
     "vat",
@@ -832,16 +783,7 @@ $HD_Form -> AddEditElement (gettext("VAT REGISTRATION NUMBER "),
     "size=40 maxlength=40",
     null, gettext("Insert the VAT registration number of this customer"), "", "", "", "", "", "", "NO");
 
-
-$HD_Form -> AddEditElement (gettext("DISCOUNT"),
-    "discount",
-    "",
-    "",
-    "",
-    "SELECT",
-    "",
-    null, "", "list", "", "", "", $discount_list, "%1");
-
+$HD_Form->AddEditSelect("discount", $discount_list, gettext("DISCOUNT"));
 
 $HD_Form -> AddEditElement (gettext("TRAFFIC PER MONTH"),
     "traffic",
@@ -862,15 +804,15 @@ $HD_Form -> AddEditElement (gettext("TARGET TRAFFIC"),
     "cols=50 rows=4",
     null, gettext("Insert the target traffic description"));
 
-
-$HD_Form -> AddEditElement (gettext("RESTRICTION"),
+$HD_Form->AddEditSelect(
     "restriction",
-    "0",
+    $restriction_list,
+    gettext("RESTRICTION"),
     "",
-    gettext("RESTRICTED NUMBERS"),
-    "SELECT",
     "",
-    null, "", "list", "", "", "", $restriction_list, "%1");
+    "",
+    gettext("RESTRICTED NUMBERS")
+);
 
 $HD_Form -> AddEditElement (gettext("RESTRICTED NUMBERS"),
     "restrictednumber",

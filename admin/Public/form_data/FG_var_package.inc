@@ -93,23 +93,9 @@ $HD_Form -> AddEditElement (gettext("LABEL"),
     "size=30 maxlength=30",
     0, gettext("Insert the package label"), "", "", "", "", "", "", "");
 
-$HD_Form -> AddEditElement (gettext("PACKAGE TYPE"),
-    "packagetype",
-    '$value',
-    "",
-    "",
-    "SELECT",
-    "",
-    null, "", "list", "", "", "", $packagetype_list, "%1", "");
+$HD_Form->AddEditSelect("packagetype", $packagetype_list, gettext("PACKAGE TYPE"));
 
-$HD_Form -> AddEditElement (gettext("BILLING TYPE"),
-    "billingtype",
-    '$value',
-    "",
-    "",
-    "SELECT",
-    "",
-    null, "", "list", "", "", "", $billingtype_list, "%1", "");
+$HD_Form->AddEditSelect("billingtype", $billingtype_list, gettext("BILLING TYPE"));
 
 if (isset($form_action) && $form_action=="ask-add") {
 	$default_init = "value='1'";

@@ -133,14 +133,12 @@ $HD_Form -> AddEditElement (gettext("AMOUNT CREDIT"),
     "size=30 maxlength=30",
     12, gettext("Insert the number of credit to remove from the cards."));
 
-$HD_Form -> AddEditElement (gettext("RULE"),
+$HD_Form->AddEditSelect(
     "rule",
-    '$value',
-    gettext("where X - day number (X) in days <br>	and Y = number set in period field"),
-    "",
-    "SELECT",
-    "",
-    null, "", "list", "", "", "", $rule_list, "%1");
+    $rule_list,
+    gettext("RULE"),
+    gettext("where X - day number (X) in days <br>	and Y = number set in period field")
+);
 
 $HD_Form -> AddEditElement ("DAY NUMBER (X)",
     "daynumber",
@@ -151,23 +149,9 @@ $HD_Form -> AddEditElement ("DAY NUMBER (X)",
     "size=20 maxlength=3",
     4, gettext("Insert the daynumber"), "", "", "", "", "", "", "NO");
 
-$HD_Form -> AddEditElement (gettext("PERIOD (Y)"),
-    "period",
-    '$value',
-    gettext("Interval to apply service"),
-    "",
-    "SELECT",
-    "",
-    null, "", "list", "", "", "", $period_list, "%1");
+$HD_Form->AddEditSelect("period", $period_list, gettext("PERIOD (Y)"), gettext("Interval to apply service"));
 
-$HD_Form -> AddEditElement ("STOP MODE",
-    "stopmode",
-    '$value',
-    "",
-    "",
-    "SELECT",
-    "",
-    null, "", "list", "", "", "", $stopmode_list, "%1");
+$HD_Form->AddEditSelect("stopmode", $stopmode_list, gettext("STOP MODE"));
 
 $HD_Form -> AddEditElement ("MAX NUMBER OF CYCLES BY CARD",
     "maxnumbercycle",
@@ -178,14 +162,7 @@ $HD_Form -> AddEditElement ("MAX NUMBER OF CYCLES BY CARD",
     "size=20 maxlength=3",
     4, gettext("Insert the max number of cycle"), "", "", "", "", "", "", "NO-NULL");
 
-$HD_Form -> AddEditElement ("STATUS",
-    "status",
-    '$value',
-    "",
-    "",
-    "SELECT",
-    "",
-    null, "", "list", "", "", "", $actived_list, "%1");
+$HD_Form->AddEditSelect("status", $actived_list, gettext("STATUS"));
 
 $HD_Form -> AddEditElement (gettext("EMAIL TO SEND REPORT"),
     "emailreport",
@@ -206,23 +183,19 @@ $HD_Form -> AddEditElement (gettext("CALL PLAN"),
     "sql",
     "cc_tariffgroup union select '--ANY--',0", "tariffgroupname, id", "", "", "%1");
 
-$HD_Form -> AddEditElement (gettext("OPERATE MODE"),
+$HD_Form->AddEditSelect(
     "operate_mode",
-    '$value',
-    gettext("If you want to charge only part of sum in case if current balance less then amount, select second option. Will be charged only part of amount, cause balance to be 0.0"),
-    "",
-    "SELECT",
-    null,
-    "", "", "list", "", "", "", $operatemode_list, "%1");
+    $operatemode_list,
+    gettext("OPERATE MODE"),
+    gettext("If you want to charge only part of sum in case if current balance less then amount, select second option. Will be charged only part of amount, cause balance to be 0.0")
+);
 
-$HD_Form -> AddEditElement (gettext("SKIP GROUP"),
+$HD_Form->AddEditSelect(
     "use_group",
-    '$value',
-    gettext("Select first option(default) to manualy select groups or select second option to use service for any group, discarding list below"),
-    "",
-    "SELECT",
-    null,
-    "", "", "list", "", "", "", $usegroup_list, "%1", "");
+    $usegroup_list,
+    gettext("SKIP GROUP"),
+    gettext("Select first option(default) to manualy select groups or select second option to use service for any group, discarding list below")
+);
 
 $DBHandle_max  = DbConnect();
 $numrow = 0;

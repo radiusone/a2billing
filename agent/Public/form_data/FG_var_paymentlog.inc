@@ -149,15 +149,7 @@ $HD_Form -> AddEditElement (gettext("PAYMENT METHOD"),
     "size=30 maxlength=30",
     12, gettext("Insert the payment method"));
 
-
-$HD_Form -> AddEditElement (gettext("STATUS"),
-    "status",
-    '$value',
-    "",
-    "",
-    "SELECT",
-    "",
-    null, "", "list", "", "", "", $status_list, "%1");
+$HD_Form->AddEditSelect("status", $status_list, gettext("STATUS"));
 
 $HD_Form -> AddEditElement (gettext("OWNER"),
     "cc_owner",

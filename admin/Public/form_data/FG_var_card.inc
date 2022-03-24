@@ -560,37 +560,14 @@ if (!$popup_select) {
             });
         }
         array_walk($timezone_list, fn (&$v, $k) => $v = [$v[2], $k]);
-        $HD_Form->AddEditElement(_("TIMEZONE"),
-            "id_timezone",
-            "$tz_val",
-            "",
-            "", "SELECT", "",
-            null, "", "list", "", "", "", $timezone_list, "%1", "");
 
-        $HD_Form->AddEditElement(_("LANGUAGE"),
-            "language",
-            "",
-            "",
-            "",
-            "SELECT",
-            "",
-            null, "", "list", "", "", "", $language_list, "%1", "");
+        $HD_Form->AddEditSelect("id_timezone", $timezone_list, _("TIMEZONE"));
 
-        $HD_Form->AddEditElement(_("CURRENCY"),
-            "currency",
-            "",
-            _("Currency used at the customer end."),
-            "",
-            "SELECT", "", null, "", "list", "", "", "", $currency_list, "%1", "");
+        $HD_Form->AddEditSelect("language", $language_list, _("LANGUAGE"));
 
-        $HD_Form->AddEditElement(_("STATUS"),
-            "status",
-            "",
-            "",
-            "",
-            "SELECT",
-            "",
-            null, "", "list", "", "", "", $cardstatus_list, "%1", "");
+        $HD_Form->AddEditSelect("currency", $currency_list, _("CURRENCY"), _("Currency used at the customer end."));
+
+        $HD_Form->AddEditSelect("status", $cardstatus_list, _("STATUS"));
 
         $HD_Form->AddEditElement(_("LOCK"),
             "block",
@@ -706,16 +683,7 @@ if (!$popup_select) {
             "size=40 maxlength=40 readonly",
             null, "the first use date", "", "", "", "", "", "", "NO-NULL", "", "res_display_dateformat");
 
-
-        $HD_Form->AddEditElement(_("ENABLE EXPIRY"),
-            "enableexpire",
-            "",
-            _("Select method of expiry for the account."),
-            "",
-            "SELECT",
-            "",
-            null, "", "list", "", "", "", $expire_list, "%1", "");
-
+        $HD_Form->AddEditSelect("enableexpire", $expire_list, _("ENABLE EXPIRY"), _("Select method of expiry for the account."));
 
         $comp_zero = $comp_date_plus = '';
         if (isset($form_action) && $form_action === "ask-add") {
@@ -813,15 +781,7 @@ if (!$popup_select) {
             "size=30 $default_initbalance maxlength=30",
             12, _("Insert the amount of the initial balance"), "", "", "", "", "", "", "");
 
-        $HD_Form->AddEditElement(_("INVOICE DAY"),
-            "invoiceday",
-            '$value',
-            _("Define the day of the month when the system will generate the customer invoice."),
-            _("Invoice Status"),
-            "SELECT",
-            "",
-            null, "", "list", "", "", "", $invoiceday_list, "%1",
-            "", '', '');
+        $HD_Form->AddEditSelect("invoiceday", $invoiceday_list, _("INVOICE DAY"), _("Define the day of the month when the system will generate the customer invoice."), "", "", _("Invoice Status"));
 
         $vat_init = ($form_action === "ask-add" || $form_action === "add") ? "value = '0'" : "";
         $HD_Form->AddEditElement(_("VAT"),

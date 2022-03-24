@@ -163,13 +163,14 @@ if (has_rights (ACX_MODIFY_AGENTS) && !($popup_select)) {
         "INPUT",
         "size=30 maxlength=15", 3, gettext("Insert the password"));
 
-	$HD_Form -> AddEditElement (gettext("PERMISSION"),
+    $HD_Form->AddEditSelect(
         "perms",
-        '$value',
+        $right_list,
+        gettext("PERMISSION"),
         gettext("To select several rights in the above ListBox, hold the CTRL key down while clicking the items"),
         "",
-        "SELECT", "size=\"$len_right_list\" multiple=\"multiple\"",
-        null, null, "list", "", "description, id", "", $right_list, "%1");
+        "size='$len_right_list' multiple='multiple'"
+    );
 
 	$HD_Form -> AddEditElement (gettext("ACTIVE"),
         "active",
@@ -206,12 +207,7 @@ if (has_rights (ACX_MODIFY_AGENTS) && !($popup_select)) {
         "readonly $default_com_bal",
         null, gettext("amount of commission"));
 
-	$HD_Form -> AddEditElement (gettext("CURRENCY"),
-        "currency",
-        "",
-        gettext("Currency used at the customer end."),
-        "",
-        "SELECT", "", null, "", "list", "", "", "", $currency_list, "%1");
+    $HD_Form->AddEditSelect("currency", $currency_list, gettext("CURRENCY"), gettext("Currency used at the customer end."));
 
 	$HD_Form -> AddEditElement (gettext("COMMISSION PERCENTAGE"),
         "commission",
@@ -240,14 +236,7 @@ if (has_rights (ACX_MODIFY_AGENTS) && !($popup_select)) {
         "size=20 maxlength=20",
         12, gettext("Insert the VAT"), "", "", "", "", "", "", "NO-NULL");
 
-	$HD_Form -> AddEditElement (gettext("LANGUAGE"),
-        "language",
-        "",
-        "",
-        "",
-        "SELECT",
-        "",
-        null, "", "list", "", "", "", $language_list, "%1");
+    $HD_Form->AddEditSelect("language", $language_list, gettext("LANGUAGE"));
 
 	$HD_Form -> AddEditElement (gettext("COMPANY"),
         "company",

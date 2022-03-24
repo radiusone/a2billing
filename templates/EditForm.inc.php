@@ -141,7 +141,7 @@ $options = null
                 <?php endif ?>
                 <select
                     id="<?= $row["name"] ?>"
-                    name="<?= $row["name"] ?><?php if (str_icontains($row["attributes"], "multiple")): ?>[]<?php endif ?>"
+                    name="<?= $row["name"] ?><?php if (str_contains($row["attributes"], "multiple")): ?>[]<?php endif ?>"
                     class="form-select <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
                     <?= $row["attributes"] ?>
                 >
@@ -151,7 +151,7 @@ $options = null
                     <option
                         value="<?= $option[1] ?>"
                             <?php if ($this->VALID_SQL_REG_EXP): ?>
-                                <?php if (str_icontains($row["attributes"], "multiple")): ?>
+                                <?php if (str_contains($row["attributes"], "multiple")): ?>
                                     <?php if (intval($option[1]) & intval($db_data[$i])): ?>
                         selected="selected"
                                     <?php endif ?>
@@ -161,8 +161,8 @@ $options = null
                                     <?php endif ?>
                                 <?php endif ?>
                             <?php else: ?>
-                                <?php if (str_icontains($row["attributes"], "multiple")): ?>
-                                    <?php if (is_array($processed[$row["name"]]) && (intval($option[1]) & array_sum($processed[$row["name"]]))): ?>
+                                <?php if (str_contains($row["attributes"], "multiple")): ?>
+                                    <?php /* TODO: WTF is this? */ if (is_array($processed[$row["name"]]) && (intval($option[1]) & array_sum($processed[$row["name"]]))): ?>
                         selected="selected"
                                     <?php endif ?>
                                 <?php else: ?>
@@ -172,15 +172,7 @@ $options = null
                                 <?php endif ?>
                             <?php endif ?>
                     >
-                            <?php if ($row["select_format"] === ""): ?>
-                        <?= $option[0] ?>
-                            <?php else: ?>
-                                <?php $val = $row["select_format"] ?>
-                                <?php for ($k = 1; $k <= count($option); $k++): ?>
-                                    <?php $val = str_replace("%$k", $option[$k -1], $val) ?>
-                                <?php endfor ?>
-                        <?= $val ?>
-                            <?php endif ?>
+                        <?= preg_replace_callback("/%([0-9]+)/", fn ($m) => str_replace($m[0], $option[$m[1] - 1] ?? "", $m[0]), $row["select_format"]); ?>
                     </option>
                         <?php endforeach ?>
                     <?php else: ?>

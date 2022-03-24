@@ -201,13 +201,7 @@ $HD_Form -> AddEditElement (gettext("KEY"),
     null, gettext("Insert the TITLE"));
 
 if ($setbool) {
-	$HD_Form -> AddEditElement (gettext("VALUE"),
-        "config_value",
-        "",
-        "",
-        "", "SELECT", "",
-        null, "", "list", "", "", "", $value_list, "%1");
-
+    $HD_Form->AddEditSelect("config_value", $value_list, gettext("VALUE"));
 } else {
 	$HD_Form -> AddEditElement (gettext("VALUE"),
         "config_value",

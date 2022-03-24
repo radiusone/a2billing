@@ -109,15 +109,7 @@ $options = null;
                     value="<?= $option[1] ?>"
                     <?php if ($row["default"] === $option[1]): ?>selected="selected"<?php endif ?>
                 >
-                    <?php if ($row["select_format"] === ""): ?>
-                    <?= $option[0] ?>
-                    <?php else: ?>
-                        <?php $val = $row["select_format"] ?>
-                        <?php for ($k = 1; $k <= count($option); $k++): ?>
-                            <?php $val = str_replace("%$k", $option[$k -1], $val) ?>
-                        <?php endfor ?>
-                    <?= $val ?>
-                    <?php endif ?>
+                    <?= preg_replace_callback("/%([0-9]+)/", fn ($m) => str_replace($m[0], $option[$m[1] - 1] ?? "", $m[0]), $row["select_format"]); ?>
                 </option>
                 <?php endforeach ?>
             <?php else: ?>

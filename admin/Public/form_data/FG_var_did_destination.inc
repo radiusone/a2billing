@@ -149,23 +149,9 @@ $HD_Form -> AddEditElement (gettext("ACTIVATED"),
     "",
     null, gettext("Choose if you want to activate this card"), "", "", "", "Yes:1,No:0");
 
-$HD_Form -> AddEditElement (gettext("VALIDATED"),
-    "validated",
-    "",
-    "",
-    "",
-    "SELECT",
-    "",
-    null, "", "list", "", "", "", $validated_list, "%1");
+$HD_Form->AddEditSelect("validated", $validated_list, gettext("VALIDATED"));
 
-$HD_Form -> AddEditElement (gettext("PRIORITY"),
-    "priority",
-    "",
-    "",
-    "",
-    "SELECT",
-    "",
-    null, "", "list", "", "", "", $priority_list, "%1");
+$HD_Form->AddEditSelect("priority", $priority_list, gettext("PRIORITY"));
 
 $HD_Form -> AddEditElement (gettext("VOIP_CALL"),
     "voip_call",

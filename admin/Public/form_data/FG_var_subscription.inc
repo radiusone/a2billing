@@ -110,7 +110,7 @@ $HD_Form -> AddEditElement (gettext("LABEL"),
     "",
     "INPUT",
     "size=35 maxlength=30",
-    3, gettext("Insert the service label"), "", "", "", "", "", "", "");
+    3, gettext("Insert the service label"));
 
 $HD_Form -> AddEditElement (gettext("FEE"),
     "fee",
@@ -119,17 +119,9 @@ $HD_Form -> AddEditElement (gettext("FEE"),
     "",
     "INPUT",
     "size=30 maxlength=30",
-    12, gettext("Insert the fee amount."), "", "", "", "", "", "", "");
+    12, gettext("Insert the fee amount."));
 
-
-$HD_Form -> AddEditElement ("STATUS",
-    "status",
-    '$value',
-    "",
-    "",
-    "SELECT",
-    "",
-    null, "", "list", "", "", "", $actived_list, "%1", "");
+$HD_Form->AddEditSelect("status", $actived_list, gettext("STATUS"));
 
 $HD_Form -> AddEditElement (gettext("START DATE"),
     "startdate",

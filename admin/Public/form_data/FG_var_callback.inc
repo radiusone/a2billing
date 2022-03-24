@@ -117,15 +117,7 @@ if ($form_action=="ask-add") {
 	$def_nbattempt = " value='0' ";
 }
 
-$HD_Form -> AddEditElement (gettext("STATUS"),
-    "status",
-    '$value',
-    "",
-    "",
-    "SELECT",
-    "",
-    null, "", "list", "", "", "", $status_list, "%1");
-
+$HD_Form->AddEditSelect("status", $status_list, gettext("STATUS"));
 
 $HD_Form -> AddEditElement (gettext("IP SERVER"),
     "server_ip",

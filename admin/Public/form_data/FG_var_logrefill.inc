@@ -147,14 +147,12 @@ if (has_rights (ACX_MODIFY_REFILLS)) {
         "cols=50 rows=4",
         null, gettext("Insert the description"));
 
-	$HD_Form -> AddEditElement (gettext("REFILL TYPE"),
+    $HD_Form->AddEditSelect(
         "refill_type",
-        '$value',
-        gettext("Define type for payment and refill,if created."),
-        "",
-        "SELECT",
-        "",
-        null, "", "list", "", "", "", $list_refill_type, "%1");
+        $list_refill_type,
+        gettext("REFILL TYPE"),
+        gettext("Define type for payment and refill,if created.")
+    );
 
 	if ($form_action!="ask-edit" && $form_action!="edit") {
 		$HD_Form -> AddEditElement (gettext("CREATE ASSOCIATE INVOICE"),

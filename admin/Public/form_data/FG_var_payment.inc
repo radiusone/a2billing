@@ -182,15 +182,12 @@ if (has_rights (ACX_MODIFY_PAYMENTS)) {
             null, gettext("Choose if you want to create a commission to an agent, if this customer is managed by one"), "", "", "", "Yes:1,No:0");
 	}
 
-	$HD_Form -> AddEditElement (gettext("PAYMENT TYPE"),
+    $HD_Form->AddEditSelect(
         "payment_type",
-        '$value',
-        gettext("Define type for payment and refill,if created."),
-        "",
-        "SELECT",
-        null,
-        "", "", "list", "", "", "", $list_refill_type, "%1");
-
+        gettext("PAYMENT TYPE"),
+        $list_refill_type,
+        gettext("Define type for payment and refill,if created.")
+    );
 	if ($form_action!="ask-edit" && $form_action!="edit") {
 		$HD_Form -> FieldEditElement ('card_id, date, payment, description,payment_type');
 	} else {

@@ -77,15 +77,7 @@ $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 
-$HD_Form -> AddEditElement (gettext("SPEED DIAL"),
-    "speeddial",
-    "",
-    "",
-    "",
-    "SELECT",
-    "",
-    null, "", "list", "", "", "", $speeddial_list, "%1", "");
-
+$HD_Form->AddEditSelect("speeddial", $speeddial_list, gettext("SPEED DIAL"));
 
 $HD_Form -> AddEditElement (gettext("NAME"),
     "name",

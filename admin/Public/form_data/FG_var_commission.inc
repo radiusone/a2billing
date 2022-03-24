@@ -144,14 +144,7 @@ $HD_Form -> AddEditElement (gettext("PAYMENT ID"),
 				, "",
     "A2B_entity_payment.php?popup_select=1&", ", 'PaymentSelection','width=550,height=330,top=20,left=100,scrollbars=1'");
 
-$HD_Form -> AddEditElement (gettext("COMMISSION TYPE"),
-    "commission_type",
-    '$value',
-    gettext("Define the type of this commission."),
-    "",
-    "SELECT",
-    "",
-    null, "", "list", "", "", "", $com_list, "%1", "");
+$HD_Form->AddEditSelect("commission_type", $com_list, gettext("COMMISSION TYPE"), gettext("Define the type of this commission."));
 
 $HD_Form -> FieldEditElement ('id_card, id_agent, date, amount, description, id_payment, commission_type');
 

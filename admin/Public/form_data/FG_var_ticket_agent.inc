@@ -135,14 +135,7 @@ $HD_Form -> AddEditElement (gettext("COMPONENT"),
     "sql",
     "cc_support_component", "name, id", "", "", "%1");
 
-$HD_Form -> AddEditElement (gettext("PRIORITY"),
-    "priority",
-    '$value',
-    "",
-    "",
-    "SELECT",
-    "",
-    null, "", "list", "", "", "", $priority_list, "%1");
+$HD_Form->AddEditSelect("priority", $priority_list, gettext("PRIORITY"));
 
 $HD_Form -> AddEditElement (gettext("DESCRIPTION"),
     "description",
@@ -151,7 +144,7 @@ $HD_Form -> AddEditElement (gettext("DESCRIPTION"),
     "",
     "TEXTAREA",
     "cols=50 rows=4",
-    null, gettext("Insert the description"), "", "", "", "", "", "", "");
+    null, gettext("Insert the description"));
 
 $HD_Form -> FieldEditElement (' creator, title, id_component, priority, description');
 

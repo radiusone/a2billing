@@ -157,15 +157,15 @@ if (isset ($form_action) && $form_action == "add") {
 
 $language_list = getLanguagesList();
 if (LANGUAGE_ENABLE)  {
-$HD_Form->AddEditElement(gettext("LANGUAGE"), "language", "", "", "", "SELECT", "", null, "", "list", "", "", "", $language_list, "%1");
+$HD_Form->AddEditSelect("language", $language_list, gettext("LANGUAGE"));
 $language_editFG = "language,";
 }
 if (CURRENCY_ENABLE)  {
-$HD_Form->AddEditElement("CURRENCY", "currency", "", "", "", "SELECT", "", null, "", "list", "", "", "", $currency_list, "%1");
+$HD_Form->AddEditSelect("currency", $currency_list, gettext("CURRENCY"));
 $currency_editFG = "currency,";
 }
 if (!$agent_conf && strpos($callPlan_idlist, ',') !== false && !($subscriber_signup>0)) {
-	$HD_Form->AddEditElement(gettext("CALL PLAN"), "tariff", "", "", "", "SELECT", "", null, "", "list", "", "", "", $callPlan_list, "%1");
+    $HD_Form->AddEditSelect("tariff", $callPlan_list, gettext("CALL PLAN"));
 }
 $comp_zero = $comp_date_plus = '';
 if (isset ($form_action) && $form_action == "ask-add") {
@@ -259,15 +259,8 @@ foreach ($timezone_list as $key => $cur_value) {
 	}
 }
 if (TIMEZONE_ENABLE)  {
-$HD_Form->AddEditElement(gettext("TIMEZONE"),
-    "id_timezone",
-    "$timezone_default_val",
-    "",
-    "", "SELECT", "",
-    null, "", "list", "",
-    "",
-    "", $timezone_list, "%1", "");
 $id_timezone_editFG = "id_timezone,";
+$HD_Form->AddEditSelect("id_timezone", $timezone_list, gettext("TIMEZONE"));
 }
 if (PHONE_ENABLE)  {
 $HD_Form->AddEditElement(gettext("PHONENUMBER"),

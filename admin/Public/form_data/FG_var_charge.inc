@@ -135,17 +135,9 @@ $HD_Form_c -> AddEditElement (gettext("AMOUNT"),
     "",
     "INPUT",
     "size=20  maxlength=20 $val_default_fixrate",
-    12, gettext("Insert the amount"), "", "", "", "", "", "", "");
+    12, gettext("Insert the amount"));
 
-
-$HD_Form_c -> AddEditElement (gettext("CHARGE TYPE"),
-    "chargetype",
-    "",
-    "",
-    "",
-    "SELECT",
-    "",
-    null, "", "list", "", "", "", $chargetype_list, "%1", "");
+$HD_Form_c->AddEditSelect("chargetype", $chargetype_list, gettext("CHARGE TYPE"));
 
 $HD_Form_c -> AddEditElement (gettext("DESCRIPTION"),
     "description",
@@ -154,7 +146,7 @@ $HD_Form_c -> AddEditElement (gettext("DESCRIPTION"),
     "",
     "TEXTAREA",
     "cols=50 rows=4",
-    null, gettext("Insert the description"), "", "", "", "", "", "", "");
+    null, gettext("Insert the description"));
 
 
 $HD_Form_c -> FieldEditElement ('id_cc_card, amount, chargetype, description');

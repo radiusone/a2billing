@@ -659,14 +659,7 @@ $HD_Form->AddEditElement(gettext("TAG"),
 
 
 if (ADVANCED_MODE) {
-    $HD_Form->AddEditElement(gettext("MUSICONHOLD"),
-        "musiconhold",
-        '$value',
-        "",
-        "",
-        "SELECT",
-        "",
-        null, "", "list", "", "", "", $musiconhold_list, "%1", "");
+    $HD_Form->AddEditSelect("musiconhold", $musiconhold_list, gettext("MUSICONHOLD"));
 }
 
 

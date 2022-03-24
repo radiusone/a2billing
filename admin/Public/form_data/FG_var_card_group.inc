@@ -130,15 +130,14 @@ $HD_Form -> AddEditElement (gettext("AGENT"),
     "sql",
     "cc_agent", "login,id,firstname,lastname", "", "", "%1 - %3 %4 (%2)", "", "", '<OPTION  value="-1" selected>' . gettext("NONE") . '</OPTION>');
 
-$HD_Form -> AddEditElement (gettext("PERMISSION USER INTERFACE"),
+$HD_Form->AddEditSelect(
     "users_perms",
-    '$value',
+    $right_list,
+    gettext("PERMISSION USER INTERFACE"),
     gettext("To select several rights in the above ListBox, hold the CTRL key down while clicking the items"),
     "",
-    "SELECT", "size=\"$len_right_list\" multiple=\"multiple\"",
-    null, "", "list", "", "description, id", "", $right_list,
-    "%1", "");
-
+    "size='$len_right_list' multiple='multiple'"
+);
 
 $HD_Form -> FieldEditElement ('name, description, id_agent, users_perms');
 

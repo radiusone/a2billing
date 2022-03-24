@@ -133,7 +133,7 @@ $HD_Form -> AddEditElement (gettext("VOUCHER"),
     "",
     "INPUT",
     "size=20 $maxi readonly maxlength=40",
-    4, gettext("Insert the voucher"), "", "", "", "", "", "", "");
+    4, gettext("Insert the voucher"));
 
 
 $HD_Form -> AddEditElement (gettext("AMOUNT"),
@@ -143,7 +143,7 @@ $HD_Form -> AddEditElement (gettext("AMOUNT"),
     "",
     "INPUT",
     "size=30 maxlength=30",
-    12, gettext("Insert the number of credit"), "", "", "", "", "", "", "");
+    12, gettext("Insert the number of credit"));
 
 
 $HD_Form -> AddEditElement (gettext("TAG"),
@@ -163,17 +163,9 @@ $HD_Form -> AddEditElement (gettext("ACTIVATED"),
     "",
     "RADIOBUTTON",
     "",
-    null, gettext("Choose if you want to activate this card"), "", "", "", "Yes:t,No:f", "", "", "");
+    null, gettext("Choose if you want to activate this card"), "", "", "", "Yes:t,No:f");
 
-$HD_Form -> AddEditElement (gettext("CURRENCY"),
-    "currency",
-    '$value',
-    "",
-    "",
-    "SELECT",
-    "",
-    null, "", "list", "", "", "", $currency_list, "%1", "");
-
+$HD_Form->AddEditSelect("currency", $currency_list, gettext("CURRENCY"));
 
 if ($form_action=="ask-add") {
 	$begin_date = date("Y");

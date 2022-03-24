@@ -113,14 +113,7 @@ $HD_Form -> AddEditElement (gettext("Support Box"),
     "sql",
     "cc_support", "name, id", "", "", "%1");
 
-$HD_Form -> AddEditElement (gettext("USER TYPE"),
-    "type_user",
-    '$value',
-    gettext("Define who can use this component."),
-    "",
-    "SELECT",
-    "",
-    null, "", "list", "", "", "", $user_type, "%1");
+$HD_Form->AddEditSelect("type_user", $user_type, gettext("USER TYPE"), gettext("Define who can use this component."));
 
 $HD_Form -> FieldEditElement ('name, activated, id_support,type_user');
 

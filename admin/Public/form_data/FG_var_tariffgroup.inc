@@ -119,16 +119,7 @@ $HD_Form -> AddEditElement (gettext("NAME"),
     "size=30 maxlength=20",
     9, gettext("Insert the Call Plan name "));
 
-
-$HD_Form -> AddEditElement (gettext("LC TYPE"),
-    "lcrtype",
-    '$value',
-    "",
-    "",
-    "SELECT",
-    "",
-    null, "", "list", "", "", "", $lcrtype_list, "%1");
-
+$HD_Form->AddEditSelect("lcrtype", $lcrtype_list, gettext("LC TYPE"));
 
 $HD_Form -> AddEditElement(gettext("PACKAGE"),
     "id_cc_package_offer",

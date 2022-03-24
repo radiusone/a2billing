@@ -115,14 +115,7 @@ $HD_Form -> AddEditElement (gettext("TEXT INTRO"),
     "size=30 maxlength=50",
     3, gettext("Insert the text intro"), "", "", "", "", "", "", "yes");
 
-$HD_Form -> AddEditElement (gettext("QUERY TYPE"),
-    "query_type",
-    '$value',
-    gettext("Define type of the query that will be performed."),
-    "",
-    "SELECT",
-    "",
-    null, "", "list", "", "", "", $mquery_type_list, "%1", "");
+$HD_Form->AddEditSelect("query_type", $mquery_type_list, gettext("QUERY TYPE"), gettext("Define type of the query that will be performed."));
 
 $HD_Form -> AddEditElement (gettext("QUERY / SHELL SCRIPT"),
     "query",
@@ -133,14 +126,7 @@ $HD_Form -> AddEditElement (gettext("QUERY / SHELL SCRIPT"),
     "cols=80 rows=4",
     null, gettext("Insert the description"), "", "", "", "", "", "", "");
 
-$HD_Form -> AddEditElement (gettext("SAY RESULT AS"),
-    "result_type",
-    '$value',
-    gettext("Define type of result."),
-    "",
-    "SELECT",
-    "",
-    null, "", "list", "", "", "", $mresult_type_list, "%1", "");
+$HD_Form->AddEditSelect("result_type", $mresult_type_list, gettext("SAY RESULT AS"), gettext("Define type of result."));
 
 $HD_Form -> AddEditElement (gettext("ENABLE"),
     "enable",

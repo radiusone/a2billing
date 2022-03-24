@@ -240,24 +240,14 @@ $HD_Form -> AddEditElement (gettext("MAXIMUM CONNECTIONS"),
     "size=30 $def_value_maxuse maxlength=30",
     12, gettext("Number of maximum simultaneous connections"));
 
-$HD_Form -> AddEditElement ("IFMAXUSED",
+$HD_Form->AddEditSelect(
     "if_max_use",
-    '$value',
-    gettext("Specifies which trunk to use when the maximum number of connections is reached"),
-    "",
-    "SELECT",
-    "",
-    null, "", "list", "", "", "", $maxuse_behaviour_list, "%1");
+    $maxuse_behaviour_list,
+    gettext("IFMAXUSED"),
+    gettext("Specifies which trunk to use when the maximum number of connections is reached")
+);
 
-$HD_Form -> AddEditElement ("STATUS",
-    "status",
-    '$value',
-    gettext("Define if this trunk is active or not"),
-    "",
-    "SELECT",
-    "",
-    null, "", "list", "", "", "", $actived_list, "%1");
-
+$HD_Form->AddEditSelect("status", $actived_list, gettext("STATUS"), gettext("Define if this trunk is active or not"));
 
 $HD_Form -> FieldEditElement ('id_provider, trunkcode, trunkprefix, removeprefix, providertech, providerip, addparameter, failover_trunk, inuse, maxuse, if_max_use, status');
 

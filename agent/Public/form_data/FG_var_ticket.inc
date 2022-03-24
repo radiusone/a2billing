@@ -143,14 +143,7 @@ $HD_Form -> AddEditElement (gettext("COMPONENT"),
     "sql",
     "cc_support_component", "name, id", "", "", "%1");
 
-$HD_Form -> AddEditElement (gettext("PRIORITY"),
-    "priority",
-    '$value',
-    "",
-    "",
-    "SELECT",
-    "",
-    null, "", "list", "", "", "", $priority_list, "%1");
+$HD_Form->AddEditSelect("priority", $priority_list, gettext("PRIORITY"));
 
 $HD_Form -> AddEditElement (gettext("DESCRIPTION"),
     "description",

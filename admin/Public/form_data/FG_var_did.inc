@@ -153,15 +153,7 @@ $HD_Form->AddEditElement(_("DID"),
     9, _("Insert the DID"));
 
 
-$HD_Form->AddEditElement(_("BILLING"),
-    "billingtype",
-    "",
-    "",
-    "",
-    "SELECT",
-    "",
-    null, "", "list", "", "", "", $billingtype_list, "%1");
-
+$HD_Form->AddEditSelect("billingtype", $billingtype_list, _("BILLING"));
 
 $HD_Form->AddEditElement(_("START DATE"),
     "startingdate",

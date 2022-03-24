@@ -759,14 +759,14 @@ class FormHandler
      * @param string $sql_column
      * @param string $sql_where
      * @param string $form_text_bottom
-     * @param string $section_name
+     * @param string $display_format
      * @param string $html_attributes
+     * @param string $check_emptyvalue
+     * @param string $first_option
+     * @param string $section_name
+     * @param string $custom_query
      * @param int|null $regexpr_nb
      * @param string $error_message
-     * @param string $display_format
-     * @param string $check_emptyvalue
-     * @param string $custom_query
-     * @param string $first_option
      * @param bool $field_enabled
      * @return void
      */
@@ -777,14 +777,14 @@ class FormHandler
         string $sql_column,
         string $sql_where = "",
         string $form_text_bottom = "",
-        string $section_name = "",
+        string $display_format = "%1",
         string $html_attributes = "",
+        string $check_emptyvalue = "",
+        string $first_option = "",
+        string $section_name = "",
+        string $custom_query = "",
         ?int   $regexpr_nb = null,
         string $error_message = "",
-        string $display_format = "",
-        string $check_emptyvalue = "",
-        string $custom_query = "",
-        string $first_option = "",
         bool   $field_enabled = true
     ): void
     {
@@ -819,29 +819,23 @@ class FormHandler
      * @param string $fieldname
      * @param array $options
      * @param string $label_text
-     * @param string $first_option
      * @param string $form_text_bottom
-     * @param string $section_name
+     * @param string $first_option
      * @param string $html_attributes
-     * @param int|null $regexpr_nb
+     * @param string $section_name
      * @param string $error_message
-     * @param string $display_format
-     * @param string $check_emptyvalue
      * @param bool $field_enabled
      * @return void
      */
-    public function addEditSelect(
+    public function AddEditSelect(
         string $fieldname,
         array  $options,
         string $label_text,
-        string $first_option = "",
         string $form_text_bottom = "",
-        string $section_name = "",
+        string $first_option = "",
         string $html_attributes = "",
-        ?int   $regexpr_nb = null,
+        string $section_name = "",
         string $error_message = "",
-        string $display_format = "",
-        string $check_emptyvalue = "",
         bool   $field_enabled = true
     ): void
     {
@@ -854,12 +848,11 @@ class FormHandler
             "name" => $fieldname,
             "type" => "SELECT",
             "attributes" => $html_attributes,
-            "regex" => $regexpr_nb,
+            "regex" => null,
             "error" => $error_message,
             "select_type" => "LIST",
             "select_fields" => $options,
-            "select_format" => $display_format,
-            "check_empty" => strtoupper($check_emptyvalue),
+            "select_format" => "%1",
             "first_option" => $first_option,
             "section_name" => $section_name,
             "comment" => $form_text_bottom,

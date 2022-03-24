@@ -155,14 +155,14 @@ if (has_rights (ACX_MODIFY_ADMINS) && !($popup_select)) {
         3, gettext("Insert the Reseller password"), "", "", "", "", "", "", "");
 
 	if ($groupID!="0") {
-		$HD_Form -> AddEditElement (gettext("PERMISSION"),
+        $HD_Form->AddEditSelect(
             "perms",
-            '$value',
-            gettext("To select several rights in the above ListBox, hold the CTRL key down while clicking the items"),
+            $right_list,
+            gettext("PERMISSION"),
             "",
-            "SELECT", "size=\"$len_right_list\" multiple=\"multiple\"",
-            null, "", "list", "", "description, id", "", $right_list,
-            "%1", "");
+            gettext("To select several rights in the above ListBox, hold the CTRL key down while clicking the items"),
+            "size='$len_right_list' multiple='multiple'"
+        );
 	}
 
 

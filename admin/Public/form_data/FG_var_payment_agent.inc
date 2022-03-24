@@ -154,15 +154,12 @@ if (has_rights (ACX_MODIFY_PAYMENTS)) {
             null, gettext("Choose if you want to create a refill with this payment account"), "", "", "", "Yes:1,No:0");
 	}
 
-	$HD_Form -> AddEditElement (gettext("REFILL TYPE"),
+    $HD_Form->AddEditSelect(
         "payment_type",
-        '$value',
-        gettext("Define type for payment and refill,if created."),
-        "",
-        "SELECT",
-        null,
-        null, "", "list", "", "", "", $list_refill_type, "%1");
-
+        $list_refill_type,
+        gettext("REFILL TYPE"),
+        gettext("Define type for payment and refill,if created.")
+    );
 
 	if ($form_action!="ask-edit" && $form_action!="edit") {
 		$HD_Form -> FieldEditElement ('agent_id, date, payment, description,payment_type');

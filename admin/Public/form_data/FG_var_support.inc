@@ -94,14 +94,7 @@ $HD_Form -> AddEditElement (gettext("NAME"),
     "INPUT",
     "size=30 maxlength=20",
     9, gettext("Insert the Support Box name "), "", "", "", "", "", "", "");
-$HD_Form -> AddEditElement (gettext("LANGUAGE"),
-    "language",
-    "",
-    "",
-    "",
-    "SELECT",
-    "",
-    null, "", "list", "", "", "", $language_list, "%1", "");
+$HD_Form->AddEditSelect("language", $language_list, gettext("LANGUAGE"));
 $HD_Form -> AddEditElement (gettext("EMAIL"),
     "email",
     '$value',

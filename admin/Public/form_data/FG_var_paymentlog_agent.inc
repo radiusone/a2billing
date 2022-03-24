@@ -125,8 +125,7 @@ $HD_Form -> AddEditElement (gettext("ID"),
     "",
     "INPUT",
     "size=10 READONLY maxlength=10",
-    4, gettext("Insert the Id "), "", "", "", "", "",
-    "", "");
+    4, gettext("Insert the Id "));
 
 
 $HD_Form -> AddEditElement (gettext("DATE"),
@@ -136,7 +135,7 @@ $HD_Form -> AddEditElement (gettext("DATE"),
     "",
     "INPUT",
     "size=40 READONLY maxlength=40 ",
-    10, gettext("Insert the creation date"), "", "", "", "", "", "", "");
+    10, gettext("Insert the creation date"));
 
 
 $HD_Form -> AddEditElement (gettext("PAYMENT METHOD"),
@@ -146,17 +145,9 @@ $HD_Form -> AddEditElement (gettext("PAYMENT METHOD"),
     "",
     "INPUT",
     "size=30 maxlength=30",
-    12, gettext("Insert the payment method"), "", "", "", "", "", "", "");
+    12, gettext("Insert the payment method"));
 
-
-$HD_Form -> AddEditElement (gettext("STATUS"),
-    "status",
-    '$value',
-    "",
-    "",
-    "SELECT",
-    "",
-    null, "", "list", "", "", "", $status_list, "%1", "");
+$HD_Form->AddEditSelect("status", $status_list, gettext("STATUS"));
 
 $HD_Form -> AddEditElement (gettext("OWNER"),
     "cc_owner",
@@ -165,7 +156,7 @@ $HD_Form -> AddEditElement (gettext("OWNER"),
     "",
     "INPUT",
     "size=30 maxlength=30",
-    12, gettext("Insert the owner"), "", "", "", "", "", "", "");
+    12, gettext("Insert the owner"));
 
 
 $HD_Form -> AddEditElement (gettext("AMOUNT"),
@@ -175,7 +166,7 @@ $HD_Form -> AddEditElement (gettext("AMOUNT"),
     "",
     "INPUT",
     "size=30 maxlength=30",
-    12, gettext("Insert the amount"), "", "", "", "", "", "", "");
+    12, gettext("Insert the amount"));
 
 
 
