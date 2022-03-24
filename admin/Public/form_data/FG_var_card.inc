@@ -575,14 +575,7 @@ if (!$popup_select) {
             "size=20 maxlength=10 $lockpin_default",
             4, "", "", "", "", "", "", "", "NO");
 
-        $HD_Form->AddEditElement(_("SIMULTANEOUS ACCESS"),
-            "simultaccess",
-            "1",
-            "",
-            "",
-            "SELECT",
-            "",
-            null, "", "list", "", "", "", $simultaccess_list, "%1", "");
+        $HD_Form->AddEditSelect("simultaccess", $simultaccess_list, _("SIMULTANEOUS ACCESS"), "", "", "1");
 
         $HD_Form->AddEditElement(_("RUN SERVICE"),
             "runservice",
@@ -602,16 +595,13 @@ if (!$popup_select) {
             "size=20 maxlength=20",
             4, _("Insert the credit limit"), "", "", "", "", "", "", "NO-NULL");
 
-        $HD_Form->AddEditElement(_("CREDIT LIMIT NOTIFICATION"),
+        $HD_Form->AddEditSelect(
             "credit_notification",
-            '',
+            $limits_notify_list,
+            _("CREDIT LIMIT NOTIFICATION"),
             _("currency : ") . strtoupper(BASE_CURRENCY) . '<BR>' . _("Low credit limit to alert the customer"),
-            "",
-            "SELECT",
-            "",
-            null, "", "list", "", "", "", $limits_notify_list,
-            "%1",
-            "", "", '<OPTION  value="-1" selected>' . _("NOT DEFINED") . '</OPTION>');
+            '<option value="-1" selected="selected">' . gettext("NOT DEFINED") . '</option>'
+        );
 
         $HD_Form->AddEditElement(_("PERMITTED NOTIFICATIONS BY MAIL"),
             "notify_email",
@@ -648,18 +638,18 @@ if (!$popup_select) {
                 "",
                 "RADIOBUTTON",
                 "",
-                null, _("Customer can choose to enable the voicemail for this account"), "", "", "", "Yes:1,No:0", "", "", "");
+                null, _("Customer can choose to enable the voicemail for this account"), "", "", "", "Yes:1,No:0");
         }
 
-        $HD_Form->AddEditElement(_("CAMPAIGN"),
+        $HD_Form->AddEditSqlSelect(
             "id_campaign",
+            _("CAMPAIGN"),
+            "cc_campaign",
+            "name,id",
             "",
             "",
-            "", "SELECT", "",
-            null,
-            "",
-            "sql",
-            "cc_campaign", "name, id", "", "", "%1", "", "", '<OPTION  value="-1" selected>' . _("NOT DEFINED") . '</OPTION>');
+            '<option value="-1" selected="selected">' . gettext("NOT DEFINED") . '</option>'
+        );
 
         $HD_Form->AddEditElement(_("FIRST USE DATE"),
             "firstusedate",
@@ -698,7 +688,7 @@ if (!$popup_select) {
             "",
             "INPUT",
             "size=10 maxlength=6 $comp_zero",
-            4, _("Insert the number of days after which the account will expire"), "", "", "", "", "", "", "");
+            4, _("Insert the number of days after which the account will expire"));
 
         if (!empty($A2B->config["webui"]['buddy_sip_file'])) {
             $HD_Form->AddEditElement(_("CREATE SIP CONFIG"),
@@ -708,7 +698,7 @@ if (!$popup_select) {
                 "",
                 "RADIOBUTTON",
                 "",
-                null, _("Choose if you want to enable the sip account"), "", "", "", "Yes:1,No:0", "", "", "");
+                null, _("Choose if you want to enable the sip account"), "", "", "", "Yes:1,No:0");
         }
 
         if (!empty($A2B->config["webui"]['buddy_iax_file'])) {
@@ -719,7 +709,7 @@ if (!$popup_select) {
                 "",
                 "RADIOBUTTON",
                 "",
-                null, _("Choose if you want to enable the iax account"), "", "", "", "Yes:1,No:0", "", "", "");
+                null, _("Choose if you want to enable the iax account"), "", "", "", "Yes:1,No:0");
         }
 
         $HD_Form->AddEditElement(_("MAC ADDRESS"),
@@ -756,8 +746,7 @@ if (!$popup_select) {
             _("AUTOREFILL"),
             "RADIOBUTTON",
             "",
-            null, _("Choose if you want to enable the autorefill on this account"), "", "", "", "Yes:1,No:0", "", "",
-            "", '', '');
+            null, _("Choose if you want to enable the autorefill on this account"), "", "", "", "Yes:1,No:0");
 
         $HD_Form->AddEditElement(_("INITIAL BALANCE"),
             "initialbalance",
@@ -766,7 +755,7 @@ if (!$popup_select) {
             "",
             "INPUT",
             "size=30 $default_initbalance maxlength=30",
-            12, _("Insert the amount of the initial balance"), "", "", "", "", "", "", "");
+            12, _("Insert the amount of the initial balance"));
 
         $HD_Form->AddEditSelect("invoiceday", $invoiceday_list, _("INVOICE DAY"), _("Define the day of the month when the system will generate the customer invoice."), "", "", "", _("Invoice Status"));
 
@@ -778,7 +767,7 @@ if (!$popup_select) {
             "",
             "INPUT",
             "size=10 maxlength=6 $vat_init",
-            12, _("Insert the VAT"), "", "", "", "", "", "", "");
+            12, _("Insert the VAT"));
 
         $HD_Form->AddEditElement(_("VAT REGISTRATION NUMBER "),
             "vat_rn",
@@ -789,14 +778,7 @@ if (!$popup_select) {
             "size=40 maxlength=40",
             null, _("Insert the VAT registration number of this customer"), "", "", "", "", "", "", "NO");
 
-        $HD_Form->AddEditElement(_("DISCOUNT"),
-            "discount",
-            "",
-            "",
-            "",
-            "SELECT",
-            "",
-            null, "", "list", "", "", "", $discount_list, "%1", "");
+        $HD_Form->AddEditSelect("discount", $discount_list, _("DISCOUNT"));
 
         $HD_Form->AddEditElement(_("TRAFFIC PER MONTH"),
             "traffic",
@@ -806,7 +788,7 @@ if (!$popup_select) {
             "INPUT",
             "size=30 maxlength=20",
             4, _("Insert the traffic per month for this customer"), "", "", "", "", "", "",
-            "NO", '', '');
+            "NO");
 
         $HD_Form->AddEditElement(_("TARGET TRAFFIC"),
             "traffic_target",
@@ -815,17 +797,18 @@ if (!$popup_select) {
             "",
             "TEXTAREA",
             "cols=50 rows=4",
-            null, _("Insert the target traffic description"), "", "", "", "", "", "", "");
+            null, _("Insert the target traffic description"));
 
-        $HD_Form->AddEditElement(_("RESTRICTION"),
+        $HD_Form->AddEditSelect(
             "restriction",
+            $restriction_list,
+            _("RESTRICTION"),
+            "",
+            "",
             "0",
             "",
-            _("RESTRICTED NUMBERS"),
-            "SELECT",
-            "",
-            null, "", "list", "", "", "", $restriction_list, "%1",
-            "");
+            _("RESTRICTED NUMBERS")
+        );
 
         $HD_Form->AddEditElement(_("RESTRICTED NUMBERS"),
             "restrictednumber",
