@@ -95,6 +95,7 @@ $HD_Form->AddEditSelect(
     '<option value="-1" selected="selected">' . gettext("NOT DEFINED") . '</option>',
     "",
     "",
+    "",
     gettext("Insert the number of credit when the customer receive a notification")
 );
 

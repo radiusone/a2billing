@@ -155,20 +155,16 @@ $options = null
                                     <?php if (intval($option[1]) & intval($db_data[$i])): ?>
                         selected="selected"
                                     <?php endif ?>
-                                <?php else: ?>
-                                    <?php if ($db_data[$i] == $option[1]): ?>
+                                <?php elseif ($db_data[$i] == $option[1]): ?>
                         selected="selected"
-                                    <?php endif ?>
                                 <?php endif ?>
                             <?php else: ?>
                                 <?php if (str_contains($row["attributes"], "multiple")): ?>
                                     <?php /* TODO: WTF is this? */ if (is_array($processed[$row["name"]]) && (intval($option[1]) & array_sum($processed[$row["name"]]))): ?>
                         selected="selected"
                                     <?php endif ?>
-                                <?php else: ?>
-                                    <?php if ($processed[$row["name"]] == $option[1]): ?>
+                                <?php elseif ($processed[$row["name"]] == $option[1]): ?>
                         selected="selected"
-                                    <?php endif ?>
                                 <?php endif ?>
                             <?php endif ?>
                     >
@@ -262,10 +258,7 @@ $options = null
                                                     <?php $newopts = (new Table($option[$table[8]], $table[9]))->get_list($this->DBHandle, str_replace("%1", $option[$table[7]], $table[11]))?>
                                                     <?php $option[$table[7]] = $newopts[0][0] ?>
                                                 <?php endif ?>
-                                                <?php $val = $table[6] ?>
-                                                <?php for ($k = 1; $k <= count($option); $k++): ?>
-                                                    <?php $val = str_replace("%$k", $option[$k -1], $val) ?>
-                                                <?php endfor ?>
+                                                <?php $val = preg_replace_callback("/%([0-9]+)/", fn ($m) => str_replace($m[0], $option[$m[1] - 1] ?? "", $m[0]), $table[6]); ?>
                                                 <option value="<?= $option[1] ?>"><?= $val ?></option>
                                             <?php else: ?>
                                                 <option value="<?= $option[1] ?>"><?= $option[0] ?></option>

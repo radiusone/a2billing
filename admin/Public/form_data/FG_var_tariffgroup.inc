@@ -121,16 +121,16 @@ $HD_Form -> AddEditElement (gettext("NAME"),
 
 $HD_Form->AddEditSelect("lcrtype", $lcrtype_list, gettext("LC TYPE"));
 
-$HD_Form -> AddEditElement(gettext("PACKAGE"),
+$HD_Form->AddEditSqlSelect(
     "id_cc_package_offer",
-    '$value',
-    gettext("Set the Package Group offer if you wish to use one with this Call Plan"),
-    "", "SELECT", "",
-    null,
+    gettext("PACKAGE"),
+    "cc_package_offer",
+    "label,id",
     "",
-    "sql",
-    "cc_package_offer", "label, id", "", "", "%1", "", "", '<OPTION  value="-1" selected>NO PACKAGE OFFER</OPTION>');
-
+    "",
+    '<option value="-1" selected="selected">' . gettext("NOT DEFINED") . '</option>',
+    gettext("Set the Package Group offer if you wish to use one with this Call Plan")
+);
 
 $HD_Form -> AddEditElement (gettext("REMOVE INTER PREFIX"),
     "removeinterprefix",
@@ -150,17 +150,19 @@ if ( $resmax )
 	$numrow = $resmax -> RecordCount( );
 
 if ($numrow>0){
-	$HD_Form -> AddEditElement (gettext("RATECARD"),
+    $HD_Form->AddEditSqlSelect(
         "tariffplan",
-        '$value',
+        gettext("RATECARD"),
+        "cc_tariffgroup_plan",
+        "label,id",
         "",
         "",
-        "SELECT",
-        'size="10" multiple="multiple"',
-        null,
         "",
-        "sql",
-        "cc_tariffgroup_plan", "label, id", "", "", "%1 : (%2)", "", "cc_tariffgroup_plan:idtariffplan:cc_tariffplan LEFT JOIN cc_tariffgroup_plan ON cc_tariffplan.id=cc_tariffgroup_plan.idtariffplan:DISTINCT cc_tariffplan.tariffname, cc_tariffplan.id: cc_tariffgroup_plan.idtariffgroup = %id:idtariffgroup:%2 - (%1)::::%1:id='%1'");
+        "",
+        "%1 : (%2)",
+        "size='10' multiple='muliple'",
+        "cc_tariffgroup_plan:idtariffplan:cc_tariffplan LEFT JOIN cc_tariffgroup_plan ON cc_tariffplan.id=cc_tariffgroup_plan.idtariffplan:DISTINCT cc_tariffplan.tariffname, cc_tariffplan.id: cc_tariffgroup_plan.idtariffgroup = %id:idtariffgroup:%2 - (%1)::::%1:id='%1'"
+    );
 
 }
 

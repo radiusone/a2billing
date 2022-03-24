@@ -169,6 +169,7 @@ if (has_rights (ACX_MODIFY_AGENTS) && !($popup_select)) {
         gettext("PERMISSION"),
         gettext("To select several rights in the above ListBox, hold the CTRL key down while clicking the items"),
         "",
+        "",
         "size='$len_right_list' multiple='multiple'"
     );
 
@@ -354,17 +355,19 @@ if (has_rights (ACX_MODIFY_AGENTS) && !($popup_select)) {
 		$numrow = $resmax -> RecordCount();
 
 	if ($numrow > 0) {
-		$HD_Form -> AddEditElement (gettext("CALL PLAN USABLE"),
+        $HD_Form->AddEditSqlSelect(
             "tariffgroup",
-            '$value',
+            gettext("CALL PLAN USABLE"),
+            "cc_agent_tariffgroup",
+            "label,id",
             "",
             "",
-            "SELECT",
-            'size="10" multiple="multiple"',
-            null,
             "",
-            "sql",
-            "cc_agent_tariffgroup", "label, id", "", "", "%1 : (%2)", "", "cc_agent_tariffgroup:id_tariffgroup:cc_tariffgroup LEFT JOIN cc_agent_tariffgroup ON cc_tariffgroup.id=cc_agent_tariffgroup.id_tariffgroup:DISTINCT cc_tariffgroup.tariffgroupname, cc_tariffgroup.id: cc_agent_tariffgroup.id_agent = %id:id_agent:%2 - (%1)::::%1:id='%1'");
+            "",
+            "%1: (%2)",
+            "size='10' multiple='multiple'",
+            "cc_agent_tariffgroup:id_tariffgroup:cc_tariffgroup LEFT JOIN cc_agent_tariffgroup ON cc_tariffgroup.id=cc_agent_tariffgroup.id_tariffgroup:DISTINCT cc_tariffgroup.tariffgroupname, cc_tariffgroup.id: cc_agent_tariffgroup.id_agent = %id:id_agent:%2 - (%1)::::%1:id='%1'"
+        );
 	}
 
 

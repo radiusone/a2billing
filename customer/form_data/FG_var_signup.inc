@@ -231,14 +231,8 @@ if ($form_action == 'ask-add') {
 	$country_default_val = 'USA';
 }
 if (COUNTRY_ENABLE)  {
-$HD_Form->AddEditElement(gettext("COUNTRY"),
-    "country",
-    "$country_default_val",
-    "", "", "SELECT", "",
-    null,
-    "", "sql",
-    "cc_country", "countryname, countrycode", "", "", "%1");
-$country_editFG = "country,";
+    $HD_Form->AddEditSqlSelect("country", gettext("COUNTRY"), "cc_country", "countryname,countrycode", "", $country_default_val);
+    $country_editFG = "country,";
 }
 if (ZIPCODE_ENABLE)  {
 $HD_Form->AddEditElement(gettext("ZIP/POSTAL CODE"), "zipcode", '$value', "", "", "INPUT", "size=30 maxlength=20", 0, gettext("Insert your zipcode"));
@@ -260,7 +254,7 @@ foreach ($timezone_list as $key => $cur_value) {
 }
 if (TIMEZONE_ENABLE)  {
 $id_timezone_editFG = "id_timezone,";
-$HD_Form->AddEditSelect("id_timezone", $timezone_list, gettext("TIMEZONE"));
+$HD_Form->AddEditSelect("id_timezone", $timezone_list, gettext("TIMEZONE"), "", "", $timezone_default_val);
 }
 if (PHONE_ENABLE)  {
 $HD_Form->AddEditElement(gettext("PHONENUMBER"),

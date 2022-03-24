@@ -84,15 +84,7 @@ $HD_Form -> AddEditElement (gettext("CID"),
     "cols=50 rows=4",
     null, gettext("Insert the CID"));
 
-$HD_Form -> AddEditElement (gettext("CIDGROUP"),
-    "outbound_cid_group",
-    '$value',
-    "",
-    "", "SELECT", "",
-    null,
-    "",
-    "sql",
-    "cc_outbound_cid_group", "group_name, id", "", "", "%1");
+$HD_Form->AddEditSqlSelect("outbound_cid_group", gettext("CIDGROUP"), "cc_outbound_cid_group", "group_name,id");
 
 $HD_Form -> AddEditElement (gettext("ACTIVATED"),
     "activated",

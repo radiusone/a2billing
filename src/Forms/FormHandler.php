@@ -758,14 +758,12 @@ class FormHandler
      * @param string $sql_table
      * @param string $sql_column
      * @param string $sql_where
+     * @param string $default_value
+     * @param string $first_option
      * @param string $form_text_bottom
      * @param string $display_format
      * @param string $html_attributes
-     * @param string $check_emptyvalue
-     * @param string $first_option
-     * @param string $section_name
      * @param string $custom_query
-     * @param int|null $regexpr_nb
      * @param string $error_message
      * @param bool $field_enabled
      * @return void
@@ -776,14 +774,12 @@ class FormHandler
         string $sql_table,
         string $sql_column,
         string $sql_where = "",
+        string $default_value = "",
+        string $first_option = "",
         string $form_text_bottom = "",
         string $display_format = "%1",
         string $html_attributes = "",
-        string $check_emptyvalue = "",
-        string $first_option = "",
-        string $section_name = "",
         string $custom_query = "",
-        ?int   $regexpr_nb = null,
         string $error_message = "",
         bool   $field_enabled = true
     ): void
@@ -795,19 +791,18 @@ class FormHandler
         $data = [
             "label" => $label_text,
             "name" => $fieldname,
+            "default" => $default_value,
             "type" => "SELECT",
             "attributes" => $html_attributes,
-            "regex" => $regexpr_nb,
+            "regex" => null,
             "error" => $error_message,
             "select_type" => "SQL",
             "sql_table" => $sql_table,
             "sql_field" => $sql_column,
             "sql_clause" => $sql_where,
             "select_format" => $display_format,
-            "check_empty" => strtoupper($check_emptyvalue),
             "custom_query" => $custom_query,
             "first_option" => $first_option,
-            "section_name" => $section_name,
             "comment" => $form_text_bottom,
             "validation_err" => true,
         ];
@@ -821,6 +816,7 @@ class FormHandler
      * @param string $label_text
      * @param string $form_text_bottom
      * @param string $first_option
+     * @param string|int $default_value
      * @param string $html_attributes
      * @param string $section_name
      * @param string $error_message
@@ -833,6 +829,7 @@ class FormHandler
         string $label_text,
         string $form_text_bottom = "",
         string $first_option = "",
+               $default_value = "",
         string $html_attributes = "",
         string $section_name = "",
         string $error_message = "",
@@ -846,6 +843,7 @@ class FormHandler
         $data = [
             "label" => $label_text,
             "name" => $fieldname,
+            "default" => $default_value,
             "type" => "SELECT",
             "attributes" => $html_attributes,
             "regex" => null,

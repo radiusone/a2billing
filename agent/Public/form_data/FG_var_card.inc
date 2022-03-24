@@ -378,28 +378,17 @@ if (isset($form_action) && $form_action=="ask-delete") {
 	$balance_delete = ",credit";
 }
 
+$HD_Form->AddEditSqlSelect("id_group", gettext("CUSTOMER GROUP"), "cc_card_group", "name,id", "cc_card_group.id_agent='$_SESSION[agent_id]'");
 
-$HD_Form -> AddEditElement (gettext("CUSTOMER GROUP"),
-    "id_group",
-    "",
-    "",
-    "", "SELECT", "",
-    null,
-    "",
-    "sql",
-    "cc_card_group ", "name, id", " cc_card_group.id_agent=" . $_SESSION['agent_id'], "", "%1");
-
-
-$HD_Form -> AddEditElement (gettext("SERIA"),
+$HD_Form->AddEditSqlSelect(
     "id_seria",
+    gettext("SERIA"),
+    "cc_card_seria",
+    "name,id",
     "",
     "",
-    "", "SELECT", "",
-    null,
-    "",
-    "sql",
-    "cc_card_seria", "name, id", "", "", "%1", "", "", '<OPTION  value="-1" selected>' . gettext("NOT DEFINED") . '</OPTION>');
-
+    '<option value="-1" selected="selected">' . gettext("NOT DEFINED") . '</option>'
+);
 
 $HD_Form -> AddEditElement (gettext("LAST NAME"),
     "lastname",
@@ -459,15 +448,7 @@ $HD_Form -> AddEditElement (gettext("STATE/PROVINCE"),
     "size=30 maxlength=40",
     11, gettext("Insert the state"), "", "", "", "", "", "", "NO");
 
-$HD_Form -> AddEditElement (gettext("COUNTRY"),
-    "country",
-    "",
-    "",
-    "", "SELECT", "",
-    null,
-    "",
-    "sql",
-    "cc_country", "countryname, countrycode", "", "", "%1");
+$HD_Form->AddEditSqlSelect("country", gettext("COUNTRY"), "cc_country", "countryname,countrycode");
 
 $HD_Form -> AddEditElement (gettext("ZIP/POSTAL CODE"),
     "zipcode",
@@ -520,28 +501,25 @@ $HD_Form -> AddEditElement (gettext("COMPANY WEBSITE"),
 
 $callplan_add = "";
 if (isset($form_action) && ($form_action=="ask-add" || $form_action=="add")) {
-	$HD_Form -> AddEditElement (gettext("CALL PLAN"),
+    $HD_Form->AddEditSqlSelect(
         "tariff",
-        "",
-        "",
-        "", "SELECT", "",
-        null,
-        "",
-        "sql",
-        "cc_tariffgroup, cc_agent_tariffgroup", "tariffgroupname, id", "cc_tariffgroup.id = cc_agent_tariffgroup.id_tariffgroup AND cc_agent_tariffgroup.id_agent = " . $_SESSION['agent_id'], "", "%1");
-
+        gettext("CALL PLAN"),
+        "cc_tariffgroup,cc_agent_tariffgroup",
+        "tariffgroupname,id",
+        "cc_tariffgroup.id = cc_agent_tariffgroup.id_tariffgroup AND cc_agent_tariffgroup.id_agent = '$_SESSION[agent_id]'"
+    );
 	$callplan_add = ",tariff";
 }
 
-$HD_Form -> AddEditElement (gettext("DIDGROUP"),
+$HD_Form->AddEditSqlSelect(
     "id_didgroup",
+    gettext("DIDGROUP"),
+    "cc_didgroup",
+    "didgroupname,id",
     "",
     "",
-    "", "SELECT", "",
-    null,
-    "",
-    "sql",
-    "cc_didgroup", "didgroupname, id", "", "", "%1", "", "", '<OPTION  value="-1" selected>' . gettext("NOT DEFINED") . '</OPTION>');
+    '<option value="-1" selected="selected">' . gettext("NOT DEFINED") . '</option>'
+);
 
 $timezone_list = get_timezones();
 foreach($timezone_list as $key => $cur_value) {
@@ -583,7 +561,7 @@ $HD_Form->AddEditSelect("status", $cardstatus_list, gettext("STATUS"));
         "size=20 maxlength=10 $lockpin_default",
         4, "", "", "", "", "", "", "", "NO");
 
-$HD_Form->AddEditSelect("simultaccess", $simultaccess_list, gettext("SIMULTANEOUS ACCESS"));
+$HD_Form->AddEditSelect("simultaccess", $simultaccess_list, gettext("SIMULTANEOUS ACCESS"), "", "", 1);
 
 $HD_Form -> AddEditElement (gettext("RUN SERVICE"),
     "runservice",
@@ -642,16 +620,15 @@ if (ACT_VOICEMAIL) {
         null, gettext("Customer can choose to enable the voicemail for this account"), "", "", "", "Yes:1,No:0");
 }
 
-$HD_Form -> AddEditElement (gettext("CAMPAIGN"),
+$HD_Form->AddEditSqlSelect(
     "id_campaign",
+    gettext("CAMPAIGN"),
+    "cc_campaign",
+    "name,id",
     "",
     "",
-    "", "SELECT", "",
-    null,
-    "",
-    "sql",
-    "cc_campaign", "name, id", "", "", "%1", "", "", '<OPTION  value="-1" selected>' . gettext("NOT DEFINED") . '</OPTION>');
-
+    '<option value="-1" selected="selected">' . gettext("NOT DEFINED") . '</option>'
+);
 
 $HD_Form -> AddEditElement (gettext("FIRST USE DATE"),
     "firstusedate",
@@ -761,6 +738,7 @@ $HD_Form->AddEditSelect(
     gettext("Define the day of the month when the system will generate the customer invoice."),
     "",
     "",
+    "",
     gettext("Invoice Status")
 );
 
@@ -810,6 +788,7 @@ $HD_Form->AddEditSelect(
     gettext("RESTRICTION"),
     "",
     "",
+    0,
     "",
     gettext("RESTRICTED NUMBERS")
 );

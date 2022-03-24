@@ -92,15 +92,15 @@ $HD_Form -> AddEditElement (gettext("ACCOUNT ID"),
     "", "",
     "A2B_entity_card.php?popup_select=1&", ", 'CardNumberSelection','width=550,height=350,top=20,left=100,scrollbars=1'");
 
-$HD_Form -> AddEditElement (gettext("ID SUBSCRIPTION SERVICE"),
+$HD_Form->AddEditSqlSelect(
     "id_subscription_fee",
+    gettext("ID SUBSCRIPTION SERVICE"),
+    "cc_subscription_service",
+    "label,id",
     "",
     "",
-    "", "SELECT", "",
-    null,
-    "",
-    "sql",
-    "cc_subscription_service", "label, id", "", "", "%1", "", "", '<OPTION  value="-1" selected>' . gettext("NOT DEFINED") . '</OPTION>');
+    '<option value="-1" selected="selected">' . gettext("NOT DEFINED") . '</option>'
+);
 
 $HD_Form -> AddEditElement (gettext("START DATE"),
     "startdate",

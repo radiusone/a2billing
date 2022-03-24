@@ -93,16 +93,17 @@ $HD_Form -> AddEditElement (gettext("ACTIVATED"),
     null, gettext("Choose if you want to activate this subscriber in the signup"), "", "", "", "Yes:1,No:0");
 
 $CURRENCY = strtoupper(BASE_CURRENCY);
-$HD_Form -> AddEditElement (gettext("SUBSCRIPTION OPTIONS"),
+$HD_Form->AddEditSqlSelect(
     "id_subscription",
+    gettext("SUBSCRIPTION OPTIONS"),
+    "cc_subscription_service",
+    "label,id,fee",
     "",
     "",
-    "", "SELECT", "",
-    null,
+    '<option value="-1" selected="selected">' . gettext("NONE") . '</option>',
     "",
-    "sql",
-    "cc_subscription_service", "label,id,fee", "", "", "%1 - %3 $CURRENCY (id:%2)", "", "", '<OPTION  value="NULL" selected>' . gettext("NONE") . '</OPTION>');
-
+    "%1 - %3 $CURRENCY (id:%2)"
+);
 
 $HD_Form -> AddEditElement (gettext("DESCRIPTION"),
     "description",
@@ -114,16 +115,16 @@ $HD_Form -> AddEditElement (gettext("DESCRIPTION"),
     null, gettext("Insert the description"));
 
 
-$HD_Form -> AddEditElement (gettext("CALL PLAN"),
+$HD_Form->AddEditSqlSelect(
     "id_callplan",
+    gettext("CALL PLAN"),
+    "cc_tariffgroup",
+    "tariffgroupname,id",
     "",
-    gettext("Define the callplan to associate to your Subscription"),
-    "", "SELECT", "",
-    null,
     "",
-    "sql",
-    "cc_tariffgroup", "tariffgroupname, id", "", "", "%1");
-
+    "",
+    gettext("Define the callplan to associate to your Subscription")
+);
 
 $HD_Form -> FieldEditElement ('label,enable,id_subscription, description, id_callplan');
 

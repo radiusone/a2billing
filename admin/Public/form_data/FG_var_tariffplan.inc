@@ -114,15 +114,7 @@ $HD_Form -> AddEditElement (gettext("EXPIRY DATE"),
     "size=40 maxlength=40  $comp_date_plus",
     10, gettext("Insert the expiration date"), "", "", "", "", "", "", "res_display_dateformat");
 
-$HD_Form -> AddEditElement (gettext("TRUNK"),
-    "id_trunk",
-    '$value',
-    "",
-    "", "SELECT", "",
-    null,
-    "",
-    "sql",
-    "cc_trunk", "trunkcode, id_trunk", "", "", "%1");
+$HD_Form->AddEditSqlSelect("id_trunk", gettext("TRUNK"), "cc_trunk", "trunkcode,id_trunk");
 
 $HD_Form -> AddEditElement (gettext("DESCRIPTION"),
     "description",

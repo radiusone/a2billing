@@ -9,7 +9,7 @@ use A2billing\Table;
  * @var string $wh
  * @var bool $VALID_SQL_REG_EXP
  */
-getpost_ifset(array('wh'));
+getpost_ifset(['wh']);
 $db_data = $list[0];
 $options = null;
 ?>
@@ -91,7 +91,7 @@ $options = null;
                 <?php $options = $row["select_fields"] ?>
             <?php endif ?>
             <?php if ($this->FG_DEBUG >= 2): ?>
-                <br/><?php print_r($options)?><br/><?php print_r($db_data)?><br/>#<?= $i ?>::><?= $this->VALID_SQL_REG_EXP ?><br/><br/>::><?= $db_data[$i] ?><br/><br/>::><?= $row["name"] ?>
+                <br/><?php print_r($options)?><br/><?php print_r($db_data)?><br/>#<?= $i ?>::><?= $db_data[$i] ?><br/><br/>::><?= $row["name"] ?>
             <?php endif ?>
             <select
                 id="<?= $row["name"] ?>"

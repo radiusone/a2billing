@@ -128,16 +128,7 @@ if ($form_action!='ask-edit' && $form_action!='edit') {
         "", "",
         "A2B_entity_card.php?popup_select=1&", ", 'CardNumberSelection','width=550,height=350,top=20,left=100,scrollbars=1'");
 
-
-	$HD_Form -> AddEditElement (gettext("DID"),
-        "id_cc_did",
-        '$value',
-        "",
-        "", "SELECT", "",
-        null,
-        "",
-        "sql",
-        "cc_did", "did, id", "", "", "%1");
+    $HD_Form->AddEditSqlSelect("id_cc_did", gettext("DID"), "cc_did", "did,id");
 }
 
 $HD_Form -> AddEditElement (gettext("ACTIVATED"),

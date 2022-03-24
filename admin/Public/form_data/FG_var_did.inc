@@ -174,28 +174,9 @@ $HD_Form->AddEditElement(_("EXPIRY DATE"),
     "size=40 maxlength=40  $comp_date_plus",
     10, _("Insert the expiration date"), "", "", "", "", "", "", "res_display_dateformat");
 
+$HD_Form->AddEditSqlSelect("id_cc_didgroup", _("DIDGROUP"), "cc_didgroup", "didgroupname,id");
 
-$HD_Form->AddEditElement(_("DIDGROUP"),
-    "id_cc_didgroup",
-    '$value',
-    "",
-    "", "SELECT", "",
-    null,
-    "",
-    "sql",
-    "cc_didgroup", "didgroupname, id", "", "", "%1");
-
-
-$HD_Form->AddEditElement(_("COUNTRY"),
-    "id_cc_country",
-    '$value',
-    "",
-    "", "SELECT", "",
-    null,
-    "",
-    "sql",
-    "cc_country", "countryname, id", "", "", "%1");
-
+$HD_Form->AddEditSqlSelect("id_cc_country", _("COUNTRY"), "cc_country", "countryname,id");
 
 $HD_Form->AddEditElement(_("ACTIVATED"),
     "activated",

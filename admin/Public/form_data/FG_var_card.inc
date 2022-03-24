@@ -358,7 +358,7 @@ if (!$popup_select) {
             _("Customer Information"),
             "INPUT",
             "size=30 $maxi readonly  maxlength=40",
-            4, _("Insert the account number"), "", "", "", "", "", "", "", "", "");
+            4, _("Insert the account number"));
 
         $HD_Form->AddEditElement(_("WEBUI LOGIN"),
             "useralias",
@@ -367,7 +367,7 @@ if (!$popup_select) {
             "",
             "INPUT",
             "size=20 $maxi2 maxlength=40",
-            4, _("Insert the webui login"), "", "", "", "", "", "", "");
+            4, _("Insert the webui login"));
 
         $HD_Form->AddEditElement(_("WEBUI PASSWORD"),
             "uipass",
@@ -376,7 +376,7 @@ if (!$popup_select) {
             "",
             "INPUT",
             "size=20 $maxi3 maxlength=20",
-            null, _("Insert the password"), "", "", "", "", "", "", "");
+            null, _("Insert the password"));
 
         $balance_access = ($form_action === "ask-add" || $form_action === "add") ? "value = '0'" : "readonly";
         $HD_Form->AddEditElement(_("BALANCE"),
@@ -386,27 +386,19 @@ if (!$popup_select) {
             "",
             "INPUT",
             "size=30 maxlength=30 " . $balance_access,
-            12, _("Insert the number of credit"), "", "", "", "", "", "", "");
+            12, _("Insert the number of credit"));
 
-        $HD_Form->AddEditElement(_("CUSTOMER GROUP"),
-            "id_group",
-            "",
-            "",
-            "", "SELECT", "",
-            null,
-            "",
-            "sql",
-            "cc_card_group", "name, id", "", "", "%1");
+        $HD_Form->AddEditSqlSelect("id_group", _("CUSTOMER GROUP"), "cc_card_group", "name,id");
 
-        $HD_Form->AddEditElement(_("SERIAL"),
+        $HD_Form->AddEditSqlSelect(
             "id_seria",
+            _("SERIAL"),
+            "cc_card_seria",
+            "name,id",
             "",
             "",
-            "", "SELECT", "",
-            null,
-            "",
-            "sql",
-            "cc_card_seria", "name, id", "", "", "%1", "", "", '<OPTION  value="-1" selected>' . _("NOT DEFINED") . '</OPTION>');
+            '<option value="-1" selected="selected">' . _("NOT DEFINED") . '</>'
+        );
 
         $HD_Form->AddEditElement(_("LAST NAME"),
             "lastname",
@@ -415,7 +407,7 @@ if (!$popup_select) {
             _("Personal Information"),
             "INPUT",
             "size=30 maxlength=50",
-            11, _("Insert the lastname of the customers"), "", "", "", "", "", "", "NO", "", "");
+            11, _("Insert the lastname of the customers"), "", "", "", "", "", "", "NO");
 
         $HD_Form->AddEditElement(_("FIRST NAME"),
             "firstname",
@@ -463,15 +455,7 @@ if (!$popup_select) {
             11, _("Insert the state"), "", "", "", "", "", "", "NO");
 
         $country_default_val = $form_action === "ask-add" ? "USA" : "";
-        $HD_Form->AddEditElement(_("COUNTRY"),
-            "country",
-            "$country_default_val",
-            "",
-            "", "SELECT", "",
-            null,
-            "",
-            "sql",
-            "cc_country", "countryname, countrycode", "", "", "%1");
+        $HD_Form->AddEditSqlSelect("country", _("COUNTRY"), "cc_country", "countryname,countrycode", "", $country_default_val);
 
         $HD_Form->AddEditElement(_("ZIP/POSTAL CODE"),
             "zipcode",
@@ -519,36 +503,39 @@ if (!$popup_select) {
             null, _("Insert the company website of this customer"), "", "", "", "", "", "", "NO");
 
         if ($form_action !== "edit") {
-            $payment_status = ($form_action === "ask-add" || $form_action === "add") ? "" : 'disabled="true"';
-            $HD_Form->AddEditElement(_("PAYMENT TYPE"),
+            $payment_status = ($form_action === "ask-add" || $form_action === "add") ? "" : 'disabled="disabled"';
+            $HD_Form->AddEditSelect(
                 "typepaid",
+                $typepaid_list,
+                _("PAYMENT TYPE"),
                 "",
-                '',
-                _("Customer Status"),
-                "SELECT",
+                "",
+                "",
                 $payment_status,
-                null, "", "list", "", "", "", $typepaid_list, "%1", "", "", "");
+                _("Customer Status")
+            );
         }
 
-        $HD_Form->AddEditElement(_("CALL PLAN"),
+        $HD_Form->AddEditSqlSelect(
             "tariff",
-            "",
-            _("Changing the call plan will result in the free minutes or free calls package being reset."),
-            "", "SELECT", "",
-            null,
-            "",
-            "sql",
-            "cc_tariffgroup", "tariffgroupname, id", "", "", "%1", "");
+            _("CALL PLAN"),
+            "cc_tariffgroup",
+            "tariffgroupname, id",
+            _("Changing the call plan will result in the free minutes or free calls package being reset.")
+        );
 
-        $HD_Form->AddEditElement(_("DIDGROUP"),
+        $HD_Form->AddEditSqlSelect(
             "id_didgroup",
+            _("DIDGROUP"),
+            "cc_didgroup",
+            "didgroupname,id",
             "",
             "",
-            "", "SELECT", "",
-            null,
+            '<option value="-1" selected="selected">' . gettext("NOT DEFINED") . '</option>',
             "",
-            "sql",
-            "cc_didgroup", "didgroupname, id", "", "", "%1", "", "", '<OPTION  value="-1" selected>' . _("NOT DEFINED") . '</OPTION>');
+            "%1",
+            ""
+        );
 
         $tz_val = "";
         $timezone_list = get_timezones();
@@ -561,7 +548,7 @@ if (!$popup_select) {
         }
         array_walk($timezone_list, fn (&$v, $k) => $v = [$v[2], $k]);
 
-        $HD_Form->AddEditSelect("id_timezone", $timezone_list, _("TIMEZONE"));
+        $HD_Form->AddEditSelect("id_timezone", $timezone_list, _("TIMEZONE"), "", "", $tz_val);
 
         $HD_Form->AddEditSelect("language", $language_list, _("LANGUAGE"));
 
@@ -781,7 +768,7 @@ if (!$popup_select) {
             "size=30 $default_initbalance maxlength=30",
             12, _("Insert the amount of the initial balance"), "", "", "", "", "", "", "");
 
-        $HD_Form->AddEditSelect("invoiceday", $invoiceday_list, _("INVOICE DAY"), _("Define the day of the month when the system will generate the customer invoice."), "", "", _("Invoice Status"));
+        $HD_Form->AddEditSelect("invoiceday", $invoiceday_list, _("INVOICE DAY"), _("Define the day of the month when the system will generate the customer invoice."), "", "", "", _("Invoice Status"));
 
         $vat_init = ($form_action === "ask-add" || $form_action === "add") ? "value = '0'" : "";
         $HD_Form->AddEditElement(_("VAT"),

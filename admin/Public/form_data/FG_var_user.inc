@@ -161,6 +161,7 @@ if (has_rights (ACX_MODIFY_ADMINS) && !($popup_select)) {
             gettext("PERMISSION"),
             "",
             gettext("To select several rights in the above ListBox, hold the CTRL key down while clicking the items"),
+            "",
             "size='$len_right_list' multiple='multiple'"
         );
 	}
@@ -247,25 +248,35 @@ if (has_rights (ACX_MODIFY_ADMINS) && !($popup_select)) {
 
 	if (($groupID=="2") || ($groupID=="3")) {
 		if ($groupID=="2") {
-			$HD_Form -> AddEditElement ("UserID",
+            $HD_Form->AddEditSqlSelect(
                 "a",
-                '$value',
+                gettext("UserID"),
+                "Customer",
+                "AnaCust,IDCust",
                 "",
-                "", "SELECT", "",
-                null,
-                "Insert the iva",
-                "sql",
-                "Customer", "AnaCust, IDCust", "", "", "%2 (%1)", "");
+                "",
+                "",
+                "",
+                "%2 (%1)",
+                "",
+                "",
+                "Insert the iva"
+            );
 		} else {
-			$HD_Form -> AddEditElement ("ResellerID",
+            $HD_Form->AddEditSqlSelect(
                 "a",
-                '$value',
+                gettext("ResellerID"),
+                "secauth",
+                "login,userID",
+                "groupID=1",
                 "",
-                "", "SELECT", "",
-                null,
-                "Insert the iva",
-                "sql",
-                "secauth", "login, userID", "groupID='1'", "", "%2 (%1)", "");
+                "",
+                "",
+                "%2 (%1)",
+                "",
+                "",
+                "Insert the iva"
+            );
 		}
 	}
 

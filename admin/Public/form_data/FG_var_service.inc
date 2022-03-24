@@ -173,15 +173,15 @@ $HD_Form -> AddEditElement (gettext("EMAIL TO SEND REPORT"),
     "size=30 maxlength=30",
     1, gettext("Insert the email to send the report"), "", "", "", "", "", "", "NO-NULL");
 
-$HD_Form -> AddEditElement (gettext("CALL PLAN"),
+$HD_Form->AddEditSqlSelect(
     "dialplan",
+    gettext("CALL PLAN"),
+    "cc_tariffgroup",
+    "tariffgroupname,id",
     "",
     "",
-    "", "SELECT", "",
-    null,
-    "",
-    "sql",
-    "cc_tariffgroup union select '--ANY--',0", "tariffgroupname, id", "", "", "%1");
+    '<option value="0" selected="selected">--' . gettext("ANY") . '--</option>'
+);
 
 $HD_Form->AddEditSelect(
     "operate_mode",
@@ -204,17 +204,19 @@ if ( $resmax )
 	$numrow = $resmax -> RecordCount( );
 
 if ($numrow > 0) {
-	$HD_Form -> AddEditElement (gettext("CARD GROUP"),
+    $HD_Form->AddEditSqlSelect(
         "service",
-        '$value',
+        gettext("CARD GROUP"),
+        "cards_services",
+        "name,id",
         "",
         "",
-        "SELECT",
-        'size="10" multiple="multiple"',
-        null,
         "",
-        "sql",
-        "cards_services", "name, id", "", "", "%1 : (%2)", "", "cc_cardgroup_service:id_card_group:cc_card_group LEFT JOIN cc_cardgroup_service ON cc_card_group.id=cc_cardgroup_service.id_card_group:DISTINCT cc_card_group.name, cc_card_group.id: cc_cardgroup_service.id_service = %id:id_service:%2 - (%1)::::%1:id='%1'");
+        "",
+        "%1 : (%2)",
+        "size='10' multiple='multiple'",
+        "cc_cardgroup_service:id_card_group:cc_card_group LEFT JOIN cc_cardgroup_service ON cc_card_group.id=cc_cardgroup_service.id_card_group:DISTINCT cc_card_group.name, cc_card_group.id: cc_cardgroup_service.id_service = %id:id_service:%2 - (%1)::::%1:id='%1'"
+    );
 }
 
 $HD_Form->FieldEditElement('name, amount, rule, daynumber, period, stopmode, maxnumbercycle, status, emailreport, dialplan, operate_mode, use_group');

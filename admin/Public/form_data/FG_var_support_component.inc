@@ -103,15 +103,7 @@ $HD_Form -> AddEditElement (gettext("ACTIVATED"),
     "",
     null, gettext("Choose if you want to activate this component"), "", "", "", "Yes:1,No:0");
 
-$HD_Form -> AddEditElement (gettext("Support Box"),
-    "id_support",
-    "",
-    "",
-    "", "SELECT", "",
-    null,
-    "",
-    "sql",
-    "cc_support", "name, id", "", "", "%1");
+$HD_Form->AddEditSqlSelect("id_support", gettext("Support Box"), "cc_support", "name,id");
 
 $HD_Form->AddEditSelect("type_user", $user_type, gettext("USER TYPE"), gettext("Define who can use this component."));
 

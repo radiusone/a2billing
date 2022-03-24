@@ -120,21 +120,24 @@ $HD_Form -> AddEditElement (gettext("DESCRIPTION"),
     "cols=50 rows=4",
     null, gettext("Insert the description"), "", "", "", "", "", "", "");
 
-$HD_Form -> AddEditElement (gettext("AGENT"),
+$HD_Form->AddEditSqlSelect(
     "id_agent",
+    gettext("AGENT"),
+    "cc_agent",
+    "login,id,firstname,lastname",
     "",
     "",
-    "", "SELECT", "",
-    null,
+    '<option value="-1" selected="selected">' . gettext("NONE") . '</option>',
     "",
-    "sql",
-    "cc_agent", "login,id,firstname,lastname", "", "", "%1 - %3 %4 (%2)", "", "", '<OPTION  value="-1" selected>' . gettext("NONE") . '</OPTION>');
+    "%1 - %3 %4 (%2)"
+);
 
 $HD_Form->AddEditSelect(
     "users_perms",
     $right_list,
     gettext("PERMISSION USER INTERFACE"),
     gettext("To select several rights in the above ListBox, hold the CTRL key down while clicking the items"),
+    "",
     "",
     "size='$len_right_list' multiple='multiple'"
 );

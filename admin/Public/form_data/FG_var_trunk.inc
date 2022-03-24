@@ -148,15 +148,15 @@ if (isset($form_action) && $form_action=="ask-add"){
 	$def_value_maxuse = "value='-1'";
 }
 
-$HD_Form -> AddEditElement (gettext("VOIP-PROVIDER"),
+$HD_Form->AddEditSqlSelect(
     "id_provider",
-    '$value',
+    gettext("VOIP PROVIDER"),
+    "cc_provider",
+    "provider_name,id",
     "",
-    "", "SELECT", "",
-    null,
     "",
-    "sql",
-    "cc_provider", "provider_name, id", "", "", "%1", "", "", '<OPTION  value="-1" selected>NOT DEFINED</OPTION>');
+    '<option value="-1" selected="selected">' . gettext("NOT DEFINED") . '</option>'
+);
 
 $HD_Form -> AddEditElement (gettext("LABEL"),
     "trunkcode",
@@ -212,15 +212,16 @@ $HD_Form -> AddEditElement (gettext("ADDITIONAL PARAMETER"),
     "size=60 maxlength=100",
     null, gettext("Insert Additional parameters"));
 
-$HD_Form -> AddEditElement (gettext("FAILOVER TRUNK"),
+$HD_Form->AddEditSqlSelect(
     "failover_trunk",
-    '$value',
-    gettext("You can define another trunk in case of failover!"),
-    "", "SELECT", "",
-    null,
+    gettext("FAILOVER TRUNK"),
+    "cc_trunk",
+    "trunkcode,id_trunk",
     "",
-    "sql",
-    "cc_trunk", "trunkcode, id_trunk", "", "", "%1", "", "", '<OPTION  value="-1" selected>NOT DEFINED</OPTION>');
+    "",
+    '<option value="-1" selected="selected">' . gettext("NOT DEFINED") . '</option>',
+    gettext("You can define another trunk in case of failover!")
+);
 
 $HD_Form -> AddEditElement (gettext("CURRENT CONNECTIONS"),
     "inuse",

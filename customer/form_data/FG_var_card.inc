@@ -103,17 +103,7 @@ $HD_Form -> AddEditElement (gettext("STATE/PROVINCE"),
     "size=30 maxlength=40",
     11, gettext("Insert the state"), "", "", "", "", "", "", "NO");
 
-
-$HD_Form -> AddEditElement (gettext("COUNTRY"),
-    "country",
-    "",
-    "",
-    "", "SELECT", "",
-    null,
-    "",
-    "sql",
-    "cc_country", "countryname, countrycode", "", "", "%1");
-
+$HD_Form->AddEditSqlSelect("country", gettext("COUNTRY"), "cc_country", "countryname,countrycode");
 
 $HD_Form -> AddEditElement (gettext("ZIP/POSTAL CODE"),
     "zipcode",
@@ -124,15 +114,7 @@ $HD_Form -> AddEditElement (gettext("ZIP/POSTAL CODE"),
     "size=30 maxlength=20",
     0, gettext("Insert the zipcode"), "", "", "", "", "", "", "NO");
 
-$HD_Form -> AddEditElement (gettext("TIMEZONE"),
-    "id_timezone",
-    '',
-    "",
-    "", "SELECT", "",
-    null,
-    "",
-    "sql",
-    "cc_timezone", "gmtzone, id", "", "", "%1");
+$HD_Form->AddEditSqlSelect("id_timezone", gettext("TIMEZONE"), "cc_timezone", "gmtzone,id");
 
 $HD_Form -> AddEditElement (gettext("PHONE NUMBER"),
     "phone",

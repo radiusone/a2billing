@@ -255,17 +255,7 @@ $HD_Form->AddSearchComparisonInput(gettext("RATE INITIAL"), 'rateinitial1', 'rat
 $HD_Form->AddSearchSqlSelectInput('SELECT TRUNK', "cc_trunk", "id_trunk, trunkcode, providerip", "", "trunkcode", "ASC", "id_trunk");
 $HD_Form->AddSearchSqlSelectInput('SELECT RATECARD', "cc_tariffplan", "id, tariffname", "", "tariffname", "ASC", "idtariffplan");
 
-
-$HD_Form->AddEditElement(gettext("RATECARD"),
-    "idtariffplan",
-    '$value',
-    "",
-    "", "SELECT", "",
-    null,
-    "",
-    "sql",
-    "cc_tariffplan", "tariffname, id", "", "", "%1");
-
+$HD_Form->AddEditSqlSelect("idtariffplan", gettext("RATECARD"), "cc_tariffplan", "tariffname,id");
 
 $HD_Form->AddEditElement(gettext("DIALPREFIX"),
     "dialprefix",
@@ -625,28 +615,27 @@ $HD_Form->AddEditElement(gettext("ADDITIONAL GRACE TIME"),
     "size=40 maxlength=40",
     null, gettext("Insert the additional grace time in sec"));
 
-
-$HD_Form->AddEditElement(gettext("TRUNK"),
+$HD_Form->AddEditSqlSelect(
     "id_trunk",
-    '$value',
-    gettext("Set the trunk to use for this destination, or NOT DEFINED to use the rate card trunk."),
-    "", "SELECT", "",
-    null,
+    gettext("TRUNK"),
+    "cc_trunk",
+    "trunkcode,id_trunk",
     "",
-    "sql",
-    "cc_trunk", "trunkcode, id_trunk", "", "", "%1", "", '', '<OPTION  value="-1" selected>' . gettext("NOT DEFINED") . '</OPTION>');
+    "",
+    '<option value="-1" selected="selected">' . gettext("NOT DEFINED") . '</option>',
+    gettext("Set the trunk to use for this destination, or NOT DEFINED to use the rate card trunk.")
+);
 
-
-$HD_Form->AddEditElement(gettext("CIDGroup"),
+$HD_Form->AddEditSqlSelect(
     "id_outbound_cidgroup",
-    '$value',
-    gettext("Set the Outgoing CID Group to use for this destination, or NOT DEFINED to use the rate card trunk."),
-    "", "SELECT", "",
-    null,
+    gettext("CIDGroup"),
+    "cc_outbound_cid_group",
+    "group_name,id",
     "",
-    "sql",
-    "cc_outbound_cid_group", "group_name, id", "", "", "%1", "", '', '<OPTION  value="-1" selected>' . gettext("NOT DEFINED") . '</OPTION>');
-
+    "",
+    '<option value="-1" selected="selected">' . gettext("NOT DEFINED") . '</option>',
+    gettext("Set the Outgoing CID Group to use for this destination, or NOT DEFINED to use the rate card trunk.")
+);
 
 $HD_Form->AddEditElement(gettext("TAG"),
     "tag",
