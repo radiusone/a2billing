@@ -779,7 +779,7 @@ class FormHandler
         string $form_text_bottom = "",
         string $display_format = "%1",
         string $html_attributes = "",
-        string $custom_query = "",
+        array  $custom_query = [],
         string $error_message = "",
         bool   $field_enabled = true
     ): void

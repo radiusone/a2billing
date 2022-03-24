@@ -366,7 +366,13 @@ if (has_rights (ACX_MODIFY_AGENTS) && !($popup_select)) {
             "",
             "%1: (%2)",
             "size='10' multiple='multiple'",
-            "cc_agent_tariffgroup:id_tariffgroup:cc_tariffgroup LEFT JOIN cc_agent_tariffgroup ON cc_tariffgroup.id=cc_agent_tariffgroup.id_tariffgroup:DISTINCT cc_tariffgroup.tariffgroupname, cc_tariffgroup.id: cc_agent_tariffgroup.id_agent = %id:id_agent:%2 - (%1)::::%1:id='%1'"
+            [
+                "name" => "id_tariffgroup",
+                "tables" => "cc_tariffgroup LEFT JOIN cc_agent_tariffgroup ON cc_tariffgroup.id=cc_agent_tariffgroup.id_tariffgroup",
+                "columns" => "DISTINCT cc_tariffgroup.tariffgroupname, cc_tariffgroup.id",
+                "where" => "cc_agent_tariffgroup.id_agent = %id",
+                "format" => "%2 - (%1)",
+            ]
         );
 	}
 

@@ -215,7 +215,13 @@ if ($numrow > 0) {
         "",
         "%1 : (%2)",
         "size='10' multiple='multiple'",
-        "cc_cardgroup_service:id_card_group:cc_card_group LEFT JOIN cc_cardgroup_service ON cc_card_group.id=cc_cardgroup_service.id_card_group:DISTINCT cc_card_group.name, cc_card_group.id: cc_cardgroup_service.id_service = %id:id_service:%2 - (%1)::::%1:id='%1'"
+        [
+            "name" => "id_card_group",
+            "tables" => "cc_card_group LEFT JOIN cc_cardgroup_service ON cc_card_group.id=cc_cardgroup_service.id_card_group",
+            "columns" => "DISTINCT cc_card_group.name, cc_card_group.id",
+            "where" => "cc_cardgroup_service.id_service = %id",
+            "format" => "%2 - (%1)",
+        ]
     );
 }
 

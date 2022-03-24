@@ -54,7 +54,7 @@ $options = null
         </div>
         <?php endif ?>
 
-        <?php if (!str_contains($row["custom_query"], ":")): // SQL CUSTOM QUERY ?>
+        <?php if (count($row["custom_query"]) === 0): // SQL CUSTOM QUERY ?>
         <div class="row mb-3">
             <label for="<?= $row["name"] ?>" class="col-3 col-form-label">
                 <?= $row["label"] ?>
@@ -210,8 +210,8 @@ $options = null
             </div>
         </div>
 
-        <?php elseif (str_contains($row["custom_query"], ":")): ?>
-            <?php $table = explode(":", $row["custom_query"]) ?>
+        <?php else: ?>
+            <?php $table = $row["custom_query"] ?>
 
             <?php if ($row["type"] === "SELECT"): ?>
             <div class="row mb-3">
@@ -219,19 +219,14 @@ $options = null
                     <?= $row["label"] ?>
                 </div>
                 <div class="col">
-                    <?php $options = (new Table($table[2], $table[3]))->get_list($this->DBHandle, str_replace("%id", $processed["id"], $table[4]))?>
+                    <?php $options = (new Table($table["tables"], $table["columns"]))->get_list($this->DBHandle, str_replace("%id", $processed["id"], $table["where"]))?>
                     <ul class="list-group">
                     <?php if (is_array($options) && count($options)): ?>
                         <?php foreach ($options as $k=>$option): ?>
-                            <?php if (is_numeric($table[7])): ?>
-                                <?php $newopts = (new Table($option[$table[7]], $table[11]))->get_list($this->DBHandle, str_replace("%1", $option[$table[7]], $table[11]))?>
-                                <?php $option[$table[7]] = $newopts[0][0] ?>
-                            <?php endif ?>
                             <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <?php if (!empty($option[$table[7]])): ?><strong><?= $option[$table[7]] ?></strong><?php endif ?>
                                 <?= $option[0] ?>
                                 <button
-                                    onclick="sendto('del-content','<?= $i ?>','<?= $table[1] ?>_hidden','<?= $option[1] ?>');"
+                                    onclick="sendto('del-content','<?= $i ?>','<?= $table["name"] ?>_hidden','<?= $option[1] ?>');"
                                     id="submit<?= $i ?>"
                                     name="submit<?= $i ?>"
                                     value="add-split"
@@ -246,19 +241,15 @@ $options = null
                     <?php endif ?>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             <div>
-                                <label for="<?= $table[1] ?>_ADD" class="form-label"><?= gettext("Add a new") ?> <?= $row["label"] ?></label>
-                                <input name="<?= $table[1] ?>_hidden" type="hidden" value=""/>
-                                <select id="<?= $table[1] ?>_ADD" name="<?= $table[1] ?>[]" <?= $row["attributes"] ?> class="form-select form-control-sm">
+                                <label for="<?= $table["name"] ?>_ADD" class="form-label"><?= gettext("Add a new") ?> <?= $row["label"] ?></label>
+                                <input name="<?= $table["name"] ?>_hidden" type="hidden" value=""/>
+                                <select id="<?= $table["name"] ?>_ADD" name="<?= $table["name"] ?>[]" <?= $row["attributes"] ?> class="form-select form-control-sm">
                                     <?php $order = is_string($table[13]) ? explode(",", $table[13]) : (is_array($table[13]) ? $table[13] : []) ?>
-                                    <?php $options = (new Table($table[2], $table[3]))->get_list($this->DBHandle, $table[15], $order, $table[14])?>
+                                    <?php $options = (new Table($table["tables"], $table["columns"]))->get_list($this->DBHandle, $table[15], $order, $table[14])?>
                                     <?php if (is_array($options) && count($options)): ?>
                                         <?php foreach ($options as $option): ?>
-                                            <?php if (!empty($table[6])): ?>
-                                                <?php if (is_numeric($table[7])): ?>
-                                                    <?php $newopts = (new Table($option[$table[8]], $table[9]))->get_list($this->DBHandle, str_replace("%1", $option[$table[7]], $table[11]))?>
-                                                    <?php $option[$table[7]] = $newopts[0][0] ?>
-                                                <?php endif ?>
-                                                <?php $val = preg_replace_callback("/%([0-9]+)/", fn ($m) => str_replace($m[0], $option[$m[1] - 1] ?? "", $m[0]), $table[6]); ?>
+                                            <?php if (!empty($table["format"])): ?>
+                                                <?php $val = preg_replace_callback("/%([0-9]+)/", fn ($m) => str_replace($m[0], $option[$m[1] - 1] ?? "", $m[0]), $table["format"]); ?>
                                                 <option value="<?= $option[1] ?>"><?= $val ?></option>
                                             <?php else: ?>
                                                 <option value="<?= $option[1] ?>"><?= $option[0] ?></option>
@@ -287,7 +278,6 @@ $options = null
                     <?php if (is_array($options) && count($options)): ?>
                         <?php foreach ($options as $k=>$option): ?>
                             <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <?php if (!empty($option[$table[7]])): ?>( <?= $option[$table[7]] ?> )<?php endif ?>
                                 <?= $option[0] ?>
                                 <button
                                     onclick="sendto('del-content','<?= $i ?>','<?= $col[0] ?>','<?= $option[0] ?>');"

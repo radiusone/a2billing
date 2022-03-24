@@ -37,7 +37,7 @@ $options = null;
     </div>
     <?php endif ?>
 
-    <?php if (!str_contains($row["custom_query"], ":")): ?>
+    <?php if (count($row["custom_query"]) === 0): ?>
     <div class="row mb-3">
         <label for="<?= $row["name"] ?>" class="col-3 col-form-label">
             <?= $row["label"] ?>

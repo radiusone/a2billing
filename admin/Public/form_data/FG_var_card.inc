@@ -521,6 +521,9 @@ if (!$popup_select) {
             _("CALL PLAN"),
             "cc_tariffgroup",
             "tariffgroupname, id",
+            "",
+            "",
+            "",
             _("Changing the call plan will result in the free minutes or free calls package being reset.")
         );
 
@@ -531,10 +534,7 @@ if (!$popup_select) {
             "didgroupname,id",
             "",
             "",
-            '<option value="-1" selected="selected">' . gettext("NOT DEFINED") . '</option>',
-            "",
-            "%1",
-            ""
+            '<option value="-1" selected="selected">' . gettext("NOT DEFINED") . '</option>'
         );
 
         $tz_val = "";
