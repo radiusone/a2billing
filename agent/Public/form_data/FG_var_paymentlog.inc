@@ -170,20 +170,13 @@ $HD_Form -> AddEditElement (gettext("AMOUNT"),
     "size=30 maxlength=30",
     12, gettext("Insert the amount"));
 
-
-
-$HD_Form -> AddEditElement (gettext("ID CARD"),
+$HD_Form->AddEditPopup(
     "card_id",
-    "$value",
-    gettext("Select the Card Number ID"),
-    "",
-    "POPUPVALUE",
-    "size=30 maxlength=50",
-    4, gettext("Insert the Id CardNumber"), "", "", "",
-    ""
-				, "",
-    "A2B_entity_card.php?popup_select=1&", ", 'CardNumberSelection','width=550,height=330,top=20,left=100,scrollbars=1'");
-
+    gettext("CUSTOMER ID"),
+    "A2B_entity_card.php?popup_select=1&",
+    gettext("Select the Customer ID"),
+    gettext("Insert the Customer ID")
+);
 
 $HD_Form -> FieldEditElement ('cc_epayment_log.id, cc_epayment_log.creationdate, paymentmethod, cc_epayment_log.status, cc_owner, amount, cardid ');
 

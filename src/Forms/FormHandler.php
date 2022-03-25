@@ -891,6 +891,38 @@ class FormHandler
         $this->FG_ADD_FORM_ELEMENTS[$cur] = $data;
     }
 
+    public function AddEditPopup(
+        string $fieldname,
+        string $label_text,
+        string $href,
+        string $form_text_bottom = "",
+        string $error_message = "",
+        string $html_attributes = "",
+        ?int   $regex_nb = 4,
+        bool   $is_date = false,
+        bool   $field_enabled = true
+    ): void
+    {
+        if ($field_enabled === false) {
+            return;
+        }
+        $cur = count($this->FG_EDIT_FORM_ELEMENTS);
+        $data = [
+            "label" => $label_text,
+            "name" => $fieldname,
+            "popup_dest" => $href,
+            "popup_params" => "width=550,height=330,top=20,left=100,scrollbars=1",
+            "type" => $is_date ? "POPUPDATETIME" : "POPUPVALUE",
+            "attributes" => $html_attributes,
+            "regex" => $regex_nb,
+            "error" => $error_message,
+            "comment" => $form_text_bottom,
+            "validation_err" => true,
+        ];
+        $this->FG_EDIT_FORM_ELEMENTS[$cur] = $data;
+        $this->FG_ADD_FORM_ELEMENTS[$cur] = $data;
+    }
+
     public function AddEditHasMany(
         string $label_text,
         array  $query_data,

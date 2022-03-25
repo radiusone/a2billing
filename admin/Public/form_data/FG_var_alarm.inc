@@ -132,19 +132,17 @@ $HD_Form -> AddEditElement (gettext("MAX VALUE"),
 $HD_Form -> AddEditElement (gettext("MIN VALUE"),
     "minvalue",
     '$value',
-    gettext("Input the minimum value (between 0 and 1 for ASR ; >= 0 for ALOC in sec ; not used by CIC) or leave it empty"),
-    "",
-    "INPUT",
-    "",
-    null, "", "", "", "", "", "", "", "");
-$HD_Form -> AddEditElement(gettext("TRUNK"),
+    gettext("Input the minimum value (between 0 and 1 for ASR ; >= 0 for ALOC in sec ; not used by CIC) or leave it empty"));
+
+$HD_Form->AddEditPopup(
     "id_trunk",
-    '$value',
+    gettext("TRUNK"),
+    "A2B_entity_trunk.php?popup_select=1&",
     gettext("Set if you want to apply the alarm on a specific trunk or leave empty for all trunk."),
     "",
-    "POPUPVALUE",
     "",
-    null, "", "", "", "", "", "", "A2B_entity_trunk.php?popup_select=1&", ", 'id_trunk','width=550,height=340,top=20,left=100,scrollbars=1'");
+    null
+);
 
 $HD_Form->AddEditSelect("status", $actived_list, gettext("STATUS"));
 

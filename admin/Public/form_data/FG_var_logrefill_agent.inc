@@ -95,13 +95,13 @@ if (has_rights (ACX_MODIFY_REFILLS)) {
 	$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 	$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 
-	$HD_Form -> AddEditElement (gettext("ID AGENT"),
+    $HD_Form->AddEditPopup(
         "agent_id",
-        "$value", gettext("Select the Agent ID"), "",
-        "POPUPVALUE", "size=30 maxlength=50",
-        4, gettext("Insert the Customer ID"), null, "", "",
-        "", "",
-        "A2B_entity_agent.php?popup_select=1&", ", 'AgentSelection','width=550,height=330,top=20,left=100,scrollbars=1'");
+        gettext("AGENT ID"),
+        "A2B_entity_agent.php?popup_select=1&",
+        gettext("Select the Agent ID"),
+        gettext("Insert the AGENT ID "),
+    );
 
 	if ($form_action=="ask-add") {
 		$begin_date = date("Y");

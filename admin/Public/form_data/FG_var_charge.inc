@@ -115,18 +115,13 @@ if ($form_action=='ask-add'){
 	}
 }
 
-
-$HD_Form_c -> AddEditElement (gettext("CUSTOMER ID"),
+$HD_Form_c->AddEditPopup(
     "id_cc_card",
-    '',
+    gettext("ID CARD"),
+    "A2B_entity_card.php?popup_select=1&",
     gettext("Set the Customer ID"),
-    "",
-    "POPUPVALUE",
-    "size=30 maxlength=50 $val_default",
-    4, gettext("Insert the Customer ID"), "", "", "",
-    ""
-	, "",
-    "A2B_entity_card.php?popup_select=1&", ", 'CardNumberSelection','width=550,height=350,top=20,left=100,scrollbars=1'");
+    gettext("Insert the Customer ID")
+);
 
 $HD_Form_c -> AddEditElement (gettext("AMOUNT"),
     "amount",

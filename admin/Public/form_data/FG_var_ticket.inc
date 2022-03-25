@@ -127,17 +127,14 @@ if ($form_action=='ask-add') {
 	}
 }
 
-$HD_Form -> AddEditElement (gettext("CREATOR"),
+$HD_Form->AddEditPopup(
     "creator",
-    '',
-    gettext("Set the Customer ID"),
-    "",
-    "POPUPVALUE",
-    "size=30 maxlength=50 $val_default",
-    4, gettext("Insert the Customer ID"), "", "", "",
-    ""
-	, "",
-    "A2B_entity_card.php?popup_select=1&", ", 'CardNumberSelection','width=550,height=350,top=20,left=100,scrollbars=1'");
+    gettext("CREATOR"),
+    "A2B_entity_card.php?popup_select=1&",
+    gettext("Select the Customer ID"),
+    gettext("Insert the Customer ID"),
+    $val_default
+);
 
 $HD_Form -> AddEditElement (gettext("TITLE"),
     "title",

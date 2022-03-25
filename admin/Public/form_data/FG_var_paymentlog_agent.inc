@@ -169,19 +169,13 @@ $HD_Form -> AddEditElement (gettext("AMOUNT"),
     12, gettext("Insert the amount"));
 
 
-
-$HD_Form -> AddEditElement (gettext("ID AGENT"),
+$HD_Form->AddEditPopup(
     "agent_id",
-    "$value",
+    gettext("AGENT ID"),
+    "A2B_entity_agent.php?popup_select=1&",
     gettext("Select the Agent ID"),
-    "",
-    "POPUPVALUE",
-    "size=30 maxlength=50",
-    4, gettext("Insert the Id CardNumber"), "", "", "",
-    ""
-				, "",
-    "A2B_entity_agent.php?popup_select=1&", ", 'AgentIdSelection','width=550,height=330,top=20,left=100,scrollbars=1'");
-
+    gettext("Insert the AGENT ID ")
+);
 
 $HD_Form -> FieldEditElement ('id, creationdate, paymentmethod, status, cc_owner, amount, id_agent ');
 

@@ -86,7 +86,6 @@ $options = null
                 />
 
             <?php elseif (str_starts_with($row["type"], "POPUP")): ?>
-                <?php $pu = explode(",", trim($row["popup_params"], ", ")) ?>
                 <div class="input-group">
                     <input
                         id="<?= $row["name"] ?>"
@@ -102,8 +101,8 @@ $options = null
                     <?php if ($row["type"] === "POPUPVALUE"): ?>
                     <a
                         href="<?= $row["popup_dest"] ?>"
-                        data-window-name="<?= trim($pu[0], "'\" ") ?>"
-                        data-popup-options="<?= trim($pu[1], "'\" ") ?>"
+                        data-window-name="<?= $row["name"] ?>Popup"
+                        data-popup-options="<?= $row["popup_params"] ?>"
                         class="btn btn-primary popup_trigger"
                         aria-label="open a popup to select an item"
                     >&gt;</a>

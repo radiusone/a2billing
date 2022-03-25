@@ -54,7 +54,6 @@ $options = null;
 
         <?php elseif (str_starts_with($row["type"], "POPUP")): ?>
             <div class="input-group">
-            <?php $pu = explode(",", trim($row["popup_params"], ", ")) ?>
                 <input
                     id="<?= $row["name"] ?>"
                     class="form-control <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
@@ -64,8 +63,8 @@ $options = null;
             <?php if ($row["type"] === "POPUPVALUE"): ?>
                 <a
                     href="<?= $row["popup_dest"] ?>"
-                    data-window-name="<?= trim($pu[0], "'\" ") ?>"
-                    data-popup-options="<?= trim($pu[1], "'\" ") ?>"
+                    data-window-name="<?= $row["name"] ?>Popup"
+                    data-popup-options="<?= $row["popup_params"] ?>"
                     class="btn btn-primary popup_trigger"
                     aria-label="open a popup to select an item"
                 >&gt;</a>

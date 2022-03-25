@@ -114,16 +114,14 @@ if (has_rights (ACX_MODIFY_PAYMENTS)) {
 		$id_val = "value='$card_id'";
 	}
 
-	$HD_Form -> AddEditElement (gettext("CUSTOMER ID"),
+    $HD_Form->AddEditPopup(
         "card_id",
-        "$value",
+        gettext("CUSTOMER ID"),
+        "A2B_entity_card.php?popup_select=1&",
         gettext("Select the Customer ID"),
-        "",
-        "POPUPVALUE",
-        "size=30 maxlength=50 " . $id_val,
-        4, gettext("Insert the Customer ID "), "", "", "",
-        "", "",
-        "A2B_entity_card.php?popup_select=1&", ", 'CardNumberSelection','width=550,height=330,top=20,left=100,scrollbars=1'");
+        gettext("Insert the Customer ID"),
+        $id_val
+    );
 
 	if ($form_action=="ask-add"){
 		$begin_date = date("Y");

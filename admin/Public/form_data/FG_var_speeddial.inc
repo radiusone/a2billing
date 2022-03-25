@@ -86,7 +86,7 @@ $HD_Form -> AddEditElement (gettext("NAME"),
     "",
     "INPUT",
     "size=40 maxlength=50",
-    0, gettext("Insert the name"), "", "", "", "", "", "", "");
+    0, gettext("Insert the name"));
 
 
 $HD_Form -> AddEditElement (gettext("PHONE"),
@@ -96,20 +96,15 @@ $HD_Form -> AddEditElement (gettext("PHONE"),
     "",
     "INPUT",
     "size=30 maxlength=50",
-    4, gettext("Insert the phone"), "", "", "", "", "", "", "");
+    4, gettext("Insert the phone"));
 
-
-$HD_Form -> AddEditElement (gettext("ID CARD"),
+$HD_Form->AddEditPopup(
     "id_cc_card",
-    "$value",
+    gettext("CARD ID"),
+    "A2B_entity_card.php?popup_select=1&",
     gettext("Define the card number ID to use."),
-    "",
-    "POPUPVALUE",
-    "size=30 maxlength=50",
-    4, gettext("Insert the Id CardNumber"), "", "", "",
-    ""
-				, "",
-    "A2B_entity_card.php?popup_select=1&", ", 'CardNumberSelection','width=550,height=330,top=20,left=100,scrollbars=1'");
+    gettext("Insert the card number ID")
+);
 
 $HD_Form -> FieldEditElement ('cc_speeddial.speeddial, cc_speeddial.name, cc_speeddial.phone, cc_speeddial.id_cc_card');
 

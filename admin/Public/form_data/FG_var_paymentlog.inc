@@ -125,8 +125,7 @@ $HD_Form -> AddEditElement (gettext("ID"),
     "",
     "INPUT",
     "size=10 READONLY maxlength=10",
-    4, gettext("Insert the Id "), "", "", "", "", "",
-    "", "");
+    4, gettext("Insert the Id "));
 
 
 $HD_Form -> AddEditElement (gettext("DATE"),
@@ -136,7 +135,7 @@ $HD_Form -> AddEditElement (gettext("DATE"),
     "",
     "INPUT",
     "size=40 READONLY maxlength=40 ",
-    10, gettext("Insert the creation date"), "", "", "", "", "", "", "");
+    10, gettext("Insert the creation date"));
 
 
 $HD_Form -> AddEditElement (gettext("PAYMENT METHOD"),
@@ -146,7 +145,7 @@ $HD_Form -> AddEditElement (gettext("PAYMENT METHOD"),
     "",
     "INPUT",
     "size=30 maxlength=30",
-    12, gettext("Insert the payment method"), "", "", "", "", "", "", "");
+    12, gettext("Insert the payment method"));
 
 
 $HD_Form->AddEditSelect("status", $status_list, gettext("STATUS"));
@@ -158,7 +157,7 @@ $HD_Form -> AddEditElement (gettext("OWNER"),
     "",
     "INPUT",
     "size=30 maxlength=30",
-    12, gettext("Insert the owner"), "", "", "", "", "", "", "");
+    12, gettext("Insert the owner"));
 
 
 $HD_Form -> AddEditElement (gettext("AMOUNT"),
@@ -168,22 +167,15 @@ $HD_Form -> AddEditElement (gettext("AMOUNT"),
     "",
     "INPUT",
     "size=30 maxlength=30",
-    12, gettext("Insert the amount"), "", "", "", "", "", "", "");
+    12, gettext("Insert the amount"));
 
-
-
-$HD_Form -> AddEditElement (gettext("ID CARD"),
+$HD_Form->AddEditPopup(
     "card_id",
-    "$value",
-    gettext("Select the Card Number ID"),
-    "",
-    "POPUPVALUE",
-    "size=30 maxlength=50",
-    4, gettext("Insert the Id CardNumber"), "", "", "",
-    ""
-				, "",
-    "A2B_entity_card.php?popup_select=1&", ", 'CardNumberSelection','width=550,height=330,top=20,left=100,scrollbars=1'");
-
+    gettext("CARD ID"),
+    "A2B_entity_card.php?popup_select=1&",
+    gettext("Define the card number ID to use."),
+    gettext("Insert the Id CardNumber"),
+);
 
 $HD_Form -> FieldEditElement ('id, creationdate, paymentmethod, status, cc_owner, amount, cardid ');
 

@@ -66,13 +66,13 @@ $HD_Form -> FieldViewElement ('cc_billing_customer.id, username, cc_billing_cust
 $HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 
-$HD_Form -> AddEditElement (gettext("ID CUSTOMER"),
+$HD_Form->AddEditPopup(
     "id_card",
-    "$value", gettext("Select the Customer ID"), "",
-    "POPUPVALUE", "size=30 maxlength=50",
-    4, gettext("Insert the Customer ID"), null, "", "",
-    "", "",
-    "A2B_entity_card.php?popup_select=1&", ", 'CardNumberSelection','width=550,height=330,top=20,left=100,scrollbars=1'");
+    gettext("CUSTOMER ID"),
+    "A2B_entity_card.php?popup_select=1&",
+    gettext("Select the Customer ID"),
+    gettext("Insert the Customer ID")
+);
 
 if ($form_action=="ask-add"){
     $comp_date = date("Y-m-d");

@@ -266,16 +266,15 @@ $HD_Form->AddEditElement(gettext("DIALPREFIX"),
     "size=50 maxlength=80",
     9, gettext("Insert the dialing prefix, such as for UK '44' or for US '1' "));
 
-
-$HD_Form->AddEditElement(gettext("Destination Prefix"),
+$HD_Form->AddEditPopup(
     "destination",
-    '$value',
+    gettext("Destination Prefix"),
+    "A2B_entity_prefix.php?popup_select=2&",
     gettext("Select the prefix destination corresponding to your prefix rate.") . '<br>' . gettext("This is the label that appears against the Call Detail Record."),
     "",
-    "POPUPVALUE",
-    "size=50 maxlength=80",
-    9, "", "", "", "", "", "",
-    "A2B_entity_prefix.php?popup_select=2&", ", 'prefix','width=650,height=400,top=20,left=100,scrollbars=1'");
+    "",
+    9
+);
 
 $HD_Form->AddEditElement("BUYING RATE",
     "buyrate",
@@ -545,26 +544,27 @@ if ($form_action == "ask-add") {
     $comp_time_plus = " value=10079 ";
 }
 
-
-$HD_Form->AddEditElement(gettext("START TIME"),
+$HD_Form->AddEditPopup(
     "starttime",
-    '$value',
+    gettext("START TIME"),
+    "",
     gettext("Set the time and day of the week at the rate is first valid (ie Monday 00:00 is 0)"),
-    "",
-    "POPUPDATETIME",
-    "size=8 maxlength=8 $comp_time",
-    4, gettext("Insert the start time"));
+    gettext("Insert the start time"),
+    $comp_time,
+    4,
+    true
+);
 
-
-$HD_Form->AddEditElement(gettext("END TIME"),
+$HD_Form->AddEditPopup(
     "endtime",
-    '$value',
-    gettext("Set the time and the day of the week that the rate is no longer valid. (ie Sunday 23:59 is 10079)"),
+    gettext("END TIME"),
     "",
-    "POPUPDATETIME",
-    "size=8 maxlength=8 $comp_time_plus",
-    4, gettext("Insert the end time"));
-
+    gettext("Set the time and the day of the week that the rate is no longer valid. (ie Sunday 23:59 is 10079)"),
+    gettext("Insert the end time"),
+    $comp_time_plus,
+    4,
+    true
+);
 
 $HD_Form->AddEditElement(gettext("ROUNDING CALLTIME"),
     "rounding_calltime",

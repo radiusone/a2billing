@@ -73,29 +73,22 @@ if ($form_action=="ask-add" && !empty($id_card)) {
 	$id_val = "value='$id_card'";
 }
 
-$HD_Form -> AddEditElement (gettext("CUSTOMER ID"),
+$HD_Form->AddEditPopup(
     "id_card",
-    "$value",
+    gettext("CUSTOMER ID"),
+    "A2B_entity_card.php?popup_select=1&",
     gettext("Select the Customer ID"),
-    "",
-    "POPUPVALUE",
-    "size=30 maxlength=50 " . $id_val,
-    4, gettext("Insert the Customer ID "), "", "", "",
-    ""
-				, "",
-    "A2B_entity_card.php?popup_select=1&", ", 'CardNumberSelection','width=550,height=330,top=20,left=100,scrollbars=1'");
+    gettext("Insert the Customer ID")
+);
 
-$HD_Form -> AddEditElement (gettext("AGENT ID"),
+$HD_Form->AddEditPopup(
     "id_agent",
-    "$value",
+    gettext("AGENT ID"),
+    "A2B_entity_agent.php?popup_select=1&",
     gettext("Select the Agent ID"),
-    "",
-    "POPUPVALUE",
-    "size=30 maxlength=50 " . $id_val,
-    4, gettext("Insert the AGENT ID "), "", "", "",
-    ""
-				, "",
-    "A2B_entity_agent.php?popup_select=1&", ", 'AgentSelection','width=550,height=330,top=20,left=100,scrollbars=1'");
+    gettext("Insert the AGENT ID "),
+    $id_val
+);
 
 if ($form_action=="ask-add") {
 	$begin_date = date("Y");
@@ -132,17 +125,14 @@ $HD_Form -> AddEditElement (gettext("DESCRIPTION"),
     "cols=50 rows=4",
     null, gettext("Insert the description"), "", "", "", "", "", "", "");
 
-$HD_Form -> AddEditElement (gettext("PAYMENT ID"),
+$HD_Form->AddEditPopup(
     "id_payment",
-    "$value",
+    gettext("PAYMENT ID"),
+    "A2B_entity_payment.php?popup_select=1&",
     gettext("Select the Payment ID"),
-    "",
-    "POPUPVALUE",
-    "size=30 maxlength=50 " . $id_val,
-    4, gettext("Insert the Payment ID "), "", "", "",
-    ""
-				, "",
-    "A2B_entity_payment.php?popup_select=1&", ", 'PaymentSelection','width=550,height=330,top=20,left=100,scrollbars=1'");
+    gettext("Insert the Payment ID "),
+    $id_val
+);
 
 $HD_Form->AddEditSelect("commission_type", $com_list, gettext("COMMISSION TYPE"), gettext("Define the type of this commission."));
 

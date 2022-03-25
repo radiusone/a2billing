@@ -97,16 +97,14 @@ if (has_rights (ACX_MODIFY_PAYMENTS)) {
 		$id_val = "value='$agent_id'";
 	}
 
-	$HD_Form -> AddEditElement (gettext("AGENT ID"),
+    $HD_Form->AddEditPopup(
         "agent_id",
-        "$value",
+        gettext("AGENT ID"),
+        "A2B_entity_agent.php?popup_select=1&",
         gettext("Select the Agent ID"),
-        "",
-        "POPUPVALUE",
-        "size=30 maxlength=50 " . $id_val,
-        4, gettext("Insert the Agent ID "), "", "", "",
-        "", "",
-        "A2B_entity_agent.php?popup_select=1&", ", 'AgentSelection','width=550,height=330,top=20,left=100,scrollbars=1'");
+        gettext("Insert the AGENT ID "),
+        $id_val
+    );
 
 	if ($form_action=="ask-add") {
 		$begin_date = date("Y");

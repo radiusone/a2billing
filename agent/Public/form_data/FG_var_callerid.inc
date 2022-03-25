@@ -94,17 +94,13 @@ $HD_Form->AddEditRadio(
     gettext("Choose if you want to activate this card")
 );
 
-$HD_Form -> AddEditElement (gettext("ID CARD"),
+$HD_Form->AddEditPopup(
     "id_cc_card",
-    "$value",
+    gettext("CARD ID"),
+    "A2B_entity_card.php?popup_select=1&",
     gettext("Define the card number ID to use."),
-    "",
-    "POPUPVALUE",
-    "size=30 maxlength=50",
-    4, gettext("Insert the Id CardNumber"), "", "", "",
-    "", "",
-    "A2B_entity_card.php?popup_select=1&", ", 'CardNumberSelection','width=550,height=330,top=20,left=100,scrollbars=1'");
-
+    gettext("Insert the card number ID")
+);
 
 $HD_Form -> FieldEditElement ('cid, activated, id_cc_card');
 
