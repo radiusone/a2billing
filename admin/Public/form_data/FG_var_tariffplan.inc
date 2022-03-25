@@ -116,14 +116,12 @@ $HD_Form -> AddEditElement (gettext("EXPIRY DATE"),
 
 $HD_Form->AddEditSqlSelect("id_trunk", gettext("TRUNK"), "cc_trunk", "trunkcode,id_trunk");
 
-$HD_Form -> AddEditElement (gettext("DESCRIPTION"),
+$HD_Form->AddEditTextarea(
     "description",
-    '',
-    "",
-    "",
-    "TEXTAREA",
-    "cols=50 rows=4",
-    null, gettext("Insert the description"));
+    gettext("DESCRIPTION"),
+    "cols='50' rows='4'",
+    gettext("Insert the description")
+);
 
 if ($form_action=="ask-add"){
 	$val_dnidprefix = "value='all'";

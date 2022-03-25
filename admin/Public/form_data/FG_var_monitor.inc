@@ -84,7 +84,7 @@ $HD_Form -> AddEditElement (gettext("LABEL"),
     "",
     "INPUT",
     "size=30 maxlength=50",
-    3, gettext("Insert the label"), "", "", "", "", "", "", "yes");
+    3, gettext("Insert the label"));
 
 
 $HD_Form -> AddEditElement (gettext("DIAL CODE"),
@@ -94,17 +94,15 @@ $HD_Form -> AddEditElement (gettext("DIAL CODE"),
     "",
     "INPUT",
     "size=5 maxlength=3",
-    4, gettext("Insert the dial code"), "", "", "", "", "", "", "yes");
+    4, gettext("Insert the dial code"));
 
 
-$HD_Form -> AddEditElement (gettext("DESCRIPTION"),
+$HD_Form->AddEditTextarea(
     "description",
-    '',
-    "",
-    "",
-    "TEXTAREA",
-    "cols=60 rows=2",
-    null, gettext("Insert the description"), "", "", "", "", "", "", "");
+    gettext("DESCRIPTION"),
+    "cols='60' rows='2'",
+    gettext("Insert the description")
+);
 
 $HD_Form -> AddEditElement (gettext("TEXT INTRO"),
     "text_intro",
@@ -113,18 +111,19 @@ $HD_Form -> AddEditElement (gettext("TEXT INTRO"),
     "",
     "INPUT",
     "size=30 maxlength=50",
-    3, gettext("Insert the text intro"), "", "", "", "", "", "", "yes");
+    3, gettext("Insert the text intro"));
 
 $HD_Form->AddEditSelect("query_type", $mquery_type_list, gettext("QUERY TYPE"), gettext("Define type of the query that will be performed."));
 
-$HD_Form -> AddEditElement (gettext("QUERY / SHELL SCRIPT"),
+$HD_Form->AddEditTextarea(
     "query",
-    '',
-    gettext("Shell Script need to be copied into the directory") . SCRIPT_CONFIG_DIR . "<br>" . gettext("Do not specify the path here."),
+    gettext("QUERY / SHELL SCRIPT"),
+    "cols='80' rows='4'",
+    gettext("Insert the description"),
     "",
-    "TEXTAREA",
-    "cols=80 rows=4",
-    null, gettext("Insert the description"), "", "", "", "", "", "", "");
+    null,
+    gettext("Shell Script need to be copied into the directory") . SCRIPT_CONFIG_DIR . "<br>" . gettext("Do not specify the path here.")
+);
 
 $HD_Form->AddEditSelect("result_type", $mresult_type_list, gettext("SAY RESULT AS"), gettext("Define type of result."));
 

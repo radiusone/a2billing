@@ -791,14 +791,12 @@ if (!$popup_select) {
             4, _("Insert the traffic per month for this customer"), "", "", "", "", "", "",
             "NO");
 
-        $HD_Form->AddEditElement(_("TARGET TRAFFIC"),
+        $HD_Form->AddEditTextarea(
             "traffic_target",
-            '',
-            "",
-            "",
-            "TEXTAREA",
-            "cols=50 rows=4",
-            null, _("Insert the target traffic description"));
+            _("TARGET TRAFFIC"),
+            "cols='50' rows='4'",
+            _("Insert the target traffic description")
+        );
 
         $HD_Form->AddEditSelect(
             "restriction",

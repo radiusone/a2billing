@@ -108,17 +108,14 @@ $HD_Form -> AddEditElement (gettext("NAME"),
     "",
     "INPUT",
     "size=30 maxlength=40",
-    0, gettext("Insert the provider name"), "", "", "", "", "", "", "");
+    0, gettext("Insert the provider name"));
 
-
-$HD_Form -> AddEditElement (gettext("DESCRIPTION"),
+$HD_Form->AddEditTextarea(
     "description",
-    '',
-    "",
-    "",
-    "TEXTAREA",
-    "cols=50 rows=4",
-    null, gettext("Insert the description"), "", "", "", "", "", "", "");
+    gettext("DESCRIPTION"),
+    "cols='50' rows='4'",
+    gettext("Insert the description")
+);
 
 $HD_Form->AddEditSqlSelect(
     "id_agent",

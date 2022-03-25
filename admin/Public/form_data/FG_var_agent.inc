@@ -338,15 +338,12 @@ if (has_rights (ACX_MODIFY_AGENTS) && !($popup_select)) {
         "size=30 maxlength=20",
         null, gettext("Insert the fax number"));
 
-	$HD_Form -> AddEditElement (gettext("BANK INFO"),
+    $HD_Form->AddEditTextarea(
         "bank_info",
-        '',
-        "",
-        "",
-        "TEXTAREA",
-        "cols=50 rows=4",
-        null, gettext("Insert the bank info of this agent"));
-
+        gettext("BANK INFO"),
+        "cols='50' rows='4'",
+        gettext("Insert the bank info of this agent")
+    );
 
 	$DBHandle_max  = DbConnect();
 	$numrow = 0;

@@ -217,15 +217,15 @@ $HD_Form->AddEditElement(_("SELLING RATE"),
     "size=30 maxlength=20 $fixval",
     12, _("Insert the rate"));
 
-$HD_Form->AddEditElement(_("TIME INTERVAL"),
+$HD_Form->AddEditTextarea(
     "aleg_timeinterval",
-    '$value',
-    _("The format is \"start_time;day_of_week;day_of_month;month;time_interval_type\" e.g. 7:00-19:00|mon-fri|*|*|p for peak hours or *|*|24|dec|o for off peak during Xmas day and so on. The last character indicates time interval type where \"p\" means PEAK and \"o\" OFF-PEAK. More definition one per line are supported. If there are PEAK and OFF-PEAK time interval definitions overlaps, than the OFF-PEAK is used."),
+    _("TIME INTERVAL"),
+    "cols='50' rows='4'",
+    _("Insert time definition for peak and off peak time intervals."),
     _("Peak / Off Peak Time definition"),
-    "TEXTAREA",
-    "cols=50 rows=4",
-    null, _("Insert time definition for peak and off peak time intervals."));
-
+    null,
+    _("The format is \"start_time;day_of_week;day_of_month;month;time_interval_type\" e.g. 7:00-19:00|mon-fri|*|*|p for peak hours or *|*|24|dec|o for off peak during Xmas day and so on. The last character indicates time interval type where \"p\" means PEAK and \"o\" OFF-PEAK. More definition one per line are supported. If there are PEAK and OFF-PEAK time interval definitions overlaps, than the OFF-PEAK is used."),
+);
 
 $HD_Form->AddEditElement(_("CARRIER CONNECTION CHARGE"),
     "aleg_carrier_connect_charge",

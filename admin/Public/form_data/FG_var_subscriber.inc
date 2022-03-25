@@ -118,14 +118,12 @@ $HD_Form -> AddEditElement (gettext("STOP DATE"),
     "size=40 maxlength=40  $comp_date_plus",
     10, gettext("Insert the stop date"), "", "", "", "", "", "", "NO-NULL", "", "res_display_dateformat");
 
-$HD_Form -> AddEditElement (gettext("PRODUCT LABEL"),
+$HD_Form->AddEditTextarea(
     "product_name",
-    '',
-    "",
-    "",
-    "TEXTAREA",
-    "cols=50 rows=4",
-    null, gettext("Enter the name of the product wich is subscribed"));
+    gettext("PRODUCT LABEL"),
+    "cols='50' rows='4'",
+    gettext("Enter the name of the product wich is subscribed")
+);
 
 $HD_Form -> FieldEditElement ('id_cc_card, id_subscription_fee, startdate, stopdate, product_name');
 

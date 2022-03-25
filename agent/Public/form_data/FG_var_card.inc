@@ -776,14 +776,12 @@ $HD_Form -> AddEditElement (gettext("TRAFFIC PER MONTH"),
     null, gettext("Insert the traffic per month for this customer"), "", "", "", "", "", "",
     "NO");
 
-$HD_Form -> AddEditElement (gettext("TARGET TRAFFIC"),
+$HD_Form->AddEditTextarea(
     "traffic_target",
-    '',
-    "",
-    "",
-    "TEXTAREA",
-    "cols=50 rows=4",
-    null, gettext("Insert the target traffic description"));
+    gettext("TARGET TRAFFIC"),
+    "cols='50' rows='4'",
+    gettext("Insert the target traffic description")
+);
 
 $HD_Form->AddEditSelect(
     "restriction",

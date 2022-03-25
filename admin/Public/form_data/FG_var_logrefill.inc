@@ -139,14 +139,12 @@ if (has_rights (ACX_MODIFY_REFILLS)) {
         "size=60 maxlength=10",
         12, gettext("Insert the credit amount"));
 
-	$HD_Form -> AddEditElement (gettext("DESCRIPTION"),
+    $HD_Form->AddEditTextarea(
         "description",
-        '',
-        "",
-        "",
-        "TEXTAREA",
-        "cols=50 rows=4",
-        null, gettext("Insert the description"));
+        gettext("DESCRIPTION"),
+        "cols='50' rows='4'",
+        gettext("Insert the description")
+    );
 
     $HD_Form->AddEditSelect(
         "refill_type",

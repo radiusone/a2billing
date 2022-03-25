@@ -131,15 +131,12 @@ if (has_rights (ACX_MODIFY_PAYMENTS)) {
         "size=60 maxlength=10",
         12, gettext("Insert the payment amount"));
 
-
-	$HD_Form -> AddEditElement (gettext("DESCRIPTION"),
+    $HD_Form->AddEditTextarea(
         "description",
-        '',
-        "",
-        "",
-        "TEXTAREA",
-        "cols=50 rows=4",
-        null, gettext("Insert the description"));
+        gettext("DESCRIPTION"),
+        "cols='50' rows='4'",
+        gettext("Insert the description")
+    );
 
 	if ($form_action!="ask-edit" && $form_action!="edit") {
         $HD_Form->AddEditRadio(

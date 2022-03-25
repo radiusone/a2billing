@@ -305,12 +305,13 @@ $HD_Form->AddEditElement(gettext("TRAFFIC PER MONTH"),
 $traffic_editFG = "traffic,";
 }
 if (TRAFFIC_TARGET_ENABLE)  {
-$HD_Form->AddEditElement(gettext("TARGET TRAFFIC"),
-    "traffic_target",
-    '',
-    "", "",
-    "TEXTAREA", "cols=50 rows=4", null, gettext("Insert the target traffic description"));
-$traffic_target_editFG = "traffic_target,";
+    $HD_Form->AddEditTextarea(
+        "traffic_target",
+        gettext("TARGET TRAFFIC"),
+        "cols='50' rows='4'",
+        gettext("Insert the target traffic description")
+    );
+    $traffic_target_editFG = "traffic_target,";
 }
 if (CAPTCHA_ENABLE) {
 	$HD_Form->AddEditElement(gettext("VERIFICATION"), "captchacode", '$value', "", "", "CAPTCHAIMAGE", "size=10 maxlength=6", 19, gettext("Insert code from above picture"), "", "", "", "", "", "", "", CAPTCHA_ENABLE);

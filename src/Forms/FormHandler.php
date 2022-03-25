@@ -948,6 +948,35 @@ class FormHandler
         $this->FG_ADD_FORM_ELEMENTS[$cur] = $data;
     }
 
+    public function AddEditTextarea(
+        string $fieldname,
+        string $label_text,
+        string $html_attributes = "",
+        string $error_message = "",
+        string $section_name = "",
+        ?int   $regex_nb = null,
+        string $form_text_bottom = "",
+        bool   $field_enabled = true
+    ): void
+    {
+        if ($field_enabled === false) {
+            return;
+        }
+        $cur = count($this->FG_EDIT_FORM_ELEMENTS);
+        $data = [
+            "name" => $fieldname,
+            "type" => "TEXTAREA",
+            "label" => $label_text,
+            "section" => $section_name,
+            "attributes" => $html_attributes,
+            "comment" => $form_text_bottom,
+            "regex" => $regex_nb,
+            "error" => $error_message,
+            "validation_err" => true,
+        ];
+        $this->FG_EDIT_FORM_ELEMENTS[$cur] = $data;
+        $this->FG_ADD_FORM_ELEMENTS[$cur] = $data;
+    }
 
     /**
      * Sets Search form fieldnames for the view module

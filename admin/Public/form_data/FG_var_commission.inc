@@ -104,7 +104,7 @@ $HD_Form -> AddEditElement (gettext("PAYMENT DATE"),
     "",
     "INPUT",
     "size=40 READONLY maxlength=40  $comp_date",
-    10, gettext("Insert the current date"), "", "", "", "", "", "", "");
+    10, gettext("Insert the current date"));
 
 $HD_Form -> AddEditElement (gettext("COMMISSION AMOUNT"),
     "amount",
@@ -113,17 +113,14 @@ $HD_Form -> AddEditElement (gettext("COMMISSION AMOUNT"),
     "",
     "INPUT",
     "size=60 maxlength=10",
-    12, gettext("Insert the commission amount"), "", "", "", "", "", "", "");
+    12, gettext("Insert the commission amount"));
 
-
-$HD_Form -> AddEditElement (gettext("DESCRIPTION"),
+$HD_Form->AddEditTextarea(
     "description",
-    '',
-    "",
-    "",
-    "TEXTAREA",
-    "cols=50 rows=4",
-    null, gettext("Insert the description"), "", "", "", "", "", "", "");
+    gettext("DESCRIPTION"),
+    "cols='50' rows='4'",
+    gettext("Insert the description")
+);
 
 $HD_Form->AddEditPopup(
     "id_payment",
