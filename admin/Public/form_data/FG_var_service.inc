@@ -147,7 +147,7 @@ $HD_Form -> AddEditElement ("DAY NUMBER (X)",
     "",
     "INPUT",
     "size=20 maxlength=3",
-    4, gettext("Insert the daynumber"), "", "", "", "", "", "", "NO");
+    4, gettext("Insert the daynumber"), "NO");
 
 $HD_Form->AddEditSelect("period", $period_list, gettext("PERIOD (Y)"), gettext("Interval to apply service"));
 
@@ -160,7 +160,7 @@ $HD_Form -> AddEditElement ("MAX NUMBER OF CYCLES BY CARD",
     "",
     "INPUT",
     "size=20 maxlength=3",
-    4, gettext("Insert the max number of cycle"), "", "", "", "", "", "", "NO-NULL");
+    4, gettext("Insert the max number of cycle"), "NO-NULL");
 
 $HD_Form->AddEditSelect("status", $actived_list, gettext("STATUS"));
 
@@ -171,7 +171,7 @@ $HD_Form -> AddEditElement (gettext("EMAIL TO SEND REPORT"),
     "",
     "INPUT",
     "size=30 maxlength=30",
-    1, gettext("Insert the email to send the report"), "", "", "", "", "", "", "NO-NULL");
+    1, gettext("Insert the email to send the report"), "NO-NULL");
 
 $HD_Form->AddEditSqlSelect(
     "dialplan",

@@ -162,7 +162,7 @@ $HD_Form->AddEditElement(_("START DATE"),
     "",
     "INPUT",
     "size=40 maxlength=40  $comp_date",
-    10, _("Insert the starting date"), "", "", "", "", "", "", "res_display_dateformat");
+    10, _("Insert the starting date"), "", "res_display_dateformat");
 
 
 $HD_Form->AddEditElement(_("EXPIRY DATE"),
@@ -172,7 +172,7 @@ $HD_Form->AddEditElement(_("EXPIRY DATE"),
     "",
     "INPUT",
     "size=40 maxlength=40  $comp_date_plus",
-    10, _("Insert the expiration date"), "", "", "", "", "", "", "res_display_dateformat");
+    10, _("Insert the expiration date"), "", "res_display_dateformat");
 
 $HD_Form->AddEditSqlSelect("id_cc_didgroup", _("DIDGROUP"), "cc_didgroup", "didgroupname,id");
 
@@ -204,8 +204,7 @@ $HD_Form->AddEditElement(_("CONNECT CHARGE"),
     _("DID On Net Charges"),
     "INPUT",
     "size=30 maxlength=20 $fixval",
-    12, _("Insert the connect charge"), "", "", "", "", "", "",
-    "NO");
+    12, _("Insert the connect charge"), "NO");
    // On Net Charges is where one customer calls another customer without any external carrier being involved in the call
 
 $HD_Form->AddEditElement(_("SELLING RATE"),
@@ -244,7 +243,7 @@ $HD_Form->AddEditElement(_("CARRIER COST PER MINUTE"),
     "",
     "INPUT",
     "size=30 maxlength=20 $fixval",
-    12, _("Insert the connect cost"), "", "", "", "", "", "", "NO");
+    12, _("Insert the connect cost"), "NO");
 
 
 $HD_Form->AddEditElement(_("CARRIER MIN DURATION"),
@@ -254,7 +253,7 @@ $HD_Form->AddEditElement(_("CARRIER MIN DURATION"),
     "",
     "INPUT",
     "size=30 maxlength=20",
-    4, _("Insert the buyrate init block"), "", "", "", "", "", "", "NO");
+    4, _("Insert the buyrate init block"), "NO");
 
 
 $HD_Form->AddEditElement(_("CARRIER BILLING BLOCK"),
@@ -264,7 +263,7 @@ $HD_Form->AddEditElement(_("CARRIER BILLING BLOCK"),
     "",
     "INPUT",
     "size=30 maxlength=20",
-    4, _("Insert the billing block"), "", "", "", "", "", "", "NO");
+    4, _("Insert the billing block"), "NO");
 
 
 $HD_Form->AddEditElement(_("RETAIL CONNECTION CHARGE"),
@@ -284,7 +283,7 @@ $HD_Form->AddEditElement(_("RETAIL COST PER MINUTE"),
     "",
     "INPUT",
     "size=30 maxlength=20 $fixval",
-    12, _("Insert the connect cost"), "", "", "", "", "", "", "NO");
+    12, _("Insert the connect cost"), "NO");
 
 
 $HD_Form->AddEditElement(_("RETAIL MIN DURATION"),
@@ -294,7 +293,7 @@ $HD_Form->AddEditElement(_("RETAIL MIN DURATION"),
     "",
     "INPUT",
     "size=30 maxlength=20",
-    4, _("Insert the init block"), "", "", "", "", "", "", "NO");
+    4, _("Insert the init block"), "NO");
 
 
 $HD_Form->AddEditElement(_("RETAIL BILLING BLOCK"),
@@ -304,7 +303,7 @@ $HD_Form->AddEditElement(_("RETAIL BILLING BLOCK"),
     "",
     "INPUT",
     "size=30 maxlength=20",
-    4, _("Insert the billing block"), "", "", "", "", "", "", "NO");
+    4, _("Insert the billing block"), "NO");
 
 
 $HD_Form->AddEditElement(_("CARRIER CONNECTION CHARGE OFF PEAK"),
@@ -324,7 +323,7 @@ $HD_Form->AddEditElement(_("CARRIER COST PER MINUTE OFF PEAK"),
     "",
     "INPUT",
     "size=30 maxlength=20 $fixval",
-    12, _("Insert the connect cost"), "", "", "", "", "", "", "NO");
+    12, _("Insert the connect cost"), "NO");
 
 
 $HD_Form->AddEditElement(_("CARRIER MIN DURATION OFF PEAK"),
@@ -334,7 +333,7 @@ $HD_Form->AddEditElement(_("CARRIER MIN DURATION OFF PEAK"),
     "",
     "INPUT",
     "size=30 maxlength=20",
-    4, _("Insert the buyrate init block"), "", "", "", "", "", "", "NO");
+    4, _("Insert the buyrate init block"), "NO");
 
 
 $HD_Form->AddEditElement(_("CARRIER BILLING BLOCK OFF PEAK"),
@@ -344,7 +343,7 @@ $HD_Form->AddEditElement(_("CARRIER BILLING BLOCK OFF PEAK"),
     "",
     "INPUT",
     "size=30 maxlength=20",
-    4, _("Insert the billing block"), "", "", "", "", "", "", "NO");
+    4, _("Insert the billing block"), "NO");
 
 
 $HD_Form->AddEditElement(_("RETAIL CONNECTION CHARGE OFF PEAK"),
@@ -364,7 +363,7 @@ $HD_Form->AddEditElement(_("RETAIL COST PER MINUTE OFF PEAK"),
     "",
     "INPUT",
     "size=30 maxlength=20 $fixval",
-    12, _("Insert the connect cost"), "", "", "", "", "", "", "NO");
+    12, _("Insert the connect cost"), "NO");
 
 
 $HD_Form->AddEditElement(_("RETAIL MIN DURATION OFF PEAK"),
@@ -374,7 +373,7 @@ $HD_Form->AddEditElement(_("RETAIL MIN DURATION OFF PEAK"),
     "",
     "INPUT",
     "size=30 maxlength=20",
-    4, _("Insert the init block"), "", "", "", "", "", "", "NO");
+    4, _("Insert the init block"), "NO");
 
 
 $HD_Form->AddEditElement(_("RETAIL BILLING BLOCK OFF PEAK"),
@@ -384,7 +383,7 @@ $HD_Form->AddEditElement(_("RETAIL BILLING BLOCK OFF PEAK"),
     "",
     "INPUT",
     "size=30 maxlength=20",
-    4, _("Insert the billing block"), "", "", "", "", "", "", "NO");
+    4, _("Insert the billing block"), "NO");
 
 
 $HD_Form->AddEditElement(_("MAX CONCURRENT CALLS"),
@@ -394,7 +393,7 @@ $HD_Form->AddEditElement(_("MAX CONCURRENT CALLS"),
     "",
     "INPUT",
     "size=5 maxlength=5",
-    null, "", "", "", "", "", "", "", "NO");
+    null, "", "NO");
 
 $HD_Form->FieldEditElement('did, billingtype, startingdate, expirationdate, id_cc_didgroup, id_cc_country, activated, fixrate, connection_charge, selling_rate, aleg_timeinterval, aleg_carrier_connect_charge, aleg_carrier_cost_min, aleg_carrier_initblock, aleg_carrier_increment, aleg_retail_connect_charge, aleg_retail_cost_min, aleg_retail_initblock, aleg_retail_increment, aleg_carrier_connect_charge_offp, aleg_carrier_cost_min_offp, aleg_carrier_initblock_offp, aleg_carrier_increment_offp, aleg_retail_connect_charge_offp, aleg_retail_cost_min_offp, aleg_retail_initblock_offp, aleg_retail_increment_offp, max_concurrent');
 

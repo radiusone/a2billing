@@ -153,7 +153,7 @@ $HD_Form -> AddEditElement (gettext("TAG"),
     "",
     "INPUT",
     "size=30 maxlength=30",
-    11, gettext("Insert the tag"), "", "", "", "", "", "", "NO-NULL");
+    11, gettext("Insert the tag"), "NO-NULL");
 
 $HD_Form->AddEditRadio(
     "activated",
@@ -182,7 +182,7 @@ $HD_Form -> AddEditElement (gettext("EXPIRY DATE"),
     "",
     "INPUT",
     "size=40 maxlength=40  $comp_date_plus",
-    10, gettext("Insert the expiration date"), "", "", "", "", "", "", "", "", "res_display_dateformat");
+    10, gettext("Insert the expiration date"), "", "res_display_dateformat");
 
 $HD_Form -> FieldEditElement ('voucher, credit, tag, activated, currency, expirationdate ');
 

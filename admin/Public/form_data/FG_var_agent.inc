@@ -217,7 +217,7 @@ if (has_rights (ACX_MODIFY_AGENTS) && !($popup_select)) {
         "",
         "INPUT",
         "size=20 maxlength=20",
-        21, gettext("Insert the commision"), "", "", "", "", "", "", "NO-NULL");
+        21, gettext("Insert the commision"), "NO-NULL");
 
     $HD_Form -> AddEditElement (gettext("THRESHOLD REMITTANCE"),
         "threshold_remittance",
@@ -235,7 +235,7 @@ if (has_rights (ACX_MODIFY_AGENTS) && !($popup_select)) {
         "",
         "INPUT",
         "size=20 maxlength=20",
-        12, gettext("Insert the VAT"), "", "", "", "", "", "", "NO-NULL");
+        12, gettext("Insert the VAT"), "NO-NULL");
 
     $HD_Form->AddEditSelect("language", $language_list, gettext("LANGUAGE"));
 
@@ -318,7 +318,7 @@ if (has_rights (ACX_MODIFY_AGENTS) && !($popup_select)) {
         "",
         "INPUT",
         "size=30 maxlength=70",
-        1, gettext("Insert the email"), "", "", "", "", "", "", "NO");
+        1, gettext("Insert the email"), "NO");
 
 	$HD_Form -> AddEditElement (gettext("PHONE"),
         "phone",

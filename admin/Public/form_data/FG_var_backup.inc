@@ -98,7 +98,7 @@ $HD_Form -> AddEditElement (gettext("Name"),
     "",
     "INPUT",
     "size=50 maxlength=50",
-    null, gettext("Insert the name of backup"), "", "", "", "", "", "", "");
+    null, gettext("Insert the name of backup"));
 
 $HD_Form -> AddEditElement (gettext("PATH"),
     "path",
@@ -107,7 +107,7 @@ $HD_Form -> AddEditElement (gettext("PATH"),
     "",
     "INPUT",
     "size=100 maxlength=200 $default_path",
-    null, gettext("Insert the patch for the backup file or leave the default path"), "", "", "", "", "", "", "");
+    null, gettext("Insert the patch for the backup file or leave the default path"));
 
 
 $HD_Form -> FieldEditElement ('name, path, creationdate');

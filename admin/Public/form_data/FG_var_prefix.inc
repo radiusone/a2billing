@@ -91,7 +91,7 @@ $HD_Form -> AddEditElement (gettext("PREFIX"),
     "",
     "INPUT",
     "size=30 maxlength=300",
-    "$dialprefix", gettext("Insert the Prefixe"), "", "", "", "", "", "", "");
+    "$dialprefix", gettext("Insert the Prefixe"));
 
 $HD_Form -> AddEditElement (gettext("DESTINATION"),
     "destination",
@@ -100,7 +100,7 @@ $HD_Form -> AddEditElement (gettext("DESTINATION"),
     "",
     "INPUT",
     "size=30 maxlength=300",
-    "$destination", gettext("Insert the Destination"), "", "", "", "", "", "", "");
+    "$destination", gettext("Insert the Destination"));
 
 
 $HD_Form -> FieldEditElement ('prefix, destination');

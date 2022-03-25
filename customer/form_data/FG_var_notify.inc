@@ -115,7 +115,7 @@ $HD_Form -> AddEditElement (gettext("EMAIL NOTIFICATION"),
     "",
     "INPUT",
     "size=30 maxlength=70",
-    1, gettext("Insert the email to notify the customers"), "", "", "", "", "", "", "NO");
+    1, gettext("Insert the email to notify the customers"), "NO");
 
 $HD_Form -> FieldEditElement ('credit_notification, notify_email, email_notification');
 

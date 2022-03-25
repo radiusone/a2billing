@@ -397,7 +397,7 @@ $HD_Form -> AddEditElement (gettext("LAST NAME"),
     gettext("Personal Information"),
     "INPUT",
     "size=30 maxlength=50",
-    11, gettext("Insert the lastname of the customers"), "", "", "", "", "", "", "NO");
+    11, gettext("Insert the lastname of the customers"), "NO");
 
 $HD_Form -> AddEditElement (gettext("FIRST NAME"),
     "firstname",
@@ -406,7 +406,7 @@ $HD_Form -> AddEditElement (gettext("FIRST NAME"),
     "",
     "INPUT",
     "size=30 maxlength=50",
-    11, gettext("Insert the firstname of the customers"), "", "", "", "", "", "", "NO");
+    11, gettext("Insert the firstname of the customers"), "NO");
 
 
 $HD_Form -> AddEditElement (gettext("EMAIL"),
@@ -416,7 +416,7 @@ $HD_Form -> AddEditElement (gettext("EMAIL"),
     "",
     "INPUT",
     "size=30 maxlength=70",
-    1, gettext("Insert the email"), "", "", "", "", "", "", "NO");
+    1, gettext("Insert the email"), "NO");
 
 
 $HD_Form -> AddEditElement (gettext("ADDRESS"),
@@ -426,7 +426,7 @@ $HD_Form -> AddEditElement (gettext("ADDRESS"),
     "",
     "INPUT",
     "size=30 maxlength=100",
-    0, gettext("Insert the address of the customers"), "", "", "", "", "", "", "NO");
+    0, gettext("Insert the address of the customers"), "NO");
 
 
 $HD_Form -> AddEditElement (gettext("CITY"),
@@ -436,7 +436,7 @@ $HD_Form -> AddEditElement (gettext("CITY"),
     "",
     "INPUT",
     "size=30 maxlength=40",
-    0, gettext("Insert the city"), "", "", "", "", "", "", "NO");
+    0, gettext("Insert the city"), "NO");
 
 
 $HD_Form -> AddEditElement (gettext("STATE/PROVINCE"),
@@ -446,7 +446,7 @@ $HD_Form -> AddEditElement (gettext("STATE/PROVINCE"),
     "",
     "INPUT",
     "size=30 maxlength=40",
-    11, gettext("Insert the state"), "", "", "", "", "", "", "NO");
+    11, gettext("Insert the state"), "NO");
 
 $HD_Form->AddEditSqlSelect("country", gettext("COUNTRY"), "cc_country", "countryname,countrycode");
 
@@ -457,7 +457,7 @@ $HD_Form -> AddEditElement (gettext("ZIP/POSTAL CODE"),
     "",
     "INPUT",
     "size=30 maxlength=20",
-    0, gettext("Insert the zipcode"), "", "", "", "", "", "", "NO");
+    0, gettext("Insert the zipcode"), "NO");
 
 
 $HD_Form -> AddEditElement (gettext("PHONE NUMBER"),
@@ -467,7 +467,7 @@ $HD_Form -> AddEditElement (gettext("PHONE NUMBER"),
     "",
     "INPUT",
     "size=30 maxlength=20",
-    7, gettext("Insert the phone number of the customers"), "", "", "", "", "", "", "NO");
+    7, gettext("Insert the phone number of the customers"), "NO");
 
 
 $HD_Form -> AddEditElement (gettext("FAX NUMBER"),
@@ -477,7 +477,7 @@ $HD_Form -> AddEditElement (gettext("FAX NUMBER"),
     "",
     "INPUT",
     "size=30 maxlength=20",
-    null, gettext("Insert the fax number of the customers"), "", "", "", "", "", "", "NO");
+    null, gettext("Insert the fax number of the customers"), "NO");
 
 $HD_Form -> AddEditElement (gettext("COMPANY NAME"),
     "company_name",
@@ -486,7 +486,7 @@ $HD_Form -> AddEditElement (gettext("COMPANY NAME"),
     "",
     "INPUT",
     "size=40 maxlength=50",
-    null, gettext("Insert Company name of this customer"), "", "", "", "", "", "", "NO");
+    null, gettext("Insert Company name of this customer"), "NO");
 
 
 $HD_Form -> AddEditElement (gettext("COMPANY WEBSITE"),
@@ -496,7 +496,7 @@ $HD_Form -> AddEditElement (gettext("COMPANY WEBSITE"),
     "",
     "INPUT",
     "size=40 maxlength=60",
-    null, gettext("Insert the company website of this customer"), "", "", "", "", "", "", "NO");
+    null, gettext("Insert the company website of this customer"), "NO");
 
 
 $callplan_add = "";
@@ -559,7 +559,7 @@ $HD_Form -> AddEditElement (gettext("LOCK PIN"),
     "",
     "INPUT",
     "size=20 maxlength=10 $lockpin_default",
-    4, "", "", "", "", "", "", "", "NO");
+    4, "", "NO");
 
 $HD_Form->AddEditSelect("simultaccess", $simultaccess_list, gettext("SIMULTANEOUS ACCESS"), "", "", 1);
 
@@ -596,7 +596,7 @@ $HD_Form -> AddEditElement (gettext("EMAIL NOTIFICATION"),
     "",
     "INPUT",
     "size=30 maxlength=70",
-    1, gettext("Insert the email to notify this customer"), "", "", "", "", "", "", "NO");
+    1, gettext("Insert the email to notify this customer"), "NO");
 
 
 if (ACT_VOICEMAIL) {
@@ -636,7 +636,7 @@ $HD_Form -> AddEditElement (gettext("FIRST USE DATE"),
     "",
     "INPUT",
     "size=40 maxlength=40 readonly",
-    null, "the first use date", "", "", "", "", "", "", "NO-NULL", "", "res_display_dateformat");
+    null, "the first use date", "NO-NULL", "res_display_dateformat");
 
 
 $HD_Form->AddEditSelect("enableexpire", $expire_list, gettext("ENABLE EXPIRY"), gettext("Select method of expiry for the account."));
@@ -658,7 +658,7 @@ $HD_Form -> AddEditElement (gettext("EXPIRY DATE"),
     "",
     "INPUT",
     "size=40 maxlength=40  $comp_date_plus",
-    10, gettext("Insert the expiration date"), "", "", "", "", "", "", "NO-NULL", "", "res_display_dateformat");
+    10, gettext("Insert the expiration date"), "NO-NULL", "res_display_dateformat", "", "", "", "", "", "", "");
 
 
 
@@ -701,7 +701,7 @@ $HD_Form -> AddEditElement (gettext("MAC ADDRESS"),
     "",
     "INPUT",
     "size=20 maxlength=17",
-    null, gettext("Insert the MAC address customers' device"), "", "", "", "", "", "", "NO");
+    null, gettext("Insert the MAC address customers' device"), "NO");
 
 
 $HD_Form -> AddEditElement (gettext("IN USE"),
@@ -711,7 +711,7 @@ $HD_Form -> AddEditElement (gettext("IN USE"),
     "",
     "INPUT",
     "size=5 maxlength=5",
-    null, "", "", "", "", "", "", "", "NO");
+    null, "", "NO");
 
 $HD_Form->AddEditRadio(
     "autorefill",
@@ -762,7 +762,7 @@ $HD_Form -> AddEditElement (gettext("VAT REGISTRATION NUMBER "),
     "",
     "INPUT",
     "size=40 maxlength=40",
-    null, gettext("Insert the VAT registration number of this customer"), "", "", "", "", "", "", "NO");
+    null, gettext("Insert the VAT registration number of this customer"), "NO");
 
 $HD_Form->AddEditSelect("discount", $discount_list, gettext("DISCOUNT"));
 
@@ -773,8 +773,7 @@ $HD_Form -> AddEditElement (gettext("TRAFFIC PER MONTH"),
     gettext("TARGET TRAFFIC"),
     "INPUT",
     "size=30 maxlength=20",
-    null, gettext("Insert the traffic per month for this customer"), "", "", "", "", "", "",
-    "NO");
+    null, gettext("Insert the traffic per month for this customer"), "NO");
 
 $HD_Form->AddEditTextarea(
     "traffic_target",

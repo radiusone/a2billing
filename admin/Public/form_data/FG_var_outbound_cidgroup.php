@@ -84,7 +84,7 @@ $HD_Form -> AddEditElement (gettext("CIDGROUPNAME"),
     "",
     "INPUT",
     "size=30 maxlength=70",
-    9, gettext("Insert the CID Group Name "), "", "", "", "", "", "", "");
+    9, gettext("Insert the CID Group Name "));
 
 $HD_Form -> FieldEditElement ('group_name');
 

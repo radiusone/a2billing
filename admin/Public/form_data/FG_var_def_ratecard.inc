@@ -293,7 +293,7 @@ $HD_Form->AddEditElement(gettext("BUYRATE MIN DURATION"),
     "",
     "INPUT",
     "size=30 maxlength=20",
-    4, gettext("Insert the buyrate init block"), "", "", "", "", "", "", "NO");
+    4, gettext("Insert the buyrate init block"), "NO");
 
 
 $HD_Form->AddEditElement(gettext("BUYRATE BILLING BLOCK"),
@@ -303,7 +303,7 @@ $HD_Form->AddEditElement(gettext("BUYRATE BILLING BLOCK"),
     "",
     "INPUT",
     "size=30 maxlength=20",
-    4, gettext("Insert the billing block"), "", "", "", "", "", "", "NO");
+    4, gettext("Insert the billing block"), "NO");
 
 
 $HD_Form->AddEditElement(gettext("SELLING RATE"),
@@ -323,7 +323,7 @@ $HD_Form->AddEditElement(gettext("SELLRATE MIN DURATION"),
     "",
     "INPUT",
     "size=30 maxlength=20",
-    4, gettext("Insert the init block"), "", "", "", "", "", "", "NO");
+    4, gettext("Insert the init block"), "NO");
 
 
 $HD_Form->AddEditElement(gettext("SELLRATE BILLING BLOCK"),
@@ -333,7 +333,7 @@ $HD_Form->AddEditElement(gettext("SELLRATE BILLING BLOCK"),
     "",
     "INPUT",
     "size=30 maxlength=20",
-    4, gettext("Insert the billing block"), "", "", "", "", "", "", "NO");
+    4, gettext("Insert the billing block"), "NO");
 
 
 $HD_Form->AddEditElement(gettext("CONNECT CHARGE"),
@@ -343,7 +343,7 @@ $HD_Form->AddEditElement(gettext("CONNECT CHARGE"),
     "",
     "INPUT",
     "size=30 maxlength=20",
-    12, gettext("Insert the connect charge"), "", "", "", "", "", "", "NO");
+    12, gettext("Insert the connect charge"), "NO");
 
 
 $HD_Form->AddEditElement(gettext("DISCONNECT CHARGE"),
@@ -353,7 +353,7 @@ $HD_Form->AddEditElement(gettext("DISCONNECT CHARGE"),
     "",
     "INPUT",
     "size=30 maxlength=20",
-    12, gettext("Insert the disconnect charge"), "", "", "", "", "", "", "NO");
+    12, gettext("Insert the disconnect charge"), "NO");
 
 
 $HD_Form->AddEditElement(gettext("DISCONNECT CHARGE THRESHOLD"),
@@ -363,7 +363,7 @@ $HD_Form->AddEditElement(gettext("DISCONNECT CHARGE THRESHOLD"),
     "",
     "INPUT",
     "size=30 maxlength=20",
-    12, gettext("Insert the disconnect charge threshold"), "", "", "", "", "", "", "NO");
+    12, gettext("Insert the disconnect charge threshold"), "NO");
 
 
 $HD_Form->AddEditElement(gettext("MINIMUM CALL COST"),
@@ -373,7 +373,7 @@ $HD_Form->AddEditElement(gettext("MINIMUM CALL COST"),
     "",
     "INPUT",
     "size=30 maxlength=20",
-    12, gettext("Insert the Minimum call cost"), "", "", "", "", "", "", "NO");
+    12, gettext("Insert the Minimum call cost"), "NO");
 
 
 if (ADVANCED_MODE) {
@@ -385,7 +385,7 @@ if (ADVANCED_MODE) {
         gettext("Below we have the section to create progressive rates. Progressive rate aims to bill the customer at various rates according the duration of the call. For instance you can define that you can to bill the customer 0.33dollars for the first 2 minutes and then you want to bill him 0.45dollars for the rest of the call."),
         "INPUT",
         "size=30 maxlength=20",
-        12, gettext("Insert the stepcharge A"), "", "", "", "", "", "", "NO");
+        12, gettext("Insert the stepcharge A"), "NO");
 
 
     $HD_Form->AddEditElement(gettext("CHARGE A"),
@@ -395,7 +395,7 @@ if (ADVANCED_MODE) {
         "",
         "INPUT",
         "size=30 maxlength=20",
-        12, gettext("Insert the charge A"), "", "", "", "", "", "", "NO");
+        12, gettext("Insert the charge A"), "NO");
 
 
     $HD_Form->AddEditElement(gettext("TIMECHARGE A"),
@@ -405,7 +405,7 @@ if (ADVANCED_MODE) {
         "",
         "INPUT",
         "size=30 maxlength=20",
-        4, gettext("Insert the time charge A"), "", "", "", "", "", "", "NO");
+        4, gettext("Insert the time charge A"), "NO");
 
 
     $HD_Form->AddEditElement(gettext("BILLING BLOCK A"),
@@ -415,7 +415,7 @@ if (ADVANCED_MODE) {
         "",
         "INPUT",
         "size=30 maxlength=20",
-        4, gettext("Insert the billing block A"), "", "", "", "", "", "", "NO");
+        4, gettext("Insert the billing block A"), "NO");
 
 
     $HD_Form->AddEditElement(gettext("STEPCHARGE B"),
@@ -425,7 +425,7 @@ if (ADVANCED_MODE) {
         "",
         "INPUT",
         "size=30 maxlength=20",
-        12, gettext("Insert the stepcharge B"), "", "", "", "", "", "", "NO");
+        12, gettext("Insert the stepcharge B"), "NO");
 
 
     $HD_Form->AddEditElement(gettext("CHARGE B"),
@@ -435,7 +435,7 @@ if (ADVANCED_MODE) {
         "",
         "INPUT",
         "size=30 maxlength=20",
-        12, gettext("Insert the charge B"), "", "", "", "", "", "", "NO");
+        12, gettext("Insert the charge B"), "NO");
 
 
     $HD_Form->AddEditElement(gettext("TIMECHARGE B"),
@@ -445,7 +445,7 @@ if (ADVANCED_MODE) {
         "",
         "INPUT",
         "size=30 maxlength=20",
-        4, gettext("Insert the time charge B"), "", "", "", "", "", "", "NO");
+        4, gettext("Insert the time charge B"), "NO");
 
 
     $HD_Form->AddEditElement(gettext("BILLING BLOCK B"),
@@ -455,7 +455,7 @@ if (ADVANCED_MODE) {
         "",
         "INPUT",
         "size=30 maxlength=20",
-        4, gettext("Insert the billing block B"), "", "", "", "", "", "", "NO");
+        4, gettext("Insert the billing block B"), "NO");
 
 
     $HD_Form->AddEditElement(gettext("STEPCHARGE C"),
@@ -465,7 +465,7 @@ if (ADVANCED_MODE) {
         "",
         "INPUT",
         "size=30 maxlength=20",
-        12, "Insert the stepcharge C", "", "", "", "", "", "", "NO");
+        12, "Insert the stepcharge C", "NO");
 
 
     $HD_Form->AddEditElement(gettext("CHARGE C"),
@@ -475,7 +475,7 @@ if (ADVANCED_MODE) {
         "",
         "INPUT",
         "size=30 maxlength=20",
-        12, gettext("Insert the charge C"), "", "", "", "", "", "", "NO");
+        12, gettext("Insert the charge C"), "NO");
 
 
     $HD_Form->AddEditElement(gettext("TIMECHARGE C"),
@@ -485,7 +485,7 @@ if (ADVANCED_MODE) {
         "",
         "INPUT",
         "size=30 maxlength=20",
-        4, gettext("Insert the time charge C"), "", "", "", "", "", "", "NO");
+        4, gettext("Insert the time charge C"), "NO");
 
 
     $HD_Form->AddEditElement(gettext("BILLING BLOCK C"),
@@ -495,7 +495,7 @@ if (ADVANCED_MODE) {
         "",
         "INPUT",
         "size=30 maxlength=20",
-        4, gettext("Insert the billing block C"), "", "", "", "", "", "", "NO");
+        4, gettext("Insert the billing block C"), "NO");
 
 
     $HD_Form->AddEditElement(gettext("ANNOUNCE TIME CORRECTION"),
@@ -505,7 +505,7 @@ if (ADVANCED_MODE) {
         "",
         "INPUT",
         "size=30 maxlength=20",
-        12, gettext("insert corection for announce time"), "", "", "", "", "", "", "NO");
+        12, gettext("insert corection for announce time"), "NO");
 
 }//ENDif (ADVANCED_MODE)
 
@@ -525,8 +525,7 @@ $HD_Form->AddEditElement(gettext("START DATE"),
     gettext("Define the period when this rate table is active."),
     "INPUT",
     "size=40 maxlength=40  $comp_date",
-    10, gettext("Insert the starting date"), "", "", "", "", "", "",
-    "", "", "res_display_dateformat");
+    10, gettext("Insert the starting date"), "", "res_display_dateformat");
 
 
 $HD_Form->AddEditElement(gettext("STOP DATE"),
@@ -536,7 +535,7 @@ $HD_Form->AddEditElement(gettext("STOP DATE"),
     "",
     "INPUT",
     "size=40 maxlength=40  $comp_date_plus",
-    10, gettext("Insert the stop date"), "", "", "", "", "", "NO-NULL", "", "", "res_display_dateformat");
+    10, gettext("Insert the stop date"), "NO-NULL", "res_display_dateformat");
 
 
 if ($form_action == "ask-add") {
@@ -644,7 +643,7 @@ $HD_Form->AddEditElement(gettext("TAG"),
     "",
     "INPUT",
     "size=30 maxlength=40",
-    11, "", "", "", "", "", "", "", "NO");
+    11, "", "NO");
 
 
 if (ADVANCED_MODE) {

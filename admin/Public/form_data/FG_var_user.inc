@@ -133,7 +133,7 @@ if (has_rights (ACX_MODIFY_ADMINS) && !($popup_select)) {
             "",
             "INPUT",
             "size=8 READONLY maxlength=6",
-            4, gettext("Insert the userid"), "", "", "", "", "", "", "");
+            4, gettext("Insert the userid"));
 	}
 
 	$HD_Form -> AddEditElement (gettext("LOGIN"),
@@ -143,7 +143,7 @@ if (has_rights (ACX_MODIFY_ADMINS) && !($popup_select)) {
         "",
         "INPUT",
         "size=30 maxlength=12",
-        3, gettext("Insert the username"), "", "", "", "", "", "", "");
+        3, gettext("Insert the username"));
 
 	$HD_Form -> AddEditElement (gettext("PASSWORD"),
         "pwd_encoded",
@@ -152,7 +152,7 @@ if (has_rights (ACX_MODIFY_ADMINS) && !($popup_select)) {
         "",
         "INPUT",
         "type=password size=30 maxlength=30",
-        3, gettext("Insert the Reseller password"), "", "", "", "", "", "", "");
+        3, gettext("Insert the Reseller password"));
 
 	if ($groupID!="0") {
         $HD_Form->AddEditSelect(
@@ -174,7 +174,7 @@ if (has_rights (ACX_MODIFY_ADMINS) && !($popup_select)) {
         "",
         "INPUT",
         "size=60 maxlength=50",
-        null, gettext("Insert the name"), "", "", "", "", "", "", "");
+        null, gettext("Insert the name"));
 
 	$HD_Form -> AddEditElement (gettext("ADDRESS"),
         "direction",
@@ -183,7 +183,7 @@ if (has_rights (ACX_MODIFY_ADMINS) && !($popup_select)) {
         "",
         "INPUT",
         "size=60 maxlength=250",
-        null, gettext("Insert the direction"), "", "", "", "", "", "", "");
+        null, gettext("Insert the direction"));
 	$HD_Form -> AddEditElement (gettext("CITY"),
         "city",
         '$value',
@@ -191,7 +191,7 @@ if (has_rights (ACX_MODIFY_ADMINS) && !($popup_select)) {
         "",
         "INPUT",
         "size=30 maxlength=30",
-        null, gettext("Insert the country"), "", "", "", "", "", "", "");
+        null, gettext("Insert the country"));
 
 	$HD_Form -> AddEditElement (gettext("ZIPCODE"),
         "zipcode",
@@ -200,7 +200,7 @@ if (has_rights (ACX_MODIFY_ADMINS) && !($popup_select)) {
         "",
         "INPUT",
         "size=10 maxlength=7",
-        null, gettext("Insert the zip code"), "", "", "", "", "", "", "");
+        null, gettext("Insert the zip code"));
 
 	$HD_Form -> AddEditElement (gettext("STATE"),
         "state",
@@ -209,7 +209,7 @@ if (has_rights (ACX_MODIFY_ADMINS) && !($popup_select)) {
         "",
         "INPUT",
         "size=30 maxlength=30",
-        null, gettext("Insert the state"), "", "", "", "", "", "", "");
+        null, gettext("Insert the state"));
 	$HD_Form -> AddEditElement (gettext("COUNTRY"),
         "country",
         '$value',
@@ -217,7 +217,7 @@ if (has_rights (ACX_MODIFY_ADMINS) && !($popup_select)) {
         "",
         "INPUT",
         "size=30 maxlength=30",
-        null, gettext("Insert the country"), "", "", "", "", "", "", "");
+        null, gettext("Insert the country"));
 
 	$HD_Form -> AddEditElement (gettext("PHONE"),
         "phone",
@@ -226,7 +226,7 @@ if (has_rights (ACX_MODIFY_ADMINS) && !($popup_select)) {
         "",
         "INPUT",
         "size=30 maxlength=20",
-        null, gettext("Insert the telephone number"), "", "", "", "", "", "", "");
+        null, gettext("Insert the telephone number"));
 
 	$HD_Form -> AddEditElement (gettext("FAX"),
         "fax",
@@ -235,7 +235,7 @@ if (has_rights (ACX_MODIFY_ADMINS) && !($popup_select)) {
         "",
         "INPUT",
         "size=30 maxlength=20",
-        null, gettext("Insert the fax number"), "", "", "", "", "", "", "");
+        null, gettext("Insert the fax number"));
 	$HD_Form -> AddEditElement (gettext("EMAIL"),
         "email",
         '$value',
@@ -243,7 +243,7 @@ if (has_rights (ACX_MODIFY_ADMINS) && !($popup_select)) {
         "",
         "INPUT",
         "size=30 maxlength=70",
-        null, gettext("Insert the email"), "", "", "", "", "", "", "");
+        null, gettext("Insert the email"));
 
 
 	if (($groupID=="2") || ($groupID=="3")) {

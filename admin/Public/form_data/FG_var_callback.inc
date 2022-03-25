@@ -137,7 +137,7 @@ $HD_Form -> AddEditElement (gettext("MANAGER RESULT"),
     "",
     "INPUT",
     "size=50 maxlength=80",
-    11, gettext("Insert the manager result"), "", "", "", "", "", "", "NO");
+    11, gettext("Insert the manager result"), "NO");
 
 
 $HD_Form -> AddEditElement (gettext("AGI RESULT"),
@@ -147,7 +147,7 @@ $HD_Form -> AddEditElement (gettext("AGI RESULT"),
     "",
     "INPUT",
     "size=50 maxlength=80",
-    11, gettext("Insert the agi result"), "", "", "", "", "", "", "NO");
+    11, gettext("Insert the agi result"), "NO");
 
 
 $HD_Form -> AddEditElement (gettext("CALLBACK DATE"),
@@ -157,7 +157,7 @@ $HD_Form -> AddEditElement (gettext("CALLBACK DATE"),
     "",
     "INPUT",
     "size=20 maxlength=20  $comp_date",
-    10, "Insert the callback time", "", "", "", "", "", "", "NO-NULL", "", "res_display_dateformat");
+    10, "Insert the callback time", "NO-NULL", "res_display_dateformat");
 
 
 $HD_Form -> AddEditElement (gettext("CHANNEL"),
@@ -206,7 +206,7 @@ $HD_Form -> AddEditElement (gettext("APPLICATION"),
     "",
     "INPUT",
     "size=20 maxlength=30",
-    11, gettext("Insert the application"), "", "", "", "", "", "", "NO");
+    11, gettext("Insert the application"), "NO");
 
 
 $HD_Form -> AddEditElement (gettext("DATA"),
@@ -216,7 +216,7 @@ $HD_Form -> AddEditElement (gettext("DATA"),
     "",
     "INPUT",
     "size=30 maxlength=30",
-    11, gettext("Insert the data"), "", "", "", "", "", "", "NO");
+    11, gettext("Insert the data"), "NO");
 
 
 $HD_Form -> AddEditElement (gettext("TIMEOUT"),
@@ -226,7 +226,7 @@ $HD_Form -> AddEditElement (gettext("TIMEOUT"),
     "",
     "INPUT",
     "size=10 maxlength=15",
-    11, gettext("Insert the timeout"), "", "", "", "", "", "", "NO");
+    11, gettext("Insert the timeout"), "NO");
 
 
 $HD_Form -> AddEditElement (gettext("CALLERID"),
@@ -236,7 +236,7 @@ $HD_Form -> AddEditElement (gettext("CALLERID"),
     "",
     "INPUT",
     "size=20 maxlength=30",
-    11, gettext("Insert the callerid"), "", "", "", "", "", "", "NO");
+    11, gettext("Insert the callerid"), "NO");
 
 
 $HD_Form -> AddEditElement (gettext("variable"),
@@ -246,7 +246,7 @@ $HD_Form -> AddEditElement (gettext("variable"),
     "",
     "INPUT",
     "size=80 maxlength=300",
-    11, gettext("Insert the variable"), "", "", "", "", "", "", "NO");
+    11, gettext("Insert the variable"), "NO");
 
 
 $HD_Form -> AddEditElement (gettext("account"),
@@ -256,7 +256,7 @@ $HD_Form -> AddEditElement (gettext("account"),
     "",
     "INPUT",
     "size=20 maxlength=30",
-    11, gettext("Insert the account"), "", "", "", "", "", "", "NO");
+    11, gettext("Insert the account"), "NO");
 
 
 $HD_Form -> AddEditElement (gettext("async"),
@@ -266,7 +266,7 @@ $HD_Form -> AddEditElement (gettext("async"),
     "",
     "INPUT",
     "size=10 maxlength=10",
-    11, gettext("Insert the async"), "", "", "", "", "", "", "NO");
+    11, gettext("Insert the async"), "NO");
 
 
 $HD_Form -> AddEditElement (gettext("actionid"),
@@ -276,7 +276,7 @@ $HD_Form -> AddEditElement (gettext("actionid"),
     "",
     "INPUT",
     "size=20 maxlength=30",
-    11, gettext("Insert the actionid"), "", "", "", "", "", "", "NO");
+    11, gettext("Insert the actionid"), "NO");
 
 
 $HD_Form -> FieldEditElement ('id_server_group, uniqueid, status, server_ip, num_attempt, manager_result, agi_result, callback_time, channel, exten, context, priority, application, data, timeout, callerid, variable, account, async, actionid');

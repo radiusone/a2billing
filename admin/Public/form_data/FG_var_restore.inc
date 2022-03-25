@@ -73,7 +73,7 @@ $HD_Form -> AddEditElement (gettext("Name "),
     "",
     "INPUT",
     "size=50 maxlength=50",
-    null, gettext("Insert the name of backup"), "", "", "", "", "", "", "");
+    null, gettext("Insert the name of backup"));
 
 $HD_Form -> AddEditElement ("PATH",
     "path",
@@ -82,7 +82,7 @@ $HD_Form -> AddEditElement ("PATH",
     "",
     "INPUT",
     "size=100 maxlength=200 readonly",
-    null, "the backup file", "", "", "", "", "", "", "");
+    null, "the backup file");
 
 
 

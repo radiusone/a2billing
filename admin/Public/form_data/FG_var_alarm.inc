@@ -110,7 +110,7 @@ $HD_Form -> AddEditElement (gettext("NAME"),
     "",
     "INPUT",
     "",
-    3, gettext("Insert the alarm name"), "", "", "", "", "", "", "yes");
+    3, gettext("Insert the alarm name"));
 
 $HD_Form->AddEditSelect("periode", $period_list, gettext("PERIOD"));
 
@@ -127,7 +127,7 @@ $HD_Form -> AddEditElement (gettext("MAX VALUE"),
     "",
     "INPUT",
     "",
-    null, gettext("Insert the maximu value in"), "", "", "", "yes", "", "", "");
+    null, gettext("Insert the maximu value in"));
 
 $HD_Form -> AddEditElement (gettext("MIN VALUE"),
     "minvalue",
@@ -153,7 +153,7 @@ $HD_Form -> AddEditElement (gettext("EMAIL TO SEND ALARM"),
     "",
     "INPUT",
     "size=40 maxlength=40",
-    1, gettext("Insert the email to send the alarm"), "", "", "", "", "", "", "yes");
+    1, gettext("Insert the email to send the alarm"));
 
 
 

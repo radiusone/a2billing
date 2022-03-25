@@ -66,7 +66,7 @@ $HD_Form -> AddEditElement (gettext("CALL ID"),
     "",
     "INPUT",
     "size=10 maxlength=10",
-    18, "", "", "", "", "", "", "", "");
+    18);
 
 $HD_Form->AddEditPopup(
     "card_id",
@@ -83,7 +83,7 @@ $HD_Form -> AddEditElement (gettext("CALLED NUMBER"),
     "",
     "INPUT",
     "size=40 maxlength=30",
-    18, "", "", "", "", "", "", "", "");
+    18);
 
 
 $HD_Form -> AddEditElement (gettext("Source"),
@@ -93,7 +93,7 @@ $HD_Form -> AddEditElement (gettext("Source"),
     "",
     "INPUT",
     "size=40 maxlength=30",
-    18, "", "", "", "", "", "", "", "");
+    18);
 
 $HD_Form -> AddEditElement (gettext("Dnid"),
     "dnid",
@@ -102,7 +102,7 @@ $HD_Form -> AddEditElement (gettext("Dnid"),
     "",
     "INPUT",
     "size=40 maxlength=30",
-    18, "", "", "", "", "", "", "", "");
+    18);
 
 $HD_Form -> AddEditElement (gettext("Duration"),
     "sessiontime",
@@ -111,7 +111,7 @@ $HD_Form -> AddEditElement (gettext("Duration"),
     "",
     "INPUT",
     "size=40 maxlength=30",
-    18, "", "", "", "", "", "", "", "");
+    18);
 
 
 

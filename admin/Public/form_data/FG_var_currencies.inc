@@ -71,7 +71,7 @@ $HD_Form -> AddEditElement (gettext("Name"),
     "",
     "INPUT",
     "size=35 maxlength=30",
-    3, gettext("Insert the currency name"), "", "", "", "", "", "", "");
+    3, gettext("Insert the currency name"));
 
 $HD_Form -> AddEditElement (gettext("LABEL"),
     "currency",
@@ -80,7 +80,7 @@ $HD_Form -> AddEditElement (gettext("LABEL"),
     "",
     "INPUT",
     "size=3 maxlength=3",
-    0, gettext("Insert the currency label"), "", "", "", "", "", "", "");
+    0, gettext("Insert the currency label"));
 
 
 $HD_Form -> AddEditElement (gettext("VALUE"),
@@ -90,7 +90,7 @@ $HD_Form -> AddEditElement (gettext("VALUE"),
     "",
     "INPUT",
     "size=30 maxlength=30",
-    12, gettext("Insert the fee amount."), "", "", "", "", "", "", "");
+    12, gettext("Insert the fee amount."));
 
 
 // Set the filter variables

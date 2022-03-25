@@ -107,7 +107,7 @@ $HD_Form -> AddEditElement (gettext("START DATE"),
     "",
     "INPUT",
     "size=40 maxlength=40  $comp_date",
-    10, gettext("Insert the start date"), "", "", "", "", "", "", "NO-NULL", "", "res_display_dateformat");
+    10, gettext("Insert the start date"), "NO-NULL", "res_display_dateformat");
 
 $HD_Form -> AddEditElement (gettext("STOP DATE"),
     "stopdate",
@@ -116,7 +116,7 @@ $HD_Form -> AddEditElement (gettext("STOP DATE"),
     "",
     "INPUT",
     "size=40 maxlength=40  $comp_date_plus",
-    10, gettext("Insert the stop date"), "", "", "", "", "", "", "NO-NULL", "", "res_display_dateformat");
+    10, gettext("Insert the stop date"), "NO-NULL", "res_display_dateformat");
 
 $HD_Form->AddEditTextarea(
     "product_name",

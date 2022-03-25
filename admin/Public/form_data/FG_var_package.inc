@@ -91,7 +91,7 @@ $HD_Form -> AddEditElement (gettext("LABEL"),
     "",
     "INPUT",
     "size=30 maxlength=30",
-    0, gettext("Insert the package label"), "", "", "", "", "", "", "");
+    0, gettext("Insert the package label"));
 
 $HD_Form->AddEditSelect("packagetype", $packagetype_list, gettext("PACKAGE TYPE"));
 
@@ -108,7 +108,7 @@ $HD_Form -> AddEditElement (gettext("STARTING DAY"),
     "",
     "INPUT",
     "size=10 $default_init maxlength=5",
-    4, gettext("Insert the start day"), "", "", "", "", "", "", "");
+    4, gettext("Insert the start day"));
 
 
 $HD_Form -> AddEditElement (gettext("FREE UNITS"),
@@ -118,7 +118,7 @@ $HD_Form -> AddEditElement (gettext("FREE UNITS"),
     "",
     "INPUT",
     "size=10 maxlength=10",
-    4, gettext("Insert the amount of free time to call (seconds)"), "", "", "", "", "", "", "");
+    4, gettext("Insert the amount of free time to call (seconds)"));
 
 
 

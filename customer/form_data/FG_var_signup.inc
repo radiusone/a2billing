@@ -224,7 +224,7 @@ $HD_Form->AddEditElement(gettext("STATE/PROVINCE"),
     '$value',
     "",
     "", "INPUT",
-    "size=30 maxlength=40", 11, gettext("Insert your state"), "", "", "", "", "", "", "NO");
+    "size=30 maxlength=40", 11, gettext("Insert your state"), "NO");
 $state_editFG = "state,";
 }
 if ($form_action == 'ask-add') {
@@ -277,7 +277,7 @@ $HD_Form->AddEditElement(gettext("COMPANY NAME"),
     "company_name",
     '$value',
     "", "",
-    "INPUT", "size=40 maxlength=50", null, gettext("Insert Company name of this customer"), "", "", "", "", "", "", "NO");
+    "INPUT", "size=40 maxlength=50", null, gettext("Insert Company name of this customer"), "NO");
 $company_name_editFG = "company_name,";
 }
 if (COMP_WEB_ENABLE)  {
@@ -285,7 +285,7 @@ $HD_Form->AddEditElement(gettext("COMPANY WEBSITE"),
     "company_website",
     '$value',
     "", "",
-    "INPUT", "size=40 maxlength=60", null, gettext("Insert the company website of this customer"), "", "", "", "", "", "", "NO");
+    "INPUT", "size=40 maxlength=60", null, gettext("Insert the company website of this customer"), "NO");
 $company_website_editFG = "company_website,";
 }
 if (VAT_RN_ENABLE)  {
@@ -293,7 +293,7 @@ $HD_Form->AddEditElement(gettext("VAT REGISTRATION NUMBER "),
     "VAT_RN",
     '$value',
     "", "",
-    "INPUT", "size=40 maxlength=40", null, gettext("Insert the VAT registration number of this customer"), "", "", "", "", "", "", "NO");
+    "INPUT", "size=40 maxlength=40", null, gettext("Insert the VAT registration number of this customer"), "NO");
 $VAT_RN_editFG = "VAT_RN,";
 }
 if (TRAFFIC_ENABLE)  {
@@ -301,7 +301,7 @@ $HD_Form->AddEditElement(gettext("TRAFFIC PER MONTH"),
     "traffic",
     '$value',
     "", "",
-    "INPUT", "size=30 maxlength=20", 4, gettext("Insert the traffic per month for this customer"), "", "", "", "", "", "", "NO");
+    "INPUT", "size=30 maxlength=20", 4, gettext("Insert the traffic per month for this customer"), "NO");
 $traffic_editFG = "traffic,";
 }
 if (TRAFFIC_TARGET_ENABLE)  {
@@ -314,7 +314,7 @@ if (TRAFFIC_TARGET_ENABLE)  {
     $traffic_target_editFG = "traffic_target,";
 }
 if (CAPTCHA_ENABLE) {
-	$HD_Form->AddEditElement(gettext("VERIFICATION"), "captchacode", '$value', "", "", "CAPTCHAIMAGE", "size=10 maxlength=6", 19, gettext("Insert code from above picture"), "", "", "", "", "", "", "", CAPTCHA_ENABLE);
+	$HD_Form->AddEditElement(gettext("VERIFICATION"), "captchacode", '$value', "", "", "CAPTCHAIMAGE", "size=10 maxlength=6", 19, gettext("Insert code from above picture"), "", "", "", "", "", "", "", "", "", CAPTCHA_ENABLE);
 	$captcha = "captchacode,";
 }
 

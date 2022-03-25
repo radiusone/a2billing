@@ -103,7 +103,7 @@ $HD_Form -> AddEditElement (gettext("START DATE"),
     "",
     "INPUT",
     "size=40 maxlength=40 $comp_date",
-    10, gettext("Insert the starting date"), "", "", "", "", "", "", "", "", "res_display_dateformat");
+    10, gettext("Insert the starting date"), "", "res_display_dateformat");
 
 $HD_Form -> AddEditElement (gettext("EXPIRY DATE"),
     "expirationdate",
@@ -112,7 +112,7 @@ $HD_Form -> AddEditElement (gettext("EXPIRY DATE"),
     "",
     "INPUT",
     "size=40 maxlength=40  $comp_date_plus",
-    10, gettext("Insert the expiration date"), "", "", "", "", "", "", "res_display_dateformat");
+    10, gettext("Insert the expiration date"), "", "res_display_dateformat");
 
 $HD_Form->AddEditSqlSelect("id_trunk", gettext("TRUNK"), "cc_trunk", "trunkcode,id_trunk");
 

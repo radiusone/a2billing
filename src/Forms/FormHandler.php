@@ -702,16 +702,16 @@ class FormHandler
         string $fieldproperty = "",
         ?int   $regexpr_nb = null,
         string $error_message = "",
+        string $check_emptyvalue = "",
+        string $custom_function = "",
         string $select_type = "",
         string $lie_tablename = "",
         string $lie_tablefield = "",
                $lie_clause = "",
                $listname = "",
         string $displayformat_selectfield = "",
-        string $check_emptyvalue = "",
         string $custom_query = "",
-        string $displayinput_defaultselect = "",
-        bool $field_enabled = true
+        bool   $field_enabled = true
     )
     {
         $fieldtype = strtoupper($fieldtype);
@@ -734,7 +734,7 @@ class FormHandler
                 "select_format" => $displayformat_selectfield, // 12
                 "check_empty" => strtoupper($check_emptyvalue), // 13
                 "custom_query" => $custom_query, // 14
-                "first_option" => $displayinput_defaultselect, // 15
+                "first_option" => $custom_function, // 15
                 "section_name" => $toplabel_text, // 16
 
                 // extra repeated values because same index is used for multiple purposes
@@ -742,7 +742,7 @@ class FormHandler
                 "popup_dest" => $displayformat_selectfield, //12
                 "popup_params" => $check_emptyvalue, //13
                 "popup_timeval" => $custom_query, //14
-                "custom_function" => $displayinput_defaultselect, //15
+                "custom_function" => $custom_function, //15
                 "comment" => $label_text,
 
                 "validation_err" => true,
