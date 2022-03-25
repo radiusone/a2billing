@@ -793,56 +793,38 @@ $HD_Form->AddEditSelect(
     gettext("RESTRICTED NUMBERS")
 );
 
-$HD_Form -> AddEditElement (gettext("RESTRICTED NUMBERS"),
-    "restrictednumber",
-    '$value',
-    "",
-    "",
-    "HAS_MANY",
-    "",
-    null,
-    gettext("Insert numbers that restrict the customer"),
-    "",
-    "", "", "", "", "", "", "cc_restricted_phonenumber:number:number, id_card:id_card = %id::id_card:::::::0");
+$HD_Form->AddEditHasMany(
+    gettext("RESTRICTED NUMBERS"),
+    [
+        "table" => "cc_restricted_phonenumber",
+        "name" => "number",
+        "columns" => "number,id_card",
+        "where" => "id_card=%id",
+    ]
+);
 
+$HD_Form->AddEditHasMany(
+    gettext("CALLERID"),
+    [
+        "table" => "cc_callerid",
+        "name" => "cid",
+        "columns" => "cid,id_cc_card",
+        "where" => "id_cc_card=%id",
+    ],
+    false,
+    gettext("CALLERID / CUSTOMER HISTORY")
+);
 
-
-$HD_Form -> AddEditElement (gettext("CALLERID"),
-    "callerid",
-    '$value',
-    "",
-    gettext("CALLERID / CUSTOMER HISTORY"),
-    "HAS_MANY",
-    "",
-    null,
-    "",
-    "",
-    "", "", "", "", "", "",
-    "cc_callerid:cid:cid, cid, id_cc_card:id_cc_card = %id::id_cc_card:::::::0");
-
-
-
-$HD_Form -> AddEditElement (gettext("CUSTOMER HISTORY"),
-    "description",
-    '$value',
-    "",
-    "",
-    "HAS_MANY",
-    "multiline",
-    null,
-    "",
-    "",
-    "", "", "", "", "", "", "cc_card_history:description:description,id_cc_card,datecreated:id_cc_card = %id::id_cc_card::2:::::0");
-
-			   // cc_card_history:description:description,id_cc_card:id_cc_card = %id::id_cc_card
-			   // Above function will provid Has Many functionality
-			   // Each parameter is seperated by (:) notation
-			   // 0. HAS_MANY will allow to get one to many functionality
-			   // 1. First param is the table name
-			   // 2. Second param is the join condition coloumn
-			   // 3. Third will get all the columns (but first should be joining column)
-			   // 4. Fourth param generates the where cluase
-			   // 5. Last, Sixth param is the FK column
+$HD_Form->AddEditHasMany(
+    gettext("CUSTOMER HISTORY"),
+    [
+        "table" => "cc_card_history",
+        "name" => "description",
+        "columns" => "description,id_cc_card,datecreated",
+        "where" => "id_cc_card=%id"
+    ],
+    true
+);
 
 $add_fields_voicemail = '';
 if (ACT_VOICEMAIL)

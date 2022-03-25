@@ -860,6 +860,28 @@ class FormHandler
         $this->FG_ADD_FORM_ELEMENTS[$cur] = $data;
     }
 
+    public function AddEditHasMany(
+        string $label_text,
+        array  $query_data,
+        bool   $multiline = false,
+        string $section_name = "",
+        bool   $field_enabled = true
+    ): void
+    {
+        if ($field_enabled === false) {
+            return;
+        }
+        $cur = count($this->FG_EDIT_FORM_ELEMENTS);
+        $data = [
+            "label" => $label_text,
+            "custom_query" => $query_data,
+            "section" => $section_name,
+            "multiline" => $multiline,
+        ];
+        $this->FG_EDIT_FORM_ELEMENTS[$cur] = $data;
+        $this->FG_ADD_FORM_ELEMENTS[$cur] = $data;
+    }
+
     /**
      * Sets Search form fieldnames for the view module
      *

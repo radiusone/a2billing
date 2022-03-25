@@ -269,11 +269,11 @@ $options = null
             </div>
 
             <?php elseif ($row["type"] === "HAS_MANY"): ?>
-                <?php $col = explode(",", $table[2]) ?>
+                <?php $col = explode(",", $table["columns"]) ?>
             <div class="row mb-3">
                 <div class="col-3"><?= $row["label"] ?></div>
                 <div class="col">
-                    <?php $options = (new Table($table[0], $table[2]))->get_list($this->DBHandle, str_replace("%id", $processed["id"], $table[3]))?>
+                    <?php $options = (new Table($table["table"], $table["columns"]))->get_list($this->DBHandle, str_replace("%id", $processed["id"], $table["where"]))?>
                     <ul class="list-group">
                     <?php if (is_array($options) && count($options)): ?>
                         <?php foreach ($options as $k=>$option): ?>
@@ -295,11 +295,11 @@ $options = null
                     <?php endif ?>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             <div class="flex-grow-1 me-3">
-                                <label for="<?= $table[1] ?>_ADD" class="form-label"><?= gettext("Add a new") ?> <?= $row["label"] ?></label>
-                                <?php if (($row["attributes"] == "multiline")): ?>
-                                    <textarea id="<?= $table[1] ?>_ADD" name="<?= $col[0] ?>" class="form-control form-control-sm" cols="40" rows="5"></textarea>
+                                <label for="<?= $table["name"] ?>_ADD" class="form-label"><?= gettext("Add a new") ?> <?= $row["label"] ?></label>
+                                <?php if ($row["multiline"]): ?>
+                                    <textarea id="<?= $table["name"] ?>_ADD" name="<?= $col[0] ?>" class="form-control form-control-sm" cols="40" rows="5"></textarea>
                                 <?php else: ?>
-                                    <input id="<?= $table[1] ?>_ADD" name="<?= $col[0] ?>" class="form-control form-control-sm" size="20" maxlength="20"/>
+                                    <input id="<?= $table["name"] ?>_ADD" name="<?= $col[0] ?>" class="form-control form-control-sm" size="20" maxlength="20"/>
                                 <?php endif ?>
                             </div>
                             <button class="btn btn-sm btn-primary" onclick="sendto('add-content', '<?= $i ?>')">
