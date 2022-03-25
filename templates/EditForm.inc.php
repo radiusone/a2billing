@@ -244,8 +244,7 @@ $options = null
                                 <label for="<?= $table["name"] ?>_ADD" class="form-label"><?= gettext("Add a new") ?> <?= $row["label"] ?></label>
                                 <input name="<?= $table["name"] ?>_hidden" type="hidden" value=""/>
                                 <select id="<?= $table["name"] ?>_ADD" name="<?= $table["name"] ?>[]" <?= $row["attributes"] ?> class="form-select form-control-sm">
-                                    <?php $order = is_string($table[13]) ? explode(",", $table[13]) : (is_array($table[13]) ? $table[13] : []) ?>
-                                    <?php $options = (new Table($table["tables"], $table["columns"]))->get_list($this->DBHandle, $table[15], $order, $table[14])?>
+                                    <?php $options = (new Table($table["tables"], $table["columns"]))->get_list($this->DBHandle)?>
                                     <?php if (is_array($options) && count($options)): ?>
                                         <?php foreach ($options as $option): ?>
                                             <?php if (!empty($table["format"])): ?>
