@@ -351,42 +351,43 @@ if (!$popup_select) {
             $default_initbalance = "value='0'";
         }
 
-        $HD_Form->AddEditElement(_("ACCOUNT NUMBER"),
+        $HD_Form->AddEditElement(
+            _("ACCOUNT NUMBER"),
             "username",
-            "",
             '',
-            _("Customer Information"),
-            "INPUT",
             "size=30 $maxi readonly  maxlength=40",
-            4, _("Insert the account number"));
+            4,
+            _("Insert the account number"), 
+            _("Customer Information")
+        );
 
-        $HD_Form->AddEditElement(_("WEBUI LOGIN"),
+        $HD_Form->AddEditElement(
+            _("WEBUI LOGIN"),
             "useralias",
             "",
-            "",
-            "",
-            "INPUT",
             "size=20 $maxi2 maxlength=40",
-            4, _("Insert the webui login"));
+            4,
+            _("Insert the webui login")
+        );
 
-        $HD_Form->AddEditElement(_("WEBUI PASSWORD"),
+        $HD_Form->AddEditElement(
+            _("WEBUI PASSWORD"),
             "uipass",
-            '',
             _("Password for customer to access to the web interface and view the balance."),
-            "",
-            "INPUT",
             "size=20 $maxi3 maxlength=20",
-            null, _("Insert the password"));
+            null,
+            _("Insert the password")
+        );
 
         $balance_access = ($form_action === "ask-add" || $form_action === "add") ? "value = '0'" : "readonly";
-        $HD_Form->AddEditElement(_("BALANCE"),
+        $HD_Form->AddEditElement(
+            _("BALANCE"),
             "credit",
-            "",
             _("currency : ") . strtoupper(BASE_CURRENCY),
-            "",
-            "INPUT",
             "size=30 maxlength=30 " . $balance_access,
-            12, _("Insert the number of credit"));
+            12,
+            _("Insert the number of credit")
+        );
 
         $HD_Form->AddEditSqlSelect("id_group", _("CUSTOMER GROUP"), "cc_card_group", "name,id");
 
@@ -400,107 +401,136 @@ if (!$popup_select) {
             '<option value="-1" selected="selected">' . _("NOT DEFINED") . '</>'
         );
 
-        $HD_Form->AddEditElement(_("LAST NAME"),
+        $HD_Form->AddEditElement(
+            _("LAST NAME"),
             "lastname",
-            '$value',
             "",
-            _("Personal Information"),
-            "INPUT",
             "size=30 maxlength=50",
-            11, _("Insert the lastname of the customers"), "NO");
+            11,
+            _("Insert the lastname of the customers"), 
+            _("Personal Information"), 
+            "NO"
+        );
 
-        $HD_Form->AddEditElement(_("FIRST NAME"),
+        $HD_Form->AddEditElement(
+            _("FIRST NAME"),
             "firstname",
-            '$value',
             "",
-            "",
-            "INPUT",
             "size=30 maxlength=50",
-            11, _("Insert the firstname of the customers"), "NO");
+            11,
+            _("Insert the firstname of the customers"), 
+            "", 
+            "NO"
+        );
 
-        $HD_Form->AddEditElement(_("EMAIL"),
+        $HD_Form->AddEditElement(
+            _("EMAIL"),
             "email",
-            '$value',
             "",
-            "",
-            "INPUT",
             "size=30 maxlength=70",
-            1, _("Insert the email"), "NO");
+            1,
+            _("Insert the email"), 
+            "", 
+            "NO"
+        );
 
-        $HD_Form->AddEditElement(_("ADDRESS"),
+        $HD_Form->AddEditElement(
+            _("ADDRESS"),
             "address",
-            '$value',
             "",
-            "",
-            "INPUT",
             "size=30 maxlength=100",
-            0, _("Insert the address of the customers"), "NO");
+            0,
+            _("Insert the address of the customers"), 
+            "", 
+            "NO"
+        );
 
-        $HD_Form->AddEditElement(_("CITY"),
+        $HD_Form->AddEditElement(
+            _("CITY"),
             "city",
-            '$value',
             "",
-            "",
-            "INPUT",
             "size=30 maxlength=40",
-            0, _("Insert the city"), "NO");
+            0,
+            _("Insert the city"), 
+            "", 
+            "NO"
+        );
 
-        $HD_Form->AddEditElement(_("STATE/PROVINCE"),
+        $HD_Form->AddEditElement(
+            _("STATE/PROVINCE"),
             "state",
-            '$value',
             "",
-            "",
-            "INPUT",
             "size=30 maxlength=40",
-            11, _("Insert the state"), "NO");
+            11,
+            _("Insert the state"), 
+            "", 
+            "NO"
+        );
 
         $country_default_val = $form_action === "ask-add" ? "USA" : "";
-        $HD_Form->AddEditSqlSelect("country", _("COUNTRY"), "cc_country", "countryname,countrycode", "", $country_default_val);
+        $HD_Form->AddEditSqlSelect(
+            "country", 
+            _("COUNTRY"), 
+            "cc_country", 
+            "countryname,countrycode", 
+            "", 
+            $country_default_val
+        );
 
-        $HD_Form->AddEditElement(_("ZIP/POSTAL CODE"),
+        $HD_Form->AddEditElement(
+            _("ZIP/POSTAL CODE"),
             "zipcode",
-            '$value',
             "",
-            "",
-            "INPUT",
             "size=30 maxlength=20",
-            0, _("Insert the zipcode"), "NO");
+            0,
+            _("Insert the zipcode"), 
+            "", 
+            "NO"
+        );
 
-        $HD_Form->AddEditElement(_("PHONE NUMBER"),
+        $HD_Form->AddEditElement(
+            _("PHONE NUMBER"),
             "phone",
-            '$value',
             "",
-            "",
-            "INPUT",
             "size=30 maxlength=20",
-            7, _("Insert the phone number of the customers"), "NO");
+            7,
+            _("Insert the phone number of the customers"), 
+            "", 
+            "NO"
+        );
 
-        $HD_Form->AddEditElement(_("FAX NUMBER"),
+        $HD_Form->AddEditElement(
+            _("FAX NUMBER"),
             "fax",
-            '$value',
             "",
-            "",
-            "INPUT",
             "size=30 maxlength=20",
-            null, _("Insert the fax number of the customers"), "NO");
+            null,
+            _("Insert the fax number of the customers"), 
+            "", 
+            "NO"
+        );
 
-        $HD_Form->AddEditElement(_("COMPANY NAME"),
+        $HD_Form->AddEditElement(
+            _("COMPANY NAME"),
             "company_name",
-            '$value',
             "",
-            "",
-            "INPUT",
             "size=40 maxlength=50",
-            null, _("Insert Company name of this customer"), "NO");
+            null,
+            _("Insert Company name of this customer"), 
+            "", 
+            "NO"
+        );
 
-        $HD_Form->AddEditElement(_("COMPANY WEBSITE"),
+        $HD_Form->AddEditElement(
+            _("COMPANY WEBSITE"),
             "company_website",
-            '$value',
             "",
-            "",
-            "INPUT",
             "size=40 maxlength=60",
-            null, _("Insert the company website of this customer"), "NO");
+            null,
+            _("Insert the company website of this customer"), 
+            "", 
+            "NO"
+        );
 
         if ($form_action !== "edit") {
             $payment_status = ($form_action === "ask-add" || $form_action === "add") ? "" : 'disabled="disabled"';
@@ -548,11 +578,23 @@ if (!$popup_select) {
         }
         array_walk($timezone_list, fn (&$v, $k) => $v = [$v[2], $k]);
 
-        $HD_Form->AddEditSelect("id_timezone", $timezone_list, _("TIMEZONE"), "", "", $tz_val);
+        $HD_Form->AddEditSelect(
+            "id_timezone", 
+            $timezone_list, 
+            _("TIMEZONE"), 
+            "", 
+            "", 
+            $tz_val
+        );
 
         $HD_Form->AddEditSelect("language", $language_list, _("LANGUAGE"));
 
-        $HD_Form->AddEditSelect("currency", $currency_list, _("CURRENCY"), _("Currency used at the customer end."));
+        $HD_Form->AddEditSelect(
+            "currency", 
+            $currency_list, 
+            _("CURRENCY"), 
+            _("Currency used at the customer end.")
+        );
 
         $HD_Form->AddEditSelect("status", $cardstatus_list, _("STATUS"));
 
@@ -566,16 +608,25 @@ if (!$popup_select) {
         );
 
         $lockpin_default = ($form_action == "ask-add" || $form_action == "add") ? "value = '0'" : "";
-        $HD_Form->AddEditElement(_("LOCK PIN"),
+        $HD_Form->AddEditElement(
+            _("LOCK PIN"),
             "lock_pin",
-            '$value',
             _("Code required to make the call if the lock is active."),
-            "",
-            "INPUT",
             "size=20 maxlength=10 $lockpin_default",
-            4, "", "NO");
+            4,
+            "", 
+            "", 
+            "NO"
+        );
 
-        $HD_Form->AddEditSelect("simultaccess", $simultaccess_list, _("SIMULTANEOUS ACCESS"), "", "", "1");
+        $HD_Form->AddEditSelect(
+            "simultaccess", 
+            $simultaccess_list, 
+            _("SIMULTANEOUS ACCESS"), 
+            "", 
+            "", 
+            "1"
+        );
 
         $HD_Form->AddEditRadio(
             "runservice",
@@ -586,14 +637,16 @@ if (!$popup_select) {
             gettext("Choose if you want to enable the service recurring on this account")
         );
 
-        $HD_Form->AddEditElement(_("CREDIT LIMIT"),
+        $HD_Form->AddEditElement(
+            _("CREDIT LIMIT"),
             "creditlimit",
-            "",
             _("Credit limit is only used for the postpaid account."),
-            "",
-            "INPUT",
             "size=20 maxlength=20",
-            4, _("Insert the credit limit"), "NO-NULL");
+            4,
+            _("Insert the credit limit"), 
+            "", 
+            "NO-NULL"
+        );
 
         $HD_Form->AddEditSelect(
             "credit_notification",
@@ -612,14 +665,16 @@ if (!$popup_select) {
             gettext("Choose if you want to enable the notification by email for this account")
         );
 
-        $HD_Form->AddEditElement(_("EMAIL NOTIFICATION"),
+        $HD_Form->AddEditElement(
+            _("EMAIL NOTIFICATION"),
             "email_notification",
-            '$value',
             "",
-            "",
-            "INPUT",
             "size=30 maxlength=70",
-            1, _("Insert the email to notify this customer"), "NO");
+            1,
+            _("Insert the email to notify this customer"),
+            "",
+            "NO"
+        );
 
         if (ACT_VOICEMAIL) {
             $HD_Form->AddEditRadio(
@@ -651,16 +706,24 @@ if (!$popup_select) {
             '<option value="-1" selected="selected">' . gettext("NOT DEFINED") . '</option>'
         );
 
-        $HD_Form->AddEditElement(_("FIRST USE DATE"),
+        $HD_Form->AddEditElement(
+            _("FIRST USE DATE"),
             "firstusedate",
             "",
-            "",
-            "",
-            "INPUT",
             "size=40 maxlength=40 readonly",
-            null, "the first use date", "NO-NULL", "res_display_dateformat");
+            null,
+            "the first use date",
+            "",
+            "NO-NULL",
+            "res_display_dateformat"
+        );
 
-        $HD_Form->AddEditSelect("enableexpire", $expire_list, _("ENABLE EXPIRY"), _("Select method of expiry for the account."));
+        $HD_Form->AddEditSelect(
+            "enableexpire",
+            $expire_list,
+            _("ENABLE EXPIRY"),
+            _("Select method of expiry for the account.")
+        );
 
         $comp_zero = $comp_date_plus = '';
         if (isset($form_action) && $form_action === "ask-add") {
@@ -672,23 +735,26 @@ if (!$popup_select) {
             $comp_zero = "value='0'";
         }
 
-        $HD_Form->AddEditElement(_("EXPIRY DATE"),
+        $HD_Form->AddEditElement(
+            _("EXPIRY DATE"),
             "expirationdate",
-            '$value',
             _("please use the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
-            "",
-            "INPUT",
             "size=40 maxlength=40  $comp_date_plus",
-            10, _("Insert the expiration date"), "NO-NULL", "res_display_dateformat");
+            10,
+            _("Insert the expiration date"),
+            "",
+            "NO-NULL",
+            "res_display_dateformat"
+        );
 
-        $HD_Form->AddEditElement(_("EXPIRY DAYS"),
+        $HD_Form->AddEditElement(
+            _("EXPIRY DAYS"),
             "expiredays",
-            "",
             _("The number of days after which the account will expire."),
-            "",
-            "INPUT",
             "size=10 maxlength=6 $comp_zero",
-            4, _("Insert the number of days after which the account will expire"));
+            4,
+            _("Insert the number of days after which the account will expire")
+        );
 
         if (!empty($A2B->config["webui"]['buddy_sip_file'])) {
             $HD_Form->AddEditRadio(
@@ -712,32 +778,38 @@ if (!$popup_select) {
             );
         }
 
-        $HD_Form->AddEditElement(_("MAC ADDRESS"),
+        $HD_Form->AddEditElement(
+            _("MAC ADDRESS"),
             "mac_addr",
-            '$value',
             _("FORMAT: 00-08-74-4C-7F-1D"),
-            "",
-            "INPUT",
             "size=20 maxlength=17",
-            null, _("Insert the MAC address customers' device"), "NO");
+            null,
+            _("Insert the MAC address customers' device"),
+            "",
+            "NO"
+        );
 
-        $HD_Form->AddEditElement(_("IN USE"),
+        $HD_Form->AddEditElement(
+            _("IN USE"),
             "inuse",
-            '$value',
             _("Updated to show the number of concurrent calls in use by this customer. If there are no currently no calls, and the system shows that there are, manually reset this field back to zero."),
-            "",
-            "INPUT",
             "size=5 maxlength=5",
-            null, "", "NO");
+            null,
+            "",
+            "",
+            "NO"
+        );
 
-        $HD_Form->AddEditElement(_("MAX CONCURRENT CALLS"),
+        $HD_Form->AddEditElement(
+            _("MAX CONCURRENT CALLS"),
             "max_concurrent",
-            '$value',
             _("Max concurrent calls (Feature not implemented)"),
-            "",
-            "INPUT",
             "size=5 maxlength=5",
-            null, "", "NO");
+            null,
+            "",
+            "",
+            "NO"
+        );
 
         $HD_Form->AddEditRadio(
             "autorefill",
@@ -749,46 +821,50 @@ if (!$popup_select) {
             gettext("AUTOREFILL")
         );
 
-        $HD_Form->AddEditElement(_("INITIAL BALANCE"),
+        $HD_Form->AddEditElement(
+            _("INITIAL BALANCE"),
             "initialbalance",
-            "",
             _("The initial balance is used by autorefill to reset the current balance to this amount"),
-            "",
-            "INPUT",
             "size=30 $default_initbalance maxlength=30",
-            12, _("Insert the amount of the initial balance"));
+            12,
+            _("Insert the amount of the initial balance")
+        );
 
         $HD_Form->AddEditSelect("invoiceday", $invoiceday_list, _("INVOICE DAY"), _("Define the day of the month when the system will generate the customer invoice."), "", "", "", _("Invoice Status"));
 
         $vat_init = ($form_action === "ask-add" || $form_action === "add") ? "value = '0'" : "";
-        $HD_Form->AddEditElement(_("VAT"),
+        $HD_Form->AddEditElement(
+            _("VAT"),
             "vat",
-            "",
             _("VAT to add on the invoice of this customer. it should be a decimal value '21' this will be for 21% of VAT!"),
-            "",
-            "INPUT",
             "size=10 maxlength=6 $vat_init",
-            12, _("Insert the VAT"));
+            12,
+            _("Insert the VAT")
+        );
 
-        $HD_Form->AddEditElement(_("VAT REGISTRATION NUMBER "),
+        $HD_Form->AddEditElement(
+            _("VAT REGISTRATION NUMBER "),
             "vat_rn",
-            '$value',
             "",
-            "",
-            "INPUT",
             "size=40 maxlength=40",
-            null, _("Insert the VAT registration number of this customer"), "NO");
+            null,
+            _("Insert the VAT registration number of this customer"),
+            "",
+            "NO"
+        );
 
         $HD_Form->AddEditSelect("discount", $discount_list, _("DISCOUNT"));
 
-        $HD_Form->AddEditElement(_("TRAFFIC PER MONTH"),
+        $HD_Form->AddEditElement(
+            _("TRAFFIC PER MONTH"),
             "traffic",
-            '$value',
             "",
-            _("TARGET TRAFFIC"),
-            "INPUT",
             "size=30 maxlength=20",
-            4, _("Insert the traffic per month for this customer"), "NO");
+            4,
+            _("Insert the traffic per month for this customer"),
+            _("TARGET TRAFFIC"),
+            "NO"
+        );
 
         $HD_Form->AddEditTextarea(
             "traffic_target",

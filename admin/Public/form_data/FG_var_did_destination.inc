@@ -106,14 +106,14 @@ if ($form_action=="ask-add"){
 
 
 
-$HD_Form -> AddEditElement (gettext("DESTINATION"),
+$HD_Form->AddEditElement(
+    gettext("DESTINATION"),
     "destination",
-    '$value',
     gettext("Enter the phone number you wish to call, or the VoIP client to reach. (ie: 347894999 or SIP/jeremy@182.212.1.45). If the call is VoIP, the VoIP_Call must be set to yes."),
-    "",
-    "INPUT",
     "size=50 maxlength=120",
-    0, gettext("Insert the DID"));
+    0,
+    gettext("Insert the DID")
+);
 
 if ($form_action!='ask-edit' && $form_action!='edit') {
 

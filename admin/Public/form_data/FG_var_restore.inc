@@ -66,23 +66,23 @@ $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form -> FG_OTHER_BUTTON1 = true;
 $HD_Form -> FG_OTHER_BUTTON2 = true;
 
-$HD_Form -> AddEditElement (gettext("Name "),
+$HD_Form->AddEditElement(
+    gettext("Name "),
     "name",
-    "",
     gettext("Name of the backup"),
-    "",
-    "INPUT",
     "size=50 maxlength=50",
-    null, gettext("Insert the name of backup"));
+    null,
+    gettext("Insert the name of backup")
+);
 
-$HD_Form -> AddEditElement ("PATH",
+$HD_Form->AddEditElement(
+    gettext("PATH"),
     "path",
-    '',
     gettext("The backup file name"),
-    "",
-    "INPUT",
     "size=100 maxlength=200 readonly",
-    null, "the backup file");
+    null,
+    gettext("The backup file")
+);
 
 
 

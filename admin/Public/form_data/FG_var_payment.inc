@@ -130,23 +130,23 @@ if (has_rights (ACX_MODIFY_PAYMENTS)) {
 		$comp_date="value='$comp_date'";
 	}
 
-	$HD_Form -> AddEditElement (gettext("PAYMENT DATE"),
+    $HD_Form->AddEditElement(
+        gettext("PAYMENT DATE"),
         "date",
-        '$value',
         "",
-        "",
-        "INPUT",
         "size=40 maxlength=40  $comp_date",
-        10, gettext("Insert the current date"));
+        10,
+        gettext("Insert the current date")
+    );
 
-	$HD_Form -> AddEditElement (gettext("PAYMENT AMOUNT"),
+    $HD_Form->AddEditElement(
+        gettext("PAYMENT AMOUNT"),
         "payment",
-        '$value',
         gettext("Enter the amount in the currency base : ") . BASE_CURRENCY,
-        "",
-        "INPUT",
         "size=60 maxlength=10",
-        12, gettext("Insert the payment amount"));
+        12,
+        gettext("Insert the payment amount")
+    );
 
     $HD_Form->AddEditTextarea(
         "description",
@@ -177,8 +177,8 @@ if (has_rights (ACX_MODIFY_PAYMENTS)) {
 
     $HD_Form->AddEditSelect(
         "payment_type",
-        gettext("PAYMENT TYPE"),
         $list_refill_type,
+        gettext("PAYMENT TYPE"),
         gettext("Define type for payment and refill,if created.")
     );
 	if ($form_action!="ask-edit" && $form_action!="edit") {

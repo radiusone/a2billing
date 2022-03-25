@@ -67,14 +67,14 @@ $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 
-$HD_Form -> AddEditElement ("NAME",
+$HD_Form->AddEditElement(
+    gettext("NAME"),
     "name",
-    '$value',
     "",
-    "",
-    "INPUT",
     "size=20 maxlength=30",
-    3, gettext("Insert the name"));
+    3,
+    gettext("Insert the name")
+);
 
 $HD_Form->AddEditTextarea(
     "description",

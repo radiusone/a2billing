@@ -102,13 +102,14 @@ $right_list["19"] = array( gettext("SEE RECORDING"), "262144");
 $len_right_list = count($right_list);
 
 
-$HD_Form -> AddEditElement (gettext("NAME"),
-    "name", '$value',
+$HD_Form->AddEditElement(
+    gettext("NAME"),
+    "name",
     "",
-    "",
-    "INPUT",
     "size=30 maxlength=40",
-    0, gettext("Insert the provider name"));
+    0,
+    gettext("Insert the provider name")
+);
 
 $HD_Form->AddEditTextarea(
     "description",

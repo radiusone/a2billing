@@ -79,14 +79,14 @@ $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 
-$HD_Form -> AddEditElement (gettext("TARIFFNAME"),
+$HD_Form->AddEditElement(
+    gettext("TARIFFNAME"),
     "tariffname",
-    '$value',
     "",
-    "",
-    "INPUT",
     "size=40 maxlength=30",
-    3, gettext("Insert the tariff name "));
+    3,
+    gettext("Insert the tariff name ")
+);
 
 if ($form_action=="ask-add"){
 	$begin_date = date("Y");
@@ -96,23 +96,29 @@ if ($form_action=="ask-add"){
 	$comp_date_plus = "value='".$begin_date_plus.$end_date."'";
 }
 
-$HD_Form -> AddEditElement (gettext("START DATE"),
+$HD_Form->AddEditElement(
+    gettext("START DATE"),
     "startingdate",
-    '$value',
     gettext("Please use the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
-    "",
-    "INPUT",
     "size=40 maxlength=40 $comp_date",
-    10, gettext("Insert the starting date"), "", "res_display_dateformat");
-
-$HD_Form -> AddEditElement (gettext("EXPIRY DATE"),
-    "expirationdate",
-    '$value',
-    gettext("Format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
+    10,
+    gettext("Insert the starting date"),
     "",
-    "INPUT",
+    "",
+    "res_display_dateformat"
+);
+
+$HD_Form->AddEditElement(
+    gettext("EXPIRY DATE"),
+    "expirationdate",
+    gettext("Format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
     "size=40 maxlength=40  $comp_date_plus",
-    10, gettext("Insert the expiration date"), "", "res_display_dateformat");
+    10,
+    gettext("Insert the expiration date"),
+    "",
+    "",
+    "res_display_dateformat"
+);
 
 $HD_Form->AddEditSqlSelect("id_trunk", gettext("TRUNK"), "cc_trunk", "trunkcode,id_trunk");
 
@@ -128,24 +134,24 @@ if ($form_action=="ask-add"){
 	$val_calleridprefix = "value='all'";
 }
 
-$HD_Form -> AddEditElement (gettext("DNID PREFIX"),
+$HD_Form->AddEditElement(
+    gettext("DNID PREFIX"),
     "dnidprefix",
-    '$value',
     gettext("Set the DNID rules to choose the ratecard 'dnidprefix', by default, matches all DNID. For instance, Set the DNIDPrefix  to 900540540 to choose this ratecard when the DNID is 900540540"),
-    "",
-    "INPUT",
     "size=20 $val_dnidprefix maxlength=20",
-    14, gettext("Insert the dnid prefix"));
+    14,
+    gettext("Insert the dnid prefix")
+);
 
 
-$HD_Form -> AddEditElement (gettext("CALLERID PREFIX"),
+$HD_Form->AddEditElement(
+    gettext("CALLERID PREFIX"),
     "calleridprefix",
-    '$value',
     gettext("Set the CallerID rules to choose the ratecard 'calleridprefix', by default, matches all callerID. For instance, Set the calleridprefix to 900540540 to choose this ratecard when the CallerID is 900540540."),
-    "",
-    "INPUT",
     "size=20 $val_calleridprefix maxlength=20",
-    14, gettext("Insert the dnid prefix"));
+    14,
+    gettext("Insert the dnid prefix")
+);
 
 
 $HD_Form -> FieldEditElement ('tariffname, startingdate, expirationdate, id_trunk, description, dnidprefix, calleridprefix');

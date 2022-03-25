@@ -75,13 +75,14 @@ $HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 
-$HD_Form -> AddEditElement (gettext("LABEL"),
-    "label", '$value',
+$HD_Form->AddEditElement(
+    gettext("LABEL"),
+    "label",
     "",
-    "",
-    "INPUT",
     "size=30 maxlength=40",
-    0, gettext("Insert the provider name"));
+    0,
+    gettext("Insert the provider name")
+);
 
 $HD_Form->AddEditRadio(
     "enable",

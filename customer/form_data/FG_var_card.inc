@@ -55,85 +55,111 @@ $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form -> FG_ENABLE_ADD_BUTTON = false;
 
 
-$HD_Form -> AddEditElement (gettext("LASTNAME"),
+$HD_Form->AddEditElement(
+    gettext("LASTNAME"),
     "lastname",
-    '$value',
     "",
-    "",
-    "INPUT",
     "size=30 maxlength=50",
-    11, gettext("Insert the lastname of the customers"), "NO");
+    11,
+    gettext("Insert the lastname of the customers"),
+    "",
+    "NO"
+);
 
-$HD_Form -> AddEditElement (gettext("FIRSTNAME"),
+$HD_Form->AddEditElement(
+    gettext("FIRSTNAME"),
     "firstname",
-    '$value',
     "",
-    "",
-    "INPUT",
     "size=30 maxlength=50",
-    11, gettext("Insert the firstname of the customers"), "NO");
+    11,
+    gettext("Insert the firstname of the customers"),
+    "",
+    "NO"
+);
 
 
-$HD_Form -> AddEditElement (gettext("ADDRESS"),
+$HD_Form->AddEditElement(
+    gettext("ADDRESS"),
     "address",
-    '$value',
     "",
-    "",
-    "INPUT",
     "size=30 maxlength=100",
-    0, gettext("Insert the address of the customers"), "NO");
+    0,
+    gettext("Insert the address of the customers"),
+    "",
+    "NO"
+);
 
 
-$HD_Form -> AddEditElement (gettext("CITY"),
+$HD_Form->AddEditElement(
+    gettext("CITY"),
     "city",
-    '$value',
     "",
-    "",
-    "INPUT",
     "size=30 maxlength=40",
-    0, gettext("Insert the city"), "NO");
+    0,
+    gettext("Insert the city"),
+    "",
+    "NO"
+);
 
 
-$HD_Form -> AddEditElement (gettext("STATE/PROVINCE"),
+$HD_Form->AddEditElement(
+    gettext("STATE/PROVINCE"),
     "state",
-    '$value',
     "",
-    "",
-    "INPUT",
     "size=30 maxlength=40",
-    11, gettext("Insert the state"), "NO");
+    11,
+    gettext("Insert the state"),
+    "",
+    "NO"
+);
 
-$HD_Form->AddEditSqlSelect("country", gettext("COUNTRY"), "cc_country", "countryname,countrycode");
+$HD_Form->AddEditSqlSelect(
+    "country",
+    gettext("COUNTRY"),
+    "cc_country",
+    "countryname,countrycode"
+);
 
-$HD_Form -> AddEditElement (gettext("ZIP/POSTAL CODE"),
+$HD_Form->AddEditElement(
+    gettext("ZIP/POSTAL CODE"),
     "zipcode",
-    '$value',
     "",
-    "",
-    "INPUT",
     "size=30 maxlength=20",
-    0, gettext("Insert the zipcode"), "NO");
+    0,
+    gettext("Insert the zipcode"),
+    "",
+    "NO"
+);
 
-$HD_Form->AddEditSqlSelect("id_timezone", gettext("TIMEZONE"), "cc_timezone", "gmtzone,id");
+$HD_Form->AddEditSqlSelect(
+    "id_timezone",
+    gettext("TIMEZONE"),
+    "cc_timezone",
+    "gmtzone,id"
+);
 
-$HD_Form -> AddEditElement (gettext("PHONE NUMBER"),
+$HD_Form->AddEditElement(
+    gettext("PHONE NUMBER"),
     "phone",
-    '$value',
     "",
-    "",
-    "INPUT",
     "size=30 maxlength=20",
-    7, gettext("Insert the phone number of the customers"), "NO");
+    7,
+    gettext("Insert the phone number of the customers"),
+    "",
+    "NO"
+);
 
 
-$HD_Form -> AddEditElement (gettext("FAX NUMBER"),
+$HD_Form->AddEditElement(
+    gettext("FAX NUMBER"),
     "fax",
-    '$value',
     "",
-    "",
-    "INPUT",
     "size=30 maxlength=20",
-    null, gettext("Insert the fax number of the customers"), "NO");
+    null,
+    gettext("Insert the fax number of the customers"),
+    "",
+    "NO"
+);
 
 if (ACT_VOICEMAIL) {
     $HD_Form->AddEditRadio(

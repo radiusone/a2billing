@@ -84,14 +84,14 @@ $HD_Form -> FG_OTHER_BUTTON1 = true;
 $HD_Form -> FG_OTHER_BUTTON1_ALT = gettext("Add rates");
 $HD_Form -> FG_OTHER_BUTTON1_IMG = "";
 $HD_Form -> FG_OTHER_BUTTON1_LINK = "A2B_package_manage_rates.php?id=|param|";
-$HD_Form -> AddEditElement (gettext("LABEL"),
+$HD_Form->AddEditElement(
+    gettext("LABEL"),
     "label",
-    '$value',
     "",
-    "",
-    "INPUT",
     "size=30 maxlength=30",
-    0, gettext("Insert the package label"));
+    0,
+    gettext("Insert the package label")
+);
 
 $HD_Form->AddEditSelect("packagetype", $packagetype_list, gettext("PACKAGE TYPE"));
 
@@ -101,27 +101,24 @@ if (isset($form_action) && $form_action=="ask-add") {
 	$default_init = "value='1'";
 }
 
-$HD_Form -> AddEditElement (gettext("STARTING DAY"),
+$HD_Form->AddEditElement(
+    gettext("STARTING DAY"),
     "startday",
-    '$value',
     gettext("The value will be related to billing type ; if monthly accepted value are 1-31 ; if Weekly accepted value 1-7 (Monday to Sunday) "),
-    "",
-    "INPUT",
     "size=10 $default_init maxlength=5",
-    4, gettext("Insert the start day"));
+    4,
+    gettext("Insert the start day")
+);
 
 
-$HD_Form -> AddEditElement (gettext("FREE UNITS"),
+$HD_Form->AddEditElement(
+    gettext("FREE UNITS"),
     "freetimetocall",
-    '$value',
     gettext("Insert the amount of free units, in seconds,for the FREE SECONDS mode. For NUMBER OF FREE CALLS insert the number of free calls"),
-    "",
-    "INPUT",
     "size=10 maxlength=10",
-    4, gettext("Insert the amount of free time to call (seconds)"));
-
-
-
+    4,
+    gettext("Insert the amount of free time to call (seconds)")
+);
 
 $HD_Form -> FieldEditElement ('label, packagetype, billingtype, startday, freetimetocall');
 

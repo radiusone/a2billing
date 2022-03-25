@@ -103,14 +103,14 @@ $HD_Form -> FG_OTHER_BUTTON1_IMG = Images_Path . "/icon-viewdetails.gif";
 $HD_Form -> FG_OTHER_BUTTON1_ALT = gettext("View details");
 
 
-$HD_Form -> AddEditElement (gettext("NAME"),
+$HD_Form->AddEditElement(
+    gettext("NAME"),
     "name",
-    "$value",
     "",
     "",
-    "INPUT",
-    "",
-    3, gettext("Insert the alarm name"));
+    3,
+    gettext("Insert the alarm name")
+);
 
 $HD_Form->AddEditSelect("periode", $period_list, gettext("PERIOD"));
 
@@ -120,19 +120,20 @@ $HD_Form->AddEditSelect(
     gettext("ALOC (average length of call) ; ASR (answer seize ratio) ; CIC (Consecutive Incomplete Calls)")
 );
 
-$HD_Form -> AddEditElement (gettext("MAX VALUE"),
+$HD_Form->AddEditElement(
+    gettext("MAX VALUE"),
     "`maxvalue`",
-    "$value",
     gettext("Input the maximum value (between 0 and 1 for ASR ; > 0 for ALOC in sec ; > 0 for CIC)"),
     "",
-    "INPUT",
-    "",
-    null, gettext("Insert the maximu value in"));
+    null,
+    gettext("Insert the maximu value in")
+);
 
-$HD_Form -> AddEditElement (gettext("MIN VALUE"),
+$HD_Form->AddEditElement(
+    gettext("MIN VALUE"),
     "minvalue",
-    '$value',
-    gettext("Input the minimum value (between 0 and 1 for ASR ; >= 0 for ALOC in sec ; not used by CIC) or leave it empty"));
+    gettext("Input the minimum value (between 0 and 1 for ASR ; >= 0 for ALOC in sec ; not used by CIC) or leave it empty")
+);
 
 $HD_Form->AddEditPopup(
     "id_trunk",
@@ -146,14 +147,14 @@ $HD_Form->AddEditPopup(
 
 $HD_Form->AddEditSelect("status", $actived_list, gettext("STATUS"));
 
-$HD_Form -> AddEditElement (gettext("EMAIL TO SEND ALARM"),
+$HD_Form->AddEditElement(
+    gettext("EMAIL TO SEND ALARM"),
     "emailreport",
-    '$value',
     "",
-    "",
-    "INPUT",
     "size=40 maxlength=40",
-    1, gettext("Insert the email to send the alarm"));
+    1,
+    gettext("Insert the email to send the alarm")
+);
 
 
 

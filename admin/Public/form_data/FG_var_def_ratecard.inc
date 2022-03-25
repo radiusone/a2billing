@@ -257,14 +257,14 @@ $HD_Form->AddSearchSqlSelectInput('SELECT RATECARD', "cc_tariffplan", "id, tarif
 
 $HD_Form->AddEditSqlSelect("idtariffplan", gettext("RATECARD"), "cc_tariffplan", "tariffname,id");
 
-$HD_Form->AddEditElement(gettext("DIALPREFIX"),
+$HD_Form->AddEditElement(
+    gettext("DIALPREFIX"),
     "dialprefix",
-    '$value',
     gettext("A) Add destination prefixes, ie '441' for UK Landlines.<br>B) Use 'defaultprefix' to setup a rate for all destinations where a specific rate is not provided.<br>C) if you ADD a rate, NOT an EDIT, you can define a range of prefixes. '32484-32487' adds all prefixes between 32484 and 32487. '32484,32386,32488' would add only the individual prefixes listed.<br>D) Asterisk extensions style + POSIX regex syntaxes are supported. '_447[7-9]XXXXXXXX' matches 12-digit UK mobiles. '_X{0,3}(112|999|911)' matches any 0-3 digits followed an emergency number. '_' can be used to add length, and raise the priority."),
-    "",
-    "INPUT",
     "size=50 maxlength=80",
-    9, gettext("Insert the dialing prefix, such as for UK '44' or for US '1' "));
+    9,
+    gettext("Insert the dialing prefix, such as for UK '44' or for US '1' ")
+);
 
 $HD_Form->AddEditPopup(
     "destination",
@@ -278,234 +278,277 @@ $HD_Form->AddEditPopup(
 
 $HD_Form->AddEditElement("BUYING RATE",
     "buyrate",
-    '$value',
     gettext("Set the carrier cost, the price you pay for minutes."),
-    gettext("Set the carrier cost for this destination."),
-    "INPUT",
     "size=30 maxlength=20",
-    12, gettext("Insert the buy rate"));
+    12,
+    gettext("Insert the buy rate"),
+    gettext("Set the carrier cost for this destination.")
+);
 
 
-$HD_Form->AddEditElement(gettext("BUYRATE MIN DURATION"),
+$HD_Form->AddEditElement(
+    gettext("BUYRATE MIN DURATION"),
     "buyrateinitblock",
-    '$value',
     gettext("Set the minimum duration charged by the carrier. (i.e. 30 secs)"),
-    "",
-    "INPUT",
     "size=30 maxlength=20",
-    4, gettext("Insert the buyrate init block"), "NO");
+    4,
+    gettext("Insert the buyrate init block"),
+    "",
+    "NO"
+);
 
 
-$HD_Form->AddEditElement(gettext("BUYRATE BILLING BLOCK"),
+$HD_Form->AddEditElement(
+    gettext("BUYRATE BILLING BLOCK"),
     "buyrateincrement",
-    '$value',
     gettext("Set the billing increment, in seconds (billing block), that the carrier applies. (ie 30 secs)"),
-    "",
-    "INPUT",
     "size=30 maxlength=20",
-    4, gettext("Insert the billing block"), "NO");
+    4,
+    gettext("Insert the billing block"),
+    "",
+    "NO"
+);
 
 
-$HD_Form->AddEditElement(gettext("SELLING RATE"),
+$HD_Form->AddEditElement(
+    gettext("SELLING RATE"),
     "rateinitial",
-    '$value',
     gettext("The retail rate; or the cost per minute to apply to the customer, e.g. 0.02"),
-    gettext("Define the selling cost for customers."),
-    "INPUT",
     "size=30 maxlength=20",
-    12, gettext("Insert the initial rate"));
+    12,
+    gettext("Insert the initial rate"),
+    gettext("Define the selling cost for customers.")
+);
 
 
-$HD_Form->AddEditElement(gettext("SELLRATE MIN DURATION"),
+$HD_Form->AddEditElement(
+    gettext("SELLRATE MIN DURATION"),
     "initblock",
-    '$value',
     gettext("Set the minimum duration to charge the customer (ie 60 seconds)"),
-    "",
-    "INPUT",
     "size=30 maxlength=20",
-    4, gettext("Insert the init block"), "NO");
+    4,
+    gettext("Insert the init block"),
+    "",
+    "NO"
+);
 
 
-$HD_Form->AddEditElement(gettext("SELLRATE BILLING BLOCK"),
+$HD_Form->AddEditElement(
+    gettext("SELLRATE BILLING BLOCK"),
     "billingblock",
-    '$value',
     gettext("Set the billing increment in seconds to bill your customer."),
-    "",
-    "INPUT",
     "size=30 maxlength=20",
-    4, gettext("Insert the billing block"), "NO");
+    4,
+    gettext("Insert the billing block"),
+    "",
+    "NO"
+);
 
 
-$HD_Form->AddEditElement(gettext("CONNECT CHARGE"),
+$HD_Form->AddEditElement(
+    gettext("CONNECT CHARGE"),
     "connectcharge",
-    '$value',
     gettext("Apply a connection charge"),
-    "",
-    "INPUT",
     "size=30 maxlength=20",
-    12, gettext("Insert the connect charge"), "NO");
+    12,
+    gettext("Insert the connect charge"),
+    "",
+    "NO"
+);
 
 
-$HD_Form->AddEditElement(gettext("DISCONNECT CHARGE"),
+$HD_Form->AddEditElement(
+    gettext("DISCONNECT CHARGE"),
     "disconnectcharge",
-    '$value',
     gettext("Apply a disconnection charge"),
-    "",
-    "INPUT",
     "size=30 maxlength=20",
-    12, gettext("Insert the disconnect charge"), "NO");
+    12,
+    gettext("Insert the disconnect charge"),
+    "",
+    "NO"
+);
 
 
-$HD_Form->AddEditElement(gettext("DISCONNECT CHARGE THRESHOLD"),
+$HD_Form->AddEditElement(
+    gettext("DISCONNECT CHARGE THRESHOLD"),
     "disconnectcharge_after",
-    '$value',
     gettext("Apply the disconnection charge if the call duration is greater than this amount of seconds. If 0, it will always apply."),
-    "",
-    "INPUT",
     "size=30 maxlength=20",
-    12, gettext("Insert the disconnect charge threshold"), "NO");
+    12,
+    gettext("Insert the disconnect charge threshold"),
+    "",
+    "NO"
+);
 
 
-$HD_Form->AddEditElement(gettext("MINIMUM CALL COST"),
+$HD_Form->AddEditElement(
+    gettext("MINIMUM CALL COST"),
     "minimal_cost",
-    '$value',
     gettext("Apply a minimum charge for the call."),
-    "",
-    "INPUT",
     "size=30 maxlength=20",
-    12, gettext("Insert the Minimum call cost"), "NO");
+    12,
+    gettext("Insert the Minimum call cost"),
+    "",
+    "NO"
+);
 
 
 if (ADVANCED_MODE) {
 
-    $HD_Form->AddEditElement(gettext("STEPCHARGE A"),
+    $HD_Form->AddEditElement(
+        gettext("STEPCHARGE A"),
         "stepchargea",
-        '$value',
         gettext("When entering in the cycle 'A', define the amount to charge for the entrance."),
+        "size=30 maxlength=20",
+        12,
+        gettext("Insert the stepcharge A"),
         gettext("Below we have the section to create progressive rates. Progressive rate aims to bill the customer at various rates according the duration of the call. For instance you can define that you can to bill the customer 0.33dollars for the first 2 minutes and then you want to bill him 0.45dollars for the rest of the call."),
-        "INPUT",
-        "size=30 maxlength=20",
-        12, gettext("Insert the stepcharge A"), "NO");
+        "NO"
+    );
 
 
-    $HD_Form->AddEditElement(gettext("CHARGE A"),
+    $HD_Form->AddEditElement(
+        gettext("CHARGE A"),
         "chargea",
-        '$value',
         gettext("When entering in the cycle 'A', define the rate to apply."),
-        "",
-        "INPUT",
         "size=30 maxlength=20",
-        12, gettext("Insert the charge A"), "NO");
+        12,
+        gettext("Insert the charge A"),
+        "",
+        "NO"
+    );
 
 
-    $HD_Form->AddEditElement(gettext("TIMECHARGE A"),
+    $HD_Form->AddEditElement(
+        gettext("TIMECHARGE A"),
         "timechargea",
-        '$value',
         gettext("Define the duration of the cycle 'A'."),
-        "",
-        "INPUT",
         "size=30 maxlength=20",
-        4, gettext("Insert the time charge A"), "NO");
+        4,
+        gettext("Insert the time charge A"),
+        "",
+        "NO"
+    );
 
 
-    $HD_Form->AddEditElement(gettext("BILLING BLOCK A"),
+    $HD_Form->AddEditElement(
+        gettext("BILLING BLOCK A"),
         "billingblocka",
-        '$value',
         gettext("Define the duration of each billing block to apply the rate 'CHARGE A'."),
-        "",
-        "INPUT",
         "size=30 maxlength=20",
-        4, gettext("Insert the billing block A"), "NO");
+        4,
+        gettext("Insert the billing block A"),
+        "",
+        "NO"
+    );
 
 
-    $HD_Form->AddEditElement(gettext("STEPCHARGE B"),
+    $HD_Form->AddEditElement(
+        gettext("STEPCHARGE B"),
         "stepchargeb",
-        '$value',
         gettext("When entering in the cycle 'B', define the amount to charge for the entrance."),
-        "",
-        "INPUT",
         "size=30 maxlength=20",
-        12, gettext("Insert the stepcharge B"), "NO");
+        12,
+        gettext("Insert the stepcharge B"),
+        "",
+        "NO"
+    );
 
 
-    $HD_Form->AddEditElement(gettext("CHARGE B"),
+    $HD_Form->AddEditElement(
+        gettext("CHARGE B"),
         "chargeb",
-        '$value',
         gettext("When entering in the cycle 'B', define the rate to apply."),
-        "",
-        "INPUT",
         "size=30 maxlength=20",
-        12, gettext("Insert the charge B"), "NO");
+        12,
+        gettext("Insert the charge B"),
+        "",
+        "NO"
+    );
 
 
-    $HD_Form->AddEditElement(gettext("TIMECHARGE B"),
+    $HD_Form->AddEditElement(
+        gettext("TIMECHARGE B"),
         "timechargeb",
-        '$value',
         gettext("Define the duration of the cycle 'B'."),
-        "",
-        "INPUT",
         "size=30 maxlength=20",
-        4, gettext("Insert the time charge B"), "NO");
+        4,
+        gettext("Insert the time charge B"),
+        "",
+        "NO"
+    );
 
 
-    $HD_Form->AddEditElement(gettext("BILLING BLOCK B"),
+    $HD_Form->AddEditElement(
+        gettext("BILLING BLOCK B"),
         "billingblockb",
-        '$value',
         gettext("Define the duration of each billing block to apply the rate 'CHARGE B'."),
-        "",
-        "INPUT",
         "size=30 maxlength=20",
-        4, gettext("Insert the billing block B"), "NO");
+        4,
+        gettext("Insert the billing block B"),
+        "",
+        "NO"
+    );
 
 
-    $HD_Form->AddEditElement(gettext("STEPCHARGE C"),
+    $HD_Form->AddEditElement(
+        gettext("STEPCHARGE C"),
         "stepchargec",
-        '$value',
         gettext("When entering in the cycle 'C', define the amount to charge for the entrance."),
-        "",
-        "INPUT",
         "size=30 maxlength=20",
-        12, "Insert the stepcharge C", "NO");
+        12,
+        "Insert the stepcharge C",
+        "",
+        "NO"
+    );
 
 
-    $HD_Form->AddEditElement(gettext("CHARGE C"),
+    $HD_Form->AddEditElement(
+        gettext("CHARGE C"),
         "chargec",
-        '$value',
         gettext("When entering in the cycle 'C', define the rate to apply."),
-        "",
-        "INPUT",
         "size=30 maxlength=20",
-        12, gettext("Insert the charge C"), "NO");
+        12,
+        gettext("Insert the charge C"),
+        "",
+        "NO"
+    );
 
 
-    $HD_Form->AddEditElement(gettext("TIMECHARGE C"),
+    $HD_Form->AddEditElement(
+        gettext("TIMECHARGE C"),
         "timechargec",
-        '$value',
         gettext("Define the duration of the cycle 'C'."),
-        "",
-        "INPUT",
         "size=30 maxlength=20",
-        4, gettext("Insert the time charge C"), "NO");
+        4,
+        gettext("Insert the time charge C"),
+        "",
+        "NO"
+    );
 
 
-    $HD_Form->AddEditElement(gettext("BILLING BLOCK C"),
+    $HD_Form->AddEditElement(
+        gettext("BILLING BLOCK C"),
         "billingblockc",
-        '$value',
         gettext("Define the duration of each billing block to apply the rate 'CHARGE C'."),
-        "",
-        "INPUT",
         "size=30 maxlength=20",
-        4, gettext("Insert the billing block C"), "NO");
+        4,
+        gettext("Insert the billing block C"),
+        "",
+        "NO"
+    );
 
 
-    $HD_Form->AddEditElement(gettext("ANNOUNCE TIME CORRECTION"),
+    $HD_Form->AddEditElement(
+        gettext("ANNOUNCE TIME CORRECTION"),
         "announce_time_correction",
-        '$value',
         gettext("Define the multiplier on announce time for clients."),
-        "",
-        "INPUT",
         "size=30 maxlength=20",
-        12, gettext("insert corection for announce time"), "NO");
+        12,
+        gettext("insert corection for announce time"),
+        "",
+        "NO"
+    );
 
 }//ENDif (ADVANCED_MODE)
 
@@ -518,24 +561,30 @@ if ($form_action == "ask-add") {
     $comp_date_plus = "value='" . $begin_date_plus . $end_date . "'";
 }
 
-$HD_Form->AddEditElement(gettext("START DATE"),
+$HD_Form->AddEditElement(
+    gettext("START DATE"),
     "startdate",
-    '$value',
     gettext("Format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
-    gettext("Define the period when this rate table is active."),
-    "INPUT",
     "size=40 maxlength=40  $comp_date",
-    10, gettext("Insert the starting date"), "", "res_display_dateformat");
-
-
-$HD_Form->AddEditElement(gettext("STOP DATE"),
-    "stopdate",
-    '$value',
-    gettext("Leave empty to apply this rate indefinitely. Format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00"),
+    10,
+    gettext("Insert the starting date"),
+    gettext("Define the period when this rate table is active."),
     "",
-    "INPUT",
+    "res_display_dateformat"
+);
+
+
+$HD_Form->AddEditElement(
+    gettext("STOP DATE"),
+    "stopdate",
+    gettext("Leave empty to apply this rate indefinitely. Format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00"),
     "size=40 maxlength=40  $comp_date_plus",
-    10, gettext("Insert the stop date"), "NO-NULL", "res_display_dateformat");
+    10,
+    gettext("Insert the stop date"),
+    "",
+    "NO-NULL",
+    "res_display_dateformat"
+);
 
 
 if ($form_action == "ask-add") {
@@ -565,54 +614,54 @@ $HD_Form->AddEditPopup(
     true
 );
 
-$HD_Form->AddEditElement(gettext("ROUNDING CALLTIME"),
+$HD_Form->AddEditElement(
+    gettext("ROUNDING CALLTIME"),
     "rounding_calltime",
-    '$value',
     gettext("Set the rounding calltime. All the selling rules will apply over this new calltime."),
-    "",
-    "INPUT",
     "size=40 maxlength=40",
-    null, gettext("Insert the rounding calltime"));
+    null,
+    gettext("Insert the rounding calltime")
+);
 
 
-$HD_Form->AddEditElement(gettext("ROUNDING THRESHOLD"),
+$HD_Form->AddEditElement(
+    gettext("ROUNDING THRESHOLD"),
     "rounding_threshold",
-    '$value',
     gettext("Set the rounding threshold"),
-    "",
-    "INPUT",
     "size=40 maxlength=40",
-    null, gettext("Insert the rounding threshold"));
+    null,
+    gettext("Insert the rounding threshold")
+);
 
 
-$HD_Form->AddEditElement(gettext("ADDITIONAL BLOCK CHARGE"),
+$HD_Form->AddEditElement(
+    gettext("ADDITIONAL BLOCK CHARGE"),
     "additional_block_charge",
-    '$value',
     gettext("Set the initial block charge"),
-    "",
-    "INPUT",
     "size=40 maxlength=40",
-    null, gettext("Insert the additional block charge"));
+    null,
+    gettext("Insert the additional block charge")
+);
 
 
-$HD_Form->AddEditElement(gettext("ADDITIONAL BLOCK CHARGE TIME"),
+$HD_Form->AddEditElement(
+    gettext("ADDITIONAL BLOCK CHARGE TIME"),
     "additional_block_charge_time",
-    '$value',
     gettext("Set the initial block charge time"),
-    "",
-    "INPUT",
     "size=40 maxlength=40",
-    null, gettext("Insert the additional block charge time"));
+    null,
+    gettext("Insert the additional block charge time")
+);
 
 
-$HD_Form->AddEditElement(gettext("ADDITIONAL GRACE TIME"),
+$HD_Form->AddEditElement(
+    gettext("ADDITIONAL GRACE TIME"),
     "additional_grace",
-    '$value',
     gettext("Set the additional grace time in sec"),
-    "",
-    "INPUT",
     "size=40 maxlength=40",
-    null, gettext("Insert the additional grace time in sec"));
+    null,
+    gettext("Insert the additional grace time in sec")
+);
 
 $HD_Form->AddEditSqlSelect(
     "id_trunk",
@@ -636,14 +685,16 @@ $HD_Form->AddEditSqlSelect(
     gettext("Set the Outgoing CID Group to use for this destination, or NOT DEFINED to use the rate card trunk.")
 );
 
-$HD_Form->AddEditElement(gettext("TAG"),
+$HD_Form->AddEditElement(
+    gettext("TAG"),
     "tag",
-    '$value',
     gettext("Set a tag on this rate"),
-    "",
-    "INPUT",
     "size=30 maxlength=40",
-    11, "", "NO");
+    11,
+    "",
+    "",
+    "NO"
+);
 
 
 if (ADVANCED_MODE) {

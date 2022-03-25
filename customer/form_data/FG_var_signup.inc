@@ -177,66 +177,93 @@ if (isset ($form_action) && $form_action == "ask-add") {
 	$comp_zero = "value='0'";
 }
 if (LASTNAME_ENABLE)  {
-$HD_Form->AddEditElement(gettext("LASTNAME"),
+$HD_Form->AddEditElement(
+    gettext("LASTNAME"),
     "lastname",
-    '$value',
     "",
-    "", "INPUT",
-    "size=30 maxlength=50", 11, gettext("Insert your lastname"));
+    "size=30 maxlength=50",
+    11,
+    gettext("Insert your lastname")
+);
 $lastname_editFG = "lastname,";
 }
 if (FIRSTNAME_ENABLE)  {
-$HD_Form->AddEditElement(gettext("FIRSTNAME"),
+$HD_Form->AddEditElement(
+    gettext("FIRSTNAME"),
     "firstname",
-    '$value',
     "",
-    "", "INPUT",
-    "size=30 maxlength=50", 11, gettext("Insert your firstname"));
+    "size=30 maxlength=50",
+    11,
+    gettext("Insert your firstname")
+);
 $firstname_editFG = "firstname,";
 }
-$HD_Form->AddEditElement(gettext("EMAIL"),
+$HD_Form->AddEditElement(
+    gettext("EMAIL"),
     "email",
-    '$value',
     "",
-    "", "INPUT",
-    "size=30 maxlength=70", 1, gettext("Insert your email"));
+    "size=30 maxlength=70",
+    1,
+    gettext("Insert your email")
+);
 if (ADDRESS_ENABLE)  {
-$HD_Form->AddEditElement(gettext("ADDRESS"),
+$HD_Form->AddEditElement(
+    gettext("ADDRESS"),
     "address",
-    '$value',
     "",
-    "", "INPUT",
-    "size=30 maxlength=100", 0, gettext("Insert your address"));
+    "size=30 maxlength=100",
+    0,
+    gettext("Insert your address")
+);
 $address_editFG = "address,";
 }
 if (CITY_ENABLE)  {
-$HD_Form->AddEditElement(gettext("CITY"),
+$HD_Form->AddEditElement(
+    gettext("CITY"),
     "city",
-    '$value',
     "",
-    "", "INPUT",
-    "size=30 maxlength=40", 0, gettext("Insert your city"));
+    "size=30 maxlength=40",
+    0,
+    gettext("Insert your city")
+);
 $city_editFG = "city,";
 }
 if (STATE_ENABLE)  {
-$HD_Form->AddEditElement(gettext("STATE/PROVINCE"),
+$HD_Form->AddEditElement(
+    gettext("STATE/PROVINCE"),
     "state",
-    '$value',
     "",
-    "", "INPUT",
-    "size=30 maxlength=40", 11, gettext("Insert your state"), "NO");
+    "size=30 maxlength=40",
+    11,
+    gettext("Insert your state"),
+    "",
+    "NO"
+);
 $state_editFG = "state,";
 }
 if ($form_action == 'ask-add') {
 	$country_default_val = 'USA';
 }
 if (COUNTRY_ENABLE)  {
-    $HD_Form->AddEditSqlSelect("country", gettext("COUNTRY"), "cc_country", "countryname,countrycode", "", $country_default_val);
+    $HD_Form->AddEditSqlSelect(
+        "country",
+        gettext("COUNTRY"),
+        "cc_country", "countryname,countrycode",
+        "",
+        $country_default_val
+    );
     $country_editFG = "country,";
 }
 if (ZIPCODE_ENABLE)  {
-$HD_Form->AddEditElement(gettext("ZIP/POSTAL CODE"), "zipcode", '$value', "", "", "INPUT", "size=30 maxlength=20", 0, gettext("Insert your zipcode"));
-$zipcode_editFG = "zipcode,";
+    $HD_Form->AddEditElement(
+        gettext("ZIP/POSTAL CODE"),
+        "zipcode",
+        "",
+        "size=30 maxlength=20",
+        0,
+        gettext("Insert your zipcode")
+    );
+    $zipcode_editFG = "zipcode,";
 }
 $timezone_list = get_timezones();
 $one_select = false;
@@ -253,56 +280,89 @@ foreach ($timezone_list as $key => $cur_value) {
 	}
 }
 if (TIMEZONE_ENABLE)  {
-$id_timezone_editFG = "id_timezone,";
-$HD_Form->AddEditSelect("id_timezone", $timezone_list, gettext("TIMEZONE"), "", "", $timezone_default_val);
+    $id_timezone_editFG = "id_timezone,";
+    $HD_Form->AddEditSelect(
+        "id_timezone",
+        $timezone_list,
+        gettext("TIMEZONE"),
+        "",
+        "",
+        $timezone_default_val
+    );
 }
 if (PHONE_ENABLE)  {
-$HD_Form->AddEditElement(gettext("PHONENUMBER"),
-    "phone",
-    '$value',
-    "", "",
-    "INPUT", "size=30 maxlength=20", 7, gettext("Insert your phone number"));
-$phone_editFG = "phone,";
+    $HD_Form->AddEditElement(
+        gettext("PHONENUMBER"),
+        "phone",
+        "",
+        "size=30 maxlength=20",
+        7,
+        gettext("Insert your phone number")
+    );
+    $phone_editFG = "phone,";
 }
 if (FAX_ENABLE)  {
-$HD_Form->AddEditElement(gettext("FAXNUMBER"),
-    "fax",
-    '$value',
-    "", "",
-    "INPUT", "size=30 maxlength=20", null, gettext("Insert your fax number"));
-$fax_editFG = "fax,";
+    $HD_Form->AddEditElement(
+        gettext("FAXNUMBER"),
+        "fax",
+        "",
+        "size=30 maxlength=20",
+        null,
+        gettext("Insert your fax number")
+    );
+    $fax_editFG = "fax,";
 }
 if (COMP_ENABLE)  {
-$HD_Form->AddEditElement(gettext("COMPANY NAME"),
-    "company_name",
-    '$value',
-    "", "",
-    "INPUT", "size=40 maxlength=50", null, gettext("Insert Company name of this customer"), "NO");
-$company_name_editFG = "company_name,";
+    $HD_Form->AddEditElement(
+        gettext("COMPANY NAME"),
+        "company_name",
+        "",
+        "size=40 maxlength=50",
+        null,
+        gettext("Insert Company name of this customer"),
+        "",
+        "NO"
+    );
+    $company_name_editFG = "company_name,";
 }
 if (COMP_WEB_ENABLE)  {
-$HD_Form->AddEditElement(gettext("COMPANY WEBSITE"),
-    "company_website",
-    '$value',
-    "", "",
-    "INPUT", "size=40 maxlength=60", null, gettext("Insert the company website of this customer"), "NO");
-$company_website_editFG = "company_website,";
+    $HD_Form->AddEditElement(
+        gettext("COMPANY WEBSITE"),
+        "company_website",
+        "",
+        "size=40 maxlength=60",
+        null,
+        gettext("Insert the company website of this customer"),
+        "",
+        "NO"
+    );
+    $company_website_editFG = "company_website,";
 }
 if (VAT_RN_ENABLE)  {
-$HD_Form->AddEditElement(gettext("VAT REGISTRATION NUMBER "),
-    "VAT_RN",
-    '$value',
-    "", "",
-    "INPUT", "size=40 maxlength=40", null, gettext("Insert the VAT registration number of this customer"), "NO");
-$VAT_RN_editFG = "VAT_RN,";
+    $HD_Form->AddEditElement(
+        gettext("VAT REGISTRATION NUMBER "),
+        "VAT_RN",
+        "",
+        "size=40 maxlength=40",
+        null,
+        gettext("Insert the VAT registration number of this customer"),
+        "",
+        "NO"
+    );
+    $VAT_RN_editFG = "VAT_RN,";
 }
 if (TRAFFIC_ENABLE)  {
-$HD_Form->AddEditElement(gettext("TRAFFIC PER MONTH"),
-    "traffic",
-    '$value',
-    "", "",
-    "INPUT", "size=30 maxlength=20", 4, gettext("Insert the traffic per month for this customer"), "NO");
-$traffic_editFG = "traffic,";
+    $HD_Form->AddEditElement(
+        gettext("TRAFFIC PER MONTH"),
+        "traffic",
+        "",
+        "size=30 maxlength=20",
+        4,
+        gettext("Insert the traffic per month for this customer"),
+        "",
+        "NO"
+    );
+    $traffic_editFG = "traffic,";
 }
 if (TRAFFIC_TARGET_ENABLE)  {
     $HD_Form->AddEditTextarea(
@@ -314,7 +374,17 @@ if (TRAFFIC_TARGET_ENABLE)  {
     $traffic_target_editFG = "traffic_target,";
 }
 if (CAPTCHA_ENABLE) {
-	$HD_Form->AddEditElement(gettext("VERIFICATION"), "captchacode", '$value', "", "", "CAPTCHAIMAGE", "size=10 maxlength=6", 19, gettext("Insert code from above picture"), "", "", "", "", "", "", "", "", "", CAPTCHA_ENABLE);
+    $HD_Form->AddEditElement(
+        gettext("VERIFICATION"),
+        "captchacode",
+        "",
+        "size=10 maxlength=6",
+        19,
+        gettext("Insert code from above picture"),
+        "",
+        "",
+        "",
+        CAPTCHA_ENABLE);
 	$captcha = "captchacode,";
 }
 

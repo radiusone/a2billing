@@ -121,14 +121,14 @@ $HD_Form->AddEditPopup(
     $val_default
 );
 
-$HD_Form -> AddEditElement (gettext("TITLE"),
+$HD_Form->AddEditElement(
+    gettext("TITLE"),
     "title",
-    '$value',
     "",
-    "",
-    "INPUT",
     "size=60 maxlength=50",
-    9, gettext("Insert the Title of ticket "));
+    9,
+    gettext("Insert the Title of ticket ")
+);
 
 $HD_Form->AddEditSqlSelect("id_component", gettext("Insert the Title of ticket"), "cc_support_component", "name,id");
 $HD_Form->AddEditSelect("priority", $priority_list, gettext("PRIORITY"));

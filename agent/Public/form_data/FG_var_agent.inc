@@ -59,111 +59,111 @@ $yesno = getYesNoList();
 
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 
-$HD_Form -> AddEditElement (gettext("LAST NAME"),
+$HD_Form->AddEditElement(
+    gettext("LAST NAME"),
     "lastname",
-    '$value',
     "",
-    "",
-    "INPUT",
     "size=60 maxlength=50",
-    null, gettext("Insert the lastname"));
+    null,
+    gettext("Insert the lastname")
+);
 
-$HD_Form -> AddEditElement (gettext("FIRST NAME"),
+$HD_Form->AddEditElement(
+    gettext("FIRST NAME"),
     "firstname",
-    '$value',
     "",
-    "",
-    "INPUT",
     "size=60 maxlength=50",
-    null, gettext("Insert the firstname"));
+    null,
+    gettext("Insert the firstname")
+);
 
-$HD_Form -> AddEditElement (gettext("ADDRESS"),
+$HD_Form->AddEditElement(
+    gettext("ADDRESS"),
     "address",
-    '$value',
     "",
-    "",
-    "INPUT",
     "size=60 maxlength=250",
-    null, gettext("Insert the address"));
+    null,
+    gettext("Insert the address")
+);
 
-$HD_Form -> AddEditElement (gettext("CITY"),
+$HD_Form->AddEditElement(
+    gettext("CITY"),
     "city",
-    '$value',
     "",
-    "",
-    "INPUT",
     "size=20 maxlength=20",
-    null, gettext("Insert the city"));
+    null,
+    gettext("Insert the city")
+);
 
-$HD_Form -> AddEditElement (gettext("STATE"),
+$HD_Form->AddEditElement(
+    gettext("STATE"),
     "state",
-    '$value',
     "",
-    "",
-    "INPUT",
     "size=20 maxlength=40",
-    null, gettext("Insert the state"));
+    null,
+    gettext("Insert the state")
+);
 
-$HD_Form -> AddEditElement (gettext("COUNTRY"),
+$HD_Form->AddEditElement(
+    gettext("COUNTRY"),
     "country",
-    '$value',
     "",
-    "",
-    "INPUT",
     "size=20 maxlength=40",
-    null, gettext("Insert the country"));
+    null,
+    gettext("Insert the country")
+);
 
-$HD_Form -> AddEditElement (gettext("ZIPCODE"),
+$HD_Form->AddEditElement(
+    gettext("ZIPCODE"),
     "zipcode",
-    '$value',
     "",
-    "",
-    "INPUT",
     "size=10 maxlength=7",
-    null, gettext("Insert the zip code"));
+    null,
+    gettext("Insert the zip code")
+);
 
-$HD_Form -> AddEditElement (gettext("EMAIL"),
+$HD_Form->AddEditElement(
+    gettext("EMAIL"),
     "email",
-    '$value',
     "",
-    "",
-    "INPUT",
     "size=30 maxlength=70",
-    1, gettext("Insert the email"), "NO");
+    1,
+    gettext("Insert the email"),
+    "",
+    "NO"
+);
 
-$HD_Form -> AddEditElement (gettext("PHONE"),
+$HD_Form->AddEditElement(
+    gettext("PHONE"),
     "phone",
-    '$value',
     "",
-    "",
-    "INPUT",
     "size=30 maxlength=20",
-    null, gettext("Insert the telephone number"));
+    null,
+    gettext("Insert the telephone number")
+);
 
-$HD_Form -> AddEditElement (gettext("FAX"),
+$HD_Form->AddEditElement(
+    gettext("FAX"),
     "fax",
-    '$value',
     "",
-    "",
-    "INPUT",
     "size=30 maxlength=20",
-    null, gettext("Insert the fax number"));
+    null,
+    gettext("Insert the fax number")
+);
 
 
-$HD_Form -> AddEditElement (gettext("COMPANY"),
+$HD_Form->AddEditElement(
+    gettext("COMPANY"),
     "company",
-    '$value',
     "",
-    "",
-    "INPUT",
     "size=60 maxlength=50",
-    null, gettext("Insert the company"));
+    null,
+    gettext("Insert the company")
+);
 
 $FG_QUERY_EDITION = ' lastname, firstname, address, city, state, country, zipcode, email, phone,  fax, company';
 
 $HD_Form -> FieldEditElement ($FG_QUERY_EDITION);
-
-
 
 $HD_Form -> FG_INTRO_TEXT_EDITION= gettext("Modify your informations");
 $HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?message=success";

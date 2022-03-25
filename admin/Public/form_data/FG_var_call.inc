@@ -59,14 +59,13 @@ $HD_Form -> FG_ENABLE_ADD_BUTTON = false;
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = false;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 
-$HD_Form -> AddEditElement (gettext("CALL ID"),
+$HD_Form->AddEditElement(
+    gettext("CALL ID"),
     "id",
-    '$value',
     "",
-    "",
-    "INPUT",
     "size=10 maxlength=10",
-    18);
+    18
+);
 
 $HD_Form->AddEditPopup(
     "card_id",
@@ -76,44 +75,38 @@ $HD_Form->AddEditPopup(
     gettext("Insert the Id CardNumber"),
 );
 
-$HD_Form -> AddEditElement (gettext("CALLED NUMBER"),
+$HD_Form->AddEditElement(
+    gettext("CALLED NUMBER"),
     "calledstation",
-    '$value',
     "",
-    "",
-    "INPUT",
     "size=40 maxlength=30",
-    18);
+    18
+);
 
 
-$HD_Form -> AddEditElement (gettext("Source"),
+$HD_Form->AddEditElement(
+    gettext("Source"),
     "src",
-    '$value',
     "",
-    "",
-    "INPUT",
     "size=40 maxlength=30",
-    18);
+    18
+);
 
-$HD_Form -> AddEditElement (gettext("Dnid"),
+$HD_Form->AddEditElement(
+    gettext("Dnid"),
     "dnid",
-    '$value',
     "",
-    "",
-    "INPUT",
     "size=40 maxlength=30",
-    18);
+    18
+);
 
-$HD_Form -> AddEditElement (gettext("Duration"),
+$HD_Form->AddEditElement(
+    gettext("Duration"),
     "sessiontime",
-    '$value',
     "",
-    "",
-    "INPUT",
     "size=40 maxlength=30",
-    18);
-
-
+    18
+);
 
 $HD_Form -> FieldEditElement ('id, card_id, calledstation, src, dnid, sessiontime');
 

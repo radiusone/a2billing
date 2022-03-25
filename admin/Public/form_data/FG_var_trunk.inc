@@ -158,59 +158,59 @@ $HD_Form->AddEditSqlSelect(
     '<option value="-1" selected="selected">' . gettext("NOT DEFINED") . '</option>'
 );
 
-$HD_Form -> AddEditElement (gettext("LABEL"),
+$HD_Form->AddEditElement(
+    gettext("LABEL"),
     "trunkcode",
-    "$value",
     gettext("Unique and friendly name for the trunk"),
-    "",
-    "INPUT",
     "size=45 maxlength=40",
-    3, gettext("Insert the trunkcode"));
+    3,
+    gettext("Insert the trunkcode")
+);
 
-$HD_Form -> AddEditElement (gettext("ADD PREFIX"),
+$HD_Form->AddEditElement(
+    gettext("ADD PREFIX"),
     "trunkprefix",
-    "$value",
     gettext("Add a prefix to the dialled digits."),
-    "",
-    "INPUT",
     "size=30 maxlength=20",
-    null, gettext("Insert the trunkprefix"));
+    null,
+    gettext("Insert the trunkprefix")
+);
 
-$HD_Form -> AddEditElement (gettext("REMOVE PREFIX"),
+$HD_Form->AddEditElement(
+    gettext("REMOVE PREFIX"),
     "removeprefix",
-    "$value",
     gettext("Remove prefix from the dialed digits."),
-    "",
-    "INPUT",
     "size=30 maxlength=20",
-    null, gettext("Insert the removeprefix"));
+    null,
+    gettext("Insert the removeprefix")
+);
 
-$HD_Form -> AddEditElement (gettext("PROVIDER TECH"),
+$HD_Form->AddEditElement(
+    gettext("PROVIDER TECH"),
     "providertech",
-    "$value",
     gettext("Technology used on the trunk (SIP,IAX2,ZAP,H323)"),
-    "",
-    "INPUT",
     "size=20 maxlength=15",
-    0, gettext("Insert the providertech"));
+    0,
+    gettext("Insert the providertech")
+);
 
-$HD_Form -> AddEditElement (gettext("PROVIDER IP"),
+$HD_Form->AddEditElement(
+    gettext("PROVIDER IP"),
     "providerip",
-    "$value",
     gettext("Set the IP or URL of the VoIP provider. Alternatively, put in the name of a previously defined trunk in Asterisk or FreePBX. (MyVoiPTrunk, ZAP4G etc.) You can use the following tags to as variables: %dialingnumber%, %cardnumber%. ie g2/1644787890wwwwwwwwww%dialingnumber%"),
-    "",
-    "INPUT",
     "size=80 maxlength=140",
-    9, gettext("Insert the providerip"));
+    9,
+    gettext("Insert the providerip")
+);
 
-$HD_Form -> AddEditElement (gettext("ADDITIONAL PARAMETER"),
+$HD_Form->AddEditElement(
+    gettext("ADDITIONAL PARAMETER"),
     "addparameter",
-    "$value",
     gettext("Define any additional parameters that will be used when running the Dial Command in Asterisk. Use the following tags as variables  %dialingnumber%, %cardnumber%. ie 'D(ww%cardnumber%wwwwwwwwww%dialingnumber%)'"),
-    "",
-    "INPUT",
     "size=60 maxlength=100",
-    null, gettext("Insert Additional parameters"));
+    null,
+    gettext("Insert Additional parameters")
+);
 
 $HD_Form->AddEditSqlSelect(
     "failover_trunk",
@@ -223,23 +223,22 @@ $HD_Form->AddEditSqlSelect(
     gettext("You can define another trunk in case of failover!")
 );
 
-$HD_Form -> AddEditElement (gettext("CURRENT CONNECTIONS"),
+$HD_Form->AddEditElement(
+    gettext("CURRENT CONNECTIONS"),
     "inuse",
-    "",
     gettext("Updated to show the number of channels currently in use on this trunk.If there are no channels in use, and the system shows that there are, manually reset this field back to zero."),
-    "",
-    "INPUT",
     "size=30 $def_value_inuse maxlength=30",
-    12, gettext("Number of current connections"));
+    12,
+    gettext("Number of current connections"));
 
-$HD_Form -> AddEditElement (gettext("MAXIMUM CONNECTIONS"),
+$HD_Form->AddEditElement(
+    gettext("MAXIMUM CONNECTIONS"),
     "maxuse",
-    "",
     gettext("The maximum number of channels available to this trunk. Set to -1 to have an unlimited number of channels"),
-    "",
-    "INPUT",
     "size=30 $def_value_maxuse maxlength=30",
-    12, gettext("Number of maximum simultaneous connections"));
+    12,
+    gettext("Number of maximum simultaneous connections")
+);
 
 $HD_Form->AddEditSelect(
     "if_max_use",

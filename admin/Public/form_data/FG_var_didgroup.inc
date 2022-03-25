@@ -77,14 +77,14 @@ $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 
-$HD_Form -> AddEditElement (gettext("NAME"),
+$HD_Form->AddEditElement(
+    gettext("NAME"),
     "didgroupname",
-    '$value',
     "",
-    "",
-    "INPUT",
     "size=30 maxlength=20",
-    9, gettext("Insert the Did group name "));
+    9,
+    gettext("Insert the Did group name ")
+);
 
 $HD_Form -> FieldEditElement ('didgroupname');
 

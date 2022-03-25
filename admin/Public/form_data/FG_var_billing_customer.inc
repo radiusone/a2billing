@@ -79,14 +79,14 @@ if ($form_action=="ask-add"){
     $comp_date="value='$comp_date'";
 }
 
-$HD_Form -> AddEditElement (gettext("BILLING DATE"),
+$HD_Form->AddEditElement(
+    gettext("BILLING DATE"),
     "date",
-    '$value',
     "",
-    "",
-    "INPUT",
     "size=40 maxlength=40 $comp_date",
-    8, gettext("Insert the current date (YYYY-MM-DD)"));
+    8,
+    gettext("Insert the current date (YYYY-MM-DD)")
+);
 
 $HD_Form -> FieldEditElement ('id_card, date');
 

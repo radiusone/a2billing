@@ -110,14 +110,14 @@ if ($popup_select) {
 }
 
 
-$HD_Form -> AddEditElement (gettext("NAME"),
+$HD_Form->AddEditElement(
+    gettext("NAME"),
     "tariffgroupname",
-    '$value',
     "",
-    "",
-    "INPUT",
     "size=30 maxlength=20",
-    9, gettext("Insert the Call Plan name "));
+    9,
+    gettext("Insert the Call Plan name ")
+);
 
 $HD_Form->AddEditSelect("lcrtype", $lcrtype_list, gettext("LC TYPE"));
 

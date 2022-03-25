@@ -115,23 +115,23 @@ $HD_Form -> FG_OTHER_BUTTON1_IMG = Images_Path . "/icon-viewdetails.gif";
 $HD_Form -> FG_OTHER_BUTTON1_ALT = gettext("VIEW DETAILS");
 
 
-$HD_Form -> AddEditElement (gettext("NAME"),
+$HD_Form->AddEditElement(
+    gettext("NAME"),
     "name",
-    "$value",
     "",
-    "",
-    "INPUT",
     "size=35 maxlength=30",
-    3, gettext("Insert the service name"));
+    3,
+    gettext("Insert the service name")
+);
 
-$HD_Form -> AddEditElement (gettext("AMOUNT CREDIT"),
+$HD_Form->AddEditElement(
+    gettext("AMOUNT CREDIT"),
     "amount",
-    '$value',
     gettext("Set the amount of credit to remove from the card. 0 will remove all credit from the card use -1 for DID recurrent service."),
-    "",
-    "INPUT",
     "size=30 maxlength=30",
-    12, gettext("Insert the number of credit to remove from the cards."));
+    12,
+    gettext("Insert the number of credit to remove from the cards.")
+);
 
 $HD_Form->AddEditSelect(
     "rule",
@@ -140,38 +140,44 @@ $HD_Form->AddEditSelect(
     gettext("where X - day number (X) in days <br>	and Y = number set in period field")
 );
 
-$HD_Form -> AddEditElement ("DAY NUMBER (X)",
+$HD_Form->AddEditElement(
+    gettext("DAY NUMBER (X)"),
     "daynumber",
-    "$value",
     gettext("Set the number of days to apply to the rule above."),
-    "",
-    "INPUT",
     "size=20 maxlength=3",
-    4, gettext("Insert the daynumber"), "NO");
+    4,
+    gettext("Insert the daynumber"),
+    "",
+    "NO"
+);
 
 $HD_Form->AddEditSelect("period", $period_list, gettext("PERIOD (Y)"), gettext("Interval to apply service"));
 
 $HD_Form->AddEditSelect("stopmode", $stopmode_list, gettext("STOP MODE"));
 
-$HD_Form -> AddEditElement ("MAX NUMBER OF CYCLES BY CARD",
+$HD_Form->AddEditElement(
+    gettext("MAX NUMBER OF CYCLES BY CARD"),
     "maxnumbercycle",
-    "$value",
     gettext("Set the maximum number of times that the service should be applied."),
-    "",
-    "INPUT",
     "size=20 maxlength=3",
-    4, gettext("Insert the max number of cycle"), "NO-NULL");
+    4,
+    gettext("Insert the max number of cycle"),
+    "",
+    "NO-NULL"
+);
 
 $HD_Form->AddEditSelect("status", $actived_list, gettext("STATUS"));
 
-$HD_Form -> AddEditElement (gettext("EMAIL TO SEND REPORT"),
+$HD_Form->AddEditElement(
+    gettext("EMAIL TO SEND REPORT"),
     "emailreport",
-    '$value',
     "",
-    "",
-    "INPUT",
     "size=30 maxlength=30",
-    1, gettext("Insert the email to send the report"), "NO-NULL");
+    1,
+    gettext("Insert the email to send the report"),
+    "",
+    "NO-NULL"
+);
 
 $HD_Form->AddEditSqlSelect(
     "dialplan",

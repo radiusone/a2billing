@@ -108,14 +108,16 @@ $HD_Form->AddEditRadio(
     gettext("Choose if you want to enable the notification by email for this card")
 );
 
-$HD_Form -> AddEditElement (gettext("EMAIL NOTIFICATION"),
+$HD_Form->AddEditElement(
+    gettext("EMAIL NOTIFICATION"),
     "email_notification",
-    '$value',
     "",
-    "",
-    "INPUT",
     "size=30 maxlength=70",
-    1, gettext("Insert the email to notify the customers"), "NO");
+    1,
+    gettext("Insert the email to notify the customers"),
+    "",
+    "NO"
+);
 
 $HD_Form -> FieldEditElement ('credit_notification, notify_email, email_notification');
 

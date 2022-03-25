@@ -77,24 +77,24 @@ $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 
-$HD_Form -> AddEditElement (gettext("LABEL"),
+$HD_Form->AddEditElement(
+    gettext("LABEL"),
     "label",
-    "$value",
     "",
-    "",
-    "INPUT",
     "size=30 maxlength=50",
-    3, gettext("Insert the label"));
+    3,
+    gettext("Insert the label")
+);
 
 
-$HD_Form -> AddEditElement (gettext("DIAL CODE"),
+$HD_Form->AddEditElement(
+    gettext("DIAL CODE"),
     "dial_code",
-    "$value",
     "",
-    "",
-    "INPUT",
     "size=5 maxlength=3",
-    4, gettext("Insert the dial code"));
+    4,
+    gettext("Insert the dial code")
+);
 
 
 $HD_Form->AddEditTextarea(
@@ -104,14 +104,14 @@ $HD_Form->AddEditTextarea(
     gettext("Insert the description")
 );
 
-$HD_Form -> AddEditElement (gettext("TEXT INTRO"),
+$HD_Form->AddEditElement(
+    gettext("TEXT INTRO"),
     "text_intro",
-    "$value",
     "",
-    "",
-    "INPUT",
     "size=30 maxlength=50",
-    3, gettext("Insert the text intro"));
+    3,
+    gettext("Insert the text intro")
+);
 
 $HD_Form->AddEditSelect("query_type", $mquery_type_list, gettext("QUERY TYPE"), gettext("Define type of the query that will be performed."));
 
@@ -125,7 +125,12 @@ $HD_Form->AddEditTextarea(
     gettext("Shell Script need to be copied into the directory") . SCRIPT_CONFIG_DIR . "<br>" . gettext("Do not specify the path here.")
 );
 
-$HD_Form->AddEditSelect("result_type", $mresult_type_list, gettext("SAY RESULT AS"), gettext("Define type of result."));
+$HD_Form->AddEditSelect(
+    "result_type",
+    $mresult_type_list,
+    gettext("SAY RESULT AS"),
+    gettext("Define type of result.")
+);
 
 $HD_Form->AddEditRadio(
     "enable",

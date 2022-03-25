@@ -110,23 +110,23 @@ if (has_rights (ACX_MODIFY_REFILLS)) {
 		$comp_date="value='$comp_date'";
 	}
 
-	$HD_Form -> AddEditElement (gettext("REFILL DATE"),
+    $HD_Form->AddEditElement(
+        gettext("REFILL DATE"),
         "date",
-        '$value',
         "",
-        "",
-        "INPUT",
         "size=40 maxlength=40  $comp_date",
-        10, gettext("Insert the current date"));
+        10,
+        gettext("Insert the current date")
+    );
 
-	$HD_Form -> AddEditElement (gettext("REFILL AMOUNT"),
+    $HD_Form->AddEditElement(
+        gettext("REFILL AMOUNT"),
         "credit",
-        '$value',
         gettext("Enter the amount in the currency base : ") . BASE_CURRENCY,
-        "",
-        "INPUT",
         "size=60 maxlength=10",
-        12, gettext("Insert the credit amount"));
+        12,
+        gettext("Insert the credit amount")
+    );
 
     $HD_Form->AddEditTextarea(
         "description",

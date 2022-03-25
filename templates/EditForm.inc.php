@@ -80,7 +80,7 @@ $options = null
                     <?= $row["attributes"] ?>
                     <?php if ($this->VALID_SQL_REG_EXP): /* what is VALID_SQL_REG_EXP */ ?>
                         value="<?= $db_data[$i] ?>"
-                    <?php else: /* this doesn't make sense; did they mean defaultvalue – formerly index 2 – instead? */ ?>
+                    <?php else: ?>
                         value="<?= $processed[$row["name"]] ?>"
                     <?php endif ?>
                 />

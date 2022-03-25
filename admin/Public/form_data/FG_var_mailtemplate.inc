@@ -136,42 +136,42 @@ if ($popup_select >= 1) {
 
 $HD_Form->AddEditSelect("mailtype", $typemail_list, gettext("MAIL TYPE"));
 
-$HD_Form -> AddEditElement (gettext("LANGUAGE"),
+$HD_Form->AddEditElement(
+    gettext("LANGUAGE"),
     "id_language",
-    '',
     "",
-    "",
-    "INPUT",
     "size=30 maxlength=60",
-    null, gettext("Insert the mail id language"));
+    null,
+    gettext("Insert the mail id language")
+);
 
 
-$HD_Form -> AddEditElement (gettext("FROM EMAIL"),
+$HD_Form->AddEditElement(
+    gettext("FROM EMAIL"),
     "fromemail",
-    '',
     "",
-    "",
-    "INPUT",
     "size=30 maxlength=60",
-    1, gettext("Insert the user fromemail"));
+    1,
+    gettext("Insert the user fromemail")
+);
 
-$HD_Form -> AddEditElement (gettext("FROM NAME"),
+$HD_Form->AddEditElement(
+    gettext("FROM NAME"),
     "fromname",
-    '',
     "",
-    "",
-    "INPUT",
     "size=30 maxlength=60",
-    null, gettext("Insert the user fromname"));
+    null,
+    gettext("Insert the user fromname")
+);
 
-$HD_Form -> AddEditElement (gettext("SUBJECT"),
+$HD_Form->AddEditElement(
+    gettext("SUBJECT"),
     "subject",
-    '',
     "",
-    "",
-    "INPUT",
     "size=30 maxlength=80",
-    null, gettext("Insert the user subject"));
+    null,
+    gettext("Insert the user subject")
+);
 
 $HD_Form->AddEditTextarea(
     "messagetext",

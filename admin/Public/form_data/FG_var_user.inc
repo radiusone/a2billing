@@ -126,33 +126,33 @@ if (has_rights (ACX_MODIFY_ADMINS) && !($popup_select)) {
 	$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 
 	if ($form_action!="ask-add" && $form_action!="add") {
-		$HD_Form -> AddEditElement (gettext("USERID"),
+        $HD_Form->AddEditElement(
+            gettext("USERID"),
             "userid",
-            '$value',
             "",
-            "",
-            "INPUT",
             "size=8 READONLY maxlength=6",
-            4, gettext("Insert the userid"));
+            4,
+            gettext("Insert the userid")
+        );
 	}
 
-	$HD_Form -> AddEditElement (gettext("LOGIN"),
+    $HD_Form->AddEditElement(
+        gettext("LOGIN"),
         "login",
-        '$value',
         "",
-        "",
-        "INPUT",
         "size=30 maxlength=12",
-        3, gettext("Insert the username"));
+        3,
+        gettext("Insert the username")
+    );
 
-	$HD_Form -> AddEditElement (gettext("PASSWORD"),
+    $HD_Form->AddEditElement(
+        gettext("PASSWORD"),
         "pwd_encoded",
-        '$value',
         "",
-        "",
-        "INPUT",
         "type=password size=30 maxlength=30",
-        3, gettext("Insert the Reseller password"));
+        3,
+        gettext("Insert the Reseller password")
+    );
 
 	if ($groupID!="0") {
         $HD_Form->AddEditSelect(
@@ -167,84 +167,85 @@ if (has_rights (ACX_MODIFY_ADMINS) && !($popup_select)) {
 	}
 
 
-	$HD_Form -> AddEditElement (gettext("NAME"),
+    $HD_Form->AddEditElement(
+        gettext("NAME"),
         "name",
-        '$value',
         "",
-        "",
-        "INPUT",
         "size=60 maxlength=50",
-        null, gettext("Insert the name"));
+        null,
+        gettext("Insert the name")
+    );
 
-	$HD_Form -> AddEditElement (gettext("ADDRESS"),
+    $HD_Form->AddEditElement(
+        gettext("ADDRESS"),
         "direction",
-        '$value',
         "",
-        "",
-        "INPUT",
         "size=60 maxlength=250",
-        null, gettext("Insert the direction"));
-	$HD_Form -> AddEditElement (gettext("CITY"),
+        null,
+        gettext("Insert the direction")
+    );
+
+    $HD_Form->AddEditElement(
+        gettext("CITY"),
         "city",
-        '$value',
         "",
-        "",
-        "INPUT",
         "size=30 maxlength=30",
-        null, gettext("Insert the country"));
+        null,
+        gettext("Insert the country")
+    );
 
-	$HD_Form -> AddEditElement (gettext("ZIPCODE"),
+    $HD_Form->AddEditElement(
+        gettext("ZIPCODE"),
         "zipcode",
-        '$value',
         "",
-        "",
-        "INPUT",
         "size=10 maxlength=7",
-        null, gettext("Insert the zip code"));
+        null,
+        gettext("Insert the zip code")
+    );
 
-	$HD_Form -> AddEditElement (gettext("STATE"),
+    $HD_Form->AddEditElement(
+        gettext("STATE"),
         "state",
-        '$value',
         "",
-        "",
-        "INPUT",
         "size=30 maxlength=30",
-        null, gettext("Insert the state"));
-	$HD_Form -> AddEditElement (gettext("COUNTRY"),
+        null,
+        gettext("Insert the state")
+    );
+
+    $HD_Form->AddEditElement(
+        gettext("COUNTRY"),
         "country",
-        '$value',
         "",
-        "",
-        "INPUT",
         "size=30 maxlength=30",
-        null, gettext("Insert the country"));
+        null,
+        gettext("Insert the country")
+    );
 
-	$HD_Form -> AddEditElement (gettext("PHONE"),
+    $HD_Form->AddEditElement(
+        gettext("PHONE"),
         "phone",
-        '$value',
         "",
-        "",
-        "INPUT",
         "size=30 maxlength=20",
-        null, gettext("Insert the telephone number"));
+        null,
+        gettext("Insert the telephone number")
+    );
 
-	$HD_Form -> AddEditElement (gettext("FAX"),
+    $HD_Form->AddEditElement(
+        gettext("FAX"),
         "fax",
-        '$value',
         "",
-        "",
-        "INPUT",
         "size=30 maxlength=20",
-        null, gettext("Insert the fax number"));
-	$HD_Form -> AddEditElement (gettext("EMAIL"),
-        "email",
-        '$value',
-        "",
-        "",
-        "INPUT",
-        "size=30 maxlength=70",
-        null, gettext("Insert the email"));
+        null,
+        gettext("Insert the fax number")
+    );
 
+    $HD_Form->AddEditElement(
+        gettext("EMAIL"),
+        "email",
+        "",
+        "size=30 maxlength=70",
+        null,
+        gettext("Insert the email"));
 
 	if (($groupID=="2") || ($groupID=="3")) {
 		if ($groupID=="2") {

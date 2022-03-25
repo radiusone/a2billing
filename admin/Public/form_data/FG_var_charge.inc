@@ -123,14 +123,14 @@ $HD_Form_c->AddEditPopup(
     gettext("Insert the Customer ID")
 );
 
-$HD_Form_c -> AddEditElement (gettext("AMOUNT"),
+$HD_Form_c->AddEditElement(
+    gettext("AMOUNT"),
     "amount",
-    '$value',
     "",
-    "",
-    "INPUT",
     "size=20  maxlength=20 $val_default_fixrate",
-    12, gettext("Insert the amount"));
+    12,
+    gettext("Insert the amount")
+);
 
 $HD_Form_c->AddEditSelect("chargetype", $chargetype_list, gettext("CHARGE TYPE"));
 

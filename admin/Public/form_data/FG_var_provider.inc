@@ -82,13 +82,14 @@ if ($popup_select) {
 	$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 }
 
-$HD_Form -> AddEditElement (gettext("PROVIDER NAME"),
-    "provider_name", '$value',
+$HD_Form->AddEditElement(
+    gettext("PROVIDER NAME"),
+    "provider_name",
     "",
-    "",
-    "INPUT",
     "size=40 maxlength=40",
-    0, gettext("Insert the provider name"));
+    0,
+    gettext("Insert the provider name")
+);
 
 $HD_Form->AddEditTextarea(
     "description",

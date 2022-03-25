@@ -108,14 +108,14 @@ $HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 
 $HD_Form->AddEditSqlSelect("creator", gettext("AGENT"), "cc_agent", "login,id,firstname,lastname", "", "", "", "", "%1 (%3, %4)");
 
-$HD_Form -> AddEditElement (gettext("TITLE"),
+$HD_Form->AddEditElement(
+    gettext("TITLE"),
     "title",
-    '$value',
     "",
-    "",
-    "INPUT",
     "size=60 maxlength=50",
-    9, gettext("Insert the Title of ticket "));
+    9,
+    gettext("Insert the Title of ticket ")
+);
 
 $HD_Form->AddEditSqlSelect("id_component", gettext("COMPONENT"), "cc_support_component", "name,id");
 

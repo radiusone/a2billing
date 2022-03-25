@@ -106,7 +106,7 @@ $options = null;
                 <?php foreach ($options as $option): ?>
                 <option
                     value="<?= $option[1] ?>"
-                    <?php if ($row["default"] === $option[1]): ?>selected="selected"<?php endif ?>
+                    <?php if ($option[1] === $row["default"]): ?>selected="selected"<?php endif ?>
                 >
                     <?= preg_replace_callback("/%([0-9]+)/", fn ($m) => str_replace($m[0], $option[$m[1] - 1] ?? "", $m[0]), $row["select_format"]); ?>
                 </option>

@@ -116,22 +116,23 @@ if ($form_action=="ask-add"){
 	$comp_date="value='$comp_date'";
 }
 
-$HD_Form -> AddEditElement (gettext("INVOICE DATE"),
+$HD_Form->AddEditElement(
+    gettext("INVOICE DATE"),
     "date",
-    '$value',
     "",
-    "",
-    "INPUT",
     "size=40 READONLY maxlength=40  $comp_date",
-    10, gettext("Insert the current date"));
+    10,
+    gettext("Insert the current date")
+);
 
-$HD_Form -> AddEditElement (gettext("TITLE"),
-    "title", '$value',
+$HD_Form->AddEditElement(
+    gettext("TITLE"),
+    "title",
     "",
-    "",
-    "INPUT",
     "size=30 maxlength=50",
-    0, gettext("Insert the title of invoice, if you need one"));
+    0,
+    gettext("Insert the title of invoice, if you need one")
+);
 
 $HD_Form->AddEditTextarea(
     "description",

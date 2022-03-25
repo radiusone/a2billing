@@ -148,20 +148,22 @@ if (has_rights (ACX_MODIFY_AGENTS) && !($popup_select)) {
 	$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 
 
-	$HD_Form -> AddEditElement (gettext("LOGIN"),
+	$HD_Form->AddEditElement(
+        gettext("LOGIN"),
         "login",
-        '$value',
         "",
-        "",
-        "INPUT", "size=30 maxlength=12", 3, gettext("Insert the login"));
+        "size=30 maxlength=12",
+        3,
+        gettext("Insert the login")
+    );
 
-	$HD_Form -> AddEditElement (gettext("PASSWORD"),
+    $HD_Form->AddEditElement(
+        gettext("PASSWORD"),
         "passwd",
-        '$value',
         "",
-        "",
-        "INPUT",
-        "size=30 maxlength=15", 3, gettext("Insert the password"));
+        "size=30 maxlength=15",
+        3, gettext("Insert the password")
+    );
 
     $HD_Form->AddEditSelect(
         "perms",
@@ -190,153 +192,159 @@ if (has_rights (ACX_MODIFY_AGENTS) && !($popup_select)) {
         $default_com_bal = "";
 	}
 
-	$HD_Form -> AddEditElement (gettext("BALANCE"),
+    $HD_Form->AddEditElement(
+        gettext("BALANCE"),
         "credit",
-        "",
         gettext("currency : ") . strtoupper(BASE_CURRENCY),
-        "",
-        "INPUT",
         "size=30 maxlength=30 $balance_access",
-        12, gettext("amount of credit"));
+        12,
+        gettext("amount of credit")
+    );
 
-	$HD_Form -> AddEditElement (gettext("COMMISSION BALANCE"),
+    $HD_Form->AddEditElement(
+        gettext("COMMISSION BALANCE"),
         "com_balance",
-        "",
         gettext("currency : ") . strtoupper(BASE_CURRENCY),
-        "",
-        "INPUT",
         "readonly $default_com_bal",
-        null, gettext("amount of commission"));
+        null,
+        gettext("amount of commission")
+    );
 
     $HD_Form->AddEditSelect("currency", $currency_list, gettext("CURRENCY"), gettext("Currency used at the customer end."));
 
-	$HD_Form -> AddEditElement (gettext("COMMISSION PERCENTAGE"),
+    $HD_Form->AddEditElement(
+        gettext("COMMISSION PERCENTAGE"),
         "commission",
-        "",
         gettext("Commission in percent"),
-        "",
-        "INPUT",
         "size=20 maxlength=20",
-        21, gettext("Insert the commision"), "NO-NULL");
+        21,
+        gettext("Insert the commision"),
+        "",
+        "NO-NULL"
+    );
 
-    $HD_Form -> AddEditElement (gettext("THRESHOLD REMITTANCE"),
+    $HD_Form->AddEditElement(
+        gettext("THRESHOLD REMITTANCE"),
         "threshold_remittance",
-        "",
         gettext("currency : ") . strtoupper(BASE_CURRENCY),
-        "",
-        "INPUT",
         "size=20 maxlength=20",
-        12, gettext("treshold remittance"));
+        12,
+        gettext("treshold remittance")
+    );
 
-	$HD_Form -> AddEditElement (gettext("VAT"),
-        "vat",
-        "",
+    $HD_Form->AddEditElement(
         gettext("VAT"),
-        "",
-        "INPUT",
+        "vat",
+        gettext("VAT"),
         "size=20 maxlength=20",
-        12, gettext("Insert the VAT"), "NO-NULL");
+        12,
+        gettext("Insert the VAT"),
+        "",
+        "NO-NULL"
+    );
 
     $HD_Form->AddEditSelect("language", $language_list, gettext("LANGUAGE"));
 
-	$HD_Form -> AddEditElement (gettext("COMPANY"),
+    $HD_Form->AddEditElement(
+        gettext("COMPANY"),
         "company",
-        '$value',
         "",
-        "",
-        "INPUT",
         "size=60 maxlength=50",
-        null, gettext("Insert the company"));
+        null,
+        gettext("Insert the company")
+    );
 
-	$HD_Form -> AddEditElement (gettext("LAST NAME"),
+    $HD_Form->AddEditElement(
+        gettext("LAST NAME"),
         "lastname",
-        '$value',
         "",
-        "",
-        "INPUT",
         "size=60 maxlength=50",
-        null, gettext("Insert the lastname"));
+        null,
+        gettext("Insert the lastname")
+    );
 
-	$HD_Form -> AddEditElement (gettext("FIRST NAME"),
+    $HD_Form->AddEditElement(
+        gettext("FIRST NAME"),
         "firstname",
-        '$value',
         "",
-        "",
-        "INPUT",
         "size=60 maxlength=50",
-        null, gettext("Insert the firstname"));
+        null,
+        gettext("Insert the firstname")
+    );
 
-	$HD_Form -> AddEditElement (gettext("ADDRESS"),
+    $HD_Form->AddEditElement(
+        gettext("ADDRESS"),
         "address",
-        '$value',
         "",
-        "",
-        "INPUT",
         "size=60 maxlength=250",
-        null, gettext("Insert the address"));
+        null,
+        gettext("Insert the address")
+    );
 
-	$HD_Form -> AddEditElement (gettext("CITY"),
+    $HD_Form->AddEditElement(
+        gettext("CITY"),
         "city",
-        '$value',
         "",
-        "",
-        "INPUT",
         "size=20 maxlength=20",
-        null, gettext("Insert the city"));
+        null,
+        gettext("Insert the city")
+    );
 
-	$HD_Form -> AddEditElement (gettext("STATE"),
+    $HD_Form->AddEditElement(
+        gettext("STATE"),
         "state",
-        '$value',
         "",
-        "",
-        "INPUT",
         "size=20 maxlength=40",
-        null, gettext("Insert the state"));
+        null,
+        gettext("Insert the state")
+    );
 
-	$HD_Form -> AddEditElement (gettext("COUNTRY"),
+    $HD_Form->AddEditElement(
+        gettext("COUNTRY"),
         "country",
-        '$value',
         "",
-        "",
-        "INPUT",
         "size=20 maxlength=40",
-        null, gettext("Insert the country"));
+        null,
+        gettext("Insert the country")
+    );
 
-	$HD_Form -> AddEditElement (gettext("ZIPCODE"),
+    $HD_Form->AddEditElement(
+        gettext("ZIPCODE"),
         "zipcode",
-        '$value',
         "",
-        "",
-        "INPUT",
         "size=10 maxlength=7",
-        null, gettext("Insert the zip code"));
+        null,
+        gettext("Insert the zip code")
+    );
 
-	$HD_Form -> AddEditElement (gettext("EMAIL"),
+    $HD_Form->AddEditElement(
+        gettext("EMAIL"),
         "email",
-        '$value',
         "",
-        "",
-        "INPUT",
         "size=30 maxlength=70",
-        1, gettext("Insert the email"), "NO");
+        1,
+        gettext("Insert the email"),
+        "",
+        "NO"
+    );
 
-	$HD_Form -> AddEditElement (gettext("PHONE"),
+    $HD_Form->AddEditElement(
+        gettext("PHONE"),
         "phone",
-        '$value',
         "",
-        "",
-        "INPUT",
         "size=30 maxlength=20",
-        null, gettext("Insert the telephone number"));
+        null,
+        gettext("Insert the telephone number")
+    );
 
-	$HD_Form -> AddEditElement (gettext("FAX"),
+    $HD_Form->AddEditElement(
+        gettext("FAX"),
         "fax",
-        '$value',
         "",
-        "",
-        "INPUT",
         "size=30 maxlength=20",
-        null, gettext("Insert the fax number"));
+        null,
+        gettext("Insert the fax number")
+    );
 
     $HD_Form->AddEditTextarea(
         "bank_info",

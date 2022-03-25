@@ -100,23 +100,29 @@ $HD_Form->AddEditSqlSelect(
     '<option value="-1" selected="selected">' . gettext("NOT DEFINED") . '</option>'
 );
 
-$HD_Form -> AddEditElement (gettext("START DATE"),
+$HD_Form->AddEditElement(
+    gettext("START DATE"),
     "startdate",
-    '$value',
     gettext("please use the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
-    "",
-    "INPUT",
     "size=40 maxlength=40  $comp_date",
-    10, gettext("Insert the start date"), "NO-NULL", "res_display_dateformat");
-
-$HD_Form -> AddEditElement (gettext("STOP DATE"),
-    "stopdate",
-    '$value',
-    gettext("please use the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
+    10,
+    gettext("Insert the start date"),
     "",
-    "INPUT",
+    "NO-NULL",
+    "res_display_dateformat"
+);
+
+$HD_Form->AddEditElement(
+    gettext("STOP DATE"),
+    "stopdate",
+    gettext("please use the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
     "size=40 maxlength=40  $comp_date_plus",
-    10, gettext("Insert the stop date"), "NO-NULL", "res_display_dateformat");
+    10,
+    gettext("Insert the stop date"),
+    "",
+    "NO-NULL",
+    "res_display_dateformat"
+);
 
 $HD_Form->AddEditTextarea(
     "product_name",

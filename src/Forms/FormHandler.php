@@ -693,63 +693,37 @@ class FormHandler
 	 */
 
     public function AddEditElement(
-        string $displayname,
-        string $fieldname,
-               $defaultvalue, // only used for radio buttons
-        string $label_text = "",
-        string $toplabel_text = "",
-        string $fieldtype = "INPUT",
-        string $fieldproperty = "",
+        string $label_text,
+        string $fieldname, // only used for radio buttons
+        string $form_text_bottom = "",
+        string $html_attributes = "",
         ?int   $regexpr_nb = null,
         string $error_message = "",
+        string $section_name = "",
         string $check_emptyvalue = "",
         string $custom_function = "",
-        string $select_type = "",
-        string $lie_tablename = "",
-        string $lie_tablefield = "",
-               $lie_clause = "",
-               $listname = "",
-        string $displayformat_selectfield = "",
-        string $custom_query = "",
         bool   $field_enabled = true
     )
     {
-        $fieldtype = strtoupper($fieldtype);
-
-        if ($field_enabled === true) {
-            $cur = count($this->FG_EDIT_FORM_ELEMENTS);
-            $assoc = [
-                "label" => $displayname, // 0
-                "name" => $fieldname, // 1
-                "default" => $defaultvalue, // 2
-                "type" => strtoupper($fieldtype), // 3
-                "attributes" => $fieldproperty, // 4
-                "regex" => $regexpr_nb, // 5
-                "error" => $error_message, // 6
-                "select_type" => strtoupper($select_type), // 7
-                "sql_table" => $lie_tablename, // 8
-                "sql_field" => $lie_tablefield, // 9
-                "sql_clause" => $lie_clause, // 10
-                "select_fields" => $listname, // 11
-                "select_format" => $displayformat_selectfield, // 12
-                "check_empty" => strtoupper($check_emptyvalue), // 13
-                "custom_query" => $custom_query, // 14
-                "first_option" => $custom_function, // 15
-                "section_name" => $toplabel_text, // 16
-
-                // extra repeated values because same index is used for multiple purposes
-                "radio_options" => $lie_clause, // 10
-                "popup_dest" => $displayformat_selectfield, //12
-                "popup_params" => $check_emptyvalue, //13
-                "popup_timeval" => $custom_query, //14
-                "custom_function" => $custom_function, //15
-                "comment" => $label_text,
-
-                "validation_err" => true,
-            ];
-            $this->FG_EDIT_FORM_ELEMENTS[$cur] = $assoc + array_values($assoc);
-            $this->FG_ADD_FORM_ELEMENTS[$cur] = $this->FG_EDIT_FORM_ELEMENTS[$cur];
+        if (!$field_enabled) {
+            return;
         }
+        $cur = count($this->FG_EDIT_FORM_ELEMENTS);
+        $data = [
+            "label" => $label_text, // 0
+            "name" => $fieldname, // 1
+            "type" => "INPUT", // 3
+            "attributes" => $html_attributes, // 4
+            "regex" => $regexpr_nb, // 5
+            "error" => $error_message, // 6
+            "check_empty" => strtoupper($check_emptyvalue), // 13
+            "section_name" => $section_name, // 16
+            "custom_function" => $custom_function, //15
+            "comment" => $form_text_bottom,
+            "validation_err" => true,
+        ];
+        $this->FG_EDIT_FORM_ELEMENTS[$cur] = $data;
+        $this->FG_ADD_FORM_ELEMENTS[$cur] = $data;
     }
 
     /**

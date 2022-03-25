@@ -85,14 +85,14 @@ $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 
 
-$HD_Form -> AddEditElement (gettext("NAME"),
+$HD_Form->AddEditElement(
+    gettext("NAME"),
     "name",
-    '$value',
     "",
-    "",
-    "INPUT",
     "size=30 maxlength=20",
-    9, gettext("Insert the Support Box name "));
+    9,
+    gettext("Insert the Support Box name ")
+);
 
 $HD_Form->AddEditRadio(
     "activated",

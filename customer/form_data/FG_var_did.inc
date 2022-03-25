@@ -124,14 +124,14 @@ $HD_Form -> FG_VIEW_TABLE_WITDH = '80%';
 
 if (isset($form_action) && ($form_action=='ask-edit')) {
 
-    $HD_Form -> AddEditElement (gettext("DESTINATION"),
+    $HD_Form->AddEditElement(
+        gettext("DESTINATION"),
         "destination",
-        '$value',
         gettext("Enter here the phonenumber you want to call or the SIP/IAX/H323 peer to reach (ie: 347894999 or SIP/jeremy@182.212.1.45). To call SIP/IAX/H323 peer, you need to enable the voip_call below (voip_call = Yes) "),
-        "",
-        "INPUT",
         "size=50 maxlength=120",
-        0, "Insert the Destination");
+        0,
+        gettext("Insert the Destination")
+    );
 }
 
 $HD_Form->AddEditRadio(

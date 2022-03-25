@@ -97,23 +97,23 @@ if ($form_action=="ask-add") {
 	$comp_date="value='$comp_date'";
 }
 
-$HD_Form -> AddEditElement (gettext("PAYMENT DATE"),
+$HD_Form->AddEditElement(
+    gettext("PAYMENT DATE"),
     "date",
-    '$value',
     "",
-    "",
-    "INPUT",
     "size=40 READONLY maxlength=40  $comp_date",
-    10, gettext("Insert the current date"));
+    10,
+    gettext("Insert the current date")
+);
 
-$HD_Form -> AddEditElement (gettext("COMMISSION AMOUNT"),
+$HD_Form->AddEditElement(
+    gettext("COMMISSION AMOUNT"),
     "amount",
-    '$value',
     gettext("Enter the amount in the currency base : ") . BASE_CURRENCY,
-    "",
-    "INPUT",
     "size=60 maxlength=10",
-    12, gettext("Insert the commission amount"));
+    12,
+    gettext("Insert the commission amount")
+);
 
 $HD_Form->AddEditTextarea(
     "description",

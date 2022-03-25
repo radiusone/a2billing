@@ -103,55 +103,60 @@ if (isset($form_action) && $form_action=="ask-add") {
 	$comp_zero = "value='0'";
 }
 
-$HD_Form -> AddEditElement (gettext("LABEL"),
+$HD_Form->AddEditElement(
+    gettext("LABEL"),
     "label",
-    "$value",
     "",
-    "",
-    "INPUT",
     "size=35 maxlength=30",
-    3, gettext("Insert the service label"));
+    3,
+    gettext("Insert the service label")
+);
 
-$HD_Form -> AddEditElement (gettext("FEE"),
+$HD_Form->AddEditElement(
+    gettext("FEE"),
     "fee",
-    '$value',
     gettext("Set the fee amount that the user have to pay per month."),
-    "",
-    "INPUT",
     "size=30 maxlength=30",
-    12, gettext("Insert the fee amount."));
+    12,
+    gettext("Insert the fee amount.")
+);
 
 $HD_Form->AddEditSelect("status", $actived_list, gettext("STATUS"));
 
-$HD_Form -> AddEditElement (gettext("START DATE"),
+$HD_Form->AddEditElement(
+    gettext("START DATE"),
     "startdate",
-    '$value',
     gettext("please use the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
-    "",
-    "INPUT",
     "size=40 maxlength=40  $comp_date",
-    10, gettext("Insert the start date"), "NO-NULL", "res_display_dateformat");
+    10,
+    gettext("Insert the start date"),
+    "",
+    "NO-NULL",
+    "res_display_dateformat"
+);
 
-$HD_Form -> AddEditElement (gettext("STOP DATE"),
+$HD_Form->AddEditElement(
+    gettext("STOP DATE"),
     "stopdate",
-    '$value',
     gettext("please use the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
-    "",
-    "INPUT",
     "size=40 maxlength=40  $comp_date_plus",
-    10, gettext("Insert the stop date"), "NO-NULL", "res_display_dateformat");
+    10,
+    gettext("Insert the stop date"),
+    "",
+    "NO-NULL",
+    "res_display_dateformat"
+);
 
-
-$HD_Form -> AddEditElement (gettext("EMAIL TO SEND REPORT"),
+$HD_Form->AddEditElement(
+    gettext("EMAIL TO SEND REPORT"),
     "emailreport",
-    '$value',
     "",
-    "",
-    "INPUT",
     "size=30 maxlength=30",
-    1, gettext("Insert the email to send the report"), "NO-NULL");
-
-
+    1,
+    gettext("Insert the email to send the report"),
+    "",
+    "NO-NULL"
+);
 
 $HD_Form -> FieldEditElement ('label, fee, status,startdate,stopdate, emailreport');
 
