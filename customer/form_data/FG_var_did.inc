@@ -134,26 +134,25 @@ if (isset($form_action) && ($form_action=='ask-edit')) {
         0, "Insert the Destination");
 }
 
-$HD_Form -> AddEditElement (gettext("ACTIVATED"),
+$HD_Form->AddEditRadio(
     "activated",
-    '1',
+    [[gettext("Yes"), "1"], [gettext("No"), "0"]],
+    gettext("ACTIVATED"),
+    "1",
     "",
-    "",
-    "RADIOBUTTON",
-    "",
-    null, gettext("Choose if you want to activate this card"), "", "", "", "Yes:1,No:0");
+    gettext("Choose if you want to activate this card")
+);
 
 $HD_Form->AddEditSelect("priority", $priority_list, gettext("PRIORITY"));
 
-$HD_Form -> AddEditElement (gettext("VOIP_CALL"),
+$HD_Form->AddEditRadio(
     "voip_call",
-    '1',
+    [[gettext("Yes"), "1"], [gettext("No"), "0"]],
+    gettext("VOIP CALL"),
+    "1",
     "",
-    "",
-    "RADIOBUTTON",
-    "",
-    null, gettext("Choose if you want to not use the trunk and let the asterisk call directly the destination (ie, Destination : SIP/jeremy@182.212.1.45)"), "", "", "", "Yes:1,No:0");
-
+    gettext("Choose if you want to not use the trunk and let the asterisk call directly the destination (ie, Destination : SIP/jeremy@182.212.1.45)")
+);
 
 if (isset($form_action) && ($form_action=='ask-edit')) {
     $HD_Form -> FieldEditElement ('destination, activated, priority, voip_call');

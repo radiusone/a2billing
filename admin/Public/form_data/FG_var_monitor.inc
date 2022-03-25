@@ -128,16 +128,12 @@ $HD_Form -> AddEditElement (gettext("QUERY / SHELL SCRIPT"),
 
 $HD_Form->AddEditSelect("result_type", $mresult_type_list, gettext("SAY RESULT AS"), gettext("Define type of result."));
 
-$HD_Form -> AddEditElement (gettext("ENABLE"),
+$HD_Form->AddEditRadio(
     "enable",
-    '0',
-    "",
-    "",
-    "RADIOBUTTON",
-    "",
-    null, "", "", "", "", "Yes:1,No:0", "", "", "");
-
-
+    [[gettext("Yes"), "1"], [gettext("No"), "0"]],
+    gettext("ENABLE"),
+    "0"
+);
 
 $HD_Form -> FieldEditElement ('label, dial_code, description, text_intro, query_type, query, result_type, enable');
 

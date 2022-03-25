@@ -155,14 +155,14 @@ if (has_rights (ACX_MODIFY_REFILLS)) {
     );
 
 	if ($form_action!="ask-edit" && $form_action!="edit") {
-		$HD_Form -> AddEditElement (gettext("CREATE ASSOCIATE INVOICE"),
+        $HD_Form->AddEditRadio(
             "added_invoice",
-            '1',
+            [[gettext("Yes"), "1"], [gettext("No"), "0"]],
+            gettext("CREATE ASSOCIATE INVOICE"),
+            "1",
             "",
-            "",
-            "RADIOBUTTON",
-            "",
-            null, gettext("Choose if you want to create an invoice with this refill account"), "", "", "", "Yes:1,No:0");
+            gettext("Choose if you want to create an invoice with this refill account")
+        );
 	}
 
 

@@ -539,38 +539,38 @@ $HD_Form->AddEditSelect("currency", $currency_list, gettext("CURRENCY"), gettext
 
 $HD_Form->AddEditSelect("status", $cardstatus_list, gettext("STATUS"));
 
-	$HD_Form -> AddEditElement (gettext("LOCK"),
-        "block",
-        '0',
-        gettext("Enable lock for this account."),
-        "",
-        "RADIOBUTTON",
-        "",
-        null, gettext("Choose if you want to enable the lock on this account"), "", "", "", "Yes:1,No:0");
+$HD_Form->AddEditRadio(
+    "block",
+    [[gettext("Yes"), "1"], [gettext("No"), "0"]],
+    gettext("LOCK"),
+    "0",
+    gettext("Enable lock for this account."),
+    gettext("Choose if you want to enable the lock on this account")
+);
 
-	if ($form_action =="ask-add" || $form_action=="add") {
-		$lockpin_default = "value = '0'";
-	}
+if ($form_action =="ask-add" || $form_action=="add") {
+    $lockpin_default = "value = '0'";
+}
 
-	$HD_Form -> AddEditElement (gettext("LOCK PIN"),
-        "lock_pin",
-        '$value',
-        gettext("Code required to make the call if the lock is active."),
-        "",
-        "INPUT",
-        "size=20 maxlength=10 $lockpin_default",
-        4, "", "", "", "", "", "", "", "NO");
+$HD_Form -> AddEditElement (gettext("LOCK PIN"),
+    "lock_pin",
+    '$value',
+    gettext("Code required to make the call if the lock is active."),
+    "",
+    "INPUT",
+    "size=20 maxlength=10 $lockpin_default",
+    4, "", "", "", "", "", "", "", "NO");
 
 $HD_Form->AddEditSelect("simultaccess", $simultaccess_list, gettext("SIMULTANEOUS ACCESS"), "", "", 1);
 
-$HD_Form -> AddEditElement (gettext("RUN SERVICE"),
+$HD_Form->AddEditRadio(
     "runservice",
-    '0',
+    [[gettext("Yes"), "1"], [gettext("No"), "0"]],
+    gettext("RUN SERVICE"),
+    "0",
     gettext("Apply recurring service to this account."),
-    "",
-    "RADIOBUTTON",
-    "",
-    null, gettext("Choose if you want to enable the service recurring on this account"), "", "", "", "Yes:1,No:0");
+    gettext("Choose if you want to enable the service recurring on this account")
+);
 
 $HD_Form->AddEditSelect(
     "credit_notification",
@@ -580,15 +580,14 @@ $HD_Form->AddEditSelect(
     '<option value="-1" selected="selected">' . gettext("NOT DEFINED") . '</option>'
 );
 
-$HD_Form -> AddEditElement (gettext("PERMITTED NOTIFICATIONS BY MAIL"),
+$HD_Form->AddEditRadio(
     "notify_email",
-    '0',
+    [[gettext("Yes"), "1"], [gettext("No"), "0"]],
+    gettext("PERMITTED NOTIFICATIONS BY MAIL"),
+    "0",
     gettext("Enable the notification by mail for this account."),
-    "",
-    "RADIOBUTTON",
-    "",
-    null, gettext("Choose if you want to enable the notification by email for this account"), "", "", "", "Yes:1,No:0");
-
+    gettext("Choose if you want to enable the notification by email for this account")
+);
 
 $HD_Form -> AddEditElement (gettext("EMAIL NOTIFICATION"),
     "email_notification",
@@ -601,23 +600,23 @@ $HD_Form -> AddEditElement (gettext("EMAIL NOTIFICATION"),
 
 
 if (ACT_VOICEMAIL) {
-	$HD_Form -> AddEditElement (gettext("PERMITTED VOICEMAIL"),
+    $HD_Form->AddEditRadio(
         "voicemail_permitted",
-        '1',
+        [[gettext("Yes"), "1"], [gettext("No"), "0"]],
+        gettext("PERMITTED VOICEMAIL"),
+        "1",
         gettext("Enable the voicemail functionality for this account."),
-        "",
-        "RADIOBUTTON",
-        "",
-        null, gettext("Choose if you want to enable the voicemail functionality for this account"), "", "", "", "Yes:1,No:0");
+        gettext("Choose if you want to enable the voicemail functionality for this account"),
+    );
 
-	$HD_Form -> AddEditElement (gettext("ACTIVE VOICEMAIL SERVICE"),
+    $HD_Form->AddEditRadio(
         "voicemail_activated",
-        '0',
+        [[gettext("Yes"), "1"], [gettext("No"), "0"]],
+        gettext("ACTIVE VOICEMAIL SERVICE"),
+        "0",
         gettext("Customer can enable the voicemail for this account."),
-        "",
-        "RADIOBUTTON",
-        "",
-        null, gettext("Customer can choose to enable the voicemail for this account"), "", "", "", "Yes:1,No:0");
+        gettext("Customer can choose to enable the voicemail for this account")
+    );
 }
 
 $HD_Form->AddEditSqlSelect(
@@ -673,24 +672,27 @@ $HD_Form -> AddEditElement (gettext("EXPIRY DAYS"),
     4, gettext("Insert the number of days after which the account will expire"));
 
 
-$HD_Form -> AddEditElement (gettext("CREATE SIP CONFIG"),
-    "sip_buddy",
-    '1',
-    gettext("Create the SIP config automatically"),
-    "",
-    "RADIOBUTTON",
-    "",
-    null, gettext("Choose if you want to enable the sip account"), "", "", "", "Yes:1,No:0");
+if (!empty($A2B->config["webui"]['buddy_sip_file'])) {
+    $HD_Form->AddEditRadio(
+        "sip_buddy",
+        [[gettext("Yes"), "1"], [gettext("No"), "0"]],
+        gettext("CREATE SIP CONFIG"),
+        "1",
+        gettext("Create the SIP config automatically"),
+        gettext("Choose if you want to enable the SIP account")
+    );
+}
 
-
-$HD_Form -> AddEditElement (gettext("CREATE IAX CONFIG"),
-    "iax_buddy",
-    '1',
-    gettext("Create the IAX config automatically"),
-    "",
-    "RADIOBUTTON",
-    "",
-    null, gettext("Choose if you want to enable the iax account"), "", "", "", "Yes:1,No:0");
+if (!empty($A2B->config["webui"]['buddy_iax_file'])) {
+    $HD_Form->AddEditRadio(
+        "iax_buddy",
+        [[gettext("Yes"), "1"], [gettext("No"), "0"]],
+        gettext("CREATE IAX CONFIG"),
+        "1",
+        gettext("Create the IAX config automatically"),
+        gettext("Choose if you want to enable the IAX account")
+    );
+}
 
 $HD_Form -> AddEditElement (gettext("MAC ADDRESS"),
     "mac_addr",
@@ -711,14 +713,15 @@ $HD_Form -> AddEditElement (gettext("IN USE"),
     "size=5 maxlength=5",
     null, "", "", "", "", "", "", "", "NO");
 
-$HD_Form -> AddEditElement (gettext("AUTOREFILL"),
+$HD_Form->AddEditRadio(
     "autorefill",
-    '0',
-    gettext("Define if you want to authorize the autorefill to apply on this accout"),
+    [[gettext("Yes"), "1"], [gettext("No"), "0"]],
     gettext("AUTOREFILL"),
-    "RADIOBUTTON",
-    "",
-    null, gettext("Choose if you want to enable the autorefill on this account"), "", "", "", "Yes:1,No:0");
+    "0",
+    gettext("Define if you want to authorize the autorefill to apply on this accout"),
+    gettext("Choose if you want to enable the autorefill on this account"),
+    gettext("AUTOREFILL")
+);
 
 $HD_Form -> AddEditElement (gettext("INITIAL BALANCE"),
     "initialbalance",

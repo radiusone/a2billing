@@ -131,27 +131,27 @@ if ($form_action!='ask-edit' && $form_action!='edit') {
     $HD_Form->AddEditSqlSelect("id_cc_did", gettext("DID"), "cc_did", "did,id");
 }
 
-$HD_Form -> AddEditElement (gettext("ACTIVATED"),
+$HD_Form->AddEditRadio(
     "activated",
-    '1',
+    [[gettext("Yes"), "1"], [gettext("No"), "0"]],
+    gettext("ACTIVATED"),
+    "1",
     "",
-    "",
-    "RADIOBUTTON",
-    "",
-    null, gettext("Choose if you want to activate this card"), "", "", "", "Yes:1,No:0");
+    gettext("Choose if you want to activate this card")
+);
 
 $HD_Form->AddEditSelect("validated", $validated_list, gettext("VALIDATED"));
 
 $HD_Form->AddEditSelect("priority", $priority_list, gettext("PRIORITY"));
 
-$HD_Form -> AddEditElement (gettext("VOIP_CALL"),
+$HD_Form->AddEditRadio(
     "voip_call",
-    '1',
+    [[gettext("Yes"), "1"], [gettext("No"), "0"]],
+    gettext("ACTIVATED"),
+    "1",
     "",
-    "",
-    "RADIOBUTTON",
-    "",
-    null, gettext("Choose if you want to not use the trunk and let the asterisk call directly the destination (ie, Destination : SIP/jeremy@182.212.1.45)"), "", "", "", "Yes:1,No:0");
+    gettext("Choose if you want to not use the trunk and let the asterisk call directly the destination (ie, Destination : SIP/jeremy@182.212.1.45)")
+);
 
 if ($form_action!='ask-edit' && $form_action!='edit') {
 	$HD_Form -> FieldEditElement ('destination, id_cc_card, id_cc_did, activated, validated, priority, voip_call');

@@ -99,15 +99,14 @@ $HD_Form->AddEditSelect(
     gettext("Insert the number of credit when the customer receive a notification")
 );
 
-$HD_Form -> AddEditElement (gettext("PERMITTED NOTIFICATIONS BY MAIL"),
+$HD_Form->AddEditRadio(
     "notify_email",
-    '0',
+    [["Yes", "1"], ["No", "0"]],
+    gettext("PERMITTED NOTIFICATIONS BY MAIL"),
+    "0",
     gettext("Enable Email Notification"),
-    "",
-    "RADIOBUTTON",
-    "",
-    null, gettext("Choose if you want to enable the notification by email for this card"), "", "", "", "Yes:1,No:0", "", "", "");
-
+    gettext("Choose if you want to enable the notification by email for this card")
+);
 
 $HD_Form -> AddEditElement (gettext("EMAIL NOTIFICATION"),
     "email_notification",

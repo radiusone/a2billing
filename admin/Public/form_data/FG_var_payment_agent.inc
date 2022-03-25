@@ -144,14 +144,14 @@ if (has_rights (ACX_MODIFY_PAYMENTS)) {
         null, gettext("Insert the description"));
 
 	if ($form_action!="ask-edit" && $form_action!="edit") {
-		$HD_Form -> AddEditElement (gettext("CREATE ASSOCIATE REFILL"),
+        $HD_Form->AddEditRadio(
             "added_refill",
-            '0',
+            [[gettext("Yes"), "1"], [gettext("No"), "0"]],
+            gettext("CREATE ASSOCIATE REFILL"),
+            "0",
             gettext("Refill card account"),
-            "",
-            "RADIOBUTTON",
-            "",
-            null, gettext("Choose if you want to create a refill with this payment account"), "", "", "", "Yes:1,No:0");
+            gettext("Choose if you want to create a refill with this payment account")
+        );
 	}
 
     $HD_Form->AddEditSelect(

@@ -86,14 +86,14 @@ $HD_Form -> AddEditElement (gettext("CID"),
 
 $HD_Form->AddEditSqlSelect("outbound_cid_group", gettext("CIDGROUP"), "cc_outbound_cid_group", "group_name,id");
 
-$HD_Form -> AddEditElement (gettext("ACTIVATED"),
+$HD_Form->AddEditRadio(
     "activated",
-    '1',
+    [[gettext("Yes"), "1"], [gettext("No"), "0"]],
+    gettext("ACTIVATED"),
+    "1",
     "",
-    "",
-    "RADIOBUTTON",
-    "",
-    null, gettext("Choose if you want to activate this CallerID"), "", "", "", "Yes:1,No:0");
+    gettext("Choose if you want to activate this CallerID")
+);
 
 $HD_Form -> FieldEditElement ('cid, outbound_cid_group, activated');
 

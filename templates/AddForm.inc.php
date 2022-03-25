@@ -118,10 +118,8 @@ $options = null;
             </select>
 
         <?php elseif ($row["type"] === "RADIOBUTTON"): ?>
-            <?php $vals = explode(",", $row["radio_options"]) ?>
-            <?php foreach ($vals as $v): ?>
+            <?php foreach ($row["radio_options"] as $rad): ?>
             <div class="form-check">
-                <?php $rad = explode(":", $v) ?>
                 <?php if ($processed[$row["name"]] === $rad[1]): ?>
                     <?php $check = $rad[1] ?>
                 <?php elseif ($VALID_SQL_REG_EXP): ?>
@@ -135,7 +133,7 @@ $options = null;
                     type="radio"
                     name="<?= $row["name"] ?>"
                     value="<?= $rad[1] ?>"
-                    <?php if ($check == $rad[1]): ?>checked="checked"<?php endif ?>
+                    <?php if ($check === $rad[1]): ?>checked="checked"<?php endif ?>
                 />
                 <label for="<?= $row["name"] ?>_<?= $rad[1] ?>" class="form-check-label"><?= $rad[0] ?></label>
             </div>

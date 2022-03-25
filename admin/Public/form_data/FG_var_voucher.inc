@@ -155,15 +155,14 @@ $HD_Form -> AddEditElement (gettext("TAG"),
     "size=30 maxlength=30",
     11, gettext("Insert the tag"), "", "", "", "", "", "", "NO-NULL");
 
-
-$HD_Form -> AddEditElement (gettext("ACTIVATED"),
+$HD_Form->AddEditRadio(
     "activated",
-    't',
+    [[gettext("Yes"), "t"], [gettext("No"), "f"]],
+    gettext("ACTIVATED"),
+    "t",
     "",
-    "",
-    "RADIOBUTTON",
-    "",
-    null, gettext("Choose if you want to activate this card"), "", "", "", "Yes:t,No:f");
+    gettext("Choose if you want to activate this card")
+);
 
 $HD_Form->AddEditSelect("currency", $currency_list, gettext("CURRENCY"));
 

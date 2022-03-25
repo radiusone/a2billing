@@ -94,14 +94,14 @@ $HD_Form -> AddEditElement (gettext("NAME"),
     "size=30 maxlength=20",
     9, gettext("Insert the Support Box name "));
 
-$HD_Form -> AddEditElement (gettext("ACTIVATED"),
+$HD_Form->AddEditRadio(
     "activated",
-    '1',
+    [[gettext("Yes"), "1"], [gettext("No"), "0"]],
+    gettext("ACTIVATED"),
+    "1",
     "",
-    "",
-    "RADIOBUTTON",
-    "",
-    null, gettext("Choose if you want to activate this component"), "", "", "", "Yes:1,No:0");
+    gettext("Choose if you want to activate this component")
+);
 
 $HD_Form->AddEditSqlSelect("id_support", gettext("Support Box"), "cc_support", "name,id");
 

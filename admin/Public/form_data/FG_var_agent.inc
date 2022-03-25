@@ -173,14 +173,14 @@ if (has_rights (ACX_MODIFY_AGENTS) && !($popup_select)) {
         "size='$len_right_list' multiple='multiple'"
     );
 
-	$HD_Form -> AddEditElement (gettext("ACTIVE"),
+    $HD_Form->AddEditRadio(
         "active",
-        '1',
+        [[gettext("Yes"), "1"], [gettext("No"), "0"]],
+        gettext("ACTIVE"),
+        "1",
         gettext("Enable agent"),
-        "",
-        "RADIOBUTTON",
-        "",
-        null, gettext("Choose if you want to active the agent"), "", "", "", "Yes:1,No:0");
+        gettext("Choose if you want to active this agent")
+    );
 
 	if ($form_action =="ask-add" || $form_action=="add") {
 		$balance_access = "value = '0'";

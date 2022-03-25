@@ -83,14 +83,14 @@ $HD_Form -> AddEditElement (gettext("LABEL"),
     "size=30 maxlength=40",
     0, gettext("Insert the provider name"));
 
-$HD_Form -> AddEditElement (gettext("ACTIVATED"),
+$HD_Form->AddEditRadio(
     "enable",
-    '1',
+    [[gettext("Yes"), "1"], [gettext("No"), "0"]],
+    gettext("ACTIVATED"),
+    "1",
     "",
-    "",
-    "RADIOBUTTON",
-    "",
-    null, gettext("Choose if you want to activate this subscriber in the signup"), "", "", "", "Yes:1,No:0");
+    gettext("Choose if you want to activate this subscriber in the signup")
+);
 
 $CURRENCY = strtoupper(BASE_CURRENCY);
 $HD_Form->AddEditSqlSelect(

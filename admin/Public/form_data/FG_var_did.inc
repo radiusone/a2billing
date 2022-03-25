@@ -178,15 +178,14 @@ $HD_Form->AddEditSqlSelect("id_cc_didgroup", _("DIDGROUP"), "cc_didgroup", "didg
 
 $HD_Form->AddEditSqlSelect("id_cc_country", _("COUNTRY"), "cc_country", "countryname,id");
 
-$HD_Form->AddEditElement(_("ACTIVATED"),
+$HD_Form->AddEditRadio(
     "activated",
-    '1',
+    [[gettext("Yes"), "1"], [gettext("No"), "0"]],
+    gettext("ACTIVATED"),
+    "1",
     "",
-    "",
-    "RADIOBUTTON",
-    "",
-    null, _("Choose if you want to activate this card"), "", "", "", "Yes:1,No:0");
-
+    gettext("Choose if you want to activate this card")
+);
 
 $HD_Form->AddEditElement(_("MONTHLY RATE"),
     "fixrate",

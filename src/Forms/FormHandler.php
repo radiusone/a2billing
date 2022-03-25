@@ -860,6 +860,37 @@ class FormHandler
         $this->FG_ADD_FORM_ELEMENTS[$cur] = $data;
     }
 
+    public function AddEditRadio(
+        string $fieldname,
+        array  $options,
+        string $label_text,
+        string $default_value = "",
+        string $form_text_bottom = "",
+        string $error_message = "",
+        string $section_name = "",
+        bool   $field_enabled = true
+    ): void
+    {
+        if ($field_enabled === false) {
+            return;
+        }
+        $cur = count($this->FG_EDIT_FORM_ELEMENTS);
+        $data = [
+            "label" => $label_text,
+            "name" => $fieldname,
+            "default" => $default_value,
+            "type" => "RADIOBUTTON",
+            "regex" => null,
+            "error" => $error_message,
+            "radio_options" => $options,
+            "section_name" => $section_name,
+            "comment" => $form_text_bottom,
+            "validation_err" => true,
+        ];
+        $this->FG_EDIT_FORM_ELEMENTS[$cur] = $data;
+        $this->FG_ADD_FORM_ELEMENTS[$cur] = $data;
+    }
+
     public function AddEditHasMany(
         string $label_text,
         array  $query_data,
@@ -873,14 +904,18 @@ class FormHandler
         }
         $cur = count($this->FG_EDIT_FORM_ELEMENTS);
         $data = [
+            "type" => "HAS_MANY",
             "label" => $label_text,
             "custom_query" => $query_data,
             "section" => $section_name,
             "multiline" => $multiline,
+            "regex" => null,
+            "validation_err" => true,
         ];
         $this->FG_EDIT_FORM_ELEMENTS[$cur] = $data;
         $this->FG_ADD_FORM_ELEMENTS[$cur] = $data;
     }
+
 
     /**
      * Sets Search form fieldnames for the view module

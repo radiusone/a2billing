@@ -136,14 +136,14 @@ $HD_Form -> AddEditElement (gettext("FAX NUMBER"),
     null, gettext("Insert the fax number of the customers"), "", "", "", "", "", "", "NO");
 
 if (ACT_VOICEMAIL) {
-	$HD_Form -> AddEditElement (gettext("ACTIVE VOICEMAIL SERVICE"),
+    $HD_Form->AddEditRadio(
         "voicemail_activated",
-        '0',
+        [[gettext("Yes"), "1"], [gettext("No"), "0"]],
+        gettext("ACTIVE VOICEMAIL SERVICE"),
+        "0",
         gettext("Customer can enable the voicemail for this card."),
-        "",
-        "RADIOBUTTON",
-        "",
-        null, gettext("Customer can choose to enable the voicemail for this card"), "", "", "", "Yes:1,No:0");
+        gettext("Customer can choose to enable the voicemail for this card")
+    );
 }
 
 $add_fields_voicemail = '';
