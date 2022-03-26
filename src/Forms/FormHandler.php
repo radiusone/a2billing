@@ -641,60 +641,22 @@ class FormHandler
         }
     }
 
-    // ----------------------------------------------
-    // METHOD FOR THE EDITION
-    // ----------------------------------------------
-
     /**
-     * Adds a "element" to the FG_TABLE_EDITION array.  Returns void.
-     *
-     * @public
-     * @.0 $displayname - name of the column for the current field
-     * @.1 $fieldname - name of the field to edit
-     * @.2 $defaultvalue - value of the field
-     * @.3 $fieldtype - type of edition (INPUT / SELECT / TEXTAREA / RADIOBUTTON/ CHECKBOX/ SUBFORM /...)        ##
-     * @.4 $fieldproperty - property of the field (ie: "size=6 maxlength=6")
-     * @.5 $regexpr_nb the regexp number, used to this is this match with the value introduced
-     * @.6 $error_message - set the error message
-     * @.7 $type_selectfield - if the fieldtype = SELECT, set the type of field feed  (LIST or SQL)
-     * @.8 $feed_selectfield - if the fieldtype = SELECT, [define a sql to feed it] OR [define a array to use]
-     * @.9 $displayformat_selectfield - if the fieldtype = SELECT and fieldname of sql > 1 is useful to define the format to show the data (ie: "%1 : (%2)")
-     * @.10 $config_radiobouttonfield - if the fieldtype = RADIOBUTTON : config format - valuename1 :value1, valuename2 :value2,...  (ie: "Yes:t,No:f")
-     * @.12 $check_emptyvalue - ("no" or "yes") if "no" we we check the regularexpression only if a value has been entered
-     * @.13 $attach2table - yes
-     * @.14 $attach2table_conf - "doc_tariff:call_tariff_id:call_tariff:webm_retention, id, country_id:id IN (select call_tariff_id from doc_tariff where document_id = %id) AND cttype='PHONE':document_id:%1 - (%3):2:country:label, id:%1:id='%1'"
-     * @.END $comment - set a comment to display below the field
+     * @param string $label_text The label text
+     * @param string $fieldname The form input name
+     * @param string $form_text_bottom Text to display below the form input
+     * @param string $html_attributes HTML attributes for the input
+     * @param int|null $regexpr_nb A validation method number
+     * @param string $error_message A message to show if validation fails
+     * @param string $section_name If provided, added as a row above the input
+     * @param string $check_emptyvalue If set to "NO", empty values are not validated; if set to "NO-NULL" empty values are added to the SQL query as NULL
+     * @param string $custom_function A callback to run the value through before displaying it
+     * @param bool $field_enabled If set to false, the input will not be added
+     * @return void
      */
-
-    /*
-	// THE VARIABLE $FG_TABLE_EDITION WOULD DEFINE THE COL THAT WE WANT SHOW IN YOUR EDITION TABLE
-	// 0. NAME OF THE COLUMN IN THE HTML PAGE,
-	// 1. NAME OF THE FIELD
-	// 2. VALUE OF THE FIELD
-	// 3. THE TYPE OF THE FIELD (INPUT/SELECT/TEXTAREA)
-	// 4. THE PROPERTY OF THIS FIELD
-	// 5. REGEXPRES TO CHECK THE VALUE
-	//    "^.{3}$": A STRING WITH EXACTLY 3 CHARACTERS.
-	//     ^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*$  : EMAIL ADRESSE
-	// 6. ERROR MESSAGE // Used IF SELECT for ask-add as option with value -1
-	// 7.  IF THE FIELD TYPE IS A SELECT,  DEFINE LIST OR SQL
-	// 8.  IF SQL,		THE TABLE NAME
-	// 9.  IF SQL,		THE FIELDS  : Three MAXIMUM IN ORDER (NAME, VALUE, ...other that we need for the display) ;)
-	// 10. IF SQL,		THE CLAUSE
-	// 11. IF LIST,		THE NAME OF THE LIST
-	// 12. IF LIST,		DISPLAY : %1 : (%2) ; IF SELECT , show the content of that field
-	// 13. CHECK_EMPTYVALUE - ("no" or "yes") if "no" we we check the regularexpression only if a value has been entered - if NO-NULL, if the value is
-	// 	 					  not entered the field will not be include in the update/addition query
-	// 14. COMMENT ( that is not included in FG_TABLE_EDITION or FG_TABLE_ADITION )
-	// 15. SQL CUSTOM QUERY : customer SQL   or   function to display the edit input
-	// 16. DISPLAYINPUT_DEFAULTSELECT : IF INPUT : FUNCTION TO DISPLAY THE VALUE OF THE FIELD ; IF SELECT IT WILL DISPLAY THE OPTION PER DEFAUTL, ie:
-	//									'<OPTION  value="-1" selected>NOT DEFINED</OPTION>'
-	// 17. COMMENT ABOVE : this will insert a comment line above the edition line, useful to separate section and to provide some detailed instruction
-	 */
-
     public function AddEditElement(
         string $label_text,
-        string $fieldname, // only used for radio buttons
+        string $fieldname,
         string $form_text_bottom = "",
         string $html_attributes = "",
         ?int   $regexpr_nb = null,
@@ -702,7 +664,7 @@ class FormHandler
         string $section_name = "",
         string $check_emptyvalue = "",
         string $custom_function = "",
-        bool   $field_enabled = true
+        bool   $field_enabled = true // only used in FG_var_signup.inc for captcha
     )
     {
         if (!$field_enabled) {
@@ -727,19 +689,18 @@ class FormHandler
     }
 
     /**
-     * @param string $fieldname
-     * @param string $label_text
-     * @param string $sql_table
-     * @param string $sql_column
-     * @param string $sql_where
-     * @param string $default_value
-     * @param string $first_option
-     * @param string $form_text_bottom
-     * @param string $display_format
-     * @param string $html_attributes
-     * @param string $custom_query
-     * @param string $error_message
-     * @param bool $field_enabled
+     * @param string $fieldname The form input name
+     * @param string $label_text The label text
+     * @param string $sql_table The table to check
+     * @param string $sql_column The columns to retrieve
+     * @param string $sql_where A condition to apply using a WHERE clause
+     * @param string $default_value When adding (not editing), the value of the selected item
+     * @param string $first_option HTML to add before the option list
+     * @param string $form_text_bottom Text to display below the form input
+     * @param string $display_format A format string like "%1" which will be replaced with the first result column
+     * @param string $html_attributes HTML attributes for the input
+     * @param array $custom_query If provided, an array containing values to build a custom query
+     * @param string $error_message A message to show if validation fails
      * @return void
      */
     public function AddEditSqlSelect(
@@ -754,13 +715,9 @@ class FormHandler
         string $display_format = "%1",
         string $html_attributes = "",
         array  $custom_query = [],
-        string $error_message = "",
-        bool   $field_enabled = true
+        string $error_message = ""
     ): void
     {
-        if ($field_enabled === false) {
-            return;
-        }
         $cur = count($this->FG_EDIT_FORM_ELEMENTS);
         $data = [
             "label" => $label_text,
@@ -785,16 +742,14 @@ class FormHandler
     }
 
     /**
-     * @param string $fieldname
-     * @param array $options
-     * @param string $label_text
-     * @param string $form_text_bottom
-     * @param string $first_option
-     * @param string|int $default_value
-     * @param string $html_attributes
-     * @param string $section_name
-     * @param string $error_message
-     * @param bool $field_enabled
+     * @param string $fieldname The form input name
+     * @param array $options An array of options to build the select element with
+     * @param string $label_text The label text
+     * @param string $form_text_bottom Text to display below the form input
+     * @param string|int $default_value When adding (not editing) the value of the selected item
+     * @param string $html_attributes HTML attributes for the input
+     * @param string $section_name If provided, added as a row above the input
+     * @param string $error_message A message to show if validation fails
      * @return void
      */
     public function AddEditSelect(
@@ -802,17 +757,12 @@ class FormHandler
         array  $options,
         string $label_text,
         string $form_text_bottom = "",
-        string $first_option = "",
                $default_value = "",
         string $html_attributes = "",
         string $section_name = "",
-        string $error_message = "",
-        bool   $field_enabled = true
+        string $error_message = ""
     ): void
     {
-        if ($field_enabled === false) {
-            return;
-        }
         $cur = count($this->FG_EDIT_FORM_ELEMENTS);
         $data = [
             "label" => $label_text,
@@ -825,7 +775,6 @@ class FormHandler
             "select_type" => "LIST",
             "select_fields" => $options,
             "select_format" => "%1",
-            "first_option" => $first_option,
             "section_name" => $section_name,
             "comment" => $form_text_bottom,
             "validation_err" => true,
@@ -834,6 +783,16 @@ class FormHandler
         $this->FG_ADD_FORM_ELEMENTS[$cur] = $data;
     }
 
+    /**
+     * @param string $fieldname The form input name
+     * @param array $options An array of data (name, value) to build radio buttons
+     * @param string $label_text The label text
+     * @param string $default_value When adding (not editing), the value of the selected item
+     * @param string $form_text_bottom Text to display below the form input
+     * @param string $error_message A message to show if validation fails
+     * @param string $section_name If provided, added as a row above the input
+     * @return void
+     */
     public function AddEditRadio(
         string $fieldname,
         array  $options,
@@ -841,13 +800,9 @@ class FormHandler
         string $default_value = "",
         string $form_text_bottom = "",
         string $error_message = "",
-        string $section_name = "",
-        bool   $field_enabled = true
+        string $section_name = ""
     ): void
     {
-        if ($field_enabled === false) {
-            return;
-        }
         $cur = count($this->FG_EDIT_FORM_ELEMENTS);
         $data = [
             "label" => $label_text,
@@ -865,6 +820,17 @@ class FormHandler
         $this->FG_ADD_FORM_ELEMENTS[$cur] = $data;
     }
 
+    /**
+     * @param string $fieldname The form input name
+     * @param string $label_text The label text
+     * @param string $href The address of the popup
+     * @param string $form_text_bottom Text to display below the form input
+     * @param string $error_message A message to show if validation fails
+     * @param string $html_attributes HTML attributes for the input
+     * @param int|null $regexpr_nb A validation method number
+     * @param bool $is_date Whether this is a date popup used in FG_var_def_ratecard.inc
+     * @return void
+     */
     public function AddEditPopup(
         string $fieldname,
         string $label_text,
@@ -873,13 +839,9 @@ class FormHandler
         string $error_message = "",
         string $html_attributes = "",
         ?int   $regex_nb = 4,
-        bool   $is_date = false,
-        bool   $field_enabled = true
+        bool   $is_date = false
     ): void
     {
-        if ($field_enabled === false) {
-            return;
-        }
         $cur = count($this->FG_EDIT_FORM_ELEMENTS);
         $data = [
             "label" => $label_text,
@@ -897,17 +859,20 @@ class FormHandler
         $this->FG_ADD_FORM_ELEMENTS[$cur] = $data;
     }
 
+    /**
+     * @param string $label_text The label text
+     * @param array $query_data Data used to build the query for populating items
+     * @param bool $multiline Determines whether to use <input> or <textarea>
+     * @param string $section_name If provided, added as a row above the input
+     * @return void
+     */
     public function AddEditHasMany(
         string $label_text,
         array  $query_data,
         bool   $multiline = false,
-        string $section_name = "",
-        bool   $field_enabled = true
+        string $section_name = ""
     ): void
     {
-        if ($field_enabled === false) {
-            return;
-        }
         $cur = count($this->FG_EDIT_FORM_ELEMENTS);
         $data = [
             "type" => "HAS_MANY",
@@ -922,6 +887,16 @@ class FormHandler
         $this->FG_ADD_FORM_ELEMENTS[$cur] = $data;
     }
 
+    /**
+     * @param string $fieldname The form input name
+     * @param string $label_text The label text
+     * @param string $html_attributes HTML attributes for the input
+     * @param string $error_message A message to show if validation fails
+     * @param string $section_name If provided, added as a row above the input
+     * @param int|null $regexpr_nb A validation method number
+     * @param string $form_text_bottom Text to display below the form input
+     * @return void
+     */
     public function AddEditTextarea(
         string $fieldname,
         string $label_text,
@@ -929,13 +904,9 @@ class FormHandler
         string $error_message = "",
         string $section_name = "",
         ?int   $regex_nb = null,
-        string $form_text_bottom = "",
-        bool   $field_enabled = true
+        string $form_text_bottom = ""
     ): void
     {
-        if ($field_enabled === false) {
-            return;
-        }
         $cur = count($this->FG_EDIT_FORM_ELEMENTS);
         $data = [
             "name" => $fieldname,

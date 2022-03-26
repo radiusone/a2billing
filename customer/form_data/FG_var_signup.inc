@@ -286,7 +286,6 @@ if (TIMEZONE_ENABLE)  {
         $timezone_list,
         gettext("TIMEZONE"),
         "",
-        "",
         $timezone_default_val
     );
 }

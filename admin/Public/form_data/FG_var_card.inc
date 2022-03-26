@@ -162,6 +162,7 @@ $discount_list = getDiscount_List();
 $simultaccess_list = getCardAccess_List();
 $simultaccess_list_r = array_map("array_reverse", $simultaccess_list);
 $limits_notify_list = getLimitNotify_List($A2B);
+array_unshift($limits_notify_list, [gettext("NOT DEFINED"), -1]);
 
 $currency_list = [];
 $currency_list_r = [];
@@ -540,7 +541,6 @@ if (!$popup_select) {
                 _("PAYMENT TYPE"),
                 "",
                 "",
-                "",
                 $payment_status,
                 _("Customer Status")
             );
@@ -579,20 +579,19 @@ if (!$popup_select) {
         array_walk($timezone_list, fn (&$v, $k) => $v = [$v[2], $k]);
 
         $HD_Form->AddEditSelect(
-            "id_timezone", 
-            $timezone_list, 
-            _("TIMEZONE"), 
-            "", 
-            "", 
+            "id_timezone",
+            $timezone_list,
+            _("TIMEZONE"),
+            "",
             $tz_val
         );
 
         $HD_Form->AddEditSelect("language", $language_list, _("LANGUAGE"));
 
         $HD_Form->AddEditSelect(
-            "currency", 
-            $currency_list, 
-            _("CURRENCY"), 
+            "currency",
+            $currency_list,
+            _("CURRENCY"),
             _("Currency used at the customer end.")
         );
 
@@ -620,11 +619,10 @@ if (!$popup_select) {
         );
 
         $HD_Form->AddEditSelect(
-            "simultaccess", 
-            $simultaccess_list, 
-            _("SIMULTANEOUS ACCESS"), 
-            "", 
-            "", 
+            "simultaccess",
+            $simultaccess_list,
+            _("SIMULTANEOUS ACCESS"),
+            "",
             "1"
         );
 
@@ -652,8 +650,7 @@ if (!$popup_select) {
             "credit_notification",
             $limits_notify_list,
             _("CREDIT LIMIT NOTIFICATION"),
-            _("currency : ") . strtoupper(BASE_CURRENCY) . '<BR>' . _("Low credit limit to alert the customer"),
-            '<option value="-1" selected="selected">' . gettext("NOT DEFINED") . '</option>'
+            _("currency : ") . strtoupper(BASE_CURRENCY) . '<BR>' . _("Low credit limit to alert the customer")
         );
 
         $HD_Form->AddEditRadio(
@@ -830,7 +827,7 @@ if (!$popup_select) {
             _("Insert the amount of the initial balance")
         );
 
-        $HD_Form->AddEditSelect("invoiceday", $invoiceday_list, _("INVOICE DAY"), _("Define the day of the month when the system will generate the customer invoice."), "", "", "", _("Invoice Status"));
+        $HD_Form->AddEditSelect("invoiceday", $invoiceday_list, _("INVOICE DAY"), _("Define the day of the month when the system will generate the customer invoice."), "", "", _("Invoice Status"));
 
         $vat_init = ($form_action === "ask-add" || $form_action === "add") ? "value = '0'" : "";
         $HD_Form->AddEditElement(
@@ -877,7 +874,6 @@ if (!$popup_select) {
             "restriction",
             $restriction_list,
             _("RESTRICTION"),
-            "",
             "",
             "0",
             "",

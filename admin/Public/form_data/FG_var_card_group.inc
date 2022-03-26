@@ -136,7 +136,6 @@ $HD_Form->AddEditSelect(
     gettext("PERMISSION USER INTERFACE"),
     gettext("To select several rights in the above ListBox, hold the CTRL key down while clicking the items"),
     "",
-    "",
     "size='$len_right_list' multiple='multiple'"
 );
 

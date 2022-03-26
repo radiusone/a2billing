@@ -99,6 +99,7 @@ $discount_list = getDiscount_List();
 $simultaccess_list = getCardAccess_List();
 $simultaccess_list_r = array_map("array_reverse", $simultaccess_list);
 $limits_notify_list = getLimitNotify_List($A2B);
+array_unshift($limits_notify_list, [gettext("NOT DEFINED"), -1]);
 
 $currency_list = array();
 $currency_list_r = array();
@@ -605,7 +606,6 @@ $HD_Form->AddEditSelect(
     $simultaccess_list,
     gettext("SIMULTANEOUS ACCESS"),
     "",
-    "",
     1
 );
 
@@ -622,8 +622,7 @@ $HD_Form->AddEditSelect(
     "credit_notification",
     $limits_notify_list,
     gettext("CREDIT LIMIT NOTIFICATION"),
-    gettext("currency : ") . strtoupper(BASE_CURRENCY) . '<BR>' . gettext("Low credit limit to alert the customer"),
-    '<option value="-1" selected="selected">' . gettext("NOT DEFINED") . '</option>'
+    gettext("currency : ") . strtoupper(BASE_CURRENCY) . '<BR>' . gettext("Low credit limit to alert the customer")
 );
 
 $HD_Form->AddEditRadio(
@@ -799,7 +798,6 @@ $HD_Form->AddEditSelect(
     gettext("Define the day of the month when the system will generate the customer invoice."),
     "",
     "",
-    "",
     gettext("Invoice Status")
 );
 
@@ -848,7 +846,6 @@ $HD_Form->AddEditSelect(
     "restriction",
     $restriction_list,
     gettext("RESTRICTION"),
-    "",
     "",
     0,
     "",

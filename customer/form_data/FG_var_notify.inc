@@ -71,28 +71,14 @@ if (!isset($currencies_list[strtoupper($customer_info [1])][2]) || !is_numeric($
 else $mycur = $currencies_list[strtoupper($customer_info [1])][2];
 
 
-// Possible value to notify the user
-$instance_config_table = new Table("cc_config", "id, config_value");
-$QUERY = " config_key = 'values_notifications' ";
-$return = null;
-$return = $instance_config_table -> get_list($DBHandle, $QUERY);
-$values = explode(":",$return[0]["config_value"]);
-$limits_notify = array();
-$idx =0;
-foreach ($values as $val) {
-$val_display = $val / $mycur;
-	$val_display = round($val_display,2);
-	$limits_notify [$idx] = array($val_display,$val);
-	$idx++;
-}
-
+$limits_notify = getLimitNotify_List($A2B);
+array_unshift($limits_notify, [gettext("NOT DEFINED"), -1]);
 
 $HD_Form->AddEditSelect(
     "credit_notification",
     $limits_notify,
     gettext("LIMIT CREDIT NOTIFICATION"),
     gettext("currency : ") . strtoupper(BASE_CURRENCY),
-    '<option value="-1" selected="selected">' . gettext("NOT DEFINED") . '</option>',
     "",
     "",
     "",
