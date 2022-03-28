@@ -17,6 +17,8 @@ global $letter;
 global $current_page;
 global $popup_select;
 
+$origlist = [];
+
 getpost_ifset(['stitle', 'letter', 'current_page', 'popup_select']);
 /**
  * @var string $stitle
@@ -166,16 +168,15 @@ $hasActionButtons = ($this->FG_ENABLE_DELETE_BUTTON || $this->FG_ENABLE_INFO_BUT
             <?php $k=0 ?>
             <?php foreach($this->FG_LIST_TABLE_CELLS as $j=> $row): ?>
             <?php
-            if (str_starts_with($row["type"], "lie")) {
+                $origlist[$num][$j - $k] = $item[$j - $k];
+                if (str_starts_with($row["type"], "lie")) {
                 $options = (new Table($row["sql_table"], $row["sql_columns"]))->get_list($this->DBHandle, str_replace("%id", $item[$j - $k], $row["sql_clause"]), [], "ASC", 0, 0, [], 10);
                 $record_display = $row["sql_display"];
-                $record_display = preg_replace_callback("/%([0-9]+)/", function ($m) use ($options) {
-                    if (is_array($options) && isset($options[0][$m[1] - 1])) {
-                        return str_replace("%$m[1]", $options[0][$m[1] - 1], $m[0]);
-                    } else {
-                        return str_replace("%$m[1]", "", $m[0]);
-                    }
-                }, $record_display);
+                $record_display = preg_replace_callback(
+                    "/%([0-9]+)/",
+                    fn ($m) => str_replace($m[0], $options[0][$m[1] - 1] ?? "", $m[0]),
+                    $record_display
+                );
                 if (trim($record_display) === "") {
                     $record_display = $item[$j - $k] ?: "n/a";
                 }
@@ -189,9 +190,11 @@ $hasActionButtons = ($this->FG_ENABLE_DELETE_BUTTON || $this->FG_ENABLE_INFO_BUT
                 }
             } elseif ($row["type"] === "eval") {
                 // this exists only so that FG_var_card.inc.php can left pad a card number with zeroes
-                $string_to_eval = preg_replace_callback("/%([0-9]+)/", function ($m) use ($item) {
-                    return str_replace("%$m[1]", empty($item[$m[1]]) ? 0 : $item[$m[1]], $m[0]);
-                }, $row["code"]);
+                $string_to_eval = preg_replace_callback(
+                    "/%([0-9]+)/",
+                    fn ($m) => str_replace("%$m[1]", $item[$m[1]] ?? "0", $m[0]),
+                    $row["code"]
+                );
                 $record_display = eval("return $string_to_eval;");
             } elseif ($row["type"] === "list") {
                 $select_list = $row["options"];
@@ -212,7 +215,6 @@ $hasActionButtons = ($this->FG_ENABLE_DELETE_BUTTON || $this->FG_ENABLE_INFO_BUT
             if ($row["maxsize"] > 0 && strlen($record_display) > $row["maxsize"]) {
                 $record_display = substr($record_display, 0, $row["maxsize"]) . "…";
             }
-            $origlist[$num][$j - $k] = $item[$j - $k];
             $item[$j - $k] = $record_display;
             ?>
             <td>
@@ -226,7 +228,7 @@ $hasActionButtons = ($this->FG_ENABLE_DELETE_BUTTON || $this->FG_ENABLE_INFO_BUT
             <?php if ($hasActionButtons): ?>
             <td>
                 <?php if($this->FG_ENABLE_INFO_BUTTON): ?>
-                    <a href="<?= $this->FG_INFO_BUTTON_LINK?><?= $item["id"] ?>">
+                    <a href="<?= $this->FG_INFO_BUTTON_LINK?><?= $item[$this->FG_QUERY_PRIMARY_KEY] ?? "" ?>">
                         <img alt="<?= _("About this ") . $this->FG_INSTANCE_NAME ?>" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJGSURBVDjLjdJLSNRBHMDx78yqLZaKS75DPdgDDaFDbdJmde5QlhCJGxgpRJfqEEKnIsJLB7skQYQKZaSmdLaopPCgEvSCShCMzR5a7oq7/3l12RVtjfzBMA/4fWZ+MyOccwBM3g8HEbIdfCEhfAFnLVapOa28Uevpjrqz/WOsERJgsu9Uq5CZQzgqrJfo9BajNd5irEYn4p3OUiFExtCLmw2tawFi4l5zUMjMIau9u7K+qxeoAcoAA0wDb2OPwmfA16LiiaOHLj1edRLpkO3WmIis7+oBDgJbgQ2AH6gC6jY19N62RkcctKeVIJAhp9QgUA3kJXdONZVcq9JxPSgQoXRAyIDRth8oAXQyKdWnoCKrTD9CBv4GMqx1WGNZkeRWJKbG2hiD1Cb9FbTnzWFdY/LCdLKlgNQ84gyNKqHm0gDjqVHnxDHgA/B9RQkpaB6YklkZl62np9KBhOqwjpKFgeY2YAz4BESBWHI8Hhs6PVVSvc3v98ye4fP7T676B845nt040ip98qpWJmI9PWiU6bfWgXGN2YHcKwU7tsuc4kpUPMbU0+f8+vKt+Pitl7PLAMDI9cNBoB0hQwICzjqUp6MZvsy8yvp95BRuQUjJ75mPvH4wYo1NlJ64Mza7DPwrhi8cCOeXl/aUB4P4c/NJxKLMvpngycCrzxVFG2v/CwAMnguF80oLe8p27cQh+fnpPV/fTc95S6piXQDAw7a9YbWkezZXFbAwMx/xPFXb1D3+Y90AQF/L7kAsri9mZ4lrTd0TcYA/Kakr+x2JSPUAAAAASUVORK5CYII=">
                     </a>
                 <?php endif ?>
@@ -237,7 +239,7 @@ $hasActionButtons = ($this->FG_ENABLE_DELETE_BUTTON || $this->FG_ENABLE_INFO_BUT
                         "/col([0-9])/i",
                         function ($m) use ($item, &$check) {
                             $check = false;
-                            $tmp = str_replace("col$m[1]", $item[$m[1]], $m[0]);
+                            $tmp = str_replace($m[0], $item[$m[1]] ?? "", $m[0]);
                             $check = eval("return $tmp;");
                             return $tmp;
                         },
@@ -246,19 +248,19 @@ $hasActionButtons = ($this->FG_ENABLE_DELETE_BUTTON || $this->FG_ENABLE_INFO_BUT
                     );
                     ?>
                     <?php if($check): ?>
-                        <a href="<?= $this->FG_EDIT_BUTTON_LINK?><?= $item["id"]?>">
+                        <a href="<?= $this->FG_EDIT_BUTTON_LINK?><?= $item[$this->FG_QUERY_PRIMARY_KEY] ?? "" ?>">
                             <img alt="<?= _("Edit this ") . $this->FG_INSTANCE_NAME ?>" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAFUSURBVDjLrZM/SAJxGIZdWwuDlnCplkAEm1zkaIiGFFpyMIwGK5KGoK2lphDKkMDg3LLUSIJsSKhIi+684CokOtTiMizCGuzEU5K3vOEgKvtBDe/2Pc8H3x8NAM1fQlx4H9M3pcOWp6TXWmM8A7j0629v1nraiAVC0IrrwATKIgs5xyG5QiE+Z4iQdoeU2oAsnqCSO1NSTu+D9VhqRLD8nIB8F0Q2MgmJDyipCzjvYJkIfpN2UBLG8MpP4dxvQ3ZzGuyyBQ2H+AnOOCBd9aL6soh81A5hyYSGWyCFvxUcerqI4S+CvYVOFPMHxLAq8I3qdHVY5LbBhJzEsCrwutpRFBlUHy6wO2tEYtWAzLELPN2P03kjfj3luqDycV2F8AgefWbEnVqEHa2IznSD6BdsVDNStB0lfh0FPoQjdx8RrAqGzC0YprSgxzsUMOY2bf37N/6Ud1Vc9yYcH50CAAAAAElFTkSuQmCC">
                         </a>
                     <?php endif ?>
                 <?php endif ?>
-                <?php if($this->FG_ENABLE_DELETE_BUTTON && !in_array($item["id"], $this->FG_DELETION_FORBIDDEN_ID)): ?>
+                <?php if($this->FG_ENABLE_DELETE_BUTTON && !in_array($item[$this->FG_QUERY_PRIMARY_KEY], $this->FG_DELETION_FORBIDDEN_ID)): ?>
                     <?php
                     $check = true;
                     $condition_eval = preg_replace_callback(
                         "/col([0-9])/i",
                         function ($m) use ($item, &$check) {
                             $check = false;
-                            $tmp = str_replace("col$m[1]", $item[$m[1]], $m[0]);
+                            $tmp = str_replace($m[0], $item[$m[1]] ?? "", $m[0]);
                             $check = eval("return $tmp;");
                             return $tmp;
                         },
@@ -266,7 +268,7 @@ $hasActionButtons = ($this->FG_ENABLE_DELETE_BUTTON || $this->FG_ENABLE_INFO_BUT
                     );
                     ?>
                     <?php if ($check): ?>
-                        <a href="<?= $this->FG_DELETE_BUTTON_LINK?><?= $item["id"]?>">
+                        <a href="<?= $this->FG_DELETE_BUTTON_LINK?><?= $item[$this->FG_QUERY_PRIMARY_KEY] ?? "" ?>">
                             <img alt="<?= _("Delete this ") . $this->FG_INSTANCE_NAME ?>" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAIhSURBVDjLlZPrThNRFIWJicmJz6BWiYbIkYDEG0JbBiitDQgm0PuFXqSAtKXtpE2hNuoPTXwSnwtExd6w0pl2OtPlrphKLSXhx07OZM769qy19wwAGLhM1ddC184+d18QMzoq3lfsD3LZ7Y3XbE5DL6Atzuyilc5Ciyd7IHVfgNcDYTQ2tvDr5crn6uLSvX+Av2Lk36FFpSVENDe3OxDZu8apO5rROJDLo30+Nlvj5RnTlVNAKs1aCVFr7b4BPn6Cls21AWgEQlz2+Dl1h7IdA+i97A/geP65WhbmrnZZ0GIJpr6OqZqYAd5/gJpKox4Mg7pD2YoC2b0/54rJQuJZdm6Izcgma4TW1WZ0h+y8BfbyJMwBmSxkjw+VObNanp5h/adwGhaTXF4NWbLj9gEONyCmUZmd10pGgf1/vwcgOT3tUQE0DdicwIod2EmSbwsKE1P8QoDkcHPJ5YESjgBJkYQpIEZ2KEB51Y6y3ojvY+P8XEDN7uKS0w0ltA7QGCWHCxSWWpwyaCeLy0BkA7UXyyg8fIzDoWHeBaDN4tQdSvAVdU1Aok+nsNTipIEVnkywo/FHatVkBoIhnFisOBoZxcGtQd4B0GYJNZsDSiAEadUBCkstPtN3Avs2Msa+Dt9XfxoFSNYF/Bh9gP0bOqHLAm2WUF1YQskwrVFYPWkf3h1iXwbvqGfFPSGW9Eah8HSS9fuZDnS32f71m8KFY7xs/QZyu6TH2+2+FAAAAABJRU5ErkJggg==">
                         </a>
                     <?php endif ?>
@@ -278,7 +280,7 @@ $hasActionButtons = ($this->FG_ENABLE_DELETE_BUTTON || $this->FG_ENABLE_INFO_BUT
                             "/\|col([0-9]+)\|/i",
                             function ($m) use ($item, &$check) {
                                 $check = false;
-                                $tmp = str_replace("|col$m[1]|", $item[$m[1]], $m[0]);
+                                $tmp = str_replace("|col$m[1]|", $item[$m[1]] ?? "", $m[0]);
                                 $check = eval("return $tmp;");
                                 return $tmp;
                             },
@@ -286,26 +288,25 @@ $hasActionButtons = ($this->FG_ENABLE_DELETE_BUTTON || $this->FG_ENABLE_INFO_BUT
                         );
                         $new_link = $this->{"FG_OTHER_BUTTON{$b}_LINK"};
                         if ($check) {
-                            $new_link = str_replace("|param|", $item["id"], $new_link);
+                            $new_link = str_replace("|param|", $item[$this->FG_QUERY_PRIMARY_KEY] ?? "", $new_link);
                         }
                         $new_link = preg_replace_callback(
                             "/\|col([0-9]+)\|/i",
-                            function ($m) use ($item) {
-                                return str_replace("|col$m[1]|", $item[$m[1]], $m[0]);
-                            },
+                            fn ($m) => str_replace("|col$m[1]|", $item[$m[1]] ?? "", $m[0]),
                             $new_link
                         );
                         $extra_html = "";
                         $id = $this->{"FG_OTHER_BUTTON{$b}_HTML_ID"};
-                        if (!empty($id) && !empty($origlist[$num])) {
-                            for ($h = count($item); $h >= 0; $h--) {
-                                $id = str_replace("|col$h|", $origlist[$num][$h], $id);
-                            }
-                            $extra_html .= " id='$id' ";
-                        }
+                        // ID can also have placeholders, unclear why we use $origlist here and not elsewhere
+                        preg_replace_callback(
+                            "/\|col([0-9]+)\|/",
+                            fn ($m) => str_replace($m[0], $origlist[$num][$m[1]] ?? "", $m[0]),
+                            $id
+                        );
+                        $extra_html .= " id='$id' ";
 
                         if (substr($new_link, -1) === "=") {
-                            $new_link .= $item["id"];
+                            $new_link .= $item[$this->FG_QUERY_PRIMARY_KEY] ?? "";
                         }
 
                         $class = $this->{"FG_OTHER_BUTTON{$b}_HTML_CLASS"};
