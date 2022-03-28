@@ -42,7 +42,7 @@ const BINDTEXTDOMAIN = __DIR__ . "/../admin_ui_locale";
 require_once __DIR__ . "/common.defines.php";
 require_once __DIR__ . "/admin.module.access.php";
 
-if (!has_rights(ACX_ACCESS) || (is_admin() && !has_rights(ACX_ADMINISTRATOR))) {
+if (!is_admin() || !has_rights(ACX_ADMINISTRATOR)) {
     header("HTTP/1.0 401 Unauthorized");
     header("Location: PP_error.php?c=accessdenied");
     die();
