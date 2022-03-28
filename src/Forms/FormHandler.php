@@ -548,7 +548,8 @@ class FormHandler
                     $this->_processed[$key] = str_replace($filtered_char, "", $this->_processed[$key]);
                 }
                 if ($key == 'pwd_encoded' && !empty($value)) {
-                    $this->_processed[$key] = hash("whirlpool", $this->_processed[$key]);
+                    $this->_processed[$key] = password_hash($this->_processed[$key]);
+//                    $this->_processed[$key] = hash("whirlpool", $this->_processed[$key]);
                 }
             }
         }
