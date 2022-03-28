@@ -342,12 +342,6 @@ $smarty->display ( 'main.tpl' );
     NAME="current_page" value=0>
 <TABLE class="bar-status" width="85%" border="0" cellspacing="1"
     cellpadding="2" align="center">
-        <?php
-        if ($_SESSION ["pr_groupID"] == 2 && is_numeric ( $_SESSION ["pr_IDCust"] )) {
-            ?>
-        <?php
-        } else {
-            ?>
         <tr>
         <td align="left" valign="top" class="bgcolor_004"><font
             class="fontstyle_003">&nbsp;&nbsp;<?php
@@ -389,9 +383,6 @@ $smarty->display ( 'main.tpl' );
         </table>
         </td>
     </tr>
-        <?php
-        }
-        ?>
     <tr>
         <td align="left" class="bgcolor_004"><font class="fontstyle_003">&nbsp;&nbsp;<?php echo gettext ( "DATE" ); ?></font>
         </td>

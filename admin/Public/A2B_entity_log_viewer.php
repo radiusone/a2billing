@@ -72,8 +72,6 @@ if ($form_action=="list") {
     <?= $HD_Form->csrf_inputs() ?>
     <table class="bar-status" width="85%" border="0" cellspacing="1" cellpadding="2" align="center">
         <tbody>
-        <?php  if ($_SESSION["pr_groupID"]==2 && is_numeric($_SESSION["pr_IDCust"])) { ?>
-        <?php  } else { ?>
         <tr>
             <td align="left" valign="top" class="bgcolor_004">
                 <font class="fontstyle_003">&nbsp;&nbsp;<?php echo gettext("CUSTOMERS");?></font>
@@ -86,7 +84,6 @@ if ($form_action=="list") {
                 </td>
             </tr></table></td>
         </tr>
-        <?php  }?>
         <tr>
             <td class="bgcolor_002" align="left">
 

@@ -209,11 +209,6 @@ if ($_SESSION["is_admin"] == 1) {
 
 }
 
-if ($_SESSION["is_admin"]==0) {
-    if (strlen($FG_TABLE_CLAUSE)>0) $FG_TABLE_CLAUSE.=" AND ";
-    $FG_TABLE_CLAUSE.="t1.cardID=t2.IDCust AND t2.IDmanager='".$_SESSION["pr_reseller_ID"]."'";
-}
-
 if (isset($choose_calltype) && ($choose_calltype!=-1)) {
     if (strlen($FG_TABLE_CLAUSE)>0) $FG_TABLE_CLAUSE.=" AND ";
     $FG_TABLE_CLAUSE .= " t1.sipiax='$choose_calltype' ";
@@ -318,8 +313,6 @@ $smarty->display('main.tpl');
 <INPUT TYPE="hidden" NAME="posted" value=1>
 <INPUT TYPE="hidden" NAME="current_page" value=0>
     <TABLE class="bar-status" width="85%" border="0" cellspacing="1" cellpadding="2" align="center">
-        <?php  if ($_SESSION["pr_groupID"]==2 && is_numeric($_SESSION["pr_IDCust"])) { ?>
-        <?php  } else { ?>
         <tr>
             <td align="left" valign="top" class="bgcolor_004">
                 <font class="fontstyle_003">&nbsp;&nbsp;<?php echo gettext("CUSTOMERS");?></font>
@@ -368,7 +361,6 @@ $smarty->display('main.tpl');
             </table>
             </td>
         </tr>
-        <?php  } ?>
 
         <tr>
             <td align="left" class="bgcolor_004">

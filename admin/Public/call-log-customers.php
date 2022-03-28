@@ -210,14 +210,12 @@ $HD_Form->FG_FILTER_SEARCH_1_TIME = true;
 $HD_Form->FG_FILTER_SEARCH_1_TIME_TEXT = _('DATE');
 $HD_Form->FG_FILTER_SEARCH_1_TIME_FIELD = "cc_call.starttime";
 
-if ($_SESSION ["pr_groupID"] != 2 || !is_numeric($_SESSION ["pr_IDCust"])) {
-    $HD_Form->AddSearchPopupInput("card_id", _("Enter the customer ID"), "A2B_entity_card.php");
-    $HD_Form->AddSearchPopupInput("username", _("Enter the customer number"), "A2B_entity_card.php", 2);
-    $HD_Form->AddSearchPopupInput("id_tariffgroup", _("Call Plan"), "A2B_entity_tariffgroup.php", 2);
-    $HD_Form->AddSearchPopupInput("id_provider", _("Provider"), "A2B_entity_provider.php", 2);
-    $HD_Form->AddSearchPopupInput("cc_call.id_trunk", _("Trunk"), "A2B_entity_trunk.php", 2);
-    $HD_Form->AddSearchPopupInput("id_ratecard", _("Rate"), "A2B_entity_def_ratecard.php", 2);
-}
+$HD_Form->AddSearchPopupInput("card_id", _("Enter the customer ID"), "A2B_entity_card.php");
+$HD_Form->AddSearchPopupInput("username", _("Enter the customer number"), "A2B_entity_card.php", 2);
+$HD_Form->AddSearchPopupInput("id_tariffgroup", _("Call Plan"), "A2B_entity_tariffgroup.php", 2);
+$HD_Form->AddSearchPopupInput("id_provider", _("Provider"), "A2B_entity_provider.php", 2);
+$HD_Form->AddSearchPopupInput("cc_call.id_trunk", _("Trunk"), "A2B_entity_trunk.php", 2);
+$HD_Form->AddSearchPopupInput("id_ratecard", _("Rate"), "A2B_entity_def_ratecard.php", 2);
 
 $HD_Form->AddSearchTextInput(_("Phone number"), "destination", "dsttype");
 $HD_Form->AddSearchTextInput(_("Caller ID"), "src", "srctype");

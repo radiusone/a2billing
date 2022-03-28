@@ -86,35 +86,25 @@ if (!isset($_SESSION['pr_login']) || !isset($_SESSION['pr_password']) || !isset(
 
         $return = login ($pr_login, $pr_password);
 
-        if (!is_array($return) || $return[1] == 0 ) {
+        if (!is_array($return) || $return["perms"] === "0" || $return["groupid"] > 1 ) {
             header ("HTTP/1.0 401 Unauthorized");
             header ("Location: index.php?error=1");
             die();
         }
 
-        $pr_login = $return["login"];
         $admin_id = (int)$return["userid"];
-        $pr_groupID = (int)$return["groupid"];
 
-        if ($pr_groupID === 0) {
-            $pr_reseller_ID = null;
+        if ($return["groupid"] === "0") {
             $rights = 33554431;
-            $is_admin = 1;
         } else {
-            // there wasn't a $return[4] here originally maybe they meant to select confaddcust?
-            // $pr_reseller_ID = ($pr_groupID === 3) ? $return[4] : $return[0];
-            $pr_reseller_ID = $admin_id;
-            $rights = $return[1];
-            $is_admin = ($pr_groupID === 1) ? 1 : 0;
+            $rights = $return["perms"];
         }
 
-        $_SESSION["pr_login"] = $pr_login;
+        $_SESSION["pr_login"] = $return["login"];
         $_SESSION["pr_password"] = $pr_password;
         $_SESSION["rights"] = $rights;
-        $_SESSION["is_admin"] = $is_admin;
+        $_SESSION["is_admin"] = 1;
         $_SESSION["user_type"] = "ADMIN";
-        $_SESSION["pr_reseller_ID"] = $pr_reseller_ID;
-        $_SESSION["pr_groupID"] = $pr_groupID;
         $_SESSION["admin_id"] = $admin_id;
         (new Logger())->insertLog($admin_id, 1, "User Logged In", "User Logged in to website", '', $_SERVER['REMOTE_ADDR'], 'PP_Intro.php');
     } else {
