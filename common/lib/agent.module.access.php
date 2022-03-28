@@ -82,54 +82,57 @@ if (!isset($_SESSION['pr_login']) || !isset($_SESSION['pr_password']) || !isset(
         $agent_id = $return[0];
         $rights = $return[1];
 
-        if ($pr_login) {
-            $_SESSION["pr_login"] = $pr_login;
-            $_SESSION["pr_password"] = $pr_password;
-            $_SESSION["rights"] = $rights;
-            $_SESSION["agent_id"] = $agent_id;
-            $_SESSION["user_type"] = "AGENT";
-            $_SESSION["currency"] = $return["currency"];
-            $_SESSION["vat"] = $return["vat"];
-            (new Logger())->insertLogAgent($agent_id, 1, "Agent Logged In", "Agent Logged in to website", '', $_SERVER['REMOTE_ADDR'], 'PP_Intro.php');
-        }
+        $_SESSION["pr_login"] = $pr_login;
+        $_SESSION["pr_password"] = $pr_password;
+        $_SESSION["rights"] = $rights;
+        $_SESSION["agent_id"] = $agent_id;
+        $_SESSION["user_type"] = "AGENT";
+        $_SESSION["currency"] = $return["currency"];
+        $_SESSION["vat"] = $return["vat"];
+        (new Logger())->insertLogAgent($agent_id, 1, "Agent Logged In", "Agent Logged in to website", '', $_SERVER['REMOTE_ADDR'], 'PP_Intro.php');
     } else {
         $_SESSION["rights"] = 0;
     }
 }
 
-// 					FUNCTIONS
-//////////////////////////////////////////////////////////////////////////////
-
+/**
+ * @param string|null $user
+ * @param string|null $pass
+ * @return bool|string[]
+ */
 function login (?string $user, ?string $pass)
 {
     $user = trim($user);
     $pass = trim($pass);
-    $user = filter_var($user, FILTER_SANITIZE_STRING);
-    $pass = filter_var($pass, FILTER_SANITIZE_STRING);
 
-    if (empty($user) || strlen($user) >= 50 || empty($pass) || strlen($pass) >= 50) {
+    if (empty($user) || empty($pass)) {
         return false;
     }
-    $QUERY = "SELECT id, perms, active,currency,vat FROM cc_agent WHERE login = '".$user."' AND passwd = '".$pass."'";
+    $QUERY = "SELECT id, perms, active, currency, vat, passwd FROM cc_agent WHERE login = ?";
 
     $DBHandle = DbConnect();
-    $res = $DBHandle->Execute($QUERY);
+    $res = $DBHandle->Execute($QUERY, [$user]);
 
-    if (!$res) {
-        return false;
+    if ($res && $row = $res->FetchRow()) {
+        if ($row["active"] !== "t" && $row["active"] !== "1") {
+            return false;
+        }
+        if (password_verify($pass, $row["passwd"])) {
+            return $row;
+        }
+        // fallback to legacy authentication
+        $pass = filter_var($pass, FILTER_SANITIZE_STRING);
+        if (hash('whirlpool', $pass) === $row["passwd"]) {
+            return $row;
+        }
     }
 
-    $row = $res -> fetchRow();
-    if ($row[2] !== "t" && $row[2] != "1") {
-        return false;
-    }
-
-    return $row;
+    return false;
 }
 
-function has_rights ($condition): int
+function has_rights($condition): bool
 {
-    return ($_SESSION["rights"] & $condition);
+    return (bool)($_SESSION["rights"] & $condition);
 }
 
 $ACXACCESS 					= $_SESSION["rights"] > 0;

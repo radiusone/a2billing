@@ -58,13 +58,9 @@ const ACX_SEERECORDING = 262144;
 
 header("Expires: Sat, Jan 01 2000 01:01:01 GMT");
 
+$C_RETURN_URL_DISTANT_LOGIN = 'index.php?';
 if (!empty(RETURN_URL_DISTANT_LOGIN)) {
-    if (!str_contains(RETURN_URL_DISTANT_LOGIN, '?'))
-        $C_RETURN_URL_DISTANT_LOGIN = RETURN_URL_DISTANT_LOGIN . '?';
-    else
-        $C_RETURN_URL_DISTANT_LOGIN = RETURN_URL_DISTANT_LOGIN . '&';
-} else {
-    $C_RETURN_URL_DISTANT_LOGIN = 'index.php?';
+    $C_RETURN_URL_DISTANT_LOGIN = RETURN_URL_DISTANT_LOGIN . (str_contains(RETURN_URL_DISTANT_LOGIN, '?') ? "&" : "?");
 }
 
 if (($_GET["logout"] ?? "") === "true") {
@@ -94,67 +90,65 @@ if (!isset($_SESSION['pr_login']) || !isset($_SESSION['pr_password']) || !isset(
             die();
         }
 
-        if ($pr_login) {
-            $pr_login = $return[0];
-            $_SESSION["pr_login"] = $pr_login;
-            $_SESSION["pr_password"] = $pr_password;
-            $_SESSION["cus_rights"] = empty($return[10]) ? 1 : $return[10] + 1;
-            $_SESSION["user_type"] = "CUST";
-            $_SESSION["card_id"] = $return[3];
-            $_SESSION["id_didgroup"] = $return[4];
-            $_SESSION["tariff"] = $return[5];
-            $_SESSION["vat"] = $return[6];
-            $_SESSION["gmtoffset"] = $return[7];
-            $_SESSION["currency"] = $return["currency"];
-            $_SESSION["voicemail"] = $return[8];
-        }
+        $pr_login = $return[0];
+        $_SESSION["pr_login"] = $pr_login;
+        $_SESSION["pr_password"] = $pr_password;
+        $_SESSION["cus_rights"] = empty($return[10]) ? 1 : $return[10] + 1;
+        $_SESSION["user_type"] = "CUST";
+        $_SESSION["card_id"] = $return[3];
+        $_SESSION["id_didgroup"] = $return[4];
+        $_SESSION["tariff"] = $return[5];
+        $_SESSION["vat"] = $return[6];
+        $_SESSION["gmtoffset"] = $return[7];
+        $_SESSION["currency"] = $return["currency"];
+        $_SESSION["voicemail"] = $return[8];
     } else {
         $_SESSION["cus_rights"] = 0;
     }
 }
 
-// Functions
-
-function login ($user, $pass)
+/**
+ * @param string|null $user
+ * @param string|null $pass
+ * @return bool|string[]
+ */
+function login (?string $user, ?string $pass)
 {
     $user = trim($user);
     $pass = trim($pass);
 
-    $user = filter_var($user, FILTER_SANITIZE_STRING);
-    $pass = filter_var($pass, FILTER_SANITIZE_STRING);
-
-    if (empty($user) || strlen($user) >= 50 || empty($pass) || strlen($pass) >= 50) {
+    if (empty($user) || empty($pass)) {
         return false;
     }
 
     $QUERY = "SELECT cc.username, cc.credit, cc.status, cc.id, cc.id_didgroup, cc.tariff, cc.vat, ct.gmtoffset, cc.voicemail_permitted, " .
-             "cc.voicemail_activated, cc_card_group.users_perms, cc.currency " .
+             "cc.voicemail_activated, cc_card_group.users_perms, cc.currency, cc.uipass " .
              "FROM cc_card cc LEFT JOIN cc_timezone AS ct ON ct.id = cc.id_timezone LEFT JOIN cc_card_group ON cc_card_group.id=cc.id_group " .
-             "WHERE (cc.email = '".$user."' OR cc.useralias = '".$user."') AND cc.uipass = '".$pass."'";
+             "WHERE cc.email = ? OR cc.useralias = ?";
 
     $DBHandle = DbConnect();
-    $res = $DBHandle->Execute($QUERY);
+    $res = $DBHandle->Execute($QUERY, [$user, $user]);
 
-    if (!$res) {
-        return 1;
+    if ($res && $row = $res->FetchRow()) {
+        if ($row["status"] !== "t" && $row["status"] !== "1"  && $row["status"] !== "8") {
+            return false;
+        }
+        if (password_verify($pass, $row["uipass"])) {
+            return $row;
+        }
+        // fallback to legacy authentication
+        $pass = filter_var($pass, FILTER_SANITIZE_STRING);
+        if (hash('whirlpool', $pass) === $row["uipass"]) {
+            return $row;
+        }
     }
 
-    $row = $res->fetchRow();
-
-    if ($row[2] == "2") {
-        return 4;
-    }
-
-    if ($row[2] !== "t" && $row[2] != "1"  && $row[2] != "8") {
-        return 3;
-    }
-
-    return $row;
+    return false;
 }
 
-function has_rights ($condition): int
+function has_rights($condition): bool
 {
-    return ($_SESSION['cus_rights'] & $condition);
+    return (bool)($_SESSION['cus_rights'] & $condition);
 }
 
 $ACXPASSWORD 				= has_rights (ACX_PASSWORD);

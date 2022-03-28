@@ -40,6 +40,12 @@ const BINDTEXTDOMAIN = __DIR__ . '/../cust_ui_locale';
 require_once __DIR__ . "/common.defines.php";
 require_once __DIR__ . "/customer.module.access.php";
 
+if (!has_rights(ACX_ACCESS)) {
+    header("HTTP/1.0 401 Unauthorized");
+    header("Location: PP_error.php?c=accessdenied");
+    die();
+}
+
 //Enable Disable Captcha
 define ("CAPTCHA_ENABLE", $A2B->config["signup"]['enable_captcha'] ?? 0);
 

@@ -1330,3 +1330,18 @@ HTML;
 
     return $help;
 }
+
+function is_admin(): bool
+{
+    return ($_SESSION["user_type"] ?? "") === "ADMIN";
+}
+
+function is_agent(): bool
+{
+    return ($_SESSION["user_type"] ?? "") === "AGENT";
+}
+
+function is_customer(): bool
+{
+    return ($_SESSION["user_type"] ?? "") === "CUST";
+}

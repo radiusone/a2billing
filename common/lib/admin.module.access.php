@@ -66,7 +66,6 @@ const ACX_MODIFY_ADMINS = 8388608;    // 1 << 23
 const ACX_MODIFY_AGENTS = 16777216;    // 1 << 24
 
 header("Expires: Sat, Jan 01 2000 01:01:01 GMT");
-//echo "PHP_AUTH_USER : $PHP_AUTH_USER";
 
 if (($_GET["logout"] ?? "") === "true") {
     (new Logger())->insertLog($_SESSION["admin_id"], 1, "USER LOGGED OUT", "User Logged out from website", '', $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI']);
@@ -92,85 +91,99 @@ if (!isset($_SESSION['pr_login']) || !isset($_SESSION['pr_password']) || !isset(
             header ("Location: index.php?error=1");
             die();
         }
-        // if groupID egal 1, this user is a root
 
-        $pr_groupID = $return[3];
-        if ($pr_groupID == 0) {
+        $pr_login = $return["login"];
+        $admin_id = (int)$return["userid"];
+        $pr_groupID = (int)$return["groupid"];
+
+        if ($pr_groupID === 0) {
             $pr_reseller_ID = null;
-            $admin_id = $return[0];
             $rights = 33554431;
             $is_admin = 1;
         } else {
-            $pr_reseller_ID = ($pr_groupID == 3) ? $return[4] : $return[0];
-            $admin_id = $return[0];
+            // there wasn't a $return[4] here originally maybe they meant to select confaddcust?
+            // $pr_reseller_ID = ($pr_groupID === 3) ? $return[4] : $return[0];
+            $pr_reseller_ID = $admin_id;
             $rights = $return[1];
-            $is_admin = ($pr_groupID == 1) ? 1 : 0;
+            $is_admin = ($pr_groupID === 1) ? 1 : 0;
         }
 
-        if ($pr_login) {
-            $_SESSION["pr_login"] = $pr_login;
-            $_SESSION["pr_password"] = $pr_password;
-            $_SESSION["rights"] = $rights;
-            $_SESSION["is_admin"] = $is_admin;
-            $_SESSION["user_type"] = "ADMIN";
-            $_SESSION["pr_reseller_ID"] = $pr_reseller_ID;
-            $_SESSION["pr_groupID"] = $pr_groupID;
-            $_SESSION["admin_id"] = $admin_id;
-            (new Logger())->insertLog($admin_id, 1, "User Logged In", "User Logged in to website", '', $_SERVER['REMOTE_ADDR'], 'PP_Intro.php');
-        }
+        $_SESSION["pr_login"] = $pr_login;
+        $_SESSION["pr_password"] = $pr_password;
+        $_SESSION["rights"] = $rights;
+        $_SESSION["is_admin"] = $is_admin;
+        $_SESSION["user_type"] = "ADMIN";
+        $_SESSION["pr_reseller_ID"] = $pr_reseller_ID;
+        $_SESSION["pr_groupID"] = $pr_groupID;
+        $_SESSION["admin_id"] = $admin_id;
+        (new Logger())->insertLog($admin_id, 1, "User Logged In", "User Logged in to website", '', $_SERVER['REMOTE_ADDR'], 'PP_Intro.php');
     } else {
         $_SESSION["rights"] = 0;
     }
 }
 
-function login (?string $user = "", ?string $pass = "")
+/**
+ * @param string|null $user
+ * @param string|null $pass
+ * @return bool|string[]
+ */
+function login (?string $user, ?string $pass)
 {
     $user = trim($user);
     $pass = trim($pass);
-    $user = filter_var($user, FILTER_SANITIZE_STRING);
-    $pass = filter_var($pass, FILTER_SANITIZE_STRING);
 
-    if (empty($user) || strlen($user) >= 50 || empty($pass) || strlen($pass) >= 50) {
+    if (empty($user) || empty($pass)) {
         return false;
     }
 
-    $pass_encoded= hash('whirlpool', $pass);
-    $QUERY = "SELECT userid, perms, confaddcust, groupid FROM cc_ui_authen WHERE login = '".$user."' AND pwd_encoded = '".$pass_encoded."'";
+    $QUERY = "SELECT userid, perms, confaddcust, groupid, login, pwd_encoded FROM cc_ui_authen WHERE login = ?";
 
     $DBHandle = DbConnect();
-    $res = $DBHandle -> Execute($QUERY);
+    $res = $DBHandle -> Execute($QUERY, [$user]);
 
-    return $res ? $res -> fetchRow() : false;
+    if ($res && $row = $res->FetchRow()) {
+        if (password_verify($pass, $row["pwd_encoded"])) {
+            return $row;
+        }
+        // fallback to legacy authentication
+        $pass = filter_var($pass, FILTER_SANITIZE_STRING);
+        if (hash('whirlpool', $pass) === $row["pwd_encoded"]) {
+            return $row;
+        }
+    }
+    return false;
 }
 
-function has_rights ($condition): int
+function has_rights($condition): bool
 {
-    return ($_SESSION["rights"] & $condition);
+    return (bool)($_SESSION["rights"] & $condition);
 }
 
 $ACXACCESS 				= $_SESSION["rights"] > 0;
-$ACXDASHBOARD			= has_rights (ACX_DASHBOARD);
-$ACXCUSTOMER 			= has_rights (ACX_CUSTOMER);
-$ACXBILLING 			= has_rights (ACX_BILLING);
-$ACXRATECARD 			= has_rights (ACX_RATECARD);
-$ACXTRUNK				= has_rights (ACX_TRUNK);
-$ACXDID					= has_rights (ACX_DID);
-$ACXCALLREPORT			= has_rights (ACX_CALL_REPORT);
-$ACXCRONTSERVICE		= has_rights (ACX_CRONT_SERVICE);
-$ACXMAIL 				= has_rights (ACX_MAIL);
-$ACXADMINISTRATOR 		= has_rights (ACX_ADMINISTRATOR);
-$ACXMAINTENANCE 		= has_rights (ACX_MAINTENANCE);
-$ACXCALLBACK			= has_rights (ACX_CALLBACK);
-$ACXOUTBOUNDCID 		= has_rights (ACX_OUTBOUNDCID);
-$ACXPACKAGEOFFER 		= has_rights (ACX_PACKAGEOFFER);
-$ACXPREDICTIVEDIALER 	= has_rights (ACX_PREDICTIVE_DIALER);
-$ACXINVOICING 			= has_rights (ACX_INVOICING);
-$ACXSUPPORT 			= has_rights (ACX_SUPPORT);
-$ACXSETTING 			= has_rights (ACX_ACXSETTING);
-$ACXMODIFY_REFILLS 		= has_rights (ACX_MODIFY_REFILLS);
-$ACXMODIFY_PAYMENTS 	= has_rights (ACX_MODIFY_PAYMENTS);
-$ACXMODIFY_CUSTOMERS 	= has_rights (ACX_MODIFY_CUSTOMERS);
-$ACXDELETE_NOTIFICATIONS= has_rights (ACX_DELETE_NOTIFICATIONS);
-$ACXDELETE_CDR			= has_rights (ACX_DELETE_CDR);
+$ACXDASHBOARD			= has_rights(ACX_DASHBOARD);
+$ACXCUSTOMER 			= has_rights(ACX_CUSTOMER);
+$ACXBILLING 			= has_rights(ACX_BILLING);
+$ACXRATECARD 			= has_rights(ACX_RATECARD);
+$ACXTRUNK				= has_rights(ACX_TRUNK);
+$ACXDID					= has_rights(ACX_DID);
+$ACXCALLREPORT			= has_rights(ACX_CALL_REPORT);
+$ACXCRONTSERVICE		= has_rights(ACX_CRONT_SERVICE);
+$ACXMAIL 				= has_rights(ACX_MAIL);
+$ACXADMINISTRATOR 		= has_rights(ACX_ADMINISTRATOR);
+$ACXMAINTENANCE 		= has_rights(ACX_MAINTENANCE);
+$ACXCALLBACK			= has_rights(ACX_CALLBACK);
+$ACXOUTBOUNDCID 		= has_rights(ACX_OUTBOUNDCID);
+$ACXPACKAGEOFFER 		= has_rights(ACX_PACKAGEOFFER);
+$ACXPREDICTIVEDIALER 	= has_rights(ACX_PREDICTIVE_DIALER);
+$ACXINVOICING 			= has_rights(ACX_INVOICING);
+$ACXSUPPORT 			= has_rights(ACX_SUPPORT);
+$ACXSETTING 			= has_rights(ACX_ACXSETTING);
+$ACXMODIFY_REFILLS 		= has_rights(ACX_MODIFY_REFILLS);
+$ACXMODIFY_PAYMENTS 	= has_rights(ACX_MODIFY_PAYMENTS);
+$ACXMODIFY_CUSTOMERS 	= has_rights(ACX_MODIFY_CUSTOMERS);
+$ACXDELETE_NOTIFICATIONS= has_rights(ACX_DELETE_NOTIFICATIONS);
+$ACXDELETE_CDR			= has_rights(ACX_DELETE_CDR);
 
-if(isset($_SESSION["admin_id"]))$NEW_NOTIFICATION = NotificationsDAO::IfNewNotification($_SESSION["admin_id"]);
+if(isset($_SESSION["admin_id"])) {
+    $NEW_NOTIFICATION = NotificationsDAO::IfNewNotification($_SESSION["admin_id"]);
+}
