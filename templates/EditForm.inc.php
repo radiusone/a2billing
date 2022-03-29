@@ -274,6 +274,9 @@ $options = null
                     <?php if (is_array($options) && count($options)): ?>
                         <?php foreach ($options as $k=>$option): ?>
                             <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <?php if (isset($table["extra_col"]) && array_key_exists($table["extra_col"], $option)): ?>
+                                (<?= $option[$table["extra_col"]] ?>)
+                                <?php endif ?>
                                 <?= $option[0] ?>
                                 <button
                                     onclick="sendto('del-content','<?= $i ?>','<?= $col[0] ?>','<?= $option[0] ?>');"

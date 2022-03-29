@@ -863,6 +863,8 @@ if (!$popup_select) {
                 "name" => "number",
                 "columns" => "number,id_card",
                 "where" => "id_card=%id",
+                "fk" => "id_card",
+                "regex" => 0,
             ]
         );
 
@@ -873,6 +875,8 @@ if (!$popup_select) {
                 "name" => "cid",
                 "columns" => "cid,id_cc_card",
                 "where" => "id_cc_card=%id",
+                "fk" => "id_cc_card",
+                "regex" => 0,
             ],
             false,
             gettext("CALLERID / CUSTOMER HISTORY")
@@ -884,7 +888,10 @@ if (!$popup_select) {
                 "table" => "cc_card_history",
                 "name" => "description",
                 "columns" => "description,id_cc_card,datecreated",
-                "where" => "id_cc_card=%id"
+                "where" => "id_cc_card=%id",
+                "pk" => "id_cc_card",
+                "regex" => 0,
+                "extra_col" => 2,
             ],
             true
         );

@@ -1774,12 +1774,12 @@ class FormHandler
     public function perform_add_content($sub_action, $id)
     {
         $processed = $this->getProcessed();
-        $table_split = explode(":", $this->FG_EDIT_FORM_ELEMENTS[$sub_action][14]);
-        $instance_sub_table = new Table($table_split[0], $table_split[1] . ", " . $table_split[5]);
+        $table_split = $this->FG_EDIT_FORM_ELEMENTS[$sub_action]["custom_query"];
+        $instance_sub_table = new Table($table_split["table"], $table_split["name"] . ", " . $table_split["fk"]);
 
-        $arr = is_array($processed[$table_split[1]]) ? $processed[$table_split[1]] : [$processed[$table_split[1]]];
+        $arr = is_array($processed[$table_split["name"]]) ? $processed[$table_split["name"]] : [$processed[$table_split["name"]]];
         foreach ($arr as $value) {
-            if (empty($table_split[12]) || $this->validate_field($table_split[12][0], $value)) {
+            if (!isset($table_split["regex"]) || $this->validate_field($table_split["regex"], $value) === true) {
                 // RESPECT REGULAR EXPRESSION
                 $result_query = $instance_sub_table->Add_table($this->DBHandle, "'" . addslashes(trim($value)) . "', '" . addslashes(trim($id)) . "'");
 
@@ -1806,14 +1806,14 @@ class FormHandler
     public function perform_del_content($sub_action, $id)
     {
         $processed = $this->getProcessed();
-        $table_split = explode(":", $this->FG_EDIT_FORM_ELEMENTS[$sub_action][14]);
-        if (array_key_exists($table_split[1] . '_hidden', $processed)) {
-            $value = trim($processed[$table_split[1] . '_hidden']);
+        $table_split = $this->FG_EDIT_FORM_ELEMENTS[$sub_action]["custom_query"];
+        if (array_key_exists($table_split["name"] . '_hidden', $processed)) {
+            $value = trim($processed[$table_split["name"] . '_hidden']);
         } else {
-            $value = trim($processed[$table_split[1]]);
+            $value = trim($processed[$table_split["name"]]);
         }
-        $instance_sub_table = new Table($table_split[0], $table_split[1] . ", " . $table_split[5]);
-        $SPLIT_FG_DELETE_CLAUSE = $table_split[1] . "='" . $value . "' AND " . $table_split[5] . "='" . trim($id) . "'";
+        $instance_sub_table = new Table($table_split["table"], $table_split["name"] . ", " . $table_split["fk"]);
+        $SPLIT_FG_DELETE_CLAUSE = $table_split["name"] . "='" . $value . "' AND " . $table_split["name"] . "='" . trim($id) . "'";
         $instance_sub_table->Delete_table($this->DBHandle, $SPLIT_FG_DELETE_CLAUSE);
     }
 
