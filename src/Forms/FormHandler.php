@@ -356,20 +356,8 @@ class FormHandler
 
     private bool $FG_ENABLE_LOG = ENABLE_LOG;
 
-    // CSRF TOKEN
-    // TODO: figure out wtf this stuff is actually doing
-    public bool $FG_CSRF_STATUS = true;
-    public ?string $FG_CSRF_TOKEN_SALT = CSRF_SALT;
-    public ?string $FG_CSRF_TOKEN_KEY = null;
-    public ?string $FG_CSRF_TOKEN = null;
-    public string $FG_CSRF_FIELD = 'csrf_token';
-    public string $FG_FORM_UNIQID_FIELD = 'form_id';
-
-    public string $FG_FORM_UNIQID;
-    public string $FG_FORM_RECEIVED_UNIQID;
-    public ?string $FG_FORM_RECEIVED_TOKEN;
-    public ?string $FG_CSRF_RECEIVED_TOKEN;
-    public string $FG_CSRF_RECEIVED_FIELD;
+    /** @var string The CSRF token for the current request */
+    public string $FG_CSRF_TOKEN;
 
     private bool $alarm_db_error_duplication = false;
 
@@ -403,35 +391,24 @@ class FormHandler
         $this->FG_QUERY_TABLE_NAME = $tablename;
         $this->FG_INSTANCE_NAME = $instance_name;
 
-        // If anti CSRF protection is enabled
-        if ($this->FG_CSRF_STATUS == true) {
-            // Initializing anti csrf token (Generate a key, concat it with salt and hash it)
-            $this->FG_CSRF_TOKEN_KEY = $this->genCsrfTokenKey();
-            $this->FG_CSRF_TOKEN = $this->FG_CSRF_TOKEN_SALT . $this->FG_CSRF_TOKEN_KEY;
-            $this->FG_CSRF_TOKEN = hash('SHA256', $this->FG_CSRF_TOKEN);
-            $this->FG_FORM_UNIQID = uniqid();
+        if (!empty($_POST)) {
+            $posted_token = $_POST["csrf_token"] ?? "";
+            $session_token = $_SESSION['CSRF_TOKEN'] ?? "";
 
-            $this->FG_FORM_RECEIVED_UNIQID = $_POST[$this->FG_FORM_UNIQID_FIELD] ?? "";
-            $this->FG_FORM_RECEIVED_TOKEN = $_POST[$this->FG_CSRF_FIELD] ?? "";
-            $this->FG_CSRF_RECEIVED_TOKEN = $_SESSION['CSRF_TOKEN'][$this->FG_FORM_RECEIVED_UNIQID] ?? "";
-            $_SESSION['CSRF_TOKEN'][$this->FG_FORM_UNIQID] = $this->FG_CSRF_TOKEN;
-
-            if ($this->FG_DEBUG) {
-                echo 'FG_FORM_UNIQID : ' . $this->FG_FORM_UNIQID . '<br />';
-                echo 'CSRF NEW TOKEN : ' . $this->FG_CSRF_TOKEN . '<br />';
-                echo 'CSRF RECEIVED TOKEN : ' . $this->FG_CSRF_RECEIVED_TOKEN . '<br />';
+            // Check CSRF
+            if ($session_token !== $posted_token) {
+                echo "CSRF Error!";
+                exit();
+            } else {
+                //Remove key from the session
+                unset($_SESSION['CSRF_TOKEN']);
             }
-            if (!empty($_POST)) {
-                // Check CSRF
-                if (!$this->FG_CSRF_RECEIVED_TOKEN or
-                    ($this->FG_CSRF_RECEIVED_TOKEN != $this->FG_FORM_RECEIVED_TOKEN)) {
-                    echo "CSRF Error!";
-                    exit();
-                } else {
-                    //Remove key from the session
-                    unset($_SESSION['CSRF_TOKEN'][$this->FG_FORM_RECEIVED_UNIQID]);
-                }
-            }
+        }
+        // Initializing anti csrf token (Generate a key, concat it with salt and hash it)
+        $this->FG_CSRF_TOKEN = hash('SHA256', CSRF_SALT . $this->genCsrfTokenKey());
+        $_SESSION['CSRF_TOKEN'] = $this->FG_CSRF_TOKEN;
+        if ($this->FG_DEBUG) {
+            echo 'CSRF NEW TOKEN : ' . $this->FG_CSRF_TOKEN . '<br />';
         }
 
         $this->_vars = array_merge($_GET, $_POST);
@@ -1212,14 +1189,6 @@ class FormHandler
             $session_limit = $this->FG_QUERY_TABLE_NAME . "-displaylimit";
             if (!empty((int)$_SESSION[$session_limit])) {
                 $this->FG_LIST_VIEW_PAGE_SIZE = (int)$_SESSION[$session_limit];
-            }
-
-            /* Add CSRF protection (or not, since $this->FG_CSRF_RECEIVED_FIELD is never written to) */
-            if ($this->FG_CSRF_STATUS && $form_action === 'edit') {
-                if ($this->_processed[$this->FG_CSRF_RECEIVED_FIELD] != $this->FG_CSRF_RECEIVED_TOKEN) {
-                    header("Location: " . filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL));
-                    die();
-                }
             }
 
             if (!empty($processed['mydisplaylimit'])) {
@@ -2089,12 +2058,7 @@ class FormHandler
 
     public function csrf_inputs(): string
     {
-        $html = "";
-        if ($this->FG_CSRF_STATUS) {
-            $html = "<input type='hidden' name='$this->FG_FORM_UNIQID_FIELD' value='$this->FG_FORM_UNIQID'/>";
-            $html .= "<input type='hidden' name='$this->FG_CSRF_FIELD' value='$this->FG_CSRF_TOKEN'/>";
-        }
-        return $html;
+        return "<input type='hidden' name='csrf_token' value='$this->FG_CSRF_TOKEN'/>\n";
     }
 
     public function set_debug(int $level = 1): void
