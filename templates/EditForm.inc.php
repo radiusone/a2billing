@@ -289,7 +289,7 @@ $options = null
                     <?php else: ?>
                         <li class="list-group-item"><?= gettext("No") ?> <?= $row["label"] ?></li>
                     <?php endif ?>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <li class="list-group-item d-flex justify-content-between align-items-end">
                             <div class="flex-grow-1 me-3">
                                 <label for="<?= $table["name"] ?>_ADD" class="form-label"><?= gettext("Add a new") ?> <?= $row["label"] ?></label>
                                 <?php if ($row["multiline"]): ?>

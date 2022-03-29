@@ -278,11 +278,11 @@ class FormHandler
     /** @var array used only in FG_var_signup.inc, should figure a way to get rid of this */
     public array $REALTIME_SIP_IAX_INFO = [];
 
-    /** @var string Where to redirect the user after adding a record */
+    /** @var string Where to redirect the user after adding a record; expected to end with = and will have ID appended */
     public string $FG_LOCATION_AFTER_ADD;
-    /** @var string Where to redirect the user after deleting a record */
+    /** @var string Where to redirect the user after deleting a record; expected to end with = and will have ID appended */
     public string $FG_LOCATION_AFTER_DELETE;
-    /** @var string Where to redirect the user after editing a record */
+    /** @var string Where to redirect the user after editing a record; expected to end with = and will have ID appended */
     public string $FG_LOCATION_AFTER_EDIT;
 
     /** @var string Message text for the edit page */
@@ -974,10 +974,9 @@ class FormHandler
      */
     public function FieldEditElement($fieldname)
     {
-        if ($this->FG_DISPLAY_SELECT == true) {
-            if (strlen($this->FG_SELECT_FIELDNAME) > 0) {
-                $fieldname .= ", " . $this->FG_SELECT_FIELDNAME;
-            }
+        if ($this->FG_DISPLAY_SELECT && $this->FG_SELECT_FIELDNAME) {
+            // only used by FG_var_config.inc
+            $fieldname .= ", " . $this->FG_SELECT_FIELDNAME;
         }
         $this->FG_QUERY_EDITION = $fieldname;
         $this->FG_QUERY_ADITION = $fieldname;
@@ -1154,19 +1153,19 @@ class FormHandler
     public function perform_action(&$form_action)
     {
         //security check
-        $list = [];
+        $self = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL);
         switch ($form_action) {
             case "ask-add":
             case "add":
                 if (!$this->FG_ENABLE_ADD_BUTTON) {
-                    header("Location: " . filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL));
+                    header("Location: $self");
                     die();
                 }
                 break;
             case "ask-edit":
             case "edit":
                 if (!$this->FG_ENABLE_EDIT_BUTTON) {
-                    header("Location: " . filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL));
+                    header("Location: $self");
                     die();
                 }
                 break;
@@ -1174,7 +1173,7 @@ class FormHandler
             case "ask-delete":
             case "delete":
                 if (!$this->FG_ENABLE_DELETE_BUTTON) {
-                    header("Location: " . filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL));
+                    header("Location: $self");
                     die();
                 }
                 break;
@@ -1191,20 +1190,23 @@ class FormHandler
                 break;
         }
 
-        $processed = $this->getProcessed();  //$processed['firstname']
+        $processed = $this->getProcessed();
 
-        if ($form_action == "ask-delete" && in_array($processed['id'], $this->FG_DELETION_FORBIDDEN_ID)) {
+        if ($form_action === "ask-delete" && in_array($processed['id'], $this->FG_DELETION_FORBIDDEN_ID)) {
             if (!empty($this->FG_LOCATION_AFTER_DELETE)) {
-                header("Location: " . $this->FG_LOCATION_AFTER_DELETE . $processed['id']);
+                header("Location: " . $this->FG_LOCATION_AFTER_DELETE . $processed[$this->FG_QUERY_PRIMARY_KEY]);
             } else {
-                header("Location: " . filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL));
+                header("Location: $self");
             }
             die();
         }
 
-        if ($form_action == "list" || $form_action == "edit" || $form_action == "ask-delete" ||
-            $form_action == "ask-edit" || $form_action == "add-content" || $form_action == "del-content" || $form_action == "ask-del-confirm") {
-
+        $list = [];
+        if (
+            $form_action === "list" || $form_action === "edit" || $form_action === "ask-delete" ||
+            $form_action === "ask-edit" || $form_action === "add-content" || $form_action === "del-content" ||
+            $form_action === "ask-del-confirm"
+        ) {
             $this->FG_QUERY_ORDERBY_COLUMNS = [$processed['order']];
             $this->FG_QUERY_DIRECTION = $processed['sens'];
             $this->CV_CURRENT_PAGE = (int)$processed['current_page'];
@@ -1231,17 +1233,16 @@ class FormHandler
                 $_SESSION[$this->FG_QUERY_TABLE_NAME . "-displaylimit"] = $this->FG_LIST_VIEW_PAGE_SIZE;
             }
 
-            if (empty($this->FG_QUERY_ORDERBY_COLUMNS) || empty($this->FG_QUERY_DIRECTION)) {
+            if (empty($this->FG_QUERY_ORDERBY_COLUMNS)) {
                 $this->FG_QUERY_ORDERBY_COLUMNS = [$this->FG_TABLE_DEFAULT_ORDER];
+            }
+            if (empty($this->FG_QUERY_DIRECTION)) {
                 $this->FG_QUERY_DIRECTION = $this->FG_TABLE_DEFAULT_SENS;
             }
 
-            if ($form_action == "list") {
-                $sql_calc_found_rows = '';
-                if (DB_TYPE != "postgres") {
-                    $sql_calc_found_rows = 'SQL_CALC_FOUND_ROWS';
-                }
-                $instance_table = new Table($this->FG_QUERY_TABLE_NAME, "$sql_calc_found_rows " . $this->FG_QUERY_COLUMN_LIST);
+            if ($form_action === "list") {
+                $sql_calc_found_rows = DB_TYPE !== "postgres" ? 'SQL_CALC_FOUND_ROWS' : "";
+                $instance_table = new Table($this->FG_QUERY_TABLE_NAME, "$sql_calc_found_rows $this->FG_QUERY_COLUMN_LIST");
 
                 $this->prepare_list_subselection($form_action);
 
@@ -1257,12 +1258,19 @@ class FormHandler
                     echo "CV_CURRENT_PAGE = " . $this->CV_CURRENT_PAGE . "<br>";
                 }
 
-                $list = $instance_table->get_list($this->DBHandle, $this->FG_QUERY_WHERE_CLAUSE, $this->FG_QUERY_ORDERBY_COLUMNS, $this->FG_QUERY_DIRECTION,
-                    $this->FG_LIST_VIEW_PAGE_SIZE, $this->CV_CURRENT_PAGE * $this->FG_LIST_VIEW_PAGE_SIZE, $this->FG_QUERY_GROUPBY_COLUMNS);
+                $list = $instance_table->get_list(
+                    $this->DBHandle,
+                    $this->FG_QUERY_WHERE_CLAUSE,
+                    $this->FG_QUERY_ORDERBY_COLUMNS,
+                    $this->FG_QUERY_DIRECTION,
+                    $this->FG_LIST_VIEW_PAGE_SIZE,
+                    $this->CV_CURRENT_PAGE * $this->FG_LIST_VIEW_PAGE_SIZE,
+                    $this->FG_QUERY_GROUPBY_COLUMNS
+                );
                 if ($this->FG_DEBUG === 3) {
                     echo "<br>Clause : " . $this->FG_QUERY_WHERE_CLAUSE;
                 }
-                if (DB_TYPE == "postgres") {
+                if (DB_TYPE === "postgres") {
                     $this->FG_LIST_VIEW_ROW_COUNT = $instance_table->Table_count($this->DBHandle, $this->FG_QUERY_WHERE_CLAUSE);
                 } else {
                     $res_count = $instance_table->SQLExec($this->DBHandle, "SELECT FOUND_ROWS() as count");
@@ -1281,8 +1289,6 @@ class FormHandler
 
                 if ($this->FG_DEBUG === 3) {
                     echo "<br>Nb_record : " . $this->FG_LIST_VIEW_ROW_COUNT;
-                }
-                if ($this->FG_DEBUG === 3) {
                     echo "<br>Nb_record_max : " . $this->FG_LIST_VIEW_PAGE_COUNT;
                 }
 
@@ -1292,16 +1298,10 @@ class FormHandler
                 $list = $instance_table->get_list($this->DBHandle, $this->FG_EDIT_QUERY_CONDITION, [], "ASC", 1);
 
                 //PATCH TO CLEAN THE IMPORT OF PASSWORD FROM THE DATABASE
-                if (substr_count($this->FG_QUERY_EDITION, "pwd_encoded") > 0) {
-                    $tab_field = explode(',', $this->FG_QUERY_EDITION);
-                    for ($i = 0; $i < count($tab_field); $i++) {
-                        if (trim($tab_field[$i]) == "pwd_encoded") {
-                            $list[0][$i] = "";
-                        }
-                    }
-                }
-
-                if (isset($list[0]["pwd_encoded"])) {
+                $tab_field = array_map('trim', explode(',', $this->FG_QUERY_EDITION));
+                $index = array_search("pwd_encoded", $tab_field);
+                if ($index !== false) {
+                    $list[0][$index] = "";
                     $list[0]["pwd_encoded"] = "";
                 }
             }
@@ -1320,119 +1320,112 @@ class FormHandler
      *
      * @public
      */
-    public function prepare_list_subselection($form_action)
+    public function prepare_list_subselection($form_action): void
     {
-
         $processed = $this->getProcessed();
 
-        if ($form_action == "list" && $this->FG_FILTER_SEARCH_FORM) {
+        if ($form_action !== "list" || !$this->FG_FILTER_SEARCH_FORM) {
+            return;
+        }
 
-            if (isset($processed['cancelsearch']) && ($processed['cancelsearch'] == true)) {
-                $_SESSION[$this->FG_FILTER_SEARCH_SESSION_NAME] = '';
-            }
+        if ($processed['cancelsearch'] ?? false) {
+            $_SESSION[$this->FG_FILTER_SEARCH_SESSION_NAME] = '';
+        }
 
-            // RETRIEVE THE CONTENT OF THE SEARCH SESSION AND
-            if (strlen($_SESSION[$this->FG_FILTER_SEARCH_SESSION_NAME]) > 5 && ($processed['posted_search'] != 1)) {
-                $element_arr = explode("|", $_SESSION[$this->FG_FILTER_SEARCH_SESSION_NAME]);
-                foreach ($element_arr as $val_element_arr) {
-                    $pos = strpos($val_element_arr, '=');
-                    if ($pos !== false) {
-                        $entity_name = substr($val_element_arr, 0, $pos);
-                        $entity_value = substr($val_element_arr, $pos + 1);
-                        $this->_processed[$entity_name] = $entity_value;
+        // RETRIEVE THE CONTENT OF THE SEARCH SESSION AND
+        if ($processed['posted_search'] != 1 && strlen($_SESSION[$this->FG_FILTER_SEARCH_SESSION_NAME] ?? "") > 5) {
+            $element_arr = explode("|", $_SESSION[$this->FG_FILTER_SEARCH_SESSION_NAME]);
+            foreach ($element_arr as $val_element_arr) {
+                if (str_contains($val_element_arr, '=')) {
+                    [$entity_name, $entity_value] = explode("=", $val_element_arr);
+                    $this->_processed[$entity_name] = $entity_value;
+                    if (strlen($_SESSION[$this->FG_FILTER_SEARCH_SESSION_NAME]) > 10) {
+                        // TODO: what does the length of this value signify? why difference between 5 and 10?
+                        $processed[$entity_name] = $entity_value;
+                        $_POST[$entity_name] = $entity_value;
+                        $processed['posted_search'] = 1;
                     }
                 }
             }
+        }
 
-            if (($processed['posted_search'] != 1 && isset($_SESSION[$this->FG_FILTER_SEARCH_SESSION_NAME]) && strlen($_SESSION[$this->FG_FILTER_SEARCH_SESSION_NAME]) > 10)) {
-                $arr_session_var = explode("|", $_SESSION[$this->FG_FILTER_SEARCH_SESSION_NAME]);
-                foreach ($arr_session_var as $arr_val) {
-                    [$namevar, $valuevar] = explode("=", $arr_val);
-                    $this->_processed[$namevar] = $valuevar;
-                    $processed[$namevar] = $valuevar;
-                    $_POST[$namevar] = $valuevar;
-                }
-                $processed['posted_search'] = 1;
+        if ($processed['posted_search'] != 1) {
+            return;
+        }
+
+        $this->_processed["fromstatsday_sday"] = normalize_day_of_month($processed["fromstatsday_sday"], $processed["fromstatsmonth_sday"]);
+        $this->_processed["tostatsday_sday"] = normalize_day_of_month($processed["tostatsday_sday"], $processed["tostatsmonth_sday"]);
+        $this->_processed["fromstatsday_sday_bis"] = normalize_day_of_month($processed["fromstatsday_sday_bis"], $processed["fromstatsmonth_sday_bis"]);
+        $this->_processed["tostatsday_sday_bis"] = normalize_day_of_month($processed["tostatsday_sday_bis"], $processed["tostatsmonth_sday_bis"]);
+
+        $SQLcmd = '';
+
+        $search_parameters = "Period=$processed[Period]|frommonth=$processed[frommonth]|fromstatsmonth=$processed[fromstatsmonth]|tomonth=$processed[tomonth]";
+        $search_parameters .= "|tostatsmonth=$processed[tostatsmonth]|fromday=$processed[fromday]|fromstatsday_sday=$processed[fromstatsday_sday]";
+        $search_parameters .= "|fromstatsmonth_sday=$processed[fromstatsmonth_sday]|today=$processed[today]|tostatsday_sday=$processed[tostatsday_sday]";
+        $search_parameters .= "|tostatsmonth_sday=$processed[tostatsmonth_sday]";
+        $search_parameters .= "|Period_bis=$processed[Period_bis]|frommonth_bis=$processed[frommonth_bis]|fromstatsmonth_bis=$processed[fromstatsmonth_bis]|tomonth_bis=$processed[tomonth_bis]";
+        $search_parameters .= "|tostatsmonth_bis=$processed[tostatsmonth_bis]|fromday_bis=$processed[fromday_bis]|fromstatsday_sday_bis=$processed[fromstatsday_sday_bis]";
+        $search_parameters .= "|fromstatsmonth_sday_bis=$processed[fromstatsmonth_sday_bis]|today_bis=$processed[today_bis]|tostatsday_sday_bis=$processed[tostatsday_sday_bis]";
+        $search_parameters .= "|tostatsmonth_sday_bis=$processed[tostatsmonth_sday_bis]";
+
+        foreach ($this->FG_FILTER_SEARCH_FORM_TEXT_INPUTS as $r) {
+            $search_parameters .= "|$r[1]=" . $processed[$r[1]] . "|$r[2]=" . $processed[$r[2]];
+            $SQLcmd = $this->do_field($SQLcmd, $r[1], 0, $processed);
+        }
+
+        foreach ($this->FG_FILTER_SEARCH_FORM_COMPARE_INPUTS as $r) {
+            $search_parameters .= "|$r[1]=" . $processed[$r[1]] . "|$r[2]=" . $processed[$r[2]];
+            $search_parameters .= "|$r[3]=" . $processed[$r[3]] . "|$r[4]=" . $processed[$r[4]];
+            $SQLcmd = $this->do_field_duration($SQLcmd, $r[1], $r[5]);
+            $SQLcmd = $this->do_field_duration($SQLcmd, $r[3], $r[5]);
+        }
+
+        foreach ($this->FG_FILTER_SEARCH_FORM_SELECT_INPUTS as $r) {
+            $search_parameters .= "|$r[2]=" . $processed[$r[2]];
+            $SQLcmd = $this->do_field($SQLcmd, $r[2], 1, null, $r[4]);
+        }
+
+        foreach ($this->FG_FILTER_SEARCH_FORM_POPUP_INPUTS as $r) {
+            $search_parameters .= "|$r[name]=" . $processed[$r["name"]];
+            $SQLcmd = $this->do_field($SQLcmd, $r["name"], 1, null);
+        }
+
+        $_SESSION[$this->FG_FILTER_SEARCH_SESSION_NAME] = $search_parameters;
+
+        $date_clause = '';
+
+        if ($processed['fromday'] && isset($processed['fromstatsday_sday']) && isset($processed['fromstatsmonth_sday'])) {
+            $date_clause .= " AND " . $this->FG_FILTER_SEARCH_1_TIME_FIELD . " >= TIMESTAMP('$processed[fromstatsmonth_sday]-$processed[fromstatsday_sday]')";
+        }
+        if ($processed['today'] && isset($processed['tostatsday_sday']) && isset($processed['tostatsmonth_sday'])) {
+            $date_clause .= " AND " . $this->FG_FILTER_SEARCH_1_TIME_FIELD . " <= TIMESTAMP('$processed[tostatsmonth_sday]-" . sprintf("%02d", intval($processed["tostatsday_sday"])/*+1*/) . " 23:59:59')";
+        }
+
+
+        if ($processed["Period"] == "month_older_rad") {
+            $from_month = $processed["month_earlier"];
+            $date_clause .= " AND DATE_SUB(NOW(),INTERVAL $from_month MONTH) > " . $this->FG_FILTER_SEARCH_3_TIME_FIELD;
+        }
+
+        //BIS FIELD
+        if ($processed['fromday_bis'] && isset($processed['fromstatsday_sday_bis']) && isset($processed['fromstatsmonth_sday_bis'])) {
+            $date_clause .= " AND " . $this->FG_FILTER_SEARCH_1_TIME_FIELD_BIS . " >= TIMESTAMP('$processed[fromstatsmonth_sday_bis]-$processed[fromstatsday_sday_bis]')";
+        }
+        if ($processed['today_bis'] && isset($processed['tostatsday_sday_bis']) && isset($processed['tostatsmonth_sday_bis'])) {
+            $date_clause .= " AND " . $this->FG_FILTER_SEARCH_1_TIME_FIELD_BIS . " <= TIMESTAMP('$processed[tostatsmonth_sday_bis]-" . sprintf("%02d", intval($processed["tostatsday_sday_bis"])/*+1*/) . " 23:59:59')";
+        }
+
+        if (strpos($SQLcmd, 'WHERE') > 0) {
+            if (strlen($this->FG_QUERY_WHERE_CLAUSE) > 0) {
+                $this->FG_QUERY_WHERE_CLAUSE .= " AND ";
             }
-
-            // Search Form On
-            if (($processed['posted_search'] == 1)) {
-
-                $this->_processed["fromstatsday_sday"] = normalize_day_of_month($processed["fromstatsday_sday"], $processed["fromstatsmonth_sday"]);
-                $this->_processed["tostatsday_sday"] = normalize_day_of_month($processed["tostatsday_sday"], $processed["tostatsmonth_sday"]);
-                $this->_processed["fromstatsday_sday_bis"] = normalize_day_of_month($processed["fromstatsday_sday_bis"], $processed["fromstatsmonth_sday_bis"]);
-                $this->_processed["tostatsday_sday_bis"] = normalize_day_of_month($processed["tostatsday_sday_bis"], $processed["tostatsmonth_sday_bis"]);
-
-                $SQLcmd = '';
-
-                $search_parameters = "Period=$processed[Period]|frommonth=$processed[frommonth]|fromstatsmonth=$processed[fromstatsmonth]|tomonth=$processed[tomonth]";
-                $search_parameters .= "|tostatsmonth=$processed[tostatsmonth]|fromday=$processed[fromday]|fromstatsday_sday=$processed[fromstatsday_sday]";
-                $search_parameters .= "|fromstatsmonth_sday=$processed[fromstatsmonth_sday]|today=$processed[today]|tostatsday_sday=$processed[tostatsday_sday]";
-                $search_parameters .= "|tostatsmonth_sday=$processed[tostatsmonth_sday]";
-                $search_parameters .= "|Period_bis=$processed[Period_bis]|frommonth_bis=$processed[frommonth_bis]|fromstatsmonth_bis=$processed[fromstatsmonth_bis]|tomonth_bis=$processed[tomonth_bis]";
-                $search_parameters .= "|tostatsmonth_bis=$processed[tostatsmonth_bis]|fromday_bis=$processed[fromday_bis]|fromstatsday_sday_bis=$processed[fromstatsday_sday_bis]";
-                $search_parameters .= "|fromstatsmonth_sday_bis=$processed[fromstatsmonth_sday_bis]|today_bis=$processed[today_bis]|tostatsday_sday_bis=$processed[tostatsday_sday_bis]";
-                $search_parameters .= "|tostatsmonth_sday_bis=$processed[tostatsmonth_sday_bis]";
-
-                foreach ($this->FG_FILTER_SEARCH_FORM_TEXT_INPUTS as $r) {
-                    $search_parameters .= "|$r[1]=" . $processed[$r[1]] . "|$r[2]=" . $processed[$r[2]];
-                    $SQLcmd = $this->do_field($SQLcmd, $r[1], 0, $processed);
-                }
-
-                foreach ($this->FG_FILTER_SEARCH_FORM_COMPARE_INPUTS as $r) {
-                    $search_parameters .= "|$r[1]=" . $processed[$r[1]] . "|$r[2]=" . $processed[$r[2]];
-                    $search_parameters .= "|$r[3]=" . $processed[$r[3]] . "|$r[4]=" . $processed[$r[4]];
-                    $SQLcmd = $this->do_field_duration($SQLcmd, $r[1], $r[5]);
-                    $SQLcmd = $this->do_field_duration($SQLcmd, $r[3], $r[5]);
-                }
-
-                foreach ($this->FG_FILTER_SEARCH_FORM_SELECT_INPUTS as $r) {
-                    $search_parameters .= "|$r[2]=" . $processed[$r[2]];
-                    $SQLcmd = $this->do_field($SQLcmd, $r[2], 1, null, $r[4]);
-                }
-
-                foreach ($this->FG_FILTER_SEARCH_FORM_POPUP_INPUTS as $r) {
-                    $search_parameters .= "|$r[name]=" . $processed[$r["name"]];
-                    $SQLcmd = $this->do_field($SQLcmd, $r["name"], 1, null);
-                }
-
-                $_SESSION[$this->FG_FILTER_SEARCH_SESSION_NAME] = $search_parameters;
-
-                $date_clause = '';
-
-                if ($processed['fromday'] && isset($processed['fromstatsday_sday']) && isset($processed['fromstatsmonth_sday'])) {
-                    $date_clause .= " AND " . $this->FG_FILTER_SEARCH_1_TIME_FIELD . " >= TIMESTAMP('$processed[fromstatsmonth_sday]-$processed[fromstatsday_sday]')";
-                }
-                if ($processed['today'] && isset($processed['tostatsday_sday']) && isset($processed['tostatsmonth_sday'])) {
-                    $date_clause .= " AND " . $this->FG_FILTER_SEARCH_1_TIME_FIELD . " <= TIMESTAMP('$processed[tostatsmonth_sday]-" . sprintf("%02d", intval($processed["tostatsday_sday"])/*+1*/) . " 23:59:59')";
-                }
-
-
-                if ($processed["Period"] == "month_older_rad") {
-                    $from_month = $processed["month_earlier"];
-                    $date_clause .= " AND DATE_SUB(NOW(),INTERVAL $from_month MONTH) > " . $this->FG_FILTER_SEARCH_3_TIME_FIELD;
-                }
-
-                //BIS FIELD
-                if ($processed['fromday_bis'] && isset($processed['fromstatsday_sday_bis']) && isset($processed['fromstatsmonth_sday_bis'])) {
-                    $date_clause .= " AND " . $this->FG_FILTER_SEARCH_1_TIME_FIELD_BIS . " >= TIMESTAMP('$processed[fromstatsmonth_sday_bis]-$processed[fromstatsday_sday_bis]')";
-                }
-                if ($processed['today_bis'] && isset($processed['tostatsday_sday_bis']) && isset($processed['tostatsmonth_sday_bis'])) {
-                    $date_clause .= " AND " . $this->FG_FILTER_SEARCH_1_TIME_FIELD_BIS . " <= TIMESTAMP('$processed[tostatsmonth_sday_bis]-" . sprintf("%02d", intval($processed["tostatsday_sday_bis"])/*+1*/) . " 23:59:59')";
-                }
-
-                if (strpos($SQLcmd, 'WHERE') > 0) {
-                    if (strlen($this->FG_QUERY_WHERE_CLAUSE) > 0) {
-                        $this->FG_QUERY_WHERE_CLAUSE .= " AND ";
-                    }
-                    $this->FG_QUERY_WHERE_CLAUSE .= substr($SQLcmd, 6) . $date_clause;
-                } elseif (strpos($date_clause, 'AND') > 0) {
-                    if (strlen($this->FG_QUERY_WHERE_CLAUSE) > 0) {
-                        $this->FG_QUERY_WHERE_CLAUSE .= " AND ";
-                    }
-                    $this->FG_QUERY_WHERE_CLAUSE .= substr($date_clause, 5);
-                }
+            $this->FG_QUERY_WHERE_CLAUSE .= substr($SQLcmd, 6) . $date_clause;
+        } elseif (strpos($date_clause, 'AND') > 0) {
+            if (strlen($this->FG_QUERY_WHERE_CLAUSE) > 0) {
+                $this->FG_QUERY_WHERE_CLAUSE .= " AND ";
             }
+            $this->FG_QUERY_WHERE_CLAUSE .= substr($date_clause, 5);
         }
     }
 
@@ -1442,11 +1435,8 @@ class FormHandler
      ******************************************/
     public function Delete_Selected()
     {
-        //if ( $form_action == "list" && $this->FG_FILTER_SEARCH_FORM)
-        {
-            $instance_table = new Table($this->FG_QUERY_TABLE_NAME, $this->FG_QUERY_COLUMN_LIST);
-            $instance_table->Delete_Selected($this->DBHandle, $this->FG_QUERY_WHERE_CLAUSE);
-        }
+        $instance_table = new Table($this->FG_QUERY_TABLE_NAME, $this->FG_QUERY_COLUMN_LIST);
+        $instance_table->Delete_Selected($this->DBHandle, $this->FG_QUERY_WHERE_CLAUSE);
     }
 
     /**
@@ -1454,7 +1444,7 @@ class FormHandler
      *
      * @public
      */
-    public function perform_add(&$form_action)
+    public function perform_add(&$form_action): void
     {
         $processed = $this->getProcessed();  //$processed['firstname']
         $this->VALID_SQL_REG_EXP = true;
@@ -1587,35 +1577,35 @@ class FormHandler
             $res_funct = call_user_func([FormBO::class, $this->FG_ADDITIONAL_FUNCTION_BEFORE_ADD]);
         }
 
-        if ($res_funct) {
+        if (!$res_funct) {
+            return;
+        }
 
-            $instance_table = new Table($this->FG_QUERY_TABLE_NAME, $param_add_fields);
-            // CHECK IF WE HAD FOUND A SPLITABLE FIELD THEN WE MIGHT HAVE %TAGPREFIX%
-            if (strpos($param_add_value, '%TAGPREFIX%')) {
-                foreach ($arr_value_to_import as $current_value) {
-                    $param_add_value_replaced = str_replace("%TAGPREFIX%", $current_value, $param_add_value);
-                    if ($this->VALID_SQL_REG_EXP) {
-                        $this->QUERY_RESULT = $instance_table->Add_table($this->DBHandle, $param_add_value_replaced, null, null, $this->FG_QUERY_PRIMARY_KEY);
-                    }
+        $instance_table = new Table($this->FG_QUERY_TABLE_NAME, $param_add_fields);
+        // CHECK IF WE HAD FOUND A SPLITABLE FIELD THEN WE MIGHT HAVE %TAGPREFIX%
+        if (str_contains($param_add_value, '%TAGPREFIX%')) {
+            foreach ($arr_value_to_import as $current_value) {
+                $param_add_value_replaced = str_replace("%TAGPREFIX%", $current_value, $param_add_value);
+                if ($this->VALID_SQL_REG_EXP) {
+                    $this->QUERY_RESULT = $instance_table->Add_table($this->DBHandle, $param_add_value_replaced, null, null, $this->FG_QUERY_PRIMARY_KEY);
                 }
-            } elseif ($this->VALID_SQL_REG_EXP) {
-                $this->QUERY_RESULT = $instance_table->Add_table($this->DBHandle, $param_add_value, null, null, $this->FG_QUERY_PRIMARY_KEY);
             }
-            if ($this->FG_ENABLE_LOG) {
-                $this->logger->insertLog_Add($_SESSION["admin_id"], 2, "NEW " . strtoupper($this->FG_INSTANCE_NAME) . " CREATED", "User added a new record in database", $this->FG_QUERY_TABLE_NAME, $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI'], $param_add_fields, $param_add_value);
+        } elseif ($this->VALID_SQL_REG_EXP) {
+            $this->QUERY_RESULT = $instance_table->Add_table($this->DBHandle, $param_add_value, null, null, $this->FG_QUERY_PRIMARY_KEY);
+        }
+        if ($this->FG_ENABLE_LOG) {
+            $this->logger->insertLog_Add($_SESSION["admin_id"], 2, "NEW " . strtoupper($this->FG_INSTANCE_NAME) . " CREATED", "User added a new record in database", $this->FG_QUERY_TABLE_NAME, $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI'], $param_add_fields, $param_add_value);
+        }
+        // CALL DEFINED FUNCTION AFTER THE ACTION ADDITION
+        if (strlen($this->FG_ADDITIONAL_FUNCTION_AFTER_ADD) > 0 && ($this->VALID_SQL_REG_EXP)) {
+            call_user_func([FormBO::class, $this->FG_ADDITIONAL_FUNCTION_AFTER_ADD]);
+        }
+        $id = $this->QUERY_RESULT;
+        if (!empty($id) && ($this->VALID_SQL_REG_EXP) && (isset($this->FG_LOCATION_AFTER_ADD))) {
+            if ($this->FG_DEBUG == 1) {
+                echo "<br> GOTO ; " . $this->FG_LOCATION_AFTER_ADD . $id;
             }
-            // CALL DEFINED FUNCTION AFTER THE ACTION ADDITION
-            if (strlen($this->FG_ADDITIONAL_FUNCTION_AFTER_ADD) > 0 && ($this->VALID_SQL_REG_EXP)) {
-                call_user_func([FormBO::class, $this->FG_ADDITIONAL_FUNCTION_AFTER_ADD]);
-            }
-            $id = $this->QUERY_RESULT;
-            if (!empty($id) && ($this->VALID_SQL_REG_EXP) && (isset($this->FG_LOCATION_AFTER_ADD))) {
-                if ($this->FG_DEBUG == 1) {
-                    echo "<br> GOTO ; " . $this->FG_LOCATION_AFTER_ADD . $id;
-                }
-                //echo "<br> GOTO ; ".$this->FG_GO_LINK_AFTER_ACTION_ADD.$id;
-                header("Location: " . $this->FG_LOCATION_AFTER_ADD . $id);
-            }
+            header("Location: " . $this->FG_LOCATION_AFTER_ADD . $id);
         }
     }
 

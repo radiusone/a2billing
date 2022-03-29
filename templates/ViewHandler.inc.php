@@ -36,7 +36,7 @@ $hasActionButtons = ($this->FG_ENABLE_DELETE_BUTTON || $this->FG_ENABLE_INFO_BUT
             <a href="<?= $this->FG_LIST_ADDING_BUTTON_LINK1 ?>" class="text-decoration-none">
                 <?= $this->FG_LIST_ADDING_BUTTON_MSG1 ?>
                 <?php if ($this->FG_LIST_ADDING_BUTTON_IMG1): ?>
-                <img src="<?= $this->FG_LIST_ADDING_BUTTON_IMG1 ?>" alt="<?= $this->FG_LIST_ADDING_BUTTON_ALT1 ?>">
+                <img src="<?= $this->FG_LIST_ADDING_BUTTON_IMG1 ?>" alt="<?= $this->FG_LIST_ADDING_BUTTON_ALT1 ?? "" ?>">
                 <?php endif ?>
             </a>
         </div>
@@ -46,7 +46,7 @@ $hasActionButtons = ($this->FG_ENABLE_DELETE_BUTTON || $this->FG_ENABLE_INFO_BUT
             <a href="<?= $this->FG_LIST_ADDING_BUTTON_LINK2 ?>" class="text-decoration-none">
                 <?= $this->FG_LIST_ADDING_BUTTON_MSG2 ?>
                 <?php if ($this->FG_LIST_ADDING_BUTTON_IMG2): ?>
-                    <img src="<?= $this->FG_LIST_ADDING_BUTTON_IMG2 ?>" alt="<?= $this->FG_LIST_ADDING_BUTTON_ALT2 ?>">
+                    <img src="<?= $this->FG_LIST_ADDING_BUTTON_IMG2 ?>" alt="<?= $this->FG_LIST_ADDING_BUTTON_ALT2 ?? "" ?>">
                 <?php endif ?>
             </a>
         </div>
