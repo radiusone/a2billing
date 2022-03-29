@@ -889,7 +889,7 @@ if (!$popup_select) {
                 "name" => "description",
                 "columns" => "description,id_cc_card,datecreated",
                 "where" => "id_cc_card=%id",
-                "pk" => "id_cc_card",
+                "fk" => "id_cc_card",
                 "regex" => 0,
                 "extra_col" => 2,
             ],
