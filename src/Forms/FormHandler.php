@@ -986,7 +986,7 @@ class FormHandler
      * @param string $value
      * @return bool|string
      */
-    public function validate_field($rule_number, string $value)
+    private function validate_field($rule_number, string $value)
     {
         $messages = [
             gettext("(at least 3 characters)"),
@@ -1041,7 +1041,7 @@ class FormHandler
             default: return $messages["default"];
         }
         if (is_null($result) && isset($pattern)) {
-            $result = preg_match($pattern, $value);
+            $result = (bool)preg_match($pattern, $value);
         }
 
         return $result ?: $messages[$rule_number];
@@ -1291,13 +1291,14 @@ class FormHandler
                 }
 
             } else {
+                $cols = array_column($this->FG_EDIT_FORM_ELEMENTS, "name");
+                $fields = implode(",", $cols);
 
                 $instance_table = new Table($this->FG_QUERY_TABLE_NAME, $this->FG_QUERY_EDITION);
                 $list = $instance_table->get_list($this->DBHandle, $this->FG_EDIT_QUERY_CONDITION, [], "ASC", 1);
 
                 //PATCH TO CLEAN THE IMPORT OF PASSWORD FROM THE DATABASE
-                $tab_field = array_map('trim', explode(',', $this->FG_QUERY_EDITION));
-                $index = array_search("pwd_encoded", $tab_field);
+                $index = array_search("pwd_encoded", $cols);
                 if ($index !== false) {
                     $list[0][$index] = "";
                     $list[0]["pwd_encoded"] = "";
