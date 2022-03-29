@@ -261,7 +261,6 @@ class FormHandler
      * @public    -    @type string
      */
     public string $FG_QUERY_EDITION = '';
-    public string $FG_QUERY_ADITION = '';
 
     /** @var string A condition that will be applied to the edit query; %id is replaced within the page code */
     public string $FG_EDIT_QUERY_CONDITION = " id='%id' ";
@@ -979,7 +978,6 @@ class FormHandler
             $fieldname .= ", " . $this->FG_SELECT_FIELDNAME;
         }
         $this->FG_QUERY_EDITION = $fieldname;
-        $this->FG_QUERY_ADITION = $fieldname;
     }
 
 
@@ -1207,8 +1205,8 @@ class FormHandler
             $form_action === "ask-edit" || $form_action === "add-content" || $form_action === "del-content" ||
             $form_action === "ask-del-confirm"
         ) {
-            $this->FG_QUERY_ORDERBY_COLUMNS = [$processed['order']];
-            $this->FG_QUERY_DIRECTION = $processed['sens'];
+            $this->FG_QUERY_ORDERBY_COLUMNS = array_filter([$processed['order']]);
+            $this->FG_QUERY_DIRECTION = $processed['sens'] ?? "";
             $this->CV_CURRENT_PAGE = (int)$processed['current_page'];
 
             $session_limit = $this->FG_QUERY_TABLE_NAME . "-displaylimit";
@@ -1234,7 +1232,7 @@ class FormHandler
             }
 
             if (empty($this->FG_QUERY_ORDERBY_COLUMNS)) {
-                $this->FG_QUERY_ORDERBY_COLUMNS = [$this->FG_TABLE_DEFAULT_ORDER];
+                $this->FG_QUERY_ORDERBY_COLUMNS = array_filter([$this->FG_TABLE_DEFAULT_ORDER]);
             }
             if (empty($this->FG_QUERY_DIRECTION)) {
                 $this->FG_QUERY_DIRECTION = $this->FG_TABLE_DEFAULT_SENS;
@@ -1620,7 +1618,7 @@ class FormHandler
         $param_update = "";
         $processed = $this->getProcessed();  //$processed['firstname']
         $this->VALID_SQL_REG_EXP = true;
-        $instance_table = new Table($this->FG_QUERY_TABLE_NAME, $this->FG_QUERY_EDITION);
+        $instance_table = new Table($this->FG_QUERY_TABLE_NAME);
         $i = 0;
 
         if (!empty($processed['id'])) {
@@ -1771,10 +1769,10 @@ class FormHandler
 
         if (($tableCount == $clauseCount) && $clauseCount > 0 && $this->FG_FK_DELETE_ALLOWED) {
             if (!empty($processed['id'])) {
-                $instance_table = new Table($this->FG_QUERY_TABLE_NAME, $this->FG_QUERY_EDITION, $this->FG_FK_TABLENAMES, $this->FG_FK_EDITION_CLAUSE, $processed['id'], $this->FG_FK_WARNONLY);
+                $instance_table = new Table($this->FG_QUERY_TABLE_NAME, "*", $this->FG_FK_TABLENAMES, $this->FG_FK_EDITION_CLAUSE, $processed['id'], $this->FG_FK_WARNONLY);
             }
         } else {
-            $instance_table = new Table($this->FG_QUERY_TABLE_NAME, $this->FG_QUERY_EDITION);
+            $instance_table = new Table($this->FG_QUERY_TABLE_NAME);
         }
         $instance_table->FK_DELETE = !$this->FG_FK_WARNONLY;
 
