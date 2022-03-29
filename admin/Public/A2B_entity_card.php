@@ -47,7 +47,7 @@ require('./form_data/FG_var_card.inc');
  * @var string $CC_help_create_customer
  * @var array $cardstatus_list
  * @var array $language_list
- * @var array $cardnumberlength_list
+ * @var string $cardnumber_length
  */
 
 if (!has_rights(ACX_CUSTOMER)) {
@@ -664,13 +664,14 @@ if (!empty($update_msg)) {
 $HD_Form->create_toppage ($form_action);
 
 if (!$popup_select && $form_action === "ask-add"):?>
-<div class="row">
+<div class="row pb-3">
     <div class="col">
         <form action="?form_action=ask-add&section=1" method="post" name="cardform">
+            <?= $HD_Form->csrf_inputs() ?>
             <label for="cardnumber_length"><?= _("Change the account number length") ?></label>
-            <select name="cardnumber_length_list" id="cardnumber_length" onchange="this.form.submit()">
+            <select name="cardnumber_length" id="cardnumber_length" onchange="this.form.submit()">
                 <?php foreach ($A2B->cardnumber_range as $v): ?>
-                <option value="$v" <?php if ($v == $cardnumberlength_list): ?>selected="selected"<?php endif ?>><?= $v ?> <?= _("Digits") ?></option>
+                <option value="$v" <?php if ($v == $cardnumber_length): ?>selected="selected"<?php endif ?>><?= $v ?> <?= _("Digits") ?></option>
                 <?php endforeach ?>
             </select>
         </form>

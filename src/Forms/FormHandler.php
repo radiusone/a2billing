@@ -1423,7 +1423,7 @@ class FormHandler
         $instance_table = new Table($this->FG_QUERY_TABLE_NAME);
 
         foreach ($this->FG_ADD_FORM_ELEMENTS as $i => &$row) {
-            if (!str_contains($row["custom_query"], ":")) {
+            if (empty($row["custom_query"])) {
                 $fields_name = $row["name"];
                 $regexp = $row["regex"];
 
