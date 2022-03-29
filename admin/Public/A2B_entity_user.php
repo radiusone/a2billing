@@ -1,5 +1,8 @@
 <?php
 
+use A2billing\A2Billing;
+use A2billing\Forms\FormHandler;
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
@@ -34,45 +37,45 @@
 **/
 
 require_once "../../common/lib/admin.defines.php";
-include './form_data/FG_var_user.inc';
+require_once "./form_data/FG_var_user.inc";
+/**
+ * @var A2Billing $A2B
+ * @var SmartyBC $smarty
+ * @var FormHandler $HD_Form
+ * @var string $popup_select
+ * @var string $form_action
+ * @var string $CC_help_admin_edit
+ * @var string $CC_help_admin_list
+ * @var string $groupID
+ * @var string $id
+ */
 
-if (! has_rights (ACX_ADMINISTRATOR)) {
-    Header ("HTTP/1.0 401 Unauthorized");
-    Header ("Location: PP_error.php?c=accessdenied");
-    die();
+$HD_Form->setDBHandler (DbConnect());
+$HD_Form->init();
+
+$HD_Form->FG_EDIT_BUTTON_LINK= "?form_action=ask-edit&groupID=$groupID&id=";
+$HD_Form->FG_DELETE_BUTTON_LINK= "?form_action=ask-delete&groupID=$groupID&id=";
+
+if (!empty($id)) {
+    $HD_Form->FG_EDIT_QUERY_CONDITION = str_replace("%id", "$id", $HD_Form->FG_EDIT_QUERY_CONDITION);
 }
 
-$HD_Form -> setDBHandler (DbConnect());
-$HD_Form -> init();
+$form_action = $form_action ?? "list";
+$action = $action ?? $form_action;
 
-$HD_Form -> FG_EDIT_BUTTON_LINK= $_SERVER[PHP_SELF]."?form_action=ask-edit&groupID=$groupID&id=";
-$HD_Form -> FG_DELETE_BUTTON_LINK= $_SERVER[PHP_SELF]."?form_action=ask-delete&groupID=$groupID&id=";
+$list = $HD_Form->perform_action($form_action);
 
-if ($id!="" || !is_null($id)) {
-    $HD_Form -> FG_EDIT_QUERY_CONDITION = str_replace("%id", "$id", $HD_Form -> FG_EDIT_QUERY_CONDITION);
-}
-
-if (!isset($form_action))  $form_action="list"; //ask-add
-if (!isset($action)) $action = $form_action;
-
-$list = $HD_Form -> perform_action($form_action);
-
-// #### HEADER SECTION
 $smarty->display('main.tpl');
 
-// #### HELP SECTION
-if ($popup_select == "") {
-    if ($form_action == 'ask-add') echo $CC_help_admin_edit;
-    else echo $CC_help_admin_list;
-}
-
-if ($popup_select != "") {
+if (!$popup_select) {
+    echo $form_action === 'ask-add' ? $CC_help_admin_edit : $CC_help_admin_list;
+} else {
 ?>
 <script>
 function sendValue(selvalue)
 {
-    var formname = <?= json_encode($popup_formname ?? "") ?>;
-    var fieldname = <?= json_encode($popup_fieldname ?? "") ?>;
+    const formname = <?= json_encode($popup_formname ?? "") ?>;
+    const fieldname = <?= json_encode($popup_fieldname ?? "") ?>;
     $(`form[name='${formname}'] [name='${fieldname}']`, window.opener.document).val(selvalue);
     window.close();
 }
@@ -80,9 +83,8 @@ function sendValue(selvalue)
 <?php
 }
 
-// #### TOP SECTION PAGE
-$HD_Form -> create_toppage ($form_action);
+$HD_Form->create_toppage ($form_action);
 
-$HD_Form -> create_form($form_action, $list) ;
+$HD_Form->create_form($form_action, $list);
 
 $smarty->display('footer.tpl');
