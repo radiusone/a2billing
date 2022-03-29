@@ -1626,7 +1626,7 @@ class FormHandler
         }
 
         foreach ($this->FG_EDIT_FORM_ELEMENTS as $i => &$row) {
-            if (!str_contains($row["custom_query"], ":")) {
+            if (empty($row["custom_query"])) {
                 $fields_name = $row["name"];
                 $regexp = $row["regex"];
 
@@ -1664,39 +1664,6 @@ class FormHandler
                         $param_update .= $fields_name . " = NULL ";
                     } elseif ($row["type"] !== "SPAN") {
                         $param_update .= $fields_name . " = '" . addslashes(trim($processed[$fields_name])) . "' ";
-                    }
-                }
-
-            } elseif ($row["type"] == "CHECKBOX") {
-                $table_split = explode(":", $row["name"]);
-                $checkbox_data = $table_split[0];    //doc_tariff
-                $instance_sub_table = new Table($table_split[0], $table_split[1] . ", " . $table_split[5]);
-                $SPLIT_FG_DELETE_CLAUSE = $table_split[5] . "='" . trim($processed['id']) . "'";
-                $instance_sub_table->Delete_table($this->DBHandle, $SPLIT_FG_DELETE_CLAUSE);
-
-                if (!is_array($processed[$checkbox_data])) {
-                    $snum = 0;
-                    $this->VALID_SQL_REG_EXP = false;
-                    $row["validation_err"] = _("Validation error");
-                } else {
-                    $snum = count($processed[$checkbox_data]);
-                }
-
-                $checkbox_data_tab = $processed[$checkbox_data];
-                for ($j = 0; $j < $snum; $j++) {
-                    $this->QUERY_RESULT = $instance_sub_table->Add_table($this->DBHandle, "'" . addslashes(trim($checkbox_data_tab[$j])) . "', '" . addslashes(trim($processed['id'])) . "'");
-                    if (!$this->QUERY_RESULT) {
-                        $findme = 'duplicate';
-                        $pos_find = strpos($instance_sub_table->errstr, $findme);
-
-                        // Note our use of ===.  Simply == would not work as expected
-                        // because the position of 'a' was the 0th (first) character.
-                        if ($pos_find === false) {
-                            echo $instance_sub_table->errstr;
-                        } else {
-                            //echo $FG_TEXT_ERROR_DUPLICATION;
-                            $this->alarm_db_error_duplication = true;
-                        }
                     }
                 }
             }
