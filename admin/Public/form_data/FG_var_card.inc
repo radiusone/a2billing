@@ -6,6 +6,13 @@ use A2billing\Notification;
 use A2billing\NotificationsDAO;
 use A2billing\Table;
 
+/**
+ * @var A2Billing $A2B
+ * @var string $popup_formname
+ * @var string $popup_fieldname
+ * @var string $form_action
+ */
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
@@ -38,27 +45,12 @@ use A2billing\Table;
  *
  **/
 
-/**
- * Defined in A2B_entity_card.php
- *
- * @var A2Billing $A2B
- * @var string $popup_formname
- * @var string $popup_fieldname
- * @var string $form_action
- */
-
-if (!has_rights(ACX_ADMINISTRATOR)) {
-    header("HTTP/1.0 401 Unauthorized");
-    header("Location: PP_error.php?c=accessdenied");
-    die();
-}
-
 getpost_ifset([
     'id', 'username', 'useralias', 'uipass', 'credit', 'language', 'tariff',
     'id_didgroup', 'id_campaign', 'callback', 'simultaccess', 'currency', 'typepaid', 'creditlimit',
     'lastname', 'firstname', 'email', 'address', 'city', 'state', 'country', 'zipcode', 'phone', 'fax', 'inuse',
     'max_concurrent', 'cid', 'runservice', 'firstusedate', 'expirationdate', 'enableexpire', 'expiredays', 'sip_buddy',
-    'iax_buddy', 'popup_select', 'vat', 'autorefill', 'initialbalance', 'mac_addr', 'cardnumberlength_list',
+    'iax_buddy', 'popup_select', 'vat', 'autorefill', 'initialbalance', 'mac_addr', 'cardnumber_length',
     'status', 'block', 'lock_pin', 'template_invoice', 'template_outstanding', 'description', 'voicemail_activated',
     'voicemail_permitted', 'email_notification', 'credit_notification', 'notify_email', 'id_seria',
     'company_name', 'company_website', 'vat_rn', 'traffic', 'traffic_target', 'discount', 'restriction',
@@ -103,7 +95,7 @@ getpost_ifset([
  * @var string $autorefill
  * @var string $initialbalance
  * @var string $mac_addr
- * @var string $cardnumberlength_list
+ * @var string $cardnumber_length
  * @var string $status
  * @var string $block
  * @var string $lock_pin
@@ -144,12 +136,14 @@ if (DELETE_FK_CARD) {
     $HD_Form->FG_FK_DELETE_MESSAGE = _("You are going to remove a card that have SIP/IAX accounts and/or CallerIDs attached to it ! Please confirm that you really want to remove this card ? ");
 }
 
-if (!$popup_select) {
+if (!$popup_select && (is_admin() || has_rights(ACX_GENERATE_CUSTOMER))) {
     $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
     $HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_card_multi.php?stitle=Card&section=" . $_SESSION["menu_section"];
     $HD_Form->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form->FG_LIST_ADDING_BUTTON_MSG1 = _("Generate Customers");
     $HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAQCAYAAAABOs/SAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9gJGBI4Of08ag4AAASESURBVDjLxZJbbBRVHIe/MzO7293e7LallIttBbQVaAsVqAoSI2gEIkGJplChiAkUQ1LBhAdREkUoRtAnUDBihBZQlJvhqhQtSgGhgG21xVJAKNDL9rLb2e7szBwfiA0pl8iT/8eTfN/vnP/5Ce5zFoxKeGdQvL1EVe1Iw5L4DUW/0KF9XHKqeen9eMT9yKOw/Fn95UqHRwgbMMKSQNCmKSBlXbvj/RSXMP/rpdTeB/NyvEsy+9nLPdHCqbkEiiqQ2A4wxw2NlxPdUYpo7bTQDYlhCmzFgWEKYZpWbk4/JtyJi4+NUs7fCB65NUfrHZzd1yqO8Kg0d1pYAkDBVpxoqiXa/QYjpixkYmoMV65eo3TzZjRNI6RF44nwudweheZO8zYuzmEWAcvuueqVT0XJEXlFDOstF26G9TEpWH0Io/4wAT1Ii6+DmCgPsY9OYN+K6cSPnMGw1NjbuLDeFh47bmz0rOI9obu+OCE13jd+2qteo/4wAzWNuYULeuRb351pBS+fUk1XAnGRJnGJ/QiYKvjq6DLd5ovTZml34g6sejk4NH2gvDVH6R0ctCL/CF4+RciVQFxiMkMeySAy6SHCzbXsacpsP7BpDTF0ILQIhOYiSjU4smU1314Z3tFW/9ttHL46/IbnfGbBWuOu5UqaXOI4e0N96sGm7VnZ2cPBGYNQNGS4m/fW/chPgQLP4uKllG9ewZ9VldRWVVJXU03f2btZdyDZc7V6J8/lJOJw3+ScspsfStew6vfcCvnwvD36hT3mbX+cOGmLy7at19z0Xbt/fS7Vn81AIpESjrUOYtfV6ez7dCSncXO6HYJdYATB1CG5awdGy24CwTb8AT8pQZNsJRaBoN/MEvKKTqKbDUWC8IbWw/P1nuD457cJw2K219l/Y2/59apL+Pd9zby3FtHqVqnWJeFuMA0wukFt2kbqAwfJyXiMAd4hlFXvpKKqHL/yEolDlpEWCc/2CZK3qJKWrtoFmhra0FFWaCoAfT1dU8fEXNr40dJcfm51c/xvid4sCbdL3m6YROlsHzdq9lHRCHqbIOSHkB/CATBbN5GdnoWlWGQlT8QSYXKHP4Hvry8xOiVVDTbfX3Qzp+Bxxnib1g6IDOT3lGtTxofb7ybXhERzeTha0cJgTadbh5AOhn5z1W3+azhEFC9kLARg8TPrGdQnE2mHMHSJERQcrwGl8TDfzNf5PP2L9T3BqhDK3eRlaZ9QX1ZKRPg6u0pO4IyWRMRBZBLEDgSfv4Pqxl8pPjQHgOKDc6hvOgfCheJQUCIEo9JCVFReR9EcqKrQelr9xut5RuvJ78ZXdg62y88pSnJOCg43OKOgKWYQZ1PmQvpoqstraTxSLq8crxUNx+rsi0drbGF3Kbp2gtSkVFr0K3R0NfHL2XIc3ny8aeNxR8P+tXsZHXdGT/XttF3pTxev23GirKfVDVsLozee6+/8qibrA9neOll1eLwIxYEtkZZp2mZ3wOGNPzMl5XT+m0/eCKa8ss7/L5dfvnd5WNqFQpgOaTtlsH2c7Gqeat2L+9/mH65EU5RAm4B6AAAAAElFTkSuQmCC";
+}
 
+if (!$popup_select && (is_admin() || has_rights(ACX_CREATE_CUSTOMER))) {
     $HD_Form->FG_LIST_ADDING_BUTTON2 = true;
     $HD_Form->FG_LIST_ADDING_BUTTON_LINK2 = "A2B_entity_card.php?form_action=ask-add&atmenu=card&stitle=Card&section=" . $_SESSION["menu_section"];
     $HD_Form->FG_LIST_ADDING_BUTTON_ALT2 = $HD_Form->FG_LIST_ADDING_BUTTON_MSG2 = _("Add Customer");
@@ -171,9 +165,9 @@ $indcur = 0;
 
 $currencies_list = get_currencies();
 foreach ($currencies_list as $key => $cur_value) {
-    $currency_list[$key] = [$cur_value[1] . ' (' . $cur_value[2] . ')', $key];
+    $currency_list[$key]  = ["$cur_value[1] ($cur_value[2])", $key];
     $currency_list_r[$key] = [$key, $cur_value[1]];
-    $currency_list_key[$key][0] = $key;
+    $currency_list_key[$key] = [$key];
 }
 
 $restriction_list = getRestrictionList();
@@ -309,8 +303,8 @@ if (!$popup_select) {
     $HD_Form->AddSearchSelectInput(_("SELECT PAYMENT TYPE"), "typepaid", $typepaid_list_r);
 
     $HD_Form->FG_ENABLE_INFO_BUTTON = true;
-    $HD_Form->FG_OTHER_BUTTON1 = !empty($A2B->config["webui"]['buddy_sip_file']);
-    $HD_Form->FG_OTHER_BUTTON2 = !empty($A2B->config["webui"]['buddy_iax_file']);
+    $HD_Form->FG_OTHER_BUTTON1 = !empty($A2B->config["webui"]['buddy_sip_file']) && (is_admin() || has_rights(ACX_VOIPCONF));
+    $HD_Form->FG_OTHER_BUTTON2 = !empty($A2B->config["webui"]['buddy_iax_file']) && (is_admin() || has_rights(ACX_VOIPCONF));
     $HD_Form->FG_OTHER_BUTTON3 = true;
     $HD_Form->FG_OTHER_BUTTON4 = true;
     $HD_Form->FG_OTHER_BUTTON5 = true;
@@ -335,16 +329,16 @@ if (!$popup_select) {
     $HD_Form->FG_OTHER_BUTTON5_ALT = _('Email to this Customer');
 
     if (has_rights(ACX_MODIFY_CUSTOMERS)) {
-        $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
-        $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
+        $HD_Form->FG_ENABLE_EDIT_BUTTON = is_admin() || has_rights(ACX_EDIT_CUSTOMER);
+        $HD_Form->FG_ENABLE_DELETE_BUTTON = is_admin() || has_rights(ACX_DELETE_CUSTOMER);
 
         $maxi = $maxi2 = $maxi3 = $default_initbalance = "";
 
         if ($form_action === "ask-add") {
-            if (!is_numeric($cardnumberlength_list)) {
-                $cardnumberlength_list = min($A2B->cardnumber_range);
+            if (empty($cardnumber_length) || !is_numeric($cardnumber_length)) {
+                $cardnumber_length = min($A2B->cardnumber_range);
             }
-            $array_card_generated = gen_card_with_alias("cc_card", $cardnumberlength_list);
+            $array_card_generated = gen_card_with_alias("cc_card", $cardnumber_length);
             $maxi = "value='$array_card_generated[0]'";
             $maxi2 = "value='$array_card_generated[1]'";
             $pass = MDP_NUMERIC(5) . MDP_STRING(15);
@@ -394,7 +388,7 @@ if (!$popup_select) {
 
         $HD_Form->AddEditSqlSelect(
             "id_seria",
-            _("SERIAL"),
+            _("SERIES"),
             "cc_card_seria",
             "name,id",
             "",
@@ -533,7 +527,7 @@ if (!$popup_select) {
             "NO"
         );
 
-        if ($form_action !== "edit") {
+        if ($form_action !== "edit" && is_admin()) {
             $payment_status = ($form_action === "ask-add" || $form_action === "add") ? "" : 'disabled="disabled"';
             $HD_Form->AddEditSelect(
                 "typepaid",
@@ -546,16 +540,18 @@ if (!$popup_select) {
             );
         }
 
-        $HD_Form->AddEditSqlSelect(
-            "tariff",
-            _("CALL PLAN"),
-            "cc_tariffgroup",
-            "tariffgroupname, id",
-            "",
-            "",
-            "",
-            _("Changing the call plan will result in the free minutes or free calls package being reset.")
-        );
+        if (is_admin() || $form_action === "add" || $form_action === "ask-add") {
+            $HD_Form->AddEditSqlSelect(
+                "tariff",
+                _("CALL PLAN"),
+                "cc_tariffgroup",
+                "tariffgroupname, id",
+                "",
+                "",
+                "",
+                _("Changing the call plan will result in the free minutes or free calls package being reset.")
+            );
+        }
 
         $HD_Form->AddEditSqlSelect(
             "id_didgroup",
@@ -635,16 +631,18 @@ if (!$popup_select) {
             gettext("Choose if you want to enable the service recurring on this account")
         );
 
-        $HD_Form->AddEditElement(
-            _("CREDIT LIMIT"),
-            "creditlimit",
-            _("Credit limit is only used for the postpaid account."),
-            "size=20 maxlength=20",
-            4,
-            _("Insert the credit limit"), 
-            "", 
-            "NO-NULL"
-        );
+        if (is_admin()) {
+            $HD_Form->AddEditElement(
+                _("CREDIT LIMIT"),
+                "creditlimit",
+                _("Credit limit is only used for the postpaid account."),
+                "size=20 maxlength=20",
+                4,
+                _("Insert the credit limit"),
+                "",
+                "NO-NULL"
+            );
+        }
 
         $HD_Form->AddEditSelect(
             "credit_notification",
@@ -672,26 +670,6 @@ if (!$popup_select) {
             "",
             "NO"
         );
-
-        if (ACT_VOICEMAIL) {
-            $HD_Form->AddEditRadio(
-                "voicemail_permitted",
-                [[gettext("Yes"), "1"], [gettext("No"), "0"]],
-                gettext("PERMITTED VOICEMAIL"),
-                "1",
-                gettext("Enable the voicemail functionality for this account."),
-                gettext("Choose if you want to enable the voicemail functionality for this account"),
-            );
-
-            $HD_Form->AddEditRadio(
-                "voicemail_activated",
-                [[gettext("Yes"), "1"], [gettext("No"), "0"]],
-                gettext("ACTIVE VOICEMAIL SERVICE"),
-                "0",
-                gettext("Customer can enable the voicemail for this account."),
-                gettext("Customer can choose to enable the voicemail for this account")
-            );
-        }
 
         $HD_Form->AddEditSqlSelect(
             "id_campaign",
@@ -724,12 +702,8 @@ if (!$popup_select) {
 
         $comp_zero = $comp_date_plus = '';
         if (isset($form_action) && $form_action === "ask-add") {
-            $begin_date = date("Y");
-            $begin_date_plus = date("Y") + 10;
-            $end_date = date("-m-d H:i:s");
-            $comp_date = "value='" . $begin_date . $end_date . "'";
-            $comp_date_plus = "value='" . $begin_date_plus . $end_date . "'";
             $comp_zero = "value='0'";
+            $comp_date_plus = 'value="' . (new DateTime())->modify(("+10 years"))->format("Y-m-d H:i:s") . '"';
         }
 
         $HD_Form->AddEditElement(
@@ -753,7 +727,7 @@ if (!$popup_select) {
             _("Insert the number of days after which the account will expire")
         );
 
-        if (!empty($A2B->config["webui"]['buddy_sip_file'])) {
+        if (!empty($A2B->config["webui"]['buddy_sip_file']) && (is_admin() || has_rights(ACX_VOIPCONF))) {
             $HD_Form->AddEditRadio(
                 "sip_buddy",
                 [[gettext("Yes"), "1"], [gettext("No"), "0"]],
@@ -764,7 +738,7 @@ if (!$popup_select) {
             );
         }
 
-        if (!empty($A2B->config["webui"]['buddy_iax_file'])) {
+        if (!empty($A2B->config["webui"]['buddy_iax_file']) && (is_admin() || has_rights(ACX_VOIPCONF))) {
             $HD_Form->AddEditRadio(
                 "iax_buddy",
                 [[gettext("Yes"), "1"], [gettext("No"), "0"]],
@@ -797,16 +771,18 @@ if (!$popup_select) {
             "NO"
         );
 
-        $HD_Form->AddEditElement(
-            _("MAX CONCURRENT CALLS"),
-            "max_concurrent",
-            _("Max concurrent calls (Feature not implemented)"),
-            "size=5 maxlength=5",
-            null,
-            "",
-            "",
-            "NO"
-        );
+        if (is_admin()) {
+            $HD_Form->AddEditElement(
+                _("MAX CONCURRENT CALLS"),
+                "max_concurrent",
+                _("Max concurrent calls (Feature not implemented)"),
+                "size=5 maxlength=5",
+                null,
+                "",
+                "",
+                "NO"
+            );
+        }
 
         $HD_Form->AddEditRadio(
             "autorefill",
@@ -831,7 +807,7 @@ if (!$popup_select) {
 
         $vat_init = ($form_action === "ask-add" || $form_action === "add") ? "value = '0'" : "";
         $HD_Form->AddEditElement(
-            _("VAT"),
+            _("VAT/GST"),
             "vat",
             _("VAT to add on the invoice of this customer. it should be a decimal value '21' this will be for 21% of VAT!"),
             "size=10 maxlength=6 $vat_init",
@@ -840,7 +816,7 @@ if (!$popup_select) {
         );
 
         $HD_Form->AddEditElement(
-            _("VAT REGISTRATION NUMBER "),
+            _("VAT/GST REGISTRATION NUMBER "),
             "vat_rn",
             "",
             "size=40 maxlength=40",
@@ -913,13 +889,13 @@ if (!$popup_select) {
             true
         );
 
-        $add_fields_voicemail = ACT_VOICEMAIL ? "voicemail_permitted, voicemail_activated, " : "";
+
         $update_field_typepaid = $form_action !== "edit" ? "typepaid," : "";
 
         $HD_Form->FieldEditElement('username, useralias, uipass, credit, id_group, id_seria, lastname, firstname, email, ' .
             ' address, city, state, country, zipcode, phone, fax,company_name, company_website, ' .
             $update_field_typepaid . ' tariff, id_didgroup, id_timezone, language, currency, status, block, lock_pin, simultaccess,  runservice, creditlimit, ' .
-            ' credit_notification, notify_email, email_notification, ' . $add_fields_voicemail .
+            ' credit_notification, notify_email, email_notification, ' .
             ' id_campaign, ' .
             ' firstusedate, enableexpire, expirationdate, expiredays, sip_buddy, iax_buddy, mac_addr, inuse, max_concurrent, ' .
             ' autorefill, initialbalance, invoiceday, vat, vat_rn, discount, traffic, traffic_target, restriction');
@@ -942,32 +918,31 @@ if (!$popup_select) {
             $card_result = $card_table->get_list(DbConnect(), $card_clause);
             $sip_buddy = $card_result[0]['sip_buddy'];
             $iax_buddy = $card_result[0]['iax_buddy'];
-            if ($sip_buddy == 1 && $iax_buddy == 1) {
+            if ($sip_buddy && $iax_buddy) {
                 $key = "sip_iax_changed";
-            } elseif ($sip_buddy == 1) {
+            } elseif ($sip_buddy) {
                 $key = "sip_changed";
-            } elseif ($iax_buddy == 1) {
+            } elseif ($iax_buddy) {
                 $key = "iax_changed";
             } else {
                 $key = "";
             }
 
-            if ($_SESSION["user_type"] == "ADMIN") {
+            $who = Notification::$UNKNOWN;
+            $who_id = -1;
+            if (is_admin()) {
                 $who = Notification::$ADMIN;
                 $who_id = $_SESSION['admin_id'];
-            } elseif ($_SESSION["user_type"] == "AGENT") {
+            } elseif (is_agent()) {
                 $who = Notification::$AGENT;
                 $who_id = $_SESSION['agent_id'];
-            } else {
-                $who = Notification::$UNKNOWN;
-                $who_id = -1;
             }
             NotificationsDAO::AddNotification($key, Notification::$HIGH, $who, $who_id);
         }
 
-        $HD_Form->FG_LOCATION_AFTER_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL) . "?section=" . $_SESSION["menu_section"] . "&id=";
-        $HD_Form->FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL) . "?section=" . $_SESSION["menu_section"] . "&id=";
-        $HD_Form->FG_LOCATION_AFTER_DELETE = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL) . "?section=" . $_SESSION["menu_section"] . "&id=";
+        $HD_Form->FG_LOCATION_AFTER_ADD = "?section=" . $_SESSION["menu_section"] . "&id=";
+        $HD_Form->FG_LOCATION_AFTER_EDIT = "?section=" . $_SESSION["menu_section"] . "&id=";
+        $HD_Form->FG_LOCATION_AFTER_DELETE = "?section=" . $_SESSION["menu_section"] . "&id=";
     }
 
 } else {
