@@ -24,24 +24,25 @@ $db_data = $list[0];
 
     <input type="hidden" name="form_action" value="delete">
 
-    <div class="modal show d-block" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="delconfirmTitle" aria-hidden="false">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content shadow">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="delconfirmTitle"><?= _("Warning") ?></h4>
-                </div>
-                <div class="modal-body">
-                    <p>
-                        <?= gettext("You have ")?> <?= $processed["fk_count"] ?> <?= gettext(" dependent records.") ?>
-                    </p>
-                    <p>
-                        <?= $this -> FG_FK_DELETE_MESSAGE ?>
-                    </p>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-danger" href="index.php"><?= _("Delete this Record") ?></button>
-                </div>
-            </div>
+    <div class="row pb-3 justify-content-center">
+        <div class="col-6 align-content-center">
+            <h4><?= _("Warning") ?></h4>
+        </div>
+    </div>
+    <div class="row pb-3 justify-content-center">
+        <div class="col-6">
+            <p>
+                <?= gettext("You have ")?> <?= $processed["fk_count"] ?> <?= gettext(" dependent records.") ?>
+            </p>
+            <p>
+                <?= $this -> FG_FK_DELETE_MESSAGE ?>
+            </p>
+        </div>
+    </div>
+    <div class="row my-4 justify-content-end">
+        <div class="col-6">
+            <button type="submit" class="btn btn-secondary" name="form_action" value="ask-delete"><?= _("Cancel") ?></button>
+            <button type="submit" class="btn btn-danger"><?= _("Delete this Record") ?></button>
         </div>
     </div>
 
@@ -138,6 +139,7 @@ $db_data = $list[0];
 
     <div class="row my-4 justify-content-end">
         <div class="col-auto">
+            <a class="btn btn-secondary" href="?form_action=list"><?= _("Cancel") ?></a>
             <button type="submit" class="btn btn-danger"><?= _("Delete") ?></button>
         </div>
     </div>
