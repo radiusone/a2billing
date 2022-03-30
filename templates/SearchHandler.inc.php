@@ -58,7 +58,7 @@ $action = http_build_query([
         </label>
         <div class="col-4">
             <div class="form-check form-check-inline">
-                <input type="checkbox" name="fromday" value="true" aria-label="<?= _("enable the search start date")?>" <?php if ($processed["fromday"]): ?>checked="checked"<?php endif ?> class="form-check-input"/>
+                <input type="checkbox" name="fromday" id="search_fromday" value="true" aria-label="<?= _("enable the search start date")?>" <?php if ($processed["fromday"]): ?>checked="checked"<?php endif ?> class="form-check-input"/>
                 <label class="form-check-label" for="fromstatsday_sday"><?= gettext("From :") ?></label>
             </div>
             <!-- will need to get backend fixed up to use a reasonable date input
@@ -77,7 +77,7 @@ $action = http_build_query([
         </div>
         <div class="col-4">
             <div class="form-check form-check-inline">
-                <input type="checkbox" name="today" value="true" aria-label="<?= _("enable the search end date") ?>" <?php if ($processed["today"]): ?>checked="checked"<?php endif ?> class="form-check-input"/>
+                <input type="checkbox" name="today" id="search_today" value="true" aria-label="<?= _("enable the search end date") ?>" <?php if ($processed["today"]): ?>checked="checked"<?php endif ?> class="form-check-input"/>
                 <label class="form-check-label" for="tostatsday_sday"><?= gettext("To :") ?></label>
             </div>
             <!-- will need to get backend fixed up to use a reasonable date input
@@ -103,7 +103,7 @@ $action = http_build_query([
             <?= $this->FG_FILTER_SEARCH_1_TIME_TEXT_BIS ?>
         </label>
         <div class="col-4">
-            <input type="checkbox" name="fromday_bis" value="true" aria-label="<?= _("enable the search start date")?>" <?php if ($processed["fromday_bis"]): ?>checked="checked"<?php endif ?> class="form-check-input"/>
+            <input type="checkbox" name="fromday_bis" id="search_fromday_bis" value="true" aria-label="<?= _("enable the search start date")?>" <?php if ($processed["fromday_bis"]): ?>checked="checked"<?php endif ?> class="form-check-input"/>
             <label for="fromstatsday_sday_bis"><?= gettext("From :") ?></label>
             <!-- will need to get backend fixed up to use a reasonable date input
             <input type="date" name="fromstats_sday_bis" id="fromstats_sday_bis" value="<?= $processed["fromstats_sday_bis"] ?? (new DateTime())->format("Y-m-d") ?>" aria-label="<?= _("search start date") ?>"/>
@@ -120,7 +120,7 @@ $action = http_build_query([
             </select>
         </div>
         <div class="col-4">
-            <input type="checkbox" name="today_bis" value="true" aria-label="<?= _("enable the search end date") ?>" <?php if ($processed["today_bis"]): ?>checked="checked"<?php endif ?> class="form-check-input"/>
+            <input type="checkbox" name="today_bis" id="search_today_bis" value="true" aria-label="<?= _("enable the search end date") ?>" <?php if ($processed["today_bis"]): ?>checked="checked"<?php endif ?> class="form-check-input"/>
             <label for="tostatsday_sday_bis"><?= gettext("To :") ?></label>
             <!-- will need to get backend fixed up to use a reasonable date input
             <input type="date" name="tostats_sday_bis" id="tostats_sday_bis" value="<?= $processed["tostats_sday_bis"] ?? (new DateTime())->format("Y-m-d") ?>" aria-label="<?= _("search end date") ?>"/>
