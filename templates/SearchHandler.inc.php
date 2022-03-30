@@ -239,10 +239,10 @@ $action = http_build_query([
 <?php endforeach ?>
 
 <?php if (count($this->FG_FILTER_SEARCH_FORM_SELECT_INPUTS)): ?>
-    <div class="row pb-1">
-        <?php foreach (array_chunk($this->FG_FILTER_SEARCH_FORM_SELECT_INPUTS, 4) as $chunk): ?>
+    <?php foreach (array_chunk($this->FG_FILTER_SEARCH_FORM_SELECT_INPUTS, 4) as $chunk): ?>
+        <div class="row pb-1">
             <?php foreach ($chunk as $i => $item): ?>
-            <div class="col">
+            <div class="col-auto">
                 <select name="<?= str_replace(".", "^^", $item[2]) ?>" aria-label="<?= $item[0] ?>" class="form-select form-select-sm">
                     <option value=""><?= $item[0] ?></option>
                     <?php foreach ($item[1] as $opt): ?>
@@ -253,8 +253,8 @@ $action = http_build_query([
                 </select>
             </div>
             <?php endforeach ?>
-        <?php endforeach ?>
-    </div>
+        </div>
+    <?php endforeach ?>
 <?php endif ?>
 <?php if ($full_modal): ?>
                 </div> <!-- .modal-body -->
