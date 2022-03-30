@@ -7,23 +7,10 @@ use A2billing\Table;
  * @var array $processed
  * @var array $list
  * @var string $form_action
+ * @var bool $has_child_records
  */
-
-if ($form_action === "ask-delete") {
-    if (!$this->isFKDataExists()) {
-        $this->FG_FK_DELETE_ALLOWED = false;
-        $FG_ISCHILDS = false;
-        $this->FG_FK_WARNONLY = false;
-        $this->FG_FK_DELETE_CONFIRM = false;
-    }
-}
+$db_data = $list[0];
 ?>
-
-<script>
-function sendto(action, record, field_inst, instance) {
-  document.myForm.submit();
-}
-</script>
 
 <form action="" id="myForm" method="post" name="myForm">
     <input type="hidden" name="id" value="<?= $processed["id"] ?>">
@@ -33,63 +20,41 @@ function sendto(action, record, field_inst, instance) {
     <input type="hidden" name="sens" value="<?= $processed['sens'] ?>">
     <?= $this->csrf_inputs() ?>
 
-<?php if ($this->FG_FK_DELETE_CONFIRM && $form_action == "ask-del-confirm" && $this-> FG_FK_DELETE_ALLOWED): ?>
+<?php if ($form_action === "ask-del-confirm"): ?>
 
     <input type="hidden" name="form_action" value="delete">
 
-	<table cellspacing="2"  class="tablestyle_001">
-        <tr>
-            <td>
-                <table cellspacing=0 class="delform_table2">
-                    <tr>
-                        <td align=left class="delform_table2_td1"><?= gettext("Message") ?></td>
-                    </tr>
-                    <tr >
-                        <td class="bgcolor_006">&nbsp;</td>
-                    </tr>
-                    <tr height="50px">
-                        <td align=center class="bgcolor_006">
-                            <?= gettext("You have ")?> <?= $processed["fkCount"] ?> <?= gettext(" dependent records.") ?>
-                            <br>
-                            <?= $this -> FG_FK_DELETE_MESSAGE ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="bgcolor_006">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td align=center class="bgcolor_006">
-                            <input
-                                title="Delete this record"
-                                alt="Delete this Record"
-                                hspace=2
-                                id=submit22
-                                name=submit22
-                                src="data:image/gif;base64,R0lGODlhXgAUANUAAAAAAP///+JfYPO5uvfR0v33+PjZ2NAAANQXF9gtLds5Od1GRt9SUuJgX+Vzc+WHh+qXl+2lpfGysvG1tfS/v/O/vvTFxfXLy/rf3/ng4Prm5vzs7P3y8v74+P/7+/78/P///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAACAALAAAAABeABQAAAb/wABgSCwaj8ikcslsOgHCh2RKrVqv2Kx2y+12H8OHeEwujyWBtHrNbrvf8Li8DQY8HPi8fu+Qzv+AgYJpdXd8h3kSHx6MjY6PkJGSk5SVH5eXhQ0CAptpnJucogISBaanqKmqq6ytrqgdsbKxBR21HYUMurppu767EhzCw8TFwwfIB8bFysvCzc7RzoUL1dYLadfXERvd3t/g3gfi4d/j5d3n6OvohQrv8App8fERGvf4+fr4B/n998n4+UMGkGDBf/sS6iuUoKFDh2keNoyAAUOGixgzasxwIGNHjhg/fgR5UWTIkxtTVryIgSGCBC9jJkgj8yUEAzhz6tyZ84BOzZ8GkiHDCTSoUKI9j/JcurMQgqdQEdCMChUCgatYs2rFeiBrVwJfvXLdGjbs1rNnnSI48JRtGrZr2yKAcKGu3bt47R7Qy7fu3gt/AfcNTDiv4byFhB54q1goBAuQI0ueHFno5GSVJWOGjKxyZ8qgKScWyrgxsgcVUqtezbq169ewY6+mQLs2bdajTet+MKC379/AgwsfTry48eC5dTd+MKG58+fQo0ufTr269ejJlQuV4qW79+9eCpkZT768+fPo06sHI+SJ+/fw4zMJEAQAOw=="
-                                type="image"
-                            />
-                        </td>
-                    </tr>
-                    <tr height="5px">
-                        <td class="bgcolor_006">&nbsp;</td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
+    <div class="modal show d-block" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="delconfirmTitle" aria-hidden="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content shadow">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="delconfirmTitle"><?= _("Warning") ?></h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        <?= gettext("You have ")?> <?= $processed["fk_count"] ?> <?= gettext(" dependent records.") ?>
+                    </p>
+                    <p>
+                        <?= $this -> FG_FK_DELETE_MESSAGE ?>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-danger" href="index.php"><?= _("Delete this Record") ?></button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 <?php else: ?>
 
-    <table cellspacing="3" class="delform_table3">
-        <tr>
-            <td class="delform_table3_td1" valign="top">
-                <span class="textnegrita"><?= $this->FG_INTRO_TEXT_ASK_DELETION ?></span>
-            </td>
-        </tr>
-    </table>
+    <div class="row pb-3">
+        <div class="col">
+            <strong><?= $this->FG_INTRO_TEXT_ASK_DELETION ?></strong>
+        </div>
+    </div>
 
-    <input type="hidden" name="fkCount" value="<?= $this -> FG_FK_RECORDS_COUNT ?>">
-    <?php if ($this->FG_FK_DELETE_CONFIRM && $this-> FG_FK_DELETE_ALLOWED && $FG_ISCHILDS): ?>
+    <?php if ($this->FG_FK_RECORDS_COUNT > 0 && $this->FG_FK_DELETE_ALLOWED && $this->FG_FK_DELETE_CONFIRM): ?>
+    <input type="hidden" name="fk_count" value="<?= $this->FG_FK_RECORDS_COUNT ?>">
 	<input type="hidden" name="form_action" value="ask-del-confirm">
     <?php else: ?>
     <input type="hidden" name="form_action" value="delete">
@@ -99,112 +64,83 @@ function sendto(action, record, field_inst, instance) {
         <input type="hidden" name="<?= htmlspecialchars($name) ?>" value="<?= htmlspecialchars($value) ?>"/>
     <?php endforeach ?>
 
-	<table cellspacing="2" class="tablestyle_001">
-		<?php foreach($this->FG_EDIT_FORM_ELEMENTS as $i=> $row): ?>
-		<tr>
-			<td width="25%" valign="middle" class="form_head">
-				<label for="<?= $row["name"] ?>"><?= $row["label"] ?></label>
-			</td>
-			<td valign="top" class="tablestyle_001">
-				<?php if ($this->FG_DEBUG == 1): ?>
-				    <?= $row[3] ?>
+    <?php foreach($this->FG_EDIT_FORM_ELEMENTS as $i=> $row): ?>
+        <?php if (!empty($row["custom_query"]) || $row["type"] === "HAS_MANY") {continue;} ?>
+    <div class="row pb-3">
+        <label for="<?= $row["name"] ?>" class="col-3 col-form-label"><?= $row["label"] ?></label>
+        <div class="col">
+            <?php if ($this->FG_DEBUG == 1): ?><?= $row["type"] ?><?php endif ?>
+            <?php if ($row["type"] === "INPUT" || str_starts_with($row["type"], "POPUP")): ?>
+            <input
+                id="<?= $row["name"] ?>"
+                class="form-control"
+                readonly="readonly"
+                disabled="disabled"
+                name="<?= $row["name"] ?>"
+                <?= $row["attributes"] ?>
+                value="<?= $db_data[$i] ?>"
+            />
+
+            <?php elseif ($row["type"] === "TEXTAREA"): ?>
+            <textarea
+                id="<?= $row["name"] ?>"
+                class="form-control"
+                readonly="readonly"
+                disabled="disabled"
+                name="<?= $row["name"] ?>"
+                <?= $row["attributes"]?>
+            ><?= $db_data[$i] ?></textarea>
+
+            <?php elseif ($row["type"] === "SELECT"): ?>
+                <?php if ($row["select_type"] === "SQL"): ?>
+                    <?php $options = (new Table($row["sql_table"], $row["sql_field"]))->get_list($this->DBHandle, $row["sql_clause"])?>
+                <?php else: ?>
+                    <?php $options = $row["select_fields"] ?>
                 <?php endif ?>
-
-                <?php if ($row["type"] === "INPUT" || str_starts_with($row["type"], "POPUP")): ?>
-					<input
-					    id="<?= $row["name"] ?>"
-					    class="form_enter"
-					    readonly
-					    name=<?= $row["name"] ?>
-					    <?= $row["attributes"] ?>
-					    value="<?= $list[0][$i] ?>"
-                    />
-
-				<?php elseif ($row["type"] === "TEXTAREA"): ?>
-					<textarea
-					    id="<?= $row["name"] ?>"
-					    class="form_input_textarea"
-					    readonly
-					    name="<?= $row["name"] ?>"
-					    <?= $row["attributes"]?>
-                    >
-                        <?= $list[0][$i] ?>
-                    </textarea>
-
-				<?php elseif ($row["type"] === "SELECT"): ?>
-                    <?php if ($row["select_type"] === "SQL"): ?>
-                        <?php $options = (new Table($row["sql_table"], $row["sql_field"]))->get_list($this->DBHandle, $row["sql_clause"])?>
-                    <?php elseif ($row["select_type"] === "LIST"): ?>
-                        <?php $options = $row["select_fields"] ?>
-                    <?php endif ?>
-                    <?php if ($this->FG_DEBUG >= 2): ?>
-                        <br/><?php print_r($options)?><br/><?php print_r($list)?><br/>#<?= $i ?>::><?= $this->VALID_SQL_REG_EXP ?><br/><br/>::><?= $list[0][$i] ?><br/><br/>::><?= $row["name"] ?>
-                    <?php endif ?>
-					<select class="form_input_select" disabled name="<?= $row["name"] ?>" id="<?= $row["name"] ?>">
-                    <?php if (is_array($options) && count($options)): ?>
-                        <?php foreach ($options as $option): ?>
-                            <option
-                                value="<?= $option[1] ?>"
-                                <?php if ($list[0][$i] === $option[1]): ?>
-                                    selected
-                                <?php endif ?>
-                            >
-                                <?php if ($row["select_format"] === ""): ?>
-                                    <?= $option[0] ?>
-                                <?php else: ?>
-                                    <?php $val = $row["select_format"] ?>
-                                    <?php for ($k = 1; $k <= count($option); $k++): ?>
-                                        <?php $val = str_replace("%$k", $option[$k -1], $val) ?>
-                                    <?php endfor ?>
-                                    <?= $val ?>
-                                <?php endif ?>
-                            </option>
-						<?php endforeach ?>
-                    <?php else: ?>
-						<?= gettext("No data found !!!") ?>
-					<?php endif ?>
-                    </select>
-
-				<?php elseif ($row["type"] === "RADIOBUTTON"): ?>
-                <?php $vals = explode(",", $row["radio_options"]) ?>
-                <?php foreach ($vals as $v): ?>
-                    <?php $rad = explode(":", $v) ?>
-                    <label for="<?= $row["name"] ?>_<?= $rad[1] ?>"><?= $rad[0] ?></label>
-                        <?php if ($this->VALID_SQL_REG_EXP): ?>
-                            <?php $check = $list[0][$i] ?>
-                        <?php else: ?>
-                            <?php $check = $processed[$row["name"]] ?>
-                        <?php endif ?>
-                        <input
-                            id="<?= $row["name"] ?>_<?= $rad[1] ?>"
-                            class="form_enter"
-                            type="radio"
-                            name="<?= $row["name"] ?>"
-                            value="<?= $rad[1] ?>"
-                            <?php if ($check === $rad[1]): ?>checked<?php endif ?>
-                        />
+                <?php if ($this->FG_DEBUG >= 2): ?>
+                    <br/><?php print_r($options)?><br/><?php print_r($list)?><br/>#<?= $i ?>::><?= $this->VALID_SQL_REG_EXP ?><br/><br/>::><?= $db_data[$i] ?><br/><br/>::><?= $row["name"] ?>
+                <?php endif ?>
+            <select class="form-select" disabled="disabled" name="<?= $row["name"] ?>" id="<?= $row["name"] ?>">
+                <?= $row["first_option"] ?>
+                <?php if (is_array($options) && count($options)): ?>
+                    <?php foreach ($options as $option): ?>
+                <option
+                    value="<?= $option[1] ?>"
+                    <?php if ($db_data[$i] === $option[1]): ?>selected="selected"<?php endif ?>
+                >
+                    <?= preg_replace_callback("/%([0-9]+)/", fn ($m) => str_replace($m[0], $option[$m[1] - 1] ?? "", $m[0]), $row["select_format"]); ?>
+                </option>
                     <?php endforeach ?>
+                <?php else: ?>
+                    <?= gettext("No data found !!!") ?>
                 <?php endif ?>
-		  	</td>
-		</tr>
-		<?php endforeach ?>
-	</table>
+            </select>
 
-	<table cellspacing="0" class="delform_table5">
-		<tr height="2">
-			<td colspan="2" style="border-bottom: medium dotted rgb(255, 119, 102);">&nbsp; </td>
-		</tr>
-		<tr>
-		    <td width="50%" class="text_azul">
-		        <span class="tableBodyRight"><?= $this->FG_BUTTON_DELETION_BOTTOM_TEXT ?></span>
-            </td>
-		    <td width="50%" align="right" class="text">
-				<a href="#" onclick="sendto('delete');" class="cssbutton_big" title="<?= gettext("Remove this ");?> <?= $this->FG_INSTANCE_NAME; ?>">
-				    <img alt="" src="data:image/gif;base64,R0lGODlhDwAPAMQYAP+yPf+fEv+qLP+3Tf+pKv++Xf/Gcv+mJP+tNf+tMf+kH/+/YP+oJv+wO/+jHP/Ohf/WmP+vOv/cpv+kHf+iGf+jG/////Hw7P///wAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAABgALAAAAAAPAA8AAAVjIHaNZEmKF6auLJpiEvQYxQAgiTpiMm0Tk4pigsLMag2Co8KkFA0Lm8XCbBajDcFkWnXuBlkFk1vxpgACcYVcLqbHVKaDuFNXqwxGkUK5VyYMEQhFGAGGhxQHOS4tjTsmkDshADs="/>
-				    <?= _("Delete") ?>
-				</a>
-			</td>
-		</tr>
-	</table>
-</form>
+            <?php elseif ($row["type"] === "RADIOBUTTON"): ?>
+            <?php foreach ($row["radio_options"] as $rad): ?>
+                <?php $check = $this->VALID_SQL_REG_EXP ? $db_data[$i] : $processed[$row["name"]] ?>
+            <div class="form-check">
+                <input
+                        id="<?= $row["name"] ?>_<?= $rad[1] ?>"
+                        class="form-check-input <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
+                        type="radio"
+                        name="<?= $row["name"] ?>"
+                        value="<?= $rad[1] ?>"
+                        <?php if ($check === $rad[1]): ?>checked="checked"<?php endif ?>
+                />
+                <label for="<?= $row["name"] ?>_<?= $rad[1] ?>" class="form-check-label"><?= $rad[0] ?></label>
+            </div>
+            <?php endforeach ?>
+        <?php endif ?>
+        </div>
+    </div>
+    <?php endforeach ?>
+
+    <div class="row my-4 justify-content-end">
+        <div class="col-auto">
+            <button type="submit" class="btn btn-danger"><?= _("Delete") ?></button>
+        </div>
+    </div>
+
 <?php endif ?>
+</form>

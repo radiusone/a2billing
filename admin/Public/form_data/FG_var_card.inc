@@ -384,7 +384,13 @@ if (!$popup_select) {
             _("Insert the number of credit")
         );
 
-        $HD_Form->AddEditSqlSelect("id_group", _("CUSTOMER GROUP"), "cc_card_group", "name,id");
+        $HD_Form->AddEditSqlSelect(
+            "id_group",
+            _("CUSTOMER GROUP"),
+            "cc_card_group",
+            "name,id",
+            is_admin() ? "" : "id_agent='$_SESSION[agent_id]'"
+        );
 
         $HD_Form->AddEditSqlSelect(
             "id_seria",
@@ -544,9 +550,9 @@ if (!$popup_select) {
             $HD_Form->AddEditSqlSelect(
                 "tariff",
                 _("CALL PLAN"),
-                "cc_tariffgroup",
+                is_admin() ? "cc_tariffgroup" : "cc_tariffgroup,cc_agent_tariffgroup",
                 "tariffgroupname, id",
-                "",
+                is_admin() ? "" : "cc_tariffgroup.id = cc_agent_tariffgroup.id_tariffgroup AND cc_agent_tariffgroup.id_agent = '$_SESSION[agent_id]'",
                 "",
                 "",
                 _("Changing the call plan will result in the free minutes or free calls package being reset.")

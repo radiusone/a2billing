@@ -1744,22 +1744,23 @@ class FormHandler
         }
     }
 
-    /*
-      Function to check for the Dependent Data
-    */
-    public function isFKDataExists(): bool
+    /**
+     * Checks for child records, populates FormHandler::$FG_FK_RECORDS_COUNT
+     *
+     * @return bool whether there are any child records
+     */
+    public function check_child_records(): bool
     {
         $processed = $this->getProcessed();
         $tableCount = count($this->FG_FK_TABLENAMES);
         $clauseCount = count($this->FG_FK_EDITION_CLAUSE);
+        if (empty($this->FG_FK_TABLENAMES) || empty($processed["id"]) || $tableCount !== $clauseCount) {
+            return false;
+        }
         $rowcount = 0;
-        if (($tableCount == $clauseCount) && $clauseCount > 0) {
-            for ($i = 0; $i < $tableCount; $i++) {
-                if (!empty($processed['id'])) {
-                    $instance_table = new Table($this->FG_FK_TABLENAMES[$i]);
-                    $rowcount = $rowcount + $instance_table->Table_count($this->DBHandle, $this->FG_FK_EDITION_CLAUSE[$i], $processed['id']);
-                }
-            }
+        foreach ($this->FG_FK_TABLENAMES as $i => $table) {
+            $instance_table = new Table($table);
+            $rowcount += $instance_table->Table_count($this->DBHandle, $this->FG_FK_EDITION_CLAUSE[$i], $processed['id']);
         }
         $this->FG_FK_RECORDS_COUNT = $rowcount;
 
@@ -1944,6 +1945,10 @@ class FormHandler
                 if (strlen($this->FG_ADDITIONAL_FUNCTION_BEFORE_DELETE) > 0) {
                     $res_funct = call_user_func([FormBO::class, $this->FG_ADDITIONAL_FUNCTION_BEFORE_DELETE]);
                 }
+                if ($form_action === "ask-delete") {
+                    $this->check_child_records();
+                }
+
                 require(__DIR__ . "/../../templates/DelForm.inc.php");
                 break;
 
