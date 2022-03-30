@@ -33,16 +33,28 @@ use A2billing\Forms\FormHandler;
  *
  *
 **/
-
+/**
+ * @var string $popup_select
+ * @var string $form_action
+ */
 if (! has_rights (ACX_ADMINISTRATOR)) {
-    Header ("HTTP/1.0 401 Unauthorized");
-    Header ("Location: PP_error.php?c=accessdenied");
+    header("HTTP/1.0 401 Unauthorized");
+    header("Location: PP_error.php?c=accessdenied");
     die();
 }
+getpost_ifset(['id', 'card_id', 'date', 'payment','description','added_refill','refill_type']);
+/**
+ * @var string $id
+ * @var string $card_id
+ * @var string $date
+ * @var string $payment
+ * @var string $description
+ * @var string $added_refill
+ * @var string $refill_type
+ */
+$form_action = $form_action ?? "list";
 
-getpost_ifset(array('id', 'card_id', 'date', 'payment','description','added_refill','refill_type'));
-
-if (!isset($form_action) || $form_action=="list") {
+if ($form_action === "list") {
 	$HD_Form = new FormHandler("cc_logpayment LEFT JOIN cc_card ON cc_card.id=card_id", "Payment");
 } else {
 	$HD_Form = new FormHandler("cc_logpayment", "Payment");
@@ -54,9 +66,9 @@ $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
 if (has_rights (ACX_MODIFY_PAYMENTS)) {
 	$HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
-	$HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_payment.php?form_action=ask-add&section=".$_SESSION["menu_section"];
-	$HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add Payment");
-	$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/money_add.png";
+	$HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_payment.php?form_action=ask-add";
+	$HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add Payment");
+	$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJ0SURBVDjLlZPdT9JRGMe5qFu2Lrt1a63LWv9ATRdN5xvLsnLRipzZpIVpigjyIs3XAOUHgopoWkggP5QXSRJwJQmtm/IlAWtt3XXTfubS+nZ+P1eby6ldPGdn5+zzfb7Pc57DA8DbL9rjrYxuVsXf7W5fuC2mYawpE7QRJZpDDfz/EngYVTN9qR4EPvlgXjCiKVCPWvou/0ACxDJjSbIwDefqMPxrEzC87IDUW4Pq8Vv8PQVaX7Qw5qQRgY9ePP0wDMeSFfWTUkxmPeiI61DlFOP6SAV/VwFtRMFQCwb4CdwW10IbVcK+aMHgohmPlwdBZ11oCctx1X5p/R8B9Uzzuum1ntj1Iv1tGRtb3zH2dgSa2eZtOOOCMizD5cGyzR0lGBNdx1TP5T96E4+4WttiWg6mYr3Ifk1DF1PBmxmHYlrGZkbFUDku2oSHOAFjolOuIpZ65rs5+MmKg9hWcJlZWB1UbsOhRjYz5r/MoSn4AKWWQg0nwFoyzndhijRobGWIq3XgPQU1sa2LqjCRHoc81IBK9w0OnvscRWQtBGFfEc4b8o7wNDMKOwnY3lDwZZ+h1idB/zsThpf6CezkstVN3yNwHFMrNGqCVRvlA2UQ6POkud1nTvE0EcVR1gU7JNSCnrPrWLRtw+RM7BKBXnJDP9eOYqogVNAj0Av0uTk7mtjov2+1p2yQ0hIYXnXCs+qEzF+HC9YSyIiIsK84XWTKP5tvPHdi11GupSXHW8JNW+FMAHdclSCCKDEX/iKdDgotRY17jTu31LhvHybT5RGPin5K3NWs1c0yW+lp0umc/T7b383NUdHJa44rSfJU+Qf54n/iNzi8zBtL0z1zAAAAAElFTkSuQmCC";
 }
 
 $list_refill_type = getRefillType_List();
@@ -78,7 +90,7 @@ $HD_Form -> FG_FILTER_SEARCH_1_TIME_TEXT = gettext('DATE');
 $HD_Form -> FG_FILTER_SEARCH_1_TIME_FIELD = 'date';
 $HD_Form -> FG_FILTER_SEARCH_DELETE_ALL =false;
 
-if (!($popup_select>=1)) {
+if (!$popup_select) {
 	$HD_Form -> FG_FILTER_SEARCH_FORM = true;
 }
 
@@ -99,7 +111,9 @@ $HD_Form -> FG_FILTER_COLUMN = 'cardnumber';
 $HD_Form -> FG_FILTER_LABEL = 'account number';
 
 if (isset($filterprefix)  &&  (strlen($filterprefix)>0)) {
-	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
+	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) {
+        $HD_Form->FG_QUERY_WHERE_CLAUSE .= " AND ";
+    }
 	$HD_Form -> FG_QUERY_WHERE_CLAUSE.="username like '$filterprefix%'";
 }
 
@@ -110,9 +124,7 @@ if (has_rights (ACX_MODIFY_PAYMENTS)) {
 	$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 	$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 
-	if ($form_action=="ask-add" && !empty($card_id)) {
-		$id_val = "value='$card_id'";
-	}
+    $id_val = ($form_action === "ask-add" && !empty($card_id)) ? "value='$card_id'" : "";
 
     $HD_Form->AddEditPopup(
         "card_id",
@@ -123,18 +135,13 @@ if (has_rights (ACX_MODIFY_PAYMENTS)) {
         $id_val
     );
 
-	if ($form_action=="ask-add"){
-		$begin_date = date("Y");
-		$end_date = date("-m-d H:i:s");
-		$comp_date=$begin_date.$end_date;
-		$comp_date="value='$comp_date'";
-	}
+    $comp_date = ($form_action === "ask-add") ? (new DateTime())->format("Y-m-d H:i:s") : "";
 
     $HD_Form->AddEditElement(
         gettext("PAYMENT DATE"),
         "date",
         "",
-        "size=40 maxlength=40  $comp_date",
+        "size=40 maxlength=40 value='$comp_date'",
         10,
         gettext("Insert the current date")
     );
@@ -155,7 +162,7 @@ if (has_rights (ACX_MODIFY_PAYMENTS)) {
         gettext("Insert the description")
     );
 
-	if ($form_action!="ask-edit" && $form_action!="edit") {
+	if ($form_action !== "ask-edit" && $form_action !== "edit") {
         $HD_Form->AddEditRadio(
             "added_refill",
             [[gettext("Yes"), "1"], [gettext("No"), "0"]],
@@ -181,19 +188,17 @@ if (has_rights (ACX_MODIFY_PAYMENTS)) {
         gettext("PAYMENT TYPE"),
         gettext("Define type for payment and refill,if created.")
     );
+
 	if ($form_action!="ask-edit" && $form_action!="edit") {
 		$HD_Form -> FieldEditElement ('card_id, date, payment, description,payment_type');
 	} else {
 		$HD_Form -> FieldEditElement ('card_id, date, payment, description, added_refill,added_commission, payment_type');
 	}
 
-	
 	$HD_Form -> FG_INTRO_TEXT_ADITION = '';
-	
-		
 	$HD_Form -> FG_ADDITIONAL_FUNCTION_AFTER_ADD = 'create_refill_after_payment';
 
-	$HD_Form -> FG_LOCATION_AFTER_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&stitle=Document&wh=AC&id=";
-	$HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&stitle=Document&wh=AC&id=";
-	$HD_Form -> FG_LOCATION_AFTER_DELETE = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&stitle=Document&wh=AC&id=";
+	$HD_Form -> FG_LOCATION_AFTER_ADD = "?atmenu=document&stitle=Document&wh=AC&id=";
+	$HD_Form -> FG_LOCATION_AFTER_EDIT = "?atmenu=document&stitle=Document&wh=AC&id=";
+	$HD_Form -> FG_LOCATION_AFTER_DELETE = "?atmenu=document&stitle=Document&wh=AC&id=";
 }
