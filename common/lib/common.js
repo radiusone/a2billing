@@ -77,11 +77,11 @@ $(function() {
     const toMonth = $("#tostatsmonth_sday");
 
     fromDay.add(fromMonth).prop("disabled", true);
-    $("#search_fromday").on("change", () => fromDay.add(fromMonth).prop("disabled", !this.checked));
+    $("#search_fromday").on("change", e => fromDay.add(fromMonth).prop("disabled", !e.target.checked));
     fromMonth.on("change", ev => setValidDay(fromMonth, fromDay));
 
     toDay.add(toMonth).prop("disabled", true);
-    $("#search_today").on("change", () => toDay.add(toMonth).prop("disabled", !this.checked));
+    $("#search_today").on("change", e => toDay.add(toMonth).prop("disabled", !e.target.checked));
     toMonth.on("change", ev => setValidDay(toMonth, toDay));
 
     const fromDay2 = $("#fromstatsday_sday_bis");
@@ -90,10 +90,10 @@ $(function() {
     const toMonth2 = $("#tostatsmonth_sday_bis");
 
     fromDay2.add(fromMonth2).prop("disabled", true);
-    $("#search_fromday_bis").on("change", () => fromDay2.add(fromMonth2).prop("disabled", !this.checked));
+    $("#search_fromday_bis").on("change", e => fromDay2.add(fromMonth2).prop("disabled", !e.target.checked));
     fromMonth2.on("change", ev => setValidDay(fromMonth2, fromDay2));
 
     toDay2.add(toMonth2).prop("disabled", true);
-    $("#search_today_bis").on("change", () => toDay2.add(toMonth2).prop("disabled", !this.checked));
+    $("#search_today_bis").on("change", e => toDay2.add(toMonth2).prop("disabled", !e.target.checked));
     toMonth2.on("change", ev => setValidDay(toMonth2, toDay2));
 });
