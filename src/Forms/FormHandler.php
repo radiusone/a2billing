@@ -1874,11 +1874,9 @@ class FormHandler
     }
 
     /**
-     * Function to create the search form
-     *
-     * @public
+     * @noinspection PhpUnusedParameterInspection
      */
-    public function create_search_form()
+    public function create_search_form(bool $full_modal = false, bool $with_hide_button = true)
     {
         Console::logSpeed('Time taken to get to line ' . __LINE__);
         $processed = $this->getProcessed();
@@ -1900,7 +1898,14 @@ class FormHandler
                 $select[1] = $list;
             }
         }
-        $this->show_search($processed, $list);
+        $id = $processed['id'];
+        $atmenu = $processed['atmenu'];
+        $stitle = $processed['stitle'];
+        $ratesort = $processed['ratesort'];
+        $sub_action = $processed['sub_action'];
+
+        require(__DIR__ . "/../../templates/SearchHandler.inc.php");
+
     }
 
     /**
@@ -1964,18 +1969,6 @@ class FormHandler
             default:
                 $this->create_custom($form_action);
         }
-    }
-
-    /** @noinspection PhpUnusedParameterInspection */
-    private function show_search($processed, $list)
-    {
-        $id = $processed['id'];
-        $atmenu = $processed['atmenu'];
-        $stitle = $processed['stitle'];
-        $ratesort = $processed['ratesort'];
-        $sub_action = $processed['sub_action'];
-
-        require(__DIR__ . "/../../templates/SearchHandler.inc.php");
     }
 
     /**
@@ -2074,5 +2067,26 @@ class FormHandler
     public function no_debug(): void
     {
         $this->FG_DEBUG = 0;
+    }
+
+    public function create_date_options($target): string
+    {
+        $month_list = [
+            "", gettext("January"), gettext("February"), gettext("March"), gettext("April"), gettext("May"),
+            gettext("June"), gettext("July"), gettext("August"), gettext("September"), gettext("October"),
+            gettext("November"), gettext("December")
+        ];
+        $this_year = date("Y");
+        $this_month = date("n");
+        $month_year_opts = "";
+        for ($i = $this_year; $i >= $this_year - 10; $i--) {
+            for ($j = ($i == $this_year ? $this_month : 12); $j > 0; $j--) {
+                $val = sprintf("%d-%02d", $i, $j);
+                $selected = $target == $val ? 'selected="selected"' : "";
+                $display = $month_list[$j] . " " . $i;
+                $month_year_opts .= "<option value=\"$val\" $selected>$display</option>";
+            }
+        }
+        return $month_year_opts;
     }
 }

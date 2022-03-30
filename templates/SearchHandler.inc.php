@@ -3,38 +3,52 @@
  * @var A2billing\Forms\Formhandler $this
  * @var array $processed
  * @var array $list
+ * @var bool $full_modal
+ * @var bool $with_hide_button
  */
-function create_date_options($target)
-{
-    $month_list = [
-        "", gettext("January"), gettext("February"), gettext("March"), gettext("April"), gettext("May"),
-        gettext("June"), gettext("July"), gettext("August"), gettext("September"), gettext("October"),
-        gettext("November"), gettext("December")
-    ];
-    $this_year = date("Y");
-    $this_month = date("n");
-    $month_year_opts = "";
-    for ($i = $this_year; $i >= $this_year - 10; $i--) {
-        for ($j = ($i == $this_year ? $this_month : 12); $j > 0; $j--) {
-            $val = sprintf("%d-%02d", $i, $j);
-            $selected = $target == $val ? 'selected="selected"' : "";
-            $display = $month_list[$j] . " " . $i;
-            $month_year_opts .= "<option value=\"$val\" $selected>$display</option>";
-        }
-    }
-    return $month_year_opts;
-}
+$action = http_build_query([
+    "s" => $processed["s"],
+    "t" => $processed["t"],
+    "order" => $processed["order"],
+    "sens" => $processed["sens"],
+    "current_page" => $processed["current_page"],
+]);
 ?>
-<div class="row">
-    <div class="col">
-        <strong><?php echo $this->FG_FILTER_SEARCH_TOP_TEXT?></strong>
+<?php if ($full_modal && $with_hide_button): ?>
+<div class="row pb-3 justify-content-center">
+    <div class="col-auto">
+        <button
+                class="btn btn-sm <?= empty($_SESSION[$HD_Form->FG_FILTER_SEARCH_SESSION_NAME]) ? "btn-outline-primary" : "btn-primary" ?>"
+                data-bs-toggle="modal"
+                data-bs-target="#searchModal"
+                title="<?= _("Search Payments") ?> <?= empty($_SESSION[$HD_Form->FG_FILTER_SEARCH_SESSION_NAME]) ? "" : "(" . _("search activated") . ")" ?>"
+        >
+            <?= _("Search Payments") ?>
+        </button>
     </div>
 </div>
-
-<form method="post" name="searchForm" id="searchForm" class="container-fluid form-striped" action="<?= "?s=$processed[s]&t=$processed[t]&order=$processed[order]&sens=$processed[sens]&current_page=$processed[current_page]" ?>">
+<?php endif ?>
+<form method="post" name="searchForm" id="searchForm" class="container-fluid form-striped" action="?<?= $action ?>">
     <input type="hidden" name="posted_search" value="1"/>
     <input type="hidden" name="current_page" value="0"/>
     <?= $this->csrf_inputs() ?>
+
+<?php if ($full_modal): ?>
+    <div class="modal" id="searchModal" aria-labelledby="modal-title-search" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-title-search"><?= _("Search Payments") ?></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+<?php endif ?>
+
+    <div class="row">
+        <div class="col">
+            <strong><?php echo $this->FG_FILTER_SEARCH_TOP_TEXT?></strong>
+        </div>
+    </div>
 
 <?php if ($this -> FG_FILTER_SEARCH_1_TIME): ?>
     <div class="row pb-1">
@@ -57,7 +71,7 @@ function create_date_options($target)
                 <?php endfor ?>
             </select>
             <select name="fromstatsmonth_sday" id="fromstatsmonth_sday" class="form-select form-select-sm">
-                <?= create_date_options($processed["fromstatsmonth_sday"]) ?>
+                <?= $this->create_date_options($processed["fromstatsmonth_sday"]) ?>
             </select>
         </div>
         <div class="col-4">
@@ -76,7 +90,7 @@ function create_date_options($target)
                 <?php endfor ?>
             </select>
             <select name="tostatsmonth_sday" id="tostatsmonth_sday" class="form-select form-select-sm">
-                <?= create_date_options($processed["tostatsmonth_sday"]) ?>
+                <?= $this->create_date_options($processed["tostatsmonth_sday"]) ?>
             </select>
         </div>
     </div>
@@ -101,7 +115,7 @@ function create_date_options($target)
                 <?php endfor ?>
             </select>
             <select name="fromstatsmonth_sday_bis" id="fromstatsmonth_sday_bis" class="form-select form-select-sm">
-                <?= create_date_options($processed["fromstatsmonth_sday_bis"]) ?>
+                <?= $this->create_date_options($processed["fromstatsmonth_sday_bis"]) ?>
             </select>
         </div>
         <div class="col-4">
@@ -118,7 +132,7 @@ function create_date_options($target)
                 <?php endfor ?>
             </select>
             <select name="tostatsmonth_sday_bis" id="tostatsmonth_sday_bis" class="form-select form-select-sm">
-                <?= create_date_options($processed["tostatsmonth_sday_bis"]) ?>
+                <?= $this->create_date_options($processed["tostatsmonth_sday_bis"]) ?>
             </select>
         </div>
     </div>
@@ -139,7 +153,7 @@ function create_date_options($target)
     </div>
 <?php endif ?>
 
-<?php foreach ($this->FG_FILTER_SEARCH_FORM_POPUP as $item): ?>
+<?php foreach ($this->FG_FILTER_SEARCH_FORM_POPUP_INPUTS as $item): ?>
     <div class="row pb-1">
         <label class="col-4 col-form-label col-form-label-sm" for="<?= $item["name"] ?>">
             <?= $item["label"] ?>
@@ -175,11 +189,11 @@ function create_date_options($target)
             <input name="<?= str_replace(".", "^^", $item[1]) ?>" id="<?= $item[1] ?>" value="<?= $processed[$item[1]] ?? "" ?>" class="form-control form-control-sm"/>
         </div>
         <div class="col-4">
-            <select name="<?= str_replace(".", "^^", $item[2]) ?>" id="<?= $item[2] ?>" class="form-select form-select-sm">
-                <option value="1" <?php if (($processed[$item[2]] ?? 1) == 1): ?>selected="selected"<?php endif ?>><?= _("Exact") ?></option>
-                <option value="2" <?php if (($processed[$item[2]] ?? 1) == 2): ?>selected="selected"<?php endif ?>><?= _("Begins with") ?></option>
-                <option value="3" <?php if (($processed[$item[2]] ?? 1) == 3): ?>selected="selected"<?php endif ?>><?= _("Contains") ?></option>
-                <option value="4" <?php if (($processed[$item[2]] ?? 1) == 4): ?>selected="selected"<?php endif ?>><?= _("Ends with") ?></option>
+            <select name="<?= str_replace(".", "^^", $item[2]) ?>" id="<?= $item[2] ?>" class="form-select form-select-sm" aria-label="select a search type for the previous input">
+                <option value="1" <?php if (($processed[$item[2]] ?? 3) == 1): ?>selected="selected"<?php endif ?>><?= _("Exact") ?></option>
+                <option value="2" <?php if (($processed[$item[2]] ?? 3) == 2): ?>selected="selected"<?php endif ?>><?= _("Begins with") ?></option>
+                <option value="3" <?php if (($processed[$item[2]] ?? 3) == 3): ?>selected="selected"<?php endif ?>><?= _("Contains") ?></option>
+                <option value="4" <?php if (($processed[$item[2]] ?? 3) == 4): ?>selected="selected"<?php endif ?>><?= _("Ends with") ?></option>
             </select>
         </div>
     </div>
@@ -193,12 +207,12 @@ function create_date_options($target)
         <div class="col">
             <div class="row">
                 <div class="col-2">
-                    <select name="<?= str_replace(".", "^^", $item[2]) ?>" class="form-select form-select-sm">
-                        <option value="4" <?php if (($processed[$item[2]] ?? 1) == 4): ?> selected="selected"<?php endif ?>>&gt;</option>
-                        <option value="5" <?php if (($processed[$item[2]] ?? 1) == 5): ?> selected="selected"<?php endif ?>>&gt;=</option>
-                        <option value="1" <?php if (($processed[$item[2]] ?? 1) == 1): ?> selected="selected"<?php endif ?>>=</option>
-                        <option value="2" <?php if (($processed[$item[2]] ?? 1) == 2): ?> selected="selected"<?php endif ?>>&lt;=</option>
-                        <option value="3" <?php if (($processed[$item[2]] ?? 1) == 3): ?> selected="selected"<?php endif ?>>&lt;</option>
+                    <select name="<?= str_replace(".", "^^", $item[2]) ?>" class="form-select form-select-sm" aria-label="select an operator to apply to the next input">
+                        <option value="4" <?php if (($processed[$item[2]] ?? 1) == 4): ?> selected="selected"<?php endif ?> aria-label="greater than">&gt;</option>
+                        <option value="5" <?php if (($processed[$item[2]] ?? 1) == 5): ?> selected="selected"<?php endif ?> aria-label="greater than or equal to">&gt;=</option>
+                        <option value="1" <?php if (($processed[$item[2]] ?? 1) == 1): ?> selected="selected"<?php endif ?> aria-label="equal to">=</option>
+                        <option value="2" <?php if (($processed[$item[2]] ?? 1) == 2): ?> selected="selected"<?php endif ?> aria-label="less than or equal to">&lt;=</option>
+                        <option value="3" <?php if (($processed[$item[2]] ?? 1) == 3): ?> selected="selected"<?php endif ?> aria-label="less than">&lt;</option>
                     </select>
                 </div>
                 <div class="col-3">
@@ -208,25 +222,25 @@ function create_date_options($target)
                     <?= gettext("AND") ?>
                 </div>
                 <div class="col-2">
-                    <select name="<?= str_replace(".", "^^", $item[4]) ?>" class="form-select form-select-sm">
+                    <select name="<?= str_replace(".", "^^", $item[4]) ?>" class="form-select form-select-sm" aria-label="select an operator to apply to the next input">
                         <option></option>
-                        <option value="4" <?php if (($processed[$item[4]] ?? 1) == 4): ?> selected="selected"<?php endif ?>>&gt;</option>
-                        <option value="5" <?php if (($processed[$item[4]] ?? 1) == 5): ?> selected="selected"<?php endif ?>>&gt;=</option>
-                        <option value="2" <?php if (($processed[$item[4]] ?? 1) == 2): ?> selected="selected"<?php endif ?>>&lt;=</option>
-                        <option value="3" <?php if (($processed[$item[4]] ?? 1) == 3): ?> selected="selected"<?php endif ?>>&lt;</option>
+                        <option value="4" <?php if (($processed[$item[4]] ?? 1) == 4): ?> selected="selected"<?php endif ?> aria-label="greater than">&gt;</option>
+                        <option value="5" <?php if (($processed[$item[4]] ?? 1) == 5): ?> selected="selected"<?php endif ?> aria-label="greater than or equal to">&gt;=</option>
+                        <option value="2" <?php if (($processed[$item[4]] ?? 1) == 2): ?> selected="selected"<?php endif ?> aria-label="less than or equal to">&lt;=</option>
+                        <option value="3" <?php if (($processed[$item[4]] ?? 1) == 3): ?> selected="selected"<?php endif ?> aria-label="less than">&lt;</option>
                     </select>
                 </div>
                 <div class="col-3">
-                    <input type="text" name="<?= str_replace(".", "^^", $item[3]) ?>" id="<?= $item[3] ?>" value="<?= $processed[$item[3]] ?? "" ?>" class="form-control form-control-sm"/>
+                    <input type="text" name="<?= str_replace(".", "^^", $item[3]) ?>" id="<?= $item[3] ?>" value="<?= $processed[$item[3]] ?? "" ?>" class="form-control form-control-sm" aria-label="<?= $item[0] ?>"/>
                 </div>
             </div>
         </div>
     </div>
 <?php endforeach ?>
 
-<?php if (is_array($this->FG_FILTER_SEARCH_FORM_SELECT) && count($this->FG_FILTER_SEARCH_FORM_SELECT)): ?>
+<?php if (count($this->FG_FILTER_SEARCH_FORM_SELECT_INPUTS)): ?>
     <div class="row pb-1">
-        <?php foreach (array_chunk($this->FG_FILTER_SEARCH_FORM_SELECT, 4) as $chunk): ?>
+        <?php foreach (array_chunk($this->FG_FILTER_SEARCH_FORM_SELECT_INPUTS, 4) as $chunk): ?>
             <?php foreach ($chunk as $i => $item): ?>
             <div class="col">
                 <select name="<?= str_replace(".", "^^", $item[2]) ?>" aria-label="<?= $item[0] ?>" class="form-select form-select-sm">
@@ -242,9 +256,13 @@ function create_date_options($target)
         <?php endforeach ?>
     </div>
 <?php endif ?>
-
+<?php if ($full_modal): ?>
+            </div> <!-- .modal-body -->
+            <div class="modal-footer">
+<?php else: ?>
     <div class="row justify-content-end border-top pt-3 mt-3 bg-transparent">
         <div class="col text-end">
+<?php endif ?>
             <?php if (strlen($_SESSION[$this->FG_FILTER_SEARCH_SESSION_NAME] ?? "") > 10): ?>
                 <?php if ($this->FG_FILTER_SEARCH_DELETE_ALL): ?>
                     <a class="btn btn-danger" href="?deleteselected=true" onclick="return confirm('<?= "Are you sure to delete " . $this->FG_LIST_VIEW_ROW_COUNT . " selected records?" ?>')"><?= _("Delete") ?></a>
@@ -252,7 +270,12 @@ function create_date_options($target)
             <a class="btn btn-secondary" href="?cancelsearch=true"><?= _("Cancel") ?></a>
             <?php endif ?>
             <button type="submit" class="btn btn-primary"><?= _("Search") ?></button>
-        </div>
-    </div>
-
+<?php if ($full_modal): ?>
+            </div><!-- .modal-footer -->
+        </div><!-- .modal-content -->
+    </div><!-- .modal -->
+<?php else: ?>
+        </div><!-- .col -->
+    </div><!-- .row -->
+<?php endif ?>
 </form>

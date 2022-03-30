@@ -69,7 +69,7 @@ $smarty->display('main.tpl');
 echo $CC_help_view_payment;
 
 if ($form_action === "list") {
-    $HD_Form->create_search_form();
+    $HD_Form->create_search_form(true);
 }
 
 $HD_Form->create_toppage($form_action);

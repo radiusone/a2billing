@@ -224,8 +224,8 @@ $HD_Form->AddSearchTextInput(_("DNID"), "dnid", "dnidtype");
 $HD_Form->AddSearchSelectInput(_("Disposition"), "terminatecauseid", $dialstatus_list_r);
 $HD_Form->AddSearchSelectInput(_("Call type"), "sipiax", $calltype_list);
 /** TODO: find some way to intercept display of records to apply these options
-$HD_Form->FG_FILTER_SEARCH_FORM_SELECT[] = [_("Currency"), false, "choose_currency", $currencies_list];
-$HD_Form->FG_FILTER_SEARCH_FORM_SELECT[] = [_("Time unit"), false, "choose_timeunit", [["min", _("Minutes")], ["sec", _("Seconds")]]];
+$HD_Form->FG_FILTER_SEARCH_FORM_SELECT_INPUTS[] = [_("Currency"), false, "choose_currency", $currencies_list];
+$HD_Form->FG_FILTER_SEARCH_FORM_SELECT_INPUTS[] = [_("Time unit"), false, "choose_timeunit", [["min", _("Minutes")], ["sec", _("Seconds")]]];
  */
 $HD_Form->FG_FILTER_SEARCH_DELETE_ALL = false;
 

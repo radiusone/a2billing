@@ -252,25 +252,7 @@ function sendValue(selvalue, othervalue) {
     </div>
 </div>
 
-<div class="modal" id="searchModal" aria-labelledby="modal-title-search" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modal-title-search"><?= _("Search Customers") ?></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <?php $HD_Form->create_search_form() ?>
-            </div>
-<!-- buttons are in the form
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" form="searchForm" class="btn btn-primary"><?= _("Search") ?></button>
-            </div>
--->
-        </div>
-    </div>
-</div>
+<?php $HD_Form->create_search_form(true, false) ?>
 
 <div class="modal" id="batchUpdateModal" aria-labelledby="modal-title-udpate" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
