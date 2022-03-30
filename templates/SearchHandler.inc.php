@@ -257,8 +257,8 @@ $action = http_build_query([
     </div>
 <?php endif ?>
 <?php if ($full_modal): ?>
-            </div> <!-- .modal-body -->
-            <div class="modal-footer">
+                </div> <!-- .modal-body -->
+                <div class="modal-footer">
 <?php else: ?>
     <div class="row justify-content-end border-top pt-3 mt-3 bg-transparent">
         <div class="col text-end">
@@ -271,8 +271,9 @@ $action = http_build_query([
             <?php endif ?>
             <button type="submit" class="btn btn-primary"><?= _("Search") ?></button>
 <?php if ($full_modal): ?>
-            </div><!-- .modal-footer -->
-        </div><!-- .modal-content -->
+                </div><!-- .modal-footer -->
+            </div><!-- .modal-content -->
+        </div><!-- .modal-dialog -->
     </div><!-- .modal -->
 <?php else: ?>
         </div><!-- .col -->
