@@ -341,7 +341,7 @@ function sendValue(selvalue, othervalue) {
 
                     <div class="row mb-1">
                         <div class="col-4">
-                            <input name="check[upd_credit]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if ($check["upd_credit"] === "on"): ?> checked="checked" <?php endif ?> class="form-check-input"/>
+                            <input name="check[upd_credit]" id="check[upd_credit]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if ($check["upd_credit"] === "on"): ?> checked="checked" <?php endif ?> class="form-check-input"/>
                             <input name="mode[upd_credit]" type="hidden" value="2"/>
                             <label class="form-label form-label-sm" for="upd_credit">
                                 <?= _("Credit") ?>
@@ -690,7 +690,8 @@ function toggleUpdateField(el) {
 $("#batchUpdateModal input[type='checkbox'][name^='check']")
     .each((i, el) => toggleUpdateField(el))
     .on('change', ev => toggleUpdateField(ev.target));
-
+// special case
+$("#check[upd_credit]").on("change", ev => $("#upd_refill_type, #upd_description").attr("disabled", !ev.target.checked));
 </script>
 
 <?php $smarty->display('footer.tpl');
