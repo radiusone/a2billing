@@ -236,44 +236,8 @@ if (!$nodisplay) {
 }
 
 $smarty->display ( 'main.tpl' );
+$HD_Form->create_search_form(true);
 
-?>
-
-<!-- ** ** ** ** ** Part for the research ** ** ** ** ** -->
-<div class="row justify-content-center">
-    <div class="col-auto">
-        <button
-                class="btn btn-sm <?= empty($_SESSION[$HD_Form->FG_FILTER_SEARCH_SESSION_NAME]) ? "btn-outline-primary" : "btn-primary" ?>"
-                data-bs-toggle="modal"
-                data-bs-target="#searchModal"
-                title="<?= _("Search Calls") ?> <?= empty($_SESSION[$HD_Form->FG_FILTER_SEARCH_SESSION_NAME]) ? "" : "(" . _("search activated") . ")" ?>"
-        >
-            <?= _("Search Calls") ?>
-        </button>
-    </div>
-</div>
-    <div class="modal" id="searchModal" aria-labelledby="modal-title-search" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modal-title-search"><?= _("Search Customers") ?></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <?php $HD_Form->create_search_form() ?>
-                </div>
-                <!-- buttons are in the form
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" form="searchForm" class="btn btn-primary"><?= _("Search") ?></button>
-                </div>
-                -->
-            </div>
-        </div>
-    </div>
-
-<!-- ** ** ** ** ** Part to display the CDR ** ** ** ** ** -->
-<?php
 if (!$nodisplay) {
     $HD_Form->create_toppage($form_action);
     $HD_Form->create_form("list", $list);
