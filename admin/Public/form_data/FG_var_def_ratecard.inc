@@ -586,10 +586,10 @@ $HD_Form->AddEditElement(
     "res_display_dateformat"
 );
 
-
-if ($form_action == "ask-add") {
-    $comp_time = " value=0 ";
-    $comp_time_plus = " value=10079 ";
+$comp_time = $comp_time_plus = "";
+if ($form_action === "ask-add") {
+    $comp_time = " value='0' ";
+    $comp_time_plus = " value='10079' ";
 }
 
 $HD_Form->AddEditPopup(

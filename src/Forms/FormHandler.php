@@ -608,7 +608,7 @@ class FormHandler
         $this->FG_QUERY_COLUMN_LIST = $fieldname;
         // We need to have the ID as the last column
         if ($add_id) {
-            $this->FG_QUERY_COLUMN_LIST .= ", " . $this->FG_QUERY_PRIMARY_KEY;
+            $this->FG_QUERY_COLUMN_LIST .= ", $this->FG_QUERY_PRIMARY_KEY AS instance_primary_key";
         }
     }
 
@@ -1177,7 +1177,7 @@ class FormHandler
 
         if ($form_action === "ask-delete" && in_array($processed['id'], $this->FG_DELETION_FORBIDDEN_ID)) {
             if (!empty($this->FG_LOCATION_AFTER_DELETE)) {
-                header("Location: " . $this->FG_LOCATION_AFTER_DELETE . $processed[$this->FG_QUERY_PRIMARY_KEY]);
+                header("Location: " . $this->FG_LOCATION_AFTER_DELETE . $processed['id']);
             } else {
                 header("Location: $self");
             }
