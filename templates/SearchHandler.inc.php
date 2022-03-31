@@ -153,6 +153,99 @@ $action = http_build_query([
         </div>
     </div>
 <?php endif ?>
+<?php foreach ($this->SEARCH_FORM_ELEMENTS as $item): ?>
+    <div class="row pb-1">
+        <label class="col-4 col-form-label col-form-label-sm" for="<?= $item["input"] ?>">
+            <?= $item["label"] ?>
+        </label>
+    <?php if ($item["type"] === "POPUP"): ?>
+        <div class="col-8">
+            <div class="input-group">
+                <input
+                    name="<?= $item["input"] ?>"
+                    id="<?= $item["input"] ?>"
+                    value="<?= $processed[$item["input"]] ?>"
+                    class="form-control form-control-sm"
+                />
+                <a
+                    href="<?= $item["href"] ?>"
+                    data-field-name="<?= str_replace(".", "^^", $item["input"]) ?>"
+                    data-window-name="<?= $item["input"] ?>_popup"
+                    data-popup-options="width=550,height=330,top=20,left=100,scrollbars=1"
+                    data-select="<?= $item["select"] ?>"
+                    class="badge bg-primary popup_trigger"
+                    aria-label="open a popup to select an item"
+                >&gt;</a>
+            </div>
+        </div>
+
+    <?php elseif ($item["type"] === "TEXT"): ?>
+        <div class="col-4">
+            <input name="<?= $item["input"][0] ?>" id="<?= $item["input"][0] ?>" value="<?= $processed[$item["input"][0]] ?? "" ?>" class="form-control form-control-sm"/>
+        </div>
+        <div class="col-4">
+            <select name="<?= $item["input"][1] ?>" id="<?= $item["input"][1] ?>" class="form-select form-select-sm" aria-label="<?= _("select a search type for the previous input") ?>">
+                <option value="1" <?php if (($processed[$item["input"][1]] ?? 3) == 1): ?>selected="selected"<?php endif ?>><?= _("Exact") ?></option>
+                <option value="2" <?php if (($processed[$item["input"][1]] ?? 3) == 2): ?>selected="selected"<?php endif ?>><?= _("Begins with") ?></option>
+                <option value="3" <?php if (($processed[$item["input"][1]] ?? 3) == 3): ?>selected="selected"<?php endif ?>><?= _("Contains") ?></option>
+                <option value="4" <?php if (($processed[$item["input"][1]] ?? 3) == 4): ?>selected="selected"<?php endif ?>><?= _("Ends with") ?></option>
+            </select>
+        </div>
+
+    <?php elseif ($item["type"] === "COMPARISON"): ?>
+        <div class="col">
+            <div class="row">
+                <div class="col-2">
+                    <select name="<?= $item["input"][0] ?>" class="form-select form-select-sm" aria-label="select an operator to apply to the next input">
+                        <option value="4" <?php if (($processed[$item["operator"][0]] ?? 1) == 4): ?> selected="selected"<?php endif ?> aria-label="greater than">&gt;</option>
+                        <option value="5" <?php if (($processed[$item["operator"][0]] ?? 1) == 5): ?> selected="selected"<?php endif ?> aria-label="greater than or equal to">&gt;=</option>
+                        <option value="1" <?php if (($processed[$item["operator"][0]] ?? 1) == 1): ?> selected="selected"<?php endif ?> aria-label="equal to">=</option>
+                        <option value="2" <?php if (($processed[$item["operator"][0]] ?? 1) == 2): ?> selected="selected"<?php endif ?> aria-label="less than or equal to">&lt;=</option>
+                        <option value="3" <?php if (($processed[$item["operator"][0]] ?? 1) == 3): ?> selected="selected"<?php endif ?> aria-label="less than">&lt;</option>
+                    </select>
+                </div>
+                <div class="col-3">
+                    <input type="text" name="<?= $item["input"][0] ?>" id="<?= $item["input"][0] ?>" value="<?= $processed[$item["input"][0]] ?? "" ?>" class="form-control form-control-sm"/>
+                </div>
+                <div class="col-1">
+                    <?= gettext("AND") ?>
+                </div>
+                <div class="col-2">
+                    <select name="<?= $item["input"][1] ?>" class="form-select form-select-sm" aria-label="select an operator to apply to the next input">
+                        <option></option>
+                        <option value="4" <?php if (($processed[$item["operator"][1]] ?? 1) == 4): ?> selected="selected"<?php endif ?> aria-label="greater than">&gt;</option>
+                        <option value="5" <?php if (($processed[$item["operator"][1]] ?? 1) == 5): ?> selected="selected"<?php endif ?> aria-label="greater than or equal to">&gt;=</option>
+                        <option value="2" <?php if (($processed[$item["operator"][1]] ?? 1) == 2): ?> selected="selected"<?php endif ?> aria-label="less than or equal to">&lt;=</option>
+                        <option value="3" <?php if (($processed[$item["operator"][1]] ?? 1) == 3): ?> selected="selected"<?php endif ?> aria-label="less than">&lt;</option>
+                    </select>
+                </div>
+                <div class="col-3">
+                    <input type="text" name="<?= $item["input"][1] ?>" id="<?= $item["input"][1] ?>" value="<?= $processed[$item["input"][1]] ?? "" ?>" class="form-control form-control-sm" aria-label="<?= $item["label"] ?>"/>
+                </div>
+            </div>
+        </div>
+
+    <?php endif ?>
+    </div>
+<?php endforeach ?>
+
+<?php $sel = 0 ?>
+<?php foreach ($this->SEARCH_FORM_ELEMENTS as $item): ?>
+    <?php if ($item["type"] !== "SELECT") {continue;} ?>
+    <?php if ($sel === 0 || $sel % 3 === 0): ?><div class="row pb-1"><?php endif ?>
+        <div class="col-4">
+            <select name="<?= $item["input"][0] ?>" aria-label="<?= $item["label"] ?>" class="form-select form-select-sm">
+                <option value=""><?= $item["label"] ?></option>
+                <?php foreach ($item["options"] as $opt): ?>
+                    <option value="<?= $opt[0] ?>" <?php if (strcmp($processed[$item["input"][0]] ?? "zzzzzz", $opt[0]) === 0): ?>selected="selected"<?php endif ?>>
+                        <?= $opt[1] ?>
+                    </option>
+                <?php endforeach ?>
+            </select>
+        </div>
+    <?php if ($sel === 0 || $sel % 3 === 0): ?></div><?php endif ?>
+    <?php $sel++ ?>
+<?php endforeach ?>
 
 <?php foreach ($this->FG_FILTER_SEARCH_FORM_POPUP_INPUTS as $item): ?>
     <div class="row pb-1">

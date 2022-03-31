@@ -1345,3 +1345,25 @@ function is_customer(): bool
 {
     return ($_SESSION["user_type"] ?? "") === "CUST";
 }
+
+/**
+ * Return an array containing the selected entries from the given array
+ *
+ * @param array $arr
+ * @param string ...$keys
+ * @return array
+ */
+function extract_keys(array $arr, string ...$keys): array
+{
+    $ret = [];
+    array_map(
+        function ($v) use ($arr, &$ret) {
+            if (array_key_exists($v, $arr)) {
+                $ret[$v] = $arr[$v];
+            }
+        },
+        $keys
+    );
+
+    return $ret;
+}

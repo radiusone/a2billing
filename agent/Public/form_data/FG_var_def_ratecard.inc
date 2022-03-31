@@ -102,7 +102,6 @@ if ($popup_select) {
 	$HD_Form -> FG_EXPORT_SESSION_VAR = "pr_export_entity_rates";
 }
 
-_
 // Search form
 $HD_Form -> FG_FILTER_SEARCH_FORM = true;
 $HD_Form -> FG_FILTER_SEARCH_1_TIME = true;
@@ -112,10 +111,10 @@ $HD_Form -> FG_FILTER_SEARCH_1_TIME_FIELD = 'startdate';
 $HD_Form -> AddSearchTextInput(gettext("PREFIX"),'dialprefix','dialprefixtype');
 $HD_Form -> AddSearchComparisonInput(gettext("RATE INITIAL"),'rateinitial1','rateinitial1type','rateinitial2','rateinitial2type','rateinitial');
 
-$HD_Form -> AddSearchSqlSelectInput('SELECT CALLPLAN',"cc_tariffgroup,cc_agent_tariffgroup",
-	"cc_tariffgroup.id, cc_tariffgroup.tariffgroupname",
-	"cc_tariffgroup.id = cc_agent_tariffgroup.id_tariffgroup AND cc_agent_tariffgroup.id_agent=".$_SESSION['agent_id'],
-	"tariffgroupname","ASC","tariffgroup_id",1,null);
+$HD_Form -> AddSearchSqlSelectInput('SELECT CALLPLAN', "cc_tariffgroup,cc_agent_tariffgroup",
+    "cc_tariffgroup.id, cc_tariffgroup.tariffgroupname",
+    "cc_tariffgroup.id = cc_agent_tariffgroup.id_tariffgroup AND cc_agent_tariffgroup.id_agent=" . $_SESSION['agent_id'],
+    "tariffgroupname", "ASC", "tariffgroup_id");
 
 
 $HD_Form -> FG_INTRO_TEXT_ADITION = $HD_Form -> FG_INTRO_TEXT_EDITION = gettext("Rates must be entered in the currency base : ").strtoupper(BASE_CURRENCY);

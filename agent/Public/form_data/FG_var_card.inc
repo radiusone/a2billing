@@ -253,7 +253,7 @@ $HD_Form -> AddSearchComparisonInput(gettext("SERIAL"),'serial1','serial1type','
 $HD_Form -> AddSearchComparisonInput(gettext("CREDIT"),'credit1','credit1type','credit2','credit2type','credit');
 $HD_Form -> AddSearchComparisonInput(gettext("INUSE"),'inuse1','inuse1type','inuse2','inuse2type','inuse');
 
-$HD_Form -> AddSearchSqlSelectInput(gettext("SELECT SERIA"),"cc_card_seria","id, name", "", "name", "ASC", "id_seria");
+$HD_Form -> AddSearchSqlSelectInput(gettext("SELECT SERIA"), "cc_card_seria", "id, name", "", "name", "ASC", "id_seria");
 $HD_Form -> AddSearchSelectInput(gettext("SELECT LANGUAGE"), "language", $language_list_r);
 $HD_Form -> AddSearchSqlSelectInput(gettext("SELECT TARIFF"), "cc_tariffgroup", "id, tariffgroupname", "", "tariffgroupname", "ASC", "tariff");
 $HD_Form -> AddSearchSelectInput(gettext("SELECT STATUS"), "status", $cardstatus_list_r);

@@ -5,8 +5,8 @@ namespace A2billing\Forms;
 use A2billing\Logger;
 use A2billing\Table;
 use ADOConnection;
-use DateTime;
 use Profiler_Console as Console;
+use const PASSWORD_DEFAULT;
 
 /***************************************************************************
  *
@@ -144,14 +144,8 @@ class FormHandler
     public string $FG_FILTER_SEARCH_3_TIME_TEXT = '';
     public string $FG_FILTER_SEARCH_3_TIME_FIELD = 'creationdate';
 
-    /** @var array List of elements used to add text inputs with simple operators (starts with, contains, etc) to the search */
-    private array $FG_FILTER_SEARCH_FORM_TEXT_INPUTS = [];
-    /** @var array List of elements used to add a pair of text inputs with comparison operators (>, =, etc) to the search */
-    private array $FG_FILTER_SEARCH_FORM_COMPARE_INPUTS = [];
-    /** @var array List of elements used to add dropdowns to the search */
-    private array $FG_FILTER_SEARCH_FORM_SELECT_INPUTS = [];
-    /** @var array List of elements used to add text inputs with popups to the search (only in call-log-customers.php) */
-    private array $FG_FILTER_SEARCH_FORM_POPUP_INPUTS = [];
+    /** @var array List of elements to be added to the search form */
+    private array $SEARCH_FORM_ELEMENTS = [];
     /** @var string The text for the top of the search dialog */
     public string $FG_FILTER_SEARCH_TOP_TEXT = "";
     /** @var string The session variable that stores search values */
@@ -524,7 +518,7 @@ class FormHandler
                     $this->_processed[$key] = str_replace($filtered_char, "", $this->_processed[$key]);
                 }
                 if ($key == 'pwd_encoded' && !empty($value)) {
-                    $this->_processed[$key] = password_hash($this->_processed[$key]);
+                    $this->_processed[$key] = password_hash($this->_processed[$key], PASSWORD_DEFAULT);
 //                    $this->_processed[$key] = hash("whirlpool", $this->_processed[$key]);
                 }
             }
@@ -884,8 +878,7 @@ class FormHandler
         string $form_text_bottom = ""
     ): void
     {
-        $cur = count($this->FG_EDIT_FORM_ELEMENTS);
-        $data = [
+        $this->FG_EDIT_FORM_ELEMENTS[] = $this->FG_ADD_FORM_ELEMENTS[] = [
             "name" => $fieldname,
             "type" => "TEXTAREA",
             "label" => $label_text,
@@ -896,8 +889,6 @@ class FormHandler
             "error" => $error_message,
             "validation_err" => true,
         ];
-        $this->FG_EDIT_FORM_ELEMENTS[$cur] = $data;
-        $this->FG_ADD_FORM_ELEMENTS[$cur] = $data;
     }
 
     /**
@@ -908,15 +899,22 @@ class FormHandler
      */
     public function AddSearchTextInput($displayname, $fieldname, $fieldvar)
     {
-        $cur = count($this->FG_FILTER_SEARCH_FORM_TEXT_INPUTS);
-        $this->FG_FILTER_SEARCH_FORM_TEXT_INPUTS[$cur] = [$displayname, $fieldname, $fieldvar];
+        $this->SEARCH_FORM_ELEMENTS[] = [
+            "label" => $displayname,
+            "input" => [$fieldname],
+            "operator" => [$fieldvar],
+            "type" => "TEXT",
+        ];
     }
 
     public function AddSearchComparisonInput($displayname, $fieldname1, $fielvar1, $fieldname2, $fielvar2, $sqlfield)
     {
-        $cur = count($this->FG_FILTER_SEARCH_FORM_COMPARE_INPUTS);
-        $this->FG_FILTER_SEARCH_FORM_COMPARE_INPUTS[$cur] = [
-            $displayname, $fieldname1, $fielvar1, $fieldname2, $fielvar2, $sqlfield,
+        $this->SEARCH_FORM_ELEMENTS[] = [
+            "label" => $displayname,
+            "input" => [$fieldname1, $fieldname2],
+            "operator" => [$fielvar1, $fielvar2],
+            "column" => $sqlfield,
+            "type" => "COMPARISON",
         ];
     }
 
@@ -926,22 +924,42 @@ class FormHandler
      * @public
      * @ $displayname , SQL or array to fill select and the name of select box
      */
-    public function AddSearchSqlSelectInput(string $displayname, string $table, string $fields, string $clause = "",
-                                         $order = null, $sens = null, $select_name = '', $search_table = null)
+    public function AddSearchSqlSelectInput(string $displayname, string $table, string $fields, string $clause,
+                                                   $order, $sens, $select_name)
     {
-        $sql = [$table, $fields, $clause, $order, $sens];
-        $this->FG_FILTER_SEARCH_FORM_SELECT_INPUTS[] = [$displayname, $sql, $select_name, null, $search_table];
+        $this->SEARCH_FORM_ELEMENTS[] = [
+            "label" => $displayname,
+            "table" => $table,
+            "columns" => $fields,
+            "where" => $clause,
+            "order" => $order,
+            "dir" => $sens,
+            "input" => $select_name,
+            "type" => "SQL_SELECT",
+        ];
     }
 
     public function AddSearchSelectInput(string $displayname, string $select_name, array $array_content = [])
     {
-            $this->FG_FILTER_SEARCH_FORM_SELECT_INPUTS[] = [$displayname, null, $select_name, $array_content, null];
+            $this->SEARCH_FORM_ELEMENTS[] = [
+                "label" => $displayname,
+                "input" => [$select_name],
+                "options" => $array_content,
+                "type" => "SELECT",
+            ];
     }
 
     public function AddSearchPopupInput(string $name, string $label, string $href, int $select = 1): void
     {
-        $this->FG_FILTER_SEARCH_FORM_POPUP_INPUTS[] = compact("name", "label", "href", "select");
+        $this->SEARCH_FORM_ELEMENTS[] = [
+            "label" => $label,
+            "input" => [$name],
+            "href" => $href,
+            "select" => $select,
+            "type" => "POPUP",
+        ];
     }
+
     /**
      * Sets Query fieldnames for the Edit/ADD module
      *
@@ -1025,96 +1043,86 @@ class FormHandler
     }
 
 
-    // ----------------------------------------------
-    // FUNCTION FOR THE FORM
-    // ----------------------------------------------
-
-    public function do_field_duration($sql, $fld, $fldsql)
+    /**
+     * Adds to the SQL command a comparison between a column and a posted value
+     *
+     * @param string $sql the existing SQL query
+     * @param string $left_column the column name
+     * @param string $operator post field name of the operator: 1=eq 2=lte 3=lt 4=gt 5=gte
+     * @param string $post_field post field name for the comparison
+     * @return string the SQL command with new comparison appended
+     */
+    public function do_field_duration(string $sql, string $left_column, string $operator, string $post_field): string
     {
         $processed = $this->getProcessed();
 
-        $fldtype = $fld . 'type';
+        if (!isset($processed[$post_field]) || $processed[$post_field] === "") {
+            return $sql;
+        }
 
-        if (isset($processed[$fld]) && ($processed[$fld] != '')) {
-            if (strpos($sql, 'WHERE') > 0) {
-                $sql = "$sql AND ";
-            } else {
-                $sql = "$sql WHERE ";
-            }
-            $sql = "$sql $fldsql";
-            if (isset ($processed[$fldtype])) {
-                switch ($processed[$fldtype]) {
-                    case 1:
-                        $sql = "$sql ='" . $processed[$fld] . "'";
-                        break;
-                    case 2:
-                        $sql = "$sql <= '" . $processed[$fld] . "'";
-                        break;
-                    case 3:
-                        $sql = "$sql < '" . $processed[$fld] . "'";
-                        break;
-                    case 4:
-                        $sql = "$sql > '" . $processed[$fld] . "'";
-                        break;
-                    case 5:
-                        $sql = "$sql >= '" . $processed[$fld] . "'";
-                        break;
-                }
-            } else {
-                $sql = "$sql = '" . $processed[$fld] . "'";
-            }
+        $sql .= str_contains($sql, 'WHERE ') ? " AND " : " WHERE ";
+        $val = $processed[$post_field];
+        switch ($processed[$operator] ?? null) {
+            default:
+                $sql .= " $left_column = '$val'";
+                break;
+            case 2:
+                $sql .= " $left_column <= '$val'";
+                break;
+            case 3:
+                $sql .= " $left_column < '$val'";
+                break;
+            case 4:
+                $sql .= " $left_column > '$val'";
+                break;
+            case 5:
+                $sql .= " $left_column >= '$val'";
+                break;
         }
 
         return $sql;
     }
 
-    public function do_field($sql, $fld, $simple = 0, $processed = null, $search_table = null)
+    /**
+     * Adds to the SQL command a comparison between a column and a posted value
+     *
+     * @param string $sql the existing SQL query
+     * @param string $column the column name, also used for the post field name
+     * @param string $like_type post field name of the operator: 1=equal (default) 2=starts with 3=contains 4=ends with
+     * @return string the SQL command with new comparison appended
+     */
+    public function do_field(string $sql, string $column, string $like_type = null): string
     {
-        $fldtype = $fld . 'type';
-        if (empty($processed)) {
-            $processed = $this->getProcessed();
+        $processed = $this->getProcessed();
+
+        if (empty($processed[$column])) {
+            return $sql;
         }
 
-        if (isset($processed[$fld]) && ($processed[$fld] != '')) {
-            if (strpos($sql, 'WHERE') > 0) {
-                $sql = "$sql AND ";
-            } else {
-                $sql = "$sql WHERE ";
-            }
-            if (empty($search_table)) {
-                $sql = "$sql $fld";
-            } else {
-                $sql = "$sql $search_table.$fld";
-            }
-            if (DB_TYPE == "postgres") {
-                $LIKE = "ILIKE";
-                $CONVERT = "";
-            } else {
-                $LIKE = "LIKE";
-                $CONVERT = " COLLATE utf8_unicode_ci";
-            }
+        $op = $processed[$like_type] ?? 1;
+        $val = $processed[$column];
+        $sql .= str_contains($sql, 'WHERE ') ? " AND " : " WHERE ";
 
-            if ($simple == 0) {
-                if (isset ($processed[$fldtype])) {
-                    switch ($processed[$fldtype]) {
-                        case 1:
-                            $sql = "$sql='" . $processed[$fld] . "'";
-                            break;
-                        case 2:
-                            $sql = "$sql $LIKE '" . $processed[$fld] . "%'" . $CONVERT;
-                            break;
-                        case 3:
-                            $sql = "$sql $LIKE '%" . $processed[$fld] . "%'" . $CONVERT;
-                            break;
-                        case 4:
-                            $sql = "$sql $LIKE '%" . $processed[$fld] . "'" . $CONVERT;
-                    }
-                } else {
-                    $sql = "$sql $LIKE '%" . $processed[$fld] . "%'" . $CONVERT;
-                }
-            } else {
-                $sql = "$sql ='" . $processed[$fld] . "'";
-            }
+        $LIKE = "LIKE";
+        $CONVERT = " COLLATE utf8_unicode_ci";
+        if (DB_TYPE === "postgres") {
+            $LIKE = "ILIKE";
+            $CONVERT = "";
+        }
+
+        switch ($op ?? null) {
+            case 1:
+                $sql .= " $column='$val'";
+                break;
+            case 2:
+                $sql .= " $column $LIKE CONCAT('$val', '%') $CONVERT";
+                break;
+            default:
+                $sql .= " $column $LIKE CONCAT('%', '$val', '%') $CONVERT";
+                break;
+            case 4:
+                $sql .= " $column $LIKE CONCAT('%', '$val') $CONVERT";
+                break;
         }
 
         return $sql;
@@ -1263,7 +1271,7 @@ class FormHandler
                 $cols = array_column($this->FG_EDIT_FORM_ELEMENTS, "name");
                 $fields = implode(",", $cols);
 
-                $instance_table = new Table($this->FG_QUERY_TABLE_NAME, $this->FG_QUERY_EDITION);
+                $instance_table = new Table($this->FG_QUERY_TABLE_NAME, $fields);
                 $list = $instance_table->get_list($this->DBHandle, $this->FG_EDIT_QUERY_CONDITION, [], "ASC", 1);
 
                 //PATCH TO CLEAN THE IMPORT OF PASSWORD FROM THE DATABASE
@@ -1302,17 +1310,15 @@ class FormHandler
 
         // RETRIEVE THE CONTENT OF THE SEARCH SESSION AND
         if ($processed['posted_search'] != 1 && strlen($_SESSION[$this->FG_FILTER_SEARCH_SESSION_NAME] ?? "") > 5) {
-            $element_arr = explode("|", $_SESSION[$this->FG_FILTER_SEARCH_SESSION_NAME]);
-            foreach ($element_arr as $val_element_arr) {
-                if (str_contains($val_element_arr, '=')) {
-                    [$entity_name, $entity_value] = explode("=", $val_element_arr);
-                    $this->_processed[$entity_name] = $entity_value;
-                    if (strlen($_SESSION[$this->FG_FILTER_SEARCH_SESSION_NAME]) > 10) {
-                        // TODO: what does the length of this value signify? why difference between 5 and 10?
-                        $processed[$entity_name] = $entity_value;
-                        $_POST[$entity_name] = $entity_value;
-                        $processed['posted_search'] = 1;
-                    }
+            $element_arr = json_decode($_SESSION[$this->FG_FILTER_SEARCH_SESSION_NAME], true);
+            foreach ($element_arr as $entity_name => $entity_value) {
+                $this->_processed[$entity_name] = $entity_value;
+                if (strlen($_SESSION[$this->FG_FILTER_SEARCH_SESSION_NAME]) > 10) {
+                    // TODO: what does the length of this value signify? why difference between 5 and 10?
+                    // below is only place it was set, and it would never be < 10
+                    $processed[$entity_name] = $entity_value;
+                    $_POST[$entity_name] = $entity_value;
+                    $processed['posted_search'] = 1;
                 }
             }
         }
@@ -1328,73 +1334,65 @@ class FormHandler
 
         $SQLcmd = '';
 
-        $search_parameters = "Period=$processed[Period]|frommonth=$processed[frommonth]|fromstatsmonth=$processed[fromstatsmonth]|tomonth=$processed[tomonth]";
-        $search_parameters .= "|tostatsmonth=$processed[tostatsmonth]|fromday=$processed[fromday]|fromstatsday_sday=$processed[fromstatsday_sday]";
-        $search_parameters .= "|fromstatsmonth_sday=$processed[fromstatsmonth_sday]|today=$processed[today]|tostatsday_sday=$processed[tostatsday_sday]";
-        $search_parameters .= "|tostatsmonth_sday=$processed[tostatsmonth_sday]";
-        $search_parameters .= "|Period_bis=$processed[Period_bis]|frommonth_bis=$processed[frommonth_bis]|fromstatsmonth_bis=$processed[fromstatsmonth_bis]|tomonth_bis=$processed[tomonth_bis]";
-        $search_parameters .= "|tostatsmonth_bis=$processed[tostatsmonth_bis]|fromday_bis=$processed[fromday_bis]|fromstatsday_sday_bis=$processed[fromstatsday_sday_bis]";
-        $search_parameters .= "|fromstatsmonth_sday_bis=$processed[fromstatsmonth_sday_bis]|today_bis=$processed[today_bis]|tostatsday_sday_bis=$processed[tostatsday_sday_bis]";
-        $search_parameters .= "|tostatsmonth_sday_bis=$processed[tostatsmonth_sday_bis]";
+        $search = extract_keys(
+            $processed,
+            "frommonth", "fromday", "fromstatsmonth", "fromsatssday_sday", "fromstatsmonth_sday",
+            "tomonth", "today", "tostatsmonth", "tosatssday_sday", "tostatsmonth_sday",
+            "frommonth_bis", "fromday_bis", "fromstatsmonth_bis", "fromsatssday_sday_bis", "fromstatsmonth_sday_bis",
+            "tomonth_bis", "today_bis", "tostatsmonth_bis", "tosatssday_sday_bis", "tostatsmonth_sday_bis",
+            "Period", "month_earlier",
+        );
 
-        foreach ($this->FG_FILTER_SEARCH_FORM_TEXT_INPUTS as $r) {
-            $search_parameters .= "|$r[1]=" . $processed[$r[1]] . "|$r[2]=" . $processed[$r[2]];
-            $SQLcmd = $this->do_field($SQLcmd, $r[1], 0, $processed);
+        foreach ($this->SEARCH_FORM_ELEMENTS as $el) {
+            foreach ($el["input"] as $i => $input) {
+                $search[$input] = $processed[$input];
+                if (!empty($el["operator"][$i])) {
+                    $search[$el["operator"][$i]] = $processed[$el["operator"][$i]];
+                }
+                if ($el["type"] === "TEXT") {
+                    $SQLcmd = $this->do_field($SQLcmd, $input, $el["operator"][$i]);
+                } elseif ($el["type"] === "COMPARISON") {
+                    $SQLcmd = $this->do_field_duration($SQLcmd, $el["column"], $el["operator"][$i], $input);
+                } elseif ($el["type"] === "SELECT" || $el["type"] === "POPUP") {
+                    $SQLcmd = $this->do_field($SQLcmd, $input);
+                }
+            }
         }
 
-        foreach ($this->FG_FILTER_SEARCH_FORM_COMPARE_INPUTS as $r) {
-            $search_parameters .= "|$r[1]=" . $processed[$r[1]] . "|$r[2]=" . $processed[$r[2]];
-            $search_parameters .= "|$r[3]=" . $processed[$r[3]] . "|$r[4]=" . $processed[$r[4]];
-            $SQLcmd = $this->do_field_duration($SQLcmd, $r[1], $r[5]);
-            $SQLcmd = $this->do_field_duration($SQLcmd, $r[3], $r[5]);
-        }
-
-        foreach ($this->FG_FILTER_SEARCH_FORM_SELECT_INPUTS as $r) {
-            $search_parameters .= "|$r[2]=" . $processed[$r[2]];
-            $SQLcmd = $this->do_field($SQLcmd, $r[2], 1, null, $r[4]);
-        }
-
-        foreach ($this->FG_FILTER_SEARCH_FORM_POPUP_INPUTS as $r) {
-            $search_parameters .= "|$r[name]=" . $processed[$r["name"]];
-            $SQLcmd = $this->do_field($SQLcmd, $r["name"], 1, null);
-        }
-
-        $_SESSION[$this->FG_FILTER_SEARCH_SESSION_NAME] = $search_parameters;
+        $_SESSION[$this->FG_FILTER_SEARCH_SESSION_NAME] = json_encode($search);
 
         $date_clause = '';
 
-        if ($processed['fromday'] && isset($processed['fromstatsday_sday']) && isset($processed['fromstatsmonth_sday'])) {
-            $date_clause .= " AND " . $this->FG_FILTER_SEARCH_1_TIME_FIELD . " >= TIMESTAMP('$processed[fromstatsmonth_sday]-$processed[fromstatsday_sday]')";
+        if (!empty($processed['fromday']) && !empty($processed['fromstatsday_sday']) && !empty($processed['fromstatsmonth_sday'])) {
+            $dt = sprintf("%s-%02d 00:00:00", $processed["fromstatsmonth_sday"], $processed["fromstatsday_sday"]);
+            $date_clause .= " AND $this->FG_FILTER_SEARCH_1_TIME_FIELD >= '$dt'";
         }
-        if ($processed['today'] && isset($processed['tostatsday_sday']) && isset($processed['tostatsmonth_sday'])) {
-            $date_clause .= " AND " . $this->FG_FILTER_SEARCH_1_TIME_FIELD . " <= TIMESTAMP('$processed[tostatsmonth_sday]-" . sprintf("%02d", intval($processed["tostatsday_sday"])/*+1*/) . " 23:59:59')";
+        if (!empty($processed['today']) && !empty($processed['tostatsday_sday']) && !empty($processed['tostatsmonth_sday'])) {
+            $dt = sprintf("%s-%02d 23:59:59", $processed["tostatsmonth_sday"], $processed["tostatsday_sday"]);
+            $date_clause .= " AND $this->FG_FILTER_SEARCH_1_TIME_FIELD <= '$dt'";
         }
 
-
-        if ($processed["Period"] == "month_older_rad") {
+        if (($processed["Period"] ?? "") === "month_older_rad") {
             $from_month = $processed["month_earlier"];
-            $date_clause .= " AND DATE_SUB(NOW(),INTERVAL $from_month MONTH) > " . $this->FG_FILTER_SEARCH_3_TIME_FIELD;
+            $date_clause .= " AND $this->FG_FILTER_SEARCH_3_TIME_FIELD < NOW() - INTERVAL $from_month MONTH";
         }
 
         //BIS FIELD
         if ($processed['fromday_bis'] && isset($processed['fromstatsday_sday_bis']) && isset($processed['fromstatsmonth_sday_bis'])) {
-            $date_clause .= " AND " . $this->FG_FILTER_SEARCH_1_TIME_FIELD_BIS . " >= TIMESTAMP('$processed[fromstatsmonth_sday_bis]-$processed[fromstatsday_sday_bis]')";
+            $dt = sprintf("%s-%02d", $processed["fromstatsmonth_sday_bis"], $processed["fromstatsday_sday_bis"]);
+            $date_clause .= " AND $this->FG_FILTER_SEARCH_1_TIME_FIELD_BIS >= '$dt'";
         }
         if ($processed['today_bis'] && isset($processed['tostatsday_sday_bis']) && isset($processed['tostatsmonth_sday_bis'])) {
-            $date_clause .= " AND " . $this->FG_FILTER_SEARCH_1_TIME_FIELD_BIS . " <= TIMESTAMP('$processed[tostatsmonth_sday_bis]-" . sprintf("%02d", intval($processed["tostatsday_sday_bis"])/*+1*/) . " 23:59:59')";
+            $dt = sprintf("%s-%02d 23:59:59", $processed["tostatsmonth_sday_bis"], $processed["tostatsday_sday_bis"]);
+            $date_clause .= " AND $this->FG_FILTER_SEARCH_1_TIME_FIELD_BIS <= '$dt'";
         }
 
-        if (strpos($SQLcmd, 'WHERE') > 0) {
-            if (strlen($this->FG_QUERY_WHERE_CLAUSE) > 0) {
-                $this->FG_QUERY_WHERE_CLAUSE .= " AND ";
-            }
-            $this->FG_QUERY_WHERE_CLAUSE .= substr($SQLcmd, 6) . $date_clause;
-        } elseif (strpos($date_clause, 'AND') > 0) {
-            if (strlen($this->FG_QUERY_WHERE_CLAUSE) > 0) {
-                $this->FG_QUERY_WHERE_CLAUSE .= " AND ";
-            }
-            $this->FG_QUERY_WHERE_CLAUSE .= substr($date_clause, 5);
+        $this->FG_QUERY_WHERE_CLAUSE = preg_replace("/^ *WHERE +/", "", $SQLcmd);
+        $date_clause = preg_replace("/^ AND /", "", $date_clause);
+        if ($this->FG_QUERY_WHERE_CLAUSE) {
+            $this->FG_QUERY_WHERE_CLAUSE .= " AND ";
         }
+        $this->FG_QUERY_WHERE_CLAUSE .= $date_clause;
     }
 
     /****************************************
@@ -1589,7 +1587,6 @@ class FormHandler
         $processed = $this->getProcessed();  //$processed['firstname']
         $this->VALID_SQL_REG_EXP = true;
         $instance_table = new Table($this->FG_QUERY_TABLE_NAME);
-        $i = 0;
 
         if (!empty($processed['id'])) {
             $this->FG_EDIT_QUERY_CONDITION = str_replace("%id", $processed['id'], $this->FG_EDIT_QUERY_CONDITION);
@@ -1763,6 +1760,9 @@ class FormHandler
             $rowcount += $instance_table->Table_count($this->DBHandle, $this->FG_FK_EDITION_CLAUSE[$i], $processed['id']);
         }
         $this->FG_FK_RECORDS_COUNT = $rowcount;
+        if ($this->FG_DEBUG == 1) {
+            echo "<br>$this->FG_FK_RECORDS_COUNT children found";
+        }
 
         return ($rowcount > 0);
     }
@@ -1882,21 +1882,28 @@ class FormHandler
         $processed = $this->getProcessed();
         $list = null;
 
-        foreach ($this->FG_FILTER_SEARCH_FORM_SELECT_INPUTS as &$select) {
-            // 	If is a sql_type
-            if (is_array($select[1])) {
-                $sql = $select[1];
-                if (is_string($sql[3]) && str_contains($sql[3], ",")) {
-                    $order = explode(",", $sql[3]);
-                } elseif (is_string($sql[3])) {
-                    $order = [$sql[3]];
-                } else {
-                    $order = is_array($sql[3]) ? $sql[3] : [];
-                }
-                $instance_table = new Table($sql[0], $sql[1]);
-                $list = $instance_table->get_list($this->DBHandle, $sql[2], $order, $sql[4]);
-                $select[1] = $list;
+        foreach ($this->SEARCH_FORM_ELEMENTS as &$el) {
+            // can't post a dot, so temporarily replace it
+            if (is_array($el["input"])) {
+                $el["input"][0] = str_replace(".", "^^", $el["input"][0]);
+                $el["input"][1] = str_replace(".", "^^", $el["input"][1]);
+            } else {
+                $el["input"] = str_replace(".", "^^", $el["input"]);
             }
+            if ($el["type"] !== "SQL_SELECT") {
+                continue;
+            }
+            if (is_string($el["order"]) && str_contains($el["order"], ",")) {
+                $order = explode(",", $el["order"]);
+            } elseif (is_string($el["order"])) {
+                $order = [$el["order"]];
+            } else {
+                $order = is_array($el["order"]) ? $el["order"] : [];
+            }
+            $instance_table = new Table($el["table"], $el["columns"]);
+            $list = $instance_table->get_list($this->DBHandle, $el["where"], $order, $el["dir"]);
+            $el["options"] = $list;
+            $el["type"] = "SELECT";
         }
         $id = $processed['id'];
         $atmenu = $processed['atmenu'];

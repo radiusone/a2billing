@@ -143,7 +143,7 @@ $HD_Form -> AddSearchTextInput(gettext("PREFIX"),'dialprefix','dialprefixtype');
 $HD_Form -> AddSearchComparisonInput(gettext("BUYRATE"),'buyrate1','buyrate1type','buyrate2','buyrate2type','buyrate');
 $HD_Form -> AddSearchComparisonInput(gettext("RATE INITIAL"),'rateinitial1','rateinitial1type','rateinitial2','rateinitial2type','rateinitial');
 $HD_Form -> prepare_list_subselection('list');
-$HD_Form -> AddSearchSqlSelectInput('SELECT TRUNK',"cc_trunk","id_trunk, trunkcode, providerip","","trunkcode","ASC","id_trunk");
+$HD_Form -> AddSearchSqlSelectInput('SELECT TRUNK', "cc_trunk", "id_trunk, trunkcode, providerip", "", "trunkcode", "ASC", "id_trunk");
 $_SESSION['search_ratecard'] = $HD_Form -> FG_QUERY_WHERE_CLAUSE;
 
 /*************************************************************/
