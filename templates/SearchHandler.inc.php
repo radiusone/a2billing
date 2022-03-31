@@ -182,13 +182,12 @@ $action = http_build_query([
     </div>
 <?php endif ?>
 
-<?php foreach ($this->SEARCH_FORM_ELEMENTS as $item): ?>
-    <?php if ($item["type"] !== "SELECT"): ?>
+<?php $inputs = array_filter($this->SEARCH_FORM_ELEMENTS, fn ($v) => $v["type"] !== "SELECT") ?>
+<?php foreach ($inputs as $item): ?>
     <div class="row pb-1">
         <label class="col-4 col-form-label col-form-label-sm" for="<?= $item["input"] ?>">
             <?= $item["label"] ?>
         </label>
-    <?php endif ?>
     <?php if ($item["type"] === "POPUP"): ?>
         <div class="col-8">
             <div class="input-group">
