@@ -1389,7 +1389,7 @@ class FormHandler
 
         $this->FG_QUERY_WHERE_CLAUSE = preg_replace("/^ *WHERE +/", "", $SQLcmd);
         $date_clause = preg_replace("/^ AND /", "", $date_clause);
-        if ($this->FG_QUERY_WHERE_CLAUSE) {
+        if ($this->FG_QUERY_WHERE_CLAUSE && $date_clause) {
             $this->FG_QUERY_WHERE_CLAUSE .= " AND ";
         }
         $this->FG_QUERY_WHERE_CLAUSE .= $date_clause;

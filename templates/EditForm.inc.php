@@ -105,10 +105,12 @@ $options = null
                         data-popup-options="<?= $row["popup_params"] ?>"
                         class="btn btn-primary popup_trigger"
                         aria-label="open a popup to select an item"
-                    >&gt;</a>
+                    >
+                        <svg class="mx-auto" width="16" height="16"><use xlink:href="#popup"></use></svg>
+                    </a>
                     <?php elseif ($row["type"] === "POPUPDATETIME"): //minutes since monday 00:00, used 2x in FG_var_def_ratecard.inc ?>
                     <a href="#" class="btn btn-primary calendar_trigger" aria-label="<?= _("click to select the time (in minutes since midnight monday)")?>">
-                        <svg class="mx-auto" width="24" height="24"><use xlink:href="#calendar"></use></svg>
+                        <svg class="mx-auto" width="16" height="16"><use xlink:href="#calendar"></use></svg>
                     </a>
                     <?php endif ?>
                 </div>

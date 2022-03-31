@@ -56,44 +56,57 @@ $action = http_build_query([
         <label class="col-4 col-form-label col-form-label-sm">
             <?= $this->FG_FILTER_SEARCH_1_TIME_TEXT ?>
         </label>
-        <div class="col-4">
-            <div class="form-check form-check-inline">
-                <input type="checkbox" name="fromday" id="search_fromday" value="true" aria-label="<?= _("enable the search start date")?>" <?php if ($processed["fromday"]): ?>checked="checked"<?php endif ?> class="form-check-input"/>
-                <label class="form-check-label" for="fromstatsday_sday"><?= gettext("From :") ?></label>
+        <div class="col">
+            <div class="row pb-1">
+                <div class="col-3">
+                    <div class="form-check form-check-inline">
+                        <input type="checkbox" name="fromday" id="search_fromday" value="true" aria-label="<?= _("enable the search start date")?>" <?php if ($processed["fromday"]): ?>checked="checked"<?php endif ?> class="form-check-input"/>
+                        <label class="form-check-label" for="fromstatsday_sday"><?= gettext("From :") ?></label>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <!-- will need to get backend fixed up to use a reasonable date input
+                    <input type="date" name="fromstats_sday" id="fromstats_sday" value="<?= $processed["fromstats_sday"] ?? (new DateTime())->format("Y-m-d") ?>" aria-label="<?= _("search start date") ?>"/>
+                    -->
+                    <select name="fromstatsday_sday" id="fromstatsday_sday" class="form-select form-select-sm" aria-label="<?= _("day component of search start date") ?>">
+                        <?php for ($i = 1; $i <= 31; $i++): ?>
+                            <option <?php if ($processed['fromstatsday_sday'] === sprintf("%02d", $i)):?>selected="selected"<?php endif ?>>
+                                <?= sprintf("%02d", $i) ?>
+                            </option>
+                        <?php endfor ?>
+                    </select>
+                </div>
+                <div class="col-5">
+                    <select name="fromstatsmonth_sday" id="fromstatsmonth_sday" class="form-select form-select-sm" aria-label="<?= _("month and year component of search start date") ?>">
+                        <?= $this->create_date_options($processed["fromstatsmonth_sday"]) ?>
+                    </select>
+                </div>
             </div>
-            <!-- will need to get backend fixed up to use a reasonable date input
-            <input type="date" name="fromstats_sday" id="fromstats_sday" value="<?= $processed["fromstats_sday"] ?? (new DateTime())->format("Y-m-d") ?>" aria-label="<?= _("search start date") ?>"/>
-            -->
-            <select name="fromstatsday_sday" id="fromstatsday_sday" class="form-select form-select-sm" aria-label="<?= _("day component of search start date") ?>">
-                <?php for ($i = 1; $i <= 31; $i++): ?>
-                <option <?php if ($processed['fromstatsday_sday'] === sprintf("%02d", $i)):?>selected="selected"<?php endif ?>>
-                    <?= sprintf("%02d", $i) ?>
-                </option>
-                <?php endfor ?>
-            </select>
-            <select name="fromstatsmonth_sday" id="fromstatsmonth_sday" class="form-select form-select-sm" aria-label="<?= _("month and year component of search start date") ?>">
-                <?= $this->create_date_options($processed["fromstatsmonth_sday"]) ?>
-            </select>
-        </div>
-        <div class="col-4">
-            <div class="form-check form-check-inline">
-                <input type="checkbox" name="today" id="search_today" value="true" aria-label="<?= _("enable the search end date") ?>" <?php if ($processed["today"]): ?>checked="checked"<?php endif ?> class="form-check-input"/>
-                <label class="form-check-label" for="tostatsday_sday"><?= gettext("To :") ?></label>
+            <div class="row pb-1">
+                <div class="col-3">
+                    <div class="form-check form-check-inline">
+                        <input type="checkbox" name="today" id="search_today" value="true" aria-label="<?= _("enable the search end date") ?>" <?php if ($processed["today"]): ?>checked="checked"<?php endif ?> class="form-check-input"/>
+                        <label class="form-check-label" for="tostatsday_sday"><?= gettext("To :") ?></label>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <!-- will need to get backend fixed up to use a reasonable date input
+                    <input type="date" name="tostats_sday" id="tostats_sday" value="<?= $processed["tostats_sday"] ?? (new DateTime())->format("Y-m-d") ?>" aria-label="<?= _("search end date") ?>"/>
+                    -->
+                    <select name="tostatsday_sday" id="tostatsday_sday" class="form-select form-select-sm" aria-label="<?= _("day component of search end date") ?>">
+                        <?php for ($i = 1; $i <= 31; $i++): ?>
+                            <option <?php if ($processed['tostatsday_sday'] == sprintf("%02d", $i)):?>selected="selected"<?php endif ?>>
+                                <?= sprintf("%02d", $i) ?>
+                            </option>
+                        <?php endfor ?>
+                    </select>
+                </div>
+                <div class="col-5">
+                    <select name="tostatsmonth_sday" id="tostatsmonth_sday" class="form-select form-select-sm" aria-label="<?= _("month and year component of search end date") ?>">
+                        <?= $this->create_date_options($processed["tostatsmonth_sday"]) ?>
+                    </select>
+                </div>
             </div>
-            <!-- will need to get backend fixed up to use a reasonable date input
-            <input type="date" name="tostats_sday" id="tostats_sday" value="<?= $processed["tostats_sday"] ?? (new DateTime())->format("Y-m-d") ?>" aria-label="<?= _("search end date") ?>"/>
-            -->
-            <select name="tostatsday_sday" id="tostatsday_sday" class="form-select form-select-sm" aria-label="<?= _("day component of search end date") ?>">
-                <?php for ($i = 1; $i <= 31; $i++): ?>
-                    <option <?php if ($processed['tostatsday_sday'] == sprintf("%02d", $i)):?>selected="selected"<?php endif ?>>
-                        <?= sprintf("%02d", $i) ?>
-                    </option>
-                <?php endfor ?>
-            </select>
-            <select name="tostatsmonth_sday" id="tostatsmonth_sday" class="form-select form-select-sm" aria-label="<?= _("month and year component of search end date") ?>">
-                <?= $this->create_date_options($processed["tostatsmonth_sday"]) ?>
-            </select>
-        </div>
     </div>
 <?php endif ?>
 
@@ -154,10 +167,12 @@ $action = http_build_query([
     </div>
 <?php endif ?>
 <?php foreach ($this->SEARCH_FORM_ELEMENTS as $item): ?>
+    <?php if ($item["type"] !== "SELECT"): ?>
     <div class="row pb-1">
         <label class="col-4 col-form-label col-form-label-sm" for="<?= $item["input"] ?>">
             <?= $item["label"] ?>
         </label>
+    <?php endif ?>
     <?php if ($item["type"] === "POPUP"): ?>
         <div class="col-8">
             <div class="input-group">
@@ -175,7 +190,9 @@ $action = http_build_query([
                     data-select="<?= $item["select"] ?>"
                     class="badge bg-primary popup_trigger"
                     aria-label="open a popup to select an item"
-                >&gt;</a>
+                >
+                    <svg class="mx-auto" width="16" height="16"><use xlink:href="#calendar"></use></svg>
+                </a>
             </div>
         </div>
 
@@ -184,11 +201,11 @@ $action = http_build_query([
             <input name="<?= $item["input"][0] ?>" id="<?= $item["input"][0] ?>" value="<?= $processed[$item["input"][0]] ?? "" ?>" class="form-control form-control-sm"/>
         </div>
         <div class="col-4">
-            <select name="<?= $item["input"][1] ?>" id="<?= $item["input"][1] ?>" class="form-select form-select-sm" aria-label="<?= _("select a search type for the previous input") ?>">
-                <option value="1" <?php if (($processed[$item["input"][1]] ?? 3) == 1): ?>selected="selected"<?php endif ?>><?= _("Exact") ?></option>
-                <option value="2" <?php if (($processed[$item["input"][1]] ?? 3) == 2): ?>selected="selected"<?php endif ?>><?= _("Begins with") ?></option>
-                <option value="3" <?php if (($processed[$item["input"][1]] ?? 3) == 3): ?>selected="selected"<?php endif ?>><?= _("Contains") ?></option>
-                <option value="4" <?php if (($processed[$item["input"][1]] ?? 3) == 4): ?>selected="selected"<?php endif ?>><?= _("Ends with") ?></option>
+            <select name="<?= $item["operator"][0] ?>" id="<?= $item["operator"][0] ?>" class="form-select form-select-sm" aria-label="<?= _("select a search type for the previous input") ?>">
+                <option value="1" <?php if (($processed[$item["operator"][0]] ?? 3) == 1): ?>selected="selected"<?php endif ?>><?= _("Exact") ?></option>
+                <option value="2" <?php if (($processed[$item["operator"][0]] ?? 3) == 2): ?>selected="selected"<?php endif ?>><?= _("Begins with") ?></option>
+                <option value="3" <?php if (($processed[$item["operator"][0]] ?? 3) == 3): ?>selected="selected"<?php endif ?>><?= _("Contains") ?></option>
+                <option value="4" <?php if (($processed[$item["operator"][0]] ?? 3) == 4): ?>selected="selected"<?php endif ?>><?= _("Ends with") ?></option>
             </select>
         </div>
 
