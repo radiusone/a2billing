@@ -107,8 +107,8 @@ $options = null
                         aria-label="open a popup to select an item"
                     >&gt;</a>
                     <?php elseif ($row["type"] === "POPUPDATETIME"): //minutes since monday 00:00, used 2x in FG_var_def_ratecard.inc ?>
-                    <a href="#" class="btn btn-primary calendar_trigger">
-                        <img width="16" height="16" alt="Click Here to Pick up the date" src="data:image/gif;base64,R0lGODlhEAAQAKIAAKVNSkpNpUpNSqWmpdbT1v///////wAAACH5BAEAAAYALAAAAAAQABAAAANEaLrcNjDKKUa4OExYM95DVRTEWJLmKKLseVZELMdADcSrOwK7OqQsXkEIm8lsN0IOqCssW8Cicar8Qa/P5kvA7Xq/ggQAOw=="/>
+                    <a href="#" class="btn btn-primary calendar_trigger" aria-label="<?= _("click to select the time (in minutes since midnight monday)")?>">
+                        <svg class="mx-auto" width="24" height="24"><use xlink:href="#calendar"></use></svg>
                     </a>
                     <?php endif ?>
                 </div>

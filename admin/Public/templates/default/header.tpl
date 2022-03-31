@@ -20,6 +20,10 @@
 			fill: currentColor;
 		}
 
+		.calendar_trigger svg {
+			fill: currentColor;
+		}
+
 		.dropdown-toggle { outline: 0; }
 
 		.nav-flush .nav-link {
