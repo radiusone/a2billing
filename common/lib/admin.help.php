@@ -160,10 +160,6 @@
 
     $CC_help_edit_cid = create_help(gettext("Outbound CID offers customers a number which will be selected randomly for a ratecard for outgoing calls"), 'EditCID');
 
-    $CC_help_currency = create_help(gettext("Currency data is automatically updated from Yahoo Financial.") .
-    '<br>' . gettext("For more information please visit the website http://finance.yahoo.com.") .
-    '<br>' . gettext("The list below is based on your currency :") . ' <b>' . BASE_CURRENCY . '</b>', 'CurrencyList');
-
     $CC_help_list_didgroup = create_help(gettext("DID (or DDI) Group list. DID can be chosen by customers through the customer interface."), 'ListDIDGroup');
 
     $CC_help_edit_didgroup = create_help(gettext("DID group offers customers a group of DID numbers which can be selected by the customer"), 'EditDIDGroup');

@@ -246,24 +246,6 @@ class Soap
     }
 
     /*
-     *		Function to Update the currency list
-     */
-    public function Update_Currencies_list($security_key)
-    {
-        if (!$this->Check_SecurityKey ($security_key)) {
-            return array("ERROR", "INVALID KEY");
-        }
-
-        $return = currencies_update_yahoo($this->DBHandle, $this -> instance_table);
-
-        if (!$return) {
-            return array(false, "Currency Update Failure");
-        }
-
-        return array (true, 'Currency Update  SUCCESS');
-    }
-
-    /*
      *		Function to reload the SIP / IAX Asterisk Config
      */
     public function Reload_Asterisk_SIP_IAX($security_key)

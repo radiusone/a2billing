@@ -51,14 +51,6 @@ $HD_Form -> init();
 /********************************* BATCH UPDATE CURRENCY TABLE ***********************************/
 $A2B -> DBHandle = $HD_Form -> DBHandle;
 
-if ($updatecurrency == 1) {
-    // Update Currencies
-    $instance_table = new Table();
-    $A2B -> set_table ($instance_table);
-    $return = currencies_update_yahoo($A2B -> DBHandle, $A2B -> table);
-    $update_msg = '<center><font color="green"><b>'.$return.'</b></font></center>';
-}
-
 if ($id!="" || !is_null($id)) {
     $HD_Form -> FG_EDIT_QUERY_CONDITION = str_replace("%id", "$id", $HD_Form -> FG_EDIT_QUERY_CONDITION);
 }
@@ -73,23 +65,6 @@ $smarty->display('main.tpl');
 
 // #### HELP SECTION
 echo $CC_help_currency;
-
-?>
-<div align="center">
-<table align="center" border="0" width="65%"  cellspacing="1" cellpadding="2">
-    <FORM name="updateForm" action="<?php echo filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)?>" method="post">
-    <INPUT type="hidden" name="updatecurrency" value="1">
-    <?= $HD_Form->csrf_inputs() ?>
-    <tr>
-      <td align="center"  class="bgcolor_001">
-        &nbsp;<?php echo gettext("THE CURRENCY LIST IS BASED FROM YAHOO FINANCE"); ?>&nbsp;:
-            <input class="form_input_button"  value=" <?php echo gettext("CLICK HERE TO UPDATE NOW");?>  " type="submit">
-        </td>
-    </tr>
-    </form>
-</table>
-</div>
-<?php
 
 if (isset($update_msg) && strlen($update_msg)>0) echo $update_msg;
 
