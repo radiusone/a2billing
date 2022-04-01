@@ -46,7 +46,6 @@ if (!has_rights(ACX_SPEED_DIAL)) {
 
 getpost_ifset(array ('destination',	'choose_speeddial',	'name'));
 
-$HD_Form->setDBHandler(DbConnect());
 $HD_Form->init();
 
 // ADD SPEED DIAL

@@ -136,8 +136,6 @@ function getnumber($arr, $country, $selected=0) {
     return $res;
 }
 
-$HD_Form -> setDBHandler (DbConnect());
-
 ini_set("precision", "16");
 $didx = new didx();
 

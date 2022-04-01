@@ -69,7 +69,6 @@ $HD_Form = new FormHandler("cc_payment_methods", "payment_method");
 
 getpost_ifset(array('item_id','item_type'));
 $DBHandle =DbConnect();
-$HD_Form -> setDBHandler ($DBHandle);
 $HD_Form -> init();
 
 $static_amount = false;

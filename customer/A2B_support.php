@@ -55,7 +55,6 @@ getpost_ifset(array (
     'component'
 ));
 
-$HD_Form->setDBHandler(DbConnect());
 $HD_Form->init();
 
 // ADD TICKET

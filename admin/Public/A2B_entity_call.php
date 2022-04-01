@@ -42,7 +42,6 @@ if (! has_rights (ACX_DELETE_CDR)) {
     die();
 }
 
-$HD_Form -> setDBHandler (DbConnect());
 $HD_Form -> init();
 
 if ($id!="" || !is_null($id)) {

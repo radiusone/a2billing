@@ -52,7 +52,6 @@ if (!has_rights(ACX_BILLING)) {
     die();
 }
 
-$HD_Form->setDBHandler(DbConnect());
 $HD_Form->init();
 
 if (!empty($id)) {

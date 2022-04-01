@@ -44,7 +44,6 @@ if (!has_rights(ACX_DID)) {
     die();
 }
 
-$HD_Form->setDBHandler(DbConnect());
 $HD_Form->init();
 
 if (!isset ($form_action))

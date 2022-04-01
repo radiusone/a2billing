@@ -50,7 +50,6 @@ if (! has_rights (ACX_SUPPORT)) {
 
 getpost_ifset(array('title', 'description', 'priority' , 'component'));
 
-$HD_Form -> setDBHandler (DbConnect());
 $HD_Form -> init();
 
 // ADD Ticket

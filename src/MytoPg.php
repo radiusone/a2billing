@@ -19,13 +19,13 @@ namespace A2billing;
 * This software is released under the terms of the GNU Lesser General Public License v2.1
 * A copy of which is available from http://www.gnu.org/copyleft/lesser.html
 *
-* @category   Database
-* @package    MytoPg
-* @author     Steve Dommett <steve@st4vs.net>
-* @copyright  2009 A2Billing
-* @license    http://www.gnu.org/copyleft/lesser.html  LGPL License 2.1
-* @version    CVS: $Id:$
-* @since      File available since Release 1.4
+* @category   Database
+* @package    MytoPg
+* @author     Steve Dommett <steve@st4vs.net>
+* @copyright  2009 A2Billing
+* @license    http://www.gnu.org/copyleft/lesser.html  LGPL License 2.1
+* @version    CVS: $Id:$
+* @since      File available since Release 1.4
 *
 */
 

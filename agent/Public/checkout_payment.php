@@ -71,7 +71,6 @@ getpost_ifset(array (
 ));
 
 $DBHandle = DbConnect();
-$HD_Form->setDBHandler($DBHandle);
 $HD_Form->init();
 
 // #### HEADER SECTION

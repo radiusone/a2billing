@@ -61,7 +61,6 @@ if ($action == "lock") {
     die();
 }
 
-$HD_Form->setDBHandler($DBHandle);
 $HD_Form->init();
 
 if ($id != "" || !is_null($id)) {

@@ -43,7 +43,6 @@ if (!has_rights(ACX_MAINTENANCE)) {
 
 include './form_data/FG_var_backup.inc';
 
-$HD_Form->setDBHandler(DbConnect());
 $HD_Form->init();
 
 if ($id != "" || !is_null($id)) {

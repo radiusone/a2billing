@@ -43,8 +43,6 @@ if (!has_rights(ACX_OUTBOUNDCID)) {
 
 }
 
-$HD_Form->setDBHandler(DbConnect());
-
 $HD_Form->init();
 
 if ($id != "" || !is_null($id)) {

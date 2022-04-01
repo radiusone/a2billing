@@ -74,7 +74,6 @@ getpost_ifset(array('subject', 'message','atmenu','submit','hd_email', 'total_cu
 
 $HD_Form = new FormHandler("cc_card");
 $HD_Form -> search_session_key = 'entity_card_selection_mail';
-$HD_Form -> setDBHandler (DbConnect());
 $HD_Form -> init();
 $instance_cus_table = new Table("cc_card","id, email, credit, currency, lastname, firstname, loginkey, username, useralias, uipass");
 $cardstatus_list_r = array();

@@ -42,7 +42,6 @@ if (! has_rights (ACX_ACCESS)) {
     die();
 }
 
-$HD_Form -> setDBHandler (DbConnect());
 $HD_Form -> init();
 
 getpost_ifset(array('message'));

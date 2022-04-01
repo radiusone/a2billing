@@ -60,8 +60,6 @@ if ($form_action=="ask-delete") {
     }
 }
 
-$HD_Form -> setDBHandler (DbConnect());
-
 // SECURTY CHECK FOR AGENT
 if ($form_action != "list" && isset($id)) {
     if (!empty($id)&& $id>0) {

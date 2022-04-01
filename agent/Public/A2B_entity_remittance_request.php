@@ -59,7 +59,6 @@ if ($action == "cancel") {
     }
     die();
 }
-$HD_Form->setDBHandler(DbConnect());
 $HD_Form->init();
 
 if ($id != "" || !is_null($id)) {

@@ -51,8 +51,6 @@ $HD_Form->FG_TABLE_DEFAULT_SENS = "ASC";
 $HD_Form->search_session_key = 'entity_card_selection';
 $HD_Form->FG_ENABLE_ADD_BUTTON = true;
 
-$HD_Form->setDBHandler(DbConnect());
-
 $agent_conf = false;
 if (!empty ($key)) {
 	$agentkey = $key;

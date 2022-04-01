@@ -46,8 +46,6 @@ if (! has_rights (ACX_BILLING)) {
 
 getpost_ifset(array('choose_list', 'addcredit', 'gen_id', 'cardnum', 'choose_currency', 'expirationdate', 'addcredit','tag_list'));
 
-$HD_Form -> setDBHandler (DbConnect());
-
 $nbvoucher = $choose_list;
 
 if ($nbvoucher>0) {

@@ -71,7 +71,6 @@ if (!is_numeric($subscriber_signup)) {
     }
 }
 
-$HD_Form->setDBHandler(DbConnect());
 $HD_Form->init();
 
 if ($id != "" || !is_null($id)) {

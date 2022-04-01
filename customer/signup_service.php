@@ -45,7 +45,6 @@ if (!$A2B->config["signup"]['enable_signup']) {
 
 $HD_Form = new FormHandler();
 
-$HD_Form->setDBHandler(DbConnect());
 $HD_Form->init();
 
 //check subscriber

@@ -42,8 +42,6 @@ if (!has_rights(ACX_INVOICES)) {
     die();
 }
 
-$HD_Form->setDBHandler(DbConnect());
-
 $HD_Form->init();
 
 if ($id != "" || !is_null($id)) {

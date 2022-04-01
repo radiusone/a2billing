@@ -44,8 +44,6 @@ if (!has_rights(ACX_BILLING)) {
     die();
 }
 
-$HD_Form->setDBHandler(DbConnect());
-
 if ($form_action != "list" && isset ($id)) {
     if (!empty ($id) && $id > 0) {
         $table_agent_security = new Table("cc_epayment_log,cc_card LEFT JOIN cc_card_group ON cc_card.id_group=cc_card_group.id ", " cc_card_group.id_agent");

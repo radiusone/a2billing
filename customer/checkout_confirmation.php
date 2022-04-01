@@ -100,8 +100,6 @@ if ($item_type == "invoice" && is_numeric($item_id)) {
 }
 
 $HD_Form = new FormHandler("cc_payment_methods", "payment_method");
-
-$HD_Form -> setDBHandler(DbConnect());
 $HD_Form -> init();
 $_SESSION["p_module"] = $payment;
 $_SESSION["p_amount"] = 3;

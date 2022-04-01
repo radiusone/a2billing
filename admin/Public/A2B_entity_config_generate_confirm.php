@@ -44,7 +44,6 @@ if (! has_rights (ACX_ACXSETTING)) {
     die();
 }
 
-$HD_Form -> setDBHandler (DbConnect());
 $HD_Form -> init();
 
 // #### HEADER SECTION

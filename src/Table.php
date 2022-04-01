@@ -37,14 +37,14 @@ namespace A2billing;
 /**
 * Class Table used to abstract Database queries and processing
 *
-* @category   Database
-* @package    Table
-* @author     Arezqui Belaid <areski _atl_ gmail com>
-* @author     Steve Dommett <steve@st4vs.net>
-* @copyright  2004-2015 A2Billing
-* @license    http://www.gnu.org/copyleft/lesser.html  LGPL License 2.1
-* @version    CVS: $Id:$
-* @since      File available since Release 1.0
+* @category   Database
+* @package    Table
+* @author     Arezqui Belaid <areski _atl_ gmail com>
+* @author     Steve Dommett <steve@st4vs.net>
+* @copyright  2004-2015 A2Billing
+* @license    http://www.gnu.org/copyleft/lesser.html  LGPL License 2.1
+* @version    CVS: $Id:$
+* @since      File available since Release 1.0
 */
 
 $ADODB_CACHE_DIR = '/tmp';

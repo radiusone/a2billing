@@ -46,7 +46,6 @@ getpost_ifset(array (
     'id_cc_card'
 ));
 
-$HD_Form->setDBHandler(DbConnect());
 $HD_Form->init();
 
 if ($id != "" || !is_null($id)) {

@@ -46,7 +46,6 @@ if (! has_rights (ACX_BILLING)) {
 
 getpost_ifset(array('updatecurrency'));
 
-$HD_Form -> setDBHandler (DbConnect());
 $HD_Form -> init();
 
 /********************************* BATCH UPDATE CURRENCY TABLE ***********************************/

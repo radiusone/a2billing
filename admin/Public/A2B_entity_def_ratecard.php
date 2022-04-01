@@ -235,7 +235,6 @@ getpost_ifset($update_fields);
 
 /***********************************************************************************/
 
-$HD_Form->setDBHandler(DbConnect());
 $HD_Form->init();
 
 // CHECK IF REQUEST OF BATCH UPDATE

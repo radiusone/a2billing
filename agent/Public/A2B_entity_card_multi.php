@@ -48,8 +48,6 @@ getpost_ifset(array('nb_to_create', 'creditlimit', 'cardnum', 'choose_tariff', '
     'choose_currency', 'choose_typepaid', 'creditlimit', 'enableexpire', 'expirationdate', 'expiredays', 'runservice', 'sip', 'iax',
     'cardnumberlength_list', 'tag', 'id_group', 'discount', 'id_seria'));
 
-$HD_Form -> setDBHandler (DbConnect());
-
 $nb_error = 0;
 $msg_error = '';
 $group_error = false;

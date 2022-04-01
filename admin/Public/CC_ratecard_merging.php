@@ -47,7 +47,6 @@ if (! has_rights (ACX_RATECARD)) {
 }
 
 $HD_Form = new FormHandler();
-$HD_Form -> setDBHandler (DbConnect());
 $HD_Form -> init();
 $HD_Form->no_debug();
 $HD_Form -> search_session_key = 'entity_ratecard_selection';

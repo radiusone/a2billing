@@ -137,7 +137,6 @@ if (($download ?? "") === "file" && !empty($file)) {
 }
 
 $HD_Form = new FormHandler("cc_call", gettext("CDR"));
-$HD_Form->setDBHandler(DbConnect());
 $HD_Form->init();
 
 $currencies_list = array_map(fn ($v) => array_reverse($v), getCurrenciesList());

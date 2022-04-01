@@ -54,7 +54,6 @@ if ($form_action=="add_sip" || $atmenu=="sip" || $form_action=="add_iax" || $atm
     }
 }
 
-$HD_Form -> setDBHandler (DbConnect());
 $HD_Form -> init();
 
 /********************************* ADD SIP / IAX FRIEND ***********************************/

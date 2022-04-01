@@ -48,8 +48,6 @@ getpost_ifset(array (
     'popup_fieldname'
 ));
 
-$HD_Form->setDBHandler(DbConnect());
-
 $HD_Form->init();
 
 if ($id != "" || !is_null($id)) {

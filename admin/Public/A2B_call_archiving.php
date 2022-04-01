@@ -50,7 +50,6 @@ if (!isset ($current_page) || ($current_page == "")) {
 }
 $HD_Form = new FormHandler("cc_call t1 LEFT OUTER JOIN cc_trunk t3 ON t1.id_trunk = t3.id_trunk", "Calls");
 
-$HD_Form -> setDBHandler (DbConnect());
 $HD_Form -> init();
 
 $HD_Form->no_debug();

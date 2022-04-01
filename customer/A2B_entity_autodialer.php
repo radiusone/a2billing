@@ -46,7 +46,6 @@ if (! has_rights (ACX_CALLER_ID)) {
 
 getpost_ifset(array('add_callerid'));
 
-$HD_Form -> setDBHandler (DbConnect());
 $HD_Form -> init();
 
 // ADD SPEED DIAL

@@ -56,7 +56,6 @@ require_once "../common/lib/customer.defines.php";
 getpost_ifset(array ( 'key' ));
 
 $HD_Form = new FormHandler("cc_card", "User");
-$HD_Form->setDBHandler(DbConnect());
 $HD_Form->init();
 
 // HEADER SECTION

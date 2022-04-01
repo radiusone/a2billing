@@ -44,7 +44,6 @@ if (! has_rights (ACX_MAINTENANCE)) {
 }
 
 $HD_Form = new FormHandler("cc_card", "Customer");
-$HD_Form -> setDBHandler (DbConnect());
 $HD_Form -> init();
 
 $HD_Form->no_debug();

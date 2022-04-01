@@ -44,7 +44,6 @@ if (! has_rights (ACX_VOUCHER)) {
     die();
 }
 
-$HD_Form -> setDBHandler (DbConnect());
 $HD_Form -> init();
 $currencies_list = get_currencies();
 

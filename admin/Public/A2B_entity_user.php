@@ -50,7 +50,6 @@ require_once "./form_data/FG_var_user.inc";
  * @var string $id
  */
 
-$HD_Form->setDBHandler (DbConnect());
 $HD_Form->init();
 
 $HD_Form->FG_EDIT_BUTTON_LINK= "?form_action=ask-edit&groupID=$groupID&id=";

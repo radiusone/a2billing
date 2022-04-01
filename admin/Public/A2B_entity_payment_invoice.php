@@ -42,7 +42,6 @@ if (!has_rights(ACX_INVOICING)) {
     die();
 }
 
-$HD_Form->setDBHandler(DbConnect());
 $HD_Form->init();
 
 if (!isset ($form_action))

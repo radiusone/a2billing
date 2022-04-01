@@ -2,6 +2,7 @@
 
 namespace A2billing\Forms;
 
+use A2billing\Connection;
 use A2billing\Logger;
 use A2billing\Table;
 use ADOConnection;
@@ -374,14 +375,15 @@ class FormHandler
     /** @var string */
     public string $FG_LIST_ADDING_BUTTON_MSG2;
 
-    public function __construct(?string $tablename = null, ?string $instance_name = null)
+    public function __construct(string $tablename, string $instance_name, ADOConnection $DBHandle = null)
     {
         Console::log('Construct FormHandler');
         Console::logMemory($this, 'FormHandler Class : Line ' . __LINE__);
         Console::logSpeed('FormHandler Class : Line ' . __LINE__);
-        self:: $Instance = $this;
+        self::$Instance = $this;
         $this->FG_QUERY_TABLE_NAME = $tablename;
         $this->FG_INSTANCE_NAME = $instance_name;
+        $this->DBHandle = $DBHandle ?? Connection::GetDBHandler();
 
         if (!empty($_POST)) {
             $posted_token = $_POST["csrf_token"] ?? "";
@@ -407,25 +409,24 @@ class FormHandler
 
         $this->def_list();
 
-        //initializing variables with gettext
+        //initializing variables with _
         $this->CV_NO_FIELDS = sprintf(_("No %s has been created"), $this->FG_INSTANCE_NAME);
-        $this->CV_TITLE_TEXT = $instance_name . ' ' . gettext("list");
-        $this->FG_INTRO_TEXT_EDITION = gettext("You can modify, through the following form, the different properties of your") . " #FG_INSTANCE_NAME#" . '<br>';
-        $this->FG_INTRO_TEXT_ASK_DELETION = gettext("If you really want to remove this") . " #FG_INSTANCE_NAME#, " . gettext("click on the delete button.");
-        $this->FG_INTRO_TEXT_DELETION = gettext("One") . " #FG_INSTANCE_NAME# " . gettext("has been deleted!");
+        $this->CV_TITLE_TEXT = sprintf(_("%s list"), $this->FG_INSTANCE_NAME);
+        $this->FG_INTRO_TEXT_EDITION = sprintf(_("Use this form to modify your %s."), $this->FG_INSTANCE_NAME);
+        $this->FG_INTRO_TEXT_ASK_DELETION = sprintf(_("If you really want to remove this %s, click the delete button"), $this->FG_INSTANCE_NAME);
+        $this->FG_INTRO_TEXT_DELETION = sprintf(_("One %s has been deleted"), $this->FG_INSTANCE_NAME);
+        $this->FG_INTRO_TEXT_ADITION = sprintf(_("Add a %s now"), $this->FG_INSTANCE_NAME);
+        $this->FG_TEXT_ADITION_CONFIRMATION = sprintf(_("Your new %s has been inserted"), $this->FG_INSTANCE_NAME);
+        $this->FG_TEXT_ADITION_ERROR = sprintf(_("Your new %s hasn't been inserted"), $this->FG_INSTANCE_NAME);
 
-        $this->FG_INTRO_TEXT_ADITION = gettext("Add a") . " \"#FG_INSTANCE_NAME#\" " . gettext("now.");
-        $this->FG_TEXT_ADITION_CONFIRMATION = gettext("Your new") . " #FG_INSTANCE_NAME# " . gettext("has been inserted.");
-        $this->FG_TEXT_ADITION_ERROR = gettext("Your new") . " #FG_INSTANCE_NAME# " . gettext("hasn't been inserted.");
-        $this->FG_TEXT_ERROR_DUPLICATION = gettext("You cannot choose more than one !");
+        $this->FG_TEXT_ERROR_DUPLICATION = _("You cannot choose more than one !");
+        $this->search_form_title = _("Define the search criteria");
+        $this->FG_ADD_PAGE_BOTTOM_TEXT = _("Click 'Confirm Data' to continue");
+        $this->FG_EDIT_PAGE_BOTTOM_TEXT = _("Click 'Confirm Data' to continue");
+        $this->FG_FK_DELETE_MESSAGE = _("Are you sure you want to delete all records connected to this instance?");
 
-        $this->FG_ADD_PAGE_BOTTOM_TEXT = gettext("Click 'Confirm Data' to continue");
-        $this->FG_EDIT_PAGE_BOTTOM_TEXT = gettext("Click 'Confirm Data' to continue");
-
-        $this->FG_FK_DELETE_MESSAGE = gettext("Are you sure to delete all records connected to this instance.");
-
-        /* used once in admin/FG_var_signup.inc */
-        $this->FG_ADD_PAGE_SAVE_BUTTON_TEXT = gettext('Confirm Data');
+        /* only modified once in admin/FG_var_signup.inc */
+        $this->FG_ADD_PAGE_SAVE_BUTTON_TEXT = _('Confirm Data');
 
         if ($this->FG_ENABLE_LOG) {
             $this->logger = new Logger();
@@ -448,16 +449,7 @@ class FormHandler
 
     public static function GetInstance(): FormHandler
     {
-        return self:: $Instance;
-    }
-
-    public function setDBHandler($DBHandle = null)
-    {
-        Console::log('FormHandler -> setDBHandler');
-        Console::logMemory($this, 'FormHandler -> setDBHandler : Line ' . __LINE__);
-        Console::logSpeed('FormHandler -> setDBHandler : Line ' . __LINE__);
-
-        $this->DBHandle = $DBHandle;
+        return self::$Instance;
     }
 
     /**
@@ -475,21 +467,13 @@ class FormHandler
         Console::logMemory($this, 'FormHandler -> init : Line ' . __LINE__);
         Console::logSpeed('FormHandler -> init : Line ' . __LINE__);
 
-        if ($processed['section'] != "") {
+        if (!empty($processed['section'])) {
             $section = $processed['section'];
             $_SESSION["menu_section"] = intval($section);
         }
-        $ext_link = "&amp;" . http_build_query([$current_page ?? "", $order ?? "", $sens ?? ""], "", "&amp;");
+        $ext_link = "&amp;" . http_build_query(["current_page" => $processed["current_page"] ?? "", "order" => $processed["order"] ?? "", "sens" => $processed["sens"] ?? ""], "", "&amp;");
         $this->FG_EDIT_BUTTON_LINK = "?form_action=ask-edit" . $ext_link . "&amp;id=";
         $this->FG_DELETE_BUTTON_LINK = "?form_action=ask-delete" . $ext_link . "&amp;id=";
-
-        $this->FG_INTRO_TEXT_EDITION = str_replace('#FG_INSTANCE_NAME#', $this->FG_INSTANCE_NAME, $this->FG_INTRO_TEXT_EDITION);
-        $this->FG_INTRO_TEXT_ASK_DELETION = str_replace('#FG_INSTANCE_NAME#', $this->FG_INSTANCE_NAME, $this->FG_INTRO_TEXT_ASK_DELETION);
-        $this->FG_INTRO_TEXT_DELETION = str_replace('#FG_INSTANCE_NAME#', $this->FG_INSTANCE_NAME, $this->FG_INTRO_TEXT_DELETION);
-        $this->FG_INTRO_TEXT_ADITION = str_replace('#FG_INSTANCE_NAME#', $this->FG_INSTANCE_NAME, $this->FG_INTRO_TEXT_ADITION);
-        $this->FG_TEXT_ADITION_CONFIRMATION = str_replace('#FG_INSTANCE_NAME#', $this->FG_INSTANCE_NAME, $this->FG_TEXT_ADITION_CONFIRMATION);
-        $this->FG_TEXT_ADITION_ERROR = str_replace('#FG_INSTANCE_NAME#', $this->FG_INSTANCE_NAME, $this->FG_TEXT_ADITION_ERROR);
-        $this->search_form_title = gettext("Define the search criteria");
     }
 
     /**
@@ -982,29 +966,29 @@ class FormHandler
     private function validate_field($rule_number, string $value)
     {
         $messages = [
-            gettext("(at least 3 characters)"),
-            gettext("(must match email structure. Example : name@domain.com)"),
-            gettext("(at least 5 successive characters appear at the end of this string)"),
-            gettext("(at least 4 characters)"),
-            gettext("(number format)"),
-            "(YYYY-MM-DD)",
-            gettext("(only number with more that 8 digits)"),
-            gettext("(at least 8 digits using . or - or the space key)"),
-            gettext("network adress format"),
-            gettext("at least 1 character"),
-            "(YYYY-MM-DD HH:MM:SS)",
-            gettext("(AT LEAST 2 CARACTERS)"),
-            gettext("(NUMBER FORMAT WITH/WITHOUT DECIMAL, use '.' for decimal)"),
-            "(NUMBER FORMAT OR 'defaultprefix' OR ASTERISK/POSIX REGEX FORMAT)",
-            "(NUMBER FORMAT OR 'all')",
-            "(HH:MM)",
-            gettext("You must write something."),
-            gettext("8 characters alphanumeric"),
-            "Phone Number format",
-            gettext("(at least 6 Alphanumeric characters)"),
-            "(HH:MM:SS)",
-            gettext("(PERCENT FORMAT WITH/WITHOUT DECIMAL, use '.' for decimal and don't use '%' character. e.g.: 12.4 )"),
-            "default" => "A validation error occurred.",
+            _("(at least 3 characters)"),
+            _("(must match email structure. Example : name@domain.com)"),
+            _("(at least 5 successive characters appear at the end of this string)"),
+            _("(at least 4 characters)"),
+            _("(number format)"),
+            _("(YYYY-MM-DD)"),
+            _("(only number with more that 8 digits)"),
+            _("(at least 8 digits using . or - or the space key)"),
+            _("network adress format"),
+            _("at least 1 character"),
+            _("(YYYY-MM-DD HH:MM:SS)"),
+            _("(AT LEAST 2 CARACTERS)"),
+            _("(NUMBER FORMAT WITH/WITHOUT DECIMAL, use '.' for decimal)"),
+            _("(NUMBER FORMAT OR 'defaultprefix' OR ASTERISK/POSIX REGEX FORMAT)"),
+            _("(NUMBER FORMAT OR 'all')"),
+            _("(HH:MM)"),
+            _("You must write something."),
+            _("8 characters alphanumeric"),
+            _("Phone Number format"),
+            _("(at least 6 Alphanumeric characters)"),
+            _("(HH:MM:SS)"),
+            _("(PERCENT FORMAT WITH/WITHOUT DECIMAL, use '.' for decimal and don't use '%' character. e.g.: 12.4 )"),
+            "default" => _("A validation error occurred."),
         ];
 
         $result = null;
@@ -1717,7 +1701,7 @@ class FormHandler
             $this->logger->insertLog($_SESSION["admin_id"], 3, "A " . strtoupper($this->FG_INSTANCE_NAME) . " DELETED", "A RECORD IS DELETED, EDITION CLAUSE USED IS " . $this->FG_EDIT_QUERY_CONDITION, $this->FG_QUERY_TABLE_NAME, $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI']);
         }
         if (!$this->QUERY_RESULT) {
-            echo gettext("error deletion");
+            echo _("error deletion");
         }
 
         if (!empty($this->FG_LOCATION_AFTER_DELETE)) {
@@ -2077,9 +2061,9 @@ class FormHandler
     public function create_date_options($target): string
     {
         $month_list = [
-            "", gettext("January"), gettext("February"), gettext("March"), gettext("April"), gettext("May"),
-            gettext("June"), gettext("July"), gettext("August"), gettext("September"), gettext("October"),
-            gettext("November"), gettext("December")
+            "", _("January"), _("February"), _("March"), _("April"), _("May"),
+            _("June"), _("July"), _("August"), _("September"), _("October"),
+            _("November"), _("December")
         ];
         $this_year = date("Y");
         $this_month = date("n");

@@ -42,10 +42,6 @@ if (! has_rights (ACX_ADMINISTRATOR)) {
        die();
 }
 
-?>
-<?php
-$HD_Form -> setDBHandler (DbConnect());
-
 $HD_Form -> init();
 
 if (!isset($form_action))  $form_action="list"; //ask-add
