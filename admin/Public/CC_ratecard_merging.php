@@ -50,7 +50,7 @@ $HD_Form = new FormHandler();
 $HD_Form -> setDBHandler (DbConnect());
 $HD_Form -> init();
 $HD_Form->no_debug();
-$HD_Form -> FG_FILTER_SEARCH_SESSION_NAME = 'entity_ratecard_selection';
+$HD_Form -> search_session_key = 'entity_ratecard_selection';
 
 getpost_ifset(array('posted' ,'ratecard_source' ,'ratecard_destination', 'search_sources'));
 
@@ -133,8 +133,8 @@ if ($posted == 1) {
     $_SESSION['search_ratecard'] = "";
 }
 
-$HD_Form -> FG_FILTER_SEARCH_FORM = true;
-$HD_Form -> FG_FILTER_SEARCH_1_TIME_TEXT = gettext("Start Date / Month");
+$HD_Form -> search_form_enabled = true;
+$HD_Form -> search_date_text = gettext("Start Date / Month");
 $HD_Form -> FG_FILTER_SEARCH_2_TIME_TEXT = gettext("Start Date / Day");
 $HD_Form -> FG_FILTER_SEARCH_2_TIME_FIELD = 'startdate';
 $HD_Form -> AddSearchTextInput(gettext("TAG"), 'tag','tagtype');

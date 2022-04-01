@@ -48,7 +48,7 @@ $HD_Form = new FormHandler("cc_card", "User");
 $HD_Form->no_debug();
 
 $HD_Form->FG_TABLE_DEFAULT_SENS = "ASC";
-$HD_Form->FG_FILTER_SEARCH_SESSION_NAME = 'entity_card_selection';
+$HD_Form->search_session_key = 'entity_card_selection';
 $HD_Form->FG_ENABLE_ADD_BUTTON = true;
 
 $HD_Form->setDBHandler(DbConnect());

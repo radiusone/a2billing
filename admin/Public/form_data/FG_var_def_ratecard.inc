@@ -184,7 +184,7 @@ $HD_Form->no_debug();
 $HD_Form->FG_TABLE_DEFAULT_ORDER = " dialprefix";
 $HD_Form->FG_TABLE_DEFAULT_SENS = "ASC";
 
-$HD_Form->FG_FILTER_SEARCH_SESSION_NAME = 'entity_ratecard_selection';
+$HD_Form->search_session_key = 'entity_ratecard_selection';
 
 $musiconhold_list = getMusicOnHold_List($A2B);
 $yesno = getYesNoList();
@@ -241,10 +241,10 @@ if (!$popup_select) {
 }
 
 // Search form
-$HD_Form->FG_FILTER_SEARCH_FORM = true;
-$HD_Form->FG_FILTER_SEARCH_1_TIME = true;
-$HD_Form->FG_FILTER_SEARCH_1_TIME_TEXT = gettext("START DATE");
-$HD_Form->FG_FILTER_SEARCH_1_TIME_FIELD = 'startdate';
+$HD_Form->search_form_enabled = true;
+$HD_Form->search_date_enabled = true;
+$HD_Form->search_date_text = gettext("START DATE");
+$HD_Form->search_date_column = 'startdate';
 
 
 $HD_Form->AddSearchTextInput(gettext("TAG"), 'tag', 'tagtype');

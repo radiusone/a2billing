@@ -79,14 +79,14 @@ $HD_Form -> FG_FILTER_COLUMN = 'cardnumber';
 $HD_Form -> FG_FILTER_LABEL = 'account number';
 
 
-if (!($popup_select>=1))	 $HD_Form -> FG_FILTER_SEARCH_FORM = true;
+if (!($popup_select>=1))	 $HD_Form -> search_form_enabled = true;
 
-$HD_Form -> FG_FILTER_SEARCH_SESSION_NAME = 'payment_cust_selection';
+$HD_Form -> search_session_key = 'payment_cust_selection';
 
-$HD_Form -> FG_FILTER_SEARCH_TOP_TEXT = gettext('Define specific criteria to search for payments created.');
-$HD_Form -> FG_FILTER_SEARCH_1_TIME = true;
-$HD_Form -> FG_FILTER_SEARCH_1_TIME_TEXT = gettext('DATE');
-$HD_Form -> FG_FILTER_SEARCH_1_TIME_FIELD = 'date';
+$HD_Form -> search_form_title = gettext('Define specific criteria to search for payments created.');
+$HD_Form -> search_date_enabled = true;
+$HD_Form -> search_date_text = gettext('DATE');
+$HD_Form -> search_date_column = 'date';
 
 $HD_Form -> AddSearchTextInput(gettext("ACCOUNT NUMBER"), 'username','usernametype');
 $HD_Form -> AddSearchTextInput(gettext("LASTNAME"),'lastname','lastnametype');

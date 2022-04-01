@@ -81,13 +81,13 @@ $HD_Form -> AddViewElement(gettext("STATUS"), "status", true, 0, "", "list", $st
 
 $HD_Form -> FieldViewElement ('cc_remittance_request.id, id_agent, date, amount,type, status ');
 
-$HD_Form -> FG_FILTER_SEARCH_FORM = true;
-$HD_Form -> FG_FILTER_SEARCH_SESSION_NAME = 'remittance_agent_selection';
-$HD_Form -> FG_FILTER_SEARCH_TOP_TEXT = gettext('Define specific criteria to search for remittances requests created.');
-$HD_Form -> FG_FILTER_SEARCH_1_TIME = true;
-$HD_Form -> FG_FILTER_SEARCH_1_TIME_TEXT = gettext('DATE');
-$HD_Form -> FG_FILTER_SEARCH_1_TIME_FIELD = 'date';
-$HD_Form -> FG_FILTER_SEARCH_DELETE_ALL =false;
+$HD_Form -> search_form_enabled = true;
+$HD_Form -> search_session_key = 'remittance_agent_selection';
+$HD_Form -> search_form_title = gettext('Define specific criteria to search for remittances requests created.');
+$HD_Form -> search_date_enabled = true;
+$HD_Form -> search_date_text = gettext('DATE');
+$HD_Form -> search_date_column = 'date';
+$HD_Form -> search_delete_enabled =false;
 $HD_Form -> AddSearchTextInput(gettext("LOGIN"), 'login','logintype');
 $HD_Form -> AddSearchTextInput(gettext("LASTNAME"),'lastname','lastnametype');
 $HD_Form -> AddSearchTextInput(gettext("FIRSTNAME"),'firstname','firstnametype');

@@ -62,7 +62,7 @@ if (!isset($form_action) || $form_action=="list" || $form_action=="addcredit") {
 $HD_Form->no_debug();
 $HD_Form -> FG_QUERY_PRIMARY_KEY="cc_card.id";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "ASC";
-$HD_Form -> FG_FILTER_SEARCH_SESSION_NAME = 'entity_card_selection';
+$HD_Form -> search_session_key = 'entity_card_selection';
 $HD_Form -> FG_FK_DELETE_CONFIRM = true;
 $HD_Form -> FG_FK_DELETE_ALLOWED = true;
 $HD_Form -> FG_FK_TABLENAMES = array('cc_iax_buddies', 'cc_sip_buddies', 'cc_callerid', 'cc_card_history');
@@ -232,15 +232,15 @@ if (($popup_select>=1))	$HD_Form ->FG_LIST_VIEW_PAGE_SIZE = 7;
 $HD_Form -> CV_FOLLOWPARAMETERS= "&popup_select=".$popup_select."&popup_formname=".$popup_formname."&popup_fieldname=".$popup_fieldname;
 
 // Search form
-if (!($popup_select>=1))	 $HD_Form -> FG_FILTER_SEARCH_FORM = true;
+if (!($popup_select>=1))	 $HD_Form -> search_form_enabled = true;
 
-$HD_Form -> FG_FILTER_SEARCH_TOP_TEXT = gettext('Define specific criteria to search for cards created.');
-$HD_Form -> FG_FILTER_SEARCH_1_TIME = true;
-$HD_Form -> FG_FILTER_SEARCH_1_TIME_TEXT = gettext('CREATION DATE');
+$HD_Form -> search_form_title = gettext('Define specific criteria to search for cards created.');
+$HD_Form -> search_date_enabled = true;
+$HD_Form -> search_date_text = gettext('CREATION DATE');
 
-$HD_Form -> FG_FILTER_SEARCH_1_TIME_BIS = true;
-$HD_Form -> FG_FILTER_SEARCH_1_TIME_TEXT_BIS = gettext('FIRST USE DATE');
-$HD_Form -> FG_FILTER_SEARCH_1_TIME_FIELD_BIS = 'firstusedate';
+$HD_Form -> search_date2_enabled = true;
+$HD_Form -> search_date2_text = gettext('FIRST USE DATE');
+$HD_Form -> search_date2_column = 'firstusedate';
 
 
 $HD_Form -> AddSearchTextInput(gettext("ACCOUNT NUMBER"), 'username','usernametype');

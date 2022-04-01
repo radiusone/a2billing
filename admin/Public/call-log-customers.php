@@ -203,12 +203,12 @@ $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] = "SELECT $HD_Form->FG_QUERY_COLUMN_L
 
 /************************/
 
-$HD_Form->FG_FILTER_SEARCH_FORM = true;
-$HD_Form->FG_FILTER_SEARCH_SESSION_NAME = 'call_log_selection';
-$HD_Form->FG_FILTER_SEARCH_TOP_TEXT = gettext('Define specific criteria to search for call records');
-$HD_Form->FG_FILTER_SEARCH_1_TIME = true;
-$HD_Form->FG_FILTER_SEARCH_1_TIME_TEXT = _('DATE');
-$HD_Form->FG_FILTER_SEARCH_1_TIME_FIELD = "cc_call.starttime";
+$HD_Form->search_form_enabled = true;
+$HD_Form->search_session_key = 'call_log_selection';
+$HD_Form->search_form_title = gettext('Define specific criteria to search for call records');
+$HD_Form->search_date_enabled = true;
+$HD_Form->search_date_text = _('DATE');
+$HD_Form->search_date_column = "cc_call.starttime";
 
 $HD_Form->AddSearchPopupInput("card_id", _("Enter the customer ID"), "A2B_entity_card.php");
 $HD_Form->AddSearchPopupInput("username", _("Enter the customer number"), "A2B_entity_card.php", 2);
@@ -227,7 +227,7 @@ $HD_Form->AddSearchSelectInput(_("Call type"), "sipiax", $calltype_list);
 $HD_Form->FG_FILTER_SEARCH_FORM_SELECT_INPUTS[] = [_("Currency"), false, "choose_currency", $currencies_list];
 $HD_Form->FG_FILTER_SEARCH_FORM_SELECT_INPUTS[] = [_("Time unit"), false, "choose_timeunit", [["min", _("Minutes")], ["sec", _("Seconds")]]];
  */
-$HD_Form->FG_FILTER_SEARCH_DELETE_ALL = false;
+$HD_Form->search_delete_enabled = false;
 
 $form_action = $form_action ?? "list";
 if (!$nodisplay) {

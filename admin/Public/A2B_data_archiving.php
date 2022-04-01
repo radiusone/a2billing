@@ -49,7 +49,7 @@ $HD_Form -> init();
 
 $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "ASC";
-$HD_Form -> FG_FILTER_SEARCH_SESSION_NAME = 'entity_archiving_selection';
+$HD_Form -> search_session_key = 'entity_archiving_selection';
 $language_list = array();
 $language_list["0"] = array( gettext("ENGLISH"), "en");
 $language_list["1"] = array( gettext("SPANISH"), "es");
@@ -144,18 +144,18 @@ $HD_Form -> FieldViewElement ($FG_COL_QUERY);
 $HD_Form -> CV_NO_FIELDS  = gettext("NO CUSTOMER SEARCHED!");
 $HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 30;
 
-$HD_Form -> FG_FILTER_SEARCH_FORM = true;
-$HD_Form -> FG_FILTER_SEARCH_TOP_TEXT = gettext('Define specific criteria to search for cards created.');
-$HD_Form -> FG_FILTER_SEARCH_1_TIME = true;
-$HD_Form -> FG_FILTER_SEARCH_1_TIME_TEXT = gettext('Creation date');
+$HD_Form -> search_form_enabled = true;
+$HD_Form -> search_form_title = gettext('Define specific criteria to search for cards created.');
+$HD_Form -> search_date_enabled = true;
+$HD_Form -> search_date_text = gettext('Creation date');
 
-$HD_Form -> FG_FILTER_SEARCH_1_TIME_BIS = true;
-$HD_Form -> FG_FILTER_SEARCH_1_TIME_TEXT_BIS = gettext('FIRST USE DATE');
-$HD_Form -> FG_FILTER_SEARCH_1_TIME_FIELD_BIS = 'firstusedate';
+$HD_Form -> search_date2_enabled = true;
+$HD_Form -> search_date2_text = gettext('FIRST USE DATE');
+$HD_Form -> search_date2_column = 'firstusedate';
 
-$HD_Form -> FG_FILTER_SEARCH_3_TIME = true;
-$HD_Form -> FG_FILTER_SEARCH_3_TIME_TEXT = gettext('Select customer created more than');
-$HD_Form -> FG_FILTER_SEARCH_3_TIME_FIELD = 'creationdate';
+$HD_Form -> search_months_ago_enabled = true;
+$HD_Form -> search_months_ago_text = gettext('Select customer created more than');
+$HD_Form -> search_months_ago_column = 'creationdate';
 
 //Select card older than : 3 Months, 4 Months, 5.... 12 Months
 $HD_Form -> AddSearchTextInput(gettext("ACCOUNT NUMBER"), 'username','usernametype');

@@ -86,14 +86,14 @@ $HD_Form->FG_INFO_BUTTON_LINK = "A2B_payment_info.php?id=";
 
 
 if (!$popup_select) {
-	$HD_Form->FG_FILTER_SEARCH_FORM = true;
-    $HD_Form->FG_FILTER_SEARCH_SESSION_NAME = 'payment_cust_selection';
-    $HD_Form->FG_FILTER_SEARCH_DELETE_ALL = false;
+	$HD_Form->search_form_enabled = true;
+    $HD_Form->search_session_key = 'payment_cust_selection';
+    $HD_Form->search_delete_enabled = false;
 
-    $HD_Form->FG_FILTER_SEARCH_TOP_TEXT = _('Define specific criteria to search for payments created.');
-    $HD_Form->FG_FILTER_SEARCH_1_TIME = true;
-    $HD_Form->FG_FILTER_SEARCH_1_TIME_TEXT = _('DATE');
-    $HD_Form->FG_FILTER_SEARCH_1_TIME_FIELD = 'date';
+    $HD_Form->search_form_title = _('Define specific criteria to search for payments created.');
+    $HD_Form->search_date_enabled = true;
+    $HD_Form->search_date_text = _('DATE');
+    $HD_Form->search_date_column = 'date';
 
     $HD_Form->AddSearchTextInput(_("ACCOUNT NUMBER"), 'username','usernametype');
     $HD_Form->AddSearchTextInput(_("LASTNAME"),'lastname','lastnametype');

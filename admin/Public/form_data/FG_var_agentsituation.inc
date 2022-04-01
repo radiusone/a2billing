@@ -57,10 +57,10 @@ $HD_Form -> AddViewElement(gettext("AGENT PAYMENT"), "payment", true, 15, "", "l
 
 $HD_Form -> FieldViewElement ('id, id, credit,com_balance,id,id, id, id');
 
-$HD_Form -> FG_FILTER_SEARCH_FORM = true;
-$HD_Form -> FG_FILTER_SEARCH_SESSION_NAME = 'agent_situation';
-$HD_Form -> FG_FILTER_SEARCH_TOP_TEXT = gettext('Define specific criteria to search for agent infos.');
-$HD_Form -> FG_FILTER_SEARCH_DELETE_ALL =false;
+$HD_Form -> search_form_enabled = true;
+$HD_Form -> search_session_key = 'agent_situation';
+$HD_Form -> search_form_title = gettext('Define specific criteria to search for agent infos.');
+$HD_Form -> search_delete_enabled =false;
 $HD_Form -> AddSearchTextInput(gettext("LOGIN"), 'login','logintype');
 $HD_Form -> AddSearchTextInput(gettext("LASTNAME"),'lastname','lastnametype');
 $HD_Form -> AddSearchTextInput(gettext("FIRSTNAME"),'firstname','firstnametype');

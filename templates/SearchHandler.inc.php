@@ -18,10 +18,10 @@ $action = http_build_query([
 <div class="row pb-3 justify-content-center">
     <div class="col-auto">
         <button
-                class="btn btn-sm <?= empty($_SESSION[$HD_Form->FG_FILTER_SEARCH_SESSION_NAME]) ? "btn-outline-primary" : "btn-primary" ?>"
+                class="btn btn-sm <?= empty($_SESSION[$HD_Form->search_session_key]) ? "btn-outline-primary" : "btn-primary" ?>"
                 data-bs-toggle="modal"
                 data-bs-target="#searchModal"
-                title="<?= sprintf(_("Search %s"), $this->FG_INSTANCE_NAME) ?> <?= empty($_SESSION[$HD_Form->FG_FILTER_SEARCH_SESSION_NAME]) ? "" : "(" . _("search activated") . ")" ?>"
+                title="<?= sprintf(_("Search %s"), $this->FG_INSTANCE_NAME) ?> <?= empty($_SESSION[$HD_Form->search_session_key]) ? "" : "(" . _("search activated") . ")" ?>"
         >
             <?= sprintf(_("Search %s"), $this->FG_INSTANCE_NAME) ?>
         </button>
@@ -38,7 +38,7 @@ $action = http_build_query([
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modal-title-search"><?= $this->FG_FILTER_SEARCH_TOP_TEXT ?? sprintf(_("Search %s"), $this->FG_INSTANCE_NAME) ?></h5>
+                    <h5 class="modal-title" id="modal-title-search"><?= $this->search_form_title ?? sprintf(_("Search %s"), $this->FG_INSTANCE_NAME) ?></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -46,15 +46,15 @@ $action = http_build_query([
 
     <div class="row">
         <div class="col">
-            <strong><?php echo $this->FG_FILTER_SEARCH_TOP_TEXT?></strong>
+            <strong><?php echo $this->search_form_title?></strong>
         </div>
     </div>
 <?php endif ?>
 
-<?php if ($this -> FG_FILTER_SEARCH_1_TIME): ?>
+<?php if ($this -> search_date_enabled): ?>
     <div class="row pb-1">
         <label class="col-4 col-form-label col-form-label-sm">
-            <?= $this->FG_FILTER_SEARCH_1_TIME_TEXT ?>
+            <?= $this->search_date_text ?>
         </label>
         <div class="col-8">
             <div class="row pb-1">
@@ -111,10 +111,10 @@ $action = http_build_query([
     </div>
 <?php endif ?>
 
-<?php if ($this->FG_FILTER_SEARCH_1_TIME_BIS): ?>
+<?php if ($this->search_date2_enabled): ?>
     <div class="row pb-1">
         <label class="col-4 col-form-label col-form-label-sm">
-            <?= $this->FG_FILTER_SEARCH_1_TIME_TEXT_BIS ?>
+            <?= $this->search_date2_text ?>
         </label>
         <div class="col-8">
             <div class="row pb-1">
@@ -167,10 +167,10 @@ $action = http_build_query([
     </div>
 <?php endif ?>
 
-<?php if ($this->FG_FILTER_SEARCH_3_TIME): // this is only used by A2B_data_archiving.php ?>
+<?php if ($this->search_months_ago_enabled): // this is only used by A2B_data_archiving.php ?>
     <div class="row pb-1">
         <label class="col-4 col-form-label col-form-label-sm" for="month_earlier">
-            <?php echo $this-> FG_FILTER_SEARCH_3_TIME_TEXT?>
+            <?php echo $this-> search_months_ago_text?>
         </label>
         <div class="col">
             <select name="month_earlier" id="month_earlier" class="form-select form-select-sm">
@@ -286,8 +286,8 @@ $action = http_build_query([
     <div class="row justify-content-end border-top pt-3 mt-3 bg-transparent">
         <div class="col text-end">
 <?php endif ?>
-            <?php if (strlen($_SESSION[$this->FG_FILTER_SEARCH_SESSION_NAME] ?? "") > 10): ?>
-                <?php if ($this->FG_FILTER_SEARCH_DELETE_ALL): ?>
+            <?php if (strlen($_SESSION[$this->search_session_key] ?? "") > 10): ?>
+                <?php if ($this->search_delete_enabled): ?>
                     <a class="btn btn-danger" href="?deleteselected=true" onclick="return confirm('<?= "Are you sure to delete " . $this->FG_LIST_VIEW_ROW_COUNT . " selected records?" ?>')"><?= _("Delete") ?></a>
                 <?php endif ?>
             <a class="btn btn-secondary" href="?cancelsearch=true"><?= _("Cancel") ?></a>

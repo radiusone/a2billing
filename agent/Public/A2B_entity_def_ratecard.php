@@ -103,7 +103,7 @@ if (is_string($tariffgroup) && strlen(trim($tariffgroup)) > 0) {
     $mytariffgrouplcrtype = $_SESSION["tariffgrouplcrtype"];
 }
 
-if (($form_action == "list") && ($HD_Form->FG_FILTER_SEARCH_FORM) && ($_POST['posted_search'] == 1) && is_numeric($mytariffgroup_id)) {
+if (($form_action == "list") && ($HD_Form->search_form_enabled) && ($_POST['posted_search'] == 1) && is_numeric($mytariffgroup_id)) {
     if (!empty ($HD_Form->FG_QUERY_WHERE_CLAUSE)) {
         $HD_Form->FG_QUERY_WHERE_CLAUSE .= ' AND ';
     }

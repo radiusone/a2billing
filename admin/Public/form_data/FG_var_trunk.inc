@@ -116,8 +116,8 @@ if ($popup_select) {
 	$HD_Form -> FieldViewElement ('trunkcode, trunkprefix, removeprefix, providertech, providerip, id_provider, secondusedreal, status, maxuse');
 }
 
-$HD_Form -> FG_FILTER_SEARCH_FORM = true;
-$HD_Form -> FG_FILTER_SEARCH_TOP_TEXT = gettext("Search");
+$HD_Form -> search_form_enabled = true;
+$HD_Form -> search_form_title = gettext("Search");
 $HD_Form -> AddSearchTextInput(gettext("IP/HOST"),'providerip','provideriptype');
 $HD_Form -> AddSearchSelectInput(gettext("SELECT PROVIDER"), "id_provider", $provider_list_result);
 $HD_Form -> AddSearchSelectInput(gettext("SELECT STATUS"), "status", $trunk_actived_list);

@@ -73,7 +73,7 @@ if (! has_rights (ACX_MAIL)) {
 getpost_ifset(array('subject', 'message','atmenu','submit','hd_email', 'total_customer', 'from', 'fromname'));
 
 $HD_Form = new FormHandler("cc_card");
-$HD_Form -> FG_FILTER_SEARCH_SESSION_NAME = 'entity_card_selection_mail';
+$HD_Form -> search_session_key = 'entity_card_selection_mail';
 $HD_Form -> setDBHandler (DbConnect());
 $HD_Form -> init();
 $instance_cus_table = new Table("cc_card","id, email, credit, currency, lastname, firstname, loginkey, username, useralias, uipass");
@@ -100,9 +100,9 @@ $language_list_r["0"] = array("en", gettext("ENGLISH"));
 $language_list_r["1"] = array("es", gettext("SPANISH"));
 $language_list_r["2"] = array("fr", gettext("FRENCH"));
 
-$HD_Form -> FG_FILTER_SEARCH_FORM = true;
-$HD_Form -> FG_FILTER_SEARCH_TOP_TEXT = gettext('Define specific criteria to search for cards created.');
-$HD_Form -> FG_FILTER_SEARCH_1_TIME_TEXT = gettext('Creation date / Month');
+$HD_Form -> search_form_enabled = true;
+$HD_Form -> search_form_title = gettext('Define specific criteria to search for cards created.');
+$HD_Form -> search_date_text = gettext('Creation date / Month');
 $HD_Form -> FG_FILTER_SEARCH_2_TIME_TEXT = gettext('Creation date / Day');
 $HD_Form -> FG_FILTER_SEARCH_2_TIME_FIELD = 'creationdate';
 $HD_Form -> AddSearchTextInput(gettext("ACCOUNT NUMBER"), 'username','usernametype');

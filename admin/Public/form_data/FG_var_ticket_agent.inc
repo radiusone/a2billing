@@ -88,13 +88,13 @@ $HD_Form -> FG_OTHER_BUTTON1_LINK = "CC_ticket_view.php?id=";
 $HD_Form -> FG_OTHER_BUTTON1_IMG = Images_Path."/icon-viewdetails.gif";
 $HD_Form -> FG_OTHER_BUTTON1_ALT = gettext("VIEW DETAILS");
 
-if (!($popup_select>=1))	 $HD_Form -> FG_FILTER_SEARCH_FORM = true;
-$HD_Form -> FG_FILTER_SEARCH_DELETE_ALL =false;
-$HD_Form -> FG_FILTER_SEARCH_SESSION_NAME = 'ticket_agent_selection';
-$HD_Form -> FG_FILTER_SEARCH_TOP_TEXT = gettext('Define specific criteria to search for ticket created.');
-$HD_Form -> FG_FILTER_SEARCH_1_TIME = true;
-$HD_Form -> FG_FILTER_SEARCH_1_TIME_TEXT = gettext("DATE");
-$HD_Form -> FG_FILTER_SEARCH_1_TIME_FIELD = 'cc_ticket.creationdate';
+if (!($popup_select>=1))	 $HD_Form -> search_form_enabled = true;
+$HD_Form -> search_delete_enabled =false;
+$HD_Form -> search_session_key = 'ticket_agent_selection';
+$HD_Form -> search_form_title = gettext('Define specific criteria to search for ticket created.');
+$HD_Form -> search_date_enabled = true;
+$HD_Form -> search_date_text = gettext("DATE");
+$HD_Form -> search_date_column = 'cc_ticket.creationdate';
 
 $HD_Form -> AddSearchTextInput(gettext("LOGIN"), 'login','logintype');
 $HD_Form -> AddSearchTextInput(gettext("LASTNAME"),'lastname','lastnametype');

@@ -127,31 +127,29 @@ class FormHandler
     /** @var string Text used to label the form (prefixed by "Filter on ") */
     public string $FG_FILTER2_LABEL = '';
 
-
     /** @var bool Whether to show a search popup at the top of the list view */
-    public bool $FG_FILTER_SEARCH_FORM = false;
+    public bool $search_form_enabled = false;
+    /** @var array List of elements to be added to the search form */
+    private array $search_form_elements = [];
+    /** @var string The text for the top of the search dialog */
+    public string $search_form_title = "";
+    /** @var string The session variable that stores search values */
+    public string $search_session_key = '';
+    /** @var bool Whether to enable a delete button on the search to allow user to remove all searched items */
+    public bool $search_delete_enabled = true;
 
-    public bool $FG_FILTER_SEARCH_1_TIME = false;
-    public string $FG_FILTER_SEARCH_1_TIME_TEXT = '';
-    public string $FG_FILTER_SEARCH_1_TIME_FIELD = 'creationdate';
+    public bool $search_date_enabled = false;
+    public string $search_date_text = '';
+    public string $search_date_column = 'creationdate';
 
-    public bool $FG_FILTER_SEARCH_1_TIME_BIS = false;
-    public string $FG_FILTER_SEARCH_1_TIME_TEXT_BIS = '';
-    public string $FG_FILTER_SEARCH_1_TIME_FIELD_BIS = '';
+    public bool $search_date2_enabled = false;
+    public string $search_date2_text = '';
+    public string $search_date2_column = '';
 
     /** @var bool Whether to display a 3rd time field in search (only used in A2B_data_archiving.php) */
-    public bool $FG_FILTER_SEARCH_3_TIME = false;
-    public string $FG_FILTER_SEARCH_3_TIME_TEXT = '';
-    public string $FG_FILTER_SEARCH_3_TIME_FIELD = 'creationdate';
-
-    /** @var array List of elements to be added to the search form */
-    private array $SEARCH_FORM_ELEMENTS = [];
-    /** @var string The text for the top of the search dialog */
-    public string $FG_FILTER_SEARCH_TOP_TEXT = "";
-    /** @var string The session variable that stores search values */
-    public string $FG_FILTER_SEARCH_SESSION_NAME = '';
-    /** @var bool Whether to enable a delete button on the search to allow user to remove all searched items */
-    public bool $FG_FILTER_SEARCH_DELETE_ALL = true;
+    public bool $search_months_ago_enabled = false;
+    public string $search_months_ago_text = '';
+    public string $search_months_ago_column = 'creationdate';
 
     /** @var bool Whether to enable a CSV export button at the bottom of a list view */
     public bool $FG_EXPORT_CSV = false;
@@ -491,7 +489,7 @@ class FormHandler
         $this->FG_INTRO_TEXT_ADITION = str_replace('#FG_INSTANCE_NAME#', $this->FG_INSTANCE_NAME, $this->FG_INTRO_TEXT_ADITION);
         $this->FG_TEXT_ADITION_CONFIRMATION = str_replace('#FG_INSTANCE_NAME#', $this->FG_INSTANCE_NAME, $this->FG_TEXT_ADITION_CONFIRMATION);
         $this->FG_TEXT_ADITION_ERROR = str_replace('#FG_INSTANCE_NAME#', $this->FG_INSTANCE_NAME, $this->FG_TEXT_ADITION_ERROR);
-        $this->FG_FILTER_SEARCH_TOP_TEXT = gettext("Define the search criteria");
+        $this->search_form_title = gettext("Define the search criteria");
     }
 
     /**
@@ -899,7 +897,7 @@ class FormHandler
      */
     public function AddSearchTextInput($displayname, $fieldname, $fieldvar)
     {
-        $this->SEARCH_FORM_ELEMENTS[] = [
+        $this->search_form_elements[] = [
             "label" => $displayname,
             "input" => [$fieldname],
             "operator" => [$fieldvar],
@@ -909,7 +907,7 @@ class FormHandler
 
     public function AddSearchComparisonInput($displayname, $fieldname1, $fielvar1, $fieldname2, $fielvar2, $sqlfield)
     {
-        $this->SEARCH_FORM_ELEMENTS[] = [
+        $this->search_form_elements[] = [
             "label" => $displayname,
             "input" => [$fieldname1, $fieldname2],
             "operator" => [$fielvar1, $fielvar2],
@@ -927,7 +925,7 @@ class FormHandler
     public function AddSearchSqlSelectInput(string $displayname, string $table, string $fields, string $clause,
                                                    $order, $sens, $select_name)
     {
-        $this->SEARCH_FORM_ELEMENTS[] = [
+        $this->search_form_elements[] = [
             "label" => $displayname,
             "table" => $table,
             "columns" => $fields,
@@ -941,7 +939,7 @@ class FormHandler
 
     public function AddSearchSelectInput(string $displayname, string $select_name, array $array_content = [])
     {
-            $this->SEARCH_FORM_ELEMENTS[] = [
+            $this->search_form_elements[] = [
                 "label" => $displayname,
                 "input" => [$select_name],
                 "options" => $array_content,
@@ -951,7 +949,7 @@ class FormHandler
 
     public function AddSearchPopupInput(string $name, string $label, string $href, int $select = 1): void
     {
-        $this->SEARCH_FORM_ELEMENTS[] = [
+        $this->search_form_elements[] = [
             "label" => $label,
             "input" => [$name],
             "href" => $href,
@@ -1300,20 +1298,20 @@ class FormHandler
     {
         $processed = $this->getProcessed();
 
-        if ($form_action !== "list" || !$this->FG_FILTER_SEARCH_FORM) {
+        if ($form_action !== "list" || !$this->search_form_enabled) {
             return;
         }
 
         if ($processed['cancelsearch'] ?? false) {
-            $_SESSION[$this->FG_FILTER_SEARCH_SESSION_NAME] = '';
+            $_SESSION[$this->search_session_key] = '';
         }
 
         // RETRIEVE THE CONTENT OF THE SEARCH SESSION AND
-        if ($processed['posted_search'] != 1 && strlen($_SESSION[$this->FG_FILTER_SEARCH_SESSION_NAME] ?? "") > 5) {
-            $element_arr = json_decode($_SESSION[$this->FG_FILTER_SEARCH_SESSION_NAME], true);
+        if ($processed['posted_search'] != 1 && strlen($_SESSION[$this->search_session_key] ?? "") > 5) {
+            $element_arr = json_decode($_SESSION[$this->search_session_key], true);
             foreach ($element_arr as $entity_name => $entity_value) {
                 $this->_processed[$entity_name] = $entity_value;
-                if (strlen($_SESSION[$this->FG_FILTER_SEARCH_SESSION_NAME]) > 10) {
+                if (strlen($_SESSION[$this->search_session_key]) > 10) {
                     // TODO: what does the length of this value signify? why difference between 5 and 10?
                     // below is only place it was set, and it would never be < 10
                     $processed[$entity_name] = $entity_value;
@@ -1343,7 +1341,7 @@ class FormHandler
             "Period", "month_earlier",
         );
 
-        foreach ($this->SEARCH_FORM_ELEMENTS as $el) {
+        foreach ($this->search_form_elements as $el) {
             foreach ($el["input"] as $i => $input) {
                 $search[$input] = $processed[$input];
                 if (!empty($el["operator"][$i])) {
@@ -1359,32 +1357,32 @@ class FormHandler
             }
         }
 
-        $_SESSION[$this->FG_FILTER_SEARCH_SESSION_NAME] = json_encode($search);
+        $_SESSION[$this->search_session_key] = json_encode($search);
 
         $date_clause = '';
 
         if (!empty($processed['fromday']) && !empty($processed['fromstatsday_sday']) && !empty($processed['fromstatsmonth_sday'])) {
             $dt = sprintf("%s-%02d 00:00:00", $processed["fromstatsmonth_sday"], $processed["fromstatsday_sday"]);
-            $date_clause .= " AND $this->FG_FILTER_SEARCH_1_TIME_FIELD >= '$dt'";
+            $date_clause .= " AND $this->search_date_column >= '$dt'";
         }
         if (!empty($processed['today']) && !empty($processed['tostatsday_sday']) && !empty($processed['tostatsmonth_sday'])) {
             $dt = sprintf("%s-%02d 23:59:59", $processed["tostatsmonth_sday"], $processed["tostatsday_sday"]);
-            $date_clause .= " AND $this->FG_FILTER_SEARCH_1_TIME_FIELD <= '$dt'";
+            $date_clause .= " AND $this->search_date_column <= '$dt'";
         }
 
         if (($processed["Period"] ?? "") === "month_older_rad") {
             $from_month = $processed["month_earlier"];
-            $date_clause .= " AND $this->FG_FILTER_SEARCH_3_TIME_FIELD < NOW() - INTERVAL $from_month MONTH";
+            $date_clause .= " AND $this->search_months_ago_column < NOW() - INTERVAL $from_month MONTH";
         }
 
         //BIS FIELD
         if ($processed['fromday_bis'] && isset($processed['fromstatsday_sday_bis']) && isset($processed['fromstatsmonth_sday_bis'])) {
             $dt = sprintf("%s-%02d", $processed["fromstatsmonth_sday_bis"], $processed["fromstatsday_sday_bis"]);
-            $date_clause .= " AND $this->FG_FILTER_SEARCH_1_TIME_FIELD_BIS >= '$dt'";
+            $date_clause .= " AND $this->search_date2_column >= '$dt'";
         }
         if ($processed['today_bis'] && isset($processed['tostatsday_sday_bis']) && isset($processed['tostatsmonth_sday_bis'])) {
             $dt = sprintf("%s-%02d 23:59:59", $processed["tostatsmonth_sday_bis"], $processed["tostatsday_sday_bis"]);
-            $date_clause .= " AND $this->FG_FILTER_SEARCH_1_TIME_FIELD_BIS <= '$dt'";
+            $date_clause .= " AND $this->search_date2_column <= '$dt'";
         }
 
         $this->FG_QUERY_WHERE_CLAUSE = preg_replace("/^ *WHERE +/", "", $SQLcmd);
@@ -1882,7 +1880,7 @@ class FormHandler
         $processed = $this->getProcessed();
         $list = null;
 
-        foreach ($this->SEARCH_FORM_ELEMENTS as &$el) {
+        foreach ($this->search_form_elements as &$el) {
             // can't post a dot, so temporarily replace it
             if (is_array($el["input"])) {
                 $el["input"][0] = str_replace(".", "^^", $el["input"][0]);

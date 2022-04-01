@@ -304,7 +304,7 @@ if (!empty($id)) {
 
 $form_action = $form_action ?? "list"; //ask-add
 
-if ($form_action === "list" && $HD_Form->FG_FILTER_SEARCH_FORM && $_POST['posted_search'] == 1 && is_numeric($mytariffgroup_id)) {
+if ($form_action === "list" && $HD_Form->search_form_enabled && $_POST['posted_search'] == 1 && is_numeric($mytariffgroup_id)) {
     if (!empty ($HD_Form->FG_QUERY_WHERE_CLAUSE)) {
         $HD_Form->FG_QUERY_WHERE_CLAUSE .= ' AND ';
     }
@@ -348,10 +348,10 @@ if ($form_action === "list" && !$popup_select): ?>
 <div class="row justify-content-center">
     <div class="col-auto">
         <button
-            class="btn btn-sm <?= empty($_SESSION[$HD_Form->FG_FILTER_SEARCH_SESSION_NAME]) ? "btn-outline-primary" : "btn-primary" ?>"
+            class="btn btn-sm <?= empty($_SESSION[$HD_Form->search_session_key]) ? "btn-outline-primary" : "btn-primary" ?>"
             data-bs-toggle="modal"
             data-bs-target="#searchModal"
-            title="<?= _("Search Customers") ?> <?= empty($_SESSION[$HD_Form->FG_FILTER_SEARCH_SESSION_NAME]) ? "" : "(" . _("search activated") . ")" ?>"
+            title="<?= _("Search Customers") ?> <?= empty($_SESSION[$HD_Form->search_session_key]) ? "" : "(" . _("search activated") . ")" ?>"
         >
             <?= _("Search Rates") ?>
         </button>

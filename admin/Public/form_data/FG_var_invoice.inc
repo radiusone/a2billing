@@ -112,12 +112,12 @@ $HD_Form -> AddViewElement(gettext("STATUS"), "cc_invoice_status", true, 0, "", 
 $HD_Form -> AddViewElement(gettext("AMOUNT INCL VAT"), "total_price", true, 0, "display_2bill");
 $HD_Form -> FieldViewElement ("cc_invoice.id, cc_invoice.reference, username, cc_invoice.date,title, cc_invoice.paid_status, cc_invoice.status as cc_invoice_status,$filter_amount_with_vat");
 
-if (!($popup_select>=1)) $HD_Form -> FG_FILTER_SEARCH_FORM = true;
-if (!($popup_select>=1)) $HD_Form -> FG_FILTER_SEARCH_DELETE_ALL = false;
+if (!($popup_select>=1)) $HD_Form -> search_form_enabled = true;
+if (!($popup_select>=1)) $HD_Form -> search_delete_enabled = false;
 
-$HD_Form -> FG_FILTER_SEARCH_TOP_TEXT = gettext('Define specific criteria to search for invoice created.');
-$HD_Form -> FG_FILTER_SEARCH_1_TIME = true;
-$HD_Form -> FG_FILTER_SEARCH_1_TIME_TEXT = gettext('CREATION DATE');
+$HD_Form -> search_form_title = gettext('Define specific criteria to search for invoice created.');
+$HD_Form -> search_date_enabled = true;
+$HD_Form -> search_date_text = gettext('CREATION DATE');
 
 $HD_Form -> AddSearchTextInput(gettext("FIRSTNAME"),'firstname','firstnametype');
 $HD_Form -> AddSearchTextInput(gettext("LASTNAME"),'lastname','lastnametype');

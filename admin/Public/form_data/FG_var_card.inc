@@ -120,7 +120,7 @@ $HD_Form = new FormHandler("cc_card", _("Card"));
 
 $HD_Form->no_debug();
 $HD_Form->FG_TABLE_DEFAULT_SENS = "ASC";
-$HD_Form->FG_FILTER_SEARCH_SESSION_NAME = 'entity_card_selection';
+$HD_Form->search_session_key = 'entity_card_selection';
 $HD_Form->FG_FK_DELETE_CONFIRM = true;
 $HD_Form->FG_FK_DELETE_ALLOWED = true;
 $HD_Form->FG_FK_TABLENAMES = ['cc_iax_buddies', 'cc_sip_buddies', 'cc_callerid', 'cc_card_history', 'cc_status_log'];
@@ -270,15 +270,15 @@ if (!$popup_select) {
     // Code here for adding the fields in the Export File
     $HD_Form->FieldExportElement(explode(",", $A2B->config['webui']['card_export_field_list']));
     $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 10;
-    $HD_Form->FG_FILTER_SEARCH_FORM = true;
+    $HD_Form->search_form_enabled = true;
 
-    $HD_Form->FG_FILTER_SEARCH_TOP_TEXT = _('Define specific criteria to search for cards created.');
-    $HD_Form->FG_FILTER_SEARCH_1_TIME = true;
-    $HD_Form->FG_FILTER_SEARCH_1_TIME_TEXT = _('CREATION DATE');
+    $HD_Form->search_form_title = _('Define specific criteria to search for cards created.');
+    $HD_Form->search_date_enabled = true;
+    $HD_Form->search_date_text = _('CREATION DATE');
 
-    $HD_Form->FG_FILTER_SEARCH_1_TIME_BIS = true;
-    $HD_Form->FG_FILTER_SEARCH_1_TIME_TEXT_BIS = _('FIRST USE DATE');
-    $HD_Form->FG_FILTER_SEARCH_1_TIME_FIELD_BIS = 'firstusedate';
+    $HD_Form->search_date2_enabled = true;
+    $HD_Form->search_date2_text = _('FIRST USE DATE');
+    $HD_Form->search_date2_column = 'firstusedate';
 
     $HD_Form->AddSearchTextInput(_("ACCOUNT NUMBER"), 'username', 'usernametype');
     $HD_Form->AddSearchTextInput(_("EMAIL"), 'email', 'emailtype');

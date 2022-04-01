@@ -51,7 +51,7 @@ $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "destination";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "ASC";
 $HD_Form -> FG_VIEW_TABLE_WITDH = "65%";
-$HD_Form -> FG_FILTER_SEARCH_SESSION_NAME = 'entity_ratecard_selection';
+$HD_Form -> search_session_key = 'entity_ratecard_selection';
 
 
 

@@ -75,12 +75,12 @@ if (isset($filterprefix)  &&  (strlen($filterprefix)>0)) {
 	$HD_Form -> FG_QUERY_WHERE_CLAUSE.="username like '$filterprefix%'";
 }
 
-if (!($popup_select>=1))	 $HD_Form -> FG_FILTER_SEARCH_FORM = true;
-$HD_Form -> FG_FILTER_SEARCH_SESSION_NAME = 'refill_cust_selection';
-$HD_Form -> FG_FILTER_SEARCH_TOP_TEXT = gettext('Define specific criteria to search for refills created.');
-$HD_Form -> FG_FILTER_SEARCH_1_TIME = true;
-$HD_Form -> FG_FILTER_SEARCH_1_TIME_TEXT = gettext('DATE');
-$HD_Form -> FG_FILTER_SEARCH_1_TIME_FIELD = 'date';
+if (!($popup_select>=1))	 $HD_Form -> search_form_enabled = true;
+$HD_Form -> search_session_key = 'refill_cust_selection';
+$HD_Form -> search_form_title = gettext('Define specific criteria to search for refills created.');
+$HD_Form -> search_date_enabled = true;
+$HD_Form -> search_date_text = gettext('DATE');
+$HD_Form -> search_date_column = 'date';
 
 $HD_Form -> AddSearchTextInput(gettext("ACCOUNT NUMBER"), 'username','usernametype');
 $HD_Form -> AddSearchTextInput(gettext("LASTNAME"),'lastname','lastnametype');
