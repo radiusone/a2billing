@@ -8,6 +8,7 @@ use A2billing\Table;
 
 /**
  * @var A2Billing $A2B
+ * @var string $popup_select
  * @var string $popup_formname
  * @var string $popup_fieldname
  * @var string $form_action

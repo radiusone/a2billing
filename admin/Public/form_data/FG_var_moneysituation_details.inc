@@ -61,8 +61,7 @@ if ($type=='payment'){
 	$list_sql = "cc_invoice ".
 	            "LEFT JOIN ( SELECT st1.id_invoice, SUM(st1.price*(1+(st1.vat/100))) AS total_price FROM cc_invoice_item AS st1 GROUP BY st1.id_invoice) " .
 	            "AS items ON items.id_invoice=cc_invoice.id ";
-	$HD_Form = new FormHandler($list_sql, "Invoice");
-	$HD_Form -> FG_QUERY_PRIMARY_KEY = 'cc_invoice.id';
+	$HD_Form = new FormHandler($list_sql, "Invoice", 'cc_invoice.id');
 	$HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 	$HD_Form -> FG_QUERY_WHERE_CLAUSE = "cc_invoice.id_card = $id";
 	//SELECT t3.date, t3.credit, t3.reseller_id from cc_logrefill as t3 WHERE t3.card_id='1'

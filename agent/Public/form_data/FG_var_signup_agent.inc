@@ -45,7 +45,6 @@ getpost_ifset(array('id', 'id_agent', 'id_tariff_group', 'code','id_group'));
 
 $HD_Form = new FormHandler("cc_agent_signup", "SIGNUP KEY");
 
-$HD_Form -> FG_QUERY_PRIMARY_KEY = 'cc_agent_signup.id';
 $HD_Form -> FG_QUERY_WHERE_CLAUSE = "id_agent = ".$_SESSION['agent_id'];
 $HD_Form->no_debug();
 

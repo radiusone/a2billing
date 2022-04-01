@@ -47,8 +47,7 @@ getpost_ifset(array('id', 'trunkcode', 'trunkprefix', 'removeprefix', 'providert
 $DBHandle  = DbConnect();
 $instance_table = new Table();
 
-$HD_Form = new FormHandler("cc_trunk", "trunk");
-
+$HD_Form = new FormHandler("cc_trunk", _("trunk"), "id_trunk");
 
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_trunk.php?form_action=ask-add&section=".$_SESSION["menu_section"];
@@ -57,7 +56,6 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/add.png" ;
 
 
 $HD_Form->no_debug();
-$HD_Form -> FG_QUERY_PRIMARY_KEY = " id_trunk";
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = " id_trunk";
 $HD_Form -> FG_EDIT_QUERY_CONDITION = " id_trunk='%id' ";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "ASC";

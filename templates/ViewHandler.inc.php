@@ -146,7 +146,7 @@ $hasActionButtons = ($this->FG_ENABLE_DELETE_BUTTON || $this->FG_ENABLE_INFO_BUT
             <?php foreach ($this->FG_LIST_TABLE_CELLS as $row): ?>
             <th>
                 <?php if ($row["sortable"]): ?>
-                <a class="sort <?= $this->FG_QUERY_ORDERBY_COLUMNS[0] === $row["field"] ? strtolower($this->FG_QUERY_DIRECTION) : "" ?>" href="<?= "?stitle=$stitle&atmenu=$processed[atmenu]&current_page=$current_page&letter=$letter&popup_select=$processed[popup_select]&order=$row[field]&sens=" . ($this->FG_QUERY_DIRECTION === "ASC" ? "DESC" : "ASC") . $this-> CV_FOLLOWPARAMETERS ?>">
+                <a class="sort <?= $this->FG_QUERY_ORDERBY_COLUMNS[0] === $row["field"] ? strtolower($this->FG_QUERY_DIRECTION) : "" ?>" href="<?= "?stitle=$stitle&amp;atmenu=$processed[atmenu]&amp;current_page=$current_page&amp;letter=$letter&amp;popup_select=$processed[popup_select]&amp;order=$row[field]&amp;sens=" . ($this->FG_QUERY_DIRECTION === "ASC" ? "DESC" : "ASC") . (str_starts_with($this->CV_FOLLOWPARAMETERS, "&") ? "" : "&amp;") . $this->CV_FOLLOWPARAMETERS ?>">
                 <?php endif ?>
                     <?= $row["header"] ?>
                 <?php if ($row["sortable"]): ?>
@@ -335,7 +335,7 @@ $hasActionButtons = ($this->FG_ENABLE_DELETE_BUTTON || $this->FG_ENABLE_INFO_BUT
 <?php if ($this->CV_DISPLAY_BROWSE_PAGE): ?>
 <div class="row pb-3">
     <div class="col">
-        <?= FormHandler::printPages($this->CV_CURRENT_PAGE + 1, $this->FG_LIST_VIEW_PAGE_COUNT, "?stitle=$stitle&atmenu=$processed[atmenu]&current_page=%s&filterprefix=$processed[filterprefix]&order=$processed[order]&sens=$processed[sens]&mydisplaylimit=$processed[mydisplaylimit]&popup_select=$processed[popup_select]&letter=$letter$this->CV_FOLLOWPARAMETERS") ?>
+        <?= FormHandler::printPages($this->CV_CURRENT_PAGE + 1, $this->FG_LIST_VIEW_PAGE_COUNT, "?stitle=$stitle&amp;atmenu=$processed[atmenu]&amp;current_page=%s&amp;filterprefix=$processed[filterprefix]&amp;order=$processed[order]&amp;sens=$processed[sens]&amp;mydisplaylimit=$processed[mydisplaylimit]&amp;popup_select=$processed[popup_select]&amp;letter=$letter" . (str_starts_with($this->CV_FOLLOWPARAMETERS, "&") ? "" : "&amp;") . $this->CV_FOLLOWPARAMETERS) ?>
     </div>
 </div>
 <?php endif ?>

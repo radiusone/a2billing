@@ -48,9 +48,9 @@ getpost_ifset(array('id', 'title', 'id_component','description','priority','stat
 if (!isset($form_action) || $form_action=="list") {
 	$HD_Form = new FormHandler("cc_ticket LEFT JOIN
 	( SELECT aa.id, CASE WHEN MAX(aa.viewed_admin)=1 OR SUM(bb.viewed_admin)>0 THEN 1 ELSE 0 END as viewed FROM cc_ticket aa LEFT JOIN cc_ticket_comment bb ON aa.id = bb.id_ticket	WHERE  aa.creator_type = 0 GROUP BY aa.id ) AS v ON cc_ticket.id = v.id
-	LEFT JOIN cc_card ON cc_card.id=cc_ticket.creator", "Ticket");
+	LEFT JOIN cc_card ON cc_card.id=cc_ticket.creator", _("Ticket"), "cc_ticket.id");
 } else {
-	$HD_Form = new FormHandler("cc_ticket", "Ticket");
+	$HD_Form = new FormHandler("cc_ticket", _("Ticket"));
 }
 
 
@@ -58,7 +58,6 @@ $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = " cc_ticket.id";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 $HD_Form -> FG_QUERY_WHERE_CLAUSE = " cc_ticket.creator_type= 0 ";
-$HD_Form -> FG_QUERY_PRIMARY_KEY="cc_ticket.id";
 
 $HD_Form -> FG_FK_DELETE_ALLOWED = true;
 $HD_Form -> FG_FK_DELETE_CONFIRM = true;

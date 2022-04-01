@@ -55,12 +55,11 @@ getpost_ifset(['id', 'card_id', 'date', 'payment','description','added_refill','
 $form_action = $form_action ?? "list";
 
 if ($form_action === "list") {
-	$HD_Form = new FormHandler("cc_logpayment LEFT JOIN cc_card ON cc_card.id=card_id", "Payment");
+	$HD_Form = new FormHandler("cc_logpayment LEFT JOIN cc_card ON cc_card.id=card_id", "Payment", 'cc_logpayment.id');
 } else {
 	$HD_Form = new FormHandler("cc_logpayment", "Payment");
 }
 
-$HD_Form->FG_QUERY_PRIMARY_KEY = 'cc_logpayment.id';
 $HD_Form->no_debug();
 $HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
 

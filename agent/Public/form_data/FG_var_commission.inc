@@ -49,8 +49,6 @@ getpost_ifset(array('id', 'card_id', 'date', 'payment','description','added_refi
 $HD_Form = new FormHandler("cc_agent_commission", "Commission");
 
 $HD_Form -> FG_QUERY_WHERE_CLAUSE = " cc_agent_commission.id_agent=".$_SESSION['agent_id'] ;
-$HD_Form -> FG_QUERY_PRIMARY_KEY = 'cc_agent_commission.id';
-
 $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 

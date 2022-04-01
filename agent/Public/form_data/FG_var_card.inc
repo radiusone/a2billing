@@ -53,14 +53,13 @@ getpost_ifset(array('id', 'username', 'useralias', 'uipass', 'credit', 'language
 'company_name' , 'company_website' , 'vat_rn' , 'traffic' , 'traffic_target','discount','restriction' ));
 
 if (!isset($form_action) || $form_action=="list" || $form_action=="addcredit") {
-	$HD_Form = new FormHandler("cc_card LEFT JOIN cc_card_group ON cc_card.id_group=cc_card_group.id ", "Card");
+	$HD_Form = new FormHandler("cc_card LEFT JOIN cc_card_group ON cc_card.id_group=cc_card_group.id ", _("Card"), "cc_card.id");
 	$HD_Form -> FG_QUERY_WHERE_CLAUSE = " cc_card_group.id_agent=".$_SESSION['agent_id'] ;
 } else {
-	$HD_Form = new FormHandler("cc_card", "Card");
+	$HD_Form = new FormHandler("cc_card", _("Card"));
 }
 
 $HD_Form->no_debug();
-$HD_Form -> FG_QUERY_PRIMARY_KEY="cc_card.id";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "ASC";
 $HD_Form -> search_session_key = 'entity_card_selection';
 $HD_Form -> FG_FK_DELETE_CONFIRM = true;

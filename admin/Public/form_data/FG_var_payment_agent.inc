@@ -45,12 +45,10 @@ getpost_ifset(array('id', 'agent_id', 'date', 'payment','description','added_ref
 
 
 if (!isset($form_action) || $form_action=="list") {
-	$HD_Form = new FormHandler("cc_logpayment_agent LEFT JOIN cc_agent ON cc_agent.id=agent_id", "Payment Agent");
+	$HD_Form = new FormHandler("cc_logpayment_agent LEFT JOIN cc_agent ON cc_agent.id=agent_id", "Payment Agent", 'cc_logpayment_agent.id');
 } else {
 	$HD_Form = new FormHandler("cc_logpayment_agent", "Agent Payment");
 }
-
-$HD_Form -> FG_QUERY_PRIMARY_KEY = 'cc_logpayment_agent.id';
 
 $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";

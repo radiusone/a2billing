@@ -131,11 +131,11 @@ if ($popup_select) {
 	$HD_Form -> FG_OTHER_BUTTON1_IMG = '';
 	$HD_Form -> FG_OTHER_BUTTON2 = false;
 	//echo $popup_select;
-	if ($popup_select == 1)
-		$HD_Form -> FG_OTHER_BUTTON1_LINK = "javascript:sendValue('|param|');";
-	elseif ($popup_select == 2)
-		$HD_Form -> FG_OTHER_BUTTON1_LINK = "javascript:sendValue('|col0|');";
-
+	if ($popup_select == 1) {
+        $HD_Form->FG_OTHER_BUTTON1_LINK = "javascript:sendValue('|param|');";
+    } elseif ($popup_select == 2) {
+        $HD_Form->FG_OTHER_BUTTON1_LINK = "javascript:sendValue('|col0|');";
+    }
 } else {
 	$HD_Form -> FG_ENABLE_INFO_BUTTON = true;
 	$HD_Form -> FG_INFO_BUTTON_LINK = "A2B_agent_info.php?id=";
@@ -352,52 +352,35 @@ if (has_rights (ACX_MODIFY_AGENTS) && !($popup_select)) {
         gettext("Insert the bank info of this agent")
     );
 
-	$DBHandle_max  = DbConnect();
-	$numrow = 0;
-	$resmax = $DBHandle_max -> Execute("SELECT * FROM cc_tariffgroup");
-	if ( $resmax )
-		$numrow = $resmax -> RecordCount();
-
-	if ($numrow > 0) {
-        $HD_Form->AddEditSqlSelect(
-            "tariffgroup",
-            gettext("CALL PLAN USABLE"),
-            "cc_agent_tariffgroup",
-            "label,id",
-            "",
-            "",
-            "",
-            "",
-            "%1: (%2)",
-            "size='10' multiple='multiple'",
-            [
-                "name" => "id_tariffgroup",
-                "tables" => "cc_tariffgroup LEFT JOIN cc_agent_tariffgroup ON cc_tariffgroup.id=cc_agent_tariffgroup.id_tariffgroup",
-                "columns" => "DISTINCT cc_tariffgroup.tariffgroupname, cc_tariffgroup.id",
-                "where" => "cc_agent_tariffgroup.id_agent = %id",
-                "format" => "%2 - (%1)",
-            ]
-        );
-	}
-
+    $HD_Form->AddEditSqlSelect(
+        "tariffgroup",
+        gettext("CALL PLAN USABLE"),
+        "cc_agent_tariffgroup",
+        "label,id",
+        "",
+        "",
+        "",
+        "",
+        "%1: (%2)",
+        "size='10' multiple='multiple'",
+        [
+            "name" => "id_tariffgroup",
+            "tables" => "cc_tariffgroup LEFT JOIN cc_agent_tariffgroup ON cc_tariffgroup.id=cc_agent_tariffgroup.id_tariffgroup",
+            "columns" => "DISTINCT cc_tariffgroup.tariffgroupname, cc_tariffgroup.id",
+            "where" => "cc_agent_tariffgroup.id_agent = %id",
+            "format" => "%2 - (%1)",
+        ]
+    );
 
     $FG_QUERY_EDITION = 'login, passwd, perms, active, credit,com_balance, currency, commission,threshold_remittance, vat, language, company, lastname, firstname, address, city, state, country, zipcode, email, phone,  fax,bank_info';
     $HD_Form -> FieldEditElement ($FG_QUERY_EDITION);
 
 	$HD_Form -> FG_EDIT_QUERY_CONDITION = " id='%id'";
-
 	$HD_Form -> FG_ADDITIONAL_FUNCTION_AFTER_ADD = 'creation_agent_refill';
-
-	
-
 	$HD_Form -> FG_INTRO_TEXT_ADITION = '';
-	
-
-		
-
-	$HD_Form -> FG_LOCATION_AFTER_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&stitle=Document&wh=AC&id=";
-	$HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&stitle=Document&wh=AC&id=";
-	$HD_Form -> FG_LOCATION_AFTER_DELETE = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&stitle=Document&wh=AC&id=";
+	$HD_Form -> FG_LOCATION_AFTER_ADD = "?atmenu=document&stitle=Document&wh=AC&id=";
+	$HD_Form -> FG_LOCATION_AFTER_EDIT = "?atmenu=document&stitle=Document&wh=AC&id=";
+	$HD_Form -> FG_LOCATION_AFTER_DELETE = "?atmenu=document&stitle=Document&wh=AC&id=";
 
 
 }

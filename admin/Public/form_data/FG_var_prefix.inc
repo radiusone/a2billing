@@ -1,6 +1,12 @@
 <?php
 
+use A2billing\A2Billing;
 use A2billing\Forms\FormHandler;
+
+/**
+ * @var A2Billing $A2B
+ * @var string $form_action
+ */
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -35,103 +41,84 @@ use A2billing\Forms\FormHandler;
 **/
 
 if (! has_rights (ACX_ADMINISTRATOR)) {
-    Header ("HTTP/1.0 401 Unauthorized");
-    Header ("Location: PP_error.php?c=accessdenied");
+    header("HTTP/1.0 401 Unauthorized");
+    header("Location: PP_error.php?c=accessdenied");
     die();
 }
 
+getpost_ifset(['id', 'destination','prefix','popup_select','popup_formname','popup_fieldname']);
+/**
+ * @var string $id
+ * @var string $destination
+ * @var string $prefix
+ * @var string $popup_select
+ * @var string $popup_formname
+ * @var string $popup_fieldname
+ */
 
-getpost_ifset(array('id', 'destination','prefix','popup_select','popup_formname','popup_fieldname' ));
-
-$HD_Form = new FormHandler("cc_prefix", "prefix");
+$HD_Form = new FormHandler("cc_prefix", "prefix", "prefix");
 
 $HD_Form->no_debug();
-$HD_Form -> FG_QUERY_PRIMARY_KEY = "prefix";
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "destination";
-$HD_Form -> FG_TABLE_DEFAULT_SENS = "ASC";
-
 
 $HD_Form -> FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form -> FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_prefix.php?form_action=ask-add&atmenu=prefixe&section=".$_SESSION["menu_section"];
-$HD_Form -> FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add PREFIX");
+$HD_Form -> FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_prefix.php?form_action=ask-add&atmenu=prefixe";
+$HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = _("Add PREFIX");
 $HD_Form -> FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/world_add.png" ;
 
-
-$HD_Form -> AddViewElement(gettext("Prefix"), "prefix");
-$HD_Form -> AddViewElement(gettext("Destination"), "destination");
-
-
+$HD_Form -> AddViewElement(_("Prefix"), "prefix");
+$HD_Form -> AddViewElement(_("Destination"), "destination");
 $HD_Form -> FieldViewElement ('prefix, destination');
 
 if ($popup_select) {
 	$HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 7;
-	$HD_Form -> CV_FOLLOWPARAMETERS = "&popup_select=" . $popup_select . "&popup_formname=" . $popup_formname . "&popup_fieldname=" . $popup_fieldname;
-
+    $HD_Form -> CV_FOLLOWPARAMETERS = http_build_query(compact("popup_select", "popup_formname", "popup_fieldname"), "", "&amp;");
 	$HD_Form -> FG_OTHER_BUTTON1 = true;
 	$HD_Form -> FG_OTHER_BUTTON1_ALT = '<font color="red">&lt;select&gt;</font>';
 	$HD_Form -> FG_OTHER_BUTTON1_IMG = '';
-
-	if ($popup_select == 1)
-		$HD_Form -> FG_OTHER_BUTTON1_LINK = "javascript:sendValue('|param|');";
-	elseif ($popup_select == 2)
-		$HD_Form -> FG_OTHER_BUTTON1_LINK = "javascript:sendValue('|col0|');";
-}
-else {
+    $HD_Form->FG_OTHER_BUTTON1_LINK = $popup_select === "1" ? "javascript:sendValue('|param|');" : "javascript:sendValue('|col0|');";
+} else {
 	$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 	$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 	$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 }
 
-
-
 $HD_Form->AddEditElement(
-    gettext("PREFIX"),
+    _("PREFIX"),
     "prefix",
     "",
     "size=30 maxlength=300",
-    "$dialprefix",
-    gettext("Insert the Prefixe")
+    null,
+    _("Insert the Prefixe")
 );
 
 $HD_Form->AddEditElement(
-    gettext("DESTINATION"),
+    _("DESTINATION"),
     "destination",
     "",
     "size=30 maxlength=300",
-    "$destination",
-    gettext("Insert the Destination")
+    null,
+    _("Insert the Destination")
 );
-
 
 $HD_Form -> FieldEditElement ('prefix, destination');
 
 $HD_Form -> FG_EDIT_QUERY_CONDITION = " prefix='%id'";
-
 
 $HD_Form -> FG_FILTER_ENABLE = true;
 $HD_Form -> FG_FILTER_COLUMN = 'prefix';
 $HD_Form -> FG_FILTER_LABEL = 'prefix';
 
 if (isset($filterprefix)  &&  (strlen($filterprefix)>0)) {
-	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
+	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) {
+        $HD_Form->FG_QUERY_WHERE_CLAUSE .= " AND ";
+    }
 	$filterprefix = strtoupper(substr($filterprefix,0,1)).substr($filterprefix,1);
 	$HD_Form -> FG_QUERY_WHERE_CLAUSE .= "prefix like '$filterprefix%'";
 }
 
-
-
 $HD_Form -> FG_INTRO_TEXT_EDITION= '';
-
-
 $HD_Form -> FG_INTRO_TEXT_ADITION = '';
-
-
-
-
-$HD_Form -> FG_LOCATION_AFTER_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&stitle=Document&wh=AC&id=";
-$HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&stitle=Document&wh=AC&id=";
-$HD_Form -> FG_LOCATION_AFTER_DELETE = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&stitle=Document&wh=AC&id=";
-
-
-
-
+$HD_Form -> FG_LOCATION_AFTER_ADD = "?atmenu=document&stitle=Document&wh=AC&id=";
+$HD_Form -> FG_LOCATION_AFTER_EDIT = "?atmenu=document&stitle=Document&wh=AC&id=";
+$HD_Form -> FG_LOCATION_AFTER_DELETE = "?atmenu=document&stitle=Document&wh=AC&id=";

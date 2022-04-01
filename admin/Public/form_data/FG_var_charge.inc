@@ -48,8 +48,8 @@ if (($form_action=='ask-edit') || ($form_action=='ask-add') || ($form_action=='a
 	if ($wantinclude==1) $HD_Form_c = new FormHandler("cc_charge", "charge");
 	else $HD_Form_c = new FormHandler("cc_charge", "charge");
 }else {
-	if ($wantinclude==1) $HD_Form_c = new FormHandler("cc_charge, cc_card", "charge");
-	else $HD_Form_c = new FormHandler("cc_charge, cc_card", "charge");
+	if ($wantinclude==1) $HD_Form_c = new FormHandler("cc_charge, cc_card", "charge", "cc_charge.id");
+	else $HD_Form_c = new FormHandler("cc_charge, cc_card", "charge", "cc_charge.id");
 }
 
 $HD_Form_c->no_debug();
@@ -58,8 +58,6 @@ else $HD_Form_c -> FG_TABLE_DEFAULT_ORDER = "id_cc_card";
 
 $HD_Form_c -> FG_TABLE_DEFAULT_SENS = "DESC";
 $HD_Form_c -> FG_QUERY_WHERE_CLAUSE = " cc_card.id=id_cc_card ";
-$HD_Form_c -> FG_QUERY_PRIMARY_KEY="cc_charge.id";
-
 
 $HD_Form_c -> FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form_c -> FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_charge.php?form_action=ask-add&section=".$_SESSION["menu_section"];

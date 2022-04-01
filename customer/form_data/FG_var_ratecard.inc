@@ -43,9 +43,7 @@ if (! has_rights (ACX_ACCESS)) {
 getpost_ifset(array('destination', 'dialprefix', 'rateinitial','posted','tariffplan'));
 
 
-$HD_Form = new FormHandler("cc_callplan_lcr", "Rates");
-$HD_Form -> FG_QUERY_PRIMARY_KEY = 'ratecard_id';
-
+$HD_Form = new FormHandler("cc_callplan_lcr", _("Rates"), 'ratecard_id');
 
 $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "destination";

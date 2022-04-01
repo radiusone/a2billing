@@ -45,12 +45,10 @@ getpost_ifset(array('id', 'agent_id', 'date', 'credit','description'));
 
 
 if (!isset($form_action) || $form_action=="list") {
-	$HD_Form = new FormHandler("cc_logrefill_agent LEFT JOIN cc_agent ON cc_agent.id=agent_id", "Refill Agent");
+	$HD_Form = new FormHandler("cc_logrefill_agent LEFT JOIN cc_agent ON cc_agent.id=agent_id", "Refill Agent", 'cc_logrefill_agent.id');
 } else {
 	$HD_Form = new FormHandler("cc_logrefill_agent", "Agent Refill");
 }
-
-$HD_Form -> FG_QUERY_PRIMARY_KEY = 'cc_logrefill_agent.id';
 
 $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";

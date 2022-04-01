@@ -54,23 +54,21 @@ getpost_ifset(array('defaultuser', 'subscribemwi', 'vmexten', 'cid_number', 'cal
 
 if ($atmenu=='sip') {
 	if (!isset($form_action) || $form_action=="list") {
-		$HD_Form = new FormHandler("cc_sip_buddies LEFT JOIN cc_card ON cc_card.id=cc_sip_buddies.id_cc_card LEFT JOIN cc_card_group ON cc_card.id_group=cc_card_group.id", "SIP Friend");
+		$HD_Form = new FormHandler("cc_sip_buddies LEFT JOIN cc_card ON cc_card.id=cc_sip_buddies.id_cc_card LEFT JOIN cc_card_group ON cc_card.id_group=cc_card_group.id", "SIP Friend", 'cc_sip_buddies.id');
 		$HD_Form -> FG_QUERY_WHERE_CLAUSE = " cc_card_group.id_agent=".$_SESSION['agent_id'] ;
 	} else {
 		$HD_Form = new FormHandler("cc_sip_buddies", "SIP Friend");
 	}
-	$HD_Form -> FG_QUERY_PRIMARY_KEY = 'cc_sip_buddies.id';
 	$table_name = "cc_sip_buddies";
 
 } else {
 
 	if (!isset($form_action) || $form_action=="list") {
-		$HD_Form = new FormHandler("cc_iax_buddies LEFT JOIN cc_card ON cc_card.id=cc_iax_buddies.id_cc_card LEFT JOIN cc_card_group ON cc_card.id_group=cc_card_group.id", "IAX Friend");
+		$HD_Form = new FormHandler("cc_iax_buddies LEFT JOIN cc_card ON cc_card.id=cc_iax_buddies.id_cc_card LEFT JOIN cc_card_group ON cc_card.id_group=cc_card_group.id", "IAX Friend", 'cc_iax_buddies.id');
 		$HD_Form -> FG_QUERY_WHERE_CLAUSE = " cc_card_group.id_agent=".$_SESSION['agent_id'] ;
 	} else {
 		$HD_Form = new FormHandler("cc_iax_buddies", "IAX Friend");
 	}
-	$HD_Form -> FG_QUERY_PRIMARY_KEY = 'cc_iax_buddies.id';
 	$table_name = "cc_iax_buddies";
 }
 

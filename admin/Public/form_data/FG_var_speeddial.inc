@@ -44,14 +44,13 @@ if (! has_rights (ACX_ADMINISTRATOR)) {
 getpost_ifset(array('id', 'speeddial', 'id_cc_card', 'name', 'phone','popup_select','popup_formname','popup_fieldname'));
 
 if (!isset($form_action) || $form_action=="list") {
-	$HD_Form = new FormHandler("cc_speeddial LEFT JOIN cc_card ON cc_card.id = cc_speeddial.id_cc_card", "speed dial");
+	$HD_Form = new FormHandler("cc_speeddial LEFT JOIN cc_card ON cc_card.id = cc_speeddial.id_cc_card", "speed dial", "cc_speeddial.id");
 }else{
 	$HD_Form = new FormHandler("cc_speeddial ", "speed dial");
 }
 $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "cc_speeddial.creationdate";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
-$HD_Form -> FG_QUERY_PRIMARY_KEY="cc_speeddial.id";
 
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_speeddial.php?form_action=ask-add&atmenu=speeddial&section=".$_SESSION["menu_section"];

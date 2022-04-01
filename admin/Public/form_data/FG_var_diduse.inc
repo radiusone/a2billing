@@ -76,9 +76,6 @@ if ($posted){
 	$HD_Form -> FG_OTHER_BUTTON1_ALT=gettext("Release this did");
 }
 
-
-$HD_Form -> FG_QUERY_PRIMARY_KEY="cc_did_use.id";
-
 $actived_list = array();
 $actived_list["1"] = array( gettext("Reserved"), "1");
 $actived_list["0"] = array( gettext("Free"), "0");

@@ -135,12 +135,10 @@ getpost_ifset([
 $destination = strtolower($destination);
 
 if ((empty($form_action) || $form_action == "list") && $deleteselected != 'true') {
-    $HD_Form = new FormHandler("cc_ratecard LEFT JOIN cc_prefix ON prefix=cc_ratecard.destination", "Rates");
+    $HD_Form = new FormHandler("cc_ratecard LEFT JOIN cc_prefix ON prefix=cc_ratecard.destination", "Rates", 'cc_ratecard.id');
 } else {
     $HD_Form = new FormHandler("cc_ratecard", "Rates");
 }
-
-$HD_Form->FG_QUERY_PRIMARY_KEY = 'cc_ratecard.id';
 
 if ($cancelsearch_callplanlcr) {
     $_SESSION['def_ratecard_tariffgroup'] = '';
@@ -193,7 +191,7 @@ $yesno = getYesNoList();
 if ($popup_select) {
     $HD_Form->AddViewElement(gettext("ID"), "id");
 }
-$HD_Form->AddViewElement(gettext("DESTINATION"), "destination", false, 15);
+$HD_Form->AddViewElement(gettext("DESTINATION"), "cc_ratecard.destination", false, 15);
 $HD_Form->AddViewElement("<acronym title=\"DIALING PREFIX\">" . gettext("PREFIX") . "</acronym>", "dialprefix");
 $HD_Form->AddViewElement("<acronym title=\"BUYING RATE\">" . gettext("BR") . "</acronym>", "buyrate");
 $HD_Form->AddViewElement("<acronym title=\"SELLING RATE\">" . gettext("SR") . "</acronym>", "rateinitial");

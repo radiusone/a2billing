@@ -44,10 +44,9 @@ if (! has_rights (ACX_ADMINISTRATOR)) {
 getpost_ifset(array('id', 'status', 'id_cc_card', 'updated_date', 'Period', 'frommonth', 'fromstatsmonth', 'tomonth', 'tostatsmonth', 'fromday', 'fromstatsday_sday', 'fromstatsmonth_sday', 'today', 'tostatsday_sday', 'tostatsmonth_sday', 'status', 'stitle', 'atmenu', 'current_page', 'order', 'sens','popup_select'));
 
 
-$HD_Form = new FormHandler("cc_status_log sl LEFT JOIN cc_card ON cc_card.id = sl.id_cc_card", gettext("Status Log"));
+$HD_Form = new FormHandler("cc_status_log sl LEFT JOIN cc_card ON cc_card.id = sl.id_cc_card", gettext("Status Log"), "sl.id");
 
 $HD_Form->no_debug();
-$HD_Form -> FG_QUERY_PRIMARY_KEY = "sl.id";
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "updated_date";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 

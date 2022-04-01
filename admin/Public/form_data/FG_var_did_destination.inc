@@ -44,16 +44,14 @@ if (! has_rights (ACX_ADMINISTRATOR)) {
 getpost_ifset(array('id', 'destination', 'id_cc_card', 'id_cc_did', 'activated', 'priority', 'id_trunk', 'voip_call'));
 
 if ( (empty($form_action) || $form_action=="list")) {
-	$HD_Form = new FormHandler("cc_did_destination LEFT JOIN cc_did ON cc_did.id = cc_did_destination.id_cc_did", "Did Destination");
+	$HD_Form = new FormHandler("cc_did_destination LEFT JOIN cc_did ON cc_did.id = cc_did_destination.id_cc_did", _("Did Destination"), 'cc_did_destination.id');
 } else {
-	$HD_Form = new FormHandler("cc_did_destination");
+	$HD_Form = new FormHandler("cc_did_destination", _("DID Destination"));
 }
 
 $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "destination";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
-
-$HD_Form -> FG_QUERY_PRIMARY_KEY = 'cc_did_destination.id';
 
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_did_destination.php?form_action=ask-add&section=".$_SESSION["menu_section"];

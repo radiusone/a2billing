@@ -72,10 +72,9 @@ if ($groupID !== "0" && $groupID !== "1") {
 }
 $subadmin = $groupID > 0;
 
-$HD_Form = new FormHandler("cc_ui_authen", _($subadmin ? "Sub-administrator" : "Administrator"));
+$HD_Form = new FormHandler("cc_ui_authen", _($subadmin ? _("Sub-administrator") : _("Administrator")), "userid");
 
 $HD_Form->no_debug();
-$HD_Form->FG_QUERY_PRIMARY_KEY = "userid";
 $HD_Form->FG_TABLE_DEFAULT_ORDER = " datecreation";
 $HD_Form->FG_TABLE_DEFAULT_SENS = "ASC";
 

@@ -54,19 +54,15 @@ if (!isset($form_action) || $form_action=="list"){
 	  LEFT JOIN cc_card_group ee ON dd.id_group = ee.id
 	  WHERE  aa.creator_type = 0 AND ee.id_agent=" . $_SESSION['agent_id'] . " GROUP BY aa.id
 	) AS v ON cc_ticket.id = v.id
-	LEFT JOIN cc_card ON cc_card.id=cc_ticket.creator LEFT JOIN cc_card_group ON cc_card.id_group=cc_card_group.id", "Ticket");
-
+	LEFT JOIN cc_card ON cc_card.id=cc_ticket.creator LEFT JOIN cc_card_group ON cc_card.id_group=cc_card_group.id", _("Ticket"), "cc_ticket.id");
 }else {
-	 $HD_Form = new FormHandler("cc_ticket", "Ticket");
-
+	 $HD_Form = new FormHandler("cc_ticket", _("Ticket"));
 }
-
 
 $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = " cc_ticket.id";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 $HD_Form -> FG_QUERY_WHERE_CLAUSE = " cc_ticket.creator_type=0 AND cc_card_group.id_agent=".$_SESSION['agent_id'];
-$HD_Form -> FG_QUERY_PRIMARY_KEY="cc_ticket.id";
 
 $priority_list = getTicketPriorityList();
 $viewed_list = getTicketViewedList();

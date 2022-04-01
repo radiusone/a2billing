@@ -46,8 +46,6 @@ getpost_ifset(array('card', 'invoice'));
 
 $HD_Form = new FormHandler("cc_logpayment", "Payment");
 
-$HD_Form -> FG_QUERY_PRIMARY_KEY = 'cc_logpayment.id';
-
 $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 

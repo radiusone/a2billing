@@ -44,12 +44,10 @@ if (! has_rights (ACX_ADMINISTRATOR)) {
 getpost_ifset(array('id', 'card_id', 'date', 'credit','description,added_invoice'));
 
 if (!isset($form_action) || $form_action=="list") {
-	$HD_Form = new FormHandler("cc_logrefill LEFT JOIN cc_card ON cc_card.id=card_id", "Refill");
+	$HD_Form = new FormHandler("cc_logrefill LEFT JOIN cc_card ON cc_card.id=card_id", "Refill", 'cc_logrefill.id');
 } else {
 	$HD_Form = new FormHandler("cc_logrefill", "Refill");
 }
-
-$HD_Form -> FG_QUERY_PRIMARY_KEY = 'cc_logrefill.id';
 
 $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";

@@ -375,7 +375,7 @@ class FormHandler
     /** @var string */
     public string $FG_LIST_ADDING_BUTTON_MSG2;
 
-    public function __construct(string $tablename, string $instance_name, ADOConnection $DBHandle = null)
+    public function __construct(string $tablename, string $instance_name, string $primary_key = "id", ADOConnection $DBHandle = null)
     {
         Console::log('Construct FormHandler');
         Console::logMemory($this, 'FormHandler Class : Line ' . __LINE__);
@@ -384,6 +384,7 @@ class FormHandler
         $this->FG_QUERY_TABLE_NAME = $tablename;
         $this->FG_INSTANCE_NAME = $instance_name;
         $this->DBHandle = $DBHandle ?? Connection::GetDBHandler();
+        $this->FG_QUERY_PRIMARY_KEY = $primary_key;
 
         if (!empty($_POST)) {
             $posted_token = $_POST["csrf_token"] ?? "";
@@ -1199,7 +1200,12 @@ class FormHandler
 
             if ($form_action === "list") {
                 $sql_calc_found_rows = DB_TYPE !== "postgres" ? 'SQL_CALC_FOUND_ROWS' : "";
-                $instance_table = new Table($this->FG_QUERY_TABLE_NAME, "$sql_calc_found_rows $this->FG_QUERY_COLUMN_LIST");
+                $cols = array_column($this->FG_LIST_TABLE_CELLS, "field");
+                $fields = implode(",", $cols);
+                // instance_primary_key is used to fill in links for edit/delete buttons
+                $fields = "$sql_calc_found_rows $fields, $this->FG_QUERY_PRIMARY_KEY AS instance_primary_key";
+
+                $instance_table = new Table($this->FG_QUERY_TABLE_NAME, $fields);
 
                 $this->prepare_list_subselection($form_action);
 

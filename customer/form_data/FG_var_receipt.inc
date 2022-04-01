@@ -47,12 +47,11 @@ if (!isset($form_action) || $form_action=="list") {
 	$list_sql = "cc_receipt LEFT JOIN cc_card ON cc_card.id=id_card " .
 	            "LEFT JOIN ( SELECT st1.id_receipt, SUM(st1.price) as total_price FROM cc_receipt_item AS st1 GROUP BY st1.id_receipt ) ".
 	            "as items ON items.id_receipt = cc_receipt.id ";
-	$HD_Form = new FormHandler($list_sql, "Receipt");
+	$HD_Form = new FormHandler($list_sql, _("Receipt"), 'cc_receipt.id');
 } else {
-	$HD_Form = new FormHandler("cc_receipt", "Receipt");
+	$HD_Form = new FormHandler("cc_receipt", _("Receipt"));
 }
 
-$HD_Form -> FG_QUERY_PRIMARY_KEY = 'cc_receipt.id';
 $HD_Form -> FG_QUERY_WHERE_CLAUSE = " id_card = ".$_SESSION["card_id"];
 $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";

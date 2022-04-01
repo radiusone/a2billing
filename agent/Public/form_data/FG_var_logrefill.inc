@@ -44,17 +44,14 @@ getpost_ifset(array('id', 'card_id', 'date', 'credit', 'description'));
 
 
 if (!isset($form_action) || $form_action=="list") {
-	$HD_Form = new FormHandler("cc_logrefill LEFT JOIN cc_card ON cc_card.id=cc_logrefill.card_id LEFT JOIN cc_card_group ON cc_card.id_group=cc_card_group.id", "Refill");
+	$HD_Form = new FormHandler("cc_logrefill LEFT JOIN cc_card ON cc_card.id=cc_logrefill.card_id LEFT JOIN cc_card_group ON cc_card.id_group=cc_card_group.id", _("Refill"), 'cc_logrefill.id');
 	$HD_Form -> FG_QUERY_WHERE_CLAUSE = " cc_card_group.id_agent=".$_SESSION['agent_id'] ;
 } else {
-	$HD_Form = new FormHandler("cc_logrefill", "Refill");
+	$HD_Form = new FormHandler("cc_logrefill", _("Refill"));
 }
-
-$HD_Form -> FG_QUERY_PRIMARY_KEY = 'cc_logrefill.id';
 
 $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
-
 
 $list_refill_type=getRefillType_List();
 $HD_Form -> AddViewElement(gettext("ID"), "cc_logrefill.id");
