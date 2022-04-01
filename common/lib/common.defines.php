@@ -114,13 +114,6 @@ define ("FRIEND_QUALIFY", $A2B->config['peer_friend']['qualify'] ?? null);
 define ("FRIEND_HOST", $A2B->config['peer_friend']['host'] ?? null);
 define ("FRIEND_DTMFMODE", $A2B->config['peer_friend']['dtmfmode'] ?? null);
 
-//DIDX.NET API
-define ("DIDX_ID", $A2B->config['webui']['didx_id'] ?? null);
-define ("DIDX_PASS", $A2B->config['webui']['didx_pass'] ?? null);
-define ("DIDX_MIN_RATING", $A2B->config['webui']['didx_min_rating'] ?? null);
-const DIDX_SITE = "api.didx.net";
-define ("DIDX_RING_TO", $A2B->config['webui']['didx_ring_to'] ?? null);
-
 define ("API_LOGFILE", $A2B->config['webui']['api_logfile'] ?? "/var/log/a2billing/");
 
 // BUDDY ASTERISK FILES

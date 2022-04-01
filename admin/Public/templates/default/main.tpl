@@ -189,7 +189,6 @@
 							<li><a class="link-dark rounded" href="A2B_entity_didgroup.php?section=8">{_("Groups")}</a>
 							<li><a class="link-dark rounded" href="A2B_entity_did_destination.php?section=8">{_("Destination")}</a></li>
 							<li><a class="link-dark rounded" href="A2B_entity_did_import.php?section=8">{_("Import [CSV]")}</a></li>
-							<li><a class="link-dark rounded" href="A2B_entity_didx.php?section=8">{_("Import [DIDX]")}</a></li>
 							<li><a class="link-dark rounded" href="A2B_entity_did_use.php?atmenu=did_use&amp;section=8">{_("Usage")}</a></li>
 							<li><a class="link-dark rounded" href="A2B_entity_did_billing.php?atmenu=did_billing&amp;section=8">{_("Billing")}</a></li>
 						</ul>
