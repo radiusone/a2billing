@@ -1250,7 +1250,8 @@ class FormHandler
                 }
 
             } else {
-                $cols = array_column($this->FG_EDIT_FORM_ELEMENTS, "name");
+                $selected_elements = array_filter($this->FG_EDIT_FORM_ELEMENTS, fn ($v) => empty($v["custom_query"]));
+                $cols = array_column($selected_elements, "name");
                 $fields = implode(",", $cols);
 
                 $instance_table = new Table($this->FG_QUERY_TABLE_NAME, $fields);
