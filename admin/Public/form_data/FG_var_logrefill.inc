@@ -34,16 +34,20 @@ use A2billing\Forms\FormHandler;
  *
 **/
 
-if (! has_rights (ACX_ADMINISTRATOR)) {
-    Header ("HTTP/1.0 401 Unauthorized");
-    Header ("Location: PP_error.php?c=accessdenied");
-    die();
-}
+getpost_ifset(['id', 'card_id', 'date', 'credit', 'description', 'added_invoice']);
+/**
+ * @var string $form_action
+ * @var string $popup_select
+ * @var string $id
+ * @var string $card_id
+ * @var string $date
+ * @var string $credit
+ * @var string $description
+ * @var string $added_invoice
+ */
+$form_action = $form_action ?? "list";
 
-
-getpost_ifset(array('id', 'card_id', 'date', 'credit','description,added_invoice'));
-
-if (!isset($form_action) || $form_action=="list") {
+if ($form_action === "list") {
 	$HD_Form = new FormHandler("cc_logrefill LEFT JOIN cc_card ON cc_card.id=card_id", "Refill", 'cc_logrefill.id');
 } else {
 	$HD_Form = new FormHandler("cc_logrefill", "Refill");
@@ -53,10 +57,10 @@ $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
 if (has_rights (ACX_MODIFY_REFILLS)) {
-	$HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
-	$HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_logrefill.php?form_action=ask-add&section=".$_SESSION["menu_section"];
-	$HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add Refill");
-	$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/time_add.png" ;
+	$HD_Form->FG_LIST_ADDING_BUTTON1 = true;
+	$HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_logrefill.php?form_action=ask-add&section=".$_SESSION["menu_section"];
+	$HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add Refill");
+	$HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/time_add.png" ;
 }
 
 $list_refill_type = getRefillType_List();
@@ -69,39 +73,40 @@ $HD_Form -> AddViewElement(gettext("REFILL TYPE"), "refill_type", true, 0, "", "
 
 $HD_Form -> FieldViewElement ('cc_logrefill.id, cc_logrefill.card_id, cc_logrefill.date, cc_logrefill.credit , cc_logrefill.refill_type');
 
-if (!($popup_select>=1))	 $HD_Form -> search_form_enabled = true;
-$HD_Form -> search_session_key = 'refill_cust_selection';
-$HD_Form -> search_form_title = gettext('Define specific criteria to search for refills created.');
-$HD_Form -> search_date_enabled = true;
-$HD_Form -> search_date_text = gettext('DATE');
-$HD_Form -> search_date_column = 'date';
+if (!$popup_select) {
+    $HD_Form->search_form_enabled = true;
+    $HD_Form->search_session_key = 'refill_cust_selection';
+    $HD_Form->search_form_title = gettext('Define specific criteria to search for refills created.');
+    $HD_Form->search_date_enabled = true;
+    $HD_Form->search_date_text = gettext('DATE');
+    $HD_Form->search_date_column = 'date';
 
+    $HD_Form->AddSearchTextInput(gettext("ACCOUNT NUMBER"), 'username', 'usernametype');
+    $HD_Form->AddSearchTextInput(gettext("LASTNAME"), 'lastname', 'lastnametype');
+    $HD_Form->AddSearchTextInput(gettext("FIRSTNAME"), 'firstname', 'firstnametype');
+    $HD_Form->search_delete_enabled = false;
 
-$HD_Form -> AddSearchTextInput(gettext("ACCOUNT NUMBER"), 'username','usernametype');
-$HD_Form -> AddSearchTextInput(gettext("LASTNAME"),'lastname','lastnametype');
-$HD_Form -> AddSearchTextInput(gettext("FIRSTNAME"),'firstname','firstnametype');
-$HD_Form -> search_delete_enabled =false;
+    $HD_Form -> FG_ENABLE_INFO_BUTTON = true;
+    $HD_Form -> FG_INFO_BUTTON_LINK = "A2B_refill_info.php?id=";
+    $HD_Form -> FG_ENABLE_ADD_BUTTON = true;
+}
 
-$HD_Form -> FG_ENABLE_INFO_BUTTON = true;
-$HD_Form -> FG_INFO_BUTTON_LINK = "A2B_refill_info.php?id=";
 $HD_Form -> FG_FILTER_ENABLE = true;
 $HD_Form -> FG_FILTER_COLUMN = 'cardnumber';
 $HD_Form -> FG_FILTER_LABEL = 'Account number';
 
-if (isset($filterprefix)  &&  (strlen($filterprefix)>0)) {
-	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
+if (!empty($filterprefix)) {
+	if (!empty($HD_Form -> FG_QUERY_WHERE_CLAUSE)) {
+        $HD_Form->FG_QUERY_WHERE_CLAUSE .= " AND ";
+    }
 	$HD_Form -> FG_QUERY_WHERE_CLAUSE.="username like '$filterprefix%'";
 }
 
-$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 if (has_rights (ACX_MODIFY_REFILLS)) {
-
 	$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 	$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 
-	if ($form_action=="ask-add" && !empty($card_id)) {
-		$id_val = "value='$card_id'";
-	}
+    $id_val = $form_action === "ask-add" && !empty($card_id) ? "value='$card_id'" : "";
 
     $HD_Form->AddEditPopup(
         "card_id",
@@ -112,13 +117,7 @@ if (has_rights (ACX_MODIFY_REFILLS)) {
         $id_val
     );
 
-	if ($form_action=="ask-add") {
-		$begin_date = date("Y");
-		$end_date = date("-m-d H:i:s");
-		$comp_date=$begin_date.$end_date;
-		$comp_date="value='$comp_date'";
-	}
-
+    $comp_date = $form_action === "ask-add" ? "value='" . (new DateTime())->format("Y-m-d H:i:s") . "'" : "";
     $HD_Form->AddEditElement(
         gettext("REFILL DATE"),
         "date",
@@ -151,7 +150,7 @@ if (has_rights (ACX_MODIFY_REFILLS)) {
         gettext("Define type for payment and refill,if created.")
     );
 
-	if ($form_action!="ask-edit" && $form_action!="edit") {
+	if ($form_action !== "ask-edit" && $form_action !== "edit") {
         $HD_Form->AddEditRadio(
             "added_invoice",
             [[gettext("Yes"), "1"], [gettext("No"), "0"]],
@@ -165,19 +164,10 @@ if (has_rights (ACX_MODIFY_REFILLS)) {
 
 	$HD_Form -> FieldEditElement ('card_id, date, credit, description, refill_type, added_invoice');
 
-
-
-	
-
 	$HD_Form -> FG_INTRO_TEXT_ADITION = '';
-	
-
-		
 	$HD_Form -> FG_ADDITIONAL_FUNCTION_AFTER_ADD = 'processing_refill_add';
-
-	$HD_Form -> FG_LOCATION_AFTER_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&stitle=Document&wh=AC&id=";
-	$HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&stitle=Document&wh=AC&id=";
-	$HD_Form -> FG_LOCATION_AFTER_DELETE = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&stitle=Document&wh=AC&id=";
-
+	$HD_Form -> FG_LOCATION_AFTER_ADD = "?atmenu=document&stitle=Document&wh=AC&id=";
+	$HD_Form -> FG_LOCATION_AFTER_EDIT = "?atmenu=document&stitle=Document&wh=AC&id=";
+	$HD_Form -> FG_LOCATION_AFTER_DELETE = "?atmenu=document&stitle=Document&wh=AC&id=";
 }
 
