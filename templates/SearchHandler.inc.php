@@ -1,6 +1,6 @@
 <?php
 /**
- * @var A2billing\Forms\Formhandler $this
+ * @var A2billing\Forms\FormHandler $this
  * @var array $processed
  * @var array $list
  * @var bool $full_modal
@@ -182,7 +182,7 @@ $action = http_build_query([
     </div>
 <?php endif ?>
 
-<?php $inputs = array_filter($this->SEARCH_FORM_ELEMENTS, fn ($v) => $v["type"] !== "SELECT") ?>
+<?php $inputs = array_filter($this->search_form_elements, fn ($v) => $v["type"] !== "SELECT") ?>
 <?php foreach ($inputs as $item): ?>
     <div class="row pb-1">
         <label class="col-4 col-form-label col-form-label-sm" for="<?= $item["input"] ?>">
@@ -261,7 +261,7 @@ $action = http_build_query([
     </div>
 <?php endforeach ?>
 
-<?php $selects = array_filter($this->SEARCH_FORM_ELEMENTS, fn ($v) => $v["type"] === "SELECT") ?>
+<?php $selects = array_filter($this->search_form_elements, fn ($v) => $v["type"] === "SELECT") ?>
 <?php foreach (array_chunk($selects, 3) as $chunk): ?>
     <div class="row pb-1">
     <?php foreach ($chunk as $item): ?>

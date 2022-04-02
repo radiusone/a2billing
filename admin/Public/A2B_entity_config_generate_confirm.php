@@ -37,12 +37,13 @@ use A2billing\Table;
 
 require_once "../../common/lib/admin.defines.php";
 include './form_data/FG_var_config.inc';
-
-if (! has_rights (ACX_ACXSETTING)) {
-    Header ("HTTP/1.0 401 Unauthorized");
-    Header ("Location: PP_error.php?c=accessdenied");
-    die();
-}
+/**
+ * @var FormHandler $HD_Form
+ * @var SmartyBC $smarty
+ * @var string $id
+ * @var string $form_action
+ * @var string $CC_help_add_agi_confx
+ */
 
 $HD_Form -> init();
 
@@ -50,18 +51,15 @@ $HD_Form -> init();
 $smarty->display('main.tpl');
 
 // #### HELP SECTION
-if ($form_action=='list') echo $CC_help_add_agi_confx;
-else echo $CC_help_add_agi_confx;
+echo $CC_help_add_agi_confx;
 
 // #### TOP SECTION PAGE
 $HD_Form -> create_toppage ($form_action);
 
 $link = "A2B_entity_config.php?form_action=list&atmenu=config&stitle=Configuration&section=8&agi_conf=true";
 
-$config_group = array();
 $config_group  = agi_confx_title(); // calling function  to generate agi-conf(title_number)
-$group_title = $config_group[0];
-$group_description = $config_group[2];
+[$new_group_title, $first_group_title] = $config_group;
 
 ?>
 <table width="92%" align="center" class="bar-status">
@@ -79,8 +77,8 @@ $group_description = $config_group[2];
                     <th class="tableBody" style="padding: 2px;" align="center"><?php echo gettext("Description")?></th>
                 </tr>
                 <tr bgcolor="#FCFBFB"  onmouseover="bgColor='#FFDEA6'" onMouseOut="bgColor='#FCFBFB'">
-                    <td class="tableBody"><?php echo $group_title?></td>
-                    <td class="tableBody"><?php echo $group_description?></td>
+                    <td class="tableBody"><?php echo $new_group_title?></td>
+                    <td class="tableBody"><?php echo _("This configuration group handles the AGI Configuration.") ?></td>
                 </tr>
             </tbody>
             </table>
@@ -94,7 +92,7 @@ $group_description = $config_group[2];
             <table width="100%" style="border:1px solid">
             <thead>
                 <tr>
-                    <td colspan="5" class="bgcolor_005"><font style="color:#FFFFFF;padding-left:3px"><strong><?php echo gettext("List of Configurations - We will create base on ")." AGI-CONF".$config_group[3]?> </strong></font></td>
+                    <td colspan="5" class="bgcolor_005"><font style="color:#FFFFFF;padding-left:3px"><strong><?php echo sprintf(_("List of configuration values (copied from %s)"), $first_group_title) ?> </strong></font></td>
                 </tr>
             </thead>
             <tbody>
@@ -107,7 +105,7 @@ $group_description = $config_group[2];
                 </tr>
 <?php
 $instance_table = new Table();
-$QUERY = "SELECT config_title, config_key, config_value, config_description FROM cc_config WHERE config_group_title = 'agi-conf".$config_group[3]."' ORDER BY id LIMIT 10";
+$QUERY = "SELECT config_title, config_key, config_value, config_description FROM cc_config WHERE config_group_title = '$first_group_title' ORDER BY id LIMIT 10";
 $config  = $instance_table->SQLExec ($HD_Form -> DBHandle, $QUERY);
 
 $i=0;
@@ -127,7 +125,7 @@ foreach ($config as $values) {
                     <td align="left" class="tableBody"><?php echo $config_key?></td>
                     <td align="left" class="tableBody"><?php echo $config_value?></td>
                     <td align="left" class="tableBody"><?php echo $config_description?></td>
-                    <td align="left" class="tableBody"><?php echo $group_title?></td>
+                    <td align="left" class="tableBody"><?php echo $new_group_title?></td>
                 </tr>
 <?php
     $i++;
@@ -138,14 +136,10 @@ foreach ($config as $values) {
         </td>
     </tr>
     <br>
-    <?php
-    $text = gettext("CREATE");
-    $group_title = $text." ".strtoupper($group_title);
-    ?>
     <tr>
         <td align="right">
         <form name="theform">
-            <a class="btn btn-primary" href="<?= $link ?>"><?php echo $group_title;?></a>
+            <a class="btn btn-primary" href="<?= $link ?>"><?= sprintf(_("Create %s"), $new_group_title) ?></a>
         </form></td>
     </tr>
 </table>

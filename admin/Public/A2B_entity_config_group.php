@@ -1,5 +1,7 @@
 <?php
 
+use A2billing\Forms\FormHandler;
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
@@ -35,35 +37,30 @@
 
 require_once "../../common/lib/admin.defines.php";
 include './form_data/FG_var_config_group.inc';
-
-if (!has_rights(ACX_ACXSETTING)) {
-    Header("HTTP/1.0 401 Unauthorized");
-    Header("Location: PP_error.php?c=accessdenied");
-    die();
-}
+/**
+ * @var FormHandler $HD_Form
+ * @var SmartyBC $smarty
+ * @var string $id
+ * @var string $form_action
+ * @var string $CC_help_list_global_config
+ */
 
 $HD_Form->init();
 
-if ($id != "" || !is_null($id)) {
+if (!empty($id)) {
     $HD_Form->FG_EDIT_QUERY_CONDITION = str_replace("%id", "$id", $HD_Form->FG_EDIT_QUERY_CONDITION);
 }
 
-if (!isset ($form_action))
-    $form_action = "list"; //ask-add
-
-if (!isset ($action))
-    $action = $form_action;
-
+$form_action = $form_action ?? "list";
 $list = $HD_Form->perform_action($form_action);
 
 // #### HEADER SECTION
 $smarty->display('main.tpl');
 
 // #### HELP SECTION
-if ($form_action == 'list')
-    echo $CC_help_list_global_config;
-else
-    echo $CC_help_edit_did;
+if ($form_action === 'list') {
+    echo $CC_help_edit_config;
+}
 
 ?>
 

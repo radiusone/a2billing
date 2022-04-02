@@ -621,7 +621,7 @@ echo get_login_button ($DBHandle, $id);
 
 // We need to list all required columns as both tables have an 'id' column
 $result = $DBHandle->Execute(
-    "SELECT cc_card_subscription.id, id_cc_card, startdate, product_name, fee FROM cc_card_subscription,cc_subscription_service WHERE cc_card_subscription.id_subscription_fee = cc_subscription_service.id AND id_cc_card = ? ORDER BY startdate DESC LIMIT 10",
+    "SELECT cc_card_subscription.id, id_cc_card, cc_card_subscription.startdate, product_name, fee FROM cc_card_subscription,cc_subscription_service WHERE cc_card_subscription.id_subscription_fee = cc_subscription_service.id AND id_cc_card = ? ORDER BY startdate DESC LIMIT 10",
     [$id]
 );
 if ($result && $subscription_result = $result->GetAll()) {

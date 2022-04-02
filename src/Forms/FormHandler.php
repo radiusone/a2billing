@@ -880,8 +880,11 @@ class FormHandler
      * @public
      * @ $displayname , $fieldname, $fieldvar
      */
-    public function AddSearchTextInput($displayname, $fieldname, $fieldvar)
+    public function AddSearchTextInput($displayname, $fieldname, $fieldvar = null)
     {
+        if (empty($fieldvar)) {
+            $fieldvar = $fieldname . "type";
+        }
         $this->search_form_elements[] = [
             "label" => $displayname,
             "input" => [$fieldname],

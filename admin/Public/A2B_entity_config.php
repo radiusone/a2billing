@@ -1,6 +1,6 @@
 <?php
 
-use A2billing\Table;
+use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -36,25 +36,23 @@ use A2billing\Table;
 **/
 
 require_once "../../common/lib/admin.defines.php";
-include '../lib/config_functions.php';
 include './form_data/FG_var_config.inc';
+/**
+ * @var FormHandler $HD_Form
+ * @var SmartyBC $smarty
+ * @var string $id
+ * @var string $form_action
+ * @var string $CC_help_list_configuration
+ */
 
-if (!has_rights (ACX_ACXSETTING)) {
-    Header ("HTTP/1.0 401 Unauthorized");
-    Header ("Location: PP_error.php?c=accessdenied");
-    die();
+$HD_Form->init();
+
+if (!empty($id)) {
+    $HD_Form->FG_EDIT_QUERY_CONDITION = str_replace("%id", $id, $HD_Form->FG_EDIT_QUERY_CONDITION);
 }
 
-$HD_Form -> init();
-
-if ($id!="" || !is_null($id)) {
-    $HD_Form -> FG_EDIT_QUERY_CONDITION = str_replace("%id", "$id", $HD_Form -> FG_EDIT_QUERY_CONDITION);
-}
-
-if (!isset($form_action))  $form_action="list";
-if (!isset($action)) $action = $form_action;
-
-$list = $HD_Form -> perform_action($form_action);
+$form_action = $form_action ?? "list";
+$list = $HD_Form->perform_action($form_action);
 
 // #### HEADER SECTION
 $smarty->display('main.tpl');
@@ -62,197 +60,18 @@ $smarty->display('main.tpl');
 echo $CC_help_list_configuration;
 
 // #### TOP SECTION PAGE
-$HD_Form -> create_toppage ($form_action);
+$HD_Form->create_toppage ($form_action);
 
-if ($form_action == "list") {
-
-?>
-<br>
-<script language="javascript">
-function go(URL) {
-    if (Check()) {
-        document.searchform.action = URL;
-        alert(document.searchform.action);
-        document.searchform.submit();
-    }
+if ($form_action === "list") {
+    $HD_Form->search_form_enabled = true;
+    $HD_Form->AddSearchTextInput(_("Value"), "config_value");
+    $HD_Form->AddSearchTextInput(_("Key"), "config_key");
+    $HD_Form->AddSearchTextInput(_("Description"), "config_description");
+    $HD_Form->AddSearchSqlSelectInput(_("Group"), "cc_config_group", "id,group_title", "", ["group_title"], "ASC", "group_title");
+    $HD_Form->create_search_form(true, true);
 }
 
-function Check() {
-    if (document.searchform.filterradio[1].value == "payment") {
-        if (document.searchform.paymenttext.value < 0) {
-            alert("Payment amount cannot be less than Zero.");
-            document.searchform.paymenttext.focus();
-
-            return false;
-        }
-    }
-    return true;
-}
-</script>
-
-<form name="searchform" id="searchform" method="post" action="A2B_entity_config.php">
-    <input type="hidden" name="searchenabled" value="yes">
-    <input type="hidden" name="posted" value="1">
-    <?= $HD_Form->csrf_inputs() ?>
-
-    <table class="bar-status" width="85%" border="0" cellspacing="1" cellpadding="2" align="center">
-
-        <tr>
-            <td width="19%" align="left" valign="top" class="bgcolor_004">
-                <font class="fontstyle_003">&nbsp;&nbsp;<?php echo gettext("VALUE");?></font>
-            </td>
-
-            <td align="left"  class="bgcolor_003">
-            <table>
-                <tr>
-                    <td width="25%" align="left" valign="top">
-                        <input class="form_input_text" name="filterValue" size="20">
-                    </td>
-
-                    <td width="10%">
-                        <font class="version">
-                        <input type="radio" NAME="rbValue" value="1" checked> <?php echo gettext("Exact");?>
-                        </font>
-                    </td>
-                    <td width="10%">
-                        <font class="version">
-                        <input type="radio" NAME="rbValue" value="2"> <?php echo gettext("Begins with");?>
-                        </font>
-                    </td>
-                    <td width="10%">
-                        <font class="version">
-                        <input type="radio" NAME="rbValue" value="3"> <?php echo gettext("Contains");?>
-                        </font>
-                    </td>
-                    <td width="10%">
-                        <font class="version">
-                        <input type="radio" NAME="rbValue" value="4"> <?php echo gettext("Ends with");?>
-                        </font>
-                    </td>
-                </tr>
-            </table>
-            </td>
-        </tr>
-
-        <tr>
-            <td width="19%" align="left" valign="top" class="bgcolor_004">
-                <font class="fontstyle_003">&nbsp;&nbsp;<?php echo gettext("KEY");?></font>
-            </td>
-
-            <td align="left"  class="bgcolor_005">
-            <table>
-                <tr>
-                    <td width="25%" align="left" valign="top">
-                        <input class="form_input_text" name="filterKey" size="20">
-                    </td>
-
-                    <td width="10%">
-                        <font class="version">
-                        <input type="radio" NAME="rbKey" value="1" checked> <?php echo gettext("Exact");?>
-                        </font>
-                    </td>
-                    <td width="10%">
-                        <font class="version">
-                        <input type="radio" NAME="rbKey" value="2"> <?php echo gettext("Begins with");?>
-                        </font>
-                    </td>
-                    <td width="10%">
-                        <font class="version">
-                        <input type="radio" NAME="rbKey" value="3"> <?php echo gettext("Contains");?>
-                        </font>
-                    </td>
-                    <td width="10%">
-                        <font class="version">
-                        <input type="radio" NAME="rbKey" value="4"> <?php echo gettext("Ends with");?>
-                        </font>
-                    </td>
-                </tr>
-            </table>
-            </td>
-        </tr>
-
-        <tr>
-            <td width="19%" align="left" valign="top" class="bgcolor_004">
-                <font class="fontstyle_003">&nbsp;&nbsp;<?php echo gettext("DESCRIPTION");?></font>
-            </td>
-
-            <td align="left"  class="bgcolor_003">
-            <table>
-                <tr>
-                    <td width="25%" align="left" valign="top">
-                        <input class="form_input_text" name="filterDescription" size="20">
-                    </td>
-
-                    <td width="10%">
-                        <font class="version">
-                        <input type="radio" NAME="rbDesc" value="1" checked> <?php echo gettext("Exact");?>
-                        </font>
-                    </td>
-                    <td width="10%">
-                        <font class="version">
-                        <input type="radio" NAME="rbDesc" value="2"> <?php echo gettext("Begins with");?>
-                        </font>
-                    </td>
-                    <td width="10%">
-                        <font class="version">
-                        <input type="radio" NAME="rbDesc" value="3"> <?php echo gettext("Contains");?>
-                        </font>
-                    </td>
-                    <td width="10%">
-                        <font class="version">
-                        <input type="radio" NAME="rbDesc" value="4"> <?php echo gettext("Ends with");?>
-                        </font>
-                    </td>
-                </tr>
-            </table>
-            </td>
-        </tr>
-
-        <tr>
-            <td width="19%" align="left" valign="top" class="bgcolor_004">
-                <font class="fontstyle_003">&nbsp;&nbsp;<?php echo gettext("SELECT GROUP");?></font>
-            </td>
-            <td width="81%" align="left" class="bgcolor_005">
-            <table width="100%" border="0" cellspacing="0" cellpadding="0"><tr>
-              <td class="fontstyle_searchoptions">
-              <?php
-                $instance_table = new Table();
-                $QUERY = "SELECT * from cc_config_group";
-                $list_total_groups  = $instance_table->SQLExec ($HD_Form -> DBHandle, $QUERY);
-               ?>
-            <select name="groupselect" class="form_input_select">
-            <option value="-1" ><?php echo gettext("Select Group");?></option>
-            <?php
-            foreach ($list_total_groups as $groupname) {
-            ?>
-            <option value="<?php echo $groupname[1]?>" <?php if($groupselect == $groupname[1] || $groupname[1] == $_SESSION['grpselect']) echo "selected"?>><?php echo $groupname[1]?></option>
-            <?php
-            }
-            ?>
-            </select>
-                </td>
-            </tr></table></td>
-        </tr>
-
-        <tr>
-            <td class="bgcolor_002" align="left">&nbsp;</td>
-            <td class="bgcolor_003" align="left">
-                <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                <tr>
-                  <td class="fontstyle_searchoptions">					<div align="center"><span class="bgcolor_005">
-                  <input type="image"  name="image16" align="left" border="0" src="<?php echo Images_Path;?>/button-search.gif" />
-                    </span> </div></td>
-                </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
-</FORM>
-
-<?php
-}
-
-$HD_Form -> create_form($form_action, $list) ;
+$HD_Form->create_form($form_action, $list) ;
 
 // #### FOOTER SECTION
 $smarty->display('footer.tpl');

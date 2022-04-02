@@ -239,7 +239,7 @@ Browse here the pending and completed callbacks. You will see that different par
 
     $CC_help_list_payment_methods = create_help(gettext("Epayment methods help you to collect payments from your customers."));
 
-    $CC_help_add_agi_confx = create_help(gettext("This action will generate agi-conf2 as a global configuration along with a list of all configurations."));
+    $CC_help_add_agi_confx = create_help(gettext("This action will generate a new agi-conf configuration group, copying configurations from the first agi-conf group found."));
 
     $CC_help_list_global_config = create_help(gettext("Here is a list of all configuration groups. You can pick one and see its members"));
 
