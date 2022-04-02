@@ -1,5 +1,7 @@
 <?php
 
+use A2billing\A2Billing;
+use A2billing\Forms\FormHandler;
 use A2billing\Table;
 use A2billing\Realtime;
 
@@ -38,153 +40,152 @@ use A2billing\Realtime;
 
 require_once "../../common/lib/admin.defines.php";
 include './form_data/FG_var_card.inc';
+/**
+ * @var FormHandler $HD_Form
+ * @var A2Billing $A2B
+ * @var SmartyBC $smarty
+ * @var string $form_action
+ * @var string $action
+ * @var string $CC_help_generate_customer
+ */
 
 if (!has_rights(ACX_CUSTOMER)) {
-    Header("HTTP/1.0 401 Unauthorized");
-    Header("Location: PP_error.php?c=accessdenied");
+    header("HTTP/1.0 401 Unauthorized");
+    header("Location: PP_error.php?c=accessdenied");
     die();
 }
 
-getpost_ifset(array('nb_to_create', 'creditlimit', 'cardnum', 'addcredit', 'choose_tariff', 'gen_id', 'cardnum', 'choose_simultaccess',
+getpost_ifset([
+    'nb_to_create', 'creditlimit', 'cardnum', 'addcredit', 'choose_tariff', 'gen_id', 'cardnum', 'choose_simultaccess',
     'choose_currency', 'choose_typepaid', 'creditlimit', 'enableexpire', 'expirationdate', 'expiredays', 'runservice', 'sip', 'iax',
-    'cardnumberlength_list', 'tag', 'id_group', 'discount', 'id_seria', 'id_didgroup', 'vat', 'id_country'));
+    'cardnumberlength_list', 'tag', 'id_group', 'discount', 'id_seria', 'id_didgroup', 'vat', 'id_country',
+]);
+/**
+ * @var string $nb_to_create
+ * @var string $creditlimit
+ * @var string $cardnum
+ * @var string $addcredit
+ * @var string $choose_tariff
+ * @var string $gen_id
+ * @var string $cardnum
+ * @var string $choose_simultaccess
+ * @var string $choose_currency
+ * @var string $choose_typepaid
+ * @var string $creditlimit
+ * @var string $enableexpire
+ * @var string $expirationdate
+ * @var string $expiredays
+ * @var string $runservice
+ * @var string $sip
+ * @var string $iax
+ * @var string $cardnumberlength_list
+ * @var string $tag
+ * @var string $id_group
+ * @var string $discount
+ * @var string $id_seria
+ * @var string $id_didgroup
+ * @var string $vat
+ * @var string $id_country
+ */
 
-$nb_error = 0;
-$msg_error = '';
-$group_error = false;
-$tariff_error = false;
-$credit_error = false;
-$number_error = false;
-$expdate_error = false;
-$expday_error = false;
+$id_group = (int)($id_group ?? 0);
+$choose_tariff = (int)($choose_tariff ?? 0);
+$addcredit = (int)($addcredit ?? 0);
+$expiredays = (int)($expiredays ?? 0);
+$expirationdate = $expirationdate ?? "";
+$nb_to_create = (int)($nb_to_create ?? 0);
+$instance_realtime = new Realtime();
+
+$errors = [];
 
 if ($action == "generate") {
-    if (!is_numeric($id_group) || $id_group < 1) {
-        $nb_error++;
-        $group_error = true;
-        $msg_error = gettext("- Choose a GROUP for the customers!");
+    if ($id_group < 1) {
+        $errors["id_group"] = _("Choose a GROUP for the customers");
     }
-    if (!is_numeric($choose_tariff) || $choose_tariff < 1) {
-        $nb_error++;
-        $tariff_error = true;
-        if (!empty ($msg_error))
-            $msg_error .= "<br/>";
-        $msg_error .= gettext("- Choose a CALL PLAN for the customers!");
+    if ($choose_tariff < 1) {
+        $errors["choose_tariff"] =  _("Choose a CALL PLAN for the customers");
     }
-    if (!is_numeric($addcredit) || $addcredit < 0) {
-        $nb_error++;
-        $credit_error = true;
-        if (!empty ($msg_error))
-            $msg_error .= "<br/>";
-        $msg_error .= gettext("- Choose a BALANCE (initial amount)  equal or higher than 0 for the customers!");
+    if ($addcredit < 0) {
+        $errors["addcredit"] = _("Choose an initial BALANCE of at least 0 for the customers");
     }
-    if (!is_numeric($expiredays) || $expiredays < 0) {
-        $nb_error++;
-        $expday_error = true;
-        if (!empty ($msg_error))
-            $msg_error .= "<br/>";
-        $msg_error .= gettext("- Choose an EXPIRATIONS DAYS  equal or higher than 0 for the customers!");
+    if ($expiredays < 0) {
+        $errors["expiredays"] = _("Choose EXPIRATIONS DAYS of at least 0 for the customers");
     }
-    if (empty ($expirationdate) || strtotime($expirationdate) === FALSE) {
-        $nb_error++;
-        $expdate_error = true;
-        if (!empty ($msg_error))
-            $msg_error .= "<br/>";
-        $msg_error .= gettext("- EXPIRATION DAY inserted is invalid, it must respect the date format YYYY-MM-DD HH:MM:SS (time is optional) !");
+    if (strtotime($expirationdate) === false) {
+        $errors["expirationdate"] = _("EXPIRATION DATE should be in the format YYYY-MM-DD HH:MM");
     }
-    if (!is_numeric($nb_to_create) || $nb_to_create < 1) {
-        $nb_error++;
-        $number_error = true;
-        if (!empty ($msg_error))
-            $msg_error .= "<br/>";
-        $msg_error .= gettext("- Choose the number of customers that you want generate!");
+    if ($nb_to_create < 1) {
+        $errors["nb_to_create"] = _("Choose the number of customers that you want to generate");
     }
 }
-$nbcard = $nb_to_create;
-if ($nbcard > 0 && $action == "generate" && $nb_error == 0) {
 
-    $instance_realtime = new Realtime();
+$_SESSION["IDfilter"] = 'NODEFINED';
 
-    $FG_ADITION_SECOND_ADD_TABLE = "cc_card";
-    $FG_ADITION_SECOND_ADD_FIELDS = "username, useralias, credit, tariff, activated, lastname, firstname, email, address, city, state, country, zipcode, phone, simultaccess, currency, typepaid, " .
-            "creditlimit, enableexpire, expirationdate, expiredays, uipass, runservice, tag,id_group, discount, id_seria, id_didgroup, sip_buddy, iax_buddy, vat";
+if ($nb_to_create > 0 && $action === "generate" && count($errors) === 0) {
+    $_SESSION["IDfilter"] = $gen_id = time();
+    $sip_buddy = !empty($sip) ? 1 : 0;
+    $iax_buddy = !empty($iax) ? 1 : 0;
+    $creditlimit = (int)($creditlimit ?? 0);
 
-    if (DB_TYPE != "postgres") {
-        $FG_ADITION_SECOND_ADD_FIELDS .= ",creationdate ";
-    }
-
-    $instance_sub_table = new Table($FG_ADITION_SECOND_ADD_TABLE, $FG_ADITION_SECOND_ADD_FIELDS);
-
-    $gen_id = time();
-    $_SESSION["IDfilter"] = $gen_id;
-
-    $sip_buddy = $iax_buddy = 0;
-
-    if (isset ($sip) && $sip == 1)
-        $sip_buddy = 1;
-
-    if (isset ($iax) && $iax == 1)
-        $iax_buddy = 1;
-
-    $creditlimit = is_numeric($creditlimit) ? $creditlimit : 0;
-    //initialize refill parameter
-    $description_refill = gettext("CREATION CARD REFILL");
-    $field_insert_refill = " credit,card_id, description";
-    $instance_refill_table = new Table("cc_logrefill", $field_insert_refill);
-
-    for ($k = 0; $k < $nbcard; $k++) {
-        $arr_card_alias = gen_card_with_alias("cc_card", $cardnumberlength_list);
-        $accountnumber = $arr_card_alias[0];
-        $useralias = $arr_card_alias[1];
-        if (!is_numeric($addcredit))
-            $addcredit = 0;
+    for ($k = 0; $k < $nb_to_create; $k++) {
+        [$accountnumber, $useralias] = gen_card_with_alias("cc_card", $cardnumberlength_list);
         $passui_secret = MDP_NUMERIC(5).MDP_STRING(10).MDP_NUMERIC(5);
 
-        $FG_ADITION_SECOND_ADD_VALUE = "'$accountnumber', '$useralias', '$addcredit', '$choose_tariff', 't', '$gen_id', '', '', '', '', '', '$id_country', '', '', $choose_simultaccess, '$choose_currency', " .
-                    "$choose_typepaid, $creditlimit, $enableexpire, '$expirationdate', $expiredays, '$passui_secret', '$runservice', '$tag', '$id_group', '$discount', '$id_seria', " .
-                    "'$id_didgroup', $sip_buddy, $iax_buddy, '$vat'";
-
-        if (DB_TYPE != "postgres")
-            $FG_ADITION_SECOND_ADD_VALUE .= ", now() ";
-
-        $id_cc_card = $instance_sub_table->Add_table($HD_Form->DBHandle, $FG_ADITION_SECOND_ADD_VALUE, null, null, $HD_Form->FG_QUERY_PRIMARY_KEY);
-        //create refill for each cards
-
-        if ($addcredit > 0) {
-            $value_insert_refill = "'$addcredit', '$id_cc_card', '$description_refill' ";
-            $instance_refill_table->Add_table($HD_Form->DBHandle, $value_insert_refill, null, null);
+        $datecol = $dateval = "";
+        if (DB_TYPE === "mysql") {
+            $datecol = ", creationdate";
+            $dateval = ", NOW()";
         }
 
-        $instance_realtime -> insert_voip_config ($sip, $iax, $id_cc_card, $accountnumber, $passui_secret);
+        $HD_Form->DBHandle->enableLastInsertID();
+        $result = $HD_Form->DBHandle->Execute(
+            "INSERT INTO cc_card (
+                 username, useralias, credit, tariff, activated, lastname, firstname, email, address, city, state, country, 
+                 zipcode, phone, simultaccess, currency, typepaid, creditlimit, enableexpire, expirationdate, expiredays, 
+                 uipass, runservice, tag,id_group, discount, id_seria, id_didgroup, sip_buddy, iax_buddy, vat $datecol
+             )
+            VALUES (?, ?, ?, ?, 't', ?, '', '', '', '', '', ?, '', '', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? $dateval)",
+            [
+                $accountnumber, $useralias, $addcredit, $choose_tariff, $gen_id, $id_country, $choose_simultaccess,
+                $choose_currency, $choose_typepaid, $creditlimit, $enableexpire, $expirationdate, $expiredays, $passui_secret,
+                $runservice, $tag, $id_group, $discount, $id_seria, $id_didgroup, $sip_buddy, $iax_buddy, $vat,
+            ]
+        );
+        $id_cc_card = $HD_Form->DBHandle->Insert_ID();
+
+        //create refill for each cards
+        if ($addcredit > 0) {
+            $HD_Form->DBHandle->Execute(
+                "INSERT INTO cc_logrefill (credit, card_id, description) VALUES (?, ?, ?)",
+                [$addcredit, $id_cc_card, _("CREATION CARD REFILL")]
+            );
+        }
+
+        if ($sip || $iax) {
+            $instance_realtime->insert_voip_config($sip, $iax, $id_cc_card, $accountnumber, $passui_secret);
+        }
     }
 
-    // Save Sip accounts to file
-    if (isset ($sip)) {
-        $instance_realtime -> create_trunk_config_file ('sip');
+    if ($sip) {
+        $instance_realtime->create_trunk_config_file();
     }
-
-    // Save IAX accounts to file
     if (isset ($iax)) {
-        $instance_realtime -> create_trunk_config_file ('iax');
+        $instance_realtime->create_trunk_config_file('iax');
     }
 }
-if (!isset ($_SESSION["IDfilter"]))
-    $_SESSION["IDfilter"] = 'NODEFINED';
 
-$HD_Form->FG_QUERY_WHERE_CLAUSE = " lastname='" . $_SESSION["IDfilter"] . "'";
+$HD_Form->FG_QUERY_WHERE_CLAUSE = " lastname='$_SESSION[IDfilter]'";
 
 // END GENERATE CARDS
 
 $HD_Form->init();
 
-if ($id != "" || !is_null($id)) {
+if (!empty($id)) {
     $HD_Form->FG_EDIT_QUERY_CONDITION = str_replace("%id", "$id", $HD_Form->FG_EDIT_QUERY_CONDITION);
 }
 
-if (!isset ($form_action))
-    $form_action = "list"; //ask-add
-if (!isset ($action))
-    $action = $form_action;
+$form_action = $form_action ?? "list";
+$action = $action ?? $form_action;
 
 $list = $HD_Form->perform_action($form_action);
 
@@ -194,233 +195,302 @@ $smarty->display('main.tpl');
 // #### HELP SECTION
 echo $CC_help_generate_customer;
 
-$instance_table_tariff = new Table("cc_tariffgroup", "id, tariffgroupname");
-$FG_TABLE_CLAUSE = "";
-$list_tariff = $instance_table_tariff->get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, ["tariffgroupname"]);
-$nb_tariff = count($list_tariff);
-$instance_table_group = new Table("cc_card_group", " id, name ");
-$list_group = $instance_table_group->get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, ["name"]);
+$result = $HD_Form->DBHandle->CacheExecute(300, "SELECT id, tariffgroupname AS name FROM cc_tariffgroup ORDER BY tariffgroupname");
+$list_tariff = $result ? $result->GetAll() : [];
 
-$instance_table_agent = new Table("cc_agent", " id, login ");
-$list_agent = $instance_table_agent->get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, ["login"]);
+$result = $HD_Form->DBHandle->CacheExecute(300, "SELECT id, name FROM cc_card_group ORDER BY name");
+$list_group = $result ? $result->GetAll() : [];
 
-$instance_table_seria = new Table("cc_card_seria", " id, name ");
-$list_seria = $instance_table_seria->get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, ["name"]);
+$result = $HD_Form->DBHandle->CacheExecute(300, "SELECT id, login AS name FROM cc_agent ORDER BY login");
+$list_agent = $result ? $result->GetAll() : [];
 
-$instance_table_didgroup = new Table("cc_didgroup", " id, didgroupname ");
-$list_didgroup = $instance_table_didgroup->get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, ["didgroupname"]);
+$result = $HD_Form->DBHandle->CacheExecute(300, "SELECT id, name FROM cc_card_seria ORDER BY name");
+$list_seria = $result ? $result->GetAll() : [];
 
-$instance_table_country = new Table("cc_country", " countrycode, countryname ");
-$list_country = $instance_table_country->get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, ["countryname"]);
+$result = $HD_Form->DBHandle->CacheExecute(300, "SELECT id, didgroupname AS name FROM cc_didgroup ORDER BY didgroupname");
+$list_didgroup = $result ? $result->GetAll() : [];
+
+$result = $HD_Form->DBHandle->CacheExecute(300, "SELECT countrycode AS id, countryname AS name FROM cc_country ORDER BY countryname");
+$list_country = $result ? $result->GetAll() : [];
 
 // FORM FOR THE GENERATION
 ?>
-<div align="center">
-<?php if (!empty($msg_error) && $nb_error>0 ) { ?>
-    <div class="msg_error" style="width:70%;text-align:left;">
-        <?php echo $msg_error ?>
-    </div>
-<?php } ?>
-<table align="center"  class="bgcolor_001" border="0" width="65%">
-<form name="theForm" action="<?php echo filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL) ?>" method="POST">
+<?php if (count($errors) > 0 ): ?>
+<div class="row pb-3 text-danger">
+    <?= _("Errors were found in the input:") ?><br/>
+    <?php foreach ($errors as $err): ?>
+        <?= $err ?><br/>
+    <?php endforeach ?>
+<?php endif ?>
+
+
+<form name="theForm" action="" method="POST">
 <?= $HD_Form->csrf_inputs() ?>
-<tr>
-    <td align="left" width="100%">
-    <strong>1)</strong> <?php echo gettext("Length of card number :");?>
-    <select name="cardnumberlength_list" size="1" class="form_input_select">
-    <?php
-    foreach ($A2B -> cardnumber_range as $value) {
-    ?>
-        <option value='<?php echo $value ?>'
-        <?php if ($value == $cardnumberlength_list) echo "selected";
-        ?>> <?php echo $value." ".gettext("Digits");?> </option>
-
-    <?php
-    }
-    ?>
-    </select><br>
-    <strong>2)</strong>
-     <?php echo gettext("Number of customers to create")?> :
-        <input class="form_input_text" name="nb_to_create" size="5" maxlength="5" value="<?php echo $nb_to_create; ?>" >
-        <img style="vertical-align:middle;" src="<?php echo Images_Path;?>/exclamation.png"/> <?php echo gettext("(an high value will load your system!)");?>
-    <br/>
-
-    <strong>3)</strong>
-    <?php echo gettext("Call plan");?> :
-    <select NAME="choose_tariff" size="1" class="form_input_select" >
-        <option value=''><?php echo gettext("Choose a Call Plan");?></option>
-    <?php foreach ($list_tariff as $recordset) { ?>
-        <option class=input value='<?php echo $recordset[0]?>' <?php if($recordset[0]==$choose_tariff) echo "selected"; ?> ><?php echo $recordset[1]?></option>
-    <?php } ?>
-    </select>
-    <?php if ($tariff_error) { ?>
-        <img style="vertical-align:middle;" src="<?php echo Images_Path;?>/exclamation.png" />
-    <?php } ?>
-    <br/>
-
-    <strong>4)</strong>
-    <?php echo gettext("Initial amount of credit");?> : <input class="form_input_text" value="<?php if(is_numeric($addcredit) && $addcredit>0) echo $addcredit; else echo 0;?>" name="addcredit" size="10" maxlength="10" >
-    <?php if ($credit_error) { ?>
-        <img style="vertical-align:middle;" src="<?php echo Images_Path;?>/exclamation.png" />
-    <?php } ?>
-    <br/>
-
-    <strong>5)</strong>
-    <?php echo gettext("Simultaneous access");?> :
-    <select NAME="choose_simultaccess" size="1" class="form_input_select" >
-        <option value='0' <?php if($choose_simultaccess== 0 || empty($choose_simultaccess)) echo "selected"; ?>><?php echo gettext("INDIVIDUAL ACCESS");?></option>
-        <option value='1' <?php if($choose_simultaccess== 1) echo "selected"; ?>><?php echo gettext("SIMULTANEOUS ACCESS");?></option>
-       </select>
-    <br/>
-
-    <strong>6)</strong>
-    <?php echo gettext("Currency");?> :
-    <select NAME="choose_currency" size="1" class="form_input_select" >
-    <?php foreach (get_currencies() as $key => $cur_value) { ?>
-        <option value='<?php echo $key ?>' <?php if($choose_currency== $key) echo "selected"; ?>><?php echo $cur_value[1].' ('.$cur_value[2].')' ?></option>
-    <?php } ?>
-    </select>
-    <br/>
-
-    <strong>7)</strong>
-    <?php echo gettext("Card type");?> :
-    <select NAME="choose_typepaid" size="1" class="form_input_select" >
-        <option value='0' <?php if($choose_typepaid== 0 || empty($choose_typepaid)) echo "selected"; ?>><?php echo gettext("PREPAID CARD");?></option>
-        <option value='1' <?php if($choose_typepaid== 1) echo "selected"; ?>><?php echo gettext("POSTPAY CARD");?></option>
-       </select>
-    <br/>
-
-    <strong>8)</strong>
-    <?php echo gettext("Credit Limit of postpay");?> : <input class="form_input_text" value="<?php if(is_numeric($creditlimit) && $creditlimit>0) echo $creditlimit; else echo 0;?>" name="creditlimit" size="10" maxlength="16" >
-    <br/>
-
-    <strong>9)</strong>
-       <?php echo gettext("Enable expire");?>&nbsp;:
-    <select name="enableexpire" class="form_input_select" >
-        <option value="0" <?php if($enableexpire== 0 || empty($enableexpire)) echo "selected"; ?>> <?php echo gettext("NO EXPIRATION");?> </option>
-        <option value="1" <?php if($enableexpire== 1) echo "selected";?> > <?php echo gettext("EXPIRE DATE");?> </option>
-        <option value="2" <?php if($enableexpire== 2) echo "selected";?> > <?php echo gettext("EXPIRE DAYS SINCE FIRST USE");?> </option>
-        <option value="3" <?php if($enableexpire== 3) echo "selected"; ?> > <?php echo gettext("EXPIRE DAYS SINCE CREATION");?> </option>
-    </select>
-    <br/>
-    <?php
-        $begin_date = date("Y");
-        $begin_date_plus = date("Y") + 10;
-        $end_date = date("-m-d H:i:s");
-        $comp_date = "value='".$begin_date.$end_date."'";
-        $comp_date_plus = "value='".$begin_date_plus.$end_date."'";
-    ?>
-
-    <strong>10)</strong>
-    <?php echo gettext("Expiry Date");?> : <input class="form_input_text"  name="expirationdate" size="40" maxlength="40" <?php if(!empty($expirationdate)) echo "value='$expirationdate'"; else echo $comp_date_plus;?> > <?php echo gettext("(Format YYYY-MM-DD HH:MM:SS)");?>
-    <?php if ($expdate_error) { ?>
-        <img style="vertical-align:middle;" src="<?php echo Images_Path;?>/exclamation.png" />
-    <?php } ?>
-    <br/>
-
-    <strong>11)</strong>
-   <?php echo gettext("Expiry days");?> : <input class="form_input_text"  name="expiredays" size="10" maxlength="6" value="<?php if(is_numeric($expiredays) && $expiredays>0) echo $expiredays; else echo 0;?>">
-    <?php if ($expday_error) { ?>
-        <img style="vertical-align:middle;" src="<?php echo Images_Path;?>/exclamation.png" />
-    <?php } ?>
-    <br/>
-
-    <strong>12)</strong>
-    <?php echo gettext("Run service");?> :
-    <?php echo gettext("Yes");?> <input name="runservice" value="1" <?php if($runservice==1) echo "checked='checked'" ?> type="radio"> - <?php echo gettext("No");?> <input name="runservice" value="0" <?php if($runservice==0 || empty($runservice) ) echo "checked='checked'" ?>  type="radio">
-    <br/>
-
-    <strong>13)</strong>
-   <?php echo gettext("Create SIP/IAX Friends");?>&nbsp;: <?php echo gettext("SIP")?> <input type="checkbox" name="sip" value="1" <?php if($sip==1) echo "checked" ?>> <?php echo gettext("IAX")?> : <input type="checkbox" name="iax" value="1" <?php if($iax==1 ) echo "checked" ?> >
-    <br/>
-
-    <strong>14)</strong>
-    <?php echo gettext("Tag");?> : <input class="form_input_text"  name="tag" size="40" maxlength="40" <?php if(!empty($tag)) echo "value='$tag'"; ?> >
-    <br/>
-
-    <strong>15)</strong>
-    <?php echo gettext("Customer group");?> :
-    <select NAME="id_group" size="1" class="form_input_select" >
-    <option value=''><?php echo gettext("Choose a group");?></option>
-    <?php foreach ($list_group as $recordset) { ?>
-        <option class=input value='<?php echo $recordset[0]?>' <?php if($recordset[0]==$id_group) echo "selected"; ?> ><?php echo $recordset[1]?></option>
-    <?php } ?>
-    </select>
-    <?php if ($group_error) { ?>
-        <img style="vertical-align:middle;" src="<?php echo Images_Path;?>/exclamation.png" />
-    <?php } ?>
-    <br/>
-    <strong>16)</strong>
-     <?php echo gettext("Discount");?> :
-    <select NAME="discount" size="1" class="form_input_select" >
-    <option value='0'><?php echo gettext("NO DISCOUNT");?></option>
-    <?php for ($i=1;$i<99;$i++) { ?>
-        <option class=input value='<?php echo $i; ?>' <?php if($i==$discount) echo "selected"; ?> ><?php echo $i;?>%</option>
-    <?php } ?>
-    </select>
-    <br/>
-    <strong>17)</strong>
-    <?php echo gettext("Serie");?> :
-    <select NAME="id_seria" size="1" class="form_input_select" >
-    <option value=''><?php echo gettext("Choose a Series");?></option>
-    <?php
-     foreach ($list_seria as $recordset) {
-    ?>
-        <option class=input value='<?php echo $recordset[0]?>'  <?php if($recordset[0]==$id_seria) echo "selected"; ?>  ><?php echo $recordset[1]?></option>
-    <?php } ?>
-     </select>
-     <br/>
-     <strong>18)</strong>
-    <?php echo gettext("DID GROUP");?> :
-    <select NAME="id_didgroup" size="1" class="form_input_select" >
-    <option value='0'><?php echo gettext("Choose a DID Group");?></option>
-    <?php foreach ($list_didgroup as $recordset) { ?>
-        <option class=input value='<?php echo $recordset[0]?>' <?php if($recordset[0]==$id_didgroup) echo "selected"; ?> ><?php echo $recordset[1]?></option>
-    <?php } ?>
-    </select>
-    <?php if ($didgroup_error) { ?>
-        <img style="vertical-align:middle;" src="<?php echo Images_Path;?>/exclamation.png" />
-    <?php } ?>
-
-    <br/>
-    <strong>19)</strong>
-    <?php echo gettext("VAT");?> : <input class="form_input_text"  name="vat" size="10" maxlength="10" <?php if(!empty($vat)) echo "value='$vat'"; ?> >
-
-    <br/>
-     <strong>20)</strong>
-    <?php echo gettext("COUNTRY");?> :
-    <select NAME="id_country" size="1" class="form_input_select" >
-    <option value='0'><?php echo gettext("Choose a country");?></option>
-    <?php foreach ($list_country as $recordset) { ?>
-        <option class=input value='<?php echo $recordset[0]?>' <?php if($recordset[0]==$id_country) echo "selected"; ?> ><?php echo $recordset[1]?></option>
-    <?php } ?>
-    </select>
-    <?php if ($country_error) { ?>
-        <img style="vertical-align:middle;" src="<?php echo Images_Path;?>/exclamation.png" />
-    <?php } ?>
-
-    </td>
-</tr>
-<tr>
-    <td align="right">
-        <input name="action"  value="generate" type="hidden"/>
-        <input class="form_input_button"  value=" GENERATE CUSTOMERS " type="submit"/>
-    </td>
-</tr>
+    <div class="row pb-3">
+        <label class="col-4 col-form-label" for="cardnumberlength_list">
+            <?= _("Length of card number :") ?>
+        </label>
+        <div class="col-8">
+            <select name="cardnumberlength_list" id="cardnumberlength_list" class="form-select">
+                <?php foreach ($A2B->cardnumber_range as $value): ?>
+                <option value="<?= $value ?>"><?= sprintf(_("%d digits"), $value) ?></option>
+                <?php endforeach ?>
+            </select>
+        </div>
+    </div>
+    <div class="row pb-3">
+        <label class="col-4 col-form-label" for="nb_to_create">
+            <?= _("Number of customers to create") ?>
+        </label>
+        <div class="col-8">
+            <input type="number" name="nb_to_create" id="nb_to_create" class="form-control" value="<?= $nb_to_create ?? "" ?>" min="1" max="999"/>
+        </div>
+    </div>
+    <div class="row pb-3">
+        <label class="col-4 col-form-label" for="choose_tariff">
+            <?= _("Call plan") ?>
+        </label>
+        <div class="col-8">
+            <select name="choose_tariff" id="choose_tariff" class="form-select <?= empty($errors["choose_tariff"]) ? "" : "is-invalid" ?>">
+                <option value=""><?= _("Choose a call plan") ?></option>
+                <?php foreach ($list_tariff as $plan): ?>
+                <option value="<?= $plan["id"] ?>" <?= ($plan["id"] === $choose_tariff ?? "") ? 'selected="selected"' : "" ?>><?= $plan["name"] ?></option>
+                <?php endforeach ?>
+            </select>
+        </div>
+    </div>
+    <div class="row pb-3">
+        <label class="col-4 col-form-label" for="addcredit">
+            <?= _("Initial amount of credit") ?>
+        </label>
+        <div class="col-8">
+            <input
+                type="number"
+                name="addcredit"
+                id="addcredit"
+                class="form-control <?= empty($errors["addcredit"]) ? "" : "is-invalid" ?>"
+                value="<?= empty($errors["addcredit"]) ? $addcredit : "" ?>"
+                min="0"
+                max="999"
+            />
+        </div>
+    </div>
+    <div class="row pb-3">
+        <label class="col-4 col-form-label" for="choose_simultaccess">
+            <?= _("Simultaneous access") ?>
+        </label>
+        <div class="col-8">
+            <select name="choose_simultaccess" id="choose_simultaccess" class="form-select">
+                <option value="0" <?= ($choose_simultaccess ?? "0") === "0" ? "selected='selected'" : "" ?>><?= _("Individual access") ?></option>
+                <option value="1" <?= ($choose_simultaccess ?? "0") === "1" ? "selected='selected'" : "" ?>><?= _("Simultaneous access") ?></option>
+            </select>
+        </div>
+    </div>
+    <div class="row pb-3">
+        <label class="col-4 col-form-label" for="choose_currency">
+            <?= _("Currency") ?>
+        </label>
+        <div class="col-8">
+            <select name="choose_currency" id="choose_currency" class="form-select <?= empty($errors["choose_currency"]) ? "" : "is-invalid" ?>">
+                <?php foreach (get_currencies() as $id => $val): ?>
+                <option value="<?= $id ?>" <?= ($choose_currency ?? "") === $id ? "selected='selected'" : "" ?>><?= $val[1] ?> (<?= $val[2] ?>)</option>
+                <?php endforeach ?>
+            </select>
+        </div>
+    </div>
+    <div class="row pb-3">
+        <label class="col-4 col-form-label" for="choose_typepaid">
+            <?= _("Card type") ?>
+        </label>
+        <div class="col-8">
+            <select name="choose_typepaid" id="choose_typepaid" class="form-select">
+                <option value="0" <?= ($choose_typepaid ?? "0") === "0" ? "selected='selected'" : "" ?>><?= _("Prepaid") ?></option>
+                <option value="1" <?= ($choose_typepaid ?? "0") === "1" ? "selected='selected'" : "" ?>><?= _("Postpaid") ?></option>
+            </select>
+        </div>
+    </div>
+    <div class="row pb-3">
+        <label class="col-4 col-form-label" for="creditlimit">
+            <?= _("Postpaid credit limit") ?>
+        </label>
+        <div class="col-8">
+            <input type="number" name="creditlimit" id="creditlimit" min="0" max="999" value="<?= ($creditlimit ?? 0) * 1 ?>"/>
+        </div>
+    </div>
+    <div class="row pb-3">
+        <label class="col-4 col-form-label" for="enableexpire">
+            <?= _("Expiration") ?>
+        </label>
+        <div class="col-8">
+            <select name="enableexpire" id="enableexpire" class="form-select">
+                <option value="0" <?= ($enableexpire ?? "0") === "0" ? "selected='selected'" : "" ?>><?= _("No expiration") ?></option>
+                <option value="1" <?= ($enableexpire ?? "0") === "1" ? "selected='selected'" : "" ?>><?= _("Expires on date") ?></option>
+                <option value="2" <?= ($enableexpire ?? "0") === "2" ? "selected='selected'" : "" ?>><?= _("Expires in days since first use") ?></option>
+                <option value="3" <?= ($enableexpire ?? "0") === "3" ? "selected='selected'" : "" ?>><?= _("Expires in days since creation") ?></option>
+            </select>
+        </div>
+    </div>
+    <div class="row pb-3">
+        <label class="col-4 col-form-label" for="expirationdate">
+            <?= _("Expiry date") ?>
+        </label>
+        <div class="col-8">
+            <input
+                type="datetime-local"
+                name="expirationdate"
+                id="expirationdate"
+                class="form-control <?= empty($errors["expirationdate"]) ? "" : "is-invalid" ?>"
+                value="<?= empty($errors["expirationdate"]) ? $expirationdate : (new DateTime("now +10 years"))->format("Y-m-d\\TH:i") ?>"
+            />
+        </div>
+    </div>
+    <div class="row pb-3">
+        <label class="col-4 col-form-label" for="expiredays">
+            <?= _("Expiry days") ?>
+        </label>
+        <div class="col-8">
+            <input
+                type="number"
+                name="expiredays"
+                id="expiredays"
+                class="form-control <?= empty($errors["expiredays"]) ? "" : "is-invalid" ?>"
+                value="<?= empty($errors["expiredays"]) ? $addcredit : "0" ?>"
+                min="0"
+                max="999"
+            />
+        </div>
+    </div>
+    <div class="row pb-3">
+        <label class="col-4 col-form-label" for="runservice">
+            <?= _("Run service?") ?>
+        </label>
+        <div class="col-8">
+            <select name="runservice" id="runservice" class="form-select">
+                <option value="0" <?= ($runservice ?? "0") === "0" ? "selected='selected'" : "" ?>><?= _("No") ?></option>
+                <option value="1" <?= ($runservice ?? "0") === "1" ? "selected='selected'" : "" ?>><?= _("Yes") ?></option>
+            </select>
+        </div>
+    </div>
+    <div class="row pb-3">
+        <label class="col-4 col-form-label" for="sip">
+            <?= _("Create SIP/IAX peers?") ?>
+        </label>
+        <div class="col-8">
+            <div class="form-check">
+                <label class="form-check-label" for="sip"><?= _("SIP") ?></label>
+                <input type="checkbox" name="sip" id="sip" value="1" class="form-check" <?= empty($sip) ? "" : "checked='checked'" ?>/>
+            </div>
+            <div class="form-check">
+                <label class="form-check-label" for="iax"><?= _("IAX") ?></label>
+                <input type="checkbox" name="iax" id="iax" value="1" class="form-check" <?= empty($iax) ? "" : "checked='checked'" ?>/>
+            </div>
+        </div>
+    </div>
+    <div class="row pb-3">
+        <label class="col-4 col-form-label" for="tag">
+            <?= _("Tag") ?>
+        </label>
+        <div class="col-8">
+            <input type="text" name="tag" id="tag" class="form-control" value="<?= $tag ?? "" ?>" maxlength="40"/>
+        </div>
+    </div>
+    <div class="row pb-3">
+        <label class="col-4 col-form-label" for="id_group">
+            <?= _("Customer group") ?>
+        </label>
+        <div class="col-8">
+            <select name="id_group" id="id_group" class="form-select <?= empty($errors["id_group"]) ? "" : "is-invalid" ?>">
+                <option value=""><?= _("Choose a group") ?></option>
+                <?php foreach ($list_group as $group): ?>
+                    <option value="<?= $group["id"] ?>" <?= ($group["id"] === $id_group ?? "") ? 'selected="selected"' : "" ?>><?= $group["name"] ?></option>
+                <?php endforeach ?>
+            </select>
+        </div>
+    </div>
+    <div class="row pb-3">
+        <label class="col-4 col-form-label" for="discount">
+            <?= _("Discount") ?>
+        </label>
+        <div class="col-8">
+            <select name="discount" id="discount" class="form-select">
+                <option value="0"><?= _("No discount") ?></option>
+                <?php for ($i = 1; $i < 100; $i++): ?>
+                    <option value="<?= $i ?>"<?= ($i === $discount ?? 0) ? 'selected="selected"' : "" ?>><?= $i ?>%</option>
+                <?php endfor ?>
+            </select>
+        </div>
+    </div>
+    <div class="row pb-3">
+        <label class="col-4 col-form-label" for="id_seria">
+            <?= _("Card series") ?>
+        </label>
+        <div class="col-8">
+            <select name="id_seria" id="id_seria" class="form-select">
+                <option value=""><?= _("Choose a series") ?></option>
+                <?php foreach ($list_seria as $group): ?>
+                    <option value="<?= $group["id"] ?>" <?= ($group["id"] === $id_group ?? "") ? 'selected="selected"' : "" ?>><?= $group["name"] ?></option>
+                <?php endforeach ?>
+            </select>
+        </div>
+    </div>
+    <div class="row pb-3">
+        <label class="col-4 col-form-label" for="id_didgroup">
+            <?= _("DID group") ?>
+        </label>
+        <div class="col-8">
+            <select name="id_didgroup" id="id_didgroup" class="form-select <?= empty($errors["id_didgroup"]) ? "" : "is-invalid" ?>">
+                <option value=""><?= _("Choose a DID group") ?></option>
+                <?php foreach ($list_didgroup as $group): ?>
+                    <option value="<?= $group["id"] ?>" <?= ($group["id"] === $id_group ?? "") ? 'selected="selected"' : "" ?>><?= $group["name"] ?></option>
+                <?php endforeach ?>
+            </select>
+        </div>
+    </div>
+    <div class="row pb-3">
+        <label class="col-4 col-form-label" for="vat">
+            <?= _("VAT/GST") ?>
+        </label>
+        <div class="col-8">
+            <input type="number" name="vat" id="vat" min="0" max="99" value="<?= ($vat ?? 0) * 1 ?>"/>
+        </div>
+    </div>
+    <div class="row pb-3">
+        <label class="col-4 col-form-label" for="id_country">
+            <?= _("Country") ?>
+        </label>
+        <div class="col-8">
+            <select name="id_country" id="id_country" class="form-select <?= empty($errors["id_country"]) ? "" : "is-invalid" ?>">
+                <option value="0"><?= _("Choose a country") ?></option>
+                <?php foreach ($list_country as $country): ?>
+                    <option value="<?= $country["id"] ?>" <?= ($country["id"] === $id_country ?? "") ? 'selected="selected"' : "" ?>><?= $country["name"] ?></option>
+                <?php endforeach ?>
+            </select>
+        </div>
+    </div>
+    <div class="row my-4">
+        <div class="col align-items-end">
+            <button type="submit" class="btn btn-primary"><?= _("Generate Customers") ?></button>
+        </div>
+    </div>
 </form>
-</table>
-</div>
-<br>
 
 <?php
 // #### TOP SECTION PAGE
-$HD_Form -> create_toppage ($form_action);
 
-$HD_Form -> create_form($form_action, $list) ;
+$HD_Form->FG_FILTER_ENABLE = false;
+$HD_Form->FG_ENABLE_ADD_BUTTON = false;
+$HD_Form->FG_ENABLE_INFO_BUTTON = false;
+$HD_Form->FG_LIST_ADDING_BUTTON1 = false;
+$HD_Form->FG_LIST_ADDING_BUTTON2 = false;
 
-$_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR]= "SELECT ".implode(",", $HD_Form -> FG_EXPORT_FIELD_LIST)." FROM $HD_Form->FG_QUERY_TABLE_NAME";
-if (strlen($HD_Form->FG_QUERY_WHERE_CLAUSE)>1)
+$HD_Form->create_toppage ($form_action);
+
+$HD_Form->create_form($form_action, $list) ;
+
+$_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR]= "SELECT ".implode(",", $HD_Form->FG_EXPORT_FIELD_LIST)." FROM $HD_Form->FG_QUERY_TABLE_NAME";
+if (strlen($HD_Form->FG_QUERY_WHERE_CLAUSE)>1) {
     $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] .= " WHERE $HD_Form->FG_QUERY_WHERE_CLAUSE ";
+}
 if (!empty($HD_Form->FG_QUERY_ORDERBY_COLUMNS) && !empty($HD_Form->FG_QUERY_DIRECTION)) {
     $ord = implode(",", $HD_Form->FG_QUERY_ORDERBY_COLUMNS);
     $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] .= " ORDER BY $ord $HD_Form->FG_QUERY_DIRECTION";
