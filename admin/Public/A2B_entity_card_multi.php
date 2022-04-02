@@ -92,7 +92,12 @@ $id_group = (int)($id_group ?? 0);
 $choose_tariff = (int)($choose_tariff ?? 0);
 $addcredit = (int)($addcredit ?? 0);
 $expiredays = (int)($expiredays ?? 0);
-$expirationdate = $expirationdate ?? "";
+$expirationdate = empty($expirationdate) ? "zzzzzz" : $expirationdate;
+try {
+    $expirationdate = (new DateTime($expirationdate))->format("Y-m-d H:i:s");
+} catch (\Exception $e) {
+    $expirationdate = null;
+}
 $nb_to_create = (int)($nb_to_create ?? 0);
 $instance_realtime = new Realtime();
 
@@ -111,7 +116,7 @@ if ($action == "generate") {
     if ($expiredays < 0) {
         $errors["expiredays"] = _("Choose EXPIRATIONS DAYS of at least 0 for the customers");
     }
-    if (strtotime($expirationdate) === false) {
+    if (!$expirationdate) {
         $errors["expirationdate"] = _("EXPIRATION DATE should be in the format YYYY-MM-DD HH:MM");
     }
     if ($nb_to_create < 1) {
@@ -225,7 +230,8 @@ $list_country = $result ? $result->GetAll() : [];
 
 
 <form name="theForm" action="" method="POST">
-<?= $HD_Form->csrf_inputs() ?>
+    <?= $HD_Form->csrf_inputs() ?>
+    <input type="hidden" name="action" value="generate"/>
     <div class="row pb-3">
         <label class="col-4 col-form-label" for="cardnumberlength_list">
             <?= _("Length of card number :") ?>
@@ -375,14 +381,14 @@ $list_country = $result ? $result->GetAll() : [];
         <label class="col-4 col-form-label" for="sip">
             <?= _("Create SIP/IAX peers?") ?>
         </label>
-        <div class="col-8">
-            <div class="form-check">
+        <div class="col-8 d-flex align-items-center">
+            <div class="form-check form-check-inline">
+                <input type="checkbox" name="sip" id="sip" value="1" class="form-check-input" <?= empty($sip) ? "" : "checked='checked'" ?>/>
                 <label class="form-check-label" for="sip"><?= _("SIP") ?></label>
-                <input type="checkbox" name="sip" id="sip" value="1" class="form-check" <?= empty($sip) ? "" : "checked='checked'" ?>/>
             </div>
-            <div class="form-check">
+            <div class="form-check form-check-inline">
+                <input type="checkbox" name="iax" id="iax" value="1" class="form-check-input" <?= empty($iax) ? "" : "checked='checked'" ?>/>
                 <label class="form-check-label" for="iax"><?= _("IAX") ?></label>
-                <input type="checkbox" name="iax" id="iax" value="1" class="form-check" <?= empty($iax) ? "" : "checked='checked'" ?>/>
             </div>
         </div>
     </div>
@@ -467,8 +473,8 @@ $list_country = $result ? $result->GetAll() : [];
             </select>
         </div>
     </div>
-    <div class="row my-4">
-        <div class="col align-items-end">
+    <div class="row my-4 justify-content-end">
+        <div class="col-auto">
             <button type="submit" class="btn btn-primary"><?= _("Generate Customers") ?></button>
         </div>
     </div>
