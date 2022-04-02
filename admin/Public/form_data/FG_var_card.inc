@@ -186,8 +186,8 @@ $serial_pad_length = $A2B->config["webui"]['card_serial_length'];
 // first define each possible field
 $show_fields = [
     'id' => [_("ID"), "id"],
-    'username' => [_("Account number"), "username", true, 30, "display_customer_link"],
-    'lastname' => [_("Las name"), "lastname", true, 20],
+    'username' => [_("Account number"), "username", true, 30, $popup_select ? "" : "display_customer_link"],
+    'lastname' => [_("Last name"), "lastname", true, 20],
     'id_group' => [_("Group"), "id_group", true, 20, "", "lie", "cc_card_group", "name", "id='%id'", "%1"],
     'credit' => [_("Balance"), "credit", true, 0, "display_2bill"],
     'useralias' => [_("Web login"), "useralias"],
@@ -197,13 +197,13 @@ $show_fields = [
     'status' => [_("Status"), "status", true, 0, "", "list", $cardstatus_list_acronym],
     'language' => [_("Language"), "language"],
     'inuse' => [_("In use"), "inuse"],
-    'currency' => ["<acronym title=\"" . _("Currency") . "\">" . _("Cur") . "</acronym>", "currency", true, 0, "", "list", $currency_list_key],
+    'currency' => [_("Currency"), "currency", true, 0, "", "list", $currency_list_key],
     'sip_buddy' => [_("SIP"), "sip_buddy", true, 0, "", "list", $yesno],
     'iax_buddy' => [_("IAX"), "iax_buddy", true, 0, "", "list", $yesno],
     'nbused' => [_("Calls"), "nbused"],
     'firstname' => [_("First name"), "firstname", true, 15],
     'email' => [_("Email"), "email", true, 40],
-    'discount' => ["<acronym title=\"Discount\">" . _("Disc") . "</acronym>", "discount", true, 15, "display_percentage"],
+    'discount' => [_("Discount"), "discount", true, 15, "display_percentage"],
     'callerid' => ["<acronym title=\"Caller ID\">" . _("CID") . "</acronym>", "callerid", true, 15],
 ];
 

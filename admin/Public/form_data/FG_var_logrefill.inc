@@ -66,9 +66,9 @@ if (has_rights (ACX_MODIFY_REFILLS)) {
 $list_refill_type = getRefillType_List();
 
 $HD_Form -> AddViewElement(gettext("ID"), "cc_logrefill.id");
-$HD_Form -> AddViewElement(gettext("ACCOUNT"), "username", true, 30, "display_customer_id_link");
+$HD_Form -> AddViewElement(gettext("ACCOUNT"), "username", true, 30, "display_customer_link");
 $HD_Form -> AddViewElement(gettext("REFILL DATE"), "cc_logrefill.date", true, 30, "display_dateformat");
-$HD_Form -> AddViewElement(gettext("REFILL AMOUNT"), "credit", true, 0, "display_money");
+$HD_Form -> AddViewElement(gettext("REFILL AMOUNT"), "cc_logrefill.credit", true, 0, "display_money");
 $HD_Form -> AddViewElement(gettext("REFILL TYPE"), "refill_type", true, 0, "", "list", $list_refill_type);
 
 $HD_Form -> FieldViewElement ('cc_logrefill.id, cc_logrefill.card_id, cc_logrefill.date, cc_logrefill.credit , cc_logrefill.refill_type');
@@ -102,6 +102,7 @@ if (!empty($filterprefix)) {
 	$HD_Form -> FG_QUERY_WHERE_CLAUSE.="username like '$filterprefix%'";
 }
 
+// what is the point of this, if editing or deleting a refill doesn't change the card balance?
 if (has_rights (ACX_MODIFY_REFILLS)) {
 	$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 	$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;

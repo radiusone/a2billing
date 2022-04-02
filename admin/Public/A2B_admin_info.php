@@ -52,13 +52,8 @@ if (empty($id)) {
 }
 
 $DBHandle  = DbConnect();
-
-$admin_table = new Table('cc_ui_authen','*');
-$admin_clause = "userid = ".$id;
-$admin_result = $admin_table -> get_list($DBHandle, $admin_clause);
-$admin = $admin_result[0];
-
-if (empty($admin)) {
+$result = $DBHandle->Execute("SELECT * FROM cc_ui_authen WHERE userid = ?", [$id]);
+if (!$result || !($admin = $result->FetchRow())) {
     header("Location: A2B_entity_user.php?atmenu=user&groupID=$groupID&section=3");
 }
 

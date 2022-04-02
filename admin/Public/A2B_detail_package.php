@@ -183,10 +183,8 @@ if ($nb_record<=$FG_LIMITE_DISPLAY) {
     }
 }
 
-$instance_table_tariff = new Table("cc_package_offer", "id, label");
-$FG_TABLE_CLAUSE = "";
-$list_package = $instance_table_tariff -> get_list ($DBHandle, $FG_TABLE_CLAUSE, ["label"]);
-$nb_package = count($list_package);
+$result = $DBHandle->Execute("SELECT id, label FROM cc_package_offer ORDER BY label");
+$list_package = $result->GetAll();
 
 $smarty->display('main.tpl');
 

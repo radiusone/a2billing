@@ -2,7 +2,6 @@
 
 use A2billing\A2Billing;
 use A2billing\Forms\FormHandler;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -210,25 +209,23 @@ function sendValue(selvalue, othervalue) {
 
 <?php if ($form_action === "list" && !$popup_select):
 
-    $instance_table_tariff = new Table("cc_tariffgroup", "id, tariffgroupname");
-    $FG_TABLE_CLAUSE = "";
-    $list_tariff = $instance_table_tariff->get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, ["tariffgroupname"]);
-    $nb_tariff = count($list_tariff);
+    $result = $HD_Form->DBHandle->CacheExecute(300, "SELECT id, tariffgroupname FROM cc_tariffgroup ORDER BY tariffgroupname");
+    $list_tariff = $result ? $result->GetAll() : [];
 
-    $instance_table_group = new Table("cc_card_group"," id, name ");
-    $list_group = $instance_table_group->get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, ["name"]);
+    $result = $HD_Form->DBHandle->CacheExecute(300, "SELECT id, name FROM cc_card_group ORDER BY name");
+    $list_group = $result ? $result->GetAll() : [];
 
-    $instance_table_agent = new Table("cc_agent"," id, login ");
-    $list_agent = $instance_table_agent->get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, ["login"]);
+    $result = $HD_Form->DBHandle->CacheExecute(300, "SELECT id, login FROM cc_agent ORDER BY login");
+    $list_agent = $result ? $result->GetAll() : [];
 
-    $instance_table_seria = new Table("cc_card_seria"," id, name");
-    $list_seria  = $instance_table_seria->get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, ["name"]);
+    $result = $HD_Form->DBHandle->CacheExecute(300, "SELECT id, name FROM cc_card_seria ORDER BY name");
+    $list_seria = $result ? $result->GetAll() : [];
 
     $list_refill_type = getRefillType_List();
     $list_refill_type["-1"] = ["NO REFILL", "-1"];
 
-    $instance_table_country = new Table("cc_country", " countrycode, countryname ");
-    $list_country = $instance_table_country->get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, ["countryname"]);
+    $result = $HD_Form->DBHandle->CacheExecute(300, "SELECT countrycode, countryname FROM cc_country ORDER BY countryname");
+    $list_country = $result ? $result->GetAll() : [];
 
     echo $CC_help_list_customer;
 ?>
