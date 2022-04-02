@@ -58,7 +58,7 @@ if (!has_rights(ACX_CUSTOMER)) {
 getpost_ifset([
     'nb_to_create', 'creditlimit', 'cardnum', 'addcredit', 'choose_tariff', 'gen_id', 'cardnum', 'choose_simultaccess',
     'choose_currency', 'choose_typepaid', 'creditlimit', 'enableexpire', 'expirationdate', 'expiredays', 'runservice', 'sip', 'iax',
-    'cardnumberlength_list', 'tag', 'id_group', 'discount', 'id_seria', 'id_didgroup', 'vat', 'id_country',
+    'cardnumber_length', 'tag', 'id_group', 'discount', 'id_seria', 'id_didgroup', 'vat', 'id_country',
 ]);
 /**
  * @var string $nb_to_create
@@ -78,7 +78,7 @@ getpost_ifset([
  * @var string $runservice
  * @var string $sip
  * @var string $iax
- * @var string $cardnumberlength_list
+ * @var string $cardnumber_length
  * @var string $tag
  * @var string $id_group
  * @var string $discount
@@ -133,8 +133,8 @@ if ($nb_to_create > 0 && $action === "generate" && count($errors) === 0) {
     $creditlimit = (int)($creditlimit ?? 0);
 
     for ($k = 0; $k < $nb_to_create; $k++) {
-        [$accountnumber, $useralias] = gen_card_with_alias("cc_card", $cardnumberlength_list);
-        $passui_secret = MDP_NUMERIC(5).MDP_STRING(10).MDP_NUMERIC(5);
+        [$accountnumber, $useralias] = gen_card_with_alias("cc_card", $cardnumber_length);
+        $passui_secret = MDP_NUMERIC(5) . MDP_STRING(10) . MDP_NUMERIC(5);
 
         $datecol = $dateval = "";
         if (DB_TYPE === "mysql") {
@@ -226,18 +226,18 @@ $list_country = $result ? $result->GetAll() : [];
     <?php foreach ($errors as $err): ?>
         <?= $err ?><br/>
     <?php endforeach ?>
+</div>
 <?php endif ?>
-
 
 <form name="theForm" action="" method="POST">
     <?= $HD_Form->csrf_inputs() ?>
     <input type="hidden" name="action" value="generate"/>
     <div class="row pb-3">
-        <label class="col-4 col-form-label" for="cardnumberlength_list">
+        <label class="col-4 col-form-label" for="cardnumber_length">
             <?= _("Length of card number :") ?>
         </label>
         <div class="col-8">
-            <select name="cardnumberlength_list" id="cardnumberlength_list" class="form-select">
+            <select name="cardnumber_length" id="cardnumber_length" class="form-select">
                 <?php foreach ($A2B->cardnumber_range as $value): ?>
                 <option value="<?= $value ?>"><?= sprintf(_("%d digits"), $value) ?></option>
                 <?php endforeach ?>
@@ -260,7 +260,7 @@ $list_country = $result ? $result->GetAll() : [];
             <select name="choose_tariff" id="choose_tariff" class="form-select <?= empty($errors["choose_tariff"]) ? "" : "is-invalid" ?>">
                 <option value=""><?= _("Choose a call plan") ?></option>
                 <?php foreach ($list_tariff as $plan): ?>
-                <option value="<?= $plan["id"] ?>" <?= ($plan["id"] === $choose_tariff ?? "") ? 'selected="selected"' : "" ?>><?= $plan["name"] ?></option>
+                <option value="<?= $plan["id"] ?>" <?= ($plan["id"] === "$choose_tariff" ?? "") ? 'selected="selected"' : "" ?>><?= $plan["name"] ?></option>
                 <?php endforeach ?>
             </select>
         </div>
@@ -287,8 +287,8 @@ $list_country = $result ? $result->GetAll() : [];
         </label>
         <div class="col-8">
             <select name="choose_simultaccess" id="choose_simultaccess" class="form-select">
-                <option value="0" <?= ($choose_simultaccess ?? "0") === "0" ? "selected='selected'" : "" ?>><?= _("Individual access") ?></option>
-                <option value="1" <?= ($choose_simultaccess ?? "0") === "1" ? "selected='selected'" : "" ?>><?= _("Simultaneous access") ?></option>
+                <option value="0" <?= ("$choose_simultaccess" ?? "0") === "0" ? "selected='selected'" : "" ?>><?= _("Individual access") ?></option>
+                <option value="1" <?= ("$choose_simultaccess" ?? "0") === "1" ? "selected='selected'" : "" ?>><?= _("Simultaneous access") ?></option>
             </select>
         </div>
     </div>
@@ -299,7 +299,7 @@ $list_country = $result ? $result->GetAll() : [];
         <div class="col-8">
             <select name="choose_currency" id="choose_currency" class="form-select <?= empty($errors["choose_currency"]) ? "" : "is-invalid" ?>">
                 <?php foreach (get_currencies() as $id => $val): ?>
-                <option value="<?= $id ?>" <?= ($choose_currency ?? "") === $id ? "selected='selected'" : "" ?>><?= $val[1] ?> (<?= $val[2] ?>)</option>
+                <option value="<?= $id ?>" <?= ("$choose_currency" ?? "") === $id ? "selected='selected'" : "" ?>><?= $val[1] ?> (<?= $val[2] ?>)</option>
                 <?php endforeach ?>
             </select>
         </div>
@@ -310,8 +310,8 @@ $list_country = $result ? $result->GetAll() : [];
         </label>
         <div class="col-8">
             <select name="choose_typepaid" id="choose_typepaid" class="form-select">
-                <option value="0" <?= ($choose_typepaid ?? "0") === "0" ? "selected='selected'" : "" ?>><?= _("Prepaid") ?></option>
-                <option value="1" <?= ($choose_typepaid ?? "0") === "1" ? "selected='selected'" : "" ?>><?= _("Postpaid") ?></option>
+                <option value="0" <?= ("$choose_typepaid" ?? "0") === "0" ? "selected='selected'" : "" ?>><?= _("Prepaid") ?></option>
+                <option value="1" <?= ("$choose_typepaid" ?? "0") === "1" ? "selected='selected'" : "" ?>><?= _("Postpaid") ?></option>
             </select>
         </div>
     </div>
@@ -320,7 +320,7 @@ $list_country = $result ? $result->GetAll() : [];
             <?= _("Postpaid credit limit") ?>
         </label>
         <div class="col-8">
-            <input type="number" name="creditlimit" id="creditlimit" min="0" max="999" value="<?= ($creditlimit ?? 0) * 1 ?>"/>
+            <input type="number" name="creditlimit" id="creditlimit" class="form-control" min="0" max="999" value="<?= ($creditlimit ?? 0) * 1 ?>"/>
         </div>
     </div>
     <div class="row pb-3">
@@ -329,10 +329,10 @@ $list_country = $result ? $result->GetAll() : [];
         </label>
         <div class="col-8">
             <select name="enableexpire" id="enableexpire" class="form-select">
-                <option value="0" <?= ($enableexpire ?? "0") === "0" ? "selected='selected'" : "" ?>><?= _("No expiration") ?></option>
-                <option value="1" <?= ($enableexpire ?? "0") === "1" ? "selected='selected'" : "" ?>><?= _("Expires on date") ?></option>
-                <option value="2" <?= ($enableexpire ?? "0") === "2" ? "selected='selected'" : "" ?>><?= _("Expires in days since first use") ?></option>
-                <option value="3" <?= ($enableexpire ?? "0") === "3" ? "selected='selected'" : "" ?>><?= _("Expires in days since creation") ?></option>
+                <option value="0" <?= ("$enableexpire" ?? "0") === "0" ? "selected='selected'" : "" ?>><?= _("No expiration") ?></option>
+                <option value="1" <?= ("$enableexpire" ?? "0") === "1" ? "selected='selected'" : "" ?>><?= _("Expires on date") ?></option>
+                <option value="2" <?= ("$enableexpire" ?? "0") === "2" ? "selected='selected'" : "" ?>><?= _("Expires in days since first use") ?></option>
+                <option value="3" <?= ("$enableexpire" ?? "0") === "3" ? "selected='selected'" : "" ?>><?= _("Expires in days since creation") ?></option>
             </select>
         </div>
     </div>
@@ -372,8 +372,8 @@ $list_country = $result ? $result->GetAll() : [];
         </label>
         <div class="col-8">
             <select name="runservice" id="runservice" class="form-select">
-                <option value="0" <?= ($runservice ?? "0") === "0" ? "selected='selected'" : "" ?>><?= _("No") ?></option>
-                <option value="1" <?= ($runservice ?? "0") === "1" ? "selected='selected'" : "" ?>><?= _("Yes") ?></option>
+                <option value="0" <?= ("$runservice" ?? "0") === "0" ? "selected='selected'" : "" ?>><?= _("No") ?></option>
+                <option value="1" <?= ("$runservice" ?? "0") === "1" ? "selected='selected'" : "" ?>><?= _("Yes") ?></option>
             </select>
         </div>
     </div>
@@ -408,7 +408,7 @@ $list_country = $result ? $result->GetAll() : [];
             <select name="id_group" id="id_group" class="form-select <?= empty($errors["id_group"]) ? "" : "is-invalid" ?>">
                 <option value=""><?= _("Choose a group") ?></option>
                 <?php foreach ($list_group as $group): ?>
-                    <option value="<?= $group["id"] ?>" <?= ($group["id"] === $id_group ?? "") ? 'selected="selected"' : "" ?>><?= $group["name"] ?></option>
+                    <option value="<?= $group["id"] ?>" <?= ($group["id"] === "$id_group" ?? "") ? 'selected="selected"' : "" ?>><?= $group["name"] ?></option>
                 <?php endforeach ?>
             </select>
         </div>
@@ -421,7 +421,7 @@ $list_country = $result ? $result->GetAll() : [];
             <select name="discount" id="discount" class="form-select">
                 <option value="0"><?= _("No discount") ?></option>
                 <?php for ($i = 1; $i < 100; $i++): ?>
-                    <option value="<?= $i ?>"<?= ($i === $discount ?? 0) ? 'selected="selected"' : "" ?>><?= $i ?>%</option>
+                    <option value="<?= $i ?>"<?= ($i === "$discount" ?? "0") ? 'selected="selected"' : "" ?>><?= $i ?>%</option>
                 <?php endfor ?>
             </select>
         </div>
@@ -434,7 +434,7 @@ $list_country = $result ? $result->GetAll() : [];
             <select name="id_seria" id="id_seria" class="form-select">
                 <option value=""><?= _("Choose a series") ?></option>
                 <?php foreach ($list_seria as $group): ?>
-                    <option value="<?= $group["id"] ?>" <?= ($group["id"] === $id_group ?? "") ? 'selected="selected"' : "" ?>><?= $group["name"] ?></option>
+                    <option value="<?= $group["id"] ?>" <?= ($group["id"] === "$id_seria" ?? "") ? 'selected="selected"' : "" ?>><?= $group["name"] ?></option>
                 <?php endforeach ?>
             </select>
         </div>
@@ -447,7 +447,7 @@ $list_country = $result ? $result->GetAll() : [];
             <select name="id_didgroup" id="id_didgroup" class="form-select <?= empty($errors["id_didgroup"]) ? "" : "is-invalid" ?>">
                 <option value=""><?= _("Choose a DID group") ?></option>
                 <?php foreach ($list_didgroup as $group): ?>
-                    <option value="<?= $group["id"] ?>" <?= ($group["id"] === $id_group ?? "") ? 'selected="selected"' : "" ?>><?= $group["name"] ?></option>
+                    <option value="<?= $group["id"] ?>" <?= ($group["id"] === "$id_didgroup" ?? "") ? 'selected="selected"' : "" ?>><?= $group["name"] ?></option>
                 <?php endforeach ?>
             </select>
         </div>
@@ -457,7 +457,7 @@ $list_country = $result ? $result->GetAll() : [];
             <?= _("VAT/GST") ?>
         </label>
         <div class="col-8">
-            <input type="number" name="vat" id="vat" min="0" max="99" value="<?= ($vat ?? 0) * 1 ?>"/>
+            <input type="number" name="vat" id="vat" class="form-control" min="0" max="99" value="<?= ($vat ?? 0) * 1 ?>"/>
         </div>
     </div>
     <div class="row pb-3">
