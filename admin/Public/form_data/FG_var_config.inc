@@ -85,37 +85,35 @@ $HD_Form = new FormHandler("cc_config", _("Configuration"));
 $HD_Form->no_debug();
 $HD_Form->FG_TABLE_DEFAULT_ORDER = "config_group_title";
 
-$yesno = [];
-$result = $handle->Execute("SELECT config_value, config_valuetype, id FROM cc_config ORDER BY id");
-$config_list = $result ? $result->GetAll() : [];
-foreach($config_list as $key => $cur_value) {
-    $id = $cur_value[2];
-    if($cur_value[1] !== '1') {
-        $yesno[$id] = [$cur_value[0], $cur_value[2]];
-    } elseif($cur_value[0] === '1') {
-        $yesno[$id] = ["Yes", $cur_value[2]];
-    } elseif($cur_value[0] === '0') {
-        $yesno[$id] = ["No", $cur_value[2]];
-    } else {
-        $yesno[$id] = [$cur_value[0], $cur_value[2]];
+if ($form_action === "list") {
+    $yesno = [];
+    $result = $handle->Execute("SELECT config_value, config_valuetype, id FROM cc_config ORDER BY id");
+    $config_list = $result ? $result->GetAll() : [];
+    foreach ($config_list as $key => $cur_value) {
+        $i = $cur_value[2];
+        if ($cur_value[1] !== '1') {
+            $yesno[$i] = [$cur_value[0], $cur_value[2]];
+        } elseif ($cur_value[0] === '1') {
+            $yesno[$i] = ["Yes", $cur_value[2]];
+        } elseif ($cur_value[0] === '0') {
+            $yesno[$i] = ["No", $cur_value[2]];
+        } else {
+            $yesno[$i] = [$cur_value[0], $cur_value[2]];
+        }
     }
 
+    $HD_Form->FG_EDIT_QUERY_CONDITION = "id = %id";
+    $HD_Form->AddViewElement(_("TITLE"), "config_title");
+    $HD_Form->AddViewElement(_("KEY"), "config_key");
+    $HD_Form->AddViewElement(_("VALUE"), "config_value", false, 0, "", "list-conf", $yesno);
+    $HD_Form->AddViewElement(_("DESCRIPTION"), "config_description");
+    $HD_Form->AddViewElement(_("GROUP"), "config_group_title");
+
+    $HD_Form->FieldViewElement('config_title, config_key, config_value, config_description, config_group_title');
+
+    $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 25;
+    $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
 }
-
-$HD_Form->FG_EDIT_QUERY_CONDITION = "id = %id";
-$HD_Form->AddViewElement(_("TITLE"), "config_title");
-$HD_Form->AddViewElement(_("KEY"), "config_key");
-$HD_Form->AddViewElement(_("VALUE"), "config_value", false, 0, "", "list-conf", $yesno);
-$HD_Form->AddViewElement(_("DESCRIPTION"), "config_description");
-$HD_Form->AddViewElement(_("GROUP"), "config_group_title");
-
-$HD_Form->FieldViewElement ('config_title, config_key, config_value, config_description, config_group_title');
-
-$HD_Form->FG_LIST_VIEW_PAGE_SIZE = 25;
-
-$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form->FG_ENABLE_DELETE_BUTTON = false;
-$HD_Form->FG_ENABLE_ADD_BUTTON = false;
 if(!$setbool) {
 	$HD_Form->FG_DISPLAY_SELECT = true;
 	$HD_Form->FG_SELECT_FIELDNAME = "config_listvalues";
