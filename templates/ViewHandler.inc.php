@@ -235,17 +235,21 @@ $hasActionButtons = ($this->FG_ENABLE_DELETE_BUTTON || $this->FG_ENABLE_INFO_BUT
                 <?php if($this->FG_ENABLE_EDIT_BUTTON): ?>
                     <?php
                     $check = true;
-                    $condition_eval = preg_replace_callback(
-                        "/col([0-9])/i",
-                        function ($m) use ($item, &$check) {
-                            $check = false;
-                            $tmp = str_replace($m[0], $item[$m[1]] ?? "", $m[0]);
-                            $check = eval("return $tmp;");
-                            return $tmp;
-                        },
-                        // only used in FG_var_invoice.inc and FG_var_receipt.inc
-                        $this->FG_EDIT_BUTTON_CONDITION
-                    );
+                    if (!empty($this->FG_EDIT_BUTTON_CONDITION)) {
+                        $condition_eval = preg_replace_callback(
+                            "/\\|col([0-9]+)\\|/i",
+                            function ($m) use ($item, &$check)
+                            {
+                                $check = false;
+                                $tmp = str_replace($m[0], $item[$m[1]] ?? "", $m[0]);
+
+                                return $tmp;
+                            },
+                            // only used in FG_var_invoice.inc and FG_var_receipt.inc
+                            $this->FG_EDIT_BUTTON_CONDITION
+                        );
+                        $check = eval("return $condition_eval;");
+                    }
                     ?>
                     <?php if($check): ?>
                         <a href="<?= $this->FG_EDIT_BUTTON_LINK?><?= $item["instance_primary_key"] ?? "" ?>">
@@ -256,16 +260,20 @@ $hasActionButtons = ($this->FG_ENABLE_DELETE_BUTTON || $this->FG_ENABLE_INFO_BUT
                 <?php if($this->FG_ENABLE_DELETE_BUTTON && !in_array($item["instance_primary_key"], $this->FG_DELETION_FORBIDDEN_ID)): ?>
                     <?php
                     $check = true;
-                    $condition_eval = preg_replace_callback(
-                        "/col([0-9])/i",
-                        function ($m) use ($item, &$check) {
-                            $check = false;
-                            $tmp = str_replace($m[0], $item[$m[1]] ?? "", $m[0]);
-                            $check = eval("return $tmp;");
-                            return $tmp;
-                        },
-                        $this->FG_DELETE_BUTTON_CONDITION
-                    );
+                    if (!empty($this->FG_DELETE_BUTTON_CONDITION)) {
+                        $condition_eval = preg_replace_callback(
+                            "/\\|col([0-9]+)\\|/i",
+                            function ($m) use ($item, &$check)
+                            {
+                                $check = false;
+                                $tmp = str_replace($m[0], $item[$m[1]] ?? "", $m[0]);
+
+                                return $tmp;
+                            },
+                            $this->FG_DELETE_BUTTON_CONDITION
+                        );
+                        $check = eval("return $condition_eval;");
+                    }
                     ?>
                     <?php if ($check): ?>
                         <a href="<?= $this->FG_DELETE_BUTTON_LINK?><?= $item["instance_primary_key"] ?? "" ?>">
@@ -276,20 +284,25 @@ $hasActionButtons = ($this->FG_ENABLE_DELETE_BUTTON || $this->FG_ENABLE_INFO_BUT
                 <?php for ($b = 1; $b <= 5; $b++):
                     if (property_exists($this, "FG_OTHER_BUTTON$b") && !empty($this->{"FG_OTHER_BUTTON$b"})):
                         $check = true;
-                        $condition_eval = preg_replace_callback(
-                            "/\|col([0-9]+)\|/i",
-                            function ($m) use ($item, &$check) {
-                                $check = false;
-                                $tmp = str_replace("|col$m[1]|", $item[$m[1]] ?? "", $m[0]);
-                                $check = eval("return $tmp;");
-                                return $tmp;
-                            },
-                            $this->{"FG_OTHER_BUTTON{$b}_CONDITION"}
-                        );
-                        $new_link = $this->{"FG_OTHER_BUTTON{$b}_LINK"};
-                        if ($check) {
-                            $new_link = str_replace("|param|", $item["instance_primary_key"] ?? "", $new_link);
+                        if (!empty($this->{"FG_OTHER_BUTTON{$b}_CONDITION"})) {
+                            $condition_eval = preg_replace_callback(
+                                "/\\|col([0-9]+)\\|/i",
+                                function ($m) use ($item, &$check)
+                                {
+                                    $check = false;
+                                    $tmp = str_replace("|col$m[1]|", $item[$m[1]] ?? "", $m[0]);
+
+                                    return $tmp;
+                                },
+                                $this->{"FG_OTHER_BUTTON{$b}_CONDITION"}
+                            );
+                            $check = eval("return $condition_eval;");
                         }
+                        if (!$check) {
+                            continue;
+                        }
+                        $new_link = $this->{"FG_OTHER_BUTTON{$b}_LINK"};
+                        $new_link = str_replace("|param|", $item["instance_primary_key"] ?? "", $new_link);
                         $new_link = preg_replace_callback(
                             "/\|col([0-9]+)\|/i",
                             fn ($m) => str_replace("|col$m[1]|", $item[$m[1]] ?? "", $m[0]),
