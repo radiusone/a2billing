@@ -122,6 +122,12 @@ if(!$setbool) {
 	$HD_Form->FG_CONF_VALUE_FIELDNAME = "config_value";
 }
 
+$HD_Form->search_form_enabled = true;
+$HD_Form->AddSearchTextInput(_("Value"), "config_value");
+$HD_Form->AddSearchTextInput(_("Key"), "config_key");
+$HD_Form->AddSearchTextInput(_("Description"), "config_description");
+$HD_Form->AddSearchSqlSelectInput(_("Group"), "cc_config_group", "group_title,group_title", "", ["group_title"], "ASC", "config_group_title");
+
 $HD_Form->AddEditElement(
     _("GROUP"),
     "config_group_title",

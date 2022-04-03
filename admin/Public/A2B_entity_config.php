@@ -63,11 +63,6 @@ echo $CC_help_list_configuration;
 $HD_Form->create_toppage ($form_action);
 
 if ($form_action === "list") {
-    $HD_Form->search_form_enabled = true;
-    $HD_Form->AddSearchTextInput(_("Value"), "config_value");
-    $HD_Form->AddSearchTextInput(_("Key"), "config_key");
-    $HD_Form->AddSearchTextInput(_("Description"), "config_description");
-    $HD_Form->AddSearchSqlSelectInput(_("Group"), "cc_config_group", "id,group_title", "", ["group_title"], "ASC", "group_title");
     $HD_Form->create_search_form(true, true);
 }
 

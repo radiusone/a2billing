@@ -920,7 +920,7 @@ class FormHandler
             "where" => $clause,
             "order" => $order,
             "dir" => $sens,
-            "input" => $select_name,
+            "input" => [$select_name],
             "type" => "SQL_SELECT",
         ];
     }
@@ -1345,7 +1345,7 @@ class FormHandler
                     $SQLcmd = $this->do_field($SQLcmd, $input, $el["operator"][$i]);
                 } elseif ($el["type"] === "COMPARISON") {
                     $SQLcmd = $this->do_field_duration($SQLcmd, $el["column"], $el["operator"][$i], $input);
-                } elseif ($el["type"] === "SELECT" || $el["type"] === "POPUP") {
+                } elseif ($el["type"] === "SELECT" || $el["type"] === "SQL_SELECT" || $el["type"] === "POPUP") {
                     $SQLcmd = $this->do_field($SQLcmd, $input);
                 }
             }
