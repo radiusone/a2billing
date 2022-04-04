@@ -1,6 +1,6 @@
 <?php
 
-use A2billing\Table;
+use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -36,7 +36,7 @@ use A2billing\Table;
 **/
 
 require_once "../../common/lib/admin.defines.php";
-include './form_data/FG_var_config.inc';
+include './form_data/FG_var_config_group.inc';
 /**
  * @var FormHandler $HD_Form
  * @var SmartyBC $smarty
@@ -54,97 +54,52 @@ $smarty->display('main.tpl');
 echo $CC_help_add_agi_confx;
 
 // #### TOP SECTION PAGE
-$HD_Form -> create_toppage ($form_action);
+$HD_Form->create_toppage($form_action);
 
-$link = "A2B_entity_config.php?form_action=list&atmenu=config&stitle=Configuration&section=8&agi_conf=true";
+[$new_group_title, $first_group_title] = agi_confx_title(); // calling function  to generate agi-conf(title_number)
 
-$config_group  = agi_confx_title(); // calling function  to generate agi-conf(title_number)
-[$new_group_title, $first_group_title] = $config_group;
+$result = $HD_Form->DBHandle->Execute(
+    "SELECT config_title, config_key, config_value, config_description FROM cc_config WHERE config_group_title = ? ORDER BY key LIMIT 20",
+    [$first_group_title]
+);
+$config = $result ? $result->GetAll() : [];
 
 ?>
-<table width="92%" align="center" class="bar-status">
-    <tr>
-        <td>
-            <table width="100%" style="border:1px solid">
-            <thead>
-                <tr>
-                    <td colspan="2"  class="bgcolor_005"><font style="color:#FFFFFF;padding-left:3px"><strong><?php echo gettext("Group Configurations");?></strong></font></td>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="form_head">
-                    <th class="tableBody" style="padding: 2px;" align="center"><?php echo gettext("Title")?></th>
-                    <th class="tableBody" style="padding: 2px;" align="center"><?php echo gettext("Description")?></th>
-                </tr>
-                <tr bgcolor="#FCFBFB"  onmouseover="bgColor='#FFDEA6'" onMouseOut="bgColor='#FCFBFB'">
-                    <td class="tableBody"><?php echo $new_group_title?></td>
-                    <td class="tableBody"><?php echo _("This configuration group handles the AGI Configuration.") ?></td>
-                </tr>
-            </tbody>
-            </table>
-        </td>
-    </tr>
-    <tr>
-        <td width="70%">&nbsp;</td>
-    </tr>
-    <tr>
-        <td>
-            <table width="100%" style="border:1px solid">
-            <thead>
-                <tr>
-                    <td colspan="5" class="bgcolor_005"><font style="color:#FFFFFF;padding-left:3px"><strong><?php echo sprintf(_("List of configuration values (copied from %s)"), $first_group_title) ?> </strong></font></td>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="form_head">
-                    <th align="center" width="15%" class="tableBody" style="padding: 2px;" ><?php echo gettext("Title")?></th>
-                    <th class="tableBody" style="padding: 2px;" align="center" width="10%"><?php echo gettext("Key")?></th>
-                    <th class="tableBody" style="padding: 2px;" align="center" width="10%"><?php echo gettext("Value")?></th>
-                    <th class="tableBody" style="padding: 2px;" align="center" width="50%"><?php echo gettext("Description")?></th>
-                    <th class="tableBody" style="padding: 2px;" align="center" width="5%"><?php echo gettext("Group")?></th>
-                </tr>
-<?php
-$instance_table = new Table();
-$QUERY = "SELECT config_title, config_key, config_value, config_description FROM cc_config WHERE config_group_title = '$first_group_title' ORDER BY id LIMIT 10";
-$config  = $instance_table->SQLExec ($HD_Form -> DBHandle, $QUERY);
+<div class="row-pb-3">
+    <div class="col">
+        <strong><?= sprintf(_("Creating a new group configuration named %s"), $new_group_title) ?></strong>
+    </div>
+</div>
 
-$i=0;
-foreach ($config as $values) {
-    $config_title = $values[0];
-    $config_key = $values[1];
-    $config_value = $values[2];
-    $config_description = $values[3];
-    if ($i % 2 == 0) {
-        $bgcolor = "bgColor='#FCFBFB'";
-    } else {
-        $bgcolor = "bgColor='#F2F2EE'";
-    }
-?>
-                <tr <?php echo $bgcolor?> onmouseover="bgColor='#FFDEA6'" onMouseOut="<?php echo $bgcolor?>">
-                    <td align="left" class="tableBody"><?php echo $config_title?></td>
-                    <td align="left" class="tableBody"><?php echo $config_key?></td>
-                    <td align="left" class="tableBody"><?php echo $config_value?></td>
-                    <td align="left" class="tableBody"><?php echo $config_description?></td>
-                    <td align="left" class="tableBody"><?php echo $new_group_title?></td>
-                </tr>
-<?php
-    $i++;
-}
-?>
-            </tbody>
-            </table>
-        </td>
-    </tr>
-    <br>
+<?php if (count($config)): ?>
+<table class="table caption-top">
+    <caption><?= sprintf(_("Partial list of configuration values (copied from %s)"), $first_group_title) ?></caption>
+    <thead>
     <tr>
-        <td align="right">
-        <form name="theform">
-            <a class="btn btn-primary" href="<?= $link ?>"><?= sprintf(_("Create %s"), $new_group_title) ?></a>
-        </form></td>
+        <th><?= _("Title") ?></th>
+        <th><?= _("Key") ?></th>
+        <th><?= _("Value") ?></th>
+        <th><?= _("Description") ?></th>
     </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($config as $conf): ?>
+        <tr>
+            <td><?= $conf["config_title"] ?></td>
+            <td><?= $conf["config_key"] ?></td>
+            <td><?= $conf["config_value"] ?></td>
+            <td><?= $conf["config_description"] ?></td>
+        </tr>
+    <?php endforeach ?>
+    </tbody>
 </table>
+<?php endif ?>
 
+<div class="my-4 justify-content-end">
+    <div class="col-auto">
+        <a class="btn btn-primary" href="A2B_entity_config_group.php?form_action=list&amp;agi_conf=<?= $new_group_title ?>&amp;from_conf=<?= $first_group_title ?>"><?= sprintf(_("Create %s"), $new_group_title) ?></a>
+    </div>
+</div>
 <?php
-
 // #### FOOTER SECTION
 $smarty->display('footer.tpl');

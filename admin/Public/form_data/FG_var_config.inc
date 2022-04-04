@@ -1,7 +1,6 @@
 <?php
 
 use A2billing\Forms\FormHandler;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -41,35 +40,13 @@ if (!has_rights(ACX_ACXSETTING)) {
     die();
 }
 
-getpost_ifset([
-    'id', 'config_title', 'config_key', 'config_value', 'config_description', 'config_group_title', 
-    'groupselect', 'filterKey', 'rbKey', 'filterDescription', 'rbDesc', 'filterValue', 'rbValue', 'posted','agi_conf'
-]);
+getpost_ifset(['id', 'groupselect']);
 /**
  * @var string $id
- * @var string $config_title
- * @var string $config_key
- * @var string $config_value
- * @var string $config_description
- * @var string $config_group_title
  * @var string $groupselect
- * @var string $filterKey
- * @var string $rbKey
- * @var string $filterDescription
- * @var string $rbDesc
- * @var string $filterValue
- * @var string $rbValue
- * @var string $posted
- * @var string $agi_conf
  * @var string $form_action
  */
-
-// This will generate agi-confx
-// agi-confx is duplication of Global configuration and list of configurations of : agi-conf1
-if (!empty($agi_conf)) {
-	$groupselect = add_agi_confx();
-	unset($agi_conf);
-}
+$form_action = $form_action ?? "list";
 
 $handle = DbConnect();
 
@@ -113,6 +90,14 @@ if ($form_action === "list") {
 
     $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 25;
     $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
+
+    if (!empty($groupselect)) {
+        if (!empty($HD_Form->FG_QUERY_WHERE_CLAUSE)) {
+            $HD_Form->FG_QUERY_WHERE_CLAUSE .= " AND ";
+        }
+        $HD_Form->FG_QUERY_WHERE_CLAUSE .= " config_group_title='$groupselect'";
+        $HD_Form->CV_FOLLOWPARAMETERS = "groupselect=$groupselect";
+    }
 }
 if(!$setbool) {
 	$HD_Form->FG_DISPLAY_SELECT = true;
@@ -124,7 +109,7 @@ $HD_Form->search_form_enabled = true;
 $HD_Form->AddSearchTextInput(_("Value"), "config_value");
 $HD_Form->AddSearchTextInput(_("Key"), "config_key");
 $HD_Form->AddSearchTextInput(_("Description"), "config_description");
-$HD_Form->AddSearchSqlSelectInput(_("Group"), "cc_config_group", "group_title,group_title", "", ["group_title"], "ASC", "config_group_title");
+$HD_Form->AddSearchSqlSelectInput(_("Select config group"), "cc_config_group", "group_title,group_title", "", ["group_title"], "ASC", "config_group_title");
 
 $HD_Form->AddEditElement(
     _("GROUP"),
@@ -187,60 +172,3 @@ $HD_Form->FieldEditElement ('config_group_title, config_title, config_key, confi
 
 $HD_Form->FG_INTRO_TEXT_EDITION= '';
 $HD_Form->FG_LOCATION_AFTER_EDIT = "?atmenu=document&stitle=Document&wh=AC&id=";
-
-function agi_confx_title(): array
-{
-    $handle = DbConnect();
-
-    $QUERY = "SELECT id, group_title, group_description FROM cc_config_group WHERE group_title like 'agi-conf%' ORDER BY group_title";
-    $result = $handle->Execute($QUERY);
-    $result = $result ? $result->FetchRow() : [];
-
-    $agi_number = [];
-    foreach ($result as $row) {
-        $agi_number[] = (int)str_replace("agi-conf", "", $row["group_title"]);
-    }
-
-    $first_group_title = $result[0]["group_title"];
-    $agi_conf_number = max($agi_number) + 1;
-
-    return ["agi-conf$agi_conf_number", $first_group_title];
-}
-
-function add_agi_confx($handle = null)
-{
-    [$group_title, $base_group_title] = agi_confx_title();
-
-    $group_desc = 'This configuration group handles the AGI Configuration.';
-    $handle = DbConnect();
-    $handle->Execute("INSERT INTO cc_config_group (group_title, group_description) VALUES (?, ?)", [$group_title, $group_desc]);
-    $handle->Execute(
-        "INSERT INTO cc_config_group (config_title, config_key, config_value, config_description, config_valuetype, config_group_title, config_listvalues)
-        SELECT config_title, config_key, config_value, config_description, config_valuetype, ?, config_listvalues FROM cc_config WHERE config_group_title = ?",
-        [$group_title, $base_group_title]
-    );
-    return $group_title;
-}
-
-/*
- * This function delete agi-confx, all its global configurations and list of configurations
- * Operations : DELETE
- * Tables : cc_config, cc_config_group
- */
-function delete_agi_confx($agi_conf)
-{
-    if (empty($handle)) {
-        $handle = DbConnect();
-    }
-    $instance_table = new Table();
-
-    $clause = "group_title = '$agi_conf'";
-    $fun_table = "cc_config_group";
-    $result = $instance_table->Delete_table ($handle, $clause, $fun_table);
-
-    $clause = "config_group_title = '$agi_conf'";
-    $fun_table = "cc_config";
-    $result = $instance_table->Delete_table ($handle, $clause, $fun_table);
-
-    return $result;
-}

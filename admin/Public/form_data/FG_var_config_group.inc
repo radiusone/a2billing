@@ -34,15 +34,22 @@ use A2billing\Table;
  *
  *
 **/
-
-if (! has_rights (ACX_ADMINISTRATOR)) {
-    Header ("HTTP/1.0 401 Unauthorized");
-    Header ("Location: PP_error.php?c=accessdenied");
+if (!has_rights(ACX_ACXSETTING)) {
+    header("HTTP/1.0 401 Unauthorized");
+    header("Location: PP_error.php?c=accessdenied");
     die();
 }
 
-getpost_ifset(array('id', 'group_title', 'group_description','agi_conf', 'groupdelete'));
-
+getpost_ifset(['id', 'group_title', 'group_description','agi_conf', 'groupdelete', 'agi_conf', 'from_conf']);
+/**
+ * @var string $id
+ * @var string $group_title
+ * @var string $group_description
+ * @var string $agi_conf
+ * @var string $groupdelete
+ * @var string $agi_conf
+ * @var string $from_conf
+ */
 
 $setbool = false;
 $handle = DbConnect();
@@ -56,8 +63,9 @@ if ( !empty($groupdelete) && substr($groupdelete,0,8) == "agi-conf" && $groupdel
 
 	$msg = $groupdelete.' : '."Group deleted !";
 	$error_msg = '<font face="Arial, Helvetica, sans-serif" size="2" color="green"><b>'.$msg.'</b></font><br>';
+} elseif (!empty($agi_conf)) {
+    add_agi_confx($agi_conf, $from_conf);
 }
-
 
 $HD_Form = new FormHandler("cc_config_group", "configuration group");
 
@@ -65,10 +73,8 @@ $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "id";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "ASC";
 
-
 $HD_Form -> AddViewElement(gettext("TITLE"), "group_title");
 $HD_Form -> AddViewElement(gettext("DESCRIPTION"), "group_description");
-
 
 $HD_Form -> FieldViewElement ('group_title, group_description');
 
@@ -76,7 +82,8 @@ $HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 15;
 
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = false;
 $HD_Form -> FG_ENABLE_ADD_BUTTON = false;
-$HD_Form -> FG_ENABLE_DELETE_BUTTON = false;
+$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form -> FG_DELETE_BUTTON_CONDITION = 'substr("|col0|",0,8) == "agi-conf" && "|col0|" != "agi-conf1"';
 
 $HD_Form -> FG_OTHER_BUTTON1 = true;
 $HD_Form -> FG_OTHER_BUTTON1_LINK = "A2B_entity_config.php?groupselect=|col0|";
@@ -90,16 +97,41 @@ $HD_Form -> FG_OTHER_BUTTON2_CONDITION = 'substr("|col0|",0,8) == "agi-conf" && 
 $HD_Form -> FG_OTHER_BUTTON2_ALT = gettext('DELETE THIS AGI CONF');
 
 $HD_Form -> FG_INTRO_TEXT_EDITION = '';
-
-
 $HD_Form -> FG_INTRO_TEXT_ADITION = '';
-
-
-
 
 $HD_Form -> FG_LOCATION_AFTER_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&stitle=Document&wh=AC&id=";
 $HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&stitle=Document&wh=AC&id=";
 $HD_Form -> FG_LOCATION_AFTER_DELETE = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&stitle=Document&wh=AC&id=";
 
+function add_agi_confx(string $group_title, ?string $from_conf): void
+{
+    $group_desc = 'This configuration group handles the AGI Configuration.';
+    $handle = DbConnect();
+    $handle->Execute("INSERT INTO cc_config_group (group_title, group_description) VALUES (?, ?)", [$group_title, $group_desc]);
+    if (!empty($from_conf)) {
+        $handle->Execute(
+            "INSERT INTO cc_config_group (config_title, config_key, config_value, config_description, config_valuetype, config_group_title, config_listvalues)
+            SELECT config_title, config_key, config_value, config_description, config_valuetype, ?, config_listvalues FROM cc_config WHERE config_group_title = ?",
+            [$group_title, $from_conf]
+        );
+    }
+}
 
+function agi_confx_title(): array
+{
+    $handle = DbConnect();
 
+    $QUERY = "SELECT id, group_title, group_description FROM cc_config_group WHERE group_title like 'agi-conf%' ORDER BY group_title";
+    $result = $handle->Execute($QUERY);
+    $result = $result ? $result->GetAll() : [];
+
+    $agi_number = [];
+    foreach ($result as $row) {
+        $agi_number[] = (int)str_replace("agi-conf", "", $row["group_title"]);
+    }
+
+    $first_group_title = $result[0]["group_title"];
+    $agi_conf_number = max($agi_number) + 1;
+
+    return ["agi-conf$agi_conf_number", $first_group_title];
+}
