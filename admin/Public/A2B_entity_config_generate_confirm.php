@@ -59,7 +59,7 @@ $HD_Form->create_toppage($form_action);
 [$new_group_title, $first_group_title] = agi_confx_title(); // calling function  to generate agi-conf(title_number)
 
 $result = $HD_Form->DBHandle->Execute(
-    "SELECT config_title, config_key, config_value, config_description FROM cc_config WHERE config_group_title = ? ORDER BY key LIMIT 20",
+    "SELECT config_title, config_key, config_value, config_description FROM cc_config WHERE config_group_title = ? ORDER BY config_key LIMIT 20",
     [$first_group_title]
 );
 $config = $result ? $result->GetAll() : [];
@@ -95,7 +95,7 @@ $config = $result ? $result->GetAll() : [];
 </table>
 <?php endif ?>
 
-<div class="my-4 justify-content-end">
+<div class="row my-4 justify-content-end">
     <div class="col-auto">
         <a class="btn btn-primary" href="A2B_entity_config_group.php?form_action=list&amp;agi_conf=<?= $new_group_title ?>&amp;from_conf=<?= $first_group_title ?>"><?= sprintf(_("Create %s"), $new_group_title) ?></a>
     </div>

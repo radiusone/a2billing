@@ -43,6 +43,8 @@ include './form_data/FG_var_config_group.inc';
  * @var string $id
  * @var string $form_action
  * @var string $CC_help_list_global_config
+ * @var string $delete_msg
+ * @var string $CC_help_edit_config
  */
 
 $HD_Form->init();
@@ -62,11 +64,9 @@ if ($form_action === 'list') {
     echo $CC_help_edit_config;
 }
 
-?>
-
-  <br><center><?php echo $error_msg ?> </center>
-
-<?php
+if (!empty($delete_msg)) {
+    echo "<div class='row pb-3'><div class='col'><div class='alert alert-success'>$delete_msg</div></div></div>";
+}
 
 // #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);

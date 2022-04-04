@@ -55,14 +55,13 @@ $setbool = false;
 $handle = DbConnect();
 $instance_table = new Table();
 
-if ( !empty($groupdelete) && substr($groupdelete,0,8) == "agi-conf" && $groupdelete != "agi-conf1" && strlen($groupdelete) < 11) {
-	$QUERY =  "DELETE FROM cc_config_group WHERE group_title='$groupdelete'";
-	$result = $instance_table -> SQLExec ($handle, $QUERY);
-	$QUERY =  "DELETE FROM cc_config WHERE config_group_title='$groupdelete'";
-	$result = $instance_table -> SQLExec ($handle, $QUERY);
+if (!empty($groupdelete) && substr($groupdelete,0,8) === "agi-conf" && $groupdelete !== "agi-conf1") {
+	$QUERY =  "DELETE FROM cc_config_group WHERE group_title = ?";
+    $handle->Execute($QUERY, [$groupdelete]);
+	$QUERY =  "DELETE FROM cc_config WHERE config_group_title = ?";
+    $handle->Execute($QUERY, [$groupdelete]);
 
-	$msg = $groupdelete.' : '."Group deleted !";
-	$error_msg = '<font face="Arial, Helvetica, sans-serif" size="2" color="green"><b>'.$msg.'</b></font><br>';
+    $delete_msg = sprintf(_("Group %s deleted"), $groupdelete);
 } elseif (!empty($agi_conf)) {
     add_agi_confx($agi_conf, $from_conf);
 }
