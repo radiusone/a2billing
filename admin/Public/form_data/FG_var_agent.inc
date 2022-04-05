@@ -378,9 +378,9 @@ if (has_rights (ACX_MODIFY_AGENTS) && !($popup_select)) {
 	$HD_Form -> FG_EDIT_QUERY_CONDITION = " id='%id'";
 	$HD_Form -> FG_ADDITIONAL_FUNCTION_AFTER_ADD = 'creation_agent_refill';
 	$HD_Form -> FG_INTRO_TEXT_ADITION = '';
-	$HD_Form -> FG_LOCATION_AFTER_ADD = "?atmenu=document&wh=AC&id=";
-	$HD_Form -> FG_LOCATION_AFTER_EDIT = "?atmenu=document&wh=AC&id=";
-	$HD_Form -> FG_LOCATION_AFTER_DELETE = "?atmenu=document&wh=AC&id=";
+	$HD_Form -> FG_LOCATION_AFTER_ADD = "?atmenu=document&id=";
+	$HD_Form -> FG_LOCATION_AFTER_EDIT = "?atmenu=document&id=";
+	$HD_Form -> FG_LOCATION_AFTER_DELETE = "?atmenu=document&id=";
 
 
 }

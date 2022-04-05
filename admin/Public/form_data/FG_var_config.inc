@@ -163,4 +163,4 @@ $HD_Form->AddEditElement(
 $HD_Form->FieldEditElement ('config_group_title, config_title, config_key, config_value ,config_listvalues, config_description');
 
 $HD_Form->FG_INTRO_TEXT_EDITION= '';
-$HD_Form->FG_LOCATION_AFTER_EDIT = "?atmenu=document&wh=AC&id=";
+$HD_Form->FG_LOCATION_AFTER_EDIT = "?atmenu=document&id=";

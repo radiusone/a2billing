@@ -6,10 +6,8 @@ use A2billing\Table;
  * @var A2billing\Forms\Formhandler $this
  * @var array $processed
  * @var array $list
- * @var string $wh
  * @var bool $VALID_SQL_REG_EXP
  */
-getpost_ifset(['wh']);
 $db_data = $list[0];
 $options = null;
 ?>
@@ -18,7 +16,6 @@ $options = null;
 
 <form action="" method="post" name="myForm" id="myForm">
     <input type="hidden" name="form_action" value="add"/>
-    <input type="hidden" name="wh" value="<?= $wh ?>"/>
     <input type="hidden" name="atmenu" value="<?= $processed["atmenu"]?>">
     <?= $this->csrf_inputs() ?>
 
