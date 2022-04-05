@@ -16,7 +16,7 @@ $options = null
 <script>
     function sendto(action, record, field_inst, instance) {
         $("form#editForm input[name=form_action]").val(action);
-        $("form#editForm input[name=sub_action]").val(record);
+        $("form#editForm input[name=form_el_index]").val(record);
         if (field_inst) {
             $(`form#editForm [name=${field_inst}]`).val(instance);
         }
@@ -31,7 +31,7 @@ $options = null
 <form action="" method="post" name="myForm" id="editForm">
     <input type="hidden" name="id" value="<?= $processed["id"] ?>"/>
     <input type="hidden" name="form_action" value="edit"/>
-    <input type="hidden" name="sub_action" value=""/>
+    <input type="hidden" name="form_el_index" value=""/>
     <input type="hidden" name="atmenu" value="<?= $processed["atmenu"] ?>"/>
     <input type="hidden" name="current_page" value="<?= $processed["current_page"] ?>"/>
     <input type="hidden" name="order" value="<?= $processed["order"] ?>"/>

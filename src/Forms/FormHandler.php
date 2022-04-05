@@ -1764,10 +1764,10 @@ class FormHandler
      *
      * @public
      */
-    public function perform_add_content($sub_action, $id)
+    public function perform_add_content($form_el_index, $id)
     {
         $processed = $this->getProcessed();
-        $table_split = $this->FG_EDIT_FORM_ELEMENTS[$sub_action]["custom_query"];
+        $table_split = $this->FG_EDIT_FORM_ELEMENTS[$form_el_index]["custom_query"];
         $instance_sub_table = new Table($table_split["table"], $table_split["name"] . ", " . $table_split["fk"]);
 
         $arr = is_array($processed[$table_split["name"]]) ? $processed[$table_split["name"]] : [$processed[$table_split["name"]]];
@@ -1796,10 +1796,10 @@ class FormHandler
      *
      * @public
      */
-    public function perform_del_content($sub_action, $id)
+    public function perform_del_content($form_el_index, $id)
     {
         $processed = $this->getProcessed();
-        $table_split = $this->FG_EDIT_FORM_ELEMENTS[$sub_action]["custom_query"];
+        $table_split = $this->FG_EDIT_FORM_ELEMENTS[$form_el_index]["custom_query"];
         if (array_key_exists($table_split["name"] . '_hidden', $processed)) {
             $value = trim($processed[$table_split["name"] . '_hidden']);
         } else {
@@ -1900,7 +1900,6 @@ class FormHandler
         $id = $processed['id'];
         $atmenu = $processed['atmenu'];
         $ratesort = $processed['ratesort'];
-        $sub_action = $processed['sub_action'];
 
         require(__DIR__ . "/../../templates/SearchHandler.inc.php");
 
@@ -1920,16 +1919,16 @@ class FormHandler
         $id = $processed['id'];
         $atmenu = $processed['atmenu'];
         $ratesort = $processed['ratesort'];
-        $sub_action = $processed['sub_action'];
+        $form_el_index = $processed['form_el_index'];
 
         switch ($form_action) {
             case "add-content":
-                $this->perform_add_content($sub_action, $id);
+                $this->perform_add_content($form_el_index, $id);
                 require(__DIR__ . "/../../templates/EditForm.inc.php");
                 break;
 
             case "del-content":
-                $this->perform_del_content($sub_action, $id);
+                $this->perform_del_content($form_el_index, $id);
                 require(__DIR__ . "/../../templates/EditForm.inc.php");
                 break;
 
