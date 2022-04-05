@@ -1602,7 +1602,7 @@ class FormHandler
                     }
                     $param_update .= "$fields_name = '" . addslashes(trim($total_mult_select)) . "'";
                 } else {
-                    if (is_numeric($regexp) && !(str_starts_with($row["check_empty"], "NO") && $processed[$fields_name] === "")) {
+                    if (is_numeric($regexp) && isset($processed[$fields_name]) && !(str_starts_with($row["check_empty"], "NO") && $processed[$fields_name] === "")) {
                         $row["validation_err"] = $this->validate_field($regexp, $processed[$fields_name]);
                         if ($row["validation_err"] !== true) {
                             $this->VALID_SQL_REG_EXP = false;
@@ -1973,13 +1973,14 @@ class FormHandler
     /**
      * Do multi-page navigation.  Displays the prev, next and page options.
      *
-     * @param int $page the page currently viewed
-     * @param int $pages the maximum number of pages
+     * @param int $page the page currently viewed (one-based, unlike URL parameter which is zero-based)
+     * @param int $pages the total number of pages
      * @param string $url the url to refer to with the page number inserted
-     * @param int $max_width the number of pages to make available at any one time (default = 20)
+     * @param int $max_width the number of pages to make available at any one time (default = 10)
      */
-    public static function printPages(int $page, int $pages, string $url, int $max_width = 12): string
+    public static function printPages(int $page, int $pages, string $url, int $max_width = 10): string
     {
+        // the number of pages on either side of the current page
         $window = intdiv($max_width, 2);
 
         if ($page < 0 || $page > $pages || $pages <= 1 || $max_width <= 0) {
@@ -1987,38 +1988,71 @@ class FormHandler
         }
 
         $url = rawurldecode($url);
-        $prevlink = str_replace("%s", $page - 2, $url);
         $prevlabel = _("Previous");
-        $prevdis = $page === 1 ? "disabled" : "";
-        $firstlink = str_replace("%s", 0, $url);
+        $prevlink = sprintf(
+            "<a class='page-link' href='%s'>%s</a>",
+            str_replace("%s", $page - 2, $url),
+            $prevlabel
+        );
+        $prevdis = "";
         $firstlabel = _("First");
-        $lastlink = str_replace("%s", $pages - 1, $url);
+        $firstlink = sprintf(
+            "<a class='page-link' href='%s'>%s</a>",
+            str_replace("%s", 0, $url),
+            $firstlabel
+        );
+        if ($page === 1) {
+            $prevdis = "disabled";
+            $prevlink = sprintf("<span class='page-link'>%s</span>", $prevlabel);
+            $firstlink = sprintf("<span class='page-link'>%s</span>", $firstlabel);
+        }
+
         $lastlabel = _("Last");
-        $nextlink = str_replace("%s", $page, $url);
+        $lastlink = sprintf(
+            "<a class='page-link' href='%s'>%s</a>",
+            str_replace("%s", $pages - 1, $url),
+            $lastlabel
+        );
         $nextlabel = _("Next");
-        $nextdis = $page >= $pages;
+        $nextlink = sprintf(
+            "<a class='page-link' href='%s'>%s</a>",
+            str_replace("%s", $page, $url),
+            $nextlabel
+        );
+        $nextdis = "";
+        if ($page >= $pages) {
+            $nextdis = "disabled";
+            $lastlink = sprintf("<span class='page-link'>%s</span>", $lastlabel);
+            $nextlink = sprintf("<span class='page-link'>%s</span>", $nextlabel);
+        }
 
         $ret = <<< HTML
         <nav aria-label="page navigation">
             <ul class="pagination justify-content-center">
-                <li class="page-item">
-                    <a class="page-link" href="$firstlink"><span aria-hidden="true">&lt;&lt;&nbsp;</span>$firstlabel</a>
+                <li class="page-item $prevdis">
+                    $firstlink
                 </li>
                 <li class="page-item $prevdis">
-                    <a class="page-link" href="$prevlink"><span aria-hidden="true">&lt;&nbsp;</span>$prevlabel</a>
+                    $prevlink
                 </li>
 
         HTML;
 
-        if ($page <= $window) {
+// $window = 2
+// $pages = 10
+// $page = 3
+        if ($page < $window * 2) {
+            // |1 2 [3] 4 5...
             $min_page = 1;
-            $max_page = min(2 * $window, $pages) - 1;
+            $max_page = min(2 * $window, $pages);
         } elseif ($pages >= $page + $window) {
-            $min_page = ($page - $window) + 1;
+            // ...4 5 [6] 7 8...
+            $min_page = $page - $window;
             $max_page = $page + $window;
         } else {
-            $min_page = ($page - (2 * $window - ($pages - $page))) + 1;
-            $max_page = $pages - 1;
+            // ...6 7 [8] 9 10|
+            $min_page = ($page - (2 * $window - ($pages - $page)));
+            $max_page = $pages;
         }
 
         // Make sure min_page is always at least 1
@@ -2040,10 +2074,10 @@ class FormHandler
         }
         $ret .= <<< HTML
                 <li class="page-item $nextdis">
-                    <a class="page-link" href="$nextlink"><span aria-hidden="true">&gt;&nbsp;</span>$nextlabel</a>
+                    $nextlink
                 </li>
-                <li class="page-item">
-                    <a class="page-link" href="$lastlink"><span aria-hidden="true">&gt;&gt;&nbsp;</span>$lastlabel</a>
+                <li class="page-item $nextdis">
+                    $lastlink
                 </li>
             </ul>
         </nav>

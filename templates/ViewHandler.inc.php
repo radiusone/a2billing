@@ -348,7 +348,12 @@ $hasActionButtons = ($this->FG_ENABLE_DELETE_BUTTON || $this->FG_ENABLE_INFO_BUT
 <?php if ($this->CV_DISPLAY_BROWSE_PAGE): ?>
 <div class="row pb-3">
     <div class="col">
-        <?= FormHandler::printPages($this->CV_CURRENT_PAGE + 1, $this->FG_LIST_VIEW_PAGE_COUNT, "?stitle=$stitle&amp;atmenu=$processed[atmenu]&amp;current_page=%s&amp;filterprefix=$processed[filterprefix]&amp;order=$processed[order]&amp;sens=$processed[sens]&amp;mydisplaylimit=$processed[mydisplaylimit]&amp;popup_select=$processed[popup_select]&amp;letter=$letter" . (str_starts_with($this->CV_FOLLOWPARAMETERS, "&") ? "" : "&amp;") . $this->CV_FOLLOWPARAMETERS) ?>
+        <?= FormHandler::printPages(
+            $this->CV_CURRENT_PAGE + 1,
+            $this->FG_LIST_VIEW_PAGE_COUNT,
+            "?" . http_build_query(["current_page" => "%s", "filterprefix" => $processed["filterprefix"], "order" => $processed["order"], "sens" => $processed["sens"]], "", "&amp;") . (str_starts_with($this->CV_FOLLOWPARAMETERS, "&") ? "" : "&amp;") . $this->CV_FOLLOWPARAMETERS
+//            "?stitle=$stitle&amp;atmenu=$processed[atmenu]&amp;current_page=%s&amp;filterprefix=$processed[filterprefix]&amp;order=$processed[order]&amp;sens=$processed[sens]&amp;mydisplaylimit=$processed[mydisplaylimit]&amp;popup_select=$processed[popup_select]&amp;letter=$letter" . (str_starts_with($this->CV_FOLLOWPARAMETERS, "&") ? "" : "&amp;") . $this->CV_FOLLOWPARAMETERS
+        ) ?>
     </div>
 </div>
 <?php endif ?>
@@ -360,7 +365,7 @@ $hasActionButtons = ($this->FG_ENABLE_DELETE_BUTTON || $this->FG_ENABLE_INFO_BUT
             <label for="displaylimit" class="form-label d-inline"><?= gettext("Display");?></label>
             <input type="hidden" name="id" value="<?= $processed["id"] ?>"/>
             <input type="hidden" name="stitle" value="<?= $stitle ?>"/>
-            <input type="hidden" name="form_action" value="edit"/>
+            <input type="hidden" name="form_action" value="list"/>
             <input type="hidden" name="current_page" value="0"/>
             <?php foreach ($processed as $key => $val): ?>
                 <?php if ($key !== 'current_page' && $key !== 'id'): ?>
@@ -368,10 +373,10 @@ $hasActionButtons = ($this->FG_ENABLE_DELETE_BUTTON || $this->FG_ENABLE_INFO_BUT
                 <?php endif ?>
             <?php endforeach ?>
             <select id="displaylimit" name="mydisplaylimit" size="1" class="form-select form-select-sm d-inline w-50">
-                <option value="10" <?= $_SESSION["$this->FG_QUERY_TABLE_NAME-displaylimit"] < 50 ? 'selected="selected"' : "" ?>>10</option>
-                <option value="50" <?= $_SESSION["$this->FG_QUERY_TABLE_NAME-displaylimit"] == 50 ? 'selected="selected"' : "" ?>>50</option>
-                <option value="100" <?= $_SESSION["$this->FG_QUERY_TABLE_NAME-displaylimit"] == 100 ? 'selected="selected"' : "" ?>>100</option>
-                <option value="ALL" <?= $_SESSION["$this->FG_QUERY_TABLE_NAME-displaylimit"] > 100 ? 'selected="selected"' : "" ?>>All</option>
+                <option value="10" <?= (int)($_SESSION["$this->FG_QUERY_TABLE_NAME-displaylimit"] ?? 10) < 50 ? 'selected="selected"' : "" ?>>10</option>
+                <option value="50" <?= (int)($_SESSION["$this->FG_QUERY_TABLE_NAME-displaylimit"] ?? 10) === 50 ? 'selected="selected"' : "" ?>>50</option>
+                <option value="100" <?= (int)($_SESSION["$this->FG_QUERY_TABLE_NAME-displaylimit"] ?? 10) === 100 ? 'selected="selected"' : "" ?>>100</option>
+                <option value="ALL" <?= (int)($_SESSION["$this->FG_QUERY_TABLE_NAME-displaylimit"] ?? 10) > 100 ? 'selected="selected"' : "" ?>>All</option>
             </select>
         </form>
     </div>
