@@ -551,11 +551,11 @@ if ($form_action == "list" && (!($popup_select>=1))) {
             <font color=white><b>
             <?php  if ( isset($_SESSION["is_sip_changed"]) && $_SESSION["is_sip_changed"] ) { ?>
             SIP : <input class="form_input_button"  TYPE="button" VALUE="<?php echo gettext("GENERATE ADDITIONAL_A2BILLING_SIP.CONF");?>"
-            onClick="self.location.href='./CC_generate_friend_file.php?atmenu=sipfriend';">
+            onClick="self.location.href='./CC_generate_friend_file.php?voip_type=sipfriend';">
             <?php }
             if ( isset($_SESSION["is_iax_changed"]) && $_SESSION["is_iax_changed"] ) { ?>
             IAX : <input class="form_input_button"  TYPE="button" VALUE="<?php echo gettext("GENERATE ADDITIONAL_A2BILLING_IAX.CONF");?>"
-            onClick="self.location.href='./CC_generate_friend_file.php?atmenu=iaxfriend';">
+            onClick="self.location.href='./CC_generate_friend_file.php?voip_type=iaxfriend';">
             <?php } ?>
             </b></font></td></FORM>
         </TR>
@@ -580,7 +580,7 @@ if (!$popup_select && $form_action == "ask-add") {
         document.cardform.submit();
     }
     </script>
-    <form action="A2B_entity_card.php?form_action=ask-add&atmenu=card&section=1" method="post" name="cardform">
+    <form action="A2B_entity_card.php?form_action=ask-add&section=1" method="post" name="cardform">
     <tr>
         <td class="viewhandler_filter_td1">
         <span>

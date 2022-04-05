@@ -42,7 +42,7 @@ if (! has_rights (ACX_ACCESS)) {
 
 
 
-getpost_ifset(array('id_cc_card', 'cardnumber', 'id', 'name', 'amaflags', 'callgroup', 'accountcode', 'callerid', 'canreinvite', 'context', 'defaultip', 'dtmfmode',
+getpost_ifset(array('voip_type', 'id_cc_card', 'cardnumber', 'id', 'name', 'amaflags', 'callgroup', 'accountcode', 'callerid', 'canreinvite', 'context', 'defaultip', 'dtmfmode',
 'fromuser', 'fromdomain', 'host', 'insecure', 'language', 'mailbox', 'md5secret', 'nat', 'permit', 'deny', 'mask', 'pickupgroup', 'port', 'qualify',
 'restrictcid', 'rtptimeout', 'rtpholdtimeout', 'secret', 'type', 'username', 'disallow', 'allow', 'musiconhold', 'regseconds', 'ipaddr', 'cancallforward', 'regexten','friend_id'));
 
@@ -52,7 +52,7 @@ getpost_ifset(array('defaultuser', 'subscribemwi', 'vmexten', 'cid_number', 'cal
 'qualifyfreqok ', 'qualifyfreqnotok ', 'timezone', 'adsi'));
 
 
-if ($atmenu=='sip') {
+if ($voip_type=='sip') {
 	if (!isset($form_action) || $form_action=="list") {
 		$HD_Form = new FormHandler("cc_sip_buddies LEFT JOIN cc_card ON cc_card.id=cc_sip_buddies.id_cc_card LEFT JOIN cc_card_group ON cc_card.id_group=cc_card_group.id", "SIP Friend", 'cc_sip_buddies.id');
 		$HD_Form -> FG_QUERY_WHERE_CLAUSE = " cc_card_group.id_agent=".$_SESSION['agent_id'] ;
@@ -89,8 +89,8 @@ $HD_Form -> AddViewElement(gettext("CONTEXT"), "context");
 $HD_Form -> AddViewElement(gettext("DEFAULTIP"), "defaultip");
 
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_friend.php?form_action=ask-add&atmenu=sip&section=1";
-if ($atmenu=='sip') {
+$HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_friend.php?form_action=ask-add&voip_type=sip&section=1";
+if ($voip_type=='sip') {
 	$HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add SIP Friend");
 } else {
 	$HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add IAX Friend");
@@ -375,7 +375,7 @@ $HD_Form->AddEditElement(
     gettext("Insert the permit"));
 
 
-if ($atmenu=='sip') {
+if ($voip_type=='sip') {
 
     $HD_Form->AddEditElement(
         gettext("USERNAME"),
@@ -825,7 +825,7 @@ if ($atmenu=='sip') {
 
 $field_list_edit = 'id_cc_card, name, accountcode, regexten, callerid, cid_number, amaflags, secret, qualify, disallow, allow, host, context, defaultip, language, port, regseconds, ipaddr, mohsuggest, auth, setvar, type, deny, permit';
 
-if ($atmenu=='sip') {
+if ($voip_type=='sip') {
 	$field_list_edit .= ', username, md5secret, nat, dtmfmode, canreinvite, callgroup, fromuser, fromdomain, insecure, mailbox, mask, pickupgroup, restrictcid, rtptimeout, rtpholdtimeout, ' .
 			'musiconhold,  cancallforward, defaultuser, subscribemwi, vmexten, callingpres, usereqphone, incominglimit, subscribecontext, musicclass, allowtransfer, ' .
 			'autoframing, maxcallbitrate, outboundproxy, regserver, rtpkeepalive';
@@ -855,7 +855,7 @@ $HD_Form -> FG_INTRO_TEXT_ADITION = '';
 
 
 
-$HD_Form -> FG_LOCATION_AFTER_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=$atmenu&id=";
-$HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=$atmenu&id=";
-$HD_Form -> FG_LOCATION_AFTER_DELETE = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=$atmenu&id=";
+$HD_Form -> FG_LOCATION_AFTER_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?voip_type=$voip_type&id=";
+$HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?voip_type=$voip_type&id=";
+$HD_Form -> FG_LOCATION_AFTER_DELETE = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?voip_type=$voip_type&id=";
 

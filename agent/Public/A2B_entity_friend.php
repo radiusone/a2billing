@@ -46,7 +46,7 @@ if (! has_rights (ACX_CUSTOMER)) {
     die();
 }
 
-if ($form_action=="add_sip" || $atmenu=="sip" || $form_action=="add_iax" || $atmenu=="iax") {
+if ($form_action=="add_sip" || $voip_type=="sip" || $form_action=="add_iax" || $voip_type=="iax") {
     if (! has_rights (ACX_VOIPCONF)) {
         Header ("HTTP/1.0 401 Unauthorized");
         Header ("Location: PP_error.php?c=accessdenied");
@@ -90,7 +90,7 @@ if ( (isset ($id_cc_card) && (is_numeric($id_cc_card)  != "")) && ( $form_action
     $list_friend = $instance_table_friend -> get_list ($HD_Form->DBHandle, "id_cc_card='$id_cc_card'");
 
     if (is_array($list_friend) && count($list_friend)>0) {
-        Header ("Location: A2B_entity_card.php?atmenu=card&id="); exit();
+        Header ("Location: A2B_entity_card.php?id="); exit();
     }
 
     $form_action = "add";
@@ -112,8 +112,8 @@ if ( (isset ($id_cc_card) && (is_numeric($id_cc_card)  != "")) && ( $form_action
     $HD_Form->init();
 }
 
-$HD_Form -> FG_EDIT_BUTTON_LINK	= filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?form_action=ask-edit&atmenu=$atmenu&id=";
-$HD_Form -> FG_DELETE_BUTTON_LINK = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?form_action=ask-delete&atmenu=$atmenu&id=";
+$HD_Form -> FG_EDIT_BUTTON_LINK	= filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?form_action=ask-edit&voip_type=$voip_type&id=";
+$HD_Form -> FG_DELETE_BUTTON_LINK = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?form_action=ask-delete&voip_type=$voip_type&id=";
 
 if ($id!="" || !is_null($id)) {
     $HD_Form -> FG_EDIT_QUERY_CONDITION = str_replace("%id", "$id", $HD_Form -> FG_EDIT_QUERY_CONDITION);
@@ -126,7 +126,7 @@ if (!USE_REALTIME) {
     // CHECK THE ACTION AND SET THE IS_SIP_IAX_CHANGE IF WE ADD/EDIT/REMOVE A RECORD
     if ($form_action == "add" || $form_action == "edit" || $form_action == "delete") {
         $_SESSION["is_sip_iax_change"]=1;
-        if ($atmenu=='sip') {
+        if ($voip_type=='sip') {
             $_SESSION["is_sip_changed"]=1;
         } else {
             $_SESSION["is_iax_changed"]=1;
@@ -153,11 +153,11 @@ if ($form_action=='list') {
                 <font color=white><b>
                 <?php  if ( isset($_SESSION["is_sip_changed"]) && $_SESSION["is_sip_changed"] ) { ?>
                 SIP : <input class="form_input_button"  TYPE="button" VALUE=" GENERATE ADDITIONAL_A2BILLING_SIP.CONF "
-                onClick="self.location.href='./CC_generate_friend_file.php?atmenu=sipfriend';">
+                onClick="self.location.href='./CC_generate_friend_file.php?voip_type=sipfriend';">
                 <?php }
                 if ( isset($_SESSION["is_iax_changed"]) && $_SESSION["is_iax_changed"] ) { ?>
                 IAX : <input class="form_input_button"  TYPE="button" VALUE=" GENERATE ADDITIONAL_A2BILLING_IAX.CONF "
-                onClick="self.location.href='./CC_generate_friend_file.php?atmenu=iaxfriend';">
+                onClick="self.location.href='./CC_generate_friend_file.php?voip_type=iaxfriend';">
                 <?php } ?>
                 </b></font></td>
                 </FORM>
@@ -179,9 +179,9 @@ if ($form_action=='list') {
           <tr>
             <td bgcolor="#FFFFFF" class="fontstyle_006" width="100%">&nbsp;<?php echo gettext("CONFIGURATION TYPE")?> </td>
             <td bgcolor="#FFFFFF" class="fontstyle_006" align="center">
-               <select name="atmenu" id="col_configtype" onChange="window.document.form1.elements['PMChange'].value='Change';window.document.form1.submit();">
-                 <option value="iax" <?php if($atmenu == "iax")echo "selected"?>><?php echo gettext("IAX")?></option>
-                 <option value="sip" <?php if($atmenu == "sip")echo "selected"?>><?php echo gettext("SIP")?></option>
+               <select name="voip_type" id="col_configtype" onChange="window.document.form1.elements['PMChange'].value='Change';window.document.form1.submit();">
+                 <option value="iax" <?php if($voip_type == "iax")echo "selected"?>><?php echo gettext("IAX")?></option>
+                 <option value="sip" <?php if($voip_type == "sip")echo "selected"?>><?php echo gettext("SIP")?></option>
                </select>
               <input name="PMChange" type="hidden" id="PMChange">
 

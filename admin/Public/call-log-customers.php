@@ -53,7 +53,7 @@ getpost_ifset ([
     'entertrunk', 'enterratecard', 'posted', 'Period', 'frommonth', 'fromstatsmonth', 'tomonth', 'tostatsmonth',
     'fromday', 'fromstatsday_sday', 'fromstatsmonth_sday', 'today', 'tostatsday_sday', 'tostatsmonth_sday', 
     'fromtime', 'totime', 'fromstatsday_hour', 'tostatsday_hour', 'fromstatsday_min', 'tostatsday_min', 'dsttype',
-    'srctype', 'dnidtype', 'clidtype', 'channel', 'resulttype', 'atmenu', 'current_page', 'order', 'sens',
+    'srctype', 'dnidtype', 'clidtype', 'channel', 'resulttype', 'current_page', 'order', 'sens',
     'dst', 'src', 'dnid', 'clid', 'choose_currency', 'terminatecauseid', 'choose_calltype', 'download', 'file',
 ]);
 /**
@@ -90,7 +90,6 @@ getpost_ifset ([
  * @var string $clidtype
  * @var string $channel
  * @var string $resulttype
- * @var string $atmenu
  * @var string $current_page
  * @var string $order
  * @var string $sens

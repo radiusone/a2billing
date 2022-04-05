@@ -46,7 +46,7 @@ if (! has_rights (ACX_INVOICING)) {
 getpost_ifset(array('id','addpayment','delpayment','status'));
 
 if (empty($id)) {
-    Header ("Location: A2B_entity_invoice.php?atmenu=payment&section=13");
+    Header ("Location: A2B_entity_invoice.php?section=13");
 }
 
 $invoice = new invoice($id);

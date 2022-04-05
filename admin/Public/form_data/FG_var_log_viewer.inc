@@ -41,7 +41,7 @@ if (! has_rights (ACX_ADMINISTRATOR)) {
 }
 
 
-getpost_ifset(array('id', 'loglevel', 'enteradmin', 'Period', 'frommonth', 'fromstatsmonth', 'tomonth', 'tostatsmonth', 'fromday', 'fromstatsday_sday', 'fromstatsmonth_sday', 'today', 'tostatsday_sday', 'tostatsmonth_sday', 'atmenu', 'current_page', 'order', 'sens','popup_select'));
+getpost_ifset(array('id', 'loglevel', 'enteradmin', 'Period', 'frommonth', 'fromstatsmonth', 'tomonth', 'tostatsmonth', 'fromday', 'fromstatsday_sday', 'fromstatsmonth_sday', 'today', 'tostatsday_sday', 'tostatsmonth_sday', 'current_page', 'order', 'sens','popup_select'));
 
 $HD_Form = new FormHandler("cc_system_log csl LEFT JOIN cc_ui_authen cua ON csl.iduser = cua.userid", "Log");
 

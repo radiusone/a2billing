@@ -44,7 +44,7 @@ if (! has_rights (ACX_PACKAGEOFFER)) {
     die();
 }
 
-getpost_ifset(array('customer', 'enter_cardid', 'enter_packageid', 'posted', 'Period', 'frommonth', 'fromstatsmonth', 'tomonth', 'tostatsmonth', 'fromday', 'fromstatsday_sday', 'fromstatsmonth_sday', 'today', 'tostatsday_sday', 'tostatsmonth_sday', 'atmenu', 'current_page', 'order', 'sens'));
+getpost_ifset(array('customer', 'enter_cardid', 'enter_packageid', 'posted', 'Period', 'frommonth', 'fromstatsmonth', 'tomonth', 'tostatsmonth', 'fromday', 'fromstatsday_sday', 'fromstatsmonth_sday', 'today', 'tostatsday_sday', 'tostatsmonth_sday', 'current_page', 'order', 'sens'));
 
 if (!isset ($current_page) || ($current_page == "")) {
     $current_page=0;
@@ -386,7 +386,7 @@ $smarty->display('main.tpl');
                   <TD width="<?php echo $FG_TABLE_COL[$i][2]?>" align=middle class="tableBody" style="PADDING-BOTTOM: 2px; PADDING-LEFT: 2px; PADDING-RIGHT: 2px; PADDING-TOP: 2px">
                     <center><strong>
                     <?php  if (strtoupper($FG_TABLE_COL[$i][4])=="SORT") {?>
-                    <a href="<?php  echo $PHP_SELF."?customer=$customer&s=1&t=0&atmenu=$atmenu&current_page=$current_page&order=".$FG_TABLE_COL[$i][1]."&sens="; if ($sens=="ASC") {echo"DESC";} else {echo"ASC";}
+                    <a href="<?php  echo $PHP_SELF."?customer=$customer&s=1&t=0&current_page=$current_page&order=".$FG_TABLE_COL[$i][1]."&sens="; if ($sens=="ASC") {echo"DESC";} else {echo"ASC";}
                     echo "&enter_cardid=$enter_cardid&enterprovider=$enterprovider&entertrunk=$entertrunk&posted=$posted&Period=$Period&frommonth=$frommonth&fromstatsmonth=$fromstatsmonth&tomonth=$tomonth&tostatsmonth=$tostatsmonth&fromday=$fromday&fromstatsday_sday=$fromstatsday_sday&fromstatsmonth_sday=$fromstatsmonth_sday&today=$today&tostatsday_sday=$tostatsday_sday&tostatsmonth_sday=$tostatsmonth_sday&dsttype=$dsttype&srctype=$srctype&clidtype=$clidtype&channel=$channel&resulttype=$resulttype&dst=$dst&src=$src&clid=$clid&terminatecauseid=$terminatecauseid";?>">
                     <span class="liens"><?php  } ?>
                     <?php echo $FG_TABLE_COL[$i][0]?>

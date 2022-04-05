@@ -58,10 +58,9 @@ if (!$res_load_conf) {
 }
 
 // GLOBAL POST/GET VARIABLE
-getpost_ifset (['form_action', 'atmenu', 'action', 'form_el_index', 'IDmanager', 'current_page', 'order', 'sens', 'mydisplaylimit', 'filterprefix', 'cssname', 'popup_select', 'popup_formname', 'popup_fieldname', 'ui_language', 'msg', 'section', 'exporttype']);
+getpost_ifset (['form_action', 'action', 'form_el_index', 'IDmanager', 'current_page', 'order', 'sens', 'mydisplaylimit', 'filterprefix', 'cssname', 'popup_select', 'popup_formname', 'popup_fieldname', 'ui_language', 'msg', 'section', 'exporttype']);
 /**
  * @var string $form_action
- * @var string $atmenu
  * @var string $action
  * @var string $form_el_index
  * @var string $IDmanager

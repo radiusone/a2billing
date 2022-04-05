@@ -32,7 +32,6 @@ $options = null
     <input type="hidden" name="id" value="<?= $processed["id"] ?>"/>
     <input type="hidden" name="form_action" value="edit"/>
     <input type="hidden" name="form_el_index" value=""/>
-    <input type="hidden" name="atmenu" value="<?= $processed["atmenu"] ?>"/>
     <input type="hidden" name="current_page" value="<?= $processed["current_page"] ?>"/>
     <input type="hidden" name="order" value="<?= $processed["order"] ?>"/>
     <input type="hidden" name="sens" value="<?= $processed["sens"] ?>"/>

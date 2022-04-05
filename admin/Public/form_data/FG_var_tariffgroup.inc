@@ -51,7 +51,7 @@ $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
 
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_tariffgroup.php?form_action=ask-add&atmenu=tariffgroup&section=".$_SESSION["menu_section"];
+$HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_tariffgroup.php?form_action=ask-add&section=".$_SESSION["menu_section"];
 $HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add Callplan");
 $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/server_add.png" ;
 
@@ -181,9 +181,9 @@ $HD_Form -> FG_INTRO_TEXT_EDITION= '';
 $HD_Form -> FG_INTRO_TEXT_ADITION = '';
 
 
-$HD_Form -> FG_LOCATION_AFTER_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&id=";
-$HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&id=";
-$HD_Form -> FG_LOCATION_AFTER_DELETE = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&id=";
+$HD_Form -> FG_LOCATION_AFTER_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
+$HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
+$HD_Form -> FG_LOCATION_AFTER_DELETE = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
 
 
 

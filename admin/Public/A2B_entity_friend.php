@@ -49,7 +49,7 @@ if (! has_rights (ACX_CUSTOMER)) {
 $HD_Form -> init();
 
 /********************************* BATCH UPDATE ***********************************/
-getpost_ifset(array('upd_callerid', 'upd_context', 'batchupdate', 'check', 'type', 'mode', 'atmenu'));
+getpost_ifset(array('upd_callerid', 'upd_context', 'batchupdate', 'check', 'type', 'mode', 'voip_type'));
 
 
 // CHECK IF REQUEST OF BATCH UPDATE
@@ -144,7 +144,7 @@ if ( (isset ($id_cc_card) && (is_numeric($id_cc_card)  != "")) && ( $form_action
     $list_friend = $instance_table_friend -> get_list ($HD_Form->DBHandle, "id_cc_card='$id_cc_card'");
 
     if (is_array($list_friend) && count($list_friend)>0) {
-        header("Location: A2B_entity_card.php?atmenu=card&id=");
+        header("Location: A2B_entity_card.php?voip_type=card&id=");
         exit();
     }
 
@@ -167,8 +167,8 @@ if ( (isset ($id_cc_card) && (is_numeric($id_cc_card)  != "")) && ( $form_action
     $HD_Form->init();
 }
 
-$HD_Form -> FG_EDIT_BUTTON_LINK = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?form_action=ask-edit&atmenu=$atmenu&id=";
-$HD_Form -> FG_DELETE_BUTTON_LINK = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?form_action=ask-delete&atmenu=$atmenu&id=";
+$HD_Form -> FG_EDIT_BUTTON_LINK = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?form_action=ask-edit&voip_type=$voip_type&id=";
+$HD_Form -> FG_DELETE_BUTTON_LINK = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?form_action=ask-delete&voip_type=$voip_type&id=";
 
 if ($id != "" || !is_null($id)) {
     $HD_Form -> FG_EDIT_QUERY_CONDITION = str_replace("%id", "$id", $HD_Form -> FG_EDIT_QUERY_CONDITION);
@@ -180,7 +180,7 @@ if (!isset($action)) $action = $form_action;
 if (!USE_REALTIME) {
     // CHECK THE ACTION AND SET THE IS_SIP_IAX_CHANGE IF WE ADD/EDIT/REMOVE A RECORD
     if ($form_action == "add" || $form_action == "edit" || $form_action == "delete") {
-        if ($atmenu=='sip') {
+        if ($voip_type=='sip') {
             $key = "sip_changed";
         } else {
             $key = "iax_changed";
@@ -245,9 +245,9 @@ if ($form_action=='list') {
             <tr>
                 <td bgcolor="#FFFFFF" class="fontstyle_006" width="100%">&nbsp;<?php echo gettext("CONFIGURATION TYPE")?> </td>
                 <td bgcolor="#FFFFFF" class="fontstyle_006" align="center">
-                   <select name="atmenu" id="col_configtype" onChange="window.document.form1.elements['PMChange'].value='Change';window.document.form1.submit();">
-                     <option value="iax" <?php if($atmenu == "iax")echo "selected"?>><?php echo gettext("IAX")?></option>
-                     <option value="sip" <?php if($atmenu == "sip")echo "selected"?>><?php echo gettext("SIP")?></option>
+                   <select name="voip_type" id="col_configtype" onChange="window.document.form1.elements['PMChange'].value='Change';window.document.form1.submit();">
+                     <option value="iax" <?php if($voip_type == "iax")echo "selected"?>><?php echo gettext("IAX")?></option>
+                     <option value="sip" <?php if($voip_type == "sip")echo "selected"?>><?php echo gettext("SIP")?></option>
                    </select>
                   <input name="PMChange" type="hidden" id="PMChange">
                 </td>
@@ -306,7 +306,7 @@ if ($form_action=='list') {
 <!-- ** ** ** ** ** Part for the Update ** ** ** ** ** -->
 <script>
 $(function() {
-    $("#sipfriend, #iaxfriend").on("click", () => self.location.href='./CC_generate_friend_file.php?atmenu=' + this.id);
+    $("#sipfriend, #iaxfriend").on("click", () => self.location.href='./CC_generate_friend_file.php?voip_type=' + this.id);
 })
 </script>
 <?php

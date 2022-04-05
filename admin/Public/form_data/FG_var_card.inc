@@ -146,7 +146,7 @@ if (!$popup_select && (is_admin() || has_rights(ACX_GENERATE_CUSTOMER))) {
 
 if (!$popup_select && (is_admin() || has_rights(ACX_CREATE_CUSTOMER))) {
     $HD_Form->FG_LIST_ADDING_BUTTON2 = true;
-    $HD_Form->FG_LIST_ADDING_BUTTON_LINK2 = "A2B_entity_card.php?form_action=ask-add&atmenu=card&section=" . $_SESSION["menu_section"];
+    $HD_Form->FG_LIST_ADDING_BUTTON_LINK2 = "A2B_entity_card.php?form_action=ask-add&section=" . $_SESSION["menu_section"];
     $HD_Form->FG_LIST_ADDING_BUTTON_ALT2 = $HD_Form->FG_LIST_ADDING_BUTTON_MSG2 = _("Add Customer");
     $HD_Form->FG_LIST_ADDING_BUTTON_IMG2 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJ8SURBVDjLpZB/SFNRFMftj5IiW9saIQjGQrBiUagEFWLDydrUhAWzNNuWTZ1oKIUzf4RlzZY6sWyrLZXhfFszQ1eac2SQkYWW0yH0l1AWITSw1IXK+/beK0RBptCFD+fcyz2fc+4NARDyP6x5qInbVVEn5sw2SHdCL2ahQsiey4jhVW9IkBPDKbmfyibN6Rw8oLgrY0MnYaEofgcpPcitWldglLLQQhXqqSKdlIaNm8k8XDnBQWYMa2ZdgS5+O14YyzHVq8eQpQiFCTwUJ4YjX8SH+hh7wapNCQ0qMGdF/gh8/4SZN0Z87a+H13ENk89vwz85AiJ378xYq2ZLUEFjxv5B//t2TA87MT9KUNiZ3D9C4KFKMBz0Cbults1RxzVWoiAWv4ctCPieMsx/tKHzciwE8blPeCLz1jUFPAkRyhW35UWIPfB9noWjLBX2shQGOn898QsRSS/BET66xBWatq0ScE86NoUlORSRyYOYmJpH2xRQ7APy3gEXXgHnewCtsxPFRgXU9acgvyEMiEsOVS4LDsia0xJP6+EcWoLJCxS8JZE7QCK7j0RWFwmlmUCVU4lnviaMfnPD0K+B3CDAkfzwWkbwoTx6adqlxb1mFxS9VFeqo7KbxLkOEmdsVKyRoGu8AV0TjaBXreciDJ4cWhBgBN6KfaTffR3p6hZU988howM4aycht5KQWUgklx1Gj8+Clat7rIkW/P2IcWtB6Uhp1KJSeWsxTjEAJTW6agVHC/m441ZB51Ywxbo+xeoJaCbteWGVV6u5e9JcpsiE1i980eM5flLHAj/RuSCQZy7KaqNR585mOtOR3i//wUagLtdQ/KTH/hdr6PM/RhGjA91Gi1AAAAAASUVORK5CYII=";
 }
@@ -312,8 +312,8 @@ if (!$popup_select) {
     $FN_COLUMN_ID = "col" . ($FG_COL_QUERY_COUNT);//get numbers of rows for needed fields
     $FN_COLUMN_USERNAME = "col" . ($FG_COL_QUERY_COUNT + 1);
     $FN_COLUMN_ALIAS = "col" . ($FG_COL_QUERY_COUNT + 2);
-    $HD_Form->FG_OTHER_BUTTON1_LINK = "A2B_entity_friend.php?atmenu=sip&form_action=add_sip&id_cc_card=|$FN_COLUMN_ID|&cardnumber=|$FN_COLUMN_USERNAME|&useralias=|$FN_COLUMN_ALIAS|";
-    $HD_Form->FG_OTHER_BUTTON2_LINK = "A2B_entity_friend.php?atmenu=iax&form_action=add_iax&id_cc_card=|$FN_COLUMN_ID|&cardnumber=|$FN_COLUMN_USERNAME|&useralias=|$FN_COLUMN_ALIAS|";
+    $HD_Form->FG_OTHER_BUTTON1_LINK = "A2B_entity_friend.php?voip_type=sip&form_action=add_sip&id_cc_card=|$FN_COLUMN_ID|&cardnumber=|$FN_COLUMN_USERNAME|&useralias=|$FN_COLUMN_ALIAS|";
+    $HD_Form->FG_OTHER_BUTTON2_LINK = "A2B_entity_friend.php?voip_type=iax&form_action=add_iax&id_cc_card=|$FN_COLUMN_ID|&cardnumber=|$FN_COLUMN_USERNAME|&useralias=|$FN_COLUMN_ALIAS|";
     $HD_Form->FG_OTHER_BUTTON3_LINK = "A2B_entity_payment.php?form_action=ask-add&card_id=|$FN_COLUMN_ID|";
     $HD_Form->FG_OTHER_BUTTON4_LINK = "A2B_entity_subscriber.php?form_action=ask-add&id=|$FN_COLUMN_ID|";
     $HD_Form->FG_OTHER_BUTTON5_LINK = "A2B_mass_mail.php?form_action=ask-add&id=|$FN_COLUMN_ID|";

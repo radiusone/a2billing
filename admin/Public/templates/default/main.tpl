@@ -35,7 +35,7 @@
 						</a>
 						<ul class="dropdown-menu shadow" aria-labelledby="dropdownUser">
 							<li>
-								<a href="A2B_entity_password.php?atmenu=password&amp;form_action=ask-edit" class="dropdown-item">
+								<a href="A2B_entity_password.php?form_action=ask-edit" class="dropdown-item">
 									{_("Change Password")}
 								</a>
 							</li>
@@ -63,14 +63,14 @@
 						<ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
 							<li><a class="link-dark rounded" href="A2B_entity_card.php?section=1">{_("Add :: Search")}</a></li>
 							<li><a class="link-dark rounded" href="CC_card_import.php?section=1">{_("Import")}</a></li>
-							<li><a class="link-dark rounded" href="A2B_entity_friend.php?atmenu=sip&amp;section=1">{_("VoIP Settings")}</a></li>
-							<li><a class="link-dark rounded" href="A2B_entity_callerid.php?atmenu=callerid&amp;section=1">{_("Caller-ID")}</a></li>
+							<li><a class="link-dark rounded" href="A2B_entity_friend.php?voip_conf=sip&amp;section=1">{_("VoIP Settings")}</a></li>
+							<li><a class="link-dark rounded" href="A2B_entity_callerid.php?section=1">{_("Caller-ID")}</a></li>
 							<li><a class="link-dark rounded" href="A2B_notifications.php?section=1">{_("Credit Notification")}</a></li>
 							<li><a class="link-dark rounded" href="A2B_entity_card_group.php?section=1">{_("Groups")}</a></li>
 							<li><a class="link-dark rounded" href="A2B_entity_card_seria.php?section=1">{_("Card series")}</a></li>
-							<li><a class="link-dark rounded" href="A2B_entity_speeddial.php?atmenu=speeddial&amp;section=1">{_("Speed Dial")}</a></li>
-							<li><a class="link-dark rounded" href="card-history.php?atmenu=cardhistory&amp;section=1">{_("History")}</a></li>
-							<li><a class="link-dark rounded" href="A2B_entity_statuslog.php?atmenu=statuslog&amp;section=1">{_("Status")}</a></li>
+							<li><a class="link-dark rounded" href="A2B_entity_speeddial.php?section=1">{_("Speed Dial")}</a></li>
+							<li><a class="link-dark rounded" href="card-history.php?section=1">{_("History")}</a></li>
+							<li><a class="link-dark rounded" href="A2B_entity_statuslog.php?section=1">{_("Status")}</a></li>
 						</ul>
 					</div>
 				</li>
@@ -83,8 +83,8 @@
 					</button>
 					<div class="collapse {if ($section == "2")}show{/if}" id="agent-collapse">
 						<ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-							<li><a class="link-dark rounded" href="A2B_entity_agent.php?atmenu=user&amp;section=2">{_("Add :: Search")}</a></li>
-							<li><a class="link-dark rounded" href="A2B_entity_signup_agent.php?atmenu=user&amp;section=2">{_("Signup URLs")}</a></li>
+							<li><a class="link-dark rounded" href="A2B_entity_agent.php?section=2">{_("Add :: Search")}</a></li>
+							<li><a class="link-dark rounded" href="A2B_entity_signup_agent.php?section=2">{_("Signup URLs")}</a></li>
 						</ul>
 					</div>
 				</li>
@@ -98,8 +98,8 @@
 					</button>
 					<div class="collapse {if ($section == "3")}show{/if}" id="admin-collapse">
 						<ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-							<li><a class="link-dark rounded" href="A2B_entity_user.php?atmenu=user&amp;groupID=0&amp;section=3">{_("Add :: Search")}</a></li>
-							<li><a class="link-dark rounded" href="A2B_entity_user.php?atmenu=user&amp;groupID=1&amp;section=3">{_("Access Control")}</a></li>
+							<li><a class="link-dark rounded" href="A2B_entity_user.php?groupID=0&amp;section=3">{_("Add :: Search")}</a></li>
+							<li><a class="link-dark rounded" href="A2B_entity_user.php?groupID=1&amp;section=3">{_("Access Control")}</a></li>
 						</ul>
 					</div>
 				</li>
@@ -148,16 +148,16 @@
 					</button>
 					<div class="collapse {if ($section == "6")}show{/if}" id="rate-collapse">
 						<ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-							<li><a class="link-dark rounded" href="A2B_entity_tariffgroup.php?atmenu=tariffgroup&amp;section=6">{_("Call Plan")}</a></li>
+							<li><a class="link-dark rounded" href="A2B_entity_tariffgroup.php?section=6">{_("Call Plan")}</a></li>
 							<li>
-								<a class="link-dark rounded" href="A2B_entity_tariffplan.php?atmenu=tariffplan&amp;section=6">{_("RateCards")}</a>
+								<a class="link-dark rounded" href="A2B_entity_tariffplan.php?section=6">{_("RateCards")}</a>
 								<ul class="list-unstyled fw-normal ps-3 pb-1">
-									<li><a class="link-dark rounded" href="CC_ratecard_import.php?atmenu=ratecard&amp;section=6">{_("Import")}</a>
-									<li><a class="link-dark rounded" href="CC_ratecard_merging.php?atmenu=ratecard&amp;section=6">{_("Merge")}</a></li>
-									<li><a class="link-dark rounded" href="CC_entity_sim_ratecard.php?atmenu=ratecard&amp;section=6">{_("Simulator")}</a></li>
+									<li><a class="link-dark rounded" href="CC_ratecard_import.php?section=6">{_("Import")}</a>
+									<li><a class="link-dark rounded" href="CC_ratecard_merging.php?section=6">{_("Merge")}</a></li>
+									<li><a class="link-dark rounded" href="CC_entity_sim_ratecard.php?section=6">{_("Simulator")}</a></li>
 								</ul>
 							</li>
-							<li><a class="link-dark rounded" href="A2B_entity_def_ratecard.php?atmenu=ratecard&amp;section=6">{_("Rates")}</a></li>
+							<li><a class="link-dark rounded" href="A2B_entity_def_ratecard.php?section=6">{_("Rates")}</a></li>
 						</ul>
 					</div>
 				</li>
@@ -189,8 +189,8 @@
 							<li><a class="link-dark rounded" href="A2B_entity_didgroup.php?section=8">{_("Groups")}</a>
 							<li><a class="link-dark rounded" href="A2B_entity_did_destination.php?section=8">{_("Destination")}</a></li>
 							<li><a class="link-dark rounded" href="A2B_entity_did_import.php?section=8">{_("Import [CSV]")}</a></li>
-							<li><a class="link-dark rounded" href="A2B_entity_did_use.php?atmenu=did_use&amp;section=8">{_("Usage")}</a></li>
-							<li><a class="link-dark rounded" href="A2B_entity_did_billing.php?atmenu=did_billing&amp;section=8">{_("Billing")}</a></li>
+							<li><a class="link-dark rounded" href="A2B_entity_did_use.php?section=8">{_("Usage")}</a></li>
+							<li><a class="link-dark rounded" href="A2B_entity_did_billing.php?section=8">{_("Billing")}</a></li>
 						</ul>
 					</div>
 				</li>
@@ -204,8 +204,8 @@
 					</button>
 					<div class="collapse {if ($section == "9")}show{/if}" id="cid-collapse">
 						<ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-							<li><a class="link-dark rounded" href="A2B_entity_outbound_cid.php?atmenu=cid&amp;section=9">{_("Add")}</a></li>
-							<li><a class="link-dark rounded" href="A2B_entity_outbound_cidgroup.php?atmenu=cidgroup&amp;section=9">{_("Groups")}</a></li>
+							<li><a class="link-dark rounded" href="A2B_entity_outbound_cid.php?section=9">{_("Add")}</a></li>
+							<li><a class="link-dark rounded" href="A2B_entity_outbound_cidgroup.php?section=9">{_("Groups")}</a></li>
 						</ul>
 					</div>
 				</li>
@@ -221,28 +221,28 @@
 						<ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
 							<li><a class="link-dark rounded" href="A2B_entity_voucher.php?section=10">{_("Vouchers")}</a></li>
 							<li>
-								<a class="link-dark rounded" href="A2B_entity_moneysituation.php?atmenu=moneysituation&amp;section=10">{_("Customers Balance")}</a>
+								<a class="link-dark rounded" href="A2B_entity_moneysituation.php?section=10">{_("Customers Balance")}</a>
 								<ul class="list-unstyled fw-normal ps-3 pb-1">
-									<li><a class="link-dark rounded" href="A2B_entity_transactions.php?atmenu=payment&amp;section=10">{_("Transactions")}</a></li>
-									<li><a class="link-dark rounded" href="A2B_entity_billing_customer.php?atmenu=payment&amp;section=10">{_("Billings")}</a></li>
-									<li><a class="link-dark rounded" href="A2B_entity_logrefill.php?atmenu=payment&amp;section=10">{_("Refills")}</a></li>
-									<li><a class="link-dark rounded" href="A2B_entity_payment.php?atmenu=payment&amp;section=10">{_("Payments")}</a></li>
+									<li><a class="link-dark rounded" href="A2B_entity_transactions.php?section=10">{_("Transactions")}</a></li>
+									<li><a class="link-dark rounded" href="A2B_entity_billing_customer.php?section=10">{_("Billings")}</a></li>
+									<li><a class="link-dark rounded" href="A2B_entity_logrefill.php?section=10">{_("Refills")}</a></li>
+									<li><a class="link-dark rounded" href="A2B_entity_payment.php?section=10">{_("Payments")}</a></li>
 									<li><a class="link-dark rounded" href="A2B_entity_paymentlog.php?section=10">{_("E-Payment Log")}</a></li>
 									<li><a class="link-dark rounded" href="A2B_entity_charge.php?section=10">{_("Charges")}</a></li>
 								</ul>
 							</li>
 							<li>
-								<a class="link-dark rounded" href="A2B_entity_agentsituation.php?atmenu=agentsituation&amp;section=10">{_("Agents Balance")}</a>
+								<a class="link-dark rounded" href="A2B_entity_agentsituation.php?section=10">{_("Agents Balance")}</a>
 								<ul class="list-unstyled fw-normal ps-3 pb-1">
-									<li><a class="link-dark rounded" href="A2B_entity_commission_agent.php?atmenu=payment&amp;section=10">{_("Commissions")}</a></li>
-									<li><a class="link-dark rounded" href="A2B_entity_remittance_request.php?atmenu=payment&amp;section=10">{_("Remittance Request")}</a></li>
-									<li><a class="link-dark rounded" href="A2B_entity_transactions_agent.php?atmenu=payment&amp;section=10">{_("Transactions")}</a></li>
-									<li><a class="link-dark rounded" href="A2B_entity_logrefill_agent.php?atmenu=payment&amp;section=10">{_("Refills")}</a></li>
-									<li><a class="link-dark rounded" href="A2B_entity_payment_agent.php?atmenu=payment&amp;section=10">{_("Payments")}</a></li>
+									<li><a class="link-dark rounded" href="A2B_entity_commission_agent.php?section=10">{_("Commissions")}</a></li>
+									<li><a class="link-dark rounded" href="A2B_entity_remittance_request.php?section=10">{_("Remittance Request")}</a></li>
+									<li><a class="link-dark rounded" href="A2B_entity_transactions_agent.php?section=10">{_("Transactions")}</a></li>
+									<li><a class="link-dark rounded" href="A2B_entity_logrefill_agent.php?section=10">{_("Refills")}</a></li>
+									<li><a class="link-dark rounded" href="A2B_entity_payment_agent.php?section=10">{_("Payments")}</a></li>
 									<li><a class="link-dark rounded" href="A2B_entity_paymentlog_agent.php?section=10">{_("E-Payment Log")}</a></li>
 								</ul>
 							</li>
-							<li><a class="link-dark rounded" href="A2B_entity_payment_configuration.php?atmenu=payment&amp;section=10">{_("Payment Methods")}</a></li>
+							<li><a class="link-dark rounded" href="A2B_entity_payment_configuration.php?section=10">{_("Payment Methods")}</a></li>
 							<li><a class="link-dark rounded" href="A2B_currencies.php?section=10">{_("Currency List")}</a></li>
 						</ul>
 					</div>
@@ -257,11 +257,11 @@
 					</button>
 					<div class="collapse {if ($section == "11")}show{/if}" id="invoice-collapse">
 						<ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-							<li><a class="link-dark rounded" href="A2B_entity_receipt.php?atmenu=payment&amp;section=11">{_("Receipts")}</a></li>
+							<li><a class="link-dark rounded" href="A2B_entity_receipt.php?section=11">{_("Receipts")}</a></li>
 							<li>
-								<a class="link-dark rounded" href="A2B_entity_invoice.php?atmenu=payment&amp;section=11">{_("Invoices")}</a>
+								<a class="link-dark rounded" href="A2B_entity_invoice.php?section=11">{_("Invoices")}</a>
 								<ul class="list-unstyled fw-normal ps-3 pb-1">
-									<li><a class="link-dark rounded" href="A2B_entity_invoice_conf.php?atmenu=payment&amp;section=11">{_("Configuration")}</a></li>
+									<li><a class="link-dark rounded" href="A2B_entity_invoice_conf.php?section=11">{_("Configuration")}</a></li>
 								</ul>
 							</li>
 						</ul>
@@ -277,7 +277,7 @@
 					</button>
 					<div class="collapse {if ($section == "12")}show{/if}" id="package-collapse">
 						<ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-							<li><a class="link-dark rounded" href="A2B_entity_package.php?atmenu=package&amp;section=12">{_("Add")}</a></li>
+							<li><a class="link-dark rounded" href="A2B_entity_package.php?section=12">{_("Add")}</a></li>
 							<li><a class="link-dark rounded" href="A2B_detail_package.php?section=12">{_("Details")}</a></li>
 						</ul>
 					</div>
@@ -351,7 +351,7 @@
 					</button>
 					<div class="collapse {if ($section == "17")}show{/if}" id="mail-collapse">
 						<ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-							<li><a class="link-dark rounded" href="A2B_entity_mailtemplate.php?atmenu=mailtemplate&amp;section=17&amp;languages=en">{_("Mail templates")}</a></li>
+							<li><a class="link-dark rounded" href="A2B_entity_mailtemplate.php?section=17&amp;languages=en">{_("Mail templates")}</a></li>
 							<li><a class="link-dark rounded" href="A2B_mass_mail.php?section=17">{_("Mass Mail")}</a></li>
 						</ul>
 					</div>
@@ -366,8 +366,8 @@
 					</button>
 					<div class="collapse {if ($section == "18")}show{/if}" id="setting-collapse">
 						<ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-							<li><a class="link-dark rounded" href="A2B_entity_config.php?form_action=list&amp;atmenu=config&amp;section=18">{_("Global List")}</a></li>
-							<li><a class="link-dark rounded" href="A2B_entity_config_group.php?form_action=list&amp;atmenu=configgroup&amp;section=18">{_("Group List")}</a></li>
+							<li><a class="link-dark rounded" href="A2B_entity_config.php?form_action=list&amp;section=18">{_("Global List")}</a></li>
+							<li><a class="link-dark rounded" href="A2B_entity_config_group.php?form_action=list&amp;section=18">{_("Group List")}</a></li>
 							<li><a class="link-dark rounded" href="phpconfig.php?dir=/etc/asterisk&amp;section=18">{_("* Config Editor")}</a></li>
 							{if ($ASTERISK_GUI_LINK)}
 								<li><a class="link-dark rounded" href="http://{$HTTP_HOST}:8088/asterisk/static/config/index.html" target="_blank">{_("Asterisk GUI")}</a></li>

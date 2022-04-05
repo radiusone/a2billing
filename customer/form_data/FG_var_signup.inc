@@ -495,7 +495,7 @@ $HD_Form->FG_ADD_PAGE_SAVE_BUTTON_TEXT = gettext("SIGNUP");
 
 $HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = 'processing_card_signup';
 
-$HD_Form->FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL) . "?atmenu=document&id=";
-$HD_Form->FG_LOCATION_AFTER_DELETE = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL) . "?atmenu=document&id=";
+$HD_Form->FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL) . "?id=";
+$HD_Form->FG_LOCATION_AFTER_DELETE = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL) . "?id=";
 
 

@@ -616,12 +616,12 @@ function sendValue(selvalue, othervalue) {
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?= _("Close") ?></button>
                 <?php  if (!empty($_SESSION["is_sip_changed"])): ?>
-                    <a class="btn btn-primary" href="CC_generate_friend_file.php?atmenu=sipfriend">
+                    <a class="btn btn-primary" href="CC_generate_friend_file.php?voip_type=sipfriend">
                         <?= _("Generate additional_a2billing_sip.conf") ?>
                     </a>
                 <?php endif ?>
                 <?php if (!empty($_SESSION["is_iax_changed"])): ?>
-                    <a class="btn btn-primary" href="CC_generate_friend_file.php?atmenu=iaxfriend">
+                    <a class="btn btn-primary" href="CC_generate_friend_file.php?voip_type=iaxfriend">
                         <?= _("Generate additional_a2billing_iax.conf") ?>
                     </a>
                 <?php endif ?>

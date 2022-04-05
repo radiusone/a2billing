@@ -65,7 +65,6 @@ $hasActionButtons = ($this->FG_ENABLE_DELETE_BUTTON || $this->FG_ENABLE_INFO_BUT
 <div class="row pb-3">
     <div class="col">
         <form name="theFormFilter" action="">
-            <input type="hidden" name="atmenu" value="<?= $processed['atmenu'] ?>"/>
             <input type="hidden" name="popup_select" value="<?= $processed['popup_select'] ?>"/>
             <input type="hidden" name="popup_formname" value="<?= $processed['popup_formname'] ?>"/>
             <input type="hidden" name="popup_fieldname" value="<?= $processed['popup_fieldname'] ?>"/>
@@ -81,7 +80,6 @@ $hasActionButtons = ($this->FG_ENABLE_DELETE_BUTTON || $this->FG_ENABLE_INFO_BUT
 <?php if ($this -> FG_FILTER_ENABLE || $this -> FG_FILTER2_ENABLE): ?>
 <div class="row pb-3">
 <form name="theFormFilter" action="" class="col">
-    <input type="hidden" name="atmenu" value="<?= $processed['atmenu'] ?>"/>
     <input type="hidden" name="popup_select" value="<?= $processed['popup_select'] ?>"/>
     <input type="hidden" name="popup_formname" value="<?= $processed['popup_formname'] ?>"/>
     <input type="hidden" name="popup_fieldname" value="<?= $processed['popup_fieldname'] ?>"/>
@@ -143,7 +141,7 @@ $hasActionButtons = ($this->FG_ENABLE_DELETE_BUTTON || $this->FG_ENABLE_INFO_BUT
             <?php foreach ($this->FG_LIST_TABLE_CELLS as $row): ?>
             <th>
                 <?php if ($row["sortable"]): ?>
-                <a class="sort <?= $this->FG_QUERY_ORDERBY_COLUMNS[0] === $row["field"] ? strtolower($this->FG_QUERY_DIRECTION) : "" ?>" href="<?= "?atmenu=$processed[atmenu]&amp;current_page=$current_page&amp;letter=$letter&amp;popup_select=$processed[popup_select]&amp;order=$row[field]&amp;sens=" . ($this->FG_QUERY_DIRECTION === "ASC" ? "DESC" : "ASC") . (str_starts_with($this->CV_FOLLOWPARAMETERS, "&") ? "" : "&amp;") . $this->CV_FOLLOWPARAMETERS ?>">
+                <a class="sort <?= $this->FG_QUERY_ORDERBY_COLUMNS[0] === $row["field"] ? strtolower($this->FG_QUERY_DIRECTION) : "" ?>" href="<?= "?current_page=$current_page&amp;letter=$letter&amp;popup_select=$processed[popup_select]&amp;order=$row[field]&amp;sens=" . ($this->FG_QUERY_DIRECTION === "ASC" ? "DESC" : "ASC") . (str_starts_with($this->CV_FOLLOWPARAMETERS, "&") ? "" : "&amp;") . $this->CV_FOLLOWPARAMETERS ?>">
                 <?php endif ?>
                     <?= $row["header"] ?>
                 <?php if ($row["sortable"]): ?>
@@ -349,7 +347,7 @@ $hasActionButtons = ($this->FG_ENABLE_DELETE_BUTTON || $this->FG_ENABLE_INFO_BUT
             $this->CV_CURRENT_PAGE + 1,
             $this->FG_LIST_VIEW_PAGE_COUNT,
             "?" . http_build_query(["current_page" => "%s", "filterprefix" => $processed["filterprefix"], "order" => $processed["order"], "sens" => $processed["sens"]], "", "&amp;") . (str_starts_with($this->CV_FOLLOWPARAMETERS, "&") ? "" : "&amp;") . $this->CV_FOLLOWPARAMETERS
-//            "?atmenu=$processed[atmenu]&amp;current_page=%s&amp;filterprefix=$processed[filterprefix]&amp;order=$processed[order]&amp;sens=$processed[sens]&amp;mydisplaylimit=$processed[mydisplaylimit]&amp;popup_select=$processed[popup_select]&amp;letter=$letter" . (str_starts_with($this->CV_FOLLOWPARAMETERS, "&") ? "" : "&amp;") . $this->CV_FOLLOWPARAMETERS
+//            "?current_page=%s&amp;filterprefix=$processed[filterprefix]&amp;order=$processed[order]&amp;sens=$processed[sens]&amp;mydisplaylimit=$processed[mydisplaylimit]&amp;popup_select=$processed[popup_select]&amp;letter=$letter" . (str_starts_with($this->CV_FOLLOWPARAMETERS, "&") ? "" : "&amp;") . $this->CV_FOLLOWPARAMETERS
         ) ?>
     </div>
 </div>

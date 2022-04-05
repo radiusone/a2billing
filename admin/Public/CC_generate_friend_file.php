@@ -37,7 +37,7 @@ use A2billing\Realtime;
 
 require_once "../../common/lib/admin.defines.php";
 
-getpost_ifset(array('action', 'atmenu'));
+getpost_ifset(array('action', 'voip_type'));
 
 if (! has_rights (ACX_CUSTOMER)) {
     Header ("HTTP/1.0 401 Unauthorized");
@@ -54,9 +54,9 @@ if ($action == "reload") {
     $res = $as->connect(MANAGER_HOST, MANAGER_USERNAME, MANAGER_SECRET);
 
     if ($res) {
-        if ($atmenu == "sipfriend") {
+        if ($voip_type == "sipfriend") {
             $res = $as->Command('sip reload');
-        } elseif ($atmenu == "iaxfriend") {
+        } elseif ($voip_type == "iaxfriend") {
             $res = $as->Command('iax2 reload');
         } else {
             $res = $as->Command('sip reload');
@@ -73,7 +73,7 @@ if ($action == "reload") {
 
     $instance_realtime = new Realtime();
 
-    if ($atmenu == "sipfriend") {
+    if ($voip_type == "sipfriend") {
 
         $buddyfile = BUDDY_SIP_FILE;
         $instance_realtime -> create_trunk_config_file ('sip');
@@ -113,7 +113,7 @@ echo $CC_help_sipfriend_reload;
         if (strlen($error_msg)>0) {
             echo $error_msg;
         } elseif ($action != "reload") {
-            if ($atmenu == "sipfriend") {
+            if ($voip_type == "sipfriend") {
                 echo gettext("The sipfriend file has been generated : ").'<br/>'.$buddyfile;
             } else {
                 echo gettext("The iaxfriend file has been generated : ").'<br/>'.$buddyfile;
@@ -121,7 +121,7 @@ echo $CC_help_sipfriend_reload;
     ?>
 
     <br><br><br>
-    <a href="<?php  echo $PHP_SELF."?atmenu=$atmenu&action=reload";?>"><img src="<?php echo Images_Path;?>/icon_refresh.gif" />
+    <a href="<?php  echo $PHP_SELF."?voip_type=$voip_type&action=reload";?>"><img src="<?php echo Images_Path;?>/icon_refresh.gif" />
         <?php echo gettext("Click here to reload your asterisk server"); ?>
     </a>
 

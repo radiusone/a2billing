@@ -66,7 +66,6 @@ switch ($actionbtn) {
     ?>
     <FORM action=<?php echo filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)?> id=form1 method=post name=form1>
         <INPUT type="hidden" name="did" value="<?php echo $did?>">
-        <INPUT type="hidden" name="atmenu" value="<?php echo $atmenu?>">
         <INPUT type="hidden" name="actionbtn" value="ask_release">
         <?= $HD_Form->csrf_inputs() ?>
         <br><br>

@@ -48,7 +48,7 @@ if (! has_rights (ACX_INVOICES)) {
 getpost_ifset(array('id'));
 
 if (empty($id)) {
-Header ("Location: A2B_entity_receipt.php?atmenu=payment&section=13");
+Header ("Location: A2B_entity_receipt.php?section=13");
 }
 
 $receipt = new receipt($id);

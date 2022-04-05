@@ -292,6 +292,6 @@ if (!$subadmin) {
 
 $HD_Form->FG_INTRO_TEXT_ADITION = '';
 
-$HD_Form->FG_LOCATION_AFTER_ADD = "?atmenu=user&groupID=$groupID&id=";
-$HD_Form->FG_LOCATION_AFTER_EDIT = "?atmenu=user&groupID=$groupID&id=";
-$HD_Form->FG_LOCATION_AFTER_DELETE = "?atmenu=user&groupID=$groupID&id=";
+$HD_Form->FG_LOCATION_AFTER_ADD = "?groupID=$groupID&id=";
+$HD_Form->FG_LOCATION_AFTER_EDIT = "?groupID=$groupID&id=";
+$HD_Form->FG_LOCATION_AFTER_DELETE = "?groupID=$groupID&id=";

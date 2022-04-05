@@ -70,7 +70,7 @@ if (! has_rights (ACX_MAIL)) {
     die();
 }
 
-getpost_ifset(array('subject', 'message','atmenu','submit','hd_email', 'total_customer', 'from', 'fromname'));
+getpost_ifset(array('subject', 'message', 'submit','hd_email', 'total_customer', 'from', 'fromname'));
 
 $HD_Form = new FormHandler("cc_card");
 $HD_Form -> search_session_key = 'entity_card_selection_mail';
@@ -300,7 +300,7 @@ $(function() {
                     if ($key + 1 != $nb_customer) echo ", ";
                         echo "<input type=\"hidden\" name=\"hd_email[]\" value=".$list_customer[$key][1].">";
                     if ($key == 100) {
-                        echo "<br><a href=\"A2B_entity_card.php?atmenu=card&section=1\" target=\"_blank\">".gettext("Click on list customer to see them all")."</a>";
+                        echo "<br><a href=\"A2B_entity_card.php?section=1\" target=\"_blank\">".gettext("Click on list customer to see them all")."</a>";
                     }
                 }
             }?><span class="liens"></span>&nbsp;<br>

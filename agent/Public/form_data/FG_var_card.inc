@@ -87,7 +87,7 @@ if (has_rights (ACX_GENERATE_CUSTOMER)) {
 if (has_rights (ACX_CREATE_CUSTOMER)) {
 	$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 	$HD_Form ->FG_LIST_ADDING_BUTTON2 = true;
-	$HD_Form ->FG_LIST_ADDING_BUTTON_LINK2 = "A2B_entity_card.php?form_action=ask-add&atmenu=card&section=".$_SESSION["menu_section"];
+	$HD_Form ->FG_LIST_ADDING_BUTTON_LINK2 = "A2B_entity_card.php?form_action=ask-add&section=".$_SESSION["menu_section"];
 	$HD_Form ->FG_LIST_ADDING_BUTTON_ALT2 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG2 = gettext("Add Customer");
 	$HD_Form ->FG_LIST_ADDING_BUTTON_IMG2 = Images_Path ."/user_add.png" ;
 }
@@ -294,14 +294,14 @@ if (($popup_select>=1)) {
 
 	if (has_rights (ACX_SIPCONF)) {
 		$HD_Form -> FG_OTHER_BUTTON1 = true;
-		$HD_Form -> FG_OTHER_BUTTON1_LINK="A2B_entity_friend.php?atmenu=sip&form_action=add_sip&id_cc_card=|$FN_COLUMN_ID|&cardnumber=|$FN_COLUMN_USERNAME|&useralias=|$FN_COLUMN_ALIAS|";
+		$HD_Form -> FG_OTHER_BUTTON1_LINK="A2B_entity_friend.php?voip_conf=sip&form_action=add_sip&id_cc_card=|$FN_COLUMN_ID|&cardnumber=|$FN_COLUMN_USERNAME|&useralias=|$FN_COLUMN_ALIAS|";
 		$HD_Form -> FG_OTHER_BUTTON1_IMG = Images_Path . "/icon-sip.gif";
 		$HD_Form -> FG_OTHER_BUTTON1_ALT=gettext("SIP buddy");
 	}
 
 	if (has_rights (ACX_IAXCONF)) {
 		$HD_Form -> FG_OTHER_BUTTON2 = true;
-		$HD_Form -> FG_OTHER_BUTTON2_LINK="A2B_entity_friend.php?atmenu=iax&form_action=add_iax&id_cc_card=|$FN_COLUMN_ID|&cardnumber=|$FN_COLUMN_USERNAME|&useralias=|$FN_COLUMN_ALIAS|";
+		$HD_Form -> FG_OTHER_BUTTON2_LINK="A2B_entity_friend.php?voip_conf=iax&form_action=add_iax&id_cc_card=|$FN_COLUMN_ID|&cardnumber=|$FN_COLUMN_USERNAME|&useralias=|$FN_COLUMN_ALIAS|";
 		$HD_Form -> FG_OTHER_BUTTON2_IMG = Images_Path . "/icon-iax.gif";
 		$HD_Form -> FG_OTHER_BUTTON2_ALT=gettext("IAX buddy");
 	}

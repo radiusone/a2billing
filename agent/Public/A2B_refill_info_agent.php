@@ -46,7 +46,7 @@ if (! has_rights (ACX_BILLING)) {
 getpost_ifset(array('id'));
 
 if (empty($id)) {
-    header("Location: A2B_entity_logrefill_agent.php?atmenu=payment&section=2");
+    header("Location: A2B_entity_logrefill_agent.php?section=2");
 }
 
 $DBHandle  = DbConnect();
@@ -57,7 +57,7 @@ $refill_result = $refill_table -> get_list($DBHandle, $refill_clause);
 $refill = $refill_result[0];
 
 if (empty($refill)) {
-    header("Location: A2B_entity_logrefill_agent.php?atmenu=payment&section=2");
+    header("Location: A2B_entity_logrefill_agent.php?section=2");
 }
 
 // #### HEADER SECTION
@@ -119,7 +119,7 @@ $smarty->display('main.tpl');
  </table>
  <br/>
 <div style="width : 80%; text-align : right; margin-left:auto;margin-right:auto;" >
-     <a class="cssbutton_big"  href="A2B_entity_logrefill_agent.php?atmenu=payment&section=2">
+     <a class="cssbutton_big"  href="A2B_entity_logrefill_agent.php?section=2">
         <img src="<?php echo Images_Path_Main;?>/icon_arrow_orange.gif"/>
         <?php echo gettext("REFILLS AGENT LIST"); ?>
     </a>

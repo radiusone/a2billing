@@ -139,7 +139,7 @@ $contents[] = array (
 );
 $contents[] = array (
     'align' => 'center',
-    'text' => '<br><input type=submit name=submitbutton value=Update class=form_input_button> <a href="A2B_entity_payment_configuration.php?atmenu=payment"><input type="button" name="cancelbutton" value="Cancel" class="form_input_button"></a>'
+    'text' => '<br><input type=submit name=submitbutton value=Update class=form_input_button> <a href="A2B_entity_payment_configuration.php"><input type="button" name="cancelbutton" value="Cancel" class="form_input_button"></a>'
 );
 
 $smarty->display('main.tpl');

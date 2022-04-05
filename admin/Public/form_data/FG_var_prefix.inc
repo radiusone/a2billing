@@ -62,7 +62,7 @@ $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "destination";
 
 $HD_Form -> FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form -> FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_prefix.php?form_action=ask-add&atmenu=prefixe";
+$HD_Form -> FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_prefix.php?form_action=ask-add";
 $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = _("Add PREFIX");
 $HD_Form -> FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/world_add.png" ;
 
@@ -119,6 +119,6 @@ if (isset($filterprefix)  &&  (strlen($filterprefix)>0)) {
 
 $HD_Form -> FG_INTRO_TEXT_EDITION= '';
 $HD_Form -> FG_INTRO_TEXT_ADITION = '';
-$HD_Form -> FG_LOCATION_AFTER_ADD = "?atmenu=document&id=";
-$HD_Form -> FG_LOCATION_AFTER_EDIT = "?atmenu=document&id=";
-$HD_Form -> FG_LOCATION_AFTER_DELETE = "?atmenu=document&id=";
+$HD_Form -> FG_LOCATION_AFTER_ADD = "?id=";
+$HD_Form -> FG_LOCATION_AFTER_EDIT = "?id=";
+$HD_Form -> FG_LOCATION_AFTER_DELETE = "?id=";

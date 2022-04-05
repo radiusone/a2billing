@@ -393,7 +393,6 @@ if ($form_action === "list" && !$popup_select): ?>
             <div class="modal-body">
                 <form class="container-fluid form-striped" name="updateForm" id="updateForm" action="" method="post">
                     <input type="hidden" name="batchupdate" value="1"/>
-                    <input type="hidden" name="atmenu" value="<?= $atmenu?>"/>
                     <input type="hidden" name="popup_select" value="<?= $popup_select?>"/>
                     <input type="hidden" name="popup_formname" value="<?= $popup_formname?>"/>
                     <input type="hidden" name="popup_fieldname" value="<?= $popup_fieldname?>"/>
@@ -570,7 +569,6 @@ if ($popup_select): ?>
             <div class="modal-body">
                 <form class="container-fluid form-striped" name="assignForm" id="assignForm" action="" method="post">
                     <input type="hidden" name="batchupdate" value="1"/>
-                    <input type="hidden" name="atmenu" value="<?= $atmenu?>"/>
                     <input type="hidden" name="popup_select" value="<?= $popup_select?>"/>
                     <input type="hidden" name="popup_formname" value="<?= $popup_formname?>"/>
                     <input type="hidden" name="popup_fieldname" value="<?= $popup_fieldname?>"/>

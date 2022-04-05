@@ -14,7 +14,6 @@ $db_data = $list[0];
 
 <form action="" id="myForm" method="post" name="myForm">
     <input type="hidden" name="id" value="<?= $processed["id"] ?>">
-    <input type="hidden" name="atmenu" value="<?= $processed["atmenu"] ?>">
     <input type="hidden" name="current_page" value="<?= $processed['current_page'] ?>">
     <input type="hidden" name="order" value="<?= $processed['order'] ?>">
     <input type="hidden" name="sens" value="<?= $processed['sens'] ?>">

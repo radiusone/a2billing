@@ -167,8 +167,8 @@ if (has_rights (ACX_MODIFY_REFILLS)) {
 
 	$HD_Form -> FG_INTRO_TEXT_ADITION = '';
 	$HD_Form -> FG_ADDITIONAL_FUNCTION_AFTER_ADD = 'processing_refill_add';
-	$HD_Form -> FG_LOCATION_AFTER_ADD = "?atmenu=document&id=";
-	$HD_Form -> FG_LOCATION_AFTER_EDIT = "?atmenu=document&id=";
-	$HD_Form -> FG_LOCATION_AFTER_DELETE = "?atmenu=document&id=";
+	$HD_Form -> FG_LOCATION_AFTER_ADD = "?id=";
+	$HD_Form -> FG_LOCATION_AFTER_EDIT = "?id=";
+	$HD_Form -> FG_LOCATION_AFTER_DELETE = "?id=";
 }
 

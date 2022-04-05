@@ -44,7 +44,7 @@ if (! has_rights (ACX_ADMINISTRATOR)) {
 getpost_ifset(array('id'));
 
 if (empty($id)) {
-    header("Location: A2B_entity_agent.php?atmenu=user&section=2");
+    header("Location: A2B_entity_agent.php?section=2");
 }
 
 $DBHandle  = DbConnect();
@@ -53,7 +53,7 @@ $result = $DBHandle->Execute("SELECT * FROM cc_agent WHERE id = ?", [$id]);
 $agent = $result ? $result->FetchRow() : null;
 
 if (empty($agent)) {
-    header("Location: A2B_entity_agent.php?atmenu=user&section=2");
+    header("Location: A2B_entity_agent.php?section=2");
 }
 
 // #### HEADER SECTION
@@ -211,7 +211,7 @@ $lg_liste= getLanguages();
  </table>
  <br/>
 <div style="width : 80%; text-align : right; margin-left:auto;margin-right:auto;" >
-     <a class="cssbutton_big"  href="A2B_entity_agent.php?atmenu=user&section=2">
+     <a class="cssbutton_big"  href="A2B_entity_agent.php?section=2">
         <img src="<?php echo Images_Path_Main;?>/icon_arrow_orange.gif"/>
         <?php echo gettext("AGENT LIST"); ?>
     </a>

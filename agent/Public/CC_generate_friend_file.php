@@ -39,7 +39,7 @@ require_once "../../common/lib/agent.defines.php";
 
 $FG_DEBUG =0;
 
-getpost_ifset(array('action', 'atmenu'));
+getpost_ifset(array('action', 'voip_type'));
 
 if (! has_rights (ACX_CUSTOMER)) {
     Header ("HTTP/1.0 401 Unauthorized");
@@ -56,7 +56,7 @@ if ($action == "reload") {
     $res = $as->connect(MANAGER_HOST,MANAGER_USERNAME,MANAGER_SECRET);
 
     if ($res) {
-        if ($atmenu == "sipfriend") {
+        if ($voip_type == "sipfriend") {
             $res = $as->Command('sip reload');
         } else {
             $res = $as->Command('iax2 reload');
@@ -69,7 +69,7 @@ if ($action == "reload") {
         $error_msg= "<br><center><b><font color=red>".gettext("Cannot connect to the asterisk manager!<br>Please check your manager configuration.")."</font></b></center>";
     }
 } else {
-    if ($atmenu == "sipfriend") {
+    if ($voip_type == "sipfriend") {
         $TABLE_BUDDY = 'cc_sip_buddies';
         $buddyfile = BUDDY_SIP_FILE;
 
@@ -98,7 +98,7 @@ restrictcid, rtptimeout, rtpholdtimeout, musiconhold, regseconds, ipaddr, cancal
     $list_friend = $instance_table_friend -> get_list ($DBHandle, 'id > 0');
 
     if (!is_array($list_friend) || count($list_friend)==0) {
-        $error_msg= "<br><center><b><font color=red>".gettext("There is no ").$atmenu." ! </font></b></center>";
+        $error_msg= "<br><center><b><font color=red>".gettext("There is no ").$voip_type." ! </font></b></center>";
     } else {
 
         error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
@@ -152,7 +152,7 @@ echo $CC_help_sipfriend_reload;
         if (strlen($error_msg)>0) {
             echo $error_msg;
         } elseif ($action != "reload") {
-            if ($atmenu == "sipfriend") {
+            if ($voip_type == "sipfriend") {
                 echo gettext("The sipfriend file has been generated : ").$buddyfile;
             } else {
                 echo gettext("The iaxfriend file has been generated : ").$buddyfile;
@@ -161,7 +161,7 @@ echo $CC_help_sipfriend_reload;
     ?>
 
     <br><br><br>
-    <a href="<?php  echo $PHP_SELF."?atmenu=$atmenu&action=reload";?>"><img src="<?php echo Images_Path;?>/icon_refresh.gif" />
+    <a href="<?php  echo $PHP_SELF."?voip_type=$voip_type&action=reload";?>"><img src="<?php echo Images_Path;?>/icon_refresh.gif" />
         <?php echo gettext("Click here to reload your asterisk server"); ?>
     </a>
 

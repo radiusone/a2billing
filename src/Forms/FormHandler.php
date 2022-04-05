@@ -1898,7 +1898,6 @@ class FormHandler
             $el["type"] = "SELECT";
         }
         $id = $processed['id'];
-        $atmenu = $processed['atmenu'];
         $ratesort = $processed['ratesort'];
 
         require(__DIR__ . "/../../templates/SearchHandler.inc.php");
@@ -1917,7 +1916,6 @@ class FormHandler
         $processed = $this->getProcessed();
 
         $id = $processed['id'];
-        $atmenu = $processed['atmenu'];
         $ratesort = $processed['ratesort'];
         $form_el_index = $processed['form_el_index'];
 

@@ -64,8 +64,8 @@ $HD_Form -> FG_ENABLE_ADD_BUTTON = false;
 
 $HD_Form -> FG_OTHER_BUTTON1 = true;
 $HD_Form -> FG_OTHER_BUTTON2 = true;
-$HD_Form -> FG_OTHER_BUTTON2_LINK="javascript:;\" onClick=\"window.open('A2B_entity_moneysituation_details.php?type=payment&form_action=list&atmenu=card&displayheader=0&popup_select=1&id=|param|','','scrollbars=yes,resizable=yes,width=500,height=270')\"";
-$HD_Form -> FG_OTHER_BUTTON1_LINK="javascript:;\" onClick=\"window.open('A2B_entity_moneysituation_details.php?type=invoice&form_action=list&atmenu=card&displayheader=0&popup_select=1&id=|param|','','scrollbars=yes,resizable=yes,width=500,height=270')\"";
+$HD_Form -> FG_OTHER_BUTTON2_LINK="javascript:;\" onClick=\"window.open('A2B_entity_moneysituation_details.php?type=payment&form_action=list&displayheader=0&popup_select=1&id=|param|','','scrollbars=yes,resizable=yes,width=500,height=270')\"";
+$HD_Form -> FG_OTHER_BUTTON1_LINK="javascript:;\" onClick=\"window.open('A2B_entity_moneysituation_details.php?type=invoice&form_action=list&displayheader=0&popup_select=1&id=|param|','','scrollbars=yes,resizable=yes,width=500,height=270')\"";
 $HD_Form -> FG_OTHER_BUTTON2_ALT = '<font color="red">'.gettext('PAYMENT').'</font>';
 $HD_Form -> FG_OTHER_BUTTON1_ALT = '<font color="red">'.gettext('INVOICE').'</font>';
 
@@ -91,6 +91,6 @@ if (isset($filterprefix)  &&  (strlen($filterprefix)>0)){
 
 
 
-$HD_Form -> FG_LOCATION_AFTER_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&id=";
-$HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&id=";
-$HD_Form -> FG_LOCATION_AFTER_DELETE = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&id=";
+$HD_Form -> FG_LOCATION_AFTER_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
+$HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
+$HD_Form -> FG_LOCATION_AFTER_DELETE = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";

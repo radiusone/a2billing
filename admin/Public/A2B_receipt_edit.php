@@ -48,7 +48,7 @@ if (! has_rights (ACX_INVOICING)) {
 getpost_ifset(array('date','id','action','price','description','idc'));
 
 if (empty($id)) {
-    Header ("Location: A2B_entity_receipt.php?atmenu=payment&section=13");
+    Header ("Location: A2B_entity_receipt.php?section=13");
 }
 
 if (!empty($action)) {

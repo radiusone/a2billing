@@ -44,7 +44,7 @@ if (!has_rights(ACX_ADMINISTRATOR)) {
 getpost_ifset(array('id','result','action','message','id_msg','type','logo'));
 
 if (empty($id)) {
-    header("Location: A2B_entity_agent.php?atmenu=user&section=2");
+    header("Location: A2B_entity_agent.php?section=2");
 }
 if ($result == "success") {
     $message_action = gettext("Home updated successfully");

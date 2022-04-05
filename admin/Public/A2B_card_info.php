@@ -44,7 +44,7 @@ if (! has_rights (ACX_CUSTOMER)) {
 getpost_ifset(array('id'));
 
 if (empty($id)) {
-    header("Location: A2B_entity_card.php?atmenu=card&section=1");
+    header("Location: A2B_entity_card.php?section=1");
 }
 
 $DBHandle  = DbConnect();
@@ -53,7 +53,7 @@ $result = $DBHandle->Execute("SELECT * FROM cc_card WHERE id = ?", [$id]);
 $card = $result ? $result->FetchRow() : null;
 
 if (empty($card)) {
-    header("Location: A2B_entity_card.php?atmenu=card&section=1");
+    header("Location: A2B_entity_card.php?section=1");
 }
 
 // #### HEADER SECTION

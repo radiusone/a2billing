@@ -1209,7 +1209,7 @@ play_audio = YES
 #### REMOVE OLD PAYPAL
 ********************************************************************
 A2Billing_UI/paypal
-A2B_entity_paypal.php?atmenu=paypal&form_action=list&section=2
+A2B_entity_paypal.php?form_action=list&section=2
 FG_var_paypal
 
 
@@ -2054,11 +2054,11 @@ and also on the customer interface.
 1) Bug on edit entity (framework) keep transfered value in case of errors RegEx
 
 2) Reduce big space in top pages :
-			A2B_entity_def_ratecard.php?atmenu=ratecard&section=3
-			CC_ratecard_import.php?atmenu=ratecard&section=3
+			A2B_entity_def_ratecard.php?section=3
+			CC_ratecard_import.php?section=3
 
 			Good high :
-			A2B_entity_card.php?atmenu=card&section=1
+			A2B_entity_card.php?section=1
 
 
 2) LIST CARDNUMBER -> REFILL : ARANGE FORMAT OF REFILL - remove the ugly red border
@@ -2120,7 +2120,7 @@ when u delete a group of CID, it may remove all the CID inside that group
 
 #### UPDATE ACL : RIGHT MANAGEMENT
 ********************************************************************
-A2Billing_UI/Public/A2B_entity_user.php?form_action=ask-add&atmenu=user&groupID=1&section=10
+A2Billing_UI/Public/A2B_entity_user.php?form_action=ask-add&groupID=1&section=10
 
 Add new list of rights for the new options in the menu
 for instance add a new option for callback.
@@ -2643,7 +2643,7 @@ This could be helpful to enable run service for those cards in bulk, When we gen
 #### BUG V1.2 [fixed]
 ********************************************************************
 POPUP
-http://localhost/~areski/svn/a2billing/trunk/A2Billing_UI/Public/CC_entity_sim_ratecard.php?atmenu=ratecard& "View Payment".
+http://localhost/~areski/svn/a2billing/trunk/A2Billing_UI/Public/CC_entity_sim_ratecard.php? "View Payment".
 
 
 #### BUG V1.2 [Fixed]

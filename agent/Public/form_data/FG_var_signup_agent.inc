@@ -49,7 +49,7 @@ $HD_Form -> FG_QUERY_WHERE_CLAUSE = "id_agent = ".$_SESSION['agent_id'];
 $HD_Form->no_debug();
 
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_signup_agent.php?atmenu=user&section=".$_SESSION["menu_section"];
+$HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_signup_agent.php?section=".$_SESSION["menu_section"];
 $HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add Signup KEY");
 $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/key_add.png" ;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;

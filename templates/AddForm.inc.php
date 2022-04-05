@@ -16,7 +16,6 @@ $options = null;
 
 <form action="" method="post" name="myForm" id="myForm">
     <input type="hidden" name="form_action" value="add"/>
-    <input type="hidden" name="atmenu" value="<?= $processed["atmenu"]?>">
     <?= $this->csrf_inputs() ?>
 
 <?php foreach ($this->FG_ADD_QUERY_HIDDEN_INPUTS as $name => $value): ?>

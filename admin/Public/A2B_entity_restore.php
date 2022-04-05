@@ -146,7 +146,6 @@ $(function() {
         <img src="<?php echo Images_Path;?>/clear.gif">
         <input type="hidden" name="MAX_FILE_SIZE" value="8000">
         <input type="hidden" name="form_action" value="upload">
-        <input type="hidden" name="atmenu" value="upload">
         <input type="submit" value="Upload" class="form_input_button">
         </TD>
     </TR>

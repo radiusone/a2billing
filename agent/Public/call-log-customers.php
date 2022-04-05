@@ -43,7 +43,7 @@ if (! has_rights ( ACX_CALL_REPORT )) {
     die ();
 }
 
-getpost_ifset ( array ('customer', 'sellrate', 'buyrate', 'entercustomer',  'entertariffgroup', 'enterratecard', 'posted', 'Period', 'frommonth', 'fromstatsmonth', 'tomonth', 'tostatsmonth', 'fromday', 'fromstatsday_sday', 'fromstatsmonth_sday', 'today', 'tostatsday_sday', 'tostatsmonth_sday', 'fromtime', 'totime', 'fromstatsday_hour', 'tostatsday_hour', 'fromstatsday_min', 'tostatsday_min', 'dsttype', 'srctype', 'dnidtype', 'clidtype', 'channel', 'resulttype', 'atmenu', 'current_page', 'order', 'sens', 'dst', 'src', 'dnid', 'clid', 'choose_currency', 'terminatecauseid', 'choose_calltype', 'download', 'file' ) );
+getpost_ifset ( array ('customer', 'sellrate', 'buyrate', 'entercustomer',  'entertariffgroup', 'enterratecard', 'posted', 'Period', 'frommonth', 'fromstatsmonth', 'tomonth', 'tostatsmonth', 'fromday', 'fromstatsday_sday', 'fromstatsmonth_sday', 'today', 'tostatsday_sday', 'tostatsmonth_sday', 'fromtime', 'totime', 'fromstatsday_hour', 'tostatsday_hour', 'fromstatsday_min', 'tostatsday_min', 'dsttype', 'srctype', 'dnidtype', 'clidtype', 'channel', 'resulttype', 'current_page', 'order', 'sens', 'dst', 'src', 'dnid', 'clid', 'choose_currency', 'terminatecauseid', 'choose_calltype', 'download', 'file' ) );
 
 if (($download == "file") && $file) {
 
@@ -941,7 +941,7 @@ echo $FG_HTML_TABLE_WIDTH?>" border="0"
                         <center><strong>
                         <?php if (strtoupper ( $FG_TABLE_COL [$i] [4] ) == "SORT") { ?>
                         <a href="<?php
-                                echo $PHP_SELF . "?entercustomer_num=$entercustomer_num&s=1&t=0&atmenu=$atmenu&current_page=$current_page&order=" . $FG_TABLE_COL [$i] [1] . "&sens=";
+                                echo $PHP_SELF . "?entercustomer_num=$entercustomer_num&s=1&t=0&current_page=$current_page&order=" . $FG_TABLE_COL [$i] [1] . "&sens=";
                                 if ($sens == "ASC") {
                                     echo "DESC";
                                 } else {

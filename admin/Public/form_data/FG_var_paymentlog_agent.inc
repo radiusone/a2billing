@@ -41,7 +41,7 @@ if (! has_rights (ACX_ADMINISTRATOR)) {
 }
 
 
-getpost_ifset(array('id', 'status', 'Period', 'frommonth', 'fromstatsmonth', 'tomonth', 'tostatsmonth', 'fromday', 'fromstatsday_sday', 'fromstatsmonth_sday', 'today', 'tostatsday_sday', 'tostatsmonth_sday', 'atmenu', 'current_page', 'order', 'sens','popup_select'));
+getpost_ifset(array('id', 'status', 'Period', 'frommonth', 'fromstatsmonth', 'tomonth', 'tostatsmonth', 'fromday', 'fromstatsday_sday', 'fromstatsmonth_sday', 'today', 'tostatsday_sday', 'tostatsmonth_sday', 'current_page', 'order', 'sens','popup_select'));
 
 $HD_Form = new FormHandler("cc_epayment_log_agent");
 
@@ -193,6 +193,6 @@ if (isset($filterprefix)  &&  (strlen($filterprefix)>0)){
 
 $HD_Form -> FG_INTRO_TEXT_EDITION= '';
 
-$HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&id=";
+$HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
 
 
