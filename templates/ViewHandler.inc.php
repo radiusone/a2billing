@@ -173,7 +173,7 @@ $hasActionButtons = ($this->FG_ENABLE_DELETE_BUTTON || $this->FG_ENABLE_INFO_BUT
                     $record_display
                 );
                 if (trim($record_display) === "") {
-                    $record_display = $item[$j - $k] ?: "n/a";
+                    $record_display = "n/a";
                 }
                 if ($row["type"] === "lie_link") {
                     if (is_array($options)) {
