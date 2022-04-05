@@ -53,10 +53,6 @@ DELETE FROM cc_config WHERE config_key = 'currency_cents_association';
 INSERT INTO cc_config (config_title, config_key, config_value, config_description, config_valuetype, config_listvalues, config_group_title) VALUES
 ('Currency Cents Association', 'currency_cents_association', 'usd:prepaid-cents,eur:prepaid-cents,gbp:prepaid-pence,all:credit', 'Define all the audio (without file extensions) that you want to play according to currency for the cents (use , to separate, ie "usd:prepaid-cents,eur:prepaid-cents,gbp:prepaid-pence,all:credit").', 0, '', 'agi-conf1');
 
-UPDATE cc_config SET config_description='Asterisk Version Information, 1_1, 1_2, 1_4, 1_6, 1_8' WHERE config_key='asterisk_version';
-
-
-
 -- Prepare fields for IPV6
 ALTER TABLE  cc_sip_buddies CHANGE  DEFAULTip  DEFAULTip CHAR( 50 ) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL;
 ALTER TABLE  cc_sip_buddies CHANGE  host  host VARCHAR( 50 ) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL;
