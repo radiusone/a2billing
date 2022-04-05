@@ -368,7 +368,6 @@
 						<ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
 							<li><a class="link-dark rounded" href="A2B_entity_config.php?form_action=list&amp;atmenu=config&amp;section=18">{_("Global List")}</a></li>
 							<li><a class="link-dark rounded" href="A2B_entity_config_group.php?form_action=list&amp;atmenu=configgroup&amp;section=18">{_("Group List")}</a></li>
-							<li><a class="link-dark rounded" href="A2B_entity_config_generate_confirm.php?section=18">{_("Add agi-conf")}</a></li>
 							<li><a class="link-dark rounded" href="phpconfig.php?dir=/etc/asterisk&amp;section=18">{_("* Config Editor")}</a></li>
 							{if ($ASTERISK_GUI_LINK)}
 								<li><a class="link-dark rounded" href="http://{$HTTP_HOST}:8088/asterisk/static/config/index.html" target="_blank">{_("Asterisk GUI")}</a></li>

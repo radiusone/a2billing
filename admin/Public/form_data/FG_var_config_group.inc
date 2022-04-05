@@ -86,6 +86,10 @@ $HD_Form->AddEditElement(_("Title"), "group_title");
 $HD_Form->AddEditElement(_("Description"), "group_description");
 $HD_Form->FieldEditElement("group_title, group_description");
 
+$HD_Form->FG_LIST_ADDING_BUTTON1 = true;
+$HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_config_generate_confirm.php";
+$HD_Form->FG_LIST_ADDING_BUTTON_MSG1 = _("Add new agi-conf");
+
 $HD_Form->FG_LOCATION_AFTER_ADD = "?atmenu=document&stitle=Document&wh=AC&id=";
 $HD_Form->FG_LOCATION_AFTER_EDIT = "?atmenu=document&stitle=Document&wh=AC&id=";
 $HD_Form->FG_LOCATION_AFTER_DELETE = "?";
