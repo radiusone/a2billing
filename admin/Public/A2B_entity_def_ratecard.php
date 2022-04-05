@@ -1,7 +1,7 @@
 <?php
 
+use A2billing\A2Billing;
 use A2billing\Forms\FormHandler;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -36,10 +36,18 @@ use A2billing\Table;
  *
 **/
 
-/** @var FormHandler $HD_Form */
-
 require_once "../../common/lib/admin.defines.php";
 include './form_data/FG_var_def_ratecard.inc';
+/**
+ * @var A2Billing $A2B
+ * @var SmartyBC $smarty
+ * @var FormHandler $HD_Form
+ * @var string $CC_help_rate
+ * @var string $CC_help_def_ratecard
+ * @var string $order
+ * @var string $sens
+ * @var string $current_page
+ */
 
 if (!has_rights(ACX_RATECARD)) {
     header("HTTP/1.0 401 Unauthorized");
@@ -52,247 +60,114 @@ getpost_ifset([
     'popup_select',
     'popup_formname',
     'popup_fieldname',
-    'posted',
-    'Period',
-    'frommonth',
-    'fromstatsmonth',
-    'tomonth',
-    'tostatsmonth',
-    'fromday',
-    'fromstatsday_sday',
-    'fromstatsmonth_sday',
-    'today',
-    'tostatsday_sday',
-    'tostatsmonth_sday',
-    'current_page',
-    'removeallrate',
-    'removetariffplan',
-    'definecredit',
-    'IDCust',
-    'mytariff_id',
-    'destination',
-    'dialprefix',
-    'buyrate1',
-    'buyrate2',
-    'buyrate1type',
-    'buyrate2type',
-    'rateinitial1',
-    'rateinitial2',
-    'rateinitial1type',
-    'rateinitial2type',
-    'id_trunk',
-    "check",
-    "type",
-    "mode",
+    'filterprefix',
+    'filterfield',
 ]);
 /**
  * @var string $package
  * @var string $popup_select
  * @var string $popup_formname
  * @var string $popup_fieldname
- * @var string $posted
- * @var string $Period
- * @var string $frommonth
- * @var string $fromstatsmonth
- * @var string $tomonth
- * @var string $tostatsmonth
- * @var string $fromday
- * @var string $fromstatsday_sday
- * @var string $fromstatsmonth_sday
- * @var string $today
- * @var string $tostatsday_sday
- * @var string $tostatsmonth_sday
- * @var string $current_page
- * @var string $removeallrate
- * @var string $removetariffplan
- * @var string $definecredit
- * @var string $IDCust
- * @var string $mytariff_id
- * @var string $destination
- * @var string $dialprefix
- * @var string $buyrate1
- * @var string $buyrate2
- * @var string $buyrate1type
- * @var string $buyrate2type
- * @var string $rateinitial1
- * @var string $rateinitial2
- * @var string $rateinitial1type
- * @var string $rateinitial2type
- * @var string $id_trunk
- * @var array $check
- * @var array $type
- * @var array $mode
-
+ * @var string $filterprefix
+ * @var string $filterfield
  */
 /********************************* BATCH UPDATE ***********************************/
+$bu = [];
 getpost_ifset([
     'batchupdate',
     'upd_id_trunk',
     'upd_idtariffplan',
     'upd_id_outbound_cidgroup',
     'upd_tag',
-    'upd_inuse',
-    'upd_activated',
-    'upd_language',
-    'upd_tariff',
-    'upd_credit',
-    'upd_credittype',
-    'upd_simultaccess',
-    'upd_currency',
-    'upd_typepaid',
-    'upd_creditlimit',
-    'upd_enableexpire',
-    'upd_expirationdate',
-    'upd_expiredays',
-    'upd_runservice',
-    'filterprefix',
-    'filterfield'
-]);
-
-/**
- * @var string $batchupdate
- * @var string $upd_id_trunk
- * @var string $upd_idtariffplan
- * @var string $upd_id_outbound_cidgroup
- * @var string $upd_tag
- * @var string $upd_inuse
- * @var string $upd_activated
- * @var string $upd_language
- * @var string $upd_tariff
- * @var string $upd_credit
- * @var string $upd_credittype
- * @var string $upd_simultaccess
- * @var string $upd_currency
- * @var string $upd_typepaid
- * @var string $upd_creditlimit
- * @var string $upd_enableexpire
- * @var string $upd_expirationdate
- * @var string $upd_expiredays
- * @var string $upd_runservice
- * @var string $filterprefix
- * @var string $filterfield
- */
+    'check',
+    'mode',
+    'type',
+], $bu);
 
 $update_fields = [
-    "upd_buyrate",
-    "upd_buyrateinitblock",
-    "upd_buyrateincrement",
-    "upd_rateinitial",
-    "upd_initblock",
-    "upd_billingblock",
-    "upd_connectcharge",
-    "upd_disconnectcharge",
-    "upd_rounding_calltime",
-    "upd_rounding_threshold",
-    "upd_additional_block_charge",
-    "upd_additional_block_charge_time"
+    "upd_buyrate" => _("Buy Rate"),
+    "upd_buyrateinitblock" => _("Buy Min Duration"),
+    "upd_buyrateincrement" => _("Buy Billing Block"),
+    "upd_rateinitial" => _("Sell Rate"),
+    "upd_initblock" => _("Sell Min Duration"),
+    "upd_billingblock" => _("Sell Billing Block"),
+    "upd_connectcharge" => _("Connect Charge"),
+    "upd_disconnectcharge" => _("Disconnect Charge"),
+    "upd_rounding_calltime" => _("Duration Rounding"),
+    "upd_rounding_threshold" => _("Rounding Threshold"),
+    "upd_additional_block_charge" => _("Add Block Charge"),
+    "upd_additional_block_charge_time" => _("Add Block Charge Time"),
 ];
-$update_fields_info = [
-    "BUYING RATE",
-    "BUYRATE MIN DURATION",
-    "BUYRATE BILLING BLOCK",
-    "SELLING RATE",
-    "SELLRATE MIN DURATION",
-    "SELLRATE BILLING BLOCK",
-    "CONNECT CHARGE",
-    "DISCONNECT CHARGE",
-    "ROUNDING CALLTIME",
-    "ROUNDING THRESHOLD",
-    "ADDITIONAL BLOCK CHARGE",
-    "ADDITIONAL BLOCK CHARGE TIME"
-];
+getpost_ifset(array_keys($update_fields, $bu));
+
 $charges_abc = [];
-$charges_abc_info = [];
 if (ADVANCED_MODE) {
     $charges_abc = [
-        "upd_stepchargea",
-        "upd_chargea",
-        "upd_timechargea",
-        "upd_stepchargeb",
-        "upd_chargeb",
-        "upd_timechargeb",
-        "upd_stepchargec",
-        "upd_chargec",
-        "upd_timechargec",
-        "upd_announce_time_correction"
+        "upd_stepchargea" => _("Initial Charge A"),
+        "upd_chargea" => _("Rate A"),
+        "upd_timechargea" => _("Duration A"),
+        "upd_stepchargeb" => _("Initial Charge B"),
+        "upd_chargeb" => _("Rate B"),
+        "upd_timechargeb" => _("Duration B"),
+        "upd_stepchargec" => _("Initial Charge C"),
+        "upd_chargec" => _("Rate C"),
+        "upd_timechargec" => _("Duration C"),
+        "upd_announce_time_correction" => _("Announce Time Correction"),
     ];
-    getpost_ifset($charges_abc);
-    $charges_abc_info = [
-        "ENTRANCE CHARGE A",
-        "COST A",
-        "TIME FOR A",
-        "ENTRANCE CHARGE B",
-        "COST B",
-        "TIME FOR B",
-        "ENTRANCE CHARGE C",
-        "COST C",
-        "TIME FOR C",
-        "ANNOUNCE TIME CORRECTION"
-    ];
+    getpost_ifset(array_keys($charges_abc), $bu);
 }
 
-getpost_ifset($update_fields);
-
 /***********************************************************************************/
-
 $HD_Form->init();
 
 // CHECK IF REQUEST OF BATCH UPDATE
-if ($batchupdate == 1 && is_array($check)) {
+if ($bu["batchupdate"] && is_array($bu["check"])) {
+    // get the checkboxes that are checked
+    $selected_updates = array_keys($bu["check"]);
 
     $HD_Form->prepare_list_subselection('list');
 
-    // Array ( [upd_simultaccess] => on [upd_currency] => on )
-    $i = 0;
-    $SQL_UPDATE = '';
-    $PREFIX_FIELD = 'cc_ratecard.';
+    $sql_sets = [];
+    $sql_params = [];
 
-    foreach ($check as $ind_field => $ind_val) {
-        //echo "<br>::> $ind_field -";
-        $myfield = substr($ind_field, 4);
-        if ($i != 0) {
-            $SQL_UPDATE .= ',';
+    foreach ($selected_updates as $ind_field) {
+        if (!array_key_exists($ind_field, $bu)) {
+            continue;
         }
-        $val = $$ind_field;
+        $col = str_replace("upd_", "", $ind_field);
+        $val = $bu[$ind_field];
+        $mode = $bu["mode"][$ind_field] ?? "1";
+        $type = $bu["type"][$ind_field] ?? "1";
 
         // Standard update mode
-        if (($mode["$ind_field"] ?? 1) == 1) {
-            if (!isset($type["$ind_field"])) {
-                $SQL_UPDATE .= " $PREFIX_FIELD$myfield = '$val'";
-            } else {
-                $SQL_UPDATE .= " $PREFIX_FIELD$myfield = '$type[$ind_field]'";
-            }
+        if ($mode === "1") {
+            $sql_sets[] = "$col = ?";
+            $sql_params[] = $type[$ind_field] ?? $val;
             // Mode 2 - Equal - Add - Substract
-        } elseif ($mode["$ind_field"] == 2) {
-            if (($type["$ind_field"] ?? 1) == 1) {
-                $SQL_UPDATE .= " $PREFIX_FIELD$myfield = '$val'";
-            } elseif ($type["$ind_field"] == 2 && str_ends_with($val, "%")) {
-                $val = substr($val, 0, -1);
-                $SQL_UPDATE .= " $PREFIX_FIELD$myfield = ROUND($PREFIX_FIELD$myfield + (($PREFIX_FIELD$myfield * $val) / 100) + 0.00005, 4)";
-            } elseif ($type["$ind_field"] == 2) {
-                $SQL_UPDATE .= " $PREFIX_FIELD$myfield = $PREFIX_FIELD$myfield + '$val'";
-            } elseif ($type["$ind_field"] == 3 && str_ends_with($val, "%")) {
-                $val = substr($val, 0, -1);
-                $SQL_UPDATE .= " $PREFIX_FIELD$myfield = ROUND($PREFIX_FIELD$myfield - (($PREFIX_FIELD$myfield * $val) / 100) + 0.00005, 4)";
-            } elseif ($type["$ind_field"] == 3) {
-                $SQL_UPDATE .= " $PREFIX_FIELD$myfield = $PREFIX_FIELD$myfield - '$val'";
+        } elseif ($mode === "2" && $type === "1") {
+            $sql_sets[] = "$col = ?";
+            $sql_params[] = $val;
+        } elseif ($mode === "2") {
+            if ($type === "3") {
+                $val = "-$val";
             }
+            if (str_ends_with($val, "%")) {
+                $sql_sets[] = "$col = ROUND($col + ($col * (? / 100)), 4)";
+            } else {
+                $sql_sets[] = "$col = $col + ?";
+            }
+            $sql_params[] = str_replace("%", "", $val);
         }
-
-        $i++;
     }
 
-    $SQL_UPDATE = "UPDATE $HD_Form->FG_QUERY_TABLE_NAME SET $SQL_UPDATE";
-    if (strlen($HD_Form->FG_QUERY_WHERE_CLAUSE) > 1) {
-        $SQL_UPDATE .= ' WHERE ';
-        $SQL_UPDATE .= $HD_Form->FG_QUERY_WHERE_CLAUSE;
+    $updates = implode(", ", $sql_sets);
+    $where = empty($HD_Form->FG_QUERY_WHERE_CLAUSE) ? "" : "WHERE $HD_Form->FG_QUERY_WHERE_CLAUSE";
+    $result = $HD_Form->DBHandle->Execute("UPDATE cc_ratecard SET $updates $where", $sql_params);
+    if (!$result) {
+        $update_msg = "<div class='alert alert-danger'>" . _("Could not perform the batch update") . "</div>";
+    } else {
+        $update_msg = "<div class='alert alert-success'>" . _("The batch update has been successfully performed") . "</div>";
     }
-    $instance_table = new Table();
-    $res = $instance_table->ExecuteQuery($HD_Form->DBHandle, $SQL_UPDATE);
-    if (!$res)
-        $update_msg = "<center><font color=\"red\"><b>" . gettext("Could not perform the batch update") . "!</b></font></center>";
-    else
-        $update_msg = "<center><font color=\"green\"><b>" . gettext("The batch update has been successfully perform") . " !</b></font></center>";
 
 }
 /********************************* END BATCH UPDATE ***********************************/
@@ -303,17 +178,9 @@ if (!empty($id)) {
 
 $form_action = $form_action ?? "list"; //ask-add
 
-if ($form_action === "list" && $HD_Form->search_form_enabled && $_POST['posted_search'] == 1 && is_numeric($mytariffgroup_id)) {
-    if (!empty ($HD_Form->FG_QUERY_WHERE_CLAUSE)) {
-        $HD_Form->FG_QUERY_WHERE_CLAUSE .= ' AND ';
-    }
 
-    $HD_Form->FG_QUERY_WHERE_CLAUSE .= "idtariffplan='$mytariff_id'";
-}
-
-
-if (substr_count($tariffgroup ?? "", "-:-") === 2) {
-    [$mytariffgroup_id, $mytariffgroupname, $mytariffgrouplcrtype] = explode('/-:-/', $tariffgroup);
+if (!empty($tariffgroup) && substr_count($tariffgroup, "-:-") === 2) {
+    [$mytariffgroup_id, $mytariffgroupname, $mytariffgrouplcrtype] = explode('-:-', $tariffgroup);
     $_SESSION["mytariffgroup_id"] = $mytariffgroup_id;
     $_SESSION["mytariffgroupname"] = $mytariffgroupname;
     $_SESSION["tariffgrouplcrtype"] = $mytariffgrouplcrtype;
@@ -323,12 +190,20 @@ if (substr_count($tariffgroup ?? "", "-:-") === 2) {
     $mytariffgrouplcrtype = $_SESSION["tariffgrouplcrtype"];
 }
 
+if ($form_action === "list" && $HD_Form->search_form_enabled && $_POST['posted_search'] == 1 && is_numeric($mytariffgroup_id)) {
+    if (!empty ($HD_Form->FG_QUERY_WHERE_CLAUSE)) {
+        $HD_Form->FG_QUERY_WHERE_CLAUSE .= ' AND ';
+    }
+
+    $HD_Form->FG_QUERY_WHERE_CLAUSE .= "idtariffplan='$mytariffgroup_id'";
+}
+
 $list = $HD_Form->perform_action($form_action);
 
-$list_tariffname = (new Table("cc_tariffplan", "id, tariffname"))->get_list($HD_Form->DBHandle, "", ["tariffname"]);
-$list_trunk = (new Table("cc_trunk", "id_trunk, trunkcode, providerip"))->get_list($HD_Form->DBHandle, "", ["trunkcode"]);
-$list_cid_group = (new Table("cc_outbound_cid_group", "id, group_name"))->get_list($HD_Form->DBHandle, "", ["group_name"]);
-$list_tariffgroup = (new Table("cc_tariffgroup", "id, tariffgroupname, lcrtype"))->get_list($HD_Form->DBHandle, "", ["tariffgroupname"]);
+$list_tariffname = $HD_Form->DBHandle->Execute("SELECT id, tariffname FROM cc_tariffplan ORDER BY tariffname")->GetAll();
+$list_trunk = $HD_Form->DBHandle->Execute("SELECT id_trunk, trunkcode, providerip FROM cc_trunk ORDER BY trunkcode")->GetAll();
+$list_cid_group = $HD_Form->DBHandle->Execute("SELECT id, group_name FROM cc_outbound_cid_group ORDER BY group_name")->GetAll();
+$list_tariffgroup = $HD_Form->DBHandle->Execute("SELECT id, tariffgroupname, lcrtype FROM cc_tariffgroup ORDER BY tariffgroupname")->GetAll();
 
 // #### HEADER SECTION
 $smarty->display('main.tpl');
@@ -411,7 +286,7 @@ if ($form_action === "list" && !$popup_select): ?>
 
                     <div class="row mb-1">
                         <div class="col-4">
-                            <input name="check[upd_id_trunk]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if ($check["upd_id_trunk"] === "on"): ?> checked="checked"<?php endif ?> class="form-check-input"/>
+                            <input name="check[upd_id_trunk]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if (!empty($bu["check"]["upd_id_trunk"])): ?> checked="checked"<?php endif ?> class="form-check-input"/>
                             <label class="form-label form-label-sm" for="upd_id_trunk">
                                 <?= _("Trunk") ?>
                             </label>
@@ -420,7 +295,7 @@ if ($form_action === "list" && !$popup_select): ?>
                             <select name="upd_id_trunk" id="upd_id_trunk" class="form-select form-select-sm">
                                 <option value="-1"><?= _("Not Defined") ?></option>
                                 <?php foreach ($list_trunk as $v): ?>
-                                    <option value="<?= $v[0] ?>" <?php if ($upd_id_trunk == $v[0]): ?>selected="selected"<?php endif ?>><?= $v[1] ?> (<?= $v[2] ?>)</option>
+                                    <option value="<?= $v[0] ?>" <?php if (($bu["upd_id_trunk"] ?? "") == $v[0]): ?>selected="selected"<?php endif ?>><?= $v[1] ?> (<?= $v[2] ?>)</option>
                                 <?php endforeach ?>
                             </select>
                         </div>
@@ -428,7 +303,7 @@ if ($form_action === "list" && !$popup_select): ?>
                     
                     <div class="row mb-1">
                         <div class="col-4">
-                            <input name="check[upd_idtariffplan]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if ($check["upd_idtariffplan"] === "on"): ?> checked="checked"<?php endif ?> class="form-check-input"/>
+                            <input name="check[upd_idtariffplan]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if (!empty($bu["check"]["upd_idtariffplan"])): ?> checked="checked"<?php endif ?> class="form-check-input"/>
                             <label class="form-label form-label-sm" for="upd_idtariffplan">
                                 <?= _("Ratecard") ?>
                             </label>
@@ -436,7 +311,7 @@ if ($form_action === "list" && !$popup_select): ?>
                         <div class="col">
                             <select name="upd_idtariffplan" id="upd_idtariffplan" class="form-select form-select-sm">
                                 <?php foreach ($list_tariffname as $v): ?>
-                                    <option value="<?= $v[0] ?>" <?php if ($upd_idtariffplan == $v[0]): ?>selected="selected"<?php endif ?>><?= $v[1] ?></option>
+                                    <option value="<?= $v[0] ?>" <?php if (($bu["upd_idtariffplan"]) == $v[0]): ?>selected="selected"<?php endif ?>><?= $v[1] ?></option>
                                 <?php endforeach ?>
                             </select>
                         </div>
@@ -444,55 +319,51 @@ if ($form_action === "list" && !$popup_select): ?>
 
                     <div class="row mb-1">
                         <div class="col-4">
-                            <input name="check[upd_id_outbound_cidgroup]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if ($check["upd_id_outbound_cidgroup"] === "on"): ?> checked="checked"<?php endif ?> class="form-check-input"/>
+                            <input name="check[upd_id_outbound_cidgroup]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if (!empty($bu["check"]["upd_id_outbound_cidgroup"])): ?> checked="checked"<?php endif ?> class="form-check-input"/>
                             <label class="form-label form-label-sm" for="upd_id_outbound_cidgroup">
-                                <?= _("Ratecard") ?>
+                                <?= _("CID Group") ?>
                             </label>
                         </div>
                         <div class="col">
                             <select name="upd_id_outbound_cidgroup" id="upd_id_outbound_cidgroup" class="form-select form-select-sm">
                                 <?php foreach ($list_cid_group as $v): ?>
-                                    <option value="<?= $v[0] ?>" <?php if ($upd_id_outbound_cidgroup == $v[0]): ?>selected="selected"<?php endif ?>><?= $v[1] ?></option>
+                                    <option value="<?= $v[0] ?>" <?php if (($bu["upd_id_outbound_cidgroup"] ?? "") == $v[0]): ?>selected="selected"<?php endif ?>><?= $v[1] ?></option>
                                 <?php endforeach ?>
                             </select>
                         </div>
                     </div>
 
-                <?php foreach (array_merge($update_fields, $charges_abc) as $k => $v):?>
+                <?php foreach (array_merge($update_fields, $charges_abc) as $field => $label):?>
                     <div class="row mb-1">
                         <div class="col-4">
-                            <input name="check[<?= $v ?>]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if ($check[$v] === "on"): ?> checked="checked"<?php endif ?> class="form-check-input"/>
-                            <input type="hidden" name="mode[<?= $v ?>]" value="2"/>
-                            <label class="form-label form-label-sm" for="<?= $v ?>">
-                                <?php if ($k > count($update_fields) + 1): ?>
-                                <?= _($charges_abc_info[$k]) ?>
-                                <?php else: ?>
-                                <?= _($update_fields_info[$k]) ?>
-                                <?php endif ?>
+                            <input name="check[<?= $field ?>]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if (!empty($bu["check"][$field])): ?> checked="checked"<?php endif ?> class="form-check-input"/>
+                            <input type="hidden" name="mode[<?= $field ?>]" value="2"/>
+                            <label class="form-label form-label-sm" for="<?= $field ?>">
+                                <?= _($label) ?>
                             </label>
                         </div>
                         <div class="col-3">
-                            <select name="type[<?= $v ?>]" id="type[<?= $v ?>]" aria-label="select the operation to perform with the entered value" class="form-select form-select-sm">
-                                <option value="1" <?php if (($type[$v] ?? 1) == 1): ?>selected="selected"<?php endif ?>><?= _("Set equal to") ?></option>
-                                <option value="2" <?php if (($type[$v] ?? 1) == 2): ?>selected="selected"<?php endif ?>><?= _("Add to") ?></option>
-                                <option value="3" <?php if (($type[$v] ?? 1) == 3): ?>selected="selected"<?php endif ?>><?= _("Subtract from") ?></option>
+                            <select name="type[<?= $field ?>]" id="type[<?= $field ?>]" aria-label="select the operation to perform with the entered value" class="form-select form-select-sm">
+                                <option value="1" <?php if (($bu["type"][$field] ?? 1) == 1): ?>selected="selected"<?php endif ?>><?= _("Set equal to") ?></option>
+                                <option value="2" <?php if (($bu["type"][$field] ?? 1) == 2): ?>selected="selected"<?php endif ?>><?= _("Add amount") ?></option>
+                                <option value="3" <?php if (($bu["type"][$field] ?? 1) == 3): ?>selected="selected"<?php endif ?>><?= _("Subtract amount") ?></option>
                             </select>
                         </div>
                         <div class="col">
-                            <input type="number" name="<?= $v ?>" id="<?= $v ?>" value="<?= $v ?? 0 ?>" class="form-control form-control-sm"/>
+                            <input type="number" name="<?= $field ?>" id="<?= $field ?>" value="<?= $bu["field"] ?? 0 ?>" class="form-control form-control-sm"/>
                         </div>
                     </div>
                 <?php endforeach ?>
                     
                     <div class="row mb-1">
                         <div class="col-4">
-                            <input name="check[upd_tag]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if ($check["upd_tag"] === "on"): ?> checked="checked" <?php endif ?> class="form-check-input"/>
+                            <input name="check[upd_tag]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if (!empty($bu["check"]["upd_tag"])): ?> checked="checked" <?php endif ?> class="form-check-input"/>
                             <label class="form-label form-label-sm" for="upd_tag">
                                 <?= _("Tag") ?>
                             </label>
                         </div>
                         <div class="col">
-                            <input type="text" name="upd_tag" id="upd_tag" value="<?= $upd_tag ?? "" ?>" class="form-control form-control-sm"/>
+                            <input type="text" name="upd_tag" id="upd_tag" value="<?= $bu["upd_tag"] ?? "" ?>" class="form-control form-control-sm"/>
                         </div>
                     </div>
                 </form> <!-- .container-fluid -->
@@ -547,10 +418,10 @@ if ($form_action === "list" && !$popup_select): ?>
 </div> <!-- .modal -->
 
 
-<?php endif; // END if ($form_action == "list")
+<?php endif; // END if ($form_action == "list" && !$popup_select)
 
 /********************************* BATCH ASSIGNED ***********************************/
-if ($popup_select): ?>
+if ($popup_select === "1"): // only triggered from A2B_package_manage_rates.php ?>
 <div class="row justify-content-center">
     <div class="col-auto">
         <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#batchAssignModal">
@@ -568,17 +439,6 @@ if ($popup_select): ?>
             </div>
             <div class="modal-body">
                 <form class="container-fluid form-striped" name="assignForm" id="assignForm" action="" method="post">
-                    <input type="hidden" name="batchupdate" value="1"/>
-                    <input type="hidden" name="popup_select" value="<?= $popup_select?>"/>
-                    <input type="hidden" name="popup_formname" value="<?= $popup_formname?>"/>
-                    <input type="hidden" name="popup_fieldname" value="<?= $popup_fieldname?>"/>
-                    <input type="hidden" name="form_action" value="<?= $form_action?>"/>
-                    <input type="hidden" name="filterprefix" value="<?= $filterprefix?>"/>
-                    <input type="hidden" name="filterfield" value="<?= $filterfield?>"/>
-                    <input type="hidden" name="addbatchrate" value="1"/>
-                    <?= $HD_Form->csrf_inputs() ?>
-
-
                     <div class="row mb-1">
                         <div class="col">
                             <?= $HD_Form->FG_LIST_VIEW_ROW_COUNT ?> <?= _("rates selected!") ?>
@@ -588,7 +448,7 @@ if ($popup_select): ?>
 
                     <div class="row mb-1">
                         <div class="col-4">
-                            <input id="check[assign_id_trunk]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if ($check["assign_id_trunk"] === "on"): ?> checked="checked"<?php endif ?> class="form-check-input"/>
+                            <input id="check[assign_id_trunk]" type="checkbox" value="on" aria-label="check to enable searching this field" class="form-check-input"/>
                             <label class="form-label form-label-sm" for="assign_id_trunk">
                                 <?= _("Trunk") ?>
                             </label>
@@ -605,7 +465,7 @@ if ($popup_select): ?>
 
                     <div class="row mb-1">
                         <div class="col-4">
-                            <input id="check[assign_idtariffplan]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if ($check["assign_idtariffplan"] === "on"): ?> checked="checked"<?php endif ?> class="form-check-input"/>
+                            <input id="check[assign_idtariffplan]" type="checkbox" value="on" aria-label="check to enable searching this field" class="form-check-input"/>
                             <label class="form-label form-label-sm" for="assign_idtariffplan">
                                 <?= _("Ratecard") ?>
                             </label>
@@ -621,7 +481,7 @@ if ($popup_select): ?>
 
                     <div class="row mb-1">
                         <div class="col-4">
-                            <input id="check[assign_tag]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if ($check["assign_tag"] === "on"): ?> checked="checked" <?php endif ?> class="form-check-input"/>
+                            <input id="check[assign_tag]" type="checkbox" value="on" aria-label="check to enable searching this field" class="form-check-input"/>
                             <label class="form-label form-label-sm" for="assign_tag">
                                 <?= _("Tag") ?>
                             </label>
@@ -633,7 +493,7 @@ if ($popup_select): ?>
 
                     <div class="row mb-1">
                         <div class="col-4">
-                            <input id="check[assign_prefix]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if ($check["assign_prefix"] === "on"): ?> checked="checked" <?php endif ?> class="form-check-input"/>
+                            <input id="check[assign_prefix]" type="checkbox" value="on" aria-label="check to enable searching this field" class="form-check-input"/>
                             <label class="form-label form-label-sm" for="assign_prefix">
                                 <?= _("Prefix") ?>
                             </label>
@@ -662,13 +522,6 @@ if ($popup_select): ?>
 </div> <!-- .modal -->
 
 <script>
-function sendValue(selvalue) {
-    const formname = <?= json_encode($popup_formname ?? "") ?>;
-    const fieldname = <?= json_encode($popup_fieldname ?? "") ?>;
-    $(`form[name='${formname}'] [name='${fieldname}']`, window.opener.document).val(selvalue);
-    window.close();
-}
-
 $("#sendopener").on('click', function () {
     let id_trunk = "";
     let id_tariffplan = "";
@@ -698,15 +551,20 @@ $("#sendopener").on('click', function () {
 </script>
 
 <?php
-if (!empty($package) &&is_numeric($package)) {
-    $HD_Form->CV_FOLLOWPARAMETERS .= "&package=$package";
-}
-endif; // is popup
+$HD_Form->CV_FOLLOWPARAMETERS .= "&package=" . $package ?? "";
 /********************************* END BATCH ASSIGNED ***********************************/
-
+elseif ($popup_select === "2"):
 ?>
-
+<script>
+    function sendValue(selvalue) {
+    const formname = <?= json_encode($popup_formname ?? "") ?>;
+    const fieldname = <?= json_encode($popup_fieldname ?? "") ?>;
+    $(`form[name='${formname}'] [name='${fieldname}']`, window.opener.document).val(selvalue);
+    window.close();
+    }
+</script>
 <?php
+endif;
 
 // #### TOP SECTION PAGE
 $HD_Form -> create_toppage ($form_action);

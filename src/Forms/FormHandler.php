@@ -1898,7 +1898,6 @@ class FormHandler
             $el["type"] = "SELECT";
         }
         $id = $processed['id'];
-        $ratesort = $processed['ratesort'];
 
         require(__DIR__ . "/../../templates/SearchHandler.inc.php");
 
@@ -1916,7 +1915,6 @@ class FormHandler
         $processed = $this->getProcessed();
 
         $id = $processed['id'];
-        $ratesort = $processed['ratesort'];
         $form_el_index = $processed['form_el_index'];
 
         switch ($form_action) {
@@ -2033,9 +2031,6 @@ class FormHandler
 
         HTML;
 
-// $window = 2
-// $pages = 10
-// $page = 3
         if ($page < $window * 2) {
             // |1 2 [3] 4 5...
             $min_page = 1;
