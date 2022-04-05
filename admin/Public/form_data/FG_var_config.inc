@@ -90,14 +90,6 @@ if ($form_action === "list") {
 
     $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 25;
     $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
-
-    if (!empty($groupselect)) {
-        if (!empty($HD_Form->FG_QUERY_WHERE_CLAUSE)) {
-            $HD_Form->FG_QUERY_WHERE_CLAUSE .= " AND ";
-        }
-        $HD_Form->FG_QUERY_WHERE_CLAUSE .= " config_group_title='$groupselect'";
-        $HD_Form->CV_FOLLOWPARAMETERS = "groupselect=$groupselect";
-    }
 }
 if(!$setbool) {
 	$HD_Form->FG_DISPLAY_SELECT = true;

@@ -52,55 +52,43 @@ getpost_ifset(['id', 'group_title', 'group_description','agi_conf', 'groupdelete
  */
 
 $setbool = false;
-$handle = DbConnect();
-$instance_table = new Table();
-
-if (!empty($groupdelete) && substr($groupdelete,0,8) === "agi-conf" && $groupdelete !== "agi-conf1") {
-	$QUERY =  "DELETE FROM cc_config_group WHERE group_title = ?";
-    $handle->Execute($QUERY, [$groupdelete]);
-	$QUERY =  "DELETE FROM cc_config WHERE config_group_title = ?";
-    $handle->Execute($QUERY, [$groupdelete]);
-
-    $delete_msg = sprintf(_("Group %s deleted"), $groupdelete);
-} elseif (!empty($agi_conf)) {
+if (!empty($agi_conf)) {
     add_agi_confx($agi_conf, $from_conf);
 }
 
 $HD_Form = new FormHandler("cc_config_group", "configuration group");
 
 $HD_Form->no_debug();
-$HD_Form -> FG_TABLE_DEFAULT_ORDER = "id";
-$HD_Form -> FG_TABLE_DEFAULT_SENS = "ASC";
+$HD_Form->FG_TABLE_DEFAULT_ORDER = "id";
+$HD_Form->FG_TABLE_DEFAULT_SENS = "ASC";
 
-$HD_Form -> AddViewElement(gettext("TITLE"), "group_title");
-$HD_Form -> AddViewElement(gettext("DESCRIPTION"), "group_description");
+$HD_Form->AddViewElement(gettext("TITLE"), "group_title");
+$HD_Form->AddViewElement(gettext("DESCRIPTION"), "group_description");
+$HD_Form->FieldViewElement ('group_title, group_description');
 
-$HD_Form -> FieldViewElement ('group_title, group_description');
-
-$HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 15;
+$HD_Form->FG_LIST_VIEW_PAGE_SIZE = 15;
 
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = false;
 $HD_Form -> FG_ENABLE_ADD_BUTTON = false;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
-$HD_Form -> FG_DELETE_BUTTON_CONDITION = 'substr("|col0|",0,8) == "agi-conf" && "|col0|" != "agi-conf1"';
+$HD_Form -> FG_DELETE_BUTTON_CONDITION = 'str_starts_with("|col0|", "agi-conf") && "|col0|" !== "agi-conf1"';
 
 $HD_Form -> FG_OTHER_BUTTON1 = true;
-$HD_Form -> FG_OTHER_BUTTON1_LINK = "A2B_entity_config.php?groupselect=|col0|";
-$HD_Form -> FG_OTHER_BUTTON1_ALT = gettext('DETAILS');
+$HD_Form -> FG_OTHER_BUTTON1_LINK = "A2B_entity_config.php?posted_search=1&config_group_title=|col0|";
+$HD_Form -> FG_OTHER_BUTTON1_ALT = gettext('Show group entries');
+$HD_Form -> FG_OTHER_BUTTON1_IMG = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJGSURBVDjLjdJLSNRBHMDx78yqLZaKS75DPdgDDaFDbdJmde5QlhCJGxgpRJfqEEKnIsJLB7skQYQKZaSmdLaopPCgEvSCShCMzR5a7oq7/3l12RVtjfzBMA/4fWZ+MyOccwBM3g8HEbIdfCEhfAFnLVapOa28Uevpjrqz/WOsERJgsu9Uq5CZQzgqrJfo9BajNd5irEYn4p3OUiFExtCLmw2tawFi4l5zUMjMIau9u7K+qxeoAcoAA0wDb2OPwmfA16LiiaOHLj1edRLpkO3WmIis7+oBDgJbgQ2AH6gC6jY19N62RkcctKeVIJAhp9QgUA3kJXdONZVcq9JxPSgQoXRAyIDRth8oAXQyKdWnoCKrTD9CBv4GMqx1WGNZkeRWJKbG2hiD1Cb9FbTnzWFdY/LCdLKlgNQ84gyNKqHm0gDjqVHnxDHgA/B9RQkpaB6YklkZl62np9KBhOqwjpKFgeY2YAz4BESBWHI8Hhs6PVVSvc3v98ye4fP7T676B845nt040ip98qpWJmI9PWiU6bfWgXGN2YHcKwU7tsuc4kpUPMbU0+f8+vKt+Pitl7PLAMDI9cNBoB0hQwICzjqUp6MZvsy8yvp95BRuQUjJ75mPvH4wYo1NlJ64Mza7DPwrhi8cCOeXl/aUB4P4c/NJxKLMvpngycCrzxVFG2v/CwAMnguF80oLe8p27cQh+fnpPV/fTc95S6piXQDAw7a9YbWkezZXFbAwMx/xPFXb1D3+Y90AQF/L7kAsri9mZ4lrTd0TcYA/Kakr+x2JSPUAAAAASUVORK5CYII=";
 
-$HD_Form -> FG_OTHER_BUTTON2 = true;
-$HD_Form -> FG_OTHER_BUTTON2_LINK = "A2B_entity_config_group.php?groupdelete=|col0|";
-$HD_Form -> FG_OTHER_BUTTON2_IMG = Images_Path."/delete.png";
-$HD_Form -> FG_OTHER_BUTTON2_HTML_ID = "|col0|";
-$HD_Form -> FG_OTHER_BUTTON2_CONDITION = 'substr("|col0|",0,8) == "agi-conf" && "|col0|" != "agi-conf1"';
-$HD_Form -> FG_OTHER_BUTTON2_ALT = gettext('DELETE THIS AGI CONF');
 
-$HD_Form -> FG_INTRO_TEXT_EDITION = '';
-$HD_Form -> FG_INTRO_TEXT_ADITION = '';
+$HD_Form->FG_INTRO_TEXT_EDITION = '';
+$HD_Form->FG_INTRO_TEXT_ADITION = '';
 
-$HD_Form -> FG_LOCATION_AFTER_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&stitle=Document&wh=AC&id=";
-$HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&stitle=Document&wh=AC&id=";
-$HD_Form -> FG_LOCATION_AFTER_DELETE = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&stitle=Document&wh=AC&id=";
+$HD_Form->AddEditElement(_("Title"), "group_title");
+$HD_Form->AddEditElement(_("Description"), "group_description");
+$HD_Form->FieldEditElement("group_title, group_description");
+
+$HD_Form->FG_LOCATION_AFTER_ADD = "?atmenu=document&stitle=Document&wh=AC&id=";
+$HD_Form->FG_LOCATION_AFTER_EDIT = "?atmenu=document&stitle=Document&wh=AC&id=";
+$HD_Form->FG_LOCATION_AFTER_DELETE = "?";
 
 function add_agi_confx(string $group_title, ?string $from_conf): void
 {
