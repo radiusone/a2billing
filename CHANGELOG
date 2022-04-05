@@ -1209,7 +1209,7 @@ play_audio = YES
 #### REMOVE OLD PAYPAL
 ********************************************************************
 A2Billing_UI/paypal
-A2B_entity_paypal.php?atmenu=paypal&stitle=PaypalTransaction&form_action=list&section=2
+A2B_entity_paypal.php?atmenu=paypal&form_action=list&section=2
 FG_var_paypal
 
 
@@ -2054,11 +2054,11 @@ and also on the customer interface.
 1) Bug on edit entity (framework) keep transfered value in case of errors RegEx
 
 2) Reduce big space in top pages :
-			A2B_entity_def_ratecard.php?atmenu=ratecard&stitle=RateCard&section=3
-			CC_ratecard_import.php?atmenu=ratecard&stitle=RateCard&section=3
+			A2B_entity_def_ratecard.php?atmenu=ratecard&section=3
+			CC_ratecard_import.php?atmenu=ratecard&section=3
 
 			Good high :
-			A2B_entity_card.php?atmenu=card&stitle=Customers_Card&section=1
+			A2B_entity_card.php?atmenu=card&section=1
 
 
 2) LIST CARDNUMBER -> REFILL : ARANGE FORMAT OF REFILL - remove the ugly red border
@@ -2120,7 +2120,7 @@ when u delete a group of CID, it may remove all the CID inside that group
 
 #### UPDATE ACL : RIGHT MANAGEMENT
 ********************************************************************
-A2Billing_UI/Public/A2B_entity_user.php?form_action=ask-add&atmenu=user&groupID=1&stitle=ACL+Admin+management&section=10
+A2Billing_UI/Public/A2B_entity_user.php?form_action=ask-add&atmenu=user&groupID=1&section=10
 
 Add new list of rights for the new options in the menu
 for instance add a new option for callback.
@@ -2195,7 +2195,7 @@ A2BCustomer_UI/A2B_entity_unbilled_summary.php?section=4
 A2BCustomer_UI/A2B_entity_billed_summary.php?section=4
 - Fatal error: Call to a member function numRows() on a non-object in /home/areski/public_html/svn/a2billing/trunk/A2BCustomer_UI/A2B_entity_billed_summary.php on line 268
 
-A2B_entity_card_multi.php?stitle=Card&section=1
+A2B_entity_card_multi.php?section=1
 - Dont work at all, neither for range creation or standard generation cards
 
 
@@ -2643,13 +2643,7 @@ This could be helpful to enable run service for those cards in bulk, When we gen
 #### BUG V1.2 [fixed]
 ********************************************************************
 POPUP
-http://localhost/~areski/svn/a2billing/trunk/A2Billing_UI/Public/CC_entity_sim_ratecard.php?atmenu=ratecard&stitle=Ratecard+Simulator
-
-
-#### NEW TASK [Done]
-********************************************************************
-In my opinion: if its there also
-FILTER input field for "View money situation" & "View Payment".
+http://localhost/~areski/svn/a2billing/trunk/A2Billing_UI/Public/CC_entity_sim_ratecard.php?atmenu=ratecard& "View Payment".
 
 
 #### BUG V1.2 [Fixed]

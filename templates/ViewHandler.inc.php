@@ -7,21 +7,18 @@ use A2billing\Table;
  * @var A2billing\Forms\Formhandler $this
  * @var array $processed
  * @var array $list
- * @var string $stitle
  * @var string $letter
  * @var string $current_page
  * @var int $popup_select
  */
-global $stitle;
 global $letter;
 global $current_page;
 global $popup_select;
 
 $origlist = [];
 
-getpost_ifset(['stitle', 'letter', 'current_page', 'popup_select']);
+getpost_ifset(['letter', 'current_page', 'popup_select']);
 /**
- * @var string $stitle
  * @var string $letter
  * @var string $current_page
  * @var int $popup_select
@@ -146,7 +143,7 @@ $hasActionButtons = ($this->FG_ENABLE_DELETE_BUTTON || $this->FG_ENABLE_INFO_BUT
             <?php foreach ($this->FG_LIST_TABLE_CELLS as $row): ?>
             <th>
                 <?php if ($row["sortable"]): ?>
-                <a class="sort <?= $this->FG_QUERY_ORDERBY_COLUMNS[0] === $row["field"] ? strtolower($this->FG_QUERY_DIRECTION) : "" ?>" href="<?= "?stitle=$stitle&amp;atmenu=$processed[atmenu]&amp;current_page=$current_page&amp;letter=$letter&amp;popup_select=$processed[popup_select]&amp;order=$row[field]&amp;sens=" . ($this->FG_QUERY_DIRECTION === "ASC" ? "DESC" : "ASC") . (str_starts_with($this->CV_FOLLOWPARAMETERS, "&") ? "" : "&amp;") . $this->CV_FOLLOWPARAMETERS ?>">
+                <a class="sort <?= $this->FG_QUERY_ORDERBY_COLUMNS[0] === $row["field"] ? strtolower($this->FG_QUERY_DIRECTION) : "" ?>" href="<?= "?atmenu=$processed[atmenu]&amp;current_page=$current_page&amp;letter=$letter&amp;popup_select=$processed[popup_select]&amp;order=$row[field]&amp;sens=" . ($this->FG_QUERY_DIRECTION === "ASC" ? "DESC" : "ASC") . (str_starts_with($this->CV_FOLLOWPARAMETERS, "&") ? "" : "&amp;") . $this->CV_FOLLOWPARAMETERS ?>">
                 <?php endif ?>
                     <?= $row["header"] ?>
                 <?php if ($row["sortable"]): ?>
@@ -352,7 +349,7 @@ $hasActionButtons = ($this->FG_ENABLE_DELETE_BUTTON || $this->FG_ENABLE_INFO_BUT
             $this->CV_CURRENT_PAGE + 1,
             $this->FG_LIST_VIEW_PAGE_COUNT,
             "?" . http_build_query(["current_page" => "%s", "filterprefix" => $processed["filterprefix"], "order" => $processed["order"], "sens" => $processed["sens"]], "", "&amp;") . (str_starts_with($this->CV_FOLLOWPARAMETERS, "&") ? "" : "&amp;") . $this->CV_FOLLOWPARAMETERS
-//            "?stitle=$stitle&amp;atmenu=$processed[atmenu]&amp;current_page=%s&amp;filterprefix=$processed[filterprefix]&amp;order=$processed[order]&amp;sens=$processed[sens]&amp;mydisplaylimit=$processed[mydisplaylimit]&amp;popup_select=$processed[popup_select]&amp;letter=$letter" . (str_starts_with($this->CV_FOLLOWPARAMETERS, "&") ? "" : "&amp;") . $this->CV_FOLLOWPARAMETERS
+//            "?atmenu=$processed[atmenu]&amp;current_page=%s&amp;filterprefix=$processed[filterprefix]&amp;order=$processed[order]&amp;sens=$processed[sens]&amp;mydisplaylimit=$processed[mydisplaylimit]&amp;popup_select=$processed[popup_select]&amp;letter=$letter" . (str_starts_with($this->CV_FOLLOWPARAMETERS, "&") ? "" : "&amp;") . $this->CV_FOLLOWPARAMETERS
         ) ?>
     </div>
 </div>
@@ -364,7 +361,6 @@ $hasActionButtons = ($this->FG_ENABLE_DELETE_BUTTON || $this->FG_ENABLE_INFO_BUT
         <form id="displaylimit_form" action="">
             <label for="displaylimit" class="form-label d-inline"><?= gettext("Display");?></label>
             <input type="hidden" name="id" value="<?= $processed["id"] ?>"/>
-            <input type="hidden" name="stitle" value="<?= $stitle ?>"/>
             <input type="hidden" name="form_action" value="list"/>
             <input type="hidden" name="current_page" value="0"/>
             <?php foreach ($processed as $key => $val): ?>

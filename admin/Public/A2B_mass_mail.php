@@ -300,7 +300,7 @@ $(function() {
                     if ($key + 1 != $nb_customer) echo ", ";
                         echo "<input type=\"hidden\" name=\"hd_email[]\" value=".$list_customer[$key][1].">";
                     if ($key == 100) {
-                        echo "<br><a href=\"A2B_entity_card.php?atmenu=card&stitle=Customers_Card&section=1\" target=\"_blank\">".gettext("Click on list customer to see them all")."</a>";
+                        echo "<br><a href=\"A2B_entity_card.php?atmenu=card&section=1\" target=\"_blank\">".gettext("Click on list customer to see them all")."</a>";
                     }
                 }
             }?><span class="liens"></span>&nbsp;<br>

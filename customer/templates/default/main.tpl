@@ -65,7 +65,7 @@
 	{/if}
 
 	{if $ACXSPEED_DIAL >0 }
-	<div class="toggle_menu"><li><a href="A2B_entity_speeddial.php?atmenu=speeddial&stitle=Speed+Dial"><strong>{php} echo gettext("SPEED DIAL");{/php}</strong></a></li></div>
+	<div class="toggle_menu"><li><a href="A2B_entity_speeddial.php?atmenu=speeddial"><strong>{php} echo gettext("SPEED DIAL");{/php}</strong></a></li></div>
 	{/if}
 
 	{if $ACXRATECARD >0 }
@@ -81,11 +81,11 @@
 	{/if}
 
 	{if $ACXCALLER_ID >0 }
-	<div class="toggle_menu"><li><a href="A2B_entity_callerid.php?atmenu=callerid&stitle=CallerID"><strong>{php} echo gettext("ADD CALLER ID");{/php}</strong></a></li></div>
+	<div class="toggle_menu"><li><a href="A2B_entity_callerid.php?atmenu=callerid"><strong>{php} echo gettext("ADD CALLER ID");{/php}</strong></a></li></div>
 	{/if}
 
 	{if $ACXPASSWORD>0 }
-	<div class="toggle_menu"><li><a href="A2B_entity_password.php?atmenu=password&form_action=ask-edit&stitle=Password"><strong>{php} echo gettext("PASSWORD");{/php}</strong></a></li></div>
+	<div class="toggle_menu"><li><a href="A2B_entity_password.php?atmenu=password&form_action=ask-edit"><strong>{php} echo gettext("PASSWORD");{/php}</strong></a></li></div>
 	{/if}
 
 	{if $ACXSUPPORT >0 }

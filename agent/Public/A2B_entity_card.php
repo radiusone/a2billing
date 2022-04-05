@@ -362,7 +362,7 @@ if ($form_action=='list' && !($popup_select>=1)) {
                 <tr>
                     <td colspan="2" align="center">
                     <input class="form_input_button"
-                TYPE="button" VALUE="<?php echo gettext("ADD CREDIT");?>" onClick="openURL('<?php echo filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)?>?form_action=addcredit&stitle=Card_Refilled&current_page=<?php echo $current_page?>&order=<?php echo $order?>&sens=<?php echo $sens?>&id=')">
+                TYPE="button" VALUE="<?php echo gettext("ADD CREDIT");?>" onClick="openURL('<?php echo filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)?>?form_action=addcredit&current_page=<?php echo $current_page?>&order=<?php echo $order?>&sens=<?php echo $sens?>&id=')">
 
                     </td>
                 </tr>
@@ -580,7 +580,7 @@ if (!$popup_select && $form_action == "ask-add") {
         document.cardform.submit();
     }
     </script>
-    <form action="A2B_entity_card.php?form_action=ask-add&atmenu=card&stitle=Card&section=1" method="post" name="cardform">
+    <form action="A2B_entity_card.php?form_action=ask-add&atmenu=card&section=1" method="post" name="cardform">
     <tr>
         <td class="viewhandler_filter_td1">
         <span>

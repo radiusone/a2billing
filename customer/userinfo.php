@@ -69,7 +69,7 @@ if ($customer_info[14] != "1" && $customer_info[14] != "8") {
 
 $customer = $_SESSION["pr_login"];
 
-getpost_ifset(array('posted', 'Period', 'frommonth', 'fromstatsmonth', 'tomonth', 'tostatsmonth', 'fromday', 'fromstatsday_sday', 'fromstatsmonth_sday', 'today', 'tostatsday_sday', 'tostatsmonth_sday', 'dsttype', 'sourcetype', 'clidtype', 'channel', 'resulttype', 'stitle', 'atmenu', 'current_page', 'order', 'sens', 'dst', 'src', 'clid','subscribe'));
+getpost_ifset(array('posted', 'Period', 'frommonth', 'fromstatsmonth', 'tomonth', 'tostatsmonth', 'fromday', 'fromstatsday_sday', 'fromstatsmonth_sday', 'today', 'tostatsday_sday', 'tostatsmonth_sday', 'dsttype', 'sourcetype', 'clidtype', 'channel', 'resulttype', 'atmenu', 'current_page', 'order', 'sens', 'dst', 'src', 'clid','subscribe'));
 
 $currencies_list = get_currencies();
 
@@ -121,7 +121,7 @@ $smarty->display('main.tpl');
     </td>
     <td align="right">
         <?php if (has_rights (ACX_PERSONALINFO)) { ?>
-        <a href="A2B_entity_card.php?atmenu=password&form_action=ask-edit&stitle=Personal+Information"><span class="cssbutton"><font color="red"><?php echo gettext("EDIT PERSONAL INFORMATION");?></font></span></a>
+        <a href="A2B_entity_card.php?atmenu=password&form_action=ask-edit"><span class="cssbutton"><font color="red"><?php echo gettext("EDIT PERSONAL INFORMATION");?></font></span></a>
         <?php } ?>
     </td>
 </tr>

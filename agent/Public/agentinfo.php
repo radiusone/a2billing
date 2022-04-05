@@ -108,7 +108,7 @@ $smarty->display( 'main.tpl');
     </td>
     <td align="right">
         <?php if ($A2B->config["webagentui"]['personalinfo']) { ?>
-        <a href="A2B_entity_agent.php?atmenu=password&form_action=ask-edit&stitle=Personal+Information"><span class="cssbutton"><font color="red"><?php echo gettext("EDIT PERSONAL INFORMATION");?></font></span></a>
+        <a href="A2B_entity_agent.php?atmenu=password&form_action=ask-edit"><span class="cssbutton"><font color="red"><?php echo gettext("EDIT PERSONAL INFORMATION");?></font></span></a>
         <?php } ?>
     </td>
 </tr>

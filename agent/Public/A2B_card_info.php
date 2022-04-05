@@ -60,7 +60,7 @@ if (isset($id)) {
 }
 
 if (empty($id)) {
-    header("Location: A2B_entity_card.php?atmenu=card&stitle=Customers_Card&section=1");
+    header("Location: A2B_entity_card.php?atmenu=card&section=1");
 }
 
 $card_table = new Table('cc_card','*');
@@ -69,7 +69,7 @@ $card_result = $card_table -> get_list($DBHandle, $card_clause);
 $card = $card_result[0];
 
 if (empty($card)) {
-    header("Location: A2B_entity_card.php?atmenu=card&stitle=Customers_Card&section=1");
+    header("Location: A2B_entity_card.php?atmenu=card&section=1");
 }
 
 // #### HEADER SECTION

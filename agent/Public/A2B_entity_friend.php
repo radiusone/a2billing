@@ -90,7 +90,7 @@ if ( (isset ($id_cc_card) && (is_numeric($id_cc_card)  != "")) && ( $form_action
     $list_friend = $instance_table_friend -> get_list ($HD_Form->DBHandle, "id_cc_card='$id_cc_card'");
 
     if (is_array($list_friend) && count($list_friend)>0) {
-        Header ("Location: A2B_entity_card.php?atmenu=card&stitle=Customers_Card&id="); exit();
+        Header ("Location: A2B_entity_card.php?atmenu=card&id="); exit();
     }
 
     $form_action = "add";

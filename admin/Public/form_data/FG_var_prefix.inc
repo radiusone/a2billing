@@ -119,6 +119,6 @@ if (isset($filterprefix)  &&  (strlen($filterprefix)>0)) {
 
 $HD_Form -> FG_INTRO_TEXT_EDITION= '';
 $HD_Form -> FG_INTRO_TEXT_ADITION = '';
-$HD_Form -> FG_LOCATION_AFTER_ADD = "?atmenu=document&stitle=Document&wh=AC&id=";
-$HD_Form -> FG_LOCATION_AFTER_EDIT = "?atmenu=document&stitle=Document&wh=AC&id=";
-$HD_Form -> FG_LOCATION_AFTER_DELETE = "?atmenu=document&stitle=Document&wh=AC&id=";
+$HD_Form -> FG_LOCATION_AFTER_ADD = "?atmenu=document&wh=AC&id=";
+$HD_Form -> FG_LOCATION_AFTER_EDIT = "?atmenu=document&wh=AC&id=";
+$HD_Form -> FG_LOCATION_AFTER_DELETE = "?atmenu=document&wh=AC&id=";

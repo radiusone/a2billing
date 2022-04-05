@@ -113,7 +113,7 @@ if (isset($filterprefix)  &&  (strlen($filterprefix)>0)){
 }
 
 $HD_Form -> FG_OTHER_BUTTON2 = true;
-$HD_Form -> FG_OTHER_BUTTON2_LINK="A2B_entity_payment.php?stitle=Payment_add&form_action=ask-add&card_id=|col1|";
+$HD_Form -> FG_OTHER_BUTTON2_LINK="A2B_entity_payment.php?form_action=ask-add&card_id=|col1|";
 $HD_Form -> FG_OTHER_BUTTON2_IMG = Images_Path . "/money.png";
 $HD_Form -> FG_OTHER_BUTTON2_ALT = gettext('ADD PAYMENT');
 
@@ -124,9 +124,9 @@ $HD_Form -> FG_OTHER_BUTTON2_ALT = gettext('ADD PAYMENT');
 
 
 
-$HD_Form -> FG_LOCATION_AFTER_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&stitle=Document&wh=AC&id=";
-$HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&stitle=Document&wh=AC&id=";
-$HD_Form -> FG_LOCATION_AFTER_DELETE = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&stitle=Document&wh=AC&id=";
+$HD_Form -> FG_LOCATION_AFTER_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&wh=AC&id=";
+$HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&wh=AC&id=";
+$HD_Form -> FG_LOCATION_AFTER_DELETE = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?atmenu=document&wh=AC&id=";
 
 
 

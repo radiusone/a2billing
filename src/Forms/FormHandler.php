@@ -1899,7 +1899,6 @@ class FormHandler
         }
         $id = $processed['id'];
         $atmenu = $processed['atmenu'];
-        $stitle = $processed['stitle'];
         $ratesort = $processed['ratesort'];
         $sub_action = $processed['sub_action'];
 
@@ -1920,7 +1919,6 @@ class FormHandler
 
         $id = $processed['id'];
         $atmenu = $processed['atmenu'];
-        $stitle = $processed['stitle'];
         $ratesort = $processed['ratesort'];
         $sub_action = $processed['sub_action'];
 
