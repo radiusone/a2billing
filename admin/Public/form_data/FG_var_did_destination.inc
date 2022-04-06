@@ -44,7 +44,7 @@ if ($form_action === "list") {
 	$HD_Form = new FormHandler(
         "cc_did_destination dest LEFT JOIN cc_did ON cc_did.id = dest.id_cc_did",
         _("Did Destination"),
-        'cc_did_destination.id'
+        'dest.id'
     );
 } else {
 	$HD_Form = new FormHandler("cc_did_destination", _("DID Destination"));
