@@ -642,11 +642,17 @@ class A2Billing
     {
         $A2B_CUSTOM1 = substr($agi->get_variable("A2B_CUSTOM1", true), 0, 20);
         $A2B_CUSTOM2 = substr($agi->get_variable("A2B_CUSTOM2", true), 0, 20);
-        $A2B_CUSTOM1 = $this->sanitize_agi_data($A2B_CUSTOM1);
-        $A2B_CUSTOM2 = $this->sanitize_agi_data($A2B_CUSTOM2);
+        $A2B_CUSTOM1 = trim($this->sanitize_agi_data($A2B_CUSTOM1));
+        $A2B_CUSTOM2 = trim($this->sanitize_agi_data($A2B_CUSTOM2));
 
-        $this->CDR_CUSTOM_SQL = ", a2b_custom1, a2b_custom2";
-        $this->CDR_CUSTOM_VAL = ", '" . $A2B_CUSTOM1 . "', '" . $A2B_CUSTOM2 . "'";
+        if ($A2B_CUSTOM1) {
+            $this->CDR_CUSTOM_SQL .= ($this->CDR_CUSTOM_SQL ? ", " : "") . "a2b_custom1";
+            $this->CDR_CUSTOM_VAL .= ($this->CDR_CUSTOM_VAL ? ", " : "") . "'$A2B_CUSTOM1'";
+        }
+        if ($A2B_CUSTOM2) {
+            $this->CDR_CUSTOM_SQL .= ($this->CDR_CUSTOM_SQL ? ", " : "") . "a2b_custom2";
+            $this->CDR_CUSTOM_VAL .= ($this->CDR_CUSTOM_VAL ? ", " : "") . "'$A2B_CUSTOM2'";
+        }
 
         $this->CallerID    = $this->sanitize_agi_data($agi->request['agi_callerid']);
         $this->channel     = $this->sanitize_agi_data($agi->request['agi_channel']);
@@ -664,7 +670,7 @@ class A2Billing
         //Call function to find the cid number
         $this->isolate_cid();
 
-        $this->debug(self::INFO, $agi, __FILE__, __LINE__, ' get_agi_request_parameter = ' . $this->CallerID . ' ; ' . $this->channel . ' ; ' . $this->uniqueid . ' ; ' . $this->accountcode . ' ; ' . $this->dnid);
+        $this->debug(self::INFO, $agi, __FILE__, __LINE__, "get_agi_request_parameter: CID=$this->CallerID CHANNEL=$this->channel ID=$this->uniqueid ACCOUNT=$this->accountcode DNID=$this->dnid");
     }
 
     /*
@@ -2928,9 +2934,9 @@ class A2Billing
                     if ($date_will_expire < time()) {
                         $prompt = "prepaid-card-expired";
                         $this->status = 5;
-                        $QUERY = "UPDATE cc_card SET status = '5' WHERE id = '" . $this->id_card . "'";
+                        $QUERY = "UPDATE cc_card SET status = '5' WHERE id = ?";
+                        $this->DBHandle->Execute($QUERY, [$this->id_card]);
                         $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[QUERY UPDATE : $QUERY]");
-                        $this->table->SQLExec($this->DBHandle, $QUERY, 0);
                     }
                 }
 

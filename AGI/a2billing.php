@@ -120,11 +120,13 @@ $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[INFO : $agi_version]")
 /* GET THE AGI PARAMETER */
 $A2B->get_agi_request_parameter($agi);
 
-if (!$db = DbConnect()) {
+if ($A2B->DbConnect()) {
+    $A2B->debug(A2Billing::FATAL, $agi, __FILE__, __LINE__, "Database connection error");
     $agi->stream_file("prepaid-final", "#");
     exit;
 }
 
+$db = $A2B->DBHandle;
 $send_reminder = false;
 $callback_mode = null;
 $callback_leg = null;
@@ -134,8 +136,6 @@ $callback_been_connected = false;
 $called_party = null;
 $calling_party = null;
 $status_channel = 0;
-
-$A2B->set_table(new Table());
 
 $RateEngine = new RateEngine();
 
