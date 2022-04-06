@@ -59,12 +59,12 @@ $HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_did_destination.php?form_act
 $HD_Form->FG_LIST_ADDING_BUTTON_MSG1 = _("Add Destination");
 $HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAM+SURBVBgZBcHLT1xVAMDh333MkxmYAYZOwbGGPqRaHq0gpIBGba3GR2KibjQmsHDXsHDjP2DSmBgTU7swUUk0ajemK1HapjYIoYRqi4DoUAsNjwIyw9wZ7tzHOff4fZpSCgAAgJHJ4UHgPNADZAATKAG3VKAufTb49c8AAACaUgqAkclhExgF3nwtdyaSjmWw7BpsD4R0EGxxfXNMSCGvCiHf/vLlHyoAmlKKkcnhEHCju/HJ/hdzz2E5EVw8li2NsIqwawco4RHDZtOdYHZjdk744pnv3rpS0gGA0VMNx/oHmrspSA9f1xBCpyrC2IQpuBG2nRhrpRCPJp6mO/t4h+f63wMYxbMPBoCP3zn2qjEv99mkSjUQVJwEBTeE5UB+vUxpf59IehetLk9fYxvXF2dav7k1etfoHT756bnm3hOaEWNTF6CaOCgT3N4yqDo6i+sVgmiRyKG/cWvz7ARFzKLkRENOv72yVG8CPbnaFu7YG+xEdZ4wDhMgWN32cJwqdVmFVT/OcrAHriIlIuR3XM48dgrfFe0m0BA3a1i1N9h2bZLxVva8JMViQF3GoSltsyO7sNy7RFSZ8n+7FPbiJGJJfE+kTKWUpinwXAtFDjMkGZv20WIJNpcFuqqlOVMlWR7EWvdxmMX37oNSCCE0U4qgYHlWS4ORIhntZG3HxPFDhKMRok0x7v27izOTIhOeIROdJ+JZlJ0yY1O/IEVQMoUvfl8pPGg5Es9x7eEkqfgRwkYO37FRRopwIk2tO0FbdomnjvfxSP1RbixcYXp+AqNa8XTfExd/XLopDiUymPY6pd0p0mkXU7iENEVENzAr1+hq60Tqks6DZ5GaT1/7aXTPyepfvXJ53HP9n8YXb/JsSxd1Rg3pREBdWFIbdkiGXIqVLUJagtePnwfggxe+4HBTB0BIB/Bd/91f83fm/lz5i3NtPbSmTA7EFY1GmQbdplgusrAxxYWrQwBcGB/i3vYcgKMppQB46fPnk8IXl4Uvz77XP2QisygVR9M1Fv75ltXiFKc7BjiaPUn+4R9Mzf3G2v3SJ5pSCgAAgP6Pet+QQr4vZdAeyCANAJSMatnTveoBIAqUgUvTFzc+/B+ww5qo63KzbgAAAABJRU5ErkJggg==";
 
-$actived_list = getActivationList();
+$activated_list = getActivationList();
 
 $billingtype_list = getBillingTypeList();
 // -- billtype: 0 = fix per month + dialoutrate, 1= fix per month, 2 = dialoutrate, 3 = free
 
-$priority_list = array_combine(range(1, 5), range(1, 5));
+$priority_list = array_map(fn ($v) => [$v, $v], range(1, 5));
 $validated_list = [[_("Pending"), "0"], [_("Validated"), "1"]];
 $yesno_list = [[_("Yes"), "1"], [_("No"), "0"]];
 
@@ -72,8 +72,8 @@ $HD_Form->AddViewElement(_("Destination"), "destination");
 $HD_Form->AddViewElement(_("Creation Date"), "dest.creationdate", true, 16, "display_dateformat");
 $HD_Form->AddViewElement(_("DID"), "did", true, 15);
 $HD_Form->AddViewElement(_("Account Number"), "id_cc_card", true, 0, "display_customer_id_link");
-$HD_Form->AddViewElement(_("Active"), "dest.activated", true, 0, "", "list", $actived_list);
-$HD_Form->AddViewElement(_("VoIP"), "voip_call", true, 0, "", "list", $actived_list);
+$HD_Form->AddViewElement(_("Active"), "dest.activated", true, 0, "", "list", $activated_list);
+$HD_Form->AddViewElement(_("VoIP"), "voip_call", true, 0, "", "list", $yesno_list);
 $HD_Form->AddViewElement(_("Priority"), "priority", true, 0, "", "list", $priority_list);
 $HD_Form->AddViewElement(_("Minutes Used"), "dest.secondusedreal", true, 30, "display_minute");
 $HD_Form->AddViewElement(_("Validated"), "validated", true, 0, "", "list", $validated_list);
@@ -109,14 +109,14 @@ if ($form_action !== "ask-edit" && $form_action !== "edit") {
 
 $HD_Form->AddEditRadio(
     "activated",
-    [[_("Yes"), "1"], [_("No"), "0"]],
+    $activated_list,
     _("Activated"),
     "1",
     "",
     _("Choose if you want to activate this card")
 );
 
-$HD_Form->AddEditSelect("validated", $validated_list, _("Validated"));
+$HD_Form->AddEditRadio("validated", $validated_list, _("Validated"), "1");
 
 $HD_Form->AddEditSelect("priority", $priority_list, _("Priority"));
 
