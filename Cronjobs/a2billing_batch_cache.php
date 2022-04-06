@@ -83,8 +83,7 @@ $verbose_level = 1;
 $nb_record = 100;
 $wait_time = 10;
 
-$A2B = new A2Billing();
-$A2B->load_conf($idconfig);
+$A2B = new A2Billing($idconfig);
 $logfile_cront_batch = $A2B->config['log-files']['cront_batch_process'] ?? "/tmp/a2billing_cront_batch_log";
 
 write_log($logfile_cront_batch, basename(__FILE__) . ' line:' . __LINE__ . "[#### IMPORT CACHE CRONT START ####]");

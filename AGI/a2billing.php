@@ -89,8 +89,7 @@ $mode = $argv[2] ?? "standard";
 // get the area code for the cid-callback, all-callback and cid-prompt-callback
 $caller_areacode = $argv[3] ?? null;
 
-$A2B = new A2Billing();
-$A2B->load_conf((int)$idconfig, $optconfig);
+$A2B = new A2Billing((int)$idconfig, $optconfig);
 $A2B->mode = $mode;
 $A2B->G_startime = $G_startime;
 
@@ -564,16 +563,16 @@ if ($mode === "standard") {
                     $date_cond = ($A2B->config["database"]["dbtype"] === "mysql") ? " OR cc_did.expirationdate = '0000-00-00 00:00:00'" : "";
 
                     $QUERY = <<< SQL
-                    SELECT id_cc_did, cc_did_destination.id, billingtype, tariff, destination, voip_call, username, useralias, connection_charge, 
-                       selling_rate, did, aleg_carrier_connect_charge, aleg_carrier_cost_min, aleg_retail_connect_charge, aleg_retail_cost_min, 
-                       aleg_carrier_initblock, aleg_carrier_increment, aleg_retail_initblock, aleg_retail_increment, aleg_timeinterval, 
+                    SELECT id_cc_did, cc_did_destination.id, billingtype, tariff, destination, voip_call, username, useralias, connection_charge,
+                       selling_rate, did, aleg_carrier_connect_charge, aleg_carrier_cost_min, aleg_retail_connect_charge, aleg_retail_cost_min,
+                       aleg_carrier_initblock, aleg_carrier_increment, aleg_retail_initblock, aleg_retail_increment, aleg_timeinterval,
                        aleg_carrier_connect_charge_offp, aleg_carrier_cost_min_offp, aleg_retail_connect_charge_offp, aleg_retail_cost_min_offp, 
                        aleg_carrier_initblock_offp, aleg_carrier_increment_offp, aleg_retail_initblock_offp, aleg_retail_increment_offp, id_cc_card 
-                    FROM cc_did, cc_did_destination, cc_card 
+                    FROM cc_did, cc_did_destination, cc_card
                     WHERE id_cc_did=cc_did.id AND cc_card.status = 1 AND cc_card.id = id_cc_card AND cc_did_destination.activated = 1
                       AND cc_did.activated = 1 AND did = ? AND cc_did.startingdate <= CURRENT_TIMESTAMP AND cc_did_destination.validated = 1 
                       AND (cc_did.expirationdate > CURRENT_TIMESTAMP OR cc_did.expirationdate IS NULL $date_cond)
-                    ORDER BY priority ASC";
+                    ORDER BY priority ASC
                     SQL;
                     $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, $QUERY);
                     $result = $db->Execute($QUERY, [$A2B->destination]);
@@ -620,16 +619,16 @@ if ($mode === "standard") {
         $date_cond = ($A2B->config["database"]["dbtype"] === "mysql") ? " OR cc_did.expirationdate = '0000-00-00 00:00:00'" : "";
 
         $QUERY = <<< SQL
-        SELECT id_cc_did, cc_did_destination.id, billingtype, tariff, destination, voip_call, username, useralias, connection_charge, 
-           selling_rate, did, aleg_carrier_connect_charge, aleg_carrier_cost_min, aleg_retail_connect_charge, aleg_retail_cost_min, 
-           aleg_carrier_initblock, aleg_carrier_increment, aleg_retail_initblock, aleg_retail_increment, aleg_timeinterval, 
+        SELECT id_cc_did, cc_did_destination.id, billingtype, tariff, destination, voip_call, username, useralias, connection_charge,
+           selling_rate, did, aleg_carrier_connect_charge, aleg_carrier_cost_min, aleg_retail_connect_charge, aleg_retail_cost_min,
+           aleg_carrier_initblock, aleg_carrier_increment, aleg_retail_initblock, aleg_retail_increment, aleg_timeinterval,
            aleg_carrier_connect_charge_offp, aleg_carrier_cost_min_offp, aleg_retail_connect_charge_offp, aleg_retail_cost_min_offp, 
            aleg_carrier_initblock_offp, aleg_carrier_increment_offp, aleg_retail_initblock_offp, aleg_retail_increment_offp, id_cc_card 
-        FROM cc_did, cc_did_destination, cc_card 
+        FROM cc_did, cc_did_destination, cc_card
         WHERE id_cc_did = cc_did.id AND cc_card.status = 1 AND cc_card.id = id_cc_card AND cc_did_destination.activated = 1
           AND cc_did.activated = 1 AND did = ? AND cc_did.startingdate <= CURRENT_TIMESTAMP AND cc_did_destination.validated = 1 
           AND (cc_did.expirationdate > CURRENT_TIMESTAMP OR cc_did.expirationdate IS NULL $date_cond)
-        ORDER BY priority ASC";
+        ORDER BY priority ASC
         SQL;
         $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, $QUERY);
         $result = $db->Execute($QUERY, [$mydnid]);

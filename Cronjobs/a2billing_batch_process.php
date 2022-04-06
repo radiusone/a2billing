@@ -83,8 +83,7 @@ $time_checks = 20; // number of minute to check with. i.e if time1-time2< $time_
 // this value must be greater then script run time. used only when checked if service msut be run.
 $run = 1; // set to 0 if u want to just report, no updates. must be set to 1 on productional
 
-$A2B = new A2Billing();
-$A2B->load_conf($idconfig);
+$A2B = new A2Billing($idconfig);
 $logfile_cront_batch = $A2B->config['log-files']['cront_batch_process'] ?? "/tmp/a2billing_cront_batch_log";
 
 write_log($logfile_cront_batch, basename(__FILE__) . ' line:' . __LINE__ . "[#### BATCH BEGIN ####]");

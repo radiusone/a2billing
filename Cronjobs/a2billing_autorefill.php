@@ -78,8 +78,7 @@ if ($pH->isActive()) {
 $verbose_level = 0;
 $groupcard = 5000;
 
-$A2B = new A2Billing();
-$A2B->load_conf($idconfig);
+$A2B = new A2Billing($idconfig);
 $logfile_cront_autorefill = $A2B->config['log-files']['cront_autorefill'] ?? "/tmp/a2billing_cront_autorefill_log";
 
 write_log($logfile_cront_autorefill, basename(__FILE__) . ' line:' . __LINE__ . "[#### BATCH BEGIN ####]");

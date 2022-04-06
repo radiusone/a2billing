@@ -71,8 +71,7 @@ if ($pH->isActive()) {
     $pH->activate();
 }
 
-$A2B = new A2Billing();
-$A2B->load_conf($idconfig);
+$A2B = new A2Billing($idconfig);
 $logfile_cront_archive = $A2B->config['log-files']['cront_archive_data'] ?? "/tmp/a2billing_cront_archive_log";
 
 write_log($logfile_cront_archive, basename(__FILE__) . ' line:' . __LINE__ . "[#### ARCHIVING DATA BEGIN ####]");
@@ -82,9 +81,6 @@ if (!$A2B->DbConnect()) {
     write_log($logfile_cront_archive, basename(__FILE__) . ' line:' . __LINE__ . "[Cannot connect to the database]");
     exit;
 }
-
-$A2B = new A2Billing();
-$A2B->load_conf($idconfig);
 
 $instance_table = new Table();
 

@@ -75,8 +75,7 @@ if ($pH->isActive()) {
 $verbose_level = 0;
 $groupcard = 5000;
 
-$A2B = new A2Billing();
-$A2B->load_conf($idconfig);
+$A2B = new A2Billing($idconfig);
 $cron_logfile = $A2B->config['log-files']['cront_alarm'] ?? "/tmp/a2billing_cront_alarm_log";
 write_log($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . "[#### BATCH BEGIN ####]");
 

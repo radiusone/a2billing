@@ -52,10 +52,6 @@ $G_instance_Query_trace = Query_trace::getInstance();
 
 // LOAD THE CONFIGURATION
 $A2B = new A2Billing();
-$res_load_conf = $A2B -> load_conf();
-if (!$res_load_conf) {
-    exit;
-}
 
 // GLOBAL POST/GET VARIABLE
 getpost_ifset (['form_action', 'action', 'form_el_index', 'IDmanager', 'current_page', 'order', 'sens', 'mydisplaylimit', 'filterprefix', 'cssname', 'popup_select', 'popup_formname', 'popup_fieldname', 'ui_language', 'msg', 'section', 'exporttype']);

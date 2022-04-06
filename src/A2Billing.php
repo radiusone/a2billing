@@ -185,13 +185,13 @@ class A2Billing
     public array $currencies_list = [];
 
     /* CONSTRUCTOR */
-    public function __construct()
+    public function __construct(int $idconfig = 1, array $optconfig = [])
     {
         if (function_exists('pcntl_signal')) {
             pcntl_signal(SIGHUP, [$this, "Hangupsignal"]);
         }
         // populate the configuration object
-        $this->load_conf();
+        $this->load_conf($idconfig, $optconfig);
         // populate the $DBHandle property
         $this->DbConnect();
     }
@@ -290,7 +290,7 @@ class A2Billing
         $config_res = $this->DBHandle->Execute("SELECT config_key, config_value, config_group_title, config_valuetype FROM cc_config");
         if (!$config_res || $config_res->RowCount() === 0) {
             echo 'Error : cannot load conf : load_conf_db';
-            return false;
+            exit;
         }
 
         while ($conf = $config_res->FetchRow()) {

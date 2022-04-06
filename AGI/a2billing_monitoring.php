@@ -64,8 +64,7 @@ if ($argc > 2 && strlen($argv[2]) > 0 && $argv[2] == 'saydid') {
     $mode = 'standard';
 }
 
-$A2B = new A2Billing();
-$A2B->load_conf($idconfig);
+$A2B = new A2Billing($idconfig);
 $A2B->agiconfig['verbosity_level'] = 4;
 $A2B->agiconfig['logging_level'] = 0;
 $A2B->debug(A2Billing::INFO, $agi, __FILE__, __LINE__, "START MORNITORING");
