@@ -1,5 +1,8 @@
 <?php
 
+use A2billing\A2Billing;
+use A2billing\Forms\FormHandler;
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
@@ -34,25 +37,27 @@
 **/
 
 require_once "../../common/lib/admin.defines.php";
-include './form_data/FG_var_did_destination.inc';
+require_once './form_data/FG_var_did_destination.inc';
+/**
+ * @var A2Billing $A2B
+ * @var SmartyBC $smarty
+ * @var FormHandler $HD_Form
+ * @var string $id
+ * @var string $CC_help_list_did
+ */
 
 if (!has_rights(ACX_DID)) {
-    Header("HTTP/1.0 401 Unauthorized");
-    Header("Location: PP_error.php?c=accessdenied");
+    header("HTTP/1.0 401 Unauthorized");
+    header("Location: PP_error.php?c=accessdenied");
     die();
 }
 
 $HD_Form->init();
 
-if ($id != "" || !is_null($id)) {
-    $HD_Form->FG_EDIT_QUERY_CONDITION = str_replace("%id", "$id", $HD_Form->FG_EDIT_QUERY_CONDITION);
+if (!empty($id)) {
+    $HD_Form->FG_EDIT_QUERY_CONDITION = str_replace("%id", $id, $HD_Form->FG_EDIT_QUERY_CONDITION);
 }
-
-if (!isset ($form_action))
-    $form_action = "list"; //ask-add
-
-if (!isset ($action))
-    $action = $form_action;
+$form_action = $form_action ?? "list";
 
 $list = $HD_Form->perform_action($form_action);
 
@@ -60,11 +65,7 @@ $list = $HD_Form->perform_action($form_action);
 $smarty->display('main.tpl');
 
 // #### HELP SECTION
-if ($form_action == 'list')
-    echo $CC_help_list_did;
-else
-    echo $CC_help_edit_did;
-
+echo $CC_help_list_did;
 // #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);
 

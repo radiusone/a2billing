@@ -34,149 +34,124 @@ use A2billing\Forms\FormHandler;
  *
 **/
 
-if (! has_rights (ACX_ADMINISTRATOR)) {
-    Header ("HTTP/1.0 401 Unauthorized");
-    Header ("Location: PP_error.php?c=accessdenied");
-    die();
-}
+getpost_ifset(['id']);
+/**
+ * @var string $id
+ */
 
-
-getpost_ifset(array('id', 'destination', 'id_cc_card', 'id_cc_did', 'activated', 'priority', 'id_trunk', 'voip_call'));
-
-if ( (empty($form_action) || $form_action=="list")) {
-	$HD_Form = new FormHandler("cc_did_destination LEFT JOIN cc_did ON cc_did.id = cc_did_destination.id_cc_did", _("Did Destination"), 'cc_did_destination.id');
+$form_action = $form_action ?? "list";
+if ($form_action === "list") {
+	$HD_Form = new FormHandler(
+        "cc_did_destination dest LEFT JOIN cc_did ON cc_did.id = dest.id_cc_did",
+        _("Did Destination"),
+        'cc_did_destination.id'
+    );
 } else {
 	$HD_Form = new FormHandler("cc_did_destination", _("DID Destination"));
 }
 
 $HD_Form->no_debug();
-$HD_Form -> FG_TABLE_DEFAULT_ORDER = "destination";
-$HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
+$HD_Form->FG_TABLE_DEFAULT_ORDER = "destination";
+$HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
 
-$HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_did_destination.php?form_action=ask-add&section=".$_SESSION["menu_section"];
-$HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add DESTINATION");
-$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/world_add.png" ;
-
+$HD_Form->FG_LIST_ADDING_BUTTON1 = true;
+$HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_did_destination.php?form_action=ask-add";
+$HD_Form->FG_LIST_ADDING_BUTTON_MSG1 = _("Add Destination");
+$HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAM+SURBVBgZBcHLT1xVAMDh333MkxmYAYZOwbGGPqRaHq0gpIBGba3GR2KibjQmsHDXsHDjP2DSmBgTU7swUUk0ajemK1HapjYIoYRqi4DoUAsNjwIyw9wZ7tzHOff4fZpSCgAAgJHJ4UHgPNADZAATKAG3VKAufTb49c8AAACaUgqAkclhExgF3nwtdyaSjmWw7BpsD4R0EGxxfXNMSCGvCiHf/vLlHyoAmlKKkcnhEHCju/HJ/hdzz2E5EVw8li2NsIqwawco4RHDZtOdYHZjdk744pnv3rpS0gGA0VMNx/oHmrspSA9f1xBCpyrC2IQpuBG2nRhrpRCPJp6mO/t4h+f63wMYxbMPBoCP3zn2qjEv99mkSjUQVJwEBTeE5UB+vUxpf59IehetLk9fYxvXF2dav7k1etfoHT756bnm3hOaEWNTF6CaOCgT3N4yqDo6i+sVgmiRyKG/cWvz7ARFzKLkRENOv72yVG8CPbnaFu7YG+xEdZ4wDhMgWN32cJwqdVmFVT/OcrAHriIlIuR3XM48dgrfFe0m0BA3a1i1N9h2bZLxVva8JMViQF3GoSltsyO7sNy7RFSZ8n+7FPbiJGJJfE+kTKWUpinwXAtFDjMkGZv20WIJNpcFuqqlOVMlWR7EWvdxmMX37oNSCCE0U4qgYHlWS4ORIhntZG3HxPFDhKMRok0x7v27izOTIhOeIROdJ+JZlJ0yY1O/IEVQMoUvfl8pPGg5Es9x7eEkqfgRwkYO37FRRopwIk2tO0FbdomnjvfxSP1RbixcYXp+AqNa8XTfExd/XLopDiUymPY6pd0p0mkXU7iENEVENzAr1+hq60Tqks6DZ5GaT1/7aXTPyepfvXJ53HP9n8YXb/JsSxd1Rg3pREBdWFIbdkiGXIqVLUJagtePnwfggxe+4HBTB0BIB/Bd/91f83fm/lz5i3NtPbSmTA7EFY1GmQbdplgusrAxxYWrQwBcGB/i3vYcgKMppQB46fPnk8IXl4Uvz77XP2QisygVR9M1Fv75ltXiFKc7BjiaPUn+4R9Mzf3G2v3SJ5pSCgAAgP6Pet+QQr4vZdAeyCANAJSMatnTveoBIAqUgUvTFzc+/B+ww5qo63KzbgAAAABJRU5ErkJggg==";
 
 $actived_list = getActivationList();
-
 
 $billingtype_list = getBillingTypeList();
 // -- billtype: 0 = fix per month + dialoutrate, 1= fix per month, 2 = dialoutrate, 3 = free
 
-$priority_list = array();
-for ($k=1;$k<=5;$k++)
-    $priority_list["$k"]  = array( "$k", "$k");
+$priority_list = array_combine(range(1, 5), range(1, 5));
+$validated_list = [[_("Pending"), "0"], [_("Validated"), "1"]];
+$yesno_list = [[_("Yes"), "1"], [_("No"), "0"]];
 
-$validated_list = array();
-$validated_list["0"] = array( gettext("Pending"), "0");
-$validated_list["1"] = array( gettext("Validated"), "1");
-
-
-$HD_Form -> AddViewElement(gettext("DESTINATION"), "destination");
-$HD_Form -> AddViewElement(gettext("CREATION DATE"), "creationdate", true, 16, "display_dateformat");
-$HD_Form -> AddViewElement(gettext("DID"), "did", true, 15);
-$HD_Form -> AddViewElement(gettext("ACCOUNT NUMBER"), "id_cc_card", true, 0, "", "lie_link", "cc_card", "username,id", "id='%id'", "%1", "A2B_entity_card.php");
-$HD_Form -> AddViewElement(gettext("ACTIVE"), "activated", true, 0, "", "list", $actived_list);
-$HD_Form -> AddViewElement(gettext("VOIP"), "voip_call", true, 0, "", "list", $actived_list);
-$HD_Form -> AddViewElement(gettext("PRIOR"), "priority", true, 0, "", "list", $priority_list);
-$HD_Form -> AddViewElement(gettext("MINUTES USED"), "secondusedreal", true, 30, "display_minute");
-$HD_Form -> AddViewElement(gettext("VALIDATED"), "validated", true, 0, "", "list", $validated_list);
-
-
+$HD_Form->AddViewElement(_("Destination"), "destination");
+$HD_Form->AddViewElement(_("Creation Date"), "dest.creationdate", true, 16, "display_dateformat");
+$HD_Form->AddViewElement(_("DID"), "did", true, 15);
+$HD_Form->AddViewElement(_("Account Number"), "id_cc_card", true, 0, "display_customer_id_link");
+$HD_Form->AddViewElement(_("Active"), "dest.activated", true, 0, "", "list", $actived_list);
+$HD_Form->AddViewElement(_("VoIP"), "voip_call", true, 0, "", "list", $actived_list);
+$HD_Form->AddViewElement(_("Priority"), "priority", true, 0, "", "list", $priority_list);
+$HD_Form->AddViewElement(_("Minutes Used"), "dest.secondusedreal", true, 30, "display_minute");
+$HD_Form->AddViewElement(_("Validated"), "validated", true, 0, "", "list", $validated_list);
 
 // added a parameter to append  FG_TABLE_ID  ( by default ) or disable 0.
-$HD_Form -> FieldViewElement ('destination, cc_did_destination.creationdate, cc_did.did, id_cc_card, cc_did_destination.activated, voip_call, priority, cc_did_destination.secondusedreal, validated');
+$HD_Form->FieldViewElement ('destination, cc_did_destination.creationdate, cc_did.did, id_cc_card, cc_did_destination.activated, voip_call, priority, cc_did_destination.secondusedreal, validated');
 
-$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
-$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
-
-// TODO integrate in Framework
-if ($form_action=="ask-add"){
-	$begin_date = date("Y");
-	$begin_date_plus = date("Y") + 10;
-	$end_date = date("-m-d H:i:s");
-	$comp_date = "value='".$begin_date.$end_date."'";
-	$comp_date_plus = "value='".$begin_date_plus.$end_date."'";
-}
-
-
+$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form->FG_ENABLE_ADD_BUTTON = true;
 
 $HD_Form->AddEditElement(
-    gettext("DESTINATION"),
+    _("Destination"),
     "destination",
-    gettext("Enter the phone number you wish to call, or the VoIP client to reach. (ie: 347894999 or SIP/jeremy@182.212.1.45). If the call is VoIP, the VoIP_Call must be set to yes."),
-    "size=50 maxlength=120",
+    _("Enter the phone number you wish to call, or the VoIP client to reach. (ie: 347894999 or SIP/jeremy@182.212.1.45). If the call is VoIP, the VoIP_Call must be set to yes."),
+    "maxlength=120",
     0,
-    gettext("Insert the DID")
+    _("Insert the DID")
 );
 
-if ($form_action!='ask-edit' && $form_action!='edit') {
+if ($form_action !== "ask-edit" && $form_action !== "edit") {
 
     $HD_Form->AddEditPopup(
         "id_cc_card",
-        gettext("CUSTOMER ID"),
+        _("Customer"),
         "A2B_entity_card.php?popup_select=1&",
-        gettext("Select the Customer ID"),
-        gettext("Insert the Customer ID")
+        _("Select the Customer ID"),
+        _("Insert the Customer ID")
     );
 
-    $HD_Form->AddEditSqlSelect("id_cc_did", gettext("DID"), "cc_did", "did,id");
+    $HD_Form->AddEditSqlSelect("id_cc_did", _("DID"), "cc_did", "did,id");
 }
 
 $HD_Form->AddEditRadio(
     "activated",
-    [[gettext("Yes"), "1"], [gettext("No"), "0"]],
-    gettext("ACTIVATED"),
+    [[_("Yes"), "1"], [_("No"), "0"]],
+    _("Activated"),
     "1",
     "",
-    gettext("Choose if you want to activate this card")
+    _("Choose if you want to activate this card")
 );
 
-$HD_Form->AddEditSelect("validated", $validated_list, gettext("VALIDATED"));
+$HD_Form->AddEditSelect("validated", $validated_list, _("Validated"));
 
-$HD_Form->AddEditSelect("priority", $priority_list, gettext("PRIORITY"));
+$HD_Form->AddEditSelect("priority", $priority_list, _("Priority"));
 
 $HD_Form->AddEditRadio(
     "voip_call",
-    [[gettext("Yes"), "1"], [gettext("No"), "0"]],
-    gettext("ACTIVATED"),
+    $yesno_list,
+    _("VoIP Call"),
     "1",
     "",
-    gettext("Choose if you want to not use the trunk and let the asterisk call directly the destination (ie, Destination : SIP/jeremy@182.212.1.45)")
+    _("Choose if you want to not use the trunk and let the asterisk call directly the destination (ie, Destination : SIP/jeremy@182.212.1.45)")
 );
 
-if ($form_action!='ask-edit' && $form_action!='edit') {
-	$HD_Form -> FieldEditElement ('destination, id_cc_card, id_cc_did, activated, validated, priority, voip_call');
+if ($form_action !== "ask-edit" && $form_action !== "edit") {
+	$HD_Form->FieldEditElement ('destination, id_cc_card, id_cc_did, activated, validated, priority, voip_call');
 } else {
-	$HD_Form -> FieldEditElement ('destination, activated, validated, priority, voip_call');
+	$HD_Form->FieldEditElement ('destination, activated, validated, priority, voip_call');
 }
 
 // Set the filter variables
-$HD_Form -> FG_FILTER_ENABLE = true;
-$HD_Form -> FG_FILTER_COLUMN = 'did';
-$HD_Form -> FG_FILTER_LABEL = 'did';
+$HD_Form->FG_FILTER_ENABLE = true;
+$HD_Form->FG_FILTER_COLUMN = 'did';
+$HD_Form->FG_FILTER_LABEL = _("DID");
 
 if (isset($filterprefix)  &&  (strlen($filterprefix)>0)) {
-	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
-	$HD_Form -> FG_QUERY_WHERE_CLAUSE .= "cc_did.did like '$filterprefix%'";
+	if (!empty($HD_Form->FG_QUERY_WHERE_CLAUSE)) {
+        $HD_Form->FG_QUERY_WHERE_CLAUSE .= " AND ";
+    }
+	$HD_Form->FG_QUERY_WHERE_CLAUSE .= "cc_did.did like '$filterprefix%'";
 }
 
+$HD_Form->FG_INTRO_TEXT_ADITION = '';
 
+$HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = 'did_destination_add';
+$HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_DELETE = 'did_destination_del';
 
-
-$HD_Form -> FG_INTRO_TEXT_ADITION = '';
-
-
-
-$HD_Form -> FG_ADDITIONAL_FUNCTION_AFTER_ADD = 'did_destination_add';
-$HD_Form -> FG_ADDITIONAL_FUNCTION_AFTER_DELETE = 'did_destination_del';
-
-$HD_Form -> FG_LOCATION_AFTER_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
-$HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
-$HD_Form -> FG_LOCATION_AFTER_DELETE = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
-
-
-
+$HD_Form->FG_LOCATION_AFTER_ADD = "?form_action=list&id=";
+$HD_Form->FG_LOCATION_AFTER_EDIT = "?form_action=list&id=";
+$HD_Form->FG_LOCATION_AFTER_DELETE = "?form_action=list&id=";
