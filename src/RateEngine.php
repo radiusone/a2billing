@@ -150,9 +150,11 @@ class RateEngine
         buyrateinitblock, buyrateincrement, rateinitial, initblock, billingblock,
         connectcharge, disconnectcharge, stepchargea, chargea, timechargea,
         billingblocka, stepchargeb, chargeb, timechargeb, billingblockb,
-        stepchargec, chargec, timechargec, billingblockc, cc_tariffplan.id_trunk AS tp_id_trunk,
-        tp_trunk.trunkprefix AS tp_trunkprefix, tp_trunk.providertech AS tp_providertech, tp_trunk.providerip AS tp_providerip, tp_trunk.removeprefix AS tp_removeprefix, cc_ratecard.id_trunk AS rc_id_trunk,
-        rt_trunk.trunkprefix AS rc_trunkprefix, rt_trunk.providertech AS rc_providertech, rt_trunk.providerip AS rc_providerip, rt_trunk.removeprefix AS rc_removeprefix, musiconhold,
+        stepchargec, chargec, timechargec, billingblockc,
+        cc_tariffplan.id_trunk AS tp_id_trunk,
+        tp_trunk.trunkprefix AS tp_trunkprefix, tp_trunk.providertech AS tp_providertech, tp_trunk.providerip AS tp_providerip, tp_trunk.removeprefix AS tp_removeprefix,
+        cc_ratecard.id_trunk AS rt_id_trunk,
+        rt_trunk.trunkprefix AS rt_trunkprefix, rt_trunk.providertech AS rt_providertech, rt_trunk.providerip AS rt_providerip, rt_trunk.removeprefix AS rt_removeprefix, musiconhold,
         tp_trunk.failover_trunk AS tp_failover_trunk, rt_trunk.failover_trunk AS rt_failover_trunk, tp_trunk.addparameter AS tp_addparameter_trunk, rt_trunk.addparameter AS rt_addparameter_trunk, id_outbound_cidgroup,
         id_cc_package_offer, tp_trunk.status, rt_trunk.status AS rt_status, tp_trunk.inuse AS tp_inuse, rt_trunk.inuse AS rt_inuse,
         tp_trunk.maxuse AS tp_maxuse, rt_trunk.maxuse AS rt_maxuse, tp_trunk.if_max_use AS tp_if_max_use, rt_trunk.if_max_use AS rt_if_max_use, cc_ratecard.rounding_calltime AS rounding_calltime,
@@ -322,12 +324,12 @@ class RateEngine
         $distinct_result = [];
         $mylistoftrunk = [];
         foreach ($result as $i => $row) {
-            if ((int)$row["rc_id_trunk"] === -1) {
+            if ((int)$row["rt_id_trunk"] === -1) {
                 $status = (int)$row["status"];
                 $mycurrenttrunk = (int)$row["tp_id_trunk"];
             } else {
                 $status = (int)$row["rt_status"];
-                $mycurrenttrunk = (int)$row["rc_id_trunk"];
+                $mycurrenttrunk = (int)$row["rt_id_trunk"];
             }
 
             // Check if we already have the same trunk in the ratecard
@@ -1257,12 +1259,12 @@ class RateEngine
         foreach ($this->ratecard_obj as $k => $ratecard) {
 
             $destination = $old_destination;
-            $this->usedtrunk = (int)$ratecard["rc_id_trunk"];
+            $this->usedtrunk = (int)$ratecard["rt_id_trunk"];
             if ($this->usedtrunk !== -1) {
-                $prefix         = $ratecard["rc_trunkprefix"];
-                $tech           = $ratecard["rc_providertech"];
-                $ipaddress      = $ratecard["rc_providerip"];
-                $removeprefix   = $ratecard["rc_removeprefix"];
+                $prefix         = $ratecard["rt_trunkprefix"];
+                $tech           = $ratecard["rt_providertech"];
+                $ipaddress      = $ratecard["rt_providerip"];
+                $removeprefix   = $ratecard["rt_removeprefix"];
                 $failover_trunk = (int)$ratecard["rt_failover_trunk"];
                 $addparameter   = $ratecard["rt_addparameter_trunk"];
                 $inuse          = (int)$ratecard["rt_inuse"];

@@ -406,7 +406,7 @@ function display_money($value, $currency = BASE_CURRENCY)
 }
 
 /**
- * Used as callback for list/form elements
+ * Used as callback for list view elements
  * @param $mydate
  * @return void
  */
@@ -417,26 +417,22 @@ function display_dateformat($mydate)
 
 function get_dateformat(string $mydate): string
 {
-    if (DB_TYPE == "mysql" && strlen($mydate) === 14) {
+    if (DB_TYPE === "mysql" && strlen($mydate) === 14) {
+        // why is this here? MySQL does not return in this format and never has
         return DateTime::createFromFormat("YmdHis", $mydate)->format("Y-m-d H:i:s");
     }
 
     return $mydate;
 }
 
-/*
- * function res_display_dateformat
+/**
+ * Used as callback for edit form elements
  */
 function res_display_dateformat($mydate)
 {
-    if (DB_TYPE == "mysql") {
-        if (strlen($mydate) == 14) {
-            // YYYY-MM-DD HH:MM:SS 20300331225242
-            $res = substr($mydate, 0, 4) . '-' . substr($mydate, 4, 2) . '-' . substr($mydate, 6, 2);
-            $res .= ' ' . substr($mydate, 8, 2) . ':' . substr($mydate, 10, 2) . ':' . substr($mydate, 12, 2);
-
-            return $res;
-        }
+    if (DB_TYPE === "mysql" && strlen($mydate) === 14) {
+        // why is this here? MySQL does not return in this format and never has
+        return DateTime::createFromFormat("YmdHis", $mydate)->format("Y-m-d H:i:s");
     }
 
     return $mydate;
@@ -454,13 +450,14 @@ function display_minute($sessiontime): void
 
 function get_minute($sessiontime)
 {
-    global $resulttype;
-    if ((!isset ($resulttype)) || ($resulttype == "min")) {
-        $minutes = sprintf("%02d", intval($sessiontime / 60)) . ":" . sprintf("%02d", $sessiontime % 60);
-    } else {
-        $minutes = $sessiontime;
+    // see if this came in via post/get
+    getpost_ifset(["resulttype"], $p);
+
+    if (($p["resulttype"] ?? "min") === "min") {
+        $sessiontime = sprintf("%02d:%02d", intval($sessiontime / 60), $sessiontime % 60);
     }
-    return $minutes;
+
+    return $sessiontime;
 }
 
 /**

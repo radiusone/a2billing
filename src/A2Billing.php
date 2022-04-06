@@ -1155,18 +1155,18 @@ class A2Billing
 
         $callcount = 0;
         $dialstatus = null;
-        $doibill = ($listdestination[0][2] == 0 || $listdestination[0][2] == 2);
+        $doibill = ($listdestination[0]["billingtype"] === "0" || $listdestination[0]["billingtype"] === "2");
         foreach ($listdestination as $dest) {
             $callcount++;
 
             $this->debug(self::INFO, $agi, __FILE__, __LINE__, "[A2Billing] DID call friend: FOLLOWME=$callcount (cardnumber:$dest[6]|destination:$dest[4]|tariff:$dest[3])\n");
 
             $this->agiconfig['cid_enable'] = 0;
-            $this->accountcode = $dest[6];
-            $this->tariff      = $dest[3];
-            $this->destination = $dest[4];
-            $this->username    = $dest[6];
-            $this->useralias   = $dest[7];
+            $this->accountcode = $dest["username"];
+            $this->tariff      = (int)$dest["tariff"];
+            $this->destination = $dest["destination"];
+            $this->username    = $dest["username"];
+            $this->useralias   = $dest["useralias"];
 
             if ($this->set_inuse) {
                 $this->callingcard_acct_start_inuse($agi);
@@ -1178,15 +1178,15 @@ class A2Billing
                 continue;
             }
             // CHECK IF DESTINATION IS SET
-            if (strlen($dest[4]) === 0) {
+            if (strlen($dest["destination"]) === 0) {
                 continue;
             }
 
             // IF VOIP CALL
-            if ($dest[5] == 1) {
+            if ($dest["voip_call"]) {
 
                 // RUN MIXMONITOR TO RECORD CALL
-                if ($this->agiconfig['record_call'] == 1) {
+                if ($this->agiconfig['record_call']) {
                     $command_mixmonitor = "MixMonitor $this->uniqueid.{$this->agiconfig['monitor_formatfile']},b";
                     $agi->exec($command_mixmonitor);
                     $this->debug(self::INFO, $agi, __FILE__, __LINE__, $command_mixmonitor);
@@ -1197,7 +1197,7 @@ class A2Billing
                 $dialparams = $this->agiconfig['dialcommand_param_call_2did'];
                 $dialparams = str_replace("%timeout%", min($time2call * 1000, $max_long), $dialparams);
                 $dialparams = str_replace("%timeoutsec%", min($time2call, $max_long), $dialparams);
-                $dialstr = $dest[4] . $dialparams;
+                $dialstr = $dest["destination"] . $dialparams;
 
                 $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[A2Billing] DID call friend: Dialing '$dialstr' Friend.\n");
 
@@ -1211,12 +1211,12 @@ class A2Billing
                 $dialstatus = $agi->get_variable("DIALSTATUS");
                 $dialstatus = $dialstatus['data'];
 
-                if ($this->agiconfig['record_call'] == 1) {
+                if ($this->agiconfig['record_call']) {
                     $agi->exec("StopMixMonitor");
                     $this->debug(self::INFO, $agi, __FILE__, __LINE__, "EXEC StopMixMonitor ($this->uniqueid)");
                 }
 
-                $this->debug(self::INFO, $agi, __FILE__, __LINE__, "[$dest[4] Friend][followme=$callcount]:[ANSWEREDTIME=$answeredtime-DIALSTATUS=$dialstatus]");
+                $this->debug(self::INFO, $agi, __FILE__, __LINE__, "[$dest[destination] Friend][followme=$callcount]:[ANSWEREDTIME=$answeredtime-DIALSTATUS=$dialstatus]");
 
                 //# Ooh, something actually happend!
                 if ($dialstatus === "BUSY") {
@@ -1262,17 +1262,17 @@ class A2Billing
                         " terminatecauseid, stoptime, sessionbill, id_tariffgroup, id_tariffplan, id_ratecard, id_trunk, src, sipiax $this->CDR_CUSTOM_SQL) VALUES " .
                         "(?, ?, ?, ?, CURRENT_TIMESTAMP - INTERVAL ? SECOND, ?, ?, ?, now(), '0', '0', '0', '0', '0', ?, '3' $this->CDR_CUSTOM_VAL)";
 
-                    $params = [$this->uniqueid, $this->channel, $this->id_card, $this->hostname, $answeredtime, $answeredtime, $dest[4], $terminatecauseid, $this->CallerID];
+                    $params = [$this->uniqueid, $this->channel, $this->id_card, $this->hostname, $answeredtime, $answeredtime, $dest["destination"], $terminatecauseid, $this->CallerID];
                     $this->DBHandle->Execute($QUERY, $params);
                     $this->debug(self::INFO, $agi, __FILE__, __LINE__, "[DID CALL - LOG CC_CALL: SQL: $QUERY]");
 
                     // CC_DID & CC_DID_DESTINATION - cc_did.id, cc_did_destination.id
                     $QUERY = "UPDATE cc_did SET secondusedreal = secondusedreal + ? WHERE id = ?";
-                    $this->DBHandle->Execute($QUERY, [$answeredtime, $dest[0]]);
+                    $this->DBHandle->Execute($QUERY, [$answeredtime, $dest["id_cc_did"]]);
                     $this->debug(self::INFO, $agi, __FILE__, __LINE__, "UPDATE DID");
 
                     $QUERY = "UPDATE cc_did_destination SET secondusedreal = secondusedreal + ? WHERE id = ?";
-                    $this->DBHandle->Execute($QUERY, [$answeredtime, $dest[1]]);
+                    $this->DBHandle->Execute($QUERY, [$answeredtime, $dest["id"]]);
                     $this->debug(self::INFO, $agi, __FILE__, __LINE__, "UPDATE DID_DESTINATION");
 
                     $this->bill_did_aleg($agi, $dest, $answeredtime);
@@ -1286,7 +1286,7 @@ class A2Billing
                 $this->agiconfig['use_dnid'] = 1;
                 $this->agiconfig['say_timetocall'] = 0;
 
-                $this->extension = $this->dnid = $this->destination = $dest[4];
+                $this->extension = $this->dnid = $this->destination = $dest["destination"];
 
                 if ($this->callingcard_ivr_authorize($agi, $RateEngine, 0) === 1) {
 
@@ -1311,11 +1311,11 @@ class A2Billing
                     $RateEngine->rate_engine_updatesystem($this, $agi, $this->destination, $doibill, true);
                     // CC_DID & CC_DID_DESTINATION - cc_did.id, cc_did_destination.id
                     $QUERY = "UPDATE cc_did SET secondusedreal = secondusedreal + ? WHERE id = ?";
-                    $this->DBHandle->Execute($QUERY, [$RateEngine->answeredtime, $dest[0]]);
+                    $this->DBHandle->Execute($QUERY, [$RateEngine->answeredtime, $dest["id_cc_did"]]);
                     $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "UPDATE DID");
 
                     $QUERY = "UPDATE cc_did_destination SET secondusedreal = secondusedreal + ? WHERE id = ?";
-                    $this->DBHandle->Execute($QUERY, [$RateEngine->answeredtime, $dest[1]]);
+                    $this->DBHandle->Execute($QUERY, [$RateEngine->answeredtime, $dest["id"]]);
                     $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "UPDATE DID_DESTINATION");
 
                     $this->bill_did_aleg($agi, $dest, $RateEngine->answeredtime);
@@ -1342,10 +1342,10 @@ class A2Billing
         $nbused = $this->nbused;
         $dialstatus = null;
         $new_username = '';
-        $connection_charge = $listdestination[0][8];
-        $selling_rate = $listdestination[0][9];
+        $connection_charge = (float)$listdestination[0]["connection_charge"];
+        $selling_rate = (float)$listdestination[0]["selling_rate"];
 
-        if ($connection_charge == 0 && $selling_rate == 0) {
+        if ($connection_charge === 0.0 && $selling_rate === 0.0) {
             $call_did_free = true;
             $this->debug(self::INFO, $agi, __FILE__, __LINE__, "[A2Billing] DID call free ");
         } else {
@@ -1353,16 +1353,16 @@ class A2Billing
             $this->debug(self::INFO, $agi, __FILE__, __LINE__, "[A2Billing] DID call not free: (connection charge:" . $connection_charge . "|selling_rate:" . $selling_rate);
         }
 
-        $doibill = ($listdestination[0][2] == 0 || $listdestination[0][2] == 2);
+        $doibill = ($listdestination[0]["billingtype"] === "0" || $listdestination[0]["billingtype"] === "2");
 
         $time2call = $this->agiconfig['max_call_call_2_did'];
         if (!$call_did_free) {
-            if ($this->typepaid == 0) {
+            if ($this->typepaid === 0) {
                 if ($this->credit < $this->agiconfig['min_credit_2call']) {
                     $time2call = 0;
                 } else {
                     $credit_without_charge = $this->credit - abs($connection_charge);
-                    if ($credit_without_charge > 0 && $selling_rate != 0) {
+                    if ($credit_without_charge > 0 && $selling_rate !== 0.0) {
                         $time2call = intval($credit_without_charge / abs($selling_rate)) * 60;
                     }
                 }
@@ -1370,7 +1370,7 @@ class A2Billing
                 $time2call = 0;
             } else {
                 $credit_without_charge = $this->credit + abs($this->creditlimit) - abs($connection_charge);
-                if ($credit_without_charge > 0 && $selling_rate != 0) {
+                if ($credit_without_charge > 0 && $selling_rate !== 0.0) {
                     $time2call = intval($credit_without_charge / abs($selling_rate)) * 60;
                 }
             }
@@ -1385,26 +1385,25 @@ class A2Billing
 
         foreach ($listdestination as $dest) {
             $callcount++;
-            $this->debug(self::INFO, $agi, __FILE__, __LINE__, "[A2Billing] DID call friend: FOLLOWME=$callcount (cardnumber:$dest[6]|destination:$dest[4]|tariff:$dest[3])\n");
-
             $this->agiconfig['cid_enable'] = 0;
-            $this->accountcode = $dest[6];
-            $this->tariff      = (int)$dest[3];
-            $this->destination = $dest[10];
-            $new_username      = $dest[6];
-            $this->useralias   = $dest[7];
-            $this->id_card     = (int)$dest[28];
+            $this->accountcode = $dest["username"];
+            $this->tariff      = (int)$dest["tariff"];
+            $this->destination = $dest["did"];
+            $new_username      = $dest["username"];
+            $this->useralias   = $dest["useralias"];
+            $this->id_card     = (int)$dest["id_cc_card"];
+            $this->debug(self::INFO, $agi, __FILE__, __LINE__, "[A2Billing] DID call friend: FOLLOWME=$callcount (cardnumber:$this->accountcode|destination:$this->destination|tariff:$this->tariff)\n");
 
             // CHECK IF DESTINATION IS SET
-            if (strlen($dest[4]) === 0) {
+            if (strlen($dest["destination"]) === 0) {
                 continue;
             }
 
             // IF VOIP CALL
-            if ($dest[5] == 1) {
+            if ($dest["voip_call"]) {
 
                 // RUN MIXMONITOR TO RECORD CALL
-                if ($this->agiconfig['record_call'] == 1) {
+                if ($this->agiconfig['record_call']) {
                     $command_mixmonitor = "MixMonitor $this->uniqueid.{$this->agiconfig['monitor_formatfile']},b";
                     $agi->exec($command_mixmonitor);
                     $this->debug(self::INFO, $agi, __FILE__, __LINE__, $command_mixmonitor);
@@ -1416,7 +1415,7 @@ class A2Billing
                     $dialparams = $this->agiconfig['dialcommand_param_call_2did'];
                     $dialparams = str_replace("%timeout%", min($time2call * 1000, $max_long), $dialparams);
                     $dialparams = str_replace("%timeoutsec%", min($time2call, $max_long), $dialparams);
-                    $dialstr = $dest[4] . $dialparams;
+                    $dialstr = $dest["destination"] . $dialparams;
 
                     $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[A2Billing] DID call friend: Dialing '$dialstr' Friend.\n");
                     //# Channel: technology/number@ip_of_gw_to PSTN
@@ -1430,15 +1429,15 @@ class A2Billing
                     $dialparams = str_replace("%timeout%", min($time2call * 1000, $max_long), $this->agiconfig['dialcommand_param']);
                     $dialparams = str_replace("%timeoutsec%", min($time2call, $max_long), $dialparams);
 
-                    if ($this->agiconfig['record_call'] == 1) {
+                    if ($this->agiconfig['record_call']) {
                         $command_mixmonitor = "MixMonitor $this->uniqueid.{$this->agiconfig['monitor_formatfile']},b";
                         $agi->exec($command_mixmonitor);
                         $this->debug(self::INFO, $agi, __FILE__, __LINE__, $command_mixmonitor);
                     }
-                    $dialstr = $dest[4] . $dialparams;
+                    $dialstr = $dest["destination"] . $dialparams;
                     $agi->exec("DIAL $dialstr");
                     $this->debug(self::INFO, $agi, __FILE__, __LINE__, "DIAL $dialstr");
-                    if ($this->agiconfig['record_call'] == 1) {
+                    if ($this->agiconfig['record_call']) {
                         $agi->exec("StopMixMonitor");
                         $this->debug(self::INFO, $agi, __FILE__, __LINE__, "EXEC StopMixMonitor (" . $this->uniqueid . ")");
                     }
@@ -1449,17 +1448,17 @@ class A2Billing
                 $dialstatus = $agi->get_variable("DIALSTATUS");
                 $dialstatus = $dialstatus['data'];
 
-                if ($this->agiconfig['record_call'] == 1) {
+                if ($this->agiconfig['record_call']) {
                     $agi->exec("StopMixMonitor");
                     $this->debug(self::INFO, $agi, __FILE__, __LINE__, "EXEC StopMixMonitor ($this->uniqueid)");
                 }
 
-                $this->debug(self::INFO, $agi, __FILE__, __LINE__, "[$dest[4] Friend][followme=$callcount]:[ANSWEREDTIME=$answeredtime-DIALSTATUS=$dialstatus]");
+                $this->debug(self::INFO, $agi, __FILE__, __LINE__, "[$dest[destination] Friend][followme=$callcount]:[ANSWEREDTIME=$answeredtime-DIALSTATUS=$dialstatus]");
 
                 //# Ooh, something actually happend!
                 if ($dialstatus === "BUSY") {
                     $answeredtime = 0;
-                    if ($this->agiconfig['busy_timeout'] > 0) {
+                    if ($this->agiconfig['busy_timeout']) {
                         $agi->exec("Busy " . $this->agiconfig['busy_timeout']);
                     }
                     if (count($listdestination) > $callcount) {
@@ -1501,12 +1500,12 @@ class A2Billing
                         //CALL2DID CDR is free
                         /* CDR A-LEG OF DID CALL */
                         $cost = 0;
-                        $cdr_dest = $dest[10];
+                        $cdr_dest = $dest["did"];
                     } else {
                         //CALL2DID CDR is not free
                         $cost = ($answeredtime / 60) * abs($selling_rate) + abs($connection_charge);
                         /* CDR A-LEG OF DID CALL */
-                        $cdr_dest = $listdestination[0][10];
+                        $cdr_dest = $listdestination[0]["did"];
                     }
                     $QUERY = "INSERT INTO cc_call (uniqueid, sessionid, card_id, nasipaddress, starttime, sessiontime, calledstation, terminatecauseid, stoptime, sessionbill, id_tariffgroup, id_tariffplan, id_ratecard, id_trunk, src, sipiax $this->CDR_CUSTOM_SQL) " .
                         "VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP - INTERVAL ? SECOND, ?, ?, ?, now(), ?, '0', '0', '0', '0', ?, '3' $this->CDR_CUSTOM_VAL)";
@@ -1522,11 +1521,11 @@ class A2Billing
 
                     // CC_DID & CC_DID_DESTINATION - cc_did.id, cc_did_destination.id
                     $QUERY = "UPDATE cc_did SET secondusedreal = secondusedreal + ? WHERE id = ?";
-                    $this->DBHandle->Execute($QUERY, [$answeredtime, $dest[0]]);
+                    $this->DBHandle->Execute($QUERY, [$answeredtime, $dest["id_cc_did"]]);
                     $this->debug(self::INFO, $agi, __FILE__, __LINE__, "[UPDATE DID SQL: $QUERY]");
 
                     $QUERY = "UPDATE cc_did_destination SET secondusedreal = secondusedreal + ? WHERE id = ?";
-                    $this->DBHandle->Execute($QUERY, [$answeredtime, $dest[1]]);
+                    $this->DBHandle->Execute($QUERY, [$answeredtime, $dest["id"]]);
                     $this->debug(self::INFO, $agi, __FILE__, __LINE__, "[UPDATE DID_DESTINATION SQL: $QUERY]");
 
                     #This is a call from user to DID
@@ -1539,7 +1538,7 @@ class A2Billing
                 $this->agiconfig['use_dnid'] = 1;
                 $this->agiconfig['say_timetocall'] = 0;
 
-                $this->extension = $this->dnid = $this->destination = $dest[4];
+                $this->extension = $this->dnid = $this->destination = $dest["destination"];
 
                 if ($this->callingcard_ivr_authorize($agi, $RateEngine, 0) === 1) {
                     // check the min to call
@@ -1568,11 +1567,11 @@ class A2Billing
 
                     // CC_DID & CC_DID_DESTINATION - cc_did.id, cc_did_destination.id
                     $QUERY = "UPDATE cc_did SET secondusedreal = secondusedreal + ? WHERE id = ?";
-                    $this->DBHandle->Execute($QUERY, [$RateEngine->answeredtime, $dest[0]]);
+                    $this->DBHandle->Execute($QUERY, [$RateEngine->answeredtime, $dest["id_cc_did"]]);
                     $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[UPDATE DID]");
 
                     $QUERY = "UPDATE cc_did_destination SET secondusedreal = secondusedreal + ? WHERE id = ?";
-                    $this->DBHandle->Execute($QUERY, [$RateEngine->answeredtime, $dest[1]]);
+                    $this->DBHandle->Execute($QUERY, [$RateEngine->answeredtime, $dest["id"]]);
                     $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[UPDATE DID_DESTINATION]");
 
                     $answeredtime = $agi->get_variable("ANSWEREDTIME");
@@ -1586,12 +1585,12 @@ class A2Billing
                     if ($call_did_free) {
                         //CALL2DID CDR is free
                         $cost = 0;
-                        $cdr_dest = $dest[10];
+                        $cdr_dest = $dest["did"];
                     } else {
                         //CALL2DID CDR is not free
                         $cost = ($answeredtime / 60) * abs($selling_rate) + abs($connection_charge);
                         /* CDR A-LEG OF DID CALL */
-                        $cdr_dest = $listdestination[0][10];
+                        $cdr_dest = $listdestination[0]["did"];
                     }
                     $QUERY = "INSERT INTO cc_call (uniqueid, sessionid, card_id, nasipaddress, starttime, sessiontime, calledstation, terminatecauseid, stoptime, sessionbill, id_tariffgroup, id_tariffplan, id_ratecard, id_trunk, src, sipiax $this->CDR_CUSTOM_SQL) " .
                         "VALUES " . "(?, ?, ?, ?, CURRENT_TIMESTAMP - INTERVAL ? SECOND, ?, ?, ?, now(), ?, '0', '0', '0', '0', ?, '3' $this->CDR_CUSTOM_VAL)";
@@ -1634,7 +1633,7 @@ class A2Billing
 
         $start_time = $this->G_startime;
         $stop_time = time();
-        $timeinterval = (int)$dest[19];
+        $timeinterval = (int)$dest["aleg_timeinterval"];
         $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[bill_did_aleg]: START TIME peak=" . $this->calculate_time_condition($start_time, $timeinterval, "peak") . " ,offpeak=" . $this->calculate_time_condition($start_time, $timeinterval, "offpeak") . " ");
         $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[bill_did_aleg]: STOP TIME peak=" . $this->calculate_time_condition($stop_time, $timeinterval, "peak") . " ,offpeak=" . $this->calculate_time_condition($stop_time, $timeinterval, "offpeak") . " ");
 
@@ -1647,28 +1646,28 @@ class A2Billing
         ) {
             # We have PEAK time
             $this->debug(self::INFO, $agi, __FILE__, __LINE__, "[bill_did_aleg]: We have PEAK time.");
-            $aleg_carrier_connect_charge = (float)$dest[11];
-            $aleg_carrier_cost_min = (float)$dest[12];
-            $aleg_retail_connect_charge = (float)$dest[13];
-            $aleg_retail_cost_min = (float)$dest[14];
+            $aleg_carrier_connect_charge = (float)$dest["aleg_carrier_connect_charge"];
+            $aleg_carrier_cost_min = (float)$dest["aleg_carrier_cost_min"];
+            $aleg_retail_connect_charge = (float)$dest["aleg_retail_connect_charge"];
+            $aleg_retail_cost_min = (float)$dest["aleg_retail_cost_min"];
 
-            $aleg_carrier_initblock = (int)$dest[15];
-            $aleg_carrier_increment = (int)$dest[16];
-            $aleg_retail_initblock = (int)$dest[17];
-            $aleg_retail_increment = (int)$dest[18];
+            $aleg_carrier_initblock = (int)$dest["aleg_carrier_initblock"];
+            $aleg_carrier_increment = (int)$dest["aleg_carrier_increment"];
+            $aleg_retail_initblock = (int)$dest["aleg_retail_initblock"];
+            $aleg_retail_increment = (int)$dest["aleg_retail_increment"];
             #TODO use the above variables to define the time2call
         } else {
             #We have OFF-PEAK time
             $this->debug(self::INFO, $agi, __FILE__, __LINE__, "[bill_did_aleg]: We have OFF-PEAK time.");
-            $aleg_carrier_connect_charge = $dest[20];
-            $aleg_carrier_cost_min = $dest[21];
-            $aleg_retail_connect_charge = $dest[22];
-            $aleg_retail_cost_min = $dest[23];
+            $aleg_carrier_connect_charge = $dest["aleg_carrier_connect_charge_offp"];
+            $aleg_carrier_cost_min = $dest["aleg_carrier_cost_min_offp"];
+            $aleg_retail_connect_charge = $dest["aleg_retail_connect_charge_offp"];
+            $aleg_retail_cost_min = $dest["aleg_retail_cost_min_offp"];
 
-            $aleg_carrier_initblock = $dest[24];
-            $aleg_carrier_increment = $dest[25];
-            $aleg_retail_initblock = $dest[26];
-            $aleg_retail_increment = $dest[27];
+            $aleg_carrier_initblock = $dest["aleg_carrier_initblock_offp"];
+            $aleg_carrier_increment = $dest["aleg_carrier_increment_offp"];
+            $aleg_retail_initblock = $dest["aleg_retail_initblock_offp"];
+            $aleg_retail_increment = $dest["aleg_retail_increment_offp"];
             #TODO use the above variables to define the time2call
         }
 
@@ -1687,7 +1686,7 @@ class A2Billing
                 aleg_retail_increment=$aleg_retail_increment - b_leg_answeredtime=$b_leg_answeredtime]"
         );
 
-        $this->dnid = $dest[10];
+        $this->dnid = $dest["did"];
 
         // SET CORRECTLY THE CALLTIME FOR THE 1st LEG
         $aleg_answeredtime = $this->agiconfig['answer_call'] == 1 ? time() - $this->G_startime : $b_leg_answeredtime;
@@ -1750,7 +1749,7 @@ class A2Billing
             $aleg_answeredtime,
             $aleg_answeredtime,
             $aleg_answeredtime,
-            $dest[10],
+            $dest["did"],
             $terminatecauseid,
             a2b_round($aleg_retail_cost),
             $this->CallerID,
