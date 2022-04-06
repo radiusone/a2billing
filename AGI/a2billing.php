@@ -120,7 +120,7 @@ $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[INFO : $agi_version]")
 /* GET THE AGI PARAMETER */
 $A2B->get_agi_request_parameter($agi);
 
-if ($A2B->DbConnect()) {
+if (!$A2B->DbConnect()) {
     $A2B->debug(A2Billing::FATAL, $agi, __FILE__, __LINE__, "Database connection error");
     $agi->stream_file("prepaid-final", "#");
     exit;
