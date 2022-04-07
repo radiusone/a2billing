@@ -41,7 +41,7 @@ if (! has_rights (ACX_ADMINISTRATOR)) {
 }
 
 
-getpost_ifset(array('posted', 'Period', 'frommonth', 'fromstatsmonth', 'tomonth', 'tostatsmonth', 'fromday', 'fromstatsday_sday', 'fromstatsmonth_sday', 'today', 'tostatsday_sday', 'tostatsmonth_sday', 'current_page', 'filterprefix', 'filterprefix2'));
+getpost_ifset(array('posted', 'Period', 'frommonth', 'fromstatsmonth', 'tomonth', 'tostatsmonth', 'fromday', 'fromstatsday_sday', 'fromstatsmonth_sday', 'today', 'tostatsday_sday', 'tostatsmonth_sday', 'current_page'));
 
 
 $HD_Form = new FormHandler("cc_call INNER JOIN cc_did ON cc_did.id = cc_call.id_did INNER JOIN cc_card ON cc_card.id = cc_call.card_id", "did billing");
@@ -69,33 +69,12 @@ $HD_Form -> FG_ENABLE_DELETE_BUTTON = false;
 $HD_Form -> FG_ENABLE_ADD_BUTTON = false;
 
 $HD_Form -> FG_FILTER_ENABLE = true;
-$HD_Form -> FG_FILTER_COLUMN = 'cardnumber';
+$HD_Form -> FG_FILTER_COLUMN = 'username';
 $HD_Form -> FG_FILTER_LABEL = 'cardnumber';
 
-if (isset($filterprefix)  &&  (strlen($filterprefix)>0)){
-	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
-	$HD_Form -> FG_QUERY_WHERE_CLAUSE.="username like '$filterprefix%'";
-}
-
-
 $HD_Form -> FG_FILTER2_ENABLE = true;
-$HD_Form -> FG_FILTER2_COLUMN = 'did';
+$HD_Form -> FG_FILTER2_COLUMN = 'cc_did.did';
 $HD_Form -> FG_FILTER2_LABEL = 'did';
-
-if (isset($filterprefix2)  &&  (strlen($filterprefix2)>0)){
-	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
-	$HD_Form -> FG_QUERY_WHERE_CLAUSE .= "cc_did.did like '$filterprefix2%'";
-}
-
-
-
-
-
-
-
-
-
-
 
 $HD_Form -> FG_LOCATION_AFTER_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
 $HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";

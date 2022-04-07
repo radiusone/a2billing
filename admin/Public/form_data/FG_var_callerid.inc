@@ -101,16 +101,10 @@ $HD_Form->AddEditPopup(
 
 $HD_Form -> FieldEditElement ('cid, activated, id_cc_card');
 
-
 // Set the filter variables
 $HD_Form -> FG_FILTER_ENABLE = true;
-$HD_Form -> FG_FILTER_COLUMN = 'callerid';
+$HD_Form -> FG_FILTER_COLUMN = 'cid';
 $HD_Form -> FG_FILTER_LABEL = gettext('CALLERID');
-
-if (isset($filterprefix)  &&  (strlen($filterprefix)>0)){
-	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
-	$HD_Form -> FG_QUERY_WHERE_CLAUSE.="cid like '$filterprefix%'";
-}
 
 $HD_Form -> FG_OTHER_BUTTON2 = true;
 $HD_Form -> FG_OTHER_BUTTON2_LINK="A2B_entity_payment.php?form_action=ask-add&card_id=|col1|";

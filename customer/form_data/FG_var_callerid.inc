@@ -100,13 +100,6 @@ $HD_Form->AddEditRadio(
 
 $HD_Form -> FieldEditElement ('cid, activated');
 
-if (isset($filterprefix)  &&  (strlen($filterprefix)>0)) {
-    if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0)
-        $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
-
-    $HD_Form -> FG_QUERY_WHERE_CLAUSE.="cid like '$filterprefix%'";
-}
-
 $HD_Form -> FG_OTHER_BUTTON1_LINK="A2B_entity_card?form_action=ask-edit&id=";
 $HD_Form -> FG_OTHER_BUTTON1_IMG = Images_Path."/icon-card.png";
 

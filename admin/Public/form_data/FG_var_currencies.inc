@@ -98,26 +98,11 @@ $HD_Form -> FG_FILTER_ENABLE = true;
 $HD_Form -> FG_FILTER_COLUMN = 'currency';
 $HD_Form -> FG_FILTER_LABEL = 'currency';
 
-
-if (isset($filterprefix)  &&  (strlen($filterprefix)>0)) {
-	$filterprefix = strtoupper($filterprefix);
-	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
-	$HD_Form -> FG_QUERY_WHERE_CLAUSE.="currency like '$filterprefix%'";
-}
-
-
-
 $HD_Form -> FieldEditElement ('name, currency,value');
 
 $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["basecurrency"] = strtoupper(BASE_CURRENCY);
 
-
-
-
-
 $HD_Form -> FG_INTRO_TEXT_ADITION = '';
-
-
 
 $HD_Form -> FG_ADDITIONAL_FUNCTION_AFTER_ADD = 'processing_refill_add';
 

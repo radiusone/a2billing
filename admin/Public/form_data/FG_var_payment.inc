@@ -100,15 +100,8 @@ if (!$popup_select) {
 }
 
 $HD_Form->FG_FILTER_ENABLE = true;
-$HD_Form->FG_FILTER_COLUMN = 'cardnumber';
+$HD_Form->FG_FILTER_COLUMN = 'username';
 $HD_Form->FG_FILTER_LABEL = 'account number';
-
-if (!empty($filterprefix)) {
-	if (strlen($HD_Form->FG_QUERY_WHERE_CLAUSE)>0) {
-        $HD_Form->FG_QUERY_WHERE_CLAUSE .= " AND ";
-    }
-	$HD_Form->FG_QUERY_WHERE_CLAUSE.="username like '$filterprefix%'";
-}
 
 if (has_rights (ACX_MODIFY_PAYMENTS)) {
 

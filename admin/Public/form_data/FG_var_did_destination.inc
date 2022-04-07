@@ -43,7 +43,7 @@ $form_action = $form_action ?? "list";
 if ($form_action === "list") {
 	$HD_Form = new FormHandler(
         "cc_did_destination dest LEFT JOIN cc_did ON cc_did.id = dest.id_cc_did",
-        _("Did Destination"),
+        _("DID Destination"),
         'dest.id'
     );
 } else {
@@ -137,15 +137,8 @@ if ($form_action !== "ask-edit" && $form_action !== "edit") {
 
 // Set the filter variables
 $HD_Form->FG_FILTER_ENABLE = true;
-$HD_Form->FG_FILTER_COLUMN = 'did';
+$HD_Form->FG_FILTER_COLUMN = 'cc_did.did';
 $HD_Form->FG_FILTER_LABEL = _("DID");
-
-if (isset($filterprefix)  &&  (strlen($filterprefix)>0)) {
-	if (!empty($HD_Form->FG_QUERY_WHERE_CLAUSE)) {
-        $HD_Form->FG_QUERY_WHERE_CLAUSE .= " AND ";
-    }
-	$HD_Form->FG_QUERY_WHERE_CLAUSE .= "cc_did.did like '$filterprefix%'";
-}
 
 $HD_Form->FG_INTRO_TEXT_ADITION = '';
 

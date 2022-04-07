@@ -250,16 +250,8 @@ $HD_Form->FieldViewElement($FG_COL_QUERY_FIELD);
 $HD_Form->CV_FOLLOWPARAMETERS = "&popup_select=$popup_select&popup_formname=$popup_formname&popup_fieldname=$popup_fieldname";
 
 $HD_Form->FG_FILTER_ENABLE = true;
-$HD_Form->FG_FILTER_COLUMN = 'cardnumber';
+$HD_Form->FG_FILTER_COLUMN = 'username';
 $HD_Form->FG_FILTER_LABEL = _('Account Number');
-
-if (isset($filterprefix) && $filterprefix !== "") {
-    if (strlen($HD_Form->FG_QUERY_WHERE_CLAUSE)) {
-        // there might be an active search...
-        $HD_Form->FG_QUERY_WHERE_CLAUSE .= " AND ";
-    }
-    $HD_Form->FG_QUERY_WHERE_CLAUSE .= "username like '$filterprefix%'";
-}
 
 $HD_Form->FG_ENABLE_ADD_BUTTON = true;
 $form_action = $form_action ?? "list";

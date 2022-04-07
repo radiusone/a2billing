@@ -836,24 +836,12 @@ if ($voip_type=='sip') {
 
 $HD_Form -> FieldEditElement ($field_list_edit);
 
-
 $HD_Form -> FG_FILTER_ENABLE = true;
-$HD_Form -> FG_FILTER_COLUMN = 'username';
+$HD_Form -> FG_FILTER_COLUMN = 'name';
 $HD_Form -> FG_FILTER_LABEL = 'username';
 
-
-if (isset($filterprefix)  &&  (strlen($filterprefix)>0)){
-	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
-	$HD_Form -> FG_QUERY_WHERE_CLAUSE.="name like '$filterprefix%'";
-}
-
 $HD_Form -> FG_INTRO_TEXT_EDITION= '';
-
-
 $HD_Form -> FG_INTRO_TEXT_ADITION = '';
-
-
-
 
 $HD_Form -> FG_LOCATION_AFTER_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?voip_type=$voip_type&id=";
 $HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?voip_type=$voip_type&id=";

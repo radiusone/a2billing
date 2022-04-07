@@ -102,12 +102,6 @@ $HD_Form->AddEditElement(
 
 $HD_Form -> FieldEditElement ('speeddial, name, phone');
 
-
-if (isset($filterprefix)  &&  (strlen($filterprefix)>0)) {
-	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
-	$HD_Form -> FG_QUERY_WHERE_CLAUSE.="id_cc_card like '$filterprefix'";
-}
-
 $HD_Form -> FG_INTRO_TEXT_ADITION = '';
 
 $HD_Form -> FG_LOCATION_AFTER_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";

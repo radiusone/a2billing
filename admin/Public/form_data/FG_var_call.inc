@@ -116,15 +116,6 @@ $HD_Form -> FG_FILTER_ENABLE = true;
 $HD_Form -> FG_FILTER_COLUMN = 'id';
 $HD_Form -> FG_FILTER_LABEL = 'call ID';
 
-if (isset($filterprefix) && (strlen($filterprefix)>0)){
-  if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
-  $HD_Form -> FG_QUERY_WHERE_CLAUSE.="id like '$filterprefix%'";
-}
-
-
-
-
-
 $HD_Form -> FG_LOCATION_AFTER_DELETE = 'call-log-customers.php?nodisplay=1&posted=1';
 $HD_Form -> FG_LOCATION_AFTER_ADD = $HD_Form -> FG_LOCATION_AFTER_DELETE;
 $HD_Form -> FG_LOCATION_AFTER_EDIT = $HD_Form -> FG_LOCATION_AFTER_DELETE;

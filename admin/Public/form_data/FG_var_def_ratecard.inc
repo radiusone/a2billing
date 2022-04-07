@@ -643,13 +643,6 @@ $HD_Form->FG_FILTER_ENABLE = true;
 $HD_Form->FG_FILTER_COLUMN = 'dialprefix';
 $HD_Form->FG_FILTER_LABEL = _("Dial Prefix");
 
-if (isset($filterprefix) && (strlen($filterprefix) > 0)) {
-    if (strlen($HD_Form->FG_QUERY_WHERE_CLAUSE) > 0) {
-        $HD_Form->FG_QUERY_WHERE_CLAUSE .= " AND ";
-    }
-    $HD_Form->FG_QUERY_WHERE_CLAUSE .= "dialprefix like '$filterprefix%'";
-}
-
 $HD_Form->FG_LOCATION_AFTER_ADD = "?id=";
 $HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";
 $HD_Form->FG_LOCATION_AFTER_DELETE = "?id=";

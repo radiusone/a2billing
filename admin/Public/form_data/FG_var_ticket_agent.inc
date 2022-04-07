@@ -131,14 +131,8 @@ $HD_Form -> FieldEditElement (' creator, title, id_component, priority, descript
 
 // Set the filter variables
 $HD_Form -> FG_FILTER_ENABLE = true;
-$HD_Form -> FG_FILTER_COLUMN = 'creator';
+$HD_Form -> FG_FILTER_COLUMN = 'cc_agent.login';
 $HD_Form -> FG_FILTER_LABEL = gettext('LOGIN');
-
-if (isset($filterprefix)  &&  (strlen($filterprefix)>0)){
-	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
-	$HD_Form -> FG_QUERY_WHERE_CLAUSE.="cc_agent.login like '$filterprefix%'";
-}
-
 
 $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["viewed_admin"] = 0;
 $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["creator_type"] = 1;

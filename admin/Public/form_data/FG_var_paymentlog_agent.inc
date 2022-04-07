@@ -182,13 +182,7 @@ $HD_Form -> FieldEditElement ('id, creationdate, paymentmethod, status, cc_owner
 
 $HD_Form -> FG_FILTER_ENABLE = true;
 $HD_Form -> FG_FILTER_COLUMN = 'agent_id';
-$HD_Form -> FG_FILTER_LABEL = 'agent_id';
-
-if (isset($filterprefix)  &&  (strlen($filterprefix)>0)){
-	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
-	$HD_Form -> FG_QUERY_WHERE_CLAUSE.="agent_id like '$filterprefix%'";
-}
-
+$HD_Form -> FG_FILTER_LABEL = _("Agent ID");
 
 
 $HD_Form -> FG_INTRO_TEXT_EDITION= '';

@@ -96,7 +96,6 @@ $hasActionButtons = ($this->FG_ENABLE_DELETE_BUTTON || $this->FG_ENABLE_INFO_BUT
                 <?= gettext("Filter on") ?>
                 <?= $this->FG_FILTER_LABEL ?>:
             </label>
-            <input type="hidden" name="filterfield" value="<?= $this->FG_FILTER_COLUMN?>"/>
             <input
                 type="text"
                 id="filterprefix"
@@ -113,7 +112,6 @@ $hasActionButtons = ($this->FG_ENABLE_DELETE_BUTTON || $this->FG_ENABLE_INFO_BUT
                 <?= gettext("Filter on");?>
                 <?= $this->FG_FILTER2_LABEL ?>:
             </label>
-            <input type="hidden" name="filterfield2" value="<?= $this->FG_FILTER2_COLUMN?>"/>
             <input
                 type="text"
                 id="filterprefix2"

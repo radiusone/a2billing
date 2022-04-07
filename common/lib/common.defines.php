@@ -54,7 +54,7 @@ $G_instance_Query_trace = Query_trace::getInstance();
 $A2B = new A2Billing();
 
 // GLOBAL POST/GET VARIABLE
-getpost_ifset (['form_action', 'action', 'form_el_index', 'IDmanager', 'current_page', 'order', 'sens', 'mydisplaylimit', 'filterprefix', 'cssname', 'popup_select', 'popup_formname', 'popup_fieldname', 'ui_language', 'msg', 'section', 'exporttype']);
+getpost_ifset (['form_action', 'action', 'form_el_index', 'IDmanager', 'current_page', 'order', 'sens', 'mydisplaylimit', 'cssname', 'popup_select', 'popup_formname', 'popup_fieldname', 'ui_language', 'msg', 'section', 'exporttype']);
 /**
  * @var string $form_action
  * @var string $action
@@ -64,7 +64,6 @@ getpost_ifset (['form_action', 'action', 'form_el_index', 'IDmanager', 'current_
  * @var string $order
  * @var string $sens
  * @var string $mydisplaylimit
- * @var string $filterprefix
  * @var string $cssname
  * @var string $popup_select
  * @var string $popup_formname

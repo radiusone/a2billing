@@ -64,12 +64,3 @@ $HD_Form -> FG_EXPORT_CSV = false;
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = false;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = false;
 $HD_Form -> FG_ENABLE_ADD_BUTTON = false;
-
-// Set the filter variables
-$HD_Form -> FG_FILTER_COLUMN = 'voucher';
-$HD_Form -> FG_FILTER_LABEL = 'voucher';
-
-if (isset($filterprefix)  &&  (strlen($filterprefix)>0)){
-	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
-	$HD_Form -> FG_QUERY_WHERE_CLAUSE.="voucher like '$filterprefix%'";
-}

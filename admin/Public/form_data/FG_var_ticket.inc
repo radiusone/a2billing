@@ -160,10 +160,6 @@ $HD_Form -> FG_FILTER_ENABLE = true;
 $HD_Form -> FG_FILTER_COLUMN = 'username';
 $HD_Form -> FG_FILTER_LABEL = gettext('ACCOUNT NUMBER');
 
-if (!empty($filterprefix)) {
-    $HD_Form->FG_QUERY_WHERE_CLAUSE .= ($HD_Form->FG_QUERY_WHERE_CLAUSE ? " AND " : "") . "username LIKE '$filterprefix%'";
-}
-
 $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["viewed_admin"] = 0;
 $HD_Form -> FG_ADDITIONAL_FUNCTION_AFTER_ADD = 'ticket_add';
 $HD_Form -> FG_INTRO_TEXT_EDITION= '';

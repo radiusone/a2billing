@@ -109,14 +109,6 @@ $HD_Form -> FG_FILTER_ENABLE = true;
 $HD_Form -> FG_FILTER_COLUMN = 'prefix';
 $HD_Form -> FG_FILTER_LABEL = 'prefix';
 
-if (isset($filterprefix)  &&  (strlen($filterprefix)>0)) {
-	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) {
-        $HD_Form->FG_QUERY_WHERE_CLAUSE .= " AND ";
-    }
-	$filterprefix = strtoupper(substr($filterprefix,0,1)).substr($filterprefix,1);
-	$HD_Form -> FG_QUERY_WHERE_CLAUSE .= "prefix like '$filterprefix%'";
-}
-
 $HD_Form -> FG_INTRO_TEXT_EDITION= '';
 $HD_Form -> FG_INTRO_TEXT_ADITION = '';
 $HD_Form -> FG_LOCATION_AFTER_ADD = "?id=";

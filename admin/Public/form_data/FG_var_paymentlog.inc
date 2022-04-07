@@ -182,12 +182,7 @@ $HD_Form -> FieldEditElement ('id, creationdate, paymentmethod, status, cc_owner
 
 $HD_Form -> FG_FILTER_ENABLE = true;
 $HD_Form -> FG_FILTER_COLUMN = 'cardid';
-$HD_Form -> FG_FILTER_LABEL = 'cardid';
-
-if (isset($filterprefix)  &&  (strlen($filterprefix)>0)){
-	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
-	$HD_Form -> FG_QUERY_WHERE_CLAUSE.="cardid like '$filterprefix%'";
-}
+$HD_Form -> FG_FILTER_LABEL = 'Card ID';
 
 
 

@@ -141,18 +141,11 @@ $HD_Form_c->AddEditTextarea(
 
 $HD_Form_c -> FieldEditElement ('id_cc_card, amount, chargetype, description');
 
-
-
 // Set the filter variables
 
 $HD_Form_c -> FG_FILTER_ENABLE = true;
-$HD_Form_c -> FG_FILTER_COLUMN = 'cardnumber';
+$HD_Form_c -> FG_FILTER_COLUMN = 'username';
 $HD_Form_c -> FG_FILTER_LABEL = 'account number';
-
-if (isset($filterprefix)  &&  (strlen($filterprefix)>0)){
-	if (strlen($HD_Form_c -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form_c -> FG_QUERY_WHERE_CLAUSE.=" AND ";
-	$HD_Form_c -> FG_QUERY_WHERE_CLAUSE.="username like '$filterprefix%'";
-}
 
 $HD_Form_c -> FG_INTRO_TEXT_ADITION = '';
 

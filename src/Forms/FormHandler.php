@@ -1312,6 +1312,18 @@ class FormHandler
             }
         }
 
+        if ($this->FG_FILTER2_ENABLE) {
+            $filtercolumn = $this->FG_FILTER2_COLUMN;
+            $filterprefix = $processed["filterprefix2"];
+            if ($filtercolumn && $filterprefix) {
+                $filterprefix = $this->DBHandle->qStr($processed["filterprefix2"]);
+                if ($this->FG_QUERY_WHERE_CLAUSE) {
+                    $this->FG_QUERY_WHERE_CLAUSE .= " AND ";
+                }
+                $this->FG_QUERY_WHERE_CLAUSE .= " $filtercolumn LIKE CONCAT($filterprefix, '%') ";
+            }
+        }
+
         // RETRIEVE THE CONTENT OF THE SEARCH SESSION AND
         if ($processed['posted_search'] != 1 && strlen($_SESSION[$this->search_session_key] ?? "") > 5) {
             $element_arr = json_decode($_SESSION[$this->search_session_key], true);

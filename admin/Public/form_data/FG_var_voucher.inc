@@ -197,11 +197,6 @@ $HD_Form -> FG_FILTER_ENABLE = true;
 $HD_Form -> FG_FILTER_COLUMN = 'voucher';
 $HD_Form -> FG_FILTER_LABEL = 'voucher';
 
-if (isset($filterprefix)  &&  (strlen($filterprefix)>0)) {
-	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
-	$HD_Form -> FG_QUERY_WHERE_CLAUSE.="voucher like '$filterprefix%'";
-}
-
 $HD_Form -> FG_INTRO_TEXT_EDITION= gettext("Modify the properties of the selected voucher.");
 $HD_Form -> FG_INTRO_TEXT_ADITION = '';
 

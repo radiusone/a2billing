@@ -61,7 +61,6 @@ getpost_ifset([
     'popup_formname',
     'popup_fieldname',
     'filterprefix',
-    'filterfield',
 ]);
 /**
  * @var string $package
@@ -69,7 +68,6 @@ getpost_ifset([
  * @var string $popup_formname
  * @var string $popup_fieldname
  * @var string $filterprefix
- * @var string $filterfield
  */
 /********************************* BATCH UPDATE ***********************************/
 $bu = [];
@@ -273,7 +271,6 @@ if ($form_action === "list" && !$popup_select): ?>
                     <input type="hidden" name="popup_fieldname" value="<?= $popup_fieldname?>"/>
                     <input type="hidden" name="form_action" value="<?= $form_action?>"/>
                     <input type="hidden" name="filterprefix" value="<?= $filterprefix?>"/>
-                    <input type="hidden" name="filterfield" value="<?= $filterfield?>"/>
                     <?= $HD_Form->csrf_inputs() ?>
 
 

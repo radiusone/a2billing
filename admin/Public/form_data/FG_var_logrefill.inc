@@ -92,15 +92,8 @@ if (!$popup_select) {
 }
 
 $HD_Form -> FG_FILTER_ENABLE = true;
-$HD_Form -> FG_FILTER_COLUMN = 'cardnumber';
+$HD_Form -> FG_FILTER_COLUMN = 'username';
 $HD_Form -> FG_FILTER_LABEL = 'Account number';
-
-if (!empty($filterprefix)) {
-	if (!empty($HD_Form -> FG_QUERY_WHERE_CLAUSE)) {
-        $HD_Form->FG_QUERY_WHERE_CLAUSE .= " AND ";
-    }
-	$HD_Form -> FG_QUERY_WHERE_CLAUSE.="username like '$filterprefix%'";
-}
 
 // what is the point of this, if editing or deleting a refill doesn't change the card balance?
 if (has_rights (ACX_MODIFY_REFILLS)) {
