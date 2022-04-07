@@ -801,7 +801,7 @@ class FormHandler
             "label" => $label_text,
             "name" => $fieldname,
             "popup_dest" => $href,
-            "popup_params" => "width=550,height=330,top=20,left=100,scrollbars=1",
+            "popup_params" => "width=750,height=450,top=50,left=100,scrollbars=1",
             "type" => $is_date ? "POPUPDATETIME" : "POPUPVALUE",
             "attributes" => $html_attributes,
             "regex" => $regex_nb,
