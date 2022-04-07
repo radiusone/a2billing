@@ -38,6 +38,11 @@ session_start();
 const BINDTEXTDOMAIN = __DIR__ . '/../cust_ui_locale';
 
 require_once __DIR__ . "/common.defines.php";
+
+// these constants are used in the included file
+define ("RETURN_URL_DISTANT_LOGIN", $A2B->config["webcustomerui"]['return_url_distant_login'] ?? null);
+define ("RETURN_URL_DISTANT_FORGETPASSWORD", $A2B->config["webcustomerui"]['return_url_distant_forgetpassword'] ?? null);
+
 require_once __DIR__ . "/customer.module.access.php";
 
 if (!has_rights(ACX_ACCESS)) {
@@ -77,9 +82,6 @@ define('TEXT_CCVAL_ERROR_UNKNOWN_CARD', gettext('The first four digits of the nu
 // javascript messages
 define('JS_ERROR', gettext('Errors have occured during the process of your form.')."\n\n".gettext('Please make the following corrections:\n\n'));
 define('JS_ERROR_NO_PAYMENT_MODULE_SELECTED', '* '.gettext('Please select a payment method for your order.').'\n');
-
-define ("RETURN_URL_DISTANT_LOGIN", $A2B->config["webcustomerui"]['return_url_distant_login'] ?? null);
-define ("RETURN_URL_DISTANT_FORGETPASSWORD", $A2B->config["webcustomerui"]['return_url_distant_forgetpassword'] ?? null);
 
 //Images Path
 define ("Images_Path", "./templates/$_SESSION[stylefile]/images");

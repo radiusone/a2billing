@@ -59,7 +59,7 @@ const ACX_SEERECORDING = 262144;
 header("Expires: Sat, Jan 01 2000 01:01:01 GMT");
 
 $C_RETURN_URL_DISTANT_LOGIN = 'index.php?';
-if (!empty(RETURN_URL_DISTANT_LOGIN)) {
+if (defined("RETURN_URL_DISTANT_LOGIN") && !empty(RETURN_URL_DISTANT_LOGIN)) {
     $C_RETURN_URL_DISTANT_LOGIN = RETURN_URL_DISTANT_LOGIN . (str_contains(RETURN_URL_DISTANT_LOGIN, '?') ? "&" : "?");
 }
 
