@@ -743,6 +743,7 @@ function get_formatted_did($did): string
 function format_phone_number(string $value): string
 {
     if (preg_match("/^(1?)([2-9]\d\d)([2-9]\d\d)(\d\d\d\d)$/",$value, $matches)) {
+        $value = "";
         if ($matches[1]) {
             $value = "1-";
         }
