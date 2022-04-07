@@ -2,6 +2,7 @@
 
 use A2billing\Connection;
 use A2billing\Table;
+use PHPMailer\PHPMailer\PHPMailer;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -95,7 +96,7 @@ function a2b_round($number, $PRECISION = 6): float
  * a2b_mail - function mail used in a2billing
  */
 /**
- * @throws phpmailerException
+ * @throws \PHPMailer\PHPMailer\Exception
  */
 function a2b_mail($to, $subject, $mail_content, $from = 'root@localhost', $fromname = '', $contenttype = 'multipart/alternative')
 {
@@ -143,66 +144,34 @@ function a2b_mail($to, $subject, $mail_content, $from = 'root@localhost', $fromn
  */
 function get_currencies($handle = null): array
 {
-    if (empty ($handle)) {
-        $handle = DbConnect();
-    }
+    $handle = $handle ?? DbConnect();
     $currencies_list = [];
-    $instance_table = new Table("cc_currencies", "id,currency,name,value");
-    $result = $instance_table->get_list($handle, null, ["id"], "ASC", 0, 0, [], 300);
-
-    if (is_array($result)) {
-        foreach ($result as $row) {
-            $currencies_list[$row[1]] = [
-                1 => $row[2],
-                2 => $row[3],
-            ];
+    $result = $handle->CacheGetAll(900, "SELECT currency, name, `value` FROM cc_currencies ORDER BY id");
+    array_walk(
+        $result,
+        function ($v) use (&$currencies_list) {
+            $currencies_list[$v["currency"]] = $v;
         }
-    }
+    );
 
-    if (isset ($currencies_list)) {
-        sort_currencies_list($currencies_list);
-    }
+    // these are always at the top of the list
+    $top_curr = [
+        strtoupper(BASE_CURRENCY), 'USD', 'EUR', 'GBP', 'CAD', 'AUD', 'HKD',
+        'JPY', 'NZD', 'SGD', 'TWD', 'PLN', 'SEK', 'DKK', 'CHF', 'COP', 'MXN', 'CLP',
+    ];
 
-    return $currencies_list;
+    return array_replace(array_flip($top_curr), $currencies_list);
 }
 
 function getCurrenciesList(): array
 {
-    $currency_list = [];
     $currencies_list = get_currencies();
-    foreach ($currencies_list as $key => $cur_value) {
-        $currency_list[$key] = [
-            $cur_value[1] . ' (' . $cur_value[2] . ')',
-            $key,
-        ];
-    }
+    array_walk(
+        $currencies_list,
+        fn (&$v, $k) => $v = [sprintf("%s (%s)", $v["name"], $v["value"]), $k]
+    );
 
-    return $currency_list;
-}
-
-function getCurrenciesKeyList(): array
-{
-    $currency_list_key = [];
-    $currencies_list = get_currencies();
-    foreach ($currencies_list as $key => $cur_value) {
-        $currency_list_key[$key][0] = $key;
-    }
-
-    return $currency_list_key;
-}
-
-function getCurrenciesRateList(): array
-{
-    $currency_list_r = [];
-    $currencies_list = get_currencies();
-    foreach ($currencies_list as $key => $cur_value) {
-        $currency_list_r[$key] = [
-            $key,
-            $cur_value[1],
-        ];
-    }
-
-    return $currency_list_r;
+    return $currencies_list;
 }
 
 /**
@@ -223,33 +192,13 @@ function convert_currency(array $currencies_list, $amount, string $from_cur, str
     }
     // EUR -> 1.19175 : MAD -> 0.10897
     // FROM -> 2 - TO -> 0.5 =>>>> multiply 4
-    $mycur_tobase = $currencies_list[strtoupper($from_cur)][2];
-    $mycur = $currencies_list[strtoupper($to_cur)][2];
+    $mycur_tobase = $currencies_list[strtoupper($from_cur)]["value"];
+    $mycur = $currencies_list[strtoupper($to_cur)]["value"];
     if ($mycur == 0) {
         return 0;
     }
 
     return $amount * ($mycur_tobase / $mycur);
-}
-
-/*
- * sort_currencies_list
- */
-function sort_currencies_list(array &$currencies_list): void
-{
-    $first_array = [
-        strtoupper(BASE_CURRENCY
-        ), 'USD', 'EUR', 'GBP', 'AUD', 'HKD', 'JPY', 'NZD', 'SGD', 'TWD', 'PLN', 'SEK', 'DKK', 'CHF', 'COP', 'MXN',
-        'CLP',
-    ];
-    $currencies_list2 = [];
-    foreach ($first_array as $element_first_array) {
-        if (isset ($currencies_list[$element_first_array])) {
-            $currencies_list2[$element_first_array] = $currencies_list[$element_first_array];
-            unset ($currencies_list[$element_first_array]);
-        }
-    }
-    $currencies_list = array_merge($currencies_list2, $currencies_list);
 }
 
 /*
@@ -576,15 +525,18 @@ function display_customer_link(string $value): void
     echo get_customer_link($value);
 }
 
-function get_customer_link($value): string
+function get_customer_link($username): string
 {
+    $value = _("n/a");
+    if (empty($username)) {
+
+        return $value;
+    }
     $handle = DbConnect();
-    $inst_table = new Table("cc_card", "id");
-    $FG_TABLE_CLAUSE = "username = '$value'";
-    $list_customer = $inst_table->get_list($handle, $FG_TABLE_CLAUSE, [], "ASC", 0, 0, [], 10);
-    $id = $list_customer[0][0];
-    if ($id > 0) {
-        return "<a href=\"A2B_entity_card.php?form_action=ask-edit&id=$id\">$value</a>";
+    $id = $handle->CacheGetOne(60, "SELECT id FROM cc_card WHERE username = ?", [$username]);
+    if ($id) {
+
+        return "<a href=\"A2B_entity_card.php?form_action=ask-edit&id=$id\">$username</a>";
     } else {
         return $value;
     }
@@ -596,32 +548,45 @@ function get_customer_link($value): string
  * @return void
  * @noinspection PhpUnusedFunctionInspection
  */
-function display_customer_id_link($id)
+function display_customer_id_link($id): void
 {
+    $value = _("n/a");
+    if ($id <= 0) {
+
+        echo $value;
+    }
     $handle = DbConnect();
-    $inst_table = new Table("cc_card", "username");
-    $FG_TABLE_CLAUSE = "id = '$id'";
-    $list_customer = $inst_table->get_list($handle, $FG_TABLE_CLAUSE, [], "ASC", 0, 0, [], 10);
-    $value = $list_customer[0][0];
-    if ($id > 0) {
-        echo "<a href=\"A2B_entity_card.php?form_action=ask-edit&id=$id\">$value</a>";
+    $username = $handle->CacheGetOne(60, "SELECT username FROM cc_card WHERE id = ?", [$id]);
+    if ($username) {
+        echo "<a href=\"A2B_entity_card.php?form_action=ask-edit&id=$id\">$username</a>";
     } else {
         echo $value;
     }
 }
 
+/**
+ * Used as callback for list elements
+ * @param string $value
+ * @return void
+ * @noinspection PhpUnusedFunctionInspection
+ */
+function display_infocustomer_id($id): void
+{
+    echo get_infocustomer_id($id);
+}
+
 function get_infocustomer_id($id): string
 {
-    $handle = DbConnect();
-    $inst_table = new Table("cc_card", "username,firstname,lastname");
-    $FG_TABLE_CLAUSE = "id = '$id'";
-    $list_customer = $inst_table->get_list($handle, $FG_TABLE_CLAUSE, [], "ASC", 0, 0, [], 10);
-    if (is_array($list_customer)) {
-        $value = $list_customer[0][1] . " " . $list_customer[0][2] . " (" . $list_customer[0][0] . ")";
-    } else {
-        $value = "";
+    $value = _("n/a");
+    if ($id <= 0) {
+
+        return $value;
     }
-    if ($id > 0) {
+    $handle = DbConnect();
+    $row = $handle->CacheGetRow(60, "SELECT username, firstname, lastname FROM cc_card WHERE id = ?", [$id]);
+    if ($row) {
+        $value = sprintf("%s %s (%s)", $row["firstname"], $row["lastname"], $row["username"]);
+
         return "<a href=\"A2B_card_info.php?id=$id\">$value</a>";
     } else {
         return $value;
@@ -630,14 +595,15 @@ function get_infocustomer_id($id): string
 
 function get_nameofadmin($id): string
 {
+    $value = _("n/a");
+    if ($id <= 0) {
+
+        return $value;
+    }
     $handle = DbConnect();
-    $inst_table = new Table("cc_ui_authen", "login,name");
-    $FG_TABLE_CLAUSE = "userid = '$id'";
-    $list_admin = $inst_table->get_list($handle, $FG_TABLE_CLAUSE, [], "ASC", 0, 0, [], 10);
-    if (is_array($list_admin)) {
-        $value = $list_admin[0][1] . " (" . $list_admin[0][0] . ")";
-    } else {
-        $value = "";
+    $row = $handle->CacheGetRow(60, "SELECT login, name FROM cc_ui_authen WHERE userid = ?", [$id]);
+    if ($row) {
+        $value = sprintf("%s (%s)", $row["name"], $row["login"]);
     }
 
     return $value;
@@ -645,14 +611,15 @@ function get_nameofadmin($id): string
 
 function get_nameofcustomer_id($id): string
 {
+    $value = _("n/a");
+    if ($id <= 0) {
+
+        return $value;
+    }
     $handle = DbConnect();
-    $inst_table = new Table("cc_card", "username,firstname,lastname");
-    $FG_TABLE_CLAUSE = "id = '$id'";
-    $list_customer = $inst_table->get_list($handle, $FG_TABLE_CLAUSE, [], "ASC", 0, 0, [], 10);
-    if (is_array($list_customer)) {
-        $value = $list_customer[0][1] . " " . $list_customer[0][2] . " (" . $list_customer[0][0] . ")";
-    } else {
-        $value = "";
+    $row = $handle->CacheGetRow(60, "SELECT username, firstname, lastname FROM cc_card WHERE id = ?", [$id]);
+    if (is_array($row)) {
+        $value = sprintf("%s %s (%s)", $row["firstname"], $row["lastname"], $row["username"]);
     }
 
     return $value;
@@ -671,16 +638,16 @@ function display_linktoagent($id): void
 
 function get_linktoagent($id): string
 {
-    $handle = DbConnect();
-    $inst_table = new Table("cc_agent", "login,firstname,lastname");
-    $FG_TABLE_CLAUSE = "id = '$id'";
-    $list_agent = $inst_table->get_list($handle, $FG_TABLE_CLAUSE, [], "ASC", 0, 0, [], 10);
-    if (is_array($list_agent)) {
-        $value = $list_agent[0][1] . " " . $list_agent[0][2] . " (" . $list_agent[0][0] . ")";
-    } else {
-        $value = "";
+    $value = _("n/a");
+    if ($id <= 0) {
+
+        return $value;
     }
-    if ($id > 0) {
+    $handle = DbConnect();
+    $row = $handle->CacheGetRow(60, "SELECT login, firstname, lastname FROM cc_agent WHERE id = ?", [$id]);
+    if (is_array($row)) {
+        $value = sprintf("%s %s (%s)", $row["firstname"], $row["lastname"], $row["login"]);
+
         return "<a href=\"A2B_entity_agent.php?form_action=ask-edit&id=$id\">$value</a>";
     } else {
         return $value;
@@ -700,14 +667,15 @@ function display_nameofagent($id): void
 
 function get_nameofagent($id): string
 {
+    $value = _("n/a");
+    if ($id <= 0) {
+
+        return $value;
+    }
     $handle = DbConnect();
-    $inst_table = new Table("cc_agent", "login,firstname,lastname");
-    $FG_TABLE_CLAUSE = "id = '$id'";
-    $list_agent = $inst_table->get_list($handle, $FG_TABLE_CLAUSE, [], "ASC", 0, 0, [], 10);
-    if (is_array($list_agent)) {
-        $value = $list_agent[0][1] . " " . $list_agent[0][2] . " ( login: " . $list_agent[0][0] . ")";
-    } else {
-        $value = "";
+    $row = $handle->CacheGetRow(60, "SELECT login, firstname, lastname FROM cc_agent WHERE id = ?", [$id]);
+    if (is_array($row)) {
+        $value = sprintf(_("%s %s (login: %s)"), $row["firstname"], $row["lastname"], $row["login"]);
     }
 
     return $value;

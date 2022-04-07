@@ -93,10 +93,8 @@ $len_right_list = count($right_list);
 $yesno = getYesNoList();
 
 
-$currency_list=getCurrenciesList();
-$currency_list_r = getCurrenciesRateList();
-$currency_list_key = getCurrenciesKeyList() ;
-
+$currency_list = $currency_list_key = getCurrenciesList();
+array_walk($currencies_list_key, fn (&$v, $k)  => $v = [$k]);
 
 if ($popup_select) {
 	$HD_Form -> AddViewElement(gettext("ID"), "id");
