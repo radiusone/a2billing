@@ -1302,8 +1302,9 @@ class FormHandler
 
         if ($this->FG_FILTER_ENABLE) {
             $filtercolumn = $this->FG_FILTER_COLUMN;
-            $filterprefix = $this->DBHandle->qStr($processed["filterprefix"]);
+            $filterprefix = $processed["filterprefix"];
             if ($filtercolumn && $filterprefix) {
+                $filterprefix = $this->DBHandle->qStr($processed["filterprefix"]);
                 if ($this->FG_QUERY_WHERE_CLAUSE) {
                     $this->FG_QUERY_WHERE_CLAUSE .= " AND ";
                 }
