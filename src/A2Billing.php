@@ -182,7 +182,8 @@ class A2Billing
 
     public array $dialstatus_rev_list = ["ANSWER" => 1, "BUSY" => 2, "NOANSWER" => 3, "CANCEL" => 4, "CONGESTION" => 5, "CHANUNAVAIL" => 6, "DONTCALL" => 7, "TORTURE" => 8, "INVALIDARGS" => 9];
 
-    public array $currencies_list = [];
+    /** @var array list of currency exchange rates indexed by currency code */
+    private array $currencies_list = [];
 
     /* CONSTRUCTOR */
     public function __construct(int $idconfig = 1, array $optconfig = [])
@@ -1852,10 +1853,10 @@ class A2Billing
 
         $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[CURRENCY : $this->currency]");
         $curr = strtoupper($this->currency);
-        if (!is_numeric($this->currencies_list[$curr][2] ?? null)) {
+        if (!is_numeric($this->currencies_list[$curr] ?? null)) {
             $mycur = 1;
         } else {
-            $mycur = $this->currencies_list[$curr][2];
+            $mycur = $this->currencies_list[$curr];
         }
 
         $credit_cur = $credit / $mycur;
@@ -1963,10 +1964,10 @@ class A2Billing
 
         $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[CURRENCY : $this->currency]");
         $curr = strtoupper($this->currency);
-        if (!is_numeric($this->currencies_list[$curr][2] ?? null)) {
+        if (!is_numeric($this->currencies_list[$curr] ?? null)) {
             $mycur = 1;
         } else {
-            $mycur = $this->currencies_list[$curr][2];
+            $mycur = $this->currencies_list[$curr];
         }
         $credit_cur = $rate / $mycur;
 
@@ -2071,10 +2072,10 @@ class A2Billing
         }
         $curr = strtoupper($this->currency);
 
-        if (!is_numeric($this->currencies_list[$curr][2] ?? null)) {
+        if (!is_numeric($this->currencies_list[$curr] ?? null)) {
             $mycur = 1;
         } else {
-            $mycur = $this->currencies_list[$curr][2];
+            $mycur = $this->currencies_list[$curr];
         }
         $timetowait = ($this->config['global']['len_voucher'] < 6) ? 8000 : 20000;
         $res_dtmf = $agi->get_data('prepaid-voucher_enter_number', $timetowait, $this->config['global']['len_voucher']);
@@ -2092,13 +2093,13 @@ class A2Billing
         $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[VOUCHER SELECT: $QUERY] " . json_encode($result));
         $row = $result ? $result->FetchRow() : [0];
         if ($row && $row[0] == $vouchernumber) {
-            if (!isset($this->currencies_list[strtoupper($row[4])][2])) {
+            if (!isset($this->currencies_list[strtoupper($row[4])])) {
                 $this->debug(self::ERROR, $agi, __FILE__, __LINE__, "System Error : No currency table complete !!!");
 
                 return false;
             } else {
                 // DISABLE THE VOUCHER
-                $add_credit = $row[1] * $this->currencies_list[strtoupper($row[4])][2];
+                $add_credit = $row[1] * $this->currencies_list[strtoupper($row[4])];
                 $QUERY = "UPDATE cc_voucher SET activated = 'f', usedcardnumber = ?, used = 1, usedate = now() WHERE voucher = ?";
                 $this->DBHandle->Execute($QUERY, [$this->accountcode, $vouchernumber]);
                 $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "QUERY UPDATE VOUCHER: $QUERY");
@@ -3460,13 +3461,11 @@ class A2Billing
 
     private function get_currencies(): array
     {
-        $list = [];
-        $result = $this->DBHandle->Execute("SELECT id, currency, name, value FROM cc_currencies");
-        if ($result && $data = $result->GetAll()) {
-            foreach ($data as $val) {
-                $list[$val[1]] = [1 => $val[2], 2 => $val[3]];
-            }
-        }
-        return $list;
+        $result = $this->DBHandle->CacheGetAll(900, "SELECT currency, `value` FROM cc_currencies ORDER BY id");
+
+        return array_combine(
+            array_column($result, "currency"),
+            array_column($result, "value")
+        );
     }
 }
