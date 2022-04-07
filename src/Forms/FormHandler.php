@@ -1292,12 +1292,23 @@ class FormHandler
     {
         $processed = $this->getProcessed();
 
-        if ($form_action !== "list" || !$this->search_form_enabled) {
+        if ($form_action !== "list" || (!$this->search_form_enabled && !$this->FG_FILTER_ENABLE)) {
             return;
         }
 
         if ($processed['cancelsearch'] ?? false) {
             $_SESSION[$this->search_session_key] = '';
+        }
+
+        if ($this->FG_FILTER_ENABLE) {
+            $filtercolumn = $this->DBHandle->qStr($this->FG_FILTER_COLUMN);
+            $filterprefix = $processed["filterprefix"];
+            if ($filtercolumn && $filterprefix) {
+                if ($this->FG_QUERY_WHERE_CLAUSE) {
+                    $this->FG_QUERY_WHERE_CLAUSE .= " AND ";
+                }
+                $this->FG_QUERY_WHERE_CLAUSE .= " $filtercolumn LIKE CONCAT($filterprefix, '%') ";
+            }
         }
 
         // RETRIEVE THE CONTENT OF THE SEARCH SESSION AND
