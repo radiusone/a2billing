@@ -70,7 +70,7 @@ $yesno_list = [[_("Yes"), "1"], [_("No"), "0"]];
 
 $HD_Form->AddViewElement(_("Destination"), "destination");
 $HD_Form->AddViewElement(_("Creation Date"), "dest.creationdate", true, 16, "display_dateformat");
-$HD_Form->AddViewElement(_("DID"), "did", true, 15);
+$HD_Form->AddViewElement(_("DID"), "did", true, 15, "display_did");
 $HD_Form->AddViewElement(_("Account Number"), "id_cc_card", true, 0, "display_customer_id_link");
 $HD_Form->AddViewElement(_("Active"), "dest.activated", true, 0, "", "list", $activated_list);
 $HD_Form->AddViewElement(_("VoIP"), "voip_call", true, 0, "", "list", $yesno_list);

@@ -40,52 +40,11 @@ use A2billing\Forms\FormHandler;
  * @var string $popup_formname
  */
 
-if (! has_rights (ACX_ADMINISTRATOR)) {
-    header ("HTTP/1.0 401 Unauthorized");
-    header ("Location: PP_error.php?c=accessdenied");
-    die();
-}
-
-getpost_ifset([
-    'id', 'billingtype', 'did', 'startingdate', 'expirationdate', 'id_cc_didgroup', 'id_cc_country',
-    'activated', 'fixrate', 'id_trunk', 'max_concurrent', 'connection_charge','selling_rate',
-    'aleg_timeinterval', 'aleg_carrier_connect_charge', 'aleg_carrier_cost_min', 'aleg_carrier_initblock',
-    'aleg_carrier_increment', 'aleg_retail_connect_charge', 'aleg_retail_cost_min', 'aleg_retail_initblock',
-    'aleg_retail_increment', 'aleg_carrier_connect_charge_offp', 'aleg_carrier_cost_min_offp',
-    'aleg_carrier_initblock_offp', 'aleg_carrier_increment_offp', 'aleg_retail_connect_charge_offp',
-    'aleg_retail_cost_min_offp', 'aleg_retail_initblock_offp', 'aleg_retail_increment_offp'
-]);
+getpost_ifset(['id', 'did', 'fixrate']);
 /**
  * @var string $id
- * @var string $billingtype
  * @var string $did
- * @var string $startingdate
- * @var string $expirationdate
- * @var string $id_cc_didgroup
- * @var string $id_cc_country
- * @var string $activated
  * @var string $fixrate
- * @var string $id_trunk
- * @var string $max_concurrent
- * @var string $connection_charge
- * @var string $selling_rate
- * @var string $aleg_timeinterval
- * @var string $aleg_carrier_connect_charge
- * @var string $aleg_carrier_cost_min
- * @var string $aleg_carrier_initblock
- * @var string $aleg_carrier_increment
- * @var string $aleg_retail_connect_charge
- * @var string $aleg_retail_cost_min
- * @var string $aleg_retail_initblock
- * @var string $aleg_retail_increment
- * @var string $aleg_carrier_connect_charge_offp
- * @var string $aleg_carrier_cost_min_offp
- * @var string $aleg_carrier_initblock_offp
- * @var string $aleg_carrier_increment_offp
- * @var string $aleg_retail_connect_charge_offp
- * @var string $aleg_retail_cost_min_offp
- * @var string $aleg_retail_initblock_offp
- * @var string $aleg_retail_increment_offp
  */
 
 $HD_Form = new FormHandler("cc_did", "did");
@@ -101,25 +60,22 @@ $HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = 'add_did_use';
 $HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_DELETE = 'did_use_delete';
 $HD_Form->FG_ADDITIONAL_FUNCTION_BEFORE_DELETE = 'is_did_in_use';
 
-$actived_list = getActivationList();
 $billingtype_list = getBillingTypeList();
 // -- billtype: 0 = fix per month + dialoutrate, 1= fix per month, 2 = dialoutrate, 3 = free
 $billingtype_list_short = getBillingTypeShortList();
-
 $yesno = getYesNoList();
 
-
-$HD_Form->AddViewElement(_("DID"), "did");
-$HD_Form->AddViewElement(_("CUSTOMER"), "iduser", true, 0, "", "lie_link", "cc_card", "lastname, id, firstname", "id='%id'", "%1 %3", "A2B_entity_card.php");
-$HD_Form->AddViewElement(_("BILLING"), "billingtype", true, 0, "", "list", $billingtype_list_short);
-$HD_Form->AddViewElement(_("START DATE"), "startingdate", true, 19, "display_dateformat");
-$HD_Form->AddViewElement(_("DIDGROUP"), "id_cc_didgroup", true, 15, "", "lie", "cc_didgroup", "didgroupname", "id='%id'", "%1");
-$HD_Form->AddViewElement(_("COUNTRY"), "id_cc_country", true, 15, "", "lie", "cc_country", "countryname", "id='%id'", "%1");
-$HD_Form->AddViewElement("<acronym title=\"" . _("ACTIVATED") . "\">" . _("ACT") . "</acronym>", "activated", true, 0, "", "list", $actived_list);
-$HD_Form->AddViewElement("<acronym title=\"" . _("MINUTES USED") . "\">" . _("MU") . "</acronym>", "secondusedreal", true, 30, "display_minute");
-$HD_Form->AddViewElement("<acronym title=\"" . _("RESERVED") . "\">" . _("RES") . "</acronym>", "reserved", true, 0, "", "list", $yesno);
-$HD_Form->AddViewElement("<acronym title=\"" . _("MONTHLY RATE") . "\">" . _("MR") . "</acronym>", "fixrate");
-$HD_Form->AddViewElement("<acronym title=\"" . _("SELLING RATE") . "\">" . _("SR") . "</acronym>", "selling_rate");
+$HD_Form->AddViewElement(_("DID"), "did", true, 0, "display_did");
+$HD_Form->AddViewElement(_("Customer"), "iduser", true, 0, "display_customer_name_id_link");
+$HD_Form->AddViewElement(_("Billing"), "billingtype", true, 0, "", "list", $billingtype_list_short);
+$HD_Form->AddViewElement(_("Start Date"), "startingdate", true, 19, "display_dateformat");
+$HD_Form->AddViewElement(_("DID Group"), "id_cc_didgroup", true, 15, "", "lie", "cc_didgroup", "didgroupname", "id='%id'", "%1");
+$HD_Form->AddViewElement(_("Country"), "id_cc_country", true, 15, "", "lie", "cc_country", "countryname", "id='%id'", "%1");
+$HD_Form->AddViewElement(_("Active"), "activated", true, 0, "", "list", $yesno);
+$HD_Form->AddViewElement("<acronym title=\"" . _("Minutes Used") . "\">" . _("Min") . "</acronym>", "secondusedreal", true, 30, "display_minute");
+$HD_Form->AddViewElement("<acronym title=\"" . _("Reserved") . "\">" . _("Res") . "</acronym>", "reserved", true, 0, "", "list", $yesno);
+$HD_Form->AddViewElement("<acronym title=\"" . _("Monthly Rate") . "\">" . _("MR") . "</acronym>", "fixrate");
+$HD_Form->AddViewElement("<acronym title=\"" . _("Sell Rate") . "\">" . _("SR") . "</acronym>", "selling_rate");
 
 $HD_Form->FieldViewElement ('did, iduser, billingtype, startingdate, id_cc_didgroup, id_cc_country, activated, secondusedreal, reserved, fixrate, selling_rate');
 
@@ -128,16 +84,14 @@ $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form->FG_SPLITABLE_FIELDS[] = 'did';
 
-
-// TODO integrate in Framework
 $comp_date = $comp_date_plus = $didval = $fixval = "";
 if ($form_action === "ask-add" || $form_action === "purchase") {
     $date = new DateTime();
     $comp_date = sprintf('value="%s"', $date->format("Y-m-d H:i:s"));
     $comp_date_plus = sprintf('value="%s"', $date->modify("+ 10 years")->format("Y-m-d H:i:s"));
     if ($form_action === "purchase") {
-        $didval = "value='".$did."'";
-        $fixval = "value='".$fixrate."'";
+        $didval = "value='$did'";
+        $fixval = "value='$fixrate'";
     } else {
         $fixval = "value='0'";
     }
@@ -147,7 +101,7 @@ $HD_Form->AddEditElement(
     _("DID"),
     "did",
     _("Define the DID's. If you ADD a new DID, NOT an EDIT, you can define a range of DID. <br>80412340210-80412340218 would add all DID's between the range, whereas DIDs separated by a comma e.g. 80412340210,80412340212,80412340214 would only add the individual DID listed."),
-    "size=40 maxlength=60 $didval",
+    "maxlength=60 $didval",
     9,
     _("Insert the DID")
 );
@@ -159,7 +113,7 @@ $HD_Form->AddEditElement(
     _("START DATE"),
     "startingdate",
     _("Format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
-    "size=40 maxlength=40  $comp_date",
+    "maxlength=40  $comp_date",
     10,
     _("Insert the starting date"),
     "",
@@ -172,7 +126,7 @@ $HD_Form->AddEditElement(
     _("EXPIRY DATE"),
     "expirationdate",
     _("Format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
-    "size=40 maxlength=40  $comp_date_plus",
+    "maxlength=40  $comp_date_plus",
     10,
     _("Insert the expiration date"),
     "",
@@ -186,7 +140,7 @@ $HD_Form->AddEditSqlSelect("id_cc_country", _("COUNTRY"), "cc_country", "country
 
 $HD_Form->AddEditRadio(
     "activated",
-    [[gettext("Yes"), "1"], [gettext("No"), "0"]],
+    $yesno,
     gettext("ACTIVATED"),
     "1",
     "",
@@ -197,7 +151,7 @@ $HD_Form->AddEditElement(
     _("MONTHLY RATE"),
     "fixrate",
     _("currency : ") . strtoupper(BASE_CURRENCY),
-    "size=20  maxlength=20 $fixval",
+    "maxlength=20 $fixval",
     12,
     _("Insert the monthly rate"),
     _("Define the renting cost for the customers.")
@@ -208,7 +162,7 @@ $HD_Form->AddEditElement(
     _("CONNECT CHARGE"),
     "connection_charge",
     _("Apply a connection charge to connect DID together"),
-    "size=30 maxlength=20 $fixval",
+    "maxlength=20 $fixval",
     12,
     _("Insert the connect charge"),
     _("DID On Net Charges"),
@@ -220,7 +174,7 @@ $HD_Form->AddEditElement(
     _("SELLING RATE"),
     "selling_rate",
     _("The retail rate; or the cost per minute to apply to the customer to connect DID together, e.g. 0.02"),
-    "size=30 maxlength=20 $fixval",
+    "maxlength=20 $fixval",
     12,
     _("Insert the rate"),
     ""
@@ -229,7 +183,7 @@ $HD_Form->AddEditElement(
 $HD_Form->AddEditTextarea(
     "aleg_timeinterval",
     _("TIME INTERVAL"),
-    "cols='50' rows='4'",
+    "rows='4'",
     _("Insert time definition for peak and off peak time intervals."),
     _("Peak / Off Peak Time definition"),
     null,
@@ -240,7 +194,7 @@ $HD_Form->AddEditElement(
     _("CARRIER CONNECTION CHARGE"),
     "aleg_carrier_connect_charge",
     _("The connection charge can be negative or positive"),
-    "size=30 maxlength=20 $fixval",
+    "maxlength=20 $fixval",
     12,
     _("Insert a rate"),
     _("DID Ingress Charges Peak")
@@ -251,7 +205,7 @@ $HD_Form->AddEditElement(
     _("CARRIER COST PER MINUTE"),
     "aleg_carrier_cost_min",
     _("The cost can be negative for Non geographic calls where there is an out-payment"),
-    "size=30 maxlength=20 $fixval",
+    "maxlength=20 $fixval",
     12,
     _("Insert the connect cost"),
     "",
@@ -263,7 +217,7 @@ $HD_Form->AddEditElement(
     _("CARRIER MIN DURATION"),
     "aleg_carrier_initblock",
     _("Set the minimum duration charged by the carrier. (i.e. 30 secs)"),
-    "size=30 maxlength=20",
+    "maxlength=20",
     4,
     _("Insert the buyrate init block"),
     "",
@@ -275,7 +229,7 @@ $HD_Form->AddEditElement(
     _("CARRIER BILLING BLOCK"),
     "aleg_carrier_increment",
     _("Set the billing increment, in seconds (billing block), that the carrier applies. (ie 30 secs)"),
-    "size=30 maxlength=20",
+    "maxlength=20",
     4,
     _("Insert the billing block"),
     "",
@@ -287,7 +241,7 @@ $HD_Form->AddEditElement(
     _("RETAIL CONNECTION CHARGE"),
     "aleg_retail_connect_charge",
     _("The connection charge can be negative or positive"),
-    "size=30 maxlength=20 $fixval",
+    "maxlength=20 $fixval",
     12,
     _("Insert a rate")
 );
@@ -297,7 +251,7 @@ $HD_Form->AddEditElement(
     _("RETAIL COST PER MINUTE"),
     "aleg_retail_cost_min",
     _("The cost can be negative where there is an out payment, or more usually, positive"),
-    "size=30 maxlength=20 $fixval",
+    "maxlength=20 $fixval",
     12,
     _("Insert the connect cost"),
     "",
@@ -309,7 +263,7 @@ $HD_Form->AddEditElement(
     _("RETAIL MIN DURATION"),
     "aleg_retail_initblock",
     _("Set the minimum duration to charge the customer (ie 60 seconds)"),
-    "size=30 maxlength=20",
+    "maxlength=20",
     4,
     _("Insert the init block"),
     "",
@@ -321,7 +275,7 @@ $HD_Form->AddEditElement(
     _("RETAIL BILLING BLOCK"),
     "aleg_retail_increment",
     _("Set the billing increment in seconds to bill your customer."),
-    "size=30 maxlength=20",
+    "maxlength=20",
     4,
     _("Insert the billing block"),
     "",
@@ -333,7 +287,7 @@ $HD_Form->AddEditElement(
     _("CARRIER CONNECTION CHARGE OFF PEAK"),
     "aleg_carrier_connect_charge_offp",
     _("The connection charge can be negative or positive"),
-    "size=30 maxlength=20 $fixval",
+    "maxlength=20 $fixval",
     12,
     _("Insert a rate"),
     _("DID Ingress Charges Off Peak")
@@ -344,7 +298,7 @@ $HD_Form->AddEditElement(
     _("CARRIER COST PER MINUTE OFF PEAK"),
     "aleg_carrier_cost_min_offp",
     _("The cost can be negative for Non geographic calls where there is an out-payment"),
-    "size=30 maxlength=20 $fixval",
+    "maxlength=20 $fixval",
     12,
     _("Insert the connect cost"),
     "",
@@ -356,7 +310,7 @@ $HD_Form->AddEditElement(
     _("CARRIER MIN DURATION OFF PEAK"),
     "aleg_carrier_initblock_offp",
     _("Set the minimum duration charged by the carrier. (i.e. 30 secs)"),
-    "size=30 maxlength=20",
+    "maxlength=20",
     4,
     _("Insert the buyrate init block"),
     "",
@@ -368,7 +322,7 @@ $HD_Form->AddEditElement(
     _("CARRIER BILLING BLOCK OFF PEAK"),
     "aleg_carrier_increment_offp",
     _("Set the billing increment, in seconds (billing block), that the carrier applies. (ie 30 secs)"),
-    "size=30 maxlength=20",
+    "maxlength=20",
     4,
     _("Insert the billing block"),
     "",
@@ -380,7 +334,7 @@ $HD_Form->AddEditElement(
     _("RETAIL CONNECTION CHARGE OFF PEAK"),
     "aleg_retail_connect_charge_offp",
     _("The connection charge can be negative or positive"),
-    "size=30 maxlength=20 $fixval",
+    "maxlength=20 $fixval",
     12,
     _("Insert a rate"),
     ""
@@ -391,7 +345,7 @@ $HD_Form->AddEditElement(
     _("RETAIL COST PER MINUTE OFF PEAK"),
     "aleg_retail_cost_min_offp",
     _("The cost can be negative where there is an out payment, or more usually, positive"),
-    "size=30 maxlength=20 $fixval",
+    "maxlength=20 $fixval",
     12,
     _("Insert the connect cost"),
     "",
@@ -403,7 +357,7 @@ $HD_Form->AddEditElement(
     _("RETAIL MIN DURATION OFF PEAK"),
     "aleg_retail_initblock_offp",
     _("Set the minimum duration to charge the customer (ie 60 seconds)"),
-    "size=30 maxlength=20",
+    "maxlength=20",
     4,
     _("Insert the init block"),
     "",
@@ -415,7 +369,7 @@ $HD_Form->AddEditElement(
     _("RETAIL BILLING BLOCK OFF PEAK"),
     "aleg_retail_increment_offp",
     _("Set the billing increment in seconds to bill your customer."),
-    "size=30 maxlength=20",
+    "maxlength=20",
     4,
     _("Insert the billing block"),
     "",
@@ -436,7 +390,6 @@ $HD_Form->AddEditElement(
 
 $HD_Form->FieldEditElement('did, billingtype, startingdate, expirationdate, id_cc_didgroup, id_cc_country, activated, fixrate, connection_charge, selling_rate, aleg_timeinterval, aleg_carrier_connect_charge, aleg_carrier_cost_min, aleg_carrier_initblock, aleg_carrier_increment, aleg_retail_connect_charge, aleg_retail_cost_min, aleg_retail_initblock, aleg_retail_increment, aleg_carrier_connect_charge_offp, aleg_carrier_cost_min_offp, aleg_carrier_initblock_offp, aleg_carrier_increment_offp, aleg_retail_connect_charge_offp, aleg_retail_cost_min_offp, aleg_retail_initblock_offp, aleg_retail_increment_offp, max_concurrent');
 
-
 // Set the filter variables
 $HD_Form->FG_FILTER_ENABLE = true;
 $HD_Form->FG_FILTER_COLUMN = 'did';
@@ -452,7 +405,7 @@ if (isset($filterprefix)  &&  (strlen($filterprefix)>0)) {
 $HD_Form->FG_INTRO_TEXT_EDITION= '';
 $HD_Form->FG_INTRO_TEXT_ADITION = '';
 
-$HD_Form->FG_LOCATION_AFTER_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
-$HD_Form->FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
-$HD_Form->FG_LOCATION_AFTER_DELETE = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
+$HD_Form->FG_LOCATION_AFTER_ADD = "?form_action=list&amp;id=";
+$HD_Form->FG_LOCATION_AFTER_EDIT = "?form_action=list&amp;id=";
+$HD_Form->FG_LOCATION_AFTER_DELETE = "?form_action=list&amp;id=";
 

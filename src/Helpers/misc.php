@@ -565,6 +565,28 @@ function display_customer_id_link($id): void
 }
 
 /**
+ * Used as callback for list/form elements
+ * @param string $value
+ * @return void
+ * @noinspection PhpUnusedFunctionInspection
+ */
+function display_customer_name_id_link($id): void
+{
+    $value = _("n/a");
+    if ($id <= 0) {
+
+        echo $value;
+    }
+    $handle = DbConnect();
+    $row = $handle->CacheGetRow(60, "SELECT firstname, lastname, username FROM cc_card WHERE id = ?", [$id]);
+    if ($row) {
+        echo "<a href=\"A2B_entity_card.php?form_action=ask-edit&id=$id\" title=\"$row[username]\">$row[firstname] $row[lastname]</a>";
+    } else {
+        echo $value;
+    }
+}
+
+/**
  * Used as callback for list elements
  * @param string $value
  * @return void
@@ -674,13 +696,50 @@ function get_nameofagent($id): string
     }
     $handle = DbConnect();
     $row = $handle->CacheGetRow(60, "SELECT login, firstname, lastname FROM cc_agent WHERE id = ?", [$id]);
-    if (is_array($row)) {
+    if ($row) {
         $value = sprintf(_("%s %s (login: %s)"), $row["firstname"], $row["lastname"], $row["login"]);
     }
 
     return $value;
 }
 
+/**
+ * Used as callback for list/form elements
+ * @param $id
+ * @return void
+ * @noinspection PhpUnusedFunctionInspection
+ */
+function get_formatted_did($did): string
+{
+    $value = $did;
+    if (empty($did) || !is_numeric($did)) {
+
+        return $value;
+    }
+    $handle = DbConnect();
+    $cc = $handle->CacheGetOne(
+        60,
+        "SELECT countrycode FROM cc_did d LEFT JOIN cc_country c ON (c.id = d.id_cc_country) WHERE did = ? AND countryprefix = 1",
+        [$did]
+    );
+    if ($cc) {
+        return format_phone_number($value);
+    }
+
+    return $value;
+}
+
+function format_phone_number(string $value): string
+{
+    if (preg_match("/^(1?)([2-9]\d\d)([2-9]\d\d)(\d\d\d\d)$/",$value, $matches)) {
+        if ($matches[1]) {
+            $value = "1-";
+        }
+        $value .= "$matches[2]-$matches[3]-$matches[4]";
+    }
+
+    return $value;
+}
 /*
  * function MDP_STRING
  */
