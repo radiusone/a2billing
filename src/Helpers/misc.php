@@ -704,8 +704,19 @@ function get_nameofagent($id): string
 }
 
 /**
+ * Used as callback for list elements
+ * @param int|string $did
+ * @return void
+ * @noinspection PhpUnusedFunctionInspection
+ */
+function display_did($did): void
+{
+    echo get_formatted_did($did);
+}
+
+/**
  * Used as callback for list/form elements
- * @param $id
+ * @param int|string $did
  * @return void
  * @noinspection PhpUnusedFunctionInspection
  */
