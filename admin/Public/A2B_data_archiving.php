@@ -124,7 +124,6 @@ $invoiceday_list = array();
 for ($k=0;$k<=28;$k++)
     $invoiceday_list["$k"]  = array( "$k", "$k");
 
-$HD_Form -> CV_DO_ARCHIVE_ALL = true;
 $HD_Form -> AddViewElement(gettext("ID"), "id");
 $HD_Form -> AddViewElement(gettext("ACCOUNT NUMBER"), "username", true, 30, "display_customer_link");
 $HD_Form -> AddViewElement("<acronym title=\"" . gettext("BALANCE") . "\">" . gettext("BA") . "</acronym>", "credit", true, "", "display_2dec");
@@ -242,6 +241,19 @@ $HD_Form -> create_search_form();
 </FORM>
 </center>
 
+<div class="row pb-3">
+    <div class="col">
+        <form name="theFormFilter" action="">
+            <input type="hidden" name="popup_select" value="<?= $popup_select ?>"/>
+            <input type="hidden" name="popup_formname" value="<?= $popup_formname ?>"/>
+            <input type="hidden" name="popup_fieldname" value="<?= $popup_fieldname ?>"/>
+            <input type="hidden" name="archive" value="true"/>
+            <button type="submit" class="btn btn-primary" onclick="return confirm('This action will archive the data, Are you sure?')">
+                <?= gettext("Archiving All");?>
+            </button>
+        </form>
+    </div>
+</div>
 <?php
 
 if (isset($archive) && !empty($archive)) {

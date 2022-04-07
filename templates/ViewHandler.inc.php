@@ -61,22 +61,6 @@ $hasActionButtons = ($this->FG_ENABLE_DELETE_BUTTON || $this->FG_ENABLE_INFO_BUT
 <?php return ?>
 <?php endif ?>
 
-<?php if ($this->CV_DO_ARCHIVE_ALL): ?>
-<div class="row pb-3">
-    <div class="col">
-        <form name="theFormFilter" action="">
-            <input type="hidden" name="popup_select" value="<?= $processed['popup_select'] ?>"/>
-            <input type="hidden" name="popup_formname" value="<?= $processed['popup_formname'] ?>"/>
-            <input type="hidden" name="popup_fieldname" value="<?= $processed['popup_fieldname'] ?>"/>
-            <input type="hidden" name="archive" value="true"/>
-            <button type="submit" class="btn btn-primary" onclick="return confirm('This action will archive the data, Are you sure?')">
-                <?= gettext("Archiving All");?>
-            </button>
-        </form>
-    </div>
-</div>
-<?php endif ?>
-
 <?php if ($this -> FG_FILTER_ENABLE || $this -> FG_FILTER2_ENABLE): ?>
 <div class="row pb-3">
 <form name="theFormFilter" action="" class="col">

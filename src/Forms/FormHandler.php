@@ -45,8 +45,6 @@ class FormHandler
     public string $CV_TITLE_TEXT = '';
     /** @var string Parameters to add to the URL of the list view sorting/pagination buttons */
     public string $CV_FOLLOWPARAMETERS = '';
-    /** @var bool Whether to enable an archive row in list view. Used only by A2B_data_archiving.php and A2B_call_archiving.php */
-    public bool $CV_DO_ARCHIVE_ALL = false;
     /** @var bool Whether to display the records-per-page dropdown. Never set to false anywhere... */
     public bool $CV_DISPLAY_RECORD_LIMIT = true;
     /** @var bool Whether to display the pagination controls. Never set to false anywhere... */

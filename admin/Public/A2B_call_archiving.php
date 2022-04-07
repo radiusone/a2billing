@@ -63,7 +63,6 @@ $yesno["0"] = array( gettext("No"), "0");
 
 $HD_Form -> CV_DISPLAY_FILTER_ABOVE_TABLE = FALSE;
 $HD_Form -> CV_DISPLAY_LINE_TITLE_ABOVE_TABLE = false;
-$HD_Form -> CV_DO_ARCHIVE_ALL = true;
 $HD_Form -> AddViewElement(gettext("ID"), "id");
 $HD_Form -> AddViewElement(gettext("Calldate"), "starttime", true, 19, "display_dateformat");
 $HD_Form -> AddViewElement(gettext("CalledNumber"), "calledstation", true, 30, "display_without_prefix");
@@ -459,6 +458,19 @@ $smarty->display('main.tpl');
         </tbody></table>
 </form>
 </center>
+<div class="row pb-3">
+    <div class="col">
+        <form name="theFormFilter" action="">
+            <input type="hidden" name="popup_select" value="<?= $popup_select ?>"/>
+            <input type="hidden" name="popup_formname" value="<?= $popup_formname ?>"/>
+            <input type="hidden" name="popup_fieldname" value="<?= $popup_fieldname ?>"/>
+            <input type="hidden" name="archive" value="true"/>
+            <button type="submit" class="btn btn-primary" onclick="return confirm('This action will archive the data, Are you sure?')">
+                <?= gettext("Archiving All");?>
+            </button>
+        </form>
+    </div>
+</div>
 <script>
 $(function() {
     $("#archiveselect").on('change', () => this.form.submit());
