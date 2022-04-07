@@ -191,7 +191,8 @@ class A2Billing
             pcntl_signal(SIGHUP, [$this, "Hangupsignal"]);
         }
         // populate the configuration object
-        $this->load_conf($idconfig, $optconfig);
+        $this->idconfig = $idconfig;
+        $this->load_conf($optconfig);
         // populate the $DBHandle property
         $this->DbConnect();
     }
@@ -263,7 +264,7 @@ class A2Billing
     /*
     * load_conf
     */
-    public function load_conf(int $idconfig = 1, array $optconfig = []): bool
+    public function load_conf(array $optconfig = []): void
     {
         $config = self::DEFAULT_A2BILLING_CONFIG;
 
@@ -271,7 +272,14 @@ class A2Billing
             echo "Error : A2Billing configuration file $config is missing!";
             exit;
         }
-        $this->idconfig = $idconfig;
+
+        $idconfig = $this->idconfig;
+        if (!empty($this->config["agi-conf$idconfig"])) {
+            // config has already been parsed, assume it isn't going to change
+            $this->agiconfig = $this->config["agi-conf$idconfig"];
+            return;
+        }
+
         $this->config = parse_ini_file($config, true);
 
         // conf for the database connection
@@ -537,8 +545,6 @@ class A2Billing
         // Print out on CLI for debug purpose
         $this->debug(self::DEBUG, null, __FILE__, __LINE__, 'A2Billing AGI internal configuration:');
         $this->debug(self::DEBUG, null, __FILE__, __LINE__, json_encode($this->agiconfig));
-
-        return true;
     }
 
     /*
