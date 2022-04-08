@@ -59,10 +59,10 @@ $agent_info =$resmax -> fetchRow();
 $currencies_list = get_currencies();
 
 $two_currency = false;
-if (!isset($currencies_list[strtoupper($agent_info [1])][2]) || !is_numeric($currencies_list[strtoupper($agent_info [1])][2])) {
+if (!isset($currencies_list[strtoupper($agent_info [1])]["value"]) || !is_numeric($currencies_list[strtoupper($agent_info [1])]["value"])) {
     $mycur = 1;
 } else {
-    $mycur = $currencies_list[strtoupper($agent_info [1])][2];
+    $mycur = $currencies_list[strtoupper($agent_info [1])]["value"];
     $display_currency =strtoupper($agent_info [1]);
     if(strtoupper($agent_info [1])!=strtoupper(BASE_CURRENCY))$two_currency=true;
 }

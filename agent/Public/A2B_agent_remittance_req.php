@@ -67,10 +67,10 @@ $agent_info = $resmax->fetchRow();
 $currencies_list = get_currencies();
 $two_currency = false;
 
-if (!isset ($currencies_list[strtoupper($agent_info['currency'])][2]) || !is_numeric($currencies_list[strtoupper($agent_info['currency'])][2])) {
+if (!isset ($currencies_list[strtoupper($agent_info['currency'])]["value"]) || !is_numeric($currencies_list[strtoupper($agent_info['currency'])]["value"])) {
     $mycur = 1;
 } else {
-    $mycur = $currencies_list[strtoupper($agent_info['currency'])][2];
+    $mycur = $currencies_list[strtoupper($agent_info['currency'])]["value"];
 }
 
 $credit_cur = $agent_info['credit'] / $mycur;

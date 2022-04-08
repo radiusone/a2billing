@@ -53,10 +53,10 @@ if (! has_rights (ACX_ACCESS)) {
 
 $currencies_list = get_currencies();
 $two_currency = false;
-if (!isset($currencies_list[strtoupper($_SESSION['currency'])][2]) || !is_numeric($currencies_list[strtoupper($_SESSION['currency'])][2])) {
+if (!isset($currencies_list[strtoupper($_SESSION['currency'])]["value"]) || !is_numeric($currencies_list[strtoupper($_SESSION['currency'])]["value"])) {
     $mycur = 1;
 } else {
-    $mycur = $currencies_list[strtoupper($_SESSION['currency'])][2];
+    $mycur = $currencies_list[strtoupper($_SESSION['currency'])]["value"];
     $display_currency =strtoupper($_SESSION['currency']);
     if(strtoupper($_SESSION['currency'])!=strtoupper(BASE_CURRENCY))$two_currency=true;
 }

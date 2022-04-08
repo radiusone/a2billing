@@ -357,7 +357,7 @@ $list_group = $instance_table_group  -> get_list ($HD_Form->DBHandle, $FG_TABLE_
     <?php echo gettext("Currency");?> :
     <select NAME="choose_currency" size="1" class="form_input_select" >
     <?php foreach (get_currencies() as $key => $cur_value) { ?>
-        <option value='<?php echo $key ?>' <?php if($choose_currency== $key) echo "selected"; ?>><?php echo $cur_value[1].' ('.$cur_value[2].')' ?></option>
+        <option value='<?php echo $key ?>' <?php if($choose_currency== $key) echo "selected"; ?>><?php echo $cur_value["name"].' ('.$cur_value["value"].')' ?></option>
     <?php } ?>
     </select>
     <br/>

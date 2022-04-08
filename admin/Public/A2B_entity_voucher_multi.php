@@ -112,7 +112,7 @@ echo $CC_help_generate_voucher;
         <?php
         foreach (get_currencies() as $key => $cur_value) {
         ?>
-        <option value='<?php echo $key ?>'><?php echo $cur_value[1].' ('.$cur_value[2].')' ?></option>
+        <option value='<?php echo $key ?>'><?php echo $cur_value["name"].' ('.$cur_value["value"].')' ?></option>
         <?php } ?>
         </select>
         <br/>

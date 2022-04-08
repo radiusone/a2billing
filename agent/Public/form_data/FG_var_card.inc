@@ -106,7 +106,7 @@ $indcur=0;
 
 $currencies_list = get_currencies();
 foreach($currencies_list as $key => $cur_value) {
-	$currency_list[$key]  = array( $cur_value[1].' ('.$cur_value[2].')', $key);
+	$currency_list[$key]  = array( $cur_value["name"].' ('.$cur_value["value"].')', $key);
 	$currency_list_r[$key]  = array( $key, $cur_value[1]);
 	$currency_list_key[$key][0] = $key;
 }

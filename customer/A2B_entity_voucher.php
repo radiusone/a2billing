@@ -62,10 +62,10 @@ if (strlen($voucher)>0) {
         $list_voucher = $instance_sub_table -> get_list ($HD_Form->DBHandle, $FG_TABLE_CLAUSE_VOUCHER, $ord_arr, $sens, (int)$limite, (int)$current_record);
 
         if ($list_voucher[0][0]==$voucher) {
-            if (!isset ($currencies_list[strtoupper($list_voucher[0][4])][2])) {
+            if (!isset ($currencies_list[strtoupper($list_voucher[0][4])]["value"])) {
                 $error_msg = '<font face="Arial, Helvetica, sans-serif" size="2" color="red"><b>'.gettext("System Error : the currency table is incomplete!").'</b></font><br><br>';
             } else {
-                $add_credit = $list_voucher[0][1]*$currencies_list[strtoupper($list_voucher[0][4])][2];
+                $add_credit = $list_voucher[0][1]*$currencies_list[strtoupper($list_voucher[0][4])]["value"];
                 $QUERY = "UPDATE cc_voucher SET activated='f', usedcardnumber='".$_SESSION["pr_login"]."', usedate=now() WHERE voucher='".$voucher."'";
                 $result = $instance_sub_table -> SQLExec ($HD_Form -> DBHandle, $QUERY, 0);
 

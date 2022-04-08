@@ -67,8 +67,8 @@ $customer_info =$resmax -> fetchRow();
 
 $currencies_list = get_currencies();
 
-if (!isset($currencies_list[strtoupper($customer_info [1])][2]) || !is_numeric($currencies_list[strtoupper($customer_info [1])][2])) $mycur = 1;
-else $mycur = $currencies_list[strtoupper($customer_info [1])][2];
+if (!isset($currencies_list[strtoupper($customer_info [1])]["value"]) || !is_numeric($currencies_list[strtoupper($customer_info [1])]["value"])) $mycur = 1;
+else $mycur = $currencies_list[strtoupper($customer_info [1])]["value"];
 
 
 $limits_notify = getLimitNotify_List($A2B);

@@ -195,10 +195,10 @@ class Mail
                 $credit = round($credit, 3);
                 $currency = $card['currency'];
                 $currencies_list = get_currencies($DBHandle);
-                if (!isset ($currencies_list[strtoupper($currency)][2]) || !is_numeric($currencies_list[strtoupper($currency)][2])) {
+                if (!isset ($currencies_list[strtoupper($currency)]["value"]) || !is_numeric($currencies_list[strtoupper($currency)]["value"])) {
                     $mycur = 1;
                 } else {
-                    $mycur = $currencies_list[strtoupper($currency)][2];
+                    $mycur = $currencies_list[strtoupper($currency)]["value"];
                 }
                 $credit_currency = $credit / $mycur;
                 $credit_currency = round($credit_currency, 3);

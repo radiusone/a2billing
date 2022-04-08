@@ -74,10 +74,10 @@ getpost_ifset(array('posted', 'Period', 'frommonth', 'fromstatsmonth', 'tomonth'
 $currencies_list = get_currencies();
 
 $two_currency = false;
-if (!isset ($currencies_list[strtoupper($customer_info[22])][2]) || !is_numeric($currencies_list[strtoupper($customer_info[22])][2])) {
+if (!isset ($currencies_list[strtoupper($customer_info[22])]["value"]) || !is_numeric($currencies_list[strtoupper($customer_info[22])]["value"])) {
     $mycur = 1;
 } else {
-    $mycur = $currencies_list[strtoupper($customer_info[22])][2];
+    $mycur = $currencies_list[strtoupper($customer_info[22])]["value"];
     $display_currency = strtoupper($customer_info[22]);
     if (strtoupper($customer_info[22]) != strtoupper(BASE_CURRENCY)) {
         $two_currency = true;

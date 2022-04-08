@@ -87,7 +87,7 @@ $cardstatus_list_r["5"]  = array("5", gettext("EXPIRED"));
 $currency_list_r = array();
 $currencies_list = get_currencies();
 foreach ($currencies_list as $key => $cur_value) {
-    $currency_list_r[$key]  = array( $key, $cur_value[1]);
+    $currency_list_r[$key]  = array( $key, $cur_value["name"]);
 }
 
 $simultaccess_list_r = array();

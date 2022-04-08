@@ -208,10 +208,10 @@ if (($form_action == "addcredit") && ($addcredit > 0) && ($id > 0 || $cardnumber
 
                 $currencies_list = get_currencies();
 
-                if (!isset($currencies_list[strtoupper($agent_info [0][1])][2]) || !is_numeric($currencies_list[strtoupper($agent_info [0][1])][2]))
+                if (!isset($currencies_list[strtoupper($agent_info [0][1])]["value"]) || !is_numeric($currencies_list[strtoupper($agent_info [0][1])]["value"]))
                     $mycur = 1;
                 else
-                    $mycur = $currencies_list[strtoupper($agent_info [0][1])][2];
+                    $mycur = $currencies_list[strtoupper($agent_info [0][1])]["value"];
 
                 $credit_cur = $agent_info[0][0] / $mycur;
                 $credit_cur = round($credit_cur,3);

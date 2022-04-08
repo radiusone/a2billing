@@ -452,7 +452,7 @@ function get_2bill($var, $currency = BASE_CURRENCY): string
     }
     $currencies_list = get_currencies();
 
-    $var = $var / $currencies_list[strtoupper($currency)][2];
+    $var = $var / $currencies_list[strtoupper($currency)]["value"];
 
     return number_format($var, 3) . ' ' . strtoupper($currency);
 }

@@ -403,7 +403,7 @@ if ($fullhtmlpage) { ?>
                 <?php
                 $currencies_list = get_currencies();
                 foreach ($currencies_list as $key => $cur_value) {?>
-                <option value="<?php echo $key ?>" <?php if (("$choose_currency"=="$key") || (!isset($choose_currency) && $key==strtoupper(BASE_CURRENCY)) ) {?>selected<?php } ?>><?php echo $cur_value[1] ?>
+                <option value="<?php echo $key ?>" <?php if (("$choose_currency"=="$key") || (!isset($choose_currency) && $key==strtoupper(BASE_CURRENCY)) ) {?>selected<?php } ?>><?php echo $cur_value["name"] ?>
                 </option>
                 <?php 	} ?>
                 </select>

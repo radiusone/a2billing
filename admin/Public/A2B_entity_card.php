@@ -412,8 +412,8 @@ function sendValue(selvalue, othervalue) {
                         </div>
                         <div class="col">
                             <select name="upd_currency" id="upd_currency" class="form-select form-select-sm">
-                                <?php foreach (get_currencies() as $v): ?>
-                                    <option value="<?= $v[1] ?>" <?php if ($upd_currency == $v[1]): ?>selected="selected"<?php endif ?>><?= $v[0] ?></option>
+                                <?php foreach (get_currencies() as $k=>$v): ?>
+                                    <option value="<?= $k ?>" <?php if ($upd_currency === $k): ?>selected="selected"<?php endif ?>><?= $v["name"] ?> (<?= $v["value"] ?>)</option>
                                 <?php endforeach ?>
                             </select>
                         </div>

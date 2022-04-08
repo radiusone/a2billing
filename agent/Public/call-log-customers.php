@@ -872,7 +872,7 @@ $smarty->display ( 'main.tpl' );
                         selected <?php
                             }
                             ?>><?php
-                            echo $cur_value [1] . ' (' . $cur_value [2] . ')'?>
+                            echo $cur_value ["name"] . ' (' . $cur_value ["value"] . ')'?>
                             </option>
                         <?php
                         }

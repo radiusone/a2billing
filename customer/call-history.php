@@ -345,7 +345,7 @@ echo $CC_help_balance_customer;
                                 $currencies_list = get_currencies();
                                 foreach ($currencies_list as $key => $cur_value) {
                             ?>
-                                <option value='<?php echo $key ?>' <?php if (($choose_currency==$key) || (!isset($choose_currency) && $key==strtoupper(BASE_CURRENCY))) {?>selected<?php } ?>><?php echo $cur_value[1].' ('.$cur_value[2].')' ?>
+                                <option value='<?php echo $key ?>' <?php if (($choose_currency==$key) || (!isset($choose_currency) && $key==strtoupper(BASE_CURRENCY))) {?>selected<?php } ?>><?php echo $cur_value["name"].' ('.$cur_value["value"].')' ?>
                                 </option>
                             <?php 	} ?>
                         </select>
