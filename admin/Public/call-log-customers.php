@@ -48,64 +48,17 @@ if (! has_rights ( ACX_CALL_REPORT )) {
 
 global $letter;
 
-getpost_ifset ([
-    'customer', 'sellrate', 'buyrate', 'entercustomer','entercustomer_num', 'enterprovider', 'entertariffgroup',
-    'entertrunk', 'enterratecard', 'posted', 'Period', 'frommonth', 'fromstatsmonth', 'tomonth', 'tostatsmonth',
-    'fromday', 'fromstatsday_sday', 'fromstatsmonth_sday', 'today', 'tostatsday_sday', 'tostatsmonth_sday', 
-    'fromtime', 'totime', 'fromstatsday_hour', 'tostatsday_hour', 'fromstatsday_min', 'tostatsday_min', 'dsttype',
-    'srctype', 'dnidtype', 'clidtype', 'channel', 'resulttype', 'current_page', 'order', 'sens',
-    'dst', 'src', 'dnid', 'clid', 'choose_currency', 'terminatecauseid', 'choose_calltype', 'download', 'file',
-]);
+getpost_ifset (['current_page', 'order', 'sens', 'download', 'file', 'nodisplay']);
 /**
- * @var string $customer
- * @var string $sellrate
- * @var string $buyrate
- * @var string $entercustomer
- * @var string $entercustomer_num
- * @var string $enterprovider
- * @var string $entertariffgroup
- * @var string $entertrunk
- * @var string $enterratecard
- * @var string $posted
- * @var string $Period
- * @var string $frommonth
- * @var string $fromstatsmonth
- * @var string $tomonth
- * @var string $tostatsmonth
- * @var string $fromday
- * @var string $fromstatsday_sday
- * @var string $fromstatsmonth_sday
- * @var string $today
- * @var string $tostatsday_sday
- * @var string $tostatsmonth_sday
- * @var string $fromtime
- * @var string $totime
- * @var string $fromstatsday_hour
- * @var string $tostatsday_hour
- * @var string $fromstatsday_min
- * @var string $tostatsday_min
- * @var string $dsttype
- * @var string $srctype
- * @var string $dnidtype
- * @var string $clidtype
- * @var string $channel
- * @var string $resulttype
  * @var string $current_page
  * @var string $order
  * @var string $sens
- * @var string $dst
- * @var string $src
- * @var string $dnid
- * @var string $clid
- * @var string $choose_currency
- * @var string $terminatecauseid
- * @var string $choose_calltype
  * @var string $download
  * @var string $file
+ * @var string $nodisplay
  */
 $current_page = (int)($current_page ?? 0);
-$nodisplay = (bool)($_REQUEST["nodisplay"] ?? 0);
-$posted = $posted ?? "0";
+$nodisplay = (bool)($nodisplay ?? 0);
 
 if (($download ?? "") === "file" && !empty($file)) {
 
@@ -159,13 +112,13 @@ $calltype_list = [
 $HD_Form->no_debug();
 $HD_Form->FG_QUERY_COLUMN_LIST = 'cc_call.starttime, cc_call.src, cc_call.dnid, cc_call.calledstation, cc_call.destination AS dest, cc_ratecard.buyrate, cc_ratecard.rateinitial, cc_call.sessiontime, cc_call.card_id, cc_trunk.trunkcode, cc_call.terminatecauseid, cc_call.sipiax, cc_call.buycost, cc_call.sessionbill, CASE WHEN cc_call.sessionbill != 0 THEN ((cc_call.sessionbill - cc_call.buycost) / cc_call.sessionbill) * 100 ELSE NULL END AS margin, CASE WHEN cc_call.buycost != 0 THEN ((cc_call.sessionbill - cc_call.buycost) / cc_call.buycost) * 100 ELSE NULL END AS markup, cc_call.id, cc_trunk.id_provider, cc_trunk.id_trunk AS trunk_id';
 
-$DBHandle = DbConnect ();
+$DBHandle = DbConnect();
 
 $HD_Form->AddViewElement(_("Date"), "cc_call.starttime", true, 19, "display_dateformat");
 $HD_Form->AddViewElement(_("CallerID"), "src");
 $HD_Form->AddViewElement(_("DNID"), "dnid");
 $HD_Form->AddViewElement(_("Phone Number"), "calledstation");
-$HD_Form->AddViewElement(_("Destination"), "cc_call.destintation", true, 15, "", "lie", "cc_prefix", "destination,prefix", "prefix='%id'", "%1");
+$HD_Form->AddViewElement(_("Destination"), "cc_call.destination", true, 15, "", "lie", "cc_prefix", "destination,prefix", "prefix='%id'", "%1");
 $HD_Form->AddViewElement(_("Buy Rate"), "buyrate", true, 30, "display_2bill");
 $HD_Form->AddViewElement(_("Sell Rate"), "rateinitial", true, 30, "display_2bill");
 $HD_Form->AddViewElement(_("Duration"), "sessiontime", true, 30, "display_minute");
@@ -183,7 +136,7 @@ $HD_Form->FG_DELETE_BUTTON_LINK = "A2B_entity_call.php?form_action=ask-delete&id
 
 if (LINK_AUDIO_FILE) {
     // TODO: figure out how this works, move it into this file with custom button
-    $HD_Form->AddViewElement("", "uniqueid", false, 30, "display_monitorfile_link", "", "", "", "", "");
+    $HD_Form->AddViewElement("", "uniqueid", false, 30, "display_monitorfile_link");
     $HD_Form->FG_QUERY_COLUMN_LIST .= ', cc_call.uniqueid';
 }
 
@@ -231,8 +184,8 @@ $HD_Form->search_delete_enabled = false;
 
 $form_action = $form_action ?? "list";
 if ($nodisplay) {
-    $date = (new DateTime('-5 days'))->format("Y-m-d");
-    $HD_Form->FG_QUERY_WHERE_CLAUSE = "cc_call.starttime > '$date'";
+    $date = (new DateTime())->format("Y-m-d");
+    $HD_Form->FG_QUERY_WHERE_CLAUSE = "cc_call.starttime > '$date' AND terminatecauseid = 1";
 }
 $HD_Form->prepare_list_subselection('list');
 $list = $HD_Form->perform_action($form_action);
@@ -243,214 +196,105 @@ $HD_Form->create_search_form(true);
 $HD_Form->create_toppage($form_action);
 $HD_Form->create_form("list", $list);
 
-?>
-<!-- ** ** ** ** ** Part to display the GRAPHIC ** ** ** ** ** -->
 
-<?php
-$list_total_day = [];
-if (!$nodisplay) {
-    $QUERY = "SELECT DATE(cc_call.starttime) AS day, SUM(cc_call.sessiontime) AS calltime, SUM(cc_call.sessionbill) AS cost, COUNT(*) as nbcall,
-            SUM(cc_call.buycost) AS buy, SUM(CASE WHEN cc_call.sessiontime > 0 THEN 1 ELSE 0 END) AS success_calls
-            FROM $HD_Form->FG_QUERY_TABLE_NAME WHERE $HD_Form->FG_QUERY_WHERE_CLAUSE GROUP BY day ORDER BY day";
+$QUERY = "SELECT DATE(cc_call.starttime) AS day, SUM(cc_call.sessiontime) AS calltime,
+    SUM(cc_call.sessionbill) AS sell, COUNT(*) as nbcall,
+    SUM(cc_call.buycost) AS buy, SUM(CASE WHEN cc_call.sessiontime > 0 THEN 1 ELSE 0 END) AS success_calls
+FROM $HD_Form->FG_QUERY_TABLE_NAME
+WHERE $HD_Form->FG_QUERY_WHERE_CLAUSE
+GROUP BY day
+ORDER BY day";
+$list_total_day = $HD_Form->DBHandle->GetAll($QUERY);
 
-    $res = $HD_Form->DBHandle->Execute ( $QUERY );
-    if ($res) {
-        $list_total_day = $res->GetAll();
-    }
-}
+if (count($list_total_day)):
+    $mmax = max(array_column($list_total_day, "calltime"));
+    $totalcall = array_sum(array_column($list_total_day, "nbcall"));
+    $totalminutes = array_sum(array_column($list_total_day, "calltime"));
+    $totalsell = array_sum(array_column($list_total_day, "sell"));
+    $totalbuycost = array_sum(array_column($list_total_day, "buy"));
+    $totalsuccess = array_sum(array_column($list_total_day, "success_calls"));
+    $widthbar = 0;
 
-if (count($list_total_day)) {
+    $total_tmc = ($resulttype ?? "min") === "min"
+        ? sprintf("%02d:%02d", ($totalminutes / $totalcall) / 60, ($totalminutes / $totalcall) % 60)
+        : intval($totalminutes / $totalcall);
 
-    $mmax = 0;
-    $totalcall = 0;
-    $totalminutes = 0;
-    $totalsuccess = 0;
-    $totalfail = 0;
-    $totalcost = 0;
-    $totalbuycost = 0;
-    foreach ($list_total_day as $data) {
-        if ($mmax < $data [1]) {
-            $mmax = $data [1];
-        }
-        $totalcall += $data [3];
-        $totalminutes += $data [1];
-        $totalcost += $data [2];
-        $totalbuycost += $data [4];
-        $totalsuccess += $data [5];
-    }
-    $max_fail = 0;
+    $totalminutes = sprintf("%02d:%02d", $totalminutes / 60, $totalminutes % 60);
 ?>
 
-<!-- END TITLE GLOBAL MINUTES //-->
-
-<table border="0" cellspacing="0" cellpadding="0" width="95%">
-    <tbody>
+<table class="table table-striped caption-top">
+    <caption><?= _("Traffic Summary") ?></caption>
+    <thead>
         <tr>
-            <td bgcolor="#000000">
-            <table border="0" cellspacing="1" cellpadding="2" width="100%">
-                <tbody>
-                    <tr>
-                        <td align="center" class="bgcolor_019"></td>
-                        <td class="bgcolor_020" align="center" colspan="10"><font
-                            class="fontstyle_003"><?= _( "TRAFFIC SUMMARY" ) ?></font></td>
-                    </tr>
-                    <tr class="bgcolor_019">
-                        <td align="center" class="bgcolor_020"><font class="fontstyle_003"><?= _( "DATE" ) ?></font></td>
-                        <td align="center"><font class="fontstyle_003"><acronym
-                            title="<?= _( "DURATION" ) ?>"><?= _( "DUR" ) ?></acronym></font></td>
-                        <td align="center"><font class="fontstyle_003"><?= _( "GRAPHIC" ) ?></font></td>
-                        <td align="center"><font class="fontstyle_003"><?= _( "CALLS" ) ?></font></td>
-                        <td align="center"><font class="fontstyle_003"><acronym
-                            title="<?= _( "AVERAGE LENGTH OF CALL" ) ?>"><?= _( "ALOC" ) ?></acronym></font></td>
-                        <td align="center"><font class="fontstyle_003"><acronym
-                            title="<?= _( "ANSWER SEIZE RATIO" ) ?>"><?= _( "ASR" ) ?></acronym></font></td>
-                        <td align="center"><font class="fontstyle_003"><?= _( "SELL" ) ?></font></td>
-                        <td align="center"><font class="fontstyle_003"><?= _( "BUY" ) ?></font></td>
-                        <td align="center"><font class="fontstyle_003"><?= _( "PROFIT" ) ?></font></td>
-                        <td align="center"><font class="fontstyle_003"><?= _( "MARGIN" ) ?></font></td>
-                        <td align="center"><font class="fontstyle_003"><?= _( "MARKUP" ) ?></font></td>
-
+            <th><?= _( "Date" ) ?></th>
+            <th><acronym title="<?= _( "Call duration" ) ?>"><?= _( "Time" ) ?></acronym></th>
+            <th style="width: 10vw"></th>
+            <th><?= _( "Calls" ) ?></th>
+            <th><acronym title="<?= _( "Average call length" ) ?>"><?= _( "Avg" ) ?></acronym></th>
+            <th><acronym title="<?= _( "Answer sieze ratio" ) ?>"><?= _( "ASR" ) ?></acronym></th>
+            <th><?= _( "Sell" ) ?></th>
+            <th><?= _( "Buy" ) ?></th>
+            <th><?= _( "Profit" ) ?></th>
+            <th><?= _( "Margin" ) ?></th>
+            <th><?= _( "Markup" ) ?></th>
+        </tr>
+    </thead>
+    <tbody>
                         <!-- LOOP -->
     <?php
-    $i = 0;
-    $j = 0;
-    foreach ($list_total_day as $data) {
-        $i = ($i + 1) % 2;
-        $tmc = $data [1] / $data [3];
+    foreach ($list_total_day as $data):
 
-        if ((! isset ( $resulttype )) || ($resulttype == "min")) {
-            $tmc = sprintf ( "%02d", intval ( $tmc / 60 ) ) . ":" . sprintf ( "%02d", $tmc % 60);
-        } else {
+        $tmc = $data ["calltime"] / $data ["nbcall"];
 
-            $tmc = intval ( $tmc );
-        }
+        $tmc = ($resulttype ?? "min") === "min"
+            ? sprintf ("%02d:%02d", $tmc / 60, $tmc % 60)
+            :intval ($tmc);
 
-        if ((! isset ( $resulttype )) || ($resulttype == "min")) {
-            $minutes = sprintf ( "%02d", intval ( $data [1] / 60 ) ) . ":" . sprintf ( "%02d", $data [1] % 60);
-        } else {
-            $minutes = $data [1];
-        }
+        $minutes = ($resulttype ?? "min") === "min"
+            ? sprintf ("%02d:%02d", $data["calltime"] / 60, $data["calltime"] % 60)
+            : $data["calltime"];
+
         if ($mmax > 0) {
-            $widthbar = intval(($data [1] / $mmax) * 150);
+            $widthbar = intval(($data["calltime"] / $mmax) * 100);
         }
         ?>
+        <tr>
+            <td><?= $data["day"] ?></td>
+            <td><?= $minutes ?></td>
+            <td aria-hidden="true"><div style="width: <?=$widthbar * 0.9?>%; background: darkred">&nbsp;</div></td>
+            <td><?= $data["nbcall"] ?></td>
+            <td><?= $tmc ?></td>
+            <td><?= get_2dec_percentage($data["success_calls"] * 100/ ($data["nbcall"]) ) ?></td>
+            <td><?= get_2bill ($data["sell"]) ?></td>
+            <td><?= get_2bill ($data["buy"] ) ?></td>
+            <td><?= get_2bill ($data["sell"] - $data["buy"] ) ?></td>
+            <td><?= $data["sell"] ? get_2dec_percentage((($data ["sell"] - $data ["buy"]) / $data ["sell"]) * 100) : "NULL"?></td>
+            <td><?= $data["buy"] > $data["sell"] ? get_2dec_percentage((($data["sell"] - $data ["buy"]) / $data ["buy"]) * 100) : "NULL"?></td>
         </tr>
-                    <tr>
-                        <td align="right" class="sidenav" nowrap="nowrap"><font
-                            class="fontstyle_003"><?= $data [0] ?></font></td>
-                        <td
-                            align="right" nowrap="nowrap"><font class="fontstyle_006"><?= $minutes ?> </font></td>
-                        <td
-                            align="left" nowrap="nowrap" width="<?= $widthbar + 40 ?>">
-                        <table cellspacing="0" cellpadding="0">
-                            <tbody>
-                                <tr>
-                                    <td bgcolor="#e22424"><img
-                                        src="<?= Images_Path ?>/spacer.gif"
-                                        width="<?= $widthbar ?>" height="6"></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        </td>
-                        <td
-                            align="right" nowrap="nowrap"><font class="fontstyle_006"><?= $data [3] ?></font></td>
-                        <td
-                            align="right" nowrap="nowrap"><font class="fontstyle_006"><?= $tmc ?> </font></td>
-                        <td
-                            align="right" nowrap="nowrap"><font class="fontstyle_006"><?= get_2dec_percentage ( $data [5] * 100/ ($data [3]) ) ?> </font></td>
-                        <!-- SELL -->
-                        <td
-                            align="right" nowrap="nowrap"><font class="fontstyle_006"><?= get_2bill ( $data [2] ) ?>
-                        </font></td>
-                        <!-- BUY -->
-                        <td
-                            align="right" nowrap="nowrap"><font class="fontstyle_006"><?= get_2bill ( $data [4] ) ?>
-                        </font></td>
-                        <!-- PROFIT -->
-                        <td
-                            align="right" nowrap="nowrap"><font class="fontstyle_006"><?= get_2bill ( $data [2] - $data [4] ) ?>
-                        </font></td>
-                        <td
-                            align="right" nowrap="nowrap"><font class="fontstyle_006"><?php
-                            if ($data [2] != 0) {
-                                echo get_2dec_percentage ( (($data [2] - $data [4]) / $data [2]) * 100 );
-                            } else {
-                                echo "NULL";
-                            }
-                            ?>
-                        </font></td>
-                        <td
-                            align="right" nowrap="nowrap"><font class="fontstyle_006"><?php
-                            if ($data [4] != 0) {
-                                echo get_2dec_percentage ( (($data [2] - $data [4]) / $data [4]) * 100 );
-                            } else {
-                                echo "NULL";
-                            }
-                            ?>
-                        </font></td>
-                 <?php
-                    $j ++;
-                }
-
-                if ((! isset ( $resulttype )) || ($resulttype == "min")) {
-                    $total_tmc = sprintf ( "%02d", intval ( ($totalminutes / $totalcall) / 60 ) ) . ":" . sprintf ( "%02d", ($totalminutes / $totalcall) % 60);
-                    $totalminutes = sprintf ( "%02d", intval ( $totalminutes / 60 ) ) . ":" . sprintf ( "%02d", $totalminutes % 60);
-                } else {
-                    $total_tmc = intval ( $totalminutes / $totalcall );
-                }
-
-                ?>
-                </tr>
-                    <!-- END DETAIL -->
-
-                    <!-- END LOOP -->
-
-                    <!-- TOTAL -->
-                    <tr bgcolor="bgcolor_019">
-                        <td align="right" nowrap="nowrap"><font class="fontstyle_003"><?= _( "TOTAL" ) ?></font></td>
-                        <td align="center" nowrap="nowrap" colspan="2"><font
-                            class="fontstyle_003"><?= $totalminutes ?> </font></td>
-                        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?= $totalcall ?></font></td>
-                        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?= $total_tmc ?></font></td>
-                        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?= get_2dec_percentage ( $totalsuccess*100 / $totalcall ) ?> </font></td>
-                        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?= get_2bill ( $totalcost ) ?></font></td>
-                        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?= get_2bill ( $totalbuycost ) ?></font></td>
-                        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?= get_2bill ( $totalcost - $totalbuycost ) ?></font></td>
-                        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php
-                            if ($totalcost != 0) {
-                                echo get_2dec_percentage ( (($totalcost - $totalbuycost) / $totalcost) * 100 );
-                            } else {
-                                echo "NULL";
-                            }
-                            ?></font></td>
-                        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php
-                            if ($totalbuycost != 0) {
-                                echo get_2dec_percentage ( (($totalcost - $totalbuycost) / $totalbuycost) * 100 );
-                            } else {
-                                echo "NULL";
-                            }
-                            ?></font></td>
-                    </tr>
-                    <!-- END TOTAL -->
-
-                </tbody>
-            </table>
-            <!-- END ARRAY GLOBAL //--></td>
-        </tr>
+    <?php endforeach ?>
     </tbody>
+    <tfoot>
+        <tr>
+            <th scope="row"><?= _( "TOTAL" ) ?></th>
+            <td colspan="2"><?= $totalminutes ?></td>
+            <td><?= $totalcall ?></td>
+            <td><?= $total_tmc ?></td>
+            <td><?= get_2dec_percentage($totalsuccess * 100 / $totalcall) ?></td>
+            <td><?= get_2bill($totalsell) ?></td>
+            <td><?= get_2bill($totalbuycost) ?></td>
+            <td><?= get_2bill($totalsell - $totalbuycost) ?></td>
+            <td><?= $totalsell ? get_2dec_percentage((($totalsell - $totalbuycost) / $totalsell) * 100) : "NULL" ?></td>
+            <td><?= $totalbuycost ? get_2dec_percentage((($totalsell - $totalbuycost) / $totalbuycost) * 100) : "NULL"?></td>
+        </tr>
+    </tfoot>
 </table>
 
-<?php } else { ?>
-<center>
-<h3><?= _( "No calls in your selection") ?>.</h3>
-<?php  } ?>
-</center>
-<script>
-$(function() {
-    $("#archiveselect").on('change', () => this.form.submit());
-});
-</script>
+<?php  else: ?>
+<div class="row pb-3 align-content-center">
+    <div class="col">
+        <?= _( "No calls in your selection") ?>
+    </div>
+<?php endif ?>
 
-<?php
+<?php $smarty->display('footer.tpl') ?>
 
-$smarty->display('footer.tpl');
