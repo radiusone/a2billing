@@ -71,29 +71,38 @@ $(function() {
         }
     }
 
+    const fromDayCheck = $("#search_fromday");
     const fromDay = $("#fromstatsday_sday");
     const fromMonth = $("#fromstatsmonth_sday");
+    const toDayCheck = $("#search_today");
     const toDay = $("#tostatsday_sday");
     const toMonth = $("#tostatsmonth_sday");
 
     fromDay.add(fromMonth).prop("disabled", true);
-    $("#search_fromday").on("change", e => fromDay.add(fromMonth).prop("disabled", !e.target.checked));
+    fromDayCheck.on("change", e => fromDay.add(fromMonth).prop("disabled", !e.target.checked));
     fromMonth.on("change", ev => setValidDay(fromMonth, fromDay));
 
     toDay.add(toMonth).prop("disabled", true);
-    $("#search_today").on("change", e => toDay.add(toMonth).prop("disabled", !e.target.checked));
+    toDayCheck.on("change", e => toDay.add(toMonth).prop("disabled", !e.target.checked));
     toMonth.on("change", ev => setValidDay(toMonth, toDay));
 
+    const fromDayCheck2 = $("#search_fromday_bis");
     const fromDay2 = $("#fromstatsday_sday_bis");
     const fromMonth2 = $("#fromstatsmonth_sday_bis");
+    const toDayCheck2 = $("#search_today_bis");
     const toDay2 = $("#tostatsday_sday_bis");
     const toMonth2 = $("#tostatsmonth_sday_bis");
 
     fromDay2.add(fromMonth2).prop("disabled", true);
-    $("#search_fromday_bis").on("change", e => fromDay2.add(fromMonth2).prop("disabled", !e.target.checked));
+    fromDayCheck2.on("change", e => fromDay2.add(fromMonth2).prop("disabled", !e.target.checked));
     fromMonth2.on("change", ev => setValidDay(fromMonth2, fromDay2));
 
     toDay2.add(toMonth2).prop("disabled", true);
-    $("#search_today_bis").on("change", e => toDay2.add(toMonth2).prop("disabled", !e.target.checked));
+    toDayCheck2.on("change", e => toDay2.add(toMonth2).prop("disabled", !e.target.checked));
     toMonth2.on("change", ev => setValidDay(toMonth2, toDay2));
+
+    fromDayCheck.trigger("change");
+    toDayCheck.trigger("change");
+    fromDayCheck2.trigger("change");
+    toDayCheck2.trigger("change");
 });

@@ -121,7 +121,7 @@ $action = http_build_query([
                     -->
                     <select name="fromstatsday_sday_bis" id="fromstatsday_sday_bis" class="form-select form-select-sm" aria-label="<?= _("day component of search start date") ?>">
                         <?php for ($i = 1; $i <= 31; $i++): ?>
-                            <option <?php if ($processed['fromstatsday_sday_bis'] == sprintf("%02d", $i)):?>selected="selected"<?php endif ?>>
+                            <option <?php if ($processed['fromstatsday_sday_bis'] === sprintf("%02d", $i)):?>selected="selected"<?php endif ?>>
                                 <?= sprintf("%02d", $i) ?>
                             </option>
                         <?php endfor ?>
@@ -144,7 +144,7 @@ $action = http_build_query([
                     -->
                     <select name="tostatsday_sday_bis" id="tostatsday_sday_bis" class="form-select form-select-sm" aria-label="<?= _("day component of search end date") ?>">
                         <?php for ($i = 1; $i <= 31; $i++): ?>
-                            <option <?php if ($processed['tostatsday_sday_bis'] == sprintf("%02d", $i)):?>selected="selected"<?php endif ?>>
+                            <option <?php if ($processed['tostatsday_sday_bis'] === sprintf("%02d", $i)):?>selected="selected"<?php endif ?>>
                                 <?= sprintf("%02d", $i) ?>
                             </option>
                         <?php endfor ?>
@@ -199,7 +199,7 @@ $action = http_build_query([
                     class="badge bg-primary popup_trigger"
                     aria-label="open a popup to select an item"
                 >
-                    <svg class="mx-auto" width="16" height="16"><use xlink:href="#calendar"></use></svg>
+                    <svg class="mx-auto" width="16" height="16"><use xlink:href="#popup"></use></svg>
                 </a>
             </div>
         </div>
