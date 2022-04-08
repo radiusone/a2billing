@@ -127,9 +127,9 @@ function login (?string $user, ?string $pass)
              "WHERE cc.email = ? OR cc.useralias = ?";
 
     $DBHandle = DbConnect();
-    $res = $DBHandle->Execute($QUERY, [$user, $user]);
+    $row = $DBHandle->GetRow($QUERY, [$user, $user]);
 
-    if ($res && $row = $res->FetchRow()) {
+    if ($row) {
         if ($row["status"] !== "t" && $row["status"] !== "1"  && $row["status"] !== "8") {
             return false;
         }

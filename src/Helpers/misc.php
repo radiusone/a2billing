@@ -39,22 +39,13 @@ use PHPMailer\PHPMailer\PHPMailer;
 
 function get_cardlength(): int
 {
-    static $cardlength;
-
-    if (!empty($cardlength)) {
-        return $cardlength;
-    }
-
     $db = DbConnect();
-
-    $result = $db
-        ->Execute("SELECT config_value FROM cc_config WHERE config_key = 'interval_len_cardnumber' LIMIT 1");
-    if ($result && $row = $result->FetchRow()) {
-        $len = min(split_data($row[0]));
+    $len = $db->CacheGetOne(86400, "SELECT config_value FROM cc_config WHERE config_key = 'interval_len_cardnumber' LIMIT 1");
+    if ($len) {
+        $len = min(split_data($len));
     } else {
         $len = 10;
     }
-    $cardlength = $len;
 
     return $len;
 }
@@ -1232,21 +1223,9 @@ function SetLocalLanguage(): void
 
 function create_help($text, $wiki = ""): string
 {
-    static $showhelp;
-
-    if (!isset($showhelp)) {
-        $db = DbConnect();
-        $result = $db->Execute("SELECT config_value FROM cc_config WHERE config_key = 'show_help'");
-        if ($result && $row = $result->FetchRow()) {
-            if (empty($row[0])) {
-                $showhelp = false;
-                return "";
-            } else {
-                $showhelp = true;
-            }
-        }
-    }
-    if (!$showhelp) {
+    $db = DbConnect();
+    $result = $db->CacheGetOne(86400, "SELECT config_value FROM cc_config WHERE config_key = 'show_help'");
+    if ($result !== "1") {
         return "";
     }
 

@@ -198,11 +198,10 @@ if ($mode === "standard") {
             if ($A2B->agiconfig["ivr_enable_locking_option"]) {
                 $QUERY = "SELECT block, lock_pin FROM cc_card WHERE username = ?";
                 $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[QUERY] : " . $QUERY);
-                $result = $db->Execute($QUERY, [$A2B->username]);
-                $row = $result ? $result->FetchRow() : ["block"=>0];
+                $row = $db->GetRow($QUERY, [$A2B->username]);
 
                 // Check if the locking option is enabled for this account
-                if ($row["block"] === "1" && !empty($row["lock_pin"])) {
+                if ($row && $row["block"] === "1" && !empty($row["lock_pin"])) {
                     $try = 0;
                     do {
                         $return = false;
@@ -249,10 +248,9 @@ if ($mode === "standard") {
                         $QUERY = "SELECT UNIX_TIMESTAMP(lastuse) AS lastuse, UNIX_TIMESTAMP(lock_date) AS lock_date, UNIX_TIMESTAMP(firstusedate) AS firstuse FROM cc_card WHERE username = ? LIMIT 1";
                     }
                     $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[QUERY] : " . $QUERY);
-                    $result = $db->Execute($QUERY, [$A2B->username]);
-                    $card_info = $result ? $result->FetchRow() : null;
+                    $card_info = $db->GetRow($QUERY, [$A2B->username]);
 
-                    if (is_array($card_info)) {
+                    if ($card_info) {
                         do {
                             $return = false;
 
@@ -268,10 +266,10 @@ if ($mode === "standard") {
 
                             switch ($res_dtmf) {
                                 case "1" :
+                                    // TODO: can't we just check $card_info["lastuse"] ?
                                     $QUERY = "SELECT starttime FROM cc_call WHERE card_id = ? ORDER BY starttime DESC LIMIT 1";
-                                    $result = $db->Execute($QUERY, [$A2B->id_card]);
-                                    $lastcall_info = $result ? $result->FetchRow() : null;
-                                    if (is_array($lastcall_info)) {
+                                    $val = $db->GetOne($QUERY, [$A2B->id_card]);
+                                    if ($val) {
                                         $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[INFORMATION MENU]:[OPTION 1]");
                                         $agi->stream_file("prepaid-lastcall", "#"); //Your last call was made
                                         $agi->exec("SayUnixTime $card_info[lastuse]");
@@ -433,10 +431,9 @@ if ($mode === "standard") {
                                 $action = "insert";
                                 $QUERY = "SELECT phone, id FROM cc_speeddial WHERE id_cc_card = ? AND speeddial = ?";
                                 $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, $QUERY);
-                                $result = $db->Execute($QUERY, [$A2B->id_card, $speeddial_number]);
-                                $row = $result ? $result->FetchRow() : null;
+                                $row = $db->GetRow($QUERY, [$A2B->id_card, $speeddial_number]);
                                 $id_speeddial = null;
-                                if (is_array($row)) {
+                                if ($row) {
                                     $id_speeddial = $row["id"];
                                     $agi->say_number($speeddial_number);
                                     $agi->stream_file("prepaid-is-used-for", "#");
@@ -575,10 +572,9 @@ if ($mode === "standard") {
                     ORDER BY priority ASC
                     SQL;
                     $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, $QUERY);
-                    $result = $db->Execute($QUERY, [$A2B->destination]);
-                    $result = $result ? $result->GetAll() : null;
+                    $result = $db->GetAll($QUERY, [$A2B->destination]);
 
-                    if (is_array($result)) {
+                    if ($result) {
                         //On Net
                         $A2B->call_2did($agi, $RateEngine, $result);
                         if ($A2B->set_inuse) {
@@ -631,11 +627,10 @@ if ($mode === "standard") {
         ORDER BY priority ASC
         SQL;
         $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, $QUERY);
-        $result = $db->Execute($QUERY, [$mydnid]);
-        $result = $result ? $result->GetAll() : null;
+        $result = $db->GetAll($QUERY, [$mydnid]);
         $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, $result);
 
-        if (is_array($result)) {
+        if ($result) {
             //Off Net
             $A2B->call_did($agi, $RateEngine, $result);
             if ($A2B->set_inuse) {

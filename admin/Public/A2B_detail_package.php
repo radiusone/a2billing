@@ -183,8 +183,7 @@ if ($nb_record<=$FG_LIMITE_DISPLAY) {
     }
 }
 
-$result = $DBHandle->Execute("SELECT id, label FROM cc_package_offer ORDER BY label");
-$list_package = $result->GetAll();
+$list_package = $DBHandle->GetAll("SELECT id, label FROM cc_package_offer ORDER BY label");
 
 $smarty->display('main.tpl');
 

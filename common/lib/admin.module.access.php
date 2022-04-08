@@ -129,9 +129,9 @@ function login (?string $user, ?string $pass)
     $QUERY = "SELECT userid, perms, confaddcust, groupid, login, pwd_encoded FROM cc_ui_authen WHERE login = ?";
 
     $DBHandle = DbConnect();
-    $res = $DBHandle -> Execute($QUERY, [$user]);
+    $row = $DBHandle -> GetRow($QUERY, [$user]);
 
-    if ($res && $row = $res->FetchRow()) {
+    if ($row) {
         if (password_verify($pass, $row["pwd_encoded"])) {
             return $row;
         }

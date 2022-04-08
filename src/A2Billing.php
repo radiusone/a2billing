@@ -725,13 +725,8 @@ class A2Billing
             }
         } elseif ($this->credit <= -$this->creditlimit) {
             $QUERY = "SELECT id_cc_package_offer FROM cc_tariffgroup WHERE id = ?";
-            $result = $this->DBHandle->Execute($QUERY, [$this->tariff]);
-            $row = $result ? $result->FetchRow() : [0];
-            if (!empty($row[0])) {
-                return $row[0] > 0;
-            } else {
-                return false;
-            }
+            $val = $this->DBHandle->GetOne($QUERY, [$this->tariff]);
+            return $val > 0;
         } else {
             return true;
         }
@@ -783,9 +778,9 @@ class A2Billing
 
         if (strlen($this->destination) <= 2 && is_numeric($this->destination) && $this->destination >= 0) {
             $QUERY = "SELECT phone FROM cc_speeddial WHERE id_cc_card = ? AND speeddial = ?";
-            $result = $this->DBHandle->Execute($QUERY, [$this->id_card, $this->destination]);
-            if ($result && $row = $result->FetchRow()) {
-                $this->destination = $row[0];
+            $val = $this->DBHandle->GetOne($QUERY, [$this->id_card, $this->destination]);
+            if ($val) {
+                $this->destination = $val;
             }
             $this->debug(self::INFO, $agi, __FILE__, __LINE__, "SPEEDIAL REPLACE DESTINATION ::> " . $this->destination);
         }
@@ -795,15 +790,15 @@ class A2Billing
 
             $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[ACCOUNT WITH RESTRICTION]");
 
-            $QUERY = "SELECT * FROM cc_restricted_phonenumber WHERE id_card = ? AND ? LIKE number";
+            $QUERY = "SELECT COUNT(*) FROM cc_restricted_phonenumber WHERE id_card = ? AND ? LIKE number";
+            $params = [$this->id_card, $this->destination];
             if ($this->removeinterprefix) {
                 $QUERY .= " OR ? LIKE number";
+                $params[] = $this->apply_rules($this->destination);
             }
-            $QUERY .= " LIMIT 1";
-            $params = [$this->id_card, $this->destination, $this->apply_rules($this->destination)];
-            $result = $this->DBHandle->Execute($QUERY, $params);
+            $count = $this->DBHandle->GetOne($QUERY, $params);
 
-            if (($this->restriction === 1 && $result && $result->RowCount()) || ($this->restriction === 2 && (!$result || $result->RowCount() === 0))) {
+            if (($this->restriction === 1 && $count) || ($this->restriction === 2 && !$count)) {
                 $this->debug(self::INFO, $agi, __FILE__, __LINE__, "[NUMBER NOT AUHTORIZED - RESTRICTION POLICY $this->restriction]");
                 $agi->stream_file('prepaid-not-authorized-phonenumber', '#');
 
@@ -825,9 +820,9 @@ class A2Billing
             }
             $QUERY .= ")";
             $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, $QUERY);
-            $result_did = $this->DBHandle->Execute($QUERY, [$this->destination]);
-            if ($result_did && $row = $result_did->FetchRow()) {
-                if (!empty($row[0]) && !empty($row[1])) {
+            $row = $this->DBHandle->GetRow($QUERY, [$this->destination]);
+            if ($row) {
+                if (!empty($row["id"]) && !empty($row["iduser"])) {
                     $iscall2did = true;
                 }
             }
@@ -865,8 +860,8 @@ class A2Billing
                     "FROM cc_card RIGHT JOIN cc_tariffgroup ON cc_tariffgroup.id = cc_card.tariff " .
                     "RIGHT JOIN cc_package_offer ON cc_package_offer.id = cc_tariffgroup.id_cc_package_offer " .
                     "WHERE cc_card.id = ?";
-            $result = $this->DBHandle->Execute($QUERY, [$this->id_card]);
-            if ($result && $row = $result->FetchRow()) {
+            $row = $this->DBHandle->GetRow($QUERY, [$this->id_card]);
+            if ($row) {
                 [$freetime, $packagetype, $billingtype, $startday, $id_cc_package_offer] = $row;
                 $freetimetocall_used = $this->free_calls_used($this->id_card, (int)$id_cc_package_offer, (int)$billingtype, (int)$startday, "time");
 
@@ -1033,23 +1028,21 @@ class A2Billing
         $dest_username = "";
 
         $QUERY = "SELECT name, cc_card.username FROM cc_iax_buddies, cc_card WHERE cc_iax_buddies.id_cc_card = cc_card.id AND useralias = ?";
-        $result = $this->DBHandle->Execute($QUERY, [$this->destination]);
+        $row = $this->DBHandle->GetRow($QUERY, [$this->destination]);
 
-        if ($result && $row = $result->FetchRow()) {
+        if ($row) {
             $iax_buddies = 1;
-            $destiax = $row[0];
-            $dest_username = $row[1];
+            [$destiax, $dest_username] = $row;
         }
 
         $card_alias = $this->destination;
         $QUERY = "SELECT name, cc_card.username FROM cc_sip_buddies, cc_card WHERE cc_sip_buddies.id_cc_card = cc_card.id AND useralias = ?";
-        $result = $this->DBHandle->Execute($QUERY, [$this->destination]);
-        $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "RESULT : " . json_encode($result));
+        $row = $this->DBHandle->GetRow($QUERY, [$this->destination]);
+        $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "RESULT : " . json_encode($row));
 
-        if ($result && $row = $result->FetchRow()) {
+        if ($row) {
             $sip_buddies = 1;
-            $destsip = $row[0];
-            $dest_username = $row[1];
+            [$destsip, $dest_username] = $row;
         }
 
         if (!$sip_buddies && !$iax_buddies) {
@@ -2087,19 +2080,18 @@ class A2Billing
 
         $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "VOUCHER NUMBER : " . $vouchernumber);
 
-        $QUERY = "SELECT voucher, credit, activated, tag, currency, expirationdate FROM cc_voucher WHERE expirationdate >= CURRENT_TIMESTAMP AND activated = 't' AND voucher = ?";
+        $QUERY = "SELECT voucher, credit, currency FROM cc_voucher WHERE expirationdate >= CURRENT_TIMESTAMP AND activated = 't' AND voucher = ?";
 
-        $result = $this->DBHandle->Execute($QUERY, [$vouchernumber]);
-        $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[VOUCHER SELECT: $QUERY] " . json_encode($result));
-        $row = $result ? $result->FetchRow() : [0];
-        if ($row && $row[0] == $vouchernumber) {
-            if (!isset($this->currencies_list[strtoupper($row[4])])) {
+        $row = $this->DBHandle->GetRow($QUERY, [$vouchernumber]);
+        $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[VOUCHER SELECT: $QUERY] " . json_encode($row));
+        if ($row && $row["voucher"] === $vouchernumber) {
+            if (!isset($this->currencies_list[strtoupper($row["currency"])])) {
                 $this->debug(self::ERROR, $agi, __FILE__, __LINE__, "System Error : No currency table complete !!!");
 
                 return false;
             } else {
                 // DISABLE THE VOUCHER
-                $add_credit = $row[1] * $this->currencies_list[strtoupper($row[4])];
+                $add_credit = $row["credit"] * $this->currencies_list[strtoupper($row["currency"])];
                 $QUERY = "UPDATE cc_voucher SET activated = 'f', usedcardnumber = ?, used = 1, usedate = now() WHERE voucher = ?";
                 $this->DBHandle->Execute($QUERY, [$this->accountcode, $vouchernumber]);
                 $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "QUERY UPDATE VOUCHER: $QUERY");
@@ -2185,9 +2177,8 @@ class A2Billing
         $QUERY = "SELECT COUNT(*), SUM(used_secondes) FROM cc_card_package_offer " .
                 "WHERE $CLAUSE_DATE AND id_cc_card = ? AND id_cc_package_offer = ?";
         $params = [$clause_param, $id_cc_card, $id_cc_package_offer];
-        $pack_result = $this->DBHandle->Execute($QUERY, $params);
-        if ($pack_result && $pack_result->RecordCount() > 0) {
-            $result = $pack_result->fetchRow();
+        $result = $this->DBHandle->GetRow($QUERY, $params);
+        if ($result) {
             $number_calls_used = intval($result[0]);
             $freetimetocall_used = intval($result[1]);
         } else {
@@ -2254,8 +2245,7 @@ class A2Billing
                 " JOIN cc_card ON cc_callerid.id_cc_card = cc_card.id " .
                 " WHERE (cc_callerid.activated = 1 OR cc_callerid.activated = 't') AND cc_card.username = ?" .
                 "ORDER BY 1";
-            $result1 = $this->DBHandle->Execute($QUERY, [$this->username]);
-            $result1 = $result1 ? $result1->GetAll() : [];
+            $result1 = $this->DBHandle->GetAll($QUERY, [$this->username]);
             $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, json_encode($result1));
         }
 
@@ -2270,8 +2260,7 @@ class A2Billing
                 " AND cc_card.username = ?" .
                 " AND cc_did_destination.validated = 1" .
                 " ORDER BY 1";
-            $result2 = $this->DBHandle->Execute($QUERY, [$this->username]);
-            $result2 = $result2 ? $result2->GetAll() : [];
+            $result2 = $this->DBHandle->GetAll($QUERY, [$this->username]);
             $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, json_encode($result2));
         }
 
@@ -2364,10 +2353,10 @@ class A2Billing
         $query_rate = "SELECT cc_campaign_config.flatrate, cc_campaign_config.context FROM cc_card,cc_card_group,cc_campaignconf_cardgroup,cc_campaign_config , cc_campaign WHERE cc_card.id = ? AND cc_card.id_group = cc_card_group.id AND cc_campaignconf_cardgroup.id_card_group = cc_card_group.id AND cc_campaignconf_cardgroup.id_campaign_config = cc_campaign_config.id AND cc_campaign.id = ? AND cc_campaign.id_campaign_config = cc_campaign_config.id";
         $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[QUERY SEARCH CAMPAIGN CONFIG : " . $query_rate);
 
-        $result_rate = $this->DBHandle->Execute($query_rate, [$userid, $campaign_id]);
+        $row = $this->DBHandle->GetRow($query_rate, [$userid, $campaign_id]);
 
         $cost = 0;
-        if ($result_rate && $row = $result_rate->FetchRow()) {
+        if ($row) {
             $cost = $row[0];
             $context = $row[1];
         }
@@ -2430,10 +2419,10 @@ class A2Billing
                     " LEFT JOIN cc_tariffgroup ON cc_card.tariff = cc_tariffgroup.id " .
                     " LEFT JOIN cc_country ON cc_card.country = cc_country.countrycode " .
                     " WHERE cc_callerid.cid = ?";
-            $result = $this->DBHandle->Execute($QUERY, [$this->CallerID]);
+            $row = $this->DBHandle->GetRow($QUERY, [$this->CallerID]);
             $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, json_encode($result));
 
-            if (!$result || $result->RowCount() === 0) {
+            if (!$row) {
 
                 $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[CID_CONTROL - NO CALLERID]");
 
@@ -2450,9 +2439,9 @@ class A2Billing
                         $card_gen = $this->MDP($this->agiconfig['cid_auto_create_card_len']);
                         $card_alias = $this->MDP($this->agiconfig['cid_auto_create_card_len']);
                         $cardexist_query = "SELECT username, useralias FROM cc_card WHERE username = ? OR useralias = ?";
-                        $resmax = $this->DBHandle->Execute($cardexist_query, [$card_gen, $card_alias]);
-                        if (!$resmax || $resmax->RowCount() === 0) {
-                            $this->debug(self::INFO, $agi, __FILE__, __LINE__, "[CN:$card_gen|CA:$card_alias|Query:$cardexist_query][resmax:$resmax] Not Card found...");
+                        $resmax = $this->DBHandle->GetRow($cardexist_query, [$card_gen, $card_alias]);
+                        if (!$resmax) {
+                            $this->debug(self::INFO, $agi, __FILE__, __LINE__, "[CN:$card_gen|CA:$card_alias|Query:$cardexist_query] Not Card found...");
                         } else {
                             $this->debug(self::INFO, $agi, __FILE__, __LINE__, "[CN:$card_gen|CA:$card_alias|Query:$cardexist_query] Found similar account! Continue...");
                             continue;
@@ -2510,7 +2499,6 @@ class A2Billing
 
             } else {
                 // authenticate OK using the callerID
-                $row                        = $result->FetchRow();
                 $cid_active                 = $row[2];
                 $this->credit               = (int)$row[3];
                 $this->tariff               = (int)$row[4];
@@ -2653,10 +2641,10 @@ class A2Billing
                         " LEFT JOIN cc_tariffgroup ON tariff = cc_tariffgroup.id " .
                         " LEFT JOIN cc_country ON cc_card.country = cc_country.countrycode " .
                         " WHERE username = ?";
-                    $result = $this->DBHandle->Execute($QUERY, [$this->cardnumber]);
+                    $row = $this->DBHandle->GetRow($QUERY, [$this->cardnumber]);
                     $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, ' - Retrieve account info SQL ::> ' . $QUERY);
 
-                    if (!$result || $result->RowCount() === 0) {
+                    if (!$row) {
                         $prompt = "prepaid-auth-fail";
                         $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, strtoupper($prompt));
                         $res = -2;
@@ -2668,10 +2656,10 @@ class A2Billing
                             break;
                         }
                         $QUERY = " SELECT cid, id_cc_card, activated FROM cc_callerid WHERE cc_callerid.cid = ? AND cc_callerid.id_cc_card = ?";
-                        $result_check_cid = $this->DBHandle->Execute($QUERY, [$this->CallerID, $result[0][22]]);
-                        $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, $result_check_cid[0]);
+                        $result_check_cid = $this->DBHandle->GetRow($QUERY, [$this->CallerID, $result[0][22]]);
+                        $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, $result_check_cid);
 
-                        if (!$result_check_cid || $result_check_cid->RowCount() === 0) {
+                        if (!$result_check_cid) {
                             $prompt = "prepaid-auth-fail";
                             $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, strtoupper($prompt));
                             $res = -2;
@@ -2679,7 +2667,6 @@ class A2Billing
                         }
                     }
 
-                    $row                        = $result->FetchRow();
                     $this->credit               = (int)$row[0];
                     $this->tariff               = (int)$row[1];
                     $this->active               = $row[2];
@@ -2837,10 +2824,10 @@ class A2Billing
                     " LEFT JOIN cc_country ON cc_card.country = cc_country.countrycode " .
                     " WHERE username = ?";
 
-                $result = $this->DBHandle->Execute($QUERY, [$this->cardnumber]);
+                $row = $this->DBHandle->GetRow($QUERY, [$this->cardnumber]);
                 $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, json_encode($result));
 
-                if (!$result || $result->RowCount() === 0) {
+                if (!$row) {
                     $prompt = "prepaid-auth-fail";
                     $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, strtoupper($prompt));
                     continue;
@@ -2852,10 +2839,7 @@ class A2Billing
                         continue;
                     }
                     $QUERY = " SELECT cid, id_cc_card, activated FROM cc_callerid WHERE cc_callerid.cid = ? AND cc_callerid.id_cc_card = ?";
-                    $result_check_cid = $this->DBHandle->Execute($QUERY, [$this->CallerID, $result[0][23]]);
-                    if ($result_check_cid) {
-                        $result_check_cid = $result_check_cid->FetchRow();
-                    }
+                    $result_check_cid = $this->DBHandle->GetRow($QUERY, [$this->CallerID, $result[0][23]]);
                     $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, json_encode($result_check_cid));
 
                     if (!$result_check_cid) {
@@ -2865,7 +2849,6 @@ class A2Billing
                     }
                 }
 
-                $row                        = $result->FetchRow();
                 $this->credit               = (int)$row[0];
                 $this->tariff               = (int)$row[1];
                 $this->active               = $row[2];
@@ -2951,11 +2934,10 @@ class A2Billing
                 if ($this->agiconfig['cid_enable'] && $this->agiconfig['cid_auto_assign_card_to_cid'] && is_numeric($this->CallerID) && $this->CallerID > 0 && !$this->ask_other_cardnumber && !$this->update_callerid) {
 
                     $QUERY = "SELECT count(*) FROM cc_callerid WHERE id_cc_card = ?";
-                    $result = $this->DBHandle->Execute($QUERY, [$the_card_id]);
-                    $row = $result ? $result->FetchRow() : false;
+                    $count = $this->DBHandle->GetOne($QUERY, [$the_card_id]);
 
                     // CHECK IF THE AMOUNT OF CALLERID IS LESS THAN THE LIMIT
-                    if ($row && $row[0] < $this->config["webcustomerui"]['limit_callerid']) {
+                    if ($count < $this->config["webcustomerui"]['limit_callerid']) {
                         $query = "INSERT INTO cc_callerid cid, id_cc_card VALUES(?, ?)";
                         $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[CREATE AN INSTANCE IN CC_CALLERID -  QUERY: $query]");
                         $result = $this->DBHandle->Execute($query, [$this->CallerID, $the_card_id]);
@@ -3016,9 +2998,9 @@ class A2Billing
                     " FROM cc_card LEFT JOIN cc_tariffgroup ON tariff = cc_tariffgroup.id " .
                     " LEFT JOIN cc_country ON cc_card.country = cc_country.countrycode " .
                     " WHERE username = ?";
-        $result = $this->DBHandle->Execute($QUERY, [$this->cardnumber]);
+        $row = $this->DBHandle->GetRow($QUERY, [$this->cardnumber]);
 
-        if (!$result || $result->RowCount() === 0) {
+        if (!$row) {
             $error_msg = gettext("Error : Authentication Failed !!!");
 
             return false;
@@ -3027,9 +3009,8 @@ class A2Billing
         if ($simbalance > 0) {
             $this->credit = $simbalance;
         } else {
-            $this->credit = $result[0][0];
+            $this->credit = $row["credit"];
         }
-        $row                        = $result->FetchRow();
         $this->tariff               = (int)$row[1];
         $this->active               = $row[2];
         $isused                     = $row[3];
@@ -3133,8 +3114,7 @@ class A2Billing
         }
 
         $QUERY = "SELECT sum(sessiontime), count(*) FROM cc_call WHERE card_id = ?";
-        $result = $this->DBHandle->Execute($QUERY, [$this->id_card]);
-        $row = $result ? $result->FetchRow() : false;
+        $row = $this->DBHandle->GetRow($QUERY, [$this->id_card]);
         $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[DECK SWITCH - Start]" . json_encode($row));
         if (!$row) {
             return false;
@@ -3263,7 +3243,7 @@ class A2Billing
             return;
         }
         $QUERY = "UPDATE cc_card SET redial = ? WHERE username = ?";
-        $result = $this->DBHandle->Execute($QUERY, [$number, $this->accountcode]);
+        $this->DBHandle->Execute($QUERY, [$number, $this->accountcode]);
         $this->debug(self::DEBUG, $agi, __FILE__, __LINE__, "[SAVING DESTINATION FOR REDIAL: SQL: $QUERY]");
     }
 

@@ -49,8 +49,7 @@ if (empty($id)) {
 
 $DBHandle  = DbConnect();
 
-$result = $DBHandle->Execute("SELECT * FROM cc_card WHERE id = ?", [$id]);
-$card = $result ? $result->FetchRow() : null;
+$card = $DBHandle->GetRow("SELECT * FROM cc_card WHERE id = ?", [$id]);
 
 if (empty($card)) {
     header("Location: A2B_entity_card.php?section=1");
@@ -425,8 +424,8 @@ echo get_login_button ($DBHandle, $id);
     <tr>
      <td valign="top" width="50%" >
         <?php
-        $result = $DBHandle->Execute("SELECT * FROM cc_callerid WHERE id_cc_card = ?", [$id]);
-        if ($result && $callerid_result = $result->GetAll()) {
+        $callerid_result = $DBHandle->GetAll("SELECT * FROM cc_callerid WHERE id_cc_card = ?", [$id]);
+        if ($callerid_result) {
         ?>
           <table width="100%" class="editform_table1">
         <tr>
@@ -469,8 +468,8 @@ echo get_login_button ($DBHandle, $id);
 
         <td valign="top" width="50%" >
         <?php
-        $result = $DBHandle->Execute("SELECT * FROM cc_speeddial WHERE id_cc_card = ?", [$id]);
-        if ($result && $speeddial_result = $result->GetAll()) {
+        $speeddial_result = $DBHandle->GetAll("SELECT * FROM cc_speeddial WHERE id_cc_card = ?", [$id]);
+        if ($speeddial_result) {
         ?>
         <table width="100%" class="editform_table1">
            <tr>
@@ -522,8 +521,8 @@ echo get_login_button ($DBHandle, $id);
     <tr>
      <td valign="top" width="50%" >
         <?php
-        $result = $DBHandle->Execute("SELECT * FROM cc_sip_buddies WHERE id_cc_card = ?", [$id]);
-        if ($result && $sip_buddies_result = $result->GetAll()) {
+        $sip_buddies_result = $DBHandle->GetAll("SELECT * FROM cc_sip_buddies WHERE id_cc_card = ?", [$id]);
+        if ($sip_buddies_result) {
         ?>
         <table width="100%" class="editform_table1">
            <tr>
@@ -565,8 +564,8 @@ echo get_login_button ($DBHandle, $id);
 
         <td valign="top" width="50%" >
         <?php
-        $result = $DBHandle->Execute("SELECT * FROM cc_iax_buddies WHERE id_cc_card = ?", [$id]);
-        if ($result && $iax_buddies_result = $result->GetAll()) {
+        $iax_buddies_result = $DBHandle->GetAll("SELECT * FROM cc_iax_buddies WHERE id_cc_card = ?", [$id]);
+        if ($iax_buddies_result) {
         ?>
         <table width="100%" class="editform_table1">
            <tr>
@@ -620,11 +619,11 @@ echo get_login_button ($DBHandle, $id);
 <?php
 
 // We need to list all required columns as both tables have an 'id' column
-$result = $DBHandle->Execute(
+$subscription_result = $DBHandle->GetAll(
     "SELECT cc_card_subscription.id, id_cc_card, cc_card_subscription.startdate, product_name, fee FROM cc_card_subscription,cc_subscription_service WHERE cc_card_subscription.id_subscription_fee = cc_subscription_service.id AND id_cc_card = ? ORDER BY startdate DESC LIMIT 10",
     [$id]
 );
-if ($result && $subscription_result = $result->GetAll()) {
+if ($subscription_result) {
 ?>
 <table class="toppage_maintable">
     <tr>
@@ -692,8 +691,8 @@ if ($result && $subscription_result = $result->GetAll()) {
 </table>
 <?php
 }
-$result = $DBHandle->Execute("SELECT * FROM cc_logpayment WHERE card_id = ? ORDER BY date DESC LIMIT 10", [$id]);
-if ($result && $payment_result = $result->GetAll()) {
+$payment_result = $DBHandle->GetAll("SELECT * FROM cc_logpayment WHERE card_id = ? ORDER BY date DESC LIMIT 10", [$id]);
+if ($payment_result) {
 ?>
 <table class="toppage_maintable">
     <tr>
@@ -758,8 +757,8 @@ if ($result && $payment_result = $result->GetAll()) {
 </table>
 <?php
 }
-$result = $DBHandle->Execute("SELECT * FROM cc_logrefill WHERE card_id = ? ORDER BY date DESC LIMIT 10", [$id]);
-if ($result && $refill_result = $result->GetAll()) {
+$refill_result = $DBHandle->GetAll("SELECT * FROM cc_logrefill WHERE card_id = ? ORDER BY date DESC LIMIT 10", [$id]);
+if ($refill_result) {
 ?>
 <table class="toppage_maintable">
     <tr>
@@ -819,11 +818,11 @@ if ($result && $refill_result = $result->GetAll()) {
 </table>
 <?php
 }
-$result = $DBHandle->Execute(
+$did_destination_result = $DBHandle->GetAll(
     "SELECT * FROM cc_did_destination, cc_did WHERE cc_did_destination.id_cc_did = cc_did.id and cc_did_destination.id_cc_card = ?",
     [$id]
 );
-if ($result && $did_destination_result = $result->GetAll()) {
+if ($did_destination_result) {
 ?>
 <table class="toppage_maintable">
     <tr>

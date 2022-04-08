@@ -52,14 +52,11 @@ $UI = $info_tmp[0] . ' ' . $info_tmp[1];
 $UI_path = substr(__DIR__, 0, strpos(__DIR__, "/admin"));
 
 $DBHandle = DbConnect();
-$rs = $DBHandle->Execute('SELECT VERSION()');
-$rs = $rs->FetchRow();
-$info_tmp = explode('-', $rs[0]);
+$ver = $DBHandle->GetOne('SELECT VERSION()');
+$info_tmp = explode('-', $ver);
 $mysql = $info_tmp[1] . ' ' . $info_tmp[0];
 
-$rs = $DBHandle->Execute('SELECT * FROM cc_version');
-$rs = $rs->FetchRow();
-$database = $rs[0];
+$database = $DBHandle->GetOne('SELECT version FROM cc_version');
 
 $asterisk = str_replace("Asterisk ", "", `asterisk -V`);
 $php = phpversion();

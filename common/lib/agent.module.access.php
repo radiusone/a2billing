@@ -111,9 +111,9 @@ function login (?string $user, ?string $pass)
     $QUERY = "SELECT id, perms, active, currency, vat, passwd FROM cc_agent WHERE login = ?";
 
     $DBHandle = DbConnect();
-    $res = $DBHandle->Execute($QUERY, [$user]);
+    $row = $DBHandle->GetRow($QUERY, [$user]);
 
-    if ($res && $row = $res->FetchRow()) {
+    if ($row) {
         if ($row["active"] !== "t" && $row["active"] !== "1") {
             return false;
         }

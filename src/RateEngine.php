@@ -178,12 +178,11 @@ class RateEngine
         ORDER BY LENGTH(dialprefix) DESC";
 
         $params = array_merge($prefix_params, [$tariffgroupid, $minutes_since_monday, $minutes_since_monday, $tariffgroupid, $mydnid, $mydnid, $tariffgroupid, $mycallerid, $tariffgroupid, $mycallerid]);
-        $result = $A2B->DBHandle->Execute($QUERY, $params);
+        $result = $A2B->DBHandle->GetAll($QUERY, $params);
 
-        if (!$result || $result->RowCount() === 0) {
+        if (!$result) {
             return 0; // NO RATE FOR THIS NUMBER
         }
-        $result = $result->GetAll();
 
         if ($this->debug_st) {
             echo "::> Count Total result " . count($result) . "\n\n";
@@ -446,11 +445,10 @@ class RateEngine
                                 " AND cc_package_offer.id = cc_package_rate.package_id AND cc_package_rate.rate_id = ?" .
                                 " ORDER BY packagetype ASC";
             $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[PACKAGE IN:$query_pakages ]");
-            $result_packages = $A2B->DBHandle->Execute($query_pakages, [$id_cc_package_offer, $id_rate]);
+            $result_packages = $A2B->DBHandle->GetAll($query_pakages, [$id_cc_package_offer, $id_rate]);
             $idx_pack = 0;
 
-            if ($result_packages && $result_packages->RowCount() > 0) {
-                $result_packages = $result_packages->GetAll();
+            if ($result_packages) {
                 $package_selected = false;
 
                 while (!$package_selected && $idx_pack < count($result_packages)) {
@@ -1340,11 +1338,8 @@ class RateEngine
             //$myres = $agi->agi_exec("EXEC DIAL SIP/3465078XXXXX@254.20.7.28|30|HL(" . ($timeout * 60 * 1000) . ":60000:30000)");
 
             $QUERY = "SELECT cid FROM cc_outbound_cid_list WHERE activated = 1 AND outbound_cid_group = ? ORDER BY RAND() LIMIT 1";
-
-            $cidresult = $A2B->DBHandle->Execute($QUERY, [$cidgroupid]);
-            $outcid = 0;
-            if ($cidresult && $row = $cidresult->FetchRow()) {
-                $outcid = $row[0];
+            $outcid = $A2B->DBHandle->GetOne($QUERY, [$cidgroupid]) ?: 0;
+            if ($outcid) {
                 # Uncomment this line if you want to save the outbound_cid in the CDR
                 //$A2B->CallerID = $outcid;
                 $agi->set_callerid($outcid);
@@ -1393,9 +1388,9 @@ class RateEngine
                 $destination = $old_destination;
 
                 $QUERY = "SELECT trunkprefix, providertech, providerip, removeprefix, failover_trunk, status, inuse, maxuse, if_max_use FROM cc_trunk WHERE id_trunk = ?";
-                $result = $A2B->DBHandle->Execute($QUERY, [$failover_trunk]);
+                $row = $A2B->DBHandle->GetRow($QUERY, [$failover_trunk]);
 
-                if ($result && $row = $result->FetchRow()) {
+                if ($row) {
 
                     //DO SELECT WITH THE FAILOVER_TRUNKID
                     $prefix              = $row["trunkprefix"];

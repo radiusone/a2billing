@@ -49,8 +49,7 @@ if (empty($id)) {
 
 $DBHandle  = DbConnect();
 
-$result = $DBHandle->Execute("SELECT * FROM cc_agent WHERE id = ?", [$id]);
-$agent = $result ? $result->FetchRow() : null;
+$agent = $DBHandle->GetRow("SELECT * FROM cc_agent WHERE id = ?", [$id]);
 
 if (empty($agent)) {
     header("Location: A2B_entity_agent.php?section=2");

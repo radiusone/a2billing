@@ -52,10 +52,7 @@ $handle = DbConnect();
 
 $setbool = false;
 if ($form_action === "ask-edit") {
-    $result = $handle->Execute("SELECT config_listvalues FROM cc_config WHERE id = ?", [$id]);
-    if ($result && $row = $result->FetchRow()) {
-        $setbool = ($row[0] === "yes,no" || $row[0] === "no,yes");
-    }
+    $setbool = (bool)$handle->GetOne("SELECT IF(config_listvalues = 'yes,no' OR config_listvalues = 'no,yes', 1, 0) FROM cc_config WHERE id = ?", [$id]);
 }
 
 $HD_Form = new FormHandler("cc_config", _("Configuration"));
@@ -64,8 +61,7 @@ $HD_Form->FG_TABLE_DEFAULT_ORDER = "config_group_title";
 
 if ($form_action === "list") {
     $yesno = [];
-    $result = $handle->Execute("SELECT config_value, config_valuetype, id FROM cc_config ORDER BY id");
-    $config_list = $result ? $result->GetAll() : [];
+    $config_list = $handle->GetAll("SELECT config_value, config_valuetype, id FROM cc_config ORDER BY id");
     foreach ($config_list as $key => $cur_value) {
         $i = $cur_value[2];
         if ($cur_value[1] !== '1') {

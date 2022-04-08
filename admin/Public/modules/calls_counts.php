@@ -57,8 +57,7 @@ while ($row = $result->FetchRow()) {
     // 1 = answered, 2= no answer, 3 = cancelled, 4 = congested, 5 = busy, 6 = chanunavil
 }
 
-$result = $DBHandle->Execute($QUERY_COUNT_CALL_BILL);
-$row = $result->FetchRow();
+$row = $DBHandle->GetRow($QUERY_COUNT_CALL_BILL);
 $call_times = $row[0];
 $call_sell = a2b_round($row[1]);
 $call_buy = a2b_round($row[2]);

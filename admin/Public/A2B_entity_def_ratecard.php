@@ -198,10 +198,10 @@ if ($form_action === "list" && $HD_Form->search_form_enabled && $_POST['posted_s
 
 $list = $HD_Form->perform_action($form_action);
 
-$list_tariffname = $HD_Form->DBHandle->Execute("SELECT id, tariffname FROM cc_tariffplan ORDER BY tariffname")->GetAll();
-$list_trunk = $HD_Form->DBHandle->Execute("SELECT id_trunk, trunkcode, providerip FROM cc_trunk ORDER BY trunkcode")->GetAll();
-$list_cid_group = $HD_Form->DBHandle->Execute("SELECT id, group_name FROM cc_outbound_cid_group ORDER BY group_name")->GetAll();
-$list_tariffgroup = $HD_Form->DBHandle->Execute("SELECT id, tariffgroupname, lcrtype FROM cc_tariffgroup ORDER BY tariffgroupname")->GetAll();
+$list_tariffname = $HD_Form->DBHandle->GetAll("SELECT id, tariffname FROM cc_tariffplan ORDER BY tariffname");
+$list_trunk = $HD_Form->DBHandle->GetAll("SELECT id_trunk, trunkcode, providerip FROM cc_trunk ORDER BY trunkcode");
+$list_cid_group = $HD_Form->DBHandle->GetAll("SELECT id, group_name FROM cc_outbound_cid_group ORDER BY group_name");
+$list_tariffgroup = $HD_Form->DBHandle->GetAll("SELECT id, tariffgroupname, lcrtype FROM cc_tariffgroup ORDER BY tariffgroupname");
 
 // #### HEADER SECTION
 $smarty->display('main.tpl');

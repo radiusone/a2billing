@@ -58,11 +58,10 @@ $HD_Form->create_toppage($form_action);
 
 [$new_group_title, $first_group_title] = agi_confx_title(); // calling function  to generate agi-conf(title_number)
 
-$result = $HD_Form->DBHandle->Execute(
+$config = $HD_Form->DBHandle->GetAll(
     "SELECT config_title, config_key, config_value, config_description FROM cc_config WHERE config_group_title = ? ORDER BY config_key LIMIT 20",
     [$first_group_title]
 );
-$config = $result ? $result->GetAll() : [];
 
 ?>
 <div class="row-pb-3">

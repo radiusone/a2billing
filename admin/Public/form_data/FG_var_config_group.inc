@@ -113,8 +113,7 @@ function agi_confx_title(): array
     $handle = DbConnect();
 
     $QUERY = "SELECT id, group_title, group_description FROM cc_config_group WHERE group_title like 'agi-conf%' ORDER BY group_title";
-    $result = $handle->Execute($QUERY);
-    $result = $result ? $result->GetAll() : [];
+    $result = $handle->GetAll($QUERY);
 
     $agi_number = [];
     foreach ($result as $row) {
