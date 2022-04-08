@@ -134,7 +134,11 @@ if (($download ?? "") === "file" && !empty($file)) {
     exit ();
 }
 
-$HD_Form = new FormHandler("cc_call", gettext("CDR"));
+$HD_Form = new FormHandler(
+    "cc_call LEFT OUTER JOIN cc_trunk ON cc_call.id_trunk = cc_trunk.id_trunk LEFT OUTER JOIN cc_ratecard ON cc_call.id_ratecard = cc_ratecard.id LEFT OUTER JOIN cc_card ON cc_call.card_id = cc_card.id",
+    gettext("CDR"),
+    "cc_call.id"
+);
 $HD_Form->init();
 
 $currencies_list = array_map(fn ($v) => array_reverse($v), getCurrenciesList());
@@ -153,16 +157,15 @@ $calltype_list = [
 ];
 
 $HD_Form->no_debug();
-$HD_Form->FG_QUERY_TABLE_NAME = "cc_call LEFT OUTER JOIN cc_trunk ON cc_call.id_trunk = cc_trunk.id_trunk LEFT OUTER JOIN cc_ratecard ON cc_call.id_ratecard = cc_ratecard.id LEFT OUTER JOIN cc_card ON cc_call.card_id = cc_card.id";
 $HD_Form->FG_QUERY_COLUMN_LIST = 'cc_call.starttime, cc_call.src, cc_call.dnid, cc_call.calledstation, cc_call.destination AS dest, cc_ratecard.buyrate, cc_ratecard.rateinitial, cc_call.sessiontime, cc_call.card_id, cc_trunk.trunkcode, cc_call.terminatecauseid, cc_call.sipiax, cc_call.buycost, cc_call.sessionbill, CASE WHEN cc_call.sessionbill != 0 THEN ((cc_call.sessionbill - cc_call.buycost) / cc_call.sessionbill) * 100 ELSE NULL END AS margin, CASE WHEN cc_call.buycost != 0 THEN ((cc_call.sessionbill - cc_call.buycost) / cc_call.buycost) * 100 ELSE NULL END AS markup, cc_call.id, cc_trunk.id_provider, cc_trunk.id_trunk AS trunk_id';
 
 $DBHandle = DbConnect ();
 
-$HD_Form->AddViewElement(_("Date"), "starttime", true, 19, "display_dateformat");
+$HD_Form->AddViewElement(_("Date"), "cc_call.starttime", true, 19, "display_dateformat");
 $HD_Form->AddViewElement(_("CallerID"), "src");
 $HD_Form->AddViewElement(_("DNID"), "dnid");
 $HD_Form->AddViewElement(_("Phone Number"), "calledstation");
-$HD_Form->AddViewElement(_("Destination"), "dest", true, 15, "", "lie", "cc_prefix", "destination,prefix", "prefix='%id'", "%1");
+$HD_Form->AddViewElement(_("Destination"), "cc_call.destintation", true, 15, "", "lie", "cc_prefix", "destination,prefix", "prefix='%id'", "%1");
 $HD_Form->AddViewElement(_("Buy Rate"), "buyrate", true, 30, "display_2bill");
 $HD_Form->AddViewElement(_("Sell Rate"), "rateinitial", true, 30, "display_2bill");
 $HD_Form->AddViewElement(_("Duration"), "sessiontime", true, 30, "display_minute");
@@ -172,8 +175,8 @@ $HD_Form->AddViewElement(_("Disposition"), "terminatecauseid", true, "", null, "
 $HD_Form->AddViewElement(_("CallType"), "sipiax", true, 0, "", "list", $calltype_list);
 $HD_Form->AddViewElement(_("Buy"), "buycost", true, 30, "display_2bill");
 $HD_Form->AddViewElement(_("Sell"), "sessionbill", true, 30, "display_2bill");
-$HD_Form->AddViewElement(_("Margin"), "margin", true, 30, "display_2dec_percentage");
-$HD_Form->AddViewElement(_("Markup"), "markup", true, 30, "display_2dec_percentage");
+$HD_Form->AddViewElement(_("Margin"), "CASE WHEN cc_call.sessionbill != 0 THEN ((cc_call.sessionbill - cc_call.buycost) / cc_call.sessionbill) * 100 ELSE NULL END", true, 30, "display_2dec_percentage");
+$HD_Form->AddViewElement(_("Markup"), "CASE WHEN cc_call.buycost != 0 THEN ((cc_call.sessionbill - cc_call.buycost) / cc_call.buycost) * 100 ELSE NULL END AS markup", true, 30, "display_2dec_percentage");
 
 $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form->FG_DELETE_BUTTON_LINK = "A2B_entity_call.php?form_action=ask-delete&id=";
@@ -227,22 +230,21 @@ $HD_Form->FG_FILTER_SEARCH_FORM_SELECT_INPUTS[] = [_("Time unit"), false, "choos
 $HD_Form->search_delete_enabled = false;
 
 $form_action = $form_action ?? "list";
-if (!$nodisplay) {
-    $HD_Form->prepare_list_subselection('list');
-    $list = $HD_Form->perform_action($form_action);
+if ($nodisplay) {
+    $date = (new DateTime('-5 days'))->format("Y-m-d");
+    $HD_Form->FG_QUERY_WHERE_CLAUSE = "cc_call.starttime > '$date'";
 }
+$HD_Form->prepare_list_subselection('list');
+$list = $HD_Form->perform_action($form_action);
 
 $smarty->display ( 'main.tpl' );
 $HD_Form->create_search_form(true);
 
-if (!$nodisplay) {
-    $HD_Form->create_toppage($form_action);
-    $HD_Form->create_form("list", $list);
-}
+$HD_Form->create_toppage($form_action);
+$HD_Form->create_form("list", $list);
+
 ?>
 <!-- ** ** ** ** ** Part to display the GRAPHIC ** ** ** ** ** -->
-
-<br>
 
 <?php
 $list_total_day = [];
