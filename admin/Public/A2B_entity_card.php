@@ -551,13 +551,13 @@ function sendValue(selvalue, othervalue) {
                         <div class="col-4">
                             <input name="check[upd_id_seria]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if ($check["upd_id_seria"] === "on"): ?> checked="checked"<?php endif ?> class="form-check-input"/>
                             <label class="form-label form-label-sm" for="upd_id_seria">
-                                <?= _("Move to Seria") ?> <!-- TODO: figure out WTF this means -->
+                                <?= _("Move to Card Series") ?>
                             </label>
                         </div>
                         <div class="col">
                             <select name="upd_id_seria" id="upd_id_seria" class="form-select form-select-sm">
                                 <?php foreach ($list_seria as $v): ?>
-                                    <option value="<?= $v[0] ?>" <?php if ($upd_id_seria == $v[0]): ?>selected="selected"<?php endif ?>><?= $v[1] ?></option>
+                                    <option value="<?= $v[0] ?>" <?php if ($upd_id_seria === $v[0]): ?>selected="selected"<?php endif ?>><?= $v[1] ?></option>
                                 <?php endforeach ?>
                             </select>
                         </div>
@@ -588,7 +588,7 @@ function sendValue(selvalue, othervalue) {
                         <div class="col">
                             <select name="upd_country" id="upd_country" class="form-select form-select-sm">
                                 <?php foreach ($list_country as $v): ?>
-                                    <option value="<?= $v[0] ?>" <?php if ($upd_country == $v[0]): ?>selected="selected"<?php endif ?>><?= $v[1] ?></option>
+                                    <option value="<?= $v[0] ?>" <?php if (($upd_country ?? $A2B->config["global"]["base_country"] ?? "") === $v[0]): ?>selected="selected"<?php endif ?>><?= $v[1] ?></option>
                                 <?php endforeach ?>
                             </select>
                         </div>

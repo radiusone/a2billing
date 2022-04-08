@@ -24,21 +24,75 @@ getpost_ifset(['letter', 'current_page', 'popup_select']);
  * @var int $popup_select
  */
 $hasActionButtons = ($this->FG_ENABLE_DELETE_BUTTON || $this->FG_ENABLE_INFO_BUTTON || $this->FG_ENABLE_EDIT_BUTTON || $this->FG_OTHER_BUTTON1 || $this->FG_OTHER_BUTTON2 || $this->FG_OTHER_BUTTON3 || $this->FG_OTHER_BUTTON4 || $this->FG_OTHER_BUTTON5);
+
+if (empty($list)) {
+    echo "<div class='row pb-3 justify-content-center'><div class='col-8'>$this->CV_NO_FIELDS</div></div>";
+    return;
+}
 ?>
 
-<?php if( $popup_select < 1 && ($this->FG_LIST_ADDING_BUTTON1 || $this->FG_LIST_ADDING_BUTTON2)): ?>
-<div class="row pb-3 justify-content-end align-items-center">
-    <?php if($this->FG_LIST_ADDING_BUTTON1 && !empty($this->FG_LIST_ADDING_BUTTON_MSG1)): ?>
+<?php if (($this -> FG_FILTER_ENABLE || $this -> FG_FILTER2_ENABLE) || ($popup_select < 1 && ($this->FG_LIST_ADDING_BUTTON1 || $this->FG_LIST_ADDING_BUTTON2))): ?>
+<div class="row pb-3 align-items-end">
+    <?php if ($this -> FG_FILTER_ENABLE || $this -> FG_FILTER2_ENABLE): ?>
+    <form name="theFormFilter" action="" class="col">
+        <input type="hidden" name="popup_select" value="<?= $processed['popup_select'] ?>"/>
+        <input type="hidden" name="popup_formname" value="<?= $processed['popup_formname'] ?>"/>
+        <input type="hidden" name="popup_fieldname" value="<?= $processed['popup_fieldname'] ?>"/>
+        <input type="hidden" name="form_action" value="list"/>
+        <?php foreach ($processed as $key => $val): ?>
+            <?php if (!empty($key) && $key !== 'current_page' && $key !== 'id'): ?>
+            <input type="hidden" name="<?= $key?>" value="<?= $val?>"/>
+            <?php endif ?>
+        <?php endforeach ?>
+        <div class="row align-items-end">
+            <?php if ($this->FG_FILTER_ENABLE): ?>
+            <div class="col-auto">
+                <label for="filterprefix" class="form-label">
+                    <?= gettext("Filter on") ?>
+                    <?= $this->FG_FILTER_LABEL ?>:
+                </label>
+                <input
+                    type="text"
+                    id="filterprefix"
+                    name="filterprefix"
+                    value="<?= $processed['filterprefix'] ?>"
+                    class="form-control form-control-sm"
+                />
+            </div>
+            <?php endif ?>
+
+            <?php if ($this->FG_FILTER2_ENABLE): ?>
+            <div class="col-auto">
+                <label for="filterprefix2" class="form-label">
+                    <?= gettext("Filter on");?>
+                    <?= $this->FG_FILTER2_LABEL ?>:
+                </label>
+                <input
+                    type="text"
+                    id="filterprefix2"
+                    name="filterprefix2"
+                    value=""
+                    class="form-control form-control-sm"
+                />
+            </div>
+            <?php endif ?>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-sm btn-primary"><?= _("Apply Filter") ?></button>
+            </div>
+        </div>
+    </form>
+    <?php endif ?>
+    <?php if ($popup_select < 1 && $this->FG_LIST_ADDING_BUTTON1 && !empty($this->FG_LIST_ADDING_BUTTON_MSG1)): ?>
         <div class="col-auto">
             <a href="<?= $this->FG_LIST_ADDING_BUTTON_LINK1 ?>" class="text-decoration-none">
                 <?= $this->FG_LIST_ADDING_BUTTON_MSG1 ?>
                 <?php if (!empty($this->FG_LIST_ADDING_BUTTON_IMG1)): ?>
-                <img src="<?= $this->FG_LIST_ADDING_BUTTON_IMG1 ?>" alt="<?= $this->FG_LIST_ADDING_BUTTON_ALT1 ?? "" ?>">
+                    <img src="<?= $this->FG_LIST_ADDING_BUTTON_IMG1 ?>" alt="<?= $this->FG_LIST_ADDING_BUTTON_ALT1 ?? "" ?>">
                 <?php endif ?>
             </a>
         </div>
     <?php endif ?>
-    <?php if($this->FG_LIST_ADDING_BUTTON2 && !empty($this->FG_LIST_ADDING_BUTTON_MSG2)): ?>
+    <?php if($popup_select < 1 && $this->FG_LIST_ADDING_BUTTON2 && !empty($this->FG_LIST_ADDING_BUTTON_MSG2)): ?>
         <div class="col-auto">
             <a href="<?= $this->FG_LIST_ADDING_BUTTON_LINK2 ?>" class="text-decoration-none">
                 <?= $this->FG_LIST_ADDING_BUTTON_MSG2 ?>
@@ -48,68 +102,6 @@ $hasActionButtons = ($this->FG_ENABLE_DELETE_BUTTON || $this->FG_ENABLE_INFO_BUT
             </a>
         </div>
     <?php endif ?>
-</div>
-<?php endif ?>
-
-
-<?php if (empty($list)): ?>
-<div class="row pb-3 justify-content-center">
-    <div class="col-8">
-        <?= $this -> CV_NO_FIELDS ?>
-    </div>
-</div>
-<?php return ?>
-<?php endif ?>
-
-<?php if ($this -> FG_FILTER_ENABLE || $this -> FG_FILTER2_ENABLE): ?>
-<div class="row pb-3">
-<form name="theFormFilter" action="" class="col">
-    <input type="hidden" name="popup_select" value="<?= $processed['popup_select'] ?>"/>
-    <input type="hidden" name="popup_formname" value="<?= $processed['popup_formname'] ?>"/>
-    <input type="hidden" name="popup_fieldname" value="<?= $processed['popup_fieldname'] ?>"/>
-    <input type="hidden" name="form_action" value="list"/>
-    <?php foreach ($processed as $key => $val): ?>
-        <?php if (!empty($key) && $key !== 'current_page' && $key !== 'id'): ?>
-        <input type="hidden" name="<?= $key?>" value="<?= $val?>"/>
-        <?php endif ?>
-    <?php endforeach ?>
-    <div class="row pb-3 align-items-center">
-        <?php if ($this->FG_FILTER_ENABLE): ?>
-        <div class="col-auto">
-            <label for="filterprefix" class="form-label d-inline w-50">
-                <?= gettext("Filter on") ?>
-                <?= $this->FG_FILTER_LABEL ?>:
-            </label>
-            <input
-                type="text"
-                id="filterprefix"
-                name="filterprefix"
-                value="<?= $processed['filterprefix'] ?>"
-                class="form-control form-control-sm d-inline w-50"
-            />
-        </div>
-        <?php endif ?>
-
-        <?php if ($this->FG_FILTER2_ENABLE): ?>
-        <div class="col-auto">
-            <label for="filterprefix2" class="form-label d-inline w-50">
-                <?= gettext("Filter on");?>
-                <?= $this->FG_FILTER2_LABEL ?>:
-            </label>
-            <input
-                type="text"
-                id="filterprefix2"
-                name="filterprefix2"
-                value=""
-                class="form-control form-control-sm d-inline w-50"
-            />
-        </div>
-        <?php endif ?>
-        <div class="col-auto">
-            <button type="submit" class="btn btn-sm btn-primary"><?= gettext("APPLY FILTER ") ?></button>
-        </div>
-    </div>
-</form>
 </div>
 <?php endif ?>
 

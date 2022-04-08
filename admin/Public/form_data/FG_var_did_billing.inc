@@ -34,29 +34,18 @@ use A2billing\Forms\FormHandler;
  *
 **/
 
-if (! has_rights (ACX_ADMINISTRATOR)) {
-    Header ("HTTP/1.0 401 Unauthorized");
-    Header ("Location: PP_error.php?c=accessdenied");
-    die();
-}
-
-
-getpost_ifset(array('posted', 'Period', 'frommonth', 'fromstatsmonth', 'tomonth', 'tostatsmonth', 'fromday', 'fromstatsday_sday', 'fromstatsmonth_sday', 'today', 'tostatsday_sday', 'tostatsmonth_sday', 'current_page'));
-
-
-$HD_Form = new FormHandler("cc_call INNER JOIN cc_did ON cc_did.id = cc_call.id_did INNER JOIN cc_card ON cc_card.id = cc_call.card_id", "did billing");
+$HD_Form = new FormHandler("cc_call INNER JOIN cc_did ON cc_did.id = cc_call.id_did INNER JOIN cc_card ON cc_card.id = cc_call.card_id", "did billing", "cc_did.id");
 
 $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "date";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 $HD_Form -> FG_QUERY_WHERE_CLAUSE = "( sipiax = 2 OR sipiax = 3) ";
 
-
-$HD_Form -> AddViewElement(gettext("DATE"), "starttime", false);
+$HD_Form -> AddViewElement(gettext("DATE"), "date(starttime) as date", false);
 $HD_Form -> AddViewElement(gettext("DID"), "cc_did.did", false);
-$HD_Form -> AddViewElement(gettext("NB_CALL"), "nb_call", false);
-$HD_Form -> AddViewElement(gettext("TOTAL_DURATION"), "t_time", false);
-$HD_Form -> AddViewElement(gettext("TOTAL_COST"), "t_cost", false);
+$HD_Form -> AddViewElement(gettext("NB_CALL"), "count(*)", false);
+$HD_Form -> AddViewElement(gettext("TOTAL_DURATION"), "sum(sessiontime)", false);
+$HD_Form -> AddViewElement(gettext("TOTAL_COST"), "sum(sessionbill)", false);
 $HD_Form -> AddViewElement(gettext("CARDNUMBER"), "username", false);
 
 // added a parameter to append  FG_TABLE_ID  ( by default ) or disable 0.
