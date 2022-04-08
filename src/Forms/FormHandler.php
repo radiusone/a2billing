@@ -1925,6 +1925,22 @@ class FormHandler
 
     }
 
+    public function create_search_button(string $content = null): string
+    {
+        $class = "btn-outline-primary";
+        $title = _("Search Customers");
+        if (!empty($_SESSION[$this->search_session_key])) {
+            $class = "btn-primary btn-search-active";
+            $title .= " (" . _("search activated") . ")";
+        }
+        $content = htmlspecialchars($content ?? sprintf(_("Search %s"), $this->FG_INSTANCE_NAME));
+
+        return <<< HTML
+        <button class="btn btn-sm $class" data-bs-toggle="modal" data-bs-target="#searchModal" title="$title">$content</button>
+
+        HTML;
+    }
+
     /**
      * Function to create the form
      *

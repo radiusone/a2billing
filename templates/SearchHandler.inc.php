@@ -17,14 +17,7 @@ $action = http_build_query([
 <?php if ($full_modal && $with_hide_button): ?>
 <div class="row pb-3 justify-content-center">
     <div class="col-auto">
-        <button
-                class="btn btn-sm <?= empty($_SESSION[$HD_Form->search_session_key]) ? "btn-outline-primary" : "btn-primary" ?>"
-                data-bs-toggle="modal"
-                data-bs-target="#searchModal"
-                title="<?= sprintf(_("Search %s"), $this->FG_INSTANCE_NAME) ?> <?= empty($_SESSION[$HD_Form->search_session_key]) ? "" : "(" . _("search activated") . ")" ?>"
-        >
-            <?= sprintf(_("Search %s"), $this->FG_INSTANCE_NAME) ?>
-        </button>
+        <?= $this->create_search_button() ?>
     </div>
 </div>
 <?php endif ?>
