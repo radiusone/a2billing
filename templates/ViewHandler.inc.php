@@ -83,7 +83,7 @@ if (empty($list)) {
     </form>
     <?php endif ?>
     <?php if ($popup_select < 1 && $this->FG_LIST_ADDING_BUTTON1 && !empty($this->FG_LIST_ADDING_BUTTON_MSG1)): ?>
-        <div class="col-auto">
+        <div class="col-auto ms-auto">
             <a href="<?= $this->FG_LIST_ADDING_BUTTON_LINK1 ?>" class="text-decoration-none">
                 <?= $this->FG_LIST_ADDING_BUTTON_MSG1 ?>
                 <?php if (!empty($this->FG_LIST_ADDING_BUTTON_IMG1)): ?>
@@ -93,7 +93,7 @@ if (empty($list)) {
         </div>
     <?php endif ?>
     <?php if($popup_select < 1 && $this->FG_LIST_ADDING_BUTTON2 && !empty($this->FG_LIST_ADDING_BUTTON_MSG2)): ?>
-        <div class="col-auto">
+        <div class="col-auto ms-auto">
             <a href="<?= $this->FG_LIST_ADDING_BUTTON_LINK2 ?>" class="text-decoration-none">
                 <?= $this->FG_LIST_ADDING_BUTTON_MSG2 ?>
                 <?php if (!empty($this->FG_LIST_ADDING_BUTTON_IMG2)): ?>
