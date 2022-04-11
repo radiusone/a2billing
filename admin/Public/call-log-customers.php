@@ -99,14 +99,14 @@ $dialstatus_list = getDialStatusList();
 $dialstatus_list_r = array_map(fn ($v) => array_reverse($v), $dialstatus_list);
 $yesno = getYesNoList();
 $calltype_list = [
-    [0, _("STANDARD")],
-    [1, _("SIP/IAX")],
-    [2, _("DIDCALL")],
-    [3, _("DID_VOIP")],
-    [4, _("CALLBACK")],
-    [5, _("PREDICT")],
-    [6, _("AUTO DIALER")],
-    [7, _("DID-ALEG")],
+    [_("STANDARD")],
+    [_("SIP/IAX")],
+    [_("DIDCALL")],
+    [_("DID_VOIP")],
+    [_("CALLBACK")],
+    [_("PREDICT")],
+    [_("AUTO DIALER")],
+    [_("DID-ALEG")],
 ];
 
 $HD_Form->no_debug();
