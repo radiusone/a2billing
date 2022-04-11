@@ -1434,7 +1434,7 @@ class FormHandler
             }
         }
 
-        $_SESSION[$this->search_session_key] = json_encode(array_filter($search));
+        $_SESSION[$this->search_session_key] = json_encode(array_filter($search, fn($v) => is_string($v) && strlen($v)));
 
         $this->FG_QUERY_WHERE_CLAUSE = preg_replace("/^ *WHERE +/", "", $SQLcmd);
         $date_clause = preg_replace("/^ AND /", "", $date_clause);
