@@ -1,6 +1,5 @@
 <?php
 
-use A2billing\Factory\SmartyFactory;
 use A2billing\NotificationsDAO;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -63,7 +62,7 @@ const TEMPLATE_DIR = __DIR__ . '/../../admin/Public/templates/';
 const TEMPLATE_C_DIR = __DIR__ . '/../../admin/templates_c/';
 require_once __DIR__ . "/../../vendor/autoload.php";
 
-$smarty = SmartyFactory::getInstance();
+$smarty = new Smarty();
 
 $skin_name = $_SESSION["stylefile"];
 
