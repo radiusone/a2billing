@@ -58,7 +58,7 @@ $action = http_build_query([
                     </div>
                 </div>
                 <div class="col-4">
-                    <input type="date" name="search_start_date" id="search_start_date" value="<?= $processed["search_start_date"] ?? (new DateTime())->format("Y-m-d") ?>" aria-label="<?= _("search start date") ?>"/>
+                    <input type="date" name="search_start_date" id="search_start_date" value="<?= $processed["search_start_date"] ?? (new DateTime())->format("Y-m-d") ?>" aria-label="<?= _("search start date") ?>" class="form-control form-control-sm"/>
                 </div>
             </div>
             <div class="row pb-1">
@@ -69,7 +69,7 @@ $action = http_build_query([
                     </div>
                 </div>
                 <div class="col-4">
-                    <input type="date" name="search_end_date" id="search_end_date" value="<?= $processed["search_end_date"] ?? (new DateTime('+1 month'))->format("Y-m-d") ?>" aria-label="<?= _("search end date") ?>"/>
+                    <input type="date" name="search_end_date" id="search_end_date" value="<?= $processed["search_end_date"] ?? (new DateTime('+1 month'))->format("Y-m-d") ?>" aria-label="<?= _("search end date") ?>" class="form-control form-control-sm"/>
                 </div>
             </div>
         </div>
@@ -88,7 +88,7 @@ $action = http_build_query([
                     <label for="enable_search_start_date2"><?= gettext("From :") ?></label>
                 </div>
                 <div class="col-4">
-                    <input type="date" name="search_start_date2" id="search_start_date2" value="<?= $processed["search_start_date2"] ?? (new DateTime())->format("Y-m-d") ?>" aria-label="<?= _("search start date") ?>"/>
+                    <input type="date" name="search_start_date2" id="search_start_date2" value="<?= $processed["search_start_date2"] ?? (new DateTime())->format("Y-m-d") ?>" aria-label="<?= _("search start date") ?>" class="form-control form-control-sm"/>
                 </div>
             </div>
             <div class="row pb-1">
@@ -97,7 +97,7 @@ $action = http_build_query([
                     <label for="tostatsday_sday_bis"><?= gettext("To :") ?></label>
                 </div>
                 <div class="col-4">
-                    <input type="date" name="search_end_date2" id="search_end_date2" value="<?= $processed["search_end_date2"] ?? (new DateTime('+1 month'))->format("Y-m-d") ?>" aria-label="<?= _("search end date") ?>"/>
+                    <input type="date" name="search_end_date2" id="search_end_date2" value="<?= $processed["search_end_date2"] ?? (new DateTime('+1 month'))->format("Y-m-d") ?>" aria-label="<?= _("search end date") ?>" class="form-control form-control-sm"/>
                 </div>
             </div>
         </div>
@@ -115,9 +115,9 @@ $action = http_build_query([
                     <input type="checkbox" name="enable_search_months" id="enable_search_months" value="true" aria-label="<?= _("enable the search for months ago")?>" <?php if ($processed["enable_search_start_date2"]): ?>checked="checked"<?php endif ?> class="form-check-input"/>
                 </div>
                 <div class="col-4">
-                    <select name="search_date_months" id="search_date_months" class="form-select form-select-sm">
+                    <select name="search_months" id="search_months" class="form-select form-select-sm">
                         <?php for ($i=3 ; $i<=12 ; $i++): ?>
-                        <option <?php if ($processed['search_date_months'] === "$i"): ?>selected="selected"<?php endif ?>><?= sprintf("%d months", $i) ?></option>
+                        <option <?php if ($processed['search_months'] === "$i"): ?>selected="selected"<?php endif ?>><?= sprintf("%d months", $i) ?></option>
                         <?php endfor ?>
                     </select>
                 </div>

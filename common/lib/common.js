@@ -49,9 +49,18 @@ $(function() {
             calendars[id].popup();
         });
 
-    /*
+    /***
     Search form dates
-     */
+    ***/
+    $("#enable_search_start_date, #enable_search_start_date2, #enable_search_end_date, #enable_search_end_date2, #enable_search_months")
+        .on("change", function(e) {
+            const id = this.getAttribute("id").replace(/^enable_/, "");
+            $(`#${id}`).prop("disabled", !this.checked);
+        })
+        .trigger("change");
+
+    /* Old search form dates */
+
     function setValidDay(monthEl, dayEl)
     {
         let ym = monthEl.val().split(/-/);
