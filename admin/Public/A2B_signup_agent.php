@@ -35,6 +35,7 @@ use A2billing\Table;
  *
 **/
 
+$menu_section = 2;
 require_once "../../common/lib/admin.defines.php";
 
 if (! has_rights (ACX_ADMINISTRATOR)) {
@@ -165,7 +166,7 @@ echo $CC_help_generate_signup;
                 </tr>
                 <tr>
                  <td  width="50%" align="center">
-                        <a class="cssbutton_big"  href="A2B_entity_signup_agent.php?section=2">
+                        <a class="cssbutton_big"  href="A2B_entity_signup_agent.php">
                             <?php echo gettext("RETURN TO URL KEY LIST"); ?>
                         </a>
                   </td>

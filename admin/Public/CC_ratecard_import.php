@@ -35,6 +35,7 @@ use A2billing\Table;
  * 
 **/
 
+$menu_section = 6;
 require_once "../../common/lib/admin.defines.php";
 
 set_time_limit(0);

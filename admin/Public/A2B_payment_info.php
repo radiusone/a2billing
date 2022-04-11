@@ -35,6 +35,7 @@ use A2billing\Table;
  *
 **/
 
+$menu_section = 10;
 require_once "../../common/lib/admin.defines.php";
 
 if (! has_rights (ACX_BILLING)) {
@@ -46,7 +47,7 @@ if (! has_rights (ACX_BILLING)) {
 getpost_ifset(array('id'));
 
 if (empty($id)) {
-    header("Location: A2B_entity_payment.php?section=10");
+    header("Location: A2B_entity_payment.php");
 }
 
 $DBHandle  = DbConnect();
@@ -57,7 +58,7 @@ $payment_result = $payment_table -> get_list($DBHandle, $payment_clause);
 $payment = $payment_result[0];
 
 if (empty($payment)) {
-    header("Location: A2B_entity_payment.php?section=10");
+    header("Location: A2B_entity_payment.php");
 }
 
 // #### HEADER SECTION
@@ -134,7 +135,7 @@ $smarty->display('main.tpl');
  </table>
  <br/>
 <div style="width : 80%; text-align : right; margin-left:auto;margin-right:auto;" >
-     <a class="cssbutton_big"  href="A2B_entity_payment.php?section=10">
+     <a class="cssbutton_big"  href="A2B_entity_payment.php">
         <img src="<?php echo Images_Path_Main;?>/icon_arrow_orange.gif"/>
         <?php echo gettext("PAYMENTS LIST"); ?>
     </a>

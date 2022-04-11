@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Factory\SmartyFactory;
+use A2billing\NotificationsDAO;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -35,6 +36,26 @@ use A2billing\Factory\SmartyFactory;
  *
 **/
 
+/**
+ * @var string $popup_select From common.defines.php
+ * @var string $menu_section From the individual page
+ * @var bool $ACXSETTING Following from admin.module.access.php
+ * @var bool $ACXINVOICING
+ * @var bool $ACXPACKAGEOFFER
+ * @var bool $ACXOUTBOUNDCID
+ * @var bool $ACXCALLBACK
+ * @var bool $ACXSUPPORT
+ * @var bool $ACXMAINTENANCE
+ * @var bool $ACXADMINISTRATOR
+ * @var bool $ACXCRONTSERVICE
+ * @var bool $ACXCALLREPORT
+ * @var bool $ACXMAIL
+ * @var bool $ACXDID
+ * @var bool $ACXTRUNK
+ * @var bool $ACXRATECARD
+ * @var bool $ACXBILLING
+ * @var bool $ACXCUSTOMER
+ */
 error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
 
 const SMARTY_DIR = __DIR__ . '/../../vendor/smarty/smarty/libs/';
@@ -58,10 +79,9 @@ $smarty->assign("SKIN_NAME", $skin_name);
 if (!is_numeric($popup_select)) {
     $popup_select=0;
 }
-$smarty->assign("popupwindow", $popup_select);
+$smarty->assign("menu_section", $menu_section);
+$smarty->assign("popupwindow", $popup_select > 0);
 
-$smarty->assign("ACXACCESS", $ACXACCESS);
-$smarty->assign("ACXDASHBOARD", $ACXDASHBOARD);
 $smarty->assign("ACXCUSTOMER", $ACXCUSTOMER);
 $smarty->assign("ACXBILLING", $ACXBILLING);
 $smarty->assign("ACXRATECARD", $ACXRATECARD);
@@ -70,30 +90,21 @@ $smarty->assign("ACXDID", $ACXDID);
 $smarty->assign("ACXMAIL", $ACXMAIL);
 $smarty->assign("ACXCALLREPORT", $ACXCALLREPORT);
 $smarty->assign("ACXCRONTSERVICE", $ACXCRONTSERVICE);
-$smarty->assign("ACXMISC", $ACXMISC);
 $smarty->assign("ACXADMINISTRATOR", $ACXADMINISTRATOR);
 $smarty->assign("ACXMAINTENANCE", $ACXMAINTENANCE);
 $smarty->assign("ACXSUPPORT", $ACXSUPPORT);
 $smarty->assign("ACXCALLBACK", $ACXCALLBACK);
 $smarty->assign("ACXOUTBOUNDCID", $ACXOUTBOUNDCID);
 $smarty->assign("ACXPACKAGEOFFER", $ACXPACKAGEOFFER);
-$smarty->assign("ACXPREDICTIVEDIALER", $ACXPREDICTIVEDIALER);
 $smarty->assign("ACXINVOICING", $ACXINVOICING);
 $smarty->assign("ACXSETTING", $ACXSETTING);
-$smarty->assign("NEW_NOTIFICATION", $NEW_NOTIFICATION);
+if(isset($_SESSION["admin_id"])) {
+    $smarty->assign("NEW_NOTIFICATION", NotificationsDAO::IfNewNotification($_SESSION["admin_id"]));
+} else {
+    $smarty->assign("NEW_NOTIFICATION", null);
+}
 
 $smarty->assign("HTTP_HOST", $_SERVER['HTTP_HOST']);
 $smarty->assign("ASTERISK_GUI_LINK", ASTERISK_GUI_LINK);
-
-$section = $_SESSION["menu_section"];
-
-$smarty->assign("section", $section);
-
-$smarty->assign("adminname", $_SESSION["pr_login"]);
-
-// OPTION FOR THE MENU
-$smarty->assign("A2Bconfig", $A2B->config);
-
-$smarty->assign("PAGE_SELF", $PHP_SELF);
 
 $smarty->disableSecurity();

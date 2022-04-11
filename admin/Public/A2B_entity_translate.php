@@ -35,6 +35,7 @@ use A2billing\Table;
  *
 **/
 
+$menu_section = 17;
 require_once "../../common/lib/admin.defines.php";
 
 if (!has_rights(ACX_MAIL)) {

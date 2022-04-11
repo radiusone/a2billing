@@ -35,6 +35,7 @@ use A2billing\Logger;
  *
 **/
 
+$menu_section = 1;
 // Common includes
 require_once "../../common/lib/admin.defines.php";
 

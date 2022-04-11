@@ -33,6 +33,7 @@
  *
 **/
 
+$menu_section = 16;
 require_once "../../common/lib/admin.defines.php";
 include './form_data/FG_var_log_viewer.inc';
 

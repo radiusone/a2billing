@@ -33,6 +33,7 @@
  *
 **/
 
+$menu_section = 2;
 require_once "../../common/lib/admin.defines.php";
 
 if (! has_rights (ACX_ADMINISTRATOR)) {
@@ -44,7 +45,7 @@ if (! has_rights (ACX_ADMINISTRATOR)) {
 getpost_ifset(array('id'));
 
 if (empty($id)) {
-    header("Location: A2B_entity_agent.php?section=2");
+    header("Location: A2B_entity_agent.php");
 }
 
 $DBHandle  = DbConnect();
@@ -52,7 +53,7 @@ $DBHandle  = DbConnect();
 $agent = $DBHandle->GetRow("SELECT * FROM cc_agent WHERE id = ?", [$id]);
 
 if (empty($agent)) {
-    header("Location: A2B_entity_agent.php?section=2");
+    header("Location: A2B_entity_agent.php");
 }
 
 // #### HEADER SECTION
@@ -210,7 +211,7 @@ $lg_liste= getLanguages();
  </table>
  <br/>
 <div style="width : 80%; text-align : right; margin-left:auto;margin-right:auto;" >
-     <a class="cssbutton_big"  href="A2B_entity_agent.php?section=2">
+     <a class="cssbutton_big"  href="A2B_entity_agent.php">
         <img src="<?php echo Images_Path_Main;?>/icon_arrow_orange.gif"/>
         <?php echo gettext("AGENT LIST"); ?>
     </a>

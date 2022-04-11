@@ -35,7 +35,7 @@ use A2billing\Forms\FormHandler;
  *
  *
 **/
-
+$menu_section = 1;
 require_once "../../common/lib/admin.defines.php";
 require('./form_data/FG_var_card.inc');
 /**
@@ -644,7 +644,7 @@ $HD_Form->create_toppage ($form_action);
 if (!$popup_select && $form_action === "ask-add"):?>
 <div class="row pb-3">
     <div class="col">
-        <form action="?form_action=ask-add&section=1" method="post" name="cardform">
+        <form action="?form_action=ask-add" method="post" name="cardform">
             <?= $HD_Form->csrf_inputs() ?>
             <label for="cardnumber_length"><?= _("Change the account number length") ?></label>
             <select name="cardnumber_length" id="cardnumber_length" onchange="this.form.submit()">

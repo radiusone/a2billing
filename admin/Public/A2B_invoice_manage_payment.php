@@ -33,6 +33,7 @@
  *
 **/
 
+$menu_section = 11;
 require_once "../../common/lib/admin.defines.php";
 include '../lib/support/classes/invoice.php';
 include '../lib/support/classes/invoiceItem.php';
@@ -46,7 +47,7 @@ if (! has_rights (ACX_INVOICING)) {
 getpost_ifset(array('id','addpayment','delpayment','status'));
 
 if (empty($id)) {
-    Header ("Location: A2B_entity_invoice.php?section=13");
+    Header ("Location: A2B_entity_invoice.php");
 }
 
 $invoice = new invoice($id);

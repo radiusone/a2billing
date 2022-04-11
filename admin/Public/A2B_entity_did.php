@@ -1,5 +1,7 @@
 <?php
 
+use A2billing\Forms\FormHandler;
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
@@ -33,8 +35,7 @@
  *
 **/
 
-use A2billing\Forms\FormHandler;
-
+$menu_section = 8;
 require_once "../../common/lib/admin.defines.php";
 include './form_data/FG_var_did.inc';
 /**

@@ -33,6 +33,7 @@
  *
 **/
 
+$menu_section = 4;
 require_once "../../common/lib/admin.defines.php";
 include './form_data/FG_var_support_component.inc';
 

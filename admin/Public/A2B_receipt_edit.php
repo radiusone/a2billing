@@ -35,6 +35,7 @@ use A2billing\Table;
  *
 **/
 
+$menu_section = 11;
 require_once "../../common/lib/admin.defines.php";
 include '../lib/support/classes/receipt.php';
 include '../lib/support/classes/receiptItem.php';
@@ -48,7 +49,7 @@ if (! has_rights (ACX_INVOICING)) {
 getpost_ifset(array('date','id','action','price','description','idc'));
 
 if (empty($id)) {
-    Header ("Location: A2B_entity_receipt.php?section=13");
+    Header ("Location: A2B_entity_receipt.php");
 }
 
 if (!empty($action)) {

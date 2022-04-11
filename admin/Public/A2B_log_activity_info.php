@@ -35,6 +35,7 @@ use A2billing\Table;
  *
 **/
 
+$menu_section = 16;
 require_once "../../common/lib/admin.defines.php";
 
 if (! has_rights (ACX_ADMINISTRATOR)) {
@@ -46,7 +47,7 @@ if (! has_rights (ACX_ADMINISTRATOR)) {
 getpost_ifset(array('id'));
 
 if (empty($id)) {
-    header("Location: A2B_entity_log_viewer.php?section=16");
+    header("Location: A2B_entity_log_viewer.php");
 }
 
 $DBHandle  = DbConnect();
@@ -57,7 +58,7 @@ $log_result = $log_table -> get_list($DBHandle, $log_clause);
 $log = $log_result[0];
 
 if (empty($log)) {
-    header("Location: A2B_entity_log_viewer.php?section=16");
+    header("Location: A2B_entity_log_viewer.php");
 }
 
 // #### HEADER SECTION
@@ -147,7 +148,7 @@ $smarty->display('main.tpl');
  </table>
  <br/>
 <div style="width : 80%; text-align : right; margin-left:auto;margin-right:auto;" >
-     <a class="cssbutton_big"  href="A2B_entity_log_viewer.php?section=16">
+     <a class="cssbutton_big"  href="A2B_entity_log_viewer.php">
         <img src="<?php echo Images_Path_Main;?>/icon_arrow_orange.gif"/>
         <?php echo gettext("LOG LIST"); ?>
     </a>

@@ -36,6 +36,7 @@ use A2billing\RateEngine;
  *
 **/
 
+$menu_section = 6;
 require_once "../../common/lib/admin.defines.php";
 
 if (! has_rights (ACX_RATECARD)) {

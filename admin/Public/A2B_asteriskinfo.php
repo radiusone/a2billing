@@ -33,6 +33,7 @@
  *
 **/
 
+$menu_section = 16;
 require_once "../../common/lib/admin.defines.php";
 
 if (! has_rights (ACX_MAINTENANCE)) {
@@ -141,8 +142,8 @@ $i=0;
 foreach ($modes as $mode => $value) {
     $i++;
     if ($i > 1) echo " | ";
-    //echo "<li><a id=\"".($extdisplay==$mode)."\" href=\"".filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?&section=".$section."type=".urlencode("tool")."&display=".urlencode($dispnum)."&extdisplay=".urlencode($mode)."\">"._($value)."</a></li>";
-    echo "<a id=\"".($extdisplay==$mode)."\" href=\"".filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?section=".$section."&type=".urlencode("tool")."&display=".urlencode($dispnum)."&extdisplay=".urlencode($mode)."\">"._($value)."</a>";
+    //echo "<li><a id=\"".($extdisplay==$mode)."\" href=\"".filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?type=".urlencode("tool")."&display=".urlencode($dispnum)."&extdisplay=".urlencode($mode)."\">"._($value)."</a></li>";
+    echo "<a id=\"".($extdisplay==$mode)."\" href=\"".filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?type=".urlencode("tool")."&display=".urlencode($dispnum)."&extdisplay=".urlencode($mode)."\">"._($value)."</a>";
 }
 ?>
 </ul></div>

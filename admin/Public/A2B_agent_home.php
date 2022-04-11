@@ -33,6 +33,7 @@
  *
 **/
 
+$menu_section = 2;
 require_once "../../common/lib/admin.defines.php";
 
 if (!has_rights(ACX_ADMINISTRATOR)) {
@@ -44,7 +45,7 @@ if (!has_rights(ACX_ADMINISTRATOR)) {
 getpost_ifset(array('id','result','action','message','id_msg','type','logo'));
 
 if (empty($id)) {
-    header("Location: A2B_entity_agent.php?section=2");
+    header("Location: A2B_entity_agent.php");
 }
 if ($result == "success") {
     $message_action = gettext("Home updated successfully");

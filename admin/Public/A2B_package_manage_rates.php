@@ -35,6 +35,7 @@ use A2billing\Table;
  *
 **/
 
+$menu_section = 6;
 require_once "../../common/lib/admin.defines.php";
 
 if (! has_rights (ACX_PACKAGEOFFER)) {
@@ -46,7 +47,7 @@ if (! has_rights (ACX_PACKAGEOFFER)) {
 getpost_ifset(array('id', 'addrate', 'delallrate', 'addbatchrate', 'delrate', 'id_trunk', 'id_tariffplan','tag', 'prefix', 'destination', 'rbDestination', 'rbPrefix'));
 
 if (empty($id)) {
-    Header ("Location: A2B_entity_package.php?section=12");
+    Header ("Location: A2B_entity_package.php");
 }
 
 $table_pack = new Table("cc_package_offer ","*");
@@ -54,7 +55,7 @@ $pack_clauses = "id = $id";
 $result_pack=$table_pack ->get_list(DbConnect(), $pack_clauses);
 
 if (!is_array($result_pack)|| sizeof($result_pack)!=1) {
-    Header ("Location: A2B_entity_package.php?section=12");
+    Header ("Location: A2B_entity_package.php");
 }
 
 if (isset($addbatchrate) && ($addbatchrate)) {

@@ -35,6 +35,7 @@ use A2billing\Table;
  *
 **/
 
+$menu_section = 3;
 require_once "../../common/lib/admin.defines.php";
 
 if (! has_rights (ACX_ADMINISTRATOR)) {
@@ -48,13 +49,13 @@ getpost_ifset(array('id','groupID'));
 if(!is_numeric($groupID) || ($groupID != 0 && $groupID != 1)) $groupID =0;
 
 if (empty($id)) {
-    header("Location: A2B_entity_user.php?groupID=$groupID&section=3");
+    header("Location: A2B_entity_user.php?groupID=$groupID");
 }
 
 $DBHandle  = DbConnect();
 $admin = $DBHandle->GetRow("SELECT * FROM cc_ui_authen WHERE userid = ?", [$id]);
 if (!$admin) {
-    header("Location: A2B_entity_user.php?groupID=$groupID&section=3");
+    header("Location: A2B_entity_user.php?groupID=$groupID");
 }
 
 // #### HEADER SECTION
@@ -164,7 +165,7 @@ $lg_liste= getLanguages();
  </table>
  <br/>
 <div style="width : 80%; text-align : right; margin-left:auto;margin-right:auto;" >
-     <a class="cssbutton_big"  href="<?php echo "A2B_entity_user.php?groupID=$groupID&section=3" ?>">
+     <a class="cssbutton_big"  href="<?php echo "A2B_entity_user.php?groupID=$groupID" ?>">
         <img src="<?php echo Images_Path_Main;?>/icon_arrow_orange.gif"/>
         <?php echo gettext("AGENT LIST"); ?>
     </a>

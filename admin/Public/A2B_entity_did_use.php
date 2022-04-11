@@ -35,6 +35,7 @@ use A2billing\Table;
  *
 **/
 
+$menu_section = 8;
 require_once "../../common/lib/admin.defines.php";
 include_once './form_data/FG_var_diduse.inc';
 

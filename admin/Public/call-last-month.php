@@ -33,6 +33,7 @@
  *
 **/
 
+$menu_section = 5;
 require_once "../../common/lib/admin.defines.php";
 
 if (! has_rights (ACX_CALL_REPORT)) {

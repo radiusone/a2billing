@@ -35,6 +35,7 @@ use A2billing\Table;
  *
 **/
 
+$menu_section = 10;
 require_once "../../common/lib/admin.defines.php";
 include './form_data/FG_var_moneysituation.inc';
 

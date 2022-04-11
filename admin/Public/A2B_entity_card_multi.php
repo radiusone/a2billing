@@ -38,6 +38,7 @@ use A2billing\Realtime;
  *
 **/
 
+$menu_section = 1;
 require_once "../../common/lib/admin.defines.php";
 include './form_data/FG_var_card.inc';
 /**

@@ -35,6 +35,7 @@ use A2billing\Forms\FormHandler;
  *
 **/
 
+$menu_section = 5;
 require_once "../../common/lib/admin.defines.php";
 /**
  * @var SmartyBC $smarty

@@ -48,6 +48,7 @@
  *          Rob Birkinshaw <robert.birkinshaw@utah.edu>
  */
 
+$menu_section = 18;
 // add for a2billing
 require_once "../../common/lib/admin.defines.php";
 

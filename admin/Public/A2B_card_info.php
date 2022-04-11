@@ -33,6 +33,7 @@
  *
 **/
 
+$menu_section = 1;
 require_once "../../common/lib/admin.defines.php";
 
 if (! has_rights (ACX_CUSTOMER)) {
@@ -44,7 +45,7 @@ if (! has_rights (ACX_CUSTOMER)) {
 getpost_ifset(array('id'));
 
 if (empty($id)) {
-    header("Location: A2B_entity_card.php?section=1");
+    header("Location: A2B_entity_card.php");
 }
 
 $DBHandle  = DbConnect();
@@ -52,7 +53,7 @@ $DBHandle  = DbConnect();
 $card = $DBHandle->GetRow("SELECT * FROM cc_card WHERE id = ?", [$id]);
 
 if (empty($card)) {
-    header("Location: A2B_entity_card.php?section=1");
+    header("Location: A2B_entity_card.php");
 }
 
 // #### HEADER SECTION
@@ -610,7 +611,7 @@ echo get_login_button ($DBHandle, $id);
 <br/>
 
 <div style="width : 90%; text-align : right; margin-left:auto;margin-right:auto;" >
-     <a class="cssbutton_big"  href="A2B_entity_card.php?section=1">
+     <a class="cssbutton_big"  href="A2B_entity_card.php">
         <img src="<?php echo Images_Path_Main;?>/icon_arrow_orange.gif"/>
         <?php echo gettext("CUSTOMERS LIST"); ?>
     </a>
@@ -886,7 +887,7 @@ if ( (sizeof($payment_result)>0 && $payment_result[0]!=null) ||
 ?>
 <br/>
 <div style="width : 90%; text-align : right; margin-left:auto;margin-right:auto;" >
-     <a class="cssbutton_big"  href="A2B_entity_card.php?section=1">
+     <a class="cssbutton_big"  href="A2B_entity_card.php">
         <img src="<?php echo Images_Path_Main;?>/icon_arrow_orange.gif"/>
         <?php echo gettext("CUSTOMERS LIST"); ?>
     </a>

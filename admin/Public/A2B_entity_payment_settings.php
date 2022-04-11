@@ -35,6 +35,7 @@ use A2billing\Table;
  *
 **/
 
+$menu_section = 10;
 require_once "../../common/lib/admin.defines.php";
 include '../lib/epayment/classes/payment.php';
 include '../lib/epayment/classes/objectinfo.php';

@@ -173,7 +173,3 @@ $ACXMODIFY_PAYMENTS 	= has_rights(ACX_MODIFY_PAYMENTS);
 $ACXMODIFY_CUSTOMERS 	= has_rights(ACX_MODIFY_CUSTOMERS);
 $ACXDELETE_NOTIFICATIONS= has_rights(ACX_DELETE_NOTIFICATIONS);
 $ACXDELETE_CDR			= has_rights(ACX_DELETE_CDR);
-
-if(isset($_SESSION["admin_id"])) {
-    $NEW_NOTIFICATION = NotificationsDAO::IfNewNotification($_SESSION["admin_id"]);
-}

@@ -36,6 +36,7 @@ use A2billing\Forms\FormHandler;
  *
 **/
 
+$menu_section = 8;
 require_once "../../common/lib/admin.defines.php";
 require_once './form_data/FG_var_did_destination.inc';
 /**
