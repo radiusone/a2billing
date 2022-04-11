@@ -1080,7 +1080,7 @@ class FormHandler
     {
         $processed = $this->getProcessed();
 
-        if (empty($processed[$column])) {
+        if (!isset($processed[$column]) || $processed[$column] === "") {
             return $sql;
         }
 
