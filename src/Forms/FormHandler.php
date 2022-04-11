@@ -1350,10 +1350,10 @@ class FormHandler
 
         $search = extract_keys(
             $processed,
-            "frommonth", "fromday", "fromstatsmonth", "fromsatssday_sday", "fromstatsmonth_sday",
-            "tomonth", "today", "tostatsmonth", "tosatssday_sday", "tostatsmonth_sday",
-            "frommonth_bis", "fromday_bis", "fromstatsmonth_bis", "fromsatssday_sday_bis", "fromstatsmonth_sday_bis",
-            "tomonth_bis", "today_bis", "tostatsmonth_bis", "tosatssday_sday_bis", "tostatsmonth_sday_bis",
+            "frommonth", "fromday", "fromstatsmonth", "fromsatsday_sday", "fromstatsmonth_sday",
+            "tomonth", "today", "tostatsmonth", "tosatsday_sday", "tostatsmonth_sday",
+            "frommonth_bis", "fromday_bis", "fromstatsmonth_bis", "fromsatsday_sday_bis", "fromstatsmonth_sday_bis",
+            "tomonth_bis", "today_bis", "tostatsmonth_bis", "tosatsday_sday_bis", "tostatsmonth_sday_bis",
             "Period", "month_earlier",
         );
 
@@ -1373,7 +1373,7 @@ class FormHandler
             }
         }
 
-        $_SESSION[$this->search_session_key] = json_encode($search);
+        $_SESSION[$this->search_session_key] = json_encode(array_filter($search));
 
         $date_clause = '';
 
