@@ -6,6 +6,7 @@ use A2billing\Connection;
 use A2billing\Logger;
 use A2billing\Table;
 use ADOConnection;
+use DateTime;
 use Profiler_Console as Console;
 use const PASSWORD_DEFAULT;
 
@@ -1341,39 +1342,22 @@ class FormHandler
             return;
         }
 
+        $SQLcmd = '';
+
+        /** Old search field names */
         $this->_processed["fromstatsday_sday"] = normalize_day_of_month($processed["fromstatsday_sday"], $processed["fromstatsmonth_sday"]);
         $this->_processed["tostatsday_sday"] = normalize_day_of_month($processed["tostatsday_sday"], $processed["tostatsmonth_sday"]);
         $this->_processed["fromstatsday_sday_bis"] = normalize_day_of_month($processed["fromstatsday_sday_bis"], $processed["fromstatsmonth_sday_bis"]);
         $this->_processed["tostatsday_sday_bis"] = normalize_day_of_month($processed["tostatsday_sday_bis"], $processed["tostatsmonth_sday_bis"]);
 
-        $SQLcmd = '';
-
         $search = extract_keys(
             $processed,
-            "frommonth", "fromday", "fromstatsmonth", "fromsatsday_sday", "fromstatsmonth_sday",
-            "tomonth", "today", "tostatsmonth", "tosatsday_sday", "tostatsmonth_sday",
-            "frommonth_bis", "fromday_bis", "fromstatsmonth_bis", "fromsatsday_sday_bis", "fromstatsmonth_sday_bis",
-            "tomonth_bis", "today_bis", "tostatsmonth_bis", "tosatsday_sday_bis", "tostatsmonth_sday_bis",
+            "frommonth", "fromday", "fromstatsmonth", "fromstatsday_sday", "fromstatsmonth_sday",
+            "tomonth", "today", "tostatsmonth", "tostatsday_sday", "tostatsmonth_sday",
+            "frommonth_bis", "fromday_bis", "fromstatsmonth_bis", "fromstatsday_sday_bis", "fromstatsmonth_sday_bis",
+            "tomonth_bis", "today_bis", "tostatsmonth_bis", "tostatsday_sday_bis", "tostatsmonth_sday_bis",
             "Period", "month_earlier",
         );
-
-        foreach ($this->search_form_elements as $el) {
-            foreach ($el["input"] as $i => $input) {
-                $search[$input] = $processed[$input];
-                if (!empty($el["operator"][$i])) {
-                    $search[$el["operator"][$i]] = $processed[$el["operator"][$i]];
-                }
-                if ($el["type"] === "TEXT") {
-                    $SQLcmd = $this->do_field($SQLcmd, $input, $el["operator"][$i]);
-                } elseif ($el["type"] === "COMPARISON") {
-                    $SQLcmd = $this->do_field_duration($SQLcmd, $el["column"], $el["operator"][$i], $input);
-                } elseif ($el["type"] === "SELECT" || $el["type"] === "SQL_SELECT" || $el["type"] === "POPUP") {
-                    $SQLcmd = $this->do_field($SQLcmd, $input);
-                }
-            }
-        }
-
-        $_SESSION[$this->search_session_key] = json_encode(array_filter($search));
 
         $date_clause = '';
 
@@ -1400,6 +1384,57 @@ class FormHandler
             $dt = sprintf("%s-%02d 23:59:59", $processed["tostatsmonth_sday_bis"], $processed["tostatsday_sday_bis"]);
             $date_clause .= " AND $this->search_date2_column <= '$dt'";
         }
+
+        /** New search field names */
+        $search2 = extract_keys(
+            $processed,
+            "enable_search_start_date", "search_start_date", "enable_search_start_date2", "search_start_date2",
+            "enable_search_end_date", "search_end_date", "enable_search_end_date2", "search_end_date2",
+            "enable_search_months", "search_months",
+        );
+
+        if (!empty($processed["enable_search_start_date"]) && !empty($processed["search_start_date"])) {
+            $dt = $this->DBHandle->qStr($processed["search_start_date"]);
+            $date_clause .= " AND $this->search_date_column >= $dt";
+        }
+        if (!empty($processed["enable_search_start_date2"]) && !empty($processed["search_start_date2"])) {
+            $dt = $this->DBHandle->qStr($processed["search_start_date2"]);
+            $date_clause .= " AND $this->search_date2_column >= $dt";
+        }
+        if (!empty($processed["enable_search_end_date"]) && !empty($processed["search_end_date"])) {
+            $dt = $this->DBHandle->qStr($processed["search_end_date"] . "23:59:59");
+            $date_clause .= " AND $this->search_date_column <= $dt";
+        }
+        if (!empty($processed["enable_search_end_date2"]) && !empty($processed["search_end_date2"])) {
+            $dt = $this->DBHandle->qStr($processed["search_end_date2"] . "23:59:59");
+            $date_clause .= " AND $this->search_date2_column <= $dt";
+        }
+        if (!empty($processed["enable_search_months"]) && !empty($processed["search_months"] * 1)) {
+            $mo = $processed["search_months"] * 1;
+            $dt = $this->DBHandle->qStr((new DateTime("-$mo months"))->format("Y-m-d"));
+            $date_clause .= "AND $this->search_months_ago_column < $dt";
+        }
+
+        // temporary until we get rid of old search forms
+        $search = array_merge($search, $search2);
+
+        foreach ($this->search_form_elements as $el) {
+            foreach ($el["input"] as $i => $input) {
+                $search[$input] = $processed[$input];
+                if (!empty($el["operator"][$i])) {
+                    $search[$el["operator"][$i]] = $processed[$el["operator"][$i]];
+                }
+                if ($el["type"] === "TEXT") {
+                    $SQLcmd = $this->do_field($SQLcmd, $input, $el["operator"][$i]);
+                } elseif ($el["type"] === "COMPARISON") {
+                    $SQLcmd = $this->do_field_duration($SQLcmd, $el["column"], $el["operator"][$i], $input);
+                } elseif ($el["type"] === "SELECT" || $el["type"] === "SQL_SELECT" || $el["type"] === "POPUP") {
+                    $SQLcmd = $this->do_field($SQLcmd, $input);
+                }
+            }
+        }
+
+        $_SESSION[$this->search_session_key] = json_encode(array_filter($search));
 
         $this->FG_QUERY_WHERE_CLAUSE = preg_replace("/^ *WHERE +/", "", $SQLcmd);
         $date_clause = preg_replace("/^ AND /", "", $date_clause);
@@ -2135,7 +2170,7 @@ class FormHandler
         $month_list = [
             "", _("January"), _("February"), _("March"), _("April"), _("May"),
             _("June"), _("July"), _("August"), _("September"), _("October"),
-            _("November"), _("December")
+            _("November"), _("December"),
         ];
         $this_year = date("Y");
         $this_month = date("n");
