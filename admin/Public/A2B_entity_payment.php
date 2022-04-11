@@ -41,7 +41,7 @@ require_once "../../common/lib/admin.defines.php";
 include './form_data/FG_var_payment.inc';
 /**
  * @var A2Billing $A2B
- * @var SmartyBC $smarty
+ * @var Smarty $smarty
  * @var FormHandler $HD_Form
  * @var string $CC_help_view_payment
  * @var string $id

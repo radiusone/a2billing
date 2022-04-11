@@ -38,7 +38,7 @@ use A2billing\Forms\FormHandler;
 $menu_section = 5;
 require_once "../../common/lib/admin.defines.php";
 /**
- * @var SmartyBC $smarty
+ * @var Smarty $smarty
  */
 
 if (! has_rights ( ACX_CALL_REPORT )) {

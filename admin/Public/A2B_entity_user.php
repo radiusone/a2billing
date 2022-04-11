@@ -41,7 +41,7 @@ require_once "../../common/lib/admin.defines.php";
 require_once "./form_data/FG_var_user.inc";
 /**
  * @var A2Billing $A2B
- * @var SmartyBC $smarty
+ * @var Smarty $smarty
  * @var FormHandler $HD_Form
  * @var string $popup_select
  * @var string $form_action

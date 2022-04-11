@@ -40,7 +40,7 @@ require_once "../../common/lib/admin.defines.php";
 include './form_data/FG_var_logrefill.inc';
 /**
  * @var FormHandler $HD_Form
- * @var SmartyBC $smarty
+ * @var Smarty $smarty
  * @var string $form_action
  * @var string $id
  * @var string $CC_help_view_refill

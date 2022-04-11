@@ -40,7 +40,7 @@ require_once "../../common/lib/admin.defines.php";
 include './form_data/FG_var_did.inc';
 /**
  * @var FormHandler $HD_Form
- * @var SmartyBC $smarty
+ * @var Smarty $smarty
  * @var string $CC_help_list_did
  * @var string $CC_help_edit_did
  */

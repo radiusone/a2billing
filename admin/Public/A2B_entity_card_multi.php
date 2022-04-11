@@ -44,7 +44,7 @@ include './form_data/FG_var_card.inc';
 /**
  * @var FormHandler $HD_Form
  * @var A2Billing $A2B
- * @var SmartyBC $smarty
+ * @var Smarty $smarty
  * @var string $form_action
  * @var string $action
  * @var string $CC_help_generate_customer

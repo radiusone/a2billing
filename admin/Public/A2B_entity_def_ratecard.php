@@ -41,7 +41,7 @@ require_once "../../common/lib/admin.defines.php";
 include './form_data/FG_var_def_ratecard.inc';
 /**
  * @var A2Billing $A2B
- * @var SmartyBC $smarty
+ * @var Smarty $smarty
  * @var FormHandler $HD_Form
  * @var string $CC_help_rate
  * @var string $CC_help_def_ratecard

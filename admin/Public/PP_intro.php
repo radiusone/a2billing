@@ -36,7 +36,7 @@
 require_once "../../common/lib/admin.defines.php";
 /**
  * @var int $ACXACCESS
- * @var SmartyBC $smarty
+ * @var Smarty $smarty
  */
 
 if (!$ACXACCESS) {

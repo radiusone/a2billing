@@ -40,7 +40,7 @@ require_once "../../common/lib/admin.defines.php";
 require('./form_data/FG_var_card.inc');
 /**
  * @var A2Billing $A2B
- * @var SmartyBC $smarty
+ * @var Smarty $smarty
  * @var FormHandler $HD_Form
  * @var string $CC_help_list_customer
  * @var string $CC_help_create_customer

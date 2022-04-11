@@ -40,7 +40,7 @@ require_once "../../common/lib/admin.defines.php";
 include './form_data/FG_var_ticket.inc';
 /**
  * @var FormHandler $HD_Form
- * @var SmartyBC $smarty
+ * @var Smarty $smarty
  * @var string $CC_help_support_list
  */
 

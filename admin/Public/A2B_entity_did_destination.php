@@ -41,7 +41,7 @@ require_once "../../common/lib/admin.defines.php";
 require_once './form_data/FG_var_did_destination.inc';
 /**
  * @var A2Billing $A2B
- * @var SmartyBC $smarty
+ * @var Smarty $smarty
  * @var FormHandler $HD_Form
  * @var string $id
  * @var string $CC_help_list_did

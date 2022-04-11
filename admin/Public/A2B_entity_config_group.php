@@ -40,7 +40,7 @@ require_once "../../common/lib/admin.defines.php";
 include './form_data/FG_var_config_group.inc';
 /**
  * @var FormHandler $HD_Form
- * @var SmartyBC $smarty
+ * @var Smarty $smarty
  * @var string $id
  * @var string $form_action
  * @var string $CC_help_list_global_config
