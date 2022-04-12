@@ -398,13 +398,14 @@ class FormHandler
                 unset($_SESSION['CSRF_TOKEN']);
             }
         }
-        // Initializing anti csrf token (Generate a key, concat it with salt and hash it)
-        $this->FG_CSRF_TOKEN = hash('SHA256', CSRF_SALT . $this->genCsrfTokenKey());
-        $_SESSION['CSRF_TOKEN'] = $this->FG_CSRF_TOKEN;
-        if ($this->FG_DEBUG) {
-            echo 'CSRF NEW TOKEN : ' . $this->FG_CSRF_TOKEN . '<br />';
+        if (empty($_REQUEST["popup_select"])) {
+            // Initializing anti csrf token (Generate a key, concat it with salt and hash it)
+            $this->FG_CSRF_TOKEN = hash('SHA256', CSRF_SALT . $this->genCsrfTokenKey());
+            $_SESSION['CSRF_TOKEN'] = $this->FG_CSRF_TOKEN;
+            if ($this->FG_DEBUG) {
+                echo 'CSRF NEW TOKEN : ' . $this->FG_CSRF_TOKEN . '<br />';
+            }
         }
-
         $this->_vars = array_merge($_GET, $_POST);
 
         $this->def_list();

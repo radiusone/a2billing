@@ -120,3 +120,9 @@ form.form-striped > div.row:nth-of-type(2n + 1) {
         transform: scale(1.1, 1.5);
     }
 }
+
+div.input-group > div > select {
+    border-right: none;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
