@@ -143,6 +143,9 @@ $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 25;
 
 $HD_Form->CV_TITLE_TEXT = _("Call Logs");
 
+$HD_Form->FG_TABLE_DEFAULT_ORDER = "cc_call.starttime";
+$HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
+
 // EXPORT
 $HD_Form->FG_EXPORT_CSV = true;
 $HD_Form->FG_EXPORT_XML = true;
