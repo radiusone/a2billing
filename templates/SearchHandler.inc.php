@@ -44,7 +44,7 @@ $action = http_build_query([
     </div>
 <?php endif ?>
 
-<?php if ($this -> search_date_enabled): ?>
+<?php if ($this->search_date_enabled): ?>
     <div class="row pb-1">
         <label class="col-4 col-form-label col-form-label-sm">
             <?= $this->search_date_text ?>
@@ -52,7 +52,15 @@ $action = http_build_query([
         <div class="col-4">
             <div class="input-group">
                 <div class="input-group-text">
-                    <input type="checkbox" name="enable_search_start_date" id="enable_search_start_date" value="true" aria-label="<?= _("enable the search start date")?>" <?php if ($processed["enable_search_start_date"]): ?>checked="checked"<?php endif ?> class="form-check-input m-0"/>
+                    <input
+                        type="checkbox"
+                        name="enable_search_start_date"
+                        id="enable_search_start_date"
+                        value="true"
+                        aria-label="<?= _("enable the search start date")?>"
+                        <?php if ($processed["enable_search_start_date"]): ?>checked="checked"<?php endif ?>
+                        class="form-check-input m-0"
+                    />&nbsp;<label for="enable_search_start_date" class="form-label form-label-sm"><?=_("From") ?></label>
                 </div>
                 <input type="date" name="search_start_date" id="search_start_date" value="<?= $processed["search_start_date"] ?? (new DateTime())->format("Y-m-d") ?>" aria-label="<?= _("search start date") ?>" class="form-control form-control-sm"/>
             </div>
@@ -60,7 +68,15 @@ $action = http_build_query([
         <div class="col-4">
             <div class="input-group">
                 <div class="input-group-text">
-                    <input type="checkbox" name="enable_search_end_date" id="enable_search_end_date" value="true" aria-label="<?= _("enable the search end date") ?>" <?php if ($processed["enable_search_end_date"]): ?>checked="checked"<?php endif ?> class="form-check-input m-0"/>
+                    <input
+                        type="checkbox"
+                        name="enable_search_end_date"
+                        id="enable_search_end_date"
+                        value="true"
+                        aria-label="<?= _("enable the search end date") ?>"
+                        <?php if ($processed["enable_search_end_date"]): ?>checked="checked"<?php endif ?>
+                        class="form-check-input m-0"
+                    />&nbsp;<label for="enable_search_end_date" class="form-label form-label-sm"><?=_("To") ?></label>
                 </div>
                 <input type="date" name="search_end_date" id="search_end_date" value="<?= $processed["search_end_date"] ?? (new DateTime('+1 month'))->format("Y-m-d") ?>" aria-label="<?= _("search end date") ?>" class="form-control form-control-sm"/>
             </div>
@@ -76,7 +92,15 @@ $action = http_build_query([
         <div class="col-4">
             <div class="input-group">
                 <div class="input-group-text">
-                    <input type="checkbox" name="enable_search_start_date2" id="enable_search_start_date2" value="true" aria-label="<?= _("enable the search start date")?>" <?php if ($processed["enable_search_start_date2"]): ?>checked="checked"<?php endif ?> class="form-check-input m-0"/>
+                    <input
+                        type="checkbox"
+                        name="enable_search_start_date2"
+                        id="enable_search_start_date2"
+                        value="true"
+                        aria-label="<?= _("enable the search start date")?>"
+                        <?php if ($processed["enable_search_start_date2"]): ?>checked="checked"<?php endif ?>
+                        class="form-check-input m-0"
+                    />&nbsp;<label for="enable_search_start_date2" class="form-label form-label-sm"><?=_("From") ?></label>
                 </div>
                 <input type="date" name="search_start_date2" id="search_start_date2" value="<?= $processed["search_start_date2"] ?? (new DateTime())->format("Y-m-d") ?>" aria-label="<?= _("search start date") ?>" class="form-control form-control-sm"/>
             </div>
@@ -84,7 +108,15 @@ $action = http_build_query([
         <div class="col-4">
             <div class="input-group">
                 <div class="input-group-text">
-                    <input type="checkbox" name="enable_search_end_date" id="enable_search_end_date2" value="true" aria-label="<?= _("enable the search end date") ?>" <?php if ($processed["enable_search_end_date2"]): ?>checked="checked"<?php endif ?> class="form-check-input m-0"/>
+                    <input
+                        type="checkbox"
+                        name="enable_search_end_date"
+                        id="enable_search_end_date2"
+                        value="true"
+                        aria-label="<?= _("enable the search end date") ?>"
+                        <?php if ($processed["enable_search_end_date2"]): ?>checked="checked"<?php endif ?>
+                        class="form-check-input m-0"
+                    />&nbsp;<label for="enable_search_end_date2" class="form-label form-label-sm"><?=_("To") ?></label>
                 </div>
                 <input type="date" name="search_end_date2" id="search_end_date2" value="<?= $processed["search_end_date2"] ?? (new DateTime('+1 month'))->format("Y-m-d") ?>" aria-label="<?= _("search end date") ?>" class="form-control form-control-sm"/>
             </div>
