@@ -696,22 +696,21 @@ function get_nameofagent($id): string
 
 /**
  * Used as callback for list elements
- * @param int|string $did
+ * @param string $did
  * @return void
  * @noinspection PhpUnusedFunctionInspection
  */
-function display_did($did): void
+function display_did(string $did): void
 {
     echo get_formatted_did($did);
 }
 
 /**
  * Used as callback for list/form elements
- * @param int|string $did
+ * @param string $did
  * @return void
- * @noinspection PhpUnusedFunctionInspection
  */
-function get_formatted_did($did): string
+function get_formatted_did(string $did): string
 {
     $value = $did;
     if (empty($did) || !is_numeric($did)) {
@@ -729,6 +728,17 @@ function get_formatted_did($did): string
     }
 
     return $value;
+}
+
+/**
+ * Used as callback for list elements
+ * @param string $num
+ * @return void
+ * @noinspection PhpUnusedFunctionInspection
+ */
+function display_phone_number(string $num): void
+{
+    echo format_phone_number($num);
 }
 
 function format_phone_number(string $value): string
