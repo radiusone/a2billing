@@ -52,8 +52,6 @@ global $letter;
 getpost_ifset (['current_page', 'order', 'sens', 'download', 'file', 'nodisplay']);
 /**
  * @var string $current_page
- * @var string $order
- * @var string $sens
  * @var string $download
  * @var string $file
  * @var string $nodisplay
@@ -145,15 +143,11 @@ $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 25;
 
 $HD_Form->CV_TITLE_TEXT = _("Call Logs");
 
-$order = $HD_Form->FG_TABLE_DEFAULT_ORDER = $order ?? "cc_call.starttime";
-$sens = $HD_Form->FG_TABLE_DEFAULT_SENS = $sens ?? "DESC";
-
 // EXPORT
 $HD_Form->FG_EXPORT_CSV = true;
 $HD_Form->FG_EXPORT_XML = true;
 $HD_Form->FG_EXPORT_SESSION_VAR = "pr_export_entity_call";
-$ord = implode(",", $HD_Form->FG_QUERY_ORDERBY_COLUMNS);
-$_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] = "SELECT $HD_Form->FG_QUERY_COLUMN_LIST FROM $HD_Form->FG_QUERY_TABLE_NAME WHERE $HD_Form->FG_QUERY_WHERE_CLAUSE ORDER BY $ord $HD_Form->FG_QUERY_DIRECTION";
+$_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] = "SELECT $HD_Form->FG_QUERY_COLUMN_LIST FROM $HD_Form->FG_QUERY_TABLE_NAME WHERE $HD_Form->FG_QUERY_WHERE_CLAUSE";
 
 /************************/
 
@@ -184,15 +178,16 @@ $HD_Form->FG_FILTER_SEARCH_FORM_SELECT_INPUTS[] = [_("Time unit"), false, "choos
 $HD_Form->search_delete_enabled = false;
 
 $form_action = $form_action ?? "list";
-if ($nodisplay) {
-    $date = (new DateTime())->format("Y-m-d");
-    $HD_Form->FG_QUERY_WHERE_CLAUSE = "cc_call.starttime > '$date' AND terminatecauseid = 1";
-}
 $HD_Form->prepare_list_subselection('list');
+if (empty($HD_Form->FG_QUERY_WHERE_CLAUSE)) {
+    $date = (new DateTime("-1 day"))->format("Y-m-d H:i:s");
+    $HD_Form->FG_QUERY_WHERE_CLAUSE = "cc_call.starttime >= '$date' AND terminatecauseid = 1";
+}
+
 $list = $HD_Form->perform_action($form_action);
 
 $smarty->display ( 'main.tpl' );
-$HD_Form->create_search_form(true);
+$HD_Form->create_search_form();
 
 $HD_Form->create_toppage($form_action);
 $HD_Form->create_form("list", $list);
@@ -289,12 +284,6 @@ if (count($list_total_day)):
         </tr>
     </tfoot>
 </table>
-
-<?php  else: ?>
-<div class="row pb-3 align-content-center">
-    <div class="col">
-        <?= _( "No calls in your selection") ?>
-    </div>
 <?php endif ?>
 
 <?php $smarty->display('footer.tpl') ?>
