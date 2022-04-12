@@ -110,7 +110,7 @@ echo $CC_help_list_did_use;
 if (!isset($inuse) || $inuse=="")$inuse=1;
 /*<!-- ** ** ** ** ** Part for the research ** ** ** ** ** -->*/?>
     <center>
-    <FORM METHOD=POST name="myForm" ACTION="<?php echo $PHP_SELF?>?order=<?php echo $order?>&sens=<?php echo $sens?>&current_page=<?php echo $current_page?>">
+    <FORM METHOD=POST name="myForm" ACTION="?order=<?php echo $order?>&sens=<?php echo $sens?>&current_page=<?php echo $current_page?>">
         <INPUT TYPE="hidden" NAME="posted" value="1">
         <INPUT TYPE="hidden" NAME="current_page" value="0">
         <?= $HD_Form->csrf_inputs() ?>

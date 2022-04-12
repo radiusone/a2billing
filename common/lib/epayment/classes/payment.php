@@ -18,7 +18,7 @@ Class payment {
     // class constructor
     public function __construct($module = '')
     {
-      global $payment, $language, $PHP_SELF;
+      global $payment, $language;
       $instance_sub_table = new Table("cc_payment_methods", "payment_filename");
       $DBHandle  = DbConnect();
       $return = null;
@@ -32,7 +32,7 @@ Class payment {
       }
 
       $include_modules = array();
-      if ((!empty($module)) && (in_array($module . '.' . substr($PHP_SELF, (strrpos($PHP_SELF, '.')+1)), $this->modules)) ) {
+      if ((!empty($module)) && (in_array($module . '.' . substr($_SERVER['PHP_SELF'], (strrpos($_SERVER['PHP_SELF'], '.')+1)), $this->modules)) ) {
           $this->selected_module = $module;
 
           $include_modules[] = array('class' => $module, 'file' => $module . '.php');

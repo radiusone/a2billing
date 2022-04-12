@@ -199,7 +199,7 @@ $smarty->display('main.tpl');
 
 <!-- ** ** ** ** ** Part for the research ** ** ** ** ** -->
     <div align="center">
-    <FORM METHOD=POST name="myForm" ACTION="<?php echo $PHP_SELF?>?s=<?php echo $s?>&t=<?php echo $t?>&order=<?php echo $order?>&sens=<?php echo $sens?>&current_page=<?php echo $current_page?>">
+    <FORM METHOD=POST name="myForm" ACTION="?order=<?php echo $order?>&sens=<?php echo $sens?>&current_page=<?php echo $current_page?>">
     <INPUT TYPE="hidden" NAME="posted" value=1>
         <table class="bar-status" width="80%" border="0" cellspacing="1" cellpadding="2" align="center">
             <tbody>

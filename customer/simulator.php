@@ -157,7 +157,7 @@ echo $CC_help_simulator_rateengine;
     <TR>
       <TD style="border-bottom: medium dotted #8888CC" colspan="2"> <B><?php echo gettext("Simulator");?></B></TD>
     </TR>
-    <FORM NAME="theFormFilter" action="<?php echo $PHP_SELF?>">
+    <FORM NAME="theFormFilter" action="">
     <tr>
         <td height="31" class="bgcolor_009" style="padding-left: 5px;">
                 <br>

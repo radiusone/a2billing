@@ -54,7 +54,7 @@ $G_instance_Query_trace = Query_trace::getInstance();
 $A2B = new A2Billing();
 
 // GLOBAL POST/GET VARIABLE
-getpost_ifset (['form_action', 'action', 'form_el_index', 'IDmanager', 'current_page', 'order', 'sens', 'mydisplaylimit', 'cssname', 'popup_select', 'popup_formname', 'popup_fieldname', 'ui_language', 'msg', 'section', 'exporttype']);
+getpost_ifset (['form_action', 'action', 'form_el_index', 'IDmanager', 'current_page', 'order', 'sens', 'mydisplaylimit', 'cssname', 'popup_select', 'popup_formname', 'popup_fieldname', 'ui_language', 'msg', 'exporttype']);
 /**
  * @var string $form_action
  * @var string $action
@@ -70,7 +70,6 @@ getpost_ifset (['form_action', 'action', 'form_el_index', 'IDmanager', 'current_
  * @var string $popup_fieldname
  * @var string $ui_language
  * @var string $msg
- * @var string $section
  * @var string $exporttype
  */
 
@@ -220,8 +219,6 @@ if (empty($_SESSION["stylefile"])) {
 /*
  *		GLOBAL USED VARIABLE
  */
-$PHP_SELF = $_SERVER["PHP_SELF"];
-
 // A2BILLING INFO
 const COPYRIGHT = <<< HTML
 A2Billing v2.2.0 is licensed under the <a href="https://www.gnu.org/licenses/agpl-3.0.en.html" target="_blank">AGPL 3</a><br/>

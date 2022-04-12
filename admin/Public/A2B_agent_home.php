@@ -152,7 +152,7 @@ $smarty->display('main.tpl');
 $message_types = getMsgTypeList();
 ?>
 
-<form action="<?php echo $PHP_SELF.'?id='.$id ?>" method="post" >
+<form action="<?php echo '?id='.$id ?>" method="post" >
     <input id="action" type="hidden" name="action" value="<?php echo $action;?>"/>
     <input id="id_msg" type="hidden" name="id_msg" value="<?php echo $id_msg;?>"/>
     <table class="epayment_conf_table">

@@ -161,7 +161,7 @@ echo $CC_help_sipfriend_reload;
     ?>
 
     <br><br><br>
-    <a href="<?php  echo $PHP_SELF."?voip_type=$voip_type&action=reload";?>"><img src="<?php echo Images_Path;?>/icon_refresh.gif" />
+    <a href="<?php  echo "?voip_type=$voip_type&action=reload";?>"><img src="<?php echo Images_Path;?>/icon_refresh.gif" />
         <?php echo gettext("Click here to reload your asterisk server"); ?>
     </a>
 

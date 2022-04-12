@@ -144,7 +144,7 @@ $smarty->display('main.tpl');
 
 <br/>
 
-  <form action="<?php echo $PHP_SELF.'?id='.$ticket->getId(); ?>" method="post" >
+  <form action="<?php echo '?id='.$ticket->getId(); ?>" method="post" >
      <input id="action" type="hidden" name="action" value="change"/>
     <input id="idc" type="hidden" name="idc" value=""/>
     <table class="epayment_conf_table">

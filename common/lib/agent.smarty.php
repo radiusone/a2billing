@@ -81,5 +81,3 @@ $smarty->assign("adminname", $_SESSION["pr_login"]);
 
 // OPTION FOR THE MENU
 $smarty->assign("A2Bconfig", $A2B->config);
-
-$smarty->assign("PAGE_SELF", $PHP_SELF);

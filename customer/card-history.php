@@ -171,7 +171,7 @@ if ($FG_DEBUG == 3) echo "<br>Nb_record_max : $nb_record_max";
 
 <!-- ** ** ** ** ** Part for the research ** ** ** ** ** -->
     <center>
-    <FORM METHOD=POST ACTION="<?php echo $PHP_SELF?>?s=1&t=0&order=<?php echo $order?>&sens=<?php echo $sens?>&current_page=<?php echo $current_page?>&terminatecauseid=<?php echo $terminatecauseid?>">
+    <FORM METHOD=POST ACTION="?order=<?php echo $order?>&sens=<?php echo $sens?>&current_page=<?php echo $current_page?>&terminatecauseid=<?php echo $terminatecauseid?>">
         <INPUT TYPE="hidden" NAME="posted" value=1>
         <INPUT TYPE="hidden" NAME="current_page" value=0>
         <table class="callhistory_maintable" align="center">
@@ -327,7 +327,7 @@ if ($FG_DEBUG == 3) echo "<br>Nb_record_max : $nb_record_max";
                   <TD width="<?php echo $FG_TABLE_COL[$i][2]?>" align=middle class="tableBody" style="PADDING-BOTTOM: 2px; PADDING-LEFT: 2px; PADDING-RIGHT: 2px; PADDING-TOP: 2px">
                     <center><strong>
                     <?php  if (strtoupper($FG_TABLE_COL[$i][4])=="SORT") {?>
-                        <a href="<?php  echo $PHP_SELF."?customer=$customer&s=1&t=0&current_page=$current_page&order=".$FG_TABLE_COL[$i][1]."&sens="; if ($sens=="ASC") {echo"DESC";} else {echo"ASC";}
+                        <a href="<?php  echo "?customer=$customer&current_page=$current_page&order=".$FG_TABLE_COL[$i][1]."&sens="; if ($sens=="ASC") {echo"DESC";} else {echo"ASC";}
                             echo "&posted=$posted&Period=$Period&frommonth=$frommonth&fromstatsmonth=$fromstatsmonth&tomonth=$tomonth&tostatsmonth=$tostatsmonth&fromday=$fromday&fromstatsday_sday=$fromstatsday_sday&fromstatsmonth_sday=$fromstatsmonth_sday&today=$today&tostatsday_sday=$tostatsday_sday&tostatsmonth_sday=$tostatsmonth_sday";?>">
                     <span class="liens"><?php  } ?>
                     <?php echo $FG_TABLE_COL[$i][0]?>

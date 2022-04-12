@@ -383,7 +383,7 @@ if ($form_action === "list" && !$popup_select): ?>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form class="container-fluid" name="exportForm" id="exportForm" action="?s=1&amp;t=0&amp;order=<?= $order ?>&amp;sens=<?= $sens ?>&amp;current_page=<?= $current_page ?>" method="post">
+                <form class="container-fluid" name="exportForm" id="exportForm" action="?order=<?= $order ?>&amp;sens=<?= $sens ?>&amp;current_page=<?= $current_page ?>" method="post">
                     <input type="hidden" name="posted" value="1"/>
                     <input type="hidden" name="current_page" value="0"/>
                     <?= $HD_Form->csrf_inputs() ?>

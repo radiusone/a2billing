@@ -180,7 +180,7 @@ $smarty->display('main.tpl');
 
 <!-- ** ** ** ** ** Part for the research ** ** ** ** ** -->
 <center>
-<FORM METHOD=POST name="myForm" ACTION="<?php echo $PHP_SELF?>?s=1&t=0&order=<?php echo $order?>&sens=<?php echo $sens?>&current_page=<?php echo $current_page?>">
+<FORM METHOD=POST name="myForm" ACTION="?order=<?php echo $order?>&sens=<?php echo $sens?>&current_page=<?php echo $current_page?>">
     <INPUT TYPE="hidden" NAME="posted" value="1'>
     <INPUT TYPE="hidden" NAME="current_page" value="0">
     <?= $HD_Form->csrf_inputs() ?>

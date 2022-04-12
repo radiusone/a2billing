@@ -94,5 +94,3 @@ $smarty->assign("popupwindow", $popup_select);
 
 // OPTION FOR THE MENU
 $smarty->assign("A2Bconfig", $A2B->config);
-
-$smarty->assign("PAGE_SELF", $PHP_SELF);

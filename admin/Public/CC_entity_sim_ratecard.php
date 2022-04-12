@@ -121,7 +121,7 @@ echo $CC_help_sim_ratecard;
 ?>
     <center>
     <br>
-    <FORM NAME="theFormFilter" action="<?php echo $PHP_SELF?>">
+    <FORM NAME="theFormFilter" action="">
     <table width="500" border="0" align="center" cellpadding="0" cellspacing="0">
     <TR>
       <TD colspan="2"> <B><?php echo gettext("RATECARD SIMULATOR");?></B></TD>
