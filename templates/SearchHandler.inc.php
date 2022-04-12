@@ -60,7 +60,7 @@ $action = http_build_query([
                         aria-label="<?= _("enable the search start date")?>"
                         <?php if ($processed["enable_search_start_date"]): ?>checked="checked"<?php endif ?>
                         class="form-check-input m-0"
-                    />&nbsp;<label for="enable_search_start_date" class="form-label form-label-sm"><?=_("From") ?></label>
+                    />&nbsp;<label for="enable_search_start_date" class="form-label form-label-sm m-0"><?=_("From") ?></label>
                 </div>
                 <input type="date" name="search_start_date" id="search_start_date" value="<?= $processed["search_start_date"] ?? (new DateTime())->format("Y-m-d") ?>" aria-label="<?= _("search start date") ?>" class="form-control form-control-sm"/>
             </div>
@@ -76,7 +76,7 @@ $action = http_build_query([
                         aria-label="<?= _("enable the search end date") ?>"
                         <?php if ($processed["enable_search_end_date"]): ?>checked="checked"<?php endif ?>
                         class="form-check-input m-0"
-                    />&nbsp;<label for="enable_search_end_date" class="form-label form-label-sm"><?=_("To") ?></label>
+                    />&nbsp;<label for="enable_search_end_date" class="form-label form-label-sm m-0"><?=_("To") ?></label>
                 </div>
                 <input type="date" name="search_end_date" id="search_end_date" value="<?= $processed["search_end_date"] ?? (new DateTime('+1 month'))->format("Y-m-d") ?>" aria-label="<?= _("search end date") ?>" class="form-control form-control-sm"/>
             </div>
@@ -100,7 +100,7 @@ $action = http_build_query([
                         aria-label="<?= _("enable the search start date")?>"
                         <?php if ($processed["enable_search_start_date2"]): ?>checked="checked"<?php endif ?>
                         class="form-check-input m-0"
-                    />&nbsp;<label for="enable_search_start_date2" class="form-label form-label-sm"><?=_("From") ?></label>
+                    />&nbsp;<label for="enable_search_start_date2" class="form-label form-label-sm m-0"><?=_("From") ?></label>
                 </div>
                 <input type="date" name="search_start_date2" id="search_start_date2" value="<?= $processed["search_start_date2"] ?? (new DateTime())->format("Y-m-d") ?>" aria-label="<?= _("search start date") ?>" class="form-control form-control-sm"/>
             </div>
@@ -116,7 +116,7 @@ $action = http_build_query([
                         aria-label="<?= _("enable the search end date") ?>"
                         <?php if ($processed["enable_search_end_date2"]): ?>checked="checked"<?php endif ?>
                         class="form-check-input m-0"
-                    />&nbsp;<label for="enable_search_end_date2" class="form-label form-label-sm"><?=_("To") ?></label>
+                    />&nbsp;<label for="enable_search_end_date2" class="form-label form-label-sm m-0"><?=_("To") ?></label>
                 </div>
                 <input type="date" name="search_end_date2" id="search_end_date2" value="<?= $processed["search_end_date2"] ?? (new DateTime('+1 month'))->format("Y-m-d") ?>" aria-label="<?= _("search end date") ?>" class="form-control form-control-sm"/>
             </div>
@@ -161,7 +161,7 @@ $action = http_build_query([
                 />
                 <a
                     href="<?= $item["href"] ?>"
-                    data-field-name="<?= str_replace(".", "^^", $item["input"][0]) ?>"
+                    data-field-name="<?= $item["input"][0] ?>"
                     data-window-name="<?= $item["input"][0] ?>_popup"
                     data-popup-options="width=750,height=450,top=50,left=100,scrollbars=1"
                     data-select="<?= $item["select"] ?>"

@@ -492,17 +492,19 @@ class FormHandler
     public function &getProcessed(): array
     {
         foreach ($this->_vars as $key => $value) {
+            if (str_contains($key, "^^")) {
+                $this->_processed[$key] = sanitize_data($value);
+            }
             $key = str_replace("^^", ".", $key);
             if (!$this->_processed[$key] or empty($this->_processed[$key])) {
                 $this->_processed[$key] = sanitize_data($value);
-                if ($key == 'username') {
+                if ($key === "username") {
                     //rebuild the search parameter to filter character to format card number
                     $filtered_char = [" ", "-", "_", "(", ")", "+"];
                     $this->_processed[$key] = str_replace($filtered_char, "", $this->_processed[$key]);
                 }
-                if ($key == 'pwd_encoded' && !empty($value)) {
+                if ($key === "pwd_encoded" && !empty($value)) {
                     $this->_processed[$key] = password_hash($this->_processed[$key], PASSWORD_DEFAULT);
-//                    $this->_processed[$key] = hash("whirlpool", $this->_processed[$key]);
                 }
             }
         }
@@ -2153,7 +2155,11 @@ class FormHandler
 
     public function csrf_inputs(): string
     {
-        return "<input type='hidden' name='csrf_token' value='$this->FG_CSRF_TOKEN'/>\n";
+        if (!empty($this->FG_CSRF_TOKEN)) {
+            return "<input type='hidden' name='csrf_token' value='$this->FG_CSRF_TOKEN'/>\n";
+        }
+
+        return "";
     }
 
     public function set_debug(int $level = 1): void
