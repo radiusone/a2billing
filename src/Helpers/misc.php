@@ -433,28 +433,34 @@ function get_2dec_percentage($var): string
 
 /**
  * Used as callback for list/form elements
- * @param $var
- * @param $currency
+ * @param float|int|string $amt
  * @return void
  * @noinspection PhpUnusedFunctionInspection
  */
-function display_2bill($var, $currency = BASE_CURRENCY): void
+function display_2bill($amt): void
 {
-    echo get_2bill($var, $currency);
+    echo get_2bill($amt);
 }
 
-function get_2bill($var, $currency = BASE_CURRENCY): string
+/**
+ * Rounds and formats a currency amount
+ * @param float|int|string $amt
+ * @return string
+ */
+function get_2bill($amt): string
 {
-    global $choose_currency;
+    if (class_exists("NumberFormatter")) {
+        static $formatter = null;
+        if (is_null($formatter)) {
+            // TODO: set this based on user language, so decimals are properly displayed
+            $formatter = NumberFormatter::create("en_CA", NumberFormatter::CURRENCY);
+            $formatter->setAttribute(NumberFormatter::FRACTION_DIGITS, 3);
+        }
 
-    if (isset ($choose_currency) && strlen($choose_currency) == 3) {
-        $currency = $choose_currency;
+        return $formatter->formatCurrency($amt, BASE_CURRENCY);
     }
-    $currencies_list = get_currencies();
 
-    $var = $var / $currencies_list[strtoupper($currency)]["value"];
-
-    return number_format($var, 3) . ' ' . strtoupper($currency);
+    return sprintf("%0.3f %s", $amt, BASE_CURRENCY);
 }
 
 /**
