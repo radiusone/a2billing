@@ -1,7 +1,6 @@
 <?php
 
 use A2billing\Connection;
-use A2billing\Table;
 use PHPMailer\PHPMailer\PHPMailer;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -949,50 +948,6 @@ function get_date_with_offset($currDate, $user_offset = null)
     $timestamp = strtotime($currDate) - ($server_offset - $user_offset);
 
     return date("Y-m-d H:i:s", $timestamp);
-}
-
-/*
- * Function use to archive data and call records
- * Insert in cc_call_archive and cc_card_archive on seletion criteria
- * Delete from cc_call and cc_card
- * Used in
- * 1. A2Billing_UI/Public/A2B_data_archving.php
- * 2. A2Billing_UI/Public/A2B_call_archiving.php
- */
-
-function archive_data($condition, $entity = ""): int
-{
-    $handle = DbConnect();
-    $instance_table = new Table();
-    if (empty ($entity)) {
-        return 1;
-    }
-    if ($entity == "card") {
-        $func_fields = "id, creationdate, firstusedate, expirationdate, enableexpire, expiredays, username, useralias, uipass, credit, tariff, id_didgroup, activated, status, lastname, firstname, address, city, state, country, zipcode, phone, email, fax, inuse, simultaccess, currency, lastuse, nbused, typepaid, creditlimit, voipcall, sip_buddy, iax_buddy, language, redial, runservice, nbservice, id_campaign, num_trials_done, vat, servicelastrun, initialbalance, invoiceday, autorefill, loginkey, mac_addr, id_timezone, tag, voicemail_permitted, voicemail_activated, last_notification, email_notification, notify_email, credit_notification, id_group, company_name, company_website, VAT_RN, traffic, traffic_target, discount, restriction";
-        $value = "SELECT $func_fields FROM cc_card $condition";
-        $func_table = 'cc_card_archive';
-        $id_name = "";
-        $instance_table->Add_table($handle, $value, $func_fields, $func_table, $id_name, true);
-        $fun_table = "cc_card";
-        if (strpos($condition, 'WHERE') > 0) {
-            $condition = str_replace("WHERE", "", $condition);
-        }
-
-        $instance_table->Delete_table($handle, $condition, $fun_table);
-    } elseif ($entity == "call") {
-        $value = "SELECT id, sessionid,uniqueid,card_id,nasipaddress,starttime,stoptime,sessiontime,calledstation,sessionbill,id_tariffgroup,id_tariffplan,id_ratecard,id_trunk,sipiax,src,id_did,buyrate,id_card_package_offer,real_sessiontime FROM cc_call $condition";
-        $func_fields = "id, sessionid,uniqueid,card_id,nasipaddress,starttime,stoptime,sessiontime,calledstation,sessionbill,id_tariffgroup,id_tariffplan,id_ratecard,id_trunk,sipiax,src,id_did,buyrate,id_card_package_offer,real_sessiontime";
-        $func_table = 'cc_call_archive';
-        $id_name = "";
-        $instance_table->Add_table($handle, $value, $func_fields, $func_table, $id_name, true);
-        if (strpos($condition, 'WHERE') > 0) {
-            $condition = str_replace("WHERE", "", $condition);
-        }
-        $fun_table = "cc_call";
-        $instance_table->Delete_table($handle, $condition, $fun_table);
-    }
-
-    return 1;
 }
 
 /*

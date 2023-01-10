@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Forms\FormHandler;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -188,7 +189,7 @@ if (isset($archive) && !empty($archive)) {
         $condition = " WHERE $condition";
     }
     echo "condition : $condition";
-    $rec = archive_data($condition, "card");
+    $rec = archive_data($condition);
     if($rec > 0)
         $archive_message = "The data has been successfully archived";
 }
@@ -264,3 +265,31 @@ if (isset($archive) && !empty($archive)) {
 $HD_Form -> create_form($form_action, $list);
 
 $smarty->display('footer.tpl');
+
+/*
+ * Function use to archive data and call records
+ * Insert in cc_call_archive and cc_card_archive on seletion criteria
+ * Delete from cc_call and cc_card
+ * Used in
+ * 1. A2Billing_UI/Public/A2B_data_archving.php
+ * 2. A2Billing_UI/Public/A2B_call_archiving.php
+ */
+
+function archive_data($condition): int
+{
+    $handle = DbConnect();
+    $instance_table = new Table();
+    $func_fields = "id, creationdate, firstusedate, expirationdate, enableexpire, expiredays, username, useralias, uipass, credit, tariff, id_didgroup, activated, status, lastname, firstname, address, city, state, country, zipcode, phone, email, fax, inuse, simultaccess, currency, lastuse, nbused, typepaid, creditlimit, voipcall, sip_buddy, iax_buddy, language, redial, runservice, nbservice, id_campaign, num_trials_done, vat, servicelastrun, initialbalance, invoiceday, autorefill, loginkey, mac_addr, id_timezone, tag, voicemail_permitted, voicemail_activated, last_notification, email_notification, notify_email, credit_notification, id_group, company_name, company_website, VAT_RN, traffic, traffic_target, discount, restriction";
+    $value = "SELECT $func_fields FROM cc_card $condition";
+    $func_table = 'cc_card_archive';
+    $id_name = "";
+    $instance_table->Add_table($handle, $value, $func_fields, $func_table, $id_name, true);
+    $fun_table = "cc_card";
+    if (strpos($condition, 'WHERE') > 0) {
+        $condition = str_replace("WHERE", "", $condition);
+    }
+
+    $instance_table->Delete_table($handle, $condition, $fun_table);
+
+    return 1;
+}

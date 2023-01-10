@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Forms\FormHandler;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -169,7 +170,7 @@ if (isset($archive) && !empty($archive)) {
     if (strlen($condition) && strpos($condition,'WHERE') === false) {
         $condition = " WHERE $condition";
     }
-    $rec = archive_data($condition, "call");
+    $rec = archive_data($condition);
     if($rec > 0)
         $archive_message = "The data has been successfully archived";
 }
@@ -493,3 +494,30 @@ $list = $HD_Form -> perform_action($form_action);
 $HD_Form -> create_form($form_action, $list) ;
 
 $smarty->display('footer.tpl');
+
+/*
+ * Function use to archive data and call records
+ * Insert in cc_call_archive and cc_card_archive on seletion criteria
+ * Delete from cc_call and cc_card
+ * Used in
+ * 1. A2Billing_UI/Public/A2B_data_archving.php
+ * 2. A2Billing_UI/Public/A2B_call_archiving.php
+ */
+
+function archive_data($condition): int
+{
+    $handle = DbConnect();
+    $instance_table = new Table();
+    $value = "SELECT id, sessionid,uniqueid,card_id,nasipaddress,starttime,stoptime,sessiontime,calledstation,sessionbill,id_tariffgroup,id_tariffplan,id_ratecard,id_trunk,sipiax,src,id_did,buyrate,id_card_package_offer,real_sessiontime FROM cc_call $condition";
+    $func_fields = "id, sessionid,uniqueid,card_id,nasipaddress,starttime,stoptime,sessiontime,calledstation,sessionbill,id_tariffgroup,id_tariffplan,id_ratecard,id_trunk,sipiax,src,id_did,buyrate,id_card_package_offer,real_sessiontime";
+    $func_table = 'cc_call_archive';
+    $id_name = "";
+    $instance_table->Add_table($handle, $value, $func_fields, $func_table, $id_name, true);
+    if (strpos($condition, 'WHERE') > 0) {
+        $condition = str_replace("WHERE", "", $condition);
+    }
+    $fun_table = "cc_call";
+    $instance_table->Delete_table($handle, $condition, $fun_table);
+
+    return 1;
+}
