@@ -814,7 +814,7 @@ class Soap
         $arr_account = array();
 
         for ($k = 0; $k < $units; $k++) {
-            $arr_card_alias = gen_card_with_alias("cc_card", $accountnumber_len);
+            $arr_card_alias = gen_card_with_alias($accountnumber_len);
             $accountnumber = $arr_card_alias[0];
             $useralias = $arr_card_alias[1];
             if (!is_numeric($balance))

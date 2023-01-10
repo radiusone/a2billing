@@ -823,8 +823,8 @@ function generate_unique_value($table = "cc_card", $len = 0, $field = "username"
     for ($k = 0; $k <= 200; $k++) {
         $card_gen = MDP($len);
 
-        $query = "SELECT $field FROM $table WHERE $field = '$card_gen'";
-        $resmax = $DBHandle_max->Execute($query);
+        $query = "SELECT `$field` FROM `$table` WHERE `$field` = ?";
+        $resmax = $DBHandle_max->Execute($query, [$card_gen]);
         if ($resmax && !$resmax->RecordCount()) {
             return $card_gen;
         }
@@ -836,7 +836,7 @@ function generate_unique_value($table = "cc_card", $len = 0, $field = "username"
 /*
  * function gen_card_with_alias
  */
-function gen_card_with_alias($table = "cc_card", $length_cardnumber = 0)
+function gen_card_with_alias($length_cardnumber = null)
 {
     $DBHandle = DbConnect();
 
@@ -848,8 +848,8 @@ function gen_card_with_alias($table = "cc_card", $length_cardnumber = 0)
         $card_gen = MDP($length_cardnumber);
         $alias_gen = MDP(LEN_ALIASNUMBER);
 
-        $query = "SELECT username FROM $table WHERE username='$card_gen' OR useralias='$alias_gen'";
-        $resmax = $DBHandle->Execute($query);
+        $query = "SELECT username FROM cc_card WHERE username=? OR useralias=? OR username=? OR useralias=?";
+        $resmax = $DBHandle->Execute($query, [$card_gen, $alias_gen, $alias_gen, $card_gen]);
         if ($resmax && !$resmax->RecordCount()) {
             $arr_val[0] = $card_gen;
             $arr_val[1] = $alias_gen;
@@ -918,19 +918,16 @@ function securitykey(string $key, string $data): string
 */
 function get_timezones(): array
 {
-    $handle = DbConnect();
-    $instance_table = new Table();
-
-    $QUERY = "SELECT id, gmttime, gmtzone, gmtoffset FROM cc_timezone ORDER by id";
-    $result = $instance_table->SQLExec($handle, $QUERY, 1, 300);
+    $db = DbConnect();
+    $result = $db->CacheGetAll(900, "SELECT id, gmttime, gmtzone, gmtoffset FROM cc_timezone ORDER by id");
     $timezone_list = [];
 
     if (is_array($result)) {
         foreach ($result as $row) {
-            $timezone_list[$row[0]] = [
-                1 => $row[1],
-                2 => $row[2],
-                3 => $row[3],
+            $timezone_list[$row["id"]] = [
+                1 => $row["gmttime"],
+                2 => $row["gmtzone"],
+                3 => $row["gmtoffset"],
             ];
         }
     }
@@ -938,15 +935,18 @@ function get_timezones(): array
     return $timezone_list;
 }
 
-function get_date_with_offset($currDate, $number)
+function get_date_with_offset($currDate, $user_offset = null)
 {
+    if (is_null($user_offset)) {
+        $user_offset = $_SESSION["gmtoffset"] ?? 0;
+    }
+    $server_offset = 0;
     $handle = DbConnect();
-    $instance_table = new Table();
-    $QUERY = "SELECT gmtoffset FROM cc_timezone WHERE gmttime = '" . SERVER_GMT . "'";
-    $result = $instance_table->SQLExec($handle, $QUERY, 1, 300);
-    $server_offset = $result[0][0];
-
-    $timestamp = strtotime($currDate) - ($server_offset - $number);
+    $row = $handle->CacheGetRow(300, "SELECT gmtoffset FROM cc_timezone WHERE gmttime = ?", [SERVER_GMT]);
+    if (is_array($row)) {
+        $server_offset = $row["gmtoffset"];
+    }
+    $timestamp = strtotime($currDate) - ($server_offset - $user_offset);
 
     return date("Y-m-d H:i:s", $timestamp);
 }
@@ -1038,24 +1038,18 @@ function generate_invoice_reference(): string
 {
     $handle = DbConnect();
     $year = date("Y");
-    $invoice_conf_table = new Table('cc_invoice_conf', 'value');
-    $conf_clause = "key_val = 'count_$year'";
-    $result = $invoice_conf_table->get_list($handle, $conf_clause);
+    $count = $handle->GetOne("SELECT value FROM cc_invoice_conf WHERE key_val = ?", ["count_$year"]);
 
-    if (is_array($result) && !empty ($result[0][0])) {
-        $count = $result[0][0];
+    if ($count !== false) {
         if (!is_numeric($count)) {
             $count = 0;
         }
         $count++;
-        $param_update_conf = "value ='" . $count . "'";
-        $clause_update_conf = "key_val = 'count_$year'";
-        $invoice_conf_table->Update_table($handle, $param_update_conf, $clause_update_conf);
+        $handle->Execute("UPDATE cc_invoice_conf SET value=? WHERE key_val=?", [$count, "count_$year"]);
     } else {
         //insert newcount
         $count = 1;
-        $QUERY = "INSERT INTO cc_invoice_conf (key_val ,value) VALUES ( 'count_$year', '1');";
-        $invoice_conf_table->SQLExec($handle, $QUERY);
+        $handle->Execute("INSERT INTO cc_invoice_conf(`value`, `key_val`) VALUES(?, ?)", [$count, "count_$year"]);
     }
 
     return $year . sprintf("%08d", $count);
@@ -1101,27 +1095,33 @@ function lastDayOfMonth($month = null, $year = null, string $format = 'd-m-Y'): 
 
 function get_login_button($DBHandle, $id): string
 {
-    $inst_table = new Table("cc_card", "useralias, uipass");
-    $FG_TABLE_CLAUSE = "id = $id";
-    $list_card_info = $inst_table->get_list($DBHandle, $FG_TABLE_CLAUSE);
-    $username = $list_card_info[0][0];
-    $password = $list_card_info[0][1];
+    $handle = DbConnect();
+    $row = $handle->GetRow("SELECT useralias, uipass FROM cc_card WHERE id=?", [$id]);
+    if ($row === false) {
+        return "";
+    }
+    $username = htmlspecialchars($row["useralias"]);
+    $password = htmlspecialchars($row["uipass"]);
     $link = CUSTOMER_UI_URL;
 
     if (strpos($link, 'index.php') !== false) {
         $link = substr($link, 0, strlen($link) - 9) . 'userinfo.php';
     } else {
-        $link = $link . '/userinfo.php';
+        $link .= '/userinfo.php';
     }
+    $link = htmlspecialchars($link);
+    $label = htmlspecialchars(_("GO TO CUSTOMER ACCOUNT"));
 
-    return '<div align="right" style="padding-right:20px;">
-        <form action="' . $link . '" method="POST" target="_blank">
+    return <<< HTML
+    '<div align="right" style="padding-right:20px;">
+        <form action="$link" method="POST" target="_blank">
             <input type="hidden" name="done" value="submit_log"/>
-            <input type="hidden" name="pr_login" value="' . $username . '"/>
-            <input type="hidden" name="pr_password" value="'.$password.'"/>
-            <a href="#" onclick="$(\'form\').submit();" > '.gettext("GO TO CUSTOMER ACCOUNT").'</a>
+            <input type="hidden" name="pr_login" value="$username"/>
+            <input type="hidden" name="pr_password" value="$password"/>
+            <a href="#" onclick="$('form').submit();" >$label</a>
         </form>
     </div>';
+HTML;
 }
 
 function str_icontains(string $haystack, string $needle): bool

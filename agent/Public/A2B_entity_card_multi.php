@@ -135,7 +135,7 @@ if ($nbcard>0 && $action=="generate" && $nb_error==0) {
     $instance_refill_table = new Table("cc_logrefill", $field_insert_refill);
 
     for ($k=0; $k<$nbcard; $k++) {
-        $arr_card_alias = gen_card_with_alias("cc_card", $cardnumberlength_list);
+        $arr_card_alias = gen_card_with_alias($cardnumberlength_list);
         $cardnum = $arr_card_alias[0];
         $useralias = $arr_card_alias[1];
         $addcredit=0;

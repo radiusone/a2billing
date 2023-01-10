@@ -331,7 +331,7 @@ if (!$popup_select) {
             if (empty($cardnumber_length) || !is_numeric($cardnumber_length)) {
                 $cardnumber_length = min($A2B->cardnumber_range);
             }
-            $array_card_generated = gen_card_with_alias("cc_card", $cardnumber_length);
+            $array_card_generated = gen_card_with_alias($cardnumber_length);
             $maxi = "value='$array_card_generated[0]'";
             $maxi2 = "value='$array_card_generated[1]'";
             $pass = MDP_NUMERIC(5) . MDP_STRING(15);

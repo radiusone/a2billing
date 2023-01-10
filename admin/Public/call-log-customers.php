@@ -114,20 +114,20 @@ $HD_Form->FG_QUERY_COLUMN_LIST = 'cc_call.starttime, cc_call.src, cc_call.dnid, 
 $DBHandle = DbConnect();
 
 $HD_Form->AddViewElement(_("Date"), "cc_call.starttime", true, 19, "display_dateformat");
-$HD_Form->AddViewElement(_("CallerID"), "src");
-$HD_Form->AddViewElement(_("DNID"), "dnid");
-$HD_Form->AddViewElement(_("Phone Number"), "calledstation");
+$HD_Form->AddViewElement(_("Caller ID"), "src", true, 0, "display_phone_number");
+$HD_Form->AddViewElement(_("DNID"), "dnid", true, 0, "display_phone_number");
+$HD_Form->AddViewElement(_("Phone Number"), "calledstation", true, 0, "display_phone_number");
 $HD_Form->AddViewElement(_("Destination"), "cc_call.destination", true, 15, "", "lie", "cc_prefix", "destination,prefix", "prefix='%id'", "%1");
 $HD_Form->AddViewElement(_("Buy Rate"), "buyrate", true, 30, "display_2bill");
 $HD_Form->AddViewElement(_("Sell Rate"), "rateinitial", true, 30, "display_2bill");
 $HD_Form->AddViewElement(_("Duration"), "sessiontime", true, 30, "display_minute");
-$HD_Form->AddViewElement(_("Account"), "card_id", true, 0, "", "lie_link", "cc_card", "username,id", "id='%id'", "%1", "A2B_entity_card.php");
+$HD_Form->AddViewElement(_("Account"), "card_id", true, 0, "display_customer_id_link");
 $HD_Form->AddViewElement(_("Trunk"), "trunkcode");
 $HD_Form->AddViewElement(_("Disposition"), "terminatecauseid", true, "", null, "list", $dialstatus_list);
 $HD_Form->AddViewElement(_("CallType"), "sipiax", true, 0, "", "list", $calltype_list);
 $HD_Form->AddViewElement(_("Buy"), "buycost", true, 30, "display_2bill");
 $HD_Form->AddViewElement(_("Sell"), "sessionbill", true, 30, "display_2bill");
-$HD_Form->AddViewElement(_("Margin"), "CASE WHEN cc_call.sessionbill != 0 THEN ((cc_call.sessionbill - cc_call.buycost) / cc_call.sessionbill) * 100 ELSE NULL END", true, 30, "display_2dec_percentage");
+$HD_Form->AddViewElement(_("Margin"), "CASE WHEN cc_call.sessionbill != 0 THEN ((cc_call.sessionbill - cc_call.buycost) / cc_call.sessionbill) * 100 ELSE NULL END AS margin", true, 30, "display_2dec_percentage");
 $HD_Form->AddViewElement(_("Markup"), "CASE WHEN cc_call.buycost != 0 THEN ((cc_call.sessionbill - cc_call.buycost) / cc_call.buycost) * 100 ELSE NULL END AS markup", true, 30, "display_2dec_percentage");
 
 $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
