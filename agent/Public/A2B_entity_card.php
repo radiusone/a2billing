@@ -603,7 +603,7 @@ if (!$popup_select && $form_action == "ask-add") {
 }
 
 if ($form_action=='ask-edit') {
-    echo get_login_button ($HD_Form -> DBHandle, $id);
+    echo get_login_button ($id);
 }
 
 $HD_Form -> create_form($form_action, $list) ;

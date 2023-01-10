@@ -203,21 +203,6 @@ function write_log($logfile, $output)
     }
 }
 
-/*
- * function sanitize_tag
- */
-function sanitize_tag($input)
-{
-    $search = [
-        '@<script[^>]*?>.*?</script>@si', // Strip out javascript
-        '@<[/!]*?[^<>]*?>@si', // Strip out HTML tags
-        '@<style[^>]*?>.*?</style>@siU', // Strip style tags properly
-        '@<![\s\S]*?--[ \t\n\r]*>@' // Strip multi-line comments
-    ];
-
-    return preg_replace($search, '', $input);
-}
-
 /**
  * function sanitize_data
  * @param array|string $input
@@ -269,7 +254,7 @@ function sanitize_data($input)
         $input = str_ireplace('=', '', $input);
         $input = str_ireplace('+$', '=$', $input);
 
-        $input = sanitize_tag($input);
+        $input = strip_tags($input);
 
         $output = addslashes($input);
     }
@@ -326,8 +311,7 @@ function getpost_ifset(array $test_vars, ?array &$data = null)
         if (!is_null($data)) {
             $data[$test_var] = $val;
         } else {
-            global $$test_var;
-            $$test_var = $val;
+            $GLOBALS[$test_var] = $val;
         }
     }
 }
@@ -348,6 +332,7 @@ function display_money($value, $currency = BASE_CURRENCY)
  * Used as callback for list view elements
  * @param $mydate
  * @return void
+ * @noinspection PhpUnusedFunctionInspection
  */
 function display_dateformat($mydate)
 {
@@ -366,6 +351,7 @@ function get_dateformat(string $mydate): string
 
 /**
  * Used as callback for edit form elements
+ * @noinspection PhpUnusedFunctionInspection
  */
 function res_display_dateformat($mydate)
 {
@@ -508,7 +494,7 @@ function display_monitorfile_link($value)
 
     $myfile = base64_encode($myfile);
     echo "<a target='_blank' href='call-log-customers.php?download=file&file=$myfile'>";
-    echo '<img alt="access recording" src="this image doesnt exist" height="18" /></a>';
+    echo '<img alt="access recording" src="" height="18" /></a>';
 }
 
 /**
@@ -951,38 +937,29 @@ function get_date_with_offset($currDate, $user_offset = null)
 }
 
 /*
- * Function use to define exact sql statement for
- * different criteria selection
+ * Apparently builds SQL out of global variables, typically populated by POST.
+ * Used a lot, will have to wait to replace it.
+ * A2b, A2b, how do I inject thee? Let me count the ways...
  */
 function do_field($sql, $fld, $dbfld)
 {
-    $fldtype = $fld . 'type';
-    global $$fld;
-    global $$fldtype;
+    $glob_value = str_replace("'", "\\'", $GLOBALS[$fld] ?? "");
+    $glob_type = $GLOBALS[$fld . "type"];
 
-    if ($$fld) {
-        if (strpos($sql, 'WHERE') > 0) {
-            $sql = "$sql AND ";
-        } else {
-            $sql = "$sql WHERE ";
-        }
-        $sql = "$sql $dbfld";
-        if (isset ($$fldtype)) {
-            switch ($$fldtype) {
-                case 1 :
-                    $sql = "$sql='" . $$fld . "'";
-                    break;
-                case 2 :
-                    $sql = "$sql LIKE '" . $$fld . "%'";
-                    break;
-                case 3 :
-                    $sql = "$sql LIKE '%" . $$fld . "%'";
-                    break;
-                case 4 :
-                    $sql = "$sql LIKE '%" . $$fld . "'";
-            }
-        } else {
-            $sql = "$sql LIKE '%" . $$fld . "%'";
+    if ($glob_value) {
+        $sql .= strpos($sql, "WHERE") ? " AND " : " WHERE ";
+        switch ($glob_type) {
+            case 1:
+                $sql .= " $dbfld='$glob_value'";
+                break;
+            case 2:
+                $sql .= " $dbfld LIKE '$glob_value%'";
+                break;
+            default:
+                $sql .= " $dbfld LIKE '%$glob_value%'";
+                break;
+            case 4:
+                $sql .= " $dbfld LIKE '%$glob_value'";
         }
     }
 
@@ -1048,7 +1025,7 @@ function lastDayOfMonth($month = null, $year = null, string $format = 'd-m-Y'): 
     return DateTime::createFromFormat("Y-m-d", $date)->format($format);
 }
 
-function get_login_button($DBHandle, $id): string
+function get_login_button($id): string
 {
     $handle = DbConnect();
     $row = $handle->GetRow("SELECT useralias, uipass FROM cc_card WHERE id=?", [$id]);
@@ -1068,14 +1045,14 @@ function get_login_button($DBHandle, $id): string
     $label = htmlspecialchars(_("GO TO CUSTOMER ACCOUNT"));
 
     return <<< HTML
-    '<div align="right" style="padding-right:20px;">
+    <div align="right" style="padding-right:20px;">
         <form action="$link" method="POST" target="_blank">
             <input type="hidden" name="done" value="submit_log"/>
             <input type="hidden" name="pr_login" value="$username"/>
             <input type="hidden" name="pr_password" value="$password"/>
-            <a href="#" onclick="$('form').submit();" >$label</a>
+            <a href="#" onclick="$('form').trigger('submit');" >$label</a>
         </form>
-    </div>';
+    </div>
 HTML;
 }
 
@@ -1181,7 +1158,7 @@ function SetLocalLanguage(): void
             break;
     }
 
-    @setlocale(LC_TIME, $languageEncoding);
+    setlocale(LC_TIME, $languageEncoding);
     putenv("LANG=$slectedLanguage");
     putenv("LANGUAGE=$slectedLanguage");
     setlocale(LC_ALL, $slectedLanguage);
@@ -1201,23 +1178,24 @@ function create_help($text, $wiki = ""): string
         return "";
     }
 
+    $text = htmlspecialchars($text);
     if (!empty($wiki)) {
-        $wiki = gettext("For further information please consult") . ' <a target="_blank" href="http://www.asterisk2billing.org/documentation/">' . gettext("the online documention") . '</a>.<br/>';
+        $wiki = htmlspecialchars(_("For further information please consult")) . ' <a target="_blank" href="http://www.asterisk2billing.org/documentation/">' . htmlspecialchars(_("the online documention")) . '</a>.<br/>';
     }
-    $help = <<< HTML
+    $path = htmlspecialchars(Images_Path);
+
+    return <<< HTML
 <div class="toggle_show2hide">
-    <div class="tohide" style="display:visible;">
+    <div class="tohide" style="display:initial;">
         <div class="msg_info">
             $text<br/>$wiki
             <a href="#" target="_self" class="hide_help" style="float:right;">
-                <img class="toggle_show2hide" src="' . Images_Path . '/toggle_hide2show_on.png" onmouseover="this.style.cursor=\'hand\';" HEIGHT="16">
+                <img class="toggle_show2hide" src="$path/toggle_hide2show_on.png" onmouseover="this.style.cursor='hand'" HEIGHT="16" alt=""/>
             </a>
         </div>
     </div>
 </div>
 HTML;
-
-    return $help;
 }
 
 function is_admin(): bool
