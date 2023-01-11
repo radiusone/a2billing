@@ -137,6 +137,9 @@ function get_currencies($handle = null): array
     $handle = $handle ?? DbConnect();
     $currencies_list = [];
     $result = $handle->CacheGetAll(900, "SELECT currency, name, `value` FROM cc_currencies ORDER BY id");
+    if ($result === false || $result === []) {
+        return [];
+    }
     array_walk(
         $result,
         function ($v) use (&$currencies_list) {
@@ -493,7 +496,7 @@ function display_monitorfile_link($value)
     }
 
     $myfile = base64_encode($myfile);
-    echo "<a target='_blank' href='call-log-customers.php?download=file&file=$myfile'>";
+    echo "<a target='_blank' href='call-log-customers.php?download=file&amp;file=$myfile'>";
     echo '<img alt="access recording" src="" height="18" /></a>';
 }
 
@@ -510,19 +513,19 @@ function display_customer_link(string $value): void
 
 function get_customer_link($username): string
 {
-    $value = _("n/a");
+    $value = htmlspecialchars(_("n/a"));
     if (empty($username)) {
 
         return $value;
     }
     $handle = DbConnect();
     $id = $handle->CacheGetOne(60, "SELECT id FROM cc_card WHERE username = ?", [$username]);
-    if ($id) {
-
-        return "<a href=\"A2B_entity_card.php?form_action=ask-edit&id=$id\">$username</a>";
-    } else {
-        return $value;
+    if ($id !== false && !is_null($id)) {
+        $username = htmlspecialchars($username);
+        $value = "<a href=\"A2B_entity_card.php?form_action=ask-edit&amp;id=$id\">$username</a>";
     }
+
+    return $value;
 }
 
 /**
@@ -533,18 +536,17 @@ function get_customer_link($username): string
  */
 function display_customer_id_link($id): void
 {
-    $value = _("n/a");
+    $value = htmlspecialchars(_("n/a"));
     if ($id <= 0) {
-
         echo $value;
     }
     $handle = DbConnect();
     $username = $handle->CacheGetOne(60, "SELECT username FROM cc_card WHERE id = ?", [$id]);
-    if ($username) {
-        echo "<a href=\"A2B_entity_card.php?form_action=ask-edit&id=$id\">$username</a>";
-    } else {
-        echo $value;
+    if ($username !== false && !is_null($username)) {
+        $username = htmlspecialchars($username);
+        $value = "<a href=\"A2B_entity_card.php?form_action=ask-edit&amp;id=$id\">$username</a>";
     }
+    echo $value;
 }
 
 /**
@@ -555,18 +557,19 @@ function display_customer_id_link($id): void
  */
 function display_customer_name_id_link($id): void
 {
-    $value = _("n/a");
+    $value = htmlspecialchars(_("n/a"));
     if ($id <= 0) {
-
         echo $value;
     }
     $handle = DbConnect();
     $row = $handle->CacheGetRow(60, "SELECT firstname, lastname, username FROM cc_card WHERE id = ?", [$id]);
-    if ($row) {
-        echo "<a href=\"A2B_entity_card.php?form_action=ask-edit&id=$id\" title=\"$row[username]\">$row[firstname] $row[lastname]</a>";
-    } else {
-        echo $value;
+    if ($row !== false && $row !== []) {
+        $u = htmlspecialchars($row["username"]);
+        $f = htmlspecialchars($row["firstname"]);
+        $l = htmlspecialchars($row["lastname"]);
+        $value = "<a href=\"A2B_entity_card.php?form_action=ask-edit&amp;id=$id\" title=\"$u\">$f $l</a>";
     }
+    echo $value;
 }
 
 /**
@@ -582,20 +585,24 @@ function display_infocustomer_id($id): void
 
 function get_infocustomer_id($id): string
 {
-    $value = _("n/a");
+    $value = htmlspecialchars(_("n/a"));
     if ($id <= 0) {
 
         return $value;
     }
     $handle = DbConnect();
     $row = $handle->CacheGetRow(60, "SELECT username, firstname, lastname FROM cc_card WHERE id = ?", [$id]);
-    if ($row) {
-        $value = sprintf("%s %s (%s)", $row["firstname"], $row["lastname"], $row["username"]);
-
-        return "<a href=\"A2B_card_info.php?id=$id\">$value</a>";
-    } else {
-        return $value;
+    if ($row !== false && $row !== []) {
+        $value = sprintf(
+            "%s %s (%s)",
+            htmlspecialchars($row["firstname"]),
+            htmlspecialchars($row["lastname"]),
+            htmlspecialchars($row["username"])
+        );
+        $value = "<a href=\"A2B_card_info.php?id=$id\">$value</a>";
     }
+
+    return $value;
 }
 
 function get_nameofadmin($id): string
@@ -607,7 +614,7 @@ function get_nameofadmin($id): string
     }
     $handle = DbConnect();
     $row = $handle->CacheGetRow(60, "SELECT login, name FROM cc_ui_authen WHERE userid = ?", [$id]);
-    if ($row) {
+    if ($row !== false && $row !== []) {
         $value = sprintf("%s (%s)", $row["name"], $row["login"]);
     }
 
@@ -616,14 +623,14 @@ function get_nameofadmin($id): string
 
 function get_nameofcustomer_id($id): string
 {
-    $value = _("n/a");
+    $value = htmlspecialchars(_("n/a"));
     if ($id <= 0) {
 
         return $value;
     }
     $handle = DbConnect();
     $row = $handle->CacheGetRow(60, "SELECT username, firstname, lastname FROM cc_card WHERE id = ?", [$id]);
-    if (is_array($row)) {
+    if ($row !== false && $row !== []) {
         $value = sprintf("%s %s (%s)", $row["firstname"], $row["lastname"], $row["username"]);
     }
 
@@ -650,13 +657,16 @@ function get_linktoagent($id): string
     }
     $handle = DbConnect();
     $row = $handle->CacheGetRow(60, "SELECT login, firstname, lastname FROM cc_agent WHERE id = ?", [$id]);
-    if (is_array($row)) {
-        $value = sprintf("%s %s (%s)", $row["firstname"], $row["lastname"], $row["login"]);
-
-        return "<a href=\"A2B_entity_agent.php?form_action=ask-edit&id=$id\">$value</a>";
-    } else {
-        return $value;
+    if ($row !== false && $row !== []) {
+        $value = sprintf(
+            "%s %s (%s)",
+            htmlspecialchars($row["firstname"]),
+            htmlspecialchars($row["lastname"]),
+            htmlspecialchars($row["login"])
+        );
+        $value = "<a href=\"A2B_entity_agent.php?form_action=ask-edit&amp;id=$id\">$value</a>";
     }
+    return $value;
 }
 
 /**
@@ -715,8 +725,8 @@ function get_formatted_did(string $did): string
         "SELECT countrycode FROM cc_did d LEFT JOIN cc_country c ON (c.id = d.id_cc_country) WHERE did = ? AND countryprefix = 1",
         [$did]
     );
-    if ($cc) {
-        return format_phone_number($value);
+    if ($cc !== false && !is_null($cc)) {
+        $value = format_phone_number($value);
     }
 
     return $value;
@@ -757,7 +767,7 @@ function MDP_STRING($chrs = 0): string
     $pwd = "";
     mt_srand((double)microtime() * 1000000);
     while (strlen($pwd) < $chrs) {
-        $chr = chr(mt_rand(0, 255));
+        $chr = chr(mt_rand(48, 122));
         if (preg_match("/^[0-9a-z]$/i", $chr)) {
             $pwd = $pwd . $chr;
         }
@@ -800,7 +810,7 @@ function MDP($chrs = 0): string
  */
 function generate_unique_value($table = "cc_card", $len = 0, $field = "username")
 {
-    $DBHandle_max = DbConnect();
+    $DBHandle = DbConnect();
     if (empty($len)) {
         $len = get_cardlength();
     }
@@ -809,8 +819,9 @@ function generate_unique_value($table = "cc_card", $len = 0, $field = "username"
         $card_gen = MDP($len);
 
         $query = "SELECT `$field` FROM `$table` WHERE `$field` = ?";
-        $resmax = $DBHandle_max->Execute($query, [$card_gen]);
-        if ($resmax && !$resmax->RecordCount()) {
+        $val = $DBHandle->GetOne($query, [$card_gen]);
+        if (is_null($val)) {
+
             return $card_gen;
         }
     }
@@ -834,12 +845,10 @@ function gen_card_with_alias($length_cardnumber = null)
         $alias_gen = MDP(LEN_ALIASNUMBER);
 
         $query = "SELECT username FROM cc_card WHERE username=? OR useralias=? OR username=? OR useralias=?";
-        $resmax = $DBHandle->Execute($query, [$card_gen, $alias_gen, $alias_gen, $card_gen]);
-        if ($resmax && !$resmax->RecordCount()) {
-            $arr_val[0] = $card_gen;
-            $arr_val[1] = $alias_gen;
+        $val = $DBHandle->GetOne($query, [$card_gen, $alias_gen, $alias_gen, $card_gen]);
+        if (is_null($val)) {
 
-            return $arr_val;
+            return [$card_gen, $alias_gen];
         }
     }
     echo "ERROR : Impossible to generate a Cardnumber & Aliasnumber not yet used!";
@@ -863,19 +872,19 @@ function validate_upload(string $the_file, string $the_file_type): string
         "application/vnd.ms-excel",
     ];
 
-    $start_error = "\n<b>ERROR:</b>\n<ul>";
+    $start_error = "<b>" . htmlspecialchars(_("ERROR:")) . "</b>";
     $error = "";
     if ($the_file == "") {
-        $error .= "\n<li>" . gettext("File size is greater than allowed limit.") . "\n</li>";
+        $error = htmlspecialchars(_("File size is greater than allowed limit."));
     } elseif ($the_file == "none") {
-        $error .= "\n<li>" . gettext("You did not upload anything!") . "</li>";
+        $error = htmlspecialchars(_("You did not upload anything!"));
     } elseif ($_FILES['the_file']['size'] == 0) {
-        $error .= "\n<li>" . gettext("Failed to upload the file, The file you uploaded may not exist on disk.") . "!</li>";
+        $error = htmlspecialchars(_("Failed to upload the file, The file you uploaded may not exist on disk."));
     } elseif (!in_array($the_file_type, $allowed_types)) {
-        $error .= "\n<li>$the_file_type " . gettext("file type is not allowed") . "\n</li>";
+        $error = htmlspecialchars($the_file_type) . " " . htmlspecialchars(_("file type is not allowed"));
     }
 
-    return ($error) ? $start_error . $error . "\n</ul>" : "";
+    return ($error) ? "$start_error<ul><li>$error</li></ul>" : "";
 }
 
 function securitykey(string $key, string $data): string
@@ -907,7 +916,7 @@ function get_timezones(): array
     $result = $db->CacheGetAll(900, "SELECT id, gmttime, gmtzone, gmtoffset FROM cc_timezone ORDER by id");
     $timezone_list = [];
 
-    if (is_array($result)) {
+    if ($result !== false && $result !== []) {
         foreach ($result as $row) {
             $timezone_list[$row["id"]] = [
                 1 => $row["gmttime"],
@@ -927,10 +936,11 @@ function get_date_with_offset($currDate, $user_offset = null)
     }
     $server_offset = 0;
     $handle = DbConnect();
-    $row = $handle->CacheGetRow(300, "SELECT gmtoffset FROM cc_timezone WHERE gmttime = ?", [SERVER_GMT]);
-    if (is_array($row)) {
-        $server_offset = $row["gmtoffset"];
+    $val = $handle->CacheGetOne(300, "SELECT gmtoffset FROM cc_timezone WHERE gmttime = ?", [SERVER_GMT]);
+    if (!is_null($val)) {
+        $server_offset = $val;
     }
+    // TODO: proper date math
     $timestamp = strtotime($currDate) - ($server_offset - $user_offset);
 
     return date("Y-m-d H:i:s", $timestamp);
@@ -972,7 +982,7 @@ function generate_invoice_reference(): string
     $year = date("Y");
     $count = $handle->GetOne("SELECT value FROM cc_invoice_conf WHERE key_val = ?", ["count_$year"]);
 
-    if ($count !== false) {
+    if ($count !== false && !is_null($count)) {
         if (!is_numeric($count)) {
             $count = 0;
         }
@@ -1029,7 +1039,7 @@ function get_login_button($id): string
 {
     $handle = DbConnect();
     $row = $handle->GetRow("SELECT useralias, uipass FROM cc_card WHERE id=?", [$id]);
-    if ($row === false) {
+    if ($row === false || $row === []) {
         return "";
     }
     $username = htmlspecialchars($row["useralias"]);

@@ -47,17 +47,23 @@ $QUERY_COUNT_CALL_ALL = "select terminatecauseid, COUNT(*) from cc_call WHERE st
 $QUERY_COUNT_CALL_BILL = "SELECT SUM(sessiontime), SUM(sessionbill), SUM(buycost) FROM cc_call WHERE starttime >= DATE(NOW())";
 
 $DBHandle = DbConnect();
-$result = $DBHandle->Execute($QUERY_COUNT_CALL_ALL);
+$result = $DBHandle->GetAll($QUERY_COUNT_CALL_ALL);
 
 $count_total = 0;
 $counts = [];
-while ($row = $result->FetchRow()) {
+if ($result === false) {
+    die();
+}
+foreach ($result as $row) {
     $count_total += $row[1];
     $counts[$row[0]] = $row[1];
     // 1 = answered, 2= no answer, 3 = cancelled, 4 = congested, 5 = busy, 6 = chanunavil
 }
 
 $row = $DBHandle->GetRow($QUERY_COUNT_CALL_BILL);
+if ($row === false) {
+    die();
+}
 $call_times = $row[0];
 $call_sell = a2b_round($row[1]);
 $call_buy = a2b_round($row[2]);

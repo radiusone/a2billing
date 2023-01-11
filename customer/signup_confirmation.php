@@ -75,26 +75,19 @@ try {
     exit ();
 }
 
-$QUERY = "SELECT username, lastname, firstname, email, uipass, credit, useralias, loginkey FROM cc_card WHERE id=" . $_SESSION["id_signup"];
+$QUERY = "SELECT username, lastname, firstname, email, uipass, credit, useralias, loginkey FROM cc_card WHERE id=?";
 
-$res = $DBHandle->Execute($QUERY);
-$num = 0;
-if ($res)
-    $num = $res->RecordCount();
+$list = $DBHandle->GetRow($QUERY, [$_SESSION["id_signup"]]);
 
-if (!$num) {
+if ($list === false || $list === []) {
     echo "<br>" . gettext("Error : No such user found in database");
     exit ();
-}
-
-for ($i = 0; $i < $num; $i++) {
-    $list[] = $res->fetchRow();
 }
 
 if ($FG_DEBUG == 1)
     echo "<br><b>BELOW THE CARD PROPERTIES </b><hr><br>";
 
-list ($username, $lastname, $firstname, $email, $uipass, $credit, $cardalias, $loginkey) = $list[0];
+list ($username, $lastname, $firstname, $email, $uipass, $credit, $cardalias, $loginkey) = $list;
 if ($FG_DEBUG == 1)
     echo "<br># $username, $lastname, $firstname, $email, $uipass, $credit, $cardalias #<br>";
 
@@ -113,16 +106,16 @@ $smarty->display('signup_header.tpl');
           <br/><br/>
 
     <?php if (!$activatedbyuser) { ?>
-        <?php echo $list[0][2]; ?> <?php echo $list[0][1]; ?>, <?php echo gettext("thank you for registering with us!");?><br>
-        <?php echo gettext("An activation email has been sent to"); ?> <b><?php echo $list[0][3]; ?></b><br><br>
+        <?php echo $lastname; ?> <?php echo $firstname ?>, <?php echo gettext("thank you for registering with us!");?><br>
+        <?php echo gettext("An activation email has been sent to"); ?> <b><?php echo $email ?></b><br><br>
     <?php } else { ?>
-          <?php echo $list[0][2]; ?> <?php echo $list[0][1]; ?>, <?php echo gettext("Thank you for registering with us !");?><br>
-          <?php echo gettext("An email confirming your information has been sent to"); ?> <b><?php echo $list[0][3]; ?></b><br><br>
+          <?php echo $lastname ?> <?php echo $firstname ?>, <?php echo gettext("Thank you for registering with us !");?><br>
+          <?php echo gettext("An email confirming your information has been sent to"); ?> <b><?php echo $email ?></b><br><br>
             <h3>
-              <?php echo gettext("Your cardnumber is "); ?> <b><font color="#00AA00"><?php echo $list[0][0]; ?></font></b><br><br><br>
+              <?php echo gettext("Your cardnumber is "); ?> <b><font color="#00AA00"><?php echo $username ?></font></b><br><br><br>
               <?php echo gettext("To login to your account :"); ?><br>
-              <?php echo gettext("Your card alias (login) is "); ?> <b><font color="#00AA00"><?php echo $list[0][6]; ?></font></b><br>
-              <?php echo gettext("Your password is "); ?> <b><font color="#00AA00"><?php echo $list[0][4]; ?></font></b><br>
+              <?php echo gettext("Your card alias (login) is "); ?> <b><font color="#00AA00"><?php echo $cardalias ?></font></b><br>
+              <?php echo gettext("Your password is "); ?> <b><font color="#00AA00"><?php echo $uipass ?></font></b><br>
             </h3>
     <?php } ?>
 

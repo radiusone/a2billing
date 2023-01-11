@@ -1294,7 +1294,7 @@ class Soap
 
             $result_query = $this->DBHandle->Execute($TT_QUERY);
 
-            if (!$result_query) {
+            if ($result_query === false) {
                 return array(false, "ERROR RATES CREATION ($nb_to_import Rates imported)");
             }
 
@@ -1370,7 +1370,7 @@ class Soap
 
             $result_query = $this->DBHandle->Execute($TT_QUERY);
 
-            if (!$result_query) {
+            if ($result_query === false) {
                 return array(false, "ERROR RATES CREATION ($nb_to_import Rates imported)");
             }
 

@@ -44,17 +44,13 @@ if (!has_rights(ACX_SIMULATOR)) {
     die();
 }
 
-$QUERY = "SELECT  username, credit, lastname, firstname, address, city, state, country, zipcode, phone, email, fax, lastuse, activated, status, id, tariff, currency FROM cc_card WHERE username = '" . $_SESSION["pr_login"] . "' AND uipass = '" . $_SESSION["pr_password"] . "'";
+$QUERY = "SELECT  username, credit, lastname, firstname, address, city, state, country, zipcode, phone, email, fax, lastuse, activated, status, id, tariff, currency FROM cc_card WHERE username = ? AND uipass = ?";
 
 $DBHandle_max = DbConnect();
-$numrow = 0;
-$resmax = $DBHandle_max->Execute($QUERY);
-if ($resmax)
-    $numrow = $resmax->RecordCount();
-
-if ($numrow == 0)
-    exit ();
-$customer_info = $resmax->fetchRow();
+$customer_info = $DBHandle_max->GetRow($QUERY, [$_SESSION["pr_login"], $_SESSION["pr_password"]]);
+if ($customer_info === false || $customer_info === []) {
+    exit;
+}
 
 if ($customer_info[14] != "1" && $customer_info[14] != "8") {
     Header("HTTP/1.0 401 Unauthorized");
@@ -68,16 +64,8 @@ $id_cc_card = $customer_info[15];
 $tariffplan = $customer_info[16];
 $balance = (int)$customer_info[1];
 $currency = $customer_info[17];
-$QUERY = "SELECT value from cc_currencies where currency='$currency'";
-$DBHandle_max = DbConnect();
-$numrow = 0;
-$resmax = $DBHandle_max->Execute($QUERY);
-if ($resmax)
-    $numrow = $resmax->RecordCount();
-
-if ($numrow == 0)
-    exit ();
-$currency_value = $resmax->fetchRow()[0];
+$QUERY = "SELECT value from cc_currencies where currency=?";
+$currency_value = $DBHandle_max->GetOne($QUERY, [$currency]);
 
 $FG_DEBUG = 0;
 $DBHandle = DbConnect();

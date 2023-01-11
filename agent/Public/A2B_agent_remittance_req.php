@@ -49,20 +49,15 @@ if (!$A2B->config["webagentui"]['remittance_request']) {
     die();
 }
 
-$QUERY = "SELECT  credit, currency, com_balance, threshold_remittance FROM cc_agent WHERE id = " . $_SESSION['agent_id'];
+$QUERY = "SELECT  credit, currency, com_balance, threshold_remittance FROM cc_agent WHERE id = ?";
 $table_remittance = $table_remittance = new Table("cc_remittance_request", '*');
 $remittance_clause = "id_agent = " . $_SESSION['agent_id'] . " AND status = 0";
 
 $DBHandle_max = DbConnect();
-$numrow = 0;
-//echo $QUERY;
-$resmax = $DBHandle_max->Execute($QUERY);
-if ($resmax)
-    $numrow = $resmax->RecordCount();
-
-if ($numrow == 0)
-    exit ();
-$agent_info = $resmax->fetchRow();
+$agent_info = $DBHandle_max->GetRow($QUERY, [$_SESSION["agent_id"]]);
+if ($agent_info === false || $agent_info === []) {
+    exit;
+}
 
 $currencies_list = get_currencies();
 $two_currency = false;

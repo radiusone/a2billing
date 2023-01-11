@@ -201,7 +201,7 @@ if ($mode === "standard") {
                 $row = $db->GetRow($QUERY, [$A2B->username]);
 
                 // Check if the locking option is enabled for this account
-                if ($row && $row["block"] === "1" && !empty($row["lock_pin"])) {
+                if ($row !== false && $row !== [] && $row["block"] === "1" && !empty($row["lock_pin"])) {
                     $try = 0;
                     do {
                         $return = false;
@@ -250,7 +250,7 @@ if ($mode === "standard") {
                     $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[QUERY] : " . $QUERY);
                     $card_info = $db->GetRow($QUERY, [$A2B->username]);
 
-                    if ($card_info) {
+                    if ($card_info !== false && $card_info !== []) {
                         do {
                             $return = false;
 
@@ -269,7 +269,7 @@ if ($mode === "standard") {
                                     // TODO: can't we just check $card_info["lastuse"] ?
                                     $QUERY = "SELECT starttime FROM cc_call WHERE card_id = ? ORDER BY starttime DESC LIMIT 1";
                                     $val = $db->GetOne($QUERY, [$A2B->id_card]);
-                                    if ($val) {
+                                    if ($val !== false && !is_null($val)) {
                                         $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[INFORMATION MENU]:[OPTION 1]");
                                         $agi->stream_file("prepaid-lastcall", "#"); //Your last call was made
                                         $agi->exec("SayUnixTime $card_info[lastuse]");
@@ -433,7 +433,7 @@ if ($mode === "standard") {
                                 $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, $QUERY);
                                 $row = $db->GetRow($QUERY, [$A2B->id_card, $speeddial_number]);
                                 $id_speeddial = null;
-                                if ($row) {
+                                if ($row !== false && $row !== []) {
                                     $id_speeddial = $row["id"];
                                     $agi->say_number($speeddial_number);
                                     $agi->stream_file("prepaid-is-used-for", "#");
@@ -484,7 +484,7 @@ if ($mode === "standard") {
                                         }
 
                                         $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, $QUERY);
-                                        $result = $db->Execute($QUERY, $params);
+                                        $db->Execute($QUERY, $params);
                                         $agi->stream_file("prepaid-speeddial-saved"); //The speed dial number has been successfully saved.
                                         $return_mainmenu = true;
                                         break;
@@ -574,7 +574,7 @@ if ($mode === "standard") {
                     $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, $QUERY);
                     $result = $db->GetAll($QUERY, [$A2B->destination]);
 
-                    if ($result) {
+                    if ($result !== false && $result !== []) {
                         //On Net
                         $A2B->call_2did($agi, $RateEngine, $result);
                         if ($A2B->set_inuse) {
@@ -630,7 +630,7 @@ if ($mode === "standard") {
         $result = $db->GetAll($QUERY, [$mydnid]);
         $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, $result);
 
-        if ($result) {
+        if ($result !== false && $result !== []) {
             //Off Net
             $A2B->call_did($agi, $RateEngine, $result);
             if ($A2B->set_inuse) {

@@ -205,7 +205,7 @@ if ($task == 'upload') {
             $nb_to_import = 0;
             $result_query = $DBHandle->Execute($TT_QUERY);
 
-            if ($result_query) {
+            if ($result_query !== false) {
                 $nb_imported = $nb_imported +1;
             } else {
                 $buffer_error .= $ligneoriginal . '<br/>';
@@ -216,8 +216,8 @@ if ($task == 'upload') {
     } // END WHILE EOF
 
     if ($TT_QUERY != '' && strlen($TT_QUERY) > 0 && ($nb_to_import > 0)) {
-        $result_query = @ $DBHandle->Execute($TT_QUERY);
-        if ($result_query)
+        $result_query = $DBHandle->Execute($TT_QUERY);
+        if ($result_query !== false)
             $nb_imported = $nb_imported + $nb_to_import;
     }
 }

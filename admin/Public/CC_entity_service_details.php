@@ -66,35 +66,17 @@ if (!isset ($current_page) || ($current_page == "")) {
 $DBHandle = DbConnect();
 
 // SERVICE INFO
-$QUERY = "SELECT id, name, numberofrun, datelastrun, totalcredit, totalcardperform from cc_service WHERE id='$id'";
-$res = $DBHandle->Execute($QUERY);
-if ($res) {
-    $num = $res->RecordCount();
-
-    for ($i = 0; $i < $num; $i++) {
-        $list_service[] = $res->fetchRow();
-    }
-}
+$QUERY = "SELECT id, name, numberofrun, datelastrun, totalcredit, totalcardperform from cc_service WHERE id=?";
+$list_service = $DBHandle->GetAll($QUERY, [$id]) ?: [];
 
 // LIST REFILL
-$QUERY = "SELECT  t3.daterun, t3.totalcardperform, t3.totalcredit from cc_service_report as t3 WHERE t3.cc_service_id='$id'";
-
-if ($A2B->config["database"]['dbtype'] == 'postgres')
-    $QUERY .= " ORDER BY t3.id DESC LIMIT 25 OFFSET 0";
-else
-    $QUERY .= " ORDER BY t3.id DESC LIMIT 0, 25";
+$QUERY = "SELECT t3.daterun, t3.totalcardperform, t3.totalcredit from cc_service_report as t3 WHERE t3.cc_service_id=? ORDER BY t3.id DESC";
+$QUERY .= ($A2B->config["database"]['dbtype'] == 'postgres') ? " LIMIT 25 OFFSET 0" : " LIMIT 0, 25";
 
 if ($FG_DEBUG > 0)
     echo $QUERY;
 
-$res = $DBHandle->Execute($QUERY);
-if ($res) {
-    $num = $res->RecordCount();
-
-    for ($i = 0; $i < $num; $i++) {
-        $list[] = $res->fetchRow();
-    }
-}
+$list = $DBHandle->GetAll($QUERY, [$id]) ?: [];
 
 $smarty->display('main.tpl');
 

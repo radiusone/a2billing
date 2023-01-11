@@ -201,23 +201,12 @@ $smarty->display('main.tpl');
 // #### HELP SECTION
 echo $CC_help_generate_customer;
 
-$result = $HD_Form->DBHandle->CacheExecute(300, "SELECT id, tariffgroupname AS name FROM cc_tariffgroup ORDER BY tariffgroupname");
-$list_tariff = $result ? $result->GetAll() : [];
-
-$result = $HD_Form->DBHandle->CacheExecute(300, "SELECT id, name FROM cc_card_group ORDER BY name");
-$list_group = $result ? $result->GetAll() : [];
-
-$result = $HD_Form->DBHandle->CacheExecute(300, "SELECT id, login AS name FROM cc_agent ORDER BY login");
-$list_agent = $result ? $result->GetAll() : [];
-
-$result = $HD_Form->DBHandle->CacheExecute(300, "SELECT id, name FROM cc_card_seria ORDER BY name");
-$list_seria = $result ? $result->GetAll() : [];
-
-$result = $HD_Form->DBHandle->CacheExecute(300, "SELECT id, didgroupname AS name FROM cc_didgroup ORDER BY didgroupname");
-$list_didgroup = $result ? $result->GetAll() : [];
-
-$result = $HD_Form->DBHandle->CacheExecute(300, "SELECT countrycode AS id, countryname AS name FROM cc_country ORDER BY countryname");
-$list_country = $result ? $result->GetAll() : [];
+$list_tariff = $HD_Form->DBHandle->CacheGetAll(300, "SELECT id, tariffgroupname AS name FROM cc_tariffgroup ORDER BY tariffgroupname") ?: [];
+$list_group = $HD_Form->DBHandle->CacheGetAll(300, "SELECT id, name FROM cc_card_group ORDER BY name") ?: [];
+$list_agent = $HD_Form->DBHandle->CacheGetAll(300, "SELECT id, login AS name FROM cc_agent ORDER BY login") ?: [];
+$list_seria = $HD_Form->DBHandle->CacheGetAll(300, "SELECT id, name FROM cc_card_seria ORDER BY name") ?: [];
+$list_didgroup = $HD_Form->DBHandle->CacheGetAll(300, "SELECT id, didgroupname AS name FROM cc_didgroup ORDER BY didgroupname");
+$list_country = $HD_Form->DBHandle->CacheGetAll(300, "SELECT countrycode AS id, countryname AS name FROM cc_country ORDER BY countryname") ?: [];
 
 // FORM FOR THE GENERATION
 ?>

@@ -60,21 +60,13 @@ if (isset ($pr_email) && isset ($action)) {
         }
         $show_message = true;
         $DBHandle = DbConnect();
-        $QUERY = "SELECT id,username, lastname, firstname, email, uipass, useralias FROM cc_card WHERE email='" . $pr_email . "' ";
+        $QUERY = "SELECT id,username, lastname, firstname, email, uipass, useralias FROM cc_card WHERE email=?";
 
-        $res = $DBHandle->Execute($QUERY);
-        $num = 0;
-        if ($res)
-            $num = $res->RecordCount();
-
-        if (!$num) {
+        $list = $DBHandle->GetAll($QUERY, [$pr_email]);
+        if ($list === false || $list === []) {
             $error = 1;
             sleep(4);
-        }
-        if ($error == 0) {
-            for ($i = 0; $i < $num; $i++) {
-                $list[] = $res->fetchRow();
-            }
+        } else {
             foreach ($list as $recordset) {
                 list ($id_card, $username, $lastname, $firstname, $email, $uipass, $cardalias) = $recordset;
 

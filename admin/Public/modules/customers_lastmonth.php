@@ -73,8 +73,11 @@ if (!empty($type) && !empty($view_type)) {
             die();
     }
 
-    $result = DbConnect()->Execute($query, [$dt_fmt, $ck_dt]);
-    while ($row = $result->FetchRow()) {
+    $result = DbConnect()->GetAll($query, [$dt_fmt, $ck_dt]);
+    if ($result === false) {
+        die();
+    }
+    foreach ($result as $row) {
         $max = max($max, $row[1]);
         $data[] = [intval($row[0]), floatval($row[1])];
     }

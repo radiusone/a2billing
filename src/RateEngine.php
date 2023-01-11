@@ -180,7 +180,8 @@ class RateEngine
         $params = array_merge($prefix_params, [$tariffgroupid, $minutes_since_monday, $minutes_since_monday, $tariffgroupid, $mydnid, $mydnid, $tariffgroupid, $mycallerid, $tariffgroupid, $mycallerid]);
         $result = $A2B->DBHandle->GetAll($QUERY, $params);
 
-        if (!$result) {
+        if ($result === false || $result === []) {
+
             return 0; // NO RATE FOR THIS NUMBER
         }
 
@@ -448,7 +449,7 @@ class RateEngine
             $result_packages = $A2B->DBHandle->GetAll($query_pakages, [$id_cc_package_offer, $id_rate]);
             $idx_pack = 0;
 
-            if ($result_packages) {
+            if ($result_packages !== false && $result_packages !== []) {
                 $package_selected = false;
 
                 while (!$package_selected && $idx_pack < count($result_packages)) {
@@ -1109,7 +1110,13 @@ class RateEngine
 
                 $query = "INSERT INTO cc_card_package_offer (id_cc_card, id_cc_package_offer, used_secondes) VALUES (?, ?, ?)";
                 $id_card_package_offer = $A2B->DBHandle->Execute($query, [$A2B->id_card, $id_package_offer, $this->freetimetocall_used]);
-                $A2B->debug(A2Billing::INFO, $agi, __FILE__, __LINE__, ":[ID_CARD_PACKAGE_OFFER CREATED : $id_card_package_offer]");
+                $A2B->debug(
+                    A2Billing::INFO,
+                    $agi,
+                    __FILE__,
+                    __LINE__,
+                    ":[ID_CARD_PACKAGE_OFFER CREATED : " . ($id_card_package_offer instanceof \ADORecordSet ? "ok" : $A2B->DBHandle->ErrorMsg()) . "]"
+                );
 
             } else {
 
@@ -1196,7 +1203,13 @@ class RateEngine
             }
         } else {
             $result = $A2B->DBHandle->Execute($QUERY, $params);
-            $A2B->debug(A2Billing::INFO, $agi, __FILE__, __LINE__, "[CC_asterisk_stop : SQL: DONE : result=" . $result . "]");
+            $A2B->debug(
+                A2Billing::INFO,
+                $agi,
+                __FILE__,
+                __LINE__,
+                "[CC_asterisk_stop : SQL: DONE : result=" . ($result instanceof \ADORecordSet ? "ok" : $A2B->DBHandle->ErrorMsg()) . "]"
+            );
             $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[CC_asterisk_stop : SQL: $QUERY]");
         }
 
@@ -1390,7 +1403,7 @@ class RateEngine
                 $QUERY = "SELECT trunkprefix, providertech, providerip, removeprefix, failover_trunk, status, inuse, maxuse, if_max_use FROM cc_trunk WHERE id_trunk = ?";
                 $row = $A2B->DBHandle->GetRow($QUERY, [$failover_trunk]);
 
-                if ($row) {
+                if ($row !== false && $row !== []) {
 
                     //DO SELECT WITH THE FAILOVER_TRUNKID
                     $prefix              = $row["trunkprefix"];

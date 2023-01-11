@@ -162,7 +162,7 @@ if ($bu["batchupdate"] && is_array($bu["check"])) {
     $updates = implode(", ", $sql_sets);
     $where = empty($HD_Form->FG_QUERY_WHERE_CLAUSE) ? "" : "WHERE $HD_Form->FG_QUERY_WHERE_CLAUSE";
     $result = $HD_Form->DBHandle->Execute("UPDATE cc_ratecard SET $updates $where", $sql_params);
-    if (!$result) {
+    if ($result === false) {
         $update_msg = "<div class='alert alert-danger'>" . _("Could not perform the batch update") . "</div>";
     } else {
         $update_msg = "<div class='alert alert-success'>" . _("The batch update has been successfully performed") . "</div>";
@@ -199,10 +199,10 @@ if ($form_action === "list" && $HD_Form->search_form_enabled && $_POST['posted_s
 
 $list = $HD_Form->perform_action($form_action);
 
-$list_tariffname = $HD_Form->DBHandle->GetAll("SELECT id, tariffname FROM cc_tariffplan ORDER BY tariffname");
-$list_trunk = $HD_Form->DBHandle->GetAll("SELECT id_trunk, trunkcode, providerip FROM cc_trunk ORDER BY trunkcode");
-$list_cid_group = $HD_Form->DBHandle->GetAll("SELECT id, group_name FROM cc_outbound_cid_group ORDER BY group_name");
-$list_tariffgroup = $HD_Form->DBHandle->GetAll("SELECT id, tariffgroupname, lcrtype FROM cc_tariffgroup ORDER BY tariffgroupname");
+$list_tariffname = $HD_Form->DBHandle->GetAll("SELECT id, tariffname FROM cc_tariffplan ORDER BY tariffname") ?: [];
+$list_trunk = $HD_Form->DBHandle->GetAll("SELECT id_trunk, trunkcode, providerip FROM cc_trunk ORDER BY trunkcode") ?: [];
+$list_cid_group = $HD_Form->DBHandle->GetAll("SELECT id, group_name FROM cc_outbound_cid_group ORDER BY group_name") ?: [];
+$list_tariffgroup = $HD_Form->DBHandle->GetAll("SELECT id, tariffgroupname, lcrtype FROM cc_tariffgroup ORDER BY tariffgroupname") ?: [];
 
 // #### HEADER SECTION
 $smarty->display('main.tpl');
