@@ -178,8 +178,13 @@ if ($mode === "standard") {
 
             // RETRIEVE THE CHANNEL STATUS AND LOG : STATUS - CREIT - MIN_CREDIT_2CALL
             $stat_channel = $agi->channel_status($A2B->channel);
-            $A2B->debug(A2Billing::INFO, $agi, __FILE__, __LINE__, "[CHANNEL STATUS : $stat_channel[result] = $stat_channel[data]]" .
-                "\n[CREDIT : $A2B->credit][CREDIT MIN_CREDIT_2CALL : $A2B->agiconfig[min_credit_2call]]");
+            $A2B->debug(
+                A2Billing::INFO,
+                $agi,
+                __FILE__,
+                __LINE__,
+                "[CHANNEL STATUS : $stat_channel[result] = $stat_channel[data]]\n[CREDIT : $A2B->credit][CREDIT MIN_CREDIT_2CALL : " . $A2B->agiconfig["min_credit_2call"] . "]"
+            );
 
             // CHECK IF THE CHANNEL IS UP
             if ($A2B->agiconfig["answer_call"] && $stat_channel["result"] != $status_channel) {

@@ -235,6 +235,12 @@ class RateEngine
             $countdelete = 0;
             $resultcount = 0;
             for ($ii = 0; $ii < count($result) - 1; $ii++) {
+                if (empty($sorted_result[$ii])) {
+                    if ($this->webui) {
+                        $A2B->debug(A2Billing::DEBUG, $agi, __FILE__, __LINE__, "[rate-engine: Skipping for ii value " . $ii . " due to missing value]");
+                    }
+                    continue;
+                }
                 $row = $sorted_result[$ii];
                 $mysearchvalue[$resultcount] = $row;
                 if ($this->webui) {
