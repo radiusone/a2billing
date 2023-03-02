@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Admin;
 use A2billing\A2Billing;
 use A2billing\Forms\FormHandler;
 use A2billing\Table;
@@ -50,7 +51,7 @@ include './form_data/FG_var_card.inc';
  * @var string $CC_help_generate_customer
  */
 
-if (!has_rights(ACX_CUSTOMER)) {
+if (!has_rights(Admin::ACX_CUSTOMER)) {
     header("HTTP/1.0 401 Unauthorized");
     header("Location: PP_error.php?c=accessdenied");
     die();

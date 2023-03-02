@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\A2Billing;
+use A2billing\Admin;
 use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -50,7 +51,7 @@ include './form_data/FG_var_def_ratecard.inc';
  * @var string $current_page
  */
 
-if (!has_rights(ACX_RATECARD)) {
+if (!has_rights(Admin::ACX_RATECARD)) {
     header("HTTP/1.0 401 Unauthorized");
     header("Location: PP_error.php?c=accessdenied");
     die();

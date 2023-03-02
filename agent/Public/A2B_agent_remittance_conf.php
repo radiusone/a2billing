@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Agent;
 use A2billing\Table;
 use A2billing\NotificationsDAO;
 use A2billing\Notification;
@@ -39,7 +40,7 @@ use A2billing\Notification;
 
 require_once "../../common/lib/agent.defines.php";
 
-if (! has_rights (ACX_ACCESS)) {
+if (! has_rights (Agent::ACX_ACCESS)) {
     Header ("HTTP/1.0 401 Unauthorized");
     Header ("Location: PP_error.php?c=accessdenied");
     die();

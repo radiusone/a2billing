@@ -1,5 +1,7 @@
 <?php
 
+use A2billing\Customer;
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
@@ -45,7 +47,7 @@ define ("RETURN_URL_DISTANT_FORGETPASSWORD", $A2B->config["webcustomerui"]['retu
 
 require_once __DIR__ . "/customer.module.access.php";
 
-if (!has_rights(ACX_ACCESS)) {
+if (!has_rights(Customer::ACX_ACCESS)) {
     header("HTTP/1.0 401 Unauthorized");
     header("Location: PP_error.php?c=accessdenied");
     die();

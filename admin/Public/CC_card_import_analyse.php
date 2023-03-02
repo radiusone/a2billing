@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Admin;
 use A2billing\Logger;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -41,7 +42,7 @@ require_once "../../common/lib/admin.defines.php";
 
 set_time_limit(0);
 
-if (! has_rights (ACX_CUSTOMER)) {
+if (! has_rights (Admin::ACX_CUSTOMER)) {
     Header ("HTTP/1.0 401 Unauthorized");
     Header ("Location: PP_error.php?c=accessdenied");
     die();

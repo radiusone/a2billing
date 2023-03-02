@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Agent;
 use A2billing\Table;
 use A2billing\NotificationsDAO;
 use A2billing\Notification;
@@ -42,7 +43,7 @@ use A2billing\A2bMailException;
 require_once "../../common/lib/agent.defines.php";
 include './form_data/FG_var_ticket_agent.inc';
 
-if (! has_rights (ACX_SUPPORT)) {
+if (! has_rights (Agent::ACX_SUPPORT)) {
     Header ("HTTP/1.0 401 Unauthorized");
     Header ("Location: PP_error.php?c=accessdenied");
     die();

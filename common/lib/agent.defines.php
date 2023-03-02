@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Agent;
 use A2billing\Logger;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -42,7 +43,7 @@ const BINDTEXTDOMAIN = __DIR__ . '/../common/agent_ui_locale';
 require_once __DIR__ . "/common.defines.php";
 require_once __DIR__ . "/agent.module.access.php";
 
-if (!has_rights(ACX_ACCESS)) {
+if (!has_rights(Agent::ACX_ACCESS)) {
     header("HTTP/1.0 401 Unauthorized");
     header("Location: PP_error.php?c=accessdenied");
     die();

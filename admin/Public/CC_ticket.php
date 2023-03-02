@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Admin;
 use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -44,7 +45,7 @@ include './form_data/FG_var_ticket.inc';
  * @var string $CC_help_support_list
  */
 
-if (!has_rights(ACX_SUPPORT)) {
+if (!has_rights(Admin::ACX_SUPPORT)) {
     header("HTTP/1.0 401 Unauthorized");
     header("Location: PP_error.php?c=accessdenied");
     die();

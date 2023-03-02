@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\A2Billing;
+use A2billing\Admin;
 use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -47,7 +48,7 @@ require_once './form_data/FG_var_did_destination.inc';
  * @var string $CC_help_list_did
  */
 
-if (!has_rights(ACX_DID)) {
+if (!has_rights(Admin::ACX_DID)) {
     header("HTTP/1.0 401 Unauthorized");
     header("Location: PP_error.php?c=accessdenied");
     die();

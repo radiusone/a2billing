@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Customer;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -38,7 +39,7 @@ use A2billing\Table;
 require_once "../common/lib/customer.defines.php";
 include './form_data/FG_var_callerid.inc';
 
-if (! has_rights (ACX_CALLER_ID)) {
+if (! has_rights (Customer::ACX_CALLER_ID)) {
     Header ("HTTP/1.0 401 Unauthorized");
     Header ("Location: PP_error.php?c=accessdenied");
     die();

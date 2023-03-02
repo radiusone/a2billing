@@ -1,7 +1,8 @@
 <?php
 
-use A2billing\Table;
+use A2billing\Customer;
 use A2billing\RateEngine;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -40,7 +41,7 @@ require_once "../common/lib/customer.defines.php";
 
 getpost_ifset(array('callback', 'called', 'calling'));
 
-if (! has_rights (ACX_CALL_BACK)) {
+if (! has_rights (Customer::ACX_CALL_BACK)) {
     Header ("HTTP/1.0 401 Unauthorized");
     Header ("Location: PP_error.php?c=accessdenied");
     die();

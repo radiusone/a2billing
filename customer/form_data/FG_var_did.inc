@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 use A2billing\Notification;
 use A2billing\NotificationsDAO;
@@ -36,7 +37,7 @@ use A2billing\NotificationsDAO;
  *
 **/
 
-if (! has_rights (ACX_ACCESS)) {
+if (! has_rights (Customer::ACX_ACCESS)) {
     Header ("HTTP/1.0 401 Unauthorized");
     Header ("Location: PP_error.php?c=accessdenied");
     die();

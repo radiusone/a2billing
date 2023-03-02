@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Admin;
 use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -33,8 +34,8 @@ use A2billing\Forms\FormHandler;
  *
  *
 **/
-
-if (! has_rights (ACX_ADMINISTRATOR)) {
+// TODO: what's this doing in the agent directory?
+if (! has_rights (Admin::ACX_ADMINISTRATOR)) {
     Header ("HTTP/1.0 401 Unauthorized");
     Header ("Location: PP_error.php?c=accessdenied");
     die();

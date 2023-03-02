@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Agent;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -38,14 +39,14 @@ use A2billing\Table;
 require_once "../../common/lib/agent.defines.php";
 include './form_data/FG_var_card.inc';
 
-if (! has_rights (ACX_CUSTOMER)) {
+if (! has_rights (Agent::ACX_CUSTOMER)) {
     Header ("HTTP/1.0 401 Unauthorized");
     Header ("Location: PP_error.php?c=accessdenied");
     die();
 }
 
 if ($form_action=="ask-edit") {
-    if (! has_rights (ACX_EDIT_CUSTOMER)) {
+    if (! has_rights (Agent::ACX_EDIT_CUSTOMER)) {
         Header ("HTTP/1.0 401 Unauthorized");
         Header ("Location: PP_error.php?c=accessdenied");
         die();
@@ -53,7 +54,7 @@ if ($form_action=="ask-edit") {
 }
 
 if ($form_action=="ask-delete") {
-    if (! has_rights (ACX_DELETE_CUSTOMER)) {
+    if (! has_rights (Agent::ACX_DELETE_CUSTOMER)) {
         Header ("HTTP/1.0 401 Unauthorized");
         Header ("Location: PP_error.php?c=accessdenied");
         die();

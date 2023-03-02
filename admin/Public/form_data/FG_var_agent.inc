@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Admin;
 use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -34,7 +35,7 @@ use A2billing\Forms\FormHandler;
  *
 **/
 
-if (! has_rights (ACX_ADMINISTRATOR)) {
+if (! has_rights (Admin::ACX_ADMINISTRATOR)) {
     Header ("HTTP/1.0 401 Unauthorized");
     Header ("Location: PP_error.php?c=accessdenied");
     die();
@@ -139,7 +140,7 @@ if ($popup_select) {
 	$HD_Form -> FG_INFO_BUTTON_LINK = "A2B_agent_info.php?id=";
 }
 
-if (has_rights (ACX_MODIFY_AGENTS) && !($popup_select)) {
+if (has_rights (Admin::ACX_MODIFY_AGENTS) && !($popup_select)) {
 
 	$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 	$HD_Form -> FG_ENABLE_ADD_BUTTON = true;

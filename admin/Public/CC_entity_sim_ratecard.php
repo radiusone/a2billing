@@ -1,7 +1,8 @@
 <?php
 
-use A2billing\Table;
+use A2billing\Admin;
 use A2billing\RateEngine;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -39,7 +40,7 @@ use A2billing\RateEngine;
 $menu_section = 6;
 require_once "../../common/lib/admin.defines.php";
 
-if (! has_rights (ACX_RATECARD)) {
+if (! has_rights (Admin::ACX_RATECARD)) {
     Header ("HTTP/1.0 401 Unauthorized");
     Header ("Location: PP_error.php?c=accessdenied");
     die();

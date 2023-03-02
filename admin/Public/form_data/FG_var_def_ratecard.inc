@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\A2Billing;
+use A2billing\Admin;
 use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -42,7 +43,7 @@ use A2billing\Forms\FormHandler;
  * @var string $popup_formname
  * @var string $popup_fieldname
  */
-if (!has_rights(ACX_ADMINISTRATOR)) {
+if (!has_rights(Admin::ACX_ADMINISTRATOR)) {
     header("HTTP/1.0 401 Unauthorized");
     header("Location: PP_error.php?c=accessdenied");
     die();

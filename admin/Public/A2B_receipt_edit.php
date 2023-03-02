@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Admin;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -40,7 +41,7 @@ require_once "../../common/lib/admin.defines.php";
 include '../lib/support/classes/receipt.php';
 include '../lib/support/classes/receiptItem.php';
 
-if (! has_rights (ACX_INVOICING)) {
+if (! has_rights (Admin::ACX_INVOICING)) {
     Header ("HTTP/1.0 401 Unauthorized");
     Header ("Location: PP_error.php?c=accessdenied");
     die();

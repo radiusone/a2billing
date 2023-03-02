@@ -1,5 +1,7 @@
 <?php
 
+use A2billing\Customer;
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
@@ -36,7 +38,7 @@
 require_once "../common/lib/customer.defines.php";
 include './form_data/FG_var_notify.inc';
 
-if (!has_rights(ACX_NOTIFICATION)) {
+if (!has_rights(Customer::ACX_NOTIFICATION)) {
     Header("HTTP/1.0 401 Unauthorized");
     Header("Location: PP_error.php?c=accessdenied");
     die();

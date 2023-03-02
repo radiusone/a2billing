@@ -1,5 +1,7 @@
 <?php
 
+use A2billing\Customer;
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
@@ -35,26 +37,6 @@
 
 $FG_DEBUG = 0;
 error_reporting(E_ALL & ~E_NOTICE);
-
-const ACX_ACCESS = 1;
-const ACX_PASSWORD = 2;
-const ACX_SIP_IAX = 4;            // 1 << 1
-const ACX_CALL_HISTORY = 8;            // 1 << 2
-const ACX_PAYMENT_HISTORY = 16;        // 1 << 3
-const ACX_VOUCHER = 32;        // 1 << 4
-const ACX_INVOICES = 64;        // 1 << 5
-const ACX_DID = 128;        // 1 << 6
-const ACX_SPEED_DIAL = 256;        // 1 << 7
-const ACX_RATECARD = 512;        // 1 << 8
-const ACX_SIMULATOR = 1024;        // 1 << 9
-const ACX_CALL_BACK = 2048;        // 1 << 10
-const ACX_WEB_PHONE = 4096;        // 1 << 11
-const ACX_CALLER_ID = 8192;        // 1 << 12
-const ACX_SUPPORT = 16384;        // 1 << 14
-const ACX_NOTIFICATION = 32768;        // 1 << 15
-const ACX_AUTODIALER = 65536;        // 1 << 16
-const ACX_PERSONALINFO = 131072;
-const ACX_SEERECORDING = 262144;
 
 header("Expires: Sat, Jan 01 2000 01:01:01 GMT");
 
@@ -151,23 +133,23 @@ function has_rights($condition): bool
     return (bool)($_SESSION['cus_rights'] & $condition);
 }
 
-$ACXPASSWORD 				= has_rights (ACX_PASSWORD);
-$ACXSIP_IAX 				= has_rights (ACX_SIP_IAX);
-$ACXCALL_HISTORY 			= has_rights (ACX_CALL_HISTORY);
-$ACXPAYMENT_HISTORY			= has_rights (ACX_PAYMENT_HISTORY);
-$ACXVOUCHER					= has_rights (ACX_VOUCHER);
-$ACXINVOICES				= has_rights (ACX_INVOICES);
-$ACXDID						= has_rights (ACX_DID);
-$ACXSPEED_DIAL 				= has_rights (ACX_SPEED_DIAL);
-$ACXRATECARD 				= has_rights (ACX_RATECARD);
-$ACXSIMULATOR 				= has_rights (ACX_SIMULATOR);
-$ACXWEB_PHONE				= has_rights (ACX_WEB_PHONE);
-$ACXCALL_BACK				= has_rights (ACX_CALL_BACK);
-$ACXCALLER_ID				= has_rights (ACX_CALLER_ID);
-$ACXSUPPORT 				= has_rights (ACX_SUPPORT);
-$ACXNOTIFICATION 			= has_rights (ACX_NOTIFICATION);
-$ACXAUTODIALER 				= has_rights (ACX_AUTODIALER);
-$ACXSEERECORDING 			= has_rights (ACX_SEERECORDING);
+$ACXPASSWORD 				= has_rights (Customer::ACX_PASSWORD);
+$ACXSIP_IAX 				= has_rights (Customer::ACX_SIP_IAX);
+$ACXCALL_HISTORY 			= has_rights (Customer::ACX_CALL_HISTORY);
+$ACXPAYMENT_HISTORY			= has_rights (Customer::ACX_PAYMENT_HISTORY);
+$ACXVOUCHER					= has_rights (Customer::ACX_VOUCHER);
+$ACXINVOICES				= has_rights (Customer::ACX_INVOICES);
+$ACXDID						= has_rights (Customer::ACX_DID);
+$ACXSPEED_DIAL 				= has_rights (Customer::ACX_SPEED_DIAL);
+$ACXRATECARD 				= has_rights (Customer::ACX_RATECARD);
+$ACXSIMULATOR 				= has_rights (Customer::ACX_SIMULATOR);
+$ACXWEB_PHONE				= has_rights (Customer::ACX_WEB_PHONE);
+$ACXCALL_BACK				= has_rights (Customer::ACX_CALL_BACK);
+$ACXCALLER_ID				= has_rights (Customer::ACX_CALLER_ID);
+$ACXSUPPORT 				= has_rights (Customer::ACX_SUPPORT);
+$ACXNOTIFICATION 			= has_rights (Customer::ACX_NOTIFICATION);
+$ACXAUTODIALER 				= has_rights (Customer::ACX_AUTODIALER);
+$ACXSEERECORDING 			= has_rights (Customer::ACX_SEERECORDING);
 
 if (ACT_VOICEMAIL) {
     $ACXVOICEMAIL 				= $_SESSION["voicemail"];

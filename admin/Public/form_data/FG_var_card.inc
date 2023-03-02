@@ -1,6 +1,8 @@
 <?php
 
 use A2billing\A2Billing;
+use A2billing\Admin;
+use A2billing\Agent;
 use A2billing\Forms\FormHandler;
 use A2billing\Notification;
 use A2billing\NotificationsDAO;
@@ -137,14 +139,14 @@ if (DELETE_FK_CARD) {
     $HD_Form->FG_FK_DELETE_MESSAGE = _("You are going to remove a card that have SIP/IAX accounts and/or CallerIDs attached to it ! Please confirm that you really want to remove this card ? ");
 }
 
-if (!$popup_select && (is_admin() || has_rights(ACX_GENERATE_CUSTOMER))) {
+if (!$popup_select && (is_admin() || has_rights(Agent::ACX_GENERATE_CUSTOMER))) {
     $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
     $HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_card_multi.php";
     $HD_Form->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form->FG_LIST_ADDING_BUTTON_MSG1 = _("Generate Customers");
     $HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAQCAYAAAABOs/SAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9gJGBI4Of08ag4AAASESURBVDjLxZJbbBRVHIe/MzO7293e7LallIttBbQVaAsVqAoSI2gEIkGJplChiAkUQ1LBhAdREkUoRtAnUDBihBZQlJvhqhQtSgGhgG21xVJAKNDL9rLb2e7szBwfiA0pl8iT/8eTfN/vnP/5Ce5zFoxKeGdQvL1EVe1Iw5L4DUW/0KF9XHKqeen9eMT9yKOw/Fn95UqHRwgbMMKSQNCmKSBlXbvj/RSXMP/rpdTeB/NyvEsy+9nLPdHCqbkEiiqQ2A4wxw2NlxPdUYpo7bTQDYlhCmzFgWEKYZpWbk4/JtyJi4+NUs7fCB65NUfrHZzd1yqO8Kg0d1pYAkDBVpxoqiXa/QYjpixkYmoMV65eo3TzZjRNI6RF44nwudweheZO8zYuzmEWAcvuueqVT0XJEXlFDOstF26G9TEpWH0Io/4wAT1Ii6+DmCgPsY9OYN+K6cSPnMGw1NjbuLDeFh47bmz0rOI9obu+OCE13jd+2qteo/4wAzWNuYULeuRb351pBS+fUk1XAnGRJnGJ/QiYKvjq6DLd5ovTZml34g6sejk4NH2gvDVH6R0ctCL/CF4+RciVQFxiMkMeySAy6SHCzbXsacpsP7BpDTF0ILQIhOYiSjU4smU1314Z3tFW/9ttHL46/IbnfGbBWuOu5UqaXOI4e0N96sGm7VnZ2cPBGYNQNGS4m/fW/chPgQLP4uKllG9ewZ9VldRWVVJXU03f2btZdyDZc7V6J8/lJOJw3+ScspsfStew6vfcCvnwvD36hT3mbX+cOGmLy7at19z0Xbt/fS7Vn81AIpESjrUOYtfV6ez7dCSncXO6HYJdYATB1CG5awdGy24CwTb8AT8pQZNsJRaBoN/MEvKKTqKbDUWC8IbWw/P1nuD457cJw2K219l/Y2/59apL+Pd9zby3FtHqVqnWJeFuMA0wukFt2kbqAwfJyXiMAd4hlFXvpKKqHL/yEolDlpEWCc/2CZK3qJKWrtoFmhra0FFWaCoAfT1dU8fEXNr40dJcfm51c/xvid4sCbdL3m6YROlsHzdq9lHRCHqbIOSHkB/CATBbN5GdnoWlWGQlT8QSYXKHP4Hvry8xOiVVDTbfX3Qzp+Bxxnib1g6IDOT3lGtTxofb7ybXhERzeTha0cJgTadbh5AOhn5z1W3+azhEFC9kLARg8TPrGdQnE2mHMHSJERQcrwGl8TDfzNf5PP2L9T3BqhDK3eRlaZ9QX1ZKRPg6u0pO4IyWRMRBZBLEDgSfv4Pqxl8pPjQHgOKDc6hvOgfCheJQUCIEo9JCVFReR9EcqKrQelr9xut5RuvJ78ZXdg62y88pSnJOCg43OKOgKWYQZ1PmQvpoqstraTxSLq8crxUNx+rsi0drbGF3Kbp2gtSkVFr0K3R0NfHL2XIc3ny8aeNxR8P+tXsZHXdGT/XttF3pTxev23GirKfVDVsLozee6+/8qibrA9neOll1eLwIxYEtkZZp2mZ3wOGNPzMl5XT+m0/eCKa8ss7/L5dfvnd5WNqFQpgOaTtlsH2c7Gqeat2L+9/mH65EU5RAm4B6AAAAAElFTkSuQmCC";
 }
 
-if (!$popup_select && (is_admin() || has_rights(ACX_CREATE_CUSTOMER))) {
+if (!$popup_select && (is_admin() || has_rights(Agent::ACX_CREATE_CUSTOMER))) {
     $HD_Form->FG_LIST_ADDING_BUTTON2 = true;
     $HD_Form->FG_LIST_ADDING_BUTTON_LINK2 = "A2B_entity_card.php?form_action=ask-add";
     $HD_Form->FG_LIST_ADDING_BUTTON_ALT2 = $HD_Form->FG_LIST_ADDING_BUTTON_MSG2 = _("Add Customer");
@@ -204,7 +206,7 @@ $show_fields = [
     'firstname' => [_("First name"), "firstname", true, 15],
     'email' => [_("Email"), "email", true, 40],
     'discount' => [_("Discount"), "discount", true, 15, "display_percentage"],
-    'callerid' => ["<acronym title=\"Caller ID\">" . _("CID") . "</acronym>", "callerid", true, 15],
+    'callerid' => ["<abbr title=\"Caller ID\">" . _("CID") . "</abbr>", "callerid", true, 15],
 ];
 
 // extract the user-defined list of fields we're showing
@@ -296,8 +298,8 @@ if (!$popup_select) {
     $HD_Form->AddSearchSelectInput(_("SELECT PAYMENT TYPE"), "typepaid", $typepaid_list_r);
 
     $HD_Form->FG_ENABLE_INFO_BUTTON = true;
-    $HD_Form->FG_OTHER_BUTTON1 = !empty($A2B->config["webui"]['buddy_sip_file']) && (is_admin() || has_rights(ACX_VOIPCONF));
-    $HD_Form->FG_OTHER_BUTTON2 = !empty($A2B->config["webui"]['buddy_iax_file']) && (is_admin() || has_rights(ACX_VOIPCONF));
+    $HD_Form->FG_OTHER_BUTTON1 = !empty($A2B->config["webui"]['buddy_sip_file']) && (is_admin() || has_rights(Agent::ACX_VOIPCONF));
+    $HD_Form->FG_OTHER_BUTTON2 = !empty($A2B->config["webui"]['buddy_iax_file']) && (is_admin() || has_rights(Agent::ACX_VOIPCONF));
     $HD_Form->FG_OTHER_BUTTON3 = true;
     $HD_Form->FG_OTHER_BUTTON4 = true;
     $HD_Form->FG_OTHER_BUTTON5 = true;
@@ -321,9 +323,9 @@ if (!$popup_select) {
     $HD_Form->FG_OTHER_BUTTON4_ALT = _('Add New Subscription to this Card');
     $HD_Form->FG_OTHER_BUTTON5_ALT = _('Email to this Customer');
 
-    if (has_rights(ACX_MODIFY_CUSTOMERS)) {
-        $HD_Form->FG_ENABLE_EDIT_BUTTON = is_admin() || has_rights(ACX_EDIT_CUSTOMER);
-        $HD_Form->FG_ENABLE_DELETE_BUTTON = is_admin() || has_rights(ACX_DELETE_CUSTOMER);
+    if (has_rights(Admin::ACX_MODIFY_CUSTOMERS)) {
+        $HD_Form->FG_ENABLE_EDIT_BUTTON = is_admin() || has_rights(Agent::ACX_EDIT_CUSTOMER);
+        $HD_Form->FG_ENABLE_DELETE_BUTTON = is_admin() || has_rights(Agent::ACX_DELETE_CUSTOMER);
 
         $maxi = $maxi2 = $maxi3 = $default_initbalance = "";
 
@@ -726,7 +728,7 @@ if (!$popup_select) {
             _("Insert the number of days after which the account will expire")
         );
 
-        if (!empty($A2B->config["webui"]['buddy_sip_file']) && (is_admin() || has_rights(ACX_VOIPCONF))) {
+        if (!empty($A2B->config["webui"]['buddy_sip_file']) && (is_admin() || has_rights(Agent::ACX_VOIPCONF))) {
             $HD_Form->AddEditRadio(
                 "sip_buddy",
                 [[gettext("Yes"), "1"], [gettext("No"), "0"]],
@@ -737,7 +739,7 @@ if (!$popup_select) {
             );
         }
 
-        if (!empty($A2B->config["webui"]['buddy_iax_file']) && (is_admin() || has_rights(ACX_VOIPCONF))) {
+        if (!empty($A2B->config["webui"]['buddy_iax_file']) && (is_admin() || has_rights(Agent::ACX_VOIPCONF))) {
             $HD_Form->AddEditRadio(
                 "iax_buddy",
                 [[gettext("Yes"), "1"], [gettext("No"), "0"]],

@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Agent;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -37,7 +38,7 @@ use A2billing\Table;
 
 require_once "../../common/lib/agent.defines.php";
 
-if (! has_rights ( ACX_CALL_REPORT )) {
+if (! has_rights ( Agent::ACX_CALL_REPORT )) {
     Header ( "HTTP/1.0 401 Unauthorized" );
     Header ( "Location: PP_error.php?c=accessdenied" );
     die ();
@@ -112,7 +113,7 @@ $DBHandle = DbConnect ();
 
 $FG_TABLE_COL = array ();
 $FG_TABLE_COL [] = array (gettext ( "Date" ), "starttime", "15%", "center", "SORT", "19", "", "", "", "", "", "display_dateformat" );
-if ( has_rights ( ACX_SEE_CUSTOMERS_CALLERID )) {
+if ( has_rights ( Agent::ACX_SEE_CUSTOMERS_CALLERID )) {
     $FG_TABLE_COL [] = array (gettext ( "CallerID" ), "src", "7%", "center", "SORT", "30" );
 }
 $FG_TABLE_COL [] = array (gettext ( "DNID" ), "dnid", "7%", "center", "SORT", "30" );
@@ -129,7 +130,7 @@ if (LINK_AUDIO_FILE) {
     $FG_TABLE_COL [] = array ("", "uniqueid", "1%", "center", "", "30", "", "", "", "", "", "display_monitorfile_link" );
 }
 
-if ( has_rights ( ACX_SEE_CUSTOMERS_CALLERID )) {
+if ( has_rights ( Agent::ACX_SEE_CUSTOMERS_CALLERID )) {
     $FG_COL_QUERY = 't1.starttime, t1.src, t1.dnid, t1.calledstation, t1.destination AS dest, t4.rateinitial, t1.sessiontime, t1.card_id, t1.terminatecauseid, t1.sipiax, t1.sessionbill';
 } else {
     $FG_COL_QUERY = 't1.starttime, t1.dnid, t1.calledstation, t1.destination AS dest, t4.rateinitial, t1.sessiontime, t1.card_id, t1.terminatecauseid, t1.sipiax, t1.sessionbill';

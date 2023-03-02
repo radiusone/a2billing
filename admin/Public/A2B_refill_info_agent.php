@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Admin;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -38,7 +39,7 @@ use A2billing\Table;
 $menu_section = 10;
 require_once "../../common/lib/admin.defines.php";
 
-if (! has_rights (ACX_BILLING)) {
+if (! has_rights (Admin::ACX_BILLING)) {
     Header ("HTTP/1.0 401 Unauthorized");
     Header ("Location: PP_error.php?c=accessdenied");
     die();
@@ -80,7 +81,7 @@ $smarty->display('main.tpl');
         </td>
         <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
             <?php
-            if (has_rights (ACX_ADMINISTRATOR)) {
+            if (has_rights (Admin::ACX_ADMINISTRATOR)) {
                 echo get_linktoagent($refill['agent_id']);
             } else {
                 echo get_nameofagent($refill['agent_id']);

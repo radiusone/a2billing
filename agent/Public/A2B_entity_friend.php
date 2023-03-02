@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Agent;
 use A2billing\Table;
 use A2billing\NotificationsDAO;
 use A2billing\Notification;
@@ -40,14 +41,14 @@ use A2billing\Notification;
 require_once "../../common/lib/agent.defines.php";
 include './form_data/FG_var_friend.inc';
 
-if (! has_rights (ACX_CUSTOMER)) {
+if (! has_rights (Agent::ACX_CUSTOMER)) {
     Header ("HTTP/1.0 401 Unauthorized");
     Header ("Location: PP_error.php?c=accessdenied");
     die();
 }
 
 if ($form_action=="add_sip" || $voip_type=="sip" || $form_action=="add_iax" || $voip_type=="iax") {
-    if (! has_rights (ACX_VOIPCONF)) {
+    if (! has_rights (Agent::ACX_VOIPCONF)) {
         Header ("HTTP/1.0 401 Unauthorized");
         Header ("Location: PP_error.php?c=accessdenied");
         die();

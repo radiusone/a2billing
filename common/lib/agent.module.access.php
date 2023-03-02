@@ -1,5 +1,7 @@
 <?php
 
+use A2billing\Agent;
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
@@ -37,20 +39,6 @@ use A2billing\Logger;
 
 $FG_DEBUG = 0;
 error_reporting(E_ALL & ~E_NOTICE);
-
-const ACX_CUSTOMER = 1;
-const ACX_BILLING = 2;            // 1 << 1
-const ACX_RATECARD = 4;            // 1 << 2
-const ACX_CALL_REPORT = 8;            // 1 << 3
-const ACX_MYACCOUNT = 16;
-const ACX_SUPPORT = 32;
-const ACX_CREATE_CUSTOMER = 64;
-const ACX_EDIT_CUSTOMER = 128;
-const ACX_DELETE_CUSTOMER = 256;
-const ACX_GENERATE_CUSTOMER = 512;
-const ACX_SIGNUP = 1024;
-const ACX_VOIPCONF = 2048;
-const ACX_SEE_CUSTOMERS_CALLERID = 4096;
 
 header("Expires: Sat, Jan 01 2000 01:01:01 GMT");
 
@@ -131,16 +119,16 @@ function login (?string $user, ?string $pass)
 }
 
 $ACXACCESS 					= $_SESSION["rights"] > 0;
-$ACXSIGNUP 					= has_rights(ACX_SIGNUP);
-$ACXCUSTOMER 				= has_rights(ACX_CUSTOMER);
-$ACXBILLING 				= has_rights(ACX_BILLING);
-$ACXRATECARD 				= has_rights(ACX_RATECARD);
-$ACXCALLREPORT				= has_rights(ACX_CALL_REPORT);
-$ACXMYACCOUNT  				= has_rights(ACX_MYACCOUNT);
-$ACXSUPPORT  				= has_rights(ACX_SUPPORT);
-$ACXCREATECUSTOMER  		= has_rights(ACX_CREATE_CUSTOMER);
-$ACXEDITCUSTOMER  			= has_rights(ACX_EDIT_CUSTOMER);
-$ACXDELETECUSTOMER  		= has_rights(ACX_DELETE_CUSTOMER);
-$ACXGENERATECUSTOMER  		= has_rights(ACX_GENERATE_CUSTOMER);
-$ACXVOIPCONF  				= has_rights(ACX_VOIPCONF);
-$ACXSEE_CUSTOMERS_CALLERID	= has_rights(ACX_SEE_CUSTOMERS_CALLERID);
+$ACXSIGNUP 					= has_rights(Agent::ACX_SIGNUP);
+$ACXCUSTOMER 				= has_rights(Agent::ACX_CUSTOMER);
+$ACXBILLING 				= has_rights(Agent::ACX_BILLING);
+$ACXRATECARD 				= has_rights(Agent::ACX_RATECARD);
+$ACXCALLREPORT				= has_rights(Agent::ACX_CALL_REPORT);
+$ACXMYACCOUNT  				= has_rights(Agent::ACX_MYACCOUNT);
+$ACXSUPPORT  				= has_rights(Agent::ACX_SUPPORT);
+$ACXCREATECUSTOMER  		= has_rights(Agent::ACX_CREATE_CUSTOMER);
+$ACXEDITCUSTOMER  			= has_rights(Agent::ACX_EDIT_CUSTOMER);
+$ACXDELETECUSTOMER  		= has_rights(Agent::ACX_DELETE_CUSTOMER);
+$ACXGENERATECUSTOMER  		= has_rights(Agent::ACX_GENERATE_CUSTOMER);
+$ACXVOIPCONF  				= has_rights(Agent::ACX_VOIPCONF);
+$ACXSEE_CUSTOMERS_CALLERID	= has_rights(Agent::ACX_SEE_CUSTOMERS_CALLERID);

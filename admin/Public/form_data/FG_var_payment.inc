@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Admin;
 use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -37,7 +38,7 @@ use A2billing\Forms\FormHandler;
  * @var string $popup_select
  * @var string $form_action
  */
-if (! has_rights (ACX_ADMINISTRATOR)) {
+if (! has_rights (Admin::ACX_ADMINISTRATOR)) {
     header("HTTP/1.0 401 Unauthorized");
     header("Location: PP_error.php?c=accessdenied");
     die();
@@ -63,7 +64,7 @@ if ($form_action === "list") {
 $HD_Form->no_debug();
 $HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
 
-if (has_rights (ACX_MODIFY_PAYMENTS)) {
+if (has_rights (Admin::ACX_MODIFY_PAYMENTS)) {
 	$HD_Form->FG_LIST_ADDING_BUTTON1 = true;
 	$HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_payment.php?form_action=ask-add";
 	$HD_Form->FG_LIST_ADDING_BUTTON_MSG1 = _("Add Payment");
@@ -103,7 +104,7 @@ $HD_Form->FG_FILTER_ENABLE = true;
 $HD_Form->FG_FILTER_COLUMN = 'username';
 $HD_Form->FG_FILTER_LABEL = 'account number';
 
-if (has_rights (ACX_MODIFY_PAYMENTS)) {
+if (has_rights (Admin::ACX_MODIFY_PAYMENTS)) {
 
 	$HD_Form->FG_ENABLE_ADD_BUTTON = true;
 	$HD_Form->FG_ENABLE_EDIT_BUTTON = true;

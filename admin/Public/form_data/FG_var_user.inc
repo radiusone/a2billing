@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Admin;
 use A2billing\Forms\FormHandler;
 
 /**
@@ -36,7 +37,7 @@ use A2billing\Forms\FormHandler;
  *
 **/
 
-if (!has_rights(ACX_ADMINISTRATOR)) {
+if (!has_rights(Admin::ACX_ADMINISTRATOR)) {
     header("HTTP/1.0 401 Unauthorized");
     header("Location: PP_error.php?c=accessdenied");
     die();
@@ -105,7 +106,7 @@ $HD_Form->FG_ENABLE_ADD_BUTTON = true;
 $HD_Form->FG_ENABLE_INFO_BUTTON = true;
 $HD_Form->FG_INFO_BUTTON_LINK = "A2B_admin_info.php?groupID=$groupID&id=";
 
-if (!has_rights(ACX_MODIFY_ADMINS)) {
+if (!has_rights(Admin::ACX_MODIFY_ADMINS)) {
     exit;
 }
 
@@ -143,31 +144,31 @@ $HD_Form->AddEditElement(
 
 if ($subadmin) {
     $rights = [
-        ACX_CUSTOMER => _("CUSTOMERS"),
-        ACX_BILLING => _("BILLING"),
-        ACX_RATECARD => _("RATECARD"),
-        ACX_TRUNK => _("TRUNK"),
-        ACX_CALL_REPORT => _("CALL REPORT"),
-        ACX_CRONT_SERVICE => _("CRONT SERVICE"),
-        ACX_ADMINISTRATOR =>  _("AGENT / ADMIN"),
-        ACX_MAINTENANCE => _("MAINTENANCE"),
-        ACX_MAIL => _("MAIL"),
-        ACX_DID => _("DID"),
-        ACX_CALLBACK => _("CALL BACK"),
-        ACX_OUTBOUNDCID => _("OUTBOUND CID"),
-        ACX_PACKAGEOFFER => _("PACKAGE OFFER"),
-        // ACX_PREDICTIVE_DIALER => _("PREDICTIVE DIALER"),
-        ACX_INVOICING => _("INVOICES"),
-        ACX_SUPPORT => _("SUPPORT"),
-        ACX_DASHBOARD => _("DASHBOARD"),
-        ACX_ACXSETTING => _("SYSTEM SETTINGS"),
-        ACX_MODIFY_REFILLS => _("EDIT/DELETE REFILLS"),
-        ACX_MODIFY_PAYMENTS => _("EDIT/DELETE PAYMENTS"),
-        ACX_MODIFY_CUSTOMERS => _("EDIT/DELETE CUSTOMERS"),
-        ACX_DELETE_NOTIFICATIONS => _("DELETE NOTIFICATIONS"),
-        ACX_DELETE_CDR => _("DELETE CDR"),
-        ACX_MODIFY_ADMINS => _("EDIT/DELETE ADMIN"),
-        ACX_MODIFY_AGENTS => _("EDIT/DELETE AGENT"),
+        Admin::ACX_CUSTOMER => _("CUSTOMERS"),
+        Admin::ACX_BILLING => _("BILLING"),
+        Admin::ACX_RATECARD => _("RATECARD"),
+        Admin::ACX_TRUNK => _("TRUNK"),
+        Admin::ACX_CALL_REPORT => _("CALL REPORT"),
+        Admin::ACX_CRONT_SERVICE => _("CRONT SERVICE"),
+        Admin::ACX_ADMINISTRATOR =>  _("AGENT / ADMIN"),
+        Admin::ACX_MAINTENANCE => _("MAINTENANCE"),
+        Admin::ACX_MAIL => _("MAIL"),
+        Admin::ACX_DID => _("DID"),
+        Admin::ACX_CALLBACK => _("CALL BACK"),
+        Admin::ACX_OUTBOUNDCID => _("OUTBOUND CID"),
+        Admin::ACX_PACKAGEOFFER => _("PACKAGE OFFER"),
+        // Admin::ACX_PREDICTIVE_DIALER => _("PREDICTIVE DIALER"),
+        Admin::ACX_INVOICING => _("INVOICES"),
+        Admin::ACX_SUPPORT => _("SUPPORT"),
+        Admin::ACX_DASHBOARD => _("DASHBOARD"),
+        Admin::ACX_ACXSETTING => _("SYSTEM SETTINGS"),
+        Admin::ACX_MODIFY_REFILLS => _("EDIT/DELETE REFILLS"),
+        Admin::ACX_MODIFY_PAYMENTS => _("EDIT/DELETE PAYMENTS"),
+        Admin::ACX_MODIFY_CUSTOMERS => _("EDIT/DELETE CUSTOMERS"),
+        Admin::ACX_DELETE_NOTIFICATIONS => _("DELETE NOTIFICATIONS"),
+        Admin::ACX_DELETE_CDR => _("DELETE CDR"),
+        Admin::ACX_MODIFY_ADMINS => _("EDIT/DELETE ADMIN"),
+        Admin::ACX_MODIFY_AGENTS => _("EDIT/DELETE AGENT"),
     ];
     foreach ($rights as $k => $v) {
         $right_list[] = [$v, $k];

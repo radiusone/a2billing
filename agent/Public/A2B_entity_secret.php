@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Agent;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -37,7 +38,7 @@ use A2billing\Table;
 
 require_once "../../common/lib/agent.defines.php";
 
-if (! has_rights (ACX_SIGNUP)) {
+if (! has_rights (Agent::ACX_SIGNUP)) {
        Header ("HTTP/1.0 401 Unauthorized");
        Header ("Location: PP_error.php?c=accessdenied");
        die();

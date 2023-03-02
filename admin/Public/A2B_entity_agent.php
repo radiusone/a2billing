@@ -1,5 +1,7 @@
 <?php
 
+use A2billing\Admin;
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
@@ -37,7 +39,7 @@ $menu_section = 2;
 require_once "../../common/lib/admin.defines.php";
 include './form_data/FG_var_agent.inc';
 
-if (!has_rights(ACX_ADMINISTRATOR)) {
+if (!has_rights(Admin::ACX_ADMINISTRATOR)) {
     Header("HTTP/1.0 401 Unauthorized");
     Header("Location: PP_error.php?c=accessdenied");
     die();

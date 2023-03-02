@@ -1,10 +1,11 @@
 <?php
 
+use A2billing\A2bMailException;
+use A2billing\Customer;
+use A2billing\Mail;
+use A2billing\Notification;
 use A2billing\NotificationsDAO;
 use A2billing\Table;
-use A2billing\Mail;
-use A2billing\A2bMailException;
-use A2billing\Notification;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -42,7 +43,7 @@ use A2billing\Notification;
 require_once "../common/lib/customer.defines.php";
 include './form_data/FG_var_ticket.inc';
 
-if (!has_rights(ACX_SUPPORT)) {
+if (!has_rights(Customer::ACX_SUPPORT)) {
     Header("HTTP/1.0 401 Unauthorized");
     Header("Location: PP_error.php?c=accessdenied");
     die();

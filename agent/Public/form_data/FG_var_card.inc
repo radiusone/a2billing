@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Agent;
 use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -34,7 +35,7 @@ use A2billing\Forms\FormHandler;
  *
 **/
 
-if (! has_rights (ACX_ACCESS)) {
+if (! has_rights (Agent::ACX_ACCESS)) {
     Header ("HTTP/1.0 401 Unauthorized");
     Header ("Location: PP_error.php?c=accessdenied");
     die();
@@ -77,14 +78,14 @@ if (DELETE_FK_CARD) {
 	$HD_Form -> FG_FK_DELETE_MESSAGE = gettext("You are going to remove a card that have SIP/IAX accounts and/or CallerIDs attached to it ! Please confirm that you really want to remove this card ? ");
 }
 
-if (has_rights (ACX_GENERATE_CUSTOMER)) {
+if (has_rights (Agent::ACX_GENERATE_CUSTOMER)) {
 	$HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
 	$HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_card_multi.php?section=".$_SESSION["menu_section"];
 	$HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Generate Customers");
 	$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/user_multi_add.png" ;
 }
 
-if (has_rights (ACX_CREATE_CUSTOMER)) {
+if (has_rights (Agent::ACX_CREATE_CUSTOMER)) {
 	$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 	$HD_Form ->FG_LIST_ADDING_BUTTON2 = true;
 	$HD_Form ->FG_LIST_ADDING_BUTTON_LINK2 = "A2B_entity_card.php?form_action=ask-add&section=".$_SESSION["menu_section"];
@@ -277,14 +278,14 @@ if (($popup_select>=1)) {
 
 } else {
 
-	if (has_rights (ACX_EDIT_CUSTOMER)) {
+	if (has_rights (Agent::ACX_EDIT_CUSTOMER)) {
 		$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 	}
 
 	$HD_Form -> FG_ENABLE_INFO_BUTTON = true;
 	$HD_Form -> FG_INFO_BUTTON_LINK = "A2B_card_info.php?id=";
 
-	if (has_rights (ACX_DELETE_CUSTOMER)) {
+	if (has_rights (Agent::ACX_DELETE_CUSTOMER)) {
 		$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 	}
 
@@ -292,14 +293,14 @@ if (($popup_select>=1)) {
 	$FN_COLUMN_USERNAME="col".($FG_COL_QUERY_COUNT+1);
 	$FN_COLUMN_ALIAS="col".($FG_COL_QUERY_COUNT+2);
 
-	if (has_rights (ACX_SIPCONF)) {
+	if (has_rights (Agent::ACX_VOIPCONF)) {
 		$HD_Form -> FG_OTHER_BUTTON1 = true;
 		$HD_Form -> FG_OTHER_BUTTON1_LINK="A2B_entity_friend.php?voip_conf=sip&form_action=add_sip&id_cc_card=|$FN_COLUMN_ID|&cardnumber=|$FN_COLUMN_USERNAME|&useralias=|$FN_COLUMN_ALIAS|";
 		$HD_Form -> FG_OTHER_BUTTON1_IMG = Images_Path . "/icon-sip.gif";
 		$HD_Form -> FG_OTHER_BUTTON1_ALT=gettext("SIP buddy");
 	}
 
-	if (has_rights (ACX_IAXCONF)) {
+	if (has_rights (Agent::ACX_VOIPCONF)) {
 		$HD_Form -> FG_OTHER_BUTTON2 = true;
 		$HD_Form -> FG_OTHER_BUTTON2_LINK="A2B_entity_friend.php?voip_conf=iax&form_action=add_iax&id_cc_card=|$FN_COLUMN_ID|&cardnumber=|$FN_COLUMN_USERNAME|&useralias=|$FN_COLUMN_ALIAS|";
 		$HD_Form -> FG_OTHER_BUTTON2_IMG = Images_Path . "/icon-iax.gif";

@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Admin;
 use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -34,7 +35,7 @@ use A2billing\Forms\FormHandler;
  *
 **/
 
-if (! has_rights (ACX_ADMINISTRATOR)) {
+if (! has_rights (Admin::ACX_ADMINISTRATOR)) {
     Header ("HTTP/1.0 401 Unauthorized");
     Header ("Location: PP_error.php?c=accessdenied");
     die();
@@ -60,7 +61,7 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/money_add.png" ;
 
 $list_refill_type=getRefillType_List();
 $HD_Form -> AddViewElement(gettext("ID"), "cc_logpayment.id");
-if (has_rights (ACX_ADMINISTRATOR)) {
+if (has_rights (Admin::ACX_ADMINISTRATOR)) {
 	$HD_Form -> AddViewElement(gettext("AGENT"), "agent_id", true, 30, "display_linktoagent");
 } else {
 	$HD_Form -> AddViewElement(gettext("AGENT"), "agent_id", true, 30, "display_nameofagent");
@@ -87,7 +88,7 @@ $HD_Form -> AddSearchTextInput(gettext("LOGIN"), 'login','logintype');
 $HD_Form -> AddSearchTextInput(gettext("LASTNAME"),'lastname','lastnametype');
 $HD_Form -> AddSearchTextInput(gettext("FIRSTNAME"),'firstname','firstnametype');
 
-if (has_rights (ACX_MODIFY_PAYMENTS)) {
+if (has_rights (Admin::ACX_MODIFY_PAYMENTS)) {
 	$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 	$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 

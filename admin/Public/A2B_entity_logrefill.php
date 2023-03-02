@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Admin;
 use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -46,7 +47,7 @@ include './form_data/FG_var_logrefill.inc';
  * @var string $CC_help_view_refill
  */
 
-if (!has_rights(ACX_BILLING)) {
+if (!has_rights(Admin::ACX_BILLING)) {
     header("HTTP/1.0 401 Unauthorized");
     header("Location: PP_error.php?c=accessdenied");
     die();

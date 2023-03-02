@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Admin;
 use A2billing\Connection;
 use A2billing\Table;
 
@@ -39,7 +40,7 @@ use A2billing\Table;
 $menu_section = 12;
 require_once "../../common/lib/admin.defines.php";
 
-if (! has_rights (ACX_PACKAGEOFFER)) {
+if (! has_rights (Admin::ACX_PACKAGEOFFER)) {
     Header ("HTTP/1.0 401 Unauthorized");
     Header ("Location: PP_error.php?c=accessdenied");
     die();

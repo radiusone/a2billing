@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Admin;
 use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -41,7 +42,7 @@ require_once "../../common/lib/admin.defines.php";
  * @var Smarty $smarty
  */
 
-if (! has_rights ( ACX_CALL_REPORT )) {
+if (! has_rights ( Admin::ACX_CALL_REPORT )) {
     header ( "HTTP/1.0 401 Unauthorized" );
     header ( "Location: PP_error.php?c=accessdenied" );
     die ();

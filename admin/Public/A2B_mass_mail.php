@@ -1,9 +1,10 @@
 <?php
 
-use A2billing\Forms\FormHandler;
-use A2billing\Table;
-use A2billing\Mail;
 use A2billing\A2bMailException;
+use A2billing\Admin;
+use A2billing\Forms\FormHandler;
+use A2billing\Mail;
+use A2billing\Table;
 
 /**
  * starts the microtime counter
@@ -65,7 +66,7 @@ function mt_end($len = 4): float
 $menu_section = 17;
 require_once "../../common/lib/admin.defines.php";
 
-if (! has_rights (ACX_MAIL)) {
+if (! has_rights (Admin::ACX_MAIL)) {
     Header ("HTTP/1.0 401 Unauthorized");
     Header ("Location: PP_error.php?c=accessdenied");
     die();

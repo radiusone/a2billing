@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Admin;
 use A2billing\NotificationsDAO;
 use A2billing\Table;
 
@@ -81,7 +82,7 @@ if (!empty ($action) && is_numeric($id)) {
             break;
 
         case "delete" :
-            if (has_rights(ACX_DELETE_NOTIFICATIONS)) {
+            if (has_rights(Admin::ACX_DELETE_NOTIFICATIONS)) {
                 $return = NotificationsDAO :: DelNotification($id);
                 if ($return)
                     echo "true";
@@ -215,7 +216,7 @@ $list_notifications = NotificationsDAO::getNotifications($_SESSION['admin_id'],(
                 <td class="tableBody"  align="center">
                 <?php if ($notification->getNew()) { ?>
                     <strong style="font-size:8px; color:#B00000; background-color:white; border:solid 1px;"> &nbsp;NEW&nbsp;</strong>
-                <?php } elseif (has_rights (ACX_DELETE_NOTIFICATIONS)) { ?>
+                <?php } elseif (has_rights (Admin::ACX_DELETE_NOTIFICATIONS)) { ?>
                     <img id=" <?php echo $notification->getId(); ?>" onmouseover="this.style.cursor='pointer'" class="delete" src="<?php echo Images_Path ?>/delete.png" title="<?php echo gettext("Delete this Notification")?>" alt="<?php echo gettext("Delete this Notification")?>" border="0"/>
                 <?php } ?>
                 </td>

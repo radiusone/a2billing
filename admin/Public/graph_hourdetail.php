@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Admin;
 use A2billing\Table;
 use Amenadiel\JpGraph\Graph\Graph;
 use Amenadiel\JpGraph\Plot\BarPlot;
@@ -41,7 +42,7 @@ use Amenadiel\JpGraph\Util\RGB;
 
 require_once "../../common/lib/admin.defines.php";
 
-if (!has_rights(ACX_CALL_REPORT)) {
+if (!has_rights(Admin::ACX_CALL_REPORT)) {
     Header("HTTP/1.0 401 Unauthorized");
     Header("Location: PP_error.php?c=accessdenied");
     die();

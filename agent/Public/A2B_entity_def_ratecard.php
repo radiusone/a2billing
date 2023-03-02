@@ -1,5 +1,7 @@
 <?php
 
+use A2billing\Agent;
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
@@ -36,7 +38,7 @@
 require_once "../../common/lib/agent.defines.php";
 include './form_data/FG_var_def_ratecard.inc';
 
-if (!has_rights(ACX_RATECARD)) {
+if (!has_rights(Agent::ACX_RATECARD)) {
     Header("HTTP/1.0 401 Unauthorized");
     Header("Location: PP_error.php?c=accessdenied");
     die();

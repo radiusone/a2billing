@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Customer;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -40,7 +41,7 @@ include 'lib/epayment/includes/configure.php';
 include 'lib/epayment/includes/html_output.php';
 include './lib/epayment/includes/general.php';
 
-if (!has_rights(ACX_ACCESS)) {
+if (!has_rights(Customer::ACX_ACCESS)) {
     Header("HTTP/1.0 401 Unauthorized");
     Header("Location: PP_error.php?c=accessdenied");
     die();
@@ -120,7 +121,7 @@ $smarty->display('main.tpl');
         &nbsp;
     </td>
     <td align="right">
-        <?php if (has_rights (ACX_PERSONALINFO)) { ?>
+        <?php if (has_rights (Customer::ACX_PERSONALINFO)) { ?>
         <a href="A2B_entity_card.php?form_action=ask-edit"><span class="cssbutton"><font color="red"><?php echo gettext("EDIT PERSONAL INFORMATION");?></font></span></a>
         <?php } ?>
     </td>

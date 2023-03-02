@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Admin;
 use A2billing\Logger;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -48,7 +49,7 @@ $open_pages = [
     "logout.php",
     "PP_error.php",
 ];
-if (!in_array(basename($_SERVER["PHP_SELF"]), $open_pages) && (!is_admin() || !has_rights(ACX_ADMINISTRATOR))) {
+if (!in_array(basename($_SERVER["PHP_SELF"]), $open_pages) && (!is_admin() || !has_rights(Admin::ACX_ADMINISTRATOR))) {
     header("HTTP/1.0 401 Unauthorized");
     header("Location: PP_error.php?c=accessdenied");
     die();

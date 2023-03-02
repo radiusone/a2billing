@@ -1,5 +1,7 @@
 <?php
 
+use A2billing\Admin;
+
 /**
  *
  * phpconfig HTML output
@@ -25,7 +27,7 @@
 // add for a2billing
 require_once "../../common/lib/admin.defines.php";
 
-if (! has_rights (ACX_ADMINISTRATOR)) {
+if (! has_rights (Admin::ACX_ADMINISTRATOR)) {
     Header ("HTTP/1.0 401 Unauthorized");
     Header ("Location: PP_error.php?c=accessdenied");
     die();

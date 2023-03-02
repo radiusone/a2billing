@@ -1,8 +1,9 @@
 <?php
 
+use A2billing\Admin;
 use A2billing\NotificationsDAO;
-use A2billing\Table;
 use A2billing\Notification;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -41,7 +42,7 @@ $menu_section = 1;
 require_once "../../common/lib/admin.defines.php";
 include './form_data/FG_var_friend.inc';
 
-if (! has_rights (ACX_CUSTOMER)) {
+if (! has_rights (Admin::ACX_CUSTOMER)) {
     Header ("HTTP/1.0 401 Unauthorized");
     Header ("Location: PP_error.php?c=accessdenied");
     die();

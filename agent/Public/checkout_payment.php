@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Agent;
 use A2billing\Forms\FormHandler;
 use A2billing\Table;
 
@@ -45,7 +46,7 @@ include '../lib/epayment/includes/html_output.php';
 include '../lib/epayment/includes/loadconfiguration.php';
 include '../lib/epayment/includes/configure.php';
 
-if (!has_rights(ACX_ACCESS)) {
+if (!has_rights(Agent::ACX_ACCESS)) {
     Header("HTTP/1.0 401 Unauthorized");
     Header("Location: PP_error.php?c=accessdenied");
     die();

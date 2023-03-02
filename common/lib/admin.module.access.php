@@ -1,5 +1,7 @@
 <?php
 
+use A2billing\Admin;
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
@@ -34,36 +36,9 @@
 **/
 
 use A2billing\Logger;
-use A2billing\NotificationsDAO;
 
 $FG_DEBUG = 0;
 error_reporting(E_ALL & ~E_NOTICE);
-
-const ACX_CUSTOMER = 1;
-const ACX_BILLING = 2;            // 1 << 1
-const ACX_RATECARD = 4;            // 1 << 2
-const ACX_TRUNK = 8;            // 1 << 3
-const ACX_CALL_REPORT = 16;        // 1 << 4
-const ACX_CRONT_SERVICE = 32;        // 1 << 5
-const ACX_ADMINISTRATOR = 64;        // 1 << 6
-const ACX_MAINTENANCE = 128;        // 1 << 7
-const ACX_MAIL = 256;        // 1 << 8
-const ACX_DID = 512;        // 1 << 9
-const ACX_CALLBACK = 1024;        // 1 << 10
-const ACX_OUTBOUNDCID = 2048;        // 1 << 11
-const ACX_PACKAGEOFFER = 4096;        // 1 << 12
-const ACX_PREDICTIVE_DIALER = 8192;        // 1 << 13
-const ACX_INVOICING = 16384;        // 1 << 14
-const ACX_SUPPORT = 32768;        // 1 << 15
-const ACX_DASHBOARD = 65536;        // 1 << 16
-const ACX_ACXSETTING = 131072;    // 1 << 17
-const ACX_MODIFY_REFILLS = 262144;    // 1 << 18
-const ACX_MODIFY_PAYMENTS = 524288;    // 1 << 19
-const ACX_MODIFY_CUSTOMERS = 1048576;    // 1 << 20
-const ACX_DELETE_NOTIFICATIONS = 2097152;    // 1 << 21
-const ACX_DELETE_CDR = 4194304;    // 1 << 22
-const ACX_MODIFY_ADMINS = 8388608;    // 1 << 23
-const ACX_MODIFY_AGENTS = 16777216;    // 1 << 24
 
 header("Expires: Sat, Jan 01 2000 01:01:01 GMT");
 
@@ -145,26 +120,26 @@ function login (?string $user, ?string $pass)
 }
 
 $ACXACCESS 				= $_SESSION["rights"] > 0;
-$ACXDASHBOARD			= has_rights(ACX_DASHBOARD);
-$ACXCUSTOMER 			= has_rights(ACX_CUSTOMER);
-$ACXBILLING 			= has_rights(ACX_BILLING);
-$ACXRATECARD 			= has_rights(ACX_RATECARD);
-$ACXTRUNK				= has_rights(ACX_TRUNK);
-$ACXDID					= has_rights(ACX_DID);
-$ACXCALLREPORT			= has_rights(ACX_CALL_REPORT);
-$ACXCRONTSERVICE		= has_rights(ACX_CRONT_SERVICE);
-$ACXMAIL 				= has_rights(ACX_MAIL);
-$ACXADMINISTRATOR 		= has_rights(ACX_ADMINISTRATOR);
-$ACXMAINTENANCE 		= has_rights(ACX_MAINTENANCE);
-$ACXCALLBACK			= has_rights(ACX_CALLBACK);
-$ACXOUTBOUNDCID 		= has_rights(ACX_OUTBOUNDCID);
-$ACXPACKAGEOFFER 		= has_rights(ACX_PACKAGEOFFER);
-$ACXPREDICTIVEDIALER 	= has_rights(ACX_PREDICTIVE_DIALER);
-$ACXINVOICING 			= has_rights(ACX_INVOICING);
-$ACXSUPPORT 			= has_rights(ACX_SUPPORT);
-$ACXSETTING 			= has_rights(ACX_ACXSETTING);
-$ACXMODIFY_REFILLS 		= has_rights(ACX_MODIFY_REFILLS);
-$ACXMODIFY_PAYMENTS 	= has_rights(ACX_MODIFY_PAYMENTS);
-$ACXMODIFY_CUSTOMERS 	= has_rights(ACX_MODIFY_CUSTOMERS);
-$ACXDELETE_NOTIFICATIONS= has_rights(ACX_DELETE_NOTIFICATIONS);
-$ACXDELETE_CDR			= has_rights(ACX_DELETE_CDR);
+$ACXDASHBOARD			= has_rights(Admin::ACX_DASHBOARD);
+$ACXCUSTOMER 			= has_rights(Admin::ACX_CUSTOMER);
+$ACXBILLING 			= has_rights(Admin::ACX_BILLING);
+$ACXRATECARD 			= has_rights(Admin::ACX_RATECARD);
+$ACXTRUNK				= has_rights(Admin::ACX_TRUNK);
+$ACXDID					= has_rights(Admin::ACX_DID);
+$ACXCALLREPORT			= has_rights(Admin::ACX_CALL_REPORT);
+$ACXCRONTSERVICE		= has_rights(Admin::ACX_CRONT_SERVICE);
+$ACXMAIL 				= has_rights(Admin::ACX_MAIL);
+$ACXADMINISTRATOR 		= has_rights(Admin::ACX_ADMINISTRATOR);
+$ACXMAINTENANCE 		= has_rights(Admin::ACX_MAINTENANCE);
+$ACXCALLBACK			= has_rights(Admin::ACX_CALLBACK);
+$ACXOUTBOUNDCID 		= has_rights(Admin::ACX_OUTBOUNDCID);
+$ACXPACKAGEOFFER 		= has_rights(Admin::ACX_PACKAGEOFFER);
+$ACXPREDICTIVEDIALER 	= has_rights(Admin::ACX_PREDICTIVE_DIALER);
+$ACXINVOICING 			= has_rights(Admin::ACX_INVOICING);
+$ACXSUPPORT 			= has_rights(Admin::ACX_SUPPORT);
+$ACXSETTING 			= has_rights(Admin::ACX_ACXSETTING);
+$ACXMODIFY_REFILLS 		= has_rights(Admin::ACX_MODIFY_REFILLS);
+$ACXMODIFY_PAYMENTS 	= has_rights(Admin::ACX_MODIFY_PAYMENTS);
+$ACXMODIFY_CUSTOMERS 	= has_rights(Admin::ACX_MODIFY_CUSTOMERS);
+$ACXDELETE_NOTIFICATIONS= has_rights(Admin::ACX_DELETE_NOTIFICATIONS);
+$ACXDELETE_CDR			= has_rights(Admin::ACX_DELETE_CDR);

@@ -1,5 +1,7 @@
 <?php
 
+use A2billing\Admin;
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
@@ -37,7 +39,7 @@ use A2billing\Table;
 
 require_once __DIR__ . "/../../lib/admin.defines.php";
 
-if (!has_rights(ACX_DASHBOARD)) {
+if (!has_rights(Admin::ACX_DASHBOARD)) {
     header("HTTP/1.0 401 Unauthorized");
     header("Location: PP_error.php?c=accessdenied");
     die();

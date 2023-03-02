@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Admin;
 use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -56,7 +57,7 @@ if ($form_action === "list") {
 $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
-if (has_rights (ACX_MODIFY_REFILLS)) {
+if (has_rights (Admin::ACX_MODIFY_REFILLS)) {
 	$HD_Form->FG_LIST_ADDING_BUTTON1 = true;
 	$HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_logrefill.php?form_action=ask-add";
 	$HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add Refill");
@@ -96,7 +97,7 @@ $HD_Form -> FG_FILTER_COLUMN = 'username';
 $HD_Form -> FG_FILTER_LABEL = 'Account number';
 
 // what is the point of this, if editing or deleting a refill doesn't change the card balance?
-if (has_rights (ACX_MODIFY_REFILLS)) {
+if (has_rights (Admin::ACX_MODIFY_REFILLS)) {
 	$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 	$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 

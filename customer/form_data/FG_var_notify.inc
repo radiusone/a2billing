@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 use A2billing\Table;
 
@@ -35,7 +36,7 @@ use A2billing\Table;
  *
 **/
 
-if (! has_rights (ACX_ACCESS)) {
+if (! has_rights (Customer::ACX_ACCESS)) {
     Header ("HTTP/1.0 401 Unauthorized");
     Header ("Location: PP_error.php?c=accessdenied");
     die();
