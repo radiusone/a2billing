@@ -35,9 +35,12 @@
 
 include "../../common/lib/admin.defines.php";
 
-getpost_ifset(array (
-    'error'
-));
+if (is_admin()) {
+    // already logged in
+    header("Location: PP_intro.php");
+}
 
-$smarty -> assign("error", $error);
-$smarty -> display('index.tpl');
+getpost_ifset(["error"]);
+
+$smarty->assign("error", $error);
+$smarty->display('index.tpl');

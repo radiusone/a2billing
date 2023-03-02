@@ -37,9 +37,12 @@ $disable_load_conf = true;
 
 require_once "../../common/lib/agent.defines.php";
 
-getpost_ifset(array (
-    'error'
-));
+if (is_agent()) {
+    // already logged in
+    header("Location: PP_intro.php");
+}
 
-$smarty -> assign("error", $error);
-$smarty -> display('index.tpl');
+getpost_ifset(["error"]);
+
+$smarty->assign("error", $error);
+$smarty->display('index.tpl');

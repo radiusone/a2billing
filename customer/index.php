@@ -37,11 +37,15 @@ $disable_load_conf = true;
 
 require_once "../common/lib/customer.defines.php";
 
-getpost_ifset(array ('error', 'password', 'username'));
+if (is_customer()) {
+    // already logged in
+    header("Location: userinfo.php");
+}
 
-$smarty -> assign("error", $error);
+getpost_ifset(["error", "password", "username"]);
 
-$smarty -> assign("username", $username);
-$smarty -> assign("password", $password);
+$smarty->assign("error", $error);
+$smarty->assign("username", $username);
+$smarty->assign("password", $password);
 
-$smarty -> display('index.tpl');
+$smarty->display('index.tpl');
