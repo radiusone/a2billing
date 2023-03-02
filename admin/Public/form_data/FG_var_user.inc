@@ -143,34 +143,34 @@ $HD_Form->AddEditElement(
 
 if ($subadmin) {
     $rights = [
-        _("CUSTOMERS"),
-        _("BILLING"),
-        _("RATECARD"),
-        _("TRUNK"),
-        _("CALL REPORT"),
-        _("CRONT SERVICE"),
-        _("AGENT / ADMIN"),
-        _("MAINTENANCE"),
-        _("MAIL"),
-        _("DID"),
-        _("CALL BACK"),
-        _("OUTBOUND CID"),
-        _("PACKAGE OFFER"),
-        _("PREDICTIVE DIALER"),
-        _("INVOICES"),
-        _("SUPPORT"),
-        _("DASHBOARD"),
-        _("SYSTEM SETTINGS"),
-        _("EDIT/DELETE REFILLS"),
-        _("EDIT/DELETE PAYMENTS"),
-        _("EDIT/DELETE CUSTOMERS"),
-        _("DELETE NOTIFICATIONS"),
-        _("DELETE CDR"),
-        _("EDIT/DELETE ADMIN"),
-        _("EDIT/DELETE AGENT"),
+        ACX_CUSTOMER => _("CUSTOMERS"),
+        ACX_BILLING => _("BILLING"),
+        ACX_RATECARD => _("RATECARD"),
+        ACX_TRUNK => _("TRUNK"),
+        ACX_CALL_REPORT => _("CALL REPORT"),
+        ACX_CRONT_SERVICE => _("CRONT SERVICE"),
+        ACX_ADMINISTRATOR =>  _("AGENT / ADMIN"),
+        ACX_MAINTENANCE => _("MAINTENANCE"),
+        ACX_MAIL => _("MAIL"),
+        ACX_DID => _("DID"),
+        ACX_CALLBACK => _("CALL BACK"),
+        ACX_OUTBOUNDCID => _("OUTBOUND CID"),
+        ACX_PACKAGEOFFER => _("PACKAGE OFFER"),
+        // ACX_PREDICTIVE_DIALER => _("PREDICTIVE DIALER"),
+        ACX_INVOICING => _("INVOICES"),
+        ACX_SUPPORT => _("SUPPORT"),
+        ACX_DASHBOARD => _("DASHBOARD"),
+        ACX_ACXSETTING => _("SYSTEM SETTINGS"),
+        ACX_MODIFY_REFILLS => _("EDIT/DELETE REFILLS"),
+        ACX_MODIFY_PAYMENTS => _("EDIT/DELETE PAYMENTS"),
+        ACX_MODIFY_CUSTOMERS => _("EDIT/DELETE CUSTOMERS"),
+        ACX_DELETE_NOTIFICATIONS => _("DELETE NOTIFICATIONS"),
+        ACX_DELETE_CDR => _("DELETE CDR"),
+        ACX_MODIFY_ADMINS => _("EDIT/DELETE ADMIN"),
+        ACX_MODIFY_AGENTS => _("EDIT/DELETE AGENT"),
     ];
     foreach ($rights as $k => $v) {
-        $right_list[] = [$v, pow(2, $k)];
+        $right_list[] = [$v, $k];
     }
 
     $len_right_list = count($right_list);
@@ -183,6 +183,10 @@ if ($subadmin) {
         "",
         "size='$len_right_list' multiple='multiple'"
     );
+} else {
+    // 32 bits max permission value
+    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["perms"] = pow(2, 32) - 1;
+    $HD_Form->FG_EDIT_QUERY_HIDDEN_INPUTS["perms"] = pow(2, 32) - 1;
 }
 
 $HD_Form->AddEditElement(
@@ -284,11 +288,6 @@ $HD_Form->FG_EDIT_QUERY_CONDITION = " userid='%id'";
 
 $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["groupID"] = $groupID;
 $HD_Form->FG_EDIT_QUERY_HIDDEN_INPUTS["groupID"] = $groupID;
-
-if (!$subadmin) {
-    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["perms"] = pow(2, 32) - 1;
-    $HD_Form->FG_EDIT_QUERY_HIDDEN_INPUTS["perms"] = pow(2, 32) - 1;
-}
 
 $HD_Form->FG_INTRO_TEXT_ADITION = '';
 

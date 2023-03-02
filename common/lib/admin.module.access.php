@@ -144,11 +144,6 @@ function login (?string $user, ?string $pass)
     return false;
 }
 
-function has_rights($condition): bool
-{
-    return (bool)($_SESSION["rights"] & $condition);
-}
-
 $ACXACCESS 				= $_SESSION["rights"] > 0;
 $ACXDASHBOARD			= has_rights(ACX_DASHBOARD);
 $ACXCUSTOMER 			= has_rights(ACX_CUSTOMER);

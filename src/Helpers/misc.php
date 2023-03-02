@@ -36,6 +36,18 @@ use PHPMailer\PHPMailer\PHPMailer;
  *
  **/
 
+/**
+ * Determine if a user is entitled to certain rights
+ *
+ * @param int $condition integer representing the permission flag
+ * @param int $check integer representing the user's permission bits
+ * @return bool whether or not the user has the right
+ */
+function has_rights(int $condition, ?int $check = null): bool
+{
+    return (bool)(($check ?? $_SESSION["rights"] ?? 0) & $condition);
+}
+
 function get_cardlength(): int
 {
     $db = DbConnect();
