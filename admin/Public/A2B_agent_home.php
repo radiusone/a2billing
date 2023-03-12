@@ -38,6 +38,8 @@ use A2billing\Admin;
 $menu_section = 2;
 require_once "../../common/lib/admin.defines.php";
 
+Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
+
 getpost_ifset(array('id','result','action','message','id_msg','type','logo'));
 
 if (empty($id)) {

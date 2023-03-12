@@ -39,6 +39,8 @@ use A2billing\Table;
 $menu_section = 16;
 require_once "../../common/lib/admin.defines.php";
 
+Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
+
 getpost_ifset(array('id', 'displayheader', 'displayfooter', 'popup_select'));
 
 $FG_DEBUG = 0;

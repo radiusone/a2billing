@@ -38,17 +38,17 @@ class Admin extends User
 
     public static function allowed(int $rights): bool
     {
-        if (!has_rights($rights)) {
+        if (($_SESSION["user_type"] ?? "") !== "ADMIN") {
             return false;
         }
-        if (($_SESSION["user_type"] ?? "") !== "ADMIN") {
+        if (!has_rights($rights)) {
             return false;
         }
 
         return true;
     }
 
-    public static function checkPageAccess(int $rights): void
+    public static function checkPageAccess(int $rights = 0): void
     {
         $page = basename($_SERVER["PHP_SELF"]);
         if (

@@ -27,6 +27,8 @@ use A2billing\Admin;
 // add for a2billing
 require_once "../../common/lib/admin.defines.php";
 
+Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
+
 class Open_Conf_HTML
 {
 

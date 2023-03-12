@@ -39,6 +39,8 @@ $menu_section = 2;
 require_once "../../common/lib/admin.defines.php";
 include './form_data/FG_var_agent.inc';
 
+Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
+
 $HD_Form->init();
 
 if ($id != "" || !is_null($id)) {

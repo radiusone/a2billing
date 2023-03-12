@@ -39,6 +39,8 @@ $menu_section = 2;
 require_once "../../common/lib/admin.defines.php";
 include './form_data/FG_var_signup_agent.inc';
 
+Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
+
 $HD_Form -> init();
 
 if (!isset($form_action))  $form_action="list"; //ask-add
