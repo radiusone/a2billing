@@ -40,11 +40,7 @@ $menu_section = 8;
 require_once "../../common/lib/admin.defines.php";
 include_once './form_data/FG_var_diduse.inc';
 
-if (!has_rights(Admin::ACX_DID)) {
-    Header("HTTP/1.0 401 Unauthorized");
-    Header("Location: PP_error.php?c=accessdenied");
-    die();
-}
+Admin::checkPageAccess(Admin::ACX_DID);
 
 $HD_Form->init();
 

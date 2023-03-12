@@ -39,11 +39,7 @@ $menu_section = 10;
 require_once "../../common/lib/admin.defines.php";
 include './form_data/FG_var_moneysituation_details.inc';
 
-if (!has_rights(Admin::ACX_BILLING)) {
-    Header("HTTP/1.0 401 Unauthorized");
-    Header("Location: PP_error.php?c=accessdenied");
-    die();
-}
+Admin::checkPageAccess(Admin::ACX_BILLING);
 
 $HD_Form->init();
 

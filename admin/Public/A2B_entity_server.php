@@ -39,11 +39,7 @@ $menu_section = 14;
 require_once "../../common/lib/admin.defines.php";
 include './form_data/FG_var_server.inc';
 
-if (!has_rights(Admin::ACX_CALLBACK)) {
-    Header("HTTP/1.0 401 Unauthorized");
-    Header("Location: PP_error.php?c=accessdenied");
-    die();
-}
+Admin::checkPageAccess(Admin::ACX_CALLBACK);
 
 $HD_Form->init();
 

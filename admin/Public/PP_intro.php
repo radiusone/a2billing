@@ -35,15 +35,8 @@
 
 require_once "../../common/lib/admin.defines.php";
 /**
- * @var int $ACXACCESS
  * @var Smarty $smarty
  */
-
-if (!$ACXACCESS) {
-    header ("HTTP/1.0 401 Unauthorized");
-    header ("Location: PP_error.php?c=accessdenied");
-    die();
-}
 
 $smarty->display('main.tpl');
 ?>

@@ -54,11 +54,7 @@ $menu_section = 18;
 // add for a2billing
 require_once "../../common/lib/admin.defines.php";
 
-if (!has_rights(Admin::ACX_ACXSETTING)) {
-	Header("HTTP/1.0 401 Unauthorized");
-	Header("Location: PP_error.php?c=accessdenied");
-	die();
-}
+Admin::checkPageAccess(Admin::ACX_ACXSETTING);
 
 getpost_ifset(array('tryUpdate', 'themd5', 'updateSection', 'section_text'));
 

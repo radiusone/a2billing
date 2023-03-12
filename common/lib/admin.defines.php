@@ -43,17 +43,7 @@ const BINDTEXTDOMAIN = __DIR__ . "/../admin_ui_locale";
 require_once __DIR__ . "/common.defines.php";
 require_once __DIR__ . "/admin.module.access.php";
 
-// don't check access for these pages
-$open_pages = [
-    "index.php",
-    "logout.php",
-    "PP_error.php",
-];
-if (!in_array(basename($_SERVER["PHP_SELF"]), $open_pages) && (!is_admin() || !has_rights(Admin::ACX_ADMINISTRATOR))) {
-    header("HTTP/1.0 401 Unauthorized");
-    header("Location: PP_error.php?c=accessdenied");
-    die();
-}
+Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
 // Parameter to show link to Asterisk GUI
 const ASTERISK_GUI_LINK = false;

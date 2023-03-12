@@ -40,11 +40,7 @@ use A2billing\Table;
 $menu_section = 6;
 require_once "../../common/lib/admin.defines.php";
 
-if (! has_rights (Admin::ACX_RATECARD)) {
-    Header ("HTTP/1.0 401 Unauthorized");
-    Header ("Location: PP_error.php?c=accessdenied");
-    die();
-}
+Admin::checkPageAccess(Admin::ACX_RATECARD);
 
 getpost_ifset(array('posted', 'tariffplan', 'balance', 'id_cc_card', 'called' , 'username'));
 

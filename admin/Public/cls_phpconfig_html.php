@@ -27,12 +27,6 @@ use A2billing\Admin;
 // add for a2billing
 require_once "../../common/lib/admin.defines.php";
 
-if (! has_rights (Admin::ACX_ADMINISTRATOR)) {
-    Header ("HTTP/1.0 401 Unauthorized");
-    Header ("Location: PP_error.php?c=accessdenied");
-    die();
-}
-
 class Open_Conf_HTML
 {
 

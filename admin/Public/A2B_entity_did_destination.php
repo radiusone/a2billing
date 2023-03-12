@@ -48,11 +48,7 @@ require_once './form_data/FG_var_did_destination.inc';
  * @var string $CC_help_list_did
  */
 
-if (!has_rights(Admin::ACX_DID)) {
-    header("HTTP/1.0 401 Unauthorized");
-    header("Location: PP_error.php?c=accessdenied");
-    die();
-}
+Admin::checkPageAccess(Admin::ACX_DID);
 
 $HD_Form->init();
 

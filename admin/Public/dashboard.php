@@ -37,11 +37,7 @@ use A2billing\Admin;
 
 require_once "../../common/lib/admin.defines.php";
 
-if (!has_rights(Admin::ACX_DASHBOARD)) {
-    Header("HTTP/1.0 401 Unauthorized");
-    Header("Location: PP_error.php?c=accessdenied");
-    die();
-}
+Admin::checkPageAccess(Admin::ACX_DASHBOARD);
 
 //month view
 $st = (new DateTime('midnight first day of this month'))->modify('-6 months -15 days');

@@ -29,4 +29,35 @@ class Admin extends User
     public const ACX_DELETE_CDR = 4194304;
     public const ACX_MODIFY_ADMINS = 8388608;
     public const ACX_MODIFY_AGENTS = 16777216;
+
+    private static array $open_pages = [
+        "index.php",
+        "logout.php",
+        "PP_error.php",
+    ];
+
+    public static function allowed(int $rights): bool
+    {
+        if (!has_rights($rights)) {
+            return false;
+        }
+        if (($_SESSION["user_type"] ?? "") !== "ADMIN") {
+            return false;
+        }
+
+        return true;
+    }
+
+    public static function checkPageAccess(int $rights): void
+    {
+        $page = basename($_SERVER["PHP_SELF"]);
+        if (
+            !in_array($page, self::$open_pages)
+            && !self::allowed($rights)
+        ) {
+            header("HTTP/1.0 401 Unauthorised");
+            header("Location: PP_error.php?c=accessdenied");
+            die();
+        }
+    }
 }

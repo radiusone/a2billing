@@ -39,11 +39,7 @@ $menu_section = 5;
 require_once "../../common/lib/admin.defines.php";
 include './form_data/FG_var_call.inc';
 
-if (! has_rights (Admin::ACX_DELETE_CDR)) {
-    Header ("HTTP/1.0 401 Unauthorized");
-    Header ("Location: PP_error.php?c=accessdenied");
-    die();
-}
+Admin::checkPageAccess(Admin::ACX_DELETE_CDR);
 
 $HD_Form -> init();
 

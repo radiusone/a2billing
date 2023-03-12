@@ -40,11 +40,7 @@ use Amenadiel\JpGraph\Plot\BarPlot;
 
 require_once "../../common/lib/admin.defines.php";
 
-if (!has_rights(Admin::ACX_CALL_REPORT)) {
-    Header("HTTP/1.0 401 Unauthorized");
-    Header("Location: PP_error.php?c=accessdenied");
-    die();
-}
+Admin::checkPageAccess(Admin::ACX_CALL_REPORT);
 
 $FG_DEBUG = 0;
 

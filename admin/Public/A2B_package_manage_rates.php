@@ -39,11 +39,7 @@ use A2billing\Table;
 $menu_section = 6;
 require_once "../../common/lib/admin.defines.php";
 
-if (! has_rights (Admin::ACX_PACKAGEOFFER)) {
-    Header ("HTTP/1.0 401 Unauthorized");
-    Header ("Location: PP_error.php?c=accessdenied");
-    die();
-}
+Admin::checkPageAccess(Admin::ACX_PACKAGEOFFER);
 
 getpost_ifset(array('id', 'addrate', 'delallrate', 'addbatchrate', 'delrate', 'id_trunk', 'id_tariffplan','tag', 'prefix', 'destination', 'rbDestination', 'rbPrefix'));
 

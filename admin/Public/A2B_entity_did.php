@@ -46,11 +46,7 @@ include './form_data/FG_var_did.inc';
  * @var string $CC_help_edit_did
  */
 
-if (!has_rights(Admin::ACX_DID)) {
-    header("HTTP/1.0 401 Unauthorized");
-    header("Location: PP_error.php?c=accessdenied");
-    die();
-}
+Admin::checkPageAccess(Admin::ACX_DID);
 
 $HD_Form->init();
 

@@ -40,11 +40,7 @@ $menu_section = 11;
 require_once "../../common/lib/admin.defines.php";
 include './form_data/FG_var_receipt.inc';
 
-if (!has_rights(Admin::ACX_INVOICING)) {
-    Header("HTTP/1.0 401 Unauthorized");
-    Header("Location: PP_error.php?c=accessdenied");
-    die();
-}
+Admin::checkPageAccess(Admin::ACX_INVOICING);
 
 getpost_ifset(array (
     'id',

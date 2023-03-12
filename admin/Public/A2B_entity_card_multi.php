@@ -51,11 +51,7 @@ include './form_data/FG_var_card.inc';
  * @var string $CC_help_generate_customer
  */
 
-if (!has_rights(Admin::ACX_CUSTOMER)) {
-    header("HTTP/1.0 401 Unauthorized");
-    header("Location: PP_error.php?c=accessdenied");
-    die();
-}
+Admin::checkPageAccess(Admin::ACX_CUSTOMER);
 
 getpost_ifset([
     'nb_to_create', 'creditlimit', 'cardnum', 'addcredit', 'choose_tariff', 'gen_id', 'cardnum', 'choose_simultaccess',

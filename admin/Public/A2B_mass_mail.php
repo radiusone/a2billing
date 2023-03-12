@@ -66,11 +66,7 @@ function mt_end($len = 4): float
 $menu_section = 17;
 require_once "../../common/lib/admin.defines.php";
 
-if (! has_rights (Admin::ACX_MAIL)) {
-    Header ("HTTP/1.0 401 Unauthorized");
-    Header ("Location: PP_error.php?c=accessdenied");
-    die();
-}
+Admin::checkPageAccess(Admin::ACX_MAIL);
 
 getpost_ifset(array('subject', 'message', 'submit','hd_email', 'total_customer', 'from', 'fromname'));
 

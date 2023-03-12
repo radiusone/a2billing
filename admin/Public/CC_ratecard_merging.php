@@ -42,11 +42,7 @@ require_once "../../common/lib/admin.defines.php";
 
 set_time_limit(0);
 
-if (! has_rights (Admin::ACX_RATECARD)) {
-    Header ("HTTP/1.0 401 Unauthorized");
-    Header ("Location: PP_error.php?c=accessdenied");
-    die();
-}
+Admin::checkPageAccess(Admin::ACX_RATECARD);
 
 $HD_Form = new FormHandler();
 $HD_Form -> init();

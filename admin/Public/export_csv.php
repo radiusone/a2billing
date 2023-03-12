@@ -39,11 +39,7 @@ use A2billing\Logger;
 require_once "../../common/lib/admin.defines.php";
 require_once '../lib/iam_csvdump.php';
 
-if (!has_rights(Admin::ACX_CALL_REPORT) && !has_rights(Admin::ACX_CUSTOMER)) {
-    Header("HTTP/1.0 401 Unauthorized");
-    Header("Location: PP_error.php?c=accessdenied");
-    die();
-}
+Admin::checkPageAccess(Admin::ACX_CALL_REPORT) && !has_rights(Admin::ACX_CUSTOMER);
 
 getpost_ifset(array ( 'var_export', 'var_export_type' ));
 

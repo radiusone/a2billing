@@ -36,11 +36,7 @@ use A2billing\Admin;
 **/
 require_once __DIR__ . "/../../lib/admin.defines.php";
 
-if (!has_rights(Admin::ACX_DASHBOARD)) {
-    Header("HTTP/1.0 401 Unauthorized");
-    Header("Location: PP_error.php?c=accessdenied");
-    die();
-}
+Admin::checkPageAccess(Admin::ACX_DASHBOARD);
 
 exec("uname -a 2> /dev/null", $output);
 

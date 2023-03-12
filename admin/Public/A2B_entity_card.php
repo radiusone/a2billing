@@ -50,11 +50,7 @@ require('./form_data/FG_var_card.inc');
  * @var string $cardnumber_length
  */
 
-if (!has_rights(Admin::ACX_CUSTOMER)) {
-    header("HTTP/1.0 401 Unauthorized");
-    header("Location: PP_error.php?c=accessdenied");
-    die();
-}
+Admin::checkPageAccess(Admin::ACX_CUSTOMER);
 
 $HD_Form->init();
 

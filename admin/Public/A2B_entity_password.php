@@ -37,12 +37,6 @@ use A2billing\Table;
 
 require_once "../../common/lib/admin.defines.php";
 
-if (!$ACXACCESS) {
-    Header("HTTP/1.0 401 Unauthorized");
-    Header("Location: PP_error.php?c=accessdenied");
-    die();
-}
-
 getpost_ifset(array (
     'OldPassword',
     'NewPassword'

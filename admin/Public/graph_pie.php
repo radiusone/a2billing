@@ -40,11 +40,7 @@ use Amenadiel\JpGraph\Plot\PiePlot3D;
 
 require_once "../../common/lib/admin.defines.php";
 
-if (!has_rights(Admin::ACX_CALL_REPORT)) {
-    Header("HTTP/1.0 401 Unauthorized");
-    Header("Location: PP_error.php?c=accessdenied");
-    die();
-}
+Admin::checkPageAccess(Admin::ACX_CALL_REPORT);
 
 getpost_ifset(array('months_compare', 'min_call', 'fromstatsday_sday', 'days_compare', 'fromstatsmonth_sday', 'dsttype', 'srctype', 'clidtype', 'channel', 'resulttype', 'dst', 'src', 'clid', 'userfieldtype', 'userfield', 'accountcodetype', 'accountcode', 'customer', 'entercustomer', 'enterprovider', 'entertrunk', 'enterratecard', 'entertariffgroup', 'graphtype'));
 

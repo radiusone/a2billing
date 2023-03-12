@@ -39,11 +39,7 @@ $menu_section = 4;
 require_once "../../common/lib/admin.defines.php";
 include './form_data/FG_var_ticket_agent.inc';
 
-if (!has_rights(Admin::ACX_SUPPORT)) {
-    Header("HTTP/1.0 401 Unauthorized");
-    Header("Location: PP_error.php?c=accessdenied");
-    die();
-}
+Admin::checkPageAccess(Admin::ACX_SUPPORT);
 
 $HD_Form->init();
 

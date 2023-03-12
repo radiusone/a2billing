@@ -40,11 +40,7 @@ use A2billing\Table;
 $menu_section = 16;
 require_once "../../common/lib/admin.defines.php";
 
-if (! has_rights (Admin::ACX_MAINTENANCE)) {
-    Header ("HTTP/1.0 401 Unauthorized");
-    Header ("Location: PP_error.php?c=accessdenied");
-    die();
-}
+Admin::checkPageAccess(Admin::ACX_MAINTENANCE);
 
 $HD_Form = new FormHandler("cc_card", "Customer");
 $HD_Form -> init();

@@ -45,11 +45,7 @@ include '../lib/epayment/classes/box.php';
 include '../lib/epayment/includes/general.php';
 include '../lib/epayment/includes/html_output.php';
 
-if (!has_rights(Admin::ACX_BILLING)) {
-    Header("HTTP/1.0 401 Unauthorized");
-    Header("Location: PP_error.php?c=accessdenied");
-    die();
-}
+Admin::checkPageAccess(Admin::ACX_BILLING);
 
 getpost_ifset(array('action', 'configuration', 'id', 'configuration', 'result'));
 

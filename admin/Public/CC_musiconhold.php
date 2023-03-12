@@ -40,11 +40,7 @@ require_once "../../common/lib/admin.defines.php";
 
 $FG_DEBUG = 0;
 
-if (! has_rights (Admin::ACX_MAINTENANCE)) {
-    Header ("HTTP/1.0 401 Unauthorized");
-    Header ("Location: PP_error.php?c=accessdenied");
-    die();
-}
+Admin::checkPageAccess(Admin::ACX_MAINTENANCE);
 
 $smarty->display('main.tpl');
 ?>

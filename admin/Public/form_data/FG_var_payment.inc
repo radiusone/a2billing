@@ -38,11 +38,8 @@ use A2billing\Forms\FormHandler;
  * @var string $popup_select
  * @var string $form_action
  */
-if (! has_rights (Admin::ACX_ADMINISTRATOR)) {
-    header("HTTP/1.0 401 Unauthorized");
-    header("Location: PP_error.php?c=accessdenied");
-    die();
-}
+Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
+
 getpost_ifset(['id', 'card_id', 'date', 'payment','description','added_refill','refill_type']);
 /**
  * @var string $id

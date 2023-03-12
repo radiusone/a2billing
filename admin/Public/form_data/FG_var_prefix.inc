@@ -41,11 +41,7 @@ use A2billing\Forms\FormHandler;
  *
 **/
 
-if (! has_rights (Admin::ACX_ADMINISTRATOR)) {
-    header("HTTP/1.0 401 Unauthorized");
-    header("Location: PP_error.php?c=accessdenied");
-    die();
-}
+Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
 getpost_ifset(['id', 'destination','prefix','popup_select','popup_formname','popup_fieldname']);
 /**

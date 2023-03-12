@@ -38,11 +38,7 @@ use A2billing\Table;
 
 require_once __DIR__ . "/../../lib/admin.defines.php";
 
-if (!has_rights(Admin::ACX_DASHBOARD)) {
-    header("HTTP/1.0 401 Unauthorized");
-    header("Location: PP_error.php?c=accessdenied");
-    die();
-}
+Admin::checkPageAccess(Admin::ACX_DASHBOARD);
 
 $QUERY_COUNT_CALL_ALL = "select terminatecauseid, COUNT(*) from cc_call WHERE starttime >= DATE(NOW()) GROUP BY terminatecauseid";
 $QUERY_COUNT_CALL_BILL = "SELECT SUM(sessiontime), SUM(sessionbill), SUM(buycost) FROM cc_call WHERE starttime >= DATE(NOW())";

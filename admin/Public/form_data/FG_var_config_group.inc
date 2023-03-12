@@ -35,11 +35,7 @@ use A2billing\Table;
  *
  *
 **/
-if (!has_rights(Admin::ACX_ACXSETTING)) {
-    header("HTTP/1.0 401 Unauthorized");
-    header("Location: PP_error.php?c=accessdenied");
-    die();
-}
+Admin::checkPageAccess(Admin::ACX_ACXSETTING);
 
 getpost_ifset(['id', 'group_title', 'group_description','agi_conf', 'groupdelete', 'agi_conf', 'from_conf']);
 /**

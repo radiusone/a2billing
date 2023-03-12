@@ -39,11 +39,7 @@ $menu_section = 12;
 require_once "../../common/lib/admin.defines.php";
 include './form_data/FG_var_package.inc';
 
-if (!has_rights(Admin::ACX_PACKAGEOFFER)) {
-    Header("HTTP/1.0 401 Unauthorized");
-    Header("Location: PP_error.php?c=accessdenied");
-    die();
-}
+Admin::checkPageAccess(Admin::ACX_PACKAGEOFFER);
 
 $HD_Form->init();
 

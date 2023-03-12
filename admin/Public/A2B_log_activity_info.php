@@ -39,12 +39,6 @@ use A2billing\Table;
 $menu_section = 16;
 require_once "../../common/lib/admin.defines.php";
 
-if (! has_rights (Admin::ACX_ADMINISTRATOR)) {
-    Header ("HTTP/1.0 401 Unauthorized");
-    Header ("Location: PP_error.php?c=accessdenied");
-    die();
-}
-
 getpost_ifset(array('id'));
 
 if (empty($id)) {

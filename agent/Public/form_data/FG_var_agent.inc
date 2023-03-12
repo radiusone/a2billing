@@ -35,12 +35,7 @@ use A2billing\Forms\FormHandler;
  *
 **/
 // TODO: what's this doing in the agent directory?
-if (! has_rights (Admin::ACX_ADMINISTRATOR)) {
-    Header ("HTTP/1.0 401 Unauthorized");
-    Header ("Location: PP_error.php?c=accessdenied");
-    die();
-}
-
+Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
 getpost_ifset(array('id', 'message', 'location', 'id_tariffgroup', 'options', 'credit',
 'currency', 'locale', 'commission', 'vat', 'banner', 'language', 'perms', 'lastname', 'firstname', 'address', 'city', 'state',

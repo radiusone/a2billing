@@ -45,11 +45,7 @@ include './form_data/FG_var_ticket.inc';
  * @var string $CC_help_support_list
  */
 
-if (!has_rights(Admin::ACX_SUPPORT)) {
-    header("HTTP/1.0 401 Unauthorized");
-    header("Location: PP_error.php?c=accessdenied");
-    die();
-}
+Admin::checkPageAccess(Admin::ACX_SUPPORT);
 
 $HD_Form->init();
 

@@ -39,12 +39,6 @@ use A2billing\Table;
 $menu_section = 3;
 require_once "../../common/lib/admin.defines.php";
 
-if (! has_rights (Admin::ACX_ADMINISTRATOR)) {
-    Header ("HTTP/1.0 401 Unauthorized");
-    Header ("Location: PP_error.php?c=accessdenied");
-    die();
-}
-
 getpost_ifset(array('id','groupID'));
 
 if(!is_numeric($groupID) || ($groupID != 0 && $groupID != 1)) $groupID =0;

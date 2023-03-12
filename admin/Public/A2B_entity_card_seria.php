@@ -39,11 +39,7 @@ $menu_section = 1;
 require_once "../../common/lib/admin.defines.php";
 include './form_data/FG_var_card_seria.inc';
 
-if (! has_rights (Admin::ACX_CUSTOMER)) {
-    Header ("HTTP/1.0 401 Unauthorized");
-    Header ("Location: PP_error.php?c=accessdenied");
-    die();
-}
+Admin::checkPageAccess(Admin::ACX_CUSTOMER);
 
 getpost_ifset(array('popup_select', 'popup_formname', 'popup_fieldname'));
 

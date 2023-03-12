@@ -39,11 +39,7 @@ use A2billing\Table;
 
 require_once __DIR__ . "/../../lib/admin.defines.php";
 
-if (!has_rights(Admin::ACX_DASHBOARD)) {
-    header("HTTP/1.0 401 Unauthorized");
-    header("Location: PP_error.php?c=accessdenied");
-    die();
-}
+Admin::checkPageAccess(Admin::ACX_DASHBOARD);
 
 getpost_ifset(["type", "view_type"]);
 /**

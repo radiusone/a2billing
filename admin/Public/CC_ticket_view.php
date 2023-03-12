@@ -42,11 +42,7 @@ include '../lib/support/classes/ticket.php';
 include '../lib/support/classes/comment.php';
 include '../lib/epayment/includes/general.php';
 
-if (!has_rights(Admin::ACX_SUPPORT)) {
-    Header("HTTP/1.0 401 Unauthorized");
-    Header("Location: PP_error.php?c=accessdenied");
-    die();
-}
+Admin::checkPageAccess(Admin::ACX_SUPPORT);
 
 getpost_ifset(array ( 'result', 'action', 'status', 'id', 'idc', 'comment' ));
 

@@ -40,11 +40,7 @@ use A2billing\Table;
 $menu_section = 5;
 require_once "../../common/lib/admin.defines.php";
 
-if (! has_rights (Admin::ACX_CALL_REPORT)) {
-    Header ("HTTP/1.0 401 Unauthorized");
-    Header ("Location: PP_error.php?c=accessdenied");
-    die();
-}
+Admin::checkPageAccess(Admin::ACX_CALL_REPORT);
 
 getpost_ifset(array('customer','sellrate','buyrate','entercustomer', 'enterprovider', 'entertariffgroup', 'entertrunk', 'enterratecard', 'posted', 'Period', 'frommonth', 'fromstatsmonth', 'tomonth', 'tostatsmonth', 'fromday', 'fromstatsday_sday', 'fromstatsmonth_sday', 'today', 'tostatsday_sday', 'tostatsmonth_sday','fromtime','totime','fromstatsday_hour', 'tostatsday_hour' ,'fromstatsday_min', 'tostatsday_min' , 'dsttype', 'srctype','dnidtype', 'clidtype', 'channel', 'resulttype', 'current_page', 'order', 'sens', 'dst', 'src','dnid', 'clid', 'choose_currency', 'terminatecauseid', 'choose_calltype'));
 

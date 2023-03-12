@@ -40,11 +40,7 @@ require_once "../../common/lib/admin.defines.php";
 
 getpost_ifset(array('action', 'voip_type'));
 
-if (! has_rights (Admin::ACX_CUSTOMER)) {
-    Header ("HTTP/1.0 401 Unauthorized");
-    Header ("Location: PP_error.php?c=accessdenied");
-    die();
-}
+Admin::checkPageAccess(Admin::ACX_CUSTOMER);
 
 $DBHandle  = DbConnect();
 

@@ -42,11 +42,7 @@ require_once "../../common/lib/admin.defines.php";
 
 set_time_limit(0);
 
-if (! has_rights (Admin::ACX_DID)) {
-    Header ("HTTP/1.0 401 Unauthorized");
-    Header ("Location: PP_error.php?c=accessdenied");
-    die();
-}
+Admin::checkPageAccess(Admin::ACX_DID);
 
 $FG_DEBUG = 0;
 $DBHandle  = DbConnect();

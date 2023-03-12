@@ -47,11 +47,7 @@ include './form_data/FG_var_logrefill.inc';
  * @var string $CC_help_view_refill
  */
 
-if (!has_rights(Admin::ACX_BILLING)) {
-    header("HTTP/1.0 401 Unauthorized");
-    header("Location: PP_error.php?c=accessdenied");
-    die();
-}
+Admin::checkPageAccess(Admin::ACX_BILLING);
 
 $HD_Form->init();
 

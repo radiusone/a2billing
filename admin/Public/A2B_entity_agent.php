@@ -39,12 +39,6 @@ $menu_section = 2;
 require_once "../../common/lib/admin.defines.php";
 include './form_data/FG_var_agent.inc';
 
-if (!has_rights(Admin::ACX_ADMINISTRATOR)) {
-    Header("HTTP/1.0 401 Unauthorized");
-    Header("Location: PP_error.php?c=accessdenied");
-    die();
-}
-
 $HD_Form->init();
 
 if ($id != "" || !is_null($id)) {
