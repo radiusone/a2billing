@@ -36,19 +36,19 @@ class Admin extends User
         "PP_error.php",
     ];
 
-    public static function allowed(int $rights): bool
+    public static function allowed(?int $rights): bool
     {
         if (($_SESSION["user_type"] ?? "") !== "ADMIN") {
             return false;
         }
-        if (!has_rights($rights)) {
+        if (!is_null($rights) && !has_rights($rights)) {
             return false;
         }
 
         return true;
     }
 
-    public static function checkPageAccess(int $rights = 0): void
+    public static function checkPageAccess(?int $rights = null): void
     {
         $page = basename($_SERVER["PHP_SELF"]);
         if (
