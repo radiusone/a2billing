@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Admin;
 use A2billing\NotificationsDAO;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -38,22 +39,6 @@ use A2billing\NotificationsDAO;
 /**
  * @var string $popup_select From common.defines.php
  * @var string $menu_section From the individual page
- * @var bool $ACXSETTING Following from admin.module.access.php
- * @var bool $ACXINVOICING
- * @var bool $ACXPACKAGEOFFER
- * @var bool $ACXOUTBOUNDCID
- * @var bool $ACXCALLBACK
- * @var bool $ACXSUPPORT
- * @var bool $ACXMAINTENANCE
- * @var bool $ACXADMINISTRATOR
- * @var bool $ACXCRONTSERVICE
- * @var bool $ACXCALLREPORT
- * @var bool $ACXMAIL
- * @var bool $ACXDID
- * @var bool $ACXTRUNK
- * @var bool $ACXRATECARD
- * @var bool $ACXBILLING
- * @var bool $ACXCUSTOMER
  */
 error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
 
@@ -78,22 +63,22 @@ $smarty->assign("SKIN_NAME", $skin_name);
 $smarty->assign("menu_section", $menu_section);
 $smarty->assign("popupwindow", ($popup_select ?? 0) > 0);
 
-$smarty->assign("ACXCUSTOMER", $ACXCUSTOMER);
-$smarty->assign("ACXBILLING", $ACXBILLING);
-$smarty->assign("ACXRATECARD", $ACXRATECARD);
-$smarty->assign("ACXTRUNK", $ACXTRUNK);
-$smarty->assign("ACXDID", $ACXDID);
-$smarty->assign("ACXMAIL", $ACXMAIL);
-$smarty->assign("ACXCALLREPORT", $ACXCALLREPORT);
-$smarty->assign("ACXCRONTSERVICE", $ACXCRONTSERVICE);
-$smarty->assign("ACXADMINISTRATOR", $ACXADMINISTRATOR);
-$smarty->assign("ACXMAINTENANCE", $ACXMAINTENANCE);
-$smarty->assign("ACXSUPPORT", $ACXSUPPORT);
-$smarty->assign("ACXCALLBACK", $ACXCALLBACK);
-$smarty->assign("ACXOUTBOUNDCID", $ACXOUTBOUNDCID);
-$smarty->assign("ACXPACKAGEOFFER", $ACXPACKAGEOFFER);
-$smarty->assign("ACXINVOICING", $ACXINVOICING);
-$smarty->assign("ACXSETTING", $ACXSETTING);
+$smarty->assign("ACXCUSTOMER", has_rights(Admin::ACX_CUSTOMER));
+$smarty->assign("ACXBILLING", has_rights(Admin::ACX_BILLING));
+$smarty->assign("ACXRATECARD", has_rights(Admin::ACX_RATECARD));
+$smarty->assign("ACXTRUNK", has_rights(Admin::ACX_TRUNK));
+$smarty->assign("ACXDID", has_rights(Admin::ACX_DID));
+$smarty->assign("ACXMAIL", has_rights(Admin::ACX_MAIL));
+$smarty->assign("ACXCALLREPORT", has_rights(Admin::ACX_CALL_REPORT));
+$smarty->assign("ACXCRONTSERVICE", has_rights(Admin::ACX_CRONT_SERVICE));
+$smarty->assign("ACXADMINISTRATOR", has_rights(Admin::ACX_ADMINISTRATOR));
+$smarty->assign("ACXMAINTENANCE", has_rights(Admin::ACX_MAINTENANCE));
+$smarty->assign("ACXSUPPORT", has_rights(Admin::ACX_SUPPORT));
+$smarty->assign("ACXCALLBACK", has_rights(Admin::ACX_CALLBACK));
+$smarty->assign("ACXOUTBOUNDCID", has_rights(Admin::ACX_OUTBOUNDCID));
+$smarty->assign("ACXPACKAGEOFFER", has_rights(Admin::ACX_PACKAGEOFFER));
+$smarty->assign("ACXINVOICING", has_rights(Admin::ACX_INVOICING));
+$smarty->assign("ACXSETTING", has_rights(Admin::ACX_ACXSETTING));
 if(isset($_SESSION["admin_id"])) {
     $smarty->assign("NEW_NOTIFICATION", NotificationsDAO::IfNewNotification($_SESSION["admin_id"]));
 } else {

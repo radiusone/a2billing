@@ -1,5 +1,7 @@
 <?php
 
+use A2billing\Agent;
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
@@ -59,14 +61,14 @@ if (!is_numeric($popup_select)) {
 $smarty->assign("popupwindow", $popup_select);
 
 // for menu
-$smarty->assign("ACXCUSTOMER", $ACXCUSTOMER);
-$smarty->assign("ACXBILLING", $ACXBILLING);
-$smarty->assign("ACXRATECARD", $ACXRATECARD);
-$smarty->assign("ACXCALLREPORT", $ACXCALLREPORT);
-$smarty->assign("ACXMYACCOUNT", $ACXMYACCOUNT);
-$smarty->assign("ACXSUPPORT", $ACXSUPPORT);
-$smarty->assign("ACXSIGNUP", $ACXSIGNUP);
-$smarty->assign("ACXVOIPCONF", $ACXVOIPCONF);
+$smarty->assign("ACXCUSTOMER", has_rights(Agent::ACX_CUSTOMER));
+$smarty->assign("ACXBILLING", has_rights(Agent::ACX_BILLING));
+$smarty->assign("ACXRATECARD", has_rights(Agent::ACX_RATECARD));
+$smarty->assign("ACXCALLREPORT", has_rights(Agent::ACX_CALL_REPORT));
+$smarty->assign("ACXMYACCOUNT", has_rights(Agent::ACX_MYACCOUNT));
+$smarty->assign("ACXSUPPORT", has_rights(Agent::ACX_SUPPORT));
+$smarty->assign("ACXSIGNUP", has_rights(Agent::ACX_SIGNUP));
+$smarty->assign("ACXVOIPCONF", has_rights(Agent::ACX_VOIPCONF));
 
 getpost_ifset(['section']);
 

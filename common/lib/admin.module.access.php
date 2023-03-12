@@ -43,10 +43,18 @@ error_reporting(E_ALL & ~E_NOTICE);
 header("Expires: Sat, Jan 01 2000 01:01:01 GMT");
 
 if (($_GET["logout"] ?? "") === "true") {
-    (new Logger())->insertLog($_SESSION["admin_id"], 1, "USER LOGGED OUT", "User Logged out from website", '', $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI']);
+    (new Logger())->insertLog(
+        $_SESSION["admin_id"],
+        1,
+        "USER LOGGED OUT",
+        "User Logged out from website",
+        '',
+        $_SERVER['REMOTE_ADDR'],
+        $_SERVER['REQUEST_URI']
+    );
     session_destroy();
-    header ("HTTP/1.0 401 Unauthorized");
-    header ("Location: index.php");
+    header("HTTP/1.0 401 Unauthorized");
+    header("Location: index.php");
     die();
 }
 
@@ -81,7 +89,15 @@ if (!isset($_SESSION['pr_login']) || !isset($_SESSION['pr_password']) || !isset(
         $_SESSION["is_admin"] = 1;
         $_SESSION["user_type"] = "ADMIN";
         $_SESSION["admin_id"] = $admin_id;
-        (new Logger())->insertLog($admin_id, 1, "User Logged In", "User Logged in to website", '', $_SERVER['REMOTE_ADDR'], 'PP_Intro.php');
+        (new Logger())->insertLog(
+            $admin_id,
+            1,
+            "User Logged In",
+            "User Logged in to website",
+            '',
+            $_SERVER['REMOTE_ADDR'],
+            'PP_Intro.php'
+        );
     } else {
         $_SESSION["rights"] = 0;
     }
@@ -118,28 +134,3 @@ function login (?string $user, ?string $pass)
     }
     return false;
 }
-
-$ACXACCESS 				= $_SESSION["rights"] > 0;
-$ACXDASHBOARD			= has_rights(Admin::ACX_DASHBOARD);
-$ACXCUSTOMER 			= has_rights(Admin::ACX_CUSTOMER);
-$ACXBILLING 			= has_rights(Admin::ACX_BILLING);
-$ACXRATECARD 			= has_rights(Admin::ACX_RATECARD);
-$ACXTRUNK				= has_rights(Admin::ACX_TRUNK);
-$ACXDID					= has_rights(Admin::ACX_DID);
-$ACXCALLREPORT			= has_rights(Admin::ACX_CALL_REPORT);
-$ACXCRONTSERVICE		= has_rights(Admin::ACX_CRONT_SERVICE);
-$ACXMAIL 				= has_rights(Admin::ACX_MAIL);
-$ACXADMINISTRATOR 		= has_rights(Admin::ACX_ADMINISTRATOR);
-$ACXMAINTENANCE 		= has_rights(Admin::ACX_MAINTENANCE);
-$ACXCALLBACK			= has_rights(Admin::ACX_CALLBACK);
-$ACXOUTBOUNDCID 		= has_rights(Admin::ACX_OUTBOUNDCID);
-$ACXPACKAGEOFFER 		= has_rights(Admin::ACX_PACKAGEOFFER);
-$ACXPREDICTIVEDIALER 	= has_rights(Admin::ACX_PREDICTIVE_DIALER);
-$ACXINVOICING 			= has_rights(Admin::ACX_INVOICING);
-$ACXSUPPORT 			= has_rights(Admin::ACX_SUPPORT);
-$ACXSETTING 			= has_rights(Admin::ACX_ACXSETTING);
-$ACXMODIFY_REFILLS 		= has_rights(Admin::ACX_MODIFY_REFILLS);
-$ACXMODIFY_PAYMENTS 	= has_rights(Admin::ACX_MODIFY_PAYMENTS);
-$ACXMODIFY_CUSTOMERS 	= has_rights(Admin::ACX_MODIFY_CUSTOMERS);
-$ACXDELETE_NOTIFICATIONS= has_rights(Admin::ACX_DELETE_NOTIFICATIONS);
-$ACXDELETE_CDR			= has_rights(Admin::ACX_DELETE_CDR);

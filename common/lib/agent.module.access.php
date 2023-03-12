@@ -43,10 +43,17 @@ error_reporting(E_ALL & ~E_NOTICE);
 header("Expires: Sat, Jan 01 2000 01:01:01 GMT");
 
 if (($_GET["logout"] ?? "") === "true") {
-    (new Logger())->insertLogAgent($_SESSION["agent_id"], 1, "AGENT LOGGED OUT", "User Logged out from website", '', $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI']);
+    (new Logger())->insertLogAgent(
+        $_SESSION["agent_id"],
+        1, "AGENT LOGGED OUT",
+        "User Logged out from website",
+        '',
+        $_SERVER['REMOTE_ADDR'],
+        $_SERVER['REQUEST_URI']
+    );
     session_destroy();
-    header ("HTTP/1.0 401 Unauthorized");
-    header ("Location: index.php");
+    header("HTTP/1.0 401 Unauthorized");
+    header("Location: index.php");
     die();
 }
 
@@ -77,7 +84,15 @@ if (!isset($_SESSION['pr_login']) || !isset($_SESSION['pr_password']) || !isset(
         $_SESSION["user_type"] = "AGENT";
         $_SESSION["currency"] = $return["currency"];
         $_SESSION["vat"] = $return["vat"];
-        (new Logger())->insertLogAgent($agent_id, 1, "Agent Logged In", "Agent Logged in to website", '', $_SERVER['REMOTE_ADDR'], 'PP_Intro.php');
+        (new Logger())->insertLogAgent(
+            $agent_id,
+            1,
+            "Agent Logged In",
+            "Agent Logged in to website",
+            '',
+            $_SERVER['REMOTE_ADDR'],
+            'PP_Intro.php'
+        );
     } else {
         $_SESSION["rights"] = 0;
     }
@@ -117,18 +132,3 @@ function login (?string $user, ?string $pass)
 
     return false;
 }
-
-$ACXACCESS 					= $_SESSION["rights"] > 0;
-$ACXSIGNUP 					= has_rights(Agent::ACX_SIGNUP);
-$ACXCUSTOMER 				= has_rights(Agent::ACX_CUSTOMER);
-$ACXBILLING 				= has_rights(Agent::ACX_BILLING);
-$ACXRATECARD 				= has_rights(Agent::ACX_RATECARD);
-$ACXCALLREPORT				= has_rights(Agent::ACX_CALL_REPORT);
-$ACXMYACCOUNT  				= has_rights(Agent::ACX_MYACCOUNT);
-$ACXSUPPORT  				= has_rights(Agent::ACX_SUPPORT);
-$ACXCREATECUSTOMER  		= has_rights(Agent::ACX_CREATE_CUSTOMER);
-$ACXEDITCUSTOMER  			= has_rights(Agent::ACX_EDIT_CUSTOMER);
-$ACXDELETECUSTOMER  		= has_rights(Agent::ACX_DELETE_CUSTOMER);
-$ACXGENERATECUSTOMER  		= has_rights(Agent::ACX_GENERATE_CUSTOMER);
-$ACXVOIPCONF  				= has_rights(Agent::ACX_VOIPCONF);
-$ACXSEE_CUSTOMERS_CALLERID	= has_rights(Agent::ACX_SEE_CUSTOMERS_CALLERID);

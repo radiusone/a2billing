@@ -1,5 +1,7 @@
 <?php
 
+use A2billing\Customer;
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
@@ -51,23 +53,23 @@ $smarty->setPluginsDir("./plugins/");
 $smarty->assign("COPYRIGHT", COPYRIGHT);
 $smarty->assign("CCMAINTITLE", CCMAINTITLE);
 
-$smarty->assign("ACXPASSWORD", $ACXPASSWORD);
-$smarty->assign("ACXSIP_IAX", $ACXSIP_IAX);
-$smarty->assign("ACXCALL_HISTORY", $ACXCALL_HISTORY);
-$smarty->assign("ACXPAYMENT_HISTORY", $ACXPAYMENT_HISTORY);
-$smarty->assign("ACXVOUCHER", $ACXVOUCHER);
-$smarty->assign("ACXINVOICES", $ACXINVOICES);
-$smarty->assign("ACXDID", $ACXDID);
-$smarty->assign("ACXSPEED_DIAL", $ACXSPEED_DIAL);
-$smarty->assign("ACXRATECARD", $ACXRATECARD);
-$smarty->assign("ACXSIMULATOR", $ACXSIMULATOR);
-$smarty->assign("ACXWEB_PHONE", $ACXWEB_PHONE);
-$smarty->assign("ACXCALL_BACK", $ACXCALL_BACK);
-$smarty->assign("ACXCALLER_ID", $ACXCALLER_ID);
-$smarty->assign("ACXSUPPORT", $ACXSUPPORT);
-$smarty->assign("ACXNOTIFICATION", $ACXNOTIFICATION);
-$smarty->assign("ACXAUTODIALER", $ACXAUTODIALER);
-$smarty->assign("ACXVOICEMAIL", $ACXVOICEMAIL);
+$smarty->assign("ACXPASSWORD", has_rights(Customer::ACX_PASSWORD));
+$smarty->assign("ACXSIP_IAX", has_rights(Customer::ACX_SIP_IAX));
+$smarty->assign("ACXCALL_HISTORY", has_rights(Customer::ACX_CALL_HISTORY));
+$smarty->assign("ACXPAYMENT_HISTORY", has_rights(Customer::ACX_PAYMENT_HISTORY));
+$smarty->assign("ACXVOUCHER", has_rights(Customer::ACX_VOUCHER));
+$smarty->assign("ACXINVOICES", has_rights(Customer::ACX_INVOICES));
+$smarty->assign("ACXDID", has_rights(Customer::ACX_DID));
+$smarty->assign("ACXSPEED_DIAL", has_rights(Customer::ACX_SPEED_DIAL));
+$smarty->assign("ACXRATECARD", has_rights(Customer::ACX_RATECARD));
+$smarty->assign("ACXSIMULATOR", has_rights(Customer::ACX_SIMULATOR));
+$smarty->assign("ACXWEB_PHONE", has_rights(Customer::ACX_WEB_PHONE));
+$smarty->assign("ACXCALL_BACK", has_rights(Customer::ACX_CALL_BACK));
+$smarty->assign("ACXCALLER_ID", has_rights(Customer::ACX_CALLER_ID));
+$smarty->assign("ACXSUPPORT", has_rights(Customer::ACX_SUPPORT));
+$smarty->assign("ACXNOTIFICATION", has_rights(Customer::ACX_NOTIFICATION));
+$smarty->assign("ACXAUTODIALER", has_rights(Customer::ACX_AUTODIALER));
+$smarty->assign("ACXVOICEMAIL", ACT_VOICEMAIL ? $_SESSION["voicemail"] : false);
 
 if ($exporttype != "" && $exporttype != "html") {
     $smarty->assign("EXPORT", 1);

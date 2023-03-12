@@ -48,8 +48,8 @@ if (defined("RETURN_URL_DISTANT_LOGIN") && !empty(RETURN_URL_DISTANT_LOGIN)) {
 if (($_GET["logout"] ?? "") === "true") {
     $C_RETURN_URL_DISTANT_LOGIN .=  "cssname=" . $_SESSION['stylefile'] ?? "";
     session_destroy();
-    header ("HTTP/1.0 401 Unauthorized");
-    header ("Location: $C_RETURN_URL_DISTANT_LOGIN");
+    header("HTTP/1.0 401 Unauthorized");
+    header("Location: $C_RETURN_URL_DISTANT_LOGIN");
     die();
 }
 
@@ -67,8 +67,8 @@ if (!isset($_SESSION['pr_login']) || !isset($_SESSION['pr_password']) || !isset(
 
         if (!is_array($return)) {
             sleep(2);
-            header ("HTTP/1.0 401 Unauthorized");
-            header ("Location: ${C_RETURN_URL_DISTANT_LOGIN}error=$return");
+            header("HTTP/1.0 401 Unauthorized");
+            header("Location: ${C_RETURN_URL_DISTANT_LOGIN}error=$return");
             die();
         }
 
@@ -126,31 +126,4 @@ function login (?string $user, ?string $pass)
     }
 
     return false;
-}
-
-function has_rights($condition): bool
-{
-    return (bool)($_SESSION['cus_rights'] & $condition);
-}
-
-$ACXPASSWORD 				= has_rights (Customer::ACX_PASSWORD);
-$ACXSIP_IAX 				= has_rights (Customer::ACX_SIP_IAX);
-$ACXCALL_HISTORY 			= has_rights (Customer::ACX_CALL_HISTORY);
-$ACXPAYMENT_HISTORY			= has_rights (Customer::ACX_PAYMENT_HISTORY);
-$ACXVOUCHER					= has_rights (Customer::ACX_VOUCHER);
-$ACXINVOICES				= has_rights (Customer::ACX_INVOICES);
-$ACXDID						= has_rights (Customer::ACX_DID);
-$ACXSPEED_DIAL 				= has_rights (Customer::ACX_SPEED_DIAL);
-$ACXRATECARD 				= has_rights (Customer::ACX_RATECARD);
-$ACXSIMULATOR 				= has_rights (Customer::ACX_SIMULATOR);
-$ACXWEB_PHONE				= has_rights (Customer::ACX_WEB_PHONE);
-$ACXCALL_BACK				= has_rights (Customer::ACX_CALL_BACK);
-$ACXCALLER_ID				= has_rights (Customer::ACX_CALLER_ID);
-$ACXSUPPORT 				= has_rights (Customer::ACX_SUPPORT);
-$ACXNOTIFICATION 			= has_rights (Customer::ACX_NOTIFICATION);
-$ACXAUTODIALER 				= has_rights (Customer::ACX_AUTODIALER);
-$ACXSEERECORDING 			= has_rights (Customer::ACX_SEERECORDING);
-
-if (ACT_VOICEMAIL) {
-    $ACXVOICEMAIL 				= $_SESSION["voicemail"];
 }
