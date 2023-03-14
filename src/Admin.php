@@ -10,6 +10,11 @@ class Admin extends User
     public const ACX_TRUNK = 8;
     public const ACX_CALL_REPORT = 16;
     public const ACX_CRONT_SERVICE = 32;
+    /**
+     * Meaning is unclear; seems like it was intended for permissions to view sub-admins and agents
+     * but is also checked on pages that have nothing to do with that. I suspect poor naming has
+     * led to it being used as a general check for whether or not a user is an administrator
+     */
     public const ACX_ADMINISTRATOR = 64;
     public const ACX_MAINTENANCE = 128;
     public const ACX_MAIL = 256;
@@ -30,12 +35,19 @@ class Admin extends User
     public const ACX_MODIFY_ADMINS = 8388608;
     public const ACX_MODIFY_AGENTS = 16777216;
 
+    /** @var array|string[] pages that don't require authentication */
     private static array $open_pages = [
         "index.php",
         "logout.php",
         "PP_error.php",
     ];
 
+    /**
+     * Check a user's permission bits
+     *
+     * @param int|null $rights the rights to check, or null to just check if user is admin
+     * @return bool
+     */
     public static function allowed(?int $rights): bool
     {
         if (($_SESSION["user_type"] ?? "") !== "ADMIN") {
@@ -48,6 +60,12 @@ class Admin extends User
         return true;
     }
 
+    /**
+     * Check a user's right to access a page, and redirect to HTTP error page if not allowed
+     *
+     * @param int|null $rights any additional user rights to check
+     * @return void
+     */
     public static function checkPageAccess(?int $rights = null): void
     {
         $page = basename($_SERVER["PHP_SELF"]);
