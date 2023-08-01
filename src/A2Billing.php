@@ -219,22 +219,22 @@ class A2Billing
     public function debug(int $level, ?Agi $agi, string $file, int $line, $buffer_debug): void
     {
         $file = basename($file);
-        $u = $this->uniqueid ?? "";
+        $u = $this->uniqueid ?? "n/a";
         // VERBOSE
         if ($agi && $this->agiconfig['verbosity_level'] >= $level) {
-            if (!is_string($buffer_debug)) {
-                $buffer_debug = json_encode($buffer_debug);
+            if (!is_string($output = $buffer_debug)) {
+                $output = json_encode($output);
             }
-            $chunks = str_split($buffer_debug, 1024);
+            $chunks = str_split($output, 1024);
             foreach ($chunks as $key => $chunk) {
-                $part = " " . ($key + 1) . "/" . count($chunks);
-                if ($part === " 1/1") {
-                    $part = "";
-                }
+                $part = $key > 0 ? sprintf(" %d/%d", $key + 1, count($chunks)) : "";
                 $agi->verbose("$file:$line [$u]$part $chunk");
             }
         }
         // LOG INTO FILE
+        if (!is_string($buffer_debug)) {
+            $buffer_debug = print_r($buffer_debug, true);
+        }
         if ($this->agiconfig['logging_level'] >= $level) {
             $this->write_log($buffer_debug, "$file:$line [$u]");
         }
@@ -247,9 +247,7 @@ class A2Billing
     {
         if (!empty($this->log_file) && is_writable($this->log_file)) {
             $date = date("Y-m-d H:i:s");
-            $cid = $this->CallerID ?? "n/a";
-            $cn = $this->cardnumber ?? "n/a";
-            $string_log = "[$date] $line_file_info [CID:$cid]:[CN:$cn] $output\n";
+            $string_log = "[$date] $line_file_info $output\n";
             error_log($string_log, 3, $this->log_file);
         }
     }
