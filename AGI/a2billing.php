@@ -116,7 +116,7 @@ $A2B->debug(A2Billing::DEBUG, "AGI Request:\n" . json_encode($agi->request));
 $A2B->debug(A2Billing::DEBUG, "[INFO : $agi_version]");
 
 /* GET THE AGI PARAMETER */
-$A2B->get_agi_request_parameter($agi);
+$A2B->get_agi_request_parameter();
 
 if (!$A2B->DbConnect()) {
     $A2B->debug(A2Billing::FATAL, "Database connection error");
@@ -148,7 +148,7 @@ if ($mode === "standard" || $mode === "voucher") {
         $status_channel = 4;
     }
 
-    $A2B->play_menulanguage($agi);
+    $A2B->play_menulanguage();
     // Play intro message
     if (strlen($A2B->agiconfig["intro_prompt"]) > 0) {
         $agi->stream_file($A2B->agiconfig["intro_prompt"], "#");
@@ -163,13 +163,13 @@ if ($mode === "standard" || $mode === "voucher") {
 }
 
 if ($mode === "standard") {
-    $cia_res = $A2B->callingcard_ivr_authenticate($agi);
+    $cia_res = $A2B->callingcard_ivr_authenticate();
     $A2B->debug(A2Billing::DEBUG, "[TRY : callingcard_ivr_authenticate]");
 
     // CALL AUTHENTICATE AND WE HAVE ENOUGH CREDIT TO GO AHEAD
     if ($cia_res) {
         // RE-SET THE CALLERID
-        $A2B->callingcard_auto_setcallerid($agi);
+        $A2B->callingcard_auto_setcallerid();
 
         for ($i = 0; $i < $A2B->agiconfig["number_try"]; $i++) {
             $RateEngine->Reinit();
@@ -232,7 +232,7 @@ if ($mode === "standard") {
             if (!$A2B->enough_credit_to_call() && $A2B->agiconfig["jump_voucher_if_min_credit"]) {
 
                 $A2B->debug(A2Billing::DEBUG, "[NOTENOUGHCREDIT - Refill with voucher]");
-                if ($A2B->refill_card_with_voucher($agi)) {
+                if ($A2B->refill_card_with_voucher()) {
                     $A2B->debug(A2Billing::DEBUG, "[ADDED CREDIT - refill_card_with_voucher Success] ");
                 } else {
                     $A2B->debug(A2Billing::DEBUG, "[NOTENOUGHCREDIT - refill_card_with_voucher fail] ");
@@ -384,7 +384,7 @@ if ($mode === "standard") {
                     $A2B->username = "";
                     $A2B->ask_other_cardnumber = true;
 
-                    $cia_res = $A2B->callingcard_ivr_authenticate($agi);
+                    $cia_res = $A2B->callingcard_ivr_authenticate();
                     $A2B->debug(A2Billing::DEBUG, "[NOTENOUGHCREDIT_CARDNUMBER - TRY : callingcard_ivr_authenticate]");
                     if (!$cia_res) {
                         break;
@@ -408,7 +408,7 @@ if ($mode === "standard") {
                 $res_dtmf = $agi->get_data("prepaid-refill_card_with_voucher", 5000, 1);
                 $A2B->debug(A2Billing::DEBUG, "RES REFILL CARD VOUCHER DTMF : " . $res_dtmf["result"]);
                 if (($res_dtmf["result"] ?? null) === $A2B->agiconfig["ivr_voucher_prefixe"]) {
-                    $A2B->refill_card_with_voucher($agi);
+                    $A2B->refill_card_with_voucher();
                 }
             }
 
@@ -545,11 +545,11 @@ if ($mode === "standard") {
             if (strlen($A2B->sip_iax_buddy ?? "")) {
 
                 $A2B->debug(A2Billing::INFO, "CALL SIP_IAX_BUDDY");
-                $cia_res = $A2B->call_sip_iax_buddy($agi);
+                $cia_res = $A2B->call_sip_iax_buddy();
 
             } else {
 
-                $ans = $A2B->callingcard_ivr_authorize($agi, $RateEngine, $i, true);
+                $ans = $A2B->callingcard_ivr_authorize($RateEngine, $i, true);
                 $A2B->debug(A2Billing::DEBUG, "ANSWER fct callingcard_ivr authorize:> $ans");
 
                 if ($ans === 1) {
@@ -633,7 +633,7 @@ if ($mode === "standard") {
 
         if ($result !== false && $result !== []) {
             //Off Net
-            $A2B->call_did($agi, $RateEngine, $result);
+            $A2B->call_did($RateEngine, $result);
             if ($A2B->set_inuse) {
                 $A2B->callingcard_acct_start_inuse();
             }
@@ -645,13 +645,13 @@ if ($mode === "standard") {
     if (strlen($A2B->CallerID) > 1 && is_numeric($A2B->CallerID)) {
         $A2B->CallerID = $caller_areacode . $A2B->CallerID;
     }
-    $cia_res = $A2B->callingcard_ivr_authenticate($agi);
+    $cia_res = $A2B->callingcard_ivr_authenticate();
     $A2B->debug(A2Billing::DEBUG, "[TRY : callingcard_ivr_authenticate]");
 
     // CALL AUTHENTICATE AND WE HAVE ENOUGH CREDIT TO GO AHEAD
     if ($A2B->id_card > 0) {
         for ($k = 0; $k < 3; $k++) {
-            if ($A2B->refill_card_with_voucher($agi)) {
+            if ($A2B->refill_card_with_voucher()) {
                 $A2B->debug(A2Billing::DEBUG, "VOUCHER RESULT = SUCCESS");
                 break;
             } else {
@@ -674,7 +674,7 @@ if ($mode === "standard") {
 
 // MODE CAMPAIGN-CALLBACK
 } elseif ($mode === "campaign-callback") {
-    $A2B->update_callback_campaign($agi);
+    $A2B->update_callback_campaign();
 
 // MODE cid-callback & cid-prompt-callback
 } elseif ($mode === "cid-callback" || $mode === "cid-prompt-callback") {
@@ -698,7 +698,7 @@ if ($mode === "standard") {
     if (strlen($A2B->CallerID) > 1 && is_numeric($A2B->CallerID)) {
 
         /* WE START ;) */
-        $cia_res = $A2B->callingcard_ivr_authenticate($agi);
+        $cia_res = $A2B->callingcard_ivr_authenticate();
         $A2B->debug(A2Billing::DEBUG, "[TRY : callingcard_ivr_authenticate]");
         if ($cia_res) {
 
@@ -888,7 +888,7 @@ if ($mode === "standard") {
         $A2B->debug(A2Billing::DEBUG, "[CALLBACK]:[ANSWER CALL]");
         $agi->answer();
         $status_channel = 6;
-        $A2B->play_menulanguage($agi);
+        $A2B->play_menulanguage();
 
         // PLAY INTRO FOR CALLBACK
         if ($A2B->config["callback"]["callback_audio_intro"] ?? false) {
@@ -897,7 +897,7 @@ if ($mode === "standard") {
     } else {
         $A2B->debug(A2Billing::DEBUG, "[CALLBACK]:[NO ANSWER CALL]");
         $status_channel = 4;
-        $A2B->play_menulanguage($agi);
+        $A2B->play_menulanguage();
     }
 
     // |MODEFROM=ALL-CALLBACK|TARIFF=" . $A2B->tariff;
@@ -940,14 +940,14 @@ if ($mode === "standard") {
 
     /* WE START ;) */
     $A2B->debug(A2Billing::DEBUG, "[CALLBACK]:[TRY : callingcard_ivr_authenticate]");
-    $cia_res = $A2B->callingcard_ivr_authenticate($agi);
+    $cia_res = $A2B->callingcard_ivr_authenticate();
     if ($cia_res) {
 
         $charge_callback = 1; // EVEN FOR ALL CALLBACK
         $callback_leg = $A2B->username;
 
         $A2B->debug(A2Billing::DEBUG, "[CALLBACK]:[Start]");
-        $A2B->callingcard_auto_setcallerid($agi);
+        $A2B->callingcard_auto_setcallerid();
 
         for ($i = 0; $i < $A2B->agiconfig["number_try"]; $i++) {
 
@@ -975,7 +975,7 @@ if ($mode === "standard") {
                 $A2B->debug(A2Billing::DEBUG, "[CALLBACK]:[STOP STREAM FILE $prompt]");
             }
 
-            if ($A2B->callingcard_ivr_authorize($agi, $RateEngine, $i) === 1) {
+            if ($A2B->callingcard_ivr_authorize($RateEngine, $i) === 1) {
                 // PERFORM THE CALL
                 attempt_call($A2B, $RateEngine, $agi);
 
@@ -1009,7 +1009,7 @@ if ($mode === "standard") {
         $status_channel = 4;
     }
 
-    $A2B->play_menulanguage($agi);
+    $A2B->play_menulanguage();
 
     $accountcode = $agi->get_variable("ACCOUNTCODE", true);
     $room_number = $agi->get_variable("ROOMNUMBER", true);
@@ -1061,7 +1061,7 @@ if ($mode === "standard") {
 
     /* WE START ;) */
     $A2B->debug(A2Billing::DEBUG, "[CALLBACK]:[TRY : callingcard_ivr_authenticate]");
-    $cia_res = $A2B->callingcard_ivr_authenticate($agi);
+    $cia_res = $A2B->callingcard_ivr_authenticate();
     if ($cia_res) {
 
         $charge_callback = 1; // EVEN FOR ALL CALLBACK
@@ -1150,7 +1150,7 @@ if ($charge_callback) {
 
     $A2B->debug(A2Billing::DEBUG, "[CALLBACK 1ST LEG]:[INFO FOR THE 1ST LEG - callback_username=$callback_username");
     $A2B->debug(A2Billing::DEBUG, "[CALLBACK 1ST LEG]:[TRY : callingcard_ivr_authenticate]");
-    $cia_res = $A2B->callingcard_ivr_authenticate($agi);
+    $cia_res = $A2B->callingcard_ivr_authenticate();
 
     //overrides the tariff for the user with the one passed in.
     if ($callback_tariff) {
@@ -1304,7 +1304,7 @@ function attempt_call(A2Billing $A2B, RateEngine $RateEngine, Agi $agi)
     $RateEngine->rate_engine_updatesystem($A2B, $agi, $A2B->destination);
 
     if ($A2B->agiconfig["say_balance_after_call"]) {
-        $A2B->fct_say_balance($agi, $A2B->credit);
+        $A2B->fct_say_balance($A2B->credit);
     }
     $A2B->debug(A2Billing::DEBUG, "[a2billing account stop]");
 }

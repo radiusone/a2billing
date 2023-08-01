@@ -79,7 +79,7 @@ define("SMTP_PASSWORD", isset($A2B->config['global']['smtp_password']) ? $A2B->c
 $A2B->debug(A2Billing::DEBUG, "AGI Request:\n" . json_encode($agi->request));
 
 /* GET THE AGI PARAMETER */
-$A2B->get_agi_request_parameter($agi);
+$A2B->get_agi_request_parameter();
 
 if (!$A2B->DbConnect()) {
     $agi->stream_file('prepaid-final', '#');
