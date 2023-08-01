@@ -50,8 +50,8 @@ class RateEngine
     public array $package_to_apply = [];
 
     public int $number_trunk        = 0;
-    public int $lastcost            = 0;
-    public int $lastbuycost         = 0;
+    public float $lastcost          = 0;
+    public float $lastbuycost       = 0;
     public int $answeredtime        = 0;
     public int $real_answeredtime   = 0;
     public string $dialstatus       = "";
@@ -1194,7 +1194,7 @@ class RateEngine
         $QUERY_COLUMN = "uniqueid, sessionid, card_id, nasipaddress, starttime, sessiontime, real_sessiontime, calledstation, terminatecauseid, stoptime, sessionbill, id_tariffgroup, id_tariffplan, id_ratecard, id_trunk, src, sipiax, buycost, id_card_package_offer, dnid, destination $A2B->CDR_CUSTOM_SQL";
         $QUERY = "INSERT INTO cc_call ($QUERY_COLUMN) VALUES ";
         $QUERY .= "(?, ?, ?, ?, $starttime, ?, ?, ?, ?, $stoptime, ? * ${signe_cc_call}1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? $A2B->CDR_CUSTOM_VAL)";
-        $params = [$A2B->uniqueid, $A2B->channel, $card_id, $A2B->hostname, $sessiontime, $sessiontime, $real_sessiontime, $calledstation, $terminatecauseid, $cost, $id_tariffgroup, $id_tariffplan, $id_ratecard, $trunk_id, $A2B->CallerID, $calltype, $buycost, $id_card_package_offer, $A2B->dnid, $calldestination];
+        $params = [$A2B->uniqueid, $A2B->channel, $card_id, $A2B->hostname, $sessiontime, $sessiontime, $real_sessiontime, $calledstation, $terminatecauseid, a2b_round(abs($cost)), $id_tariffgroup, $id_tariffplan, $id_ratecard, $trunk_id, $A2B->CallerID, $calltype, $buycost, $id_card_package_offer, $A2B->dnid, $calldestination];
 
         if ($A2B->config["global"]['cache_enabled']) {
              //insert query in the cache system
