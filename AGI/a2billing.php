@@ -185,7 +185,7 @@ if ($mode === "standard") {
             // CHECK IF THE CHANNEL IS UP
             if ($A2B->agiconfig["answer_call"] && $stat_channel["result"] != $status_channel) {
                 if ($A2B->set_inuse) {
-                    $A2B->callingcard_acct_start_inuse($agi);
+                    $A2B->callingcard_acct_start_inuse();
                 }
                 $A2B->write_log("[STOP - EXIT]");
                 exit();
@@ -217,7 +217,7 @@ if ($mode === "standard") {
                         }
                         if ($try > 3) {
                             if ($A2B->set_inuse) {
-                                $A2B->callingcard_acct_start_inuse($agi);
+                                $A2B->callingcard_acct_start_inuse();
                             }
                             $agi->hangup();
                             exit();
@@ -227,7 +227,7 @@ if ($mode === "standard") {
             }
 
             // Feature to switch the Callplan from a customer : callplan_deck_minute_threshold
-            $A2B->deck_switch($agi);
+            $A2B->deck_switch();
 
             if (!$A2B->enough_credit_to_call() && $A2B->agiconfig["jump_voucher_if_min_credit"]) {
 
@@ -301,7 +301,7 @@ if ($mode === "standard") {
                                 case "*" :
                                     $agi->stream_file("prepaid-final", "#");
                                     if ($A2B->set_inuse) {
-                                        $A2B->callingcard_acct_start_inuse($agi);
+                                        $A2B->callingcard_acct_start_inuse();
                                     }
                                     $agi->hangup();
                                     exit();
@@ -354,7 +354,7 @@ if ($mode === "standard") {
                             case "*" :
                                 $agi->stream_file("prepaid-final", "#");
                                 if ($A2B->set_inuse) {
-                                    $A2B->callingcard_acct_start_inuse($agi);
+                                    $A2B->callingcard_acct_start_inuse();
                                 }
                                 $agi->hangup();
                                 exit();
@@ -374,7 +374,7 @@ if ($mode === "standard") {
                 if ($A2B->agiconfig["notenoughcredit_cardnumber"] && $i + 1 < $A2B->agiconfig["number_try"]) {
 
                     if ($A2B->set_inuse) {
-                        $A2B->callingcard_acct_start_inuse($agi);
+                        $A2B->callingcard_acct_start_inuse();
                     }
 
                     $A2B->agiconfig["cid_enable"] = 0;
@@ -391,7 +391,7 @@ if ($mode === "standard") {
                     }
 
                     $A2B->debug(A2Billing::DEBUG, "[NOTENOUGHCREDIT_CARDNUMBER - callingcard_acct_start_inuse]");
-                    $A2B->callingcard_acct_start_inuse($agi, true);
+                    $A2B->callingcard_acct_start_inuse(true);
                     continue;
 
                 } else {
@@ -579,7 +579,7 @@ if ($mode === "standard") {
                         //On Net
                         $A2B->call_2did($agi, $RateEngine, $result);
                         if ($A2B->set_inuse) {
-                            $A2B->callingcard_acct_start_inuse($agi);
+                            $A2B->callingcard_acct_start_inuse();
                         }
                     }
                 }
@@ -635,7 +635,7 @@ if ($mode === "standard") {
             //Off Net
             $A2B->call_did($agi, $RateEngine, $result);
             if ($A2B->set_inuse) {
-                $A2B->callingcard_acct_start_inuse($agi);
+                $A2B->callingcard_acct_start_inuse();
             }
         }
     }
@@ -667,7 +667,7 @@ if ($mode === "standard") {
 
     $agi->hangup();
     if ($A2B->set_inuse) {
-        $A2B->callingcard_acct_start_inuse($agi);
+        $A2B->callingcard_acct_start_inuse();
     }
     $A2B->write_log("[STOP - EXIT]");
     exit();
@@ -755,7 +755,7 @@ if ($mode === "standard") {
                                     $res_dtmf = $agi->get_data("prepaid-re-enter-press1-confirm", 4000, 1);
                                     if ($subtry >= 3) {
                                         if ($A2B->set_inuse) {
-                                            $A2B->callingcard_acct_start_inuse($agi);
+                                            $A2B->callingcard_acct_start_inuse();
                                         }
                                         $agi->hangup();
                                         exit();
@@ -773,7 +773,7 @@ if ($mode === "standard") {
 
                         if (!strlen($outbound_destination)) {
                             if ($A2B->set_inuse) {
-                                $A2B->callingcard_acct_start_inuse($agi);
+                                $A2B->callingcard_acct_start_inuse();
                             }
                             $agi->hangup();
                             exit();
@@ -988,7 +988,7 @@ if ($mode === "standard") {
         }//END FOR
 
         if ($A2B->set_inuse) {
-            $A2B->callingcard_acct_start_inuse($agi);
+            $A2B->callingcard_acct_start_inuse();
         }
 
     } else {
@@ -1042,7 +1042,7 @@ if ($mode === "standard") {
     }
 
     $A2B->username = $A2B->accountcode = $accountcode;
-    $A2B->callingcard_acct_start_inuse($agi, true);
+    $A2B->callingcard_acct_start_inuse(true);
 
     if ($callback_mode === "CONF-MODERATOR") {
         $charge_callback = 1;
@@ -1131,7 +1131,7 @@ if ($mode === "standard") {
         }//END FOR
 
         if ($A2B->set_inuse) {
-            $A2B->callingcard_acct_start_inuse($agi);
+            $A2B->callingcard_acct_start_inuse();
         }
 
     } else {
@@ -1210,7 +1210,7 @@ if ($send_reminder && $A2B->agiconfig["send_reminder"] && $A2B->cardholder_email
 }
 
 if ($A2B->set_inuse) {
-    $A2B->callingcard_acct_start_inuse($agi);
+    $A2B->callingcard_acct_start_inuse();
 }
 
 # End

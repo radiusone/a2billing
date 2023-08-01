@@ -698,7 +698,7 @@ class A2Billing
     /*
     * function would set when the card is used or when it release
     */
-    public function callingcard_acct_start_inuse(Agi $agi, bool $inuse = false): void
+    public function callingcard_acct_start_inuse(bool $inuse = false): void
     {
         $upd_balance = 0;
         if (is_numeric($this->agiconfig['dial_balance_reservation'])) {
@@ -836,7 +836,7 @@ class A2Billing
 
         if ($iscall2did) {
             //it's call to did
-            $this->save_redial_number($agi, $this->destination);
+            $this->save_redial_number($this->destination);
 
             return 2;
         }
@@ -958,7 +958,7 @@ class A2Billing
         // STRIP * FROM DESTINATION NUMBER
         $this->destination = str_replace(['*', '.'], '', $this->destination);
 
-        $this->save_redial_number($agi, $this->destination);
+        $this->save_redial_number($this->destination);
 
         // LOOKUP RATE : FIND A RATE FOR THIS DESTINATION
         $resfindrate = $RateEngine->rate_engine_findrates($this, $this->destination, $this->tariff);
@@ -1021,7 +1021,7 @@ class A2Billing
             }
         }
 
-        $this->save_redial_number($agi, $this->destination);
+        $this->save_redial_number($this->destination);
 
         $this->debug(self::DEBUG, "SIP o IAX DESTINATION : " . $this->destination);
         $sip_buddies = 0;
@@ -1179,7 +1179,7 @@ class A2Billing
             $this->useralias   = $dest["useralias"];
 
             if ($this->set_inuse) {
-                $this->callingcard_acct_start_inuse($agi);
+                $this->callingcard_acct_start_inuse();
             }
 
             // MAKE THE AUTHENTICATION TO GET ALL VALUE : CREDIT - EXPIRATION - ...
@@ -1285,7 +1285,7 @@ class A2Billing
                     $this->DBHandle->Execute($QUERY, [$answeredtime, $dest["id"]]);
                     $this->debug(self::INFO, "UPDATE DID_DESTINATION");
 
-                    $this->bill_did_aleg($agi, $dest, $answeredtime);
+                    $this->bill_did_aleg($dest, $answeredtime);
 
                     return;
                 }
@@ -1328,7 +1328,7 @@ class A2Billing
                     $this->DBHandle->Execute($QUERY, [$RateEngine->answeredtime, $dest["id"]]);
                     $this->debug(self::DEBUG, "UPDATE DID_DESTINATION");
 
-                    $this->bill_did_aleg($agi, $dest, $RateEngine->answeredtime);
+                    $this->bill_did_aleg($dest, $RateEngine->answeredtime);
 
                     // THEN STATUS IS ANSWER
                     break;
@@ -1540,7 +1540,7 @@ class A2Billing
 
                     #This is a call from user to DID
                     #we will change the B-Leb using the did bill_did_aleg function
-                    $this->bill_did_aleg($agi, $listdestination[0], $answeredtime);
+                    $this->bill_did_aleg($listdestination[0], $answeredtime);
                 }
             // ELSEIF NOT VOIP CALL
             } else {
@@ -1614,7 +1614,7 @@ class A2Billing
                     $this->debug(self::INFO, "[DID CALL - UPDATE CARD: SQL: $QUERY]");
 
                     #This is a call from user to DID, we dont want to charge the A-leg
-                    $this->bill_did_aleg($agi, $listdestination[0], $answeredtime);
+                    $this->bill_did_aleg($listdestination[0], $answeredtime);
 
                     break;
                 }
@@ -1638,7 +1638,7 @@ class A2Billing
     /*
     * Function to bill the A-Leg on DID Calls
     */
-    public function bill_did_aleg(Agi $agi, array $dest, int $b_leg_answeredtime = 0)
+    public function bill_did_aleg(array $dest, int $b_leg_answeredtime = 0)
     {
 
         $start_time = $this->G_startime;
@@ -2228,7 +2228,7 @@ class A2Billing
     * Function callingcard_cid_sanitize : Ensure the caller is allowed to use their claimed CID.
     * Returns: clean CID value, possibly empty.
     */
-    public function callingcard_cid_sanitize(Agi $agi): string
+    public function callingcard_cid_sanitize(): string
     {
         $this->debug(self::DEBUG, "[CID_SANITIZE - CID:" . $this->CallerID . "]");
 
@@ -2312,7 +2312,7 @@ class A2Billing
                 $cid_sanitized = $this->CallerID;
                 $san = strtoupper($this->agiconfig['cid_sanitize']);
                 if ($san === "DID" || $san === "CID" || $san === "BOTH") {
-                    $cid_sanitized = $this->callingcard_cid_sanitize($agi);
+                    $cid_sanitized = $this->callingcard_cid_sanitize();
                     $this->debug(self::INFO, "[TRY : callingcard_cid_sanitize]");
                     if ($this->agiconfig['debug'] >= 1) {
                         $agi->verbose('CALLERID SANITIZED: "' . $cid_sanitized . '"');
@@ -2976,7 +2976,7 @@ class A2Billing
         }
 
         if (($retries ?? 0) < 3 && $res == 0) {
-            $this->callingcard_acct_start_inuse($agi, true);
+            $this->callingcard_acct_start_inuse(true);
             if ($this->agiconfig['say_balance_after_auth'] == 1) {
                 $this->debug(self::DEBUG, "[A2Billing] SAY BALANCE : $this->credit \n");
                 $this->early_destination = $this->fct_say_balance($agi, $this->credit);
@@ -3085,7 +3085,7 @@ class A2Billing
     * to switch the Callplan from a customer : callplan_deck_minute_threshold
     *
     */
-    public function deck_switch(Agi $agi): bool
+    public function deck_switch(): bool
     {
         $thresh = $this->agiconfig['callplan_deck_minute_threshold'] ?? "";
         if (!str_contains($thresh, ',')) {
@@ -3183,7 +3183,7 @@ class A2Billing
     * Function DbReConnect
     * Returns: true / false if connection has been established
     */
-    public function DbReConnect(Agi $agi): bool
+    public function DbReConnect(): bool
     {
         $res = $this->DBHandle->Execute("select 1");
         if (!$res) {
@@ -3238,7 +3238,7 @@ class A2Billing
         $this->DBHandle->Disconnect();
     }
 
-    public function save_redial_number(Agi $agi, string $number): void
+    public function save_redial_number(string $number): void
     {
         if ($this->mode === 'did' || $this->mode === 'callback') {
             return;

@@ -1368,7 +1368,7 @@ class RateEngine
                 $A2B->debug(A2Billing::INFO, "DIAL $dialstr");
 
                 // check connection after dial(long pause)
-                $A2B->DbReConnect($agi);
+                $A2B->DbReConnect();
 
                 // Count this call on the trunk
                 $this->trunk_start_inuse($agi, $A2B, false);
@@ -1465,7 +1465,7 @@ class RateEngine
                     $A2B->debug(A2Billing::DEBUG, "DIAL FAILOVER $dialstr");
 
                     // check connection after dial(long pause)
-                    $A2B->DbReConnect($agi);
+                    $A2B->DbReConnect();
 
                     // Count this call on the trunk
                     $this->trunk_start_inuse($agi, $A2B, false);
