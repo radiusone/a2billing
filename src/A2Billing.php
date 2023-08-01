@@ -185,12 +185,16 @@ class A2Billing
     /** @var array list of currency exchange rates indexed by currency code */
     private array $currencies_list = [];
 
+    /** @var Agi|null the current AGI instance */
+    private ?Agi $agi = null;
+
     /* CONSTRUCTOR */
-    public function __construct(int $idconfig = 1, array $optconfig = [])
+    public function __construct(int $idconfig = 1, array $optconfig = [], ?Agi $agi = null)
     {
         if (function_exists('pcntl_signal')) {
             pcntl_signal(SIGHUP, [$this, "Hangupsignal"]);
         }
+        $this->agi = $agi;
         // populate the configuration object
         $this->idconfig = $idconfig;
         $this->load_conf($optconfig);

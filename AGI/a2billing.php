@@ -89,7 +89,7 @@ $mode = $argv[2] ?? "standard";
 // get the area code for the cid-callback, all-callback and cid-prompt-callback
 $caller_areacode = $argv[3] ?? null;
 
-$A2B = new A2Billing((int)$idconfig, $optconfig);
+$A2B = new A2Billing((int)$idconfig, $optconfig, $agi);
 $A2B->mode = $mode;
 $A2B->G_startime = $G_startime;
 
