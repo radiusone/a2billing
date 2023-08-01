@@ -221,7 +221,7 @@ if (empty($_SESSION["stylefile"])) {
  */
 // A2BILLING INFO
 const COPYRIGHT = <<< HTML
-A2Billing v2.2.0 is licensed under the <a href="https://www.gnu.org/licenses/agpl-3.0.en.html" target="_blank">AGPL 3</a><br/>
+A2Billing v3.0 is licensed under the <a href="https://www.gnu.org/licenses/agpl-3.0.en.html" target="_blank">AGPL 3</a><br/>
 Copyright © 2004-2015 Star2billing SL, © 2022 RadiusOne Inc.
 HTML;
 define ("CCMAINTITLE", gettext("A2Billing Portal"));

@@ -52,7 +52,7 @@ require_once __DIR__ . "/../vendor/autoload.php";
 
 $charge_callback = 0;
 $G_startime = time();
-$agi_version = "A2Billing - v2.2.0";
+$agi_version = "A2Billing - v3.0";
 
 if ($argc > 1 && ($argv[1] === "--version" || $argv[1] === "-v")) {
     echo "$agi_version\n";
