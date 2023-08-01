@@ -223,6 +223,7 @@ class A2Billing
         $st = debug_backtrace(\DEBUG_BACKTRACE_IGNORE_ARGS, 1);
         $file = $st[0]["file"];
         $line = $st[0]["line"];
+        $func = ($st[0]["class"] ?? "") . ($st[0]["type"] ?? "") . $st[0]["function"] . "()";
         $file = basename($file);
         $u = $this->uniqueid ?? "n/a";
         // VERBOSE
@@ -233,7 +234,7 @@ class A2Billing
             $chunks = str_split($output, 1024);
             foreach ($chunks as $key => $chunk) {
                 $part = $key > 0 ? sprintf(" %d/%d", $key + 1, count($chunks)) : "";
-                $this->agi->verbose("$file:$line [$u]$part $chunk");
+                $this->agi->verbose("$func $file:$line [$u]$part $chunk");
             }
         }
         // LOG INTO FILE
@@ -241,7 +242,7 @@ class A2Billing
             $buffer_debug = print_r($buffer_debug, true);
         }
         if ($this->agiconfig['logging_level'] >= $level) {
-            $this->write_log($buffer_debug, "$file:$line [$u]");
+            $this->write_log($buffer_debug, "$func $file:$line [$u]");
         }
     }
 
