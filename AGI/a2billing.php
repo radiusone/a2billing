@@ -577,7 +577,7 @@ if ($mode === "standard") {
 
                     if ($result !== false && $result !== []) {
                         //On Net
-                        $A2B->call_2did($agi, $RateEngine, $result);
+                        $A2B->call_2did($RateEngine, $result);
                         if ($A2B->set_inuse) {
                             $A2B->callingcard_acct_start_inuse();
                         }

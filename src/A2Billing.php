@@ -1373,7 +1373,7 @@ class A2Billing
         }
     }
 
-    public function call_2did(Agi $agi, RateEngine $RateEngine, array $listdestination)
+    public function call_2did(RateEngine $RateEngine, array $listdestination)
     {
         $card_number = $this->username; // username of the caller
         $nbused = $this->nbused;
