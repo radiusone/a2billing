@@ -306,7 +306,6 @@ class A2Billing
         $this->currencies_list = $this->get_currencies();
         $query = "SELECT config_key, config_value, config_group_title, config_valuetype FROM cc_config";
         $config_res = $this->DBHandle->GetAll($query);
-        $this->debug(self::DEBUG, "Query: $query");
         if ($config_res === false || $config_res === []) {
             echo 'Error : cannot load conf : load_conf_db';
             exit;
@@ -555,7 +554,7 @@ class A2Billing
 
         // Print out on CLI for debug purpose
         $this->debug(self::DEBUG, 'A2Billing AGI internal configuration:');
-        $this->debug(self::DEBUG, json_encode($this->agiconfig));
+        $this->debug(self::DEBUG, $this->agiconfig);
     }
 
     /*
