@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "77e14d7f1716a3c449cfe6f1cd3f642d",
+    "content-hash": "67a4d7cc0063457f728c9a7f8098bc0c",
     "packages": [
         {
             "name": "adodb/adodb-php",
@@ -1129,18 +1129,19 @@
         },
         {
             "name": "welltime/phpagi",
-            "version": "2.20.1",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/welltime/phpagi.git",
-                "reference": "00436062cc807e96b01050d9fdc20e2e3b07fd4f"
+                "reference": "86a2e68287048c05b0dd6ac2ef943198ec7ad8ef"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/welltime/phpagi/zipball/00436062cc807e96b01050d9fdc20e2e3b07fd4f",
-                "reference": "00436062cc807e96b01050d9fdc20e2e3b07fd4f",
+                "url": "https://api.github.com/repos/welltime/phpagi/zipball/86a2e68287048c05b0dd6ac2ef943198ec7ad8ef",
+                "reference": "86a2e68287048c05b0dd6ac2ef943198ec7ad8ef",
                 "shasum": ""
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "classmap": [
@@ -1155,9 +1156,9 @@
             "description": "PHPAGI is a PHP class for the Asterisk Gateway Interface.",
             "support": {
                 "issues": "https://github.com/welltime/phpagi/issues",
-                "source": "https://github.com/welltime/phpagi/tree/2.20.1"
+                "source": "https://github.com/welltime/phpagi/tree/master"
             },
-            "time": "2019-04-15T09:13:08+00:00"
+            "time": "2020-08-14T08:31:43+00:00"
         }
     ],
     "packages-dev": [
@@ -3263,7 +3264,8 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "dubcanada/php-profiler": 20
+        "dubcanada/php-profiler": 20,
+        "welltime/phpagi": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
@@ -3277,8 +3279,9 @@
         "ext-posix": "*",
         "ext-soap": "*",
         "ext-iconv": "*",
-        "ext-pdo_sqlite": "*"
+        "ext-pdo_sqlite": "*",
+        "ext-pdo": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.1.0"
+    "plugin-api-version": "2.3.0"
 }
