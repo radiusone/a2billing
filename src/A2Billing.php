@@ -220,10 +220,10 @@ class A2Billing
     */
     public function debug(int $level, ...$data): void
     {
-        $st = debug_backtrace(\DEBUG_BACKTRACE_IGNORE_ARGS, 1);
-        $file = $st[0]["file"];
-        $line = $st[0]["line"];
-        $func = ($st[0]["class"] ?? "") . ($st[0]["type"] ?? "") . $st[0]["function"] . "()";
+        $st = debug_backtrace(\DEBUG_BACKTRACE_IGNORE_ARGS, 2);
+        $file = $st[1]["file"];
+        $line = $st[1]["line"];
+        $func = ($st[1]["class"] ?? "") . ($st[1]["type"] ?? "") . $st[1]["function"] . "()";
         $file = basename($file);
         $u = $this->uniqueid ?? "n/a";
         // VERBOSE
