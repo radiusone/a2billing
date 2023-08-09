@@ -223,7 +223,7 @@ class A2Billing
         $st = debug_backtrace(\DEBUG_BACKTRACE_IGNORE_ARGS, 2);
         $file = $st[1]["file"];
         $line = $st[1]["line"];
-        $func = ($st[1]["class"] ?? "") . ($st[1]["type"] ?? "") . $st[1]["function"] . "()";
+        $func = basename(str_replace("\\", "/", $st[1]["class"] ?? "")) . ($st[1]["type"] ?? "") . $st[1]["function"] . "()";
         $file = basename($file);
         $u = $this->uniqueid ?? "n/a";
         // VERBOSE
