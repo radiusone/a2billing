@@ -2,10 +2,12 @@
 
 namespace A2billing\PhpAgi;
 
+use PhpAgi\AGI as BaseAGI;
+
 /**
  * @method array|string get_variable($variable, $getvalue = false)
  */
-class Agi extends \AGI
+class Agi extends BaseAGI
 {
     public bool $play_audio = true;
 
@@ -19,29 +21,29 @@ class Agi extends \AGI
         $this->play_audio = (bool)$bool;
     }
 
-    public function say_digits($digits, $escape_digits = ''): ?array
+    public function say_digits($digits, $escape_digits = ''): array
     {
-        return $this->play_audio ? parent::say_digits($digits, $escape_digits) : null;
+        return $this->play_audio ? parent::say_digits($digits, $escape_digits) : [];
     }
 
-    public function say_number($number, $escape_digits = ''): ?array
+    public function say_number($number, $escape_digits = ''): array
     {
-        return $this->play_audio ? parent::say_number($number, $escape_digits) : null;
+        return $this->play_audio ? parent::say_number($number, $escape_digits) : [];
     }
 
-    public function say_phonetic($text, $escape_digits = ''): ?array
+    public function say_phonetic($text, $escape_digits = ''): array
     {
-        return $this->play_audio ? parent::say_phonetic($text, $escape_digits) : null;
+        return $this->play_audio ? parent::say_phonetic($text, $escape_digits) : [];
     }
 
-    public function say_time($time = null, $escape_digits = ''): ?array
+    public function say_time($time = null, $escape_digits = ''): array
     {
-        return $this->play_audio ? parent::say_time($time, $escape_digits) : null;
+        return $this->play_audio ? parent::say_time($time, $escape_digits) : [];
     }
 
-    public function stream_file($filename, $escape_digits = '', $offset = 0): ?array
+    public function stream_file($filename, $escape_digits = '', $offset = 0): array
     {
-        return $this->play_audio ? parent::stream_file($filename, $escape_digits, $offset) : null;
+        return $this->play_audio ? parent::stream_file($filename, $escape_digits, $offset) : [];
     }
 
     public function exec($application, $options = []): array

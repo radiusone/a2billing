@@ -2,7 +2,7 @@
 
 namespace A2billing;
 
-use AGI_AsteriskManager;
+use PhpAgi\AMI as AGI_AsteriskManager;
 
 require_once __DIR__ . "/admin.defines.php";
 

@@ -2,6 +2,7 @@
 
 use A2billing\Agent;
 use A2billing\Table;
+use PhpAgi\AMI as AGI_AsteriskManager;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
