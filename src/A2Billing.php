@@ -1159,11 +1159,11 @@ class A2Billing
                 // The following section will send the caller to VoiceMail
                 // with the unavailable priority.
                 $this->debug(self::INFO, "[STATUS] CHANNEL UNAVAILABLE - GOTO VOICEMAIL ($dest_username)");
-                $this->agi->exec("VoiceMail", "$dest_username,u");
+                $this->agi->exec("VoiceMail", [$dest_username, "u"]);
             } elseif (($dialstatus === "BUSY")) {
                 // The following section will send the caller to VoiceMail with the busy priority.
                 $this->debug(self::INFO, "[STATUS] CHANNEL BUSY - GO VOICEMAIL ($dest_username)");
-                $this->agi->exec("VoiceMail", "$dest_username,b");
+                $this->agi->exec("VoiceMail", [$dest_username, "b"]);
             }
         }
 
@@ -1368,7 +1368,7 @@ class A2Billing
                 // The following section will send the caller to VoiceMail with the unavailable priority.\
                 $dest_username = $this->username;
                 $this->debug(self::INFO, "[STATUS] CHANNEL ($dialstatus) - GOTO VOICEMAIL ($dest_username)");
-                $this->agi->exec("VoiceMail", "$dest_username,s");
+                $this->agi->exec("VoiceMail", [$dest_username, "s"]);
             }
         }
     }
@@ -1659,7 +1659,7 @@ class A2Billing
                 // The following section will send the caller to VoiceMail with the unavailable priority.\
                 $dest_username = $new_username;
                 $this->debug(self::INFO, "[STATUS] CHANNEL ($dialstatus) - GOTO VOICEMAIL ($dest_username)");
-                $this->agi->exec("VoiceMail", "$dest_username,s");
+                $this->agi->exec("VoiceMail", [$dest_username,"s"]);
             }
         }
         $this->accountcode = $accountcode;

@@ -273,7 +273,7 @@ if ($mode === "standard") {
                                     if ($val !== false && !is_null($val)) {
                                         $A2B->debug(A2Billing::DEBUG, "[INFORMATION MENU]:[OPTION 1]");
                                         $agi->stream_file("prepaid-lastcall", "#"); //Your last call was made
-                                        $agi->exec("SayUnixTime $card_info[lastuse]");
+                                        $agi->exec("SayUnixTime", [$card_info["lastuse"]]);
                                         $agi->stream_file("prepaid-call-duration", "#"); //the duration of the call was
                                         $agi->say_number($card_info["sessiontime"]);
                                         $agi->stream_file("seconds", "#");
@@ -285,7 +285,7 @@ if ($mode === "standard") {
                                 case "2" :
                                     if ($card_info["lock_date"]) {
                                         $agi->stream_file("prepaid-account-has-locked", "#"); //Your Account has been locked the
-                                        $agi->exec("SayUnixTime $card_info[lock_date]");
+                                        $agi->exec("SayUnixTime", [$card_info["lock_date"]]);
                                     } else {
                                         $agi->stream_file("prepaid-account-nolocked", "#"); //Your account is not locked
                                     }
@@ -293,7 +293,7 @@ if ($mode === "standard") {
                                     break;
                                 case "3" :
                                     $agi->stream_file("prepaid-account-firstused", "#"); //Your Account has been used for the first time the
-                                    $agi->exec("SayUnixTime $card_info[firstuse]");
+                                    $agi->exec("SayUnixTime", [$card_info["firstuse"]]);
                                     $return = true;
                                     break;
                                 case "9" :
@@ -1126,7 +1126,7 @@ if ($mode === "standard") {
             $dialstr = "local/$room_number@a2billing-conference-room";
 
             $A2B->debug(A2Billing::INFO, "DIAL $dialstr");
-            $myres = $agi->exec("DIAL $dialstr");
+            $myres = $agi->exec("DIAL", [$dialstr]);
 
         }//END FOR
 

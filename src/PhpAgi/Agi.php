@@ -9,75 +9,66 @@ use PhpAgi\AGI as BaseAGI;
  */
 class Agi extends BaseAGI
 {
-    public bool $play_audio = true;
-
-    public function __construct()
-    {
-        parent::__construct();
-    }
+    private bool $play_audio = true;
 
     public function set_play_audio($bool)
     {
         $this->play_audio = (bool)$bool;
     }
 
-    public function say_digits($digits, $escape_digits = ''): array
+    public function say_digits(int $digits, string $escape_digits = ''): array
     {
         return $this->play_audio ? parent::say_digits($digits, $escape_digits) : [];
     }
 
-    public function say_number($number, $escape_digits = ''): array
+    public function say_number(int $number, string $escape_digits = ''): array
     {
         return $this->play_audio ? parent::say_number($number, $escape_digits) : [];
     }
 
-    public function say_phonetic($text, $escape_digits = ''): array
+    public function say_phonetic(string $text, string $escape_digits = ''): array
     {
         return $this->play_audio ? parent::say_phonetic($text, $escape_digits) : [];
     }
 
-    public function say_time($time = null, $escape_digits = ''): array
+    public function say_time(int $time = null, string $escape_digits = ''): array
     {
         return $this->play_audio ? parent::say_time($time, $escape_digits) : [];
     }
 
-    public function stream_file($filename, $escape_digits = '', $offset = 0): array
+    public function stream_file(string $filename, string $escape_digits = '', $offset = 0): array
     {
         return $this->play_audio ? parent::stream_file($filename, $escape_digits, $offset) : [];
     }
 
-    public function exec($application, $options = []): array
+    public function espeak(string $text, string $escape_digits = '', int $frequency = 8000, string $voice = null)
     {
-        return parent::exec($application, $options);
-    }
-
-    public function espeak($text, $escape_digits = '', $frequency = 8000, $voice = null)
-    {
-        if (is_null($voice)) {
-            $voice = "-vf2";
-        }
+        $voice ??= "f2";
 
         $text = trim($text);
         if ($text == '') {
+
             return true;
         }
 
-        $hash = md5($text);
-        $fname = $this->config['phpagi']['tempdir'] . DIRECTORY_SEPARATOR;
-        $fname .= 'espeak_' . $hash;
+        $fname = $this->config['phpagi']['tempdir'] . DIRECTORY_SEPARATOR . 'espeak_' . md5($text);
 
         // create wave file
         if (!file_exists("$fname.wav")) {
-            // write text file
-            if (!file_exists("$fname.txt")) {
-                $fp = fopen("$fname.txt", 'w');
-                fputs($fp, $text);
-                fclose($fp);
-            }
-            shell_exec("{$this->config['espeak']['espeak']} $voice -f $fname.txt -w $fname" . "_orig.wav ");
+            file_put_contents("$fname.txt", $text);
+            $cmd = escapeshellarg($this->config['espeak']['espeak']);
+            $cmd .= " -v " . escapeshellarg($voice);
+            $cmd .= " -f " . escapeshellarg("$fname.txt");
+            $cmd .= " --stdout ";
 
-            shell_exec("{$this->config['sox']['sox']} $fname" . "_orig.wav -r $frequency -c1 $fname.wav ");
-            unlink("$fname" . "_orig.wav");
+            $cmd .= " | ";
+
+            $cmd .= escapeshellarg($this->config['sox']['sox']);
+            $cmd .= " - ";
+            $cmd .= " -r " . escapeshellarg($frequency);
+            $cmd .= " -c1 " . escapeshellarg("$fname.wav");
+
+            shell_exec($cmd);
         }
 
         // stream it
@@ -85,11 +76,7 @@ class Agi extends BaseAGI
 
         // clean up old files
         $delete = time() - 2592000; // 1 month
-        foreach (glob($this->config['phpagi']['tempdir'] . DIRECTORY_SEPARATOR . 'espeak_*') as $file) {
-            if (filemtime($file) < $delete) {
-                unlink($file);
-            }
-        }
+        $this->clearTemp('espeak_*', $delete);
 
         return $ret;
     }
