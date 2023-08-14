@@ -1195,7 +1195,7 @@ class RateEngine
         }
         $QUERY_COLUMN = "uniqueid, sessionid, card_id, nasipaddress, starttime, sessiontime, real_sessiontime, calledstation, terminatecauseid, stoptime, sessionbill, id_tariffgroup, id_tariffplan, id_ratecard, id_trunk, src, sipiax, buycost, id_card_package_offer, dnid, destination {$this->a2b->CDR_CUSTOM_SQL}";
         $QUERY = "INSERT INTO cc_call ($QUERY_COLUMN) VALUES ";
-        $QUERY .= "(?, ?, ?, ?, $starttime, ?, ?, ?, ?, $stoptime, ? * ${signe_cc_call}1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? $this->a2b->CDR_CUSTOM_VAL)";
+        $QUERY .= "(?, ?, ?, ?, $starttime, ?, ?, ?, ?, $stoptime, ? * ${signe_cc_call}1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? {$this->a2b->CDR_CUSTOM_VAL})";
         $params = [$this->a2b->uniqueid, $this->a2b->channel, $card_id, $this->a2b->hostname, $sessiontime, $sessiontime, $real_sessiontime, $calledstation, $terminatecauseid, a2b_round(abs($cost)), $id_tariffgroup, $id_tariffplan, $id_ratecard, $trunk_id, $this->a2b->CallerID, $calltype, $buycost, $id_card_package_offer, $this->a2b->dnid, $calldestination];
 
         if ($this->a2b->config["global"]['cache_enabled']) {
