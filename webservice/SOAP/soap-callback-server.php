@@ -241,17 +241,17 @@ class Callback
             }
         }
 
-        $RateEngine = new RateEngine();
+        $RateEngine = $A2B->rateEngine();
 
         $A2B -> extension = $A2B -> dnid = $A2B -> destination = $called;
 
         // LOOKUP RATE : FIND A RATE FOR THIS DESTINATION
-        $resfindrate = $RateEngine->rate_engine_findrates($A2B, $A2B->destination, $A2B->tariff);
+        $resfindrate = $RateEngine->rate_engine_findrates($A2B->destination, $A2B->tariff);
 
         if ($resfindrate != 0) {
 
             //$RateEngine -> debug_st = 1;
-            $res_all_calcultimeout = $RateEngine->rate_engine_all_calcultimeout($A2B, $A2B->credit);
+            $res_all_calcultimeout = $RateEngine->rate_engine_all_calcultimeout($A2B->credit);
 
             if ($res_all_calcultimeout) {
                 // MAKE THE CALL

@@ -3,7 +3,6 @@
 
 use A2billing\A2Billing;
 use A2billing\ProcessHandler;
-use A2billing\RateEngine;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -223,7 +222,7 @@ for ($page = 0; $page < $nbpage; $page++) {
 
         if ($A2B->callingcard_ivr_authenticate_light($error_msg)) {
 
-            $RateEngine = new RateEngine();
+            $RateEngine = $A2B->rateEngine();
             $RateEngine->webui = false;
             // LOOKUP RATE : FIND A RATE FOR THIS DESTINATION
 
@@ -233,11 +232,11 @@ for ($page = 0; $page < $nbpage; $page++) {
 
             $A2B->dnid = $A2B->destination = $phone["number"];
 
-            $resfindrate = $RateEngine->rate_engine_findrates($A2B, $phone["number"], (int)$phone["tariff"]);
+            $resfindrate = $RateEngine->rate_engine_findrates($phone["number"], (int)$phone["tariff"]);
 
             // IF FIND RATE
             if ($resfindrate != 0) {
-                $res_all_calcultimeout = $RateEngine->rate_engine_all_calcultimeout($A2B, $A2B->credit);
+                $res_all_calcultimeout = $RateEngine->rate_engine_all_calcultimeout($A2B->credit);
                 if ($res_all_calcultimeout) {
 
                     // MAKE THE CALL

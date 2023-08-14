@@ -5,7 +5,6 @@ use A2billing\A2Billing;
 use A2billing\A2bMailException;
 use A2billing\Mail;
 use A2billing\PhpAgi\Agi;
-use A2billing\RateEngine;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -135,7 +134,7 @@ $called_party = null;
 $calling_party = null;
 $status_channel = 0;
 
-$RateEngine = new RateEngine();
+$RateEngine = $A2B->rateEngine();
 
 // get some common stuff out of the way
 if ($mode === "standard" || $mode === "voucher") {
@@ -172,7 +171,6 @@ if ($mode === "standard") {
         $A2B->callingcard_auto_setcallerid();
 
         for ($i = 0; $i < $A2B->agiconfig["number_try"]; $i++) {
-            $RateEngine->Reinit();
             $A2B->Reinit();
 
             // RETRIEVE THE CHANNEL STATUS AND LOG : STATUS - CREIT - MIN_CREDIT_2CALL
@@ -549,11 +547,11 @@ if ($mode === "standard") {
 
             } else {
 
-                $ans = $A2B->callingcard_ivr_authorize($RateEngine, $i, true);
+                $ans = $A2B->callingcard_ivr_authorize($i, true);
                 $A2B->debug(A2Billing::DEBUG, "ANSWER fct callingcard_ivr authorize:> $ans");
 
                 if ($ans === 1) {
-                    attempt_call($A2B, $RateEngine, $agi);
+                    attempt_call($A2B);
                 } elseif ($ans === 2) {
 
                     $A2B->debug(A2Billing::INFO, "[ CALL OF THE SYSTEM - [DID=" . $A2B->destination . "]");
@@ -577,7 +575,7 @@ if ($mode === "standard") {
 
                     if ($result !== false && $result !== []) {
                         //On Net
-                        $A2B->call_2did($RateEngine, $result);
+                        $A2B->call_2did($result);
                         if ($A2B->set_inuse) {
                             $A2B->callingcard_acct_start_inuse();
                         }
@@ -605,7 +603,6 @@ if ($mode === "standard") {
         $A2B->debug(A2Billing::INFO, "[NO ANSWER CALL]");
     }
 
-    $RateEngine->Reinit();
     $A2B->Reinit();
 
     $mydnid = $A2B->orig_ext;
@@ -633,7 +630,7 @@ if ($mode === "standard") {
 
         if ($result !== false && $result !== []) {
             //Off Net
-            $A2B->call_did($RateEngine, $result);
+            $A2B->call_did($result);
             if ($A2B->set_inuse) {
                 $A2B->callingcard_acct_start_inuse();
             }
@@ -702,7 +699,7 @@ if ($mode === "standard") {
         $A2B->debug(A2Billing::DEBUG, "[TRY : callingcard_ivr_authenticate]");
         if ($cia_res) {
 
-            $RateEngine = new RateEngine();
+            $RateEngine = $A2B->rateEngine();
 
             // Apply 1st leg tariff override if param was passed in
             if ($cid_1st_leg_tariff_id) {
@@ -719,12 +716,12 @@ if ($mode === "standard") {
             $A2B->debug(A2Billing::DEBUG, "[destination: - $A2B->destination]");
 
             // LOOKUP RATE : FIND A RATE FOR THIS DESTINATION
-            $resfindrate = $RateEngine->rate_engine_findrates($A2B, $A2B->destination, $A2B->tariff);
+            $resfindrate = $RateEngine->rate_engine_findrates($A2B->destination, $A2B->tariff);
             $A2B->debug(A2Billing::DEBUG, "[resfindrate: - $resfindrate]");
 
             // IF FIND RATE
             if ($resfindrate) {
-                $res_all_calcultimeout = $RateEngine->rate_engine_all_calcultimeout($A2B, $A2B->credit);
+                $res_all_calcultimeout = $RateEngine->rate_engine_all_calcultimeout($A2B->credit);
                 if ($res_all_calcultimeout) {
                     $CALLING_VAR = "";
                     $MODE_VAR = "MODE=CID";
@@ -782,7 +779,7 @@ if ($mode === "standard") {
                         $CALLING_VAR = "CALLING=" . $outbound_destination;
                     } // if ($mode == "cid-prompt-callback")
 
-                    $channel = get_dialstring($RateEngine->ratecard_obj[0], $A2B, $RateEngine);
+                    $channel = get_dialstring($RateEngine->ratecard_obj[0], $A2B);
                     $exten = $groupid;
                     $uniqueid = MDP_NUMERIC(5) . "-" . MDP_STRING(7);
                     $variable = sprintf(
@@ -798,7 +795,7 @@ if ($mode === "standard") {
                     if (strlen($cid_1st_leg_tariff_id) > 0) {
                         $variable .= ",TARIFF=$cid_1st_leg_tariff_id";
                     }
-                    insert_callback($A2B, $agi, $uniqueid, $channel, $variable, $exten);
+                    insert_callback($A2B, $uniqueid, $channel, $variable, $exten);
 
                 } else {
                     $error_msg = "Error : You don t have enough credit to call you back !!!";
@@ -839,7 +836,8 @@ if ($mode === "standard") {
         // removed if ($cia_res == 0) because $cia_res was never defined as far back as 2007
         // https://github.com/Star2Billing/a2billing/blob/9d042c34e7d85ddf8abd6f1da2cbe2d8c02ab854/A2Billing_AGI/a2billing.php
 
-        $RateEngine = new RateEngine();
+        $RateEngine = $A2B->rateEngine();
+
         // $RateEngine->webui = 0;
         // LOOKUP RATE : FIND A RATE FOR THIS DESTINATION
 
@@ -848,16 +846,16 @@ if ($mode === "standard") {
         $A2B->agiconfig["say_balance_after_auth"] = 0;
         $A2B->extension = $A2B->dnid = $A2B->destination = $caller_areacode . $A2B->CallerID;
 
-        $resfindrate = $RateEngine->rate_engine_findrates($A2B, $A2B->destination, $A2B->tariff);
+        $resfindrate = $RateEngine->rate_engine_findrates($A2B->destination, $A2B->tariff);
 
         // IF FIND RATE
         if ($resfindrate) {
             //$RateEngine->debug_st = 1;
-            $res_all_calcultimeout = $RateEngine->rate_engine_all_calcultimeout($A2B, $A2B->credit);
+            $res_all_calcultimeout = $RateEngine->rate_engine_all_calcultimeout($A2B->credit);
 
             if ($res_all_calcultimeout) {
                 // MAKE THE CALL
-                $channel = get_dialstring($RateEngine->ratecard_obj[0], $A2B, $RateEngine);
+                $channel = get_dialstring($RateEngine->ratecard_obj[0], $A2B);
                 $exten = $groupid;
                 $uniqueid = MDP_NUMERIC(5) . "-" . MDP_STRING(7);
                 $variable = sprintf(
@@ -865,7 +863,7 @@ if ($mode === "standard") {
                     $idconfig, $A2B->destination, $uniqueid, $A2B->tariff, $A2B->username
                 );
 
-                insert_callback($A2B, $agi, $uniqueid, $channel, $variable, $exten);
+                insert_callback($A2B, $uniqueid, $channel, $variable, $exten);
 
             } else {
                 $error_msg = "Error : You don t have enough credit to call you back !!!";
@@ -951,7 +949,6 @@ if ($mode === "standard") {
 
         for ($i = 0; $i < $A2B->agiconfig["number_try"]; $i++) {
 
-            $RateEngine->Reinit();
             $A2B->Reinit();
 
             // DIVIDE THE AMOUNT OF CREDIT BY 2 IN ORDER TO AVOID NEGATIVE BALANCE IF THE USER USE ALL HIS CREDIT
@@ -975,9 +972,9 @@ if ($mode === "standard") {
                 $A2B->debug(A2Billing::DEBUG, "[CALLBACK]:[STOP STREAM FILE $prompt]");
             }
 
-            if ($A2B->callingcard_ivr_authorize($RateEngine, $i) === 1) {
+            if ($A2B->callingcard_ivr_authorize($i) === 1) {
                 // PERFORM THE CALL
-                attempt_call($A2B, $RateEngine, $agi);
+                attempt_call($A2B);
 
                 if ($RateEngine->dialstatus === "ANSWER") {
                     $callback_been_connected = true;
@@ -1087,16 +1084,16 @@ if ($mode === "standard") {
                     $A2B->debug(A2Billing::DEBUG, "[CALLBACK]:[Spool Callback for the PhoneNumber $inst_pn_member]");
                     $A2B->extension = $A2B->dnid = $A2B->destination = $inst_pn_member;
 
-                    $resfindrate = $RateEngine->rate_engine_findrates($A2B, $A2B->destination, $A2B->tariff);
+                    $resfindrate = $RateEngine->rate_engine_findrates($A2B->destination, $A2B->tariff);
 
                     // IF FIND RATE
                     if ($resfindrate != 0) {
                         //$RateEngine->debug_st = 1;
-                        $res_all_calcultimeout = $RateEngine->rate_engine_all_calcultimeout($A2B, $A2B->credit);
+                        $res_all_calcultimeout = $RateEngine->rate_engine_all_calcultimeout($A2B->credit);
 
                         if ($res_all_calcultimeout) {
                             // MAKE THE CALL
-                            $channel = get_dialstring($RateEngine->ratecard_obj[0], $A2B, $RateEngine);
+                            $channel = get_dialstring($RateEngine->ratecard_obj[0], $A2B);
                             $exten = $inst_pn_member;
                             $context = "a2billing-conference-member";
                             $id_server_group = $A2B->config["callback"]["id_server_group"];
@@ -1109,7 +1106,7 @@ if ($mode === "standard") {
                                 $inst_pn_member, $inst_pn_member, $callback_uniqueid, $callback_tariff, $A2B->accountcode, $A2B->accountcode, $room_number
                             );
 
-                            insert_callback($A2B, $agi, $uniqueid, $channel, $variable, $exten, $context, $callerid);
+                            insert_callback($A2B, $uniqueid, $channel, $variable, $exten, $context, $callerid);
 
                         } else {
                             $error_msg = "Error : You don t have enough credit to call you back !!!";
@@ -1164,12 +1161,12 @@ if ($charge_callback) {
         $A2B->agiconfig["use_dnid"] = 1;
         $A2B->dnid = $A2B->destination = $called_party;
 
-        $resfindrate = $RateEngine->rate_engine_findrates($A2B, $called_party, $A2B->tariff);
+        $resfindrate = $RateEngine->rate_engine_findrates($called_party, $A2B->tariff);
         $RateEngine->usedratecard = 0;
 
         // IF FIND RATE
         if ($resfindrate) {
-            $res_all_calcultimeout = $RateEngine->rate_engine_all_calcultimeout($A2B, $A2B->credit);
+            $res_all_calcultimeout = $RateEngine->rate_engine_all_calcultimeout($A2B->credit);
 
             if ($res_all_calcultimeout) {
                 // SET CORRECTLY THE CALLTIME FOR THE 1st LEG
@@ -1179,7 +1176,7 @@ if ($charge_callback) {
 
                 //(ST) replace above code with the code below to store CDR for all callbacks and to only charge for the callback if requested
                 $dobill = $callback_been_connected || $A2B->agiconfig["callback_bill_1stleg_ifcall_notconnected"];
-                $RateEngine->rate_engine_updatesystem($A2B, $agi, $A2B->destination, $dobill, false, true);
+                $RateEngine->rate_engine_updatesystem($A2B->destination, $dobill, false, true);
 
             } else {
                 $A2B->debug(A2Billing::ERROR, "[CALLBACK 1ST LEG]:[ERROR - BILLING FOR THE 1ST LEG - rate_engine_all_calcultimeout: CALLED=$called_party]");
@@ -1216,8 +1213,9 @@ if ($A2B->set_inuse) {
 # End
 $A2B->write_log("[exit]");
 
-function get_dialstring(array $ratecard, A2Billing $A2B, RateEngine $RateEngine): string
+function get_dialstring(array $ratecard, A2Billing $A2B): string
 {
+    $RateEngine = $A2B->rateEngine();
     // if the ratecard doesn't define a trunk, the plan trunk is used instead
     $pre = $ratecard["rt_id_trunk"] !== "-1" ? "rt" : "tp";
     $RateEngine->usedtrunk = $ratecard["{$pre}_id_trunk"];
@@ -1254,7 +1252,7 @@ function get_dialstring(array $ratecard, A2Billing $A2B, RateEngine $RateEngine)
     return $dialstr;
 }
 
-function insert_callback(A2Billing $A2B, Agi $agi, string $uniqueid, string $channel, string $variable, ?string $exten, ?string $context = null, ?string $callerid = null): bool
+function insert_callback(A2Billing $A2B, string $uniqueid, string $channel, string $variable, ?string $exten, ?string $context = null, ?string $callerid = null): bool
 {
     $exten = $exten ?? $A2B->config["callback"]["extension"];
     $context = $context ?? $A2B->config["callback"]["context_callback"];
@@ -1291,17 +1289,20 @@ function insert_callback(A2Billing $A2B, Agi $agi, string $uniqueid, string $cha
     return true;
 }
 
-function attempt_call(A2Billing $A2B, RateEngine $RateEngine, Agi $agi)
+function attempt_call(A2Billing $A2B)
 {
+    $RateEngine = $A2B->rateEngine();
+    $agi = $A2B->agi();
+
     // PERFORM THE CALL
-    $result_callperf = $RateEngine->rate_engine_performcall($agi, $A2B, $A2B->destination);
+    $result_callperf = $RateEngine->rate_engine_performcall($A2B->destination);
 
     if (!$result_callperf) {
         $prompt = "prepaid-dest-unreachable";
         $agi->stream_file($prompt, "#");
     }
     // INSERT CDR & UPDATE SYSTEM
-    $RateEngine->rate_engine_updatesystem($A2B, $agi, $A2B->destination);
+    $RateEngine->rate_engine_updatesystem($A2B->destination);
 
     if ($A2B->agiconfig["say_balance_after_call"]) {
         $A2B->fct_say_balance($A2B->credit);

@@ -1,7 +1,6 @@
 <?php
 
 use A2billing\Customer;
-use A2billing\RateEngine;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -80,7 +79,7 @@ if ($callback) {
 
         if ($A2B -> callingcard_ivr_authenticate_light ($error_msg)) {
 
-            $RateEngine = new RateEngine();
+            $RateEngine = $A2B->rateEngine();
             $RateEngine -> webui = false;
             // LOOKUP RATE : FIND A RATE FOR THIS DESTINATION
 
@@ -89,11 +88,11 @@ if ($callback) {
             $A2B -> agiconfig['say_timetocall'] = 0;
             $A2B -> extension = $A2B -> dnid = $A2B -> destination = $called;
 
-            $resfindrate = $RateEngine->rate_engine_findrates($A2B, $called, (int)$_SESSION["tariff"]);
+            $resfindrate = $RateEngine->rate_engine_findrates($called, (int)$_SESSION["tariff"]);
 
             // IF FIND RATE
             if ($resfindrate!=0) {
-                $res_all_calcultimeout = $RateEngine->rate_engine_all_calcultimeout($A2B, $A2B->credit);
+                $res_all_calcultimeout = $RateEngine->rate_engine_all_calcultimeout($A2B->credit);
                 if ($res_all_calcultimeout) {
 
                     // MAKE THE CALL

@@ -1,7 +1,6 @@
 <?php
 
 use A2billing\Admin;
-use A2billing\RateEngine;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -82,9 +81,9 @@ if ($called  && ($id_cc_card > 0 || $username > 0)) {
         if ($FG_DEBUG == 1) echo "cardnumber = ".$row[0][0] ."<br>";
 
         if ($A2B -> callingcard_ivr_authenticate_light ($error_msg, (int)$balance)) {
+            $RateEngine = $A2B->rateEngine();
             if ($FG_DEBUG == 1) $RateEngine -> debug_st = true;
 
-            $RateEngine = new RateEngine();
             $RateEngine -> webui = false;
 
             // LOOKUP RATE : FIND A RATE FOR THIS DESTINATION
@@ -95,12 +94,12 @@ if ($called  && ($id_cc_card > 0 || $username > 0)) {
 
             if ($A2B->removeinterprefix) $A2B->destination = $A2B -> apply_rules ($A2B->destination);
 
-            $resfindrate = $RateEngine->rate_engine_findrates($A2B, $A2B->destination, (int)$row[0][1]);
+            $resfindrate = $RateEngine->rate_engine_findrates($A2B->destination, (int)$row[0][1]);
             if ($FG_DEBUG == 1) echo "resfindrate=$resfindrate";
 
             // IF FIND RATE
             if ($resfindrate!=0) {
-                $res_all_calcultimeout = $RateEngine->rate_engine_all_calcultimeout($A2B, $A2B->credit);
+                $res_all_calcultimeout = $RateEngine->rate_engine_all_calcultimeout($A2B->credit);
 
                 if ($FG_DEBUG == 1) print_r($RateEngine->ratecard_obj);
             } else {

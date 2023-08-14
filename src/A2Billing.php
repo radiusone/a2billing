@@ -189,12 +189,17 @@ class A2Billing
     /** @var Agi|null the current AGI instance */
     private ?Agi $agi;
 
+    /** @var RateEngine the RateEngine instance used for calculations */
+    private RateEngine $rateEngine;
+
+
     public function __construct(int $idconfig = 1, array $optconfig = [], ?Agi $agi = null)
     {
         if (function_exists('pcntl_signal')) {
             pcntl_signal(SIGHUP, [$this, "Hangupsignal"]);
         }
         $this->agi = $agi;
+        $this->rateEngine = new RateEngine($this);
         // populate the configuration object
         $this->idconfig = $idconfig;
         $this->load_conf($optconfig);
@@ -206,6 +211,7 @@ class A2Billing
     public function Reinit(): void
     {
         $this->destination = '';
+        $this->rateEngine->Reinit();
     }
 
     /* Hangupsignal */
@@ -558,6 +564,16 @@ class A2Billing
         $this->debug(self::DEBUG, $this->agiconfig);
     }
 
+    public function rateEngine(): RateEngine
+    {
+        return $this->rateEngine;
+    }
+
+    public function agi(): ?Agi
+    {
+        return $this->agi;
+    }
+
     /*
     * Function to create a menu to select the language
     */
@@ -749,7 +765,7 @@ class A2Billing
     /**
     * Function callingcard_ivr_authorize : check the dialed/dialing number and play the time to call
     **/
-    public function callingcard_ivr_authorize(RateEngine $RateEngine, int $try_num, bool $call2did = false): int
+    public function callingcard_ivr_authorize(int $try_num, bool $call2did = false): int
     {
         /************** ASK DESTINATION ******************/
         $prompt_enter_dest = $this->agiconfig['file_conf_enter_destination'];
@@ -976,7 +992,7 @@ class A2Billing
         $this->save_redial_number($this->destination);
 
         // LOOKUP RATE : FIND A RATE FOR THIS DESTINATION
-        $resfindrate = $RateEngine->rate_engine_findrates($this, $this->destination, $this->tariff);
+        $resfindrate = $this->rateEngine->rate_engine_findrates($this->destination, $this->tariff);
         if ($resfindrate == 0) {
             $this->debug(self::ERROR, "ERROR ::> The phone number (" . $this->destination . ") cannot be dialed by the Rate engine, check that the Ratecard and Call Plan are well configured!");
         } else {
@@ -990,7 +1006,7 @@ class A2Billing
             return -1;
         }
         // CHECKING THE TIMEOUT
-        $res_all_calcultimeout = $RateEngine->rate_engine_all_calcultimeout($this, $this->credit);
+        $res_all_calcultimeout = $this->rateEngine->rate_engine_all_calcultimeout($this->credit);
 
         $this->debug(self::DEBUG, "RES_ALL_CALCULTIMEOUT ::> $res_all_calcultimeout");
         if (!$res_all_calcultimeout) {
@@ -999,15 +1015,15 @@ class A2Billing
             return -1;
         }
 
-        $this->timeout = $RateEngine->ratecard_obj[0]['timeout'];
+        $this->timeout = $this->rateEngine->ratecard_obj[0]['timeout'];
         $timeout = $this->timeout;
         if ($this->agiconfig['cheat_on_announcement_time'] == 1) {
-            $timeout = $RateEngine->ratecard_obj[0]['timeout_without_rules'];
+            $timeout = $this->rateEngine->ratecard_obj[0]['timeout_without_rules'];
         }
 
-        $announce_time_correction = $RateEngine->ratecard_obj[0][61];
+        $announce_time_correction = $this->rateEngine->ratecard_obj[0][61];
         $timeout = $timeout * $announce_time_correction;
-        $this->fct_say_time_2_call($timeout, $RateEngine->ratecard_obj[0][12]);
+        $this->fct_say_time_2_call($timeout, $this->rateEngine->ratecard_obj[0][12]);
 
         return 1;
     }
@@ -1174,10 +1190,10 @@ class A2Billing
     /**
     * Function call_did
     *
-    *  @param array|iterable $listdestination
+    * @param array|iterable $listdestination
     *         cc_did.id, cc_did_destination.id, billingtype, cc_did.id_trunk, destination, cc_did.id_trunk, voip_call
     **/
-    public function call_did(RateEngine $RateEngine, array $listdestination)
+    public function call_did(array $listdestination)
     {
         $this->agiconfig['say_balance_after_auth'] = 0;
         $this->agiconfig['say_timetocall'] = 0;
@@ -1321,41 +1337,41 @@ class A2Billing
 
                 $this->extension = $this->dnid = $this->destination = $dest["destination"];
 
-                if ($this->callingcard_ivr_authorize($RateEngine, 0) === 1) {
+                if ($this->callingcard_ivr_authorize(0) === 1) {
 
                     // PERFORM THE CALL
-                    $result_callperf = $RateEngine->rate_engine_performcall($this->agi, $this, $this->destination);
+                    $result_callperf = $this->rateEngine->rate_engine_performcall($this->destination);
                     if (!$result_callperf) {
                         $prompt = "prepaid-callfollowme";
                         $this->agi->stream_file($prompt, '#');
                         continue;
                     }
 
-                    $dialstatus = $RateEngine->dialstatus;
-                    if ($RateEngine->dialstatus === "NOANSWER" || $RateEngine->dialstatus === "BUSY" || $RateEngine->dialstatus === "CHANUNAVAIL" || $RateEngine->dialstatus === "CONGESTION") {
+                    $dialstatus = $this->rateEngine->dialstatus;
+                    if ($this->rateEngine->dialstatus === "NOANSWER" || $this->rateEngine->dialstatus === "BUSY" || $this->rateEngine->dialstatus === "CHANUNAVAIL" || $this->rateEngine->dialstatus === "CONGESTION") {
                         continue;
                     }
 
-                    if ($RateEngine->dialstatus === "CANCEL") {
+                    if ($this->rateEngine->dialstatus === "CANCEL") {
                         break;
                     }
 
                     // INSERT CDR & UPDATE SYSTEM
-                    $RateEngine->rate_engine_updatesystem($this, $this->agi, $this->destination, $doibill, true);
+                    $this->rateEngine->rate_engine_updatesystem($this->destination, $doibill, true);
                     // CC_DID & CC_DID_DESTINATION - cc_did.id, cc_did_destination.id
                     $query = "UPDATE cc_did SET secondusedreal = secondusedreal + ? WHERE id = ?";
-                    $params = [$RateEngine->answeredtime, $dest["id_cc_did"]];
+                    $params = [$this->rateEngine->answeredtime, $dest["id_cc_did"]];
                     $this->DBHandle->Execute($query, $params);
                     $this->debug(self::DEBUG, "Query: $query", $params);
                     $this->debug(self::DEBUG, "UPDATE DID");
 
                     $query = "UPDATE cc_did_destination SET secondusedreal = secondusedreal + ? WHERE id = ?";
-                    $params = [$RateEngine->answeredtime, $dest["id"]];
+                    $params = [$this->rateEngine->answeredtime, $dest["id"]];
                     $this->DBHandle->Execute($query, $params);
                     $this->debug(self::DEBUG, "Query: $query", $params);
                     $this->debug(self::DEBUG, "UPDATE DID_DESTINATION");
 
-                    $this->bill_did_aleg($dest, $RateEngine->answeredtime);
+                    $this->bill_did_aleg($dest, $this->rateEngine->answeredtime);
 
                     // THEN STATUS IS ANSWER
                     break;
@@ -1373,7 +1389,7 @@ class A2Billing
         }
     }
 
-    public function call_2did(RateEngine $RateEngine, array $listdestination)
+    public function call_2did(array $listdestination)
     {
         $card_number = $this->username; // username of the caller
         $nbused = $this->nbused;
@@ -1580,7 +1596,7 @@ class A2Billing
 
                 $this->extension = $this->dnid = $this->destination = $dest["destination"];
 
-                if ($this->callingcard_ivr_authorize($RateEngine, 0) === 1) {
+                if ($this->callingcard_ivr_authorize(0) === 1) {
                     // check the min to call
                     if (!$call_did_free) {
                         $this->timeout = min($this->timeout, $time2call);
@@ -1588,14 +1604,14 @@ class A2Billing
                     $this->fct_say_time_2_call($this->timeout, $selling_rate);
 
                     // PERFORM THE CALL
-                    $result_callperf = $RateEngine->rate_engine_performcall($this->agi, $this, $this->destination);
+                    $result_callperf = $this->rateEngine->rate_engine_performcall($this->destination);
                     if (!$result_callperf) {
                         $prompt = "prepaid-callfollowme";
                         $this->agi->stream_file($prompt, '#');
                         continue;
                     }
 
-                    $dialstatus = $RateEngine->dialstatus;
+                    $dialstatus = $this->rateEngine->dialstatus;
                     if ($dialstatus == "NOANSWER" || $dialstatus == "BUSY" || $dialstatus == "CHANUNAVAIL" || $dialstatus == "CONGESTION") {
                         continue;
                     } elseif ($dialstatus == "CANCEL") {
@@ -1603,16 +1619,16 @@ class A2Billing
                     }
 
                     // INSERT CDR & UPDATE SYSTEM
-                    $RateEngine->rate_engine_updatesystem($this, $this->agi, $this->destination, $doibill, true);
+                    $this->rateEngine->rate_engine_updatesystem($this->destination, $doibill, true);
 
                     // CC_DID & CC_DID_DESTINATION - cc_did.id, cc_did_destination.id
                     $query = "UPDATE cc_did SET secondusedreal = secondusedreal + ? WHERE id = ?";
-                    $params = [$RateEngine->answeredtime, $dest["id_cc_did"]];
+                    $params = [$this->rateEngine->answeredtime, $dest["id_cc_did"]];
                     $this->DBHandle->Execute($query, $params);
                     $this->debug(self::DEBUG, "Query: $query", $params);
 
                     $query = "UPDATE cc_did_destination SET secondusedreal = secondusedreal + ? WHERE id = ?";
-                    $params = [$RateEngine->answeredtime, $dest["id"]];
+                    $params = [$this->rateEngine->answeredtime, $dest["id"]];
                     $this->DBHandle->Execute($query, $params);
                     $this->debug(self::DEBUG, "Query: $query", $params);
 
