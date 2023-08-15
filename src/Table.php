@@ -53,7 +53,6 @@ class Table
 {
     public ?string $fields = null;
     public ?string $table = null;
-    public ?string $table_count = null;
     public string $errstr = '';
     public bool $debug_st = false;
     public int $debug_st_stop = 0;
@@ -74,16 +73,20 @@ class Table
     public ?Query_trace $query_handler = null;
     public string $db_type = 'mysql';
 
-    /* CONSTRUCTOR */
-    public function __construct(string $table = null, string $liste_fields = "*", array $fk_Tables = [], array $fk_Fields = [], int $id_Value = null, bool $fk_del_upd = true, string $table_count = null)
+    /**
+     * @param string|null $table the table we're working with
+     * @param string $liste_fields when selecting, what fields will be selected
+     * @param array $fk_Tables when deleting, tables that refer back to the current table
+     * @param array $fk_Fields when deleting, fields in the foreign tables that need updating/deleting
+     * @param int|null $id_Value when deleting, the value to check for in foreign tables when updating/deleting
+     * @param bool $fk_del_upd when deleting, whether to delete or update (with -1) foreign tables
+     */
+    public function __construct(string $table = null, string $liste_fields = "*", array $fk_Tables = [], array $fk_Fields = [], int $id_Value = null, bool $fk_del_upd = true)
     {
-        global $A2B;
-
         $this->writelog = defined('WRITELOG_QUERY') && WRITELOG_QUERY;
         $this->table = $table;
-        $this->table_count = $table_count;
         $this->fields = $liste_fields;
-        if ($A2B && $A2B->config["database"]['dbtype'] === 'postgres') {
+        if (DB_TYPE === 'postgres') {
             $this->db_type = "postgres";
         }
 
@@ -107,7 +110,7 @@ class Table
     /*
      * ExecuteQuery
      */
-    public function ExecuteQuery(ADOConnection $DBHandle, $QUERY, $cache = 0)
+    public function ExecuteQuery(ADOConnection $DBHandle, string $QUERY, $cache = 0)
     {
         global $A2B;
 
@@ -170,16 +173,11 @@ class Table
 
         if ($select) {
             $num = $res->RecordCount();
-            if ($num == 0) {
+            if ($num === 0) {
                 return false;
             }
 
-            $row = [];
-            for ($i = 0; $i < $num; $i++) {
-                $row[] =$res->fetchRow();
-            }
-
-            return($row);
+            return $res->GetAll();
         }
 
         return true;
@@ -272,11 +270,7 @@ class Table
 
     public function Table_count(ADOConnection $DBHandle, string $clause = "", string $compare = "", int $cache = 0)
     {
-        if (!is_null($this->table_count)) {
-            $sql = "SELECT count(*) FROM $this->table_count";
-        } else {
-            $sql = "SELECT count(*) FROM $this->table";
-        }
+        $sql = "SELECT count(*) FROM $this->table";
 
         $sql_clause = '';
         if (!empty($clause)) {
