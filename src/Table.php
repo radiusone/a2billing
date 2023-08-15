@@ -75,25 +75,25 @@ class Table
 
     /**
      * @param string|null $table the table we're working with
-     * @param string $liste_fields when selecting, what fields will be selected
+     * @param string $list_fields when selecting, what fields will be selected
      * @param array $fk_Tables when deleting, tables that refer back to the current table
      * @param array $fk_Fields when deleting, fields in the foreign tables that need updating/deleting
      * @param int|null $id_Value when deleting, the value to check for in foreign tables when updating/deleting
-     * @param bool $fk_del_upd when deleting, whether to delete or update (with -1) foreign tables
+     * @param bool $fk_delete when deleting, whether to delete or update (with -1) foreign tables
      */
-    public function __construct(string $table = null, string $liste_fields = "*", array $fk_Tables = [], array $fk_Fields = [], int $id_Value = null, bool $fk_del_upd = true)
+    public function __construct(string $table = null, string $list_fields = "*", array $fk_Tables = [], array $fk_Fields = [], int $id_Value = null, bool $fk_delete = true)
     {
         $this->writelog = defined('WRITELOG_QUERY') && WRITELOG_QUERY;
         $this->table = $table;
-        $this->fields = $liste_fields;
+        $this->fields = $list_fields;
         if (DB_TYPE === 'postgres') {
             $this->db_type = "postgres";
         }
 
-        if ((count($fk_Tables) == count($fk_Fields)) && (count($fk_Fields) > 0)) {
+        if ((count($fk_Tables) === count($fk_Fields)) && (count($fk_Fields) > 0)) {
             $this->FK_TABLES         = $fk_Tables;
             $this->FK_EDITION_CLAUSE = $fk_Fields;
-            $this->FK_DELETE         = $fk_del_upd;
+            $this->FK_DELETE         = $fk_delete;
             $this->FK_ID_VALUE       = $id_Value;
         }
 
@@ -110,7 +110,7 @@ class Table
     /*
      * ExecuteQuery
      */
-    public function ExecuteQuery(ADOConnection $DBHandle, string $QUERY, $cache = 0)
+    public function ExecuteQuery(ADOConnection $DBHandle, string $QUERY, int $cache = 0)
     {
         global $A2B;
 
@@ -164,7 +164,7 @@ class Table
     // If $select is not supplied then function check numrows
     // so expect a SELECT query.
 
-    public function SQLExec(ADOConnection $DBHandle, string $QUERY, $select = 1, $cache = 0)
+    public function SQLExec(ADOConnection $DBHandle, string $QUERY, $select = 1, int $cache = 0)
     {
         $res = $this->ExecuteQuery($DBHandle, $QUERY, $cache);
         if (!$res) {
@@ -183,13 +183,13 @@ class Table
         return true;
     }
 
-    public function get_list(ADOConnection $DBHandle, string $clause = "", array $orderby = [], $sens = "ASC", $limite = 0, $current_record = 0, array $groupby = [], $cache = 0)
+    public function get_list(ADOConnection $DBHandle, string $where = "", array $orderby = [], string $sens = "ASC", int $limite = 0, int $current_record = 0, array $groupby = [], int $cache = 0)
     {
         $sql = "SELECT $this->fields FROM $this->table";
 
         $sql_clause = "";
-        if (!empty($clause)) {
-            $sql_clause = " WHERE $clause";
+        if (!empty($where)) {
+            $sql_clause = " WHERE $where";
         }
 
         $sql_orderby = "";
@@ -289,7 +289,7 @@ class Table
         return $row[0];
     }
 
-    public function Add_table(ADOConnection $DBHandle, $value, string $func_fields = "", string $func_table = "", string $id_name = "", bool $subquery = false)
+    public function Add_table(ADOConnection $DBHandle, string $value, string $func_fields = "", string $func_table = "", string $id_name = "", bool $subquery = false)
     {
         if ($func_fields !== "") {
             $this->fields = $func_fields;
