@@ -279,5 +279,3 @@ if (!isset($currencies_list[strtoupper($curr)]["value"]) || !is_numeric($currenc
         </tbody>
 
     </table></div>
-
-<?php $smarty->display('profiler.tpl');

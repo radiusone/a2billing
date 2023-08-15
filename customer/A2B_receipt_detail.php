@@ -196,5 +196,3 @@ function amount_convert($amount)
   </tbody>
 
   </table></div>
-
-<?php $smarty->display('profiler.tpl');

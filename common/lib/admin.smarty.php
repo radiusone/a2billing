@@ -2,6 +2,8 @@
 
 use A2billing\Admin;
 use A2billing\NotificationsDAO;
+use A2billing\Profiler;
+use A2billing\Query_trace;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -87,4 +89,18 @@ if(isset($_SESSION["admin_id"])) {
 $smarty->assign("HTTP_HOST", $_SERVER['HTTP_HOST']);
 $smarty->assign("ASTERISK_GUI_LINK", ASTERISK_GUI_LINK);
 
+/** @var Profiler $profiler from common.defines.php */
+/** @var Query_trace $G_instance_Query_trace from common.defines.php */
+try {
+    $smarty->registerPlugin(
+        'function',
+        'show_profiler',
+        function () use ($profiler, $G_instance_Query_trace) {
+            if ($profiler->installed && $profiler->modedebug) {
+                $profiler->display($G_instance_Query_trace);
+            }
+        }
+    );
+} catch (SmartyException $e) {
+}
 $smarty->disableSecurity();

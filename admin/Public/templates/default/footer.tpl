@@ -11,7 +11,7 @@
 	</footer>
 </div> <!-- .container-fluid -->
 
-{include file="profiler.tpl"}
+{show_profiler}
 
 </body>
 </html>

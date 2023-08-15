@@ -2,6 +2,8 @@
 
 use A2billing\A2Billing;
 use A2billing\Agent;
+use A2billing\Profiler;
+use A2billing\Query_trace;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -82,6 +84,20 @@ $smarty->assign("section", $section);
 
 $smarty->assign("adminname", $_SESSION["pr_login"]);
 
-// OPTION FOR THE MENU
 /** @var A2Billing $A2B the A2Billing instance from common.defines.php */
 $smarty->assign("A2Bconfig", $A2B->config);
+
+/** @var Profiler $profiler from common.defines.php */
+/** @var Query_trace $G_instance_Query_trace from common.defines.php */
+try {
+    $smarty->registerPlugin(
+        'function',
+        'show_profiler',
+        function () use ($profiler, $G_instance_Query_trace) {
+            if ($profiler->installed && $profiler->modedebug) {
+                $profiler->display($G_instance_Query_trace);
+            }
+        }
+    );
+} catch (SmartyException $e) {
+}
