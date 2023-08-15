@@ -89,14 +89,14 @@ if(isset($_SESSION["admin_id"])) {
 $smarty->assign("HTTP_HOST", $_SERVER['HTTP_HOST']);
 $smarty->assign("ASTERISK_GUI_LINK", ASTERISK_GUI_LINK);
 
-/** @var Profiler $profiler from common.defines.php */
+/** @var ?Profiler $profiler from common.defines.php */
 /** @var Query_trace $G_instance_Query_trace from common.defines.php */
 try {
     $smarty->registerPlugin(
         'function',
         'show_profiler',
         function () use ($profiler, $G_instance_Query_trace) {
-            if ($profiler->installed && $profiler->modedebug) {
+            if (!is_null($profiler)) {
                 $profiler->display($G_instance_Query_trace);
             }
         }

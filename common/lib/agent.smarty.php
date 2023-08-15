@@ -87,14 +87,14 @@ $smarty->assign("adminname", $_SESSION["pr_login"]);
 /** @var A2Billing $A2B the A2Billing instance from common.defines.php */
 $smarty->assign("A2Bconfig", $A2B->config);
 
-/** @var Profiler $profiler from common.defines.php */
+/** @var ?Profiler $profiler from common.defines.php */
 /** @var Query_trace $G_instance_Query_trace from common.defines.php */
 try {
     $smarty->registerPlugin(
         'function',
         'show_profiler',
         function () use ($profiler, $G_instance_Query_trace) {
-            if ($profiler->installed && $profiler->modedebug) {
+            if (!is_null($profiler)) {
                 $profiler->display($G_instance_Query_trace);
             }
         }

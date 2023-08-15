@@ -47,8 +47,9 @@ const WRITELOG_QUERY = false;
 
 sanitize_post_get();
 
-$profiler = new Profiler();
-$G_instance_Query_trace = Query_trace::getInstance();
+const DEBUG = false;
+$profiler = DEBUG ? new Profiler() : null;
+$G_instance_Query_trace = DEBUG ? Query_trace::getInstance() : null;
 
 // LOAD THE CONFIGURATION
 $A2B = new A2Billing();
