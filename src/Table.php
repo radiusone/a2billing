@@ -51,7 +51,7 @@ use ADOConnection;
 
 class Table
 {
-    public string $fields = '*';
+    public ?string $fields = null;
     public ?string $table = null;
     public ?string $table_count = null;
     public string $errstr = '';
@@ -75,7 +75,7 @@ class Table
     public string $db_type = 'mysql';
 
     /* CONSTRUCTOR */
-    public function __construct(string $table = null, string $liste_fields = null, array $fk_Tables = [], array $fk_Fields = [], int $id_Value = null, bool $fk_del_upd = true, string $table_count = null)
+    public function __construct(string $table = null, string $liste_fields = "*", array $fk_Tables = [], array $fk_Fields = [], int $id_Value = null, bool $fk_del_upd = true, string $table_count = null)
     {
         global $A2B;
 
@@ -185,7 +185,7 @@ class Table
         return true;
     }
 
-    public function get_list(ADOConnection $DBHandle, ?string $clause = "", array $orderby = [], $sens = "ASC", $limite = 0, $current_record = 0, array $groupby = [], $cache = 0)
+    public function get_list(ADOConnection $DBHandle, string $clause = "", array $orderby = [], $sens = "ASC", $limite = 0, $current_record = 0, array $groupby = [], $cache = 0)
     {
         $sql = "SELECT $this->fields FROM $this->table";
 
@@ -270,12 +270,11 @@ class Table
         return($row);
     }
 
-    public function Table_count(ADOConnection $DBHandle, $clause = "", $compare = null, $cache = 0)
+    public function Table_count(ADOConnection $DBHandle, string $clause = "", string $compare = "", int $cache = 0)
     {
         if (!is_null($this->table_count)) {
             $sql = "SELECT count(*) FROM $this->table_count";
-        }
-        else {
+        } else {
             $sql = "SELECT count(*) FROM $this->table";
         }
 
@@ -293,16 +292,16 @@ class Table
 
         $row = $res->fetchRow();
 
-        return($row['0']);
+        return $row[0];
     }
 
-    public function Add_table(ADOConnection $DBHandle, $value, $func_fields = null, $func_table = null, $id_name = null, $subquery = false)
+    public function Add_table(ADOConnection $DBHandle, $value, string $func_fields = "", string $func_table = "", string $id_name = "", bool $subquery = false)
     {
-        if ($func_fields != "") {
+        if ($func_fields !== "") {
             $this->fields = $func_fields;
         }
 
-        if ($func_table !="") {
+        if ($func_table !== "") {
             $this->table = $func_table;
         }
         if ($subquery) {
@@ -317,43 +316,36 @@ class Table
         }
 
         // Fix that , make PEAR complaint
-        if ($id_name != "") {
-
-            if (DB_TYPE == "postgres") {
-
-                $oid = $DBHandle->Insert_ID();
-                if ($oid <= 0 || $oid == '') {
-                    return(true);
+        if ($id_name !== "") {
+            $insertid = $DBHandle->Insert_ID();
+            if ($this->db_type === "postgres") {
+                if (!$insertid) {
+                    return true;
                 }
-                $sql = 'SELECT ' . $id_name . ' FROM ' . $this->table . ' WHERE oid = \'' . $oid . '\'';
+                $sql = "SELECT $id_name FROM $this->table WHERE oid = '$insertid'";
                 $res = $DBHandle->Execute($sql);
                 if (!$res) {
-                    return(false);
+                    return false;
                 }
-                $row[] = $res->fetchRow();
-                if ($this->debug_st) {
-                    echo "\n <br> psql_insert_id = " . $row[0][0];
-                }
+                $row = $res->fetchRow();
 
-                return $row[0][0];
+                $insertid = $row[0];
 
-            } else {
-                $insertid = $DBHandle->Insert_ID();
-                if ($this->debug_st) {
-                    echo "\n <br> mysql_insert_id = $insertid";
-                }
-
-                return $insertid;
             }
+            if ($this->debug_st) {
+                echo "\n <br> insert_id = $insertid";
+            }
+
+            return $insertid;
         }
 
-        return(true);
+        return true;
     }
 
-    public function Update_table(ADOConnection $DBHandle, $param_update, $clause, $func_table = null)
+    public function Update_table(ADOConnection $DBHandle, string $param_update, string $clause, string $func_table = "")
     {
 
-        if ($func_table != "") {
+        if ($func_table !== "") {
             $this->table = $func_table;
         }
 
@@ -363,10 +355,10 @@ class Table
         return($res);
     }
 
-    public function Delete_table(ADOConnection $DBHandle, $clause, $func_table = null)
+    public function Delete_table(ADOConnection $DBHandle, string $clause, string $func_table = "")
     {
 
-        if ($func_table != "") {
+        if ($func_table !== "") {
             $this->table = $func_table;
         }
 
@@ -391,7 +383,7 @@ class Table
         return($res);
     }
 
-    public function Delete_Selected(ADOConnection $DBHandle, $clause = null)
+    public function Delete_Selected(ADOConnection $DBHandle, string $clause = "")
     {
         $QUERY = 'DELETE FROM ' . $this->quote_identifier($this->table);
         if ($clause) {
@@ -401,7 +393,7 @@ class Table
         return $this->ExecuteQuery($DBHandle, $QUERY);
     }
 
-    public function logQuery($sql, $start)
+    public function logQuery(string $sql, float $start)
     {
         if (count($this->query_handler->queries) < 100) {
             $this->query_handler->queries[] = [
