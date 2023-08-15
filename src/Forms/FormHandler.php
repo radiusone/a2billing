@@ -344,8 +344,6 @@ class FormHandler
     // Configuration Key value Field Name
     public string $FG_CONF_VALUE_FIELDNAME = "";
 
-    public Logger $logger;
-
     private bool $FG_ENABLE_LOG = ENABLE_LOG;
 
     /** @var string The CSRF token for the current request */
@@ -428,10 +426,6 @@ class FormHandler
 
         /* only modified once in admin/FG_var_signup.inc */
         $this->FG_ADD_PAGE_SAVE_BUTTON_TEXT = _('Confirm Data');
-
-        if ($this->FG_ENABLE_LOG) {
-            $this->logger = new Logger();
-        }
     }
 
 
@@ -1623,7 +1617,7 @@ class FormHandler
             $this->QUERY_RESULT = $instance_table->Add_table($this->DBHandle, $param_add_value, null, null, $this->FG_QUERY_PRIMARY_KEY);
         }
         if ($this->FG_ENABLE_LOG) {
-            $this->logger->insertLog(
+            Logger::insertLog(
                 $_SESSION["admin_id"],
                 2,
                 "NEW " . strtoupper($this->FG_INSTANCE_NAME) . " CREATED",
@@ -1741,7 +1735,7 @@ class FormHandler
         }
 
         if ($this->FG_ENABLE_LOG) {
-            $this->logger->insertLog(
+            Logger::insertLog(
                 $_SESSION["admin_id"],
                 3,
                 "A " . strtoupper($this->FG_INSTANCE_NAME) . " UPDATED",
@@ -1810,7 +1804,7 @@ class FormHandler
 
         $this->QUERY_RESULT = $instance_table->Delete_table($this->DBHandle, $this->FG_EDIT_QUERY_CONDITION);
         if ($this->FG_ENABLE_LOG) {
-            $this->logger->insertLog(
+            Logger::insertLog(
                 $_SESSION["admin_id"],
                 3,
                 "A " . strtoupper($this->FG_INSTANCE_NAME) . " DELETED",

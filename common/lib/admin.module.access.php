@@ -41,7 +41,7 @@ error_reporting(E_ALL & ~E_NOTICE);
 header("Expires: Sat, Jan 01 2000 01:01:01 GMT");
 
 if (($_GET["logout"] ?? "") === "true") {
-    (new Logger())->insertLog(
+    Logger::insertLog(
         $_SESSION["admin_id"],
         1,
         "USER LOGGED OUT",
@@ -87,7 +87,7 @@ if (!isset($_SESSION['pr_login']) || !isset($_SESSION['pr_password']) || !isset(
         $_SESSION["is_admin"] = 1;
         $_SESSION["user_type"] = "ADMIN";
         $_SESSION["admin_id"] = $admin_id;
-        (new Logger())->insertLog(
+        Logger::insertLog(
             $admin_id,
             1,
             "User Logged In",

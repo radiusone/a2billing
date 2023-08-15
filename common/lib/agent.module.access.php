@@ -41,7 +41,7 @@ error_reporting(E_ALL & ~E_NOTICE);
 header("Expires: Sat, Jan 01 2000 01:01:01 GMT");
 
 if (($_GET["logout"] ?? "") === "true") {
-    (new Logger())->insertLog(
+    Logger::insertLog(
         $_SESSION["agent_id"],
         1, "AGENT LOGGED OUT",
         "User Logged out from website",
@@ -85,7 +85,7 @@ if (!isset($_SESSION['pr_login']) || !isset($_SESSION['pr_password']) || !isset(
         $_SESSION["user_type"] = "AGENT";
         $_SESSION["currency"] = $return["currency"];
         $_SESSION["vat"] = $return["vat"];
-        (new Logger())->insertLog(
+        Logger::insertLog(
             $agent_id,
             1,
             "Agent Logged In",

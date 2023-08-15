@@ -37,23 +37,19 @@ namespace A2billing;
 
 class Logger
 {
-    public bool $do_debug = false;
+    public static bool $do_debug = false;
 
-    public function insertLog($userID, $logLevel, $actionPerformed, $description, $tableName, $ipAddress, $pageName, $fields = '', $values = [], $agent = false)
+    public static function insertLog($userID, $logLevel, $actionPerformed, $description, $tableName, $ipAddress, $pageName, $fields = '', $values = [], $agent = false)
     {
         $DB_Handle = DbConnect();
-        $pageName = basename($pageName);
-        $interName = explode('?', $pageName);
-        $pageName = array_shift($interName);
-        $description = str_replace("'", "", $description);
+        $pageName = preg_replace("/\?.*/", "", basename($pageName));
+        $data = $fields;
         if (is_array($fields)) {
             $pairs = [];
             foreach ($fields as $i => $field) {
                 $pairs[] = $field . " = " . $values[$i] ?? "null";
             }
             $data = implode("|", $pairs);
-        } else {
-            $data = $fields;
         }
 
         $columns = ["iduser", "loglevel", "action", "description", "tablename", "pagename", "ipaddress", "data"];
@@ -64,7 +60,7 @@ class Logger
         }
         $query = "INSERT INTO cc_system_log (" . implode(",", $columns) . ") VALUES (";
         $query .= implode(",", array_fill(0, count($columns), "?")) . ")";
-        if ($this->do_debug) {
+        if (self::$do_debug) {
             echo $query;
         }
 

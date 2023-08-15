@@ -55,14 +55,13 @@ $dumpfile = new iam_csvdump;
 if (strlen($_SESSION[$var_export]) < 10) {
     echo gettext("ERROR CSV EXPORT");
 } else {
-    $log = new Logger();
     if (strcmp($var_export_type, "type_csv") == 0) {
         $myfileName = "Dump_" . date("Y-m-d");
-        $log->insertLog($_SESSION["admin_id"], 2, "FILE EXPORTED", "A File in CSV Format is exported by User, File Name= " . $myfileName . ".csv", '', $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI'], '');
+        Logger::insertLog($_SESSION["admin_id"], 2, "FILE EXPORTED", "A File in CSV Format is exported by User, File Name= " . $myfileName . ".csv", '', $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI'], '');
         $dumpfile->dump($_SESSION[$var_export], $myfileName, "csv", DBNAME, USER, PASS, HOST, DB_TYPE);
     } elseif (strcmp($var_export_type, "type_xml") == 0) {
         $myfileName = "Dump_" . date("Y-m-d");
-        $log->insertLog($_SESSION["admin_id"], 2, "FILE EXPORTED", "A File in XML Format is exported by User, File Name= " . $myfileName . ".xml", '', $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI'], '');
+        Logger::insertLog($_SESSION["admin_id"], 2, "FILE EXPORTED", "A File in XML Format is exported by User, File Name= " . $myfileName . ".xml", '', $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI'], '');
         $dumpfile->dump($_SESSION[$var_export], $myfileName, "xml", DBNAME, USER, PASS, HOST, DB_TYPE);
     }
     $log = null;
