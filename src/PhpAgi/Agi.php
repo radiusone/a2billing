@@ -4,9 +4,6 @@ namespace A2billing\PhpAgi;
 
 use PhpAgi\AGI as BaseAGI;
 
-/**
- * @method array|string get_variable($variable, $getvalue = false)
- */
 class Agi extends BaseAGI
 {
     private bool $play_audio = true;

@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\A2Billing;
 use A2billing\Agent;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -37,7 +38,6 @@ use A2billing\Agent;
 
 error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
 
-const SMARTY_DIR = __DIR__ . '/../../vendor/smarty/smarty/libs/';
 const TEMPLATE_DIR = __DIR__ . '/../../agent/Public/templates/';
 const TEMPLATE_C_DIR = __DIR__ . '/../../agent/templates_c/';
 require_once __DIR__ . "/../../vendor/autoload.php";
@@ -55,6 +55,7 @@ $smarty->assign("CCMAINTITLE", CCMAINTITLE);
 
 $smarty->assign("SKIN_NAME", $skin_name);
 // if it is a pop window
+/** @var int $popup_select from common.defines.php */
 if (!is_numeric($popup_select)) {
     $popup_select=0;
 }
@@ -82,4 +83,5 @@ $smarty->assign("section", $section);
 $smarty->assign("adminname", $_SESSION["pr_login"]);
 
 // OPTION FOR THE MENU
+/** @var A2Billing $A2B the A2Billing instance from common.defines.php */
 $smarty->assign("A2Bconfig", $A2B->config);

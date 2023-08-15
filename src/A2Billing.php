@@ -6,6 +6,7 @@ namespace A2billing;
 
 use A2billing\PhpAgi\Agi;
 use ADOConnection;
+use const DEBUG_BACKTRACE_IGNORE_ARGS;
 
 /**
  * This file is part of A2Billing (http://www.a2billing.net/)
@@ -226,10 +227,10 @@ class A2Billing
     */
     public function debug(int $level, ...$data): void
     {
-        $st = debug_backtrace(\DEBUG_BACKTRACE_IGNORE_ARGS, 2);
+        $st = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
+        $file = $st[0]["file"];
+        $line = $st[0]["line"];
         $st = $st[1] ?? $st[0];
-        $file = $st["file"];
-        $line = $st["line"];
         $func = basename(str_replace("\\", "/", $st["class"] ?? "")) . ($st["type"] ?? "") . $st["function"] . "()";
         $file = basename($file);
         $u = $this->uniqueid ?? "n/a";

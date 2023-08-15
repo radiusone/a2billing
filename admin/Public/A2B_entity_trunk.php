@@ -86,8 +86,6 @@ if ($form_action == 'list') {
     echo $CC_help_trunk_edit;
 }
 
-echo $CALL_LABS;
-
 //  #### SEARCH SECTION
 if ($form_action == "list") {
         $HD_Form->create_search_form();

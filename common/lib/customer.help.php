@@ -101,16 +101,3 @@ if (!isset ($disable_load_conf) || !($disable_load_conf)) {
     }
     $PAYMENT_METHOD = '<table style="width:70%;margin:0 auto;" align="center" ><tr><TD valign="top" align="center" class="tableBodyRight">' . $show_logo . '</td></tr></table>';
 }
-
-$CALL_LABS = '
-<table width="70%" align="center">
-    <tr>
-        <TD width="%75" valign="top" align="center" class="tableBodyRight" background="' . Images_Path . '/background_cells.gif" >
-                Global VoIP termination (A-Z)  to over 400 worldwide destinations!<br>
-                Visit Call-Labs at <a href="http://www.call-labs.com/" target="_blank">http://www.call-labs.com/</a><br/>
-        </TD>
-        <TD width="%25" valign="middle" align="center" class="tableBodyRight" background="' . Images_Path . '/background_cells.gif" >
-                <a href="http://www.call-labs.com/" target="_blank"><img src="' . Images_Path . '/call-labs.com.png" alt="call-labs"/></a>
-        </TD>
-    </tr>
-</table>';

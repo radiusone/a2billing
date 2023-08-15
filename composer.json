@@ -17,7 +17,7 @@
     "pear/soap": "^0.14",
     "phpmailer/phpmailer": "^6.0",
     "phpsysinfo/phpsysinfo": "^3.0",
-    "smarty/smarty": "^3.0",
+    "smarty/smarty": "^4.0",
     "softcommerce/jquery-flot": "^1.0",
     "symfony/polyfill-php80": "^1.0",
     "symfony/polyfill-php81": "^1.0",

@@ -42,7 +42,6 @@ use A2billing\NotificationsDAO;
  */
 error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
 
-const SMARTY_DIR = __DIR__ . '/../../vendor/smarty/smarty/libs/';
 const TEMPLATE_DIR = __DIR__ . '/../../admin/Public/templates/';
 const TEMPLATE_C_DIR = __DIR__ . '/../../admin/templates_c/';
 require_once __DIR__ . "/../../vendor/autoload.php";
@@ -82,7 +81,7 @@ $smarty->assign("ACXSETTING", has_rights(Admin::ACX_ACXSETTING));
 if(isset($_SESSION["admin_id"])) {
     $smarty->assign("NEW_NOTIFICATION", NotificationsDAO::IfNewNotification($_SESSION["admin_id"]));
 } else {
-    $smarty->assign("NEW_NOTIFICATION", null);
+    $smarty->assign("NEW_NOTIFICATION");
 }
 
 $smarty->assign("HTTP_HOST", $_SERVER['HTTP_HOST']);

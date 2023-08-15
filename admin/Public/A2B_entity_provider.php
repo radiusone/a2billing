@@ -77,8 +77,6 @@ if (!$popup_select) {
     echo $CC_help_provider;
 }
 
-echo $CALL_LABS;
-
 // #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);
 

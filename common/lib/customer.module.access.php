@@ -1,7 +1,5 @@
 <?php
 
-use A2billing\Customer;
-
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
@@ -75,7 +73,7 @@ if (!isset($_SESSION['pr_login']) || !isset($_SESSION['pr_password']) || !isset(
         $pr_login = $return[0];
         $_SESSION["pr_login"] = $pr_login;
         $_SESSION["pr_password"] = $pr_password;
-        $_SESSION["cus_rights"] = empty($return[10]) ? 1 : $return[10] + 1;
+        $_SESSION["cus_rights"] = empty($return[10]) ? 1 : (int)$return[10] + 1;
         $_SESSION["user_type"] = "CUST";
         $_SESSION["card_id"] = $return[3];
         $_SESSION["id_didgroup"] = $return[4];

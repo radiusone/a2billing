@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\A2Billing;
 use A2billing\Customer;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -37,7 +38,6 @@ use A2billing\Customer;
 
 error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
 
-const SMARTY_DIR = __DIR__ . '/../../vendor/smarty/smarty/libs/';
 const TEMPLATE_DIR = __DIR__ . '/../../customer/templates/';
 const TEMPLATE_C_DIR = __DIR__ . '/../../customer/templates_c/';
 require_once __DIR__ . "/../../vendor/autoload.php";
@@ -71,6 +71,7 @@ $smarty->assign("ACXNOTIFICATION", has_rights(Customer::ACX_NOTIFICATION));
 $smarty->assign("ACXAUTODIALER", has_rights(Customer::ACX_AUTODIALER));
 $smarty->assign("ACXVOICEMAIL", ACT_VOICEMAIL ? $_SESSION["voicemail"] : false);
 
+/** @var string $exporttype from common.defines.php */
 if ($exporttype != "" && $exporttype != "html") {
     $smarty->assign("EXPORT", 1);
 } else {
@@ -88,6 +89,7 @@ $smarty->assign("section", $section);
 
 $smarty->assign("SKIN_NAME", $skin_name);
 // if it is a pop window
+/** @var int $popup_select from common.defines.php */
 if (!is_numeric($popup_select)) {
     $popup_select=0;
 }
@@ -95,4 +97,5 @@ if (!is_numeric($popup_select)) {
 $smarty->assign("popupwindow", $popup_select);
 
 // OPTION FOR THE MENU
+/** @var A2Billing $A2B the A2Billing instance from common.defines.php */
 $smarty->assign("A2Bconfig", $A2B->config);
