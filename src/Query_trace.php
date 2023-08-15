@@ -4,23 +4,13 @@ namespace A2billing;
 
 class Query_trace
 {
-    public $queryCount = 0;
-    public $queries = array();
+    public int $queryCount = 0;
+    public array $queries = [];
+    private static self $m_pInstance;
 
-    private static $m_pInstance;
-
-    /* CONSTRUCTOR */
-    public function __construct()
+    public static function getInstance(): self
     {
-
-    }
-
-    // Query_trace::getInstance();
-    public static function getInstance()
-    {
-        if (!self::$m_pInstance) {
-            self::$m_pInstance = new Query_trace();
-        }
+        self::$m_pInstance ??= new Query_trace();
 
         return self::$m_pInstance;
     }

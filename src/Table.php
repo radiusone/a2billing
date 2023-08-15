@@ -136,7 +136,7 @@ class Table
         if ($cache > 0) {
             $res = $DBHandle->CacheExecute($cache, $QUERY);
         } else {
-            $start = $this->getTime();
+            $start = microtime(true);
             $res = $DBHandle->Execute($QUERY);
             $this->query_handler->queryCount += 1;
             $this->logQuery($QUERY, $start);
@@ -396,22 +396,10 @@ class Table
     public function logQuery($sql, $start)
     {
         if (count($this->query_handler->queries) < 100) {
-            $query = array(
-                    'sql' => $sql,
-                    'time' => ($this->getTime() - $start) * 1000
-                );
-            array_push($this->query_handler->queries, $query);
+            $this->query_handler->queries[] = [
+                'sql' => $sql,
+                'time' => microtime(true) - $start
+            ];
         }
     }
-
-    public function getTime()
-    {
-        $time = microtime();
-        $time = explode(' ', $time);
-        $time = $time[1] + $time[0];
-        $start = $time;
-
-        return $start;
-    }
-
-};
+}
