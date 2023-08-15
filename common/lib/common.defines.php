@@ -212,10 +212,7 @@ if (!empty($cssname)) {
     }
     $_SESSION["stylefile"] = $cssname;
 }
-
-if (empty($_SESSION["stylefile"])) {
-    $_SESSION["stylefile"] = "default";
-}
+$_SESSION["stylefile"] ??= "default";
 
 /*
  *		GLOBAL USED VARIABLE
