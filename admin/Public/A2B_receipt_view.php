@@ -53,7 +53,7 @@ $receipt = new Receipt($id);
 $items = $receipt->loadItems();
 //load customer
 $DBHandle  = DbConnect();
-$card_table = new Table('cc_card','*');
+$card_table = new Table('cc_card', '*');
 $card_clause = "id = ".$receipt->getCard();
 $card_result = $card_table -> get_list($DBHandle, $card_clause);
 $card = $card_result[0];
@@ -64,7 +64,7 @@ if (empty($card)) {
 }
 $smarty->display('main.tpl');
 //Load invoice conf
-$invoice_conf_table = new Table('cc_invoice_conf','value');
+$invoice_conf_table = new Table('cc_invoice_conf', 'value');
 $conf_clause = "key_val = 'company_name'";
 $result = $invoice_conf_table -> get_list($DBHandle, $conf_clause);
 $company_name = $result[0][0];

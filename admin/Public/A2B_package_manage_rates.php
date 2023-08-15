@@ -47,7 +47,7 @@ if (empty($id)) {
     Header ("Location: A2B_entity_package.php");
 }
 
-$table_pack = new Table("cc_package_offer ","*");
+$table_pack = new Table("cc_package_offer ", "*");
 $pack_clauses = "id = $id";
 $result_pack=$table_pack ->get_list(DbConnect(), $pack_clauses);
 
@@ -59,7 +59,7 @@ if (isset($addbatchrate) && ($addbatchrate)) {
     $DBHandle = DbConnect();
 
     $rates_clauses = "";
-    $table_rates = new Table("cc_ratecard"," DISTINCT COUNT(destination)");
+    $table_rates = new Table("cc_ratecard", " DISTINCT COUNT(destination)");
     if (isset($id_trunk)) {
         $rates_clauses = " id_trunk = '{$id_trunk}'";
     }
@@ -145,7 +145,7 @@ $smarty->display('main.tpl');
 //load rates
 $DBHandle = DbConnect();
 
-$table_rates = new Table("cc_package_rate JOIN cc_ratecard ON cc_ratecard.id = cc_package_rate.rate_id LEFT JOIN cc_prefix ON cc_prefix.prefix = cc_ratecard.destination ","DISTINCT cc_ratecard.id,cc_prefix.destination, cc_ratecard.dialprefix");
+$table_rates = new Table("cc_package_rate JOIN cc_ratecard ON cc_ratecard.id = cc_package_rate.rate_id LEFT JOIN cc_prefix ON cc_prefix.prefix = cc_ratecard.destination ", "DISTINCT cc_ratecard.id,cc_prefix.destination, cc_ratecard.dialprefix");
 $rates_clauses = " cc_package_rate.package_id = $id";
 $result_rates=$table_rates ->get_list(DbConnect(), $rates_clauses);
 

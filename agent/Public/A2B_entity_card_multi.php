@@ -183,7 +183,7 @@ if ($nbcard>0 && $action=="generate" && $nb_error==0) {
     if (isset($sip)) {
         $buddyfile = BUDDY_SIP_FILE;
 
-        $instance_table_friend = new Table($FG_TABLE_SIP_NAME,'id, '.$FG_QUERY_ADITION_SIP_IAX);
+        $instance_table_friend = new Table($FG_TABLE_SIP_NAME, 'id, ' . $FG_QUERY_ADITION_SIP_IAX);
         $list_friend = $instance_table_friend -> get_list ($HD_Form ->DBHandle);
         if (is_array($list_friend)) {
             $fd=fopen($buddyfile,"w");
@@ -223,7 +223,7 @@ if ($nbcard>0 && $action=="generate" && $nb_error==0) {
     if (isset($iax)) {
         $buddyfile = BUDDY_IAX_FILE;
 
-        $instance_table_friend = new Table($FG_TABLE_IAX_NAME,'id, '.$FG_QUERY_ADITION_SIP_IAX);
+        $instance_table_friend = new Table($FG_TABLE_IAX_NAME, 'id, ' . $FG_QUERY_ADITION_SIP_IAX);
         $list_friend = $instance_table_friend -> get_list ($HD_Form ->DBHandle);
 
         if (is_array($list_friend)) {
@@ -289,7 +289,7 @@ $FG_TABLE_CLAUSE = "cc_agent_tariffgroup.id_agent = ".$_SESSION['agent_id'];
 $list_tariff = $instance_table_tariff -> get_list ($HD_Form->DBHandle, $FG_TABLE_CLAUSE, ["tariffgroupname"]);
 $nb_tariff = count($list_tariff);
 $FG_TABLE_CLAUSE =  "cc_card_group.id_agent=".$_SESSION['agent_id'] ;
-$instance_table_group=  new Table("cc_card_group"," id, name ");
+$instance_table_group=  new Table("cc_card_group", " id, name ");
 $list_group = $instance_table_group  -> get_list ($HD_Form->DBHandle, $FG_TABLE_CLAUSE, ["name"]);
 
 // FORM FOR THE GENERATION

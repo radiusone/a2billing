@@ -54,7 +54,7 @@ if (!$A2B->config["webagentui"]['remittance_request']) {
 getpost_ifset(array('amount','remittance_type','action'));
 
 $QUERY = "SELECT  credit, currency,com_balance,threshold_remittance,firstname,lastname,address,bank_info FROM cc_agent WHERE id = ".$_SESSION['agent_id'];
-$table_remittance = $table_remittance = new Table("cc_remittance_request",'*');
+$table_remittance = $table_remittance = new Table("cc_remittance_request", '*');
 $remittance_clause = "id_agent = ".$_SESSION['agent_id']." AND status = 0";
 
 $DBHandle_max = DbConnect();
@@ -82,7 +82,7 @@ $commision_bal_cur = round($commision_bal_cur,3);
 $threshold_cur  =  $agent_info['threshold-remittance'] / $mycur;
 $threshold_cur = round($threshold_cur,3);
 $smarty->display( 'main.tpl');
-$table_remittance = $table_remittance = new Table("cc_remittance_request",'*');
+$table_remittance = $table_remittance = new Table("cc_remittance_request", '*');
 $remittance_clause = "id_agent = ".$_SESSION['agent_id']." AND status = 0";
 $result_remittance = $table_remittance -> get_list($DBHandle_max, $remittance_clause);
 if (is_array($result_remittance) && sizeof($result_remittance)>=1 ) {

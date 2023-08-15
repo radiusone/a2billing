@@ -133,10 +133,10 @@ function amount_convert($amount)
     return $amount/$mycur;
 }
 
-$billing_table = new Table('cc_billing_customer','id,date');
+$billing_table = new Table('cc_billing_customer', 'id,date');
 $clause_last_billing = "id_card = ".$_SESSION["card_id"];
 $result = $billing_table -> get_list($DBHandle, $clause_last_billing, ["date"], "desc");
-$call_table = new Table('cc_call','COALESCE(SUM(sessionbill),0)' );
+$call_table = new Table('cc_call', 'COALESCE(SUM(sessionbill),0)');
 $clause_call_billing ="card_id = ".$_SESSION["card_id"]." AND ";
 $clause_charge = "id_cc_card = ".$_SESSION["card_id"]." AND ";
 $start_date =$result[0][1];

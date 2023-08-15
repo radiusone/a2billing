@@ -302,7 +302,7 @@ class FormBO
         //AFTER A DELETE YOU DON T HAVE ACCESS TO ANY FIELD AND YOU CAN ACCESS ONLY TO THE ID
         //SO YOU HAVE TO LOAD THE FIELD THAT YOU NEED
         $card_id = $processed['id'];
-        $card_table = new Table('cc_card','credit');
+        $card_table = new Table('cc_card', 'credit');
         $card_clause = "id = ".$card_id;
         $card_result = $card_table -> get_list($FormHandler->DBHandle, $card_clause);
 
@@ -390,7 +390,7 @@ class FormBO
         $FormHandler = FormHandler::GetInstance();
         $processed = $FormHandler->getProcessed();
         $subscriber = $processed['subscriber_signup'];
-        $table_subscription = new Table("cc_subscription_service","*");
+        $table_subscription = new Table("cc_subscription_service", "*");
         $subscription_clause = "id = ".$subscriber;
         $result_sub = $table_subscription->get_list($FormHandler->DBHandle, $subscription_clause);
 
@@ -479,7 +479,7 @@ class FormBO
         $type_com =  $processed['commission_type'];
         if (!empty($id_agent)) {
             //update record with agent commission
-            $table_agent = new Table('cc_agent','commission');
+            $table_agent = new Table('cc_agent', 'commission');
             $agent_clause = "id = ".$id_agent;
             $agent_result = $table_agent -> get_list($FormHandler->DBHandle, $agent_clause);
             $agent_com = $agent_result[0][0];
@@ -655,10 +655,10 @@ class FormBO
             $vat = $card_result[0][0];
 
         // FIND THE LAST BILLING
-        $billing_table = new Table('cc_billing_customer','id,date');
+        $billing_table = new Table('cc_billing_customer', 'id,date');
         $clause_last_billing = "id_card = $card_id AND id != ".$FormHandler -> QUERY_RESULT;
         $result = $billing_table -> get_list($FormHandler->DBHandle, $clause_last_billing, ["date"], "desc");
-        $call_table = new Table('cc_call',' COALESCE(SUM(sessionbill),0)' );
+        $call_table = new Table('cc_call', ' COALESCE(SUM(sessionbill),0)');
         $clause_call_billing ="card_id = $card_id AND ";
         $clause_charge = "id_cc_card = $card_id AND ";
         $desc_billing="";
@@ -678,7 +678,7 @@ class FormBO
         $lastpostpaid_amount = 0;
         $query_table = "cc_billing_customer LEFT JOIN cc_invoice ON cc_billing_customer.id_invoice = cc_invoice.id ";
         $query_table .= "LEFT JOIN (SELECT st1.id_invoice, TRUNCATE(SUM(st1.price),2) as total_price FROM cc_invoice_item AS st1 WHERE st1.type_ext ='POSTPAID' GROUP BY st1.id_invoice ) as items ON items.id_invoice = cc_invoice.id";
-        $invoice_table = new Table($query_table,'SUM( items.total_price) as total');
+        $invoice_table = new Table($query_table, 'SUM( items.total_price) as total');
         $lastinvoice_clause = "cc_billing_customer.id_card = $card_id AND cc_invoice.paid_status=0 AND cc_billing_customer.id != ".$FormHandler -> QUERY_RESULT;
         $result_lastinvoice = $invoice_table ->get_list($FormHandler->DBHandle, $lastinvoice_clause);
         if (is_array($result_lastinvoice)&& !empty($result_lastinvoice[0][0])) {
@@ -850,7 +850,7 @@ class FormBO
             if (!empty($id_invoice)&& is_numeric($id_invoice)) {
                 $amount = $processed['credit'];
                 $description = $processed['description'];
-                $card_table = new Table('cc_card','vat');
+                $card_table = new Table('cc_card', 'vat');
                 $card_clause = "id = ".$card_id;
                 $card_result = $card_table -> get_list($FormHandler->DBHandle, $card_clause);
                 if(!is_array($card_result)||empty($card_result[0][0])||!is_numeric($card_result[0][0])) $vat=0;
@@ -898,7 +898,7 @@ class FormBO
             $card_id = $processed['card_id'];
             $refill_type= $processed['payment_type'];
             $description = $processed['description'];
-            $card_table = new Table('cc_card','vat');
+            $card_table = new Table('cc_card', 'vat');
             $card_clause = "id = ".$card_id;
             $card_result = $card_table -> get_list($FormHandler->DBHandle, $card_clause);
             if(!is_array($card_result)||empty($card_result[0][0])||!is_numeric($card_result[0][0])) {
@@ -928,7 +928,7 @@ class FormBO
             $list_refill_type=getRefillType_List();
             $refill_type = $processed['payment_type'];
             $year = date("Y");
-            $invoice_conf_table = new Table('cc_invoice_conf','value');
+            $invoice_conf_table = new Table('cc_invoice_conf', 'value');
             $conf_clause = "key_val = 'count_$year'";
             $result = $invoice_conf_table -> get_list($FormHandler->DBHandle, $conf_clause);
             if (is_array($result) && !empty($result[0][0])) {

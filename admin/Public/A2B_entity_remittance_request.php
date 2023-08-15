@@ -50,7 +50,7 @@ $DBHandle = DbConnect();
 
 if ($action == "accept") {
     if (!empty ($id) && is_numeric($id)) {
-        $instance_table_remittance = new Table("cc_remittance_request","*");
+        $instance_table_remittance = new Table("cc_remittance_request", "*");
         $param_update_remittance = "status = '1'";
         $clause_update_remittance = " id ='$id'";
         $instance_table_remittance->Update_table($DBHandle, $param_update_remittance, $clause_update_remittance, $func_table = null);

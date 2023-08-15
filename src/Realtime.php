@@ -77,7 +77,7 @@ class Realtime
             $buddyfile = BUDDY_IAX_FILE;
             $table_name = $this -> FG_TABLE_IAX_NAME;
 
-            $this -> instance_table = new Table($table_name, 'id, ' . $this -> FG_QUERY_ADITION_IAX);
+            $this -> instance_table = new Table($table_name, 'id, ' . $this->FG_QUERY_ADITION_IAX);
             $list_friend = $this -> instance_table -> get_list($this->DBHandler);
             $list_names = explode(",",$this -> FG_QUERY_ADITION_IAX);
 
@@ -85,7 +85,7 @@ class Realtime
             $buddyfile = BUDDY_SIP_FILE;
             $table_name = $this -> FG_TABLE_SIP_NAME;
 
-            $this -> instance_table = new Table($table_name, 'id, ' . $this -> FG_QUERY_ADITION_SIP);
+            $this -> instance_table = new Table($table_name, 'id, ' . $this->FG_QUERY_ADITION_SIP);
             $list_friend = $this -> instance_table -> get_list($this->DBHandler);
             $list_names = explode(",",$this -> FG_QUERY_ADITION_SIP);
 

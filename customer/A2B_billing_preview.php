@@ -56,7 +56,7 @@ if (empty($_SESSION["card_id"])) {
 
 $DBHandle  = DbConnect();
 
-$card_table = new Table('cc_card','vat,typepaid,credit');
+$card_table = new Table('cc_card', 'vat,typepaid,credit');
 $card_clause = "id = ".$_SESSION["card_id"];
 $card_result = $card_table -> get_list($DBHandle, $card_clause);
 
@@ -68,10 +68,10 @@ if(!is_array($card_result)||empty($card_result[0]['credit'])||!is_numeric($card_
     else $credit = $card_result[0][2];
 //find the last billing
 
-$billing_table = new Table('cc_billing_customer','id,date');
+$billing_table = new Table('cc_billing_customer', 'id,date');
 $clause_last_billing = "id_card = ".$_SESSION["card_id"];
 $result = $billing_table -> get_list($DBHandle, $clause_last_billing, ["date"], "desc");
-$call_table = new Table('cc_call','COALESCE(SUM(sessionbill),0)' );
+$call_table = new Table('cc_call', 'COALESCE(SUM(sessionbill),0)');
 $clause_call_billing ="card_id = ".$_SESSION["card_id"]." AND ";
 $clause_charge = "id_cc_card = ".$_SESSION["card_id"]." AND ";
 $desc_billing="";

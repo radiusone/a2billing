@@ -49,7 +49,7 @@ if (empty($id)) {
 
 $DBHandle  = DbConnect();
 
-$remittance_table = new Table('cc_remittance_request','*');
+$remittance_table = new Table('cc_remittance_request', '*');
 $remittance_clause = "id = ".$id;
 $remittance_result = $remittance_table -> get_list($DBHandle, $remittance_clause);
 $remittance = $remittance_result[0];

@@ -13,7 +13,7 @@ class currencies
     public function __construct()
     {
       $this->currencies = array();
-      $currenciesTable= new Table("cc_currencies"," * ");
+      $currenciesTable= new Table("cc_currencies", " * ");
       $DBHandle = DBConnect();
       $return = $currenciesTable -> get_list($DBHandle);
       $this->currencies = array();

@@ -87,7 +87,7 @@ if ( (isset ($id_cc_card) && (is_numeric($id_cc_card)  != "")) && ( $form_action
     } else {
         $TABLE_BUDDY = 'cc_iax_buddies';
     }
-    $instance_table_friend = new Table($TABLE_BUDDY,'*');
+    $instance_table_friend = new Table($TABLE_BUDDY, '*');
     $list_friend = $instance_table_friend -> get_list ($HD_Form->DBHandle, "id_cc_card='$id_cc_card'");
 
     if (is_array($list_friend) && count($list_friend)>0) {

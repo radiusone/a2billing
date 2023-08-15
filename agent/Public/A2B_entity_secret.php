@@ -54,7 +54,7 @@ $DBHandle  = DbConnect();
 //////$result = $instance_sub_table -> SQLExec ($HD_Form -> DBHandle, $QUERY, 0);
 
 if ($form_action=="ask-modif") {
-    $instance_sub_table = new Table('cc_agent',"id");
+    $instance_sub_table = new Table('cc_agent', "id");
     $QUERY = "UPDATE cc_agent SET secret= '".$NewSecret."' WHERE ( ID = ".$_SESSION["agent_id"]."  ) ";
     $result = $instance_sub_table -> SQLExec ($DBHandle, $QUERY, 0);
 }

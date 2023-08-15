@@ -327,7 +327,7 @@ if (empty($item_type)) {
 } else {
     $transaction_type = $item_type;
     //Check amount
-    $table_invoice_item = new Table("cc_invoice_item","COALESCE(SUM(price*(1+(vat/100))),0)");
+    $table_invoice_item = new Table("cc_invoice_item", "COALESCE(SUM(price*(1+(vat/100))),0)");
     $clause_invoice_item = "id_invoice = ".$item_id;
     $result= $table_invoice_item -> get_list($DBHandle, $clause_invoice_item);
     $inv_amount = ceil($result[0][0] * 100) / 100;
@@ -458,7 +458,7 @@ if ($id > 0) {
     } else {
         #Payment related to a Postpaid invoice
         if ($item_id > 0) {
-            $invoice_table = new Table('cc_invoice','reference');
+            $invoice_table = new Table('cc_invoice', 'reference');
             $invoice_clause = "id = ".$item_id;
             $result_invoice = $invoice_table->get_list($DBHandle, $invoice_clause);
 
@@ -485,7 +485,7 @@ if ($id > 0) {
                     if ($item -> getExtType() == 'SUBSCR') {
                         //Load subscription
                         write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."- Type SUBSCR");
-                        $table_subsc = new Table('cc_card_subscription','paid_status');
+                        $table_subsc = new Table('cc_card_subscription', 'paid_status');
                         $subscr_clause = "id = ".$item -> getExtId();
                         $result_subscr = $table_subsc -> get_list($DBHandle, $subscr_clause);
                         if (is_array($result_subscr)) {

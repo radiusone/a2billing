@@ -47,7 +47,7 @@ getpost_ifset(array('languages', 'id', 'action'));
 if ($action=="load") {
     $DBHandle=DbConnect();
     if (!empty($id) && is_numeric($id)) {
-        $instance_table_mail = new Table("cc_templatemail","messagetext, fromemail, fromname, subject");
+        $instance_table_mail = new Table("cc_templatemail", "messagetext, fromemail, fromname, subject");
         $clause_mail = " id ='$id'";
         $result=$instance_table_mail-> get_list($DBHandle, $clause_mail);
         echo json_encode($result[0]);

@@ -62,7 +62,7 @@ $items = $invoice->loadItems();
 
 //load customer
 $DBHandle  = DbConnect();
-$card_table = new Table('cc_card','*');
+$card_table = new Table('cc_card', '*');
 $card_clause = "id = ".$_SESSION["card_id"];
 $card_result = $card_table -> get_list($DBHandle, $card_clause);
 $card = $card_result[0];
@@ -73,7 +73,7 @@ if (empty($card)) {
 }
 $smarty->display('main.tpl');
 //Load invoice conf
-$invoice_conf_table = new Table('cc_invoice_conf','value');
+$invoice_conf_table = new Table('cc_invoice_conf', 'value');
 $conf_clause = "key_val = 'company_name'";
 $result = $invoice_conf_table -> get_list($DBHandle, $conf_clause);
 $company_name = $result[0][0];
@@ -119,7 +119,7 @@ $result = $invoice_conf_table -> get_list($DBHandle, $conf_clause);
 $display_account = $result[0][0];
 
 //country convert
-$table_country= new Table('cc_country','countryname');
+$table_country= new Table('cc_country', 'countryname');
 $country_clause = "countrycode = '".$card['country']."'";
 $result = $table_country -> get_list($DBHandle, $country_clause);
 $card_country = $result[0][0];

@@ -115,7 +115,7 @@ if (!empty($action)) {
 }
 
 $invoice = new invoice($id);
-$table_card = new Table("cc_card","vat");
+$table_card = new Table("cc_card", "vat");
 $result_vat = $table_card->get_list(DbConnect(), "id=" . $invoice->getCard());
 $card_vat =  $result_vat[0][0];
 $items = $invoice->loadItems();

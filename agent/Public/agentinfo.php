@@ -45,7 +45,7 @@ if (! has_rights (Agent::ACX_ACCESS)) {
 }
 
 $QUERY = "SELECT  credit, currency, lastname, firstname, address, city, state, country, zipcode, phone, email, fax, id, com_balance FROM cc_agent WHERE login = '".$_SESSION["pr_login"]."' AND passwd = '".$_SESSION["pr_password"]."'";
-$table_remittance = new Table("cc_remittance_request",'*');
+$table_remittance = new Table("cc_remittance_request", '*');
 $remittance_clause = "id_agent = ".$_SESSION['agent_id']." AND status = 0";
 
 $DBHandle_max = DbConnect();

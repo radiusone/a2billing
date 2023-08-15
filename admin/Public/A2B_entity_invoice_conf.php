@@ -101,7 +101,7 @@ if ($form_action=="ask-modif") {
 // #### HEADER SECTION
 $smarty->display( 'main.tpl');
 
-$table_invoice_conf= new Table("cc_invoice_conf","value");
+$table_invoice_conf= new Table("cc_invoice_conf", "value");
 $clause_update_conf = "key_val = 'company_name'";
 $result=$table_invoice_conf -> get_list($DBHandle, $clause_update_conf);
 $company_name=$result[0][0];
