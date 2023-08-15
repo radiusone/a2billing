@@ -37,103 +37,37 @@ namespace A2billing;
 
 class Logger
 {
-    public $do_debug = 0;
+    public bool $do_debug = false;
 
-    //constructor
-    public function __construct()
+    public function insertLog($userID, $logLevel, $actionPerformed, $description, $tableName, $ipAddress, $pageName, $fields = '', $values = [], $agent = false)
     {
-
-    }
-    //Function insertLog
-    // Inserts the Log into table
-    public function insertLog_Add($userID, $logLevel, $actionPerformed, $description, $tableName, $ipAddress, $pageName, $param_add_fields, $param_add_value)
-    {
-        $DB_Handle = DBConnect();
-        $table_log = new Table();
+        $DB_Handle = DbConnect();
         $pageName = basename($pageName);
-        $interName    = explode('?', $pageName);
+        $interName = explode('?', $pageName);
         $pageName = array_shift($interName);
         $description = str_replace("'", "", $description);
-        $str_submitted_fields = explode(',', $param_add_fields);
-        $str_submitted_values = explode(',', $param_add_value);
-        $num_records = count($str_submitted_fields);
-        for ($num = 0; $num < $num_records; $num++) {
-            $str_name_value_pair .= $str_submitted_fields[$num]." = ".str_replace("'",'',$str_submitted_values[$num]);
-            if ($num != $num_records -1) {
-                $str_name_value_pair .= "|";
+        if (is_array($fields)) {
+            $pairs = [];
+            foreach ($fields as $i => $field) {
+                $pairs[] = $field . " = " . $values[$i] ?? "null";
             }
+            $data = implode("|", $pairs);
+        } else {
+            $data = $fields;
         }
-        $QUERY = "INSERT INTO cc_system_log (iduser, loglevel, action, description, tablename, pagename, ipaddress, data) ";
-        $QUERY .= " VALUES('".$userID."','".$logLevel."','".$actionPerformed."','".$description."','".$tableName."','".$pageName."','".$ipAddress."','".$str_name_value_pair."')";
-        if ($this -> do_debug) echo $QUERY;
 
-        $table_log -> SQLExec($DB_Handle, $QUERY);
-    }
-
-    public function insertLog_Update($userID, $logLevel, $actionPerformed, $description, $tableName, $ipAddress, $pageName, $param_update)
-    {
-        $DB_Handle = DBConnect();
-        $table_log = new Table();
-        $pageName = basename($pageName);
-        $interName    = explode('?', $pageName);
-        $pageName = array_shift($interName);
-        $description = str_replace("'", "", $description);
-        $str_submitted_fields = explode(',', $param_update);
-        $num_records = count($str_submitted_fields);
-        for ($num = 0; $num < $num_records; $num++) {
-            $str_name_value_pair .= str_replace("'","",$str_submitted_fields[$num]);
-            if ($num != $num_records -1) {
-                $str_name_value_pair .= "|";
-            }
+        $columns = ["iduser", "loglevel", "action", "description", "tablename", "pagename", "ipaddress", "data"];
+        $params = [$userID, $logLevel, $actionPerformed, $description, $tableName, $pageName, $ipAddress, $data];
+        if ($agent) {
+            $columns[] = "agent";
+            $params[] = 1;
         }
-        $QUERY = "INSERT INTO cc_system_log (iduser, loglevel, action, description, tablename, pagename, ipaddress, data) ";
-        $QUERY .= " VALUES('".$userID."','".$logLevel."','".$actionPerformed."','".$description."','".$tableName."','".$pageName."','".$ipAddress."','".$str_name_value_pair."')";
+        $query = "INSERT INTO cc_system_log (" . implode(",", $columns) . ") VALUES (";
+        $query .= implode(",", array_fill(0, count($columns), "?")) . ")";
+        if ($this->do_debug) {
+            echo $query;
+        }
 
-        if ($this -> do_debug) echo $QUERY;
-
-        $table_log -> SQLExec($DB_Handle, $QUERY);
-    }
-
-    public function insertLog($userID, $logLevel, $actionPerformed, $description, $tableName, $ipAddress, $pageName, $data='')
-    {
-        $DB_Handle = DBConnect();
-        $table_log = new Table();
-        $pageName = basename($pageName);
-        $pageArray = explode('?', $pageName);
-        $pageName = array_shift($pageArray);
-        $description = str_replace("'", "", $description);
-
-        $QUERY = "INSERT INTO cc_system_log (iduser, loglevel, action, description, tablename, pagename, ipaddress, data) ";
-        $QUERY .= " VALUES('".$userID."','".$logLevel."','".$actionPerformed."','".$description."','".$tableName."','".$pageName."','".$ipAddress."','".$data."')";
-        if ($this -> do_debug) echo $QUERY;
-
-        $table_log -> SQLExec($DB_Handle, $QUERY);
-    }
-
-    public function insertLogAgent($userID, $logLevel, $actionPerformed, $description, $tableName, $ipAddress, $pageName, $data='')
-    {
-        $DB_Handle = DBConnect();
-        $table_log = new Table();
-        $pageName = basename($pageName);
-        $pageArray = explode('?', $pageName);
-        $pageName = array_shift($pageArray);
-        $description = str_replace("'", "", $description);
-
-        $QUERY = "INSERT INTO cc_system_log (iduser, loglevel, action, description, tablename, pagename, ipaddress, data, agent) ";
-        $QUERY .= " VALUES('".$userID."','".$logLevel."','".$actionPerformed."','".$description."','".$tableName."','".$pageName."','".$ipAddress."','".$data."', 1)";
-        if ($this -> do_debug) echo $QUERY;
-
-        $table_log -> SQLExec($DB_Handle, $QUERY);
-    }
-
-    //Funtion deleteLog
-    //Delete the log from table
-    public function deleteLog($id = 0)
-    {
-        $DB_Handle = DBConnect();
-        $table_log = new Table();
-        $QUERY = "DELETE FROM cc_system_log WHERE id = ".$id;
-        if ($this -> do_debug) echo $QUERY;
-        $table_log -> SQLExec($DB_Handle, $QUERY);
+        $DB_Handle->Execute($query, $params);
     }
 }

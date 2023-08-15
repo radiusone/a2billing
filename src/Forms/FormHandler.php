@@ -1466,6 +1466,9 @@ class FormHandler
     {
         $processed = $this->getProcessed();  //$processed['firstname']
         $this->VALID_SQL_REG_EXP = true;
+        // just for logging, but will be used for parameterized queries later
+        $fields = [];
+        $values = [];
         $param_add_fields = "";
         $param_add_value = "";
         $arr_value_to_import = [];
@@ -1489,10 +1492,12 @@ class FormHandler
                     if ($i > 0) {
                         $param_add_fields .= ", ";
                     }
+                    $fields[] = $fields_name;
                     $param_add_fields .= $fields_name;
                     if ($i > 0) {
                         $param_add_value .= ", ";
                     }
+                    $values[] = $total_mult_select;
                     $param_add_value .= "'" . addslashes(trim($total_mult_select)) . "'";
 
                 } else {
@@ -1540,10 +1545,12 @@ class FormHandler
                             if ($i > 0) {
                                 $param_add_fields .= ", ";
                             }
+                            $fields[] = $fields_name;
                             $param_add_fields .= $fields_name;
                             if ($i > 0) {
                                 $param_add_value .= ", ";
                             }
+                            $values[] = "'%TAGPREFIX%'";
                             $param_add_value .= "'%TAGPREFIX%'";
                         }
                     } else {
@@ -1554,10 +1561,12 @@ class FormHandler
                             if ($i > 0) {
                                 $param_add_fields .= ", ";
                             }
+                            $fields[] = $fields_name;
                             $param_add_fields .= $fields_name;
                             if ($i > 0) {
                                 $param_add_value .= ", ";
                             }
+                            $values[] = $processed[$fields_name];
                             $param_add_value .= "'" . addslashes(trim($processed[$fields_name])) . "'";
                         }
                     }
@@ -1567,6 +1576,8 @@ class FormHandler
         unset ($row);
 
         foreach ($this->FG_EDIT_QUERY_HIDDEN_INPUTS as $name => $value) {
+            $fields[] = $name;
+            $values[] = $value;
             $name = $instance_table->quote_identifier($name);
             // TODO: change to fully parameterized statements
             if ($value !== "now()") {
@@ -1612,7 +1623,17 @@ class FormHandler
             $this->QUERY_RESULT = $instance_table->Add_table($this->DBHandle, $param_add_value, null, null, $this->FG_QUERY_PRIMARY_KEY);
         }
         if ($this->FG_ENABLE_LOG) {
-            $this->logger->insertLog_Add($_SESSION["admin_id"], 2, "NEW " . strtoupper($this->FG_INSTANCE_NAME) . " CREATED", "User added a new record in database", $this->FG_QUERY_TABLE_NAME, $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI'], $param_add_fields, $param_add_value);
+            $this->logger->insertLog(
+                $_SESSION["admin_id"],
+                2,
+                "NEW " . strtoupper($this->FG_INSTANCE_NAME) . " CREATED",
+                "User added a new record in database",
+                $this->FG_QUERY_TABLE_NAME,
+                $_SERVER['REMOTE_ADDR'],
+                $_SERVER['REQUEST_URI'],
+                $fields,
+                $values
+            );
         }
         // CALL DEFINED FUNCTION AFTER THE ACTION ADDITION
         if (strlen($this->FG_ADDITIONAL_FUNCTION_AFTER_ADD) > 0 && ($this->VALID_SQL_REG_EXP)) {
@@ -1636,6 +1657,9 @@ class FormHandler
     public function perform_edit(&$form_action)
     {
         $param_update = "";
+        // just for logging, but will be used for parameterized queries later
+        $fields = [];
+        $values = [];
         $processed = $this->getProcessed();  //$processed['firstname']
         $this->VALID_SQL_REG_EXP = true;
         $instance_table = new Table($this->FG_QUERY_TABLE_NAME);
@@ -1660,6 +1684,8 @@ class FormHandler
                     if ($i > 0) {
                         $param_update .= ", ";
                     }
+                    $fields[] = $fields_name;
+                    $values[] = $total_mult_select;
                     $param_update .= "$fields_name = '" . addslashes(trim($total_mult_select)) . "'";
                 } else {
                     if (is_numeric($regexp) && isset($processed[$fields_name]) && !(str_starts_with($row["check_empty"], "NO") && $processed[$fields_name] === "")) {
@@ -1680,8 +1706,12 @@ class FormHandler
                         $param_update .= ", ";
                     }
                     if (empty($processed[$fields_name]) && str_ends_with($row["check_empty"], "NULL")) {
+                        $fields[] = $fields_name;
+                        $values[] = null;
                         $param_update .= $fields_name . " = NULL ";
                     } elseif ($row["type"] !== "SPAN") {
+                        $fields[] = $fields_name;
+                        $values[] = $processed[$fields_name];
                         $param_update .= $fields_name . " = '" . addslashes(trim($processed[$fields_name])) . "' ";
                     }
                 }
@@ -1690,6 +1720,8 @@ class FormHandler
         unset($row);
 
         foreach ($this->FG_EDIT_QUERY_HIDDEN_INPUTS as $name => $value) {
+            $fields[] = $name;
+            $values[] = $value;
             $name = $instance_table->quote_identifier($name);
             // TODO: change to fully parameterized statements
             $value = $this->DBHandle->qStr($value);
@@ -1709,7 +1741,17 @@ class FormHandler
         }
 
         if ($this->FG_ENABLE_LOG) {
-            $this->logger->insertLog_Update($_SESSION["admin_id"], 3, "A " . strtoupper($this->FG_INSTANCE_NAME) . " UPDATED", "A RECORD IS UPDATED, EDITION CALUSE USED IS " . $this->FG_EDIT_QUERY_CONDITION, $this->FG_QUERY_TABLE_NAME, $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI'], $param_update);
+            $this->logger->insertLog(
+                $_SESSION["admin_id"],
+                3,
+                "A " . strtoupper($this->FG_INSTANCE_NAME) . " UPDATED",
+                "A RECORD IS UPDATED, EDITION CALUSE USED IS " . $this->FG_EDIT_QUERY_CONDITION,
+                $this->FG_QUERY_TABLE_NAME,
+                $_SERVER['REMOTE_ADDR'],
+                $_SERVER['REQUEST_URI'],
+                $fields,
+                $values
+            );
         }
 
         if ($this->FG_DEBUG == 1) {
@@ -1768,7 +1810,15 @@ class FormHandler
 
         $this->QUERY_RESULT = $instance_table->Delete_table($this->DBHandle, $this->FG_EDIT_QUERY_CONDITION);
         if ($this->FG_ENABLE_LOG) {
-            $this->logger->insertLog($_SESSION["admin_id"], 3, "A " . strtoupper($this->FG_INSTANCE_NAME) . " DELETED", "A RECORD IS DELETED, EDITION CLAUSE USED IS " . $this->FG_EDIT_QUERY_CONDITION, $this->FG_QUERY_TABLE_NAME, $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI']);
+            $this->logger->insertLog(
+                $_SESSION["admin_id"],
+                3,
+                "A " . strtoupper($this->FG_INSTANCE_NAME) . " DELETED",
+                "A RECORD IS DELETED, EDITION CLAUSE USED IS " . $this->FG_EDIT_QUERY_CONDITION,
+                $this->FG_QUERY_TABLE_NAME,
+                $_SERVER['REMOTE_ADDR'],
+                $_SERVER['REQUEST_URI']
+            );
         }
         if (!$this->QUERY_RESULT) {
             echo _("error deletion");

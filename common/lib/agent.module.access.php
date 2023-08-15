@@ -41,13 +41,16 @@ error_reporting(E_ALL & ~E_NOTICE);
 header("Expires: Sat, Jan 01 2000 01:01:01 GMT");
 
 if (($_GET["logout"] ?? "") === "true") {
-    (new Logger())->insertLogAgent(
+    (new Logger())->insertLog(
         $_SESSION["agent_id"],
         1, "AGENT LOGGED OUT",
         "User Logged out from website",
         '',
         $_SERVER['REMOTE_ADDR'],
-        $_SERVER['REQUEST_URI']
+        $_SERVER['REQUEST_URI'],
+        '',
+        [],
+        true
     );
     session_destroy();
     header("HTTP/1.0 401 Unauthorized");
@@ -82,14 +85,17 @@ if (!isset($_SESSION['pr_login']) || !isset($_SESSION['pr_password']) || !isset(
         $_SESSION["user_type"] = "AGENT";
         $_SESSION["currency"] = $return["currency"];
         $_SESSION["vat"] = $return["vat"];
-        (new Logger())->insertLogAgent(
+        (new Logger())->insertLog(
             $agent_id,
             1,
             "Agent Logged In",
             "Agent Logged in to website",
             '',
             $_SERVER['REMOTE_ADDR'],
-            'PP_Intro.php'
+            'PP_Intro.php',
+            '',
+            [],
+            true
         );
     } else {
         $_SESSION["rights"] = 0;
