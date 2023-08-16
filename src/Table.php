@@ -86,7 +86,7 @@ class Table
         $this->writelog = defined('WRITELOG_QUERY') && WRITELOG_QUERY;
         $this->table = $table;
         $this->fields = $list_fields;
-        if (DB_TYPE === 'postgres') {
+        if (defined("DB_TYPE") && DB_TYPE === 'postgres') {
             $this->db_type = "postgres";
         }
 
