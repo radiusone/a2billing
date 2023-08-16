@@ -988,6 +988,50 @@ function do_field($sql, $fld, $dbfld)
     return $sql;
 }
 
+/**
+ * Builds an SQL query condition and parameter array from request variables.
+ * This requires the post field (e.g. foo) to have a corresponding type field (e.g. footype).
+ * For example, build_query_safe($sql, 'foo', 'bar', $params) will construct something like
+ * 'WHERE bar = $_REQUEST[foo]` if $_REQUEST[footype] == 1
+ *
+ * @param string $sql the SQL query string; assumed to be empty or starting with WHERE
+ * @param string $post_field the name to search for in $_REQUEST
+ * @param string $db_column the column name to be checked
+ * @param array $params an array of query parameters
+ * @return void
+ */
+function build_query_safe(string &$sql, string $post_field, string $db_column, array &$params): void
+{
+    $check_value = $_REQUEST[$post_field] ?? null;
+    $check_type = $_REQUEST[$post_field . "type"] ?? null;
+    $sql = trim($sql);
+
+    if (is_null($check_value) || is_null($check_type)) {
+        return;
+    }
+
+    $params[] = $check_value;
+    $sql .= ($sql === "") ? "WHERE " : " AND ";
+    switch ($check_type) {
+        case 1:
+            // matches
+            $sql .= "$db_column = ?";
+            break;
+        case 2:
+            // starts with
+            $sql .= "$db_column LIKE CONCAT(?, '%')";
+            break;
+        case 3:
+            // ends with
+            $sql .= "$db_column LIKE CONCAT('%', ?)";
+            break;
+        case 4:
+            // contains
+            $sql .= "$db_column LIKE CONCAT('%', ?, '%')";
+            break;
+    }
+}
+
 function generate_invoice_reference(): string
 {
     $handle = DbConnect();
