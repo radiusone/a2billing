@@ -1022,12 +1022,12 @@ function build_query_safe(string &$sql, string $post_field, string $db_column, a
             $sql .= "$db_column LIKE CONCAT(?, '%')";
             break;
         case 3:
-            // ends with
-            $sql .= "$db_column LIKE CONCAT('%', ?)";
-            break;
-        case 4:
             // contains
             $sql .= "$db_column LIKE CONCAT('%', ?, '%')";
+            break;
+        case 4:
+            // ends with
+            $sql .= "$db_column LIKE CONCAT('%', ?)";
             break;
     }
 }
