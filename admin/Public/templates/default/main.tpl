@@ -337,7 +337,8 @@
 							<li><a class="link-dark rounded" href="CC_musiconhold.php">{_("MusicOnHold")}</a></li>
 							<li><a class="link-dark rounded" href="CC_upload.php">{_("Upload File")}</a></li>
 							<li><a class="link-dark rounded" href="A2B_logfile.php">{_("Watch Log files")}</a></li>
-							<li><a class="link-dark rounded" href="A2B_data_archiving.php">{_("Archiving")}</a></li>
+							<li><a class="link-dark rounded" href="A2B_call_archiving.php">{_("Call archiving")}</a></li>
+							<li><a class="link-dark rounded" href="A2B_data_archiving.php">{_("Data archiving")}</a></li>
 							<li><a class="link-dark rounded" href="A2B_asteriskinfo.php">{"Asterisk Info"}</a></li>
 							<li><a class="link-dark rounded" href="A2B_phpsysinfo.php">{"phpSysInfo"}</a></li>
 							<li><a class="link-dark rounded" href="A2B_phpinfo.php">{"phpInfo"}</a></li>
