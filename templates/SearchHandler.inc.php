@@ -144,7 +144,7 @@ $action = http_build_query([
     </div>
 <?php endif ?>
 
-<?php $inputs = array_filter($this->search_form_elements, fn ($v) => $v["type"] !== "SELECT") ?>
+<?php $inputs = array_filter($this->search_form_elements, fn ($v) => !in_array($v["type"], ["SELECT", "BUTTON"])) ?>
 <?php foreach ($inputs as $item): ?>
     <div class="row pb-1">
         <label class="col-4 col-form-label col-form-label-sm" for="<?= $item["input"][0] ?>">
@@ -256,10 +256,20 @@ $action = http_build_query([
 <?php endif ?>
             <?php if (strlen($_SESSION[$this->search_session_key] ?? "") > 10): ?>
                 <?php if ($this->search_delete_enabled): ?>
-                    <a class="btn btn-danger" href="?deleteselected=true" onclick="return confirm('<?= "Are you sure to delete " . $this->FG_LIST_VIEW_ROW_COUNT . " selected records?" ?>')"><?= _("Delete") ?></a>
+                    <a class="btn btn-danger" href="?deleteselected=true" onclick="return confirm('<?= "Are you sure you want to delete " . $this->FG_LIST_VIEW_ROW_COUNT . " selected records?" ?>')"><?= _("Delete") ?></a>
                 <?php endif ?>
             <a class="btn btn-secondary" href="?cancelsearch=true"><?= _("Cancel") ?></a>
             <?php endif ?>
+            <?php $buttons = array_filter($this->search_form_elements, fn ($v) => $v["type"] === "BUTTON") ?>
+            <?php foreach ($buttons as $button): ?>
+            <button
+                type="submit"
+                name="<?= $button["input"][0] ?>"
+                value="<?= $button["value"] ?>"
+                class="btn <?= $button["class"] ?>"
+                onclick="<?= $button["onclick"] ?>"
+            ><?= $button["label"] ?></button>
+            <?php endforeach ?>
             <button type="submit" class="btn btn-primary"><?= _("Search") ?></button>
 <?php if ($full_modal): ?>
                 </div><!-- .modal-footer -->

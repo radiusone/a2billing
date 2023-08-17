@@ -942,6 +942,18 @@ class FormHandler
         ];
     }
 
+    public function AddSearchButton(string $name, string $label, string $value = '1', string $class = 'btn-secondary', string $onclick = ''): void
+    {
+        $this->search_form_elements[] = [
+            "input" => [$name],
+            "value" => $value,
+            "label" => $label,
+            "class" => $class,
+            "onclick" => $onclick,
+            "type" => "BUTTON",
+        ];
+    }
+
     /**
      * Sets Query fieldnames for the Edit/ADD module
      *

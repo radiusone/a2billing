@@ -39,12 +39,6 @@ use ADOConnection;
 class Connection
 {
     private static ADOConnection $DBHandler;
-    private static MytoPg $MytoPgklass;
-
-    private function __construct()
-    {
-        self::initDB();
-    }
 
     private static function initDB(): void
     {
@@ -73,21 +67,5 @@ class Connection
             self::initDB();
         }
         return self::$DBHandler;
-    }
-
-    public static function CleanExecute($QUERY)
-    {
-        $connection = self::$DBHandler;
-
-        if (DB_TYPE === "postgres") {
-            if (empty(self::$MytoPgklass)) {
-                self::$MytoPgklass = new MytoPg(0);
-            }
-
-            // convert MySQLisms to be Postgres compatible
-            self::$MytoPgklass->My_to_Pg($QUERY);
-        }
-
-        return $connection->Execute($QUERY);
     }
 }
