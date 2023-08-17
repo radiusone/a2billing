@@ -380,7 +380,7 @@ class FormHandler
         self::$Instance = $this;
         $this->FG_QUERY_TABLE_NAME = $tablename;
         $this->FG_INSTANCE_NAME = $instance_name;
-        $this->DBHandle = $DBHandle ?? Connection::GetDBHandler();
+        $this->DBHandle = $DBHandle ?? DbConnect();
         $this->FG_QUERY_PRIMARY_KEY = $primary_key;
 
         if (!empty($_POST)) {

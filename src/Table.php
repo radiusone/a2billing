@@ -386,14 +386,4 @@ class Table
 
         return $this->ExecuteQuery($DBHandle, $QUERY);
     }
-
-    public function logQuery(string $sql, float $start)
-    {
-        if (count($this->query_handler->queries) < 100) {
-            $this->query_handler->queries[] = [
-                'sql' => $sql,
-                'time' => microtime(true) - $start
-            ];
-        }
-    }
 }

@@ -274,7 +274,7 @@ if (!is_null ($order) && ($order!='') && !is_null ($sens) && ($sens!='')) {
 $QUERY = "SELECT DATE(t1.starttime) AS day, sum(t1.sessiontime) AS calltime, sum(t1.sessionbill) AS cost, count(*) as nbcall, sum(t1.buycost) AS buy FROM $FG_TABLE_NAME WHERE ".$FG_TABLE_CLAUSE." GROUP BY day ORDER BY day"; //extract(DAY from calldate)
 
 if (!$nodisplay) {
-    $res = Connection::CleanExecute($QUERY);
+    $res = $DBHandle->Execute($QUERY);
     if ($res) {
         $num = $res -> RecordCount();
         for ($i=0;$i<$num;$i++) {

@@ -157,7 +157,7 @@ $_SESSION["pr_sql_export"]="SELECT $FG_COL_QUERY FROM $FG_TABLE_NAME WHERE $FG_T
 $QUERY = "SELECT DATE(t1.date_consumption) AS day, sum(t1.used_secondes) AS used_secondes, count(*) as nbperf FROM $FG_TABLE_NAME WHERE $FG_TABLE_CLAUSE GROUP BY day ORDER BY day"; //extract(DAY from calldate)
 
 if (!$nodisplay) {
-    $res = Connection::CleanExecute($QUERY);
+    $res = $DBHandle->Execute($QUERY);
     if ($res) {
         $num = $res -> RecordCount();
         for ($i=0;$i<$num;$i++) {

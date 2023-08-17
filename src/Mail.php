@@ -132,7 +132,7 @@ class Mail
 
     public function __construct($type, $id_card = null, $lg = null, $msg = null, $title = null)
     {
-        $DBHandle = Connection::GetDBHandler();
+        $DBHandle = DbConnect();
 
         if (!empty ($type)) {
             $tmpl_table = new Table("cc_templatemail", "*");
