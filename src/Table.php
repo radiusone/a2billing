@@ -5,6 +5,7 @@ namespace A2billing;
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 use ADOConnection;
+use Profiler_Console;
 
 /**
  * This file is part of A2Billing (http://www.a2billing.net/)
@@ -128,10 +129,9 @@ class Table
         if ($cache > 0) {
             $res = $DBHandle->CacheExecute($cache, $QUERY);
         } else {
-            $start = microtime(true);
+            Profiler_Console::logQuery($QUERY);
             $res = $DBHandle->Execute($QUERY);
-            $this->query_handler->queryCount += 1;
-            $this->logQuery($QUERY, $start);
+            Profiler_Console::logQuery($QUERY);
         }
 
         if ($DBHandle->ErrorNo() != 0) {

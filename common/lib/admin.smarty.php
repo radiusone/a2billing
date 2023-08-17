@@ -2,7 +2,7 @@
 
 use A2billing\Admin;
 use A2billing\NotificationsDAO;
-use A2billing\Profiler;
+use Profiler_Profiler as Profiler;
 use A2billing\Query_trace;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
