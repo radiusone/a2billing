@@ -56,6 +56,11 @@ $(function() {
         .on("change", function(e) {
             const id = this.getAttribute("id").replace(/^enable_/, "");
             $(`#${id}`).prop("disabled", !this.checked);
+            if (id === "search_months" && this.checked) {
+                $("#enable_search_start_date, #enable_search_start_date2, #enable_search_end_date, #enable_search_end_date2").prop("checked", false).change();
+            } else if (this.checked) {
+                $("#enable_search_months").prop("checked", false).change();
+            }
         })
         .trigger("change");
 
