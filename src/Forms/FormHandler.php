@@ -2022,7 +2022,7 @@ class FormHandler
     public function create_search_button(string $content = null): string
     {
         $class = "btn-outline-primary";
-        $title = _("Search Customers");
+        $title = sprintf(_("Search %s"), $this->FG_INSTANCE_NAME);
         if (!empty($_SESSION[$this->search_session_key])) {
             $class = "btn-primary btn-search-active";
             $title .= " (" . _("search activated") . ")";

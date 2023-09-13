@@ -45,7 +45,7 @@ $action = http_build_query([
 <?php endif ?>
 
 <?php if ($this->search_date_enabled): ?>
-    <div class="row pb-1">
+    <div class="row py-1">
         <label class="col-4 col-form-label col-form-label-sm">
             <?= $this->search_date_text ?>
         </label>
@@ -85,7 +85,7 @@ $action = http_build_query([
 <?php endif ?>
 
 <?php if ($this->search_date2_enabled): ?>
-    <div class="row pb-1">
+    <div class="row py-1">
         <label class="col-4 col-form-label col-form-label-sm">
             <?= $this->search_date2_text ?>
         </label>
@@ -125,7 +125,7 @@ $action = http_build_query([
 <?php endif ?>
 
 <?php if ($this->search_months_ago_enabled): // this is only used by A2B_data_archiving.php ?>
-    <div class="row pb-1">
+    <div class="row py-1">
         <label class="col-4 col-form-label col-form-label-sm" for="search_months">
             <?php echo $this->search_months_ago_text?>
         </label>
@@ -154,7 +154,7 @@ $action = http_build_query([
 
 <?php $inputs = array_filter($this->search_form_elements, fn ($v) => !in_array($v["type"], ["SELECT", "BUTTON"])) ?>
 <?php foreach ($inputs as $item): ?>
-    <div class="row pb-1">
+    <div class="row py-1">
         <label class="col-4 col-form-label col-form-label-sm" for="<?= $item["input"][0] ?>">
             <?= $item["label"] ?>
         </label>
@@ -239,7 +239,7 @@ $action = http_build_query([
 
 <?php $selects = array_filter($this->search_form_elements, fn ($v) => $v["type"] === "SELECT") ?>
 <?php foreach (array_chunk($selects, 3) as $chunk): ?>
-    <div class="row pb-1">
+    <div class="row py-1">
     <?php foreach ($chunk as $item): ?>
         <div class="col-4">
             <select name="<?= $item["input"][0] ?>" aria-label="<?= $item["label"] ?>" class="form-select form-select-sm">
