@@ -39,15 +39,42 @@ use A2billing\Table;
 
 $menu_section = 16;
 require_once "../../common/lib/admin.defines.php";
+/**
+ * @var Smarty $smarty
+ * @var FormHandler $HD_Form
+ * @var string $popup_select
+ * @var string $popup_formname
+ * @var string $popup_fieldname
+ */
 
 Admin::checkPageAccess(Admin::ACX_MAINTENANCE);
 
+getpost_ifset([
+    "posted_search", "posted_archive", "enable_search_start_date", "search_start_date", "enable_search_end_date",
+    "search_end_date", "enable_search_start_date2", "search_start_date2", "enable_search_end_date2", "search_end_date2",
+    "enable_search_months", "search_months", 
+]);
+/**
+ * @var bool|string $posted_search whether the user has clicked the search button
+ * @var bool|string $posted_archive whether the user has clicked the archive button
+ * @var bool|string $enable_search_start_date
+ * @var string $search_start_date
+ * @var bool|string $enable_search_end_date
+ * @var string $search_end_date
+ * @var bool|string $enable_search_start_date2
+ * @var string $search_start_date2
+ * @var bool|string $enable_search_end_date2
+ * @var string $search_end_date2
+ * @var bool|string $enable_search_months
+ * @var string $search_months
+ */
+
 $HD_Form = new FormHandler("cc_card", "Customer");
-$HD_Form -> init();
+$HD_Form->init();
 
 $HD_Form->no_debug();
-$HD_Form -> FG_TABLE_DEFAULT_SENS = "ASC";
-$HD_Form -> search_session_key = 'entity_archiving_selection';
+$HD_Form->FG_TABLE_DEFAULT_SENS = "ASC";
+$HD_Form->search_session_key = 'entity_archiving_selection';
 $language_list = array();
 $language_list["0"] = array( gettext("ENGLISH"), "en");
 $language_list["1"] = array( gettext("SPANISH"), "es");
@@ -123,57 +150,65 @@ $invoiceday_list = array();
 for ($k=0;$k<=28;$k++)
     $invoiceday_list["$k"]  = array( "$k", "$k");
 
-$HD_Form -> AddViewElement(gettext("ID"), "id");
-$HD_Form -> AddViewElement(gettext("ACCOUNT NUMBER"), "username", true, 30, "display_customer_link");
-$HD_Form -> AddViewElement("<acronym title=\"" . gettext("BALANCE") . "\">" . gettext("BA") . "</acronym>", "credit", true, "", "display_2dec");
-$HD_Form -> AddViewElement(gettext("LASTNAME"), "lastname", true, 15);
-$HD_Form -> AddViewElement(gettext("STATUS"), "status", true, 0, "", "list", $cardstatus_list_acronym);
-$HD_Form -> AddViewElement(gettext("LG"), "language");
-$HD_Form -> AddViewElement(gettext("USE"), "inuse");
-$HD_Form -> AddViewElement("<acronym title=\"" . gettext("CURRENCY") . "\">" . gettext("CUR") . "</acronym>", "currency", true, 0, "", "list", $currency_list_key);
-$HD_Form -> AddViewElement(gettext("SIP"), "sip_buddy", true, 0, "", "list", $yesno);
-$HD_Form -> AddViewElement(gettext("IAX"), "iax_buddy", true, 0, "", "list", $yesno);
-$HD_Form -> AddViewElement("<acronym title=\"AMOUNT OF CALL DONE\">" . gettext("ACD") . "</acronym>", "nbused");
-$FG_COL_QUERY='id, username, credit, lastname, status, language, inuse, currency, sip_buddy, iax_buddy, nbused';
+$HD_Form->AddViewElement(gettext("ID"), "id");
+$HD_Form->AddViewElement(gettext("ACCOUNT NUMBER"), "username", true, 30, "display_customer_link");
+$HD_Form->AddViewElement("<acronym title=\"" . gettext("BALANCE") . "\">" . gettext("BA") . "</acronym>", "credit", true, "", "display_2dec");
+$HD_Form->AddViewElement(gettext("LASTNAME"), "lastname", true, 15);
+$HD_Form->AddViewElement(gettext("STATUS"), "status", true, 0, "", "list", $cardstatus_list_acronym);
+$HD_Form->AddViewElement(gettext("LG"), "language");
+$HD_Form->AddViewElement(gettext("USE"), "inuse");
+$HD_Form->AddViewElement("<acronym title=\"" . gettext("CURRENCY") . "\">" . gettext("CUR") . "</acronym>", "currency", true, 0, "", "list", $currency_list_key);
+$HD_Form->AddViewElement(gettext("SIP"), "sip_buddy", true, 0, "", "list", $yesno);
+$HD_Form->AddViewElement(gettext("IAX"), "iax_buddy", true, 0, "", "list", $yesno);
+$HD_Form->AddViewElement("<acronym title=\"AMOUNT OF CALL DONE\">" . gettext("ACD") . "</acronym>", "nbused");
+$HD_Form->FieldViewElement ('id, username, credit, lastname, status, language, inuse, currency, sip_buddy, iax_buddy, nbused');
 
-$HD_Form -> FieldViewElement ($FG_COL_QUERY);
+$HD_Form->CV_NO_FIELDS  = _("NO CUSTOMER SEARCHED!");
+$HD_Form->FG_LIST_VIEW_PAGE_SIZE = 30;
 
-$HD_Form -> CV_NO_FIELDS  = gettext("NO CUSTOMER SEARCHED!");
-$HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 30;
+$HD_Form->search_form_enabled = true;
+$HD_Form->search_form_title = gettext('Define specific criteria to search for cards created.');
+$HD_Form->search_date_enabled = true;
+$HD_Form->search_date_text = gettext('Creation date');
+$HD_Form->search_date_column = 'creationdate';
 
-$HD_Form -> search_form_enabled = true;
-$HD_Form -> search_form_title = gettext('Define specific criteria to search for cards created.');
-$HD_Form -> search_date_enabled = true;
-$HD_Form -> search_date_text = gettext('Creation date');
+$HD_Form->search_date2_enabled = true;
+$HD_Form->search_date2_text = gettext('FIRST USE DATE');
+$HD_Form->search_date2_column = 'firstusedate';
 
-$HD_Form -> search_date2_enabled = true;
-$HD_Form -> search_date2_text = gettext('FIRST USE DATE');
-$HD_Form -> search_date2_column = 'firstusedate';
-
-$HD_Form -> search_months_ago_enabled = true;
-$HD_Form -> search_months_ago_text = gettext('Select customer created more than');
-$HD_Form -> search_months_ago_column = 'creationdate';
+$HD_Form->search_months_ago_enabled = true;
+$HD_Form->search_months_ago_text = gettext('Select customer created more than');
+$HD_Form->search_months_ago_column = 'creationdate';
 
 //Select card older than : 3 Months, 4 Months, 5.... 12 Months
-$HD_Form -> AddSearchTextInput(gettext("ACCOUNT NUMBER"), 'username','usernametype');
-$HD_Form -> AddSearchTextInput(gettext("LASTNAME"),'lastname','lastnametype');
-$HD_Form -> AddSearchTextInput(gettext("LOGIN"),'useralias','useraliastype');
-$HD_Form -> AddSearchTextInput(gettext("MACADDRESS"),'mac_addr','macaddresstype');
-$HD_Form -> AddSearchTextInput(gettext("EMAIL"),'email','emailtype');
-$HD_Form -> AddSearchComparisonInput(gettext("CUSTOMER ID (SERIAL)"),'id1','id1type','id2','id2type','id');
-$HD_Form -> AddSearchComparisonInput(gettext("CREDIT"),'credit1','credit1type','credit2','credit2type','credit');
-$HD_Form -> AddSearchComparisonInput(gettext("INUSE"),'inuse1','inuse1type','inuse2','inuse2type','inuse');
+$HD_Form->AddSearchTextInput(_("Account"), 'username','usernametype');
+$HD_Form->AddSearchTextInput(_("Last name"),'lastname','lastnametype');
+$HD_Form->AddSearchTextInput(_("Login"),'useralias','useraliastype');
+$HD_Form->AddSearchTextInput(_("MAC address"),'mac_addr','macaddresstype');
+$HD_Form->AddSearchTextInput(_("Email"),'email','emailtype');
+$HD_Form->AddSearchComparisonInput(_("Card"),'id1','id1type','id2','id2type','id');
+$HD_Form->AddSearchComparisonInput(_("Credit"),'credit1','credit1type','credit2','credit2type','credit');
+$HD_Form->AddSearchComparisonInput(_("In use"),'inuse1','inuse1type','inuse2','inuse2type','inuse');
 
-$HD_Form -> AddSearchSelectInput(gettext("SELECT LANGUAGE"), "language", $language_list_r);
-$HD_Form -> AddSearchSqlSelectInput(gettext("SELECT TARIFF"), "cc_tariffgroup", "id, tariffgroupname, id", "", "tariffgroupname", "ASC", "tariff");
-$HD_Form -> AddSearchSelectInput(gettext("SELECT STATUS"), "status", $cardstatus_list_r);
-$HD_Form -> AddSearchSelectInput(gettext("SELECT ACCESS"), "simultaccess", $simultaccess_list_r);
-$HD_Form -> AddSearchSqlSelectInput(gettext("SELECT GROUP"), "cc_card_group", "id, name", "", "name", "ASC", "id_group");
-$HD_Form -> AddSearchSelectInput(gettext("SELECT CURRENCY"), "currency", $currency_list_r);
-$HD_Form -> AddSearchSelectInput(gettext("SELECT LANGUAGE"), "language", $language_list_r);
+$HD_Form->AddSearchSelectInput(_("Language"), "language", $language_list_r);
+$HD_Form->AddSearchSqlSelectInput(_("Rate plan"), "cc_tariffgroup", "id, tariffgroupname, id", "", "tariffgroupname", "ASC", "tariff");
+$HD_Form->AddSearchSelectInput(_("Status"), "status", $cardstatus_list_r);
+$HD_Form->AddSearchSelectInput(_("Access"), "simultaccess", $simultaccess_list_r);
+$HD_Form->AddSearchSqlSelectInput(_("Group"), "cc_card_group", "id, name", "", "name", "ASC", "id_group");
+$HD_Form->AddSearchSelectInput(_("Currency"), "currency", $currency_list_r);
+$HD_Form->AddSearchSelectInput(_("Language"), "language", $language_list_r);
 
-$HD_Form -> prepare_list_subselection('list');
-$HD_Form -> FG_TABLE_DEFAULT_SENS = "ASC";
+if ($posted_search === true && $posted_archive === false) {
+    $HD_Form->AddSearchButton(
+        "posted_archive",
+        "Archive Displayed Calls",
+        "true", "btn-secondary",
+        "return confirm('This action will archive the selected customers. Are you sure?')"
+    );
+}
+
+$HD_Form->prepare_list_subselection('list');
+$HD_Form->FG_TABLE_DEFAULT_SENS = "ASC";
 
 $nb_customer = 0;
 
@@ -181,7 +216,7 @@ $nb_customer = 0;
 getpost_ifset(array('archive', 'id'));
 
 if (isset($archive) && !empty($archive)) {
-    $condition = $HD_Form -> FG_QUERY_WHERE_CLAUSE;
+    $condition = $HD_Form->FG_QUERY_WHERE_CLAUSE;
     if (strlen($condition) && strpos($condition,'WHERE') === false) {
         $condition = " WHERE $condition";
     }
@@ -194,26 +229,15 @@ if (isset($archive) && !empty($archive)) {
 if (!isset($form_action))  $form_action="list"; //ask-add
 if (!isset($action)) $action = $form_action;
 
-$list = $HD_Form -> perform_action($form_action);
+$list = $HD_Form->perform_action($form_action);
 
 // #### HEADER SECTION
 $smarty->display('main.tpl');
 echo $CC_help_data_archive;
 
-if (!isset($submit)) {?>
-<script language="JavaScript" src="javascript/card.js"></script>
-<div class="toggle_hide2show">
-<center><a href="#" target="_self" class="toggle_menu"><img class="toggle_hide2show" src="<?php echo KICON_PATH; ?>/toggle_hide2show.png" onmouseover="this.style.cursor='hand';" HEIGHT="16"> <font class="fontstyle_002"><?php echo gettext("SEARCH CUSTOMERS");?> </font></a><?php if (!empty($_SESSION['entity_archiving_selection'])) { ?>&nbsp;(<font style="color:#EE6564;" > <?php echo gettext("search activated"); ?> </font> ) <?php } ?></center>
-    <div class="tohide" style="display:none;">
-
-<?php
-$HD_Form -> create_search_form();
-?>
-
-    </div>
-</div>
-
-<?php }
+if (!isset($submit)) {
+    $HD_Form->create_search_form();
+}
 
 ?>
 <center>
@@ -256,10 +280,10 @@ $HD_Form -> create_search_form();
 <?php
 
 if (isset($archive) && !empty($archive)) {
-    $HD_Form -> CV_NO_FIELDS = "";
+    $HD_Form->CV_NO_FIELDS = "";
     print "<div align=\"center\">".$archive_message."</div>";
 }
-$HD_Form -> create_form($form_action, $list);
+$HD_Form->create_form($form_action, $list);
 
 $smarty->display('footer.tpl');
 
