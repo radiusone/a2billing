@@ -102,7 +102,6 @@ class A2Billing
     /** @var int credit on the account */
     public int $credit;
     public int $tariff;
-    public string $active;
     /** @var int card status; 1=active 5=expired */
     public int $status;
     /** @var string seems to always be blank */
@@ -2545,7 +2544,6 @@ class A2Billing
 
                     $this->credit = (int)$this->agiconfig['cid_auto_create_card_credit'];
                     $this->tariff = (int)$this->agiconfig['cid_auto_create_card_tariffgroup'];
-                    $this->active = 1;
                     $this->status = 1;
                     $this->typepaid = $typepaid;
                     $this->creditlimit = (int)$this->agiconfig['cid_auto_create_card_credit_limit'];
@@ -2568,7 +2566,6 @@ class A2Billing
                 $cid_active                 = $row[2];
                 $this->credit               = (int)$row[3];
                 $this->tariff               = (int)$row[4];
-                $this->active               = $row[5];
                 $isused                     = $row[6];
                 $simultaccess               = (int)$row[7];
                 $this->typepaid             = (int)$row[8];
@@ -2738,7 +2735,6 @@ class A2Billing
 
                     $this->credit               = (int)$row[0];
                     $this->tariff               = (int)$row[1];
-                    $this->active               = $row[2];
                     $isused                     = $row[3];
                     $simultaccess               = (int)$row[4];
                     $this->typepaid             = (int)$row[5];
@@ -2922,7 +2918,6 @@ class A2Billing
 
                 $this->credit               = (int)$row[0];
                 $this->tariff               = (int)$row[1];
-                $this->active               = $row[2];
                 $isused                     = $row[3];
                 $simultaccess               = (int)$row[4];
                 $this->typepaid             = (int)$row[5];
@@ -3090,7 +3085,6 @@ class A2Billing
             $this->credit = $row["credit"];
         }
         $this->tariff               = (int)$row[1];
-        $this->active               = $row[2];
         $isused                     = $row[3];
         $simultaccess               = $row[4];
         $this->typepaid             = (int)$row[5];
