@@ -2416,8 +2416,8 @@ class A2Billing
 
         $cost = 0;
         if ($row !== false && !is_null($row)) {
-            $cost = $row[0];
-            $context = $row[1];
+            $cost = $row["flatrate"];
+            $context = $row["context"];
         }
 
         if (empty($context)) {
@@ -2470,10 +2470,10 @@ class A2Billing
 
             // NOT USE A LEFT JOIN HERE - In case the callerID is alone without card bound
             $query = "SELECT cc_callerid.cid, cc_callerid.id_cc_card, cc_callerid.activated, cc_card.credit, " .
-                    " cc_card.tariff, cc_card.activated, cc_card.inuse, cc_card.simultaccess, cc_card.typepaid, cc_card.creditlimit, " .
-                    " cc_card.language, cc_card.username, removeinterprefix, cc_card.redial, enableexpire, UNIX_TIMESTAMP(expirationdate), " .
-                    " expiredays, nbused, UNIX_TIMESTAMP(firstusedate), UNIX_TIMESTAMP(cc_card.creationdate), cc_card.currency, " .
-                    " cc_card.lastname, cc_card.firstname, cc_card.email, cc_card.uipass, cc_card.id_campaign, cc_card.id, useralias, " .
+                    " cc_card.tariff, cc_card.inuse, cc_card.simultaccess, cc_card.typepaid, cc_card.creditlimit, " .
+                    " cc_card.language, cc_card.username, removeinterprefix, cc_card.redial, enableexpire, UNIX_TIMESTAMP(expirationdate) AS expiryts, " .
+                    " expiredays, nbused, UNIX_TIMESTAMP(firstusedate) AS firstts, UNIX_TIMESTAMP(cc_card.creationdate) AS createts, cc_card.currency, " .
+                    " cc_card.lastname, cc_card.firstname, cc_card.email, cc_card.uipass, cc_card.id_campaign, cc_card.id AS id_card, useralias, " .
                     " cc_card.status, cc_card.voicemail_permitted, cc_card.voicemail_activated, cc_card.restriction, cc_country.countryprefix" .
                     " FROM cc_callerid " .
                     " LEFT JOIN cc_card ON cc_callerid.id_cc_card = cc_card.id " .
@@ -2563,36 +2563,36 @@ class A2Billing
 
             } else {
                 // authenticate OK using the callerID
-                $cid_active                 = $row[2];
-                $this->credit               = (int)$row[3];
-                $this->tariff               = (int)$row[4];
-                $isused                     = $row[6];
-                $simultaccess               = (int)$row[7];
-                $this->typepaid             = (int)$row[8];
-                $this->creditlimit          = (int)$row[9];
-                $language                   = $row[10];
-                $this->accountcode          = $row[11];
-                $this->username             = $row[11];
-                $this->removeinterprefix    = (bool)$row[12];
-                $this->redial               = $row[13];
-                $this->enableexpire         = (int)$row[14];
-                $this->expirationdate       = (int)$row[15];
-                $this->expiredays           = (int)$row[16];
-                $this->nbused               = (int)$row[17];
-                $this->firstusedate         = (int)$row[18];
-                $this->creationdate         = (int)$row[19];
-                $this->currency             = $row[20];
-                $this->cardholder_lastname  = $row[21];
-                $this->cardholder_firstname = $row[22];
-                $this->cardholder_email     = $row[23];
-                $this->cardholder_uipass    = $row[24];
-                $this->id_campaign          = (int)$row[25];
-                $this->id_card              = (int)$row[26];
-                $this->useralias            = $row[27];
-                $this->status               = (int)$row[28];
-                $this->voicemail            = $row[29] && $row[30];
-                $this->restriction          = (int)$row[31];
-                $this->countryprefix        = $row[32];
+                $cid_active                 = $row["activated"];
+                $this->credit               = (int)$row["credit"];
+                $this->tariff               = (int)$row["tariff"];
+                $isused                     = (int)$row["inuse"];
+                $simultaccess               = (int)$row["simultaccess"];
+                $this->typepaid             = (int)$row["typepaid"];
+                $this->creditlimit          = (int)$row["creditlimit"];
+                $language                   = $row["language"];
+                $this->accountcode          = $row["username"];
+                $this->username             = $row["username"];
+                $this->removeinterprefix    = (bool)$row["removeinterprefix"];
+                $this->redial               = $row["redial"];
+                $this->enableexpire         = (int)$row["enableexpire"];
+                $this->expirationdate       = (int)$row["expiryts"];
+                $this->expiredays           = (int)$row["expiredays"];
+                $this->nbused               = (int)$row["nbused"];
+                $this->firstusedate         = (int)$row["firstts"];
+                $this->creationdate         = (int)$row["createts"];
+                $this->currency             = $row["currency"];
+                $this->cardholder_lastname  = $row["lastname"];
+                $this->cardholder_firstname = $row["firstname"];
+                $this->cardholder_email     = $row["email"];
+                $this->cardholder_uipass    = $row["uipass"];
+                $this->id_campaign          = (int)$row["id_campaign"];
+                $this->id_card              = (int)$row["id_card"];
+                $this->useralias            = $row["useralias"];
+                $this->status               = (int)$row["status"];
+                $this->voicemail            = $row["voicemail_permitted"] && $row["voicemail_activated"];
+                $this->restriction          = (int)$row["restriction"];
+                $this->countryprefix        = $row["countryprefix"];
 
                 if (strlen($language) === 2 && !($this->languageselected >= 1)) {
                     $this->agi->set_variable('CHANNEL(language)', $language);
@@ -2695,11 +2695,11 @@ class A2Billing
             $this->username = $this->cardnumber = $this->accountcode;
             for ($i = 0; $i <= 0; $i++) {
                 if ($callerID_enable != 1 || !is_numeric($this->CallerID) || $this->CallerID <= 0) {
-                    $query = "SELECT credit, tariff, activated, inuse, simultaccess, typepaid, creditlimit, " .
+                    $query = "SELECT credit, tariff, inuse, simultaccess, typepaid, creditlimit, " .
                         " language, removeinterprefix, redial, enableexpire, " .
-                        " UNIX_TIMESTAMP(expirationdate), expiredays, nbused, UNIX_TIMESTAMP(firstusedate), " .
-                        " UNIX_TIMESTAMP(cc_card.creationdate), cc_card.currency, cc_card.lastname, cc_card.firstname, cc_card.email, " .
-                        " cc_card.uipass, cc_card.id_campaign, cc_card.id, useralias, status, voicemail_permitted, voicemail_activated, " .
+                        " UNIX_TIMESTAMP(expirationdate) AS expiryts, expiredays, nbused, UNIX_TIMESTAMP(firstusedate) AS firstts, " .
+                        " UNIX_TIMESTAMP(cc_card.creationdate) AS createts, cc_card.currency, cc_card.lastname, cc_card.firstname, cc_card.email, " .
+                        " cc_card.uipass, cc_card.id_campaign, cc_card.id AS id_card, useralias, status, voicemail_permitted, voicemail_activated, " .
                         " cc_card.restriction, cc_country.countryprefix " .
                         " FROM cc_card " .
                         " LEFT JOIN cc_tariffgroup ON tariff = cc_tariffgroup.id " .
@@ -2721,7 +2721,7 @@ class A2Billing
                             break;
                         }
                         $query = " SELECT cid, id_cc_card, activated FROM cc_callerid WHERE cc_callerid.cid = ? AND cc_callerid.id_cc_card = ?";
-                        $params = [$this->CallerID, $row[22]];
+                        $params = [$this->CallerID, $row["id_card"]];
                         $result_check_cid = $this->DBHandle->GetRow($query, $params);
                         $this->debug(self::DEBUG, "Query: $query", $params, $result_check_cid);
 
@@ -2733,33 +2733,33 @@ class A2Billing
                         }
                     }
 
-                    $this->credit               = (int)$row[0];
-                    $this->tariff               = (int)$row[1];
-                    $isused                     = $row[3];
-                    $simultaccess               = (int)$row[4];
-                    $this->typepaid             = (int)$row[5];
-                    $this->creditlimit          = (int)$row[6];
-                    $language                   = $row[7];
-                    $this->removeinterprefix    = (bool)$row[8];
-                    $this->redial               = $row[9];
-                    $this->enableexpire         = (int)$row[10];
-                    $this->expirationdate       = (int)$row[11];
-                    $this->expiredays           = (int)$row[12];
-                    $this->nbused               = (int)$row[13];
-                    $this->firstusedate         = (int)$row[14];
-                    $this->creationdate         = (int)$row[15];
-                    $this->currency             = $row[16];
-                    $this->cardholder_lastname  = $row[17];
-                    $this->cardholder_firstname = $row[18];
-                    $this->cardholder_email     = $row[19];
-                    $this->cardholder_uipass    = $row[20];
-                    $this->id_campaign          = (int)$row[21];
-                    $this->id_card              = (int)$row[22];
-                    $this->useralias            = $row[23];
-                    $this->status               = (int)$row[24];
-                    $this->voicemail            = $row[25] && $row[26];
-                    $this->restriction          = (int)$row[27];
-                    $this->countryprefix        = $row[28];
+                    $this->credit               = (int)$row["credit"];
+                    $this->tariff               = (int)$row["tariff"];
+                    $isused                     = (int)$row["inuse"];
+                    $simultaccess               = (int)$row["simultaccess"];
+                    $this->typepaid             = (int)$row["typepaid"];
+                    $this->creditlimit          = (int)$row["creditlimit"];
+                    $language                   = $row["language"];
+                    $this->removeinterprefix    = (bool)$row["removeinterprefix"];
+                    $this->redial               = $row["redial"];
+                    $this->enableexpire         = (int)$row["enableexpire"];
+                    $this->expirationdate       = (int)$row["expiryts"];
+                    $this->expiredays           = (int)$row["expiredays"];
+                    $this->nbused               = (int)$row["nbused"];
+                    $this->firstusedate         = (int)$row["firstts"];
+                    $this->creationdate         = (int)$row["createts"];
+                    $this->currency             = $row["currency"];
+                    $this->cardholder_lastname  = $row["lastname"];
+                    $this->cardholder_firstname = $row["firstname"];
+                    $this->cardholder_email     = $row["email"];
+                    $this->cardholder_uipass    = $row["uipass"];
+                    $this->id_campaign          = (int)$row["id_campaign"];
+                    $this->id_card              = (int)$row["id_card"];
+                    $this->useralias            = $row["useralias"];
+                    $this->status               = (int)$row["status"];
+                    $this->voicemail            = $row["voicemail_permitted"] && $row["voicemail_activated"];
+                    $this->restriction          = (int)$row["restriction"];
+                    $this->countryprefix        = $row["countryprefix"];
 
                     if ($this->typepaid == 1) {
                         $this->credit = $this->credit + $this->creditlimit;
@@ -2881,10 +2881,10 @@ class A2Billing
                 }
                 $this->accountcode = $this->username = $this->cardnumber;
 
-                $query = "SELECT credit, tariff, activated, inuse, simultaccess, typepaid, creditlimit, language, removeinterprefix, redial, " .
-                    " enableexpire, UNIX_TIMESTAMP(expirationdate), expiredays, nbused, UNIX_TIMESTAMP(firstusedate), " .
-                    " UNIX_TIMESTAMP(cc_card.creationdate), cc_card.currency, cc_card.lastname, cc_card.firstname, cc_card.email, " .
-                    " cc_card.uipass, cc_card.id, cc_card.id_campaign, cc_card.id, useralias, status, voicemail_permitted, " .
+                $query = "SELECT credit, tariff, inuse, simultaccess, typepaid, creditlimit, language, removeinterprefix, redial, " .
+                    " enableexpire, UNIX_TIMESTAMP(expirationdate) AS expiryts, expiredays, nbused, UNIX_TIMESTAMP(firstusedate) AS firstts, " .
+                    " UNIX_TIMESTAMP(cc_card.creationdate) AS createts, cc_card.currency, cc_card.lastname, cc_card.firstname, cc_card.email, " .
+                    " cc_card.uipass, cc_card.id_campaign, cc_card.id AS id_card, useralias, status, voicemail_permitted, " .
                     " voicemail_activated, cc_card.restriction, cc_country.countryprefix " .
                     " FROM cc_card LEFT JOIN cc_tariffgroup ON tariff = cc_tariffgroup.id " .
                     " LEFT JOIN cc_country ON cc_card.country = cc_country.countrycode " .
@@ -2905,7 +2905,7 @@ class A2Billing
                         continue;
                     }
                     $query = " SELECT cid, id_cc_card, activated FROM cc_callerid WHERE cc_callerid.cid = ? AND cc_callerid.id_cc_card = ?";
-                    $params = [$this->CallerID, $row[23]];
+                    $params = [$this->CallerID, $row["id_card"]];
                     $result_check_cid = $this->DBHandle->GetRow($query, $params);
                     $this->debug(self::DEBUG, "Query: $query", $params, $result_check_cid);
 
@@ -2916,34 +2916,33 @@ class A2Billing
                     }
                 }
 
-                $this->credit               = (int)$row[0];
-                $this->tariff               = (int)$row[1];
-                $isused                     = $row[3];
-                $simultaccess               = (int)$row[4];
-                $this->typepaid             = (int)$row[5];
-                $this->creditlimit          = (int)$row[6];
-                $language                   = $row[7];
-                $this->removeinterprefix    = (bool)$row[8];
-                $this->redial               = $row[9];
-                $this->enableexpire         = (int)$row[10];
-                $this->expirationdate       = (int)$row[11];
-                $this->expiredays           = (int)$row[12];
-                $this->nbused               = (int)$row[13];
-                $this->firstusedate         = (int)$row[14];
-                $this->creationdate         = (int)$row[15];
-                $this->currency             = $row[16];
-                $this->cardholder_lastname  = $row[17];
-                $this->cardholder_firstname = $row[18];
-                $this->cardholder_email     = $row[19];
-                $this->cardholder_uipass    = $row[20];
-                $the_card_id                = $row[21];
-                $this->id_campaign          = (int)$row[22];
-                $this->id_card              = (int)$row[23];
-                $this->useralias            = $row[24];
-                $this->status               = (int)$row[25];
-                $this->voicemail            = $row[26] && $row[27];
-                $this->restriction          = (int)$row[28];
-                $this->countryprefix        = $row[29];
+                $this->credit               = (int)$row["credit"];
+                $this->tariff               = (int)$row["tariff"];
+                $isused                     = (int)$row["inuse"];
+                $simultaccess               = (int)$row["simultaccess"];
+                $this->typepaid             = (int)$row["typepaid"];
+                $this->creditlimit          = (int)$row["creditlimit"];
+                $language                   = $row["language"];
+                $this->removeinterprefix    = (bool)$row["removeinterprefix"];
+                $this->redial               = $row["redial"];
+                $this->enableexpire         = (int)$row["enableexpire"];
+                $this->expirationdate       = (int)$row["expiryts"];
+                $this->expiredays           = (int)$row["expiredays"];
+                $this->nbused               = (int)$row["nbused"];
+                $this->firstusedate         = (int)$row["firstts"];
+                $this->creationdate         = (int)$row["createts"];
+                $this->currency             = $row["currency"];
+                $this->cardholder_lastname  = $row["lastname"];
+                $this->cardholder_firstname = $row["firstname"];
+                $this->cardholder_email     = $row["email"];
+                $this->cardholder_uipass    = $row["uipass"];
+                $this->id_campaign          = (int)$row["id_campaign"];
+                $this->id_card              = (int)$row["id_card"];
+                $this->useralias            = $row["useralias"];
+                $this->status               = (int)$row["status"];
+                $this->voicemail            = $row["voicemail_permitted"] && $row["voicemail_activated"];
+                $this->restriction          = (int)$row["restriction"];
+                $this->countryprefix        = $row["countryprefix"];
 
                 if ($this->typepaid == 1) {
                     $this->credit = $this->credit + $this->creditlimit;
@@ -3001,14 +3000,14 @@ class A2Billing
                 if ($this->agiconfig['cid_enable'] && $this->agiconfig['cid_auto_assign_card_to_cid'] && is_numeric($this->CallerID) && $this->CallerID > 0 && !$this->ask_other_cardnumber && !$this->update_callerid) {
 
                     $query = "SELECT count(*) FROM cc_callerid WHERE id_cc_card = ?";
-                    $params = [$the_card_id];
+                    $params = [$this->id_card];
                     $count = $this->DBHandle->GetOne($query, $params);
                     $this->debug(self::DEBUG, "Query: $query", $params, $count);
 
                     // CHECK IF THE AMOUNT OF CALLERID IS LESS THAN THE LIMIT
                     if ($count !== false && $count < $this->config["webcustomerui"]['limit_callerid']) {
                         $query = "INSERT INTO cc_callerid cid, id_cc_card VALUES(?, ?)";
-                        $params = [$this->CallerID, $the_card_id];
+                        $params = [$this->CallerID, $this->id_card];
                         $result = $this->DBHandle->Execute($query, $params);
                         $this->debug(self::DEBUG, "Query: $query", $params);
                         if ($result === false) {
@@ -3028,7 +3027,7 @@ class A2Billing
                 if ($this->update_callerid && strlen($this->CallerID) > 1 && $this->ask_other_cardnumber) {
                     $this->ask_other_cardnumber = false;
                     $query = "UPDATE cc_callerid SET id_cc_card = ? WHERE cid = ?";
-                    $params = [$the_card_id, $this->CallerID];
+                    $params = [$this->id_card, $this->CallerID];
                     $this->DBHandle->Execute($query, $params);
                     $this->debug(self::DEBUG, "Query: $query", $params);
                 }
@@ -3062,8 +3061,8 @@ class A2Billing
 
     public function callingcard_ivr_authenticate_light(?string &$error_msg, int $simbalance = 0): bool
     {
-        $query = "SELECT credit, tariff, activated, inuse, simultaccess, typepaid, creditlimit, language, removeinterprefix, redial, enableexpire, " .
-                    " UNIX_TIMESTAMP(expirationdate), expiredays, nbused, UNIX_TIMESTAMP(firstusedate), UNIX_TIMESTAMP(cc_card.creationdate), " .
+        $query = "SELECT credit, tariff, inuse, simultaccess, typepaid, creditlimit, language, removeinterprefix, redial, enableexpire, " .
+                    " UNIX_TIMESTAMP(expirationdate) AS expiryts, expiredays, nbused, UNIX_TIMESTAMP(firstusedate) AS firstts, UNIX_TIMESTAMP(cc_card.creationdate) AS createts, " .
                     " cc_card.currency, cc_card.lastname, cc_card.firstname, cc_card.email, cc_card.uipass, cc_card.id_campaign, status, " .
                     " voicemail_permitted, voicemail_activated, cc_card.restriction, cc_country.countryprefix " .
                     " FROM cc_card LEFT JOIN cc_tariffgroup ON tariff = cc_tariffgroup.id " .
@@ -3084,29 +3083,29 @@ class A2Billing
         } else {
             $this->credit = $row["credit"];
         }
-        $this->tariff               = (int)$row[1];
-        $isused                     = $row[3];
-        $simultaccess               = $row[4];
-        $this->typepaid             = (int)$row[5];
-        $this->creditlimit          = (int)$row[6];
-        $this->removeinterprefix    = (bool)$row[8];
-        $this->redial               = $row[9];
-        $this->enableexpire         = (int)$row[10];
-        $this->expirationdate       = (int)$row[11];
-        $this->expiredays           = (int)$row[12];
-        $this->nbused               = (int)$row[13];
-        $this->firstusedate         = (int)$row[14];
-        $this->creationdate         = (int)$row[15];
-        $this->currency             = $row[16];
-        $this->cardholder_lastname  = $row[17];
-        $this->cardholder_firstname = $row[18];
-        $this->cardholder_email     = $row[19];
-        $this->cardholder_uipass    = $row[20];
-        $this->id_campaign          = (int)$row[21];
-        $this->status               = (int)$row[22];
-        $this->voicemail            = $row[23] && $row[24];
-        $this->restriction          = (int)$row[25];
-        $this->countryprefix        = $row[26];
+        $this->tariff               = (int)$row["credit"];
+        $isused                     = (int)$row["inuse"];
+        $simultaccess               = (int)$row["simultaccess"];
+        $this->typepaid             = (int)$row["typepaid"];
+        $this->creditlimit          = (int)$row["creditlimit"];
+        $this->removeinterprefix    = (bool)$row["removeinterprefix"];
+        $this->redial               = $row["redial"];
+        $this->enableexpire         = (int)$row["enableexpire"];
+        $this->expirationdate       = (int)$row["expiryts"];
+        $this->expiredays           = (int)$row["expiredays"];
+        $this->nbused               = (int)$row["nbused"];
+        $this->firstusedate         = (int)$row["firstts"];
+        $this->creationdate         = (int)$row["createts"];
+        $this->currency             = $row["currency"];
+        $this->cardholder_lastname  = $row["lastname"];
+        $this->cardholder_firstname = $row["firstname"];
+        $this->cardholder_email     = $row["email"];
+        $this->cardholder_uipass    = $row["uipass"];
+        $this->id_campaign          = (int)$row["id_campaign"];
+        $this->status               = (int)$row["status"];
+        $this->voicemail            = $row["voicemail_permitted"] && $row["voicemail_activated"];
+        $this->restriction          = (int)$row["restriction"];
+        $this->countryprefix        = $row["countryprefix"];
 
         $error_msg = "";
         if ($this->typepaid == 1) {
@@ -3185,15 +3184,15 @@ class A2Billing
             return false;
         }
 
-        $query = "SELECT sum(sessiontime), count(*) FROM cc_call WHERE card_id = ?";
+        $query = "SELECT SUM(sessiontime) AS sessionsum, COUNT(*) AS sessioncount FROM cc_call WHERE card_id = ?";
         $params = [$this->id_card];
         $row = $this->DBHandle->GetRow($query, $params);
         $this->debug(self::DEBUG, "Query: $query", $params, $row);
         if ($row === false || $row === []) {
             return false;
         }
-        $sessiontime_for_card = $row[0];
-        $calls_for_card = $row[1];
+        $sessiontime_for_card = $row["sessionsum"];
+        $calls_for_card = $row["sessioncount"];
 
         $find_deck = false;
         $accumul_seconds = 0;
