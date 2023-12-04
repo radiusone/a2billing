@@ -847,9 +847,9 @@ class A2Billing
             $this->debug(self::INFO, "[CALL 2 DID]");
             $query = <<< SQL
                 SELECT cc_did.id, iduser
-                FROM cc_did, cc_card
+                FROM cc_did
+                    JOIN cc_card ON cc_card.id = cc_did.iduser
                 WHERE cc_card.status=1
-                    AND cc_card.id = iduser
                     AND cc_did.activated = 1
                     AND did = ?
                     AND cc_did.startingdate<= CURRENT_TIMESTAMP
@@ -891,10 +891,13 @@ class A2Billing
             $this->fct_say_balance($this->credit);
 
             // Retrieve this customer's FT2C package details
-            $query = "SELECT freetimetocall, packagetype, billingtype, startday, id_cc_package_offer " .
-                    "FROM cc_card RIGHT JOIN cc_tariffgroup ON cc_tariffgroup.id = cc_card.tariff " .
-                    "RIGHT JOIN cc_package_offer ON cc_package_offer.id = cc_tariffgroup.id_cc_package_offer " .
-                    "WHERE cc_card.id = ?";
+            $query = <<< SQL
+                SELECT freetimetocall, packagetype, billingtype, startday, id_cc_package_offer
+                FROM cc_card
+                    RIGHT JOIN cc_tariffgroup ON cc_tariffgroup.id = cc_card.tariff
+                    RIGHT JOIN cc_package_offer ON cc_package_offer.id = cc_tariffgroup.id_cc_package_offer
+                WHERE cc_card.id = ?
+                SQL;
             $params = [$this->id_card];
             $row = $this->DBHandle->GetRow($query, $params);
             $this->debug(self::DEBUG, "Query: $query", $params, $row);
@@ -1032,10 +1035,10 @@ class A2Billing
 
 
     /**
-    * Function call_sip_iax_buddy : make the Sip/IAX free calls
-    *
-    *  @return 1 if Ok ; -1 if error
-    **/
+     * Function call_sip_iax_buddy : make the Sip/IAX free calls
+     *
+     * @return int 1 if Ok ; -1 if error
+     */
     public function call_sip_iax_buddy(): int
     {
         if (
@@ -1064,7 +1067,7 @@ class A2Billing
         $dialstatus = null;
         $dest_username = "";
 
-        $query = "SELECT name, cc_card.username FROM cc_iax_buddies, cc_card WHERE cc_iax_buddies.id_cc_card = cc_card.id AND useralias = ?";
+        $query = "SELECT name, cc_card.username FROM cc_iax_buddies JOIN cc_card ON id_cc_card = cc_card.id WHERE useralias = ?";
         $params = [$this->destination];
         $row = $this->DBHandle->GetRow($query, $params);
         $this->debug(self::DEBUG, "Query: $query", $params, $row);
@@ -1075,7 +1078,7 @@ class A2Billing
         }
 
         $card_alias = $this->destination;
-        $query = "SELECT name, cc_card.username FROM cc_sip_buddies, cc_card WHERE cc_sip_buddies.id_cc_card = cc_card.id AND useralias = ?";
+        $query = "SELECT name, cc_card.username FROM cc_sip_buddies JOIN cc_card ON id_cc_card = cc_card.id WHERE useralias = ?";
         $params = [$this->destination];
         $row = $this->DBHandle->GetRow($query, $params);
         $this->debug(self::DEBUG, "Query: $query", $params, $row);
@@ -1163,7 +1166,15 @@ class A2Billing
             if ($answeredtime > 0) {
                 $this->debug(self::DEBUG, "[CC_RATE_ENGINE_UPDATESYSTEM: (answeredtime=$answeredtime :: dialstatus=$dialstatus)]");
 
-                $query = "INSERT INTO cc_call (uniqueid, sessionid, card_id, nasipaddress, starttime, sessiontime, calledstation, terminatecauseid, stoptime, sessionbill, id_tariffplan, id_ratecard, id_trunk, src, sipiax $this->CDR_CUSTOM_SQL) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP - INTERVAL ? SECOND, ?, ?, ?, now(), '0', '0', '0', '0', ?, '1' $this->CDR_CUSTOM_VAL)";
+                $query = <<<SQL
+                    INSERT INTO cc_call (
+                        uniqueid, sessionid, card_id, nasipaddress, starttime, sessiontime, calledstation, terminatecauseid,
+                        stoptime, sessionbill, id_tariffplan, id_ratecard, id_trunk, src, sipiax $this->CDR_CUSTOM_SQL
+                    )
+                    VALUES (
+                        ?, ?, ?, ?, CURRENT_TIMESTAMP - INTERVAL ? SECOND, ?, ?, ?, CURRENT_TIMESTAMP, '0', '0', '0', '0', ?, '1' $this->CDR_CUSTOM_VAL
+                    )
+                    SQL;
                 $params = [$this->uniqueid, $this->channel, $this->id_card, $this->hostname, $answeredtime, $answeredtime, $card_alias, $terminatecauseid, $this->CallerID];
                 $this->DBHandle->Execute($query, $params);
                 $this->debug(self::DEBUG, "Query: $query", $params);
@@ -1305,9 +1316,15 @@ class A2Billing
 
                     $terminatecauseid = $this->dialstatus_rev_list[$dialstatus] ?? 0;
 
-                    $query = "INSERT INTO cc_call (uniqueid, sessionid, card_id, nasipaddress, starttime, sessiontime, calledstation, " .
-                        " terminatecauseid, stoptime, sessionbill, id_tariffgroup, id_tariffplan, id_ratecard, id_trunk, src, sipiax $this->CDR_CUSTOM_SQL) VALUES " .
-                        "(?, ?, ?, ?, CURRENT_TIMESTAMP - INTERVAL ? SECOND, ?, ?, ?, now(), '0', '0', '0', '0', '0', ?, '3' $this->CDR_CUSTOM_VAL)";
+                    $query = <<<SQL
+                        INSERT INTO cc_call (
+                            uniqueid, sessionid, card_id, nasipaddress, starttime, sessiontime, calledstation, terminatecauseid,
+                            stoptime, sessionbill, id_tariffgroup, id_tariffplan, id_ratecard, id_trunk, src, sipiax $this->CDR_CUSTOM_SQL
+                        )
+                        VALUES (
+                            ?, ?, ?, ?, CURRENT_TIMESTAMP - INTERVAL ? SECOND, ?, ?, ?, CURRENT_TIMESTAMP, '0', '0', '0', '0', '0', ?, '3' $this->CDR_CUSTOM_VAL
+                        )
+                        SQL;
 
                     $params = [$this->uniqueid, $this->channel, $this->id_card, $this->hostname, $answeredtime, $answeredtime, $dest["destination"], $terminatecauseid, $this->CallerID];
                     $this->DBHandle->Execute($query, $params);
@@ -1394,7 +1411,6 @@ class A2Billing
     public function call_2did(array $listdestination)
     {
         $card_number = $this->username; // username of the caller
-        $nbused = $this->nbused;
         $dialstatus = null;
         $new_username = '';
         $connection_charge = (float)$listdestination[0]["connection_charge"];
@@ -1562,15 +1578,37 @@ class A2Billing
                         /* CDR A-LEG OF DID CALL */
                         $cdr_dest = $listdestination[0]["did"];
                     }
-                    $query = "INSERT INTO cc_call (uniqueid, sessionid, card_id, nasipaddress, starttime, sessiontime, calledstation, terminatecauseid, stoptime, sessionbill, id_tariffgroup, id_tariffplan, id_ratecard, id_trunk, src, sipiax $this->CDR_CUSTOM_SQL) " .
-                        "VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP - INTERVAL ? SECOND, ?, ?, ?, now(), ?, '0', '0', '0', '0', ?, '3' $this->CDR_CUSTOM_VAL)";
-                    $params = [$this->uniqueid, $this->channel, $this->id_card, $this->hostname, $answeredtime, $answeredtime, $cdr_dest, $terminatecauseid, $cost, $this->CallerID];
+                    $query = <<< SQL
+                        INSERT INTO cc_call (
+                            uniqueid, sessionid, card_id, nasipaddress, starttime, sessiontime, calledstation, terminatecauseid, 
+                            stoptime, sessionbill, id_tariffgroup, id_tariffplan, id_ratecard, id_trunk, src, sipiax $this->CDR_CUSTOM_SQL
+                        )
+                        VALUES (
+                            ?, ?, ?, ?, CURRENT_TIMESTAMP - INTERVAL ? SECOND, ?, ?, ?, CURRENT_TIMESTAMP, ?, '0', '0', '0', '0', ?, '3' $this->CDR_CUSTOM_VAL
+                        )
+                        SQL;
+                    $params = [
+                        $this->uniqueid,
+                        $this->channel,
+                        $this->id_card,
+                        $this->hostname,
+                        $answeredtime,
+                        $answeredtime,
+                        $cdr_dest,
+                        $terminatecauseid,
+                        $cost,
+                        $this->CallerID,
+                    ];
                     $this->DBHandle->Execute($query, $params);
                     $this->debug(self::DEBUG, "Query: $query", $params);
 
                     // Update the account
-                    $firstuse = $nbused ? "" : "firstusedate = now(),";
-                    $query = "UPDATE cc_card SET credit= credit - ?, lastuse = now(), $firstuse nbused = nbused + 1 WHERE username = ?";
+                    $query = <<<SQL
+                        UPDATE cc_card
+                        SET credit = credit - ?, lastuse = CURRENT_TIMESTAMP, nbused = nbused + 1,
+                            firstusedate = IF(nbused > 0, firstusedate, CURRENT_TIMESTAMP)
+                        WHERE username = ?
+                        SQL;
                     $params = [a2b_round(abs($cost)), $card_number];
                     $this->DBHandle->Execute($query, $params);
                     $this->debug(self::DEBUG, "Query: $query", $params);
@@ -1652,14 +1690,25 @@ class A2Billing
                         /* CDR A-LEG OF DID CALL */
                         $cdr_dest = $listdestination[0]["did"];
                     }
-                    $query = "INSERT INTO cc_call (uniqueid, sessionid, card_id, nasipaddress, starttime, sessiontime, calledstation, terminatecauseid, stoptime, sessionbill, id_tariffgroup, id_tariffplan, id_ratecard, id_trunk, src, sipiax $this->CDR_CUSTOM_SQL) " .
-                        "VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP - INTERVAL ? SECOND, ?, ?, ?, now(), ?, '0', '0', '0', '0', ?, '3' $this->CDR_CUSTOM_VAL)";
+                    $query = <<<SQL
+                        INSERT INTO cc_call (
+                            uniqueid, sessionid, card_id, nasipaddress, starttime, sessiontime, calledstation, terminatecauseid,
+                            stoptime, sessionbill, id_tariffgroup, id_tariffplan, id_ratecard, id_trunk, src, sipiax $this->CDR_CUSTOM_SQL
+                        )
+                        VALUES (
+                            ?, ?, ?, ?, CURRENT_TIMESTAMP - INTERVAL ? SECOND, ?, ?, ?, CURRENT_TIMESTAMP, ?, '0', '0', '0', '0', ?, '3' $this->CDR_CUSTOM_VAL
+                        )
+                        SQL;
                     $params = [$this->uniqueid, $this->channel, $this->id_card, $this->hostname, $answeredtime, $answeredtime, $cdr_dest, $terminatecauseid, $cost, $this->CallerID];
                     $this->DBHandle->Execute($query, $params);
                     $this->debug(self::DEBUG, "Query: $query", $params);
 
-                    $firstuse = $nbused ? "" : "firstusedate = now(),";
-                    $query = "UPDATE cc_card SET credit= credit - ? , lastuse = now(), $firstuse nbused = nbused + 1 WHERE username = ?";
+                    $query = <<<SQL
+                        UPDATE cc_card
+                        SET credit= credit - ? , lastuse = CURRENT_TIMESTAMP, nbused = nbused + 1,
+                            firstusedate = IF(nbused > 0, firstusedate, CURRENT_TIMESTAMP)
+                        WHERE username = ?
+                        SQL;
                     $params = [a2b_round(abs($cost)), $card_number];
                     $this->DBHandle->Execute($query, $params);
                     $this->debug(self::DEBUG, "Query: $query", $params);
@@ -1797,10 +1846,15 @@ class A2Billing
             $aleg_carrier_cost = 0;
             $aleg_retail_cost = 0;
         }
-        $QUERY_COLUMN = " uniqueid, sessionid, card_id, nasipaddress, starttime, sessiontime, real_sessiontime, calledstation, terminatecauseid, stoptime, sessionbill, id_tariffgroup, id_tariffplan, id_ratecard, id_trunk, src, sipiax, buycost, dnid";
-        $calltype = '7'; // DID-ALEG
-        $query = "INSERT INTO cc_call ($QUERY_COLUMN $this->CDR_CUSTOM_SQL) " .
-            "VALUES (?, ?, ?, ?, NOW() - INTERVAL ? SECOND, ?, ?, ?, ?, NOW(), ?, 0, 0, 0, 0, ?, ?, ?, ? $this->CDR_CUSTOM_VAL)";
+        $query = <<< SQL
+            INSERT INTO cc_call (
+                uniqueid, sessionid, card_id, nasipaddress, starttime, sessiontime, real_sessiontime, calledstation, terminatecauseid, 
+                stoptime, sessionbill, id_tariffgroup, id_tariffplan, id_ratecard, id_trunk, src, sipiax, buycost, dnid $this->CDR_CUSTOM_SQL
+            )
+            VALUES (
+                ?, ?, ?, ?, CURRENT_TIMESTAMP - INTERVAL ? SECOND, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, 0, 0, 0, 0, ?, 7, ?, ? $this->CDR_CUSTOM_VAL
+            )
+            SQL;
         $params = [
             $this->uniqueid,
             $this->channel,
@@ -1813,7 +1867,6 @@ class A2Billing
             $terminatecauseid,
             a2b_round($aleg_retail_cost),
             $this->CallerID,
-            $calltype,
             $aleg_carrier_cost,
             $this->dnid
         ];
@@ -1887,11 +1940,13 @@ class A2Billing
     }
 
     /**
-    * Function to play the balance
-    * format : "you have 100 dollars and 28 cents"
-    *
-    * @param float $credit
-    **/
+     * Function to play the balance
+     * format : "you have 100 dollars and 28 cents"
+     *
+     * @param float $credit
+     * @param bool $fromvoucher
+     * @return string
+     */
     public function fct_say_balance(float $credit, bool $fromvoucher = false): string
     {
         if (isset($this->agiconfig['agi_force_currency']) && strlen($this->agiconfig['agi_force_currency']) == 3) {
@@ -2147,7 +2202,7 @@ class A2Billing
             } else {
                 // DISABLE THE VOUCHER
                 $add_credit = $row["credit"] * $this->currencies_list[strtoupper($row["currency"])];
-                $query = "UPDATE cc_voucher SET activated = 'f', usedcardnumber = ?, used = 1, usedate = now() WHERE voucher = ?";
+                $query = "UPDATE cc_voucher SET activated = 'f', usedcardnumber = ?, used = 1, usedate = CURRENT_TIMESTAMP WHERE voucher = ?";
                 $params = [$this->accountcode, $vouchernumber];
                 $this->DBHandle->Execute($query, $params);
                 $this->debug(self::DEBUG, "Query: $query", $params);
@@ -2215,7 +2270,6 @@ class A2Billing
             }
 
             $yearmonth = sprintf("%s-%02d", $year_month, $startday);
-            $CLAUSE_DATE = " date_consumption >= ?";
             $clause_param = $yearmonth;
         } else {
             // PROCESSING FOR WEEKLY
@@ -2228,12 +2282,16 @@ class A2Billing
                 $dayofweek = $dayofweek + 7;
             }
             $diffday = $dayofweek - $startday;
-            $CLAUSE_DATE = "date_consumption >= NOW() - INTERVAL ? DAY ";
             $clause_param = $diffday;
         }
-        $query = "SELECT COUNT(*), SUM(used_secondes) FROM cc_card_package_offer " .
-                "WHERE $CLAUSE_DATE AND id_cc_card = ? AND id_cc_package_offer = ?";
-        $params = [$clause_param, $id_cc_card, $id_cc_package_offer];
+        $query = <<<SQL
+            SELECT COUNT(*), SUM(used_secondes)
+            FROM cc_card_package_offer
+            WHERE date_consumption >= IF(? = 0, ?, CURRENT_TIMESTAMP - INTERVAL ? DAY)
+                AND id_cc_card = ?
+                AND id_cc_package_offer = ?
+            SQL;
+        $params = [$billingtype, $clause_param, $id_cc_card, $id_cc_package_offer];
         $result = $this->DBHandle->GetRow($query, $params);
         $this->debug(self::DEBUG, "Query: $query", $params, $result);
         if ($result !== false && $result !== []) {
@@ -2298,27 +2356,33 @@ class A2Billing
         $san = strtoupper($this->agiconfig['cid_sanitize']);
 
         if ($san === 'CID' || $san === 'BOTH') {
-            $query = "SELECT cc_callerid.cid " .
-                " FROM cc_callerid " .
-                " JOIN cc_card ON cc_callerid.id_cc_card = cc_card.id " .
-                " WHERE (cc_callerid.activated = 1 OR cc_callerid.activated = 't') AND cc_card.username = ?" .
-                "ORDER BY 1";
+            $query = <<< SQL
+                SELECT cc_callerid.cid
+                FROM cc_callerid
+                    JOIN cc_card ON cc_callerid.id_cc_card = cc_card.id
+                WHERE (cc_callerid.activated = 1 OR cc_callerid.activated = 't')
+                    AND cc_card.username = ?
+                ORDER BY 1
+                SQL;
             $params = [$this->username];
             $result1 = $this->DBHandle->GetCol($query, $params);
             $this->debug(self::DEBUG, "Query: $query", $params, $result1);
         }
 
         if ($san === "DID" || $san === "BOTH") {
-            $query = "SELECT cc_did.did " .
-                " FROM cc_did " .
-                " JOIN cc_did_destination ON cc_did_destination.id_cc_did = cc_did.id " .
-                " JOIN cc_card ON cc_did_destination.id_cc_card = cc_card.id " .
-                " WHERE (cc_did.activated = 1 OR cc_did.activated = 't') AND " .
-                " cc_did_destination.activated = 1 AND cc_did.startingdate <= NOW() " .
-                " AND cc_did.expirationdate >= NOW()" .
-                " AND cc_card.username = ?" .
-                " AND cc_did_destination.validated = 1" .
-                " ORDER BY 1";
+            $query = <<<SQL
+                SELECT cc_did.did
+                FROM cc_did
+                    JOIN cc_did_destination ON cc_did_destination.id_cc_did = cc_did.id
+                    JOIN cc_card ON cc_did_destination.id_cc_card = cc_card.id
+                WHERE (cc_did.activated = 1 OR cc_did.activated = 't')
+                    AND cc_did_destination.activated = 1
+                    AND cc_did.startingdate <= CURRENT_TIMESTAMP
+                    AND cc_did.expirationdate >= CURRENT_TIMESTAMP
+                    AND cc_card.username = ?
+                    AND cc_did_destination.validated = 1
+                ORDER BY 1
+                SQL;
             $params = [$this->username];
             $result2 = $this->DBHandle->GetCol($query, $params);
             $this->debug(self::DEBUG, "Query: $query", $params, $result2);
@@ -2411,7 +2475,16 @@ class A2Billing
         $campaign_id= $this->agi->get_variable("CAMPAIGN_ID", true);
         $this->debug(self::DEBUG, "[MODE CAMPAIGN CALLBACK: USERNAME=$username USERID=$userid ]");
 
-        $query = "SELECT cc_campaign_config.flatrate, cc_campaign_config.context FROM cc_card, cc_card_group, cc_campaignconf_cardgroup, cc_campaign_config, cc_campaign WHERE cc_card.id = ? AND cc_card.id_group = cc_card_group.id AND cc_campaignconf_cardgroup.id_card_group = cc_card_group.id AND cc_campaignconf_cardgroup.id_campaign_config = cc_campaign_config.id AND cc_campaign.id = ? AND cc_campaign.id_campaign_config = cc_campaign_config.id";
+        $query = <<< SQL
+            SELECT cc_campaign_config.flatrate, cc_campaign_config.context
+            FROM cc_card
+                JOIN cc_card_group ON cc_card.id_group = cc_card_group.id
+                JOIN cc_campaignconf_cardgroup ON cc_campaignconf_cardgroup.id_card_group = cc_card_group.id
+                JOIN cc_campaign_config ON cc_campaign_config.id = cc_campaignconf_cardgroup.id_campaign_config
+                JOIN cc_campaign ON cc_campaign.id_campaign_config = cc_campaign_config.id
+            WHERE cc_card.id = ?
+                AND cc_campaign.id = ?
+            SQL;
         $params = [$userid, $campaign_id];
         $row = $this->DBHandle->GetRow($query, $params);
         $this->debug(self::DEBUG, "Query: $query", $params, $row);
@@ -2427,7 +2500,7 @@ class A2Billing
         }
 
         //update balance
-        $query = "UPDATE cc_card SET credit = credit + ?, lastuse = now() WHERE username = ?";
+        $query = "UPDATE cc_card SET credit = credit + ?, lastuse = CURRENT_TIMESTAMP WHERE username = ?";
         $params = [a2b_round($cost), $username];
         $this->DBHandle->Execute($query, $params);
         $this->debug(self::DEBUG, "Query: $query", $params);
@@ -2440,8 +2513,10 @@ class A2Billing
         $duration = time() - $now;
         ///create campaign cdr
         $query = <<< SQL
-            INSERT INTO cc_call (uniqueid, sessionid, card_id, calledstation, sipiax, sessionbill, sessiontime, stoptime, starttime $this->CDR_CUSTOM_SQL)
-            VALUES (?, ?, ?, ?, 6, ?, ?, CURRENT_TIMESTAMP , NOW() - INTERVAL ? SECOND $this->CDR_CUSTOM_VAL)
+            INSERT INTO cc_call (
+                uniqueid, sessionid, card_id, calledstation, sipiax, sessionbill, sessiontime, stoptime, starttime $this->CDR_CUSTOM_SQL
+            )
+            VALUES (?, ?, ?, ?, 6, ?, ?, CURRENT_TIMESTAMP , CURRENT_TIMESTAMP - INTERVAL ? SECOND $this->CDR_CUSTOM_VAL)
             SQL;
         $params = [
             $this->uniqueid,
@@ -2454,7 +2529,6 @@ class A2Billing
         ];
         $this->DBHandle->Execute($query, $params);
         $this->debug(self::DEBUG, "Query: $query", $params);
-
     }
 
     public function callingcard_ivr_authenticate(): bool
@@ -2473,17 +2547,20 @@ class A2Billing
             $this->debug(self::DEBUG, "[CID_ENABLE - CID_CONTROL - CID:" . $this->CallerID . "]");
 
             // NOT USE A LEFT JOIN HERE - In case the callerID is alone without card bound
-            $query = "SELECT cc_callerid.cid, cc_callerid.id_cc_card, cc_callerid.activated, cc_card.credit, " .
-                    " cc_card.tariff, cc_card.inuse, cc_card.simultaccess, cc_card.typepaid, cc_card.creditlimit, " .
-                    " cc_card.language, cc_card.username, removeinterprefix, cc_card.redial, enableexpire, UNIX_TIMESTAMP(expirationdate) AS expiryts, " .
-                    " expiredays, nbused, UNIX_TIMESTAMP(firstusedate) AS firstts, UNIX_TIMESTAMP(cc_card.creationdate) AS createts, cc_card.currency, " .
-                    " cc_card.lastname, cc_card.firstname, cc_card.email, cc_card.uipass, cc_card.id_campaign, cc_card.id AS id_card, useralias, " .
-                    " cc_card.status, cc_card.voicemail_permitted, cc_card.voicemail_activated, cc_card.restriction, cc_country.countryprefix" .
-                    " FROM cc_callerid " .
-                    " LEFT JOIN cc_card ON cc_callerid.id_cc_card = cc_card.id " .
-                    " LEFT JOIN cc_tariffgroup ON cc_card.tariff = cc_tariffgroup.id " .
-                    " LEFT JOIN cc_country ON cc_card.country = cc_country.countrycode " .
-                    " WHERE cc_callerid.cid = ?";
+            $query = <<< SQL
+                SELECT cc_callerid.cid, cc_callerid.id_cc_card, cc_callerid.activated, cc_card.credit, cc_card.tariff, cc_card.inuse,
+                    cc_card.simultaccess, cc_card.typepaid, cc_card.creditlimit, cc_card.language, cc_card.username, removeinterprefix,
+                    cc_card.redial, enableexpire, UNIX_TIMESTAMP(expirationdate) AS expiryts, expiredays, nbused,
+                    UNIX_TIMESTAMP(firstusedate) AS firstts, UNIX_TIMESTAMP(cc_card.creationdate) AS createts, cc_card.currency,
+                    cc_card.lastname, cc_card.firstname, cc_card.email, cc_card.uipass, cc_card.id_campaign, cc_card.id AS id_card,
+                    useralias, cc_card.status, cc_card.voicemail_permitted, cc_card.voicemail_activated, cc_card.restriction,
+                    cc_country.countryprefix
+                FROM cc_callerid 
+                    LEFT JOIN cc_card ON cc_callerid.id_cc_card = cc_card.id
+                    LEFT JOIN cc_tariffgroup ON cc_card.tariff = cc_tariffgroup.id
+                    LEFT JOIN cc_country ON cc_card.country = cc_country.countrycode
+                WHERE cc_callerid.cid = ?
+                SQL;
             $params = [$this->CallerID];
             $row = $this->DBHandle->GetRow($query, $params);
             $this->debug(self::DEBUG, "Query: $query", $params, $row);
@@ -2517,21 +2594,29 @@ class A2Billing
                     $typepaid = ($this->agiconfig['cid_auto_create_card_typepaid'] === "POSTPAID") ? 1 : 0;
 
                     //CREATE A CARD
-                    $QUERY_FIELDS = 'username, useralias, uipass, credit, language, tariff, activated, typepaid, creditlimit, inuse, status, currency';
-                    $QUERY_VALUES = "?, ?, ?, ?, 'en', ?, 't', ?, ?, 0, 1, ?";
-                    $params = [$card_gen, $card_alias, $uipass, $this->agiconfig['cid_auto_create_card_credit'], $this->agiconfig['cid_auto_create_card_tariffgroup'], $typepaid, $this->agiconfig['cid_auto_create_card_credit_limit'], $this->config['global']['base_currency']];
-
+                    $query = <<< SQL
+                        INSERT INTO cc_card (
+                            username, useralias, uipass, credit, language, tariff, typepaid, creditlimit, inuse, status, currency
+                        )
+                        VALUES(?, ?, ?, ?, 'en', ?, ?, ?, 0, 1, ?)
+                        SQL;
+                    $params = [
+                        $card_gen,
+                        $card_alias,
+                        $uipass,
+                        $this->agiconfig['cid_auto_create_card_credit'],
+                        $this->agiconfig['cid_auto_create_card_tariffgroup'],
+                        $typepaid, $this->agiconfig['cid_auto_create_card_credit_limit'],
+                        $this->config['global']['base_currency'],
+                    ];
                     if ($this->group_mode) {
-                        $QUERY_FIELDS .= ", id_group";
-                        $QUERY_VALUES .= " , ?";
+                        $query = str_replace(["currency", "?)"], ["currency, id_group", "?, ?)"], $query);
                         $params[] = $this->group_id;
                     }
-
-                    $query = "INSERT INTO cc_card $QUERY_FIELDS VALUES($QUERY_VALUES)";
                     $this->DBHandle->Execute($query, $params);
                     $this->debug(self::DEBUG, "Query: $query", $params);
                     $result = $this->DBHandle->Insert_ID();
-                    $this->debug(self::INFO, "[CARDNUMBER:$card_gen]:[CREATED:$result]:[QUERY_VALUES:$QUERY_VALUES]");
+                    $this->debug(self::INFO, "[CARDNUMBER:$card_gen]:[CREATED:$result]");
 
                     //CREATE A CARD AND AN INSTANCE IN CC_CALLERID
                     $query = "INSERT INTO cc_callerid (cid, id_cc_card) VALUES(?, ?)";
@@ -2699,16 +2784,18 @@ class A2Billing
             $this->username = $this->cardnumber = $this->accountcode;
             for ($i = 0; $i <= 0; $i++) {
                 if ($callerID_enable != 1 || !is_numeric($this->CallerID) || $this->CallerID <= 0) {
-                    $query = "SELECT credit, tariff, inuse, simultaccess, typepaid, creditlimit, " .
-                        " language, removeinterprefix, redial, enableexpire, " .
-                        " UNIX_TIMESTAMP(expirationdate) AS expiryts, expiredays, nbused, UNIX_TIMESTAMP(firstusedate) AS firstts, " .
-                        " UNIX_TIMESTAMP(cc_card.creationdate) AS createts, cc_card.currency, cc_card.lastname, cc_card.firstname, cc_card.email, " .
-                        " cc_card.uipass, cc_card.id_campaign, cc_card.id AS id_card, useralias, status, voicemail_permitted, voicemail_activated, " .
-                        " cc_card.restriction, cc_country.countryprefix " .
-                        " FROM cc_card " .
-                        " LEFT JOIN cc_tariffgroup ON tariff = cc_tariffgroup.id " .
-                        " LEFT JOIN cc_country ON cc_card.country = cc_country.countrycode " .
-                        " WHERE username = ?";
+                    $query = <<<SQL
+                        SELECT credit, tariff, inuse, simultaccess, typepaid, creditlimit, language, removeinterprefix,
+                            redial, enableexpire, UNIX_TIMESTAMP(expirationdate) AS expiryts, expiredays, nbused, 
+                            UNIX_TIMESTAMP(firstusedate) AS firstts, UNIX_TIMESTAMP(cc_card.creationdate) AS createts,
+                            cc_card.currency, cc_card.lastname, cc_card.firstname, cc_card.email, cc_card.uipass,
+                            cc_card.id_campaign, cc_card.id AS id_card, useralias, status, voicemail_permitted,
+                            voicemail_activated, cc_card.restriction, cc_country.countryprefix
+                        FROM cc_card
+                            LEFT JOIN cc_tariffgroup ON tariff = cc_tariffgroup.id
+                            LEFT JOIN cc_country ON cc_card.country = cc_country.countrycode
+                        WHERE username = ?
+                        SQL;
                     $params = [$this->cardnumber];
                     $row = $this->DBHandle->GetRow($query, $params);
                     $this->debug(self::DEBUG, "Query: $query", $params, $row);
@@ -2724,7 +2811,7 @@ class A2Billing
                             $res = -2;
                             break;
                         }
-                        $query = " SELECT cid, id_cc_card, activated FROM cc_callerid WHERE cc_callerid.cid = ? AND cc_callerid.id_cc_card = ?";
+                        $query = " SELECT cid, id_cc_card, activated FROM cc_callerid WHERE cid = ? AND id_cc_card = ?";
                         $params = [$this->CallerID, $row["id_card"]];
                         $result_check_cid = $this->DBHandle->GetRow($query, $params);
                         $this->debug(self::DEBUG, "Query: $query", $params, $result_check_cid);
@@ -2885,14 +2972,17 @@ class A2Billing
                 }
                 $this->accountcode = $this->username = $this->cardnumber;
 
-                $query = "SELECT credit, tariff, inuse, simultaccess, typepaid, creditlimit, language, removeinterprefix, redial, " .
-                    " enableexpire, UNIX_TIMESTAMP(expirationdate) AS expiryts, expiredays, nbused, UNIX_TIMESTAMP(firstusedate) AS firstts, " .
-                    " UNIX_TIMESTAMP(cc_card.creationdate) AS createts, cc_card.currency, cc_card.lastname, cc_card.firstname, cc_card.email, " .
-                    " cc_card.uipass, cc_card.id_campaign, cc_card.id AS id_card, useralias, status, voicemail_permitted, " .
-                    " voicemail_activated, cc_card.restriction, cc_country.countryprefix " .
-                    " FROM cc_card LEFT JOIN cc_tariffgroup ON tariff = cc_tariffgroup.id " .
-                    " LEFT JOIN cc_country ON cc_card.country = cc_country.countrycode " .
-                    " WHERE username = ?";
+                $query = <<<SQL
+                    SELECT credit, tariff, inuse, simultaccess, typepaid, creditlimit, language, removeinterprefix, redial, enableexpire,
+                        UNIX_TIMESTAMP(expirationdate) AS expiryts, expiredays, nbused, UNIX_TIMESTAMP(firstusedate) AS firstts,
+                        UNIX_TIMESTAMP(cc_card.creationdate) AS createts, cc_card.currency, cc_card.lastname, cc_card.firstname,
+                        cc_card.email, cc_card.uipass, cc_card.id_campaign, cc_card.id AS id_card, useralias, status, voicemail_permitted,
+                        voicemail_activated, cc_card.restriction, cc_country.countryprefix
+                    FROM cc_card
+                        LEFT JOIN cc_tariffgroup ON tariff = cc_tariffgroup.id
+                        LEFT JOIN cc_country ON cc_card.country = cc_country.countrycode
+                    WHERE username = ?
+                    SQL;
                 $params = [$this->cardnumber];
                 $row = $this->DBHandle->GetRow($query, $params);
                 $this->debug(self::DEBUG, "Query: $query", $params, $row);
@@ -2908,7 +2998,7 @@ class A2Billing
                         $this->debug(self::DEBUG, "prepaid-auth-fail");
                         continue;
                     }
-                    $query = " SELECT cid, id_cc_card, activated FROM cc_callerid WHERE cc_callerid.cid = ? AND cc_callerid.id_cc_card = ?";
+                    $query = " SELECT cid, id_cc_card, activated FROM cc_callerid WHERE cid = ? AND id_cc_card = ?";
                     $params = [$this->CallerID, $row["id_card"]];
                     $result_check_cid = $this->DBHandle->GetRow($query, $params);
                     $this->debug(self::DEBUG, "Query: $query", $params, $result_check_cid);
@@ -3003,7 +3093,7 @@ class A2Billing
                 //CREATE AN INSTANCE IN CC_CALLERID
                 if ($this->agiconfig['cid_enable'] && $this->agiconfig['cid_auto_assign_card_to_cid'] && is_numeric($this->CallerID) && $this->CallerID > 0 && !$this->ask_other_cardnumber && !$this->update_callerid) {
 
-                    $query = "SELECT count(*) FROM cc_callerid WHERE id_cc_card = ?";
+                    $query = "SELECT COUNT(*) FROM cc_callerid WHERE id_cc_card = ?";
                     $params = [$this->id_card];
                     $count = $this->DBHandle->GetOne($query, $params);
                     $this->debug(self::DEBUG, "Query: $query", $params, $count);
@@ -3065,13 +3155,17 @@ class A2Billing
 
     public function callingcard_ivr_authenticate_light(?string &$error_msg, int $simbalance = 0): bool
     {
-        $query = "SELECT credit, tariff, inuse, simultaccess, typepaid, creditlimit, language, removeinterprefix, redial, enableexpire, " .
-                    " UNIX_TIMESTAMP(expirationdate) AS expiryts, expiredays, nbused, UNIX_TIMESTAMP(firstusedate) AS firstts, UNIX_TIMESTAMP(cc_card.creationdate) AS createts, " .
-                    " cc_card.currency, cc_card.lastname, cc_card.firstname, cc_card.email, cc_card.uipass, cc_card.id_campaign, status, " .
-                    " voicemail_permitted, voicemail_activated, cc_card.restriction, cc_country.countryprefix " .
-                    " FROM cc_card LEFT JOIN cc_tariffgroup ON tariff = cc_tariffgroup.id " .
-                    " LEFT JOIN cc_country ON cc_card.country = cc_country.countrycode " .
-                    " WHERE username = ?";
+        $query = <<<SQL
+            SELECT credit, tariff, inuse, simultaccess, typepaid, creditlimit, language, removeinterprefix, redial, enableexpire,
+                UNIX_TIMESTAMP(expirationdate) AS expiryts, expiredays, nbused, UNIX_TIMESTAMP(firstusedate) AS firstts,
+                UNIX_TIMESTAMP(cc_card.creationdate) AS createts, cc_card.currency, cc_card.lastname, cc_card.firstname,
+                cc_card.email, cc_card.uipass, cc_card.id_campaign, status, voicemail_permitted, voicemail_activated, 
+                cc_card.restriction, cc_country.countryprefix
+            FROM cc_card
+                LEFT JOIN cc_tariffgroup ON tariff = cc_tariffgroup.id
+                LEFT JOIN cc_country ON cc_card.country = cc_country.countrycode
+            WHERE username = ?
+            SQL;
         $params = [$this->cardnumber];
         $row = $this->DBHandle->GetRow($query, $params);
         $this->debug(self::DEBUG, "Query: $query", $params, $row);

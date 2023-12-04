@@ -4,6 +4,7 @@ namespace A2billing;
 
 use A2billing\PhpAgi\Agi;
 use ADORecordSet;
+use DateTime;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -136,7 +137,7 @@ class RateEngine
         // justification at http://forum.asterisk2billing.org/viewtopic.php?p=9620#9620
         $max_len_prefix = min(strlen($phonenumber), 15); // don't match more than 15 digits (the most I have on my side is 8 digit prefixes)
         $prefix_params = [];
-        $prefixclause = '(';
+        $prefixclause = "(";
         while ($max_len_prefix > 0) {
             $prefixclause .= "dialprefix=? OR ";
             $prefix_params[] = substr($phonenumber, 0, $max_len_prefix);
@@ -148,44 +149,74 @@ class RateEngine
         // POSIX equivalents, and test each of them against the dialed number
         $prefixclause .= " OR (dialprefix LIKE '&_%' ESCAPE '&' AND ? ";
         $prefixclause .= "REGEXP REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(CONCAT('^', dialprefix, '$'), ";
-        $prefixclause .= "'X', '[0-9]'), 'Z', '[1-9]'), 'N', '[2-9]'), '.', '.+'), '_', ''))";
+        $prefixclause .= "'X', '[0-9]'), 'Z', '[1-9]'), 'N', '[2-9]'), '.', '.+'), '_', '')";
         $prefix_params[] = $phonenumber;
 
         // select group by 5 ... more easy to count
-        $QUERY = "SELECT
-        tariffgroupname, lcrtype, idtariffgroup, cc_tariffgroup_plan.idtariffplan, tariffname,
-        destination, cc_ratecard.id AS ratecard_id, dialprefix, destination, buyrate,
-        buyrateinitblock, buyrateincrement, rateinitial, initblock, billingblock,
-        connectcharge, disconnectcharge, stepchargea, chargea, timechargea,
-        billingblocka, stepchargeb, chargeb, timechargeb, billingblockb,
-        stepchargec, chargec, timechargec, billingblockc,
-        cc_tariffplan.id_trunk AS tp_id_trunk,
-        tp_trunk.trunkprefix AS tp_trunkprefix, tp_trunk.providertech AS tp_providertech, tp_trunk.providerip AS tp_providerip, tp_trunk.removeprefix AS tp_removeprefix,
-        cc_ratecard.id_trunk AS rt_id_trunk,
-        rt_trunk.trunkprefix AS rt_trunkprefix, rt_trunk.providertech AS rt_providertech, rt_trunk.providerip AS rt_providerip, rt_trunk.removeprefix AS rt_removeprefix, musiconhold,
-        tp_trunk.failover_trunk AS tp_failover_trunk, rt_trunk.failover_trunk AS rt_failover_trunk, tp_trunk.addparameter AS tp_addparameter_trunk, rt_trunk.addparameter AS rt_addparameter_trunk, id_outbound_cidgroup,
-        id_cc_package_offer, tp_trunk.status, rt_trunk.status AS rt_status, tp_trunk.inuse AS tp_inuse, rt_trunk.inuse AS rt_inuse,
-        tp_trunk.maxuse AS tp_maxuse, rt_trunk.maxuse AS rt_maxuse, tp_trunk.if_max_use AS tp_if_max_use, rt_trunk.if_max_use AS rt_if_max_use, cc_ratecard.rounding_calltime AS rounding_calltime,
-        cc_ratecard.rounding_threshold AS rounding_threshold, cc_ratecard.additional_block_charge AS additional_block_charge, cc_ratecard.additional_block_charge_time AS additional_block_charge_time,
-        cc_ratecard.additional_grace AS additional_grace, cc_ratecard.minimal_cost AS minimal_cost, disconnectcharge_after, announce_time_correction
-
+        $QUERY = <<<SQL
+            SELECT tariffgroupname, lcrtype, idtariffgroup, cc_tariffgroup_plan.idtariffplan, tariffname, destination, 
+                cc_ratecard.id AS ratecard_id, dialprefix, destination, buyrate, buyrateinitblock, buyrateincrement, rateinitial,
+                initblock, billingblock, connectcharge, disconnectcharge, stepchargea, chargea, timechargea, billingblocka,
+                stepchargeb, chargeb, timechargeb, billingblockb, stepchargec, chargec, timechargec, billingblockc,
+                cc_tariffplan.id_trunk AS tp_id_trunk, tp_trunk.trunkprefix AS tp_trunkprefix, tp_trunk.providertech AS tp_providertech,
+                tp_trunk.providerip AS tp_providerip, tp_trunk.removeprefix AS tp_removeprefix, cc_ratecard.id_trunk AS rt_id_trunk,
+                rt_trunk.trunkprefix AS rt_trunkprefix, rt_trunk.providertech AS rt_providertech, rt_trunk.providerip AS rt_providerip,
+                rt_trunk.removeprefix AS rt_removeprefix, musiconhold, tp_trunk.failover_trunk AS tp_failover_trunk,
+                rt_trunk.failover_trunk AS rt_failover_trunk, tp_trunk.addparameter AS tp_addparameter_trunk,
+                rt_trunk.addparameter AS rt_addparameter_trunk, id_outbound_cidgroup, id_cc_package_offer, tp_trunk.status,
+                rt_trunk.status AS rt_status, tp_trunk.inuse AS tp_inuse, rt_trunk.inuse AS rt_inuse, tp_trunk.maxuse AS tp_maxuse,
+                rt_trunk.maxuse AS rt_maxuse, tp_trunk.if_max_use AS tp_if_max_use, rt_trunk.if_max_use AS rt_if_max_use,
+                cc_ratecard.rounding_calltime AS rounding_calltime, cc_ratecard.rounding_threshold AS rounding_threshold,
+                cc_ratecard.additional_block_charge AS additional_block_charge,
+                cc_ratecard.additional_block_charge_time AS additional_block_charge_time, cc_ratecard.additional_grace AS additional_grace,
+                cc_ratecard.minimal_cost AS minimal_cost, disconnectcharge_after, announce_time_correction
         FROM cc_tariffgroup
-        RIGHT JOIN cc_tariffgroup_plan ON cc_tariffgroup_plan.idtariffgroup = cc_tariffgroup.id
-        INNER JOIN cc_tariffplan ON (cc_tariffplan.id = cc_tariffgroup_plan.idtariffplan)
-        LEFT JOIN cc_ratecard ON cc_ratecard.idtariffplan = cc_tariffplan.id
-        LEFT JOIN cc_trunk AS rt_trunk ON cc_ratecard.id_trunk = rt_trunk.id_trunk
-        LEFT JOIN cc_trunk AS tp_trunk ON cc_tariffplan.id_trunk = tp_trunk.id_trunk
+            RIGHT JOIN cc_tariffgroup_plan ON cc_tariffgroup_plan.idtariffgroup = cc_tariffgroup.id
+            INNER JOIN cc_tariffplan ON (cc_tariffplan.id = cc_tariffgroup_plan.idtariffplan)
+            LEFT JOIN cc_ratecard ON cc_ratecard.idtariffplan = cc_tariffplan.id
+            LEFT JOIN cc_trunk AS rt_trunk ON cc_ratecard.id_trunk = rt_trunk.id_trunk
+            LEFT JOIN cc_trunk AS tp_trunk ON cc_tariffplan.id_trunk = tp_trunk.id_trunk
 
-        WHERE ($prefixclause) AND cc_tariffgroup.id = ?
-        AND startingdate <= CURRENT_TIMESTAMP AND (expirationdate > CURRENT_TIMESTAMP OR expirationdate IS NULL)
-        AND startdate <= CURRENT_TIMESTAMP AND (stopdate > CURRENT_TIMESTAMP OR stopdate IS NULL)
-        AND (starttime <= ? AND endtime >= ?)
-        AND idtariffgroup = ?
-        AND (dnidprefix = SUBSTRING(?, 1, length(dnidprefix)) OR (dnidprefix = 'all' AND 0 = (SELECT COUNT(dnidprefix) FROM cc_tariffgroup_plan RIGHT JOIN cc_tariffplan ON cc_tariffgroup_plan.idtariffplan = cc_tariffplan.id WHERE dnidprefix = SUBSTRING(?, 1, length(dnidprefix)) AND idtariffgroup = ?)))
-        AND (calleridprefix = SUBSTRING(?, 1, length(calleridprefix)) OR (calleridprefix = 'all' AND 0 = (SELECT count(calleridprefix) FROM cc_tariffgroup_plan RIGHT JOIN cc_tariffplan ON cc_tariffgroup_plan.idtariffplan = cc_tariffplan.id WHERE calleridprefix = SUBSTRING(?, 1, length(calleridprefix)) AND idtariffgroup = ?)))
-        ORDER BY LENGTH(dialprefix) DESC";
+        WHERE ($prefixclause)
+            AND cc_tariffgroup.id = ?
+            AND startingdate <= CURRENT_TIMESTAMP
+            AND (expirationdate > CURRENT_TIMESTAMP OR expirationdate IS NULL)
+            AND startdate <= CURRENT_TIMESTAMP
+            AND (stopdate > CURRENT_TIMESTAMP OR stopdate IS NULL)
+            AND (starttime <= AND endtime >= ?)
+            AND idtariffgroup = ?
+            AND (
+                dnidprefix = SUBSTRING(?, 1, LENGTH(dnidprefix))
+                OR (
+                    dnidprefix = 'all'
+                    AND 0 = (SELECT COUNT(dnidprefix) FROM cc_tariffgroup_plan RIGHT JOIN cc_tariffplan ON cc_tariffgroup_plan.idtariffplan = cc_tariffplan.id WHERE dnidprefix = SUBSTRING(?, 1, length(dnidprefix)) AND idtariffgroup = ?)
+                )
+            )
+            AND (
+                calleridprefix = SUBSTRING(?, 1, length(calleridprefix))
+                OR (
+                    calleridprefix = 'all'
+                    AND 0 = (SELECT COUNT(calleridprefix) FROM cc_tariffgroup_plan RIGHT JOIN cc_tariffplan ON cc_tariffgroup_plan.idtariffplan = cc_tariffplan.id WHERE calleridprefix = SUBSTRING(?, 1, length(calleridprefix)) AND idtariffgroup = ?)
+                )
+            )
+        ORDER BY LENGTH(dialprefix) DESC
+        SQL;
 
-        $params = array_merge($prefix_params, [$tariffgroupid, $minutes_since_monday, $minutes_since_monday, $tariffgroupid, $mydnid, $mydnid, $tariffgroupid, $mycallerid, $tariffgroupid, $mycallerid]);
+        $params = array_merge(
+            $prefix_params,
+            [
+                $tariffgroupid,
+                $minutes_since_monday,
+                $minutes_since_monday,
+                $tariffgroupid,
+                $mydnid,
+                $mydnid,
+                $tariffgroupid,
+                $mycallerid,
+                $tariffgroupid,
+                $mycallerid,
+            ]
+        );
         $result = $this->a2b->DBHandle->GetAll($QUERY, $params);
 
         if ($result === false || $result === []) {
@@ -1119,15 +1150,14 @@ class RateEngine
                 $this->rate_engine_calculcost($sessiontime);
 
                 $query = "INSERT INTO cc_card_package_offer (id_cc_card, id_cc_package_offer, used_secondes) VALUES (?, ?, ?)";
-                $id_card_package_offer = $this->a2b->DBHandle->Execute($query, [$this->a2b->id_card, $id_package_offer, $this->freetimetocall_used]);
+                $params = [$this->a2b->id_card, $id_package_offer, $this->freetimetocall_used];
+                $result = $this->a2b->DBHandle->Execute($query, $params);
+                $this->a2b->debug(A2Billing::DEBUG, "Query: $query", $params);
                 $this->a2b->debug(
                     A2Billing::INFO,
-                    ":[ID_CARD_PACKAGE_OFFER CREATED : " . ($id_card_package_offer instanceof ADORecordSet ? "ok"
-                        : $this->a2b->DBHandle->ErrorMsg()) . "]"
+                    ":[ID_CARD_PACKAGE_OFFER CREATED : " . ($result instanceof ADORecordSet ? "ok" : $this->a2b->DBHandle->ErrorMsg()) . "]"
                 );
-
             } else {
-
                 $this->rate_engine_calculcost($sessiontime);
                 // rate_engine_calculcost could have change the duration of the call
 
@@ -1153,15 +1183,7 @@ class RateEngine
         }
         $buycost = abs($this->lastbuycost);
 
-        if ($cost < 0) {
-            $signe = '-';
-            $signe_cc_call = '+';
-        } else {
-            $signe = '+';
-            $signe_cc_call = '-';
-        }
-
-        $this->a2b->debug(A2Billing::DEBUG, "[CC_RATE_ENGINE_UPDATESYSTEM: usedratecard K=$K - (sessiontime=$sessiontime :: dialstatus=$dialstatus :: buycost=$buycost :: cost=$cost : signe_cc_call=$signe_cc_call: signe=$signe)]");
+        $this->a2b->debug(A2Billing::DEBUG, "[CC_RATE_ENGINE_UPDATESYSTEM: usedratecard K=$K - (sessiontime=$sessiontime :: dialstatus=$dialstatus :: buycost=$buycost :: cost=$cost)]");
 
         $dialstatus_rev_list = ["ANSWER" => 1, "BUSY" => 2, "NOANSWER" => 3, "CANCEL" => 4, "CONGESTION" => 5, "CHANUNAVAIL" => 6, "DONTCALL" => 7, "TORTURE" => 8, "INVALIDARGS" => 9];
         $terminatecauseid = $dialstatus_rev_list[$dialstatus] ?? 0;
@@ -1193,10 +1215,38 @@ class RateEngine
             $starttime = "SUBDATE(CURRENT_TIMESTAMP, INTERVAL ? SECOND) ";
             $stoptime = "now()";
         }
-        $QUERY_COLUMN = "uniqueid, sessionid, card_id, nasipaddress, starttime, sessiontime, real_sessiontime, calledstation, terminatecauseid, stoptime, sessionbill, id_tariffgroup, id_tariffplan, id_ratecard, id_trunk, src, sipiax, buycost, id_card_package_offer, dnid, destination {$this->a2b->CDR_CUSTOM_SQL}";
-        $QUERY = "INSERT INTO cc_call ($QUERY_COLUMN) VALUES ";
-        $QUERY .= "(?, ?, ?, ?, $starttime, ?, ?, ?, ?, $stoptime, ? * ${signe_cc_call}1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? {$this->a2b->CDR_CUSTOM_VAL})";
-        $params = [$this->a2b->uniqueid, $this->a2b->channel, $card_id, $this->a2b->hostname, $sessiontime, $sessiontime, $real_sessiontime, $calledstation, $terminatecauseid, a2b_round(abs($cost)), $id_tariffgroup, $id_tariffplan, $id_ratecard, $trunk_id, $this->a2b->CallerID, $calltype, $buycost, $id_card_package_offer, $this->a2b->dnid, $calldestination];
+        $QUERY_COLUMN = "";
+        $QUERY = <<<SQL
+            INSERT INTO cc_call (
+                uniqueid, sessionid, card_id, nasipaddress, starttime, sessiontime, real_sessiontime, calledstation, 
+                terminatecauseid, stoptime, sessionbill, id_tariffgroup, id_tariffplan, id_ratecard, id_trunk, src, 
+                sipiax, buycost, id_card_package_offer, dnid, destination $this->a2b->CDR_CUSTOM_SQL
+            )
+            VALUES (
+                ?, ?, ?, ?, $starttime, ?, ?, ?, ?, $stoptime, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? $this->a2b->CDR_CUSTOM_VAL
+            )
+            SQL;
+        $params = [
+            $this->a2b->uniqueid,
+            $this->a2b->channel,
+            $card_id,
+            $this->a2b->hostname,
+            $sessiontime,
+            $sessiontime,
+            $real_sessiontime,
+            $calledstation,
+            $terminatecauseid,
+            a2b_round($cost * -1),
+            $id_tariffgroup,
+            $id_tariffplan,
+            $id_ratecard,
+            $trunk_id,
+            $this->a2b->CallerID,
+            $calltype,
+            $buycost,
+            $id_card_package_offer,
+            $this->a2b->dnid, $calldestination,
+        ];
 
         if ($this->a2b->config["global"]['cache_enabled']) {
              //insert query in the cache system
@@ -1221,30 +1271,33 @@ class RateEngine
 
         if ($sessiontime > 0) {
 
-            $params = [a2b_round($cost)];
-            if (!$didcall && !$callback) {
-                $redial_clause = ", redial=?";
+            $params = [a2b_round($cost), (int)$didcall + (int)$callback];
+            if ((int)$didcall + (int)$callback === 0) {
                 $params[] = $calledstation;
-            } else {
-                $redial_clause = '';
             }
-            $firstuse_clause = $this->a2b->nbused > 0 ? "" : ", firstusedate = NOW(),";
             $params[] = $this->a2b->username;
 
             //Update the global credit
             $this->a2b->credit = $this->a2b->credit + $cost;
 
-            $QUERY = "UPDATE cc_card SET credit = credit + ? $redial_clause, lastuse = NOW() $firstuse_clause, nbused = nbused + 1 WHERE username = ?";
-            $this->a2b->debug(A2Billing::DEBUG, "[CC_asterisk_stop 1.2: SQL: $QUERY]");
-            $this->a2b->DBHandle->Execute($QUERY, $params);
+            $query = <<< SQL
+                UPDATE cc_card
+                SET credit = credit + ?, redial = IF(? = 0, ?, redial), lastuse = CURRENT_TIMESTAMP, 
+                    firstusedate = IF(nbused > 0, firstusedate, CURRENT_TIMESTAMP), nbused = nbused + 1
+                WHERE username = ?
+                SQL;
+            $this->a2b->DBHandle->Execute($query, $params);
+            $this->a2b->debug(A2Billing::DEBUG, "Query: $query", $params);
 
-            $QUERY = "UPDATE cc_trunk SET secondusedreal = secondusedreal + ? WHERE id_trunk = ?";
-            $this->a2b->debug(A2Billing::DEBUG, $QUERY);
-            $this->a2b->DBHandle->Execute($QUERY, [$sessiontime, $this->usedtrunk]);
+            $query = "UPDATE cc_trunk SET secondusedreal = secondusedreal + ? WHERE id_trunk = ?";
+            $params = [$sessiontime, $this->usedtrunk];
+            $this->a2b->DBHandle->Execute($query, $params);
+            $this->a2b->debug(A2Billing::DEBUG, "Query: $query", $params);
 
-            $QUERY = "UPDATE cc_tariffplan SET secondusedreal = secondusedreal + ? WHERE id = ?";
-            $this->a2b->debug(A2Billing::DEBUG, $QUERY);
-            $this->a2b->DBHandle->Execute($QUERY, [$sessiontime, $id_tariffplan]);
+            $query = "UPDATE cc_tariffplan SET secondusedreal = secondusedreal + ? WHERE id = ?";
+            $params = [$sessiontime, $id_tariffplan];
+            $this->a2b->DBHandle->Execute($query, $params);
+            $this->a2b->debug(A2Billing::DEBUG, "Query: $query", $params);
         }
     }
 
@@ -1357,8 +1410,10 @@ class RateEngine
             // Dial(IAX2/guest@misery.digium.com/s@default)
             //$myres = $agi->agi_exec("EXEC DIAL SIP/3465078XXXXX@254.20.7.28|30|HL(" . ($timeout * 60 * 1000) . ":60000:30000)");
 
-            $QUERY = "SELECT cid FROM cc_outbound_cid_list WHERE activated = 1 AND outbound_cid_group = ? ORDER BY RAND() LIMIT 1";
-            $outcid = $this->a2b->DBHandle->GetOne($QUERY, [$cidgroupid]) ?: 0;
+            $query = "SELECT cid FROM cc_outbound_cid_list WHERE activated = 1 AND outbound_cid_group = ? ORDER BY RAND() LIMIT 1";
+            $params = [$cidgroupid];
+            $outcid = $this->a2b->DBHandle->GetOne($query, $params) ?: 0;
+            $this->a2b->debug(A2Billing::DEBUG, "Query: $query", $params);
             if ($outcid) {
                 # Uncomment this line if you want to save the outbound_cid in the CDR
                 //$this->a2b->CallerID = $outcid;
@@ -1407,8 +1462,11 @@ class RateEngine
 
                 $destination = $old_destination;
 
-                $QUERY = "SELECT trunkprefix, providertech, providerip, removeprefix, failover_trunk, status, inuse, maxuse, if_max_use FROM cc_trunk WHERE id_trunk = ?";
-                $row = $this->a2b->DBHandle->GetRow($QUERY, [$failover_trunk]);
+                $query = "SELECT trunkprefix, providertech, providerip, removeprefix, failover_trunk, status, inuse, maxuse, if_max_use FROM cc_trunk WHERE id_trunk = ?";
+                $params = [$failover_trunk];
+                $row = $this->a2b->DBHandle->GetRow($query, $params);
+                $this->a2b->debug(A2Billing::DEBUG, "Query: $query", $params);
+
 
                 if ($row !== false && $row !== []) {
 
