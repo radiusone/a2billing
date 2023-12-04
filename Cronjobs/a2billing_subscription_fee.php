@@ -102,8 +102,8 @@ $instance_table = new Table();
 */
 
 $QUERY = 'SELECT count(*) FROM cc_card INNER JOIN cc_card_subscription ON cc_card.id = cc_card_subscription.id_cc_card INNER JOIN cc_subscription_service ON cc_card_subscription.id_subscription_fee=cc_subscription_service.id' .
-' WHERE cc_subscription_service.status=1 AND cc_card_subscription.startdate < NOW() AND (cc_card_subscription.stopdate = "0000-00-00 00:00:00" OR cc_card_subscription.stopdate > NOW())'.
-' AND cc_subscription_service.startdate < NOW() AND (cc_subscription_service.stopdate = "0000-00-00 00:00:00" OR cc_subscription_service.stopdate > NOW()) AND cc_card_subscription.paid_status !=3';
+' WHERE cc_subscription_service.status=1 AND cc_card_subscription.startdate < NOW() AND (cc_card_subscription.stopdate IS NULL OR cc_card_subscription.stopdate > NOW())'.
+' AND cc_subscription_service.startdate < NOW() AND (cc_subscription_service.stopdate IS NULL OR cc_subscription_service.stopdate > NOW()) AND cc_card_subscription.paid_status !=3';
 
 $result = $instance_table->SQLExec($A2B->DBHandle, $QUERY);
 $nb_card = $result[0][0];
@@ -128,8 +128,8 @@ for ($page = 0; $page < $nbpagemax; $page++) {
 
     $sql = 'SELECT cc_card.id card_id ,cc_subscription_service.id service_id, cc_subscription_service.label, cc_subscription_service.fee, cc_subscription_service.emailreport,DATE(cc_card_subscription.startdate) startdate , cc_card_subscription.paid_status , cc_card_subscription.last_run, cc_card_subscription.next_billing_date , cc_card_subscription.limit_pay_date , cc_card_subscription.id card_subscription_id, cc_card_subscription.product_name product_name'.
     ' FROM cc_card INNER JOIN cc_card_subscription ON cc_card.id = cc_card_subscription.id_cc_card  INNER JOIN cc_subscription_service ON cc_card_subscription.id_subscription_fee=cc_subscription_service.id '  .
-    ' WHERE cc_subscription_service.status=1 AND cc_card_subscription.startdate < NOW() AND (cc_card_subscription.stopdate = "0000-00-00 00:00:00" OR cc_card_subscription.stopdate > NOW())'.
-    ' AND cc_subscription_service.startdate < NOW() AND (cc_subscription_service.stopdate = "0000-00-00 00:00:00" OR cc_subscription_service.stopdate > NOW()) AND cc_card_subscription.paid_status !=3'.
+    ' WHERE cc_subscription_service.status=1 AND cc_card_subscription.startdate < NOW() AND (cc_card_subscription.stopdate IS NULL OR cc_card_subscription.stopdate > NOW())'.
+    ' AND cc_subscription_service.startdate < NOW() AND (cc_subscription_service.stopdate IS NULL OR cc_subscription_service.stopdate > NOW()) AND cc_card_subscription.paid_status !=3'.
     ' ORDER BY cc_card.id';
 
     if ($A2B->config["database"]['dbtype'] == "postgres") {

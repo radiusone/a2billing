@@ -116,12 +116,6 @@ foreach ($result as $myalarm) {
     //  1 "Daily", 2 "Weekly", 3 "Monthly"
     $run_alarm = false;
 
-    // LITTLE TRICK TO MAKE IT WORKS WITH POSTGRES TOO AS THE VALUE WILL BE NULL
-    if ($myalarm[10] == "0000-00-00 00:00:00") {
-        $myalarm[10] = "";
-        // WE WILL THEN COMPARE TO AN EMPTY STRING ""
-    }
-
     switch ($myalarm[2]) {
         // Hourly
         case 1 :

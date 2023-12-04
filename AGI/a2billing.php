@@ -556,8 +556,6 @@ if ($mode === "standard") {
 
                     $A2B->debug(A2Billing::INFO, "[ CALL OF THE SYSTEM - [DID=" . $A2B->destination . "]");
 
-                    $date_cond = ($A2B->config["database"]["dbtype"] === "mysql") ? " OR cc_did.expirationdate = '0000-00-00 00:00:00'" : "";
-
                     $QUERY = <<< SQL
                     SELECT id_cc_did, cc_did_destination.id, billingtype, tariff, destination, voip_call, username, useralias, connection_charge,
                        selling_rate, did, aleg_carrier_connect_charge, aleg_carrier_cost_min, aleg_retail_connect_charge, aleg_retail_cost_min,
@@ -567,7 +565,7 @@ if ($mode === "standard") {
                     FROM cc_did, cc_did_destination, cc_card
                     WHERE id_cc_did=cc_did.id AND cc_card.status = 1 AND cc_card.id = id_cc_card AND cc_did_destination.activated = 1
                       AND cc_did.activated = 1 AND did = ? AND cc_did.startingdate <= CURRENT_TIMESTAMP AND cc_did_destination.validated = 1 
-                      AND (cc_did.expirationdate > CURRENT_TIMESTAMP OR cc_did.expirationdate IS NULL $date_cond)
+                      AND (cc_did.expirationdate > CURRENT_TIMESTAMP OR cc_did.expirationdate IS NULL)
                     ORDER BY priority ASC
                     SQL;
                     $A2B->debug(A2Billing::DEBUG, $QUERY);
@@ -610,8 +608,6 @@ if ($mode === "standard") {
     if (strlen($mydnid) > 0) {
         $A2B->debug(A2Billing::INFO, "[DID CALL - [CallerID=" . $A2B->CallerID . "]:[DID=" . $mydnid . "]");
 
-        $date_cond = ($A2B->config["database"]["dbtype"] === "mysql") ? " OR cc_did.expirationdate = '0000-00-00 00:00:00'" : "";
-
         $QUERY = <<< SQL
         SELECT id_cc_did, cc_did_destination.id, billingtype, tariff, destination, voip_call, username, useralias, connection_charge,
            selling_rate, did, aleg_carrier_connect_charge, aleg_carrier_cost_min, aleg_retail_connect_charge, aleg_retail_cost_min,
@@ -621,7 +617,7 @@ if ($mode === "standard") {
         FROM cc_did, cc_did_destination, cc_card
         WHERE id_cc_did = cc_did.id AND cc_card.status = 1 AND cc_card.id = id_cc_card AND cc_did_destination.activated = 1
           AND cc_did.activated = 1 AND did = ? AND cc_did.startingdate <= CURRENT_TIMESTAMP AND cc_did_destination.validated = 1 
-          AND (cc_did.expirationdate > CURRENT_TIMESTAMP OR cc_did.expirationdate IS NULL $date_cond)
+          AND (cc_did.expirationdate > CURRENT_TIMESTAMP OR cc_did.expirationdate IS NULL)
         ORDER BY priority ASC
         SQL;
         $A2B->debug(A2Billing::DEBUG, $QUERY);

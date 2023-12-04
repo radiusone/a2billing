@@ -845,14 +845,16 @@ class A2Billing
         $iscall2did = false;
         if ($call2did) {
             $this->debug(self::INFO, "[CALL 2 DID]");
-            $query = "SELECT cc_did.id, iduser" .
-                    " FROM cc_did, cc_card " .
-                    " WHERE cc_card.status=1 and cc_card.id = iduser and cc_did.activated = 1 and did = ? " .
-                    " AND cc_did.startingdate<= CURRENT_TIMESTAMP AND (cc_did.expirationdate > CURRENT_TIMESTAMP OR cc_did.expirationdate IS NULL";
-            if ($this->config["database"]['dbtype'] != "postgres") {
-                $query .= " OR cc_did.expirationdate = '0000-00-00 00:00:00'";
-            }
-            $query .= ")";
+            $query = <<< SQL
+                SELECT cc_did.id, iduser
+                FROM cc_did, cc_card
+                WHERE cc_card.status=1
+                    AND cc_card.id = iduser
+                    AND cc_did.activated = 1
+                    AND did = ?
+                    AND cc_did.startingdate<= CURRENT_TIMESTAMP
+                    AND (cc_did.expirationdate > CURRENT_TIMESTAMP OR cc_did.expirationdate IS NULL)
+                SQL;
             $params = [$this->destination];
             $row = $this->DBHandle->GetRow($query, $params);
             $this->debug(self::DEBUG, "Query: $query", $params, $row);
@@ -2437,8 +2439,10 @@ class A2Billing
 
         $duration = time() - $now;
         ///create campaign cdr
-        $query = "INSERT INTO cc_call (uniqueid, sessionid, card_id, calledstation, sipiax, sessionbill, sessiontime, stoptime, starttime $this->CDR_CUSTOM_SQL)" .
-            " VALUES (?, ?, ?, ?, 6, ?, ?, CURRENT_TIMESTAMP , NOW() - INTERVAL ? SECOND $this->CDR_CUSTOM_VAL)";
+        $query = <<< SQL
+            INSERT INTO cc_call (uniqueid, sessionid, card_id, calledstation, sipiax, sessionbill, sessiontime, stoptime, starttime $this->CDR_CUSTOM_SQL)
+            VALUES (?, ?, ?, ?, 6, ?, ?, CURRENT_TIMESTAMP , NOW() - INTERVAL ? SECOND $this->CDR_CUSTOM_VAL)
+            SQL;
         $params = [
             $this->uniqueid,
             $this->channel,
@@ -2530,7 +2534,7 @@ class A2Billing
                     $this->debug(self::INFO, "[CARDNUMBER:$card_gen]:[CREATED:$result]:[QUERY_VALUES:$QUERY_VALUES]");
 
                     //CREATE A CARD AND AN INSTANCE IN CC_CALLERID
-                    $query = "INSERT INTO cc_callerid cid, id_cc_card VALUES(?, ?)";
+                    $query = "INSERT INTO cc_callerid (cid, id_cc_card) VALUES(?, ?)";
                     $params = [$this->CallerID, $result];
                     $this->DBHandle->Execute($query, $params);
                     $this->debug(self::DEBUG, "Query: $query", $params);
@@ -3006,7 +3010,7 @@ class A2Billing
 
                     // CHECK IF THE AMOUNT OF CALLERID IS LESS THAN THE LIMIT
                     if ($count !== false && $count < $this->config["webcustomerui"]['limit_callerid']) {
-                        $query = "INSERT INTO cc_callerid cid, id_cc_card VALUES(?, ?)";
+                        $query = "INSERT INTO cc_callerid (cid, id_cc_card) VALUES(?, ?)";
                         $params = [$this->CallerID, $this->id_card];
                         $result = $this->DBHandle->Execute($query, $params);
                         $this->debug(self::DEBUG, "Query: $query", $params);
