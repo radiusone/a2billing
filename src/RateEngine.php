@@ -108,18 +108,11 @@ class RateEngine
 
         /***  0 ) CODE TO RETURN THE DAY OF WEEK + CREATE THE CLAUSE  ***/
 
-        $daytag = date("w"); // Day of week ( Sunday = 0 .. Saturday = 6 )
-        $hours = date("G"); // Hours in 24h format ( 0-23 )
-        $minutes = date("i"); // Minutes (00-59)
-        $daytag = $daytag === "0" ? 6 : (int)$daytag - 1;
-        if ($this->debug_st) {
-            echo "$daytag $hours $minutes <br>";
-        }
-        // Race condiction on $minutes ?!
-        $minutes_since_monday = ($daytag * 1440) + ($hours * 60) + $minutes;
-        if ($this->debug_st) {
-            echo "$minutes_since_monday<br> ";
-        }
+        // in MySQL could do it like this:
+        // SELECT TIMESTAMPDIFF(MINUTE, DATE(CURRENT_TIMESTAMP - INTERVAL WEEKDAY(CURRENT_TIMESTAMP) DAY), CURRENT_TIMESTAMP) AS minutes_since_monday
+        $now = new DateTime();
+        $diff = $now->diff(new DateTime("midnight this monday"));
+        $minutes_since_monday = $diff->d * 1440 + $diff->h * 60 + $diff->i + ($diff->s >= 30 ? 1 : 0);
 
         $mydnid = $mycallerid = "";
         if (strlen($this->a2b->dnid)) {
