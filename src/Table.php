@@ -357,13 +357,12 @@ class Table
         }
 
         $countFK = count($this->FK_TABLES);
-        for ($i = 0; $i < $countFK; $i++) {
+        foreach ($this->FK_TABLES as $i => $table) {
+            $table = $this->quote_identifier($table);
             if ($this->FK_DELETE === false) {
-                $QUERY = "UPDATE " . $this->FK_TABLES[$i] . " SET ".
-                            trim($this->FK_EDITION_CLAUSE[$i]) . " = -1 WHERE (" . trim($this->FK_EDITION_CLAUSE[$i]) . " = " . $this->FK_ID_VALUE . " )";
+                $QUERY = "UPDATE $table SET {$this->FK_EDITION_CLAUSE[$i]} = -1 WHERE {$this->FK_EDITION_CLAUSE[$i]} = {$this->FK_ID_VALUE}";
             } else {
-                $QUERY = "DELETE FROM " . $this->FK_TABLES[$i].
-                            " WHERE (" . trim($this->FK_EDITION_CLAUSE[$i]) . " = " . $this->FK_ID_VALUE . " )";
+                $QUERY = "DELETE FROM $table WHERE {$this->FK_EDITION_CLAUSE[$i]} = {$this->FK_ID_VALUE}";
             }
             if ($this->debug_st) {
                 echo "<br>$QUERY";
@@ -371,19 +370,17 @@ class Table
             $DBHandle->Execute($QUERY);
         }
 
-        $QUERY = "DELETE FROM " . $this->table . " WHERE (" . trim($clause) . ")";
-        $res = $this->ExecuteQuery($DBHandle, $QUERY);
+        $table = $this->quote_identifier($this->table);
+        $query = "DELETE FROM $table WHERE ($clause)";
 
-        return($res);
+        return $this->ExecuteQuery($DBHandle, $query);
     }
 
     public function Delete_Selected(ADOConnection $DBHandle, string $clause = "")
     {
-        $QUERY = 'DELETE FROM ' . $this->quote_identifier($this->table);
-        if ($clause) {
-            $QUERY .= "WHERE $clause";
-        }
+        $table = $this->quote_identifier($this->table);
+        $query = "DELETE FROM  $table WHERE ($clause)";
 
-        return $this->ExecuteQuery($DBHandle, $QUERY);
+        return $this->ExecuteQuery($DBHandle, $query);
     }
 }
