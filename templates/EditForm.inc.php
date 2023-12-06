@@ -121,15 +121,6 @@ $options = null
                     <?= $row["attributes"] ?>
                 ><?= $this->VALID_SQL_REG_EXP ? $db_data[$i] : $processed[$row["name"]] ?></textarea>
 
-            <?php elseif ($row["type"] === "SPAN"): //used once in FG_var_config.inc ?>
-                <span id="<?= $row["name"] ?>" name="<?= $row["name"] ?>" <?= $row["attributes"] ?>>
-                <?php if ($this->VALID_SQL_REG_EXP): ?>
-                    <?= $db_data[$i] ?>
-                <?php else: ?>
-                    <?= $processed[$row["name"]] ?>
-                <?php endif ?>
-                </span>
-
             <?php elseif ($row["type"] === "SELECT"): ?>
                 <?php if ($row["select_type"] === "SQL"): ?>
                     <?php $options = (new Table($row["sql_table"], $row["sql_field"]))->get_list($this->DBHandle, $row["sql_clause"])?>

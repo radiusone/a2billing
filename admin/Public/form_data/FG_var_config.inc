@@ -149,10 +149,7 @@ $HD_Form->AddEditTextarea(
     _("DESCRIPTION"),
     "config_description",
     _("Insert the Description"),
-    "rows=5",
-    null,
-    "",
-    ""
+    "rows=5 readonly=\"readonly\""
 );
 
 $HD_Form->FieldEditElement('config_title, config_key, config_value ,config_listvalues, config_description');
