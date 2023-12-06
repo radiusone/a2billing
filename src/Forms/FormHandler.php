@@ -334,16 +334,6 @@ class FormHandler
     // Delete Message for FK
     public string $FG_FK_DELETE_MESSAGE = "Are you sure to delete all records connected to this instance.";
 
-    // TODO: this is only used by config page, surely it could be done there
-    // seems to just be fetching an SQL value and then exploding it on comma
-
-    //To enable Disable Selection List
-    public bool $FG_DISPLAY_SELECT = false;
-    //Selection List Field Name to get from Database
-    public string $FG_SELECT_FIELDNAME = "";
-    // Configuration Key value Field Name
-    public string $FG_CONF_VALUE_FIELDNAME = "";
-
     private bool $FG_ENABLE_LOG = ENABLE_LOG;
 
     /** @var string The CSRF token for the current request */
@@ -963,10 +953,6 @@ class FormHandler
      */
     public function FieldEditElement($fieldname)
     {
-        if ($this->FG_DISPLAY_SELECT && $this->FG_SELECT_FIELDNAME) {
-            // only used by FG_var_config.inc
-            $fieldname .= ", " . $this->FG_SELECT_FIELDNAME;
-        }
         $this->FG_QUERY_EDITION = $fieldname;
     }
 

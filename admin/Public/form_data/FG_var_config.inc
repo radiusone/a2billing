@@ -47,30 +47,23 @@ $form_action = $form_action ?? "list";
 
 $handle = DbConnect();
 
-$setbool = false;
-if ($form_action === "ask-edit") {
-    $setbool = (bool)$handle->GetOne("SELECT IF(config_listvalues = 'yes,no' OR config_listvalues = 'no,yes', 1, 0) FROM cc_config WHERE id = ?", [$id]);
-}
-
 $HD_Form = new FormHandler("cc_config LEFT JOIN cc_config_group ON cc_config.config_group_id = cc_config_group.id", _("Configuration"), "cc_config.id");
 $HD_Form->no_debug();
 $HD_Form->FG_TABLE_DEFAULT_ORDER = "group_title";
 $HD_Form->FG_QUERY_PRIMARY_KEY = "cc_config.id";
 $HD_Form->FG_EDIT_QUERY_CONDITION = "cc_config.id = %id";
 
+$value_select = "";
 if ($form_action === "list") {
     $yesno = [];
-    $config_list = $handle->GetAll("SELECT config_value, config_valuetype, id FROM cc_config ORDER BY id");
-    foreach ($config_list as $key => $cur_value) {
-        $i = $cur_value[2];
-        if ($cur_value[1] !== '1') {
-            $yesno[$i] = [$cur_value[0], $cur_value[2]];
-        } elseif ($cur_value[0] === '1') {
-            $yesno[$i] = ["Yes", $cur_value[2]];
-        } elseif ($cur_value[0] === '0') {
-            $yesno[$i] = ["No", $cur_value[2]];
+    $config_list = $handle->GetAll("SELECT config_value AS val, config_valuetype AS type, id FROM cc_config ORDER BY id");
+    foreach ($config_list as $key => $config) {
+        // where type = 1, map values 1 and 0 to yes and no
+        $id = $config["id"];
+        if ($config["type"] !== "1" || ($config["val"] !== "1" && $config["val"] !== "0")) {
+            $yesno[$id] = [$config["val"], $id];
         } else {
-            $yesno[$i] = [$cur_value[0], $cur_value[2]];
+            $yesno[$id] = [$config["val"] === "1" ? "Yes" : "No", $id];
         }
     }
 
@@ -83,11 +76,16 @@ if ($form_action === "list") {
     $HD_Form->FieldViewElement('config_title, config_key, config_value, config_description, group_title');
 
     $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 25;
-}
-if(!$setbool) {
-	$HD_Form->FG_DISPLAY_SELECT = true;
-	$HD_Form->FG_SELECT_FIELDNAME = "config_listvalues";
-	$HD_Form->FG_CONF_VALUE_FIELDNAME = "config_value";
+} elseif ($form_action === "ask-edit") {
+    $result = $handle->GetOne(
+        "SELECT IF(config_valuetype = 1 OR config_valuetype = 0 AND LENGTH(config_listvalues) > 0, config_listvalues, '') FROM cc_config WHERE id = ?",
+        [$id]
+    );
+    if (strlen($result) > 0) {
+        $bool = ($result === "yes,no" || $result === "no,yes");
+        $result = explode(",", $result);
+        $value_select = array_map(fn($v) => [$v, $bool ? ($v === "yes" ? "1" : "0") : $v], $result);
+    }
 }
 
 $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
@@ -124,11 +122,11 @@ $HD_Form->AddEditElement(
     _("Insert the TITLE")
 );
 
-if ($setbool) {
+if (is_array($value_select)) {
     $HD_Form->AddEditSelect(
         _("VALUE"),
         "config_value",
-        [1 => [_("yes"), 1], 2 => [_("no"), 0]]
+        $value_select,
     );
 } else {
     $HD_Form->AddEditElement(

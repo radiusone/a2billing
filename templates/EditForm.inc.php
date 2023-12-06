@@ -60,15 +60,7 @@ $options = null
             </label>
             <div class="col">
 
-            <?php if ($this->FG_DISPLAY_SELECT && !empty($db_data[$this->FG_SELECT_FIELDNAME]) && $this->FG_CONF_VALUE_FIELDNAME === $row["name"]): ?>
-                <select id="<?= $row["name"] ?>" name="<?= $row["name"] ?>" class="form-select">
-                    <?php $vals = explode(",", $db_data[$this->FG_SELECT_FIELDNAME]) ?>
-                    <?php foreach ($vals as $val): ?>
-                        <option <?php if ($val == $db_data[$i]): ?>selected="selected"<?php endif ?>><?= $val ?></option>
-                    <?php endforeach ?>
-                </select>
-
-            <?php elseif ($row["type"] === "INPUT"): ?>
+            <?php if ($row["type"] === "INPUT"): ?>
                 <?php if (!empty($row["custom_function"])): ?>
                     <?php $db_data[$i] = call_user_func($row["custom_function"], $db_data[$i]) ?>
                 <?php endif ?>
