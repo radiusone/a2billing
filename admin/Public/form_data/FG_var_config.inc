@@ -56,6 +56,7 @@ $HD_Form = new FormHandler("cc_config LEFT JOIN cc_config_group ON cc_config.con
 $HD_Form->no_debug();
 $HD_Form->FG_TABLE_DEFAULT_ORDER = "group_title";
 $HD_Form->FG_QUERY_PRIMARY_KEY = "cc_config.id";
+$HD_Form->FG_EDIT_QUERY_CONDITION = "cc_config.id = %id";
 
 if ($form_action === "list") {
     $yesno = [];
@@ -73,7 +74,6 @@ if ($form_action === "list") {
         }
     }
 
-    $HD_Form->FG_EDIT_QUERY_CONDITION = "cc_config.id = %id";
     $HD_Form->AddViewElement(_("TITLE"), "config_title");
     $HD_Form->AddViewElement(_("KEY"), "config_key");
     $HD_Form->AddViewElement(_("VALUE"), "config_value", false, 0, "", "list-conf", $yesno);
@@ -91,7 +91,6 @@ if(!$setbool) {
 }
 
 $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form->FG_EDIT_BUTTON_LINK = "A2B_entity_config.php?form_action=ask-edit&amp;cc_config.id=";
 $HD_Form->search_form_enabled = true;
 $HD_Form->AddSearchTextInput(_("Value"), "config_value");
 $HD_Form->AddSearchTextInput(_("Key"), "config_key");
@@ -140,17 +139,18 @@ if ($setbool) {
     );
 }
 
-    $HD_Form->AddEditElement(
-        _("LIST OF VALUES"),
-        "config_listvalues",
-        _("Insert the List of values, comma separated")
-    );
-
 $HD_Form->AddEditElement(
-    _("DESCRIPTION"),
+    _("LIST OF VALUES"),
+    "config_listvalues",
+    _("Insert the List of values, comma separated")
+);
+
+$HD_Form->AddEditTextarea(
     "config_description",
+    _("DESCRIPTION"),
+    "rows=5",
     "",
-    "rows=10",
+    "",
     null,
     _("Insert the Description")
 );
