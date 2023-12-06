@@ -108,24 +108,24 @@ if ($form_action !== "ask-edit" && $form_action !== "edit") {
 }
 
 $HD_Form->AddEditRadio(
+    _("Activated"),
     "activated",
     $activated_list,
-    _("Activated"),
     "1",
-    "",
+    "", "",
     _("Choose if you want to activate this card")
 );
 
-$HD_Form->AddEditRadio("validated", $validated_list, _("Validated"), "1");
+$HD_Form->AddEditRadio(_("Validated"), "validated", $validated_list, "1", "", "");
 
 $HD_Form->AddEditSelect("priority", $priority_list, _("Priority"));
 
 $HD_Form->AddEditRadio(
+    _("VoIP Call"),
     "voip_call",
     $yesno_list,
-    _("VoIP Call"),
     "1",
-    "",
+    "", "",
     _("Choose if you want to not use the trunk and let the asterisk call directly the destination (ie, Destination : SIP/jeremy@182.212.1.45)")
 );
 

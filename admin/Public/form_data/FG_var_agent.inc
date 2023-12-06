@@ -169,11 +169,11 @@ if (has_rights (Admin::ACX_MODIFY_AGENTS) && !($popup_select)) {
     );
 
     $HD_Form->AddEditRadio(
+        gettext("ACTIVE"),
         "active",
         [[gettext("Yes"), "1"], [gettext("No"), "0"]],
-        gettext("ACTIVE"),
         "1",
-        gettext("Enable agent"),
+        gettext("Enable agent"), "",
         gettext("Choose if you want to active this agent")
     );
 

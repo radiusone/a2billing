@@ -734,21 +734,23 @@ class FormHandler
     }
 
     /**
+     * @param string $label_text The label text
      * @param string $fieldname The form input name
      * @param array $options An array of data (name, value) to build radio buttons
-     * @param string $label_text The label text
      * @param string $default_value When adding (not editing), the value of the selected item
      * @param string $form_text_bottom Text to display below the form input
+     * @param string $html_attributes
      * @param string $error_message A message to show if validation fails
      * @param string $section_name If provided, added as a row above the input
      * @return void
      */
     public function AddEditRadio(
+        string $label_text,
         string $fieldname,
         array  $options,
-        string $label_text,
         string $default_value = "",
         string $form_text_bottom = "",
+        string $html_attributes = "",
         string $error_message = "",
         string $section_name = ""
     ): void

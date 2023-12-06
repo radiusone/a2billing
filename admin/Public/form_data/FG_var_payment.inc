@@ -147,20 +147,20 @@ if (has_rights (Admin::ACX_MODIFY_PAYMENTS)) {
 
 	if ($form_action !== "ask-edit" && $form_action !== "edit") {
         $HD_Form->AddEditRadio(
+            _("CREATE ASSOCIATE REFILL"),
             "added_refill",
             [[_("Yes"), "1"], [_("No"), "0"]],
-            _("CREATE ASSOCIATE REFILL"),
             "0",
-            _("Refill card account"),
+            _("Refill card account"), "",
             _("Choose if you want to create a refill with this payment account")
         );
 
         $HD_Form->AddEditRadio(
+            _("CREATE AGENT COMMISSION "),
             "added_commission",
             [[_("Yes"), "1"], [_("No"), "0"]],
-            _("CREATE AGENT COMMISSION "),
             "0",
-            _("Commission for agent"),
+            _("Commission for agent"), "",
             _("Choose if you want to create a commission to an agent, if this customer is managed by one")
         );
 	}

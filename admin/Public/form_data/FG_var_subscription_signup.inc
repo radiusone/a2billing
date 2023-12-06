@@ -81,11 +81,11 @@ $HD_Form->AddEditElement(
 );
 
 $HD_Form->AddEditRadio(
+    gettext("ACTIVATED"),
     "enable",
     [[gettext("Yes"), "1"], [gettext("No"), "0"]],
-    gettext("ACTIVATED"),
     "1",
-    "",
+    "", "",
     gettext("Choose if you want to activate this subscriber in the signup")
 );
 

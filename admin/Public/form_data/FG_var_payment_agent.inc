@@ -134,11 +134,11 @@ if (has_rights (Admin::ACX_MODIFY_PAYMENTS)) {
 
 	if ($form_action!="ask-edit" && $form_action!="edit") {
         $HD_Form->AddEditRadio(
+            gettext("CREATE ASSOCIATE REFILL"),
             "added_refill",
             [[gettext("Yes"), "1"], [gettext("No"), "0"]],
-            gettext("CREATE ASSOCIATE REFILL"),
             "0",
-            gettext("Refill card account"),
+            gettext("Refill card account"), "",
             gettext("Choose if you want to create a refill with this payment account")
         );
 	}

@@ -139,11 +139,11 @@ $HD_Form->AddEditSqlSelect("id_cc_didgroup", _("DIDGROUP"), "cc_didgroup", "didg
 $HD_Form->AddEditSqlSelect("id_cc_country", _("COUNTRY"), "cc_country", "countryname,id");
 
 $HD_Form->AddEditRadio(
+    gettext("ACTIVATED"),
     "activated",
     $yesno,
-    gettext("ACTIVATED"),
     "1",
-    "",
+    "", "",
     gettext("Choose if you want to activate this card")
 );
 

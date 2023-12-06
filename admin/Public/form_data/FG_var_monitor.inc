@@ -130,10 +130,10 @@ $HD_Form->AddEditSelect(
 );
 
 $HD_Form->AddEditRadio(
+    gettext("ENABLE"),
     "enable",
     [[gettext("Yes"), "1"], [gettext("No"), "0"]],
-    gettext("ENABLE"),
-    "0"
+    "0", "", ""
 );
 
 $HD_Form -> FieldEditElement ('label, dial_code, description, text_intro, query_type, query, result_type, enable');

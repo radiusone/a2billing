@@ -129,11 +129,11 @@ $HD_Form->AddEditSqlSelect(
 );
 
 $HD_Form->AddEditRadio(
+    gettext("REMOVE INTER PREFIX"),
     "removeinterprefix",
     [[gettext("Yes"), "1"], [gettext("No"), "0"]],
-    gettext("REMOVE INTER PREFIX"),
     "0",
-    gettext("Remove the international access prefix (00 or 011) before matching the dialled digits with the rate card. E.G. If the dialled digits were 0044 for a call to the UK, only 44 would be delivered."),
+    gettext("Remove the international access prefix (00 or 011) before matching the dialled digits with the rate card. E.G. If the dialled digits were 0044 for a call to the UK, only 44 would be delivered."), "",
     gettext("Define if the international prefix will be removed to check the rate.")
 );
 

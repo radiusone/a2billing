@@ -154,11 +154,11 @@ $HD_Form->AddEditElement(
 );
 
 $HD_Form->AddEditRadio(
+    gettext("ACTIVATED"),
     "activated",
     [[gettext("Yes"), "t"], [gettext("No"), "f"]],
-    gettext("ACTIVATED"),
     "t",
-    "",
+    "", "",
     gettext("Choose if you want to activate this card")
 );
 

@@ -136,22 +136,22 @@ if (isset($form_action) && ($form_action=='ask-edit')) {
 }
 
 $HD_Form->AddEditRadio(
+    gettext("ACTIVATED"),
     "activated",
     [[gettext("Yes"), "1"], [gettext("No"), "0"]],
-    gettext("ACTIVATED"),
     "1",
-    "",
+    "", "",
     gettext("Choose if you want to activate this card")
 );
 
 $HD_Form->AddEditSelect("priority", $priority_list, gettext("PRIORITY"));
 
 $HD_Form->AddEditRadio(
+    gettext("VOIP CALL"),
     "voip_call",
     [[gettext("Yes"), "1"], [gettext("No"), "0"]],
-    gettext("VOIP CALL"),
     "1",
-    "",
+    "", "",
     gettext("Choose if you want to not use the trunk and let the asterisk call directly the destination (ie, Destination : SIP/jeremy@182.212.1.45)")
 );
 

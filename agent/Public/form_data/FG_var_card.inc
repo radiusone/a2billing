@@ -572,11 +572,11 @@ $HD_Form->AddEditSelect(
 $HD_Form->AddEditSelect("status", $cardstatus_list, gettext("STATUS"));
 
 $HD_Form->AddEditRadio(
+    gettext("LOCK"),
     "block",
     [[gettext("Yes"), "1"], [gettext("No"), "0"]],
-    gettext("LOCK"),
     "0",
-    gettext("Enable lock for this account."),
+    gettext("Enable lock for this account."), "",
     gettext("Choose if you want to enable the lock on this account")
 );
 
@@ -604,11 +604,11 @@ $HD_Form->AddEditSelect(
 );
 
 $HD_Form->AddEditRadio(
+    gettext("RUN SERVICE"),
     "runservice",
     [[gettext("Yes"), "1"], [gettext("No"), "0"]],
-    gettext("RUN SERVICE"),
     "0",
-    gettext("Apply recurring service to this account."),
+    gettext("Apply recurring service to this account."), "",
     gettext("Choose if you want to enable the service recurring on this account")
 );
 
@@ -620,11 +620,11 @@ $HD_Form->AddEditSelect(
 );
 
 $HD_Form->AddEditRadio(
+    gettext("PERMITTED NOTIFICATIONS BY MAIL"),
     "notify_email",
     [[gettext("Yes"), "1"], [gettext("No"), "0"]],
-    gettext("PERMITTED NOTIFICATIONS BY MAIL"),
     "0",
-    gettext("Enable the notification by mail for this account."),
+    gettext("Enable the notification by mail for this account."), "",
     gettext("Choose if you want to enable the notification by email for this account")
 );
 
@@ -642,20 +642,20 @@ $HD_Form->AddEditElement(
 
 if (ACT_VOICEMAIL) {
     $HD_Form->AddEditRadio(
+        gettext("PERMITTED VOICEMAIL"),
         "voicemail_permitted",
         [[gettext("Yes"), "1"], [gettext("No"), "0"]],
-        gettext("PERMITTED VOICEMAIL"),
         "1",
-        gettext("Enable the voicemail functionality for this account."),
+        gettext("Enable the voicemail functionality for this account."), "",
         gettext("Choose if you want to enable the voicemail functionality for this account"),
     );
 
     $HD_Form->AddEditRadio(
+        gettext("ACTIVE VOICEMAIL SERVICE"),
         "voicemail_activated",
         [[gettext("Yes"), "1"], [gettext("No"), "0"]],
-        gettext("ACTIVE VOICEMAIL SERVICE"),
         "0",
-        gettext("Customer can enable the voicemail for this account."),
+        gettext("Customer can enable the voicemail for this account."), "",
         gettext("Customer can choose to enable the voicemail for this account")
     );
 }
@@ -721,22 +721,22 @@ $HD_Form->AddEditElement(
 
 if (!empty($A2B->config["webui"]['buddy_sip_file'])) {
     $HD_Form->AddEditRadio(
+        gettext("CREATE SIP CONFIG"),
         "sip_buddy",
         [[gettext("Yes"), "1"], [gettext("No"), "0"]],
-        gettext("CREATE SIP CONFIG"),
         "1",
-        gettext("Create the SIP config automatically"),
+        gettext("Create the SIP config automatically"), "",
         gettext("Choose if you want to enable the SIP account")
     );
 }
 
 if (!empty($A2B->config["webui"]['buddy_iax_file'])) {
     $HD_Form->AddEditRadio(
+        gettext("CREATE IAX CONFIG"),
         "iax_buddy",
         [[gettext("Yes"), "1"], [gettext("No"), "0"]],
-        gettext("CREATE IAX CONFIG"),
         "1",
-        gettext("Create the IAX config automatically"),
+        gettext("Create the IAX config automatically"), "",
         gettext("Choose if you want to enable the IAX account")
     );
 }
@@ -765,11 +765,11 @@ $HD_Form->AddEditElement(
 );
 
 $HD_Form->AddEditRadio(
+    gettext("AUTOREFILL"),
     "autorefill",
     [[gettext("Yes"), "1"], [gettext("No"), "0"]],
-    gettext("AUTOREFILL"),
     "0",
-    gettext("Define if you want to authorize the autorefill to apply on this accout"),
+    gettext("Define if you want to authorize the autorefill to apply on this accout"), "",
     gettext("Choose if you want to enable the autorefill on this account"),
     gettext("AUTOREFILL")
 );

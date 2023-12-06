@@ -91,11 +91,11 @@ $HD_Form->AddEditElement(
 );
 
 $HD_Form->AddEditRadio(
+    gettext("ACTIVATED"),
     "activated",
     [[gettext("Yes"), "1"], [gettext("No"), "0"]],
-    gettext("ACTIVATED"),
     "1",
-    "",
+    "", "",
     gettext("Choose if you want to activate this component")
 );
 

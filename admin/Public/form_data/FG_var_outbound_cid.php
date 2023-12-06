@@ -84,11 +84,11 @@ $HD_Form->AddEditTextarea(
 $HD_Form->AddEditSqlSelect("outbound_cid_group", gettext("CIDGROUP"), "cc_outbound_cid_group", "group_name,id");
 
 $HD_Form->AddEditRadio(
+    gettext("ACTIVATED"),
     "activated",
     [[gettext("Yes"), "1"], [gettext("No"), "0"]],
-    gettext("ACTIVATED"),
     "1",
-    "",
+    "", "",
     gettext("Choose if you want to activate this CallerID")
 );
 

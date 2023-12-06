@@ -164,11 +164,11 @@ $HD_Form->AddEditElement(
 
 if (ACT_VOICEMAIL) {
     $HD_Form->AddEditRadio(
+        gettext("ACTIVE VOICEMAIL SERVICE"),
         "voicemail_activated",
         [[gettext("Yes"), "1"], [gettext("No"), "0"]],
-        gettext("ACTIVE VOICEMAIL SERVICE"),
         "0",
-        gettext("Customer can enable the voicemail for this card."),
+        gettext("Customer can enable the voicemail for this card."), "",
         gettext("Customer can choose to enable the voicemail for this card")
     );
 }

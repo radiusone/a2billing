@@ -595,11 +595,11 @@ if (!$popup_select) {
         $HD_Form->AddEditSelect("status", $cardstatus_list, _("STATUS"));
 
         $HD_Form->AddEditRadio(
+            gettext("LOCK"),
             "block",
             [[gettext("Yes"), "1"], [gettext("No"), "0"]],
-            gettext("LOCK"),
             "0",
-            gettext("Enable lock for this account."),
+            gettext("Enable lock for this account."), "",
             gettext("Choose if you want to enable the lock on this account")
         );
 
@@ -624,11 +624,11 @@ if (!$popup_select) {
         );
 
         $HD_Form->AddEditRadio(
+            gettext("RUN SERVICE"),
             "runservice",
             [[gettext("Yes"), "1"], [gettext("No"), "0"]],
-            gettext("RUN SERVICE"),
             "0",
-            gettext("Apply recurring service to this account."),
+            gettext("Apply recurring service to this account."), "",
             gettext("Choose if you want to enable the service recurring on this account")
         );
 
@@ -653,11 +653,11 @@ if (!$popup_select) {
         );
 
         $HD_Form->AddEditRadio(
+            gettext("PERMITTED NOTIFICATIONS BY MAIL"),
             "notify_email",
             [[gettext("Yes"), "1"], [gettext("No"), "0"]],
-            gettext("PERMITTED NOTIFICATIONS BY MAIL"),
             "0",
-            gettext("Enable the notification by mail for this account."),
+            gettext("Enable the notification by mail for this account."), "",
             gettext("Choose if you want to enable the notification by email for this account")
         );
 
@@ -730,22 +730,22 @@ if (!$popup_select) {
 
         if (!empty($A2B->config["webui"]['buddy_sip_file']) && (is_admin() || has_rights(Agent::ACX_VOIPCONF))) {
             $HD_Form->AddEditRadio(
+                gettext("CREATE SIP CONFIG"),
                 "sip_buddy",
                 [[gettext("Yes"), "1"], [gettext("No"), "0"]],
-                gettext("CREATE SIP CONFIG"),
                 "1",
-                gettext("Create the SIP config automatically"),
+                gettext("Create the SIP config automatically"), "",
                 gettext("Choose if you want to enable the SIP account")
             );
         }
 
         if (!empty($A2B->config["webui"]['buddy_iax_file']) && (is_admin() || has_rights(Agent::ACX_VOIPCONF))) {
             $HD_Form->AddEditRadio(
+                gettext("CREATE IAX CONFIG"),
                 "iax_buddy",
                 [[gettext("Yes"), "1"], [gettext("No"), "0"]],
-                gettext("CREATE IAX CONFIG"),
                 "1",
-                gettext("Create the IAX config automatically"),
+                gettext("Create the IAX config automatically"), "",
                 gettext("Choose if you want to enable the IAX account")
             );
         }
@@ -786,11 +786,11 @@ if (!$popup_select) {
         }
 
         $HD_Form->AddEditRadio(
+            gettext("AUTOREFILL"),
             "autorefill",
             [[gettext("Yes"), "1"], [gettext("No"), "0"]],
-            gettext("AUTOREFILL"),
             "0",
-            gettext("Define if you want to authorize the autorefill to apply on this accout"),
+            gettext("Define if you want to authorize the autorefill to apply on this accout"), "",
             gettext("Choose if you want to enable the autorefill on this account"),
             gettext("AUTOREFILL")
         );
