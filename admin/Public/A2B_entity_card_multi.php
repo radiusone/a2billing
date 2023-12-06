@@ -143,11 +143,11 @@ if ($nb_to_create > 0 && $action === "generate" && count($errors) === 0) {
         $HD_Form->DBHandle->enableLastInsertID();
         $result = $HD_Form->DBHandle->Execute(
             "INSERT INTO cc_card (
-                 username, useralias, credit, tariff, activated, lastname, firstname, email, address, city, state, country, 
+                 username, useralias, credit, tariff, lastname, firstname, email, address, city, state, country, 
                  zipcode, phone, simultaccess, currency, typepaid, creditlimit, enableexpire, expirationdate, expiredays, 
                  uipass, runservice, tag,id_group, discount, id_seria, id_didgroup, sip_buddy, iax_buddy, vat $datecol
              )
-            VALUES (?, ?, ?, ?, 't', ?, '', '', '', '', '', ?, '', '', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? $dateval)",
+            VALUES (?, ?, ?, ?, ?, '', '', '', '', '', ?, '', '', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? $dateval)",
             [
                 $accountnumber, $useralias, $addcredit, $choose_tariff, $gen_id, $id_country, $choose_simultaccess,
                 $choose_currency, $choose_typepaid, $creditlimit, $enableexpire, $expirationdate, $expiredays, $passui_secret,
