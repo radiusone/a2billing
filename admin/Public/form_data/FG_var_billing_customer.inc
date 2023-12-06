@@ -62,11 +62,11 @@ $HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 
 $HD_Form->AddEditPopup(
-    "id_card",
     gettext("CUSTOMER ID"),
+    "id_card",
     "A2B_entity_card.php?popup_select=1&",
     gettext("Select the Customer ID"),
-    gettext("Insert the Customer ID")
+    "", 4, gettext("Insert the Customer ID")
 );
 
 if ($form_action=="ask-add"){

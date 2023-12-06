@@ -110,11 +110,11 @@ if ($form_action=='ask-add'){
 }
 
 $HD_Form_c->AddEditPopup(
-    "id_cc_card",
     gettext("ID CARD"),
+    "id_cc_card",
     "A2B_entity_card.php?popup_select=1&",
     gettext("Set the Customer ID"),
-    gettext("Insert the Customer ID")
+    "", 4, gettext("Insert the Customer ID")
 );
 
 $HD_Form_c->AddEditElement(

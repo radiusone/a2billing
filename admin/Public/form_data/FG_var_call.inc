@@ -65,11 +65,11 @@ $HD_Form->AddEditElement(
 );
 
 $HD_Form->AddEditPopup(
-    "card_id",
     gettext("CARD ID"),
+    "card_id",
     "A2B_entity_card.php?popup_select=1&",
     gettext("Define the card number ID to use."),
-    gettext("Insert the Id CardNumber"),
+    "", 4, gettext("Insert the Id CardNumber"),
 );
 
 $HD_Form->AddEditElement(

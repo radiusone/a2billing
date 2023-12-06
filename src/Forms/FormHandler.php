@@ -771,24 +771,24 @@ class FormHandler
     }
 
     /**
-     * @param string $fieldname The form input name
      * @param string $label_text The label text
+     * @param string $fieldname The form input name
      * @param string $href The address of the popup
      * @param string $form_text_bottom Text to display below the form input
-     * @param string $error_message A message to show if validation fails
      * @param string $html_attributes HTML attributes for the input
-     * @param int|null $regexpr_nb A validation method number
+     * @param int|null $regex_nb A validation method number
+     * @param string $error_message A message to show if validation fails
      * @param bool $is_date Whether this is a date popup used in FG_var_def_ratecard.inc
      * @return void
      */
     public function AddEditPopup(
-        string $fieldname,
         string $label_text,
+        string $fieldname,
         string $href,
         string $form_text_bottom = "",
-        string $error_message = "",
         string $html_attributes = "",
         ?int   $regex_nb = 4,
+        string $error_message = "",
         bool   $is_date = false
     ): void
     {

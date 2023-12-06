@@ -110,12 +110,12 @@ if (has_rights (Admin::ACX_MODIFY_PAYMENTS)) {
     $id_val = ($form_action === "ask-add" && !empty($card_id)) ? $card_id : "";
 
     $HD_Form->AddEditPopup(
-        "card_id",
         _("CUSTOMER ID"),
+        "card_id",
         "A2B_entity_card.php?popup_select=1&",
         _("Select the Customer ID"),
-        _("Insert the Customer ID"),
-        "value='$id_val'"
+        "value='$id_val'",
+        4, _("Insert the Customer ID")
     );
 
     $comp_date = ($form_action === "ask-add") ? (new DateTime())->format("Y-m-d H:i:s") : "";

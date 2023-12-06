@@ -78,12 +78,12 @@ if (isset($form_action) && $form_action=="ask-add") {
 }
 
 $HD_Form->AddEditPopup(
-    "id_cc_card",
     gettext("CUSTOMER ID"),
+    "id_cc_card",
     "A2B_entity_card.php?popup_select=1&",
     gettext("Select the Customer ID"),
-    gettext("Insert the Customer ID"),
-    $idd
+    $idd,
+    4, gettext("Insert the Customer ID")
 );
 
 $HD_Form->AddEditSqlSelect(

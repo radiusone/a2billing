@@ -97,11 +97,11 @@ $HD_Form->AddEditElement(
 if ($form_action !== "ask-edit" && $form_action !== "edit") {
 
     $HD_Form->AddEditPopup(
-        "id_cc_card",
         _("Customer"),
+        "id_cc_card",
         "A2B_entity_card.php?popup_select=1&",
         _("Select the Customer ID"),
-        _("Insert the Customer ID")
+        "", 4, _("Insert the Customer ID")
     );
 
     $HD_Form->AddEditSqlSelect("id_cc_did", _("DID"), "cc_did", "did,id");

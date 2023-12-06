@@ -69,20 +69,20 @@ if ($form_action=="ask-add" && !empty($id_card)) {
 }
 
 $HD_Form->AddEditPopup(
-    "id_card",
     gettext("CUSTOMER ID"),
+    "id_card",
     "A2B_entity_card.php?popup_select=1&",
     gettext("Select the Customer ID"),
-    gettext("Insert the Customer ID")
+    "", 4, gettext("Insert the Customer ID")
 );
 
 $HD_Form->AddEditPopup(
-    "id_agent",
     gettext("AGENT ID"),
+    "id_agent",
     "A2B_entity_agent.php?popup_select=1&",
     gettext("Select the Agent ID"),
-    gettext("Insert the AGENT ID "),
-    $id_val
+    $id_val,
+    4, gettext("Insert the AGENT ID ")
 );
 
 if ($form_action=="ask-add") {
@@ -118,12 +118,12 @@ $HD_Form->AddEditTextarea(
 );
 
 $HD_Form->AddEditPopup(
-    "id_payment",
     gettext("PAYMENT ID"),
+    "id_payment",
     "A2B_entity_payment.php?popup_select=1&",
     gettext("Select the Payment ID"),
-    gettext("Insert the Payment ID "),
-    $id_val
+    $id_val,
+    4, gettext("Insert the Payment ID ")
 );
 
 $HD_Form->AddEditSelect("commission_type", $com_list, gettext("COMMISSION TYPE"), gettext("Define the type of this commission."));

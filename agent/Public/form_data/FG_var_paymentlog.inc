@@ -171,11 +171,11 @@ $HD_Form->AddEditElement(
 );
 
 $HD_Form->AddEditPopup(
-    "card_id",
     gettext("CUSTOMER ID"),
+    "card_id",
     "A2B_entity_card.php?popup_select=1&",
     gettext("Select the Customer ID"),
-    gettext("Insert the Customer ID")
+    "", 4, gettext("Insert the Customer ID")
 );
 
 $HD_Form -> FieldEditElement ('cc_epayment_log.id, cc_epayment_log.creationdate, paymentmethod, cc_epayment_log.status, cc_owner, amount, cardid ');

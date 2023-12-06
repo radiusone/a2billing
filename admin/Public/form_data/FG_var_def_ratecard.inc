@@ -191,13 +191,13 @@ $HD_Form->AddEditElement(
 );
 
 $HD_Form->AddEditPopup(
-    "destination",
     _("Destination Prefix"),
+    "destination",
     "A2B_entity_prefix.php?popup_select=2&",
     _("Select the prefix destination corresponding to your prefix rate.") . '<br>' . _("This is the label that appears against the Call Detail Record."),
     "",
-    "",
-    9
+    9,
+    ""
 );
 
 $HD_Form->AddEditElement("Buy Rate",
@@ -514,24 +514,24 @@ if ($form_action === "ask-add") {
 }
 
 $HD_Form->AddEditPopup(
-    "starttime",
     _("Start Time"),
+    "starttime",
     "",
     _("Set the time and day of the week at the rate is first valid (ie Monday 00:00 is 0)"),
-    _("Insert the start time"),
     $comp_time,
     4,
+    _("Insert the start time"),
     true
 );
 
 $HD_Form->AddEditPopup(
-    "endtime",
     _("End Time"),
+    "endtime",
     "",
     _("Set the time and the day of the week that the rate is no longer valid. (ie Sunday 23:59 is 10079)"),
-    _("Insert the end time"),
     $comp_time_plus,
     4,
+    _("Insert the end time"),
     true
 );
 

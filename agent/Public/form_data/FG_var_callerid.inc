@@ -95,11 +95,11 @@ $HD_Form->AddEditRadio(
 );
 
 $HD_Form->AddEditPopup(
-    "id_cc_card",
     gettext("CARD ID"),
+    "id_cc_card",
     "A2B_entity_card.php?popup_select=1&",
     gettext("Define the card number ID to use."),
-    gettext("Insert the card number ID")
+    "", 4, gettext("Insert the card number ID")
 );
 
 $HD_Form -> FieldEditElement ('cid, activated, id_cc_card');

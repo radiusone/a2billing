@@ -92,12 +92,12 @@ if (has_rights (Admin::ACX_MODIFY_PAYMENTS)) {
 	}
 
     $HD_Form->AddEditPopup(
-        "agent_id",
         gettext("AGENT ID"),
+        "agent_id",
         "A2B_entity_agent.php?popup_select=1&",
         gettext("Select the Agent ID"),
-        gettext("Insert the AGENT ID "),
-        $id_val
+        $id_val,
+        4, gettext("Insert the AGENT ID ")
     );
 
 	if ($form_action=="ask-add") {

@@ -94,11 +94,11 @@ $HD_Form->AddEditElement(
 );
 
 $HD_Form->AddEditPopup(
-    "id_cc_card",
     gettext("CARD ID"),
+    "id_cc_card",
     "A2B_entity_card.php?popup_select=1&",
     gettext("Define the card number ID to use."),
-    gettext("Insert the card number ID")
+    "", 4, gettext("Insert the card number ID")
 );
 
 $HD_Form -> FieldEditElement ('cc_speeddial.speeddial, cc_speeddial.name, cc_speeddial.phone, cc_speeddial.id_cc_card');
