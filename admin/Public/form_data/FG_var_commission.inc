@@ -126,7 +126,7 @@ $HD_Form->AddEditPopup(
     4, gettext("Insert the Payment ID ")
 );
 
-$HD_Form->AddEditSelect("commission_type", $com_list, gettext("COMMISSION TYPE"), gettext("Define the type of this commission."));
+$HD_Form->AddEditSelect(gettext("COMMISSION TYPE"), "commission_type", $com_list, "", gettext("Define the type of this commission."));
 
 $HD_Form -> FieldEditElement ('id_card, id_agent, date, amount, description, id_payment, commission_type');
 

@@ -91,7 +91,7 @@ $HD_Form->AddEditElement(
     gettext("Insert the Support Box name ")
 );
 
-$HD_Form->AddEditSelect("language", $language_list, gettext("LANGUAGE"));
+$HD_Form->AddEditSelect(gettext("LANGUAGE"), "language", $language_list);
 
 $HD_Form->AddEditElement(
     gettext("EMAIL"),

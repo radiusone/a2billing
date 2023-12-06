@@ -76,14 +76,14 @@ $limits_notify = getLimitNotify_List($A2B);
 array_unshift($limits_notify, [gettext("NOT DEFINED"), -1]);
 
 $HD_Form->AddEditSelect(
+    gettext("LIMIT CREDIT NOTIFICATION"),
     "credit_notification",
     $limits_notify,
-    gettext("LIMIT CREDIT NOTIFICATION"),
+    "",
     gettext("currency : ") . strtoupper(BASE_CURRENCY),
     "",
-    "",
-    "",
-    gettext("Insert the number of credit when the customer receive a notification")
+    gettext("Insert the number of credit when the customer receive a notification"),
+    ""
 );
 
 $HD_Form->AddEditRadio(

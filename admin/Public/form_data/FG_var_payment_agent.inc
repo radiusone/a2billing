@@ -144,10 +144,10 @@ if (has_rights (Admin::ACX_MODIFY_PAYMENTS)) {
 	}
 
     $HD_Form->AddEditSelect(
+        gettext("REFILL TYPE"),
         "payment_type",
         $list_refill_type,
-        gettext("REFILL TYPE"),
-        gettext("Define type for payment and refill,if created.")
+        "", gettext("Define type for payment and refill,if created.")
     );
 
 	if ($form_action!="ask-edit" && $form_action!="edit") {

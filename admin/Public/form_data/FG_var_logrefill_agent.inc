@@ -130,10 +130,10 @@ if (has_rights (Admin::ACX_MODIFY_REFILLS)) {
     );
 
     $HD_Form->AddEditSelect(
+        gettext("REFILL TYPE"),
         "refill_type",
         $list_refill_type,
-        gettext("REFILL TYPE"),
-        gettext("Define type for payment and refill,if created.")
+        "", gettext("Define type for payment and refill,if created.")
     );
 	$HD_Form -> FieldEditElement ('agent_id, date, credit, description, refill_type');
 

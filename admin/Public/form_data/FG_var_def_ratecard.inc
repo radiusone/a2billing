@@ -619,7 +619,7 @@ $HD_Form->AddEditElement(
 
 
 if (ADVANCED_MODE) {
-    $HD_Form->AddEditSelect("musiconhold", $musiconhold_list, _("On-hold Music"));
+    $HD_Form->AddEditSelect(_("On-hold Music"), "musiconhold", $musiconhold_list);
 }
 
 

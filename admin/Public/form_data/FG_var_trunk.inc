@@ -235,13 +235,13 @@ $HD_Form->AddEditElement(
 );
 
 $HD_Form->AddEditSelect(
+    gettext("IFMAXUSED"),
     "if_max_use",
     $maxuse_behaviour_list,
-    gettext("IFMAXUSED"),
-    gettext("Specifies which trunk to use when the maximum number of connections is reached")
+    "", gettext("Specifies which trunk to use when the maximum number of connections is reached")
 );
 
-$HD_Form->AddEditSelect("status", $actived_list, gettext("STATUS"), gettext("Define if this trunk is active or not"));
+$HD_Form->AddEditSelect(gettext("STATUS"), "status", $actived_list, "", gettext("Define if this trunk is active or not"));
 
 $HD_Form -> FieldEditElement ('id_provider, trunkcode, trunkprefix, removeprefix, providertech, providerip, addparameter, failover_trunk, inuse, maxuse, if_max_use, status');
 

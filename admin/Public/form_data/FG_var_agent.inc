@@ -160,11 +160,11 @@ if (has_rights (Admin::ACX_MODIFY_AGENTS) && !($popup_select)) {
     );
 
     $HD_Form->AddEditSelect(
+        gettext("PERMISSION"),
         "perms",
         $right_list,
-        gettext("PERMISSION"),
-        gettext("To select several rights in the above ListBox, hold the CTRL key down while clicking the items"),
         "",
+        gettext("To select several rights in the above ListBox, hold the CTRL key down while clicking the items"),
         "size='$len_right_list' multiple='multiple'"
     );
 
@@ -203,7 +203,7 @@ if (has_rights (Admin::ACX_MODIFY_AGENTS) && !($popup_select)) {
         gettext("amount of commission")
     );
 
-    $HD_Form->AddEditSelect("currency", $currency_list, gettext("CURRENCY"), gettext("Currency used at the customer end."));
+    $HD_Form->AddEditSelect(gettext("CURRENCY"), "currency", $currency_list, "", gettext("Currency used at the customer end."));
 
     $HD_Form->AddEditElement(
         gettext("COMMISSION PERCENTAGE"),
@@ -236,7 +236,7 @@ if (has_rights (Admin::ACX_MODIFY_AGENTS) && !($popup_select)) {
         "NO-NULL"
     );
 
-    $HD_Form->AddEditSelect("language", $language_list, gettext("LANGUAGE"));
+    $HD_Form->AddEditSelect(gettext("LANGUAGE"), "language", $language_list);
 
     $HD_Form->AddEditElement(
         gettext("COMPANY"),

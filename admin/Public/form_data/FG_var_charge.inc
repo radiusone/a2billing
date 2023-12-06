@@ -126,7 +126,7 @@ $HD_Form_c->AddEditElement(
     gettext("Insert the amount")
 );
 
-$HD_Form_c->AddEditSelect("chargetype", $chargetype_list, gettext("CHARGE TYPE"));
+$HD_Form_c->AddEditSelect(gettext("CHARGE TYPE"), "chargetype", $chargetype_list);
 
 $HD_Form_c->AddEditTextarea(
     gettext("DESCRIPTION"),

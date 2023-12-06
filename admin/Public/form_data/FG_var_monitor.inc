@@ -110,7 +110,7 @@ $HD_Form->AddEditElement(
     gettext("Insert the text intro")
 );
 
-$HD_Form->AddEditSelect("query_type", $mquery_type_list, gettext("QUERY TYPE"), gettext("Define type of the query that will be performed."));
+$HD_Form->AddEditSelect(gettext("QUERY TYPE"), "query_type", $mquery_type_list, "", gettext("Define type of the query that will be performed."));
 
 $HD_Form->AddEditTextarea(
     gettext("QUERY / SHELL SCRIPT"),
@@ -123,10 +123,10 @@ $HD_Form->AddEditTextarea(
 );
 
 $HD_Form->AddEditSelect(
+    gettext("SAY RESULT AS"),
     "result_type",
     $mresult_type_list,
-    gettext("SAY RESULT AS"),
-    gettext("Define type of result.")
+    "", gettext("Define type of result.")
 );
 
 $HD_Form->AddEditRadio(

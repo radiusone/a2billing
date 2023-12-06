@@ -126,9 +126,9 @@ $HD_Form->AddEditElement(
 
 if ($setbool) {
     $HD_Form->AddEditSelect(
+        _("VALUE"),
         "config_value",
-        [1 => [_("yes"), 1], 2 => [_("no"), 0]],
-        _("VALUE")
+        [1 => [_("yes"), 1], 2 => [_("no"), 0]]
     );
 } else {
     $HD_Form->AddEditElement(

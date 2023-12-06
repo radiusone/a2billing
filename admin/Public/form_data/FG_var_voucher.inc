@@ -162,7 +162,7 @@ $HD_Form->AddEditRadio(
     gettext("Choose if you want to activate this card")
 );
 
-$HD_Form->AddEditSelect("currency", $currency_list, gettext("CURRENCY"));
+$HD_Form->AddEditSelect(gettext("CURRENCY"), "currency", $currency_list);
 
 if ($form_action=="ask-add") {
 	$begin_date = date("Y");

@@ -173,11 +173,11 @@ if ($subadmin) {
     $len_right_list = count($right_list);
 
     $HD_Form->AddEditSelect(
+        _("PERMISSION"),
         "perms",
         $right_list,
-        _("PERMISSION"),
-        _("To select several rights in the above ListBox, hold the Control/⌘ key down while clicking the items"),
         "",
+        _("To select several rights in the above ListBox, hold the Control/⌘ key down while clicking the items"),
         "size='$len_right_list' multiple='multiple'"
     );
 } else {

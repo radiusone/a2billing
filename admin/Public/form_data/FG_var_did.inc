@@ -107,7 +107,7 @@ $HD_Form->AddEditElement(
 );
 
 
-$HD_Form->AddEditSelect("billingtype", $billingtype_list, _("BILLING"));
+$HD_Form->AddEditSelect(_("BILLING"), "billingtype", $billingtype_list);
 
 $HD_Form->AddEditElement(
     _("START DATE"),

@@ -531,13 +531,13 @@ if (!$popup_select) {
         if ($form_action !== "edit" && is_admin()) {
             $payment_status = ($form_action === "ask-add" || $form_action === "add") ? "" : 'disabled="disabled"';
             $HD_Form->AddEditSelect(
+                _("PAYMENT TYPE"),
                 "typepaid",
                 $typepaid_list,
-                _("PAYMENT TYPE"),
                 "",
                 "",
                 $payment_status,
-                _("Customer Status")
+                "", _("Customer Status")
             );
         }
 
@@ -576,23 +576,23 @@ if (!$popup_select) {
         array_walk($timezone_list, fn (&$v, $k) => $v = [$v[2], $k]);
 
         $HD_Form->AddEditSelect(
+            _("TIMEZONE"),
             "id_timezone",
             $timezone_list,
-            _("TIMEZONE"),
-            "",
-            $tz_val
+            $tz_val,
+            ""
         );
 
-        $HD_Form->AddEditSelect("language", $language_list, _("LANGUAGE"));
+        $HD_Form->AddEditSelect(_("LANGUAGE"), "language", $language_list);
 
         $HD_Form->AddEditSelect(
+            _("CURRENCY"),
             "currency",
             $currency_list,
-            _("CURRENCY"),
-            _("Currency used at the customer end.")
+            "", _("Currency used at the customer end.")
         );
 
-        $HD_Form->AddEditSelect("status", $cardstatus_list, _("STATUS"));
+        $HD_Form->AddEditSelect(_("STATUS"), "status", $cardstatus_list);
 
         $HD_Form->AddEditRadio(
             gettext("LOCK"),
@@ -616,11 +616,11 @@ if (!$popup_select) {
         );
 
         $HD_Form->AddEditSelect(
+            _("SIMULTANEOUS ACCESS"),
             "simultaccess",
             $simultaccess_list,
-            _("SIMULTANEOUS ACCESS"),
-            "",
-            "1"
+            "1",
+            ""
         );
 
         $HD_Form->AddEditRadio(
@@ -646,10 +646,10 @@ if (!$popup_select) {
         }
 
         $HD_Form->AddEditSelect(
+            _("CREDIT LIMIT NOTIFICATION"),
             "credit_notification",
             $limits_notify_list,
-            _("CREDIT LIMIT NOTIFICATION"),
-            _("currency : ") . strtoupper(BASE_CURRENCY) . '<BR>' . _("Low credit limit to alert the customer")
+            "", _("currency : ") . strtoupper(BASE_CURRENCY) . '<BR>' . _("Low credit limit to alert the customer")
         );
 
         $HD_Form->AddEditRadio(
@@ -695,10 +695,10 @@ if (!$popup_select) {
         );
 
         $HD_Form->AddEditSelect(
+            _("ENABLE EXPIRY"),
             "enableexpire",
             $expire_list,
-            _("ENABLE EXPIRY"),
-            _("Select method of expiry for the account.")
+            "", _("Select method of expiry for the account.")
         );
 
         $comp_zero = $comp_date_plus = '';
@@ -804,7 +804,7 @@ if (!$popup_select) {
             _("Insert the amount of the initial balance")
         );
 
-        $HD_Form->AddEditSelect("invoiceday", $invoiceday_list, _("INVOICE DAY"), _("Define the day of the month when the system will generate the customer invoice."), "", "", _("Invoice Status"));
+        $HD_Form->AddEditSelect(_("INVOICE DAY"), "invoiceday", $invoiceday_list, "", _("Define the day of the month when the system will generate the customer invoice."), "", "", _("Invoice Status"));
 
         $vat_init = ($form_action === "ask-add" || $form_action === "add") ? "value = '0'" : "";
         $HD_Form->AddEditElement(
@@ -827,7 +827,7 @@ if (!$popup_select) {
             "NO"
         );
 
-        $HD_Form->AddEditSelect("discount", $discount_list, _("DISCOUNT"));
+        $HD_Form->AddEditSelect(_("DISCOUNT"), "discount", $discount_list);
 
         $HD_Form->AddEditElement(
             _("TRAFFIC PER MONTH"),
@@ -848,13 +848,13 @@ if (!$popup_select) {
         );
 
         $HD_Form->AddEditSelect(
+            _("RESTRICTION"),
             "restriction",
             $restriction_list,
-            _("RESTRICTION"),
-            "",
             "0",
             "",
-            _("RESTRICTED NUMBERS")
+            "",
+            "", _("RESTRICTED NUMBERS")
         );
 
         $HD_Form->AddEditHasMany(

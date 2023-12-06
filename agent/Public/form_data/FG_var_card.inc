@@ -558,18 +558,18 @@ foreach($timezone_list as $key => $cur_value) {
 }
 
 
-$HD_Form->AddEditSelect("id_timezone", $timezone_list, gettext("TIMEZONE"));
+$HD_Form->AddEditSelect(gettext("TIMEZONE"), "id_timezone", $timezone_list);
 
-$HD_Form->AddEditSelect("language", $language_list, gettext("LANGUAGE"));
+$HD_Form->AddEditSelect(gettext("LANGUAGE"), "language", $language_list);
 
 $HD_Form->AddEditSelect(
+    gettext("CURRENCY"),
     "currency",
     $currency_list,
-    gettext("CURRENCY"),
-    gettext("Currency used at the customer end.")
+    "", gettext("Currency used at the customer end.")
 );
 
-$HD_Form->AddEditSelect("status", $cardstatus_list, gettext("STATUS"));
+$HD_Form->AddEditSelect(gettext("STATUS"), "status", $cardstatus_list);
 
 $HD_Form->AddEditRadio(
     gettext("LOCK"),
@@ -596,11 +596,11 @@ $HD_Form->AddEditElement(
 );
 
 $HD_Form->AddEditSelect(
+    gettext("SIMULTANEOUS ACCESS"),
     "simultaccess",
     $simultaccess_list,
-    gettext("SIMULTANEOUS ACCESS"),
-    "",
-    1
+    1,
+    ""
 );
 
 $HD_Form->AddEditRadio(
@@ -613,10 +613,10 @@ $HD_Form->AddEditRadio(
 );
 
 $HD_Form->AddEditSelect(
+    gettext("CREDIT LIMIT NOTIFICATION"),
     "credit_notification",
     $limits_notify_list,
-    gettext("CREDIT LIMIT NOTIFICATION"),
-    gettext("currency : ") . strtoupper(BASE_CURRENCY) . '<BR>' . gettext("Low credit limit to alert the customer")
+    "", gettext("currency : ") . strtoupper(BASE_CURRENCY) . '<BR>' . gettext("Low credit limit to alert the customer")
 );
 
 $HD_Form->AddEditRadio(
@@ -683,7 +683,7 @@ $HD_Form->AddEditElement(
 );
 
 
-$HD_Form->AddEditSelect("enableexpire", $expire_list, gettext("ENABLE EXPIRY"), gettext("Select method of expiry for the account."));
+$HD_Form->AddEditSelect(gettext("ENABLE EXPIRY"), "enableexpire", $expire_list, "", gettext("Select method of expiry for the account."));
 
 $comp_zero = $comp_date_plus='';
 if (isset($form_action) && $form_action=="ask-add") {
@@ -786,13 +786,13 @@ $HD_Form->AddEditElement(
 
 
 $HD_Form->AddEditSelect(
+    gettext("INVOICE DAY"),
     "invoiceday",
     $invoiceday_list,
-    gettext("INVOICE DAY"),
+    "",
     gettext("Define the day of the month when the system will generate the customer invoice."),
     "",
-    "",
-    gettext("Invoice Status")
+    "", gettext("Invoice Status")
 );
 
 $HD_Form->AddEditElement(
@@ -816,7 +816,7 @@ $HD_Form->AddEditElement(
     "NO"
 );
 
-$HD_Form->AddEditSelect("discount", $discount_list, gettext("DISCOUNT"));
+$HD_Form->AddEditSelect(gettext("DISCOUNT"), "discount", $discount_list);
 
 $HD_Form->AddEditElement(
     gettext("TRAFFIC PER MONTH"),
@@ -837,13 +837,13 @@ $HD_Form->AddEditTextarea(
 );
 
 $HD_Form->AddEditSelect(
+    gettext("RESTRICTION"),
     "restriction",
     $restriction_list,
-    gettext("RESTRICTION"),
-    "",
     0,
     "",
-    gettext("RESTRICTED NUMBERS")
+    "",
+    "", gettext("RESTRICTED NUMBERS")
 );
 
 $HD_Form->AddEditHasMany(

@@ -115,7 +115,7 @@ $HD_Form->AddEditElement(
     gettext("Insert the Call Plan name ")
 );
 
-$HD_Form->AddEditSelect("lcrtype", $lcrtype_list, gettext("LC TYPE"));
+$HD_Form->AddEditSelect(gettext("LC TYPE"), "lcrtype", $lcrtype_list);
 
 $HD_Form->AddEditSqlSelect(
     "id_cc_package_offer",

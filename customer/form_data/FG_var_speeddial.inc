@@ -80,7 +80,7 @@ if (strlen($HD_Form -> FG_EDIT_QUERY_CONDITION)>0)
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 
-$HD_Form->AddEditSelect("speeddial", $speeddial_list, gettext("SPEEDDIAL"));
+$HD_Form->AddEditSelect(gettext("SPEEDDIAL"), "speeddial", $speeddial_list);
 
 $HD_Form->AddEditElement(
     gettext("NAME"),

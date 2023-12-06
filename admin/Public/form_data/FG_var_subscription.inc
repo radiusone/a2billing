@@ -117,7 +117,7 @@ $HD_Form->AddEditElement(
     gettext("Insert the fee amount.")
 );
 
-$HD_Form->AddEditSelect("status", $actived_list, gettext("STATUS"));
+$HD_Form->AddEditSelect(gettext("STATUS"), "status", $actived_list);
 
 $HD_Form->AddEditElement(
     gettext("START DATE"),

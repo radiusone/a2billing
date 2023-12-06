@@ -130,10 +130,10 @@ $HD_Form->AddEditElement(
 );
 
 $HD_Form->AddEditSelect(
+    gettext("RULE"),
     "rule",
     $rule_list,
-    gettext("RULE"),
-    gettext("where X - day number (X) in days <br>	and Y = number set in period field")
+    "", gettext("where X - day number (X) in days <br>	and Y = number set in period field")
 );
 
 $HD_Form->AddEditElement(
@@ -147,9 +147,9 @@ $HD_Form->AddEditElement(
     "NO"
 );
 
-$HD_Form->AddEditSelect("period", $period_list, gettext("PERIOD (Y)"), gettext("Interval to apply service"));
+$HD_Form->AddEditSelect(gettext("PERIOD (Y)"), "period", $period_list, "", gettext("Interval to apply service"));
 
-$HD_Form->AddEditSelect("stopmode", $stopmode_list, gettext("STOP MODE"));
+$HD_Form->AddEditSelect(gettext("STOP MODE"), "stopmode", $stopmode_list);
 
 $HD_Form->AddEditElement(
     gettext("MAX NUMBER OF CYCLES BY CARD"),
@@ -162,7 +162,7 @@ $HD_Form->AddEditElement(
     "NO-NULL"
 );
 
-$HD_Form->AddEditSelect("status", $actived_list, gettext("STATUS"));
+$HD_Form->AddEditSelect(gettext("STATUS"), "status", $actived_list);
 
 $HD_Form->AddEditElement(
     gettext("EMAIL TO SEND REPORT"),
@@ -186,17 +186,17 @@ $HD_Form->AddEditSqlSelect(
 );
 
 $HD_Form->AddEditSelect(
+    gettext("OPERATE MODE"),
     "operate_mode",
     $operatemode_list,
-    gettext("OPERATE MODE"),
-    gettext("If you want to charge only part of sum in case if current balance less then amount, select second option. Will be charged only part of amount, cause balance to be 0.0")
+    "", gettext("If you want to charge only part of sum in case if current balance less then amount, select second option. Will be charged only part of amount, cause balance to be 0.0")
 );
 
 $HD_Form->AddEditSelect(
+    gettext("SKIP GROUP"),
     "use_group",
     $usegroup_list,
-    gettext("SKIP GROUP"),
-    gettext("Select first option(default) to manualy select groups or select second option to use service for any group, discarding list below")
+    "", gettext("Select first option(default) to manualy select groups or select second option to use service for any group, discarding list below")
 );
 
 $DBHandle_max  = DbConnect();

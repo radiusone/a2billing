@@ -141,7 +141,7 @@ $HD_Form->AddEditElement(
 
 $HD_Form->AddEditSqlSelect("id_component", gettext("COMPONENT"), "cc_support_component", "name,id");
 
-$HD_Form->AddEditSelect("priority", $priority_list, gettext("PRIORITY"));
+$HD_Form->AddEditSelect(gettext("PRIORITY"), "priority", $priority_list);
 
 $HD_Form->AddEditTextarea(
     gettext("DESCRIPTION"),

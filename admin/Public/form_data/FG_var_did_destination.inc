@@ -118,7 +118,7 @@ $HD_Form->AddEditRadio(
 
 $HD_Form->AddEditRadio(_("Validated"), "validated", $validated_list, "1", "", "");
 
-$HD_Form->AddEditSelect("priority", $priority_list, _("Priority"));
+$HD_Form->AddEditSelect(_("Priority"), "priority", $priority_list);
 
 $HD_Form->AddEditRadio(
     _("VoIP Call"),

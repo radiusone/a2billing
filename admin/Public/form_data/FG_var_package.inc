@@ -89,9 +89,9 @@ $HD_Form->AddEditElement(
     gettext("Insert the package label")
 );
 
-$HD_Form->AddEditSelect("packagetype", $packagetype_list, gettext("PACKAGE TYPE"));
+$HD_Form->AddEditSelect(gettext("PACKAGE TYPE"), "packagetype", $packagetype_list);
 
-$HD_Form->AddEditSelect("billingtype", $billingtype_list, gettext("BILLING TYPE"));
+$HD_Form->AddEditSelect(gettext("BILLING TYPE"), "billingtype", $billingtype_list);
 
 if (isset($form_action) && $form_action=="ask-add") {
 	$default_init = "value='1'";

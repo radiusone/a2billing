@@ -131,7 +131,7 @@ if ($popup_select >= 1) {
     $HD_Form -> FG_OTHER_BUTTON2_ALT = gettext('Translate');
 }
 
-$HD_Form->AddEditSelect("mailtype", $typemail_list, gettext("MAIL TYPE"));
+$HD_Form->AddEditSelect(gettext("MAIL TYPE"), "mailtype", $typemail_list);
 
 $HD_Form->AddEditElement(
     gettext("LANGUAGE"),

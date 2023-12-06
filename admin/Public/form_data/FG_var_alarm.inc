@@ -108,12 +108,12 @@ $HD_Form->AddEditElement(
     gettext("Insert the alarm name")
 );
 
-$HD_Form->AddEditSelect("periode", $period_list, gettext("PERIOD"));
+$HD_Form->AddEditSelect(gettext("PERIOD"), "periode", $period_list);
 
 $HD_Form->AddEditSelect(
-    "type", $type_list,
-    gettext("TYPE"),
-    gettext("ALOC (average length of call) ; ASR (answer seize ratio) ; CIC (Consecutive Incomplete Calls)")
+    gettext("TYPE"), "type",
+    $type_list,
+    "", gettext("ALOC (average length of call) ; ASR (answer seize ratio) ; CIC (Consecutive Incomplete Calls)")
 );
 
 $HD_Form->AddEditElement(
@@ -141,7 +141,7 @@ $HD_Form->AddEditPopup(
     ""
 );
 
-$HD_Form->AddEditSelect("status", $actived_list, gettext("STATUS"));
+$HD_Form->AddEditSelect(gettext("STATUS"), "status", $actived_list);
 
 $HD_Form->AddEditElement(
     gettext("EMAIL TO SEND ALARM"),

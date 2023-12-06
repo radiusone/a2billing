@@ -692,25 +692,25 @@ class FormHandler
     }
 
     /**
+     * @param string $label_text The label text
      * @param string $fieldname The form input name
      * @param array $options An array of options to build the select element with
-     * @param string $label_text The label text
-     * @param string $form_text_bottom Text to display below the form input
      * @param string|int $default_value When adding (not editing) the value of the selected item
+     * @param string $form_text_bottom Text to display below the form input
      * @param string $html_attributes HTML attributes for the input
-     * @param string $section_name If provided, added as a row above the input
      * @param string $error_message A message to show if validation fails
+     * @param string $section_name If provided, added as a row above the input
      * @return void
      */
     public function AddEditSelect(
+        string $label_text,
         string $fieldname,
         array  $options,
-        string $label_text,
-        string $form_text_bottom = "",
                $default_value = "",
+        string $form_text_bottom = "",
         string $html_attributes = "",
-        string $section_name = "",
-        string $error_message = ""
+        string $error_message = "",
+        string $section_name = ""
     ): void
     {
         $cur = count($this->FG_EDIT_FORM_ELEMENTS);
@@ -739,7 +739,7 @@ class FormHandler
      * @param array $options An array of data (name, value) to build radio buttons
      * @param string $default_value When adding (not editing), the value of the selected item
      * @param string $form_text_bottom Text to display below the form input
-     * @param string $html_attributes
+     * @param string $html_attributes HTML attributes for the inputs
      * @param string $error_message A message to show if validation fails
      * @param string $section_name If provided, added as a row above the input
      * @return void

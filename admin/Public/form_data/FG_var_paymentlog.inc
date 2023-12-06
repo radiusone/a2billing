@@ -144,7 +144,7 @@ $HD_Form->AddEditElement(
 );
 
 
-$HD_Form->AddEditSelect("status", $status_list, gettext("STATUS"));
+$HD_Form->AddEditSelect(gettext("STATUS"), "status", $status_list);
 
 $HD_Form->AddEditElement(
     gettext("OWNER"),

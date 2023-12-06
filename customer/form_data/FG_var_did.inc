@@ -144,7 +144,7 @@ $HD_Form->AddEditRadio(
     gettext("Choose if you want to activate this card")
 );
 
-$HD_Form->AddEditSelect("priority", $priority_list, gettext("PRIORITY"));
+$HD_Form->AddEditSelect(gettext("PRIORITY"), "priority", $priority_list);
 
 $HD_Form->AddEditRadio(
     gettext("VOIP CALL"),

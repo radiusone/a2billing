@@ -101,7 +101,7 @@ $HD_Form->AddEditRadio(
 
 $HD_Form->AddEditSqlSelect("id_support", gettext("Support Box"), "cc_support", "name,id");
 
-$HD_Form->AddEditSelect("type_user", $user_type, gettext("USER TYPE"), gettext("Define who can use this component."));
+$HD_Form->AddEditSelect(gettext("USER TYPE"), "type_user", $user_type, "", gettext("Define who can use this component."));
 
 $HD_Form -> FieldEditElement ('name, activated, id_support,type_user');
 
