@@ -2,10 +2,10 @@
 
 namespace A2billing\Forms;
 
-use A2billing\Connection;
 use A2billing\Logger;
 use A2billing\Table;
 use ADOConnection;
+use Closure;
 use DateTime;
 use Profiler_Console as Console;
 use const PASSWORD_DEFAULT;
@@ -589,7 +589,7 @@ class FormHandler
      * @param string $error_message A message to show if validation fails
      * @param string $section_name If provided, added as a row above the input
      * @param string $check_emptyvalue If set to "NO", empty values are not validated; if set to "NO-NULL" empty values are added to the SQL query as NULL
-     * @param string $custom_function A callback to run the value through before displaying it
+     * @param Closure|string $custom_function A callback to run the value through before displaying it
      * @param bool $field_enabled If set to false, the input will not be added
      * @return void
      */
@@ -602,7 +602,7 @@ class FormHandler
         string $error_message = "",
         string $section_name = "",
         string $check_emptyvalue = "",
-        string $custom_function = "",
+               $custom_function = "",
         bool   $field_enabled = true // only used in FG_var_signup.inc for captcha
     )
     {

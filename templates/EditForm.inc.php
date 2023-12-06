@@ -1,7 +1,9 @@
 <?php
 
-use A2billing\Forms\FormHandler;
+namespace A2billing\Forms;
+
 use A2billing\Table;
+use Closure;
 
 /**
  * @var FormHandler $this
@@ -62,7 +64,7 @@ $options = null
 
             <?php if ($row["type"] === "INPUT"): ?>
                 <?php if (!empty($row["custom_function"])): ?>
-                    <?php $db_data[$i] = call_user_func($row["custom_function"], $db_data[$i]) ?>
+                    <?php $db_data[$i] = $row["custom_function"] instanceof Closure ? $row["custom_function"]($db_data[$i]) : call_user_func($row["custom_function"], $db_data[$i]) ?>
                 <?php endif ?>
                 <input
                     id="<?= $row["name"] ?>"
@@ -203,7 +205,7 @@ $options = null
                     <?php $options = (new Table($table["tables"], $table["columns"]))->get_list($this->DBHandle, str_replace("%id", $processed["id"], $table["where"]))?>
                     <ul class="list-group">
                     <?php if (is_array($options) && count($options)): ?>
-                        <?php foreach ($options as $k=>$option): ?>
+                        <?php foreach ($options as $option): ?>
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 <?= $option[0] ?>
                                 <button
@@ -256,7 +258,7 @@ $options = null
                     <?php $options = (new Table($table["table"], $table["columns"]))->get_list($this->DBHandle, str_replace("%id", $processed["id"], $table["where"]))?>
                     <ul class="list-group">
                     <?php if (is_array($options) && count($options)): ?>
-                        <?php foreach ($options as $k=>$option): ?>
+                        <?php foreach ($options as $option): ?>
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 <?php if (isset($table["extra_col"]) && array_key_exists($table["extra_col"], $option)): ?>
                                 (<?= $option[$table["extra_col"]] ?>)
