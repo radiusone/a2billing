@@ -88,7 +88,7 @@ class FormHandler
     /** @var bool Whether to place a delete button in the list view's action column */
     public bool $FG_ENABLE_DELETE_BUTTON = false;
     /** @var string The link for the delete button */
-    public string $FG_DELETE_BUTTON_LINK = '';
+    public ?string $FG_DELETE_BUTTON_LINK = null;
     /** @var string Code which is eval'd to decide whether to show the delete button */
     public string $FG_DELETE_BUTTON_CONDITION = '';
     /** @var array Primary key of entries that can't be deleted */
@@ -102,7 +102,7 @@ class FormHandler
     /** @var bool Whether to place an edit button in the list view's action column */
     public bool $FG_ENABLE_EDIT_BUTTON = false;
     /** @var string The link for the edit button */
-    public string $FG_EDIT_BUTTON_LINK = '';
+    public ?string $FG_EDIT_BUTTON_LINK = null;
     /** @var string Code which is eval'd to decide whether to show the edit button */
     public string $FG_EDIT_BUTTON_CONDITION = '';
 
@@ -467,8 +467,8 @@ class FormHandler
             $_SESSION["menu_section"] = intval($section);
         }
         $ext_link = "&amp;" . http_build_query(["current_page" => $processed["current_page"] ?? "", "order" => $processed["order"] ?? "", "sens" => $processed["sens"] ?? ""], "", "&amp;");
-        $this->FG_EDIT_BUTTON_LINK = "?form_action=ask-edit" . $ext_link . "&amp;id=";
-        $this->FG_DELETE_BUTTON_LINK = "?form_action=ask-delete" . $ext_link . "&amp;id=";
+        $this->FG_EDIT_BUTTON_LINK ??= "?form_action=ask-edit" . $ext_link . "&amp;id=";
+        $this->FG_DELETE_BUTTON_LINK ??= "?form_action=ask-delete" . $ext_link . "&amp;id=";
     }
 
     /**
