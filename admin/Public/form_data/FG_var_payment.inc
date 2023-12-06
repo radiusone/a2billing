@@ -139,10 +139,10 @@ if (has_rights (Admin::ACX_MODIFY_PAYMENTS)) {
     );
 
     $HD_Form->AddEditTextarea(
-        "description",
         _("DESCRIPTION"),
-        "cols='50' rows='4'",
-        _("Insert the description")
+        "description",
+        "",
+        "cols='50' rows='4'", null, _("Insert the description")
     );
 
 	if ($form_action !== "ask-edit" && $form_action !== "edit") {

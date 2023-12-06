@@ -171,10 +171,10 @@ $HD_Form->AddEditElement(
 );
 
 $HD_Form->AddEditTextarea(
-    "messagetext",
     gettext("MESSAGE TEXT"),
-    "cols='70' rows='10'",
-    gettext("Insert the user subject")
+    "messagetext",
+    "",
+    "cols='70' rows='10'", null, gettext("Insert the user subject")
 );
 
 $HD_Form -> FieldEditElement ('mailtype, id_language, fromemail, fromname, subject, messagetext');

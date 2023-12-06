@@ -166,10 +166,10 @@ $HD_Form->AddEditElement(
 );
 
 $HD_Form->AddEditTextarea(
-    "description",
     gettext("DESCRIPTION"),
-    "cols='50' rows='4'",
-    gettext("Insert the description")
+    "description",
+    "",
+    "cols='50' rows='4'", null, gettext("Insert the description")
 );
 
 $HD_Form -> FieldEditElement ('id_card, date,title, description');

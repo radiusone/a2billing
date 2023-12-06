@@ -841,10 +841,10 @@ if (!$popup_select) {
         );
 
         $HD_Form->AddEditTextarea(
-            "traffic_target",
             _("TARGET TRAFFIC"),
-            "cols='50' rows='4'",
-            _("Insert the target traffic description")
+            "traffic_target",
+            "",
+            "cols='50' rows='4'", null, _("Insert the target traffic description")
         );
 
         $HD_Form->AddEditSelect(

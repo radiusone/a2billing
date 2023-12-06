@@ -146,13 +146,13 @@ $HD_Form->AddEditElement(
 );
 
 $HD_Form->AddEditTextarea(
-    "config_description",
     _("DESCRIPTION"),
+    "config_description",
+    _("Insert the Description"),
     "rows=5",
-    "",
-    "",
     null,
-    _("Insert the Description")
+    "",
+    ""
 );
 
 $HD_Form->FieldEditElement('config_title, config_key, config_value ,config_listvalues, config_description');

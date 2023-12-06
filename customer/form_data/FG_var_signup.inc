@@ -364,10 +364,10 @@ if (TRAFFIC_ENABLE)  {
 }
 if (TRAFFIC_TARGET_ENABLE)  {
     $HD_Form->AddEditTextarea(
-        "traffic_target",
         gettext("TARGET TRAFFIC"),
-        "cols='50' rows='4'",
-        gettext("Insert the target traffic description")
+        "traffic_target",
+        "",
+        "cols='50' rows='4'", null, gettext("Insert the target traffic description")
     );
     $traffic_target_editFG = "traffic_target,";
 }

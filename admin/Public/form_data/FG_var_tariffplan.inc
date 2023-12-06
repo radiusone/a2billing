@@ -119,10 +119,10 @@ $HD_Form->AddEditElement(
 $HD_Form->AddEditSqlSelect("id_trunk", gettext("TRUNK"), "cc_trunk", "trunkcode,id_trunk");
 
 $HD_Form->AddEditTextarea(
-    "description",
     gettext("DESCRIPTION"),
-    "cols='50' rows='4'",
-    gettext("Insert the description")
+    "description",
+    "",
+    "cols='50' rows='4'", null, gettext("Insert the description")
 );
 
 if ($form_action=="ask-add"){

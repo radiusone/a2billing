@@ -95,10 +95,10 @@ $HD_Form->AddEditElement(
 
 
 $HD_Form->AddEditTextarea(
-    "description",
     gettext("DESCRIPTION"),
-    "cols='60' rows='2'",
-    gettext("Insert the description")
+    "description",
+    "",
+    "cols='60' rows='2'", null, gettext("Insert the description")
 );
 
 $HD_Form->AddEditElement(
@@ -113,13 +113,13 @@ $HD_Form->AddEditElement(
 $HD_Form->AddEditSelect("query_type", $mquery_type_list, gettext("QUERY TYPE"), gettext("Define type of the query that will be performed."));
 
 $HD_Form->AddEditTextarea(
-    "query",
     gettext("QUERY / SHELL SCRIPT"),
+    "query",
+    gettext("Shell Script need to be copied into the directory") . SCRIPT_CONFIG_DIR . "<br>" . gettext("Do not specify the path here."),
     "cols='80' rows='4'",
-    gettext("Insert the description"),
-    "",
     null,
-    gettext("Shell Script need to be copied into the directory") . SCRIPT_CONFIG_DIR . "<br>" . gettext("Do not specify the path here.")
+    gettext("Insert the description"),
+    ""
 );
 
 $HD_Form->AddEditSelect(

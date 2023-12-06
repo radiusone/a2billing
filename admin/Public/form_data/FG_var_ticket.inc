@@ -144,10 +144,10 @@ $HD_Form->AddEditSqlSelect("id_component", gettext("COMPONENT"), "cc_support_com
 $HD_Form->AddEditSelect("priority", $priority_list, gettext("PRIORITY"));
 
 $HD_Form->AddEditTextarea(
-    "description",
     gettext("DESCRIPTION"),
-    "rows='4'",
-    gettext("Insert the description")
+    "description",
+    "",
+    "rows='4'", null, gettext("Insert the description")
 );
 
 $HD_Form -> FieldEditElement (' creator, title, id_component, priority, description');

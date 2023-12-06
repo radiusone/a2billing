@@ -103,10 +103,10 @@ $HD_Form->AddEditSqlSelect(
 );
 
 $HD_Form->AddEditTextarea(
-    "description",
     gettext("DESCRIPTION"),
-    "cols='50' rows='4'",
-    gettext("Insert the description")
+    "description",
+    "",
+    "cols='50' rows='4'", null, gettext("Insert the description")
 );
 
 $HD_Form->AddEditSqlSelect(

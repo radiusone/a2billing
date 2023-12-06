@@ -88,10 +88,10 @@ $HD_Form->AddEditElement(
 );
 
 $HD_Form->AddEditTextarea(
-    "description",
     gettext("DESCRIPTION"),
-    "cols='50' rows='5'",
-    gettext("Insert the description")
+    "description",
+    "",
+    "cols='50' rows='5'", null, gettext("Insert the description")
 );
 
 $HD_Form -> FieldEditElement ('provider_name, description');

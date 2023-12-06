@@ -830,10 +830,10 @@ $HD_Form->AddEditElement(
 );
 
 $HD_Form->AddEditTextarea(
-    "traffic_target",
     gettext("TARGET TRAFFIC"),
-    "cols='50' rows='4'",
-    gettext("Insert the target traffic description")
+    "traffic_target",
+    "",
+    "cols='50' rows='4'", null, gettext("Insert the target traffic description")
 );
 
 $HD_Form->AddEditSelect(

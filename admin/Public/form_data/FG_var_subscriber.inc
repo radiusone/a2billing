@@ -121,10 +121,10 @@ $HD_Form->AddEditElement(
 );
 
 $HD_Form->AddEditTextarea(
-    "product_name",
     gettext("PRODUCT LABEL"),
-    "cols='50' rows='4'",
-    gettext("Enter the name of the product wich is subscribed")
+    "product_name",
+    "",
+    "cols='50' rows='4'", null, gettext("Enter the name of the product wich is subscribed")
 );
 
 $HD_Form -> FieldEditElement ('id_cc_card, id_subscription_fee, startdate, stopdate, product_name');

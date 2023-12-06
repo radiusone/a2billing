@@ -838,23 +838,23 @@ class FormHandler
     }
 
     /**
-     * @param string $fieldname The form input name
      * @param string $label_text The label text
+     * @param string $fieldname The form input name
+     * @param string $form_text_bottom Text to display below the form input
      * @param string $html_attributes HTML attributes for the input
+     * @param int|null $regex_nb A validation method number
      * @param string $error_message A message to show if validation fails
      * @param string $section_name If provided, added as a row above the input
-     * @param int|null $regexpr_nb A validation method number
-     * @param string $form_text_bottom Text to display below the form input
      * @return void
      */
     public function AddEditTextarea(
-        string $fieldname,
         string $label_text,
+        string $fieldname,
+        string $form_text_bottom = "",
         string $html_attributes = "",
-        string $error_message = "",
-        string $section_name = "",
         ?int   $regex_nb = null,
-        string $form_text_bottom = ""
+        string $error_message = "",
+        string $section_name = ""
     ): void
     {
         $this->FG_EDIT_FORM_ELEMENTS[] = $this->FG_ADD_FORM_ELEMENTS[] = [

@@ -340,10 +340,10 @@ if (has_rights (Admin::ACX_MODIFY_AGENTS) && !($popup_select)) {
     );
 
     $HD_Form->AddEditTextarea(
-        "bank_info",
         gettext("BANK INFO"),
-        "cols='50' rows='4'",
-        gettext("Insert the bank info of this agent")
+        "bank_info",
+        "",
+        "cols='50' rows='4'", null, gettext("Insert the bank info of this agent")
     );
 
     $HD_Form->AddEditSqlSelect(
