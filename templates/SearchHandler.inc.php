@@ -1,6 +1,8 @@
 <?php
+
+use A2billing\Forms\FormHandler;
 /**
- * @var A2billing\Forms\FormHandler $this
+ * @var FormHandler $this
  * @var array $processed
  * @var array $list
  * @var bool $full_modal

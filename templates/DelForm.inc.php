@@ -1,9 +1,10 @@
 <?php
 
+use A2billing\Forms\FormHandler;
 use A2billing\Table;
 
 /**
- * @var A2billing\Forms\Formhandler $this
+ * @var FormHandler $this
  * @var array $processed
  * @var array $list
  * @var string $form_action

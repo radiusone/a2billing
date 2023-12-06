@@ -65,13 +65,13 @@ class FormHandler
     public string $FG_QUERY_PRIMARY_KEY = 'id';
     /** @var string Comma separated list of columns from the SQL query to display in the list */
     public string $FG_QUERY_COLUMN_LIST = ""; // TODO: change this to an array
-    /** @var string A condition to add to the list query */
+    /** @var string|null A condition to add to the list query */
     public ?string $FG_QUERY_WHERE_CLAUSE = "";
-    /** @var string List of columns for the list display query to be grouped by */
+    /** @var array List of columns for the list display query to be grouped by */
     public array $FG_QUERY_GROUPBY_COLUMNS = [];
     /** @var array List of columns for the list display query to be ordered by */
     public array $FG_QUERY_ORDERBY_COLUMNS = [];
-    /** @var string Direction (ASC or DESC) for the list display query ordering */
+    /** @var string|null Direction (ASC or DESC) for the list display query ordering */
     public ?string $FG_QUERY_DIRECTION = '';
     /** @var string Default sort order */
     public string $FG_TABLE_DEFAULT_ORDER = "id";
@@ -87,7 +87,7 @@ class FormHandler
 
     /** @var bool Whether to place a delete button in the list view's action column */
     public bool $FG_ENABLE_DELETE_BUTTON = false;
-    /** @var string The link for the delete button */
+    /** @var string|null The link for the delete button */
     public ?string $FG_DELETE_BUTTON_LINK = null;
     /** @var string Code which is eval'd to decide whether to show the delete button */
     public string $FG_DELETE_BUTTON_CONDITION = '';
@@ -101,7 +101,7 @@ class FormHandler
 
     /** @var bool Whether to place an edit button in the list view's action column */
     public bool $FG_ENABLE_EDIT_BUTTON = false;
-    /** @var string The link for the edit button */
+    /** @var string|null The link for the edit button */
     public ?string $FG_EDIT_BUTTON_LINK = null;
     /** @var string Code which is eval'd to decide whether to show the edit button */
     public string $FG_EDIT_BUTTON_CONDITION = '';
@@ -351,7 +351,6 @@ class FormHandler
 
     private bool $alarm_db_error_duplication = false;
 
-    /** @var string */
     public bool $FG_LIST_ADDING_BUTTON1 = false;
     /** @var string */
     public string $FG_LIST_ADDING_BUTTON_LINK1;
@@ -1084,7 +1083,7 @@ class FormHandler
      *
      * @param string $sql the existing SQL query
      * @param string $column the column name, also used for the post field name
-     * @param string $like_type post field name of the operator: 1=equal (default) 2=starts with 3=contains 4=ends with
+     * @param string|null $like_type post field name of the operator: 1=equal (default) 2=starts with 3=contains 4=ends with
      * @return string the SQL command with new comparison appended
      */
     public function do_field(string $sql, string $column, string $like_type = null): string

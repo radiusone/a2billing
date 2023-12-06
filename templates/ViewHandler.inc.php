@@ -4,7 +4,7 @@ use A2billing\Forms\FormHandler;
 use A2billing\Table;
 
 /**
- * @var A2billing\Forms\Formhandler $this
+ * @var FormHandler $this
  * @var array $processed
  * @var array $list
  * @var string $letter
@@ -207,13 +207,7 @@ if (empty($list)) {
                         if (!empty($this->FG_EDIT_BUTTON_CONDITION)) {
                             $condition_eval = preg_replace_callback(
                                 "/\\|col([0-9]+)\\|/i",
-                                function ($m) use ($item, &$check)
-                                {
-                                    $check = false;
-                                    $tmp = str_replace($m[0], $item[$m[1]] ?? "", $m[0]);
-
-                                    return $tmp;
-                                },
+                                fn ($m) => str_replace($m[0], $item[$m[1]] ?? "", $m[0]),
                                 // only used in FG_var_invoice.inc and FG_var_receipt.inc
                                 $this->FG_EDIT_BUTTON_CONDITION
                             );
@@ -232,13 +226,7 @@ if (empty($list)) {
                         if (!empty($this->FG_DELETE_BUTTON_CONDITION)) {
                             $condition_eval = preg_replace_callback(
                                 "/\\|col([0-9]+)\\|/i",
-                                function ($m) use ($item, &$check)
-                                {
-                                    $check = false;
-                                    $tmp = str_replace($m[0], $item[$m[1]] ?? "", $m[0]);
-
-                                    return $tmp;
-                                },
+                                fn ($m) => str_replace($m[0], $item[$m[1]] ?? "", $m[0]),
                                 $this->FG_DELETE_BUTTON_CONDITION
                             );
                             $check = eval("return $condition_eval;");
@@ -256,13 +244,7 @@ if (empty($list)) {
                             if (!empty($this->{"FG_OTHER_BUTTON{$b}_CONDITION"})) {
                                 $condition_eval = preg_replace_callback(
                                     "/\\|col([0-9]+)\\|/i",
-                                    function ($m) use ($item, &$check)
-                                    {
-                                        $check = false;
-                                        $tmp = str_replace("|col$m[1]|", $item[$m[1]] ?? "", $m[0]);
-
-                                        return $tmp;
-                                    },
+                                    fn ($m) => str_replace($m[0], $item[$m[1]] ?? "", $m[0]),
                                     $this->{"FG_OTHER_BUTTON{$b}_CONDITION"}
                                 );
                                 $check = eval("return $condition_eval;");

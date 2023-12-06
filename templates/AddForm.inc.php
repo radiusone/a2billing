@@ -1,9 +1,10 @@
 <?php
 
+use A2billing\Forms\FormHandler;
 use A2billing\Table;
 
 /**
- * @var A2billing\Forms\Formhandler $this
+ * @var FormHandler $this
  * @var array $processed
  * @var array $list
  * @var bool $VALID_SQL_REG_EXP
@@ -135,7 +136,7 @@ $options = null;
             <?php endforeach ?>
 
         <?php elseif ($row["type"] === "CAPTCHAIMAGE"): ?>
-            <table cellpadding="2" cellspacing="0" border="0" width="100%">
+            <table>
                 <tr>
                     <td>
                         <img alt="captcha" src="captcha/captcha.php"/>
