@@ -115,15 +115,15 @@ $HD_Form->AddEditTextarea(
 );
 
 $HD_Form->AddEditSqlSelect(
-    "id_agent",
     gettext("AGENT"),
+    "id_agent",
     "cc_agent",
     "login,id,firstname,lastname",
     "",
     "",
     '<option value="-1" selected="selected">' . gettext("NONE") . '</option>',
-    "",
-    "%1 - %3 %4 (%2)"
+    "%1 - %3 %4 (%2)",
+    ""
 );
 
 $HD_Form->AddEditSelect(

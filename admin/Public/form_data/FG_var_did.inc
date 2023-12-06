@@ -134,9 +134,9 @@ $HD_Form->AddEditElement(
     "res_display_dateformat"
 );
 
-$HD_Form->AddEditSqlSelect("id_cc_didgroup", _("DIDGROUP"), "cc_didgroup", "didgroupname,id");
+$HD_Form->AddEditSqlSelect(_("DIDGROUP"), "id_cc_didgroup", "cc_didgroup", "didgroupname,id");
 
-$HD_Form->AddEditSqlSelect("id_cc_country", _("COUNTRY"), "cc_country", "countryname,id");
+$HD_Form->AddEditSqlSelect(_("COUNTRY"), "id_cc_country", "cc_country", "countryname,id");
 
 $HD_Form->AddEditRadio(
     gettext("ACTIVATED"),

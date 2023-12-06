@@ -87,8 +87,8 @@ $HD_Form->AddEditPopup(
 );
 
 $HD_Form->AddEditSqlSelect(
-    "id_subscription_fee",
     gettext("ID SUBSCRIPTION SERVICE"),
+    "id_subscription_fee",
     "cc_subscription_service",
     "label,id",
     "",

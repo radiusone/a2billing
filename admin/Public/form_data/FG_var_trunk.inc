@@ -143,8 +143,8 @@ if (isset($form_action) && $form_action=="ask-add"){
 }
 
 $HD_Form->AddEditSqlSelect(
-    "id_provider",
     gettext("VOIP PROVIDER"),
+    "id_provider",
     "cc_provider",
     "provider_name,id",
     "",
@@ -207,14 +207,14 @@ $HD_Form->AddEditElement(
 );
 
 $HD_Form->AddEditSqlSelect(
-    "failover_trunk",
     gettext("FAILOVER TRUNK"),
+    "failover_trunk",
     "cc_trunk",
     "trunkcode,id_trunk",
     "",
     "",
     '<option value="-1" selected="selected">' . gettext("NOT DEFINED") . '</option>',
-    gettext("You can define another trunk in case of failover!")
+    "%1", gettext("You can define another trunk in case of failover!")
 );
 
 $HD_Form->AddEditElement(

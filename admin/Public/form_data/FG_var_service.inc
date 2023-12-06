@@ -176,8 +176,8 @@ $HD_Form->AddEditElement(
 );
 
 $HD_Form->AddEditSqlSelect(
-    "dialplan",
     gettext("CALL PLAN"),
+    "dialplan",
     "cc_tariffgroup",
     "tariffgroupname,id",
     "",
@@ -207,17 +207,17 @@ if ( $resmax )
 
 if ($numrow > 0) {
     $HD_Form->AddEditSqlSelect(
-        "service",
         gettext("CARD GROUP"),
+        "service",
         "cards_services",
         "name,id",
         "",
         "",
         "",
-        "",
         "%1 : (%2)",
+        "",
         "size='10' multiple='multiple'",
-        [
+        "", [
             "name" => "id_card_group",
             "tables" => "cc_card_group LEFT JOIN cc_cardgroup_service ON cc_card_group.id=cc_cardgroup_service.id_card_group",
             "columns" => "DISTINCT cc_card_group.name, cc_card_group.id",

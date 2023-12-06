@@ -104,7 +104,7 @@ if ($form_action !== "ask-edit" && $form_action !== "edit") {
         "", 4, _("Insert the Customer ID")
     );
 
-    $HD_Form->AddEditSqlSelect("id_cc_did", _("DID"), "cc_did", "did,id");
+    $HD_Form->AddEditSqlSelect(_("DID"), "id_cc_did", "cc_did", "did,id");
 }
 
 $HD_Form->AddEditRadio(

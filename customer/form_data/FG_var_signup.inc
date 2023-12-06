@@ -245,8 +245,8 @@ if ($form_action == 'ask-add') {
 }
 if (COUNTRY_ENABLE)  {
     $HD_Form->AddEditSqlSelect(
-        "country",
         gettext("COUNTRY"),
+        "country",
         "cc_country", "countryname,countrycode",
         "",
         $country_default_val

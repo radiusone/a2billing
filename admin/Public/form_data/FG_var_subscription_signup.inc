@@ -91,15 +91,15 @@ $HD_Form->AddEditRadio(
 
 $CURRENCY = strtoupper(BASE_CURRENCY);
 $HD_Form->AddEditSqlSelect(
-    "id_subscription",
     gettext("SUBSCRIPTION OPTIONS"),
+    "id_subscription",
     "cc_subscription_service",
     "label,id,fee",
     "",
     "",
     '<option value="-1" selected="selected">' . gettext("NONE") . '</option>',
-    "",
-    "%1 - %3 $CURRENCY (id:%2)"
+    "%1 - %3 $CURRENCY (id:%2)",
+    ""
 );
 
 $HD_Form->AddEditTextarea(
@@ -110,14 +110,14 @@ $HD_Form->AddEditTextarea(
 );
 
 $HD_Form->AddEditSqlSelect(
-    "id_callplan",
     gettext("CALL PLAN"),
+    "id_callplan",
     "cc_tariffgroup",
     "tariffgroupname,id",
     "",
     "",
     "",
-    gettext("Define the callplan to associate to your Subscription")
+    "%1", gettext("Define the callplan to associate to your Subscription")
 );
 
 $HD_Form -> FieldEditElement ('label,enable,id_subscription, description, id_callplan');

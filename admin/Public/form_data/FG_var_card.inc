@@ -380,16 +380,16 @@ if (!$popup_select) {
         );
 
         $HD_Form->AddEditSqlSelect(
-            "id_group",
             _("CUSTOMER GROUP"),
+            "id_group",
             "cc_card_group",
             "name,id",
             is_admin() ? "" : "id_agent='$_SESSION[agent_id]'"
         );
 
         $HD_Form->AddEditSqlSelect(
-            "id_seria",
             _("SERIES"),
+            "id_seria",
             "cc_card_seria",
             "name,id",
             "",
@@ -465,11 +465,11 @@ if (!$popup_select) {
 
         $country_default_val = $form_action === "ask-add" ? "USA" : "";
         $HD_Form->AddEditSqlSelect(
-            "country", 
-            _("COUNTRY"), 
-            "cc_country", 
-            "countryname,countrycode", 
-            "", 
+            _("COUNTRY"),
+            "country",
+            "cc_country",
+            "countryname,countrycode",
+            "",
             $country_default_val
         );
 
@@ -543,20 +543,21 @@ if (!$popup_select) {
 
         if (is_admin() || $form_action === "add" || $form_action === "ask-add") {
             $HD_Form->AddEditSqlSelect(
-                "tariff",
                 _("CALL PLAN"),
+                "tariff",
                 is_admin() ? "cc_tariffgroup" : "cc_tariffgroup,cc_agent_tariffgroup",
                 "tariffgroupname, id",
-                is_admin() ? "" : "cc_tariffgroup.id = cc_agent_tariffgroup.id_tariffgroup AND cc_agent_tariffgroup.id_agent = '$_SESSION[agent_id]'",
+                is_admin() ? ""
+                    : "cc_tariffgroup.id = cc_agent_tariffgroup.id_tariffgroup AND cc_agent_tariffgroup.id_agent = '$_SESSION[agent_id]'",
                 "",
                 "",
-                _("Changing the call plan will result in the free minutes or free calls package being reset.")
+                "%1", _("Changing the call plan will result in the free minutes or free calls package being reset.")
             );
         }
 
         $HD_Form->AddEditSqlSelect(
-            "id_didgroup",
             _("DIDGROUP"),
+            "id_didgroup",
             "cc_didgroup",
             "didgroupname,id",
             "",
@@ -673,8 +674,8 @@ if (!$popup_select) {
         );
 
         $HD_Form->AddEditSqlSelect(
-            "id_campaign",
             _("CAMPAIGN"),
+            "id_campaign",
             "cc_campaign",
             "name,id",
             "",

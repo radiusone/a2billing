@@ -639,33 +639,33 @@ class FormHandler
     }
 
     /**
-     * @param string $fieldname The form input name
      * @param string $label_text The label text
+     * @param string $fieldname The form input name
      * @param string $sql_table The table to check
      * @param string $sql_column The columns to retrieve
      * @param string $sql_where A condition to apply using a WHERE clause
      * @param string $default_value When adding (not editing), the value of the selected item
      * @param string $first_option HTML to add before the option list
-     * @param string $form_text_bottom Text to display below the form input
      * @param string $display_format A format string like "%1" which will be replaced with the first result column
+     * @param string $form_text_bottom Text to display below the form input
      * @param string $html_attributes HTML attributes for the input
-     * @param array $custom_query If provided, an array containing values to build a custom query
      * @param string $error_message A message to show if validation fails
+     * @param array $custom_query If provided, an array containing values to build a custom query
      * @return void
      */
     public function AddEditSqlSelect(
-        string $fieldname,
         string $label_text,
+        string $fieldname,
         string $sql_table,
         string $sql_column,
         string $sql_where = "",
         string $default_value = "",
         string $first_option = "",
-        string $form_text_bottom = "",
         string $display_format = "%1",
+        string $form_text_bottom = "",
         string $html_attributes = "",
-        array  $custom_query = [],
-        string $error_message = ""
+        string $error_message = "",
+        array  $custom_query = []
     ): void
     {
         $cur = count($this->FG_EDIT_FORM_ELEMENTS);

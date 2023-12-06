@@ -347,17 +347,17 @@ if (has_rights (Admin::ACX_MODIFY_AGENTS) && !($popup_select)) {
     );
 
     $HD_Form->AddEditSqlSelect(
-        "tariffgroup",
         gettext("CALL PLAN USABLE"),
+        "tariffgroup",
         "cc_agent_tariffgroup",
         "label,id",
         "",
         "",
         "",
-        "",
         "%1: (%2)",
+        "",
         "size='10' multiple='multiple'",
-        [
+        "", [
             "name" => "id_tariffgroup",
             "tables" => "cc_tariffgroup LEFT JOIN cc_agent_tariffgroup ON cc_tariffgroup.id=cc_agent_tariffgroup.id_tariffgroup",
             "columns" => "DISTINCT cc_tariffgroup.tariffgroupname, cc_tariffgroup.id",

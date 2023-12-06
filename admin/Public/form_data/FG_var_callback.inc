@@ -82,7 +82,7 @@ $HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 
-$HD_Form->AddEditSqlSelect("id_server_group", gettext("SERVER GROUP"), "cc_server_group", "name,id");
+$HD_Form->AddEditSqlSelect(gettext("SERVER GROUP"), "id_server_group", "cc_server_group", "name,id");
 
 $HD_Form->AddEditElement(
     gettext("UNIQUEID"),

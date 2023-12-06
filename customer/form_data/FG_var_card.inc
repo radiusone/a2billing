@@ -115,8 +115,8 @@ $HD_Form->AddEditElement(
 );
 
 $HD_Form->AddEditSqlSelect(
-    "country",
     gettext("COUNTRY"),
+    "country",
     "cc_country",
     "countryname,countrycode"
 );
@@ -133,8 +133,8 @@ $HD_Form->AddEditElement(
 );
 
 $HD_Form->AddEditSqlSelect(
-    "id_timezone",
     gettext("TIMEZONE"),
+    "id_timezone",
     "cc_timezone",
     "gmtzone,id"
 );

@@ -81,7 +81,7 @@ $HD_Form->AddEditTextarea(
     gettext("Insert the CID"), "cols='50' rows='4'"
 );
 
-$HD_Form->AddEditSqlSelect("outbound_cid_group", gettext("CIDGROUP"), "cc_outbound_cid_group", "group_name,id");
+$HD_Form->AddEditSqlSelect(gettext("CIDGROUP"), "outbound_cid_group", "cc_outbound_cid_group", "group_name,id");
 
 $HD_Form->AddEditRadio(
     gettext("ACTIVATED"),

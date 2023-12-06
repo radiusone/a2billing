@@ -374,15 +374,15 @@ if (isset($form_action) && $form_action=="ask-delete") {
 }
 
 $HD_Form->AddEditSqlSelect(
-    "id_group",
     gettext("CUSTOMER GROUP"),
+    "id_group",
     "cc_card_group", "name,id",
     "cc_card_group.id_agent='$_SESSION[agent_id]'"
 );
 
 $HD_Form->AddEditSqlSelect(
-    "id_seria",
     gettext("SERIA"),
+    "id_seria",
     "cc_card_seria",
     "name,id",
     "",
@@ -461,8 +461,8 @@ $HD_Form->AddEditElement(
 );
 
 $HD_Form->AddEditSqlSelect(
-    "country",
     gettext("COUNTRY"),
+    "country",
     "cc_country",
     "countryname,countrycode"
 );
@@ -529,8 +529,8 @@ $HD_Form->AddEditElement(
 $callplan_add = "";
 if (isset($form_action) && ($form_action=="ask-add" || $form_action=="add")) {
     $HD_Form->AddEditSqlSelect(
-        "tariff",
         gettext("CALL PLAN"),
+        "tariff",
         "cc_tariffgroup,cc_agent_tariffgroup",
         "tariffgroupname,id",
         "cc_tariffgroup.id = cc_agent_tariffgroup.id_tariffgroup AND cc_agent_tariffgroup.id_agent = '$_SESSION[agent_id]'"
@@ -539,8 +539,8 @@ if (isset($form_action) && ($form_action=="ask-add" || $form_action=="add")) {
 }
 
 $HD_Form->AddEditSqlSelect(
-    "id_didgroup",
     gettext("DIDGROUP"),
+    "id_didgroup",
     "cc_didgroup",
     "didgroupname,id",
     "",
@@ -661,8 +661,8 @@ if (ACT_VOICEMAIL) {
 }
 
 $HD_Form->AddEditSqlSelect(
-    "id_campaign",
     gettext("CAMPAIGN"),
+    "id_campaign",
     "cc_campaign",
     "name,id",
     "",

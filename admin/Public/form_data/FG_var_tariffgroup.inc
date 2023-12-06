@@ -118,14 +118,14 @@ $HD_Form->AddEditElement(
 $HD_Form->AddEditSelect(gettext("LC TYPE"), "lcrtype", $lcrtype_list);
 
 $HD_Form->AddEditSqlSelect(
-    "id_cc_package_offer",
     gettext("PACKAGE"),
+    "id_cc_package_offer",
     "cc_package_offer",
     "label,id",
     "",
     "",
     '<option value="-1" selected="selected">' . gettext("NOT DEFINED") . '</option>',
-    gettext("Set the Package Group offer if you wish to use one with this Call Plan")
+    "%1", gettext("Set the Package Group offer if you wish to use one with this Call Plan")
 );
 
 $HD_Form->AddEditRadio(
@@ -145,17 +145,17 @@ if ( $resmax )
 
 if ($numrow>0){
     $HD_Form->AddEditSqlSelect(
-        "tariffplan",
         gettext("RATECARD"),
+        "tariffplan",
         "cc_tariffgroup_plan",
         "label,id",
         "",
         "",
         "",
-        "",
         "%1 : (%2)",
+        "",
         "size='10' multiple='muliple'",
-        [
+        "", [
             "name" => "idtariffplan",
             "tables" => "cc_tariffplan LEFT JOIN cc_tariffgroup_plan ON cc_tariffplan.id=cc_tariffgroup_plan.idtariffplan",
             "columns" => "DISTINCT cc_tariffplan.tariffname, cc_tariffplan.id",

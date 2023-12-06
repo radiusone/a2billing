@@ -116,7 +116,7 @@ $HD_Form->AddEditElement(
     "res_display_dateformat"
 );
 
-$HD_Form->AddEditSqlSelect("id_trunk", gettext("TRUNK"), "cc_trunk", "trunkcode,id_trunk");
+$HD_Form->AddEditSqlSelect(gettext("TRUNK"), "id_trunk", "cc_trunk", "trunkcode,id_trunk");
 
 $HD_Form->AddEditTextarea(
     gettext("DESCRIPTION"),
