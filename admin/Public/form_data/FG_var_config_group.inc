@@ -71,7 +71,7 @@ $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form -> FG_DELETE_BUTTON_CONDITION = 'str_starts_with("|col0|", "agi-conf") && "|col0|" !== "agi-conf1"';
 
 $HD_Form -> FG_OTHER_BUTTON1 = true;
-$HD_Form -> FG_OTHER_BUTTON1_LINK = "A2B_entity_config.php?posted_search=1&config_group_title=|col0|";
+$HD_Form -> FG_OTHER_BUTTON1_LINK = "A2B_entity_config.php?posted_search=1&config_group_id=|param|";
 $HD_Form -> FG_OTHER_BUTTON1_ALT = gettext('Show group entries');
 $HD_Form -> FG_OTHER_BUTTON1_IMG = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJGSURBVDjLjdJLSNRBHMDx78yqLZaKS75DPdgDDaFDbdJmde5QlhCJGxgpRJfqEEKnIsJLB7skQYQKZaSmdLaopPCgEvSCShCMzR5a7oq7/3l12RVtjfzBMA/4fWZ+MyOccwBM3g8HEbIdfCEhfAFnLVapOa28Uevpjrqz/WOsERJgsu9Uq5CZQzgqrJfo9BajNd5irEYn4p3OUiFExtCLmw2tawFi4l5zUMjMIau9u7K+qxeoAcoAA0wDb2OPwmfA16LiiaOHLj1edRLpkO3WmIis7+oBDgJbgQ2AH6gC6jY19N62RkcctKeVIJAhp9QgUA3kJXdONZVcq9JxPSgQoXRAyIDRth8oAXQyKdWnoCKrTD9CBv4GMqx1WGNZkeRWJKbG2hiD1Cb9FbTnzWFdY/LCdLKlgNQ84gyNKqHm0gDjqVHnxDHgA/B9RQkpaB6YklkZl62np9KBhOqwjpKFgeY2YAz4BESBWHI8Hhs6PVVSvc3v98ye4fP7T676B845nt040ip98qpWJmI9PWiU6bfWgXGN2YHcKwU7tsuc4kpUPMbU0+f8+vKt+Pitl7PLAMDI9cNBoB0hQwICzjqUp6MZvsy8yvp95BRuQUjJ75mPvH4wYo1NlJ64Mza7DPwrhi8cCOeXl/aUB4P4c/NJxKLMvpngycCrzxVFG2v/CwAMnguF80oLe8p27cQh+fnpPV/fTc95S6piXQDAw7a9YbWkezZXFbAwMx/xPFXb1D3+Y90AQF/L7kAsri9mZ4lrTd0TcYA/Kakr+x2JSPUAAAAASUVORK5CYII=";
 
@@ -96,12 +96,19 @@ function add_agi_confx(string $group_title, ?string $from_conf): void
     $group_desc = 'This configuration group handles the AGI Configuration.';
     $handle = DbConnect();
     $handle->Execute("INSERT INTO cc_config_group (group_title, group_description) VALUES (?, ?)", [$group_title, $group_desc]);
+    $group_id = $handle->Insert_ID();
     if (!empty($from_conf)) {
-        $handle->Execute(
-            "INSERT INTO cc_config_group (config_title, config_key, config_value, config_description, config_valuetype, config_group_title, config_listvalues)
-            SELECT config_title, config_key, config_value, config_description, config_valuetype, ?, config_listvalues FROM cc_config WHERE config_group_title = ?",
-            [$group_title, $from_conf]
-        );
+        $query = <<< SQL
+            INSERT INTO cc_config (
+                config_title, config_key, config_value, config_description, config_valuetype, config_group_id, config_listvalues
+            )
+            SELECT config_title, config_key, config_value, config_description, config_valuetype, ?, config_listvalues
+            FROM cc_config c
+                LEFT JOIN cc_config_group g ON c.config_group_id = g.id
+            WHERE g.group_title = ?
+            SQL;
+        $params = [$group_id, $from_conf];
+        $handle->Execute($query, $params);
     }
 }
 

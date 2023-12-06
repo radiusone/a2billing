@@ -311,7 +311,7 @@ class A2Billing
 
         $this->DbConnect();
         $this->currencies_list = $this->get_currencies();
-        $query = "SELECT config_key, config_value, config_group_title, config_valuetype FROM cc_config";
+        $query = "SELECT config_key, config_value, group_title, config_valuetype FROM cc_config LEFT JOIN mya2billing.cc_config_group ccg ON config_group_id = ccg.id";
         $config_res = $this->DBHandle->GetAll($query);
         if ($config_res === false || $config_res === []) {
             echo 'Error : cannot load conf : load_conf_db';
@@ -320,7 +320,7 @@ class A2Billing
 
         foreach ($config_res as $conf) {
             $type = $conf["config_valuetype"];
-            $group = $conf["config_group_title"];
+            $group = $conf["group_title"];
             $key = $conf["config_key"];
             $val = $conf["config_value"];
             if ($type == 1 && preg_match("/(yes|true|1)/i", $val)) { // if its type is boolean yes

@@ -52,9 +52,9 @@ if ($form_action === "ask-edit") {
     $setbool = (bool)$handle->GetOne("SELECT IF(config_listvalues = 'yes,no' OR config_listvalues = 'no,yes', 1, 0) FROM cc_config WHERE id = ?", [$id]);
 }
 
-$HD_Form = new FormHandler("cc_config", _("Configuration"));
+$HD_Form = new FormHandler("cc_config LEFT JOIN cc_config_group ON cc_config.config_group_id = cc_config_group.id", _("Configuration"));
 $HD_Form->no_debug();
-$HD_Form->FG_TABLE_DEFAULT_ORDER = "config_group_title";
+$HD_Form->FG_TABLE_DEFAULT_ORDER = "group_title";
 
 if ($form_action === "list") {
     $yesno = [];
@@ -77,9 +77,9 @@ if ($form_action === "list") {
     $HD_Form->AddViewElement(_("KEY"), "config_key");
     $HD_Form->AddViewElement(_("VALUE"), "config_value", false, 0, "", "list-conf", $yesno);
     $HD_Form->AddViewElement(_("DESCRIPTION"), "config_description");
-    $HD_Form->AddViewElement(_("GROUP"), "config_group_title");
+    $HD_Form->AddViewElement(_("GROUP"), "group_title");
 
-    $HD_Form->FieldViewElement('config_title, config_key, config_value, config_description, config_group_title');
+    $HD_Form->FieldViewElement('config_title, config_key, config_value, config_description, group_title');
 
     $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 25;
 }
@@ -94,11 +94,11 @@ $HD_Form->search_form_enabled = true;
 $HD_Form->AddSearchTextInput(_("Value"), "config_value");
 $HD_Form->AddSearchTextInput(_("Key"), "config_key");
 $HD_Form->AddSearchTextInput(_("Description"), "config_description");
-$HD_Form->AddSearchSqlSelectInput(_("Select config group"), "cc_config_group", "group_title,group_title", "", ["group_title"], "ASC", "config_group_title");
+$HD_Form->AddSearchSqlSelectInput(_("Select config group"), "cc_config_group", "id,group_title", "", ["group_title"], "ASC", "config_group_id");
 
 $HD_Form->AddEditElement(
     _("GROUP"),
-    "config_group_title",
+    "group_title",
     _("Group Name of the configuration variable"),
     "readonly='readonly'",
     null,
@@ -153,7 +153,7 @@ $HD_Form->AddEditElement(
     _("Insert the Description")
 );
 
-$HD_Form->FieldEditElement ('config_group_title, config_title, config_key, config_value ,config_listvalues, config_description');
+$HD_Form->FieldEditElement('config_title, config_key, config_value ,config_listvalues, config_description');
 
 $HD_Form->FG_INTRO_TEXT_EDITION= '';
 $HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";
