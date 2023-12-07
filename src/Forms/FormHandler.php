@@ -1510,27 +1510,32 @@ class FormHandler
                         $this->VALID_SQL_REG_EXP = false;
                         $form_action = "ask-add";
                     }
-                    // CHECK IF THIS IS A SPLITABLE FIELD LIKE 012-014 OR 15;16;17
+                    // CHECK IF THIS IS A SPLITABLE FIELD LIKE 012-014 OR 15,16,17
                     if (in_array($this->FG_SPLITABLE_FIELDS, $fields_name) && !str_starts_with($processed[$fields_name], '_')) {
-                        $splitable_value = $processed[$fields_name];
-                        $arr_splitable_value = explode(",", $splitable_value);
-                        foreach ($arr_splitable_value as $arr_value) {
-                            $arr_value = trim($arr_value);
-                            $arr_value_explode = explode("-", $arr_value, 2);
-                            if (count($arr_value_explode) > 1) {
-                                if (is_numeric($arr_value_explode[0]) && is_numeric($arr_value_explode[1]) && $arr_value_explode[0] < $arr_value_explode[1]) {
-                                    $kk = strlen($arr_value_explode[0]) - strlen(ltrim($arr_value_explode[0], '0'));
-                                    $prefix = substr($arr_value_explode[0], 0, $kk);
-                                    for ($kk = $arr_value_explode[0]; $kk <= $arr_value_explode[1]; $kk++) {
-                                        $arr_value_to_import[] = $prefix . $kk;
+                        $splittable_value = $processed[$fields_name];
+                        $items = explode(",", $splittable_value);
+                        foreach ($items as $item) {
+                            $item = trim($item);
+                            $range = explode("-", $item, 2);
+                            if (isset($range[1])) {
+                                $min = trim($range[0]);
+                                $max = trim($range[1]);
+                                // get common prefix to avoid issues with very large numeric strings like card numbers
+                                $prefix_len = strspn("$min" ^ "$max", chr(0));
+                                $prefix = substr($min, 0, $prefix_len);
+                                $min = substr($min, $prefix_len);
+                                $max = substr($max, $prefix_len);
+                                if (is_numeric($min) && is_numeric($max) && $min < $max) {
+                                    for ($i = $min; $i <= $max; $i++) {
+                                        $arr_value_to_import[] = $prefix . $i;
                                     }
-                                } elseif (is_numeric($arr_value_explode[0])) {
-                                    $arr_value_to_import[] = $arr_value_explode[0];
-                                } elseif (is_numeric($arr_value_explode[1])) {
-                                    $arr_value_to_import[] = $arr_value_explode[1];
+                                } elseif (is_numeric($min)) {
+                                    $arr_value_to_import[] = $prefix . $min;
+                                } elseif (is_numeric($max)) {
+                                    $arr_value_to_import[] = $prefix . $max;
                                 }
                             } else {
-                                $arr_value_to_import[] = $arr_value_explode[0];
+                                $arr_value_to_import[] = $range[0];
                             }
                         }
 
