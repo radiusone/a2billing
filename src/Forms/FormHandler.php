@@ -1452,47 +1452,23 @@ class FormHandler
 
     /**
      * Function to perform the add action after inserting all data in required fields
-     *
-     * @public
      */
-    public function perform_add(&$form_action): void
+    public function perform_add(string &$form_action): void
     {
         $processed = $this->getProcessed();  //$processed['firstname']
         $this->VALID_SQL_REG_EXP = true;
-        // just for logging, but will be used for parameterized queries later
-        $fields = [];
         $values = [];
-        $param_add_fields = "";
-        $param_add_value = "";
         $arr_value_to_import = [];
-        $i = 0;
         $instance_table = new Table($this->FG_QUERY_TABLE_NAME);
 
-        foreach ($this->FG_ADD_FORM_ELEMENTS as $i => &$row) {
+        foreach ($this->FG_ADD_FORM_ELEMENTS as &$row) {
             if (empty($row["custom_query"])) {
                 $fields_name = $row["name"];
                 $regexp = $row["regex"];
 
                 if (str_contains($row["attributes"], "multiple") && is_array($processed[$fields_name])) {
-                    $total_mult_select = 0;
-                    foreach ($processed[$fields_name] as $value) {
-                        $total_mult_select += $value;
-                    }
-
-                    if ($this->FG_DEBUG == 1) {
-                        echo "<br>$fields_name : " . $total_mult_select;
-                    }
-                    if ($i > 0) {
-                        $param_add_fields .= ", ";
-                    }
-                    $fields[] = $fields_name;
-                    $param_add_fields .= $fields_name;
-                    if ($i > 0) {
-                        $param_add_value .= ", ";
-                    }
-                    $values[] = $total_mult_select;
-                    $param_add_value .= "'" . addslashes(trim($total_mult_select)) . "'";
-
+                    $total_mult_select = (int)array_sum($processed[$fields_name]);
+                    $values[$fields_name] = $total_mult_select;
                 } else {
                     // CHECK ACCORDING TO THE REGULAR EXPRESSION DEFINED
                     if (is_numeric($regexp) && !(str_starts_with($row["check_empty"], "NO") && $processed[$fields_name] === "")) {
@@ -1500,7 +1476,7 @@ class FormHandler
                         if ($row["validation_err"] !== true) {
                             $this->VALID_SQL_REG_EXP = false;
                             if ($this->FG_DEBUG == 1) {
-                                echo "<br>-> $i) Error Match";
+                                echo "<br>-> $fields_name) Error Match";
                             }
                             $form_action = "ask-add";
                         }
@@ -1512,8 +1488,8 @@ class FormHandler
                     }
                     // CHECK IF THIS IS A SPLITABLE FIELD LIKE 012-014 OR 15,16,17
                     if (in_array($this->FG_SPLITABLE_FIELDS, $fields_name) && !str_starts_with($processed[$fields_name], '_')) {
-                        $splittable_value = $processed[$fields_name];
-                        $items = explode(",", $splittable_value);
+                        $value = $processed[$fields_name];
+                        $items = explode(",", $value);
                         foreach ($items as $item) {
                             $item = trim($item);
                             $range = explode("-", $item, 2);
@@ -1527,46 +1503,23 @@ class FormHandler
                                 $max = substr($max, $prefix_len);
                                 if (is_numeric($min) && is_numeric($max) && $min < $max) {
                                     for ($i = $min; $i <= $max; $i++) {
-                                        $arr_value_to_import[] = $prefix . $i;
+                                        $arr_value_to_import[$fields_name] = $prefix . $i;
                                     }
                                 } elseif (is_numeric($min)) {
-                                    $arr_value_to_import[] = $prefix . $min;
+                                    $arr_value_to_import[$fields_name] = $prefix . $min;
                                 } elseif (is_numeric($max)) {
-                                    $arr_value_to_import[] = $prefix . $max;
+                                    $arr_value_to_import[$fields_name] = $prefix . $max;
                                 }
                             } else {
-                                $arr_value_to_import[] = $range[0];
+                                $arr_value_to_import[$fields_name] = $range[0];
                             }
                         }
 
                         if (!empty($processed[$fields_name]) && !str_contains($row["attributes"], "disabled")) {
-                            if ($i > 0) {
-                                $param_add_fields .= ", ";
-                            }
-                            $fields[] = $fields_name;
-                            $param_add_fields .= $fields_name;
-                            if ($i > 0) {
-                                $param_add_value .= ", ";
-                            }
-                            $values[] = "'%TAGPREFIX%'";
-                            $param_add_value .= "'%TAGPREFIX%'";
+                            $values[$fields_name] = "%check_array%";
                         }
-                    } else {
-                        if ($this->FG_DEBUG == 1) {
-                            echo "<br>$fields_name : " . $processed[$fields_name];
-                        }
-                        if (!empty($processed[$fields_name]) && !str_contains($row["attributes"], "disabled") && $row["type"] !== "CAPTCHAIMAGE") {
-                            if ($i > 0) {
-                                $param_add_fields .= ", ";
-                            }
-                            $fields[] = $fields_name;
-                            $param_add_fields .= $fields_name;
-                            if ($i > 0) {
-                                $param_add_value .= ", ";
-                            }
-                            $values[] = $processed[$fields_name];
-                            $param_add_value .= "'" . addslashes(trim($processed[$fields_name])) . "'";
-                        }
+                    } elseif (!empty($processed[$fields_name]) && !str_contains($row["attributes"], "disabled") && $row["type"] !== "CAPTCHAIMAGE") {
+                        $values[$fields_name] = $processed[$fields_name];
                     }
                 }
             }
@@ -1574,48 +1527,29 @@ class FormHandler
         unset ($row);
 
         foreach ($this->FG_ADD_QUERY_HIDDEN_INPUTS as $name => $value) {
-            $fields[] = $name;
-            $values[] = $value;
-            $name = $instance_table->quote_identifier($name);
-            if ($i > 0) {
-                $param_add_fields .= ", ";
-                $param_add_value .= ", ";
-            }
-            $param_add_fields .= $name;
-            $param_add_value .= $value;
+            $values[$name] = $value;
         }
-
-        if ($this->FG_DEBUG == 1) {
-            echo "<br><hr> $param_add_fields";
-        }
-        if ($this->FG_DEBUG == 1) {
-            echo "<br><hr> $param_add_value";
-        }
-
-        $res_funct = true;
 
         // CALL DEFINED FUNCTION BEFORE THE ADDITION
 
         if (strlen($this->FG_ADDITIONAL_FUNCTION_BEFORE_ADD) > 0 && ($this->VALID_SQL_REG_EXP)) {
             $res_funct = call_user_func([FormBO::class, $this->FG_ADDITIONAL_FUNCTION_BEFORE_ADD]);
-        }
-
-        if (!$res_funct) {
-            return;
-        }
-
-        $instance_table = new Table($this->FG_QUERY_TABLE_NAME, $param_add_fields);
-        // CHECK IF WE HAD FOUND A SPLITABLE FIELD THEN WE MIGHT HAVE %TAGPREFIX%
-        if (str_contains($param_add_value, '%TAGPREFIX%')) {
-            foreach ($arr_value_to_import as $current_value) {
-                $param_add_value_replaced = str_replace("%TAGPREFIX%", $current_value, $param_add_value);
-                if ($this->VALID_SQL_REG_EXP) {
-                    $this->QUERY_RESULT = $instance_table->Add_table($this->DBHandle, $param_add_value_replaced, null, null, $this->FG_QUERY_PRIMARY_KEY);
-                }
+            if (!$res_funct) {
+                return;
             }
-        } elseif ($this->VALID_SQL_REG_EXP) {
-            $this->QUERY_RESULT = $instance_table->Add_table($this->DBHandle, $param_add_value, null, null, $this->FG_QUERY_PRIMARY_KEY);
         }
+
+        if ($this->VALID_SQL_REG_EXP === false) {
+            $this->QUERY_RESULT = false;
+        } elseif (($key = array_search("%check_array%", $values)) !== false) {
+            foreach ($arr_value_to_import[$key] as $array_value) {
+                $values[$key] = $array_value;
+                $this->QUERY_RESULT = $instance_table->addRow($this->DBHandle, $values, array_keys($values), $id);
+            }
+        } else {
+            $this->QUERY_RESULT = $instance_table->addRow($this->DBHandle, $values, array_keys($values), $id);
+        }
+
         if ($this->FG_ENABLE_LOG) {
             Logger::insertLog(
                 $_SESSION["admin_id"],
@@ -1625,19 +1559,15 @@ class FormHandler
                 $this->FG_QUERY_TABLE_NAME,
                 $_SERVER['REMOTE_ADDR'],
                 $_SERVER['REQUEST_URI'],
-                $fields,
-                $values
+                array_keys($values),
+                array_values($values)
             );
         }
         // CALL DEFINED FUNCTION AFTER THE ACTION ADDITION
         if (strlen($this->FG_ADDITIONAL_FUNCTION_AFTER_ADD) > 0 && ($this->VALID_SQL_REG_EXP)) {
             call_user_func([FormBO::class, $this->FG_ADDITIONAL_FUNCTION_AFTER_ADD]);
         }
-        $id = $this->QUERY_RESULT;
         if (!empty($id) && ($this->VALID_SQL_REG_EXP) && (isset($this->FG_LOCATION_AFTER_ADD))) {
-            if ($this->FG_DEBUG == 1) {
-                echo "<br> GOTO ; " . $this->FG_LOCATION_AFTER_ADD . $id;
-            }
             header("Location: " . $this->FG_LOCATION_AFTER_ADD . $id);
         }
     }
