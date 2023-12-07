@@ -289,6 +289,37 @@ class Table
         return $row[0];
     }
 
+    /**
+     * Add a row with a proper parameterized statement
+     *
+     * @param ADOConnection $db
+     * @param array $values
+     * @param array $fields
+     * @param $id
+     * @return bool
+     */
+    public function addRow(ADOConnection $db, array $values, array $fields = [], &$id = null): bool
+    {
+        if (count($fields)) {
+            array_walk($fields, fn ($v) => $this->quote_identifier($v));
+            $this->fields = implode(",", $fields);
+        }
+
+        $table = $this->quote_identifier($this->table);
+        $placeholders = implode(",", array_fill(0, count($values), "?"));
+
+        $query = "INSERT INTO $table ($this->fields) VALUES ($placeholders)";
+
+        $result = $db->Execute($query, $values);
+
+        if ($result === false) {
+            return false;
+        }
+        $id = $db->Insert_ID();
+
+        return true;
+    }
+
     public function Add_table(ADOConnection $DBHandle, string $value, string $func_fields = "", string $func_table = "", string $id_name = "", bool $subquery = false)
     {
         if ($func_fields !== "") {
