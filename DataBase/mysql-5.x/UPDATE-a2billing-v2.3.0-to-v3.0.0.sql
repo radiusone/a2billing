@@ -198,6 +198,7 @@ ALTER TABLE cc_config ADD COLUMN config_group_id BIGINT NOT NULL;
 DELETE FROM cc_config WHERE config_group_title NOT IN (SELECT group_title FROM cc_config_group);
 UPDATE cc_config SET cc_config.config_group_id = (SELECT id FROM cc_config_group WHERE group_title=config_group_title) WHERE config_group_title != '';
 ALTER TABLE cc_config DROP config_group_title;
+UPDATE cc_config SET config_valuetype = 2 WHERE config_valuetype = 1 AND config_listvalues != '' AND config_listvalues IS NOT NULL;
 
 -- primary keys
 ALTER TABLE cc_agent MODIFY id bigint(20) NOT NULL AUTO_INCREMENT;

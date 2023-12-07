@@ -60,7 +60,7 @@ if ($form_action === "list") {
     foreach ($config_list as $key => $config) {
         // where type = 1, map values 1 and 0 to yes and no
         $id = $config["id"];
-        if ($config["type"] !== "1" || ($config["val"] !== "1" && $config["val"] !== "0")) {
+        if ($config["type"] !== "1") {
             $yesno[$id] = [$config["val"], $id];
         } else {
             $yesno[$id] = [$config["val"] === "1" ? "Yes" : "No", $id];
@@ -78,7 +78,7 @@ if ($form_action === "list") {
     $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 25;
 } elseif ($form_action === "ask-edit") {
     $result = $handle->GetOne(
-        "SELECT IF(config_valuetype = 1 OR config_valuetype = 0 AND LENGTH(config_listvalues) > 0, config_listvalues, '') FROM cc_config WHERE id = ?",
+        "SELECT IF(config_valuetype > 0, config_listvalues, '') FROM cc_config WHERE id = ?",
         [$id]
     );
     if (strlen($result) > 0) {
@@ -137,10 +137,22 @@ if (is_array($value_select)) {
     );
 }
 
+$HD_Form->AddEditSelect(
+    _("TYPE"),
+    "config_valuetype",
+    [["Plain value", 0], ["Yes/No value", 1], ["Selectable list", 2]],
+);
+
 $HD_Form->AddEditElement(
     _("LIST OF VALUES"),
     "config_listvalues",
-    _("Insert the List of values, comma separated")
+    _("For selectable lists only, insert the comma separated list of values"),
+    "",
+    null,
+    "",
+    "",
+    "",
+    fn ($v) => $v === "yes,no" || $v === "no,yes" ? "" : $v
 );
 
 $HD_Form->AddEditTextarea(
@@ -150,7 +162,7 @@ $HD_Form->AddEditTextarea(
     "rows=5 readonly=\"readonly\""
 );
 
-$HD_Form->FieldEditElement('config_title, config_key, config_value ,config_listvalues, config_description');
+$HD_Form->FieldEditElement('config_title, config_key, config_value, config_valuetype, config_listvalues, config_description');
 
 $HD_Form->FG_INTRO_TEXT_EDITION= '';
 $HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";
