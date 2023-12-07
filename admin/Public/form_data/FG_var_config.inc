@@ -78,13 +78,16 @@ if ($form_action === "list") {
     $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 25;
 } elseif ($form_action === "ask-edit") {
     $result = $handle->GetOne(
-        "SELECT IF(config_valuetype > 0, config_listvalues, '') FROM cc_config WHERE id = ?",
+        "SELECT CASE config_valuetype WHEN 0 THEN '' WHEN 1 THEN 'bool' WHEN 2 THEN config_listvalues END FROM cc_config WHERE id = ?",
         [$id]
     );
-    if (strlen($result) > 0) {
-        $bool = ($result === "yes,no" || $result === "no,yes");
+    if ($result !== "" && $result !== "bool") {
         $result = explode(",", $result);
-        $value_select = array_map(fn($v) => [$v, $bool ? ($v === "yes" ? "1" : "0") : $v], $result);
+        $value_select = array_map(fn($v) => [$v, $v], $result);
+    } elseif ($result === "bool") {
+        $value_select = [["Yes", 1], ["No", 0]];
+    } else {
+        $value_select = null;
     }
 }
 
