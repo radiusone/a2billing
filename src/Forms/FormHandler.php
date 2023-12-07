@@ -1568,14 +1568,10 @@ class FormHandler
         } // endforeach with reference
         unset ($row);
 
-        foreach ($this->FG_EDIT_QUERY_HIDDEN_INPUTS as $name => $value) {
+        foreach ($this->FG_ADD_QUERY_HIDDEN_INPUTS as $name => $value) {
             $fields[] = $name;
             $values[] = $value;
             $name = $instance_table->quote_identifier($name);
-            // TODO: change to fully parameterized statements
-            if ($value !== "now()") {
-                $value = $this->DBHandle->qStr($value);
-            }
             if ($i > 0) {
                 $param_add_fields .= ", ";
                 $param_add_value .= ", ";

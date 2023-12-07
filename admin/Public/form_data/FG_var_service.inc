@@ -229,10 +229,6 @@ if ($numrow > 0) {
 
 $HD_Form->FieldEditElement('name, amount, rule, daynumber, period, stopmode, maxnumbercycle, status, emailreport, dialplan, operate_mode, use_group');
 
-if (DB_TYPE == "mysql") {
-    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["datecreate"] = "now()";
-}
-
 $HD_Form->FG_LOCATION_AFTER_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL) . "?id=";
 $HD_Form->FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL) . "?id=";
 $HD_Form->FG_LOCATION_AFTER_DELETE = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL) . "?id=";
