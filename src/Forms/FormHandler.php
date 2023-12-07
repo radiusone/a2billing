@@ -448,7 +448,7 @@ class FormHandler
         $processed = $this->getProcessed();
 
         Console::log('FormHandler -> init');
-        Console::logMemory($this, 'FormHandler -> init : Line ' . __LINE__);
+        Console::logMemory(false, 'FormHandler -> init : Line ' . __LINE__);
         Console::logSpeed('FormHandler -> init : Line ' . __LINE__);
 
         if (!empty($processed['section'])) {
