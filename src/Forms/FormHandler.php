@@ -641,6 +641,7 @@ class FormHandler
      * @param string $error_message A message to show if validation fails
      * @param array $custom_query If provided, an array containing values to build a custom query
      * @return void
+     * @todo $custom_query is only used in FG_var_[agent|service|tariffgroup].inc
      */
     public function AddEditSqlSelect(
         string $label_text,
@@ -806,6 +807,7 @@ class FormHandler
      * @param bool $multiline Determines whether to use <input> or <textarea>
      * @param string $section_name If provided, added as a row above the input
      * @return void
+     * @todo this function is only used in FG_var_card.inc
      */
     public function AddEditHasMany(
         string $label_text,
@@ -1544,10 +1546,20 @@ class FormHandler
         } elseif (($key = array_search("%check_array%", $values)) !== false) {
             foreach ($arr_value_to_import[$key] as $array_value) {
                 $values[$key] = $array_value;
-                $this->QUERY_RESULT = $instance_table->addRow($this->DBHandle, $values, array_keys($values), $id);
+                $this->QUERY_RESULT = $instance_table->addRow(
+                    $this->DBHandle,
+                    array_keys($values),
+                    array_values($values),
+                    $id
+                );
             }
         } else {
-            $this->QUERY_RESULT = $instance_table->addRow($this->DBHandle, $values, array_keys($values), $id);
+            $this->QUERY_RESULT = $instance_table->addRow(
+                $this->DBHandle,
+                array_keys($values),
+                array_values($values),
+                $id
+            );
         }
 
         if ($this->FG_ENABLE_LOG) {
@@ -1580,16 +1592,13 @@ class FormHandler
      */
     public function perform_edit(&$form_action)
     {
-        $param_update = "";
-        // just for logging, but will be used for parameterized queries later
-        $fields = [];
-        $values = [];
         $processed = $this->getProcessed();  //$processed['firstname']
         $this->VALID_SQL_REG_EXP = true;
+        $values = [];
         $instance_table = new Table($this->FG_QUERY_TABLE_NAME);
 
         if (!empty($processed['id'])) {
-            $this->FG_EDIT_QUERY_CONDITION = str_replace("%id", $processed['id'], $this->FG_EDIT_QUERY_CONDITION);
+            $this->FG_EDIT_QUERY_CONDITION = str_replace("%id", "?", $this->FG_EDIT_QUERY_CONDITION);
         }
 
         foreach ($this->FG_EDIT_FORM_ELEMENTS as $i => &$row) {
@@ -1598,21 +1607,10 @@ class FormHandler
                 $regexp = $row["regex"];
 
                 if (str_contains($row["attributes"], "multiple") && is_array($processed[$fields_name])) {
-                    $total_mult_select = 0;
-                    foreach ($processed[$fields_name] as $value) {
-                        $total_mult_select += $value;
-                    }
-                    if ($this->FG_DEBUG == 1) {
-                        echo "<br>$fields_name : " . $total_mult_select;
-                    }
-                    if ($i > 0) {
-                        $param_update .= ", ";
-                    }
-                    $fields[] = $fields_name;
-                    $values[] = $total_mult_select;
-                    $param_update .= "$fields_name = '" . addslashes(trim($total_mult_select)) . "'";
+                    $total_mult_select = (int)array_sum($processed[$fields_name]);
+                    $values[$fields_name] = $total_mult_select;
                 } else {
-                    if (is_numeric($regexp) && isset($processed[$fields_name]) && !(str_starts_with($row["check_empty"], "NO") && $processed[$fields_name] === "")) {
+                    if (is_numeric($regexp) && !(str_starts_with($row["check_empty"], "NO") && ($processed[$fields_name] ?? null) === "")) {
                         $row["validation_err"] = $this->validate_field($regexp, $processed[$fields_name]);
                         if ($row["validation_err"] !== true) {
                             $this->VALID_SQL_REG_EXP = false;
@@ -1622,21 +1620,10 @@ class FormHandler
                             $form_action = "ask-edit";
                         }
                     }
-
-                    if ($this->FG_DEBUG == 1) {
-                        echo "<br>$fields_name : " . $processed[$fields_name];
-                    }
-                    if ($i > 0 && $row["type"] !== "SPAN") {
-                        $param_update .= ", ";
-                    }
                     if (empty($processed[$fields_name]) && str_ends_with($row["check_empty"], "NULL")) {
-                        $fields[] = $fields_name;
-                        $values[] = null;
-                        $param_update .= $fields_name . " = NULL ";
+                        $values[$fields_name] = null;
                     } elseif ($row["type"] !== "SPAN") {
-                        $fields[] = $fields_name;
-                        $values[] = $processed[$fields_name];
-                        $param_update .= $fields_name . " = '" . addslashes(trim($processed[$fields_name])) . "' ";
+                        $values[$fields_name] = $processed[$fields_name];
                     }
                 }
             }
@@ -1644,24 +1631,21 @@ class FormHandler
         unset($row);
 
         foreach ($this->FG_EDIT_QUERY_HIDDEN_INPUTS as $name => $value) {
-            $fields[] = $name;
-            $values[] = $value;
-            $name = $instance_table->quote_identifier($name);
-            // TODO: change to fully parameterized statements
-            $value = $this->DBHandle->qStr($value);
-            $param_update .= ", $name = $value";
+            $values[$name] = $value;
         }
 
         if (strlen($this->FG_ADDITIONAL_FUNCTION_BEFORE_EDITION) > 0 && ($this->VALID_SQL_REG_EXP)) {
             call_user_func([FormBO::class, $this->FG_ADDITIONAL_FUNCTION_BEFORE_EDITION]);
         }
 
-        if ($this->FG_DEBUG == 1) {
-            echo "<br><hr> PARAM_UPDATE: $param_update<br>" . $this->FG_EDIT_QUERY_CONDITION;
-        }
-
         if ($this->VALID_SQL_REG_EXP) {
-            $this->QUERY_RESULT = $instance_table->Update_table($this->DBHandle, $param_update, $this->FG_EDIT_QUERY_CONDITION);
+            $this->QUERY_RESULT = $instance_table->updateRow(
+                $this->DBHandle,
+                array_keys($values),
+                array_values($values),
+                $this->FG_EDIT_QUERY_CONDITION,
+                [$processed['id']]
+            );
         }
 
         if ($this->FG_ENABLE_LOG) {
@@ -1673,23 +1657,17 @@ class FormHandler
                 $this->FG_QUERY_TABLE_NAME,
                 $_SERVER['REMOTE_ADDR'],
                 $_SERVER['REQUEST_URI'],
-                $fields,
-                $values
+                array_keys($values),
+                array_values($values)
             );
         }
 
-        if ($this->FG_DEBUG == 1) {
-            echo $this->QUERY_RESULT;
-        }
         // CALL DEFINED FUNCTION AFTER THE ACTION ADDITION
         if (strlen($this->FG_ADDITIONAL_FUNCTION_AFTER_EDITION) > 0 && ($this->VALID_SQL_REG_EXP)) {
             call_user_func([FormBO::class, $this->FG_ADDITIONAL_FUNCTION_AFTER_EDITION]);
         }
 
         if ($this->VALID_SQL_REG_EXP && !empty($this->FG_LOCATION_AFTER_EDIT)) {
-            if ($this->FG_DEBUG == 1) {
-                echo "<br> GOTO ; " . $this->FG_LOCATION_AFTER_EDIT . $processed['id'];
-            }
             $ext_link = '';
             if (is_numeric($processed['current_page'])) {
                 $ext_link .= "&current_page=" . $processed['current_page'];

@@ -298,12 +298,10 @@ class Table
      * @param $id
      * @return bool
      */
-    public function addRow(ADOConnection $db, array $values, array $fields = [], &$id = null): bool
+    public function addRow(ADOConnection $db, array $fields, array $values, &$id = null): bool
     {
-        if (count($fields)) {
-            array_walk($fields, fn ($v) => $this->quote_identifier($v));
-            $this->fields = implode(",", $fields);
-        }
+        array_walk($fields, fn ($v) => $this->quote_identifier($v));
+        $this->fields = implode(",", $fields);
 
         $table = $this->quote_identifier($this->table);
         $placeholders = implode(",", array_fill(0, count($values), "?"));
@@ -365,6 +363,19 @@ class Table
         }
 
         return true;
+    }
+
+    public function updateRow(ADOConnection $db, array $fields, array $values, string $where = "1=1", array $where_values = []): bool
+    {
+        array_walk($fields, fn ($v) => $this->quote_identifier($v));
+        $this->fields = implode(",", $fields);
+
+        $table = $this->quote_identifier($this->table);
+        $placeholders = implode(",", array_fill(0, count($values), "?"));
+
+        $query = "INSERT INTO $table ($this->fields) VALUES ($placeholders) WHERE $where";
+
+        return $db->Execute($query, array_merge($values, $where_values));
     }
 
     public function Update_table(ADOConnection $DBHandle, string $param_update, string $clause, string $func_table = "")
