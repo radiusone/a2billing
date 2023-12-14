@@ -116,8 +116,6 @@ $HD_Form->AddEditElement(
     gettext("Insert the amount of free time to call (seconds)")
 );
 
-$HD_Form -> FieldEditElement ('label, packagetype, billingtype, startday, freetimetocall');
-
 $HD_Form -> FG_INTRO_TEXT_ADITION = '';
 
 $HD_Form -> FG_LOCATION_AFTER_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";

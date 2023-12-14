@@ -135,10 +135,7 @@ $HD_Form_c->AddEditTextarea(
     "cols='50' rows='4'", null, gettext("Insert the description")
 );
 
-$HD_Form_c -> FieldEditElement ('id_cc_card, amount, chargetype, description');
-
 // Set the filter variables
-
 $HD_Form_c -> FG_FILTER_ENABLE = true;
 $HD_Form_c -> FG_FILTER_COLUMN = 'username';
 $HD_Form_c -> FG_FILTER_LABEL = 'account number';

@@ -128,10 +128,6 @@ $HD_Form->AddEditPopup(
 
 $HD_Form->AddEditSelect(gettext("COMMISSION TYPE"), "commission_type", $com_list, "", gettext("Define the type of this commission."));
 
-$HD_Form -> FieldEditElement ('id_card, id_agent, date, amount, description, id_payment, commission_type');
-
-
-
 $HD_Form -> FG_ADDITIONAL_FUNCTION_AFTER_ADD = "processing_commission_add";
 $HD_Form -> FG_INTRO_TEXT_ADITION = '';
 

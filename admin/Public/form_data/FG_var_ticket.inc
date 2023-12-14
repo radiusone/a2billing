@@ -150,8 +150,6 @@ $HD_Form->AddEditTextarea(
     "rows='4'", null, gettext("Insert the description")
 );
 
-$HD_Form -> FieldEditElement (' creator, title, id_component, priority, description');
-
 // Set the filter variables
 $HD_Form -> FG_FILTER_ENABLE = true;
 $HD_Form -> FG_FILTER_COLUMN = 'username';

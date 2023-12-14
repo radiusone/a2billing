@@ -898,17 +898,6 @@ if (!$popup_select) {
             true
         );
 
-
-        $update_field_typepaid = $form_action !== "edit" ? "typepaid," : "";
-
-        $HD_Form->FieldEditElement('username, useralias, uipass, credit, id_group, id_seria, lastname, firstname, email, ' .
-            ' address, city, state, country, zipcode, phone, fax,company_name, company_website, ' .
-            $update_field_typepaid . ' tariff, id_didgroup, id_timezone, language, currency, status, block, lock_pin, simultaccess,  runservice, creditlimit, ' .
-            ' credit_notification, notify_email, email_notification, ' .
-            ' id_campaign, ' .
-            ' firstusedate, enableexpire, expirationdate, expiredays, sip_buddy, iax_buddy, mac_addr, inuse, max_concurrent, ' .
-            ' autorefill, initialbalance, invoiceday, vat, vat_rn, discount, traffic, traffic_target, restriction');
-
         if ($form_action === "ask-edit") {
             $table_card = new Table("cc_card", "status");
             $result_card = $table_card->get_list(DbConnect(), "id=$id");

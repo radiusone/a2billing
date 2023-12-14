@@ -129,12 +129,6 @@ $HD_Form->AddEditRadio(
     _("Choose if you want to not use the trunk and let the asterisk call directly the destination (ie, Destination : SIP/jeremy@182.212.1.45)")
 );
 
-if ($form_action !== "ask-edit" && $form_action !== "edit") {
-	$HD_Form->FieldEditElement ('destination, id_cc_card, id_cc_did, activated, validated, priority, voip_call');
-} else {
-	$HD_Form->FieldEditElement ('destination, activated, validated, priority, voip_call');
-}
-
 // Set the filter variables
 $HD_Form->FG_FILTER_ENABLE = true;
 $HD_Form->FG_FILTER_COLUMN = 'cc_did.did';

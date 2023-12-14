@@ -96,8 +96,6 @@ $HD_Form->AddEditPopup(
     "", 4, gettext("Insert the card number ID")
 );
 
-$HD_Form -> FieldEditElement ('cid, activated, id_cc_card');
-
 // Set the filter variables
 $HD_Form -> FG_FILTER_ENABLE = true;
 $HD_Form -> FG_FILTER_COLUMN = 'cid';

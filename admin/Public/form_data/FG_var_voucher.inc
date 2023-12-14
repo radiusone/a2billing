@@ -185,9 +185,6 @@ $HD_Form->AddEditElement(
     "res_display_dateformat"
 );
 
-$HD_Form -> FieldEditElement ('voucher, credit, tag, activated, currency, expirationdate ');
-
-
 // Set the filter variables
 $HD_Form -> FG_FILTER_ENABLE = true;
 $HD_Form -> FG_FILTER_COLUMN = 'voucher';

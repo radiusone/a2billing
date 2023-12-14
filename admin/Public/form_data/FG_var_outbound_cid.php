@@ -92,10 +92,7 @@ $HD_Form->AddEditRadio(
     gettext("Choose if you want to activate this CallerID")
 );
 
-$HD_Form -> FieldEditElement ('cid, outbound_cid_group, activated');
-
 $HD_Form -> FG_INTRO_TEXT_EDITION = '';
-
 $HD_Form -> FG_INTRO_TEXT_ADITION = '';
 
 

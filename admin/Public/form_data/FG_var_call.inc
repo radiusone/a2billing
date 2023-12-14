@@ -105,9 +105,6 @@ $HD_Form->AddEditElement(
     18
 );
 
-$HD_Form -> FieldEditElement ('id, card_id, calledstation, src, dnid, sessiontime');
-
-
 // Set the filter variables
 $HD_Form -> FG_FILTER_ENABLE = true;
 $HD_Form -> FG_FILTER_COLUMN = 'id';

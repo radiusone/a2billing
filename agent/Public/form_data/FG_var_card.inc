@@ -886,24 +886,9 @@ $HD_Form->AddEditHasMany(
     true
 );
 
-$add_fields_voicemail = '';
-if (ACT_VOICEMAIL)
-	$add_fields_voicemail = 'voicemail_permitted, voicemail_activated, ';
-
-$HD_Form -> FieldEditElement ('username, useralias, uipass'.$balance_delete.', id_group, id_seria, lastname, firstname, email, '.
-		' address, city, state, country, zipcode, phone, fax,company_name, company_website '.
-		$callplan_add.', id_didgroup, id_timezone, language, currency, status, block, lock_pin, simultaccess,  runservice, ' .
-		' credit_notification, notify_email, email_notification, ' .$add_fields_voicemail.
-		' id_campaign, ' .
-		' firstusedate, enableexpire, expirationdate, expiredays, sip_buddy, iax_buddy, mac_addr, inuse, autorefill, initialbalance,' .
-		' invoiceday, vat, vat_rn, discount, traffic, traffic_target, restriction' );
-
-
 if(!isset($myusername)) $myusername='';
 
 $HD_Form -> FG_INTRO_TEXT_ADITION = '';
-
-
 
 $HD_Form -> FG_ADDITIONAL_FUNCTION_BEFORE_EDITION = 'change_card_lock';
 
@@ -920,5 +905,3 @@ if (isset($form_action) && $form_action=='delete' && USE_REALTIME) {
 $HD_Form -> FG_LOCATION_AFTER_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?section=".$_SESSION["menu_section"]."&id=";
 $HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?section=".$_SESSION["menu_section"]."&id=";
 $HD_Form -> FG_LOCATION_AFTER_DELETE = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?section=".$_SESSION["menu_section"]."&id=";
-
-

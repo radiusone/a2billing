@@ -124,8 +124,6 @@ $HD_Form->AddEditTextarea(
     "cols='50' rows='4'", null, gettext("Insert the description")
 );
 
-$HD_Form -> FieldEditElement (' creator, title, id_component, priority, description');
-
 // Set the filter variables
 $HD_Form -> FG_FILTER_ENABLE = true;
 $HD_Form -> FG_FILTER_COLUMN = 'cc_agent.login';
@@ -136,12 +134,8 @@ $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["creator_type"] = 1;
 
 $HD_Form -> FG_INTRO_TEXT_EDITION= '';
 $HD_Form -> FG_ADDITIONAL_FUNCTION_AFTER_ADD = 'ticket_agent_add';
-
 $HD_Form -> FG_INTRO_TEXT_ADITION = '';
-
 
 $HD_Form -> FG_LOCATION_AFTER_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
 $HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
 $HD_Form -> FG_LOCATION_AFTER_DELETE = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
-
-

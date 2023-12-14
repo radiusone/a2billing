@@ -103,8 +103,6 @@ $HD_Form->AddEditElement(
     gettext("Insert the manager secret")
 );
 
-$HD_Form -> FieldEditElement ('id_group, server_ip, manager_host, manager_username, manager_secret');
-
 // Set the filter variables
 $HD_Form -> FG_FILTER_ENABLE = true;
 $HD_Form -> FG_FILTER_COLUMN = 'id_group';

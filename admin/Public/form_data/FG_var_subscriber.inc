@@ -127,14 +127,8 @@ $HD_Form->AddEditTextarea(
     "cols='50' rows='4'", null, gettext("Enter the name of the product wich is subscribed")
 );
 
-$HD_Form -> FieldEditElement ('id_cc_card, id_subscription_fee, startdate, stopdate, product_name');
-
-
-
 $HD_Form -> FG_INTRO_TEXT_ADITION = gettext("Apply subscription to account");
 
 $HD_Form -> FG_LOCATION_AFTER_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
 $HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
 $HD_Form -> FG_LOCATION_AFTER_DELETE = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
-
-

@@ -106,11 +106,7 @@ $HD_Form->AddEditElement(
     "NO"
 );
 
-$HD_Form -> FieldEditElement ('credit_notification, notify_email, email_notification');
-
 $HD_Form -> FG_INTRO_TEXT_ADITION = '';
 $HD_Form -> FG_TEXT_ADITION_CONFIRMATION = gettext("Your record has been updated.")."<br>";
 
 $HD_Form -> FG_LOCATION_AFTER_EDIT = "A2B_notification.php?message=success";
-
-

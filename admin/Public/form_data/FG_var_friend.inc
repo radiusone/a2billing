@@ -845,9 +845,6 @@ if ($voip_type=='sip') {
 			'forcejitterbuffer, codecpriority, qualifysmoothing, qualifyfreqok, qualifyfreqnotok, timezone, adsi, requirecalltoken, maxcallnumbers, maxcallnumbers_nonvalidated';
 }
 
-
-$HD_Form -> FieldEditElement ($field_list_edit);
-
 $HD_Form -> FG_FILTER_ENABLE = true;
 $HD_Form -> FG_FILTER_COLUMN = 'name';
 $HD_Form -> FG_FILTER_LABEL = gettext('username');

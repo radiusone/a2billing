@@ -172,12 +172,6 @@ if (has_rights (Admin::ACX_MODIFY_PAYMENTS)) {
         "", _("Define type for payment and refill,if created.")
     );
 
-	if ($form_action!="ask-edit" && $form_action!="edit") {
-		$HD_Form->FieldEditElement ('card_id, date, payment, description,payment_type');
-	} else {
-		$HD_Form->FieldEditElement ('card_id, date, payment, description, added_refill,added_commission, payment_type');
-	}
-
 	$HD_Form->FG_INTRO_TEXT_ADITION = '';
 	$HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = 'create_refill_after_payment';
 

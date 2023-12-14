@@ -166,21 +166,9 @@ if ($numrow>0){
 
 }
 
-
-$HD_Form -> FieldEditElement ('tariffgroupname, lcrtype, id_cc_package_offer, removeinterprefix');
-
-
 $HD_Form -> FG_INTRO_TEXT_EDITION= '';
-
-
-
 $HD_Form -> FG_INTRO_TEXT_ADITION = '';
-
 
 $HD_Form -> FG_LOCATION_AFTER_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
 $HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
 $HD_Form -> FG_LOCATION_AFTER_DELETE = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
-
-
-
-

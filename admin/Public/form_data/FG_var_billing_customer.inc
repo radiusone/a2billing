@@ -83,8 +83,6 @@ $HD_Form->AddEditElement(
     gettext("Insert the current date (YYYY-MM-DD)")
 );
 
-$HD_Form -> FieldEditElement ('id_card, date');
-
 $HD_Form -> FG_FILTER_ENABLE = true;
 $HD_Form -> FG_FILTER_COLUMN = 'username';
 $HD_Form -> FG_FILTER_LABEL = 'Account number';

@@ -135,18 +135,7 @@ $HD_Form->AddEditSelect(
     "size='$len_right_list' multiple='multiple'"
 );
 
-$HD_Form -> FieldEditElement ('name, description, id_agent, users_perms');
-
-
-
-
-
-
 $HD_Form -> FG_INTRO_TEXT_ADITION = gettext("Add $HD_Form->FG_INSTANCE_NAME.");
-
-
-
-
 
 $HD_Form -> FG_LOCATION_AFTER_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
 $HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";

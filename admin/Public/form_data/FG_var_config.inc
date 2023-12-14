@@ -165,7 +165,5 @@ $HD_Form->AddEditTextarea(
     "rows=5 readonly=\"readonly\""
 );
 
-$HD_Form->FieldEditElement('config_title, config_key, config_value, config_valuetype, config_listvalues, config_description');
-
 $HD_Form->FG_INTRO_TEXT_EDITION= '';
 $HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";

@@ -106,13 +106,5 @@ $HD_Form->AddEditElement(
     gettext("Insert the patch for the backup file or leave the default path")
 );
 
-
-$HD_Form -> FieldEditElement ('name, path, creationdate');
-
-
-
-
-
-
 $HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
 $HD_Form -> FG_LOCATION_AFTER_DELETE = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";

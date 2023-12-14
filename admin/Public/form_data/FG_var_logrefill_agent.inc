@@ -135,14 +135,8 @@ if (has_rights (Admin::ACX_MODIFY_REFILLS)) {
         $list_refill_type,
         "", gettext("Define type for payment and refill,if created.")
     );
-	$HD_Form -> FieldEditElement ('agent_id, date, credit, description, refill_type');
-
-	
 
 	$HD_Form -> FG_INTRO_TEXT_ADITION = '';
-	
-
-		
 	$HD_Form -> FG_ADDITIONAL_FUNCTION_AFTER_ADD = 'add_agent_refill';
 
 	$HD_Form -> FG_LOCATION_AFTER_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";

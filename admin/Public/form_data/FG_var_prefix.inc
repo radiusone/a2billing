@@ -98,8 +98,6 @@ $HD_Form->AddEditElement(
     _("Insert the Destination")
 );
 
-$HD_Form -> FieldEditElement ('prefix, destination');
-
 $HD_Form -> FG_EDIT_QUERY_CONDITION = " prefix='%id'";
 
 $HD_Form -> FG_FILTER_ENABLE = true;

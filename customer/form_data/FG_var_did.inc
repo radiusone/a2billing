@@ -155,9 +155,7 @@ $HD_Form->AddEditRadio(
     gettext("Choose if you want to not use the trunk and let the asterisk call directly the destination (ie, Destination : SIP/jeremy@182.212.1.45)")
 );
 
-if (isset($form_action) && ($form_action=='ask-edit')) {
-    $HD_Form -> FieldEditElement ('destination, activated, priority, voip_call');
-} else {
+if (!isset($form_action) && ($form_action!=='ask-edit')) {
     $HD_Form->FG_EDIT_QUERY_HIDDEN_INPUTS["destination"] = $destination;
     $HD_Form->FG_EDIT_QUERY_HIDDEN_INPUTS["validated"] = $validated;
 }
@@ -168,5 +166,3 @@ $HD_Form -> FG_INTRO_TEXT_ADITION = '';
 $HD_Form -> FG_LOCATION_AFTER_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
 $HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
 $HD_Form -> FG_LOCATION_AFTER_DELETE = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
-
-

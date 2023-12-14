@@ -150,20 +150,11 @@ if (has_rights (Admin::ACX_MODIFY_PAYMENTS)) {
         "", gettext("Define type for payment and refill,if created.")
     );
 
-	if ($form_action!="ask-edit" && $form_action!="edit") {
-		$HD_Form -> FieldEditElement ('agent_id, date, payment, description,payment_type');
-	} else {
-		$HD_Form -> FieldEditElement ('agent_id, date, payment, description, added_refill, payment_type');
-	}
-
 	$HD_Form -> FG_INTRO_TEXT_ADITION = '';
-	
-
 		
 	$HD_Form -> FG_ADDITIONAL_FUNCTION_AFTER_ADD = 'create_agent_refill';
 
 	$HD_Form -> FG_LOCATION_AFTER_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
 	$HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
 	$HD_Form -> FG_LOCATION_AFTER_DELETE = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
-
 }

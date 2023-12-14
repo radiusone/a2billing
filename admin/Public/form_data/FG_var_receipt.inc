@@ -136,8 +136,6 @@ $HD_Form->AddEditTextarea(
     "cols='50' rows='4'", null, gettext("Insert the description")
 );
 
-$HD_Form -> FieldEditElement ('id_card, date,title, description');
-
 $HD_Form -> FG_FILTER_ENABLE = true;
 $HD_Form -> FG_FILTER_COLUMN = 'username';
 $HD_Form -> FG_FILTER_LABEL = 'Account number';

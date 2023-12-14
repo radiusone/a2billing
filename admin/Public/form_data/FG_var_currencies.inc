@@ -95,8 +95,6 @@ $HD_Form -> FG_FILTER_ENABLE = true;
 $HD_Form -> FG_FILTER_COLUMN = 'currency';
 $HD_Form -> FG_FILTER_LABEL = 'currency';
 
-$HD_Form -> FieldEditElement ('name, currency,value');
-
 $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["basecurrency"] = strtoupper(BASE_CURRENCY);
 
 $HD_Form -> FG_INTRO_TEXT_ADITION = '';

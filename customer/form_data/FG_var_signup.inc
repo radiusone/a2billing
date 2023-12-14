@@ -386,16 +386,6 @@ if (CAPTCHA_ENABLE) {
 	$captcha = "captchacode,";
 }
 
-if (!$agent_conf && strpos($callPlan_idlist, ',') !== false && !($subscriber_signup>0)) {
-	$HD_Form->FieldEditElement('username, useralias, uipass, credit, ' . $language_editFG . ' tariff, id_didgroup, id_campaign,' .
-	'callback, simultaccess, ' . $currency_editFG . ' runservice, typepaid, creditlimit, firstusedate, enableexpire,' .
-	'expirationdate, expiredays, vat, ' . $lastname_editFG . $firstname_editFG . ' email,' . $address_editFG . $city_editFG . $state_editFG . $country_editFG . $zipcode_editFG . $id_timezone_editFG . $phone_editFG . $fax_editFG . $company_name_editFG . $company_website_editFG . $VAT_RN_editFG . $traffic_editFG . $traffic_target_editFG . $captcha . ' sip_buddy, iax_buddy, inuse');
-} else {
-	$HD_Form->FieldEditElement('username, useralias, uipass, credit, ' . $language_editFG . ' id_didgroup, id_campaign,' .
-	'callback, simultaccess, ' . $currency_editFG . ' runservice, typepaid, creditlimit, firstusedate, enableexpire,' .
-	'expirationdate, expiredays, vat, ' . $lastname_editFG . $firstname_editFG . ' email,' . $address_editFG . $city_editFG . $state_editFG . $country_editFG . $zipcode_editFG . $id_timezone_editFG . $phone_editFG . $fax_editFG . $company_name_editFG . $company_website_editFG . $VAT_RN_editFG . $traffic_editFG . $traffic_target_editFG . $captcha . ' sip_buddy, iax_buddy, inuse');
-}
-
 if (!isset ($myusername))
 	$myusername = '';
 

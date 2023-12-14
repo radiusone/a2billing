@@ -245,13 +245,6 @@ class FormHandler
     /** @var array A list of field names considered "splittable" during create or edit (values like e.g. 12-14 or 15;16;17) */
     public array $FG_SPLITABLE_FIELDS = [];
 
-    /**
-     * Set the fields  for the EDIT/ADD query
-     *
-     * @public    -    @type string
-     */
-    public string $FG_QUERY_EDITION = '';
-
     /** @var string A condition that will be applied to the edit query; %id is replaced within the page code */
     public string $FG_EDIT_QUERY_CONDITION = " id='%id' ";
 
@@ -938,18 +931,6 @@ class FormHandler
             "type" => "BUTTON",
         ];
     }
-
-    /**
-     * Sets Query fieldnames for the Edit/ADD module
-     *
-     * @public
-     * @ $col_query
-     */
-    public function FieldEditElement($fieldname)
-    {
-        $this->FG_QUERY_EDITION = $fieldname;
-    }
-
 
     /**
      * @param $rule_number

@@ -103,18 +103,9 @@ $HD_Form->AddEditSqlSelect(gettext("Support Box"), "id_support", "cc_support", "
 
 $HD_Form->AddEditSelect(gettext("USER TYPE"), "type_user", $user_type, "", gettext("Define who can use this component."));
 
-$HD_Form -> FieldEditElement ('name, activated, id_support,type_user');
-
-
-
 $HD_Form -> FG_INTRO_TEXT_EDITION= '';
-
-
 $HD_Form -> FG_INTRO_TEXT_ADITION = '';
-
 
 $HD_Form -> FG_LOCATION_AFTER_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
 $HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
 $HD_Form -> FG_LOCATION_AFTER_DELETE = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
-
-

@@ -80,21 +80,11 @@ $HD_Form->AddEditElement(
     gettext("The backup file")
 );
 
-
-
-$HD_Form -> FieldEditElement ('name, path, creationdate');
-
-//$HD_Form -> FG_QUERY_EDITION_HIDDEN_FIELDS = "path";
-//$HD_Form -> FG_QUERY_EDITION_HIDDEN_VALUE  = "$path";
-
-
 if ($form_action=="ask-restore") {
     $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["form_action"] = "restore";
 }
 
-
 $HD_Form -> FG_INTRO_TEXT_EDITION= '';
-
 
 $HD_Form -> FG_OTHER_BUTTON1_LINK = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?form_action=restore&id=";
 $HD_Form -> FG_OTHER_BUTTON1_IMG = Images_Path . "/icon-restore.gif";
@@ -103,9 +93,6 @@ $HD_Form -> FG_OTHER_BUTTON1_ALT = gettext("Restore");
 $HD_Form -> FG_OTHER_BUTTON2_LINK = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?form_action=download&id=";
 $HD_Form -> FG_OTHER_BUTTON2_IMG = Images_Path . "/dl.gif";
 $HD_Form -> FG_OTHER_BUTTON2_ALT = gettext("Download");
-
-
-
 
 $HD_Form -> FG_LOCATION_AFTER_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
 $HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";

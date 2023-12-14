@@ -177,8 +177,6 @@ $HD_Form->AddEditTextarea(
     "cols='70' rows='10'", null, gettext("Insert the user subject")
 );
 
-$HD_Form -> FieldEditElement ('mailtype, id_language, fromemail, fromname, subject, messagetext');
-
 $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["id"] = $latest_id;
 $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["id_language"] = $id_language;
 $HD_Form->FG_EDIT_QUERY_HIDDEN_INPUTS["id_language"] = $id_language;

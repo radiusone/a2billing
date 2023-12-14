@@ -173,17 +173,7 @@ if (ACT_VOICEMAIL) {
     );
 }
 
-$add_fields_voicemail = '';
-if (ACT_VOICEMAIL)
-	$add_fields_voicemail = ', voicemail_activated ';
-
-
-$HD_Form -> FieldEditElement ('lastname, firstname, address, city, state, country, zipcode,id_timezone, phone, fax '.$add_fields_voicemail);
-
 $HD_Form -> FG_INTRO_TEXT_ADITION = '';
 $HD_Form -> FG_TEXT_ADITION_CONFIRMATION = gettext("Your record has been updated.")."<br>";
 
 $HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?message=success";
-
-
-

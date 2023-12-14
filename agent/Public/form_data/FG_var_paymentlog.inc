@@ -178,18 +178,10 @@ $HD_Form->AddEditPopup(
     "", 4, gettext("Insert the Customer ID")
 );
 
-$HD_Form -> FieldEditElement ('cc_epayment_log.id, cc_epayment_log.creationdate, paymentmethod, cc_epayment_log.status, cc_owner, amount, cardid ');
-
-
 $HD_Form -> FG_FILTER_ENABLE = true;
 $HD_Form -> FG_FILTER_COLUMN = 'cardid';
 $HD_Form -> FG_FILTER_LABEL = _("Card ID");
 
-
 $HD_Form -> FG_INTRO_TEXT_EDITION= '';
 
 $HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
-
-
-
-

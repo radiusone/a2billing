@@ -366,9 +366,6 @@ if (has_rights (Admin::ACX_MODIFY_AGENTS) && !($popup_select)) {
         ]
     );
 
-    $FG_QUERY_EDITION = 'login, passwd, perms, active, credit,com_balance, currency, commission,threshold_remittance, vat, language, company, lastname, firstname, address, city, state, country, zipcode, email, phone,  fax,bank_info';
-    $HD_Form -> FieldEditElement ($FG_QUERY_EDITION);
-
 	$HD_Form -> FG_EDIT_QUERY_CONDITION = " id='%id'";
 	$HD_Form -> FG_ADDITIONAL_FUNCTION_AFTER_ADD = 'creation_agent_refill';
 	$HD_Form -> FG_INTRO_TEXT_ADITION = '';

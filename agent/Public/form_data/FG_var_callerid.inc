@@ -102,9 +102,6 @@ $HD_Form->AddEditPopup(
     "", 4, gettext("Insert the card number ID")
 );
 
-$HD_Form -> FieldEditElement ('cid, activated, id_cc_card');
-
-
 // Set the filter variables
 $HD_Form -> FG_FILTER_ENABLE = true;
 $HD_Form -> FG_FILTER_COLUMN = 'cid';
@@ -115,16 +112,6 @@ $HD_Form -> FG_OTHER_BUTTON3_LINK = "A2B_entity_logrefill.php?form_action=ask-ad
 $HD_Form -> FG_OTHER_BUTTON3_IMG = Images_Path . "/brick_add.png";
 $HD_Form -> FG_OTHER_BUTTON3_ALT = gettext('ADD REFILL');
 
-
-
-
-
-
-
-
 $HD_Form -> FG_LOCATION_AFTER_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
 $HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
 $HD_Form -> FG_LOCATION_AFTER_DELETE = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
-
-
-

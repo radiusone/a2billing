@@ -101,8 +101,6 @@ $HD_Form->AddEditPopup(
     "", 4, gettext("Insert the card number ID")
 );
 
-$HD_Form -> FieldEditElement ('cc_speeddial.speeddial, cc_speeddial.name, cc_speeddial.phone, cc_speeddial.id_cc_card');
-
 $HD_Form -> FG_FILTER_ENABLE = true;
 $HD_Form -> FG_FILTER_COLUMN = 'username';
 $HD_Form -> FG_FILTER_LABEL = gettext('Account Number');

@@ -156,9 +156,6 @@ if (has_rights (Admin::ACX_MODIFY_REFILLS)) {
         );
 	}
 
-
-	$HD_Form -> FieldEditElement ('card_id, date, credit, description, refill_type, added_invoice');
-
 	$HD_Form -> FG_INTRO_TEXT_ADITION = '';
 	$HD_Form -> FG_ADDITIONAL_FUNCTION_AFTER_ADD = 'processing_refill_add';
 	$HD_Form -> FG_LOCATION_AFTER_ADD = "?id=";
