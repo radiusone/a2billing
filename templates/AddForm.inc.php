@@ -27,7 +27,7 @@ $options = null;
     <input type="hidden" name="<?= htmlspecialchars($name) ?>" value="<?= htmlspecialchars($value) ?>"/>
 <?php endforeach ?>
 
-<?php foreach ($this->FG_ADD_FORM_ELEMENTS as $i=>$row):?>
+<?php foreach ($this->FG_EDIT_FORM_ELEMENTS as $i=>$row):?>
     <?php if (!empty($row["section_name"]) && $row["type"] !== "HAS_MANY"): ?>
     <div class="row mb-3">
         <h4><?= $row["section_name"] ?></h4>

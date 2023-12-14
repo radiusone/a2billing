@@ -241,8 +241,6 @@ class FormHandler
 
     /** @var array List of form elements used to create the edit form */
     private array $FG_EDIT_FORM_ELEMENTS = [];
-    /** @var array List of form elements used to create the add form (is this always the same as FG_EDIT_FORM_ELEMENTS?) */
-    private array $FG_ADD_FORM_ELEMENTS = [];
 
     /** @var array A list of field names considered "splittable" during create or edit (values like e.g. 12-14 or 15;16;17) */
     public array $FG_SPLITABLE_FIELDS = [];
@@ -624,7 +622,6 @@ class FormHandler
             "validation_err" => true,
         ];
         $this->FG_EDIT_FORM_ELEMENTS[$cur] = $data;
-        $this->FG_ADD_FORM_ELEMENTS[$cur] = $data;
     }
 
     /**
@@ -678,7 +675,6 @@ class FormHandler
             "validation_err" => true,
         ];
         $this->FG_EDIT_FORM_ELEMENTS[$cur] = $data;
-        $this->FG_ADD_FORM_ELEMENTS[$cur] = $data;
     }
 
     /**
@@ -720,7 +716,6 @@ class FormHandler
             "validation_err" => true,
         ];
         $this->FG_EDIT_FORM_ELEMENTS[$cur] = $data;
-        $this->FG_ADD_FORM_ELEMENTS[$cur] = $data;
     }
 
     /**
@@ -759,7 +754,6 @@ class FormHandler
             "validation_err" => true,
         ];
         $this->FG_EDIT_FORM_ELEMENTS[$cur] = $data;
-        $this->FG_ADD_FORM_ELEMENTS[$cur] = $data;
     }
 
     /**
@@ -798,7 +792,6 @@ class FormHandler
             "validation_err" => true,
         ];
         $this->FG_EDIT_FORM_ELEMENTS[$cur] = $data;
-        $this->FG_ADD_FORM_ELEMENTS[$cur] = $data;
     }
 
     /**
@@ -827,7 +820,6 @@ class FormHandler
             "validation_err" => true,
         ];
         $this->FG_EDIT_FORM_ELEMENTS[$cur] = $data;
-        $this->FG_ADD_FORM_ELEMENTS[$cur] = $data;
     }
 
     /**
@@ -850,7 +842,7 @@ class FormHandler
         string $section_name = ""
     ): void
     {
-        $this->FG_EDIT_FORM_ELEMENTS[] = $this->FG_ADD_FORM_ELEMENTS[] = [
+        $this->FG_EDIT_FORM_ELEMENTS[] = [
             "name" => $fieldname,
             "type" => "TEXTAREA",
             "label" => $label_text,
@@ -1463,7 +1455,7 @@ class FormHandler
         $arr_value_to_import = [];
         $instance_table = new Table($this->FG_QUERY_TABLE_NAME);
 
-        foreach ($this->FG_ADD_FORM_ELEMENTS as &$row) {
+        foreach ($this->FG_EDIT_FORM_ELEMENTS as &$row) {
             if (empty($row["custom_query"])) {
                 $fields_name = $row["name"];
                 $regexp = $row["regex"];
