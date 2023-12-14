@@ -1687,30 +1687,24 @@ class FormHandler
      */
     public function perform_delete()
     {
-        if (strlen($this->FG_ADDITIONAL_FUNCTION_AFTER_DELETE) > 0) {
-            call_user_func([FormBO::class, $this->FG_ADDITIONAL_FUNCTION_AFTER_DELETE]);
-        }
         $processed = $this->getProcessed();  //$processed['firstname']
         $this->VALID_SQL_REG_EXP = true;
 
-        $instance_table = null;
         $tableCount = count($this->FG_FK_TABLENAMES);
         $clauseCount = count($this->FG_FK_EDITION_CLAUSE);
 
-        if (($tableCount == $clauseCount) && $clauseCount > 0 && $this->FG_FK_DELETE_ALLOWED) {
-            if (!empty($processed['id'])) {
-                $instance_table = new Table($this->FG_QUERY_TABLE_NAME, "*", $this->FG_FK_TABLENAMES, $this->FG_FK_EDITION_CLAUSE, $processed['id'], $this->FG_FK_WARNONLY);
-            }
+        if ($tableCount === $clauseCount && $clauseCount > 0 && $this->FG_FK_DELETE_ALLOWED && !empty($processed['id'])) {
+            $instance_table = new Table($this->FG_QUERY_TABLE_NAME, "*", $this->FG_FK_TABLENAMES, $this->FG_FK_EDITION_CLAUSE, $processed["id"], $this->FG_FK_WARNONLY);
         } else {
             $instance_table = new Table($this->FG_QUERY_TABLE_NAME);
         }
         $instance_table->FK_DELETE = !$this->FG_FK_WARNONLY;
 
         if (!empty($processed['id'])) {
-            $this->FG_EDIT_QUERY_CONDITION = str_replace("%id", $processed['id'], $this->FG_EDIT_QUERY_CONDITION);
+            $this->FG_EDIT_QUERY_CONDITION = str_replace("%id", "?", $this->FG_EDIT_QUERY_CONDITION);
         }
 
-        $this->QUERY_RESULT = $instance_table->Delete_table($this->DBHandle, $this->FG_EDIT_QUERY_CONDITION);
+        $this->QUERY_RESULT = $instance_table->deleteRow($this->DBHandle, $this->FG_EDIT_QUERY_CONDITION, [$processed['id']]);
         if ($this->FG_ENABLE_LOG) {
             Logger::insertLog(
                 $_SESSION["admin_id"],
@@ -1721,6 +1715,9 @@ class FormHandler
                 $_SERVER['REMOTE_ADDR'],
                 $_SERVER['REQUEST_URI']
             );
+        }
+        if (strlen($this->FG_ADDITIONAL_FUNCTION_AFTER_DELETE) > 0) {
+            call_user_func([FormBO::class, $this->FG_ADDITIONAL_FUNCTION_AFTER_DELETE]);
         }
         if (!$this->QUERY_RESULT) {
             echo _("error deletion");

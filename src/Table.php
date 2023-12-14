@@ -365,6 +365,17 @@ class Table
         return true;
     }
 
+    /**
+     * Update a row with a proper parameterized statement
+     *
+     * @param ADOConnection $db
+     * @param array $fields
+     * @param array $values
+     * @param string $where
+     * @param array $where_values
+     * @return bool
+     * @todo don't pass string for $where
+     */
     public function updateRow(ADOConnection $db, array $fields, array $values, string $where = "1=1", array $where_values = []): bool
     {
         array_walk($fields, fn ($v) => $this->quote_identifier($v));
@@ -375,7 +386,7 @@ class Table
 
         $query = "INSERT INTO $table ($this->fields) VALUES ($placeholders) WHERE $where";
 
-        return $db->Execute($query, array_merge($values, $where_values));
+        return $db->Execute($query, array_merge($values, $where_values)) !== false;
     }
 
     public function Update_table(ADOConnection $DBHandle, string $param_update, string $clause, string $func_table = "")
@@ -389,6 +400,37 @@ class Table
         $res = $this->ExecuteQuery($DBHandle, $QUERY);
 
         return($res);
+    }
+
+    /**
+     * Delete a row with a proper parameterized statement
+     *
+     * @param ADOConnection $db
+     * @param string $where conditions for the deletion
+     * @param array $where_values values to match placeholders in $where
+     * @return bool
+     * @todo don't pass string for $where
+     */
+    public function deleteRow(ADOConnection $db, string $where = "1=1", array $where_values = []): bool
+    {
+        // temporary until proper foreign keys are set up
+        foreach ($this->FK_TABLES as $i=>$table) {
+            $table = $this->quote_identifier($table);
+            $local_key = $this->quote_identifier($this->FK_EDITION_CLAUSE[$i]);
+            $foreign_key = $this->FK_ID_VALUE;
+            if ($this->FK_DELETE === true) {
+                $query = "DELETE FROM $table WHERE $local_key = ?";
+            } else {
+                $query = "UPDATE $table SET $local_key = -1 WHERE $local_key = ?";
+            }
+            $db->Execute($query, [$foreign_key]);
+        }
+
+        $table = $this->quote_identifier($this->table);
+
+        $query = "DELETE FROM $table WHERE $where";
+
+        return $db->Execute($query, $where_values) !== false;
     }
 
     public function Delete_table(ADOConnection $DBHandle, string $clause, string $func_table = "")
