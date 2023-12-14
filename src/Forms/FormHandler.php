@@ -248,16 +248,27 @@ class FormHandler
     /** @var string A condition that will be applied to the edit query; %id is replaced within the page code */
     public string $FG_EDIT_QUERY_CONDITION = " id='%id' ";
 
-    /** @var array list of key/value pairs that will be added to the edit form as hidden inputs */
+    /**
+     * @var array list of key/value pairs that will be added to the edit form as hidden inputs
+     * @todo only used in admin/Public/form_data/FG_var_card.inc; why not just use fg_edit_query_hidden_inputs?
+     */
     public array $FG_EDIT_FORM_HIDDEN_INPUTS = [];
-    /** @var array list of key/value pairs that will be added to the add form as hidden inputs */
+
+    /**
+     * @var array list of key/value pairs that will be added to the add form as hidden inputs
+     * @todo only used in customer/form_data/FG_var_signup.inc
+     */
     public array $FG_ADD_FORM_HIDDEN_INPUTS = [];
     /** @var array list of key/value pairs that will be added to the edit form AND the SQL query */
+
     public array $FG_EDIT_QUERY_HIDDEN_INPUTS = [];
     /** @var array list of key/value pairs that will be added to the add form AND the SQL query */
     public array $FG_ADD_QUERY_HIDDEN_INPUTS = [];
 
-    /** @var array used only in FG_var_signup.inc, should figure a way to get rid of this */
+    /**
+     * @var array
+     * @todo used only in FG_var_signup.inc, should figure a way to get rid of this
+     */
     public array $REALTIME_SIP_IAX_INFO = [];
 
     /** @var string Where to redirect the user after adding a record; expected to end with = and will have ID appended */
@@ -290,11 +301,13 @@ class FormHandler
     /** @var string Text telling you to click the button */
     public string $FG_EDIT_PAGE_BOTTOM_TEXT = "Click 'Confirm Data' to continue";
 
-    /** @var string Static method of FormBO class executed before creating */
-    public string $FG_ADDITIONAL_FUNCTION_BEFORE_ADD = '';
     /** @var string Static method of FormBO class executed after creating */
     public string $FG_ADDITIONAL_FUNCTION_AFTER_ADD = '';
-    /** @var string Static method of FormBO class executed before deleting */
+
+    /**
+     * @var string Static method of FormBO class executed before deleting
+     * @todo only used in admin/Public/form_data/FG_var_did.inc
+     */
     public string $FG_ADDITIONAL_FUNCTION_BEFORE_DELETE = '';
     /** @var string Static method of FormBO class executed after deleting */
     public string $FG_ADDITIONAL_FUNCTION_AFTER_DELETE = '';
@@ -1503,15 +1516,6 @@ class FormHandler
 
         foreach ($this->FG_ADD_QUERY_HIDDEN_INPUTS as $name => $value) {
             $values[$name] = $value;
-        }
-
-        // CALL DEFINED FUNCTION BEFORE THE ADDITION
-
-        if (strlen($this->FG_ADDITIONAL_FUNCTION_BEFORE_ADD) > 0 && ($this->VALID_SQL_REG_EXP)) {
-            $res_funct = call_user_func([FormBO::class, $this->FG_ADDITIONAL_FUNCTION_BEFORE_ADD]);
-            if (!$res_funct) {
-                return;
-            }
         }
 
         if ($this->VALID_SQL_REG_EXP === false) {
