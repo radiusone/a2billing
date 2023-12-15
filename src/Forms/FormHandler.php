@@ -29,7 +29,9 @@ use const PASSWORD_DEFAULT;
 class FormHandler
 {
     private static self $Instance;
+
     private array $_vars = [];
+
     private array $_processed = [];
 
     public ADOConnection $DBHandle;
@@ -41,15 +43,21 @@ class FormHandler
     public $QUERY_RESULT = false;
 
     /* CONFIG THE VIEWER : CV */
+
     /** @var string Message to display if there's no data found for list view */
     public string $CV_NO_FIELDS = "THERE IS NO RECORD !";
+
     public string $CV_TITLE_TEXT = '';
+
     /** @var string Parameters to add to the URL of the list view sorting/pagination buttons */
     public string $CV_FOLLOWPARAMETERS = '';
+
     /** @var bool Whether to display the records-per-page dropdown. Never set to false anywhere... */
     public bool $CV_DISPLAY_RECORD_LIMIT = true;
+
     /** @var bool Whether to display the pagination controls. Never set to false anywhere... */
     public bool $CV_DISPLAY_BROWSE_PAGE = true;
+
     /**
      * @var int Tracks the current page for pagination and DB queries
      * @todo this is barely used; could it be replaced with a variable?
@@ -125,118 +133,161 @@ class FormHandler
 
     /** @var bool Whether to enable the second filter (only used in FG_var_did_billing.inc */
     public bool $FG_FILTER2_ENABLE = false;
+
     /** @var string The column that will be checked for a matching value */
     public string $FG_FILTER2_COLUMN = '';
+
     /** @var string Text used to label the form (prefixed by "Filter on ") */
     public string $FG_FILTER2_LABEL = '';
 
     /** @var bool Whether to show a search popup at the top of the list view */
     public bool $search_form_enabled = false;
+
     /** @var array List of elements to be added to the search form */
     private array $search_form_elements = [];
+
     /** @var string The text for the top of the search dialog */
     public string $search_form_title = "";
+
     /** @var string The session variable that stores search values */
     public string $search_session_key = '';
+
     /** @var bool Whether to enable a delete button on the search to allow user to remove all searched items */
     public bool $search_delete_enabled = true;
 
     public bool $search_date_enabled = false;
+
     public string $search_date_text = '';
+
     public string $search_date_column = 'creationdate';
 
     public bool $search_date2_enabled = false;
+
     public string $search_date2_text = '';
+
     public string $search_date2_column = '';
 
     /** @var bool Whether to display a 3rd time field in search (only used in A2B_data_archiving.php) */
     public bool $search_months_ago_enabled = false;
+
     public string $search_months_ago_text = '';
+
     public string $search_months_ago_column = 'creationdate';
 
     /** @var bool Whether to enable a CSV export button at the bottom of a list view */
     public bool $FG_EXPORT_CSV = false;
+
     /** @var bool Whether to enable an XML export button at the bottom of a list view */
     public bool $FG_EXPORT_XML = false;
+
     /** @var string A session variable used to hold a per-export query string */
     public string $FG_EXPORT_SESSION_VAR = "";
+
     /** @var array List of columns to use in the export (but it is never used in the class) */
     public array $FG_EXPORT_FIELD_LIST = [];
 
     /** @var bool Whether to enable a custom button in the list view's action column */
     public bool $FG_OTHER_BUTTON1 = false;
+
     /** @var bool Whether to enable a custom button in the list view's action column */
     public bool $FG_OTHER_BUTTON2 = false;
+
     /** @var bool Whether to enable a custom button in the list view's action column */
     public bool $FG_OTHER_BUTTON3 = false;
+
     /** @var bool Whether to enable a custom button in the list view's action column (only used in FG_var_card.inc) */
     public bool $FG_OTHER_BUTTON4 = false;
+
     /** @var bool Whether to enable a custom button in the list view's action column (only used in FG_var_card.inc) */
     public bool $FG_OTHER_BUTTON5 = false;
 
     /** @var string Link for the custom button */
     public string $FG_OTHER_BUTTON1_LINK = '';
+
     /** @var string Link for the custom button */
     public string $FG_OTHER_BUTTON2_LINK = '';
+
     /** @var string Link for the custom button */
     public string $FG_OTHER_BUTTON3_LINK = '';
+
     /** @var string Link for the custom button */
     public string $FG_OTHER_BUTTON4_LINK = '';
+
     /** @var string Link for the custom button */
     public string $FG_OTHER_BUTTON5_LINK = '';
 
     /** @var string Image link or data URI for the custom button */
     public string $FG_OTHER_BUTTON1_IMG = '';
+
     /** @var string Image link or data URI for the custom button */
     public string $FG_OTHER_BUTTON2_IMG = '';
+
     /** @var string Image link or data URI for the custom button */
     public string $FG_OTHER_BUTTON3_IMG = '';
+
     /** @var string Image link or data URI for the custom button */
     public string $FG_OTHER_BUTTON4_IMG = '';
+
     /** @var string Image link or data URI for the custom button */
     public string $FG_OTHER_BUTTON5_IMG = '';
 
     /** @var string Image alt text for the custom button (or button text if no image specified) */
     public string $FG_OTHER_BUTTON1_ALT = '';
+
     /** @var string Image alt text for the custom button (or button text if no image specified) */
     public string $FG_OTHER_BUTTON2_ALT = '';
+
     /** @var string Image alt text for the custom button (or button text if no image specified) */
     public string $FG_OTHER_BUTTON3_ALT = '';
+
     /** @var string Image alt text for the custom button (or button text if no image specified) */
     public string $FG_OTHER_BUTTON4_ALT = '';
+
     /** @var string Image alt text for the custom button (or button text if no image specified) */
     public string $FG_OTHER_BUTTON5_ALT = '';
 
     /** @var string CSS class for the custom button */
     public string $FG_OTHER_BUTTON1_HTML_CLASS = '';
+
     /** @var string CSS class for the custom button */
     public string $FG_OTHER_BUTTON2_HTML_CLASS = '';
+
     /** @var string CSS class for the custom button */
     public string $FG_OTHER_BUTTON3_HTML_CLASS = '';
+
     /** @var string CSS class for the custom button */
     public string $FG_OTHER_BUTTON4_HTML_CLASS = '';
+
     /** @var string CSS class for the custom button */
     public string $FG_OTHER_BUTTON5_HTML_CLASS = '';
 
     /** @var string ID attribute for the custom button */
     public string $FG_OTHER_BUTTON1_HTML_ID = '';
+
     /** @var string ID attribute for the custom button */
     public string $FG_OTHER_BUTTON2_HTML_ID = '';
+
     /** @var string ID attribute for the custom button */
     public string $FG_OTHER_BUTTON3_HTML_ID = '';
+
     /** @var string ID attribute for the custom button */
     public string $FG_OTHER_BUTTON4_HTML_ID = '';
+
     /** @var string ID attribute for the custom button */
     public string $FG_OTHER_BUTTON5_HTML_ID = '';
 
     /** @var string Code which is eval'd to decide whether to show the custom button */
     public string $FG_OTHER_BUTTON1_CONDITION = '';
+
     /** @var string Code which is eval'd to decide whether to show the custom button */
     public string $FG_OTHER_BUTTON2_CONDITION = '';
+
     /** @var string Code which is eval'd to decide whether to show the custom button */
     public string $FG_OTHER_BUTTON3_CONDITION = '';
+
     /** @var string Code which is eval'd to decide whether to show the custom button */
     public string $FG_OTHER_BUTTON4_CONDITION = '';
+
     /** @var string Code which is eval'd to decide whether to show the custom button */
     public string $FG_OTHER_BUTTON5_CONDITION = '';
 
@@ -265,6 +316,7 @@ class FormHandler
     /** @var array list of key/value pairs that will be added to the edit form AND the SQL query */
 
     public array $FG_EDIT_QUERY_HIDDEN_INPUTS = [];
+
     /** @var array list of key/value pairs that will be added to the add form AND the SQL query */
     public array $FG_ADD_QUERY_HIDDEN_INPUTS = [];
 
@@ -276,31 +328,41 @@ class FormHandler
 
     /** @var string Where to redirect the user after adding a record; expected to end with = and will have ID appended */
     public string $FG_LOCATION_AFTER_ADD;
+
     /** @var string Where to redirect the user after deleting a record; expected to end with = and will have ID appended */
     public string $FG_LOCATION_AFTER_DELETE;
+
     /** @var string Where to redirect the user after editing a record; expected to end with = and will have ID appended */
     public string $FG_LOCATION_AFTER_EDIT;
 
     /** @var string Message text for the edit page */
     public string $FG_INTRO_TEXT_EDITION = "You can modify, through the following form, the different properties of your #FG_INSTANCE_NAME#<br>";
+
     /** @var string Message text for the delete page */
     public string $FG_INTRO_TEXT_ASK_DELETION = "If you really want to remove this #FG_INSTANCE_NAME#, click on the delete button.";
+
     /** @var string Result text for the delete page */
     public string $FG_INTRO_TEXT_DELETION = "One #FG_INSTANCE_NAME# has been deleted!";
+
     /** @var string Message text for the add page */
     public string $FG_INTRO_TEXT_ADITION = "Add a \"#FG_INSTANCE_NAME#\" now.";
+
     /** @var string Result text for the add page */
     public string $FG_TEXT_ADITION_CONFIRMATION = "Your new #FG_INSTANCE_NAME# has been inserted.";
+
     /** @var string Error text for the add page */
     public string $FG_TEXT_ADITION_ERROR = 'Your new #FG_INSTANCE_NAME# has not been inserted.';
+
     /** @var string Error text for the add page */
     public string $FG_TEXT_ERROR_DUPLICATION = "You cannot choose more than one !";
 
 
     /** @var string Text telling you to click the button */
     public string $FG_ADD_PAGE_BOTTOM_TEXT = "Click 'Confirm Data' to continue";
+
     /** @var string Label for the "save" button when creating a new item */
     public string $FG_ADD_PAGE_SAVE_BUTTON_TEXT = 'Confirm Data';
+
     /** @var string Text telling you to click the button */
     public string $FG_EDIT_PAGE_BOTTOM_TEXT = "Click 'Confirm Data' to continue";
 
@@ -312,10 +374,13 @@ class FormHandler
      * @todo only used in admin/Public/form_data/FG_var_did.inc
      */
     public string $FG_ADDITIONAL_FUNCTION_BEFORE_DELETE = '';
+
     /** @var string Static method of FormBO class executed after deleting */
     public string $FG_ADDITIONAL_FUNCTION_AFTER_DELETE = '';
+
     /** @var string Static method of FormBO class executed before editing */
     public string $FG_ADDITIONAL_FUNCTION_BEFORE_EDITION = '';
+
     /** @var string Static method of FormBO class executed after editing */
     public string $FG_ADDITIONAL_FUNCTION_AFTER_EDITION = '';
 
@@ -349,22 +414,30 @@ class FormHandler
     private bool $alarm_db_error_duplication = false;
 
     public bool $FG_LIST_ADDING_BUTTON1 = false;
+
     /** @var string */
     public string $FG_LIST_ADDING_BUTTON_LINK1;
+
     /** @var string */
     public string $FG_LIST_ADDING_BUTTON_ALT1;
+
     /** @var string */
     public string $FG_LIST_ADDING_BUTTON_IMG1;
+
     /** @var string */
     public string $FG_LIST_ADDING_BUTTON_MSG1;
 
     public bool $FG_LIST_ADDING_BUTTON2 = false;
+
     /** @var string */
     public string $FG_LIST_ADDING_BUTTON_LINK2;
+
     /** @var string */
     public string $FG_LIST_ADDING_BUTTON_ALT2;
+
     /** @var string */
     public string $FG_LIST_ADDING_BUTTON_IMG2;
+
     /** @var string */
     public string $FG_LIST_ADDING_BUTTON_MSG2;
 
