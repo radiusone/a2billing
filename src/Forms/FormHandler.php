@@ -50,8 +50,11 @@ class FormHandler
     public bool $CV_DISPLAY_RECORD_LIMIT = true;
     /** @var bool Whether to display the pagination controls. Never set to false anywhere... */
     public bool $CV_DISPLAY_BROWSE_PAGE = true;
-    /** @var int Tracks the current page for pagination and DB queries */
-    private int $CV_CURRENT_PAGE = 0;
+    /**
+     * @var int Tracks the current page for pagination and DB queries
+     * @todo this is barely used; could it be replaced with a variable?
+     */
+    public int $CV_CURRENT_PAGE = 0;
 
     /** @var int debug level 0 (none) - 3 (lots) */
     private int $FG_DEBUG = 0;
@@ -80,7 +83,7 @@ class FormHandler
 
 
     /** @var array Data used to build the list view table */
-    private array $FG_LIST_TABLE_CELLS = [];
+    public array $FG_LIST_TABLE_CELLS = [];
 
     /** @var bool Whether to place an add button in the list view's action column */
     public bool $FG_ENABLE_ADD_BUTTON = false;
@@ -1908,8 +1911,7 @@ class FormHandler
     /**
      * Function to create the form
      *
-     * @public
-     * @noinspection PhpUnusedParameterInspection
+     * @todo make this return a string, not echo
      */
     public function create_form($form_action, $list)
     {
@@ -1952,7 +1954,7 @@ class FormHandler
                 break;
 
             case "list":
-                require(__DIR__ . "/../../templates/ViewHandler.inc.php");
+                echo new ViewForm($this, $processed, $list);
                 break;
 
             case "delete":
