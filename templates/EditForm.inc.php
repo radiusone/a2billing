@@ -6,13 +6,12 @@ use A2billing\Table;
 use Closure;
 
 /**
- * @var FormHandler $this
+ * @var FormHandler $form
  * @var array $processed
  * @var array $list
+ * @var array $db_data
  */
 
-$db_data = $list[0];
-$options = null
 ?>
 
 <script src="javascript/calonlydays.js"></script>
@@ -38,17 +37,17 @@ $options = null
     <input type="hidden" name="current_page" value="<?= $processed["current_page"] ?>"/>
     <input type="hidden" name="order" value="<?= $processed["order"] ?>"/>
     <input type="hidden" name="sens" value="<?= $processed["sens"] ?>"/>
-    <?= $this->csrf_inputs() ?>
+    <?= $form->csrf_inputs() ?>
 
-    <?php foreach ($this->FG_EDIT_QUERY_HIDDEN_INPUTS as $name => $value): ?>
+    <?php foreach ($form->FG_EDIT_QUERY_HIDDEN_INPUTS as $name => $value): ?>
         <input type="hidden" name="<?= htmlspecialchars($name) ?>" value="<?= htmlspecialchars($value) ?>"/>
     <?php endforeach ?>
 
-    <?php foreach ($this->FG_EDIT_FORM_HIDDEN_INPUTS as $name => $value): ?>
+    <?php foreach ($form->FG_EDIT_FORM_HIDDEN_INPUTS as $name => $value): ?>
         <input type="hidden" name="<?= htmlspecialchars($name) ?>" value="<?= htmlspecialchars($value) ?>"/>
     <?php endforeach ?>
 
-    <?php foreach ($this->FG_EDIT_FORM_ELEMENTS as $i=> $row): ?>
+    <?php foreach ($form->FG_EDIT_FORM_ELEMENTS as $i=> $row): ?>
         <?php if (!empty($row["section_name"])): ?>
         <div class="row mb-3">
             <h4><?= $row["section_name"] ?></h4>
@@ -71,7 +70,7 @@ $options = null
                     class="form-control <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
                     name="<?= $row["name"] ?>"
                     <?= $row["attributes"] ?>
-                    <?php if ($this->VALID_SQL_REG_EXP): /* what is VALID_SQL_REG_EXP */ ?>
+                    <?php if ($form->VALID_SQL_REG_EXP): /* what is VALID_SQL_REG_EXP */ ?>
                         value="<?= $db_data[$i] ?>"
                     <?php else: ?>
                         value="<?= $processed[$row["name"]] ?>"
@@ -85,7 +84,7 @@ $options = null
                         class="form-control <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
                         name="<?= $row["name"] ?>"
                         <?= $row["attributes"] ?>
-                        <?php if ($this->VALID_SQL_REG_EXP): ?>
+                        <?php if ($form->VALID_SQL_REG_EXP): ?>
                             value="<?= $db_data[$i] ?>"
                         <?php else: ?>
                             value="<?= $processed[$row["name"]] ?>"
@@ -113,16 +112,16 @@ $options = null
                     class="form-control <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
                     name="<?= $row["name"] ?>"
                     <?= $row["attributes"] ?>
-                ><?= $this->VALID_SQL_REG_EXP ? $db_data[$i] : $processed[$row["name"]] ?></textarea>
+                ><?= $form->VALID_SQL_REG_EXP ? $db_data[$i] : $processed[$row["name"]] ?></textarea>
 
             <?php elseif ($row["type"] === "SELECT"): ?>
                 <?php if ($row["select_type"] === "SQL"): ?>
-                    <?php $options = (new Table($row["sql_table"], $row["sql_field"]))->get_list($this->DBHandle, $row["sql_clause"])?>
-                <?php elseif ($row["select_type"] === "LIST"): ?>
-                    <?php $options = $row["select_fields"] ?>
+                    <?php $options = (new Table($row["sql_table"], $row["sql_field"]))->get_list($form->DBHandle, $row["sql_clause"])?>
+                <?php else: ?>
+                    <?php $options = $row["select_type"] === "LIST" ? $row["select_fields"] : [] ?>
                 <?php endif ?>
-                <?php if ($this->FG_DEBUG >= 2): ?>
-                    <br/><?php print_r($options)?><br/><?php print_r($db_data)?><br/>#<?= $i ?>::><?= $this->VALID_SQL_REG_EXP ?><br/><br/>::><?= $db_data[$i] ?><br/><br/>::><?= $row["name"] ?>
+                <?php if ($form->FG_DEBUG >= 2): ?>
+                    <br/><?php print_r($options)?><br/><?php print_r($db_data)?><br/>#<?= $i ?>::><?= $form->VALID_SQL_REG_EXP ?><br/><br/>::><?= $db_data[$i] ?><br/><br/>::><?= $row["name"] ?>
                 <?php endif ?>
                 <select
                     id="<?= $row["name"] ?>"
@@ -131,11 +130,11 @@ $options = null
                     <?= $row["attributes"] ?>
                 >
                     <?= $row["first_option"] ?>
-                    <?php if (is_array($options) && count($options)): ?>
+                    <?php if (count($options)): ?>
                         <?php foreach ($options as $option): ?>
                     <option
                         value="<?= $option[1] ?>"
-                            <?php if ($this->VALID_SQL_REG_EXP): ?>
+                            <?php if ($form->VALID_SQL_REG_EXP): ?>
                                 <?php if (str_contains($row["attributes"], "multiple")): ?>
                                     <?php if (intval($option[1]) & intval($db_data[$i])): ?>
                         selected="selected"
@@ -164,7 +163,7 @@ $options = null
             <?php elseif ($row["type"] === "RADIOBUTTON"): ?>
                 <?php foreach ($row["radio_options"] as $rad): ?>
                 <div class="form-check">
-                    <?php if ($this->VALID_SQL_REG_EXP): ?>
+                    <?php if ($form->VALID_SQL_REG_EXP): ?>
                         <?php $check = $db_data[$i] ?>
                     <?php else: ?>
                         <?php $check = $processed[$row["name"]] ?>
@@ -184,7 +183,7 @@ $options = null
             <?php if ($row["validation_err"] !== true): ?>
                 <div class="form-text invalid-feedback"><?= $row["error"] ?> - <?= $row["validation_err"] ?></div>
             <?php endif ?>
-            <?php if ($this->FG_DEBUG == 1): ?>
+            <?php if ($form->FG_DEBUG == 1): ?>
                 <div class="form-text"><?= $row["type"] ?></div>
             <?php endif ?>
             <?php if (!empty($row["comment"])): ?>
@@ -202,7 +201,7 @@ $options = null
                     <?= $row["label"] ?>
                 </div>
                 <div class="col">
-                    <?php $options = (new Table($table["tables"], $table["columns"]))->get_list($this->DBHandle, str_replace("%id", $processed["id"], $table["where"]))?>
+                    <?php $options = (new Table($table["tables"], $table["columns"]))->get_list($form->DBHandle, str_replace("%id", $processed["id"], $table["where"]))?>
                     <ul class="list-group">
                     <?php if (is_array($options) && count($options)): ?>
                         <?php foreach ($options as $option): ?>
@@ -227,7 +226,7 @@ $options = null
                                 <label for="<?= $table["name"] ?>_ADD" class="form-label"><?= gettext("Add a new") ?> <?= $row["label"] ?></label>
                                 <input name="<?= $table["name"] ?>_hidden" type="hidden" value=""/>
                                 <select id="<?= $table["name"] ?>_ADD" name="<?= $table["name"] ?>[]" <?= $row["attributes"] ?> class="form-select form-control-sm">
-                                    <?php $options = (new Table($table["tables"], $table["columns"]))->get_list($this->DBHandle)?>
+                                    <?php $options = (new Table($table["tables"], $table["columns"]))->get_list($form->DBHandle)?>
                                     <?php if (is_array($options) && count($options)): ?>
                                         <?php foreach ($options as $option): ?>
                                             <?php if (!empty($table["format"])): ?>
@@ -255,7 +254,7 @@ $options = null
             <div class="row mb-3">
                 <div class="col-3"><?= $row["label"] ?></div>
                 <div class="col">
-                    <?php $options = (new Table($table["table"], $table["columns"]))->get_list($this->DBHandle, str_replace("%id", $processed["id"], $table["where"]))?>
+                    <?php $options = (new Table($table["table"], $table["columns"]))->get_list($form->DBHandle, str_replace("%id", $processed["id"], $table["where"]))?>
                     <ul class="list-group">
                     <?php if (is_array($options) && count($options)): ?>
                         <?php foreach ($options as $option): ?>
@@ -299,7 +298,7 @@ $options = null
     <?php endforeach ?>
     <div class="row my-4 justify-content-between">
         <div class="col-auto">
-            <?= $this->FG_EDIT_PAGE_BOTTOM_TEXT ?>
+            <?= $form->FG_EDIT_PAGE_BOTTOM_TEXT ?>
         </div>
         <div class="col-auto">
             <button type="submit" class="btn btn-primary"><?= _("Confirm Data") ?></button>

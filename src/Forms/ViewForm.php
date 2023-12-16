@@ -1,7 +1,6 @@
 <?php
-namespace A2billing\Forms;
 
-use A2billing\Table;
+namespace A2billing\Forms;
 
 class ViewForm
 {
@@ -27,9 +26,9 @@ class ViewForm
          * @var string $current_page
          * @var string $popup_select
          */
-        $this->letter = $letter;
-        $this->current_page = $current_page;
-        $this->popup_select = (int)$popup_select;
+        $this->letter = $letter ?? "";
+        $this->current_page = $current_page ?? "";
+        $this->popup_select = (int)($popup_select ?? 0);
     }
 
     public function __toString(): string

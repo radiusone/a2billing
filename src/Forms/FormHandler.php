@@ -37,7 +37,7 @@ class FormHandler
     public ADOConnection $DBHandle;
 
     /** @var bool ??? */
-    private bool $VALID_SQL_REG_EXP = true;
+    public bool $VALID_SQL_REG_EXP = true;
 
     /** @var mixed The result of a non-select query (insert, update, delete) */
     public $QUERY_RESULT = false;
@@ -65,7 +65,7 @@ class FormHandler
     public int $CV_CURRENT_PAGE = 0;
 
     /** @var int debug level 0 (none) - 3 (lots) */
-    private int $FG_DEBUG = 0;
+    public int $FG_DEBUG = 0;
 
     /** @var string The name of the element you are managing */
     public string $FG_INSTANCE_NAME = "";
@@ -144,7 +144,7 @@ class FormHandler
     public bool $search_form_enabled = false;
 
     /** @var array List of elements to be added to the search form */
-    private array $search_form_elements = [];
+    public array $search_form_elements = [];
 
     /** @var string The text for the top of the search dialog */
     public string $search_form_title = "";
@@ -294,7 +294,7 @@ class FormHandler
     //	-------------------- DATA FOR THE EDITION --------------------
 
     /** @var array List of form elements used to create the edit form */
-    private array $FG_EDIT_FORM_ELEMENTS = [];
+    public array $FG_EDIT_FORM_ELEMENTS = [];
 
     /** @var array A list of field names considered "splittable" during create or edit (values like e.g. 12-14 or 15;16;17) */
     public array $FG_SPLITABLE_FIELDS = [];
@@ -398,7 +398,7 @@ class FormHandler
     public bool $FG_FK_DELETE_CONFIRM = false;
 
     //Foreign Key Records Count
-    private int $FG_FK_RECORDS_COUNT = 0;
+    public int $FG_FK_RECORDS_COUNT = 0;
 
     //Foreign Key Exists so Warn only not to delete ,,Boolean
     public bool $FG_FK_WARNONLY = false;
@@ -1927,9 +1927,6 @@ class FormHandler
         echo $html;
     }
 
-    /**
-     * @noinspection PhpUnusedParameterInspection
-     */
     public function create_search_form(bool $full_modal = false, bool $with_hide_button = true)
     {
         Console::logSpeed('Time taken to get to line ' . __LINE__);
@@ -1959,10 +1956,8 @@ class FormHandler
             $el["options"] = $list;
             $el["type"] = "SELECT";
         }
-        $id = $processed['id'];
 
-        require(__DIR__ . "/../../templates/SearchHandler.inc.php");
-
+        echo new SearchForm($this, $processed, $list, $full_modal, $with_hide_button);
     }
 
     public function create_search_button(string $content = null): string
@@ -1997,33 +1992,34 @@ class FormHandler
         switch ($form_action) {
             case "add-content":
                 $this->perform_add_content($form_el_index, $id);
-                require(__DIR__ . "/../../templates/EditForm.inc.php");
+                echo new EditForm($this, $processed, $list);
                 break;
 
             case "del-content":
                 $this->perform_del_content($form_el_index, $id);
-                require(__DIR__ . "/../../templates/EditForm.inc.php");
+                echo new EditForm($this, $processed, $list);
                 break;
 
             case "ask-edit":
             case "edit":
-                require(__DIR__ . "/../../templates/EditForm.inc.php");
+                echo new EditForm($this, $processed, $list);
                 break;
 
             case "ask-add":
-                require(__DIR__ . "/../../templates/AddForm.inc.php");
+                echo new AddForm($this, $processed, $list);
                 break;
 
             case "ask-delete":
             case "ask-del-confirm":
                 if (strlen($this->FG_ADDITIONAL_FUNCTION_BEFORE_DELETE) > 0) {
-                    $res_funct = call_user_func([FormBO::class, $this->FG_ADDITIONAL_FUNCTION_BEFORE_DELETE]);
+                    call_user_func([FormBO::class, $this->FG_ADDITIONAL_FUNCTION_BEFORE_DELETE]);
+                    // @todo should this be using the return from the function?
                 }
                 if ($form_action === "ask-delete") {
                     $this->check_child_records();
                 }
 
-                require(__DIR__ . "/../../templates/DelForm.inc.php");
+                echo new DeleteForm($this, $processed, $list, $form_action);
                 break;
 
             case "list":

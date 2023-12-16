@@ -2,38 +2,32 @@
 
 use A2billing\Forms\FormHandler;
 /**
- * @var FormHandler $this
+ * @var FormHandler $form
  * @var array $processed
  * @var array $list
  * @var bool $full_modal
  * @var bool $with_hide_button
+ * @var string $action
  */
-$action = http_build_query([
-    "s" => $processed["s"],
-    "t" => $processed["t"],
-    "order" => $processed["order"],
-    "sens" => $processed["sens"],
-    "current_page" => $processed["current_page"],
-]);
 ?>
 <?php if ($full_modal && $with_hide_button): ?>
 <div class="row pb-3 justify-content-center">
     <div class="col-auto">
-        <?= $this->create_search_button() ?>
+        <?= $form->create_search_button() ?>
     </div>
 </div>
 <?php endif ?>
 <form method="post" name="searchForm" id="searchForm" class="container-fluid form-striped" action="?<?= $action ?>">
     <input type="hidden" name="posted_search" value="1"/>
     <input type="hidden" name="current_page" value="0"/>
-    <?= $this->csrf_inputs() ?>
+    <?= $form->csrf_inputs() ?>
 
 <?php if ($full_modal): ?>
     <div class="modal" id="searchModal" aria-labelledby="modal-title-search" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modal-title-search"><?= $this->search_form_title ?? sprintf(_("Search %s"), $this->FG_INSTANCE_NAME) ?></h5>
+                    <h5 class="modal-title" id="modal-title-search"><?= $form->search_form_title ?? sprintf(_("Search %s"), $form->FG_INSTANCE_NAME) ?></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -41,15 +35,15 @@ $action = http_build_query([
 
     <div class="row">
         <div class="col">
-            <strong><?php echo $this->search_form_title?></strong>
+            <strong><?php echo $form->search_form_title?></strong>
         </div>
     </div>
 <?php endif ?>
 
-<?php if ($this->search_date_enabled): ?>
+<?php if ($form->search_date_enabled): ?>
     <div class="row py-1">
         <label class="col-4 col-form-label col-form-label-sm">
-            <?= $this->search_date_text ?>
+            <?= $form->search_date_text ?>
         </label>
         <div class="col-4">
             <div class="input-group">
@@ -86,10 +80,10 @@ $action = http_build_query([
     </div>
 <?php endif ?>
 
-<?php if ($this->search_date2_enabled): ?>
+<?php if ($form->search_date2_enabled): ?>
     <div class="row py-1">
         <label class="col-4 col-form-label col-form-label-sm">
-            <?= $this->search_date2_text ?>
+            <?= $form->search_date2_text ?>
         </label>
         <div class="col-4">
             <div class="input-group">
@@ -126,10 +120,10 @@ $action = http_build_query([
     </div>
 <?php endif ?>
 
-<?php if ($this->search_months_ago_enabled): // this is only used by A2B_data_archiving.php ?>
+<?php if ($form->search_months_ago_enabled): // this is only used by A2B_data_archiving.php ?>
     <div class="row py-1">
         <label class="col-4 col-form-label col-form-label-sm" for="search_months">
-            <?php echo $this->search_months_ago_text?>
+            <?php echo $form->search_months_ago_text?>
         </label>
         <div class="col-8">
             <div class="input-group">
@@ -154,7 +148,7 @@ $action = http_build_query([
     </div>
 <?php endif ?>
 
-<?php $inputs = array_filter($this->search_form_elements, fn ($v) => !in_array($v["type"], ["SELECT", "BUTTON"])) ?>
+<?php $inputs = array_filter($form->search_form_elements, fn ($v) => !in_array($v["type"], ["SELECT", "BUTTON"])) ?>
 <?php foreach ($inputs as $item): ?>
     <div class="row py-1">
         <label class="col-4 col-form-label col-form-label-sm" for="<?= $item["input"][0] ?>">
@@ -239,7 +233,7 @@ $action = http_build_query([
     </div>
 <?php endforeach ?>
 
-<?php $selects = array_filter($this->search_form_elements, fn ($v) => $v["type"] === "SELECT") ?>
+<?php $selects = array_filter($form->search_form_elements, fn ($v) => $v["type"] === "SELECT") ?>
 <?php foreach (array_chunk($selects, 3) as $chunk): ?>
     <div class="row py-1">
     <?php foreach ($chunk as $item): ?>
@@ -264,13 +258,13 @@ $action = http_build_query([
     <div class="row justify-content-end border-top pt-3 mt-3 bg-transparent">
         <div class="col text-end">
 <?php endif ?>
-            <?php if (strlen($_SESSION[$this->search_session_key] ?? "") > 10): ?>
-                <?php if ($this->search_delete_enabled): ?>
-                    <a class="btn btn-danger" href="?deleteselected=true" onclick="return confirm('<?= "Are you sure you want to delete " . $this->FG_LIST_VIEW_ROW_COUNT . " selected records?" ?>')"><?= _("Delete") ?></a>
+            <?php if (strlen($_SESSION[$form->search_session_key] ?? "") > 10): ?>
+                <?php if ($form->search_delete_enabled): ?>
+                    <a class="btn btn-danger" href="?deleteselected=true" onclick="return confirm('<?= "Are you sure you want to delete " . $form->FG_LIST_VIEW_ROW_COUNT . " selected records?" ?>')"><?= _("Delete") ?></a>
                 <?php endif ?>
             <a class="btn btn-secondary" href="?cancelsearch=true"><?= _("Clear Search") ?></a>
             <?php endif ?>
-            <?php $buttons = array_filter($this->search_form_elements, fn ($v) => $v["type"] === "BUTTON") ?>
+            <?php $buttons = array_filter($form->search_form_elements, fn ($v) => $v["type"] === "BUTTON") ?>
             <?php foreach ($buttons as $button): ?>
             <button
                 type="submit"

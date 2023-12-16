@@ -1,33 +1,32 @@
 <?php
 
-use A2billing\Forms\FormHandler;
+namespace A2billing\Forms;
+
 use A2billing\Table;
 
 /**
- * @var FormHandler $this
+ * @var FormHandler $form
  * @var array $processed
  * @var array $list
- * @var bool $VALID_SQL_REG_EXP
+ * @var array $db_data
  */
-$db_data = $list[0];
-$options = null;
 ?>
 
 <script src="javascript/calonlydays.js"></script>
 
 <form action="" method="post" name="myForm" id="myForm">
     <input type="hidden" name="form_action" value="add"/>
-    <?= $this->csrf_inputs() ?>
+    <?= $form->csrf_inputs() ?>
 
-<?php foreach ($this->FG_ADD_QUERY_HIDDEN_INPUTS as $name => $value): ?>
+<?php foreach ($form->FG_ADD_QUERY_HIDDEN_INPUTS as $name => $value): ?>
     <input type="hidden" name="<?= htmlspecialchars($name) ?>" value="<?= htmlspecialchars($value) ?>"/>
 <?php endforeach ?>
 
-<?php foreach ($this->FG_ADD_FORM_HIDDEN_INPUTS as $name => $value): ?>
+<?php foreach ($form->FG_ADD_FORM_HIDDEN_INPUTS as $name => $value): ?>
     <input type="hidden" name="<?= htmlspecialchars($name) ?>" value="<?= htmlspecialchars($value) ?>"/>
 <?php endforeach ?>
 
-<?php foreach ($this->FG_EDIT_FORM_ELEMENTS as $i=>$row):?>
+<?php foreach ($form->FG_EDIT_FORM_ELEMENTS as $i=>$row):?>
     <?php if (!empty($row["section_name"]) && $row["type"] !== "HAS_MANY"): ?>
     <div class="row mb-3">
         <h4><?= $row["section_name"] ?></h4>
@@ -82,11 +81,11 @@ $options = null;
 
         <?php elseif ($row["type"] === "SELECT"): ?>
             <?php if ($row["select_type"] === "SQL"): ?>
-                <?php $options = (new Table($row["sql_table"], $row["sql_field"]))->get_list($this->DBHandle, $row["sql_clause"])?>
-            <?php elseif ($row["select_type"] === "LIST"): ?>
-                <?php $options = $row["select_fields"] ?>
+                <?php $options = (new Table($row["sql_table"], $row["sql_field"]))->get_list($form->DBHandle, $row["sql_clause"])?>
+            <?php else: ?>
+                <?php $options = $row["select_type"] === "LIST" ? $row["select_fields"] : [] ?>
             <?php endif ?>
-            <?php if ($this->FG_DEBUG >= 2): ?>
+            <?php if ($form->FG_DEBUG >= 2): ?>
                 <br/><?php print_r($options)?><br/><?php print_r($db_data)?><br/>#<?= $i ?>::><?= $db_data[$i] ?><br/><br/>::><?= $row["name"] ?>
             <?php endif ?>
             <select
@@ -99,7 +98,7 @@ $options = null;
                 <option value="-1"><?= $row["error_message"] ?></option>
             <?php endif ?>
                 <?= $row["first_option"] ?>
-            <?php if (is_array($options) && count($options)): ?>
+            <?php if (count($options)): ?>
                 <?php foreach ($options as $option): ?>
                 <option
                     value="<?= $option[1] ?>"
@@ -118,7 +117,7 @@ $options = null;
             <div class="form-check">
                 <?php if ($processed[$row["name"]] === $rad[1]): ?>
                     <?php $check = $rad[1] ?>
-                <?php elseif ($VALID_SQL_REG_EXP): ?>
+                <?php elseif ($form->VALID_SQL_REG_EXP): ?>
                     <?php $check = $db_data[$i] ?>
                 <?php else: ?>
                     <?php $check = $row["default"] ?>
@@ -154,7 +153,7 @@ $options = null;
             <?php if ($row["validation_err"] !== true): ?>
                 <div class="form-text invalid-feedback"><?= $row["error"] ?> - <?= $row["validation_err"] ?></div>
             <?php endif ?>
-            <?php if ($this->FG_DEBUG == 1): ?>
+            <?php if ($form->FG_DEBUG == 1): ?>
                 <div class="form-text"><?= $row["type"] ?></div>
             <?php endif ?>
             <?php if (!empty($row["comment"])): ?>
@@ -166,10 +165,10 @@ $options = null;
 <?php endforeach ?>
     <div class="row my-4 justify-content-between">
         <div class="col-auto">
-            <?= $this->FG_ADD_PAGE_BOTTOM_TEXT ?>
+            <?= $form->FG_ADD_PAGE_BOTTOM_TEXT ?>
         </div>
         <div class="col-auto">
-            <button type="submit" class="btn btn-primary"><?= $this->FG_ADD_PAGE_SAVE_BUTTON_TEXT ?></button>
+            <button type="submit" class="btn btn-primary"><?= $form->FG_ADD_PAGE_SAVE_BUTTON_TEXT ?></button>
         </div>
     </div>
 </form>
