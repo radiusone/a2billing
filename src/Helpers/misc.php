@@ -40,7 +40,7 @@ use PHPMailer\PHPMailer\PHPMailer;
  * Determine if a user is entitled to certain rights
  *
  * @param int $condition integer representing the permission flag
- * @param int $check integer representing the user's permission bits
+ * @param int|null $check integer representing the user's permission bits
  * @return bool whether or not the user has the right
  */
 function has_rights(int $condition, ?int $check = null): bool
@@ -366,7 +366,7 @@ function get_dateformat(string $mydate): string
 
 /**
  * Used as callback for edit form elements
- * @noinspection PhpUnusedFunctionInspection
+ * @noinspection PhpUnused
  */
 function res_display_dateformat($mydate)
 {
@@ -468,7 +468,7 @@ function get_2bill($amt): string
  * Used as callback for list/form elements
  * @param string $phonenumber
  * @return int|void
- * @noinspection PhpUnusedFunctionInspection
+ * @noinspection PhpUnused
  */
 function display_without_prefix(string $phonenumber)
 {
@@ -542,9 +542,9 @@ function get_customer_link($username): string
 
 /**
  * Used as callback for list/form elements
- * @param string $value
+ * @param string|int $id
  * @return void
- * @noinspection PhpUnusedFunctionInspection
+ * @noinspection PhpUnused
  */
 function display_customer_id_link($id): void
 {
@@ -563,7 +563,7 @@ function display_customer_id_link($id): void
 
 /**
  * Used as callback for list/form elements
- * @param string $value
+ * @param string|int $id
  * @return void
  * @noinspection PhpUnusedFunctionInspection
  */
@@ -586,9 +586,9 @@ function display_customer_name_id_link($id): void
 
 /**
  * Used as callback for list elements
- * @param string $value
+ * @param string|int $id
  * @return void
- * @noinspection PhpUnusedFunctionInspection
+ * @noinspection PhpUnused
  */
 function display_infocustomer_id($id): void
 {
@@ -1299,4 +1299,35 @@ function extract_keys(array $arr, string ...$keys): array
     );
 
     return $ret;
+}
+
+/**
+ * Convert an array to a key=value string
+ *
+ * @param array $arr the array to process
+ * @param callable|null $key_callback a callback to apply to each of the keys
+ * @param callable|null $value_callback a callback to apply to each of the values
+ * @param string $val_sep the separator between keys and values
+ * @param string $pair_sep the separator between key/value pairs
+ * @return string
+ */
+function array_kv(
+    array $arr,
+    ?callable $key_callback = null,
+    ?callable $value_callback = null,
+    string $val_sep = " = ",
+    string $pair_sep = ", "
+): string
+{
+    $keys = array_keys($arr);
+    $vals = array_values($arr);
+
+    if (is_callable($key_callback)) {
+        $keys = array_map($key_callback, $keys);
+    }
+    if (is_callable($value_callback)) {
+        $vals = array_map($value_callback, $vals);
+    }
+
+    return implode($pair_sep, array_map(fn ($k, $v) => "$k$val_sep$v", $keys, $vals));
 }
