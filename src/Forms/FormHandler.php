@@ -1650,8 +1650,10 @@ class FormHandler
         $values = [];
         $instance_table = new Table($this->FG_QUERY_TABLE_NAME);
 
-        if (!empty($processed['id'])) {
+        $params = [];
+        if (!empty($processed["id"]) && str_contains($this->FG_EDIT_QUERY_CONDITION, "%id")) {
             $this->FG_EDIT_QUERY_CONDITION = str_replace("%id", "?", $this->FG_EDIT_QUERY_CONDITION);
+            $params = [$processed["id"]];
         }
 
         foreach ($this->FG_EDIT_FORM_ELEMENTS as $i => &$row) {
@@ -1697,7 +1699,7 @@ class FormHandler
                 array_keys($values),
                 array_values($values),
                 $this->FG_EDIT_QUERY_CONDITION,
-                [$processed['id']]
+                $params
             );
         }
 
@@ -1753,11 +1755,13 @@ class FormHandler
         }
         $instance_table->FK_DELETE = !$this->FG_FK_WARNONLY;
 
-        if (!empty($processed['id'])) {
+        $params = [];
+        if (!empty($processed["id"]) && str_contains($this->FG_EDIT_QUERY_CONDITION, "%id")) {
             $this->FG_EDIT_QUERY_CONDITION = str_replace("%id", "?", $this->FG_EDIT_QUERY_CONDITION);
+            $params = [$processed["id"]];
         }
 
-        $this->QUERY_RESULT = $instance_table->deleteRow($this->DBHandle, $this->FG_EDIT_QUERY_CONDITION, [$processed['id']]);
+        $this->QUERY_RESULT = $instance_table->deleteRow($this->DBHandle, $this->FG_EDIT_QUERY_CONDITION, $params);
         if ($this->FG_ENABLE_LOG) {
             Logger::insertLog(
                 $_SESSION["admin_id"],
