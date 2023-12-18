@@ -105,6 +105,10 @@ class Table
     public function quote_identifier(string $identifier): string
     {
         $q = $this->db_type === "mysql" ? "`" : "\"";
+        if (str_contains($identifier, ".")) {
+            $identifier = implode("$q.$q", explode(".", $identifier));
+        }
+
         return $q . str_replace($q, "", $identifier) . $q;
     }
 
