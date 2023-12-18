@@ -43,10 +43,6 @@ Admin::checkPageAccess(Admin::ACX_CUSTOMER);
 
 $HD_Form -> init();
 
-if ($id!="" || !is_null($id)) {
-    $HD_Form -> FG_EDIT_QUERY_CONDITION = str_replace("%id", "$id", $HD_Form -> FG_EDIT_QUERY_CONDITION);
-}
-
 if (!isset($form_action))  $form_action="list"; //ask-add
 if (!isset($action)) $action = $form_action;
 

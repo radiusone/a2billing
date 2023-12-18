@@ -44,7 +44,6 @@ $HD_Form = new FormHandler("cc_backup", "restore");
 
 $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = " name";
-$HD_Form -> FG_EDIT_QUERY_CONDITION = " id='%id' ";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
 $HD_Form -> AddViewElement(gettext("ID"), "id");

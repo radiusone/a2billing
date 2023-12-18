@@ -61,10 +61,6 @@ if (strlen($destination) > 0 && is_numeric($choose_speeddial)) {
     $result = $instance_sub_table->SQLExec($HD_Form->DBHandle, $QUERY, 0);
 }
 
-if ($id != "" || !is_null($id)) {
-    $HD_Form->FG_EDIT_QUERY_CONDITION = str_replace("%id", "$id", $HD_Form->FG_EDIT_QUERY_CONDITION);
-}
-
 if (!isset ($form_action))
     $form_action = "list";
 

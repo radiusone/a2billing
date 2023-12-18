@@ -48,10 +48,6 @@ include './form_data/FG_var_config.inc';
 
 $HD_Form->init();
 
-if (!empty($id)) {
-    $HD_Form->FG_EDIT_QUERY_CONDITION = str_replace("%id", $id, $HD_Form->FG_EDIT_QUERY_CONDITION);
-}
-
 $form_action = $form_action ?? "list";
 $list = $HD_Form->perform_action($form_action);
 

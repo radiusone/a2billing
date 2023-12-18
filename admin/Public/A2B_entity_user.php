@@ -56,10 +56,6 @@ $HD_Form->init();
 $HD_Form->FG_EDIT_BUTTON_LINK= "?form_action=ask-edit&groupID=$groupID&id=";
 $HD_Form->FG_DELETE_BUTTON_LINK= "?form_action=ask-delete&groupID=$groupID&id=";
 
-if (!empty($id)) {
-    $HD_Form->FG_EDIT_QUERY_CONDITION = str_replace("%id", "$id", $HD_Form->FG_EDIT_QUERY_CONDITION);
-}
-
 $form_action = $form_action ?? "list";
 $action = $action ?? $form_action;
 

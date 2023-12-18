@@ -99,6 +99,7 @@ $HD_Form->AddEditElement(
 );
 
 $HD_Form -> FG_EDIT_QUERY_CONDITION = " prefix='%id'";
+$HD_Form->update_query_conditions = ["prefix" => "%id"];
 
 $HD_Form -> FG_FILTER_ENABLE = true;
 $HD_Form -> FG_FILTER_COLUMN = 'prefix';

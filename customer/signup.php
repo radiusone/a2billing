@@ -73,10 +73,6 @@ if (!is_numeric($subscriber_signup)) {
 
 $HD_Form->init();
 
-if ($id != "" || !is_null($id)) {
-    $HD_Form->FG_EDIT_QUERY_CONDITION = str_replace("%id", "$id", $HD_Form->FG_EDIT_QUERY_CONDITION);
-}
-
 $list = $HD_Form->perform_action($form_action);
 
 if ($form_action == "add") {

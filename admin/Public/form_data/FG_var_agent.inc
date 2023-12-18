@@ -366,7 +366,6 @@ if (has_rights (Admin::ACX_MODIFY_AGENTS) && !($popup_select)) {
         ]
     );
 
-	$HD_Form -> FG_EDIT_QUERY_CONDITION = " id='%id'";
 	$HD_Form -> FG_ADDITIONAL_FUNCTION_AFTER_ADD = 'creation_agent_refill';
 	$HD_Form -> FG_INTRO_TEXT_ADITION = '';
 	$HD_Form -> FG_LOCATION_AFTER_ADD = "?id=";

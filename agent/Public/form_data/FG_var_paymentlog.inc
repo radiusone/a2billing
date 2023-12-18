@@ -53,6 +53,7 @@ $HD_Form -> FG_QUERY_WHERE_CLAUSE = "cc_card.id=cc_epayment_log.cardid AND cc_ca
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "cc_epayment_log.creationdate";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 $HD_Form ->FG_EDIT_QUERY_CONDITION = "cc_epayment_log.id = %id";
+$HD_Form->update_query_conditions = ["cc_epayment_log.id" => "%id"];
 
 $date_clause = "";
 

@@ -181,8 +181,6 @@ $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["id"] = $latest_id;
 $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["id_language"] = $id_language;
 $HD_Form->FG_EDIT_QUERY_HIDDEN_INPUTS["id_language"] = $id_language;
 
-$HD_Form -> FG_EDIT_QUERY_CONDITION = "id ='%id' ";
-
 // if ($id_language != '' || !is_null($id_language)) {
 //     $HD_Form -> FG_EDITION_CLAUSE .= "AND id_language = '$id_language'";
 // }

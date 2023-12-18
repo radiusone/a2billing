@@ -183,10 +183,6 @@ $HD_Form->FG_QUERY_WHERE_CLAUSE = " lastname='$_SESSION[IDfilter]'";
 
 $HD_Form->init();
 
-if (!empty($id)) {
-    $HD_Form->FG_EDIT_QUERY_CONDITION = str_replace("%id", "$id", $HD_Form->FG_EDIT_QUERY_CONDITION);
-}
-
 $form_action = $form_action ?? "list";
 $action = $action ?? $form_action;
 

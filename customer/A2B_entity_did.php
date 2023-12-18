@@ -227,6 +227,7 @@ if (!isset ($action_release) || $action_release == "confirm_release" || $action_
     if ($form_action == "delete") {
         $HD_Form->FG_QUERY_TABLE_NAME = "cc_did_destination";
         $HD_Form->FG_EDIT_QUERY_CONDITION = "id_cc_card='" . $_SESSION["card_id"] . "' AND id = " . $id;
+        $HD_Form->update_query_conditions = ["id_cc_card" => $_SESSION["card_id"], "id" => $id];
     }
     $list = $HD_Form->perform_action($form_action);
 

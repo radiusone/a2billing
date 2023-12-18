@@ -299,6 +299,9 @@ class FormHandler
     /** @var array A list of field names considered "splittable" during create or edit (values like e.g. 12-14 or 15;16;17) */
     public array $FG_SPLITABLE_FIELDS = [];
 
+    /** @var array columns/values to be used as a condition in update/delete queries */
+    public array $update_query_conditions = ["id" => "%id"];
+
     /** @var string A condition that will be applied to the edit query; %id is replaced within the page code */
     public string $FG_EDIT_QUERY_CONDITION = " id='%id' ";
 
@@ -1206,6 +1209,15 @@ class FormHandler
                 }
                 break;
         }
+
+        $processed = $this->getProcessed();
+        if (!empty($processed["id"])) {
+            array_walk(
+                $this->update_query_conditions,
+                fn ($v) => str_replace("%id", $processed["id"], $v)
+            );
+        }
+
         switch ($form_action) {
             case "add":
                 $this->perform_add($form_action);
