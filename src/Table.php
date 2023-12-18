@@ -410,12 +410,11 @@ class Table
      * Delete a row with a proper parameterized statement
      *
      * @param ADOConnection $db
-     * @param string $where conditions for the deletion
-     * @param array $where_values values to match placeholders in $where
+     * @param array $conditions values to match placeholders in $where
      * @return bool
      * @todo don't pass string for $where
      */
-    public function deleteRow(ADOConnection $db, string $where = "1=1", array $where_values = []): bool
+    public function deleteRow(ADOConnection $db, array $conditions = []): bool
     {
         // temporary until proper foreign keys are set up
         foreach ($this->FK_TABLES as $i=>$table) {
@@ -432,9 +431,13 @@ class Table
 
         $table = $this->quote_identifier($this->table);
 
+        $params = array_values($conditions);
+        $where = count($conditions) > 0
+            ? array_kv($conditions, [$this, "quote_identifier"], fn ($v) => "?",  " = ", " AND ")
+            : "1=1";
         $query = "DELETE FROM $table WHERE $where";
 
-        return $db->Execute($query, $where_values) !== false;
+        return $db->Execute($query, $params) !== false;
     }
 
     public function Delete_table(ADOConnection $DBHandle, string $clause, string $func_table = "")
