@@ -375,12 +375,10 @@ class Table
      * @param ADOConnection $db
      * @param array $fields
      * @param array $values
-     * @param string $where
-     * @param array $where_values
+     * @param array $conditions
      * @return bool
-     * @todo don't pass string for $where
      */
-    public function updateRow(ADOConnection $db, array $fields, array $values, string $where = "1=1", array $where_values = []): bool
+    public function updateRow(ADOConnection $db, array $fields, array $values, array $conditions = []): bool
     {
         array_walk($fields, fn ($v) => $this->quote_identifier($v));
         $this->fields = implode(",", $fields);
@@ -388,9 +386,14 @@ class Table
         $table = $this->quote_identifier($this->table);
         $placeholders = implode(",", array_fill(0, count($values), "?"));
 
+        $where_params = array_values($conditions);
+        $where = count($conditions) > 0
+            ? array_kv($conditions, [$this, "quote_identifier"], fn ($v) => "?",  " = ", " AND ")
+            : "1=1";
+
         $query = "INSERT INTO $table ($this->fields) VALUES ($placeholders) WHERE $where";
 
-        return $db->Execute($query, array_merge($values, $where_values)) !== false;
+        return $db->Execute($query, array_merge($values, $where_params)) !== false;
     }
 
     public function Update_table(ADOConnection $DBHandle, string $param_update, string $clause, string $func_table = "")
@@ -412,7 +415,6 @@ class Table
      * @param ADOConnection $db
      * @param array $conditions values to match placeholders in $where
      * @return bool
-     * @todo don't pass string for $where
      */
     public function deleteRow(ADOConnection $db, array $conditions = []): bool
     {

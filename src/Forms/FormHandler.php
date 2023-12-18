@@ -1662,12 +1662,6 @@ class FormHandler
         $values = [];
         $instance_table = new Table($this->FG_QUERY_TABLE_NAME);
 
-        $params = [];
-        if (!empty($processed["id"]) && str_contains($this->FG_EDIT_QUERY_CONDITION, "%id")) {
-            $this->FG_EDIT_QUERY_CONDITION = str_replace("%id", "?", $this->FG_EDIT_QUERY_CONDITION);
-            $params = [$processed["id"]];
-        }
-
         foreach ($this->FG_EDIT_FORM_ELEMENTS as $i => &$row) {
             if (empty($row["custom_query"])) {
                 $fields_name = $row["name"];
@@ -1710,8 +1704,7 @@ class FormHandler
                 $this->DBHandle,
                 array_keys($values),
                 array_values($values),
-                $this->FG_EDIT_QUERY_CONDITION,
-                $params
+                $this->update_query_conditions
             );
         }
 
@@ -1720,7 +1713,7 @@ class FormHandler
                 $_SESSION["admin_id"],
                 3,
                 "A " . strtoupper($this->FG_INSTANCE_NAME) . " UPDATED",
-                "A RECORD IS UPDATED, EDITION CALUSE USED IS " . $this->FG_EDIT_QUERY_CONDITION,
+                "A RECORD IS UPDATED, EDITION CALUSE USED IS " . array_kv($this->update_query_conditions),
                 $this->FG_QUERY_TABLE_NAME,
                 $_SERVER['REMOTE_ADDR'],
                 $_SERVER['REQUEST_URI'],
