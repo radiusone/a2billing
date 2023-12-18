@@ -1767,19 +1767,13 @@ class FormHandler
         }
         $instance_table->FK_DELETE = !$this->FG_FK_WARNONLY;
 
-        $params = [];
-        if (!empty($processed["id"]) && str_contains($this->FG_EDIT_QUERY_CONDITION, "%id")) {
-            $this->FG_EDIT_QUERY_CONDITION = str_replace("%id", "?", $this->FG_EDIT_QUERY_CONDITION);
-            $params = [$processed["id"]];
-        }
-
-        $this->QUERY_RESULT = $instance_table->deleteRow($this->DBHandle, $this->FG_EDIT_QUERY_CONDITION, $params);
+        $this->QUERY_RESULT = $instance_table->deleteRow($this->DBHandle, $this->update_query_conditions);
         if ($this->FG_ENABLE_LOG) {
             Logger::insertLog(
                 $_SESSION["admin_id"],
                 3,
                 "A " . strtoupper($this->FG_INSTANCE_NAME) . " DELETED",
-                "A RECORD IS DELETED, EDITION CLAUSE USED IS " . $this->FG_EDIT_QUERY_CONDITION,
+                "A RECORD IS DELETED, EDITION CLAUSE USED IS " . array_kv($this->update_query_conditions),
                 $this->FG_QUERY_TABLE_NAME,
                 $_SERVER['REMOTE_ADDR'],
                 $_SERVER['REQUEST_URI']

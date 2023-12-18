@@ -49,7 +49,7 @@ if (!isset($action)) $action = $form_action;
 
 if ($form_action == "delete") {
     $instance_table = new Table($HD_Form->FG_QUERY_TABLE_NAME, null);
-    $res_delete = $instance_table -> Delete_table ($HD_Form -> DBHandle, $HD_Form ->FG_EDIT_QUERY_CONDITION, null);
+    $res_delete = $instance_table->deleteRow($HD_Form->DBHandle, $HD_Form->update_query_conditions);
     if (!$res_delete) {
         echo "error deletion";
         } else {
