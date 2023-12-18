@@ -105,6 +105,10 @@ class Table
     public function quote_identifier(string $identifier): string
     {
         $q = $this->db_type === "mysql" ? "`" : "\"";
+        if (str_starts_with($identifier, $q) && str_ends_with($identifier, $q)) {
+            // there is plenty of room for abuse here, but assume already quoted values are ok
+            return $identifier;
+        }
         if (str_contains($identifier, ".")) {
             $identifier = implode("$q.$q", explode(".", $identifier));
         }
@@ -308,7 +312,7 @@ class Table
         $this->fields = implode(",", $fields);
 
         $table = $this->quote_identifier($this->table);
-        $placeholders = implode(",", array_fill(0, count($values), "?"));
+        $placeholders = implode(",", array_map(fn ($v) => $this->quote_identifier($v) === $v ? $v : "?", $values));
 
         $query = "INSERT INTO $table ($this->fields) VALUES ($placeholders)";
 
@@ -384,11 +388,20 @@ class Table
         $this->fields = implode(",", $fields);
 
         $table = $this->quote_identifier($this->table);
-        $placeholders = implode(",", array_fill(0, count($values), "?"));
+        $placeholders = implode(",", array_map(fn ($v) => $this->quote_identifier($v) === $v ? $v : "?", $values));
 
-        $where_params = array_values($conditions);
+        $where_params = array_filter(
+            array_values($conditions),
+            fn ($v) => $this->quote_identifier($v) !== $v
+        );
         $where = count($conditions) > 0
-            ? array_kv($conditions, [$this, "quote_identifier"], fn ($v) => "?",  " = ", " AND ")
+            ? array_kv(
+                $conditions,
+                [$this, "quote_identifier"],
+                fn ($v) => $this->quote_identifier($v) === $v ? $v : "?",
+                " = ",
+                " AND "
+            )
             : "1=1";
 
         $query = "INSERT INTO $table ($this->fields) VALUES ($placeholders) WHERE $where";
@@ -433,9 +446,18 @@ class Table
 
         $table = $this->quote_identifier($this->table);
 
-        $params = array_values($conditions);
+        $params = array_filter(
+            array_values($conditions),
+            fn ($v) => $this->quote_identifier($v) !== $v
+        );
         $where = count($conditions) > 0
-            ? array_kv($conditions, [$this, "quote_identifier"], fn ($v) => "?",  " = ", " AND ")
+            ? array_kv(
+                $conditions,
+                [$this, "quote_identifier"],
+                fn ($v) => $this->quote_identifier($v) === $v ? $v : "?",
+                " = ",
+                " AND "
+            )
             : "1=1";
         $query = "DELETE FROM $table WHERE $where";
 
