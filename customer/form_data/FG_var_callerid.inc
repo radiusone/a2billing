@@ -70,10 +70,7 @@ if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0)
 
 $HD_Form -> FG_QUERY_WHERE_CLAUSE.="id_cc_card =".$_SESSION["card_id"];
 
-if (strlen($HD_Form -> FG_EDIT_QUERY_CONDITION)>0)
-    $HD_Form -> FG_EDIT_QUERY_CONDITION.=" AND ";
-
-$HD_Form -> FG_EDIT_QUERY_CONDITION.="id_cc_card =".$_SESSION["card_id"];
+$HD_Form -> FG_EDIT_QUERY_CONDITION.=" AND id_cc_card =".$_SESSION["card_id"];
 $HD_Form->update_query_conditions["id_cc_card"] = $_SESSION["card_id"];
 
 $HD_Form -> FG_ENABLE_ADD_BUTTON = true;

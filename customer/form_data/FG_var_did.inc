@@ -77,15 +77,15 @@ $validated_list["1"] = array( gettext("Validated"), "1");
 
 $HD_Form -> AddViewElement(gettext("DESTINATION"), "destination");
 $HD_Form -> AddViewElement(gettext("DID"), "id_cc_did", true, 15, "", "lie", "cc_did", "did", "id='%id'", "%1");
-$HD_Form -> AddViewElement(gettext("ACTIVATED"), "t1.activated", true, 0, "", "list", $actived_list);
+$HD_Form -> AddViewElement(gettext("ACTIVATED"), "cc_did_destination.activated", true, 0, "", "list", $actived_list);
 $HD_Form -> AddViewElement(gettext("PRIORITY"), "priority", true, 0, "", "list", $priority_list);
-$HD_Form -> AddViewElement(gettext("USED MINUTE"), "t1.secondusedreal", true, 30, "display_minute");
+$HD_Form -> AddViewElement(gettext("USED MINUTE"), "cc_did_destination.secondusedreal", true, 30, "display_minute");
 $HD_Form -> AddViewElement(gettext("COUNTRY"), "id_cc_country", true, 15, "", "lie", "cc_country", "countryname", "id='%id'", "%1");
 $HD_Form -> AddViewElement(gettext("VALIDATED"), "validated", true, 0, "", "list", $validated_list);
 
 
 if (isset($form_action) && ($form_action=='ask-edit' || $form_action=='edit')) {
-	$HD_Form -> FG_QUERY_TABLE_NAME = "cc_did_destination AS t1";
+	$HD_Form -> FG_QUERY_TABLE_NAME = "cc_did_destination";
 	$country_field = '';
 	$validated = 1;
 
@@ -111,13 +111,14 @@ if (isset($form_action) && ($form_action=='ask-edit' || $form_action=='edit')) {
 	}
 
 } else {
-	$HD_Form -> FG_QUERY_TABLE_NAME = "cc_did_destination AS t1, cc_did AS t2";
-	$HD_Form -> FG_QUERY_WHERE_CLAUSE = " id_cc_card='".$_SESSION["card_id"]."' AND t1.id_cc_did=t2.id";
+	$HD_Form -> FG_QUERY_TABLE_NAME = "cc_did_destination, cc_did";
+	$HD_Form -> FG_QUERY_WHERE_CLAUSE = " id_cc_card='".$_SESSION["card_id"]."' AND cc_did_destination.id_cc_did=cc_did.id";
+    $HD_Form->update_query_conditions = ["id_cc_card" => $_SESSION["card_id"], "cc_did_destination.id_cc_did" => "`cc_did`.`id`"];
 	$country_field = ' id_cc_country,';
 	$validated = 0;
 }
 
-$HD_Form -> FG_QUERY_COLUMN_LIST = 'destination, id_cc_did, t1.activated, priority, t1.secondusedreal,'. $country_field .'  t1.validated, t1.id ';
+$HD_Form -> FG_QUERY_COLUMN_LIST = 'destination, id_cc_did, cc_did_destination.activated, priority, cc_did_destination.secondusedreal,'. $country_field .'  cc_did_destination.validated, cc_did_destination.id ';
 
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;

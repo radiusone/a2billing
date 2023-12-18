@@ -59,7 +59,7 @@ if ($form_action == "delete") {
 
 if ($form_action == "restore") {
     $instance_table_backup = new Table($HD_Form->FG_QUERY_TABLE_NAME, 'name, path, creationdate');
-    $list = $instance_table_backup -> get_list ($HD_Form->DBHandle, $HD_Form->FG_EDIT_QUERY_CONDITION, [], "", 1);
+    $list = $instance_table_backup -> get_list ($HD_Form->DBHandle, "id=$id", [], "", 1);
     $path = $list[0][1];
 
     if (substr($path,-3)=='.gz') {
@@ -81,7 +81,7 @@ if ($form_action == "restore") {
 
 if ($form_action == "download") {
     $instance_table_backup = new Table($HD_Form->FG_QUERY_TABLE_NAME, 'name, path, creationdate');
-    $list = $instance_table_backup -> get_list ($HD_Form->DBHandle, $HD_Form->FG_EDIT_QUERY_CONDITION, [], "", 1);
+    $list = $instance_table_backup -> get_list ($HD_Form->DBHandle, "id=$id", [], "", 1);
     $path = $list[0][1];
     $filename = basename($path);
     $len = filesize($path);

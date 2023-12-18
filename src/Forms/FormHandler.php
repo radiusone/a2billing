@@ -1330,6 +1330,7 @@ class FormHandler
                 }
 
             } else {
+                // TODO: when is this code called? it's the only use left of $FG_EDIT_QUERY_CONDITION
                 $selected_elements = array_filter($this->FG_EDIT_FORM_ELEMENTS, fn ($v) => empty($v["custom_query"]));
                 $cols = array_column($selected_elements, "name");
                 $fields = implode(",", $cols);

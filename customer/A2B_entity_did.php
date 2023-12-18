@@ -218,8 +218,10 @@ if (!isset ($action_release) || $action_release == "confirm_release" || $action_
     if ($id != "" || !is_null($id)) {
         if (isset ($form_action) && ($form_action == 'ask-edit' || $form_action == 'edit')) {
             $HD_Form->FG_EDIT_QUERY_CONDITION = " id = " . $id;
+            $HD_Form->update_query_conditions = ["id" => $id];
         } else {
-            $HD_Form->FG_EDIT_QUERY_CONDITION = $HD_Form->FG_QUERY_WHERE_CLAUSE . " AND t1.id = " . $id;
+            $HD_Form->FG_EDIT_QUERY_CONDITION = $HD_Form->FG_QUERY_WHERE_CLAUSE . " AND cc_did_destination.id = " . $id;
+            $HD_Form->update_query_conditions["cc_did_destination.id"] = $id;
         }
     }
 
