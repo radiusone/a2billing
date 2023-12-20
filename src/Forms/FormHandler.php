@@ -1397,17 +1397,13 @@ class FormHandler
         }
 
         // RETRIEVE THE CONTENT OF THE SEARCH SESSION AND
-        if ($processed['posted_search'] != 1 && strlen($_SESSION[$this->search_session_key] ?? "") > 5) {
+        if ($processed['posted_search'] != 1 && !empty($_SESSION[$this->search_session_key] ?? "")) {
             $element_arr = json_decode($_SESSION[$this->search_session_key], true);
             foreach ($element_arr as $entity_name => $entity_value) {
                 $this->_processed[$entity_name] = $entity_value;
-                if (strlen($_SESSION[$this->search_session_key]) > 10) {
-                    // TODO: what does the length of this value signify? why difference between 5 and 10?
-                    // below is only place it was set, and it would never be < 10
-                    $processed[$entity_name] = $entity_value;
-                    $_POST[$entity_name] = $entity_value;
-                    $processed['posted_search'] = 1;
-                }
+                $processed[$entity_name] = $entity_value;
+                $_POST[$entity_name] = $entity_value;
+                $processed['posted_search'] = 1;
             }
         }
 
@@ -1420,16 +1416,11 @@ class FormHandler
         /** Old search field names */
         $this->_processed["fromstatsday_sday"] = normalize_day_of_month($processed["fromstatsday_sday"], $processed["fromstatsmonth_sday"]);
         $this->_processed["tostatsday_sday"] = normalize_day_of_month($processed["tostatsday_sday"], $processed["tostatsmonth_sday"]);
-        $this->_processed["fromstatsday_sday_bis"] = normalize_day_of_month($processed["fromstatsday_sday_bis"], $processed["fromstatsmonth_sday_bis"]);
-        $this->_processed["tostatsday_sday_bis"] = normalize_day_of_month($processed["tostatsday_sday_bis"], $processed["tostatsmonth_sday_bis"]);
 
         $search = extract_keys(
             $processed,
             "frommonth", "fromday", "fromstatsmonth", "fromstatsday_sday", "fromstatsmonth_sday",
-            "tomonth", "today", "tostatsmonth", "tostatsday_sday", "tostatsmonth_sday",
-            "frommonth_bis", "fromday_bis", "fromstatsmonth_bis", "fromstatsday_sday_bis", "fromstatsmonth_sday_bis",
-            "tomonth_bis", "today_bis", "tostatsmonth_bis", "tostatsday_sday_bis", "tostatsmonth_sday_bis",
-            "Period", "month_earlier",
+            "tomonth", "today", "tostatsmonth", "tostatsday_sday", "tostatsmonth_sday", "Period",
         );
 
         $date_clause = '';
@@ -1441,21 +1432,6 @@ class FormHandler
         if (!empty($processed['today']) && !empty($processed['tostatsday_sday']) && !empty($processed['tostatsmonth_sday'])) {
             $dt = sprintf("%s-%02d 23:59:59", $processed["tostatsmonth_sday"], $processed["tostatsday_sday"]);
             $date_clause .= " AND $this->search_date_column <= '$dt'";
-        }
-
-        if (($processed["Period"] ?? "") === "month_older_rad") {
-            $from_month = $processed["month_earlier"];
-            $date_clause .= " AND $this->search_months_ago_column < NOW() - INTERVAL $from_month MONTH";
-        }
-
-        //BIS FIELD
-        if ($processed['fromday_bis'] && isset($processed['fromstatsday_sday_bis']) && isset($processed['fromstatsmonth_sday_bis'])) {
-            $dt = sprintf("%s-%02d", $processed["fromstatsmonth_sday_bis"], $processed["fromstatsday_sday_bis"]);
-            $date_clause .= " AND $this->search_date2_column >= '$dt'";
-        }
-        if ($processed['today_bis'] && isset($processed['tostatsday_sday_bis']) && isset($processed['tostatsmonth_sday_bis'])) {
-            $dt = sprintf("%s-%02d 23:59:59", $processed["tostatsmonth_sday_bis"], $processed["tostatsday_sday_bis"]);
-            $date_clause .= " AND $this->search_date2_column <= '$dt'";
         }
 
         /** New search field names */
