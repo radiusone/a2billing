@@ -498,4 +498,69 @@ class Table
 
         return $this->ExecuteQuery($DBHandle, $query);
     }
+
+    /**
+     * Takes an array of data and process it to create an SQL query condition
+     *
+     * @param array $where the array of data
+     * @param array $params parameters for use with the database execution
+     * @return string the query clause with placeholders
+     */
+    public function processWhereClauseArray(array $where, array &$params): string
+    {
+        $query = " WHERE ";
+        $params = [];
+        foreach ($where as $col => $data) {
+            if (is_numeric($col) && is_array($data) && count($data) > 1 && $data[0] === "SUB") {
+                $clauses = $data[1];
+                $operator = $data[2] ?? "AND";
+                if (is_array($clauses)) {
+                    $subclauses = [];
+                    foreach ($clauses as $subcol => $clause) {
+                        $subclauses[] = $this->processConditionClauseArray($subcol, $clause, $params);
+                    }
+                    if (count($subclauses)) {
+                        $query .= " AND ( ";
+                        $query .= implode(" $operator ", $subclauses);
+                        $query .= " ) ";
+                    }
+                }
+                continue;
+            }
+            $query .= $this->processConditionClauseArray($col, $data, $params);
+        }
+
+        return $query;
+    }
+
+    /**
+     * Process a single array for use as part of a WHERE clause
+     *
+     * @param string $col the column name
+     * @param mixed $condition either a value or an array with operator and value
+     * @param array $params query parameters for the prepared statement
+     * @return string the query with placeholders
+     */
+    private function processConditionClauseArray(string $col, $condition, array &$params): string
+    {
+        $col = $this->quote_identifier($col);
+        $operator = is_array($condition) ? $condition[0] : "=";
+        $value = is_array($condition) ? $condition[1] : $condition;
+        if ($operator === "IN") {
+            $value = is_array($value) ? $value : [$value];
+            $placeholder = sprintf(
+                "(%s)",
+                implode(",", array_fill(0, count($value), "?"))
+            );
+            $params = array_merge($params, $value);
+        } elseif ($this->quote_identifier("$value") === "$value") {
+            // something like a column name passed as RHS
+            $placeholder = $value;
+        } else {
+            $placeholder = "?";
+            $params[] = $value;
+        }
+
+        return " $col $operator $placeholder ";
+    }
 }
