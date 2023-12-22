@@ -1462,22 +1462,22 @@ class FormHandler
         if (!empty($processed["enable_search_start_date"]) && !empty($processed["search_start_date"])) {
             $dt = $this->DBHandle->qStr($processed["search_start_date"]);
             $date_clause .= " AND $this->search_date_column >= $dt";
-            $this->list_query_conditions[$this->search_date_column] = [">=", $dt];
+            $this->list_query_conditions[] = ["SUB", [[$this->search_date_column => [">=", $dt]]]];
         }
         if (!empty($processed["enable_search_start_date2"]) && !empty($processed["search_start_date2"])) {
             $dt = $this->DBHandle->qStr($processed["search_start_date2"]);
             $date_clause .= " AND $this->search_date2_column >= $dt";
-            $this->list_query_conditions[$this->search_date2_column] = [">=", $dt];
+            $this->list_query_conditions[] = ["SUB", [[$this->search_date2_column => [">=", $dt]]]];
         }
         if (!empty($processed["enable_search_end_date"]) && !empty($processed["search_end_date"])) {
             $dt = $this->DBHandle->qStr($processed["search_end_date"] . " 23:59:59");
             $date_clause .= " AND $this->search_date_column <= $dt";
-            $this->list_query_conditions[$this->search_date_column] = ["<=", $dt];
+            $this->list_query_conditions[] = ["SUB", [[$this->search_date_column => ["<=", $dt]]]];
         }
         if (!empty($processed["enable_search_end_date2"]) && !empty($processed["search_end_date2"])) {
             $dt = $this->DBHandle->qStr($processed["search_end_date2"] . " 23:59:59");
             $date_clause .= " AND $this->search_date2_column <= $dt";
-            $this->list_query_conditions[$this->search_date2_column] = ["<=", $dt];
+            $this->list_query_conditions[] = ["SUB", [[$this->search_date2_column => ["<=", $dt]]]];
         }
         if (!empty($processed["enable_search_months"]) && !empty($processed["search_months"] * 1)) {
             $mo = $processed["search_months"] * 1;
