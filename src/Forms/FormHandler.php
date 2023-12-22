@@ -1117,18 +1117,23 @@ class FormHandler
         switch ($processed[$operator] ?? null) {
             default:
                 $sql .= " $left_column = '$val'";
+                $this->list_query_conditions[$left_column] = $val;
                 break;
             case 2:
                 $sql .= " $left_column <= '$val'";
+                $this->list_query_conditions[$left_column] = ["<=", $val];
                 break;
             case 3:
                 $sql .= " $left_column < '$val'";
+                $this->list_query_conditions[$left_column] = ["<", $val];
                 break;
             case 4:
                 $sql .= " $left_column > '$val'";
+                $this->list_query_conditions[$left_column] = [">", $val];
                 break;
             case 5:
                 $sql .= " $left_column >= '$val'";
+                $this->list_query_conditions[$left_column] = [">=", $val];
                 break;
         }
 
@@ -1165,15 +1170,19 @@ class FormHandler
         switch ($op ?? null) {
             case 1:
                 $sql .= " $column='$val'";
+                $this->list_query_conditions[$column] = $val;
                 break;
             case 2:
                 $sql .= " $column $LIKE CONCAT('$val', '%') $CONVERT";
+                $this->list_query_conditions[$column] = ["LIKE", "$val%"];
                 break;
             default:
                 $sql .= " $column $LIKE CONCAT('%', '$val', '%') $CONVERT";
+                $this->list_query_conditions[$column] = ["LIKE", "%$val%"];
                 break;
             case 4:
                 $sql .= " $column $LIKE CONCAT('%', '$val') $CONVERT";
+                $this->list_query_conditions[$column] = ["LIKE", "%$val"];
                 break;
         }
 
@@ -1380,6 +1389,7 @@ class FormHandler
             $filtercolumn = $this->FG_FILTER_COLUMN;
             $filterprefix = $processed["filterprefix"];
             if ($filtercolumn && $filterprefix) {
+                $this->list_query_conditions[$filtercolumn] = ["LIKE", "$filterprefix%"];
                 $filterprefix = $this->DBHandle->qStr($processed["filterprefix"]);
                 if ($this->FG_QUERY_WHERE_CLAUSE) {
                     $this->FG_QUERY_WHERE_CLAUSE .= " AND ";
@@ -1392,6 +1402,7 @@ class FormHandler
             $filtercolumn = $this->FG_FILTER2_COLUMN;
             $filterprefix = $processed["filterprefix2"];
             if ($filtercolumn && $filterprefix) {
+                $this->list_query_conditions[$filtercolumn] = ["LIKE", "$filterprefix%"];
                 $filterprefix = $this->DBHandle->qStr($processed["filterprefix2"]);
                 if ($this->FG_QUERY_WHERE_CLAUSE) {
                     $this->FG_QUERY_WHERE_CLAUSE .= " AND ";
@@ -1432,10 +1443,12 @@ class FormHandler
         if (!empty($processed['fromday']) && !empty($processed['fromstatsday_sday']) && !empty($processed['fromstatsmonth_sday'])) {
             $dt = sprintf("%s-%02d 00:00:00", $processed["fromstatsmonth_sday"], $processed["fromstatsday_sday"]);
             $date_clause .= " AND $this->search_date_column >= '$dt'";
+            $this->list_query_conditions[$this->search_date_column] = [">=", $dt];
         }
         if (!empty($processed['today']) && !empty($processed['tostatsday_sday']) && !empty($processed['tostatsmonth_sday'])) {
             $dt = sprintf("%s-%02d 23:59:59", $processed["tostatsmonth_sday"], $processed["tostatsday_sday"]);
             $date_clause .= " AND $this->search_date_column <= '$dt'";
+            $this->list_query_conditions[$this->search_date_column] = ["<=", $dt];
         }
 
         /** New search field names */
@@ -1449,23 +1462,28 @@ class FormHandler
         if (!empty($processed["enable_search_start_date"]) && !empty($processed["search_start_date"])) {
             $dt = $this->DBHandle->qStr($processed["search_start_date"]);
             $date_clause .= " AND $this->search_date_column >= $dt";
+            $this->list_query_conditions[$this->search_date_column] = [">=", $dt];
         }
         if (!empty($processed["enable_search_start_date2"]) && !empty($processed["search_start_date2"])) {
             $dt = $this->DBHandle->qStr($processed["search_start_date2"]);
             $date_clause .= " AND $this->search_date2_column >= $dt";
+            $this->list_query_conditions[$this->search_date2_column] = [">=", $dt];
         }
         if (!empty($processed["enable_search_end_date"]) && !empty($processed["search_end_date"])) {
             $dt = $this->DBHandle->qStr($processed["search_end_date"] . " 23:59:59");
             $date_clause .= " AND $this->search_date_column <= $dt";
+            $this->list_query_conditions[$this->search_date_column] = ["<=", $dt];
         }
         if (!empty($processed["enable_search_end_date2"]) && !empty($processed["search_end_date2"])) {
             $dt = $this->DBHandle->qStr($processed["search_end_date2"] . " 23:59:59");
             $date_clause .= " AND $this->search_date2_column <= $dt";
+            $this->list_query_conditions[$this->search_date2_column] = ["<=", $dt];
         }
         if (!empty($processed["enable_search_months"]) && !empty($processed["search_months"] * 1)) {
             $mo = $processed["search_months"] * 1;
             $dt = $this->DBHandle->qStr((new DateTime("-$mo months"))->format("Y-m-d"));
             $date_clause .= "AND $this->search_months_ago_column < $dt";
+            $this->list_query_conditions[$this->search_months_ago_column] = ["<", $dt];
         }
 
         // temporary until we get rid of old search forms
