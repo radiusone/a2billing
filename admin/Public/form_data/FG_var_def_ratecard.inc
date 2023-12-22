@@ -87,10 +87,12 @@ if (isset($posted) && !$popup_select) {
         $FG_TOP_FILTER_VALUE = $tariffgroup[0];
 
         $HD_Form->FG_QUERY_WHERE_CLAUSE = "tariffgroup_id= '$FG_TOP_FILTER_VALUE'";
+        $HD_Form->list_query_conditions["tariffgroup_id"] = $FG_TOP_FILTER_VALUE;
 
         $rateinitial_field = "MIN(rateinitial) as rateinitial";
 
         $_SESSION['def_ratecard_tariffgroup'] = $HD_Form->FG_QUERY_WHERE_CLAUSE;
+        $_SESSION['def_ratecard_tariffgroup2'] = $HD_Form->list_query_conditions;
 
     } else {
         $_SESSION['def_ratecard_tariffgroup'] = '';
@@ -101,6 +103,7 @@ if (isset($posted) && !$popup_select) {
     $HD_Form->FG_QUERY_GROUPBY_COLUMNS = ["dialprefix"];
 
     $HD_Form->FG_QUERY_WHERE_CLAUSE = $_SESSION['def_ratecard_tariffgroup'];
+    $HD_Form->list_query_conditions = $_SESSION["def_ratecard_tariffgroup2"];
     $rateinitial_field = "MIN(rateinitial) as rateinitial";
 }
 

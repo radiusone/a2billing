@@ -113,6 +113,7 @@ if (isset($form_action) && ($form_action=='ask-edit' || $form_action=='edit')) {
 } else {
 	$HD_Form -> FG_QUERY_TABLE_NAME = "cc_did_destination, cc_did";
 	$HD_Form -> FG_QUERY_WHERE_CLAUSE = " id_cc_card='".$_SESSION["card_id"]."' AND cc_did_destination.id_cc_did=cc_did.id";
+    $HD_Form->list_query_conditions = ["id_cc_card" => $_SESSION["card_id"], "cc_did_destination.id_cc_did" => "`cc_did`.`id`"];
     $HD_Form->update_query_conditions = ["id_cc_card" => $_SESSION["card_id"], "cc_did_destination.id_cc_did" => "`cc_did`.`id`"];
 	$country_field = ' id_cc_country,';
 	$validated = 0;

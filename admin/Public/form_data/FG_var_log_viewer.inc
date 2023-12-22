@@ -46,7 +46,7 @@ $HD_Form -> FG_TABLE_DEFAULT_ORDER = "creationdate";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
 $condition_ary = array();
-$lastdayofmonth = date("t", strtotime($tostatsmonth.'-01'));
+$lastdayofmonth = date("t", strtotime(($tostatsmonth ?? "2099-12").'-01'));
 normalize_day_of_month($fromstatsday_sday, $fromstatsmonth_sday);
 normalize_day_of_month($tostatsday_sday, $tostatsmonth_sday);
 if ($Period=="Month"){
@@ -55,6 +55,13 @@ if ($Period=="Month"){
 	{
 		$condition_ary[] = "UNIX_TIMESTAMP(csl.creationdate) <= UNIX_TIMESTAMP('".$tostatsmonth."-$lastdayofmonth 23:59:59')";
 	}
+    $HD_Form->list_query_conditions[] = [
+        "SUB",
+        [
+            ["csl.creationdate" => [">=", sprintf("%s-01", $fromstatsmonth ?? "1900-01")]],
+            ["csl.creationdate" => ["<=", sprintf("%s-%s 23:59:59", $tostatsmonth ?? "2099-12", $lastdayofmonth)]],
+        ],
+    ];
 }else{
 	if ($fromday && isset($fromstatsday_sday) && isset($fromstatsmonth_sday))
 	{
@@ -64,15 +71,24 @@ if ($Period=="Month"){
 	{
 		$condition_ary[] = " UNIX_TIMESTAMP(csl.creationdate) <= UNIX_TIMESTAMP('$tostatsmonth_sday-".sprintf("%02d",intval($tostatsday_sday)/*+1*/)." 23:59:59')";
 	}
+    $HD_Form->list_query_conditions[] = [
+        "SUB",
+        [
+            ["csl.creationdate" => [">=", sprintf("%s-%02d", $fromstatsmonth_sday ?? "1900-01", $fromstatsday_sday ?? 1)]],
+            ["csl.creationdate" => ["<=", sprintf("%s-%02d 23:59:59", $tostatsmonth_sday ?? "2099-12", $tostatsday_sday ?? 31)]],
+        ],
+    ];
 }
 
 if($enteradmin != "")
 {
 	$condition_ary[] = "csl.iduser = '$enteradmin'";
+    $HD_Form->list_query_conditions["csl.iduser"] = $enteradmin;
 }
 if($loglevel != "" && $loglevel > 0)
 {
 	$condition_ary[] = " csl.loglevel = '$loglevel'";
+    $HD_Form->list_query_conditions["csl.loglevel"] = $loglevel;
 }
 
 $HD_Form -> FG_QUERY_WHERE_CLAUSE = implode(' AND ', $condition_ary);

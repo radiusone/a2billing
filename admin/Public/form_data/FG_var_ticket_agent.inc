@@ -55,6 +55,7 @@ $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = " cc_ticket.id";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 $HD_Form -> FG_QUERY_WHERE_CLAUSE = " cc_ticket.creator_type = 1 ";
+$HD_Form->list_query_conditions["cc_ticket.creator_type"] = 0;
 
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_ticket_agent.php?form_action=ask-add";

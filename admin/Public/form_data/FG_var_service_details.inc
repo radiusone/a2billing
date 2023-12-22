@@ -46,6 +46,7 @@ $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "id";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 $HD_Form -> FG_QUERY_WHERE_CLAUSE = " id='$id'";
+$HD_Form->list_query_conditions["id"] = $id;
 $HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 1;
 
 

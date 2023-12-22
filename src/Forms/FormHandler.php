@@ -78,6 +78,10 @@ class FormHandler
     public string $FG_QUERY_COLUMN_LIST = ""; // TODO: change this to an array
     /** @var string|null A condition to add to the list query */
     public ?string $FG_QUERY_WHERE_CLAUSE = "";
+
+    /** @var array columns/values to be used as a condition in list queries */
+    public array $list_query_conditions = [];
+
     /** @var array List of columns for the list display query to be grouped by */
     public array $FG_QUERY_GROUPBY_COLUMNS = [];
     /** @var array List of columns for the list display query to be ordered by */

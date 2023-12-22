@@ -48,6 +48,7 @@ getpost_ifset(array('IDCust', 'id', 'cid', 'activated'));
 if (!isset($form_action) || $form_action=="list") {
 	$HD_Form = new FormHandler("cc_callerid LEFT JOIN cc_card ON cc_card.id=cc_callerid.id_cc_card LEFT JOIN cc_card_group ON cc_card.id_group=cc_card_group.id", _("Caller ID"), 'cc_callerid.id');
 	$HD_Form -> FG_QUERY_WHERE_CLAUSE = " cc_card_group.id_agent=".$_SESSION['agent_id'] ;
+    $HD_Form->list_query_conditions["cc_card_group.id_agent"] = $_SESSION["agent_id"];
 } else {
 	$HD_Form = new FormHandler("cc_callerid", _("Caller ID"));
 }

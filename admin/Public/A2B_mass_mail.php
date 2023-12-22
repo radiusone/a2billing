@@ -124,8 +124,10 @@ $limit_massmail = 2000;
 
 if (!empty($HD_Form -> FG_QUERY_WHERE_CLAUSE)) {
     $HD_Form -> FG_QUERY_WHERE_CLAUSE .= " AND email <> ''";
+    $HD_Form->list_query_conditions["email"] = ["<>", ""];
     if ($_REQUEST['id']!=null) {
         $HD_Form -> FG_QUERY_WHERE_CLAUSE .= " AND id = '".$_REQUEST['id']."'";
+        $HD_Form->list_query_conditions["id"] = $_REQUEST["id"];
     }
     $list_customer = $instance_cus_table -> get_list ($HD_Form->DBHandle, $HD_Form->FG_QUERY_WHERE_CLAUSE, [], "ASC", $limit_massmail);
 } else {

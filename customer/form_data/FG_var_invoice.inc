@@ -53,6 +53,8 @@ if (!isset($form_action) || $form_action=="list") {
 }
 
 $HD_Form -> FG_QUERY_WHERE_CLAUSE = " id_card = ".$_SESSION["card_id"]." AND status = 1";
+$HD_Form->list_query_conditions["id_card"] = $_SESSION["card_id"];
+$HD_Form->list_query_conditions["status"] = 1;
 $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 

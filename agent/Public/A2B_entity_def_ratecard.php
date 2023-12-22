@@ -106,6 +106,7 @@ if (($form_action == "list") && ($HD_Form->search_form_enabled) && ($_POST['post
     }
 
     $HD_Form->FG_QUERY_WHERE_CLAUSE = "idtariffplan='$mytariff_id'";
+    $HD_Form->list_query_conditions["idtariffplan"] = $mytariff_id;
 
     /*
     SELECT t1.destination, min(t1.rateinitial), t1.dialprefix FROM cc_ratecard t1, cc_tariffplan t4, cc_tariffgroup t5,

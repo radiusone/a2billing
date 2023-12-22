@@ -64,6 +64,7 @@ if (!isset($action)) $action = $form_action;
 
 if ( ($form_action == "list") &&  ($HD_Form->search_form_enabled) && ($posted_search == 1 ) && isset($mytariff_id) ) {
     $HD_Form->FG_QUERY_WHERE_CLAUSE = "idtariffplan='$mytariff_id'";
+    $HD_Form->list_query_conditions["idtariffplan"] = $mytariff_id;
 }
 
 $list = $HD_Form -> perform_action($form_action);

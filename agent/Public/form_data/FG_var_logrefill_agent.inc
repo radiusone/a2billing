@@ -48,6 +48,7 @@ getpost_ifset(array('id', 'agent_id', 'date', 'credit','description'));
 if (!isset($form_action) || $form_action=="list") {
 	$HD_Form = new FormHandler("cc_logrefill_agent LEFT JOIN cc_agent ON cc_agent.id=agent_id", _("Refill Agent"),'cc_logrefill_agent.id');
 	$HD_Form -> FG_QUERY_WHERE_CLAUSE = " cc_agent.id =".$_SESSION['agent_id'] ;
+    $HD_Form->list_query_conditions["cc_agent.id"] = $_SESSION["agent_id"];
 } else {
 	$HD_Form = new FormHandler("cc_logrefill_agent", _("Refill Agent"));
 }

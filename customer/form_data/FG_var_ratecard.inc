@@ -56,6 +56,7 @@ $HD_Form -> search_session_key = 'entity_ratecard_selection';
 
 
 $HD_Form -> FG_QUERY_WHERE_CLAUSE = "tariffgroup_id = '".$_SESSION["tariff"]."' ";
+$HD_Form->list_query_conditions["tariffgroup_id"] = $_SESSION["tariff"];
 $HD_Form -> FG_QUERY_GROUPBY_COLUMNS = ["dialprefix"];
 
 $HD_Form -> AddViewElement("<acronym title=\"DIALING PREFIX\">" . gettext("PREFIX") . "</acronym>", "dialprefix");

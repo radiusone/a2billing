@@ -44,6 +44,7 @@ if (! has_rights (Agent::ACX_ACCESS)) {
 
 $HD_Form = new FormHandler("cc_card LEFT JOIN cc_card_group ON cc_card.id_group=cc_card_group.id ", _("Card"), "cc_card.id");
 $HD_Form -> FG_QUERY_WHERE_CLAUSE = " cc_card_group.id_agent=".$_SESSION['agent_id'] ;
+$HD_Form->list_query_conditions["cc_card_group.id_agent"] = $_SESSION["agent_id"];
 $HD_Form->no_debug();
 $HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 10;
 

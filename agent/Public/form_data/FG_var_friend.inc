@@ -57,6 +57,7 @@ if ($voip_type=='sip') {
 	if (!isset($form_action) || $form_action=="list") {
 		$HD_Form = new FormHandler("cc_sip_buddies LEFT JOIN cc_card ON cc_card.id=cc_sip_buddies.id_cc_card LEFT JOIN cc_card_group ON cc_card.id_group=cc_card_group.id", "SIP Friend", 'cc_sip_buddies.id');
 		$HD_Form -> FG_QUERY_WHERE_CLAUSE = " cc_card_group.id_agent=".$_SESSION['agent_id'] ;
+        $HD_Form->list_query_conditions["cc_card_group.id_agent"] = $_SESSION["agent_id"];
 	} else {
 		$HD_Form = new FormHandler("cc_sip_buddies", "SIP Friend");
 	}
@@ -67,6 +68,7 @@ if ($voip_type=='sip') {
 	if (!isset($form_action) || $form_action=="list") {
 		$HD_Form = new FormHandler("cc_iax_buddies LEFT JOIN cc_card ON cc_card.id=cc_iax_buddies.id_cc_card LEFT JOIN cc_card_group ON cc_card.id_group=cc_card_group.id", "IAX Friend", 'cc_iax_buddies.id');
 		$HD_Form -> FG_QUERY_WHERE_CLAUSE = " cc_card_group.id_agent=".$_SESSION['agent_id'] ;
+        $HD_Form->list_query_conditions["cc_card_group.id_agent"] = $_SESSION["agent_id"];
 	} else {
 		$HD_Form = new FormHandler("cc_iax_buddies", "IAX Friend");
 	}
@@ -108,6 +110,7 @@ if (isset($friend_id)  &&  (strlen($friend_id)>0)){
 	if ($friend_id!='all'){
 		if (strlen($HD_Form ->FG_QUERY_WHERE_CLAUSE)>0) $HD_Form ->FG_QUERY_WHERE_CLAUSE.=" AND ";
 		$HD_Form ->FG_QUERY_WHERE_CLAUSE.="name='$friend_id'";
+        $HD_Form->list_query_conditions["name"] = $friend_id;
 	}
 }
 

@@ -49,6 +49,8 @@ $HD_Form = new FormHandler("cc_epayment_log,cc_card LEFT JOIN cc_card_group ON c
 $HD_Form->no_debug();
 //CLause to filter by agent
 $HD_Form -> FG_QUERY_WHERE_CLAUSE = "cc_card.id=cc_epayment_log.cardid AND cc_card_group.id_agent=".$_SESSION['agent_id'] ;
+$HD_Form->list_query_conditions["cc_card.id"] = "`cc_epayment_log`.`cardid`";
+$HD_Form->list_query_conditions["cc_card_group.id_agent"] = $_SESSION["agent_id"];
 
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "cc_epayment_log.creationdate";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
@@ -62,7 +64,7 @@ if (DB_TYPE == "postgres") {
 }else{
 		$UNIX_TIMESTAMP = "UNIX_TIMESTAMP";
 }
-$lastdayofmonth = date("t", strtotime($tostatsmonth.'-01'));
+$lastdayofmonth = date("t", strtotime(($tostatsmonth ?? "2099-12").'-01'));
 normalize_day_of_month($fromstatsday_sday, $fromstatsmonth_sday);
 normalize_day_of_month($tostatsday_sday, $tostatsmonth_sday);
 if ($Period=="Month"){
@@ -71,6 +73,13 @@ if ($Period=="Month"){
 		if (strlen($date_clause)>0) $date_clause.=" AND ";
 		$date_clause.=" $UNIX_TIMESTAMP(cc_epayment_log.creationdate) <= $UNIX_TIMESTAMP('".$tostatsmonth."-$lastdayofmonth 23:59:59')";
 	}
+    $HD_Form->list_query_conditions[] = [
+        "SUB",
+        [
+            ["cc_epayment_log.creationdate" => [">=", sprintf("%s-01", $fromstatsmonth ?? "1900-01")]],
+            ["cc_epayment_log.creationdate" => ["<=", sprintf("%s-%s 23:59:59", $tostatsmonth ?? "2099-12", $lastdayofmonth)]],
+        ],
+    ];
 } else {
 	if ($fromday && isset($fromstatsday_sday) && isset($fromstatsmonth_sday)) {
 		if (strlen($date_clause)>0) $date_clause.=" AND ";
@@ -80,18 +89,27 @@ if ($Period=="Month"){
 		if (strlen($date_clause)>0) $date_clause.=" AND ";
 		$date_clause.=" $UNIX_TIMESTAMP(cc_epayment_log.creationdate) <= $UNIX_TIMESTAMP('$tostatsmonth_sday-".sprintf("%02d",intval($tostatsday_sday)/*+1*/)." 23:59:59')";
 	}
+    $HD_Form->list_query_conditions[] = [
+        "SUB",
+        [
+            ["cc_epayment_log.creationdate" => [">=", sprintf("%s-%02d", $fromstatsmonth_sday ?? "1900-01", $fromstatsday_sday ?? 1)]],
+            ["cc_epayment_log.creationdate" => ["<=", sprintf("%s-%02d 23:59:59", $tostatsmonth_sday ?? "2099-12", $tostatsday_sday ?? 31)]],
+        ],
+    ];
 }
 
 if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0 && strlen($enteradmin)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
 if($enteradmin != "") {
 	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
 	$HD_Form -> FG_QUERY_WHERE_CLAUSE.=" iduser = '$enteradmin'";
+    $HD_Form->list_query_conditions["iduser"] = $enteradmin;
 }
 
 if (strlen($enteradmin)>0 && strlen($loglevel)>0 && $loglevel > 0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
 if($status >= 0 && $status != '') {
 	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
 	$HD_Form -> FG_QUERY_WHERE_CLAUSE.=" cc_epayment_log.status = '$status'";
+    $HD_Form->list_query_conditions["cc_epayment_log.status"] = $status;
 }
 if (strlen($loglevel)>0 && strlen($date_clause)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
 if(!empty($date_clause)) {

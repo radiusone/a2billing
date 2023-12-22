@@ -47,11 +47,14 @@ if ($posted){
 	if (isset($did) && strlen($did)>0) {
 		if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
 		$HD_Form -> FG_QUERY_WHERE_CLAUSE.="id_did = '$did'";
+        $HD_Form->list_query_conditions["id_did"] = $did;
 	}
 
 	if ($inuse) {
 		if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
 		$HD_Form -> FG_QUERY_WHERE_CLAUSE.=" (releasedate IS NULL OR releasedate < '1984-01-01 00:00:00') and activated=1";
+        $HD_Form->list_query_conditions[] = ["SUB", [["releasedate" => null], ["releasedate" => ["<", "1984-01-01"]]], "OR"];
+        $HD_Form->list_query_conditions["activated"] = 1;
 		$HD_Form -> FG_OTHER_BUTTON1 = true;
 		$HD_Form -> FG_OTHER_BUTTON1_LINK="A2B_entity_did_use.php?posted=$posted&order=$order&sens=$sens&current_page=$current_page&did=$did&inuse=$inuse&actionbtn=release_did&did=|col0|";
 		$HD_Form -> FG_OTHER_BUTTON1_IMG =Images_Path . "/icon-release.gif";
@@ -64,6 +67,8 @@ if ($posted){
 } else {
 	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
 	$HD_Form -> FG_QUERY_WHERE_CLAUSE.=" (releasedate IS NULL OR releasedate < '1984-01-01 00:00:00') and activated=1";
+    $HD_Form->list_query_conditions[] = ["SUB", [["releasedate" => null], ["releasedate" => ["<", "1984-01-01"]]], "OR"];
+    $HD_Form->list_query_conditions["activated"] = 1;
 	$HD_Form -> FG_TABLE_DEFAULT_ORDER = "id_did";
 	$HD_Form -> FG_TABLE_DEFAULT_SENS = "ASC";
 	$HD_Form -> FG_OTHER_BUTTON1 = true;

@@ -40,6 +40,7 @@ $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "date";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 $HD_Form -> FG_QUERY_WHERE_CLAUSE = "( sipiax = 2 OR sipiax = 3) ";
+$HD_Form->list_query_conditions["sipiax"] = ["IN", [2, 3]];
 
 $HD_Form -> AddViewElement(gettext("DATE"), "date(starttime) as date", false);
 $HD_Form -> AddViewElement(gettext("DID"), "cc_did.did", false);

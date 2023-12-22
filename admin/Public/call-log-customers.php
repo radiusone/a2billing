@@ -182,6 +182,8 @@ $HD_Form->prepare_list_subselection('list');
 if (empty($HD_Form->FG_QUERY_WHERE_CLAUSE)) {
     $date = (new DateTime("-1 day"))->format("Y-m-d H:i:s");
     $HD_Form->FG_QUERY_WHERE_CLAUSE = "cc_call.starttime >= '$date' AND terminatecauseid = 1";
+    $HD_Form->list_query_conditions["cc_call.starttime"] = [">=", $date];
+    $HD_Form->list_query_conditions["terminatecauseid"] = 1;
 }
 
 $list = $HD_Form->perform_action($form_action);

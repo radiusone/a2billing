@@ -60,6 +60,7 @@ if ($languages != '') {
     }
     if (isset($_SESSION["Langfilter"])) {
         $HD_Form -> FG_QUERY_WHERE_CLAUSE = "id_language='".$_SESSION["Langfilter"]."'";
+        $HD_Form->list_query_conditions["id_language"] = $_SESSION["Langfilter"];
     }
 } else {
     if (isset($_SESSION["Langfilter"])) {

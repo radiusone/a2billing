@@ -56,6 +56,7 @@ getpost_ifset(array('id', 'username', 'useralias', 'uipass', 'credit', 'language
 if (!isset($form_action) || $form_action=="list" || $form_action=="addcredit") {
 	$HD_Form = new FormHandler("cc_card LEFT JOIN cc_card_group ON cc_card.id_group=cc_card_group.id ", _("Card"), "cc_card.id");
 	$HD_Form -> FG_QUERY_WHERE_CLAUSE = " cc_card_group.id_agent=".$_SESSION['agent_id'] ;
+    $HD_Form->list_query_conditions["cc_card_group.id_agent"] = $_SESSION["agent_id"];
 } else {
 	$HD_Form = new FormHandler("cc_card", _("Card"));
 }

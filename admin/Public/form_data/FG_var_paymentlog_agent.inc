@@ -52,7 +52,7 @@ if (DB_TYPE == "postgres") {
 }else{
 		$UNIX_TIMESTAMP = "UNIX_TIMESTAMP";
 }
-$lastdayofmonth = date("t", strtotime($tostatsmonth.'-01'));
+$lastdayofmonth = date("t", strtotime(($tostatsmonth ?? "2099-12").'-01'));
 normalize_day_of_month($fromstatsday_sday, $fromstatsmonth_sday);
 normalize_day_of_month($tostatsday_sday, $tostatsmonth_sday);
 if ($Period=="Month"){
@@ -62,6 +62,13 @@ if ($Period=="Month"){
 		if (strlen($date_clause)>0) $date_clause.=" AND ";
 		$date_clause.=" $UNIX_TIMESTAMP(creationdate) <= $UNIX_TIMESTAMP('".$tostatsmonth."-$lastdayofmonth 23:59:59')";
 	}
+    $HD_Form->list_query_conditions[] = [
+        "SUB",
+        [
+            ["creationdate" => [">=", sprintf("%s-01", $fromstatsmonth ?? "1900-01")]],
+            ["creationdate" => ["<=", sprintf("%s-%s 23:59:59", $tostatsmonth ?? "2099-12", $lastdayofmonth)]],
+        ],
+    ];
 }else{
 	if ($fromday && isset($fromstatsday_sday) && isset($fromstatsmonth_sday))
 	{
@@ -73,17 +80,26 @@ if ($Period=="Month"){
 		if (strlen($date_clause)>0) $date_clause.=" AND ";
 		$date_clause.=" $UNIX_TIMESTAMP(creationdate) <= $UNIX_TIMESTAMP('$tostatsmonth_sday-".sprintf("%02d",intval($tostatsday_sday)/*+1*/)." 23:59:59')";
 	}
+    $HD_Form->list_query_conditions[] = [
+        "SUB",
+        [
+            ["creationdate" => [">=", sprintf("%s-%02d", $fromstatsmonth_sday ?? "1900-01", $fromstatsday_sday ?? 1)]],
+            ["creationdate" => ["<=", sprintf("%s-%02d 23:59:59", $tostatsmonth_sday ?? "2099-12", $tostatsday_sday ?? 31)]],
+        ],
+    ];
 }
 
 if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0 && strlen($enteradmin)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
 if($enteradmin != "")
 {
 	$HD_Form -> FG_QUERY_WHERE_CLAUSE.=" iduser = '$enteradmin'";
+    $HD_Form->list_query_conditions["iduser"] = $enteradmin;
 }
 if (strlen($enteradmin)>0 && strlen($loglevel)>0 && $loglevel > 0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
 if($status >= 0 && $status != '')
 {
 	$HD_Form -> FG_QUERY_WHERE_CLAUSE.=" status = '$status'";
+    $HD_Form->list_query_conditions["status"] = $status;
 }
 if (strlen($loglevel)>0 && strlen($date_clause)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
 if($date_clause != "")

@@ -51,6 +51,8 @@ $HD_Form->no_debug();
 if ($type == 'payment') {
 	$HD_Form = new FormHandler("cc_logpayment as t2 LEFT JOIN cc_card ON cc_card.id=t2.card_id LEFT JOIN cc_card_group ON cc_card_group.id = cc_card.id_group ", _("Payment"), 't2.id');
 	$HD_Form->FG_QUERY_WHERE_CLAUSE = "t2.card_id = $id AND cc_card_group.id_agent = " . $_SESSION['agent_id'];
+    $HD_Form->list_query_conditions["t2.card_id"] = $id;
+    $HD_Form->list_query_conditions["cc_card_group.id_agent"] = $_SESSION["agent_id"];
 	$HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
 	//SELECT t3.date, t3.credit, t3.reseller_id from cc_logrefill as t3 WHERE t3.card_id='1'
 	//SELECT t2.date, t2.payment, t2.reseller_id from cc_logpayment as t2 WHERE t2.card_id='1'
@@ -66,6 +68,8 @@ if ($type == 'payment') {
 	$HD_Form = new FormHandler($list_sql, _("Invoice"), 'cc_invoice.id');
 	$HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
 	$HD_Form->FG_QUERY_WHERE_CLAUSE = "cc_invoice.id_card = $id AND cc_card_group.id_agent = " . $_SESSION['agent_id'] . " ";
+    $HD_Form->list_query_conditions["cc_invoice.id_card"] = $id;
+    $HD_Form->list_query_conditions["cc_card_group.id_agent"] = $_SESSION["agent_id"];
 	//SELECT t3.date, t3.credit, t3.reseller_id from cc_logrefill as t3 WHERE t3.card_id='1'
 	//SELECT t2.date, t2.payment, t2.reseller_id from cc_logpayment as t2 WHERE t2.card_id='1'
 	$HD_Form->AddViewElement(gettext("DATE"), "date", true, 30, "display_dateformat");

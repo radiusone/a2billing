@@ -91,6 +91,7 @@ if (isset($friend_id)  &&  (strlen($friend_id)>0)) {
 	if ($friend_id!='all') {
 		if (strlen($HD_Form ->FG_QUERY_WHERE_CLAUSE)>0) $HD_Form ->FG_QUERY_WHERE_CLAUSE.=" AND ";
 		$HD_Form ->FG_QUERY_WHERE_CLAUSE.="name='$friend_id'";
+        $HD_Form->list_query_conditions["name"] = $friend_id;
 	}
 }
 

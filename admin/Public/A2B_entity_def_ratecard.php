@@ -188,6 +188,7 @@ if ($form_action === "list" && $HD_Form->search_form_enabled && $_POST['posted_s
     }
 
     $HD_Form->FG_QUERY_WHERE_CLAUSE .= "idtariffplan='$mytariffgroup_id'";
+    $HD_Form->list_query_conditions["idtariffplan"] = $mytariffgroup_id;
 }
 
 $list = $HD_Form->perform_action($form_action);

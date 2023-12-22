@@ -54,7 +54,7 @@ if (DB_TYPE == "postgres") {
 	$UNIX_TIMESTAMP = "UNIX_TIMESTAMP";
 }
 
-$lastdayofmonth = date("t", strtotime($tostatsmonth.'-01'));
+$lastdayofmonth = date("t", strtotime(($tostatsmonth ?? "2099-12").'-01'));
 normalize_day_of_month($fromstatsday_sday, $fromstatsmonth_sday);
 normalize_day_of_month($tostatsday_sday, $tostatsmonth_sday);
 if ($Period=="Month"){
@@ -63,6 +63,13 @@ if ($Period=="Month"){
 		if (strlen($date_clause)>0) $date_clause.=" AND ";
 		$date_clause.=" $UNIX_TIMESTAMP(sl.updated_date) <= $UNIX_TIMESTAMP('".$tostatsmonth."-$lastdayofmonth 23:59:59')";
 	}
+    $HD_Form->list_query_conditions[] = [
+        "SUB",
+        [
+            ["sl.updated_date" => [">=", sprintf("%s-01", $fromstatsmonth ?? "1900-01")]],
+            ["sl.updated_date" => ["<=", sprintf("%s-%s 23:59:59", $tostatsmonth ?? "2099-12", $lastdayofmonth)]],
+        ],
+    ];
 } else {
 	if ($fromday && isset($fromstatsday_sday) && isset($fromstatsmonth_sday)) {
 		if (strlen($date_clause)>0) $date_clause.=" AND ";
@@ -72,6 +79,13 @@ if ($Period=="Month"){
 		if (strlen($date_clause)>0) $date_clause.=" AND ";
 		$date_clause.=" $UNIX_TIMESTAMP(sl.updated_date) <= $UNIX_TIMESTAMP('$tostatsmonth_sday-".sprintf("%02d",intval($tostatsday_sday)/*+1*/)." 23:59:59')";
 	}
+    $HD_Form->list_query_conditions[] = [
+        "SUB",
+        [
+            ["sl.updated_date" => [">=", sprintf("%s-%02d", $fromstatsmonth_sday ?? "1900-01", $fromstatsday_sday ?? 1)]],
+            ["sl.updated_date" => ["<=", sprintf("%s-%02d 23:59:59", $tostatsmonth_sday ?? "2099-12", $tostatsday_sday ?? 31)]],
+        ],
+    ];
 }
 
 if($date_clause != "") {
@@ -82,6 +96,7 @@ if ($id_cc_card != "") {
 	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0)
 		$HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
 	$HD_Form -> FG_QUERY_WHERE_CLAUSE.=" sl.id_cc_card = '$id_cc_card'";
+    $HD_Form->list_query_conditions["sl.id_cc_card"] = $id_cc_card;
 }
 
 if ($status >= 0) {
@@ -89,6 +104,7 @@ if ($status >= 0) {
 		$HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
 
 	$HD_Form -> FG_QUERY_WHERE_CLAUSE.=" sl.status = '$status'";
+    $HD_Form->list_query_conditions["sl.status"] = $status;
 }
 
 $cardstatus_list = getCardStatus_List();
