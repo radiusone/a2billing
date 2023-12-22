@@ -5,6 +5,7 @@ namespace A2billing;
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 use ADOConnection;
+use ADORecordSet;
 use Profiler_Console;
 
 /**
@@ -265,15 +266,10 @@ class Table
 
         $num = $res->RecordCount();
         if ($num == 0) {
-            return 0;
+            return [];
         }
 
-        $row = [];
-        for ($i = 0; $i < $num; $i++) {
-            $row[] = $res->fetchRow();
-        }
-
-        return($row);
+        return $res->GetAll();
     }
 
     public function Table_count(ADOConnection $DBHandle, string $clause = "", string $compare = "", int $cache = 0)
