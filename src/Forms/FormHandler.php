@@ -1117,23 +1117,23 @@ class FormHandler
         switch ($processed[$operator] ?? null) {
             default:
                 $sql .= " $left_column = '$val'";
-                $this->list_query_conditions[$left_column] = $val;
+                $this->list_query_conditions[] = ["SUB", [[$left_column => $val]]];
                 break;
             case 2:
                 $sql .= " $left_column <= '$val'";
-                $this->list_query_conditions[$left_column] = ["<=", $val];
+                $this->list_query_conditions[] = ["SUB", [[$left_column => ["<=", $val]]]];
                 break;
             case 3:
                 $sql .= " $left_column < '$val'";
-                $this->list_query_conditions[$left_column] = ["<", $val];
+                $this->list_query_conditions[] = ["SUB", [[$left_column => ["<", $val]]]];
                 break;
             case 4:
                 $sql .= " $left_column > '$val'";
-                $this->list_query_conditions[$left_column] = [">", $val];
+                $this->list_query_conditions[] = ["SUB", [[$left_column => [">", $val]]]];
                 break;
             case 5:
                 $sql .= " $left_column >= '$val'";
-                $this->list_query_conditions[$left_column] = [">=", $val];
+                $this->list_query_conditions[] = ["SUB", [[$left_column => [">=", $val]]]];
                 break;
         }
 
