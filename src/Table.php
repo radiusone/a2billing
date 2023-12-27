@@ -5,7 +5,6 @@ namespace A2billing;
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 use ADOConnection;
-use ADORecordSet;
 use Profiler_Console;
 
 /**
@@ -58,7 +57,7 @@ class Table
     public string $errstr = '';
     public bool $debug_st = false;
     public int $debug_st_stop = 0;
-    public string $start_message_debug = "<table width=\"100%\" align=\"right\" style=\"float : left;\"><tr><td>QUERY: \n";
+    public string $start_message_debug = "<table style=\"float : left;\"><tr><td>QUERY: \n";
     public string $end_message_debug = "\n</td></tr></table><br><br><br>";
     public float $alert_query_time = 0.1;
     public int $alert_query_long_time = 2;
@@ -467,13 +466,12 @@ class Table
             $this->table = $func_table;
         }
 
-        $countFK = count($this->FK_TABLES);
         foreach ($this->FK_TABLES as $i => $table) {
             $table = $this->quote_identifier($table);
             if ($this->FK_DELETE === false) {
-                $QUERY = "UPDATE $table SET {$this->FK_EDITION_CLAUSE[$i]} = -1 WHERE {$this->FK_EDITION_CLAUSE[$i]} = {$this->FK_ID_VALUE}";
+                $QUERY = "UPDATE $table SET {$this->FK_EDITION_CLAUSE[$i]} = -1 WHERE {$this->FK_EDITION_CLAUSE[$i]} = $this->FK_ID_VALUE";
             } else {
-                $QUERY = "DELETE FROM $table WHERE {$this->FK_EDITION_CLAUSE[$i]} = {$this->FK_ID_VALUE}";
+                $QUERY = "DELETE FROM $table WHERE {$this->FK_EDITION_CLAUSE[$i]} = $this->FK_ID_VALUE";
             }
             if ($this->debug_st) {
                 echo "<br>$QUERY";
@@ -504,29 +502,33 @@ class Table
      */
     public function processWhereClauseArray(array $where, array &$params): string
     {
-        $query = " WHERE ";
         $params = [];
+        $query_clauses = [];
         foreach ($where as $col => $data) {
+            $query = "";
             if (is_numeric($col) && is_array($data) && count($data) > 1 && $data[0] === "SUB") {
                 $clauses = $data[1];
                 $operator = $data[2] ?? "AND";
                 if (is_array($clauses)) {
                     $subclauses = [];
-                    foreach ($clauses as $subcol => $clause) {
-                        $subclauses[] = $this->processConditionClauseArray($subcol, $clause, $params);
+                    foreach ($clauses as $subclause) {
+                        foreach ($subclause as $subcol => $subcondition) {
+                            $subclauses[] = $this->processConditionClauseArray($subcol, $subcondition, $params);
+                        }
                     }
                     if (count($subclauses)) {
-                        $query .= " AND ( ";
+                        $query .= " ( ";
                         $query .= implode(" $operator ", $subclauses);
                         $query .= " ) ";
                     }
                 }
+                $query_clauses[] = $query;
                 continue;
             }
-            $query .= $this->processConditionClauseArray($col, $data, $params);
+            $query_clauses[] = $this->processConditionClauseArray($col, $data, $params);
         }
 
-        return $query;
+        return implode(" AND ", $query_clauses);
     }
 
     /**
