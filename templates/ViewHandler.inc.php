@@ -12,6 +12,9 @@ use A2billing\Table;
  * @var int $popup_select
  * @var bool $hasActionButtons
  */
+
+$cached_options = [];
+$origlist = [];
 ?>
 
 <?php if (($form -> FG_FILTER_ENABLE || $form -> FG_FILTER2_ENABLE) || ($popup_select < 1 && ($form->FG_LIST_ADDING_BUTTON1 || $form->FG_LIST_ADDING_BUTTON2))): ?>
@@ -122,7 +125,12 @@ use A2billing\Table;
                 <?php foreach($form->FG_LIST_TABLE_CELLS as $j=> $row):
                     $origlist[$num][$j - $k] = $item[$j - $k];
                     if (str_starts_with($row["type"], "lie")) {
-                        $options = (new Table($row["sql_table"], $row["sql_columns"]))->get_list($form->DBHandle, str_replace("%id", $item[$j - $k], $row["sql_clause"]), [], "ASC", 0, 0, [], 10);
+                        if (empty($cached_options[$row["field"]])) {
+                            $options = (new Table($row["sql_table"], $row["sql_columns"]))->get_list($form->DBHandle, str_replace("%id", $item[$j - $k], $row["sql_clause"]));
+                            $cached_options[$row["field"]] = $options;
+                        } else {
+                            $options = $cached_options[$row["field"]];
+                        }
                         $record_display = $row["sql_display"];
                         $record_display = preg_replace_callback(
                             "/%([0-9]+)/",
