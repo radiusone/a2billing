@@ -131,9 +131,8 @@ if ($terminatecauseid=="ANSWER") {
 $instance_table = new Table($FG_TABLE_NAME, $FG_COL_QUERY);
 
 if (!$nodisplay) {
-    $ord_arr = explode(",", $order ?? "");
     $grp_arr = explode(",", $SQL_GROUP ?? "");
-    $list = $instance_table -> get_list ($DBHandle, $FG_TABLE_CLAUSE, $ord_arr, $sens, $inputtopvar, 0, $grp_arr);
+    $list = $instance_table -> get_list ($DBHandle, $FG_TABLE_CLAUSE, $order ?? "", $sens, $inputtopvar, 0, $grp_arr);
 }
 
 $smarty->display('main.tpl');

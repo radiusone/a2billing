@@ -87,7 +87,7 @@ class receipt
             $instance_sub_table = new Table("cc_receipt_item", "*");
             $QUERY = " id_receipt = " . $this->id;
             $return = null;
-            $return = $instance_sub_table->get_list($DBHandle, $QUERY, ["date"]);
+            $return = $instance_sub_table->get_list($DBHandle, $QUERY, "date");
             $i = 0;
             foreach ($return as $value) {
                 $comment = new ReceiptItem($value['id'], $value['description'], $value['date'], $value["price"],$value["type_ext"],$value["id_ext"]);
@@ -111,7 +111,7 @@ class receipt
             $instance_sub_table = new Table("cc_receipt_item", "*");
             $QUERY = " id_receipt = " . $this->id;
             $return = null;
-            $return = $instance_sub_table->get_list($DBHandle, $QUERY, ["date"]);
+            $return = $instance_sub_table->get_list($DBHandle, $QUERY, "date");
             $i = 0;
             foreach ($return as $value) {
                 if ($value['id_ext'] && $value['type_ext'] == "CALLS") {
@@ -125,7 +125,7 @@ class receipt
                         if (!empty ($result_billing[0]['start_date'])) {
                             $call_clause .= " AND stoptime >= '" . $result_billing[0]['start_date'] . "'";
                         }
-                        $return_calls = $call_table->get_list($DBHandle, $call_clause, ['starttime'], 'ASC', (int)$nb, $begin);
+                        $return_calls = $call_table->get_list($DBHandle, $call_clause, 'starttime', 'ASC', (int)$nb, $begin);
                         foreach ($return_calls as $call) {
                             $min = floor($call['sessiontime'] / 60);
                             $sec = $call['sessiontime'] % 60;
@@ -156,7 +156,7 @@ class receipt
             $instance_sub_table = new Table("cc_receipt_item", "*");
             $QUERY = " id_receipt = " . $this->id;
             $return = null;
-            $return = $instance_sub_table->get_list($DBHandle, $QUERY, ["date"]);
+            $return = $instance_sub_table->get_list($DBHandle, $QUERY, "date");
             $i = 0;
             foreach ($return as $value) {
                 if ($value['id_ext'] && $value['type_ext'] == "CALLS") {
@@ -170,7 +170,7 @@ class receipt
                         if (!empty ($result_billing[0]['start_date'])) {
                             $call_clause .= " AND stoptime >= '" . $result_billing[0]['start_date'] . "'";
                         }
-                        $return_calls = $call_table->get_list($DBHandle, $call_clause, ['starttime']);
+                        $return_calls = $call_table->get_list($DBHandle, $call_clause, 'starttime');
                         if(is_array($return_calls))$i=$i+$return_calls[0][0];
 
                     }
@@ -195,7 +195,7 @@ class receipt
             $instance_sub_table = new Table("cc_receipt_item", "SUM(price)");
             $QUERY = " id_receipt = " . $this->id;
             $return = null;
-            $return = $instance_sub_table->get_list($DBHandle, $QUERY, ["date"]);
+            $return = $instance_sub_table->get_list($DBHandle, $QUERY, "date");
             if(empty ($return)||!is_array($return)||empty ($return[0][0]))
 
                 return 0;

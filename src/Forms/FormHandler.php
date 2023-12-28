@@ -1349,7 +1349,7 @@ class FormHandler
                 $fields = implode(",", $cols);
 
                 $instance_table = new Table($this->FG_QUERY_TABLE_NAME, $fields);
-                $list = $instance_table->get_list($this->DBHandle, $this->FG_EDIT_QUERY_CONDITION, [], "ASC", 1);
+                $list = $instance_table->get_list($this->DBHandle, $this->FG_EDIT_QUERY_CONDITION, "", "ASC", 1);
 
                 //PATCH TO CLEAN THE IMPORT OF PASSWORD FROM THE DATABASE
                 $index = array_search("pwd_encoded", $cols);
@@ -1933,7 +1933,7 @@ class FormHandler
     {
         Console::logSpeed('Time taken to get to line ' . __LINE__);
         $processed = $this->getProcessed();
-        $list = null;
+        $list = [];
 
         foreach ($this->search_form_elements as &$el) {
             // can't post a dot, so temporarily replace it
@@ -1946,15 +1946,8 @@ class FormHandler
             if ($el["type"] !== "SQL_SELECT") {
                 continue;
             }
-            if (is_string($el["order"]) && str_contains($el["order"], ",")) {
-                $order = explode(",", $el["order"]);
-            } elseif (is_string($el["order"])) {
-                $order = [$el["order"]];
-            } else {
-                $order = is_array($el["order"]) ? $el["order"] : [];
-            }
             $instance_table = new Table($el["table"], $el["columns"]);
-            $list = $instance_table->get_list($this->DBHandle, $el["where"], $order, $el["dir"]);
+            $list = $instance_table->get_list($this->DBHandle, $el["where"], $el["order"], $el["dir"]);
             $el["options"] = $list;
             $el["type"] = "SELECT";
         }

@@ -283,11 +283,11 @@ echo $CC_help_generate_customer;
 
 $instance_table_tariff = new Table("cc_tariffgroup LEFT JOIN cc_agent_tariffgroup ON cc_agent_tariffgroup.id_tariffgroup = cc_tariffgroup.id ", "id, tariffgroupname");
 $FG_TABLE_CLAUSE = "cc_agent_tariffgroup.id_agent = ".$_SESSION['agent_id'];
-$list_tariff = $instance_table_tariff -> get_list ($HD_Form->DBHandle, $FG_TABLE_CLAUSE, ["tariffgroupname"]);
+$list_tariff = $instance_table_tariff -> get_list ($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "tariffgroupname");
 $nb_tariff = count($list_tariff);
 $FG_TABLE_CLAUSE =  "cc_card_group.id_agent=".$_SESSION['agent_id'] ;
 $instance_table_group=  new Table("cc_card_group", " id, name ");
-$list_group = $instance_table_group  -> get_list ($HD_Form->DBHandle, $FG_TABLE_CLAUSE, ["name"]);
+$list_group = $instance_table_group  -> get_list ($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "name");
 
 // FORM FOR THE GENERATION
 ?>

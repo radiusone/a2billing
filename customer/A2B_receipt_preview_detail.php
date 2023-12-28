@@ -62,7 +62,7 @@ function loadDetailledItems($startdate,$begin=null,$nb=null)
     $call_clause = " card_id = " .$card_id ;
     if(!empty($startdate)) $call_clause .= " AND stoptime>= '$startdate'";
     $call_clause .=" AND stoptime < NOW()";
-    $return_calls = $call_table->get_list($DBHandle, $call_clause, ['starttime'], 'ASC', (int)$nb, (int)$begin);
+    $return_calls = $call_table->get_list($DBHandle, $call_clause, 'starttime', 'ASC', (int)$nb, (int)$begin);
     foreach ($return_calls as $call) {
         $min = floor($call['sessiontime'] / 60);
         $sec = $call['sessiontime'] % 60;
@@ -92,7 +92,7 @@ function nbDetailledItems($startdate)
     $call_clause = " card_id = " . $card_id;
     if(!empty($startdate)) $call_clause .= " AND stoptime>= '$startdate'";
     $call_clause .=" AND stoptime < NOW()";
-    $return_calls = $call_table->get_list($DBHandle, $call_clause, ['starttime']);
+    $return_calls = $call_table->get_list($DBHandle, $call_clause, 'starttime');
     if(is_array($return_calls))$i=$i+$return_calls[0][0];
     $charge_table = new Table("cc_charge", "COUNT(*)");
     $clause_charge = "id_cc_card = ".$card_id;
@@ -135,7 +135,7 @@ function amount_convert($amount)
 
 $billing_table = new Table('cc_billing_customer', 'id,date');
 $clause_last_billing = "id_card = ".$_SESSION["card_id"];
-$result = $billing_table -> get_list($DBHandle, $clause_last_billing, ["date"], "desc");
+$result = $billing_table -> get_list($DBHandle, $clause_last_billing, "date", "desc");
 $call_table = new Table('cc_call', 'COALESCE(SUM(sessionbill),0)');
 $clause_call_billing ="card_id = ".$_SESSION["card_id"]." AND ";
 $clause_charge = "id_cc_card = ".$_SESSION["card_id"]." AND ";

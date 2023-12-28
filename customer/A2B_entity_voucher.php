@@ -59,8 +59,7 @@ if (strlen($voucher)>0) {
 
         $FG_TABLE_CLAUSE_VOUCHER = "expirationdate >= CURRENT_TIMESTAMP AND activated='t' AND voucher='$voucher'";
 
-        $ord_arr = explode(",", $order ?? "");
-        $list_voucher = $instance_sub_table -> get_list ($HD_Form->DBHandle, $FG_TABLE_CLAUSE_VOUCHER, $ord_arr, $sens ?? "", (int)$limite ?? 0, (int)$current_record ?? 0);
+        $list_voucher = $instance_sub_table -> get_list ($HD_Form->DBHandle, $FG_TABLE_CLAUSE_VOUCHER, $order ?? "", $sens ?? "", (int)$limite ?? 0, (int)$current_record ?? 0);
 
         if ($list_voucher[0][0]==$voucher) {
             if (!isset ($currencies_list[strtoupper($list_voucher[0][4])]["value"])) {

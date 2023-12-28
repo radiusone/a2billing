@@ -164,8 +164,7 @@ class Mail
                     }
                 }
             }
-            $ord_arr = explode(",", $order_field ?? "");
-            $result_tmpl = $tmpl_table->get_list($DBHandle, $tmpl_clause, $ord_arr, $order);
+            $result_tmpl = $tmpl_table->get_list($DBHandle, $tmpl_clause, $order_field, $order);
             if (is_array($result_tmpl) && sizeof($result_tmpl) > 0) {
                 $mail_tmpl = $result_tmpl[0];
                 $this->message = $mail_tmpl['messagetext'];

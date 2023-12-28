@@ -150,7 +150,7 @@ if (isset($enter_packageid)  &&  ($enter_packageid>0)) {
 $FG_TABLE_CLAUSE_GROUP = $FG_TABLE_CLAUSE." GROUP BY t1.id_cc_card, t1.id_cc_package_offer ";
 
 if (!$nodisplay) {
-    $list = $instance_table -> get_list ($DBHandle, $FG_TABLE_CLAUSE_GROUP, [], "ASC", $FG_LIMITE_DISPLAY, $current_page * $FG_LIMITE_DISPLAY);
+    $list = $instance_table -> get_list ($DBHandle, $FG_TABLE_CLAUSE_GROUP, "", "ASC", $FG_LIMITE_DISPLAY, $current_page * $FG_LIMITE_DISPLAY);
 }
 $_SESSION["pr_sql_export"]="SELECT $FG_COL_QUERY FROM $FG_TABLE_NAME WHERE $FG_TABLE_CLAUSE_GROUP";
 

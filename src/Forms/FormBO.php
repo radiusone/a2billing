@@ -657,7 +657,7 @@ class FormBO
         // FIND THE LAST BILLING
         $billing_table = new Table('cc_billing_customer', 'id,date');
         $clause_last_billing = "id_card = $card_id AND id != ".$FormHandler -> QUERY_RESULT;
-        $result = $billing_table -> get_list($FormHandler->DBHandle, $clause_last_billing, ["date"], "desc");
+        $result = $billing_table -> get_list($FormHandler->DBHandle, $clause_last_billing, "date", "desc");
         $call_table = new Table('cc_call', ' COALESCE(SUM(sessionbill),0)');
         $clause_call_billing ="card_id = $card_id AND ";
         $clause_charge = "id_cc_card = $card_id AND ";

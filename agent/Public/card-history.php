@@ -138,8 +138,7 @@ if (isset ($FG_TABLE_CLAUSE) && strlen($FG_TABLE_CLAUSE)>0) {
 $FG_TABLE_CLAUSE .= ' ch.id_cc_card = cc.id AND cc_card_group.id_agent = '.$_SESSION['agent_id'];
 
 if (!$nodisplay) {
-    $ord_arr = explode(",", $order ?? "");
-    $list = $instance_table -> get_list ($DBHandle, $FG_TABLE_CLAUSE, $ord_arr, $sens, $FG_LIMITE_DISPLAY, $current_page * $FG_LIMITE_DISPLAY);
+    $list = $instance_table -> get_list ($DBHandle, $FG_TABLE_CLAUSE, $order ?? "", $sens, $FG_LIMITE_DISPLAY, $current_page * $FG_LIMITE_DISPLAY);
     $nb_record = $instance_table -> Table_count ($DBHandle, $FG_TABLE_CLAUSE);
 }
 

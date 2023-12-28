@@ -105,6 +105,7 @@ class Table
     public function quote_identifier(string $identifier): string
     {
         $q = $this->db_type === "mysql" ? "`" : "\"";
+        $identifier = trim($identifier);
         if (str_starts_with($identifier, $q) && str_ends_with($identifier, $q)) {
             // there is plenty of room for abuse here, but assume already quoted values are ok
             return $identifier;
@@ -191,7 +192,7 @@ class Table
         return true;
     }
 
-    public function get_list(ADOConnection $DBHandle, string $where = "", array $orderby = [], string $sens = "ASC", int $limite = 0, int $current_record = 0, array $groupby = [], int $cache = 0)
+    public function get_list(ADOConnection $DBHandle, string $where = "", string $orderby = "", string $sens = "ASC", int $limite = 0, int $current_record = 0, array $groupby = [])
     {
         $sql = "SELECT $this->fields FROM $this->table";
 
@@ -205,21 +206,12 @@ class Table
         if ($sens !== "ASC" && $sens !== "DESC") {
             $sens = "ASC";
         }
-        array_filter($orderby);
-        if (count($orderby)) {
-            foreach ($orderby as &$col) {
-                if (str_contains($col, "(")) {
-                    // don't want to parse function calls
-                    continue;
-                }
-                $col = str_replace(
-                    ".",
-                    $this->quote_identifier("."),
-                    $this->quote_identifier(trim($col))
-                );
-            }
-            $orderby = implode(",", $orderby);
-            $sql_orderby = " ORDER BY $orderby $sens";
+        $order = explode(",", $orderby);
+        array_filter($order);
+        array_walk($order, fn ($v) => (str_contains($v, "(") ? $v : $this->quote_identifier($v)) . " $sens");
+        if (count($order)) {
+            $orderby = implode(",", $order);
+            $sql_orderby = " ORDER BY $orderby ";
         }
 
         $sql_limit = "";
@@ -258,7 +250,7 @@ class Table
             $QUERY = str_replace("%LIMIT%", $sql_limit, $QUERY);
         }
 
-        $res = $this->ExecuteQuery($DBHandle, $QUERY, $cache);
+        $res = $this->ExecuteQuery($DBHandle, $QUERY);
         if (!$res) {
             return false;
         }

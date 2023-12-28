@@ -140,8 +140,7 @@ if (strlen($FG_TABLE_CLAUSE)>0) $FG_TABLE_CLAUSE.=" AND ";
 $FG_TABLE_CLAUSE.="ch.id_cc_card='$customer'";
 
 if (!$nodisplay) {
-    $ord_arr = explode(",", $order ?? "");
-    $list = $instance_table -> get_list ($DBHandle, $FG_TABLE_CLAUSE, $ord_arr, $sens, $FG_LIMITE_DISPLAY, $current_page * $FG_LIMITE_DISPLAY);
+    $list = $instance_table -> get_list ($DBHandle, $FG_TABLE_CLAUSE,  $order ?? "", $sens, $FG_LIMITE_DISPLAY, $current_page * $FG_LIMITE_DISPLAY);
     $nb_record = $instance_table -> Table_count ($DBHandle, $FG_TABLE_CLAUSE);
 }
 

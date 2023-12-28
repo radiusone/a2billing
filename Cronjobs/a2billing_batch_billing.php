@@ -166,7 +166,7 @@ for ($page = 0; $page < $nbpagemax; $page++) {
             // FIND THE LAST BILLING
             $billing_table = new Table('cc_billing_customer', 'id, date, id_invoice');
             $clause_last_billing = "id_card = " . $card_id;
-            $result = $billing_table->get_list($A2B->DBHandle, $clause_last_billing, ["date"], "desc");
+            $result = $billing_table->get_list($A2B->DBHandle, $clause_last_billing, "date", "desc");
 
             $call_table = new Table('cc_call', ' COALESCE(SUM(sessionbill),0)');
             $clause_call_billing = "card_id = " . $card_id . " AND ";

@@ -167,8 +167,7 @@ if (strpos($SQLcmd, 'WHERE') > 0) {
 }
 
 if ($posted==1) {
-    $ord_arr = explode(",", $order ?? "");
-    $list = $instance_table -> get_list ($DBHandle, $FG_TABLE_CLAUSE, $ord_arr, $sens, $FG_LIMITE_DISPLAY, $current_page * $FG_LIMITE_DISPLAY);
+    $list = $instance_table -> get_list ($DBHandle, $FG_TABLE_CLAUSE, $order ?? "", $sens, $FG_LIMITE_DISPLAY, $current_page * $FG_LIMITE_DISPLAY);
 
     $instance_table_graph = new Table($FG_TABLE_NAME, $FG_COL_QUERY_GRAPH);
     $list_total = $instance_table_graph -> get_list ($DBHandle, $FG_TABLE_CLAUSE);

@@ -70,7 +70,7 @@ if (!empty ($agentkey)) {
 		$agentid = $data[0]['id_agent'];
 		// check if groupid and tarif in already in this agent
 		$instance_table_agent_check = new Table("cc_agent JOIN cc_agent_tariffgroup ON cc_agent_tariffgroup.id_agent =  cc_agent.id JOIN cc_card_group ON cc_card_group.id_agent =  cc_agent.id  ", "cc_agent.id");
-		$list_agent_check = $instance_table_agent_check->get_list($HD_Form->DBHandle, "cc_agent.id= $agentid AND cc_agent_tariffgroup.id_tariffgroup = $tariffid  AND cc_card_group.id = $groupid", ["cc_agent.id"]);
+		$list_agent_check = $instance_table_agent_check->get_list($HD_Form->DBHandle, "cc_agent.id= $agentid AND cc_agent_tariffgroup.id_tariffgroup = $tariffid  AND cc_card_group.id = $groupid", "cc_agent.id");
 		if (is_array($list_agent_check)) {
 			if (!empty ($groupid) && is_numeric($groupid) && !empty ($tariffid) && is_numeric($tariffid)) {
 				$agent_conf = true;

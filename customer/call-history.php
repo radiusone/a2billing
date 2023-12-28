@@ -166,8 +166,7 @@ if (!isset($terminatecauseid)) {
 }
 
 if (!$nodisplay) {
-    $ord_arr = explode(",", $order ?? "");
-    $list = $instance_table -> get_list ($DBHandle, $FG_TABLE_CLAUSE, $ord_arr, $sens, $FG_LIMITE_DISPLAY, $current_page * $FG_LIMITE_DISPLAY);
+    $list = $instance_table -> get_list ($DBHandle, $FG_TABLE_CLAUSE, $order ?? "", $sens, $FG_LIMITE_DISPLAY, $current_page * $FG_LIMITE_DISPLAY);
 }
 $_SESSION["pr_sql_export"] = "SELECT $FG_COL_QUERY FROM $FG_TABLE_NAME WHERE $FG_TABLE_CLAUSE";
 

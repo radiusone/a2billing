@@ -46,17 +46,17 @@ getpost_ifset(array('agentid', 'tariffplan', 'group','task'));
 $FG_DEBUG = 0;
 $DBHandle  = DbConnect();
 $instance_table_agent = new Table("cc_agent ", "id, login, firstname, lastname");
-$list_agent = $instance_table_agent  -> get_list ($DBHandle, "", ["id"]);
+$list_agent = $instance_table_agent  -> get_list ($DBHandle, "", "id");
 $disabled = true;
 
 if (!empty($agentid) && is_numeric($agentid)) {
 
     $instance_table_tariffname = new Table("cc_tariffgroup LEFT JOIN cc_agent_tariffgroup ON cc_tariffgroup.id = cc_agent_tariffgroup.id_tariffgroup", "id, tariffgroupname");
     $FG_TABLE_CLAUSE = "id_agent = ".$agentid;
-    $list_tariffname = $instance_table_tariffname  -> get_list ($DBHandle, $FG_TABLE_CLAUSE, ["tariffgroupname"]);
+    $list_tariffname = $instance_table_tariffname  -> get_list ($DBHandle, $FG_TABLE_CLAUSE, "tariffgroupname");
     $instance_table_group = new Table("cc_card_group", "id, name");
     $FG_TABLE_CLAUSE = "id_agent = ".$agentid;
-    $list_group = $instance_table_group -> get_list ($DBHandle, $FG_TABLE_CLAUSE, ["id"]);
+    $list_group = $instance_table_group -> get_list ($DBHandle, $FG_TABLE_CLAUSE, "id");
     $disabled =false;
 }
 

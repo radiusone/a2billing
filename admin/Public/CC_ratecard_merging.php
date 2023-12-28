@@ -149,7 +149,7 @@ $instance_table_tariffname = new Table("cc_tariffplan", "id, tariffname");
 
 $con = "";
 
-$list_tariffname = $instance_table_tariffname  -> get_list ($HD_Form->DBHandle, $con, ["tariffname"]);
+$list_tariffname = $instance_table_tariffname  -> get_list ($HD_Form->DBHandle, $con, "tariffname");
 
 $nb_tariffname = count($list_tariffname);
 
