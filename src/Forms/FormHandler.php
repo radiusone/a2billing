@@ -1311,7 +1311,7 @@ class FormHandler
                 $list = $instance_table->get_list(
                     $this->DBHandle,
                     $this->FG_QUERY_WHERE_CLAUSE,
-                    $this->FG_QUERY_ORDERBY_COLUMNS,
+                    implode(",", $this->FG_QUERY_ORDERBY_COLUMNS),
                     $this->FG_QUERY_DIRECTION,
                     $this->FG_LIST_VIEW_PAGE_SIZE,
                     $this->CV_CURRENT_PAGE * $this->FG_LIST_VIEW_PAGE_SIZE,
