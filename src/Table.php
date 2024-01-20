@@ -207,11 +207,13 @@ class Table
             $sens = "ASC";
         }
         $order = explode(",", $orderby);
-        array_filter($order);
-        array_walk($order, fn ($v) => (str_contains($v, "(") ? $v : $this->quote_identifier($v)) . " $sens");
-        if (count($order)) {
-            $orderby = implode(",", $order);
-            $sql_orderby = " ORDER BY $orderby ";
+        if (is_array($order)) {
+            array_filter($order);
+            array_walk($order, fn ($v) => (str_contains($v, "(") ? $v : $this->quote_identifier($v)) . " $sens");
+            if (count($order)) {
+                $orderby = implode(",", $order);
+                $sql_orderby = " ORDER BY $orderby ";
+            }
         }
 
         $sql_limit = "";
