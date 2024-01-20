@@ -40,11 +40,11 @@ use Closure;
     <?= $form->csrf_inputs() ?>
 
     <?php foreach ($form->FG_EDIT_QUERY_HIDDEN_INPUTS as $name => $value): ?>
-        <input type="hidden" name="<?= htmlspecialchars($name) ?>" value="<?= htmlspecialchars($value) ?>"/>
+        <input type="hidden" name="<?= htmlspecialchars($name) ?>" value="<?= htmlspecialchars($value ?? "") ?>"/>
     <?php endforeach ?>
 
     <?php foreach ($form->FG_EDIT_FORM_HIDDEN_INPUTS as $name => $value): ?>
-        <input type="hidden" name="<?= htmlspecialchars($name) ?>" value="<?= htmlspecialchars($value) ?>"/>
+        <input type="hidden" name="<?= htmlspecialchars($name) ?>" value="<?= htmlspecialchars($value ?? "") ?>"/>
     <?php endforeach ?>
 
     <?php foreach ($form->FG_EDIT_FORM_ELEMENTS as $i=> $row): ?>
@@ -54,7 +54,7 @@ use Closure;
         </div>
         <?php endif ?>
 
-        <?php if (count($row["custom_query"]) === 0): // SQL CUSTOM QUERY ?>
+        <?php if (count($row["custom_query"] ?? []) === 0): // SQL CUSTOM QUERY ?>
         <div class="row mb-3">
             <label for="<?= $row["name"] ?>" class="col-3 col-form-label">
                 <?= $row["label"] ?>
@@ -130,7 +130,7 @@ use Closure;
                     <?= $row["attributes"] ?>
                 >
                     <?= $row["first_option"] ?>
-                    <?php if (count($options)): ?>
+                    <?php if (is_array($options) && count($options)): ?>
                         <?php foreach ($options as $option): ?>
                     <option
                         value="<?= $option[1] ?>"

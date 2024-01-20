@@ -1294,6 +1294,14 @@ class FormHandler
 
                 $instance_table = new Table($this->FG_QUERY_TABLE_NAME, $fields);
 
+                if ($this->FG_DEBUG) {
+                    $params = [];
+                    echo "<pre>";
+                    echo json_encode($this->list_query_conditions, JSON_PRETTY_PRINT) . "\n";
+                    echo "WHERE " . $instance_table->processWhereClauseArray($this->list_query_conditions, $params) . "\n";
+                    echo json_encode($params, JSON_PRETTY_PRINT);
+                    echo "</pre>";
+                }
                 $this->prepare_list_subselection($form_action);
 
                 // Code here to call the Delete Selected items Fucntion
