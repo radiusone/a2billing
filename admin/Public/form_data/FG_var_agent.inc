@@ -103,7 +103,7 @@ if ($popup_select) {
 	$HD_Form -> FieldViewElement ('id, login, passwd, lastname, currency, active');
 } else {
 	$HD_Form -> AddViewElement(gettext("ID"), "id", "sort");
-	$HD_Form -> AddViewElement(gettext("DATE"), "datecreation", true, 19, "display_dateformat");
+	$HD_Form -> AddViewElement(gettext("DATE"), "datecreation", true, 19);
 	$HD_Form -> AddViewElement(gettext("LOGIN"), "login");
 	$HD_Form -> AddViewElement(gettext("PASSWORD"), "passwd");
 	$HD_Form -> AddViewElement(gettext("FIRSTNAME"), "firstname");

@@ -112,7 +112,7 @@ $FG_TABLE_DEFAULT_SENS = "DESC";
 $DBHandle = DbConnect ();
 
 $FG_TABLE_COL = array ();
-$FG_TABLE_COL [] = array (gettext ( "Date" ), "starttime", "15%", "center", "SORT", "19", "", "", "", "", "", "display_dateformat" );
+$FG_TABLE_COL [] = array (gettext ( "Date" ), "starttime", "15%", "center", "SORT", "19", "", "", "", "", "" );
 if ( has_rights ( Agent::ACX_SEE_CUSTOMERS_CALLERID )) {
     $FG_TABLE_COL [] = array (gettext ( "CallerID" ), "src", "7%", "center", "SORT", "30" );
 }

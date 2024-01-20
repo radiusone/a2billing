@@ -61,7 +61,7 @@ if (has_rights (Admin::ACX_ADMINISTRATOR)) {
 } else {
 	$HD_Form -> AddViewElement(gettext("AGENT"), "agent_id", true, 30, "display_nameofagent");
 }
-$HD_Form -> AddViewElement(gettext("PAYMENT DATE"), "date", true, 30, "display_dateformat");
+$HD_Form -> AddViewElement(gettext("PAYMENT DATE"), "date", true, 30);
 $HD_Form -> AddViewElement(gettext("PAYMENT AMOUNT"), "payment", true, 0, "display_money");
 $HD_Form -> AddViewElement(gettext("PAYMENT TYPE"), "payment_type", true, 0, "", "list", $list_refill_type);
 $HD_Form -> AddViewElement(gettext("REFILL"), "id_logrefill", true, 0, "", "lie_link", "cc_logrefill_agent", "TRUNCATE(credit,2), id", "id='%id'", "%1 " . strtoupper(BASE_CURRENCY) . " (id:%2)", "A2B_refill_info_agent.php");

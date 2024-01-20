@@ -58,7 +58,7 @@ $com_list = getRefillType_List();
 $HD_Form -> AddViewElement(gettext("ID"), "cc_agent_commission.id");
 $HD_Form -> AddViewElement(gettext("ACCOUNT"), "id_card", true, 0, "display_customer_id_link");
 $HD_Form -> AddViewElement(gettext("AGENT"), "id_agent", true, 0, "display_linktoagent");
-$HD_Form -> AddViewElement(gettext("PAYMENT DATE"), "date", true, 30, "display_dateformat");
+$HD_Form -> AddViewElement(gettext("PAYMENT DATE"), "date", true, 30);
 $HD_Form -> AddViewElement(gettext("AMOUNT"), "amount");
 $HD_Form -> AddViewElement(gettext("PAID STATUS"), "paid_status", true, 0, "", "list", $com_list);
 $HD_Form -> AddViewElement(gettext("DESCRIPTION"), "description", true, 50);

@@ -47,7 +47,7 @@ $HD_Form -> FG_TABLE_DEFAULT_ORDER = "id";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
 $HD_Form -> AddViewElement(gettext("ID"), "id");
-$HD_Form -> AddViewElement(gettext("ORDER DATE"), "date_purchased", true, 19, "display_dateformat");
+$HD_Form -> AddViewElement(gettext("ORDER DATE"), "date_purchased", true, 19);
 $HD_Form -> AddViewElement(gettext("CARDID"), "agent_id");
 $HD_Form -> AddViewElement(gettext("NAME"), "agent_name");
 $HD_Form -> AddViewElement(gettext("ITEM NAME"), "item_name");

@@ -86,7 +86,7 @@ $HD_Form->FG_QUERY_WHERE_CLAUSE = "groupid=$groupID";
 $HD_Form->list_query_conditions["groupid"] = $groupID;
 
 $HD_Form->AddViewElement(_("USERID"), "UserID");
-$HD_Form->AddViewElement(_("DATE"), "datecreation", true, 19, "display_dateformat");
+$HD_Form->AddViewElement(_("DATE"), "datecreation", true, 19);
 $HD_Form->AddViewElement(_("LOGIN"), "login");
 
 $HD_Form->FieldViewElement('userid, datecreation, login');

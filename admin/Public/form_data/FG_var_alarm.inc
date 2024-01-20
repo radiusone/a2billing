@@ -77,7 +77,7 @@ $HD_Form -> AddViewElement(gettext("MAX"), "maxvalue");
 $HD_Form -> AddViewElement(gettext("MIN"), "minvalue");
 $HD_Form -> AddViewElement(gettext("STATUS"), "status", true, 0, "", "list", $actived_list);
 $HD_Form -> AddViewElement(gettext("TRUNK"), "id_trunk");
-$HD_Form -> AddViewElement(gettext("CREATION DATE"), "datecreate", true, 22, "display_dateformat");
+$HD_Form -> AddViewElement(gettext("CREATION DATE"), "datecreate", true, 22);
 
 
 

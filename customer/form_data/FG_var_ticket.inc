@@ -62,7 +62,7 @@ $filter_view ='v.viewed ';
 
 $HD_Form -> AddViewElement(gettext("ID"), "id");
 $HD_Form -> AddViewElement(gettext("TITLE"), "title");
-$HD_Form -> AddViewElement(gettext("CREATIONDATE"), "creationdate", true, 19, "display_dateformat");
+$HD_Form -> AddViewElement(gettext("CREATIONDATE"), "creationdate", true, 19);
 $HD_Form -> AddViewElement(gettext("COMPONENT"), "id_component", true, 15, "", "lie", "cc_support_component", "name", "id='%id'", "%1");
 $HD_Form -> AddViewElement(gettext("PRIORITY"), "priority", true, 0, "", "list", $priority_list);
 $HD_Form -> AddViewElement(gettext("VIEWED"), "viewed_cust", false, 0, "", "list", $viewed_list);

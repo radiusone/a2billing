@@ -692,7 +692,7 @@ if (!$popup_select) {
             "the first use date",
             "",
             "NO-NULL",
-            "res_display_dateformat"
+            
         );
 
         $HD_Form->AddEditSelect(
@@ -717,7 +717,7 @@ if (!$popup_select) {
             _("Insert the expiration date"),
             "",
             "NO-NULL",
-            "res_display_dateformat"
+            
         );
 
         $HD_Form->AddEditElement(

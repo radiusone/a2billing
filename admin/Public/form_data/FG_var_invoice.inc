@@ -100,7 +100,7 @@ $list_refill_type=getRefillType_List();
 $HD_Form -> AddViewElement(gettext("ID"), "cc_invoice.id");
 $HD_Form -> AddViewElement(gettext("REFERENCE"), "cc_invoice.reference");
 $HD_Form -> AddViewElement(gettext("ACCOUNT"), "username", true, 30, "display_customer_link");
-$HD_Form -> AddViewElement(gettext("DATE"), "date", true, 30, "display_dateformat");
+$HD_Form -> AddViewElement(gettext("DATE"), "date", true, 30);
 $HD_Form -> AddViewElement(gettext("TITLE"), "title");
 $HD_Form -> AddViewElement(gettext("PAID STATUS"), "status", true, 0, "", "list", $paid_status_list);
 $HD_Form -> AddViewElement(gettext("STATUS"), "cc_invoice_status", true, 0, "", "list", $status_list);

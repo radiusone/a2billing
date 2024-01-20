@@ -49,7 +49,7 @@ $FG_TABLE_ALTERNATE_ROW_COLOR[] = "#F2F2EE";
 $FG_TABLE_ALTERNATE_ROW_COLOR[] = "#FCFBFB";
 
 $FG_TABLE_COL=array();
-$FG_TABLE_COL[]=array (gettext("DATE"), "daterun", "50%", "center", "sort", "30", "", "", "", "", "", "display_dateformat");
+$FG_TABLE_COL[]=array (gettext("DATE"), "daterun", "50%", "center", "sort", "30", "", "", "", "", "");
 $FG_TABLE_COL[]=array (gettext("CALCULTED VALUE"), "calcultedvalue", "50%", "center", "sort");
 
 $FG_NB_TABLE_COL=count($FG_TABLE_COL);

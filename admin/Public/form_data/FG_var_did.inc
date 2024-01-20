@@ -68,7 +68,7 @@ $yesno = getYesNoList();
 $HD_Form->AddViewElement(_("DID"), "did", true, 0, "display_did");
 $HD_Form->AddViewElement(_("Customer"), "iduser", true, 0, "display_customer_name_id_link");
 $HD_Form->AddViewElement(_("Billing"), "billingtype", true, 0, "", "list", $billingtype_list_short);
-$HD_Form->AddViewElement(_("Start Date"), "startingdate", true, 19, "display_dateformat");
+$HD_Form->AddViewElement(_("Start Date"), "startingdate", true, 19);
 $HD_Form->AddViewElement(_("DID Group"), "id_cc_didgroup", true, 15, "", "lie", "cc_didgroup", "didgroupname", "id='%id'", "%1");
 $HD_Form->AddViewElement(_("Country"), "id_cc_country", true, 15, "", "lie", "cc_country", "countryname", "id='%id'", "%1");
 $HD_Form->AddViewElement(_("Active"), "activated", true, 0, "", "list", $yesno);
@@ -118,7 +118,7 @@ $HD_Form->AddEditElement(
     _("Insert the starting date"),
     "",
     "",
-    "res_display_dateformat"
+    
 );
 
 
@@ -131,7 +131,7 @@ $HD_Form->AddEditElement(
     _("Insert the expiration date"),
     "",
     "",
-    "res_display_dateformat"
+    
 );
 
 $HD_Form->AddEditSqlSelect(_("DIDGROUP"), "id_cc_didgroup", "cc_didgroup", "didgroupname,id");

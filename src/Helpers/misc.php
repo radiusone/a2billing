@@ -344,41 +344,6 @@ function display_money($value, $currency = BASE_CURRENCY)
 }
 
 /**
- * Used as callback for list view elements
- * @param $mydate
- * @return void
- * @noinspection PhpUnusedFunctionInspection
- */
-function display_dateformat($mydate)
-{
-    echo get_dateformat($mydate);
-}
-
-function get_dateformat(string $mydate): string
-{
-    if (DB_TYPE === "mysql" && strlen($mydate) === 14) {
-        // why is this here? MySQL does not return in this format and never has
-        return DateTime::createFromFormat("YmdHis", $mydate)->format("Y-m-d H:i:s");
-    }
-
-    return $mydate;
-}
-
-/**
- * Used as callback for edit form elements
- * @noinspection PhpUnused
- */
-function res_display_dateformat($mydate)
-{
-    if (DB_TYPE === "mysql" && strlen($mydate) === 14) {
-        // why is this here? MySQL does not return in this format and never has
-        return DateTime::createFromFormat("YmdHis", $mydate)->format("Y-m-d H:i:s");
-    }
-
-    return $mydate;
-}
-
-/**
  * Used as callback for list/form elements
  * @param $sessiontime
  * @return void

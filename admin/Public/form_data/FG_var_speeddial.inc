@@ -63,7 +63,7 @@ $HD_Form -> AddViewElement(gettext("SPEED DIAL"), "cc_speeddial.speeddial");
 $HD_Form -> AddViewElement(gettext("PHONE NUMBER"), "cc_speeddial.phone");
 $HD_Form -> AddViewElement(gettext("NAME"), "cc_speeddial.name");
 $HD_Form -> AddViewElement(gettext("ACCOUNT"), " cc_speeddial.id_cc_card", true, 30, "display_customer_id_link");
-$HD_Form -> AddViewElement(gettext("DATE"), "cc_speeddial.creationdate", true, 16, "display_dateformat");
+$HD_Form -> AddViewElement(gettext("DATE"), "cc_speeddial.creationdate", true, 16);
 
 
 $HD_Form -> FieldViewElement ('cc_speeddial.speeddial, cc_speeddial.phone, cc_speeddial.name, cc_speeddial.id_cc_card, cc_speeddial.creationdate');

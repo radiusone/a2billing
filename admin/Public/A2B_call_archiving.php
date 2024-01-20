@@ -105,7 +105,7 @@ $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 30;
 $HD_Form->FG_QUERY_PRIMARY_KEY = "cc_call.id";
 $HD_Form->CV_NO_FIELDS = _("No matching calls found; use the fields above to refine your search.");
 
-$HD_Form->AddViewElement(_("Calldate"), "starttime", true, 19, "display_dateformat");
+$HD_Form->AddViewElement(_("Calldate"), "starttime", true, 19);
 $HD_Form->AddViewElement(_("CalledNumber"), "calledstation", true, 30, "display_did");
 $HD_Form->AddViewElement(_("Destination"), "destination", true, 30, "display_without_prefix");
 $HD_Form->AddViewElement(_("Duration"), "sessiontime", true, 30, "display_minute");

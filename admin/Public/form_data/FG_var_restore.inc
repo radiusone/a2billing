@@ -49,7 +49,7 @@ $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 $HD_Form -> AddViewElement(gettext("ID"), "id");
 $HD_Form -> AddViewElement(gettext("NAME"), "name");
 $HD_Form -> AddViewElement(gettext("FILE"), "path");
-$HD_Form -> AddViewElement(gettext("CREATIONDATE"), "creationdate", true, 19, "display_dateformat");
+$HD_Form -> AddViewElement(gettext("CREATIONDATE"), "creationdate", true, 19);
 
 
 $HD_Form -> FieldViewElement ('id, name, path, creationdate');

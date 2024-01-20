@@ -63,7 +63,7 @@ if (has_rights (Admin::ACX_ADMINISTRATOR)) {
 }else{
 	$HD_Form -> AddViewElement(gettext("AGENT"), "agent_id", true, 30, "display_nameofagent");
 }
-$HD_Form -> AddViewElement(gettext("REFILL DATE"), "date", true, 30, "display_dateformat");
+$HD_Form -> AddViewElement(gettext("REFILL DATE"), "date", true, 30);
 $HD_Form -> AddViewElement(gettext("REFILL TYPE"), "refill_type", true, 0, "", "list", $list_refill_type);
 $HD_Form -> AddViewElement(gettext("REFILL AMOUNT"), "credit", true, 0, "display_money");
 

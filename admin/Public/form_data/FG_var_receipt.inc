@@ -86,7 +86,7 @@ $filter_amount_with_vat ='total_price';
 $list_refill_type=getRefillType_List();
 $HD_Form -> AddViewElement(gettext("ID"), "cc_receipt.id");
 $HD_Form -> AddViewElement(gettext("ACCOUNT"), "username", true, 30, "display_customer_link");
-$HD_Form -> AddViewElement(gettext("DATE"), "date", true, 30, "display_dateformat");
+$HD_Form -> AddViewElement(gettext("DATE"), "date", true, 30);
 $HD_Form -> AddViewElement(gettext("TITLE"), "title");
 $HD_Form -> AddViewElement(gettext("STATUS"), "status", true, 0, "", "list", $status_list);
 $HD_Form -> AddViewElement(gettext("AMOUNT INCL VAT"), "total_price", true, 0, "display_2bill");

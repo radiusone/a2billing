@@ -680,7 +680,7 @@ $HD_Form->AddEditElement(
     "the first use date",
     "",
     "NO-NULL",
-    "res_display_dateformat"
+    
 );
 
 
@@ -705,7 +705,7 @@ $HD_Form->AddEditElement(
     gettext("Insert the expiration date"),
     "",
     "NO-NULL",
-    "res_display_dateformat"
+    
 );
 
 

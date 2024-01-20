@@ -105,7 +105,7 @@ $HD_Form->AddEditElement(
     gettext("Insert the start date"),
     "",
     "NO-NULL",
-    "res_display_dateformat"
+    
 );
 
 $HD_Form->AddEditElement(
@@ -117,7 +117,7 @@ $HD_Form->AddEditElement(
     gettext("Insert the stop date"),
     "",
     "NO-NULL",
-    "res_display_dateformat"
+    
 );
 
 $HD_Form->AddEditTextarea(

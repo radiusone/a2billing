@@ -60,7 +60,7 @@ $list_refill_type=getRefillType_List();
 $HD_Form -> AddViewElement(gettext("ID"), "cc_logpayment_agent.id");
 $HD_Form -> AddViewElement(gettext("AGENT"), "creator", true, 25, "", "lie", "cc_agent", "lastname, firstname", "id='%id'", "%1 %2");
 $HD_Form -> AddViewElement(gettext("LOGIN"), "login", true, 25, "", "lie", "cc_agent", "login", "id='%id'", "%1");
-$HD_Form -> AddViewElement(gettext("PAYMENT DATE"), "date", true, 30, "display_dateformat");
+$HD_Form -> AddViewElement(gettext("PAYMENT DATE"), "date", true, 30);
 $HD_Form -> AddViewElement(gettext("PAYMENT AMOUNT"), "payment");
 $HD_Form -> AddViewElement(gettext("DESCRIPTION"), "description");
 $HD_Form -> AddViewElement(gettext("PAYMENT TYPE"), "payment_type", true, 0, "", "list", $list_refill_type);

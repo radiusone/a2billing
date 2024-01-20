@@ -83,7 +83,7 @@ switch ($topsearch) {
 $FG_TABLE_COL[]=array (gettext("Duration"), "calltime", "15%", "center", "SORT", "30", "", "", "", "", "", "display_minute");
 $FG_TABLE_COL[]=array (gettext("Sell"), "cost", "15%", "center","sort","","","","","","","display_2bill");
 $FG_TABLE_COL[]=array (gettext("Buy"), "buy", "15%", "center","sort","","","","","","","display_2bill");
-if ($grouped) $FG_TABLE_COL[]=array (gettext("Calldate"), "day", "10%", "center", "SORT", "19", "", "", "", "", "", "display_dateformat");
+if ($grouped) $FG_TABLE_COL[]=array (gettext("Calldate"), "day", "10%", "center", "SORT", "19", "", "", "", "", "");
 if ((isset($inputtopvar)) && ($inputtopvar!="") && (isset($topsearch)) && ($topsearch!="")) {
     $FG_TABLE_COL[]=array (gettext("NbrCall"), 'nbcall', "10%", "center", "SORT");
 }

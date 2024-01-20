@@ -62,13 +62,13 @@ $yesno = getYesNoList();
 
 $HD_Form -> AddViewElement(gettext("ID"), "id");
 $HD_Form -> AddViewElement(gettext("UNIQUEID"), "uniqueid");
-$HD_Form -> AddViewElement(gettext("ENTRY TIME"), "entry_time", true, 19, "display_dateformat");
+$HD_Form -> AddViewElement(gettext("ENTRY TIME"), "entry_time", true, 19);
 $HD_Form -> AddViewElement(gettext("STATUS"), "status");
 $HD_Form -> AddViewElement(gettext("SERVER IP"), "server_ip");
 $HD_Form -> AddViewElement("<acronym title=\"" . gettext("NUMBER OF ATTEMPT") . "\">NA</acronym>", "num_attempt");
 $HD_Form -> AddViewElement("<acronym title=\"" . gettext("AGI RESULT") . "\">AR</acronym>", "agi_result");
-$HD_Form -> AddViewElement(gettext("CALLBACK TIME"), "callback_time", true, 19, "display_dateformat");
-$HD_Form -> AddViewElement(gettext("LAST_ATTEMPT"), "last_attempt_time", true, 19, "display_dateformat");
+$HD_Form -> AddViewElement(gettext("CALLBACK TIME"), "callback_time", true, 19);
+$HD_Form -> AddViewElement(gettext("LAST_ATTEMPT"), "last_attempt_time", true, 19);
 $HD_Form -> AddViewElement(gettext("CHANNEL"), "channel");
 $HD_Form -> AddViewElement(gettext("CONTEXT"), "context");
 $HD_Form -> AddViewElement(gettext("SERVER"), "id_server", true, 15, "", "lie", "server_manager", "server_ip", "id='%id'", "%1");
@@ -160,7 +160,7 @@ $HD_Form->AddEditElement(
     "Insert the callback time",
     "",
     "NO-NULL",
-    "res_display_dateformat"
+    
 );
 
 

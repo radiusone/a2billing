@@ -125,8 +125,8 @@ $HD_Form->AddViewElement("<acronym title=\"Dialing Prefix\">" . _("Prefix") . "<
 $HD_Form->AddViewElement("<acronym title=\"Buy Rate\">" . _("Buy") . "</acronym>", "buyrate");
 $HD_Form->AddViewElement("<acronym title=\"Sell Rate\">" . _("Sell") . "</acronym>", "rateinitial");
 if (!$popup_select) {
-    $HD_Form->AddViewElement(_("Start"), "startdate", true, 19, "display_dateformat");
-    $HD_Form->AddViewElement(_("Stop"), "stopdate", true, 19, "display_dateformat");
+    $HD_Form->AddViewElement(_("Start"), "startdate", true, 19);
+    $HD_Form->AddViewElement(_("Stop"), "stopdate", true, 19);
     $HD_Form->AddViewElement("<acronym title=\"Initial Billing Block\">" . _("Init.") . "</acronym>", "initblock");
     $HD_Form->AddViewElement("<acronym title=\"Connect Charge\">" . _("Conn.") . "</acronym>", "connectcharge");
     $HD_Form->AddViewElement(_("Trunk"), "id_trunk", true, 15, "", "lie", "cc_trunk", "trunkcode", "id_trunk='%id'", "%1");
@@ -494,7 +494,7 @@ $HD_Form->AddEditElement(
     _("Insert the starting date"),
     _("Define the period when this rate table is active."),
     "",
-    "res_display_dateformat"
+    
 );
 
 
@@ -507,7 +507,7 @@ $HD_Form->AddEditElement(
     _("Insert the stop date"),
     "",
     "NO-NULL",
-    "res_display_dateformat"
+    
 );
 
 $comp_time = $comp_time_plus = "";

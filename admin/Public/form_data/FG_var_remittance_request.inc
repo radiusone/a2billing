@@ -69,7 +69,7 @@ $type_list = getRemittanceType_List();
 $type_revert_list = array_map("array_reverse", $type_list);
 $HD_Form -> AddViewElement(gettext("ID"), "cc_agent_commission.id");
 $HD_Form -> AddViewElement(gettext("AGENT"), "id_agent", true, 30, "display_linktoagent");
-$HD_Form -> AddViewElement(gettext("DATE"), "date", true, 30, "display_dateformat");
+$HD_Form -> AddViewElement(gettext("DATE"), "date", true, 30);
 $HD_Form -> AddViewElement(gettext("AMOUNT"), "amount", true, 0, "display_money");
 $HD_Form -> AddViewElement(gettext("TYPE"), "type", true, 0, "", "list", $type_list);
 $HD_Form -> AddViewElement(gettext("STATUS"), "status", true, 0, "", "list", $status_list);

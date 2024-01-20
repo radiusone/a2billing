@@ -68,7 +68,7 @@ $list_refill_type = getRefillType_List();
 
 $HD_Form -> AddViewElement(gettext("ID"), "cc_logrefill.id");
 $HD_Form -> AddViewElement(gettext("ACCOUNT"), "username", true, 30, "display_customer_link");
-$HD_Form -> AddViewElement(gettext("REFILL DATE"), "cc_logrefill.date", true, 30, "display_dateformat");
+$HD_Form -> AddViewElement(gettext("REFILL DATE"), "cc_logrefill.date", true, 30);
 $HD_Form -> AddViewElement(gettext("REFILL AMOUNT"), "cc_logrefill.credit", true, 0, "display_money");
 $HD_Form -> AddViewElement(gettext("REFILL TYPE"), "refill_type", true, 0, "", "list", $list_refill_type);
 

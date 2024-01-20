@@ -54,7 +54,7 @@ $HD_Form -> AddViewElement(gettext("GROUP"), "id_group", true, 15, "", "lie", "c
 $HD_Form -> AddViewElement(gettext("SERVER HOSTNAME"), "server_ip");
 $HD_Form -> AddViewElement(gettext("MANAGER HOST"), "manager_host");
 $HD_Form -> AddViewElement(gettext("MANAGER USERNAME"), "manager_username");
-$HD_Form -> AddViewElement(gettext("LASTTIME USED"), "lasttime_used", true, 19, "display_dateformat");
+$HD_Form -> AddViewElement(gettext("LASTTIME USED"), "lasttime_used", true, 19);
 
 
 $HD_Form -> FieldViewElement ('id_group, id_group, server_ip, manager_host, manager_username, lasttime_used');

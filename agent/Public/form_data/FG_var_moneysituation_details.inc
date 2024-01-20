@@ -56,7 +56,7 @@ if ($type == 'payment') {
 	$HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
 	//SELECT t3.date, t3.credit, t3.reseller_id from cc_logrefill as t3 WHERE t3.card_id='1'
 	//SELECT t2.date, t2.payment, t2.reseller_id from cc_logpayment as t2 WHERE t2.card_id='1'
-	$HD_Form->AddViewElement(gettext("DATE"), "date", true, 30, "display_dateformat");
+	$HD_Form->AddViewElement(gettext("DATE"), "date", true, 30);
 	$HD_Form->AddViewElement(gettext("AMOUNT"), "payment");
 
 	$HD_Form->FieldViewElement('t2.date, t2.payment');
@@ -72,7 +72,7 @@ if ($type == 'payment') {
     $HD_Form->list_query_conditions["cc_card_group.id_agent"] = $_SESSION["agent_id"];
 	//SELECT t3.date, t3.credit, t3.reseller_id from cc_logrefill as t3 WHERE t3.card_id='1'
 	//SELECT t2.date, t2.payment, t2.reseller_id from cc_logpayment as t2 WHERE t2.card_id='1'
-	$HD_Form->AddViewElement(gettext("DATE"), "date", true, 30, "display_dateformat");
+	$HD_Form->AddViewElement(gettext("DATE"), "date", true, 30);
 	$HD_Form->AddViewElement(gettext("AMOUNT INCL VAT"), "total_price", true, 30, "display_2bill");
 	$HD_Form->FieldViewElement("cc_invoice.date, total_price");
 }

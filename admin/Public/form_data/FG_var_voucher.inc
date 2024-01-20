@@ -182,7 +182,7 @@ $HD_Form->AddEditElement(
     gettext("Insert the expiration date"),
     "",
     "",
-    "res_display_dateformat"
+    
 );
 
 // Set the filter variables

@@ -110,7 +110,7 @@ $HD_Form->FG_QUERY_COLUMN_LIST = 'cc_call.starttime, cc_call.src, cc_call.dnid, 
 
 $DBHandle = DbConnect();
 
-$HD_Form->AddViewElement(_("Date"), "cc_call.starttime", true, 19, "display_dateformat");
+$HD_Form->AddViewElement(_("Date"), "cc_call.starttime", true, 19);
 $HD_Form->AddViewElement(_("Caller ID"), "src", true, 0, "display_phone_number");
 $HD_Form->AddViewElement(_("DNID"), "dnid", true, 0, "display_phone_number");
 $HD_Form->AddViewElement(_("Phone Number"), "calledstation", true, 0, "display_phone_number");

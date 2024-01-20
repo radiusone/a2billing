@@ -50,7 +50,7 @@ $FG_TABLE_ALTERNATE_ROW_COLOR[] = "#FCFBFB";
 
 $FG_TABLE_COL=array();
 
-$FG_TABLE_COL[]=array (gettext("DATE"), "date", "30%", "center", "sort", "30", "", "", "", "", "", "display_dateformat");
+$FG_TABLE_COL[]=array (gettext("DATE"), "date", "30%", "center", "sort", "30", "", "", "", "", "");
 $FG_TABLE_COL[]=array (gettext("ACCOUNT DEDUCTED"), "totalcardperform", "20%", "center", "sort");
 $FG_TABLE_COL[]=array (gettext("TOTAL CREDIT"), "totalcredit", "20%", "center", "sort");
 

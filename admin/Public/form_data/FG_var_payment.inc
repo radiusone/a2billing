@@ -71,7 +71,7 @@ if (has_rights (Admin::ACX_MODIFY_PAYMENTS)) {
 $list_refill_type = getRefillType_List();
 $HD_Form->AddViewElement(_("ID"), "cc_logpayment.id");
 $HD_Form->AddViewElement(_("ACCOUNT"), "username", true, 30, "display_customer_id_link");
-$HD_Form->AddViewElement(_("PAYMENT DATE"), "date", true, 30, "display_dateformat");
+$HD_Form->AddViewElement(_("PAYMENT DATE"), "date", true, 30);
 $HD_Form->AddViewElement(_("PAYMENT AMOUNT"), "payment", true, 0, "display_money");
 $HD_Form->AddViewElement(_("PAYMENT TYPE"), "payment_type", true, 0, "", "list", $list_refill_type);
 $HD_Form->AddViewElement(_("REFILL"), "id_logrefill", true, 0, "", "lie_link", "cc_logrefill", "TRUNCATE(credit,2), id", "id='%id'", "%1 " . BASE_CURRENCY . " (id:%2)", "A2B_refill_info.php");
