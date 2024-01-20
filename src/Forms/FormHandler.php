@@ -511,7 +511,7 @@ class FormHandler
     private function genCsrfTokenKey(): string
     {
         $token1 = microtime();
-        $token2 = uniqid(null, true);
+        $token2 = uniqid("", true);
         $token3 = session_id();
         $token4 = mt_rand();
 
@@ -1194,7 +1194,7 @@ class FormHandler
      *
      * @public
      */
-    public function perform_action(&$form_action)
+    public function perform_action(string &$form_action): array
     {
         //security check
         $self = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL);
@@ -1316,7 +1316,7 @@ class FormHandler
                     $this->FG_LIST_VIEW_PAGE_SIZE,
                     $this->CV_CURRENT_PAGE * $this->FG_LIST_VIEW_PAGE_SIZE,
                     $this->FG_QUERY_GROUPBY_COLUMNS
-                );
+                ) ?: [];
                 if ($this->FG_DEBUG === 3) {
                     echo "<br>Clause : " . $this->FG_QUERY_WHERE_CLAUSE;
                 }
@@ -1349,7 +1349,7 @@ class FormHandler
                 $fields = implode(",", $cols);
 
                 $instance_table = new Table($this->FG_QUERY_TABLE_NAME, $fields);
-                $list = $instance_table->get_list($this->DBHandle, $this->FG_EDIT_QUERY_CONDITION, "", "ASC", 1);
+                $list = $instance_table->get_list($this->DBHandle, $this->FG_EDIT_QUERY_CONDITION, "", "ASC", 1) ?: [];
 
                 //PATCH TO CLEAN THE IMPORT OF PASSWORD FROM THE DATABASE
                 $index = array_search("pwd_encoded", $cols);
@@ -1938,10 +1938,10 @@ class FormHandler
         foreach ($this->search_form_elements as &$el) {
             // can't post a dot, so temporarily replace it
             if (is_array($el["input"])) {
-                $el["input"][0] = str_replace(".", "^^", $el["input"][0]);
-                $el["input"][1] = str_replace(".", "^^", $el["input"][1]);
+                $el["input"][0] = str_replace(".", "^^", $el["input"][0] ?? "");
+                $el["input"][1] = str_replace(".", "^^", $el["input"][1] ?? "");
             } else {
-                $el["input"] = str_replace(".", "^^", $el["input"]);
+                $el["input"] = str_replace(".", "^^", $el["input"] ?? "");
             }
             if ($el["type"] !== "SQL_SELECT") {
                 continue;
@@ -1976,7 +1976,7 @@ class FormHandler
      *
      * @todo make this return a string, not echo
      */
-    public function create_form($form_action, $list)
+    public function create_form(string $form_action, array $list)
     {
         Console::logSpeed('Time taken to get to line ' . __LINE__);
         $processed = $this->getProcessed();
