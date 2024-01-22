@@ -208,7 +208,7 @@ class Table
         }
         $order = explode(",", $orderby);
         if (is_array($order)) {
-            array_filter($order);
+            $order = array_filter($order);
             array_walk($order, fn ($v) => (str_contains($v, "(") ? $v : $this->quote_identifier($v)) . " $sens");
             if (count($order)) {
                 $orderby = implode(",", $order);
@@ -222,7 +222,7 @@ class Table
         }
 
         $sql_group = "";
-        array_filter($groupby);
+        $groupby = array_filter($groupby);
         if (count($groupby)) {
             foreach($groupby as &$col) {
                 if (str_contains($col, "(")) {
