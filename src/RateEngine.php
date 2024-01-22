@@ -142,10 +142,9 @@ class RateEngine
         // POSIX equivalents, and test each of them against the dialed number
         $prefixclause .= " OR (dialprefix LIKE '&_%' ESCAPE '&' AND ? ";
         $prefixclause .= "REGEXP REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(CONCAT('^', dialprefix, '$'), ";
-        $prefixclause .= "'X', '[0-9]'), 'Z', '[1-9]'), 'N', '[2-9]'), '.', '.+'), '_', '')";
+        $prefixclause .= "'X', '[0-9]'), 'Z', '[1-9]'), 'N', '[2-9]'), '.', '.+'), '_', ''))";
         $prefix_params[] = $phonenumber;
 
-        // select group by 5 ... more easy to count
         $QUERY = <<<SQL
             SELECT tariffgroupname, lcrtype, idtariffgroup, cc_tariffgroup_plan.idtariffplan, tariffname, destination, 
                 cc_ratecard.id AS ratecard_id, dialprefix, destination, buyrate, buyrateinitblock, buyrateincrement, rateinitial,
@@ -176,7 +175,7 @@ class RateEngine
             AND (expirationdate > CURRENT_TIMESTAMP OR expirationdate IS NULL)
             AND startdate <= CURRENT_TIMESTAMP
             AND (stopdate > CURRENT_TIMESTAMP OR stopdate IS NULL)
-            AND (starttime <= AND endtime >= ?)
+            AND (starttime <= ? AND endtime >= ?)
             AND idtariffgroup = ?
             AND (
                 dnidprefix = SUBSTRING(?, 1, LENGTH(dnidprefix))
@@ -206,8 +205,8 @@ class RateEngine
                 $mydnid,
                 $tariffgroupid,
                 $mycallerid,
-                $tariffgroupid,
                 $mycallerid,
+                $tariffgroupid,
             ]
         );
         $result = $this->a2b->DBHandle->GetAll($QUERY, $params);
