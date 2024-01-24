@@ -1212,7 +1212,7 @@ class RateEngine
             INSERT INTO cc_call (
                 uniqueid, sessionid, card_id, nasipaddress, starttime, sessiontime, real_sessiontime, calledstation, 
                 terminatecauseid, stoptime, sessionbill, id_tariffgroup, id_tariffplan, id_ratecard, id_trunk, src, 
-                sipiax, buycost, id_card_package_offer, dnid, destination $this->a2b->CDR_CUSTOM_SQL
+                sipiax, buycost, id_card_package_offer, dnid, destination {$this->a2b->CDR_CUSTOM_SQL}
             )
             VALUES (
                 ?, ?, ?, ?, $starttime, ?, ?, ?, ?, $stoptime, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? $this->a2b->CDR_CUSTOM_VAL
