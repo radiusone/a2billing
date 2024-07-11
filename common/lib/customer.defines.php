@@ -45,12 +45,13 @@ require_once __DIR__ . "/common.defines.php";
 define ("RETURN_URL_DISTANT_LOGIN", $A2B->config["webcustomerui"]['return_url_distant_login'] ?? null);
 define ("RETURN_URL_DISTANT_FORGETPASSWORD", $A2B->config["webcustomerui"]['return_url_distant_forgetpassword'] ?? null);
 
-require_once __DIR__ . "/customer.module.access.php";
-
-if (!has_rights(Customer::ACX_ACCESS)) {
-    header("HTTP/1.0 401 Unauthorized");
-    header("Location: PP_error.php?c=accessdenied");
-    die();
+if (PHP_SAPI !== "cli") {
+    require_once __DIR__ . "/customer.module.access.php";
+    if (!has_rights(Customer::ACX_ACCESS)) {
+        header("HTTP/1.0 401 Unauthorized");
+        header("Location: PP_error.php?c=accessdenied");
+        die();
+    }
 }
 
 //Enable Disable Captcha

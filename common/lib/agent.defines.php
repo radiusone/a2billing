@@ -41,12 +41,14 @@ session_start();
 const BINDTEXTDOMAIN = __DIR__ . '/../common/agent_ui_locale';
 
 require_once __DIR__ . "/common.defines.php";
-require_once __DIR__ . "/agent.module.access.php";
 
-if (!has_rights(Agent::ACX_ACCESS)) {
-    header("HTTP/1.0 401 Unauthorized");
-    header("Location: PP_error.php?c=accessdenied");
-    die();
+if (PHP_SAPI !== "cli") {
+    require_once __DIR__ . "/agent.module.access.php";
+    if (!has_rights(Agent::ACX_ACCESS)) {
+        header("HTTP/1.0 401 Unauthorized");
+        header("Location: PP_error.php?c=accessdenied");
+        die();
+    }
 }
 
 //Enable Disable Captcha

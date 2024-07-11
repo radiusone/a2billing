@@ -193,7 +193,7 @@ class A2Billing
     private RateEngine $rateEngine;
 
 
-    public function __construct(int $idconfig = 1, array $optconfig = [], ?Agi $agi = null)
+    public function __construct(?int $idconfig = 1, array $optconfig = [], ?Agi $agi = null)
     {
         if (function_exists('pcntl_signal')) {
             pcntl_signal(SIGHUP, [$this, "Hangupsignal"]);
@@ -201,7 +201,7 @@ class A2Billing
         $this->agi = $agi;
         $this->rateEngine = new RateEngine($this);
         // populate the configuration object
-        $this->idconfig = $idconfig;
+        $this->idconfig = $idconfig ?? 1;
         $this->load_conf($optconfig);
         // populate the $DBHandle property
         $this->DbConnect();

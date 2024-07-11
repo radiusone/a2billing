@@ -41,9 +41,11 @@ session_start();
 const BINDTEXTDOMAIN = __DIR__ . "/../admin_ui_locale";
 
 require_once __DIR__ . "/common.defines.php";
-require_once __DIR__ . "/admin.module.access.php";
 
-Admin::checkPageAccess();
+if (PHP_SAPI !== "cli") {
+    require_once __DIR__ . "/admin.module.access.php";
+    Admin::checkPageAccess();
+}
 
 // Parameter to show link to Asterisk GUI
 const ASTERISK_GUI_LINK = false;
