@@ -147,6 +147,7 @@ $HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
 $HD_Form->FG_EXPORT_CSV = true;
 $HD_Form->FG_EXPORT_XML = true;
 $HD_Form->FG_EXPORT_SESSION_VAR = "pr_export_entity_call";
+// todo: get rid of FG_QUERY_WHERE_CLAUSE usage
 $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] = "SELECT $HD_Form->FG_QUERY_COLUMN_LIST FROM $HD_Form->FG_QUERY_TABLE_NAME WHERE $HD_Form->FG_QUERY_WHERE_CLAUSE";
 
 /************************/

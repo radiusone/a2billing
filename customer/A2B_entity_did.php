@@ -242,10 +242,6 @@ if (!isset ($action_release) || $action_release == "confirm_release" || $action_
     $HD_Form->create_toppage($form_action);
 
     $instance_table = new Table($HD_Form->FG_QUERY_TABLE_NAME, $HD_Form->FG_QUERY_COLUMN_LIST);
-    $instance_table_phonenumberdid = new Table($HD_Form->FG_QUERY_TABLE_NAME, $HD_Form->FG_QUERY_COLUMN_LIST);
-    $list_phonenumberdid = $instance_table_phonenumberdid->get_list($HD_Form->DBHandle, $HD_Form->FG_QUERY_WHERE_CLAUSE, $order ?? "", $sens ?? "", (int)$limite ?? 0, (int)$current_record ?? 0);
-    $nb_record = count($list_phonenumberdid);
-
     $nb_record = $instance_table->Table_count($HD_Form->DBHandle, $HD_Form->FG_QUERY_WHERE_CLAUSE);
 
     if ($nb_record <= $FG_LIMITE_DISPLAY) {

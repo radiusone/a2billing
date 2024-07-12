@@ -141,6 +141,7 @@ $HD_Form -> AddSearchComparisonInput(gettext("BUYRATE"),'buyrate1','buyrate1type
 $HD_Form -> AddSearchComparisonInput(gettext("RATE INITIAL"),'rateinitial1','rateinitial1type','rateinitial2','rateinitial2type','rateinitial');
 $HD_Form -> prepare_list_subselection('list');
 $HD_Form -> AddSearchSqlSelectInput('SELECT TRUNK', "cc_trunk", "id_trunk, trunkcode, providerip", "", "trunkcode", "ASC", "id_trunk");
+// todo: get rid of FG_QUERY_WHERE_CLAUSE usage
 $_SESSION['search_ratecard'] = $HD_Form -> FG_QUERY_WHERE_CLAUSE;
 
 /*************************************************************/
