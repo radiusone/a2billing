@@ -217,10 +217,8 @@ if (!isset ($action_release) || $action_release == "confirm_release" || $action_
 
     if ($id != "" || !is_null($id)) {
         if (isset ($form_action) && ($form_action == 'ask-edit' || $form_action == 'edit')) {
-            $HD_Form->FG_EDIT_QUERY_CONDITION = " id = " . $id;
             $HD_Form->update_query_conditions = ["id" => $id];
         } else {
-            $HD_Form->FG_EDIT_QUERY_CONDITION = $HD_Form->FG_QUERY_WHERE_CLAUSE . " AND cc_did_destination.id = " . $id;
             $HD_Form->update_query_conditions["cc_did_destination.id"] = $id;
         }
     }
@@ -228,7 +226,6 @@ if (!isset ($action_release) || $action_release == "confirm_release" || $action_
     // TODO integrate in Framework
     if ($form_action == "delete") {
         $HD_Form->FG_QUERY_TABLE_NAME = "cc_did_destination";
-        $HD_Form->FG_EDIT_QUERY_CONDITION = "id_cc_card='" . $_SESSION["card_id"] . "' AND id = " . $id;
         $HD_Form->update_query_conditions = ["id_cc_card" => $_SESSION["card_id"], "id" => $id];
     }
     $list = $HD_Form->perform_action($form_action);

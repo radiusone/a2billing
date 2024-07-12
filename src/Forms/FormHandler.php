@@ -303,11 +303,8 @@ class FormHandler
     /** @var array A list of field names considered "splittable" during create or edit (values like e.g. 12-14 or 15;16;17) */
     public array $FG_SPLITABLE_FIELDS = [];
 
-    /** @var array columns/values to be used as a condition in update/delete queries */
+    /** @var array columns/values to be used as a condition in update/delete queries as well as fetching for edits */
     public array $update_query_conditions = ["id" => "%id"];
-
-    /** @var string A condition that will be applied to the edit query; %id is replaced within the page code */
-    public string $FG_EDIT_QUERY_CONDITION = " id='%id' ";
 
     /**
      * @var array list of key/value pairs that will be added to the edit form as hidden inputs
@@ -1225,9 +1222,9 @@ class FormHandler
 
         $processed = $this->getProcessed();
         if (!empty($processed["id"])) {
-            array_walk(
-                $this->update_query_conditions,
-                fn ($v) => str_replace("%id", $processed["id"], $v)
+            $this->update_query_conditions = array_map(
+                fn ($v) => str_replace("%id", $processed["id"], $v),
+                $this->update_query_conditions
             );
         }
 
@@ -1351,13 +1348,12 @@ class FormHandler
                 }
 
             } else {
-                // TODO: when is this code called? it's the only use left of $FG_EDIT_QUERY_CONDITION
                 $selected_elements = array_filter($this->FG_EDIT_FORM_ELEMENTS, fn ($v) => empty($v["custom_query"]));
                 $cols = array_column($selected_elements, "name");
                 $fields = implode(",", $cols);
 
                 $instance_table = new Table($this->FG_QUERY_TABLE_NAME, $fields);
-                $list = $instance_table->get_list($this->DBHandle, $this->FG_EDIT_QUERY_CONDITION, "", "ASC", 1) ?: [];
+                $list = $instance_table->getRows($this->DBHandle, $this->update_query_conditions, "", "", 1);
 
                 //PATCH TO CLEAN THE IMPORT OF PASSWORD FROM THE DATABASE
                 $index = array_search("pwd_encoded", $cols);

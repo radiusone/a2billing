@@ -53,7 +53,6 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/add.png" ;
 
 $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = " id_trunk";
-$HD_Form -> FG_EDIT_QUERY_CONDITION = " id_trunk='%id' ";
 $HD_Form->update_query_conditions = ["id_trunk" => "%id"];
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "ASC";
 

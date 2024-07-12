@@ -51,7 +51,6 @@ $HD_Form = new FormHandler("cc_config LEFT JOIN cc_config_group ON cc_config.con
 $HD_Form->no_debug();
 $HD_Form->FG_TABLE_DEFAULT_ORDER = "group_title";
 $HD_Form->FG_QUERY_PRIMARY_KEY = "cc_config.id";
-$HD_Form->FG_EDIT_QUERY_CONDITION = "cc_config.id = %id";
 $HD_Form->update_query_conditions = ["cc_config.id" => "%id"];
 
 $value_select = "";

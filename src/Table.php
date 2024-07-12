@@ -192,6 +192,54 @@ class Table
         return true;
     }
 
+
+    /**
+     * Fetch one or more rows with a proper parameterized statement
+     *
+     * @param ADOConnection $db
+     * @param array $conditions values to match placeholders in $where
+     * @param string $order the column(s) to order by (use commas for multiple)
+     * @param string $direction either "asc" or "desc"
+     * @param int $limit query limit
+     * @return array
+     */
+    public function getRows(ADOConnection $db, array $conditions = [], string $order = "", string $direction = "ASC", int $limit = 0): array
+    {
+        $table = $this->quote_identifier($this->table);
+        $where = $this->processWhereClauseArray($conditions, $params);
+        $direction = strtoupper($direction) === "ASC" ? "ASC" : "DESC";
+        $orderings = array_filter(explode(",", $order) ?: []);
+        if (!empty($orderings)) {
+            // escape column names, but watch for use of subqueries and don't escape them
+            array_walk(
+                $orderings,
+                fn ($v) => (str_contains($v, "(") ? $v : $this->quote_identifier($v)) . " $direction"
+            );
+            $order_sql = "ORDER BY " . implode(",", $orderings);
+        } else {
+            $order_sql = "";
+        }
+        $limit_sql = $limit ? "LIMIT $limit" : "";
+
+        $query = "SELECT $this->fields FROM $table WHERE $where $order_sql $limit_sql";
+
+        return $db->GetArray($query, $params) ?: [];
+    }
+
+    /**
+     * Get a single row
+     *
+     * @param ADOConnection $db
+     * @param array $conditions
+     * @return array
+     */
+    public function getRow(ADOConnection $db, array $conditions = []): array
+    {
+        $data = $this->getRows($db, $conditions, "", "", 1);
+
+        return $data[0] ?? [];
+    }
+
     public function get_list(ADOConnection $DBHandle, string $where = "", string $orderby = "", string $sens = "ASC", int $limite = 0, int $current_record = 0, array $groupby = [])
     {
         $sql = "SELECT $this->fields FROM $this->table";
@@ -491,10 +539,10 @@ class Table
      * Takes an array of data and process it to create an SQL query condition
      *
      * @param array $where the array of data
-     * @param array $params parameters for use with the database execution
+     * @param array|null $params parameters for use with the database execution
      * @return string the query clause with placeholders
      */
-    public function processWhereClauseArray(array $where, array &$params): string
+    public function processWhereClauseArray(array $where, ?array &$params): string
     {
         $params = [];
         $query_clauses = [];

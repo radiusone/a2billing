@@ -47,7 +47,6 @@ $HD_Form = new FormHandler("cc_agent", $FG_INSTANCE_NAME);
 
 $HD_Form->no_debug();
 
-$HD_Form -> FG_EDIT_QUERY_CONDITION = " id = ".$_SESSION["agent_id"];
 $HD_Form->update_query_conditions = ["id" => $_SESSION["agent_id"]];
 
 $language_list = getLanguagesList();

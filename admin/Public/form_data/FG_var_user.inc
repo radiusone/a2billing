@@ -280,7 +280,6 @@ if ($groupID) {
 
 $FG_QUERY_EDITION .= 'name, direction,city, zipcode, state,country, phone, fax,email';
 
-$HD_Form->FG_EDIT_QUERY_CONDITION = " userid='%id'";
 $HD_Form->update_query_conditions = ["userid" => "%id"];
 
 $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["groupID"] = $groupID;
