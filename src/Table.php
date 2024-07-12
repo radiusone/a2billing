@@ -54,6 +54,7 @@ class Table
 {
     public ?string $fields = null;
     public ?string $table = null;
+    public array $joins = [];
     public string $errstr = '';
     public bool $debug_st = false;
     public int $debug_st_stop = 0;
@@ -77,12 +78,16 @@ class Table
     /**
      * @param string|null $table the table we're working with
      * @param string $list_fields when selecting, what fields will be selected
+     * @param array $joins tables to join to the query; for example:
+     *                      ["t2" => ["t1.col", "t2.col"]] gives "LEFT JOIN t2 ON (t1.col = t2.col)"
+     *                      ["t2" => ["t1.col", "<", "t2.col", "INNER"]] gives "INNER JOIN t2 ON (t1.col < t2.col)"
      */
-    public function __construct(string $table = null, string $list_fields = "*")
+    public function __construct(string $table = null, string $list_fields = "*", array $joins = [])
     {
         $this->writelog = defined('WRITELOG_QUERY') && WRITELOG_QUERY;
         $this->table = $table;
         $this->fields = $list_fields;
+        $this->joins = $joins;
         if (defined("DB_TYPE") && DB_TYPE === 'postgres') {
             $this->db_type = "postgres";
         }
@@ -113,16 +118,22 @@ class Table
     public function quote_identifier(string $identifier): string
     {
         $q = $this->db_type === "mysql" ? "`" : "\"";
-        $identifier = str_replace($q, "", trim($identifier));
+        $identifier = trim($identifier);
+        $distinct = "";
+        if (str_starts_with($identifier, "DISTINCT ")) {
+            $identifier = trim(substr($identifier, 8));
+            $distinct = "DISTINCT ";
+        }
         if (str_starts_with($identifier, $q) && str_ends_with($identifier, $q)) {
             // there is plenty of room for abuse here, but assume already quoted values are ok
-            return $identifier;
+            return "$distinct$identifier";
         }
+        $identifier = str_replace($q, "", $identifier);
         if (str_contains($identifier, ".")) {
             $identifier = implode("$q.$q", explode(".", $identifier));
         }
 
-        return $q . $identifier . $q;
+        return "$distinct$q$identifier$q";
     }
 
     /*
@@ -214,6 +225,7 @@ class Table
     public function getRows(ADOConnection $db, array $conditions = [], string $order = "", string $direction = "ASC", int $limit = 0): array
     {
         $table = str_contains($this->table, " JOIN ") ? $this->table : $this->quote_identifier($this->table);
+        $table .= " " . $this->processJoinedTables();
         $where = $this->processWhereClauseArray($conditions, $params);
         $direction = strtoupper($direction) === "ASC" ? "ASC" : "DESC";
         $orderings = array_filter(explode(",", $order) ?: []);
@@ -610,5 +622,24 @@ class Table
         }
 
         return " $col $operator $placeholder ";
+    }
+
+    private function processJoinedTables(): string
+    {
+        $joins = [];
+        foreach ($this->joins as $table => $conditions) {
+            if (count($conditions) < 2 || count($conditions) > 4) {
+                continue;
+            }
+            $type = count($conditions) === 4 ? $conditions[3] : "LEFT";
+            $table = $this->quote_identifier($table);
+            $col1 = $this->quote_identifier($conditions[0]);
+            $operator = count($conditions) > 2 ? $conditions[1] : "=";
+            $col2 = count($conditions) > 2 ? $conditions[2] : $conditions[1];
+            $col2 = $this->quote_identifier($col2);
+            $joins[] = "$type JOIN $table ON ($col1 $operator $col2)";
+        }
+
+        return implode(" ", $joins);
     }
 }

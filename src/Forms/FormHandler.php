@@ -74,6 +74,10 @@ class FormHandler
     public string $FG_QUERY_TABLE_NAME = "";
     /** The primary key column of the table */
     public string $FG_QUERY_PRIMARY_KEY = 'id';
+
+    /** @var array[] Tables to join to the query; ["t2" => ["t1.col", "=", "t2.col"]] gives "LEFT JOIN t2 ON (t1.col = t2.col)" */
+    public array $query_table_joins;
+
     /** @var string Comma separated list of columns from the SQL query to display in the list */
     public string $FG_QUERY_COLUMN_LIST = ""; // TODO: change this to an array
     /** @var string|null A condition to add to the list query */
