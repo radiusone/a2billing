@@ -205,7 +205,7 @@ class Table
      */
     public function getRows(ADOConnection $db, array $conditions = [], string $order = "", string $direction = "ASC", int $limit = 0): array
     {
-        $table = $this->quote_identifier($this->table);
+        $table = str_contains($this->table, " JOIN ") ? $this->table : $this->quote_identifier($this->table);
         $where = $this->processWhereClauseArray($conditions, $params);
         $direction = strtoupper($direction) === "ASC" ? "ASC" : "DESC";
         $orderings = array_filter(explode(",", $order) ?: []);
@@ -348,7 +348,7 @@ class Table
         array_walk($fields, fn ($v) => $this->quote_identifier($v));
         $this->fields = implode(",", $fields);
 
-        $table = $this->quote_identifier($this->table);
+        $table = str_contains($this->table, " JOIN ") ? $this->table : $this->quote_identifier($this->table);
         $placeholders = implode(",", array_map(fn ($v) => $this->quote_identifier($v) === $v ? $v : "?", $values));
 
         $query = "INSERT INTO $table ($this->fields) VALUES ($placeholders)";
@@ -424,7 +424,7 @@ class Table
         array_walk($fields, fn ($v) => $this->quote_identifier($v));
         $this->fields = implode(",", $fields);
 
-        $table = $this->quote_identifier($this->table);
+        $table = str_contains($this->table, " JOIN ") ? $this->table : $this->quote_identifier($this->table);
         $placeholders = implode(",", array_map(fn ($v) => $this->quote_identifier($v) === $v ? $v : "?", $values));
 
         $where_params = array_filter(
@@ -481,7 +481,7 @@ class Table
             $db->Execute($query, [$foreign_key]);
         }
 
-        $table = $this->quote_identifier($this->table);
+        $table = str_contains($this->table, " JOIN ") ? $this->table : $this->quote_identifier($this->table);
 
         $params = array_filter(
             array_values($conditions),
