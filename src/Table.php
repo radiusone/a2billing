@@ -117,6 +117,11 @@ class Table
 
     public function quote_identifier(string $identifier): string
     {
+        if (str_contains($identifier, "(")) {
+            // something like a function call
+            return $identifier;
+        }
+
         $q = $this->db_type === "mysql" ? "`" : "\"";
         $identifier = trim($identifier);
         $distinct = "";
