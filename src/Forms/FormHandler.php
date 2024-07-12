@@ -832,6 +832,7 @@ class FormHandler
             "name" => $fieldname,
             "default" => $default_value,
             "type" => "RADIOBUTTON",
+            "attributes" => $html_attributes,
             "regex" => null,
             "error" => $error_message,
             "radio_options" => $options,
@@ -1756,10 +1757,9 @@ class FormHandler
         $tableCount = count($this->FG_FK_TABLENAMES);
         $clauseCount = count($this->FG_FK_EDITION_CLAUSE);
 
+        $instance_table = new Table($this->FG_QUERY_TABLE_NAME);
         if ($tableCount === $clauseCount && $clauseCount > 0 && $this->FG_FK_DELETE_ALLOWED && !empty($processed['id'])) {
-            $instance_table = new Table($this->FG_QUERY_TABLE_NAME, "*", $this->FG_FK_TABLENAMES, $this->FG_FK_EDITION_CLAUSE, $processed["id"], $this->FG_FK_WARNONLY);
-        } else {
-            $instance_table = new Table($this->FG_QUERY_TABLE_NAME);
+            $instance_table->setDeleteFk($this->FG_FK_TABLENAMES, $this->FG_FK_EDITION_CLAUSE, $processed["id"], $this->FG_FK_WARNONLY);
         }
         $instance_table->FK_DELETE = !$this->FG_FK_WARNONLY;
 

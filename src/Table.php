@@ -77,12 +77,8 @@ class Table
     /**
      * @param string|null $table the table we're working with
      * @param string $list_fields when selecting, what fields will be selected
-     * @param array $fk_Tables when deleting, tables that refer back to the current table
-     * @param array $fk_Fields when deleting, fields in the foreign tables that need updating/deleting
-     * @param int|null $id_Value when deleting, the value to check for in foreign tables when updating/deleting
-     * @param bool $fk_delete when deleting, whether to delete or update (with -1) foreign tables
      */
-    public function __construct(string $table = null, string $list_fields = "*", array $fk_Tables = [], array $fk_Fields = [], int $id_Value = null, bool $fk_delete = true)
+    public function __construct(string $table = null, string $list_fields = "*")
     {
         $this->writelog = defined('WRITELOG_QUERY') && WRITELOG_QUERY;
         $this->table = $table;
@@ -91,15 +87,27 @@ class Table
             $this->db_type = "postgres";
         }
 
-        if ((count($fk_Tables) === count($fk_Fields)) && (count($fk_Fields) > 0)) {
+        $this->query_handler = Query_trace::getInstance();
+
+    }
+
+    /**
+     * Configure the table for deleting records using (fake) foreign keys
+     *
+     * @param array $fk_Tables tables that refer back to the current table
+     * @param array $fk_Fields fields in the foreign tables that need updating/deleting
+     * @param int|null $id_Value the value to check for in foreign tables when updating/deleting
+     * @param bool $fk_delete whether to delete or update (with -1) foreign tables
+     * @return void
+     */
+    public function setDeleteFk(array $fk_Tables = [], array $fk_Fields = [], int $id_Value = null, bool $fk_delete = true)
+    {
+        if (count($fk_Tables) === count($fk_Fields)) {
             $this->FK_TABLES         = $fk_Tables;
             $this->FK_EDITION_CLAUSE = $fk_Fields;
             $this->FK_DELETE         = $fk_delete;
             $this->FK_ID_VALUE       = $id_Value;
         }
-
-        $this->query_handler = Query_trace::getInstance();
-
     }
 
     public function quote_identifier(string $identifier): string
