@@ -105,7 +105,7 @@ class Table
     public function quote_identifier(string $identifier): string
     {
         $q = $this->db_type === "mysql" ? "`" : "\"";
-        $identifier = trim($identifier);
+        $identifier = str_replace($q, "", trim($identifier));
         if (str_starts_with($identifier, $q) && str_ends_with($identifier, $q)) {
             // there is plenty of room for abuse here, but assume already quoted values are ok
             return $identifier;
@@ -114,7 +114,7 @@ class Table
             $identifier = implode("$q.$q", explode(".", $identifier));
         }
 
-        return $q . str_replace($q, "", $identifier) . $q;
+        return $q . $identifier . $q;
     }
 
     /*
