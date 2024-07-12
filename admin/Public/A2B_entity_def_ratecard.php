@@ -3,6 +3,7 @@
 use A2billing\A2Billing;
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -157,7 +158,7 @@ if ($bu["batchupdate"] && is_array($bu["check"])) {
     }
 
     $updates = implode(", ", $sql_sets);
-    $where = empty($HD_Form->FG_QUERY_WHERE_CLAUSE) ? "" : "WHERE $HD_Form->FG_QUERY_WHERE_CLAUSE";
+    $where = (new Table())->processWhereClauseArray($HD_Form->list_query_conditions, $sql_params) ?: "1=1";
     $result = $HD_Form->DBHandle->Execute("UPDATE cc_ratecard SET $updates $where", $sql_params);
     if ($result === false) {
         $update_msg = "<div class='alert alert-danger'>" . _("Could not perform the batch update") . "</div>";

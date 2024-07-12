@@ -83,50 +83,58 @@ if ($batchupdate == 1 && is_array($check)) {
 
     $HD_Form->prepare_list_subselection('list');
 
+    $authorized_field = [
+        "upd_inuse",
+        "upd_status",
+        "upd_language",
+        "upd_simultaccess",
+        "upd_currency",
+        "upd_enableexpire",
+        "upd_expirationdate",
+        "upd_expiredays",
+        "upd_runservice"
+    ];
+
     // Array ( [upd_simultaccess] => on [upd_currency] => on )
-    $loop_pass = 0;
-    $SQL_UPDATE = '';
+    $i = 0;
+    $update_sql = "UPDATE $HD_Form->FG_QUERY_TABLE_NAME SET";
+    $update_params = [];
     foreach ($check as $ind_field => $ind_val) {
-        //echo "<br>::> $ind_field -";
-        $myfield = substr($ind_field,4);
-        if ($loop_pass!=0) $SQL_UPDATE.=',';
-
-        $authorized_field = array("upd_inuse", "upd_status", "upd_language", "upd_simultaccess", "upd_currency", "upd_enableexpire",
-                            "upd_expirationdate", "upd_expiredays", "upd_runservice");
-
-        if (in_array($ind_field, $authorized_field)) {
-            // Standard update mode
-            if (!isset($mode["$ind_field"]) || $mode["$ind_field"]==1) {
-                if (!isset($type["$ind_field"])) {
-                    $SQL_UPDATE .= " $myfield='".$$ind_field."'";
-                } else {
-                    $SQL_UPDATE .= " $myfield='".$type["$ind_field"]."'";
-                }
-            // Mode 2 - Equal - Add - Subtract
-            } elseif ($mode["$ind_field"]==2) {
-                if (!isset($type["$ind_field"])) {
-                    $SQL_UPDATE .= " $myfield='".$$ind_field."'";
-                } else {
-                    if ($type["$ind_field"] == 1) {
-                        $SQL_UPDATE .= " $myfield='".$$ind_field."'";
-                    } elseif ($type["$ind_field"] == 2) {
-                        $SQL_UPDATE .= " $myfield = $myfield +'".$$ind_field."'";
-                    } else {
-                        $SQL_UPDATE .= " $myfield = $myfield -'".$$ind_field."'";
-                    }
-                }
-            }
+        if (!in_array($ind_field, $authorized_field)) {
+            continue;
         }
-        $loop_pass++;
+        $myfield = (new Table())->quote_identifier(substr($ind_field,4));
+        if ($i !== 0) {
+            $update_sql .= ',';
+        }
+        $val = $$ind_field;
+
+        // Standard update mode
+        if (($mode[$ind_field] ?? 1) == 1) {
+            $update_sql .= " $myfield = ?";
+            if (!isset($type[$ind_field])) {
+                $update_params[] = $val;
+            } else {
+                $update_params[] = $type[$ind_field];
+            }
+            // Mode 2 - Equal - Add - Subtract
+        } elseif ($mode[$ind_field] == 2) {
+            if (($type[$ind_field] ?? 1) == 1) {
+                $update_sql .= " $myfield = ?";
+            } elseif ($type[$ind_field] == 2) {
+                $update_sql .= " $myfield = $myfield + ?";
+            } elseif ($type[$ind_field] == 3) {
+                $update_sql .= " $myfield = $myfield - ?";
+            }
+            $update_params[] = $val;
+        }
+        $i++;
     }
 
-    $SQL_UPDATE = "UPDATE $HD_Form->FG_QUERY_TABLE_NAME SET $SQL_UPDATE";
-    if (strlen($HD_Form->FG_QUERY_WHERE_CLAUSE)>1) {
-        $SQL_UPDATE .= ' WHERE ';
-        $SQL_UPDATE .= $HD_Form->FG_QUERY_WHERE_CLAUSE;
-    }
+    $where = (new Table())->processWhereClauseArray($HD_Form->list_query_conditions, $update_params) ?: "1=1";
+    $update_sql .= "WHERE $where";
 
-    if (! $res = $HD_Form -> DBHandle -> Execute($SQL_UPDATE)) {
+    if (! $res = $HD_Form -> DBHandle -> Execute($update_sql, $update_params)) {
         $update_msg = '<center><font color="red"><b>'.gettext('Could not perform the batch update!').'</b></font></center>';
     } else {
         $update_msg = '<center><font color="green"><b>'.gettext('The batch update has been successfully perform!').'</b></font></center>';
@@ -605,6 +613,7 @@ $HD_Form -> create_form($form_action, $list) ;
 
 
 // Code for the Export Functionality
+// todo: get rid of FG_QUERY_WHERE_CLAUSE usage
 $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR]= "SELECT ". implode(",", $HD_Form -> FG_EXPORT_FIELD_LIST) ." FROM $HD_Form->FG_QUERY_TABLE_NAME";
 if (strlen($HD_Form->FG_QUERY_WHERE_CLAUSE)>1)
     $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] .= " WHERE $HD_Form->FG_QUERY_WHERE_CLAUSE ";

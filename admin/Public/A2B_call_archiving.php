@@ -123,9 +123,11 @@ $SQLcmd = do_field($SQLcmd, 'src', 'src');
 $SQLcmd = do_field($SQLcmd, 'dst', 'calledstation');
 if (!empty($src)) {
     build_query_safe($param_condition, 'src', 'src', $params);
+    $HD_Form->list_query_conditions["src"] = $src;
 }
 if (!empty($dst)) {
     build_query_safe($param_condition, 'dst', 'calledstation', $params);
+    $HD_Form->list_query_conditions["dst"] = $dst;
 }
 
 $date_clause='';
@@ -133,21 +135,25 @@ if ($enable_search_start_date && !empty($search_start_date)) {
     $date_clause .= " AND starttime >= '$search_start_date'";
     $param_condition .= " AND starttime >= ?";
     $params[] = $search_start_date;
+    $HD_Form->list_query_conditions["starttime"] = [">=", $search_start_date];
 }
 if ($enable_search_end_date && !empty($search_end_date)) {
     $date_clause .= " AND starttime <= '$search_end_date 23:59:59'";
     $param_condition .= " AND starttime <= ?";
     $params[] = "$search_end_date 23:59:59";
+    $HD_Form->list_query_conditions["starttime"] = ["<=", "$search_end_date 23:59:59"];
 }
 if ($enable_search_months) {
     if (DB_TYPE == "postgres") {
         $date_clause .= " AND CURRENT_TIMESTAMP - interval '$search_months months' > starttime";
         $param_condition .= " AND starttime <= CURRENT_TIMESTAMP - INTERVAL ?";
         $params[] = "$search_months months";
+        $HD_Form->list_query_conditions["starttime"] = ["<=", "CURRENT_TIMESTAMP() - INTERVAL $search_months MONTHS"];
     } else {
         $date_clause .= " AND NOW() - INTERVAL $search_months MONTH > starttime";
         $param_condition .= " AND starttime <= NOW() - INTERVAL ? MONTH";
         $params[] = $search_months;
+        $HD_Form->list_query_conditions["starttime"] = ["<=", "NOW() - INTERVAL $search_months MONTH"];
     }
 }
 
@@ -163,32 +169,38 @@ if (empty($HD_Form->FG_QUERY_WHERE_CLAUSE)) {
 if ($param_condition === 'WHERE 1=1') {
     $param_condition .= " AND starttime >= CURRENT_DATE";
 }
+$HD_Form->list_query_conditions["starttime"] ??= [">=", "CURRENT_TIMESTAMP()"];
 
 if (!empty($card_id)) {
     $HD_Form->FG_QUERY_WHERE_CLAUSE.=" AND username='$card_id'";
     $param_condition .= " AND username = ?";
     $params[] = $card_id;
+    $HD_Form->list_query_conditions["username"] = $card_id;
 }
 if ($_SESSION["is_admin"] == 1) {
     if ($id_provider > 0) {
         $HD_Form->FG_QUERY_WHERE_CLAUSE .= " AND cc_trunk.id_provider = '$id_provider'";
         $param_condition .= "cc_trunk.id_provider = ?";
         $params[] = $id_provider;
+        $HD_Form->list_query_conditions["cc_trunk.id_provider"] = $id_provider;
     }
     if ($id_trunk > 0) {
         $HD_Form->FG_QUERY_WHERE_CLAUSE .= " AND id_trunk = '$id_trunk'";
         $param_condition .= " AND id_trunk = ?";
         $params[] = $id_trunk;
+        $HD_Form->list_query_conditions["id_trunk"] = $id_trunk;
     }
     if ($id_tariffgroup > 0) {
         $HD_Form->FG_QUERY_WHERE_CLAUSE .= " AND id_tariffgroup = '$id_tariffgroup'";
         $param_condition .= " AND id_tariffgroup = ?";
         $params[] = $id_tariffgroup;
+        $HD_Form->list_query_conditions["id_tariffgroup"] = $id_tariffgroup;
     }
     if ($id_ratecard > 0) {
         $HD_Form->FG_QUERY_WHERE_CLAUSE .= " AND id_ratecard = '$id_ratecard'";
         $param_condition .= " AND id_ratecard = ?";
         $params[] = $id_ratecard;
+        $HD_Form->list_query_conditions["id_ratecard"] = $id_ratecard;
     }
 
 }
@@ -196,6 +208,7 @@ if ($_SESSION["is_admin"] == 1) {
 if (($calltype ?? "answered") === "answered") {
     $HD_Form->FG_QUERY_WHERE_CLAUSE .= " AND terminatecauseid=1 ";
     $param_condition .= " AND terminatecauseid = 1";
+    $HD_Form->list_query_conditions["terminatecauseid"] = 1;
 }
 
 $archive_message = "";

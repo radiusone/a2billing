@@ -3,6 +3,7 @@
 use A2billing\A2Billing;
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -99,79 +100,77 @@ getpost_ifset(['popup_select', 'popup_formname', 'popup_fieldname', 'upd_inuse',
 
 // CHECK IF REQUEST OF BATCH UPDATE
 if ($batchupdate == 1 && is_array($check)) {
-    $SQL_REFILL="";
     $HD_Form->prepare_list_subselection('list');
 
     if (!empty($upd_expirationdate)) {
         // html datetime input sends as 2022-02-21T13:40
-        $upd_expirationdate = str_replace("T", " ", $upd_expirationdate) . ":00";
+        $upd_expirationdate = str_replace("T", " ", $upd_expirationdate);
     }
     if (isset($check['upd_credit']) && strlen($upd_credit) > 0) {
         //set to refill
-        $SQL_REFILL_CREDIT="";
-        $SQL_REFILL_WHERE="";
-        if ($type["upd_credit"] == 1) {//equal
-            $SQL_REFILL_CREDIT = "($upd_credit - credit) ";
-            $SQL_REFILL_WHERE = " AND $upd_credit <> credit ";//never write 0 refill
-        } elseif ($type["upd_credit"] == 2) {//+-
-            $SQL_REFILL_CREDIT = "($upd_credit) ";
-        } else {
-            $SQL_REFILL_CREDIT = "(-$upd_credit) ";
+        $refill_sql = "INSERT INTO cc_logrefill (credit, card_id, description, refill_type) ";
+        $refill_params = [];
+        switch ($type["upd_credit"]) {
+            case 1: $refill_sql .= "SELECT (? - credit), a.id, ?, ? FROM $HD_Form->FG_QUERY_TABLE_NAME AS a"; break;
+            case 2: $refill_sql .= "SELECT ?, a.id, ?, ? FROM $HD_Form->FG_QUERY_TABLE_NAME AS a"; break;
+            default: $refill_sql .= "SELECT -?, a.id, ?, ? FROM $HD_Form->FG_QUERY_TABLE_NAME AS a"; break;
         }
-        $SQL_REFILL="INSERT INTO cc_logrefill (credit, card_id, description, refill_type) SELECT $SQL_REFILL_CREDIT, a.id, '$upd_description', '$upd_refill_type' FROM $HD_Form->FG_QUERY_TABLE_NAME AS a ";
-        if (strlen($HD_Form->FG_QUERY_WHERE_CLAUSE) > 1) {
-            $SQL_REFILL .= " WHERE $HD_Form->FG_QUERY_WHERE_CLAUSE $SQL_REFILL_WHERE";
-        } elseif ($SQL_REFILL_WHERE && $type["upd_credit"] == 1) {
-            $SQL_REFILL .= " WHERE $upd_credit <> credit ";
+        $refill_params = [$upd_credit, $upd_description, $upd_refill_type];
+        $where = (new Table())->processWhereClauseArray($HD_Form->list_query_conditions, $refill_params) ?: "1=1";
+        $refill_sql .= " WHERE $where";
+        if ($type["upd_credit"] == 1) {
+            $refill_sql .= " AND ? <> credit";
+            $refill_params[] = $upd_credit;
         }
     }
 
     // Array ( [upd_simultaccess] => on [upd_currency] => on )
     $i = 0;
-    $SQL_UPDATE = '';
+    $update_sql = "UPDATE $HD_Form->FG_QUERY_TABLE_NAME SET";
+    $update_params = [];
     foreach ($check as $ind_field => $ind_val) {
-        $myfield = substr($ind_field,4);
-        if ($i != 0) {
-            $SQL_UPDATE.=',';
+        $myfield = (new Table())->quote_identifier(substr($ind_field,4));
+        if ($i !== 0) {
+            $update_sql .= ',';
         }
         $val = $$ind_field;
 
         // Standard update mode
         if (($mode[$ind_field] ?? 1) == 1) {
+            $update_sql .= " $myfield = ?";
             if (!isset($type[$ind_field])) {
-                $SQL_UPDATE .= " $myfield='$val'";
+                $update_params[] = $val;
             } else {
-                $SQL_UPDATE .= " $myfield='$type[$ind_field]'";
+                $update_params[] = $type[$ind_field];
             }
         // Mode 2 - Equal - Add - Subtract
         } elseif ($mode[$ind_field] == 2) {
             if (($type[$ind_field] ?? 1) == 1) {
-                $SQL_UPDATE .= " $myfield='$val'";
+                $update_sql .= " $myfield = ?";
             } elseif ($type[$ind_field] == 2) {
-                $SQL_UPDATE .= " $myfield = $myfield + '$val'";
+                $update_sql .= " $myfield = $myfield + ?";
             } elseif ($type[$ind_field] == 3) {
-                $SQL_UPDATE .= " $myfield = $myfield - '$val'";
+                $update_sql .= " $myfield = $myfield - ?";
             }
+            $update_params[] = $val;
         }
         $i++;
     }
 
-    $SQL_UPDATE = "UPDATE $HD_Form->FG_QUERY_TABLE_NAME SET $SQL_UPDATE";
-    if ($HD_Form->FG_QUERY_WHERE_CLAUSE) {
-        $SQL_UPDATE .= " WHERE $HD_Form->FG_QUERY_WHERE_CLAUSE";
-    }
+    $where = (new Table())->processWhereClauseArray($HD_Form->list_query_conditions, $update_params) ?: "1=1";
+    $update_sql .= "WHERE $where";
     $update_msg_error = _('Could not perform the batch update!');
     $update_msg = "";
 
     if (!$HD_Form->DBHandle->Execute("begin")) {
         $update_msg = $update_msg_error;
     } else {
-        if (isset($check['upd_credit']) && (strlen($upd_credit) > 0) && ($upd_refill_type >= 0)) {
-            if (!$HD_Form->DBHandle->Execute($SQL_REFILL)) {
+        if (isset($refill_sql, $refill_params) && ($upd_refill_type >= 0)) {
+            if (!$HD_Form->DBHandle->Execute($refill_sql, $refill_params)) {
                 $update_msg = _('Could not perform refill log for the batch update!');
             }
         }
-        if (!$HD_Form->DBHandle->Execute($SQL_UPDATE)) {
+        if (!$HD_Form->DBHandle->Execute($update_sql, $update_params)) {
             $update_msg = $update_msg_error;
         }
         if (!$HD_Form->DBHandle->Execute("commit")) { // this looks like an error to me?
@@ -659,6 +658,7 @@ if ($form_action === "ask-edit") {
 $HD_Form->create_form($form_action, $list);
 
 // Code for the Export Functionality
+// todo: get rid of FG_QUERY_WHERE_CLAUSE usage
 $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] = "SELECT " . implode(",", $HD_Form -> FG_EXPORT_FIELD_LIST) . " FROM $HD_Form->FG_QUERY_TABLE_NAME";
 
 if (strlen($HD_Form->FG_QUERY_WHERE_CLAUSE)>1) {
