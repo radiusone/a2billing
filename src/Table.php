@@ -233,7 +233,7 @@ class Table
             // escape column names, but watch for use of subqueries and don't escape them
             array_walk(
                 $orderings,
-                fn ($v) => (str_contains($v, "(") ? $v : $this->quote_identifier($v)) . " $direction"
+                fn (&$v) => $v = (str_contains($v, "(") ? $v : $this->quote_identifier($v)) . " $direction"
             );
             $order_sql = "ORDER BY " . implode(",", $orderings);
         } else {
@@ -277,7 +277,10 @@ class Table
         $order = explode(",", $orderby);
         if (is_array($order)) {
             $order = array_filter($order);
-            array_walk($order, fn ($v) => (str_contains($v, "(") ? $v : $this->quote_identifier($v)) . " $sens");
+            array_walk(
+                $order,
+                fn (&$v) => $v = (str_contains($v, "(") ? $v : $this->quote_identifier($v)) . " $sens"
+            );
             if (count($order)) {
                 $orderby = implode(",", $order);
                 $sql_orderby = " ORDER BY $orderby ";
@@ -365,7 +368,7 @@ class Table
      */
     public function addRow(ADOConnection $db, array $fields, array $values, &$id = null): bool
     {
-        array_walk($fields, fn ($v) => $this->quote_identifier($v));
+        array_walk($fields, fn (&$v) => $v = $this->quote_identifier($v));
         $this->fields = implode(",", $fields);
 
         $table = str_contains($this->table, " JOIN ") ? $this->table : $this->quote_identifier($this->table);
@@ -441,7 +444,7 @@ class Table
      */
     public function updateRow(ADOConnection $db, array $fields, array $values, array $conditions = []): bool
     {
-        array_walk($fields, fn ($v) => $this->quote_identifier($v));
+        array_walk($fields, fn (&$v) => $v = $this->quote_identifier($v));
         $this->fields = implode(",", $fields);
 
         $table = str_contains($this->table, " JOIN ") ? $this->table : $this->quote_identifier($this->table);
