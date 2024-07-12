@@ -445,7 +445,7 @@ class FormHandler
     /** @var string */
     public string $FG_LIST_ADDING_BUTTON_MSG2;
 
-    public function __construct(string $tablename, string $instance_name, string $primary_key = "id", ADOConnection $DBHandle = null)
+    public function __construct(string $tablename, string $instance_name, string $primary_key = "id")
     {
         Console::log('Construct FormHandler');
         Console::logMemory($this, 'FormHandler Class : Line ' . __LINE__);
@@ -453,7 +453,7 @@ class FormHandler
         self::$Instance = $this;
         $this->FG_QUERY_TABLE_NAME = $tablename;
         $this->FG_INSTANCE_NAME = $instance_name;
-        $this->DBHandle = $DBHandle ?? DbConnect();
+        $this->DBHandle = DbConnect();
         $this->FG_QUERY_PRIMARY_KEY = $primary_key;
 
         if (!empty($_POST)) {
