@@ -108,7 +108,7 @@ $HD_Form -> AddSearchSelectInput (gettext("SELECT STATUS"), "activated", $active
 $HD_Form -> AddSearchSelectInput (gettext("SELECT USED"), "used", $used_list_r);
 $HD_Form -> AddSearchSelectInput (gettext("SELECT CURRENCY"), "currency", $currency_list_r);
 
-$HD_Form -> FG_EXPORT_SESSION_VAR = "pr_export_entity_voucher";
+$HD_Form -> export_session_key = "pr_export_entity_voucher";
 $HD_Form -> FG_EXPORT_FIELD_LIST = explode(",", $A2B->config['webui']['voucher_export_field_list']);
 $HD_Form -> FG_EXPORT_CSV = true;
 $HD_Form -> FG_EXPORT_XML = true;

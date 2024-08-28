@@ -483,10 +483,10 @@ $HD_Form -> FieldViewElement($FG_COL_QUERY);
 $HD_Form -> CV_NO_FIELDS  = gettext("NO INFO!");
 
 // Code here for adding the fields in the Export File
-$HD_Form -> FieldExportElement(explode(",", $FG_COL_QUERY));
+$HD_Form -> FG_EXPORT_FIELD_LIST = explode(",", $FG_COL_QUERY);
 if (!($popup_select>=1)) $HD_Form -> FG_EXPORT_CSV = true;
 if (!($popup_select>=1)) $HD_Form -> FG_EXPORT_XML = true;
-$HD_Form -> FG_EXPORT_SESSION_VAR = "pr_export_pnl_report";
+$HD_Form -> export_session_key = "pr_export_pnl_report";
 
 if (!isset($form_action))  $form_action="list"; //ask-add
 if (!isset($action)) $action = $form_action;
@@ -545,15 +545,7 @@ if ($res) {
 ?>
 </div>
 <?php
-// Code for the Export Functionality
-//* Query Preparation.
-// todo: get rid of FG_QUERY_WHERE_CLAUSE usage
-$_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR]= $QUERY;
-if (strlen($HD_Form->FG_QUERY_WHERE_CLAUSE)>1)
-        $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] .= " WHERE $HD_Form->FG_QUERY_WHERE_CLAUSE ";
-if (!empty($HD_Form->FG_QUERY_ORDERBY_COLUMNS) && !empty($HD_Form->FG_QUERY_DIRECTION)) {
-    $ord = implode(",", $HD_Form->FG_QUERY_ORDERBY_COLUMNS);
-    $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] .= " ORDER BY $ord $HD_Form->FG_QUERY_DIRECTION";
-}
+// todo: this may be broken for now; export should match $QUERY which should be in a temp table
+$HD_Form->setup_export(["*"], "pnl_report");
 
 $smarty->display('footer.tpl');

@@ -259,11 +259,11 @@ $HD_Form->FG_ENABLE_ADD_BUTTON = true;
 $form_action = $form_action ?? "list";
 
 if (!$popup_select) {
-    $HD_Form->FG_EXPORT_SESSION_VAR = "pr_export_entity_card";
+    $HD_Form->export_session_key = "pr_export_entity_card";
     $HD_Form->FG_EXPORT_CSV = true;
     $HD_Form->FG_EXPORT_XML = true;
     // Code here for adding the fields in the Export File
-    $HD_Form->FieldExportElement(explode(",", $A2B->config['webui']['card_export_field_list']));
+    $HD_Form->FG_EXPORT_FIELD_LIST = explode(",", $A2B->config['webui']['card_export_field_list']);
     $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 10;
     $HD_Form->search_form_enabled = true;
 
@@ -791,7 +791,8 @@ if (!$popup_select) {
             "autorefill",
             [[gettext("Yes"), "1"], [gettext("No"), "0"]],
             "0",
-            gettext("Define if you want to authorize the autorefill to apply on this accout"), "",
+            gettext("Define if you want to authorize the autorefill to apply on this accout"),
+            "",
             gettext("Choose if you want to enable the autorefill on this account"),
             gettext("AUTOREFILL")
         );

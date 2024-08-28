@@ -221,10 +221,10 @@ $HD_Form -> FieldViewElement ($FG_COL_QUERY.' '.$FG_COL_QUERY_FIELD);
 $HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 10;
 
 // Code here for adding the fields in the Export File
-$HD_Form -> FieldExportElement(explode(",", $A2B->config['webui']['card_export_field_list']));
+$HD_Form -> FG_EXPORT_FIELD_LIST = explode(",", $A2B->config['webui']['card_export_field_list']);
 if (!($popup_select>=1)) $HD_Form -> FG_EXPORT_CSV = false;
 if (!($popup_select>=1)) $HD_Form -> FG_EXPORT_XML = false;
-$HD_Form -> FG_EXPORT_SESSION_VAR = "pr_export_entity_card";
+$HD_Form -> export_session_key = "pr_export_entity_card";
 
 
 if (($popup_select>=1))	$HD_Form ->FG_LIST_VIEW_PAGE_SIZE = 7;

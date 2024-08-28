@@ -98,10 +98,14 @@ if ($popup_select) {
 		$HD_Form -> FG_OTHER_BUTTON1_LINK = "javascript:sendValue('|col0|');";
 	}
 } else {
-	$HD_Form -> FieldExportElement (explode(",", $A2B->config['webui']['rate_export_field_list']));
+    $export_cols = $A2B->config['webui']['rate_export_field_list'];
+    if (str_contains($HD_Form->FG_QUERY_TABLE_NAME, "cc_callplan_lcr")) {
+        $export_cols = str_replace("destination", "cc_prefix.destination", $export_cols);
+    }
+	$HD_Form -> FG_EXPORT_FIELD_LIST = explode(",", $export_cols);
 	$HD_Form -> FG_EXPORT_CSV = false;
 	$HD_Form -> FG_EXPORT_XML = false;
-	$HD_Form -> FG_EXPORT_SESSION_VAR = "pr_export_entity_rates";
+	$HD_Form -> export_session_key = "pr_export_entity_rates";
 }
 
 // Search form

@@ -562,24 +562,8 @@ endif;
 // #### TOP SECTION PAGE
 $HD_Form -> create_toppage ($form_action);
 
-$HD_Form -> create_form($form_action, $list) ;
-
-// Code for the Export Functionality
-// todo: get rid of FG_QUERY_WHERE_CLAUSE usage
-$_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR]= "SELECT " . implode(",", $HD_Form -> FG_EXPORT_FIELD_LIST) . " FROM $HD_Form->FG_QUERY_TABLE_NAME";
-if (strlen($HD_Form->FG_QUERY_WHERE_CLAUSE) > 1) {
-    $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] .= " WHERE $HD_Form->FG_QUERY_WHERE_CLAUSE ";
-}
-if (!empty($HD_Form->FG_QUERY_GROUPBY_COLUMNS)) {
-    $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] .= " $HD_Form->FG_QUERY_GROUPBY_COLUMNS ";
-}
-if (!empty($HD_Form->FG_QUERY_ORDERBY_COLUMNS) && !empty($HD_Form->FG_QUERY_DIRECTION)) {
-    $ord = implode(",", $HD_Form->FG_QUERY_ORDERBY_COLUMNS);
-    $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR].= " ORDER BY $ord $HD_Form->FG_QUERY_DIRECTION";
-}
-if (!str_contains($_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR], 'cc_callplan_lcr')) {
-    $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR] = str_replace('destination,', 'cc_prefix.destination,', $_SESSION[$HD_Form->FG_EXPORT_SESSION_VAR]);
-}
+$HD_Form -> create_form($form_action, $list);
+$HD_Form->setup_export();
 
 // #### FOOTER SECTION
 $smarty->display('footer.tpl');

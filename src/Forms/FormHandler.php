@@ -188,10 +188,10 @@ class FormHandler
     /** @var bool Whether to enable an XML export button at the bottom of a list view */
     public bool $FG_EXPORT_XML = false;
 
-    /** @var string A session variable used to hold a per-export query string */
-    public string $FG_EXPORT_SESSION_VAR = "";
+    /** @var string A session variable used to hold export info */
+    public string $export_session_key = "export_data";
 
-    /** @var array List of columns to use in the export (but it is never used in the class) */
+    /** @var array List of columns to use in the export */
     public array $FG_EXPORT_FIELD_LIST = [];
 
     /** @var bool Whether to enable a custom button in the list view's action column */
@@ -634,23 +634,6 @@ class FormHandler
             "href" => $destination, // when type = lie_link
         ];
     }
-
-    //----------------------------------------------------
-    // Method to Add the Field which will be included in the export file
-    //----------------------------------------------------
-    /*
-        Add Field to FG_EXPORT_COL array, Returns Void
-        *fieldname is the Field Name which will be included in the export file
-
-    */
-
-    public function FieldExportElement(array $fieldnames)
-    {
-        if (count($fieldnames)) {
-            $this->FG_EXPORT_FIELD_LIST = $fieldnames;
-        }
-    }
-
 
     /**
      * Sets Query fieldnames for the View module
@@ -2193,5 +2176,24 @@ class FormHandler
             }
         }
         return $month_year_opts;
+    }
+
+    public function setup_export(
+        ?array $columns = null,
+        ?string $table = null,
+        ?array $conditions = null,
+        ?array $group = null,
+        ?array $order = null,
+        ?string $direction = null
+    ): void
+    {
+        $columns ??= $this->FG_EXPORT_FIELD_LIST;
+        $table ??= $this->FG_QUERY_TABLE_NAME;
+        $conditions ??= $this->list_query_conditions;
+        $group ??= $this->FG_QUERY_GROUPBY_COLUMNS;
+        $order ??= $this->FG_QUERY_ORDERBY_COLUMNS;
+        $direction ??= $this->FG_QUERY_DIRECTION ?? "ASC";
+
+        $_SESSION[$this->export_session_key] = [$columns, $table, $conditions, $group, $order, $direction];
     }
 }
