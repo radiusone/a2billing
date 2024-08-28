@@ -170,7 +170,7 @@ use Closure;
                         type="radio"
                         name="<?= $row["name"] ?>"
                         value="<?= $rad[1] ?>"
-                        <?php if ($check === $rad[1]): ?>checked="checked"<?php endif ?>
+                        <?php if ("$check" === "$rad[1]"): ?>checked="checked"<?php endif ?>
                     />
                     <label for="<?= $row["name"] ?>_<?= $rad[1] ?>" class="form-check-label"><?= $rad[0] ?></label>
                 </div>
