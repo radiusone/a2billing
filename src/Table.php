@@ -115,8 +115,11 @@ class Table
         }
     }
 
-    public function quote_identifier(string $identifier): string
+    public function quote_identifier(?string $identifier): ?string
     {
+        if (is_null($identifier)) {
+            return null;
+        }
         if (str_contains($identifier, "(")) {
             // something like a function call
             return $identifier;
@@ -339,6 +342,23 @@ class Table
         }
 
         return $res->GetAll();
+    }
+
+    /**
+     * Count matching rows
+     *
+     * @param ADOConnection $db
+     * @param array $conditions
+     * @return array
+     */
+    public function countRows(ADOConnection $db, array $conditions = []): array
+    {
+        $old_fields = $this->fields;
+        $this->fields = "COUNT(*)";
+        $data = $this->getRows($db, $conditions);
+        $this->fields = $old_fields;
+
+        return $data[0][0] ?? [];
     }
 
     public function Table_count(ADOConnection $DBHandle, string $clause = "", string $compare = "", int $cache = 0)
@@ -572,7 +592,7 @@ class Table
      */
     public function processWhereClauseArray(array $where, ?array &$params): string
     {
-        $params = [];
+        $params ??= [];
         $query_clauses = [];
         foreach ($where as $col => $data) {
             $query = "";

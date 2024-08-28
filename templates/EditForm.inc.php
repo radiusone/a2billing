@@ -163,11 +163,7 @@ use Closure;
             <?php elseif ($row["type"] === "RADIOBUTTON"): ?>
                 <?php foreach ($row["radio_options"] as $rad): ?>
                 <div class="form-check">
-                    <?php if ($form->VALID_SQL_REG_EXP): ?>
-                        <?php $check = $db_data[$i] ?>
-                    <?php else: ?>
-                        <?php $check = $processed[$row["name"]] ?>
-                    <?php endif ?>
+                    <?php $check = $form->VALID_SQL_REG_EXP ? $db_data[$i] : $processed[$row["name"]] ?>
                     <input
                         id="<?= $row["name"] ?>_<?= $rad[1] ?>"
                         class="form-check-input <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
