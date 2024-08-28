@@ -1606,16 +1606,14 @@ class FormHandler
                 $values[$key] = $array_value;
                 $this->QUERY_RESULT = $instance_table->addRow(
                     $this->DBHandle,
-                    array_keys($values),
-                    array_values($values),
+                    $values,
                     $id
                 );
             }
         } else {
             $this->QUERY_RESULT = $instance_table->addRow(
                 $this->DBHandle,
-                array_keys($values),
-                array_values($values),
+                $values,
                 $id
             );
         }

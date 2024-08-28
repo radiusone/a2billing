@@ -387,21 +387,31 @@ class Table
      *
      * @param ADOConnection $db
      * @param array $values
-     * @param array $fields
      * @param $id
      * @return bool
      */
-    public function addRow(ADOConnection $db, array $fields, array $values, &$id = null): bool
+    public function addRow(ADOConnection $db, array $values, &$id = null): bool
     {
+        $fields = array_keys($values);
         array_walk($fields, fn (&$v) => $v = $this->quote_identifier($v));
         $this->fields = implode(",", $fields);
 
         $table = str_contains($this->table, " JOIN ") ? $this->table : $this->quote_identifier($this->table);
-        $placeholders = implode(",", array_map(fn ($v) => $this->quote_identifier($v) === $v ? $v : "?", $values));
+        $value_callback = function ($v) use (&$parameters): string {
+            // temporary workaround while there are still things like "now()" in value lists
+            if ($this->quote_identifier($v) !== $v) {
+                $parameters[] = $v;
+                $v = "?";
+            }
+
+            return $v;
+        };
+        $parameters = [];
+        $placeholders = implode(",", array_map($value_callback, $values));
 
         $query = "INSERT INTO $table ($this->fields) VALUES ($placeholders)";
 
-        $result = $db->Execute($query, $values);
+        $result = $db->Execute($query, $parameters);
 
         if ($result === false) {
             return false;
@@ -469,9 +479,13 @@ class Table
     public function updateRow(ADOConnection $db, array $values, array $conditions = []): bool
     {
         $value_callback = function ($v) use (&$parameters): string {
-            $parameters[] = $v;
+            // temporary workaround while there are still things like "now()" in value lists
+            if ($this->quote_identifier($v) !== $v) {
+                $parameters[] = $v;
+                $v = "?";
+            }
 
-            return "?";
+            return $v;
         };
 
         $parameters = [];
