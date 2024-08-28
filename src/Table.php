@@ -462,36 +462,34 @@ class Table
      * Update a row with a proper parameterized statement
      *
      * @param ADOConnection $db
-     * @param array $fields
-     * @param array $values
-     * @param array $conditions
+     * @param array $values values indexed by column name
+     * @param array $conditions values indexed by column name (will be joined with AND)
      * @return bool
      */
-    public function updateRow(ADOConnection $db, array $fields, array $values, array $conditions = []): bool
+    public function updateRow(ADOConnection $db, array $values, array $conditions = []): bool
     {
-        array_walk($fields, fn (&$v) => $v = $this->quote_identifier($v));
-        $this->fields = implode(",", $fields);
+        $value_callback = function ($v) use (&$parameters): string {
+            $parameters[] = $v;
 
+            return "?";
+        };
+
+        $parameters = [];
         $table = str_contains($this->table, " JOIN ") ? $this->table : $this->quote_identifier($this->table);
-        $placeholders = implode(",", array_map(fn ($v) => $this->quote_identifier($v) === $v ? $v : "?", $values));
-
-        $where_params = array_filter(
-            array_values($conditions),
-            fn ($v) => $this->quote_identifier($v) !== $v
-        );
+        $updates = array_kv($values, [$this, "quote_identifier"], $value_callback);
         $where = count($conditions) > 0
             ? array_kv(
                 $conditions,
                 [$this, "quote_identifier"],
-                fn ($v) => $this->quote_identifier($v) === $v ? $v : "?",
+                $value_callback,
                 " = ",
                 " AND "
             )
             : "1=1";
 
-        $query = "INSERT INTO $table ($this->fields) VALUES ($placeholders) WHERE $where";
+        $query = "UPDATE $table SET $updates WHERE $where";
 
-        return $db->Execute($query, array_merge($values, $where_params)) !== false;
+        return $db->Execute($query, $parameters) !== false;
     }
 
     public function Update_table(ADOConnection $DBHandle, string $param_update, string $clause, string $func_table = "")

@@ -1695,8 +1695,7 @@ class FormHandler
         if ($this->VALID_SQL_REG_EXP) {
             $this->QUERY_RESULT = $instance_table->updateRow(
                 $this->DBHandle,
-                array_keys($values),
-                array_values($values),
+                $values,
                 $this->update_query_conditions
             );
         }
