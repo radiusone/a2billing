@@ -119,7 +119,8 @@ Delete from cc_config where config_key='cid_auto_create_card_tariffgroup';
 -- change type in cc_config
 ALTER TABLE cc_config CHANGE config_title config_title VARCHAR( 100 ); 
 ALTER TABLE cc_config CHANGE config_key config_key VARCHAR( 100 ); 
-ALTER IGNORE TABLE cc_config CHANGE config_value config_value VARCHAR( 100 );
+UPDATE cc_config SET config_value = LEFT(config_value, 100) WHERE LENGTH(config_value) > 100;
+ALTER TABLE cc_config CHANGE config_value config_value VARCHAR( 100 );
 ALTER TABLE cc_config CHANGE config_listvalues config_listvalues VARCHAR( 100 ); 
 
 -- Set Qualify at No per default

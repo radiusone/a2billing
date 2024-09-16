@@ -93,7 +93,8 @@ ALTER TABLE cc_templatemail CHANGE messagehtml messagehtml VARCHAR( 3000 ) CHARA
 
 ALTER TABLE cc_card_group CHANGE description description VARCHAR( 400 ) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL;
 
-ALTER IGNORE TABLE cc_config CHANGE config_description config_description VARCHAR( 500 ) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL;
+UPDATE cc_config SET config_description = LEFT(config_description, 500) WHERE LENGTH(config_description) > 500;
+ALTER TABLE cc_config CHANGE config_description config_description VARCHAR( 500 ) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL;
 
 
 -- Update Version
