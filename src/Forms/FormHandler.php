@@ -1556,7 +1556,7 @@ class FormHandler
                         $form_action = "ask-add";
                     }
                     // CHECK IF THIS IS A SPLITABLE FIELD LIKE 012-014 OR 15,16,17
-                    if (in_array($this->FG_SPLITABLE_FIELDS, $fields_name) && !str_starts_with($processed[$fields_name], '_')) {
+                    if (in_array($fields_name, $this->FG_SPLITABLE_FIELDS) && !str_starts_with($processed[$fields_name], '_')) {
                         $value = $processed[$fields_name];
                         $items = explode(",", $value);
                         foreach ($items as $item) {

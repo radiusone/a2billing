@@ -19,7 +19,7 @@ $origlist = [];
 
 <?php if (($form -> FG_FILTER_ENABLE || $form -> FG_FILTER2_ENABLE) || ($popup_select < 1 && ($form->FG_LIST_ADDING_BUTTON1 || $form->FG_LIST_ADDING_BUTTON2))): ?>
 <div class="row pb-3 align-items-end">
-    <?php if ($form -> FG_FILTER_ENABLE || $form -> FG_FILTER2_ENABLE): ?>
+    <?php if ($form->FG_LIST_VIEW_ROW_COUNT > 0 && ($form -> FG_FILTER_ENABLE || $form -> FG_FILTER2_ENABLE)): ?>
     <form name="theFormFilter" action="" class="col">
         <input type="hidden" name="popup_select" value="<?= $processed['popup_select'] ?>"/>
         <input type="hidden" name="popup_formname" value="<?= $processed['popup_formname'] ?>"/>
@@ -91,6 +91,7 @@ $origlist = [];
 </div>
 <?php endif ?>
 
+<?php if ($form->FG_LIST_VIEW_ROW_COUNT > 0): ?>
 <div class="row pb-3">
     <div class="col table-responsive">
         <table class="table table-bordered table-striped table-hover caption-top <?php if ($popup_select): ?>table-sm<?php endif ?>">
@@ -342,6 +343,7 @@ $origlist = [];
     </div>
     <?php endif ?>
 </div>
+<?php endif ?>
 
 <script>
 $(function() {
