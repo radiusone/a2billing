@@ -168,7 +168,7 @@ if ($_SESSION["is_admin"] == 1) {
         }
 }
 
-if (strpos($SQLcmd, 'WHERE') > 0) {
+if (strpos($SQLcmd ?? "", 'WHERE') > 0) {
     $FG_TABLE_CLAUSE = substr($SQLcmd,6).$date_clause;
 } elseif (strpos($date_clause, 'AND') > 0) {
     $FG_TABLE_CLAUSE = substr($date_clause,5);
@@ -181,7 +181,7 @@ if ($posted==1) {
     $list_total = $instance_table_graph -> get_list ($DBHandle, $FG_TABLE_CLAUSE);
 }
 
-$nb_record = count($list_total);
+$nb_record = count($list_total ?? []);
 
 if ($nb_record<=$FG_LIMITE_DISPLAY) {
     $nb_record_max=1;
