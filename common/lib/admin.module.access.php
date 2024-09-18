@@ -125,7 +125,7 @@ function login (?string $user, ?string $pass)
             return $row;
         }
         // fallback to legacy authentication
-        $pass = filter_var($pass, FILTER_SANITIZE_STRING);
+        $pass = htmlspecialchars($pass, ENT_QUOTES, 'UTF-8');
         if (hash('whirlpool', $pass) === $row["pwd_encoded"]) {
             return $row;
         }
