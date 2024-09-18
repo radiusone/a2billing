@@ -524,6 +524,15 @@ class FormHandler
         return self::$Instance;
     }
 
+    public function setDBHandler($DBHandle=null)
+    {
+        Console::log('FormHandler -> setDBHandler');
+        Console::logMemory($this, 'FormHandler -> setDBHandler : Line '.__LINE__);
+        Console::logSpeed('FormHandler -> setDBHandler : Line '.__LINE__);
+
+        $this->DBHandle = $DBHandle;
+    }
+
     /**
      * Perform the execution of some actions to prepare the form generation
      *
