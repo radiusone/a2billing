@@ -268,7 +268,7 @@ $condition2 = str_replace('cdr.starttime','firstusedate',$condition);
 $payphones = $A2B->config["webui"]["report_pnl_pay_phones"];
 $tallfree = $A2B->config["webui"]["report_pnl_tall_free"];
 $payphones = str_replace(' ','',$payphones);
-$tallfree = str_replace(' ','',$tallfree);
+$tallfree = str_replace(' ','',$tallfree ?? '');
 $payphones = str_replace('),(',' ,1 as dnid_type union select ',$payphones);
 $payphones = str_replace(')',' ,1  ',$payphones);
 $tallfree = str_replace('),(',' ,2  union select ',$tallfree);
@@ -529,7 +529,7 @@ if ($res) {
          if ($k<3) {
             echo $row[$k];
         } else {
-            echo number_format($row[$k],2);
+            echo number_format($row[$k] ?? 0, 2);
             if (($k==14)||($k==16)) {
                 echo "%";
             }
