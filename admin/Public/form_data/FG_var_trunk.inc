@@ -113,7 +113,7 @@ if ($popup_select) {
 $HD_Form -> search_form_enabled = true;
 $HD_Form -> search_form_title = gettext("Search");
 $HD_Form -> AddSearchTextInput(gettext("IP/HOST"),'providerip','provideriptype');
-$HD_Form -> AddSearchSelectInput(gettext("SELECT PROVIDER"), "id_provider", $provider_list_result);
+$HD_Form -> AddSearchSelectInput(gettext("SELECT PROVIDER"), "id_provider", $provider_list_result ?? []);
 $HD_Form -> AddSearchSelectInput(gettext("SELECT STATUS"), "status", $trunk_actived_list);
 
 if ($popup_select) {
