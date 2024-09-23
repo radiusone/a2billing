@@ -182,9 +182,9 @@ if ($subadmin) {
         "size='$len_right_list' multiple='multiple'"
     );
 } else {
-    // 32 bits max permission value
-    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["perms"] = pow(2, 32) - 1;
-    $HD_Form->FG_EDIT_QUERY_HIDDEN_INPUTS["perms"] = pow(2, 32) - 1;
+    // 25 bits max permission value
+    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["perms"] = pow(2, 25) - 1;
+    $HD_Form->FG_EDIT_QUERY_HIDDEN_INPUTS["perms"] = pow(2, 25) - 1;
 }
 
 $HD_Form->AddEditElement(
