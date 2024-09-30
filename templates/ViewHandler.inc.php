@@ -125,27 +125,22 @@ $origlist = [];
                 <?php foreach($form->FG_LIST_TABLE_CELLS as $j=> $row):
                     $origlist[$num][$j - $k] = $item[$j - $k];
                     if (str_starts_with($row["type"], "lie")) {
-                        if (empty($cached_options[$row["field"]])) {
-                            $options = (new Table($row["sql_table"], $row["sql_columns"]))->get_list($form->DBHandle, str_replace("%id", $item[$j - $k], $row["sql_clause"]));
-                            $cached_options[$row["field"]] = $options;
-                        } else {
-                            $options = $cached_options[$row["field"]];
-                        }
-                        $record_display = $row["sql_display"];
+                        $lie_id = $item[$j - $k];
+                        $cached_options[$row["field"]][$lie_id] ??= (new Table($row["sql_table"], $row["sql_columns"]))
+                            ->get_list($form->DBHandle, str_replace("%id", $lie_id, $row["sql_clause"]));
+                        $options = $cached_options[$row["field"]][$lie_id];
                         $record_display = preg_replace_callback(
                             "/%([0-9]+)/",
                             fn ($m) => str_replace($m[0], $options[0][$m[1] - 1] ?? "", $m[0]),
-                            $record_display
+                            $row["sql_display"]
                         );
                         if (trim($record_display) === "") {
                             $record_display = "n/a";
                         }
-                        if ($row["type"] === "lie_link") {
-                            if (is_array($options)) {
-                                $link = $row["href"] . (str_contains($row["href"], 'form_action') ? "?" : "?form_action=ask-edit&") . "id=" . $options[0][1];
-                                if (!$popup_select) {
-                                    $record_display = "<a class='text-decoration-underline' href='$link'>$record_display</a>";
-                                }
+                        if ($row["type"] === "lie_link" && is_array($options)) {
+                            $link = $row["href"] . (str_contains($row["href"], 'form_action') ? "?" : "?form_action=ask-edit&") . "id=" . $options[0][1];
+                            if (!$popup_select) {
+                                $record_display = "<a class='text-decoration-underline' href='$link'>$record_display</a>";
                             }
                         }
                     } elseif ($row["type"] === "eval") {
