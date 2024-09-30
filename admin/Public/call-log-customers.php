@@ -84,7 +84,7 @@ if (($download ?? "") === "file" && !empty($file)) {
 }
 
 $HD_Form = new FormHandler(
-    "cc_call LEFT OUTER JOIN cc_trunk ON cc_call.id_trunk = cc_trunk.id_trunk LEFT OUTER JOIN cc_ratecard ON cc_call.id_ratecard = cc_ratecard.id LEFT OUTER JOIN cc_prefix ON cc_call.destination = cc_prefix.prefix LEFT OUTER JOIN cc_card ON cc_call.card_id = cc_card.id",
+    "cc_call LEFT OUTER JOIN cc_trunk ON cc_call.id_trunk = cc_trunk.id_trunk LEFT OUTER JOIN cc_ratecard ON cc_call.id_ratecard = cc_ratecard.id LEFT OUTER JOIN cc_card ON cc_call.card_id = cc_card.id",
     gettext("CDR"),
     "cc_call.id"
 );
@@ -106,7 +106,7 @@ $calltype_list = [
 ];
 
 $HD_Form->no_debug();
-$HD_Form->FG_QUERY_COLUMN_LIST = 'cc_call.starttime, cc_call.src, cc_call.dnid, cc_call.calledstation, cc_prefix.destination AS dest, cc_ratecard.buyrate, cc_ratecard.rateinitial, cc_call.sessiontime, cc_call.card_id, cc_trunk.trunkcode, cc_call.terminatecauseid, cc_call.sipiax, cc_call.buycost, cc_call.sessionbill, CASE WHEN cc_call.sessionbill != 0 THEN ((cc_call.sessionbill - cc_call.buycost) / cc_call.sessionbill) * 100 ELSE NULL END AS margin, CASE WHEN cc_call.buycost != 0 THEN ((cc_call.sessionbill - cc_call.buycost) / cc_call.buycost) * 100 ELSE NULL END AS markup, cc_call.id, cc_trunk.id_provider, cc_trunk.id_trunk AS trunk_id';
+$HD_Form->FG_QUERY_COLUMN_LIST = 'cc_call.starttime, cc_call.src, cc_call.dnid, cc_call.calledstation, cc_call.destination AS dest, cc_ratecard.buyrate, cc_ratecard.rateinitial, cc_call.sessiontime, cc_call.card_id, cc_trunk.trunkcode, cc_call.terminatecauseid, cc_call.sipiax, cc_call.buycost, cc_call.sessionbill, CASE WHEN cc_call.sessionbill != 0 THEN ((cc_call.sessionbill - cc_call.buycost) / cc_call.sessionbill) * 100 ELSE NULL END AS margin, CASE WHEN cc_call.buycost != 0 THEN ((cc_call.sessionbill - cc_call.buycost) / cc_call.buycost) * 100 ELSE NULL END AS markup, cc_call.id, cc_trunk.id_provider, cc_trunk.id_trunk AS trunk_id';
 
 $DBHandle = DbConnect();
 
@@ -114,7 +114,7 @@ $HD_Form->AddViewElement(_("Date"), "cc_call.starttime", true, 19);
 $HD_Form->AddViewElement(_("Caller ID"), "src", true, 0, "display_phone_number");
 $HD_Form->AddViewElement(_("DNID"), "dnid", true, 0, "display_phone_number");
 $HD_Form->AddViewElement(_("Phone Number"), "calledstation", true, 0, "display_phone_number");
-$HD_Form->AddViewElement(_("Destination"), "cc_prefix.destination", true, 15);
+$HD_Form->AddViewElement(_("Destination"), "cc_call.destination", true, 15, "", "lie", "cc_prefix", "destination,prefix", "prefix='%id'", "%1");
 $HD_Form->AddViewElement(_("Buy Rate"), "buyrate", true, 30, "display_2bill");
 $HD_Form->AddViewElement(_("Sell Rate"), "rateinitial", true, 30, "display_2bill");
 $HD_Form->AddViewElement(_("Duration"), "sessiontime", true, 30, "display_minute");
