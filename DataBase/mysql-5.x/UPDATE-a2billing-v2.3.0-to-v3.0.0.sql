@@ -39,6 +39,9 @@ ALTER TABLE cc_call_archive MODIFY calledstation VARCHAR(100) NOT NULL;
 -- remove unused settings
 DELETE FROM cc_config WHERE config_key IN ('asterisk_version', 'cront_currency_update', 'didx_id', 'didx_pass', 'didx_min_rating', 'didx_ring_to');
 
+-- increase permissions size
+ALTER TABLE cc_ui_authen MODIFY perms INT UNSIGNED DEFAULT NULL;
+
 -- stop using timestamps
 ALTER TABLE cc_agent MODIFY datecreation DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP;
 ALTER TABLE cc_agent_commission MODIFY `date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP;
