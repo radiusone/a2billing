@@ -1,5 +1,6 @@
 #!/bin/bash
-SCRIPT_DIR=$(dirname $0)
+
+script_dir=$(dirname "$0")
 sqllist=(
     a2billing-schema-v1.4.0.sql UPDATE-a2billing-v1.4.0-to-v1.4.1.sql
     UPDATE-a2billing-v1.4.1-to-v1.4.2.sql UPDATE-a2billing-v1.4.2-to-v1.4.3.sql
@@ -29,29 +30,54 @@ sqllist=(
     UPDATE-a2billing-v2.3.0-to-v3.0.0.sql
 )
 
-echo ""
-echo "Install A2Billing Database"
-echo "--------------------------"
-echo ""
+printf "\n"
+printf "Install A2Billing Database\n"
+printf -- "--------------------------\n"
+printf "\n"
 
-echo "Enter Database Name : "
-read dbname
+printf "Enter Database Name: "
+read -r dbname
 
-echo "Enter Hostname : "
-read hostname
+printf "Enter Hostname: "
+read -r hostname
 
-echo "Enter UserName : "
-read username
+printf "Enter Username: "
+read -r username
 
-echo "Enter Password : "
-read password
+printf "Enter Password: "
+read -r password
 
-echo mysql --user=$username --password=$password --host=$hostname $dbname
+cmd=(mysql)
+if [[ -n $username ]]; then
+	cmd+=("--user=$username")
+fi
+if [[ -n $password ]]; then
+	cmd+=("--password=$password")
+fi
+if [[ -n $hostname ]]; then
+	cmd+=("--host=$hostname")
+fi
+if [[ -n $dbname ]]; then
+	cmd+=("--database=$dbname")
+fi
 
-for script in "${sqllist[@]}"
-do
-	cat $SCRIPT_DIR/$script|mysql --user=$username --password=$password --host=$hostname $dbname
+printf "\nUsing command: %s\n\n" "${cmd[*]}"
+
+if ! "${cmd[@]}" --execute='SELECT 1' &> /dev/null; then
+	printf "Check database %s and user %s exist before running script:\n" "$dbname" "$username"
+	printf "CREATE DATABASE IF NOT EXISTS %s;\n" "$dbname"
+	printf "CREATE USER IF NOT EXISTS %s@localhost IDENTIFIED BY '%s';\n" "$username" "$password"
+	printf "GRANT ALL PRIVILEGES ON %s.* TO %s@localhost WITH GRANT OPTION;\n" "$dbname" "$username"
+	exit 1
+fi
+
+for script in "${sqllist[@]}"; do
+	printf .
+	if ! "${cmd[@]}" < "$script_dir/$script"; then
+		printf "Error running script %s\n" "$script"
+		exit 1
+	fi
 done
+printf "\n"
 
-# All done, exit ok
 exit 0
