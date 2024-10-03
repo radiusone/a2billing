@@ -495,9 +495,9 @@ class A2Billing
         $default["cid_auto_create_card"] = 0;
         $default["sip_iax_friends"] = 0;
         $default["sip_iax_pstn_direct_call"] = 0;
-        $default["dialcommand_param"] = '|30|HL(%timeout%:61000:30000)';
-        $default["dialcommand_param_sipiax_friend"] = '|30|HL(3600000:61000:30000)';
-        $default["dialcommand_param_call_2did "] = '|30|HL(3600000:61000:30000)';
+        $default["dialcommand_param"] = ',30,HL(%timeout%:61000:30000)';
+        $default["dialcommand_param_sipiax_friend"] = ',30,HL(3600000:61000:30000)';
+        $default["dialcommand_param_call_2did "] = ',30,HL(3600000:61000:30000)';
         $default["switchdialcommand"] = 0;
         $default["failover_recursive_limit"] = 1;
         $default["record_call"] = 0;
