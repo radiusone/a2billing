@@ -47,14 +47,12 @@ $form_action = $form_action ?? "list";
 
 $handle = DbConnect();
 
-$HD_Form = new FormHandler("cc_config LEFT JOIN cc_config_group ON cc_config.config_group_id = cc_config_group.id", _("Configuration"), "cc_config.id");
-$HD_Form->no_debug();
-$HD_Form->FG_TABLE_DEFAULT_ORDER = "group_title";
-$HD_Form->FG_QUERY_PRIMARY_KEY = "cc_config.id";
-$HD_Form->update_query_conditions = ["cc_config.id" => "%id"];
-
 $value_select = "";
 if ($form_action === "list") {
+    $HD_Form = new FormHandler("cc_config LEFT JOIN cc_config_group ON cc_config.config_group_id = cc_config_group.id", _("Configuration"), "cc_config.id");
+    $HD_Form->FG_TABLE_DEFAULT_ORDER = "group_title";
+    $HD_Form->FG_QUERY_PRIMARY_KEY = "cc_config.id";
+    $HD_Form->update_query_conditions = ["cc_config.id" => "%id"];
     $yesno = [];
     $config_list = $handle->GetAll("SELECT config_value AS val, config_valuetype AS type, id FROM cc_config ORDER BY id");
     foreach ($config_list as $key => $config) {
@@ -76,18 +74,22 @@ if ($form_action === "list") {
     $HD_Form->FieldViewElement('config_title, config_key, config_value, config_description, group_title');
 
     $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 25;
-} elseif ($form_action === "ask-edit") {
-    $result = $handle->GetOne(
-        "SELECT CASE config_valuetype WHEN 0 THEN '' WHEN 1 THEN 'bool' WHEN 2 THEN config_listvalues END FROM cc_config WHERE id = ?",
-        [$id]
-    );
-    if ($result !== "" && $result !== "bool") {
-        $result = explode(",", $result);
-        $value_select = array_map(fn($v) => [$v, $v], $result);
-    } elseif ($result === "bool") {
-        $value_select = [["Yes", 1], ["No", 0]];
-    } else {
-        $value_select = null;
+} else {
+    $HD_Form = new FormHandler("cc_config", _("Configuration"));
+
+    if ($form_action === "ask-edit") {
+        $result = $handle->GetOne(
+            "SELECT CASE config_valuetype WHEN 0 THEN '' WHEN 1 THEN 'bool' WHEN 2 THEN config_listvalues END FROM cc_config WHERE id = ?",
+            [$id]
+        );
+        if ($result !== "" && $result !== "bool") {
+            $result = explode(",", $result);
+            $value_select = array_map(fn($v) => [$v, $v], $result);
+        } elseif ($result === "bool") {
+            $value_select = [["Yes", 1], ["No", 0]];
+        } else {
+            $value_select = null;
+        }
     }
 }
 
@@ -98,12 +100,17 @@ $HD_Form->AddSearchTextInput(_("Key"), "config_key");
 $HD_Form->AddSearchTextInput(_("Description"), "config_description");
 $HD_Form->AddSearchSqlSelectInput(_("Select config group"), "cc_config_group", "id,group_title", "", "group_title", "ASC", "config_group_id");
 
-$HD_Form->AddEditElement(
+$HD_Form->AddEditSqlSelect(
     _("GROUP"),
-    "group_title",
+    "config_group_id",
+    "cc_config_group",
+    "group_title,id",
+    "",
+    "",
+    "",
+    "%1",
     _("Group Name of the configuration variable"),
     "readonly='readonly'",
-    null,
     _("This is the group of the configuration. Not editable!")
 );
 

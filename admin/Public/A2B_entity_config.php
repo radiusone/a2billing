@@ -57,13 +57,13 @@ $smarty->display('main.tpl');
 echo $CC_help_list_configuration;
 
 // #### TOP SECTION PAGE
-$HD_Form->create_toppage ($form_action);
+$HD_Form->create_toppage($form_action);
 
 if ($form_action === "list") {
     $HD_Form->create_search_form(true, true);
 }
 
-$HD_Form->create_form($form_action, $list) ;
+$HD_Form->create_form($form_action, $list);
 
 // #### FOOTER SECTION
 $smarty->display('footer.tpl');
