@@ -41,8 +41,6 @@ include_once './form_data/FG_var_charge.inc';
 
 Admin::checkPageAccess(Admin::ACX_BILLING);
 
-$HD_Form_c->setDBHandler(DbConnect());
-
 $HD_Form_c->init();
 
 // To fix internal links due $_SERVER["PHP_SELF"] from parent include that fakes them

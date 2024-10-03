@@ -55,7 +55,6 @@ $bool = false;
 
 $HD_Form = new FormHandler("pnl_report", "PNL Report");
 
-$HD_Form -> setDBHandler (DbConnect());
 $HD_Form -> init();
 
 //     Generating WHERE CLAUSE		///////////////////////////////
