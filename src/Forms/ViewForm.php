@@ -40,10 +40,6 @@ class ViewForm
         $current_page = $this->current_page;
         $popup_select = $this->popup_select;
 
-        if (empty($list)) {
-            return "<div class='row pb-3 justify-content-center'><div class='col-8'>$form->CV_NO_FIELDS</div></div>";
-        }
-
         $origlist = [];
         $hasActionButtons = (
             $form->FG_ENABLE_DELETE_BUTTON || $form->FG_ENABLE_INFO_BUTTON || $form->FG_ENABLE_EDIT_BUTTON || $form->FG_OTHER_BUTTON1
@@ -53,6 +49,12 @@ class ViewForm
         ob_start();
         require(__DIR__ . "/../../templates/ViewHandler.inc.php");
 
-        return ob_get_clean() ?: "Template error!";
+        $output = ob_get_clean() ?: "Template error!";
+
+        if (empty($list)) {
+            $output .=  "<div class='row pb-3 justify-content-center'><div class='col-8'>$form->CV_NO_FIELDS</div></div>";
+        }
+
+        return $output;
     }
 }

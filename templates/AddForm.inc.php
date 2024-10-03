@@ -33,7 +33,7 @@ use A2billing\Table;
     </div>
     <?php endif ?>
 
-    <?php if (count($row["custom_query"]) === 0): ?>
+    <?php if (count($row["custom_query"] ?? []) === 0): ?>
     <div class="row mb-3">
         <label for="<?= $row["name"] ?>" class="col-3 col-form-label">
             <?= $row["label"] ?>
