@@ -120,7 +120,7 @@ class Table
         if (is_null($identifier)) {
             return null;
         }
-        if (str_contains($identifier, "(")) {
+        if ($this->isSqlFunction($identifier)) {
             // something like a function call
             return $identifier;
         }
@@ -142,6 +142,21 @@ class Table
         }
 
         return "$distinct$q$identifier$q";
+    }
+
+    public function isSqlFunction(string $value): bool
+    {
+        $value = strtolower($value);
+        return str_starts_with($value, "now()")
+            || str_starts_with($value, "current_timestamp")
+            || str_starts_with($value, "(select")
+            || str_starts_with($value, "case when")
+            || str_starts_with($value, "left(")
+            || str_starts_with($value, "right(")
+            || str_starts_with($value, "replace(")
+            || str_starts_with($value, "substring(")
+            || str_starts_with($value, "lower(")
+            || str_starts_with($value, "upper(");
     }
 
     /*
