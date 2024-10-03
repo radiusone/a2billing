@@ -44,7 +44,7 @@ set_time_limit(0);
 
 Admin::checkPageAccess(Admin::ACX_RATECARD);
 
-$HD_Form = new FormHandler();
+$HD_Form = new FormHandler('cc_ratecard', 'Rate Card');
 $HD_Form -> init();
 $HD_Form->no_debug();
 $HD_Form -> search_session_key = 'entity_ratecard_selection';

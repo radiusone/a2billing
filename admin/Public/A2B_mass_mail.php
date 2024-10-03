@@ -70,7 +70,7 @@ Admin::checkPageAccess(Admin::ACX_MAIL);
 
 getpost_ifset(array('subject', 'message', 'submit','hd_email', 'total_customer', 'from', 'fromname'));
 
-$HD_Form = new FormHandler("cc_card");
+$HD_Form = new FormHandler("cc_card", "Card");
 $HD_Form -> search_session_key = 'entity_card_selection_mail';
 $HD_Form -> init();
 $instance_cus_table = new Table("cc_card", "id, email, credit, currency, lastname, firstname, loginkey, username, useralias, uipass");
