@@ -8289,7 +8289,7 @@ CREATE TABLE IF NOT EXISTS `cc_ui_authen` (
   `login` char(50) collate utf8_bin NOT NULL,
   `pwd_encoded` varchar(250) collate utf8_bin NOT NULL,
   `groupid` int(11) default NULL,
-  `perms` int(11) default NULL,
+  `perms` int(11) unsigned default NULL,
   `confaddcust` int(11) default NULL,
   `name` char(50) collate utf8_bin default NULL,
   `direction` char(80) collate utf8_bin default NULL,
@@ -8308,7 +8308,7 @@ CREATE TABLE IF NOT EXISTS `cc_ui_authen` (
 -- Dumping data for table `cc_ui_authen`
 --
 
-INSERT INTO `cc_ui_authen` (`userid`, `login`, `pwd_encoded`, `groupid`, `perms`, `confaddcust`, `name`, `direction`, `zipcode`, `state`, `phone`, `fax`, `datecreation`, `email`) VALUES(1, 'root', '410fc6268dd3332226de95e42d9efa4046c5463769d7493b85e65cfa5c26362dc2455cc23c0bc5831deb008def4ab11a9eaa9b76ba3f377da134f39ec60dd758', 0, 5242879, NULL, NULL, NULL, NULL, NULL, NULL, NULL, CURRENT_TIMESTAMP, NULL);
+INSERT INTO `cc_ui_authen` (`userid`, `login`, `pwd_encoded`, `groupid`, `perms`, `confaddcust`, `name`, `direction`, `zipcode`, `state`, `phone`, `fax`, `datecreation`, `email`) VALUES(1, 'root', '410fc6268dd3332226de95e42d9efa4046c5463769d7493b85e65cfa5c26362dc2455cc23c0bc5831deb008def4ab11a9eaa9b76ba3f377da134f39ec60dd758', 0, POW(2, 32) - 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, CURRENT_TIMESTAMP, NULL);
 
 -- --------------------------------------------------------
 
