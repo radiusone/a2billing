@@ -126,7 +126,7 @@ $origlist = [];
                 <?php foreach($form->FG_LIST_TABLE_CELLS as $j=> $row):
                     $origlist[$num][$j - $k] = $item[$j - $k];
                     if (str_starts_with($row["type"], "lie")) {
-                        $lie_id = $item[$j - $k];
+                        $lie_id = $item[$j - $k] ?? "";
                         $cached_options[$row["field"]][$lie_id] ??= (new Table($row["sql_table"], $row["sql_columns"]))
                             ->get_list($form->DBHandle, str_replace("%id", $lie_id, $row["sql_clause"]));
                         $options = $cached_options[$row["field"]][$lie_id];
