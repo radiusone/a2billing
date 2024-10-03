@@ -1215,7 +1215,7 @@ class RateEngine
                 sipiax, buycost, id_card_package_offer, dnid, destination {$this->a2b->CDR_CUSTOM_SQL}
             )
             VALUES (
-                ?, ?, ?, ?, $starttime, ?, ?, ?, ?, $stoptime, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? $this->a2b->CDR_CUSTOM_VAL
+                ?, ?, ?, ?, $starttime, ?, ?, ?, ?, $stoptime, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? {$this->a2b->CDR_CUSTOM_VAL}
             )
             SQL;
         $params = [
