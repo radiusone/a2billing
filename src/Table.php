@@ -151,6 +151,7 @@ class Table
             || str_starts_with($value, "current_timestamp")
             || str_starts_with($value, "(select")
             || str_starts_with($value, "case when")
+            || str_starts_with($value, "count(")
             || str_starts_with($value, "left(")
             || str_starts_with($value, "right(")
             || str_starts_with($value, "replace(")
@@ -253,11 +254,7 @@ class Table
         $direction = strtoupper($direction) === "ASC" ? "ASC" : "DESC";
         $orderings = array_filter(explode(",", $order) ?: []);
         if (!empty($orderings)) {
-            // escape column names, but watch for use of subqueries and don't escape them
-            array_walk(
-                $orderings,
-                fn (&$v) => $v = (str_contains($v, "(") ? $v : $this->quote_identifier($v)) . " $direction"
-            );
+            array_walk($orderings, fn (&$v) => $v = $this->quote_identifier($v) . " $direction");
             $order_sql = "ORDER BY " . implode(",", $orderings);
         } else {
             $order_sql = "";
@@ -364,16 +361,16 @@ class Table
      *
      * @param ADOConnection $db
      * @param array $conditions
-     * @return array
+     * @return int
      */
-    public function countRows(ADOConnection $db, array $conditions = []): array
+    public function countRows(ADOConnection $db, array $conditions = []): int
     {
         $old_fields = $this->fields;
         $this->fields = "COUNT(*)";
-        $data = $this->getRows($db, $conditions);
+        $data = $this->getRow($db, $conditions);
         $this->fields = $old_fields;
 
-        return $data[0][0] ?? [];
+        return $data[0] ?? 0;
     }
 
     public function Table_count(ADOConnection $DBHandle, string $clause = "", string $compare = "", int $cache = 0)

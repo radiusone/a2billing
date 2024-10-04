@@ -1314,7 +1314,7 @@ class FormHandler
                     echo "<br>Clause : " . $this->FG_QUERY_WHERE_CLAUSE;
                 }
                 if (DB_TYPE === "postgres") {
-                    $this->FG_LIST_VIEW_ROW_COUNT = $instance_table->Table_count($this->DBHandle, $this->FG_QUERY_WHERE_CLAUSE);
+                    $this->FG_LIST_VIEW_ROW_COUNT = $instance_table->countRows($this->DBHandle, $this->list_query_conditions);
                 } else {
                     $res_count = $instance_table->SQLExec($this->DBHandle, "SELECT FOUND_ROWS() as count");
                     $this->FG_LIST_VIEW_ROW_COUNT = $res_count[0][0];
@@ -1803,7 +1803,7 @@ class FormHandler
         $rowcount = 0;
         foreach ($this->FG_FK_TABLENAMES as $i => $table) {
             $instance_table = new Table($table);
-            $rowcount += $instance_table->Table_count($this->DBHandle, $this->FG_FK_EDITION_CLAUSE[$i], $processed['id']);
+            $rowcount += $instance_table->countRows($this->DBHandle, [$this->FG_FK_EDITION_CLAUSE[$i] => $processed['id']]);
         }
         $this->FG_FK_RECORDS_COUNT = $rowcount;
         if ($this->FG_DEBUG == 1) {
