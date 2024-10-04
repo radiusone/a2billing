@@ -126,7 +126,7 @@ $origlist = [];
                     $origlist[$num][$j - $k] = $item[$j - $k];
                     if (str_starts_with($row["type"], "lie")) {
                         if (empty($cached_options[$row["field"]])) {
-                            $options = (new Table($row["sql_table"], $row["sql_columns"]))->get_list($form->DBHandle, str_replace("%id", $item[$j - $k] ?? "", $row["sql_clause"]));
+                            $options = (new Table($row["sql_table"], $row["sql_columns"]))->get_list($form->DBHandle, str_replace("%id", $item[$j - $k], $row["sql_clause"]));
                             $cached_options[$row["field"]] = $options;
                         } else {
                             $options = $cached_options[$row["field"]];
