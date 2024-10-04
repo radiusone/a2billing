@@ -280,6 +280,9 @@ class Table
         return $data[0] ?? [];
     }
 
+    /**
+     * @deprecated 3.0 Use Table::getRows()
+     */
     public function get_list(ADOConnection $DBHandle, string $where = "", string $orderby = "", string $sens = "ASC", int $limite = 0, int $current_record = 0, array $groupby = [])
     {
         $sql = "SELECT $this->fields FROM $this->table";
@@ -373,6 +376,9 @@ class Table
         return $data[0] ?? 0;
     }
 
+    /**
+     * @deprecated 3.0 Use Table::countRows()
+     */
     public function Table_count(ADOConnection $DBHandle, string $clause = "", string $compare = "", int $cache = 0)
     {
         $sql = "SELECT count(*) FROM $this->table";
@@ -433,6 +439,9 @@ class Table
         return true;
     }
 
+    /**
+     * @deprecated 3.0 Use Table::addRow()
+     */
     public function Add_table(ADOConnection $DBHandle, string $value, string $func_fields = "", string $func_table = "", string $id_name = "", bool $subquery = false)
     {
         if ($func_fields !== "") {
@@ -518,6 +527,9 @@ class Table
         return $db->Execute($query, $parameters) !== false;
     }
 
+    /**
+     * @deprecated 3.0 Use Table::updateRow()
+     */
     public function Update_table(ADOConnection $DBHandle, string $param_update, string $clause, string $func_table = "")
     {
 
@@ -573,6 +585,9 @@ class Table
         return $db->Execute($query, $params) !== false;
     }
 
+    /**
+     * @deprecated 3.0 Use Table::deleteRow()
+     */
     public function Delete_table(ADOConnection $DBHandle, string $clause, string $func_table = "")
     {
 
@@ -599,6 +614,9 @@ class Table
         return $this->ExecuteQuery($DBHandle, $query);
     }
 
+    /**
+     * @deprecated 3.0 Use Table::deleteRow()
+     */
     public function Delete_Selected(ADOConnection $DBHandle, string $clause = "")
     {
         $table = $this->quote_identifier($this->table);
