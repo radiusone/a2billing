@@ -87,7 +87,7 @@ if (!empty($action)) {
             if (!empty($idc) && is_numeric($idc)) {
                 $DBHandle  = DbConnect();
                 $instance_sub_table = new Table("cc_invoice_item", "*");
-                $instance_sub_table -> Delete_Selected($DBHandle, "id = $idc" );
+                $instance_sub_table->deleteRow($DBHandle, ["id" => $idc]);
             }
             Header ("Location: A2B_invoice_edit.php?"."id=".$id);
             break;

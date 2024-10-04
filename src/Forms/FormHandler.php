@@ -1516,7 +1516,7 @@ class FormHandler
     public function Delete_Selected()
     {
         $instance_table = new Table($this->FG_QUERY_TABLE_NAME, $this->FG_QUERY_COLUMN_LIST);
-        $instance_table->Delete_Selected($this->DBHandle, $this->FG_QUERY_WHERE_CLAUSE);
+        $instance_table->deleteRow($this->DBHandle, $this->list_query_conditions);
     }
 
     /**

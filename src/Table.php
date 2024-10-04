@@ -154,6 +154,7 @@ class Table
             || str_starts_with($value, "count(")
             || str_starts_with($value, "left(")
             || str_starts_with($value, "right(")
+            || str_starts_with($value, "concat(")
             || str_starts_with($value, "replace(")
             || str_starts_with($value, "substring(")
             || str_starts_with($value, "lower(")
@@ -622,46 +623,6 @@ class Table
         $query = "DELETE FROM $table WHERE $where";
 
         return $db->Execute($query, $params) !== false;
-    }
-
-    /**
-     * @deprecated 3.0 Use Table::deleteRow()
-     */
-    public function Delete_table(ADOConnection $DBHandle, string $clause, string $func_table = "")
-    {
-
-        if ($func_table !== "") {
-            $this->table = $func_table;
-        }
-
-        foreach ($this->FK_TABLES as $i => $table) {
-            $table = $this->quote_identifier($table);
-            if ($this->FK_DELETE === false) {
-                $QUERY = "UPDATE $table SET {$this->FK_EDITION_CLAUSE[$i]} = -1 WHERE {$this->FK_EDITION_CLAUSE[$i]} = $this->FK_ID_VALUE";
-            } else {
-                $QUERY = "DELETE FROM $table WHERE {$this->FK_EDITION_CLAUSE[$i]} = $this->FK_ID_VALUE";
-            }
-            if ($this->debug_st) {
-                echo "<br>$QUERY";
-            }
-            $DBHandle->Execute($QUERY);
-        }
-
-        $table = $this->quote_identifier($this->table);
-        $query = "DELETE FROM $table WHERE ($clause)";
-
-        return $this->ExecuteQuery($DBHandle, $query);
-    }
-
-    /**
-     * @deprecated 3.0 Use Table::deleteRow()
-     */
-    public function Delete_Selected(ADOConnection $DBHandle, string $clause = "")
-    {
-        $table = $this->quote_identifier($this->table);
-        $query = "DELETE FROM  $table WHERE ($clause)";
-
-        return $this->ExecuteQuery($DBHandle, $query);
     }
 
     /**
