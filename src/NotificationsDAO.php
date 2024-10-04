@@ -51,12 +51,8 @@ class NotificationsDAO
     {
         if (is_numeric($id)) {
             $DBHandle = DbConnect();
-            $table = new Table("cc_notification", "*");
-            $CLAUSE = " id = " . $id ;
-            $table->Delete_table($DBHandle, $CLAUSE);
-            $table = new Table("cc_notification_admin", "*");
-            $CLAUSE = " id_notification = " . $id ;
-            $table->Delete_table($DBHandle, $CLAUSE);
+            (new Table("cc_notification"))->deleteRow($DBHandle, ["id" => $id]);
+            (new Table("cc_notification_admin"))->deleteRow($DBHandle, ["id_notification" => $id]);
 
             return true;
         } else

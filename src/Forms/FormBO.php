@@ -29,24 +29,17 @@ class FormBO
             $FormHandler -> FG_INTRO_TEXT_ASK_DELETION = gettext ("This did is in use by customer id:".$row[0][0].", If you really want remove this ". $FormHandler -> FG_INSTANCE_NAME .", click on the delete button.");
     }
 
-    /**
-     * Function did_use_delete
-     * @public
-     */
-    public static function did_use_delete()
+    public static function did_use_delete(): void
     {
         $FormHandler = FormHandler::GetInstance();
         $processed = $FormHandler->getProcessed();
-        $did_id=$processed['id'];
-        $FG_TABLE_DID_USE_NAME = "cc_did_use";
-        $FG_TABLE_DID_USE_CLAUSE= "id_did = '".$did_id."' and releasedate IS NULL";
-        $FG_TABLE_DID_USE_PARAM= "releasedate = now()";
-        $instance_did_use_table = new Table($FG_TABLE_DID_USE_NAME);
-        $result_query= $instance_did_use_table -> Update_table ($FormHandler->DBHandle, $FG_TABLE_DID_USE_PARAM, $FG_TABLE_DID_USE_CLAUSE, null);
-        $FG_TABLE_DID_USE_NAME = "cc_did_destination";
-        $instance_did_use_table = new Table($FG_TABLE_DID_USE_NAME);
-        $FG_TABLE_DID_USE_CLAUSE= "id_cc_did = '".$did_id."'";
-        $result_query= $instance_did_use_table -> Delete_table ($FormHandler->DBHandle, $FG_TABLE_DID_USE_CLAUSE, null);
+        $did_id = $processed['id'];
+        (new Table("cc_did_use"))->updateRow(
+            $FormHandler->DBHandle,
+            ["releasedate" => "now()"],
+            ["id_did" => $did_id, "releasedate" => null]
+        );
+        (new Table("cc_did_destination"))->deleteRow($FormHandler->DBHandle, ["id_cc_did" => $did_id]);
     }
 
     /**

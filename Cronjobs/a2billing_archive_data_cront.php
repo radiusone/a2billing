@@ -86,9 +86,12 @@ $instance_table = new Table();
 
 $prior_x_month = $A2B->config["backup"]['archive_call_prior_x_month'];
 
+$interval = "CURRENT_TIMESTAMP - INTERVAL ";
 if ($A2B->config["database"]['dbtype'] == "postgres") {
+    $interval .= "'$prior_x_month months'";
     $condition = "CURRENT_TIMESTAMP - interval '$prior_x_month months' > starttime";
 } else {
+    $interval .= "$prior_x_month MONTH";
     $condition = "DATE_SUB(NOW(),INTERVAL $prior_x_month MONTH) > starttime";
 }
 
@@ -99,6 +102,5 @@ $id_name = "";
 $subquery = true;
 $result = $instance_table->Add_table($A2B->DBHandle, $value, $func_fields, $func_table, $id_name, $subquery);
 
-$fun_table = "cc_call";
-$result = $instance_table->Delete_table($A2B->DBHandle, $condition, $fun_table);
+(new Table("cc_call"))->deleteRow($A2B->DBHandle, ["starttime" => ["<=", $interval]]);
 write_log($logfile_cront_archive, basename(__FILE__) . ' line:' . __LINE__ . "[#### ARCHIVING DATA END ####]");

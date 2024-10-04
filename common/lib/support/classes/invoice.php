@@ -18,11 +18,7 @@ class invoice
     {
         $DBHandle = DbConnect();
         $instance_sub_table = new Table("cc_invoice", "*");
-        $QUERY = " id = " . $id;
-        $return = null;
-        $return = $instance_sub_table->get_list($DBHandle, $QUERY);
-
-        $value = $return[0];
+        $value = $instance_sub_table->getRow($DBHandle, ["id" => $id]);
         if (!is_null($value)) {
             $this->id = $value["id"];
             $this->card = $value["id_card"];
@@ -36,10 +32,7 @@ class invoice
 
         if (!is_null($this->card)) {
             $instance_sub_table = new Table("cc_card", "lastname, firstname,username");
-            $QUERY = " id = " . $this->card;
-            $return = null;
-            $return = $instance_sub_table->get_list($DBHandle, $QUERY);
-            $value = $return[0];
+            $value = $instance_sub_table->getRow($DBHandle, ["id" => $this->card]);
 
             if (!is_null($value)) {
                 $this->username = $value["lastname"] . " " . $value["firstname"] . " " . "(" . $value["username"] . ")";
@@ -104,10 +97,8 @@ class invoice
         if (!is_null($this->id)) {
             $result = array ();
             $DBHandle = DbConnect();
-            $instance_sub_table = new Table("cc_invoice_item", "*");
-            $QUERY = " id_invoice = " . $this->id;
-            $return = null;
-            $return = $instance_sub_table->get_list($DBHandle, $QUERY, "date");
+            $instance_sub_table = new Table("cc_invoice_item");
+            $return = $instance_sub_table->getRows($DBHandle, ["id_invoice" => $this->id]);
             $i = 0;
             foreach ($return as $value) {
                 $comment = new InvoiceItem($value['id'], $value['description'], $value['date'], $value["price"], $value["VAT"],$value["type_ext"],$value["id_ext"]);
@@ -126,10 +117,8 @@ class invoice
         if (!is_null($this->id)) {
             $result = array ();
             $DBHandle = DbConnect();
-            $instance_sub_table = new Table("cc_invoice_item", "*");
-            $QUERY = " id_invoice = " . $this->id;
-            $return = null;
-            $return = $instance_sub_table->get_list($DBHandle, $QUERY, "date");
+            $instance_sub_table = new Table("cc_invoice_item");
+            $return = $instance_sub_table->getRows($DBHandle, ["id_invoice" => $this->id]);
             $i = 0;
             foreach ($return as $value) {
                 if ($value['id_ext'] && $value['type_ext'] == "CALLS") {
@@ -168,10 +157,12 @@ class invoice
     {
         if (!is_null($this->id)) {
             $DBHandle = DbConnect();
-            $instance_sub_table = new Table("cc_invoice_payment,cc_logpayment", "*");
-            $CLAUSE = " id_invoice = " . $this->id . " AND id_payment = cc_logpayment.id";
-            $result = null;
-            $result = $instance_sub_table->get_list($DBHandle, $CLAUSE, "date");
+            $instance_sub_table = new Table(
+                "cc_invoice_payment",
+                "*",
+                ["cc_logpayment" => ["cc_invoice_payment.id_payment", "cc_logpayment.id", "=", "NATURAL"]]
+            );
+            $result = $instance_sub_table->getRows($DBHandle, ["id_invoice" => $this->id], "date");
             return $result;
         } else {
             return null;
@@ -182,10 +173,7 @@ class invoice
     {
         if (!is_null($this->id)) {
             $DBHandle = DbConnect();
-            $instance_sub_table = new Table("cc_invoice_payment", "*");
-            $CLAUSE = " id_invoice = " . $this->id . " AND id_payment = $idpayment";
-            $result = null;
-            $instance_sub_table->Delete_table($DBHandle, $CLAUSE);
+            (new Table("cc_invoice_payment"))->deleteRow($DBHandle, ["id_invoice" => $this->id, "id_payment" => $idpayment]);
         } else {
             return null;
         }
@@ -195,10 +183,7 @@ class invoice
     {
         if (!is_null($this->id)) {
             $DBHandle = DbConnect();
-            $instance_sub_table = new Table("cc_invoice_payment", "*");
-            $fields = " id_invoice , id_payment";
-            $values = " $this->id , $idpayment	";
-            $instance_sub_table->Add_table($DBHandle, $values, $fields);
+            (new Table("cc_invoice_payment"))->addRow($DBHandle, ["id_invoice" => $this->id, "id_payment" => $idpayment]);
         } else {
             return null;
         }
@@ -208,10 +193,7 @@ class invoice
     {
         if (!is_null($this->id)) {
             $DBHandle = DbConnect();
-            $instance_sub_table = new Table("cc_invoice", "*");
-            $clause = "id = " . $this->id;
-            $param = " paid_status = " . $status;
-            $instance_sub_table->Update_table($DBHandle, $param, $clause);
+            (new Table("cc_invoice"))->updateRow($DBHandle, ["paid_status" => $status], ["id" => $this->id]);
             if ($this->paid_status !=$status) {
                 $items = $this -> loadItems();
                 foreach ($items as $item) {
@@ -232,11 +214,11 @@ class invoice
     public function insertInvoiceItem($desc, $price, $VAT)
     {
         $DBHandle = DbConnect();
-        $instance_sub_table = new Table("cc_invoice_item", "*");
-        $QUERY_FIELDS = 'id_invoice, description,price, VAT';
-        $QUERY_VALUES = "'$this->id', '$desc','$price', '$VAT'";
-        $return = $instance_sub_table->Add_table($DBHandle, $QUERY_VALUES, $QUERY_FIELDS, 'cc_invoice_item', 'id');
-
+        (new Table("cc_invoice_item"))->addRow(
+            $DBHandle,
+            ["id_invoice" => $this->id, "description" => $desc, "price" => $price, "VAT" => $VAT],
+            $return
+        );
     }
 
     public static function getStatusDisplay($status)

@@ -47,9 +47,7 @@ if (empty($id)) {
     Header ("Location: A2B_entity_package.php");
 }
 
-$table_pack = new Table("cc_package_offer ", "*");
-$pack_clauses = "id = $id";
-$result_pack=$table_pack ->get_list(DbConnect(), $pack_clauses);
+$result_pack=(new Table("cc_package_offer", "*"))->getRows(DbConnect(), ["id" => $id]);
 
 if (!is_array($result_pack)|| sizeof($result_pack)!=1) {
     Header ("Location: A2B_entity_package.php");
@@ -117,26 +115,19 @@ if (isset($addbatchrate) && ($addbatchrate)) {
 
 if (isset($addrate) && is_numeric($addrate)) {
     $DBHandle = DbConnect();
-    $add_rate_table = new Table("cc_package_rate", "*");
-    $fields = " package_id , rate_id";
-    $values = " $id , $addrate";
-    $add_rate_table->Add_table($DBHandle, $values, $fields);
+    (new Table("cc_package_rate"))->addRow($DBHandle, ["package_id" => $id, "rate_id" => $addrate]);
     Header ("Location: A2B_package_manage_rates.php?id=$id");
 }
 
 if (isset($delrate) && is_numeric($delrate)) {
     $DBHandle = DbConnect();
-    $del_rate_table = new Table("cc_package_rate", "*");
-    $CLAUSE = " package_id = " . $id . " AND rate_id = $delrate";
-    $del_rate_table->Delete_table($DBHandle, $CLAUSE);
+    (new Table("cc_package_rate"))->deleteRow($DBHandle, ["package_id" => $id, "rate_id" => $delrate]);
     Header ("Location: A2B_package_manage_rates.php?id=$id");
 }
 
 if (isset($delallrate) && ($delallrate)) {
     $DBHandle = DbConnect();
-    $del_rate_table = new Table("cc_package_rate", "*");
-    $CLAUSE = " package_id = " . $id;
-    $del_rate_table->Delete_table($DBHandle, $CLAUSE);
+    (new Table("cc_package_rate"))->deleteRow($DBHandle, ["package_id" => $id]);
     Header ("Location: A2B_package_manage_rates.php?id=$id");
 }
 

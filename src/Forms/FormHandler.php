@@ -1859,9 +1859,10 @@ class FormHandler
         } else {
             $value = trim($processed[$table_split["name"]]);
         }
-        $instance_sub_table = new Table($table_split["table"], $table_split["name"] . ", " . $table_split["fk"]);
-        $SPLIT_FG_DELETE_CLAUSE = $table_split["name"] . "='" . $value . "' AND " . $table_split["name"] . "='" . trim($id) . "'";
-        $instance_sub_table->Delete_table($this->DBHandle, $SPLIT_FG_DELETE_CLAUSE);
+        (new Table($table_split["name"]))->deleteRow(
+            $this->DBHandle,
+            [$table_split["name"] => $value, $table_split["name"] => trim($id)]
+        );
     }
 
 
