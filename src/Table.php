@@ -683,6 +683,13 @@ class Table
                 implode(",", array_fill(0, count($value), "?"))
             );
             $params = array_merge($params, $value);
+        } elseif (is_null($value)) {
+            if ($operator === "=") {
+                $operator = "IS";
+            } elseif ($operator === "!=") {
+                $operator = "IS NOT";
+            }
+            $placeholder = "NULL";
         } elseif ($this->quote_identifier("$value") === "$value") {
             // something like a column name passed as RHS
             $placeholder = $value;
