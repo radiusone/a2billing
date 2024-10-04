@@ -449,7 +449,7 @@ class FormHandler
     /** @var string */
     public string $FG_LIST_ADDING_BUTTON_MSG2;
 
-    public function __construct(string $tablename = "", string $instance_name = "", string $primary_key = "id")
+    public function __construct(string $tablename, string $instance_name, string $primary_key = "id")
     {
         Console::log('Construct FormHandler');
         Console::logMemory($this, 'FormHandler Class : Line ' . __LINE__);
@@ -522,15 +522,6 @@ class FormHandler
     public static function GetInstance(): FormHandler
     {
         return self::$Instance;
-    }
-
-    public function setDBHandler($DBHandle=null)
-    {
-        Console::log('FormHandler -> setDBHandler');
-        Console::logMemory($this, 'FormHandler -> setDBHandler : Line '.__LINE__);
-        Console::logSpeed('FormHandler -> setDBHandler : Line '.__LINE__);
-
-        $this->DBHandle = $DBHandle;
     }
 
     /**
