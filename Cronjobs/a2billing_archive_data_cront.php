@@ -82,25 +82,16 @@ if (!$A2B->DbConnect()) {
     exit;
 }
 
-$instance_table = new Table();
-
 $prior_x_month = $A2B->config["backup"]['archive_call_prior_x_month'];
 
 $interval = "CURRENT_TIMESTAMP - INTERVAL ";
 if ($A2B->config["database"]['dbtype'] == "postgres") {
     $interval .= "'$prior_x_month months'";
-    $condition = "CURRENT_TIMESTAMP - interval '$prior_x_month months' > starttime";
 } else {
     $interval .= "$prior_x_month MONTH";
-    $condition = "DATE_SUB(NOW(),INTERVAL $prior_x_month MONTH) > starttime";
 }
 
-$value = "SELECT sessionid, uniqueid, card_id, nasipaddress, starttime, stoptime, sessiontime, calledstation, sessionbill, id_tariffgroup, id_tariffplan, id_ratecard, id_trunk, sipiax, src, id_did, buycost, id_card_package_offer, real_sessiontime, dnid, terminatecauseid, destination FROM cc_call WHERE $condition";
-$func_fields = "sessionid, uniqueid, card_id, nasipaddress, starttime, stoptime, sessiontime, calledstation, sessionbill, id_tariffgroup, id_tariffplan, id_ratecard, id_trunk, sipiax, src, id_did, buycost, id_card_package_offer, real_sessiontime, dnid, terminatecauseid, destination";
-$func_table = 'cc_call_archive';
-$id_name = "";
-$subquery = true;
-$result = $instance_table->Add_table($A2B->DBHandle, $value, $func_fields, $func_table, $id_name, $subquery);
-
+$func_fields = "sessionid, uniqueid, card_id, nasipaddress, starttime, stoptime, sessiontime, calledstation, sessionbill, id_tariffgroup, id_tariffplan, id_ratecard, id_trunk, sipiax, src, id_did, buycost, id_card_package_offer, real_sessiontime, dnid, terminatecauseid, destination, a2b_custom1, a2b_custom2";
+(new Table("cc_call_archive"))->addRowsFromSelect($A2B->DBHandle, new Table("cc_call", $func_fields), ["starttime" => ["<=", $interval]]);
 (new Table("cc_call"))->deleteRow($A2B->DBHandle, ["starttime" => ["<=", $interval]]);
 write_log($logfile_cront_archive, basename(__FILE__) . ' line:' . __LINE__ . "[#### ARCHIVING DATA END ####]");

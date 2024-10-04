@@ -404,7 +404,7 @@ class Table
      * Add a row with a proper parameterized statement
      *
      * @param ADOConnection $db
-     * @param array $values
+     * @param array<string,mixed> $values
      * @param $id
      * @return bool
      */
@@ -431,12 +431,31 @@ class Table
 
         $result = $db->Execute($query, $parameters);
 
-        if ($result === false) {
-            return false;
-        }
-        $id = $db->Insert_ID();
+            if ($result === false) {
+                return false;
+            }
+            $id = $db->Insert_ID();
 
         return true;
+    }
+
+    /**
+     * Add rows using INSERT ... SELECT with paramaterized statements
+     *
+     * @param ADOConnection $db
+     * @param Table $source
+     * @param array $conditions
+     * @return int
+     */
+    public function addRowsFromSelect(ADOConnection $db, Table $source, array $conditions): int
+    {
+        $table = $this->quote_identifier($this->table);
+        $source_table = $this->quote_identifier($source->table);
+        $where = $this->processWhereClauseArray($conditions, $params);
+        $query = "INSERT INTO $table ($source->fields) SELECT $source->fields FROM $source_table $where";
+        $result = $db->Execute($query, $params);
+
+        return $result ? $db->Affected_Rows() : 0;
     }
 
     /**
