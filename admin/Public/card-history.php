@@ -88,7 +88,7 @@ normalize_day_of_month($tostatsday_sday, $tostatsmonth_sday);
 if ($fromday && isset($fromstatsday_sday) && isset($fromstatsmonth_sday)) $date_clause.=" AND $UNIX_TIMESTAMP(ch.datecreated) >= $UNIX_TIMESTAMP('$fromstatsmonth_sday-$fromstatsday_sday')";
 if ($today && isset($tostatsday_sday) && isset($tostatsmonth_sday)) $date_clause.=" AND $UNIX_TIMESTAMP(ch.datecreated) <= $UNIX_TIMESTAMP('$tostatsmonth_sday-".sprintf("%02d",intval($tostatsday_sday)/*+1*/)." 23:59:59')";
 
-if (strpos($SQLcmd, 'WHERE') > 0) {
+if (strpos($SQLcmd ?? "", 'WHERE') > 0) {
     $FG_TABLE_CLAUSE = substr($SQLcmd,6).$date_clause;
 } elseif (strpos($date_clause, 'AND') > 0) {
     $FG_TABLE_CLAUSE = substr($date_clause,5);

@@ -298,6 +298,7 @@ $smarty->display('main.tpl');
                 if ($i % 2 == 0) {
                     $bgcolor = "bgcolor='#F2F2EE'";$mouseout = "bgColor='#F2F2EE'";} else {$bgcolor = "bgcolor='#FCFBFB'";$mouseout = "bgColor='#FCFBFB'";
                 }
+                $ALOC = $ALOC ?? 0;
                 ?>
                     <tr onmouseover="bgColor='#FFDEA6'" onmouseout=<?php echo $mouseout?> <?php echo $bgcolor?>>
                     <td class="tableBody" align="center" valign="top"><?php echo $ASR?></td>

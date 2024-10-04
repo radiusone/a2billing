@@ -91,7 +91,7 @@ function split_data(?string $values): array
 function a2b_round($number, $PRECISION = 6): float
 {
 
-    return round($number, $PRECISION);
+    return round($number ?? 0, $PRECISION);
 }
 
 /*
