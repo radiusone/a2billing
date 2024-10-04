@@ -410,6 +410,22 @@ class Table
      */
     public function addRow(ADOConnection $db, array $values, &$id = null): bool
     {
+        return $this->addRows($db, [$values], $id);
+    }
+
+    /**
+     * Add multiple rows with proper paramaterized statements
+     * This assumes that all rows are identically structured
+     * including things like function calls, subqueries, etc.
+     *
+     * @param ADOConnection $db
+     * @param array<array<string,mixed>> $rows
+     * @param null $id
+     * @return bool
+     */
+    public function addRows(ADOConnection $db, array $rows, &$id = null): bool
+    {
+        $values = $rows[0];
         $fields = array_keys($values);
         array_walk($fields, fn (&$v) => $v = $this->quote_identifier($v));
         $this->fields = implode(",", $fields);
@@ -428,13 +444,17 @@ class Table
         $placeholders = implode(",", array_map($value_callback, $values));
 
         $query = "INSERT INTO $table ($this->fields) VALUES ($placeholders)";
+        $statement = $db->Prepare($query);
 
-        $result = $db->Execute($query, $parameters);
-
+        foreach ($rows as $values) {
+            $parameters = [];
+            array_map($value_callback, $values);
+            $result = $db->Execute($statement, $parameters);
             if ($result === false) {
                 return false;
             }
             $id = $db->Insert_ID();
+        }
 
         return true;
     }
@@ -452,7 +472,7 @@ class Table
         $table = $this->quote_identifier($this->table);
         $source_table = $this->quote_identifier($source->table);
         $where = $this->processWhereClauseArray($conditions, $params);
-        $query = "INSERT INTO $table ($source->fields) SELECT $source->fields FROM $source_table $where";
+        $query = "INSERT INTO $table SELECT $source->fields FROM $source_table $where";
         $result = $db->Execute($query, $params);
 
         return $result ? $db->Affected_Rows() : 0;
