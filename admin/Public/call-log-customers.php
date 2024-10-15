@@ -264,8 +264,8 @@ if (count($list_total_day)):
             <td><?= get_2bill ($data["sell"]) ?></td>
             <td><?= get_2bill ($data["buy"] ) ?></td>
             <td><?= get_2bill ($data["sell"] - $data["buy"] ) ?></td>
-            <td><?= $data["sell"] && $data["buy"] > $data["sell"] ? get_2dec_percentage((($data ["sell"] - $data ["buy"]) / $data ["sell"]) * 100) : "NULL"?></td>
-            <td><?= $data["buy"] > $data["sell"] ? get_2dec_percentage((($data["sell"] - $data ["buy"]) / $data ["buy"]) * 100) : "NULL"?></td>
+            <td><?= $data["sell"] ? get_2dec_percentage((($data ["sell"] - $data ["buy"]) / $data ["sell"]) * 100) : "NULL"?></td>
+            <td><?= $data["buy"] ? get_2dec_percentage((($data["sell"] - $data ["buy"]) / $data ["buy"]) * 100) : "NULL"?></td>
         </tr>
     <?php endforeach ?>
     </tbody>
