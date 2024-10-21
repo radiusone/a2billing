@@ -1262,13 +1262,6 @@ class RateEngine
         }
 
         if ($sessiontime > 0) {
-
-            $params = [a2b_round($cost), (int)$didcall + (int)$callback];
-            if ((int)$didcall + (int)$callback === 0) {
-                $params[] = $calledstation;
-            }
-            $params[] = $this->a2b->username;
-
             //Update the global credit
             $this->a2b->credit = $this->a2b->credit + $cost;
 
@@ -1278,6 +1271,12 @@ class RateEngine
                     firstusedate = IF(nbused > 0, firstusedate, CURRENT_TIMESTAMP), nbused = nbused + 1
                 WHERE username = ?
                 SQL;
+            $params = [
+                a2b_round($cost),
+                (int)$didcall + (int)$callback,
+                $calledstation,
+                $this->a2b->username
+            ];
             $this->a2b->DBHandle->Execute($query, $params);
             $this->a2b->debug(A2Billing::DEBUG, "Query: $query", $params);
 
