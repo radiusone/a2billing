@@ -99,8 +99,8 @@ class A2Billing
     public string $early_destination = '';
     /** @var string */
     public string $sip_iax_buddy = "";
-    /** @var int credit on the account */
-    public int $credit;
+    /** @var int|float credit on the account */
+    public $credit;
     public int $tariff;
     /** @var int card status; 1=active 5=expired */
     public int $status;
@@ -673,8 +673,8 @@ class A2Billing
     */
     public function get_agi_request_parameter(): void
     {
-        $A2B_CUSTOM1 = substr($this->agi->get_variable("A2B_CUSTOM1", true), 0, 20);
-        $A2B_CUSTOM2 = substr($this->agi->get_variable("A2B_CUSTOM2", true), 0, 20);
+        $A2B_CUSTOM1 = substr($this->agi->get_variable("A2B_CUSTOM1", true) ?? "", 0, 20);
+        $A2B_CUSTOM2 = substr($this->agi->get_variable("A2B_CUSTOM2", true) ?? "", 0, 20);
         $A2B_CUSTOM1 = trim($this->sanitize_agi_data($A2B_CUSTOM1));
         $A2B_CUSTOM2 = trim($this->sanitize_agi_data($A2B_CUSTOM2));
 
@@ -1028,7 +1028,7 @@ class A2Billing
 
         $announce_time_correction = $this->rateEngine->ratecard_obj[0][61];
         $timeout = $timeout * $announce_time_correction;
-        $this->fct_say_time_2_call($timeout, $this->rateEngine->ratecard_obj[0][12]);
+        $this->fct_say_time_2_call($timeout, (float)$this->rateEngine->ratecard_obj[0][12]);
 
         return 1;
     }
@@ -1122,10 +1122,8 @@ class A2Billing
             $this->debug(self::INFO, "DIAL $dialstr");
             $this->agi->exec("DIAL $dialstr");
 
-            $answeredtime = $this->agi->get_variable("ANSWEREDTIME");
-            $answeredtime = $answeredtime['data'];
-            $dialstatus = $this->agi->get_variable("DIALSTATUS");
-            $dialstatus = $dialstatus['data'];
+            $answeredtime = (int)($this->agi->get_variable("ANSWEREDTIME", true) ?? 0);
+            $dialstatus = $this->agi->get_variable("DIALSTATUS", true);
 
             if ($this->agiconfig['record_call'] == 1) {
                 $this->debug(self::INFO, "EXEC StopMixMonitor ($this->uniqueid)");
@@ -1264,10 +1262,8 @@ class A2Billing
                 $this->agi->exec("DIAL $dialstr");
                 $this->debug(self::INFO, "DIAL $dialstr");
 
-                $answeredtime = $this->agi->get_variable("ANSWEREDTIME");
-                $answeredtime = (int)$answeredtime['data'];
-                $dialstatus = $this->agi->get_variable("DIALSTATUS");
-                $dialstatus = $dialstatus['data'];
+                $answeredtime = (int)($this->agi->get_variable("ANSWEREDTIME", true) ?? 0);
+                $dialstatus = $this->agi->get_variable("DIALSTATUS", true);
 
                 if ($this->agiconfig['record_call']) {
                     $this->agi->exec("StopMixMonitor");
@@ -1514,10 +1510,8 @@ class A2Billing
                     }
                 }
 
-                $answeredtime = $this->agi->get_variable("ANSWEREDTIME");
-                $answeredtime = (int)$answeredtime['data'];
-                $dialstatus = $this->agi->get_variable("DIALSTATUS");
-                $dialstatus = $dialstatus['data'];
+                $answeredtime = (int)($this->agi->get_variable("ANSWEREDTIME", true) ?? 0);
+                $dialstatus = $this->agi->get_variable("DIALSTATUS", true);
 
                 if ($this->agiconfig['record_call']) {
                     $this->agi->exec("StopMixMonitor");
@@ -1672,10 +1666,8 @@ class A2Billing
                     $this->DBHandle->Execute($query, $params);
                     $this->debug(self::DEBUG, "Query: $query", $params);
 
-                    $answeredtime = $this->agi->get_variable("ANSWEREDTIME");
-                    $answeredtime = (int)$answeredtime['data'];
-                    $dialstatus = $this->agi->get_variable("DIALSTATUS");
-                    $dialstatus = $dialstatus['data'];
+                    $answeredtime = (int)($this->agi->get_variable("ANSWEREDTIME", true) ?? 0);
+                    $dialstatus = $this->agi->get_variable("DIALSTATUS", true);
 
                     $terminatecauseid = $this->dialstatus_rev_list[$dialstatus] ?? 0;
 
@@ -1876,8 +1868,7 @@ class A2Billing
         $this->debug(self::INFO, "[DID CALL ZERO]");
     }
 
-
-    public function fct_say_time_2_call(int $timeout, int $rate = 0)
+    public function fct_say_time_2_call(int $timeout, float $rate = 0)
     {
         // set destination and timeout
         // say 'you have x minutes and x seconds'
@@ -2468,11 +2459,11 @@ class A2Billing
     public function update_callback_campaign()
     {
         $now = time();
-        $username = $this->agi->get_variable("USERNAME", true);
-        $userid= $this->agi->get_variable("USERID", true);
-        $called= $this->agi->get_variable("CALLED", true);
-        $phonenumber_id= $this->agi->get_variable("PHONENUMBER_ID", true);
-        $campaign_id= $this->agi->get_variable("CAMPAIGN_ID", true);
+        $username = $this->agi->get_variable("USERNAME", true) ?? "";
+        $userid = $this->agi->get_variable("USERID", true) ?? "";
+        $called = $this->agi->get_variable("CALLED", true) ?? "";
+        $phonenumber_id = $this->agi->get_variable("PHONENUMBER_ID", true) ?? "";
+        $campaign_id = $this->agi->get_variable("CAMPAIGN_ID", true) ?? "";
         $this->debug(self::DEBUG, "[MODE CAMPAIGN CALLBACK: USERNAME=$username USERID=$userid ]");
 
         $query = <<< SQL
