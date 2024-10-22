@@ -77,23 +77,27 @@ class Table
 
     /**
      * @param string|null $table the table we're working with
-     * @param string $list_fields when selecting, what fields will be selected
+     * @param array|string $list_fields when selecting, what fields will be selected
      * @param array $joins tables to join to the query; for example:
      *                      ["t2" => ["t1.col", "t2.col"]] gives "LEFT JOIN t2 ON (t1.col = t2.col)"
      *                      ["t2" => ["t1.col", "<", "t2.col", "INNER"]] gives "INNER JOIN t2 ON (t1.col < t2.col)"
      */
-    public function __construct(string $table = null, string $list_fields = "*", array $joins = [])
+    public function __construct(string $table = null, $list_fields = "*", array $joins = [])
     {
         $this->writelog = defined('WRITELOG_QUERY') && WRITELOG_QUERY;
         $this->table = $table;
-        $this->fields = $list_fields;
+        if (is_array($list_fields)) {
+            array_walk($list_fields, fn (&$v) => $v = $this->quote_identifier($v));
+            $this->fields = implode(",", $list_fields);
+        } else {
+            $this->fields = $list_fields;
+        }
         $this->joins = $joins;
         if (defined("DB_TYPE") && DB_TYPE === 'postgres') {
             $this->db_type = "postgres";
         }
 
         $this->query_handler = Query_trace::getInstance();
-
     }
 
     /**
@@ -146,7 +150,7 @@ class Table
 
     public function isSqlFunction(string $value): bool
     {
-        $value = strtolower($value);
+        $value = trim(strtolower($value));
         return str_starts_with($value, "now()")
             || str_starts_with($value, "current_timestamp")
             || str_starts_with($value, "date(")
