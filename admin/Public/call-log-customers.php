@@ -2,6 +2,7 @@
 
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -95,14 +96,14 @@ $dialstatus_list = getDialStatusList();
 $dialstatus_list_r = array_map(fn ($v) => array_reverse($v), $dialstatus_list);
 $yesno = getYesNoList();
 $calltype_list = [
-    [_("STANDARD")],
-    [_("SIP/IAX")],
-    [_("DIDCALL")],
-    [_("DID_VOIP")],
-    [_("CALLBACK")],
-    [_("PREDICT")],
-    [_("AUTO DIALER")],
-    [_("DID-ALEG")],
+    [0, _("STANDARD")],
+    [1, _("SIP/IAX")],
+    [2, _("DIDCALL")],
+    [3, _("DID_VOIP")],
+    [4, _("CALLBACK")],
+    [5, _("PREDICT")],
+    [6, _("AUTO DIALER")],
+    [7, _("DID-ALEG")],
 ];
 
 $HD_Form->no_debug();
@@ -186,21 +187,26 @@ if (empty($HD_Form->FG_QUERY_WHERE_CLAUSE)) {
 
 $list = $HD_Form->perform_action($form_action);
 
-$smarty->display ( 'main.tpl' );
+$smarty->display("main.tpl");
 $HD_Form->create_search_form();
 
 $HD_Form->create_toppage($form_action);
 $HD_Form->create_form("list", $list);
 
-
-$QUERY = "SELECT DATE(cc_call.starttime) AS day, SUM(cc_call.sessiontime) AS calltime,
-    SUM(cc_call.sessionbill) AS sell, COUNT(*) as nbcall,
-    SUM(cc_call.buycost) AS buy, SUM(CASE WHEN cc_call.sessiontime > 0 THEN 1 ELSE 0 END) AS success_calls
-FROM $HD_Form->FG_QUERY_TABLE_NAME
-WHERE $HD_Form->FG_QUERY_WHERE_CLAUSE
-GROUP BY day
-ORDER BY day";
-$list_total_day = $HD_Form->DBHandle->GetAll($QUERY);
+$table = new Table(
+    "cc_call",
+    [
+        "DATE(cc_call.starttime) AS day",
+        "SUM(cc_call.sessiontime) AS calltime",
+        "COUNT(*) AS nbcall",
+        "SUM(cc_call.buycost + 0) AS buy",
+        "SUM(cc_call.sessionbill + 0) AS sell",
+        "SUM(CASE WHEN sessionbill != 0 THEN ((sessionbill - buycost) / sessionbill) * 100 ELSE 0 END) AS margin",
+        "SUM(CASE WHEN buycost != 0 THEN ((sessionbill - buycost) / buycost) * 100 ELSE 0 END) AS markup",
+        "SUM(CASE WHEN cc_call.sessiontime > 0 THEN 1 ELSE 0 END) AS success_calls",
+    ]
+);
+$list_total_day = $table->getRows($DBHandle, $HD_Form->list_query_conditions, ["day"], "ASC", ["day"]);
 
 if (count($list_total_day)):
     $mmax = max(array_column($list_total_day, "calltime"));
@@ -223,11 +229,11 @@ if (count($list_total_day)):
     <thead>
         <tr>
             <th><?= _( "Date" ) ?></th>
-            <th><acronym title="<?= _( "Call duration" ) ?>"><?= _( "Time" ) ?></acronym></th>
+            <th><abbr title="<?= _( "Call duration" ) ?>"><?= _( "Time" ) ?></abbr></th>
             <th style="width: 10vw"></th>
             <th><?= _( "Calls" ) ?></th>
-            <th><acronym title="<?= _( "Average call length" ) ?>"><?= _( "Avg" ) ?></acronym></th>
-            <th><acronym title="<?= _( "Answer sieze ratio" ) ?>"><?= _( "ASR" ) ?></acronym></th>
+            <th><abbr title="<?= _( "Average call length" ) ?>"><?= _( "Avg" ) ?></abbr></th>
+            <th><abbr title="<?= _( "Answer sieze ratio" ) ?>"><?= _( "ASR" ) ?></abbr></th>
             <th><?= _( "Sell" ) ?></th>
             <th><?= _( "Buy" ) ?></th>
             <th><?= _( "Profit" ) ?></th>
@@ -236,36 +242,21 @@ if (count($list_total_day)):
         </tr>
     </thead>
     <tbody>
-                        <!-- LOOP -->
-    <?php
-    foreach ($list_total_day as $data):
-
-        $tmc = $data ["calltime"] / $data ["nbcall"];
-
-        $tmc = ($resulttype ?? "min") === "min"
-            ? sprintf ("%02d:%02d", $tmc / 60, $tmc % 60)
-            :intval ($tmc);
-
-        $minutes = ($resulttype ?? "min") === "min"
-            ? sprintf ("%02d:%02d", $data["calltime"] / 60, $data["calltime"] % 60)
-            : $data["calltime"];
-
-        if ($mmax > 0) {
-            $widthbar = intval(($data["calltime"] / $mmax) * 100);
-        }
-        ?>
+    <?php foreach ($list_total_day as $data): ?>
         <tr>
             <td><?= $data["day"] ?></td>
-            <td><?= $minutes ?></td>
-            <td aria-hidden="true"><div style="width: <?=$widthbar * 0.9?>%; background: darkred">&nbsp;</div></td>
+            <td><?= get_minute($data["calltime"]) ?></td>
+            <td aria-hidden="true">
+                <div style="width: <?= $mmax ? ($data["calltime"] / $mmax) * 100 : 0 ?>%; background: darkred">&nbsp;</div>
+            </td>
             <td><?= $data["nbcall"] ?></td>
-            <td><?= $tmc ?></td>
-            <td><?= get_2dec_percentage($data["success_calls"] * 100/ ($data["nbcall"]) ) ?></td>
-            <td><?= get_2bill ($data["sell"]) ?></td>
-            <td><?= get_2bill ($data["buy"] ) ?></td>
-            <td><?= get_2bill ($data["sell"] - $data["buy"] ) ?></td>
-            <td><?= $data["sell"] && $data["buy"] > $data["sell"] ? get_2dec_percentage((($data ["sell"] - $data ["buy"]) / $data ["sell"]) * 100) : "NULL"?></td>
-            <td><?= $data["buy"] > $data["sell"] ? get_2dec_percentage((($data["sell"] - $data ["buy"]) / $data ["buy"]) * 100) : "NULL"?></td>
+            <td><?= get_minute(intval($data ["calltime"] / $data ["nbcall"])) ?></td>
+            <td><?= get_2dec_percentage($data["success_calls"] * 100 / ($data["nbcall"]) ) ?></td>
+            <td><?= get_2bill($data["sell"]) ?></td>
+            <td><?= get_2bill($data["buy"] ) ?></td>
+            <td><?= get_2bill($data["sell"] - $data["buy"]) ?></td>
+            <td><?= get_2dec_percentage($data["margin"]) ?></td>
+            <td><?= get_2dec_percentage($data["markup"]) ?></td>
         </tr>
     <?php endforeach ?>
     </tbody>
@@ -279,12 +270,12 @@ if (count($list_total_day)):
             <td><?= get_2bill($totalsell) ?></td>
             <td><?= get_2bill($totalbuycost) ?></td>
             <td><?= get_2bill($totalsell - $totalbuycost) ?></td>
-            <td><?= $totalsell ? get_2dec_percentage((($totalsell - $totalbuycost) / $totalsell) * 100) : "NULL" ?></td>
-            <td><?= $totalbuycost ? get_2dec_percentage((($totalsell - $totalbuycost) / $totalbuycost) * 100) : "NULL"?></td>
+            <td><?= $totalsell ? get_2dec_percentage((($totalsell - $totalbuycost) / $totalsell) * 100) : _("n/a") ?></td>
+            <td><?= $totalbuycost ? get_2dec_percentage((($totalsell - $totalbuycost) / $totalbuycost) * 100) : _("n/a")?></td>
         </tr>
     </tfoot>
 </table>
 <?php endif ?>
 
-<?php $smarty->display('footer.tpl') ?>
+<?php $smarty->display("footer.tpl") ?>
 
