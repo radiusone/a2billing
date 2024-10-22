@@ -168,7 +168,7 @@ $origlist = [];
                     }
 
                     /**********************   IF LENGTH OF THE VALUE IS TOO LONG IT MIGHT BE CUT ************************/
-                    if ($row["maxsize"] > 0 && strlen($record_display) > $row["maxsize"]) {
+                    if ($row["maxsize"] > 0 && strlen($record_display ?? "") > $row["maxsize"]) {
                         $record_display = substr($record_display, 0, $row["maxsize"]) . "…";
                     }
                     $item[$j - $k] = $record_display;
@@ -177,7 +177,7 @@ $origlist = [];
                     <?php if (!empty($row["function"]) && is_callable($row["function"])): ?>
                         <?php call_user_func($row["function"], $record_display) ?>
                     <?php else: ?>
-                        <?= $record_display ?>
+                        <?= $record_display ?? "" ?>
                     <?php endif ?>
                     </td>
                 <?php endforeach ?>
