@@ -333,12 +333,12 @@ function getpost_ifset(array $test_vars, ?array &$data = null)
 
 /**
  * Used as callback for list/form elements
- * @param $value
+ *
+ * @param float $value
  * @param $currency
  * @return void
- * @noinspection PhpUnusedFunctionInspection
  */
-function display_money($value, $currency = BASE_CURRENCY)
+function display_money(float $value, $currency = BASE_CURRENCY)
 {
     echo number_format($value, 2, '.', ' ') . ' ' . strtoupper($currency);
 }
@@ -367,11 +367,11 @@ function get_minute($sessiontime)
 
 /**
  * Used as callback for list/form elements
- * @param $var
+ *
+ * @param float $var
  * @return void
- * @noinspection PhpUnusedFunctionInspection
  */
-function display_2dec($var)
+function display_2dec(float $var)
 {
     echo number_format($var, 2);
 }
@@ -387,7 +387,7 @@ function display_2dec_percentage($var)
     echo get_2dec_percentage($var);
 }
 
-function get_2dec_percentage($var): string
+function get_2dec_percentage(?float $var): string
 {
     if (isset ($var)) {
         return number_format($var, 2) . "%";
