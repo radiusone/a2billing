@@ -162,7 +162,7 @@ class invoice
                 "*",
                 ["cc_logpayment" => ["cc_invoice_payment.id_payment", "cc_logpayment.id", "=", "NATURAL"]]
             );
-            $result = $instance_sub_table->getRows($DBHandle, ["id_invoice" => $this->id], "date");
+            $result = $instance_sub_table->getRows($DBHandle, ["id_invoice" => $this->id], ["date"]);
             return $result;
         } else {
             return null;

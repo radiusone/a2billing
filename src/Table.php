@@ -149,9 +149,11 @@ class Table
         $value = strtolower($value);
         return str_starts_with($value, "now()")
             || str_starts_with($value, "current_timestamp")
+            || str_starts_with($value, "date(")
             || str_starts_with($value, "(select")
             || str_starts_with($value, "case when")
             || str_starts_with($value, "count(")
+            || str_starts_with($value, "sum(")
             || str_starts_with($value, "left(")
             || str_starts_with($value, "right(")
             || str_starts_with($value, "concat(")
@@ -242,27 +244,35 @@ class Table
      *
      * @param ADOConnection $db
      * @param array $conditions values to match placeholders in $where
-     * @param string $order the column(s) to order by (use commas for multiple)
+     * @param array $order the column(s) to order by
      * @param string $direction either "asc" or "desc"
+     * @param array $group the column(s) to group by
      * @param int $limit query limit
      * @return array
      */
-    public function getRows(ADOConnection $db, array $conditions = [], string $order = "", string $direction = "ASC", int $limit = 0): array
+    public function getRows(ADOConnection $db, array $conditions = [], array $order = [], string $direction = "ASC", array $group = [], int $limit = 0): array
     {
         $table = str_contains($this->table, " JOIN ") ? $this->table : $this->quote_identifier($this->table);
         $table .= " " . $this->processJoinedTables();
         $where = $this->processWhereClauseArray($conditions, $params);
         $direction = strtoupper($direction) === "ASC" ? "ASC" : "DESC";
-        $orderings = array_filter(explode(",", $order) ?: []);
+        $orderings = array_filter($order);
         if (!empty($orderings)) {
             array_walk($orderings, fn (&$v) => $v = $this->quote_identifier($v) . " $direction");
             $order_sql = "ORDER BY " . implode(",", $orderings);
         } else {
             $order_sql = "";
         }
+        $group = array_filter($group);
+        if (!empty($group)) {
+            array_walk($group, fn (&$v) => $v = $this->quote_identifier($v));
+            $group_sql = "GROUP BY " . implode(",", $group);
+        } else {
+            $group_sql = "";
+        }
         $limit_sql = $limit ? "LIMIT $limit" : "";
 
-        $query = "SELECT $this->fields FROM $table WHERE $where $order_sql $limit_sql";
+        $query = "SELECT $this->fields FROM $table WHERE $where $group_sql $order_sql $limit_sql";
 
         return $db->GetArray($query, $params) ?: [];
     }
@@ -276,7 +286,7 @@ class Table
      */
     public function getRow(ADOConnection $db, array $conditions = []): array
     {
-        $data = $this->getRows($db, $conditions, "", "", 1);
+        $data = $this->getRows($db, $conditions, [], "", [], 1);
 
         return $data[0] ?? [];
     }
