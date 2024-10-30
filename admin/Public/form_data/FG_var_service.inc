@@ -218,11 +218,13 @@ if ($numrow > 0) {
         "",
         "size='10' multiple='multiple'",
         "", [
+            "table" => "cc_cardgroup_service",
             "name" => "id_card_group",
             "tables" => "cc_card_group LEFT JOIN cc_cardgroup_service ON cc_card_group.id=cc_cardgroup_service.id_card_group",
             "columns" => "DISTINCT cc_card_group.name, cc_card_group.id",
             "where" => "cc_cardgroup_service.id_service = %id",
             "format" => "%2 - (%1)",
+            "fk" => "id_service",
         ]
     );
 }

@@ -17,12 +17,18 @@ use Closure;
 <script src="javascript/calonlydays.js"></script>
 <script>
     function sendto(action, record, field_inst, instance) {
-        $("form#editForm input[name=form_action]").val(action);
-        $("form#editForm input[name=form_el_index]").val(record);
+        let form = $("form#editForm");
+        form.find("input[name=form_action]").val(action);
+        form.find("input[name=form_el_index]").val(record);
         if (field_inst) {
-            $(`form#editForm [name=${field_inst}]`).val(instance);
+            let hid = form.find(`input[name=${field_inst}]`);
+            if (!hid.length) {
+                form.append($(`<input type="hidden" name="${field_inst}" value="${instance}"/>`));
+            } else {
+                hid.val(instance);
+            }
         }
-        $("form#editForm").trigger("submit");
+        form.trigger("submit");
     }
 
     function sendtolittle(direction) {

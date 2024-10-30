@@ -156,11 +156,13 @@ if ($numrow>0){
         "",
         "size='10' multiple='muliple'",
         "", [
+            "table" => "cc_tariffgroup_plan",
             "name" => "idtariffplan",
             "tables" => "cc_tariffplan LEFT JOIN cc_tariffgroup_plan ON cc_tariffplan.id=cc_tariffgroup_plan.idtariffplan",
             "columns" => "DISTINCT cc_tariffplan.tariffname, cc_tariffplan.id",
             "where" => "cc_tariffgroup_plan.idtariffgroup = %id",
             "format" => "%2 - (%1)",
+            "fk" => "idtariffgroup",
         ]
     );
 

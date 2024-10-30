@@ -1275,8 +1275,6 @@ class FormHandler
 
             if ($form_action === "list") {
                 $sql_calc_found_rows = DB_TYPE !== "postgres" ? 'SQL_CALC_FOUND_ROWS' : "";
-                $cols = array_column($this->FG_LIST_TABLE_CELLS, "field");
-                $fields = implode(",", $cols);
                 $fields = "$sql_calc_found_rows $this->FG_QUERY_COLUMN_LIST";
 
                 $instance_table = new Table($this->FG_QUERY_TABLE_NAME, $fields);
@@ -1815,31 +1813,26 @@ class FormHandler
     }
 
     /**
-     * Function to add_content
-     *
-     * @public
+     * Add content from SQL selects (only used in FG_var_[tariffgroup|agent|service].inc)
      */
     public function perform_add_content($form_el_index, $id)
     {
         $processed = $this->getProcessed();
         $table_split = $this->FG_EDIT_FORM_ELEMENTS[$form_el_index]["custom_query"];
-        $instance_sub_table = new Table($table_split["table"], $table_split["name"] . ", " . $table_split["fk"]);
+        $instance_sub_table = new Table($table_split["table"]);
 
         $arr = is_array($processed[$table_split["name"]]) ? $processed[$table_split["name"]] : [$processed[$table_split["name"]]];
         foreach ($arr as $value) {
-            if (!isset($table_split["regex"]) || $this->validate_field($table_split["regex"], $value) === true) {
-                // RESPECT REGULAR EXPRESSION
-                $result_query = $instance_sub_table->Add_table($this->DBHandle, "'" . addslashes(trim($value)) . "', '" . addslashes(trim($id)) . "'");
+            $result_query = $instance_sub_table->addRow(
+                $this->DBHandle,
+                [$table_split["name"] => $value, $table_split["fk"] => $id]
+            );
 
-                if (!$result_query) {
-                    $findme = 'duplicate';
-                    $pos_find = strpos($instance_sub_table->errstr, $findme);
-
-                    if ($pos_find === false) {
-                        echo $instance_sub_table->errstr;
-                    } else {
-                        $this->alarm_db_error_duplication = true;
-                    }
+            if (!$result_query) {
+                if (!str_contains($instance_sub_table->errstr, "duplicate")) {
+                    echo $instance_sub_table->errstr;
+                } else {
+                    $this->alarm_db_error_duplication = true;
                 }
             }
         }
@@ -1847,22 +1840,16 @@ class FormHandler
 
 
     /**
-     * Function to del_content
-     *
-     * @public
+     * Delete content from SQL selects (only used in FG_var_[tariffgroup|agent|service].inc)
      */
     public function perform_del_content($form_el_index, $id)
     {
         $processed = $this->getProcessed();
         $table_split = $this->FG_EDIT_FORM_ELEMENTS[$form_el_index]["custom_query"];
-        if (array_key_exists($table_split["name"] . '_hidden', $processed)) {
-            $value = trim($processed[$table_split["name"] . '_hidden']);
-        } else {
-            $value = trim($processed[$table_split["name"]]);
-        }
-        (new Table($table_split["name"]))->deleteRow(
+        $value = trim($processed[$table_split["name"] . "_hidden"] ?? $processed[$table_split["name"]]);
+        (new Table($table_split["table"]))->deleteRow(
             $this->DBHandle,
-            [$table_split["name"] => $value, $table_split["name"] => trim($id)]
+            [$table_split["name"] => $value, $table_split["fk"] => $id]
         );
     }
 
