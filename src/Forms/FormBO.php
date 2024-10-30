@@ -879,88 +879,73 @@ class FormBO
      */
     public static function create_refill_after_payment()
     {
-        global $A2B;
         $FormHandler = FormHandler::GetInstance();
         $processed = $FormHandler->getProcessed();
-        if ($processed['added_refill'] == 1) {
-            $id_payment = $FormHandler -> QUERY_RESULT;
+        if ((int)$processed['added_refill'] === 1) {
+            $id_payment = $FormHandler->QUERY_RESULT;
             // CREATE REFILL
-            $field_insert = "date, credit, card_id ,refill_type, description";
             $date = $processed['date'];
-            $credit = $processed['payment'];
             $card_id = $processed['card_id'];
-            $refill_type= $processed['payment_type'];
+            $refill_type = (int)$processed['payment_type'];
             $description = $processed['description'];
-            $card_table = new Table('cc_card', 'vat');
-            $card_clause = "id = ".$card_id;
-            $card_result = $card_table -> get_list($FormHandler->DBHandle, $card_clause);
-            if(!is_array($card_result)||empty($card_result[0][0])||!is_numeric($card_result[0][0])) {
-                $vat=0;
-            } else {
-                $vat = $card_result[0][0];
-            }
-            $credit_without_vat = $credit / (1+$vat/100);
+            $card_result = (new Table("cc_card", "vat"))->getRow($FormHandler->DBHandle, ["id" => $card_id]);
+            $vat = (int)($card_result["vat"] ?? 0);
+            $credit = $processed['payment'] / (1 + $vat / 100);
 
-            $value_insert = " '$date' , '$credit_without_vat', '$card_id','$refill_type', '$description' ";
-            $instance_sub_table = new Table("cc_logrefill", $field_insert);
-            $id_refill = $instance_sub_table -> Add_table ($FormHandler->DBHandle, $value_insert, null, null,"id");
+            $insert_values = compact("date", "credit", "card_id", "refill_type", "description");
+            (new Table("cc_logrefill"))->addRow($FormHandler->DBHandle, $insert_values, $id_refill);
+
             // REFILL CARD - UPDATE CARD
-            $instance_table_card = new Table("cc_card");
-            $param_update_card = "credit = credit + '".$credit_without_vat."'";
-            $clause_update_card = " id='$card_id'";
-            $instance_table_card -> Update_table ($FormHandler->DBHandle, $param_update_card, $clause_update_card, $func_table = null);
+            $insert_values = ["credit" => ["credit + ?", $credit]];
+            (new Table("cc_card"))->updateRow($FormHandler->DBHandle, $insert_values, ["id" => $card_id]);
+
             // LINK THE REFILL TO THE PAYMENT .. UPADTE PAYMENT
-            $instance_table_pay = new Table("cc_logpayment");
-            $param_update_pay = "id_logrefill = '".$id_refill."'";
-            $clause_update_pay = " id ='$id_payment'";
-            $instance_table_pay-> Update_table ($FormHandler->DBHandle, $param_update_pay, $clause_update_pay, $func_table = null);
+            $insert_values = ["id_logrefill" => $id_refill];
+            (new Table("cc_logpayment"))->updateRow($FormHandler->DBHandle, $insert_values, ["id" => $id_payment]);
 
             // Create invoice associated
 
             // CREATE AND UPDATE REF NUMBER
-            $list_refill_type=getRefillType_List();
-            $refill_type = $processed['payment_type'];
             $year = date("Y");
-            $invoice_conf_table = new Table('cc_invoice_conf', 'value');
-            $conf_clause = "key_val = 'count_$year'";
-            $result = $invoice_conf_table -> get_list($FormHandler->DBHandle, $conf_clause);
-            if (is_array($result) && !empty($result[0][0])) {
+            $invoice_conf_table = new Table("cc_invoice_conf", "value");
+            $result = $invoice_conf_table->getRow($FormHandler->DBHandle, ["key_val" => "count_$year"]);
+            if (!empty($result["value"])) {
                 // update count
-                $count =$result[0][0];
-                if(!is_numeric($count)) $count=0;
-                $count++;
-                $param_update_conf = "value ='".$count."'";
-                $clause_update_conf = "key_val = 'count_$year'";
-                $invoice_conf_table -> Update_table ($FormHandler->DBHandle, $param_update_conf, $clause_update_conf, $func_table = null);
+                $count = (int)$result["value"] + 1;
+                $invoice_conf_table->updateRow($FormHandler->DBHandle, ["value" => $count], ["key_val" => "count_$year"]);
             } else {
-                // insert newcount
-                $count=1;
-                $QUERY= "INSERT INTO cc_invoice_conf (key_val ,value) VALUES ( 'count_$year', '1');";
-                $invoice_conf_table -> SQLExec($FormHandler->DBHandle,$QUERY);
+                // insert new count
+                $count = 1;
+                $invoice_conf_table->addRow($FormHandler->DBHandle, ["key_val" => "count_$year", "value" => $count]);
             }
-            $field_insert = "date, id_card, title ,reference, description,status,paid_status";
-            if ($refill_type!=0) {
-                $title = $list_refill_type[$refill_type][0]." ".gettext("REFILL");
-            } else {
-                $title = gettext("REFILL");
-            }
-            $description = gettext("Invoice for refill");
-            $reference = $year.sprintf("%08d",$count);
-            $value_insert = " '$date' , '$card_id', '$title','$reference','$description','1','1' ";
-            $instance_table = new Table("cc_invoice", $field_insert);
-            $id_invoice = $instance_table -> Add_table ($FormHandler->DBHandle, $value_insert, null, null,"id");
+
+            $list_refill_type = getRefillType_List();
+
+            $insert_values = [
+                "date" => $date,
+                "id_card" => $card_id,
+                "title" => trim(($list_refill_type[$refill_type][0] ?? "") . " " . _("REFILL")),
+                "reference" => sprintf("%d%08d", $year, $count),
+                "description" => gettext("Invoice for refill"),
+                "status" => 1,
+                "paid_status" => 1,
+            ];
+            (new Table("cc_invoice"))->addRow($FormHandler->DBHandle, $insert_values, $id_invoice);
+
             //add payment to this invoice
-            $field_insert = "id_invoice, id_payment";
-            $value_insert = "'$id_invoice' , '$id_payment'";
-            $instance_table = new Table("cc_invoice_payment", $field_insert);
-            $instance_table -> Add_table ($FormHandler->DBHandle, $value_insert, null, null);
+            $insert_values = compact("id_invoice", "id_payment");
+            (new Table("cc_invoice_payment"))->addRow($FormHandler->DBHandle, $insert_values);
+
             //load vat of this card
             if (!empty($id_invoice) && is_numeric($id_invoice)) {
-                $description = $processed['description'];
-                $field_insert = "date, id_invoice ,price,vat, description";
-                $instance_table = new Table("cc_invoice_item", $field_insert);
-                $value_insert = " '$date' , '$id_invoice', '$credit_without_vat','$vat','$description' ";
-                $instance_table -> Add_table ($FormHandler->DBHandle, $value_insert, null, null,"id");
+                $insert_values = [
+                    "date" => $date,
+                    "id_invoice" => $id_invoice,
+                    "price" => $credit,
+                    "vat" => $vat,
+                    "description" => $description
+                ];
+                (new Table("cc_invoice_item"))->addRow($FormHandler->DBHandle, $insert_values);
             }
         }
 
