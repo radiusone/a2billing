@@ -132,16 +132,16 @@ class RateEngine
         $prefix_params = [];
         $prefixclause = "(";
         while ($max_len_prefix > 0) {
-            $prefixclause .= "dialprefix=? OR ";
+            $prefixclause .= "cc_ratecard.dialprefix = ? OR ";
             $prefix_params[] = substr($phonenumber, 0, $max_len_prefix);
             $max_len_prefix--;
         }
-        $prefixclause .= "dialprefix='defaultprefix')";
+        $prefixclause .= "cc_ratecard.dialprefix = 'defaultprefix')";
 
         // match Asterisk/POSIX regex prefixes,  rewrite the Asterisk '_XZN.' characters to
         // POSIX equivalents, and test each of them against the dialed number
-        $prefixclause .= " OR (dialprefix LIKE '&_%' ESCAPE '&' AND ? ";
-        $prefixclause .= "REGEXP REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(CONCAT('^', dialprefix, '$'), ";
+        $prefixclause .= " OR (cc_ratecard.dialprefix LIKE '&_%' ESCAPE '&' AND ? ";
+        $prefixclause .= "REGEXP REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(CONCAT('^', cc_ratecard.dialprefix, '$'), ";
         $prefixclause .= "'X', '[0-9]'), 'Z', '[1-9]'), 'N', '[2-9]'), '.', '.+'), '_', ''))";
         $prefix_params[] = $phonenumber;
 
@@ -171,27 +171,39 @@ class RateEngine
 
         WHERE ($prefixclause)
             AND cc_tariffgroup.id = ?
-            AND startingdate <= CURRENT_TIMESTAMP
-            AND (expirationdate > CURRENT_TIMESTAMP OR expirationdate IS NULL)
-            AND startdate <= CURRENT_TIMESTAMP
-            AND (stopdate > CURRENT_TIMESTAMP OR stopdate IS NULL)
-            AND (starttime <= ? AND endtime >= ?)
-            AND idtariffgroup = ?
+            AND cc_tariffplan.startingdate <= CURRENT_TIMESTAMP
+            AND (cc_tariffplan.expirationdate > CURRENT_TIMESTAMP OR cc_tariffplan.expirationdate IS NULL)
+            AND cc_ratecard.startdate <= CURRENT_TIMESTAMP
+            AND (cc_ratecard.stopdate > CURRENT_TIMESTAMP OR cc_ratecard.stopdate IS NULL)
+            AND (cc_ratecard.starttime <= ? AND cc_ratecard.endtime >= ?)
+            AND cc_tariffgroup_plan.idtariffgroup = ?
             AND (
-                dnidprefix = SUBSTRING(?, 1, LENGTH(dnidprefix))
+                cc_tariffplan.dnidprefix = SUBSTRING(?, 1, LENGTH(cc_tariffplan.dnidprefix))
                 OR (
-                    dnidprefix = 'all'
-                    AND 0 = (SELECT COUNT(dnidprefix) FROM cc_tariffgroup_plan RIGHT JOIN cc_tariffplan ON cc_tariffgroup_plan.idtariffplan = cc_tariffplan.id WHERE dnidprefix = SUBSTRING(?, 1, length(dnidprefix)) AND idtariffgroup = ?)
+                    cc_tariffplan.dnidprefix = 'all'
+                    AND 0 = (
+                        SELECT COUNT(cc_tariffplan.dnidprefix)
+                        FROM cc_tariffgroup_plan
+                            RIGHT JOIN cc_tariffplan ON cc_tariffgroup_plan.idtariffplan = cc_tariffplan.id
+                        WHERE cc_tariffplan.dnidprefix = SUBSTRING(?, 1, length(cc_tariffplan.dnidprefix))
+                            AND cc_tariffgroup_plan.idtariffgroup = ?
+                    )
                 )
             )
             AND (
-                calleridprefix = SUBSTRING(?, 1, length(calleridprefix))
+                cc_tariffplan.calleridprefix = SUBSTRING(?, 1, length(cc_tariffplan.calleridprefix))
                 OR (
-                    calleridprefix = 'all'
-                    AND 0 = (SELECT COUNT(calleridprefix) FROM cc_tariffgroup_plan RIGHT JOIN cc_tariffplan ON cc_tariffgroup_plan.idtariffplan = cc_tariffplan.id WHERE calleridprefix = SUBSTRING(?, 1, length(calleridprefix)) AND idtariffgroup = ?)
+                    cc_tariffplan.calleridprefix = 'all'
+                    AND 0 = (
+                        SELECT COUNT(cc_tariffplan.calleridprefix)
+                        FROM cc_tariffgroup_plan
+                            RIGHT JOIN cc_tariffplan ON cc_tariffgroup_plan.idtariffplan = cc_tariffplan.id
+                        WHERE cc_tariffplan.calleridprefix = SUBSTRING(?, 1, length(cc_tariffplan.calleridprefix))
+                          AND cc_tariffgroup_plan.idtariffgroup = ?
+                    )
                 )
             )
-        ORDER BY LENGTH(dialprefix) DESC
+        ORDER BY LENGTH(cc_ratecard.dialprefix) DESC
         SQL;
 
         $params = array_merge(
