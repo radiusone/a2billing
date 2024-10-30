@@ -636,16 +636,19 @@ class FormHandler
     }
 
     /**
-     * Sets Query fieldnames for the View module
+     * Sets query field names for the View module
+     * Some items sent to AddViewElement have fake names, so this overrides them?
      *
-     * @public
-     * @ $col_query    , option to append id ( by default )
+     * @param string $fieldname comma-separated list of column names used for list view
+     * @param bool $add_id only set false in FG_var_did_billing.inc and FG_var_service_details.inc, not sure why
+     * @return void
+     * @todo figure out where this is required and work around it
      */
-
-    public function FieldViewElement($fieldname, $add_id = 1)
+    public function FieldViewElement(string $fieldname, bool $add_id = true): void
     {
         $this->FG_QUERY_COLUMN_LIST = $fieldname;
         // We need to have the ID as the last column
+        // instance_primary_key is used to fill in links for edit/delete buttons
         if ($add_id) {
             $this->FG_QUERY_COLUMN_LIST .= ", $this->FG_QUERY_PRIMARY_KEY AS instance_primary_key";
         }
@@ -1274,8 +1277,7 @@ class FormHandler
                 $sql_calc_found_rows = DB_TYPE !== "postgres" ? 'SQL_CALC_FOUND_ROWS' : "";
                 $cols = array_column($this->FG_LIST_TABLE_CELLS, "field");
                 $fields = implode(",", $cols);
-                // instance_primary_key is used to fill in links for edit/delete buttons
-                $fields = "$sql_calc_found_rows $fields, $this->FG_QUERY_PRIMARY_KEY AS instance_primary_key";
+                $fields = "$sql_calc_found_rows $this->FG_QUERY_COLUMN_LIST";
 
                 $instance_table = new Table($this->FG_QUERY_TABLE_NAME, $fields);
 

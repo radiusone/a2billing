@@ -70,7 +70,7 @@ if (has_rights (Admin::ACX_MODIFY_PAYMENTS)) {
 
 $list_refill_type = getRefillType_List();
 $HD_Form->AddViewElement(_("ID"), "cc_logpayment.id");
-$HD_Form->AddViewElement(_("ACCOUNT"), "username", true, 30, "display_customer_id_link");
+$HD_Form->AddViewElement(_("ACCOUNT"), "username", true, 30, "display_customer_link");
 $HD_Form->AddViewElement(_("PAYMENT DATE"), "date", true, 30);
 $HD_Form->AddViewElement(_("PAYMENT AMOUNT"), "payment", true, 0, "display_money");
 $HD_Form->AddViewElement(_("PAYMENT TYPE"), "payment_type", true, 0, "", "list", $list_refill_type);

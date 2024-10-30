@@ -59,7 +59,7 @@ $HD_Form -> AddViewElement(gettext("TOTALCARDPERFORM"), "totalcardperform");
 
 
 // added a parameter to append  FG_TABLE_ID  ( by default ) or disable 0.
-$HD_Form -> FieldViewElement ('name, numberofrun, datelastrun, totalcredit, totalcardperform',0);
+$HD_Form -> FieldViewElement ('name, numberofrun, datelastrun, totalcredit, totalcardperform', false);
 
 $HD_Form -> FG_ENABLE_ADD_BUTTON = false;
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = false;
