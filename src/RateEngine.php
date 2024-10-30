@@ -138,13 +138,6 @@ class RateEngine
         }
         $prefixclause .= "cc_ratecard.dialprefix = 'defaultprefix')";
 
-        // match Asterisk/POSIX regex prefixes,  rewrite the Asterisk '_XZN.' characters to
-        // POSIX equivalents, and test each of them against the dialed number
-        $prefixclause .= " OR (cc_ratecard.dialprefix LIKE '&_%' ESCAPE '&' AND ? ";
-        $prefixclause .= "REGEXP REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(CONCAT('^', cc_ratecard.dialprefix, '$'), ";
-        $prefixclause .= "'X', '[0-9]'), 'Z', '[1-9]'), 'N', '[2-9]'), '.', '.+'), '_', ''))";
-        $prefix_params[] = $phonenumber;
-
         $QUERY = <<<SQL
             SELECT tariffgroupname, lcrtype, idtariffgroup, cc_tariffgroup_plan.idtariffplan, tariffname, destination, 
                 cc_ratecard.id AS ratecard_id, dialprefix, destination, buyrate, buyrateinitblock, buyrateincrement, rateinitial,
@@ -169,7 +162,15 @@ class RateEngine
             LEFT JOIN cc_trunk AS rt_trunk ON cc_ratecard.id_trunk = rt_trunk.id_trunk
             LEFT JOIN cc_trunk AS tp_trunk ON cc_tariffplan.id_trunk = tp_trunk.id_trunk
 
-        WHERE ($prefixclause)
+        WHERE (
+                $prefixclause
+                OR (
+                    -- match Asterisk/POSIX regex prefixes,  rewrite the Asterisk '_XZN.' characters to
+                    -- POSIX equivalents, and test each of them against the dialed number
+                    cc_ratecard.dialprefix LIKE '&_%' ESCAPE '&'
+                    AND ? REGEXP REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(CONCAT('^', cc_ratecard.dialprefix, '$'), 'X', '[0-9]'), 'Z', '[1-9]'), 'N', '[2-9]'), '.', '.+'), '_', '')
+                ) 
+            )
             AND cc_tariffgroup.id = ?
             AND cc_tariffplan.startingdate <= CURRENT_TIMESTAMP
             AND (cc_tariffplan.expirationdate > CURRENT_TIMESTAMP OR cc_tariffplan.expirationdate IS NULL)
@@ -185,20 +186,20 @@ class RateEngine
                         SELECT COUNT(cc_tariffplan.dnidprefix)
                         FROM cc_tariffgroup_plan
                             RIGHT JOIN cc_tariffplan ON cc_tariffgroup_plan.idtariffplan = cc_tariffplan.id
-                        WHERE cc_tariffplan.dnidprefix = SUBSTRING(?, 1, length(cc_tariffplan.dnidprefix))
+                        WHERE cc_tariffplan.dnidprefix = SUBSTRING(?, 1, LENGTH(cc_tariffplan.dnidprefix))
                             AND cc_tariffgroup_plan.idtariffgroup = ?
                     )
                 )
             )
             AND (
-                cc_tariffplan.calleridprefix = SUBSTRING(?, 1, length(cc_tariffplan.calleridprefix))
+                cc_tariffplan.calleridprefix = SUBSTRING(?, 1, LENGTH(cc_tariffplan.calleridprefix))
                 OR (
                     cc_tariffplan.calleridprefix = 'all'
                     AND 0 = (
                         SELECT COUNT(cc_tariffplan.calleridprefix)
                         FROM cc_tariffgroup_plan
                             RIGHT JOIN cc_tariffplan ON cc_tariffgroup_plan.idtariffplan = cc_tariffplan.id
-                        WHERE cc_tariffplan.calleridprefix = SUBSTRING(?, 1, length(cc_tariffplan.calleridprefix))
+                        WHERE cc_tariffplan.calleridprefix = SUBSTRING(?, 1, LENGTH(cc_tariffplan.calleridprefix))
                           AND cc_tariffgroup_plan.idtariffgroup = ?
                     )
                 )
@@ -209,6 +210,7 @@ class RateEngine
         $params = array_merge(
             $prefix_params,
             [
+                $phonenumber,
                 $tariffgroupid,
                 $minutes_since_monday,
                 $minutes_since_monday,
