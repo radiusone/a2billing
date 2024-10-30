@@ -554,8 +554,12 @@ class Table
     public function updateRow(ADOConnection $db, array $values, array $conditions = []): bool
     {
         $value_callback = function ($v) use (&$parameters): string {
-            // temporary workaround while there are still things like "now()" in value lists
-            if ($this->quote_identifier($v) !== $v) {
+            if (is_array($v)) {
+                // this allows updates like ["usage" => ["usage + ?", 1]]
+                $parameters[] = $v[1];
+                $v = $v[0];
+            } elseif ($this->quote_identifier($v) !== $v) {
+                // temporary workaround while there are still things like "now()" in value lists
                 $parameters[] = $v;
                 $v = "?";
             }
