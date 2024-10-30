@@ -91,7 +91,7 @@ getpost_ifset([
  * @var string $expirationdate
  * @var string $enableexpire
  * @var string $expiredays
- * @var string sip_buddy
+ * @var string $sip_buddy
  * @var string $iax_buddy
  * @var string $popup_select
  * @var string $vat
@@ -105,19 +105,19 @@ getpost_ifset([
  * @var string $template_invoice
  * @var string $template_outstanding
  * @var string $description
- * @var string voicemail_activated
+ * @var string $voicemail_activated
  * @var string $voicemail_permitted
  * @var string $email_notification
  * @var string $credit_notification
  * @var string $notify_email
- * @var string id_seria
+ * @var string $id_seria
  * @var string $company_name
  * @var string $company_website
  * @var string $vat_rn
  * @var string $traffic
  * @var string $traffic_target
  * @var string $discount
- * @var string restriction
+ * @var string $restriction
  */
 $HD_Form = new FormHandler("cc_card", _("Card"));
 
@@ -580,8 +580,7 @@ if (!$popup_select) {
             _("TIMEZONE"),
             "id_timezone",
             $timezone_list,
-            $tz_val,
-            ""
+            $tz_val
         );
 
         $HD_Form->AddEditSelect(_("LANGUAGE"), "language", $language_list);
@@ -620,8 +619,7 @@ if (!$popup_select) {
             _("SIMULTANEOUS ACCESS"),
             "simultaccess",
             $simultaccess_list,
-            "1",
-            ""
+            "1"
         );
 
         $HD_Form->AddEditRadio(
@@ -705,7 +703,7 @@ if (!$popup_select) {
         $comp_zero = $comp_date_plus = '';
         if (isset($form_action) && $form_action === "ask-add") {
             $comp_zero = "value='0'";
-            $comp_date_plus = 'value="' . (new DateTime())->modify(("+10 years"))->format("Y-m-d H:i:s") . '"';
+            $comp_date_plus = 'value="' . (new DateTime("+10 years"))->format("Y-m-d H:i:s") . '"';
         }
 
         $HD_Form->AddEditElement(
@@ -900,9 +898,8 @@ if (!$popup_select) {
         );
 
         if ($form_action === "ask-edit") {
-            $table_card = new Table("cc_card", "status");
-            $result_card = $table_card->get_list(DbConnect(), "id=$id");
-            $HD_Form->FG_EDIT_FORM_HIDDEN_INPUTS["oldstatus"] = $result_card[0][0];
+            $result_card = (new Table("cc_card", "status"))->getRow($HD_Form->DBHandle, ["id" => $id]);
+            $HD_Form->FG_EDIT_FORM_HIDDEN_INPUTS["oldstatus"] = $result_card["status"] ?? "";
         }
 
         $HD_Form->FG_INTRO_TEXT_ADITION = '';
@@ -912,11 +909,9 @@ if (!$popup_select) {
         $HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_EDITION = 'create_status_log';
 
         if ($form_action === 'delete' && USE_REALTIME) {
-            $card_table = new Table('cc_card', 'sip_buddy,iax_buddy');
-            $card_clause = "id = " . $id;
-            $card_result = $card_table->get_list(DbConnect(), $card_clause);
-            $sip_buddy = $card_result[0]['sip_buddy'];
-            $iax_buddy = $card_result[0]['iax_buddy'];
+            $card_result = (new Table("cc_card", "sip_buddy, iax_buddy"))->getRow($HD_Form->DBHandle, ["id" => $id]);
+            $sip_buddy = $card_result['sip_buddy'] ?? "";
+            $iax_buddy = $card_result['iax_buddy'] ?? "";
             if ($sip_buddy && $iax_buddy) {
                 $key = "sip_iax_changed";
             } elseif ($sip_buddy) {

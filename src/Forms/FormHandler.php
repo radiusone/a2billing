@@ -1343,13 +1343,13 @@ class FormHandler
                 $fields = implode(",", $cols);
 
                 $instance_table = new Table($this->FG_QUERY_TABLE_NAME, $fields);
-                $list = $instance_table->getRow($this->DBHandle, $this->update_query_conditions);
+                $list = $instance_table->getRows($this->DBHandle, $this->update_query_conditions);
 
                 //PATCH TO CLEAN THE IMPORT OF PASSWORD FROM THE DATABASE
                 $index = array_search("pwd_encoded", $cols);
                 if ($index !== false) {
-                    $list[$index] = "";
-                    $list["pwd_encoded"] = "";
+                    $list[0][$index] = "";
+                    $list[0]["pwd_encoded"] = "";
                 }
             }
 
@@ -1359,7 +1359,6 @@ class FormHandler
         }
 
         return $list;
-
     }
 
     /**
