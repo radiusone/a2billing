@@ -1540,7 +1540,7 @@ class FormHandler
                     $values[$fields_name] = $total_mult_select;
                 } else {
                     // CHECK ACCORDING TO THE REGULAR EXPRESSION DEFINED
-                    if (is_numeric($regexp) && !(str_starts_with($row["check_empty"], "NO") && $processed[$fields_name] === "")) {
+                    if (is_numeric($regexp) && !(str_starts_with($row["check_empty"] ?? "", "NO") && $processed[$fields_name] === "")) {
                         $row["validation_err"] = $this->validate_field($regexp, $processed[$fields_name]);
                         if ($row["validation_err"] !== true) {
                             $this->VALID_SQL_REG_EXP = false;
@@ -1662,7 +1662,7 @@ class FormHandler
                     $total_mult_select = (int)array_sum($processed[$fields_name]);
                     $values[$fields_name] = $total_mult_select;
                 } else {
-                    if (is_numeric($regexp) && !(str_starts_with($row["check_empty"], "NO") && ($processed[$fields_name] ?? null) === "")) {
+                    if (is_numeric($regexp) && !(str_starts_with($row["check_empty"] ?? "", "NO") && ($processed[$fields_name] ?? null) === "")) {
                         $row["validation_err"] = $this->validate_field($regexp, $processed[$fields_name]);
                         if ($row["validation_err"] !== true) {
                             $this->VALID_SQL_REG_EXP = false;
@@ -1672,7 +1672,7 @@ class FormHandler
                             $form_action = "ask-edit";
                         }
                     }
-                    if (empty($processed[$fields_name]) && str_ends_with($row["check_empty"], "NULL")) {
+                    if (empty($processed[$fields_name]) && str_ends_with($row["check_empty"] ?? "", "NULL")) {
                         $values[$fields_name] = null;
                     } elseif ($row["type"] !== "SPAN") {
                         $values[$fields_name] = $processed[$fields_name];
