@@ -394,7 +394,7 @@ class Table
     /**
      * @deprecated 3.0 Use Table::countRows()
      */
-    public function Table_count(ADOConnection $DBHandle, string $clause = "", string $compare = "", int $cache = 0)
+    public function Table_count(ADOConnection $DBHandle, ?string $clause = "", ?string $compare = "", int $cache = 0)
     {
         $sql = "SELECT count(*) FROM $this->table";
 
@@ -496,7 +496,7 @@ class Table
     /**
      * @deprecated 3.0 Use Table::addRow()
      */
-    public function Add_table(ADOConnection $DBHandle, string $value, string $func_fields = "", string $func_table = "", string $id_name = "", bool $subquery = false)
+    public function Add_table(ADOConnection $DBHandle, ?string $value, ?string $func_fields = "", ?string $func_table = "", ?string $id_name = "", bool $subquery = false)
     {
         if ($func_fields !== "") {
             $this->fields = $func_fields;
@@ -588,7 +588,7 @@ class Table
     /**
      * @deprecated 3.0 Use Table::updateRow()
      */
-    public function Update_table(ADOConnection $DBHandle, string $param_update, string $clause, string $func_table = "")
+    public function Update_table(ADOConnection $DBHandle, ?string $param_update, ?string $clause, ?string $func_table = "")
     {
 
         if ($func_table !== "") {
