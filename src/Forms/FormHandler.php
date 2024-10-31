@@ -1599,6 +1599,7 @@ class FormHandler
                 $this->QUERY_RESULT = $instance_table->addRow(
                     $this->DBHandle,
                     $values,
+                    $this->FG_QUERY_PRIMARY_KEY,
                     $id
                 );
             }
@@ -1606,6 +1607,7 @@ class FormHandler
             $this->QUERY_RESULT = $instance_table->addRow(
                 $this->DBHandle,
                 $values,
+                $this->FG_QUERY_PRIMARY_KEY,
                 $id
             );
         }

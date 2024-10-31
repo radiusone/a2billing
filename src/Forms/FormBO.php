@@ -893,7 +893,7 @@ class FormBO
             $credit = $processed['payment'] / (1 + $vat / 100);
 
             $insert_values = compact("date", "credit", "card_id", "refill_type", "description");
-            (new Table("cc_logrefill"))->addRow($FormHandler->DBHandle, $insert_values, $id_refill);
+            (new Table("cc_logrefill"))->addRow($FormHandler->DBHandle, $insert_values, "id", $id_refill);
 
             // REFILL CARD - UPDATE CARD
             $insert_values = ["credit" => ["credit + ?", $credit]];
@@ -930,7 +930,7 @@ class FormBO
                 "status" => 1,
                 "paid_status" => 1,
             ];
-            (new Table("cc_invoice"))->addRow($FormHandler->DBHandle, $insert_values, $id_invoice);
+            (new Table("cc_invoice"))->addRow($FormHandler->DBHandle, $insert_values, "id", $id_invoice);
 
             //add payment to this invoice
             $insert_values = compact("id_invoice", "id_payment");

@@ -420,12 +420,13 @@ class Table
      *
      * @param ADOConnection $db
      * @param array<string,mixed> $values
-     * @param $id
+     * @param string $pk_column
+     * @param null $id
      * @return bool
      */
-    public function addRow(ADOConnection $db, array $values, &$id = null): bool
+    public function addRow(ADOConnection $db, array $values, string $pk_column = "id", &$id = null): bool
     {
-        return $this->addRows($db, [$values], $id);
+        return $this->addRows($db, [$values], $pk_column, $id);
     }
 
     /**
@@ -435,10 +436,11 @@ class Table
      *
      * @param ADOConnection $db
      * @param array<array<string,mixed>> $rows
+     * @param string $pk_column
      * @param null $id
      * @return bool
      */
-    public function addRows(ADOConnection $db, array $rows, &$id = null): bool
+    public function addRows(ADOConnection $db, array $rows, string $pk_column = "id", &$id = null): bool
     {
         $values = $rows[0];
         $fields = array_keys($values);
@@ -468,7 +470,7 @@ class Table
             if ($result === false) {
                 return false;
             }
-            $id = $db->Insert_ID();
+            $id = $db->Insert_ID($this->table, $pk_column);
         }
 
         return true;
@@ -496,13 +498,13 @@ class Table
     /**
      * @deprecated 3.0 Use Table::addRow()
      */
-    public function Add_table(ADOConnection $DBHandle, ?string $value, ?string $func_fields = "", ?string $func_table = "", ?string $id_name = "", bool $subquery = false)
+    public function Add_table(ADOConnection $DBHandle, string $value, ?string $func_fields = "", ?string $func_table = "", ?string $id_name = "", bool $subquery = false)
     {
-        if ($func_fields !== "") {
+        if (!empty($func_fields)) {
             $this->fields = $func_fields;
         }
 
-        if ($func_table !== "") {
+        if (!empty($func_table)) {
             $this->table = $func_table;
         }
         if ($subquery) {
@@ -517,22 +519,9 @@ class Table
         }
 
         // Fix that , make PEAR complaint
-        if ($id_name !== "") {
-            $insertid = $DBHandle->Insert_ID();
-            if ($this->db_type === "postgres") {
-                if (!$insertid) {
-                    return true;
-                }
-                $sql = "SELECT $id_name FROM $this->table WHERE oid = '$insertid'";
-                $res = $DBHandle->Execute($sql);
-                if (!$res) {
-                    return false;
-                }
-                $row = $res->fetchRow();
+        if (!empty($id_name)) {
+            $insertid = $DBHandle->Insert_ID($this->table, $id_name);
 
-                $insertid = $row[0];
-
-            }
             if ($this->debug_st) {
                 echo "\n <br> insert_id = $insertid";
             }
@@ -588,10 +577,10 @@ class Table
     /**
      * @deprecated 3.0 Use Table::updateRow()
      */
-    public function Update_table(ADOConnection $DBHandle, ?string $param_update, ?string $clause, ?string $func_table = "")
+    public function Update_table(ADOConnection $DBHandle, string $param_update, string $clause, ?string $func_table = "")
     {
 
-        if ($func_table !== "") {
+        if (!empty($func_table)) {
             $this->table = $func_table;
         }
 

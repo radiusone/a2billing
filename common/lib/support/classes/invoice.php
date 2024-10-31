@@ -216,8 +216,7 @@ class invoice
         $DBHandle = DbConnect();
         (new Table("cc_invoice_item"))->addRow(
             $DBHandle,
-            ["id_invoice" => $this->id, "description" => $desc, "price" => $price, "VAT" => $VAT],
-            $return
+            ["id_invoice" => $this->id, "description" => $desc, "price" => $price, "VAT" => $VAT]
         );
     }
 
