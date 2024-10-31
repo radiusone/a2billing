@@ -95,10 +95,6 @@ if ($nbcard>0 && $action=="generate" && $nb_error==0) {
     $FG_ADITION_SECOND_ADD_TABLE  = "cc_card";
     $FG_ADITION_SECOND_ADD_FIELDS = "username, useralias, credit, tariff, activated, lastname, firstname, email, address, city, state, country, zipcode, phone, simultaccess, currency, typepaid , creditlimit, enableexpire, expirationdate, expiredays, uipass, runservice, tag,id_group, discount, id_seria";
 
-    if (DB_TYPE != "postgres") {
-        $FG_ADITION_SECOND_ADD_FIELDS .= ",creationdate ";
-    }
-
     $FG_TABLE_SIP_NAME="cc_sip_buddies";
     $FG_TABLE_IAX_NAME="cc_iax_buddies";
 
@@ -143,9 +139,6 @@ if ($nbcard>0 && $action=="generate" && $nb_error==0) {
         $passui_secret = MDP_NUMERIC(5).MDP_STRING(10).MDP_NUMERIC(5);
         $FG_ADITION_SECOND_ADD_VALUE  = "'$cardnum', '$useralias', '$addcredit', '$choose_tariff', 't', '$gen_id', '', '', '', '', '', '', '', '', $choose_simultaccess, '$choose_currency', $choose_typepaid, $creditlimit, $enableexpire, '$expirationdate', $expiredays, '$passui_secret', '$runservice', '$tag', '$id_group', '$discount', '$id_seria'";
 
-        if (DB_TYPE != "postgres") {
-            $FG_ADITION_SECOND_ADD_VALUE .= ",now() ";
-        }
         if (isset($sip)) $FG_ADITION_SECOND_ADD_VALUE .= ", 1";
         if (isset($iax)) $FG_ADITION_SECOND_ADD_VALUE .= ", 1";
 

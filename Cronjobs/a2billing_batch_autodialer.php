@@ -93,12 +93,6 @@ if (!$A2B->DbConnect()) {
     exit;
 }
 
-if ($A2B->config["database"]['dbtype'] == "postgres") {
-    $UNIX_TIMESTAMP = "date_part('epoch',";
-} else {
-    $UNIX_TIMESTAMP = "UNIX_TIMESTAMP(";
-}
-
 $tab_day = array (
     1 => 'monday',
     'tuesday',
@@ -189,8 +183,11 @@ for ($page = 0; $page < $nbpage; $page++) {
         }
 
         //test if you have to inject it again
-        $frequency_sec = $phone['frequency'] * 60;
-        $query_searche_phonestatus = "SELECT status, $UNIX_TIMESTAMP lastuse ) < $UNIX_TIMESTAMP CURRENT_TIMESTAMP) - $frequency_sec  FROM cc_campaign_phonestatus WHERE id_campaign = " . $phone[2] . " AND id_phonenumber = " . $phone[0];
+        $frequency_sec = sprintf("%d SECOND", $phone['frequency'] * 60);
+        if ($A2B->config["database"]['dbtype'] == "postgres") {
+            $frequency_sec = "'$frequency_sec'";
+        }
+        $query_searche_phonestatus = "SELECT status, lastuse < CURRENT_TIMESTAMP - INTERVAL $frequency_sec FROM cc_campaign_phonestatus WHERE id_campaign = " . $phone[2] . " AND id_phonenumber = " . $phone[0];
         $result_search_phonestatus = $instance_table->SQLExec($A2B->DBHandle, $query_searche_phonestatus);
 
         if ($verbose_level >= 1)

@@ -73,16 +73,15 @@ include './lib/support/classes/invoiceItem.php';
 $DBHandle_max  = DbConnect();
 $paymentTable = new Table();
 
+$interval = "2 MINUTE";
 if (DB_TYPE == "postgres") {
-    $NOW_2MIN = " creationdate <= (now() - interval '2 minute') ";
-} else {
-    $NOW_2MIN = " creationdate <= DATE_SUB(NOW(), INTERVAL 2 MINUTE) ";
+    $interval = "'$interval'";
 }
 
 // Status - New 0 ; Proceed 1 ; In Process 2
 $QUERY = "SELECT id, cardid, amount, vat, paymentmethod, cc_owner, cc_number, cc_expires, creationdate, status, cvv, credit_card_type, currency, item_id, item_type " .
          " FROM cc_epayment_log " .
-         " WHERE id = ".$transactionID." AND (status = 0 OR (status = 2 AND $NOW_2MIN))";
+         " WHERE id = ".$transactionID." AND (status = 0 OR (status = 2 AND creationdate <= CURRENT_TIMESTAMP - INTERVAL $interval))";
 $transaction_data = $paymentTable->SQLExec ($DBHandle_max, $QUERY);
 
 $item_id = $transaction_data[0][13];

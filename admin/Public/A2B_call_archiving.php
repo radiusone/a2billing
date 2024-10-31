@@ -144,17 +144,13 @@ if ($enable_search_end_date && !empty($search_end_date)) {
     $HD_Form->list_query_conditions["starttime"] = ["<=", "$search_end_date 23:59:59"];
 }
 if ($enable_search_months) {
+    $interval = "$search_months MONTH";
     if (DB_TYPE == "postgres") {
-        $date_clause .= " AND CURRENT_TIMESTAMP - interval '$search_months months' > starttime";
-        $param_condition .= " AND starttime <= CURRENT_TIMESTAMP - INTERVAL ?";
-        $params[] = "$search_months months";
-        $HD_Form->list_query_conditions["starttime"] = ["<=", "CURRENT_TIMESTAMP() - INTERVAL $search_months MONTHS"];
-    } else {
-        $date_clause .= " AND NOW() - INTERVAL $search_months MONTH > starttime";
-        $param_condition .= " AND starttime <= NOW() - INTERVAL ? MONTH";
-        $params[] = $search_months;
-        $HD_Form->list_query_conditions["starttime"] = ["<=", "NOW() - INTERVAL $search_months MONTH"];
+        $interval = "'$interval'";
     }
+    $date_clause .= " AND CURRENT_TIMESTAMP - INTERVAL $interval > starttime";
+    $param_condition .= " AND starttime <= CURRENT_TIMESTAMP - INTERVAL $interval";
+    $HD_Form->list_query_conditions["starttime"] = ["<=", "CURRENT_TIMESTAMP - INTERVAL $interval"];
 }
 
 if (str_starts_with($SQLcmd, ' WHERE ')) {

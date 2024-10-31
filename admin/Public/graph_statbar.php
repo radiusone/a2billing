@@ -158,15 +158,13 @@ if ($_SESSION["is_admin"] == 1) {
     }
 }
 
-if (DB_TYPE == "postgres") {
-    if (isset ($fromstatsday_sday) && isset ($fromstatsmonth_sday))
-        $date_clause .= " AND starttime < date'$fromstatsmonth_sday-$fromstatsday_sday'+ INTERVAL '1 DAY' AND starttime >= '$fromstatsmonth_sday-$fromstatsday_sday'";
-} else {
-    if (isset ($fromstatsday_sday) && isset ($fromstatsmonth_sday))
-        $date_clause .= " AND starttime < ADDDATE('$fromstatsmonth_sday-$fromstatsday_sday',INTERVAL 1 DAY) AND starttime >= '$fromstatsmonth_sday-$fromstatsday_sday'";
+if (isset ($fromstatsday_sday) && isset ($fromstatsmonth_sday)) {
+    $interval = "1 DAY";
+    if (DB_TYPE == "postgres") {
+        $interval = "'$interval'";
+    }
+    $date_clause .= " AND starttime < CAST('$fromstatsmonth_sday-$fromstatsday_sday' AS DATE) + INTERVAL $interval AND starttime >= '$fromstatsmonth_sday-$fromstatsday_sday'";
 }
-
-//-- $date_clause=" AND calldate < date'$fromstatsmonth_sday-$fromstatsday_sday'+ INTERVAL '1 DAY' AND calldate >= '$fromstatsmonth_sday-$fromstatsday_sday 12:00:00'";
 
 if (strpos($SQLcmd, 'WHERE') > 0) {
     $FG_TABLE_CLAUSE = substr($SQLcmd, 6) . $date_clause;

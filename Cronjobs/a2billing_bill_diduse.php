@@ -82,12 +82,6 @@ $A2B = new A2Billing($idconfig);
 
 $logfile_cront_billdid = $A2B->config['log-files']['cront_bill_diduse'] ?? "/tmp/a2billing_cront_billdid_log";
 
-if ($A2B->config["database"]['dbtype'] == "postgres") {
-    $UNIX_TIMESTAMP = "date_part('epoch',";
-} else {
-    $UNIX_TIMESTAMP = "UNIX_TIMESTAMP(";
-}
-
 write_log($logfile_cront_billdid, basename(__FILE__) . ' line:' . __LINE__ . "[#### BATCH DIDUSE BEGIN ####]");
 
 if (!$A2B->DbConnect()) {

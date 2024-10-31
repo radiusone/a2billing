@@ -158,13 +158,8 @@ if ($task=='upload') {
         if (substr($ligne,0,1)!='#' && substr($ligne,0,2)!='"#') {
 
             $FG_ADITION_SECOND_ADD_TABLE  = 'cc_did';
-            if (DB_TYPE == "postgres") {
-                $FG_ADITION_SECOND_ADD_FIELDS = 'id_cc_didgroup, id_cc_country, did, fixrate'; //$fieldtoimport_sql
-                $FG_ADITION_SECOND_ADD_VALUE  = "'".$didgroupval[0]."', '".$countryIDval[0]."', '".$val[0]."', '".$val[1]."'";
-            } else {
-                $FG_ADITION_SECOND_ADD_FIELDS = 'id_cc_didgroup, id_cc_country, did, fixrate, creationdate'; //$fieldtoimport_sql
-                $FG_ADITION_SECOND_ADD_VALUE  = "'".$didgroupval[0]."', '".$countryIDval[0]."', '".$val[0]."', '".$val[1]."', now()";
-            }
+            $FG_ADITION_SECOND_ADD_FIELDS = 'id_cc_didgroup, id_cc_country, did, fixrate'; //$fieldtoimport_sql
+            $FG_ADITION_SECOND_ADD_VALUE  = "'".$didgroupval[0]."', '".$countryIDval[0]."', '".$val[0]."', '".$val[1]."'";
             for ($k=0;$k<count($fieldtoimport);$k++) {
                 if (!empty($val[$k+2]) || $val[$k+2]=='0') {
                     $val[$k+2]=str_replace('"', '', $val[$k+2]); //DH

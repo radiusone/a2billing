@@ -793,10 +793,6 @@ class Soap
         $FG_ADITION_SECOND_ADD_TABLE = "cc_card";
         $FG_ADITION_SECOND_ADD_FIELDS = "username, useralias, credit, tariff, country, language, activated, simultaccess, currency, typepaid, uipass, id_group, id_didgroup, sip_buddy, iax_buddy";
 
-        if (DB_TYPE != "postgres") {
-            $FG_ADITION_SECOND_ADD_FIELDS .= ",creationdate ";
-        }
-
         $instance_sub_table = new Table($FG_ADITION_SECOND_ADD_TABLE, $FG_ADITION_SECOND_ADD_FIELDS);
 
         $sip_buddy = $iax_buddy = 0;
@@ -823,9 +819,6 @@ class Soap
 
             $FG_ADITION_SECOND_ADD_VALUE = "'$accountnumber', '$useralias', '$balance', '$id_callplan', '$country', '$language', '$activated', ".
                                  " $simultaccess, '$currency', $typepaid, '$passui_secret', '$id_group', '$id_didgroup', $sip_buddy, $iax_buddy";
-
-            if (DB_TYPE != "postgres")
-                $FG_ADITION_SECOND_ADD_VALUE .= ", now() ";
 
             $id_cc_card = $instance_sub_table->Add_table($this->DBHandle, $FG_ADITION_SECOND_ADD_VALUE, null, null, 'id');
 

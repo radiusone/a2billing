@@ -163,11 +163,7 @@ for ($i = 0; $i < $months_compare +1; $i++) {
     }
     $current_myyear2 = $myyear - $minus_oneyar;
 
-    if (DB_TYPE == "postgres") {
-        $date_clause = " starttime >= '$current_myyear2-" . sprintf("%02d", intval($current_mymonth2)) . "-01' AND starttime < '$current_myyear-" . sprintf("%02d", intval($current_mymonth)) . "-01'";
-    } else {
-        $date_clause = " starttime >= '$current_myyear2-" . sprintf("%02d", intval($current_mymonth2)) . "-01' AND starttime < '$current_myyear-" . sprintf("%02d", intval($current_mymonth)) . "-01'";
-    }
+    $date_clause = " starttime >= '$current_myyear2-" . sprintf("%02d", intval($current_mymonth2)) . "-01' AND starttime < '$current_myyear-" . sprintf("%02d", intval($current_mymonth)) . "-01'";
 
     $FG_TABLE_CLAUSE = $SQLcmd . $date_clause;
 

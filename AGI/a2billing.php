@@ -241,11 +241,7 @@ if ($mode === "standard") {
                 $A2B->debug(A2Billing::DEBUG, " [GET ACCOUNT INFORMATION]");
                 $res_dtmf = $agi->get_data("prepaid-press4-info", 5000, 1); //Press 4 to get information about your account
                 if ($res_dtmf["result"] === "4") {
-                    if ($A2B->config["database"]["dbtype"] === "postgres") {
-                        $QUERY = "SELECT EXTRACT(EPOCH FROM lastuse) AS lastuse, EXTRACT(EPOCH FROM lock_date) AS lock_date, EXTRACT(EPOCH FROM firstusedate) AS firstuse FROM cc_card WHERE username = ? LIMIT 1";
-                    } else {
-                        $QUERY = "SELECT UNIX_TIMESTAMP(lastuse) AS lastuse, UNIX_TIMESTAMP(lock_date) AS lock_date, UNIX_TIMESTAMP(firstusedate) AS firstuse FROM cc_card WHERE username = ? LIMIT 1";
-                    }
+                    $QUERY = "SELECT lastuse, lock_date, firstusedate FROM cc_card WHERE username = ? LIMIT 1";
                     $A2B->debug(A2Billing::DEBUG, "[QUERY] : " . $QUERY);
                     $card_info = $db->GetRow($QUERY, [$A2B->username]);
 
@@ -265,15 +261,14 @@ if ($mode === "standard") {
 
                             switch ($res_dtmf) {
                                 case "1" :
-                                    // TODO: can't we just check $card_info["lastuse"] ?
-                                    $QUERY = "SELECT starttime FROM cc_call WHERE card_id = ? ORDER BY starttime DESC LIMIT 1";
+                                    $QUERY = "SELECT starttime, sessiontime FROM cc_call WHERE card_id = ? ORDER BY starttime DESC LIMIT 1";
                                     $val = $db->GetOne($QUERY, [$A2B->id_card]);
                                     if ($val !== false && !is_null($val)) {
                                         $A2B->debug(A2Billing::DEBUG, "[INFORMATION MENU]:[OPTION 1]");
                                         $agi->stream_file("prepaid-lastcall", "#"); //Your last call was made
-                                        $agi->exec("SayUnixTime", [$card_info["lastuse"]]);
+                                        $agi->exec("SayUnixTime", [strtotime($val["starttime"])]);
                                         $agi->stream_file("prepaid-call-duration", "#"); //the duration of the call was
-                                        $agi->say_number($card_info["sessiontime"]);
+                                        $agi->say_number($val["sessiontime"]);
                                         $agi->stream_file("seconds", "#");
                                     } else {
                                         $agi->stream_file("prepaid-no-call", "#"); //No call has been made
@@ -283,7 +278,7 @@ if ($mode === "standard") {
                                 case "2" :
                                     if ($card_info["lock_date"]) {
                                         $agi->stream_file("prepaid-account-has-locked", "#"); //Your Account has been locked the
-                                        $agi->exec("SayUnixTime", [$card_info["lock_date"]]);
+                                        $agi->exec("SayUnixTime", [strtotime($card_info["lock_date"])]);
                                     } else {
                                         $agi->stream_file("prepaid-account-nolocked", "#"); //Your account is not locked
                                     }
@@ -291,7 +286,7 @@ if ($mode === "standard") {
                                     break;
                                 case "3" :
                                     $agi->stream_file("prepaid-account-firstused", "#"); //Your Account has been used for the first time the
-                                    $agi->exec("SayUnixTime", [$card_info["firstuse"]]);
+                                    $agi->exec("SayUnixTime", [strtotime($card_info["firstusedate"])]);
                                     $return = true;
                                     break;
                                 case "9" :

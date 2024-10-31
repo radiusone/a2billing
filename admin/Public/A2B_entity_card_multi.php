@@ -134,20 +134,14 @@ if ($nb_to_create > 0 && $action === "generate" && count($errors) === 0) {
         [$accountnumber, $useralias] = gen_card_with_alias($cardnumber_length);
         $passui_secret = MDP_NUMERIC(5) . MDP_STRING(10) . MDP_NUMERIC(5);
 
-        $datecol = $dateval = "";
-        if (DB_TYPE === "mysql") {
-            $datecol = ", creationdate";
-            $dateval = ", NOW()";
-        }
-
         $HD_Form->DBHandle->enableLastInsertID();
         $result = $HD_Form->DBHandle->Execute(
             "INSERT INTO cc_card (
                  username, useralias, credit, tariff, lastname, firstname, email, address, city, state, country, 
                  zipcode, phone, simultaccess, currency, typepaid, creditlimit, enableexpire, expirationdate, expiredays, 
-                 uipass, runservice, tag,id_group, discount, id_seria, id_didgroup, sip_buddy, iax_buddy, vat $datecol
+                 uipass, runservice, tag,id_group, discount, id_seria, id_didgroup, sip_buddy, iax_buddy, vat
              )
-            VALUES (?, ?, ?, ?, ?, '', '', '', '', '', ?, '', '', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? $dateval)",
+            VALUES (?, ?, ?, ?, ?, '', '', '', '', '', ?, '', '', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             [
                 $accountnumber, $useralias, $addcredit, $choose_tariff, $gen_id, $id_country, $choose_simultaccess,
                 $choose_currency, $choose_typepaid, $creditlimit, $enableexpire, $expirationdate, $expiredays, $passui_secret,

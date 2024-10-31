@@ -107,12 +107,6 @@ if (!($nb_card > 0)) {
     exit ();
 }
 
-if ($A2B->config["database"]['dbtype'] == "postgres") {
-    $UNIX_TIMESTAMP = "date_part('epoch',";
-} else {
-    $UNIX_TIMESTAMP = "UNIX_TIMESTAMP(";
-}
-
 write_log($logfile_cront_autorefill, basename(__FILE__) . ' line:' . __LINE__ . "[Number of card found : $nb_card]");
 
 $totalcardperform = 0;

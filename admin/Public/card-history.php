@@ -78,15 +78,10 @@ if (is_null ($order) || is_null($sens)) {
 }
 
 $date_clause='';
-if (DB_TYPE == "postgres") {
-         $UNIX_TIMESTAMP = "";
-} else {
-        $UNIX_TIMESTAMP = "UNIX_TIMESTAMP";
-}
 normalize_day_of_month($fromstatsday_sday, $fromstatsmonth_sday);
 normalize_day_of_month($tostatsday_sday, $tostatsmonth_sday);
-if ($fromday && isset($fromstatsday_sday) && isset($fromstatsmonth_sday)) $date_clause.=" AND $UNIX_TIMESTAMP(ch.datecreated) >= $UNIX_TIMESTAMP('$fromstatsmonth_sday-$fromstatsday_sday')";
-if ($today && isset($tostatsday_sday) && isset($tostatsmonth_sday)) $date_clause.=" AND $UNIX_TIMESTAMP(ch.datecreated) <= $UNIX_TIMESTAMP('$tostatsmonth_sday-".sprintf("%02d",intval($tostatsday_sday)/*+1*/)." 23:59:59')";
+if ($fromday && isset($fromstatsday_sday) && isset($fromstatsmonth_sday)) $date_clause.=" AND ch.datecreated >= '$fromstatsmonth_sday-$fromstatsday_sday'";
+if ($today && isset($tostatsday_sday) && isset($tostatsmonth_sday)) $date_clause.=" AND ch.datecreated <= '$tostatsmonth_sday-".sprintf("%02d",intval($tostatsday_sday)/*+1*/)." 23:59:59'";
 
 if (strpos($SQLcmd ?? "", 'WHERE') > 0) {
     $FG_TABLE_CLAUSE = substr($SQLcmd,6).$date_clause;
@@ -96,7 +91,7 @@ if (strpos($SQLcmd ?? "", 'WHERE') > 0) {
 
 if (!isset ($FG_TABLE_CLAUSE) || strlen($FG_TABLE_CLAUSE)==0) {
     $cc_yearmonth = sprintf("%04d-%02d-%02d",date("Y"),date("n"),date("d"));
-    $FG_TABLE_CLAUSE=" $UNIX_TIMESTAMP(ch.datecreated) >= $UNIX_TIMESTAMP('$cc_yearmonth')";
+    $FG_TABLE_CLAUSE=" ch.datecreated >= '$cc_yearmonth'";
 }
 
 if (isset($entercustomer)  &&  ($entercustomer>0)) {

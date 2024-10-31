@@ -166,14 +166,15 @@ if (!isset ($days_compare)) {
     $days_compare = 2;
 }
 
+$interval1 = "1 DAY";
+$interval2 = "$days_compare DAY";
 if (DB_TYPE == "postgres") {
-    if (isset ($fromstatsday_sday) && isset ($fromstatsmonth_sday))
-        $date_clause .= " AND t1.starttime < date'$fromstatsmonth_sday-$fromstatsday_sday'+ INTERVAL '1 DAY' AND t1.starttime >= date'$fromstatsmonth_sday-$fromstatsday_sday' - INTERVAL '$days_compare DAY'";
-} else {
-    if (isset ($fromstatsday_sday) && isset ($fromstatsmonth_sday))
-        $date_clause .= " AND t1.starttime < ADDDATE('$fromstatsmonth_sday-$fromstatsday_sday',INTERVAL 1 DAY) AND t1.starttime >= SUBDATE('$fromstatsmonth_sday-$fromstatsday_sday',INTERVAL $days_compare DAY)";
+    $interval1 = "'$interval1'";
+    $interval2 = "'$interval2'";
 }
-
+if (isset ($fromstatsday_sday) && isset ($fromstatsmonth_sday)) {
+    $date_clause .= " AND t1.starttime < CAST('$fromstatsmonth_sday-$fromstatsday_sday' AS DATE) + INTERVAL $interval1 AND t1.starttime >= CAST('$fromstatsmonth_sday-$fromstatsday_sday' AS DATE) - INTERVAL $interval2";
+}
 if (strpos($SQLcmd, 'WHERE') > 0) {
     $FG_TABLE_CLAUSE = substr($SQLcmd, 6) . $date_clause;
 } elseif (strpos($date_clause, 'AND') > 0) {

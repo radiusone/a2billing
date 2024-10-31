@@ -48,20 +48,15 @@ $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
 
 $date_clause = "";
-if (DB_TYPE == "postgres") {
-	$UNIX_TIMESTAMP = "";
-} else {
-	$UNIX_TIMESTAMP = "UNIX_TIMESTAMP";
-}
 
 $lastdayofmonth = date("t", strtotime(($tostatsmonth ?? "2099-12").'-01'));
 normalize_day_of_month($fromstatsday_sday, $fromstatsmonth_sday);
 normalize_day_of_month($tostatsday_sday, $tostatsmonth_sday);
 if ($Period=="Month"){
-	if ($frommonth && isset($fromstatsmonth)) $date_clause.=" $UNIX_TIMESTAMP(sl.updated_date) >= $UNIX_TIMESTAMP('$fromstatsmonth-01')";
+	if ($frommonth && isset($fromstatsmonth)) $date_clause.=" sl.updated_date >= '$fromstatsmonth-01'";
 	if ($tomonth && isset($tostatsmonth)) {
 		if (strlen($date_clause)>0) $date_clause.=" AND ";
-		$date_clause.=" $UNIX_TIMESTAMP(sl.updated_date) <= $UNIX_TIMESTAMP('".$tostatsmonth."-$lastdayofmonth 23:59:59')";
+		$date_clause.=" sl.updated_date <= '".$tostatsmonth."-$lastdayofmonth 23:59:59'";
 	}
     $HD_Form->list_query_conditions[] = [
         "SUB",
@@ -73,11 +68,11 @@ if ($Period=="Month"){
 } else {
 	if ($fromday && isset($fromstatsday_sday) && isset($fromstatsmonth_sday)) {
 		if (strlen($date_clause)>0) $date_clause.=" AND ";
-		$date_clause.=" $UNIX_TIMESTAMP(sl.updated_date) >= $UNIX_TIMESTAMP('$fromstatsmonth_sday-$fromstatsday_sday')";
+		$date_clause.=" sl.updated_date >= '$fromstatsmonth_sday-$fromstatsday_sday'";
 	}
 	if ($today && isset($tostatsday_sday) && isset($tostatsmonth_sday)) {
 		if (strlen($date_clause)>0) $date_clause.=" AND ";
-		$date_clause.=" $UNIX_TIMESTAMP(sl.updated_date) <= $UNIX_TIMESTAMP('$tostatsmonth_sday-".sprintf("%02d",intval($tostatsday_sday)/*+1*/)." 23:59:59')";
+		$date_clause.=" sl.updated_date <= '$tostatsmonth_sday-".sprintf("%02d",intval($tostatsday_sday)/*+1*/)." 23:59:59'";
 	}
     $HD_Form->list_query_conditions[] = [
         "SUB",

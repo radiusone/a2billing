@@ -62,11 +62,7 @@ $DBHandle  = DbConnect();
 
 /*******************   ALARM INFO  *****************************************/
 
-if (DB_TYPE != "postgres") {
-    $QUERY = "SELECT id, name, type, numberofrun, substring(datelastrun,1,19), numberofalarm from cc_alarm WHERE id='$id'";
-} else {
-    $QUERY = "SELECT id, name, type, numberofrun, substring(datelastrun::text,1,19), numberofalarm from cc_alarm WHERE id='$id'";
-}
+$QUERY = "SELECT id, name, type, numberofrun, CAST(datelastrun AS CHAR(19)), numberofalarm from cc_alarm WHERE id='$id'";
 $res = $DBHandle -> Execute($QUERY);
 if ($res) {
     $num = $res -> RecordCount( );
@@ -76,13 +72,7 @@ if ($res) {
 }
 
 /*******************  LIST REFILL  *****************************************/
-$QUERY = "SELECT  t3.daterun, t3.calculatedvalue from cc_alarm_report as t3 WHERE t3.cc_alarm_id='$id'";
-$QUERY.=" ORDER BY t3.id DESC";
-if (DB_TYPE == "postgres") {
-    $QUERY .= " LIMIT 25 OFFSET 0";
-} else {
-    $QUERY .= " LIMIT 0, 25";
-}
+$QUERY = "SELECT  t3.daterun, t3.calculatedvalue from cc_alarm_report as t3 WHERE t3.cc_alarm_id='$id' ORDER BY t3.id DESC LIMIT 25";
 if ($FG_DEBUG > 0)   echo $QUERY ;
 $res = $DBHandle -> Execute($QUERY);
 if ($res) {
