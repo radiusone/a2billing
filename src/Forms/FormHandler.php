@@ -1274,10 +1274,8 @@ class FormHandler
             }
 
             if ($form_action === "list") {
-                $sql_calc_found_rows = DB_TYPE !== "postgres" ? 'SQL_CALC_FOUND_ROWS' : "";
-                $fields = "$sql_calc_found_rows $this->FG_QUERY_COLUMN_LIST";
 
-                $instance_table = new Table($this->FG_QUERY_TABLE_NAME, $fields);
+                $instance_table = new Table($this->FG_QUERY_TABLE_NAME, $this->FG_QUERY_COLUMN_LIST);
 
                 if ($this->FG_DEBUG) {
                     $params = [];
@@ -1313,12 +1311,7 @@ class FormHandler
                 if ($this->FG_DEBUG === 3) {
                     echo "<br>Clause : " . $this->FG_QUERY_WHERE_CLAUSE;
                 }
-                if (DB_TYPE === "postgres") {
-                    $this->FG_LIST_VIEW_ROW_COUNT = $instance_table->countRows($this->DBHandle, $this->list_query_conditions);
-                } else {
-                    $res_count = $instance_table->SQLExec($this->DBHandle, "SELECT FOUND_ROWS() as count");
-                    $this->FG_LIST_VIEW_ROW_COUNT = $res_count[0][0];
-                }
+                $this->FG_LIST_VIEW_ROW_COUNT = $instance_table->countRows($this->DBHandle, $this->list_query_conditions);
 
                 if ($this->FG_DEBUG >= 1) {
                     var_dump($list);
