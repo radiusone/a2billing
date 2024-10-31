@@ -1379,7 +1379,6 @@ class FormHandler
                     $this->FG_QUERY_WHERE_CLAUSE .= " AND ";
                 }
                 $this->FG_QUERY_WHERE_CLAUSE .= " $filtercolumn LIKE CONCAT($filterprefix, '%') ";
-                $this->list_query_conditions[$filtercolumn] = ["LIKE", "CONCAT($filterprefix, '%')"];
             }
         }
 
@@ -1393,7 +1392,6 @@ class FormHandler
                     $this->FG_QUERY_WHERE_CLAUSE .= " AND ";
                 }
                 $this->FG_QUERY_WHERE_CLAUSE .= " $filtercolumn LIKE CONCAT($filterprefix, '%') ";
-                $this->list_query_conditions[$filtercolumn] = ["LIKE", "CONCAT($filterprefix, '%')"];
             }
         }
 

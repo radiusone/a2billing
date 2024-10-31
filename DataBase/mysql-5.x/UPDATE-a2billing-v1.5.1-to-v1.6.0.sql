@@ -103,7 +103,7 @@ CREATE TABLE cc_monitor (
 
 INSERT INTO cc_monitor (label, dial_code, description, text_intro, query_type, query, result_type, enable) VALUES
 ('TotalCall', 2, 'To say the total amount of calls', 'The total amount of calls on your system is', 1, 'select count(*) from cc_call;', 3, 1),
-('Say Time', 1, 'just saying the current date and time', 'The current date and time is', 1, 'SELECT UNIX_TIMESTAMP( );', 2, 1),
+('Say Time', 1, 'just saying the current date and time', 'The current date and time is', 1, 'SELECT CURRENT_TIMESTAMP;', 2, 1),
 ('Test Connectivity', 3, 'Test Connectivity with Google', 'your Internet connection is', 2, 'check_connectivity.sh', 1, 1);
 
 

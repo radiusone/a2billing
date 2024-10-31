@@ -1253,9 +1253,13 @@ function insert_callback(A2Billing $A2B, string $uniqueid, string $channel, stri
     $caller_id = $callerid ?? $A2B->config["callback"]["callerid"];
     $timeout = $A2B->config["callback"]["timeout"] * 1000;
     $db = DbConnect();
+    $interval = "$callback_time SECOND";
+    if ($A2B->config["database"]["dbtype"] === "postgres") {
+        $interval = "'$interval'";
+    }
 
     $query = "INSERT INTO cc_callback_spool (status, server_ip, num_attempt, priority, uniqueid, channel, exten, context, variable, id_server_group, callback_time, account, callerid, timeout)";
-    $query .= " VALUES ('PENDING', 'localhost', 0, 1, ?, ?, ?, ?, ?, ?, NOW() + INTERVAL ? SECOND, ?, ?, ?)";
+    $query .= " VALUES ('PENDING', 'localhost', 0, 1, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP + INTERVAL $interval, ?, ?, ?)";
     $params = [
         $uniqueid,
         $channel,
@@ -1263,7 +1267,6 @@ function insert_callback(A2Billing $A2B, string $uniqueid, string $channel, stri
         $context,
         $variable,
         $id_server_group,
-        $callback_time,
         $account,
         $caller_id,
         $timeout,

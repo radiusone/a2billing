@@ -58,6 +58,7 @@ if (!empty($type) && !empty($view_type)) {
     $ck_dt = $view_type === "month" ? $checkdate_month : $checkdate_day;
     $dt_fmt = $view_type === "month" ? "%Y-%m-01" : "%Y-%m-%d";
     switch ($type) {
+        // todo: date_format() doesn't exist in pgsql
         case "card_creation":
             $query = "SELECT UNIX_TIMESTAMP(DATE_FORMAT(creationdate, ?)) * 1000 AS period, COUNT(*) FROM cc_card WHERE creationdate >= ? AND creationdate <= CURRENT_TIMESTAMP GROUP BY period ORDER BY period";
             break;

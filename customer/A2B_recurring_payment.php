@@ -99,7 +99,7 @@ if (!$fp) {
 }
 fclose($fp);
 $DBHandle = DbConnect();
-$table_card = new Table("cc_card", "username,useralias,UNIX_TIMESTAMP(creationdate) creationdate,vat,firstname,lastname");
+$table_card = new Table("cc_card", "username,useralias,creationdate,vat,firstname,lastname");
 $card_clause = "id = $id";
 $result = $table_card->get_list($DBHandle, $card_clause);
 
@@ -110,7 +110,7 @@ if (!is_array($result)) {
 
 $card = $result[0];
 $username = $result[0]['username'];
-$creationdate = $result[0]['creationdate'];
+$creationdate = strtotime($result[0]['creationdate']);
 $useralias = $result[0]['useralias'];
 $vat = $result[0]['vat'];
 $firstname = $result[0]['firstname'];

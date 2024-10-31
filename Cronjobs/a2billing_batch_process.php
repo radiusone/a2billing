@@ -96,14 +96,17 @@ if (!$A2B->DbConnect()) {
 
 $instance_table = new Table();
 
-$oneday = 60 * 60 * 24;
-$service_lastrun = "AND UNIX_TIMESTAMP(cc_service.datelastrun) < UNIX_TIMESTAMP(CURRENT_TIMESTAMP) - $oneday  + $time_checks *60 ";
+$interval = 24 + $time_checks . " HOUR";
+if ($A2B->config["database"]["dbtype"] === "postgres") {
+    $interval = "'$interval'";
+}
+$service_lastrun = "";
 
 // CHECK THE SERVICES
 $QUERY = "SELECT DISTINCT id, name, amount, period, rule, daynumber, stopmode, maxnumbercycle, status, numberofrun, datecreate, " .
-        "UNIX_TIMESTAMP(datelastrun), emailreport, totalcredit, totalcardperform, dialplan, operate_mode, use_group " .
+        "datelastrun, emailreport, totalcredit, totalcardperform, dialplan, operate_mode, use_group " .
         "FROM cc_service " .
-        "WHERE status=1 $service_lastrun ORDER BY id DESC";
+        "WHERE status=1 AND cc_service.datelastrun < CURRENT_TIMESTAMP - INTERVAL $interval ORDER BY id DESC";
 if ($verbose_level >= 1)
     echo $QUERY;
 
@@ -129,7 +132,6 @@ foreach ($result as $myservice) {
 
     $totalcardperform = 0;
     $totalcredit = 0;
-    $timestamp_lastsend = $myservice[11]; // 4 aug 1PM
 
     write_log($logfile_cront_batch, basename(__FILE__) . ' line:' . __LINE__ . "[Service : " . $myservice[1] . " ]");
     $filters 		= '';
@@ -149,16 +151,28 @@ foreach ($result as $myservice) {
 
     // RULES
     if ($rule == 3) {
+        $interval = "$period DAY";
+        if ($A2B->config["database"]['dbtype'] == "postgres") {
+            $interval = "'$interval'";
+        }
         $filter .= " -- card last run date <= period
-                 AND UNIX_TIMESTAMP(servicelastrun) <= UNIX_TIMESTAMP(CURRENT_TIMESTAMP) - $oneday * $period \n";
+                 AND servicelastrun <= CURRENT_TIMESTAMP - INTERVAL $interval \n";
     }
     if (($rule == 1) && ($rule_day > 0)) {
+        $interval = "1 DAY";
+        if ($A2B->config["database"]['dbtype'] == "postgres") {
+            $interval = "'$interval'";
+        }
         $filter .= " -- Apply service if card NO used in last y days
-                AND UNIX_TIMESTAMP(lastuse) < UNIX_TIMESTAMP(CURRENT_TIMESTAMP) - $oneday \n";
+                AND lastuse < CURRENT_TIMESTAMP - INTERVAL $interval \n";
     }
     if (($rule == 2) && ($rule_day > 0)) {
+        $interval = "1 DAY";
+        if ($A2B->config["database"]['dbtype'] == "postgres") {
+            $interval = "'$interval'";
+        }
         $filter .= " -- Apply service if card used in last y days
-                        AND UNIX_TIMESTAMP(lastuse) >= UNIX_TIMESTAMP(CURRENT_TIMESTAMP) - $oneday \n";
+                        AND lastuse >= CURRENT_TIMESTAMP - INTERVAL $interval \n";
     }
     //stopmode variants
     if ($stopmode == 2) {
@@ -239,7 +253,7 @@ foreach ($result as $myservice) {
             $totalcredit += $refill_amount;
         }
 
-        $QUERY = "UPDATE cc_card SET nbservice=nbservice+1, credit= $credit_sql, servicelastrun=now() WHERE id=" . $mycard[0];
+        $QUERY = "UPDATE cc_card SET nbservice=nbservice+1, credit= $credit_sql, servicelastrun=current_timestamp WHERE id=" . $mycard[0];
         if ($run) {
             $result = $instance_table->SQLExec($A2B->DBHandle, $QUERY, 0);
         }
@@ -254,7 +268,7 @@ foreach ($result as $myservice) {
 
     // INSERT REPORT SERVICE INTO THE DATABASE
     $QUERY = "INSERT INTO cc_service_report (cc_service_id, totalcardperform, totalcredit, daterun) " .
-    "VALUES ('" . $myservice[0] . "', '$totalcardperform', '$totalcredit', now())";
+    "VALUES ('" . $myservice[0] . "', '$totalcardperform', '$totalcredit', current_timestamp)";
     if ($run) {
         $result_insert = $instance_table->SQLExec($A2B->DBHandle, $QUERY, 0);
     }
@@ -264,7 +278,7 @@ foreach ($result as $myservice) {
     write_log($logfile_cront_batch, basename(__FILE__) . ' line:' . __LINE__ . "[Service report : 'totalcardperform=$totalcardperform', 'totalcredit=$totalcredit']");
 
     // UPDATE THE SERVICE
-    $QUERY = "UPDATE cc_service SET datelastrun=now(), numberofrun=numberofrun+1, totalcardperform=totalcardperform+" . $totalcardperform .
+    $QUERY = "UPDATE cc_service SET datelastrun=current_timestamp, numberofrun=numberofrun+1, totalcardperform=totalcardperform+" . $totalcardperform .
              ", totalcredit = totalcredit + '" . $totalcredit . "' WHERE id=" . $myservice[0];
 
     if ($run)

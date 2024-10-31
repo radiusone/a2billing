@@ -49,7 +49,7 @@ if (!has_rights(Customer::ACX_ACCESS)) {
 
 $inst_table = new Table();
 
-$QUERY = "SELECT username, credit, lastname, firstname, address, city, state, country, zipcode, phone, email, fax, lastuse, activated, status, freetimetocall, label, packagetype, billingtype, startday, id_cc_package_offer, cc_card.id, currency,cc_card.useralias,UNIX_TIMESTAMP(cc_card.creationdate) creationdate  FROM cc_card LEFT JOIN cc_tariffgroup ON cc_tariffgroup.id=cc_card.tariff LEFT JOIN cc_package_offer ON cc_package_offer.id=cc_tariffgroup.id_cc_package_offer LEFT JOIN cc_card_group ON cc_card_group.id=cc_card.id_group WHERE username = '" . $_SESSION["pr_login"] . "' AND uipass = '" . $_SESSION["pr_password"] . "'";
+$QUERY = "SELECT username, credit, lastname, firstname, address, city, state, country, zipcode, phone, email, fax, lastuse, activated, status, freetimetocall, label, packagetype, billingtype, startday, id_cc_package_offer, cc_card.id, currency,cc_card.useralias,cc_card.creationdate FROM cc_card LEFT JOIN cc_tariffgroup ON cc_tariffgroup.id=cc_card.tariff LEFT JOIN cc_package_offer ON cc_package_offer.id=cc_tariffgroup.id_cc_package_offer LEFT JOIN cc_card_group ON cc_card_group.id=cc_card.id_group WHERE username = '" . $_SESSION["pr_login"] . "' AND uipass = '" . $_SESSION["pr_password"] . "'";
 
 $DBHandle = DbConnect();
 
@@ -88,7 +88,7 @@ if (!isset ($currencies_list[strtoupper($customer_info[22])]["value"]) || !is_nu
 $credit_cur = $customer_info[1] / $mycur;
 $credit_cur = round($credit_cur, 3);
 $useralias = $customer_info['useralias'];
-$creation_date = $customer_info['creationdate'];
+$creation_date = strtotime($customer_info['creationdate']);
 $username = $customer_info['username'];
 
 $smarty->display('main.tpl');

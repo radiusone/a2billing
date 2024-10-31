@@ -61,7 +61,7 @@ $HD_Form -> init();
 
 normalize_day_of_month($fromstatsday_sday, $fromstatsmonth_sday);
 normalize_day_of_month($tostatsday_sday, $tostatsmonth_sday);
-if ($Period == "Time" && $lst_time != "") {
+if ($Period === "Time" && $lst_time !== "") {
     if (strlen($condition) > 0) {
         $condition .= " AND ";
     }
@@ -90,22 +90,23 @@ if ($Period == "Time" && $lst_time != "") {
         $int = "'$int'";
     }
     $condition .= "CURRENT_TIMESTAMP - INTERVAL $int <= cdr.starttime";
-} elseif ($Period == "Day" && $fromday && $today) {
+} elseif ($Period === "Day" && $fromday && $today) {
     if ($fromday && isset ($fromstatsday_sday) && isset ($fromstatsmonth_sday)) {
-        if (strlen($condition) > 0)
+        if (strlen($condition) > 0) {
             $condition .= " AND ";
+        }
         $condition .= " cdr.starttime >= '$fromstatsmonth_sday-$fromstatsday_sday'";
     }
     if ($today && isset ($tostatsday_sday) && isset ($tostatsmonth_sday)) {
-        if (strlen($condition) > 0)
+        if (strlen($condition) > 0) {
             $condition .= " AND ";
-        $condition .= " cdr.starttime <= '$tostatsmonth_sday-" . sprintf("%02d", intval($tostatsday_sday) /*+1*/
-        ) . " 23:59:59'";
+        }
+        $condition .= " cdr.starttime <= '$tostatsmonth_sday-" . sprintf("%02d", intval($tostatsday_sday) /*+1*/) . " 23:59:59'";
     }
 } else {
     $bool = true;
     $int = "1 DAY";
-    if (DB_TYPE == "postgres") {
+    if (DB_TYPE === "postgres") {
         $int = "'$int'";
     }
     $condition = "CURRENT_TIMESTAMP - INTERVAL $int <= cdr.starttime";

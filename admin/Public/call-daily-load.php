@@ -155,9 +155,13 @@ if (!isset($fromstatsday_sday)) {
     $fromstatsmonth_sday 	= date("Y-m");
 }
 
-if (isset($fromstatsday_sday) && isset($fromstatsmonth_sday))
-    $date_clause.=" AND t1.starttime < ADDDATE('$fromstatsmonth_sday-$fromstatsday_sday',INTERVAL 1 DAY) AND t1.starttime >= '$fromstatsmonth_sday-$fromstatsday_sday'";
-
+if (isset($fromstatsday_sday) && isset($fromstatsmonth_sday)) {
+    $interval = "1 DAY";
+    if (DB_TYPE === "postgres") {
+        $interval = "'$interval'";
+    }
+    $date_clause .= " AND t1.starttime < CAST('$fromstatsmonth_sday-$fromstatsday_sday' AS DATE) + INTERVAL $interval AND t1.starttime >= '$fromstatsmonth_sday-$fromstatsday_sday'";
+}
 if ($FG_DEBUG == 3) echo "<br>$date_clause<br>";
 
 if (strpos($SQLcmd ?? "", 'WHERE') > 0) {

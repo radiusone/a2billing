@@ -50,10 +50,10 @@ $lastdayofmonth = date("t", strtotime(($tostatsmonth ?? "2099-12").'-01'));
 normalize_day_of_month($fromstatsday_sday, $fromstatsmonth_sday);
 normalize_day_of_month($tostatsday_sday, $tostatsmonth_sday);
 if ($Period=="Month"){
-	if ($frommonth && isset($fromstatsmonth)) $condition_ary[] = "UNIX_TIMESTAMP(csl.creationdate) >= UNIX_TIMESTAMP('$fromstatsmonth-01')";
+	if ($frommonth && isset($fromstatsmonth)) $condition_ary[] = "csl.creationdate >= '$fromstatsmonth-01'";
 	if ($tomonth && isset($tostatsmonth))
 	{
-		$condition_ary[] = "UNIX_TIMESTAMP(csl.creationdate) <= UNIX_TIMESTAMP('".$tostatsmonth."-$lastdayofmonth 23:59:59')";
+		$condition_ary[] = "csl.creationdate <= '".$tostatsmonth."-$lastdayofmonth 23:59:59'";
 	}
     $HD_Form->list_query_conditions[] = [
         "SUB",
@@ -65,11 +65,11 @@ if ($Period=="Month"){
 }else{
 	if ($fromday && isset($fromstatsday_sday) && isset($fromstatsmonth_sday))
 	{
-		$condition_ary[] = "UNIX_TIMESTAMP(csl.creationdate) >= UNIX_TIMESTAMP('$fromstatsmonth_sday-$fromstatsday_sday')";
+		$condition_ary[] = "csl.creationdate >= '$fromstatsmonth_sday-$fromstatsday_sday'";
 	}
 	if ($today && isset($tostatsday_sday) && isset($tostatsmonth_sday))
 	{
-		$condition_ary[] = " UNIX_TIMESTAMP(csl.creationdate) <= UNIX_TIMESTAMP('$tostatsmonth_sday-".sprintf("%02d",intval($tostatsday_sday)/*+1*/)." 23:59:59')";
+		$condition_ary[] = " csl.creationdate <= '$tostatsmonth_sday-".sprintf("%02d",intval($tostatsday_sday)/*+1*/)." 23:59:59'";
 	}
     $HD_Form->list_query_conditions[] = [
         "SUB",

@@ -114,11 +114,11 @@ normalize_day_of_month($fromstatsday_sday, $fromstatsmonth_sday);
 normalize_day_of_month($tostatsday_sday, $tostatsmonth_sday);
 $lastdayofmonth = date("t", strtotime($tostatsmonth.'-01'));
 if ($Period=="Month") {
-    if ($frommonth && isset($fromstatsmonth)) $date_clause.=" AND UNIX_TIMESTAMP(t1.date_consumption) >= UNIX_TIMESTAMP('$fromstatsmonth-01')";
-    if ($tomonth && isset($tostatsmonth)) $date_clause.=" AND UNIX_TIMESTAMP(t1.date_consumption) <= UNIX_TIMESTAMP('".$tostatsmonth."-$lastdayofmonth 23:59:59')";
+    if ($frommonth && isset($fromstatsmonth)) $date_clause.=" AND t1.date_consumption >= '$fromstatsmonth-01'";
+    if ($tomonth && isset($tostatsmonth)) $date_clause.=" AND t1.date_consumption <= '$tostatsmonth-$lastdayofmonth 23:59:59')";
 } else {
-    if ($fromday && isset($fromstatsday_sday) && isset($fromstatsmonth_sday)) $date_clause.=" AND UNIX_TIMESTAMP(t1.date_consumption) >= UNIX_TIMESTAMP('$fromstatsmonth_sday-$fromstatsday_sday')";
-    if ($today && isset($tostatsday_sday) && isset($tostatsmonth_sday)) $date_clause.=" AND UNIX_TIMESTAMP(t1.date_consumption) <= UNIX_TIMESTAMP('$tostatsmonth_sday-".sprintf("%02d",intval($tostatsday_sday)/*+1*/)." 23:59:59')";
+    if ($fromday && isset($fromstatsday_sday) && isset($fromstatsmonth_sday)) $date_clause.=" AND t1.date_consumption >= '$fromstatsmonth_sday-$fromstatsday_sday'";
+    if ($today && isset($tostatsday_sday) && isset($tostatsmonth_sday)) $date_clause.=" AND t1.date_consumption <= '$tostatsmonth_sday-".sprintf("%02d",intval($tostatsday_sday)/*+1*/)." 23:59:59'";
 }
 
 if (strpos($SQLcmd, 'WHERE') > 0) {
@@ -129,7 +129,7 @@ if (strpos($SQLcmd, 'WHERE') > 0) {
 
 if (!isset ($FG_TABLE_CLAUSE) || strlen($FG_TABLE_CLAUSE)==0) {
     $cc_yearmonth = sprintf("%04d-%02d-%02d",date("Y"),date("n"),date("d"));
-    $FG_TABLE_CLAUSE=" UNIX_TIMESTAMP(t1.date_consumption) >= UNIX_TIMESTAMP('$cc_yearmonth')";
+    $FG_TABLE_CLAUSE=" t1.date_consumption >= '$cc_yearmonth'";
 }
 
 if (isset($customer)  &&  ($customer>0)) {

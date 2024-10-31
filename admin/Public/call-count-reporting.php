@@ -45,7 +45,7 @@ getpost_ifset(array('inputtopvar','topsearch', 'posted', 'Period', 'frommonth', 
 
 if (!isset ($FG_TABLE_CLAUSE) || strlen($FG_TABLE_CLAUSE)==0) {
     $cc_yearmonth = sprintf("%04d-%02d-%02d",date("Y"),date("n"),date("d"));
-    $FG_TABLE_CLAUSE=" UNIX_TIMESTAMP(starttime) <= UNIX_TIMESTAMP('$cc_yearmonth')";
+    $FG_TABLE_CLAUSE=" starttime <= '$cc_yearmonth'";
 }
 
 $FG_DEBUG = 0;
@@ -112,8 +112,8 @@ $date_clause='';
 normalize_day_of_month($fromstatsday_sday, $fromstatsmonth_sday);
 normalize_day_of_month($tostatsday_sday, $tostatsmonth_sday);
 
-if ($fromday && isset($fromstatsday_sday) && isset($fromstatsmonth_sday)) $date_clause.=" AND UNIX_TIMESTAMP(starttime) >= UNIX_TIMESTAMP('$fromstatsmonth_sday-$fromstatsday_sday') ";
-if ($today && isset($tostatsday_sday) && isset($tostatsmonth_sday)) $date_clause.=" AND UNIX_TIMESTAMP(starttime) <= UNIX_TIMESTAMP('$tostatsmonth_sday-".sprintf("%02d",intval($tostatsday_sday)/*+1*/)." 23:59:59') ";
+if ($fromday && isset($fromstatsday_sday) && isset($fromstatsmonth_sday)) $date_clause.=" AND starttime >= '$fromstatsmonth_sday-$fromstatsday_sday' ";
+if ($today && isset($tostatsday_sday) && isset($tostatsmonth_sday)) $date_clause.=" AND starttime <= '$tostatsmonth_sday-".sprintf("%02d",intval($tostatsday_sday)/*+1*/)." 23:59:59' ";
 
 if (strpos($date_clause, 'AND') > 0) {
     $FG_TABLE_CLAUSE = substr($date_clause,5);

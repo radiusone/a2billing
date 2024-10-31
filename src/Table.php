@@ -154,6 +154,7 @@ class Table
         return str_starts_with($value, "now()")
             || str_starts_with($value, "current_timestamp")
             || str_starts_with($value, "date(")
+            || str_starts_with($value, "cast(")
             || str_starts_with($value, "(select")
             || str_starts_with($value, "case when")
             || str_starts_with($value, "count(")
@@ -163,6 +164,7 @@ class Table
             || str_starts_with($value, "concat(")
             || str_starts_with($value, "replace(")
             || str_starts_with($value, "substring(")
+            || str_starts_with($value, "substr(")
             || str_starts_with($value, "lower(")
             || str_starts_with($value, "upper(");
     }
