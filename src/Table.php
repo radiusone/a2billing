@@ -636,44 +636,42 @@ class Table
 
     /**
      * Takes an array of data and process it to create an SQL query condition
+     * Example input array/output string:
+     *  - ["mycol" => "value"] `mycol` = ?
+     *  - ["mycol" => "value", "mycol2" => "value2"] `mycol` = ? AND `mycol2` = ?
+     *  - [["SUB", [["mycol" => "value", "mycol2" => "value2"]], "OR"]] (`mycol` = ? OR `mycol2` = ?)
+     *  - ["mycol" => "value", ["SUB", ["mycol2" => "value2", "mycol3" => "value3"], "OR"]] `mycol` = ? AND (`mycol2` = ? OR `mycol3` = ?)
      *
      * @param array $where the array of data
      * @param array|null $params parameters for use with the database execution
      * @return string the query clause with placeholders
      */
-    public function processWhereClauseArray(array $where, ?array &$params): string
+    public function processWhereClauseArray(array $where, ?array &$params, string $operator = "AND"): string
     {
         $params ??= [];
         $query_clauses = [];
         foreach ($where as $col => $data) {
-            $query = "";
             if (is_numeric($col) && is_array($data) && count($data) > 1 && $data[0] === "SUB") {
                 $clauses = $data[1];
-                $operator = $data[2] ?? "AND";
-                if (is_array($clauses)) {
-                    $subclauses = [];
-                    foreach ($clauses as $subclause) {
-                        foreach ($subclause as $subcol => $subcondition) {
-                            $subclauses[] = $this->processConditionClauseArray($subcol, $subcondition, $params);
-                        }
-                    }
-                    if (count($subclauses)) {
-                        $query .= " ( ";
-                        $query .= implode(" $operator ", $subclauses);
-                        $query .= " ) ";
-                    }
-                }
-                $query_clauses[] = $query;
-                continue;
+                $suboperator = $data[2] ?? "AND";
+                $query_clauses[] = "(" . $this->processWhereClauseArray($clauses, $params, $suboperator) . ")";
+            } else {
+                $query_clauses[] = $this->processConditionClauseArray($col, $data, $params);
             }
-            $query_clauses[] = $this->processConditionClauseArray($col, $data, $params);
         }
 
-        return implode(" AND ", $query_clauses);
+        return implode(" $operator ", $query_clauses);
     }
 
     /**
      * Process a single array for use as part of a WHERE clause
+     * Example input parameters/output string:
+     *  - $col="mycol",$condition="value" `mycol` = ?
+     *  - $col="mycol",$condition=["<", "value"] `mycol` < ?
+     *  - $col="mycol",$condition=["!=", null] `mycol` IS NOT NULL
+     *  - $col="mycol",$condition=["IN", ["value1", "value2"]] `mycol` IN (?, ?)
+     *  - $col="mycol",$condition=["CASE", [3 => "value1", "x" => "value2"]] CASE `mycol` WHEN 3 THEN ? WHEN "x" THEN ? END
+     *  - $col="mycol",$condition=["CASE", [3 => "`col2`", "else" => "value2"]] CASE `mycol` WHEN 3 THEN `col2` ELSE ? END
      *
      * @param string $col the column name
      * @param mixed $condition either a value or an array with operator and value
@@ -692,10 +690,45 @@ class Table
                 implode(",", array_fill(0, count($value), "?"))
             );
             $params = array_merge($params, $value);
+        } elseif ($operator === "CASE") {
+            $conditions = "";
+            $else = "";
+            $else_param = "";
+            foreach ($value as $k => $v) {
+                if (strtolower($k) === "else") {
+                    if (is_bool($v)) {
+                        $else = $v ? "TRUE" : "FALSE";
+                    } elseif ($this->quote_identifier("$v") !== "$v") {
+                        $else_param = $v;
+                        $else = "?";
+                    } else {
+                        $else = $v;
+                    }
+                    continue;
+                }
+                if (is_bool($v)) {
+                    $v = $v ? "TRUE" : "FALSE";
+                } elseif ($this->quote_identifier("$v") !== "$v") {
+                    $params[] = $v;
+                    $v = "?";
+                }
+                if (!is_numeric($k)) {
+                    $k = "\"$k\"";
+                }
+                $conditions .= "WHEN $k THEN $v ";
+            }
+            if ($else) {
+                $conditions .= "ELSE $else";
+                if ($else_param) {
+                    $params[] = $else_param;
+                }
+            }
+
+            return " CASE $col $conditions END ";
         } elseif (is_null($value)) {
             if ($operator === "=") {
                 $operator = "IS";
-            } elseif ($operator === "!=") {
+            } elseif ($operator === "!=" || $operator === "<>") {
                 $operator = "IS NOT";
             }
             $placeholder = "NULL";
