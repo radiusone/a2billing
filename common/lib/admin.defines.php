@@ -55,7 +55,7 @@ define ("Images_Path","../Public/templates/$_SESSION[stylefile]/images");
 define ("Images_Path_Main","../Public/templates/$_SESSION[stylefile]/images");
 define ("KICON_PATH","../Public/templates/$_SESSION[stylefile]/images/kicons");
 
-if (ENABLE_LOG && !str_contains($_SERVER['REQUEST_URI'], "Public/index.php") && !empty($_SESSION["admin_id"])) {
+if (!empty($_SESSION["admin_id"]) && ENABLE_LOG && !str_contains($_SERVER['REQUEST_URI'], "Public/index.php")) {
     Logger::insertLog($_SESSION["admin_id"], 1, "Page Visit", "User Visited the Page", '', $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI']);
 }
 
