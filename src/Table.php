@@ -260,7 +260,7 @@ class Table
     {
         $table = str_contains($this->table, " JOIN ") ? $this->table : $this->quote_identifier($this->table);
         $table .= " " . $this->processJoinedTables();
-        $where = $this->processWhereClauseArray($conditions, $params);
+        $where = $this->processWhereClauseArray($conditions, $params) ?: "1=1";
         $direction = strtoupper($direction) === "ASC" ? "ASC" : "DESC";
         $orderings = array_filter($order);
         if (!empty($orderings)) {
