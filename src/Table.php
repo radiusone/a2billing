@@ -254,9 +254,10 @@ class Table
      * @param string $direction either "asc" or "desc"
      * @param array $group the column(s) to group by
      * @param int $limit query limit
+     * @param int $offset
      * @return array
      */
-    public function getRows(ADOConnection $db, array $conditions = [], array $order = [], string $direction = "ASC", array $group = [], int $limit = 0): array
+    public function getRows(ADOConnection $db, array $conditions = [], array $order = [], string $direction = "ASC", array $group = [], int $limit = 0, int $offset = 0): array
     {
         $table = str_contains($this->table, " JOIN ") ? $this->table : $this->quote_identifier($this->table);
         $table .= " " . $this->processJoinedTables();
@@ -277,8 +278,9 @@ class Table
             $group_sql = "";
         }
         $limit_sql = $limit ? "LIMIT $limit" : "";
+        $offset_sql = $offset ? "OFFSET $offset" : "";
 
-        $query = "SELECT $this->fields FROM $table WHERE $where $group_sql $order_sql $limit_sql";
+        $query = "SELECT $this->fields FROM $table WHERE $where $group_sql $order_sql $limit_sql $offset_sql";
 
         return $db->GetArray($query, $params) ?: [];
     }
