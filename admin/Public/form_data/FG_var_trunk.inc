@@ -2,7 +2,13 @@
 
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
-use A2billing\Table;
+
+/**
+ * @var string $popup_select
+ * @var string $popup_formname
+ * @var string $popup_fieldname
+ * @var string $form_action
+ */
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -38,106 +44,75 @@ use A2billing\Table;
 
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
-getpost_ifset(array('id', 'trunkcode', 'trunkprefix', 'removeprefix', 'providertech', 'providerip', 'addparameter','failover_trunk', 'id_provider', 'popup_select', 'inuse', 'maxuse', 'status', 'if_max_use'));
-
 $DBHandle  = DbConnect();
-$instance_table = new Table();
 
-$HD_Form = new FormHandler("cc_trunk", _("trunk"), "id_trunk");
+$HD_Form = new FormHandler("cc_trunk", _("Trunk"), "id_trunk");
 
-$HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_trunk.php?form_action=ask-add";
-$HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add Trunk");
-$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/add.png" ;
-
+$HD_Form->FG_LIST_ADDING_BUTTON1 = true;
+$HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_trunk.php?form_action=ask-add";
+$HD_Form->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add Trunk");
+$HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJvSURBVDjLpZPrS5NhGIf9W7YvBYOkhlkoqCklWChv2WyKik7blnNris72bi6dus0DLZ0TDxW1odtopDs4D8MDZuLU0kXq61CijSIIasOvv94VTUfLiB74fXngup7nvrnvJABJ/5PfLnTTdcwOj4RsdYmo5glBWP6iOtzwvIKSWstI0Wgx80SBblpKtE9KQs/We7EaWoT/8wbWP61gMmCH0lMDvokT4j25TiQU/ITFkek9Ow6+7WH2gwsmahCPdwyw75uw9HEO2gUZSkfyI9zBPCJOoJ2SMmg46N61YO/rNoa39Xi41oFuXysMfh36/Fp0b7bAfWAH6RGi0HglWNCbzYgJaFjRv6zGuy+b9It96N3SQvNKiV9HvSaDfFEIxXItnPs23BzJQd6DDEVM0OKsoVwBG/1VMzpXVWhbkUM2K4oJBDYuGmbKIJ0qxsAbHfRLzbjcnUbFBIpx/qH3vQv9b3U03IQ/HfFkERTzfFj8w8jSpR7GBE123uFEYAzaDRIqX/2JAtJbDat/COkd7CNBva2cMvq0MGxp0PRSCPF8BXjWG3FgNHc9XPT71Ojy3sMFdfJRCeKxEsVtKwFHwALZfCUk3tIfNR8XiJwc1LmL4dg141JPKtj3WUdNFJqLGFVPC4OkR4BxajTWsChY64wmCnMxsWPCHcutKBxMVp5mxA1S+aMComToaqTRUQknLTH62kHOVEE+VQnjahscNCy0cMBWsSI0TCQcZc5ALkEYckL5A5noWSBhfm2AecMAjbcRWV0pUTh0HE64TNf0mczcnnQyu/MilaFJCae1nw2fbz1DnVOxyGTlKeZft/Ff8x1BRssfACjTwQAAAABJRU5ErkJggg==";
 
 $HD_Form->no_debug();
-$HD_Form -> FG_TABLE_DEFAULT_ORDER = " id_trunk";
+$HD_Form->FG_TABLE_DEFAULT_ORDER = " id_trunk";
 $HD_Form->update_query_conditions = ["id_trunk" => "%id"];
-$HD_Form -> FG_TABLE_DEFAULT_SENS = "ASC";
-
-$actived_list = array();
-$actived_list["1"] = array( gettext("Active"), "1");
-$actived_list["0"] = array( gettext("Inactive"), "0");
-
-$actived_list = array();
-$actived_list["1"] = array( gettext("Active"), "1");
-$actived_list["0"] = array( gettext("Inactive"), "0");
-
-$trunk_actived_list = array();
-$trunk_actived_list["0"] = array( gettext("0"), "Inactive");
-$trunk_actived_list["1"] = array( gettext("1"), "Active");
-
-$provider_list_query = "select * from cc_provider";
-$res_provider_list  = $instance_table->SQLExec ($DBHandle, $provider_list_query);
-if (is_array($res_provider_list)) {
-    foreach($res_provider_list as $val){
-	    $provider_list_result[] = array(gettext($val['id']),$val['provider_name']);
-    }
-}
-
-$maxuse_behaviour_list = array();
-$maxuse_behaviour_list["0"] = array( gettext("Use failover trunk"), "0");
-$maxuse_behaviour_list["1"] = array( gettext("Use next trunk"), "1");
+$HD_Form->FG_TABLE_DEFAULT_SENS = "ASC";
 
 // Dependent Tables
-$HD_Form -> FG_FK_DELETE_ALLOWED = true;
-$HD_Form -> FG_FK_DELETE_CONFIRM = true;
-$HD_Form -> FG_FK_WARNONLY = true;
-$HD_Form -> FG_FK_TABLENAMES = array("cc_ratecard");
-$HD_Form -> FG_FK_EDITION_CLAUSE = array(" id_trunk ");
-
-$HD_Form -> FG_FK_DELETE_MESSAGE = gettext("You have some rates attached to this Trunk! Please comfirm that you really want to remove this Trunk? ");
-
+$HD_Form->FG_FK_DELETE_ALLOWED = true;
+$HD_Form->FG_FK_DELETE_CONFIRM = true;
+$HD_Form->FG_FK_WARNONLY = true;
+$HD_Form->FG_FK_TABLENAMES = ["cc_ratecard"];
+$HD_Form->FG_FK_EDITION_CLAUSE = ["id_trunk"];
+$HD_Form->FG_FK_DELETE_MESSAGE = gettext("You have some rates attached to this Trunk! Please comfirm that you really want to remove this Trunk? ");
 
 if ($popup_select) {
-	$HD_Form -> AddViewElement(gettext("ID"), "id_trunk");
-	$HD_Form -> AddViewElement(gettext("LABEL"), "trunkcode");
-	$HD_Form -> AddViewElement(gettext("PROVIDER"), "id_provider", true, 15, "", "lie", "cc_provider", "provider_name", "id='%id'", "%1");
-
-	$HD_Form -> FieldViewElement ('id_trunk, trunkcode, id_provider');
+	$HD_Form->AddViewElement(gettext("ID"), "id_trunk");
+	$HD_Form->AddViewElement(gettext("LABEL"), "trunkcode");
+	$HD_Form->AddViewElement(gettext("PROVIDER"), "id_provider", true, 15, "", "lie", "cc_provider", "provider_name", "id='%id'", "%1");
+	$HD_Form->FieldViewElement ('id_trunk, trunkcode, id_provider');
 } else {
-	$HD_Form -> AddViewElement(gettext("LABEL"), "trunkcode");
-	$HD_Form -> AddViewElement(gettext("ADD_PREFIX"), "trunkprefix");
-	$HD_Form -> AddViewElement(gettext("REMOVE_PREFIX"), "removeprefix");
-	$HD_Form -> AddViewElement(gettext("TECH"), "providertech");
-	$HD_Form -> AddViewElement(gettext("IP/HOST"), "providerip");
-	$HD_Form -> AddViewElement(gettext("PROVIDER"), "id_provider", true, 15, "", "lie", "cc_provider", "provider_name", "id='%id'", "%1");
-	$HD_Form -> AddViewElement(gettext("MINUTES USED"), "secondusedreal", true, 30, "display_minute");
-	$HD_Form -> AddViewElement(gettext("STATUS"), "status", true, 0, "", "list", $actived_list);
-	$HD_Form -> AddViewElement(gettext("MAXUSE"), "maxuse");
-
-	$HD_Form -> FieldViewElement ('trunkcode, trunkprefix, removeprefix, providertech, providerip, id_provider, secondusedreal, status, maxuse');
+	$HD_Form->AddViewElement(gettext("LABEL"), "trunkcode");
+	$HD_Form->AddViewElement(gettext("ADD_PREFIX"), "trunkprefix");
+	$HD_Form->AddViewElement(gettext("REMOVE_PREFIX"), "removeprefix");
+	$HD_Form->AddViewElement(gettext("TECH"), "providertech");
+	$HD_Form->AddViewElement(gettext("IP/HOST"), "providerip");
+	$HD_Form->AddViewElement(gettext("PROVIDER"), "id_provider", true, 15, "", "lie", "cc_provider", "provider_name", "id='%id'", "%1");
+	$HD_Form->AddViewElement(gettext("MINUTES USED"), "secondusedreal", true, 30, "display_minute");
+	$HD_Form->AddViewElement(gettext("STATUS"), "status", true, 0, "", "list", getActivationList());
+	$HD_Form->AddViewElement(gettext("MAXUSE"), "maxuse");
+	$HD_Form->FieldViewElement ('trunkcode, trunkprefix, removeprefix, providertech, providerip, id_provider, secondusedreal, status, maxuse');
 }
 
-$HD_Form -> search_form_enabled = true;
-$HD_Form -> search_form_title = gettext("Search");
-$HD_Form -> AddSearchTextInput(gettext("IP/HOST"),'providerip','provideriptype');
-$HD_Form -> AddSearchSelectInput(gettext("SELECT PROVIDER"), "id_provider", $provider_list_result ?? []);
-$HD_Form -> AddSearchSelectInput(gettext("SELECT STATUS"), "status", $trunk_actived_list);
+$HD_Form->search_form_enabled = true;
+$HD_Form->search_form_title = gettext("Search");
+$HD_Form->AddSearchTextInput(gettext("IP/HOST"),'providerip','provideriptype');
+$HD_Form->AddSearchSqlSelectInput(_("SELECT PROVIDER"), "cc_provider", "id,provider_name", "", "provider_name", "ASC", "id_provider");
+$HD_Form->AddSearchSelectInput(gettext("SELECT STATUS"), "status", [[0, _("Inactive")], [1, _("Active")]]);
 
-if ($popup_select) {
-	$HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 7;
-	$HD_Form -> CV_FOLLOWPARAMETERS = "&popup_select=" . $popup_select . "&popup_formname=" . $popup_formname . "&popup_fieldname=" . $popup_fieldname;
+if ((int)$popup_select > 0) {
+	$HD_Form->FG_LIST_VIEW_PAGE_SIZE = 7;
+	$HD_Form->CV_FOLLOWPARAMETERS = "&popup_select=$popup_select&popup_formname=$popup_formname&popup_fieldname=$popup_fieldname";
 
-	$HD_Form -> FG_OTHER_BUTTON1 = true;
-	$HD_Form -> FG_OTHER_BUTTON1_ALT = '<font color="red">&lt;select&gt;</font>';
-	$HD_Form -> FG_OTHER_BUTTON1_IMG = '';
+	$HD_Form->FG_OTHER_BUTTON1 = true;
+	$HD_Form->FG_OTHER_BUTTON1_ALT = '<font color="red">&lt;select&gt;</font>';
+	$HD_Form->FG_OTHER_BUTTON1_IMG = '';
 
 	//echo $popup_select;
-	if ($popup_select == 1)
-		$HD_Form -> FG_OTHER_BUTTON1_LINK = "javascript:sendValue('|param|');";
-	elseif ($popup_select == 2)
-		$HD_Form -> FG_OTHER_BUTTON1_LINK = "javascript:sendValue('|col0|');";
+	if ((int)$popup_select === 1) {
+        $HD_Form->FG_OTHER_BUTTON1_LINK = "javascript:sendValue('|param|');";
+    } elseif ((int)$popup_select === 2) {
+        $HD_Form->FG_OTHER_BUTTON1_LINK = "javascript:sendValue('|col0|');";
+    }
 } else {
-	$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
-	$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
-	$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
+	$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
+	$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
+	$HD_Form->FG_ENABLE_ADD_BUTTON = true;
 }
 
 $def_value_inuse = '';
 $def_value_maxuse = '';
-if (isset($form_action) && $form_action=="ask-add"){
+if (isset($form_action) && $form_action === "ask-add"){
 	$def_value_inuse = "value='0'";
 	$def_value_maxuse = "value='-1'";
 }
@@ -214,7 +189,8 @@ $HD_Form->AddEditSqlSelect(
     "",
     "",
     '<option value="-1" selected="selected">' . gettext("NOT DEFINED") . '</option>',
-    "%1", gettext("You can define another trunk in case of failover!")
+    "%1",
+    gettext("You can define another trunk in case of failover!")
 );
 
 $HD_Form->AddEditElement(
@@ -237,14 +213,19 @@ $HD_Form->AddEditElement(
 $HD_Form->AddEditSelect(
     gettext("IFMAXUSED"),
     "if_max_use",
-    $maxuse_behaviour_list,
-    "", gettext("Specifies which trunk to use when the maximum number of connections is reached")
+    [[_("Use failover trunk"), 0], [_("Use next trunk"), 1]],
+    "",
+    gettext("Specifies which trunk to use when the maximum number of connections is reached")
 );
 
-$HD_Form->AddEditSelect(gettext("STATUS"), "status", $actived_list, "", gettext("Define if this trunk is active or not"));
+$HD_Form->AddEditSelect(
+    gettext("STATUS"),
+    "status",
+    getActivationList(),
+    "",
+    gettext("Define if this trunk is active or not")
+);
 
-$HD_Form -> FG_INTRO_TEXT_ADITION = '';
-
-//$HD_Form -> FG_GO_LINK_AFTER_ACTION_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
-$HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
-$HD_Form -> FG_LOCATION_AFTER_DELETE = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
+$HD_Form->FG_INTRO_TEXT_ADITION = '';
+$HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";
+$HD_Form->FG_LOCATION_AFTER_DELETE = "?id=";

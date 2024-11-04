@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -34,26 +35,32 @@ use A2billing\Admin;
  *
  *
 **/
-
 $menu_section = 7;
 require_once "../../common/lib/admin.defines.php";
-include './form_data/FG_var_trunk.inc';
+require_once "./form_data/FG_var_trunk.inc";
 
+/**
+ * @var Smarty $smarty
+ * @var FormHandler $HD_Form
+ * @var string $CC_help_trunk_list
+ * @var string $CC_help_trunk_edit
+ */
 Admin::checkPageAccess(Admin::ACX_TRUNK);
 
-getpost_ifset(array (
+getpost_ifset([
     'popup_select',
     'popup_formname',
-    'popup_fieldname'
-));
+    'popup_fieldname',
+]);
+/**
+ * @var string $popup_select
+ * @var string $popup_formname
+ * @var string $popup_fieldname
+ */
 
 $HD_Form->init();
 
-if (!isset ($form_action))
-    $form_action = "list"; //ask-add
-if (!isset ($action))
-    $action = $form_action;
-
+$form_action ??= "list";
 $list = $HD_Form->perform_action($form_action);
 
 // #### HEADER SECTION
@@ -62,29 +69,24 @@ $smarty->display('main.tpl');
 if ($popup_select) {
 ?>
 <script>
-function sendValue(selvalue)
-{
-    var formname = <?= json_encode($popup_formname ?? "") ?>;
-    var fieldname = <?= json_encode($popup_fieldname ?? "") ?>;
+function sendValue(selvalue) {
+    const formname = <?= json_encode($popup_formname ?? "") ?>;
+    const fieldname = <?= json_encode($popup_fieldname ?? "") ?>;
     $(`form[name='${formname}'] [name='${fieldname}']`, window.opener.document).val(selvalue);
     window.close();
 }
 </script>
 <?php
 
-}
-
-// #### HELP SECTION
-if ($form_action == 'list') {
-    if (!$popup_select)
-        echo $CC_help_trunk_list;
+} elseif ($form_action === "list") {
+    echo $CC_help_trunk_list;
 } else {
     echo $CC_help_trunk_edit;
 }
 
 //  #### SEARCH SECTION
 if ($form_action == "list") {
-        $HD_Form->create_search_form();
+    $HD_Form->create_search_form();
 }
 
 // #### TOP SECTION PAGE
@@ -93,5 +95,6 @@ $HD_Form->create_toppage($form_action);
 $HD_Form->create_form($form_action, $list);
 
 // #### FOOTER SECTION
-if (!$popup_select)
+if (!$popup_select) {
     $smarty->display('footer.tpl');
+}
