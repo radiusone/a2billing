@@ -39,7 +39,7 @@ class FormHandler
     /** @var bool ??? */
     public bool $VALID_SQL_REG_EXP = true;
 
-    /** @var mixed The result of a non-select query (insert, update, delete) */
+    /** @var bool|int The result of a non-select query (bool for update and delete, inserted ID for insert) */
     public $QUERY_RESULT = false;
 
     /* CONFIG THE VIEWER : CV */
@@ -1548,6 +1548,7 @@ class FormHandler
                     // CHECK IF THIS IS A SPLITABLE FIELD LIKE 012-014 OR 15,16,17
                     if (in_array($fields_name, $this->FG_SPLITABLE_FIELDS) && !str_starts_with($processed[$fields_name], '_')) {
                         $value = $processed[$fields_name];
+                        $arr_value_to_import[$fields_name] = [];
                         $items = explode(",", $value);
                         foreach ($items as $item) {
                             $item = trim($item);
@@ -1562,15 +1563,15 @@ class FormHandler
                                 $max = substr($max, $prefix_len);
                                 if (is_numeric($min) && is_numeric($max) && $min < $max) {
                                     for ($i = $min; $i <= $max; $i++) {
-                                        $arr_value_to_import[$fields_name] = $prefix . $i;
+                                        $arr_value_to_import[$fields_name][] = $prefix . $i;
                                     }
                                 } elseif (is_numeric($min)) {
-                                    $arr_value_to_import[$fields_name] = $prefix . $min;
+                                    $arr_value_to_import[$fields_name][] = $prefix . $min;
                                 } elseif (is_numeric($max)) {
-                                    $arr_value_to_import[$fields_name] = $prefix . $max;
+                                    $arr_value_to_import[$fields_name][] = $prefix . $max;
                                 }
                             } else {
-                                $arr_value_to_import[$fields_name] = $range[0];
+                                $arr_value_to_import[$fields_name][] = $range[0];
                             }
                         }
 
@@ -1594,20 +1595,31 @@ class FormHandler
         } elseif (($key = array_search("%check_array%", $values)) !== false) {
             foreach ($arr_value_to_import[$key] as $array_value) {
                 $values[$key] = $array_value;
-                $this->QUERY_RESULT = $instance_table->addRow(
+                $instance_table->addRow(
                     $this->DBHandle,
                     $values,
                     $this->FG_QUERY_PRIMARY_KEY,
                     $id
                 );
+                // CALL DEFINED FUNCTION AFTER THE ACTION ADDITION
+                if (method_exists(FormBO::class, $this->FG_ADDITIONAL_FUNCTION_AFTER_ADD)) {
+                    call_user_func([FormBO::class, $this->FG_ADDITIONAL_FUNCTION_AFTER_ADD]);
+                }
             }
         } else {
-            $this->QUERY_RESULT = $instance_table->addRow(
+            $instance_table->addRow(
                 $this->DBHandle,
                 $values,
                 $this->FG_QUERY_PRIMARY_KEY,
                 $id
             );
+            // CALL DEFINED FUNCTION AFTER THE ACTION ADDITION
+            if (method_exists(FormBO::class, $this->FG_ADDITIONAL_FUNCTION_AFTER_ADD)) {
+                call_user_func([FormBO::class, $this->FG_ADDITIONAL_FUNCTION_AFTER_ADD]);
+            }
+        }
+        if (!empty($id)) {
+            $this->QUERY_RESULT = $id;
         }
 
         if ($this->FG_ENABLE_LOG) {
@@ -1622,10 +1634,6 @@ class FormHandler
                 array_keys($values),
                 array_values($values)
             );
-        }
-        // CALL DEFINED FUNCTION AFTER THE ACTION ADDITION
-        if (strlen($this->FG_ADDITIONAL_FUNCTION_AFTER_ADD) > 0 && ($this->VALID_SQL_REG_EXP)) {
-            call_user_func([FormBO::class, $this->FG_ADDITIONAL_FUNCTION_AFTER_ADD]);
         }
         if (!empty($id) && ($this->VALID_SQL_REG_EXP) && (isset($this->FG_LOCATION_AFTER_ADD))) {
             header("Location: " . $this->FG_LOCATION_AFTER_ADD . $id);
