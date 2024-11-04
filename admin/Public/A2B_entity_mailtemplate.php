@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Forms\FormHandler;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -38,84 +39,65 @@ use A2billing\Table;
 
 $menu_section = 17;
 require_once "../../common/lib/admin.defines.php";
-include './form_data/FG_var_mailtemplate.inc';
+require_once "./form_data/FG_var_mailtemplate.inc";
+/**
+ * @var Smarty $smarty
+ * @var FormHandler $HD_Form
+ * @var string $CC_help_list_misc
+ */
 
 Admin::checkPageAccess(Admin::ACX_MAIL);
 
-getpost_ifset(array('languages', 'id', 'action'));
+getpost_ifset(['popup_select', 'form_action', 'action']);
+/**
+ * @var string $popup_select
+ * @var string $form_action
+ * @var string $action
+ */
 
-if ($action=="load") {
+if ($action === "load") {
+    /** @var string $id */
+    getpost_ifset(['id']);
     $DBHandle=DbConnect();
-    if (!empty($id) && is_numeric($id)) {
-        $instance_table_mail = new Table("cc_templatemail", "messagetext, fromemail, fromname, subject");
-        $clause_mail = " id ='$id'";
-        $result=$instance_table_mail-> get_list($DBHandle, $clause_mail);
-        echo json_encode($result[0]);
+    if ((int)$id > 0) {
+        $result = (new Table("cc_templatemail", "messagetext, fromemail, fromname, subject"))->getRow($DBHandle, ["id" => $id]);
+        header("Content-Type: application/json");
+        echo json_encode($result);
     }
     die();
 }
 
-if ($popup_select) {
-?>
-<SCRIPT LANGUAGE="javascript">
-function sendValue(selvalue) {
-    $.getJSON("A2B_entity_mailtemplate.php", { id: ""+ selvalue, action: "load" },
-    function(data){
-        window.opener.document.getElementById('msg_mail').value = data.messagetext;
-        window.opener.document.getElementById('from').value = data.fromemail;
-        window.opener.document.getElementById('fromname').value = data.fromname;
-        window.opener.document.getElementById('subject').value = data.subject;
-        window.close();
-    });
-}
-</script>
-<?php
-}
+$HD_Form->init();
 
-$HD_Form -> init();
-
-if (!isset($form_action))  $form_action="list"; //ask-add
-if (!isset($action)) $action = $form_action;
-
-$list = $HD_Form -> perform_action($form_action);
+$form_action ??= "list";
+$list = $HD_Form->perform_action($form_action);
 
 // #### HEADER SECTION
 $smarty->display('main.tpl');
 
 // #### HELP SECTION
-if (!$popup_select) echo $CC_help_list_misc;
-if (isset($form_action) && $form_action=="list") {
+if (!$popup_select) {
+    echo $CC_help_list_misc;
+    if ($form_action === "list") {
+        $HD_Form->create_search_form();
+    }
+} else {
 ?>
-<table align="center" class="bgcolor_001" border="0" width="30%">
-    <tr>
-        <form name="theForm" action="<?php echo filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL) ?>">
-          <?php if ($popup_select) { ?>
-                  <input type="hidden" name="popup_select" value="<?php echo $popup_select; ?>" />
-          <?php } ?>
-          <td align="left" width="75%">
-                <?php
-                    $handle = DbConnect();
-                    $instance_table = new Table();
-                    $QUERY =  "SELECT code, name FROM cc_iso639 order by code";
-                    $result = $instance_table -> SQLExec ($handle, $QUERY);
-                    if (is_array($result)) {
-                        $num_cur = count($result);
-                        for ($i=0;$i<$num_cur;$i++) {
-                            $languages_list[$result[$i][0]] = array (0 => $result[$i][0], 1 => $result[$i][1]);
-                        }
-                    }
-                ?>
-                <select NAME="languages" size="1" class="form_input_select" onChange="form.submit()">
-                    <?php
-                    foreach ($languages_list as $key => $lang_value) {
-                ?>
-                    <option value='<?php echo $lang_value[0];?>' <?php if($lang_value[0]==$languages) print "selected";?>><?php echo $lang_value[1]; ?></option>
-                <?php } ?>
-        </td>
-       </form>
-   </tr>
-</table>
-<?php
+    <script>
+        function sendValue(selvalue) {
+            $.getJSON(
+                "A2B_entity_mailtemplate.php",
+                {id: selvalue, action: "load"},
+                function(data){
+                    window.opener.document.getElementById('msg_mail').value = data.messagetext;
+                    window.opener.document.getElementById('from').value = data.fromemail;
+                    window.opener.document.getElementById('fromname').value = data.fromname;
+                    window.opener.document.getElementById('subject').value = data.subject;
+                    window.close();
+                });
+        }
+    </script>
+    <?php
 }
 
 // #### TOP SECTION PAGE
