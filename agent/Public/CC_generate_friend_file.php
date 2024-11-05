@@ -68,7 +68,7 @@ if ($action == "reload") {
         // && DISCONNECTING
         $as->disconnect();
     } else {
-        $error_msg= "<br><center><b><font color=red>".gettext("Cannot connect to the asterisk manager!<br>Please check your manager configuration.")."</font></b></center>";
+        $error_msg= '<p style="text-align: center; font-weight: bold; color: red">' . gettext("Cannot connect to the asterisk manager!<br>Please check your manager configuration.") . "</p>";
     }
 } else {
     if ($voip_type == "sipfriend") {
@@ -100,13 +100,13 @@ restrictcid, rtptimeout, rtpholdtimeout, musiconhold, regseconds, ipaddr, cancal
     $list_friend = $instance_table_friend -> get_list ($DBHandle, 'id > 0');
 
     if (!is_array($list_friend) || count($list_friend)==0) {
-        $error_msg= "<br><center><b><font color=red>".gettext("There is no ").$voip_type." ! </font></b></center>";
+        $error_msg= '<p style="text-align: center; font-weight: bold; color: red">' . gettext("There is no ") . $voip_type . '</p>';
     } else {
 
         error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
         $fd=fopen($buddyfile,"w");
         if (!$fd) {
-            $error_msg= "<br><center><b><font color=red>".gettext("Could not open the user configuration file :")." '$buddyfile'</font></b></center>";
+            $error_msg= '<p style="text-align: center; font-weight: bold; color: red">' . gettext("Could not open the user configuration file :") . $buddyfile . '</p>';
         } else {
             foreach ($list_friend as $data) {
                 $line="\n\n[".$data[1]."]\n";

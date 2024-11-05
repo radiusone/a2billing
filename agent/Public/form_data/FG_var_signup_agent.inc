@@ -65,7 +65,7 @@ $HD_Form -> AddViewElement(gettext("GROUP"), "id_group", true, 0, "", "lie", "cc
 $HD_Form -> FieldViewElement ('code, id_agent, id_tariffgroup ,id_group');
 
 $HD_Form -> FG_OTHER_BUTTON1 = true;
-$HD_Form -> FG_OTHER_BUTTON1_ALT = '<font color="red">URL</font>';
+$HD_Form -> FG_OTHER_BUTTON1_ALT = '<span style="color:red">' . _("URL") . '</span>';
 $HD_Form -> FG_OTHER_BUTTON1_IMG = '';
 $HD_Form -> FG_OTHER_BUTTON1_LINK = "javascript:alert(".json_encode($A2B->config['signup']['urlcustomerinterface'])." + 'signup.php?key=|col0|',400);";
 

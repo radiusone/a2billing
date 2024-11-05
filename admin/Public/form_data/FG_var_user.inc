@@ -93,7 +93,7 @@ $HD_Form->FieldViewElement('userid, datecreation, login');
 
 if ($popup_select) {
     $HD_Form->FG_OTHER_BUTTON1 = true;
-    $HD_Form->FG_OTHER_BUTTON1_ALT = '<font color="red">&lt;select&gt;</font>';
+    $HD_Form->FG_OTHER_BUTTON1_ALT = '<span style="color:red">&lt;' . _("SELECT") . '&gt;</span>';
     $HD_Form->FG_OTHER_BUTTON1_IMG = '';
     $HD_Form->FG_OTHER_BUTTON1_LINK = "javascript:sendValue('|param|');";
     exit;

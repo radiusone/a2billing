@@ -71,7 +71,7 @@ if ($popup_select) {
 	$HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 7;
     $HD_Form -> CV_FOLLOWPARAMETERS = http_build_query(compact("popup_select", "popup_formname", "popup_fieldname"), "", "&amp;");
 	$HD_Form -> FG_OTHER_BUTTON1 = true;
-	$HD_Form -> FG_OTHER_BUTTON1_ALT = '<font color="red">&lt;select&gt;</font>';
+	$HD_Form -> FG_OTHER_BUTTON1_ALT = '<span style="color:red">&lt;' . _("SELECT") . '&gt;</span>';
 	$HD_Form -> FG_OTHER_BUTTON1_IMG = '';
     $HD_Form->FG_OTHER_BUTTON1_LINK = $popup_select === "1" ? "javascript:sendValue('|param|');" : "javascript:sendValue('|col0|');";
 } else {

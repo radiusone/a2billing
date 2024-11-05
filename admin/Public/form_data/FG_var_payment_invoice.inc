@@ -58,7 +58,7 @@ $HD_Form -> FieldViewElement ('cc_logpayment.id, date, payment,description ,paym
 if (($popup_select>=1)) {
 
 	$HD_Form -> FG_OTHER_BUTTON1 = true;
-	$HD_Form -> FG_OTHER_BUTTON1_ALT = '<font color="red">&lt;ADD&gt;</font>';
+	$HD_Form -> FG_OTHER_BUTTON1_ALT = '<span style="color:red">' . _("ADD") . '</span>';
 	$HD_Form -> FG_OTHER_BUTTON1_IMG = '';
 
 	if ($popup_select==1){

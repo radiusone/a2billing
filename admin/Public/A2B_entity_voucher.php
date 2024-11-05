@@ -105,9 +105,9 @@ if ($batchupdate == 1 && is_array($check)) {
         $SQL_UPDATE .= $HD_Form->FG_QUERY_WHERE_CLAUSE;
     }
     if (!$res = $HD_Form->DBHandle->Execute($SQL_UPDATE)) {
-        $update_msg = '<center><font color="red"><b>' . gettext('Could not perform the batch update!') . '</b></font></center>';
+        $update_msg = '<p style="text-align:center; font-weight: bold; color: red">' . gettext('Could not perform the batch update!') . '</p>';
     } else {
-        $update_msg = '<center><font color="green"><b>' . gettext('The batch update has been successfully perform!') . '</b></font></center>';
+        $update_msg = '<p style="text-align:center; font-weight: bold; color: green">' . gettext('The batch update has been successfully perform!') . '</p>';
     }
 
 }

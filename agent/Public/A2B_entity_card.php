@@ -135,9 +135,9 @@ if ($batchupdate == 1 && is_array($check)) {
     $update_sql .= "WHERE $where";
 
     if (! $res = $HD_Form -> DBHandle -> Execute($update_sql, $update_params)) {
-        $update_msg = '<center><font color="red"><b>'.gettext('Could not perform the batch update!').'</b></font></center>';
+        $update_msg = '<p style="text-align:center; font-weight: bold; color: red">' . gettext('Could not perform the batch update!') . '</p>';
     } else {
-        $update_msg = '<center><font color="green"><b>'.gettext('The batch update has been successfully perform!').'</b></font></center>';
+        $update_msg = '<p style="text-align:center; font-weight: bold; color: green">' . gettext('The batch update has been successfully perform!') . '</p>';
     }
 
 }
@@ -179,7 +179,7 @@ if (($form_action == "addcredit") && ($addcredit > 0) && ($id > 0 || $cardnumber
                 $instance_table = new Table("cc_card", "username, id");
                 $instance_table -> Update_table ($HD_Form -> DBHandle, $param_update, $FG_EDITION_CLAUSE, $func_table = null);
 
-                $update_msg ='<b><font color="green">'.gettext("Refill executed ").'!</font></b>';
+                $update_msg ='<span style="color:green; font-weight: bold">' . gettext("Refill executed ") . '</span>';
                 $id_agent = $_SESSION['agent_id'];
                 $field_insert = "date, credit, card_id, description, refill_type,agent_id";
                 $value_insert = "now(), '$addcredit', '$id','$description','3','$id_agent'";
@@ -225,11 +225,11 @@ if (($form_action == "addcredit") && ($addcredit > 0) && ($id > 0 || $cardnumber
                 $credit_cur = $agent_info[0][0] / $mycur;
                 $credit_cur = round($credit_cur,3);
 
-                $update_msg ='<b> <font color="red">'.gettext("You don't have enough credit to do this refill. You have ").$credit_cur.' '.$agent_info[0][1].' </font></b>';
+                $update_msg ='<span style="font-weight: bold; color: red">' . gettext("You don't have enough credit to do this refill. You have ") . $credit_cur . ' ' . $agent_info[0][1] . ' </span>';
             }
 
         } else {
-                $update_msg ='<b><font color="red">'.gettext("Impossible to refill this card ").'</font></b>';
+                $update_msg ='<span style="font-weight: bold; color: red">' . gettext("Impossible to refill this card ") . '</span>';
         }
     }
 }

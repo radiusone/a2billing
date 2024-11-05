@@ -94,7 +94,7 @@ class Realtime
         if (is_array($list_friend)) {
             $fd =@ fopen($buddyfile, "w");
             if (!$fd) {
-                $error_msg = "<br><center><b><font color=red>" . gettext("Could not open buddy file") . $buddyfile . "</font></b></center>";
+                $error_msg = '<p style="text-align: center; font-weight: bold; color: red">' . gettext("Could not open buddy file") . $buddyfile . '</p>';
             } else {
                 foreach ($list_friend as $data) {
                     $line = "\n\n[" . $data[1] . "]\n";

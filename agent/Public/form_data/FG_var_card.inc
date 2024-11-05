@@ -266,7 +266,7 @@ $HD_Form -> AddSearchSelectInput(gettext("SELECT CURRENCY"), "currency", $curren
 if (($popup_select>=1)) {
 
 	$HD_Form -> FG_OTHER_BUTTON1 = true;
-	$HD_Form -> FG_OTHER_BUTTON1_ALT = '<font color="red">&lt;select&gt;</font>';
+	$HD_Form -> FG_OTHER_BUTTON1_ALT = '<span style="color:red">&lt;' . _("SELECT") . '&gt;</span>';
 	$HD_Form -> FG_OTHER_BUTTON1_IMG = '';
 
 	if ($popup_select==1) {

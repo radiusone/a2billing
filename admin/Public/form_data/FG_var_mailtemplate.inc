@@ -127,7 +127,7 @@ $HD_Form->FieldViewElement ('id, mailtype, fromemail, subject');
 
 if ((int)$popup_select >= 1) {
     $HD_Form->FG_OTHER_BUTTON1 = true;
-    $HD_Form->FG_OTHER_BUTTON1_ALT = '<font color="red">&lt;'._("SELECT TEXT").'&gt;</font>';
+    $HD_Form->FG_OTHER_BUTTON1_ALT = '<span style="color:red">&lt;' . _("SELECT TEXT") . '&gt;</span>';
     $HD_Form->FG_OTHER_BUTTON1_IMG = '';
 
     if ((int)$popup_select === 1) {
