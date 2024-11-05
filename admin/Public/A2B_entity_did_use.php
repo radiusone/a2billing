@@ -91,7 +91,7 @@ switch ($actionbtn) {
     break;
     case "ask_release":
         (new Table("cc_did"))->updateRow($HD_Form->DBHandle, ["iduser" => 0, "reserved" => 0], ["id" => $did]);
-        (new Table("cc_did_use"))->updateRow($HD_Form->DBHandle, ["releasedate" => "CURRENT_TIMESTAMP"], ["id" => $did, "activated" => 1]);
+        (new Table("cc_did_use"))->updateRow($HD_Form->DBHandle, ["releasedate" => "CURRENT_TIMESTAMP"], ["id_did" => $did, "activated" => 1]);
         (new Table("cc_did_use"))->addRow($HD_Form->DBHandle, ["activated" => 0, "id_did" => $did]);
         (new Table("cc_did_destination"))->deleteRow($HD_Form->DBHandle, ["id_cc_did" => $did]);
     break;
