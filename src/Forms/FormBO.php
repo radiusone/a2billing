@@ -1,4 +1,7 @@
 <?php
+/**
+ * @noinspection PhpUnused
+ */
 
 namespace A2billing\Forms;
 
@@ -13,20 +16,23 @@ use ticket;
 
 class FormBO
 {
-/**
+    /**
     * Function to add/modify cc_did_use and cc_did_destination if records existe
-    *
     */
     public static function is_did_in_use()
     {
         $FormHandler = FormHandler::GetInstance();
         $processed = $FormHandler->getProcessed();
-        $did_id=$processed['id'];
-        $instance_did_use_table = new Table();
-        $QUERY_DID="select id_cc_card from cc_did_use where id_did ='".$did_id."' and releasedate IS NULL and activated = 1";
-        $row= $instance_did_use_table -> SQLexec ($FormHandler->DBHandle,$QUERY_DID, 1);
-        if ((isset($row[0][0])) && (strlen($row[0][0]) > 0))
-            $FormHandler -> FG_INTRO_TEXT_ASK_DELETION = gettext ("This did is in use by customer id:".$row[0][0].", If you really want remove this ". $FormHandler -> FG_INSTANCE_NAME .", click on the delete button.");
+        $row = (new Table("cc_did", "id_cc_card"))->getRow(
+            $FormHandler->DBHandle,
+            ["id_did" => $processed["id"], "releasedate" => null, "activated" => 1]
+        );
+        if (!empty($row)) {
+            $FormHandler->FG_INTRO_TEXT_ASK_DELETION = sprintf(
+                _("This DID is in use by customer ID %s, If you really want remove this DID, click on the delete button."),
+                $row["id_cc_card"]
+            );
+        }
     }
 
     public static function did_use_delete(): void
@@ -42,20 +48,14 @@ class FormBO
         (new Table("cc_did_destination"))->deleteRow($FormHandler->DBHandle, ["id_cc_did" => $did_id]);
     }
 
-    /**
-     * Function add_did_use
-     * @public
-     */
     public static function add_did_use()
     {
         $FormHandler = FormHandler::GetInstance();
         $processed = $FormHandler->getProcessed();
-        $did=$processed['did'];
-        $FG_TABLE_DID_USE_NAME = "cc_did_use";
-        $FG_QUERY_ADITION_DID_USE_FIELDS = 'id_did';
-        $instance_did_use_table = new Table($FG_TABLE_DID_USE_NAME, $FG_QUERY_ADITION_DID_USE_FIELDS);
-        $id = $FormHandler -> QUERY_RESULT;
-        $result_query= $instance_did_use_table -> Add_table ($FormHandler->DBHandle, $id, null, null, null);
+        (new Table("cc_did_use"))->addRow(
+            $FormHandler->DBHandle,
+            ["id_did" => $FormHandler->QUERY_RESULT, "activated" => $processed["activated"] ?? 0]
+        );
     }
 
     /**

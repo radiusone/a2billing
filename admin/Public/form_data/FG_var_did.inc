@@ -47,7 +47,7 @@ getpost_ifset(['id', 'did', 'fixrate']);
  * @var string $fixrate
  */
 
-$HD_Form = new FormHandler("cc_did", "did");
+$HD_Form = new FormHandler("cc_did", "DID");
 
 $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_did.php?form_action=ask-add";
@@ -72,10 +72,10 @@ $HD_Form->AddViewElement(_("Start Date"), "startingdate", true, 19);
 $HD_Form->AddViewElement(_("DID Group"), "id_cc_didgroup", true, 15, "", "lie", "cc_didgroup", "didgroupname", "id='%id'", "%1");
 $HD_Form->AddViewElement(_("Country"), "id_cc_country", true, 15, "", "lie", "cc_country", "countryname", "id='%id'", "%1");
 $HD_Form->AddViewElement(_("Active"), "activated", true, 0, "", "list", $yesno);
-$HD_Form->AddViewElement("<acronym title=\"" . _("Minutes Used") . "\">" . _("Min") . "</acronym>", "secondusedreal", true, 30, "display_minute");
-$HD_Form->AddViewElement("<acronym title=\"" . _("Reserved") . "\">" . _("Res") . "</acronym>", "reserved", true, 0, "", "list", $yesno);
-$HD_Form->AddViewElement("<acronym title=\"" . _("Monthly Rate") . "\">" . _("MR") . "</acronym>", "fixrate");
-$HD_Form->AddViewElement("<acronym title=\"" . _("Sell Rate") . "\">" . _("SR") . "</acronym>", "selling_rate");
+$HD_Form->AddViewElement("<abbr title=\"" . _("Minutes Used") . "\">" . _("Min") . "</abbr>", "secondusedreal", true, 30, "display_minute");
+$HD_Form->AddViewElement("<abbr title=\"" . _("Reserved") . "\">" . _("Res") . "</abbr>", "reserved", true, 0, "", "list", $yesno);
+$HD_Form->AddViewElement("<abbr title=\"" . _("Monthly Rate") . "\">" . _("MR") . "</abbr>", "fixrate");
+$HD_Form->AddViewElement("<abbr title=\"" . _("Sell Rate") . "\">" . _("SR") . "</abbr>", "selling_rate");
 
 $HD_Form->FieldViewElement ('did, iduser, billingtype, startingdate, id_cc_didgroup, id_cc_country, activated, secondusedreal, reserved, fixrate, selling_rate');
 
@@ -115,10 +115,7 @@ $HD_Form->AddEditElement(
     _("Format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
     "maxlength=40  $comp_date",
     10,
-    _("Insert the starting date"),
-    "",
-    "",
-    
+    _("Insert the starting date")
 );
 
 
@@ -128,10 +125,7 @@ $HD_Form->AddEditElement(
     _("Format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
     "maxlength=40  $comp_date_plus",
     10,
-    _("Insert the expiration date"),
-    "",
-    "",
-    
+    _("Insert the expiration date")
 );
 
 $HD_Form->AddEditSqlSelect(_("DIDGROUP"), "id_cc_didgroup", "cc_didgroup", "didgroupname,id");
@@ -176,8 +170,7 @@ $HD_Form->AddEditElement(
     _("The retail rate; or the cost per minute to apply to the customer to connect DID together, e.g. 0.02"),
     "maxlength=20 $fixval",
     12,
-    _("Insert the rate"),
-    ""
+    _("Insert the rate")
 );
 
 $HD_Form->AddEditTextarea(
@@ -336,8 +329,7 @@ $HD_Form->AddEditElement(
     _("The connection charge can be negative or positive"),
     "maxlength=20 $fixval",
     12,
-    _("Insert a rate"),
-    ""
+    _("Insert a rate")
 );
 
 

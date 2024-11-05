@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Forms\FormHandler;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -39,20 +40,29 @@ use A2billing\Table;
 $menu_section = 8;
 require_once "../../common/lib/admin.defines.php";
 include_once './form_data/FG_var_diduse.inc';
-
+/**
+ * @var FormHandler $HD_Form
+ * @var Smarty $smarty
+ * @var string $CC_help_release_did
+ * @var string $CC_help_list_did_use
+ * @var string $did
+ * @var string $inuse
+ * @var string $actionbtn
+ * @var string $order
+ * @var string $sens
+ * @var string $current_page
+ * @var string $posted
+ */
 Admin::checkPageAccess(Admin::ACX_DID);
 
 $HD_Form->init();
 
-if (!isset ($form_action))
-    $form_action = "list";
-if (!isset ($action))
-    $action = $form_action;
+$form_action ??= "list";
 
 $smarty->display('main.tpl');
 
 // #### TOP SECTION PAGE
-$HD_Form -> create_toppage ($form_action);
+$HD_Form->create_toppage($form_action);
 
 switch ($actionbtn) {
     case "release_did":
@@ -80,27 +90,18 @@ switch ($actionbtn) {
 <?php
     break;
     case "ask_release":
-        $instance_table = new Table();
-        $QUERY = "UPDATE cc_did set iduser = 0 ,reserved=0 where id=$did" ;
-        $result = $instance_table -> SQLExec ($HD_Form -> DBHandle, $QUERY, 0);
-
-        $QUERY = "UPDATE cc_did_use set releasedate = now() where id_did =$did and activated = 1" ;
-        $result = $instance_table -> SQLExec ($HD_Form -> DBHandle, $QUERY, 0);
-
-        $QUERY = "insert into cc_did_use (activated, id_did) values ('0','".$did."')";
-        $result = $instance_table -> SQLExec ($HD_Form -> DBHandle, $QUERY, 0);
-
-        $QUERY = "delete FROM cc_did_destination where id_cc_did =".$did;
-        $result = $instance_table -> SQLExec ($HD_Form -> DBHandle, $QUERY, 0);
-
+        (new Table("cc_did"))->updateRow($HD_Form->DBHandle, ["iduser" => 0, "reserved" => 0], ["id" => $did]);
+        (new Table("cc_did_use"))->updateRow($HD_Form->DBHandle, ["releasedate" => "CURRENT_TIMESTAMP"], ["id" => $did, "activated" => 1]);
+        (new Table("cc_did_use"))->addRow($HD_Form->DBHandle, ["activated" => 0, "id_did" => $did]);
+        (new Table("cc_did_destination"))->deleteRow($HD_Form->DBHandle, ["id_cc_did" => $did]);
     break;
 }
 
-if (!isset($actionbtn) || $actionbtn=="ask_release") {
+if (empty($actionbtn) || $actionbtn === "ask_release") {
 
 echo $CC_help_list_did_use;
 
-if (!isset($inuse) || $inuse=="")$inuse=1;
+$inuse ??= 1;
 /*<!-- ** ** ** ** ** Part for the research ** ** ** ** ** -->*/?>
     <center>
     <FORM METHOD=POST name="myForm" ACTION="?order=<?php echo $order?>&sens=<?php echo $sens?>&current_page=<?php echo $current_page?>">
@@ -138,9 +139,9 @@ if (!isset($inuse) || $inuse=="")$inuse=1;
 </center>
 <?php
 
-$list = $HD_Form -> perform_action($form_action);
+$list = $HD_Form->perform_action($form_action);
 
-$HD_Form -> create_form($form_action, $list) ;
+$HD_Form->create_form($form_action, $list) ;
 
 }
 $smarty->display('footer.tpl');

@@ -37,66 +37,59 @@ use A2billing\Forms\FormHandler;
 
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
-getpost_ifset(array('did', 'inuse', 'actionbtn', 'order', 'sens', 'current_page', 'posted'));
-
+getpost_ifset(['did', 'inuse', 'actionbtn', 'order', 'sens', 'current_page', 'posted']);
+/**
+ * @var string $did
+ * @var string $inuse
+ * @var string $actionbtn
+ * @var string $order
+ * @var string $sens
+ * @var string $current_page
+ * @var string $posted
+ */
 $HD_Form = new FormHandler("cc_did_use", "DID in use");
 
 $HD_Form->no_debug();
-if ($posted){
-
-	if (isset($did) && strlen($did)>0) {
-		if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
-		$HD_Form -> FG_QUERY_WHERE_CLAUSE.="id_did = '$did'";
-        $HD_Form->list_query_conditions["id_did"] = $did;
-	}
-
-	if ($inuse) {
-		if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
-		$HD_Form -> FG_QUERY_WHERE_CLAUSE.=" (releasedate IS NULL OR releasedate < '1984-01-01 00:00:00') and activated=1";
-        $HD_Form->list_query_conditions[] = ["SUB", [["releasedate" => null], ["releasedate" => ["<", "1984-01-01"]]], "OR"];
-        $HD_Form->list_query_conditions["activated"] = 1;
-		$HD_Form -> FG_OTHER_BUTTON1 = true;
-		$HD_Form -> FG_OTHER_BUTTON1_LINK="A2B_entity_did_use.php?posted=$posted&order=$order&sens=$sens&current_page=$current_page&did=$did&inuse=$inuse&actionbtn=release_did&did=|col0|";
-		$HD_Form -> FG_OTHER_BUTTON1_IMG =Images_Path . "/icon-release.gif";
-		$HD_Form -> FG_OTHER_BUTTON1_ALT=gettext("Release this did");
-	} else {
-		$HD_Form -> FG_TABLE_DEFAULT_ORDER = "reservationdate";
-		$HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
-		$HD_Form -> FG_OTHER_BUTTON1 = false;
-	}
-} else {
-	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
-	$HD_Form -> FG_QUERY_WHERE_CLAUSE.=" (releasedate IS NULL OR releasedate < '1984-01-01 00:00:00') and activated=1";
-    $HD_Form->list_query_conditions[] = ["SUB", [["releasedate" => null], ["releasedate" => ["<", "1984-01-01"]]], "OR"];
+if ($posted && !empty($did)) {
+    if (strlen($HD_Form->FG_QUERY_WHERE_CLAUSE) > 0) {
+        $HD_Form->FG_QUERY_WHERE_CLAUSE .= " AND ";
+    }
+    $HD_Form->FG_QUERY_WHERE_CLAUSE .= "id_did = '$did'";
+    $HD_Form->list_query_conditions["id_did"] = $did;
+}
+if (($posted && !empty($inuse)) || !$posted) {
+    if (strlen($HD_Form->FG_QUERY_WHERE_CLAUSE) > 0) {
+        $HD_Form->FG_QUERY_WHERE_CLAUSE .= " AND ";
+    }
+    $HD_Form->FG_QUERY_WHERE_CLAUSE .= " (releasedate IS NULL OR releasedate < '1984-01-01 00:00:00') and activated=1";
+    $HD_Form->list_query_conditions[] = ["SUB", ["releasedate" => null, ["SUB", ["releasedate" => ["<", "1984-01-01"]]]], "OR"];
     $HD_Form->list_query_conditions["activated"] = 1;
-	$HD_Form -> FG_TABLE_DEFAULT_ORDER = "id_did";
-	$HD_Form -> FG_TABLE_DEFAULT_SENS = "ASC";
-	$HD_Form -> FG_OTHER_BUTTON1 = true;
-	$HD_Form -> FG_OTHER_BUTTON1_LINK="A2B_entity_did_use.php?posted=$posted&order=$order&sens=$sens&current_page=$current_page&did=$did&inuse=$inuse&actionbtn=release_did&did=|col0|";
-	$HD_Form -> FG_OTHER_BUTTON1_IMG =Images_Path . "/icon-release.gif";
-	$HD_Form -> FG_OTHER_BUTTON1_ALT=gettext("Release this did");
+    $HD_Form->FG_OTHER_BUTTON1 = true;
+    $HD_Form->FG_OTHER_BUTTON1_LINK = "A2B_entity_did_use.php?posted=$posted&order=$order&sens=$sens&current_page=$current_page&did=$did&inuse=$inuse&actionbtn=release_did&did=|col0|";
+    $HD_Form->FG_OTHER_BUTTON1_IMG = "data:image/gif;base64,R0lGODlhIQALAKEDAPPt2ZycnAAAAP///yH+FUNyZWF0ZWQgd2l0aCBUaGUgR0lNUAAh+QQBAAADACwAAAAAIQALAAACQVyOqctoAKOctMZjs5YYCAF9IBh+nimeZDd6EemGLgwDLGnGZzmiMDt7CWU0nS1AVClTLWaus4lSoNKqzdDIah0FADs=";
+    $HD_Form->FG_OTHER_BUTTON1_ALT=gettext("Release this did");
+} else {
+    $HD_Form->FG_TABLE_DEFAULT_ORDER = "reservationdate";
+    $HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
+    $HD_Form->FG_OTHER_BUTTON1 = false;
 }
 
-$actived_list = array();
-$actived_list["1"] = array( gettext("Reserved"), "1");
-$actived_list["0"] = array( gettext("Free"), "0");
+$HD_Form->AddViewElement(gettext("ID DID"), "id_did");
+$HD_Form->AddViewElement(gettext("DID"), "id_did", true, 25, "", "lie", "cc_did", "did", "id='%id'", "%1");
+$HD_Form->AddViewElement(gettext("ID card"), "id_cc_card");
+$HD_Form->AddViewElement(gettext("CARDNUMBER"), "id_cc_card", true, 25, "", "lie", "cc_card", "username", "id='%id'", "%1");
 
-$HD_Form -> AddViewElement(gettext("ID DID"), "id_did");
-$HD_Form -> AddViewElement(gettext("DID"), "id_did", true, 25, "", "lie", "cc_did", "did", "id='%id'", "%1");
-$HD_Form -> AddViewElement(gettext("ID card"), "id_cc_card");
-$HD_Form -> AddViewElement(gettext("CARDNUMBER"), "id_cc_card", true, 25, "", "lie", "cc_card", "username", "id='%id'", "%1");
-
-$HD_Form -> AddViewElement(gettext("RESERVATION DATE"), "reservationdate");
-$HD_Form -> AddViewElement(gettext("LIBERATION DATE"), "releasedate");
-$HD_Form -> AddViewElement(gettext("STATUS"), "activated", true, 0, "", "list", $actived_list);
+$HD_Form->AddViewElement(gettext("RESERVATION DATE"), "reservationdate");
+$HD_Form->AddViewElement(gettext("LIBERATION DATE"), "releasedate");
+$HD_Form->AddViewElement(gettext("STATUS"), "activated", true, 0, "", "list", [[_("Free"), 0], [_("Reserved")], 1]);
 
 // added a parameter to append  FG_TABLE_ID  ( by default ) or disable 0.
-$HD_Form -> FieldViewElement ('id_did, id_did, id_cc_card, id_cc_card, reservationdate, releasedate, activated');
+$HD_Form->FieldViewElement ('id_did, id_did, id_cc_card, id_cc_card, reservationdate, releasedate, activated');
 
-$HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO DID IN USE!");
-$HD_Form -> CV_FOLLOWPARAMETERS ="&posted=$posted&did=$did&inuse=$inuse";
+$HD_Form->CV_NO_FIELDS  = gettext("THERE IS NO DID IN USE!");
+$HD_Form->CV_FOLLOWPARAMETERS ="&posted=$posted&did=$did&inuse=$inuse";
 
-$HD_Form -> FG_ENABLE_ADD_BUTTON = false;
-$HD_Form -> FG_ENABLE_EDIT_BUTTON = false;
-$HD_Form -> FG_ENABLE_DELETE_BUTTON = false;
-$HD_Form -> FG_FILTER_ENABLE = false;
+$HD_Form->FG_ENABLE_ADD_BUTTON = false;
+$HD_Form->FG_ENABLE_EDIT_BUTTON = false;
+$HD_Form->FG_ENABLE_DELETE_BUTTON = false;
+$HD_Form->FG_FILTER_ENABLE = false;
