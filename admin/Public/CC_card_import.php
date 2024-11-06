@@ -38,14 +38,18 @@ use A2billing\Admin;
 $menu_section = 1;
 // Common includes
 require_once "../../common/lib/admin.defines.php";
+/**
+ * @var Smarty $smarty
+ * @var string $CC_help_import_customer
+ */
 
 set_time_limit(0);
 
 Admin::checkPageAccess(Admin::ACX_CUSTOMER);
 
 $FG_DEBUG = 0;
-$DBHandle  = DbConnect();
-$my_max_file_size = (int) MY_MAX_FILE_SIZE_IMPORT;
+$DBHandle = DbConnect();
+$my_max_file_size = (int)MY_MAX_FILE_SIZE_IMPORT;
 
 $smarty->display('main.tpl');
 
@@ -54,204 +58,193 @@ echo $CC_help_import_customer;
 ?>
 <script>
 $(function() {
-    $("a#addsource").on('click', function () {
-        $("#unselected_search_sources option:selected").appendTo($("#selected_search_sources"));
+    $("#unselected_search_sources option").on("doubleclick", function() {
+        let opt = $(this);
+        opt.appendTo($("#selected_search_sources optgroup:first"));
+        $("#selected_search_sources option").prop("selected", false).filter((i, el) => el.value.match(/^\s*$/)).remove();
         resetHidden();
     });
 
-    $("a#removesource").on('click', function () {
-        $("#selected_search_sources option:selected").appendTo($("#unselected_search_sources"));
-        resetHidden();
-    });
-
-    $("input#sendtoupload").on('click', function() {
-        var file = $("#the_file");
-        if (file.value().length < 2) {
-            alert (<?= json_encode(gettext("Please, you must first select a file !")); ?>);
-            file.focus();
-            return false;
+    $("#addsource").on("click", function () {
+        let opts = $("#unselected_search_sources option:selected");
+        if (opts.length) {
+            opts.appendTo($("#selected_search_sources optgroup:first"));
+            $("#selected_search_sources option").prop("selected", false).filter((i, el) => el.value.match(/^\s*$/)).remove();
+            resetHidden();
         }
-        $("#task").val("upload");
-        $("#prefs").attr("action", "CC_card_import_analyse.php").submit()
-        return true;
-    }
+    });
 
-    $("#selected_search_sources, #unselected_search_sources").on('change', function() {
-        $("#selected_search_sources option:first, #unselected_search_sources option:first").prop("selected", false);
+    $("#selected_search_sources option").on("doubleclick", function() {
+        let opt = $(this);
+        if (opt.siblings().length === 0) {
+            opt.parent().append("<option value=''>&nbsp;</option>");
+        }
+        opt.appendTo($("#unselected_search_sources optgroup:first"));
+        resetHidden();
+    });
+
+    $("#removesource").on("click", function () {
+        let opts = $("#selected_search_sources option:selected");
+        if (opts.length) {
+            opts.appendTo($("#unselected_search_sources optgroup:first"));
+            $("#unselected_search_sources option").prop("selected", false);
+            if ($("#selected_search_sources option").length === 0) {
+                $("#selected_search_sources optgroup:first").append("<option value=''>&nbsp;</option>");
+            }
+            resetHidden();
+        }
     });
 
     $("#movesourceup").on("click", function () {
-        var select = $("#selected_search_sources");
-        var options = select.children("option");
-        var selectedOption = options.filter(":selected").first();
-        var prev = selectedOption.prev("option");
+        let selectedOption = $("#selected_search_sources option:selected").first();
+        let prev = selectedOption.prev("option");
 
-        if (selectedOption.length && options.length >= 2) {
-            if (prev.length) {
-                selectedOption.insertBefore(prev);
-            } else {
-                selectedOption.appendTo(select);
-            }
+        if (selectedOption.length && prev.length) {
+            selectedOption.insertBefore(prev);
             resetHidden();
         }
     });
 
     $("#movesourcedown").on("click", function () {
-        var select = $("#selected_search_sources");
-        var options = select.children("option");
-        var selectedOption = options.filter(":selected").first();
-        var next = selectedOption.next("option");
+        let selectedOption = $("#selected_search_sources option:selected").first();
+        let next = selectedOption.next("option");
 
-        if (selectedOption.length && options.length >= 2) {
-            if (next.length) {
-                selectedOption.insertAfter(next);
-            } else {
-                selectedOption.prependTo(select);
-            }
+        if (selectedOption.length && next.length) {
+            selectedOption.insertAfter(next);
             resetHidden();
         }
     });
 
     function resetHidden() {
-        var tmp = [];
-        $("#selected_search_sources option").each(() => tmp.push(this.value));
-        $("#search_sources").val(tmp.join("\t"));
+        let tmp = [];
+        $("#selected_search_sources option").each((i, el) => tmp.push(el.value));
+        $("#search_sources").val(tmp.join("|"));
     }
 });
 </script>
 
-<center>
-    <b><?php echo gettext("New Cards have to be imported from a CSV file.");?>.</b><br><br>
-    <form id="prefs" name="prefs" enctype="multipart/form-data"  method="post">
-    <table width="95%" border="0" cellspacing="2" align="center" class="records">
-
-        <tr>
-        <td colspan="2" align=center>
-        <?php echo gettext("These fields are mandatory");?><br>
-
-        <select id="bydefault" name="bydefault" multiple="multiple" size="4" width="40" class="form_input_select">
-            <option value="bb1"><?php echo gettext("username");?></option>
-            <option value="bb2"><?php echo gettext("useralias");?></option>
-            <option value="bb3"><?php echo gettext("uipass");?></option>
-            <option value="bb4"><?php echo gettext("credit");?></option>
-            <option value="bb5"><?php echo gettext("lastname");?></option>
-            <option value="bb6"><?php echo gettext("firstname");?></option>
-            <option value="bb7"><?php echo gettext("activated");?></option>
-            <option value="bb8"><?php echo gettext("status");?></option>
-        </select>
-        <br/><br/>
-
-        <?php echo gettext("Choose the additional fields to import from the CSV file");?>.<br>
-
-        <input id="search_sources" name="search_sources" value="nochange" type="hidden">
-        <table>
-            <tr>
-            <td>
-                <select id="unselected_search_sources" name="unselected_search_sources" multiple="multiple" size="9" width="50" class="form_input_select">
-                    <option value=""><?php echo gettext("Unselected Fields...");?></option>
-                    <option value="creationdate"><?php echo gettext("creationdate");?></option>
-                    <option value="firstusedate"><?php echo gettext("firstusedate");?></option>
-                    <option value="expirationdate"><?php echo gettext("expirationdate");?></option>
-                    <option value="enableexpire"><?php echo gettext("enableexpire");?></option>
-                    <option value="expiredays"><?php echo gettext("expiredays");?></option>
-                    <option value="tariff"><?php echo gettext("tariff");?></option>
-                    <option value="id_didgroup"><?php echo gettext("id_didgroup");?></option>
-                    <option value="id_group"><?php echo gettext("id_group");?></option>
-                    <option value="address"><?php echo gettext("address");?></option>
-
-                    <option value="city"><?php echo gettext("city");?></option>
-                    <option value="state"><?php echo gettext("state");?></option>
-                    <option value="country"><?php echo gettext("country");?></option>
-                    <option value="zipcode"><?php echo gettext("zipcode");?></option>
-                    <option value="phone"><?php echo gettext("phone");?></option>
-                    <option value="email"><?php echo gettext("email");?></option>
-                    <option value="fax"><?php echo gettext("fax");?></option>
-                    <option value="inuse"><?php echo gettext("inuse");?></option>
-                    <option value="simultaccess"><?php echo gettext("simultaccess");?></option>
-
-                    <option value="currency"><?php echo gettext("currency");?></option>
-                    <option value="lastuse"><?php echo gettext("lastuse");?></option>
-                    <option value="nbused"><?php echo gettext("nbused");?></option>
-                    <option value="typepaid"><?php echo gettext("typepaid");?></option>
-                    <option value="creditlimit"><?php echo gettext("creditlimit");?></option>
-                    <option value="voipcall"><?php echo gettext("voipcall");?></option>
-                    <option value="sip_buddy"><?php echo gettext("sip_buddy");?></option>
-                    <option value="iax_buddy"><?php echo gettext("iax_buddy");?></option>
-                    <option value="language"><?php echo gettext("language");?></option>
-                    <option value="redial"><?php echo gettext("redial");?></option>
-
-                    <option value="nbservice"><?php echo gettext("nbservice");?></option>
-                    <option value="id_campaign"><?php echo gettext("id_campaign");?></option>
-                    <option value="num_trials_done"><?php echo gettext("num_trials_done");?></option>
-                    <option value="callback"><?php echo gettext("callback");?></option>
-                    <option value="vat"><?php echo gettext("vat");?></option>
-                    <option value="servicelastrun"><?php echo gettext("servicelastrun");?></option>
-                    <option value="initialbalance"><?php echo gettext("initialbalance");?></option>
-                    <option value="invoiceday"><?php echo gettext("invoiceday");?></option>
-                    <option value="autorefill"><?php echo gettext("autorefill");?></option>
-                    <option value="loginkey"><?php echo gettext("loginkey");?></option>
-                </select>
-            </td>
-
-            <td>
-            <a href="#" id="addsource"><img src="<?php echo Images_Path;?>/forward.png" alt="add source" title="add source" border="0"></a>
-            <br>
-            <a href="#" id="removesource"><img src="<?php echo Images_Path;?>/back.png" alt="remove source" title="remove source" border="0"></a>
-            </td>
-            <td>
-            <select id="selected_search_sources" name="selected_search_sources" multiple="multiple" size="9" width="50" class="form_input_select">
-                <option value=""><?php echo gettext("Selected Fields...");?></option>
+<form class="container align-center" id="prefs" name="prefs" enctype="multipart/form-data" method="post" action="CC_card_import_analyse.php">
+    <div class="row mb-3">
+        <div class="col">
+            <h5><?= _("New Cards have to be imported from a CSV file") ?></h5>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col">
+            <label class="form-label" for="bydefault"><?= _("These fields are mandatory") ?></label>
+            <select name="bydefault" id="bydefault" class="form-select" multiple="multiple" size="5" disabled="disabled">
+                <option value="bb1"><?= _("username") ?></option>
+                <option value="bb2"><?= _("useralias") ?></option>
+                <option value="bb3"><?= _("uipass") ?></option>
+                <option value="bb4"><?= _("credit") ?></option>
+                <option value="bb5"><?= _("lastname") ?></option>
+                <option value="bb6"><?= _("firstname") ?></option>
+                <option value="bb8"><?= _("status") ?></option>
             </select>
-            </td>
-
-            <td>
-            <a id="movesourceup" href="#"><img src="<?php echo Images_Path;?>/up_black.png" alt="move up" title="move up" border="0"></a>
-            <br>
-            <a id="movesourcedown" href="#"><img src="<?php echo Images_Path;?>/down_black.png" alt="move down" title="move down" border="0"></a>
-            </td>
-            </tr>
-        </table>
-
-                </td></tr>
-
-                <tr>
-                  <td colspan="2">
-                    <div align="center"><span class="textcomment">
-
-                      <?php echo gettext("Use the example below  to format the CSV file. Fields are separated by [,] or [;]");?><br/>
-                      <?php echo gettext("(dot) . is used for decimal format.");?>
-                      <br/>
-                      <a href="importsamples.php?sample=Card_Complex" target="superframe"><?php echo gettext("Complex Sample");?></a> -
-                      <a href="importsamples.php?sample=Card_Simple" target="superframe"> <?php echo gettext("Simple Sample");?></a>
-                      </span></div>
-
-                        <center>
-                            <iframe name="superframe" src="importsamples.php?sample=Card_Simple" BGCOLOR=white	width=600 height=80 marginWidth=10 marginHeight=10  frameBorder=1  scrolling=yes>
-
-                            </iframe>
-                        </center>
-
-                  </td>
-                </tr>
-                <tr>
-                  <td colspan="2">
-                    <p align="center"><span class="textcomment">
-                      <?php echo gettext("The maximum file size is ");?>
-                      <?php echo $my_max_file_size / 1024?>
-                      KB </span><br>
-                      <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo $my_max_file_size?>">
-                      <input type="hidden" id="task" name="task" value="upload">
-                      <input id="the_file" name="the_file" type="file" size="50" class="saisie1">
-                      <input type="button" id="sendtoupload" value="<?php echo gettext("Import Customer's");?>" class="form_input_button" name="submit1">
-
-                      <br>
-                      &nbsp; </p>
-                  </td>
-                </tr>
-
-            </table>
-    </form>
-</center>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col">
+            <h6><?= _("Choose the additional fields to import from the CSV file") ?></h6>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-5">
+            <select class="form-select" name="unselected_search_sources" id="unselected_search_sources" multiple="multiple" size="10" aria-labelledby="unselected_label">
+                <optgroup id="unselected_label" label="<?= _("Unselected fields…") ?>">
+                    <option value="expirationdate"><?= _("expirationdate") ?></option>
+                    <option value="enableexpire"><?= _("enableexpire") ?></option>
+                    <option value="expiredays"><?= _("expiredays") ?></option>
+                    <option value="tariff"><?= _("tariff") ?></option>
+                    <option value="id_didgroup"><?= _("id_didgroup") ?></option>
+                    <option value="id_group"><?= _("id_group") ?></option>
+                    <option value="address"><?= _("address") ?></option>
+                    <option value="city"><?= _("city") ?></option>
+                    <option value="state"><?= _("state") ?></option>
+                    <option value="country"><?= _("country") ?></option>
+                    <option value="zipcode"><?= _("zipcode") ?></option>
+                    <option value="phone"><?= _("phone") ?></option>
+                    <option value="email"><?= _("email") ?></option>
+                    <option value="fax"><?= _("fax") ?></option>
+                    <option value="simultaccess"><?= _("simultaccess") ?></option>
+                    <option value="currency"><?= _("currency") ?></option>
+                    <option value="typepaid"><?= _("typepaid") ?></option>
+                    <option value="creditlimit"><?= _("creditlimit") ?></option>
+                    <option value="voipcall"><?= _("voipcall") ?></option>
+                    <option value="sip_buddy"><?= _("sip_buddy") ?></option>
+                    <option value="iax_buddy"><?= _("iax_buddy") ?></option>
+                    <option value="language"><?= _("language") ?></option>
+                    <option value="id_campaign"><?= _("id_campaign") ?></option>
+                    <option value="vat"><?= _("vat") ?></option>
+                    <option value="initialbalance"><?= _("initialbalance") ?></option>
+                    <option value="invoiceday"><?= _("invoiceday") ?></option>
+                    <option value="autorefill"><?= _("autorefill") ?></option>
+                    <option value="loginkey"><?= _("loginkey") ?></option>
+                </optgroup>
+            </select>
+        </div>
+        <div class="col-1 d-flex">
+            <div class="align-self-center">
+                <button type="button" class="btn btn-sm" id="addsource">
+                    <img alt="<?= _("add column to selected list") ?>" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAWCAYAAADEtGw7AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsNAAALDQHtB8AsAAAAB3RJTUUH1QMJAgsoYUq3OQAABKNJREFUOMuVldmPFFUUh797a5neqnt2nBDaARRicMaxJ5OIMS4YVARf1PigxAcNLm88SPwHTHg2xPgwiQmJQSVgjD5ABCMGWRRoMpnRgWEfcJjuWXut6q6qe32YBQaQyEnOS9063/ndyq/OEdwnMh8PWKDbQHWgdQw0oF20GrdUMd/N3np/f/89a8V9oOuBt0D3IEgjrDgAqlZFh9eBAaGCfRn91TEgvLOBuAdwNYjtGNbbiXis8aHWpFzWEmFta4moFXJpOsHVvGJyYkJNF1xXBe4xS5c/69bfnACChQbmHdCHQezCTm7qWRXl1T6HrhWa9kYDQzYBcx9jphRwebxdHsh68aODMy/VXbFiSL356eN63wEgWKJ4XumuRDL58it9KbklY9PsGAgh8OqaEyMBAE+tMYnac2UVL+T4cJVvj0zr/NTsBTucfr+L/ccBdZtivQPb2bQxk2LzkxaWKSi5CoBiFTZ0RwA4MujSlZaYhgA0fY9G8YNmsfuwWlMthR+gGQDKxpzaM+uF0bDzidXJyKaMhZRQ9xWer6j5iraUQbrNxolKljeb/DJYI2Yr/EBTDzTNCUmlbjI64XdOhCsGljF8xch8dNoCtjuO8+yLPXHRlICar/F8TW0+g1DT7MzdItogWN5icuJ8Hckc3PMVtlHnck7ZFS/wjaBw1ATagJ5kMiUbIwGFsiRUS80yVQyZLIZszKRosATtKYMtfXH2/FbEr9cYyjVSdGOUSEjF7LqiSKcl0IGQ6VZH4NYV/8yAqyJ3Zb5s8ftwbbFZe8rg3RdSjJaauTQZYaLSAGYchNGBYadNIIZsiMcsn9mKYmOvQ8+qBv5PNDuSHa/ZfLIHxmZACAGyISoUzqIrip5FrqBJt5s8SKRbIREBIeZNDgiUlKBdVK2aq0S5Ukjy/Z8PxOXoecgV5sACDaHnCR3UTLQaB64XqmplKKLs/QN+OquX/PFKQ6Dgnadh6zO3oIeHYOePc+eWhLJbAx3mpaqMS0sV88AAtWllGRpTavxAzWdI2dMUXXjusaXQkxcUX/wcYoqQiBlimyGiPqVMvJFGfe2m2c3eela9ty+sFbZaYbSpybGXTCaloXe1zYcvRRafnbpQZ/evHikLUtbC/KijvJlKNMwdShmT00Y2m2VLRt4Yo3ul0EFvus0k2RAQtwPiVkDCDljTIRed8veox3dHC5jCX3zHFD7Xb05Rq8wc7BI/7AbyCxYIDVX9vFQSj1wb4/nuVQlpW7fccWPCZXjUBuDAqQIxW7Ew6up+wMhoWZWLhTMtavhrJDnANQCy2SybM9bUlE6fLrjmumI16HRiFs2OiW1JhICLYzUujtUQAmxTYBkwWfAZvFxgfKJ4ui04uzMts6eASSA0FlT19vbqds5NT+nOswXXiE0U/M5SNbAjZiDiURNTSqQArUOmZioMXa2qc6Ol8uxs8WBL+NeX89A84Pf399+9QbZt2yaB+CBvbAhk4nWFtU5K0eFEjShAyQ09Faq8iTcSCXOH1srDx4EcMPufG2TBCEC5i/0H837nyaJIpzHstCjjCJRs1EFNqsp4o752M2VMTgMlwAXU7XvvXznGRXgBgp7QAAAAAElFTkSuQmCC"/>
+                </button>
+                <button type="button" class="btn btn-sm" id="removesource">
+                    <img alt="<?= _("remove column from selected list") ?>" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAWCAYAAADEtGw7AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsNAAALDQHtB8AsAAAAB3RJTUUH1QMJAgwPiwGUlQAABLJJREFUOMuVlUtsVFUYx3/nnHtv53Fnpg8KYsNYQFHB1trKwsQganwAuvARF8adwejODXHnRhPXxhgXTUxMNBqD0R1EXZig1SgUGyAgT0t5TGfaaWfuzNw7c+85x8WUIoomfMm3O9/v/M/3OJ/gf2z8jRkX7CCY9VibAQvYEGtKrqmXR/myMzk5edNY8T/Qh4CXwI4hKCLcLACm3cLqOWBGmGT/uP34J0D/8wJxE+BmEG+i3Jf9bKb3tjV5uW4gxd1rAtKu5lzV58+yYaFSMdVaGJok/Mm1jXdH7ec/A8m1C5x/QO8A8QFeftfYpjS7t+cY2WBZ26tQsg/oJmMpSDhfWisPTEfZQ8eWnuyEYsNx8+Jb99n9B4DkBsUrSj/w8/mnnt5ekM+Me/TnFEIIEm0pLXUAuK3Pw1HdsGakmTrZ4osfqra8uHzG09VXR/hqCjB/U2z34eV2PTFeYM8DLq4jCEKDtZagpbmnmAHg8kK7q0YIwLL9rjRx0i8++d5saQX6NSwzQEN11R55SKie9+7fnE/tGneREjqxIewYgpZhbLOPn1b0uJKgpak2EjqxIYotncTS70uaHYeLlXi4ojfMrOPkBTX++mEXeDOXy+14fCwr+nxox5awYwGY2OKTTSsAWpHhfCmi3tJEsaW94lFs8FSH8/PGa0ZJrJLaIQcYBMby+YLsTSXUmxIAP614cEsOfwWaaMuh43WClgYsFtDacqmqOVbqpR5mCPClYXlbXRSLDrAeIYtrcoKw033+moLLjpE82ZRarcCFUkSfr+jzFcZCrC1aW+qJS+VcinoIOA4ItR7lFR0gg+zJZtyY5aahN6vYOVq4AQpw11D6poO0E7jzdnh7PwghQPakhSG32hX1yGW+ZlGOoi/ncCu2dWi1SVamzkgJNsS0W/PNNBdqeX6/nOXn0+aWwPt/7YIFFnQUCZu0HawpAXO1ltmoRZpaG975GvY9C49uvR786Y/w2dTNwXECroRG2Aary9I0S9I19TIwQ7tqXGXxlAUsH36r+eXMdeWvPAyP3AuNqOvt2GC0xmiNqzSeoxGdReMQne61s1fV7omULnF/02KfK2Sd9IBv8N0YT8acmOuwLi8YGugW8sFNEIYRYRhSSHXIeTE5LybrxnSiJsFSpZGOZz8aUsdn1PT0NM+My0tXGN0obDJRHHTI9yRkvQRPJPxxuc3t/YrBgoOjYLbUohaE+F73TNZNcETM3NVF2s2lgyPim0+A8rXya2Va7weBuHP2CjtHN/nSc693xoHfaqu/1aVKSCGzkiILnTjh9MWGadRrRwbMyU+RzAOhApienmbPuLu4aIuHa6Gzrd5KhnMZl/6cg+dKhICzV9qcvdJGCPAcgatgoRZz7HyNUqV+eDA5+l5RTv8GLAB6dQomJibsWk5VF+3w0VqoMpVaPBy0Ei/lJCKbdnCkRAqwVrO41OT4ny1z6mLQWF6uHxzQJz5agZaBeHJy8t8bZO/evRLIHuOFxxLpP29wt0kp1ufSKg0QhDoy2pQdotMpPf/d3fL7KWAeWP7PDbJiBmiM8NXBcjz8S10UiyivKBrkBEb22qQtTbPUa2evFtRCFQiAEDB/33t/AfcTTUjqjZgNAAAAAElFTkSuQmCC"/>
+                </button>
+            </div>
+        </div>
+        <div class="col-5">
+            <select class="form-select" name="selected_search_sources" id="selected_search_sources" multiple="multiple" size="10" aria-labelledby="selected_label">
+                <optgroup id="selected_label" label="<?= _("Selected fields…") ?>">
+                    <option>&nbsp;</option>
+                </optgroup>
+            </select>
+        </div>
+        <div class="col-1 d-flex">
+            <div class="align-self-center">
+                <button type="button" class="btn btn-sm" id="movesourceup">
+                    <img alt="<?= _("move selected item up") ?>" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAWCAYAAADEtGw7AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsNAAALDQHtB8AsAAAAB3RJTUUH1QMJAgsz6y9+1QAABKxJREFUOMt9ldtvVEUcxz8z59K9ne2NtlbCUi4KEahlGx5I1BgVFeFJjQ/GJw1G33jQ8A+Y4KvhwYcmJiQkGgKJ0SAkYEJCQA2wpAEtKVDutLvbbvd29pzdc86MD9sWyu2XTGYy+c1nvjPznRnBcyL79bgFug/UIFonQAPaQ6sZS1ULwxxujY2NPXWseA50O/AJ6BEEGYSVBEA1G+joLjAuVHgkq386C0SPTyCeAlwHYi+G9Wkqmeh6YUVaDvTG2LCiRtyKuFFKcaugmC0WVanieSr0zlq6/t2w/vkvIFycwHwMuhrEAez0zpG1cT7Y5rBllaa/y8CQ3UB7M+ZrIVMz/fJ4zk+euTz/bssTq66oj/dt1keOA+EyxQtKD6TS6ffe39Ypd2dtehwDIQRBqJiablL3IgZ6LFb22gghcP2IcxMNfjld0oW58jU7Kn2xhaPnAPWIYv0ttrNzR7aTXVstLFNQ8xRKafLzASPrk3SnTKamfa4/8BnotgHNtpfiBGGPOHhKvdyoRV+iGQfqRlvtxe3C6Nj/6rp0bGfWQkpoBYpGSzFTCtj+ikNnsq2h2zGJIriVbwLQCjU9KYnbMrlTDIaK0arxASZuGtmvLljAXsdx3nh7JCm6U9AMNI2WouErXtvskE4sOwp6HBMhYGq6SaTADxS20WIqr2zXDwMjrJwxgT5gJJ3ulF2xkKorF+wi2DHauaT08Vg7GEMpOHa+Su5+mqqXoEZKKsqbqiKTkcAgQmZWOAKvpSjXQwDe29b1TOhirF8ZI7uxn6Ibo+h2gJkEYQxi2BkJJJAdyYQVUHYVIHhnaxdO3AAgiDTjU+4y4B8XvaX26xvhm10Ll0IIkB1xAY5cTKj6FvmKpFCT+GHbhffnYd8hn7PXjGXgA3/G+f538INHbpp46F2BkiZoD9Vs5N04bhTjZhlmfwtZtQJuFeG/+zYDPfKJbTh2CVwf4jacnWyDQUPk+0KHTROtZoC7lYZaE4k4AJfvt4tGgnj2g3J6ol2bBlgS6l4TdFSQyp2RlqoWgHGaJWUZGvuR0mFEoDXqKVDLUCSsiIQVETMjbDNCtOaUiT/ZpW9Pm8McbuXU50eiZuUzK4p3dzv2MoVKQ0/MBmJLfas7a3gtvZTXfj9aKH/ejUf5k53GbMnI5XLszsp7DxheI3Q4mukzSXeEJO2QpBWSskPW9ks2r+5YAv9ztUKHESzlmCLg7vQcTXf+xBbx60GgsGjUyFCNH2o1sf72A94cXpuStvXQw/eKHhN3bF7stTg/6baXbrSltoKQyTt1Va9WLvaqiUNI8oBnAORyOXZlrbk5nblQ8cxN1UY45CQsehwT25IIAdcfNLl0o0G+HGIZAsuA2UrA5akKM8Xqhb7w0v6MzJ0HZoFoyaCjo6O6n6ulOT10qeIZiWIlGKo1QjtmhiIZNzGlRArQOmJu3uXKrYa6eqdWL5erJ3qjf39cgBaAYGxs7Ekn7dmzRwLJy3z0VihTHyqsTVKKQSduxAFqXuSrSBVM/MlYlD+5QZ46B+SB8jN/kEUjAPUtHD1RCIb+ropMBsPOiDqOQMkuHTalcme69O3pTmO2BNQAD1CP/nv/A0BcMay0FfABAAAAAElFTkSuQmCC"/>
+                </button>
+                <button type="button" class="btn btn-sm" id="movesourcedown">
+                    <img alt="<?= _("move selected item down") ?>" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAWCAYAAADEtGw7AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsNAAALDQHtB8AsAAAAB3RJTUUH1QMJAgwDgrfYvgAABNpJREFUOMt9lc9rXFUUxz/3vnff/P6RTNOalo6xVQvWxjqhSDciij+qXfgLFy5EkIrudKH+AQpu3KiIi4BQEBSpKIi0qKAo1mprSmxtNdra9FeSSTLJvJk37828d+91kWicqr27wz3ne773nO+5R3CVU3t2UoEdAjOMtVmwgA2xZlYZvz7KB73x8fH/jBVXAd0NPAZ2J4IqQuUAMN0OVl8AJoVJDtTsO98C+soE4j8At4J4Dkc9ns9ly9esK8oNlTTb1rXIKM2ZRp5zdcPC/LxpNMPQJOG3yrZfGbXvfQckfyVwrwC9FsSbeMU9O7dkuH9XgR2bLevLDo4cAFaKsdRKODu7Xh6ciHLfnFi6pxeKzSfNoy/dbA8cBJI+xqtM38wXi/fet6sk99Y8BgsOQgjixHB2pks71GwYVGyqeAghCCLN4dMd3v+qYeuLy795uvHUDj48DJh/MLYv4BX23F0r8cCtCuUKWqEBIE4MO6/PMZB3OTsT4Xc0QgjAsuuGDHEyKPZ/YW7stPTTWCaBtrPC9sfdwkm9esvWYnpPTSEl9GJDFBu6saGcd9lY8QAYKLicr3eJuoYotvQSy2BeEvRczs/HI/N68+QGTv/h1p45prD2sXwuXaxt9dDG0AxsX0NzaafPbgaaRK/5aGPZNqz56Uyq0FjMP1yPR464wBCws1gsyXI6wQ/kv6Q3kO/rMX5HEycGrS0XG5oTs2X8MEuLvDQsb/dFteoCwwhZXVcQhD1D2DN0epIoFqSUJecZOmXdz7idEMWGRiCZvJTjop9euXBdEM4wjleVQBaZymVVzHJgWPAtpUKGe8ZKrB/MshxAnPSXZmrO4ftzWXbfVOb5vVk2DqwOhRAgUxkBhb/f7UeKuaYklVI8eVeBW7d4PH57npFNJabm033AZ5oVnrq7yB03e9x2g8MbT4AQa9oVGOmCDTHdzlyQIdBp6pHguynD7htXcj54W4bTl/pr/uJeqI2s2Qd+WAEGCzqKhE26EmtmsfpCs2NodtNc9lO8/BF8eWolSDkwWr1i7FdBwx689il8fAyUhF6vC1bXpQlmpTJ+HZik2zDKsXiOBSxvfaY58pu52ufH/q8Nn/+kUY7GczWit2hcoqmynZ5x7h9L61luCSz2oVLOzVTyhryK8WTMzxd6bCgKNlX6ddyNLR8cjvjmVERexeRUTC8KaC3NtzPx9NubnJOTzsTEBHtr8uJlRq8TNhmrDrkUUwk5L8ETCb9e6rJx0GGotKblT37wOfprQFYl5FSCK2IuzCzSDZYO7RAf7wfqf3lrx3Reb7XE9dOXuWN0S156ag3o4NEmAthYURydCjg13aGYWelVL06YOt82bb/5Y8WcfhfJHBA6ABMTEzxQU4uLtnqsGbrb/U4yUsgqBgsunpIIAb9f7nL8TIe55QTlCJQDC82YE2ebzM77x4aS469W5cRRYAHQfxdvbGzMrueXxqIdOd4Mnex8Mx5pdRIv7SYil3FxpUQKsFazuBRw8lzH/HK+1V5e9g9V9M9vr4LWgXh8fPzfG2Tfvn0SyJ3gkTsTmX/YoLZLKYYLGScD0Ap1ZLSpu0RTaT33+Tb5xWFgDlj+3w2yegzQ3sGHh+rxyBFfVKs4XlW0KQiMLNukK00wW7bTMyVnoQG0gBAw/9x7fwLZ/05q+fGkRQAAAABJRU5ErkJggg=="/>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col">
+            <p>
+                <?= _("Use the example below  to format the CSV file. Standard CSV format is used, as output from e.g. Microsoft Excel.") ?>
+                <?= _("Fields are separated by comma <code>,</code>.") ?>
+                <?= _("If a field contains a comma, surround it with quotes <code>\"</code>.") ?>
+                <?= _("If a field contains a quote, surround it with quotes and double the inside quote.") ?>
+                <?= _("A period <code>.</code> is used for decimal numbers.") ?>
+                <?= _("Lines starting with a hash <code>#</code> are ignored.")?>
+            </p>
+            <p>
+                <a href="importsamples.php?sample=Card_Complex" target="demoframe"><?php echo _("Complex Sample");?></a> -
+                <a href="importsamples.php?sample=Card_Simple" target="demoframe"> <?php echo _("Simple Sample");?></a>
+            </p>
+            <iframe class="w-100" height="80" name="demoframe" src="importsamples.php?sample=Card_Simple"></iframe>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col">
+            <label for="the_file" class="form-label">
+                <?= sprintf(_("Select a file. The maximum file size is %d KB"), $my_max_file_size / 1024) ?>
+            </label>
+            <input type="hidden" name="MAX_FILE_SIZE" value="<?= $my_max_file_size ?>"/>
+            <input type="hidden" name="task" value="preview"/>
+            <input type="hidden" id="search_sources" name="search_sources" value="nochange"/>
+            <input type="file" class="form-control" name="the_file" id="the_file" required="required"/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <button type="submit" class="btn btn-primary" id="sendtoupload"><?= _("Import customers") ?></button>
+        </div>
+    </div>
+</form>
 
 <?php
 

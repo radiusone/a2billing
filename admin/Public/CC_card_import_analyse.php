@@ -2,6 +2,7 @@
 
 use A2billing\Admin;
 use A2billing\Logger;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -39,318 +40,157 @@ use A2billing\Logger;
 $menu_section = 1;
 // Common includes
 require_once "../../common/lib/admin.defines.php";
-
+/**
+ * @var Smarty $smarty
+ */
 set_time_limit(0);
 
 Admin::checkPageAccess(Admin::ACX_CUSTOMER);
 
-getpost_ifset(array('search_sources', 'task', 'status','uploadedfile_name'));
+getpost_ifset(['search_sources', 'task', 'uploadedfile_name']);
+/**
+ * @var string $search_sources
+ * @var string $task
+ * @var string $uploadedfile_name
+ */
 
-if ($search_sources!='nochange') {
-    $fieldtoimport= preg_split("/\t/", $search_sources);
-    $fieldtoimport_sql = str_replace("\t", ", ", $search_sources);
-    $fieldtoimport_sql = trim ($fieldtoimport_sql);
-    if (strlen($fieldtoimport_sql)>0) $fieldtoimport_sql = ', '.$fieldtoimport_sql;
+$fieldtoimport = "";
+$field_names = [
+    "username",
+    "useralias",
+    "uipass",
+    "credit",
+    "lastname",
+    "firstname",
+    "status",
+];
+if ($search_sources !== "nochange") {
+    $field_names = array_merge($field_names, explode("|", $search_sources));
 }
 
-$field[0]="username";
-$field[1]="useralias";
-$field[2]="uipass";
-$field[3]="credit";
-$field[4]="lastname";
-$field[5]="firstname";
-$field[6]="activated";
-$field[7]="status";
+$nb_imported = 0;
+$import_time = 0;
+$DBHandle = DbConnect();
+$the_file = "";
+$assoc_csv = [];
 
-$FG_DEBUG = 0;
-
-// THIS VARIABLE DEFINE THE COLOR OF THE HEAD TABLE
-$FG_TABLE_ALTERNATE_ROW_COLOR[] = "#FFFFFF";
-$FG_TABLE_ALTERNATE_ROW_COLOR[] = "#F2F8FF";
-
-$Temps1 = time();
-
-if ($FG_DEBUG == 1) echo "::::>> ".$the_file;
-
-//INUTILE
-$my_max_file_size = (int) MY_MAX_FILE_SIZE_IMPORT;
-
-if ($FG_DEBUG == 1) echo "<br> Task :: $task";
-
-if ($task=='upload') {
-
-    $the_file_name = $_FILES['the_file']['name'];
-    $the_file_type = $_FILES['the_file']['type'];
-    $the_file = $_FILES['the_file']['tmp_name'];
-
-    if (count($_FILES) > 0) {
-        $errortext = validate_upload($the_file, $the_file_type);
-        if ($errortext != "" || $errortext  != false) {
+if ($task === "upload" || $task === "preview") {
+    $start_time = microtime(true);
+    if (!empty($_FILES["the_file"])) {
+        $errortext = validate_upload($_FILES["the_file"]["tmp_name"] ?? "", $_FILES["the_file"]["type"] ?? "");
+        if ($errortext) {
             echo $errortext;
             exit;
         }
-        $new_filename = "/tmp/".MDP(6).".csv";
-        if (file_exists($new_filename)) {
-            echo $_FILES["file"]["name"] . " already exists. ";
-        } else {
-            if (!move_uploaded_file($_FILES["the_file"]["tmp_name"],	$new_filename)) {
-                echo gettext("File Save Failed, FILE=".$new_filename);
-            }
+        $the_file = tempnam(sys_get_temp_dir(), "cc_card");
+        if (!move_uploaded_file($_FILES["the_file"]["tmp_name"], $the_file)) {
+            echo sprintf(_("File Save Failed, FILE=%s"), $the_file);
+            exit;
         }
-        $the_file = $new_filename;
     } else {
-        $the_file_type = $uploadedfile_type;
         $the_file = $uploadedfile_name;
     }
 
-    if ($FG_DEBUG == 1) echo "<br> FILE  ::> ".$the_file_name;
-    if ($FG_DEBUG == 1) echo "<br> THE_FILE:$the_file <br>THE_FILE_TYPE:$the_file_type";
+    $insert_data = [];
 
-    $fp = fopen($the_file,  "r");
-    if (!$fp) {
-        echo  gettext('THE FILE DOESNOT EXIST');
-        exit();
-    }
+    $file_data = file($the_file, FILE_IGNORE_NEW_LINES);
+    foreach ($file_data as $line) {
+        $line = trim($line);
+        if (str_starts_with($line, "#")) {
+            continue;
+        }
+        $values = str_getcsv($line, ",", "\"", "");
+        if (count($values) !== count($field_names)) {
+            continue;
+        }
+        $assoc_csv = array_combine($field_names, $values);
+        if (empty($assoc_csv["useralias"])) {
+            $assoc_csv["useralias"] = $assoc_csv["username"];
+        }
+        if (empty($assoc_csv["id_group"]) || $assoc_csv["id_group"] < 1) {
+            // default user group
+            $assoc_csv["id_group"] = 1;
+        }
 
-    $chaine1 = '"\'';
-
-     $nb_imported=0;
-    $nb_to_import=0;
-    $DBHandle  = DbConnect();
-    $find_createdate = 0 ;
-
-    while (!feof($fp)) {
-        //if ($nb_imported==1000) break;
-        $ligneoriginal = fgets($fp,4096);  /* On se déplace d'une ligne */
-        if ($ligneoriginal == "") {
+        $insert_data[] = $assoc_csv;
+        if ($task === "preview") {
             break;
         }
-        $ligneoriginal = trim ($ligneoriginal);
-
-        for ($i = 0; $i < strlen($chaine1); $i++)
-            $ligne = str_replace($chaine1[$i], ' ', $ligneoriginal);
-
-        $val = preg_split('/[;,]/', $ligne);
-        $val[0]=str_replace('"', '', $val[0]); //DH
-        $val[1]=str_replace('"', '', $val[1]); //DH
-        $val[2]=str_replace('"', '', $val[2]); //DH
-        $val[0]=str_replace("'", '', $val[0]); //DH
-        $val[1]=str_replace("'", '', $val[1]); //DH
-        $val[2]=str_replace("'", '', $val[2]); //DH
-
-        if ($status!="ok") break;
-        if (substr($ligne,0,1)!='#' && substr($ligne,0,2)!='"#') {
-
-            $FG_ADITION_SECOND_ADD_TABLE  = 'cc_card';
-            $useralias_val = ($val[1] == '') ? $val[0]: $val[1];
-            $FG_ADITION_SECOND_ADD_FIELDS = 'username, useralias, uipass, credit, lastname, firstname, activated, status'; //$fieldtoimport_sql
-            $FG_ADITION_SECOND_ADD_VALUE  = "'".$val[0]."', '$useralias_val', '".$val[2]."', '".$val[3]."', '".$val[4]."', '".$val[5]."', '".$val[6]."', '".$val[7]."'";
-
-            for ($k=0;$k<count($fieldtoimport);$k++) {
-                if (!empty($val[$k + 8]) || $val[$k + 8]=='0') {
-                    $val[$k+3]=str_replace('"', '', $val[$k + 8]); //DH
-                    $val[$k+3]=str_replace("'", '', $val[$k + 8]); //DH
-                    if ($fieldtoimport[$k]=="startdate" && ($val[$k + 8]=='0' || $val[$k + 8]=='')) continue;
-                    if ($fieldtoimport[$k]=="stopdate" && ($val[$k + 8]=='0' || $val[$k + 8]=='')) continue;
-                    $FG_ADITION_SECOND_ADD_FIELDS .= ', '.$fieldtoimport[$k];
-                    if (is_numeric($val[$k + 8])) {
-                        $FG_ADITION_SECOND_ADD_VALUE .= ", ".$val[$k + 8]."";
-                    } else {
-                        $FG_ADITION_SECOND_ADD_VALUE .= ", '".$val[$k + 8]."'";
-                    }
-                    if ($fieldtoimport[$k] == "creationdate")  $find_createdate = 1;
-                }
-            }
-
-            $begin_date = date("Y");
-            $begin_date_plus = date("Y") + 10;
-            $end_date = date("-m-d H:i:s");
-            $comp_date = "'".$begin_date.$end_date."'";
-            $comp_date_plus = "'".$begin_date_plus.$end_date."'";
-
-            if ($find_createdate != 1) {
-                $FG_ADITION_SECOND_ADD_FIELDS .= ', creationdate';
-                $FG_ADITION_SECOND_ADD_VALUE .= ", '".$begin_date.$end_date."'";
-            }
-
-            $TT_QUERY .= "INSERT INTO ".$FG_ADITION_SECOND_ADD_TABLE." (".$FG_ADITION_SECOND_ADD_FIELDS.") values (".trim ($FG_ADITION_SECOND_ADD_VALUE).") ";
-            $nb_to_import++;
-        }
-
-        if ($TT_QUERY != '' && strlen($TT_QUERY) > 0 && ($nb_to_import == 1)) {
-
-            $nb_to_import=0;
-            $result_query =  $DBHandle -> Execute($TT_QUERY);
-            if ($result_query) {
-                $nb_imported = $nb_imported + 1;
-            } else {
-                $buffer_error.= $ligneoriginal.'<br/>';
-            }
-            $TT_QUERY='';
-        }
-
-    } // END WHILE EOF
-
-
-    if ($TT_QUERY!='' && strlen($TT_QUERY)>0 && ($nb_to_import>0)) {
-        $result_query = @ $DBHandle -> Execute($TT_QUERY);
-        if ($result_query) $nb_imported = $nb_imported + $nb_to_import;
     }
 
+    if ($task === "upload") {
+        (new Table("cc_card"))->addRows($DBHandle, $insert_data);
+        $nb_imported = count($insert_data);
+        Logger::insertLog($_SESSION["admin_id"], 2, "CARDs IMPORTED", $nb_imported." New CARDS Imported Successfully", '', $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI']);
+    }
+    $stop_time = microtime(true);
+    $import_time = $stop_time - $start_time;
 }
-
-$Temps2 = time();
-$Temps = $Temps2 - $Temps1;
-
 
 // #### HEADER SECTION
 $smarty->display('main.tpl');
-
 ?>
 
+<?php if ($task === "preview" && empty($assoc_csv)): ?>
+<div class="row mb-3">
+    <div class="col">
+        <p class="text-danger"><?= _("No valid rows were found for import. Ensure the number of values in the CSV matches the number of fields selected for import.") ?></p>
+    </div>
+</div>
+<div class="row mb-3">
+    <div class="col">
+        <a class="btn btn-danger" href="CC_card_import.php"><?= _("Return") ?></a>
+    </div>
+</div>
 
-<style type="text/css">
-<!--
-div.myscroll {
-    align: left;
-    height: 100px;
-    width: 600px;
-    overflow: auto;
-    border: 1px solid #ddd;
-    background-color: #FFFFFF;
-    padding: 5px;
-}
--->
-</style>
+<?php elseif ($task === "preview"): ?>
+<div class="row mb-3">
+    <div class="col">
+        <p><?= _("The first line of your import is previewed below, please check to ensure that every column is correct.") ?></p>
+    </div>
+</div>
+<table class="table table-stripe">
+    <thead>
+        <tr>
+            <th scope="col"><?= _("FIELD") ?></th>
+            <th scope="col"><?= _("VALUE") ?></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($assoc_csv as $key => $data): ?>
+        <tr>
+            <th scope="row"><?= _($key) ?></th>
+            <td><?= htmlspecialchars($data) ?></td>
+        </tr>
+        <?php endforeach ?>
+    </tbody>
+</table>
+<div class="row mb-3">
+    <div class="col">
+        <form method="post">
+            <input type="hidden" name="search_sources" value="<?= $search_sources ?>"/>
+            <input type="hidden" name="uploadedfile_name" value="<?= $the_file ?>"/>
+            <input type="hidden" name="task" value="upload">
+            <p><?= _("Confirm the data is correct, or press cancel to return to the previous page.") ?></p>
+            <button class="btn btn-primary" type="submit"><?= _("Import") ?></button>
+            <a class="btn btn-danger" href="CC_card_import.php"><?= _("Cancel") ?></a>
+        </form>
+    </div>
+</div>
 
-<script type="text/javascript">
-<!--
+<?php elseif ($task === "upload"): ?>
+<div class="row mb-3">
+    <div class="col">
+        <p><?= sprintf(_("Success, %d new cards have been imported in %0.4f seconds."), $nb_imported, $import_time) ?></p>
+    </div>
+</div>
+<div class="row mb-3">
+    <div class="col">
+        <a class="btn btn-success" href="A2B_entity_card.php"><?= _("Continue") ?></a>
+    </div>
+</div>
 
-function sendtoupload(form)
-{
-    document.forms["myform"].elements["task"].value = "upload";
-    document.forms[0].submit();
-}
+<?php endif;
 
-//-->
-</script>
-
-      <?php
-      if ($status=="ok") {
-              echo $CC_help_import_card_confirm;
-      } else {
-            echo $CC_help_import_card_analyse;
-      }
-      ?>
-        <?php  if ($status!="ok") {?>
-
-        <center>
-        <?php echo gettext("The first line of your import is previewed below, please check to ensure that every is correct.")?>
-        </center>
-
-        <table align=center border="0" cellpadding="2" cellspacing="2" width="300">
-            <tbody>
-                <tr class="form_head">
-                  <td class="tableBody" style="padding: 2px;" align="center" width="50%">
-                    <strong> <span class="white_link"><?php echo gettext("FIELD")?> </span> </strong>
-                  </td>
-                  <td class="tableBody" style="padding: 2px;" align="center" width="50%">
-                    <strong> <span class="white_link"><?php echo gettext("VALUE")?> </span> </strong>
-                  </td>
-                </tr>
-                <?php  for ($i=0;$i<count($field);$i++) { ?>
-                   <tr bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[($i+1)%2]?>"  onMouseOver="bgColor='#C4FFD7'" onMouseOut="bgColor='<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[($i+1)%2]?>'">
-                 <td class="tableBody" align="left" valign="top"><b><?php echo strtoupper($field[$i])?></b></td>
-                 <td class="tableBody" align="center" valign="top"><?php echo $val[$i]?></td>
-                </tr>
-                <?php  } ?>
-                <?php  for ($i=0;$i<count($fieldtoimport);$i++) { ?>
-                   <tr bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[($i)%2]?>"  onMouseOver="bgColor='#C4FFD7'" onMouseOut="bgColor='<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[($i)%2]?>'">
-                 <td class="tableBody" align="left" valign="top"><b><?php echo strtoupper($fieldtoimport[$i])?></b></td>
-                 <td class="tableBody" align="center" valign="top"><?php echo $val[$i + 8]?></td>
-                </tr>
-                <?php  } ?>
-
-            </tbody>
-        </table>
-
-
-    <br/><br>
-        <table width="95%" border="0" cellspacing="2" align="center" class="records">
-
-              <form name="myform" enctype="multipart/form-data" action="CC_card_import_analyse.php" method="post" >
-                <INPUT type="hidden" name="search_sources" value="<?php echo $search_sources?>">
-
-                <tr>
-                  <td colspan="2">
-                    <div align="center"><span class="textcomment">
-                       <?php echo gettext("Please check if the datas above are correct")?>. <br><b><?php echo gettext("If Yes")?></b>,&nbsp;<?php echo gettext("you can continue the import. Otherwise you must fix your csv file!")?>
-                      </span></div>
-                  </td>
-                </tr>
-                <tr>
-                  <td colspan="2">
-                    <p align="center">
-                      <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo $my_max_file_size?>">
-                      <input type="hidden" name="task" value="upload">
-                      <input type="hidden" name="status" value="ok">
-                     <input type="hidden" name="uploadedfile_name" value="<?php echo $new_filename?>">
-                          <input type="hidden" name="uploadedfile_type" value="<?php echo $the_file_type?>">
-                      <input type="submit" value="<?php echo gettext("Continue to Import the CARD's")?>" onFocus=this.select() class="form_input_text" name="submit1" >
-                      <br>
-                      &nbsp; </p>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td  class="bgcolor_014" colspan="2"><b>
-                    <?php echo $translate[P34_9]?>
-                    </b></td>
-                </tr>
-
-              </form>
-            </table>
-
-            <?php } else { ?>
-
-            <br>
-            <table width="75%" border="0" cellspacing="2" align="center" class="records">
-
-                <TR>
-                      <TD style="border-bottom: medium dotted #ED2525" align="center">&nbsp;</TD>
-                </TR>
-                <tr>
-                  <td colspan="2" class="bgcolor_015" style="padding-left: 5px; padding-right: 3px;" align=center>
-                    <div align="center"><span class="textcomment">
-
-                      <br>
-                      <?php
-                      Logger::insertLog($_SESSION["admin_id"], 2, "CARDs IMPORTED", $nb_imported." New CARDS Imported Successfully", '', $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI'],'');
-                      ?>
-                      <?php echo gettext("Success")?>, <?php echo $nb_imported?>&nbsp; <?php echo gettext("new cards have been imported.")?>
-                      <br>
-                      </span></div>
-                      <br><br>
-
-
-                      <?php  if (!empty($buffer_error)) { ?>
-                      <center>
-                           <b><i><?php echo gettext("Line that has not been inserted!")?></i></b>
-                         <div class="myscroll">
-                              <span style="color: red;">
-                              <?php echo $buffer_error?>
-                              </span>
-                         </div>
-                        </center>
-                        <br>
-                     <?php  } ?>
-
-                  </td>
-                </tr>
-            </table>
-
-            <?php }?>
-            <br>
-<?php
-    // #### Footer SECTION
+// #### Footer SECTION
 $smarty->display('footer.tpl');

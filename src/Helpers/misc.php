@@ -849,19 +849,18 @@ function validate_upload(string $the_file, string $the_file_type): string
         "application/vnd.ms-excel",
     ];
 
-    $start_error = "<b>" . htmlspecialchars(_("ERROR:")) . "</b>";
     $error = "";
-    if ($the_file == "") {
-        $error = htmlspecialchars(_("File size is greater than allowed limit."));
-    } elseif ($the_file == "none") {
-        $error = htmlspecialchars(_("You did not upload anything!"));
-    } elseif ($_FILES['the_file']['size'] == 0) {
-        $error = htmlspecialchars(_("Failed to upload the file, The file you uploaded may not exist on disk."));
+    if (empty($the_file) || $the_file === "none") {
+        $error = _("You did not upload anything!");
+    } elseif (!file_exists($the_file) || !is_readable($the_file)) {
+        $error = _("Failed to upload the file, The file you uploaded may not exist on disk.");
+    } elseif (filesize($the_file) > MY_MAX_FILE_SIZE_IMPORT) {
+        $error = _("File size is greater than allowed limit.");
     } elseif (!in_array($the_file_type, $allowed_types)) {
-        $error = htmlspecialchars($the_file_type) . " " . htmlspecialchars(_("file type is not allowed"));
+        $error = sprintf(_("File type %s is not allowed"), $the_file_type);
     }
 
-    return ($error) ? "$start_error<ul><li>$error</li></ul>" : "";
+    return $error ? sprintf(_("ERROR: %s"), $error) : "";
 }
 
 function securitykey(string $key, string $data): string

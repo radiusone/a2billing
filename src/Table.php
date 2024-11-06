@@ -166,7 +166,9 @@ class Table
             || str_starts_with($value, "substring(")
             || str_starts_with($value, "substr(")
             || str_starts_with($value, "lower(")
-            || str_starts_with($value, "upper(");
+            || str_starts_with($value, "upper(")
+            || str_starts_with($value, "min(")
+            || str_starts_with($value, "max(");
     }
 
     /*
