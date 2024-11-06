@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -37,42 +38,28 @@ use A2billing\Admin;
 
 $menu_section = 2;
 require_once "../../common/lib/admin.defines.php";
-include './form_data/FG_var_agent.inc';
+require_once "./form_data/FG_var_agent.inc";
+/**
+ * @var FormHandler $HD_Form
+ * @var Smarty $smarty
+ * @var string $form_action
+ * @var string $popup_select
+ * @var string $CC_help_agent
+ */
 
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
 $HD_Form->init();
 
-if (!isset ($form_action))
-    $form_action = "list"; //ask-add
-if (!isset ($action))
-    $action = $form_action;
+$form_action ??= "list";
 
 $list = $HD_Form->perform_action($form_action);
 
 // #### HEADER SECTION
 $smarty->display('main.tpl');
 
-if ($popup_select) {
-?>
-<script>
-function sendValue(selvalue) {
-    var formname = <?= json_encode($popup_formname ?? "") ?>;
-    var fieldname = <?= json_encode($popup_fieldname ?? "") ?>;
-    $(`form[name='${formname}'] [name='${fieldname}']`, window.opener.document).val(selvalue);
-    $("#selectagent", window.opener.document).change();
-    window.close();
-}
-</script>
-<?php
-
-}
-
 // #### HELP SECTION
-if ($form_action == 'ask-add')
-    echo $CC_help_agent;
-else
-    echo $CC_help_agent;
+echo $CC_help_agent;
 
 // #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);
@@ -81,3 +68,15 @@ $HD_Form->create_form($form_action, $list);
 
 // #### FOOTER SECTION
 $smarty->display('footer.tpl');
+
+?>
+<script>
+    function sendValue(selvalue) {
+        let formname = <?= json_encode($popup_formname ?? "") ?>;
+        let fieldname = <?= json_encode($popup_fieldname ?? "") ?>;
+        $(`form[name='${formname}'] [name='${fieldname}']`, window.opener.document).val(selvalue);
+        $("#selectagent", window.opener.document).change();
+        window.close();
+    }
+</script>
+

@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Agent;
 use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -37,52 +38,50 @@ use A2billing\Forms\FormHandler;
 
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
-getpost_ifset(array('id', 'login', 'passwd', 'active', 'location', 'id_tariffgroup', 'options', 'credit',
-'currency', 'locale', 'commission', 'vat', 'banner', 'language', 'perms', 'lastname', 'firstname', 'address', 'city', 'state',
-'country', 'zipcode', 'phone', 'email', 'fax'));
+getpost_ifset(["form_action", "popup_select", "popup_formname", "popup_fieldname"]);
+/**
+ * @var string $form_action
+ * @var string $popup_select
+ * @var string $popup_formname
+ * @var string $popup_fieldname
+ */
 
+$HD_Form = new FormHandler("cc_agent", _("Agent"));
 
-$FG_INSTANCE_NAME = gettext("Agent");
-$HD_Form = new FormHandler("cc_agent", $FG_INSTANCE_NAME);
+$HD_Form->FG_TABLE_DEFAULT_ORDER = "datecreation";
+$HD_Form->FG_TABLE_DEFAULT_SENS = "ASC";
 
-$HD_Form->no_debug();
-$HD_Form -> FG_TABLE_DEFAULT_ORDER = " datecreation";
-$HD_Form -> FG_TABLE_DEFAULT_SENS = "ASC";
+$HD_Form->FG_LIST_ADDING_BUTTON1 = true;
+$HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_agent.php?form_action=ask-add&groupID=0";
+$HD_Form->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form->FG_LIST_ADDING_BUTTON_MSG1 = _("Add AGENT");
+$HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJfSURBVDjLpZNrSFNhGMelD34op67Lp4I+RKBREkUNIR2po7LOztlxbY1amstyXWw2m06b6Ra1llpqBJrlJdNFVyqxixZmIQ5npVE20DCkYqaDDBVy77+zDQbCmEUffvC8L/x/z/Pw8oYACPkfAl5mKmWl+cJFMMTzoNsUBnXsQqhk4qt/JVCrUosMVBQs2yJg5igWhUMbH4a0uKVQ7VWUzSnQswJc4II6LqT1Eg6NkI99GyPArF1M5hRoBZGkpTIPI60WdFYexO4NfKTGLoEidhl2rotEmXbXgqCCqj3LXa6P7Rjrvo7vr2thr8/B4P1ijPa3ojFjxURf3aHQoIJqxWrbuK0Jzp5bmHzbzGH11uP2ZlSnx/QEXcGaxM5/tnlrx5NMAaZ7ajD1/p6XyTc38FwjgFWY/KJRKOUFFJQnpfE7RFSNk6Ux5fiEvmPJaMnd7sVT/7J14ytDozMx+WJ9nCJylsCcIp03oNHWfpMwgOMD0PUSaKoFrlSAVJwDMRfCfe0ySPcrfGEY8iCBKq1LpEL9grYtjJGky4BHd3xwQVRagBIjcDofKMgGjh8AuVQCd4kJP9Nk5K6IPusX9J6MmnE+zANOnQAsRT7OFPjO+iwgOwNQK+FWSoAsFcYeF6IrJ3raL3hniCbjT40gSm6FqnIQLkg8XXWHQTT7QXRH4OYm8HT/IWfhajPBlruK+AX9DUf1dv3K3zOcYDSFBs4XB2SEZuCgGPQWxkxzGdOsV/hsVfPa5dI1TSLl8AArJ0M0iyGxBIOUBI4dLPrFMnI7QTHRyqasH76p5gX9jf/CH9NZtVjmGMuRAAAAAElFTkSuQmCC";
+$HD_Form->FG_OTHER_BUTTON1_LINK = "A2B_agent_home.php?id=";
+$HD_Form->FG_OTHER_BUTTON1_IMG = Images_Path."/comment_edit.png";
+$HD_Form->FG_OTHER_BUTTON1 = true;
+$HD_Form->FG_OTHER_BUTTON1_ALT = _("Edit agent homepage");
 
-
-$HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_agent.php?form_action=ask-add&groupID=0";
-$HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add AGENT");
-$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/user_red.png" ;
-$HD_Form -> FG_OTHER_BUTTON1_LINK = "A2B_agent_home.php?id=";
-$HD_Form -> FG_OTHER_BUTTON1_IMG = Images_Path."/comment_edit.png";
-$HD_Form -> FG_OTHER_BUTTON1 = true;
-$HD_Form -> FG_OTHER_BUTTON1_ALT = gettext("Edit agent homepage");
-
-$HD_Form -> FG_OTHER_BUTTON2 = true;
-$HD_Form -> FG_OTHER_BUTTON2_LINK="A2B_entity_payment_agent.php?form_action=ask-add&agent_id=|col0|";
-$HD_Form -> FG_OTHER_BUTTON2_IMG = Images_Path . "/money.png";
-$HD_Form -> FG_OTHER_BUTTON2_ALT = gettext('Add Payment to this Agent');
-
-$HD_Form -> FG_QUERY_WHERE_CLAUSE = $FG_TABLE_CLAUSE;
+$HD_Form->FG_OTHER_BUTTON2 = true;
+$HD_Form->FG_OTHER_BUTTON2_LINK="A2B_entity_payment_agent.php?form_action=ask-add&agent_id=|col0|";
+$HD_Form->FG_OTHER_BUTTON2_IMG = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJ0SURBVDjLlZPdT9JRGMe5qFu2Lrt1a63LWv9ATRdN5xvLsnLRipzZpIVpigjyIs3XAOUHgopoWkggP5QXSRJwJQmtm/IlAWtt3XXTfubS+nZ+P1eby6ldPGdn5+zzfb7Pc57DA8DbL9rjrYxuVsXf7W5fuC2mYawpE7QRJZpDDfz/EngYVTN9qR4EPvlgXjCiKVCPWvou/0ACxDJjSbIwDefqMPxrEzC87IDUW4Pq8Vv8PQVaX7Qw5qQRgY9ePP0wDMeSFfWTUkxmPeiI61DlFOP6SAV/VwFtRMFQCwb4CdwW10IbVcK+aMHgohmPlwdBZ11oCctx1X5p/R8B9Uzzuum1ntj1Iv1tGRtb3zH2dgSa2eZtOOOCMizD5cGyzR0lGBNdx1TP5T96E4+4WttiWg6mYr3Ifk1DF1PBmxmHYlrGZkbFUDku2oSHOAFjolOuIpZ65rs5+MmKg9hWcJlZWB1UbsOhRjYz5r/MoSn4AKWWQg0nwFoyzndhijRobGWIq3XgPQU1sa2LqjCRHoc81IBK9w0OnvscRWQtBGFfEc4b8o7wNDMKOwnY3lDwZZ+h1idB/zsThpf6CezkstVN3yNwHFMrNGqCVRvlA2UQ6POkud1nTvE0EcVR1gU7JNSCnrPrWLRtw+RM7BKBXnJDP9eOYqogVNAj0Av0uTk7mtjov2+1p2yQ0hIYXnXCs+qEzF+HC9YSyIiIsK84XWTKP5tvPHdi11GupSXHW8JNW+FMAHdclSCCKDEX/iKdDgotRY17jTu31LhvHybT5RGPin5K3NWs1c0yW+lp0umc/T7b383NUdHJa44rSfJU+Qf54n/iNzi8zBtL0z1zAAAAAElFTkSuQmCC";
+$HD_Form->FG_OTHER_BUTTON2_ALT = _('Add Payment to this Agent');
 
 $language_list = getLanguagesList();
 
-
-$right_list = array();
-$right_list["1"] = array( gettext("VIEW CUSTOMERS"), "1");
-$right_list["2"] = array( gettext("BILLING"), "2");
-$right_list["3"] = array( gettext("RATECARD"), "4");
-$right_list["4"] = array( gettext("CALL REPORT"), "8");
-$right_list["5"] = array( gettext("MY ACCOUNT"), "16");
-$right_list["6"] = array( gettext("SUPPORT"), "32");
-$right_list["7"] = array( gettext("CREATE CUSTOMER"), "64");
-$right_list["8"] = array( gettext("EDIT CUSTOMER"), "128");
-$right_list["9"] = array( gettext("DELETE CUSTOMER"), "256");
-$right_list["10"] = array( gettext("GENERATE CUSTOMER"), "512");
-$right_list["11"] = array( gettext("SIGNUP"), "1024");
-$right_list["12"] = array( gettext("VOIP CONF"), "2048");
-$right_list["13"] = array( gettext("SEE CUSTOMERS CALLERID"), "4096");
+$right_list = [
+    [_("VIEW CUSTOMERS"), Agent::ACX_CUSTOMER],
+    [_("BILLING"), Agent::ACX_BILLING],
+    [_("RATECARD"), Agent::ACX_RATECARD],
+    [_("CALL REPORT"), Agent::ACX_CALL_REPORT],
+    [_("MY ACCOUNT"), Agent::ACX_MYACCOUNT],
+    [_("SUPPORT"), Agent::ACX_SUPPORT],
+    [_("CREATE_CUSTOMER"), Agent::ACX_CREATE_CUSTOMER],
+    [_("EDIT CUSTOMER"), Agent::ACX_EDIT_CUSTOMER],
+    [_("DELETE CUSTOMER"), Agent::ACX_DELETE_CUSTOMER],
+    [_("GENERATE CUSTOMER"), Agent::ACX_GENERATE_CUSTOMER],
+    [_("SIGNUP"), Agent::ACX_SIGNUP],
+    [_("VOIP CONF"), Agent::ACX_VOIPCONF],
+    [_("SEE CUSTOMERS CALLERID"), Agent::ACX_SEE_CUSTOMERS_CALLERID],
+];
 
 $len_right_list = count($right_list);
 
@@ -90,91 +89,85 @@ $yesno = getYesNoList();
 
 
 $currency_list = $currency_list_key = getCurrenciesList();
-array_walk($currencies_list_key, fn (&$v, $k)  => $v = [$k]);
+array_walk($currency_list_key, fn (&$v, $k)  => $v = [$k]);
 
 if ($popup_select) {
-	$HD_Form -> AddViewElement(gettext("ID"), "id");
-	$HD_Form -> AddViewElement(gettext("LOGIN"), "login");
-	$HD_Form -> AddViewElement(gettext("FIRSTNAME"), "firstname");
-	$HD_Form -> AddViewElement(gettext("LASTNAME"), "lastname");
-	$HD_Form -> AddViewElement("<acronym title=\"" . gettext("CURRENCY") . "\">" . gettext("CUR") . "</acronym>", "currency", true, 0, "", "list", $currency_list_key);
-	$HD_Form -> AddViewElement(gettext("ACTIVE"), "active", true, 0, "", "list", $yesno);
+	$HD_Form->AddViewElement(_("ID"), "id");
+	$HD_Form->AddViewElement(_("LOGIN"), "login");
+	$HD_Form->AddViewElement(_("FIRSTNAME"), "firstname");
+	$HD_Form->AddViewElement(_("LASTNAME"), "lastname");
+	$HD_Form->AddViewElement("<abbr title=\"" . _("CURRENCY") . "\">" . _("CUR") . "</abbr>", "currency", true, 0, "", "list", $currency_list_key);
+	$HD_Form->AddViewElement(_("ACTIVE"), "active", true, 0, "", "list", $yesno);
 
-	$HD_Form -> FieldViewElement ('id, login, passwd, lastname, currency, active');
+	$HD_Form->FieldViewElement ('id, login, passwd, lastname, currency, active');
 } else {
-	$HD_Form -> AddViewElement(gettext("ID"), "id", "sort");
-	$HD_Form -> AddViewElement(gettext("DATE"), "datecreation", true, 19);
-	$HD_Form -> AddViewElement(gettext("LOGIN"), "login");
-	$HD_Form -> AddViewElement(gettext("PASSWORD"), "passwd");
-	$HD_Form -> AddViewElement(gettext("FIRSTNAME"), "firstname");
-	$HD_Form -> AddViewElement(gettext("LASTNAME"), "lastname");
-	$HD_Form -> AddViewElement(gettext("CREDIT"), "credit");
-	$HD_Form -> AddViewElement(gettext("COMMISSION"), "com_balance");
-	$HD_Form -> AddViewElement("<acronym title=\"" . gettext("CURRENCY") . "\">" . gettext("CUR") . "</acronym>", "currency", true, 0, "", "list", $currency_list_key);
-	$HD_Form -> AddViewElement(gettext("ACTIVE"), "active", true, 0, "", "list", $yesno);
+	$HD_Form->AddViewElement(_("ID"), "id", "sort");
+	$HD_Form->AddViewElement(_("DATE"), "datecreation", true, 19);
+	$HD_Form->AddViewElement(_("LOGIN"), "login");
+	$HD_Form->AddViewElement(_("PASSWORD"), "passwd");
+	$HD_Form->AddViewElement(_("FIRSTNAME"), "firstname");
+	$HD_Form->AddViewElement(_("LASTNAME"), "lastname");
+	$HD_Form->AddViewElement(_("CREDIT"), "credit");
+	$HD_Form->AddViewElement(_("COMMISSION"), "com_balance");
+	$HD_Form->AddViewElement("<abbr title=\"" . _("CURRENCY") . "\">" . _("CUR") . "</abbr>", "currency", true, 0, "", "list", $currency_list_key);
+	$HD_Form->AddViewElement(_("ACTIVE"), "active", true, 0, "", "list", $yesno);
 
-	$HD_Form -> FieldViewElement ('id, datecreation, login, passwd, firstname, lastname, credit, com_balance, currency, active');
+	$HD_Form->FieldViewElement ('id, datecreation, login, passwd, firstname, lastname, credit, com_balance, currency, active');
 }
 
 if ($popup_select) {
-	$HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 7;
-	$HD_Form -> CV_FOLLOWPARAMETERS = "&popup_select=" . $popup_select . "&popup_formname=" . $popup_formname . "&popup_fieldname=" . $popup_fieldname;
+	$HD_Form->FG_LIST_VIEW_PAGE_SIZE = 7;
+	$HD_Form->CV_FOLLOWPARAMETERS = "&amp;popup_select=$popup_select&amp;popup_formname=$popup_formname&amp;popup_fieldname=$popup_fieldname";
 
-	$HD_Form -> FG_OTHER_BUTTON1 = true;
-	$HD_Form -> FG_OTHER_BUTTON1_ALT = '<span style="color:red">&lt;' . _("SELECT") . '&gt;</span>';
-	$HD_Form -> FG_OTHER_BUTTON1_IMG = '';
-	$HD_Form -> FG_OTHER_BUTTON2 = false;
+	$HD_Form->FG_OTHER_BUTTON1 = true;
+	$HD_Form->FG_OTHER_BUTTON1_ALT = '<span style="color:red">&lt;' . _("SELECT") . '&gt;</span>';
+	$HD_Form->FG_OTHER_BUTTON2 = false;
 	//echo $popup_select;
-	if ($popup_select == 1) {
+	if ($popup_select === "1") {
         $HD_Form->FG_OTHER_BUTTON1_LINK = "javascript:sendValue('|param|');";
-    } elseif ($popup_select == 2) {
+    } elseif ($popup_select === "2") {
         $HD_Form->FG_OTHER_BUTTON1_LINK = "javascript:sendValue('|col0|');";
     }
-} else {
-	$HD_Form -> FG_ENABLE_INFO_BUTTON = true;
-	$HD_Form -> FG_INFO_BUTTON_LINK = "A2B_agent_info.php?id=";
-}
-
-if (has_rights (Admin::ACX_MODIFY_AGENTS) && !($popup_select)) {
-
-	$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
-	$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
-	$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
-
+} elseif (has_rights (Admin::ACX_MODIFY_AGENTS)) {
+	$HD_Form->FG_ENABLE_INFO_BUTTON = true;
+	$HD_Form->FG_INFO_BUTTON_LINK = "A2B_agent_info.php?id=";
+	$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
+	$HD_Form->FG_ENABLE_ADD_BUTTON = true;
+	$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 
 	$HD_Form->AddEditElement(
-        gettext("LOGIN"),
+        _("LOGIN"),
         "login",
         "",
         "size=30 maxlength=12",
         3,
-        gettext("Insert the login")
+        _("Insert the login")
     );
 
     $HD_Form->AddEditElement(
-        gettext("PASSWORD"),
+        _("PASSWORD"),
         "passwd",
         "",
         "size=30 maxlength=15",
-        3, gettext("Insert the password")
+        3, _("Insert the password")
     );
 
     $HD_Form->AddEditSelect(
-        gettext("PERMISSION"),
+        _("PERMISSION"),
         "perms",
         $right_list,
         "",
-        gettext("To select several rights in the above ListBox, hold the CTRL key down while clicking the items"),
+        _("To select several rights in the above ListBox, hold the CTRL key down while clicking the items"),
         "size='$len_right_list' multiple='multiple'"
     );
 
     $HD_Form->AddEditRadio(
-        gettext("ACTIVE"),
+        _("ACTIVE"),
         "active",
-        [[gettext("Yes"), "1"], [gettext("No"), "0"]],
+        [[_("Yes"), "1"], [_("No"), "0"]],
         "1",
-        gettext("Enable agent"), "",
-        gettext("Choose if you want to active this agent")
+        _("Enable agent"), "",
+        _("Choose if you want to active this agent")
     );
 
 	if ($form_action =="ask-add" || $form_action=="add") {
@@ -186,168 +179,170 @@ if (has_rights (Admin::ACX_MODIFY_AGENTS) && !($popup_select)) {
 	}
 
     $HD_Form->AddEditElement(
-        gettext("BALANCE"),
+        _("BALANCE"),
         "credit",
-        gettext("currency : ") . strtoupper(BASE_CURRENCY),
+        _("currency : ") . strtoupper(BASE_CURRENCY),
         "size=30 maxlength=30 $balance_access",
         12,
-        gettext("amount of credit")
+        _("amount of credit")
     );
 
     $HD_Form->AddEditElement(
-        gettext("COMMISSION BALANCE"),
+        _("COMMISSION BALANCE"),
         "com_balance",
-        gettext("currency : ") . strtoupper(BASE_CURRENCY),
+        _("currency : ") . strtoupper(BASE_CURRENCY),
         "readonly $default_com_bal",
         null,
-        gettext("amount of commission")
+        _("amount of commission")
     );
 
-    $HD_Form->AddEditSelect(gettext("CURRENCY"), "currency", $currency_list, "", gettext("Currency used at the customer end."));
+    $HD_Form->AddEditSelect(_("CURRENCY"), "currency", $currency_list, "", _("Currency used at the customer end."));
 
     $HD_Form->AddEditElement(
-        gettext("COMMISSION PERCENTAGE"),
+        _("COMMISSION PERCENTAGE"),
         "commission",
-        gettext("Commission in percent"),
+        _("Commission in percent"),
         "size=20 maxlength=20",
         21,
-        gettext("Insert the commision"),
+        _("Insert the commision"),
         "",
         "NO-NULL"
     );
 
     $HD_Form->AddEditElement(
-        gettext("THRESHOLD REMITTANCE"),
+        _("THRESHOLD REMITTANCE"),
         "threshold_remittance",
-        gettext("currency : ") . strtoupper(BASE_CURRENCY),
+        _("currency : ") . strtoupper(BASE_CURRENCY),
         "size=20 maxlength=20",
         12,
-        gettext("treshold remittance")
-    );
-
-    $HD_Form->AddEditElement(
-        gettext("VAT"),
-        "vat",
-        gettext("VAT"),
-        "size=20 maxlength=20",
-        12,
-        gettext("Insert the VAT"),
-        "",
-        "NO-NULL"
-    );
-
-    $HD_Form->AddEditSelect(gettext("LANGUAGE"), "language", $language_list);
-
-    $HD_Form->AddEditElement(
-        gettext("COMPANY"),
-        "company",
-        "",
-        "size=60 maxlength=50",
-        null,
-        gettext("Insert the company")
-    );
-
-    $HD_Form->AddEditElement(
-        gettext("LAST NAME"),
-        "lastname",
-        "",
-        "size=60 maxlength=50",
-        null,
-        gettext("Insert the lastname")
-    );
-
-    $HD_Form->AddEditElement(
-        gettext("FIRST NAME"),
-        "firstname",
-        "",
-        "size=60 maxlength=50",
-        null,
-        gettext("Insert the firstname")
-    );
-
-    $HD_Form->AddEditElement(
-        gettext("ADDRESS"),
-        "address",
-        "",
-        "size=60 maxlength=250",
-        null,
-        gettext("Insert the address")
-    );
-
-    $HD_Form->AddEditElement(
-        gettext("CITY"),
-        "city",
-        "",
-        "size=20 maxlength=20",
-        null,
-        gettext("Insert the city")
-    );
-
-    $HD_Form->AddEditElement(
-        gettext("STATE"),
-        "state",
-        "",
-        "size=20 maxlength=40",
-        null,
-        gettext("Insert the state")
-    );
-
-    $HD_Form->AddEditElement(
-        gettext("COUNTRY"),
-        "country",
-        "",
-        "size=20 maxlength=40",
-        null,
-        gettext("Insert the country")
-    );
-
-    $HD_Form->AddEditElement(
-        gettext("ZIPCODE"),
-        "zipcode",
-        "",
-        "size=10 maxlength=7",
-        null,
-        gettext("Insert the zip code")
-    );
-
-    $HD_Form->AddEditElement(
-        gettext("EMAIL"),
-        "email",
-        "",
-        "size=30 maxlength=70",
-        1,
-        gettext("Insert the email"),
+        _("threshold remittance"),
         "",
         "NO"
     );
 
     $HD_Form->AddEditElement(
-        gettext("PHONE"),
+        _("VAT"),
+        "vat",
+        _("VAT"),
+        "size=20 maxlength=20",
+        12,
+        _("Insert the VAT"),
+        "",
+        "NO-NULL"
+    );
+
+    $HD_Form->AddEditSelect(_("LANGUAGE"), "language", $language_list);
+
+    $HD_Form->AddEditElement(
+        _("COMPANY"),
+        "company",
+        "",
+        "size=60 maxlength=50",
+        null,
+        _("Insert the company")
+    );
+
+    $HD_Form->AddEditElement(
+        _("LAST NAME"),
+        "lastname",
+        "",
+        "size=60 maxlength=50",
+        null,
+        _("Insert the lastname")
+    );
+
+    $HD_Form->AddEditElement(
+        _("FIRST NAME"),
+        "firstname",
+        "",
+        "size=60 maxlength=50",
+        null,
+        _("Insert the firstname")
+    );
+
+    $HD_Form->AddEditElement(
+        _("ADDRESS"),
+        "address",
+        "",
+        "size=60 maxlength=250",
+        null,
+        _("Insert the address")
+    );
+
+    $HD_Form->AddEditElement(
+        _("CITY"),
+        "city",
+        "",
+        "size=20 maxlength=20",
+        null,
+        _("Insert the city")
+    );
+
+    $HD_Form->AddEditElement(
+        _("STATE"),
+        "state",
+        "",
+        "size=20 maxlength=40",
+        null,
+        _("Insert the state")
+    );
+
+    $HD_Form->AddEditElement(
+        _("COUNTRY"),
+        "country",
+        "",
+        "size=20 maxlength=40",
+        null,
+        _("Insert the country")
+    );
+
+    $HD_Form->AddEditElement(
+        _("ZIPCODE"),
+        "zipcode",
+        "",
+        "size=10 maxlength=7",
+        null,
+        _("Insert the zip code")
+    );
+
+    $HD_Form->AddEditElement(
+        _("EMAIL"),
+        "email",
+        "",
+        "size=30 maxlength=70",
+        1,
+        _("Insert the email"),
+        "",
+        "NO"
+    );
+
+    $HD_Form->AddEditElement(
+        _("PHONE"),
         "phone",
         "",
         "size=30 maxlength=20",
         null,
-        gettext("Insert the telephone number")
+        _("Insert the telephone number")
     );
 
     $HD_Form->AddEditElement(
-        gettext("FAX"),
+        _("FAX"),
         "fax",
         "",
         "size=30 maxlength=20",
         null,
-        gettext("Insert the fax number")
+        _("Insert the fax number")
     );
 
     $HD_Form->AddEditTextarea(
-        gettext("BANK INFO"),
+        _("BANK INFO"),
         "bank_info",
         "",
-        "cols='50' rows='4'", null, gettext("Insert the bank info of this agent")
+        "cols='50' rows='4'", null, _("Insert the bank info of this agent")
     );
 
     $HD_Form->AddEditSqlSelect(
-        gettext("CALL PLAN USABLE"),
+        _("CALL PLAN USABLE"),
         "tariffgroup",
         "cc_agent_tariffgroup",
         "label,id",
@@ -368,11 +363,9 @@ if (has_rights (Admin::ACX_MODIFY_AGENTS) && !($popup_select)) {
         ]
     );
 
-	$HD_Form -> FG_ADDITIONAL_FUNCTION_AFTER_ADD = 'creation_agent_refill';
-	$HD_Form -> FG_INTRO_TEXT_ADITION = '';
-	$HD_Form -> FG_LOCATION_AFTER_ADD = "?id=";
-	$HD_Form -> FG_LOCATION_AFTER_EDIT = "?id=";
-	$HD_Form -> FG_LOCATION_AFTER_DELETE = "?id=";
-
-
+	$HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = 'creation_agent_refill';
+	$HD_Form->FG_INTRO_TEXT_ADITION = '';
+	$HD_Form->FG_LOCATION_AFTER_ADD = "?id=";
+	$HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";
+	$HD_Form->FG_LOCATION_AFTER_DELETE = "?id=";
 }
