@@ -1,4 +1,71 @@
 $(function() {
+    /**
+     * event listeners for CSV imports
+     */
+    let resetHidden = function() {
+        $("#selected_cols option, #unselected_cols option")
+            .prop("selected", false)
+            .filter((i, el) => el.value.match(/^\s*$/))
+            .remove();
+        let selected = $("#selected_cols option");
+        if (selected.length === 0) {
+            $("#selected_cols optgroup").append("<option value='' disabled='disabled'>&nbsp;</option>");
+            $("#search_sources").val("nochange");
+        } else {
+            $("#search_sources").val(selected.map((i, el) => el.value).get().join("|"));
+        }
+    };
+
+    let swapSelects = function(/** @param {jQuery} */ opt) {
+        opt.appendTo(
+            opt.closest("select#selected_cols").length
+                ? $("#unselected_cols optgroup")
+                : $("#selected_cols optgroup")
+        );
+        resetHidden();
+    };
+
+    $("#unselected_cols option, #selected_cols option").on("dblclick", function() {
+        swapSelects($(this));
+    });
+
+    $("#add_col").on("click", function () {
+        let opts = $("#unselected_cols option:selected");
+        if (opts.length) {
+            opts.appendTo($("#selected_cols optgroup"));
+            resetHidden();
+        }
+    });
+
+    $("#remove_col").on("click", function () {
+        let opts = $("#selected_cols option:selected");
+        if (opts.length) {
+            opts.appendTo($("#unselected_cols optgroup"));
+            resetHidden();
+        }
+    });
+
+    $("#move_col_up").on("click", function () {
+        let selectedOption = $("#selected_cols option:selected").first();
+        let prev = selectedOption.prev("option");
+
+        if (selectedOption.length && prev.length) {
+            selectedOption.insertBefore(prev);
+            resetHidden();
+            selectedOption.prop("selected", true);
+        }
+    });
+
+    $("#move_col_down").on("click", function () {
+        let selectedOption = $("#selected_cols option:selected").first();
+        let next = selectedOption.next("option");
+
+        if (selectedOption.length && next.length) {
+            selectedOption.insertAfter(next);
+            resetHidden();
+            selectedOption.prop("selected", true);
+        }
+    });
 
     /*
     Standard popups
@@ -53,7 +120,7 @@ $(function() {
     Search form dates
     ***/
     $("#enable_search_start_date, #enable_search_start_date2, #enable_search_end_date, #enable_search_end_date2, #enable_search_months")
-        .on("change", function(e) {
+        .on("change", function() {
             const id = this.getAttribute("id").replace(/^enable_/, "");
             $(`#${id}`).prop("disabled", !this.checked);
             if (id === "search_months" && this.checked) {
@@ -94,11 +161,11 @@ $(function() {
 
     fromDay.add(fromMonth).prop("disabled", true);
     fromDayCheck.on("change", e => fromDay.add(fromMonth).prop("disabled", !e.target.checked));
-    fromMonth.on("change", ev => setValidDay(fromMonth, fromDay));
+    fromMonth.on("change", () => setValidDay(fromMonth, fromDay));
 
     toDay.add(toMonth).prop("disabled", true);
     toDayCheck.on("change", e => toDay.add(toMonth).prop("disabled", !e.target.checked));
-    toMonth.on("change", ev => setValidDay(toMonth, toDay));
+    toMonth.on("change", () => setValidDay(toMonth, toDay));
 
     const fromDayCheck2 = $("#search_fromday_bis");
     const fromDay2 = $("#fromstatsday_sday_bis");
@@ -109,11 +176,11 @@ $(function() {
 
     fromDay2.add(fromMonth2).prop("disabled", true);
     fromDayCheck2.on("change", e => fromDay2.add(fromMonth2).prop("disabled", !e.target.checked));
-    fromMonth2.on("change", ev => setValidDay(fromMonth2, fromDay2));
+    fromMonth2.on("change", () => setValidDay(fromMonth2, fromDay2));
 
     toDay2.add(toMonth2).prop("disabled", true);
     toDayCheck2.on("change", e => toDay2.add(toMonth2).prop("disabled", !e.target.checked));
-    toMonth2.on("change", ev => setValidDay(toMonth2, toDay2));
+    toMonth2.on("change", () => setValidDay(toMonth2, toDay2));
 
     fromDayCheck.trigger("change");
     toDayCheck.trigger("change");
