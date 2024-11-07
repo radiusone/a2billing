@@ -39,44 +39,25 @@ use A2billing\Forms\FormHandler;
 
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
-getpost_ifset([
-    'id', 'groupID', 'userid', 'login','country','city', 'pwd_encoded', 'perms', 'name', 'direction',
-    'zipcode', 'state', 'phone', 'fax', 'popup_select', 'popup_formname', 'popup_fieldname', 'email',
-]);
+getpost_ifset(['groupID', 'popup_select']);
 /**
- * @var string $id
  * @var string $groupID
- * @var string $userid
- * @var string $login
- * @var string $country
- * @var string $city
- * @var string $pwd_encoded
- * @var string $perms
- * @var string $name
- * @var string $direction
- * @var string $zipcode
- * @var string $state
- * @var string $phone
- * @var string $fax
  * @var string $popup_select
- * @var string $popup_formname
- * @var string $popup_fieldname
- * @var string $email
  */
+
 if ($groupID !== "0" && $groupID !== "1") {
     header("HTTP/1.0 400 Bad Request");
 	die();
 }
 $subadmin = $groupID > 0;
 
-$HD_Form = new FormHandler("cc_ui_authen", _($subadmin ? _("Sub-administrator") : _("Administrator")), "userid");
+$HD_Form = new FormHandler("cc_ui_authen", $subadmin ? _("Sub-administrator") : _("Administrator"), "userid");
 
 $HD_Form->no_debug();
-$HD_Form->FG_TABLE_DEFAULT_ORDER = " datecreation";
-$HD_Form->FG_TABLE_DEFAULT_SENS = "ASC";
+$HD_Form->FG_TABLE_DEFAULT_ORDER = "login";
 
 $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_user.php?form_action=ask-add&groupID=$groupID";
+$HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_user.php?form_action=ask-add&amp;groupID=$groupID";
 $HD_Form->FG_LIST_ADDING_BUTTON_MSG1 = $subadmin ? _("Add ADMIN ACL") : _("Add ADMINISTRATOR");
 $HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = $subadmin
     ? "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJlSURBVDjLpZNrSJNRGMdlr7qat+zKaoYhjqYphRCWCtKFoCj60CeRpDB0djHUSMOZm0JhGEmlNhczXXunDgy7TNcVcsjGpk6dNsiJyyjWNg3ZnJfef69vMBBkFn34wXMu/995DocTBCDof1h1cvBJnM5RTsBVyYLzBgvfigjopbGDfyUwK+Nfu2RsTNcTDO5aAk4RC1/KQ2BqjetbU+AiOZip/xNyLndQSeCHmMBUIQFzTjDWFDiu0O0qzmJKU4OvPSmYuETAXhKM8WshsOYR0NZlRAUUtOXt+Dk99hYufSu+6x7D8fEAnLozmLEq0V3M8ww1F4QGFEhz+Aa3QQmHsQPeQZJGxdRuEwnp+SRjwCs0FpwIf3guwfayKBE+owxzI50M3oGn0JbuQW323vE7uac2rSpoFB6Pll/M0FjEofDZe2Go2ocu0VGG5dpjUWOEXpPlp72X5h/irhBIcrNYNunp5s+31gFTWmCsAfiQDWiOgXq2H1Q7H1TPSVCfmjBaHY4HFzJfNOQd5vgFZGHmo5n7bEBfQlPMBNGVCqgTQZGxWGjhwivbCKorHb/UybDf5UFekE76Bf3lu5ccz0uxpIgBOvgMlGoXPeZhvnkbHY7GbEMYnHVseKQb4OquQF+JYMEvMIsElFsroTfQL/TqCBYVOzHfsh0++RZ4mqIxJ98Kj2wzc7qtJhLTb6pguJ5A+QXDLZfLTGXxi45762G7TUs6BKtirWZjWByG/opkH52pWvEKEyphRK8oLan9aurkgCSGslRHYVTCwQjNkDgSpptcqrMwafZd2cGUyTZhRMDf+C/8Blefvm4GxFC9AAAAAElFTkSuQmCC"
@@ -85,11 +66,11 @@ $HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = $subadmin
 $HD_Form->FG_QUERY_WHERE_CLAUSE = "groupid=$groupID";
 $HD_Form->list_query_conditions["groupid"] = $groupID;
 
-$HD_Form->AddViewElement(_("USERID"), "UserID");
-$HD_Form->AddViewElement(_("DATE"), "datecreation", true, 19);
+$HD_Form->AddViewElement(_("USERID"), "userid");
 $HD_Form->AddViewElement(_("LOGIN"), "login");
+$HD_Form->AddViewElement(_("NAME"), "name");
 
-$HD_Form->FieldViewElement('userid, datecreation, login');
+$HD_Form->FieldViewElement('userid, login, name');
 
 if ($popup_select) {
     $HD_Form->FG_OTHER_BUTTON1 = true;
@@ -99,27 +80,16 @@ if ($popup_select) {
     exit;
 }
 
-$HD_Form->FG_ENABLE_ADD_BUTTON = true;
 $HD_Form->FG_ENABLE_INFO_BUTTON = true;
-$HD_Form->FG_INFO_BUTTON_LINK = "A2B_admin_info.php?groupID=$groupID&id=";
 
 if (!has_rights(Admin::ACX_MODIFY_ADMINS)) {
     exit;
 }
 
+$HD_Form->FG_ENABLE_ADD_BUTTON = true;
+$HD_Form->FG_INFO_BUTTON_LINK = "A2B_admin_info.php?groupID=$groupID&id=";
 $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
-
-if ($form_action !== "ask-add" && $form_action !== "add") {
-    $HD_Form->AddEditElement(
-        _("USERID"),
-        "userid",
-        "",
-        "size=8 READONLY maxlength=6",
-        4,
-        _("Insert the userid")
-    );
-}
 
 $HD_Form->AddEditElement(
     _("LOGIN"),
@@ -134,7 +104,7 @@ $HD_Form->AddEditElement(
     _("PASSWORD"),
     "pwd_encoded",
     "",
-    "type=password size=30 maxlength=30",
+    "size=30 maxlength=30",
     3,
     _("Insert the Reseller password")
 );
@@ -154,7 +124,6 @@ if ($subadmin) {
         Admin::ACX_CALLBACK => _("CALL BACK"),
         Admin::ACX_OUTBOUNDCID => _("OUTBOUND CID"),
         Admin::ACX_PACKAGEOFFER => _("PACKAGE OFFER"),
-        // Admin::ACX_PREDICTIVE_DIALER => _("PREDICTIVE DIALER"),
         Admin::ACX_INVOICING => _("INVOICES"),
         Admin::ACX_SUPPORT => _("SUPPORT"),
         Admin::ACX_DASHBOARD => _("DASHBOARD"),
@@ -202,7 +171,7 @@ $HD_Form->AddEditElement(
     "",
     "size=60 maxlength=250",
     null,
-    _("Insert the direction")
+    _("Insert the address")
 );
 
 $HD_Form->AddEditElement(
@@ -266,19 +235,6 @@ $HD_Form->AddEditElement(
     "size=30 maxlength=70",
     null,
     _("Insert the email"));
-
-$FG_QUERY_EDITION = "";
-if ($form_action !== "ask-add" && $form_action !== "add") {
-        $FG_QUERY_EDITION = 'userid, ';
-}
-
-$FG_QUERY_EDITION .='login, pwd_encoded,  ';
-
-if ($groupID) {
-    $FG_QUERY_EDITION .= 'perms, ';
-}
-
-$FG_QUERY_EDITION .= 'name, direction,city, zipcode, state,country, phone, fax,email';
 
 $HD_Form->update_query_conditions = ["userid" => "%id"];
 
