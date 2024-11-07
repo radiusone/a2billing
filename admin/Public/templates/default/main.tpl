@@ -156,12 +156,16 @@
 							<li>
 								<a class="link-dark rounded" href="A2B_entity_tariffplan.php">{_("RateCards")}</a>
 								<ul class="list-unstyled fw-normal ps-3 pb-1">
-									<li><a class="link-dark rounded" href="CC_ratecard_import.php">{_("Import")}</a>
 									<li><a class="link-dark rounded" href="CC_ratecard_merging.php">{_("Merge")}</a></li>
+								</ul>
+							</li>
+							<li>
+								<a class="link-dark rounded" href="A2B_entity_def_ratecard.php">{_("Rates")}</a>
+								<ul class="list-unstyled fw-normal ps-3 pb-1">
+									<li><a class="link-dark rounded" href="CC_ratecard_import.php">{_("Import")}</a></li>
 									<li><a class="link-dark rounded" href="CC_entity_sim_ratecard.php">{_("Simulator")}</a></li>
 								</ul>
 							</li>
-							<li><a class="link-dark rounded" href="A2B_entity_def_ratecard.php">{_("Rates")}</a></li>
 						</ul>
 					</div>
 				</li>
@@ -190,7 +194,7 @@
 					<div class="collapse {if ($menu_section === 8)}show{/if}" id="did-collapse">
 						<ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
 							<li><a class="link-dark rounded" href="A2B_entity_did.php">{_("Add :: Search")}</a></li>
-							<li><a class="link-dark rounded" href="A2B_entity_didgroup.php">{_("Groups")}</a>
+							<li><a class="link-dark rounded" href="A2B_entity_didgroup.php">{_("Groups")}</a></li>
 							<li><a class="link-dark rounded" href="A2B_entity_did_destination.php">{_("Destination")}</a></li>
 							<li><a class="link-dark rounded" href="A2B_entity_did_import.php">{_("Import [CSV]")}</a></li>
 							<li><a class="link-dark rounded" href="A2B_entity_did_use.php">{_("Usage")}</a></li>
