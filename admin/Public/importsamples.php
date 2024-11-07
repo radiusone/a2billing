@@ -47,19 +47,18 @@ $cardSample_Complex = <<< CSV
     CSV;
 
 $ratecardSample_Simple = <<< CSV
-    1, US, 0.70, 0.50, 2008-03-07 21:21:38, tag1, 0, 0, 0, 0
-    34, Spain Fix, 1.56, 1.16, 2008-03-07 21:21:38, tag2, 360, 240, 0.5, 5
-    34650, Spain Mobile Movistar, 1.56, 1.18, tag3, 720, 480, 1.0, 10
-    32, Belgium Fix, 1.20, 1.11, tag4, 1080, 720, 1.5, 15
-    32473, Belgium Mobile Proximus, 1.70, 1.44, tag5, 1440, 960, 2.0, 20
+    # dialprefix, destination, selling rate, buyrate
+    1212, "New York, NY", 0.70, 0.50
+    32473, Belgium Mobile, 1.70, 1.44
+    34650, Spain Mobile, 1.56, 1.18
     CSV;
 
 $ratecardSample_Complex = <<< CSV
-    33, France, 1.01, 30, 6, 1.23, 30, 6, 0.12, 0, 0.12, 1.34, 120, 20, 0,0,0,0,  0,0,0,0, 0, 0, 0,10079,tag1,0,0,0,0
-    32, Belgium, 1.30, 30, 6, 1.43, 30, 6, 0.12, 0, 0.12, 1.54, 180, 20, 0,0,0,0,  0,0,0,0, 0, 0, 0,10079,tag2,360,240,0.5,5
-    34, Spain, 1.00, 30, 6, 1.10, 30, 6, 0.12, 0, 0.12, 1.14, 120, 0, 0,0,0,0,  0,0,0,0, 0, 0, 0,9079,tag3,720,480,1.0,10
-    44, UK, 0.54, 30, 10, 0.78, 30, 6, 0.06, 0, 0.06, 0.85, 120, 0, 0,0,0,0,  0,0,0,0, 2005-02-10 21:23:55, 2005-04-15 10:00:00, 1,10079,tag4,1080,720,1.5,15
-    44, UK, 0.54, 30, 10, 0.89, 30, 6, 0.10, 0, 0.06, 0.94, 120, 0, 0,0,0,0,  0,0,0,0, 2005-04-15 10:00:00, 0, 1,2000,tag5,1440,960,2.0,20
+    # dialprefix, destination, selling rate, sellrate min duration, sellrate billing block, buyrate, buyrate min duration, buyrate billing block, connect charge, disconnect charge, start time, stop time, tag
+    33, France, 1.01, 30, 6, 0.75, 30, 6, 0.12, 0, 0, 10079, tag1
+    32, Belgium, 1.30, 30, 6, 1.04, 30, 6, 0.12, 0, 0, 10079, tag1
+    34, Spain, 1.20, 30, 6, 1.00, 30, 6, 0.12, 0, 0, 10079, tag2
+    44, UK, 0.54, 30, 10, 0.78, 30, 6, 0.06, 0, 10079, tag2
     CSV;
 
 $didSample_Simple = <<< CSV

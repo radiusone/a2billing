@@ -149,7 +149,7 @@ $smarty->display('main.tpl');
         <p><?= _("The first line of your import is previewed below, please check to ensure that every column is correct.") ?></p>
     </div>
 </div>
-<table class="table table-stripe">
+<table class="table table-striped">
     <thead>
         <tr>
             <th scope="col"><?= _("FIELD") ?></th>

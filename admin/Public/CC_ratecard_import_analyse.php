@@ -2,6 +2,7 @@
 
 use A2billing\Admin;
 use A2billing\Logger;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -38,333 +39,218 @@ use A2billing\Logger;
 
 $menu_section = 6;
 require_once "../../common/lib/admin.defines.php";
-
+/**
+ * @var Smarty $smarty
+ * @var string $CC_help_import_ratecard_confirm
+ * @var string $CC_help_import_ratecard_analyse
+ */
 set_time_limit(0);
 
 Admin::checkPageAccess(Admin::ACX_RATECARD);
 
-getpost_ifset(array ('tariffplan', 'trunk', 'search_sources', 'task', 'status', 'currencytype', 'uploadedfile_name', 'uploadedfile_name'));
+getpost_ifset(["search_sources", "task", "uploadedfile_name", "tariffplan", "trunk", "currencytype"]);
+/**
+ * @var string $search_sources
+ * @var string $task
+ * @var string $uploadedfile_name
+ * @var string $tariffplan
+ * @var string $trunk
+ * @var string $currencytype
+ */
 
-$tariffplanval = preg_split('/-:-/', $tariffplan);
-if (!is_numeric($tariffplanval[0])) {
-    echo gettext("No tariffplan defined !");
-    exit ();
+$fieldtoimport = "";
+$field_names = [
+    "dialprefix",
+    "rateinitial",
+];
+if ($search_sources !== "nochange") {
+    $field_names = array_merge($field_names, explode("|", $search_sources));
 }
+$field_names = array_merge($field_names, ["idtariffplan", "id_trunk", "destination"]);
 
-$trunkval = preg_split('/-:-/', $trunk);
-if (!is_numeric($trunkval[0])) {
-    echo gettext("No Trunk defined !");
-    exit ();
-}
+$nb_imported = 0;
+$import_error = "";
+$import_time = 0;
+$DBHandle = DbConnect();
+$the_file = "";
+$assoc_csv = [];
+$prefix_values = [];
 
-if ($search_sources != 'nochange') {
-    $fieldtoimport = preg_split("/\t/", $search_sources);
-    $fieldtoimport_sql = str_replace("\t", ", ", $search_sources);
-    $fieldtoimport_sql = trim($fieldtoimport_sql);
-    if (strlen($fieldtoimport_sql) > 0)
-        $fieldtoimport_sql = ', ' . $fieldtoimport_sql;
-}
-
-$fixfield[0] = "IDTariffplan (KEY)";
-$fixfield[1] = "Outbound Trunk";
-
-$field[0] = "Dialprefix";
-$field[1] = "Destination Country";
-$field[2] = "Rate Initial";
-
-$FG_DEBUG = 0;
-
-// THIS VARIABLE DEFINE THE COLOR OF THE HEAD TABLE
-$FG_TABLE_ALTERNATE_ROW_COLOR[] = "#FFFFFF";
-$FG_TABLE_ALTERNATE_ROW_COLOR[] = "#F2F8FF";
-
-$my_max_file_size = (int) MY_MAX_FILE_SIZE_IMPORT;
-
-if ($FG_DEBUG == 1)
-    echo "<br> Task :: $task";
-
-if ($task == 'upload') {
-    $the_file_name = $_FILES['the_file']['name'];
-    $the_file_type = $_FILES['the_file']['type'];
-    $the_file = $_FILES['the_file']['tmp_name'];
-
-    if (count($_FILES) > 0) {
-        $errortext = validate_upload($the_file, $the_file_type);
-        if ($errortext != "" || $errortext != false) {
+if ($task === "upload" || $task === "preview") {
+    $start_time = microtime(true);
+    if (!empty($_FILES["the_file"])) {
+        $errortext = validate_upload($_FILES["the_file"]["tmp_name"] ?? "", $_FILES["the_file"]["type"] ?? "");
+        if ($errortext) {
             echo $errortext;
             exit;
         }
-        $new_filename = "/tmp/" . MDP(6) . ".csv";
-        if (file_exists($new_filename)) {
-            echo $_FILES["file"]["name"] . " already exists. ";
-        } else {
-            if (!move_uploaded_file($_FILES["the_file"]["tmp_name"], $new_filename)) {
-                echo gettext("File Save Failed, FILE=" . $new_filename);
-            }
+        $the_file = tempnam(sys_get_temp_dir(), "cc_card");
+        if (!move_uploaded_file($_FILES["the_file"]["tmp_name"], $the_file)) {
+            echo sprintf(_("File Save Failed, FILE=%s"), $the_file);
+            exit;
         }
-        $the_file = $new_filename;
     } else {
-        $the_file_type = $uploadedfile_type;
         $the_file = $uploadedfile_name;
     }
 
-    if ($FG_DEBUG == 1)
-        echo "<br> THE_FILE:$the_file <br>THE_FILE_TYPE:$the_file_type";
+    $insert_data = [];
 
-    $fp = fopen($the_file, "r");
-    if (!$fp) {
-        echo gettext('Error: Failed to open the file.');
-        exit ();
-    }
-
-    $nb_imported = 0;
-    $nb_to_import = 0;
-    $DBHandle = DbConnect();
-
-    while (!feof($fp)) {
-
-        //if ($nb_imported==1000) break;
-        $ligneoriginal = fgets($fp, 4096); /* On se dplace d'une ligne */
-        $ligneoriginal = trim($ligneoriginal);
-
-        // strip out ' and " and, with the exception of dialprefix field,
-        // substitute , for . to allow European style floats, eg: 0,1 == 0.1
-        $ligne = str_replace(array ( '"', "'" ), '', $ligneoriginal);
-        $val = preg_split('/[;,]/', $ligne);
-
-        if ($status != "ok") {
-            if ($currencytype == "cent") {
-                $val[2] = $val[2] / 100;
-            }
-            break;
+    $file_data = file($the_file, FILE_IGNORE_NEW_LINES);
+    foreach ($file_data as $line) {
+        $line = trim($line);
+        if (str_starts_with($line, "#")) {
+            continue;
         }
-        if (substr($ligne, 0, 1) != '#' && $val[2] != '' && strlen($val[2]) > 0) {
-            $FG_ADITION_SECOND_ADD_TABLE = 'cc_ratecard';
-            $FG_ADITION_SECOND_ADD_FIELDS = 'idtariffplan, id_trunk, dialprefix, destination, rateinitial'; //$fieldtoimport_sql
-            $FG_ADITION_SECOND_ADD_FIELDS_PREFIX = 'prefix, destination';
-            if ($currencytype == "cent") {
-                $val[2] = $val[2] / 100;
-            }
+        $values = str_getcsv($line, ",", "\"", "");
 
-            $FG_ADITION_SECOND_ADD_VALUE = "'" . $tariffplanval[0] . "', '" . $trunkval[0] . "', '" . $val[0] . "', '" . intval($val[0]) . "', '" . $val[2] . "'";
+        // remove destination
+        $dialprefix = $values[0];
+        $destination = $values[1];
+        unset($values[1]);
+        $prefix_values[] = [$dialprefix, $destination];
 
-            for ($k = 0; $k < count($fieldtoimport); $k++) {
-                if (!empty ($val[$k +3]) || $val[$k +3] == '0') {
-                    if ($fieldtoimport[$k] == "startdate" && ($val[$k +3] == '0' || $val[$k +3] == ''))
-                        continue;
-                    if ($fieldtoimport[$k] == "stopdate" && ($val[$k +3] == '0' || $val[$k +3] == ''))
-                        continue;
+        $values = array_merge($values, [$tariffplan, $trunk, $dialprefix]);
+        if (count($values) !== count($field_names)) {
+            continue;
+        }
+        $assoc_csv = array_combine($field_names, $values);
 
-                    if ($fieldtoimport[$k] == "buyrate" || $fieldtoimport[$k] == "connectcharge" || $fieldtoimport[$k] == "disconnectcharge") {
-                        if ($currencytype == "cent") {
-                            $val[$k +3] = $val[$k +3] / 100;
-                        }
-                    }
-                    $FG_ADITION_SECOND_ADD_FIELDS .= ', ' . $fieldtoimport[$k];
-
-                    if (is_numeric($val[$k +3])) {
-                        $FG_ADITION_SECOND_ADD_VALUE .= ", " . $val[$k +3] . "";
-                    } else {
-                        $FG_ADITION_SECOND_ADD_VALUE .= ", '" . trim($val[$k +3]) . "'";
-                    }
-
-                    if ($fieldtoimport[$k] == "startdate")
-                        $find_stardate = 1;
-                    if ($fieldtoimport[$k] == "stopdate")
-                        $find_stopdate = 1;
+        if ($currencytype === "cent") {
+            $currency_cols = [
+                "rateinitial",
+                "buyrate",
+                "connectcharge",
+                "disconnectcharge",
+                "stepchargea",
+                "chargea",
+                "stepchargeb",
+                "chargeb",
+                "stepchargec",
+                "chargec",
+                "additional_block_charge",
+                "minimal_cost",
+            ];
+            foreach ($currency_cols as $col) {
+                if (array_key_exists($col, $assoc_csv)) {
+                    $assoc_csv[$col] = $assoc_csv[$col] / 100;
                 }
             }
-
-            if ($find_stardate != 1) {
-                $begin_date = date("Y");
-                $end_date = date("-m-d H:i:s");
-                $FG_ADITION_SECOND_ADD_FIELDS .= ', startdate';
-                $FG_ADITION_SECOND_ADD_VALUE .= ", '" . $begin_date . $end_date . "'";
-            }
-
-            if ($find_stopdate != 1) {
-                $begin_date_plus = date("Y") + 10;
-                $end_date = date("-m-d H:i:s");
-                $FG_ADITION_SECOND_ADD_FIELDS .= ', stopdate';
-                $FG_ADITION_SECOND_ADD_VALUE .= ", '" . $begin_date_plus . $end_date . "'";
-            }
-            if (intval($val[0]) > 0) {
-                $FG_ADITION_SECOND_ADD_VALUE_PREFIX = "'" . intval($val[0]) . "', '" . $val[1] . "'";
-                $TT_QUERY_PREFIX = "REPLACE INTO cc_prefix " . $FG_ADITION_SECOND_ADD_TABLE_PREFIX . " (" . $FG_ADITION_SECOND_ADD_FIELDS_PREFIX . ") values (" . $FG_ADITION_SECOND_ADD_VALUE_PREFIX . ") ";
-                $DBHandle->Execute($TT_QUERY_PREFIX);
-            }
-
-            $TT_QUERY .= "INSERT INTO " . $FG_ADITION_SECOND_ADD_TABLE . " (" . $FG_ADITION_SECOND_ADD_FIELDS . ") values (" . $FG_ADITION_SECOND_ADD_VALUE . ") ";
-            $nb_to_import++;
+        }
+        if (!array_key_exists("stopdate", $assoc_csv)) {
+            $assoc_csv["stopdate"] = (new DateTime('+10 years'))->format("Y-m-d H:i:s");
         }
 
-        if ($TT_QUERY != '' && strlen($TT_QUERY) > 0 && ($nb_to_import == 1)) {
-            $nb_to_import = 0;
-            $result_query = $DBHandle->Execute($TT_QUERY);
-
-            if ($result_query !== false) {
-                $nb_imported = $nb_imported +1;
-            } else {
-                $buffer_error .= $ligneoriginal . '<br/>';
-            }
-            $TT_QUERY = '';
+        $insert_data[] = $assoc_csv;
+        if ($task === "preview") {
+            break;
         }
-
-    } // END WHILE EOF
-
-    if ($TT_QUERY != '' && strlen($TT_QUERY) > 0 && ($nb_to_import > 0)) {
-        $result_query = $DBHandle->Execute($TT_QUERY);
-        if ($result_query !== false)
-            $nb_imported = $nb_imported + $nb_to_import;
     }
+
+    if ($task === "upload") {
+        $result = (new Table("cc_ratecard"))->addRows($DBHandle, $insert_data);
+        if (!$result) {
+            $import_error = $DBHandle->ErrorMsg();
+        } else {
+            $nb_imported = count($insert_data);
+            Logger::insertLog($_SESSION["admin_id"], 2, "RATES IMPORTED", $nb_imported . " New RATES Imported Successfully", '', $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI']);
+            // todo: this is ugly, should be a better way
+            if (DB_TYPE === "postgres") {
+                $query = "INSERT INTO cc_prefix (prefix, destination) VALUES (?, ?) ON CONFLICT DO NOTHING";
+            } else {
+                $query = "INSERT IGNORE INTO cc_prefix (prefix, destination) VALUES (?, ?)";
+            }
+            $statement = $DBHandle->Prepare($query);
+            foreach ($prefix_values as $prefix) {
+                $DBHandle->Execute($statement, $prefix);
+            }
+        }
+    }
+    $stop_time = microtime(true);
+    $import_time = $stop_time - $start_time;
 }
 
+// #### HEADER SECTION
 $smarty->display('main.tpl');
-
-if ($status=="ok") {
-    echo $CC_help_import_ratecard_confirm;
-} else {
-    echo $CC_help_import_ratecard_analyse;
-}
 ?>
 
-<style>
-div.myscroll {
-    align: left;
-    height: 100px;
-    width: 600px;
-    overflow: auto;
-    border: 1px solid #ddd;
-    background-color: #FFFFFF;
-    padding: 5px;
-}
-</style>
+<?php if ($task === "preview" && empty($assoc_csv)): ?>
+<div class="row mb-3">
+    <div class="col">
+        <p class="text-danger"><?= _("No valid rows were found for import. Ensure the number of values in the CSV matches the number of fields selected for import.") ?></p>
+    </div>
+</div>
+<div class="row mb-3">
+    <div class="col">
+        <a class="btn btn-danger" href="CC_ratecard_import.php"><?= _("Return") ?></a>
+    </div>
+</div>
 
-<script>
-$(function() {
-    $("#sendtoupload").on('click', function () {
-        $("#task").val("upload");
-        return true;
-    });
-});
-</script>
-
-<center>
-<?php  if ($status!="ok") { ?>
-
-<?php echo gettext("The first line of your import is previewed below, please check to ensure that every is correct")?>.
-
-<table align="center" border="0" cellpadding="2" cellspacing="2" width="300">
-    <tr class="form_head">
-      <td class="tableBody" style="padding: 2px;" align="center" width="50%">
-        <strong> <span class="white_link"><?php echo gettext("FIELD")?> </span> </strong>
-      </td>
-      <td class="tableBody" style="padding: 2px;" align="center" width="50%">
-        <strong> <span class="white_link"><?php echo gettext("VALUE")?> </span> </strong>
-      </td>
+<?php elseif ($task === "preview"): ?>
+<div class="row mb-3">
+    <div class="col">
+        <p><?= $CC_help_import_ratecard_analyse ?></p>
+        <p><?= _("The first line of your import is previewed below, please check to ensure that every column is correct.") ?></p>
+        <p><?= _("Note that some values have been added or changed as part of the import process") ?></p>
+    </div>
+</div>
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th scope="col"><?= _("FIELD") ?></th>
+        <th scope="col"><?= _("VALUE") ?></th>
     </tr>
-    <tr bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[1]?>"  onMouseOver="bgColor='#C4FFD7'" onMouseOut="bgColor='<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[1]?>'">
-     <td class="tableBody" align="left" valign="top"><font color="red"><b><?php echo strtoupper($fixfield[0])?></b></font></td>
-     <td class="tableBody" align="center" valign="top"><font color="red"><b><?php echo $tariffplanval[1]?> (<?php echo $tariffplanval[0]?>)</b></font></td>
-    </tr>
-    <tr bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[2]?>"  onMouseOver="bgColor='#C4FFD7'" onMouseOut="bgColor='<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[2]?>'">
-     <td class="tableBody" align="left" valign="top"><font color="red"><b><?php echo strtoupper($fixfield[1])?></b></font></td>
-     <td class="tableBody" align="center" valign="top"><font color="red"><b><?php echo $trunkval[1]?> (<?php echo $trunkval[0]?>)</b></font></td>
-    </tr>
-    <?php  for ($i=0;$i<count($field);$i++) { ?>
-    <tr bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[($i+1)%2]?>"  onMouseOver="bgColor='#C4FFD7'" onMouseOut="bgColor='<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[($i+1)%2]?>'">
-     <td class="tableBody" align="left" valign="top"><b><?php echo strtoupper($field[$i])?></b></td>
-     <td class="tableBody" align="center" valign="top"><?php echo $val[$i]?></td>
-    </tr>
-    <?php  } ?>
-    <?php  for ($i=0;$i<count($fieldtoimport);$i++) { ?>
-    <tr bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[($i)%2]?>"  onMouseOver="bgColor='#C4FFD7'" onMouseOut="bgColor='<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[($i)%2]?>'">
-     <td class="tableBody" align="left" valign="top"><b><?php echo strtoupper($fieldtoimport[$i])?></b></td>
-     <td class="tableBody" align="center" valign="top"><?php echo $val[$i+3]?></td>
-    </tr>
-    <?php  } ?>
+    </thead>
+    <tbody>
+    <?php foreach ($assoc_csv as $key => $data): ?>
+        <tr>
+            <th scope="row"><?= _($key) ?></th>
+            <td><?= htmlspecialchars($data) ?></td>
+        </tr>
+    <?php endforeach ?>
+    </tbody>
 </table>
+<div class="row mb-3">
+    <div class="col">
+        <form method="post">
+            <input type="hidden" name="search_sources" value="<?= $search_sources ?>"/>
+            <input type="hidden" name="uploadedfile_name" value="<?= $the_file ?>"/>
+            <input type="hidden" name="tariffplan" value="<?= $tariffplan ?>"/>
+            <input type="hidden" name="trunk" value="<?= $trunk ?>"/>
+            <input type="hidden" name="currencytype" value="<?= $currencytype ?>"/>
+            <input type="hidden" name="task" value="upload">
+            <p><?= _("Confirm the data is correct, or press cancel to return to the previous page.") ?></p>
+            <button class="btn btn-primary" type="submit"><?= _("Import") ?></button>
+            <a class="btn btn-danger" href="CC_ratecard_import.php"><?= _("Cancel") ?></a>
+        </form>
+    </div>
+</div>
 
+<?php elseif ($task === "upload" && $import_error === ""): ?>
+<div class="row mb-3">
+    <div class="col">
+        <p><?= sprintf(_("Success, %d new rates have been imported in %0.4f seconds."), $nb_imported, $import_time) ?></p>
+    </div>
+</div>
+<div class="row mb-3">
+    <div class="col">
+        <a class="btn btn-success" href="A2B_entity_def_ratecard.php"><?= _("Continue") ?></a>
+    </div>
+</div>
 
-    <br/><br>
-<table width="95%" border="0" cellspacing="2" align="center" class="records">
-  <form id="myform" name="myform" enctype="multipart/form-data" action="CC_ratecard_import_analyse.php" method="post" >
-    <INPUT type="hidden" name="tariffplan" value="<?php echo $tariffplan?>">
-    <INPUT type="hidden" name="trunk" value="<?php echo $trunk?>">
-    <INPUT type="hidden" name="currencytype" value="<?php echo $currencytype?>">
-    <INPUT type="hidden" name="search_sources" value="<?php echo $search_sources?>">
-    <INPUT TYPE="hidden" VALUE="<?php echo $tag?>" NAME="tag">
+<?php elseif ($task === "upload"): ?>
+<div class="row mb-3">
+    <div class="col">
+        <p><?= _("There were errors importing the rate cards.") ?></p>
+        <p><?= $import_error ?></p>
+    </div>
+</div>
+<div class="row mb-3">
+    <div class="col">
+        <a class="btn btn-danger" href="CC_ratecard_import.php"><?= _("Continue") ?></a>
+    </div>
+</div>
 
-    <tr>
-      <td colspan="2">
-        <div align="center"><span class="textcomment">
-           <?php echo gettext("Please check if the datas above are correct.")?> <br><b><?php echo gettext("If Yes")?></b>, <?php echo gettext("you can continue the import. Otherwise you must fix your csv file!")?>
-          </span></div>
-      </td>
-    </tr>
-    <tr>
-      <td colspan="2">
-        <p align="center">
-          <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo $my_max_file_size?>">
-          <input type="hidden" id="task" name="task" value="upload">
-          <input type="hidden" name="status" value="ok">
-          <input type="hidden" name="uploadedfile_name" value="<?php echo $new_filename?>">
-          <input type="hidden" name="uploadedfile_type" value="<?php echo $the_file_type?>">
-          <input type="submit" value="Continue to Import the RateCard" class="form_input_button" id="sendtoupload" name="submit1">
-          <br>
-          &nbsp; </p>
-      </td>
-    </tr>
+<?php endif;
 
-    <tr>
-      <td  class="bgcolor_014" colspan="2"><b>
-        <?php echo $translate[P34_9]?>
-        </b></td>
-    </tr>
-
-  </form>
-</table>
-
-<?php } else { ?>
-
-<br>
-<table width="75%" border="0" cellspacing="2" align="center" class="records">
-    <TR>
-        <TD style="border-bottom: medium dotted #ED2525" align="center">&nbsp;</TD>
-    </TR>
-    <tr>
-      <td colspan="2" class="bgcolor_015" style="padding-left: 5px; padding-right: 3px;" align=center>
-        <div align="center"><span class="textcomment">
-          <br>
-          <?php
-          Logger::insertLog($_SESSION["admin_id"], 2, "RATE CARD IMPORTED", $nb_imported." Ratecards Imported Successfully", '', $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI'],'');
-          ?>
-          <?php echo gettext("Success")?>, <?php echo $nb_imported?> &nbsp; <?php echo gettext("new rates have been imported")?>.<br>
-          </span></div>
-          <br><br>
-
-          <?php  if (!empty($buffer_error)) { ?>
-          <center>
-          <b><i><?php echo gettext("Line that has not been inserted")?>!</i></b>
-          <div class="myscroll">
-            <span style="color: red;">
-                <?php echo $buffer_error?>
-            </span>
-          </div>
-          </center>
-          <br>
-          <?php  } ?>
-      </td>
-    </tr>
-</table>
-
-<?php } ?>
-</center>
-
-<br>
-
-<?php
-if ($uploadedfile_name != "") {
-    unlink($uploadedfile_name);
-}
+// #### Footer SECTION
 $smarty->display('footer.tpl');
