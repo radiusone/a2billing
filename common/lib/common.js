@@ -67,6 +67,17 @@ $(function() {
         }
     });
 
+    /**
+     * Day/time split inputs
+     */
+    $("div.daytime select, div.daytime input[type=time]").on("change", function() {
+        let day = $(this).closest("div.daytime").find("select").val();
+        let time = $(this).closest("div.daytime").find("input[type=time]").val();
+        let hidden = $(this).closest("div.daytime").find("input[type=hidden]");
+        let [hour, min] = time.split(":");
+        hidden.val((parseInt(day, 10) * 1440) + (parseInt(hour, 10) * 60) + parseInt(min, 10));
+    });
+
     /*
     Standard popups
      */

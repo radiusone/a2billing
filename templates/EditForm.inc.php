@@ -4,6 +4,7 @@ namespace A2billing\Forms;
 
 use A2billing\Table;
 use Closure;
+use DateTime;
 
 /**
  * @var FormHandler $form
@@ -14,7 +15,6 @@ use Closure;
 
 ?>
 
-<script src="javascript/calonlydays.js"></script>
 <script>
     function sendto(action, record, field_inst, instance) {
         let form = $("form#editForm");
@@ -83,7 +83,7 @@ use Closure;
                     <?php endif ?>
                 />
 
-            <?php elseif (str_starts_with($row["type"], "POPUP")): ?>
+            <?php elseif ($row["type"] === "POPUPVALUE"): ?>
                 <div class="input-group">
                     <input
                         id="<?= $row["name"] ?>"
@@ -96,7 +96,6 @@ use Closure;
                             value="<?= $processed[$row["name"]] ?>"
                         <?php endif ?>
                     />
-                    <?php if ($row["type"] === "POPUPVALUE"): ?>
                     <a
                         href="<?= $row["popup_dest"] ?>"
                         data-window-name="<?= $row["name"] ?>Popup"
@@ -106,12 +105,8 @@ use Closure;
                     >
                         <svg class="mx-auto" width="16" height="16"><use xlink:href="#popup"></use></svg>
                     </a>
-                    <?php elseif ($row["type"] === "POPUPDATETIME"): //minutes since monday 00:00, used 2x in FG_var_def_ratecard.inc ?>
-                    <a href="#" class="btn btn-primary calendar_trigger" aria-label="<?= _("click to select the time (in minutes since midnight monday)")?>">
-                        <svg class="mx-auto" width="16" height="16"><use xlink:href="#calendar"></use></svg>
-                    </a>
-                    <?php endif ?>
                 </div>
+
             <?php elseif ($row["type"] === "TEXTAREA"): ?>
                 <textarea
                     id="<?= $row["name"] ?>"
@@ -181,6 +176,42 @@ use Closure;
                     <label for="<?= $row["name"] ?>_<?= $rad[1] ?>" class="form-check-label"><?= $rad[0] ?></label>
                 </div>
                 <?php endforeach ?>
+
+            <?php elseif ($row["type"] === "DAYTIME"): ?>
+                <?php
+                    $value = ($form->VALID_SQL_REG_EXP) ? $db_data[$i] : $processed[$row["name"]];
+                    $day = intdiv($value, 1440);
+                    $time = (new DateTime("@" . ($value % 1440) * 60))->format("H:i");
+                ?>
+                <div class="daytime row">
+                    <div class="col-6">
+                        <label for="<?= $row["name"] ?>_day"><?= _("Day") ?></label>
+                        <select
+                            id="<?= $row["name"] ?>_day"
+                            class="form-select <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
+                        >
+                            <option value="0" <?php if ($day === 0): ?>selected="selected"<?php endif ?>><?= _("Monday") ?></option>
+                            <option value="1" <?php if ($day === 1): ?>selected="selected"<?php endif ?>><?= _("Tuesday") ?></option>
+                            <option value="2" <?php if ($day === 2): ?>selected="selected"<?php endif ?>><?= _("Wednesday") ?></option>
+                            <option value="3" <?php if ($day === 3): ?>selected="selected"<?php endif ?>><?= _("Thursday") ?></option>
+                            <option value="4" <?php if ($day === 4): ?>selected="selected"<?php endif ?>><?= _("Friday") ?></option>
+                            <option value="5" <?php if ($day === 5): ?>selected="selected"<?php endif ?>><?= _("Saturday") ?></option>
+                            <option value="6" <?php if ($day === 6): ?>selected="selected"<?php endif ?>><?= _("Sunday") ?></option>
+                        </select>
+                    </div>
+                    <div class="col-6">
+                        <label for="<?= $row["name"] ?>_time"><?= _("Time") ?></label>
+                        <input
+                            type="time"
+                            id="<?= $row["name"] ?>_time"
+                            class="form-control <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
+                            <?= $row["attributes"] ?>
+                            value="<?= $time ?>"
+                        />
+                        <input type="hidden" name="<?= $row["name"] ?>" id="<?= $row["name"] ?>" value="<?= $value ?>"/>
+                    </div>
+                </div>
+
             <?php endif ?>
             <?php if ($row["validation_err"] !== true): ?>
                 <div class="form-text invalid-feedback"><?= $row["error"] ?> - <?= $row["validation_err"] ?></div>

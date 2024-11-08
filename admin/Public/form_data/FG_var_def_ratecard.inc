@@ -514,32 +514,18 @@ $HD_Form->AddEditElement(
     
 );
 
-$comp_time = $comp_time_plus = "";
-if ($form_action === "ask-add") {
-    $comp_time = " value='0' ";
-    $comp_time_plus = " value='10079' ";
-}
-
-$HD_Form->AddEditPopup(
+$HD_Form->AddEditDayTime(
     _("Start Time"),
     "starttime",
-    "",
-    _("Set the time and day of the week at the rate is first valid (ie Monday 00:00 is 0)"),
-    $comp_time,
-    4,
-    _("Insert the start time"),
-    true
+    _("Set the time and day of the week that the rate is first valid"),
+    0
 );
 
-$HD_Form->AddEditPopup(
+$HD_Form->AddEditDayTime(
     _("End Time"),
     "endtime",
-    "",
-    _("Set the time and the day of the week that the rate is no longer valid. (ie Sunday 23:59 is 10079)"),
-    $comp_time_plus,
-    4,
-    _("Insert the end time"),
-    true
+    _("Set the time and the day of the week that the rate is no longer valid"),
+    10079
 );
 
 $HD_Form->AddEditElement(

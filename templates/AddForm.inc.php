@@ -3,6 +3,7 @@
 namespace A2billing\Forms;
 
 use A2billing\Table;
+use DateTime;
 
 /**
  * @var FormHandler $form
@@ -11,8 +12,6 @@ use A2billing\Table;
  * @var array $db_data
  */
 ?>
-
-<script src="javascript/calonlydays.js"></script>
 
 <form action="" method="post" name="myForm" id="myForm">
     <input type="hidden" name="form_action" value="add"/>
@@ -48,7 +47,7 @@ use A2billing\Table;
                 value="<?= $processed[$row["name"]] ?>"
             />
 
-        <?php elseif (str_starts_with($row["type"], "POPUP")): ?>
+        <?php elseif ($row["type"] === "POPUPVALUE"): ?>
             <div class="input-group">
                 <input
                     id="<?= $row["name"] ?>"
@@ -56,7 +55,6 @@ use A2billing\Table;
                     name="<?= $row["name"] ?>"
                     <?= $row["attributes"] ?>
                 />
-            <?php if ($row["type"] === "POPUPVALUE"): ?>
                 <a
                     href="<?= $row["popup_dest"] ?>"
                     data-window-name="<?= $row["name"] ?>Popup"
@@ -64,11 +62,6 @@ use A2billing\Table;
                     class="btn btn-primary popup_trigger"
                     aria-label="open a popup to select an item"
                 >&gt;</a>
-            <?php elseif ($row["type"] === "POPUPDATETIME"): //minutes since monday 00:00, used 2x in FG_var_def_ratecard.inc ?>
-                <a href="#" class="btn btn-primary calendar_trigger">
-                    <img width="16" height="16" alt="Click Here to Pick up the date" src="data:image/gif;base64,R0lGODlhEAAQAKIAAKVNSkpNpUpNSqWmpdbT1v///////wAAACH5BAEAAAYALAAAAAAQABAAAANEaLrcNjDKKUa4OExYM95DVRTEWJLmKKLseVZELMdADcSrOwK7OqQsXkEIm8lsN0IOqCssW8Cicar8Qa/P5kvA7Xq/ggQAOw=="/>
-                </a>
-            <?php endif ?>
             </div>
 
         <?php elseif ($row["type"] === "TEXTAREA"): ?>
@@ -133,6 +126,40 @@ use A2billing\Table;
                 <label for="<?= $row["name"] ?>_<?= $rad[1] ?>" class="form-check-label"><?= $rad[0] ?></label>
             </div>
             <?php endforeach ?>
+
+        <?php elseif ($row["type"] === "DAYTIME"): //used 2x in FG_var_def_ratecard.inc ?>
+            <?php
+            $value = $row["default"] ?? 0;
+            $day = intdiv($value, 1440);
+            $time = (new DateTime("@" . ($value % 1440) * 60))->format("H:i");
+            ?>
+            <div class="daytime row">
+                <div class="col-6">
+                    <label for="<?= $row["name"] ?>_day"><?= _("Day") ?></label>
+                    <select
+                        id="<?= $row["name"] ?>_day"
+                        class="form-select <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
+                    >
+                        <option value="0" <?php if ($day === 0): ?>selected="selected"<?php endif ?>><?= _("Monday") ?></option>
+                        <option value="1" <?php if ($day === 1): ?>selected="selected"<?php endif ?>><?= _("Tuesday") ?></option>
+                        <option value="2" <?php if ($day === 2): ?>selected="selected"<?php endif ?>><?= _("Wednesday") ?></option>
+                        <option value="3" <?php if ($day === 3): ?>selected="selected"<?php endif ?>><?= _("Thursday") ?></option>
+                        <option value="4" <?php if ($day === 4): ?>selected="selected"<?php endif ?>><?= _("Friday") ?></option>
+                        <option value="5" <?php if ($day === 5): ?>selected="selected"<?php endif ?>><?= _("Saturday") ?></option>
+                        <option value="6" <?php if ($day === 6): ?>selected="selected"<?php endif ?>><?= _("Sunday") ?></option>
+                    </select>
+                </div>
+                <div class="col-6">
+                    <label for="<?= $row["name"] ?>_time"><?= _("Time") ?></label>
+                    <input
+                        type="time"
+                        id="<?= $row["name"] ?>_time"
+                        class="form-control <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
+                        value="<?= $time ?>"
+                    />
+                    <input type="hidden" name="<?= $row["name"] ?>" id="<?= $row["name"] ?>" value="<?= $value ?>"/>
+                </div>
+            </div>
 
         <?php elseif ($row["type"] === "CAPTCHAIMAGE"): ?>
             <table>

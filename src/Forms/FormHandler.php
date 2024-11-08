@@ -701,6 +701,32 @@ class FormHandler
     }
 
     /**
+     * Add a split day/time field, used in admin/Public/form_data/FG_var_def_ratecard.inc
+     */
+    public function AddEditDayTime(
+        string $label_text,
+        string $fieldname,
+        string $form_text_bottom = "",
+        string $default_value = "",
+        string $error_message = "",
+        string $section_name = ""
+    )
+    {
+        $data = [
+            "label" => $label_text,
+            "name" => $fieldname,
+            "type" => "DAYTIME",
+            "error" => $error_message,
+            "section_name" => $section_name,
+            "comment" => $form_text_bottom,
+            "validation_err" => true,
+            "default" => $default_value,
+        ];
+
+        $this->FG_EDIT_FORM_ELEMENTS[] = $data;
+    }
+
+    /**
      * @param string $label_text The label text
      * @param string $fieldname The form input name
      * @param string $sql_table The table to check
@@ -841,7 +867,6 @@ class FormHandler
      * @param string $html_attributes HTML attributes for the input
      * @param int|null $regex_nb A validation method number
      * @param string $error_message A message to show if validation fails
-     * @param bool $is_date Whether this is a date popup used in FG_var_def_ratecard.inc
      * @return void
      */
     public function AddEditPopup(
@@ -851,8 +876,7 @@ class FormHandler
         string $form_text_bottom = "",
         string $html_attributes = "",
         ?int   $regex_nb = 4,
-        string $error_message = "",
-        bool   $is_date = false
+        string $error_message = ""
     ): void
     {
         $cur = count($this->FG_EDIT_FORM_ELEMENTS);
@@ -861,7 +885,7 @@ class FormHandler
             "name" => $fieldname,
             "popup_dest" => $href,
             "popup_params" => "width=750,height=450,top=50,left=100,scrollbars=1",
-            "type" => $is_date ? "POPUPDATETIME" : "POPUPVALUE",
+            "type" => "POPUPVALUE",
             "attributes" => $html_attributes,
             "regex" => $regex_nb,
             "error" => $error_message,
