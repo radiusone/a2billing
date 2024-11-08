@@ -8,8 +8,9 @@
     fill: currentColor;
 }
 
-.calendar_trigger svg, .popup_trigger svg {
-    margin-top: 3px; /* 16px image in 24 px box */
+.popup_trigger svg {
+    margin-top: 4px; /* 16px image in 24 px box */
+    vertical-align: top;
     fill: currentColor;
 }
 

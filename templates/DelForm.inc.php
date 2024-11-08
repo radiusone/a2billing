@@ -71,7 +71,7 @@ use A2billing\Table;
         <label for="<?= $row["name"] ?>" class="col-3 col-form-label"><?= $row["label"] ?></label>
         <div class="col">
             <?php if ($form->FG_DEBUG == 1): ?><?= $row["type"] ?><?php endif ?>
-            <?php if ($row["type"] === "INPUT" || str_starts_with($row["type"], "POPUP")): ?>
+            <?php if ($row["type"] === "INPUT" || $row["type"] === "POPUPVALUE"): ?>
             <input
                 id="<?= $row["name"] ?>"
                 class="form-control"

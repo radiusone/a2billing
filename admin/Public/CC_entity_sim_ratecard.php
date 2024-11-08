@@ -145,7 +145,7 @@ echo $CC_help_sim_ratecard;
         </td>
         <td height="31" style="padding-left: 5px; padding-right: 3px;" class="bgcolor_001">
                   <input class="form_input_text" name="id_cc_card" size="20" maxlength="40" value="<?php echo $id_cc_card;?>">
-                    <a href="A2B_entity_card.php" class="badge bg-primary popup_trigger" aria-label="open a popup to select an item">&gt;</a>
+                    <a href="A2B_entity_card.php" class="btn btn-primary popup_trigger" aria-label="open a popup to select an item">&gt;</a>
         </td>
     </tr>
     <tr>

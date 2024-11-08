@@ -169,8 +169,8 @@ use A2billing\Forms\FormHandler;
                     data-window-name="<?= $item["input"][0] ?>_popup"
                     data-popup-options="width=750,height=450,top=50,left=100,scrollbars=1"
                     data-select="<?= $item["select"] ?>"
-                    class="badge bg-primary popup_trigger"
-                    aria-label="open a popup to select an item"
+                    class="btn btn-primary popup_trigger"
+                    aria-label="<?= _("open a popup to select an item") ?>"
                 >
                     <svg class="mx-auto" width="16" height="16"><use xlink:href="#popup"></use></svg>
                 </a>

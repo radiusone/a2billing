@@ -98,35 +98,6 @@ $(function() {
         );
     });
 
-    /*
-    Calendar popups
-     */
-    const calendars = {};
-    $("a.calendar_trigger")
-        .each(function() {
-            let id, el;
-            if ($(this).data("fieldName")) {
-                id = $(this).data("fieldName");
-                el = $(`input[name=${id}]`).first();
-            } else {
-                el = $(this).prev("input");
-                id = el.attr("name");
-            }
-            if (!el.length) {
-                return;
-            }
-            calendars[id] = new calendaronlyminutes(el[0]);
-            calendars[id].year_scroll = false;
-            calendars[id].time_comp = true;
-            calendars[id].formatpgsql = true;
-        })
-        .on("click", function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            const id = $(this).data("fieldName") || $(this).prev("input").attr("name");
-            calendars[id].popup();
-        });
-
     /***
     Search form dates
     ***/

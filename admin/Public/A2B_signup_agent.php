@@ -118,7 +118,7 @@ echo $CC_help_generate_signup;
                                 <?php 	 }
                                 ?>
                            </select>
-                          <a href="A2B_entity_agent.php" class="badge bg-primary popup_trigger" aria-label="open a popup to select an item">&gt;</a>
+                          <a href="A2B_entity_agent.php" class="btn btn-primary popup_trigger" aria-label="open a popup to select an item">&gt;</a>
 
                       </td>
                   </tr>

@@ -60,8 +60,10 @@ use DateTime;
                     data-window-name="<?= $row["name"] ?>Popup"
                     data-popup-options="<?= $row["popup_params"] ?>"
                     class="btn btn-primary popup_trigger"
-                    aria-label="open a popup to select an item"
-                >&gt;</a>
+                    aria-label="<?= _("open a popup to select an item") ?>"
+                >
+                    <svg class="mx-auto" width="16" height="16"><use xlink:href="#popup"></use></svg>
+                </a>
             </div>
 
         <?php elseif ($row["type"] === "TEXTAREA"): ?>

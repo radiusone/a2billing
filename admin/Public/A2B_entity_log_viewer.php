@@ -74,7 +74,7 @@ if ($form_action=="list") {
             <table width="100%" border="0" cellspacing="0" cellpadding="0"><tr>
                 <td class="fontstyle_searchoptions">
                     <?php echo gettext("ADMIN USER");?>: <INPUT TYPE="text" NAME="enteradmin" value="<?php echo $enteradmin?>" class="form_input_text">
-                    <a href="A2B_entity_user.php" class="badge bg-primary popup_trigger" aria-label="open a popup to select an item">&gt;</a>
+                    <a href="A2B_entity_user.php" class="btn btn-primary popup_trigger" aria-label="open a popup to select an item">&gt;</a>
                 </td>
             </tr></table></td>
         </tr>

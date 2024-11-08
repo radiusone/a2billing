@@ -202,7 +202,7 @@ $smarty->display('main.tpl');
                 <table width="100%" border="0" cellspacing="0" cellpadding="0" class="bgcolor_005"><tr>
                     <td>
                         <?php echo gettext("Enter the card ID");?>: <INPUT TYPE="text" NAME="enter_cardid" value="<?php echo $enter_cardid?>" class="form_input_text">
-                        <a href="A2B_entity_card.php" class="badge bg-primary popup_trigger" aria-label="open a popup to select an item">&gt;</a>
+                        <a href="A2B_entity_card.php" class="btn btn-primary popup_trigger" aria-label="open a popup to select an item">&gt;</a>
                     </td>
                 </tr></table></td>
             </tr>

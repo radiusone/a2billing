@@ -90,18 +90,14 @@ use DateTime;
                         class="form-control <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
                         name="<?= $row["name"] ?>"
                         <?= $row["attributes"] ?>
-                        <?php if ($form->VALID_SQL_REG_EXP): ?>
-                            value="<?= $db_data[$i] ?>"
-                        <?php else: ?>
-                            value="<?= $processed[$row["name"]] ?>"
-                        <?php endif ?>
+                        value="<?= $form->VALID_SQL_REG_EXP ? $db_data[$i] : $processed[$row["name"]] ?>"
                     />
                     <a
                         href="<?= $row["popup_dest"] ?>"
                         data-window-name="<?= $row["name"] ?>Popup"
                         data-popup-options="<?= $row["popup_params"] ?>"
                         class="btn btn-primary popup_trigger"
-                        aria-label="open a popup to select an item"
+                        aria-label="<?= _("open a popup to select an item") ?>"
                     >
                         <svg class="mx-auto" width="16" height="16"><use xlink:href="#popup"></use></svg>
                     </a>
