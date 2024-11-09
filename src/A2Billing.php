@@ -1026,9 +1026,9 @@ class A2Billing
             $timeout = $this->rateEngine->ratecard_obj[0]['timeout_without_rules'];
         }
 
-        $announce_time_correction = $this->rateEngine->ratecard_obj[0][61];
+        $announce_time_correction = $this->rateEngine->ratecard_obj[0]["announce_time_correction"];
         $timeout = $timeout * $announce_time_correction;
-        $this->fct_say_time_2_call($timeout, (float)$this->rateEngine->ratecard_obj[0][12]);
+        $this->fct_say_time_2_call($timeout, (float)$this->rateEngine->ratecard_obj[0]["rateinitial"]);
 
         return 1;
     }

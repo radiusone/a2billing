@@ -196,7 +196,7 @@ $FG_TABLE_ALTERNATE_ROW_COLOR[1]='#EEE9E9';
         for ($j=0;$j<count($RateEngine->ratecard_obj);$j++) {
 
             $result = $A2B->table -> SQLExec ($A2B -> DBHandle,
-                "SELECT destination FROM cc_prefix where prefix='".$RateEngine->ratecard_obj[$j][5]."'");
+                "SELECT destination FROM cc_prefix where prefix='".$RateEngine->ratecard_obj[$j]["destination"]."'");
             if (is_array($result)){
                 $destination = $result[0][0];
             }
@@ -232,7 +232,7 @@ $FG_TABLE_ALTERNATE_ROW_COLOR[1]='#EEE9E9';
                     <b><?php echo $arr_ratecard[10];?></b>
                 </td>
                 <td height="15" bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[1]?>" style="padding-left: 5px;">
-                    <?php echo round($RateEngine->ratecard_obj[$j][12]/$currency_value,4) ;?> <?php echo $currency; ?>
+                    <?php echo round($RateEngine->ratecard_obj[$j]["rateinitial"]/$currency_value,4) ;?> <?php echo $currency; ?>
                 </td>
             </tr>
 

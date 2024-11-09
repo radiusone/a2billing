@@ -237,23 +237,21 @@ for ($page = 0; $page < $nbpage; $page++) {
                 if ($res_all_calcultimeout) {
 
                     // MAKE THE CALL
-                    if ($RateEngine->ratecard_obj[0][34] != '-1') {
-                        $usetrunk = 34;
-                        $usetrunk_failover = 1;
-                        $RateEngine->usedtrunk = $RateEngine->ratecard_obj[0][34];
+                    if ($RateEngine->ratecard_obj[0]["rt_id_trunk"] != '-1') {
+                        $usetrunk_prefix = "rt";
+                        $RateEngine->usedtrunk = $RateEngine->ratecard_obj[0]["rt_id_trunk"];
                     } else {
-                        $usetrunk = 29;
-                        $RateEngine->usedtrunk = $RateEngine->ratecard_obj[0][29];
-                        $usetrunk_failover = 0;
+                        $usetrunk_prefix = "tp";
+                        $RateEngine->usedtrunk = $RateEngine->ratecard_obj[0]["tp_id_trunk"];
                     }
 
-                    $prefix = $RateEngine->ratecard_obj[0][$usetrunk +1];
-                    $tech = $RateEngine->ratecard_obj[0][$usetrunk +2];
-                    $ipaddress = $RateEngine->ratecard_obj[0][$usetrunk +3];
-                    $removeprefix = $RateEngine->ratecard_obj[0][$usetrunk +4];
+                    $prefix = $RateEngine->ratecard_obj[0][$usetrunk_prefix . "_trunkprefix"];
+                    $tech = $RateEngine->ratecard_obj[0][$usetrunk_prefix . "_providertech"];
+                    $ipaddress = $RateEngine->ratecard_obj[0][$usetrunk_prefix . "_providerip"];
+                    $removeprefix = $RateEngine->ratecard_obj[0][$usetrunk_prefix . "_removeprefix"];
                     $timeout = $RateEngine->ratecard_obj[0]['timeout'];
-                    $failover_trunk = $RateEngine->ratecard_obj[0][40 + $usetrunk_failover];
-                    $addparameter = $RateEngine->ratecard_obj[0][42 + $usetrunk_failover];
+                    $failover_trunk = $RateEngine->ratecard_obj[0][$usetrunk_prefix . "_failover_trunk"];
+                    $addparameter = $RateEngine->ratecard_obj[0][$usetrunk_prefix . "_addparameter_trunk"];
 
                     $destination = $phone["number"];
                     if (strncmp($destination, $removeprefix, strlen($removeprefix)) == 0)
