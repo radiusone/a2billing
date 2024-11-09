@@ -365,6 +365,23 @@ function get_minute($sessiontime)
     return $sessiontime;
 }
 
+function display_timespan(int $seconds, bool $include_seconds = false)
+{
+    echo get_timespan($seconds, $include_seconds);
+}
+
+function get_timespan(int $sec, bool $include_seconds = false): string
+{
+    $days = intdiv($sec, 86400);
+    $hours = intdiv($sec - ($days * 86400), 3600);
+    $minutes = intdiv($sec - ($days * 86400) - ($hours * 3600), 60);
+    $seconds = $sec - ($days * 86400) - ($hours * 3600) - ($minutes * 60);
+
+    return $include_seconds
+        ? sprintf("%dd %dh %dm %ds", $days, $hours, $minutes, $seconds)
+        : sprintf("%dd %dh %dm", $days, $hours, $minutes);
+}
+
 /**
  * Used as callback for list/form elements
  *
