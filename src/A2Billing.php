@@ -226,6 +226,14 @@ class A2Billing
     */
     public function debug(int $level, ...$data): void
     {
+        if (
+            count($data) === 0
+            || $this->agiconfig['verbosity_level'] < $level
+            || $this->agiconfig['logging_level'] < $level
+        ) {
+            return;
+        }
+
         $st = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
         $file = $st[0]["file"];
         $line = $st[0]["line"];
