@@ -3202,7 +3202,7 @@ class A2Billing
         $this->status               = (int)$row["status"];
         $this->voicemail            = $row["voicemail_permitted"] && $row["voicemail_activated"];
         $this->restriction          = (int)$row["restriction"];
-        $this->countryprefix        = $row["countryprefix"];
+        $this->countryprefix        = $row["countryprefix"] ?? "";
 
         $error_msg = "";
         if ($this->typepaid == 1) {
