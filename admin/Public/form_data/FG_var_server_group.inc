@@ -46,7 +46,7 @@ $HD_Form->no_debug();
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_server_group.php?form_action=ask-add";
 $HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add SERVER GROUP");
-$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/server_add.png" ;
+$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("server_add.png") ;
 
 
 

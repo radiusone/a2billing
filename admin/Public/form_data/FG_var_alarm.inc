@@ -50,7 +50,7 @@ $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_alarm.php?form_action=ask-add";
 $HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add Alarm");
-$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/bell_add.png" ;
+$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("bell_add.png") ;
 
 
 // TODO Integrate a generic LIST to Framework
@@ -95,7 +95,7 @@ $HD_Form -> FG_OTHER_BUTTON1 = true;
 
 $HD_Form -> FG_OTHER_BUTTON1_LINK = "javascript:;\" onClick=\"window.open('CC_entity_alarm_details.php?popup_select=2&displayfooter=0&displayheader=0&id=|param|','','scrollbars=yes,resizable=yes,width=600,height=350')\"";
 
-$HD_Form -> FG_OTHER_BUTTON1_IMG = Images_Path . "/icon-viewdetails.gif";
+$HD_Form -> FG_OTHER_BUTTON1_IMG = get_image_path("icon-viewdetails.gif");
 $HD_Form -> FG_OTHER_BUTTON1_ALT = gettext("View details");
 
 

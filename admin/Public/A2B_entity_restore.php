@@ -133,7 +133,7 @@ $(function() {
     <TR valign="middle">
         <TD align="center">
             <?php echo gettext("Upload a database backup")?>&nbsp;<input type="file" id="databasebackup" name="databasebackup" value="">
-        <img src="<?php echo Images_Path;?>/clear.gif">
+        <img src="<?= get_image_path("clear.gif") ?>">
         <input type="hidden" name="MAX_FILE_SIZE" value="8000">
         <input type="hidden" name="form_action" value="upload">
         <input type="submit" value="Upload" class="form_input_button">

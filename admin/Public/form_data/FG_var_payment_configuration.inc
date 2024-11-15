@@ -51,7 +51,7 @@ $HD_Form->AddViewElement(gettext("File Name"), "payment_filename");
 $HD_Form->FieldViewElement('payment_method, payment_filename');
 
 $HD_Form->FG_OTHER_BUTTON1_LINK = "A2B_entity_payment_settings.php?id=";
-$HD_Form->FG_OTHER_BUTTON1_IMG = Images_Path . "/icon-viewdetails.gif";
+$HD_Form->FG_OTHER_BUTTON1_IMG = get_image_path("icon-viewdetails.gif");
 $HD_Form->FG_OTHER_BUTTON1_ALT = gettext("VIEW DETAILS");
 
 $HD_Form->FG_ENABLE_EDIT_BUTTON = false;

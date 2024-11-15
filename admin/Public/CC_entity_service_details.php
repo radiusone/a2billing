@@ -119,9 +119,9 @@ $smarty->display('main.tpl');
                     <span class="white_link"><?php  } ?>
                     <?php echo $FG_TABLE_COL[$i][0]?>
                     <?php if ($order==$FG_TABLE_COL[$i][1] && $sens=="ASC") {?>
-                    &nbsp;<img src="<?php echo Images_Path;?>/icon_up_12x12.GIF" width="12" height="12" border="0">
+                    &nbsp;<img src="<?= get_image_path("icon_up_12x12.GIF") ?>" width="12" height="12" border="0">
                     <?php } elseif ($order==$FG_TABLE_COL[$i][1] && $sens=="DESC") {?>
-                    &nbsp;<img src="<?php echo Images_Path;?>/icon_down_12x12.GIF" width="12" height="12" border="0">
+                    &nbsp;<img src="<?= get_image_path("icon_down_12x12.GIF") ?>" width="12" height="12" border="0">
                     <?php }?>
                     <?php  if (strtoupper($FG_TABLE_COL[$i][4])=="SORT") {?>
                     </span>

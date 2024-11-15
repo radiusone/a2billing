@@ -64,7 +64,7 @@ $HD_Form -> FG_ENABLE_INFO_BUTTON = true;
 $HD_Form -> FG_INFO_BUTTON_LINK = "A2B_invoice_view.php?id=";
 
 $HD_Form -> FG_OTHER_BUTTON3_LINK = "checkout_payment.php?item_type=invoice&item_id=";
-$HD_Form -> FG_OTHER_BUTTON3_IMG = Images_Path."/money.png";
+$HD_Form -> FG_OTHER_BUTTON3_IMG = get_image_path("money.png", true);
 $HD_Form -> FG_OTHER_BUTTON3 = true;
 $HD_Form -> FG_OTHER_BUTTON3_CONDITION = '|col6| == "UNPAID"';
 

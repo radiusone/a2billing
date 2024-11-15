@@ -49,7 +49,7 @@ $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_subscriber.php?form_action=ask-add";
 $HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add SUBSCRIBER");
-$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/text_signature.png" ;
+$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("text_signature.png") ;
 
 
 $HD_Form -> AddViewElement(gettext("ACCOUNT NUMBER"), "id_cc_card", true, 15, "", "lie", "cc_card", "username", "id='%id'", "%1");

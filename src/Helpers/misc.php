@@ -1229,7 +1229,7 @@ function create_help($text, $wiki = ""): string
     if (!empty($wiki)) {
         $wiki = htmlspecialchars(_("For further information please consult")) . ' <a target="_blank" href="http://www.asterisk2billing.org/documentation/">' . htmlspecialchars(_("the online documention")) . '</a>.<br/>';
     }
-    $path = htmlspecialchars(Images_Path);
+    $path = htmlspecialchars(get_image_path("toggle_hide2show_on.png"));
 
     return <<< HTML
 <div class="toggle_show2hide">
@@ -1237,7 +1237,7 @@ function create_help($text, $wiki = ""): string
         <div class="msg_info">
             $text<br/>$wiki
             <a href="#" target="_self" class="hide_help" style="float:right;">
-                <img class="toggle_show2hide" src="$path/toggle_hide2show_on.png" onmouseover="this.style.cursor='hand'" HEIGHT="16" alt=""/>
+                <img class="toggle_show2hide" src="$path" onmouseover="this.style.cursor='hand'" HEIGHT="16" alt=""/>
             </a>
         </div>
     </div>
@@ -1311,4 +1311,10 @@ function array_kv(
     }
 
     return implode($pair_sep, array_map(fn ($k, $v) => "$k$val_sep$v", $keys, $vals));
+}
+
+function get_image_path(string $image, bool $customer = false): string
+{
+    $public_dir = $customer ? "." : "../Public";
+    return "$public_dir/templates/$_SESSION[stylefile]/images/" . trim($image, "/");
 }

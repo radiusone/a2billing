@@ -127,7 +127,7 @@ if (!$remittance_in_progress) {
     <td align="center">
         <table width="80%" align="center" class="tablebackgroundcamel">
         <tr>
-            <td rowspan="2"><img src="<?php echo KICON_PATH ?>/gnome-finance.gif" class="kikipic"/></td>
+            <td rowspan="2"><img src="<?= get_image_path("kicons/gnome-finance.gif") ?>" class="kikipic"/></td>
 
             <td width="50%">
             <br/><font class="fontstyle_002"><?php echo gettext("BALANCE REMAINING");?> :</font><font class="fontstyle_007"> <?php echo $credit_cur.' '.$agent_info['currency']; ?> </font>

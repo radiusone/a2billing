@@ -51,7 +51,7 @@ $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_billing_customer.php?form_action=ask-add";
 $HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add Billing");
-$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/time_add.png" ;
+$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("time_add.png") ;
 
 $HD_Form -> AddViewElement(gettext("ID"), "cc_billing_customer.id");
 $HD_Form -> AddViewElement(gettext("ACCOUNT"), "username", true, 30, "display_customer_link");

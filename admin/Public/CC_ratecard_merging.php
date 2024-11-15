@@ -272,9 +272,9 @@ $(function() {
                                 </td>
 
                                 <td>
-                                    <a id="addsource" href="#"><img src="<?php echo Images_Path;?>/forward.png" alt="add source" title="add source" border="0"></a>
+                                    <a id="addsource" href="#"><img src="<?= get_image_path("forward.png") ?>" alt="add source" title="add source" border="0"></a>
                                     <br>
-                                    <a id="removesource" href="#"><img src="<?php echo Images_Path;?>/back.png" alt="remove source" title="remove source" border="0"></a>
+                                    <a id="removesource" href="#"><img src="<?= get_image_path("back.png") ?>" alt="remove source" title="remove source" border="0"></a>
                                 </td>
                                 <td>
                                     <select id="selected_search_sources" name="selected_search_sources" multiple="multiple" size="9" width="50" class="form_input_select">

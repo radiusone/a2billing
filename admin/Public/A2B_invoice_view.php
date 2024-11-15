@@ -128,7 +128,7 @@ function amount_convert($amount)
 
 if (!$popup_select) {
 ?>
-<a id="iv_popupselect" href="#"> <img src="../Public/templates/default/images/printer.png" title="Print" alt="Print" border="0"></a>
+<a id="iv_popupselect" href="#"> <img src="<?= get_image_path("printer.png") ?>" title="Print" alt="Print" border="0"></a>
 &nbsp;&nbsp;
 <?php if (strtoupper(BASE_CURRENCY)!=strtoupper($card['currency'])) { ?>
 
@@ -142,7 +142,7 @@ if (!$popup_select) {
 
 } else {
 ?>
-<P ALIGN="right"> <a href="javascript:window.print()"> <img src="./templates/default/images/printer.png" title="Print" alt="Print" border="0"> <?php echo gettext("Print"); ?></a> &nbsp; &nbsp;</P>
+<P ALIGN="right"> <a href="javascript:window.print()"> <img src="<?= get_image_path("printer.png") ?>" title="Print" alt="Print" border="0"> <?php echo gettext("Print"); ?></a> &nbsp; &nbsp;</P>
 <?php
 }
 ?>

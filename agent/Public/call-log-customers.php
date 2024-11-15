@@ -888,9 +888,7 @@ $smarty->display ( 'main.tpl' );
         <td class="bgcolor_004" align="left"></td>
         <td class="bgcolor_005" align="center"><input type="image"
             name="image16" align="top" border="0"
-            src="<?php
-            echo Images_Path;
-            ?>/button-search.gif" /></td>
+            src="<?= get_image_path("button-search.gif") ?>/></td>
     </tr>
 </table>
 </FORM>
@@ -953,12 +951,12 @@ echo $FG_HTML_TABLE_WIDTH?>" border="0"
                                 ?>
 <?php echo $FG_TABLE_COL [$i] [0]?>
 <?php if ($order == $FG_TABLE_COL [$i] [1] && $sens == "ASC") { ?>
-&nbsp;<img src="<?php echo Images_Path; ?>/icon_up_12x12.GIF" width="12"
+&nbsp;<img src="<?= get_image_path("icon_up_12x12.GIF") ?>" width="12"
 height="12" border="0">
 <?php
  } elseif ($order == $FG_TABLE_COL [$i] [1] && $sens == "DESC") {
 ?>
-&nbsp;<img src="<?php echo Images_Path; ?>/icon_down_12x12.GIF" width="12" height="12" border="0">
+&nbsp;<img src="<?= get_image_path("icon_down_12x12.GIF") ?>" width="12" height="12" border="0">
 <?php } ?>
 <?php if (strtoupper ( $FG_TABLE_COL [$i] [4] ) == "SORT") { ?>
 </span></a>
@@ -1052,7 +1050,7 @@ class=tableBody><?php echo $ligne_number + $current_page * $FG_LIMITE_DISPLAY . 
                 <?php
                     if ($current_page > 0) {
                 ?>
-<img src="<?php echo Images_Path; ?>/fleche-g.gif"
+<img src="<?= get_image_path("fleche-g.gif") ?>"
 width="5" height="10"> <a href="?order=<?php echo $order?>&sens=<?php echo $sens?>&current_page=<?php echo ($current_page - 1)?><?php if (! is_null ( $letter ) && ($letter != "")) {
     echo "&letter=$letter"; } echo "&entercustomer_num=$entercustomer_num&posted=$posted&Period=$Period&frommonth=$frommonth&fromstatsmonth=$fromstatsmonth&tomonth=$tomonth&tostatsmonth=$tostatsmonth&fromday=$fromday&fromstatsday_sday=$fromstatsday_sday&fromstatsmonth_sday=$fromstatsmonth_sday&today=$today&tostatsday_sday=$tostatsday_sday&tostatsmonth_sday=$tostatsmonth_sday&dsttype=$dsttype&srctype=$srctype&clidtype=$clidtype&channel=$channel&resulttype=$resulttype&dst=$dst&src=$src&clid=$clid&terminatecauseid=$terminatecauseid&choose_calltype=$choose_calltype&entercustomer=$entercustomer";
 ?>">
@@ -1061,7 +1059,7 @@ width="5" height="10"> <a href="?order=<?php echo $order?>&sens=<?php echo $sens
 - <a href="?order=<?php echo $order?>&sens=<?php echo $sens?>&current_page=<?php echo ($current_page + 1)?><?php
     if (! is_null ( $letter ) && ($letter != "")) { echo "&letter=$letter"; }
     echo "&entercustomer_num=$entercustomer_num&posted=$posted&Period=$Period&frommonth=$frommonth&fromstatsmonth=$fromstatsmonth&tomonth=$tomonth&tostatsmonth=$tostatsmonth&fromday=$fromday&fromstatsday_sday=$fromstatsday_sday&fromstatsmonth_sday=$fromstatsmonth_sday&today=$today&tostatsday_sday=$tostatsday_sday&tostatsmonth_sday=$tostatsmonth_sday&dsttype=$dsttype&srctype=$srctype&clidtype=$clidtype&channel=$channel&resulttype=$resulttype&dst=$dst&src=$src&clid=$clid&terminatecauseid=$terminatecauseid&choose_calltype=$choose_calltype&entercustomer=$entercustomer";
-?>"><?php echo gettext ( "Next" ); ?></a> <img src="<?php echo Images_Path; ?>/fleche-d.gif" width="5" height="10">
+?>"><?php echo gettext ( "Next" ); ?></a> <img src="<?= get_image_path("fleche-d.gif") ?>" width="5" height="10">
 </SPAN>
 <?php } ?>
             </TD>
@@ -1238,9 +1236,7 @@ if (is_array ( $list_total_day ) && count ( $list_total_day ) > 0) {
                             <tbody>
                                 <tr>
                                     <td bgcolor="#e22424"><img
-                                        src="<?php
-        echo Images_Path;
-        ?>/spacer.gif"
+                                        src="<?= get_image_path("spacer.gif") ?>"
                                         width="<?php echo $widthbar?>" height="6"></td>
                                 </tr>
                             </tbody>

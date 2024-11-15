@@ -52,7 +52,7 @@ $HD_Form = new FormHandler("cc_did", "DID");
 $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_did.php?form_action=ask-add";
 $HD_Form->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form->FG_LIST_ADDING_BUTTON_MSG1 = _("Add DID");
-$HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/telephone_add.png" ;
+$HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("telephone_add.png") ;
 
 $HD_Form->FG_TABLE_DEFAULT_ORDER = "did";
 $HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";

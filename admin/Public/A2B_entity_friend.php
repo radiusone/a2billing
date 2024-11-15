@@ -218,7 +218,7 @@ if ($form_action=='list') {
            <br/>
     <?php
     } else { ?>
-        <center><a href="<?php  echo "CC_generate_friend_file.php?action=reload";?>"><img src="<?php echo Images_Path;?>/icon_refresh.gif"/>
+        <center><a href="<?php  echo "CC_generate_friend_file.php?action=reload";?>"><img src="<?= get_image_path("icon_refresh.gif") ?>"/>
             <?php echo gettext("Reload Asterisk"); ?></a>
         </center>
     <?php
@@ -255,7 +255,7 @@ if ($form_action=='list') {
 <br/>
 <!-- ** ** ** ** ** Part for the Update ** ** ** ** ** -->
 <div class="toggle_hide2show">
-<center><a href="#" target="_self" class="toggle_menu"><img class="toggle_hide2show" src="<?php echo KICON_PATH; ?>/toggle_hide2show.png" onmouseover="this.style.cursor='hand';" HEIGHT="16"> <font class="fontstyle_002"><?php echo gettext("BATCH UPDATE");?> </font></a></center>
+<center><a href="#" target="_self" class="toggle_menu"><img class="toggle_hide2show" src="<?= get_image_path("kicons/toggle_hide2show.png") ?>" onmouseover="this.style.cursor='hand';" HEIGHT="16"> <font class="fontstyle_002"><?php echo gettext("BATCH UPDATE");?> </font></a></center>
     <div class="tohide" style="display:none;">
 
 <center>

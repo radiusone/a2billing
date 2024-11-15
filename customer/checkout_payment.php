@@ -346,7 +346,7 @@ echo tep_draw_form('checkout_amount', $form_action_url, 'post', 'onsubmit="check
               <b>Continue Checkout Procedure</b><br>to confirm this order.
           </td>
           <td align=right halign=center >
-              <input type="image" src="<?php echo Images_Path;?>/button_continue.gif" alt="Continue" border="0" title="Continue">
+              <input type="image" src="<?= get_image_path("button_continue.gif", true) ?>" alt="Continue" border="0" title="Continue">
               &nbsp;
           </td>
         </tr>

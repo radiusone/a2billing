@@ -395,9 +395,9 @@ echo $CC_help_balance_customer;
                         <span class="liens"><?php  } ?>
                         <?php echo $FG_TABLE_COL[$i][0]?>
                         <?php if ($order==$FG_TABLE_COL[$i][1] && $sens=="ASC") {?>
-                        &nbsp;<img src="<?php echo Images_Path_Main ?>/icon_up_12x12.GIF" width="12" height="12" border="0">
+                        &nbsp;<img src="<?= get_image_path("icon_up_12x12.GIF", true) ?>" width="12" height="12" border="0">
                         <?php } elseif ($order==$FG_TABLE_COL[$i][1] && $sens=="DESC") {?>
-                        &nbsp;<img src="<?php echo Images_Path_Main ?>/icon_down_12x12.GIF" width="12" height="12" border="0">
+                        &nbsp;<img src="<?= get_image_path("icon_down_12x12.GIF", true) ?>" width="12" height="12" border="0">
                         <?php }?>
                         <?php  if (strtoupper($FG_TABLE_COL[$i][4])=="SORT") {?>
                         </span></a>
@@ -485,7 +485,7 @@ echo $CC_help_balance_customer;
                 <TR>
                   <TD align="right"><SPAN style="COLOR: #ffffff; FONT-SIZE: 11px"><B>
                     <?php if ($current_page>0) {?>
-                    <img src="<?php echo Images_Path_Main ?>/fleche-g.gif" width="5" height="10"> <a href="?order=<?php echo $order?>&sens=<?php echo $sens?>&current_page=<?php  echo ($current_page-1)?><?php  if (!is_null($letter) && ($letter!="")) { echo "&letter=$letter";}
+                    <img src="<?= get_image_path("fleche-g.gif", true) ?>" width="5" height="10"> <a href="?order=<?php echo $order?>&sens=<?php echo $sens?>&current_page=<?php  echo ($current_page-1)?><?php  if (!is_null($letter) && ($letter!="")) { echo "&letter=$letter";}
                     echo "&customer=$customer&posted=$posted&Period=$Period&frommonth=$frommonth&fromstatsmonth=$fromstatsmonth&tomonth=$tomonth&tostatsmonth=$tostatsmonth&fromday=$fromday&fromstatsday_sday=$fromstatsday_sday&fromstatsmonth_sday=$fromstatsmonth_sday&today=$today&tostatsday_sday=$tostatsday_sday&tostatsmonth_sday=$tostatsmonth_sday&phonenumbertype=$phonenumbertype&sourcetype=$sourcetype&clidtype=$clidtype&channel=$channel&resulttype=$resulttype&phonenumber=$phonenumber&src=$src&clid=$clid&terminatecauseid=$terminatecauseid&choose_calltype=$choose_calltype";?>">
                     <?php echo gettext("PREVIOUS");?> </a> -
                     <?php }?>
@@ -493,7 +493,7 @@ echo $CC_help_balance_customer;
                     <?php if ($current_page<$nb_record_max-1) {?>
                     - <a href="?order=<?php echo $order?>&sens=<?php echo $sens?>&current_page=<?php  echo ($current_page+1)?><?php  if (!is_null($letter) && ($letter!="")) { echo "&letter=$letter";}
                     echo "&customer=$customer&posted=$posted&Period=$Period&frommonth=$frommonth&fromstatsmonth=$fromstatsmonth&tomonth=$tomonth&tostatsmonth=$tostatsmonth&fromday=$fromday&fromstatsday_sday=$fromstatsday_sday&fromstatsmonth_sday=$fromstatsmonth_sday&today=$today&tostatsday_sday=$tostatsday_sday&tostatsmonth_sday=$tostatsmonth_sday&phonenumbertype=$phonenumbertype&sourcetype=$sourcetype&clidtype=$clidtype&channel=$channel&resulttype=$resulttype&phonenumber=$phonenumber&src=$src&clid=$clid&terminatecauseid=$terminatecauseid&choose_calltype=$choose_calltype";?>">
-                    <?php echo gettext("NEXT");?> </a> <img src="<?php echo Images_Path_Main ?>/fleche-d.gif" width="5" height="10">
+                    <?php echo gettext("NEXT");?> </a> <img src="<?= get_image_path("fleche-d.gif", true) ?>" width="5" height="10">
                     </B></SPAN>
                     <?php }?>
                   </TD>
@@ -573,7 +573,7 @@ foreach ($list_total_day as $data) {
             <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$i]?>" align="right" nowrap="nowrap" class="fontstyle_001"><?php echo $minutes?> </td>
             <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$i]?>" align="left" nowrap="nowrap" width="<?php echo $widthbar+60?>">
                 <table cellspacing="0" cellpadding="0"><tr>
-                    <td bgcolor="#e22424"><img src="<?php echo Images_Path_Main ?>/spacer.gif" width="<?php echo $widthbar?>" height="6"></td>
+                    <td bgcolor="#e22424"><img src="<?= get_image_path("spacer.gif", true) ?>" width="<?php echo $widthbar?>" height="6"></td>
                 </tr></table>
             </td>
             <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$i]?>" align="right" nowrap="nowrap" class="fontstyle_001"><?php echo $data[3]?></td>

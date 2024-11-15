@@ -47,7 +47,7 @@ $HD_Form->no_debug();
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_signup_agent.php";
 $HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add Signup KEY");
-$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/key_add.png" ;
+$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("key_add.png") ;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 
 
@@ -60,7 +60,7 @@ $HD_Form -> FieldViewElement ('code, id_agent, id_tariffgroup ,id_group');
 
 $HD_Form -> FG_OTHER_BUTTON1 = true;
 $HD_Form -> FG_OTHER_BUTTON1_ALT = 'URL';
-$HD_Form -> FG_OTHER_BUTTON1_IMG = Images_Path ."/link.png";
+$HD_Form -> FG_OTHER_BUTTON1_IMG = get_image_path("link.png");
 $HD_Form -> FG_OTHER_BUTTON1_LINK = "javascript:alert(".json_encode($A2B->config['signup']['urlcustomerinterface'])." + 'signup.php?key=|col0|',400);";
 
 $HD_Form -> FG_LOCATION_AFTER_DELETE = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL);

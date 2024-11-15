@@ -51,7 +51,7 @@ $HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
 $HD_Form -> FG_OTHER_BUTTON2_LINK = "javascript:;";
-$HD_Form -> FG_OTHER_BUTTON2_IMG = Images_Path."/cancel.png";
+$HD_Form -> FG_OTHER_BUTTON2_IMG = get_image_path("cancel.png");
 $HD_Form -> FG_OTHER_BUTTON2 = true;
 $HD_Form -> FG_OTHER_BUTTON2_HTML_CLASS = "cancel_click";
 $HD_Form -> FG_OTHER_BUTTON2_HTML_ID = "|col0|";

@@ -324,12 +324,12 @@ if ($form_action=='list' && !($popup_select>=1)) {
 
 
 <div class="toggle_hide2show">
-<center><a href="#" target="_self" class="toggle_menu"><img class="toggle_hide2show" src="<?php echo KICON_PATH; ?>/toggle_hide2show.png" onmouseover="this.style.cursor='hand';" HEIGHT="16"> <font class="fontstyle_002"><?php echo gettext("REFILL");?> </font></a></center>
+<center><a href="#" target="_self" class="toggle_menu"><img class="toggle_hide2show" src="<?= get_image_path("kicons/toggle_hide2show.png") ?>" onmouseover="this.style.cursor='hand';" HEIGHT="16"> <font class="fontstyle_002"><?php echo gettext("REFILL");?> </font></a></center>
     <div class="tohide" style="display:none;">
     <form NAME="theForm">
        <table width="90%" border="0" align="center">
         <tr>
-           <td align="left" width="5%"><img src="<?php echo KICON_PATH; ?>/pipe.gif">
+           <td align="left" width="5%"><img src="<?= get_image_path("kicons/pipe.gif") ?>">
            </td>
           <td align="left" width="35%" class="bgcolor_001">
                <table>
@@ -379,7 +379,7 @@ if ($form_action=='list' && !($popup_select>=1)) {
     </div>
 </div>
 <div class="toggle_hide2show">
-<center><a href="#" target="_self" class="toggle_menu"><img class="toggle_hide2show" src="<?php echo KICON_PATH; ?>/toggle_hide2show.png" onmouseover="this.style.cursor='hand';" HEIGHT="16"> <font class="fontstyle_002"><?php echo gettext("SEARCH CARDS");?> </font></a><?php if (!empty($_SESSION['entity_card_selection'])) { ?>&nbsp;(<font style="color:#EE6564;" > <?php echo gettext("search activated"); ?> </font> ) <?php } ?> </center>
+<center><a href="#" target="_self" class="toggle_menu"><img class="toggle_hide2show" src="<?= get_image_path("kicons/toggle_hide2show.png") ?>" onmouseover="this.style.cursor='hand';" HEIGHT="16"> <font class="fontstyle_002"><?php echo gettext("SEARCH CARDS");?> </font></a><?php if (!empty($_SESSION['entity_card_selection'])) { ?>&nbsp;(<font style="color:#EE6564;" > <?php echo gettext("search activated"); ?> </font> ) <?php } ?> </center>
     <div class="tohide" style="display:none;">
 
 <?php
@@ -402,7 +402,7 @@ if ($form_action == "list" && (!($popup_select>=1))) {
 ?>
 <!-- ** ** ** ** ** Part for the Update ** ** ** ** ** -->
 <div class="toggle_hide2show">
-<center><a href="#" target="_self" class="toggle_menu"><img class="toggle_hide2show" src="<?php echo KICON_PATH; ?>/toggle_hide2show.png" onmouseover="this.style.cursor='hand';" HEIGHT="16"> <font class="fontstyle_002"><?php echo gettext("BATCH UPDATE");?> </font></a></center>
+<center><a href="#" target="_self" class="toggle_menu"><img class="toggle_hide2show" src="<?= get_image_path("kicons/toggle_hide2show.png") ?>" onmouseover="this.style.cursor='hand';" HEIGHT="16"> <font class="fontstyle_002"><?php echo gettext("BATCH UPDATE");?> </font></a></center>
     <div class="tohide" style="display:none;">
 
 <center>

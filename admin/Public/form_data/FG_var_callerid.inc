@@ -46,11 +46,11 @@ $HD_Form->no_debug();
 $HD_Form ->FG_LIST_ADDING_BUTTON2 = true;
 $HD_Form ->FG_LIST_ADDING_BUTTON_LINK2 = "A2B_entity_callerid.php?form_action=ask-add";
 $HD_Form ->FG_LIST_ADDING_BUTTON_ALT2 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG2 = gettext("Add CallerID");
-$HD_Form ->FG_LIST_ADDING_BUTTON_IMG2 = Images_Path ."/page_white_add.png" ;
+$HD_Form ->FG_LIST_ADDING_BUTTON_IMG2 = get_image_path("page_white_add.png") ;
 
 $HD_Form -> FG_OTHER_BUTTON3 = true;
 $HD_Form -> FG_OTHER_BUTTON3_LINK = "A2B_entity_logrefill.php?form_action=ask-add&card_id=|col1|";
-$HD_Form -> FG_OTHER_BUTTON3_IMG = Images_Path . "/brick_add.png";
+$HD_Form -> FG_OTHER_BUTTON3_IMG = get_image_path("brick_add.png");
 $HD_Form -> FG_OTHER_BUTTON3_ALT = gettext('ADD REFILL');
 
 
@@ -103,7 +103,7 @@ $HD_Form -> FG_FILTER_LABEL = gettext('CALLERID');
 
 $HD_Form -> FG_OTHER_BUTTON2 = true;
 $HD_Form -> FG_OTHER_BUTTON2_LINK="A2B_entity_payment.php?form_action=ask-add&card_id=|col1|";
-$HD_Form -> FG_OTHER_BUTTON2_IMG = Images_Path . "/money.png";
+$HD_Form -> FG_OTHER_BUTTON2_IMG = get_image_path("money.png");
 $HD_Form -> FG_OTHER_BUTTON2_ALT = gettext('ADD PAYMENT');
 
 

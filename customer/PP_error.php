@@ -63,7 +63,7 @@ $error["accessdenied"] = gettext("Sorry, you don't have access to this page !");
         </tr>
         <tr>
             <td width="70px" align="center">
-                <img src="<?php echo KICON_PATH;?>/system-config-rootpassword.png">
+                <img src="<?= get_image_path("kicons/system-config-rootpassword.png", true) ?>">
             </td>
             <td align="center">
                 <b><font size="é"><?php echo $error[$c]?></font></b>
@@ -71,7 +71,7 @@ $error["accessdenied"] = gettext("Sorry, you don't have access to this page !");
         </tr>
     </table>
           <div style="text-align:right;padding-right:10px;" >
-              <a href="index.php<?php  if(isset($_SESSION['stylefile']) && !empty($_SESSION['stylefile'])) echo "?cssname=" . $_SESSION['stylefile'];?>" ><?php echo gettext("GO TO LOGIN PAGE"); ?>&nbsp;<img src="<?php echo Images_Path; ?>/key_go.png"> </a>
+              <a href="index.php<?php  if(isset($_SESSION['stylefile']) && !empty($_SESSION['stylefile'])) echo "?cssname=" . $_SESSION['stylefile'];?>" ><?php echo gettext("GO TO LOGIN PAGE"); ?>&nbsp;<img src="<?= get_image_path("key_go.png", true) ?>"> </a>
           </div>
     </div>
 

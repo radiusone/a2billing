@@ -72,7 +72,7 @@ $error["ERR-0002"] 		= gettext("No such card number found. Please check your car
     </tr>
     <tr>
         <td width="70px" align="center">
-            <img src="<?php echo KICON_PATH;?>/system-config-rootpassword.png">
+            <img src="<?= get_image_path("kicons/system-config-rootpassword.png") ?>">
         </td>
         <td align="center">
             <b><font size="2"><?php echo $error[$c]?></font></b>
@@ -83,7 +83,7 @@ $error["ERR-0002"] 		= gettext("No such card number found. Please check your car
           </div>
           </div>
           <div style="text-align:right;padding-right:10px;" >
-              <a href="index.php" ><?php echo gettext("GO TO LOGIN PAGE"); ?>&nbsp;<img src="<?php echo Images_Path; ?>/key_go.png"> </a>
+              <a href="index.php" ><?php echo gettext("GO TO LOGIN PAGE"); ?>&nbsp;<img src="<?= get_image_path("key_go.png") ?>"> </a>
           </div>
     </div>
 

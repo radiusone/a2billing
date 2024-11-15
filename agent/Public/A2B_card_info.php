@@ -86,7 +86,7 @@ echo get_login_button ($id);
         <td valign="top" width="50%" >
             <table width="100%" class="editform_table1">
                <tr>
-                       <th colspan="2" background="../Public/templates/default/images/background_cells.gif">
+                       <th colspan="2" background="<?= get_image_path("background_cells.gif") ?>">
                            <?php echo gettext("ACCOUNT INFO") ?>
                        </th>
                </tr>
@@ -94,7 +94,7 @@ echo get_login_button ($id);
                     <td  class="form_head">
                         <?php echo gettext("STATUS") ?> :
                     </td>
-                    <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+                    <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
                         <?php
                         $list_typepaid = getPaidTypeList();
                         echo $list_typepaid[$card['typepaid']][0];?>
@@ -104,7 +104,7 @@ echo get_login_button ($id);
                     <td  class="form_head">
                         <?php echo gettext("ACCOUNT NUMBER") ?> :
                     </td>
-                    <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+                    <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
                         <?php echo $card['username']?>
                     </td>
                </tr>
@@ -112,7 +112,7 @@ echo get_login_button ($id);
                     <td  class="form_head">
                         <?php echo gettext("SERIAL NUMBER") ?> :
                     </td>
-                    <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+                    <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
                         <?php echo str_pad($card['serial'], $A2B->config["webui"]['card_serial_length'] , "0", STR_PAD_LEFT); ?>
                     </td>
                </tr>
@@ -120,7 +120,7 @@ echo get_login_button ($id);
                     <td  class="form_head">
                         <?php echo gettext("WEB ALIAS") ?>
                     </td>
-                    <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+                    <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
                         <?php echo $card['useralias']?>
                     </td>
                </tr>
@@ -128,7 +128,7 @@ echo get_login_button ($id);
                     <td  class="form_head">
                         <?php echo gettext("WEB PASSWORD") ?>
                     </td>
-                    <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+                    <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
                         <?php echo $card['uipass']?>
                     </td>
                 </tr>
@@ -136,7 +136,7 @@ echo get_login_button ($id);
                     <td  class="form_head">
                         <?php echo gettext("LANGUAGE") ?> :
                     </td>
-                    <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+                    <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
                         <?php echo $card['language']?>
                     </td>
                 </tr>
@@ -144,7 +144,7 @@ echo get_login_button ($id);
                     <td  class="form_head">
                         <?php echo gettext("STATUS") ?> :
                     </td>
-                    <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+                    <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
                         <?php
                         $list_status = getCardStatus_List();
                         echo $list_status[$card['status']][0];?>
@@ -154,7 +154,7 @@ echo get_login_button ($id);
                     <td  class="form_head">
                         <?php echo gettext("CREATION DATE") ?> :
                     </td>
-                    <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+                    <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
                         <?php echo $card['creationdate']?>
                     </td>
                 </tr>
@@ -162,7 +162,7 @@ echo get_login_button ($id);
                     <td  class="form_head">
                         <?php echo gettext("EXPIRATION DATE") ?> :
                     </td>
-                    <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+                    <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
                         <?php echo $card['expirationdate']?>
                     </td>
                 </tr>
@@ -170,7 +170,7 @@ echo get_login_button ($id);
                     <td  class="form_head">
                         <?php echo gettext("FIRST USE DATE") ?> :
                     </td>
-                    <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+                    <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
                         <?php echo $card['firstusedate']?>
                     </td>
                 </tr>
@@ -178,7 +178,7 @@ echo get_login_button ($id);
                     <td  class="form_head">
                         <?php echo gettext("LAST USE DATE") ?> :
                     </td>
-                    <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+                    <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
                         <?php echo $card['lastuse']?>
                     </td>
                 </tr>
@@ -186,7 +186,7 @@ echo get_login_button ($id);
                     <td  class="form_head">
                         <?php echo gettext("CALLBACK") ?> :
                     </td>
-                    <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+                    <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
                         <?php echo $card['callback']?>
                     </td>
                 </tr>
@@ -194,7 +194,7 @@ echo get_login_button ($id);
                     <td  class="form_head">
                         <?php echo gettext("LOCK") ?> :
                     </td>
-                    <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+                    <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
                         <?php echo ($card['block'] ? gettext("LOCK") : gettext("UNLOCK")) ?>
                     </td>
                 </tr>
@@ -202,7 +202,7 @@ echo get_login_button ($id);
                     <td  class="form_head">
                         <?php echo gettext("LOCK PIN") ?> :
                     </td>
-                    <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+                    <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
                         <?php echo $card['lock_pin']?>
                     </td>
                 </tr>
@@ -210,7 +210,7 @@ echo get_login_button ($id);
                     <td  class="form_head">
                         <?php echo gettext("LOCK DATE") ?> :
                     </td>
-                    <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+                    <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
                         <?php echo $card['lock_date']?>
                     </td>
                 </tr>
@@ -220,7 +220,7 @@ echo get_login_button ($id);
         <td valign="top" width="50%" >
             <table width="100%" class="editform_table1"  >
                 <tr>
-                    <th colspan="2" background="../Public/templates/default/images/background_cells.gif">
+                    <th colspan="2" background="<?= get_image_path("background_cells.gif") ?>">
                          <?php echo gettext("CUSTOMER INFO") ?>
                      </th>
 
@@ -229,7 +229,7 @@ echo get_login_button ($id);
                     <td  class="form_head">
                         <?php echo gettext("LAST NAME") ?> :
                     </td>
-                    <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+                    <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
                         &nbsp;<?php echo $card['lastname']?>
                     </td>
 
@@ -238,7 +238,7 @@ echo get_login_button ($id);
                     <td  class="form_head">
                         <?php echo gettext("FIRST NAME") ?> :
                     </td>
-                    <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+                    <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
                         &nbsp;<?php echo $card['firstname']?>
                     </td>
 
@@ -248,7 +248,7 @@ echo get_login_button ($id);
                     <td  class="form_head">
                         <?php echo gettext("ADDRESS") ?> :
                     </td>
-                    <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+                    <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
                         &nbsp;<?php echo $card['address']?>
                     </td>
 
@@ -258,7 +258,7 @@ echo get_login_button ($id);
                     <td  class="form_head">
                         <?php echo gettext("ZIP CODE") ?> :
                     </td>
-                    <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+                    <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
                         &nbsp;<?php echo $card['zipcode']?>
                     </td>
                 </tr>
@@ -267,7 +267,7 @@ echo get_login_button ($id);
                     <td  class="form_head">
                         <?php echo gettext("CITY") ?> :
                     </td>
-                    <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+                    <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
                         &nbsp;<?php echo $card['city']?>
                     </td>
 
@@ -277,7 +277,7 @@ echo get_login_button ($id);
                     <td  class="form_head">
                         <?php echo gettext("STATE") ?> :
                     </td>
-                    <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+                    <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
                         <?php echo $card['state']?>
                     </td>
 
@@ -287,7 +287,7 @@ echo get_login_button ($id);
                     <td  class="form_head">
                         <?php echo gettext("COUNTRY") ?> :
                     </td>
-                    <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+                    <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
                         <?php echo $card['country']?>
                     </td>
 
@@ -296,7 +296,7 @@ echo get_login_button ($id);
                     <td  class="form_head">
                         <?php echo gettext("EMAIL") ?> :
                     </td>
-                    <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+                    <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
                         <?php echo $card['email']?>
                     </td>
 
@@ -305,7 +305,7 @@ echo get_login_button ($id);
                     <td  class="form_head">
                         <?php echo gettext("PHONE") ?> :
                     </td>
-                    <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+                    <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
                         <?php echo $card['phone']?>
                     </td>
                 </tr>
@@ -313,7 +313,7 @@ echo get_login_button ($id);
                     <td  class="form_head">
                         <?php echo gettext("FAX") ?> :
                     </td>
-                    <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+                    <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
                         <?php echo $card['fax']?>
                     </td>
                 </tr>
@@ -331,7 +331,7 @@ echo get_login_button ($id);
         <td valign="top" width="50%" >
             <table width="100%" class="editform_table1">
                <tr>
-                       <th colspan="2" background="../Public/templates/default/images/background_cells.gif">
+                       <th colspan="2" background="<?= get_image_path("background_cells.gif") ?>">
                            <?php echo gettext("ACCOUNT STATUS") ?>
                        </th>
                </tr>
@@ -339,7 +339,7 @@ echo get_login_button ($id);
                     <td  class="form_head">
                         <?php echo gettext("BALANCE") ?> :
                     </td>
-                    <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+                    <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
                         &nbsp;<?php echo $card['credit']?>
                     </td>
                 </tr>
@@ -347,7 +347,7 @@ echo get_login_button ($id);
                     <td  class="form_head">
                         <?php echo gettext("CURRENCY") ?>
                     </td>
-                    <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+                    <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
                         <?php echo $card['currency']?>
                     </td>
                   </tr>
@@ -355,7 +355,7 @@ echo get_login_button ($id);
                     <td  class="form_head">
                         <?php echo gettext("CREDIT LIMIT") ?>
                     </td>
-                    <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+                    <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
                         <?php echo $card['creditlimit']?>
                     </td>
                 </tr>
@@ -363,7 +363,7 @@ echo get_login_button ($id);
                     <td  class="form_head">
                         <?php echo gettext("AUTOREFILL") ?> :
                     </td>
-                    <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+                    <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
                         <?php echo $card['autorefill']?>
                     </td>
                 </tr>
@@ -371,7 +371,7 @@ echo get_login_button ($id);
                     <td  class="form_head">
                         <?php echo gettext("INVOICE DAY") ?> :
                     </td>
-                    <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+                    <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
                         <?php echo $card['invoiceday']?>
                     </td>
                 </tr>
@@ -381,7 +381,7 @@ echo get_login_button ($id);
         <td valign="top" width="50%" >
             <table width="100%" class="editform_table1"  >
                 <tr>
-                    <th colspan="2" background="../Public/templates/default/images/background_cells.gif">
+                    <th colspan="2" background="<?= get_image_path("background_cells.gif") ?>">
                          <?php echo gettext("COMPANY INFO") ?>
                      </th>
 
@@ -390,7 +390,7 @@ echo get_login_button ($id);
                     <td  class="form_head">
                         <?php echo gettext("COMPANY NAME") ?> :
                     </td>
-                    <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+                    <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
                         &nbsp;<?php echo $card['company_name']?>
                     </td>
                 </tr>
@@ -398,7 +398,7 @@ echo get_login_button ($id);
                     <td  class="form_head">
                         <?php echo gettext("COMPANY WEBSITE") ?> :
                     </td>
-                    <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+                    <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
                         &nbsp;<?php echo $card['company_website']?>
                     </td>
 
@@ -408,7 +408,7 @@ echo get_login_button ($id);
                     <td  class="form_head">
                         <?php echo gettext("VAT REGISTRATION NUMBER") ?> :
                     </td>
-                    <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+                    <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
                         &nbsp;<?php echo $card['vat_rn']?>
                     </td>
 
@@ -418,7 +418,7 @@ echo get_login_button ($id);
                     <td  class="form_head">
                         <?php echo gettext("TRAFFIC PER MONTH") ?> :
                     </td>
-                    <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+                    <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
                         &nbsp;<?php echo $card['traffic']?>
                     </td>
                 </tr>
@@ -427,7 +427,7 @@ echo get_login_button ($id);
                     <td  class="form_head">
                         <?php echo gettext("TARGET TRAFIC") ?> :
                     </td>
-                    <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+                    <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
                         &nbsp;<?php echo $card['traffic_target']?>
                     </td>
 
@@ -450,7 +450,7 @@ echo get_login_button ($id);
         ?>
             <table width="100%" class="editform_table1">
                <tr>
-                       <th colspan="2" background="../Public/templates/default/images/background_cells.gif">
+                       <th colspan="2" background="<?= get_image_path("background_cells.gif") ?>">
                            <?php echo gettext("CALLER-ID LIST ") ?>
                        </th>
                </tr>
@@ -469,11 +469,11 @@ echo get_login_button ($id);
                 else  $bg="#f2f2ee";
        ?>
             <tr bgcolor="<?php echo $bg; ?>"  >
-                <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%" align="center">
+                <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%" align="center">
                   <?php echo $callerid['cid']; ?>
                 </td>
 
-                <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%" align="center">
+                <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%" align="center">
                   <?php echo ($callerid['activated']=="t"?"Active":"Inactive"); ?>
                 </td>
             </tr>
@@ -498,7 +498,7 @@ echo get_login_button ($id);
         ?>
             <table width="100%" class="editform_table1">
                <tr>
-                       <th colspan="3" background="../Public/templates/default/images/background_cells.gif">
+                       <th colspan="3" background="<?= get_image_path("background_cells.gif") ?>">
                            <?php echo gettext("SPEED-DIAL LIST ") ?>
                        </th>
                </tr>
@@ -520,15 +520,15 @@ echo get_login_button ($id);
                     else  $bg="#f2f2ee";
                ?>
                     <tr bgcolor="<?php echo $bg; ?>"  >
-                        <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%" align="center">
+                        <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%" align="center">
                           <?php echo $speeddial['phone']; ?>
                         </td>
 
-                        <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%" align="center">
+                        <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%" align="center">
                           <?php echo $speeddial['name']; ?>
                         </td>
 
-                        <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%"  align="center">
+                        <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%"  align="center">
                           <?php echo $speeddial['speeddial']; ?>
                         </td>
                     </tr>
@@ -559,7 +559,7 @@ echo get_login_button ($id);
         ?>
             <table width="100%" class="editform_table1">
                <tr>
-                       <th colspan="2" background="../Public/templates/default/images/background_cells.gif">
+                       <th colspan="2" background="<?= get_image_path("background_cells.gif") ?>">
                            <?php echo gettext("SIP-BUDDIES") ?>
                        </th>
                </tr>
@@ -578,10 +578,10 @@ echo get_login_button ($id);
                     else  $bg="#f2f2ee";
                ?>
                     <tr bgcolor="<?php echo $bg; ?>"  >
-                        <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%" align="center">
+                        <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%" align="center">
                           <?php echo $sip_buddies['username']; ?>
                         </td>
-                        <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%"  align="center">
+                        <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%"  align="center">
                           <?php echo $sip_buddies['secret']; ?>
                         </td>
                     </tr>
@@ -606,7 +606,7 @@ echo get_login_button ($id);
         ?>
             <table width="100%" class="editform_table1">
                <tr>
-                       <th colspan="2" background="../Public/templates/default/images/background_cells.gif">
+                       <th colspan="2" background="<?= get_image_path("background_cells.gif") ?>">
                            <?php echo gettext("IAX-BUDDIES") ?>
                        </th>
                </tr>
@@ -625,10 +625,10 @@ echo get_login_button ($id);
                     else  $bg="#f2f2ee";
                ?>
                     <tr bgcolor="<?php echo $bg; ?>"  >
-                        <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%" align="center">
+                        <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%" align="center">
                           <?php echo $iax_buddies['username']; ?>
                         </td>
-                        <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%"  align="center">
+                        <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%"  align="center">
                           <?php echo $iax_buddies['secret']; ?>
                         </td>
                     </tr>
@@ -647,7 +647,7 @@ echo get_login_button ($id);
 <br/>
 <div style="width : 90%; text-align : right; margin-left:auto;margin-right:auto;" >
      <a class="cssbutton_big"  href="A2B_entity_card.php?section=1">
-        <img src="<?php echo Images_Path_Main;?>/icon_arrow_orange.gif"/>
+        <img src="<?= get_image_path("icon_arrow_orange.gif") ?>"/>
         <?php echo gettext("CUSTOMERS LIST"); ?>
     </a>
 </div>
@@ -872,7 +872,7 @@ if (sizeof($call_result)>0 && $call_result[0]!=null) {
                 </td>
                 <td class="tableBody"  align="center">
                     <?php if (!empty($call['id_ratecard'])) { ?>
-                    <a href="A2B_entity_def_ratecard.php?form_action=ask-edit&id=<?php echo $call['id_ratecard']?>"> <img src="<?php echo Images_Path."/link.png"?>" border="0" title="<?php echo gettext("Link to the used rate")?>" alt="<?php echo  gettext("Link to the used rate")?>"></a>
+                    <a href="A2B_entity_def_ratecard.php?form_action=ask-edit&id=<?php echo $call['id_ratecard']?>"> <img src="<?= get_image_path(""/link.png"") ?>" border="0" title="<?php echo gettext("Link to the used rate")?>" alt="<?php echo  gettext("Link to the used rate")?>"></a>
                      <?php } ?>
                 </td>
 
@@ -949,7 +949,7 @@ if (sizeof($did_destination_result)>0 && $did_destination_result[0]!=null) {
 <br/>
 <div style="width : 90%; text-align : right; margin-left:auto;margin-right:auto;" >
      <a class="cssbutton_big"  href="A2B_entity_card.php?section=1">
-        <img src="<?php echo Images_Path_Main;?>/icon_arrow_orange.gif"/>
+        <img src="<?= get_image_path("icon_arrow_orange.gif") ?>"/>
         <?php echo gettext("CUSTOMERS LIST"); ?>
     </a>
 </div>

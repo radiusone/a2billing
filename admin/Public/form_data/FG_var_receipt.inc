@@ -61,12 +61,12 @@ $HD_Form -> FG_ENABLE_INFO_BUTTON = true;
 $HD_Form -> FG_INFO_BUTTON_LINK = "A2B_receipt_view.php?id=";
 
 $HD_Form -> FG_OTHER_BUTTON1_LINK = "A2B_receipt_edit.php?id=";
-$HD_Form -> FG_OTHER_BUTTON1_IMG = Images_Path."/page_white_gear.png";
+$HD_Form -> FG_OTHER_BUTTON1_IMG = get_image_path("page_white_gear.png");
 $HD_Form -> FG_OTHER_BUTTON1 = true;
 $HD_Form -> FG_OTHER_BUTTON1_CONDITION = '|col4| == "OPEN"';
 $HD_Form -> FG_OTHER_BUTTON1_ALT = gettext("Edit receipt items");
 $HD_Form -> FG_OTHER_BUTTON2_LINK = "javascript:;";
-$HD_Form -> FG_OTHER_BUTTON2_IMG = Images_Path."/lock.png";
+$HD_Form -> FG_OTHER_BUTTON2_IMG = get_image_path("lock.png");
 $HD_Form -> FG_OTHER_BUTTON2 = true;
 $HD_Form -> FG_OTHER_BUTTON2_HTML_CLASS = "lock";
 $HD_Form -> FG_OTHER_BUTTON2_HTML_ID = "|col0|";
@@ -77,7 +77,7 @@ $HD_Form -> FG_EDIT_BUTTON_CONDITION = '|col4| == "OPEN"';
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_receipt.php?form_action=ask-add";
 $HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add Receipt");
-$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/money.png" ;
+$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("money.png") ;
 
 
 $status_list = getInvoiceStatusList();

@@ -62,19 +62,19 @@ $HD_Form -> FG_ENABLE_INFO_BUTTON = true;
 $HD_Form -> FG_INFO_BUTTON_LINK = "A2B_invoice_view.php?id=";
 
 $HD_Form -> FG_OTHER_BUTTON1_LINK = "A2B_invoice_edit.php?id=";
-$HD_Form -> FG_OTHER_BUTTON1_IMG = Images_Path."/page_white_gear.png";
+$HD_Form -> FG_OTHER_BUTTON1_IMG = get_image_path("page_white_gear.png");
 $HD_Form -> FG_OTHER_BUTTON1 = true;
 $HD_Form -> FG_OTHER_BUTTON1_CONDITION = '|col6| == "'.gettext('OPEN').'"';
 $HD_Form -> FG_OTHER_BUTTON1_ALT = gettext("Edit invoice items");
 $HD_Form -> FG_OTHER_BUTTON2_LINK = "javascript:;";
-$HD_Form -> FG_OTHER_BUTTON2_IMG = Images_Path."/lock.png";
+$HD_Form -> FG_OTHER_BUTTON2_IMG = get_image_path("lock.png");
 $HD_Form -> FG_OTHER_BUTTON2 = true;
 $HD_Form -> FG_OTHER_BUTTON2_HTML_CLASS = "lock";
 $HD_Form -> FG_OTHER_BUTTON2_HTML_ID = "|col0|";
 $HD_Form -> FG_OTHER_BUTTON2_CONDITION = '|col6| == "'.gettext('OPEN').'"';
 $HD_Form -> FG_OTHER_BUTTON2_ALT = gettext("Close this invoice");
 $HD_Form -> FG_OTHER_BUTTON3_LINK = "A2B_invoice_manage_payment.php?id=";
-$HD_Form -> FG_OTHER_BUTTON3_IMG = Images_Path."/money.png";
+$HD_Form -> FG_OTHER_BUTTON3_IMG = get_image_path("money.png");
 $HD_Form -> FG_OTHER_BUTTON3 = true;
 $HD_Form -> FG_OTHER_BUTTON3_CONDITION = '|col6| == "'.gettext('CLOSE').'"';
 $HD_Form -> FG_OTHER_BUTTON3_ALT = gettext("Manage payments");
@@ -83,7 +83,7 @@ $HD_Form -> FG_DELETE_BUTTON_CONDITION = '|col6| == "'.gettext('OPEN').'"';
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_invoice.php?form_action=ask-add";
 $HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add Invoice");
-$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/money.png" ;
+$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("money.png") ;
 
 
 $status_list = getInvoiceStatusList();

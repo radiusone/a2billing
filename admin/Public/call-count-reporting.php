@@ -314,7 +314,7 @@ $smarty->display('main.tpl');
             <tr>
                 <td class="bgcolor_004" align="left" > </td>
                 <td class="bgcolor_005" align="center" >
-                    <input type="image"  name="image16" align="top" border="0" src="<?php echo Images_Path;?>/button-search.gif" />
+                    <input type="image"  name="image16" align="top" border="0" src="<?= get_image_path("button-search.gif") ?>" />
                   </td>
             </tr>
         </tbody></table>
@@ -352,9 +352,9 @@ $smarty->display('main.tpl');
                     <span class="liens"><?php  } ?>
                     <?php echo $FG_TABLE_COL[$i][0]?>
                     <?php if ($order==$FG_TABLE_COL[$i][1] && $sens=="ASC") {?>
-                    &nbsp;<img src="<?php echo Images_Path;?>/icon_up_12x12.GIF" width="12" height="12" border="0">
+                    &nbsp;<img src="<?= get_image_path("icon_up_12x12.GIF") ?>" width="12" height="12" border="0">
                     <?php } elseif ($order==$FG_TABLE_COL[$i][1] && $sens=="DESC") {?>
-                    &nbsp;<img src="<?php echo Images_Path;?>/icon_down_12x12.GIF" width="12" height="12" border="0">
+                    &nbsp;<img src="<?= get_image_path("icon_down_12x12.GIF") ?>" width="12" height="12" border="0">
                     <?php }?>
                     <?php  if (strtoupper($FG_TABLE_COL[$i][4])=="SORT") {?>
                     </span></a>

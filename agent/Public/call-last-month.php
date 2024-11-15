@@ -140,7 +140,7 @@ $smarty->display('main.tpl');
                     <table width="100%" border="0" cellspacing="0" cellpadding="0" class="bgcolor_003">
                         <tr>
                         <td align="center">
-                            <input type="image"  name="image16" align="top" border="0" src="<?php echo Images_Path;?>/button-search.gif" />
+                            <input type="image"  name="image16" align="top" border="0" src="<?= get_image_path("button-search.gif") ?>" />
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     </td></tr></table>
                   </td>

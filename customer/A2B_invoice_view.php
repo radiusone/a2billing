@@ -138,12 +138,12 @@ function amount_convert($amount)
 
 if (!$popup_select) {
 ?>
-<a href="javascript:;" onClick="window.open('?popup_select=1&id=<?php echo $id ?>','','scrollbars=yes,resizable=yes,width=700,height=500')" > <img src="./templates/default/images/printer.png" title="Print" alt="Print" border="0"></a>
+<a href="javascript:;" onClick="window.open('?popup_select=1&id=<?php echo $id ?>','','scrollbars=yes,resizable=yes,width=700,height=500')" > <img src="<?= get_image_path("printer.png", true) ?>" title="Print" alt="Print" border="0"></a>
 &nbsp;&nbsp;
 <?php
 } else {
 ?>
-<P ALIGN="right"> <a href="javascript:window.print()"> <img src="./templates/default/images/printer.png" title="Print" alt="Print" border="0"> <?php echo gettext("Print"); ?></a> &nbsp; &nbsp;</P>
+<P ALIGN="right"> <a href="javascript:window.print()"> <img src="<?= get_image_path("printer.png", true) ?>" title="Print" alt="Print" border="0"> <?php echo gettext("Print"); ?></a> &nbsp; &nbsp;</P>
 <?php
 }
 ?>

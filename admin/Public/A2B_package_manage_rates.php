@@ -192,9 +192,9 @@ $("#delall").on("click", e => self.location.href= "A2B_package_manage_rates.php?
                 </tr>
                 <tr>
                     <td align="center">
-                        <a id="addrate" href="#"> <img src="../Public/templates/default/images/add.png" alt="<?php echo gettext("Add Rate"); ?>" border="0"></a>
-                        <a id="delrate" href="#"> <img src="../Public/templates/default/images/del.png" alt="<?php echo gettext("Del Rate"); ?>" border="0"></a>
-                        <a id="delall" href="#"> <img src="../Public/templates/default/images/delete.png" alt="<?php echo gettext("Del All Rate"); ?>" border="0"></a>
+                        <a id="addrate" href="#"> <img src="<?= get_image_path("add.png") ?>" alt="<?php echo gettext("Add Rate"); ?>" border="0"></a>
+                        <a id="delrate" href="#"> <img src="<?= get_image_path("del.png") ?>" alt="<?php echo gettext("Del Rate"); ?>" border="0"></a>
+                        <a id="delall" href="#"> <img src="<?= get_image_path("delete.png") ?>" alt="<?php echo gettext("Del All Rate"); ?>" border="0"></a>
                     </td>
                 </tr>
             </table>

@@ -58,7 +58,7 @@ $HD_Form -> FG_FK_DELETE_MESSAGE = gettext("You have some cards using this Seria
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_card_seria.php?form_action=ask-add";
 $HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add Series");
-$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/page_white_add.png" ;
+$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("page_white_add.png") ;
 
 
 $HD_Form -> AddViewElement(gettext("ID"), "id");

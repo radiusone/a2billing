@@ -245,7 +245,7 @@ $FG_TABLE_ALTERNATE_ROW_COLOR[1]='#EEE9E9';
         <?php  if (count($RateEngine->ratecard_obj)==0) {
         if ($called) {
         ?>
-        <span style="font-weight: bold">	<img src="<?php echo Images_Path_Main ?>/kicons/button_cancel.gif" alt="a" width="32" height="32"/> <?php echo gettext("The number, you have entered, is not correct!");?>  </span>
+        <span style="font-weight: bold">	<img src="<?= get_image_path("kicons/button_cancel.gif", true) ?>" alt="a" width="32" height="32"/> <?php echo gettext("The number, you have entered, is not correct!");?>  </span>
         <?php  } ?>
         <?php  } ?>
 

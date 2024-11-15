@@ -130,7 +130,7 @@ if ($list[0][8] != "1" && isset ($result) && $result != null) {
 <tr><td colspan="2" bgcolor="#DDDDDD"></td></tr>
 <tr><td colspan="2" bgcolor="#DDDDDD"></td></tr>
 <tr>
-<td bgcolor="#EEEEEE"><img src="<?php echo KICON_PATH;?>/khelpcenter.gif"/></td>
+<td bgcolor="#EEEEEE"><img src="<?= get_image_path("kicons/khelpcenter.gif", true) ?>"/></td>
 <td bgcolor="#EEEEEE">
 <b>
 <?php

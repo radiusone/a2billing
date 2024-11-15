@@ -602,7 +602,7 @@ $smarty->display('main.tpl');
         <tr>
             <td class="bgcolor_004" align="left" > </td>
             <td class="bgcolor_005" align="center" >
-                <input type="image"  name="image16" align="top" border="0" src="<?php echo Images_Path;?>/button-search.gif"/>
+                <input type="image"  name="image16" align="top" border="0" src="<?= get_image_path("button-search.gif") ?>"/>
             </td>
         </tr>
     </table>
@@ -642,9 +642,9 @@ $smarty->display('main.tpl');
                     <span class="liens"><?php  } ?>
                     <?php echo $FG_TABLE_COL[$i][0]?>
                     <?php if ($order==$FG_TABLE_COL[$i][1] && $sens=="ASC") {?>
-                    &nbsp;<img src="<?php echo Images_Path;?>/icon_up_12x12.GIF" width="12" height="12" border="0">
+                    &nbsp;<img src="<?= get_image_path("icon_up_12x12.GIF") ?>" width="12" height="12" border="0">
                     <?php } elseif ($order==$FG_TABLE_COL[$i][1] && $sens=="DESC") {?>
-                    &nbsp;<img src="<?php echo Images_Path;?>/icon_down_12x12.GIF" width="12" height="12" border="0">
+                    &nbsp;<img src="<?= get_image_path("icon_down_12x12.GIF") ?>" width="12" height="12" border="0">
                     <?php }?>
                     <?php  if (strtoupper($FG_TABLE_COL[$i][4])=="SORT") {?>
                     </span></a>
@@ -840,7 +840,7 @@ foreach ($asr_cic_list1 as $asr_cic_data) {
         <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$i]?>" align="right" nowrap="nowrap"><font class="fontstyle_006"><?php echo $minutes?> </font></td>
         <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$i]?>" align="left" nowrap="nowrap" width="<?php echo $widthbar+40?>">
         <table cellspacing="0" cellpadding="0"><tbody><tr>
-        <td bgcolor="#e22424"><img src="<?php echo Images_Path;?>/spacer.gif" width="<?php echo $widthbar?>" height="6"></td>
+        <td bgcolor="#e22424"><img src="<?= get_image_path("spacer.gif") ?>" width="<?php echo $widthbar?>" height="6"></td>
         </tr></tbody></table></td>
         <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$i]?>" align="right" nowrap="nowrap"><font class="fontstyle_006"><?php echo $data[3]?></font></td>
         <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$i]?>" align="right" nowrap="nowrap"><font class="fontstyle_006"><?php echo $tmc?> </font></td>
@@ -905,9 +905,9 @@ foreach ($asr_cic_list1 as $asr_cic_data) {
 
 <br>
     <!-- SECTION EXPORT //-->
-         &nbsp; &nbsp; <a href="export_csv.php?var_export=<?php echo $FG_EXPORT_SESSION_VAR ?>&var_export_type=type_csv" target="_blank" ><img src="<?php echo Images_Path;?>/excel.gif" border="0" height="30"/><?php echo gettext("Export CSV");?></a>
+         &nbsp; &nbsp; <a href="export_csv.php?var_export=<?php echo $FG_EXPORT_SESSION_VAR ?>&var_export_type=type_csv" target="_blank" ><img src="<?= get_image_path("excel.gif") ?>" border="0" height="30"/><?php echo gettext("Export CSV");?></a>
 
-         - &nbsp; &nbsp; <a href="export_csv.php?var_export=<?php echo $FG_EXPORT_SESSION_VAR ?>&var_export_type=type_xml" target="_blank" ><img src="<?php echo Images_Path;?>/icons_xml.gif" border="0" height="32"/><?php echo gettext("Export XML");?></a>
+         - &nbsp; &nbsp; <a href="export_csv.php?var_export=<?php echo $FG_EXPORT_SESSION_VAR ?>&var_export_type=type_xml" target="_blank" ><img src="<?= get_image_path("icons_xml.gif") ?>" border="0" height="32"/><?php echo gettext("Export XML");?></a>
 
 <?php  } else { ?>
     <h3><?php echo gettext("No calls in your selection");?>.</h3>

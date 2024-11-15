@@ -167,7 +167,7 @@ $display_account=$result[0][0];
     <td class="form_head" width="25%" valign="middle">
         <?php echo gettext("Company Name")?>&nbsp; :
     </td>
-    <td class="tableBodyRight" width="75%" valign="top" background="../Public/templates/default/images/background_cells.gif">
+    <td class="tableBodyRight" width="75%" valign="top" background="<?= get_image_path("background_cells.gif") ?>">
         <input name="company_name" type="text" class="form_input_text" <?php if(!empty($company_name)) echo 'value="'.$company_name.'"';?> > <br/>
         <?php echo gettext("Insert your company name"); ?>
     </td>
@@ -176,7 +176,7 @@ $display_account=$result[0][0];
     <td class="form_head" width="25%" valign="middle">
         <?php echo gettext("Address")?>&nbsp; :
     </td>
-    <td class="tableBodyRight" width="75%" valign="top" background="../Public/templates/default/images/background_cells.gif">
+    <td class="tableBodyRight" width="75%" valign="top" background="<?= get_image_path("background_cells.gif") ?>">
         <input name="address" type="text" class="form_input_text" <?php if(!empty($address)) echo 'value="'.$address.'"';?> > <br/>
         <?php echo gettext("Insert your address"); ?>
     </td>
@@ -185,7 +185,7 @@ $display_account=$result[0][0];
     <td class="form_head" width="25%" valign="middle">
         <?php echo gettext("Zip Code")?>&nbsp; :
     </td>
-    <td class="tableBodyRight" width="75%" valign="top" background="../Public/templates/default/images/background_cells.gif">
+    <td class="tableBodyRight" width="75%" valign="top" background="<?= get_image_path("background_cells.gif") ?>">
         <input name="zipcode" type="text" class="form_input_text" <?php if(!empty($zipcode)) echo 'value="'.$zipcode.'"';?> > <br/>
         <?php echo gettext("Insert your zip code"); ?>
     </td>
@@ -194,7 +194,7 @@ $display_account=$result[0][0];
     <td class="form_head" width="25%" valign="middle">
         <?php echo gettext("City")?>&nbsp; :
     </td>
-    <td class="tableBodyRight" width="75%" valign="top" background="../Public/templates/default/images/background_cells.gif">
+    <td class="tableBodyRight" width="75%" valign="top" background="<?= get_image_path("background_cells.gif") ?>">
         <input name="city" type="text" class="form_input_text" <?php if(!empty($city)) echo 'value="'.$city.'"';?> > <br/>
         <?php echo gettext("Insert your city"); ?>
     </td>
@@ -203,7 +203,7 @@ $display_account=$result[0][0];
     <td class="form_head" width="25%" valign="middle">
         <?php echo gettext("Phone number")?>&nbsp; :
     </td>
-    <td class="tableBodyRight" width="75%" valign="top" background="../Public/templates/default/images/background_cells.gif">
+    <td class="tableBodyRight" width="75%" valign="top" background="<?= get_image_path("background_cells.gif") ?>">
         <input name="phone" type="text" class="form_input_text" <?php if(!empty($phone)) echo 'value="'.$phone.'"';?> > <br/>
         <?php echo gettext("Insert your phone number"); ?>
     </td>
@@ -212,7 +212,7 @@ $display_account=$result[0][0];
     <td class="form_head" width="25%" valign="middle">
         <?php echo gettext("Fax number")?>&nbsp; :
     </td>
-    <td class="tableBodyRight" width="75%" valign="top" background="../Public/templates/default/images/background_cells.gif">
+    <td class="tableBodyRight" width="75%" valign="top" background="<?= get_image_path("background_cells.gif") ?>">
         <input name="fax" type="text" class="form_input_text" <?php if(!empty($fax)) echo 'value="'.$fax.'"';?> > <br/>
         <?php echo gettext("Insert your fax number"); ?>
     </td>
@@ -221,7 +221,7 @@ $display_account=$result[0][0];
     <td class="form_head" width="25%" valign="middle">
         <?php echo gettext("Email")?>&nbsp; :
     </td>
-    <td class="tableBodyRight" width="75%" valign="top" background="../Public/templates/default/images/background_cells.gif">
+    <td class="tableBodyRight" width="75%" valign="top" background="<?= get_image_path("background_cells.gif") ?>">
         <input name="email" type="text" class="form_input_text" <?php if(!empty($email)) echo 'value="'.$email.'"';?> > <br/>
         <?php echo gettext("Insert your email"); ?>
     </td>
@@ -230,7 +230,7 @@ $display_account=$result[0][0];
     <td class="form_head" width="25%" valign="middle">
         <?php echo gettext("Web Site")?>&nbsp; :
     </td>
-    <td class="tableBodyRight" width="75%" valign="top" background="../Public/templates/default/images/background_cells.gif">
+    <td class="tableBodyRight" width="75%" valign="top" background="<?= get_image_path("background_cells.gif") ?>">
         <input name="web" type="text" class="form_input_text" <?php if(!empty($web)) echo 'value="'.$web.'"';?> > <br/>
         <?php echo gettext("Insert your Web site"); ?>
     </td>
@@ -239,7 +239,7 @@ $display_account=$result[0][0];
     <td class="form_head" width="25%" valign="middle">
         <?php echo gettext("VAT number")?>&nbsp; :
     </td>
-    <td class="tableBodyRight" width="75%" valign="top" background="../Public/templates/default/images/background_cells.gif">
+    <td class="tableBodyRight" width="75%" valign="top" background="<?= get_image_path("background_cells.gif") ?>">
         <input name="vat" type="text" class="form_input_text" <?php if(!empty($vat)) echo 'value="'.$vat.'"';?> > <br/>
         <?php echo gettext("Insert your vat number"); ?>
     </td>
@@ -248,7 +248,7 @@ $display_account=$result[0][0];
     <td class="form_head" width="25%" valign="middle">
         <?php echo gettext("Display Account number")?>&nbsp; :
     </td>
-    <td class="tableBodyRight" width="75%" valign="top" background="../Public/templates/default/images/background_cells.gif">
+    <td class="tableBodyRight" width="75%" valign="top" background="<?= get_image_path("background_cells.gif") ?>">
         <select name="display_account">
             <option value="1" <?php if($display_account==1) echo "selected"; ?> > <?php echo gettext("YES")?></option>
             <option value="0" <?php if($display_account==0) echo "selected"; ?> ><?php echo gettext("NO")?></option>

@@ -61,7 +61,7 @@ if (has_rights (Admin::ACX_MODIFY_REFILLS)) {
 	$HD_Form->FG_LIST_ADDING_BUTTON1 = true;
 	$HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_logrefill.php?form_action=ask-add";
 	$HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add Refill");
-	$HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/time_add.png" ;
+	$HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("time_add.png") ;
 }
 
 $list_refill_type = getRefillType_List();

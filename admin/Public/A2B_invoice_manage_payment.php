@@ -112,7 +112,7 @@ $(function() {
     </tr>
     <tr>
         <td colspan="2" align="right">
-            <a id="imp_popupselect" href="#"> <img src="../Public/templates/default/images/page_white_text.png" title="Print" alt="Print" border="0"></a>
+            <a id="imp_popupselect" href="#"> <img src="<?= get_image_path("page_white_text.png") ?>" title="Print" alt="Print" border="0"></a>
         </td>
     </tr>
     <tr>
@@ -158,8 +158,8 @@ $(function() {
                 </tr>
                 <tr>
                     <td align="center">
-                        <a id="addpayment" href="#"> <img src="../Public/templates/default/images/add.png" title="Add Payment" alt="Add Payment" border="0"></a>
-                        <a id="delpayment" href="#"> <img src="../Public/templates/default/images/del.png" title="Del Payment" alt="Del Payment" border="0"></a>
+                        <a id="addpayment" href="#"> <img src="<?= get_image_path("add.png") ?>" title="Add Payment" alt="Add Payment" border="0"></a>
+                        <a id="delpayment" href="#"> <img src="<?= get_image_path("del.png") ?>" title="Del Payment" alt="Del Payment" border="0"></a>
                     </td>
                 </tr>
             </table>

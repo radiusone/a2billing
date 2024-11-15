@@ -82,7 +82,7 @@ $HD_Form -> FieldViewElement ("cc_ticket.id, title, cc_ticket.creationdate, id_c
 
 
 $HD_Form -> FG_OTHER_BUTTON1_LINK = "A2B_ticket_view.php?id=";
-$HD_Form -> FG_OTHER_BUTTON1_IMG = Images_Path."/icon-viewdetails.gif";
+$HD_Form -> FG_OTHER_BUTTON1_IMG = get_image_path("icon-viewdetails.gif");
 
 
 $HD_Form -> FG_OTHER_BUTTON1 = true;

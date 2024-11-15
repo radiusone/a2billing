@@ -66,7 +66,7 @@ $smarty->display('signup_header.tpl');
 <div align="center">
 <table  style="width : 80%;" class="editform_table1">
    <tr>
-       <th colspan="2" background="templates/default/images/background_cells.gif">
+       <th colspan="2" background="<?= get_image_path("background_cells.gif", true) ?>">
            <?php echo gettext("SELECT THE SERVICE THAT YOU WANT SUBSCRIBE") ?>
        </th>
    </tr>
@@ -79,7 +79,7 @@ $smarty->display('signup_header.tpl');
         <td  class="form_head">
             &nbsp;<?php echo gettext("SERVICE") ?> :
         </td>
-        <td class="tableBodyRight"  background="templates/default/images/background_cells.gif" width="70%">
+        <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif", true) ?>" width="70%">
             <table>
             <?php
             $i=0;
@@ -103,9 +103,9 @@ $smarty->display('signup_header.tpl');
         </td>
     </tr>
      <tr>
-        <td colspan="2" align="right" class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+        <td colspan="2" align="right" class="tableBodyRight"  background="<?= get_image_path("background_cells.gif", true) ?>" width="70%">
             <a class="cssbutton_big" onClick="javascript:document.myForm.submit();"  href="#">
-                <img src="<?php echo Images_Path_Main;?>/icon_arrow_orange.gif"/>
+                <img src="<?= get_image_path("icon_arrow_orange.gif", true) ?>"/>
                 <?php echo gettext("SUBSCRIBE THIS SERVICE"); ?>
             </a>
         </td>

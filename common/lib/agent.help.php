@@ -78,11 +78,11 @@ if (!isset ($disable_load_conf) || !($disable_load_conf)) {
     $show_logo = '';
     for ($index = 0; $index < sizeof($payment_methods); $index++) {
         if ($payment_methods[$index][0] == "MODULE_PAYMENT_PAYPAL_STATUS") {
-            $show_logo .= '<a href="https://www.paypal.com/en/mrb/pal=PGSJEXAEXKTBU" target="_blank"><img src="' . KICON_PATH . '/paypal_logo.gif" alt="Paypal"/></a> &nbsp; ';
+            $show_logo .= '<a href="https://www.paypal.com/en/mrb/pal=PGSJEXAEXKTBU" target="_blank"><img src="' . get_image_path("kicons/paypal_logo.gif") . '" alt="Paypal"/></a> &nbsp; ';
         } elseif ($payment_methods[$index][0] == "MODULE_PAYMENT_MONEYBOOKERS_STATUS") {
-            $show_logo .= '<a href="https://www.moneybookers.com/app/?rid=811621" target="_blank"><img src="' . KICON_PATH . '/moneybookers.gif" alt="Moneybookers"/></a> &nbsp; ';
+            $show_logo .= '<a href="https://www.moneybookers.com/app/?rid=811621" target="_blank"><img src="' . get_image_path("kicons/moneybookers.gif") . '" alt="Moneybookers"/></a> &nbsp; ';
         } elseif ($payment_methods[$index][0] == "MODULE_PAYMENT_PLUGNPAY_STATUS") {
-            $show_logo .= '<a href="http://www.plugnpay.com/" target="_blank"><img src="' . KICON_PATH . '/plugnpay.png" alt="plugnpay.com"/></a> &nbsp; ';
+            $show_logo .= '<a href="http://www.plugnpay.com/" target="_blank"><img src="' . get_image_path("kicons/plugnpay.png") . '" alt="plugnpay.com"/></a> &nbsp; ';
         }
     }
     $PAYMENT_METHOD = '<table style="width:70%;margin:0 auto;" align="center" ><tr><TD valign="top" align="center" class="tableBodyRight">' . $show_logo . '</td></tr></table>';

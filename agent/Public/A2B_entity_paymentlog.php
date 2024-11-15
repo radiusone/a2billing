@@ -217,7 +217,7 @@ $HD_Form->create_toppage($form_action);
                 <td class="bgcolor_004" align="left" > </td>
 
                 <td class="bgcolor_005" align="center" >
-                    <input type="image"  name="image16" align="top" border="0" src="<?php echo Images_Path;?>/button-search.gif" />
+                    <input type="image"  name="image16" align="top" border="0" src="<?= get_image_path("button-search.gif") ?>" />
 
                   </td>
             </tr>

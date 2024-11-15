@@ -66,7 +66,7 @@ $smarty->display('main.tpl');
 <br/>
 <table style="width : 80%;" class="editform_table1">
    <tr>
-           <th colspan="2" background="../Public/templates/default/images/background_cells.gif">
+           <th colspan="2" background="<?= get_image_path("background_cells.gif") ?>">
                <?php echo gettext("LOG ACTIVITY INFO") ?>
            </th>
    </tr>
@@ -74,7 +74,7 @@ $smarty->display('main.tpl');
         <td  class="form_head" width="30%">
             <?php echo gettext("ID") ?> :
         </td>
-        <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+        <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
             <?php  echo $log['id'];?>
         </td>
    </tr>
@@ -82,7 +82,7 @@ $smarty->display('main.tpl');
         <td  class="form_head">
             <?php echo gettext("USER") ?> :
         </td>
-        <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+        <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
             <?php echo get_nameofadmin($log['iduser']);?>
         </td>
    </tr>
@@ -90,7 +90,7 @@ $smarty->display('main.tpl');
         <td  class="form_head">
             <?php echo gettext("LOG-LEVEL") ?> :
         </td>
-        <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+        <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
             <?php echo $log['loglevel']?>
         </td>
     </tr>
@@ -98,7 +98,7 @@ $smarty->display('main.tpl');
         <td  class="form_head">
             <?php echo gettext("ACTION") ?> :
         </td>
-        <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+        <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
             <?php echo $log['action']?>
         </td>
     </tr>
@@ -106,7 +106,7 @@ $smarty->display('main.tpl');
         <td  class="form_head">
             <?php echo gettext("DESCRIPTION") ?> :
         </td>
-        <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+        <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
             <?php echo $log['description']?>
         </td>
     </tr>
@@ -114,7 +114,7 @@ $smarty->display('main.tpl');
         <td  class="form_head">
             <?php echo gettext("TABLENAME") ?> :
         </td>
-        <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+        <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
             <?php echo $log['tablename']?>
         </td>
     </tr>
@@ -122,7 +122,7 @@ $smarty->display('main.tpl');
         <td  class="form_head">
             <?php echo gettext("IPADDRESS") ?> :
         </td>
-        <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+        <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
             <?php echo $log['ipaddress']?>
         </td>
     </tr>
@@ -130,7 +130,7 @@ $smarty->display('main.tpl');
         <td  class="form_head">
             <?php echo gettext("CREATION DATE") ?> :
         </td>
-        <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+        <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
             <?php echo $log['creationdate']?>
         </td>
     </tr>
@@ -138,7 +138,7 @@ $smarty->display('main.tpl');
         <td  class="form_head">
             <?php echo gettext("DATA") ?> :
         </td>
-        <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+        <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
             <?php echo $log['data']?>
         </td>
     </tr>
@@ -146,7 +146,7 @@ $smarty->display('main.tpl');
  <br/>
 <div style="width : 80%; text-align : right; margin-left:auto;margin-right:auto;" >
      <a class="cssbutton_big"  href="A2B_entity_log_viewer.php">
-        <img src="<?php echo Images_Path_Main;?>/icon_arrow_orange.gif"/>
+        <img src="<?= get_image_path("icon_arrow_orange.gif") ?>"/>
         <?php echo gettext("LOG LIST"); ?>
     </a>
 </div>

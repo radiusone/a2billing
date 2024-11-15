@@ -304,7 +304,7 @@ if ($FG_DEBUG == 3) echo "<br>Nb_record_max : $nb_record_max";
               <TBODY>
                 <TR>
                   <TD><SPAN style="COLOR: #ffffff; FONT-SIZE: 11px"><B><?php echo $FG_HTML_TABLE_TITLE?></B></SPAN></TD>
-                  <TD align=right><IMG alt="Back to Top" border=0 height=12 src="<?php echo Images_Path_Main ?>/btn_top_12x12.gif" width=12></TD>
+                  <TD align=right><IMG alt="Back to Top" border=0 height=12 src="<?= get_image_path("btn_top_12x12.gif", true) ?>" width=12></TD>
                 </TR>
               </TBODY>
             </TABLE></TD>
@@ -327,9 +327,9 @@ if ($FG_DEBUG == 3) echo "<br>Nb_record_max : $nb_record_max";
                     <span class="liens"><?php  } ?>
                     <?php echo $FG_TABLE_COL[$i][0]?>
                     <?php if ($order==$FG_TABLE_COL[$i][1] && $sens=="ASC") {?>
-                    &nbsp;<img src="<?php echo Images_Path_Main ?>/icon_up_12x12.GIF" width="12" height="12" border="0">
+                    &nbsp;<img src="<?= get_image_path("icon_up_12x12.GIF", true) ?>" width="12" height="12" border="0">
                     <?php } elseif ($order==$FG_TABLE_COL[$i][1] && $sens=="DESC") {?>
-                    &nbsp;<img src="<?php echo Images_Path_Main ?>/icon_down_12x12.GIF" width="12" height="12" border="0">
+                    &nbsp;<img src="<?= get_image_path("icon_down_12x12.GIF", true) ?>" width="12" height="12" border="0">
                     <?php }?>
                     <?php  if (strtoupper($FG_TABLE_COL[$i][4])=="SORT") {?>
                     </span></a>
@@ -342,7 +342,7 @@ if ($FG_DEBUG == 3) echo "<br>Nb_record_max : $nb_record_max";
 
                 </TR>
                 <TR>
-                  <TD bgColor=#e1e1e1 colSpan=4 height=1><IMG height=1 src="<?php echo Images_Path_Main ?>/clear.gif" width=1></TD>
+                  <TD bgColor=#e1e1e1 colSpan=4 height=1><IMG height=1 src="<?= get_image_path("clear.gif", true) ?>" width=1></TD>
                 </TR>
                 <?php
                        $ligne_number=0;
@@ -384,12 +384,12 @@ if ($FG_DEBUG == 3) echo "<br>Nb_record_max : $nb_record_max";
                  ?>
                 <TR>
                   <TD class=tableDivider colSpan=<?php echo $FG_TOTAL_TABLE_COL?>><IMG height=1
-                              src="<?php echo Images_Path_Main ?>/clear.gif"
+                              src="<?= get_image_path("clear.gif", true) ?>"
                               width=1></TD>
                 </TR>
                 <TR>
                   <TD class=tableDivider colSpan=<?php echo $FG_TOTAL_TABLE_COL?>><IMG height=1
-                              src="<?php echo Images_Path_Main ?>/clear.gif"
+                              src="<?= get_image_path("clear.gif", true) ?>"
                               width=1></TD>
                 </TR>
               </TBODY>

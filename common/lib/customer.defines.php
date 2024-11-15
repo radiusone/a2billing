@@ -86,11 +86,6 @@ define('TEXT_CCVAL_ERROR_UNKNOWN_CARD', gettext('The first four digits of the nu
 define('JS_ERROR', gettext('Errors have occured during the process of your form.')."\n\n".gettext('Please make the following corrections:\n\n'));
 define('JS_ERROR_NO_PAYMENT_MODULE_SELECTED', '* '.gettext('Please select a payment method for your order.').'\n');
 
-//Images Path
-define ("Images_Path", "./templates/$_SESSION[stylefile]/images");
-define ("Images_Path_Main", "./templates/$_SESSION[stylefile]/images");
-define ("KICON_PATH", "./templates/$_SESSION[stylefile]/images/kicons");
-const DIR_WS_IMAGES = Images_Path . '/';
 define ("ADMIN_EMAIL", $A2B->config["global"]['admin_email'] ?? null);
 
 const ENABLE_LOG = false;

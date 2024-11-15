@@ -263,13 +263,13 @@ Browse here the pending and completed callbacks. You will see that different par
 
     $CC_help_signup_agent = create_help(gettext("This shows a list of all signup key create for the Agents, this key is used to identify the default paramater for the subscription on the signup page"));
 
-$SPOT['PAYPAL'] = '<a href="https://www.paypal.com/en/mrb/pal=PGSJEXAEXKTBU" target="_blank"><img src="' . KICON_PATH . '/paypal_logo.gif" alt="Paypal"/></a>';
-$SPOT['MONEYBOOKERS'] = '<a href="https://www.moneybookers.com/app/?rid=811621" target="_blank"><img src="' . KICON_PATH . '/moneybookers.gif" alt="Moneybookers"/></a>';
-//$SPOT['AUTHORIZENET'] = '<a href="http://authorize.net/" target="_blank"><img src="'.KICON_PATH.'/authorize.gif" alt="Authorize.net"/></a>';
+$SPOT['PAYPAL'] = '<a href="https://www.paypal.com/en/mrb/pal=PGSJEXAEXKTBU" target="_blank"><img src="' . get_image_path("kicons/paypal_logo.gif") . '" alt="Paypal"/></a>';
+$SPOT['MONEYBOOKERS'] = '<a href="https://www.moneybookers.com/app/?rid=811621" target="_blank"><img src="' . get_image_path("kicons/moneybookers.gif") . '" alt="Moneybookers"/></a>';
+//$SPOT['AUTHORIZENET'] = '<a href="http://authorize.net/" target="_blank"><img src="' . get_image_path("kicons/authorize.gif") . '" alt="Authorize.net"/></a>';
 $SPOT['AUTHORIZENET'] = '';
-//$SPOT['WORLDPAY'] = '<a href="http://www.worldpay.com/" target="_blank"><img src="'.KICON_PATH.'/worldpay.gif" alt="worldpay.com"/></a>';
+//$SPOT['WORLDPAY'] = '<a href="http://www.worldpay.com/" target="_blank"><img src="' . get_image_path("kicons/worldpay.gif") . '" alt="worldpay.com"/></a>';
 $SPOT['WORLDPAY'] = '';
-$SPOT['PLUGNPAY'] = '<a href="http://www.plugnpay.com/" target="_blank"><img src="' . KICON_PATH . '/plugnpay.png" alt="plugnpay.com"/></a>';
+$SPOT['PLUGNPAY'] = '<a href="http://www.plugnpay.com/" target="_blank"><img src="' . get_image_path("kicons/plugnpay.png") . '" alt="plugnpay.com"/></a>';
 $PAYMENT_METHOD = '
 <table width="100%" align="center">
     <tr>

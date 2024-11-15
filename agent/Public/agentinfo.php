@@ -86,7 +86,7 @@ $smarty->display( 'main.tpl');
 <div>
 <table  class="tablebackgroundblue"  align="center">
 <tr>
-    <td><img src="<?php echo KICON_PATH ?>/personal.gif" align="left" class="kikipic"/></td>
+    <td><img src="<?= get_image_path("kicons/personal.gif") ?>" align="left" class="kikipic"/></td>
     <td width="50%"><font class="fontstyle_002">
     <?php echo gettext("LAST NAME");?> :</font>  <font class="fontstyle_007"><?php echo $agent_info[2]; ?></font>
     <br/><font class="fontstyle_002"><?php echo gettext("FIRST NAME");?> :</font> <font class="fontstyle_007"><?php echo $agent_info[3]; ?></font>
@@ -121,7 +121,7 @@ $smarty->display( 'main.tpl');
     <td align="center">
         <table width="80%" align="center" class="tablebackgroundcamel">
         <tr>
-            <td rowspan="2"><img src="<?php echo KICON_PATH ?>/gnome-finance.gif" class="kikipic"/></td>
+            <td rowspan="2"><img src="<?= get_image_path("kicons/gnome-finance.gif") ?>" class="kikipic"/></td>
             <td width="50%">
             <br><font class="fontstyle_002"><?php echo gettext("AGENT ID");?> :</font><font class="fontstyle_007"> <?php echo $agent_info[12]; ?></font>
                 <br/><br>
@@ -130,7 +130,7 @@ $smarty->display( 'main.tpl');
             <br/><font class="fontstyle_002"><?php echo gettext("BALANCE REMAINING");?> :</font><font class="fontstyle_007"> <?php echo $credit_cur.' '.$agent_info[1]; ?> </font>
 
             </td>
-            <td valign="bottom" align="right" rowspan="2"  ><img src="<?php echo KICON_PATH ?>/help_index.gif" class="kikipic"></td>
+            <td valign="bottom" align="right" rowspan="2"  ><img src="<?= get_image_path("kicons/help_index.gif") ?>" class="kikipic"></td>
         </tr>
         <tr>
             <td>
@@ -164,7 +164,7 @@ if ($A2B->config["epayment_method"]['enable']) { ?>
 ?>
 
 <table style="width:70%;margin:0 auto;" cellspacing="0" align="center" >
-    <tr background="<?php echo Images_Path; ?>/background_cells.gif" >
+    <tr background="<?= get_image_path("background_cells.gif") ?>" >
         <TD  valign="top" align="right" class="tableBodyRight"   >
             <font size="2"><?php echo gettext("Click below to buy credit : ");?> </font>
         </TD>

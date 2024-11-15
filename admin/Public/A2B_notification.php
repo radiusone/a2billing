@@ -201,7 +201,7 @@ $list_notifications = NotificationsDAO::getNotifications($_SESSION['admin_id'],(
                   <?php echo $notification->getKeyMsg();
                   $url = $notification->getUrl()?>
                   <?php if (!empty($url)) {?>
-                            &nbsp; <a href="<?php echo $notification->getUrl();?>"> <img src="<?php echo Images_Path."/link.png"?>" style="vertical-align:bottom;" border="0" /></a>
+                            &nbsp; <a href="<?php echo $notification->getUrl();?>"> <img src="<?= get_image_path("link.png")?>" style="vertical-align:bottom;" border="0" /></a>
                   <?php }?>
                 </td>
                 <td class="tableBody"  align="center">
@@ -211,7 +211,7 @@ $list_notifications = NotificationsDAO::getNotifications($_SESSION['admin_id'],(
                 <?php if ($notification->getNew()) { ?>
                     <strong style="font-size:8px; color:#B00000; background-color:white; border:solid 1px;"> &nbsp;NEW&nbsp;</strong>
                 <?php } elseif (has_rights (Admin::ACX_DELETE_NOTIFICATIONS)) { ?>
-                    <img id=" <?php echo $notification->getId(); ?>" onmouseover="this.style.cursor='pointer'" class="delete" src="<?php echo Images_Path ?>/delete.png" title="<?php echo gettext("Delete this Notification")?>" alt="<?php echo gettext("Delete this Notification")?>" border="0"/>
+                    <img id=" <?php echo $notification->getId(); ?>" onmouseover="this.style.cursor='pointer'" class="delete" src="<?= get_image_path("delete.png") ?>" title="<?php echo gettext("Delete this Notification")?>" alt="<?php echo gettext("Delete this Notification")?>" border="0"/>
                 <?php } ?>
                 </td>
             </tr>

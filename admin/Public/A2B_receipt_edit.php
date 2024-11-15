@@ -166,8 +166,8 @@ $smarty->display('main.tpl');
                     <?php echo number_format(round($item->getPrice(),2),2)." ".strtoupper(BASE_CURRENCY); ?>
                 </td>
                 <td align="center">
-                    <a href="?id=<?php echo $id; ?>&action=edit&idc=<?php echo $item->getId();?>"><img src="<?php echo Images_Path ?>/edit.png" title="<?php echo gettext("Edit Item") ?>" alt="<?php echo gettext("Edit Item") ?>" border="0"></a>
-                    <a href="?id=<?php echo $id; ?>&action=delete&idc=<?php echo $item->getId();?>"><img src="<?php echo Images_Path ?>/delete.png" title="<?php echo gettext("Delete Item") ?>" alt="<?php echo gettext("Delete Item") ?>" border="0"></a>
+                    <a href="?id=<?php echo $id; ?>&action=edit&idc=<?php echo $item->getId();?>"><img src="<?= get_image_path("edit.png") ?>" title="<?php echo gettext("Edit Item") ?>" alt="<?php echo gettext("Edit Item") ?>" border="0"></a>
+                    <a href="?id=<?php echo $id; ?>&action=delete&idc=<?php echo $item->getId();?>"><img src="<?= get_image_path("delete.png") ?>" title="<?php echo gettext("Delete Item") ?>" alt="<?php echo gettext("Delete Item") ?>" border="0"></a>
                 </td>
             </tr>
              <?php } ?>

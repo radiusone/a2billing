@@ -59,7 +59,7 @@ $HD_Form_c->list_query_conditions["cc_card.id"] = ["`id_cc_card`"];
 $HD_Form_c -> FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form_c -> FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_charge.php?form_action=ask-add";
 $HD_Form_c -> FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form_c -> FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add a Charge");
-$HD_Form_c -> FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/add.png" ;
+$HD_Form_c -> FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("add.png") ;
 
 // -- chargetype : 1 - connection charge for DID setup, 2 - Montly charge for DID use, 3 - Subscription fee, 4 - Extra Charge, etc...
 $chargetype_list = array();

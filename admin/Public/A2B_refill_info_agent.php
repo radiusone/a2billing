@@ -67,7 +67,7 @@ $smarty->display('main.tpl');
 <br/>
 <table style="width : 80%;" class="editform_table1">
    <tr>
-           <th colspan="2" background="../Public/templates/default/images/background_cells.gif">
+           <th colspan="2" background="<?= get_image_path("background_cells.gif") ?>">
                <?php echo gettext("REFILL INFO") ?>
            </th>
    </tr>
@@ -75,7 +75,7 @@ $smarty->display('main.tpl');
         <td  class="form_head">
             <?php echo gettext("AGENT") ?> :
         </td>
-        <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+        <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
             <?php
             if (has_rights (Admin::ACX_ADMINISTRATOR)) {
                 echo get_linktoagent($refill['agent_id']);
@@ -89,7 +89,7 @@ $smarty->display('main.tpl');
         <td  class="form_head">
             <?php echo gettext("AMOUNT") ?> :
         </td>
-        <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+        <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
             <?php echo $refill['credit']." ".strtoupper(BASE_CURRENCY);?>
         </td>
    </tr>
@@ -97,7 +97,7 @@ $smarty->display('main.tpl');
         <td  class="form_head">
             <?php echo gettext("CREATION DATE") ?> :
         </td>
-        <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+        <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
             <?php echo $refill['date']?>
         </td>
     </tr>
@@ -105,7 +105,7 @@ $smarty->display('main.tpl');
         <td  class="form_head">
             <?php echo gettext("REFILL TYPE") ?> :
         </td>
-        <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+        <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
             <?php
             $list_type = getRefillType_List();
             echo $list_type[$refill['refill_type']][0];?>
@@ -115,7 +115,7 @@ $smarty->display('main.tpl');
         <td  class="form_head">
             <?php echo gettext("DESCRIPTION ") ?> :
         </td>
-        <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+        <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
             <?php echo $refill['description']?>
         </td>
     </tr>
@@ -124,7 +124,7 @@ $smarty->display('main.tpl');
  <br/>
 <div style="width : 80%; text-align : right; margin-left:auto;margin-right:auto;" >
      <a class="cssbutton_big"  href="A2B_entity_logrefill_agent.php">
-        <img src="<?php echo Images_Path_Main;?>/icon_arrow_orange.gif"/>
+        <img src="<?= get_image_path("icon_arrow_orange.gif") ?>"/>
         <?php echo gettext("REFILLS AGENT LIST"); ?>
     </a>
 </div>

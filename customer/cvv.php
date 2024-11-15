@@ -55,7 +55,7 @@ if (! has_rights (Customer::ACX_ACCESS)) {
 
 <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="569" id="AutoNumber1" height="223">
   <tr>
-    <td><img border="0" src="<?php echo Images_Path; ?>/cvv.jpg" width="569" height="223"></td>
+    <td><img border="0" src="<?= get_image_path("cvv.jpg", true) ?>" width="569" height="223"></td>
   </tr>
 </table>
 

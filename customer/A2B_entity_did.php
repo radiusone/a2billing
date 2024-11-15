@@ -144,7 +144,7 @@ if ($action_release == "ask_release") {
                 <td style="border-bottom: medium dotted rgb(255, 119, 102);">&nbsp; </td>
             </tr>
             <tr>
-                    <td width="190" align="right" class="text"><INPUT title="<?php echo gettext("Release the DID ");?> " alt="<?php echo gettext("Release the DID "); ?>" hspace=2 name=submit src="<?php echo Images_Path;?>/btn_release_did_94x20.gif" type="image"></td>
+                    <td width="190" align="right" class="text"><INPUT title="<?php echo gettext("Release the DID ");?> " alt="<?php echo gettext("Release the DID "); ?>" hspace=2 name=submit src="<?= get_image_path("btn_release_did_94x20.gif", true) ?>" type="image"></td>
             </tr>
         </TABLE>
     </FORM>

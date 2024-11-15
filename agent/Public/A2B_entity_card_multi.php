@@ -328,7 +328,7 @@ $list_group = $instance_table_group  -> get_list ($HD_Form->DBHandle, $FG_TABLE_
     <?php } ?>
     </select>
     <?php if ($tariff_error) { ?>
-        <img style="vertical-align:middle;" src="<?php echo Images_Path;?>/exclamation.png" />
+        <img style="vertical-align:middle;" src="<?= get_image_path("exclamation.png") ?>" />
     <?php } ?>
     <br/>
 
@@ -385,14 +385,14 @@ $list_group = $instance_table_group  -> get_list ($HD_Form->DBHandle, $FG_TABLE_
     <strong>10)</strong>
     <?php echo gettext("Expiry Date");?> : <input class="form_input_text"  name="expirationdate" size="40" maxlength="40" <?php if(!empty($expirationdate)) echo "value='$expirationdate'"; else echo $comp_date_plus;?> > <?php echo gettext("(Format YYYY-MM-DD HH:MM:SS)");?>
     <?php if ($expdate_error) { ?>
-        <img style="vertical-align:middle;" src="<?php echo Images_Path;?>/exclamation.png" />
+        <img style="vertical-align:middle;" src="<?= get_image_path("exclamation.png") ?>" />
     <?php } ?>
     <br/>
 
     <strong>11)</strong>
    <?php echo gettext("Expiry days");?> : <input class="form_input_text"  name="expiredays" size="10" maxlength="6" value="<?php if(is_numeric($expiredays) && $expiredays>0) echo $expiredays; else echo 0;?>">
     <?php if ($expday_error) { ?>
-        <img style="vertical-align:middle;" src="<?php echo Images_Path;?>/exclamation.png" />
+        <img style="vertical-align:middle;" src="<?= get_image_path("exclamation.png") ?>" />
     <?php } ?>
     <br/>
 
@@ -418,7 +418,7 @@ $list_group = $instance_table_group  -> get_list ($HD_Form->DBHandle, $FG_TABLE_
     <?php } ?>
     </select>
     <?php if ($group_error) { ?>
-        <img style="vertical-align:middle;" src="<?php echo Images_Path;?>/exclamation.png" />
+        <img style="vertical-align:middle;" src="<?= get_image_path("exclamation.png") ?>" />
     <?php } ?>
     <br/>
     <strong>16)</strong>

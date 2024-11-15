@@ -202,12 +202,12 @@ foreach ($messages as $message) {
     ?>
     <div id="msg" class="<?php echo $message_types[$message['type']][2];?>" style="margin-top:0px;position:relative;<?php if($message['logo']==0)echo 'background-image:none;padding-left:10px;'; ?>" >
         <?php if ($message['order_display']>0) { ?>
-            <img id="<?php echo $message['id']; ?>" class="up" src="<?php echo Images_Path ?>/arrow_up.png"  border="0" style="position:absolute;right:60px;top:0;display:none;cursor:pointer"/>
+            <img id="<?php echo $message['id']; ?>" class="up" src="<?= get_image_path("arrow_up.png") ?>"  border="0" style="position:absolute;right:60px;top:0;display:none;cursor:pointer"/>
          <?php } ?>
-        <img id="<?php echo $message['id']; ?>" class="delete" src="<?php echo Images_Path ?>/delete.png"  border="0" style="position:absolute;right:40px;top:0;display:none;cursor:pointer"/>
-            <img id="<?php echo $message['id']; ?>" class="edit" src="<?php echo Images_Path ?>/edit.png"  border="0" style="position:absolute;right:20px;top:0;display:none;cursor:pointer"/>
+        <img id="<?php echo $message['id']; ?>" class="delete" src="<?= get_image_path("delete.png") ?>"  border="0" style="position:absolute;right:40px;top:0;display:none;cursor:pointer"/>
+            <img id="<?php echo $message['id']; ?>" class="edit" src="<?= get_image_path("edit.png") ?>"  border="0" style="position:absolute;right:20px;top:0;display:none;cursor:pointer"/>
          <?php if ($message['order_display']<$size_msg-1) { ?>
-            <img id="<?php echo $message['id']; ?>" class="down" src="<?php echo Images_Path ?>/arrow_down.png"  border="0" style="position:absolute;right:0px;top:0;display:none;cursor:pointer" />
+            <img id="<?php echo $message['id']; ?>" class="down" src="<?= get_image_path("arrow_down.png") ?>"  border="0" style="position:absolute;right:0px;top:0;display:none;cursor:pointer" />
          <?php } ?>
         <?php echo stripslashes($message['message']); ?>
     </div>

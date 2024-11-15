@@ -87,7 +87,6 @@ if(isset($_SESSION["admin_id"])) {
 }
 
 $smarty->assign("HTTP_HOST", $_SERVER['HTTP_HOST']);
-$smarty->assign("ASTERISK_GUI_LINK", ASTERISK_GUI_LINK);
 
 /** @var ?Profiler $profiler from common.defines.php */
 try {

@@ -123,7 +123,7 @@ if (is_array($result)) {
     <TBODY>
     <TR>
         <TD width="%25" valign="middle" class="form_head"> <?php echo gettext('Language');?> </TD>
-        <TD width="%75" valign="top" class="tableBodyRight" background="../Public/templates/default/images/background_cells.gif" class="text">
+        <TD width="%75" valign="top" class="tableBodyRight" background="<?= get_image_path("background_cells.gif") ?>" class="text">
             <select NAME="languages" size="1" class="form_input_select" onChange="form.submit()">
             <?php
                 foreach ($languages_list as $key => $lang_value) {
@@ -144,7 +144,7 @@ if (is_array($result)) {
 
     <TR>
         <TD width="%25" valign="middle" class="form_head"> <?php echo gettext('Subject');?> </TD>
-        <TD width="%75" valign="top" class="tableBodyRight" background="../Public/templates/default/images/background_cells.gif" class="text">
+        <TD width="%75" valign="top" class="tableBodyRight" background="<?= get_image_path("background_cells.gif") ?>" class="text">
         <INPUT class="form_input_text" name="subject"  size=30 maxlength=30 value="<?php echo $mail[0][2]?>">
         <span class="liens">
         </span>
@@ -153,7 +153,7 @@ if (is_array($result)) {
 
     <TR>
         <TD width="%25" valign="middle" class="form_head"> <?php echo gettext('Mail Text');?> </TD>
-        <TD width="%75" valign="top" class="tableBodyRight" background="../Public/templates/default/images/background_cells.gif" class="text">
+        <TD width="%75" valign="top" class="tableBodyRight" background="<?= get_image_path("background_cells.gif") ?>" class="text">
         <TEXTAREA class="form_input_textarea" name="mailtext" cols=60 rows=12><?php echo $mail[0][3]?></TEXTAREA>
         <span class="liens">
         </span>

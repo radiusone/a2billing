@@ -321,9 +321,9 @@ if ($FG_DEBUG == 3) echo "<br>Nb_record_max : $nb_record_max";
                         <font color="#FFFFFF"><?php  } ?>
                         <?php echo $FG_TABLE_COL[$i][0]?>
                         <?php if ($FG_ORDER==$FG_TABLE_COL[$i][1] && $FG_SENS=="ASC") {?>
-                        &nbsp;<img src="<?php echo Images_Path_Main;?>/icon_up_12x12.GIF" border="0">
+                        &nbsp;<img src="<?= get_image_path("icon_up_12x12.GIF") ?>" border="0">
                         <?php } elseif ($FG_ORDER==$FG_TABLE_COL[$i][1] && $FG_SENS=="DESC") {?>
-                        &nbsp;<img src="<?php echo Images_Path_Main;?>/icon_down_12x12.GIF" border="0">
+                        &nbsp;<img src="<?= get_image_path("icon_down_12x12.GIF") ?>" border="0">
                         <?php }?>
                         <?php  if (strtoupper($FG_TABLE_COL[$i][4])=="SORT") {?>
                         </font></a>

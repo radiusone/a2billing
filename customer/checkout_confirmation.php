@@ -211,7 +211,7 @@ if (is_array($payment_modules->modules)) {
         <td  align=left class="main"> <b><?php echo gettext("Please click button to confirm your order")?>.</b>
         </td>
         <td align=right halign=center>
-        <input type="image" src="<?php echo Images_Path;?>/button_confirm_order.gif" alt="Confirm Order" border="0" title="Confirm Order">
+        <input type="image" src="<?= get_image_path("button_confirm_order.gif", true) ?>" alt="Confirm Order" border="0" title="Confirm Order">
         &nbsp;</td>
     </tr>
 </table>

@@ -224,7 +224,7 @@ $(function() {
 <?php
     if ($_REQUEST['id']==null) {
 ?>
-<center><a href="#" target="_self" class="toggle_menu"><img class="toggle_hide2show" src="<?php echo KICON_PATH; ?>/toggle_hide2show.png" onmouseover="this.style.cursor='hand';" HEIGHT="16"> <font class="fontstyle_002"><?php echo gettext("SEARCH CUSTOMERS");?> </font></a></center>
+<center><a href="#" target="_self" class="toggle_menu"><img class="toggle_hide2show" src="<?= get_image_path("kicons/toggle_hide2show.png") ?>" onmouseover="this.style.cursor='hand';" HEIGHT="16"> <font class="fontstyle_002"><?php echo gettext("SEARCH CUSTOMERS");?> </font></a></center>
     <div class="tohide" style="display:none;">
 <?php
     }
@@ -288,7 +288,7 @@ $(function() {
 ?>
     <TR>
         <TD width="%25" valign="middle" class="form_head"><?php echo gettext("TO");?></TD>
-        <TD width="%75" valign="top" class="tableBodyRight" background="../Public/templates/default/images/background_cells.gif" >
+        <TD width="%75" valign="top" class="tableBodyRight" background="<?= get_image_path("background_cells.gif") ?>" >
         <?php
             $link_to_customer = CUSTOMER_UI_URL;
             if ($nb_customer==1) {
@@ -311,31 +311,31 @@ $(function() {
 ?>
     <TR>
         <TD width="%25" valign="middle" class="form_head">&nbsp;</TD>
-        <TD width="%75" valign="top" class="tableBodyRight" background="../Public/templates/default/images/background_cells.gif" >
+        <TD width="%75" valign="top" class="tableBodyRight" background="<?= get_image_path("background_cells.gif") ?>" >
             <input id="loadtmpl" class="form_input_button" style="vertical-align:top" TYPE="button" VALUE=" <?php echo gettext("LOAD TEMPLATE");?> " />
          </TD>
     </TR>
     <TR>
         <TD width="%25" valign="middle" class="form_head"><?php echo gettext("EMAIL FROM");?></TD>
-        <TD width="%75" valign="top" class="tableBodyRight" background="../Public/templates/default/images/background_cells.gif">
+        <TD width="%75" valign="top" class="tableBodyRight" background="<?= get_image_path("background_cells.gif") ?>">
             <INPUT class="form_input_text" id="from" name="from"  size="30" maxlength="80" value="<?php echo EMAIL_ADMIN; ?>"><span class="liens"></span>&nbsp;
          </TD>
     </TR>
     <TR>
         <TD width="%25" valign="middle" class="form_head"><?php echo gettext("FROM NAME");?></TD>
-        <TD width="%75" valign="top" class="tableBodyRight" background="../Public/templates/default/images/background_cells.gif">
+        <TD width="%75" valign="top" class="tableBodyRight" background="<?= get_image_path("background_cells.gif") ?>">
             <INPUT class="form_input_text" id="fromname" name="fromname"  size="30" maxlength="80" value=""><span class="liens"></span>&nbsp;
          </TD>
     </TR>
     <TR>
         <TD width="%25" valign="middle" class="form_head"><?php echo gettext("SUBJECT");?></TD>
-        <TD width="%75" valign="top" class="tableBodyRight" background="../Public/templates/default/images/background_cells.gif">
+        <TD width="%75" valign="top" class="tableBodyRight" background="<?= get_image_path("background_cells.gif") ?>">
             <INPUT class="form_input_text" name="subject" id="subject"  size="50" maxlength="120" value=""><span class="liens"></span>&nbsp;
          </TD>
     </TR>
     <TR>
         <TD width="%25" valign="middle" class="form_head"><?php echo gettext("MESSAGE");?></TD>
-        <TD width="%75" valign="top" class="tableBodyRight" background="../Public/templates/default/images/background_cells.gif">
+        <TD width="%75" valign="top" class="tableBodyRight" background="<?= get_image_path("background_cells.gif") ?>">
         <TEXTAREA id="msg_mail" class="form_input_textarea" name="message"  cols="80" rows="15"></textarea>
             <span class="liens"></span>&nbsp; </TD>
      </TR>

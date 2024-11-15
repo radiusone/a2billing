@@ -83,7 +83,7 @@ switch ($actionbtn) {
                 <td style="border-bottom: medium dotted rgb(255, 119, 102);">&nbsp; </td>
             </tr>
             <tr>
-                    <td width="190" align="right" class="text"><INPUT title="<?php echo gettext("Release the DID ");?> " alt="<?php echo gettext("Release the DID "); ?>" hspace=2 id=submit22 name=submit22 src="<?php echo Images_Path_Main;?>/btn_release_did_94x20.gif" type="image"></td>
+                    <td width="190" align="right" class="text"><INPUT title="<?php echo gettext("Release the DID ");?> " alt="<?php echo gettext("Release the DID "); ?>" hspace=2 id=submit22 name=submit22 src="<?= get_image_path("btn_release_did_94x20.gif") ?>" type="image"></td>
             </tr>
         </TABLE>
     </FORM>
@@ -131,7 +131,7 @@ $inuse ??= 1;
                 <td class="bgcolor_004" align="left" >
             </td>
             <td class="bgcolor_005" align="center" >
-                <input type="image"  name="image16" align="top" border="0" src="<?php echo Images_Path;?>/button-search.gif" />
+                <input type="image"  name="image16" align="top" border="0" src="<?= get_image_path("button-search.gif") ?>" />
               </td>
             </tr>
         </tbody></table>

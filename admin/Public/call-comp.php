@@ -334,7 +334,7 @@ $smarty->display('main.tpl');
 
                 </td>
                 <td class="bgcolor_003" align="left">
-                <center><input type="image"  name="image16" align="top" border="0" src="<?php echo Images_Path;?>/button-search.gif" />
+                <center><input type="image"  name="image16" align="top" border="0" src="<?= get_image_path("button-search.gif") ?>" />
                 </center>
                 </td>
             </tr>

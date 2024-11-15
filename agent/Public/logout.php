@@ -48,7 +48,7 @@ require_once "../../common/lib/agent.defines.php";
           <tr><td  class="bgcolor_021" align="center" colSpan=3 height=16 style="PADDING-LEFT: 2px; PADDING-RIGHT: 2px">
           </td>
           </tr>
-          <tr><td class="bgcolor_021"> <img height=1 src="<?php echo Images_Path;?>/clear.gif" width=1>
+          <tr><td class="bgcolor_021"> <img height=1 src="<?= get_image_path("clear.gif") ?>" width=1>
             </td>
             <td  class="bgcolor_024" style="PADDING-BOTTOM: 2px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 2px">
               <table width="90%" border=0 align="center" cellPadding=0 cellSpacing=0>
@@ -63,11 +63,11 @@ require_once "../../common/lib/agent.defines.php";
 
                   </tbody>
               </table></td>
-            <td class="bgcolor_021"><img height=1 src="<?php echo Images_Path;?>/clear.gif" width=1>
+            <td class="bgcolor_021"><img height=1 src="<?= get_image_path("clear.gif") ?>" width=1>
             </td>
           </tr>
           <tr>
-            <td class="bgcolor_021" colSpan=3><img height=1 src="<?php echo Images_Path;?>/clear.gif" width=1></td>
+            <td class="bgcolor_021" colSpan=3><img height=1 src="<?= get_image_path("clear.gif") ?>" width=1></td>
 
           </tr>
         </tbody>

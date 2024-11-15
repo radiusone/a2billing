@@ -60,7 +60,7 @@ $HD_Form->list_query_conditions["cc_ticket.creator_type"] = 0;
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_ticket_agent.php?form_action=ask-add";
 $HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add TICKET");
-$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = Images_Path ."/note_add.png" ;
+$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("note_add.png") ;
 
 
 $priority_list = getTicketPriorityList();
@@ -82,7 +82,7 @@ $HD_Form -> AddViewElement(gettext("STATUS"), "status", true, 0, "", "list", $st
 $HD_Form -> FieldViewElement ("cc_ticket.id, cc_ticket.creator, cc_agent.login, title, cc_ticket.creationdate, id_component , priority , $filter_view , cc_ticket.status");
 
 $HD_Form -> FG_OTHER_BUTTON1_LINK = "CC_ticket_view.php?id=";
-$HD_Form -> FG_OTHER_BUTTON1_IMG = Images_Path."/icon-viewdetails.gif";
+$HD_Form -> FG_OTHER_BUTTON1_IMG = get_image_path("icon-viewdetails.gif");
 $HD_Form -> FG_OTHER_BUTTON1_ALT = gettext("VIEW DETAILS");
 
 if (!($popup_select>=1))	 $HD_Form -> search_form_enabled = true;

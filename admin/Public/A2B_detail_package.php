@@ -343,7 +343,7 @@ $smarty->display('main.tpl');
             <tr>
                 <td class="bgcolor_004" align="left" > </td>
                 <td class="bgcolor_005" align="center" >
-                    <input type="image"  name="image16" align="top" border="0" src="<?php echo Images_Path;?>/button-search.gif" />
+                    <input type="image"  name="image16" align="top" border="0" src="<?= get_image_path("button-search.gif") ?>" />
 
                   </td>
             </tr>
@@ -388,9 +388,9 @@ $smarty->display('main.tpl');
                     <span class="liens"><?php  } ?>
                     <?php echo $FG_TABLE_COL[$i][0]?>
                     <?php if ($order==$FG_TABLE_COL[$i][1] && $sens=="ASC") {?>
-                    &nbsp;<img src="<?php echo Images_Path;?>/icon_up_12x12.GIF" width="12" height="12" border="0">
+                    &nbsp;<img src="<?= get_image_path("icon_up_12x12.GIF") ?>" width="12" height="12" border="0">
                     <?php } elseif ($order==$FG_TABLE_COL[$i][1] && $sens=="DESC") {?>
-                    &nbsp;<img src="<?php echo Images_Path;?>/icon_down_12x12.GIF" width="12" height="12" border="0">
+                    &nbsp;<img src="<?= get_image_path("icon_down_12x12.GIF") ?>" width="12" height="12" border="0">
                     <?php }?>
                     <?php  if (strtoupper($FG_TABLE_COL[$i][4])=="SORT") {?>
                     </span></a>
@@ -485,7 +485,7 @@ $smarty->display('main.tpl');
                 <TR>
                   <TD align="right"><SPAN  class="fontstyle_003" >
                     <?php if ($current_page>0) {?>
-                    <img src="<?php echo Images_Path;?>/fleche-g.gif" width="5" height="10"> <a href="?order=<?php echo $order?>&sens=<?php echo $sens?>&current_page=<?php  echo ($current_page-1)?><?php  if (!is_null($letter) && ($letter!="")) { echo "&letter=$letter";}
+                    <img src="<?= get_image_path("fleche-g.gif") ?>" width="5" height="10"> <a href="?order=<?php echo $order?>&sens=<?php echo $sens?>&current_page=<?php  echo ($current_page-1)?><?php  if (!is_null($letter) && ($letter!="")) { echo "&letter=$letter";}
                     echo "&customer=$customer&posted=$posted&Period=$Period&frommonth=$frommonth&fromstatsmonth=$fromstatsmonth&tomonth=$tomonth&tostatsmonth=$tostatsmonth&fromday=$fromday&fromstatsday_sday=$fromstatsday_sday&fromstatsmonth_sday=$fromstatsmonth_sday&today=$today&tostatsday_sday=$tostatsday_sday&tostatsmonth_sday=$tostatsmonth_sday&dsttype=$dsttype&srctype=$srctype&clidtype=$clidtype&channel=$channel&resulttype=$resulttype&dst=$dst&src=$src&clid=$clid&terminatecauseid=$terminatecauseid&enter_cardid=$enter_cardid&enterprovider=$enterprovider&entertrunk=$entertrunk";?>">
                     <?php echo gettext("Previous");?> </a> -
                     <?php }?>
@@ -493,7 +493,7 @@ $smarty->display('main.tpl');
                     <?php if ($current_page<$nb_record_max-1) {?>
                     - <a href="?order=<?php echo $order?>&sens=<?php echo $sens?>&current_page=<?php  echo ($current_page+1)?><?php  if (!is_null($letter) && ($letter!="")) { echo "&letter=$letter";}
                     echo "&customer=$customer&posted=$posted&Period=$Period&frommonth=$frommonth&fromstatsmonth=$fromstatsmonth&tomonth=$tomonth&tostatsmonth=$tostatsmonth&fromday=$fromday&fromstatsday_sday=$fromstatsday_sday&fromstatsmonth_sday=$fromstatsmonth_sday&today=$today&tostatsday_sday=$tostatsday_sday&tostatsmonth_sday=$tostatsmonth_sday&dsttype=$dsttype&srctype=$srctype&clidtype=$clidtype&channel=$channel&resulttype=$resulttype&dst=$dst&src=$src&clid=$clid&terminatecauseid=$terminatecauseid&enter_cardid=$enter_cardid&enterprovider=$enterprovider&entertrunk=$entertrunk";?>">
-                    <?php echo gettext("Next");?></a> <img src="<?php echo Images_Path;?>/fleche-d.gif" width="5" height="10">
+                    <?php echo gettext("Next");?></a> <img src="<?= get_image_path("fleche-d.gif") ?>" width="5" height="10">
                     </SPAN>
                     <?php }?>
                   </TD>
@@ -591,7 +591,7 @@ foreach ($list_total_day as $data) {
         <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$i]?>" align="right" nowrap="nowrap"><font class="fontstyle_006"><?php echo $minutes?> </font></td>
         <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$i]?>" align="left" nowrap="nowrap" width="<?php echo $widthbar+60?>">
         <table cellspacing="0" cellpadding="0"><tbody><tr>
-        <td bgcolor="#e22424"><img src="<?php echo Images_Path;?>/spacer.gif" width="<?php echo $widthbar?>" height="6"></td>
+        <td bgcolor="#e22424"><img src="<?= get_image_path("spacer.gif") ?>" width="<?php echo $widthbar?>" height="6"></td>
         </tr></tbody></table></td>
         <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$i]?>" align="right" nowrap="nowrap"><font class="fontstyle_006"><?php echo $data[2]?></font></td>
      <?php 	 $j++;}

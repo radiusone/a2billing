@@ -63,7 +63,7 @@ $lg_liste= getLanguages();
 <br/>
 <table style="width : 80%;" class="editform_table1">
    <tr>
-           <th colspan="2" background="../Public/templates/default/images/background_cells.gif">
+           <th colspan="2" background="<?= get_image_path("background_cells.gif") ?>">
                <?php echo gettext("AGENT INFO") ?>
            </th>
    </tr>
@@ -71,7 +71,7 @@ $lg_liste= getLanguages();
         <td  class="form_head">
             <?php echo gettext("LOGIN") ?> :
         </td>
-        <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+        <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
             &nbsp;<?php echo $agent['login']?>
         </td>
     </tr>
@@ -79,7 +79,7 @@ $lg_liste= getLanguages();
         <td  class="form_head">
             <?php echo gettext("PASSWORD") ?> :
         </td>
-        <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+        <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
             &nbsp;<?php echo $agent['passwd']?>
         </td>
     </tr>
@@ -87,7 +87,7 @@ $lg_liste= getLanguages();
         <td  class="form_head">
             <?php echo gettext("LAST NAME") ?> :
         </td>
-        <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+        <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
             &nbsp;<?php echo $agent['lastname']?>
         </td>
     </tr>
@@ -95,7 +95,7 @@ $lg_liste= getLanguages();
         <td  class="form_head">
             <?php echo gettext("FIRST NAME") ?> :
         </td>
-        <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+        <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
             &nbsp;<?php echo $agent['firstname']?>
         </td>
 
@@ -105,7 +105,7 @@ $lg_liste= getLanguages();
         <td  class="form_head">
             <?php echo gettext("ADDRESS") ?> :
         </td>
-        <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+        <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
             &nbsp;<?php echo $agent['address']?>
         </td>
 
@@ -115,7 +115,7 @@ $lg_liste= getLanguages();
         <td  class="form_head">
             <?php echo gettext("ZIP CODE") ?> :
         </td>
-        <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+        <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
             &nbsp;<?php echo $agent['zipcode']?>
         </td>
     </tr>
@@ -124,7 +124,7 @@ $lg_liste= getLanguages();
         <td  class="form_head">
             <?php echo gettext("CITY") ?> :
         </td>
-        <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+        <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
             &nbsp;<?php echo $agent['city']?>
         </td>
 
@@ -134,7 +134,7 @@ $lg_liste= getLanguages();
         <td  class="form_head">
             <?php echo gettext("STATE") ?> :
         </td>
-        <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+        <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
             &nbsp;<?php echo $agent['state']?>
         </td>
 
@@ -144,7 +144,7 @@ $lg_liste= getLanguages();
         <td  class="form_head">
             <?php echo gettext("COUNTRY") ?> :
         </td>
-        <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+        <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
             &nbsp;<?php echo $agent['country']?>
         </td>
 
@@ -153,7 +153,7 @@ $lg_liste= getLanguages();
         <td  class="form_head">
             <?php echo gettext("EMAIL") ?> :
         </td>
-        <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+        <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
             &nbsp;<?php echo $agent['email']?>
         </td>
 
@@ -162,7 +162,7 @@ $lg_liste= getLanguages();
         <td  class="form_head">
             <?php echo gettext("PHONE") ?> :
         </td>
-        <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+        <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
             &nbsp;<?php echo $agent['phone']?>
         </td>
     </tr>
@@ -170,7 +170,7 @@ $lg_liste= getLanguages();
         <td  class="form_head">
             <?php echo gettext("FAX") ?> :
         </td>
-        <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+        <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
             &nbsp;<?php echo $agent['fax']?>
         </td>
     </tr>
@@ -178,7 +178,7 @@ $lg_liste= getLanguages();
         <td  class="form_head">
             <?php echo gettext("BALANCE") ?> :
         </td>
-        <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+        <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
             &nbsp;<?php echo number_format($agent['credit'],3)?>
         </td>
     </tr>
@@ -186,7 +186,7 @@ $lg_liste= getLanguages();
         <td  class="form_head">
             <?php echo gettext("CURRENCY") ?> :
         </td>
-        <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+        <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
             &nbsp;<?php echo $agent['currency']?>
         </td>
       </tr>
@@ -194,7 +194,7 @@ $lg_liste= getLanguages();
         <td  class="form_head">
             <?php echo gettext("VAT") ?> :
         </td>
-        <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+        <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
             &nbsp;<?php echo $agent['vat']." %"?>
         </td>
     </tr>
@@ -202,7 +202,7 @@ $lg_liste= getLanguages();
         <td  class="form_head">
             <?php echo gettext("LANGUAGE") ?> :
         </td>
-        <td class="tableBodyRight"  background="../Public/templates/default/images/background_cells.gif" width="70%">
+        <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
             &nbsp;<?php echo $lg_liste[$agent['language']][0];?>
         </td>
     </tr>
@@ -210,7 +210,7 @@ $lg_liste= getLanguages();
  <br/>
 <div style="width : 80%; text-align : right; margin-left:auto;margin-right:auto;" >
      <a class="cssbutton_big"  href="A2B_entity_agent.php">
-        <img src="<?php echo Images_Path_Main;?>/icon_arrow_orange.gif"/>
+        <img src="<?= get_image_path("icon_arrow_orange.gif") ?>"/>
         <?php echo gettext("AGENT LIST"); ?>
     </a>
 </div>

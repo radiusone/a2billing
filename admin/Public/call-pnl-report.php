@@ -242,7 +242,7 @@ $smarty->display('main.tpl');
                 <td class="bgcolor_004" align="left" > </td>
 
                 <td class="bgcolor_005" align="center" >
-                    <input type="image"  name="image16" align="top" border="0" src="<?php echo Images_Path;?>/button-search.gif" />
+                    <input type="image"  name="image16" align="top" border="0" src="<?= get_image_path("button-search.gif") ?>" />
 
                   </td>
             </tr>
@@ -525,7 +525,7 @@ if ($res) {
         echo "</TD>";
     }?>
 
-    </tr><tr><td colspan="19" class="tableDivider"><img height="1" width="1" src="../Public/templates/default/images/clear.gif"/></td></tr>
+    </tr><tr><td colspan="19" class="tableDivider"><img height="1" width="1" src="<?= get_image_path("clear.gif") ?>"/></td></tr>
 </table>
 
 <?php

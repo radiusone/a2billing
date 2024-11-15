@@ -98,7 +98,7 @@ $smarty->display('main.tpl');
 
 <table  class="tablebackgroundblue" align="center" >
 <tr>
-    <td><img src="<?php echo KICON_PATH ?>/personal.gif" align="left" class="kikipic"/></td>
+    <td><img src="<?= get_image_path("kicons/personal.gif", true) ?>" align="left" class="kikipic"/></td>
     <td width="50%"><font class="fontstyle_002">
     <?php echo gettext("LAST NAME");?> :</font>  <font class="fontstyle_007"><?php echo $customer_info[2]; ?></font>
     <br/><font class="fontstyle_002"><?php echo gettext("FIRST NAME");?> :</font> <font class="fontstyle_007"><?php echo $customer_info[3]; ?></font>
@@ -161,7 +161,7 @@ $smarty->display('main.tpl');
                 </font>
             </tr><tr><td /><td width="50%" /><td width="50%" />
             <?php }?>
-            <td valign="bottom" align="right"><img src="<?php echo KICON_PATH ?>/help_index.gif" class="kikipic"></td>
+            <td valign="bottom" align="right"><img src="<?= get_image_path("kicons/help_index.gif", true) ?>" class="kikipic"></td>
         </tr>
         </table>
     </td>
@@ -189,7 +189,7 @@ if (!empty($subscribe)) {
 ?>
 
 <table style="width:80%;margin:0 auto;" cellspacing="0"  align="center" >
-    <tr background="<?php echo Images_Path; ?>/background_cells.gif" >
+    <tr background="<?= get_image_path("background_cells.gif", true) ?>" >
         <TD  valign="top" align="right" class="tableBodyRight"   >
             <font size="2"><?php echo gettext("Click below to buy credit : ");?> </font>
         </TD>
@@ -237,7 +237,7 @@ if (!is_array($arr_purchase_amount)) {
         $vat= $_SESSION['vat'];
          $amount_subscribe = $A2B->config['epayment_method']['paypal_subscription_amount'];
         ?>
-    <tr background="<?php echo Images_Path; ?>/background_cells.gif" >
+    <tr background="<?= get_image_path("background_cells.gif", true) ?>" >
         <TD  valign="top" align="right" class="tableBodyRight"   >
             <font size="2"><?php echo gettext("Click below to subscribe an automated refill : ");?> </font>
         </TD>
@@ -264,7 +264,7 @@ if (!is_array($arr_purchase_amount)) {
     </tr>
     <tr>
         <td align="center" colspan="2" class="tableBodyRight" >
-            <img src="<?php echo Images_Path ?>/payments_paypal.gif" />
+            <img src="<?= get_image_path("payments_paypal.gif", true) ?>" />
         </td>
     </tr>
 
