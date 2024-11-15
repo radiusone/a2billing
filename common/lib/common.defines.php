@@ -2,7 +2,6 @@
 
 use A2billing\A2Billing;
 use Profiler_Profiler as Profiler;
-use A2billing\Query_trace;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -49,7 +48,6 @@ sanitize_post_get();
 
 const DEBUG = false;
 $profiler = DEBUG ? new Profiler() : null;
-$G_instance_Query_trace = DEBUG ? Query_trace::getInstance() : null;
 
 // LOAD THE CONFIGURATION
 $A2B = new A2Billing();

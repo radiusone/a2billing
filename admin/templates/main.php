@@ -4,9 +4,9 @@ use A2billing\Admin;
 use A2billing\NotificationsDAO;
 
 require_once("header.php");
-require_once("../../common/lib/admin.defines.php");
+require_once __DIR__ . "/../../common/lib/admin.defines.php";
 /**
- * @var string $popup_select 
+ * @var string $popup_select
  * @var int $menu_section
  */
 ?>
@@ -69,7 +69,7 @@ require_once("../../common/lib/admin.defines.php");
 
 <div class="container-fluid">
     <div class="row">
-        <nav class="col-md-3 col-lg-2 flex-shrink-0 p-3 bg-light">
+        <nav class="col-md-3 col-lg-2 flex-shrink-0 p-3 bg-light text-capitalize">
             <ul class="list-unstyled ps-0">
 
                 <?php if (Admin::allowed(Admin::ACX_CUSTOMER)): ?>
@@ -107,7 +107,6 @@ require_once("../../common/lib/admin.defines.php");
                     </div>
                 </li>
                 <?php endif ?>
-
 
                 <?php if (Admin::allowed(Admin::ACX_ADMINISTRATOR)): ?>
                 <li class="mb-1">
@@ -406,11 +405,11 @@ require_once("../../common/lib/admin.defines.php");
                 </li>
             </ul>
         </nav>
-        <div id="main-content" class="col-md-9 col-lg-10 pt-3">
+        <main id="main-content" class="col-md-9 col-lg-10 pt-3">
 
 <?php else: ?>
 <div class="container-fluid">
     <div class="row">
-        <div class="col m-1">
+        <main id="main-content" class="col m-1">
 <?php endif ?>
 
