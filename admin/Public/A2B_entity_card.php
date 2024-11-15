@@ -198,7 +198,6 @@ function sendValue(selvalue, othervalue) {
     window.close();
 }
 </script>
-<script src="javascript/card.js"></script>
 
 <?php if ($form_action === "list" && !$popup_select):
 

@@ -130,7 +130,6 @@ else
     echo $CC_help_create_voucher;
 
 ?>
-<script language="JavaScript" src="javascript/card.js"></script>
 
 <div class="toggle_hide2show">
 <center><a href="#" target="_self" class="toggle_menu"><img class="toggle_hide2show" src="<?= get_image_path("kicons/toggle_hide2show.png") ?>" onmouseover="this.style.cursor='hand';" HEIGHT="16"> <font class="fontstyle_002"><?php echo gettext("SEARCH VOUCHERS");?> </font></a></center>

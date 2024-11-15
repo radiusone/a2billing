@@ -218,7 +218,6 @@ $(function() {
     });
 });
 </script>
-<script language="JavaScript" src="javascript/card.js"></script>
 
 <div class="toggle_hide2show">
 <?php
