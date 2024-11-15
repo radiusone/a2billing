@@ -72,7 +72,6 @@ class Table
     public bool $FK_DELETE = true;
     public int $FK_ID_VALUE = 0;
 
-    public ?Query_trace $query_handler = null;
     public string $db_type = 'mysql';
 
     /**
@@ -96,8 +95,6 @@ class Table
         if (defined("DB_TYPE") && DB_TYPE === 'postgres') {
             $this->db_type = "postgres";
         }
-
-        $this->query_handler = Query_trace::getInstance();
     }
 
     /**
