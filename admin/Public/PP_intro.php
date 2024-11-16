@@ -43,7 +43,7 @@ $smarty->display('main.tpl');
 
 <div class="row pb-3 justify-content-center">
     <div class="col-6">
-        <img src="images/logo/a2billing.png" alt="A2billing"/>
+        <img src="../../common/images/logo/a2billing.png" alt="A2billing"/>
     </div>
 </div>
 <div class="row pb-3 justify-content-center">

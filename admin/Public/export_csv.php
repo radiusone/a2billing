@@ -37,7 +37,7 @@ use A2billing\Logger;
 **/
 
 require_once "../../common/lib/admin.defines.php";
-require_once '../lib/iam_csvdump.php';
+require_once '../../common/lib/iam_csvdump.php';
 
 Admin::checkPageAccess(Admin::ACX_CALL_REPORT) && !has_rights(Admin::ACX_CUSTOMER);
 

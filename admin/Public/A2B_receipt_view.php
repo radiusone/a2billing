@@ -38,8 +38,8 @@ use A2billing\Table;
 
 $menu_section = 11;
 require_once "../../common/lib/admin.defines.php";
-include '../lib/support/classes/receipt.php';
-include '../lib/support/classes/receiptItem.php';
+include '../../common/lib/support/classes/receipt.php';
+include '../../common/lib/support/classes/receiptItem.php';
 
 Admin::checkPageAccess(Admin::ACX_INVOICING);
 

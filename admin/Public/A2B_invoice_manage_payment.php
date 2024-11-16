@@ -37,8 +37,8 @@ use A2billing\Admin;
 
 $menu_section = 11;
 require_once "../../common/lib/admin.defines.php";
-include '../lib/support/classes/invoice.php';
-include '../lib/support/classes/invoiceItem.php';
+include '../../common/lib/support/classes/invoice.php';
+include '../../common/lib/support/classes/invoiceItem.php';
 
 Admin::checkPageAccess(Admin::ACX_INVOICING);
 

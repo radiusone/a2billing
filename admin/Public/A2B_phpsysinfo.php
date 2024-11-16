@@ -47,7 +47,7 @@ $smarty->display('main.tpl');
 
 <center>
 
-<iframe src ="../phpsysinfo/" width="1000" height="800">
+<iframe src ="../../common/phpsysinfo/" width="1000" height="800">
 </iframe>
 
 </center>

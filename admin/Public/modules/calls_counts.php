@@ -36,7 +36,7 @@ use A2billing\Table;
  *
 **/
 
-require_once __DIR__ . "/../../lib/admin.defines.php";
+require_once __DIR__ . "/../../../common/lib/admin.defines.php";
 
 Admin::checkPageAccess(Admin::ACX_DASHBOARD);
 

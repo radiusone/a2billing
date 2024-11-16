@@ -38,12 +38,12 @@ use A2billing\Table;
 
 $menu_section = 10;
 require_once "../../common/lib/admin.defines.php";
-include '../lib/epayment/classes/payment.php';
-include '../lib/epayment/classes/objectinfo.php';
-include '../lib/epayment/classes/table_block.php';
-include '../lib/epayment/classes/box.php';
-include '../lib/epayment/includes/general.php';
-include '../lib/epayment/includes/html_output.php';
+include '../../common/lib/epayment/classes/payment.php';
+include '../../common/lib/epayment/classes/objectinfo.php';
+include '../../common/lib/epayment/classes/table_block.php';
+include '../../common/lib/epayment/classes/box.php';
+include '../../common/lib/epayment/includes/general.php';
+include '../../common/lib/epayment/includes/html_output.php';
 
 Admin::checkPageAccess(Admin::ACX_BILLING);
 
