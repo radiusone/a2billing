@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "885075039e4b595a7b05201b78609eda",
+    "content-hash": "5e38cba4651bc41a2b81cbfdc80c999e",
     "packages": [
         {
             "name": "adodb/adodb-php",
@@ -892,7 +892,7 @@
         },
         {
             "name": "radiusone/phpagi",
-            "version": "dev-master",
+            "version": "v3.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/radiusone/phpagi.git",
@@ -908,19 +908,19 @@
                 "php": "^7.4|^8.0",
                 "symfony/polyfill-php80": "^1.0"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
                     "PhpAgi\\": "src/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "LGPL-2.1-or-later"
             ],
             "description": "PHPAGI is a PHP class for the Asterisk Gateway Interface.",
             "support": {
-                "source": "https://github.com/radiusone/phpagi/tree/master"
+                "source": "https://github.com/radiusone/phpagi/tree/v3.0.3"
             },
             "time": "2024-11-16T22:51:54+00:00"
         },
@@ -2914,8 +2914,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "dubcanada/php-profiler": 20,
-        "radiusone/phpagi": 20
+        "dubcanada/php-profiler": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
