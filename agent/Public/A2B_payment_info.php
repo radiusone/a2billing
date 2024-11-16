@@ -127,7 +127,7 @@ $smarty->display('main.tpl');
             <?php echo gettext("LINK REFILL") ?> :
         </td>
         <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
-            <a href="A2B_refill_info.php?id=<?php echo $payment['id_logrefill']?>"> <img src="<?= get_image_path(""/link.png"") ?>" border="0" title="<?php echo gettext("Link to the refill")?>" alt="<?php echo  gettext("Link to the refill")?>"></a>
+            <a href="A2B_refill_info.php?id=<?php echo $payment['id_logrefill']?>"> <img src="<?= get_image_path("link.png") ?>" border="0" title="<?php echo gettext("Link to the refill")?>" alt="<?php echo  gettext("Link to the refill")?>"></a>
         </td>
     </tr>
        <?php } ?>

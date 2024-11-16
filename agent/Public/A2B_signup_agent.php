@@ -156,7 +156,7 @@ function submit_form(form)
                          <?php if (!empty($URL)) { ?>
                          <span style="font-family: sans-serif" >
                          <b>
-                             <a href="<?php echo $URL;?>"> <?php 	echo gettext("URL")."";?> <img src="<?= get_image_path(""/link.png"") ?>" border="0" style="vertical-align:bottom;" title="<?php echo gettext("Link to the URL")?>" alt="<?php echo  gettext("Link to the URL")?>"></a>
+                             <a href="<?php echo $URL;?>"> <?php 	echo gettext("URL")."";?> <img src="<?= get_image_path("link.png") ?>" border="0" style="vertical-align:bottom;" title="<?php echo gettext("Link to the URL")?>" alt="<?php echo  gettext("Link to the URL")?>"></a>
                              <?php
                              echo " : ".$URL;	echo "</b><br>"; ?>
                            </span>

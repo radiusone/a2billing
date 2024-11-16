@@ -872,7 +872,7 @@ if (sizeof($call_result)>0 && $call_result[0]!=null) {
                 </td>
                 <td class="tableBody"  align="center">
                     <?php if (!empty($call['id_ratecard'])) { ?>
-                    <a href="A2B_entity_def_ratecard.php?form_action=ask-edit&id=<?php echo $call['id_ratecard']?>"> <img src="<?= get_image_path(""/link.png"") ?>" border="0" title="<?php echo gettext("Link to the used rate")?>" alt="<?php echo  gettext("Link to the used rate")?>"></a>
+                    <a href="A2B_entity_def_ratecard.php?form_action=ask-edit&id=<?php echo $call['id_ratecard']?>"> <img src="<?= get_image_path("/link.png") ?>" border="0" title="<?php echo gettext("Link to the used rate")?>" alt="<?php echo  gettext("Link to the used rate")?>"></a>
                      <?php } ?>
                 </td>
 
