@@ -68,7 +68,7 @@ function sendValue(selvalue) {
 
 // #### HELP SECTION
 if (!$popup_select) {
-    echo $CC_help_list_prefix;
+    echo create_help(_("Prefix list with destinations."), 'BrowsePrefix');
 }
 
 // #### TOP SECTION PAGE

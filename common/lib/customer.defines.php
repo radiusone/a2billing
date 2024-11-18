@@ -90,5 +90,4 @@ define ("ADMIN_EMAIL", $A2B->config["global"]['admin_email'] ?? null);
 
 const ENABLE_LOG = false;
 
-require_once __DIR__ . "/customer.help.php";
 require_once __DIR__ . "/customer.smarty.php";

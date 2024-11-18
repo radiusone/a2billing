@@ -56,7 +56,7 @@ $list = $HD_Form->perform_action($form_action);
 
 $smarty->display('main.tpl');
 
-echo $CC_help_status_log;
+echo create_help(_("Status logs help you to keep track of the status of all customers. The status can be 'New, Active, Cancelled, Reserved, Waiting-MailConfirmation and Expired."), 'StatusLog');
 
 $HD_Form->create_toppage($form_action);
 

@@ -112,7 +112,7 @@ $DBHandle = DbConnect();
 // #### HEADER SECTION
 $smarty->display('main.tpl');
 
-echo $CC_help_notifications;
+echo create_help(_("Notification: You can see below all notifications received about some event."), 'Notificationbox');
 $nb_by_page = 15;
 $nb_total = NotificationsDAO::getNbNotifications();
 $nb_page = ceil($nb_total/$nb_by_page);

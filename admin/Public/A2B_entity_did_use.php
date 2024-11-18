@@ -43,8 +43,6 @@ include_once './form_data/FG_var_diduse.inc';
 /**
  * @var FormHandler $HD_Form
  * @var Smarty $smarty
- * @var string $CC_help_release_did
- * @var string $CC_help_list_did_use
  * @var string $did
  * @var string $inuse
  * @var string $actionbtn
@@ -66,7 +64,7 @@ $HD_Form->create_toppage($form_action);
 
 switch ($actionbtn) {
     case "release_did":
-    echo $CC_help_release_did;
+    echo create_help(_("Releasing DID put it in free stat and the user will not be monthly charged any more.."), 'ReleaseDID');
     ?>
     <FORM action=<?php echo filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)?> id=form1 method=post name=form1>
         <INPUT type="hidden" name="did" value="<?php echo $did?>">
@@ -99,7 +97,7 @@ switch ($actionbtn) {
 
 if (empty($actionbtn) || $actionbtn === "ask_release") {
 
-echo $CC_help_list_did_use;
+echo create_help(_("List the DIDs currently in use with the customer id and their destination number <br/> You can use the search option to show the usage of a given DID or all DIDs"), 'DIDUsage');
 
 $inuse ??= 1;
 /*<!-- ** ** ** ** ** Part for the research ** ** ** ** ** -->*/?>

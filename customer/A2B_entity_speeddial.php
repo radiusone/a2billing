@@ -74,7 +74,7 @@ $smarty->display('main.tpl');
 
 // #### HELP SECTION
 if ($form_action == 'list') {
-    echo $CC_help_speeddial;
+    echo create_help(gettext("Map single digit to your most dialed numbers."));
 }
 
 if ($form_action == "list") {

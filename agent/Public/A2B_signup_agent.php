@@ -88,7 +88,7 @@ function submit_form(form)
 </script>
 
 <?php
-    echo $CC_help_generate_signup;
+    echo create_help(gettext("Generate a specific crypted URL and to configure signup with a customer group and call plan."));
 ?>
 <center>
         <b><?php echo gettext("Create signup url for a specific agent, customer group and Call Plan.");?>.</b><br/><br/>

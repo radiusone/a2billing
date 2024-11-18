@@ -137,7 +137,7 @@ restrictcid, rtptimeout, rtpholdtimeout, musiconhold, regseconds, ipaddr, cancal
 
 $smarty->display('main.tpl');
 
-echo $CC_help_sipfriend_reload;
+echo create_help(gettext("Click reload to commit changes to Asterisk"));
 
 ?>
 

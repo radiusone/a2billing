@@ -42,7 +42,6 @@ include './form_data/FG_var_ticket.inc';
 /**
  * @var FormHandler $HD_Form
  * @var Smarty $smarty
- * @var string $CC_help_support_list
  */
 
 Admin::checkPageAccess(Admin::ACX_SUPPORT);
@@ -55,7 +54,7 @@ $action = $action ?? $form_action;
 $list = $HD_Form->perform_action($form_action);
 $smarty->display('main.tpl');
 
-echo $CC_help_support_list;
+echo create_help(_("You can see here, all tickets created. You can also add a new ticket for one customer."));
 if ($form_action === "list") {
     $HD_Form->create_search_form();
 }

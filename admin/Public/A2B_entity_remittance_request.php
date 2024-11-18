@@ -105,7 +105,7 @@ $list = $HD_Form->perform_action($form_action);
 $smarty->display('main.tpl');
 
 // #### HELP SECTION
-echo $CC_help_view_remittance_agent;
+echo create_help(_("Agents Remittance request history - The section below allows you to confirm or refuse remittance request of an agent. The remittance reques are generated automatically by the agent."), 'ViewRemittance');
 
 if ($form_action == "list") {
     $HD_Form->create_search_form();

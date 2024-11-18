@@ -129,7 +129,7 @@ if ($action_release == "ask_release") {
     // #### HEADER SECTION
     $smarty->display('main.tpl');
 
-    echo $CC_help_release_did;
+    echo create_help(gettext("After confirmation, the release of the did will be done immediately and you will not be monthly charged any more."));
 ?>
     <FORM action="A2B_entity_did.php" name="form1">
         <INPUT type="hidden" name="choose_did" value="<?php echo $choose_did?>">
@@ -235,7 +235,7 @@ if (!isset ($action_release) || $action_release == "confirm_release" || $action_
 
     // #### HELP SECTION
     if ($form_action == 'list') {
-        echo $CC_help_list_did;
+        echo create_help(gettext("Select the country below where you would like a DID, select a DID from the list and enter the destination you would like to assign it to."));
     }
 
     // #### TOP SECTION PAGE

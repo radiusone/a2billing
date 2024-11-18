@@ -231,7 +231,7 @@ $list = $HD_Form->perform_action($form_action);
 
 // #### HEADER SECTION
 $smarty->display('main.tpl');
-echo $CC_help_data_archive;
+echo create_help(_("Here you can archive the data. The Default listing will show you the previous 3 months data. But you can also search the data and archive it."));
 
 if (!isset($submit)) {
     $HD_Form->create_search_form();

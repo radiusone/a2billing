@@ -55,9 +55,9 @@ $smarty->display('main.tpl');
 
 // #### HELP SECTION
 if ($form_action == 'list')
-    echo $CC_help_list_didgroup;
+    echo create_help(_("DID (or DDI) Group list. DID can be chosen by customers through the customer interface."), 'ListDIDGroup');
 else
-    echo $CC_help_edit_didgroup;
+    echo create_help(_("DID group offers customers a group of DID numbers which can be selected by the customer"), 'EditDIDGroup');
 
 // #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);

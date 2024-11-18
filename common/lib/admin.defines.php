@@ -51,5 +51,4 @@ if (!empty($_SESSION["admin_id"]) && ENABLE_LOG && !str_contains($_SERVER['REQUE
     Logger::insertLog($_SESSION["admin_id"], 1, "Page Visit", "User Visited the Page", '', $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI']);
 }
 
-require_once __DIR__ . "/admin.help.php";
 require_once __DIR__ . "/admin.smarty.php";

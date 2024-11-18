@@ -55,7 +55,7 @@ $list = $HD_Form->perform_action($form_action);
 $smarty->display('main.tpl');
 
 // #### HELP SECTION
-echo $CC_help_view_payment_agent;
+echo create_help(_("Agent Payment history - The section below allows you to add payments against an agent. Note that this does not change the balance on the account. Click on 'create associate refill' when you create  a payment to top-up an account."), 'ViewPayments');
 
 if ($form_action == "list") {
     $HD_Form->create_search_form();

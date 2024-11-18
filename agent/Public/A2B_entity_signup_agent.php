@@ -55,7 +55,7 @@ $list = $HD_Form -> perform_action($form_action);
 $smarty->display('main.tpl');
 
 // #### HELP SECTION
-echo $CC_help_signup_agent;
+echo create_help(gettext("This shows a list of all signup key create for this agent, this key is used to identify the default paramater for the subscription on the signup page"));
 
 // #### TOP SECTION PAGE
 $HD_Form -> create_toppage ($form_action);

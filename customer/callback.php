@@ -187,7 +187,7 @@ $customer = $_SESSION["pr_login"];
 
 $smarty->display( 'main.tpl');
 
-echo $CC_help_callback;
+echo create_help(gettext("Callback : Entre your phone number and the phone number you wish to call."));
 
 ?>
 <br>

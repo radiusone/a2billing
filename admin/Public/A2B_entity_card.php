@@ -44,8 +44,6 @@ require('./form_data/FG_var_card.inc');
  * @var A2Billing $A2B
  * @var Smarty $smarty
  * @var FormHandler $HD_Form
- * @var string $CC_help_list_customer
- * @var string $CC_help_create_customer
  * @var array $cardstatus_list
  * @var array $language_list
  * @var string $cardnumber_length
@@ -219,7 +217,12 @@ function sendValue(selvalue, othervalue) {
     $result = $HD_Form->DBHandle->CacheExecute(300, "SELECT countrycode, countryname FROM cc_country ORDER BY countryname");
     $list_country = $result ? $result->GetAll() : [];
 
-    echo $CC_help_list_customer;
+    echo create_help(
+        _("Customers are listed below by account number. Each row corresponds to one customer, along with information such as their call plan, credit remaining, etc.")
+            . "<br/>"
+            . _("The SIP and IAX buttons create SIP and IAX entries to allow direct VoIP connections to the Asterisk server without further authentication."),
+        'ListCustomers'
+    );
 ?>
 
 <div class="row justify-content-center">
@@ -625,7 +628,10 @@ function sendValue(selvalue, othervalue) {
 endif; // ($form_action === "list" && !$popup_select)
 
 if (!$popup_select){
-    echo $CC_help_create_customer;
+    echo create_help(
+        _("Create and edit the properties of each customer. Click CONFIRM DATA at the bottom of the page to save changes."),
+        'CreateCustomer'
+    );
 }
 if (!empty($update_msg)) {
     echo $update_msg;

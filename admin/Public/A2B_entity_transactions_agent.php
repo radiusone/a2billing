@@ -54,7 +54,7 @@ $list = $HD_Form->perform_action($form_action);
 $smarty->display('main.tpl');
 
 // #### HELP SECTION
-echo $CC_help_transaction;
+echo create_help(_("You can view all the transactions through the different epayment configured systems (Paypal, MoneyBookers, etc...). "), 'ViewTransactions');
 
 // #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);

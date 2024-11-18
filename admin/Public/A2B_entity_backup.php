@@ -55,7 +55,7 @@ $list = $HD_Form->perform_action($form_action);
 $smarty->display('main.tpl');
 
 // #### HELP SECTION
-echo $CC_help_database_backup;
+echo create_help(_("This section will allow you to backup an existing database context. The Backup process will export the whole database, so you can restore it later..."), 'DatabaseBackup');
 
 // #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);

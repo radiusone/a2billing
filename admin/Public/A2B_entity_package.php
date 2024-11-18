@@ -54,7 +54,7 @@ $list = $HD_Form->perform_action($form_action);
 $smarty->display('main.tpl');
 
 // #### HELP SECTION
-echo $CC_help_offer_package;
+echo create_help(_("PACKAGES SYSTEM - FREE MINUTES, etc..."), 'OfferPackage');
 
 // #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);

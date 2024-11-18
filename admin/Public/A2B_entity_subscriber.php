@@ -54,7 +54,7 @@ $list = $HD_Form->perform_action($form_action);
 $smarty->display('main.tpl');
 
 // #### HELP SECTION
-echo $CC_help_list_subscriber;
+echo create_help(_("SUBSCRIBER - You can make customers subscribe for any subscription and for a certain time."));
 
 // #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);

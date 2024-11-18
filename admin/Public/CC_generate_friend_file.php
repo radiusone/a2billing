@@ -95,7 +95,7 @@ if ($action == "reload") {
 
 $smarty->display('main.tpl');
 
-echo $CC_help_sipfriend_reload;
+echo create_help(_("Click reload to commit changes to Asterisk"));
 
 ?>
 <center>

@@ -43,7 +43,6 @@ include './form_data/FG_var_config.inc';
  * @var Smarty $smarty
  * @var string $id
  * @var string $form_action
- * @var string $CC_help_list_configuration
  */
 
 $HD_Form->init();
@@ -54,7 +53,7 @@ $list = $HD_Form->perform_action($form_action);
 // #### HEADER SECTION
 $smarty->display('main.tpl');
 
-echo $CC_help_list_configuration;
+echo create_help(_("Here you can see and edit the different A2Billing settings."));
 
 // #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);

@@ -45,7 +45,6 @@ require_once './form_data/FG_var_did_destination.inc';
  * @var Smarty $smarty
  * @var FormHandler $HD_Form
  * @var string $id
- * @var string $CC_help_list_did
  */
 
 Admin::checkPageAccess(Admin::ACX_DID);
@@ -60,7 +59,7 @@ $list = $HD_Form->perform_action($form_action);
 $smarty->display('main.tpl');
 
 // #### HELP SECTION
-echo $CC_help_list_did;
+echo create_help(_("DID number list with destinations."), 'ListDID');
 // #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);
 

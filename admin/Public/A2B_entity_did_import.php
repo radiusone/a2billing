@@ -59,7 +59,7 @@ $nb_countryname = count($list_countryname);
 $smarty->display('main.tpl');
 
 // #### HELP SECTION
-echo $CC_help_import_did;
+echo create_help(_("You can import lists of DIDs using a CSV file."), 'ImportDID');
 
 ?>
 

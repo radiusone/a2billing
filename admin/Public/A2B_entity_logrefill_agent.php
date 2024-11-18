@@ -54,7 +54,7 @@ $list = $HD_Form->perform_action($form_action);
 $smarty->display('main.tpl');
 
 // #### HELP SECTION
-echo $CC_help_view_refill_agent;
+echo create_help(_("Agents Refill history - The section below allows you to add refills against an agent. Note that this changes the balance on the account."), 'ViewAgentRefill');
 
 if ($form_action == "list") {
     $HD_Form->create_search_form();

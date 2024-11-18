@@ -97,7 +97,7 @@ $(function () {
 </script>
 
 <?php
-echo $CC_help_generate_signup;
+echo create_help(_("Generate a specific crypted URL to configure signup with a customer group and call plan."));
 ?>
 <center>
         <b><?php echo gettext("Create signup url for a specific agent, customer group and Call Plan.");?>.</b><br/><br/>

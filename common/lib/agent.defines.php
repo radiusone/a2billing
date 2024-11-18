@@ -58,5 +58,4 @@ if (ENABLE_LOG && !str_contains($_SERVER['REQUEST_URI'], "Public/index.php") && 
     Logger::insertLog($_SESSION["agent_id"], 1, "Page Visit", "Agent Visited the Page", '', $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI'], '', [], true);
 }
 
-require_once __DIR__ . "/agent.help.php";
 require_once __DIR__ . "/agent.smarty.php";

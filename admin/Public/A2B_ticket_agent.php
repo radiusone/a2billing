@@ -52,7 +52,7 @@ $list = $HD_Form->perform_action($form_action);
 $smarty->display('main.tpl');
 
 // #### HELP SECTION
-echo $CC_help_support_list_agent;
+echo create_help(_("You can see here, all tickets created by Agents. You can also add a new ticket for one Agent."));
 
 if ($form_action == "list") {
     $HD_Form->create_search_form();

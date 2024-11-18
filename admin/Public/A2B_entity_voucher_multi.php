@@ -77,7 +77,7 @@ $list = $HD_Form -> perform_action($form_action);
 // #### HEADER SECTION
 $smarty->display('main.tpl');
 // #### HELP SECTION
-echo $CC_help_generate_voucher;
+echo create_help(_("Bulk generate a batch of vouchers, defining such properties as credit and currency etc, click Generate Vouchers when finished.<br/>The customer applies voucher credit to their account via the customer interface."), 'GenerateVouchers');
 
 ?>
 <div align="center">

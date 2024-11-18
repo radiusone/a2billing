@@ -67,7 +67,7 @@ $secret = $list_agent_secret[0][0];
 $smarty->display( 'main.tpl');
 
 // #### HELP SECTION
-echo $CC_help_secret_change."<br>";
+echo create_help(gettext("On this page you will be able to change your Secret used to crypt your generated signup URL, You have to enter the New Secret and Confirm it."));
 
 if ($form_action=="ask-modif") {
 

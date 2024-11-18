@@ -52,7 +52,7 @@ $list = $HD_Form->perform_action($form_action);
 $smarty->display('main.tpl');
 
 // #### HELP SECTION
-echo $CC_help_support_component;
+echo create_help(_("Here you can see all components which you use to handle the support task. You can use components to categorise the subject of the ticket. i.e : Tarification, Payment"));
 
 // #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);

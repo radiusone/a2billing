@@ -98,7 +98,8 @@ if (isset ($languages))
 $mail = $instance_table->SQLExec($handle, $QUERY);
 
 // #### HELP SECTION
-echo $CC_help_list_misc;
+echo create_help(_("Configure the mail template below.") . '<br>' .
+    _("A Reminder email can be sent (see a2billing.conf) to customers having low credit, a confirmation mail can be sent to customers after their signup, etc..."), 'ShowMailTemplates');
 
 // Query to get all languages with ids
 $QUERY = "SELECT code, name FROM cc_iso639 ORDER BY code";

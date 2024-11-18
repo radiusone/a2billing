@@ -42,7 +42,6 @@ require_once __DIR__ . "/../../common/lib/admin.defines.php";
 require_once __DIR__ . "/form_data/FG_var_monitor.inc";
 /**
  * @var FormHandler $HD_Form
- * @var string $CC_help_list_monitoring
  */
 
 Admin::checkPageAccess(Admin::ACX_MAINTENANCE);
@@ -51,7 +50,10 @@ $form_action ??= "list";
 
 require_once __DIR__ . "/../templates/main.php";
 
-echo $CC_help_list_monitoring;
+echo create_help(
+    _("IVR Monitoring, an extension should be configured for the admin to call and monitor through an IVR some important data from your system."),
+    'ListMonitoring'
+);
 
 $HD_Form->init();
 $list = $HD_Form->perform_action($form_action);

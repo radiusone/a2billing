@@ -65,7 +65,8 @@ if ($wantinclude != 1) {
     $smarty->display('main.tpl');
 
     // #### HELP SECTION
-    echo $CC_help_edit_charge;
+    echo create_help(_("Extra charges allow the billing of one-off or re-occurring monthly charges. These may be used as setup or service charges, etc...") .
+        _("Charges will appear to the user with the description you attach. Each charge that you create for a user will decrement his account."), 'AddCharge');
 }
 
 // #### TOP SECTION PAGE

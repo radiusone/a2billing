@@ -57,7 +57,7 @@ $list = $HD_Form->perform_action($form_action);
 $smarty->display('main.tpl');
 
 // #### HELP SECTION
-echo $CC_help_view_receipt;
+echo create_help(gettext("Receipt history - The section below allows you to see the receipt that you received. you can see in them the summary of some withdrawal"));
 
 // #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);

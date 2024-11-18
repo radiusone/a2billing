@@ -138,7 +138,8 @@ $smarty->display('main.tpl');
 
 // #### HELP SECTION
 if ($form_action=='list') {
-    echo $CC_help_sipfriend_list;
+    echo create_help(gettext("Voip Config will create a SIP or IAX entry on the Asterisk server, so that a customer can set up a SIP or IAX client to connect directly to the asterisk server without the need to enter an account and pin each time a call is made. When done, click on the CONFIRM DATA button, then click reload to apply the changes on the Asterisk server.<br>") .
+        gettext("The customer must then enter the URL/IP address of the asterisk server into the SIP/IAX client and use the account number and secret as the username and password."), 'ListSIPFriend');
 
     if ( isset($_SESSION["is_sip_iax_change"]) && $_SESSION["is_sip_iax_change"]) { ?>
         <table  border="0" align="center" cellpadding="0" cellspacing="0" >
@@ -162,7 +163,10 @@ if ($form_action=='list') {
         </table>
     <?php  } // endif is_sip_iax_change
 
-}else echo $CC_help_sipfriend_edit;
+}else echo create_help(gettext("Each SIP/IAX client is identified by a number of parameters.</br></br>") .
+    gettext("More details on how to configure clients are on the Wiki") . ' -> <a href="http://voip-info.org/wiki-Asterisk+config+sip.conf" target="_blank">sip.conf</a> &
+<a href="http://voip-info.org/wiki-Asterisk+config+iax.conf" target="_blank">iax.conf</a>', 'EditFriend');
+
 
 if ($form_action=='list') {
 ?>

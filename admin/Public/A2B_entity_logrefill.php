@@ -44,7 +44,6 @@ include './form_data/FG_var_logrefill.inc';
  * @var Smarty $smarty
  * @var string $form_action
  * @var string $id
- * @var string $CC_help_view_refill
  */
 
 Admin::checkPageAccess(Admin::ACX_BILLING);
@@ -59,7 +58,10 @@ $list = $HD_Form->perform_action($form_action);
 $smarty->display('main.tpl');
 
 // #### HELP SECTION
-echo $CC_help_view_refill;
+echo create_help(
+    _("Refill history - The section below allows you to add refills against a customer. Note that this changes the balance on the account"),
+    'ViewPayments'
+);
 
 if ($form_action === "list") {
     $HD_Form->create_search_form();

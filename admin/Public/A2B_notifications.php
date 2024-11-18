@@ -44,7 +44,7 @@ Admin::checkPageAccess(Admin::ACX_CUSTOMER);
 // #### HEADER SECTION
 $smarty->display('main.tpl');
 
-echo $CC_help_mail_notifications;
+echo create_help(_("The Notification component is responsible for informing the Customer, via e-mail, that the account has reached a minimum credit."), 'Notification');
 
 ?>
 <DIV ALIGN="CENTER">

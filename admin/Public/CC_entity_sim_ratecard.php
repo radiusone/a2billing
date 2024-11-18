@@ -103,6 +103,10 @@ if ($called && ($id_cc_card > 0 || $accountcode > 0)) {
 
 $smarty->display('main.tpl');
 
+echo create_help(
+    _('Please select an account, then enter the number you wish to call and press the "SIMULATE" button.'),
+    'RatecardSimulator'
+);
 ?>
 <form method="post" name="simulator">
     <div class="row mb-3">

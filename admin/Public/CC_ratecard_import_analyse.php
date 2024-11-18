@@ -41,8 +41,6 @@ $menu_section = 6;
 require_once "../../common/lib/admin.defines.php";
 /**
  * @var Smarty $smarty
- * @var string $CC_help_import_ratecard_confirm
- * @var string $CC_help_import_ratecard_analyse
  */
 set_time_limit(0);
 
@@ -188,7 +186,10 @@ $smarty->display('main.tpl');
 <?php elseif ($task === "preview"): ?>
 <div class="row mb-3">
     <div class="col">
-        <p><?= $CC_help_import_ratecard_analyse ?></p>
+        <p><?= create_help(_('This is the second step of the import ratecard! <br>') .
+                _('The first line of your csv files has been read and the values are displayed below according to the fields') .
+                _('you decided to import on the ratecard! You can check the values and if there are correct,') .
+                _('please select the same file and click on "Continue to Import the Ratecard" button...'), 'ImportRatecardAnalyse'); ?></p>
         <p><?= _("The first line of your import is previewed below, please check to ensure that every column is correct.") ?></p>
         <p><?= _("Note that some values have been added or changed as part of the import process") ?></p>
     </div>
@@ -228,6 +229,7 @@ $smarty->display('main.tpl');
 <?php elseif ($task === "upload" && $import_error === ""): ?>
 <div class="row mb-3">
     <div class="col">
+        <p><?= create_help(_('Ratecard comfirmation page. <br>') . _('Import results, how many new rates have been imported, and the line numbers of the CSV files that generated errors.'), 'ImportRatecardConfirm') ?></p>
         <p><?= sprintf(_("Success, %d new rates have been imported in %0.4f seconds."), $nb_imported, $import_time) ?></p>
     </div>
 </div>

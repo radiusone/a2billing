@@ -52,7 +52,7 @@ $list = $HD_Form -> perform_action($form_action);
 $smarty->display('main.tpl');
 
 // #### HELP SECTION
-echo $CC_help_list_log;
+echo create_help(_("The system log helps you track all events on your application. Log levels are the Importance Levels for the events - 1 is lowest level and 3 is highest level. 1 is used for Login, Logout and Page Visit. 2 is used for Add, Import, Export. 3 is for Update and Delete."), 'SystemLog');
 
 // #### TOP SECTION PAGE
 $HD_Form -> create_toppage ($form_action);

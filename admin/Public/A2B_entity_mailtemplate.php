@@ -43,7 +43,6 @@ require_once "./form_data/FG_var_mailtemplate.inc";
 /**
  * @var Smarty $smarty
  * @var FormHandler $HD_Form
- * @var string $CC_help_list_misc
  */
 
 Admin::checkPageAccess(Admin::ACX_MAIL);
@@ -77,7 +76,12 @@ $smarty->display('main.tpl');
 
 // #### HELP SECTION
 if (!$popup_select) {
-    echo $CC_help_list_misc;
+    echo create_help(
+            _("Configure the mail template below.")
+                . '<br/>'
+                . _("A Reminder email can be sent (see a2billing.conf) to customers having low credit, a confirmation mail can be sent to customers after their signup, etc..."),
+            'ShowMailTemplates'
+    );
     if ($form_action === "list") {
         $HD_Form->create_search_form();
     }

@@ -43,9 +43,7 @@ include './form_data/FG_var_config_group.inc';
  * @var Smarty $smarty
  * @var string $id
  * @var string $form_action
- * @var string $CC_help_list_global_config
  * @var string $delete_msg
- * @var string $CC_help_edit_config
  */
 
 $HD_Form->init();
@@ -58,7 +56,7 @@ $smarty->display('main.tpl');
 
 // #### HELP SECTION
 if ($form_action === 'list') {
-    echo $CC_help_edit_config;
+    echo create_help(_("Here is a list of all configuration groups. You can pick one and see its members"));
 }
 
 if (!empty($delete_msg)) {

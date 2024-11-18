@@ -43,7 +43,6 @@ include './form_data/FG_var_config_group.inc';
  * @var Smarty $smarty
  * @var string $id
  * @var string $form_action
- * @var string $CC_help_add_agi_confx
  */
 
 $HD_Form -> init();
@@ -52,7 +51,7 @@ $HD_Form -> init();
 $smarty->display('main.tpl');
 
 // #### HELP SECTION
-echo $CC_help_add_agi_confx;
+echo create_help(_("This action will generate a new agi-conf configuration group, copying configurations from the first agi-conf group found."));
 
 // #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);

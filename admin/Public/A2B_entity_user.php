@@ -45,8 +45,6 @@ require_once "./form_data/FG_var_user.inc";
  * @var FormHandler $HD_Form
  * @var string $popup_select
  * @var string $form_action
- * @var string $CC_help_admin_edit
- * @var string $CC_help_admin_list
  * @var string $groupID
  * @var string $id
  */
@@ -64,7 +62,9 @@ $list = $HD_Form->perform_action($form_action);
 $smarty->display('main.tpl');
 
 if (!$popup_select) {
-    echo $form_action === 'ask-add' ? $CC_help_admin_edit : $CC_help_admin_list;
+    echo $form_action === 'ask-add'
+        ? create_help(_("Add administrator."), 'EditAdministrator')
+        : create_help(_("Administrators - this shows a list of all the Administrators who have access to the Administrator interface."), 'ShowAdministrator');
 } else {
 ?>
 <script>

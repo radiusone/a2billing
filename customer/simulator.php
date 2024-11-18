@@ -132,7 +132,7 @@ $nb_tariffname = count($list_tariffname);
 $smarty->display('main.tpl');
 
 // #### HELP SECTION
-echo $CC_help_simulator_rateengine;
+echo create_help(gettext("Simulate the calling process to discover the cost per minute of a call, and the number of minutes you can call that number with your current credit."));
 
 ?>
 

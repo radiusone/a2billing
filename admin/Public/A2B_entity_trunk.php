@@ -42,8 +42,6 @@ require_once "./form_data/FG_var_trunk.inc";
 /**
  * @var Smarty $smarty
  * @var FormHandler $HD_Form
- * @var string $CC_help_trunk_list
- * @var string $CC_help_trunk_edit
  */
 Admin::checkPageAccess(Admin::ACX_TRUNK);
 
@@ -79,9 +77,11 @@ function sendValue(selvalue) {
 <?php
 
 } elseif ($form_action === "list") {
-    echo $CC_help_trunk_list;
+    echo create_help(_("Trunk List.") . '<br/>' . _("Trunks can be modified by clicking the edit button"), 'ListTrunk');
 } else {
-    echo $CC_help_trunk_edit;
+    echo create_help(_("Trunks are used to terminate the call!<br>") .
+        _("The trunk and ratecard is selected by the rating engine on the basis of the dialed digits.") .
+        _("The trunk is used to dial out from your asterisk box which can be a zaptel interface or a voip provider."), 'EditTrunk');
 }
 
 //  #### SEARCH SECTION

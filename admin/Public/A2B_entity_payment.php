@@ -44,7 +44,6 @@ include './form_data/FG_var_payment.inc';
  * @var A2Billing $A2B
  * @var Smarty $smarty
  * @var FormHandler $HD_Form
- * @var string $CC_help_view_payment
  * @var string $id
  */
 
@@ -59,7 +58,10 @@ $list = $HD_Form->perform_action($form_action);
 
 $smarty->display('main.tpl');
 
-echo $CC_help_view_payment;
+echo create_help(
+    _("Payment history - The section below allows you to add payments against a customer. Note that this does not change the balance on the account. Click on 'create associate refill' when you create a payment to top-up an account."),
+    'ViewPayments'
+);
 
 if ($form_action === "list") {
     $HD_Form->create_search_form(true);

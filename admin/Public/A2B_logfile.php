@@ -50,7 +50,8 @@ getpost_ifset(array (
 $smarty->display('main.tpl');
 
 // #### HELP SECTION
-echo $CC_help_logfile;
+echo create_help(_("Browse your server log files.") . '<br/>' .
+    _("This tool can be used to extract and present information from various logfiles."), 'WatchLogFiles');
 ?>
 <br>
 <center>

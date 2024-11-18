@@ -123,10 +123,8 @@ $smarty->display('main.tpl');
 
 // #### HELP SECTION
 if (!$popup_select) {
-    if (($form_action == 'ask-add') || ($form_action == 'ask-edit'))
-        echo $CC_help_add_rate;
 } else {
-    echo $CC_help_def_ratecard;
+    echo create_help(gettext("Please select a ratecard and click on search to browse the different rates/dialing prefix of the selected ratecard."), 'Rate');
 }
 
 // DISPLAY THE UPDATE MESSAGE

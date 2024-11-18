@@ -50,7 +50,7 @@ $list = $HD_Form -> perform_action($form_action);
 $smarty->display('main.tpl');
 
 // #### HELP SECTION
-echo $CC_help_support_box;
+echo create_help(_("You can see here the Support Box, you need at least one support box to start support activity."));
 
 // #### TOP SECTION PAGE
 $HD_Form -> create_toppage ($form_action);

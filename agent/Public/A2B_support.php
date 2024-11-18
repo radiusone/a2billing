@@ -104,7 +104,7 @@ $list = $HD_Form -> perform_action($form_action);
 $smarty->display('main.tpl');
 
 // #### HELP SECTION
-echo $CC_help_support_list;
+echo create_help(gettext("You can see here, all tickets created. You can also add a new ticket for one customer."));
 
 if ($form_action == "list") {
     // My code for Creating two functionalities in a page

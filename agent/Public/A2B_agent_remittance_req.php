@@ -88,7 +88,7 @@ if (is_array($result_remittance) && sizeof($result_remittance) >= 1) {
 $remittance_value_cur = $remittance_value / $mycur;
 $smarty->display('main.tpl');
 
-echo $CC_help_remittance_request . "<br>";
+echo create_help(gettext("On this page you will be able to create a remittance Remittance Request according to the commission accrued on your account.If the commission accrued is higher than a predefined threshold then it will be possible to ask a transfer on your balance or by a funds transfer."));
 
 ?>
 

@@ -192,7 +192,8 @@ $smarty->display('main.tpl');
 // #### HELP SECTION
 if ($form_action=='list') {
 
-    echo $CC_help_sipfriend_list;
+    echo create_help(_("SIP and IAX Config will create a SIP or IAX entry on the Asterisk server, so that a customer can set up a SIP or IAX client to connect directly to the asterisk server without the need to enter an account and pin each time a call is made. When done, click on the CONFIRM DATA button, then click reload to apply the changes on the Asterisk server.<br>") .
+        _("The customer must then enter the URL/IP address of the asterisk server into the SIP/IAX client, and use the Account Number and Secret word as the username and password."), 'ListSIPFriend');
 
     if (!USE_REALTIME) {
     ?>
@@ -224,7 +225,9 @@ if ($form_action=='list') {
     <?php
     }
 } else {
-    echo $CC_help_sipfriend_edit;
+    echo create_help(_("Each SIP/IAX client is identified by a number of parameters.<br><br>") .
+        _("More details on how to configure clients are on the Wiki") . ' -> <a href="http://voip-info.org/wiki-Asterisk+config+sip.conf" target="_blank">sip.conf</a> &
+<a href="http://voip-info.org/wiki-Asterisk+config+iax.conf" target="_blank">iax.conf</a>', 'EditFriend');
 }
 
 if ($form_action=='list') {

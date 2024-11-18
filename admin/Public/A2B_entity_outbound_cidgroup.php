@@ -55,9 +55,9 @@ $smarty->display('main.tpl');
 
 // #### HELP SECTION
 if ($form_action == 'list')
-    echo $CC_help_list_cidgroup;
+    echo create_help(_("CID Group list. CID can be chosen by customers through the customer interface."), 'ListCIDGroup');
 else
-    echo $CC_help_edit_cidgroup;
+    echo create_help(_("CID group offers customers a group of CID numbers which can be selected for a ratecard for outgoing calls"), 'EditCIDGroup');
 
 // #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);

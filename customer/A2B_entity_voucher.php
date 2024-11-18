@@ -92,7 +92,7 @@ $smarty->display( 'main.tpl');
 
 // #### HELP SECTION
 if ($form_action=='list') {
-    echo $CC_help_list_voucher;
+    echo create_help(gettext("Enter your voucher number to top up your card."));
 }
 
 // #### TOP SECTION PAGE

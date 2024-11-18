@@ -57,7 +57,7 @@ $list = $HD_Form->perform_action($form_action);
 $smarty->display('main.tpl');
 
 // #### HELP SECTION
-echo $CC_help_notification;
+echo create_help(gettext("Notification settings.") . '<br>' . gettext("You can update your notification settings here."));
 
 // #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);

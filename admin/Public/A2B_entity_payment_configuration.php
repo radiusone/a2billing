@@ -51,9 +51,20 @@ $list = $HD_Form -> perform_action($form_action);
 // #### HEADER SECTION
 $smarty->display('main.tpl');
 
-echo $CC_help_list_payment_methods;
+echo create_help(_("Epayment methods help you to collect payments from your customers."));
 
-echo $PAYMENT_METHOD;
+echo '<table width="100%" align="center">
+    <tr>
+        <TD valign="top" align="center" class="tableBodyRight">
+            <a href="https://www.paypal.com/en/mrb/pal=PGSJEXAEXKTBU" target="_blank"><img src="' . get_image_path("kicons/paypal_logo.gif") . '" alt="Paypal"/></a>
+            &nbsp;&nbsp; &nbsp;
+            <a href="https://www.moneybookers.com/app/?rid=811621" target="_blank"><img src="' . get_image_path("kicons/moneybookers.gif") . '" alt="Moneybookers"/></a>
+            &nbsp;&nbsp; &nbsp;
+            <a href="http://www.plugnpay.com/" target="_blank"><img src="' . get_image_path("kicons/plugnpay.png") . '" alt="plugnpay.com"/></a>
+        </td>
+    </tr>
+</table>
+';
 
 // #### TOP SECTION PAGE
 $HD_Form -> create_toppage ($form_action);

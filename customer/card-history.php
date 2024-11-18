@@ -160,7 +160,7 @@ if ($FG_DEBUG == 3) echo "<br>Nb_record_max : $nb_record_max";
     $smarty->display( 'main.tpl');
 
 // #### HELP SECTION
-//echo $CC_help_balance_customer;
+//echo create_help(gettext("All calls are listed below. Search by month, day or status. Additionally, you can check the rate and price."));
 
 ?>
 

@@ -74,7 +74,7 @@ $list = $HD_Form->perform_action($form_action);
 $smarty->display('main.tpl');
 
 // #### HELP SECTION
-echo $CC_help_view_receipt;
+echo create_help(_("Receipt history - The section below allows you to see and create receipt against a customer.Only the closed receipt can be see in the customer interface. Receipts are only an information for the user and aren't used in the balance of the system"), 'ViewInvoices');
 
 // #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);

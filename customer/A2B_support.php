@@ -118,7 +118,7 @@ $list = $HD_Form->perform_action($form_action);
 $smarty->display('main.tpl');
 
 // #### HELP SECTION
-echo $CC_help_support;
+echo create_help(gettext("On this page, you can open a support ticket and consult the status of your existing ticket."));
 
 if ($form_action == "list") {
     $HD_Form -> create_toppage ("ask-add");

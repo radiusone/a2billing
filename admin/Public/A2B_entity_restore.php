@@ -113,7 +113,7 @@ $list = $HD_Form -> perform_action($form_action);
 $smarty->display('main.tpl');
 
 // #### HELP SECTION
-echo $CC_help_database_restore;
+echo create_help(_("This section will allow you to restore or download an existing database backup. The restore process will delete the existing database and import the new one. You can also upload a database backup that you previously downloaded (make sure to use the same file format)."), 'DatabaseRestore');
 
 // #### TOP SECTION PAGE
 $HD_Form -> create_toppage ($form_action);

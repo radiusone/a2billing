@@ -70,7 +70,8 @@ function sendValue(selvalue) {
 
 // #### HELP SECTION
 if (!$popup_select) {
-    echo $CC_help_provider;
+    echo create_help(_("This section will allow you to create and edit VOIP Providers for reporting purposes. ") .
+        _("A provider is the company/person that provides you with termination."), 'ListProvider');
 }
 
 // #### TOP SECTION PAGE

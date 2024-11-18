@@ -253,14 +253,6 @@ function sendtoupload(form)
 //-->
 </script>
 
-      <?php
-      if ($status=="ok") {
-              echo $CC_help_import_did_confirm;
-      } else {
-            echo $CC_help_import_did_analyse;
-      }
-      ?>
-
         <?php  if ($status!="ok") {?>
 
         <center><?php echo gettext("As a preview for the import, we have made a quick analyze of the first line of your csv file.<br/>

@@ -1225,11 +1225,10 @@ function create_help($text, $wiki = ""): string
         return "";
     }
 
-    $text = htmlspecialchars($text);
     if (!empty($wiki)) {
         $wiki = htmlspecialchars(_("For further information please consult")) . ' <a target="_blank" href="http://www.asterisk2billing.org/documentation/">' . htmlspecialchars(_("the online documention")) . '</a>.<br/>';
     }
-    $path = htmlspecialchars(get_image_path("toggle_hide2show_on.png"));
+    $path = get_image_path("toggle_hide2show_on.png");
 
     return <<< HTML
 <div class="toggle_show2hide">

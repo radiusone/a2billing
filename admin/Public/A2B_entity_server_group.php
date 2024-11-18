@@ -54,7 +54,7 @@ $list = $HD_Form->perform_action($form_action);
 $smarty->display('main.tpl');
 
 // #### HELP SECTION
-echo $CC_help_server_group;
+echo create_help(_("Server Groups define the set of servers that are going to be used by the callback system. A callback is bound to a server group which will be used to dispatch the callback requests."), 'ShowServerGroup');
 
 // #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);

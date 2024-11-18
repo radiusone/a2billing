@@ -55,9 +55,9 @@ $smarty->display('main.tpl');
 
 // #### HELP SECTION
 if ($form_action == 'list')
-    echo $CC_help_list_cid;
+    echo create_help(_("Outbound CID list. CID can be added by customers through the customer interface."), 'ListCIDs');
 else
-    echo $CC_help_edit_cid;
+    echo create_help(_("Outbound CID offers customers a number which will be selected randomly for a ratecard for outgoing calls"), 'EditCID');
 
 // #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);

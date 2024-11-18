@@ -55,9 +55,10 @@ $smarty->display('main.tpl');
 
 // #### HELP SECTION
 if ($form_action == 'ask-add')
-    echo $CC_help_edit_service;
+    echo create_help(_("Utility to apply a scheduled action on the account.<br>") .
+        _("For example if you want to remove 10 cents everyday on each single account, it can be defined here, alternatively, if you now want to remove 1 credit every week but only 7 times on each account, the different rules/parameters below will define this."), 'EditRecurringService');
 else
-    echo $CC_help_list_service;
+    echo create_help(_("Recurring services that decrement an account at timed intervals."), 'ListRecurringService');
 
 // #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);

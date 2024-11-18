@@ -76,7 +76,7 @@ if (empty($card)) {
 // #### HEADER SECTION
 $smarty->display('main.tpl');
 
-echo $CC_help_info_customer;
+echo create_help(gettext("Customer information."), 'ListCustomers');
 
 echo get_login_button ($id);
 ?>

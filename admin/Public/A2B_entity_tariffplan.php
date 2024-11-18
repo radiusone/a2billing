@@ -54,9 +54,11 @@ $list = $HD_Form->perform_action($form_action);
 $smarty->display('main.tpl');
 // #### HELP SECTION
 if (($form_action == 'ask-add') || ($form_action == 'ask-edit'))
-    echo $CC_help_edit_ratecard;
+    echo create_help(_("A ratecard is a set of rates defined and applied according to the dialling prefix, for instance 441 & 442 : UK Landline.") . '<br/>' .
+        _("Each ratecard may have as many rates as you wish, however, if a dialling prefix cannot be matched when a call is made, then the call will be terminated.") . '<br/>' .
+        _('A ratecard has a "start date", an "expiry date" and a you can define a default trunk, but if no trunk is defined, the ratecard default trunk will be used.'), 'EditRatecard');
 else
-    echo $CC_help_list_ratecard;
+    echo create_help(_("List ratecards that have been created!<br>Ensure that a ratecard is added into the call plan under 'List Ratecard'"), 'ListRatecard');
 
 // #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);

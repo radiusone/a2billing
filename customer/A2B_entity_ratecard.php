@@ -78,7 +78,7 @@ $smarty->display('main.tpl');
 
 // #### HELP SECTION
 if ($form_action == 'list') {
-    echo $CC_help_ratecard.'';
+    echo create_help(gettext("View Rates"));
 }
 
  // #### TOP SECTION PAGE

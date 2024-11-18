@@ -54,7 +54,7 @@ $list = $HD_Form->perform_action($form_action);
 $smarty->display('main.tpl');
 
 // #### HELP SECTION
-echo $CC_help_list_subscription;
+echo create_help(_("SUBSCRIPTION FEE - You can bill the user  in a monthly, weekly or any time period for being subscribed on your service. The fee amount is defined here and the period through the cront configuration."), 'ListSubscription');
 
 // #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);

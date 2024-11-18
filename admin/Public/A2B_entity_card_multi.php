@@ -48,7 +48,6 @@ include './form_data/FG_var_card.inc';
  * @var Smarty $smarty
  * @var string $form_action
  * @var string $action
- * @var string $CC_help_generate_customer
  */
 
 Admin::checkPageAccess(Admin::ACX_CUSTOMER);
@@ -187,7 +186,7 @@ $list = $HD_Form->perform_action($form_action);
 $smarty->display('main.tpl');
 
 // #### HELP SECTION
-echo $CC_help_generate_customer;
+echo create_help(_("Bulk create customers in a single step. <br> Set the properties of the batch such as initial credit, account type and currency, then click on the GENERATE CUSTOMERS button to create the batch."), 'GenerateCustomers');
 
 $list_tariff = $HD_Form->DBHandle->CacheGetAll(300, "SELECT id, tariffgroupname AS name FROM cc_tariffgroup ORDER BY tariffgroupname") ?: [];
 $list_group = $HD_Form->DBHandle->CacheGetAll(300, "SELECT id, name FROM cc_card_group ORDER BY name") ?: [];

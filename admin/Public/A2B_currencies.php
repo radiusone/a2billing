@@ -58,7 +58,9 @@ $list = $HD_Form -> perform_action($form_action);
 $smarty->display('main.tpl');
 
 // #### HELP SECTION
-echo $CC_help_currency;
+echo create_help(_("Currency data is automatically updated from Yahoo Financial.") .
+    '<br>' . _("For more information please visit the website http://finance.yahoo.com.") .
+    '<br>' . _("The list below is based on your currency :") . ' <b>' . BASE_CURRENCY . '</b>', 'CurrencyList');
 
 if (isset($update_msg) && strlen($update_msg)>0) echo $update_msg;
 

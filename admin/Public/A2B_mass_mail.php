@@ -191,7 +191,7 @@ if (isset($submit)) {
 // #### HEADER SECTION
 $smarty->display('main.tpl');
 
-echo $CC_help_mass_mail;
+echo create_help(_("Here you can email a message to all of your users. To do this, an email will be sent out to the administrative email address supplied, with a blind carbon copy sent to all recipients. If you are emailing a large group of people please be patient after submitting and do not stop the page halfway through. It is normal for a mass emailing to take a long time and you will be notified when the script has completed."));
 
 $tags_help = gettext("The followings tags will be replaced in the message by the value in the database.");
 $tags_help .=  '<br/><b>$email$</b>:'.gettext('email of the customer').'<br/>';

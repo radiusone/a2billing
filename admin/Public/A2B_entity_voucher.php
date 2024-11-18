@@ -125,10 +125,9 @@ $smarty->display('main.tpl');
 
 // #### HELP SECTION
 if ($form_action == 'list')
-    echo $CC_help_list_voucher;
-else
-    echo $CC_help_create_voucher;
-
+    echo create_help(_("Listed below are the vouchers created on the system,.<br/>") .
+        _("Each row corresponds to a voucher and shows it's status, value and currency..") .
+        _("Create a single voucher, defining such properties as credit, tag, currency etc, click confirm when finished. <br/> The customer applies voucher credits to their account via the customer interface or via an IVR menu."), 'ListVoucher');
 ?>
 
 <div class="toggle_hide2show">

@@ -72,7 +72,7 @@ $list = $HD_Form->perform_action($form_action);
 $smarty->display('main.tpl');
 
 // #### HELP SECTION
-echo $CC_help_view_invoice;
+echo create_help(_("Invoice history - The section below allows you to see and create invoices against a customer. Only the closed invoice can be seen on the customer interface"), 'ViewInvoices');
 
 ?>
 <div class="toggle_hide2show">

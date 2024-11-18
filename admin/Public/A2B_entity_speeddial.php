@@ -54,7 +54,8 @@ $list = $HD_Form->perform_action($form_action);
 $smarty->display('main.tpl');
 
 // #### HELP SECTION
-echo $CC_help_speeddial;
+echo create_help(_("This section allows you to define the Speed dials for the customer.") . '<br>' .
+    _("A Speed Dial will be entered on the IVR in order to make a shortcut to their preferred dialled phone number."), 'ListSpeeddial');
 
 // #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);

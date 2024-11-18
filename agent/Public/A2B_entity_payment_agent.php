@@ -55,7 +55,7 @@ $list = $HD_Form -> perform_action($form_action);
 $smarty->display('main.tpl');
 
 // #### HELP SECTION
-echo $CC_help_view_payment_agent;
+echo create_help(gettext("Agent Payment history - The section below allows you to browse your payments"), 'ViewPayments');
 
 if ($form_action == "list") {
     $HD_Form -> create_search_form();

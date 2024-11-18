@@ -44,7 +44,6 @@ require_once "./form_data/FG_var_agent.inc";
  * @var Smarty $smarty
  * @var string $form_action
  * @var string $popup_select
- * @var string $CC_help_agent
  */
 
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
@@ -59,7 +58,7 @@ $list = $HD_Form->perform_action($form_action);
 $smarty->display('main.tpl');
 
 // #### HELP SECTION
-echo $CC_help_agent;
+echo create_help(_("Agents - this shows a list of all of the Agents who have access to the Agent interface"), 'ShowAgent');
 
 // #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);

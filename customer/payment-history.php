@@ -57,7 +57,7 @@ $list = $HD_Form->perform_action($form_action);
 $smarty->display('main.tpl');
 
 // #### HELP SECTION
-echo $CC_help_view_payment;
+echo create_help(gettext("Payment history - Record of payments made."));
 
 // #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);

@@ -74,7 +74,7 @@ $additional_iax = explode("|", IAX_ADDITIONAL_PARAMETERS);
 // #### HEADER SECTION
 $smarty->display('main.tpl');
 
-echo $CC_help_sipiax_info;
+echo create_help(gettext("Configuration information for SIP and IAX Client. You can simply copy and paste it in your configuration files and do necessary modifications."));
 ?>
 <form name="form1">
 

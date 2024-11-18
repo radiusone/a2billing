@@ -142,9 +142,20 @@ $contents[] = array (
 
 $smarty->display('main.tpl');
 
-echo $CC_help_payment_config;
+echo create_help(_("You can configure your epayment method here. It helps you to enable or disable the payment method. You can define the currency settings."));
 
-echo $PAYMENT_METHOD;
+echo '<table width="100%" align="center">
+    <tr>
+        <TD valign="top" align="center" class="tableBodyRight">
+            <a href="https://www.paypal.com/en/mrb/pal=PGSJEXAEXKTBU" target="_blank"><img src="' . get_image_path("kicons/paypal_logo.gif") . '" alt="Paypal"/></a>
+            &nbsp;&nbsp; &nbsp;
+            <a href="https://www.moneybookers.com/app/?rid=811621" target="_blank"><img src="' . get_image_path("kicons/moneybookers.gif") . '" alt="Moneybookers"/></a>
+            &nbsp;&nbsp; &nbsp;
+            <a href="http://www.plugnpay.com/" target="_blank"><img src="' . get_image_path("kicons/plugnpay.png") . '" alt="plugnpay.com"/></a>
+        </td>
+    </tr>
+</table>
+';
 
 ?>
 

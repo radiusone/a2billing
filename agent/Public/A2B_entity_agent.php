@@ -59,7 +59,7 @@ if ($message != "success") {
 $smarty->display('main.tpl');
 
 // #### HELP SECTION
-echo $CC_help_agent_info;
+echo create_help(gettext("Personal information.") . '<br>' . gettext("You can update your personal information here."));
 
 // #### TOP SECTION PAGE
 $HD_Form -> create_toppage ($form_action);

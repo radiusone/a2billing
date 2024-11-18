@@ -53,7 +53,7 @@ $smarty->display('main.tpl');
 
 // #### HELP SECTION
 if ($form_action=='list')
-    echo $CC_help_payment_log;
+    echo create_help(_("Payment log with status, payment methods , owner and creation date."));
 
 // #### TOP SECTION PAGE
 $HD_Form -> create_toppage ($form_action);

@@ -156,7 +156,8 @@ $nb_tariffname = count($list_tariffname);
 
 $smarty->display('main.tpl');
 
-//echo $CC_help_import_ratecard;
+//echo create_help(_("This section is a utility to import ratecards from a CSV file.") . "<br>" .
+//    _('Define the ratecard name, the trunk to use and the fields that you wish to include from your csv files. Finally, select the csv files and click on the "Import Ratecard" button.'), 'ImportRatecard');
 // #### CREATE SEARCH FORM
     $HD_Form -> create_search_form();
 ?>

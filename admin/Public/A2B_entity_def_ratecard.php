@@ -45,8 +45,6 @@ include './form_data/FG_var_def_ratecard.inc';
  * @var A2Billing $A2B
  * @var Smarty $smarty
  * @var FormHandler $HD_Form
- * @var string $CC_help_rate
- * @var string $CC_help_def_ratecard
  * @var string $order
  * @var string $sens
  * @var string $current_page
@@ -204,7 +202,9 @@ $smarty->display('main.tpl');
 
 // #### HELP SECTION
 if (!$popup_select) {
-    echo ($form_action === 'ask-add' || $form_action === 'ask-edit') ? $CC_help_rate : $CC_help_def_ratecard;
+    echo ($form_action === 'ask-add' || $form_action === 'ask-edit')
+        ? create_help(_("Please fill in the fields below to set up the rate for each destination."), 'Rate')
+        : create_help(_("Please select a ratecard and click on search to browse the different rates/dialing prefix of the selected ratecard."), 'Rate');
 }
 
 // DISPLAY THE UPDATE MESSAGE

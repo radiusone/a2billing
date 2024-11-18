@@ -54,7 +54,7 @@ $list = $HD_Form -> perform_action($form_action);
 $smarty->display('main.tpl');
 
 // #### HELP SECTION
-echo $CC_help_list_seria;
+echo create_help(_("This page shows the series list.") . '<br>' . _("Series & serials is used for the creation of a card range specifically for accounting purposes instead of card id."), 'ListSeria');
 
 // #### TOP SECTION PAGE
 $HD_Form -> create_toppage ($form_action);

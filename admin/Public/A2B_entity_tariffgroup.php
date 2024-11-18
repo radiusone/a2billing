@@ -55,6 +55,11 @@ $list = $HD_Form->perform_action($form_action);
 // #### HEADER SECTION
 $smarty->display('main.tpl');
 
+$CC_help_list_tariffgroup = create_help(
+    _("List of Call Plans, a Call Plan is a collection of ratecards. You can click on edit to add new ratecards to the Call Plan"),
+    'ListCallPlan'
+);
+
 // #### HELP SECTION
 if ($form_action === 'list') {
     if (!$popup_select) {

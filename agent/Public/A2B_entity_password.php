@@ -61,7 +61,7 @@ if ($form_action=="ask-modif") {
 
 $smarty->display( 'main.tpl');
 
-echo $CC_help_password_change."<br>";
+echo create_help(gettext("On this page you will be able to change your password, You have to enter the New Password and Confirm it."));
 
 ?>
 <script language="JavaScript">

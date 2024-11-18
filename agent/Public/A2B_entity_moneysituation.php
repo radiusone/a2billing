@@ -58,7 +58,7 @@ $list = $HD_Form->perform_action($form_action);
 $smarty->display('main.tpl');
 
 // #### HELP SECTION
-echo $CC_help_money_situation;
+echo create_help(gettext("This screen shows refills and payments made against each account, along with the current credit on each card. The initial amount of credit applied to the card is not included. The amount owing is calculated by subtracting payments from refills"), 'MoneySituation');
 
 // #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);

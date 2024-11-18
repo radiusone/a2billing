@@ -40,7 +40,6 @@ $menu_section = 6;
 require_once "../../common/lib/admin.defines.php";
 /**
  * @var Smarty $smarty
- * @var string $CC_help_import_ratecard
  */
 
 set_time_limit(0);
@@ -65,6 +64,12 @@ $list_tariffname = (new Table("cc_tariffplan", "id, tariffname"))->getRows($DBHa
 $list_trunk = (new Table("cc_trunk", "id_trunk, trunkcode"))->getRows($DBHandle, ["status" => 1], ["trunkcode"]);
 
 $smarty->display('main.tpl');
+echo create_help(
+    _("This section is a utility to import ratecards from a CSV file.")
+        . "<br/>"
+        . _('Define the ratecard name, the trunk to use and the fields that you wish to include from your csv files. Finally, select the csv files and click on the "Import Ratecard" button.'),
+    'ImportRatecard'
+);
 ?>
 
 <form class="container align-center" id="prefs" name="prefs" enctype="multipart/form-data" method="post" action="CC_ratecard_import_analyse.php">

@@ -52,7 +52,7 @@ $list = $HD_Form -> perform_action($form_action);
 $smarty->display('main.tpl');
 
 // #### HELP SECTION
-echo $CC_help_callerid_list;
+echo create_help(_("Set the caller ID so that the customer calling in is authenticated on the basis of the callerID rather than with the account number"), 'ListCallerID');
 
 // #### TOP SECTION PAGE
 $HD_Form -> create_toppage ($form_action);
