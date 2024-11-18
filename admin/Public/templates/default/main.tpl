@@ -344,7 +344,6 @@
 							<li><a class="link-dark rounded" href="A2B_call_archiving.php">{_("Call archiving")}</a></li>
 							<li><a class="link-dark rounded" href="A2B_data_archiving.php">{_("Data archiving")}</a></li>
 							<li><a class="link-dark rounded" href="A2B_asteriskinfo.php">{"Asterisk Info"}</a></li>
-							<li><a class="link-dark rounded" href="A2B_phpsysinfo.php">{"phpSysInfo"}</a></li>
 							<li><a class="link-dark rounded" href="A2B_phpinfo.php">{"phpInfo"}</a></li>
 							<li><a class="link-dark rounded" href="A2B_entity_monitor.php"> {_("Monitoring")}</a></li>
 						</ul>
