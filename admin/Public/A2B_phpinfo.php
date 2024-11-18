@@ -39,44 +39,28 @@ $menu_section = 16;
 require_once "../../common/lib/admin.defines.php";
 
 Admin::checkPageAccess(Admin::ACX_MAINTENANCE);
-// #### HEADER SECTION
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 
-?>
-<br>
-
-<center>
-<style type="text/css">
-.phpinfodisplay table {border-collapse: collapse; font-size: 12px;}
-.phpinfodisplay td,.phpinfodisplay  th { border: 1px solid #000000; font-size: 75%; vertical-align: baseline; font-size: 12px;}
-</style>
-
-<?php
 ob_start();
-phpinfo();
+phpinfo(INFO_GENERAL | INFO_MODULES | INFO_ENVIRONMENT);
+$html = ob_get_clean();
 
-preg_match ('%<style type="text/css">(.*?)</style>.*?(<body>.*</body>)%s', ob_get_clean(), $matches);
+$dom = new DOMDocument();
+$dom->loadHTML($html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+$css = $dom->getElementsByTagName("style")->item(0)->textContent;
+$body = $dom->saveHTML($dom->getElementsByTagName("body")->item(0));
 
-# $matches [1]; # Style information
-# $matches [2]; # Body information
+// CSS rules must be constrained so they will not mess with the whole page
+$css = implode(
+    "\n",
+    array_map(
+        fn ($v) => "div.phpinfo $v",
+        explode("\n", trim($css))
+    )
+);
+$css = str_replace("div.phpinfo body", "div.phpinfo", $css);
 
-echo "<div class='phpinfodisplay'><style type='text/css'>\n",
-    join( "\n",
-        array_map(
-            create_function(
-                '$i',
-                'return ".phpinfodisplay " . preg_replace( "/,/", ",.phpinfodisplay ", $i );'
-                ),
-            preg_split( '/\n/', $matches[1] )
-            )
-        ),
-    "</style>\n",
-    $matches[2],
-    "\n</div>\n";
-?>
+echo "<style>$css</style>";
+echo "<div class=\"phpinfo\">$body</div>";
 
-</center>
-
-<?php
-// #### FOOTER SECTION
-$smarty->display('footer.tpl');
+require_once(__DIR__ . "/../templates/footer.php");
