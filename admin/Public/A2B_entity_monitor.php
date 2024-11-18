@@ -1,6 +1,8 @@
 <?php
 
+use A2billing\A2Billing;
 use A2billing\Admin;
+use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -36,30 +38,24 @@ use A2billing\Admin;
 **/
 
 $menu_section = 16;
-require_once "../../common/lib/admin.defines.php";
-include './form_data/FG_var_monitor.inc';
+require_once __DIR__ . "/../../common/lib/admin.defines.php";
+require_once __DIR__ . "/form_data/FG_var_monitor.inc";
+/**
+ * @var FormHandler $HD_Form
+ * @var string $CC_help_list_monitoring
+ */
 
 Admin::checkPageAccess(Admin::ACX_MAINTENANCE);
 
-$HD_Form->init();
+$form_action ??= "list";
 
-if (!isset ($form_action))
-    $form_action = "list"; //ask-add
-if (!isset ($action))
-    $action = $form_action;
+require_once __DIR__ . "/../templates/main.php";
 
-$list = $HD_Form->perform_action($form_action);
-
-// #### HEADER SECTION
-$smarty->display('main.tpl');
-
-// #### HELP SECTION
 echo $CC_help_list_monitoring;
 
-// #### TOP SECTION PAGE
+$HD_Form->init();
+$list = $HD_Form->perform_action($form_action);
 $HD_Form->create_toppage($form_action);
-
 $HD_Form->create_form($form_action, $list);
 
-// #### FOOTER SECTION
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";
