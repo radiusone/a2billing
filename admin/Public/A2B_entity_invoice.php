@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Forms\FormHandler;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -34,38 +35,32 @@ use A2billing\Table;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
-**/
+ **/
 
 $menu_section = 11;
 require_once "../../common/lib/admin.defines.php";
-include './form_data/FG_var_invoice.inc';
+require_once "./form_data/FG_var_invoice.inc";
+/**
+ * @var FormHandler $HD_Form
+ * @var string $popup_select
+ */
 
 Admin::checkPageAccess(Admin::ACX_INVOICING);
 
-getpost_ifset(array (
-    'id',
-    'action'
-));
+getpost_ifset(['id', 'action']);
+/**
+ * @var string $id
+ * @var string $action
+ */
 
-$DBHandle = DbConnect();
-
-if ($action == "lock") {
-    if (!empty ($id) && is_numeric($id)) {
-        $instance_table_invoice = new Table("cc_invoice");
-        $param_update_invoice = "status = '1'";
-        $clause_update_invoice = " id ='$id'";
-        $instance_table_invoice->Update_table($DBHandle, $param_update_invoice, $clause_update_invoice, $func_table = null);
-    }
+if (($action ?? "") === "lock" && is_numeric($id ?? "")) {
+    // called by XHR
+    (new Table("cc_invoice"))->updateRow($HD_Form->DBHandle, ["status" => 1], ["id" => $id]);
     die();
 }
 
 $HD_Form->init();
-
-if (!isset ($form_action))
-    $form_action = "list"; //ask-add
-if (!isset ($action))
-    $action = $form_action;
-
+$form_action ??= "list";
 $list = $HD_Form->perform_action($form_action);
 
 require_once __DIR__ . "/../templates/main.php";
@@ -73,27 +68,30 @@ require_once __DIR__ . "/../templates/main.php";
 // #### HELP SECTION
 echo create_help(_("Invoice history - The section below allows you to see and create invoices against a customer. Only the closed invoice can be seen on the customer interface"), 'ViewInvoices');
 
-?>
-<div class="toggle_hide2show">
-<center><a href="#" target="_self" class="toggle_menu"><img class="toggle_hide2show" src="<?= get_image_path("kicons/toggle_hide2show.png") ?>" onmouseover="this.style.cursor='hand';" HEIGHT="16"> <font class="fontstyle_002"><?php echo gettext("SEARCH INVOICE");?> </font></a><?php if (!empty($_SESSION['entity_invoice_selection'])) { ?>&nbsp;(<font style="color:#EE6564;" > <?php echo gettext("search activated"); ?> </font> ) <?php } ?> </center>
-    <div class="tohide" style="display:none;">
-<?php
 // #### CREATE SEARCH FORM
-if ($form_action == "list") {
-    $HD_Form -> create_search_form();
-}
-?>
+if ($form_action === "list" && !$popup_select) { ?>
+<div class="row justify-content-center">
+    <div class="col-auto">
+        <button
+            class="btn btn-sm <?= empty($_SESSION[$HD_Form->search_session_key]) ? "btn-outline-primary" : "btn-primary btn-search-active" ?>"
+            data-bs-toggle="modal"
+            data-bs-target="#searchModal"
+            title="<?= _("Search Invoices") ?> <?= empty($_SESSION[$HD_Form->search_session_key]) ? "" : "(" . _("search activated") . ")" ?>"
+        >
+            <?= _("Search Invoices") ?>
+        </button>
     </div>
 </div>
 
 <?php
+    $HD_Form->create_search_form(true, false);
+}
+
 // #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);
-
 $HD_Form->create_form($form_action, $list);
 
 require_once __DIR__ . "/../templates/footer.php";
-
 ?>
 
 <script>
