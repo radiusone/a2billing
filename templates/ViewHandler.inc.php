@@ -44,7 +44,7 @@ $processed["popup_fieldname"] ??= "";
                     type="text"
                     id="filterprefix"
                     name="filterprefix"
-                    value="<?= $processed['filterprefix'] ?>"
+                    value="<?= $processed['filterprefix'] ?? "" ?>"
                     class="form-control form-control-sm"
                 />
             </div>
@@ -106,7 +106,10 @@ $processed["popup_fieldname"] ??= "";
                     <?php foreach ($form->FG_LIST_TABLE_CELLS as $row): ?>
                     <th>
                         <?php if ($row["sortable"]): ?>
-                        <a class="sort <?= $form->FG_QUERY_ORDERBY_COLUMNS[0] === $row["field"] ? strtolower($form->FG_QUERY_DIRECTION) : "" ?>" href="<?= "?current_page=$current_page&amp;letter=$letter&amp;popup_select=$processed[popup_select]&amp;order=$row[field]&amp;sens=" . ($form->FG_QUERY_DIRECTION === "ASC" ? "DESC" : "ASC") . (str_starts_with($form->CV_FOLLOWPARAMETERS, "&") ? "" : "&amp;") . $form->CV_FOLLOWPARAMETERS ?>">
+                        <a
+                            class="sort <?= $form->FG_QUERY_ORDERBY_COLUMNS[0] === $row["field"] ? strtolower($form->FG_QUERY_DIRECTION) : "" ?>"
+                            href="<?= "?" . http_build_query(["current_page" => $current_page, "letter" => $letter, "popup_select" => $processed["popup_select"], "order" => $row["field"] ?? "", "sens" => $form->FG_QUERY_DIRECTION === "ASC" ? "DESC" : "ASC"], "", "&amp;") . (str_starts_with($form->CV_FOLLOWPARAMETERS, "&") ? "" : "&amp;") . $form->CV_FOLLOWPARAMETERS ?>"
+                        >
                         <?php endif ?>
                             <?= $row["header"] ?>
                         <?php if ($row["sortable"]): ?>
@@ -139,7 +142,7 @@ $processed["popup_fieldname"] ??= "";
                             $row["sql_display"]
                         );
                         if (trim($record_display) === "") {
-                            $record_display = "n/a";
+                            $record_display = _("n/a");
                         }
                         if ($row["type"] === "lie_link" && is_array($options)) {
                             $link = $row["href"] . (str_contains($row["href"], 'form_action') ? "?" : "?form_action=ask-edit&") . "id=" . $options[0][1];
@@ -293,7 +296,7 @@ $processed["popup_fieldname"] ??= "";
         <?= FormHandler::printPages(
             $form->CV_CURRENT_PAGE + 1,
             $form->FG_LIST_VIEW_PAGE_COUNT,
-            "?" . http_build_query(["current_page" => "%s", "filterprefix" => $processed["filterprefix"], "order" => $processed["order"], "sens" => $processed["sens"]], "", "&amp;") . (str_starts_with($form->CV_FOLLOWPARAMETERS, "&") ? "" : "&amp;") . $form->CV_FOLLOWPARAMETERS
+            "?" . http_build_query(["current_page" => "%s", "filterprefix" => $processed["filterprefix"] ?? "", "order" => $processed["order"] ?? "", "sens" => $processed["sens"] ?? ""], "", "&amp;") . (str_starts_with($form->CV_FOLLOWPARAMETERS, "&") ? "" : "&amp;") . $form->CV_FOLLOWPARAMETERS
 //            "?current_page=%s&amp;filterprefix=$processed[filterprefix]&amp;order=$processed[order]&amp;sens=$processed[sens]&amp;mydisplaylimit=$processed[mydisplaylimit]&amp;popup_select=$processed[popup_select]&amp;letter=$letter" . (str_starts_with($form->CV_FOLLOWPARAMETERS, "&") ? "" : "&amp;") . $form->CV_FOLLOWPARAMETERS
         ) ?>
     </div>

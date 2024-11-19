@@ -1272,12 +1272,12 @@ class FormHandler
             $form_action === "ask-edit" || $form_action === "add-content" || $form_action === "del-content" ||
             $form_action === "ask-del-confirm"
         ) {
-            $this->FG_QUERY_ORDERBY_COLUMNS = array_filter([$processed['order']]);
+            $this->FG_QUERY_ORDERBY_COLUMNS = array_filter([$processed['order'] ?? []]);
             $this->FG_QUERY_DIRECTION = $processed['sens'] ?? "";
-            $this->CV_CURRENT_PAGE = (int)$processed['current_page'];
+            $this->CV_CURRENT_PAGE = (int)($processed['current_page'] ?? 0);
 
             $session_limit = $this->FG_QUERY_TABLE_NAME . "-displaylimit";
-            if (!empty((int)$_SESSION[$session_limit])) {
+            if (array_key_exists($session_limit, $_SESSION) && (int)$_SESSION[$session_limit]) {
                 $this->FG_LIST_VIEW_PAGE_SIZE = (int)$_SESSION[$session_limit];
             }
 
@@ -1395,7 +1395,7 @@ class FormHandler
 
         if ($this->FG_FILTER_ENABLE) {
             $filtercolumn = $this->FG_FILTER_COLUMN;
-            $filterprefix = $processed["filterprefix"];
+            $filterprefix = $processed["filterprefix"] ?? "";
             if ($filtercolumn && $filterprefix) {
                 $this->list_query_conditions[$filtercolumn] = ["LIKE", "$filterprefix%"];
                 $filterprefix = $this->DBHandle->qStr($processed["filterprefix"]);
@@ -1420,7 +1420,7 @@ class FormHandler
         }
 
         // RETRIEVE THE CONTENT OF THE SEARCH SESSION AND
-        if ($processed['posted_search'] != 1 && !empty($_SESSION[$this->search_session_key] ?? "")) {
+        if (($processed['posted_search'] ?? 0) != 1 && !empty($_SESSION[$this->search_session_key])) {
             $element_arr = json_decode($_SESSION[$this->search_session_key], true);
             foreach ($element_arr as $entity_name => $entity_value) {
                 $this->_processed[$entity_name] = $entity_value;
@@ -1986,7 +1986,7 @@ class FormHandler
         $processed = $this->getProcessed();
 
         $id = $processed['id'];
-        $form_el_index = $processed['form_el_index'];
+        $form_el_index = $processed['form_el_index'] ?? 0;
 
         switch ($form_action) {
             case "add-content":
@@ -2032,6 +2032,7 @@ class FormHandler
 
             default:
                 $this->create_custom($form_action);
+                break;
         }
     }
 
