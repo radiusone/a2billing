@@ -567,7 +567,7 @@ class FormHandler
                 $this->_processed[$key] = sanitize_data($value);
             }
             $key = str_replace("^^", ".", $key);
-            if (!$this->_processed[$key] or empty($this->_processed[$key])) {
+            if (empty($this->_processed[$key])) {
                 $this->_processed[$key] = sanitize_data($value);
                 if ($key === "username") {
                     //rebuild the search parameter to filter character to format card number
