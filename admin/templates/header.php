@@ -7,6 +7,7 @@
     <?php /* pages will all be served from /admin/Public, set path accordingly */?>
     <link href="../../common/lib/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css"/>
     <link href="../../common/lib/common.css" rel="stylesheet"/>
+    <script src="../../common/lib/jquery/jquery.min.js"></script>
 </head>
 <body>
 
