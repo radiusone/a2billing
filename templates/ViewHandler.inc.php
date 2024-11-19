@@ -15,6 +15,9 @@ use A2billing\Table;
 
 $cached_options = [];
 $origlist = [];
+$processed["popup_select"] ??= "0";
+$processed["popup_formname"] ??= "";
+$processed["popup_fieldname"] ??= "";
 ?>
 
 <?php if (($form -> FG_FILTER_ENABLE || $form -> FG_FILTER2_ENABLE) || ($popup_select < 1 && ($form->FG_LIST_ADDING_BUTTON1 || $form->FG_LIST_ADDING_BUTTON2))): ?>
