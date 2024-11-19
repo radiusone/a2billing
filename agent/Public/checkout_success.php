@@ -35,11 +35,11 @@
 //TODO: why is this including the customer config file? Copy/paste error?
 
 require_once "../common/lib/customer.defines.php";
-include './lib/epayment/includes/general.php';
-include './lib/epayment/includes/configure.php';
-include './lib/epayment/includes/html_output.php';
+include '../common/lib/epayment/includes/general.php';
+include '../common/lib/epayment/includes/configure.php';
+include '../common/lib/epayment/includes/html_output.php';
 $popup_select = 1;
-//include("./lib/epayment/includes/PP_header.php");
+//include("../common/lib/epayment/includes/PP_header.php");
 
 getpost_ifset(array('errcode'));
 

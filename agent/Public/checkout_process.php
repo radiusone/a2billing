@@ -54,13 +54,13 @@ if ($transactionID == "") {
     exit();
 }
 
-include '../lib/epayment/classes/payment.php';
-include '../lib/epayment/classes/order.php';
-include '../lib/epayment/classes/currencies.php';
-include '../lib/epayment/includes/general.php';
-include '../lib/epayment/includes/html_output.php';
-include '../lib/epayment/includes/configure.php';
-include '../lib/epayment/includes/loadconfiguration.php';
+include '../../common/lib/epayment/classes/payment.php';
+include '../../common/lib/epayment/classes/order.php';
+include '../../common/lib/epayment/classes/currencies.php';
+include '../../common/lib/epayment/includes/general.php';
+include '../../common/lib/epayment/includes/html_output.php';
+include '../../common/lib/epayment/includes/configure.php';
+include '../../common/lib/epayment/includes/loadconfiguration.php';
 
 $DBHandle_max  = DbConnect();
 $paymentTable = new Table();

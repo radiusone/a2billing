@@ -38,13 +38,13 @@ use A2billing\Table;
 **/
 
 require_once "../common/lib/customer.defines.php";
-include './lib/epayment/includes/configure.php';
-include './lib/epayment/classes/payment.php';
-include './lib/epayment/classes/order.php';
-include './lib/epayment/classes/currencies.php';
-include './lib/epayment/includes/general.php';
-include './lib/epayment/includes/html_output.php';
-include './lib/epayment/includes/loadconfiguration.php';
+include '../common/lib/epayment/includes/configure.php';
+include '../common/lib/epayment/classes/payment.php';
+include '../common/lib/epayment/classes/order.php';
+include '../common/lib/epayment/classes/currencies.php';
+include '../common/lib/epayment/includes/general.php';
+include '../common/lib/epayment/includes/html_output.php';
+include '../common/lib/epayment/includes/loadconfiguration.php';
 
 if (! has_rights (Customer::ACX_ACCESS)) {
     Header ("HTTP/1.0 401 Unauthorized");

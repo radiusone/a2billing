@@ -37,8 +37,8 @@ use A2billing\Table;
 **/
 
 require_once "../common/lib/customer.defines.php";
-include './lib/support/classes/invoice.php';
-include './lib/support/classes/invoiceItem.php';
+include '../common/lib/support/classes/invoice.php';
+include '../common/lib/support/classes/invoiceItem.php';
 
 if (! has_rights (Customer::ACX_INVOICES)) {
     Header ("HTTP/1.0 401 Unauthorized");

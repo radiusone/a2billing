@@ -34,9 +34,9 @@
 **/
 
 require_once "../common/lib/customer.defines.php";
-include './lib/epayment/includes/general.php';
-include './lib/epayment/includes/configure.php';
-include './lib/epayment/includes/html_output.php';
+include '../common/lib/epayment/includes/general.php';
+include '../common/lib/epayment/includes/configure.php';
+include '../common/lib/epayment/includes/html_output.php';
 $popup_select = 1;
 
 getpost_ifset(array('errcode'));

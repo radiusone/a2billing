@@ -37,9 +37,9 @@ use A2billing\Table;
 **/
 
 require_once "../common/lib/customer.defines.php";
-include 'lib/epayment/includes/configure.php';
-include 'lib/epayment/includes/html_output.php';
-include './lib/epayment/includes/general.php';
+include '../common/lib/epayment/includes/configure.php';
+include '../common/lib/epayment/includes/html_output.php';
+include '../common/lib/epayment/includes/general.php';
 
 if (!has_rights(Customer::ACX_ACCESS)) {
     Header("HTTP/1.0 401 Unauthorized");

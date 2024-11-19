@@ -66,7 +66,7 @@ set_time_limit(0);
 error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
 //dl("pgsql.so"); // remove "extension= pgsql.so !
 
-include (dirname(__FILE__) . "/lib/admin.defines.php");
+include (dirname(__FILE__) . "/../common/lib/admin.defines.php");
 
 // CHECK IF THE CRONT PROCESS IS ALREADY RUNNING
 $pH= new ProcessHandler("/var/run/a2billing/a2billing_batch_autodialer_pid.php");

@@ -49,6 +49,7 @@ $dom = new DOMDocument();
 $dom->loadHTML($html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
 $css = $dom->getElementsByTagName("style")->item(0)->textContent;
 $body = $dom->saveHTML($dom->getElementsByTagName("body")->item(0));
+$body = str_replace(["<body>", "</body>"], "", $body);
 
 // CSS rules must be constrained so they will not mess with the whole page
 $css = implode(
