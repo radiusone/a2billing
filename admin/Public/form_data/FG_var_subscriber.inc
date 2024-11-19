@@ -93,7 +93,7 @@ $HD_Form->AddEditSqlSelect(
     "label,id",
     "",
     "",
-    '<option value="-1" selected="selected">' . gettext("NOT DEFINED") . '</option>'
+    [-1, _("NOT DEFINED")]
 );
 
 $HD_Form->AddEditElement(

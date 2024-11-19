@@ -124,7 +124,7 @@ $HD_Form->AddEditSqlSelect(
     "provider_name,id",
     "",
     "",
-    '<option value="-1" selected="selected">' . gettext("NOT DEFINED") . '</option>'
+    [-1, _("NOT DEFINED")]
 );
 
 $HD_Form->AddEditElement(
@@ -188,7 +188,7 @@ $HD_Form->AddEditSqlSelect(
     "trunkcode,id_trunk",
     "",
     "",
-    '<option value="-1" selected="selected">' . gettext("NOT DEFINED") . '</option>',
+    [-1, _("NOT DEFINED")],
     "%1",
     gettext("You can define another trunk in case of failover!")
 );

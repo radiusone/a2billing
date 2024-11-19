@@ -394,7 +394,7 @@ if (!$popup_select) {
             "name,id",
             "",
             "",
-            '<option value="-1" selected="selected">' . _("NOT DEFINED") . '</>'
+            [-1, _("NOT DEFINED")]
         );
 
         $HD_Form->AddEditElement(
@@ -550,7 +550,7 @@ if (!$popup_select) {
                 is_admin() ? ""
                     : "cc_tariffgroup.id = cc_agent_tariffgroup.id_tariffgroup AND cc_agent_tariffgroup.id_agent = '$_SESSION[agent_id]'",
                 "",
-                "",
+                [],
                 "%1", _("Changing the call plan will result in the free minutes or free calls package being reset.")
             );
         }
@@ -562,7 +562,7 @@ if (!$popup_select) {
             "didgroupname,id",
             "",
             "",
-            '<option value="-1" selected="selected">' . gettext("NOT DEFINED") . '</option>'
+            [-1, _("NOT DEFINED")]
         );
 
         $tz_val = "";
@@ -678,7 +678,7 @@ if (!$popup_select) {
             "name,id",
             "",
             "",
-            '<option value="-1" selected="selected">' . gettext("NOT DEFINED") . '</option>'
+            [-1, _("NOT DEFINED")]
         );
 
         $HD_Form->AddEditElement(

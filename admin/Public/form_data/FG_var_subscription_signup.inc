@@ -97,7 +97,7 @@ $HD_Form->AddEditSqlSelect(
     "label,id,fee",
     "",
     "",
-    '<option value="-1" selected="selected">' . gettext("NONE") . '</option>',
+    [-1, _("NONE")],
     "%1 - %3 $CURRENCY (id:%2)",
     ""
 );
@@ -116,7 +116,7 @@ $HD_Form->AddEditSqlSelect(
     "tariffgroupname,id",
     "",
     "",
-    "",
+    [],
     "%1", gettext("Define the callplan to associate to your Subscription")
 );
 

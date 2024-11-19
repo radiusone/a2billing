@@ -124,7 +124,7 @@ $HD_Form->AddEditSqlSelect(
     "label,id",
     "",
     "",
-    '<option value="-1" selected="selected">' . gettext("NOT DEFINED") . '</option>',
+    [-1, _("NOT DEFINED")],
     "%1", gettext("Set the Package Group offer if you wish to use one with this Call Plan")
 );
 
@@ -151,7 +151,7 @@ if ($numrow>0){
         "label,id",
         "",
         "",
-        "",
+        [],
         "%1 : (%2)",
         "",
         "size='10' multiple='muliple'",

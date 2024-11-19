@@ -126,7 +126,9 @@ use DateTime;
                     class="form-select <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
                     <?= $row["attributes"] ?>
                 >
-                    <?= $row["first_option"] ?? "" ?>
+                    <?php if (!empty($row["first_option"]) && count($row["first_option"]) === 2): ?>
+                    <option value="<?= $row["first_option"][0] ?>"><?= $row["first_option"][1] ?></option>
+                    <?php endif ?>
                     <?php if (is_array($options) && count($options)): ?>
                         <?php foreach ($options as $option): ?>
                     <option

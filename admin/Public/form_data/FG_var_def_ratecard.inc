@@ -584,7 +584,7 @@ $HD_Form->AddEditSqlSelect(
     "trunkcode,id_trunk",
     "",
     "",
-    '<option value="-1" selected="selected">' . _("NOT DEFINED") . '</option>',
+    [-1, _("NOT DEFINED")],
     "%1", _("Set the trunk to use for this destination, or NOT DEFINED to use the rate card trunk.")
 );
 
@@ -595,7 +595,7 @@ $HD_Form->AddEditSqlSelect(
     "group_name,id",
     "",
     "",
-    '<option value="-1" selected="selected">' . _("NOT DEFINED") . '</option>',
+    [-1, _("NOT DEFINED")],
     "%1", _("Set the Outgoing CID Group to use for this destination, or NOT DEFINED to use the rate card trunk.")
 );
 

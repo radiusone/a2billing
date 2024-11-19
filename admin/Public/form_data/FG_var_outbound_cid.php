@@ -88,7 +88,8 @@ $HD_Form->AddEditRadio(
     "activated",
     [[gettext("Yes"), "1"], [gettext("No"), "0"]],
     "1",
-    "", "",
+    "",
+    "",
     gettext("Choose if you want to activate this CallerID")
 );
 

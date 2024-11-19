@@ -161,7 +161,7 @@ $HD_Form->AddEditSqlSelect(
     "name,code",
     "",
     "",
-    "",
+    [],
     "%1",
     "",
     "",

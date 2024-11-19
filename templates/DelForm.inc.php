@@ -102,7 +102,9 @@ use A2billing\Table;
                     <br/><?php print_r($options)?><br/><?php print_r($list)?><br/>#<?= $i ?>::><?= $form->VALID_SQL_REG_EXP ?><br/><br/>::><?= $db_data[$i] ?><br/><br/>::><?= $row["name"] ?>
                 <?php endif ?>
             <select class="form-select" disabled="disabled" name="<?= $row["name"] ?>" id="<?= $row["name"] ?>">
-                <?= $row["first_option"] ?>
+                <?php if (!empty($row["first_option"]) && count($row["first_option"]) === 2): ?>
+                <option value="<?= $row["first_option"][0] ?>"><?= $row["first_option"][1] ?></option>
+                <?php endif ?>
                 <?php if (is_array($options) && count($options)): ?>
                     <?php foreach ($options as $option): ?>
                 <option

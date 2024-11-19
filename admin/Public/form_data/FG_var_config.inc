@@ -107,7 +107,7 @@ $HD_Form->AddEditSqlSelect(
     "group_title,id",
     "",
     "",
-    "",
+    [],
     "%1",
     _("Group Name of the configuration variable"),
     "readonly='readonly'",

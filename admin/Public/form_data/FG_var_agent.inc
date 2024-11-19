@@ -348,7 +348,7 @@ if ($popup_select) {
         "label,id",
         "",
         "",
-        "",
+        [],
         "%1: (%2)",
         "",
         "size='10' multiple='multiple'",

@@ -388,7 +388,7 @@ $HD_Form->AddEditSqlSelect(
     "name,id",
     "",
     "",
-    '<option value="-1" selected="selected">' . gettext("NOT DEFINED") . '</option>'
+    [-1, _("NOT DEFINED")]
 );
 
 $HD_Form->AddEditElement(
@@ -546,7 +546,7 @@ $HD_Form->AddEditSqlSelect(
     "didgroupname,id",
     "",
     "",
-    '<option value="-1" selected="selected">' . gettext("NOT DEFINED") . '</option>'
+    [-1, _("NOT DEFINED")]
 );
 
 $timezone_list = get_timezones();
@@ -668,7 +668,7 @@ $HD_Form->AddEditSqlSelect(
     "name,id",
     "",
     "",
-    '<option value="-1" selected="selected">' . gettext("NOT DEFINED") . '</option>'
+    [-1, _("NOT DEFINED")]
 );
 
 $HD_Form->AddEditElement(

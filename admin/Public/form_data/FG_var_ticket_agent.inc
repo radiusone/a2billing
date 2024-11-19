@@ -103,7 +103,7 @@ $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 
-$HD_Form->AddEditSqlSelect(gettext("AGENT"), "creator", "cc_agent", "login,id,firstname,lastname", "", "", "", "%1 (%3, %4)", "");
+$HD_Form->AddEditSqlSelect(gettext("AGENT"), "creator", "cc_agent", "login,id,firstname,lastname", "", "", [], "%1 (%3, %4)", "");
 
 $HD_Form->AddEditElement(
     gettext("TITLE"),

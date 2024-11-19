@@ -182,7 +182,7 @@ $HD_Form->AddEditSqlSelect(
     "tariffgroupname,id",
     "",
     "",
-    '<option value="0" selected="selected">--' . gettext("ANY") . '--</option>'
+    [0, _("ANY")]
 );
 
 $HD_Form->AddEditSelect(
@@ -213,7 +213,7 @@ if ($numrow > 0) {
         "name,id",
         "",
         "",
-        "",
+        [],
         "%1 : (%2)",
         "",
         "size='10' multiple='multiple'",

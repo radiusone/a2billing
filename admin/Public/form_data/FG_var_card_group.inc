@@ -121,7 +121,7 @@ $HD_Form->AddEditSqlSelect(
     "login,id,firstname,lastname",
     "",
     "",
-    '<option value="-1" selected="selected">' . gettext("NONE") . '</option>',
+    [-1, _("NONE")],
     "%1 - %3 %4 (%2)",
     ""
 );

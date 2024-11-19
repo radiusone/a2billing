@@ -733,7 +733,7 @@ class FormHandler
      * @param string $sql_column The columns to retrieve
      * @param string $sql_where A condition to apply using a WHERE clause
      * @param string $default_value When adding (not editing), the value of the selected item
-     * @param string $first_option HTML to add before the option list
+     * @param array $first_option 2 element array containing a value and label for the first option in the list
      * @param string $display_format A format string like "%1" which will be replaced with the first result column
      * @param string $form_text_bottom Text to display below the form input
      * @param string $html_attributes HTML attributes for the input
@@ -749,7 +749,7 @@ class FormHandler
         string $sql_column,
         string $sql_where = "",
         string $default_value = "",
-        string $first_option = "",
+        array $first_option = [],
         string $display_format = "%1",
         string $form_text_bottom = "",
         string $html_attributes = "",
