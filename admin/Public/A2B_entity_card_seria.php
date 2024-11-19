@@ -50,8 +50,7 @@ if (!isset($action)) $action = $form_action;
 
 $list = $HD_Form -> perform_action($form_action);
 
-// #### HEADER SECTION
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 
 // #### HELP SECTION
 echo create_help(_("This page shows the series list.") . '<br>' . _("Series & serials is used for the creation of a card range specifically for accounting purposes instead of card id."), 'ListSeria');
@@ -62,4 +61,4 @@ $HD_Form -> create_toppage ($form_action);
 $HD_Form -> create_form($form_action, $list) ;
 
 // #### FOOTER SECTION
-if (!$popup_select) $smarty->display('footer.tpl');
+if (!$popup_select) require_once __DIR__ . "/../templates/footer.php";

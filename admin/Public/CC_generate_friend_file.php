@@ -93,7 +93,7 @@ if ($action == "reload") {
 
 }
 
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 
 echo create_help(_("Click reload to commit changes to Asterisk"));
 
@@ -139,4 +139,4 @@ echo create_help(_("Click reload to commit changes to Asterisk"));
 
 <?php
 
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";

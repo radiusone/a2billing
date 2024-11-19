@@ -51,8 +51,7 @@ if (!isset ($action))
 
 $list = $HD_Form->perform_action($form_action);
 
-// #### HEADER SECTION
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 
 // #### HELP SECTION
 echo create_help(_("Agent Payment history - The section below allows you to add payments against an agent. Note that this does not change the balance on the account. Click on 'create associate refill' when you create  a payment to top-up an account."), 'ViewPayments');
@@ -66,5 +65,4 @@ $HD_Form->create_toppage($form_action);
 
 $HD_Form->create_form($form_action, $list);
 
-// #### FOOTER SECTION
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";

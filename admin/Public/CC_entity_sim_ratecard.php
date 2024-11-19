@@ -101,7 +101,7 @@ if ($called && ($id_cc_card > 0 || $accountcode > 0)) {
     }
 }
 
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 
 echo create_help(
     _('Please select an account, then enter the number you wish to call and press the "SIMULATE" button.'),
@@ -229,4 +229,4 @@ if (!empty($RateEngine->ratecard_obj)) {
 } else {
     echo '<span style="color:red; font-weight: bold">' . $error_msg . '</span>';
 }
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";

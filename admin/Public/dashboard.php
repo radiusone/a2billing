@@ -79,7 +79,7 @@ if ( !empty($A2B->config["dashboard"]["system_info_enable"]) && $A2B->config["da
     put_display($A2B->config["dashboard"]["system_info_enable"], gettext("System"), ["./modules/system_info.php"], $boxes);
 }
 
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 
 ?>
 <div class="row">
@@ -214,4 +214,4 @@ $(function () {
 </script>
 <?php
 
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";

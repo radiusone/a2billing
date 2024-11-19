@@ -46,8 +46,7 @@ getpost_ifset(array (
     'filter'
 ));
 
-// #### HEADER SECTION
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 
 // #### HELP SECTION
 echo create_help(_("Browse your server log files.") . '<br/>' .
@@ -147,5 +146,4 @@ if (isset($view_log)) {
     echo '</pre></font>';
 }
 
-// #### FOOTER SECTION
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";

@@ -109,8 +109,7 @@ if(empty($page))$page=1;
 
 $DBHandle = DbConnect();
 
-// #### HEADER SECTION
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 
 echo create_help(_("Notification: You can see below all notifications received about some event."), 'Notificationbox');
 $nb_by_page = 15;
@@ -251,7 +250,7 @@ $list_notifications = NotificationsDAO::getNotifications($_SESSION['admin_id'],(
 <?php
 }
 
-$smarty->display( 'footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";
 
 ?>
 <script>

@@ -56,7 +56,7 @@ $instance_table_country = new Table("cc_country", "id, countryname");
 $list_countryname = $instance_table_country  -> get_list ($DBHandle, $FG_TABLE_CLAUSE, "countryname");
 $nb_countryname = count($list_countryname);
 
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 
 // #### HELP SECTION
 echo create_help(_("You can import lists of DIDs using a CSV file."), 'ImportDID');
@@ -249,4 +249,4 @@ $(function() {
 
 <?php
 
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";

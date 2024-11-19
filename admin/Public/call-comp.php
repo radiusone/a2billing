@@ -195,7 +195,7 @@ if ($nb_record<=$FG_LIMITE_DISPLAY) {
     $nb_record_max=(intval($nb_record/$FG_LIMITE_DISPLAY)+1);
 }
 
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 
 ?>
 
@@ -510,4 +510,4 @@ foreach ($table_graph as $tkey => $data) {
 <br><br>
 <?php
 
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";

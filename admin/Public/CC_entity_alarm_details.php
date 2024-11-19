@@ -83,7 +83,7 @@ if ($res) {
     }
 }
 
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 
 ?>
 <script language="JavaScript" type="text/JavaScript">
@@ -265,4 +265,4 @@ function openURL(theLINK)
 
 <?php
 
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";

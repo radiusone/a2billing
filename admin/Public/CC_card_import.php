@@ -50,7 +50,7 @@ $FG_DEBUG = 0;
 $DBHandle = DbConnect();
 $my_max_file_size = (int)MY_MAX_FILE_SIZE_IMPORT;
 
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 ?>
 
 <form class="container align-center" id="prefs" name="prefs" enctype="multipart/form-data" method="post" action="CC_card_import_analyse.php">
@@ -178,4 +178,4 @@ $smarty->display('main.tpl');
 
 <?php
 
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";

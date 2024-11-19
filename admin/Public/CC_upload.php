@@ -175,7 +175,7 @@ if ($method) {
     }
 }
 
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 
 ?>
 
@@ -291,4 +291,4 @@ $smarty->display('main.tpl');
 <br><br>
 <?php
 
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";

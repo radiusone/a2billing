@@ -146,7 +146,7 @@ if(empty($action)) $action="add";
 
 $messages = $DBHandle->GetRow("SELECT * FROM cc_message_agent WHERE id_agent = ? ORDER BY order_display", [$id]);
 
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 $message_types = getMsgTypeList();
 ?>
 
@@ -215,7 +215,7 @@ foreach ($messages as $message) {
 <?php
 }
 
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";
 ?>
 
 <script>

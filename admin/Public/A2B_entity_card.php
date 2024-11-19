@@ -181,8 +181,7 @@ $id = $id ?? 0;
 $form_action = $form_action ?? "list"; //ask-add
 $list = $HD_Form->perform_action($form_action);
 
-// #### HEADER SECTION
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 ?>
 
 <script>
@@ -677,4 +676,4 @@ $("#batchUpdateModal input[type='checkbox'][name^='check']")
 $("#check[upd_credit]").on("change", ev => $("#upd_refill_type, #upd_description").attr("disabled", !ev.target.checked));
 </script>
 
-<?php $smarty->display('footer.tpl');
+<?php require_once __DIR__ . "/../templates/footer.php";

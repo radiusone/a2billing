@@ -54,8 +54,7 @@ getpost_ifset(array (
 $handle = DbConnect();
 $instance_table = new Table();
 
-// #### HEADER SECTION
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 
 if (isset ($translate_data) && $translate_data == 'translate') {
     $check = false;
@@ -179,5 +178,4 @@ if (is_array($result)) {
 
 <?php
 
-// #### FOOTER SECTION
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";

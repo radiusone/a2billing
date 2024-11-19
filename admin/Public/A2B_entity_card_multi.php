@@ -182,8 +182,7 @@ $action = $action ?? $form_action;
 
 $list = $HD_Form->perform_action($form_action);
 
-// #### HEADER SECTION
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 
 // #### HELP SECTION
 echo create_help(_("Bulk create customers in a single step. <br> Set the properties of the batch such as initial credit, account type and currency, then click on the GENERATE CUSTOMERS button to create the batch."), 'GenerateCustomers');
@@ -471,5 +470,4 @@ $HD_Form->create_toppage ($form_action);
 $HD_Form->create_form($form_action, $list) ;
 $HD_Form->setup_export();
 
-// #### FOOTER SECTION
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";

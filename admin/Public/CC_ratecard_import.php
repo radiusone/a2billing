@@ -63,7 +63,7 @@ $list_tariffname = (new Table("cc_tariffplan", "id, tariffname"))->getRows($DBHa
 // GET TRUNK LIST
 $list_trunk = (new Table("cc_trunk", "id_trunk, trunkcode"))->getRows($DBHandle, ["status" => 1], ["trunkcode"]);
 
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 echo create_help(
     _("This section is a utility to import ratecards from a CSV file.")
         . "<br/>"
@@ -237,4 +237,4 @@ echo create_help(
 
 <?php
 
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";

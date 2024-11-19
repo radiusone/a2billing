@@ -127,8 +127,7 @@ if ($task === "upload" || $task === "preview") {
     $import_time = $stop_time - $start_time;
 }
 
-// #### HEADER SECTION
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 ?>
 
 <?php if ($task === "preview" && empty($assoc_csv)): ?>
@@ -193,4 +192,4 @@ $smarty->display('main.tpl');
 <?php endif;
 
 // #### Footer SECTION
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";

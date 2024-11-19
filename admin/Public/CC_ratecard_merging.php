@@ -154,7 +154,7 @@ $list_tariffname = $instance_table_tariffname  -> get_list ($HD_Form->DBHandle, 
 
 $nb_tariffname = count($list_tariffname);
 
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 
 //echo create_help(_("This section is a utility to import ratecards from a CSV file.") . "<br>" .
 //    _('Define the ratecard name, the trunk to use and the fields that you wish to include from your csv files. Finally, select the csv files and click on the "Import Ratecard" button.'), 'ImportRatecard');
@@ -300,4 +300,4 @@ $(function() {
 </div>
 
 <?php
-    $smarty->display('footer.tpl');
+    require_once __DIR__ . "/../templates/footer.php";

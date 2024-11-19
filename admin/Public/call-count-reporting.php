@@ -135,7 +135,7 @@ if (!$nodisplay) {
     $list = $instance_table -> get_list ($DBHandle, $FG_TABLE_CLAUSE, $order ?? "", $sens, $inputtopvar, 0, $grp_arr);
 }
 
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 
 ?>
 
@@ -419,4 +419,4 @@ $smarty->display('main.tpl');
 <br>
 <?php
 }
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";

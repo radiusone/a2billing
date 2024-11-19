@@ -197,8 +197,7 @@ $list_trunk = $HD_Form->DBHandle->GetAll("SELECT id_trunk, trunkcode, providerip
 $list_cid_group = $HD_Form->DBHandle->GetAll("SELECT id, group_name FROM cc_outbound_cid_group ORDER BY group_name") ?: [];
 $list_tariffgroup = $HD_Form->DBHandle->GetAll("SELECT id, tariffgroupname, lcrtype FROM cc_tariffgroup ORDER BY tariffgroupname") ?: [];
 
-// #### HEADER SECTION
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 
 // #### HELP SECTION
 if (!$popup_select) {
@@ -565,5 +564,4 @@ $HD_Form -> create_toppage ($form_action);
 $HD_Form -> create_form($form_action, $list);
 $HD_Form->setup_export();
 
-// #### FOOTER SECTION
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";

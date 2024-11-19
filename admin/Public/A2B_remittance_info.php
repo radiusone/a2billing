@@ -58,8 +58,7 @@ if (empty($remittance)) {
     header("Location: A2B_entity_remittance_request.php");
 }
 
-// #### HEADER SECTION
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 
 ?>
 <br/>
@@ -132,4 +131,4 @@ $smarty->display('main.tpl');
 </div>
 <?php
 
-$smarty->display( 'footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";

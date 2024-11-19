@@ -75,7 +75,7 @@ if ($FG_DEBUG > 0)
 
 $list = $DBHandle->GetAll($QUERY, [$id]) ?: [];
 
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 
 ?>
 
@@ -234,5 +234,5 @@ $smarty->display('main.tpl');
 <?php
 
 if ($displayfooter!="0") {
-    $smarty->display('footer.tpl');
+    require_once __DIR__ . "/../templates/footer.php";
 }

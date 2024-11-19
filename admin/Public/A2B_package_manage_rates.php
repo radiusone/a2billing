@@ -131,7 +131,7 @@ if (isset($delallrate) && ($delallrate)) {
     Header ("Location: A2B_package_manage_rates.php?id=$id");
 }
 
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 
 //load rates
 $DBHandle = DbConnect();
@@ -204,5 +204,4 @@ $("#delall").on("click", e => self.location.href= "A2B_package_manage_rates.php?
 </TABLE>
 
 <?php
-// #### FOOTER SECTION
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";

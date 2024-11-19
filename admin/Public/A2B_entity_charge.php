@@ -62,7 +62,7 @@ $list = $HD_Form_c->perform_action($form_action);
 
 if ($wantinclude != 1) {
     // #### HEADER SECTION
-    $smarty->display('main.tpl');
+    require_once __DIR__ . "/../templates/main.php";
 
     // #### HELP SECTION
     echo create_help(_("Extra charges allow the billing of one-off or re-occurring monthly charges. These may be used as setup or service charges, etc...") .
@@ -75,5 +75,5 @@ $HD_Form_c->create_toppage($form_action);
 $HD_Form_c->create_form($form_action, $list);
 
 if ($wantinclude != 1) {
-    $smarty->display('footer.tpl');
+    require_once __DIR__ . "/../templates/footer.php";
 }

@@ -187,7 +187,8 @@ if (empty($HD_Form->FG_QUERY_WHERE_CLAUSE)) {
 
 $list = $HD_Form->perform_action($form_action);
 
-$smarty->display("main.tpl");
+require_once __DIR__ . "/../templates/main.php";
+
 $HD_Form->create_search_form();
 
 $HD_Form->create_toppage($form_action);
@@ -277,5 +278,5 @@ if (count($list_total_day)):
 </table>
 <?php endif ?>
 
-<?php $smarty->display("footer.tpl") ?>
+<?php require_once __DIR__ . "/../templates/footer.php" ?>
 

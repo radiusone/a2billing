@@ -248,7 +248,7 @@ if ($posted_search === true && $posted_archive === false) {
     );
 }
 
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 $HD_Form->create_search_form();
 
 if ($posted_archive === true) {
@@ -263,7 +263,7 @@ $list = $HD_Form->perform_action($form_action);
 
 $HD_Form->create_form($form_action, $list) ;
 
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";
 
 /*
  * Function use to archive data and call records

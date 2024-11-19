@@ -53,8 +53,7 @@ if (!isset ($action))
 
 $list = $HD_Form->perform_action($form_action);
 
-// #### HEADER SECTION
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 
 // #### HELP SECTION
 echo create_help(_("This page shows a group list.") . _("The Group field is used for grouping customers for quick search, batch update and reporting."), 'ListGroup');
@@ -66,4 +65,4 @@ $HD_Form->create_form($form_action, $list);
 
 // #### FOOTER SECTION
 if (!$popup_select)
-    $smarty->display('footer.tpl');
+    require_once __DIR__ . "/../templates/footer.php";

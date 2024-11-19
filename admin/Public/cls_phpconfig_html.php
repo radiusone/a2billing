@@ -323,7 +323,7 @@ var $_OC_HTML_colspan = "3";
         }
 
         // #### HEADER SECTION
-        $smarty->display('main.tpl');
+        require_once __DIR__ . "/../templates/main.php";
 
         ?>
         <style type="text/css">
@@ -484,7 +484,7 @@ var $_OC_HTML_colspan = "3";
 
         </table>
         <?php
-        $smarty->display('footer.tpl');
+        require_once __DIR__ . "/../templates/footer.php";
     }
 
 //////////////////////////////////////////////////////////

@@ -62,7 +62,7 @@ if (empty($card)) {
     echo "Customer doesn't exist or is not correctly defined for this invoice !";
     die();
 }
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 //Load invoice conf
 $invoice_conf_table = new Table('cc_invoice_conf', 'value');
 $conf_clause = "key_val = 'company_name'";
@@ -266,4 +266,4 @@ $( function() {
   </table></div>
 
 <?php
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";

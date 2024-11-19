@@ -50,8 +50,7 @@ if (!isset ($action))
 
 $list = $HD_Form->perform_action($form_action);
 
-// #### HEADER SECTION
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 
 // #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);

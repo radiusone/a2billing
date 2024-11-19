@@ -120,7 +120,7 @@ $result_vat = $table_card->get_list(DbConnect(), "id=" . $invoice->getCard());
 $card_vat =  $result_vat[0][0];
 $items = $invoice->loadItems();
 
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 
 ?>
 <table class="invoice_table" >

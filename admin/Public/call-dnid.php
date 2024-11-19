@@ -300,7 +300,7 @@ if ($nb_record<=$FG_LIMITE_DISPLAY) {
 if ($FG_DEBUG == 3) echo "<br>Nb_record : $nb_record";
 if ($FG_DEBUG == 3) echo "<br>Nb_record_max : $nb_record_max";
 
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 
 ?>
 
@@ -914,4 +914,4 @@ foreach ($asr_cic_list1 as $asr_cic_data) {
 <?php  } ?>
 </div>
 <?php
-    $smarty->display('footer.tpl');
+    require_once __DIR__ . "/../templates/footer.php";

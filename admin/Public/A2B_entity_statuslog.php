@@ -54,7 +54,7 @@ if (!isset ($action))
 
 $list = $HD_Form->perform_action($form_action);
 
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 
 echo create_help(_("Status logs help you to keep track of the status of all customers. The status can be 'New, Active, Cancelled, Reserved, Waiting-MailConfirmation and Expired."), 'StatusLog');
 
@@ -231,4 +231,4 @@ $HD_Form->create_toppage($form_action);
 
 $HD_Form -> create_form($form_action, $list) ;
 
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";

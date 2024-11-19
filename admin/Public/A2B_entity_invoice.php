@@ -68,8 +68,7 @@ if (!isset ($action))
 
 $list = $HD_Form->perform_action($form_action);
 
-// #### HEADER SECTION
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 
 // #### HELP SECTION
 echo create_help(_("Invoice history - The section below allows you to see and create invoices against a customer. Only the closed invoice can be seen on the customer interface"), 'ViewInvoices');
@@ -93,8 +92,7 @@ $HD_Form->create_toppage($form_action);
 
 $HD_Form->create_form($form_action, $list);
 
-// #### FOOTER SECTION
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";
 
 ?>
 

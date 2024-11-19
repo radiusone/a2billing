@@ -69,7 +69,7 @@ if ($task=="generate" && !empty($agentid) && !empty($tariffplan) && !empty($grou
     if($result_insert)$URL = $A2B->config['signup']['urlcustomerinterface']."signup.php?key=$code";
 }
 
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 
 ?>
 <script>
@@ -205,4 +205,4 @@ echo create_help(_("Generate a specific crypted URL to configure signup with a c
 
 <?php
 
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";

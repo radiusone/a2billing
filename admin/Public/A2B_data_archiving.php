@@ -229,8 +229,7 @@ if (!isset($action)) $action = $form_action;
 
 $list = $HD_Form->perform_action($form_action);
 
-// #### HEADER SECTION
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 echo create_help(_("Here you can archive the data. The Default listing will show you the previous 3 months data. But you can also search the data and archive it."));
 
 if (!isset($submit)) {
@@ -283,7 +282,7 @@ if (isset($archive) && !empty($archive)) {
 }
 $HD_Form->create_form($form_action, $list);
 
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";
 
 function archive_data(string $where, array $params = []): bool
 {

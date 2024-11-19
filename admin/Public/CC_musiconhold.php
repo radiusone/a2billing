@@ -42,7 +42,7 @@ $FG_DEBUG = 0;
 
 Admin::checkPageAccess(Admin::ACX_MAINTENANCE);
 
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 ?>
 
 <table width="70%" border="0" align="center" cellpadding="0" cellspacing="5" >
@@ -64,4 +64,4 @@ $smarty->display('main.tpl');
 
 <?php
 
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";

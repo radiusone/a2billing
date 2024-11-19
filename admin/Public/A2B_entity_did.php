@@ -52,10 +52,10 @@ $form_action = $form_action ?? "list"; //ask-add
 $action = $action ?? $form_action;
 
 $list = $HD_Form->perform_action($form_action);
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 echo $form_action === 'list'
     ? create_help(_("DID number list with destinations."), 'ListDID')
     : create_help(_("DID can be assigned to a customer to re-route calls to a SIP/IAX client or a PSTN number. The Priority sets the order in which the calls are to be routed to allow for failover or follow-me."), 'EditDID');
 $HD_Form->create_toppage($form_action);
 $HD_Form->create_form($form_action, $list);
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";

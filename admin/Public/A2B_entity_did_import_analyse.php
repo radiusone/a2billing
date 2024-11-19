@@ -224,7 +224,7 @@ $Temps = $Temps2 - $Temps1;
 //echo "<br>Script Time :".$Temps."<br>";
 
 
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 
 ?>
 <style type="text/css">
@@ -373,4 +373,4 @@ function sendtoupload(form)
             <?php }?>
             <br>
 <?php
-    $smarty->display('footer.tpl');
+    require_once __DIR__ . "/../templates/footer.php";

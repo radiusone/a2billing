@@ -140,7 +140,7 @@ $contents[] = array (
     'text' => '<br><input type=submit name=submitbutton value=Update class=form_input_button> <a href="A2B_entity_payment_configuration.php"><input type="button" name="cancelbutton" value="Cancel" class="form_input_button"></a>'
 );
 
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 
 echo create_help(_("You can configure your epayment method here. It helps you to enable or disable the payment method. You can define the currency settings."));
 
@@ -182,4 +182,4 @@ echo '<table width="100%" align="center">
 
 <?php
 
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";

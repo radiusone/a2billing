@@ -183,7 +183,7 @@ if ($nb_record<=$FG_LIMITE_DISPLAY) {
 
 $list_package = $DBHandle->GetAll("SELECT id, label FROM cc_package_offer ORDER BY label");
 
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 
 ?>
 
@@ -629,4 +629,4 @@ foreach ($list_total_day as $data) {
 
 <?php
 
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";

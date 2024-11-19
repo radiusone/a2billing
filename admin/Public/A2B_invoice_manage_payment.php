@@ -65,7 +65,7 @@ if (isset($status) && is_numeric($status)) {
     $invoice ->changeStatus($status);
     Header ("Location: A2B_invoice_manage_payment.php?id=$id");
 }
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 
 $payments = $invoice->loadPayments();
 
@@ -178,5 +178,4 @@ $(function() {
 
 <?php
 
-// #### FOOTER SECTION
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";

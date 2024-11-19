@@ -41,8 +41,7 @@ require_once "../../common/lib/admin.defines.php";
 
 Admin::checkPageAccess(Admin::ACX_CUSTOMER);
 
-// #### HEADER SECTION
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 
 echo create_help(_("The Notification component is responsible for informing the Customer, via e-mail, that the account has reached a minimum credit."), 'Notification');
 
@@ -187,4 +186,4 @@ if (!is_null($return)&& (!empty($return)>0)) {
 ?>
 </DIV>
 <?php
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";

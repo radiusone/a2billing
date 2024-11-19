@@ -134,8 +134,7 @@ if (isset ($group_id)) {
 if (!isset ($report_type)) {
     $report_type = 1;
 }
-// #### HEADER SECTION
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 
 ?>
 <div align="center">
@@ -536,4 +535,4 @@ if ($res) {
 // todo: this may be broken for now; export should match $QUERY which should be in a temp table
 $HD_Form->setup_export(["*"], "pnl_report");
 
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";

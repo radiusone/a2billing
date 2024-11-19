@@ -60,8 +60,7 @@ if ($form_action == "ask-modif") {
     }
 }
 
-// #### HEADER SECTION
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 ?>
 <script>
 $(function() {
@@ -161,5 +160,4 @@ alert("<?php echo gettext("System is failed to update your password.")?>");
 
 <?php
 
-// #### FOOTER SECTION
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";

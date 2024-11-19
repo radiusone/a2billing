@@ -50,8 +50,7 @@ if (!isset ($action))
 
 $list = $HD_Form->perform_action($form_action);
 
-// #### HEADER SECTION
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 
 // #### HELP SECTION
 echo create_help(_("DID list and billing list.") .
@@ -67,5 +66,4 @@ $wantinclude = 1;
 $order = 'id';
 include_once 'A2B_entity_charge.php';
 
-// #### FOOTER SECTION
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";

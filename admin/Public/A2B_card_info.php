@@ -54,8 +54,7 @@ if (empty($card)) {
     header("Location: A2B_entity_card.php");
 }
 
-// #### HEADER SECTION
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 
 echo create_help(_("Customer information."), 'ListCustomers');
 
@@ -894,4 +893,4 @@ if ( (sizeof($payment_result)>0 && $payment_result[0]!=null) ||
 <?php
 }
 
-$smarty->display( 'footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";

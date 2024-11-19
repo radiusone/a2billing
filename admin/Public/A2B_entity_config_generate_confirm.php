@@ -47,8 +47,7 @@ include './form_data/FG_var_config_group.inc';
 
 $HD_Form -> init();
 
-// #### HEADER SECTION
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 
 // #### HELP SECTION
 echo create_help(_("This action will generate a new agi-conf configuration group, copying configurations from the first agi-conf group found."));
@@ -100,5 +99,4 @@ $config = $HD_Form->DBHandle->GetAll(
     </div>
 </div>
 <?php
-// #### FOOTER SECTION
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";

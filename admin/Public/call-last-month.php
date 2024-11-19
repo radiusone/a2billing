@@ -41,7 +41,7 @@ require_once "../../common/lib/admin.defines.php";
 Admin::checkPageAccess(Admin::ACX_CALL_REPORT);
 
 getpost_ifset(array('months_compare', 'current_page', 'fromstatsmonth_sday', 'days_compare', 'min_call', 'posted',  'dsttype', 'srctype', 'clidtype', 'channel', 'resulttype', 'current_page', 'order', 'sens', 'dst', 'src', 'clid', 'userfieldtype', 'userfield', 'accountcodetype', 'accountcode', 'customer', 'entercustomer', 'enterprovider','entertariffgroup', 'entertrunk', 'enterratecard', 'graphtype'));
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 
 ?>
 
@@ -174,4 +174,4 @@ $smarty->display('main.tpl');
 
 <br><br>
 <?php
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";

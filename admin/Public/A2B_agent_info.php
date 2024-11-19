@@ -54,8 +54,7 @@ if (empty($agent)) {
     header("Location: A2B_entity_agent.php");
 }
 
-// #### HEADER SECTION
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 $lg_liste= getLanguages();
 ?>
 <br/>
@@ -216,4 +215,4 @@ $lg_liste= getLanguages();
 </div>
 <?php
 
-$smarty->display( 'footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";

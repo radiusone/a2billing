@@ -108,7 +108,7 @@ if (!empty($action)) {
 $receipt = new Receipt($id);
 $items = $receipt->loadItems();
 
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 
 ?>
 <table class="invoice_table" >
