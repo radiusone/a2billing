@@ -24,13 +24,13 @@ class SearchForm
         $list = $this->list;
         $with_hide_button = $this->with_hide_button;
         $full_modal = $this->full_modal;
-        $action = http_build_query([
-            "s" => $processed["s"],
-            "t" => $processed["t"],
-            "order" => $processed["order"],
-            "sens" => $processed["sens"],
-            "current_page" => $processed["current_page"],
-        ]);
+        $action = http_build_query(array_filter([
+            "s" => $processed["s"] ?? null,
+            "t" => $processed["t"] ?? null,
+            "order" => $processed["order"] ?? null,
+            "sens" => $processed["sens"] ?? null,
+            "current_page" => $processed["current_page"] ?? null,
+        ]));
 
         ob_start();
         require(__DIR__ . "/../../templates/SearchHandler.inc.php");
