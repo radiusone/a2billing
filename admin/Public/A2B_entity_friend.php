@@ -256,9 +256,15 @@ if ($form_action=='list') {
 
 <br/>
 <!-- ** ** ** ** ** Part for the Update ** ** ** ** ** -->
-<div class="toggle_hide2show">
-<center><a href="#" target="_self" class="toggle_menu"><img class="toggle_hide2show" src="<?= get_image_path("kicons/toggle_hide2show.png") ?>" onmouseover="this.style.cursor='hand';" HEIGHT="16"> <font class="fontstyle_002"><?php echo gettext("BATCH UPDATE");?> </font></a></center>
-    <div class="tohide" style="display:none;">
+<div class="row">
+    <div class="col text-center">
+        <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#tohide" aria-expanded="false" aria-controls="tohide">
+            <?= _("BATCH UPDATE") ?>
+        </button>
+    </div>
+</div>
+
+    <div id="tohide" class="collapse">
 
 <center>
 <b>&nbsp;<?php echo $HD_Form -> FG_LIST_VIEW_ROW_COUNT ?> <?php echo gettext("cards selected!"); ?>&nbsp;<?php echo gettext("Use the options below to batch update the selected cards.");?></b>
@@ -298,7 +304,7 @@ if ($form_action=='list') {
     </table>
   </center>
   </div>
-</div>
+
 <!-- ** ** ** ** ** Part for the Update ** ** ** ** ** -->
 <script>
 $(function() {
