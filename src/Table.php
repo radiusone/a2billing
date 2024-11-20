@@ -453,7 +453,9 @@ class Table
         $table = str_contains($this->table, " JOIN ") ? $this->table : $this->quote_identifier($this->table);
         $value_callback = function ($v) use (&$parameters): string {
             // temporary workaround while there are still things like "now()" in value lists
-            if ($this->quote_identifier($v) !== $v) {
+            if (is_null($v)) {
+                $v = "NULL";
+            } elseif ($this->quote_identifier($v) !== $v) {
                 $parameters[] = $v;
                 $v = "?";
             }
@@ -550,6 +552,8 @@ class Table
                 // this allows updates like ["usage" => ["usage + ?", 1]]
                 $parameters[] = $v[1];
                 $v = $v[0];
+            } elseif (is_null($v)) {
+                $v = "NULL";
             } elseif ($this->quote_identifier($v) !== $v) {
                 // temporary workaround while there are still things like "now()" in value lists
                 $parameters[] = $v;
