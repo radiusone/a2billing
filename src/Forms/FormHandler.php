@@ -1173,7 +1173,7 @@ class FormHandler
         $sql .= str_contains($sql, 'WHERE ') ? " AND " : " WHERE ";
 
         $LIKE = "LIKE";
-        $CONVERT = " COLLATE utf8_unicode_ci";
+        $CONVERT = " COLLATE utf8mb4_unicode_ci";
         if (DB_TYPE === "postgres") {
             $LIKE = "ILIKE";
             $CONVERT = "";
@@ -1323,15 +1323,15 @@ class FormHandler
                     echo "CV_CURRENT_PAGE = " . $this->CV_CURRENT_PAGE . "<br>";
                 }
 
-                $list = $instance_table->get_list(
+                $list = $instance_table->getRows(
                     $this->DBHandle,
-                    $this->FG_QUERY_WHERE_CLAUSE,
-                    implode(",", $this->FG_QUERY_ORDERBY_COLUMNS),
+                    $this->list_query_conditions,
+                    $this->FG_QUERY_ORDERBY_COLUMNS,
                     $this->FG_QUERY_DIRECTION,
+                    $this->FG_QUERY_GROUPBY_COLUMNS,
                     $this->FG_LIST_VIEW_PAGE_SIZE,
-                    $this->CV_CURRENT_PAGE * $this->FG_LIST_VIEW_PAGE_SIZE,
-                    $this->FG_QUERY_GROUPBY_COLUMNS
-                ) ?: [];
+                    $this->CV_CURRENT_PAGE * $this->FG_LIST_VIEW_PAGE_SIZE
+                );
                 if ($this->FG_DEBUG === 3) {
                     echo "<br>Clause : " . $this->FG_QUERY_WHERE_CLAUSE;
                 }
@@ -1986,6 +1986,7 @@ class FormHandler
         $processed = $this->getProcessed();
 
         $id = $processed['id'];
+        // todo: is this ever not 0?
         $form_el_index = $processed['form_el_index'] ?? 0;
 
         switch ($form_action) {

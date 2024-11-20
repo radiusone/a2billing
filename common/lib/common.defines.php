@@ -53,12 +53,11 @@ $profiler = DEBUG ? new Profiler() : null;
 $A2B = new A2Billing();
 
 // GLOBAL POST/GET VARIABLE
-getpost_ifset (['form_action', 'action', 'form_el_index', 'IDmanager', 'current_page', 'order', 'sens', 'mydisplaylimit', 'cssname', 'popup_select', 'popup_formname', 'popup_fieldname', 'ui_language', 'msg', 'exporttype']);
+getpost_ifset (['form_action', 'action', 'form_el_index', 'current_page', 'order', 'sens', 'mydisplaylimit', 'cssname', 'popup_select', 'popup_formname', 'popup_fieldname', 'ui_language', 'msg', 'exporttype']);
 /**
  * @var string $form_action
  * @var string $action
  * @var string $form_el_index
- * @var string $IDmanager
  * @var string $current_page
  * @var string $order
  * @var string $sens
@@ -71,6 +70,10 @@ getpost_ifset (['form_action', 'action', 'form_el_index', 'IDmanager', 'current_
  * @var string $msg
  * @var string $exporttype
  */
+$popup_select ??= "";
+$popup_formname ??= "";
+$popup_fieldname ??= "";
+$form_action ??= null;
 
 // Enable UI Logger
 const ENABLE_LOG = true;
