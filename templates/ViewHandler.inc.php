@@ -29,7 +29,7 @@ $processed["popup_fieldname"] ??= "";
         <input type="hidden" name="popup_fieldname" value="<?= $processed['popup_fieldname'] ?>"/>
         <input type="hidden" name="form_action" value="list"/>
         <?php foreach ($processed as $key => $val): ?>
-            <?php if (!empty($key) && $key !== 'current_page' && $key !== 'id'): ?>
+            <?php if (!empty($key) && $key !== 'current_page' && $key !== 'id' && !is_array($val)): ?>
             <input type="hidden" name="<?= $key?>" value="<?= $val?>"/>
             <?php endif ?>
         <?php endforeach ?>

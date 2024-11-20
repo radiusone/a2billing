@@ -48,88 +48,20 @@ use A2billing\Table;
  *
  **/
 
-getpost_ifset([
-    'id', 'username', 'useralias', 'uipass', 'credit', 'language', 'tariff',
-    'id_didgroup', 'id_campaign', 'callback', 'simultaccess', 'currency', 'typepaid', 'creditlimit',
-    'lastname', 'firstname', 'email', 'address', 'city', 'state', 'country', 'zipcode', 'phone', 'fax', 'inuse',
-    'max_concurrent', 'cid', 'runservice', 'firstusedate', 'expirationdate', 'enableexpire', 'expiredays', 'sip_buddy',
-    'iax_buddy', 'popup_select', 'vat', 'autorefill', 'initialbalance', 'mac_addr', 'cardnumber_length',
-    'status', 'block', 'lock_pin', 'template_invoice', 'template_outstanding', 'description', 'voicemail_activated',
-    'voicemail_permitted', 'email_notification', 'credit_notification', 'notify_email', 'id_seria',
-    'company_name', 'company_website', 'vat_rn', 'traffic', 'traffic_target', 'discount', 'restriction',
-]);
+getpost_ifset(['id', 'cardnumber_length']);
 /**
  * @var string $id
- * @var string $username
- * @var string $useralias
- * @var string $uipass
- * @var string $credit
- * @var string $language
- * @var string $tariff
- * @var string $id_didgroup
- * @var string $id_campaign
- * @var string $callback
- * @var string $simultaccess
- * @var string $currency
- * @var string $typepaid
- * @var string $creditlimit
- * @var string $lastname
- * @var string $firstname
- * @var string $email
- * @var string $address
- * @var string $city
- * @var string $state
- * @var string $country
- * @var string $zipcode
- * @var string $phone
- * @var string $fax
- * @var string $inuse
- * @var string $max_concurrent
- * @var string $cid
- * @var string $runservice
- * @var string $firstusedate
- * @var string $expirationdate
- * @var string $enableexpire
- * @var string $expiredays
- * @var string $sip_buddy
- * @var string $iax_buddy
- * @var string $popup_select
- * @var string $vat
- * @var string $autorefill
- * @var string $initialbalance
- * @var string $mac_addr
  * @var string $cardnumber_length
- * @var string $status
- * @var string $block
- * @var string $lock_pin
- * @var string $template_invoice
- * @var string $template_outstanding
- * @var string $description
- * @var string $voicemail_activated
- * @var string $voicemail_permitted
- * @var string $email_notification
- * @var string $credit_notification
- * @var string $notify_email
- * @var string $id_seria
- * @var string $company_name
- * @var string $company_website
- * @var string $vat_rn
- * @var string $traffic
- * @var string $traffic_target
- * @var string $discount
- * @var string $restriction
  */
 $HD_Form = new FormHandler("cc_card", _("Card"));
 
-$HD_Form->no_debug();
-$HD_Form->FG_TABLE_DEFAULT_SENS = "ASC";
 $HD_Form->search_session_key = 'entity_card_selection';
 $HD_Form->FG_FK_DELETE_CONFIRM = true;
 $HD_Form->FG_FK_DELETE_ALLOWED = true;
 $HD_Form->FG_FK_TABLENAMES = ['cc_iax_buddies', 'cc_sip_buddies', 'cc_callerid', 'cc_card_history', 'cc_status_log'];
 $HD_Form->FG_FK_EDITION_CLAUSE = ["id_cc_card", "id_cc_card", "id_cc_card", "id_cc_card", "id_cc_card"];
 // DEFINE IF WE WANT TO DELETE THE CARD OR NOT
-$HD_Form->FG_FK_WARNONLY = !(DELETE_FK_CARD == true);
+$HD_Form->FG_FK_WARNONLY = !(DELETE_FK_CARD);
 
 if (DELETE_FK_CARD) {
     // WE WILL DELETE THE FK
@@ -159,7 +91,7 @@ $discount_list = getDiscount_List();
 $simultaccess_list = getCardAccess_List();
 $simultaccess_list_r = array_map("array_reverse", $simultaccess_list);
 $limits_notify_list = getLimitNotify_List($A2B);
-array_unshift($limits_notify_list, [gettext("NOT DEFINED"), -1]);
+array_unshift($limits_notify_list, [_("NOT DEFINED"), -1]);
 
 $currency_list = [];
 $currency_list_r = [];
@@ -256,9 +188,27 @@ $HD_Form->FG_FILTER_COLUMN = 'username';
 $HD_Form->FG_FILTER_LABEL = _('Account Number');
 
 $HD_Form->FG_ENABLE_ADD_BUTTON = true;
-$form_action = $form_action ?? "list";
+$HD_Form->FG_ENABLE_EDIT_BUTTON = !$popup_select && (is_admin() || has_rights(Agent::ACX_EDIT_CUSTOMER));
+$HD_Form->FG_ENABLE_DELETE_BUTTON = !$popup_select && (is_admin() || has_rights(Agent::ACX_DELETE_CUSTOMER));
 
-if (!$popup_select) {
+$HD_Form->FG_LOCATION_AFTER_ADD = "?id=";
+$HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";
+$HD_Form->FG_LOCATION_AFTER_DELETE = "?id=";
+
+$form_action ??= "list";
+
+if ($popup_select) {
+    // popup window
+    $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 6;
+    $HD_Form->FG_OTHER_BUTTON1 = true;
+    $HD_Form->FG_OTHER_BUTTON1_ALT = '<span style="color:red">&lt;' . _("SELECT") . '&gt;</span>';
+    $HD_Form->FG_OTHER_BUTTON1_IMG = '';
+    if ($popup_select == 1) {
+        $HD_Form->FG_OTHER_BUTTON1_LINK = "javascript:sendValue('|param|', '|col1|');";
+    } elseif ($popup_select == 2) {
+        $HD_Form->FG_OTHER_BUTTON1_LINK = "javascript:sendValue('|col1|');";
+    }
+} elseif ($form_action === "list") {
     $HD_Form->export_session_key = "pr_export_entity_card";
     $HD_Form->FG_EXPORT_CSV = true;
     $HD_Form->FG_EXPORT_XML = true;
@@ -322,632 +272,613 @@ if (!$popup_select) {
     $HD_Form->FG_OTHER_BUTTON3_ALT = _('Add Payment to this Card');
     $HD_Form->FG_OTHER_BUTTON4_ALT = _('Add New Subscription to this Card');
     $HD_Form->FG_OTHER_BUTTON5_ALT = _('Email to this Customer');
+} elseif (has_rights(Admin::ACX_MODIFY_CUSTOMERS) || has_rights(Agent::ACX_EDIT_CUSTOMER)) {
+    $maxi = $maxi2 = $maxi3 = $default_initbalance = "";
 
-    if (has_rights(Admin::ACX_MODIFY_CUSTOMERS)) {
-        $HD_Form->FG_ENABLE_EDIT_BUTTON = is_admin() || has_rights(Agent::ACX_EDIT_CUSTOMER);
-        $HD_Form->FG_ENABLE_DELETE_BUTTON = is_admin() || has_rights(Agent::ACX_DELETE_CUSTOMER);
-
-        $maxi = $maxi2 = $maxi3 = $default_initbalance = "";
-
-        if ($form_action === "ask-add") {
-            if (empty($cardnumber_length) || !is_numeric($cardnumber_length)) {
-                $cardnumber_length = min($A2B->cardnumber_range);
-            }
-            $array_card_generated = gen_card_with_alias($cardnumber_length);
-            $maxi = "value='$array_card_generated[0]'";
-            $maxi2 = "value='$array_card_generated[1]'";
-            $pass = MDP_NUMERIC(5) . MDP_STRING(15);
-            $maxi3 = "value='$pass'";
-            $default_initbalance = "value='0'";
+    if ($form_action === "ask-add") {
+        if (empty($cardnumber_length) || !is_numeric($cardnumber_length)) {
+            $cardnumber_length = min($A2B->cardnumber_range);
         }
+        $array_card_generated = gen_card_with_alias($cardnumber_length);
+        $maxi = "value='$array_card_generated[0]'";
+        $maxi2 = "value='$array_card_generated[1]'";
+        $pass = MDP_NUMERIC(5) . MDP_STRING(15);
+        $maxi3 = "value='$pass'";
+        $default_initbalance = "value='0'";
+    }
 
-        $HD_Form->AddEditElement(
-            _("ACCOUNT NUMBER"),
-            "username",
-            '',
-            "size=30 $maxi readonly  maxlength=40",
-            4,
-            _("Insert the account number"), 
-            _("Customer Information")
-        );
+    $HD_Form->AddEditElement(
+        _("ACCOUNT NUMBER"),
+        "username",
+        '',
+        "size=30 $maxi readonly  maxlength=40",
+        4,
+        _("Insert the account number"),
+        _("Customer Information")
+    );
 
-        $HD_Form->AddEditElement(
-            _("WEBUI LOGIN"),
-            "useralias",
-            "",
-            "size=20 $maxi2 maxlength=40",
-            4,
-            _("Insert the webui login")
-        );
+    $HD_Form->AddEditElement(
+        _("WEBUI LOGIN"),
+        "useralias",
+        "",
+        "size=20 $maxi2 maxlength=40",
+        4,
+        _("Insert the webui login")
+    );
 
-        $HD_Form->AddEditElement(
-            _("WEBUI PASSWORD"),
-            "uipass",
-            _("Password for customer to access to the web interface and view the balance."),
-            "size=20 $maxi3 maxlength=20",
-            null,
-            _("Insert the password")
-        );
+    $HD_Form->AddEditElement(
+        _("WEBUI PASSWORD"),
+        "uipass",
+        _("Password for customer to access to the web interface and view the balance."),
+        "size=20 $maxi3 maxlength=20",
+        null,
+        _("Insert the password")
+    );
 
-        $balance_access = ($form_action === "ask-add" || $form_action === "add") ? "value = '0'" : "readonly";
-        $HD_Form->AddEditElement(
-            _("BALANCE"),
-            "credit",
-            _("currency : ") . strtoupper(BASE_CURRENCY),
-            "size=30 maxlength=30 " . $balance_access,
-            12,
-            _("Insert the number of credit")
-        );
+    $balance_access = ($form_action === "ask-add" || $form_action === "add") ? "value = '0'" : "readonly";
+    $HD_Form->AddEditElement(
+        _("BALANCE"),
+        "credit",
+        _("currency : ") . strtoupper(BASE_CURRENCY),
+        "size=30 maxlength=30 " . $balance_access,
+        12,
+        _("Insert the number of credit")
+    );
 
-        $HD_Form->AddEditSqlSelect(
-            _("CUSTOMER GROUP"),
-            "id_group",
-            "cc_card_group",
-            "name,id",
-            is_admin() ? "" : "id_agent='$_SESSION[agent_id]'"
-        );
+    $HD_Form->AddEditSqlSelect(
+        _("CUSTOMER GROUP"),
+        "id_group",
+        "cc_card_group",
+        "name,id",
+        is_admin() ? "" : "id_agent='$_SESSION[agent_id]'"
+    );
 
-        $HD_Form->AddEditSqlSelect(
-            _("SERIES"),
-            "id_seria",
-            "cc_card_seria",
-            "name,id",
-            "",
-            "",
-            [-1, _("NOT DEFINED")]
-        );
+    $HD_Form->AddEditSqlSelect(
+        _("SERIES"),
+        "id_seria",
+        "cc_card_seria",
+        "name,id",
+        "",
+        "",
+        [-1, _("NOT DEFINED")]
+    );
 
-        $HD_Form->AddEditElement(
-            _("LAST NAME"),
-            "lastname",
-            "",
-            "size=30 maxlength=50",
-            11,
-            _("Insert the lastname of the customers"), 
-            _("Personal Information"), 
-            "NO"
-        );
+    $HD_Form->AddEditElement(
+        _("LAST NAME"),
+        "lastname",
+        "",
+        "size=30 maxlength=50",
+        11,
+        _("Insert the lastname of the customers"),
+        _("Personal Information"),
+        "NO"
+    );
 
-        $HD_Form->AddEditElement(
-            _("FIRST NAME"),
-            "firstname",
-            "",
-            "size=30 maxlength=50",
-            11,
-            _("Insert the firstname of the customers"), 
-            "", 
-            "NO"
-        );
+    $HD_Form->AddEditElement(
+        _("FIRST NAME"),
+        "firstname",
+        "",
+        "size=30 maxlength=50",
+        11,
+        _("Insert the firstname of the customers"),
+        "",
+        "NO"
+    );
 
-        $HD_Form->AddEditElement(
-            _("EMAIL"),
-            "email",
-            "",
-            "size=30 maxlength=70",
-            1,
-            _("Insert the email"), 
-            "", 
-            "NO"
-        );
+    $HD_Form->AddEditElement(
+        _("EMAIL"),
+        "email",
+        "",
+        "size=30 maxlength=70",
+        1,
+        _("Insert the email"),
+        "",
+        "NO"
+    );
 
-        $HD_Form->AddEditElement(
-            _("ADDRESS"),
-            "address",
-            "",
-            "size=30 maxlength=100",
-            0,
-            _("Insert the address of the customers"), 
-            "", 
-            "NO"
-        );
+    $HD_Form->AddEditElement(
+        _("ADDRESS"),
+        "address",
+        "",
+        "size=30 maxlength=100",
+        0,
+        _("Insert the address of the customers"),
+        "",
+        "NO"
+    );
 
-        $HD_Form->AddEditElement(
-            _("CITY"),
-            "city",
-            "",
-            "size=30 maxlength=40",
-            0,
-            _("Insert the city"), 
-            "", 
-            "NO"
-        );
+    $HD_Form->AddEditElement(
+        _("CITY"),
+        "city",
+        "",
+        "size=30 maxlength=40",
+        0,
+        _("Insert the city"),
+        "",
+        "NO"
+    );
 
-        $HD_Form->AddEditElement(
-            _("STATE/PROVINCE"),
-            "state",
-            "",
-            "size=30 maxlength=40",
-            11,
-            _("Insert the state"), 
-            "", 
-            "NO"
-        );
+    $HD_Form->AddEditElement(
+        _("STATE/PROVINCE"),
+        "state",
+        "",
+        "size=30 maxlength=40",
+        11,
+        _("Insert the state"),
+        "",
+        "NO"
+    );
 
-        $country_default_val = $form_action === "ask-add" ? "USA" : "";
-        $HD_Form->AddEditSqlSelect(
-            _("COUNTRY"),
-            "country",
-            "cc_country",
-            "countryname,countrycode",
-            "",
-            $country_default_val
-        );
+    $country_default_val = $form_action === "ask-add" ? "USA" : "";
+    $HD_Form->AddEditSqlSelect(
+        _("COUNTRY"),
+        "country",
+        "cc_country",
+        "countryname,countrycode",
+        "",
+        $country_default_val
+    );
 
-        $HD_Form->AddEditElement(
-            _("ZIP/POSTAL CODE"),
-            "zipcode",
-            "",
-            "size=30 maxlength=20",
-            0,
-            _("Insert the zipcode"), 
-            "", 
-            "NO"
-        );
+    $HD_Form->AddEditElement(
+        _("ZIP/POSTAL CODE"),
+        "zipcode",
+        "",
+        "size=30 maxlength=20",
+        0,
+        _("Insert the zipcode"),
+        "",
+        "NO"
+    );
 
-        $HD_Form->AddEditElement(
-            _("PHONE NUMBER"),
-            "phone",
-            "",
-            "size=30 maxlength=20",
-            7,
-            _("Insert the phone number of the customers"), 
-            "", 
-            "NO"
-        );
+    $HD_Form->AddEditElement(
+        _("PHONE NUMBER"),
+        "phone",
+        "",
+        "size=30 maxlength=20",
+        7,
+        _("Insert the phone number of the customers"),
+        "",
+        "NO"
+    );
 
-        $HD_Form->AddEditElement(
-            _("FAX NUMBER"),
-            "fax",
-            "",
-            "size=30 maxlength=20",
-            null,
-            _("Insert the fax number of the customers"), 
-            "", 
-            "NO"
-        );
+    $HD_Form->AddEditElement(
+        _("FAX NUMBER"),
+        "fax",
+        "",
+        "size=30 maxlength=20",
+        null,
+        _("Insert the fax number of the customers"),
+        "",
+        "NO"
+    );
 
-        $HD_Form->AddEditElement(
-            _("COMPANY NAME"),
-            "company_name",
-            "",
-            "size=40 maxlength=50",
-            null,
-            _("Insert Company name of this customer"), 
-            "", 
-            "NO"
-        );
+    $HD_Form->AddEditElement(
+        _("COMPANY NAME"),
+        "company_name",
+        "",
+        "size=40 maxlength=50",
+        null,
+        _("Insert Company name of this customer"),
+        "",
+        "NO"
+    );
 
-        $HD_Form->AddEditElement(
-            _("COMPANY WEBSITE"),
-            "company_website",
-            "",
-            "size=40 maxlength=60",
-            null,
-            _("Insert the company website of this customer"), 
-            "", 
-            "NO"
-        );
+    $HD_Form->AddEditElement(
+        _("COMPANY WEBSITE"),
+        "company_website",
+        "",
+        "size=40 maxlength=60",
+        null,
+        _("Insert the company website of this customer"),
+        "",
+        "NO"
+    );
 
-        if ($form_action !== "edit" && is_admin()) {
-            $payment_status = ($form_action === "ask-add" || $form_action === "add") ? "" : 'disabled="disabled"';
-            $HD_Form->AddEditSelect(
-                _("PAYMENT TYPE"),
-                "typepaid",
-                $typepaid_list,
-                "",
-                "",
-                $payment_status,
-                "", _("Customer Status")
-            );
-        }
-
-        if (is_admin() || $form_action === "add" || $form_action === "ask-add") {
-            $HD_Form->AddEditSqlSelect(
-                _("CALL PLAN"),
-                "tariff",
-                is_admin() ? "cc_tariffgroup" : "cc_tariffgroup,cc_agent_tariffgroup",
-                "tariffgroupname, id",
-                is_admin() ? ""
-                    : "cc_tariffgroup.id = cc_agent_tariffgroup.id_tariffgroup AND cc_agent_tariffgroup.id_agent = '$_SESSION[agent_id]'",
-                "",
-                [],
-                "%1", _("Changing the call plan will result in the free minutes or free calls package being reset.")
-            );
-        }
-
-        $HD_Form->AddEditSqlSelect(
-            _("DIDGROUP"),
-            "id_didgroup",
-            "cc_didgroup",
-            "didgroupname,id",
-            "",
-            "",
-            [-1, _("NOT DEFINED")]
-        );
-
-        $tz_val = "";
-        $timezone_list = get_timezones();
-        if ($form_action === 'ask-add') {
-            array_walk($timezone_list, function ($v, $k) use (&$tz_val) {
-                if (array_search(SERVER_GMT, $v)) {
-                    $tz_val = $k;
-                }
-            });
-        }
-        array_walk($timezone_list, fn (&$v, $k) => $v = [$v[2], $k]);
-
+    if ($form_action !== "edit" && is_admin()) {
+        $payment_status = ($form_action === "ask-add" || $form_action === "add") ? "" : 'disabled="disabled"';
         $HD_Form->AddEditSelect(
-            _("TIMEZONE"),
-            "id_timezone",
-            $timezone_list,
-            $tz_val
+            _("PAYMENT TYPE"),
+            "typepaid",
+            $typepaid_list,
+            "",
+            "",
+            $payment_status,
+            "", _("Customer Status")
         );
+    }
 
-        $HD_Form->AddEditSelect(_("LANGUAGE"), "language", $language_list);
-
-        $HD_Form->AddEditSelect(
-            _("CURRENCY"),
-            "currency",
-            $currency_list,
-            "", _("Currency used at the customer end.")
+    if (is_admin() || $form_action === "add" || $form_action === "ask-add") {
+        $HD_Form->AddEditSqlSelect(
+            _("CALL PLAN"),
+            "tariff",
+            is_admin() ? "cc_tariffgroup" : "cc_tariffgroup,cc_agent_tariffgroup",
+            "tariffgroupname, id",
+            is_admin() ? ""
+                : "cc_tariffgroup.id = cc_agent_tariffgroup.id_tariffgroup AND cc_agent_tariffgroup.id_agent = '$_SESSION[agent_id]'",
+            "",
+            [],
+            "%1", _("Changing the call plan will result in the free minutes or free calls package being reset.")
         );
+    }
 
-        $HD_Form->AddEditSelect(_("STATUS"), "status", $cardstatus_list);
+    $HD_Form->AddEditSqlSelect(
+        _("DIDGROUP"),
+        "id_didgroup",
+        "cc_didgroup",
+        "didgroupname,id",
+        "",
+        "",
+        [-1, _("NOT DEFINED")]
+    );
 
+    $tz_val = "";
+    $timezone_list = get_timezones();
+    if ($form_action === 'ask-add') {
+        $tz_val = array_search(SERVER_GMT, array_column($timezone_list, 1));
+    }
+    array_walk($timezone_list, fn (&$v, $k) => $v = [$v[2], $k]);
+
+    $HD_Form->AddEditSelect(
+        _("TIMEZONE"),
+        "id_timezone",
+        $timezone_list,
+        $tz_val
+    );
+
+    $HD_Form->AddEditSelect(_("LANGUAGE"), "language", $language_list);
+
+    $HD_Form->AddEditSelect(
+        _("CURRENCY"),
+        "currency",
+        $currency_list,
+        "", _("Currency used at the customer end.")
+    );
+
+    $HD_Form->AddEditSelect(_("STATUS"), "status", $cardstatus_list);
+
+    $HD_Form->AddEditRadio(
+        _("LOCK"),
+        "block",
+        [[_("Yes"), "1"], [_("No"), "0"]],
+        "0",
+        _("Enable lock for this account."), "",
+        _("Choose if you want to enable the lock on this account")
+    );
+
+    $lockpin_default = ($form_action == "ask-add" || $form_action == "add") ? "value = '0'" : "";
+    $HD_Form->AddEditElement(
+        _("LOCK PIN"),
+        "lock_pin",
+        _("Code required to make the call if the lock is active."),
+        "size=20 maxlength=10 $lockpin_default",
+        4,
+        "",
+        "",
+        "NO"
+    );
+
+    $HD_Form->AddEditSelect(
+        _("SIMULTANEOUS ACCESS"),
+        "simultaccess",
+        $simultaccess_list,
+        "1"
+    );
+
+    $HD_Form->AddEditRadio(
+        _("RUN SERVICE"),
+        "runservice",
+        [[_("Yes"), "1"], [_("No"), "0"]],
+        "0",
+        _("Apply recurring service to this account."), "",
+        _("Choose if you want to enable the service recurring on this account")
+    );
+
+    if (is_admin()) {
+        $HD_Form->AddEditElement(
+            _("CREDIT LIMIT"),
+            "creditlimit",
+            _("Credit limit is only used for the postpaid account."),
+            "size=20 maxlength=20",
+            4,
+            _("Insert the credit limit"),
+            "",
+            "NO-NULL"
+        );
+    }
+
+    $HD_Form->AddEditSelect(
+        _("CREDIT LIMIT NOTIFICATION"),
+        "credit_notification",
+        $limits_notify_list,
+        "", _("currency : ") . strtoupper(BASE_CURRENCY) . '<BR>' . _("Low credit limit to alert the customer")
+    );
+
+    $HD_Form->AddEditRadio(
+        _("PERMITTED NOTIFICATIONS BY MAIL"),
+        "notify_email",
+        [[_("Yes"), "1"], [_("No"), "0"]],
+        "0",
+        _("Enable the notification by mail for this account."), "",
+        _("Choose if you want to enable the notification by email for this account")
+    );
+
+    $HD_Form->AddEditElement(
+        _("EMAIL NOTIFICATION"),
+        "email_notification",
+        "",
+        "size=30 maxlength=70",
+        1,
+        _("Insert the email to notify this customer"),
+        "",
+        "NO"
+    );
+
+    $HD_Form->AddEditSqlSelect(
+        _("CAMPAIGN"),
+        "id_campaign",
+        "cc_campaign",
+        "name,id",
+        "",
+        "",
+        [-1, _("NOT DEFINED")]
+    );
+
+    $HD_Form->AddEditElement(
+        _("FIRST USE DATE"),
+        "firstusedate",
+        "",
+        "size=40 maxlength=40 readonly",
+        null,
+        "the first use date",
+        "",
+        "NO-NULL",
+
+    );
+
+    $HD_Form->AddEditSelect(
+        _("ENABLE EXPIRY"),
+        "enableexpire",
+        $expire_list,
+        "", _("Select method of expiry for the account.")
+    );
+
+    $comp_zero = $comp_date_plus = '';
+    if (isset($form_action) && $form_action === "ask-add") {
+        $comp_zero = "value='0'";
+        $comp_date_plus = 'value="' . (new DateTime("+10 years"))->format("Y-m-d H:i:s") . '"';
+    }
+
+    $HD_Form->AddEditElement(
+        _("EXPIRY DATE"),
+        "expirationdate",
+        _("please use the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
+        "size=40 maxlength=40  $comp_date_plus",
+        10,
+        _("Insert the expiration date"),
+        "",
+        "NO-NULL",
+
+    );
+
+    $HD_Form->AddEditElement(
+        _("EXPIRY DAYS"),
+        "expiredays",
+        _("The number of days after which the account will expire."),
+        "size=10 maxlength=6 $comp_zero",
+        4,
+        _("Insert the number of days after which the account will expire")
+    );
+
+    if (!empty($A2B->config["webui"]['buddy_sip_file']) && (is_admin() || has_rights(Agent::ACX_VOIPCONF))) {
         $HD_Form->AddEditRadio(
-            gettext("LOCK"),
-            "block",
-            [[gettext("Yes"), "1"], [gettext("No"), "0"]],
+            _("CREATE SIP CONFIG"),
+            "sip_buddy",
+            [[_("Yes"), "1"], [_("No"), "0"]],
             "0",
-            gettext("Enable lock for this account."), "",
-            gettext("Choose if you want to enable the lock on this account")
+            _("Create the SIP config automatically"),
+            "",
+            _("Choose if you want to enable the SIP account")
         );
+    }
 
-        $lockpin_default = ($form_action == "ask-add" || $form_action == "add") ? "value = '0'" : "";
-        $HD_Form->AddEditElement(
-            _("LOCK PIN"),
-            "lock_pin",
-            _("Code required to make the call if the lock is active."),
-            "size=20 maxlength=10 $lockpin_default",
-            4,
-            "", 
-            "", 
-            "NO"
-        );
-
-        $HD_Form->AddEditSelect(
-            _("SIMULTANEOUS ACCESS"),
-            "simultaccess",
-            $simultaccess_list,
-            "1"
-        );
-
+    if (!empty($A2B->config["webui"]['buddy_iax_file']) && (is_admin() || has_rights(Agent::ACX_VOIPCONF))) {
         $HD_Form->AddEditRadio(
-            gettext("RUN SERVICE"),
-            "runservice",
-            [[gettext("Yes"), "1"], [gettext("No"), "0"]],
+            _("CREATE IAX CONFIG"),
+            "iax_buddy",
+            [[_("Yes"), "1"], [_("No"), "0"]],
             "0",
-            gettext("Apply recurring service to this account."), "",
-            gettext("Choose if you want to enable the service recurring on this account")
+            _("Create the IAX config automatically"),
+            "",
+            _("Choose if you want to enable the IAX account")
         );
+    }
 
-        if (is_admin()) {
-            $HD_Form->AddEditElement(
-                _("CREDIT LIMIT"),
-                "creditlimit",
-                _("Credit limit is only used for the postpaid account."),
-                "size=20 maxlength=20",
-                4,
-                _("Insert the credit limit"),
-                "",
-                "NO-NULL"
-            );
-        }
+    $HD_Form->AddEditElement(
+        _("MAC ADDRESS"),
+        "mac_addr",
+        _("FORMAT: 00-08-74-4C-7F-1D"),
+        "size=20 maxlength=17",
+        null,
+        _("Insert the MAC address customers' device"),
+        "",
+        "NO"
+    );
 
-        $HD_Form->AddEditSelect(
-            _("CREDIT LIMIT NOTIFICATION"),
-            "credit_notification",
-            $limits_notify_list,
-            "", _("currency : ") . strtoupper(BASE_CURRENCY) . '<BR>' . _("Low credit limit to alert the customer")
-        );
+    $HD_Form->AddEditElement(
+        _("IN USE"),
+        "inuse",
+        _("Updated to show the number of concurrent calls in use by this customer. If there are no currently no calls, and the system shows that there are, manually reset this field back to zero."),
+        "size=5 maxlength=5",
+        null,
+        "",
+        "",
+        "NO"
+    );
 
-        $HD_Form->AddEditRadio(
-            gettext("PERMITTED NOTIFICATIONS BY MAIL"),
-            "notify_email",
-            [[gettext("Yes"), "1"], [gettext("No"), "0"]],
-            "0",
-            gettext("Enable the notification by mail for this account."), "",
-            gettext("Choose if you want to enable the notification by email for this account")
-        );
-
+    if (is_admin()) {
         $HD_Form->AddEditElement(
-            _("EMAIL NOTIFICATION"),
-            "email_notification",
-            "",
-            "size=30 maxlength=70",
-            1,
-            _("Insert the email to notify this customer"),
-            "",
-            "NO"
-        );
-
-        $HD_Form->AddEditSqlSelect(
-            _("CAMPAIGN"),
-            "id_campaign",
-            "cc_campaign",
-            "name,id",
-            "",
-            "",
-            [-1, _("NOT DEFINED")]
-        );
-
-        $HD_Form->AddEditElement(
-            _("FIRST USE DATE"),
-            "firstusedate",
-            "",
-            "size=40 maxlength=40 readonly",
-            null,
-            "the first use date",
-            "",
-            "NO-NULL",
-            
-        );
-
-        $HD_Form->AddEditSelect(
-            _("ENABLE EXPIRY"),
-            "enableexpire",
-            $expire_list,
-            "", _("Select method of expiry for the account.")
-        );
-
-        $comp_zero = $comp_date_plus = '';
-        if (isset($form_action) && $form_action === "ask-add") {
-            $comp_zero = "value='0'";
-            $comp_date_plus = 'value="' . (new DateTime("+10 years"))->format("Y-m-d H:i:s") . '"';
-        }
-
-        $HD_Form->AddEditElement(
-            _("EXPIRY DATE"),
-            "expirationdate",
-            _("please use the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
-            "size=40 maxlength=40  $comp_date_plus",
-            10,
-            _("Insert the expiration date"),
-            "",
-            "NO-NULL",
-            
-        );
-
-        $HD_Form->AddEditElement(
-            _("EXPIRY DAYS"),
-            "expiredays",
-            _("The number of days after which the account will expire."),
-            "size=10 maxlength=6 $comp_zero",
-            4,
-            _("Insert the number of days after which the account will expire")
-        );
-
-        if (!empty($A2B->config["webui"]['buddy_sip_file']) && (is_admin() || has_rights(Agent::ACX_VOIPCONF))) {
-            $HD_Form->AddEditRadio(
-                gettext("CREATE SIP CONFIG"),
-                "sip_buddy",
-                [[gettext("Yes"), "1"], [gettext("No"), "0"]],
-                "1",
-                gettext("Create the SIP config automatically"), "",
-                gettext("Choose if you want to enable the SIP account")
-            );
-        }
-
-        if (!empty($A2B->config["webui"]['buddy_iax_file']) && (is_admin() || has_rights(Agent::ACX_VOIPCONF))) {
-            $HD_Form->AddEditRadio(
-                gettext("CREATE IAX CONFIG"),
-                "iax_buddy",
-                [[gettext("Yes"), "1"], [gettext("No"), "0"]],
-                "1",
-                gettext("Create the IAX config automatically"), "",
-                gettext("Choose if you want to enable the IAX account")
-            );
-        }
-
-        $HD_Form->AddEditElement(
-            _("MAC ADDRESS"),
-            "mac_addr",
-            _("FORMAT: 00-08-74-4C-7F-1D"),
-            "size=20 maxlength=17",
-            null,
-            _("Insert the MAC address customers' device"),
-            "",
-            "NO"
-        );
-
-        $HD_Form->AddEditElement(
-            _("IN USE"),
-            "inuse",
-            _("Updated to show the number of concurrent calls in use by this customer. If there are no currently no calls, and the system shows that there are, manually reset this field back to zero."),
+            _("MAX CONCURRENT CALLS"),
+            "max_concurrent",
+            _("Max concurrent calls (Feature not implemented)"),
             "size=5 maxlength=5",
             null,
             "",
             "",
             "NO"
         );
-
-        if (is_admin()) {
-            $HD_Form->AddEditElement(
-                _("MAX CONCURRENT CALLS"),
-                "max_concurrent",
-                _("Max concurrent calls (Feature not implemented)"),
-                "size=5 maxlength=5",
-                null,
-                "",
-                "",
-                "NO"
-            );
-        }
-
-        $HD_Form->AddEditRadio(
-            gettext("AUTOREFILL"),
-            "autorefill",
-            [[gettext("Yes"), "1"], [gettext("No"), "0"]],
-            "0",
-            gettext("Define if you want to authorize the autorefill to apply on this accout"),
-            "",
-            gettext("Choose if you want to enable the autorefill on this account"),
-            gettext("AUTOREFILL")
-        );
-
-        $HD_Form->AddEditElement(
-            _("INITIAL BALANCE"),
-            "initialbalance",
-            _("The initial balance is used by autorefill to reset the current balance to this amount"),
-            "size=30 $default_initbalance maxlength=30",
-            12,
-            _("Insert the amount of the initial balance")
-        );
-
-        $HD_Form->AddEditSelect(_("INVOICE DAY"), "invoiceday", $invoiceday_list, "", _("Define the day of the month when the system will generate the customer invoice."), "", "", _("Invoice Status"));
-
-        $vat_init = ($form_action === "ask-add" || $form_action === "add") ? "value = '0'" : "";
-        $HD_Form->AddEditElement(
-            _("VAT/GST"),
-            "vat",
-            _("VAT to add on the invoice of this customer. it should be a decimal value '21' this will be for 21% of VAT!"),
-            "size=10 maxlength=6 $vat_init",
-            12,
-            _("Insert the VAT")
-        );
-
-        $HD_Form->AddEditElement(
-            _("VAT/GST REGISTRATION NUMBER "),
-            "vat_rn",
-            "",
-            "size=40 maxlength=40",
-            null,
-            _("Insert the VAT registration number of this customer"),
-            "",
-            "NO"
-        );
-
-        $HD_Form->AddEditSelect(_("DISCOUNT"), "discount", $discount_list);
-
-        $HD_Form->AddEditElement(
-            _("TRAFFIC PER MONTH"),
-            "traffic",
-            "",
-            "size=30 maxlength=20",
-            4,
-            _("Insert the traffic per month for this customer"),
-            _("TARGET TRAFFIC"),
-            "NO"
-        );
-
-        $HD_Form->AddEditTextarea(
-            _("TARGET TRAFFIC"),
-            "traffic_target",
-            "",
-            "cols='50' rows='4'", null, _("Insert the target traffic description")
-        );
-
-        $HD_Form->AddEditSelect(
-            _("RESTRICTION"),
-            "restriction",
-            $restriction_list,
-            "0",
-            "",
-            "",
-            "", _("RESTRICTED NUMBERS")
-        );
-
-        $HD_Form->AddEditHasMany(
-            gettext("RESTRICTED NUMBERS"),
-            [
-                "table" => "cc_restricted_phonenumber",
-                "name" => "number",
-                "columns" => "number,id_card",
-                "where" => "id_card=%id",
-                "fk" => "id_card",
-                "regex" => 0,
-            ]
-        );
-
-        $HD_Form->AddEditHasMany(
-            gettext("CALLERID"),
-            [
-                "table" => "cc_callerid",
-                "name" => "cid",
-                "columns" => "cid,id_cc_card",
-                "where" => "id_cc_card=%id",
-                "fk" => "id_cc_card",
-                "regex" => 0,
-            ],
-            false,
-            gettext("CALLERID / CUSTOMER HISTORY")
-        );
-
-        $HD_Form->AddEditHasMany(
-            gettext("CUSTOMER HISTORY"),
-            [
-                "table" => "cc_card_history",
-                "name" => "description",
-                "columns" => "description,id_cc_card,datecreated",
-                "where" => "id_cc_card=%id",
-                "fk" => "id_cc_card",
-                "regex" => 0,
-                "extra_col" => 2,
-            ],
-            true
-        );
-
-        if ($form_action === "ask-edit") {
-            $result_card = (new Table("cc_card", "status"))->getRow($HD_Form->DBHandle, ["id" => $id]);
-            $HD_Form->FG_EDIT_FORM_HIDDEN_INPUTS["oldstatus"] = $result_card["status"] ?? "";
-        }
-
-        $HD_Form->FG_INTRO_TEXT_ADITION = '';
-        $HD_Form->FG_ADDITIONAL_FUNCTION_BEFORE_EDITION = 'change_card_lock';
-
-        $HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = 'processing_card_add';
-        $HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_EDITION = 'create_status_log';
-
-        if ($form_action === 'delete' && USE_REALTIME) {
-            $card_result = (new Table("cc_card", "sip_buddy, iax_buddy"))->getRow($HD_Form->DBHandle, ["id" => $id]);
-            $sip_buddy = $card_result['sip_buddy'] ?? "";
-            $iax_buddy = $card_result['iax_buddy'] ?? "";
-            if ($sip_buddy && $iax_buddy) {
-                $key = "sip_iax_changed";
-            } elseif ($sip_buddy) {
-                $key = "sip_changed";
-            } elseif ($iax_buddy) {
-                $key = "iax_changed";
-            } else {
-                $key = "";
-            }
-
-            $who = Notification::$UNKNOWN;
-            $who_id = -1;
-            if (is_admin()) {
-                $who = Notification::$ADMIN;
-                $who_id = $_SESSION['admin_id'];
-            } elseif (is_agent()) {
-                $who = Notification::$AGENT;
-                $who_id = $_SESSION['agent_id'];
-            }
-            NotificationsDAO::AddNotification($key, Notification::$HIGH, $who, $who_id);
-        }
-
-        $HD_Form->FG_LOCATION_AFTER_ADD = "?id=";
-        $HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";
-        $HD_Form->FG_LOCATION_AFTER_DELETE = "?id=";
     }
 
-} else {
-    // popup window
-    $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 6;
-    $HD_Form->FG_OTHER_BUTTON1 = true;
-    $HD_Form->FG_OTHER_BUTTON1_ALT = '<span style="color:red">&lt;' . _("SELECT") . '&gt;</span>';
-    $HD_Form->FG_OTHER_BUTTON1_IMG = '';
-    if ($popup_select == 1) {
-        $HD_Form->FG_OTHER_BUTTON1_LINK = "javascript:sendValue('|param|', '|col1|');";
-    } elseif ($popup_select == 2) {
-        $HD_Form->FG_OTHER_BUTTON1_LINK = "javascript:sendValue('|col1|');";
+    $HD_Form->AddEditRadio(
+        _("AUTOREFILL"),
+        "autorefill",
+        [[_("Yes"), "1"], [_("No"), "0"]],
+        "0",
+        _("Define if you want to authorize the autorefill to apply on this accout"),
+        "",
+        _("Choose if you want to enable the autorefill on this account"),
+        _("AUTOREFILL")
+    );
+
+    $HD_Form->AddEditElement(
+        _("INITIAL BALANCE"),
+        "initialbalance",
+        _("The initial balance is used by autorefill to reset the current balance to this amount"),
+        "size=30 $default_initbalance maxlength=30",
+        12,
+        _("Insert the amount of the initial balance")
+    );
+
+    $HD_Form->AddEditSelect(_("INVOICE DAY"), "invoiceday", $invoiceday_list, "", _("Define the day of the month when the system will generate the customer invoice."), "", "", _("Invoice Status"));
+
+    $vat_init = ($form_action === "ask-add" || $form_action === "add") ? "value = '0'" : "";
+    $HD_Form->AddEditElement(
+        _("VAT/GST"),
+        "vat",
+        _("VAT to add on the invoice of this customer. it should be a decimal value '21' this will be for 21% of VAT!"),
+        "size=10 maxlength=6 $vat_init",
+        12,
+        _("Insert the VAT")
+    );
+
+    $HD_Form->AddEditElement(
+        _("VAT/GST REGISTRATION NUMBER "),
+        "vat_rn",
+        "",
+        "size=40 maxlength=40",
+        null,
+        _("Insert the VAT registration number of this customer"),
+        "",
+        "NO"
+    );
+
+    $HD_Form->AddEditSelect(_("DISCOUNT"), "discount", $discount_list);
+
+    $HD_Form->AddEditElement(
+        _("TRAFFIC PER MONTH"),
+        "traffic",
+        "",
+        "size=30 maxlength=20",
+        4,
+        _("Insert the traffic per month for this customer"),
+        _("TARGET TRAFFIC"),
+        "NO"
+    );
+
+    $HD_Form->AddEditTextarea(
+        _("TARGET TRAFFIC"),
+        "traffic_target",
+        "",
+        "cols='50' rows='4'",
+        null,
+        _("Insert the target traffic description")
+    );
+
+    $HD_Form->AddEditSelect(
+        _("RESTRICTION"),
+        "restriction",
+        $restriction_list,
+        "0",
+        "",
+        "",
+        "",
+        _("RESTRICTED NUMBERS")
+    );
+
+    $HD_Form->AddEditHasMany(
+        _("RESTRICTED NUMBERS"),
+        [
+            "table" => "cc_restricted_phonenumber",
+            "name" => "number",
+            "columns" => "number,id_card",
+            "where" => "id_card=%id",
+            "fk" => "id_card",
+            "regex" => 0,
+        ]
+    );
+
+    $HD_Form->AddEditHasMany(
+        _("CALLERID"),
+        [
+            "table" => "cc_callerid",
+            "name" => "cid",
+            "columns" => "cid,id_cc_card",
+            "where" => "id_cc_card=%id",
+            "fk" => "id_cc_card",
+            "regex" => 0,
+        ],
+        false,
+        _("CALLERID / CUSTOMER HISTORY")
+    );
+
+    $HD_Form->AddEditHasMany(
+        _("CUSTOMER HISTORY"),
+        [
+            "table" => "cc_card_history",
+            "name" => "description",
+            "columns" => "description,id_cc_card,datecreated",
+            "where" => "id_cc_card=%id",
+            "fk" => "id_cc_card",
+            "regex" => 0,
+            "extra_col" => 2,
+        ],
+        true
+    );
+
+    if ($form_action === "ask-edit") {
+        $result_card = (new Table("cc_card", "status"))
+            ->getRow($HD_Form->DBHandle, ["id" => $id]);
+        $HD_Form->FG_EDIT_FORM_HIDDEN_INPUTS["oldstatus"] = $result_card["status"] ?? "";
+    }
+
+    $HD_Form->FG_INTRO_TEXT_ADITION = '';
+    $HD_Form->FG_ADDITIONAL_FUNCTION_BEFORE_EDITION = 'change_card_lock';
+
+    $HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = 'processing_card_add';
+    $HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_EDITION = 'create_status_log';
+
+    if ($form_action === 'delete' && USE_REALTIME) {
+        $card_result = (new Table("cc_card", "sip_buddy, iax_buddy"))->getRow($HD_Form->DBHandle, ["id" => $id]);
+        $sip_buddy = $card_result['sip_buddy'] ?? "";
+        $iax_buddy = $card_result['iax_buddy'] ?? "";
+        if ($sip_buddy && $iax_buddy) {
+            $key = "sip_iax_changed";
+        } elseif ($sip_buddy) {
+            $key = "sip_changed";
+        } elseif ($iax_buddy) {
+            $key = "iax_changed";
+        } else {
+            $key = "";
+        }
+
+        $who = Notification::$UNKNOWN;
+        $who_id = -1;
+        if (is_admin()) {
+            $who = Notification::$ADMIN;
+            $who_id = $_SESSION['admin_id'];
+        } elseif (is_agent()) {
+            $who = Notification::$AGENT;
+            $who_id = $_SESSION['agent_id'];
+        }
+        NotificationsDAO::AddNotification($key, Notification::$HIGH, $who, $who_id);
     }
 }
