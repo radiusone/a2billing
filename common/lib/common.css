@@ -2,9 +2,15 @@
     --bs-body-font-size: 0.85rem;
 }
 
-.bi {
+header .nav svg.bi {
     vertical-align: -.125em;
     pointer-events: none;
+    fill: currentColor;
+}
+
+.alert > svg.bi {
+    width: 3em;
+    height: 3em;
     fill: currentColor;
 }
 

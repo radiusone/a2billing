@@ -111,12 +111,12 @@ $lang = $_SESSION["ui_language"] ?? "english";
 			</div>
 		</div>
 	</form>
-	<script>
-		$("#ui_language").on("change", function () {
-			self.location.href = "?ui_language=" + $("#ui_language option:selected").val();
-		});
-	</script>
+    <script src="../../common/lib/bootstrap/js/bootstrap.js"></script>
+    <script src="../../common/lib/jquery/jquery.min.js"></script>
+    <script>
+        $("#ui_language").on("change", function () {
+            self.location.href = "?ui_language=" + $("#ui_language option:selected").val();
+        });
+    </script>
 </body>
-<script src="../../common/lib/bootstrap/js/bootstrap.js"></script>
-<script src="../../common/lib/jquery/jquery.min.js"></script>
 </html>

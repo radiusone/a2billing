@@ -1219,29 +1219,24 @@ function SetLocalLanguage(): void
 
 function create_help($text, $wiki = ""): string
 {
-    $db = DbConnect();
-    $result = $db->CacheGetOne(86400, "SELECT config_value FROM cc_config WHERE config_key = 'show_help'");
+    $result = DbConnect()->GetOne("SELECT config_value FROM cc_config WHERE config_key = 'show_help'");
     if ($result !== "1") {
         return "";
     }
 
     if (!empty($wiki)) {
-        $wiki = htmlspecialchars(_("For further information please consult")) . ' <a target="_blank" href="http://www.asterisk2billing.org/documentation/">' . htmlspecialchars(_("the online documention")) . '</a>.<br/>';
+        $wiki = htmlspecialchars(_("For further information please consult")) . ' <a target="_blank" href="http://www.asterisk2billing.org/documentation/">' . htmlspecialchars(_("the online documention")) . '</a>.';
     }
-    $path = get_image_path("kicons/toggle_hide2show_on.png");
 
     return <<< HTML
-<div class="toggle_show2hide">
-    <div class="tohide" style="display:initial;">
-        <div class="msg_info">
-            $text<br/>$wiki
-            <a href="#" target="_self" class="hide_help" style="float:right;">
-                <img class="toggle_show2hide" src="$path" onmouseover="this.style.cursor='hand'" HEIGHT="16" alt=""/>
-            </a>
-        </div>
+    <div class="alert alert-info dismissible fade show d-flex align-items-center">
+        <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Help:">
+            <use xlink:href="#question-circle"/>
+        </svg>
+        <div class="mx-2">$text $wiki</div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
-</div>
-HTML;
+    HTML;
 }
 
 function is_admin(): bool
