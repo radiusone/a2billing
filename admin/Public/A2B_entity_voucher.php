@@ -131,13 +131,16 @@ if ($form_action == 'list')
 
     <div class="row">
         <div class="col text-center">
-            <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#tohide" aria-expanded="false" aria-controls="tohide">
+            <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#tohide1" aria-expanded="false" aria-controls="tohide1">
+                <?= _("SEARCH VOUCHERS") ?>
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#tohide2" aria-expanded="false" aria-controls="tohide2">
                 <?= _("SEARCH VOUCHERS") ?>
             </button>
         </div>
     </div>
 
-    <div id="tohide" class="collapse">
+    <div id="tohide1" class="collapse">
 
 <?php
 // #### CREATE SEARCH FORM
@@ -159,9 +162,7 @@ if ($form_action == "list" && (!($popup_select>=1))	) {
 
 ?>
 <!-- ** ** ** ** ** Part for the Update ** ** ** ** ** -->
-<div class="toggle_hide2show">
-<center><a href="#" target="_self" class="toggle_menu"><img class="toggle_hide2show" src="<?= get_image_path("kicons/toggle_hide2show.png") ?>" onmouseover="this.style.cursor='hand';" HEIGHT="16"> <font class="fontstyle_002"><?php echo gettext("BATCH UPDATE");?> </font></a></center>
-    <div class="tohide" style="display:none;">
+<div id="tohide2" class="collapse">
 
 <center>
 <b>&nbsp;<?php echo $HD_Form -> FG_LIST_VIEW_ROW_COUNT ?> <?php echo gettext("vouchers selected!"); ?>&nbsp;<?php echo gettext("Use the options below to batch update the selected vouchers.");?></b>
@@ -249,7 +250,6 @@ if ($form_action == "list" && (!($popup_select>=1))	) {
         </form>
     </table>
 </center>
-</div>
 </div>
 <!-- ** ** ** ** ** Part for the Update ** ** ** ** ** -->
 <?php

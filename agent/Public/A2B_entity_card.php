@@ -322,10 +322,15 @@ if ($form_action=='list' && !($popup_select>=1)) {
 
 ?>
 
+<div class="row">
+    <div class="col text-center">
+        <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#tohide1" aria-expanded="false" aria-controls="tohide1">
+            <?= _("REFILL") ?>
+        </button>
+    </div>
+</div>
 
-<div class="toggle_hide2show">
-<center><a href="#" target="_self" class="toggle_menu"><img class="toggle_hide2show" src="<?= get_image_path("kicons/toggle_hide2show.png") ?>" onmouseover="this.style.cursor='hand';" HEIGHT="16"> <font class="fontstyle_002"><?php echo gettext("REFILL");?> </font></a></center>
-    <div class="tohide" style="display:none;">
+<div id="tohide1" class="collapse">
     <form NAME="theForm">
        <table width="90%" border="0" align="center">
         <tr>
@@ -375,12 +380,19 @@ if ($form_action=='list' && !($popup_select>=1)) {
         </tr>
 
       </table>
-      </form>
+  </form>
+</div>
+
+<div class="row">
+    <div class="col text-center">
+        <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#tohide" aria-expanded="false" aria-controls="tohide">
+            <?= _("REFILL") ?>
+            <?php if (!empty($_SESSION['entity_card_selection'])) echo gettext("search activated"); ?>
+        </button>
     </div>
 </div>
-<div class="toggle_hide2show">
-<center><a href="#" target="_self" class="toggle_menu"><img class="toggle_hide2show" src="<?= get_image_path("kicons/toggle_hide2show.png") ?>" onmouseover="this.style.cursor='hand';" HEIGHT="16"> <font class="fontstyle_002"><?php echo gettext("SEARCH CARDS");?> </font></a><?php if (!empty($_SESSION['entity_card_selection'])) { ?>&nbsp;(<font style="color:#EE6564;" > <?php echo gettext("search activated"); ?> </font> ) <?php } ?> </center>
-    <div class="tohide" style="display:none;">
+
+<div id="tohide2" class="collapse">
 
 <?php
 // #### CREATE SEARCH FORM
@@ -389,7 +401,6 @@ if ($form_action == "list") {
 }
 ?>
 
-    </div>
 </div>
 
 <?php
@@ -401,10 +412,15 @@ if ($form_action == "list" && (!($popup_select>=1))) {
 
 ?>
 <!-- ** ** ** ** ** Part for the Update ** ** ** ** ** -->
-<div class="toggle_hide2show">
-<center><a href="#" target="_self" class="toggle_menu"><img class="toggle_hide2show" src="<?= get_image_path("kicons/toggle_hide2show.png") ?>" onmouseover="this.style.cursor='hand';" HEIGHT="16"> <font class="fontstyle_002"><?php echo gettext("BATCH UPDATE");?> </font></a></center>
-    <div class="tohide" style="display:none;">
+<div class="row">
+    <div class="col text-center">
+        <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#tohide" aria-expanded="false" aria-controls="tohide">
+            <?= _("BATCH UPDATE") ?>
+        </button>
+    </div>
+</div>
 
+<div id="tohide" class="collapse">
 <center>
 <b>&nbsp;<?php echo $HD_Form -> FG_LIST_VIEW_ROW_COUNT ?> <?php echo gettext("cards selected!"); ?>&nbsp;<?php echo gettext("Use the options below to batch update the selected cards.");?></b>
        <table align="center" border="0" width="65%"  cellspacing="1" cellpadding="2">
@@ -538,7 +554,6 @@ if ($form_action == "list" && (!($popup_select>=1))) {
         </form>
         </table>
 </center>
-    </div>
 </div>
 <!-- ** ** ** ** ** Part for the Update ** ** ** ** ** -->
 <?php
