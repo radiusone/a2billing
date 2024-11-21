@@ -135,7 +135,7 @@ if ($form_action == 'list')
                 <?= _("SEARCH VOUCHERS") ?>
             </button>
             <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#tohide2" aria-expanded="false" aria-controls="tohide2">
-                <?= _("SEARCH VOUCHERS") ?>
+                <?= _("BATCH UPDATE") ?>
             </button>
         </div>
     </div>
