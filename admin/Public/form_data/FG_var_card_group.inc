@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -37,107 +38,95 @@ use A2billing\Forms\FormHandler;
 
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
-getpost_ifset(array('id', 'name ','id_agent','users_perms', 'description'));
-
-
 $HD_Form = new FormHandler("cc_card_group", "Customer Group");
 
-$HD_Form->no_debug();
-
-
-$HD_Form -> FG_TABLE_DEFAULT_ORDER = "name";
-$HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
+$HD_Form->FG_TABLE_DEFAULT_ORDER = "name";
 
 // Code Here for Deleting the Dependent Records
 // Dependent Tables
-$HD_Form -> FG_FK_DELETE_ALLOWED = true;
-$HD_Form -> FG_FK_DELETE_CONFIRM = true;
-$HD_Form -> FG_FK_WARNONLY = true;
-$HD_Form -> FG_FK_TABLENAMES = array("cc_card");
-$HD_Form -> FG_FK_EDITION_CLAUSE = array(" id_group ");
+$HD_Form->FG_FK_DELETE_ALLOWED = true;
+$HD_Form->FG_FK_DELETE_CONFIRM = true;
+$HD_Form->FG_FK_WARNONLY = true;
+$HD_Form->FG_FK_TABLENAMES = ["cc_card"];
+$HD_Form->FG_FK_EDITION_CLAUSE = ["id_group"];
 
-$HD_Form -> FG_FK_DELETE_MESSAGE = gettext("You have some cards using this Customers Group! Please comfirm that you really want to remove this Customers Group ? ");
+$HD_Form->FG_FK_DELETE_MESSAGE = _("You have some cards using this Customers Group! Please comfirm that you really want to remove this Customers Group ? ");
 
+$HD_Form->FG_LIST_ADDING_BUTTON1 = true;
+$HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_card_group.php?form_action=ask-add";
+$HD_Form->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form->FG_LIST_ADDING_BUTTON_MSG1 = _("Add Group");
+$HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("group_add.png");
 
-$HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_card_group.php?form_action=ask-add";
-$HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add Group");
-$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("group_add.png") ;
+$HD_Form->AddViewElement(_("NAME"), "name");
+$HD_Form->AddViewElement(_("DESCRIPTION"), "description", true, 150);
+$HD_Form->FieldViewElement ('name, description');
 
+$HD_Form->FG_ENABLE_ADD_BUTTON = true;
+$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form->FG_DELETION_FORBIDDEN_ID = [1];
 
-
-$HD_Form -> AddViewElement(gettext("NAME"), "name");
-$HD_Form -> AddViewElement(gettext("DESCRIPTION"), "description", true, 150);
-$HD_Form -> FieldViewElement ( 'name, description');
-
-$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
-$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
-$HD_Form -> FG_DELETION_FORBIDDEN_ID = array(1);
-
-$right_list = array();
-$right_list["1"] = array( gettext("PASSWORD"), "2");
-$right_list["2"] = array( gettext("SIP IAX"), "4");
-$right_list["3"] = array( gettext("CALL HISTORY"), "8");
-$right_list["4"] = array( gettext("PAYMENT HISTORY"), "16");
-$right_list["5"] = array( gettext("VOUCHER"), "32");
-$right_list["6"] = array( gettext("INVOICES"), "64");
-$right_list["7"] = array( gettext("DID"), "128");
-$right_list["8"] = array( gettext("SPEED DIAL"), "256");
-$right_list["9"] = array( gettext("RATECARD"), "512");
-$right_list["10"] = array( gettext("SIMULATOR"), "1024");
-$right_list["12"] = array( gettext("CALL BACK"), "2048");
-//$right_list["13"] = array( gettext("WEB PHONE"), "4096");
-$right_list["14"] = array( gettext("CALLER_ID"), "8192");
-$right_list["15"] = array( gettext("SUPPORT"), "16384");
-$right_list["16"] = array( gettext("NOTIFICATION"), "32768");
-$right_list["17"] = array( gettext("AUTODIALER"), "65536");
-$right_list["18"] = array( gettext("EDIT PERSONAL INFO"), "131072");
-$right_list["19"] = array( gettext("SEE RECORDING"), "262144");
+$right_list = [
+    [ _("PASSWORD"), Customer::ACX_PASSWORD],
+    [ _("SIP IAX"), Customer::ACX_SIP_IAX],
+    [ _("CALL HISTORY"), Customer::ACX_CALL_HISTORY],
+    [ _("PAYMENT HISTORY"), Customer::ACX_PAYMENT_HISTORY],
+    [ _("VOUCHER"), Customer::ACX_VOUCHER],
+    [ _("INVOICES"), Customer::ACX_INVOICES],
+    [ _("DID"), Customer::ACX_DID],
+    [ _("SPEED DIAL"), Customer::ACX_SPEED_DIAL],
+    [ _("RATECARD"), Customer::ACX_RATECARD],
+    [ _("SIMULATOR"), Customer::ACX_SIMULATOR],
+    [ _("CALL BACK"), Customer::ACX_CALL_BACK],
+    //[ _("WEB PHONE"), Customer::ACX_WEB_PHONE],
+    [ _("CALLER_ID"), Customer::ACX_CALLER_ID],
+    [ _("SUPPORT"), Customer::ACX_SUPPORT],
+    [ _("NOTIFICATION"), Customer::ACX_NOTIFICATION],
+    [ _("AUTODIALER"), Customer::ACX_AUTODIALER],
+    [ _("EDIT PERSONAL INFO"), Customer::ACX_PERSONALINFO],
+    [ _("SEE RECORDING"), Customer::ACX_SEERECORDING],
+];
 
 $len_right_list = count($right_list);
 
-
 $HD_Form->AddEditElement(
-    gettext("NAME"),
+    _("NAME"),
     "name",
     "",
     "size=30 maxlength=40",
     0,
-    gettext("Insert the provider name")
+    _("Insert the provider name")
 );
 
 $HD_Form->AddEditTextarea(
-    gettext("DESCRIPTION"),
+    _("DESCRIPTION"),
     "description",
     "",
-    "cols='50' rows='4'", null, gettext("Insert the description")
+    "cols='50' rows='4'",
+    null,
+    _("Insert the description")
 );
 
 $HD_Form->AddEditSqlSelect(
-    gettext("AGENT"),
+    _("AGENT"),
     "id_agent",
     "cc_agent",
     "login,id,firstname,lastname",
     "",
     "",
     [-1, _("NONE")],
-    "%1 - %3 %4 (%2)",
-    ""
+    "%1 - %3 %4 (%2)"
 );
 
 $HD_Form->AddEditSelect(
-    gettext("PERMISSION USER INTERFACE"),
+    _("PERMISSION USER INTERFACE"),
     "users_perms",
     $right_list,
     "",
-    gettext("To select several rights in the above ListBox, hold the CTRL key down while clicking the items"),
+    _("To select several rights in the above ListBox, hold the CTRL key down while clicking the items"),
     "size='$len_right_list' multiple='multiple'"
 );
 
-$HD_Form -> FG_INTRO_TEXT_ADITION = gettext("Add $HD_Form->FG_INSTANCE_NAME.");
-
-$HD_Form -> FG_LOCATION_AFTER_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
-$HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
-$HD_Form -> FG_LOCATION_AFTER_DELETE = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
-
+$HD_Form->FG_LOCATION_AFTER_ADD = "?id=";
+$HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";
+$HD_Form->FG_LOCATION_AFTER_DELETE = "?id=";

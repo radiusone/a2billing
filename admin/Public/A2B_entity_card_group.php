@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -37,32 +38,26 @@ use A2billing\Admin;
 
 $menu_section = 1;
 require_once "../../common/lib/admin.defines.php";
-include './form_data/FG_var_card_group.inc';
+/**
+ * @var string $popup_select
+ */
+
+include "./form_data/FG_var_card_group.inc";
+/**
+ * @var FormHandler $HD_Form
+ */
 
 Admin::checkPageAccess(Admin::ACX_CUSTOMER);
 
-getpost_ifset(array('popup_select', 'popup_formname', 'popup_fieldname'));
-
 $HD_Form->init();
-
-if (!isset ($form_action))
-    $form_action = "list"; //ask-add
-
-if (!isset ($action))
-    $action = $form_action;
+$form_action ??= "list";
 
 $list = $HD_Form->perform_action($form_action);
 
 require_once __DIR__ . "/../templates/main.php";
-
-// #### HELP SECTION
 echo create_help(_("This page shows a group list.") . _("The Group field is used for grouping customers for quick search, batch update and reporting."), 'ListGroup');
-
-// #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);
-
 $HD_Form->create_form($form_action, $list);
-
-// #### FOOTER SECTION
-if (!$popup_select)
+if (!$popup_select) {
     require_once __DIR__ . "/../templates/footer.php";
+}
