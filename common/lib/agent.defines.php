@@ -44,11 +44,7 @@ require_once __DIR__ . "/common.defines.php";
 
 if (PHP_SAPI !== "cli") {
     require_once __DIR__ . "/agent.module.access.php";
-    if (!has_rights(Agent::ACX_ACCESS)) {
-        header("HTTP/1.0 401 Unauthorized");
-        header("Location: PP_error.php?c=accessdenied");
-        die();
-    }
+    Agent::checkPageAccess();
 }
 
 //Enable Disable Captcha

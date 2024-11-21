@@ -9,7 +9,7 @@
 
 <ul id="nav">
 	<li>
-	<a href="PP_intro.php" target="_top"><img style="vertical-align:bottom;" src="templates/{$SKIN_NAME}/images/house.png"> <b>&nbsp;&nbsp;{php} echo gettext("HOME");{/php}</b> </a>
+	<a href="PP_intro.php" target="_top"><img style="vertical-align:bottom;" src="templates/{$SKIN_NAME}/images/house.png"> <b>&nbsp;&nbsp;{_("HOME")}</b> </a>
 	</li>
 	{if ($ACXMYACCOUNT > 0) }
 	<div class="toggle_menu"><li>
@@ -19,7 +19,7 @@
 	{else}
 	src="templates/{$SKIN_NAME}/images/plus.gif"
 	{/if}
- onmouseover="this.style.cursor='hand';" >&nbsp; <strong>{php} echo gettext("MY ACCOUNT");{/php}</strong></a></li></div>
+ onmouseover="this.style.cursor='hand';" >&nbsp; <strong>{_("MY ACCOUNT")}</strong></a></li></div>
 	<div class="tohide"
 	{if ($section =="4")}
 	style="">
@@ -28,9 +28,9 @@
 	{/if}
 	<ul>
 		<li><ul>
-				<li><a href="agentinfo.php?section=4">{php} echo gettext("Account information");{/php}</a></li>
-				<li><a href="A2B_entity_password.php?section=4">{php} echo gettext("Password");{/php}</a></li>
-				<li><a href="A2B_entity_remittance_request.php?section=4">{php} echo gettext("Historic Remittance");{/php}</a></li>
+				<li><a href="agentinfo.php?section=4">{_("Account information")}</a></li>
+				<li><a href="A2B_entity_password.php?section=4">{_("Password")}</a></li>
+				<li><a href="A2B_entity_remittance_request.php?section=4">{_("Historic Remittance")}</a></li>
 		</ul></li>
 	</ul>
 	</div>
@@ -43,7 +43,7 @@
 	src="templates/{$SKIN_NAME}/images/minus.gif"
 	{else}
 	src="templates/{$SKIN_NAME}/images/plus.gif"
-	{/if} onmouseover="this.style.cursor='hand';" ></div> <div id="menutitlesection"><strong>{php} echo gettext("CUSTOMERS");{/php}</strong></div></div></a></li></div>
+	{/if} onmouseover="this.style.cursor='hand';" ></div> <div id="menutitlesection"><strong>{_("CUSTOMERS")}</strong></div></div></a></li></div>
 		<div class="tohide"
 	{if ($section =="1")}
 		style="">
@@ -52,13 +52,13 @@
 	{/if}
 	<ul>
 		<li><ul>
-				<li><a href="A2B_entity_card.php?section=1">{php} echo gettext("List Customers");{/php}</a></li>
-				<li><a href="A2B_entity_callerid.php?section=1">{php} echo gettext("Caller-ID");{/php}</a></li>
+				<li><a href="A2B_entity_card.php?section=1">{_("List Customers")}</a></li>
+				<li><a href="A2B_entity_callerid.php?section=1">{_("Caller-ID")}</a></li>
 				{if ($ACXCALLREPORT > 0) }
-				<li><a href="card-history.php?section=1">{php} echo gettext("Card History");{/php}</a></li>
+				<li><a href="card-history.php?section=1">{_("Card History")}</a></li>
 				{/if}
 				{if ($ACXVOIPCONF > 0) }
-				<li><a href="A2B_entity_friend.php?section=1">{php} echo gettext("VOIP Config");{/php}</a></li>
+				<li><a href="A2B_entity_friend.php?section=1">{_("VOIP Config")}</a></li>
 				{/if}
 		</ul></li>
 	</ul>
@@ -73,7 +73,7 @@
 	src="templates/{$SKIN_NAME}/images/minus.gif"
 	{else}
 	src="templates/{$SKIN_NAME}/images/plus.gif"
-	{/if} onmouseover="this.style.cursor='hand';" ></div> <div id="menutitlesection"><strong>{php} echo gettext("SIGNUP");{/php}</strong></div></div></a></li></div>
+	{/if} onmouseover="this.style.cursor='hand';" ></div> <div id="menutitlesection"><strong>{_("SIGNUP")}</strong></div></div></a></li></div>
 		<div class="tohide"
 	{if ($section =="8")}
 		style="">
@@ -82,8 +82,8 @@
 	{/if}
 	<ul>
 		<li><ul>
-				<li><a href="A2B_entity_signup_agent.php?section=8">{php} echo gettext("Signup Url List");{/php}</a></li>
-				<li><a href="A2B_signup_agent.php?section=8">{php} echo gettext("Add New Signup Url");{/php}</a></li>
+				<li><a href="A2B_entity_signup_agent.php?section=8">{_("Signup Url List")}</a></li>
+				<li><a href="A2B_signup_agent.php?section=8">{_("Add New Signup Url")}</a></li>
 		</ul></li>
 	</ul>
 	</div>
@@ -97,7 +97,7 @@
 	src="templates/{$SKIN_NAME}/images/minus.gif"
 	{else}
 	src="templates/{$SKIN_NAME}/images/plus.gif"
-	{/if} onmouseover="this.style.cursor='hand';" ></div> <div id="menutitlesection"><strong>{php} echo gettext("BILLING");{/php}</strong></div></div></a></li></div>
+	{/if} onmouseover="this.style.cursor='hand';" ></div> <div id="menutitlesection"><strong>{_("BILLING")}</strong></div></div></a></li></div>
 		<div class="tohide"
 	{if ($section =="2")}
 		style="">
@@ -106,13 +106,13 @@
 	{/if}
 		<ul>
 			<li><ul>
-				<li><a href="A2B_entity_moneysituation.php?section=2">{php} echo gettext("Account balance");{/php}</a></li>
-				<li><a href="A2B_entity_logrefill_agent.php?section=2">{php} echo gettext("Own Refills");{/php}</a></li>
-				<li><a href="A2B_entity_payment_agent.php?section=2">{php} echo gettext("Own Payments");{/php}</a></li>
-				<li><a href="A2B_entity_logrefill.php?section=2">{php} echo gettext("Customer's Refills");{/php}</a></li>
-				<li><a href="A2B_entity_payment.php?section=2">{php} echo gettext("Customer's Payment");{/php}</a></li>
-				<li><a href="A2B_entity_paymentlog.php?section=2">{php} echo gettext("Payment Log");{/php}</a></li>
-				<li><a href="A2B_entity_commission.php?section=2">{php} echo gettext("Commission");{/php}</a></li>
+				<li><a href="A2B_entity_moneysituation.php?section=2">{_("Account balance")}</a></li>
+				<li><a href="A2B_entity_logrefill_agent.php?section=2">{_("Own Refills")}</a></li>
+				<li><a href="A2B_entity_payment_agent.php?section=2">{_("Own Payments")}</a></li>
+				<li><a href="A2B_entity_logrefill.php?section=2">{_("Customer's Refills")}</a></li>
+				<li><a href="A2B_entity_payment.php?section=2">{_("Customer's Payment")}</a></li>
+				<li><a href="A2B_entity_paymentlog.php?section=2">{_("Payment Log")}</a></li>
+				<li><a href="A2B_entity_commission.php?section=2">{_("Commission")}</a></li>
 			</ul></li>
 		</ul>
 	</div>
@@ -125,7 +125,7 @@
 	src="templates/{$SKIN_NAME}/images/minus.gif"
 	{else}
 	src="templates/{$SKIN_NAME}/images/plus.gif"
-	{/if} onmouseover="this.style.cursor='hand';" ></div> <div id="menutitlesection"><strong>{php} echo gettext("RATECARD");{/php}</strong></div></div></a></li></div>
+	{/if} onmouseover="this.style.cursor='hand';" ></div> <div id="menutitlesection"><strong>{_("RATECARD")}</strong></div></div></a></li></div>
 		<div class="tohide"
 	{if ($section =="3")}
 		style="">
@@ -134,7 +134,7 @@
 	{/if}
 		<ul>
 			<li><ul>
-				<li><a href="A2B_entity_def_ratecard.php?section=3">{php} echo gettext("Browse Rates");{/php} </a></li>
+				<li><a href="A2B_entity_def_ratecard.php?section=3">{_("Browse Rates")} </a></li>
 			</ul></li>
 		</ul>
 	</div>
@@ -147,7 +147,7 @@
 	src="templates/{$SKIN_NAME}/images/minus.gif"
 	{else}
 	src="templates/{$SKIN_NAME}/images/plus.gif"
-	{/if} onmouseover="this.style.cursor='hand';" ></div> <div id="menutitlesection"><strong>{php} echo gettext("CALL REPORT");{/php}</strong></div></div></a></li></div>
+	{/if} onmouseover="this.style.cursor='hand';" ></div> <div id="menutitlesection"><strong>{_("CALL REPORT")}</strong></div></div></a></li></div>
 		<div class="tohide"
 	{if ($section =="6")}
 		style="">
@@ -156,8 +156,8 @@
 	{/if}
 		<ul>
 			<li><ul>
-					<li><a href="call-log-customers.php?nodisplay=1&posted=1&section=6">{php} echo gettext("CDR Report");{/php}</a></li>
-					<li><a href="call-last-month.php?section=6">{php} echo gettext("Monthly Traffic");{/php}</a></li>
+					<li><a href="call-log-customers.php?nodisplay=1&posted=1&section=6">{_("CDR Report")}</a></li>
+					<li><a href="call-last-month.php?section=6">{_("Monthly Traffic")}</a></li>
 			</ul></li>
 		</ul>
 	</div>
@@ -170,7 +170,7 @@
 	src="templates/{$SKIN_NAME}/images/minus.gif"
 	{else}
 	src="templates/{$SKIN_NAME}/images/plus.gif"
-	{/if} onmouseover="this.style.cursor='hand';" ></div> <div id="menutitlesection"><strong>{php} echo gettext("SUPPORT");{/php}</strong></div></div></a></li></div>
+	{/if} onmouseover="this.style.cursor='hand';" ></div> <div id="menutitlesection"><strong>{_("SUPPORT")}</strong></div></div></a></li></div>
 		<div class="tohide"
 	{if ($section =="7")}
 		style="">
@@ -179,8 +179,8 @@
 	{/if}
 		<ul>
 			<li><ul>
-				<li><a href="A2B_ticket.php?section=7">{php} echo gettext("Customer Tickets");{/php}</a></li>
-				<li><a href="A2B_support.php">{php} echo gettext("View and Create Tickets");{/php}</a></li>
+				<li><a href="A2B_ticket.php?section=7">{_("Customer Tickets")}</a></li>
+				<li><a href="A2B_support.php">{_("View and Create Tickets")}</a></li>
 			</ul></li>
 		</ul>
 	</div>
@@ -191,7 +191,7 @@
 <br>
 <ul id="nav">
 	<li>
-	<a href="logout.php?logout=true" target="_top"><img style="vertical-align:bottom;" src="templates/{$SKIN_NAME}/images/logout.png"> <font color="#DD0000"><b>&nbsp;&nbsp;{php} echo gettext("LOGOUT");{/php}</b></font> </a>
+	<a href="logout.php?logout=true" target="_top"><img style="vertical-align:bottom;" src="templates/{$SKIN_NAME}/images/logout.png"> <font color="#DD0000"><b>&nbsp;&nbsp;{_("LOGOUT")}</b></font> </a>
 	</li>
 </ul>
 

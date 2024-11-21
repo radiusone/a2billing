@@ -9,27 +9,27 @@
 
 <ul id="nav">
 
-	<div class="toggle_menu"><li><a href="userinfo.php"><strong>{php} echo gettext("ACCOUNT INFO");{/php}</strong></a></li></div>
+	<div class="toggle_menu"><li><a href="userinfo.php"><strong>{_("ACCOUNT INFO")}</strong></a></li></div>
 
 	{if $ACXVOICEMAIL>0 }
-	<div class="toggle_menu"><li><a href="A2B_entity_voicemail.php"><strong>{php} echo gettext("VOICEMAIL");{/php}</strong></a></li></div>
+	<div class="toggle_menu"><li><a href="A2B_entity_voicemail.php"><strong>{_("VOICEMAIL")}</strong></a></li></div>
 	{/if}
 
 	{if $ACXSIP_IAX>0 }
-	<div class="toggle_menu"><li><a href="A2B_entity_sipiax_info.php"><strong>{php} echo gettext("SIP/IAX INFO");{/php}</strong></a></li></div>
+	<div class="toggle_menu"><li><a href="A2B_entity_sipiax_info.php"><strong>{_("SIP/IAX INFO")}</strong></a></li></div>
 	{/if}
 
 	{if $ACXCALL_HISTORY >0 }
-	<div class="toggle_menu"><li><a href="call-history.php"><strong>{php} echo gettext("CALL HISTORY");{/php}</strong></a></li></div>
+	<div class="toggle_menu"><li><a href="call-history.php"><strong>{_("CALL HISTORY")}</strong></a></li></div>
 	{/if}
 
 	{if $ACXPAYMENT_HISTORY >0 }
-	<div class="toggle_menu"><li><a href="payment-history.php"><strong>{php} echo gettext("PAYMENT HISTORY");{/php}</strong></a></li></div>
+	<div class="toggle_menu"><li><a href="payment-history.php"><strong>{_("PAYMENT HISTORY")}</strong></a></li></div>
 	{/if}
 
 
 	{if $ACXVOUCHER >0 }
-	<div class="toggle_menu"><li><a href="A2B_entity_voucher.php?form_action=list"><strong>{php} echo gettext("VOUCHERS");{/php}</strong></a></li></div>
+	<div class="toggle_menu"><li><a href="A2B_entity_voucher.php?form_action=list"><strong>{_("VOUCHERS")}</strong></a></li></div>
 	{/if}
 
 
@@ -40,7 +40,7 @@
 	src="templates/{$SKIN_NAME}/images/minus.gif"
 	{else}
 	src="templates/{$SKIN_NAME}/images/plus.gif"
-	{/if} onmouseover="this.style.cursor='hand';" ></div> <div id="menutitlesection"><strong>{php} echo gettext("INVOICES");{/php}</strong></div></div></a></li></div>
+	{/if} onmouseover="this.style.cursor='hand';" ></div> <div id="menutitlesection"><strong>{_("INVOICES")}</strong></div></div></a></li></div>
 		<div class="tohide"
 	{if ($section =="5")}
 		style="">
@@ -50,9 +50,9 @@
 	<ul>
 		<li>
 			<ul>
-				<li><a href="A2B_entity_receipt.php?section=5"><strong>{php} echo gettext("View Receipts");{/php}</strong></a></li>
-				<li><a href="A2B_entity_invoice.php?section=5"><strong>{php} echo gettext("View Invoices");{/php}</strong></a></li>
-				<li><a href="A2B_billing_preview.php?section=5"><strong>{php} echo gettext("Preview Next Billing");{/php}</strong></a></li>
+				<li><a href="A2B_entity_receipt.php?section=5"><strong>{_("View Receipts")}</strong></a></li>
+				<li><a href="A2B_entity_invoice.php?section=5"><strong>{_("View Invoices")}</strong></a></li>
+				<li><a href="A2B_billing_preview.php?section=5"><strong>{_("Preview Next Billing")}</strong></a></li>
 			</ul>
 		</li>
 	</ul>
@@ -61,39 +61,39 @@
 
 
 	{if $ACXDID >0 }
-	<div class="toggle_menu"><li><a href="A2B_entity_did.php?form_action=list"><strong>{php} echo gettext("DID");{/php}</strong></a></li></div>
+	<div class="toggle_menu"><li><a href="A2B_entity_did.php?form_action=list"><strong>{_("DID")}</strong></a></li></div>
 	{/if}
 
 	{if $ACXSPEED_DIAL >0 }
-	<div class="toggle_menu"><li><a href="A2B_entity_speeddial.php"><strong>{php} echo gettext("SPEED DIAL");{/php}</strong></a></li></div>
+	<div class="toggle_menu"><li><a href="A2B_entity_speeddial.php"><strong>{_("SPEED DIAL")}</strong></a></li></div>
 	{/if}
 
 	{if $ACXRATECARD >0 }
-	<div class="toggle_menu"><li><a href="A2B_entity_ratecard.php?form_action=list"><strong>{php} echo gettext("RATECARD");{/php}</strong></a></li></div>
+	<div class="toggle_menu"><li><a href="A2B_entity_ratecard.php?form_action=list"><strong>{_("RATECARD")}</strong></a></li></div>
 	{/if}
 
 	{if $ACXSIMULATOR >0 }
-	<div class="toggle_menu"><li><a href="simulator.php"><strong>{php} echo gettext("SIMULATOR");{/php}</strong></a></li></div>
+	<div class="toggle_menu"><li><a href="simulator.php"><strong>{_("SIMULATOR")}</strong></a></li></div>
 	{/if}
 
 	{if $ACXCALL_BACK >0 }
-	<div class="toggle_menu"><li><a href="callback.php"><strong>{php} echo gettext("CALLBACK");{/php}</strong></a></li></div>
+	<div class="toggle_menu"><li><a href="callback.php"><strong>{_("CALLBACK")}</strong></a></li></div>
 	{/if}
 
 	{if $ACXCALLER_ID >0 }
-	<div class="toggle_menu"><li><a href="A2B_entity_callerid.php"><strong>{php} echo gettext("ADD CALLER ID");{/php}</strong></a></li></div>
+	<div class="toggle_menu"><li><a href="A2B_entity_callerid.php"><strong>{_("ADD CALLER ID")}</strong></a></li></div>
 	{/if}
 
 	{if $ACXPASSWORD>0 }
-	<div class="toggle_menu"><li><a href="A2B_entity_password.php?form_action=ask-edit"><strong>{php} echo gettext("PASSWORD");{/php}</strong></a></li></div>
+	<div class="toggle_menu"><li><a href="A2B_entity_password.php?form_action=ask-edit"><strong>{_("PASSWORD")}</strong></a></li></div>
 	{/if}
 
 	{if $ACXSUPPORT >0 }
-	<div class="toggle_menu"><li><a href="A2B_support.php"><strong>{php} echo gettext("SUPPORT");{/php}</strong></a></li></div>
+	<div class="toggle_menu"><li><a href="A2B_support.php"><strong>{_("SUPPORT")}</strong></a></li></div>
 	{/if}
 
 	{if $ACXNOTIFICATION >0 }
-	<div class="toggle_menu"><li><a href="A2B_notification.php?form_action=ask-edit"><strong>{php} echo gettext("NOTIFICATION");{/php}</strong></a></li></div>
+	<div class="toggle_menu"><li><a href="A2B_notification.php?form_action=ask-edit"><strong>{_("NOTIFICATION")}</strong></a></li></div>
 	{/if}
 
 
@@ -101,7 +101,7 @@
 
 <br/>
 <ul id="nav"><li>
-	<ul><li><a href="logout.php?logout=true" target="_top"><img style="vertical-align:bottom;" src="templates/{$SKIN_NAME}/images/logout.png"> <font color="#DD0000"><STRONG>&nbsp;&nbsp;{php} echo gettext("LOGOUT");{/php}</STRONG></font> </a></li></ul>
+	<ul><li><a href="logout.php?logout=true" target="_top"><img style="vertical-align:bottom;" src="templates/{$SKIN_NAME}/images/logout.png"> <font color="#DD0000"><STRONG>&nbsp;&nbsp;{_("LOGOUT")}</STRONG></font> </a></li></ul>
 </li></ul>
 
 </div>
