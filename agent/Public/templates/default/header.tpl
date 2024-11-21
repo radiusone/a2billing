@@ -11,15 +11,32 @@
 	<![endif]-->
 	<link href="templates/{$SKIN_NAME}/css/menu.css" rel="stylesheet" type="text/css">
 	<link href="templates/{$SKIN_NAME}/css/style-def.css" rel="stylesheet" type="text/css">
-	<link href="./javascript/jquery/osx.css" rel="stylesheet" type="text/css">
 	{if ($popupwindow != 0)}
 		<link href="templates/{$SKIN_NAME}/css/popup.css" rel="stylesheet" type="text/css">
  	{/if}
+	<link href="../../common/lib/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css"/>
+	<script type="text/javascript" src="../../common/lib/jquery/jquery.js"></script>
+	<script type="text/javascript" src="../../common/lib/bootstrap/js/bootstrap.js"></script>
 	<script type="text/javascript">	
 		var IMAGE_PATH = "templates/{$SKIN_NAME}/images/";
+		$(document).ready(function() {
+			$("div.toggle_menu a.toggle_menu").click(function(){
+				div_toggle = $(this).parent().parent().next("div.tohide");
+				if (div_toggle.css('display') === 'none') {
+					div_toggle.slideDown('slow');
+					$(this).find("img").each(function(i) {
+						//alert(newimage.substr(0,newimage.length-8) + 'minus.gif');
+						$(this).attr('src', IMAGE_PATH + 'minus.gif');
+					});
+				} else {
+					div_toggle.slideUp('slow');
+					$(this).find("img").each(function(i) {
+						$(this).attr('src', IMAGE_PATH + 'plus.gif');
+					});
+				}
+			});
+		});
 	</script>
-	<script type="text/javascript" src="./javascript/jquery/jquery-1.2.6.min.js"></script>
-	<script type="text/javascript" src="./javascript/jquery/handler_jquery.js"></script>
 </HEAD>
 <BODY leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
 
