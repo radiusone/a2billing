@@ -380,7 +380,6 @@ require_once __DIR__ . "/../../common/lib/admin.defines.php";
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                             <li><a class="link-dark rounded" href="A2B_entity_config.php?form_action=list"><?= _("Global List") ?></a></li>
                             <li><a class="link-dark rounded" href="A2B_entity_config_group.php?form_action=list"><?= _("Group List") ?></a></li>
-                            <li><a class="link-dark rounded" href="phpconfig.php?dir=/etc/asterisk"><?= _("* Config Editor") ?></a></li>
                         </ul>
                     </div>
                 </li>
