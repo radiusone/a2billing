@@ -78,8 +78,9 @@ class Table
      * @param string|null $table the table we're working with
      * @param array|string $list_fields when selecting, what fields will be selected
      * @param array $joins tables to join to the query; for example:
-     *                      ["t2" => ["t1.col", "t2.col"]] gives "LEFT JOIN t2 ON (t1.col = t2.col)"
-     *                      ["t2" => ["t1.col", "<", "t2.col", "INNER"]] gives "INNER JOIN t2 ON (t1.col < t2.col)"
+     *              ["t2" => ["t1.col", "t2.col"]] gives "LEFT JOIN t2 ON (t1.col = t2.col)"
+     *              ["t2" => ["INNER", ["t1.col", "<", "t2.col"]]] gives "INNER JOIN t2 ON (t1.col < t2.col)"
+     *              ["t2" => [["t1.col", "=", "t2.col"], "t1.col2", "t2.col2"]] gives "LEFT JOIN t2 ON (t1.col = t2.col AND t1.col2 = t2.col2)"
      */
     public function __construct(string $table = null, $list_fields = "*", array $joins = [])
     {
@@ -141,8 +142,13 @@ class Table
         if (str_contains($identifier, ".")) {
             $identifier = implode("$q.$q", explode(".", $identifier));
         }
+        $as = "";
+        if (preg_match("/(\w+?) +AS +(\w+?)/i", $identifier, $matches)) {
+            $identifier = $matches[1];
+            $as = " AS $q$matches[2]$q";
+        }
 
-        return "$distinct$q$identifier$q";
+        return "$distinct$q$identifier$q$as";
     }
 
     public function isSqlFunction(string $value): bool
@@ -154,7 +160,9 @@ class Table
             || str_starts_with($value, "cast(")
             || str_starts_with($value, "(select")
             || str_starts_with($value, "case when")
+            || str_starts_with($value, "if(")
             || str_starts_with($value, "count(")
+            || str_starts_with($value, "coalesce(")
             || str_starts_with($value, "sum(")
             || str_starts_with($value, "left(")
             || str_starts_with($value, "right(")
@@ -752,16 +760,36 @@ class Table
     {
         $joins = [];
         foreach ($this->joins as $table => $conditions) {
-            if (count($conditions) < 2 || count($conditions) > 4) {
-                continue;
+            $type = "LEFT";
+            $join_types = [
+                "inner", "cross", "left", "right", "left outer", "right outer",
+                "natural", "natural inner", "natural left", "natural right",
+                "natural left outer", "natural right outer",
+            ];
+            if (is_string($conditions[0]) && in_array(strtolower($conditions[0]), $join_types)) {
+                $type = strtoupper(array_shift($conditions));
             }
-            $type = count($conditions) === 4 ? $conditions[3] : "LEFT";
             $table = $this->quote_identifier($table);
-            $col1 = $this->quote_identifier($conditions[0]);
-            $operator = count($conditions) > 2 ? $conditions[1] : "=";
-            $col2 = count($conditions) > 2 ? $conditions[2] : $conditions[1];
-            $col2 = $this->quote_identifier($col2);
-            $joins[] = "$type JOIN $table ON ($col1 $operator $col2)";
+            $condition_clauses = [];
+            for ($i = 0; $i < count($conditions); $i++) {
+                $condition = $conditions[$i];
+                if (is_array($condition) && count($condition) >= 2 && count($condition) <= 3) {
+                    $col1 = $this->quote_identifier($condition[0]);
+                    $operator = count($condition) > 2 ? $condition[1] : "=";
+                    $col2 = count($condition) > 2 ? $condition[2] : $condition[1];
+                    $col2 = $this->quote_identifier($col2);
+                } elseif (is_string($condition) && is_string($conditions[$i + 1] ?? null)) {
+                    $col1 = $this->quote_identifier($condition);
+                    $operator = "=";
+                    $col2 = $this->quote_identifier($conditions[$i + 1]);
+                    $i++;
+                } else {
+                    continue;
+                }
+                $condition_clauses[] = "$col1 $operator $col2";
+            }
+            $condition_string = implode(" AND ", $condition_clauses);
+            $joins[] = "$type JOIN $table ON ($condition_string)";
         }
 
         return implode(" ", $joins);
