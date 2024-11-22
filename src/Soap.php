@@ -337,7 +337,7 @@ class Soap
             $priority = 0;
         }
 
-        NotificationsDAO::AddNotification($key, $priority, $who, $who_id);
+        NotificationsDAO::addNotification($key, $priority, $who, $who_id);
 
         return array (true, 'Write_Notification SUCCESS');
     }

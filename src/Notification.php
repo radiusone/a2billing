@@ -36,35 +36,45 @@ namespace A2billing;
 
 Class Notification {
 
-    public static $ADMIN = 0;
-    public static $AGENT = 1;
-    public static $CUST = 2;
-    public static $BATCH = 3;
-    public static $SOAPSERVER = 4;
-    public static $UNKNOWN = -1;
+    public static int $ADMIN = 0;
+    public static int $AGENT = 1;
+    public static int $CUST = 2;
+    public static int $BATCH = 3;
+    public static int $SOAPSERVER = 4;
+    public static int $UNKNOWN = -1;
 
-    public static $LOW = 0;
-    public static $MEDIUM = 1;
-    public static $HIGH = 2;
+    public static int $LOW = 0;
+    public static int $MEDIUM = 1;
+    public static int $HIGH = 2;
 
-    public static $LINK_NONE = "none";
-    public static $LINK_TICKET_CUST = "ticket_cust";
-    public static $LINK_TICKET_AGENT = "ticket_agent";
-    public static $LINK_REMITTANCE = "remittance";
-    public static $LINK_DID_DESTINATION = "did_destination";
-    public static $LINK_CARD = "card";
+    public static string $LINK_NONE = "none";
+    public static string $LINK_TICKET_CUST = "ticket_cust";
+    public static string $LINK_TICKET_AGENT = "ticket_agent";
+    public static string $LINK_REMITTANCE = "remittance";
+    public static string $LINK_DID_DESTINATION = "did_destination";
+    public static string $LINK_CARD = "card";
 
-    private $id;
-    private $date;
-    private $key;
-    private $priority;
-    private $from_type;
-    private $from_id;
-    private $new;
-    private $link_type;
-    private $link_id;
+    private int $id;
+    private string $date;
+    private string $key;
+    private int $priority;
+    private int $from_type;
+    private int $from_id;
+    private bool $new;
+    private ?string $link_type;
+    private ?int $link_id;
 
-    public function __construct($id, $date, $key, $priority, $from_type, $from_id, $link_id = null, $link_type = null, $new)
+    public function __construct(
+        int $id,
+        string $date,
+        string $key,
+        int $priority,
+        int $from_type,
+        int $from_id,
+        ?int $link_id = null,
+        ?string $link_type = null,
+        $new = true
+    )
     {
         $this->id = $id;
         $this->date = $date;
@@ -77,120 +87,107 @@ Class Notification {
         $this->link_type = $link_type;
     }
 
-    public static function getAllKey()
+    /**
+     * Get a list of valid keys (seems to be notification types)
+     *
+     * @return array
+     */
+    public static function getAllKeys(): array
     {
-        return array(
-            "sip_iax_changed" => gettext("New SIP & IAX added : Friends conf have to be generated"),
-            "sip_changed" => gettext("New SIP added : Sip Friends conf have to be generated"),
-            "iax_changed" => gettext("New IAX added : IAX Friends conf have to be generated"),
-            "ticket_added_agent" => gettext("New Ticket added by agent"),
-            "ticket_added_cust" => gettext("New Ticket added by customer"),
-            "did_destination_edited_cust" => gettext("DID Destination edited by customer"),
-            "remittance_added_agent" => gettext("New Remittance request added"),
-            "added_new_signup" => gettext("Added new sign-up"));
+        return [
+            "sip_iax_changed" => _("New SIP & IAX added : Friends conf have to be generated"),
+            "sip_changed" => _("New SIP added : Sip Friends conf have to be generated"),
+            "iax_changed" => _("New IAX added : IAX Friends conf have to be generated"),
+            "ticket_added_agent" => _("New Ticket added by agent"),
+            "ticket_added_cust" => _("New Ticket added by customer"),
+            "did_destination_edited_cust" => _("DID Destination edited by customer"),
+            "remittance_added_agent" => _("New Remittance request added"),
+            "added_new_signup" => _("Added new sign-up")
+        ];
     }
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getNew()
+    public function getNew(): bool
     {
         return $this->new;
     }
 
-    public function getDate()
+    public function getDate(): string
     {
         return $this->date;
     }
 
-    public function getPriority()
+    public function getPriority(): int
     {
         return $this->priority;
     }
-    public function getPriorityMsg()
+    public function getPriorityMsg(): string
     {
         switch ($this->priority) {
-            case 2: return gettext("HIGH");
-                    break;
-            case 1: return gettext("MEDIUM");
-                    break;
-            case 0:
-            default:return gettext("LOW");
-                    break;
+            case self::$HIGH: return _("HIGH");
+            case self::$MEDIUM: return _("MEDIUM");
+            case self::$LOW:
+            default: return _("LOW");
         }
-
     }
 
-    public function getFromType()
+    public function getFromType(): string
     {
         return $this->from_type;
     }
 
-    public function getLinkType()
+    public function getLinkType(): string
     {
         return $this->link_type;
     }
 
-    public function getLinkId()
+    public function getLinkId(): int
     {
         return $this->link_id;
     }
 
-    public function getFromDisplay()
+    public function getFromDisplay(): string
     {
-        $display = "";
         switch ($this->from_type) {
-            case 0: $display.= "ADMIN: ".get_nameofadmin($this->from_id);
-                    break;
-            case 1: $display.= "AGENT: ".get_nameofagent($this->from_id);
-                    break;
-            case 2: $display.= "CUST: ".get_nameofcustomer_id($this->from_id);
-                    break;
-            case 3: $display.= gettext("BATCH");
-                    break;
-            case 4: $display.= gettext("SOAP-SERVER");
-                    break;
-            case -1 :$display.= gettext("UNKNOWN");
-                    break;
+            case self::$ADMIN: return sprintf(_("ADMIN: %s"), get_nameofadmin($this->from_id));
+            case self::$AGENT: return sprintf(_("AGENT: %s"), get_nameofagent($this->from_id));
+            case self::$CUST: return sprintf(_("CUST: %s"), get_nameofcustomer_id($this->from_id));
+            case self::$BATCH: return _("BATCH");
+            case self::$SOAPSERVER: return _("SOAP-SERVER");
+            default: return _("UNKNOWN");
         }
-
-        return $display;
     }
 
-    public function getFromId()
+    public function getFromId(): int
     {
         return $this->from_id;
     }
 
-    public function getKey()
+    public function getKey(): string
     {
         return $this->key;
     }
 
-    public function getKeyMsg()
+    public function getKeyMsg(): string
     {
-        $keys=Notification::getAllKey();
-        if(array_key_exists($this->key,$keys)) return $keys[$this->key];
-        else return $this->key;
+        $keys = self::getAllKeys();
+
+        return array_key_exists($this->key,$keys) ? $keys[$this->key] : $this->key;
     }
 
-    public function getUrl()
+    public function getUrl(): string
     {
-        $link = "";
-        if (!empty($this->link_id) && !empty($this->link_type) && $this->link_type != Notification::$LINK_NONE ) {
-            switch ($this->link_type) {
-                case Notification::$LINK_REMITTANCE:$link .= "A2B_remittance_info.php?id=";
-                    break;
-                case Notification::$LINK_DID_DESTINATION:$link .= "A2B_entity_did_destination.php?form_action=ask-edit&id=";
-                    break;
-                case Notification::$LINK_TICKET_CUST:
-                case Notification::$LINK_TICKET_AGENT:$link .= "CC_ticket_view.php?id=";
-                case Notification::$LINK_CARD:$link .= "A2B_entity_card.php?form_action=ask-edit&id=";
-                    break;
-            }
-            $link .= $this->link_id;
+        switch ($this->link_type ?? "") {
+            case self::$LINK_REMITTANCE: return "A2B_remittance_info.php?id=" . $this->link_id;
+            case self::$LINK_DID_DESTINATION: return "A2B_entity_did_destination.php?form_action=ask-edit&id=" . $this->link_id;
+            case self::$LINK_TICKET_CUST:
+            case self::$LINK_TICKET_AGENT: return "CC_ticket_view.php?id=" . $this->link_id;
+            case self::$LINK_CARD: return "A2B_entity_card.php?form_action=ask-edit&id=" . $this->link_id;
+            case self::$LINK_NONE:
+            default: return "";
         }
-        return $link;
     }
 }

@@ -38,7 +38,7 @@ require_once __DIR__ . "/../../common/lib/admin.defines.php";
                     </li>
                     <li>
                         <a href="A2B_notification.php" class="nav-link text-white">
-                            <svg class="bi d-block mx-auto mb-1 <?= NotificationsDAO::IfNewNotification($_SESSION["admin_id"]) ? "text-danger" : "" ?>" width="24" height="24">
+                            <svg class="bi d-block mx-auto mb-1 <?= NotificationsDAO::hasUnreadNotifications($_SESSION["admin_id"]) ? "text-danger" : "" ?>" width="24" height="24">
                                 <use xlink:href="#notify"></use>
                             </svg>
                             <?= _("Notification") ?>

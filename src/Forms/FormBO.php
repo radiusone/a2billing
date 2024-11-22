@@ -1109,6 +1109,6 @@ class FormBO
         global $A2B;
         $FormHandler = FormHandler::GetInstance();
         $id_card = $FormHandler -> QUERY_RESULT;
-        NotificationsDAO::AddNotification("added_new_signup",Notification::$MEDIUM,Notification::$CUST,$id_card,Notification::$LINK_CARD,$id_card);
+        NotificationsDAO::addNotification("added_new_signup",Notification::$MEDIUM,Notification::$CUST,$id_card,Notification::$LINK_CARD,$id_card);
     }
 }

@@ -32,86 +32,168 @@ namespace A2billing;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
-**/
+ **/
 
 class NotificationsDAO
 {
-    public static function AddNotification($key,$priority,$from_type,$from_id=0,$link_type=null,$link_id=null)
-    {
-            $DBHandle = DbConnect();
-            $table = new Table("cc_notification", "*");
-            $fields = " key_value , priority, from_type, from_id, link_type,link_id";
-            $values = " '$key' , $priority,$from_type	,$from_id ,'$link_type',$link_id";
-            $return = $table->Add_table($DBHandle, $values, $fields);
-
-            return $return;
-       }
-
-    public static function DelNotification($id)
-    {
-        if (is_numeric($id)) {
-            $DBHandle = DbConnect();
-            (new Table("cc_notification"))->deleteRow($DBHandle, ["id" => $id]);
-            (new Table("cc_notification_admin"))->deleteRow($DBHandle, ["id_notification" => $id]);
-
-            return true;
-        } else
-
-            return false;
-       }
-
-      static function getNbNotifications()
-      {
-          $DBHandle = DbConnect();
-        $table = new Table("cc_notification", "count(*)");
-        $return = $table->get_list($DBHandle);
-
-          return $return[0][0];
-      }
-
-    public static function getAllNotifications()
+    /**
+     * Save a new notification
+     *
+     * @param string $key
+     * @param int $priority
+     * @param int $from_type
+     * @param int $from_id
+     * @param int|null $link_type
+     * @param int|null $link_id
+     * @return bool
+     */
+    public static function addNotification(
+        string $key,
+        int $priority,
+        int $from_type,
+        int $from_id = 0,
+        int $link_type = null,
+        int $link_id = null
+    ): bool
     {
         $DBHandle = DbConnect();
-        $table = new Table("cc_notification LEFT JOIN cc_notification_admin ON id = id_notification", "*");
-        $clause = "id_admin = $id";
-        $return = $table->get_list($DBHandle, $clause, "date", "DESC");
-        $list = array();
-        $i=0;
+        $table = new Table("cc_notification");
+
+        return $table->addRow($DBHandle, [
+            "key_value" => $key,
+            "priority" => $priority,
+            "from_type" => $from_type,
+            "from_id" => $from_id,
+            "link_type" => $link_type,
+            "link_id" => $link_id
+        ]);
+    }
+
+    /**
+     * Delete a notification
+     *
+     * @param int $id
+     * @return bool
+     */
+    public static function deleteNotification(int $id): bool
+    {
+        $DBHandle = DbConnect();
+        if ((new Table("cc_notification_admin"))->deleteRow($DBHandle, ["id_notification" => $id])) {
+            if ((new Table("cc_notification"))->deleteRow($DBHandle, ["id" => $id])) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Mark a notification as read by a particular admin
+     *
+     * @param int $notification_id
+     * @param int $admin_id
+     * @return bool
+     */
+    public static function markNotificationRead(int $notification_id, int $admin_id = 0): bool
+    {
+        $DBHandle = DbConnect();
+
+        return (new Table("cc_notification_admin"))
+            ->addRow(
+                $DBHandle,
+                [
+                    "id_notification" => $notification_id,
+                    "id_admin" => $admin_id,
+                    "viewed" => 1
+                ]
+            );
+    }
+
+    /**
+     * Get the total number of notifications in the system
+     * @return int
+     */
+    public static function getNotificationCount(): int
+    {
+        $DBHandle = DbConnect();
+        $table = new Table("cc_notification");
+
+        return $table->countRows($DBHandle);
+    }
+
+    /**
+     * Check if there are notifications the admin hasn't read
+     *
+     * @param int $admin_id
+     * @return bool
+     */
+    public static function hasUnreadNotifications(int $admin_id): bool
+    {
+        $DBHandle = DbConnect();
+        $table = new Table(
+            "cc_notification",
+            "*",
+            ["cc_notification_admin" => ["cc_notification.id", "cc_notification_admin.id_notification"]]
+        );
+        $return = $table->countRows(
+            $DBHandle,
+            [[
+                "SUB",
+                [
+                    "cc_notification_admin.id_admin" => ["<>", $admin_id],
+                    ["viewed" => ["<>", 1]],
+                    ["viewed" => null]
+                ],
+                "OR"
+            ]]
+        );
+
+        return $return > 0;
+    }
+
+    /**
+     * Get the list of notifications
+     *
+     * @param int $admin_id if > 0, each notification will be marked as read/unread for the given admin
+     * @param int $current_page
+     * @param int $page_count
+     * @return array<Notification>
+     */
+    public static function getNotifications(int $admin_id = 0, int $current_page = 0, int $page_count = 10): array
+    {
+        $DBHandle = DbConnect();
+        $joins = [
+            "cc_notification_admin" => [["cc_notification.id", "cc_notification_admin.id_notification"]]
+        ];
+        if ($admin_id) {
+            $joins["cc_notification_admin"][] = ["admin_id", $admin_id];
+        }
+        $table = new Table("cc_notification", "*", $joins);
+        $return = $table->getRows(
+            $DBHandle,
+            [],
+            ["date"],
+            "DESC",
+            [],
+            $page_count,
+            ($current_page - 1) * $page_count
+        );
+
+        $list = [];
         foreach ($return as $record) {
-            if($record['viewed']!=0 && !is_null($record['viewed']))$new = false;
-            else $new = true;
-            $list[$i] = new Notification($record['id'],$record['date'],$record['key_value'],$record['priority'],$record['from_type'],$record['from_id'],$record['link_id'],$record['link_type'],$new);
-            $i++;
+            $list[] = new Notification(
+                (int)$record["id"],
+                $record["date"],
+                $record["key_value"],
+                (int)$record["priority"],
+                (int)$record["from_type"],
+                (int)$record["from_id"],
+                (int)$record["link_id"],
+                $record["link_type"],
+                empty($record["viewed"])
+            );
         }
 
         return $list;
-
-      }
-
-    public static function IfNewNotification($id)
-    {
-          $DBHandle = DbConnect();
-        $table = new Table("cc_notification LEFT JOIN cc_notification_admin ON id = id_notification AND id_admin =$id", "count(*)");
-        $clause = "viewed != 1 OR viewed IS NULL";
-        $return = $table->get_list($DBHandle, $clause);
-        if($return[0][0]==0)return false;
-        else return true;
-      }
-
-    public static function getNotifications($id,$current,$nb)
-    {
-          $DBHandle = DbConnect();
-        $table = new Table("cc_notification LEFT JOIN cc_notification_admin ON id = id_notification AND id_admin =$id", "*");
-        $return = $table->get_list($DBHandle, "", "date", "DESC", (int)$nb, (int)$current);
-        $i=0;
-        foreach ($return as $record) {
-            if($record['viewed']!=0 && !is_null($record['viewed']))$new = false;
-            else $new = true;
-            $list[$i] = new Notification($record['id'],$record['date'],$record['key_value'],$record['priority'],$record['from_type'],$record['from_id'],$record['link_id'],$record['link_type'],$new);
-            $i++;
-        }
-
-        return $list;
-      }
-
+    }
 }

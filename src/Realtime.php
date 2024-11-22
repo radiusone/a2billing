@@ -171,7 +171,7 @@ class Realtime
                     $who=Notification::$UNKNOWN;
                     $id=-1;
                 }
-                NotificationsDAO::AddNotification($key, Notification::$HIGH, $who, $who_id);
+                NotificationsDAO::addNotification($key, Notification::$HIGH, $who, $who_id);
             }
         }
 
