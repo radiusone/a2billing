@@ -122,7 +122,7 @@ class Table
         if (is_null($identifier)) {
             return null;
         }
-        if ($this->isSqlFunction($identifier)) {
+        if ($this->isSqlFunction($identifier) || is_numeric($identifier)) {
             // something like a function call
             return $identifier;
         }
@@ -777,11 +777,17 @@ class Table
                     $col1 = $this->quote_identifier($condition[0]);
                     $operator = count($condition) > 2 ? $condition[1] : "=";
                     $col2 = count($condition) > 2 ? $condition[2] : $condition[1];
-                    $col2 = $this->quote_identifier($col2);
+                    // if it comes back from quote_identifer() unchanged, leave it alone
+                    if (($quoted = $this->quote_identifier($col2)) !== $col2) {
+                        $col2 = $quoted;
+                    }
                 } elseif (is_string($condition) && is_string($conditions[$i + 1] ?? null)) {
                     $col1 = $this->quote_identifier($condition);
                     $operator = "=";
-                    $col2 = $this->quote_identifier($conditions[$i + 1]);
+                    $col2 = $conditions[$i + 1];
+                    if (($quoted = $this->quote_identifier($col2)) !== $col2) {
+                        $col2 = $quoted;
+                    }
                     $i++;
                 } else {
                     continue;

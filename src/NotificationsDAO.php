@@ -133,20 +133,14 @@ class NotificationsDAO
         $table = new Table(
             "cc_notification",
             "*",
-            ["cc_notification_admin" => ["cc_notification.id", "cc_notification_admin.id_notification"]]
+            [
+                "cc_notification_admin" => [
+                    ["cc_notification.id", "cc_notification_admin.id_notification"],
+                    ["cc_notification_admin.id_admin", $admin_id],
+                ]
+            ]
         );
-        $return = $table->countRows(
-            $DBHandle,
-            [[
-                "SUB",
-                [
-                    "cc_notification_admin.id_admin" => ["<>", $admin_id],
-                    ["viewed" => ["<>", 1]],
-                    ["viewed" => null]
-                ],
-                "OR"
-            ]]
-        );
+        $return = $table->countRows($DBHandle, ["viewed" => null]);
 
         return $return > 0;
     }
@@ -166,13 +160,13 @@ class NotificationsDAO
             "cc_notification_admin" => [["cc_notification.id", "cc_notification_admin.id_notification"]]
         ];
         if ($admin_id) {
-            $joins["cc_notification_admin"][] = ["admin_id", $admin_id];
+            $joins["cc_notification_admin"][] = ["id_admin", $admin_id];
         }
         $table = new Table("cc_notification", "*", $joins);
         $return = $table->getRows(
             $DBHandle,
             [],
-            ["date"],
+            ["date", "id"],
             "DESC",
             [],
             $page_count,

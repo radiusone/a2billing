@@ -1,8 +1,8 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Notification;
 use A2billing\NotificationsDAO;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -35,272 +35,185 @@ use A2billing\Table;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
-**/
+ **/
 
 require_once "../../common/lib/admin.defines.php";
 
-getpost_ifset(array (
-    'id',
-    'page',
-    'action',
-    'ids'
-));
+getpost_ifset(["id", "page", "action", "ids"]);
+/**
+ * @var string|int $id
+ * @var string|int $page
+ * @var string $action
+ * @var array $ids
+ */
 
-if ($action=="viewall"&& !empty($ids)) {
-    $DBHandle = DbConnect();
-    $table = new Table("cc_notification_admin", "*");
-    $fields = "id_notification, id_admin, viewed";
-    $ids_array = json_decode($ids);
-    foreach ($ids_array as $id) {
-    $values = " $id , " . $_SESSION['admin_id'] . ",1 ";
-    $return = $table->Add_table($DBHandle, $values, $fields);
-    }
-     echo "true";
+$id = (int)($id ?? 0);
+$page = (int)($page ?? 1);
+$ids ??= [];
+$admin_id = (int)$_SESSION["admin_id"];
 
-    die();
-}
-
-if (!empty ($action) && is_numeric($id)) {
+if (!empty($action)) {
+    $result = false;
     switch ($action) {
-        case "view" :
-            $DBHandle = DbConnect();
-            $table = new Table("cc_notification_admin", "*");
-            $fields = "id_notification, id_admin, viewed";
-            $values = " $id , " . $_SESSION['admin_id'] . ",1 ";
-            $return = $table->Add_table($DBHandle, $values, $fields);
-            if ($return)
-                echo "true";
-            else
-                echo "false";
-            die();
-            break;
-
-        case "delete" :
-            if (has_rights(Admin::ACX_DELETE_NOTIFICATIONS)) {
-                $return = NotificationsDAO :: DelNotification($id);
-                if ($return)
-                    echo "true";
-                else
-                    echo "false";
-                die();
-            } else {
-                echo "false";
-                die();
+        case "viewall":
+            if (count($ids) > 0) {
+                $values = [];
+                foreach ($ids as $notification_id) {
+                    if (!($result = NotificationsDAO::markNotificationRead((int)$notification_id, $admin_id))) {
+                        break(2);
+                    }
+                }
             }
             break;
-        default :
-            die();
+        case "view":
+            if ($id > 0) {
+                $result = NotificationsDAO::markNotificationRead($id, $admin_id);
+            }
+            break;
+        case "delete":
+            if ($id > 0 && has_rights(Admin::ACX_DELETE_NOTIFICATIONS)) {
+                $result = NotificationsDAO::deleteNotification($id);
+            }
+            break;
+        default:
             break;
     }
-
-    $DBHandle = DbConnect();
-    $table = new Table("cc_notification_admin", "*");
-    $fields = "id_notification, id_admin, viewed";
-    $values = " $id , " . $_SESSION['admin_id'] . ",1 ";
-    $return = $table->Add_table($DBHandle, $values, $fields);
-    if ($return)
-        echo "true";
-    else
-        echo "false";
+    header("Content-Type: application/json");
+    echo json_encode($result);
     die();
 }
 
-if(empty($page))$page=1;
-
-$DBHandle = DbConnect();
-
+$menu_section = 0;
 require_once __DIR__ . "/../templates/main.php";
-
 echo create_help(_("Notification: You can see below all notifications received about some event."), 'Notificationbox');
-$nb_by_page = 15;
-$nb_total = NotificationsDAO::getNbNotifications();
-$nb_page = ceil($nb_total/$nb_by_page);
-$list_notifications = NotificationsDAO::getNotifications($_SESSION['admin_id'],(($page-1)*$nb_by_page),$nb_by_page);
 
+$nb_per_page = 15;
+$nb_total = NotificationsDAO::getNotificationCount();
+$nb_page = ceil($nb_total / $nb_per_page);
+$list = NotificationsDAO::getNotifications($admin_id, $page, $nb_per_page);
+
+if ($nb_total === 0) {
+    $empty = _("No Notifications");
+    echo <<< HTML
+    <div class="row">
+        <div class="col">
+            <strong>$empty</strong>
+        </div>
+    </div>
+    HTML;
+    require_once __DIR__ . "/../templates/footer.php";
+    die();
+}
 ?>
 
-<style type="text/css">
-.newrecord {
-    font-weight : bold;
-    color : #444444;
-    cursor : pointer;
-}
-</style>
-
-<?php if (sizeof($list_notifications)>0 && $list_notifications[0]!=null) {  ?>
-<table width="90%" style ="margin-left:auto;margin-right:auto;" cellspacing="2" cellpadding="2" border="0">
-    <tr>
-        <td colspan="6" align="center">
-            <a id ="viewall" href="javascript:;" ><?php echo gettext("View All") ?></a>
-        </td>
-    </tr>
-    <?php if ($nb_page>1) { ?>
-    <tr>
-        <td colspan="3" align="left">
-        <?php if ($page>1) { ?>
-            <a href="A2B_notification.php?page=<?php echo $page-1; ?>"> &lt; <?php echo gettext("Newer") ?> </a>
-        <?php } ?>
-        &nbsp;
-        </td>
-        <td colspan="3" align="right">
-        &nbsp;
-                <?php if ($page<$nb_page) { ?>
-        <a href="A2B_notification.php?page=<?php echo $page+1; ?>"><?php echo gettext("Older") ?> &gt;</a>
-                <?php } ?>
-        </td>
-    </tr>
-    <?php } ?>
-    <tr class="form_head">
-        <td class="tableBody"  width="15%" align="center" style="padding: 2px;">
-        <?php echo gettext("DATE"); ?>
-        </td>
-        <td class="tableBody"  width="25%" align="center" style="padding: 2px;">
-        <?php echo gettext("FROM"); ?>
-        </td>
-        <td class="tableBody"  width="45%" align="center" style="padding: 2px;">
-        <?php echo gettext("SUBJECT"); ?>
-        </td>
-        <td class="tableBody"  width="7%" align="center" style="padding: 2px;">
-        <?php echo gettext("PRIORITY"); ?>
-        </td>
-        <td class="tableBody"  width="7%" align="center" style="padding: 2px;">
-        &nbsp;
-        </td>
-
-    </tr>
-
-    <?php
-        $i=0;
-        $js_id_array= array();
-        foreach ($list_notifications as $notification) {
-            if($notification->getNew()) $js_id_array[] = (int) $notification->getId();
-
-            switch ($notification->getPriority()) {
-                case 2: if($notification->getNew()) $bg="#F98886";
-                        else $bg="#F1ACAC";
-                        break;
-                case 1: if($notification->getNew()) $bg="#6AE331";
-                        else $bg="#A2F580";
-                        break;
-                case 0:
-                default:if($i%2==0) $bg="#fcfbfb";
-                        else  $bg="#f2f2ee";
-                        break;
-            }
-    ?>
-            <tr id="<?php echo $notification->getId(); ?>" bgcolor="<?php echo $bg; ?>" <?php if ($notification->getNew()) { ?> class="newrecord" <?php } ?> >
-
-                <td class="tableBody" align="center">
-                  <?php echo $notification->getDate(); ?>
-                </td>
-                <td class="tableBody"  align="center">
-                  <?php echo $notification->getFromDisplay(); ?>
-                </td>
-                <td class="tableBody"  align="center">
-                  <?php echo $notification->getKeyMsg();
-                  $url = $notification->getUrl()?>
-                  <?php if (!empty($url)) {?>
-                            &nbsp; <a href="<?php echo $notification->getUrl();?>"> <img src="<?= get_image_path("link.png")?>" style="vertical-align:bottom;" border="0" /></a>
-                  <?php }?>
-                </td>
-                <td class="tableBody"  align="center">
-                  <?php echo $notification->getPriorityMsg(); ?>
-                </td>
-                <td class="tableBody"  align="center">
-                <?php if ($notification->getNew()) { ?>
-                    <strong style="font-size:8px; color:#B00000; background-color:white; border:solid 1px;"> &nbsp;NEW&nbsp;</strong>
-                <?php } elseif (has_rights (Admin::ACX_DELETE_NOTIFICATIONS)) { ?>
-                    <img id=" <?php echo $notification->getId(); ?>" onmouseover="this.style.cursor='pointer'" class="delete" src="<?= get_image_path("delete.png") ?>" title="<?php echo gettext("Delete this Notification")?>" alt="<?php echo gettext("Delete this Notification")?>" border="0"/>
-                <?php } ?>
-                </td>
-            </tr>
-        <?php
-        $i++;
-        }
-        ?>
-        <?php if ($nb_page>1) { ?>
-        <tr>
-            <td colspan="3" align="left">
-            <?php if ($page>1) { ?>
-                <a href="A2B_notification.php?page=<?php echo $page-1; ?>"> &lt; <?php echo gettext("Newer") ?> </a>
-            <?php } ?>
-            &nbsp;
-            </td>
-            <td colspan="3" align="right">
-            &nbsp;
-                         <?php if ($page<$nb_page) { ?>
-            <a href="A2B_notification.php?page=<?php echo $page+1; ?>"><?php echo gettext("Older") ?> &gt;</a>
-                        <?php } ?>
-            </td>
-        </tr>
-        <?php } ?>
-
-</table>
-<?php
-} else { ?>
-
-<br/>
-<div style="width : 95%; text-align : center;height:200px; margin-left:auto;margin-right:auto;" >
-    <br/>
-    <br/>
-    <strong><?php echo gettext("No Notifications") ?></strong>
+<?php if (NotificationsDAO::hasUnreadNotifications($admin_id)): ?>
+<div class="row pb-3">
+    <div class="col text-center">
+        <button class="btn btn-sm btn-outline-primary" id="mark-notifications" type="button">
+            <?= _("Mark all viewed") ?>
+        </button>
+    </div>
 </div>
-<br/>
+<?php endif ?>
 
-<?php
-}
+<div class="row pb-3">
+    <div class="col">
+        <table class="table" id="notification-table" data-page="<?= $page ?>" data-delete-prompt="<?= _("Do you want delete this notification ?") ?>">
+            <thead>
+                <tr>
+                    <th><?= _("DATE") ?></th>
+                    <th><?= _("FROM") ?></th>
+                    <th><?= _("SUBJECT") ?></th>
+                    <th><?= _("PRIORITY") ?></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+<?php foreach ($list as $notification): /** @var Notification $notification */ ?>
+                <tr
+                    data-notification-id="<?= $notification->getId() ?>"
+                    data-notification-new="<?= (int)$notification->getNew() ?>"
+                    class="table-<?= $notification->getPriority() == 2 ? "danger" : ($notification->getPriority() == 1 ? "success" : "secondary") ?> <?= $notification->getNew() ? "fw-bold" : "" ?>"
+                >
+                    <td><?= $notification->getDate() ?></td>
+                    <td><?= $notification->getFromDisplay() ?></td>
+                    <td>
+                        <?= $notification->getKeyMsg() ?>
+    <?php if (($url = $notification->getUrl())): ?>
+                        <a href="<?= $url ?>">
+                            <img alt="link to notification" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADpSURBVCjPY/jPgB8y0EmBHXdWaeu7ef9rHuaY50jU3J33v/VdVqkdN1SBEZtP18T/L/7f/X/wf+O96kM3f9z9f+T/xP8+XUZsYAWGfsUfrr6L2Ob9J/X/pP+V/1P/e/+J2LbiYfEHQz+ICV1N3yen+3PZf977/9z/Q//X/rf/7M81Ob3pu1EXWIFuZvr7aSVBOx1/uf0PBEK3/46/gnZOK0l/r5sJVqCp6Xu99/2qt+v+T/9f+L8CSK77v+pt73vf65qaYAVqzPYGXvdTvmR/z/4ZHhfunP0p+3vKF6/79gZqzPQLSYoUAABKPQ+kpVV/igAAAABJRU5ErkJggg=="/>
+                        </a>
+    <?php endif ?>
+                    </td>
+                    <td><?= $notification->getPriorityMsg() ?></td>
+                    <td>
+    <?php if ($notification->getNew()): ?>
+                        <span class="badge"><?= _("NEW") ?></span>
+    <?php elseif (has_rights(Admin::ACX_DELETE_NOTIFICATIONS)): ?>
+                        <button class="btn btn-sm delete_notification" type="button" data-notification-id="<?= $notification->getId() ?>" title="<?= _("Delete this Notification") ?>">
+                            <img alt="" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAIhSURBVDjLlZPrThNRFIWJicmJz6BWiYbIkYDEG0JbBiitDQgm0PuFXqSAtKXtpE2hNuoPTXwSnwtExd6w0pl2OtPlrphKLSXhx07OZM769qy19wwAGLhM1ddC184+d18QMzoq3lfsD3LZ7Y3XbE5DL6Atzuyilc5Ciyd7IHVfgNcDYTQ2tvDr5crn6uLSvX+Av2Lk36FFpSVENDe3OxDZu8apO5rROJDLo30+Nlvj5RnTlVNAKs1aCVFr7b4BPn6Cls21AWgEQlz2+Dl1h7IdA+i97A/geP65WhbmrnZZ0GIJpr6OqZqYAd5/gJpKox4Mg7pD2YoC2b0/54rJQuJZdm6Izcgma4TW1WZ0h+y8BfbyJMwBmSxkjw+VObNanp5h/adwGhaTXF4NWbLj9gEONyCmUZmd10pGgf1/vwcgOT3tUQE0DdicwIod2EmSbwsKE1P8QoDkcHPJ5YESjgBJkYQpIEZ2KEB51Y6y3ojvY+P8XEDN7uKS0w0ltA7QGCWHCxSWWpwyaCeLy0BkA7UXyyg8fIzDoWHeBaDN4tQdSvAVdU1Aok+nsNTipIEVnkywo/FHatVkBoIhnFisOBoZxcGtQd4B0GYJNZsDSiAEadUBCkstPtN3Avs2Msa+Dt9XfxoFSNYF/Bh9gP0bOqHLAm2WUF1YQskwrVFYPWkf3h1iXwbvqGfFPSGW9Eah8HSS9fuZDnS32f71m8KFY7xs/QZyu6TH2+2+FAAAAABJRU5ErkJggg=="/>
+                        </button>
+    <?php endif ?>
+                    </td>
+                </tr>
+<?php endforeach ?>
+            </tbody>
+        </table>
+    </div>
+</div>
 
-require_once __DIR__ . "/../templates/footer.php";
+<?php if ($nb_page > 1): ?>
+<div class="row pb-3">
+    <div class="col">
+        <nav aria-label="<?= _("page navigation") ?>">
+            <ul class="pagination justify-content-center">
+                <li class="page-item <?= $page <= 1 ? "disabled" : "" ?>">
+                    <a class="page-link" href="?page=1"><?= _("First") ?></a>
+                </li>
+                <li class="page-item <?= $page <= 1 ? "disabled" : "" ?>">
+                    <a class="page-link" href="?page=<?= $page - 1 ?>"><?= _("Newer") ?></a>
+                </li>
+    <?php for ($i = 1; $i <= $nb_page; $i++): ?>
+                <li class="page-item <?= $page === $i ? "active" : "" ?>" <?= $page === $i ? "aria-current=\"page\"" : "" ?>>
+                    <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
+                </li>
+    <?php endfor ?>
+                <li class="page-item <?= $page >= $nb_page ? "disabled" : "" ?>">
+                    <a class="page-link" href="?page=<?= $page + 1 ?>"><?= _("Older") ?></a>
+                </li>
+                <li class="page-item <?= $page >= $nb_page ? "disabled" : "" ?>">
+                    <a class="page-link" href="?page=<?= $nb_page ?>"><?= _("Last") ?></a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+<?php endif ?>
 
-?>
 <script>
-var page = <?= $page?>;
-var ids = <?= json_encode($js_id_array) ?>;
-$(function () {
-    $('.newrecord').on('click', function () {
-        $.get(
-            "A2B_notification.php",
-            {id: this.id, action: "view"},
-            function(data){
-                if(data) {
-                    location.reload(true);
-                }
-            }
-        );
-    });
-
-    $('#viewall').on('click', function () {
-        $.get(
-            "A2B_notification.php",
-            {page: page, action: "viewall", ids: ids},
-            function(data) {
-                if(data) {
-                    location.reload(true);
-                }
-            }
-        );
-    });
-
-    $('.delete').on('click', function () {
-        if (confirm(<?php echo json_encode(gettext("Do you want delete this notification ?")) ?>)) {
-            $.get("A2B_notification.php", {id: this.id, action: "delete"}, () => location.reload());
-        }
-    });
-
-    $('.view_comment_icon').on('click', function () {
-        $(`#${this.id}[type=checkbox]`).prop("checked", true);
-        $("#action").val('view_comment');
-        $("#idc").val(this.id);
-        $('form').submit();
-    });
-    $('.view_ticket').on('click', function () {
-        $("#action").val('view_ticket');
-        $('form').submit();
-    });
-    $('.view_ticket_icon').on('click', function () {
-        $('.view_ticket').prop("checked", true);
-        $("#action").val('view_ticket')
-        $('form').submit();
-    });
+document.getElementById("mark-notifications")?.addEventListener("click", function() {
+    let ids = [];
+    /** @var {HTMLTableElement} */
+    let table = document.getElementById("notification-table");
+    let page = table.dataset.page;
+    let body = new FormData();
+    table.querySelectorAll("tr[data-notification-new='1']").forEach(el => body.append("ids[]", el.dataset.notificationId));
+    fetch("A2B_notification.php?action=viewall", {method: "POST", body: body})
+        .then(data => data.json())
+        .then(result => result ? location.reload() : alert("error"));
 });
+document.querySelectorAll("button.delete_notification").forEach(el => el.addEventListener("click", function(e) {
+    /** @var {HTMLTableElement} */
+    let table = document.getElementById("notification-table");
+    let prompt = table.dataset.deletePrompt;
+    let body = new FormData();
+    body.append("id", e.target.dataset.notificationId);
+    if (confirm(prompt)) {
+        fetch("A2B_notification.php?action=delete", {method: "POST", body: body})
+            .then(data => data.json())
+            .then(result => result ? location.reload() : alert("error"));
+    }
+}));
 </script>
+<?php
+require_once __DIR__ . "/../templates/footer.php";
