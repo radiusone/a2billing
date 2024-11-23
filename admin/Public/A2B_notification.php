@@ -192,22 +192,20 @@ if ($nb_total === 0) {
 
 <script>
 document.getElementById("mark-notifications")?.addEventListener("click", function() {
-    let ids = [];
     /** @var {HTMLTableElement} */
     let table = document.getElementById("notification-table");
-    let page = table.dataset.page;
     let body = new FormData();
     table.querySelectorAll("tr[data-notification-new='1']").forEach(el => body.append("ids[]", el.dataset.notificationId));
     fetch("A2B_notification.php?action=viewall", {method: "POST", body: body})
         .then(data => data.json())
         .then(result => result ? location.reload() : alert("error"));
 });
-document.querySelectorAll("button.delete_notification").forEach(el => el.addEventListener("click", function(e) {
+document.querySelectorAll("button.delete_notification").forEach(el => el.addEventListener("click", function() {
     /** @var {HTMLTableElement} */
     let table = document.getElementById("notification-table");
     let prompt = table.dataset.deletePrompt;
     let body = new FormData();
-    body.append("id", e.target.dataset.notificationId);
+    body.append("id", this.dataset.notificationId);
     if (confirm(prompt)) {
         fetch("A2B_notification.php?action=delete", {method: "POST", body: body})
             .then(data => data.json())
