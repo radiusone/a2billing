@@ -2177,27 +2177,6 @@ class FormHandler
         $this->FG_DEBUG = 0;
     }
 
-    public function create_date_options($target): string
-    {
-        $month_list = [
-            "", _("January"), _("February"), _("March"), _("April"), _("May"),
-            _("June"), _("July"), _("August"), _("September"), _("October"),
-            _("November"), _("December"),
-        ];
-        $this_year = date("Y");
-        $this_month = date("n");
-        $month_year_opts = "";
-        for ($i = $this_year; $i >= $this_year - 10; $i--) {
-            for ($j = ($i == $this_year ? $this_month : 12); $j > 0; $j--) {
-                $val = sprintf("%d-%02d", $i, $j);
-                $selected = $target == $val ? 'selected="selected"' : "";
-                $display = $month_list[$j] . " " . $i;
-                $month_year_opts .= "<option value=\"$val\" $selected>$display</option>";
-            }
-        }
-        return $month_year_opts;
-    }
-
     public function setup_export(
         ?array $columns = null,
         ?string $table = null,
