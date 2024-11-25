@@ -84,7 +84,7 @@ $HD_Form->AddListActionButton(
     get_image_path("lock.png"),
     "lock",
     "cc_invoice_status",
-    _("OPEN")
+    0 // open
 );
 
 $HD_Form->AddListActionButton(
@@ -93,7 +93,7 @@ $HD_Form->AddListActionButton(
     get_image_path("money.png"),
     "",
     "cc_invoice_status",
-    _("CLOSE")
+    1 // closed
 );
 
 $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
