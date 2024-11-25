@@ -54,8 +54,6 @@ $HD_Form -> AddViewElement(gettext("VALUE"), "value");
 
 $HD_Form -> FieldViewElement ('currency,name,value');
 
-$HD_Form -> FG_VIEW_TABLE_WITDH = '70%';
-
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form -> FG_ENABLE_ADD_BUTTON = true;

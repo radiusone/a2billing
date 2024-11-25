@@ -55,8 +55,6 @@ $HD_Form -> AddViewElement(gettext("CREATIONDATE"), "creationdate", true, 19);
 $HD_Form -> AddViewElement(gettext("DESCRIPTION"), "description");
 $HD_Form -> FieldViewElement (($popup_select ? 'id,' : '') . 'provider_name, creationdate, description');
 
-$HD_Form -> FG_VIEW_TABLE_WITDH = '70%';
-
 if ($popup_select) {
 	$HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 7;
 	$HD_Form -> CV_FOLLOWPARAMETERS = "&popup_select=" . $popup_select . "&popup_formname=" . $popup_formname . "&popup_fieldname=" . $popup_fieldname;

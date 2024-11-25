@@ -56,7 +56,6 @@ $HD_Form -> FG_OTHER_BUTTON2_HTML_CLASS = "cancel_click";
 $HD_Form -> FG_OTHER_BUTTON2_HTML_ID = "|col0|";
 $HD_Form -> FG_OTHER_BUTTON2_CONDITION = '|col4| == "'.gettext('WAITING').'"';
 $HD_Form -> FG_OTHER_BUTTON2_ALT = gettext("CANCEL THIS REQUEST");
-$HD_Form -> FG_VIEW_TABLE_WITDH = "70%";
 
 $status_list = getRemittanceStatus_List();
 $type_list = getRemittanceType_List();

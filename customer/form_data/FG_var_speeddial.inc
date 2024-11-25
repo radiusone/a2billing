@@ -61,8 +61,6 @@ $HD_Form -> AddViewElement(gettext("PHONE"), "phone");
 $HD_Form -> AddViewElement(gettext("NAME"), "name");
 $HD_Form -> FieldViewElement ('speeddial, phone, name');
 
-$HD_Form -> FG_VIEW_TABLE_WITDH = '70%';
-
 // My Code for Where Cluase
 
 if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0)

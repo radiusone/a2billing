@@ -59,7 +59,6 @@ $HD_Form -> FieldViewElement ('cid, activated');
 
 $HD_Form -> CV_TITLE_TEXT = gettext("CallerID list");
 $HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 10;
-$HD_Form -> FG_VIEW_TABLE_WITDH = '70%';
 
 // My Code for Where Cluase
 if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0)

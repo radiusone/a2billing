@@ -131,7 +131,6 @@ $HD_Form -> FG_QUERY_COLUMN_LIST = [
 
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
-$HD_Form -> FG_VIEW_TABLE_WITDH = '80%';
 
 if (isset($form_action) && ($form_action=='ask-edit')) {
 
