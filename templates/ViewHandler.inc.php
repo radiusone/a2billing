@@ -126,62 +126,62 @@ $processed["popup_fieldname"] ??= "";
                 </tr>
             </thead>
             <tbody>
-            <?php foreach ($list as $num=>$item): ?>
+            <?php foreach ($list as $num => $item): ?>
                 <tr>
-                <?php $k=0 ?>
-                <?php foreach($form->FG_LIST_TABLE_CELLS as $j=> $row):
+                <?php $k = 0 ?>
+                <?php foreach($form->FG_LIST_TABLE_CELLS as $j => $cell):
                     $origlist[$num][$j - $k] = $item[$j - $k];
-                    if (str_starts_with($row["type"], "lie")) {
+                    if (str_starts_with($cell["type"], "lie")) {
                         $lie_id = $item[$j - $k] ?? "";
-                        $cached_options[$row["field"]][$lie_id] ??= (new Table($row["sql_table"], $row["sql_columns"]))
-                            ->get_list($form->DBHandle, str_replace("%id", $lie_id, $row["sql_clause"]));
-                        $options = $cached_options[$row["field"]][$lie_id];
+                        $cached_options[$cell["field"]][$lie_id] ??= (new Table($cell["sql_table"], $cell["sql_columns"]))
+                            ->get_list($form->DBHandle, str_replace("%id", $lie_id, $cell["sql_clause"]));
+                        $options = $cached_options[$cell["field"]][$lie_id];
                         $record_display = preg_replace_callback(
                             "/%([0-9]+)/",
                             fn ($m) => str_replace($m[0], $options[0][$m[1] - 1] ?? "", $m[0]),
-                            $row["sql_display"]
+                            $cell["sql_display"]
                         );
                         if (trim($record_display) === "") {
                             $record_display = _("n/a");
                         }
-                        if ($row["type"] === "lie_link" && is_array($options)) {
-                            $link = $row["href"] . (str_contains($row["href"], 'form_action') ? "?" : "?form_action=ask-edit&") . "id=" . $options[0][1];
+                        if ($cell["type"] === "lie_link" && is_array($options)) {
+                            $link = $cell["href"] . (str_contains($cell["href"], 'form_action') ? "?" : "?form_action=ask-edit&") . "id=" . $options[0][1];
                             if (!$popup_select) {
                                 $record_display = "<a class='text-decoration-underline' href='$link'>$record_display</a>";
                             }
                         }
-                    } elseif ($row["type"] === "eval") {
+                    } elseif ($cell["type"] === "eval") {
                         // this exists only so that FG_var_card.inc.php can left pad a card number with zeroes
                         $string_to_eval = preg_replace_callback(
                             "/%([0-9]+)/",
                             fn ($m) => str_replace("%$m[1]", $item[$m[1]] ?? "0", $m[0]),
-                            $row["code"]
+                            $cell["code"]
                         );
                         $record_display = eval("return $string_to_eval;");
-                    } elseif ($row["type"] === "list") {
-                        $select_list = $row["options"];
+                    } elseif ($cell["type"] === "list") {
+                        $select_list = $cell["options"];
                         $record_display = $select_list[$item[$j - $k]][0];
-                    } elseif ($row["type"] === "list-conf") {
-                        $select_list = $row["options"];
+                    } elseif ($cell["type"] === "list-conf") {
+                        $select_list = $cell["options"];
+                        // why +3 ?
                         $key_config =  $item[$j - $k + 3];
                         $record_display = $select_list[$key_config][0];
-
-                    } elseif ($row["type"] === "value") {
-                        $record_display = $row["value"];
+                    } elseif ($cell["type"] === "value") {
+                        $record_display = $cell["value"];
                         $k++;
                     } else {
                         $record_display = $item[$j - $k];
                     }
 
                     /**********************   IF LENGTH OF THE VALUE IS TOO LONG IT MIGHT BE CUT ************************/
-                    if ($row["maxsize"] > 0 && strlen($record_display ?? "") > $row["maxsize"]) {
-                        $record_display = substr($record_display, 0, $row["maxsize"]) . "…";
+                    if ($cell["maxsize"] > 0 && strlen($record_display ?? "") > $cell["maxsize"]) {
+                        $record_display = substr($record_display, 0, $cell["maxsize"]) . "…";
                     }
                     $item[$j - $k] = $record_display;
                     ?>
                     <td>
-                    <?php if (!empty($row["function"]) && is_callable($row["function"])): ?>
-                        <?php call_user_func($row["function"], $record_display) ?>
+                    <?php if (!empty($cell["function"]) && is_callable($cell["function"])): ?>
+                        <?php call_user_func($cell["function"], $record_display) ?>
                     <?php else: ?>
                         <?= $record_display ?? "" ?>
                     <?php endif ?>
