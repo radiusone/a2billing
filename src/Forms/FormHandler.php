@@ -1050,6 +1050,21 @@ class FormHandler
         ];
     }
 
+    /**
+     * Add an action button to the last column of the list view table
+     * When conditionally adding buttons, if $match_index is numeric
+     * the comparison will be done against the outputted text in the table
+     * column. Otherwise the comparison will be done against the database
+     * column value.
+     *
+     * @param string $url the destination link
+     * @param string $label the text (used as alt if image supplied)
+     * @param string $image an image URL
+     * @param string $class an HTML class to add to the button
+     * @param string $match_index a column of the database results to compare against
+     * @param string $match_value the value to match (see note above)
+     * @return void
+     */
     public function AddListActionButton(
         string $url,
         string $label,

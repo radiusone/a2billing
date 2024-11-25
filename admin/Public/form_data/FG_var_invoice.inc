@@ -72,25 +72,29 @@ $HD_Form->FG_DELETE_BUTTON_CONDITION = $col6_open;
 
 $HD_Form->FG_ENABLE_ADD_BUTTON = true;
 
-$HD_Form->FG_OTHER_BUTTON1 = true;
-$HD_Form->FG_OTHER_BUTTON1_LINK = "A2B_invoice_edit.php?id=";
-$HD_Form->FG_OTHER_BUTTON1_IMG = get_image_path("page_white_gear.png");
-$HD_Form->FG_OTHER_BUTTON1_CONDITION = $col6_open;
-$HD_Form->FG_OTHER_BUTTON1_ALT = _("Edit invoice items");
+$HD_Form->AddListActionButton(
+    "A2B_invoice_edit.php?id=",
+    _("Edit invoice items"),
+    get_image_path("page_white_gear.png")
+);
 
-$HD_Form->FG_OTHER_BUTTON2 = true;
-$HD_Form->FG_OTHER_BUTTON2_LINK = "#";
-$HD_Form->FG_OTHER_BUTTON2_IMG = get_image_path("lock.png");
-$HD_Form->FG_OTHER_BUTTON2_HTML_CLASS = "lock";
-$HD_Form->FG_OTHER_BUTTON2_HTML_ID = "|col0|";
-$HD_Form->FG_OTHER_BUTTON2_CONDITION = $col6_open;
-$HD_Form->FG_OTHER_BUTTON2_ALT = _("Close this invoice");
+$HD_Form->AddListActionButton(
+    "",
+    _("Close this invoice"),
+    get_image_path("lock.png"),
+    "lock",
+    "cc_invoice_status",
+    _("OPEN")
+);
 
-$HD_Form->FG_OTHER_BUTTON3 = true;
-$HD_Form->FG_OTHER_BUTTON3_LINK = "A2B_invoice_manage_payment.php?id=";
-$HD_Form->FG_OTHER_BUTTON3_IMG = get_image_path("money.png");
-$HD_Form->FG_OTHER_BUTTON3_CONDITION = $col6_closed;
-$HD_Form->FG_OTHER_BUTTON3_ALT = _("Manage payments");
+$HD_Form->AddListActionButton(
+    "A2B_invoice_manage_payment.php?id=",
+    _("Manage payments"),
+    get_image_path("money.png"),
+    "",
+    "cc_invoice_status",
+    _("CLOSE")
+);
 
 $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_invoice.php?form_action=ask-add";
