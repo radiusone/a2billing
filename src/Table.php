@@ -140,7 +140,7 @@ class Table
             $identifier = implode("$q.$q", explode(".", $identifier));
         }
         $as = "";
-        if (preg_match("/([\w.$q]+?) +AS +(\w+?)/i", $identifier, $matches)) {
+        if (preg_match("/([\w.$q]+?) +AS +(\w+)/i", $identifier, $matches)) {
             $identifier = $matches[1];
             $as = " AS $q$matches[2]$q";
         }

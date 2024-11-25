@@ -257,11 +257,11 @@ $processed["popup_fieldname"] ??= "";
                             : $button["label"];
                     ?>
                         <?php if ($link): ?>
-                        <a href="<?= $link ?>" class="btn btn-sm <?= $button["class"] ?? "" ?>" data-primary-key="<?= $item["instance-primary_key"] ?? "" ?>">
+                        <a href="<?= $link ?>" class="<?= $button["class"] ?? "" ?>" data-primary-key="<?= $item["instance_primary_key"] ?? "" ?>">
                             <?= $contents ?>
                         </a>
                         <?php else: ?>
-                        <button type="button" class="btn btn-sm <?= $button["class"] ?? "" ?>" data-primary-key="<?= $item["instance-primary_key"] ?? "" ?>">
+                        <button type="button" class="btn align-baseline p-0 <?= $button["class"] ?? "" ?>" data-primary-key="<?= $item["instance_primary_key"] ?? "" ?>">
                             <?= $contents ?>
                         </button>
                         <?php endif ?>

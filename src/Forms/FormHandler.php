@@ -1053,7 +1053,7 @@ class FormHandler
     public function AddListActionButton(
         string $url,
         string $label,
-        string $image_name,
+        string $image,
         string $class = "",
         string $match_index = "",
         string $match_value = ""
@@ -1062,7 +1062,7 @@ class FormHandler
         $this->list_action_buttons[] = compact(
             "url",
             "label",
-            "image_name",
+            "image",
             "class",
             "match_index",
             "match_value"
