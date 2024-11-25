@@ -48,7 +48,6 @@ $HD_Form = new FormHandler("cc_logpayment", gettext("payment"));
 
 $HD_Form -> FG_QUERY_WHERE_CLAUSE="card_id=".$_SESSION["card_id"];
 $HD_Form->list_query_conditions["card_id"] = $_SESSION["card_id"];
-$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
 $HD_Form -> AddViewElement(gettext("ID"), "cc_logpayment.id");

@@ -41,7 +41,6 @@ getpost_ifset(array('id', 'tariffgroupname', 'lcrtype', 'removeinterprefix', 'id
 
 $HD_Form = new FormHandler("cc_tariffgroup", "Call Plan");
 
-$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = " tariffgroupname";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 

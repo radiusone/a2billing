@@ -46,8 +46,6 @@ getpost_ifset(array('voucher'));
 
 $HD_Form = new FormHandler("cc_voucher", "Voucher");
 
-$HD_Form->no_debug();
-
 $HD_Form -> FG_VIEW_TABLE_WITDH = "65%";
 
 $HD_Form -> AddViewElement(gettext("VOUCHER"), "voucher");

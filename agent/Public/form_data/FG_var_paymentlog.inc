@@ -46,7 +46,6 @@ getpost_ifset(array('id', 'status', 'Period', 'frommonth', 'fromstatsmonth', 'to
 
 $HD_Form = new FormHandler("cc_epayment_log,cc_card LEFT JOIN cc_card_group ON cc_card.id_group=cc_card_group.id", "Payment", "cc_epayment_log.id");
 
-$HD_Form->no_debug();
 //CLause to filter by agent
 $HD_Form -> FG_QUERY_WHERE_CLAUSE = "cc_card.id=cc_epayment_log.cardid AND cc_card_group.id_agent=".$_SESSION['agent_id'] ;
 $HD_Form->list_query_conditions["cc_card.id"] = "`cc_epayment_log`.`cardid`";

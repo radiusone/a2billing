@@ -41,7 +41,6 @@ getpost_ifset(array('id', 'name', 'periode', 'type', 'maxvalue', 'minvalue', 'st
 
 $HD_Form = new FormHandler("cc_alarm", "Alarms");
 
-$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "id";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 

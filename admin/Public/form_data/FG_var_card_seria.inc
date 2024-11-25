@@ -41,8 +41,6 @@ getpost_ifset(array('id', 'name', 'description'));
 
 
 $HD_Form = new FormHandler("cc_card_seria", "Card series");
-$HD_Form->no_debug();
-
 
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "name";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";

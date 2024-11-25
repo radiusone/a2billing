@@ -46,7 +46,6 @@ getpost_ifset(array('id','subscriber_signup', 'username', 'useralias', 'uipass',
 
 //put parameter in session
 $HD_Form = new FormHandler("cc_card", "User");
-$HD_Form->no_debug();
 
 $HD_Form->FG_TABLE_DEFAULT_SENS = "ASC";
 $HD_Form->search_session_key = 'entity_card_selection';

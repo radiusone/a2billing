@@ -41,9 +41,6 @@ getpost_ifset(array('id', 'creationdate', 'usedate', 'expirationdate', 'voucher'
 
 $HD_Form = new FormHandler("cc_voucher", "Voucher");
 
-$HD_Form->no_debug();
-
-
 $currency_list = array();
 $indcur=0;
 

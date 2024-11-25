@@ -41,8 +41,6 @@ getpost_ifset(array('IDCust', 'id', 'cid', 'activated'));
 
 $HD_Form = new FormHandler("cc_callerid", "CallerID");
 
-$HD_Form->no_debug();
-
 $HD_Form ->FG_LIST_ADDING_BUTTON2 = true;
 $HD_Form ->FG_LIST_ADDING_BUTTON_LINK2 = "A2B_entity_callerid.php?form_action=ask-add";
 $HD_Form ->FG_LIST_ADDING_BUTTON_ALT2 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG2 = gettext("Add CallerID");

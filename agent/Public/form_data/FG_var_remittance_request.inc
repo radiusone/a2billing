@@ -47,7 +47,6 @@ $HD_Form = new FormHandler("cc_remittance_request", _("Remittance Request Agent"
 $HD_Form -> FG_QUERY_WHERE_CLAUSE = "id_agent=".$_SESSION['agent_id'] ;
 $HD_Form->list_query_conditions["id_agent"] = $_SESSION["agent_id"];
 
-$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
 $HD_Form -> FG_OTHER_BUTTON2_LINK = "javascript:;";

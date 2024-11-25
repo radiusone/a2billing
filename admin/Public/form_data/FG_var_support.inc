@@ -43,8 +43,6 @@ getpost_ifset(array('id', 'name', 'email','language','popup_select'));
 
 $HD_Form = new FormHandler("cc_support", "Support Box");
 
-
-$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = " name";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 

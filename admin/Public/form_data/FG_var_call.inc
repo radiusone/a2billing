@@ -41,9 +41,6 @@ getpost_ifset(array('id', 'calledstation', 'id_cc_card'));
 
 $HD_Form = new FormHandler("cc_call", "Call");
 
-$HD_Form->no_debug();
-
-
 $HD_Form -> AddViewElement(gettext("ID"), "id");
 $HD_Form -> AddViewElement(gettext("CALLEDSTATION"), "calledstation");
 $HD_Form -> AddViewElement(gettext("ACCOUNT NUMBER"), "card_id", true, 0, "", "lie_link", "cc_card", "username,id", "id='%id'", "%1", "A2B_entity_card.php");

@@ -46,8 +46,6 @@ getpost_ifset(array('id', 'displayheader', 'type','popup_select','popup_formname
 
 
 // type : refill or payment
-$HD_Form->no_debug();
-
 if ($type == 'payment') {
 	$HD_Form = new FormHandler("cc_logpayment as t2 LEFT JOIN cc_card ON cc_card.id=t2.card_id LEFT JOIN cc_card_group ON cc_card_group.id = cc_card.id_group ", _("Payment"), 't2.id');
 	$HD_Form->FG_QUERY_WHERE_CLAUSE = "t2.card_id = $id AND cc_card_group.id_agent = " . $_SESSION['agent_id'];

@@ -40,7 +40,6 @@ Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 getpost_ifset(array('id'));
 $HD_Form = new FormHandler("cc_currencies", "Currencies");
 
-$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = " currency";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "ASC";
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;

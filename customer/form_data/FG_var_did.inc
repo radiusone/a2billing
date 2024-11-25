@@ -48,7 +48,6 @@ getpost_ifset(array('id', 'billingtype', 'did', 'startingdate', 'expirationdate'
 
 $HD_Form = new FormHandler("cc_did_destination", "destination");
 
-$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "did";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 

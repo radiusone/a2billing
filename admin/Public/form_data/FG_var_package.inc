@@ -41,7 +41,6 @@ getpost_ifset(array('id', 'label', 'packagetype', 'billingtype','startday', 'fre
 
 $HD_Form = new FormHandler("cc_package_offer", "OFFER PACKAGE");
 
-$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = " label";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 

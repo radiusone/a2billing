@@ -55,7 +55,6 @@ getpost_ifset(['id', 'destination','prefix','popup_select','popup_formname','pop
 
 $HD_Form = new FormHandler("cc_prefix", "prefix", "prefix");
 
-$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "destination";
 
 $HD_Form -> FG_LIST_ADDING_BUTTON1 = true;

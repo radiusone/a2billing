@@ -2172,11 +2172,6 @@ class FormHandler
         $this->FG_DEBUG = $level;
     }
 
-    public function no_debug(): void
-    {
-        $this->FG_DEBUG = 0;
-    }
-
     public function setup_export(
         ?array $columns = null,
         ?string $table = null,

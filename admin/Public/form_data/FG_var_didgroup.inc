@@ -40,7 +40,6 @@ Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 getpost_ifset(array('id', 'didgroupname'));
 $HD_Form = new FormHandler("cc_didgroup", "Did Group");
 
-$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "didgroupname";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 

@@ -47,9 +47,6 @@ getpost_ifset(array('IDCust', 'id', 'id_cc_card', 'cid', 'activated'));
 
 $HD_Form = new FormHandler("cc_callerid", gettext("CallerID"));
 
-$HD_Form->no_debug();
-
-
 $actived_list = getActivationTrueFalseList();
 $yesno = getYesNoList();
 

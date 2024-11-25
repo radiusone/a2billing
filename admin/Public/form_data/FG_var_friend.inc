@@ -54,8 +54,6 @@ if ($voip_type=='sip') {
 	$HD_Form = new FormHandler("cc_iax_buddies", gettext("IAX Config"));
 }
 
-
-$HD_Form->no_debug();
 $typepaid_list = getPaidTypeList();
 $actived_list =  getActivationTrueFalseList();
 $yesno = getYesNoList();

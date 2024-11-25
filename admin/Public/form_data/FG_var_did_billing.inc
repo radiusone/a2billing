@@ -36,7 +36,6 @@ use A2billing\Forms\FormHandler;
 
 $HD_Form = new FormHandler("cc_call INNER JOIN cc_did ON cc_did.id = cc_call.id_did INNER JOIN cc_card ON cc_card.id = cc_call.card_id", "did billing", "cc_did.id");
 
-$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "date";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 $HD_Form -> FG_QUERY_WHERE_CLAUSE = "( sipiax = 2 OR sipiax = 3) ";

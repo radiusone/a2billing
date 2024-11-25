@@ -44,7 +44,6 @@ if (!isset($form_action) || $form_action=="list") {
 }else{
 	$HD_Form = new FormHandler("cc_speeddial ", "speed dial");
 }
-$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "cc_speeddial.creationdate";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 

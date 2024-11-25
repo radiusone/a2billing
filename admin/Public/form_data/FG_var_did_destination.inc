@@ -50,7 +50,6 @@ if ($form_action === "list") {
 	$HD_Form = new FormHandler("cc_did_destination", _("DID Destination"));
 }
 
-$HD_Form->no_debug();
 $HD_Form->FG_TABLE_DEFAULT_ORDER = "destination";
 $HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
 

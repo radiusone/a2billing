@@ -60,7 +60,6 @@ if (!isset($form_action) || $form_action=="list"){
 	 $HD_Form = new FormHandler("cc_ticket", _("Ticket"));
 }
 
-$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = " cc_ticket.id";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 $HD_Form -> FG_QUERY_WHERE_CLAUSE = " cc_ticket.creator_type=0 AND cc_card_group.id_agent=".$_SESSION['agent_id'];

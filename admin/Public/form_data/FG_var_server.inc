@@ -42,7 +42,6 @@ getpost_ifset(array('id', 'id_group', 'server_ip', 'manager_host', 'manager_user
 
 $HD_Form = new FormHandler("cc_server_manager", "Server");
 
-$HD_Form->no_debug();
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_server.php?form_action=ask-add";
 $HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add SERVER");

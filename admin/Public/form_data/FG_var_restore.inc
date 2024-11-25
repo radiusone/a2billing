@@ -42,7 +42,6 @@ getpost_ifset(array('id', 'name', 'path', 'creationdate'));
 
 $HD_Form = new FormHandler("cc_backup", "restore");
 
-$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = " name";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 

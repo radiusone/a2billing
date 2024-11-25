@@ -53,7 +53,6 @@ $subadmin = $groupID > 0;
 
 $HD_Form = new FormHandler("cc_ui_authen", $subadmin ? _("Sub-administrator") : _("Administrator"), "userid");
 
-$HD_Form->no_debug();
 $HD_Form->FG_TABLE_DEFAULT_ORDER = "login";
 
 $HD_Form->FG_LIST_ADDING_BUTTON1 = true;

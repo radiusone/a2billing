@@ -55,7 +55,6 @@ if (!empty($agi_conf)) {
 
 $HD_Form = new FormHandler("cc_config_group", "configuration group");
 
-$HD_Form->no_debug();
 $HD_Form->FG_TABLE_DEFAULT_ORDER = "id";
 $HD_Form->FG_TABLE_DEFAULT_SENS = "ASC";
 $HD_Form->FG_FK_TABLENAMES = ["cc_config"];

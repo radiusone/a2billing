@@ -41,7 +41,6 @@ getpost_ifset(array('id', 'tariffname', 'startingdate', 'expirationdate', 'id_tr
 
 $HD_Form = new FormHandler("cc_tariffplan", "Ratecard");
 
-$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = " tariffname";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 

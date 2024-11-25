@@ -43,8 +43,6 @@ getpost_ifset(array('id', 'name', 'activated' ,'id_support','type_user' ));
 
 $HD_Form = new FormHandler("cc_support_component", "Support Component");
 
-
-$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = " name";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 

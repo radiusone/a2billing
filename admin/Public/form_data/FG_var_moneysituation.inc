@@ -39,7 +39,6 @@ Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
 $HD_Form = new FormHandler("cc_card", "Card");
 
-$HD_Form->no_debug();
 $HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 10;
 
 $HD_Form -> AddViewElement(gettext("ID"), "id");

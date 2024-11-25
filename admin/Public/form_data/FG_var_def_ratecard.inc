@@ -107,7 +107,6 @@ if (isset($posted) && !$popup_select) {
     $rateinitial_field = "MIN(rateinitial) as rateinitial";
 }
 
-$HD_Form->no_debug();
 $HD_Form->FG_TABLE_DEFAULT_ORDER = " dialprefix";
 $HD_Form->FG_TABLE_DEFAULT_SENS = "ASC";
 

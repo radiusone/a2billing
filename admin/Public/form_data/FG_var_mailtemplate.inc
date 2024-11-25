@@ -45,7 +45,7 @@ Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
 
 $HD_Form = new FormHandler("cc_templatemail", _("Mail Template"));
-$HD_Form->no_debug();
+
 $HD_Form->FG_EDIT_BUTTON_LINK = "?form_action=ask-edit&id=";
 $HD_Form->FG_DELETE_BUTTON_LINK = "?form_action=ask-delete&id=";
 

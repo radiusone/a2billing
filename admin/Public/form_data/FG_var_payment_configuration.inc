@@ -41,7 +41,6 @@ getpost_ifset(array('id', 'payment_method', 'payment_filename'));
 
 $HD_Form = new FormHandler("cc_payment_methods", "payment method");
 
-$HD_Form->no_debug();
 $HD_Form->FG_TABLE_DEFAULT_ORDER = "payment_method";
 $HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
 

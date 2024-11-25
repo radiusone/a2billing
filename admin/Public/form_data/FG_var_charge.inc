@@ -48,7 +48,6 @@ if (($form_action=='ask-edit') || ($form_action=='ask-add') || ($form_action=='a
 	else $HD_Form_c = new FormHandler("cc_charge, cc_card", "charge", "cc_charge.id");
 }
 
-$HD_Form_c->no_debug();
 if ($wantinclude==1) $HD_Form_c -> FG_TABLE_DEFAULT_ORDER = $order;
 else $HD_Form_c -> FG_TABLE_DEFAULT_ORDER = "id_cc_card";
 

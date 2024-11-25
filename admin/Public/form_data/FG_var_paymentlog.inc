@@ -41,7 +41,6 @@ getpost_ifset(array('id', 'status', 'Period', 'frommonth', 'fromstatsmonth', 'to
 
 $HD_Form = new FormHandler("cc_epayment_log", "Payment");
 
-$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "creationdate";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 

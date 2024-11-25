@@ -49,7 +49,6 @@ getpost_ifset(['did', 'inuse', 'actionbtn', 'order', 'sens', 'current_page', 'po
  */
 $HD_Form = new FormHandler("cc_did_use", "DID in use");
 
-$HD_Form->no_debug();
 if ($posted && !empty($did)) {
     if (strlen($HD_Form->FG_QUERY_WHERE_CLAUSE) > 0) {
         $HD_Form->FG_QUERY_WHERE_CLAUSE .= " AND ";

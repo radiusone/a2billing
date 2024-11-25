@@ -48,7 +48,6 @@ $HD_Form = new FormHandler("cc_agent_signup", "SIGNUP KEY");
 
 $HD_Form -> FG_QUERY_WHERE_CLAUSE = "id_agent = ".$_SESSION['agent_id'];
 $HD_Form->list_query_conditions["id_agent"] = $_SESSION["agent_id"];
-$HD_Form->no_debug();
 
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_signup_agent.php?section=".$_SESSION["menu_section"];

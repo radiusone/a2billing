@@ -41,7 +41,6 @@ getpost_ifset(array('id', 'label', 'fee', 'status', 'emailreport'));
 
 $HD_Form = new FormHandler("cc_subscription_service", "Subscription Service");
 
-$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "id";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 

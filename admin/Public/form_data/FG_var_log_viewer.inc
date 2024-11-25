@@ -41,7 +41,6 @@ getpost_ifset(array('id', 'loglevel', 'enteradmin', 'Period', 'frommonth', 'from
 
 $HD_Form = new FormHandler("cc_system_log csl LEFT JOIN cc_ui_authen cua ON csl.iduser = cua.userid", "Log");
 
-$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "creationdate";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 

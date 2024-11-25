@@ -54,7 +54,6 @@ if (!isset($form_action) || $form_action=="list"){
 	$HD_Form = new FormHandler("cc_logpayment", _("payment"));
 }
 
-$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
 $list_refill_type=getRefillType_List();

@@ -42,7 +42,6 @@ getpost_ifset(array('id', 'name', 'amount', 'period', 'rule', 'daynumber', 'stop
 
 $HD_Form = new FormHandler("cc_service", "Service");
 
-$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "id";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 

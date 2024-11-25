@@ -98,7 +98,6 @@ $HD_Form = new FormHandler(
 
 $HD_Form->init();
 
-$HD_Form->no_debug();
 $HD_Form->FG_TABLE_DEFAULT_ORDER = "starttime";
 $HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
 $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 30;

@@ -41,7 +41,6 @@ getpost_ifset(array('id', 'didgroupname'));
 
 $HD_Form = new FormHandler("cc_outbound_cid_group", "Outbound CID Group");
 
-$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "group_name";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 

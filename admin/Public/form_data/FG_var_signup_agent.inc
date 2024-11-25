@@ -42,8 +42,6 @@ getpost_ifset(array('id', 'id_agent', 'id_tariff_group', 'code','id_group'));
 
 $HD_Form = new FormHandler("cc_agent_signup", "SIGNUP KEY");
 
-$HD_Form->no_debug();
-
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_signup_agent.php";
 $HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add Signup KEY");

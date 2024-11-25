@@ -42,7 +42,6 @@ getpost_ifset(array('id', 'displayheader', 'displayfooter'));
 
 $HD_Form = new FormHandler("cc_service", "service_details");
 
-$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "id";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 $HD_Form -> FG_QUERY_WHERE_CLAUSE = " id='$id'";

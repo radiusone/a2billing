@@ -42,7 +42,6 @@ getpost_ifset(array('id', 'uniqueid', 'entry_time', 'status', 'server_ip', 'num_
 
 $HD_Form = new FormHandler("cc_callback_spool", gettext("Callback"));
 
-$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "id";
 $HD_Form -> FG_TABLE_DEFAULT_SENS  = "DESC";
 

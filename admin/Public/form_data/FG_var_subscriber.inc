@@ -40,7 +40,6 @@ Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 getpost_ifset(array('id', 'id_cc_card', 'id_subscription_fee', 'datestart', 'datestop', 'product_name'));
 
 $HD_Form = new FormHandler("cc_card_subscription", "Subscriber");
-$HD_Form->no_debug();
 
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "id";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";

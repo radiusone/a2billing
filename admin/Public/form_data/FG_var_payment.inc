@@ -58,7 +58,6 @@ if ($form_action === "list") {
 	$HD_Form = new FormHandler("cc_logpayment", "Payment");
 }
 
-$HD_Form->no_debug();
 $HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
 
 if (has_rights (Admin::ACX_MODIFY_PAYMENTS)) {

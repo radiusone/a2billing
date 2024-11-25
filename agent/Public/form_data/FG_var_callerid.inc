@@ -53,8 +53,6 @@ if (!isset($form_action) || $form_action=="list") {
 	$HD_Form = new FormHandler("cc_callerid", _("Caller ID"));
 }
 
-$HD_Form->no_debug();
-
 $HD_Form ->FG_LIST_ADDING_BUTTON2 = true;
 $HD_Form ->FG_LIST_ADDING_BUTTON_LINK2 = "A2B_entity_callerid.php?form_action=ask-add&section=".$_SESSION["menu_section"];
 $HD_Form ->FG_LIST_ADDING_BUTTON_ALT2 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG2 = gettext("Add CallerID");

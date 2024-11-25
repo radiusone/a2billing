@@ -42,7 +42,6 @@ getpost_ifset(array('card', 'invoice'));
 
 $HD_Form = new FormHandler("cc_logpayment", "Payment");
 
-$HD_Form->no_debug();
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
 
