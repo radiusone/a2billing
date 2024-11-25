@@ -72,6 +72,7 @@ class FormHandler
 
     /** @var string The table name for queries */
     public string $FG_QUERY_TABLE_NAME = "";
+
     /** The primary key column of the table */
     public string $FG_QUERY_PRIMARY_KEY = 'id';
 
@@ -449,7 +450,13 @@ class FormHandler
     /** @var string */
     public string $FG_LIST_ADDING_BUTTON_MSG2;
 
-    public function __construct(string $tablename, string $instance_name, string $primary_key = "id")
+    /**
+     * @param string $tablename the table name of the object we're working with
+     * @param string $instance_name a label for the object
+     * @param string $primary_key the primary key of the table (if joining tables, make sure it's unambiguous)
+     * @param array $joins a list of joins formatted for use by Table::processJoinedTables()
+     */
+    public function __construct(string $tablename, string $instance_name, string $primary_key = "id", array $joins = [])
     {
         Console::log('Construct FormHandler');
         Console::logMemory($this, 'FormHandler Class : Line ' . __LINE__);
@@ -459,6 +466,7 @@ class FormHandler
         $this->FG_INSTANCE_NAME = $instance_name;
         $this->DBHandle = DbConnect();
         $this->FG_QUERY_PRIMARY_KEY = $primary_key;
+        $this->query_table_joins = $joins;
 
         if (!empty($_POST)) {
             $posted_token = $_POST["csrf_token"] ?? "";
@@ -504,7 +512,6 @@ class FormHandler
         /* only modified once in admin/FG_var_signup.inc */
         $this->FG_ADD_PAGE_SAVE_BUTTON_TEXT = _('Confirm Data');
     }
-
 
     /*
     * Generate a csrf token
@@ -1299,7 +1306,7 @@ class FormHandler
 
             if ($form_action === "list") {
 
-                $instance_table = new Table($this->FG_QUERY_TABLE_NAME, $this->FG_QUERY_COLUMN_LIST);
+                $instance_table = new Table($this->FG_QUERY_TABLE_NAME, $this->FG_QUERY_COLUMN_LIST, $this->query_table_joins);
 
                 if ($this->FG_DEBUG) {
                     $params = [];
@@ -1357,7 +1364,7 @@ class FormHandler
                 $cols = array_column($selected_elements, "name");
                 $fields = implode(",", $cols);
 
-                $instance_table = new Table($this->FG_QUERY_TABLE_NAME, $fields);
+                $instance_table = new Table($this->FG_QUERY_TABLE_NAME, $fields, $this->query_table_joins);
                 $list = $instance_table->getRows($this->DBHandle, $this->update_query_conditions);
 
                 //PATCH TO CLEAN THE IMPORT OF PASSWORD FROM THE DATABASE
@@ -1529,7 +1536,7 @@ class FormHandler
      ******************************************/
     public function Delete_Selected()
     {
-        $instance_table = new Table($this->FG_QUERY_TABLE_NAME, $this->FG_QUERY_COLUMN_LIST);
+        $instance_table = new Table($this->FG_QUERY_TABLE_NAME, $this->FG_QUERY_COLUMN_LIST, $this->query_table_joins);
         $instance_table->deleteRow($this->DBHandle, $this->list_query_conditions);
     }
 
@@ -1542,7 +1549,7 @@ class FormHandler
         $this->VALID_SQL_REG_EXP = true;
         $values = [];
         $arr_value_to_import = [];
-        $instance_table = new Table($this->FG_QUERY_TABLE_NAME);
+        $instance_table = new Table($this->FG_QUERY_TABLE_NAME, "*", $this->query_table_joins);
 
         foreach ($this->FG_EDIT_FORM_ELEMENTS as &$row) {
             if (empty($row["custom_query"])) {
@@ -1675,7 +1682,7 @@ class FormHandler
         $processed = $this->getProcessed();  //$processed['firstname']
         $this->VALID_SQL_REG_EXP = true;
         $values = [];
-        $instance_table = new Table($this->FG_QUERY_TABLE_NAME);
+        $instance_table = new Table($this->FG_QUERY_TABLE_NAME, "*", $this->query_table_joins);
 
         foreach ($this->FG_EDIT_FORM_ELEMENTS as $i => &$row) {
             if (empty($row["custom_query"])) {
@@ -1767,7 +1774,7 @@ class FormHandler
         $tableCount = count($this->FG_FK_TABLENAMES);
         $clauseCount = count($this->FG_FK_EDITION_CLAUSE);
 
-        $instance_table = new Table($this->FG_QUERY_TABLE_NAME);
+        $instance_table = new Table($this->FG_QUERY_TABLE_NAME, "*", $this->query_table_joins);
         if ($tableCount === $clauseCount && $clauseCount > 0 && $this->FG_FK_DELETE_ALLOWED && !empty($processed['id'])) {
             $instance_table->setDeleteFk($this->FG_FK_TABLENAMES, $this->FG_FK_EDITION_CLAUSE, $processed["id"], $this->FG_FK_WARNONLY);
         }

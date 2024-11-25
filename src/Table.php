@@ -77,10 +77,7 @@ class Table
     /**
      * @param string|null $table the table we're working with
      * @param array|string $list_fields when selecting, what fields will be selected
-     * @param array $joins tables to join to the query; for example:
-     *              ["t2" => ["t1.col", "t2.col"]] gives "LEFT JOIN t2 ON (t1.col = t2.col)"
-     *              ["t2" => ["INNER", ["t1.col", "<", "t2.col"]]] gives "INNER JOIN t2 ON (t1.col < t2.col)"
-     *              ["t2" => [["t1.col", "=", "t2.col"], "t1.col2", "t2.col2"]] gives "LEFT JOIN t2 ON (t1.col = t2.col AND t1.col2 = t2.col2)"
+     * @param array $joins tables to join to the query; see Table::processJoinedTables() for usage
      */
     public function __construct(string $table = null, $list_fields = "*", array $joins = [])
     {
@@ -756,6 +753,16 @@ class Table
         return " $col $operator $placeholder ";
     }
 
+    /**
+     * Process $this->joins into an SQL string
+     *
+     * Sample input/output:
+     *         ["t2" => ["t1.col", "t2.col"]] gives "LEFT JOIN t2 ON (t1.col = t2.col)"
+     *         ["t2" => ["INNER", ["t1.col", "<", "t2.col"]]] gives "INNER JOIN t2 ON (t1.col < t2.col)"
+     *         ["t2" => [["t1.col", "=", "t2.col"], "t1.col2", "t2.col2"]] gives "LEFT JOIN t2 ON (t1.col = t2.col AND t1.col2 = t2.col2)"
+     *
+     * @return string
+     */
     private function processJoinedTables(): string
     {
         $joins = [];
