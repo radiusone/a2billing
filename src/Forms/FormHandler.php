@@ -52,12 +52,6 @@ class FormHandler
     /** @var string Parameters to add to the URL of the list view sorting/pagination buttons */
     public string $CV_FOLLOWPARAMETERS = '';
 
-    /** @var bool Whether to display the records-per-page dropdown. Never set to false anywhere... */
-    public bool $CV_DISPLAY_RECORD_LIMIT = true;
-
-    /** @var bool Whether to display the pagination controls. Never set to false anywhere... */
-    public bool $CV_DISPLAY_BROWSE_PAGE = true;
-
     /**
      * @var int Tracks the current page for pagination and DB queries
      * @todo this is barely used; could it be replaced with a variable?

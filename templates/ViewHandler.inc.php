@@ -290,7 +290,6 @@ $processed["popup_fieldname"] ??= "";
         </table>
     </div>
 </div>
-<?php if ($form->CV_DISPLAY_BROWSE_PAGE): ?>
 <div class="row pb-3">
     <div class="col">
         <?= FormHandler::printPages(
@@ -301,10 +300,8 @@ $processed["popup_fieldname"] ??= "";
         ) ?>
     </div>
 </div>
-<?php endif ?>
 
 <div class="row pb-3 justify-content-start align-items-center">
-    <?php if ($form->CV_DISPLAY_RECORD_LIMIT): ?>
     <div class="col-4">
         <form id="displaylimit_form" action="">
             <label for="displaylimit" class="form-label d-inline"><?= gettext("Display");?></label>
@@ -324,7 +321,6 @@ $processed["popup_fieldname"] ??= "";
             </select>
         </form>
     </div>
-    <?php endif ?>
 
     <?php if ($form->FG_EXPORT_CSV): ?>
     <div class="col-auto">
