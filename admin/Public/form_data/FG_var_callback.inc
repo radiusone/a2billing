@@ -42,10 +42,7 @@ getpost_ifset(array('id', 'uniqueid', 'entry_time', 'status', 'server_ip', 'num_
 
 $HD_Form = new FormHandler("cc_callback_spool", gettext("Callback"));
 
-$HD_Form -> FG_TABLE_DEFAULT_ORDER = "id";
 $HD_Form -> FG_TABLE_DEFAULT_SENS  = "DESC";
-
-
 
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_callback.php?form_action=ask-add";

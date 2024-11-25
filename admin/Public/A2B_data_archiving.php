@@ -72,7 +72,6 @@ getpost_ifset([
 $HD_Form = new FormHandler("cc_card", "Customer");
 $HD_Form->init();
 
-$HD_Form->FG_TABLE_DEFAULT_SENS = "ASC";
 $HD_Form->search_session_key = 'entity_archiving_selection';
 $language_list = array();
 $language_list["0"] = array( gettext("ENGLISH"), "en");
@@ -207,7 +206,6 @@ if ($posted_search === true && $posted_archive === false) {
 }
 
 $HD_Form->prepare_list_subselection('list');
-$HD_Form->FG_TABLE_DEFAULT_SENS = "ASC";
 
 $nb_customer = 0;
 

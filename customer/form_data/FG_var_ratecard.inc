@@ -47,7 +47,6 @@ getpost_ifset(array('destination', 'dialprefix', 'rateinitial','posted','tariffp
 $HD_Form = new FormHandler("cc_callplan_lcr", _("Rates"), 'ratecard_id');
 
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "destination";
-$HD_Form -> FG_TABLE_DEFAULT_SENS = "ASC";
 $HD_Form -> search_session_key = 'entity_ratecard_selection';
 
 

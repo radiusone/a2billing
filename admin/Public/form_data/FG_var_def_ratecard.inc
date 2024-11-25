@@ -108,7 +108,6 @@ if (isset($posted) && !$popup_select) {
 }
 
 $HD_Form->FG_TABLE_DEFAULT_ORDER = " dialprefix";
-$HD_Form->FG_TABLE_DEFAULT_SENS = "ASC";
 
 $HD_Form->search_session_key = 'entity_ratecard_selection';
 

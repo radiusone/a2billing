@@ -41,9 +41,7 @@ getpost_ifset(array('id', 'label', 'fee', 'status', 'emailreport'));
 
 $HD_Form = new FormHandler("cc_subscription_service", "Subscription Service");
 
-$HD_Form -> FG_TABLE_DEFAULT_ORDER = "id";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
-
 
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_subscription.php?form_action=ask-add";

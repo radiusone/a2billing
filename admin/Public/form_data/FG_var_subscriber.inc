@@ -41,9 +41,7 @@ getpost_ifset(array('id', 'id_cc_card', 'id_subscription_fee', 'datestart', 'dat
 
 $HD_Form = new FormHandler("cc_card_subscription", "Subscriber");
 
-$HD_Form -> FG_TABLE_DEFAULT_ORDER = "id";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
-
 
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_subscriber.php?form_action=ask-add";

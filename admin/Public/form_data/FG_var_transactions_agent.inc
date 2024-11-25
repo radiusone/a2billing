@@ -42,7 +42,6 @@ getpost_ifset(array('id', 'agent_id', 'agent_name', 'agent_email_address', 'item
 
 $HD_Form = new FormHandler("cc_payments_agent", "Transactions");
 
-$HD_Form -> FG_TABLE_DEFAULT_ORDER = "id";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
 $HD_Form -> AddViewElement(gettext("ID"), "id");

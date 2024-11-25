@@ -41,7 +41,6 @@ getpost_ifset(array('id'));
 
 $HD_Form = new FormHandler("cc_autorefill_report", "AutoRefill Report");
 
-$HD_Form->FG_TABLE_DEFAULT_ORDER = "id";
 $HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
 
 $HD_Form->AddViewElement(gettext("DATE RUN"), "daterun");

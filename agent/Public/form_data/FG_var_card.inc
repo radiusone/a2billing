@@ -61,7 +61,6 @@ if (!isset($form_action) || $form_action=="list" || $form_action=="addcredit") {
 	$HD_Form = new FormHandler("cc_card", _("Card"));
 }
 
-$HD_Form -> FG_TABLE_DEFAULT_SENS = "ASC";
 $HD_Form -> search_session_key = 'entity_card_selection';
 $HD_Form -> FG_FK_DELETE_CONFIRM = true;
 $HD_Form -> FG_FK_DELETE_ALLOWED = true;

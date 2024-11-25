@@ -117,7 +117,6 @@ $HD_Form -> AddSearchSelectInput(gettext("SELECT STATUS"), "status", $cardstatus
 $HD_Form -> AddSearchSelectInput(gettext("SELECT ACCESS"), "simultaccess", $simultaccess_list_r);
 $HD_Form -> AddSearchSelectInput(gettext("SELECT CURRENCY"), "currency", $currency_list_r);
 $HD_Form -> prepare_list_subselection('list');
-$HD_Form -> FG_TABLE_DEFAULT_SENS = "ASC";
 $nb_customer = 0;
 
 $limit_massmail = 2000;

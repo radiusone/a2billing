@@ -42,9 +42,7 @@ getpost_ifset(array('id', 'name', 'amount', 'period', 'rule', 'daynumber', 'stop
 
 $HD_Form = new FormHandler("cc_service", "Service");
 
-$HD_Form -> FG_TABLE_DEFAULT_ORDER = "id";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
-
 
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_service.php?form_action=ask-add";

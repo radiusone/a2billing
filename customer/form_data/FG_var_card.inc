@@ -46,7 +46,6 @@ getpost_ifset(array('id', 'lastname', 'firstname', 'email', 'address','city', 's
 
 $HD_Form = new FormHandler("cc_card", "Card");
 
-$HD_Form -> FG_TABLE_DEFAULT_SENS = "ASC";
 $HD_Form->update_query_conditions = ["id" => $_SESSION["card_id"]];
 
 $HD_Form -> FG_INTRO_TEXT_EDITION = '';
