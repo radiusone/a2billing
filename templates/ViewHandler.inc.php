@@ -231,6 +231,41 @@ $processed["popup_fieldname"] ??= "";
                         </a>
                         <?php endif ?>
                     <?php endif ?>
+                    <?php foreach ($form->list_action_buttons as $button):
+                        /** this is just duplicating the following for loop until old button definitions are replaced */
+                        $check = true;
+                        if (!empty($button["match_index"])) {
+                            $check = $item[$button["match_index"]] == $button["match_value"];
+                        }
+                        if (!$check) {
+                            continue;
+                        }
+                        $link = "";
+                        if ($button["url"] !== "") {
+                            $link = str_replace("|param|", $item["instance_primary_key"] ?? "", $button["url"]);
+                            $link = preg_replace_callback(
+                                "/\\|col([0-9]+)\\|/i",
+                                fn ($m) => str_replace($m[0], $item[$m[1]] ?? "", $m[0]),
+                                $link
+                            );
+                            if (str_ends_with($link, "=")) {
+                                $link .= $item["instance_primary_key"] ?? "";
+                            }
+                        }
+                        $contents = $button["image"]
+                            ? "<img alt=\"$button[label]\" src=\"$button[image]\"/>"
+                            : $button["label"];
+                    ?>
+                        <?php if ($link): ?>
+                        <a href="<?= $link ?>" class="btn btn-sm <?= $button["class"] ?? "" ?>" data-primary-key="<?= $item["instance-primary_key"] ?? "" ?>">
+                            <?= $contents ?>
+                        </a>
+                        <?php else: ?>
+                        <button type="button" class="btn btn-sm <?= $button["class"] ?? "" ?>" data-primary-key="<?= $item["instance-primary_key"] ?? "" ?>">
+                            <?= $contents ?>
+                        </button>
+                        <?php endif ?>
+                    <?php endforeach ?>
                     <?php for ($b = 1; $b <= 5; $b++):
                         if (property_exists($form, "FG_OTHER_BUTTON$b") && !empty($form->{"FG_OTHER_BUTTON$b"})):
                             $check = true;

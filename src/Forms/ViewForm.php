@@ -44,6 +44,7 @@ class ViewForm
         $hasActionButtons = (
             $form->FG_ENABLE_DELETE_BUTTON || $form->FG_ENABLE_INFO_BUTTON || $form->FG_ENABLE_EDIT_BUTTON || $form->FG_OTHER_BUTTON1
             || $form->FG_OTHER_BUTTON2 || $form->FG_OTHER_BUTTON3 || $form->FG_OTHER_BUTTON4 || $form->FG_OTHER_BUTTON5
+            || count($form->list_action_buttons)
         );
 
         ob_start();

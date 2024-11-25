@@ -190,6 +190,9 @@ class FormHandler
     /** @var array List of columns to use in the export */
     public array $FG_EXPORT_FIELD_LIST = [];
 
+    /** @var array<array<string,string>> An array containing button definitions for the list entries */
+    public array $list_action_buttons = [];
+
     /** @var bool Whether to enable a custom button in the list view's action column */
     public bool $FG_OTHER_BUTTON1 = false;
 
@@ -1042,6 +1045,25 @@ class FormHandler
             "onclick" => $onclick,
             "type" => "BUTTON",
         ];
+    }
+
+    public function AddListActionButton(
+        string $url,
+        string $label,
+        string $image_name,
+        string $class = "",
+        string $match_index = "",
+        string $match_value = ""
+    ): void
+    {
+        $this->list_action_buttons[] = compact(
+            "url",
+            "label",
+            "image_name",
+            "class",
+            "match_index",
+            "match_value"
+        );
     }
 
     /**
