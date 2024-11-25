@@ -644,15 +644,18 @@ class FormHandler
      * Sets query field names for the View module
      * Some items sent to AddViewElement have fake names, so this overrides them?
      *
-     * @param string $fieldname comma-separated list of column names used for list view
+     * @param string|array $fields array or comma-separated list of column names used for list view
      * @param bool $add_id only set false in FG_var_did_billing.inc and FG_var_service_details.inc, not sure why
      * @return void
      * @todo figure out where this is required and work around it
      */
-    public function FieldViewElement(string $fieldname, bool $add_id = true): void
+    public function FieldViewElement($fields, bool $add_id = true): void
     {
-        $this->FG_QUERY_COLUMN_LIST = explode(",", $fieldname);
-        array_walk($this->FG_QUERY_COLUMN_LIST, 'trim');
+        if (is_string($fields)) {
+            $this->FG_QUERY_COLUMN_LIST = array_map("trim", explode(",", $fields));
+        } elseif (is_array($fields)) {
+            $this->FG_QUERY_COLUMN_LIST = $fields;
+        }
 
         // We need to have the ID as the last column
         // instance_primary_key is used to fill in links for edit/delete buttons
