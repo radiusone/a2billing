@@ -73,8 +73,9 @@ class FormHandler
     /** @var array[] Tables to join to the query; ["t2" => ["t1.col", "=", "t2.col"]] gives "LEFT JOIN t2 ON (t1.col = t2.col)" */
     public array $query_table_joins;
 
-    /** @var string Comma separated list of columns from the SQL query to display in the list */
-    public string $FG_QUERY_COLUMN_LIST = ""; // TODO: change this to an array
+    /** @var array list of columns from the SQL query to display in the list */
+    public array $FG_QUERY_COLUMN_LIST = [];
+
     /** @var string|null A condition to add to the list query */
     public ?string $FG_QUERY_WHERE_CLAUSE = "";
 
@@ -647,11 +648,13 @@ class FormHandler
      */
     public function FieldViewElement(string $fieldname, bool $add_id = true): void
     {
-        $this->FG_QUERY_COLUMN_LIST = $fieldname;
+        $this->FG_QUERY_COLUMN_LIST = explode(",", $fieldname);
+        array_walk($this->FG_QUERY_COLUMN_LIST, 'trim');
+
         // We need to have the ID as the last column
         // instance_primary_key is used to fill in links for edit/delete buttons
         if ($add_id) {
-            $this->FG_QUERY_COLUMN_LIST .= ", $this->FG_QUERY_PRIMARY_KEY AS instance_primary_key";
+            $this->FG_QUERY_COLUMN_LIST[] = "$this->FG_QUERY_PRIMARY_KEY AS instance_primary_key";
         }
     }
 

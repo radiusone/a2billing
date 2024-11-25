@@ -118,7 +118,16 @@ if (isset($form_action) && ($form_action=='ask-edit' || $form_action=='edit')) {
 	$validated = 0;
 }
 
-$HD_Form -> FG_QUERY_COLUMN_LIST = 'destination, id_cc_did, cc_did_destination.activated, priority, cc_did_destination.secondusedreal,'. $country_field .'  cc_did_destination.validated, cc_did_destination.id ';
+$HD_Form -> FG_QUERY_COLUMN_LIST = [
+    'destination',
+    'id_cc_did',
+    'cc_did_destination.activated',
+    'priority',
+    'cc_did_destination.secondusedreal',
+    $country_field,
+    'cc_did_destination.validated',
+    'cc_did_destination.id'
+];
 
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
