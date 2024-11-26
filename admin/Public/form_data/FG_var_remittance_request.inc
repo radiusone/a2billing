@@ -47,20 +47,22 @@ if (!isset($form_action) || $form_action=="list") {
 
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
-$HD_Form -> FG_OTHER_BUTTON1_LINK = "javascript:;";
-$HD_Form -> FG_OTHER_BUTTON1_IMG = get_image_path("accept.png");
-$HD_Form -> FG_OTHER_BUTTON1 = true;
-$HD_Form -> FG_OTHER_BUTTON1_HTML_ID = "|col0|";
-$HD_Form -> FG_OTHER_BUTTON1_HTML_CLASS = "accept_click";
-$HD_Form -> FG_OTHER_BUTTON1_CONDITION = '|col5| == "'.gettext('WAITING').'"';
-$HD_Form -> FG_OTHER_BUTTON1_ALT = gettext("ACCEPT THIS REQUEST");
-$HD_Form -> FG_OTHER_BUTTON2_LINK = "javascript:;";
-$HD_Form -> FG_OTHER_BUTTON2_IMG = get_image_path("cancel.png");
-$HD_Form -> FG_OTHER_BUTTON2 = true;
-$HD_Form -> FG_OTHER_BUTTON2_HTML_CLASS = "refuse_click";
-$HD_Form -> FG_OTHER_BUTTON2_HTML_ID = "|col0|";
-$HD_Form -> FG_OTHER_BUTTON2_CONDITION = '|col5| == "'.gettext('WAITING').'"';
-$HD_Form -> FG_OTHER_BUTTON2_ALT = gettext("REFUSE THIS REQUEST");
+$HD_Form->AddListActionButton(
+    "",
+    _("ACCEPT THIS REQUEST"),
+    get_image_path("accept.png"),
+    "accept_click",
+    "status",
+    0 // waiting
+);
+$HD_Form->AddListActionButton(
+    "",
+    _("REFUSE THIS REQUEST"),
+    get_image_path("cancel.png"),
+    "refuse_click",
+    "status",
+    0 // waiting
+);
 
 $status_list = getRemittanceStatus_List();
 $status_revert_list = array_map("array_reverse", $status_list);

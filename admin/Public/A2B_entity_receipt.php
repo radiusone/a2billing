@@ -86,7 +86,7 @@ require_once __DIR__ . "/../templates/footer.php";
 <script>
 $(function () {
     $('.lock').on('click', function () {
-        $.get("A2B_entity_receipt.php", {id: "" + this.id, action: "lock"}, () => location.reload());
+        $.get("A2B_entity_receipt.php", {id: "" + this.dataset.primaryKey, action: "lock"}, () => location.reload());
     });
 });
 </script>

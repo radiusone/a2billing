@@ -59,19 +59,23 @@ $HD_Form -> FG_FK_EDITION_CLAUSE = array(" id_receipt ");
 $HD_Form -> FG_ENABLE_INFO_BUTTON = true;
 $HD_Form -> FG_INFO_BUTTON_LINK = "A2B_receipt_view.php?id=";
 
-$HD_Form -> FG_OTHER_BUTTON1_LINK = "A2B_receipt_edit.php?id=";
-$HD_Form -> FG_OTHER_BUTTON1_IMG = get_image_path("page_white_gear.png");
-$HD_Form -> FG_OTHER_BUTTON1 = true;
-$HD_Form -> FG_OTHER_BUTTON1_CONDITION = '|col4| == "OPEN"';
-$HD_Form -> FG_OTHER_BUTTON1_ALT = gettext("Edit receipt items");
-$HD_Form -> FG_OTHER_BUTTON2_LINK = "javascript:;";
-$HD_Form -> FG_OTHER_BUTTON2_IMG = get_image_path("lock.png");
-$HD_Form -> FG_OTHER_BUTTON2 = true;
-$HD_Form -> FG_OTHER_BUTTON2_HTML_CLASS = "lock";
-$HD_Form -> FG_OTHER_BUTTON2_HTML_ID = "|col0|";
-$HD_Form -> FG_OTHER_BUTTON2_CONDITION = '|col4| == "OPEN"';
-$HD_Form -> FG_OTHER_BUTTON2_ALT = gettext("Close this receipt");
-$HD_Form -> FG_EDIT_BUTTON_CONDITION = '|col4| == "OPEN"';
+$HD_Form->AddListActionButton(
+    "A2B_receipt_edit.php?id=",
+    _("Edit receipt items"),
+    get_image_path("edit.png"),
+    "",
+    "status",
+    0 // open
+);
+$HD_Form->AddListActionButton(
+    "",
+    _("Close this receipt"),
+    get_image_path("lock.png"),
+    "lock",
+    "status",
+    0 // open
+);
+$HD_Form -> FG_EDIT_BUTTON_CONDITION = '"|col4|" == "OPEN"';
 
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_receipt.php?form_action=ask-add";

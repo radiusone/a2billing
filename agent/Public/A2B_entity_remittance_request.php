@@ -87,7 +87,7 @@ $smarty->display('footer.tpl');
 <script>
 $(function () {
     $('.cancel_click').on('click', function () {
-        $.get("A2B_entity_remittance_request.php", { id: this.id, action: "cancel" }, data => location.reload(true));
+        $.get("A2B_entity_remittance_request.php", { id: this.dataset.primaryKey, action: "cancel" }, data => location.reload(true));
     });
 });
 </script>

@@ -62,10 +62,14 @@ $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 $HD_Form -> FG_ENABLE_INFO_BUTTON = true;
 $HD_Form -> FG_INFO_BUTTON_LINK = "A2B_invoice_view.php?id=";
 
-$HD_Form -> FG_OTHER_BUTTON3_LINK = "checkout_payment.php?item_type=invoice&item_id=";
-$HD_Form -> FG_OTHER_BUTTON3_IMG = get_image_path("money.png", true);
-$HD_Form -> FG_OTHER_BUTTON3 = true;
-$HD_Form -> FG_OTHER_BUTTON3_CONDITION = '|col6| == "UNPAID"';
+$HD_Form->AddListActionButton(
+    "checkout_payment.php?item_type=invoice&item_id=",
+    _("Pay"),
+    get_image_path("money.png", true),
+    "",
+    "paid_status",
+    0 // unpaid
+);
 
 
 $status_list = getInvoicePaidStatusList();

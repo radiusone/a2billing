@@ -49,13 +49,14 @@ $HD_Form->list_query_conditions["id_agent"] = $_SESSION["agent_id"];
 
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
-$HD_Form -> FG_OTHER_BUTTON2_LINK = "javascript:;";
-$HD_Form -> FG_OTHER_BUTTON2_IMG = get_image_path("cancel.png");
-$HD_Form -> FG_OTHER_BUTTON2 = true;
-$HD_Form -> FG_OTHER_BUTTON2_HTML_CLASS = "cancel_click";
-$HD_Form -> FG_OTHER_BUTTON2_HTML_ID = "|col0|";
-$HD_Form -> FG_OTHER_BUTTON2_CONDITION = '|col4| == "'.gettext('WAITING').'"';
-$HD_Form -> FG_OTHER_BUTTON2_ALT = gettext("CANCEL THIS REQUEST");
+$HD_Form->AddListActionButton(
+    "",
+    _("CANCEL THIS REQUEST"),
+    get_image_path("cancel.png"),
+    "cancel_click",
+    "status",
+    0 // waiting
+);
 
 $status_list = getRemittanceStatus_List();
 $type_list = getRemittanceType_List();

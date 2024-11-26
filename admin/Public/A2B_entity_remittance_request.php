@@ -119,10 +119,10 @@ require_once __DIR__ . "/../templates/footer.php";
 <script>
 $(function () {
     $('.accept_click').on('click', function () {
-        $.get("A2B_entity_remittance_request.php", {id: this.id, action: "accept"}, () => location.reload);
+        $.get("A2B_entity_remittance_request.php", {id: this.dataset.primaryKey, action: "accept"}, () => location.reload);
     });
     $('.refuse_click').on('click', function () {
-        $.get("A2B_entity_remittance_request.php", {id: this.id, action: "refuse"}, () => location.reload);
+        $.get("A2B_entity_remittance_request.php", {id: this.dataset.primaryKey, action: "refuse"}, () => location.reload);
     });
 });
 </script>
