@@ -186,6 +186,21 @@ use A2billing\A2Billing;
         ];
     }
 
+    function getCardStatus_Acronym_List(): array
+    {
+        return [
+            1 => ["<abbr title='" . _("ACTIVE") . "'>" . _("ACTIVE") . "</abbr>", "1"],
+            0 => ["<abbr title='" . _("CANCELLED") . "'>" . _("CANCEL") . "</abbr>", "0"],
+            2 => ["<abbr title='" . _("NEW") . "'>" . _("NEW") . "</abbr>", "2"],
+            3 => ["<abbr title='" . _("WAITING-MAILCONFIRMATION") . "'>" . _("WAITING") . "</abbr>", "3"],
+            4 => ["<abbr title='" . _("RESERVED") . "'>" . _("RESERVED") . "</abbr>", "4"],
+            5 => ["<abbr title='" . _("EXPIRED") . "'>" . _("EXPIRED") . "</abbr>", "5"],
+            6 => ["<abbr title='" . _("SUSPENDED FOR UNDERPAYMENT") . "'>" . _("SUS-PAY") . "</abbr>", "6"],
+            7 => ["<abbr title='" . _("SUSPENDED FOR LITIGATION") . "'>" . _("SUS-LIT") . "</abbr>", "7"],
+            8 => ["<abbr title='" . _("WAITING SUBSCRIPTION PAYMENT") . "'>" . _("WAIT-PAY") . "</abbr>", "8"],
+        ];
+    }
+
     function getCardAccess_List(): array
     {
         return [
