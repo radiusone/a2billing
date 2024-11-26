@@ -147,21 +147,11 @@ use A2billing\A2Billing;
         ];
     }
 
-    function getTicketPriorityList(): array
-    {
-        return [
-            [_("NONE"), "0"],
-            [_("LOW"), "1"],
-            [_("MEDIUM"), "2"],
-            [_("HIGH"), "3"],
-        ];
-    }
-
     function getTicketViewedList(): array
     {
         return [
-            [_('VIEWED'), "0"],
-            ['<strong style="font-size:8px; color:#B00000; background-color:white; border:solid 1px;"> &nbsp;'._('NEW').'&nbsp;</strong>', '1'],
+            ['<span class="badge text-bg-primary">' . _('VIEWED') . '</span>', "0"],
+            ['<span class="badge text-bg-danger">' . _('NEW') . '</span>', '1'],
         ];
     }
 
@@ -193,21 +183,6 @@ use A2billing\A2Billing;
             6 => [_("SUSPENDED FOR UNDERPAYMENT"), "6"],
             7 => [_("SUSPENDED FOR LITIGATION"), "7"],
             8 => [_("WAITING SUBSCRIPTION PAYMENT"), "8"],
-        ];
-    }
-
-    function getCardStatus_Acronym_List(): array
-    {
-        return [
-            1 => ["<acronym title='" . _("ACTIVE") . "'>" . _("ACTIVE") . "</acronym>", "1"],
-            0 => ["<acronym title='" . _("CANCELLED") . "'>" . _("CANCEL") . "</acronym>", "0"],
-            2 => ["<acronym title='" . _("NEW") . "'>" . _("NEW") . "</acronym>", "2"],
-            3 => ["<acronym title='" . _("WAITING-MAILCONFIRMATION") . "'>" . _("WAITING") . "</acronym>", "3"],
-            4 => ["<acronym title='" . _("RESERVED") . "'>" . _("RESERVED") . "</acronym>", "4"],
-            5 => ["<acronym title='" . _("EXPIRED") . "'>" . _("EXPIRED") . "</acronym>", "5"],
-            6 => ["<acronym title='" . _("SUSPENDED FOR UNDERPAYMENT") . "'>" . _("SUS-PAY") . "</acronym>", "6"],
-            7 => ["<acronym title='" . _("SUSPENDED FOR LITIGATION") . "'>" . _("SUS-LIT") . "</acronym>", "7"],
-            8 => ["<acronym title='" . _("WAITING SUBSCRIPTION PAYMENT") . "'>" . _("WAIT-PAY") . "</acronym>", "8"],
         ];
     }
 

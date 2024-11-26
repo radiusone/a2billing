@@ -6,6 +6,7 @@ use A2billing\NotificationsDAO;
 use A2billing\Notification;
 use A2billing\Mail;
 use A2billing\A2bMailException;
+use A2billing\Ticket;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 

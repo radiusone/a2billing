@@ -37,7 +37,7 @@ class Ticket
     private bool $viewed_cust;
     private bool $viewed_agent;
     private bool $viewed_admin;
-    private string $supportbox_email;
+    private ?string $supportbox_email = null;
     private string $supportbox_language;
 
     public function __construct(int $id)
@@ -292,7 +292,9 @@ class Ticket
         }
 
         $owner = $this->creator_login . " (" . $this->creator_firstname . " " . $this->creator_lastname . ")";
-        $this->sendNotification($this->supportbox_email, $this->supportbox_language, $owner, $desc, $owner_comment);
+        if ($this->supportbox_email) {
+            $this->sendNotification($this->supportbox_email, $this->supportbox_language, $owner, $desc, $owner_comment);
+        }
         $this->sendNotification($this->creator_email, $this->creator_language, $owner, $desc, $owner_comment);
     }
 
@@ -323,11 +325,11 @@ class Ticket
     public static function getAllStatus(): array
     {
         return [
-            _("NEW"),
-            _("FIXED"),
-            _("REOPEN"),
-            _("CLOSED"),
-            _("INVALID"),
+            self::STATUS_NEW => _("NEW"),
+            self::STATUS_FIXED => _("FIXED"),
+            self::STATUS_REOPEN => _("REOPEN"),
+            self::STATUS_CLOSED => _("CLOSED"),
+            self::STATUS_INVALID => _("INVALID"),
         ];
     }
 
@@ -337,6 +339,23 @@ class Ticket
         array_walk($states, fn (&$v, $k) => $v = [$v, $k]);
 
         return $states;
+    }
+
+    public static function getAllPriority(): array
+    {
+        return [
+            self::PRIORITY_LOW => _("LOW"),
+            self::PRIORITY_MED => _("MEDIUM"),
+            self::PRIORITY_HIGH => _("HIGH"),
+        ];
+    }
+
+    public static function getAllPriorityListView(): array
+    {
+        $pris = self::getAllStatus();
+        array_walk($pris, fn (&$v, $k) => $v = [$v, $k]);
+
+        return $pris;
     }
 
     public static function getPossibleStatus(int $initialStatus, bool $isadmin = false): array

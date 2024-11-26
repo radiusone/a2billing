@@ -35,12 +35,12 @@ class Comment
         }
 
         $comment = new self(
-            $result["id"],
+            (int)$result["id"],
             $result["description"],
             $result["date"],
-            $result["viewed_cust"],
-            $result["viewed_agent"],
-            $result["viewed_admin"]
+            (bool)$result["viewed_cust"],
+            (bool)$result["viewed_agent"],
+            (bool)$result["viewed_admin"]
         );
         $creatorid = (int)$result["creator"];
         $creator_type = (int)$result["creator_type"];
@@ -89,9 +89,9 @@ class Comment
             case self::CUSTOMER:
                 return $this->viewed_cust;
             case self::ADMIN:
-                return $this->viewed_agent;
-            case self::AGENT:
                 return $this->viewed_admin;
+            case self::AGENT:
+                return $this->viewed_agent;
             default :
                 return false;
         }

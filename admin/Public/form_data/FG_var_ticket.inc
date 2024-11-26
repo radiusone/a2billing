@@ -36,8 +36,11 @@ use A2billing\Ticket;
  *
 **/
 
+/**
+ * @var string $popup_select
+ * @var string $form_action
+ */
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
-
 
 getpost_ifset(['id', 'title', 'id_component','description','priority','status','creator','username','viewed_admin']);
 /**
@@ -51,7 +54,7 @@ getpost_ifset(['id', 'title', 'id_component','description','priority','status','
  * @var string $username
  * @var string $viewed_admin
  */
-$form_action = $form_action ?? "list";
+$form_action ??= "list";
 
 if ($form_action === "list") {
     $tables = "cc_ticket LEFT JOIN
@@ -62,56 +65,52 @@ if ($form_action === "list") {
 	$HD_Form = new FormHandler("cc_ticket", _("Ticket"));
 }
 
-$HD_Form -> FG_TABLE_DEFAULT_ORDER = " cc_ticket.id";
-$HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
-$HD_Form -> FG_QUERY_WHERE_CLAUSE = " cc_ticket.creator_type= 0 ";
+$HD_Form->FG_TABLE_DEFAULT_ORDER = " cc_ticket.id";
+$HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
+$HD_Form->FG_QUERY_WHERE_CLAUSE = " cc_ticket.creator_type= 0 ";
 $HD_Form->list_query_conditions["cc_ticket.creator_type"] = 0;
 
-$HD_Form -> FG_FK_DELETE_ALLOWED = true;
-$HD_Form -> FG_FK_DELETE_CONFIRM = true;
-$HD_Form -> FG_FK_WARNONLY = true;
-$HD_Form -> FG_FK_TABLENAMES = ["cc_ticket_comment"];
-$HD_Form -> FG_FK_EDITION_CLAUSE = [" id_ticket "];
+$HD_Form->FG_FK_DELETE_ALLOWED = true;
+$HD_Form->FG_FK_DELETE_CONFIRM = true;
+$HD_Form->FG_FK_WARNONLY = true;
+$HD_Form->FG_FK_TABLENAMES = ["cc_ticket_comment"];
+$HD_Form->FG_FK_EDITION_CLAUSE = [" id_ticket "];
 
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "CC_ticket.php?form_action=ask-add";
 $HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add TICKET");
 $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("note_add.png") ;
 
-$priority_list = getTicketPriorityList();
+$priority_list = Ticket::getAllPriorityListView();
 $viewed_list = getTicketViewedList();
 $status_list = Ticket::getAllStatusListView();
 
-$HD_Form -> AddViewElement(gettext("ID"), "id");
-$HD_Form -> AddViewElement(gettext("CUSTOMER"), "creator", true, 25, "", "lie", "cc_card", "lastname, firstname", "id='%id'", "%1 %2");
-$HD_Form -> AddViewElement(gettext("ACCOUNT NUMBER"), "username", true, 30, "display_customer_link");
-$HD_Form -> AddViewElement(gettext("TITLE"), "title");
-$HD_Form -> AddViewElement(gettext("CREATIONDATE"), "creationdate", true, 19);
-$HD_Form -> AddViewElement(gettext("COMPONENT"), "id_component", true, 15, "", "lie", "cc_support_component", "name", "id='%id'", "%1");
-$HD_Form -> AddViewElement(gettext("PRIORITY"), "priority", true, 0, "", "list", $priority_list);
-$HD_Form -> AddViewElement(gettext("VIEWED"), "viewed_admin", false, 0, "", "list", $viewed_list);
-$HD_Form -> AddViewElement(gettext("STATUS"), "status", true, 0, "", "list", $status_list);
-$HD_Form -> FieldViewElement ("cc_ticket.id, cc_ticket.creator, cc_card.username, cc_ticket.title, cc_ticket.creationdate, cc_ticket.id_component , cc_ticket.priority , v.viewed , cc_ticket.status");
-
-$HD_Form->AddListActionButton(
-    "CC_ticket_view.php?id=",
-    _("VIEW DETAILS"),
-    get_image_path("icon-viewdetails.gif")
-);
+$HD_Form->AddViewElement(gettext("ID"), "id");
+$HD_Form->AddViewElement(gettext("CUSTOMER"), "creator", true, 25, "", "lie", "cc_card", "lastname, firstname", "id='%id'", "%1 %2");
+$HD_Form->AddViewElement(gettext("ACCOUNT NUMBER"), "username", true, 30, "display_customer_link");
+$HD_Form->AddViewElement(gettext("TITLE"), "title");
+$HD_Form->AddViewElement(gettext("CREATIONDATE"), "creationdate", true, 19);
+$HD_Form->AddViewElement(gettext("COMPONENT"), "id_component", true, 15, "", "lie", "cc_support_component", "name", "id='%id'", "%1");
+$HD_Form->AddViewElement(gettext("PRIORITY"), "priority", true, 0, "", "list", $priority_list);
+$HD_Form->AddViewElement(gettext("VIEWED"), "viewed_admin", false, 0, "", "list", $viewed_list);
+$HD_Form->AddViewElement(gettext("STATUS"), "status", true, 0, "", "list", $status_list);
+$HD_Form->FieldViewElement ("cc_ticket.id, cc_ticket.creator, cc_card.username, cc_ticket.title, cc_ticket.creationdate, cc_ticket.id_component , cc_ticket.priority , v.viewed , cc_ticket.status");
 
 $HD_Form->search_form_enabled = !$popup_select;
-$HD_Form -> search_delete_enabled =false;
-$HD_Form -> search_session_key = 'ticket_cust_selection';
-$HD_Form -> search_form_title = gettext('Define specific criteria to search for ticket created.');
-$HD_Form -> search_date_enabled = true;
-$HD_Form -> search_date_text = gettext('DATE');
-$HD_Form -> search_date_column = 'cc_ticket.creationdate';
+$HD_Form->search_delete_enabled =false;
+$HD_Form->search_session_key = 'ticket_cust_selection';
+$HD_Form->search_form_title = gettext('Define specific criteria to search for ticket created.');
+$HD_Form->search_date_enabled = true;
+$HD_Form->search_date_text = gettext('DATE');
+$HD_Form->search_date_column = 'cc_ticket.creationdate';
 
-$HD_Form -> AddSearchTextInput(gettext("ACCOUNT NUMBER"), 'username','usernametype');
+$HD_Form->AddSearchTextInput(gettext("ACCOUNT NUMBER"), 'username','usernametype');
 
-$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
-$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
+$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form->FG_ENABLE_ADD_BUTTON = true;
+$HD_Form->FG_ENABLE_INFO_BUTTON = true;
+$HD_Form->FG_INFO_BUTTON_LINK = "CC_ticket_view.php?id=";
 
 $val_default = "";
 if ($form_action === 'ask-add' && $username) {
@@ -152,14 +151,14 @@ $HD_Form->AddEditTextarea(
 );
 
 // Set the filter variables
-$HD_Form -> FG_FILTER_ENABLE = true;
-$HD_Form -> FG_FILTER_COLUMN = 'username';
-$HD_Form -> FG_FILTER_LABEL = gettext('ACCOUNT NUMBER');
+$HD_Form->FG_FILTER_ENABLE = true;
+$HD_Form->FG_FILTER_COLUMN = 'username';
+$HD_Form->FG_FILTER_LABEL = gettext('ACCOUNT NUMBER');
 
 $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["viewed_admin"] = 0;
-$HD_Form -> FG_ADDITIONAL_FUNCTION_AFTER_ADD = 'ticket_add';
-$HD_Form -> FG_INTRO_TEXT_EDITION= '';
-$HD_Form -> FG_INTRO_TEXT_ADITION = '';
-$HD_Form -> FG_LOCATION_AFTER_ADD = "?id=";
-$HD_Form -> FG_LOCATION_AFTER_EDIT = "?id=";
-$HD_Form -> FG_LOCATION_AFTER_DELETE = "?id=";
+$HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = 'ticket_add';
+$HD_Form->FG_INTRO_TEXT_EDITION= '';
+$HD_Form->FG_INTRO_TEXT_ADITION = '';
+$HD_Form->FG_LOCATION_AFTER_ADD = "?id=";
+$HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";
+$HD_Form->FG_LOCATION_AFTER_DELETE = "?id=";

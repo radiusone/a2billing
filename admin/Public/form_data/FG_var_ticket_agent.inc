@@ -2,6 +2,7 @@
 
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
+use A2billing\Ticket;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -60,7 +61,7 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = 
 $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("note_add.png") ;
 
 
-$priority_list = getTicketPriorityList();
+$priority_list = Ticket::getAllPriorityListView();
 $viewed_list = getTicketViewedList();
 $status_list = Ticket::getAllStatusListView();
 

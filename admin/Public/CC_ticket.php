@@ -41,7 +41,6 @@ require_once "../../common/lib/admin.defines.php";
 include './form_data/FG_var_ticket.inc';
 /**
  * @var FormHandler $HD_Form
- * @var Smarty $smarty
  */
 
 Admin::checkPageAccess(Admin::ACX_SUPPORT);

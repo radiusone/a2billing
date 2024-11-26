@@ -2,6 +2,7 @@
 
 use A2billing\Agent;
 use A2billing\Forms\FormHandler;
+use A2billing\Ticket;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -63,7 +64,7 @@ $HD_Form->list_query_conditions["cc_card_group.id_agent"] = $_SESSION["agent_id"
 
 $status_list = Ticket::getAllStatusListView();
 $viewed_list = getTicketViewedList();
-$priority_list =getTicketPriorityList();
+$priority_list = Ticket::getAllPriorityListView();
 
 $filter_view ='v.viewed ';
 

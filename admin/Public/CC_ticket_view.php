@@ -65,7 +65,9 @@ if (!empty($action)) {
             $admin_id = $_SESSION["admin_id"];
             $ticket = Ticket::getTicket($id);
             if ($ticket) {
-                $ticket->setStatus($status);
+                if ($ticket->getStatus() !== (int)$status) {
+                    $ticket->setStatus($status);
+                }
                 if ($comment_text) {
                     $ticket->insertComment($comment_text, $admin_id, Comment::ADMIN);
                 }
@@ -134,8 +136,8 @@ require_once __DIR__ . "/../templates/main.php";
         <div class="col">
             <label for="status" class="form-label"><strong><?= _("Status") ?></strong></label>
             <select name="status" id="status" class="form-select" multiple="multiple" size="<?= count($states) ?>">
-                <?php foreach ($states as $option): ?>
-                <option value="<?= $option["id"] ?>"><?= $option["name"] ?></option>
+                <?php foreach ($states as $i => $option): ?>
+                <option value="<?= $option["id"] ?>" <?= $i ? "" : "selected=\"selected\"" ?>><?= $option["name"] ?></option>
                 <?php endforeach ?>
             </select>
         </div>
@@ -143,8 +145,8 @@ require_once __DIR__ . "/../templates/main.php";
             <label for="comment_text" class="form-label"><strong><?= _("Comment") ?></strong></label>
             <textarea name="comment_text" id="comment_text" class="form-control" rows="<?= count($states) ?>"></textarea>
         </div>
-        <div class="col-2 d-flex align-items-bottom">
-            <button type="submit" class="btn btn-default"><?= _("Update") ?></button>
+        <div class="col-2 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary"><?= _("Update") ?></button>
         </div>
     </div>
 </form>
@@ -162,9 +164,7 @@ require_once __DIR__ . "/../templates/main.php";
         <?= $comment->getCreationdate() ?>
     </div>
     <div class="col-1">
-        <span class="badge text-bg-danger">
-            <?= $comment->getViewed(Comment::ADMIN) ? _("NEW") : "" ?>
-        </span>
+        <span class="badge text-bg-danger"><?= $comment->getViewed(Comment::ADMIN) ? _("NEW") : "" ?></span>
     </div>
 </div>
 <div class="row pb-3">
