@@ -54,7 +54,7 @@ use A2billing\Forms\FormHandler;
                         id="enable_search_start_date"
                         value="true"
                         aria-label="<?= _("enable the search start date")?>"
-                        <?php if ($processed["enable_search_start_date"]): ?>checked="checked"<?php endif ?>
+                        <?php if ($processed["enable_search_start_date"] ?? ""): ?>checked="checked"<?php endif ?>
                         class="form-check-input m-0"
                     />&nbsp;<label for="enable_search_start_date" class="form-label form-label-sm m-0"><?=_("From") ?></label>
                 </div>
@@ -70,7 +70,7 @@ use A2billing\Forms\FormHandler;
                         id="enable_search_end_date"
                         value="true"
                         aria-label="<?= _("enable the search end date") ?>"
-                        <?php if ($processed["enable_search_end_date"]): ?>checked="checked"<?php endif ?>
+                        <?php if ($processed["enable_search_end_date"] ?? ""): ?>checked="checked"<?php endif ?>
                         class="form-check-input m-0"
                     />&nbsp;<label for="enable_search_end_date" class="form-label form-label-sm m-0"><?=_("To") ?></label>
                 </div>

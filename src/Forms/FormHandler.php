@@ -2029,18 +2029,17 @@ class FormHandler
         Console::logSpeed('Time taken to get to line ' . __LINE__);
         $processed = $this->getProcessed();
 
-        $id = $processed['id'];
         // todo: is this ever not 0?
         $form_el_index = $processed['form_el_index'] ?? 0;
 
         switch ($form_action) {
             case "add-content":
-                $this->perform_add_content($form_el_index, $id);
+                $this->perform_add_content($form_el_index, $processed['id']);
                 echo new EditForm($this, $processed, $list);
                 break;
 
             case "del-content":
-                $this->perform_del_content($form_el_index, $id);
+                $this->perform_del_content($form_el_index, $processed['id']);
                 echo new EditForm($this, $processed, $list);
                 break;
 

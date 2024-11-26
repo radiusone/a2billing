@@ -340,7 +340,7 @@ $processed["popup_fieldname"] ??= "";
     <div class="col-4">
         <form id="displaylimit_form" action="">
             <label for="displaylimit" class="form-label d-inline"><?= gettext("Display");?></label>
-            <input type="hidden" name="id" value="<?= $processed["id"] ?>"/>
+            <input type="hidden" name="id" value="<?= $processed["id"] ?? "" ?>"/>
             <input type="hidden" name="form_action" value="list"/>
             <input type="hidden" name="current_page" value="0"/>
             <?php foreach ($processed as $key => $val): ?>
