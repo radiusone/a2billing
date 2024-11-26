@@ -69,11 +69,8 @@ $HD_Form -> AddViewElement(gettext("STATUS"), "status", true, 0, "", "list", $st
 
 $HD_Form -> FieldViewElement ("cc_ticket.id, title, cc_ticket.creationdate, id_component , priority,$filter_view,status");
 
-$HD_Form->AddListActionButton(
-    "A2B_ticket_view.php?id=",
-    _("View ticket"),
-    get_image_path("icon-viewdetails.gif", true)
-);
+$HD_Form->FG_ENABLE_INFO_BUTTON = true;
+$HD_Form->FG_INFO_BUTTON_LINK = "A2B_ticket_view.php?id=";
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = false;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = false;
 $HD_Form -> FG_ENABLE_ADD_BUTTON = false;

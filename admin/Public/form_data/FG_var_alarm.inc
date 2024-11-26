@@ -84,12 +84,8 @@ $HD_Form -> FieldViewElement ('name, periode, type, `maxvalue`, minvalue, status
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form -> FG_ENABLE_ADD_BUTTON = true;
-// View Details
-$HD_Form->AddListActionButton(
-    "javascript:window.open('CC_entity_alarm_details.php?popup_select=2&displayfooter=0&displayheader=0&id=|param|','','scrollbars=yes,resizable=yes,width=600,height=350')",
-    _("View details"),
-    get_image_path("icon-viewdetails.gif")
-);
+$HD_Form->FG_ENABLE_INFO_BUTTON = true;
+$HD_Form->FG_INFO_BUTTON_LINK = "javascript:window.open('CC_entity_alarm_details.php?popup_select=2&displayfooter=0&displayheader=0&id=|param|','','scrollbars=yes,resizable=yes,width=600,height=350')";
 
 $HD_Form->AddEditElement(
     gettext("NAME"),

@@ -79,12 +79,6 @@ $HD_Form -> AddViewElement(gettext("STATUS"), "status", true, 0, "", "list", $st
 
 $HD_Form -> FieldViewElement ("cc_ticket.id, cc_ticket.creator, cc_agent.login, title, cc_ticket.creationdate, id_component , priority , $filter_view , cc_ticket.status");
 
-$HD_Form->AddListActionButton(
-    "CC_ticket_view.php?id=",
-    _("VIEW DETAILS"),
-    get_image_path("icon-viewdetails.gif")
-);
-
 if (!($popup_select>=1))	 $HD_Form -> search_form_enabled = true;
 $HD_Form -> search_delete_enabled =false;
 $HD_Form -> search_session_key = 'ticket_agent_selection';
@@ -100,6 +94,8 @@ $HD_Form -> AddSearchTextInput(gettext("FIRSTNAME"),'firstname','firstnametype')
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form -> FG_ENABLE_ADD_BUTTON = true;
+$HD_Form->FG_ENABLE_INFO_BUTTON = true;
+$HD_Form->FG_INFO_BUTTON_LINK = "CC_ticket_view.php?id=";
 
 $HD_Form->AddEditSqlSelect(gettext("AGENT"), "creator", "cc_agent", "login,id,firstname,lastname", "", "", [], "%1 (%3, %4)", "");
 
