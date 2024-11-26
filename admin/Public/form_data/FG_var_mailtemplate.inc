@@ -126,13 +126,11 @@ $HD_Form->AddViewElement(_("SUBJECT"), "subject");
 $HD_Form->FieldViewElement ('id, mailtype, fromemail, subject');
 
 if ((int)$popup_select >= 1) {
-    $HD_Form->FG_OTHER_BUTTON1 = true;
-    $HD_Form->FG_OTHER_BUTTON1_ALT = '<span style="color:red">&lt;' . _("SELECT TEXT") . '&gt;</span>';
-    $HD_Form->FG_OTHER_BUTTON1_IMG = '';
-
-    if ((int)$popup_select === 1) {
-        $HD_Form->FG_OTHER_BUTTON1_LINK = "javascript:sendValue('|col0|');";
-    }
+    $HD_Form->AddListActionButton(
+        "javascript:sendValue('|col0|')",
+        '<span style="color:red">&lt;' . _("SELECT TEXT") . '&gt;</span>',
+        ""
+    );
 } else {
     $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
     $HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_mailtemplate.php?form_action=ask-add";
@@ -143,10 +141,12 @@ if ((int)$popup_select >= 1) {
     $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
     $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 
-    // Translation
-    $HD_Form->FG_OTHER_BUTTON2 = false;
-    $HD_Form->FG_OTHER_BUTTON2_LINK= "A2B_entity_translate.php?form_action=ask-add&amp;id=|param|&amp;mailtype=|col0|";
-    $HD_Form->FG_OTHER_BUTTON2_ALT = _('Translate');
+    // not sure why this was specified but disabled?
+//    $HD_Form->AddListActionButton(
+//        "A2B_entity_translate.php?form_action=ask-add&amp;id=|param|&amp;mailtype=|col0|",
+//        _("Translate"),
+//        ""
+//    );
 }
 
 $HD_Form->search_form_enabled = true;

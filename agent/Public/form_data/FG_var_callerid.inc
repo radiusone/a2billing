@@ -106,10 +106,11 @@ $HD_Form -> FG_FILTER_ENABLE = true;
 $HD_Form -> FG_FILTER_COLUMN = 'cid';
 $HD_Form -> FG_FILTER_LABEL = gettext('CALLERID');
 
-$HD_Form -> FG_OTHER_BUTTON3 = true;
-$HD_Form -> FG_OTHER_BUTTON3_LINK = "A2B_entity_logrefill.php?form_action=ask-add&card_id=|col1|";
-$HD_Form -> FG_OTHER_BUTTON3_IMG = get_image_path("brick_add.png");
-$HD_Form -> FG_OTHER_BUTTON3_ALT = gettext('ADD REFILL');
+$HD_Form->AddListActionButton(
+    "A2B_entity_logrefill.php?form_action=ask-add&card_id=|col1|",
+    _("ADD REFILL"),
+    get_image_path("brick_add.png")
+);
 
 $HD_Form -> FG_LOCATION_AFTER_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
 $HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";

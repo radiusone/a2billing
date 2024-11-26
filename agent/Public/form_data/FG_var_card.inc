@@ -262,19 +262,11 @@ $HD_Form -> AddSearchSelectInput(gettext("SELECT CURRENCY"), "currency", $curren
 
 
 if (($popup_select>=1)) {
-
-	$HD_Form -> FG_OTHER_BUTTON1 = true;
-	$HD_Form -> FG_OTHER_BUTTON1_ALT = '<span style="color:red">&lt;' . _("SELECT") . '&gt;</span>';
-	$HD_Form -> FG_OTHER_BUTTON1_IMG = '';
-
-	if ($popup_select==1) {
-		$HD_Form -> FG_OTHER_BUTTON1_LINK = "javascript:sendValue('|param|');";
-		//echo"<a title=\"Select Card\" href=\"javascript:sendValue('".$recordset[$FG_NB_TABLE_COL]."');\">&lt;Select Card&gt;</a>";
-	} elseif ($popup_select==2) {
-		$HD_Form -> FG_OTHER_BUTTON1_LINK = "javascript:sendValue('|col1|');";
-		//echo"<a title=\"Select Card\" href=\"javascript:sendValue('".$recordset[1]."');\">&lt;Select Card&gt;</a>";
-	}
-
+    $HD_Form->AddListActionButton(
+        $popup_select == 1 ? "javascript:sendValue('|param|')" : "javascript:sendValue('|col1|')",
+        '<span style="color:red">&lt;' . _("SELECT") . '&gt;</span>',
+        ""
+    );
 } else {
 
 	if (has_rights (Agent::ACX_EDIT_CUSTOMER)) {
@@ -293,17 +285,19 @@ if (($popup_select>=1)) {
 	$FN_COLUMN_ALIAS="col".($FG_COL_QUERY_COUNT+2);
 
 	if (has_rights (Agent::ACX_VOIPCONF)) {
-		$HD_Form -> FG_OTHER_BUTTON1 = true;
-		$HD_Form -> FG_OTHER_BUTTON1_LINK="A2B_entity_friend.php?voip_conf=sip&form_action=add_sip&id_cc_card=|$FN_COLUMN_ID|&cardnumber=|$FN_COLUMN_USERNAME|&useralias=|$FN_COLUMN_ALIAS|";
-		$HD_Form -> FG_OTHER_BUTTON1_IMG = get_image_path("icon-sip.gif");
-		$HD_Form -> FG_OTHER_BUTTON1_ALT=gettext("SIP buddy");
+        $HD_Form->AddListActionButton(
+            "A2B_entity_friend.php?voip_conf=sip&form_action=add_sip&id_cc_card=|$FN_COLUMN_ID|&cardnumber=|$FN_COLUMN_USERNAME|&useralias=|$FN_COLUMN_ALIAS|",
+            _("SIP buddy"),
+            get_image_path("icon-sip.gif")
+        );
 	}
 
 	if (has_rights (Agent::ACX_VOIPCONF)) {
-		$HD_Form -> FG_OTHER_BUTTON2 = true;
-		$HD_Form -> FG_OTHER_BUTTON2_LINK="A2B_entity_friend.php?voip_conf=iax&form_action=add_iax&id_cc_card=|$FN_COLUMN_ID|&cardnumber=|$FN_COLUMN_USERNAME|&useralias=|$FN_COLUMN_ALIAS|";
-		$HD_Form -> FG_OTHER_BUTTON2_IMG = get_image_path("icon-iax.gif");
-		$HD_Form -> FG_OTHER_BUTTON2_ALT=gettext("IAX buddy");
+        $HD_Form->AddListActionButton(
+            "A2B_entity_friend.php?voip_conf=iax&form_action=add_iax&id_cc_card=|$FN_COLUMN_ID|&cardnumber=|$FN_COLUMN_USERNAME|&useralias=|$FN_COLUMN_ALIAS|",
+            _("IAX buddy"),
+            get_image_path("icon-iax.gif")
+        );
 	}
 }
 

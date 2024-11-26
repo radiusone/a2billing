@@ -56,9 +56,6 @@ $HD_Form -> FieldViewElement ('id, name, path, creationdate');
 $HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
-// Restore and Download
-$HD_Form -> FG_OTHER_BUTTON1 = true;
-$HD_Form -> FG_OTHER_BUTTON2 = true;
 
 $HD_Form->AddEditElement(
     gettext("Name "),
@@ -84,13 +81,16 @@ if ($form_action=="ask-restore") {
 
 $HD_Form -> FG_INTRO_TEXT_EDITION= '';
 
-$HD_Form -> FG_OTHER_BUTTON1_LINK = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?form_action=restore&id=";
-$HD_Form -> FG_OTHER_BUTTON1_IMG = get_image_path("icon-restore.gif");
-$HD_Form -> FG_OTHER_BUTTON1_ALT = gettext("Restore");
-
-$HD_Form -> FG_OTHER_BUTTON2_LINK = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?form_action=download&id=";
-$HD_Form -> FG_OTHER_BUTTON2_IMG = get_image_path("dl.gif");
-$HD_Form -> FG_OTHER_BUTTON2_ALT = gettext("Download");
+$HD_Form->AddListActionButton(
+    "?form_action=restore&id=",
+    _("Restore"),
+    get_image_path("icon-restore.gif")
+);
+$HD_Form->AddListActionButton(
+    "?form_action=download&id=",
+    _("Download"),
+    get_image_path("dl.gif")
+);
 
 $HD_Form -> FG_LOCATION_AFTER_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
 $HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";

@@ -58,15 +58,16 @@ $HD_Form -> FG_ENABLE_EDIT_BUTTON = false;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = false;
 $HD_Form -> FG_ENABLE_ADD_BUTTON = false;
 
-$HD_Form -> FG_OTHER_BUTTON1 = true;
-$HD_Form -> FG_OTHER_BUTTON2 = true;
-$HD_Form -> FG_OTHER_BUTTON2_LINK="javascript:;\" onClick=\"window.open('A2B_entity_moneysituation_details.php?type=payment&form_action=list&displayheader=0&popup_select=1&id=|param|','','scrollbars=yes,resizable=yes,width=500,height=270')\"";
-$HD_Form -> FG_OTHER_BUTTON1_LINK="javascript:;\" onClick=\"window.open('A2B_entity_moneysituation_details.php?type=invoice&form_action=list&displayheader=0&popup_select=1&id=|param|','','scrollbars=yes,resizable=yes,width=500,height=270')\"";
-$HD_Form -> FG_OTHER_BUTTON2_ALT = '<span style="color:red">' . _("PAYMENT") . '</span>';;
-$HD_Form -> FG_OTHER_BUTTON1_ALT = '<span style="color:red">' . _("INVOICE") . '</span>';;
-
-$HD_Form -> FG_OTHER_BUTTON1_IMG = '';
-$HD_Form -> FG_OTHER_BUTTON2_IMG = '';
+$HD_Form->AddListActionButton(
+    "javascript:window.open('A2B_entity_moneysituation_details.php?type=invoice&form_action=list&displayheader=0&popup_select=1&id=|param|','','scrollbars=yes,resizable=yes,width=500,height=270')",
+    '<span style="color:red">' . _("INVOICE") . '</span>',
+    ""
+);
+$HD_Form->AddListActionButton(
+    "javascript:window.open('A2B_entity_moneysituation_details.php?type=payment&form_action=list&displayheader=0&popup_select=1&id=|param|','','scrollbars=yes,resizable=yes,width=500,height=270')",
+    '<span style="color:red">' . _("PAYMENT") . '</span>',
+    ""
+);
 
 $HD_Form -> FG_FILTER_ENABLE = true;
 $HD_Form -> FG_FILTER_COLUMN = 'username';
