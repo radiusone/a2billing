@@ -232,7 +232,6 @@ $processed["popup_fieldname"] ??= "";
                         <?php endif ?>
                     <?php endif ?>
                     <?php foreach ($form->list_action_buttons as $button):
-                        /** this is just duplicating the following for loop until old button definitions are replaced */
                         $check = true;
                         if (!empty($button["match_index"])) {
                             $check = $item[$button["match_index"]] == $button["match_value"];
@@ -266,57 +265,6 @@ $processed["popup_fieldname"] ??= "";
                         </button>
                         <?php endif ?>
                     <?php endforeach ?>
-                    <?php for ($b = 1; $b <= 5; $b++):
-                        if (property_exists($form, "FG_OTHER_BUTTON$b") && !empty($form->{"FG_OTHER_BUTTON$b"})):
-                            $check = true;
-                            if (!empty($form->{"FG_OTHER_BUTTON{$b}_CONDITION"})) {
-                                $condition_eval = preg_replace_callback(
-                                    "/\\|col([0-9]+)\\|/i",
-                                    fn ($m) => str_replace($m[0], $item[$m[1]] ?? "", $m[0]),
-                                    $form->{"FG_OTHER_BUTTON{$b}_CONDITION"}
-                                );
-                                $check = eval("return $condition_eval;");
-                            }
-                            if (!$check) {
-                                continue;
-                            }
-                            $new_link = $form->{"FG_OTHER_BUTTON{$b}_LINK"};
-                            $new_link = str_replace("|param|", $item["instance_primary_key"] ?? "", $new_link);
-                            $new_link = preg_replace_callback(
-                                "/\|col([0-9]+)\|/i",
-                                fn ($m) => str_replace("|col$m[1]|", $item[$m[1]] ?? "", $m[0]),
-                                $new_link
-                            );
-                            $extra_html = "";
-                            $id = $form->{"FG_OTHER_BUTTON{$b}_HTML_ID"};
-                            // ID can also have placeholders, unclear why we use $origlist here and not elsewhere
-                            preg_replace_callback(
-                                "/\|col([0-9]+)\|/",
-                                fn ($m) => str_replace($m[0], $origlist[$num][$m[1]] ?? "", $m[0]),
-                                $id
-                            );
-                            $extra_html .= " id='$id' ";
-
-                            if (str_ends_with($new_link, "=")) {
-                                $new_link .= $item["instance_primary_key"] ?? "";
-                            }
-
-                            $class = $form->{"FG_OTHER_BUTTON{$b}_HTML_CLASS"};
-                            if (!empty($class)) {
-                                $extra_html .= " class='$class' ";
-                            }
-
-                            $img = $form->{"FG_OTHER_BUTTON{$b}_IMG"};
-                            ?>
-                        <a href="<?= $new_link ?>" <?= $extra_html ?>>
-                            <?php if (empty($img)): ?>
-                                <?= $form->{"FG_OTHER_BUTTON{$b}_ALT"} ?>
-                            <?php else: ?>
-                                <img src="<?= $form->{"FG_OTHER_BUTTON{$b}_IMG"} ?>" alt="<?= $form->{"FG_OTHER_BUTTON{$b}_ALT"} ?>" title="<?= $form->{"FG_OTHER_BUTTON{$b}_ALT"} ?>">
-                            <?php endif ?>
-                        </a>
-                        <?php endif ?>
-                    <?php endfor ?>
                     </td>
                 <?php endif ?>
                 </tr>

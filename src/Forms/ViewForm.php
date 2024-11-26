@@ -42,8 +42,7 @@ class ViewForm
 
         $origlist = [];
         $hasActionButtons = (
-            $form->FG_ENABLE_DELETE_BUTTON || $form->FG_ENABLE_INFO_BUTTON || $form->FG_ENABLE_EDIT_BUTTON || $form->FG_OTHER_BUTTON1
-            || $form->FG_OTHER_BUTTON2 || $form->FG_OTHER_BUTTON3 || $form->FG_OTHER_BUTTON4 || $form->FG_OTHER_BUTTON5
+            $form->FG_ENABLE_DELETE_BUTTON || $form->FG_ENABLE_INFO_BUTTON || $form->FG_ENABLE_EDIT_BUTTON
             || count($form->list_action_buttons)
         );
 
