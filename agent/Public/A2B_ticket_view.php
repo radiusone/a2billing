@@ -1,7 +1,8 @@
 <?php
 
 use A2billing\Agent;
-use A2billing\Table;
+use A2billing\Comment;
+use A2billing\Ticket;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -37,9 +38,6 @@ use A2billing\Table;
 **/
 
 require_once "../../common/lib/agent.defines.php";
-include '../../common/lib/support/classes/ticket.php';
-include '../../common/lib/support/classes/comment.php';
-include '../../common/lib/epayment/includes/general.php';
 
 if (! has_rights (Agent::ACX_SUPPORT)) {
     Header ("HTTP/1.0 401 Unauthorized");
@@ -47,7 +45,7 @@ if (! has_rights (Agent::ACX_SUPPORT)) {
     die();
 }
 
-getpost_ifset(array ('result', 'id', 'action', 'status', 'comment', 'idc'));
+getpost_ifset(array ('result', 'id', 'action', 'status', 'A2billing\Comment', 'idc'));
 
 if ($result=="success") {
     $message = gettext("Ticket updated successfully");
@@ -59,31 +57,28 @@ if (isset($id)) {
     exit(gettext("Ticket ID not found"));
 }
 
-if (tep_not_null($action)) {
+if (!empty($action)) {
     switch ($action) {
         case 'change' :
-            $DBHandle = DbConnect();
-            $instance_sub_table = new Table("cc_ticket", "*");
-            $instance_sub_table->Update_table($DBHandle, "status = '" . $status . "'", "id = '" . $id . "'");
-            $ticket = new Ticket($ticketID);
-            $ticket->insertComment($comment, $_SESSION['agent_id'], 2);
-            tep_redirect("A2B_ticket_view.php?" . "id=" . $id . "&result=success");
+            $ticket = Ticket::getTicket($id);
+            if ($ticket) {
+                $ticket->setStatus($status);
+                $ticket->insertComment($comment, $_SESSION['agent_id'], Comment::AGENT);
+                header("Location: A2B_ticket_view.php?" . "id=" . $id . "&result=success");
+            }
             break;
+        default:
+            die("invalid action");
     }
+    die("update error");
 }
 
 $ticket = new Ticket($ticketID);
 $comments = $ticket->loadComments();
-$DBHandle = DbConnect();
-$instance_sub_table = new Table("cc_ticket", "*");
-if ($ticket->getViewed(1)) {
-    $instance_sub_table->Update_table($DBHandle, "viewed_agent = '0'", "id = '" . $id . "'");
-}
-$instance_sub_table = new Table("cc_ticket_comment", "*");
+
+$ticket->markViewed(Ticket::AGENT);
 foreach ($comments as $comment) {
-    if ($comment->getViewed(1)) {
-        $instance_sub_table->Update_table($DBHandle, "viewed_agent = '0'", "id = '" . $comment->getId() . "'");
-    }
+    $comment->markViewed(Comment::AGENT);
 }
 
 $smarty->display('main.tpl');
@@ -124,7 +119,7 @@ $smarty->display('main.tpl');
         <br/>
         <font style="font-weight:bold; " ><?php echo gettext("DESCRIPTION : "); ?></font>  <br/> <?php echo $ticket->getDescription();  ?></td>
     </tr>
-    <?php if ($ticket->getViewed(1)) { ?>
+    <?php if ($ticket->getViewed(Ticket::AGENT)) { ?>
     <tr>
         <td colspan="2" align="right">
         <br/>&nbsp;
@@ -150,10 +145,7 @@ $smarty->display('main.tpl');
      <input id="action" type="hidden" name="action" value="change"/>
     <input id="idc" type="hidden" name="idc" value=""/>
     <table class="epayment_conf_table">
-      <?php
-           $return_status = Ticket::getPossibleStatus($ticket->getStatus(),true);
-          if (!is_null($return_status)) {
-          ?>
+      <?php $return_status = Ticket::getPossibleStatus($ticket->getStatus(),true); ?>
         <tr>
             <td colspan="2">	<font style="font-weight:bold; " ><?php echo gettext("STATUS : "); ?></font>
 
@@ -171,7 +163,6 @@ $smarty->display('main.tpl');
             </select>
             </td>
         </tr>
-     <?php } ?>
 
         <tr>
             <td colspan="2"><font style="font-weight:bold; " ><?php echo gettext("COMMENT : "); ?>
@@ -210,7 +201,7 @@ foreach ($comments as $comment) {
         <td colspan="2"><pre><?php echo $comment->getDescription(); ?></pre> </td>
     </tr>
 
-    <?php if ($comment->getViewed(1)) { ?>
+    <?php if ($comment->getViewed(Comment::AGENT)) { ?>
     <tr>
         <td colspan="2" align="right">
         <br/>&nbsp;

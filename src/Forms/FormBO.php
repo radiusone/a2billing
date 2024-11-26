@@ -5,14 +5,14 @@
 
 namespace A2billing\Forms;
 
-use A2billing\Table;
 use A2billing\A2bMailException;
 use A2billing\Mail;
 use A2billing\Notification;
 use A2billing\NotificationsDAO;
 use A2billing\Realtime;
+use A2billing\Table;
+use A2billing\Ticket;
 use PhpAgi\AMI as AGI_AsteriskManager;
-use ticket;
 
 class FormBO
 {

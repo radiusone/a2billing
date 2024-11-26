@@ -42,7 +42,6 @@ if (! has_rights (Agent::ACX_ACCESS)) {
 }
 
 
-include (LIBDIR."/support/classes/ticket.php");
 
 getpost_ifset(array('id', 'title', 'id_component','description','priority','status','creator','username','viewed_agent' ));
 

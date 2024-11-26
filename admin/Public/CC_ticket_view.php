@@ -1,7 +1,8 @@
 <?php
 
 use A2billing\Admin;
-use A2billing\Table;
+use A2billing\Comment;
+use A2billing\Ticket;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -38,181 +39,140 @@ use A2billing\Table;
 
 $menu_section = 4;
 require_once "../../common/lib/admin.defines.php";
-include '../../common/lib/support/classes/ticket.php';
-include '../../common/lib/support/classes/comment.php';
-include '../../common/lib/epayment/includes/general.php';
 
 Admin::checkPageAccess(Admin::ACX_SUPPORT);
 
-getpost_ifset(array ( 'result', 'action', 'status', 'id', 'idc', 'comment' ));
+getpost_ifset(["result", "action", "status", "id", "comment_text"]);
+/**
+ * @var string $result
+ * @var string $action
+ * @var string $status
+ * @var string $id
+ * @var string $comment_text
+ */
 
-if ($result == "success") {
+if (($result ?? "") === "success") {
     $message = gettext("Ticket updated successfully");
 }
 
-if (!empty($id)) {
-    $ticketID = $id;
-} else {
-    exit (gettext("Ticket ID not found"));
+if (empty($id)) {
+    die(_("Ticket ID not found"));
 }
 
 if (!empty($action)) {
     switch ($action) {
-        case 'edit' :
-            $DBHandle = DbConnect();
-            $instance_sub_table = new Table("cc_ticket", "*");
-            $instance_sub_table->Update_table($DBHandle, "status = '" . $status . "'", "id = '" . $id . "'");
-            $ticket = new Ticket($ticketID);
-            $ticket->insertComment($comment, $_SESSION["admin_id"], 1);
-            tep_redirect("CC_ticket_view.php?" . "id=" . $id . "&result=success");
+        case "edit":
+            $admin_id = $_SESSION["admin_id"];
+            $ticket = Ticket::getTicket($id);
+            if ($ticket) {
+                $ticket->setStatus($status);
+                if ($comment_text) {
+                    $ticket->insertComment($comment_text, $admin_id, Comment::ADMIN);
+                }
+                header("Location: CC_ticket_view.php?id=$id&result=success");
+            }
             break;
+        default:
+            die("invalid action");
     }
+    die("update error");
 }
 
-$ticket = new Ticket($ticketID);
+$ticket = new Ticket($id);
 $comments = $ticket->loadComments();
+$states = Ticket::getPossibleStatus($ticket->getStatus(), true);
 
-$ticket = new Ticket($ticketID);
-$comments = $ticket->loadComments();
-$DBHandle = DbConnect();
-
-$instance_sub_table = new Table("cc_ticket", "*");
-if ($ticket->getViewed(2)) {
-    $instance_sub_table->Update_table($DBHandle, "viewed_admin = '0'", "id = '" . $id . "'");
-}
-
-$instance_sub_table = new Table("cc_ticket_comment", "*");
+$ticket->markViewed(Ticket::ADMIN);
 foreach ($comments as $comment) {
-    if ($comment->getViewed(2)) {
-        $instance_sub_table->Update_table($DBHandle, "viewed_admin = '0'", "id = '" . $comment->getId() . "'");
-    }
+    $comment->markViewed(Comment::ADMIN);
 }
 
 require_once __DIR__ . "/../templates/main.php";
 
 ?>
-<table class="epayment_conf_table">
-    <tr class="form_head">
-        <td ><font color="#FFFFFF"><?php echo gettext("TICKET: "); ?></font><font color="#FFFFFF"><b><?php echo $ticket->getTitle();  ?></b></font></td>
-        <td align="center" ><font color="#FFFFFF"><?php echo gettext("Number"); ?> : </font><font color="Red"> <?php echo $ticket->getId(); ?></font></td>
-    </tr>
-    <tr>
-        <td>
-        &nbsp;
-        </td>
-    </tr>
-    <tr>
-        <td colspan="2">
-         <font style="font-weight:bold; " ><?php echo gettext("BY : "); ?></font>  <?php echo $ticket->getCreatorname();  ?>
-
-        </td>
-    </tr>
-    <tr>
-        <td>
-         <font style="font-weight:bold; " ><?php echo gettext("PRIORITY : "); ?></font>  <?php echo $ticket->getPriorityDisplay();  ?>
-         </td>
-        <td>
-        <font style="font-weight:bold; " ><?php echo gettext("DATE : "); ?></font>  <?php echo $ticket->getCreationdate(); ?>
-        </td>
-    </tr>
-    <tr>
-        <td colspan="2">
-         <font style="font-weight:bold; " ><?php echo gettext("COMPONENT : "); ?></font>  <?php echo $ticket->getComponentname(); ?>
-        </td>
-    </tr>
-    <tr>
-        <td colspan="2">
+<div class="row pb-3">
+    <div class="col">
+        <h5><?= sprintf(_("Ticket %d"), $ticket->getId()) ?></h5>
+        <h6><?= $ticket->getTitle() ?></h6>
+        <span class="badge text-bg-danger"><?= $ticket->getViewed(Ticket::ADMIN) ? _("NEW") : "" ?></span>
+    </div>
+</div>
+<div class="row pb-3 border-top">
+    <div class="col">
+        <strong><?= _("By") ?></strong>
         <br/>
-        <font style="font-weight:bold; " ><?php echo gettext("DESCRIPTION : "); ?></font>  <br/> <?php echo $ticket->getDescription();  ?></td>
-    </tr>
-    <?php if ($ticket->getViewed(2)) { ?>
-    <tr>
-        <td colspan="2" align="right">
-        <strong style="font-size:8px; color:#B00000; "> &nbsp;NEW&nbsp;</strong>
-        </td>
-    </tr>
-    <?php } else {
-        ?>
-
-    <?php
-    } ?>
-    <tr >
-    <td colspan="2" align="center"><br/><font color="Green"><b><?php echo $message ?></b></font></td>
-    </tr>
-</table>
-
-<br/>
-
-  <form action="<?php echo '?id='.$ticket->getId(); ?>" method="post" >
-     <input id="action" type="hidden" name="action" value="edit"/>
-    <input id="idc" type="hidden" name="idc" value=""/>
-    <table class="epayment_conf_table">
-      <?php
-        $return_status = Ticket::getPossibleStatus($ticket->getStatus(),true);
-        if (!is_null($return_status)) {
-           ?>
-        <tr>
-            <td colspan="2">	<font style="font-weight:bold; " ><?php echo gettext("STATUS : "); ?></font>
-
-            <select name="status">
-             <?php
-                foreach ($return_status as $value) {
-                    if ($ticket->getStatus()==$value["id"]) {
-                        echo '<option selected "value="'.$value["id"] .'"> '.$value["name"].'</option> ' ;
-                    } else {
-                        echo '<option value="'.$value["id"] .'"> '.$value["name"].'</option> ' ;
-                    }
-                }
-              ?>
+        <?= $ticket->getCreatorname() ?>
+    </div>
+    <div class="col">
+        <strong><?= _("Priority") ?></strong>
+        <br/>
+        <?= $ticket->getPriorityDisplay() ?>
+    </div>
+    <div class="col">
+        <strong><?= _("Date") ?></strong>
+        <br/>
+        <?= $ticket->getCreationdate() ?>
+    </div>
+<?php if ($ticket->getComponentid()): ?>
+    <div class="col">
+        <strong><?= _("Component") ?></strong>
+        <br/>
+        <?= $ticket->getComponentname() ?>
+    </div>
+<?php endif ?>
+</div>
+<div class="row pb-3">
+    <div class="col-4">
+        <strong><?= _("Description") ?></strong>
+        <br/>
+        <?= $ticket->getDescription() ?>
+    </div>
+</div>
+<form method="post" action="?id=<?= $ticket->getId() ?>">
+    <input type="hidden" name="action" value="edit"/>
+    <div class="row pb-3">
+        <div class="col">
+            <label for="status" class="form-label"><strong><?= _("Status") ?></strong></label>
+            <select name="status" id="status" class="form-select" multiple="multiple" size="<?= count($states) ?>">
+                <?php foreach ($states as $option): ?>
+                <option value="<?= $option["id"] ?>"><?= $option["name"] ?></option>
+                <?php endforeach ?>
             </select>
-            </td>
-        </tr>
-     <?php } ?>
+        </div>
+        <div class="col">
+            <label for="comment_text" class="form-label"><strong><?= _("Comment") ?></strong></label>
+            <textarea name="comment_text" id="comment_text" class="form-control" rows="<?= count($states) ?>"></textarea>
+        </div>
+        <div class="col-2 d-flex align-items-bottom">
+            <button type="submit" class="btn btn-default"><?= _("Update") ?></button>
+        </div>
+    </div>
+</form>
 
-        <tr>
-            <td colspan="2"><font style="font-weight:bold; " ><?php echo gettext("COMMENT : "); ?>
-             </td>
-        </tr>
-        <tr>
-            <td colspan="2" align="center">
-             <textarea class="form_input_textarea" name="comment" cols="100" rows="10"></textarea>
-             </td>
-        </tr>
-        <tr>
-            <td colspan="2" align="right">
-                <input class="form_input_button" type="submit" value="<?php echo gettext("UPDATE"); ?>"/>
-             </td>
-        </tr>
-
-    </table>
-  </form>
+<?php foreach ($comments as $comment): ?>
+<div class="row w-75 pb-3 pt-1 border-top">
+    <div class="col">
+        <strong><?= _("By") ?></strong>
+        <br/>
+        <?= $comment->getCreatorname() ?>
+    </div>
+    <div class="col">
+        <strong><?= _("Date") ?></strong>
+        <br/>
+        <?= $comment->getCreationdate() ?>
+    </div>
+    <div class="col-1">
+        <span class="badge text-bg-danger">
+            <?= $comment->getViewed(Comment::ADMIN) ? _("NEW") : "" ?>
+        </span>
+    </div>
+</div>
+<div class="row pb-3">
+    <div class="col">
+        <pre><?= $comment->getDescription() ?></pre>
+    </div>
+</div>
 
 <?php
-foreach ($comments as $comment) {
-?>
-     <br/>
-     <table id="nav<?php echo $comment->getId(); ?>" class="epayment_conf_table">
-      <tr class="form_head">
-          <td>
-           <?php echo gettext("BY"); ?> :  <?php echo $comment->getCreatorname(); ?>  </td>
-           <td align="right"> <?php echo $comment->getCreationdate() ?> </td>
-      </tr>
-    <tr>
-         <td colspan="2">&nbsp;</td>
-    </tr>
-    <tr>
-        <td colspan="2"><pre><?php echo $comment->getDescription(); ?></pre> </td>
-    </tr>
-
-    <?php if ($comment->getViewed(2)) { ?>
-    <tr>
-        <td colspan="2" align="right">
-        <br/>&nbsp;
-        <strong style="font-size:8px; color:#B00000; "> &nbsp;NEW&nbsp;</strong> </td>
-    </tr>
-    <?php } else { ?>
-    <?php } ?>
-    </table>
-<?php
-}
+endforeach;
 require_once __DIR__ . "/../templates/footer.php";

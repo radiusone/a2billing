@@ -2,6 +2,7 @@
 
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
+use A2billing\Ticket;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -37,7 +38,6 @@ use A2billing\Forms\FormHandler;
 
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
-include (LIBDIR."/support/classes/ticket.php");
 
 getpost_ifset(['id', 'title', 'id_component','description','priority','status','creator','username','viewed_admin']);
 /**
@@ -80,7 +80,7 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("note_add.png") ;
 
 $priority_list = getTicketPriorityList();
 $viewed_list = getTicketViewedList();
-$status_list = ticket::getAllStatusListView();
+$status_list = Ticket::getAllStatusListView();
 
 $HD_Form -> AddViewElement(gettext("ID"), "id");
 $HD_Form -> AddViewElement(gettext("CUSTOMER"), "creator", true, 25, "", "lie", "cc_card", "lastname, firstname", "id='%id'", "%1 %2");

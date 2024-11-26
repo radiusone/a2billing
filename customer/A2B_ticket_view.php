@@ -1,7 +1,8 @@
 <?php
 
+use A2billing\Comment;
 use A2billing\Customer;
-use A2billing\Table;
+use A2billing\Ticket;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -37,9 +38,6 @@ use A2billing\Table;
 **/
 
 require_once "../common/lib/customer.defines.php";
-include '../common/lib/support/classes/ticket.php';
-include '../common/lib/support/classes/comment.php';
-include '../common/lib/epayment/includes/general.php';
 
 if (!has_rights(Customer::ACX_SUPPORT)) {
     Header("HTTP/1.0 401 Unauthorized");
@@ -52,7 +50,7 @@ getpost_ifset(array (
     'id',
     'action',
     'status',
-    'comment',
+    'A2billing\Comment',
     'idc'
 ));
 
@@ -66,45 +64,42 @@ if (isset ($id)) {
     exit (gettext("Ticket ID not found"));
 }
 
-if (tep_not_null($action)) {
+if (!empty($action)) {
     switch ($action) {
         case 'change' :
-            $DBHandle = DbConnect();
-            $instance_sub_table = new Table("cc_ticket", "*");
-            $instance_sub_table->Update_table($DBHandle, "status = '" . $status . "'", "id = '" . $id . "'");
-            $ticket = new Ticket($ticketID);
-            $ticket->insertComment($comment, $_SESSION['card_id'], 0);
-            tep_redirect("A2B_ticket_view.php?" . "id=" . $id . "&result=success");
+            $ticket = Ticket::getTicket($id);
+            if ($ticket) {
+                $ticket->setStatus($status);
+                $ticket->insertComment($comment, $_SESSION['card_id'], Comment::CUSTOMER);
+                header("Location: A2B_ticket_view.php?" . "id=" . $id . "&result=success");
+            }
+            break;
         case 'view_comment' :
-            $DBHandle = DbConnect();
-            $instance_sub_table = new Table("cc_ticket_comment", "*");
-            $instance_sub_table->Update_table($DBHandle, "viewed_cust = '0'", "id = '" . $idc . "'");
-            tep_redirect("A2B_ticket_view.php?id=" . $id . "#nav" . $idc);
+            $comment = Comment::getComment($idc);
+            if ($comment) {
+                $comment->markViewed(Comment::CUSTOMER);
+                header("Location: A2B_ticket_view.php?id=" . $id . "#nav" . $idc);
+            }
             break;
         case 'view_ticket' :
-            $DBHandle = DbConnect();
-            $instance_sub_table = new Table("cc_ticket", "*");
-            $instance_sub_table->Update_table($DBHandle, "viewed_cust = '0'", "id = '" . $id . "'");
-            tep_redirect("A2B_ticket_view.php?id=" . $id);
+            $ticket = Ticket::getTicket($id);
+            if ($ticket) {
+                $ticket->markViewed(Ticket::CUSTOMER);
+                header("Location: A2B_ticket_view.php?id=" . $id);
+            }
             break;
+        default:
+            die("invalid action");
     }
+    die("update error");
 }
 
 $ticket = new Ticket($ticketID);
 $comments = $ticket->loadComments();
 
-$ticket = new Ticket($ticketID);
-$comments = $ticket->loadComments();
-$DBHandle = DbConnect();
-$instance_sub_table = new Table("cc_ticket", "*");
-    if ($ticket->getViewed(2)) {
-    $instance_sub_table->Update_table($DBHandle, "viewed_cust = '0'", "id = '" . $id . "'");
-    }
-$instance_sub_table = new Table("cc_ticket_comment", "*");
+$ticket->markViewed(Ticket::CUSTOMER);
 foreach ($comments as $comment) {
-    if ($comment->getViewed(2)) {
-    $instance_sub_table->Update_table($DBHandle, "viewed_cust = '0'", "id = '" . $comment->getId() . "'");
-    }
+    $comment->markViewed(Comment::CUSTOMER);
 }
 
 $smarty->display('main.tpl');
@@ -162,11 +157,7 @@ $smarty->display('main.tpl');
      <input id="action" type="hidden" name="action" value="change"/>
     <input id="idc" type="hidden" name="idc" value=""/>
     <table class="epayment_conf_table">
-      <?php
-       $return_status = Ticket::getPossibleStatus($ticket->getStatus(),true);
-      if (!is_null($return_status)) {
-
-           ?>
+      <?php $return_status = Ticket::getPossibleStatus($ticket->getStatus()); ?>
         <tr>
             <td colspan="2">	<font style="font-weight:bold; " ><?php echo gettext("STATUS : "); ?></font>
 
@@ -184,7 +175,6 @@ $smarty->display('main.tpl');
             </select>
             </td>
         </tr>
-     <?php } ?>
 
         <tr>
             <td colspan="2"><font style="font-weight:bold; " ><?php echo gettext("COMMENT : "); ?>
@@ -228,7 +218,7 @@ foreach ($comments as $comment) {
         <td colspan="2"> <pre><?php echo $comment->getDescription(); ?></pre> </td>
     </tr>
 
-    <?php if ($comment->getViewed(0)) { ?>
+    <?php if ($comment->getViewed(Comment::CUSTOMER)) { ?>
     <tr>
         <td colspan="2" align="right">
         <br/>&nbsp;

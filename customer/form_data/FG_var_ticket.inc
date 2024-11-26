@@ -41,7 +41,6 @@ if (! has_rights (Customer::ACX_ACCESS)) {
     die();
 }
 
-include (LIBDIR."/support/classes/ticket.php");
 
 getpost_ifset(array('id', 'title', 'id_component','description','priority','status','viewed_cust'));
 
