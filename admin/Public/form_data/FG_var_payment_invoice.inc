@@ -55,15 +55,11 @@ $HD_Form -> AddViewElement(gettext("PAYMENT TYPE"), "payment_type", true, 30, ""
 $HD_Form -> FieldViewElement ('cc_logpayment.id, date, payment,description ,payment_type');
 
 if (($popup_select>=1)) {
-
-	$HD_Form -> FG_OTHER_BUTTON1 = true;
-	$HD_Form -> FG_OTHER_BUTTON1_ALT = '<span style="color:red">' . _("ADD") . '</span>';
-	$HD_Form -> FG_OTHER_BUTTON1_IMG = '';
-
-	if ($popup_select==1){
-		$HD_Form -> FG_OTHER_BUTTON1_LINK = "javascript:sendValue('|col0|');";
-	}
-
+    $HD_Form->AddListActionButton(
+        "javascript:sendValue('|col0|')",
+        '<span style="color:red">' . _("ADD") . '</span>',
+        ""
+    );
 }
 
 

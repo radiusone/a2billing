@@ -63,14 +63,14 @@ if (($posted && !empty($inuse)) || !$posted) {
     $HD_Form->FG_QUERY_WHERE_CLAUSE .= " (releasedate IS NULL OR releasedate < '1984-01-01 00:00:00') and activated=1";
     $HD_Form->list_query_conditions[] = ["SUB", ["releasedate" => null, ["SUB", ["releasedate" => ["<", "1984-01-01"]]]], "OR"];
     $HD_Form->list_query_conditions["activated"] = 1;
-    $HD_Form->FG_OTHER_BUTTON1 = true;
-    $HD_Form->FG_OTHER_BUTTON1_LINK = "A2B_entity_did_use.php?posted=$posted&order=$order&sens=$sens&current_page=$current_page&did=$did&inuse=$inuse&actionbtn=release_did&did=|col0|";
-    $HD_Form->FG_OTHER_BUTTON1_IMG = "data:image/gif;base64,R0lGODlhIQALAKEDAPPt2ZycnAAAAP///yH+FUNyZWF0ZWQgd2l0aCBUaGUgR0lNUAAh+QQBAAADACwAAAAAIQALAAACQVyOqctoAKOctMZjs5YYCAF9IBh+nimeZDd6EemGLgwDLGnGZzmiMDt7CWU0nS1AVClTLWaus4lSoNKqzdDIah0FADs=";
-    $HD_Form->FG_OTHER_BUTTON1_ALT=gettext("Release this did");
+    $HD_Form->AddListActionButton(
+        "A2B_entity_did_use.php?posted=$posted&order=$order&sens=$sens&current_page=$current_page&did=$did&inuse=$inuse&actionbtn=release_did&did=|col0|",
+        _("Release this did"),
+        "data:image/gif;base64,R0lGODlhIQALAKEDAPPt2ZycnAAAAP///yH+FUNyZWF0ZWQgd2l0aCBUaGUgR0lNUAAh+QQBAAADACwAAAAAIQALAAACQVyOqctoAKOctMZjs5YYCAF9IBh+nimeZDd6EemGLgwDLGnGZzmiMDt7CWU0nS1AVClTLWaus4lSoNKqzdDIah0FADs="
+    );
 } else {
     $HD_Form->FG_TABLE_DEFAULT_ORDER = "reservationdate";
     $HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
-    $HD_Form->FG_OTHER_BUTTON1 = false;
 }
 
 $HD_Form->AddViewElement(gettext("ID DID"), "id_did");

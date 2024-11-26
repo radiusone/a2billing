@@ -59,15 +59,11 @@ if ($popup_select) {
 	$HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 7;
 	$HD_Form -> CV_FOLLOWPARAMETERS = "&popup_select=" . $popup_select . "&popup_formname=" . $popup_formname . "&popup_fieldname=" . $popup_fieldname;
 
-	$HD_Form -> FG_OTHER_BUTTON1 = true;
-	$HD_Form -> FG_OTHER_BUTTON1_ALT = '<span style="color:red">&lt;' . _("SELECT") . '&gt;</span>';
-	$HD_Form -> FG_OTHER_BUTTON1_IMG = '';
-
-	//echo $popup_select;
-	if ($popup_select == 1)
-		$HD_Form -> FG_OTHER_BUTTON1_LINK = "javascript:sendValue('|param|');";
-	elseif ($popup_select == 2)
-		$HD_Form -> FG_OTHER_BUTTON1_LINK = "javascript:sendValue('|col0|');";
+    $HD_Form->AddListActionButton(
+        $popup_select == 1 ? "javascript:sendValue('|param|')" : "javascript:sendValue('|col0|')",
+        '<span style="color:red">&lt;' . _("SELECT") . '&gt;</span>',
+        ""
+    );
 } else {
 	$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 	$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;

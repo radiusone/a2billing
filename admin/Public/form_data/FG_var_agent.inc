@@ -119,16 +119,11 @@ if ($popup_select) {
 if ($popup_select) {
 	$HD_Form->FG_LIST_VIEW_PAGE_SIZE = 7;
 	$HD_Form->CV_FOLLOWPARAMETERS = "&amp;popup_select=$popup_select&amp;popup_formname=$popup_formname&amp;popup_fieldname=$popup_fieldname";
-
-	$HD_Form->FG_OTHER_BUTTON1 = true;
-	$HD_Form->FG_OTHER_BUTTON1_ALT = '<span style="color:red">&lt;' . _("SELECT") . '&gt;</span>';
-	$HD_Form->FG_OTHER_BUTTON2 = false;
-	//echo $popup_select;
-	if ($popup_select === "1") {
-        $HD_Form->FG_OTHER_BUTTON1_LINK = "javascript:sendValue('|param|');";
-    } elseif ($popup_select === "2") {
-        $HD_Form->FG_OTHER_BUTTON1_LINK = "javascript:sendValue('|col0|');";
-    }
+    $HD_Form->AddListActionButton(
+        $popup_select == 1 ? "javascript:sendValue('|param|')" : "javascript:sendValue('|col0|')",
+        '<span style="color:red">&lt;' . _("SELECT") . '&gt;</span>',
+        ""
+    );
 } elseif (has_rights (Admin::ACX_MODIFY_AGENTS)) {
 	$HD_Form->FG_ENABLE_INFO_BUTTON = true;
 	$HD_Form->FG_INFO_BUTTON_LINK = "A2B_agent_info.php?id=";

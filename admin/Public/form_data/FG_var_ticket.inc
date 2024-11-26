@@ -93,9 +93,11 @@ $HD_Form -> AddViewElement(gettext("VIEWED"), "viewed_admin", false, 0, "", "lis
 $HD_Form -> AddViewElement(gettext("STATUS"), "status", true, 0, "", "list", $status_list);
 $HD_Form -> FieldViewElement ("cc_ticket.id, cc_ticket.creator, cc_card.username, cc_ticket.title, cc_ticket.creationdate, cc_ticket.id_component , cc_ticket.priority , v.viewed , cc_ticket.status");
 
-$HD_Form -> FG_OTHER_BUTTON1_LINK = "CC_ticket_view.php?id=";
-$HD_Form -> FG_OTHER_BUTTON1_IMG = get_image_path("icon-viewdetails.gif");
-$HD_Form -> FG_OTHER_BUTTON1_ALT = gettext("VIEW DETAILS");
+$HD_Form->AddListActionButton(
+    "CC_ticket_view.php?id=",
+    _("VIEW DETAILS"),
+    get_image_path("icon-viewdetails.gif")
+);
 
 $HD_Form->search_form_enabled = !$popup_select;
 $HD_Form -> search_delete_enabled =false;
@@ -107,7 +109,6 @@ $HD_Form -> search_date_column = 'cc_ticket.creationdate';
 
 $HD_Form -> AddSearchTextInput(gettext("ACCOUNT NUMBER"), 'username','usernametype');
 
-$HD_Form -> FG_OTHER_BUTTON1 = true;
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form -> FG_ENABLE_ADD_BUTTON = true;

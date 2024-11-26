@@ -76,13 +76,6 @@ $HD_Form -> FieldViewElement ('label, fee, status,startdate,stopdate, numberofru
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form -> FG_ENABLE_ADD_BUTTON = true;
-// View Details
-// $HD_Form -> FG_OTHER_BUTTON1 = true;
-// |param| will be replace by id .
-// you don't need that, if you don't supply any |param| string id will be append after FG_OTHER_BUTTON1_LINK.
-
-//$HD_Form -> FG_OTHER_BUTTON1_LINK = "javascript:;\" onClick=\"window.open('CC_entity_subscription_details.php?displayfooter=0&popup_select=1&displayheader=0&id=|param|','','scrollbars=yes,resizable=yes,width=600,height=350')\"";
-//$HD_Form -> FG_OTHER_BUTTON1_IMG = get_image_path("icon-viewdetails.gif");
 
 $comp_zero = $comp_date_plus='';
 if (isset($form_action) && $form_action=="ask-add") {

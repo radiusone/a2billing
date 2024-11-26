@@ -56,9 +56,10 @@ $HD_Form -> AddViewElement(gettext("GROUP"), "id_group", true, 0, "", "lie", "cc
 
 $HD_Form -> FieldViewElement ('code, id_agent, id_tariffgroup ,id_group');
 
-$HD_Form -> FG_OTHER_BUTTON1 = true;
-$HD_Form -> FG_OTHER_BUTTON1_ALT = 'URL';
-$HD_Form -> FG_OTHER_BUTTON1_IMG = get_image_path("link.png");
-$HD_Form -> FG_OTHER_BUTTON1_LINK = "javascript:alert(".json_encode($A2B->config['signup']['urlcustomerinterface'])." + 'signup.php?key=|col0|',400);";
+$HD_Form->AddListActionButton(
+    "javascript:alert(".json_encode($A2B->config['signup']['urlcustomerinterface'])." + 'signup.php?key=|col0|',400)",
+    _("URL"),
+    get_image_path("link.png")
+);
 
 $HD_Form -> FG_LOCATION_AFTER_DELETE = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL);

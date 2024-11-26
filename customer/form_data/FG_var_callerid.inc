@@ -92,9 +92,6 @@ $HD_Form->AddEditRadio(
     gettext("Choose if you want to activate this card")
 );
 
-$HD_Form -> FG_OTHER_BUTTON1_LINK="A2B_entity_card?form_action=ask-edit&id=";
-$HD_Form -> FG_OTHER_BUTTON1_IMG = get_image_path("icon-card.png", true);
-
 $HD_Form -> FG_INTRO_TEXT_ADITION = gettext("You can add your home phone or cellphone number below to allow you to call in, be automatically recognized, and use your telephony services without having to enter your PIN.");
 
 $HD_Form -> FG_LOCATION_AFTER_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";

@@ -75,10 +75,11 @@ $HD_Form -> FieldViewElement ('label, creationdate, packagetype, billingtype, st
 $HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
-$HD_Form -> FG_OTHER_BUTTON1 = true;
-$HD_Form -> FG_OTHER_BUTTON1_ALT = gettext("Add rates");
-$HD_Form -> FG_OTHER_BUTTON1_IMG = "";
-$HD_Form -> FG_OTHER_BUTTON1_LINK = "A2B_package_manage_rates.php?id=|param|";
+$HD_Form->AddListActionButton(
+    "A2B_package_manage_rates.php?id=|param|",
+    _("Add rates"),
+    ""
+);
 $HD_Form->AddEditElement(
     gettext("LABEL"),
     "label",
