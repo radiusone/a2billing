@@ -181,12 +181,13 @@ $processed["popup_fieldname"] ??= "";
                     }
                     $arg = preg_replace_callback("/%(0-9+)/", fn ($m) => $item[$m[1]], $cell["arguments"] ?? "");
                     $item[$j - $k] = $record_display;
-                    if (!empty($cell["function"]) && is_callable($cell["function"])) {
-                        $record_display = call_user_func_array($cell["function"], $arg ?: [$record_display]);
-                    }
                     ?>
                     <td>
+                    <?php if (!empty($cell["function"]) && is_callable($cell["function"])): ?>
+                        <?= call_user_func_array($cell["function"], $arg ?: [$record_display]) ?>
+                    <?php else: ?>
                         <?= $record_display ?? "" ?>
+                    <?php endif ?>
                     </td>
                 <?php endforeach ?>
                 <?php if ($hasActionButtons): ?>
