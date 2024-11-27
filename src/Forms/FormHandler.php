@@ -502,7 +502,6 @@ class FormHandler
      * @param string|null $sql_display the result field to display; one-based placeholder %n is replaced with zero-based column n from the result
      * @param string|null $destination when type=sql-link, the destination; result will be appended as query string, $sql_display will be used as link text
      */
-
     public function AddViewElement(
         string  $displayname,
         string  $fieldname,
@@ -533,6 +532,96 @@ class FormHandler
             "function" => $callback,
             "href" => $destination, // when type = lie_link
         ];
+    }
+
+    /**
+     * Add a plain value to the list table view
+     *
+     * @param string $label the table column header
+     * @param string $field the database column name
+     * @param callable|null $callback a function that is passed the value (or the provided arguments) before display
+     * @param array $arguments if provided, arguments to the function (%[0-9] are replaced with row values)
+     * @param bool $sortable whether or not to allow sort
+     * @return self
+     */
+    public function AddListValue(string $label, string $field, callable $callback = null, array $arguments = [], bool $sortable = true): self
+    {
+        $this->FG_LIST_TABLE_CELLS[] = [
+            "type" => "",
+            "header" => $label,
+            "field" => $field,
+            "function" => $callback,
+            "arguments" => $arguments,
+            "sortable" => $sortable,
+        ];
+
+        return $this;
+    }
+
+    /**
+     * Adds a mapping to the list view table that translates a DB value to a pretty one
+     *
+     * @param string $label the table column header
+     * @param string $field the database column name
+     * @param array $map the mapping (key/value to raw/translated values)
+     * @param bool $sortable whether or not to allow sort (note, will be done on raw value)
+     * @return self
+     */
+    public function AddListMapping(string $label, string $field, array $map, bool $sortable = true): self
+    {
+        // temporary for backward compatibility
+        array_walk($map, fn (&$v, $k) => $v = [$v, $k]);
+
+        $this->FG_LIST_TABLE_CELLS[] = [
+            "type" => "list",
+            "header" => $label,
+            "field" => $field,
+            "options" => $map,
+            "sortable" => $sortable,
+        ];
+
+        return $this;
+    }
+
+    /**
+     * Adds a mapping to the list view table that does a lookup to translate a DB value to a pretty one
+     *
+     * @param string $label the table column header
+     * @param string $field the database column name
+     * @param Table $table a database object; first 2 columns will be used for raw and translated values
+     * @param array $conditions an array of conditions to pass to $table->getRows()
+     * @param string $url if provided, the cell will be a link to this URL with the first column value appended
+     * @param bool $sortable whether or not to allow sort (note, will be done on raw value)
+     * @return self
+     */
+    public function AddListSqlMapping(
+        string $label,
+        string $field,
+        Table $table,
+        array $conditions = [],
+        string $url = "",
+        bool $sortable = true
+    ): self
+    {
+        $result = $table->getRows($this->DBHandle, $conditions);
+        $map = array_combine(
+            array_column($result, 0),
+            array_column($result, 1)
+        );
+
+        // temporary for backward compatibility
+        array_walk($map, fn (&$v, $k) => $v = [$v, $k]);
+
+        $this->FG_LIST_TABLE_CELLS[] = [
+            "type" => "list",
+            "header" => $label,
+            "field" => $field,
+            "options" => $map,
+            "sortable" => $sortable,
+            "href" => $url,
+        ];
+
+        return $this;
     }
 
     /**

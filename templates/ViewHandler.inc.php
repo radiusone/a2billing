@@ -160,7 +160,9 @@ $processed["popup_fieldname"] ??= "";
                         $record_display = eval("return $string_to_eval;");
                     } elseif ($cell["type"] === "list") {
                         $select_list = $cell["options"];
-                        $record_display = $select_list[$item[$j - $k]][0];
+                        $match = $select_list[$item[$j - $k]];
+                        // todo: this won't be an array once old methods are gone
+                        $record_display = is_array($match) ? $match[0] : $match;
                     } elseif ($cell["type"] === "list-conf") {
                         $select_list = $cell["options"];
                         // why +3 ?
@@ -174,17 +176,17 @@ $processed["popup_fieldname"] ??= "";
                     }
 
                     /**********************   IF LENGTH OF THE VALUE IS TOO LONG IT MIGHT BE CUT ************************/
-                    if ($cell["maxsize"] > 0 && strlen($record_display ?? "") > $cell["maxsize"]) {
+                    if (($cell["maxsize"] ?? 0) > 0 && strlen($record_display ?? "") > $cell["maxsize"]) {
                         $record_display = substr($record_display, 0, $cell["maxsize"]) . "…";
                     }
+                    $arg = preg_replace_callback("/%(0-9+)/", fn ($m) => $item[$m[1]], $cell["arguments"] ?? "");
                     $item[$j - $k] = $record_display;
+                    if (!empty($cell["function"]) && is_callable($cell["function"])) {
+                        $record_display = call_user_func_array($cell["function"], $arg ?: [$record_display]);
+                    }
                     ?>
                     <td>
-                    <?php if (!empty($cell["function"]) && is_callable($cell["function"])): ?>
-                        <?php call_user_func($cell["function"], $record_display) ?>
-                    <?php else: ?>
                         <?= $record_display ?? "" ?>
-                    <?php endif ?>
                     </td>
                 <?php endforeach ?>
                 <?php if ($hasActionButtons): ?>
