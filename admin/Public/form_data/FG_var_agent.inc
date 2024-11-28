@@ -87,33 +87,28 @@ $right_list = [
 $len_right_list = count($right_list);
 
 $yesno = getYesNoList();
-
-
-$currency_list = $currency_list_key = getCurrenciesList();
-array_walk($currency_list_key, fn (&$v, $k)  => $v = [$k]);
+$currency_list = getCurrenciesList();
 
 if ($popup_select) {
-	$HD_Form->AddViewElement(_("ID"), "id");
-	$HD_Form->AddViewElement(_("LOGIN"), "login");
-	$HD_Form->AddViewElement(_("FIRSTNAME"), "firstname");
-	$HD_Form->AddViewElement(_("LASTNAME"), "lastname");
-	$HD_Form->AddViewElement("<abbr title=\"" . _("CURRENCY") . "\">" . _("CUR") . "</abbr>", "currency", true, 0, "", "list", $currency_list_key);
-	$HD_Form->AddViewElement(_("ACTIVE"), "active", true, 0, "", "list", $yesno);
-
-	$HD_Form->FieldViewElement ('id, login, passwd, lastname, currency, active');
+	$HD_Form->AddListValue(_("ID"), "id")
+        ->AddListValue(_("LOGIN"), "login")
+        ->AddListValue(_("FIRST NAME"), "firstname")
+        ->AddListValue(_("LAST NAME"), "lastname")
+        ->AddListValue(_("CURRENCY"), "currency")
+        ->AddListMapping(_("ACTIVE"), "active", $yesno)
+        ->FieldViewElement ('id, login, passwd, lastname, currency, active');
 } else {
-	$HD_Form->AddViewElement(_("ID"), "id", "sort");
-	$HD_Form->AddViewElement(_("DATE"), "datecreation", true, 19);
-	$HD_Form->AddViewElement(_("LOGIN"), "login");
-	$HD_Form->AddViewElement(_("PASSWORD"), "passwd");
-	$HD_Form->AddViewElement(_("FIRSTNAME"), "firstname");
-	$HD_Form->AddViewElement(_("LASTNAME"), "lastname");
-	$HD_Form->AddViewElement(_("CREDIT"), "credit");
-	$HD_Form->AddViewElement(_("COMMISSION"), "com_balance");
-	$HD_Form->AddViewElement("<abbr title=\"" . _("CURRENCY") . "\">" . _("CUR") . "</abbr>", "currency", true, 0, "", "list", $currency_list_key);
-	$HD_Form->AddViewElement(_("ACTIVE"), "active", true, 0, "", "list", $yesno);
-
-	$HD_Form->FieldViewElement ('id, datecreation, login, passwd, firstname, lastname, credit, com_balance, currency, active');
+	$HD_Form->AddListValue(_("ID"), "id")
+        ->AddListValue(_("DATE"), "datecreation")
+        ->AddListValue(_("LOGIN"), "login")
+        ->AddListValue(_("PASSWORD"), "passwd")
+        ->AddListValue(_("FIRST NAME"), "firstname")
+        ->AddListValue(_("LAST NAME"), "lastname")
+        ->AddListValue(_("CREDIT"), "credit", "display_2bill")
+        ->AddListValue(_("COMMISSION"), "com_balance", "display_2bill")
+        ->AddListValue(_("CURRENCY"), "currency")
+        ->AddListMapping(_("ACTIVE"), "active", $yesno)
+        ->FieldViewElement ('id, datecreation, login, passwd, firstname, lastname, credit, com_balance, currency, active');
 }
 
 if ($popup_select) {

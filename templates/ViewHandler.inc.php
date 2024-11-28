@@ -162,7 +162,7 @@ $processed["popup_fieldname"] ??= "";
                         $select_list = $cell["options"];
                         $match = $select_list[$item[$j - $k]];
                         // todo: this won't be an array once old methods are gone
-                        $record_display = is_array($match) ? $match[0] : $match;
+                        $record_display = (is_array($match) ? $match[0] : $match) ?: _("n/a");
                     } elseif ($cell["type"] === "list-conf") {
                         $select_list = $cell["options"];
                         // why +3 ?

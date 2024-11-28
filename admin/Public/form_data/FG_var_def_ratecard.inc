@@ -3,6 +3,7 @@
 use A2billing\A2Billing;
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -45,110 +46,93 @@ use A2billing\Forms\FormHandler;
  */
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
-getpost_ifset([
-    'id',
-    'tariffgroup',
-    'posted',
-    'cancelsearch_callplanlcr',
-    'deleteselected',
-]);
+getpost_ifset(["tariffgroup", "posted", "cancelsearch_callplanlcr", "deleteselected", "posted_search"]);
 /**
- * @var string $id
  * @var string $tariffgroup
  * @var string $posted
  * @var string $cancelsearch_callplanlcr
  * @var string $deleteselected
+ * @var string $posted_search
  */
 
-$form_action = $form_action ?? "list";
+$form_action ??= "list";
+$tariffgroup ??= 0;
 
-if ($form_action === "list" && $deleteselected !== 'true') {
-    $HD_Form = new FormHandler("cc_ratecard LEFT JOIN cc_prefix ON prefix=cc_ratecard.destination", "Rates", 'cc_ratecard.id');
-} else {
-    $HD_Form = new FormHandler("cc_ratecard", "Rates");
+$HD_Form = new FormHandler(
+    "cc_ratecard",
+    _("Rates"),
+    "id",
+    $form_action === "list" && !isset($deleteselected)
+        ? ["cc_prefix" => ["prefix", "cc_ratecard.destination"]]
+        : []
+);
+
+if (!empty($cancelsearch_callplanlcr) || (isset($posted) && empty($tariffgroup))) {
+    $_SESSION["def_ratecard_tariffgroup"] = "";
 }
 
-if ($cancelsearch_callplanlcr) {
-    $_SESSION['def_ratecard_tariffgroup'] = '';
-}
-
-$rateinitial_field = "rateinitial";
 $use_lcr_callplan = false;
 
-if (isset($posted) && !$popup_select) {
-
-    if (!empty($tariffgroup)) {
-        $HD_Form->FG_QUERY_TABLE_NAME = "cc_callplan_lcr";
-        $use_lcr_callplan = true;
-        $HD_Form->FG_QUERY_GROUPBY_COLUMNS = ["dialprefix"];
-
-        $tariffgroup = explode('-:-', $tariffgroup);
-        $FG_TOP_FILTER_NAME = _("EXPORTED LCR CALL PLAN") . ' : <b>' . str_replace("-:-", "", $tariffgroup[1]) . '</b>';
-        $FG_TOP_FILTER_VALUE = $tariffgroup[0];
-
-        $HD_Form->FG_QUERY_WHERE_CLAUSE = "tariffgroup_id= '$FG_TOP_FILTER_VALUE'";
-        $HD_Form->list_query_conditions["tariffgroup_id"] = $FG_TOP_FILTER_VALUE;
-
-        $rateinitial_field = "MIN(rateinitial) as rateinitial";
-
-        $_SESSION['def_ratecard_tariffgroup'] = $HD_Form->FG_QUERY_WHERE_CLAUSE;
-        $_SESSION['def_ratecard_tariffgroup2'] = $HD_Form->list_query_conditions;
-
-    } else {
-        $_SESSION['def_ratecard_tariffgroup'] = '';
-    }
-} elseif (!empty($_SESSION['def_ratecard_tariffgroup']) && (empty($form_action) || $form_action == "list")) {
-    $HD_Form = new FormHandler("cc_callplan_lcr", "Rates");
+if (($tariffgroup || !empty($_SESSION['def_ratecard_tariffgroup'])) && $form_action === "list") {
+    // "Export call plan with LCR" is active, whatever that means
+    // It certainly isn't "exporting" anything
+    $HD_Form->FG_QUERY_TABLE_NAME = "cc_callplan_lcr";
+    $HD_Form->query_table_joins = [];
     $use_lcr_callplan = true;
     $HD_Form->FG_QUERY_GROUPBY_COLUMNS = ["dialprefix"];
 
-    $HD_Form->FG_QUERY_WHERE_CLAUSE = $_SESSION['def_ratecard_tariffgroup'];
-    $HD_Form->list_query_conditions = $_SESSION["def_ratecard_tariffgroup2"];
-    $rateinitial_field = "MIN(rateinitial) as rateinitial";
+    $FG_TOP_FILTER_NAME = _("EXPORTED LCR CALL PLAN");
+    $FG_TOP_FILTER_VALUE = $tariffgroup;
+
+    if (!empty($tariffgroup)) {
+        $HD_Form->list_query_conditions["tariffgroup_id"] = $tariffgroup;
+        $_SESSION['def_ratecard_tariffgroup'] = $HD_Form->list_query_conditions;
+    } else {
+        $HD_Form->list_query_conditions = $_SESSION["def_ratecard_tariffgroup"];
+    }
+
+    if (!empty($posted_search)) {
+        $HD_Form->list_query_conditions["idtariffplan"] = $tariffgroup;
+    }
 }
 
-$HD_Form->FG_TABLE_DEFAULT_ORDER = " dialprefix";
+$HD_Form->FG_TABLE_DEFAULT_ORDER = "dialprefix";
+$HD_Form->search_session_key = "entity_ratecard_selection";
+$export_cols = $A2B->config['webui']['rate_export_field_list'];
+$HD_Form->FG_EXPORT_FIELD_LIST = explode(",", $export_cols);
 
-$HD_Form->search_session_key = 'entity_ratecard_selection';
-
-$musiconhold_list = getMusicOnHold_List($A2B);
 $yesno = getYesNoList();
 
-//
-if ($popup_select) {
-    $HD_Form->AddViewElement(_("ID"), "id");
-}
-$HD_Form->AddViewElement(_("Destination"), "cc_ratecard.destination", false, 15);
-$HD_Form->AddViewElement("<acronym title=\"Dialing Prefix\">" . _("Prefix") . "</acronym>", "dialprefix");
-$HD_Form->AddViewElement("<acronym title=\"Buy Rate\">" . _("Buy") . "</acronym>", "buyrate");
-$HD_Form->AddViewElement("<acronym title=\"Sell Rate\">" . _("Sell") . "</acronym>", "rateinitial");
+$HD_Form->AddListValue(_("Destination"), "destination", null, [], false)
+    ->AddListValue("<abbr title=\"Dialing Prefix\">" . _("Prefix") . "</abbr>", "dialprefix")
+    ->AddListValue("<abbr title=\"Buy Rate\">" . _("Buy") . "</abbr>", "buyrate")
+    ->AddListValue("<abbr title=\"Sell Rate\">" . _("Sell") . "</abbr>", "rateinitial");
+
 if (!$popup_select) {
-    $HD_Form->AddViewElement(_("Start"), "startdate", true, 19);
-    $HD_Form->AddViewElement(_("Stop"), "stopdate", true, 19);
-    $HD_Form->AddViewElement("<acronym title=\"Initial Billing Block\">" . _("Init.") . "</acronym>", "initblock");
-    $HD_Form->AddViewElement("<acronym title=\"Connect Charge\">" . _("Conn.") . "</acronym>", "connectcharge");
-    $HD_Form->AddViewElement(_("Trunk"), "id_trunk", true, 15, "", "lie", "cc_trunk", "trunkcode", "id_trunk='%id'", "%1");
-    $HD_Form->AddViewElement(_("Rate Card"), "idtariffplan", true, 15, "", "lie", "cc_tariffplan", "tariffname", "id='%id'", "%1");
+    $HD_Form->AddListValue(_("Start"), "startdate")
+        ->AddListValue(_("Stop"), "stopdate")
+        ->AddListValue("<abbr title=\"Initial Billing Block\">" . _("Init.") . "</abbr>", "initblock")
+        ->AddListValue("<abbr title=\"Connect Charge\">" . _("Conn.") . "</abbr>", "connectcharge")
+        ->AddListSqlMapping(_("Trunk"), "id_trunk", new Table("cc_trunk", ["id_trunk", "trunkcode"]))
+        ->AddListSqlMapping(_("Rate Card"), "idtariffplan", new Table("cc_tariffplan", ["id", "tariffname"]));
     if ($use_lcr_callplan) {
-        $HD_Form->FieldViewElement('destination, dialprefix, buyrate, ' . $rateinitial_field . ', startdate, stopdate, initblock, connectcharge, id_trunk , idtariffplan ');
+        $HD_Form->FieldViewElement(["destination", "dialprefix", "buyrate", "MIN(rateinitial) AS rateinitial", "startdate", "stopdate", "initblock", "connectcharge", "id_trunk", "idtariffplan"]);
     } else {
-        $HD_Form->FieldViewElement('cc_prefix.destination, cc_ratecard.dialprefix, cc_ratecard.buyrate, cc_ratecard.rateinitial, cc_ratecard.startdate, cc_ratecard.stopdate, cc_ratecard.initblock, cc_ratecard.connectcharge, cc_ratecard.id_trunk , cc_ratecard.idtariffplan ');
+        $HD_Form->FieldViewElement(["cc_prefix.destination", "cc_ratecard.dialprefix", "buyrate", "rateinitial", "startdate", "stopdate", "initblock", "connectcharge", "id_trunk", "idtariffplan"]);
+        if ($key = array_search("destination", $HD_Form->FG_EXPORT_FIELD_LIST)) {
+            $HD_Form->FG_EXPORT_FIELD_LIST[$key] = "cc_prefix.destination";
+        }
     }
     $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
     $HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_def_ratecard.php?form_action=ask-add";
     $HD_Form->FG_LIST_ADDING_BUTTON_MSG1 = _("Add Rate");
     $HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAM+SURBVBgZBcHLT1xVAMDh333MkxmYAYZOwbGGPqRaHq0gpIBGba3GR2KibjQmsHDXsHDjP2DSmBgTU7swUUk0ajemK1HapjYIoYRqi4DoUAsNjwIyw9wZ7tzHOff4fZpSCgAAgJHJ4UHgPNADZAATKAG3VKAufTb49c8AAACaUgqAkclhExgF3nwtdyaSjmWw7BpsD4R0EGxxfXNMSCGvCiHf/vLlHyoAmlKKkcnhEHCju/HJ/hdzz2E5EVw8li2NsIqwawco4RHDZtOdYHZjdk744pnv3rpS0gGA0VMNx/oHmrspSA9f1xBCpyrC2IQpuBG2nRhrpRCPJp6mO/t4h+f63wMYxbMPBoCP3zn2qjEv99mkSjUQVJwEBTeE5UB+vUxpf59IehetLk9fYxvXF2dav7k1etfoHT756bnm3hOaEWNTF6CaOCgT3N4yqDo6i+sVgmiRyKG/cWvz7ARFzKLkRENOv72yVG8CPbnaFu7YG+xEdZ4wDhMgWN32cJwqdVmFVT/OcrAHriIlIuR3XM48dgrfFe0m0BA3a1i1N9h2bZLxVva8JMViQF3GoSltsyO7sNy7RFSZ8n+7FPbiJGJJfE+kTKWUpinwXAtFDjMkGZv20WIJNpcFuqqlOVMlWR7EWvdxmMX37oNSCCE0U4qgYHlWS4ORIhntZG3HxPFDhKMRok0x7v27izOTIhOeIROdJ+JZlJ0yY1O/IEVQMoUvfl8pPGg5Es9x7eEkqfgRwkYO37FRRopwIk2tO0FbdomnjvfxSP1RbixcYXp+AqNa8XTfExd/XLopDiUymPY6pd0p0mkXU7iENEVENzAr1+hq60Tqks6DZ5GaT1/7aXTPyepfvXJ53HP9n8YXb/JsSxd1Rg3pREBdWFIbdkiGXIqVLUJagtePnwfggxe+4HBTB0BIB/Bd/91f83fm/lz5i3NtPbSmTA7EFY1GmQbdplgusrAxxYWrQwBcGB/i3vYcgKMppQB46fPnk8IXl4Uvz77XP2QisygVR9M1Fv75ltXiFKc7BjiaPUn+4R9Mzf3G2v3SJ5pSCgAAgP6Pet+QQr4vZdAeyCANAJSMatnTveoBIAqUgUvTFzc+/B+ww5qo63KzbgAAAABJRU5ErkJggg==";
-    $export_cols = $A2B->config['webui']['rate_export_field_list'];
-    if (str_contains($HD_Form->FG_QUERY_TABLE_NAME, "cc_callplan_lcr")) {
-        $export_cols = str_replace("destination", "cc_prefix.destination", $export_cols);
-    }
-    $HD_Form -> FG_EXPORT_FIELD_LIST = explode(",", $export_cols);
-    $HD_Form -> FG_EXPORT_CSV = true;
-    $HD_Form -> FG_EXPORT_XML = true;
-    $HD_Form -> export_session_key = "pr_export_entity_rates";
-    $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
-    $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
-    $HD_Form -> FG_ENABLE_ADD_BUTTON = true;
+    $HD_Form->FG_EXPORT_CSV = true;
+    $HD_Form->FG_EXPORT_XML = true;
+    $HD_Form->export_session_key = "pr_export_entity_rates";
+    $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
+    $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
+    $HD_Form->FG_ENABLE_ADD_BUTTON = true;
 } else {
     $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 7;
     $HD_Form->CV_FOLLOWPARAMETERS = "&popup_select=" . $popup_select . "&popup_formname=" . $popup_formname . "&popup_fieldname=" . $popup_fieldname;
@@ -158,9 +142,9 @@ if (!$popup_select) {
         ""
     );
     if ($use_lcr_callplan) {
-        $HD_Form->FieldViewElement('id, destination, dialprefix, buyrate, ' . $rateinitial_field);
+        $HD_Form->FieldViewElement(["destination", "dialprefix", "buyrate", "MIN(rateinitial) AS rateinitial"]);
     } else {
-        $HD_Form->FieldViewElement('id, cc_prefix.destination, cc_ratecard.dialprefix, cc_ratecard.buyrate, ' . $rateinitial_field);
+        $HD_Form->FieldViewElement(["cc_prefix.destination", "cc_ratecard.dialprefix", "buyrate", "rateinitial"]);
     }
 }
 
@@ -196,8 +180,7 @@ $HD_Form->AddEditPopup(
     "A2B_entity_prefix.php?popup_select=2&",
     _("Select the prefix destination corresponding to your prefix rate.") . '<br>' . _("This is the label that appears against the Call Detail Record."),
     "",
-    9,
-    ""
+    9
 );
 
 $HD_Form->AddEditElement("Buy Rate",
@@ -489,9 +472,7 @@ $HD_Form->AddEditElement(
     "size=40 maxlength=40  $comp_date",
     10,
     _("Insert the starting date"),
-    _("Define the period when this rate table is active."),
-    "",
-    
+    _("Define the period when this rate table is active.")
 );
 
 
@@ -503,8 +484,7 @@ $HD_Form->AddEditElement(
     10,
     _("Insert the stop date"),
     "",
-    "NO-NULL",
-    
+    "NO-NULL"
 );
 
 $HD_Form->AddEditDayTime(
@@ -589,7 +569,7 @@ $HD_Form->AddEditSqlSelect(
     "",
     "",
     [-1, _("NOT DEFINED")],
-    "%1", _("Set the Outgoing CID Group to use for this destination, or NOT DEFINED to use the rate card trunk.")
+    "%1", _("Set the Outgoing CID Group to use for this destination.")
 );
 
 $HD_Form->AddEditElement(
@@ -605,6 +585,7 @@ $HD_Form->AddEditElement(
 
 
 if (ADVANCED_MODE) {
+    $musiconhold_list = getMusicOnHold_List($A2B);
     $HD_Form->AddEditSelect(_("On-hold Music"), "musiconhold", $musiconhold_list);
 }
 
@@ -619,5 +600,3 @@ $HD_Form->FG_FILTER_LABEL = _("Dial Prefix");
 $HD_Form->FG_LOCATION_AFTER_ADD = "?id=";
 $HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";
 $HD_Form->FG_LOCATION_AFTER_DELETE = "?id=";
-
-

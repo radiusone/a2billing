@@ -58,6 +58,7 @@ getpost_ifset([
     'popup_formname',
     'popup_fieldname',
     'filterprefix',
+    'posted_search',
 ]);
 /**
  * @var string $package
@@ -65,6 +66,7 @@ getpost_ifset([
  * @var string $popup_formname
  * @var string $popup_fieldname
  * @var string $filterprefix
+ * @var string $posted_search
  */
 /********************************* BATCH UPDATE ***********************************/
 $bu = [];
@@ -93,7 +95,7 @@ $update_fields = [
     "upd_additional_block_charge" => _("Add Block Charge"),
     "upd_additional_block_charge_time" => _("Add Block Charge Time"),
 ];
-getpost_ifset(array_keys($update_fields, $bu));
+getpost_ifset(array_keys($update_fields), $bu);
 
 $charges_abc = [];
 if (ADVANCED_MODE) {
@@ -116,7 +118,7 @@ if (ADVANCED_MODE) {
 $HD_Form->init();
 
 // CHECK IF REQUEST OF BATCH UPDATE
-if ($bu["batchupdate"] && is_array($bu["check"])) {
+if (($bu["batchupdate"] ?? false) && is_array($bu["check"])) {
     // get the checkboxes that are checked
     $selected_updates = array_keys($bu["check"]);
 
@@ -163,32 +165,9 @@ if ($bu["batchupdate"] && is_array($bu["check"])) {
     } else {
         $update_msg = "<div class='alert alert-success'>" . _("The batch update has been successfully performed") . "</div>";
     }
-
 }
 /********************************* END BATCH UPDATE ***********************************/
-
 $form_action = $form_action ?? "list"; //ask-add
-
-
-if (!empty($tariffgroup) && substr_count($tariffgroup, "-:-") === 2) {
-    [$mytariffgroup_id, $mytariffgroupname, $mytariffgrouplcrtype] = explode('-:-', $tariffgroup);
-    $_SESSION["mytariffgroup_id"] = $mytariffgroup_id;
-    $_SESSION["mytariffgroupname"] = $mytariffgroupname;
-    $_SESSION["tariffgrouplcrtype"] = $mytariffgrouplcrtype;
-} else {
-    $mytariffgroup_id = $_SESSION["mytariffgroup_id"];
-    $mytariffgroupname = $_SESSION["mytariffgroupname"];
-    $mytariffgrouplcrtype = $_SESSION["tariffgrouplcrtype"];
-}
-
-if ($form_action === "list" && $HD_Form->search_form_enabled && $_POST['posted_search'] == 1 && is_numeric($mytariffgroup_id)) {
-    if (!empty ($HD_Form->FG_QUERY_WHERE_CLAUSE)) {
-        $HD_Form->FG_QUERY_WHERE_CLAUSE .= ' AND ';
-    }
-
-    $HD_Form->FG_QUERY_WHERE_CLAUSE .= "idtariffplan='$mytariffgroup_id'";
-    $HD_Form->list_query_conditions["idtariffplan"] = $mytariffgroup_id;
-}
 
 $list = $HD_Form->perform_action($form_action);
 
@@ -218,14 +197,17 @@ if ($form_action === "list" && !$popup_select): ?>
             class="btn btn-sm <?= empty($_SESSION[$HD_Form->search_session_key]) ? "btn-outline-primary" : "btn-primary" ?>"
             data-bs-toggle="modal"
             data-bs-target="#searchModal"
-            title="<?= _("Search Customers") ?> <?= empty($_SESSION[$HD_Form->search_session_key]) ? "" : "(" . _("search activated") . ")" ?>"
+            title="<?= _("Search Rates") ?> <?= empty($_SESSION[$HD_Form->search_session_key]) ? "" : "(" . _("search activated") . ")" ?>"
         >
             <?= _("Search Rates") ?>
         </button>
     </div>
     <?php if (empty($_SESSION['def_ratecard_tariffgroup'])): ?>
     <div class="col-auto">
-        <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#batchUpdateModal">
+        <button class="btn btn-outline-primary btn-sm <?= empty($_SESSION["def_ratecard_tariffgroup"]) ? "btn-outline-primary" : "btn-primary" ?>"
+            data-bs-toggle="modal"
+            data-bs-target="#batchUpdateModal"
+        >
             <?= _("Batch Update") ?>
         </button>
     </div>
@@ -250,7 +232,7 @@ if ($form_action === "list" && !$popup_select): ?>
         </div>
     </div>
 </div>
-    <?php if (empty($_SESSION['def_ratecard_tariffgroup'])): ?>
+
 <div class="modal" id="batchUpdateModal" aria-labelledby="modal-title-udpate" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
@@ -261,13 +243,12 @@ if ($form_action === "list" && !$popup_select): ?>
             <div class="modal-body">
                 <form class="container-fluid form-striped" name="updateForm" id="updateForm" action="" method="post">
                     <input type="hidden" name="batchupdate" value="1"/>
-                    <input type="hidden" name="popup_select" value="<?= $popup_select?>"/>
-                    <input type="hidden" name="popup_formname" value="<?= $popup_formname?>"/>
-                    <input type="hidden" name="popup_fieldname" value="<?= $popup_fieldname?>"/>
-                    <input type="hidden" name="form_action" value="<?= $form_action?>"/>
-                    <input type="hidden" name="filterprefix" value="<?= $filterprefix?>"/>
+                    <input type="hidden" name="popup_select" value="<?= $popup_select ?>"/>
+                    <input type="hidden" name="popup_formname" value="<?= $popup_formname ?>"/>
+                    <input type="hidden" name="popup_fieldname" value="<?= $popup_fieldname ?>"/>
+                    <input type="hidden" name="form_action" value="<?= $form_action ?>"/>
+                    <input type="hidden" name="filterprefix" value="<?= $filterprefix ?? "" ?>"/>
                     <?= $HD_Form->csrf_inputs() ?>
-
 
                     <div class="row mb-1">
                         <div class="col">
@@ -303,7 +284,7 @@ if ($form_action === "list" && !$popup_select): ?>
                         <div class="col">
                             <select name="upd_idtariffplan" id="upd_idtariffplan" class="form-select form-select-sm">
                                 <?php foreach ($list_tariffname as $v): ?>
-                                    <option value="<?= $v[0] ?>" <?php if (($bu["upd_idtariffplan"]) == $v[0]): ?>selected="selected"<?php endif ?>><?= $v[1] ?></option>
+                                    <option value="<?= $v[0] ?>" <?php if (($bu["upd_idtariffplan"] ?? "") == $v[0]): ?>selected="selected"<?php endif ?>><?= $v[1] ?></option>
                                 <?php endforeach ?>
                             </select>
                         </div>
@@ -368,7 +349,6 @@ if ($form_action === "list" && !$popup_select): ?>
     </div> <!-- .modal-dialog -->
 </div> <!-- .modal -->
 
-    <?php endif // session check ?>
 <div class="modal" id="exportModal" aria-labelledby="modal-title-export" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
@@ -377,7 +357,7 @@ if ($form_action === "list" && !$popup_select): ?>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form class="container-fluid" name="exportForm" id="exportForm" action="?order=<?= $order ?>&amp;sens=<?= $sens ?>&amp;current_page=<?= $current_page ?>" method="post">
+                <form class="container-fluid" name="exportForm" id="exportForm" action="" method="post">
                     <input type="hidden" name="posted" value="1"/>
                     <input type="hidden" name="current_page" value="0"/>
                     <?= $HD_Form->csrf_inputs() ?>
@@ -389,7 +369,7 @@ if ($form_action === "list" && !$popup_select): ?>
                             <select name="tariffgroup" id="tariffgroup" aria-label="<?= _("Choose a call plan") ?>" class="form-select form-select-sm">
                                 <option value=""><?= _("Choose a call plan") ?></option>
                                 <?php foreach ($list_tariffgroup as $v): ?>
-                                <option value="<?= implode("-:-", $v) ?>" <?php if (($FG_TOP_FILTER_VALUE ?? null) == $v[0]): ?>selected="selected" <?php endif?>>
+                                <option value="<?= $v[0] ?>" <?php if (($FG_TOP_FILTER_VALUE ?? null) == $v[0]): ?>selected="selected" <?php endif?>>
                                     <?= $v[1] ?>
                                 </option>
                                 <?php endforeach ?>
@@ -559,9 +539,8 @@ elseif ($popup_select === "2"):
 endif;
 
 // #### TOP SECTION PAGE
-$HD_Form -> create_toppage ($form_action);
-
-$HD_Form -> create_form($form_action, $list);
+$HD_Form->create_toppage($form_action);
+$HD_Form->create_form($form_action, $list);
 $HD_Form->setup_export();
 
 require_once __DIR__ . "/../templates/footer.php";
