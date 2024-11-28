@@ -174,4 +174,4 @@ if (ACT_VOICEMAIL) {
 $HD_Form -> FG_INTRO_TEXT_ADITION = '';
 $HD_Form -> FG_TEXT_ADITION_CONFIRMATION = gettext("Your record has been updated.")."<br>";
 
-$HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?message=success";
+$HD_Form -> FG_LOCATION_AFTER_EDIT = "?message=success";

@@ -61,5 +61,3 @@ $HD_Form->AddListActionButton(
     _("URL"),
     get_image_path("link.png")
 );
-
-$HD_Form -> FG_LOCATION_AFTER_DELETE = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL);

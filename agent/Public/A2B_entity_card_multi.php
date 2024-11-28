@@ -296,7 +296,7 @@ $list_group = $instance_table_group  -> get_list ($HD_Form->DBHandle, $FG_TABLE_
     <br/>
 <?php }?>
 <table align="center"  class="bgcolor_001" border="0" width="65%">
-<form name="theForm" action="<?php echo filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL) ?>" method="POST">
+<form name="theForm" action="" method="POST">
 <?= $HD_Form->csrf_inputs() ?>
 <tr>
     <td align="left" width="100%">

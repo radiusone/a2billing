@@ -168,7 +168,7 @@ if ($form_action == "list" && (!($popup_select>=1))	) {
 <b>&nbsp;<?php echo $HD_Form -> FG_LIST_VIEW_ROW_COUNT ?> <?php echo gettext("vouchers selected!"); ?>&nbsp;<?php echo gettext("Use the options below to batch update the selected vouchers.");?></b>
     <table align="center" border="0" width="65%"  cellspacing="1" cellpadding="2">
         <tbody>
-        <form name="updateForm" action="<?php echo filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)?>" method="post">
+        <form name="updateForm" action="" method="post">
         <?= $HD_Form->csrf_inputs() ?>
         <INPUT type="hidden" name="batchupdate" value="1">
         <tr>

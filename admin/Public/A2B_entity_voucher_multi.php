@@ -82,7 +82,7 @@ echo create_help(_("Bulk generate a batch of vouchers, defining such properties 
 <div align="center">
 <table align="center" class="bgcolor_001" border="0" width="65%">
 <tbody><tr>
-<form name="theForm" action="<?php echo filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL) ?>">
+<form name="theForm" action="">
     <?= $HD_Form->csrf_inputs() ?>
     <td align="left" width="75%">
         <strong>1)</strong>

@@ -79,7 +79,7 @@ $HD_Form -> FG_FILTER_ENABLE = true;
 $HD_Form -> FG_FILTER_COLUMN = 'username';
 $HD_Form -> FG_FILTER_LABEL = 'cardnumber';
 
-$HD_Form -> FG_LOCATION_AFTER_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
-$HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
-$HD_Form -> FG_LOCATION_AFTER_DELETE = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
+$HD_Form -> FG_LOCATION_AFTER_ADD = "?id=";
+$HD_Form -> FG_LOCATION_AFTER_EDIT = "?id=";
+$HD_Form -> FG_LOCATION_AFTER_DELETE = "?id=";
 

@@ -156,4 +156,4 @@ $HD_Form->AddEditElement(
 );
 
 $HD_Form -> FG_INTRO_TEXT_EDITION= gettext("Modify your informations");
-$HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?message=success";
+$HD_Form -> FG_LOCATION_AFTER_EDIT = "?message=success";

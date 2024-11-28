@@ -114,7 +114,7 @@ if (is_array($result)) {
 }
 
 ?>
-<FORM name="theForm" action="<?php echo filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL) ?>" METHOD="POST">
+<FORM name="theForm" action="" METHOD="POST">
 <INPUT name="mailtype" value="<?php echo $mailtype; ?>" type="hidden">
 
 <?= $HD_Form->csrf_inputs() ?>

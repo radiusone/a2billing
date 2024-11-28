@@ -165,8 +165,8 @@ if ( (isset ($id_cc_card) && (is_numeric($id_cc_card)  != "")) && ( $form_action
     $HD_Form->init();
 }
 
-$HD_Form -> FG_EDIT_BUTTON_LINK = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?form_action=ask-edit&voip_type=$voip_type&id=";
-$HD_Form -> FG_DELETE_BUTTON_LINK = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?form_action=ask-delete&voip_type=$voip_type&id=";
+$HD_Form -> FG_EDIT_BUTTON_LINK = "?form_action=ask-edit&voip_type=$voip_type&id=";
+$HD_Form -> FG_DELETE_BUTTON_LINK = "?form_action=ask-delete&voip_type=$voip_type&id=";
 
 if (!isset($form_action))  $form_action="list"; //ask-add
 if (!isset($action)) $action = $form_action;
@@ -270,7 +270,7 @@ if ($form_action=='list') {
 <b>&nbsp;<?php echo $HD_Form -> FG_LIST_VIEW_ROW_COUNT ?> <?php echo gettext("cards selected!"); ?>&nbsp;<?php echo gettext("Use the options below to batch update the selected cards.");?></b>
     <table align="center" border="0" width="65%"  cellspacing="1" cellpadding="2">
     <tbody>
-    <form name="updateForm" action="<?php echo filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)?>" method="post">
+    <form name="updateForm" action="" method="post">
         <?= $HD_Form->csrf_inputs() ?>
         <INPUT type="hidden" name="batchupdate" value="1">
         <tr>

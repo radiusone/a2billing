@@ -69,7 +69,7 @@ $HD_Form -> FG_FILTER_ENABLE = true;
 $HD_Form -> FG_FILTER_COLUMN = 'id';
 $HD_Form -> FG_FILTER_LABEL = 'transaction ID';
 
-$HD_Form -> FG_LOCATION_AFTER_DELETE = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
+$HD_Form -> FG_LOCATION_AFTER_DELETE = "?id=";
 
 
 

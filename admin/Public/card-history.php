@@ -241,7 +241,7 @@ require_once __DIR__ . "/../templates/main.php";
                    <td class="tableBody" style="padding: 2px;" align="center" width="<?php echo $FG_TABLE_COL[$i][2]?>" >
                         <strong>
                         <?php  if (strtoupper($FG_TABLE_COL[$i][4])=="SORT") {?>
-                        <a href="<?php  echo filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?current_page=$current_page&order=".$FG_TABLE_COL[$i][1]."&sens="; if ($FG_SENS=="ASC") {echo"DESC";} else {echo"ASC";}
+                        <a href="<?php  echo "?current_page=$current_page&order=".$FG_TABLE_COL[$i][1]."&sens="; if ($FG_SENS=="ASC") {echo"DESC";} else {echo"ASC";}
                         echo "&posted=$posted&Period=$Period&frommonth=$frommonth&fromstatsmonth=$fromstatsmonth&tomonth=$tomonth&tostatsmonth=$tostatsmonth&fromday=$fromday&fromstatsday_sday=$fromstatsday_sday&fromstatsmonth_sday=$fromstatsmonth_sday&today=$today&tostatsday_sday=$tostatsday_sday&tostatsmonth_sday=$tostatsmonth_sday";?>">
                         <font color="#FFFFFF"><?php  } ?>
                         <?php echo $FG_TABLE_COL[$i][0]?>

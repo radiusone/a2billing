@@ -245,7 +245,7 @@ $(function() {
 }
 
 ?>
-<FORM action="<?php echo filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)?>" method="post" name="mass_mail">
+<FORM action="" method="post" name="mass_mail">
 <table class="editform_table1" cellspacing="2">
     <?= $HD_Form->csrf_inputs() ?>
     <?php

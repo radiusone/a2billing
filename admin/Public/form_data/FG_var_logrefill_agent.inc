@@ -138,9 +138,9 @@ if (has_rights (Admin::ACX_MODIFY_REFILLS)) {
 	$HD_Form -> FG_INTRO_TEXT_ADITION = '';
 	$HD_Form -> FG_ADDITIONAL_FUNCTION_AFTER_ADD = 'add_agent_refill';
 
-	$HD_Form -> FG_LOCATION_AFTER_ADD = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
-	$HD_Form -> FG_LOCATION_AFTER_EDIT = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
-	$HD_Form -> FG_LOCATION_AFTER_DELETE = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL)."?id=";
+	$HD_Form -> FG_LOCATION_AFTER_ADD = "?id=";
+	$HD_Form -> FG_LOCATION_AFTER_EDIT = "?id=";
+	$HD_Form -> FG_LOCATION_AFTER_DELETE = "?id=";
 
 }
 
