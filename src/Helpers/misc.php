@@ -434,8 +434,10 @@ function get_2bill($amt): string
     if (class_exists("NumberFormatter")) {
         static $formatter = null;
         if (is_null($formatter)) {
-            // TODO: set this based on user language, so decimals are properly displayed
-            $formatter = NumberFormatter::create("en_CA", NumberFormatter::CURRENCY);
+            $formatter = NumberFormatter::create(
+                getenv("LANG") ?: "en_US",
+                NumberFormatter::CURRENCY
+            );
             $formatter->setAttribute(NumberFormatter::FRACTION_DIGITS, 4);
             $formatter->setAttribute(NumberFormatter::ROUNDING_MODE, NumberFormatter::ROUND_HALFUP);
         }
