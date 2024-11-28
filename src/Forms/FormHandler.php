@@ -540,7 +540,9 @@ class FormHandler
      * @param string $label the table column header
      * @param string $field the database column name
      * @param callable|null $callback a function that is passed the value (or the provided arguments) before display
-     * @param array $arguments if provided, arguments to the function (%[0-9] are replaced with row values)
+     * @param array $arguments if provided, arguments to the function
+     *                          %[0-9]+ are replaced with the given row values
+     *                          %X is always replaced with the current value
      * @param bool $sortable whether or not to allow sort
      * @return self
      */

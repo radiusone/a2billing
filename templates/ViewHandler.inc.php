@@ -180,6 +180,7 @@ $processed["popup_fieldname"] ??= "";
                         $record_display = substr($record_display, 0, $cell["maxsize"]) . "…";
                     }
                     $arg = preg_replace_callback("/%(0-9+)/", fn ($m) => $item[$m[1]], $cell["arguments"] ?? "");
+                    $arg = preg_replace("/%X/", $record_display, $arg);
                     $item[$j - $k] = $record_display;
                     ?>
                     <td>
