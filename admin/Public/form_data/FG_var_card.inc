@@ -47,12 +47,16 @@ use A2billing\Table;
  *
  *
  **/
+/**
+ * @var A2Billing $A2B
+ */
 
-getpost_ifset(['id', 'cardnumber_length']);
+getpost_ifset(["id", "cardnumber_length"]);
 /**
  * @var string $id
  * @var string $cardnumber_length
  */
+
 $HD_Form = new FormHandler("cc_card", _("Card"));
 
 $HD_Form->search_session_key = 'entity_card_selection';
@@ -95,20 +99,16 @@ array_unshift($limits_notify_list, [_("NOT DEFINED"), -1]);
 
 $currency_list = [];
 $currency_list_r = [];
-$currency_list_key = [];
-$indcur = 0;
 
 $currencies_list = get_currencies();
 foreach ($currencies_list as $key => $cur_value) {
     $currency_list[$key]  = ["$cur_value[name] ($cur_value[value])", $key];
     $currency_list_r[$key] = [$key, $cur_value["name"]];
-    $currency_list_key[$key] = [$key];
 }
 
 $restriction_list = getRestrictionList();
 $cardstatus_list = getCardStatus_List();
 $cardstatus_list_r = array_map("array_reverse", $cardstatus_list);
-$cardstatus_list_acronym = getCardStatus_Acronym_List();
 $typepaid_list = getPaidTypeList();
 $typepaid_list_r = array_map("array_reverse", $typepaid_list);
 $expire_list = getCardExpire_List();
@@ -117,69 +117,100 @@ $invoiceday_list = getInvoiceDay_List();
 $serial_pad_length = $A2B->config["webui"]['card_serial_length'];
 
 // The list view can be customized to only show certain fields, making things more complicated
-// first define each possible field
-$show_fields = [
-    'id' => [_("ID"), "id"],
-    'username' => [_("Account number"), "username", true, 30, $popup_select ? "" : "display_customer_link"],
-    'lastname' => [_("Last name"), "lastname", true, 20],
-    'id_group' => [_("Group"), "id_group", true, 20, "", "lie", "cc_card_group", "name", "id='%id'", "%1"],
-    'credit' => [_("Balance"), "credit", true, 0, "display_2bill"],
-    'useralias' => [_("Web login"), "useralias"],
-    'id_seria' => [_("Series"), "id_seria", true, 15, "", "lie", "cc_card_seria", "name", "id='%id'", "%1", ""],
-    'serial' => [_("Serial #"), "serial", true, 0, "", "eval", "str_pad('%C', $serial_pad_length, '0', STR_PAD_LEFT)"],
-    'tariff' => [_("Call plan"), "tariff", true, 20, "", "lie", "cc_tariffgroup", "tariffgroupname", "id='%id'", "%1"],
-    'status' => [_("Status"), "status", true, 0, "", "list", $cardstatus_list_acronym],
-    'language' => [_("Language"), "language"],
-    'inuse' => [_("In use"), "inuse"],
-    'currency' => [_("Currency"), "currency", true, 0, "", "list", $currency_list_key],
-    'sip_buddy' => [_("SIP"), "sip_buddy", true, 0, "", "list", $yesno],
-    'iax_buddy' => [_("IAX"), "iax_buddy", true, 0, "", "list", $yesno],
-    'nbused' => [_("Calls"), "nbused"],
-    'firstname' => [_("First name"), "firstname", true, 15],
-    'email' => [_("Email"), "email", true, 40],
-    'discount' => [_("Discount"), "discount", true, 15, "display_percentage"],
-    'callerid' => ["<abbr title=\"Caller ID\">" . _("CID") . "</abbr>", "callerid", true, 15],
-];
-
 // extract the user-defined list of fields we're showing
 $show_list = [];
 $show_list_temp = explode(',', $A2B->config["webui"]['card_show_field_list']);
 foreach ($show_list_temp as $value) {
-    $a = strtolower(trim($value));
-    if (str_contains($a, ":")) {
-        // ignore legacy setting
-        $a = substr($a, 0, strpos($a, ":"));
-    }
-    if (strlen($a) && isset($show_fields[$a])) {
-        $show_list[$a] = $show_fields[$a];
+    $value = strtolower(trim($value));
+    if ($value) {
+        $show_list[] = $value;
     }
 }
 
 // force some in popup view
 if ($popup_select) {
-    foreach (['id', 'username', 'lastname', 'id_group', 'credit'] as $field) {
-        $show_list[$field] = $show_fields[$field];
+    foreach (array_reverse(["username", "lastname", "id_group", "credit"]) as $field) {
+        if (!in_array($field, $show_list)) {
+            array_unshift($show_list, $field);
+        }
     }
-}
-
-// ugly hack here, this is just for padding the string but it needs to know its location in the array
-if (($idx = array_search("serial", array_keys($show_list))) !== false) {
-    $show_list["serial"][6] = str_replace("%C", "%$idx", $show_list["serial"][6]);
 }
 
 // loop through the shown data and add the table cells
 $FG_COL_QUERY_FIELDS = [];
-foreach ($show_list as $fieldname => $field) {
-    call_user_func_array([$HD_Form, "AddViewElement"], $field);
-    $FG_COL_QUERY_FIELDS[] = $fieldname === "callerid"
-        ? "(SELECT GROUP_CONCAT(cid SEPARATOR '<br/>') FROM cc_callerid WHERE id_cc_card = cc_card.id) AS callerid"
-        : $fieldname;
+foreach ($show_list as $field) {
+    switch ($field) {
+        case "id":
+            $HD_Form->AddListValue(_("ID"), "id");
+            break;
+        case "username":
+            $HD_Form->AddListValue(_("Account number"), "username", $popup_select ? "" : "display_customer_link");
+            break;
+        case "lastname":
+            $HD_Form->AddListValue(_("Last name"), "lastname");
+            break;
+        case "id_group":
+            $HD_Form->AddListSqlMapping(_("Group"), "id_group", new Table("cc_card_group", ["id", "name"]));
+            break;
+        case "credit":
+            $HD_Form->AddListValue(_("Balance"), "credit", "display_2bill");
+            break;
+        case "useralias":
+            $HD_Form->AddListValue(_("Web login"), "useralias");
+            break;
+        case "id_seria":
+            $HD_Form->AddListSqlMapping(_("Series"), "id_seria", new Table("cc_card_seria", ["id", "name"]));
+            break;
+        case "serial":
+            $HD_Form->AddListValue(_("Serial #"), "serial", "str_pad", ["%X", (int)$serial_pad_length, 0, STR_PAD_LEFT]);
+            break;
+        case "tariff":
+            $HD_Form->AddListSqlMapping(_("Call Plan"), "tariff", new Table("cc_tariffgroup", ["id", "tariffgroupname"]));
+            break;
+        case "status":
+            $HD_Form->AddListMapping(_("Status"), "status", getCardStatus_Acronym_List());
+            break;
+        case "language":
+            $HD_Form->AddListMapping(_("Language"), "language", getLanguages());
+            break;
+        case "inuse":
+            $HD_Form->AddListValue(_("In use"), "inuse");
+            break;
+        case "currency":
+            $HD_Form->AddListMapping(_("Currency"), "currency", $currency_list);
+            break;
+        case "sip_buddy":
+            $HD_Form->AddListMapping(_("SIP"), "sip_buddy", $yesno);
+            break;
+        case "aix_buddy":
+            $HD_Form->AddListMapping(_("AIX"), "aix_buddy", $yesno);
+            break;
+        case "nbused":
+            $HD_Form->AddListValue(_("Calls"), "nbused");
+            break;
+        case "firstname":
+            $HD_Form->AddListValue(_("First name"), "firstname");
+            break;
+        case "email":
+            $HD_Form->AddListValue(_("Email"), "email");
+            break;
+        case "discount":
+            $HD_Form->AddListValue(_("Discount"), "discount", "display_2dec_percentage");
+            break;
+        case "callerid":
+            $HD_Form->AddListValue(_("Caller ID"), "callerid");
+            $FG_COL_QUERY_FIELDS[] = "(SELECT GROUP_CONCAT(cid SEPARATOR '<br/>') FROM cc_callerid WHERE id_cc_card = cc_card.id) AS callerid";
+            continue(2);
+        default:
+            continue(2);
+    }
+    $FG_COL_QUERY_FIELDS[] = $field;
 }
 
 $FG_COL_QUERY_COUNT = count($FG_COL_QUERY_FIELDS);
-$FG_COL_QUERY_FIELD = implode(", ", $FG_COL_QUERY_FIELDS);
-$FG_COL_QUERY_FIELD = "DISTINCT $FG_COL_QUERY_FIELD, id as id_, username as username_, useralias as alias_ ";
-$HD_Form->FieldViewElement($FG_COL_QUERY_FIELD);
+// need these in a fixed position for action button links
+$FG_COL_QUERY_FIELDS = array_merge($FG_COL_QUERY_FIELDS, ["id AS id_", "username AS username_", "useralias AS alias_"]);
+$HD_Form->FieldViewElement($FG_COL_QUERY_FIELDS);
 
 $HD_Form->CV_FOLLOWPARAMETERS = "&popup_select=$popup_select&popup_formname=$popup_formname&popup_fieldname=$popup_fieldname";
 
@@ -267,17 +298,17 @@ if ($popup_select) {
     }
     $HD_Form->AddListActionButton(
         "A2B_entity_payment.php?form_action=ask-add&card_id=|$FN_COLUMN_ID|",
-        _('Add Payment to this Card'),
+        _("Add Payment to this Card"),
         "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJ0SURBVDjLlZPdT9JRGMe5qFu2Lrt1a63LWv9ATRdN5xvLsnLRipzZpIVpigjyIs3XAOUHgopoWkggP5QXSRJwJQmtm/IlAWtt3XXTfubS+nZ+P1eby6ldPGdn5+zzfb7Pc57DA8DbL9rjrYxuVsXf7W5fuC2mYawpE7QRJZpDDfz/EngYVTN9qR4EPvlgXjCiKVCPWvou/0ACxDJjSbIwDefqMPxrEzC87IDUW4Pq8Vv8PQVaX7Qw5qQRgY9ePP0wDMeSFfWTUkxmPeiI61DlFOP6SAV/VwFtRMFQCwb4CdwW10IbVcK+aMHgohmPlwdBZ11oCctx1X5p/R8B9Uzzuum1ntj1Iv1tGRtb3zH2dgSa2eZtOOOCMizD5cGyzR0lGBNdx1TP5T96E4+4WttiWg6mYr3Ifk1DF1PBmxmHYlrGZkbFUDku2oSHOAFjolOuIpZ65rs5+MmKg9hWcJlZWB1UbsOhRjYz5r/MoSn4AKWWQg0nwFoyzndhijRobGWIq3XgPQU1sa2LqjCRHoc81IBK9w0OnvscRWQtBGFfEc4b8o7wNDMKOwnY3lDwZZ+h1idB/zsThpf6CezkstVN3yNwHFMrNGqCVRvlA2UQ6POkud1nTvE0EcVR1gU7JNSCnrPrWLRtw+RM7BKBXnJDP9eOYqogVNAj0Av0uTk7mtjov2+1p2yQ0hIYXnXCs+qEzF+HC9YSyIiIsK84XWTKP5tvPHdi11GupSXHW8JNW+FMAHdclSCCKDEX/iKdDgotRY17jTu31LhvHybT5RGPin5K3NWs1c0yW+lp0umc/T7b383NUdHJa44rSfJU+Qf54n/iNzi8zBtL0z1zAAAAAElFTkSuQmCC"
     );
     $HD_Form->AddListActionButton(
         "A2B_entity_subscriber.php?form_action=ask-add&id=|$FN_COLUMN_ID|",
-        _('Add New Subscription to this Card'),
+        _("Add New Subscription to this Card"),
         "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJcSURBVDjLbZPfa85xFMdf36/nebbGBcLaMmtM2DybElsjQm5c+PEnoKSQCzfEnZtduLRdSJFc4UK5sEizSLtQNCYXJMXKlMeG7fv5cc5x8X02w06dzqdPn/M673M6n8TM2H/6WruZ3TaoYPQYhhlgRh5s1lUCwU18GLpxfjVAgfzBMYP15bZVyfjXCcxmkiCHKabwfeIX085QK7RQtRwAO8ptTcmujiZWNZSxnICa5lU1r758cR11tQW2HTjOXwDMlpTbm7n//B2VyhSmCoDOqDDD1Pg+OUXmPHOt2gJJoVRg7cZmWuuXIgJmiqohYogqUY3pLHDrzuP5AIaI8nF8klJaJMsygvNEze8jCygUSyxbWIOazQMAVJQoAecch7a25vJzdZgZ1wffEmqL/JP/R0EQRUIkSsrNx29wIRLFkKhEEoqlEj7mQ50XEKPiQ8ArWFpDUixCamiiqCpeErz8D0irQyREIWYRF4QsClkQXIi4KDgvuKlnfP50iZZ1A5R3j7PvXOeFvxWIElzABcnbEcOLEkWR6ac01r9h84YuVi5dy+DoXYZfP7nYfbJxcTq3heBzgI/KdBB8EFxUpn48YtP6TiQVOhv2Ikmgu9wDcCKdWRgfhegiLihZEELQXL4TKj+/UEwWsX/DKQDO7LnCmhUdALWzMxAxxAsu5J6FiHOK98q3yQqjY8/ofXgYgN4Hh3k/PgKQzc6ANGVLVweWJIgYUQytxsQdZHhkgJ6O7dx71U8pKfD05RBAX2Jm7DzSd9WMo/nPm7P/GFTP1A5BzQtIPMAPoH/48tjZ3wRCz4QMKdc8AAAAAElFTkSuQmCC"
     );
     $HD_Form->AddListActionButton(
         "A2B_mass_mail.php?form_action=ask-add&id=|$FN_COLUMN_ID|",
-        _('Email to this Customer'),
+        _("Email to this Customer"),
         "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAITSURBVBgZpcHLThNhGIDh9/vn7/RApwc5VCmFWBPi1mvwAlx7BW69Afeu3bozcSE7E02ILjCRhRrds8AEbKVS2gIdSjvTmf+TYqLu+zyiqszDMCf75PnnnVwhuNcLpwsXk8Q4BYeSOsWpkqrinJI6JXVK6lSRdDq9PO+19vb37XK13Hj0YLMUTVVyWY//Cf8IVwQEGEeJN47S1YdPo4npDpNmnDh5udOh1YsZRcph39EaONpnjs65oxsqvZEyTaHdj3n2psPpKDLBcuOOGUWpZDOG+q0S7751ObuYUisJGQ98T/Ct4Fuo5IX+MGZr95jKjRKLlSxXxFxOEmaaN4us1Upsf+1yGk5ZKhp8C74H5ZwwCGO2drssLZZo1ouIcs2MJikz1oPmapHlaoFXH1oMwphyTghyQj+MefG+RblcoLlaJG/5y4zGCTMikEwTctaxXq/w9kuXdm9Cuzfh9acujXqFwE8xmuBb/hCwl1GKAnGccDwIadQCfD9DZ5Dj494QA2w2qtQW84wmMZ1eyFI1QBVQwV5GiaZOpdsPaSwH5HMZULi9UmB9pYAAouBQbMHHrgQcnQwZV/KgTu1o8PMgipONu2t5KeaNiEkxgAiICDMCCFeEK5aNauAOfoXx8KR9ZOOLk8P7j7er2WBhwWY9sdbDeIJnwBjBWBBAhGsCmiZxPD4/7Z98b/0QVWUehjkZ5vQb/Un5e/DIsVsAAAAASUVORK5CYII="
     );
 } elseif (has_rights(Admin::ACX_MODIFY_CUSTOMERS) || has_rights(Agent::ACX_EDIT_CUSTOMER)) {
@@ -553,7 +584,7 @@ if ($popup_select) {
         _("Choose if you want to enable the lock on this account")
     );
 
-    $lockpin_default = ($form_action == "ask-add" || $form_action == "add") ? "value = '0'" : "";
+    $lockpin_default = ($form_action === "ask-add" || $form_action === "add") ? "value = '0'" : "";
     $HD_Form->AddEditElement(
         _("LOCK PIN"),
         "lock_pin",
@@ -598,7 +629,8 @@ if ($popup_select) {
         _("CREDIT LIMIT NOTIFICATION"),
         "credit_notification",
         $limits_notify_list,
-        "", _("currency : ") . strtoupper(BASE_CURRENCY) . '<BR>' . _("Low credit limit to alert the customer")
+        "",
+        _("currency : ") . strtoupper(BASE_CURRENCY) . '<BR>' . _("Low credit limit to alert the customer")
     );
 
     $HD_Form->AddEditRadio(
@@ -852,41 +884,41 @@ if ($popup_select) {
         true
     );
 
-    if ($form_action === "ask-edit") {
-        $result_card = (new Table("cc_card", "status"))
+    $HD_Form->FG_INTRO_TEXT_ADITION = "";
+    $HD_Form->FG_ADDITIONAL_FUNCTION_BEFORE_EDITION = "change_card_lock";
+
+    $HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = "processing_card_add";
+    $HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_EDITION = "create_status_log";
+
+    if ($form_action === "ask-edit" || $form_action === "delete") {
+        $result_card = (new Table("cc_card", ["status", "sip_buddy", "iax_buddy"]))
             ->getRow($HD_Form->DBHandle, ["id" => $id]);
-        $HD_Form->FG_EDIT_FORM_HIDDEN_INPUTS["oldstatus"] = $result_card["status"] ?? "";
-    }
 
-    $HD_Form->FG_INTRO_TEXT_ADITION = '';
-    $HD_Form->FG_ADDITIONAL_FUNCTION_BEFORE_EDITION = 'change_card_lock';
+        if ($form_action === "ask-edit") {
+            $HD_Form->FG_EDIT_FORM_HIDDEN_INPUTS["oldstatus"] = $result_card["status"] ?? "";
+        } elseif (USE_REALTIME) {
+            $sip_buddy = $result_card['sip_buddy'] ?? "";
+            $iax_buddy = $result_card['iax_buddy'] ?? "";
+            if ($sip_buddy && $iax_buddy) {
+                $key = "sip_iax_changed";
+            } elseif ($sip_buddy) {
+                $key = "sip_changed";
+            } elseif ($iax_buddy) {
+                $key = "iax_changed";
+            } else {
+                $key = "";
+            }
 
-    $HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = 'processing_card_add';
-    $HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_EDITION = 'create_status_log';
-
-    if ($form_action === 'delete' && USE_REALTIME) {
-        $card_result = (new Table("cc_card", "sip_buddy, iax_buddy"))->getRow($HD_Form->DBHandle, ["id" => $id]);
-        $sip_buddy = $card_result['sip_buddy'] ?? "";
-        $iax_buddy = $card_result['iax_buddy'] ?? "";
-        if ($sip_buddy && $iax_buddy) {
-            $key = "sip_iax_changed";
-        } elseif ($sip_buddy) {
-            $key = "sip_changed";
-        } elseif ($iax_buddy) {
-            $key = "iax_changed";
-        } else {
-            $key = "";
+            $who = Notification::$UNKNOWN;
+            $who_id = -1;
+            if (is_admin()) {
+                $who = Notification::$ADMIN;
+                $who_id = $_SESSION["admin_id"];
+            } elseif (is_agent()) {
+                $who = Notification::$AGENT;
+                $who_id = $_SESSION["agent_id"];
+            }
+            NotificationsDAO::addNotification($key, Notification::$HIGH, $who, $who_id);
         }
-
-        $who = Notification::$UNKNOWN;
-        $who_id = -1;
-        if (is_admin()) {
-            $who = Notification::$ADMIN;
-            $who_id = $_SESSION['admin_id'];
-        } elseif (is_agent()) {
-            $who = Notification::$AGENT;
-            $who_id = $_SESSION['agent_id'];
-        }
-        NotificationsDAO::AddNotification($key, Notification::$HIGH, $who, $who_id);
     }
 }

@@ -57,9 +57,9 @@ $HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_card_group.php?form_action=a
 $HD_Form->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form->FG_LIST_ADDING_BUTTON_MSG1 = _("Add Group");
 $HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("group_add.png");
 
-$HD_Form->AddViewElement(_("NAME"), "name");
-$HD_Form->AddViewElement(_("DESCRIPTION"), "description", true, 150);
-$HD_Form->FieldViewElement ('name, description');
+$HD_Form->AddListValue(_("Name"), "name");
+$HD_Form->AddListValue(_("Description"), "description", "substr", ["%1", "0", "150"]);
+$HD_Form->FieldViewElement (["name", "description"]);
 
 $HD_Form->FG_ENABLE_ADD_BUTTON = true;
 $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
@@ -90,7 +90,7 @@ $right_list = [
 $len_right_list = count($right_list);
 
 $HD_Form->AddEditElement(
-    _("NAME"),
+    _("Name"),
     "name",
     "",
     "size=30 maxlength=40",
@@ -99,7 +99,7 @@ $HD_Form->AddEditElement(
 );
 
 $HD_Form->AddEditTextarea(
-    _("DESCRIPTION"),
+    _("Description"),
     "description",
     "",
     "cols='50' rows='4'",
@@ -108,7 +108,7 @@ $HD_Form->AddEditTextarea(
 );
 
 $HD_Form->AddEditSqlSelect(
-    _("AGENT"),
+    _("Agent"),
     "id_agent",
     "cc_agent",
     "login,id,firstname,lastname",
@@ -119,7 +119,7 @@ $HD_Form->AddEditSqlSelect(
 );
 
 $HD_Form->AddEditSelect(
-    _("PERMISSION USER INTERFACE"),
+    _("Permissions"),
     "users_perms",
     $right_list,
     "",

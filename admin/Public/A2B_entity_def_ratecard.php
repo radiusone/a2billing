@@ -48,6 +48,7 @@ include './form_data/FG_var_def_ratecard.inc';
  * @var string $order
  * @var string $sens
  * @var string $current_page
+ * @var int $tariffgroup
  */
 
 Admin::checkPageAccess(Admin::ACX_RATECARD);
@@ -204,7 +205,7 @@ if ($form_action === "list" && !$popup_select): ?>
     </div>
     <?php if (empty($_SESSION['def_ratecard_tariffgroup'])): ?>
     <div class="col-auto">
-        <button class="btn btn-outline-primary btn-sm <?= empty($_SESSION["def_ratecard_tariffgroup"]) ? "btn-outline-primary" : "btn-primary" ?>"
+        <button class="btn btn-outline-primary btn-sm"
             data-bs-toggle="modal"
             data-bs-target="#batchUpdateModal"
         >
@@ -213,7 +214,11 @@ if ($form_action === "list" && !$popup_select): ?>
     </div>
     <?php endif ?>
     <div class="col-auto">
-        <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exportModal">
+        <button
+            class="btn btn-outline-primary btn-sm <?= empty($_SESSION["def_ratecard_tariffgroup"]) ? "btn-outline-primary" : "btn-primary" ?>"
+            data-bs-toggle="modal"
+            data-bs-target="#exportModal"
+        >
             <?= _("Export Call Plan with LCR") ?>
         </button>
     </div>
@@ -363,14 +368,14 @@ if ($form_action === "list" && !$popup_select): ?>
                     <?= $HD_Form->csrf_inputs() ?>
                     <div class="row">
                         <div class="col">
-                            <?php if (!empty($FG_TOP_FILTER_NAME)): ?>
-                                <strong><?= $FG_TOP_FILTER_NAME ?></strong><br/>
+                            <?php if (!empty($tariffgroup)): ?>
+                                <strong><?= sprintf(_("Current LCR call plan: %s"), $list_tariffgroup[$tariffgroup]["tariffgroupname"]) ?></strong><br/>
                             <?php endif ?>
                             <select name="tariffgroup" id="tariffgroup" aria-label="<?= _("Choose a call plan") ?>" class="form-select form-select-sm">
                                 <option value=""><?= _("Choose a call plan") ?></option>
                                 <?php foreach ($list_tariffgroup as $v): ?>
-                                <option value="<?= $v[0] ?>" <?php if (($FG_TOP_FILTER_VALUE ?? null) == $v[0]): ?>selected="selected" <?php endif?>>
-                                    <?= $v[1] ?>
+                                <option value="<?= $v["id"] ?>" <?php if ($tariffgroup == $v["id"]): ?>selected="selected" <?php endif?>>
+                                    <?= $v["tariffgroupname"] ?>
                                 </option>
                                 <?php endforeach ?>
                             </select>

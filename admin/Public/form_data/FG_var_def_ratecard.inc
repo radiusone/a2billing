@@ -80,19 +80,13 @@ if (($tariffgroup || !empty($_SESSION['def_ratecard_tariffgroup'])) && $form_act
     $HD_Form->query_table_joins = [];
     $use_lcr_callplan = true;
     $HD_Form->FG_QUERY_GROUPBY_COLUMNS = ["dialprefix"];
-
-    $FG_TOP_FILTER_NAME = _("EXPORTED LCR CALL PLAN");
-    $FG_TOP_FILTER_VALUE = $tariffgroup;
-
     if (!empty($tariffgroup)) {
+        $tariffgroup = (int)$tariffgroup;
         $HD_Form->list_query_conditions["tariffgroup_id"] = $tariffgroup;
         $_SESSION['def_ratecard_tariffgroup'] = $HD_Form->list_query_conditions;
     } else {
+        $tariffgroup = (int)$_SESSION['def_ratecard_tariffgroup'];
         $HD_Form->list_query_conditions = $_SESSION["def_ratecard_tariffgroup"];
-    }
-
-    if (!empty($posted_search)) {
-        $HD_Form->list_query_conditions["idtariffplan"] = $tariffgroup;
     }
 }
 

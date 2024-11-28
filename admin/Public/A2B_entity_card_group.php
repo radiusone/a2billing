@@ -37,12 +37,12 @@ use A2billing\Forms\FormHandler;
 **/
 
 $menu_section = 1;
-require_once "../../common/lib/admin.defines.php";
+require_once __DIR__ . "/../../common/lib/admin.defines.php";
 /**
  * @var string $popup_select
  */
 
-include "./form_data/FG_var_card_group.inc";
+require_once __DIR__ . "/form_data/FG_var_card_group.inc";
 /**
  * @var FormHandler $HD_Form
  */
@@ -55,9 +55,11 @@ $form_action ??= "list";
 $list = $HD_Form->perform_action($form_action);
 
 require_once __DIR__ . "/../templates/main.php";
+
 echo create_help(_("This page shows a group list.") . _("The Group field is used for grouping customers for quick search, batch update and reporting."), 'ListGroup');
 $HD_Form->create_toppage($form_action);
 $HD_Form->create_form($form_action, $list);
+
 if (!$popup_select) {
     require_once __DIR__ . "/../templates/footer.php";
 }

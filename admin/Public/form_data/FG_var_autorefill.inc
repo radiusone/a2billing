@@ -37,18 +37,13 @@ use A2billing\Forms\FormHandler;
 
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
-getpost_ifset(array('id'));
-
 $HD_Form = new FormHandler("cc_autorefill_report", "AutoRefill Report");
-
+$HD_Form->FG_QUERY_ORDERBY_COLUMNS = ["daterun"];
 $HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
 
-$HD_Form->AddViewElement(gettext("DATE RUN"), "daterun");
-$HD_Form->AddViewElement(gettext("TOTALCARD PERFORM"), "totalcardperform");
-$HD_Form->AddViewElement(gettext("TOTALCREDIT"), "totalcredit");
-;
-
-// added a parameter to append  FG_TABLE_ID  ( by default ) or disable 0.
+$HD_Form->AddListValue(_("Date"), "daterun");
+$HD_Form->AddListValue(_("Cards Refilled"), "totalcardperform");
+$HD_Form->AddListValue(_("Credit Applied"), "totalcredit");
 $HD_Form->FieldViewElement('daterun, totalcardperform, totalcredit');
 
 $HD_Form->FG_ENABLE_EDIT_BUTTON = false;

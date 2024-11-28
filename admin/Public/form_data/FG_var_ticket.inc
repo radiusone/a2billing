@@ -2,6 +2,7 @@
 
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
+use A2billing\Table;
 use A2billing\Ticket;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -56,25 +57,30 @@ getpost_ifset(['id', 'title', 'id_component','description','priority','status','
  */
 $form_action ??= "list";
 
+$HD_Form = new FormHandler("cc_ticket", _("Ticket"), "cc_ticket.id");
 if ($form_action === "list") {
-    $tables = "cc_ticket LEFT JOIN
-	( SELECT aa.id, CASE WHEN MAX(aa.viewed_admin)=1 OR SUM(bb.viewed_admin)>0 THEN 1 ELSE 0 END as viewed FROM cc_ticket aa LEFT JOIN cc_ticket_comment bb ON aa.id = bb.id_ticket	WHERE  aa.creator_type = 0 GROUP BY aa.id ) AS v ON cc_ticket.id = v.id
-	LEFT JOIN cc_card ON cc_card.id=cc_ticket.creator";
-	$HD_Form = new FormHandler($tables, _("Ticket"), "cc_ticket.id");
-} else {
-	$HD_Form = new FormHandler("cc_ticket", _("Ticket"));
+    $virtual = <<< SQL
+        SELECT aa.id, CASE WHEN MAX(aa.viewed_admin) = 1 OR SUM(bb.viewed_admin) > 0 THEN 1 ELSE 0 END AS viewed
+        FROM cc_ticket aa
+        LEFT JOIN cc_ticket_comment bb ON aa.id = bb.id_ticket
+        WHERE aa.creator_type = 0
+        GROUP BY aa.id
+        SQL;
+    $HD_Form->query_table_joins = [
+        "($virtual) AS v" => ["cc_ticket.id", "v.id"],
+        "cc_card" => ["cc_card.id", "cc_ticket.creator"]
+    ];
 }
 
-$HD_Form->FG_TABLE_DEFAULT_ORDER = " cc_ticket.id";
+$HD_Form->FG_TABLE_DEFAULT_ORDER = "cc_ticket.id";
 $HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
-$HD_Form->FG_QUERY_WHERE_CLAUSE = " cc_ticket.creator_type= 0 ";
 $HD_Form->list_query_conditions["cc_ticket.creator_type"] = 0;
 
 $HD_Form->FG_FK_DELETE_ALLOWED = true;
 $HD_Form->FG_FK_DELETE_CONFIRM = true;
 $HD_Form->FG_FK_WARNONLY = true;
 $HD_Form->FG_FK_TABLENAMES = ["cc_ticket_comment"];
-$HD_Form->FG_FK_EDITION_CLAUSE = [" id_ticket "];
+$HD_Form->FG_FK_EDITION_CLAUSE = ["id_ticket"];
 
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "CC_ticket.php?form_action=ask-add";
@@ -85,16 +91,26 @@ $priority_list = Ticket::getAllPriorityListView();
 $viewed_list = getTicketViewedList();
 $status_list = Ticket::getAllStatusListView();
 
-$HD_Form->AddViewElement(gettext("ID"), "id");
-$HD_Form->AddViewElement(gettext("CUSTOMER"), "creator", true, 25, "", "lie", "cc_card", "lastname, firstname", "id='%id'", "%1 %2");
-$HD_Form->AddViewElement(gettext("ACCOUNT NUMBER"), "username", true, 30, "display_customer_link");
-$HD_Form->AddViewElement(gettext("TITLE"), "title");
-$HD_Form->AddViewElement(gettext("CREATIONDATE"), "creationdate", true, 19);
-$HD_Form->AddViewElement(gettext("COMPONENT"), "id_component", true, 15, "", "lie", "cc_support_component", "name", "id='%id'", "%1");
-$HD_Form->AddViewElement(gettext("PRIORITY"), "priority", true, 0, "", "list", $priority_list);
-$HD_Form->AddViewElement(gettext("VIEWED"), "viewed_admin", false, 0, "", "list", $viewed_list);
-$HD_Form->AddViewElement(gettext("STATUS"), "status", true, 0, "", "list", $status_list);
-$HD_Form->FieldViewElement ("cc_ticket.id, cc_ticket.creator, cc_card.username, cc_ticket.title, cc_ticket.creationdate, cc_ticket.id_component , cc_ticket.priority , v.viewed , cc_ticket.status");
+$HD_Form->AddListValue(_("ID"), "id");
+$HD_Form->AddListSqlMapping(_("Customer"), "creator", new Table("cc_card", ["id", "CONCAT(firstname, ' ', lastname)"]));
+$HD_Form->AddListValue(_("Account number"), "username", "display_customer_link");
+$HD_Form->AddListValue(_("Title"), "title");
+$HD_Form->AddListValue(_("Creation date"), "creationdate");
+$HD_Form->AddListSqlMapping(_("Component"), "id_component", new Table("cc_support_component", ["id", "name"]));
+$HD_Form->AddListMapping(_("Priority"), "priority", $priority_list);
+$HD_Form->AddListMapping(_("Viewed"), "viewed", $viewed_list, false);
+$HD_Form->AddListMapping(_("Status"), "status", $status_list);
+$HD_Form->FieldViewElement([
+    "cc_ticket.id",
+    "cc_ticket.creator",
+    "cc_card.username",
+    "cc_ticket.title",
+    "cc_ticket.creationdate",
+    "cc_ticket.id_component",
+    "cc_ticket.priority",
+    "v.viewed",
+    "cc_ticket.status",
+]);
 
 $HD_Form->search_form_enabled = !$popup_select;
 $HD_Form->search_delete_enabled =false;

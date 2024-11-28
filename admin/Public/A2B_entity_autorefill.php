@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -36,28 +37,27 @@ use A2billing\Admin;
 **/
 
 $menu_section = 13;
-require_once "../../common/lib/admin.defines.php";
-include './form_data/FG_var_autorefill.inc';
+
+require_once __DIR__ . "/../../common/lib/admin.defines.php";
+/**
+ * @var string $form_action
+ */
+
+require_once __DIR__ . "/form_data/FG_var_autorefill.inc";
+/**
+ * @var FormHandler $HD_Form
+ */
 
 Admin::checkPageAccess(Admin::ACX_CRONT_SERVICE);
 
 $HD_Form->init();
-
-if (!isset ($form_action))
-    $form_action = "list"; //ask-add
-if (!isset ($action))
-    $action = $form_action;
-
+$form_action ??= "list";
 $list = $HD_Form->perform_action($form_action);
 
 require_once __DIR__ . "/../templates/main.php";
 
-// #### HELP SECTION
 echo create_help(_("Auto Refill report."), 'AutoRefillReport');
-
-// #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);
-
 $HD_Form->create_form($form_action, $list);
 
 require_once __DIR__ . "/../templates/footer.php";

@@ -38,11 +38,10 @@ use A2billing\Table;
  *
 **/
 $menu_section = 1;
-require_once "../../common/lib/admin.defines.php";
-require('./form_data/FG_var_card.inc');
+require_once __DIR__ . "/../../common/lib/admin.defines.php";
+require_once __DIR__ . "/form_data/FG_var_card.inc";
 /**
  * @var A2Billing $A2B
- * @var Smarty $smarty
  * @var FormHandler $HD_Form
  * @var array $cardstatus_list
  * @var array $language_list
