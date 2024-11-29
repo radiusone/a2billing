@@ -1071,6 +1071,24 @@ class FormHandler
     }
 
     /**
+     * Add a "<SELECT>" button for use with popups. This REMOVES any existing button configurations
+     *
+     * @param string $url
+     * @param string $label if not specified, defaults to "select"
+     * @return void
+     */
+    public function AddListSelectActionButton(string $url = "#", string $label = "") {
+        $this->list_action_buttons = [[
+            "url" => $url,
+            "label" => $label ?: _("select"),
+            "image" => "",
+            "class" => "popup-select-button",
+            "match_index" => "",
+            "match_value" => "",
+        ]];
+    }
+
+    /**
      * @param $rule_number
      * @param string $value
      * @return bool|string

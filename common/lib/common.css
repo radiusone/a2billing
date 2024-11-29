@@ -20,6 +20,18 @@ header .nav svg.bi {
     fill: currentColor;
 }
 
+.popup-select-link {
+    text-transform: uppercase;
+    font-weight: bold;
+    color: red;
+}
+.popup-select-link::before {
+    content: "<";
+}
+.popup-select-link::after {
+    content: ">";
+}
+
 .dropdown-toggle { outline: 0; }
 
 .nav-flush .nav-link {
