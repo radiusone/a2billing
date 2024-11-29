@@ -65,9 +65,7 @@ if (strlen($add_callerid)>0  && is_numeric($add_callerid)) {
 }
 
 
-if (!isset($form_action))  $form_action="list"; //ask-add
-if (!isset($action)) $action = $form_action;
-
+$form_action ??= "list";
 $list = $HD_Form -> perform_action($form_action);
 
 // #### HEADER SECTION

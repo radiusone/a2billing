@@ -54,9 +54,7 @@ $HD_Form -> init();
 /********************************* BATCH UPDATE CURRENCY TABLE ***********************************/
 $A2B -> DBHandle = $HD_Form -> DBHandle;
 
-if (!isset($form_action))  $form_action="list"; //ask-add
-if (!isset($action)) $action = $form_action;
-
+$form_action ??= "list";
 $list = $HD_Form -> perform_action($form_action);
 
 require_once __DIR__ . "/../templates/main.php";

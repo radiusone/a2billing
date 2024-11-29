@@ -263,9 +263,7 @@ $HD_Form->list_query_conditions["lastname"] = $_SESSION["IDfilter"];
 
 $HD_Form -> init();
 
-if (!isset($form_action))  $form_action="list"; //ask-add
-if (!isset($action)) $action = $form_action;
-
+$form_action ??= "list";
 $list = $HD_Form -> perform_action($form_action);
 
 // #### HEADER SECTION

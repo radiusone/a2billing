@@ -98,9 +98,7 @@ if (strlen($description)>0  && is_numeric($priority) && strlen($title)>0  && is_
 
 }
 
-if (!isset($form_action))  $form_action="list"; //ask-add
-if (!isset($action)) $action = $form_action;
-$list = $HD_Form -> perform_action($form_action);
+$form_action ??= "list";$list = $HD_Form -> perform_action($form_action);
 // #### HEADER SECTION
 $smarty->display('main.tpl');
 

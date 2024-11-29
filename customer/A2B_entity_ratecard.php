@@ -63,9 +63,7 @@ if (isset($mydisplaylimit) && (is_numeric($mydisplaylimit) || ($mydisplaylimit==
     }
 }
 
-if (!isset($form_action))  $form_action="list"; //ask-add
-if (!isset($action)) $action = $form_action;
-
+$form_action ??= "list";
 if ( ($form_action == "list") &&  ($HD_Form->search_form_enabled) && ($posted_search == 1 ) && isset($mytariff_id) ) {
     $HD_Form->FG_QUERY_WHERE_CLAUSE = "idtariffplan='$mytariff_id'";
     $HD_Form->list_query_conditions["idtariffplan"] = $mytariff_id;

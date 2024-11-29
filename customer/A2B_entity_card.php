@@ -46,9 +46,7 @@ if (! has_rights (Customer::ACX_ACCESS)) {
 
 $HD_Form -> init();
 
-if (!isset($form_action))  $form_action="list"; //ask-add
-if (!isset($action)) $action = $form_action;
-
+$form_action ??= "list";
 if ($message != "success") {
     $list = $HD_Form -> perform_action($form_action);
 }

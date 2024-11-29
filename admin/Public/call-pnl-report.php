@@ -473,9 +473,7 @@ if (!($popup_select>=1)) $HD_Form -> FG_EXPORT_CSV = true;
 if (!($popup_select>=1)) $HD_Form -> FG_EXPORT_XML = true;
 $HD_Form -> export_session_key = "pr_export_pnl_report";
 
-if (!isset($form_action))  $form_action="list"; //ask-add
-if (!isset($action)) $action = $form_action;
-
+$form_action ??= "list";
 $list = $HD_Form -> perform_action($form_action);
 
 // #### TOP SECTION PAGE

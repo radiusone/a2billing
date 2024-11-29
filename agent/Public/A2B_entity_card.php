@@ -237,9 +237,7 @@ if (($form_action == "addcredit") && ($addcredit > 0) && ($id > 0 || $cardnumber
 if ($form_action == "addcredit")
     $form_action='list';
 
-if (!isset($form_action))  $form_action="list"; //ask-add
-if (!isset($action)) $action = $form_action;
-
+$form_action ??= "list";
 
 $list = $HD_Form -> perform_action($form_action);
 

@@ -221,9 +221,7 @@ if (isset($archive) && !empty($archive)) {
         $archive_message = "The data has been successfully archived";
 }
 
-if (!isset($form_action))  $form_action="list"; //ask-add
-if (!isset($action)) $action = $form_action;
-
+$form_action ??= "list";
 $list = $HD_Form->perform_action($form_action);
 
 require_once __DIR__ . "/../templates/main.php";

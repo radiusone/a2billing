@@ -47,11 +47,7 @@ if (!has_rights(Customer::ACX_DID)) {
 
 $HD_Form->init();
 
-if (!isset ($form_action))
-    $form_action = "list";
-if (!isset ($action))
-    $action = $form_action;
-
+$form_action ??= "list";
 $FG_LIMITE_DISPLAY = 10;
 if (isset ($mydisplaylimit) && (is_numeric($mydisplaylimit) || ($mydisplaylimit == 'ALL'))) {
     if ($mydisplaylimit == 'ALL') {

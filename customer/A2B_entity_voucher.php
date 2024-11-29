@@ -82,9 +82,7 @@ if (strlen($voucher)>0) {
     }
 }
 
-if (!isset($form_action))  $form_action="list"; //ask-add
-if (!isset($action)) $action = $form_action;
-
+$form_action ??= "list";
 $list = $HD_Form -> perform_action($form_action);
 
 // #### HEADER SECTION

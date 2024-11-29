@@ -44,9 +44,7 @@ Admin::checkPageAccess(Admin::ACX_MAINTENANCE);
 
 $HD_Form -> init();
 
-if (!isset($form_action))  $form_action="list"; //ask-add
-if (!isset($action)) $action = $form_action;
-
+$form_action ??= "list";
 if ($form_action == "delete") {
     $instance_table = new Table($HD_Form->FG_QUERY_TABLE_NAME, null);
     $res_delete = $instance_table->deleteRow($HD_Form->DBHandle, $HD_Form->update_query_conditions);

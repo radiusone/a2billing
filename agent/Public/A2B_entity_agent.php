@@ -48,9 +48,7 @@ $HD_Form -> init();
 
 getpost_ifset(array('message'));
 
-if (!isset($form_action))  $form_action="list"; //ask-add
-if (!isset($action)) $action = $form_action;
-
+$form_action ??= "list";
 if ($message != "success") {
     $list = $HD_Form -> perform_action($form_action);
 }
