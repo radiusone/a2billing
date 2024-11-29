@@ -43,7 +43,7 @@ getpost_ifset(['id', 'groupselect']);
  * @var string $groupselect
  * @var string $form_action
  */
-$form_action = $form_action ?? "list";
+$form_action ??= "list";
 
 $handle = DbConnect();
 

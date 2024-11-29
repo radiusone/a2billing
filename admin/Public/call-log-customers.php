@@ -195,7 +195,7 @@ $HD_Form->FG_FILTER_SEARCH_FORM_SELECT_INPUTS[] = [_("Time unit"), false, "choos
  */
 $HD_Form->search_delete_enabled = false;
 
-$form_action = $form_action ?? "list";
+$form_action ??= "list";
 $HD_Form->prepare_list_subselection('list');
 if (empty($HD_Form->FG_QUERY_WHERE_CLAUSE)) {
     $date = (new DateTime("-1 day"))->format("Y-m-d H:i:s");

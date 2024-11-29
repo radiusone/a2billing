@@ -48,7 +48,7 @@ require_once __DIR__ . "/form_data/FG_var_config_group.inc";
 
 $HD_Form->init();
 
-$form_action = $form_action ?? "list";
+$form_action ??= "list";
 $list = $HD_Form->perform_action($form_action);
 
 require_once __DIR__ . "/../templates/main.php";

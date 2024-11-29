@@ -84,11 +84,7 @@ getpost_ifset(array (
 
 $HD_Form->init();
 
-if (!isset ($form_action))
-    $form_action = "list"; //ask-add
-if (!isset ($action))
-    $action = $form_action;
-
+$form_action ??= "list";
 if (is_string($tariffgroup) && strlen(trim($tariffgroup)) > 0) {
     [$mytariffgroup_id, $mytariffgroupname, $mytariffgrouplcrtype] = preg_split('/-:-/', $tariffgroup);
     $_SESSION["mytariffgroup_id"] = $mytariffgroup_id;

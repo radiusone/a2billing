@@ -47,11 +47,7 @@ if (!has_rights(Agent::ACX_BILLING)) {
 
 $HD_Form->init();
 
-if (!isset ($form_action))
-    $form_action = "list"; //ask-add
-if (!isset ($action))
-    $action = $form_action;
-
+$form_action ??= "list";
 $list = $HD_Form->perform_action($form_action);
 
 // #### HEADER SECTION

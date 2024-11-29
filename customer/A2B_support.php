@@ -108,11 +108,7 @@ if ((strlen($description) > 0 || strlen($title) > 0) && is_numeric($priority) &&
     $update_msg = gettext("Sorry, There was a problem creating your ticket.");
 }
 
-if (!isset ($form_action))
-    $form_action = "list"; //ask-add
-if (!isset ($action))
-    $action = $form_action;
-
+$form_action ??= "list";
 $list = $HD_Form->perform_action($form_action);
 
 // #### HEADER SECTION

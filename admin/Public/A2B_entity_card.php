@@ -162,7 +162,7 @@ if ($batchupdate == 1 && count($check)) {
 }
 
 $id = $id ?? 0;
-$form_action = $form_action ?? "list"; //ask-add
+$form_action ??= "list";
 $list = $HD_Form->perform_action($form_action);
 
 require_once __DIR__ . "/../templates/main.php";

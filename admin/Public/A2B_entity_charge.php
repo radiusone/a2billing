@@ -53,11 +53,7 @@ if ($id != "" || !is_null($id)) {
     $HD_Form_c->FG_EDITION_CLAUSE = str_replace("%id", "$id", $HD_Form_c->FG_EDITION_CLAUSE);
 }
 
-if (!isset ($form_action))
-    $form_action = "list"; //ask-add
-if (!isset ($action))
-    $action = $form_action;
-
+$form_action ??= "list";
 $list = $HD_Form_c->perform_action($form_action);
 
 if ($wantinclude != 1) {

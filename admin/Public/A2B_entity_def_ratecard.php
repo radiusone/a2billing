@@ -168,7 +168,7 @@ if (($bu["batchupdate"] ?? false) && is_array($bu["check"])) {
     }
 }
 /********************************* END BATCH UPDATE ***********************************/
-$form_action = $form_action ?? "list"; //ask-add
+$form_action ??= "list";
 
 $list = $HD_Form->perform_action($form_action);
 

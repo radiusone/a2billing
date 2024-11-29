@@ -50,7 +50,7 @@ getpost_ifset(['id', 'card_id', 'date', 'payment','description','added_refill','
  * @var string $added_refill
  * @var string $refill_type
  */
-$form_action = $form_action ?? "list";
+$form_action ??= "list";
 
 if ($form_action === "list") {
 	$HD_Form = new FormHandler("cc_logpayment LEFT JOIN cc_card ON cc_card.id=card_id", "Payment", 'cc_logpayment.id');

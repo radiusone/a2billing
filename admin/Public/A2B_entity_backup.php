@@ -44,11 +44,7 @@ require_once __DIR__ . "/form_data/FG_var_backup.inc";
 
 $HD_Form->init();
 
-if (!isset ($form_action))
-    $form_action = "list"; //ask-add
-if (!isset ($action))
-    $action = $form_action;
-
+$form_action ??= "list";
 $list = $HD_Form->perform_action($form_action);
 
 require_once __DIR__ . "/../templates/main.php";

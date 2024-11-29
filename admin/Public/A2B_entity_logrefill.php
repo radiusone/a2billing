@@ -50,7 +50,7 @@ Admin::checkPageAccess(Admin::ACX_BILLING);
 
 $HD_Form->init();
 
-$form_action = $form_action ?? "list";
+$form_action ??= "list";
 
 $list = $HD_Form->perform_action($form_action);
 
