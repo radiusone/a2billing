@@ -37,33 +37,30 @@ use A2billing\Forms\FormHandler;
 
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
-$HD_Form = new FormHandler("cc_agent", "Agent");
+$HD_Form = new FormHandler("cc_agent", _("Agent"));
 
-$HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 10;
+$HD_Form->AddListValue(_("Agent"), "id","display_linktoagent");
+$HD_Form->AddListValue(_("Credit"), "credit", "display_2bill");
+$HD_Form->AddListValue("<abbr title=\"" . _("Commission balance") . "\">" . _("Bal") . "</abbr>", "com_balance", "display_2bill");
+// todo: need a way to do a calculated column in tables
+$HD_Form->AddViewElement("<abbr title=\"" . _("Total commission accrued") . "\">" . _("Total") . "</abbr>", "com_accrued", true, 15, "", "lie", "cc_agent_commission as t2", "TRUNCATE(SUM(t2.amount),2)", "t2.id_agent='%id'  ", "%1");
+$HD_Form->AddViewElement("<abbr title=\"" . _("Total customer refill amount") . "\">" . _("Refills") . "</abbr>", "refill", true, 15, "", "lie", "cc_logrefill as t2", "TRUNCATE(SUM(t2.credit),2)", "t2.agent_id='%id' AND t2.refill_type=3 ", "%1");
+$HD_Form->AddViewElement("<abbr title=\"" . _("Total agent refill amount") . "\">" . _("Agent refills") . "</abbr>", "refill", true, 15, "", "lie", "cc_logrefill_agent as t2", "TRUNCATE(SUM(t2.credit),2)", "t2.agent_id='%id' ", "%1");
+$HD_Form->AddViewElement("<abbr title=\"" . _("Total payments taken") . "\">" . _("Payments") . "</abbr>", "payment", true, 15, "", "lie", "cc_logpayment_agent as t2", "TRUNCATE(SUM(t2.payment),2)", "t2.agent_id='%id' ", "%1");
+$HD_Form->FieldViewElement (["id", "credit", "com_balance", "id", "id", "id", "id"]);
 
-$HD_Form -> AddViewElement(gettext("ID"), "id");
-$HD_Form -> AddViewElement(gettext("Agent"), "username", true, 30, "display_linktoagent");
-$HD_Form -> AddViewElement(gettext("CREDIT"), "credit", true, "", "display_2bill");
-$HD_Form -> AddViewElement(gettext("COMMISSION BAL"), "com_balance", true, "", "display_2bill");
-$HD_Form -> AddViewElement(gettext("TOTAL COM. ACCRUED"), "com_accrued", true, 15, "", "lie", "cc_agent_commission as t2", "TRUNCATE(SUM(t2.amount),2)", "t2.id_agent='%id'  ", "%1");
-$HD_Form -> AddViewElement(gettext("CUSTOMER REFILL BY AGENT"), "refill", true, 15, "", "lie", "cc_logrefill as t2", "TRUNCATE(SUM(t2.credit),2)", "t2.agent_id='%id' AND t2.refill_type=3 ", "%1");
-$HD_Form -> AddViewElement(gettext("AGENT REFILL"), "refill", true, 15, "", "lie", "cc_logrefill_agent as t2", "TRUNCATE(SUM(t2.credit),2)", "t2.agent_id='%id' ", "%1");
-$HD_Form -> AddViewElement(gettext("AGENT PAYMENT"), "payment", true, 15, "", "lie", "cc_logpayment_agent as t2", "TRUNCATE(SUM(t2.payment),2)", "t2.agent_id='%id' ", "%1");
+$HD_Form->search_form_enabled = true;
+$HD_Form->search_session_key = "agent_situation";
+$HD_Form->search_form_title = _("Define specific criteria to search for agents.");
+$HD_Form->search_delete_enabled = false;
+$HD_Form->AddSearchTextInput(_("LOGIN"), "login","logintype");
+$HD_Form->AddSearchTextInput(_("LASTNAME"),"lastname","lastnametype");
+$HD_Form->AddSearchTextInput(_("FIRSTNAME"),"firstname","firstnametype");
 
-$HD_Form -> FieldViewElement ('id, id, credit,com_balance,id,id, id, id');
+$HD_Form->FG_ENABLE_EDIT_BUTTON = false;
+$HD_Form->FG_ENABLE_DELETE_BUTTON = false;
+$HD_Form->FG_ENABLE_ADD_BUTTON = false;
 
-$HD_Form -> search_form_enabled = true;
-$HD_Form -> search_session_key = 'agent_situation';
-$HD_Form -> search_form_title = gettext('Define specific criteria to search for agent infos.');
-$HD_Form -> search_delete_enabled =false;
-$HD_Form -> AddSearchTextInput(gettext("LOGIN"), 'login','logintype');
-$HD_Form -> AddSearchTextInput(gettext("LASTNAME"),'lastname','lastnametype');
-$HD_Form -> AddSearchTextInput(gettext("FIRSTNAME"),'firstname','firstnametype');
-
-$HD_Form -> FG_ENABLE_EDIT_BUTTON = false;
-$HD_Form -> FG_ENABLE_DELETE_BUTTON = false;
-$HD_Form -> FG_ENABLE_ADD_BUTTON = false;
-
-$HD_Form -> FG_LOCATION_AFTER_ADD = "?id=";
-$HD_Form -> FG_LOCATION_AFTER_EDIT = "?id=";
-$HD_Form -> FG_LOCATION_AFTER_DELETE = "?id=";
+$HD_Form->FG_LOCATION_AFTER_ADD = "?id=";
+$HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";
+$HD_Form->FG_LOCATION_AFTER_DELETE = "?id=";

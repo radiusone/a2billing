@@ -37,72 +37,91 @@ use A2billing\Forms\FormHandler;
 
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
-getpost_ifset(array('name','path','creationdate'));
-
+getpost_ifset(["path"]);
+/**
+ * @var string $path
+ */
 $HD_Form = new FormHandler("cc_backup", "Backup");
 
-if ($form_action == 'add'){
+$form_action ??= "list";
+if ($form_action === "add" && !empty($path)) {
     $backup_file = $path;
+    $do_gzip = false;
+    $error_zip = 0;
 
-    if (substr($backup_file,-3)=='.gz'){
+    if (str_ends_with($backup_file, ".gz")) {
         // WE NEED TO GZIP
         $backup_file = substr($backup_file,0,-3);
-        $do_gzip=1;
+        $do_gzip = true;
     }
+
     // Make the backup stuff here and redirect to success page
     // mysqldump -all --databases mya2billing -ua2billinguser -pa2billing > /tmp/test.sql
     // pg_dump -c -d -U a2billinguser -h localhost -f /tmp/test.sql mya2billing
     if (DB_TYPE != 'postgres') {
-        $run_backup=MYSQLDUMP." -all --databases ".DBNAME." -u'".USER."' -p'".PASS."' > '{$backup_file}'";
+        $run_backup = sprintf(
+            "%s -al --databases %s -u %s -p%s > %s",
+            escapeshellcmd(MYSQLDUMP),
+            escapeshellarg(DBNAME),
+            escapeshellarg(USER),
+            escapeshellarg(PASS),
+            escapeshellarg($backup_file)
+        );
     } else {
-        $env_var="PGPASSWORD='".PASS."'";
-        putenv($env_var);
-        $run_backup=PG_DUMP." -c -d -U ".USER." -h ".HOST." -f '{$backup_file}' ".DBNAME;
+        putenv("PGPASSWORD='".PASS."'");
+        $run_backup = sprintf(
+            "%s -c -d -U %s -h %s -f %s %s",
+            escapeshellcmd(PG_DUMP),
+            escapeshellarg(USER),
+            escapeshellarg(HOST),
+            escapeshellarg($backup_file),
+            escapeshellarg(DBNAME)
+        );
     }
-    if ($FG_DEBUG == 1 ) echo $run_backup."<br>";
     exec($run_backup,$output,$error);
 
-    if ($do_gzip){
+    if ($do_gzip) {
         // Compress file
-        $run_gzip = GZIP_EXE." '$backup_file'";
-        if ($FG_DEBUG == 1 ) echo $run_gzip."<br>";
+        $run_gzip = sprintf("%s %s", escapeshellcmd(GZIP_EXE), escapeshellarg($backup_file));
         exec($run_gzip,$output,$error_zip);
     }
 
-    if($error==0 && $error_zip==0 ) {
-        $HD_Form -> FG_LOCATION_AFTER_ADD = 'A2B_entity_restore.php?id';
-    }
-    elseif($error!=0) {
-        $HD_Form -> FG_TEXT_ADITION_CONFIRMATION = gettext("An error occur when the system tried to backup of the database.")."<br>".gettext("Please check yours system settings for the backup section ");
-    }
-    else {
-        $HD_Form -> FG_TEXT_ADITION_CONFIRMATION = gettext("An error occur when the system tried to compress the backup realized.")."<br>".gettext("Please check yours system settings for the backup section ");
+    $HD_Form->FG_TEXT_ADITION_CONFIRMATION = "";
+    if($error === 0 && $error_zip === 0) {
+        $HD_Form->FG_LOCATION_AFTER_ADD = "A2B_entity_restore.php?id=";
+    } else {
+        if ($error !== 0) {
+            $HD_Form->FG_TEXT_ADITION_CONFIRMATION .= _("An error occur when the system tried to backup of the database.") . "<br>" . _("Please check yours system settings for the backup section ");
+        }
+        if ($error_zip !== 0) {
+            $HD_Form->FG_TEXT_ADITION_CONFIRMATION .= _("An error occur when the system tried to compress the backup realized.") . "<br>" . _("Please check yours system settings for the backup section ");
+        }
     }
 }
 
-$HD_Form -> FG_ENABLE_EDIT_BUTTON = false;
-$HD_Form -> FG_ENABLE_DELETE_BUTTON = false;
-$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
+$HD_Form->FG_ENABLE_EDIT_BUTTON = false;
+$HD_Form->FG_ENABLE_DELETE_BUTTON = false;
+$HD_Form->FG_ENABLE_ADD_BUTTON = true;
 
-$default_path = "value='".BACKUP_PATH."/db_". DBNAME . "-" . date('YmdHis') . ".sql.gz'";
+$default_path = "value='" . BACKUP_PATH . "/db_" . DBNAME . "-" . date('YmdHis') . ".sql.gz'";
 
 $HD_Form->AddEditElement(
-    gettext("Name"),
+    _("Name"),
     "name",
-    gettext("Name for the backup"),
+    _("Name for the backup"),
     "size=50 maxlength=50",
     null,
-    gettext("Insert the name of backup")
+    _("Insert the name of backup")
 );
 
 $HD_Form->AddEditElement(
-    gettext("PATH"),
+    _("PATH"),
     "path",
-    gettext("Path for the backup file or leave the default path set in a2billing.conf"),
+    _("Path for the backup file or leave the default path set in a2billing.conf"),
     "size=100 maxlength=200 $default_path",
     null,
-    gettext("Insert the patch for the backup file or leave the default path")
+    _("Insert the patch for the backup file or leave the default path")
 );
 
-$HD_Form -> FG_LOCATION_AFTER_EDIT = "?id=";
-$HD_Form -> FG_LOCATION_AFTER_DELETE = "?id=";
+$HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";
+$HD_Form->FG_LOCATION_AFTER_DELETE = "?id=";

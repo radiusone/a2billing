@@ -37,111 +37,95 @@ use A2billing\Forms\FormHandler;
 
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
-getpost_ifset(array('id', 'name', 'periode', 'type', 'maxvalue', 'minvalue', 'status', 'id_trunk', 'numberofrun', 'datelastrun', 'popup_select'));
+$HD_Form = new FormHandler("cc_alarm", _("Alarms"));
 
-$HD_Form = new FormHandler("cc_alarm", "Alarms");
-
-$HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
+$HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
 
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_alarm.php?form_action=ask-add";
-$HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add Alarm");
+$HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = _("Add Alarm");
 $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("bell_add.png") ;
 
-
-// TODO Integrate a generic LIST to Framework
 $period_list = [1 => ["Hourly", "1"], 2 => ["Daily", "2"], 3 => ["Weekly", "3"], 4 => ["Monthly", "4"]];
-
-
 $actived_list = getActivationList() ;
+$type_list = [
+    1 => [_("Apply alarm on ALOC too low or too high"), 1],
+    2 => [_("Apply alarm on ASR too low or too high"), 2],
+    3 => [_("Apply alarm on CIC too many"), 3],
+];
+$daynumber_list = array_combine(range(1, 20), range(1, 20));
 
+$HD_Form->AddListValue(_("NAME"), "name");
+$HD_Form->AddListMapping(_("PERIOD"), "periode", $period_list);
+$HD_Form->AddListMapping(_("TYPE"), "type",$type_list);
+$HD_Form->AddListValue(_("MAX"), "maxvalue");
+$HD_Form->AddListValue(_("MIN"), "minvalue");
+$HD_Form->AddListMapping(_("STATUS"), "status", $actived_list);
+$HD_Form->AddListValue(_("TRUNK"), "id_trunk");
+$HD_Form->AddListValue(_("CREATION DATE"), "datecreate");
+$HD_Form->FieldViewElement (["name", "periode", "type", "maxvalue", "minvalue", "status", "id_trunk", "datecreate"]);
 
-$type_list = array();
-$type_list["1"]  = array( gettext("Apply alarm on ALOC too low or too high"), "1");
-$type_list["2"]  = array( gettext("Apply alarm on ASR too low or too high"), "2");
-$type_list["3"]  = array( gettext("Apply alarm on CIC too many"), "3");
-
-
-$daynumber_list = array();
-for ($k=1;$k<=20;$k++) {
-		$daynumber_list["$k"]  = array( "$k", "$k");
-}
-$HD_Form -> AddViewElement(gettext("NAME"), "name");
-$HD_Form -> AddViewElement(gettext("PERIOD"), "periode", true, 0, "", "list", $period_list);
-$HD_Form -> AddViewElement(gettext("TYPE"), "type", true, 0, "", "list", $type_list);
-$HD_Form -> AddViewElement(gettext("MAX"), "maxvalue");
-$HD_Form -> AddViewElement(gettext("MIN"), "minvalue");
-$HD_Form -> AddViewElement(gettext("STATUS"), "status", true, 0, "", "list", $actived_list);
-$HD_Form -> AddViewElement(gettext("TRUNK"), "id_trunk");
-$HD_Form -> AddViewElement(gettext("CREATION DATE"), "datecreate", true, 22);
-
-
-
-
-// added a parameter to append  FG_TABLE_ID  ( by default ) or disable 0.
-$HD_Form -> FieldViewElement ('name, periode, type, `maxvalue`, minvalue, status, id_trunk, datecreate');
-
-$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
-$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
+$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form->FG_ENABLE_ADD_BUTTON = true;
 $HD_Form->FG_ENABLE_INFO_BUTTON = true;
 $HD_Form->FG_INFO_BUTTON_LINK = "javascript:window.open('CC_entity_alarm_details.php?popup_select=2&displayfooter=0&displayheader=0&id=|param|','','scrollbars=yes,resizable=yes,width=600,height=350')";
 
 $HD_Form->AddEditElement(
-    gettext("NAME"),
+    _("NAME"),
     "name",
     "",
     "",
     3,
-    gettext("Insert the alarm name")
+    _("Insert the alarm name")
 );
 
-$HD_Form->AddEditSelect(gettext("PERIOD"), "periode", $period_list);
+$HD_Form->AddEditSelect(_("PERIOD"), "periode", $period_list);
 
 $HD_Form->AddEditSelect(
-    gettext("TYPE"), "type",
+    _("TYPE"), "type",
     $type_list,
-    "", gettext("ALOC (average length of call) ; ASR (answer seize ratio) ; CIC (Consecutive Incomplete Calls)")
+    "",
+    _("ALOC (average length of call) ; ASR (answer seize ratio) ; CIC (Consecutive Incomplete Calls)")
 );
 
 $HD_Form->AddEditElement(
-    gettext("MAX VALUE"),
+    _("MAX VALUE"),
     "`maxvalue`",
-    gettext("Input the maximum value (between 0 and 1 for ASR ; > 0 for ALOC in sec ; > 0 for CIC)"),
+    _("Input the maximum value (between 0 and 1 for ASR ; > 0 for ALOC in sec ; > 0 for CIC)"),
     "",
     null,
-    gettext("Insert the maximu value in")
+    _("Insert the maximum value in")
 );
 
 $HD_Form->AddEditElement(
-    gettext("MIN VALUE"),
+    _("MIN VALUE"),
     "minvalue",
-    gettext("Input the minimum value (between 0 and 1 for ASR ; >= 0 for ALOC in sec ; not used by CIC) or leave it empty")
+    _("Input the minimum value (between 0 and 1 for ASR ; >= 0 for ALOC in sec ; not used by CIC) or leave it empty")
 );
 
 $HD_Form->AddEditPopup(
-    gettext("TRUNK"),
+    _("TRUNK"),
     "id_trunk",
     "A2B_entity_trunk.php?popup_select=1&",
-    gettext("Set if you want to apply the alarm on a specific trunk or leave empty for all trunk."),
+    _("Set if you want to apply the alarm on a specific trunk or leave empty for all trunk."),
     "",
     null,
-    ""
 );
 
-$HD_Form->AddEditSelect(gettext("STATUS"), "status", $actived_list);
+$HD_Form->AddEditSelect(_("STATUS"), "status", $actived_list);
 
 $HD_Form->AddEditElement(
-    gettext("EMAIL TO SEND ALARM"),
+    _("EMAIL TO SEND ALARM"),
     "emailreport",
     "",
     "size=40 maxlength=40",
     1,
-    gettext("Insert the email to send the alarm")
+    _("Insert the email to send the alarm")
 );
 
-$HD_Form -> FG_INTRO_TEXT_ADITION = gettext("Add an alarm below");
+$HD_Form->FG_INTRO_TEXT_ADITION = _("Add an alarm below");
 
-$HD_Form -> FG_LOCATION_AFTER_ADD = "?id=";
-$HD_Form -> FG_LOCATION_AFTER_EDIT = "?id=";
-$HD_Form -> FG_LOCATION_AFTER_DELETE = "?id=";
+$HD_Form->FG_LOCATION_AFTER_ADD = "?id=";
+$HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";
+$HD_Form->FG_LOCATION_AFTER_DELETE = "?id=";
