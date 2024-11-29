@@ -144,7 +144,7 @@ foreach ($show_list as $field) {
             $HD_Form->AddListValue(_("ID"), "id");
             break;
         case "username":
-            $HD_Form->AddListValue(_("Account number"), "username", $popup_select ? "" : "display_customer_link");
+            $HD_Form->AddListValue(_("Account number"), "username", $popup_select ? null : "display_customer_link");
             break;
         case "lastname":
             $HD_Form->AddListValue(_("Last name"), "lastname");
