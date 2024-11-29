@@ -572,7 +572,7 @@ class FormHandler
     public function AddListMapping(string $label, string $field, array $map, bool $sortable = true): self
     {
         // temporary for backward compatibility
-        array_walk($map, fn (&$v, $k) => $v = [$v[0], $k]);
+        array_walk($map, fn (&$v, $k) => $v = [is_array($v) ? $v[0] : $v, $k]);
 
         $this->FG_LIST_TABLE_CELLS[] = [
             "type" => "list",
@@ -1460,7 +1460,7 @@ class FormHandler
             }
         }
 
-        if ($processed['posted_search'] != 1) {
+        if (($processed['posted_search'] ?? 0) != 1) {
             return;
         }
 

@@ -160,7 +160,7 @@ $processed["popup_fieldname"] ??= "";
                         $record_display = eval("return $string_to_eval;");
                     } elseif ($cell["type"] === "list") {
                         $select_list = $cell["options"];
-                        $match = $select_list[$item[$j - $k]];
+                        $match = $select_list[$item[$j - $k]] ?? null;
                         // todo: this won't be an array once old methods are gone
                         $record_display = (is_array($match) ? $match[0] : $match) ?: _("n/a");
                     } elseif ($cell["type"] === "list-conf") {
