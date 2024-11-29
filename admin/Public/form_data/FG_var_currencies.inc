@@ -37,25 +37,24 @@ use A2billing\Forms\FormHandler;
 
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
-getpost_ifset(array('id'));
-$HD_Form = new FormHandler("cc_currencies", "Currencies");
+$HD_Form = new FormHandler("cc_currencies", _("Currencies"));
 
-$HD_Form -> FG_TABLE_DEFAULT_ORDER = " currency";
-$HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_currencies.php?form_action=ask-add";
-$HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add Rate");
-$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("world_add.png") ;
+$HD_Form->FG_TABLE_DEFAULT_ORDER = "currency";
+$HD_Form->FG_LIST_ADDING_BUTTON1 = true;
+$HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_currencies.php?form_action=ask-add";
+$HD_Form->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = _("Add Rate");
+$HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("world_add.png") ;
 
 
-$HD_Form -> AddViewElement(gettext("CURRENCY"), "currency");
-$HD_Form -> AddViewElement(gettext("DETAIL"), "name");
-$HD_Form -> AddViewElement(gettext("VALUE"), "value");
+$HD_Form->AddListValue(_("Currency"), "currency");
+$HD_Form->AddListValue(_("Detail"), "name");
+$HD_Form->AddListValue(_("Value"), "value");
 
-$HD_Form -> FieldViewElement ('currency,name,value');
+$HD_Form->FieldViewElement(["currency", "name", "value"]);
 
-$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
-$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
+$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form->FG_ENABLE_ADD_BUTTON = true;
 
 $HD_Form->AddEditElement(
     gettext("Name"),

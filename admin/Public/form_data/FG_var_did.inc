@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Forms\FormHandler;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -60,29 +61,38 @@ $HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = 'add_did_use';
 $HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_DELETE = 'did_use_delete';
 $HD_Form->FG_ADDITIONAL_FUNCTION_BEFORE_DELETE = 'is_did_in_use';
 
-$billingtype_list = getBillingTypeList();
-// -- billtype: 0 = fix per month + dialoutrate, 1= fix per month, 2 = dialoutrate, 3 = free
-$billingtype_list_short = getBillingTypeShortList();
 $yesno = getYesNoList();
 
-$HD_Form->AddViewElement(_("DID"), "did", true, 0, "display_did");
-$HD_Form->AddViewElement(_("Customer"), "iduser", true, 0, "display_customer_name_id_link");
-$HD_Form->AddViewElement(_("Billing"), "billingtype", true, 0, "", "list", $billingtype_list_short);
-$HD_Form->AddViewElement(_("Start Date"), "startingdate", true, 19);
-$HD_Form->AddViewElement(_("DID Group"), "id_cc_didgroup", true, 15, "", "lie", "cc_didgroup", "didgroupname", "id='%id'", "%1");
-$HD_Form->AddViewElement(_("Country"), "id_cc_country", true, 15, "", "lie", "cc_country", "countryname", "id='%id'", "%1");
-$HD_Form->AddViewElement(_("Active"), "activated", true, 0, "", "list", $yesno);
-$HD_Form->AddViewElement("<abbr title=\"" . _("Minutes Used") . "\">" . _("Min") . "</abbr>", "secondusedreal", true, 30, "display_minute");
-$HD_Form->AddViewElement("<abbr title=\"" . _("Reserved") . "\">" . _("Res") . "</abbr>", "reserved", true, 0, "", "list", $yesno);
-$HD_Form->AddViewElement("<abbr title=\"" . _("Monthly Rate") . "\">" . _("MR") . "</abbr>", "fixrate");
-$HD_Form->AddViewElement("<abbr title=\"" . _("Sell Rate") . "\">" . _("SR") . "</abbr>", "selling_rate");
+$HD_Form->AddListValue(_("DID"), "did", "display_did");
+$HD_Form->AddListValue(_("Customer"), "iduser", "display_customer_name_id_link");
+$HD_Form->AddListMapping(_("Billing"), "billingtype", getBillingTypeShortList());
+$HD_Form->AddListValue(_("Start date"), "startingdate");
+$HD_Form->AddListSqlMapping(_("DID group"), "id_cc_didgroup", new Table("cc_didgroup", ["id", "didgroupname"]));
+$HD_Form->AddListSqlMapping(_("Country"), "id_cc_country", new Table("cc_country", ["id", "countryname"]));
+$HD_Form->AddListMapping(_("Active"), "activated", $yesno);
+$HD_Form->AddListValue("<abbr title=\"" . _("Minutes Used") . "\">" . _("Min") . "</abbr>", "secondusedreal", "display_minute");
+$HD_Form->AddListMapping("<abbr title=\"" . _("Reserved") . "\">" . _("Res") . "</abbr>", "reserved", $yesno);
+$HD_Form->AddListValue("<abbr title=\"" . _("Monthly Rate") . "\">" . _("MR") . "</abbr>", "fixrate");
+$HD_Form->AddListValue("<abbr title=\"" . _("Sell Rate") . "\">" . _("SR") . "</abbr>", "selling_rate");
 
-$HD_Form->FieldViewElement ('did, iduser, billingtype, startingdate, id_cc_didgroup, id_cc_country, activated, secondusedreal, reserved, fixrate, selling_rate');
+$HD_Form->FieldViewElement([
+    "did",
+    "iduser",
+    "billingtype",
+    "startingdate",
+    "id_cc_didgroup",
+    "id_cc_country",
+    "activated",
+    "secondusedreal",
+    "reserved",
+    "fixrate",
+    "selling_rate",
+]);
 
 $HD_Form->FG_ENABLE_ADD_BUTTON = true;
 $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
-$HD_Form->FG_SPLITABLE_FIELDS[] = 'did';
+$HD_Form->FG_SPLITABLE_FIELDS = ["did"];
 
 $comp_date = $comp_date_plus = $didval = $fixval = "";
 if ($form_action === "ask-add" || $form_action === "purchase") {
@@ -100,14 +110,16 @@ if ($form_action === "ask-add" || $form_action === "purchase") {
 $HD_Form->AddEditElement(
     _("DID"),
     "did",
-    _("Define the DID's. If you ADD a new DID, NOT an EDIT, you can define a range of DID. <br>80412340210-80412340218 would add all DID's between the range, whereas DIDs separated by a comma e.g. 80412340210,80412340212,80412340214 would only add the individual DID listed."),
+    $form_action === "ask-add"
+        ? _("Define the DIDs. You can define a range of DID. <br>80412340210-80412340218 would add all DID's between the range, whereas DIDs separated by a comma e.g. 80412340210,80412340212,80412340214 would only add the individual DID listed.")
+        : _("Define the DIDs"),
     "maxlength=60 $didval",
     9,
     _("Insert the DID")
 );
 
 
-$HD_Form->AddEditSelect(_("BILLING"), "billingtype", $billingtype_list);
+$HD_Form->AddEditSelect(_("BILLING"), "billingtype", getBillingTypeList());
 
 $HD_Form->AddEditElement(
     _("START DATE"),
@@ -137,7 +149,8 @@ $HD_Form->AddEditRadio(
     "activated",
     $yesno,
     "1",
-    "", "",
+    "",
+    "",
     gettext("Choose if you want to activate this card")
 );
 
@@ -382,11 +395,11 @@ $HD_Form->AddEditElement(
 
 // Set the filter variables
 $HD_Form->FG_FILTER_ENABLE = true;
-$HD_Form->FG_FILTER_COLUMN = 'did';
-$HD_Form->FG_FILTER_LABEL = 'did';
+$HD_Form->FG_FILTER_COLUMN = "did";
+$HD_Form->FG_FILTER_LABEL = "did";
 
-$HD_Form->FG_INTRO_TEXT_EDITION= '';
-$HD_Form->FG_INTRO_TEXT_ADITION = '';
+$HD_Form->FG_INTRO_TEXT_EDITION= "";
+$HD_Form->FG_INTRO_TEXT_ADITION = "";
 
 $HD_Form->FG_LOCATION_AFTER_ADD = "?form_action=list&amp;id=";
 $HD_Form->FG_LOCATION_AFTER_EDIT = "?form_action=list&amp;id=";

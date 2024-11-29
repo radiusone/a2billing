@@ -1,7 +1,8 @@
 <?php
 
+use A2billing\A2Billing;
 use A2billing\Admin;
-use A2billing\Table;
+use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -37,12 +38,16 @@ use A2billing\Table;
 **/
 
 $menu_section = 10;
-require_once "../../common/lib/admin.defines.php";
-include './form_data/FG_var_currencies.inc';
+require_once __DIR__ . "/../../common/lib/admin.defines.php";
+/**
+ * @var A2Billing $A2B
+ */
+require_once __DIR__ . "/form_data/FG_var_currencies.inc";
+/**
+ * @var FormHandler $HD_Form
+ */
 
 Admin::checkPageAccess(Admin::ACX_BILLING);
-
-getpost_ifset(array('updatecurrency'));
 
 $HD_Form -> init();
 
@@ -61,11 +66,10 @@ echo create_help(_("Currency data is automatically updated from Yahoo Financial.
     '<br>' . _("For more information please visit the website http://finance.yahoo.com.") .
     '<br>' . _("The list below is based on your currency :") . ' <b>' . BASE_CURRENCY . '</b>', 'CurrencyList');
 
-if (isset($update_msg) && strlen($update_msg)>0) echo $update_msg;
+echo $update_msg ?? "";
 
 // #### TOP SECTION PAGE
 $HD_Form -> create_toppage ($form_action);
-
 $HD_Form -> create_form($form_action, $list) ;
 
 require_once __DIR__ . "/../templates/footer.php";
