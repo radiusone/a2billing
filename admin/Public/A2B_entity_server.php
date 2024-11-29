@@ -36,8 +36,8 @@ use A2billing\Admin;
 **/
 
 $menu_section = 14;
-require_once "../../common/lib/admin.defines.php";
-include './form_data/FG_var_server.inc';
+require_once __DIR__ . "/../../common/lib/admin.defines.php";
+require_once __DIR__ . "/form_data/FG_var_server.inc";
 
 Admin::checkPageAccess(Admin::ACX_CALLBACK);
 

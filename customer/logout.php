@@ -33,6 +33,6 @@
  *
 **/
 
-require_once "../common/lib/customer.defines.php";
+require_once __DIR__ . "/../common/lib/customer.defines.php";
 
  Header ("Location: index.php");

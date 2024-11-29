@@ -37,7 +37,7 @@ use A2billing\Forms\FormHandler;
 **/
 
 $menu_section = 3;
-require_once "../../common/lib/admin.defines.php";
+require_once __DIR__ . "/../../common/lib/admin.defines.php";
 require_once "./form_data/FG_var_user.inc";
 /**
  * @var A2Billing $A2B

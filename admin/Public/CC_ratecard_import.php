@@ -37,7 +37,7 @@ use A2billing\Table;
 **/
 
 $menu_section = 6;
-require_once "../../common/lib/admin.defines.php";
+require_once __DIR__ . "/../../common/lib/admin.defines.php";
 /**
  * @var Smarty $smarty
  */

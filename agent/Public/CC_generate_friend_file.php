@@ -37,7 +37,7 @@ use PhpAgi\AMI as AGI_AsteriskManager;
  *
 **/
 
-require_once "../../common/lib/agent.defines.php";
+require_once __DIR__ . "/../../common/lib/agent.defines.php";
 
 $FG_DEBUG =0;
 

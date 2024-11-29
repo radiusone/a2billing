@@ -38,8 +38,8 @@ use A2billing\Notification;
  *
 **/
 
-require_once "../../common/lib/agent.defines.php";
-include './form_data/FG_var_friend.inc';
+require_once __DIR__ . "/../../common/lib/agent.defines.php";
+require_once __DIR__ . "/form_data/FG_var_friend.inc";
 
 if (! has_rights (Agent::ACX_CUSTOMER)) {
     Header ("HTTP/1.0 401 Unauthorized");

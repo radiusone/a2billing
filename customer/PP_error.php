@@ -33,7 +33,7 @@
  *
 **/
 
-require_once "../common/lib/customer.defines.php";
+require_once __DIR__ . "/../common/lib/customer.defines.php";
 
 $smarty->display('header.tpl');
 session_destroy();

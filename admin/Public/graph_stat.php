@@ -38,7 +38,7 @@ use Amenadiel\JpGraph\Plot\LinePlot;
  *
 **/
 
-require_once "../../common/lib/admin.defines.php";
+require_once __DIR__ . "/../../common/lib/admin.defines.php";
 
 Admin::checkPageAccess(Admin::ACX_CALL_REPORT);
 

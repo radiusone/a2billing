@@ -35,8 +35,8 @@ use A2billing\Customer;
  *
 **/
 
-require_once "../common/lib/customer.defines.php";
-include './form_data/FG_var_receipt.inc';
+require_once __DIR__ . "/../common/lib/customer.defines.php";
+require_once __DIR__ . "/form_data/FG_var_receipt.inc";
 
 if (!has_rights(Customer::ACX_INVOICES)) {
     Header("HTTP/1.0 401 Unauthorized");

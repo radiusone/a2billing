@@ -36,7 +36,7 @@ use A2billing\Admin;
 **/
 
 $menu_section = 11;
-require_once "../../common/lib/admin.defines.php";
+require_once __DIR__ . "/../../common/lib/admin.defines.php";
 include '../../common/lib/support/classes/invoice.php';
 include '../../common/lib/support/classes/invoiceItem.php';
 

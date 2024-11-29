@@ -38,7 +38,7 @@ use A2billing\Notification;
  *
 **/
 
-require_once "../../common/lib/agent.defines.php";
+require_once __DIR__ . "/../../common/lib/agent.defines.php";
 
 if (! has_rights (Agent::ACX_ACCESS)) {
     Header ("HTTP/1.0 401 Unauthorized");

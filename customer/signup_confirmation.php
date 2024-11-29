@@ -36,7 +36,7 @@ use A2billing\A2bMailException;
  *
 **/
 
-require_once "../common/lib/customer.defines.php";
+require_once __DIR__ . "/../common/lib/customer.defines.php";
 
 if (!$A2B->config["signup"]['enable_signup']) {
     echo ("No Signup page!");

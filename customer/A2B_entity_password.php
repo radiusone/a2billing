@@ -36,7 +36,7 @@ use A2billing\Table;
  *
 **/
 
-require_once "../common/lib/customer.defines.php";
+require_once __DIR__ . "/../common/lib/customer.defines.php";
 
 if (!has_rights (Customer::ACX_PASSWORD)) {
     Header ("HTTP/1.0 401 Unauthorized");

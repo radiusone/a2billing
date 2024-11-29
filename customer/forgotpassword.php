@@ -39,7 +39,7 @@ use A2billing\A2bMailException;
 // session_name("FORGOT");
 // session_start();
 
-require_once "../common/lib/customer.defines.php";
+require_once __DIR__ . "/../common/lib/customer.defines.php";
 
 getpost_ifset(array ('pr_email', 'action'));
 

@@ -37,7 +37,7 @@ use A2billing\Ticket;
  *
 **/
 
-require_once "../../common/lib/agent.defines.php";
+require_once __DIR__ . "/../../common/lib/agent.defines.php";
 
 if (! has_rights (Agent::ACX_SUPPORT)) {
     Header ("HTTP/1.0 401 Unauthorized");

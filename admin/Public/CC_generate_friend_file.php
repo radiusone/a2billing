@@ -37,7 +37,7 @@ use PhpAgi\AMI as AGI_AsteriskManager;
  *
 **/
 
-require_once "../../common/lib/admin.defines.php";
+require_once __DIR__ . "/../../common/lib/admin.defines.php";
 
 getpost_ifset(array('action', 'voip_type'));
 

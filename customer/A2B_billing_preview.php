@@ -36,7 +36,7 @@ use A2billing\Table;
  *
 **/
 
-require_once "../common/lib/customer.defines.php";
+require_once __DIR__ . "/../common/lib/customer.defines.php";
 include '../common/lib/support/classes/invoice.php';
 include '../common/lib/support/classes/invoiceItem.php';
 include '../common/lib/support/classes/receipt.php';

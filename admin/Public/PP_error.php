@@ -33,7 +33,7 @@
  *
 **/
 
-require_once "../../common/lib/admin.defines.php";
+require_once __DIR__ . "/../../common/lib/admin.defines.php";
 
 session_destroy();
 getpost_ifset(['err_type','c']);

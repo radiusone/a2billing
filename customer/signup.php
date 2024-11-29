@@ -35,7 +35,7 @@ use A2billing\Table;
  *
 **/
 
-require_once "../common/lib/customer.defines.php";
+require_once __DIR__ . "/../common/lib/customer.defines.php";
 
 if (!isset ($form_action))
     $form_action = "ask-add";
@@ -50,7 +50,7 @@ if (false) {
     $_POST["zipcode"] = $_POST["phone"] = '12345667789';
 }
 
-include './form_data/FG_var_signup.inc';
+require_once __DIR__ . "/form_data/FG_var_signup.inc";
 
 if (!$A2B->config["signup"]['enable_signup']) {
     echo ("No Signup page!");

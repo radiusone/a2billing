@@ -35,7 +35,7 @@
 
 $disable_load_conf = true;
 
-require_once "../common/lib/customer.defines.php";
+require_once __DIR__ . "/../common/lib/customer.defines.php";
 
 if (is_customer()) {
     // already logged in

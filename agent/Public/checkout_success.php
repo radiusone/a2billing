@@ -34,7 +34,7 @@
 **/
 //TODO: why is this including the customer config file? Copy/paste error?
 
-require_once "../common/lib/customer.defines.php";
+require_once __DIR__ . "/../common/lib/customer.defines.php";
 include '../common/lib/epayment/includes/general.php';
 include '../common/lib/epayment/includes/configure.php';
 include '../common/lib/epayment/includes/html_output.php';

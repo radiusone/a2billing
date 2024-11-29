@@ -36,8 +36,8 @@ use A2billing\Table;
  *
 **/
 
-require_once "../../common/lib/agent.defines.php";
-include './form_data/FG_var_paymentlog.inc';
+require_once __DIR__ . "/../../common/lib/agent.defines.php";
+require_once __DIR__ . "/form_data/FG_var_paymentlog.inc";
 
 if (!has_rights(Agent::ACX_BILLING)) {
     Header("HTTP/1.0 401 Unauthorized");

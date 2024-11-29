@@ -51,7 +51,7 @@ if (!isset ($_SESSION["date_activation"]) || (time() - $_SESSION["date_activatio
 }
 
 // get include
-require_once "../common/lib/customer.defines.php";
+require_once __DIR__ . "/../common/lib/customer.defines.php";
 
 getpost_ifset(array ( 'key' ));
 

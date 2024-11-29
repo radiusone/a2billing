@@ -37,7 +37,7 @@ use A2billing\Forms\FormHandler;
 **/
 
 $menu_section = 16;
-require_once "../../common/lib/admin.defines.php";
+require_once __DIR__ . "/../../common/lib/admin.defines.php";
 /**
  * @var Smarty $smarty
  * @var FormHandler $HD_Form

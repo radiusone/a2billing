@@ -36,7 +36,7 @@ use A2billing\Admin;
 **/
 
 $menu_section = 16;
-require_once "../../common/lib/admin.defines.php";
+require_once __DIR__ . "/../../common/lib/admin.defines.php";
 
 $FG_DEBUG = 0;
 

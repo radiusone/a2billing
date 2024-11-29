@@ -35,7 +35,7 @@ use A2billing\Table;
  *
 **/
 
-require_once "../common/lib/customer.defines.php";
+require_once __DIR__ . "/../common/lib/customer.defines.php";
 
 getpost_ifset (array('id', 'key', 'payment_gross','payment_status', 'txn_type','payer_email'));
 

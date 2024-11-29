@@ -37,7 +37,7 @@ use A2billing\A2bMailException;
  *
 **/
 
-require_once "../../common/lib/agent.defines.php";
+require_once __DIR__ . "/../../common/lib/agent.defines.php";
 
 getpost_ifset(array('transactionID', 'sess_id', 'key', 'mc_currency', 'currency', 'md5sig', 'merchant_id', 'mb_amount', 'status', 'mb_currency', 'transaction_id', 'mc_fee', 'card_number'));
 $epayment_logfile = $A2B->config['log-files']['epayment'] ?? "/tmp/a2billing_epayment_log";

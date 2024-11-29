@@ -36,8 +36,8 @@ use A2billing\Table;
  *
 **/
 
-require_once "../common/lib/customer.defines.php";
-include './form_data/FG_var_speeddial.inc';
+require_once __DIR__ . "/../common/lib/customer.defines.php";
+require_once __DIR__ . "/form_data/FG_var_speeddial.inc";
 
 if (!has_rights(Customer::ACX_SPEED_DIAL)) {
     Header("HTTP/1.0 401 Unauthorized");
