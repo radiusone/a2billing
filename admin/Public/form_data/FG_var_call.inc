@@ -2,6 +2,7 @@
 
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -37,76 +38,75 @@ use A2billing\Forms\FormHandler;
 
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
-getpost_ifset(array('id', 'calledstation', 'id_cc_card'));
+getpost_ifset(['id', 'calledstation', 'id_cc_card']);
 
-$HD_Form = new FormHandler("cc_call", "Call");
+$HD_Form = new FormHandler("cc_call", _("Call"));
 
-$HD_Form -> AddViewElement(gettext("ID"), "id");
-$HD_Form -> AddViewElement(gettext("CALLEDSTATION"), "calledstation");
-$HD_Form -> AddViewElement(gettext("ACCOUNT NUMBER"), "card_id", true, 0, "", "lie_link", "cc_card", "username,id", "id='%id'", "%1", "A2B_entity_card.php");
+$HD_Form->AddListValue(_("ID"), "id");
+$HD_Form->AddListValue(_("Called station"), "calledstation");
+$HD_Form->AddListSqlMapping(_("Account"), "card_id", new Table("cc_card", ["username,id"]), [], "A2B_entity_card.php?form-action=ask-edit&id=");
+$HD_Form->FieldViewElement (["id", "calledstation", "card_id"]);
 
-$HD_Form -> FieldViewElement ('id, calledstation, card_id, id');
-
-$HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 10;
-
-$HD_Form -> FG_ENABLE_ADD_BUTTON = false;
-$HD_Form -> FG_ENABLE_EDIT_BUTTON = false;
-$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form->FG_ENABLE_ADD_BUTTON = false;
+$HD_Form->FG_ENABLE_EDIT_BUTTON = false;
+$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 
 $HD_Form->AddEditElement(
-    gettext("CALL ID"),
+    _("CALL ID"),
     "id",
     "",
-    "size=10 maxlength=10",
+    "size='10' maxlength='10'",
     18
 );
 
 $HD_Form->AddEditPopup(
-    gettext("CARD ID"),
+    _("CARD ID"),
     "card_id",
     "A2B_entity_card.php?popup_select=1&",
-    gettext("Define the card number ID to use."),
-    "", 4, gettext("Insert the Id CardNumber"),
+    _("Define the card number ID to use."),
+    "",
+    4,
+    _("Insert the Id CardNumber")
 );
 
 $HD_Form->AddEditElement(
-    gettext("CALLED NUMBER"),
+    _("CALLED NUMBER"),
     "calledstation",
     "",
-    "size=40 maxlength=30",
+    "size='40' maxlength='30'",
     18
 );
 
 
 $HD_Form->AddEditElement(
-    gettext("Source"),
+    _("Source"),
     "src",
     "",
-    "size=40 maxlength=30",
+    "size='40' maxlength='30'",
     18
 );
 
 $HD_Form->AddEditElement(
-    gettext("Dnid"),
+    _("Dnid"),
     "dnid",
     "",
-    "size=40 maxlength=30",
+    "size='40' maxlength='30'",
     18
 );
 
 $HD_Form->AddEditElement(
-    gettext("Duration"),
+    _("Duration"),
     "sessiontime",
     "",
-    "size=40 maxlength=30",
+    "size='40' maxlength='30'",
     18
 );
 
 // Set the filter variables
-$HD_Form -> FG_FILTER_ENABLE = true;
-$HD_Form -> FG_FILTER_COLUMN = 'id';
-$HD_Form -> FG_FILTER_LABEL = 'call ID';
+$HD_Form->FG_FILTER_ENABLE = true;
+$HD_Form->FG_FILTER_COLUMN = "id";
+$HD_Form->FG_FILTER_LABEL = "call ID";
 
-$HD_Form -> FG_LOCATION_AFTER_DELETE = 'call-log-customers.php?nodisplay=1&posted=1';
-$HD_Form -> FG_LOCATION_AFTER_ADD = $HD_Form -> FG_LOCATION_AFTER_DELETE;
-$HD_Form -> FG_LOCATION_AFTER_EDIT = $HD_Form -> FG_LOCATION_AFTER_DELETE;
+$HD_Form->FG_LOCATION_AFTER_DELETE =
+$HD_Form->FG_LOCATION_AFTER_ADD =
+$HD_Form->FG_LOCATION_AFTER_EDIT = "call-log-customers.php?nodisplay=1&posted=1";

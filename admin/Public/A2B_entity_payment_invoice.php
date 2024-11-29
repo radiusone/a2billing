@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -38,39 +39,32 @@ use A2billing\Admin;
 $menu_section = 10;
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
 require_once __DIR__ . "/form_data/FG_var_payment_invoice.inc";
+/**
+ * @var FormHandler $HD_Form
+ * @var string $card
+ * @var string $invoice
+ */
 
 Admin::checkPageAccess(Admin::ACX_INVOICING);
 
 $HD_Form->init();
 
-if (!isset ($form_action))
-    $form_action = "list";
-if (!isset ($action))
-    $action = $form_action;
-
+$form_action ??= "list";
 $list = $HD_Form->perform_action($form_action);
 
 require_once __DIR__ . "/../templates/main.php";
 
-if ($popup_select) {
-?>
-<SCRIPT LANGUAGE="javascript">
-<!-- Begin
-function sendValue(selvalue)
-{
-     // redirect browser to the grabbed value (hopefully a URL)
-    window.opener.location.href= <?php echo '"A2B_invoice_manage_payment.php?id='.$invoice.'&addpayment="'; ?>+selvalue;
-    self.location.href = "<?php echo "?popup_select=1&invoice=$invoice&card=$card"?>";
-}
-// End -->
-</script>
-<?php
-
-}
 // #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);
-
 $HD_Form->create_form($form_action, $list);
 
-if (!($popup_select >= 1))
-    require_once __DIR__ . "/../templates/footer.php";
+require_once __DIR__ . "/../templates/footer.php";
+?>
+<script>
+    function sendValue(selvalue)
+    {
+        // redirect browser to the grabbed value (hopefully a URL)
+        window.opener.location.href = "A2B_invoice_manage_payment.php?id=<?= $invoice ?>&addpayment=" + selvalue;
+        self.location.href = "?popup_select=1&invoice=<?= $invoice ?>&card= <?= $card ?>";
+    }
+</script>

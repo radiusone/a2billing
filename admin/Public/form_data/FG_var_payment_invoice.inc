@@ -35,26 +35,32 @@ use A2billing\Forms\FormHandler;
  *
 **/
 
+/**
+ * @var numeric-string $popup_select
+ * @var string $popup_formname
+ * @var string $popup_fieldname
+ */
+
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
-getpost_ifset(array('card', 'invoice'));
+getpost_ifset(["card", "invoice"]);
+/**
+ * @var string $card
+ * @var string $invoice
+ */
 
+$HD_Form = new FormHandler("cc_logpayment", _("Payment"));
 
-$HD_Form = new FormHandler("cc_logpayment", "Payment");
+$HD_Form->FG_QUERY_ORDERBY_COLUMNS = ["date"];
+$HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
 
-$HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
+$HD_Form->AddListValue(_("Date"), "date");
+$HD_Form->AddListValue(_("Amount"), "payment");
+$HD_Form->AddListValue(_("Description"), "description");
+$HD_Form->AddListMapping(_("Type"), "payment_type", getRefillType_List());
+$HD_Form->FieldViewElement (["date", "payment", "description", "payment_type"]);
 
-
-$list_refill_type=getRefillType_List();
-$HD_Form -> AddViewElement(gettext("ID"), "cc_logpayment.id");
-$HD_Form -> AddViewElement(gettext("PAYMENT DATE"), "date", true, 30);
-$HD_Form -> AddViewElement(gettext("PAYMENT AMOUNT"), "payment");
-$HD_Form -> AddViewElement(gettext("DESCRIPTION"), "description");
-$HD_Form -> AddViewElement(gettext("PAYMENT TYPE"), "payment_type", true, 30, "", "list", $list_refill_type);
-
-$HD_Form -> FieldViewElement ('cc_logpayment.id, date, payment,description ,payment_type');
-
-if (($popup_select>=1)) {
+if ($popup_select) {
     $HD_Form->AddListActionButton(
         "javascript:sendValue('|col0|')",
         '<span style="color:red">' . _("ADD") . '</span>',
@@ -62,8 +68,9 @@ if (($popup_select>=1)) {
     );
 }
 
-
-$HD_Form -> CV_FOLLOWPARAMETERS= "&popup_select=".$popup_select."&popup_formname=".$popup_formname."&popup_fieldname=".$popup_fieldname;
-$HD_Form -> CV_FOLLOWPARAMETERS .= "&invoice=".$invoice;
-
-
+$HD_Form->CV_FOLLOWPARAMETERS = http_build_query([
+    "popup_select" => $popup_select ?? "",
+    "popup_formname" => $popup_formname ?? "",
+    "popup_fieldname" => $popup_fieldname ?? "",
+    "invoice" => $invoice ?? "",
+]);

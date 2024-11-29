@@ -37,58 +37,63 @@ use A2billing\Forms\FormHandler;
 
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
-getpost_ifset(array('id', 'id_card', 'date'));
+$form_action ??= "list";
 
-if (!isset($form_action) || $form_action=="list") {
-    $HD_Form = new FormHandler("cc_billing_customer LEFT JOIN cc_card ON cc_card.id=id_card  ", "Billing", 'cc_billing_customer.id');
-} else {
-    $HD_Form = new FormHandler("cc_billing_customer", "Billing");
-}
+$HD_Form = new FormHandler(
+    "cc_billing_customer", 
+    _("Billing"),
+    "cc_billing_customer.id",
+    $form_action === "list"
+        ? ["cc_card" => ["cc_card.id", "id_card"]]
+        : []
+);
 
-$HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
+$HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
 
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_billing_customer.php?form_action=ask-add";
-$HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add Billing");
+$HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = _("Add Billing");
 $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("time_add.png") ;
 
-$HD_Form -> AddViewElement(gettext("ID"), "cc_billing_customer.id");
-$HD_Form -> AddViewElement(gettext("ACCOUNT"), "username", true, 30, "display_customer_link");
-$HD_Form -> AddViewElement(gettext("BILLING DATE"), "cc_billing_customer.date", true, 30);
-$HD_Form -> FieldViewElement ('cc_billing_customer.id, username, cc_billing_customer.date');
+$HD_Form->AddListValue(_("ACCOUNT"), "username", "display_customer_link");
+$HD_Form->AddListValue(_("BILLING DATE"), "cc_billing_customer.date");
+$HD_Form->FieldViewElement(["username", "cc_billing_customer.date"]);
 
-$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
-$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form->FG_ENABLE_ADD_BUTTON = true;
+$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 
 $HD_Form->AddEditPopup(
-    gettext("CUSTOMER ID"),
+    _("CUSTOMER ID"),
     "id_card",
     "A2B_entity_card.php?popup_select=1&",
-    gettext("Select the Customer ID"),
-    "", 4, gettext("Insert the Customer ID")
+    _("Select the Customer ID"),
+    "",
+    4,
+    _("Insert the Customer ID")
 );
 
-if ($form_action=="ask-add"){
+$comp_date = "";
+if ($form_action === "ask-add"){
     $comp_date = date("Y-m-d");
     $comp_date="value='$comp_date'";
 }
 
 $HD_Form->AddEditElement(
-    gettext("BILLING DATE"),
+    _("BILLING DATE"),
     "date",
     "",
-    "size=40 maxlength=40 $comp_date",
+    "size='40' maxlength='40' $comp_date",
     8,
-    gettext("Insert the current date (YYYY-MM-DD)")
+    _("Insert the current date (YYYY-MM-DD)")
 );
 
-$HD_Form -> FG_FILTER_ENABLE = true;
-$HD_Form -> FG_FILTER_COLUMN = 'username';
-$HD_Form -> FG_FILTER_LABEL = 'Account number';
+$HD_Form->FG_FILTER_ENABLE = true;
+$HD_Form->FG_FILTER_COLUMN = "username";
+$HD_Form->FG_FILTER_LABEL = "Account number";
 
-$HD_Form -> FG_INTRO_TEXT_ADITION = '';
+$HD_Form->FG_INTRO_TEXT_ADITION = "";
 
-$HD_Form -> FG_ADDITIONAL_FUNCTION_AFTER_ADD = 'proccessing_billing_customer';
+$HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = "proccessing_billing_customer";
 
-$HD_Form -> FG_LOCATION_AFTER_ADD = "?id=";
-$HD_Form -> FG_LOCATION_AFTER_DELETE = "?id=";
+$HD_Form->FG_LOCATION_AFTER_ADD = "?id=";
+$HD_Form->FG_LOCATION_AFTER_DELETE = "?id=";
