@@ -20,15 +20,15 @@ header .nav svg.bi {
     fill: currentColor;
 }
 
-.popup-select-link {
+.popup-select-button {
     text-transform: uppercase;
     font-weight: bold;
     color: red;
 }
-.popup-select-link::before {
+.popup-select-button::before {
     content: "<";
 }
-.popup-select-link::after {
+.popup-select-button::after {
     content: ">";
 }
 

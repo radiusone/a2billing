@@ -231,11 +231,8 @@ $form_action ??= "list";
 if ($popup_select) {
     // popup window
     $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 6;
-    $HD_Form->AddListActionButton(
-        // todo: add a proper listener and make this a button
+    $HD_Form->AddListSelectActionButton(
         $popup_select == 1 ? "javascript:sendValue('|param|', '|col1|')" : "javascript:sendValue('|col1|')",
-        "<span style=\"color:red\">&lt;" . _("SELECT") . "&gt;</span>",
-        ""
     );
 } elseif ($form_action === "list") {
     $HD_Form->export_session_key = "pr_export_entity_card";

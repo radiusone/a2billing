@@ -262,10 +262,8 @@ $HD_Form -> AddSearchSelectInput(gettext("SELECT CURRENCY"), "currency", $curren
 
 
 if (($popup_select>=1)) {
-    $HD_Form->AddListActionButton(
+    $HD_Form->AddListSelectActionButton(
         $popup_select == 1 ? "javascript:sendValue('|param|')" : "javascript:sendValue('|col1|')",
-        '<span style="color:red">&lt;' . _("SELECT") . '&gt;</span>',
-        ""
     );
 } else {
 

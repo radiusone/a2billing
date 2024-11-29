@@ -126,11 +126,7 @@ $HD_Form->AddViewElement(_("SUBJECT"), "subject");
 $HD_Form->FieldViewElement ('id, mailtype, fromemail, subject');
 
 if ((int)$popup_select >= 1) {
-    $HD_Form->AddListActionButton(
-        "javascript:sendValue('|col0|')",
-        '<span style="color:red">&lt;' . _("SELECT TEXT") . '&gt;</span>',
-        ""
-    );
+    $HD_Form->AddListSelectActionButton("javascript:sendValue('|col0|')", _("SELECT TEXT"));
 } else {
     $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
     $HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_mailtemplate.php?form_action=ask-add";

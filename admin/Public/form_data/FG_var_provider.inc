@@ -59,10 +59,8 @@ if ($popup_select) {
 	$HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 7;
 	$HD_Form -> CV_FOLLOWPARAMETERS = "&popup_select=" . $popup_select . "&popup_formname=" . $popup_formname . "&popup_fieldname=" . $popup_fieldname;
 
-    $HD_Form->AddListActionButton(
+    $HD_Form->AddListSelectActionButton(
         $popup_select == 1 ? "javascript:sendValue('|param|')" : "javascript:sendValue('|col0|')",
-        '<span style="color:red">&lt;' . _("SELECT") . '&gt;</span>',
-        ""
     );
 } else {
 	$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
