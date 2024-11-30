@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Connection;
+use A2billing\Table;
 use PHPMailer\PHPMailer\PHPMailer;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -334,13 +335,32 @@ function getpost_ifset(array $test_vars, ?array &$data = null)
 /**
  * Used as callback for list/form elements
  *
- * @param float $value
+ * @param float|null $value
  * @param $currency
  * @return void
  */
-function display_money(float $value, $currency = BASE_CURRENCY)
+function display_money(?float $value, $currency = BASE_CURRENCY): void
 {
-    echo number_format($value, 2, '.', ' ') . ' ' . strtoupper($currency);
+    echo get_money($value, $currency);
+}
+
+function get_money(?float $value, $currency = BASE_CURRENCY): string
+{
+    if (is_null($value)) {
+        return "n/a";
+    }
+    if (class_exists("NumberFormatter")) {
+        static $formatter = null;
+        if (is_null($formatter)) {
+            $formatter = NumberFormatter::create(
+                getenv("LANG") ?: "en_US",
+                NumberFormatter::CURRENCY
+            );
+            $formatter->setAttribute(NumberFormatter::ROUNDING_MODE, NumberFormatter::ROUND_HALFUP);
+        }
+        return $formatter->formatCurrency($value, BASE_CURRENCY);
+    }
+    return sprintf("%0.2f %s", $value, strtoupper($currency));
 }
 
 /**
@@ -397,7 +417,6 @@ function display_2dec(float $var)
  * Used as callback for list/form elements
  * @param $var
  * @return void
- * @noinspection PhpUnusedFunctionInspection
  */
 function display_2dec_percentage($var)
 {
@@ -417,7 +436,6 @@ function get_2dec_percentage(?float $var): string
  * Used as callback for list/form elements
  * @param float|int|string $amt
  * @return void
- * @noinspection PhpUnusedFunctionInspection
  */
 function display_2bill($amt): void
 {
@@ -445,14 +463,13 @@ function get_2bill($amt): string
         return $formatter->formatCurrency($amt, BASE_CURRENCY);
     }
 
-    return sprintf("%0.3f %s", $amt, BASE_CURRENCY);
+    return sprintf("%0.4f %s", $amt, BASE_CURRENCY);
 }
 
 /**
  * Used as callback for list/form elements
  * @param string $phonenumber
  * @return int|void
- * @noinspection PhpUnused
  */
 function display_without_prefix(string $phonenumber)
 {
@@ -473,7 +490,6 @@ function display_without_prefix(string $phonenumber)
  * Used as callback for list/form elements
  * @param $value
  * @return false|void
- * @noinspection PhpUnusedFunctionInspection
  */
 function display_monitorfile_link($value)
 {
@@ -500,7 +516,6 @@ function display_monitorfile_link($value)
  * Used as callback for list/form elements
  * @param string $value
  * @return void
- * @noinspection PhpUnusedFunctionInspection
  */
 function display_customer_link(string $value): void
 {
@@ -528,7 +543,6 @@ function get_customer_link($username): string
  * Used as callback for list/form elements
  * @param string|int $id
  * @return void
- * @noinspection PhpUnused
  */
 function display_customer_id_link($id): void
 {
@@ -547,9 +561,60 @@ function display_customer_id_link($id): void
 
 /**
  * Used as callback for list/form elements
+ * @param string|int|null $id
+ * @return void
+ */
+function display_refill_link(?int $id): void
+{
+    $value = htmlspecialchars(_("n/a"));
+    if (empty($id)) {
+        echo $value;
+    }
+    $handle = DbConnect();
+    $row = (new Table("cc_logrefill", ["credit"]))
+        ->getRow($handle, ["id" => $id]);
+    if (empty($row)) {
+        echo $value;
+    }
+
+    printf(
+        "<a href=\"%s%d\">%s</a>",
+        "A2B_refill_info.php?id=",
+        $id,
+        get_money($row["credit"])
+    );
+}
+
+/**
+ * Used as callback for list/form elements
+ * @param string|int|null $id
+ * @return void
+ */
+function display_agent_refill_link(?int $id): void
+{
+    $value = htmlspecialchars(_("n/a"));
+    if (empty($id)) {
+        echo $value;
+    }
+    $handle = DbConnect();
+    $row = (new Table("cc_logrefill_agent", ["credit"]))
+        ->getRow($handle, ["id" => $id]);
+    if (empty($row)) {
+        echo $value;
+    }
+
+    printf(
+        "<a href=\"%s%d\">%s</a>",
+        "A2B_refill_info_agent.php?id=",
+        $id,
+        get_money($row["credit"])
+    );
+}
+
+/**
+ * Used as callback for list/form elements
  * @param string|int $id
  * @return void
- * @noinspection PhpUnusedFunctionInspection
  */
 function display_customer_name_id_link($id): void
 {
@@ -637,7 +702,6 @@ function get_nameofcustomer_id($id): string
  * Used as callback for list/form elements
  * @param $id
  * @return void
- * @noinspection PhpUnusedFunctionInspection
  */
 function display_linktoagent($id): void
 {
@@ -669,7 +733,6 @@ function get_linktoagent($id): string
  * Used as callback for list/form elements
  * @param $id
  * @return void
- * @noinspection PhpUnusedFunctionInspection
  */
 function display_nameofagent($id): void
 {
@@ -696,7 +759,6 @@ function get_nameofagent($id): string
  * Used as callback for list elements
  * @param string $did
  * @return void
- * @noinspection PhpUnusedFunctionInspection
  */
 function display_did(string $did): void
 {
@@ -732,7 +794,6 @@ function get_formatted_did(string $did): string
  * Used as callback for list elements
  * @param string $num
  * @return void
- * @noinspection PhpUnusedFunctionInspection
  */
 function display_phone_number(string $num): void
 {
