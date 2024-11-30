@@ -179,8 +179,11 @@ $processed["popup_fieldname"] ??= "";
                     if (($cell["maxsize"] ?? 0) > 0 && strlen($record_display ?? "") > $cell["maxsize"]) {
                         $record_display = substr($record_display, 0, $cell["maxsize"]) . "…";
                     }
-                    $arg = preg_replace_callback("/%(0-9+)/", fn ($m) => $item[$m[1]], $cell["arguments"] ?? "");
-                    $arg = preg_replace("/%X/", $record_display, $arg);
+                    $arg = preg_replace_callback(
+                        "/%([0-9]+|X)/",
+                        fn ($m) => $m[1] === "%X" ? $record_display : $item[$m[1]],
+                        $cell["arguments"] ?? ""
+                    );
                     $item[$j - $k] = $record_display;
                     ?>
                     <td>
