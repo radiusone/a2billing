@@ -318,16 +318,16 @@ class FormHandler
     public bool $FG_LIST_ADDING_BUTTON1 = false;
 
     /** @var string */
-    public string $FG_LIST_ADDING_BUTTON_LINK1;
+    public string $FG_LIST_ADDING_BUTTON_LINK1 = "?form_action=ask-add";
 
     /** @var string */
-    public string $FG_LIST_ADDING_BUTTON_ALT1;
+    public string $FG_LIST_ADDING_BUTTON_ALT1 = "";
 
     /** @var string */
-    public string $FG_LIST_ADDING_BUTTON_IMG1;
+    public string $FG_LIST_ADDING_BUTTON_IMG1 = "";
 
     /** @var string */
-    public string $FG_LIST_ADDING_BUTTON_MSG1;
+    public string $FG_LIST_ADDING_BUTTON_MSG1 = "Add \"#FG_INSTANCE_NAME#\"";
 
     public bool $FG_LIST_ADDING_BUTTON2 = false;
 
@@ -393,6 +393,7 @@ class FormHandler
         $this->FG_INTRO_TEXT_ASK_DELETION = sprintf(_("If you really want to remove this %s, click the delete button"), $this->FG_INSTANCE_NAME);
         $this->FG_INTRO_TEXT_DELETION = sprintf(_("One %s has been deleted"), $this->FG_INSTANCE_NAME);
         $this->FG_INTRO_TEXT_ADITION = sprintf(_("Add a %s now"), $this->FG_INSTANCE_NAME);
+        $this->FG_LIST_ADDING_BUTTON_MSG1 = sprintf(_("Add %s"), $this->FG_INSTANCE_NAME);
         $this->FG_TEXT_ADITION_CONFIRMATION = sprintf(_("Your new %s has been inserted"), $this->FG_INSTANCE_NAME);
         $this->FG_TEXT_ADITION_ERROR = sprintf(_("Your new %s hasn't been inserted"), $this->FG_INSTANCE_NAME);
 
