@@ -246,7 +246,6 @@ require_once __DIR__ . "/../../common/lib/admin.defines.php";
                                     <li><a class="link-dark rounded" href="A2B_entity_billing_customer.php"><?= _("Billings") ?></a></li>
                                     <li><a class="link-dark rounded" href="A2B_entity_logrefill.php"><?= _("Refills") ?></a></li>
                                     <li><a class="link-dark rounded" href="A2B_entity_payment.php"><?= _("Payments") ?></a></li>
-                                    <li><a class="link-dark rounded" href="A2B_entity_paymentlog.php"><?= _("E-Payment Log") ?></a></li>
                                     <li><a class="link-dark rounded" href="A2B_entity_charge.php"><?= _("Charges") ?></a></li>
                                 </ul>
                             </li>
@@ -258,10 +257,8 @@ require_once __DIR__ . "/../../common/lib/admin.defines.php";
                                     <li><a class="link-dark rounded" href="A2B_entity_transactions_agent.php"><?= _("Transactions") ?></a></li>
                                     <li><a class="link-dark rounded" href="A2B_entity_logrefill_agent.php"><?= _("Refills") ?></a></li>
                                     <li><a class="link-dark rounded" href="A2B_entity_payment_agent.php"><?= _("Payments") ?></a></li>
-                                    <li><a class="link-dark rounded" href="A2B_entity_paymentlog_agent.php"><?= _("E-Payment Log") ?></a></li>
                                 </ul>
                             </li>
-                            <li><a class="link-dark rounded" href="A2B_entity_payment_configuration.php"><?= _("Payment Methods") ?></a></li>
                             <li><a class="link-dark rounded" href="A2B_currencies.php"><?= _("Currency List") ?></a></li>
                         </ul>
                     </div>
