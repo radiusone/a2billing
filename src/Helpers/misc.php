@@ -595,12 +595,14 @@ function display_agent_refill_link(?int $id): void
     $value = htmlspecialchars(_("n/a"));
     if (empty($id)) {
         echo $value;
+        return;
     }
     $handle = DbConnect();
     $row = (new Table("cc_logrefill_agent", ["credit"]))
         ->getRow($handle, ["id" => $id]);
     if (empty($row)) {
         echo $value;
+        return;
     }
 
     printf(
