@@ -37,17 +37,34 @@ use A2billing\Forms\FormHandler;
 
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
-$HD_Form = new FormHandler("cc_agent", _("Agent"));
+$HD_Form = new FormHandler(
+    "cc_agent",
+    _("Agent"),
+    "cc_agent.id",
+    [
+        "cc_agent_commission" => ["cc_agent.id", "cc_agent_commission.id_agent"],
+        "cc_logrefill" => ["cc_agent.id", "cc_logrefill.agent_id"],
+        "cc_logrefill_agent" => ["cc_agent.id", "cc_logrefill_agent.agent_id"],
+        "cc_logpayment_agent" => ["cc_agent.id", "cc_logpayment_agent.agent_id"],
+    ]
+);
 
 $HD_Form->AddListValue(_("Agent"), "id","display_linktoagent");
 $HD_Form->AddListValue(_("Credit"), "credit", "display_2bill");
-$HD_Form->AddListValue("<abbr title=\"" . _("Commission balance") . "\">" . _("Bal") . "</abbr>", "com_balance", "display_2bill");
-// todo: need a way to do a calculated column in tables
-$HD_Form->AddViewElement("<abbr title=\"" . _("Total commission accrued") . "\">" . _("Total") . "</abbr>", "com_accrued", true, 15, "", "lie", "cc_agent_commission as t2", "TRUNCATE(SUM(t2.amount),2)", "t2.id_agent='%id'  ", "%1");
-$HD_Form->AddViewElement("<abbr title=\"" . _("Total customer refill amount") . "\">" . _("Refills") . "</abbr>", "refill", true, 15, "", "lie", "cc_logrefill as t2", "TRUNCATE(SUM(t2.credit),2)", "t2.agent_id='%id' AND t2.refill_type=3 ", "%1");
-$HD_Form->AddViewElement("<abbr title=\"" . _("Total agent refill amount") . "\">" . _("Agent refills") . "</abbr>", "refill", true, 15, "", "lie", "cc_logrefill_agent as t2", "TRUNCATE(SUM(t2.credit),2)", "t2.agent_id='%id' ", "%1");
-$HD_Form->AddViewElement("<abbr title=\"" . _("Total payments taken") . "\">" . _("Payments") . "</abbr>", "payment", true, 15, "", "lie", "cc_logpayment_agent as t2", "TRUNCATE(SUM(t2.payment),2)", "t2.agent_id='%id' ", "%1");
-$HD_Form->FieldViewElement (["id", "credit", "com_balance", "id", "id", "id", "id"]);
+$HD_Form->AddListValue("<abbr title=\"" . _("Commission balance") . "\">" . _("Bal") . "</abbr>", "com_balance", "display_money");
+$HD_Form->AddListValue("<abbr title=\"" . _("Total commission accrued") . "\">" . _("Total") . "</abbr>", "total", "display_money");
+$HD_Form->AddListValue("<abbr title=\"" . _("Total customer refill amount") . "\">" . _("Refills") . "</abbr>", "refills", "display_money");
+$HD_Form->AddListValue("<abbr title=\"" . _("Total agent refill amount") . "\">" . _("Agent refills") . "</abbr>", "agent_refills", "display_money");
+$HD_Form->AddListValue("<abbr title=\"" . _("Total payments taken") . "\">" . _("Payments") . "</abbr>", "payments", "display_money");
+$HD_Form->FieldViewElement([
+    "cc_agent.id",
+    "cc_agent.credit",
+    "cc_agent.com_balance",
+    "SUM(cc_agent_commission.amount) AS total",
+    "SUM(cc_logrefill.credit) AS refills",
+    "SUM(cc_logrefill_agent.credit) AS agent_refills",
+    "SUM(cc_logpayment_agent.payment) AS payments",
+]);
 
 $HD_Form->search_form_enabled = true;
 $HD_Form->search_session_key = "agent_situation";

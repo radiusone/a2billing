@@ -48,7 +48,10 @@ $HD_Form = new FormHandler(
     _("Agent Payment"),
     "cc_logpayment_agent.id",
     $form_action === "list"
-        ? ["cc_agent" => ["cc_agent.id", "agent_id"]]
+        ? [
+            "cc_agent" => ["cc_agent.id", "agent_id"],
+            "cc_logrefill_agent" => ["cc_agent.id", "cc_logrefill_agent.agent_id"],
+        ]
         : []
 );
 
@@ -61,13 +64,20 @@ $HD_Form->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = _
 $HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("money_add.png") ;
 
 $list_refill_type = getRefillType_List();
-$HD_Form->AddViewElement(_("ID"), "cc_logpayment.id");
-$HD_Form->AddListValue(_("Agent"), "agent_id", has_rights(Admin::ACX_ADMINISTRATOR) ? "display_linktoagent" : "display_nameofagent");
-$HD_Form->AddListValue(_("Date"), "date");
+$HD_Form->AddListValue(_("ID"), "cc_logpayment.id");
+$HD_Form->AddListValue(_("Agent"), "cc_logpayment_agent.agent_id", has_rights(Admin::ACX_ADMINISTRATOR) ? "display_linktoagent" : "display_nameofagent");
+$HD_Form->AddListValue(_("Date"), "cc_logpayment_agent.date");
 $HD_Form->AddListValue(_("Amount"), "payment", "display_money");
 $HD_Form->AddListMapping(_("Type"), "payment_type", $list_refill_type);
-$HD_Form->AddViewElement(_("Refill"), "id_logrefill", true, 0, "", "lie_link", "cc_logrefill_agent", "TRUNCATE(credit,2), id", "id='%id'", "%1 " . strtoupper(BASE_CURRENCY) . " (id:%2)", "A2B_refill_info_agent.php");
-$HD_Form->FieldViewElement (["cc_logpayment_agent.id", "agent_id", "date", "payment", "payment_type", "id_logrefill"]);
+$HD_Form->AddListValue(_("Refill"), "cc_logrefill_agent.id AS refill_id", "display_agent_refill_link");
+$HD_Form->FieldViewElement([
+    "cc_logpayment_agent.id",
+    "cc_logpayment_agent.agent_id",
+    "cc_logpayment_agent.date",
+    "payment",
+    "payment_type",
+    "cc_logrefill_agent.id AS refill_id",
+]);
 
 $HD_Form->FG_ENABLE_INFO_BUTTON = true;
 $HD_Form->FG_INFO_BUTTON_LINK = "A2B_payment_info_agent.php?id=";
