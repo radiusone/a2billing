@@ -2,6 +2,7 @@
 
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -35,66 +36,61 @@ use A2billing\Forms\FormHandler;
  *
 **/
 
+/**
+ * @var string $form_action
+ */
+
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
-getpost_ifset(array('id', 'cid', 'outbound_cid_group', 'activated'));
-
-$HD_Form = new FormHandler("cc_outbound_cid_list", "cid");
+$HD_Form = new FormHandler("cc_outbound_cid_list", _("CallerID"));
 
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "cid";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_outbound_cid.php?form_action=ask-add";
-$HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add CallerID");
 $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("server_connect.png") ;
 
-$actived_list = getActivationList();
-
-$HD_Form -> AddViewElement(gettext("CID"), "cid");
-$HD_Form -> AddViewElement(gettext("CIDGROUP"), "outbound_cid_group", true, 15, "", "lie", "cc_outbound_cid_group", "group_name", "id='%id'", "%1");
-$HD_Form -> AddViewElement(gettext("STATUS"), "activated", true, 30, "", "list", $actived_list);
-
-$HD_Form -> FieldViewElement ('cid, outbound_cid_group, activated');
+$HD_Form -> AddListValue(_("CID"), "cid");
+$HD_Form -> AddListSqlMapping(_("CIDGROUP"), "outbound_cid_group", new Table("cc_outbound_cid_group", ["id", "group_name"]));
+$HD_Form -> AddListMapping(_("STATUS"), "activated", getActivationList());
+$HD_Form -> FieldViewElement (["cid", "outbound_cid_group", "activated"]);
 
 $HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
-$HD_Form -> FG_SPLITABLE_FIELDS[] = 'cid';
-
-// TODO integrate in Framework
-if ($form_action=="ask-add") {
-    $begin_date = date("Y");
-    $begin_date_plus = date("Y") + 10;
-    $end_date = date("-m-d H:i:s");
-    $comp_date = "value='".$begin_date.$end_date."'";
-    $comp_date_plus = "value='".$begin_date_plus.$end_date."'";
-}
+$HD_Form -> FG_SPLITABLE_FIELDS[] = "cid";
 
 $HD_Form->AddEditTextarea(
-    gettext("CID"),
+    _("CID"),
     "cid",
     "",
-    gettext("Define the CallerID's. If you ADD a new CID, NOT an EDIT, you can define a range of CallerID. <br>80412340210-80412340218 would add all CID's between the range, whereas CIDs separated by a comma e.g. 80412340210,80412340212,80412340214 would only add the individual CID listed."),
+    $form_action === "ask-add"
+        ? _("Define the CallerIDs. You can define a range of CallerID. <br>80412340210-80412340218 would add all CID's between the range, whereas CIDs separated by a comma e.g. 80412340210,80412340212,80412340214 would only add the individual CID listed.")
+        : _("Define the CallerIDs"),
     null,
-    gettext("Insert the CID"), "cols='50' rows='4'"
+    _("Insert the CID"),
+    "cols='50' rows='4'"
 );
 
-$HD_Form->AddEditSqlSelect(gettext("CIDGROUP"), "outbound_cid_group", "cc_outbound_cid_group", "group_name,id");
+$HD_Form->AddEditSqlSelect(
+    _("CIDGROUP"),
+    "outbound_cid_group",
+    "cc_outbound_cid_group",
+    "group_name,id"
+);
 
 $HD_Form->AddEditRadio(
-    gettext("ACTIVATED"),
+    _("ACTIVATED"),
     "activated",
-    [[gettext("Yes"), "1"], [gettext("No"), "0"]],
+    [[_("Yes"), "1"], [_("No"), "0"]],
     "1",
     "",
     "",
-    gettext("Choose if you want to activate this CallerID")
+    _("Choose if you want to activate this CallerID")
 );
 
-$HD_Form -> FG_INTRO_TEXT_EDITION = '';
-$HD_Form -> FG_INTRO_TEXT_ADITION = '';
-
+$HD_Form -> FG_INTRO_TEXT_EDITION = "";
+$HD_Form -> FG_INTRO_TEXT_ADITION = "";
 
 $HD_Form -> FG_LOCATION_AFTER_ADD = "?id=";
 $HD_Form -> FG_LOCATION_AFTER_EDIT = "?id=";

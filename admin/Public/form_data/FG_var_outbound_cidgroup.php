@@ -37,53 +37,44 @@ use A2billing\Forms\FormHandler;
 
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
-getpost_ifset(array('id', 'didgroupname'));
+$HD_Form = new FormHandler("cc_outbound_cid_group", _("Outbound CID Group"));
 
-$HD_Form = new FormHandler("cc_outbound_cid_group", "Outbound CID Group");
-
-$HD_Form -> FG_TABLE_DEFAULT_ORDER = "group_name";
-$HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
+$HD_Form->FG_TABLE_DEFAULT_ORDER = "group_name";
+$HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
 
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_outbound_cidgroup.php?form_action=ask-add";
-$HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add CallerID Group");
 $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("server_connect.png") ;
 
 // Code Here for Deleting the Dependent Records
 // Dependent Tables
-$HD_Form -> FG_FK_DELETE_ALLOWED = true;
-$HD_Form -> FG_FK_DELETE_CONFIRM = true;
-
+$HD_Form->FG_FK_DELETE_ALLOWED = true;
+$HD_Form->FG_FK_DELETE_CONFIRM = true;
 $HD_Form->FG_FK_DELETE_OR_UPDATE = true;
+$HD_Form->FG_FK_WARNONLY = true;
+$HD_Form->FG_FK_TABLENAMES = ["cc_outbound_cid_list"];
+$HD_Form->FG_FK_EDITION_CLAUSE = ["outbound_cid_group"];
+$HD_Form->FG_FK_DELETE_MESSAGE = _("You have some CID using this CID Group! Please comfirm that you really want to remove this CID Group ? ");
 
-$HD_Form -> FG_FK_WARNONLY = true;
-$HD_Form -> FG_FK_TABLENAMES = array("cc_outbound_cid_list");
-$HD_Form -> FG_FK_EDITION_CLAUSE = array(" outbound_cid_group ");
+$HD_Form->AddListValue(_("ID"), "id");
+$HD_Form->AddListValue(_("DIDGROUP NAME"), "group_name");
+$HD_Form->AddListValue(_("CREATION DATE"), "creationdate");
+$HD_Form->FieldViewElement(["id", "group_name", "creationdate"]);
 
-$HD_Form -> FG_FK_DELETE_MESSAGE = gettext("You have some CID using this CID Group! Please comfirm that you really want to remove this CID Group ? ");
-
-$HD_Form -> AddViewElement(gettext("ID"), "id");
-$HD_Form -> AddViewElement(gettext("DIDGROUP NAME"), "group_name");
-$HD_Form -> AddViewElement(gettext("CREATION DATE"), "creationdate", true, 30);
-
-// added a parameter to append  FG_TABLE_ID  ( by default ) or disable 0.
-$HD_Form -> FieldViewElement ('id, group_name, creationdate');
-
-$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
-$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
+$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form->FG_ENABLE_ADD_BUTTON = true;
 
 $HD_Form->AddEditElement(
-    gettext("CIDGROUPNAME"),
+    _("CIDGROUPNAME"),
     "group_name",
     "",
     "size=30 maxlength=70",
     9,
-    gettext("Insert the CID Group Name ")
+    _("Insert the CID Group Name ")
 );
 
-$HD_Form -> FG_INTRO_TEXT_ADITION = '';
+$HD_Form->FG_INTRO_TEXT_ADITION = "";
 
-$HD_Form -> FG_LOCATION_AFTER_ADD = "?id=";
-$HD_Form -> FG_LOCATION_AFTER_EDIT = "?id=";
-$HD_Form -> FG_LOCATION_AFTER_DELETE = "?id=";
+$HD_Form->FG_LOCATION_AFTER_ADD = "?id=";
+$HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";
+$HD_Form->FG_LOCATION_AFTER_DELETE = "?id=";
