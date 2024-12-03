@@ -1310,7 +1310,9 @@ class FormHandler
             $form_action === "ask-edit" || $form_action === "add-content" || $form_action === "del-content" ||
             $form_action === "ask-del-confirm"
         ) {
-            $this->FG_QUERY_ORDERBY_COLUMNS = array_filter([$processed['order'] ?? []]);
+            if (!empty($processed["order"])) {
+                $this->FG_QUERY_ORDERBY_COLUMNS = array_filter([$processed['order']]);
+            }
             $this->FG_QUERY_DIRECTION = $processed['sens'] ?? "";
             $this->CV_CURRENT_PAGE = (int)($processed['current_page'] ?? 0);
 
