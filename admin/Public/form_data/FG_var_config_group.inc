@@ -2,7 +2,6 @@
 
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -37,13 +36,8 @@ use A2billing\Table;
 **/
 Admin::checkPageAccess(Admin::ACX_ACXSETTING);
 
-getpost_ifset(['id', 'group_title', 'group_description','agi_conf', 'groupdelete', 'agi_conf', 'from_conf']);
+getpost_ifset(["agi_conf", "from_conf"]);
 /**
- * @var string $id
- * @var string $group_title
- * @var string $group_description
- * @var string $agi_conf
- * @var string $groupdelete
  * @var string $agi_conf
  * @var string $from_conf
  */
@@ -53,22 +47,20 @@ if (!empty($agi_conf)) {
     add_agi_confx($agi_conf, $from_conf);
 }
 
-$HD_Form = new FormHandler("cc_config_group", "configuration group");
+$HD_Form = new FormHandler("cc_config_group", _("Configuration group"));
 
 $HD_Form->FG_FK_TABLENAMES = ["cc_config"];
 $HD_Form->FG_FK_EDITION_CLAUSE = ["config_group_id"];
 $HD_Form->FG_FK_DELETE_ALLOWED = true;
 
-$HD_Form->AddViewElement(gettext("TITLE"), "group_title");
-$HD_Form->AddViewElement(gettext("DESCRIPTION"), "group_description");
-$HD_Form->FieldViewElement ('group_title, group_description');
+$HD_Form->AddListValue(gettext("TITLE"), "group_title");
+$HD_Form->AddListValue(gettext("DESCRIPTION"), "group_description");
+$HD_Form->FieldViewElement(["group_title", "group_description"]);
 
-$HD_Form->FG_LIST_VIEW_PAGE_SIZE = 15;
-
-$HD_Form -> FG_ENABLE_EDIT_BUTTON = false;
-$HD_Form -> FG_ENABLE_ADD_BUTTON = false;
-$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
-$HD_Form -> FG_DELETE_BUTTON_CONDITION = 'str_starts_with("|col0|", "agi-conf") && "|col0|" !== "agi-conf1"';
+$HD_Form->FG_ENABLE_EDIT_BUTTON = false;
+$HD_Form->FG_ENABLE_ADD_BUTTON = false;
+$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form->FG_DELETE_BUTTON_CONDITION = 'str_starts_with("|col0|", "agi-conf") && "|col0|" !== "agi-conf1"';
 
 $HD_Form->AddListActionButton(
     "A2B_entity_config.php?posted_search=1&config_group_id=|param|",
@@ -76,8 +68,8 @@ $HD_Form->AddListActionButton(
     "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJGSURBVDjLjdJLSNRBHMDx78yqLZaKS75DPdgDDaFDbdJmde5QlhCJGxgpRJfqEEKnIsJLB7skQYQKZaSmdLaopPCgEvSCShCMzR5a7oq7/3l12RVtjfzBMA/4fWZ+MyOccwBM3g8HEbIdfCEhfAFnLVapOa28Uevpjrqz/WOsERJgsu9Uq5CZQzgqrJfo9BajNd5irEYn4p3OUiFExtCLmw2tawFi4l5zUMjMIau9u7K+qxeoAcoAA0wDb2OPwmfA16LiiaOHLj1edRLpkO3WmIis7+oBDgJbgQ2AH6gC6jY19N62RkcctKeVIJAhp9QgUA3kJXdONZVcq9JxPSgQoXRAyIDRth8oAXQyKdWnoCKrTD9CBv4GMqx1WGNZkeRWJKbG2hiD1Cb9FbTnzWFdY/LCdLKlgNQ84gyNKqHm0gDjqVHnxDHgA/B9RQkpaB6YklkZl62np9KBhOqwjpKFgeY2YAz4BESBWHI8Hhs6PVVSvc3v98ye4fP7T676B845nt040ip98qpWJmI9PWiU6bfWgXGN2YHcKwU7tsuc4kpUPMbU0+f8+vKt+Pitl7PLAMDI9cNBoB0hQwICzjqUp6MZvsy8yvp95BRuQUjJ75mPvH4wYo1NlJ64Mza7DPwrhi8cCOeXl/aUB4P4c/NJxKLMvpngycCrzxVFG2v/CwAMnguF80oLe8p27cQh+fnpPV/fTc95S6piXQDAw7a9YbWkezZXFbAwMx/xPFXb1D3+Y90AQF/L7kAsri9mZ4lrTd0TcYA/Kakr+x2JSPUAAAAASUVORK5CYII="
 );
 
-$HD_Form->FG_INTRO_TEXT_EDITION = '';
-$HD_Form->FG_INTRO_TEXT_ADITION = '';
+$HD_Form->FG_INTRO_TEXT_EDITION = "";
+$HD_Form->FG_INTRO_TEXT_ADITION = "";
 
 $HD_Form->AddEditElement(_("Title"), "group_title");
 $HD_Form->AddEditElement(_("Description"), "group_description");
@@ -95,7 +87,7 @@ function add_agi_confx(string $group_title, ?string $from_conf): void
     $group_desc = 'This configuration group handles the AGI Configuration.';
     $handle = DbConnect();
     $handle->Execute("INSERT INTO cc_config_group (group_title, group_description) VALUES (?, ?)", [$group_title, $group_desc]);
-    $group_id = $handle->Insert_ID();
+    $group_id = $handle->Insert_ID("cc_config_group", "id");
     if (!empty($from_conf)) {
         $query = <<< SQL
             INSERT INTO cc_config (
@@ -109,22 +101,4 @@ function add_agi_confx(string $group_title, ?string $from_conf): void
         $params = [$group_id, $from_conf];
         $handle->Execute($query, $params);
     }
-}
-
-function agi_confx_title(): array
-{
-    $handle = DbConnect();
-
-    $QUERY = "SELECT id, group_title, group_description FROM cc_config_group WHERE group_title like 'agi-conf%' ORDER BY group_title";
-    $result = $handle->GetAll($QUERY);
-
-    $agi_number = [];
-    foreach ($result as $row) {
-        $agi_number[] = (int)str_replace("agi-conf", "", $row["group_title"]);
-    }
-
-    $first_group_title = $result[0]["group_title"];
-    $agi_conf_number = max($agi_number) + 1;
-
-    return ["agi-conf$agi_conf_number", $first_group_title];
 }

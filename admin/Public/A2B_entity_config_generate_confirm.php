@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Forms\FormHandler;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -40,8 +41,6 @@ require_once __DIR__ . "/../../common/lib/admin.defines.php";
 require_once __DIR__ . "/form_data/FG_var_config_group.inc";
 /**
  * @var FormHandler $HD_Form
- * @var Smarty $smarty
- * @var string $id
  * @var string $form_action
  */
 
@@ -55,12 +54,26 @@ echo create_help(_("This action will generate a new agi-conf configuration group
 // #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);
 
-[$new_group_title, $first_group_title] = agi_confx_title(); // calling function  to generate agi-conf(title_number)
-
-$config = $HD_Form->DBHandle->GetAll(
-    "SELECT config_title, config_key, config_value, config_description FROM cc_config LEFT JOIN cc_config_group ON config_group_id = cc_config_group.id WHERE group_title = ? ORDER BY config_key LIMIT 20",
-    [$first_group_title]
+$table = new Table(
+    "cc_config",
+    [
+        "config_title",
+        "config_key",
+        "config_value",
+        "config_description",
+        "(SELECT CONCAT('agi-conf', REPLACE(MAX(group_title), 'agi-conf', '') + 1) FROM cc_config_group WHERE group_title LIKE 'agi-conf%') AS new_title",
+    ],
+    ["cc_config_group" => ["config_group_id", "cc_config_group.id"]]
 );
+$config = $table->getRows(
+    $HD_Form->DBHandle,
+    ["group_title" => "agi-conf1"],
+    ["config_key"],
+    "ASC",
+    [],
+    20
+);
+$new_group_title = $config[0]["new_title"];
 
 ?>
 <div class="row-pb-3">
@@ -71,7 +84,7 @@ $config = $HD_Form->DBHandle->GetAll(
 
 <?php if (count($config)): ?>
 <table class="table caption-top">
-    <caption><?= sprintf(_("Partial list of configuration values (copied from %s)"), $first_group_title) ?></caption>
+    <caption><?= _("Partial list of configuration values (copied from agi-conf1)") ?></caption>
     <thead>
     <tr>
         <th><?= _("Title") ?></th>

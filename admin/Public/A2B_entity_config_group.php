@@ -40,8 +40,6 @@ require_once __DIR__ . "/../../common/lib/admin.defines.php";
 require_once __DIR__ . "/form_data/FG_var_config_group.inc";
 /**
  * @var FormHandler $HD_Form
- * @var Smarty $smarty
- * @var string $id
  * @var string $form_action
  * @var string $delete_msg
  */
@@ -64,7 +62,6 @@ if (!empty($delete_msg)) {
 
 // #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);
-
 $HD_Form->create_form($form_action, $list);
 
 require_once __DIR__ . "/../templates/footer.php";

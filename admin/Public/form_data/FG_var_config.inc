@@ -2,6 +2,7 @@
 
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -49,46 +50,41 @@ $handle = DbConnect();
 
 $value_select = "";
 if ($form_action === "list") {
-    $HD_Form = new FormHandler("cc_config LEFT JOIN cc_config_group ON cc_config.config_group_id = cc_config_group.id", _("Configuration"), "cc_config.id");
-    $HD_Form->FG_TABLE_DEFAULT_ORDER = "group_title";
+    $HD_Form = new FormHandler(
+        "cc_config",
+        _("Configuration"),
+        "cc_config.id",
+        ["cc_config_group" => ["cc_config.config_group_id", "cc_config_group.id"]]
+    );
+    $HD_Form->FG_QUERY_ORDERBY_COLUMNS = ["group_title", "config_key"];
     $HD_Form->FG_QUERY_PRIMARY_KEY = "cc_config.id";
-    $HD_Form->update_query_conditions = ["cc_config.id" => "%id"];
-    $yesno = [];
-    $config_list = $handle->GetAll("SELECT config_value AS val, config_valuetype AS type, id FROM cc_config ORDER BY id");
-    foreach ($config_list as $key => $config) {
-        // where type = 1, map values 1 and 0 to yes and no
-        $id = $config["id"];
-        if ($config["type"] !== "1") {
-            $yesno[$id] = [$config["val"], $id];
-        } else {
-            $yesno[$id] = [$config["val"] === "1" ? "Yes" : "No", $id];
-        }
-    }
-
-    $HD_Form->AddViewElement(_("TITLE"), "config_title");
-    $HD_Form->AddViewElement(_("KEY"), "config_key");
-    $HD_Form->AddViewElement(_("VALUE"), "config_value", false, 0, "", "list-conf", $yesno);
-    $HD_Form->AddViewElement(_("DESCRIPTION"), "config_description");
-    $HD_Form->AddViewElement(_("GROUP"), "group_title");
-
-    $HD_Form->FieldViewElement('config_title, config_key, config_value, config_description, group_title');
-
     $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 25;
+
+    $HD_Form->AddListValue(_("Title"), "config_title");
+    $HD_Form->AddListValue(_("Key"), "config_key");
+    // if config_valuetype is 1, display as yes/no
+    $HD_Form->AddListValue(_("Value"), "config_value", "str_replace_conditional", [[0, 1], [_("No"), _("Yes")], "%X", "%5", 1]);
+    $HD_Form->AddListValue(_("Description"), "config_description");
+    $HD_Form->AddListValue(_("Group"), "group_title");
+    $HD_Form->FieldViewElement(["config_title", "config_key", "config_value", "config_description", "group_title", "config_valuetype"]);
 } else {
     $HD_Form = new FormHandler("cc_config", _("Configuration"));
 
     if ($form_action === "ask-edit") {
-        $result = $handle->GetOne(
-            "SELECT CASE config_valuetype WHEN 0 THEN '' WHEN 1 THEN 'bool' WHEN 2 THEN config_listvalues END FROM cc_config WHERE id = ?",
-            [$id]
-        );
-        if ($result !== "" && $result !== "bool") {
-            $result = explode(",", $result);
-            $value_select = array_map(fn($v) => [$v, $v], $result);
-        } elseif ($result === "bool") {
-            $value_select = [["Yes", 1], ["No", 0]];
-        } else {
-            $value_select = null;
+        $result = (new Table("cc_config", ["config_valuetype", "config_listvalues"]))
+            ->getRow($HD_Form->DBHandle, ["id" => $id]);
+        switch ($result["config_valuetype"]) {
+            case 2:
+                $value_select = array_map(
+                    fn($v) => [$v, $v],
+                    explode(",", $result["config_listvalues"])
+                );
+                break;
+            case 1:
+                $value_select = [["Yes", 1], ["No", 0]];
+                break;
+            default:
+                $value_select = null;
         }
     }
 }
@@ -172,5 +168,5 @@ $HD_Form->AddEditTextarea(
     "rows=5 readonly=\"readonly\""
 );
 
-$HD_Form->FG_INTRO_TEXT_EDITION= '';
+$HD_Form->FG_INTRO_TEXT_EDITION = "";
 $HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";

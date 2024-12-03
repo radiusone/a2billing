@@ -1387,3 +1387,20 @@ function abbr(string $content, string $title, string $class = ""): string
         htmlspecialchars($content)
     );
 }
+
+/**
+ * Performs str_replace only if the test expression matches a fixed value
+ *
+ * @param $search
+ * @param $replace
+ * @param string $subject
+ * @param $test
+ * @param $match
+ * @return string
+ */
+function str_replace_conditional($search, $replace, string $subject, $test, $match): string
+{
+    return $test == $match
+        ? str_replace($search, $replace, $subject)
+        : $subject;
+}
