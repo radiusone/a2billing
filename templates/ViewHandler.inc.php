@@ -130,6 +130,7 @@ $processed["popup_fieldname"] ??= "";
                 <tr>
                 <?php $k = 0 ?>
                 <?php foreach($form->FG_LIST_TABLE_CELLS as $j => $cell):
+/** TBD start */
                     $origlist[$num][$j - $k] = $item[$j - $k];
                     if (str_starts_with($cell["type"], "lie")) {
                         $lie_id = $item[$j - $k] ?? "";
@@ -145,10 +146,7 @@ $processed["popup_fieldname"] ??= "";
                             $record_display = _("n/a");
                         }
                         if ($cell["type"] === "lie_link" && is_array($options)) {
-                            $link = $cell["href"] . (str_contains($cell["href"], 'form_action') ? "?" : "?form_action=ask-edit&") . "id=" . $options[0][1];
-                            if (!$popup_select) {
-                                $record_display = "<a class='text-decoration-underline' href='$link'>$record_display</a>";
-                            }
+                            $cell["href"] .= (str_contains($cell["href"], 'form_action') ? "?" : "?form_action=ask-edit&") . "id=" . $options[0][1];
                         }
                     } elseif ($cell["type"] === "eval") {
                         // this exists only so that FG_var_card.inc.php can left pad a card number with zeroes
@@ -158,19 +156,20 @@ $processed["popup_fieldname"] ??= "";
                             $cell["code"]
                         );
                         $record_display = eval("return $string_to_eval;");
+                    } elseif ($cell["type"] === "list-conf") {
+                        $select_list = $cell["options"];
+                        // why +3 ?
+                        $key_config = $item[$j - $k + 3];
+                        $record_display = $select_list[$key_config][0];
+                    } elseif ($cell["type"] === "value") {
+                        $record_display = $cell["value"];
+                        $k++;
+/** TBD end */
                     } elseif ($cell["type"] === "list") {
                         $select_list = $cell["options"];
                         $match = $select_list[$item[$j - $k]] ?? null;
                         // todo: this won't be an array once old methods are gone
                         $record_display = (is_array($match) ? $match[0] : $match) ?: _("n/a");
-                    } elseif ($cell["type"] === "list-conf") {
-                        $select_list = $cell["options"];
-                        // why +3 ?
-                        $key_config =  $item[$j - $k + 3];
-                        $record_display = $select_list[$key_config][0];
-                    } elseif ($cell["type"] === "value") {
-                        $record_display = $cell["value"];
-                        $k++;
                     } else {
                         $record_display = $item[$j - $k];
                     }
@@ -184,15 +183,19 @@ $processed["popup_fieldname"] ??= "";
                         fn ($m) => $m[1] === "%X" ? $record_display : $item[$m[1]],
                         $cell["arguments"] ?? ""
                     );
-                    $item[$j - $k] = $record_display;
                     ?>
                     <td>
                     <?php if (!empty($cell["function"]) && is_callable($cell["function"])): ?>
                         <?= call_user_func_array($cell["function"], $arg ?: [$record_display]) ?>
+                    <?php elseif (!empty($cell["href"])): ?> {
+                        <a href="<?= $cell["href"] ?><?= str_ends_with($cell["href"], "=") ? $item[$j - $k] : "" ?>">
+                            <?= $record_display ?>
+                        </a>
                     <?php else: ?>
                         <?= $record_display ?? "" ?>
                     <?php endif ?>
                     </td>
+                <?php $item[$j - $k] = $record_display ?>
                 <?php endforeach ?>
                 <?php if ($hasActionButtons): ?>
                     <td>

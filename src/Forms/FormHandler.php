@@ -572,9 +572,6 @@ class FormHandler
      */
     public function AddListMapping(string $label, string $field, array $map, bool $sortable = true): self
     {
-        // temporary for backward compatibility
-        array_walk($map, fn (&$v, $k) => $v = [is_array($v) ? $v[0] : $v, $k]);
-
         $this->FG_LIST_TABLE_CELLS[] = [
             "type" => "list",
             "header" => $label,
@@ -611,9 +608,6 @@ class FormHandler
             array_column($result, 0),
             array_column($result, 1)
         );
-
-        // temporary for backward compatibility
-        array_walk($map, fn (&$v, $k) => $v = [$v, $k]);
 
         $this->FG_LIST_TABLE_CELLS[] = [
             "type" => "list",
