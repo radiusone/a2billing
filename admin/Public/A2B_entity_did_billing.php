@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -38,6 +39,9 @@ use A2billing\Admin;
 $menu_section = 8;
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
 require_once __DIR__ . "/form_data/FG_var_did_billing.inc";
+/**
+ * @var FormHandler $HD_Form
+ */
 
 Admin::checkPageAccess(Admin::ACX_DID);
 
@@ -54,12 +58,11 @@ echo create_help(_("DID list and billing list.") .
 
 // #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);
-
 $HD_Form->create_form($form_action, $list);
 
 // Include other file ( TODO , find a better way to include files )
-$wantinclude = 1;
-$order = 'id';
-include_once 'A2B_entity_charge.php';
+$wantinclude = true;
+$order = "id";
+include_once "A2B_entity_charge.php";
 
 require_once __DIR__ . "/../templates/footer.php";

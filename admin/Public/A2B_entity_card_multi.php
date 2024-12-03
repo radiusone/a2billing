@@ -3,7 +3,6 @@
 use A2billing\Admin;
 use A2billing\A2Billing;
 use A2billing\Forms\FormHandler;
-use A2billing\Table;
 use A2billing\Realtime;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -45,7 +44,6 @@ require_once __DIR__ . "/form_data/FG_var_card.inc";
 /**
  * @var FormHandler $HD_Form
  * @var A2Billing $A2B
- * @var Smarty $smarty
  * @var string $form_action
  * @var string $action
  */
@@ -53,7 +51,7 @@ require_once __DIR__ . "/form_data/FG_var_card.inc";
 Admin::checkPageAccess(Admin::ACX_CUSTOMER);
 
 getpost_ifset([
-    'nb_to_create', 'creditlimit', 'cardnum', 'addcredit', 'choose_tariff', 'gen_id', 'cardnum', 'choose_simultaccess',
+    'nb_to_create', 'creditlimit', 'cardnum', 'addcredit', 'choose_tariff', 'gen_id', 'choose_simultaccess',
     'choose_currency', 'choose_typepaid', 'creditlimit', 'enableexpire', 'expirationdate', 'expiredays', 'runservice', 'sip', 'iax',
     'cardnumber_length', 'tag', 'id_group', 'discount', 'id_seria', 'id_didgroup', 'vat', 'id_country',
 ]);
@@ -64,7 +62,6 @@ getpost_ifset([
  * @var string $addcredit
  * @var string $choose_tariff
  * @var string $gen_id
- * @var string $cardnum
  * @var string $choose_simultaccess
  * @var string $choose_currency
  * @var string $choose_typepaid
@@ -178,7 +175,6 @@ $HD_Form->list_query_conditions["lastname"] = $_SESSION["IDfilter"];
 $HD_Form->init();
 
 $form_action ??= "list";
-$action = $action ?? $form_action;
 
 $list = $HD_Form->perform_action($form_action);
 
@@ -458,12 +454,6 @@ $list_country = $HD_Form->DBHandle->CacheGetAll(300, "SELECT countrycode AS id, 
 
 <?php
 // #### TOP SECTION PAGE
-
-$HD_Form->FG_FILTER_ENABLE = false;
-$HD_Form->FG_ENABLE_ADD_BUTTON = false;
-$HD_Form->FG_ENABLE_INFO_BUTTON = false;
-$HD_Form->FG_LIST_ADDING_BUTTON1 = false;
-$HD_Form->FG_LIST_ADDING_BUTTON2 = false;
 
 $HD_Form->create_toppage ($form_action);
 

@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -38,25 +39,24 @@ use A2billing\Admin;
 $menu_section = 10;
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
 require_once __DIR__ . "/form_data/FG_var_charge.inc";
+/**
+ * @var FormHandler $HD_Form_c named differently because of the page include nonsense
+ * @var bool $wantinclude set in A2B_entity_did_billing which includes this page
+ * @var numeric-string|null $id
+ */
 
 Admin::checkPageAccess(Admin::ACX_BILLING);
 
 $HD_Form_c->init();
 
-// To fix internal links due $_SERVER["PHP_SELF"] from parent include that fakes them
-if ($wantinclude == 1) {
-    $HD_Form_c->FG_EDITION_LINK = "A2B_entity_charge.php?form_action=ask-edit&id=";
-    $HD_Form_c->FG_DELETION_LINK = "A2B_entity_charge.php?form_action=ask-delete&id=";
-}
-
-if ($id != "" || !is_null($id)) {
-    $HD_Form_c->FG_EDITION_CLAUSE = str_replace("%id", "$id", $HD_Form_c->FG_EDITION_CLAUSE);
+if (!empty($id)) {
+    $HD_Form_c->update_query_conditions["id"] = str_replace("%id", $id, $HD_Form_c->update_query_conditions["id"]);
 }
 
 $form_action ??= "list";
 $list = $HD_Form_c->perform_action($form_action);
 
-if ($wantinclude != 1) {
+if (!$wantinclude) {
     // #### HEADER SECTION
     require_once __DIR__ . "/../templates/main.php";
 
@@ -67,9 +67,8 @@ if ($wantinclude != 1) {
 
 // #### TOP SECTION PAGE
 $HD_Form_c->create_toppage($form_action);
-
 $HD_Form_c->create_form($form_action, $list);
 
-if ($wantinclude != 1) {
+if (!$wantinclude) {
     require_once __DIR__ . "/../templates/footer.php";
 }

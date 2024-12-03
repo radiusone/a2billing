@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -38,10 +39,11 @@ use A2billing\Admin;
 $menu_section = 1;
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
 require_once __DIR__ . "/form_data/FG_var_card_seria.inc";
+/**
+ * @var FormHandler $HD_Form
+ */
 
 Admin::checkPageAccess(Admin::ACX_CUSTOMER);
-
-getpost_ifset(array('popup_select', 'popup_formname', 'popup_fieldname'));
 
 $HD_Form -> init();
 
@@ -51,12 +53,12 @@ $list = $HD_Form -> perform_action($form_action);
 require_once __DIR__ . "/../templates/main.php";
 
 // #### HELP SECTION
-echo create_help(_("This page shows the series list.") . '<br>' . _("Series & serials is used for the creation of a card range specifically for accounting purposes instead of card id."), 'ListSeria');
+echo create_help(_("This page shows the series list.")
+    . '<br>' . _("Series & serials is used for the creation of a card range specifically for accounting purposes instead of card id."), 'ListSeria');
 
 // #### TOP SECTION PAGE
 $HD_Form -> create_toppage ($form_action);
-
 $HD_Form -> create_form($form_action, $list) ;
 
 // #### FOOTER SECTION
-if (!$popup_select) require_once __DIR__ . "/../templates/footer.php";
+require_once __DIR__ . "/../templates/footer.php";

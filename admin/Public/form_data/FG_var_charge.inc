@@ -2,6 +2,7 @@
 
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -34,115 +35,101 @@ use A2billing\Forms\FormHandler;
  *
  *
 **/
-
+/**
+ * @var string $form_action
+ */
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
-getpost_ifset(array('id', 'amount', 'id_cc_card', 'chargetype', 'description', 'id_did', 'username'));
+$form_action ??= "list";
+$wantinclude ??= false;
 
+getpost_ifset(["id", "id_did"]);
+/**
+ * @var numeric-string|null $id_did
+ */
 
-if (($form_action=='ask-edit') || ($form_action=='ask-add') || ($form_action=='add') || ($form_action=='edit') || ($form_action=='ask-delete') || ($form_action=='delete')){
-	if ($wantinclude==1) $HD_Form_c = new FormHandler("cc_charge", "charge");
-	else $HD_Form_c = new FormHandler("cc_charge", "charge");
-}else {
-	if ($wantinclude==1) $HD_Form_c = new FormHandler("cc_charge, cc_card", "charge", "cc_charge.id");
-	else $HD_Form_c = new FormHandler("cc_charge, cc_card", "charge", "cc_charge.id");
+$HD_Form_c = new FormHandler(
+    "cc_charge",
+    _("Charge"),
+    "cc_charge.id",
+    ["cc_card" => ["cc_charge.id_cc_card", "cc_card.id"]]
+);
+
+if ($wantinclude && isset($order)) {
+    $HD_Form_c->FG_TABLE_DEFAULT_ORDER = $order;
+} else {
+    $HD_Form_c->FG_TABLE_DEFAULT_ORDER = "id_cc_card";
 }
-
-if ($wantinclude==1) $HD_Form_c -> FG_TABLE_DEFAULT_ORDER = $order;
-else $HD_Form_c -> FG_TABLE_DEFAULT_ORDER = "id_cc_card";
-
-$HD_Form_c -> FG_TABLE_DEFAULT_SENS = "DESC";
-$HD_Form_c -> FG_QUERY_WHERE_CLAUSE = " cc_card.id=id_cc_card ";
-$HD_Form_c->list_query_conditions["cc_card.id"] = ["`id_cc_card`"];
-
-$HD_Form_c -> FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form_c -> FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_charge.php?form_action=ask-add";
-$HD_Form_c -> FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form_c -> FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add a Charge");
-$HD_Form_c -> FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("add.png") ;
+$HD_Form_c->FG_LIST_ADDING_BUTTON1 = true;
+$HD_Form_c->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_charge.php?form_action=ask-add";
+$HD_Form_c->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("add.png") ;
 
 // -- chargetype : 1 - connection charge for DID setup, 2 - Montly charge for DID use, 3 - Subscription fee, 4 - Extra Charge, etc...
-$chargetype_list = array();
-$chargetype_list["1"] = array( gettext("Connection charge for DID setup"), "1");
-$chargetype_list["2"] = array( gettext("Monthly Charge for DID use"), "2");
-$chargetype_list["3"] = array( gettext("Subscription fee"), "3");
-$chargetype_list["4"] = array( gettext("Extra charge"), "4");
+$chargetype_list = [
+    1 => [_("Connection charge for DID setup"), "1"],
+    2 => [_("Monthly Charge for DID use"), "2"],
+    3 => [_("Subscription fee"), "3"],
+    4 => [_("Extra charge"), "4"],
+];
 
+$HD_Form_c->AddListSqlMapping(_("Account holder"), "id_cc_card", new Table("cc_card", ["id", "CONCAT(lastname, ' ', firstname)"]));
+$HD_Form_c->AddListValue(_("Account number"), "username", "display_customer_link");
+$HD_Form_c->AddListValue(_("Date"), "cc_charge.creationdate");
+$HD_Form_c->AddListValue(_("Amount"), "amount", "display_money");
+$HD_Form_c->AddListMapping(_("Charge type"), "chargetype", $chargetype_list);
+$HD_Form_c->AddListValue(_("Description"), "description");
+$HD_Form_c->FieldViewElement(["id_cc_card", "username", "cc_charge.creationdate", "amount", "chargetype", "description"]);
 
+$HD_Form_c->FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form_c->FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form_c->FG_ENABLE_ADD_BUTTON = true;
 
-
-$HD_Form_c -> AddViewElement(gettext("ACCOUNT HOLDER"), "id_cc_card", true, 25, "", "lie", "cc_card", "lastname, firstname", "id='%id'", "%1 %2");
-$HD_Form_c -> AddViewElement(gettext("ACCOUNT NUMBER"), "username", true, 30, "display_customer_link");
-$HD_Form_c -> AddViewElement(gettext("DATE"), "cc_charge.creationdate", true, 16);
-$HD_Form_c -> AddViewElement(gettext("AMOUNT"), "amount");
-$HD_Form_c -> AddViewElement(gettext("CHARGE TYPE"), "chargetype", true, 30, "", "list", $chargetype_list);
-$HD_Form_c -> AddViewElement(gettext("DESCRIPTION"), "description");
-
-// added a parameter to append  FG_TABLE_ID  ( by default ) or disable 0.
-$HD_Form_c -> FieldViewElement ('id_cc_card, username, cc_charge.creationdate, amount, chargetype, description');
-
-$HD_Form_c -> FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form_c -> FG_ENABLE_DELETE_BUTTON = true;
-$HD_Form_c -> FG_ENABLE_ADD_BUTTON = true;
-
-// TODO integrate in Framework
-if ($form_action=='ask-add'){
-	$DBHandle_max  = DbConnect();
-	if ($username) {
-		$resmax = $DBHandle_max -> Execute("SELECT id FROM cc_card where username='$username'");
-		$numrow = 0;
-		if ($resmax)
-			$numrow = $resmas -> RecordCount( );
-		if ($numrow!=0) {
-			$db_row [] = $resmax -> fetchRow();
-			$val_default = "value='".$db_row[0][0]."'";
-		}
-	}
-	if ($id_did){
-		$resmax = $DBHandle_max -> Execute("SELECT fixrate FROM cc_did where id='$id_did'");
-		$numrow = 0;
-		if ($resmax)
-			$numrow = $resmax -> RecordCount( );
-		if ($numrow!=0){
-			$db_row2 [] = $resmax -> fetchRow();
-			$val_default_fixrate = "value='".$db_row2[0][0]."'";
-		}
-	}
+$val_default_fixrate = "";
+if ($form_action === "ask-add" && !empty($id_did)) {
+    $row = (new Table("cc_did", "fixrate"))->getRow(DbConnect(), ["id" => $id_did]);
+    $val_default_fixrate = "value='" . ($row["fixrate"] ?? "") . "'";
 }
 
 $HD_Form_c->AddEditPopup(
-    gettext("ID CARD"),
+    _("ID CARD"),
     "id_cc_card",
     "A2B_entity_card.php?popup_select=1&",
-    gettext("Set the Customer ID"),
-    "", 4, gettext("Insert the Customer ID")
+    _("Set the Customer ID"),
+    "",
+    4,
+    _("Insert the Customer ID")
 );
 
 $HD_Form_c->AddEditElement(
-    gettext("AMOUNT"),
+    _("AMOUNT"),
     "amount",
     "",
     "size=20  maxlength=20 $val_default_fixrate",
     12,
-    gettext("Insert the amount")
+    _("Insert the amount")
 );
 
-$HD_Form_c->AddEditSelect(gettext("CHARGE TYPE"), "chargetype", $chargetype_list);
+$HD_Form_c->AddEditSelect(
+    _("CHARGE TYPE"),
+    "chargetype",
+    $chargetype_list
+);
 
 $HD_Form_c->AddEditTextarea(
-    gettext("DESCRIPTION"),
+    _("DESCRIPTION"),
     "description",
     "",
-    "cols='50' rows='4'", null, gettext("Insert the description")
+    "cols='50' rows='4'",
+    null,
+    _("Insert the description")
 );
 
-// Set the filter variables
-$HD_Form_c -> FG_FILTER_ENABLE = true;
-$HD_Form_c -> FG_FILTER_COLUMN = 'username';
-$HD_Form_c -> FG_FILTER_LABEL = 'account number';
+$HD_Form_c->FG_FILTER_ENABLE = true;
+$HD_Form_c->FG_FILTER_COLUMN = "username";
+$HD_Form_c->FG_FILTER_LABEL = _("Account number");
 
-$HD_Form_c -> FG_INTRO_TEXT_ADITION = '';
+$HD_Form_c->FG_INTRO_TEXT_ADITION = "";
 
-$HD_Form_c -> FG_LOCATION_AFTER_ADD = "?id=";
-$HD_Form_c -> FG_LOCATION_AFTER_EDIT = "?id=";
-$HD_Form_c -> FG_LOCATION_AFTER_DELETE = "?id=";
-
+$HD_Form_c->FG_LOCATION_AFTER_ADD = "?id=";
+$HD_Form_c->FG_LOCATION_AFTER_EDIT = "?id=";
+$HD_Form_c->FG_LOCATION_AFTER_DELETE = "?id=";

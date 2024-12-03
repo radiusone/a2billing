@@ -49,7 +49,6 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("server_connect.png") ;
 // Dependent Tables
 $HD_Form->FG_FK_DELETE_ALLOWED = true;
 $HD_Form->FG_FK_DELETE_CONFIRM = true;
-$HD_Form->FG_FK_DELETE_OR_UPDATE = true;
 $HD_Form->FG_FK_WARNONLY = true;
 $HD_Form->FG_FK_TABLENAMES = ["cc_outbound_cid_list"];
 $HD_Form->FG_FK_EDITION_CLAUSE = ["outbound_cid_group"];

@@ -42,8 +42,6 @@ $HD_Form = new FormHandler("cc_card_group", "Customer Group");
 
 $HD_Form->FG_TABLE_DEFAULT_ORDER = "name";
 
-// Code Here for Deleting the Dependent Records
-// Dependent Tables
 $HD_Form->FG_FK_DELETE_ALLOWED = true;
 $HD_Form->FG_FK_DELETE_CONFIRM = true;
 $HD_Form->FG_FK_WARNONLY = true;
@@ -53,8 +51,6 @@ $HD_Form->FG_FK_EDITION_CLAUSE = ["id_group"];
 $HD_Form->FG_FK_DELETE_MESSAGE = _("You have some cards using this Customers Group! Please comfirm that you really want to remove this Customers Group ? ");
 
 $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_card_group.php?form_action=ask-add";
-$HD_Form->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form->FG_LIST_ADDING_BUTTON_MSG1 = _("Add Group");
 $HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("group_add.png");
 
 $HD_Form->AddListValue(_("Name"), "name");

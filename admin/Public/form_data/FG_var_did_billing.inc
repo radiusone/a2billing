@@ -34,37 +34,51 @@ use A2billing\Forms\FormHandler;
  *
 **/
 
-$HD_Form = new FormHandler("cc_call INNER JOIN cc_did ON cc_did.id = cc_call.id_did INNER JOIN cc_card ON cc_card.id = cc_call.card_id", "did billing", "cc_did.id");
+$HD_Form = new FormHandler(
+    "cc_call",
+    _("DID billing"),
+    "cc_did.id",
+    [
+        "cc_did" => ["INNER", "cc_did.id", "cc_call.id_did"],
+        "cc_card" => ["INNER", "cc_card.id", "cc_call.card_id"]
+    ]
+);
 
-$HD_Form -> FG_TABLE_DEFAULT_ORDER = "date";
-$HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
-$HD_Form -> FG_QUERY_WHERE_CLAUSE = "( sipiax = 2 OR sipiax = 3) ";
+$HD_Form->FG_TABLE_DEFAULT_ORDER = "date";
+$HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
 $HD_Form->list_query_conditions["sipiax"] = ["IN", [2, 3]];
 
-$HD_Form -> AddViewElement(gettext("DATE"), "date(starttime) as date", false);
-$HD_Form -> AddViewElement(gettext("DID"), "cc_did.did", false);
-$HD_Form -> AddViewElement(gettext("NB_CALL"), "count(*)", false);
-$HD_Form -> AddViewElement(gettext("TOTAL_DURATION"), "sum(sessiontime)", false);
-$HD_Form -> AddViewElement(gettext("TOTAL_COST"), "sum(sessionbill)", false);
-$HD_Form -> AddViewElement(gettext("CARDNUMBER"), "username", false);
+$HD_Form->AddListValue(_("DATE"), "DATE(starttime) AS date");
+$HD_Form->AddListValue(_("DID"), "cc_did.did");
+$HD_Form->AddListValue(_("NB_CALL"), "COUNT(*) AS nb_call");
+$HD_Form->AddListValue(_("TOTAL_DURATION"), "SUM(sessiontime) AS t_time", "display_minute");
+$HD_Form->AddListValue(_("TOTAL_COST"), "SUM(sessionbill) AS t_cost", "display_money");
+$HD_Form->AddListValue(_("CARDNUMBER"), "username");
 
-$HD_Form -> FieldViewElement ("DATE(starttime) as date, cc_did.did, count(*) as nb_call, sum(sessiontime) as t_time, sum(sessionbill) as t_cost, username ");
+$HD_Form->FieldViewElement([
+    "DATE(starttime) AS date",
+    "cc_did.did",
+    "COUNT(*) AS nb_call",
+    "SUM(sessiontime) AS t_time",
+    "sum(sessionbill) AS t_cost",
+    "username",
+]);
 
-$HD_Form -> FG_QUERY_GROUPBY_COLUMNS = ["cc_card.username","cc_did.did","date"];
+$HD_Form->FG_QUERY_GROUPBY_COLUMNS = ["cc_card.username", "cc_did.did", "date"];
 
-$HD_Form -> FG_ENABLE_EDIT_BUTTON = false;
-$HD_Form -> FG_ENABLE_DELETE_BUTTON = false;
-$HD_Form -> FG_ENABLE_ADD_BUTTON = false;
+$HD_Form->FG_ENABLE_EDIT_BUTTON = false;
+$HD_Form->FG_ENABLE_DELETE_BUTTON = false;
+$HD_Form->FG_ENABLE_ADD_BUTTON = false;
 
-$HD_Form -> FG_FILTER_ENABLE = true;
-$HD_Form -> FG_FILTER_COLUMN = 'username';
-$HD_Form -> FG_FILTER_LABEL = 'cardnumber';
+$HD_Form->FG_FILTER_ENABLE = true;
+$HD_Form->FG_FILTER_COLUMN = "username";
+$HD_Form->FG_FILTER_LABEL = "cardnumber";
 
-$HD_Form -> FG_FILTER2_ENABLE = true;
-$HD_Form -> FG_FILTER2_COLUMN = 'cc_did.did';
-$HD_Form -> FG_FILTER2_LABEL = 'did';
+$HD_Form->FG_FILTER2_ENABLE = true;
+$HD_Form->FG_FILTER2_COLUMN = "cc_did.did";
+$HD_Form->FG_FILTER2_LABEL = "did";
 
-$HD_Form -> FG_LOCATION_AFTER_ADD = "?id=";
-$HD_Form -> FG_LOCATION_AFTER_EDIT = "?id=";
-$HD_Form -> FG_LOCATION_AFTER_DELETE = "?id=";
+$HD_Form->FG_LOCATION_AFTER_ADD = "?id=";
+$HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";
+$HD_Form->FG_LOCATION_AFTER_DELETE = "?id=";
 
