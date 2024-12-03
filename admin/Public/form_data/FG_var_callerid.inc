@@ -2,6 +2,7 @@
 
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -37,14 +38,10 @@ use A2billing\Forms\FormHandler;
 
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
-getpost_ifset(array('IDCust', 'id', 'cid', 'activated'));
-
 $HD_Form = new FormHandler("cc_callerid", "CallerID");
 
-$HD_Form ->FG_LIST_ADDING_BUTTON2 = true;
-$HD_Form ->FG_LIST_ADDING_BUTTON_LINK2 = "A2B_entity_callerid.php?form_action=ask-add";
-$HD_Form ->FG_LIST_ADDING_BUTTON_ALT2 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG2 = gettext("Add CallerID");
-$HD_Form ->FG_LIST_ADDING_BUTTON_IMG2 = get_image_path("page_white_add.png") ;
+$HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
+$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("page_white_add.png") ;
 
 $HD_Form->AddListActionButton(
     "A2B_entity_payment.php?form_action=ask-add&card_id=|col1|",
@@ -57,56 +54,53 @@ $HD_Form->AddListActionButton(
     get_image_path("brick_add.png")
 );
 
-$actived_list = getActivationTrueFalseList();
-$yesno = getYesNoList();
+$HD_Form->AddListValue(_("CALLERID"), "cid");
+$HD_Form->AddListSqlMapping(_("ACCOUNT NUMBER"), "id_cc_card", new Table("cc_card", ["id", "username"]), [], "A2B_entity_card.php?form_action=ask-edit&id=");
+$HD_Form->AddListValue(_("CUSTOMER NAME"), "id_cc_card", "display_customer_name_id_link");
+$HD_Form->AddListMapping(_("ACTIVATED"), "activated", getActivationTrueFalseList());
+$HD_Form->FieldViewElement (["cid", "id_cc_card", "id_cc_card", "cc_callerid.activated", "cc_callerid.id"]);
 
-$HD_Form -> AddViewElement(gettext("CALLERID"), "cid");
-$HD_Form -> AddViewElement(gettext("ACCOUNT NUMBER"), "id_cc_card", true, 0, "", "lie_link", "cc_card", "username, id", "id='%id'", "%1", "A2B_entity_card.php");
-$HD_Form -> AddViewElement(gettext("CUSTOMER NAME"), "id_cc_card", true, 0, "", "lie_link", "cc_card", "lastname, id, firstname", "id='%id'", "%1 %3", "A2B_entity_card.php");
-$HD_Form -> AddViewElement(gettext("ACTIVATED"), "activated", true, 0, "", "list", $actived_list);
-
-$HD_Form -> FieldViewElement ('cid, id_cc_card, id_cc_card, cc_callerid.activated, cc_callerid.id');
-
-$HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 10;
-
-$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
-$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form->FG_ENABLE_ADD_BUTTON = true;
+$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 
 $HD_Form->AddEditElement(
-    gettext("CALLERID"),
+    _("CALLERID"),
     "cid",
     "",
     "size=20 maxlength=30",
     18,
-    gettext("Insert the CallerID")
+    _("Insert the CallerID")
 );
 
 $HD_Form->AddEditRadio(
-    gettext("ACTIVATED"),
+    _("ACTIVATED"),
     "activated",
-    [[gettext("Yes"), "t"], [gettext("No"), "f"]],
+    [[_("Yes"), "t"], [_("No"), "f"]],
     "t",
-    "", "",
-    gettext("Choose if you want to activate this card")
+    "",
+    "",
+    _("Choose if you want to activate this card")
 );
 
 $HD_Form->AddEditPopup(
-    gettext("CARD ID"),
+    _("CARD ID"),
     "id_cc_card",
     "A2B_entity_card.php?popup_select=1&",
-    gettext("Define the card number ID to use."),
-    "", 4, gettext("Insert the card number ID")
+    _("Define the card number ID to use."),
+    "",
+    4,
+    _("Insert the card number ID")
 );
 
 // Set the filter variables
-$HD_Form -> FG_FILTER_ENABLE = true;
-$HD_Form -> FG_FILTER_COLUMN = 'cid';
-$HD_Form -> FG_FILTER_LABEL = gettext('CALLERID');
+$HD_Form->FG_FILTER_ENABLE = true;
+$HD_Form->FG_FILTER_COLUMN = 'cid';
+$HD_Form->FG_FILTER_LABEL = _('CALLERID');
 
-$HD_Form -> FG_LOCATION_AFTER_ADD = "?id=";
-$HD_Form -> FG_LOCATION_AFTER_EDIT = "?id=";
-$HD_Form -> FG_LOCATION_AFTER_DELETE = "?id=";
+$HD_Form->FG_LOCATION_AFTER_ADD = "?id=";
+$HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";
+$HD_Form->FG_LOCATION_AFTER_DELETE = "?id=";
 
 
 

@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -38,13 +39,16 @@ use A2billing\Admin;
 $menu_section = 14;
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
 require_once __DIR__ . "/form_data/FG_var_callback.inc";
+/**
+ * @var FormHandler $HD_Form
+ */
 
 Admin::checkPageAccess(Admin::ACX_CALLBACK);
 
 $HD_Form -> init();
 
 $form_action ??= "list";
-$list = $HD_Form -> perform_action($form_action);
+$list = $HD_Form->perform_action($form_action);
 
 require_once __DIR__ . "/../templates/main.php";
 
@@ -53,8 +57,8 @@ echo create_help(_("Callback will offer you an easy way to connect any phone to 
 Browse here the pending and completed callbacks. You will see that different parameters determine the callback, the way to reach the user, the time when we need to call him, the result of the last attempts, etc..."), 'ShowCallbacks');
 
 // #### TOP SECTION PAGE
-$HD_Form -> create_toppage ($form_action);
+$HD_Form->create_toppage ($form_action);
 
-$HD_Form -> create_form($form_action, $list) ;
+$HD_Form->create_form($form_action, $list) ;
 
 require_once __DIR__ . "/../templates/footer.php";

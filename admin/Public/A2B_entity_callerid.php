@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -38,7 +39,9 @@ use A2billing\Admin;
 $menu_section = 1;
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
 require_once __DIR__ . "/form_data/FG_var_callerid.inc";
-
+/**
+ * @var FormHandler $HD_Form
+ */
 Admin::checkPageAccess(Admin::ACX_CUSTOMER);
 
 $HD_Form -> init();
@@ -53,7 +56,6 @@ echo create_help(_("Set the caller ID so that the customer calling in is authent
 
 // #### TOP SECTION PAGE
 $HD_Form -> create_toppage ($form_action);
-
 $HD_Form -> create_form($form_action, $list) ;
 
 require_once __DIR__ . "/../templates/footer.php";
