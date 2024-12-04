@@ -85,9 +85,14 @@ if (($download ?? "") === "file" && !empty($file)) {
 }
 
 $HD_Form = new FormHandler(
-    "cc_call LEFT OUTER JOIN cc_trunk ON cc_call.id_trunk = cc_trunk.id_trunk LEFT OUTER JOIN cc_ratecard ON cc_call.id_ratecard = cc_ratecard.id LEFT OUTER JOIN cc_card ON cc_call.card_id = cc_card.id",
+    "cc_call",
     gettext("CDR"),
-    "cc_call.id"
+    "cc_call.id",
+    [
+        "cc_call" => ["LEFT OUTER", "cc_call.id_trunk", "cc_trunk.id_trunk"],
+        "cc_ratecard" => ["LEFT OUTER", "cc_call.id_ratecard", "cc_ratecard.id"],
+        "cc_card" => ["LEFT OUTER", "cc_call.id_card", "cc_card.id"],
+    ]
 );
 $HD_Form->init();
 
@@ -130,29 +135,29 @@ $HD_Form->FG_QUERY_COLUMN_LIST = [
 
 $DBHandle = DbConnect();
 
-$HD_Form->AddViewElement(_("Date"), "cc_call.starttime", true, 19);
-$HD_Form->AddViewElement(_("Caller ID"), "src", true, 0, "display_phone_number");
-$HD_Form->AddViewElement(_("DNID"), "dnid", true, 0, "display_phone_number");
-$HD_Form->AddViewElement(_("Phone Number"), "calledstation", true, 0, "display_phone_number");
-$HD_Form->AddViewElement(_("Destination"), "cc_call.destination", true, 15, "", "lie", "cc_prefix", "destination,prefix", "prefix='%id'", "%1");
-$HD_Form->AddViewElement(_("Buy Rate"), "buyrate", true, 30, "display_2bill");
-$HD_Form->AddViewElement(_("Sell Rate"), "rateinitial", true, 30, "display_2bill");
-$HD_Form->AddViewElement(_("Duration"), "sessiontime", true, 30, "display_minute");
-$HD_Form->AddViewElement(_("Account"), "card_id", true, 0, "display_customer_id_link");
-$HD_Form->AddViewElement(_("Trunk"), "trunkcode");
-$HD_Form->AddViewElement(_("Disposition"), "terminatecauseid", true, "", null, "list", $dialstatus_list);
-$HD_Form->AddViewElement(_("CallType"), "sipiax", true, 0, "", "list", $calltype_list);
-$HD_Form->AddViewElement(_("Buy"), "buycost", true, 30, "display_2bill");
-$HD_Form->AddViewElement(_("Sell"), "sessionbill", true, 30, "display_2bill");
-$HD_Form->AddViewElement(_("Margin"), "CASE WHEN cc_call.sessionbill != 0 THEN ((cc_call.sessionbill - cc_call.buycost) / cc_call.sessionbill) * 100 ELSE NULL END AS margin", true, 30, "display_2dec_percentage");
-$HD_Form->AddViewElement(_("Markup"), "CASE WHEN cc_call.buycost != 0 THEN ((cc_call.sessionbill - cc_call.buycost) / cc_call.buycost) * 100 ELSE NULL END AS markup", true, 30, "display_2dec_percentage");
+$HD_Form->AddListValue(_("Date"), "cc_call.starttime");
+$HD_Form->AddListValue(_("Caller ID"), "src", "display_phone_number");
+$HD_Form->AddListValue(_("DNID"), "dnid", "display_phone_number");
+$HD_Form->AddListValue(_("Phone Number"), "calledstation", "display_phone_number");
+$HD_Form->AddListSqlMapping(_("Destination"), "cc_call.destination", new Table("cc_prefix", ["prefix", "destination"]));
+$HD_Form->AddListValue(_("Buy Rate"), "buyrate", "display_2bill");
+$HD_Form->AddListValue(_("Sell Rate"), "rateinitial", "display_2bill");
+$HD_Form->AddListValue(_("Duration"), "sessiontime", "display_minute");
+$HD_Form->AddListValue(_("Account"), "card_id", "display_customer_id_link");
+$HD_Form->AddListValue(_("Trunk"), "trunkcode");
+$HD_Form->AddListMapping(_("Disposition"), "terminatecauseid", $dialstatus_list);
+$HD_Form->AddListMapping(_("CallType"), "sipiax", $calltype_list);
+$HD_Form->AddListValue(_("Buy"), "buycost", "display_2bill");
+$HD_Form->AddListValue(_("Sell"), "sessionbill", "display_2bill");
+$HD_Form->AddListValue(_("Margin"), "CASE WHEN cc_call.sessionbill != 0 THEN ((cc_call.sessionbill - cc_call.buycost) / cc_call.sessionbill) * 100 ELSE NULL END AS margin", "display_2dec_percentage");
+$HD_Form->AddListValue(_("Markup"), "CASE WHEN cc_call.buycost != 0 THEN ((cc_call.sessionbill - cc_call.buycost) / cc_call.buycost) * 100 ELSE NULL END AS markup", "display_2dec_percentage");
 
 $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form->FG_DELETE_BUTTON_LINK = "A2B_entity_call.php?form_action=ask-delete&id=";
 
 if (LINK_AUDIO_FILE) {
     // TODO: figure out how this works, move it into this file with custom button
-    $HD_Form->AddViewElement("", "uniqueid", false, 30, "display_monitorfile_link");
+    $HD_Form->AddListValue(_("Audio"), "uniqueid", "display_monitorfile_link", [], false);
     $HD_Form->FG_QUERY_COLUMN_LIST[] = 'cc_call.uniqueid';
 }
 
@@ -183,9 +188,9 @@ $HD_Form->AddSearchPopupInput("id_provider", _("Provider"), "A2B_entity_provider
 $HD_Form->AddSearchPopupInput("cc_call.id_trunk", _("Trunk"), "A2B_entity_trunk.php", 2);
 $HD_Form->AddSearchPopupInput("id_ratecard", _("Rate"), "A2B_entity_def_ratecard.php", 2);
 
-$HD_Form->AddSearchTextInput(_("Phone number"), "destination", "dsttype");
-$HD_Form->AddSearchTextInput(_("Caller ID"), "src", "srctype");
-$HD_Form->AddSearchTextInput(_("DNID"), "dnid", "dnidtype");
+$HD_Form->AddSearchTextInput(_("Phone number"), "destination");
+$HD_Form->AddSearchTextInput(_("Caller ID"), "src");
+$HD_Form->AddSearchTextInput(_("DNID"), "dnid");
 
 $HD_Form->AddSearchSelectInput(_("Disposition"), "terminatecauseid", $dialstatus_list_r);
 $HD_Form->AddSearchSelectInput(_("Call type"), "sipiax", $calltype_list);
@@ -197,9 +202,8 @@ $HD_Form->search_delete_enabled = false;
 
 $form_action ??= "list";
 $HD_Form->prepare_list_subselection('list');
-if (empty($HD_Form->FG_QUERY_WHERE_CLAUSE)) {
+if (empty($HD_Form->list_query_conditions)) {
     $date = (new DateTime("-1 day"))->format("Y-m-d H:i:s");
-    $HD_Form->FG_QUERY_WHERE_CLAUSE = "cc_call.starttime >= '$date' AND terminatecauseid = 1";
     $HD_Form->list_query_conditions["cc_call.starttime"] = [">=", $date];
     $HD_Form->list_query_conditions["terminatecauseid"] = 1;
 }

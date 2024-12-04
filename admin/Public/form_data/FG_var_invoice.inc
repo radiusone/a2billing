@@ -42,16 +42,16 @@ Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
 $form_action ??= "list";
 $col6_open = sprintf("'|col6|' === '%s'", _("OPEN"));
-$col6_closed = sprintf("'|col6|' === '%s'", _("CLOSE"));
+$join_key = "(SELECT id_invoice, SUM(price * (1 + (vat / 100))) AS total_price FROM cc_invoice_item GROUP BY id_invoice) AS items";
 
-if ($form_action === "list") {
-	$list_query = "cc_invoice LEFT JOIN cc_card ON cc_card.id=id_card ";
-	$list_query .= "LEFT JOIN (SELECT st1.id_invoice, TRUNCATE(SUM(st1.price*(1+(st1.vat/100))),2) as total_price " .
-	               "FROM cc_invoice_item AS st1 GROUP BY st1.id_invoice ) as items ON items.id_invoice = cc_invoice.id ";
-	$HD_Form = new FormHandler($list_query, "Invoice", 'cc_invoice.id');
-} else {
-	$HD_Form = new FormHandler("cc_invoice", "Invoice");
-}
+$HD_Form = new FormHandler(
+    "cc_invoice",
+    "Invoice",
+    "cc_invoice.id",
+    $form_action !== "list"
+        ? []
+        : [$join_key => ["cc_invoice.id", "items.id_invoice"]]
+);
 
 $HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
 
@@ -59,7 +59,7 @@ $HD_Form->FG_FK_DELETE_ALLOWED = true;
 $HD_Form->FG_FK_DELETE_CONFIRM = true;
 $HD_Form->FG_FK_WARNONLY = true;
 $HD_Form->FG_FK_TABLENAMES = ["cc_invoice_item"];
-$HD_Form->FG_FK_EDITION_CLAUSE = [" id_invoice "];
+$HD_Form->FG_FK_EDITION_CLAUSE = ["id_invoice"];
 
 $HD_Form->FG_ENABLE_INFO_BUTTON = true;
 $HD_Form->FG_INFO_BUTTON_LINK = "A2B_invoice_view.php?id=";
@@ -97,8 +97,6 @@ $HD_Form->AddListActionButton(
 );
 
 $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_invoice.php?form_action=ask-add";
-$HD_Form->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form->FG_LIST_ADDING_BUTTON_MSG1 = _("Add Invoice");
 $HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("money.png") ;
 
 $status_list = getInvoiceStatusList();
@@ -107,16 +105,24 @@ $paid_status_list_r = array_map("array_reverse", $paid_status_list);
 $typepaid_list_r = array_map("array_reverse", getPaidTypeList());
 $invoiceday_list = getInvoiceDay_List();
 
-$filter_amount_with_vat = "total_price";
-$HD_Form->AddViewElement(_("ID"), "cc_invoice.id");
-$HD_Form->AddViewElement(_("REFERENCE"), "cc_invoice.reference");
-$HD_Form->AddViewElement(_("ACCOUNT"), "username", true, 30, "display_customer_link");
-$HD_Form->AddViewElement(_("DATE"), "date", true, 30);
-$HD_Form->AddViewElement(_("TITLE"), "title");
-$HD_Form->AddViewElement(_("PAID STATUS"), "status", true, 0, "", "list", $paid_status_list);
-$HD_Form->AddViewElement(_("STATUS"), "cc_invoice_status", true, 0, "", "list", $status_list);
-$HD_Form->AddViewElement(_("AMOUNT INCL VAT"), "total_price", true, 0, "display_2bill");
-$HD_Form->FieldViewElement("cc_invoice.id, cc_invoice.reference, username, cc_invoice.date,title, cc_invoice.paid_status, cc_invoice.status as cc_invoice_status,$filter_amount_with_vat");
+$HD_Form->AddListValue(_("ID"), "cc_invoice.id");
+$HD_Form->AddListValue(_("REFERENCE"), "reference");
+$HD_Form->AddListValue(_("ACCOUNT"), "id_card", "display_customer_id_link");
+$HD_Form->AddListValue(_("DATE"), "date");
+$HD_Form->AddListValue(_("TITLE"), "title");
+$HD_Form->AddListMapping(_("PAID STATUS"), "paid_status", $paid_status_list);
+$HD_Form->AddListMapping(_("STATUS"), "status", $status_list);
+$HD_Form->AddListValue(_("AMOUNT INCL VAT"), "total_price", "display_money");
+$HD_Form->FieldViewElement([
+    "cc_invoice.id",
+    "reference",
+    "id_card",
+    "cc_invoice.date",
+    "title",
+    "paid_status",
+    "status",
+    "total_price",
+]);
 
 if (!$popup_select) {
     $HD_Form->search_form_enabled = true;
