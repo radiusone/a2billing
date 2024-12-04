@@ -37,54 +37,41 @@ use A2billing\Forms\FormHandler;
 
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
-getpost_ifset(array('id', 'didgroupname'));
-$HD_Form = new FormHandler("cc_didgroup", "Did Group");
+$HD_Form = new FormHandler("cc_didgroup", _("DID Group"));
 
-$HD_Form -> FG_TABLE_DEFAULT_ORDER = "didgroupname";
-$HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
-
+$HD_Form->FG_TABLE_DEFAULT_ORDER = "didgroupname";
 
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_didgroup.php?form_action=ask-add";
-$HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add DID GROUP");
 $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("telephone_add.png") ;
 
+$HD_Form->FG_FK_DELETE_ALLOWED = true;
+$HD_Form->FG_FK_DELETE_CONFIRM = true;
+$HD_Form->FG_FK_WARNONLY = true;
+$HD_Form->FG_FK_TABLENAMES = ["cc_card"];
+$HD_Form->FG_FK_EDITION_CLAUSE = ["id_didgroup"];
+$HD_Form->FG_FK_DELETE_MESSAGE = _("You have some cards using this DID Group! Please comfirm that you really want to remove this DID Group ? ");
 
-// Code Here for Deleting the Dependent Records
-// Dependent Tables
-$HD_Form -> FG_FK_DELETE_ALLOWED = true;
-$HD_Form -> FG_FK_DELETE_CONFIRM = true;
-$HD_Form -> FG_FK_WARNONLY = true;
-$HD_Form -> FG_FK_TABLENAMES = array("cc_card");
-$HD_Form -> FG_FK_EDITION_CLAUSE = array(" id_didgroup ");
+$HD_Form->AddListValue(_("NAME"), "didgroupname");
+$HD_Form->AddListValue(_("CREATION DATE"), "creationdate");
+$HD_Form->FieldViewElement (["didgroupname", "creationdate"]);
 
-$HD_Form -> FG_FK_DELETE_MESSAGE = gettext("You have some cards using this DID Group! Please comfirm that you really want to remove this DID Group ? ");
-
-
-$HD_Form -> AddViewElement(gettext("ID"), "id");
-$HD_Form -> AddViewElement(gettext("NAME"), "didgroupname");
-$HD_Form -> AddViewElement(gettext("CREATION DATE"), "creationdate", true, 30);
-
-// added a parameter to append  FG_TABLE_ID  ( by default ) or disable 0.
-$HD_Form -> FieldViewElement ('id, didgroupname, creationdate');
-
-$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
-$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
+$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form->FG_ENABLE_ADD_BUTTON = true;
 
 $HD_Form->AddEditElement(
-    gettext("NAME"),
+    _("NAME"),
     "didgroupname",
     "",
     "size=30 maxlength=20",
     9,
-    gettext("Insert the Did group name ")
+    _("Insert the DID group name ")
 );
 
-$HD_Form -> FG_INTRO_TEXT_ADITION = '';
+$HD_Form->FG_INTRO_TEXT_ADITION = "";
 
-$HD_Form -> FG_LOCATION_AFTER_ADD = "?id=";
-$HD_Form -> FG_LOCATION_AFTER_EDIT = "?id=";
-$HD_Form -> FG_LOCATION_AFTER_DELETE = "?id=";
+$HD_Form->FG_LOCATION_AFTER_ADD = "?id=";
+$HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";
+$HD_Form->FG_LOCATION_AFTER_DELETE = "?id=";
 
 

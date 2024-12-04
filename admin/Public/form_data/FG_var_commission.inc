@@ -2,6 +2,7 @@
 
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -35,103 +36,124 @@ use A2billing\Forms\FormHandler;
  *
 **/
 
+/**
+ * @var numeric-string|null $form_action
+ */
+
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
-getpost_ifset(array('id', 'card_id', 'date', 'payment','description','added_refill','refill_type'));
+getpost_ifset(["id_card"]);
+/**
+ * @var numeric-string|null $id_card
+ */
 
-$HD_Form = new FormHandler("cc_agent_commission", "Commission Agent");
+$form_action ??= "list";
 
-$HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
+$HD_Form = new FormHandler("cc_agent_commission", _("Agent Commission"));
 
+$HD_Form->FG_QUERY_ORDERBY_COLUMNS = ["date"];
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_commission_agent.php?form_action=ask-add";
-$HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add Commission");
 $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("money_add.png") ;
+
 $com_list = getRefillType_List();
-$HD_Form -> AddViewElement(gettext("ID"), "cc_agent_commission.id");
-$HD_Form -> AddViewElement(gettext("ACCOUNT"), "id_card", true, 30, "display_customer_id_link");
-$HD_Form -> AddViewElement(gettext("AGENT"), "id_agent", true, 30, "display_linktoagent");
-$HD_Form -> AddViewElement(gettext("PAYMENT DATE"), "date", true, 30);
-$HD_Form -> AddViewElement(gettext("AMOUNT"), "amount");
-$HD_Form -> AddViewElement(gettext("PAID STATUS"), "paid_status", true, 0, "", "list", $com_list);
-$HD_Form -> AddViewElement(gettext("DESCRIPTION"), "description", true, 50);
-$HD_Form -> AddViewElement(gettext("LINK TO PAYMENT"), "id_payment", true, 0, "", "lie_link", "cc_logpayment", "payment, id", "id='%id'", "%1 " . BASE_CURRENCY . " (id:%2)", "A2B_entity_payment.php");
 
-$HD_Form -> FieldViewElement ('cc_agent_commission.id, id_card, id_agent, date, amount, commission_type , description, id_payment');
+$HD_Form->AddListValue(_("Account"), "id_card", "display_customer_id_link");
+$HD_Form->AddListValue(_("Agent"), "id_agent", "display_linktoagent");
+$HD_Form->AddListValue(_("Payment date"), "date");
+$HD_Form->AddListValue(_("Amount"), "amount", "display_money");
+$HD_Form->AddListMapping(_("Status"), "paid_status", $com_list);
+$HD_Form->AddListValue(_("Description"), "description");
+$HD_Form->AddListSqlMapping(_("Link to payment"), "id_payment", new Table("cc_logpayment", ["id", "payment"]), [], "A2B_entity_payment.php?form_action=ask-edit&id=");
+$HD_Form->FieldViewElement([
+    "id_card",
+    "id_agent",
+    "date",
+    "amount",
+    "commission_type",
+    "description",
+    "id_payment",
+]);
 
-$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
-//$HD_Form -> FG_EDITION = true;
-//$HD_Form -> FG_DELETION = true;
+$HD_Form->FG_ENABLE_ADD_BUTTON = true;
 
-if ($form_action=="ask-add" && !empty($id_card)) {
+$id_val = "";
+if ($form_action === "ask-add" && !empty($id_card)) {
 	$id_val = "value='$id_card'";
 }
 
 $HD_Form->AddEditPopup(
-    gettext("CUSTOMER ID"),
+    _("CUSTOMER ID"),
     "id_card",
     "A2B_entity_card.php?popup_select=1&",
-    gettext("Select the Customer ID"),
-    "", 4, gettext("Insert the Customer ID")
+    _("Select the Customer ID"),
+    "",
+    4,
+    _("Insert the Customer ID")
 );
 
 $HD_Form->AddEditPopup(
-    gettext("AGENT ID"),
+    _("AGENT ID"),
     "id_agent",
     "A2B_entity_agent.php?popup_select=1&",
-    gettext("Select the Agent ID"),
+    _("Select the Agent ID"),
     $id_val,
-    4, gettext("Insert the AGENT ID ")
+    4,
+    _("Insert the AGENT ID ")
 );
 
-if ($form_action=="ask-add") {
-	$begin_date = date("Y");
-	$end_date = date("-m-d H:i:s");
-	$comp_date=$begin_date.$end_date;
-	$comp_date="value='$comp_date'";
+$comp_date = "";
+if ($form_action === "ask-add") {
+	$comp_date = date("Y-m-d H:i:s");
 }
 
 $HD_Form->AddEditElement(
-    gettext("PAYMENT DATE"),
+    _("PAYMENT DATE"),
     "date",
     "",
-    "size=40 READONLY maxlength=40  $comp_date",
+    "size=40 READONLY maxlength=40 value='$comp_date'",
     10,
-    gettext("Insert the current date")
+    _("Insert the current date")
 );
 
 $HD_Form->AddEditElement(
-    gettext("COMMISSION AMOUNT"),
+    _("COMMISSION AMOUNT"),
     "amount",
-    gettext("Enter the amount in the currency base : ") . BASE_CURRENCY,
+    _("Enter the amount in the currency base : ") . BASE_CURRENCY,
     "size=60 maxlength=10",
     12,
-    gettext("Insert the commission amount")
+    _("Insert the commission amount")
 );
 
 $HD_Form->AddEditTextarea(
-    gettext("DESCRIPTION"),
+    _("DESCRIPTION"),
     "description",
     "",
-    "cols='50' rows='4'", null, gettext("Insert the description")
+    "cols='50' rows='4'",
+    null,
+    _("Insert the description")
 );
 
 $HD_Form->AddEditPopup(
-    gettext("PAYMENT ID"),
+    _("PAYMENT ID"),
     "id_payment",
     "A2B_entity_payment.php?popup_select=1&",
-    gettext("Select the Payment ID"),
+    _("Select the Payment ID"),
     $id_val,
-    4, gettext("Insert the Payment ID ")
+    4,
+    _("Insert the Payment ID ")
 );
 
-$HD_Form->AddEditSelect(gettext("COMMISSION TYPE"), "commission_type", $com_list, "", gettext("Define the type of this commission."));
+$HD_Form->AddEditSelect(
+    _("COMMISSION TYPE"),
+    "commission_type",
+    $com_list,
+    "",
+    _("Define the type of this commission.")
+);
 
-$HD_Form -> FG_ADDITIONAL_FUNCTION_AFTER_ADD = "processing_commission_add";
-$HD_Form -> FG_INTRO_TEXT_ADITION = '';
+$HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = "processing_commission_add";
+$HD_Form->FG_INTRO_TEXT_ADITION = "";
 
-$HD_Form -> FG_LOCATION_AFTER_ADD = "?id=";
-$HD_Form -> FG_LOCATION_AFTER_EDIT = "?id=";
-$HD_Form -> FG_LOCATION_AFTER_DELETE = "?id=";
-
-
+$HD_Form->FG_LOCATION_AFTER_ADD = "?id=";
+$HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";
+$HD_Form->FG_LOCATION_AFTER_DELETE = "?id=";

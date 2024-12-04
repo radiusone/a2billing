@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Forms\FormHandler;
 use A2billing\NotificationsDAO;
 use A2billing\Notification;
 use A2billing\Table;
@@ -41,114 +42,93 @@ use A2billing\Table;
 $menu_section = 1;
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
 require_once __DIR__ . "/form_data/FG_var_friend.inc";
+/**
+ * @var FormHandler $HD_Form
+ * @var string $form_action
+ */
 
 Admin::checkPageAccess(Admin::ACX_CUSTOMER);
 
-$HD_Form -> init();
+$HD_Form->init();
+$form_action ??= "list";
 
 /********************************* BATCH UPDATE ***********************************/
-getpost_ifset(array('upd_callerid', 'upd_context', 'batchupdate', 'check', 'type', 'mode', 'voip_type'));
-
+getpost_ifset(["batchupdate", "check", "type", "voip_type", "id_cc_card"]);
+/**
+ * @var numeric-string|null $batchupdate
+ * @var array|null $check
+ * @var array|null $type
+ * @var array|null $mode
+ * @var string|null $voip_type
+ * @var numeric-string|null $id_cc_card
+ */
+$batchupdate ??= "0";
+$check ??= [];
+$type ??= [];
+$mode ??= [];
 
 // CHECK IF REQUEST OF BATCH UPDATE
-if ($batchupdate == 1 && is_array($check)) {
-    $SQL_REFILL = "";
-    $HD_Form -> prepare_list_subselection('list');
-
-    // Array ( [upd_simultaccess] => on [upd_currency] => on )
-    $loop_pass = 0;
-    $SQL_UPDATE = '';
-    foreach($check as $ind_field => $ind_val) {
-        //echo "<br>::> $ind_field -";
-        $myfield = substr($ind_field,4);
-        if ($loop_pass != 0) {
-            $SQL_UPDATE.=',';
-        }
-        // Standard update mode
-        if (!isset($mode["$ind_field"]) || $mode["$ind_field"]==1) {
-            if (!isset($type["$ind_field"])) {
-                $SQL_UPDATE .= " $myfield='".$$ind_field."'";
-            } else {
-                $SQL_UPDATE .= " $myfield='".$type["$ind_field"]."'";
-            }
-        // Mode 2 - Equal - Add - Subtract
-        } elseif ($mode["$ind_field"]==2) {
-            if (!isset($type["$ind_field"])) {
-                $SQL_UPDATE .= " $myfield='".$$ind_field."'";
-            } else {
-                if ($type["$ind_field"] == 1) {
-                    $SQL_UPDATE .= " $myfield='".$$ind_field."'";
-                } elseif ($type["$ind_field"] == 2) {
-                    $SQL_UPDATE .= " $myfield = $myfield +'".$$ind_field."'";
-                } else {
-                    $SQL_UPDATE .= " $myfield = $myfield -'".$$ind_field."'";
-                }
-            }
-        }
-        $loop_pass++;
+if ($batchupdate === "1" && count($check)) {
+    $HD_Form->prepare_list_subselection('list');
+    $uf = [];
+    getpost_ifset(["upd_callerid", "upd_context"], $uf);
+    $update_fields = [];
+    foreach ($uf as $k => $v) {
+        $k = substr($k, 4);
+        $update_fields[$k] = $v;
     }
 
-    $SQL_UPDATE = "UPDATE $HD_Form->FG_QUERY_TABLE_NAME SET $SQL_UPDATE";
-    if (strlen($HD_Form->FG_QUERY_WHERE_CLAUSE)>1) {
-        $SQL_UPDATE .= ' WHERE ';
-        $SQL_UPDATE .= $HD_Form->FG_QUERY_WHERE_CLAUSE;
+    $updates = [];
+    foreach (array_keys($check) as $ch) {
+        // remove "upd_"
+        $col = substr($ch, 4);
+        $val = $update_fields[$col] ?? null;
+        if (is_null($val)) {
+            continue;
+        }
+        $updates[$col] = $val;
     }
-    $update_msg_error = '<p style="text-align:center; font-weight: bold; color: red">' . gettext('Could not perform the batch update!') . '</p>';
-
-    if (!$HD_Form -> DBHandle -> Execute("begin")) {
-        $update_msg = $update_msg_error;
+    if (!(new Table($HD_Form->FG_QUERY_TABLE_NAME))->updateRow($HD_Form->DBHandle, $updates, $HD_Form->list_query_conditions)) {
+        $update_msg = _('Could not perform the batch update!');
     } else {
-        if (!$HD_Form -> DBHandle -> Execute($SQL_UPDATE)) {
-            $update_msg = $update_msg_error;
-        }
-        if (! $res = $HD_Form -> DBHandle -> Execute("commit")) {
-            $update_msg = '<p style="text-align:center; font-weight: bold; color: green">' . gettext('The batch update has been successfully perform!') . '</p>';
-        }
-    };
-}
+        $update_msg = _('The batch update has been successfully perform!');
+    }
+} elseif (!empty($id_cc_card) && ($form_action === "add_sip" || $form_action === "add_iax")) {
+    /********************************* ADD SIP / IAX FRIEND ***********************************/
+    getpost_ifset(["cardnumber", "useralias"]);
+    /**
+     * @var numeric-string|null $cardnumber
+     * @var string|null $useralias
+     */
 
-/********************************* ADD SIP / IAX FRIEND ***********************************/
-getpost_ifset(array("id_cc_card", "cardnumber", "useralias"));
-
-if ( (isset ($id_cc_card) && (is_numeric($id_cc_card)  != "")) && ( $form_action == "add_sip" || $form_action == "add_iax") ) {
-
-    if ($form_action == "add_sip") {
-        $friend_param_update=" sip_buddy='1' ";
-        if (!USE_REALTIME) {
-            $key = "sip_changed";
-        }
+    if ($form_action === "add_sip") {
+        $friend_param_update = ["sip_buddy" => 1];
+        $key = "sip_changed";
     } else {
-        $friend_param_update=" iax_buddy='1' ";
-        if (!USE_REALTIME) {
-            $key = "iax_changed";
-        }
+        $friend_param_update = ["iax_buddy" => 1];
+        $key = "iax_changed";
     }
 
     if (!USE_REALTIME) {
-        $who= Notification::$ADMIN;$who_id=$_SESSION['admin_id'];
-        NotificationsDAO::AddNotification($key,Notification::$HIGH,$who,$who_id);
+        $who = Notification::$ADMIN;
+        $who_id = $_SESSION['admin_id'];
+        NotificationsDAO::addNotification($key, Notification::$HIGH, $who, $who_id);
     }
 
-    $instance_table_friend = new Table('cc_card');
-    $instance_table_friend -> Update_table ($HD_Form -> DBHandle, $friend_param_update, "id='$id_cc_card'", $func_table = null);
+    (new Table("cc_card"))
+        ->updateRow($HD_Form->DBHandle, $friend_param_update, ["id" => $id_cc_card]);
 
-    if ($form_action == "add_sip") {
-        $TABLE_BUDDY = 'cc_sip_buddies';
-    } else {
-        $TABLE_BUDDY = 'cc_iax_buddies';
-    }
+    $list_friend = (new Table($HD_Form->FG_QUERY_TABLE_NAME))
+        ->getRows($HD_Form->DBHandle, ["id_cc_card" => $id_cc_card]);
 
-    $instance_table_friend = new Table($TABLE_BUDDY, '*');
-    $list_friend = $instance_table_friend -> get_list ($HD_Form->DBHandle, "id_cc_card='$id_cc_card'");
-
-    if (is_array($list_friend) && count($list_friend)>0) {
+    if (count($list_friend)) {
         header("Location: A2B_entity_card.php?voip_type=card&id=");
         exit();
     }
 
     $form_action = "add";
 
-    $_POST['accountcode'] = $_POST['username']= $_POST['name']= $_POST['cardnumber'] = $cardnumber;
+    $_POST['accountcode'] = $_POST['username'] = $_POST['name'] = $_POST['cardnumber'] = $cardnumber;
     $_POST['allow'] = FRIEND_ALLOW;
     $_POST['context'] = FRIEND_CONTEXT;
     $_POST['nat'] = FRIEND_NAT;
@@ -159,162 +139,156 @@ if ( (isset ($id_cc_card) && (is_numeric($id_cc_card)  != "")) && ( $form_action
     $_POST['qualify'] = FRIEND_QUALIFY;
     $_POST['host'] = FRIEND_HOST;
     $_POST['dtmfmode'] = FRIEND_DTMFMODE;
-    $_POST['secret'] = MDP_NUMERIC(5).MDP_STRING(10).MDP_NUMERIC(5);
+    $_POST['secret'] = strtr(base64_encode(bin2hex(random_bytes(16))), "+/=", "   ");
 
     // for the getProcessed var
     $HD_Form->init();
 }
 
-$HD_Form -> FG_EDIT_BUTTON_LINK = "?form_action=ask-edit&voip_type=$voip_type&id=";
-$HD_Form -> FG_DELETE_BUTTON_LINK = "?form_action=ask-delete&voip_type=$voip_type&id=";
+$HD_Form->FG_EDIT_BUTTON_LINK = "?form_action=ask-edit&voip_type=$voip_type&id=";
+$HD_Form->FG_DELETE_BUTTON_LINK = "?form_action=ask-delete&voip_type=$voip_type&id=";
 
-$form_action ??= "list";
 if (!USE_REALTIME) {
     // CHECK THE ACTION AND SET THE IS_SIP_IAX_CHANGE IF WE ADD/EDIT/REMOVE A RECORD
-    if ($form_action == "add" || $form_action == "edit" || $form_action == "delete") {
-        if ($voip_type=='sip') {
-            $key = "sip_changed";
+    if ($form_action === "add" || $form_action === "edit" || $form_action === "delete") {
+        $key = $voip_type === "sip" ? "sip_changed" : "iax_changed";
+        if (is_admin()) {
+            $who = Notification::$ADMIN;
+            $id = $_SESSION['admin_id'];
+        } elseif (is_agent()) {
+            $who = Notification::$AGENT;
+            $id = $_SESSION['agent_id'];
         } else {
-            $key = "iax_changed";
+            $who = Notification::$UNKNOWN;
+            $id = -1;
         }
-        if ($_SESSION["user_type"]=="ADMIN") {$who= Notification::$ADMIN;$id=$_SESSION['admin_id'];} elseif ($_SESSION["user_type"]=="AGENT") {$who= Notification::$AGENT;$id=$_SESSION['agent_id'];} else {$who=Notification::$UNKNOWN;$id=-1;}
-        NotificationsDAO::AddNotification($key,Notification::$HIGH,$who,$id);
+        NotificationsDAO::AddNotification($key, Notification::$HIGH, $who, $id);
     }
 }
 
-$list = $HD_Form -> perform_action($form_action);
+$list = $HD_Form->perform_action($form_action);
 
 require_once __DIR__ . "/../templates/main.php";
 
 // #### HELP SECTION
-if ($form_action=='list') {
-
+if ($form_action === "list") {
     echo create_help(_("SIP and IAX Config will create a SIP or IAX entry on the Asterisk server, so that a customer can set up a SIP or IAX client to connect directly to the asterisk server without the need to enter an account and pin each time a call is made. When done, click on the CONFIRM DATA button, then click reload to apply the changes on the Asterisk server.<br>") .
         _("The customer must then enter the URL/IP address of the asterisk server into the SIP/IAX client, and use the Account Number and Secret word as the username and password."), 'ListSIPFriend');
 
     if (!USE_REALTIME) {
     ?>
-          <table  border="0" align="center" cellpadding="0" cellspacing="0" >
-            <TR>
-                <TD  align="center"> <?php echo gettext("Link to Generate on SIP/IAX Friends")?> &nbsp;:&nbsp;</TD>
-            </TR>
-            <TR>
-                <TD  align="center">
-                <b><?php echo gettext("Realtime not active, you have to use the conf file for your system"); ?></b>
-                </TD>
-            </TR>
-            <TR>
-            <FORM NAME="sipfriend">
-                <?= $HD_Form->csrf_inputs() ?>
-                <td height="31" style="padding-left: 5px; padding-right: 3px;" align="center" >
-                <b>
-                SIP : <input id="sipfriend" class="form_input_button"  TYPE="button" VALUE=" <?php echo gettext("GENERATE ADDITIONAL_A2BILLING_SIP.CONF"); ?> ">
-                IAX : <input id="iaxfriend" class="form_input_button"  TYPE="button" VALUE=" <?php echo gettext("GENERATE ADDITIONAL_A2BILLING_IAX.CONF"); ?> ">
-                </b></td></FORM>
-            </TR>
-           </table>
-           <br/>
+<div class="row pb-3">
+    <div class="col">
+        <?= _("Link to Generate on SIP/IAX Friends") ?>
+        <br/>
+        <?= _("Realtime not active, you have to use the conf file for your system") ?>
+    </div>
+</div>
+<div class="row pb-3">
+    <div class="col">
+        <a href="CC_generate_friend_file.php?voip_type=sipfriend" class="btn btn-sm btn-outline-primary">
+            <?= _("GENERATE ADDITIONAL_A2BILLING_SIP.CONF") ?>
+        </a>
+        <a href="CC_generate_friend_file.php?voip_type=iaxfriend" class="btn btn-sm btn-outline-primary">
+            <?= _("GENERATE ADDITIONAL_A2BILLING_IAX.CONF") ?>
+        </a>
+    </div>
+</div>
     <?php
     } else { ?>
-        <center><a href="<?php  echo "CC_generate_friend_file.php?action=reload";?>"><img src="<?= get_image_path("icon_refresh.gif") ?>"/>
-            <?php echo gettext("Reload Asterisk"); ?></a>
-        </center>
+<div class="row pb-3">
+    <div class="col">
+        <a href="CC_generate_friend_file.php?action=reload" class="btn btn-sm btn-outline-primary">
+            <?= _("Reload Asterisk") ?>
+        </a>
+    </div>
+</div>
     <?php
     }
-} else {
-    echo create_help(_("Each SIP/IAX client is identified by a number of parameters.<br><br>") .
-        _("More details on how to configure clients are on the Wiki") . ' -> <a href="http://voip-info.org/wiki-Asterisk+config+sip.conf" target="_blank">sip.conf</a> &
-<a href="http://voip-info.org/wiki-Asterisk+config+iax.conf" target="_blank">iax.conf</a>', 'EditFriend');
-}
-
-if ($form_action=='list') {
 ?>
-<div align="center">
-<table width="40%" border="0" align="center" cellpadding="0" cellspacing="1">
-    <tr>
-        <td  class="bgcolor_021">
-        <table width="100%" border="0" cellspacing="1" cellpadding="0">
-            <FORM name="form1" method="post" action="">
-            <?= $HD_Form->csrf_inputs() ?>
-            <tr>
-                <td bgcolor="#FFFFFF" class="fontstyle_006" width="100%">&nbsp;<?php echo gettext("CONFIGURATION TYPE")?> </td>
-                <td bgcolor="#FFFFFF" class="fontstyle_006" align="center">
-                   <select name="voip_type" id="col_configtype" onChange="window.document.form1.elements['PMChange'].value='Change';window.document.form1.submit();">
-                     <option value="iax" <?php if($voip_type == "iax")echo "selected"?>><?php echo gettext("IAX")?></option>
-                     <option value="sip" <?php if($voip_type == "sip")echo "selected"?>><?php echo gettext("SIP")?></option>
-                   </select>
-                  <input name="PMChange" type="hidden" id="PMChange">
-                </td>
-            </tr>
-            </FORM>
-        </table></td>
-    </tr>
-</table>
-</div>
-
-<br/>
-<!-- ** ** ** ** ** Part for the Update ** ** ** ** ** -->
-<div class="row">
-    <div class="col text-center">
-        <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#tohide" aria-expanded="false" aria-controls="tohide">
-            <?= _("BATCH UPDATE") ?>
-        </button>
+<div class="row pb-3">
+    <div class="col">
+        <form method="get" class="form form-horizontal">
+            <label for="voip_type" class="form-label"><?= _("CONFIGURATION TYPE") ?></label>
+            <select name="voip_type" id="voip_type" class="form-select" onchange="this.form.submit()">
+                <option value="iax" <?php if($voip_type == "iax")echo "selected"?>><?php echo _("IAX")?></option>
+                <option value="sip" <?php if($voip_type == "sip")echo "selected"?>><?php echo _("SIP")?></option>
+            </select>
+        </form>
     </div>
 </div>
 
-    <div id="tohide" class="collapse">
-
-<center>
-<b>&nbsp;<?php echo $HD_Form -> FG_LIST_VIEW_ROW_COUNT ?> <?php echo gettext("cards selected!"); ?>&nbsp;<?php echo gettext("Use the options below to batch update the selected cards.");?></b>
-    <table align="center" border="0" width="65%"  cellspacing="1" cellpadding="2">
-    <tbody>
-    <form name="updateForm" action="" method="post">
-        <?= $HD_Form->csrf_inputs() ?>
-        <INPUT type="hidden" name="batchupdate" value="1">
-        <tr>
-            <td align="left" class="bgcolor_001" >
-                <input name="check[upd_callerid]" type="checkbox" <?php if ($check["upd_callerid"]=="on") echo "checked"?>>
-            </td>
-            <td align="left"  class="bgcolor_001">
-                1)&nbsp;<?php echo gettext("CallerID"); ?>&nbsp;:
-                <input class="form_input_text"  name="upd_callerid" size="30" maxlength="40" value="<?php if (isset($upd_callerid)) echo $upd_callerid;?>">
-                <br/>
-            </td>
-        </tr>
-
-        <tr>
-            <td align="left" class="bgcolor_001" >
-                <input name="check[upd_context]" type="checkbox" <?php if ($check["upd_context"]=="on") echo "checked"?>>
-            </td>
-            <td align="left"  class="bgcolor_001">
-                2)&nbsp;<?php echo gettext("Context"); ?>&nbsp;:
-                <input class="form_input_text"  name="upd_context" size="30" maxlength="40" value="<?php if (isset($upd_context)) echo $upd_context;?>">
-                <br/>
-            </td>
-        </tr>
-        <tr>
-            <td align="right" class="bgcolor_001"></td>
-            <td align="right"  class="bgcolor_001">
-                <input class="form_input_button"  value=" <?php echo gettext("BATCH UPDATE VOIP SETTINGS");?>  " type="submit">
-            </td>
-        </tr>
-    </form>
-    </table>
-  </center>
-  </div>
-
 <!-- ** ** ** ** ** Part for the Update ** ** ** ** ** -->
-<script>
-$(function() {
-    $("#sipfriend, #iaxfriend").on("click", () => self.location.href='./CC_generate_friend_file.php?voip_type=' + this.id);
-})
-</script>
+<div class="row justify-content-center">
+    <div class="col">
+        <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#batchUpdateModal">
+            <?= _("Batch Update") ?>
+        </button>
+    </div>
+</div>
+<div class="modal" id="batchUpdateModal" aria-labelledby="modal-title-udpate" aria-hidden="true" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-title-update"><?= _("Batch Update") ?></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="container-fluid form-striped" name="updateForm" id="updateForm" action="" method="post">
+                    <input type="hidden" name="batchupdate" value="1"/>
+                    <?= $HD_Form->csrf_inputs() ?>
+
+                    <div class="row mb-1">
+                        <div class="col">
+                            <?= $HD_Form->FG_LIST_VIEW_ROW_COUNT ?> <?= _("cards selected!") ?>
+                            <?= _("Use the options below to batch update the selected cards.") ?>
+                        </div>
+                    </div>
+
+                    <div class="row mb-1">
+                        <div class="col-4">
+                            <input name="check[upd_callerid]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if (!empty($check["upd_callerid"])): ?> checked="checked"<?php endif ?> class="form-check-input"/>
+                            <label class="form-label form-label-sm" for="upd_callerid">
+                                <?= _("CallerID") ?>
+                            </label>
+                        </div>
+                        <div class="col">
+                            <input type="text" name="upd_callerid" id="upd_callerid" value="<?= $update_fields["callerid"] ?? "" ?>" class="form-control form-control-sm">
+                        </div>
+                    </div>
+
+                    <div class="row mb-1">
+                        <div class="col-4">
+                            <input name="check[upd_context]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if (!empty($check["upd_context"])): ?> checked="checked"<?php endif ?> class="form-check-input"/>
+                            <label class="form-label form-label-sm" for="upd_context">
+                                <?= _("Context") ?>
+                            </label>
+                        </div>
+                        <div class="col">
+                            <input type="text" name="upd_context" id="upd_context" value="<?= $update_fields["context"] ?? "" ?>" class="form-control form-control-sm">
+                        </div>
+                    </div>
+                </form> <!-- .container-fluid -->
+            </div> <!-- .modal-body -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?= _("Close") ?></button>
+                <button type="submit" form="updateForm" class="btn btn-primary"><?= _("Batch Update Settings") ?></button>
+            </div>
+        </div> <!-- .modal-content -->
+    </div> <!-- .modal-dialog -->
+</div> <!-- .modal -->
+<!-- ** ** ** ** ** Part for the Update ** ** ** ** ** -->
 <?php
+} else {
+    echo create_help(
+        _("Each SIP/IAX client is identified by a number of parameters.<br><br>") .
+            _("More details on how to configure clients are on the Wiki"),
+        'EditFriend'
+    );
 }
 
 // #### TOP SECTION PAGE
-$HD_Form -> create_toppage ($form_action);
-
-$HD_Form -> create_form($form_action, $list) ;
+$HD_Form->create_toppage ($form_action);
+$HD_Form->create_form($form_action, $list) ;
 
 require_once __DIR__ . "/../templates/footer.php";

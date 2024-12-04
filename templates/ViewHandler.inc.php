@@ -193,7 +193,7 @@ $processed["popup_fieldname"] ??= "";
                     <td>
                     <?php if (!empty($cell["function"]) && is_callable($cell["function"])): ?>
                         <?= call_user_func_array($cell["function"], $arg ?: [$record_display]) ?>
-                    <?php elseif (!empty($cell["href"])): ?> {
+                    <?php elseif (!empty($cell["href"])): ?>
                         <a href="<?= $cell["href"] ?><?= str_ends_with($cell["href"], "=") ? $item[$j - $k] : "" ?>">
                             <?= $record_display ?>
                         </a>

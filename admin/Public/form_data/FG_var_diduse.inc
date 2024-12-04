@@ -37,58 +37,42 @@ use A2billing\Forms\FormHandler;
 
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
-getpost_ifset(['did', 'inuse', 'actionbtn', 'order', 'sens', 'current_page', 'posted']);
+getpost_ifset(["inuse", "did", "action", "posted_search"]);
 /**
- * @var string $did
  * @var string $inuse
- * @var string $actionbtn
- * @var string $order
- * @var string $sens
- * @var string $current_page
- * @var string $posted
+ * @var string $did
+ * @var string $action
+ * @var string $posted_search
  */
-$HD_Form = new FormHandler("cc_did_use", "DID in use");
+$HD_Form = new FormHandler(
+    "cc_did_use",
+    _("DID usage"),
+    "cc_did_use.id",
+    ["cc_did" => ["cc_did_use.id_did", "cc_did.id"]]
+);
+$HD_Form->FG_TABLE_DEFAULT_ORDER = "reservationdate";
+$HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
 
-if ($posted && !empty($did)) {
-    if (strlen($HD_Form->FG_QUERY_WHERE_CLAUSE) > 0) {
-        $HD_Form->FG_QUERY_WHERE_CLAUSE .= " AND ";
-    }
-    $HD_Form->FG_QUERY_WHERE_CLAUSE .= "id_did = '$did'";
-    $HD_Form->list_query_conditions["id_did"] = $did;
-}
-if (($posted && !empty($inuse)) || !$posted) {
-    if (strlen($HD_Form->FG_QUERY_WHERE_CLAUSE) > 0) {
-        $HD_Form->FG_QUERY_WHERE_CLAUSE .= " AND ";
-    }
-    $HD_Form->FG_QUERY_WHERE_CLAUSE .= " (releasedate IS NULL OR releasedate < '1984-01-01 00:00:00') and activated=1";
+if ((!empty($posted_search) && !empty($inuse)) || empty($posted_search)) {
     $HD_Form->list_query_conditions[] = ["SUB", ["releasedate" => null, ["SUB", ["releasedate" => ["<", "1984-01-01"]]]], "OR"];
-    $HD_Form->list_query_conditions["activated"] = 1;
+    $HD_Form->list_query_conditions["cc_did_use.activated"] = 1;
     $HD_Form->AddListActionButton(
-        "A2B_entity_did_use.php?posted=$posted&order=$order&sens=$sens&current_page=$current_page&did=$did&inuse=$inuse&actionbtn=release_did&did=|col0|",
+        "A2B_entity_did_use.php?action=ask_release&did=|col5|",
         _("Release this did"),
         "data:image/gif;base64,R0lGODlhIQALAKEDAPPt2ZycnAAAAP///yH+FUNyZWF0ZWQgd2l0aCBUaGUgR0lNUAAh+QQBAAADACwAAAAAIQALAAACQVyOqctoAKOctMZjs5YYCAF9IBh+nimeZDd6EemGLgwDLGnGZzmiMDt7CWU0nS1AVClTLWaus4lSoNKqzdDIah0FADs="
     );
-} else {
-    $HD_Form->FG_TABLE_DEFAULT_ORDER = "reservationdate";
-    $HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
 }
 
-$HD_Form->AddViewElement(gettext("ID DID"), "id_did");
-$HD_Form->AddViewElement(gettext("DID"), "id_did", true, 25, "", "lie", "cc_did", "did", "id='%id'", "%1");
-$HD_Form->AddViewElement(gettext("ID card"), "id_cc_card");
-$HD_Form->AddViewElement(gettext("CARDNUMBER"), "id_cc_card", true, 25, "", "lie", "cc_card", "username", "id='%id'", "%1");
+$statuslist = [[_("Free"), 0], [_("Reserved"), 1]];
 
-$HD_Form->AddViewElement(gettext("RESERVATION DATE"), "reservationdate");
-$HD_Form->AddViewElement(gettext("LIBERATION DATE"), "releasedate");
-$HD_Form->AddViewElement(gettext("STATUS"), "activated", true, 0, "", "list", [[_("Free"), 0], [_("Reserved")], 1]);
+$HD_Form->AddListValue(_("DID"), "did", "display_phone_number");
+$HD_Form->AddListValue(_("Card"), "id_cc_card", "display_customer_id_link");
+$HD_Form->AddListValue(_("Reservation date"), "reservationdate");
+$HD_Form->AddListValue(_("Liberation date"), "releasedate");
+$HD_Form->AddListMapping(_("Status"), "cc_did_use.activated", $statuslist);
+$HD_Form->FieldViewElement (["did", "id_cc_card", "reservationdate", "releasedate", "cc_did_use.activated", "id_did"]);
 
-// added a parameter to append  FG_TABLE_ID  ( by default ) or disable 0.
-$HD_Form->FieldViewElement ('id_did, id_did, id_cc_card, id_cc_card, reservationdate, releasedate, activated');
+$HD_Form->CV_NO_FIELDS = _("No DIDs in use");
 
-$HD_Form->CV_NO_FIELDS  = gettext("THERE IS NO DID IN USE!");
-$HD_Form->CV_FOLLOWPARAMETERS ="&posted=$posted&did=$did&inuse=$inuse";
-
-$HD_Form->FG_ENABLE_ADD_BUTTON = false;
-$HD_Form->FG_ENABLE_EDIT_BUTTON = false;
-$HD_Form->FG_ENABLE_DELETE_BUTTON = false;
-$HD_Form->FG_FILTER_ENABLE = false;
+$HD_Form->AddSearchTextInput(_("DID"), "did", "didtype");
+$HD_Form->AddSearchSelectInput(_("Status"), "inuse", [[0, _("All DIDs")], [1, _("DIDs in use")]]);

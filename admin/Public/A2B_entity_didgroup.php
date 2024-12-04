@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -38,6 +39,9 @@ use A2billing\Admin;
 $menu_section = 8;
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
 require_once __DIR__ . "/form_data/FG_var_didgroup.inc";
+/**
+ * @var FormHandler $HD_Form
+ */
 
 Admin::checkPageAccess(Admin::ACX_DID);
 
@@ -49,14 +53,13 @@ $list = $HD_Form->perform_action($form_action);
 require_once __DIR__ . "/../templates/main.php";
 
 // #### HELP SECTION
-if ($form_action == 'list')
+if ($form_action == 'list') {
     echo create_help(_("DID (or DDI) Group list. DID can be chosen by customers through the customer interface."), 'ListDIDGroup');
-else
+} else {
     echo create_help(_("DID group offers customers a group of DID numbers which can be selected by the customer"), 'EditDIDGroup');
-
+}
 // #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);
-
 $HD_Form->create_form($form_action, $list);
 
 require_once __DIR__ . "/../templates/footer.php";
