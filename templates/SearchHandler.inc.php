@@ -198,7 +198,7 @@ use A2billing\Forms\FormHandler;
                 <div class="col-5">
                     <div class="input-group">
                         <div>
-                            <select name="<?= $item["input"][0] ?>" class="form-select form-select-sm" aria-label="select an operator to apply to the next input">
+                            <select name="<?= $item["operator"][0] ?>" class="form-select form-select-sm" aria-label="select an operator to apply to the next input">
                                 <option value="4" <?php if (($processed[$item["operator"][0]] ?? 1) == 4): ?> selected="selected"<?php endif ?> aria-label="greater than">&gt;</option>
                                 <option value="5" <?php if (($processed[$item["operator"][0]] ?? 1) == 5): ?> selected="selected"<?php endif ?> aria-label="greater than or equal to">&gt;=</option>
                                 <option value="1" <?php if (($processed[$item["operator"][0]] ?? 1) == 1): ?> selected="selected"<?php endif ?> aria-label="equal to">=</option>
@@ -215,7 +215,7 @@ use A2billing\Forms\FormHandler;
                 <div class="col-5">
                     <div class="input-group">
                         <div>
-                            <select name="<?= $item["input"][1] ?>" class="form-select form-select-sm" aria-label="select an operator to apply to the next input">
+                            <select name="<?= $item["operator"][1] ?>" class="form-select form-select-sm" aria-label="select an operator to apply to the next input">
                                 <option></option>
                                 <option value="4" <?php if (($processed[$item["operator"][1]] ?? 1) == 4): ?> selected="selected"<?php endif ?> aria-label="greater than">&gt;</option>
                                 <option value="5" <?php if (($processed[$item["operator"][1]] ?? 1) == 5): ?> selected="selected"<?php endif ?> aria-label="greater than or equal to">&gt;=</option>
