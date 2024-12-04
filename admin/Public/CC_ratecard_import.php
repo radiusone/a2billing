@@ -51,13 +51,10 @@ $DBHandle = DbConnect();
 $my_max_file_size = (int) MY_MAX_FILE_SIZE_IMPORT;
 
 // GET CALLPLAN LIST
-$where = [[
-    "SUB",
-    [
-        ["SUB", ["startingdate" => null, ["SUB", ["startingdate" => ["<", "CURRENT_TIMESTAMP"]]]], "OR"],
-        ["SUB", ["expirationdate" => null, ["SUB", ["expirationdate" => [">", "CURRENT_TIMESTAMP"]]]], "OR"],
-    ],
-]];
+$where = [
+    ["SUB", ["startingdate" => [[null], ["<", "CURRENT_TIMESTAMP"]]], "OR"],
+    ["SUB", ["expirationdate" => [[null], [">", "CURRENT_TIMESTAMP"]]], "OR"],
+];
 $list_tariffname = (new Table("cc_tariffplan", "id, tariffname"))->getRows($DBHandle, $where, ["tariffname"]);
 
 // GET TRUNK LIST

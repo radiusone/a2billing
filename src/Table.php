@@ -649,7 +649,9 @@ class Table
      * Example input array/output string:
      *  - ["mycol" => "value"] `mycol` = ?
      *  - ["mycol" => "value", "mycol2" => "value2"] `mycol` = ? AND `mycol2` = ?
-     *  - [["SUB", [["mycol" => "value", "mycol2" => "value2"]], "OR"]] (`mycol` = ? OR `mycol2` = ?)
+     *  - [["SUB", ["mycol" => "value", "mycol2" => [">", "value2"]], "OR"]] (`mycol` = ? OR `mycol2` > ?)
+     *  - [["SUB", ["mycol" => [["value"], ["value2"]], "OR"] (`mycol` = ? OR `mycol` = ?)
+     *    (note even plain values must be in an array of arrays; an array of strings is interpreted as operator/value)
      *  - ["mycol" => "value", ["SUB", ["mycol2" => "value2", "mycol3" => "value3"], "OR"]] `mycol` = ? AND (`mycol2` = ? OR `mycol3` = ?)
      *
      * @param array $where the array of data
@@ -664,8 +666,21 @@ class Table
             if (is_numeric($col) && is_array($data) && count($data) > 1 && $data[0] === "SUB") {
                 $clauses = $data[1];
                 $suboperator = $data[2] ?? "AND";
-                $query_clauses[] = "(" . $this->processWhereClauseArray($clauses, $params, $suboperator) . ")";
+                if (is_array($clauses) && array_filter($clauses, fn($v) => is_array($v[0] ?? null))) {
+                    // applying multiple conditions to the same column
+                    $subquery_clauses = [];
+                    foreach ($clauses as $subcol => $subclause) {
+                        foreach ($subclause as $subcondition) {
+                            $subquery_clauses[] = $this->processConditionClauseArray($subcol, $subcondition, $params);
+                        }
+                    }
+                    $query_clauses[] = "(" . implode($suboperator, $subquery_clauses) . ")";
+                } else {
+                    // a subclause with multiple different columns
+                    $query_clauses[] = "(" . $this->processWhereClauseArray($clauses, $params, $suboperator) . ")";
+                }
             } else {
+                // just a plain column/value pair
                 $query_clauses[] = $this->processConditionClauseArray($col, $data, $params);
             }
         }
@@ -691,6 +706,9 @@ class Table
     private function processConditionClauseArray(string $col, $condition, array &$params): string
     {
         $col = $this->quote_identifier($col);
+        if (is_array($condition) && count($condition) === 1) {
+            $condition = array_shift($condition);
+        }
         $operator = is_array($condition) ? $condition[0] : "=";
         $value = is_array($condition) ? $condition[1] : $condition;
         if ($operator === "IN") {

@@ -1167,23 +1167,23 @@ class FormHandler
         switch ($processed[$operator] ?? null) {
             default:
                 $sql .= " $left_column = '$val'";
-                $this->list_query_conditions[] = ["SUB", [[$left_column => $val]]];
+                $this->list_query_conditions[] = ["SUB", [$left_column => $val]];
                 break;
             case 2:
                 $sql .= " $left_column <= '$val'";
-                $this->list_query_conditions[] = ["SUB", [[$left_column => ["<=", $val]]]];
+                $this->list_query_conditions[] = ["SUB", [$left_column => ["<=", $val]]];
                 break;
             case 3:
                 $sql .= " $left_column < '$val'";
-                $this->list_query_conditions[] = ["SUB", [[$left_column => ["<", $val]]]];
+                $this->list_query_conditions[] = ["SUB", [$left_column => ["<", $val]]];
                 break;
             case 4:
                 $sql .= " $left_column > '$val'";
-                $this->list_query_conditions[] = ["SUB", [[$left_column => [">", $val]]]];
+                $this->list_query_conditions[] = ["SUB", [$left_column => [">", $val]]];
                 break;
             case 5:
                 $sql .= " $left_column >= '$val'";
-                $this->list_query_conditions[] = ["SUB", [[$left_column => [">=", $val]]]];
+                $this->list_query_conditions[] = ["SUB", [$left_column => [">=", $val]]];
                 break;
         }
 
@@ -1507,25 +1507,34 @@ class FormHandler
             "enable_search_months", "search_months",
         );
 
+        $date1_clauses = [];
         if (!empty($processed["enable_search_start_date"]) && !empty($processed["search_start_date"])) {
             $dt = $processed["search_start_date"];
             $date_clause .= " AND $this->search_date_column >= '$dt'";
-            $this->list_query_conditions[] = ["SUB", [[$this->search_date_column => [">=", $dt]]]];
+            $date1_clauses[] = [">=", $dt];
         }
+        $date2_clauses = [];
         if (!empty($processed["enable_search_start_date2"]) && !empty($processed["search_start_date2"])) {
             $dt = $processed["search_start_date2"];
             $date_clause .= " AND $this->search_date2_column >= '$dt'";
-            $this->list_query_conditions[] = ["SUB", [[$this->search_date2_column => [">=", $dt]]]];
+            $date2_clauses[] = [">=", $dt];
         }
         if (!empty($processed["enable_search_end_date"]) && !empty($processed["search_end_date"])) {
             $dt = $processed["search_end_date"] . " 23:59:59";
             $date_clause .= " AND $this->search_date_column <= '$dt'";
-            $this->list_query_conditions[] = ["SUB", [[$this->search_date_column => ["<=", $dt]]]];
+            $date1_clauses[] = ["<=", $dt];
         }
         if (!empty($processed["enable_search_end_date2"]) && !empty($processed["search_end_date2"])) {
             $dt = $processed["search_end_date2"] . " 23:59:59";
             $date_clause .= " AND $this->search_date2_column <= '$dt'";
-            $this->list_query_conditions[] = ["SUB", [[$this->search_date2_column => ["<=", $dt]]]];
+            $date2_clauses[] = ["<=", $dt];
+        }
+        if ($date1_clauses) {
+            // give an index so it doesn't get repeatedly added
+            $this->list_query_conditions[991] = ["SUB", [$this->search_date_column => $date1_clauses]];
+        }
+        if ($date2_clauses) {
+            $this->list_query_conditions[992] = ["SUB", [$this->search_date2_column => $date2_clauses]];
         }
         if (!empty($processed["enable_search_months"]) && !empty($processed["search_months"] * 1)) {
             $mo = $processed["search_months"] * 1;

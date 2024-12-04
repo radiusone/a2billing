@@ -51,7 +51,7 @@ $HD_Form -> init();
 if (strlen($letter)==1) {
     // sort by first letter
     $HD_Form -> FG_QUERY_WHERE_CLAUSE .= " AND (SUBSTRING(destination,1,1)='".strtolower($letter)."' OR SUBSTRING(destination,1,1)='".$letter."')";
-    $HD_Form->list_query_conditions[] = ["SUB", [["LOWER(SUBSTRING(destination, 1, 1))" => strtolower($letter)]]];
+    $HD_Form->list_query_conditions["LOWER(SUBSTRING(`destination`, 1, 1))"] = strtolower($letter);
 }
 
 $FG_LIMITE_DISPLAY=10;

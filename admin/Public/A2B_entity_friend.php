@@ -185,7 +185,7 @@ if ($form_action === "list") {
     </div>
 </div>
 <div class="row pb-3">
-    <div class="col">
+    <div class="col d-flex justify-content-around">
         <a href="CC_generate_friend_file.php?voip_type=sipfriend" class="btn btn-sm btn-outline-primary">
             <?= _("GENERATE ADDITIONAL_A2BILLING_SIP.CONF") ?>
         </a>
@@ -197,7 +197,7 @@ if ($form_action === "list") {
     <?php
     } else { ?>
 <div class="row pb-3">
-    <div class="col">
+    <div class="col-auto">
         <a href="CC_generate_friend_file.php?action=reload" class="btn btn-sm btn-outline-primary">
             <?= _("Reload Asterisk") ?>
         </a>
@@ -206,21 +206,21 @@ if ($form_action === "list") {
     <?php
     }
 ?>
-<div class="row pb-3">
-    <div class="col">
-        <form method="get" class="form form-horizontal">
-            <label for="voip_type" class="form-label"><?= _("CONFIGURATION TYPE") ?></label>
+<form method="get" class="form form-horizontal">
+    <div class="row pb-3">
+        <label for="voip_type" class="col-2 col-form-label"><?= _("CONFIGURATION TYPE") ?></label>
+        <div class="col">
             <select name="voip_type" id="voip_type" class="form-select" onchange="this.form.submit()">
-                <option value="iax" <?php if($voip_type == "iax")echo "selected"?>><?php echo _("IAX")?></option>
-                <option value="sip" <?php if($voip_type == "sip")echo "selected"?>><?php echo _("SIP")?></option>
+                <option value="iax" <?= $voip_type === "iax" ? "selected=\"selected\"" : ""?>><?= _("IAX")?></option>
+                <option value="sip" <?= $voip_type === "sip" ? "selected=\"selected\"" : ""?>><?= _("SIP")?></option>
             </select>
-        </form>
+        </div>
     </div>
-</div>
+</form>
 
 <!-- ** ** ** ** ** Part for the Update ** ** ** ** ** -->
-<div class="row justify-content-center">
-    <div class="col">
+<div class="row">
+    <div class="col-auto">
         <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#batchUpdateModal">
             <?= _("Batch Update") ?>
         </button>

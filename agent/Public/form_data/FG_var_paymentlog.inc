@@ -69,8 +69,10 @@ if ($Period=="Month"){
     $HD_Form->list_query_conditions[] = [
         "SUB",
         [
-            ["cc_epayment_log.creationdate" => [">=", sprintf("%s-01", $fromstatsmonth ?? "1900-01")]],
-            ["cc_epayment_log.creationdate" => ["<=", sprintf("%s-%s 23:59:59", $tostatsmonth ?? "2099-12", $lastdayofmonth)]],
+            "cc_epayment_log.creationdate" => [
+                [">=", sprintf("%s-01", $fromstatsmonth ?? "1900-01")],
+                ["<=", sprintf("%s-%s 23:59:59", $tostatsmonth ?? "2099-12", $lastdayofmonth)]
+            ],
         ],
     ];
 } else {
@@ -85,8 +87,10 @@ if ($Period=="Month"){
     $HD_Form->list_query_conditions[] = [
         "SUB",
         [
-            ["cc_epayment_log.creationdate" => [">=", sprintf("%s-%02d", $fromstatsmonth_sday ?? "1900-01", $fromstatsday_sday ?? 1)]],
-            ["cc_epayment_log.creationdate" => ["<=", sprintf("%s-%02d 23:59:59", $tostatsmonth_sday ?? "2099-12", $tostatsday_sday ?? 31)]],
+            "cc_epayment_log.creationdate" => [
+                [">=", sprintf("%s-%02d", $fromstatsmonth_sday ?? "1900-01", $fromstatsday_sday ?? 1)],
+                ["<=", sprintf("%s-%02d 23:59:59", $tostatsmonth_sday ?? "2099-12", $tostatsday_sday ?? 31)]
+            ],
         ],
     ];
 }

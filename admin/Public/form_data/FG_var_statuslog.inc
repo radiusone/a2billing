@@ -60,8 +60,10 @@ if ($Period=="Month"){
     $HD_Form->list_query_conditions[] = [
         "SUB",
         [
-            ["sl.updated_date" => [">=", sprintf("%s-01", $fromstatsmonth ?? "1900-01")]],
-            ["sl.updated_date" => ["<=", sprintf("%s-%s 23:59:59", $tostatsmonth ?? "2099-12", $lastdayofmonth)]],
+            "sl.updated_date" => [
+                [">=", sprintf("%s-01", $fromstatsmonth ?? "1900-01")],
+                ["<=", sprintf("%s-%s 23:59:59", $tostatsmonth ?? "2099-12", $lastdayofmonth)]
+            ],
         ],
     ];
 } else {
@@ -76,8 +78,10 @@ if ($Period=="Month"){
     $HD_Form->list_query_conditions[] = [
         "SUB",
         [
-            ["sl.updated_date" => [">=", sprintf("%s-%02d", $fromstatsmonth_sday ?? "1900-01", $fromstatsday_sday ?? 1)]],
-            ["sl.updated_date" => ["<=", sprintf("%s-%02d 23:59:59", $tostatsmonth_sday ?? "2099-12", $tostatsday_sday ?? 31)]],
+            "sl.updated_date" => [
+                [">=", sprintf("%s-%02d", $fromstatsmonth_sday ?? "1900-01", $fromstatsday_sday ?? 1)],
+                ["<=", sprintf("%s-%02d 23:59:59", $tostatsmonth_sday ?? "2099-12", $tostatsday_sday ?? 31)]
+            ],
         ],
     ];
 }

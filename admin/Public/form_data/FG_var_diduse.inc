@@ -54,7 +54,7 @@ $HD_Form->FG_TABLE_DEFAULT_ORDER = "reservationdate";
 $HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
 
 if ((!empty($posted_search) && !empty($inuse)) || empty($posted_search)) {
-    $HD_Form->list_query_conditions[] = ["SUB", ["releasedate" => null, ["SUB", ["releasedate" => ["<", "1984-01-01"]]]], "OR"];
+    $HD_Form->list_query_conditions[] = ["SUB", ["releasedate" => [[null], ["<", "1984-01-01"]]], "OR"];
     $HD_Form->list_query_conditions["cc_did_use.activated"] = 1;
     $HD_Form->AddListActionButton(
         "A2B_entity_did_use.php?action=ask_release&did=|col5|",
