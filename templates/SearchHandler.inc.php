@@ -229,6 +229,42 @@ use A2billing\Forms\FormHandler;
             </div>
         </div>
 
+    <?php elseif ($item["type"] === "DATE"): ?>
+        <div class="col-4">
+            <div class="input-group">
+                <div class="input-group-text">
+                    <input
+                        type="checkbox"
+                        name="enable_<?= $item["input"][0] ?>"
+                        id="enable_<?= $item["input"][0] ?>"
+                        value="true"
+                        aria-label="<?= _("enable the search start date")?>"
+                        <?php if ($processed["enable_" . $item["input"][0]] ?? ""): ?>checked="checked"<?php endif ?>
+                        class="form-check-input m-0"
+                    />&nbsp;<label for="enable_<?= $item["input"][0] ?>" class="form-label form-label-sm m-0"><?=_("From") ?></label>
+                </div>
+                <input type="date" name="<?= $item["input"][0] ?>" id="<?= $item["input"][0] ?>" value="<?= $processed[$item["input"][0]] ?? (new DateTime('first day of this month'))->format("Y-m-d") ?>" aria-label="<?= _("search start date") ?>" class="form-control form-control-sm"/>
+                <input type="hidden" name="<?= $item["operator"][0] ?>" value="5"/><!-- >= -->
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="input-group">
+                <div class="input-group-text">
+                    <input
+                        type="checkbox"
+                        name="enable_<?= $item["input"][1] ?>"
+                        id="enable_<?= $item["input"][1] ?>"
+                        value="true"
+                        aria-label="<?= _("enable the search end date") ?>"
+                        <?php if ($processed["enable_" . $item["input"][1]] ?? ""): ?>checked="checked"<?php endif ?>
+                        class="form-check-input m-0"
+                    />&nbsp;<label for="enable_<?= $item["input"][1] ?>" class="form-label form-label-sm m-0"><?=_("To") ?></label>
+                </div>
+                <input type="date" name="<?= $item["input"][1] ?>" id="<?= $item["input"][1] ?>" value="<?= $processed[$item["input"][1]] ?? (new DateTime('first day of next month'))->format("Y-m-d") ?>" aria-label="<?= _("search end date") ?>" class="form-control form-control-sm"/>
+                <input type="hidden" name="<?= $item["operator"][1] ?>" value="2"/><!-- <= -->
+            </div>
+        </div>
+
     <?php endif ?>
     </div>
 <?php endforeach ?>

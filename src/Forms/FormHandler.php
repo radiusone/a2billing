@@ -943,6 +943,21 @@ class FormHandler
     }
 
     /**
+     * @param string $label the label for the input
+     * @param string $fieldname the name of the database column, also used for HTML element names
+     * @return void
+     */
+    public function AddSearchDateInput(string $label, string $fieldname) {
+        $this->search_form_elements[] = [
+            "label" => $label,
+            "input" => ["${fieldname}_start", "${fieldname}_end"],
+            "operator" => ["${fieldname}_start_type", "${fieldname}_end_type"],
+            "column" => $fieldname,
+            "type" => "DATE",
+        ];
+    }
+
+    /**
      * Sets Search form fieldnames for the view module
      *
      * @public
@@ -1554,7 +1569,7 @@ class FormHandler
                 }
                 if ($el["type"] === "TEXT") {
                     $SQLcmd = $this->do_field($SQLcmd, $input, $el["operator"][$i]);
-                } elseif ($el["type"] === "COMPARISON") {
+                } elseif ($el["type"] === "COMPARISON" || ($el["type"] === "DATE" && !empty($processed["enable_${input}"]))) {
                     $SQLcmd = $this->do_field_duration($SQLcmd, $el["column"], $el["operator"][$i], $input);
                 } elseif ($el["type"] === "SELECT" || $el["type"] === "SQL_SELECT" || $el["type"] === "POPUP") {
                     $SQLcmd = $this->do_field($SQLcmd, $input);
