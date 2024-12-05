@@ -43,7 +43,6 @@ Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
  * @var string $popup_select
  */
 
-
 $HD_Form = new FormHandler("cc_templatemail", _("Mail Template"));
 
 $HD_Form->FG_EDIT_BUTTON_LINK = "?form_action=ask-edit&id=";
@@ -119,14 +118,14 @@ $message_text_bottom =
     . '<b>$credit_notification$</b>: ' . _('credit notification of the customer') . '<br/>'
     . '<b>$base_currency$</b>: ' . _('base currency of system') . '<br/>';
 
-$HD_Form->AddViewElement(_("ID MAIL"), "id");
-$HD_Form->AddViewElement(_("MAILTYPE"), "mailtype", false, 0, "", "list", $typemail_list);
-$HD_Form->AddViewElement(_("FROMEMAIL"), "fromemail");
-$HD_Form->AddViewElement(_("SUBJECT"), "subject");
-$HD_Form->FieldViewElement ('id, mailtype, fromemail, subject');
+$HD_Form->AddListValue(_("ID"), "id");
+$HD_Form->AddListMapping(_("Type"), "mailtype", $typemail_list);
+$HD_Form->AddListValue(_("From email"), "fromemail");
+$HD_Form->AddListValue(_("Subject"), "subject");
+$HD_Form->FieldViewElement (["id", "mailtype", "fromemail", "subject"]);
 
 if ((int)$popup_select >= 1) {
-    $HD_Form->AddListSelectActionButton("javascript:sendValue('|col0|')", _("SELECT TEXT"));
+    $HD_Form->AddListSelectActionButton("javascript:sendValue('|param|')", _("SELECT TEXT"));
 } else {
     $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
     $HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_mailtemplate.php?form_action=ask-add";

@@ -41,7 +41,6 @@ require_once __DIR__ . "/../../common/lib/admin.defines.php";
 require_once __DIR__ . "/form_data/FG_var_logrefill.inc";
 /**
  * @var FormHandler $HD_Form
- * @var Smarty $smarty
  * @var string $form_action
  * @var string $id
  */

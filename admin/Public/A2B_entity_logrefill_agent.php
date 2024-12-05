@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -38,6 +39,9 @@ use A2billing\Admin;
 $menu_section = 10;
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
 require_once __DIR__ . "/form_data/FG_var_logrefill_agent.inc";
+/**
+ * @var FormHandler $HD_Form
+ */
 
 Admin::checkPageAccess(Admin::ACX_BILLING);
 
@@ -49,9 +53,12 @@ $list = $HD_Form->perform_action($form_action);
 require_once __DIR__ . "/../templates/main.php";
 
 // #### HELP SECTION
-echo create_help(_("Agents Refill history - The section below allows you to add refills against an agent. Note that this changes the balance on the account."), 'ViewAgentRefill');
+echo create_help(
+    _("Agents Refill history - The section below allows you to add refills against an agent. Note that this changes the balance on the account."),
+    'ViewAgentRefill'
+);
 
-if ($form_action == "list") {
+if ($form_action === "list") {
     $HD_Form->create_search_form();
 }
 

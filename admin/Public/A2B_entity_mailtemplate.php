@@ -41,25 +41,24 @@ $menu_section = 17;
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
 require_once "./form_data/FG_var_mailtemplate.inc";
 /**
- * @var Smarty $smarty
  * @var FormHandler $HD_Form
  */
 
 Admin::checkPageAccess(Admin::ACX_MAIL);
 
-getpost_ifset(['popup_select', 'form_action', 'action']);
+getpost_ifset(["popup_select", "form_action", "action", "id"]);
 /**
  * @var string $popup_select
  * @var string $form_action
  * @var string $action
+ * @var numeric-string|null $id
  */
 
 if ($action === "load") {
-    /** @var string $id */
-    getpost_ifset(['id']);
     $DBHandle=DbConnect();
-    if ((int)$id > 0) {
-        $result = (new Table("cc_templatemail", "messagetext, fromemail, fromname, subject"))->getRow($DBHandle, ["id" => $id]);
+    if (!empty($id)) {
+        $result = (new Table("cc_templatemail", "messagetext, fromemail, fromname, subject"))
+            ->getRow($DBHandle, ["id" => $id]);
         header("Content-Type: application/json");
         echo json_encode($result);
     }
@@ -76,10 +75,10 @@ require_once __DIR__ . "/../templates/main.php";
 // #### HELP SECTION
 if (!$popup_select) {
     echo create_help(
-            _("Configure the mail template below.")
-                . '<br/>'
-                . _("A Reminder email can be sent (see a2billing.conf) to customers having low credit, a confirmation mail can be sent to customers after their signup, etc..."),
-            'ShowMailTemplates'
+        _("Configure the mail template below.")
+            . '<br/>'
+            . _("A Reminder email can be sent (see a2billing.conf) to customers having low credit, a confirmation mail can be sent to customers after their signup, etc..."),
+        'ShowMailTemplates'
     );
     if ($form_action === "list") {
         $HD_Form->create_search_form();
@@ -104,8 +103,8 @@ if (!$popup_select) {
 }
 
 // #### TOP SECTION PAGE
-$HD_Form -> create_toppage ($form_action);
+$HD_Form->create_toppage ($form_action);
 
-$HD_Form -> create_form($form_action, $list) ;
+$HD_Form->create_form($form_action, $list) ;
 
 require_once __DIR__ . "/../templates/footer.php";
