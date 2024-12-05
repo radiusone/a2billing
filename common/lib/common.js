@@ -106,7 +106,7 @@ $(function() {
             const id = this.getAttribute("id").replace(/^enable_/, "");
             $(`#${id}`).prop("disabled", !this.checked);
             if (id === "search_months" && this.checked) {
-                $(".date-input-enabler").prop("checked", false).change();
+                $(".date-input-enabler:not(#enable_search_months)").prop("checked", false).change();
             } else if (this.checked) {
                 $("#enable_search_months").prop("checked", false).change();
             }

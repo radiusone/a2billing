@@ -54,13 +54,13 @@ use A2billing\Forms\FormHandler;
                         id="enable_search_months"
                         value="true"
                         aria-label="<?= _("enable the search for months ago")?>"
-                        <?php if ($processed["enable_search_months"]): ?>checked="checked"<?php endif ?>
+                        <?php if (!empty($processed["enable_search_months"])): ?>checked="checked"<?php endif ?>
                         class="form-check-input m-0 date-input-enabler"
                     />
                 </div>
                 <select name="search_months" id="search_months" class="form-select form-select-sm">
                     <?php for ($i=3 ; $i<=12 ; $i++): ?>
-                        <option <?php if ($processed['search_months'] === "$i"): ?>selected="selected"<?php endif ?>><?= sprintf(_("%d months"), $i) ?></option>
+                        <option <?php if (($processed['search_months'] ?? 0) === "$i"): ?>selected="selected"<?php endif ?>><?= sprintf(_("%d months"), $i) ?></option>
                     <?php endfor ?>
                 </select>
             </div>
@@ -80,7 +80,7 @@ use A2billing\Forms\FormHandler;
                 <input
                     name="<?= $item["input"][0] ?>"
                     id="<?= $item["input"][0] ?>"
-                    value="<?= $processed[$item["input"][0]] ?>"
+                    value="<?= $processed[$item["input"][0]] ?? "" ?>"
                     class="form-control form-control-sm"
                 />
                 <a
