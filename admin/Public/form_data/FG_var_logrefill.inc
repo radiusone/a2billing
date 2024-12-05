@@ -68,10 +68,8 @@ if (!$popup_select) {
     $HD_Form->search_form_enabled = true;
     $HD_Form->search_session_key = 'refill_cust_selection';
     $HD_Form->search_form_title = _('Define specific criteria to search for refills created.');
-    $HD_Form->search_date_enabled = true;
-    $HD_Form->search_date_text = _('DATE');
-    $HD_Form->search_date_column = 'date';
 
+    $HD_Form->AddSearchDateInput(_("DATE"), "date");
     $HD_Form->AddSearchTextInput(_("Account number"), 'username', 'usernametype');
     $HD_Form->AddSearchTextInput(_("Last name"), 'lastname', 'lastnametype');
     $HD_Form->AddSearchTextInput(_("First name"), 'firstname', 'firstnametype');

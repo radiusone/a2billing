@@ -130,9 +130,7 @@ if ($posted == 1) {
 }
 
 $HD_Form -> search_form_enabled = true;
-$HD_Form -> search_date_text = gettext("Start Date / Month");
-$HD_Form -> FG_FILTER_SEARCH_2_TIME_TEXT = gettext("Start Date / Day");
-$HD_Form -> FG_FILTER_SEARCH_2_TIME_FIELD = 'startdate';
+$HD_Form->AddSearchDateInput(_("Start date"), "startdate");
 $HD_Form -> AddSearchTextInput(gettext("TAG"), 'tag','tagtype');
 $HD_Form -> AddSearchTextInput(gettext("DESTINATION"), 'destination','destinationtype');
 $HD_Form -> AddSearchTextInput(gettext("PREFIX"),'dialprefix','dialprefixtype');

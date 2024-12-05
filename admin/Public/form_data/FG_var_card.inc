@@ -244,13 +244,8 @@ if ($popup_select) {
     $HD_Form->search_form_enabled = true;
 
     $HD_Form->search_form_title = _('Define specific criteria to search for cards created.');
-    $HD_Form->search_date_enabled = true;
-    $HD_Form->search_date_text = _('CREATION DATE');
-
-    $HD_Form->search_date2_enabled = true;
-    $HD_Form->search_date2_text = _('FIRST USE DATE');
-    $HD_Form->search_date2_column = 'firstusedate';
-
+    $HD_Form->AddSearchDateInput(_("Creation date"), "creationdate");
+    $HD_Form->AddSearchDateInput(_("First use date"), "firstusedate");
     $HD_Form->AddSearchTextInput(_("ACCOUNT NUMBER"), 'username', 'usernametype');
     $HD_Form->AddSearchTextInput(_("EMAIL"), 'email', 'emailtype');
     $HD_Form->AddSearchTextInput(_("LASTNAME"), 'lastname', 'lastnametype');

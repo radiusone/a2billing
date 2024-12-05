@@ -166,18 +166,13 @@ $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 30;
 
 $HD_Form->search_form_enabled = true;
 $HD_Form->search_form_title = gettext('Define specific criteria to search for cards created.');
-$HD_Form->search_date_enabled = true;
-$HD_Form->search_date_text = gettext('Creation date');
-$HD_Form->search_date_column = 'creationdate';
-
-$HD_Form->search_date2_enabled = true;
-$HD_Form->search_date2_text = gettext('FIRST USE DATE');
-$HD_Form->search_date2_column = 'firstusedate';
 
 $HD_Form->search_months_ago_enabled = true;
 $HD_Form->search_months_ago_text = gettext('Select customer created more than');
 $HD_Form->search_months_ago_column = 'creationdate';
 
+$HD_Form->AddSearchDateInput(_("Creation date"), "creationdate");
+$HD_Form->AddSearchDateInput(_("First use date"), "firstusedate");
 //Select card older than : 3 Months, 4 Months, 5.... 12 Months
 $HD_Form->AddSearchTextInput(_("Account"), 'username','usernametype');
 $HD_Form->AddSearchTextInput(_("Last name"),'lastname','lastnametype');

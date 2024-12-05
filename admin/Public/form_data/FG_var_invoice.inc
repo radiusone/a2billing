@@ -129,9 +129,8 @@ if (!$popup_select) {
     $HD_Form->search_delete_enabled = false;
 
     $HD_Form->search_form_title = _('Define specific criteria to search for invoice created.');
-    $HD_Form->search_date_enabled = true;
-    $HD_Form->search_date_text = _('CREATION DATE');
-    $HD_Form->search_date_column = "`date`";
+
+    $HD_Form->AddSearchDateInput(_("CREATION DATE"), "date");
 
     $HD_Form->AddSearchTextInput(_("FIRSTNAME"), 'firstname', 'firstnametype');
     $HD_Form->AddSearchTextInput(_("LASTNAME"), 'lastname', 'lastnametype');

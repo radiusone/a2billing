@@ -116,10 +116,8 @@ $HD_Form->search_form_enabled = !$popup_select;
 $HD_Form->search_delete_enabled =false;
 $HD_Form->search_session_key = 'ticket_cust_selection';
 $HD_Form->search_form_title = gettext('Define specific criteria to search for ticket created.');
-$HD_Form->search_date_enabled = true;
-$HD_Form->search_date_text = gettext('DATE');
-$HD_Form->search_date_column = 'cc_ticket.creationdate';
 
+$HD_Form->AddSearchDateInput(_("DATE"), "cc_ticket.creationdate");
 $HD_Form->AddSearchTextInput(gettext("ACCOUNT NUMBER"), 'username','usernametype');
 
 $HD_Form->FG_ENABLE_EDIT_BUTTON = true;

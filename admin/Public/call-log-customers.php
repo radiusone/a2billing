@@ -177,10 +177,8 @@ $HD_Form->export_session_key = "pr_export_entity_call";
 $HD_Form->search_form_enabled = true;
 $HD_Form->search_session_key = 'call_log_selection';
 $HD_Form->search_form_title = gettext('Define specific criteria to search for call records');
-$HD_Form->search_date_enabled = true;
-$HD_Form->search_date_text = _('DATE');
-$HD_Form->search_date_column = "cc_call.starttime";
 
+$HD_Form->AddSearchDateInput(_("DATE"), "cc_call.starttime");
 $HD_Form->AddSearchPopupInput("card_id", _("Enter the customer ID"), "A2B_entity_card.php");
 $HD_Form->AddSearchPopupInput("username", _("Enter the customer number"), "A2B_entity_card.php", 2);
 $HD_Form->AddSearchPopupInput("id_tariffgroup", _("Call Plan"), "A2B_entity_tariffgroup.php", 2);

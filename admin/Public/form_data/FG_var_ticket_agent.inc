@@ -83,10 +83,8 @@ if (!($popup_select>=1))	 $HD_Form -> search_form_enabled = true;
 $HD_Form -> search_delete_enabled =false;
 $HD_Form -> search_session_key = 'ticket_agent_selection';
 $HD_Form -> search_form_title = gettext('Define specific criteria to search for ticket created.');
-$HD_Form -> search_date_enabled = true;
-$HD_Form -> search_date_text = gettext("DATE");
-$HD_Form -> search_date_column = 'cc_ticket.creationdate';
 
+$HD_Form->AddSearchDateInput(_("DATE"), "cc_ticket.creationdate");
 $HD_Form -> AddSearchTextInput(gettext("LOGIN"), 'login','logintype');
 $HD_Form -> AddSearchTextInput(gettext("LASTNAME"),'lastname','lastnametype');
 $HD_Form -> AddSearchTextInput(gettext("FIRSTNAME"),'firstname','firstnametype');

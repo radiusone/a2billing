@@ -73,6 +73,4 @@ $HD_Form -> FG_INFO_BUTTON_LINK = "A2B_refill_info_agent.php?id=";
 if (!($popup_select>=1))	 $HD_Form -> search_form_enabled = true;
 $HD_Form -> search_session_key = 'refill_agent_selection';
 $HD_Form -> search_form_title = gettext('Define specific criteria to search for payments created.');
-$HD_Form -> search_date_enabled = true;
-$HD_Form -> search_date_text = gettext('DATE');
-$HD_Form -> search_date_column = 'date';
+$HD_Form->AddSearchDateInput(_("DATE"), "date");

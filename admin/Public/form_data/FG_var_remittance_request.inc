@@ -80,10 +80,8 @@ $HD_Form -> FieldViewElement ('cc_remittance_request.id, id_agent, date, amount,
 $HD_Form -> search_form_enabled = true;
 $HD_Form -> search_session_key = 'remittance_agent_selection';
 $HD_Form -> search_form_title = gettext('Define specific criteria to search for remittances requests created.');
-$HD_Form -> search_date_enabled = true;
-$HD_Form -> search_date_text = gettext('DATE');
-$HD_Form -> search_date_column = 'date';
 $HD_Form -> search_delete_enabled =false;
+$HD_Form->AddSearchDateInput(_("DATE"), "date");
 $HD_Form -> AddSearchTextInput(gettext("LOGIN"), 'login','logintype');
 $HD_Form -> AddSearchTextInput(gettext("LASTNAME"),'lastname','lastnametype');
 $HD_Form -> AddSearchTextInput(gettext("FIRSTNAME"),'firstname','firstnametype');

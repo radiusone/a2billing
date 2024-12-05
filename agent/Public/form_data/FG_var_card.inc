@@ -234,14 +234,9 @@ $HD_Form -> CV_FOLLOWPARAMETERS= "&popup_select=".$popup_select."&popup_formname
 if (!($popup_select>=1))	 $HD_Form -> search_form_enabled = true;
 
 $HD_Form -> search_form_title = gettext('Define specific criteria to search for cards created.');
-$HD_Form -> search_date_enabled = true;
-$HD_Form -> search_date_text = gettext('CREATION DATE');
 
-$HD_Form -> search_date2_enabled = true;
-$HD_Form -> search_date2_text = gettext('FIRST USE DATE');
-$HD_Form -> search_date2_column = 'firstusedate';
-
-
+$HD_Form->AddSearchDateInput(_("CREATION DATE"), "creationdate");
+$HD_Form->AddSearchDateInput(_("FIRST USE DATE"), "firstusedate");
 $HD_Form -> AddSearchTextInput(gettext("ACCOUNT NUMBER"), 'username','usernametype');
 $HD_Form -> AddSearchTextInput(gettext("EMAIL"), 'email','emailtype');
 $HD_Form -> AddSearchTextInput(gettext("LASTNAME"),'lastname','lastnametype');

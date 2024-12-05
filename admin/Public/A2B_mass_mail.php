@@ -99,9 +99,7 @@ $language_list_r["2"] = array("fr", gettext("FRENCH"));
 
 $HD_Form -> search_form_enabled = true;
 $HD_Form -> search_form_title = gettext('Define specific criteria to search for cards created.');
-$HD_Form -> search_date_text = gettext('Creation date / Month');
-$HD_Form -> FG_FILTER_SEARCH_2_TIME_TEXT = gettext('Creation date / Day');
-$HD_Form -> FG_FILTER_SEARCH_2_TIME_FIELD = 'creationdate';
+$HD_Form->AddSearchDateInput(_("Creation date"), "creationdate");
 $HD_Form -> AddSearchTextInput(gettext("ACCOUNT NUMBER"), 'username','usernametype');
 $HD_Form -> AddSearchTextInput(gettext("LASTNAME"),'lastname','lastnametype');
 $HD_Form -> AddSearchTextInput(gettext("LOGIN"),'useralias','useraliastype');

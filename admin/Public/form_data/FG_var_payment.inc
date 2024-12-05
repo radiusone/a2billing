@@ -87,10 +87,8 @@ if (!$popup_select) {
     $HD_Form->search_delete_enabled = false;
 
     $HD_Form->search_form_title = _('Define specific criteria to search for payments created.');
-    $HD_Form->search_date_enabled = true;
-    $HD_Form->search_date_text = _('DATE');
-    $HD_Form->search_date_column = 'date';
 
+    $HD_Form->AddSearchDateInput(_("DATE"), "date");
     $HD_Form->AddSearchTextInput(_("ACCOUNT NUMBER"), 'username','usernametype');
     $HD_Form->AddSearchTextInput(_("LASTNAME"),'lastname','lastnametype');
     $HD_Form->AddSearchTextInput(_("FIRSTNAME"),'firstname','firstnametype');

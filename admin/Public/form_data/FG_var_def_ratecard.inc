@@ -142,10 +142,7 @@ if (!$popup_select) {
 
 // Search form
 $HD_Form->search_form_enabled = true;
-$HD_Form->search_date_enabled = true;
-$HD_Form->search_date_text = _("Start Date");
-$HD_Form->search_date_column = 'startdate';
-
+$HD_Form->AddSearchDateInput(_("Start Date"), "startdate");
 
 $HD_Form->AddSearchTextInput(_("Tag"), 'tag', 'tagtype');
 $HD_Form->AddSearchTextInput(_("Dialing Prefix"), 'dialprefix', 'dialprefixtype');

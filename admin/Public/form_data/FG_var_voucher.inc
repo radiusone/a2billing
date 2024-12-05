@@ -93,9 +93,7 @@ $HD_Form -> FieldViewElement ('id, voucher, credit, tag, activated, used, usedca
 // Search form
 if (!($popup_select>=1))	 $HD_Form -> search_form_enabled = true;
 $HD_Form -> search_form_title = gettext('Define specific criteria to search for vouchers created.');
-$HD_Form -> search_date_text = gettext('Creation date / Month');
-$HD_Form -> FG_FILTER_SEARCH_2_TIME_TEXT = gettext('Creation date / Day');
-$HD_Form -> FG_FILTER_SEARCH_2_TIME_FIELD = 'creationdate';
+$HD_Form->AddSearchDateInput(_("Creation date"), "creationdate");
 $HD_Form -> AddSearchTextInput (gettext("VOUCHER"), 'voucher','vouchertype');
 $HD_Form -> AddSearchTextInput (gettext("ACCOUNT NUMBER"),'usedcardnumber','usedcardnumbertype');
 $HD_Form -> AddSearchTextInput (gettext("TAG"),'tag','tagtype');
