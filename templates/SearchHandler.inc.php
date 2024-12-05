@@ -40,86 +40,6 @@ use A2billing\Forms\FormHandler;
     </div>
 <?php endif ?>
 
-<?php if ($form->search_date_enabled): ?>
-    <div class="row py-1">
-        <label class="col-4 col-form-label col-form-label-sm">
-            <?= $form->search_date_text ?>
-        </label>
-        <div class="col-4">
-            <div class="input-group">
-                <div class="input-group-text">
-                    <input
-                        type="checkbox"
-                        name="enable_search_start_date"
-                        id="enable_search_start_date"
-                        value="true"
-                        aria-label="<?= _("enable the search start date")?>"
-                        <?php if ($processed["enable_search_start_date"] ?? ""): ?>checked="checked"<?php endif ?>
-                        class="form-check-input m-0"
-                    />&nbsp;<label for="enable_search_start_date" class="form-label form-label-sm m-0"><?=_("From") ?></label>
-                </div>
-                <input type="date" name="search_start_date" id="search_start_date" value="<?= $processed["search_start_date"] ?? (new DateTime('first day of this month'))->format("Y-m-d") ?>" aria-label="<?= _("search start date") ?>" class="form-control form-control-sm"/>
-            </div>
-        </div>
-        <div class="col-4">
-            <div class="input-group">
-                <div class="input-group-text">
-                    <input
-                        type="checkbox"
-                        name="enable_search_end_date"
-                        id="enable_search_end_date"
-                        value="true"
-                        aria-label="<?= _("enable the search end date") ?>"
-                        <?php if ($processed["enable_search_end_date"] ?? ""): ?>checked="checked"<?php endif ?>
-                        class="form-check-input m-0"
-                    />&nbsp;<label for="enable_search_end_date" class="form-label form-label-sm m-0"><?=_("To") ?></label>
-                </div>
-                <input type="date" name="search_end_date" id="search_end_date" value="<?= $processed["search_end_date"] ?? (new DateTime('first day of next month'))->format("Y-m-d") ?>" aria-label="<?= _("search end date") ?>" class="form-control form-control-sm"/>
-            </div>
-        </div>
-    </div>
-<?php endif ?>
-
-<?php if ($form->search_date2_enabled): ?>
-    <div class="row py-1">
-        <label class="col-4 col-form-label col-form-label-sm">
-            <?= $form->search_date2_text ?>
-        </label>
-        <div class="col-4">
-            <div class="input-group">
-                <div class="input-group-text">
-                    <input
-                        type="checkbox"
-                        name="enable_search_start_date2"
-                        id="enable_search_start_date2"
-                        value="true"
-                        aria-label="<?= _("enable the search start date")?>"
-                        <?php if ($processed["enable_search_start_date2"]): ?>checked="checked"<?php endif ?>
-                        class="form-check-input m-0"
-                    />&nbsp;<label for="enable_search_start_date2" class="form-label form-label-sm m-0"><?=_("From") ?></label>
-                </div>
-                <input type="date" name="search_start_date2" id="search_start_date2" value="<?= $processed["search_start_date2"] ?? (new DateTime('first day of this month'))->format("Y-m-d") ?>" aria-label="<?= _("search start date") ?>" class="form-control form-control-sm"/>
-            </div>
-        </div>
-        <div class="col-4">
-            <div class="input-group">
-                <div class="input-group-text">
-                    <input
-                        type="checkbox"
-                        name="enable_search_end_date"
-                        id="enable_search_end_date2"
-                        value="true"
-                        aria-label="<?= _("enable the search end date") ?>"
-                        <?php if ($processed["enable_search_end_date2"]): ?>checked="checked"<?php endif ?>
-                        class="form-check-input m-0"
-                    />&nbsp;<label for="enable_search_end_date2" class="form-label form-label-sm m-0"><?=_("To") ?></label>
-                </div>
-                <input type="date" name="search_end_date2" id="search_end_date2" value="<?= $processed["search_end_date2"] ?? (new DateTime('first day of next month'))->format("Y-m-d") ?>" aria-label="<?= _("search end date") ?>" class="form-control form-control-sm"/>
-            </div>
-        </div>
-    </div>
-<?php endif ?>
-
 <?php if ($form->search_months_ago_enabled): // this is only used by A2B_data_archiving.php ?>
     <div class="row py-1">
         <label class="col-4 col-form-label col-form-label-sm" for="search_months">
@@ -135,7 +55,7 @@ use A2billing\Forms\FormHandler;
                         value="true"
                         aria-label="<?= _("enable the search for months ago")?>"
                         <?php if ($processed["enable_search_months"]): ?>checked="checked"<?php endif ?>
-                        class="form-check-input m-0"
+                        class="form-check-input m-0 date-input-enabler"
                     />
                 </div>
                 <select name="search_months" id="search_months" class="form-select form-select-sm">
@@ -240,7 +160,7 @@ use A2billing\Forms\FormHandler;
                         value="true"
                         aria-label="<?= _("enable the search start date")?>"
                         <?php if ($processed["enable_" . $item["input"][0]] ?? ""): ?>checked="checked"<?php endif ?>
-                        class="form-check-input m-0"
+                        class="form-check-input m-0 date-input-enabler"
                     />&nbsp;<label for="enable_<?= $item["input"][0] ?>" class="form-label form-label-sm m-0"><?=_("From") ?></label>
                 </div>
                 <input type="date" name="<?= $item["input"][0] ?>" id="<?= $item["input"][0] ?>" value="<?= $processed[$item["input"][0]] ?? (new DateTime('first day of this month'))->format("Y-m-d") ?>" aria-label="<?= _("search start date") ?>" class="form-control form-control-sm"/>
@@ -257,7 +177,7 @@ use A2billing\Forms\FormHandler;
                         value="true"
                         aria-label="<?= _("enable the search end date") ?>"
                         <?php if ($processed["enable_" . $item["input"][1]] ?? ""): ?>checked="checked"<?php endif ?>
-                        class="form-check-input m-0"
+                        class="form-check-input m-0 date-input-enabler"
                     />&nbsp;<label for="enable_<?= $item["input"][1] ?>" class="form-label form-label-sm m-0"><?=_("To") ?></label>
                 </div>
                 <input type="date" name="<?= $item["input"][1] ?>" id="<?= $item["input"][1] ?>" value="<?= $processed[$item["input"][1]] ?? (new DateTime('first day of next month'))->format("Y-m-d") ?>" aria-label="<?= _("search end date") ?>" class="form-control form-control-sm"/>
