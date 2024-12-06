@@ -97,11 +97,6 @@ if (is_string($tariffgroup) && strlen(trim($tariffgroup)) > 0) {
 }
 
 if (($form_action == "list") && ($HD_Form->search_form_enabled) && ($_POST['posted_search'] == 1) && is_numeric($mytariffgroup_id)) {
-    if (!empty ($HD_Form->FG_QUERY_WHERE_CLAUSE)) {
-        $HD_Form->FG_QUERY_WHERE_CLAUSE .= ' AND ';
-    }
-
-    $HD_Form->FG_QUERY_WHERE_CLAUSE = "idtariffplan='$mytariff_id'";
     $HD_Form->list_query_conditions["idtariffplan"] = $mytariff_id;
 
     /*

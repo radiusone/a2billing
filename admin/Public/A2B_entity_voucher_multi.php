@@ -64,7 +64,6 @@ if ($nbvoucher>0) {
 }
 
 if (!isset($_SESSION["IDfilter"])) $_SESSION["IDfilter"]='NODEFINED';
-$HD_Form -> FG_QUERY_WHERE_CLAUSE = "tag='".$_SESSION["IDfilter"]."'";
 $HD_Form->list_query_conditions["tag"] = $_SESSION["IDfilter"];
 
 $HD_Form -> init();

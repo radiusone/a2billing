@@ -60,11 +60,6 @@ $HD_Form -> FieldViewElement ('cid, activated');
 $HD_Form -> CV_TITLE_TEXT = gettext("CallerID list");
 $HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 10;
 
-// My Code for Where Cluase
-if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0)
-    $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
-
-$HD_Form -> FG_QUERY_WHERE_CLAUSE.="id_cc_card =".$_SESSION["card_id"];
 $HD_Form->list_query_conditions["id_cc_card"] = $_SESSION["card_id"];
 
 $HD_Form->update_query_conditions["id_cc_card"] = $_SESSION["card_id"];

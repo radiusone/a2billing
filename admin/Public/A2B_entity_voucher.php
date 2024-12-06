@@ -100,11 +100,12 @@ if ($batchupdate == 1 && is_array($check)) {
     }
 
     $SQL_UPDATE = "UPDATE $HD_Form->FG_QUERY_TABLE_NAME SET $SQL_UPDATE";
-    if (strlen($HD_Form->FG_QUERY_WHERE_CLAUSE) > 1) {
+    if (count($HD_Form->list_query_conditions)) {
+        $params = [];
         $SQL_UPDATE .= ' WHERE ';
-        $SQL_UPDATE .= $HD_Form->FG_QUERY_WHERE_CLAUSE;
+        $SQL_UPDATE .= (new Table())->processWhereClauseArray($HD_Form->list_query_conditions, $params);
     }
-    if (!$res = $HD_Form->DBHandle->Execute($SQL_UPDATE)) {
+    if (!$res = $HD_Form->DBHandle->Execute($SQL_UPDATE, $params)) {
         $update_msg = '<p style="text-align:center; font-weight: bold; color: red">' . gettext('Could not perform the batch update!') . '</p>';
     } else {
         $update_msg = '<p style="text-align:center; font-weight: bold; color: green">' . gettext('The batch update has been successfully perform!') . '</p>';

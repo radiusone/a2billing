@@ -88,11 +88,12 @@ if ($posted == 1) {
         $fields_array = preg_split('/,/', $fields);
 
         if (!empty($_SESSION['search_ratecard'])) {
-            $condition .= " AND ".$_SESSION['search_ratecard'];
+            $params = "";
+            $condition .= " AND ".(new Table())->processWhereClauseArray(json_decode($_SESSION['search_ratecard']), $params);
         }
 
         $sql = "select $fields from cc_ratecard where idtariffplan = $ratecard_src_val $condition order by dialprefix,id";
-        $result  = $instance_table->SQLExec ($HD_Form -> DBHandle, $sql);
+        $result  = $HD_Form -> DBHandle->Query($sql, $params);
         $q = "";
         $q_update = "";
         for ($i=0; $i<count($result); $i++) {
@@ -139,7 +140,7 @@ $HD_Form -> AddSearchComparisonInput(gettext("RATE INITIAL"),'rateinitial1','rat
 $HD_Form -> prepare_list_subselection('list');
 $HD_Form -> AddSearchSqlSelectInput('SELECT TRUNK', "cc_trunk", "id_trunk, trunkcode, providerip", "", "trunkcode", "ASC", "id_trunk");
 // todo: get rid of FG_QUERY_WHERE_CLAUSE usage
-$_SESSION['search_ratecard'] = $HD_Form -> FG_QUERY_WHERE_CLAUSE;
+$_SESSION['search_ratecard'] = json_encode($HD_Form->list_query_conditions);
 
 /*************************************************************/
 

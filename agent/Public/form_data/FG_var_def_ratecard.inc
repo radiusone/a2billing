@@ -56,7 +56,6 @@ if ($_POST["destination"]) {
 $HD_Form = new FormHandler("cc_callplan_lcr LEFT JOIN cc_agent_tariffgroup ON tariffgroup_id=cc_agent_tariffgroup.id_tariffgroup", "Rates");
 
 
-$HD_Form -> FG_QUERY_WHERE_CLAUSE = "cc_agent_tariffgroup.id_agent=".$_SESSION['agent_id'];
 $HD_Form->list_query_conditions["cc_agent_tariffgroup.id_agent"] = $_SESSION["agent_id"];
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = " dialprefix";
 

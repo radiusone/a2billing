@@ -50,7 +50,6 @@ $HD_Form -> init();
 
 if (strlen($letter)==1) {
     // sort by first letter
-    $HD_Form -> FG_QUERY_WHERE_CLAUSE .= " AND (SUBSTRING(destination,1,1)='".strtolower($letter)."' OR SUBSTRING(destination,1,1)='".$letter."')";
     $HD_Form->list_query_conditions["LOWER(SUBSTRING(`destination`, 1, 1))"] = strtolower($letter);
 }
 
@@ -65,7 +64,6 @@ if (isset($mydisplaylimit) && (is_numeric($mydisplaylimit) || ($mydisplaylimit==
 
 $form_action ??= "list";
 if ( ($form_action == "list") &&  ($HD_Form->search_form_enabled) && ($posted_search == 1 ) && isset($mytariff_id) ) {
-    $HD_Form->FG_QUERY_WHERE_CLAUSE = "idtariffplan='$mytariff_id'";
     $HD_Form->list_query_conditions["idtariffplan"] = $mytariff_id;
 }
 

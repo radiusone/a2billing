@@ -75,9 +75,6 @@ class FormHandler
     /** @var array list of columns from the SQL query to display in the list */
     public array $FG_QUERY_COLUMN_LIST = [];
 
-    /** @var string|null A condition to add to the list query */
-    public ?string $FG_QUERY_WHERE_CLAUSE = "";
-
     /** @var array columns/values to be used as a condition in list queries */
     public array $list_query_conditions = [];
 
@@ -1147,97 +1144,78 @@ class FormHandler
 
 
     /**
-     * Adds to the SQL command a comparison between a column and a posted value
+     * Adds to the conditions a comparison between a column and a posted value
      *
-     * @param string $sql the existing SQL query
      * @param string $left_column the column name
      * @param string $operator post field name of the operator: 1=eq 2=lte 3=lt 4=gt 5=gte
      * @param string $post_field post field name for the comparison
-     * @return string the SQL command with new comparison appended
+     * @return void
      */
-    public function do_field_duration(string $sql, string $left_column, string $operator, string $post_field): string
+    public function do_field_duration(string $left_column, string $operator, string $post_field): void
     {
         $processed = $this->getProcessed();
 
         if (!isset($processed[$post_field]) || $processed[$post_field] === "") {
-            return $sql;
+            return;
         }
 
-        $sql .= str_contains($sql, 'WHERE ') ? " AND " : " WHERE ";
         $val = $processed[$post_field];
         switch ($processed[$operator] ?? null) {
             default:
-                $sql .= " $left_column = '$val'";
                 $this->list_query_conditions[] = ["SUB", [$left_column => $val]];
                 break;
             case 2:
-                $sql .= " $left_column <= '$val'";
                 $this->list_query_conditions[] = ["SUB", [$left_column => ["<=", $val]]];
                 break;
             case 3:
-                $sql .= " $left_column < '$val'";
                 $this->list_query_conditions[] = ["SUB", [$left_column => ["<", $val]]];
                 break;
             case 4:
-                $sql .= " $left_column > '$val'";
                 $this->list_query_conditions[] = ["SUB", [$left_column => [">", $val]]];
                 break;
             case 5:
-                $sql .= " $left_column >= '$val'";
                 $this->list_query_conditions[] = ["SUB", [$left_column => [">=", $val]]];
                 break;
         }
-
-        return $sql;
     }
 
     /**
-     * Adds to the SQL command a comparison between a column and a posted value
+     * Adds to the conditions a comparison between a column and a posted value
      *
-     * @param string $sql the existing SQL query
      * @param string $column the column name, also used for the post field name
      * @param string|null $like_type post field name of the operator: 1=equal (default) 2=starts with 3=contains 4=ends with
-     * @return string the SQL command with new comparison appended
+     * @return void
      */
-    public function do_field(string $sql, string $column, string $like_type = null): string
+    public function do_field(string $column, string $like_type = null): void
     {
         $processed = $this->getProcessed();
 
         if (!isset($processed[$column]) || $processed[$column] === "") {
-            return $sql;
+            return;
         }
 
         $op = $processed[$like_type] ?? 1;
         $val = $processed[$column];
-        $sql .= str_contains($sql, 'WHERE ') ? " AND " : " WHERE ";
 
         $LIKE = "LIKE";
-        $CONVERT = " COLLATE utf8mb4_unicode_ci";
         if (DB_TYPE === "postgres") {
             $LIKE = "ILIKE";
-            $CONVERT = "";
         }
 
         switch ($op ?? null) {
             case 1:
-                $sql .= " $column='$val'";
                 $this->list_query_conditions[$column] = $val;
                 break;
             case 2:
-                $sql .= " $column $LIKE CONCAT('$val', '%') $CONVERT";
-                $this->list_query_conditions[$column] = ["LIKE", "$val%"];
+                $this->list_query_conditions[$column] = [$LIKE, "$val%"];
                 break;
             default:
-                $sql .= " $column $LIKE CONCAT('%', '$val', '%') $CONVERT";
-                $this->list_query_conditions[$column] = ["LIKE", "%$val%"];
+                $this->list_query_conditions[$column] = [$LIKE, "%$val%"];
                 break;
             case 4:
-                $sql .= " $column $LIKE CONCAT('%', '$val') $CONVERT";
-                $this->list_query_conditions[$column] = ["LIKE", "%$val"];
+                $this->list_query_conditions[$column] = [$LIKE, "%$val"];
                 break;
         }
-
-        return $sql;
     }
 
     /**
@@ -1374,7 +1352,7 @@ class FormHandler
                     $this->CV_CURRENT_PAGE * $this->FG_LIST_VIEW_PAGE_SIZE
                 );
                 if ($this->FG_DEBUG === 3) {
-                    echo "<br>Clause : " . $this->FG_QUERY_WHERE_CLAUSE;
+                    echo "<br>Clause : " . json_encode($this->list_query_conditions);
                 }
                 $this->FG_LIST_VIEW_ROW_COUNT = $instance_table->countRows($this->DBHandle, $this->list_query_conditions);
 
@@ -1439,11 +1417,6 @@ class FormHandler
             $filterprefix = $processed["filterprefix"] ?? "";
             if ($filtercolumn && $filterprefix) {
                 $this->list_query_conditions[$filtercolumn] = ["LIKE", "$filterprefix%"];
-                $filterprefix = $this->DBHandle->qStr($processed["filterprefix"]);
-                if ($this->FG_QUERY_WHERE_CLAUSE) {
-                    $this->FG_QUERY_WHERE_CLAUSE .= " AND ";
-                }
-                $this->FG_QUERY_WHERE_CLAUSE .= " $filtercolumn LIKE CONCAT($filterprefix, '%') ";
             }
         }
 
@@ -1452,11 +1425,6 @@ class FormHandler
             $filterprefix = $processed["filterprefix2"];
             if ($filtercolumn && $filterprefix) {
                 $this->list_query_conditions[$filtercolumn] = ["LIKE", "$filterprefix%"];
-                $filterprefix = $this->DBHandle->qStr($processed["filterprefix2"]);
-                if ($this->FG_QUERY_WHERE_CLAUSE) {
-                    $this->FG_QUERY_WHERE_CLAUSE .= " AND ";
-                }
-                $this->FG_QUERY_WHERE_CLAUSE .= " $filtercolumn LIKE CONCAT($filterprefix, '%') ";
             }
         }
 
@@ -1475,8 +1443,6 @@ class FormHandler
             return;
         }
 
-        $SQLcmd = '';
-
         $search = [];
 
         foreach ($this->search_form_elements as $el) {
@@ -1486,18 +1452,16 @@ class FormHandler
                     $search[$el["operator"][$i]] = $processed[$el["operator"][$i]];
                 }
                 if ($el["type"] === "TEXT") {
-                    $SQLcmd = $this->do_field($SQLcmd, $input, $el["operator"][$i]);
+                    $this->do_field($input, $el["operator"][$i]);
                 } elseif ($el["type"] === "COMPARISON" || ($el["type"] === "DATE" && !empty($processed["enable_$input"]))) {
-                    $SQLcmd = $this->do_field_duration($SQLcmd, $el["column"], $el["operator"][$i], $input);
+                    $this->do_field_duration($el["column"], $el["operator"][$i], $input);
                 } elseif ($el["type"] === "SELECT" || $el["type"] === "SQL_SELECT" || $el["type"] === "POPUP") {
-                    $SQLcmd = $this->do_field($SQLcmd, $input);
+                    $this->do_field($input);
                 }
             }
         }
 
         $_SESSION[$this->search_session_key] = json_encode(array_filter($search, fn($v) => is_string($v) && strlen($v)));
-
-        $this->FG_QUERY_WHERE_CLAUSE = preg_replace("/^ *WHERE +/", "", $SQLcmd);
     }
 
     /****************************************

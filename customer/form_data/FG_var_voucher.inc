@@ -53,7 +53,6 @@ $HD_Form -> AddViewElement(gettext(CURRENCY), "currency");
 
 $HD_Form -> FieldViewElement ('voucher, credit, currency');
 
-$HD_Form -> FG_QUERY_WHERE_CLAUSE = "usedcardnumber='".$_SESSION["pr_login"]."'";
 $HD_Form->list_query_conditions["usedcardnumber"] = $_SESSION["pr_login"];
 
 $HD_Form -> CV_NO_FIELDS  = gettext("No vouchers have been used!");

@@ -47,7 +47,6 @@ getpost_ifset(array('id', 'status', 'Period', 'frommonth', 'fromstatsmonth', 'to
 $HD_Form = new FormHandler("cc_epayment_log,cc_card LEFT JOIN cc_card_group ON cc_card.id_group=cc_card_group.id", "Payment", "cc_epayment_log.id");
 
 //CLause to filter by agent
-$HD_Form -> FG_QUERY_WHERE_CLAUSE = "cc_card.id=cc_epayment_log.cardid AND cc_card_group.id_agent=".$_SESSION['agent_id'] ;
 $HD_Form->list_query_conditions["cc_card.id"] = "`cc_epayment_log`.`cardid`";
 $HD_Form->list_query_conditions["cc_card_group.id_agent"] = $_SESSION["agent_id"];
 
@@ -61,11 +60,6 @@ $lastdayofmonth = date("t", strtotime(($tostatsmonth ?? "2099-12").'-01'));
 normalize_day_of_month($fromstatsday_sday, $fromstatsmonth_sday);
 normalize_day_of_month($tostatsday_sday, $tostatsmonth_sday);
 if ($Period=="Month"){
-	if ($frommonth && isset($fromstatsmonth)) $date_clause.=" cc_epayment_log.creationdate >= '$fromstatsmonth-01'";
-	if ($tomonth && isset($tostatsmonth)) {
-		if (strlen($date_clause)>0) $date_clause.=" AND ";
-		$date_clause.=" cc_epayment_log.creationdate <= '".$tostatsmonth."-$lastdayofmonth 23:59:59'";
-	}
     $HD_Form->list_query_conditions[] = [
         "SUB",
         [
@@ -76,14 +70,6 @@ if ($Period=="Month"){
         ],
     ];
 } else {
-	if ($fromday && isset($fromstatsday_sday) && isset($fromstatsmonth_sday)) {
-		if (strlen($date_clause)>0) $date_clause.=" AND ";
-		$date_clause.=" cc_epayment_log.creationdate >= '$fromstatsmonth_sday-$fromstatsday_sday'";
-	}
-	if ($today && isset($tostatsday_sday) && isset($tostatsmonth_sday)) {
-		if (strlen($date_clause)>0) $date_clause.=" AND ";
-		$date_clause.=" cc_epayment_log.creationdate <= '$tostatsmonth_sday-".sprintf("%02d",intval($tostatsday_sday)/*+1*/)." 23:59:59'";
-	}
     $HD_Form->list_query_conditions[] = [
         "SUB",
         [
@@ -95,25 +81,13 @@ if ($Period=="Month"){
     ];
 }
 
-if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0 && strlen($enteradmin)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
 if($enteradmin != "") {
-	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
-	$HD_Form -> FG_QUERY_WHERE_CLAUSE.=" iduser = '$enteradmin'";
     $HD_Form->list_query_conditions["iduser"] = $enteradmin;
 }
 
-if (strlen($enteradmin)>0 && strlen($loglevel)>0 && $loglevel > 0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
 if($status >= 0 && $status != '') {
-	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
-	$HD_Form -> FG_QUERY_WHERE_CLAUSE.=" cc_epayment_log.status = '$status'";
     $HD_Form->list_query_conditions["cc_epayment_log.status"] = $status;
 }
-if (strlen($loglevel)>0 && strlen($date_clause)>0) $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
-if(!empty($date_clause)) {
-	if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0) $date_clause =" AND ".$date_clause;
-	$HD_Form -> FG_QUERY_WHERE_CLAUSE.=" ".$date_clause;
-}
-
 
 $status_list = getPaymentStateList();
 

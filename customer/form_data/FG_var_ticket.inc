@@ -49,7 +49,6 @@ $HD_Form = new FormHandler("cc_ticket LEFT JOIN ( SELECT aa.id, CASE WHEN MAX(aa
 
 $HD_Form -> FG_TABLE_DEFAULT_ORDER = "cc_ticket.id";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
-$HD_Form -> FG_QUERY_WHERE_CLAUSE = " cc_ticket.creator_type=0 AND cc_ticket.creator= ".$_SESSION['card_id'];
 $HD_Form->list_query_conditions["cc_ticket.creator_type"] = 0;
 $HD_Form->list_query_conditions["cc_ticket.creator"] = $_SESSION["card_id"];
 

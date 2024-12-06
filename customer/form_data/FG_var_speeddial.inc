@@ -61,11 +61,6 @@ $HD_Form -> AddViewElement(gettext("PHONE"), "phone");
 $HD_Form -> AddViewElement(gettext("NAME"), "name");
 $HD_Form -> FieldViewElement ('speeddial, phone, name');
 
-// My Code for Where Cluase
-
-if (strlen($HD_Form -> FG_QUERY_WHERE_CLAUSE)>0)
-    $HD_Form -> FG_QUERY_WHERE_CLAUSE.=" AND ";
-$HD_Form -> FG_QUERY_WHERE_CLAUSE.="id_cc_card =".$_SESSION["card_id"];
 $HD_Form->list_query_conditions["id_cc_card"] = $_SESSION["card_id"];
 
 $HD_Form->update_query_conditions["id_cc_card"] = $_SESSION["card_id"];

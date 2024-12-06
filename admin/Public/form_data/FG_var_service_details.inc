@@ -43,7 +43,6 @@ getpost_ifset(array('id', 'displayheader', 'displayfooter'));
 $HD_Form = new FormHandler("cc_service", "service_details");
 
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
-$HD_Form -> FG_QUERY_WHERE_CLAUSE = " id='$id'";
 $HD_Form->list_query_conditions["id"] = $id;
 $HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 1;
 

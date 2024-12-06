@@ -256,7 +256,6 @@ if ($nbcard>0 && $action=="generate" && $nb_error==0) {
 }
 if (!isset($_SESSION["IDfilter"])) $_SESSION["IDfilter"]='NODEFINED';
 
-$HD_Form -> FG_QUERY_WHERE_CLAUSE = " lastname='".$_SESSION["IDfilter"]."'";
 $HD_Form->list_query_conditions["lastname"] = $_SESSION["IDfilter"];
 
 // END GENERATE CARDS

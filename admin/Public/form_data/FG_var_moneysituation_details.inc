@@ -43,7 +43,6 @@ getpost_ifset(array('id', 'displayheader', 'type','popup_select','popup_formname
 // type : refill or payment
 if ($type=='payment'){
 	$HD_Form = new FormHandler("cc_logpayment as t2", "Payment");
-	$HD_Form -> FG_QUERY_WHERE_CLAUSE = "t2.card_id = $id";
     $HD_Form->list_query_conditions["t2.card_id"] = $id;
 	$HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
@@ -59,7 +58,6 @@ if ($type=='payment'){
 	            "AS items ON items.id_invoice=cc_invoice.id ";
 	$HD_Form = new FormHandler($list_sql, "Invoice", 'cc_invoice.id');
 	$HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
-	$HD_Form -> FG_QUERY_WHERE_CLAUSE = "cc_invoice.id_card = $id";
     $HD_Form->list_query_conditions["cc_invoice.id_card"] = $id;
 	//SELECT t3.date, t3.credit, t3.reseller_id from cc_logrefill as t3 WHERE t3.card_id='1'
 	//SELECT t2.date, t2.payment, t2.reseller_id from cc_logpayment as t2 WHERE t2.card_id='1'

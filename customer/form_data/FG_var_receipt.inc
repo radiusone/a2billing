@@ -53,7 +53,6 @@ if (!isset($form_action) || $form_action=="list") {
 	$HD_Form = new FormHandler("cc_receipt", _("Receipt"));
 }
 
-$HD_Form -> FG_QUERY_WHERE_CLAUSE = " id_card = ".$_SESSION["card_id"];
 $HD_Form->list_query_conditions["id_card"] = $_SESSION["card_id"];
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
