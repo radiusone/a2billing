@@ -40,38 +40,10 @@ use A2billing\Forms\FormHandler;
     </div>
 <?php endif ?>
 
-<?php if ($form->search_months_ago_enabled): // this is only used by A2B_data_archiving.php ?>
-    <div class="row py-1">
-        <label class="col-4 col-form-label col-form-label-sm" for="search_months">
-            <?php echo $form->search_months_ago_text?>
-        </label>
-        <div class="col-8">
-            <div class="input-group">
-                <div class="input-group-text">
-                    <input
-                        type="checkbox"
-                        name="enable_search_months"
-                        id="enable_search_months"
-                        value="true"
-                        aria-label="<?= _("enable the search for months ago")?>"
-                        <?php if (!empty($processed["enable_search_months"])): ?>checked="checked"<?php endif ?>
-                        class="form-check-input m-0 date-input-enabler"
-                    />
-                </div>
-                <select name="search_months" id="search_months" class="form-select form-select-sm">
-                    <?php for ($i=3 ; $i<=12 ; $i++): ?>
-                        <option <?php if (($processed['search_months'] ?? 0) === "$i"): ?>selected="selected"<?php endif ?>><?= sprintf(_("%d months"), $i) ?></option>
-                    <?php endfor ?>
-                </select>
-            </div>
-        </div>
-    </div>
-<?php endif ?>
-
 <?php $inputs = array_filter($form->search_form_elements, fn ($v) => !in_array($v["type"], ["SELECT", "BUTTON"])) ?>
-<?php foreach ($inputs as $item): ?>
+<?php foreach ($inputs as $k => $item): ?>
     <div class="row py-1">
-        <label class="col-4 col-form-label col-form-label-sm" for="<?= $item["input"][0] ?>">
+        <label class="col-4 col-form-label col-form-label-sm" for="<?= $item["input"][0] ?>" id="item<?= $k ?>_label">
             <?= $item["label"] ?>
         </label>
     <?php if ($item["type"] === "POPUP"): ?>
@@ -150,6 +122,7 @@ use A2billing\Forms\FormHandler;
         </div>
 
     <?php elseif ($item["type"] === "DATE"): ?>
+        <?php if (!$item["relative"]): ?>
         <div class="col-4">
             <div class="input-group">
                 <div class="input-group-text">
@@ -167,7 +140,9 @@ use A2billing\Forms\FormHandler;
                 <input type="hidden" name="<?= $item["operator"][0] ?>" value="5"/><!-- >= -->
             </div>
         </div>
-        <div class="col-4">
+        <?php endif ?>
+
+        <div class="<?= $item["relative"] ? "col-8" : "col-4" ?>">
             <div class="input-group">
                 <div class="input-group-text">
                     <input
@@ -177,10 +152,27 @@ use A2billing\Forms\FormHandler;
                         value="true"
                         aria-label="<?= _("enable the search end date") ?>"
                         <?php if ($processed["enable_" . $item["input"][1]] ?? ""): ?>checked="checked"<?php endif ?>
-                        class="form-check-input m-0 date-input-enabler"
-                    />&nbsp;<label for="enable_<?= $item["input"][1] ?>" class="form-label form-label-sm m-0"><?=_("To") ?></label>
+                        class="form-check-input m-0 date-input-enabler <?= $item["relative"] ? "months-ago-enabler" : "" ?>"
+                    />&nbsp;<label for="enable_<?= $item["input"][1] ?>" class="form-label form-label-sm m-0"><?= $item["relative"] ? _("To") : _("Before") ?></label>
                 </div>
+            <?php if ($item["relative"]): ?>
+                <select name="<?= $item["input"][1] ?>" id="<?= $item["input"][1] ?>" class="form-select form-select-sm" aria-labelledby="item<?= $k ?>_label">
+                    <?php for ($i=3 ; $i<=12 ; $i++): ?>
+                        <option
+                        <?php if (($processed['search_months'] ?? 0) === "$i"): ?>
+
+                            selected="selected"
+                        <?php endif ?>
+
+                            value="<?= (new DateTime("$i months ago"))->format("Y-m-d") ?>"
+                        >
+                            <?= sprintf(_("%d months ago"), $i) ?>
+                        </option>
+                    <?php endfor ?>
+                </select>
+            <?php else: ?>
                 <input type="date" name="<?= $item["input"][1] ?>" id="<?= $item["input"][1] ?>" value="<?= $processed[$item["input"][1]] ?? (new DateTime('first day of next month'))->format("Y-m-d") ?>" aria-label="<?= _("search end date") ?>" class="form-control form-control-sm"/>
+            <?php endif ?>
                 <input type="hidden" name="<?= $item["operator"][1] ?>" value="2"/><!-- <= -->
             </div>
         </div>

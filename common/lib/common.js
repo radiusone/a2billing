@@ -105,10 +105,10 @@ $(function() {
         .on("change", function() {
             const id = this.getAttribute("id").replace(/^enable_/, "");
             $(`#${id}`).prop("disabled", !this.checked);
-            if (id === "search_months" && this.checked) {
-                $(".date-input-enabler:not(#enable_search_months)").prop("checked", false).change();
+            if ($(this).hasClass("months-ago-enabler") && this.checked) {
+                $(".date-input-enabler:not(.months-ago-enabler)").prop("checked", false).change();
             } else if (this.checked) {
-                $("#enable_search_months").prop("checked", false).change();
+                $(".months-ago-enabler").prop("checked", false).change();
             }
         })
         .trigger("change");

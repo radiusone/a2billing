@@ -945,15 +945,21 @@ class FormHandler
     /**
      * @param string $label the label for the input
      * @param string $fieldname the name of the database column, also used for HTML element names
+     * @param bool $relative if true, this is an "x months ago" type input
      * @return void
      */
-    public function AddSearchDateInput(string $label, string $fieldname) {
+    public function AddSearchDateInput(string $label, string $fieldname, bool $relative = false) {
+        $inputnames = ["${fieldname}_start", "${fieldname}_end"];
+        if ($relative) {
+            unset($inputnames[0]);
+        }
         $this->search_form_elements[] = [
             "label" => $label,
-            "input" => ["${fieldname}_start", "${fieldname}_end"],
+            "input" => $inputnames,
             "operator" => ["${fieldname}_start_type", "${fieldname}_end_type"],
             "column" => $fieldname,
             "type" => "DATE",
+            "relative" => $relative,
         ];
     }
 
