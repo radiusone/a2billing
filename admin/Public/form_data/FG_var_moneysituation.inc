@@ -37,42 +37,53 @@ use A2billing\Forms\FormHandler;
 
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
-$HD_Form = new FormHandler("cc_card", "Card");
+$HD_Form = new FormHandler(
+    "cc_card",
+    _("Card"),
+    "cc_card.id",
+    [
+        "cc_invoice" => ["cc_card.id", "cc_invoice.id_card"],
+        "cc_invoice_item" => ["cc_invoice.id", "cc_invoice_item.id_invoice"],
+        "cc_logpayment" => ["cc_card.id", "cc_logpayment.card_id"]
+    ],
+);
 
-$HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 10;
+$HD_Form->FG_QUERY_GROUPBY_COLUMNS = ["cc_card.id"];
+$HD_Form->FG_QUERY_ORDERBY_COLUMNS = ["cc_card.id"];
 
-$HD_Form -> AddViewElement(gettext("ID"), "id");
-$HD_Form -> AddViewElement(gettext("CardNumber"), "username", true, 30, "display_customer_link");
-$HD_Form -> AddViewElement(gettext("<acronym title=\"CARDALIAS\">ALIAS</acronym>"), "useralias");
-$HD_Form -> AddViewElement(gettext("FIRSTNAME"), "firstname", true, 15);
-$HD_Form -> AddViewElement(gettext("LASTNAME"), "lastname", true, 15);
+$HD_Form->AddListValue(_("ID"), "cc_card.id");
+$HD_Form->AddListValue(_("Card number"), "username", "display_customer_link");
+$HD_Form->AddListValue(_("Alias"), "useralias");
+$HD_Form->AddListValue(_("First name"), "firstname");
+$HD_Form->AddListValue(_("Last name"), "lastname");
+$HD_Form->AddListValue(_("Credit"), "credit", "display_money");
+$HD_Form->AddListValue(_("Invoiced"), "invoiced", "display_money");
+$HD_Form->AddListValue(_("Paid"), "paid", "display_money");
+$HD_Form->AddListValue(_("To pay"), "to_pay", "sub_money", ["%6", "%7"]);
 
-$HD_Form -> AddViewElement(gettext("CREDIT"), "credit", true, "", "display_2bill");
-$HD_Form -> AddViewElement(gettext("INVOICE"), "invoice", true, 15, "", "lie", "cc_invoice LEFT JOIN cc_invoice_item ON cc_invoice_item.id_invoice=cc_invoice.id", "TRUNCATE(SUM(CEIL(cc_invoice_item.price*(1+(cc_invoice_item.vat/100))*100)/100),2)", "cc_invoice.id_card='%id' GROUP BY cc_invoice.id_card", "%1");
-$HD_Form -> AddViewElement(gettext("PAYMENT"), "payment", true, 15, "", "lie", "cc_logpayment as t2", "TRUNCATE(SUM(t2.payment),2),t2.card_id", "t2.card_id='%id' GROUP BY t2.card_id", "%1");
-$HD_Form -> AddViewElement(gettext("TO PAY"), "to pay", true, 0, "", "eval", '(%7 - %6 )'); //abs
-
-$HD_Form -> FieldViewElement ('id, username, useralias, firstname, lastname, credit, id, id, id');
-
-$HD_Form -> FG_ENABLE_EDIT_BUTTON = false;
-$HD_Form -> FG_ENABLE_DELETE_BUTTON = false;
-$HD_Form -> FG_ENABLE_ADD_BUTTON = false;
+$HD_Form->FieldViewElement([
+    "cc_card.id",
+    "username",
+    "useralias",
+    "firstname",
+    "lastname",
+    "credit",
+    "SUM(cc_invoice_item.price * (1 + (cc_invoice_item.vat / 100))) AS invoiced",
+    "SUM(cc_logpayment.payment) AS paid",
+    "cc_card.id",
+]);
 
 $HD_Form->AddListActionButton(
     "javascript:window.open('A2B_entity_moneysituation_details.php?type=invoice&form_action=list&displayheader=0&popup_select=1&id=|param|','','scrollbars=yes,resizable=yes,width=500,height=270')",
-    '<span style="color:red">' . _("INVOICE") . '</span>',
+    _("INVOICE"),
     ""
 );
 $HD_Form->AddListActionButton(
     "javascript:window.open('A2B_entity_moneysituation_details.php?type=payment&form_action=list&displayheader=0&popup_select=1&id=|param|','','scrollbars=yes,resizable=yes,width=500,height=270')",
-    '<span style="color:red">' . _("PAYMENT") . '</span>',
+    _("PAYMENT"),
     ""
 );
 
-$HD_Form -> FG_FILTER_ENABLE = true;
-$HD_Form -> FG_FILTER_COLUMN = 'username';
-$HD_Form -> FG_FILTER_LABEL = 'cardnumber';
-
-$HD_Form -> FG_LOCATION_AFTER_ADD = "?id=";
-$HD_Form -> FG_LOCATION_AFTER_EDIT = "?id=";
-$HD_Form -> FG_LOCATION_AFTER_DELETE = "?id=";
+$HD_Form->FG_FILTER_ENABLE = true;
+$HD_Form->FG_FILTER_COLUMN = "username";
+$HD_Form->FG_FILTER_LABEL = "cardnumber";

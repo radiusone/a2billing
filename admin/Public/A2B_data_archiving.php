@@ -86,27 +86,27 @@ $cardstatus_list = [
 ];
 
 $cardstatus_list_acronym = [
-    [abbr(_("CANCELLED"), _("CANC")), "0"],
-    [abbr(_("ACTIVE"), _("ACT")), "1"],
+    [abbr(_("CANC"), _("CANCELLED")), "0"],
+    [abbr(_("ACT"), _("ACTIVE")), "1"],
     [_("NEW"), "2"],
-    [abbr(_("WAITING-MAILCONFIRMATION"), _("WAIT")), "3"],
-    [abbr(_("RESERVED"), _("RES")), "4"],
-    [abbr(_("EXPIRED"), _("EXP")), "5"],
+    [abbr(_("WAIT"), _("WAITING-MAILCONFIRMATION")), "3"],
+    [abbr(_("RES"), _("RESERVED")), "4"],
+    [abbr(_("EXP"), _("EXPIRED")), "5"],
 ];
 
 $yesno =[1 => [_("Yes"), "1"], 0 => [_("No"), "0"]];
 
 $HD_Form->AddListValue(_("ID"), "id");
 $HD_Form->AddListValue(_("Account number"), "username", "display_customer_link");
-$HD_Form->AddListValue(abbr(_("Balance"), _("Bal")), "credit", "display_money");
+$HD_Form->AddListValue(abbr(_("Bal"), _("Balance")), "credit", "display_money");
 $HD_Form->AddListValue(_("Last name"), "lastname");
 $HD_Form->AddListMapping(_("Status"), "status", $cardstatus_list_acronym);
-$HD_Form->AddListValue(abbr(_("Language"), _("Lang")), "language");
+$HD_Form->AddListValue(abbr(_("Lang"), _("Language")), "language");
 $HD_Form->AddListValue(_("In use"), "inuse");
-$HD_Form->AddListValue(abbr(_("CURRENCY"), _("Cur")), "currency", $currency_list_key);
+$HD_Form->AddListMapping(abbr(_("Cur"), _("Currency")), "currency", $currency_list_key);
 $HD_Form->AddListMapping(_("SIP"), "sip_buddy", $yesno);
 $HD_Form->AddListMapping(_("IAX"), "iax_buddy", $yesno);
-$HD_Form->AddListValue(abbr(_("Number of calls"), _("Num")), "nbused");
+$HD_Form->AddListValue(abbr(_("Num"), _("Number of calls")), "nbused");
 $HD_Form->FieldViewElement([
     "id",
     "username",
