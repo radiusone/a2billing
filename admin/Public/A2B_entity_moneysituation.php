@@ -2,7 +2,6 @@
 
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -35,7 +34,7 @@ use A2billing\Table;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
-**/
+ **/
 
 $menu_section = 10;
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
@@ -86,8 +85,8 @@ if (count($list) > 0) {
     $QUERY_INVOICE_COUNT = <<< SQL
         SELECT EXTRACT(MONTH FROM cc_invoice.date) AS mo,
             COUNT(*) AS total_ct,
-            SUM(CASE WHEN paid_status = 0 THEN 1 ELSE 0 END) AS unpaid_ct,
-            SUM(CASE WHEN paid_status = 1 THEN 1 ELSE 0 END) AS paid_ct
+            SUM(CASE paid_status WHEN 0 THEN 1 ELSE 0 END) AS unpaid_ct,
+            SUM(CASE paid_status WHEN 1 THEN 1 ELSE 0 END) AS paid_ct
         FROM cc_invoice
         WHERE cc_invoice.date >= ?
             AND cc_invoice.date <= CURRENT_TIMESTAMP
@@ -100,11 +99,15 @@ if (count($list) > 0) {
     for ($i = 0; $i <= $nb_month; $i++) {
         $dt = new DateTime("$i months ago");
         $mo = (int)$dt->format("m");
-        $ct_row = array_values(array_filter($result_invoice_count, fn ($v) => (int)$v["mo"] === $mo));
+        $ct_row = array_values(
+            array_filter($result_invoice_count, fn ($v) => (int)$v["mo"] === $mo)
+        );
         $table_data[] = [
             $dt->format("F"),
             $ct_row[0]["total_ct"] ?? 0,
-            array_values(array_filter($result_invoice_enough_paid, fn ($v) => (int)$v["mo"] === $mo))[0]["ct"] ?? 0,
+            array_values(
+                array_filter($result_invoice_enough_paid, fn ($v) => (int)$v["mo"] === $mo)
+            )[0]["ct"] ?? 0,
             $ct_row[0]["paid_ct"] ?? 0,
             $ct_row[0]["unpaid_ct"] ?? 0,
         ];

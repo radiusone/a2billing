@@ -155,7 +155,7 @@ $show_fields['credit']=array("<acronym title=\"".gettext("BALANCE")."\">".gettex
 if (!($popup_select>=1)) {
 	$serial_pad_length=$A2B->config["webui"]['card_serial_length'];
 	$show_fields['id_seria']=array(gettext("SERIA"), "id_seria", "*", "center", "sort", "15", "lie", "cc_card_seria", "name","id='%id'", "%1","");
-	$show_fields['serial']=array("<acronym title=\"".gettext("SERIAL NUMBER")."\">SERIAL#</acronym>", "serial", "*","center", "sort","","eval",'str_pad("%C",'.$serial_pad_length.' , "0", STR_PAD_LEFT)');
+	$show_fields['serial']=array("<acronym title=\"".gettext("SERIAL NUMBER")."\">SERIAL#</acronym>", "serial", "*","center", "sort");
 	$show_fields['tariff']=array("<acronym title=\"".gettext("Call Plan")."\">".gettext('PLAN')."</acronym>",
 	       "tariff", "8%", "center", "sort", "15", "lie", "cc_tariffgroup", "tariffgroupname", "id='%id'", "%1");
 	$show_fields['status']=array(gettext("STATUS"), "status", "4%", "center", "sort", "", "list", $cardstatus_list_acronym);
@@ -186,9 +186,6 @@ foreach ($show_list as $i => $value) {
 		$param = $param+array("","","","","","");#expand array to max length
 		$size = "*";
 		$param7=$param[7];
-		if ($param[6]=="eval"){
-			$param7 = str_replace('%C', '%'.$index, $param7);//because of dynamic nature need set current field for eval
-		};
 		if (array_key_exists($i,$show_list_sizes)) {
 			if ((strlen(trim($show_list_sizes[$i])==0))&&(strlen(trim($param[2])>0))){
 				$size=$param[2];
