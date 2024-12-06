@@ -346,9 +346,7 @@ function display_money(?float $value, $currency = BASE_CURRENCY): void
 
 function get_money(?float $value, $currency = BASE_CURRENCY): string
 {
-    if (is_null($value)) {
-        return "n/a";
-    }
+    $value ??= 0;
     if (class_exists("NumberFormatter")) {
         static $formatter = null;
         if (is_null($formatter)) {
@@ -1403,4 +1401,26 @@ function str_replace_conditional($search, $replace, string $subject, $test, $mat
     return $test == $match
         ? str_replace($search, $replace, $subject)
         : $subject;
+}
+
+function add(...$args): int
+{
+    return array_sum(array_map("intval", $args));
+}
+
+function sub(...$args): int
+{
+    $val = intval(array_shift($args));
+    array_walk($args, function ($v) use (&$val) {$val -= (int)$v;});
+
+    return $val;
+}
+
+function add_money(...$args): string
+{
+    return get_money(add(...$args));
+}
+function sub_money(...$args): string
+{
+    return get_money(sub(...$args));
 }
