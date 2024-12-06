@@ -6,7 +6,6 @@ use A2billing\Logger;
 use A2billing\Table;
 use ADOConnection;
 use Closure;
-use DateTime;
 use Profiler_Console as Console;
 use const PASSWORD_DEFAULT;
 
@@ -158,25 +157,6 @@ class FormHandler
 
     /** @var bool Whether to enable a delete button on the search to allow user to remove all searched items */
     public bool $search_delete_enabled = true;
-
-    public bool $search_date_enabled = false;
-
-    public string $search_date_text = '';
-
-    public string $search_date_column = 'creationdate';
-
-    public bool $search_date2_enabled = false;
-
-    public string $search_date2_text = '';
-
-    public string $search_date2_column = '';
-
-    /** @var bool Whether to display a 3rd time field in search (only used in A2B_data_archiving.php) */
-    public bool $search_months_ago_enabled = false;
-
-    public string $search_months_ago_text = '';
-
-    public string $search_months_ago_column = 'creationdate';
 
     /** @var bool Whether to enable a CSV export button at the bottom of a list view */
     public bool $FG_EXPORT_CSV = false;
@@ -1497,75 +1477,7 @@ class FormHandler
 
         $SQLcmd = '';
 
-        /** Old search field names */
-        $this->_processed["fromstatsday_sday"] = normalize_day_of_month($processed["fromstatsday_sday"], $processed["fromstatsmonth_sday"]);
-        $this->_processed["tostatsday_sday"] = normalize_day_of_month($processed["tostatsday_sday"], $processed["tostatsmonth_sday"]);
-
-        $search = extract_keys(
-            $processed,
-            "frommonth", "fromday", "fromstatsmonth", "fromstatsday_sday", "fromstatsmonth_sday",
-            "tomonth", "today", "tostatsmonth", "tostatsday_sday", "tostatsmonth_sday", "Period",
-        );
-
-        $date_clause = '';
-
-        if (!empty($processed['fromday']) && !empty($processed['fromstatsday_sday']) && !empty($processed['fromstatsmonth_sday'])) {
-            $dt = sprintf("%s-%02d 00:00:00", $processed["fromstatsmonth_sday"], $processed["fromstatsday_sday"]);
-            $date_clause .= " AND $this->search_date_column >= '$dt'";
-            $this->list_query_conditions[$this->search_date_column] = [">=", $dt];
-        }
-        if (!empty($processed['today']) && !empty($processed['tostatsday_sday']) && !empty($processed['tostatsmonth_sday'])) {
-            $dt = sprintf("%s-%02d 23:59:59", $processed["tostatsmonth_sday"], $processed["tostatsday_sday"]);
-            $date_clause .= " AND $this->search_date_column <= '$dt'";
-            $this->list_query_conditions[$this->search_date_column] = ["<=", $dt];
-        }
-
-        /** New search field names */
-        $search2 = extract_keys(
-            $processed,
-            "enable_search_start_date", "search_start_date", "enable_search_start_date2", "search_start_date2",
-            "enable_search_end_date", "search_end_date", "enable_search_end_date2", "search_end_date2",
-            "enable_search_months", "search_months",
-        );
-
-        $date1_clauses = [];
-        if (!empty($processed["enable_search_start_date"]) && !empty($processed["search_start_date"])) {
-            $dt = $processed["search_start_date"];
-            $date_clause .= " AND $this->search_date_column >= '$dt'";
-            $date1_clauses[] = [">=", $dt];
-        }
-        $date2_clauses = [];
-        if (!empty($processed["enable_search_start_date2"]) && !empty($processed["search_start_date2"])) {
-            $dt = $processed["search_start_date2"];
-            $date_clause .= " AND $this->search_date2_column >= '$dt'";
-            $date2_clauses[] = [">=", $dt];
-        }
-        if (!empty($processed["enable_search_end_date"]) && !empty($processed["search_end_date"])) {
-            $dt = $processed["search_end_date"] . " 23:59:59";
-            $date_clause .= " AND $this->search_date_column <= '$dt'";
-            $date1_clauses[] = ["<=", $dt];
-        }
-        if (!empty($processed["enable_search_end_date2"]) && !empty($processed["search_end_date2"])) {
-            $dt = $processed["search_end_date2"] . " 23:59:59";
-            $date_clause .= " AND $this->search_date2_column <= '$dt'";
-            $date2_clauses[] = ["<=", $dt];
-        }
-        if ($date1_clauses) {
-            // give an index so it doesn't get repeatedly added
-            $this->list_query_conditions[991] = ["SUB", [$this->search_date_column => $date1_clauses]];
-        }
-        if ($date2_clauses) {
-            $this->list_query_conditions[992] = ["SUB", [$this->search_date2_column => $date2_clauses]];
-        }
-        if (!empty($processed["enable_search_months"]) && !empty($processed["search_months"] * 1)) {
-            $mo = $processed["search_months"] * 1;
-            $dt = (new DateTime("-$mo months"))->format("Y-m-d");
-            $date_clause .= "AND $this->search_months_ago_column < '$dt'";
-            $this->list_query_conditions[$this->search_months_ago_column] = ["<", $dt];
-        }
-
-        // temporary until we get rid of old search forms
-        $search = array_merge($search, $search2);
+        $search = [];
 
         foreach ($this->search_form_elements as $el) {
             foreach ($el["input"] as $i => $input) {
@@ -1575,7 +1487,7 @@ class FormHandler
                 }
                 if ($el["type"] === "TEXT") {
                     $SQLcmd = $this->do_field($SQLcmd, $input, $el["operator"][$i]);
-                } elseif ($el["type"] === "COMPARISON" || ($el["type"] === "DATE" && !empty($processed["enable_${input}"]))) {
+                } elseif ($el["type"] === "COMPARISON" || ($el["type"] === "DATE" && !empty($processed["enable_$input"]))) {
                     $SQLcmd = $this->do_field_duration($SQLcmd, $el["column"], $el["operator"][$i], $input);
                 } elseif ($el["type"] === "SELECT" || $el["type"] === "SQL_SELECT" || $el["type"] === "POPUP") {
                     $SQLcmd = $this->do_field($SQLcmd, $input);
@@ -1586,11 +1498,6 @@ class FormHandler
         $_SESSION[$this->search_session_key] = json_encode(array_filter($search, fn($v) => is_string($v) && strlen($v)));
 
         $this->FG_QUERY_WHERE_CLAUSE = preg_replace("/^ *WHERE +/", "", $SQLcmd);
-        $date_clause = preg_replace("/^ AND /", "", $date_clause);
-        if ($this->FG_QUERY_WHERE_CLAUSE && $date_clause) {
-            $this->FG_QUERY_WHERE_CLAUSE .= " AND ";
-        }
-        $this->FG_QUERY_WHERE_CLAUSE .= $date_clause;
     }
 
     /****************************************

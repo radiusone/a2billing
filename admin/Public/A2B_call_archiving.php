@@ -203,12 +203,9 @@ if ($posted_archive === true) {
 $HD_Form->search_form_enabled = true;
 $HD_Form->search_session_key = 'call_archive_selection';
 $HD_Form->search_form_title = gettext('Define specific criteria to search for call records');
-
-$HD_Form->search_months_ago_enabled = true;
-$HD_Form->search_months_ago_column = "starttime";
 $HD_Form->search_delete_enabled = false;
-$HD_Form->search_months_ago_text = _("Calls older than");
 
+$HD_Form->AddSearchDateInput(_("Dates"), "starttime", true);
 $HD_Form->AddSearchDateInput(_("Dates"), "starttime");
 $HD_Form->AddSearchPopupInput("card_id", _("Customer ID"), "A2B_entity_card.php");
 $HD_Form->AddSearchPopupInput("id_tariffgroup", _("Call Plan"), "A2B_entity_tariffgroup.php", 2);

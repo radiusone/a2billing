@@ -127,10 +127,7 @@ $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 30;
 $HD_Form->search_form_enabled = true;
 $HD_Form->search_form_title = _('Define specific criteria to search for cards created.');
 
-$HD_Form->search_months_ago_enabled = true;
-$HD_Form->search_months_ago_text = _('Select customer created more than');
-$HD_Form->search_months_ago_column = 'creationdate';
-
+$HD_Form->AddSearchDateInput(_("Creation date"), "creationdate", true);
 $HD_Form->AddSearchDateInput(_("Creation date"), "creationdate");
 $HD_Form->AddSearchDateInput(_("First use date"), "firstusedate");
 $HD_Form->AddSearchTextInput(_("Account"), 'username');

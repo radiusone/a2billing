@@ -153,7 +153,7 @@ use A2billing\Forms\FormHandler;
                         aria-label="<?= _("enable the search end date") ?>"
                         <?php if ($processed["enable_" . $item["input"][1]] ?? ""): ?>checked="checked"<?php endif ?>
                         class="form-check-input m-0 date-input-enabler <?= $item["relative"] ? "months-ago-enabler" : "" ?>"
-                    />&nbsp;<label for="enable_<?= $item["input"][1] ?>" class="form-label form-label-sm m-0"><?= $item["relative"] ? _("To") : _("Before") ?></label>
+                    />&nbsp;<label for="enable_<?= $item["input"][1] ?>" class="form-label form-label-sm m-0"><?= $item["relative"] ? _("Before") : _("To") ?></label>
                 </div>
             <?php if ($item["relative"]): ?>
                 <select name="<?= $item["input"][1] ?>" id="<?= $item["input"][1] ?>" class="form-select form-select-sm" aria-labelledby="item<?= $k ?>_label">
