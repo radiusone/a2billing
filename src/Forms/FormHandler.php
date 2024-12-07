@@ -915,6 +915,7 @@ class FormHandler
         $inputnames = ["${fieldname}_start", "${fieldname}_end"];
         if ($relative) {
             unset($inputnames[0]);
+            $inputnames[1] .= "_months";
         }
         $this->search_form_elements[] = [
             "label" => $label,

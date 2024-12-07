@@ -103,7 +103,7 @@ $(function() {
     ***/
     $(".date-input-enabler")
         .on("change", function() {
-            const id = this.getAttribute("id").replace(/^enable_/, "");
+            const id = this.getAttribute("id").replace(/^enable_(.*?)(_months)?/, "$1");
             $(`#${id}`).prop("disabled", !this.checked);
             if ($(this).hasClass("months-ago-enabler") && this.checked) {
                 $(".date-input-enabler:not(.months-ago-enabler)").prop("checked", false).change();

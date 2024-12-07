@@ -39,20 +39,13 @@ use A2billing\Table;
 
 $menu_section = 16;
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
-/**
- * @var Smarty $smarty
- * @var FormHandler $HD_Form
- * @var string $popup_select
- * @var string $popup_formname
- * @var string $popup_fieldname
- */
 
 Admin::checkPageAccess(Admin::ACX_MAINTENANCE);
 
 getpost_ifset([
     "posted_search", "posted_archive", "enable_starttime_start", "starttime_start", "enable_starttime_end",
-    "starttime_end", "enable_search_months", "search_months", "card_id", "id_provider", "id_tariffgroup",
-    "id_trunk", "id_ratecard", "dst", "dsttype", "src", "srctype", "calltype"
+    "starttime_end", "enable_starttime_end_months", "starttime_end_months", "card_id", "id_provider",
+    "id_tariffgroup", "id_trunk", "id_ratecard", "dst", "dsttype", "src", "srctype", "calltype"
 ]);
 /**
  * @var bool|string $posted_search whether the user has clicked the search button
@@ -61,8 +54,8 @@ getpost_ifset([
  * @var string $starttime_start
  * @var bool|string $enable_starttime_end
  * @var string $starttime_end
- * @var bool|string $enable_search_months
- * @var string $search_months
+ * @var bool|string $enable_starttime_end_months
+ * @var string $starttime_end_months
  * @var string $card_id
  * @var string $id_provider
  * @var string $id_tariffgroup
@@ -79,7 +72,7 @@ $posted_search = (bool)($posted_search ?? false);
 $posted_archive = (bool)($posted_archive ?? false);
 $enable_starttime_start = (bool)($enable_starttime_start ?? false);
 $enable_starttime_end = (bool)($enable_starttime_end ?? false);
-$enable_search_months = (bool)($enable_search_months ?? false);
+$enable_starttime_end_months = (bool)($enable_starttime_end_months ?? false);
 $card_id = (int)($card_id ?? 0);
 $id_provider = (int)($id_provider ?? 0);
 $id_tariffgroup = (int)($id_tariffgroup ?? 0);
@@ -154,8 +147,8 @@ if ($enable_starttime_start && !empty($starttime_start)) {
 if ($enable_starttime_end && !empty($starttime_end)) {
     $HD_Form->list_query_conditions[] = ["SUB", ["starttime" => ["<=", "$starttime_end 23:59:59"]]];
 }
-if ($enable_search_months) {
-    $interval = "$search_months MONTH";
+if ($enable_starttime_end_months) {
+    $interval = "$starttime_end_months MONTH";
     if (DB_TYPE == "postgres") {
         $interval = "'$interval'";
     }

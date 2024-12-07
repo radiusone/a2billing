@@ -159,7 +159,7 @@ use A2billing\Forms\FormHandler;
                 <select name="<?= $item["input"][1] ?>" id="<?= $item["input"][1] ?>" class="form-select form-select-sm" aria-labelledby="item<?= $k ?>_label">
                     <?php for ($i=3 ; $i<=12 ; $i++): ?>
                         <option
-                        <?php if (($processed['search_months'] ?? 0) === "$i"): ?>
+                        <?php if (($processed[$item["input"][1]] ?? 0) === "$i"): ?>
 
                             selected="selected"
                         <?php endif ?>
