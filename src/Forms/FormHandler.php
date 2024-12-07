@@ -1488,7 +1488,7 @@ class FormHandler
         foreach ($this->FG_EDIT_FORM_ELEMENTS as &$row) {
             if (empty($row["custom_query"])) {
                 $fields_name = $row["name"];
-                $regexp = $row["regex"];
+                $regexp = $row["regex"] ?? null;
 
                 if (str_contains($row["attributes"], "multiple") && is_array($processed[$fields_name])) {
                     $total_mult_select = (int)array_sum($processed[$fields_name]);
@@ -1509,6 +1509,17 @@ class FormHandler
                         $row["validation_err"] = _("Validation error");
                         $this->VALID_SQL_REG_EXP = false;
                         $form_action = "ask-add";
+                    } elseif (!empty($row["validator"])) {
+                        if ($processed[$fields_name] === "" && str_starts_with($row["check_empty"] ?? "", "NO")) {
+                            $result = true;
+                        } else {
+                            $result = call_user_func($row["validator"], $processed[$fields_name]);
+                        }
+                        if ($result !== true) {
+                            $this->VALID_SQL_REG_EXP = false;
+                            $form_action = "ask-add";
+                        }
+                        $row["validation_err"] = $result;
                     }
                     // CHECK IF THIS IS A SPLITABLE FIELD LIKE 012-014 OR 15,16,17
                     if (in_array($fields_name, $this->FG_SPLITABLE_FIELDS) && !str_starts_with($processed[$fields_name], '_')) {
