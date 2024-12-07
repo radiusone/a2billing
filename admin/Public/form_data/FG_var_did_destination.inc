@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Forms\FormHandler;
+use A2billing\Forms\Validator;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -100,7 +101,7 @@ if ($form_action !== "ask-edit" && $form_action !== "edit") {
         "A2B_entity_card.php?popup_select=1&",
         _("Select the Customer ID"),
         "",
-        4,
+        [Validator::class, "numeric"],
         _("Insert the Customer ID")
     );
 

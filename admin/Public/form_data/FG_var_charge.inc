@@ -2,6 +2,7 @@
 
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
+use A2billing\Forms\Validator;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -96,7 +97,7 @@ $HD_Form_c->AddEditPopup(
     "A2B_entity_card.php?popup_select=1&",
     _("Set the Customer ID"),
     "",
-    4,
+    [Validator::class, "numeric"],
     _("Insert the Customer ID")
 );
 

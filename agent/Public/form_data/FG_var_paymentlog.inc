@@ -2,6 +2,7 @@
 
 use A2billing\Agent;
 use A2billing\Forms\FormHandler;
+use A2billing\Forms\Validator;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -165,7 +166,7 @@ $HD_Form->AddEditPopup(
     "card_id",
     "A2B_entity_card.php?popup_select=1&",
     gettext("Select the Customer ID"),
-    "", 4, gettext("Insert the Customer ID")
+    "", [Validator::class, "numeric"], gettext("Insert the Customer ID")
 );
 
 $HD_Form -> FG_FILTER_ENABLE = true;

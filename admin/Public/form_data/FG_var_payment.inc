@@ -2,6 +2,7 @@
 
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
+use A2billing\Forms\Validator;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -112,7 +113,7 @@ if (has_rights (Admin::ACX_MODIFY_PAYMENTS)) {
         "A2B_entity_card.php?popup_select=1&",
         _("Select the Customer ID"),
         "value='$id_val'",
-        4, _("Insert the Customer ID")
+        [Validator::class, "numeric"], _("Insert the Customer ID")
     );
 
     $comp_date = ($form_action === "ask-add") ? (new DateTime())->format("Y-m-d H:i:s") : "";

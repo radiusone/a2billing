@@ -646,8 +646,7 @@ class FormHandler
         if (!$field_enabled) {
             return;
         }
-        $cur = count($this->FG_EDIT_FORM_ELEMENTS);
-        $data = [
+        $this->FG_EDIT_FORM_ELEMENTS[] = [
             "label" => $label_text, // 0
             "name" => $fieldname, // 1
             "type" => "INPUT", // 3
@@ -660,7 +659,6 @@ class FormHandler
             "comment" => $form_text_bottom,
             "validation_err" => true,
         ];
-        $this->FG_EDIT_FORM_ELEMENTS[$cur] = $data;
     }
 
     /**
@@ -675,7 +673,7 @@ class FormHandler
         string $section_name = ""
     )
     {
-        $data = [
+        $this->FG_EDIT_FORM_ELEMENTS[] = [
             "label" => $label_text,
             "name" => $fieldname,
             "type" => "DAYTIME",
@@ -685,8 +683,6 @@ class FormHandler
             "validation_err" => true,
             "default" => $default_value,
         ];
-
-        $this->FG_EDIT_FORM_ELEMENTS[] = $data;
     }
 
     /**
@@ -720,8 +716,7 @@ class FormHandler
         array  $custom_query = []
     ): void
     {
-        $cur = count($this->FG_EDIT_FORM_ELEMENTS);
-        $data = [
+        $this->FG_EDIT_FORM_ELEMENTS[] = [
             "label" => $label_text,
             "name" => $fieldname,
             "default" => $default_value,
@@ -739,7 +734,6 @@ class FormHandler
             "comment" => $form_text_bottom,
             "validation_err" => true,
         ];
-        $this->FG_EDIT_FORM_ELEMENTS[$cur] = $data;
     }
 
     /**
@@ -764,8 +758,7 @@ class FormHandler
         string $section_name = ""
     ): void
     {
-        $cur = count($this->FG_EDIT_FORM_ELEMENTS);
-        $data = [
+        $this->FG_EDIT_FORM_ELEMENTS[] = [
             "label" => $label_text,
             "name" => $fieldname,
             "default" => $default_value,
@@ -780,7 +773,6 @@ class FormHandler
             "comment" => $form_text_bottom,
             "validation_err" => true,
         ];
-        $this->FG_EDIT_FORM_ELEMENTS[$cur] = $data;
     }
 
     /**
@@ -805,8 +797,7 @@ class FormHandler
         string $section_name = ""
     ): void
     {
-        $cur = count($this->FG_EDIT_FORM_ELEMENTS);
-        $data = [
+        $this->FG_EDIT_FORM_ELEMENTS[] = [
             "label" => $label_text,
             "name" => $fieldname,
             "default" => $default_value,
@@ -819,7 +810,6 @@ class FormHandler
             "comment" => $form_text_bottom,
             "validation_err" => true,
         ];
-        $this->FG_EDIT_FORM_ELEMENTS[$cur] = $data;
     }
 
     /**
@@ -828,7 +818,7 @@ class FormHandler
      * @param string $href The address of the popup
      * @param string $form_text_bottom Text to display below the form input
      * @param string $html_attributes HTML attributes for the input
-     * @param int|null $regex_nb A validation method number
+     * @param callable<string>|null $validator A validation method that returns true or an error message
      * @param string $error_message A message to show if validation fails
      * @return void
      */
@@ -838,24 +828,22 @@ class FormHandler
         string $href,
         string $form_text_bottom = "",
         string $html_attributes = "",
-        ?int   $regex_nb = 4,
+        ?callable $validator = null,
         string $error_message = ""
     ): void
     {
-        $cur = count($this->FG_EDIT_FORM_ELEMENTS);
-        $data = [
+        $this->FG_EDIT_FORM_ELEMENTS[] = [
             "label" => $label_text,
             "name" => $fieldname,
             "popup_dest" => $href,
             "popup_params" => "width=750,height=450,top=50,left=100,scrollbars=1",
             "type" => "POPUPVALUE",
             "attributes" => $html_attributes,
-            "regex" => $regex_nb,
+            "validator" => $validator,
             "error" => $error_message,
             "comment" => $form_text_bottom,
             "validation_err" => true,
         ];
-        $this->FG_EDIT_FORM_ELEMENTS[$cur] = $data;
     }
 
     /**
@@ -873,8 +861,7 @@ class FormHandler
         string $section_name = ""
     ): void
     {
-        $cur = count($this->FG_EDIT_FORM_ELEMENTS);
-        $data = [
+        $this->FG_EDIT_FORM_ELEMENTS[] = [
             "type" => "HAS_MANY",
             "label" => $label_text,
             "custom_query" => $query_data,
@@ -883,7 +870,6 @@ class FormHandler
             "regex" => null,
             "validation_err" => true,
         ];
-        $this->FG_EDIT_FORM_ELEMENTS[$cur] = $data;
     }
 
     /**
@@ -891,7 +877,7 @@ class FormHandler
      * @param string $fieldname The form input name
      * @param string $form_text_bottom Text to display below the form input
      * @param string $html_attributes HTML attributes for the input
-     * @param int|null $regex_nb A validation method number
+     * @param callable<string>|null $validator A validation method that returns true or an error message
      * @param string $error_message A message to show if validation fails
      * @param string $section_name If provided, added as a row above the input
      * @return void
@@ -901,7 +887,7 @@ class FormHandler
         string $fieldname,
         string $form_text_bottom = "",
         string $html_attributes = "",
-        ?int   $regex_nb = null,
+        ?callable $validator = null,
         string $error_message = "",
         string $section_name = ""
     ): void
@@ -913,7 +899,7 @@ class FormHandler
             "section" => $section_name,
             "attributes" => $html_attributes,
             "comment" => $form_text_bottom,
-            "regex" => $regex_nb,
+            "validator" => $validator,
             "error" => $error_message,
             "validation_err" => true,
         ];

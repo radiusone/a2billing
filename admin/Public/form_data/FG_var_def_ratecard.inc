@@ -3,6 +3,7 @@
 use A2billing\A2Billing;
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
+use A2billing\Forms\Validator;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -169,7 +170,7 @@ $HD_Form->AddEditPopup(
     "A2B_entity_prefix.php?popup_select=2&",
     _("Select the prefix destination corresponding to your prefix rate.") . '<br>' . _("This is the label that appears against the Call Detail Record."),
     "",
-    9
+    [Validator::class, "min1Char"]
 );
 
 $HD_Form->AddEditElement("Buy Rate",

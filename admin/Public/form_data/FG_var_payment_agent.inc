@@ -2,6 +2,7 @@
 
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
+use A2billing\Forms\Validator;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -107,7 +108,7 @@ if (has_rights (Admin::ACX_MODIFY_PAYMENTS)) {
         "A2B_entity_agent.php?popup_select=1&",
         _("Select the Agent ID"),
         $id_val,
-        4,
+        [Validator::class, "numeric"],
         _("Insert the AGENT ID ")
     );
 
