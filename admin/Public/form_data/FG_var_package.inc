@@ -37,40 +37,32 @@ use A2billing\Forms\FormHandler;
 
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
-getpost_ifset(array('id', 'label', 'packagetype', 'billingtype','startday', 'freetimetocall'));
+$form_action ??= "list";
 
-$HD_Form = new FormHandler("cc_package_offer", "OFFER PACKAGE");
+$HD_Form = new FormHandler("cc_package_offer", _("Package"));
 
-$HD_Form -> FG_TABLE_DEFAULT_ORDER = " label";
-$HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
-
-
-$HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_package.php?form_action=ask-add";
-$HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add Package");
+$HD_Form->FG_TABLE_DEFAULT_ORDER = "label";
+$HD_Form->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("package_add.png") ;
-
-
-
 
 $packagetype_list = getPackagesTypeList();
 $billingtype_list = [[_("Monthly"), 0], [_("Weekly"), 1]];
 
-// If packagetype == NUMBER OF FREE CALL -> concat unit with "times"
-// Else concat with "sec"
-if ($A2B->config["database"]['dbtype'] == 'postgres') // Postgres doesn't like double quotes...
-	$filter_unit = "CASE packagetype WHEN 1 THEN CONCAT( freetimetocall, ' times' ) WHEN 0 THEN 'ALL' ELSE CONCAT( freetimetocall, ' sec' ) END ";
-else // And I don't know if mysql likes them single.
-	$filter_unit = 'CASE packagetype WHEN 1 THEN CONCAT( freetimetocall, " times" ) WHEN 0 THEN "ALL" ELSE CONCAT( freetimetocall, " sec" ) END ';
-
-$HD_Form -> AddViewElement(gettext("LABEL"), "label");
-$HD_Form -> AddViewElement(gettext("CREATION DATE"), "creationdate", true, 19);
-$HD_Form -> AddViewElement(gettext("PACKAGE TYPE"), "packagetype", true, 0, "", "list", $packagetype_list);
-$HD_Form -> AddViewElement(gettext("BILLING TYPE"), "billingtype", true, 0, "", "list", $billingtype_list);
-$HD_Form -> AddViewElement(gettext("STARTING DAY"), "startday");
-$HD_Form -> AddViewElement(gettext("FREE"), "freetimetocall");
-
-$HD_Form -> FieldViewElement ('label, creationdate, packagetype, billingtype, startday, '.$filter_unit);
+$HD_Form->AddListValue(_("Label"), "label");
+$HD_Form->AddListValue(_("Creation date"), "creationdate");
+$HD_Form->AddListMapping(_("Type"), "packagetype", $packagetype_list);
+$HD_Form->AddListMapping(_("Billing"), "billingtype", $billingtype_list);
+$HD_Form->AddListValue(_("Starting day"), "startday");
+$HD_Form->AddListValue(_("Free calls"), "freetimetocall");
+$HD_Form-> FieldViewElement([
+    "label",
+    "creationdate",
+    "packagetype",
+    "billingtype",
+    "startday",
+    // If packagetype == NUMBER OF FREE CALL -> concat unit with "times"
+    "CASE packagetype WHEN 0 THEN 'ALL' WHEN 1 THEN CONCAT( freetimetocall, ' times') ELSE CONCAT(freetimetocall, ' sec') END"
+]);
 
 $HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
@@ -80,47 +72,42 @@ $HD_Form->AddListActionButton(
     _("Add rates"),
     ""
 );
+
 $HD_Form->AddEditElement(
-    gettext("LABEL"),
+    _("LABEL"),
     "label",
     "",
     "size=30 maxlength=30",
-    0,
-    gettext("Insert the package label")
+    0, // [Validator::class, "min3Chars"]
+    _("Insert the package label")
 );
 
-$HD_Form->AddEditSelect(gettext("PACKAGE TYPE"), "packagetype", $packagetype_list);
+$HD_Form->AddEditSelect(_("PACKAGE TYPE"), "packagetype", $packagetype_list);
+$HD_Form->AddEditSelect(_("BILLING TYPE"), "billingtype", $billingtype_list);
 
-$HD_Form->AddEditSelect(gettext("BILLING TYPE"), "billingtype", $billingtype_list);
-
-if (isset($form_action) && $form_action=="ask-add") {
-	$default_init = "value='1'";
-}
+$default_init = $form_action === "ask-add" ? "value='1'" : "";
 
 $HD_Form->AddEditElement(
-    gettext("STARTING DAY"),
+    _("STARTING DAY"),
     "startday",
-    gettext("The value will be related to billing type ; if monthly accepted value are 1-31 ; if Weekly accepted value 1-7 (Monday to Sunday) "),
+    _("The value will be related to billing type ; if monthly accepted value are 1-31 ; if Weekly accepted value 1-7 (Monday to Sunday) "),
     "size=10 $default_init maxlength=5",
-    4,
-    gettext("Insert the start day")
+    4, // [Validator::class, "numeric"]
+    _("Insert the start day")
 );
 
 
 $HD_Form->AddEditElement(
-    gettext("FREE UNITS"),
+    _("FREE UNITS"),
     "freetimetocall",
-    gettext("Insert the amount of free units, in seconds,for the FREE SECONDS mode. For NUMBER OF FREE CALLS insert the number of free calls"),
+    _("Insert the amount of free units, in seconds,for the FREE SECONDS mode. For NUMBER OF FREE CALLS insert the number of free calls"),
     "size=10 maxlength=10",
-    4,
-    gettext("Insert the amount of free time to call (seconds)")
+    4, // [Validator::class, "numeric"]
+    _("Insert the amount of free time to call (seconds)")
 );
 
-$HD_Form -> FG_INTRO_TEXT_ADITION = '';
+$HD_Form -> FG_INTRO_TEXT_ADITION = "";
 
 $HD_Form -> FG_LOCATION_AFTER_ADD = "?id=";
 $HD_Form -> FG_LOCATION_AFTER_EDIT = "?id=";
 $HD_Form -> FG_LOCATION_AFTER_DELETE = "?id=";
-
-
-

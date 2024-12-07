@@ -1,13 +1,7 @@
 <?php
 
-use A2billing\A2Billing;
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
-
-/**
- * @var A2Billing $A2B
- * @var string $form_action
- */
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -41,41 +35,35 @@ use A2billing\Forms\FormHandler;
  *
 **/
 
-Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
-
-getpost_ifset(['id', 'destination','prefix','popup_select','popup_formname','popup_fieldname']);
 /**
- * @var string $id
- * @var string $destination
- * @var string $prefix
  * @var string $popup_select
  * @var string $popup_formname
  * @var string $popup_fieldname
  */
 
-$HD_Form = new FormHandler("cc_prefix", "prefix", "prefix");
+Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
-$HD_Form -> FG_TABLE_DEFAULT_ORDER = "destination";
+$HD_Form = new FormHandler("cc_prefix", _("Prefix"), "prefix");
 
-$HD_Form -> FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form -> FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_prefix.php?form_action=ask-add";
-$HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = _("Add PREFIX");
-$HD_Form -> FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("world_add.png") ;
+$HD_Form->FG_TABLE_DEFAULT_ORDER = "destination";
 
-$HD_Form -> AddViewElement(_("Prefix"), "prefix");
-$HD_Form -> AddViewElement(_("Destination"), "destination");
-$HD_Form -> FieldViewElement ('prefix, destination');
+$HD_Form->FG_LIST_ADDING_BUTTON1 = true;
+$HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("world_add.png") ;
+
+$HD_Form->AddListValue(_("Prefix"), "prefix");
+$HD_Form->AddListValue(_("Destination"), "destination");
+$HD_Form->FieldViewElement ('prefix, destination');
 
 if ($popup_select) {
-	$HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 7;
-    $HD_Form -> CV_FOLLOWPARAMETERS = http_build_query(compact("popup_select", "popup_formname", "popup_fieldname"), "", "&amp;");
+	$HD_Form->FG_LIST_VIEW_PAGE_SIZE = 7;
+    $HD_Form->CV_FOLLOWPARAMETERS = http_build_query(compact("popup_select", "popup_formname", "popup_fieldname"), "", "&amp;");
     $HD_Form->AddListSelectActionButton(
         $popup_select === "1" ? "javascript:sendValue('|param|');" : "javascript:sendValue('|col0|');",
     );
 } else {
-	$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
-	$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
-	$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
+	$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
+	$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
+	$HD_Form->FG_ENABLE_ADD_BUTTON = true;
 }
 
 $HD_Form->AddEditElement(
@@ -98,12 +86,12 @@ $HD_Form->AddEditElement(
 
 $HD_Form->update_query_conditions = ["prefix" => "%id"];
 
-$HD_Form -> FG_FILTER_ENABLE = true;
-$HD_Form -> FG_FILTER_COLUMN = 'prefix';
-$HD_Form -> FG_FILTER_LABEL = 'prefix';
+$HD_Form->FG_FILTER_ENABLE = true;
+$HD_Form->FG_FILTER_COLUMN = "prefix";
+$HD_Form->FG_FILTER_LABEL = _("Prefix");
 
-$HD_Form -> FG_INTRO_TEXT_EDITION= '';
-$HD_Form -> FG_INTRO_TEXT_ADITION = '';
-$HD_Form -> FG_LOCATION_AFTER_ADD = "?id=";
-$HD_Form -> FG_LOCATION_AFTER_EDIT = "?id=";
-$HD_Form -> FG_LOCATION_AFTER_DELETE = "?id=";
+$HD_Form->FG_INTRO_TEXT_EDITION= "";
+$HD_Form->FG_INTRO_TEXT_ADITION = "";
+$HD_Form->FG_LOCATION_AFTER_ADD = "?id=";
+$HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";
+$HD_Form->FG_LOCATION_AFTER_DELETE = "?id=";

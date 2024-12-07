@@ -1,6 +1,5 @@
 <?php
 
-use A2billing\A2Billing;
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
 

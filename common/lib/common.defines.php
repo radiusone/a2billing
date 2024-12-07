@@ -70,7 +70,7 @@ getpost_ifset (['form_action', 'action', 'form_el_index', 'current_page', 'order
  * @var string $msg
  * @var string $exporttype
  */
-$popup_select ??= "";
+$popup_select ??= "0";
 $popup_formname ??= "";
 $popup_fieldname ??= "";
 $form_action ??= null;

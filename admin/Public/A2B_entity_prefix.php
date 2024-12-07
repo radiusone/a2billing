@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -38,6 +39,10 @@ use A2billing\Admin;
 $menu_section = 7;
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
 require_once __DIR__ . "/form_data/FG_var_prefix.inc";
+/**
+ * @var FormHandler $HD_Form
+ * @var numeric-string $popup_select
+ */
 
 Admin::checkPageAccess(Admin::ACX_TRUNK);
 
@@ -48,19 +53,6 @@ $list = $HD_Form->perform_action($form_action);
 
 require_once __DIR__ . "/../templates/main.php";
 
-if ($popup_select) {
-?>
-<script>
-function sendValue(selvalue) {
-    var formname = <?= json_encode($popup_formname ?? "") ?>;
-    var fieldname = <?= json_encode($popup_fieldname ?? "") ?>;
-    $(`form[name='${formname}'] [name='${fieldname}']`, window.opener.document).val(selvalue);
-    window.close();
-}
-</script>
-<?php
-}
-
 // #### HELP SECTION
 if (!$popup_select) {
     echo create_help(_("Prefix list with destinations."), 'BrowsePrefix');
@@ -68,9 +60,17 @@ if (!$popup_select) {
 
 // #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);
-
 $HD_Form->create_form($form_action, $list);
 
 // #### FOOTER SECTION
-if (!$popup_select)
-    require_once __DIR__ . "/../templates/footer.php";
+require_once __DIR__ . "/../templates/footer.php";
+?>
+<script>
+    function sendValue(selvalue) {
+        var formname = <?= json_encode($popup_formname ?? "") ?>;
+        var fieldname = <?= json_encode($popup_fieldname ?? "") ?>;
+        $(`form[name='${formname}'] [name='${fieldname}']`, window.opener.document).val(selvalue);
+        window.close();
+    }
+</script>
+

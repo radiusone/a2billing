@@ -38,24 +38,21 @@ use A2billing\Forms\FormHandler;
 
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
-$HD_Form = new FormHandler("cc_monitor", "Monitoring");
+$HD_Form = new FormHandler("cc_monitor", _("Monitoring"));
 
 $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_monitor.php?form_action=ask-add";
-$HD_Form->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form->FG_LIST_ADDING_BUTTON_MSG1 = _("Add Monitoring");
 $HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("map.png") ;
 
 $mquery_type_list = [[], [_("SQL"), "1"], [_("SHELL SCRIPT"), "2"]];
 $mresult_type_list = [[], [_("TEXT2SPEECH"), "1"], [_("UNIXTIME"), "2"], [_("NUMBER"), "3"], [_("DIGIT"), "4"]];
 $actived_list = getActivationList() ;
 
-$HD_Form->AddViewElement(_("LABEL"), "label");
-$HD_Form->AddViewElement(_("DIAL CODE"), "dial_code");
-$HD_Form->AddViewElement(_("DESCRIPTION"), "description", true, 70);
-$HD_Form->AddViewElement(_("TEXT"), "text_intro", true, 70);
-$HD_Form->AddViewElement(_("ENABLE"), "enable", true, 30, "", "list", $actived_list);
-
-$HD_Form->FieldViewElement ('label, dial_code, description, text_intro, enable');
+$HD_Form->AddListValue(_("Label"), "label");
+$HD_Form->AddListValue(_("Dial code"), "dial_code");
+$HD_Form->AddListValue(_("Description"), "description", "substr", ["%X", 0, 70]);
+$HD_Form->AddListValue(_("Text"), "text_intro", "substr", ["%X", 0, 70]);
+$HD_Form->AddListMapping(_("ENABLE"), "enable", $actived_list);
+$HD_Form->FieldViewElement (["label", "dial_code", "description", "text_intro", "enable"]);
 
 $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
@@ -66,7 +63,7 @@ $HD_Form->AddEditElement(
     "label",
     "",
     "size=30 maxlength=50",
-    3,
+    3, // [Validator::class, "min4Chars"]
     _("Insert the label")
 );
 
@@ -75,7 +72,7 @@ $HD_Form->AddEditElement(
     "dial_code",
     "",
     "size=5 maxlength=3",
-    4,
+    4, // [Validator::class, "numeric"]
     _("Insert the dial code")
 );
 
@@ -83,7 +80,9 @@ $HD_Form->AddEditTextarea(
     _("DESCRIPTION"),
     "description",
     "",
-    "cols='60' rows='2'", null, _("Insert the description")
+    "cols='60' rows='2'",
+    null,
+    _("Insert the description")
 );
 
 $HD_Form->AddEditElement(
@@ -91,7 +90,7 @@ $HD_Form->AddEditElement(
     "text_intro",
     "",
     "size=30 maxlength=50",
-    3,
+    3, // [Validator::class, "min4Chars"]
     _("Insert the text intro")
 );
 

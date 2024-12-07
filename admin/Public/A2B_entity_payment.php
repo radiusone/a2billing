@@ -41,10 +41,7 @@ $menu_section = 10;
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
 require_once __DIR__ . "/form_data/FG_var_payment.inc";
 /**
- * @var A2Billing $A2B
- * @var Smarty $smarty
  * @var FormHandler $HD_Form
- * @var string $id
  */
 
 Admin::checkPageAccess(Admin::ACX_BILLING);
@@ -52,7 +49,6 @@ Admin::checkPageAccess(Admin::ACX_BILLING);
 $HD_Form->init();
 
 $form_action ??= "list";
-$action = $action ?? $form_action;
 
 $list = $HD_Form->perform_action($form_action);
 
@@ -68,7 +64,6 @@ if ($form_action === "list") {
 }
 
 $HD_Form->create_toppage($form_action);
-
 $HD_Form->create_form($form_action, $list);
 
 require_once __DIR__ . "/../templates/footer.php";

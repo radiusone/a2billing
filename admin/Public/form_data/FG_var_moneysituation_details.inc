@@ -37,36 +37,36 @@ use A2billing\Forms\FormHandler;
 
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
-getpost_ifset(array('id', 'displayheader', 'type','popup_select','popup_formname','popup_fieldname'));
+getpost_ifset(["id", "type"]);
+/**
+ * @var numeric-string|null $id
+ * @var string|null $type
+ */
 
+$type ??= "refill";
 
-// type : refill or payment
-if ($type=='payment'){
-	$HD_Form = new FormHandler("cc_logpayment as t2", "Payment");
-    $HD_Form->list_query_conditions["t2.card_id"] = $id;
+if ($type === "payment"){
+	$HD_Form = new FormHandler("cc_logpayment", _("Payment"));
+    $HD_Form->list_query_conditions["card_id"] = $id;
 	$HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
-	//SELECT t3.date, t3.credit, t3.reseller_id from cc_logrefill as t3 WHERE t3.card_id='1'
-	//SELECT t2.date, t2.payment, t2.reseller_id from cc_logpayment as t2 WHERE t2.card_id='1'
-	$HD_Form -> AddViewElement(gettext("DATE"), "date", true, 30);
-	$HD_Form -> AddViewElement(gettext("AMOUNT"), "payment");
-
-	$HD_Form -> FieldViewElement ('t2.date, t2.payment');
-}else{
-	$list_sql = "cc_invoice ".
-	            "LEFT JOIN ( SELECT st1.id_invoice, SUM(st1.price*(1+(st1.vat/100))) AS total_price FROM cc_invoice_item AS st1 GROUP BY st1.id_invoice) " .
-	            "AS items ON items.id_invoice=cc_invoice.id ";
-	$HD_Form = new FormHandler($list_sql, "Invoice", 'cc_invoice.id');
+	$HD_Form->AddListValue(_("Date"), "date");
+	$HD_Form->AddListValue(_("Amount"), "payment");
+	$HD_Form->FieldViewElement (["date", "payment"]);
+} else {
+    $join = "(SELECT id_invoice, SUM(price * (1 + (vat / 100))) AS total_price FROM cc_invoice_item GROUP BY id_invoice) AS items";
+	$HD_Form = new FormHandler(
+        "cc_invoice",
+        _("Invoice"),
+        "cc_invoice.id",
+        [
+            "$join" => ["items.id_invoice", "cc_invoice.id"]
+        ]
+    );
 	$HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
     $HD_Form->list_query_conditions["cc_invoice.id_card"] = $id;
-	//SELECT t3.date, t3.credit, t3.reseller_id from cc_logrefill as t3 WHERE t3.card_id='1'
-	//SELECT t2.date, t2.payment, t2.reseller_id from cc_logpayment as t2 WHERE t2.card_id='1'
-	$HD_Form -> AddViewElement(gettext("DATE"), "date", true, 30);
-	$HD_Form -> AddViewElement(gettext("AMOUNT INCL VAT"), "total_price", true, "", "display_2bill");
-	$HD_Form -> FieldViewElement ("cc_invoice.date, total_price");
-}
 
-$HD_Form -> CV_FOLLOWPARAMETERS = "&popup_select=".$popup_select."&id=$id&type=$type";
-$HD_Form -> FG_ENABLE_EDIT_BUTTON = false;
-$HD_Form -> FG_ENABLE_DELETE_BUTTON = false;
-$HD_Form -> FG_ENABLE_ADD_BUTTON = false;
+	$HD_Form->AddListValue(_("Date"), "date");
+	$HD_Form->AddListValue(_("Amount (incl VAT)"), "total_price", "display_money");
+	$HD_Form-> FieldViewElement (["date", "total_price"]);
+}

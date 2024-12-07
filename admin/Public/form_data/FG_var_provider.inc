@@ -35,55 +35,51 @@ use A2billing\Forms\FormHandler;
  *
 **/
 
+/**
+ * @var numeric-string $popup_select
+ * @var string $popup_fieldname
+ * @var string $popup_formname
+ */
+
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
-getpost_ifset(array('id', 'provider_name', 'creationdate', 'description', 'popup_select'));
+$HD_Form = new FormHandler("cc_provider", _("Provider"));
 
-$HD_Form = new FormHandler("cc_provider", "Provider");
+$HD_Form->FG_LIST_ADDING_BUTTON1 = true;
+$HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("world_add.png");
 
-$HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_provider.php?form_action=ask-add";
-$HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add Provider");
-$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("world_add.png") ;
-
-
-
-if ($popup_select)
-	$HD_Form -> AddViewElement(gettext("ID"), "id");
-$HD_Form -> AddViewElement(gettext("PROVIDER NAME"), "provider_name");
-$HD_Form -> AddViewElement(gettext("CREATIONDATE"), "creationdate", true, 19);
-$HD_Form -> AddViewElement(gettext("DESCRIPTION"), "description");
-$HD_Form -> FieldViewElement (($popup_select ? 'id,' : '') . 'provider_name, creationdate, description');
+$HD_Form->AddListValue(_("Name"), "provider_name");
+$HD_Form->AddListValue(_("Creation date"), "creationdate");
+$HD_Form->AddListValue(_("Description"), "description");
+$HD_Form->FieldViewElement(["provider_name", "creationdate", "description"]);
 
 if ($popup_select) {
-	$HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 7;
-	$HD_Form -> CV_FOLLOWPARAMETERS = "&popup_select=" . $popup_select . "&popup_formname=" . $popup_formname . "&popup_fieldname=" . $popup_fieldname;
-
-    $HD_Form->AddListSelectActionButton(
-        $popup_select == 1 ? "javascript:sendValue('|param|')" : "javascript:sendValue('|col0|')",
-    );
+	$HD_Form->CV_FOLLOWPARAMETERS = "&popup_select=" . $popup_select . "&popup_formname=" . $popup_formname . "&popup_fieldname=" . $popup_fieldname;
+    $HD_Form->AddListSelectActionButton("javascript:sendValue('|param|')");
 } else {
-	$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
-	$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
-	$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
+	$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
+	$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
+	$HD_Form->FG_ENABLE_ADD_BUTTON = true;
 }
 
 $HD_Form->AddEditElement(
-    gettext("PROVIDER NAME"),
+    _("PROVIDER NAME"),
     "provider_name",
     "",
     "size=40 maxlength=40",
-    0,
-    gettext("Insert the provider name")
+    0, // [Validator::class, "min3Chars"]
+    _("Insert the provider name")
 );
 
 $HD_Form->AddEditTextarea(
-    gettext("DESCRIPTION"),
+    _("DESCRIPTION"),
     "description",
     "",
-    "cols='50' rows='5'", null, gettext("Insert the description")
+    "cols='50' rows='5'",
+    null,
+    _("Insert the description")
 );
 
-$HD_Form -> FG_LOCATION_AFTER_ADD = "?id=";
-$HD_Form -> FG_LOCATION_AFTER_EDIT = "?id=";
-$HD_Form -> FG_LOCATION_AFTER_DELETE = "?id=";
+$HD_Form->FG_LOCATION_AFTER_ADD = "?id=";
+$HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";
+$HD_Form->FG_LOCATION_AFTER_DELETE = "?id=";

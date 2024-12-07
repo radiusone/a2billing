@@ -36,71 +36,63 @@ use A2billing\Forms\Validator;
  *
 **/
 /**
- * @var string $popup_select
+ * @var numeric-string $popup_select
  * @var string $form_action
  */
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
-getpost_ifset(['id', 'card_id', 'date', 'payment','description','added_refill','refill_type']);
+getpost_ifset(["card_id"]);
 /**
- * @var string $id
  * @var string $card_id
- * @var string $date
- * @var string $payment
- * @var string $description
- * @var string $added_refill
- * @var string $refill_type
  */
 $form_action ??= "list";
 
-if ($form_action === "list") {
-	$HD_Form = new FormHandler("cc_logpayment LEFT JOIN cc_card ON cc_card.id=card_id", "Payment", 'cc_logpayment.id');
-} else {
-	$HD_Form = new FormHandler("cc_logpayment", "Payment");
-}
+$HD_Form = new FormHandler("cc_logpayment", _("Payment"));
 
 $HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
 
 if (has_rights (Admin::ACX_MODIFY_PAYMENTS)) {
 	$HD_Form->FG_LIST_ADDING_BUTTON1 = true;
-	$HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_payment.php?form_action=ask-add";
-	$HD_Form->FG_LIST_ADDING_BUTTON_MSG1 = _("Add Payment");
 	$HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJ0SURBVDjLlZPdT9JRGMe5qFu2Lrt1a63LWv9ATRdN5xvLsnLRipzZpIVpigjyIs3XAOUHgopoWkggP5QXSRJwJQmtm/IlAWtt3XXTfubS+nZ+P1eby6ldPGdn5+zzfb7Pc57DA8DbL9rjrYxuVsXf7W5fuC2mYawpE7QRJZpDDfz/EngYVTN9qR4EPvlgXjCiKVCPWvou/0ACxDJjSbIwDefqMPxrEzC87IDUW4Pq8Vv8PQVaX7Qw5qQRgY9ePP0wDMeSFfWTUkxmPeiI61DlFOP6SAV/VwFtRMFQCwb4CdwW10IbVcK+aMHgohmPlwdBZ11oCctx1X5p/R8B9Uzzuum1ntj1Iv1tGRtb3zH2dgSa2eZtOOOCMizD5cGyzR0lGBNdx1TP5T96E4+4WttiWg6mYr3Ifk1DF1PBmxmHYlrGZkbFUDku2oSHOAFjolOuIpZ65rs5+MmKg9hWcJlZWB1UbsOhRjYz5r/MoSn4AKWWQg0nwFoyzndhijRobGWIq3XgPQU1sa2LqjCRHoc81IBK9w0OnvscRWQtBGFfEc4b8o7wNDMKOwnY3lDwZZ+h1idB/zsThpf6CezkstVN3yNwHFMrNGqCVRvlA2UQ6POkud1nTvE0EcVR1gU7JNSCnrPrWLRtw+RM7BKBXnJDP9eOYqogVNAj0Av0uTk7mtjov2+1p2yQ0hIYXnXCs+qEzF+HC9YSyIiIsK84XWTKP5tvPHdi11GupSXHW8JNW+FMAHdclSCCKDEX/iKdDgotRY17jTu31LhvHybT5RGPin5K3NWs1c0yW+lp0umc/T7b383NUdHJa44rSfJU+Qf54n/iNzi8zBtL0z1zAAAAAElFTkSuQmCC";
 }
 
 $list_refill_type = getRefillType_List();
-$HD_Form->AddViewElement(_("ID"), "cc_logpayment.id");
-$HD_Form->AddViewElement(_("ACCOUNT"), "username", true, 30, "display_customer_link");
-$HD_Form->AddViewElement(_("PAYMENT DATE"), "date", true, 30);
-$HD_Form->AddViewElement(_("PAYMENT AMOUNT"), "payment", true, 0, "display_money");
-$HD_Form->AddViewElement(_("PAYMENT TYPE"), "payment_type", true, 0, "", "list", $list_refill_type);
-$HD_Form->AddViewElement(_("REFILL"), "id_logrefill", true, 0, "", "lie_link", "cc_logrefill", "TRUNCATE(credit,2), id", "id='%id'", "%1 " . BASE_CURRENCY . " (id:%2)", "A2B_refill_info.php");
 
-$HD_Form->FieldViewElement ('cc_logpayment.id, card_id, date, payment ,payment_type,id_logrefill');
+$HD_Form->AddListValue(_("ID"), "id");
+$HD_Form->AddListValue(_("Account"), "card_id","display_customer_id_link");
+$HD_Form->AddListValue(_("Date"), "date");
+$HD_Form->AddListValue(_("Amount"), "payment", "display_money");
+$HD_Form->AddListMapping(_("Type"), "payment_type", $list_refill_type);
+$HD_Form->AddListValue(_("Refill"), "id_logrefill", "display_refill_link");
+$HD_Form->FieldViewElement([
+    "id",
+    "card_id",
+    "date",
+    "payment",
+    "payment_type",
+    "id_logrefill",
+]);
 
 $HD_Form->FG_ENABLE_INFO_BUTTON = true;
 $HD_Form->FG_INFO_BUTTON_LINK = "A2B_payment_info.php?id=";
 
-
 if (!$popup_select) {
 	$HD_Form->search_form_enabled = true;
-    $HD_Form->search_session_key = 'payment_cust_selection';
+    $HD_Form->search_session_key = "payment_cust_selection";
     $HD_Form->search_delete_enabled = false;
+    $HD_Form->search_form_title = _("Define specific criteria to search for payments created.");
 
-    $HD_Form->search_form_title = _('Define specific criteria to search for payments created.');
-
-    $HD_Form->AddSearchDateInput(_("DATE"), "date");
-    $HD_Form->AddSearchTextInput(_("ACCOUNT NUMBER"), 'username','usernametype');
-    $HD_Form->AddSearchTextInput(_("LASTNAME"),'lastname','lastnametype');
-    $HD_Form->AddSearchTextInput(_("FIRSTNAME"),'firstname','firstnametype');
+    $HD_Form->AddSearchDateInput(_("Date"), "date");
+    $HD_Form->AddSearchTextInput(_("Account number"), "username");
+    $HD_Form->AddSearchTextInput(_("Last name"),"lastname");
+    $HD_Form->AddSearchTextInput(_("First name"),"firstname");
 }
 
 $HD_Form->FG_FILTER_ENABLE = true;
-$HD_Form->FG_FILTER_COLUMN = 'username';
-$HD_Form->FG_FILTER_LABEL = 'account number';
+$HD_Form->FG_FILTER_COLUMN = "username";
+$HD_Form->FG_FILTER_LABEL = "account number";
 
 if (has_rights (Admin::ACX_MODIFY_PAYMENTS)) {
-
 	$HD_Form->FG_ENABLE_ADD_BUTTON = true;
 	$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
 	$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
@@ -113,7 +105,8 @@ if (has_rights (Admin::ACX_MODIFY_PAYMENTS)) {
         "A2B_entity_card.php?popup_select=1&",
         _("Select the Customer ID"),
         "value='$id_val'",
-        [Validator::class, "numeric"], _("Insert the Customer ID")
+        [Validator::class, "numeric"],
+        _("Insert the Customer ID")
     );
 
     $comp_date = ($form_action === "ask-add") ? (new DateTime())->format("Y-m-d H:i:s") : "";
@@ -140,7 +133,9 @@ if (has_rights (Admin::ACX_MODIFY_PAYMENTS)) {
         _("DESCRIPTION"),
         "description",
         "",
-        "cols='50' rows='4'", null, _("Insert the description")
+        "cols='50' rows='4'",
+        null,
+        _("Insert the description")
     );
 
 	if ($form_action !== "ask-edit" && $form_action !== "edit") {
@@ -158,7 +153,8 @@ if (has_rights (Admin::ACX_MODIFY_PAYMENTS)) {
             "added_commission",
             [[_("Yes"), "1"], [_("No"), "0"]],
             "0",
-            _("Commission for agent"), "",
+            _("Commission for agent"),
+            "",
             _("Choose if you want to create a commission to an agent, if this customer is managed by one")
         );
 	}
@@ -167,11 +163,12 @@ if (has_rights (Admin::ACX_MODIFY_PAYMENTS)) {
         _("PAYMENT TYPE"),
         "payment_type",
         $list_refill_type,
-        "", _("Define type for payment and refill,if created.")
+        "",
+        _("Define type for payment and refill,if created.")
     );
 
-	$HD_Form->FG_INTRO_TEXT_ADITION = '';
-	$HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = 'create_refill_after_payment';
+	$HD_Form->FG_INTRO_TEXT_ADITION = "";
+	$HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = "create_refill_after_payment";
 
 	$HD_Form->FG_LOCATION_AFTER_ADD = "?id=";
 	$HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";
