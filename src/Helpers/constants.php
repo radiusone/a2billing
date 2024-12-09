@@ -99,7 +99,7 @@ use A2billing\A2Billing;
     {
         return [
             [_('OPEN'), '0'],
-            [_('CLOSE'), '1'],
+            [_('CLOSED'), '1'],
         ];
     }
 

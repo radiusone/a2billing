@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Forms\FormHandler;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -39,55 +40,67 @@ use A2billing\Table;
 $menu_section = 10;
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
 require_once __DIR__ . "/form_data/FG_var_remittance_request.inc";
+/**
+ * @var FormHandler $HD_Form
+ */
 
 Admin::checkPageAccess(Admin::ACX_BILLING);
-getpost_ifset(array (
-    'id',
-    'action'
-));
 
-$DBHandle = DbConnect();
+getpost_ifset(["action", "id"]);
+/**
+ * @var string|null $action
+ * @var numeric-string|null $id
+ */
+$action ??= "";
+$id ??= null;
 
-if ($action == "accept") {
-    if (!empty ($id) && is_numeric($id)) {
-        $instance_table_remittance = new Table("cc_remittance_request", "*");
-        $param_update_remittance = "status = '1'";
-        $clause_update_remittance = " id ='$id'";
-        $instance_table_remittance->Update_table($DBHandle, $param_update_remittance, $clause_update_remittance, $func_table = null);
-        // load
-        $result=$instance_table_remittance -> get_list($DBHandle, $clause_update_remittance);
-        $type = $result[0]['type'];
-        $agent_id = $result[0]['id_agent'];
-        $credit = $result[0]['amount'];
-        if ($type==0) {
+if ($action === "accept") {
+    if (is_numeric($id)) {
+        $DBHandle = DbConnect();
+        (new Table("cc_remittance_request"))
+            ->updateRow($DBHandle, ["status" => 1], ["id" => $id]);
+
+        $result = (new Table("cc_remittance_request"))
+            ->getRow($DBHandle, ["id" => $id]);
+
+        $type = $result["type"];
+        $agent_id = $result["id_agent"];
+        $credit = $result["amount"];
+
+        if ($type === "0") {
             // insert refill
-            $field_insert = " credit, agent_id, description";
-            $value_insert = "'".$credit."', '$agent_id', '".gettext('REFILL BY REMITTANCE REQUEST')."'";
-            $instance_sub_table = new Table("cc_logrefill_agent", $field_insert);
-            $instance_sub_table -> Add_table ($DBHandle, $value_insert, null, null, 'id');
+            (new Table("cc_logrefill_agent"))
+                ->addRow(
+                    $DBHandle,
+                    [
+                        "credit" => $credit,
+                        "agent_id" => $agent_id,
+                        "description" => _('REFILL BY REMITTANCE REQUEST')
+                    ]
+                );
 
             //REFILL... UPDATE AGENT
-            $instance_table_agent = new Table("cc_agent");
-            $param_update_agent = "credit = credit + '".$credit."' , com_balance = com_balance - $credit ";
-            $clause_update_agent = " id='$agent_id'";
-            $instance_table_agent -> Update_table ($DBHandle, $param_update_agent, $clause_update_agent, $func_table = null);
+            (new Table("cc_agent"))
+                ->updateRow(
+                    $DBHandle,
+                    ["credit" => ["credit + ?", $credit], "com_balance" => ["com_balance - ?", $credit]],
+                    ["id" => $agent_id]
+                );
         } else {
             //UPDATE AGENT
-            $instance_table_agent = new Table("cc_agent");
-            $param_update_agent = " com_balance = com_balance - $credit ";
-            $clause_update_agent = " id='$agent_id'";
-            $instance_table_agent -> Update_table ($DBHandle, $param_update_agent, $clause_update_agent, $func_table = null);
+            (new Table("cc_agent"))
+                ->updateRow(
+                    $DBHandle,
+                    ["com_balance" => ["com_balance - ?", $credit]],
+                    ["id" => $agent_id]
+                );
         }
     }
     die();
-}
-
-if ($action == "refuse") {
-    if (!empty ($id) && is_numeric($id)) {
-        $instance_table_remittance = new Table("cc_remittance_request");
-        $param_update_remittance = "status = '2'";
-        $clause_update_remittance = " id ='$id'";
-        $instance_table_remittance->Update_table($DBHandle, $param_update_remittance, $clause_update_remittance, $func_table = null);
+} elseif ($action === "refuse") {
+    if (is_numeric($id)) {
+        (new Table("cc_remittance_request"))
+            ->updateRow(DbConnect(), ["status" => 2], ["id" => $id]);
     }
     die();
 }

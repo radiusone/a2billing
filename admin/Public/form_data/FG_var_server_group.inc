@@ -37,54 +37,41 @@ use A2billing\Forms\FormHandler;
 
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
-getpost_ifset(array('id', 'name', 'description'));
+$HD_Form = new FormHandler("cc_server_group", _("Callback Server Group"));
 
+$HD_Form->FG_LIST_ADDING_BUTTON1 = true;
+$HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("server_add.png") ;
 
-$HD_Form = new FormHandler("cc_server_group", "Server Group");
+$HD_Form->AddListValue(_("ID"), "id");
+$HD_Form->AddListValue(_("Name"), "name");
+$HD_Form->AddListValue(_("Description"), "description");
 
-$HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_server_group.php?form_action=ask-add";
-$HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add SERVER GROUP");
-$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("server_add.png") ;
+$HD_Form->FieldViewElement ('id, name, description');
 
-
-
-
-$HD_Form -> AddViewElement("ID", "id");
-$HD_Form -> AddViewElement("NAME", "name");
-$HD_Form -> AddViewElement("DESCRIPTION", "description");
-
-$HD_Form -> FieldViewElement ('id, name, description');
-
-$HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 10;
-
-$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
-$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
+$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form->FG_ENABLE_ADD_BUTTON = true;
 
 $HD_Form->AddEditElement(
-    gettext("NAME"),
+    _("NAME"),
     "name",
     "",
     "size=20 maxlength=30",
-    3,
-    gettext("Insert the name")
+    3, // [Validator::class, "min4Chars"]
+    _("Insert the name")
 );
 
 $HD_Form->AddEditTextarea(
-    gettext("DESCRIPTION"),
+    _("DESCRIPTION"),
     "description",
     "",
-    "cols='50' rows='4'", null, gettext("Insert the description")
+    "cols='50' rows='4'",
+    null,
+    _("Insert the description")
 );
 
-// Set the filter variables
-$HD_Form -> FG_FILTER_ENABLE = true;
-$HD_Form -> FG_FILTER_COLUMN = 'name';
-$HD_Form -> FG_FILTER_LABEL = 'name';
+$HD_Form->FG_INTRO_TEXT_ADITION = "";
 
-$HD_Form -> FG_INTRO_TEXT_ADITION = '';
-
-$HD_Form -> FG_LOCATION_AFTER_ADD = "?id=";
-$HD_Form -> FG_LOCATION_AFTER_EDIT = "?id=";
-$HD_Form -> FG_LOCATION_AFTER_DELETE = "?id=";
+$HD_Form->FG_LOCATION_AFTER_ADD = "?id=";
+$HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";
+$HD_Form->FG_LOCATION_AFTER_DELETE = "?id=";

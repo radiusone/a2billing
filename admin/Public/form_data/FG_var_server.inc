@@ -2,6 +2,7 @@
 
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -37,78 +38,68 @@ use A2billing\Forms\FormHandler;
 
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
-getpost_ifset(array('id', 'id_group', 'server_ip', 'manager_host', 'manager_username', 'manager_secret'));
+$HD_Form = new FormHandler("cc_server_manager", _("Callback Server"));
 
+$HD_Form->FG_LIST_ADDING_BUTTON1 = true;
+$HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("server_add.png") ;
 
-$HD_Form = new FormHandler("cc_server_manager", "Server");
+$HD_Form->AddListValue(_("ID"), "id_group");
+$HD_Form->AddListSqlMapping(_("Group"), "id_group", new Table("cc_server_group", ["id", "name"]));
+$HD_Form->AddListValue(_("Hostname"), "server_ip");
+$HD_Form->AddListValue(_("Manager host"), "manager_host");
+$HD_Form->AddListValue(_("Manager username"), "manager_username");
+$HD_Form->AddListValue(_("Last used"), "lasttime_used");
+$HD_Form->FieldViewElement (["id_group", "id_group", "server_ip", "manager_host", "manager_username", "lasttime_used"]);
 
-$HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_server.php?form_action=ask-add";
-$HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add SERVER");
-$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("server_add.png") ;
+$HD_Form->FG_ENABLE_ADD_BUTTON = true;
+$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 
-
-$HD_Form -> AddViewElement(gettext("ID GROUP"), "id_group", true, 15);
-$HD_Form -> AddViewElement(gettext("GROUP"), "id_group", true, 15, "", "lie", "cc_server_group", "name", "id='%id'", "%1");
-$HD_Form -> AddViewElement(gettext("SERVER HOSTNAME"), "server_ip");
-$HD_Form -> AddViewElement(gettext("MANAGER HOST"), "manager_host");
-$HD_Form -> AddViewElement(gettext("MANAGER USERNAME"), "manager_username");
-$HD_Form -> AddViewElement(gettext("LASTTIME USED"), "lasttime_used", true, 19);
-
-
-$HD_Form -> FieldViewElement ('id_group, id_group, server_ip, manager_host, manager_username, lasttime_used');
-
-$HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 10;
-
-$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
-$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
-
-$HD_Form->AddEditSqlSelect(gettext("SERVER GROUP"), "id_group", "cc_server_group", "name,id");
+$HD_Form->AddEditSqlSelect(_("SERVER GROUP"), "id_group", "cc_server_group", "name,id");
 
 $HD_Form->AddEditElement(
-    gettext("SERVER HOSTNAME"),
+    _("SERVER HOSTNAME"),
     "server_ip",
     "",
     "size=30 maxlength=40",
-    3,
-    gettext("Insert the server hostname")
+    3, // [Validator::class, "min4Chars"]
+    _("Insert the server hostname")
 );
 
 $HD_Form->AddEditElement(
-    gettext("MANAGER HOST"),
+    _("MANAGER HOST"),
     "manager_host",
     "",
     "size=30 maxlength=40",
-    9,
-    gettext("Insert the manager host")
+    9, // [Validator::class, "min1Char"]
+    _("Insert the manager host")
 );
 
 $HD_Form->AddEditElement(
-    gettext("MANAGER USERNAME"),
+    _("MANAGER USERNAME"),
     "manager_username",
     "",
     "size=30 maxlength=40",
-    9,
-    gettext("Insert the manager username")
+    9, // [Validator::class, "min1Char"]
+    _("Insert the manager username")
 );
 
 $HD_Form->AddEditElement(
-    gettext("MANAGER SECRET"),
+    _("MANAGER SECRET"),
     "manager_secret",
     "",
     "size=30 maxlength=40",
     null,
-    gettext("Insert the manager secret")
+    _("Insert the manager secret")
 );
 
 // Set the filter variables
-$HD_Form -> FG_FILTER_ENABLE = true;
-$HD_Form -> FG_FILTER_COLUMN = 'id_group';
-$HD_Form -> FG_FILTER_LABEL = 'Server ID Group';
+$HD_Form->FG_FILTER_ENABLE = true;
+$HD_Form->FG_FILTER_COLUMN = "id_group";
+$HD_Form->FG_FILTER_LABEL = "Server ID Group";
 
-$HD_Form -> FG_INTRO_TEXT_ADITION = '';
+$HD_Form->FG_INTRO_TEXT_ADITION = "";
 
-$HD_Form -> FG_LOCATION_AFTER_ADD = "?id=";
-$HD_Form -> FG_LOCATION_AFTER_EDIT = "?id=";
-$HD_Form -> FG_LOCATION_AFTER_DELETE = "?id=";
+$HD_Form->FG_LOCATION_AFTER_ADD = "?id=";
+$HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";
+$HD_Form->FG_LOCATION_AFTER_DELETE = "?id=";

@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Forms\FormHandler;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -39,34 +40,31 @@ use A2billing\Table;
 $menu_section = 11;
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
 require_once __DIR__ . "/form_data/FG_var_receipt.inc";
+/**
+ * @var FormHandler $HD_Form
+ */
 
 Admin::checkPageAccess(Admin::ACX_INVOICING);
 
-getpost_ifset(array (
-    'id',
-    'action'
-));
+getpost_ifset(["action", "id"]);
+/**
+ * @var string|null $action
+ * @var numeric-string|null $id
+ */
+$action ??= "";
+$id ??= null;
 
-$DBHandle = DbConnect();
-
-if ($action == "lock") {
-    if (!empty ($id) && is_numeric($id)) {
-        $instance_table_invoice = new Table("cc_receipt");
-        $param_update_invoice = "status = '1'";
-        $clause_update_invoice = " id ='$id'";
-        $instance_table_invoice->Update_table($DBHandle, $param_update_invoice, $clause_update_invoice, $func_table = null);
+if ($action === "lock") {
+    if (is_numeric($id)) {
+        (new Table("cc_receipt"))
+            ->updateRow(DbConnect(), ["status" => 1], ["id" => $id]);
     }
     die();
 }
 
 $HD_Form->init();
 
-if (!isset ($form_action)) {
-    $form_action = "list"; //ask-add
-}
-if (!isset ($action)) {
-    $action = $form_action;
-}
+$form_action ??= "list";
 
 $list = $HD_Form->perform_action($form_action);
 
@@ -77,7 +75,6 @@ echo create_help(_("Receipt history - The section below allows you to see and cr
 
 // #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);
-
 $HD_Form->create_form($form_action, $list);
 
 require_once __DIR__ . "/../templates/footer.php";
@@ -86,7 +83,7 @@ require_once __DIR__ . "/../templates/footer.php";
 <script>
 $(function () {
     $('.lock').on('click', function () {
-        $.get("A2B_entity_receipt.php", {id: "" + this.dataset.primaryKey, action: "lock"}, () => location.reload());
+        $.get("A2B_entity_receipt.php", {id: this.dataset.primaryKey, action: "lock"}, () => location.reload());
     });
 });
 </script>

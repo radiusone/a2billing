@@ -37,15 +37,15 @@ use A2billing\Forms\FormHandler;
 
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
-getpost_ifset(array('id','id_agent','date', 'amount,type', 'status'));
+$HD_Form = new FormHandler(
+    "cc_remittance_request",
+    _("Remittance Request Agent"),
+    "cc_remittance_request",
+    ["cc_agent" => ["cc_remittance_request.id_agent", "cc_agent.id"]]
+);
 
-if (!isset($form_action) || $form_action=="list") {
-	$HD_Form = new FormHandler("cc_remittance_request LEFT JOIN cc_agent ON cc_agent.id=id_agent", "Remittance Request Agent", 'cc_remittance_request.id');
-} else {
-	$HD_Form = new FormHandler("cc_remittance_request", "Remittance Request Agent");
-}
-
-$HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
+$HD_Form->FG_QUERY_ORDERBY_COLUMNS = ["date"];
+$HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
 
 $HD_Form->AddListActionButton(
     "",
@@ -68,24 +68,25 @@ $status_list = getRemittanceStatus_List();
 $status_revert_list = array_map("array_reverse", $status_list);
 $type_list = getRemittanceType_List();
 $type_revert_list = array_map("array_reverse", $type_list);
-$HD_Form -> AddViewElement(gettext("ID"), "cc_agent_commission.id");
-$HD_Form -> AddViewElement(gettext("AGENT"), "id_agent", true, 30, "display_linktoagent");
-$HD_Form -> AddViewElement(gettext("DATE"), "date", true, 30);
-$HD_Form -> AddViewElement(gettext("AMOUNT"), "amount", true, 0, "display_money");
-$HD_Form -> AddViewElement(gettext("TYPE"), "type", true, 0, "", "list", $type_list);
-$HD_Form -> AddViewElement(gettext("STATUS"), "status", true, 0, "", "list", $status_list);
 
-$HD_Form -> FieldViewElement ('cc_remittance_request.id, id_agent, date, amount,type, status ');
+$HD_Form->AddListValue(_("ID"), "cc_agent_commission.id");
+$HD_Form->AddListValue(_("Agent"), "id_agent", "display_linktoagent");
+$HD_Form->AddListValue(_("Date"), "date");
+$HD_Form->AddListValue(_("Amount"), "amount", "display_money");
+$HD_Form->AddListMapping(_("Type"), "type", $type_list);
+$HD_Form->AddListMapping(_("Status"), "status", $status_list);
+$HD_Form->FieldViewElement (["id", "id_agent", "date", "amount", "type", "status"]);
 
-$HD_Form -> search_form_enabled = true;
-$HD_Form -> search_session_key = 'remittance_agent_selection';
-$HD_Form -> search_form_title = gettext('Define specific criteria to search for remittances requests created.');
-$HD_Form -> search_delete_enabled =false;
-$HD_Form->AddSearchDateInput(_("DATE"), "date");
-$HD_Form -> AddSearchTextInput(gettext("LOGIN"), 'login','logintype');
-$HD_Form -> AddSearchTextInput(gettext("LASTNAME"),'lastname','lastnametype');
-$HD_Form -> AddSearchTextInput(gettext("FIRSTNAME"),'firstname','firstnametype');
-$HD_Form -> AddSearchSelectInput(gettext("SELECT REQUEST TYPE"), "type", $type_revert_list);
-$HD_Form -> AddSearchSelectInput(gettext("SELECT REQUEST STATUS"), "status", $status_revert_list);
+$HD_Form->search_form_enabled = true;
+$HD_Form->search_session_key = 'remittance_agent_selection';
+$HD_Form->search_form_title = _('Define specific criteria to search for remittances requests created.');
+$HD_Form->search_delete_enabled = false;
 
-$HD_Form -> CV_NO_FIELDS  = gettext("THERE ARE NO REMITTANCE REQUEST CREATED!");
+$HD_Form->AddSearchDateInput(_("Date"), "date");
+$HD_Form->AddSearchTextInput(_("Login"), 'login');
+$HD_Form->AddSearchTextInput(_("Last name"),'lastname');
+$HD_Form->AddSearchTextInput(_("First name"),'firstname');
+$HD_Form->AddSearchSelectInput(_("Request type"), "type", $type_revert_list);
+$HD_Form->AddSearchSelectInput(_("Request status"), "status", $status_revert_list);
+
+$HD_Form->CV_NO_FIELDS  = _("THERE ARE NO REMITTANCE REQUEST CREATED!");

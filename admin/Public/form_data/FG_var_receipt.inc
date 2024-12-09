@@ -35,30 +35,30 @@ use A2billing\Forms\Validator;
  *
  *
 **/
-
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
-getpost_ifset(array('id', 'id_card', 'date','title','description'));
+$form_action ??= "list";
+$HD_Form = new FormHandler(
+    "cc_receipt",
+    _("Receipt"),
+    "cc_receipt.id",
+    $form_action === "list"
+        ? ["cc_receipt_item" => ["cc_receipt_item.id_receipt", "cc_receipt.id"]]
+        : []
+);
 
+$HD_Form->FG_QUERY_ORDERBY_COLUMNS = ["date"];
+$HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
+$HD_Form->FG_QUERY_GROUPBY_COLUMNS = ["cc_receipt.id"];
 
-if (!isset($form_action) || $form_action=="list") {
-	$list_query = "cc_receipt LEFT JOIN cc_card ON cc_card.id=id_card";
-	$list_query .= " LEFT JOIN ( SELECT st1.id_receipt, SUM(st1.price) as total_price FROM cc_receipt_item AS st1 GROUP BY st1.id_receipt) as items ON items.id_receipt = cc_receipt.id ";
-	$HD_Form = new FormHandler($list_query, "Receipt", 'cc_receipt.id');
-} else {
-	$HD_Form = new FormHandler("cc_receipt", "Receipt");
-}
+$HD_Form->FG_FK_DELETE_ALLOWED = true;
+$HD_Form->FG_FK_DELETE_CONFIRM = true;
+$HD_Form->FG_FK_WARNONLY = true;
+$HD_Form->FG_FK_TABLENAMES = ["cc_receipt_item"];
+$HD_Form->FG_FK_EDITION_CLAUSE = ["id_receipt"];
 
-$HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
-
-$HD_Form -> FG_FK_DELETE_ALLOWED = true;
-$HD_Form -> FG_FK_DELETE_CONFIRM = true;
-$HD_Form -> FG_FK_WARNONLY = true;
-$HD_Form -> FG_FK_TABLENAMES = array("cc_receipt_item");
-$HD_Form -> FG_FK_EDITION_CLAUSE = array(" id_receipt ");
-
-$HD_Form -> FG_ENABLE_INFO_BUTTON = true;
-$HD_Form -> FG_INFO_BUTTON_LINK = "A2B_receipt_view.php?id=";
+$HD_Form->FG_ENABLE_INFO_BUTTON = true;
+$HD_Form->FG_INFO_BUTTON_LINK = "A2B_receipt_view.php?id=";
 
 $HD_Form->AddListActionButton(
     "A2B_receipt_edit.php?id=",
@@ -76,76 +76,75 @@ $HD_Form->AddListActionButton(
     "status",
     0 // open
 );
-$HD_Form -> FG_EDIT_BUTTON_CONDITION = '"|col4|" == "OPEN"';
+$HD_Form->FG_EDIT_BUTTON_CONDITION = '"|col4|" == "OPEN"';
 
-$HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_receipt.php?form_action=ask-add";
-$HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add Receipt");
-$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("money.png") ;
+$HD_Form->FG_LIST_ADDING_BUTTON1 = true;
+$HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("money.png") ;
 
+$HD_Form->AddListValue(_("ID"), "cc_receipt.id");
+$HD_Form->AddListValue(_("Account"), "id_card", "display_customer_id_link");
+$HD_Form->AddListValue(_("Date"), "cc_receipt.date");
+$HD_Form->AddListValue(_("Title"), "title");
+$HD_Form->AddListMapping(_("Status"), "status", getInvoiceStatusList());
+$HD_Form->AddListValue(_("Amount (incl VAT)"), "total_price", "display_money");
+$HD_Form->FieldViewElement([
+    "cc_receipt.id",
+    "id_card",
+    "cc_receipt.date",
+    "title",
+    "cc_receipt.status",
+    "SUM(price) AS total_price",
+]);
 
-$status_list = getInvoiceStatusList();
-
-$filter_amount_with_vat ='total_price';
-$list_refill_type=getRefillType_List();
-$HD_Form -> AddViewElement(gettext("ID"), "cc_receipt.id");
-$HD_Form -> AddViewElement(gettext("ACCOUNT"), "username", true, 30, "display_customer_link");
-$HD_Form -> AddViewElement(gettext("DATE"), "date", true, 30);
-$HD_Form -> AddViewElement(gettext("TITLE"), "title");
-$HD_Form -> AddViewElement(gettext("STATUS"), "status", true, 0, "", "list", $status_list);
-$HD_Form -> AddViewElement(gettext("AMOUNT INCL VAT"), "total_price", true, 0, "display_2bill");
-$HD_Form -> FieldViewElement ("cc_receipt.id, username, cc_receipt.date,title,cc_receipt.status,$filter_amount_with_vat");
-
-$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
-$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form->FG_ENABLE_ADD_BUTTON = true;
+$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 
 $HD_Form->AddEditPopup(
-    gettext("CUSTOMER ID"),
+    _("CUSTOMER ID"),
     "id_card",
     "A2B_entity_card.php?popup_select=1&",
-    gettext("Select the Customer ID"),
-    "", [Validator::class, "numeric"], gettext("Insert the Customer ID")
+    _("Select the Customer ID"),
+    "",
+    [Validator::class, "numeric"],
+    _("Insert the Customer ID")
 );
 
-if ($form_action=="ask-add"){
-	$begin_date = date("Y");
-	$end_date = date("-m-d H:i:s");
-	$comp_date=$begin_date.$end_date;
-	$comp_date="value='$comp_date'";
-}
+$comp_date = $form_action === "ask-add" ? date("Y-m-d H:i:s") : "";
 
 $HD_Form->AddEditElement(
-    gettext("INVOICE DATE"),
+    _("INVOICE DATE"),
     "date",
     "",
-    "size=40 READONLY maxlength=40  $comp_date",
+    "size=40 READONLY maxlength=40  value='$comp_date'",
     10,
-    gettext("Insert the current date")
+    _("Insert the current date")
 );
 
 $HD_Form->AddEditElement(
-    gettext("TITLE"),
+    _("TITLE"),
     "title",
     "",
     "size=30 maxlength=50",
-    0,
-    gettext("Insert the title of invoice, if you need one")
+    0, // [Validator::class, "min3Chars"]
+    _("Insert the title of invoice, if you need one")
 );
 
 $HD_Form->AddEditTextarea(
-    gettext("DESCRIPTION"),
+    _("DESCRIPTION"),
     "description",
     "",
-    "cols='50' rows='4'", null, gettext("Insert the description")
+    "cols='50' rows='4'",
+    null,
+    _("Insert the description")
 );
 
-$HD_Form -> FG_FILTER_ENABLE = true;
-$HD_Form -> FG_FILTER_COLUMN = 'username';
-$HD_Form -> FG_FILTER_LABEL = 'Account number';
+$HD_Form->FG_FILTER_ENABLE = true;
+$HD_Form->FG_FILTER_COLUMN = "username";
+$HD_Form->FG_FILTER_LABEL = _("Account number");
 
-$HD_Form -> FG_INTRO_TEXT_ADITION = '';
+$HD_Form->FG_INTRO_TEXT_ADITION = "";
 
-$HD_Form -> FG_LOCATION_AFTER_ADD = "A2B_receipt_edit.php?id=";
-$HD_Form -> FG_LOCATION_AFTER_EDIT = "?id=";
-$HD_Form -> FG_LOCATION_AFTER_DELETE = "?id=";
+$HD_Form->FG_LOCATION_AFTER_ADD = "A2B_receipt_edit.php?id=";
+$HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";
+$HD_Form->FG_LOCATION_AFTER_DELETE = "?id=";
