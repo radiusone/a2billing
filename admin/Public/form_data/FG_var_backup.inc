@@ -2,6 +2,7 @@
 
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -37,13 +38,15 @@ use A2billing\Forms\FormHandler;
 
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
-getpost_ifset(["path"]);
+getpost_ifset(["path", "id"]);
 /**
  * @var string $path
+ * @var numeric-string|null $id
  */
 $HD_Form = new FormHandler("cc_backup", "Backup");
 
 $form_action ??= "list";
+
 if ($form_action === "add" && !empty($path)) {
     $backup_file = $path;
     $do_gzip = false;
@@ -58,7 +61,7 @@ if ($form_action === "add" && !empty($path)) {
     // Make the backup stuff here and redirect to success page
     // mysqldump -all --databases mya2billing -ua2billinguser -pa2billing > /tmp/test.sql
     // pg_dump -c -d -U a2billinguser -h localhost -f /tmp/test.sql mya2billing
-    if (DB_TYPE != 'postgres') {
+    if (DB_TYPE !== "postgres") {
         $run_backup = sprintf(
             "%s -al --databases %s -u %s -p%s > %s",
             escapeshellcmd(MYSQLDUMP),
@@ -87,23 +90,89 @@ if ($form_action === "add" && !empty($path)) {
     }
 
     $HD_Form->FG_TEXT_ADITION_CONFIRMATION = "";
-    if($error === 0 && $error_zip === 0) {
-        $HD_Form->FG_LOCATION_AFTER_ADD = "A2B_entity_restore.php?id=";
+    if ($error !== 0) {
+        $HD_Form->FG_TEXT_ADITION_CONFIRMATION .= _("An error occur when the system tried to backup of the database.") . "<br>" . _("Please check yours system settings for the backup section ");
+    }
+    if ($error_zip !== 0) {
+        $HD_Form->FG_TEXT_ADITION_CONFIRMATION .= _("An error occur when the system tried to compress the backup realized.") . "<br>" . _("Please check yours system settings for the backup section ");
+    }
+} elseif ($form_action === "delete") {
+    $path = $HD_Form->DBHandle->GetOne("SELECT path FROM cc_backup WHERE id = ?", [$id]);
+    if (!is_readable($path) || !unlink($path)) {
+        echo _("Error deleting file");
+    }
+} elseif ($form_action === "restore") {
+    $path = $HD_Form->DBHandle->GetOne("SELECT path FROM cc_backup WHERE id = ?", [$id]);
+
+    if (str_ends_with($path, ".gz")) {
+        // WE NEED TO GZIP
+        $output = escapeshellcmd(GZIP_EXE) . " -c " . escapeshellarg($path) . " | ";
     } else {
-        if ($error !== 0) {
-            $HD_Form->FG_TEXT_ADITION_CONFIRMATION .= _("An error occur when the system tried to backup of the database.") . "<br>" . _("Please check yours system settings for the backup section ");
-        }
-        if ($error_zip !== 0) {
-            $HD_Form->FG_TEXT_ADITION_CONFIRMATION .= _("An error occur when the system tried to compress the backup realized.") . "<br>" . _("Please check yours system settings for the backup section ");
-        }
+        $output = "cat " . escapeshellarg($path) . " | ";
+    }
+
+    $user = escapeshellarg(USER);
+    $pass = escapeshellarg(PASS);
+    $db = escapeshellarg(DBNAME);
+    $host = escapeshellarg(HOST);
+    if (DB_TYPE !== "postgres") {
+        $run_restore = $output . escapeshellcmd(MYSQL) . " -D $db -u $user -p$pass -h $host";
+    } else {
+        putenv("PGPASSWORD=$pass");
+        $run_restore = $output . escapeshellcmd(PSQL) . " -d $db -U $user -h $host";
+    }
+
+    exec($run_restore);
+} elseif ($form_action === "download") {
+    $path = $HD_Form->DBHandle->GetOne("SELECT path FROM cc_backup WHERE id = ?", [$id]);
+    if (is_readable($path)) {
+        $filename = basename($path);
+        $len = filesize($path);
+        header("Content-Type: application/stream");
+        header("Content-Length: " . filesize($path));
+        header("Content-Disposition: attachment; filename=\"" . $filename . "\"");
+        readfile($path);
+    }
+    exit;
+} elseif ($form_action === "upload") {
+    $uploaddir = BACKUP_PATH . "/";
+    $uploadfile = $uploaddir . basename($_FILES['databasebackup']['name']);
+
+    if (move_uploaded_file($_FILES['databasebackup']['tmp_name'], $uploadfile)) {
+        (new Table("cc_backup"))
+            ->addRow($HD_Form->DBHandle, ["name" => "Custom" . date("Ymd-His"), "path" => $uploadfile]);
+    } else {
+        $error_upload = _("Error uploading file");
     }
 }
 
-$HD_Form->FG_ENABLE_EDIT_BUTTON = false;
-$HD_Form->FG_ENABLE_DELETE_BUTTON = false;
-$HD_Form->FG_ENABLE_ADD_BUTTON = true;
+$HD_Form->FG_TABLE_DEFAULT_ORDER = "name";
 
-$default_path = "value='" . BACKUP_PATH . "/db_" . DBNAME . "-" . date('YmdHis') . ".sql.gz'";
+$HD_Form->AddListValue(_("ID"), "id");
+$HD_Form->AddListValue(_("Name"), "name");
+$HD_Form->AddListValue(_("File"), "path");
+$HD_Form->AddListValue(_("Creation date"), "creationdate");
+$HD_Form->FieldViewElement (["id", "name", "path", "creationdate"]);
+
+$HD_Form->AddListActionButton(
+    "?form_action=restore&id=",
+    _("Restore"),
+    get_image_path("icon-restore.gif")
+);
+$HD_Form->AddListActionButton(
+    "?form_action=download&id=",
+    _("Download"),
+    get_image_path("dl.gif")
+);
+
+$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form->FG_ENABLE_ADD_BUTTON = true;
+$HD_Form->FG_LIST_ADDING_BUTTON1 = true;
+
+$default_path = $form_action === "ask-add"
+    ? "value='" . BACKUP_PATH . "/db_" . DBNAME . "-" . date('YmdHis') . ".sql.gz'"
+    : "";
 
 $HD_Form->AddEditElement(
     _("Name"),
@@ -117,11 +186,12 @@ $HD_Form->AddEditElement(
 $HD_Form->AddEditElement(
     _("PATH"),
     "path",
-    _("Path for the backup file or leave the default path set in a2billing.conf"),
+    $form_action === "ask-add"
+        ? _("Path for the backup file or leave the default path set in a2billing.conf")
+        : _("The backup file name"),
     "size=100 maxlength=200 $default_path",
     null,
-    _("Insert the patch for the backup file or leave the default path")
+    $form_action === "ask-add"
+        ? _("Insert the path for the backup file or leave the default path")
+        : _("The backup file")
 );
-
-$HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";
-$HD_Form->FG_LOCATION_AFTER_DELETE = "?id=";

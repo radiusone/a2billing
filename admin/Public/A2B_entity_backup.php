@@ -61,4 +61,21 @@ echo create_help(
 $HD_Form->create_toppage($form_action);
 $HD_Form->create_form($form_action, $list);
 
+if ($form_action === "list") {
+?>
+<form method="post" enctype="multipart/form-data">
+    <div class="row">
+        <label class="col-form-label col" for="databasebackup"><?= _("Upload a database backup") ?></label>
+        <div class="col">
+            <input type="file" class="form-control" id="databasebackup" name="databasebackup" required="required"/>
+        </div>
+        <div class="col">
+            <button type="submit" class="btn btn-sm btn-primary"><?= _("Upload") ?></button>
+        </div>
+    </div>
+</form>
+
+<?php
+}
+
 require_once __DIR__ . "/../templates/footer.php";

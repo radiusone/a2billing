@@ -339,8 +339,7 @@ require_once __DIR__ . "/../../common/lib/admin.defines.php";
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                             <li><a class="link-dark rounded" href="A2B_entity_alarm.php"> <?= _("Alarms") ?></a></li>
                             <li><a class="link-dark rounded" href="A2B_entity_log_viewer.php"><?= _("Users Activity") ?></a></li>
-                            <li><a class="link-dark rounded" href="A2B_entity_backup.php?form_action=ask-add"><?= _("Database Backup") ?></a></li>
-                            <li><a class="link-dark rounded" href="A2B_entity_restore.php"><?= _("Database Restore") ?></a></li>
+                            <li><a class="link-dark rounded" href="A2B_entity_backup.php"><?= _("Database Backups") ?></a></li>
                             <li><a class="link-dark rounded" href="CC_musiconhold.php"><?= _("MusicOnHold") ?></a></li>
                             <li><a class="link-dark rounded" href="CC_upload.php"><?= _("Upload File") ?></a></li>
                             <li><a class="link-dark rounded" href="A2B_logfile.php"><?= _("Watch Log files") ?></a></li>
