@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -38,6 +39,9 @@ use A2billing\Admin;
 $menu_section = 13;
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
 require_once __DIR__ . "/form_data/FG_var_service.inc";
+/**
+ * @var FormHandler $HD_Form
+ */
 
 Admin::checkPageAccess(Admin::ACX_CRONT_SERVICE);
 
@@ -49,15 +53,14 @@ $list = $HD_Form->perform_action($form_action);
 require_once __DIR__ . "/../templates/main.php";
 
 // #### HELP SECTION
-if ($form_action == 'ask-add')
+if ($form_action == 'ask-add') {
     echo create_help(_("Utility to apply a scheduled action on the account.<br>") .
         _("For example if you want to remove 10 cents everyday on each single account, it can be defined here, alternatively, if you now want to remove 1 credit every week but only 7 times on each account, the different rules/parameters below will define this."), 'EditRecurringService');
-else
+} else {
     echo create_help(_("Recurring services that decrement an account at timed intervals."), 'ListRecurringService');
-
+}
 // #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);
-
 $HD_Form->create_form($form_action, $list);
 
 require_once __DIR__ . "/../templates/footer.php";

@@ -2,6 +2,7 @@
 
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -37,136 +38,144 @@ use A2billing\Forms\FormHandler;
 
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
-getpost_ifset(array('id', 'name', 'amount', 'period', 'rule', 'daynumber', 'stopmode', 'maxnumbercycle', 'status', 'emailreport'));
-
-
 $HD_Form = new FormHandler("cc_service", "Service");
 
-$HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
+$HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
 
-$HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_service.php?form_action=ask-add";
-$HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add RECURRING SERVICE");
-$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("cog_add.png") ;
+$HD_Form->FG_LIST_ADDING_BUTTON1 = true;
+$HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_service.php?form_action=ask-add";
+$HD_Form->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form->FG_LIST_ADDING_BUTTON_MSG1 = _("Add RECURRING SERVICE");
+$HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("cog_add.png") ;
 
-
-
-// TODO Integrate a generic LIST to Framework
-$period_list = array();
-$period_list["1"]  = array( "Daily", "1");
-for ($k=2;$k<=60;$k++)
-        $period_list["$k"]  = array( "every $k days", "$k");
+$period_list = array_map(
+    fn ($v) => [sprintf(_("Every %d days"), $v), $v],
+    array_combine(range(1, 60), range(1, 60))
+);
+$period_list[1][0]  = _("Daily");
 
 $actived_list = getActivationList();
 
-$rule_list = array();
-$rule_list["3"]  = array( gettext("Apply Service every Y days"), "3");
-$rule_list["1"]  = array( gettext("Apply service if card not used in last X days"), "1");
-$rule_list["2"]  = array( gettext("Apply service if card has been used in the last X Days"), "2");
-$rule_list["0"]  = array( gettext("No rule"), "0");
+$rule_list = [
+    [_("No rule"), 0],
+    [_("Apply service if card not used in last X days"), 1],
+    [_("Apply service if card has been used in the last X Days"), 2],
+    [_("Apply Service every Y days"), 3]
+];
 
-$daynumber_list = array();
-for ($k=1;$k<=20;$k++)
-        $daynumber_list["$k"]  = array( "$k", "$k");
+$stopmode_list = [
+    [_("Never"), 0],
+    [_("Account balance below zero"), 1],
+    [_("Max number of cycle reach"), 2],
+];
 
-$stopmode_list = array();
-$stopmode_list["0"]  = array( gettext("Never"), "0");
-$stopmode_list["1"]  = array( gettext("Account balance below zero"), "1");
-$stopmode_list["2"]  = array( gettext("Max number of cycle reach"), "2");
+$operatemode_list = [
+    [_("Allow be charged into negative balance"), 0],
+    [_("Do partial charge but never go into negative balance"), 1],
+];
 
-$operatemode_list = array();
-$operatemode_list["0"] = array(gettext("Allow be charged into negative balance"),"0");
-$operatemode_list["1"] = array(gettext("Do partial charge but never go into negative balance"),"1");
+$usegroup_list = [
+    [_("List of groups below"), 0],
+    [_("Any group"), 1],
+];
 
-$usegroup_list = array();
-$usegroup_list["0"] = array(gettext("List of groups below"),"0");
-$usegroup_list["1"] = array(gettext("Any group"),"1");
+$HD_Form->AddListValue(_("Name"), "name");
+$HD_Form->AddListValue(_("Amount"), "amount", "display_money");
+$HD_Form->AddListValue(_("Period"), "period");
+$HD_Form->AddListMapping(_("Status"), "status", $actived_list);
+$HD_Form->AddListValue(_("Runs"), "numberofrun");
+$HD_Form->AddListValue(_("Last run"), "datelastrun");
+$HD_Form->AddListValue(_("Cards affected"), "totalcardperform");
+$HD_Form->AddListValue(_("Total credit"), "totalcredit", "display_money");
+$HD_Form->FieldViewElement([
+    "name",
+    "amount",
+    "period",
+    "status",
+    "numberofrun",
+    "datelastrun",
+    "totalcardperform",
+    "totalcredit",
+]);
 
-$HD_Form -> AddViewElement(gettext("NAME"), "name");
-$HD_Form -> AddViewElement(gettext("AMOUNT"), "amount");
-$HD_Form -> AddViewElement(gettext("PERIOD"), "period");
-$HD_Form -> AddViewElement(gettext("STATUS"), "status", true, 0, "", "list", $actived_list);
-$HD_Form -> AddViewElement(gettext("NBRUN"), "numberofrun");
-$HD_Form -> AddViewElement(gettext("DATELASTRUN"), "datelastrun", true, 16);
-$HD_Form -> AddViewElement(gettext("CARDPERFORM"), "totalcardperform");
-$HD_Form -> AddViewElement(gettext("TOTALCREDIT"), "totalcredit");
-
-
-// added a parameter to append  FG_TABLE_ID  ( by default ) or disable 0.
-$HD_Form -> FieldViewElement ('name, amount, period, status, numberofrun, datelastrun, totalcardperform, totalcredit');
-
-$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
-$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form->FG_ENABLE_ADD_BUTTON = true;
+$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form->FG_ENABLE_INFO_BUTTON = true;
 $HD_Form->FG_INFO_BUTTON_LINK = "javascript:window.open('CC_entity_service_details.php?displayfooter=0&popup_select=1&displayheader=0&id=|param|','','scrollbars=yes,resizable=yes,width=600,height=350')";
 
 $HD_Form->AddEditElement(
-    gettext("NAME"),
+    _("NAME"),
     "name",
     "",
     "size=35 maxlength=30",
-    3,
-    gettext("Insert the service name")
+    3, // [Validator::class, "min4Chars"]
+    _("Insert the service name")
 );
 
 $HD_Form->AddEditElement(
-    gettext("AMOUNT CREDIT"),
+    _("AMOUNT CREDIT"),
     "amount",
-    gettext("Set the amount of credit to remove from the card. 0 will remove all credit from the card use -1 for DID recurrent service."),
+    _("Set the amount of credit to remove from the card. 0 will remove all credit from the card use -1 for DID recurrent service."),
     "size=30 maxlength=30",
-    12,
-    gettext("Insert the number of credit to remove from the cards.")
+    12, // [Validator::class, "number"]
+    _("Insert the number of credit to remove from the cards.")
 );
 
 $HD_Form->AddEditSelect(
-    gettext("RULE"),
+    _("RULE"),
     "rule",
     $rule_list,
-    "", gettext("where X - day number (X) in days <br>	and Y = number set in period field")
+    "",
+    _("where X - day number (X) in days <br>	and Y = number set in period field")
 );
 
 $HD_Form->AddEditElement(
-    gettext("DAY NUMBER (X)"),
+    _("DAY NUMBER (X)"),
     "daynumber",
-    gettext("Set the number of days to apply to the rule above."),
+    _("Set the number of days to apply to the rule above."),
     "size=20 maxlength=3",
-    4,
-    gettext("Insert the daynumber"),
+    4, // [Validator::class, "numeric"]
+    _("Insert the daynumber"),
     "",
     "NO"
 );
 
-$HD_Form->AddEditSelect(gettext("PERIOD (Y)"), "period", $period_list, "", gettext("Interval to apply service"));
+$HD_Form->AddEditSelect(
+    _("PERIOD (Y)"),
+    "period",
+    $period_list,
+    "",
+    _("Interval to apply service")
+);
 
-$HD_Form->AddEditSelect(gettext("STOP MODE"), "stopmode", $stopmode_list);
+$HD_Form->AddEditSelect(_("STOP MODE"), "stopmode", $stopmode_list);
 
 $HD_Form->AddEditElement(
-    gettext("MAX NUMBER OF CYCLES BY CARD"),
+    _("MAX NUMBER OF CYCLES BY CARD"),
     "maxnumbercycle",
-    gettext("Set the maximum number of times that the service should be applied."),
+    _("Set the maximum number of times that the service should be applied."),
     "size=20 maxlength=3",
-    4,
-    gettext("Insert the max number of cycle"),
+    4, // [Validator::class, "numeric"]
+    _("Insert the max number of cycle"),
     "",
     "NO-NULL"
 );
 
-$HD_Form->AddEditSelect(gettext("STATUS"), "status", $actived_list);
+$HD_Form->AddEditSelect(_("STATUS"), "status", $actived_list);
 
 $HD_Form->AddEditElement(
-    gettext("EMAIL TO SEND REPORT"),
+    _("EMAIL TO SEND REPORT"),
     "emailreport",
     "",
     "size=30 maxlength=30",
-    1,
-    gettext("Insert the email to send the report"),
+    1, // [Validator::class, "email"]
+    _("Insert the email to send the report"),
     "",
     "NO-NULL"
 );
 
 $HD_Form->AddEditSqlSelect(
-    gettext("CALL PLAN"),
+    _("CALL PLAN"),
     "dialplan",
     "cc_tariffgroup",
     "tariffgroupname,id",
@@ -176,28 +185,26 @@ $HD_Form->AddEditSqlSelect(
 );
 
 $HD_Form->AddEditSelect(
-    gettext("OPERATE MODE"),
+    _("OPERATE MODE"),
     "operate_mode",
     $operatemode_list,
-    "", gettext("If you want to charge only part of sum in case if current balance less then amount, select second option. Will be charged only part of amount, cause balance to be 0.0")
+    "",
+    _("If you want to charge only part of sum in case if current balance less then amount, select second option. Will be charged only part of amount, cause balance to be 0.0")
 );
 
 $HD_Form->AddEditSelect(
-    gettext("SKIP GROUP"),
+    _("SKIP GROUP"),
     "use_group",
     $usegroup_list,
-    "", gettext("Select first option(default) to manualy select groups or select second option to use service for any group, discarding list below")
+    "",
+    _("Select first option(default) to manualy select groups or select second option to use service for any group, discarding list below")
 );
 
-$DBHandle_max  = DbConnect();
-$numrow = 0;
-$resmax = $DBHandle_max -> Execute("SELECT * FROM cc_card_group");
-if ( $resmax )
-	$numrow = $resmax -> RecordCount( );
+$numrow = (new Table("cc_card_group"))->countRows($HD_Form->DBHandle);
 
 if ($numrow > 0) {
     $HD_Form->AddEditSqlSelect(
-        gettext("CARD GROUP"),
+        _("CARD GROUP"),
         "service",
         "cards_services",
         "name,id",

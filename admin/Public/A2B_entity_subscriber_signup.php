@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -37,7 +38,10 @@ use A2billing\Admin;
 
 $menu_section = 13;
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
-require_once __DIR__ . "/form_data/FG_var_subscription_signup.inc";
+require_once __DIR__ . "/form_data/FG_var_subscriber_signup.inc";
+/**
+ * @var FormHandler $HD_Form
+ */
 
 Admin::checkPageAccess(Admin::ACX_CRONT_SERVICE);
 
@@ -53,9 +57,7 @@ echo create_help(_("SIGNUP SUBSCRIBER - You can make create a list of subscriber
 
 // #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);
-
 $HD_Form->create_form($form_action, $list);
 
 // #### FOOTER SECTION
-if (!$popup_select)
-    require_once __DIR__ . "/../templates/footer.php";
+require_once __DIR__ . "/../templates/footer.php";

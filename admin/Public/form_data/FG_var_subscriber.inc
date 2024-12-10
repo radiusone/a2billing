@@ -3,6 +3,7 @@
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -38,54 +39,51 @@ use A2billing\Forms\Validator;
 
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
-getpost_ifset(array('id', 'id_cc_card', 'id_subscription_fee', 'datestart', 'datestop', 'product_name'));
+getpost_ifset(["id"]);
+/**
+ * @var numeric-string|null $id
+ */
 
-$HD_Form = new FormHandler("cc_card_subscription", "Subscriber");
+$form_action ??= "list";
+$HD_Form = new FormHandler("cc_card_subscription", _("Subscriber"));
 
-$HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
+$HD_Form->FG_LIST_ADDING_BUTTON1 = true;
+$HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("text_signature.png") ;
 
-$HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_subscriber.php?form_action=ask-add";
-$HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add SUBSCRIBER");
-$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("text_signature.png") ;
+$HD_Form->AddListValue(_("Account"), "id_cc_card", "display_customer_id_link");
+$HD_Form->AddListSqlMapping(_("Service"), "id_subscription_fee", new Table("cc_subscription_service", ["id", "label"]));
+$HD_Form->AddListValue(_("Start date"), "startdate");
+$HD_Form->AddListValue(_("Stop date"), "stopdate");
+$HD_Form->AddListValue(_("Product"), "product_name");
+$HD_Form->FieldViewElement (["id_cc_card", "id_subscription_fee", "startdate", "stopdate", "product_name"]);
 
+$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form->FG_ENABLE_ADD_BUTTON = true;
 
-$HD_Form -> AddViewElement(gettext("ACCOUNT NUMBER"), "id_cc_card", true, 15, "", "lie", "cc_card", "username", "id='%id'", "%1");
-$HD_Form -> AddViewElement(gettext("SERVICE"), "id_subscription_fee", true, 15, "", "lie", "cc_subscription_service", "label", "id='%id'", "%1");
-$HD_Form -> AddViewElement(gettext("DATE START"), "startdate");
-$HD_Form -> AddViewElement(gettext("DATE STOP"), "stopdate");
-$HD_Form -> AddViewElement(gettext("PRODUCT"), "product_name", true, 50);
-
-// added a parameter to append  FG_TABLE_ID  ( by default ) or disable 0.
-$HD_Form -> FieldViewElement ('id_cc_card, id_subscription_fee, startdate, stopdate, product_name');
-
-$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
-$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
-
-$comp_zero = $comp_date_plus='';
-if (isset($form_action) && $form_action=="ask-add") {
-	$begin_date = date("Y");
-	$end_date = date("-m-d H:i:s");
-	$comp_date = "value='".$begin_date.$end_date."'";
-	//set passed id if any (used if called from customer screen, id is passed to pr-epopluate value
-	$idd = "value='$id'";
+$comp_date = $comp_date_plus = $idd = "";
+if ($form_action === "ask-add") {
+	$end_date = date("Y-m-d H:i:s");
+	$comp_date = "value='$end_date'";
+    if (!empty($id)) {
+        //set passed id if any (used if called from customer screen, id is passed to pr-epopluate value
+        $idd = "value='$id'";
+    }
 	//Max value Mysql Timestamp can store is '2038-01-19 03:14:07' UTC
 	$comp_date_plus = "value='2038-01-01 00:00:00'";
-	$comp_zero = "value='0'";
 }
 
 $HD_Form->AddEditPopup(
-    gettext("CUSTOMER ID"),
+    _("CUSTOMER ID"),
     "id_cc_card",
     "A2B_entity_card.php?popup_select=1&",
-    gettext("Select the Customer ID"),
+    _("Select the Customer ID"),
     $idd,
-    [Validator::class, "numeric"], gettext("Insert the Customer ID")
+    [Validator::class, "numeric"], _("Insert the Customer ID")
 );
 
 $HD_Form->AddEditSqlSelect(
-    gettext("ID SUBSCRIPTION SERVICE"),
+    _("ID SUBSCRIPTION SERVICE"),
     "id_subscription_fee",
     "cc_subscription_service",
     "label,id",
@@ -95,38 +93,40 @@ $HD_Form->AddEditSqlSelect(
 );
 
 $HD_Form->AddEditElement(
-    gettext("START DATE"),
+    _("START DATE"),
     "startdate",
-    gettext("please use the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
+    _("please use the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
     "size=40 maxlength=40  $comp_date",
-    10,
-    gettext("Insert the start date"),
+    10, // [Validator::class, "dateTime"],
+    _("Insert the start date"),
     "",
     "NO-NULL",
     
 );
 
 $HD_Form->AddEditElement(
-    gettext("STOP DATE"),
+    _("STOP DATE"),
     "stopdate",
-    gettext("please use the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
+    _("please use the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
     "size=40 maxlength=40  $comp_date_plus",
-    10,
-    gettext("Insert the stop date"),
+    10, // [Validator::class, "dateTime"],
+    _("Insert the stop date"),
     "",
     "NO-NULL",
     
 );
 
 $HD_Form->AddEditTextarea(
-    gettext("PRODUCT LABEL"),
+    _("PRODUCT LABEL"),
     "product_name",
     "",
-    "cols='50' rows='4'", null, gettext("Enter the name of the product wich is subscribed")
+    "cols='50' rows='4'",
+    null,
+    _("Enter the name of the product wich is subscribed")
 );
 
-$HD_Form -> FG_INTRO_TEXT_ADITION = gettext("Apply subscription to account");
+$HD_Form->FG_INTRO_TEXT_ADITION = _("Apply subscription to account");
 
-$HD_Form -> FG_LOCATION_AFTER_ADD = "?id=";
-$HD_Form -> FG_LOCATION_AFTER_EDIT = "?id=";
-$HD_Form -> FG_LOCATION_AFTER_DELETE = "?id=";
+$HD_Form->FG_LOCATION_AFTER_ADD = "?id=";
+$HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";
+$HD_Form->FG_LOCATION_AFTER_DELETE = "?id=";

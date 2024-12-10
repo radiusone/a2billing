@@ -37,66 +37,41 @@ use A2billing\Forms\FormHandler;
 
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
-getpost_ifset(array('id', 'status', 'id_cc_card', 'updated_date', 'Period', 'frommonth', 'fromstatsmonth', 'tomonth', 'tostatsmonth', 'fromday', 'fromstatsday_sday', 'fromstatsmonth_sday', 'today', 'tostatsday_sday', 'tostatsmonth_sday', 'status', 'current_page', 'order', 'sens','popup_select'));
+$HD_Form = new FormHandler(
+    "cc_status_log",
+    _("Status Log"),
+    "cc_status_log.id",
+    ["cc_card" => ["cc_card.id", "cc_status_log.id_cc_card"]]
+);
 
-
-$HD_Form = new FormHandler("cc_status_log sl LEFT JOIN cc_card ON cc_card.id = sl.id_cc_card", gettext("Status Log"), "sl.id");
-
-$HD_Form -> FG_TABLE_DEFAULT_ORDER = "updated_date";
-$HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
-
-
-$date_clause = "";
-
-$lastdayofmonth = date("t", strtotime(($tostatsmonth ?? "2099-12").'-01'));
-normalize_day_of_month($fromstatsday_sday, $fromstatsmonth_sday);
-normalize_day_of_month($tostatsday_sday, $tostatsmonth_sday);
-if ($Period=="Month"){
-    $HD_Form->list_query_conditions[] = [
-        "SUB",
-        [
-            "sl.updated_date" => [
-                [">=", sprintf("%s-01", $fromstatsmonth ?? "1900-01")],
-                ["<=", sprintf("%s-%s 23:59:59", $tostatsmonth ?? "2099-12", $lastdayofmonth)]
-            ],
-        ],
-    ];
-} else {
-    $HD_Form->list_query_conditions[] = [
-        "SUB",
-        [
-            "sl.updated_date" => [
-                [">=", sprintf("%s-%02d", $fromstatsmonth_sday ?? "1900-01", $fromstatsday_sday ?? 1)],
-                ["<=", sprintf("%s-%02d 23:59:59", $tostatsmonth_sday ?? "2099-12", $tostatsday_sday ?? 31)]
-            ],
-        ],
-    ];
-}
-
-if ($id_cc_card != "") {
-    $HD_Form->list_query_conditions["sl.id_cc_card"] = $id_cc_card;
-}
-
-if ($status >= 0) {
-    $HD_Form->list_query_conditions["sl.status"] = $status;
-}
+$HD_Form->FG_TABLE_DEFAULT_ORDER = "updated_date";
+$HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
 
 $cardstatus_list = getCardStatus_List();
 
-$HD_Form -> AddViewElement(gettext("ID CARD"), "id_cc_card");
-$HD_Form -> AddViewElement(gettext("ACCOUNT NUMBER"), "id_cc_card", true, 0, "", "lie_link", "cc_card", "username,id", "id='%id'", "%1", "A2B_entity_card.php");
-$HD_Form -> AddViewElement(gettext("LAST NAME"), "id_cc_card", true, 15, "", "lie", "cc_card", "lastname", "id='%id'", "%1");
-$HD_Form -> AddViewElement(gettext("STATUS"), "status", true, 0, "", "list", $cardstatus_list);
-$HD_Form -> AddViewElement(gettext("DATE"), "updated_date", true, 16);
+$HD_Form->AddListValue(_("Account"), "id_cc_card", "display_customer_id_link");
+$HD_Form->AddListValue(_("Last name"), "lastname");
+$HD_Form->AddListMapping(_("Status"), "cc_status_log.status", $cardstatus_list);
+$HD_Form->AddListValue(_("Date"), "updated_date");
 
-$HD_Form -> FieldViewElement ('sl.id_cc_card, id_cc_card, id_cc_card, sl.status, sl.updated_date');
+$HD_Form->FieldViewElement ('id_cc_card, lastname, cc_status_log.status, updated_date');
 
-$HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO STATUS LOG AVAILABLE!");
-$HD_Form -> FG_INTRO_TEXT_EDITION = "";
-$HD_Form -> FG_ENABLE_EDIT_BUTTON = false;
-$HD_Form -> FG_ENABLE_DELETE_BUTTON = false;
-$HD_Form -> FG_ENABLE_ADD_BUTTON = false;
+$HD_Form->CV_NO_FIELDS  = _("THERE IS NO STATUS LOG AVAILABLE!");
+$HD_Form->FG_INTRO_TEXT_EDITION = "";
+$HD_Form->FG_ENABLE_EDIT_BUTTON = false;
+$HD_Form->FG_ENABLE_DELETE_BUTTON = false;
+$HD_Form->FG_ENABLE_ADD_BUTTON = false;
 
-$HD_Form -> FG_FILTER_ENABLE = true;
-$HD_Form -> FG_FILTER_COLUMN = 'username';
-$HD_Form -> FG_FILTER_LABEL = 'Account number';
+$HD_Form->FG_FILTER_ENABLE = true;
+$HD_Form->FG_FILTER_COLUMN = "username";
+$HD_Form->FG_FILTER_LABEL = _("Account number");
+
+$HD_Form->search_form_enabled = true;
+$HD_Form->search_delete_enabled = false;
+$HD_Form->AddSearchPopupInput("id_cc_card", _("Account"), "A2B_entity_card.php");
+$HD_Form->AddSearchDateInput(_("Dates"), "updated_date");
+$HD_Form->AddSearchSelectInput(
+    _("Status"),
+    "cc_status_log.status",
+    array_map("array_reverse", $cardstatus_list)
+);

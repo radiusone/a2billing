@@ -38,73 +38,74 @@ use A2billing\Forms\Validator;
 
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
-getpost_ifset(array('id', 'speeddial', 'id_cc_card', 'name', 'phone','popup_select','popup_formname','popup_fieldname'));
+$form_action ??= "list";
 
-if (!isset($form_action) || $form_action=="list") {
-	$HD_Form = new FormHandler("cc_speeddial LEFT JOIN cc_card ON cc_card.id = cc_speeddial.id_cc_card", "speed dial", "cc_speeddial.id");
-}else{
-	$HD_Form = new FormHandler("cc_speeddial ", "speed dial");
-}
-$HD_Form -> FG_TABLE_DEFAULT_ORDER = "cc_speeddial.creationdate";
-$HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
+$HD_Form = new FormHandler(
+    "cc_speeddial",
+    _("Speed Dial"),
+    "cc_speeddial.id",
+    $form_action === "list"
+        ? ["cc_card" => ["cc_speeddial.id_cc_card", "cc_card.id"]]
+        : []
+);
 
-$HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_speeddial.php?form_action=ask-add";
-$HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add Speed Dial");
-$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("page_white_add.png") ;
+$HD_Form->FG_TABLE_DEFAULT_ORDER = "creationdate";
+$HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
 
+$HD_Form->FG_LIST_ADDING_BUTTON1 = true;
+$HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("page_white_add.png") ;
 
-$speeddial_list = array();
-for ($k=0;$k<=9;$k++)
-	$speeddial_list["$k"] = array("$k", "$k");
+$speeddial_list = array_map(
+    fn($v) => [$v, $v],
+    array_combine(range(0, 9), range(0, 9))
+);
 
+$HD_Form->AddListValue(_("Speed dial"), "speeddial");
+$HD_Form->AddListValue(_("Phone number"), "phone");
+$HD_Form->AddListValue(_("Name"), "name");
+$HD_Form->AddListValue(_("Account"), "id_cc_card", "display_customer_id_link");
+$HD_Form->AddListValue(_("Date"), "cc_speeddial.creationdate");
+$HD_Form->FieldViewElement (["speeddial", "phone", "name", "id_cc_card", "cc_speeddial.creationdate"]);
 
-$HD_Form -> AddViewElement(gettext("SPEED DIAL"), "cc_speeddial.speeddial");
-$HD_Form -> AddViewElement(gettext("PHONE NUMBER"), "cc_speeddial.phone");
-$HD_Form -> AddViewElement(gettext("NAME"), "cc_speeddial.name");
-$HD_Form -> AddViewElement(gettext("ACCOUNT"), " cc_speeddial.id_cc_card", true, 30, "display_customer_id_link");
-$HD_Form -> AddViewElement(gettext("DATE"), "cc_speeddial.creationdate", true, 16);
+$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form->FG_ENABLE_ADD_BUTTON = true;
 
-
-$HD_Form -> FieldViewElement ('cc_speeddial.speeddial, cc_speeddial.phone, cc_speeddial.name, cc_speeddial.id_cc_card, cc_speeddial.creationdate');
-
-$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
-$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
-
-$HD_Form->AddEditSelect(gettext("SPEED DIAL"), "speeddial", $speeddial_list);
+$HD_Form->AddEditSelect(_("SPEED DIAL"), "speeddial", $speeddial_list);
 
 $HD_Form->AddEditElement(
-    gettext("NAME"),
+    _("NAME"),
     "name",
-    gettext("Enter the name or label that will identify this speed dial"),
+    _("Enter the name or label that will identify this speed dial"),
     "size=40 maxlength=50",
-    0,
-    gettext("Insert the name")
+    0, // [Validator::class, "min3Chars"],
+    _("Insert the name")
 );
 
 
 $HD_Form->AddEditElement(
-    gettext("PHONE"),
+    _("PHONE"),
     "phone",
-    gettext("Enter the phone number for the speed dial."),
+    _("Enter the phone number for the speed dial."),
     "size=30 maxlength=50",
-    4,
-    gettext("Insert the phone")
+    4, // [Validator::class, "numeric"],
+    _("Insert the phone")
 );
 
 $HD_Form->AddEditPopup(
-    gettext("CARD ID"),
+    _("CARD ID"),
     "id_cc_card",
     "A2B_entity_card.php?popup_select=1&",
-    gettext("Define the card number ID to use."),
-    "", [Validator::class, "numeric"], gettext("Insert the card number ID")
+    _("Define the card number ID to use."),
+    "",
+    [Validator::class, "numeric"],
+    _("Insert the card number ID")
 );
 
-$HD_Form -> FG_FILTER_ENABLE = true;
-$HD_Form -> FG_FILTER_COLUMN = 'username';
-$HD_Form -> FG_FILTER_LABEL = gettext('Account Number');
+$HD_Form->FG_FILTER_ENABLE = true;
+$HD_Form->FG_FILTER_COLUMN = "username";
+$HD_Form->FG_FILTER_LABEL = _("Account Number");
 
-$HD_Form -> FG_INTRO_TEXT_ADITION = '';
+$HD_Form->FG_INTRO_TEXT_ADITION = '';
 
-$HD_Form -> FG_LOCATION_AFTER_DELETE = $HD_Form -> FG_LOCATION_AFTER_EDIT = $HD_Form -> FG_LOCATION_AFTER_ADD = "?id=";
+$HD_Form->FG_LOCATION_AFTER_DELETE = $HD_Form->FG_LOCATION_AFTER_EDIT = $HD_Form->FG_LOCATION_AFTER_ADD = "?id=";
