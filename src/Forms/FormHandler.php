@@ -912,7 +912,7 @@ class FormHandler
      * @return void
      */
     public function AddSearchDateInput(string $label, string $fieldname, bool $relative = false) {
-        $inputnames = ["${fieldname}_start", "${fieldname}_end"];
+        $inputnames = ["{$fieldname}_start", "{$fieldname}_end"];
         if ($relative) {
             unset($inputnames[0]);
             $inputnames[1] .= "_months";
@@ -920,7 +920,7 @@ class FormHandler
         $this->search_form_elements[] = [
             "label" => $label,
             "input" => $inputnames,
-            "operator" => ["${fieldname}_start_type", "${fieldname}_end_type"],
+            "operator" => ["{$fieldname}_start_type", "{$fieldname}_end_type"],
             "column" => $fieldname,
             "type" => "DATE",
             "relative" => $relative,

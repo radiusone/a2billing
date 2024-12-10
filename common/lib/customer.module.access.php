@@ -66,7 +66,7 @@ if (!isset($_SESSION['pr_login']) || !isset($_SESSION['pr_password']) || !isset(
         if (!is_array($return)) {
             sleep(2);
             header("HTTP/1.0 401 Unauthorized");
-            header("Location: ${C_RETURN_URL_DISTANT_LOGIN}error=$return");
+            header("Location: {$C_RETURN_URL_DISTANT_LOGIN}error=$return");
             die();
         }
 
