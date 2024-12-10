@@ -2,6 +2,7 @@
 
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -37,73 +38,71 @@ use A2billing\Forms\FormHandler;
 
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
-getpost_ifset(array('id', 'name', 'activated' ,'id_support','type_user' ));
+$HD_Form = new FormHandler("cc_support_component", _("Support Component"));
 
+$HD_Form->FG_TABLE_DEFAULT_ORDER = "name";
 
+$HD_Form->FG_LIST_ADDING_BUTTON1 = true;
+$HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("brick_add.png") ;
 
-$HD_Form = new FormHandler("cc_support_component", "Support Component");
-
-$HD_Form -> FG_TABLE_DEFAULT_ORDER = " name";
-$HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
-
-
-$HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "CC_support_component.php?form_action=ask-add";
-$HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add COMPONENT");
-$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("brick_add.png") ;
-
-
-// Code Here for Deleting the Dependent Records
-// Dependent Tables
-$HD_Form -> FG_FK_DELETE_ALLOWED = true;
-$HD_Form -> FG_FK_DELETE_CONFIRM = true;
-$HD_Form -> FG_FK_WARNONLY = true;
-$HD_Form -> FG_FK_TABLENAMES = array("cc_ticket");
-$HD_Form -> FG_FK_EDITION_CLAUSE = array(" id_component ");
-
-$HD_Form -> FG_FK_DELETE_MESSAGE = gettext("You have some tickets using this Support Component! Please comfirm that you really want to remove this Support Component? ");
+$HD_Form->FG_FK_DELETE_ALLOWED = true;
+$HD_Form->FG_FK_DELETE_CONFIRM = true;
+$HD_Form->FG_FK_WARNONLY = true;
+$HD_Form->FG_FK_TABLENAMES = ["cc_ticket"];
+$HD_Form->FG_FK_EDITION_CLAUSE = ["id_component"];
+$HD_Form->FG_FK_DELETE_MESSAGE = _("You have some tickets using this Support Component! Please comfirm that you really want to remove this Support Component? ");
 
 $user_type = [[_("CUSTOMERS"), "0"], [_("AGENTS"), "1"], [_("CUSTOMERS AND AGENTS"),  "2"],];
 $activated_list = getActivationList();
 
-$HD_Form -> AddViewElement(gettext("ID"), "id");
-$HD_Form -> AddViewElement(gettext("NAME"), "name");
-$HD_Form -> AddViewElement(gettext("ACTIVATED"), "activated", true, 0, "", "list", $activated_list);
-$HD_Form -> AddViewElement(gettext("USER TYPE"), "activated", true, 0, "", "list", $user_type);
-$HD_Form -> AddViewElement(gettext("SUPPORT BOX"), "id_support", true, 15, "", "lie", "cc_support", "name", "id='%id'", "%1");
+$HD_Form->AddListValue(_("ID"), "id");
+$HD_Form->AddListValue(_("Name"), "name");
+$HD_Form->AddListMapping(_("Activated"), "activated", $activated_list);
+$HD_Form->AddListMapping(_("User type"), "activated", $user_type);
+$HD_Form->AddListSqlMapping(_("Support box"), "id_support", new Table("cc_support", ["id", "name"]));
+$HD_Form->FieldViewElement (["id", "name", "activated", "type_user", "id_support"]);
 
-$HD_Form -> FieldViewElement ('id, name, activated,type_user, id_support ');
-
-$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
-$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
-
+$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form->FG_ENABLE_ADD_BUTTON = true;
 
 $HD_Form->AddEditElement(
-    gettext("NAME"),
+    _("NAME"),
     "name",
     "",
     "size=30 maxlength=20",
-    9,
-    gettext("Insert the Support Box name ")
+    9, // [Validator::class, "min1Char"],
+    _("Insert the Support Box name ")
 );
 
 $HD_Form->AddEditRadio(
-    gettext("ACTIVATED"),
+    _("ACTIVATED"),
     "activated",
-    [[gettext("Yes"), "1"], [gettext("No"), "0"]],
+    getYesNoList(),
     "1",
-    "", "",
-    gettext("Choose if you want to activate this component")
+    "",
+    "",
+    _("Choose if you want to activate this component")
 );
 
-$HD_Form->AddEditSqlSelect(gettext("Support Box"), "id_support", "cc_support", "name,id");
+$HD_Form->AddEditSqlSelect(
+    _("Support Box"),
+    "id_support",
+    "cc_support",
+    "name,id"
+);
 
-$HD_Form->AddEditSelect(gettext("USER TYPE"), "type_user", $user_type, "", gettext("Define who can use this component."));
+$HD_Form->AddEditSelect(
+    _("USER TYPE"),
+    "type_user",
+    $user_type,
+    "",
+    _("Define who can use this component.")
+);
 
-$HD_Form -> FG_INTRO_TEXT_EDITION= '';
-$HD_Form -> FG_INTRO_TEXT_ADITION = '';
+$HD_Form->FG_INTRO_TEXT_EDITION = "";
+$HD_Form->FG_INTRO_TEXT_ADITION = "";
 
-$HD_Form -> FG_LOCATION_AFTER_ADD = "?id=";
-$HD_Form -> FG_LOCATION_AFTER_EDIT = "?id=";
-$HD_Form -> FG_LOCATION_AFTER_DELETE = "?id=";
+$HD_Form->FG_LOCATION_AFTER_ADD = "?id=";
+$HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";
+$HD_Form->FG_LOCATION_AFTER_DELETE = "?id=";

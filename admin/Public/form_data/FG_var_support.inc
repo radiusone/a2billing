@@ -37,74 +37,57 @@ use A2billing\Forms\FormHandler;
 
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
-getpost_ifset(array('id', 'name', 'email','language','popup_select'));
+$HD_Form = new FormHandler("cc_support", _("Support Box"));
 
+$HD_Form->FG_TABLE_DEFAULT_ORDER = "name";
 
+$HD_Form->FG_LIST_ADDING_BUTTON1 = true;
+$HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("package_add.png") ;
 
-$HD_Form = new FormHandler("cc_support", "Support Box");
+$HD_Form->FG_FK_DELETE_ALLOWED = true;
+$HD_Form->FG_FK_DELETE_CONFIRM = true;
+$HD_Form->FG_FK_WARNONLY = true;
+$HD_Form->FG_FK_TABLENAMES = ["cc_support_component"];
+$HD_Form->FG_FK_EDITION_CLAUSE = ["id_support"];
+$HD_Form->FG_FK_DELETE_MESSAGE = _("You have some components using this Support Box! Please comfirm that you really want to remove this Support Box? ");
 
-$HD_Form -> FG_TABLE_DEFAULT_ORDER = " name";
-$HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
+$HD_Form->AddListValue(_("ID"), "id");
+$HD_Form->AddListValue(_("Name"), "name");
+$HD_Form->AddListValue(_("Email"), "email");
+$HD_Form->AddListValue(_("Language"), "language");
+$HD_Form->FieldViewElement(["id", "name", "email", "language"]);
 
-
-
-
-$HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "CC_support.php?form_action=ask-add";
-$HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add SUPPORT BOX");
-$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("package_add.png") ;
-
-
-
-// Code Here for Deleting the Dependent Records
-// Dependent Tables
-$HD_Form -> FG_FK_DELETE_ALLOWED = true;
-$HD_Form -> FG_FK_DELETE_CONFIRM = true;
-$HD_Form -> FG_FK_WARNONLY = true;
-$HD_Form -> FG_FK_TABLENAMES = array("cc_support_component");
-$HD_Form -> FG_FK_EDITION_CLAUSE = array(" id_support ");
-
-$HD_Form -> FG_FK_DELETE_MESSAGE = gettext("You have some components using this Support Box! Please comfirm that you really want to remove this Support Box? ");
-
-
-
-$HD_Form -> AddViewElement(gettext("ID"), "id");
-$HD_Form -> AddViewElement(gettext("NAME"), "name");
-$HD_Form -> AddViewElement(gettext("EMAIL"), "email");
-$HD_Form -> AddViewElement(gettext("LANGUAGE"), "language");
-$HD_Form -> FieldViewElement ('id,name,email,language');
-
-$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
-$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
+$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form->FG_ENABLE_ADD_BUTTON = true;
 
 $language_list = getLanguagesList();
 
 $HD_Form->AddEditElement(
-    gettext("NAME"),
+    _("NAME"),
     "name",
     "",
     "size=30 maxlength=20",
-    9,
-    gettext("Insert the Support Box name ")
+    9, // [Validator::class, "min1Char"],
+    _("Insert the Support Box name ")
 );
 
-$HD_Form->AddEditSelect(gettext("LANGUAGE"), "language", $language_list);
+$HD_Form->AddEditSelect(_("LANGUAGE"), "language", $language_list);
 
 $HD_Form->AddEditElement(
-    gettext("EMAIL"),
+    _("EMAIL"),
     "email",
     "",
     "size=30 maxlength=70",
-    1,
-    gettext("Insert the email"),
+    1, // [Validator::class, "email"],
+    _("Insert the email"),
     "",
     "NO"
 );
 
-$HD_Form -> FG_INTRO_TEXT_EDITION= '';
-$HD_Form -> FG_INTRO_TEXT_ADITION = '';
+$HD_Form->FG_INTRO_TEXT_EDITION = "";
+$HD_Form->FG_INTRO_TEXT_ADITION = "";
 
-$HD_Form -> FG_LOCATION_AFTER_ADD = "?id=";
-$HD_Form -> FG_LOCATION_AFTER_EDIT = "?id=";
-$HD_Form -> FG_LOCATION_AFTER_DELETE = "?id=";
+$HD_Form->FG_LOCATION_AFTER_ADD = "?id=";
+$HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";
+$HD_Form->FG_LOCATION_AFTER_DELETE = "?id=";

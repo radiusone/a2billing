@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -37,26 +38,24 @@ use A2billing\Admin;
 
 $menu_section = 4;
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
-require_once __DIR__ . "/form_data/FG_var_support.inc";
+require_once __DIR__ . "/form_data/FG_var_support_component.inc";
+/**
+ * @var FormHandler $HD_Form
+ */
 
 Admin::checkPageAccess(Admin::ACX_SUPPORT);
 
-$HD_Form -> init();
+$HD_Form->init();
 
 $form_action ??= "list";
-$list = $HD_Form -> perform_action($form_action);
+$list = $HD_Form->perform_action($form_action);
 require_once __DIR__ . "/../templates/main.php";
 
 // #### HELP SECTION
-echo create_help(_("You can see here the Support Box, you need at least one support box to start support activity."));
+echo create_help(_("Here you can see all components which you use to handle the support task. You can use components to categorise the subject of the ticket. i.e : Tarification, Payment"));
 
 // #### TOP SECTION PAGE
-$HD_Form -> create_toppage ($form_action);
-
-// #### CREATE FORM OR LIST
-//$HD_Form -> CV_TOPVIEWER = "menu";
-if (strlen($_GET["menu"])>0) $_SESSION["menu"] = $_GET["menu"];
-
-$HD_Form -> create_form($form_action, $list) ;
+$HD_Form->create_toppage($form_action);
+$HD_Form->create_form($form_action, $list);
 
 require_once __DIR__ . "/../templates/footer.php";

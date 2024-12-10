@@ -37,113 +37,105 @@ use A2billing\Forms\FormHandler;
 
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
-getpost_ifset(array('id', 'label', 'fee', 'status', 'emailreport'));
+$form_action ??= "list";
 
-$HD_Form = new FormHandler("cc_subscription_service", "Subscription Service");
+$HD_Form = new FormHandler("cc_subscription_service", _("Subscription Service"));
 
-$HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
+$HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
 
-$HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_subscription.php?form_action=ask-add";
-$HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add SUBSCRIPTION SERVICE");
-$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("script.png") ;
-
+$HD_Form->FG_LIST_ADDING_BUTTON1 = true;
+$HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("script.png") ;
 
 $actived_list = getActivationList();
 
-$daynumber_list = array();
-for ($k=1;$k<=20;$k++)
-        $daynumber_list["$k"]  = array( "$k", "$k");
+$HD_Form->AddListValue(_("Label"), "label");
+$HD_Form->AddListValue(_("Fee"), "fee", "display_money");
+$HD_Form->AddListMapping(_("Status"), "status", $actived_list);
+$HD_Form->AddListValue(_("Start date"), "startdate");
+$HD_Form->AddListValue(_("Stop date"), "stopdate");
+$HD_Form->AddListValue(_("Runs"), "numberofrun");
+$HD_Form->AddListValue(_("Last run"), "datelastrun");
+$HD_Form->AddListValue(_("Cards affected"), "totalcardperform");
+$HD_Form->AddListValue(_("Total credit"), "totalcredit", "display_money");
+$HD_Form->FieldViewElement([
+    "label",
+    "fee",
+    "status",
+    "startdate",
+    "stopdate",
+    "numberofrun",
+    "datelastrun",
+    "totalcardperform",
+    "totalcredit",
+]);
 
+$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form->FG_ENABLE_ADD_BUTTON = true;
 
-
-
-
-$HD_Form -> AddViewElement(gettext("LABEL"), "label");
-$HD_Form -> AddViewElement(gettext("FEE"), "fee");
-$HD_Form -> AddViewElement(gettext("STATUS"), "status", true, 0, "", "list", $actived_list);
-$HD_Form -> AddViewElement(gettext("DATE START"), "startdate");
-$HD_Form -> AddViewElement(gettext("DATE STOP"), "stopdate");
-$HD_Form -> AddViewElement(gettext("NBRUN"), "numberofrun");
-$HD_Form -> AddViewElement(gettext("DATE LASTRUN"), "datelastrun", true, 16);
-$HD_Form -> AddViewElement(gettext("ACC PERFORM"), "totalcardperform");
-$HD_Form -> AddViewElement(gettext("TOTAL CREDIT"), "totalcredit");
-
-
-// added a parameter to append  FG_TABLE_ID  ( by default ) or disable 0.
-$HD_Form -> FieldViewElement ('label, fee, status,startdate,stopdate, numberofrun, datelastrun, totalcardperform, totalcredit');
-
-$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
-$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
-
-$comp_zero = $comp_date_plus='';
-if (isset($form_action) && $form_action=="ask-add") {
-	$begin_date = date("Y");
-	$end_date = date("-m-d H:i:s");
-	$comp_date = "value='".$begin_date.$end_date."'";
-	//set passed id if any (used if called from customer screen, id is passed to pr-epopluate value
-	$idd = "value='$id'";
+$comp_date = $comp_date_plus = '';
+if ($form_action === "ask-add") {
+	$end_date = date("Y-m-d H:i:s");
+	$comp_date = "value='$end_date'";
 	//Max value Mysql Timestamp can store is '2038-01-19 03:14:07' UTC
 	$comp_date_plus = "value='2038-01-01 00:00:00'";
-	$comp_zero = "value='0'";
 }
 
 $HD_Form->AddEditElement(
-    gettext("LABEL"),
+    _("LABEL"),
     "label",
     "",
     "size=35 maxlength=30",
-    3,
-    gettext("Insert the service label")
+    3, // [Validator::class, "min4Chars"],
+    _("Insert the service label")
 );
 
 $HD_Form->AddEditElement(
-    gettext("FEE"),
+    _("FEE"),
     "fee",
-    gettext("Set the fee amount that the user have to pay per month."),
+    _("Set the fee amount that the user have to pay per month."),
     "size=30 maxlength=30",
-    12,
-    gettext("Insert the fee amount.")
+    12, // [Validator::class, "number"],
+    _("Insert the fee amount.")
 );
 
-$HD_Form->AddEditSelect(gettext("STATUS"), "status", $actived_list);
+$HD_Form->AddEditSelect(_("STATUS"), "status", $actived_list);
 
 $HD_Form->AddEditElement(
-    gettext("START DATE"),
+    _("START DATE"),
     "startdate",
-    gettext("please use the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
+    _("please use the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
     "size=40 maxlength=40  $comp_date",
-    10,
-    gettext("Insert the start date"),
+    10, // [Validator::class, "dateTime"],
+    _("Insert the start date"),
     "",
     "NO-NULL",
     
 );
 
 $HD_Form->AddEditElement(
-    gettext("STOP DATE"),
+    _("STOP DATE"),
     "stopdate",
-    gettext("please use the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
+    _("please use the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
     "size=40 maxlength=40  $comp_date_plus",
-    10,
-    gettext("Insert the stop date"),
+    10, // [Validator::class, "dateTime"],
+    _("Insert the stop date"),
     "",
     "NO-NULL",
     
 );
 
 $HD_Form->AddEditElement(
-    gettext("EMAIL TO SEND REPORT"),
+    _("EMAIL TO SEND REPORT"),
     "emailreport",
     "",
     "size=30 maxlength=30",
-    1,
-    gettext("Insert the email to send the report"),
+    1, // [Validator::class, "email"],
+    _("Insert the email to send the report"),
     "",
     "NO-NULL"
 );
 
-$HD_Form -> FG_LOCATION_AFTER_ADD = "?id=";
-$HD_Form -> FG_LOCATION_AFTER_EDIT = "?id=";
-$HD_Form -> FG_LOCATION_AFTER_DELETE = "?id=";
+$HD_Form->FG_LOCATION_AFTER_ADD = "?id=";
+$HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";
+$HD_Form->FG_LOCATION_AFTER_DELETE = "?id=";
