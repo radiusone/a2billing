@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -38,6 +39,9 @@ use A2billing\Admin;
 $menu_section = 2;
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
 require_once __DIR__ . "/form_data/FG_var_signup_agent.inc";
+/**
+ * @var FormHandler $HD_Form
+ */
 
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
@@ -49,11 +53,24 @@ $list = $HD_Form -> perform_action($form_action);
 require_once __DIR__ . "/../templates/main.php";
 
 // #### HELP SECTION
-echo create_help(_("This shows a list of all signup key create for the Agents, this key is used to identify the default paramater for the subscription on the signup page"));
+if ($form_action === "ask-add") {
+    echo create_help(_("Generate a specific crypted URL to configure signup with a customer group and call plan."));
+} else {
+    echo create_help(_("This shows a list of all signup key create for the Agents, this key is used to identify the default paramater for the subscription on the signup page"));
+}
 
 // #### TOP SECTION PAGE
 $HD_Form -> create_toppage ($form_action);
-
 $HD_Form -> create_form($form_action, $list) ;
 
 require_once __DIR__ . "/../templates/footer.php";
+
+if ($form_action === "ask-add") {
+?>
+<script>
+    $("#id_agent").on("change", function() {
+        window.location.href = "A2B_entity_signup_agent.php?form_action=ask-add&id_agent=" + this.value;
+    });
+</script>
+<?php
+}

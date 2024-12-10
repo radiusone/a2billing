@@ -1,7 +1,9 @@
 <?php
 
+use A2billing\A2Billing;
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -34,30 +36,86 @@ use A2billing\Forms\FormHandler;
  *
  *
 **/
-
+/**
+ * @var A2Billing $A2B
+ */
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
-getpost_ifset(array('id', 'id_agent', 'id_tariff_group', 'code','id_group'));
+getpost_ifset(["id_agent"]);
+/**
+ * @var numeric-string|null $id_agent
+ */
 
+$form_action ??= "list";
 
-$HD_Form = new FormHandler("cc_agent_signup", "SIGNUP KEY");
+$HD_Form = new FormHandler("cc_agent_signup", _("Signup Key"));
 
-$HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_signup_agent.php";
-$HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add Signup KEY");
-$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("key_add.png") ;
-$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form->FG_LIST_ADDING_BUTTON1 = true;
+$HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("key_add.png");
+$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form->FG_ENABLE_EDIT_BUTTON = false;
+$HD_Form->FG_ENABLE_ADD_BUTTON = true;
 
+$HD_Form->FG_LOCATION_AFTER_DELETE = "?form_action=list&del=";
+$HD_Form->FG_LOCATION_AFTER_ADD = "?form_action=list&id=";
 
-$HD_Form -> AddViewElement(gettext("KEY"), "code");
-$HD_Form -> AddViewElement(gettext("AGENT"), "id_agent", true, 0, "", "lie", "cc_agent", "firstname, lastname , login", "id='%id'", "%1 %2 (%3)");
-$HD_Form -> AddViewElement(gettext("CALL PLAN"), "id_tariffgroup", true, 0, "", "lie", "cc_tariffgroup", "tariffgroupname", "id='%id'", "%1");
-$HD_Form -> AddViewElement(gettext("GROUP"), "id_group", true, 0, "", "lie", "cc_card_group", "name", "id='%id'", "%1");
+$HD_Form->AddListValue(_("Key"), "code");
+$HD_Form->AddListValue(_("Agent"), "id_agent", "display_linktoagent");
+$HD_Form->AddListSqlMapping(_("Call plan"), "id_tariffgroup", new Table("cc_tariffgroup", ["id", "tariffgroupname"]));
+$HD_Form->AddListSqlMapping(_("Group"), "id_group", new Table("cc_card_group", ["id" , "name"]));
+$HD_Form->FieldViewElement (["code", "id_agent", "id_tariffgroup", "id_group"]);
 
-$HD_Form -> FieldViewElement ('code, id_agent, id_tariffgroup ,id_group');
-
+$url = htmlspecialchars(json_encode($A2B->config["signup"]["urlcustomerinterface"]));
 $HD_Form->AddListActionButton(
-    "javascript:alert(".json_encode($A2B->config['signup']['urlcustomerinterface'])." + 'signup.php?key=|col0|',400)",
+    "javascript:alert($url + 'signup.php?key=|col0|')",
     _("URL"),
     get_image_path("link.png")
 );
+
+$HD_Form->AddEditSqlSelect(
+    _("Agent"),
+    "id_agent",
+    "cc_agent",
+    "CONCAT(login, '(', firstname, ' ', lastname, ')'), id",
+    "",
+    $id_agent ?? "",
+    ["", _("Select agent")],
+    "%1",
+    "",
+    "required"
+);
+
+if ((isset($id_agent) && is_numeric($id_agent) && ($form_action === "ask-add" || $form_action === "add")) || $form_action === "ask-delete") {
+    $HD_Form->AddEditSqlSelect(
+        _("Call Plan"),
+        "id_tariffgroup",
+        "cc_tariffgroup LEFT JOIN cc_agent_tariffgroup ON cc_tariffgroup.id = cc_agent_tariffgroup.id_tariffgroup",
+        "tariffgroupname, id",
+        $form_action === "ask-delete" ? "" : "id_agent = $id_agent",
+        "",
+        ["", _("Select call plan")],
+        "%1",
+        "",
+        "required"
+    );
+
+    $HD_Form->AddEditSqlSelect(
+        _("Customer Group"),
+        "id_group",
+        "cc_card_group",
+        "name, id",
+        $form_action === "ask-delete" ? "" : "id_agent = $id_agent",
+        "",
+        ["", _("Select group")],
+        "%1",
+        "",
+        "required"
+    );
+
+    if ($form_action === "ask-delete") {
+        $HD_Form->AddEditElement(_("Code"), "code");
+    }
+    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS = [
+        "code" => generate_unique_value("cc_agent_signup", 10, "code"),
+    ];
+}
