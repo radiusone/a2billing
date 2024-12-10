@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -38,32 +39,35 @@ use A2billing\Admin;
 $menu_section = 6;
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
 require_once __DIR__ . "/form_data/FG_var_tariffgroup.inc";
+/**
+ * @var FormHandler $HD_Form
+ * @var numeric-string|null $popup_select
+ */
 
 Admin::checkPageAccess(Admin::ACX_RATECARD);
 
 $HD_Form->init();
-
-if (!isset ($form_action)) {
-    $form_action = "list"; //ask-add
-}
-if (!isset ($action)) {
-    $action = $form_action;
-}
+$form_action ??= "list";
 
 $list = $HD_Form->perform_action($form_action);
 
 require_once __DIR__ . "/../templates/main.php";
 
-$CC_help_list_tariffgroup = create_help(
-    _("List of Call Plans, a Call Plan is a collection of ratecards. You can click on edit to add new ratecards to the Call Plan"),
-    'ListCallPlan'
-);
-
 // #### HELP SECTION
-if ($form_action === 'list') {
-    if (!$popup_select) {
-        echo $CC_help_list_tariffgroup;
-    } else {?>
+if (empty($popup_select)) {
+    echo create_help(
+        _("List of Call Plans, a Call Plan is a collection of ratecards. You can click on edit to add new ratecards to the Call Plan"),
+        'ListCallPlan'
+    );
+}
+
+// #### TOP SECTION PAGE
+$HD_Form->create_toppage($form_action);
+$HD_Form->create_form($form_action, $list);
+
+// #### FOOTER SECTION
+require_once __DIR__ . "/../templates/footer.php";
+?>
 <script>
     function sendValue(selvalue) {
         var formname = <?= json_encode($popup_formname ?? "") ?>;
@@ -72,17 +76,3 @@ if ($form_action === 'list') {
         window.close();
     }
 </script>
-    <?php }
-} else {
-    echo $CC_help_list_tariffgroup;
-}
-
-// #### TOP SECTION PAGE
-$HD_Form->create_toppage($form_action);
-
-$HD_Form->create_form($form_action, $list);
-
-// #### FOOTER SECTION
-if (!$popup_select) {
-    require_once __DIR__ . "/../templates/footer.php";
-}

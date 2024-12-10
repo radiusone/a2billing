@@ -2,6 +2,7 @@
 
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -35,110 +36,108 @@ use A2billing\Forms\FormHandler;
  *
 **/
 
+/**
+ * @var numeric-string|null $popup_select
+ * @var string $popup_formname
+ * @var string $popup_fieldname
+ */
+
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
-getpost_ifset(array('id', 'tariffgroupname', 'lcrtype', 'removeinterprefix', 'idtariffplan', 'idtariffplan_hidden', 'id_cc_package_offer', 'popup_select'));
+$HD_Form = new FormHandler("cc_tariffgroup", _("Call Plan"));
 
-$HD_Form = new FormHandler("cc_tariffgroup", "Call Plan");
+$HD_Form->FG_TABLE_DEFAULT_ORDER = "tariffgroupname";
 
-$HD_Form -> FG_TABLE_DEFAULT_ORDER = " tariffgroupname";
-$HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
+$HD_Form->FG_LIST_ADDING_BUTTON1 = true;
+$HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("server_add.png") ;
 
-
-$HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_tariffgroup.php?form_action=ask-add";
-$HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add Callplan");
-$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("server_add.png") ;
-
-
-// Code Here for Deleting the Dependent Records
-// Dependent Tables
-$HD_Form -> FG_FK_DELETE_ALLOWED = true;
-$HD_Form -> FG_FK_DELETE_CONFIRM = true;
-$HD_Form -> FG_FK_WARNONLY = true;
-$HD_Form -> FG_FK_TABLENAMES = array("cc_card");
-$HD_Form -> FG_FK_EDITION_CLAUSE = array(" tariff ");
-
-$HD_Form -> FG_FK_DELETE_MESSAGE = gettext("You have some cards using this Call Plan! Please comfirm that you really want to remove this Call Plan ? ");
+$HD_Form->FG_FK_DELETE_ALLOWED = true;
+$HD_Form->FG_FK_DELETE_CONFIRM = true;
+$HD_Form->FG_FK_WARNONLY = true;
+$HD_Form->FG_FK_TABLENAMES = ["cc_card"];
+$HD_Form->FG_FK_EDITION_CLAUSE = ["tariff"];
+$HD_Form->FG_FK_DELETE_MESSAGE = _("You have some cards using this Call Plan! Please comfirm that you really want to remove this Call Plan ? ");
 
 // LCD :the cheapest Provider for a given destination number
 $lcrtype_list = [[_("LCR : According to the buyer price"), 0], [_("LCD : According to the seller price"), 1]];
-
 $lcrtype_list_short = [[_("LCR : buyer price"), 0], [_("LCD : seller price"), 1]];
+$inter_prefix_list_short = [
+    [_("Keep prefix"), 0],
+    [_("Remove prefix"), 1],
+];
 
-$inter_prefix_list_short = array();
-$inter_prefix_list_short["0"] = array( gettext("Keep prefix"), "0");
-$inter_prefix_list_short["1"] = array( gettext("Remove prefix"), "1");
-
-$HD_Form -> AddViewElement(gettext("ID"), "id");
-$HD_Form -> AddViewElement(gettext("NAME"), "tariffgroupname");
+$HD_Form->AddListValue(_("ID"), "id");
+$HD_Form->AddListValue(_("Name"), "tariffgroupname");
 if (!$popup_select) {
-    $HD_Form->AddViewElement(gettext("CREATIONDATE"), "creationdate", true, 19);
+    $HD_Form->AddListValue(_("Creation date"), "creationdate");
 }
-$HD_Form -> AddViewElement(gettext("LC TYPE"), "lcrtype", true, 0, "", "list", $lcrtype_list_short);
-$HD_Form -> AddViewElement(gettext("PACKAGE"), "id_cc_package_offer", true, 15, "", "lie", "cc_package_offer", "label", "id='%id'", "%1");
-$HD_Form -> AddViewElement(gettext("INTER PREFIX"), "removeinterprefix", true, 0, "", "list", $inter_prefix_list_short);
-
-if (!$popup_select) {
-	$HD_Form -> FieldViewElement ('id, tariffgroupname, creationdate, lcrtype,id_cc_package_offer, removeinterprefix');
-} else {
-	$HD_Form -> FieldViewElement ('id, tariffgroupname, lcrtype,id_cc_package_offer, removeinterprefix');
-}
-
+$HD_Form->AddListMapping(abbr(_("LCR"), _("Least cost routing type")), "lcrtype", $lcrtype_list_short);
+$HD_Form->AddListSqlMapping(_("Package"), "id_cc_package_offer", new Table("cc_package_offer", ["id", "label"]));
+$HD_Form->AddListMapping(_("Prefix"), "removeinterprefix", $inter_prefix_list_short);
+$HD_Form->FieldViewElement([
+    "id",
+    "tariffgroupname",
+    "creationdate",
+    "lcrtype",
+    "id_cc_package_offer",
+    "removeinterprefix",
+]);
 if ($popup_select) {
-	$HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 7;
-	$HD_Form -> CV_FOLLOWPARAMETERS = "&popup_select=" . $popup_select . "&popup_formname=" . $popup_formname . "&popup_fieldname=" . $popup_fieldname;
+    $HD_Form->FieldViewElement([
+        "id",
+        "tariffgroupname",
+        "lcrtype",
+        "id_cc_package_offer",
+        "removeinterprefix",
+    ]);
 
-    $HD_Form->AddListSelectActionButton(
-        $popup_select == 1 ? "javascript:sendValue('|param|')" : "javascript:sendValue('|col0|')",
-    );
+	$HD_Form->FG_LIST_VIEW_PAGE_SIZE = 7;
+	$HD_Form->CV_FOLLOWPARAMETERS = "&popup_select=$popup_select&popup_formname=$popup_formname&popup_fieldname=$popup_fieldname";
+
+    $HD_Form->AddListSelectActionButton("javascript:sendValue('|param|')");
 } else {
-	$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
-	$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
-	$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
+	$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
+	$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
+	$HD_Form->FG_ENABLE_ADD_BUTTON = true;
 }
-
 
 $HD_Form->AddEditElement(
-    gettext("NAME"),
+    _("NAME"),
     "tariffgroupname",
     "",
     "size=30 maxlength=20",
-    9,
-    gettext("Insert the Call Plan name ")
+    9, // [Validator::class, "min1Char"],
+    _("Insert the Call Plan name ")
 );
 
-$HD_Form->AddEditSelect(gettext("LC TYPE"), "lcrtype", $lcrtype_list);
+$HD_Form->AddEditSelect(_("LC TYPE"), "lcrtype", $lcrtype_list);
 
 $HD_Form->AddEditSqlSelect(
-    gettext("PACKAGE"),
+    _("PACKAGE"),
     "id_cc_package_offer",
     "cc_package_offer",
     "label,id",
     "",
     "",
     [-1, _("NOT DEFINED")],
-    "%1", gettext("Set the Package Group offer if you wish to use one with this Call Plan")
+    "%1",
+    _("Set the Package Group offer if you wish to use one with this Call Plan")
 );
 
 $HD_Form->AddEditRadio(
-    gettext("REMOVE INTER PREFIX"),
+    _("REMOVE INTER PREFIX"),
     "removeinterprefix",
-    [[gettext("Yes"), "1"], [gettext("No"), "0"]],
+    [[_("Yes"), "1"], [_("No"), "0"]],
     "0",
-    gettext("Remove the international access prefix (00 or 011) before matching the dialled digits with the rate card. E.G. If the dialled digits were 0044 for a call to the UK, only 44 would be delivered."), "",
-    gettext("Define if the international prefix will be removed to check the rate.")
+    _("Remove the international access prefix (00 or 011) before matching the dialled digits with the rate card. E.G. If the dialled digits were 0044 for a call to the UK, only 44 would be delivered."),
+    "",
+    _("Define if the international prefix will be removed to check the rate.")
 );
 
-$DBHandle_max  = DbConnect();
-$numrow = 0;
-$resmax = $DBHandle_max -> Execute("SELECT * FROM cc_tariffplan");
-if ( $resmax )
-	$numrow = $resmax -> RecordCount( );
-
-if ($numrow>0){
+$numrow = (new Table("cc_tariffplan"))->countRows($HD_Form->DBHandle);
+if ($numrow > 0) {
     $HD_Form->AddEditSqlSelect(
-        gettext("RATECARD"),
+        _("RATECARD"),
         "tariffplan",
         "cc_tariffgroup_plan",
         "label,id",
@@ -148,7 +147,8 @@ if ($numrow>0){
         "%1 : (%2)",
         "",
         "size='10' multiple='muliple'",
-        "", [
+        "",
+        [
             "table" => "cc_tariffgroup_plan",
             "name" => "idtariffplan",
             "tables" => "cc_tariffplan LEFT JOIN cc_tariffgroup_plan ON cc_tariffplan.id=cc_tariffgroup_plan.idtariffplan",
@@ -158,12 +158,11 @@ if ($numrow>0){
             "fk" => "idtariffgroup",
         ]
     );
-
 }
 
-$HD_Form -> FG_INTRO_TEXT_EDITION= '';
-$HD_Form -> FG_INTRO_TEXT_ADITION = '';
+$HD_Form->FG_INTRO_TEXT_EDITION = "";
+$HD_Form->FG_INTRO_TEXT_ADITION = "";
 
-$HD_Form -> FG_LOCATION_AFTER_ADD = "?id=";
-$HD_Form -> FG_LOCATION_AFTER_EDIT = "?id=";
-$HD_Form -> FG_LOCATION_AFTER_DELETE = "?id=";
+$HD_Form->FG_LOCATION_AFTER_ADD = "?id=";
+$HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";
+$HD_Form->FG_LOCATION_AFTER_DELETE = "?id=";

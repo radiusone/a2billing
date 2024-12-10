@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -38,6 +39,9 @@ use A2billing\Admin;
 $menu_section = 6;
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
 require_once __DIR__ . "/form_data/FG_var_tariffplan.inc";
+/**
+ * @var FormHandler $HD_Form
+ */
 
 Admin::checkPageAccess(Admin::ACX_RATECARD);
 
@@ -48,16 +52,16 @@ $list = $HD_Form->perform_action($form_action);
 
 require_once __DIR__ . "/../templates/main.php";
 // #### HELP SECTION
-if (($form_action == 'ask-add') || ($form_action == 'ask-edit'))
+if (($form_action == 'ask-add') || ($form_action == 'ask-edit')) {
     echo create_help(_("A ratecard is a set of rates defined and applied according to the dialling prefix, for instance 441 & 442 : UK Landline.") . '<br/>' .
         _("Each ratecard may have as many rates as you wish, however, if a dialling prefix cannot be matched when a call is made, then the call will be terminated.") . '<br/>' .
         _('A ratecard has a "start date", an "expiry date" and a you can define a default trunk, but if no trunk is defined, the ratecard default trunk will be used.'), 'EditRatecard');
-else
+} else {
     echo create_help(_("List ratecards that have been created!<br>Ensure that a ratecard is added into the call plan under 'List Ratecard'"), 'ListRatecard');
+}
 
 // #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);
-
 $HD_Form->create_form($form_action, $list);
 
 require_once __DIR__ . "/../templates/footer.php";

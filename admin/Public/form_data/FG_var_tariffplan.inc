@@ -2,6 +2,7 @@
 
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -37,119 +38,119 @@ use A2billing\Forms\FormHandler;
 
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
-getpost_ifset(array('id', 'tariffname', 'startingdate', 'expirationdate', 'id_trunk', 'description', 'dnidprefix', 'calleridprefix'));
+$form_action ??= "list";
 
-$HD_Form = new FormHandler("cc_tariffplan", "Ratecard");
+$HD_Form = new FormHandler("cc_tariffplan", _("Ratecard"));
 
-$HD_Form -> FG_TABLE_DEFAULT_ORDER = " tariffname";
-$HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
+$HD_Form->FG_TABLE_DEFAULT_ORDER = " tariffname";
 
+$HD_Form->FG_LIST_ADDING_BUTTON1 = true;
+$HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("table_multiple.png") ;
 
-$HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_tariffplan.php?form_action=ask-add";
-$HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add RateCard");
-$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("table_multiple.png") ;
-
-
-// Dependent Tables
-$HD_Form -> FG_FK_DELETE_ALLOWED = true;
-$HD_Form -> FG_FK_DELETE_CONFIRM = true;
-$HD_Form -> FG_FK_TABLENAMES = array("cc_ratecard");
-$HD_Form -> FG_FK_EDITION_CLAUSE = array(" idtariffplan ");
-$HD_Form -> FG_FK_DELETE_MESSAGE = gettext("You are going as well to remove all the rates attached to this ratecard! Please comfirm that you really want to remove this ratecard and those rates ? ");
+$HD_Form->FG_FK_DELETE_ALLOWED = true;
+$HD_Form->FG_FK_DELETE_CONFIRM = true;
+$HD_Form->FG_FK_TABLENAMES = ["cc_ratecard"];
+$HD_Form->FG_FK_EDITION_CLAUSE = ["idtariffplan"];
+$HD_Form->FG_FK_DELETE_MESSAGE = _("You are going as well to remove all the rates attached to this ratecard! Please comfirm that you really want to remove this ratecard and those rates ? ");
 
 
-$HD_Form -> AddViewElement(gettext("ID"), "id");
-$HD_Form -> AddViewElement(gettext("TARIFFNAME"), "tariffname");
-$HD_Form -> AddViewElement(gettext("START DATE"), "startingdate", true, 16);
-$HD_Form -> AddViewElement(gettext("EXPIRY DATE"), "expirationdate", true, 16);
-$HD_Form -> AddViewElement(gettext("TRUNK"), "id_trunk", true, 15, "", "lie", "cc_trunk", "trunkcode", "id_trunk='%id'", "%1");
-$HD_Form -> AddViewElement(gettext("MINUTES USED"), "secondusedreal", true, 30, "display_minute");
-$HD_Form -> AddViewElement(gettext("DNID PREFIX"), "dnidprefix");
-$HD_Form -> AddViewElement(gettext("CID PREFIX"), "calleridprefix");
+$HD_Form->AddListValue(_("ID"), "id");
+$HD_Form->AddListValue(_("Name"), "tariffname");
+$HD_Form->AddListValue(_("Start date"), "startingdate");
+$HD_Form->AddListValue(_("Expiry date"), "expirationdate");
+$HD_Form->AddListSqlMapping(_("Trunk"), "id_trunk", new Table("cc_trunk", ["id_trunk", "trunkcode"]));
+$HD_Form->AddListValue(_("Minutes used"), "secondusedreal", "display_minute");
+$HD_Form->AddListValue(_("DNID prefix"), "dnidprefix");
+$HD_Form->AddListValue(_("CID prefix"), "calleridprefix");
+$HD_Form->FieldViewElement([
+    "id",
+    "tariffname",
+    "startingdate",
+    "expirationdate",
+    "id_trunk",
+    "secondusedreal",
+    "dnidprefix",
+    "calleridprefix",
+]);
 
-$HD_Form -> FieldViewElement ('id, tariffname, startingdate, expirationdate, id_trunk, secondusedreal, dnidprefix, calleridprefix');
-
-$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
-$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
+$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form->FG_ENABLE_ADD_BUTTON = true;
 
 $HD_Form->AddEditElement(
-    gettext("TARIFFNAME"),
+    _("TARIFFNAME"),
     "tariffname",
     "",
     "size=40 maxlength=30",
-    3,
-    gettext("Insert the tariff name ")
+    3, // [Validator::class, "min4Chars"],
+    _("Insert the tariff name ")
 );
 
-if ($form_action=="ask-add"){
-	$begin_date = date("Y");
-	$begin_date_plus = date("Y") + 10;
-	$end_date = date("-m-d H:i:s");
-	$comp_date = "value='".$begin_date.$end_date."'";
-	$comp_date_plus = "value='".$begin_date_plus.$end_date."'";
+$comp_date = $comp_date_plus = $val_dnidprefix = $val_calleridprefix = "";
+if ($form_action == "ask-add") {
+    $comp_date = (new DateTime())->format("Y-m-d H:i:s");
+    $comp_date_plus = (new DateTime('+10 years'))->format("Y-m-d H:i:s");
+	$comp_date = "value='$comp_date'";
+	$comp_date_plus = "value='$comp_date_plus'";
+    $val_dnidprefix = "value='all'";
+    $val_calleridprefix = "value='all'";
 }
 
 $HD_Form->AddEditElement(
-    gettext("START DATE"),
+    _("START DATE"),
     "startingdate",
-    gettext("Please use the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
+    _("Please use the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
     "size=40 maxlength=40 $comp_date",
     10,
-    gettext("Insert the starting date"),
-    "",
-    "",
-    
+    _("Insert the starting date")
 );
 
 $HD_Form->AddEditElement(
-    gettext("EXPIRY DATE"),
+    _("EXPIRY DATE"),
     "expirationdate",
-    gettext("Format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
+    _("Format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
     "size=40 maxlength=40  $comp_date_plus",
     10,
-    gettext("Insert the expiration date"),
-    "",
-    "",
-    
+    _("Insert the expiration date")
 );
 
-$HD_Form->AddEditSqlSelect(gettext("TRUNK"), "id_trunk", "cc_trunk", "trunkcode,id_trunk");
+$HD_Form->AddEditSqlSelect(
+    _("TRUNK"),
+    "id_trunk",
+    "cc_trunk",
+    "trunkcode,id_trunk"
+);
 
 $HD_Form->AddEditTextarea(
-    gettext("DESCRIPTION"),
+    _("DESCRIPTION"),
     "description",
     "",
-    "cols='50' rows='4'", null, gettext("Insert the description")
+    "cols='50' rows='4'",
+    null,
+    _("Insert the description")
 );
 
-if ($form_action=="ask-add"){
-	$val_dnidprefix = "value='all'";
-	$val_calleridprefix = "value='all'";
-}
-
 $HD_Form->AddEditElement(
-    gettext("DNID PREFIX"),
+    _("DNID PREFIX"),
     "dnidprefix",
-    gettext("Set the DNID rules to choose the ratecard 'dnidprefix', by default, matches all DNID. For instance, Set the DNIDPrefix  to 900540540 to choose this ratecard when the DNID is 900540540"),
+    _("Set the DNID rules to choose the ratecard 'dnidprefix', by default, matches all DNID. For instance, Set the DNIDPrefix  to 900540540 to choose this ratecard when the DNID is 900540540"),
     "size=20 $val_dnidprefix maxlength=20",
     14,
-    gettext("Insert the dnid prefix")
+    _("Insert the dnid prefix")
 );
 
 
 $HD_Form->AddEditElement(
-    gettext("CALLERID PREFIX"),
+    _("CALLERID PREFIX"),
     "calleridprefix",
-    gettext("Set the CallerID rules to choose the ratecard 'calleridprefix', by default, matches all callerID. For instance, Set the calleridprefix to 900540540 to choose this ratecard when the CallerID is 900540540."),
+    _("Set the CallerID rules to choose the ratecard 'calleridprefix', by default, matches all callerID. For instance, Set the calleridprefix to 900540540 to choose this ratecard when the CallerID is 900540540."),
     "size=20 $val_calleridprefix maxlength=20",
     14,
-    gettext("Insert the dnid prefix")
+    _("Insert the dnid prefix")
 );
 
-$HD_Form -> FG_INTRO_TEXT_ADITION = '';
+$HD_Form->FG_INTRO_TEXT_ADITION = "";
 
-$HD_Form -> FG_LOCATION_AFTER_ADD = "?id=";
-$HD_Form -> FG_LOCATION_AFTER_EDIT = "?id=";
-$HD_Form -> FG_LOCATION_AFTER_DELETE = "?id=";
+$HD_Form->FG_LOCATION_AFTER_ADD = "?id=";
+$HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";
+$HD_Form->FG_LOCATION_AFTER_DELETE = "?id=";
