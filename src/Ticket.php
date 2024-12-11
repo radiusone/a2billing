@@ -352,7 +352,7 @@ class Ticket
 
     public static function getAllPriorityListView(): array
     {
-        $pris = self::getAllStatus();
+        $pris = self::getAllPriority();
         array_walk($pris, fn (&$v, $k) => $v = [$v, $k]);
 
         return $pris;

@@ -41,6 +41,7 @@ require_once __DIR__ . "/../../common/lib/admin.defines.php";
 require_once __DIR__ . "/form_data/FG_var_ticket.inc";
 /**
  * @var FormHandler $HD_Form
+ * @var string $user_type
  */
 
 Admin::checkPageAccess(Admin::ACX_SUPPORT);
@@ -53,7 +54,12 @@ $action = $action ?? $form_action;
 $list = $HD_Form->perform_action($form_action);
 require_once __DIR__ . "/../templates/main.php";
 
-echo create_help(_("You can see here, all tickets created. You can also add a new ticket for one customer."));
+if ($user_type === "agent") {
+    echo create_help(_("You can see here, all tickets created by Agents. You can also add a new ticket for one Agent."));
+} else {
+    echo create_help(_("You can see here, all tickets created. You can also add a new ticket for one customer."));
+}
+
 if ($form_action === "list") {
     $HD_Form->create_search_form();
 }
