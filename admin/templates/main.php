@@ -129,8 +129,8 @@ require_once __DIR__ . "/../../common/lib/admin.defines.php";
                     </button>
                     <div class="collapse <?= $menu_section === 4 ? "show" : "" ?>" id="support-collapse">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                            <li><a class="link-dark rounded" href="CC_ticket.php"><?= _("Customer Tickets") ?></a></li>
-                            <li><a class="link-dark rounded" href="A2B_ticket_agent.php"><?= _("Agent Tickets") ?></a></li>
+                            <li><a class="link-dark rounded" href="A2B_entity_ticket.php?ticket_type=user"><?= _("Customer Tickets") ?></a></li>
+                            <li><a class="link-dark rounded" href="A2B_entity_ticket.php?ticket_type=agent"><?= _("Agent Tickets") ?></a></li>
                             <li><a class="link-dark rounded" href="A2B_entity_support_component.php"><?= _("Ticket Components") ?></a></li>
                             <li><a class="link-dark rounded" href="A2B_entity_support.php"><?= _("Support Boxes") ?></a></li>
                         </ul>
