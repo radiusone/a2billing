@@ -12,6 +12,7 @@ use A2billing\NotificationsDAO;
 use A2billing\Realtime;
 use A2billing\Table;
 use A2billing\Ticket;
+use Exception;
 use PhpAgi\AMI as AGI_AsteriskManager;
 
 class FormBO
@@ -161,100 +162,93 @@ class FormBO
         return false;
     }
 
-    public static function ticket_add()
+    public static function ticket_add(): void
     {
-        global $A2B;
         $FormHandler = FormHandler::GetInstance();
-        $id_ticket = $FormHandler -> QUERY_RESULT;
+        $id_ticket = $FormHandler->QUERY_RESULT;
         $processed = $FormHandler->getProcessed();
         $title = $processed['title'];
         $card_id = $processed['creator'];
         $priority = $processed['priority'];
         $description = $processed['description'];
         $component_id = $processed['id_component'];
-        $table_card =new Table("cc_card", "username,firstname,lastname,language,email");
-        $card_clause = "id = ".$card_id;
-        $result=$table_card ->get_list($FormHandler->DBHandle, $card_clause);
+
+        if ($processed["creator_type"] == Ticket::CUSTOMER) {
+            $table = new Table(
+                "cc_card",
+                ["username", "firstname", "lastname", "language", "email"]
+            );
+        } elseif ($processed["creator_type"] == Ticket::AGENT) {
+            $table = new Table(
+                "cc_agent",
+                ["login AS username", "firstname", "lastname", "language", "email"]
+            );
+        } elseif ($processed["creator_type"] == Ticket::ADMIN) {
+            $table = new Table(
+                "cc_ui_authen", [
+                    "login AS username",
+                    "SUBSTRING(name FROM 1 FOR POSITION(' ' IN name) AS firstname",
+                    "SUBSTRING(name FROM POSITION(' ' IN name) + 1) AS lastname",
+                    "'en' AS language",
+                    "email"
+                ]);
+        } else {
+            return;
+        }
+        $result = $table->getRow($FormHandler->DBHandle, ["id" => $card_id]);
 
         $owner = $result[0]['username']." (".$result[0]['firstname']." ".$result[0]['lastname'].")";
 
         try {
-            $mail = new Mail(Mail::$TYPE_TICKET_NEW, null, $result[0]['language']);
-            $mail->replaceInEmail(Mail::$TICKET_OWNER_KEY, $owner);
-            $mail->replaceInEmail(Mail::$TICKET_NUMBER_KEY, $id_ticket);
-            $mail->replaceInEmail(Mail::$TICKET_DESCRIPTION_KEY, $description);
-            $mail->replaceInEmail(Mail::$TICKET_PRIORITY_KEY, Ticket::DisplayPriority($priority));
-            $mail->replaceInEmail(Mail::$TICKET_STATUS_KEY,"NEW");
-            $mail->replaceInEmail(Mail::$TICKET_TITLE_KEY, $title);
-            $mail->send($result[0]['email']);
-        } catch (A2bMailException $e) {
-            $error_msg = $e->getMessage();
+            self::send_new_ticket_email(
+                $owner,
+                (int)$id_ticket,
+                $description,
+                (int)$priority,
+                $title,
+                $result["language"],
+                $result["email"]
+            );
+        } catch (Exception $e) {
+            $FormHandler->FG_TEXT_ADITION_ERROR = $e->getMessage();
         }
 
-        $component_table = new Table('cc_support_component LEFT JOIN cc_support ON id_support = cc_support.id', "email,language");
-        $component_clause = "cc_support_component.id = ".$component_id;
-        $result= $component_table -> get_list($FormHandler->DBHandle, $component_clause);
+        $component_table = new Table(
+            "cc_support_component",
+            ["email", "language"],
+            ["cc_support" => ["id_support", "cc_support.id"]]
+        );
+        $result = $component_table
+            ->getRow($FormHandler->DBHandle, ["cc_support_component.id" => $component_id]);
 
         try {
-            $mail = new Mail(Mail::$TYPE_TICKET_NEW, null, $result[0]['language']);
-            $mail->replaceInEmail(Mail::$TICKET_OWNER_KEY, $owner);
-            $mail->replaceInEmail(Mail::$TICKET_NUMBER_KEY, $id_ticket);
-            $mail->replaceInEmail(Mail::$TICKET_DESCRIPTION_KEY, $description);
-            $mail->replaceInEmail(Mail::$TICKET_PRIORITY_KEY, Ticket::DisplayPriority($priority));
-            $mail->replaceInEmail(Mail::$TICKET_STATUS_KEY,"NEW");
-            $mail->replaceInEmail(Mail::$TICKET_TITLE_KEY, $title);
-            $mail->send($result[0]['email']);
-        } catch (A2bMailException $e) {
-            $error_msg = $e->getMessage();
+            self::send_new_ticket_email(
+                $owner,
+                (int)$id_ticket,
+                $description,
+                (int)$priority,
+                $title,
+                $result["language"],
+                $result["email"]
+            );
+        } catch (Exception $e) {
+            $FormHandler->FG_TEXT_ADITION_ERROR = $e->getMessage();
         }
     }
 
-    public static function ticket_agent_add()
+    /**
+     * @throws Exception
+     */
+    private static function send_new_ticket_email(string $owner, int $id_ticket, string $description, int $priority, string $title, string $language, string $email): void
     {
-        global $A2B;
-        $FormHandler = FormHandler::GetInstance();
-        $id_ticket = $FormHandler -> QUERY_RESULT;
-        $processed = $FormHandler->getProcessed();
-        $title = $processed['title'];
-        $agent_id = $processed['creator'];
-        $priority = $processed['priority'];
-        $description = $processed['description'];
-        $component_id = $processed['id_component'];
-        $table_agent =new Table("cc_agent", "login,firstname,lastname,language,email");
-        $agent_clause = "id = ".$agent_id;
-        $result=$table_agent ->get_list($FormHandler->DBHandle, $agent_clause);
-
-        $owner = $result[0]['username']." (".$result[0]['firstname']." ".$result[0]['lastname'].")";
-
-        try {
-            $mail = new Mail(Mail::$TYPE_TICKET_NEW, null, $result[0]['language']);
-            $mail->replaceInEmail(Mail::$TICKET_OWNER_KEY, $owner);
-            $mail->replaceInEmail(Mail::$TICKET_NUMBER_KEY, $id_ticket);
-            $mail->replaceInEmail(Mail::$TICKET_DESCRIPTION_KEY, $description);
-            $mail->replaceInEmail(Mail::$TICKET_PRIORITY_KEY, Ticket::DisplayPriority($priority));
-            $mail->replaceInEmail(Mail::$TICKET_STATUS_KEY,"NEW");
-            $mail->replaceInEmail(Mail::$TICKET_TITLE_KEY, $title);
-            $mail->send($result[0]['email']);
-        } catch (A2bMailException $e) {
-            $error_msg = $e->getMessage();
-        }
-
-        $component_table = new Table('cc_support_component LEFT JOIN cc_support ON id_support = cc_support.id', "email,language");
-        $component_clause = "cc_support_component.id = ".$component_id;
-        $result= $component_table -> get_list($FormHandler->DBHandle, $component_clause);
-
-        try {
-            $mail = new Mail(Mail::$TYPE_TICKET_NEW, null, $result[0]['language']);
-            $mail->replaceInEmail(Mail::$TICKET_OWNER_KEY, $owner);
-            $mail->replaceInEmail(Mail::$TICKET_NUMBER_KEY, $id_ticket);
-            $mail->replaceInEmail(Mail::$TICKET_DESCRIPTION_KEY, $description);
-            $mail->replaceInEmail(Mail::$TICKET_PRIORITY_KEY, Ticket::DisplayPriority($priority));
-            $mail->replaceInEmail(Mail::$TICKET_STATUS_KEY,"NEW");
-            $mail->replaceInEmail(Mail::$TICKET_TITLE_KEY, $title);
-            $mail->send($result[0]['email']);
-        } catch (A2bMailException $e) {
-            $error_msg = $e->getMessage();
-        }
+        $mail = new Mail(Mail::$TYPE_TICKET_NEW, null, $language);
+        $mail->replaceInEmail(Mail::$TICKET_OWNER_KEY, $owner);
+        $mail->replaceInEmail(Mail::$TICKET_NUMBER_KEY, $id_ticket);
+        $mail->replaceInEmail(Mail::$TICKET_DESCRIPTION_KEY, $description);
+        $mail->replaceInEmail(Mail::$TICKET_PRIORITY_KEY, Ticket::DisplayPriority($priority));
+        $mail->replaceInEmail(Mail::$TICKET_STATUS_KEY,"NEW");
+        $mail->replaceInEmail(Mail::$TICKET_TITLE_KEY, $title);
+        $mail->send($email);
     }
 
     public static function add_agent_refill()
