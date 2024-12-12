@@ -2,6 +2,7 @@
 
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -37,39 +38,62 @@ use A2billing\Forms\FormHandler;
 
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
-getpost_ifset(array('id', 'customers_id', 'customers_name', 'customers_email_address', 'item_name', 'item_id', 'item_quantity', 'payment_method','cc_type', 'cc_owner','cc_number', 'cc_expires', 'orders_status', 'last_modified', 'date_purchased','orders_date_finished', 'orders_amount', 'currency', 'currency_value'));
+getpost_ifset(["trans_type"]);
+/**
+ * @var string|null $trans_type
+ */
+$trans_type ??= "user";
 
+$HD_Form = new FormHandler(
+    $trans_type === "agent" ? "cc_payments_agent" : "cc_payments",
+    _("Transactions"),
+    $trans_type === "agent" ? "cc_payments_agent.id" : "cc_payments.id",
+    $trans_type === "agent" ? ["cc_agent" => ["agent_id", "cc_agent.id"]] : ["cc_card" => ["customers_id", "cc_card.id"]]
+);
 
-$HD_Form = new FormHandler("cc_payments", "Transactions");
+$HD_Form->FG_QUERY_ORDERBY_COLUMNS = ["date_purchased"];
+$HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
 
-$HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
+$HD_Form->AddListValue(_("ID"), "id");
+$HD_Form->AddListValue(_("Date"), "date_purchased");
+if ($trans_type === "agent") {
+    $HD_Form->AddListValue(_("Login"), "cc_agent.login");
+} else {
+    $HD_Form->AddListValue(_("Card number"), "cc_card.username");
+}
+$HD_Form->AddListValue(_("Name"), "CONCAT(firstname, ' ', lastname)");
+$HD_Form->AddListValue(_("Item name"), "item_name");
+$HD_Form->AddListValue(_("Method"), "payment_method");
+$HD_Form->AddListValue(_("CC number"), "cc_number");
+$HD_Form->AddListSqlMapping(_("Status"), "orders_status", new Table("cc_payments_status", ["id", "status_name"]));
+$HD_Form->AddListValue(_("Amount"), "orders_amount", "display_money");
+$HD_Form->AddListValue(abbr(_("Cur"), _("Currency")), "currency");
+$HD_Form->AddListValue(_("Value"), "currency_value", "display_2bill");
 
-$HD_Form -> AddViewElement(gettext("ID"), "id");
-$HD_Form -> AddViewElement(gettext("ORDER DATE"), "date_purchased", true, 19);
-$HD_Form -> AddViewElement(gettext("CARDID"), "customers_id");
-$HD_Form -> AddViewElement(gettext("NAME"), "customers_name");
-$HD_Form -> AddViewElement(gettext("ITEM NAME"), "item_name", "sort");
-$HD_Form -> AddViewElement(gettext("ITEM ID"), "item_id", true, 30, "display_customer_link");
-$HD_Form -> AddViewElement(gettext("METHOD"), "payment_method");
-$HD_Form -> AddViewElement(gettext("CC NUMBER"), "cc_number");
-$HD_Form -> AddViewElement(gettext("STATUS"), "orders_status", true, 15, "", "lie", "cc_payments_status", "status_name", "status_id='%id'", "%1");
-$HD_Form -> AddViewElement(gettext("AMOUNT"), "orders_amount");
-$HD_Form -> AddViewElement("<acronym title=\"" . gettext("CURRENCY") . "\">" . gettext("CUR") . "</acronym>", "currency");
-$HD_Form -> AddViewElement(gettext("VALUE"), "currency_value");
+$HD_Form->FieldViewElement([
+    "id",
+    "date_purchased",
+    $trans_type === "agent" ? "cc_agent.login" : "cc_card.username",
+    "CONCAT(firstname, ' ', lastname)",
+    "item_name",
+    "payment_method",
+    "cc_number",
+    "orders_status",
+    "orders_amount",
+    "currency",
+    "currency_value",
+]);
 
-$HD_Form -> FieldViewElement ('id, date_purchased, customers_id, customers_name, item_name, item_id, payment_method, cc_number, orders_status, orders_amount, currency, currency_value');
+$HD_Form->FG_LIST_ADDING_BUTTON1 = true;
+$HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "?trans_type=" . ($trans_type === "agent" ? "user" : "agent"); 
+$HD_Form->FG_LIST_ADDING_BUTTON_MSG1 = $trans_type === "agent" ? _("Show user transactions") : _("Show agent transactions");
 
-$HD_Form -> FG_ENABLE_ADD_BUTTON = false;
-$HD_Form -> FG_ENABLE_EDIT_BUTTON = false;
-$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form->FG_ENABLE_ADD_BUTTON = false;
+$HD_Form->FG_ENABLE_EDIT_BUTTON = false;
+$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 
-// Set the filter variables
-$HD_Form -> FG_FILTER_ENABLE = true;
-$HD_Form -> FG_FILTER_COLUMN = 'id';
-$HD_Form -> FG_FILTER_LABEL = 'transaction ID';
+$HD_Form->FG_FILTER_ENABLE = true;
+$HD_Form->FG_FILTER_COLUMN = "id";
+$HD_Form->FG_FILTER_LABEL = _("Transaction ID");
 
-$HD_Form -> FG_LOCATION_AFTER_DELETE = "?id=";
-
-
-
-
+$HD_Form->FG_LOCATION_AFTER_DELETE = "?id=";
