@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Forms\FormHandler;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -39,80 +40,84 @@ use A2billing\Table;
 $menu_section = 10;
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
 require_once __DIR__ . "/form_data/FG_var_voucher.inc";
+/**
+ * @var FormHandler $HD_Form
+ * @var numeric-string $popup_select
+ * @var array $used_list
+ * @var array $actived_list
+ */
 
 Admin::checkPageAccess(Admin::ACX_BILLING);
 
 $HD_Form->init();
 
 /********************************* BATCH UPDATE ***********************************/
-getpost_ifset(array (
-    'popup_select',
-    'popup_formname',
-    'popup_fieldname',
-    'upd_tag',
-    'upd_currency',
-    'upd_credit',
-    'upd_activated',
-    'upd_used',
-    'upd_credittype',
-    'batchupdate',
-    'check',
-    'type',
-    'mode'
-));
+getpost_ifset(["action", "check", "type"]);
+/**
+ * @var string|null $action
+ * @var array|null $check
+ * @var array<string,numeric-string>|null $type
+ */
+$action ??= "";
+$check ??= [];
 
 // CHECK IF REQUEST OF BATCH UPDATE
-if ($batchupdate == 1 && is_array($check)) {
+if ($action === "batchupdate" && is_array($check)) {
+    $HD_Form->prepare_list_subselection("list");
 
-    $HD_Form->prepare_list_subselection('list');
+    $uf = [];
+    getpost_ifset(
+        ["upd_tag", "upd_currency", "upd_credit", "upd_activated", "upd_used", "upd_credittype"],
+        $uf
+    );
+    $update_fields = [];
+    foreach ($uf as $k => $v) {
+        $k = substr($k, 4);
+        $update_fields[$k] = $v;
+    }
 
-    // Array ( [upd_simultaccess] => on [upd_currency] => on )
-    $loop_pass = 0;
-    $SQL_UPDATE = '';
-    foreach ($check as $ind_field => $ind_val) {
-        //echo "<br>::> $ind_field -";
-        $myfield = substr($ind_field, 4);
-        if ($loop_pass != 0)
-            $SQL_UPDATE .= ',';
-
-        // Standard update mode
-        if (!isset ($mode["$ind_field"]) || $mode["$ind_field"] == 1) {
-            if (!isset ($type["$ind_field"])) {
-                $SQL_UPDATE .= " $myfield='" . $$ind_field . "'";
-            } else {
-                $SQL_UPDATE .= " $myfield='" . $type["$ind_field"] . "'";
-            }
-            // Mode 2 - Equal - Add - Subtract
-        } elseif ($mode["$ind_field"] == 2) {
-            if (!isset ($type["$ind_field"])) {
-                $SQL_UPDATE .= " $myfield='" . $$ind_field . "'";
-            } else {
-                if ($type["$ind_field"] == 1) {
-                    $SQL_UPDATE .= " $myfield='" . $$ind_field . "'";
-                } elseif ($type["$ind_field"] == 2) {
-                    $SQL_UPDATE .= " $myfield = $myfield +'" . $$ind_field . "'";
-                } else {
-                    $SQL_UPDATE .= " $myfield = $myfield -'" . $$ind_field . "'";
-                }
-            }
+    $updates = [];
+    foreach (array_keys($check) as $ch) {
+        // remove "upd_"
+        $col = substr($ch, 4);
+        $val = $update_fields[$col] ?? null;
+        if (is_null($val)) {
+            continue;
         }
-        $loop_pass++;
+        if (($type[$ch] ?? 1) == 1) {
+            $updates[$col] = $val;
+        } elseif ($type[$ch] == 2) {
+            $updates[$col] = ["`$col` + ?", $val];
+        } elseif ($type[$ch] == 3) {
+            $updates[$col] = ["`$col` - ?", $val];
+        }
     }
 
-    $SQL_UPDATE = "UPDATE $HD_Form->FG_QUERY_TABLE_NAME SET $SQL_UPDATE";
-    if (count($HD_Form->list_query_conditions)) {
-        $params = [];
-        $SQL_UPDATE .= ' WHERE ';
-        $SQL_UPDATE .= (new Table())->processWhereClauseArray($HD_Form->list_query_conditions, $params);
-    }
-    if (!$res = $HD_Form->DBHandle->Execute($SQL_UPDATE, $params)) {
-        $update_msg = '<p style="text-align:center; font-weight: bold; color: red">' . gettext('Could not perform the batch update!') . '</p>';
+    if (!(new Table("cc_voucher"))->updateRow($HD_Form->DBHandle, $updates, $HD_Form->list_query_conditions)) {
+        $update_msg = _('Could not perform the batch update!');
     } else {
-        $update_msg = '<p style="text-align:center; font-weight: bold; color: green">' . gettext('The batch update has been successfully perform!') . '</p>';
+        $update_msg = _('The batch update has been successfully perform!');
     }
-
 }
 /********************************* END BATCH UPDATE ***********************************/
+
+if ($action === "generate") {
+    $gen = [];
+    getpost_ifset(["count", "length", "credit", "currency", "expirationdate", "tag"], $gen);
+    $table = new Table("cc_voucher");
+    $count = $gen["count"] ?? 0;
+    $length = $gen["length"] ?? 0;
+    unset($gen["count"], $gen["length"]);
+    for ($i = 0; $i < $count; $i++) {
+        $gen["voucher"] = generate_unique_value("cc_voucher", $length, "voucher");
+        $gen["usedcardnumber"] = "";
+        $gen["activated"] = "t";
+        if (isset($gen["expirationdate"])) {
+            $gen["expirationdate"] = str_replace('T', ' ', $gen["expirationdate"]);
+        }
+        $table->addRow($HD_Form->DBHandle, $gen);
+    }
+}
 
 $form_action ??= "list";
 $list = $HD_Form->perform_action($form_action);
@@ -120,144 +125,282 @@ $list = $HD_Form->perform_action($form_action);
 require_once __DIR__ . "/../templates/main.php";
 
 // #### HELP SECTION
-if ($form_action == 'list')
+if ($form_action === "list" && !$popup_select) {
+    // populate some lists for the batch update settings
+
     echo create_help(_("Listed below are the vouchers created on the system,.<br/>") .
         _("Each row corresponds to a voucher and shows it's status, value and currency..") .
         _("Create a single voucher, defining such properties as credit, tag, currency etc, click confirm when finished. <br/> The customer applies voucher credits to their account via the customer interface or via an IVR menu."), 'ListVoucher');
 ?>
-
-    <div class="row">
-        <div class="col text-center">
-            <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#tohide1" aria-expanded="false" aria-controls="tohide1">
-                <?= _("SEARCH VOUCHERS") ?>
-            </button>
-            <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#tohide2" aria-expanded="false" aria-controls="tohide2">
-                <?= _("BATCH UPDATE") ?>
-            </button>
-        </div>
+<div class="row justify-content-center">
+    <div class="col-auto">
+        <button
+                class="btn btn-sm <?= empty($_SESSION[$HD_Form->search_session_key]) ? "btn-outline-primary" : "btn-primary" ?>"
+                data-bs-toggle="modal"
+                data-bs-target="#searchModal"
+                title="<?= _("Search Vouchers") ?> <?= empty($_SESSION[$HD_Form->search_session_key]) ? "" : "(" . _("search activated") . ")" ?>"
+        >
+            <?= _("Search Vouchers") ?>
+        </button>
     </div>
-
-    <div id="tohide1" class="collapse">
-
-<?php
-// #### CREATE SEARCH FORM
-if ($form_action == "list") {
-    $HD_Form -> create_search_form();
-}
-?>
-
+    <div class="col-auto">
+        <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#batchUpdateModal">
+            <?= _("Batch Update") ?>
+        </button>
     </div>
-
-<?php
-
-/********************************* BATCH UPDATE ***********************************/
-if ($form_action == "list" && (!($popup_select>=1))	) {
-    $instance_table_tariff = new Table("cc_tariffgroup", "id, tariffgroupname");
-    $FG_TABLE_CLAUSE = "";
-    $list_tariff = $instance_table_tariff -> get_list ($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "tariffgroupname");
-    $nb_tariff = count($list_tariff);
-
-?>
-<!-- ** ** ** ** ** Part for the Update ** ** ** ** ** -->
-<div id="tohide2" class="collapse">
-
-<center>
-<b>&nbsp;<?php echo $HD_Form -> FG_LIST_VIEW_ROW_COUNT ?> <?php echo gettext("vouchers selected!"); ?>&nbsp;<?php echo gettext("Use the options below to batch update the selected vouchers.");?></b>
-    <table align="center" border="0" width="65%"  cellspacing="1" cellpadding="2">
-        <tbody>
-        <form name="updateForm" action="" method="post">
-        <?= $HD_Form->csrf_inputs() ?>
-        <INPUT type="hidden" name="batchupdate" value="1">
-        <tr>
-          <td align="left" class="bgcolor_001" >
-                  <input name="check[upd_used]" type="checkbox" <?php if ($check["upd_used"]=="on") echo "checked"?>>
-          </td>
-          <td align="left"  class="bgcolor_001">
-                1)&nbsp;<?php echo gettext("USED"); ?>&nbsp;:
-                <select NAME="upd_used" size="1" class="form_input_select">
-                <?php
-                    foreach ($used_list as $key => $cur_value) {
-                ?>
-                    <option value='<?php echo $cur_value[1] ?>'  <?php if ($upd_inuse==$cur_value[1]) echo 'selected="selected"'?>><?php echo $cur_value[0] ?></option>
-                <?php } ?>
-            </select>
-          </td>
-        </tr>
-        <tr>
-          <td align="left"  class="bgcolor_001">
-              <input name="check[upd_activated]" type="checkbox" <?php if ($check["upd_activated"]=="on") echo "checked"?> >
-          </td>
-          <td align="left" class="bgcolor_001">
-                  2)&nbsp;<?php echo gettext("ACTIVATED");?>&nbsp;:
-                <select NAME="upd_activated" size="1" class="form_input_select">
-                    <?php
-                       foreach ($actived_list as $key => $cur_value) {
-                    ?>
-                        <option value='<?php echo $cur_value[1] ?>' <?php if ($upd_status==$cur_value[1]) echo 'selected="selected"'?>><?php echo $cur_value[0] ?></option>
-                    <?php } ?>
-                </select><br/>
-          </td>
-        </tr>
-        <tr>
-          <td align="left" class="bgcolor_001">
-                  <input name="check[upd_credit]" type="checkbox" <?php if ($check["upd_credit"]=="on") echo "checked"?>>
-                <input name="mode[upd_credit]" type="hidden" value="2">
-          </td>
-          <td align="left"  class="bgcolor_001">
-                  3)&nbsp;<?php echo gettext("CREDIT");?>&nbsp;:
-                    <input class="form_input_text" name="upd_credit" size="10" maxlength="10"  value="<?php if (isset($upd_credit)) echo $upd_credit; else echo '0';?>">
-                <font class="version">
-                <input type="radio" NAME="type[upd_credit]" value="1" <?php if ((!isset($type["upd_credit"]))|| ($type["upd_credit"]==1) ) {?>checked<?php }?>><?php echo gettext("Equals");?>
-                <input type="radio" NAME="type[upd_credit]" value="2" <?php if ($type["upd_credit"]==2) {?>checked<?php }?>> <?php echo gettext("Add");?>
-                <input type="radio" NAME="type[upd_credit]" value="3" <?php if ($type["upd_credit"]==3) {?>checked<?php }?>> <?php echo gettext("Subtract");?>
-                </font>
-          </td>
-        </tr>
-        <tr>
-          <td align="left" class="bgcolor_001">
-                  <input name="check[upd_currency]" type="checkbox" <?php if ($check["upd_currency"]=="on") echo "checked"?>>
-          </td>
-          <td align="left"  class="bgcolor_001">
-                4)&nbsp;<?php echo gettext("CURRENCY");?>&nbsp;:
-                <select NAME="upd_currency" size="1" class="form_input_select">
-                <?php
-                    foreach (get_currencies() as $key => $cur_value) {
-                ?>
-                    <option value='<?php echo $key ?>'  <?php if ($upd_currency==$key) echo 'selected="selected"'?>><?php echo $cur_value["name"].' ('.$cur_value["value"].')' ?></option>
-                <?php } ?>
-            </select>
-          </td>
-        </tr>
-        <tr>
-          <td align="left" class="bgcolor_001">
-                  <input name="check[upd_tag]" type="checkbox" <?php if ($check["upd_tag"]=="on") echo "checked"?>>
-          </td>
-          <td align="left"  class="bgcolor_001">
-                5)&nbsp;<?php echo gettext("TAG");?>&nbsp;:
-                <input class="form_input_text"  name="upd_tag" size="10" maxlength="6" value="<?php echo $upd_tag; ?>">
-                <br/>
-        </td>
-        </tr>
-        <tr>
-            <td align="right" class="bgcolor_001"></td>
-             <td align="right"  class="bgcolor_001">
-                <input class="form_input_button"  value=" <?php echo gettext("BATCH UPDATE VOUCHER");?>  " type="submit">
-            </td>
-        </tr>
-        </form>
-    </table>
-</center>
+    <div class="col-auto">
+        <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#generateVoucherModal">
+            <?= _("Generate Vouchers") ?>
+        </button>
+    </div>
 </div>
+
+    <?php $HD_Form->create_search_form(true, false) ?>
+
+
+<div class="modal" id="batchUpdateModal" aria-labelledby="modal-title-udpate" aria-hidden="true" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-title-update"><?= _("Batch Update") ?></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="container-fluid form-striped" name="updateForm" id="updateForm" action="" method="post">
+                    <input type="hidden" name="action" value="batchupdate"/>
+                    <?= $HD_Form->csrf_inputs() ?>
+
+                    <div class="row mb-1">
+                        <div class="col">
+                            <?= sprintf(_("%d vouchers selected!"), $HD_Form->FG_LIST_VIEW_ROW_COUNT) ?>
+                            <?= _("Use the options below to batch update the selected vouchers.") ?>
+                        </div>
+                    </div>
+
+
+                    <div class="row mb-1">
+                        <div class="col-4">
+                            <input name="check[upd_used]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if (!empty($check["upd_used"])): ?> checked="checked"<?php endif ?> class="form-check-input"/>
+                            <label class="form-label form-label-sm" for="upd_used">
+                                <?= _("Used") ?>
+                            </label>
+                        </div>
+                        <div class="col">
+                            <select name="upd_used" id="upd_used" class="form-select form-select-sm">
+                                <?php foreach ($used_list as $v): ?>
+                                    <option value="<?= $v[1] ?>" <?php if (($update_fields["status"] ?? "") == $v[1]): ?>selected="selected"<?php endif ?>>
+                                        <?= $v[0] ?>
+                                    </option>
+                                <?php endforeach ?>
+                            </select>
+                        </div>
+                    </div>
+
+
+                    <div class="row mb-1">
+                        <div class="col-4">
+                            <input name="check[upd_activated]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if (!empty($check["upd_activated"])): ?> checked="checked"<?php endif ?> class="form-check-input"/>
+                            <label class="form-label form-label-sm" for="upd_activated">
+                                <?= _("Activated") ?>
+                            </label>
+                        </div>
+                        <div class="col">
+                            <select name="upd_activated" id="upd_activated" class="form-select form-select-sm">
+                                <?php foreach ($actived_list as $v): ?>
+                                    <option value="<?= $v[1] ?>" <?php if (($update_fields["activated"] ?? "") == $v[1]): ?>selected="selected"<?php endif ?>>
+                                        <?= $v[0] ?>
+                                    </option>
+                                <?php endforeach ?>
+                            </select>
+                        </div>
+                    </div>
+
+
+                    <div class="row mb-1">
+                        <div class="col-4">
+                            <input name="check[upd_credit]" id="check[upd_credit]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if (!empty($check["upd_credit"])): ?> checked="checked" <?php endif ?> class="form-check-input"/>
+                            <label class="form-label form-label-sm" for="upd_credit">
+                                <?= _("Credit") ?>
+                            </label>
+                        </div>
+                        <div class="col-auto">
+                            <input type="number" name="upd_credit" id="upd_credit" min="-100" max="100" value="<?= $update_fields["credit"] ?? 0 ?>" class="form-control form-control-sm"/>
+                        </div>
+                        <div class="col-auto">
+                            <div class="form-check form-check-inline">
+                                <input type="radio" name="type[upd_credit]" id="type_upd_credit_1" value="1" <?php if (($type["upd_credit"] ?? 1) == 1): ?>checked="checked"<?php endif ?> class="form-check-input"/>
+                                <label class="form-check-label form-check-label-sm" for="type_upd_credit_1"><abbr title="<?= _("Equals") ?>">=</abbr></label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input type="radio" name="type[upd_credit]" id="type_upd_credit_2" value="2" <?php if(($type["upd_credit"] ?? 1) == 2): ?>checked="checked"<?php endif ?> class="form-check-input"/>
+                                <label class="form-check-label form-check-label-sm" for="type_upd_credit_2"><abbr title="<?= _("Add") ?>">+</abbr></label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input type="radio" name="type[upd_credit]" id="type_upd_credit_3" value="3" <?php if(($type["upd_credit"] ?? 1) == 3): ?>checked="checked"<?php endif ?> class="form-check-input"/>
+                                <label class="form-check-label form-check-label-sm" for="type_upd_credit_3"><abbr title="<?= _("Subtract") ?>">-</abbr></label>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row mb-1">
+                        <div class="col-4">
+                            <input name="check[upd_currency]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if (!empty($check["upd_currency"])): ?> checked="checked"<?php endif ?> class="form-check-input"/>
+                            <label class="form-label form-label-sm" for="upd_currency">
+                                <?= _("Currency") ?>
+                            </label>
+                        </div>
+                        <div class="col">
+                            <select name="upd_currency" id="upd_currency" class="form-select form-select-sm">
+                                <?php foreach (get_currencies() as $k=>$v): ?>
+                                    <option value="<?= $k ?>" <?php if (($update_fields["currency"] ?? "") === $k): ?>selected="selected"<?php endif ?>><?= $v["name"] ?> (<?= $v["value"] ?>)</option>
+                                <?php endforeach ?>
+                            </select>
+                        </div>
+                    </div>
+
+
+                    <div class="row mb-1">
+                        <div class="col-4">
+                            <input name="check[upd_tag]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if (!empty($check["upd_tag"])): ?> checked="checked"<?php endif ?> class="form-check-input"/>
+                            <label class="form-label form-label-sm" for="upd_tag">
+                                <?= _("Tag") ?>
+                            </label>
+                        </div>
+                        <div class="col">
+                            <input type="text" name="upd_tag" id="upd_tag" value="<?= $update_fields["tag"] ?? "" ?>" class="form-control form-control-sm">
+                        </div>
+                    </div>
+
+
+                </form> <!-- .container-fluid -->
+            </div> <!-- .modal-body -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?= _("Close") ?></button>
+                <button type="submit" form="updateForm" class="btn btn-primary"><?= _("Batch Update Cards") ?></button>
+            </div>
+        </div> <!-- .modal-content -->
+    </div> <!-- .modal-dialog -->
+</div> <!-- .modal -->
 <!-- ** ** ** ** ** Part for the Update ** ** ** ** ** -->
+
+
+<div class="modal" id="generateVoucherModal" aria-labelledby="modal-title-generate" aria-hidden="true" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-title-generate"><?= _("Generate Vouchers") ?></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="container-fluid form-striped" name="generateForm" id="generateForm" action="" method="post">
+                    <input type="hidden" name="action" value="generate"/>
+                    <?= $HD_Form->csrf_inputs() ?>
+
+                    <div class="row mb-1">
+                        <div class="col">
+                            <?= _("Bulk generate a batch of vouchers, defining such properties as credit and currency etc.") ?>
+                        </div>
+                    </div>
+
+
+                    <div class="row mb-1">
+                        <div class="col-4">
+                            <label class="form-label form-label-sm" for="gen_count">
+                                <?= _("Count") ?>
+                            </label>
+                        </div>
+                        <div class="col">
+                            <select name="count" id="gen_count" class="form-select form-select-sm" required="required">
+                                <?php foreach ([5, 10, 50, 100, 200, 500] as $v): ?>
+                                    <option><?= $v ?></option>
+                                <?php endforeach ?>
+                            </select>
+                        </div>
+                    </div>
+
+
+                    <div class="row mb-1">
+                        <div class="col-4">
+                            <label class="form-label form-label-sm" for="gen_length">
+                                <?= _("Voucher Length") ?>
+                            </label>
+                        </div>
+                        <div class="col">
+                            <input type="number" name="length" id="gen_length" value="<?= LEN_VOUCHER ?>" min="8" max="20" class="form-control form-control-sm" required="required"/>
+                        </div>
+                    </div>
+
+
+                    <div class="row mb-1">
+                        <div class="col-4">
+                            <label class="form-label form-label-sm" for="gen_credit">
+                                <?= _("Credit") ?>
+                            </label>
+                        </div>
+                        <div class="col">
+                            <input type="number" name="credit" id="gen_credit" min="1" max="1000" class="form-control form-control-sm" required="required"/>
+                        </div>
+                    </div>
+
+
+                    <div class="row mb-1">
+                        <div class="col-4">
+                            <label class="form-label form-label-sm" for="gen_currency">
+                                <?= _("Currency") ?>
+                            </label>
+                        </div>
+                        <div class="col">
+                            <select name="currency" id="gen_currency" class="form-select form-select-sm">
+                                <?php foreach (get_currencies() as $k=>$v): ?>
+                                    <option value="<?= $k ?>"><?= $v["name"] ?></option>
+                                <?php endforeach ?>
+                            </select>
+                        </div>
+                    </div>
+
+
+                    <div class="row mb-1">
+                        <div class="col-4">
+                            <label class="form-label form-label-sm" for="gen_expirationdate">
+                                <?= _("Expiration Date") ?>
+                            </label>
+                        </div>
+                        <div class="col">
+                            <input type="datetime-local" name="expirationdate" id="gen_expirationdate" class="form-control form-control-sm">
+                        </div>
+                    </div>
+
+
+                    <div class="row mb-1">
+                        <div class="col-4">
+                            <label class="form-label form-label-sm" for="gen_tag">
+                                <?= _("Tag") ?>
+                            </label>
+                        </div>
+                        <div class="col">
+                            <input type="text" name="tag" id="gen_tag" class="form-control form-control-sm">
+                        </div>
+                    </div>
+
+
+                </form> <!-- .container-fluid -->
+            </div> <!-- .modal-body -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?= _("Close") ?></button>
+                <button type="submit" form="generateForm" class="btn btn-primary"><?= _("Generate Vouchers") ?></button>
+            </div>
+        </div> <!-- .modal-content -->
+    </div> <!-- .modal-dialog -->
+</div> <!-- .modal -->
+
 <?php
 } // END if ($form_action == "list")
 
-if (isset($update_msg) && strlen($update_msg)>0) echo $update_msg;
+$HD_Form->create_toppage($form_action);
+echo $update_msg ?? "";
 
-// #### TOP SECTION PAGE
-$HD_Form -> create_toppage ($form_action);
-
-$HD_Form -> create_form($form_action, $list) ;
+$HD_Form->create_form($form_action, $list);
 $HD_Form->setup_export();
 
 require_once __DIR__ . "/../templates/footer.php";

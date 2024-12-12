@@ -41,7 +41,7 @@ Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
 getpost_ifset(['groupID', 'popup_select']);
 /**
- * @var string $groupID
+ * @var numeric-string $groupID
  * @var string $popup_select
  */
 
@@ -51,22 +51,25 @@ if ($groupID !== "0" && $groupID !== "1") {
 }
 $subadmin = $groupID > 0;
 
-$HD_Form = new FormHandler("cc_ui_authen", $subadmin ? _("Sub-administrator") : _("Administrator"), "userid");
+$HD_Form = new FormHandler(
+    "cc_ui_authen",
+    $subadmin ? _("Sub-administrator") : _("Administrator"),
+    "userid"
+);
 
 $HD_Form->FG_TABLE_DEFAULT_ORDER = "login";
 
 $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_user.php?form_action=ask-add&amp;groupID=$groupID";
-$HD_Form->FG_LIST_ADDING_BUTTON_MSG1 = $subadmin ? _("Add ADMIN ACL") : _("Add ADMINISTRATOR");
 $HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = $subadmin
     ? "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJlSURBVDjLpZNrSJNRGMdlr7qat+zKaoYhjqYphRCWCtKFoCj60CeRpDB0djHUSMOZm0JhGEmlNhczXXunDgy7TNcVcsjGpk6dNsiJyyjWNg3ZnJfef69vMBBkFn34wXMu/995DocTBCDof1h1cvBJnM5RTsBVyYLzBgvfigjopbGDfyUwK+Nfu2RsTNcTDO5aAk4RC1/KQ2BqjetbU+AiOZip/xNyLndQSeCHmMBUIQFzTjDWFDiu0O0qzmJKU4OvPSmYuETAXhKM8WshsOYR0NZlRAUUtOXt+Dk99hYufSu+6x7D8fEAnLozmLEq0V3M8ww1F4QGFEhz+Aa3QQmHsQPeQZJGxdRuEwnp+SRjwCs0FpwIf3guwfayKBE+owxzI50M3oGn0JbuQW323vE7uac2rSpoFB6Pll/M0FjEofDZe2Go2ocu0VGG5dpjUWOEXpPlp72X5h/irhBIcrNYNunp5s+31gFTWmCsAfiQDWiOgXq2H1Q7H1TPSVCfmjBaHY4HFzJfNOQd5vgFZGHmo5n7bEBfQlPMBNGVCqgTQZGxWGjhwivbCKorHb/UybDf5UFekE76Bf3lu5ccz0uxpIgBOvgMlGoXPeZhvnkbHY7GbEMYnHVseKQb4OquQF+JYMEvMIsElFsroTfQL/TqCBYVOzHfsh0++RZ4mqIxJ98Kj2wzc7qtJhLTb6pguJ5A+QXDLZfLTGXxi45762G7TUs6BKtirWZjWByG/opkH52pWvEKEyphRK8oLan9aurkgCSGslRHYVTCwQjNkDgSpptcqrMwafZd2cGUyTZhRMDf+C/8Blefvm4GxFC9AAAAAElFTkSuQmCC"
     : "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJUSURBVDjLpZNbaJJhHMZHUES51SoiqssWm5SMQekoFwvnYR4RP02dh/yMMhJpW3PaFOuzURfNi8GUDusw3QGDgl0k0Y3QcbjVqtsY3cVAu9uMwqf3ey+EwXBFFw/vgef58X94eesA1P2P1r284DDfDp/ajUhHPQZOCuBr3wXWrLv/VwAf64pFtM0YO3sUN1U7MOo+gr4OAdzSA2Cd1pENASGjGKO2JgyQ0A3TIRJuQJw5DF/HXhha91Q2BJw/3ojLaiHGr2gwwp6A/VgjrhqbYW0/CKZtJ0b6zmyvCRhU7ltdfH4XxfcT+P76AeYf9ePrs2tYmB1DVLP/56eHF7fUBCQcre9Kc5NYLmSx8nGKaJruS/NTuOMRFWpWaJP7tkql0ux4oBPlwj2sfnlKtfIhg8mBTojF4iei0+e2rQtQKpUNKpWKU6vVSKVS6OnpwcQQQ6XRaOidTqfj93HiFawBkOCmYDB4izfypmQyCavVimw2i0wmA5PJhOHhYXg8HnR3d1dkMtkggWyuAkjwEsuySKfTMBgMMBqNsNvtyOVyyOfzsFgs0Gq1sNlsiEajcLvdFblc3lcFLAw1/16eHUQ4HAbHcdTkcDhAJqPjMwwDr9cLl8sFv9+PYi6Kt/0t5SpgMdJSKb24Tg2JRIKCSCVq5iv19vYiEAggHo9T2I+XHOaCwkoV8PmxPzQfavrldDqh1+upkVcsFqP9+an4M+mPrq4uLERFZZLh1rzC0rSvnnRsIs/4ivRdIuOXFQoFePEhshYlEskbs9ks/Dbjq6/5G/9FfwAGy37p9rgYIQAAAABJRU5ErkJggg==";
 
 $HD_Form->list_query_conditions["groupid"] = $groupID;
 
-$HD_Form->AddViewElement(_("USERID"), "userid");
-$HD_Form->AddViewElement(_("LOGIN"), "login");
-$HD_Form->AddViewElement(_("NAME"), "name");
+$HD_Form->AddListValue(_("User ID"), "userid");
+$HD_Form->AddListValue(_("Login"), "login");
+$HD_Form->AddListValue(_("Name"), "name");
 
 $HD_Form->FieldViewElement('userid, login, name');
 
@@ -91,7 +94,7 @@ $HD_Form->AddEditElement(
     "login",
     "",
     "size=30 maxlength=12",
-    3,
+    3, // [Validator::class, "min4Chars"],
     _("Insert the username")
 );
 
@@ -100,7 +103,7 @@ $HD_Form->AddEditElement(
     "pwd_encoded",
     "",
     "size=30 maxlength=30",
-    3,
+    3, // [Validator::class, "min4Chars"],
     _("Insert the Reseller password")
 );
 
@@ -132,7 +135,7 @@ if ($subadmin) {
         Admin::ACX_MODIFY_AGENTS => _("EDIT/DELETE AGENT"),
     ];
     foreach ($rights as $k => $v) {
-        $right_list[] = [$v, $k];
+        $right_list[$k] = [$v, $k];
     }
 
     $len_right_list = count($right_list);
@@ -231,12 +234,10 @@ $HD_Form->AddEditElement(
     null,
     _("Insert the email"));
 
-$HD_Form->update_query_conditions = ["userid" => "%id"];
-
 $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["groupID"] = $groupID;
 $HD_Form->FG_EDIT_QUERY_HIDDEN_INPUTS["groupID"] = $groupID;
 
-$HD_Form->FG_INTRO_TEXT_ADITION = '';
+$HD_Form->FG_INTRO_TEXT_ADITION = "";
 
 $HD_Form->FG_LOCATION_AFTER_ADD = "?groupID=$groupID&id=";
 $HD_Form->FG_LOCATION_AFTER_EDIT = "?groupID=$groupID&id=";

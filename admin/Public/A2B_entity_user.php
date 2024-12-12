@@ -40,19 +40,16 @@ $menu_section = 3;
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
 require_once "./form_data/FG_var_user.inc";
 /**
- * @var A2Billing $A2B
- * @var Smarty $smarty
  * @var FormHandler $HD_Form
  * @var string $popup_select
  * @var string $form_action
  * @var string $groupID
- * @var string $id
  */
 
 $HD_Form->init();
 
-$HD_Form->FG_EDIT_BUTTON_LINK= "?form_action=ask-edit&groupID=$groupID&id=";
-$HD_Form->FG_DELETE_BUTTON_LINK= "?form_action=ask-delete&groupID=$groupID&id=";
+$HD_Form->FG_EDIT_BUTTON_LINK = "?form_action=ask-edit&groupID=$groupID&id=";
+$HD_Form->FG_DELETE_BUTTON_LINK = "?form_action=ask-delete&groupID=$groupID&id=";
 
 $form_action ??= "list";
 $action = $action ?? $form_action;
@@ -65,22 +62,20 @@ if (!$popup_select) {
     echo $form_action === 'ask-add'
         ? create_help(_("Add administrator."), 'EditAdministrator')
         : create_help(_("Administrators - this shows a list of all the Administrators who have access to the Administrator interface."), 'ShowAdministrator');
-} else {
-?>
-<script>
-function sendValue(selvalue)
-{
-    const formname = <?= json_encode($popup_formname ?? "") ?>;
-    const fieldname = <?= json_encode($popup_fieldname ?? "") ?>;
-    $(`form[name='${formname}'] [name='${fieldname}']`, window.opener.document).val(selvalue);
-    window.close();
-}
-</script>
-<?php
 }
 
 $HD_Form->create_toppage ($form_action);
-
 $HD_Form->create_form($form_action, $list);
 
 require_once __DIR__ . "/../templates/footer.php";
+?>
+<script>
+    function sendValue(selvalue)
+    {
+        const formname = <?= json_encode($popup_formname ?? "") ?>;
+        const fieldname = <?= json_encode($popup_fieldname ?? "") ?>;
+        $(`form[name='${formname}'] [name='${fieldname}']`, window.opener.document).val(selvalue);
+        window.close();
+    }
+</script>
+

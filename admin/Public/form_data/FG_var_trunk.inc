@@ -2,9 +2,10 @@
 
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
+use A2billing\Table;
 
 /**
- * @var string $popup_select
+ * @var numeric-string $popup_select
  * @var string $popup_formname
  * @var string $popup_fieldname
  * @var string $form_action
@@ -50,7 +51,7 @@ $HD_Form = new FormHandler("cc_trunk", _("Trunk"), "id_trunk");
 
 $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_trunk.php?form_action=ask-add";
-$HD_Form->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Add Trunk");
+$HD_Form->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form->FG_LIST_ADDING_BUTTON_MSG1 = _("Add Trunk");
 $HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJvSURBVDjLpZPrS5NhGIf9W7YvBYOkhlkoqCklWChv2WyKik7blnNris72bi6dus0DLZ0TDxW1odtopDs4D8MDZuLU0kXq61CijSIIasOvv94VTUfLiB74fXngup7nvrnvJABJ/5PfLnTTdcwOj4RsdYmo5glBWP6iOtzwvIKSWstI0Wgx80SBblpKtE9KQs/We7EaWoT/8wbWP61gMmCH0lMDvokT4j25TiQU/ITFkek9Ow6+7WH2gwsmahCPdwyw75uw9HEO2gUZSkfyI9zBPCJOoJ2SMmg46N61YO/rNoa39Xi41oFuXysMfh36/Fp0b7bAfWAH6RGi0HglWNCbzYgJaFjRv6zGuy+b9It96N3SQvNKiV9HvSaDfFEIxXItnPs23BzJQd6DDEVM0OKsoVwBG/1VMzpXVWhbkUM2K4oJBDYuGmbKIJ0qxsAbHfRLzbjcnUbFBIpx/qH3vQv9b3U03IQ/HfFkERTzfFj8w8jSpR7GBE123uFEYAzaDRIqX/2JAtJbDat/COkd7CNBva2cMvq0MGxp0PRSCPF8BXjWG3FgNHc9XPT71Ojy3sMFdfJRCeKxEsVtKwFHwALZfCUk3tIfNR8XiJwc1LmL4dg141JPKtj3WUdNFJqLGFVPC4OkR4BxajTWsChY64wmCnMxsWPCHcutKBxMVp5mxA1S+aMComToaqTRUQknLTH62kHOVEE+VQnjahscNCy0cMBWsSI0TCQcZc5ALkEYckL5A5noWSBhfm2AecMAjbcRWV0pUTh0HE64TNf0mczcnnQyu/MilaFJCae1nw2fbz1DnVOxyGTlKeZft/Ff8x1BRssfACjTwQAAAABJRU5ErkJggg==";
 
 $HD_Form->FG_TABLE_DEFAULT_ORDER = " id_trunk";
@@ -63,54 +64,61 @@ $HD_Form->FG_FK_DELETE_CONFIRM = true;
 $HD_Form->FG_FK_WARNONLY = true;
 $HD_Form->FG_FK_TABLENAMES = ["cc_ratecard"];
 $HD_Form->FG_FK_EDITION_CLAUSE = ["id_trunk"];
-$HD_Form->FG_FK_DELETE_MESSAGE = gettext("You have some rates attached to this Trunk! Please comfirm that you really want to remove this Trunk? ");
+$HD_Form->FG_FK_DELETE_MESSAGE = _("You have some rates attached to this Trunk! Please comfirm that you really want to remove this Trunk? ");
 
 if ($popup_select) {
-	$HD_Form->AddViewElement(gettext("ID"), "id_trunk");
-	$HD_Form->AddViewElement(gettext("LABEL"), "trunkcode");
-	$HD_Form->AddViewElement(gettext("PROVIDER"), "id_provider", true, 15, "", "lie", "cc_provider", "provider_name", "id='%id'", "%1");
-	$HD_Form->FieldViewElement ('id_trunk, trunkcode, id_provider');
+	$HD_Form->AddListValue(_("ID"), "id_trunk");
+	$HD_Form->AddListValue(_("Label"), "trunkcode");
+	$HD_Form->AddListSqlMapping(_("Provider"), "id_provider", new Table("cc_provider", ["id", "provider_name"]));
+	$HD_Form->FieldViewElement(["id_trunk", "trunkcode", "id_provider"]);
 } else {
-	$HD_Form->AddViewElement(gettext("LABEL"), "trunkcode");
-	$HD_Form->AddViewElement(gettext("ADD_PREFIX"), "trunkprefix");
-	$HD_Form->AddViewElement(gettext("REMOVE_PREFIX"), "removeprefix");
-	$HD_Form->AddViewElement(gettext("TECH"), "providertech");
-	$HD_Form->AddViewElement(gettext("IP/HOST"), "providerip");
-	$HD_Form->AddViewElement(gettext("PROVIDER"), "id_provider", true, 15, "", "lie", "cc_provider", "provider_name", "id='%id'", "%1");
-	$HD_Form->AddViewElement(gettext("MINUTES USED"), "secondusedreal", true, 30, "display_minute");
-	$HD_Form->AddViewElement(gettext("STATUS"), "status", true, 0, "", "list", getActivationList());
-	$HD_Form->AddViewElement(gettext("MAXUSE"), "maxuse");
-	$HD_Form->FieldViewElement ('trunkcode, trunkprefix, removeprefix, providertech, providerip, id_provider, secondusedreal, status, maxuse');
+    $HD_Form->AddListValue(_("Label"), "trunkcode");
+	$HD_Form->AddListValue(abbr(_("+"), _("Added prefix")), "trunkprefix");
+	$HD_Form->AddListValue(abbr(_("-"), _("Removed prefix")), "removeprefix");
+	$HD_Form->AddListValue(_("Tech"), "providertech");
+	$HD_Form->AddListValue(_("Host"), "providerip");
+    $HD_Form->AddListSqlMapping(_("Provider"), "id_provider", new Table("cc_provider", ["id", "provider_name"]));
+	$HD_Form->AddListValue(abbr(_("Min"), _("Minutes used")), "secondusedreal", "display_minute");
+	$HD_Form->AddListMapping(_("Status"), "status", getActivationList());
+	$HD_Form->AddListValue(_("Max use"), "maxuse");
+	$HD_Form->FieldViewElement([
+        "trunkcode",
+        "trunkprefix",
+        "removeprefix",
+        "providertech",
+        "providerip",
+        "id_provider",
+        "secondusedreal",
+        "status",
+        "maxuse",
+    ]);
 }
 
 $HD_Form->search_form_enabled = true;
-$HD_Form->search_form_title = gettext("Search");
-$HD_Form->AddSearchTextInput(gettext("IP/HOST"),'providerip','provideriptype');
-$HD_Form->AddSearchSqlSelectInput(_("SELECT PROVIDER"), "cc_provider", "id,provider_name", "", "provider_name", "ASC", "id_provider");
-$HD_Form->AddSearchSelectInput(gettext("SELECT STATUS"), "status", [[0, _("Inactive")], [1, _("Active")]]);
+$HD_Form->search_form_title = _("Search");
+$HD_Form->AddSearchTextInput(_("IP or Host"),'providerip','provideriptype');
+$HD_Form->AddSearchSqlSelectInput(_("Provider"), "cc_provider", "id,provider_name", "", "provider_name", "ASC", "id_provider");
+$HD_Form->AddSearchSelectInput(_("Status"), "status", [[0, _("Inactive")], [1, _("Active")]]);
 
-if ((int)$popup_select > 0) {
+if ($popup_select) {
 	$HD_Form->FG_LIST_VIEW_PAGE_SIZE = 7;
 	$HD_Form->CV_FOLLOWPARAMETERS = "&popup_select=$popup_select&popup_formname=$popup_formname&popup_fieldname=$popup_fieldname";
-
-    $HD_Form->AddListSelectActionButton(
-        (int)$popup_select === 1 ? "javascript:sendValue('|param|')" : "javascript:sendValue('|col0|')",
-    );
+    $HD_Form->AddListSelectActionButton("javascript:sendValue('|param|')");
 } else {
 	$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
 	$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 	$HD_Form->FG_ENABLE_ADD_BUTTON = true;
 }
 
-$def_value_inuse = '';
-$def_value_maxuse = '';
-if (isset($form_action) && $form_action === "ask-add"){
+$def_value_inuse = "";
+$def_value_maxuse = "";
+if (isset($form_action) && $form_action === "ask-add") {
 	$def_value_inuse = "value='0'";
 	$def_value_maxuse = "value='-1'";
 }
 
 $HD_Form->AddEditSqlSelect(
-    gettext("VOIP PROVIDER"),
+    _("VOIP PROVIDER"),
     "id_provider",
     "cc_provider",
     "provider_name,id",
@@ -120,61 +128,61 @@ $HD_Form->AddEditSqlSelect(
 );
 
 $HD_Form->AddEditElement(
-    gettext("LABEL"),
+    _("LABEL"),
     "trunkcode",
-    gettext("Unique and friendly name for the trunk"),
+    _("Unique and friendly name for the trunk"),
     "size=45 maxlength=40",
-    3,
-    gettext("Insert the trunkcode")
+    3, // [Validator::class, "min4Chars"],
+    _("Insert the trunkcode")
 );
 
 $HD_Form->AddEditElement(
-    gettext("ADD PREFIX"),
+    _("ADD PREFIX"),
     "trunkprefix",
-    gettext("Add a prefix to the dialled digits."),
+    _("Add a prefix to the dialled digits."),
     "size=30 maxlength=20",
     null,
-    gettext("Insert the trunkprefix")
+    _("Insert the trunkprefix")
 );
 
 $HD_Form->AddEditElement(
-    gettext("REMOVE PREFIX"),
+    _("REMOVE PREFIX"),
     "removeprefix",
-    gettext("Remove prefix from the dialed digits."),
+    _("Remove prefix from the dialed digits."),
     "size=30 maxlength=20",
     null,
-    gettext("Insert the removeprefix")
+    _("Insert the removeprefix")
 );
 
 $HD_Form->AddEditElement(
-    gettext("PROVIDER TECH"),
+    _("PROVIDER TECH"),
     "providertech",
-    gettext("Technology used on the trunk (SIP,IAX2,ZAP,H323)"),
+    _("Technology used on the trunk (SIP,IAX2,ZAP,H323)"),
     "size=20 maxlength=15",
-    0,
-    gettext("Insert the providertech")
+    0, // [Validator::class, "min3Chars"],
+    _("Insert the providertech")
 );
 
 $HD_Form->AddEditElement(
-    gettext("PROVIDER IP"),
+    _("PROVIDER IP"),
     "providerip",
-    gettext("Set the IP or URL of the VoIP provider. Alternatively, put in the name of a previously defined trunk in Asterisk or FreePBX. (MyVoiPTrunk, ZAP4G etc.) You can use the following tags to as variables: %dialingnumber%, %cardnumber%. ie g2/1644787890wwwwwwwwww%dialingnumber%"),
+    _("Set the IP or URL of the VoIP provider. Alternatively, put in the name of a previously defined trunk in Asterisk or FreePBX. (MyVoiPTrunk, ZAP4G etc.) You can use the following tags to as variables: %dialingnumber%, %cardnumber%. ie g2/1644787890wwwwwwwwww%dialingnumber%"),
     "size=80 maxlength=140",
-    9,
-    gettext("Insert the providerip")
+    9, // [Validator::class, "min1Char"],
+    _("Insert the providerip")
 );
 
 $HD_Form->AddEditElement(
-    gettext("ADDITIONAL PARAMETER"),
+    _("ADDITIONAL PARAMETER"),
     "addparameter",
-    gettext("Define any additional parameters that will be used when running the Dial Command in Asterisk. Use the following tags as variables  %dialingnumber%, %cardnumber%. ie 'D(ww%cardnumber%wwwwwwwwww%dialingnumber%)'"),
+    _("Define any additional parameters that will be used when running the Dial Command in Asterisk. Use the following tags as variables  %dialingnumber%, %cardnumber%. ie 'D(ww%cardnumber%wwwwwwwwww%dialingnumber%)'"),
     "size=60 maxlength=100",
     null,
-    gettext("Insert Additional parameters")
+    _("Insert Additional parameters")
 );
 
 $HD_Form->AddEditSqlSelect(
-    gettext("FAILOVER TRUNK"),
+    _("FAILOVER TRUNK"),
     "failover_trunk",
     "cc_trunk",
     "trunkcode,id_trunk",
@@ -182,42 +190,42 @@ $HD_Form->AddEditSqlSelect(
     "",
     [-1, _("NOT DEFINED")],
     "%1",
-    gettext("You can define another trunk in case of failover!")
+    _("You can define another trunk in case of failover!")
 );
 
 $HD_Form->AddEditElement(
-    gettext("CURRENT CONNECTIONS"),
+    _("CURRENT CONNECTIONS"),
     "inuse",
-    gettext("Updated to show the number of channels currently in use on this trunk.If there are no channels in use, and the system shows that there are, manually reset this field back to zero."),
+    _("Updated to show the number of channels currently in use on this trunk.If there are no channels in use, and the system shows that there are, manually reset this field back to zero."),
     "size=30 $def_value_inuse maxlength=30",
-    12,
-    gettext("Number of current connections"));
+    12, // [Validator::class, "number"],
+    _("Number of current connections"));
 
 $HD_Form->AddEditElement(
-    gettext("MAXIMUM CONNECTIONS"),
+    _("MAXIMUM CONNECTIONS"),
     "maxuse",
-    gettext("The maximum number of channels available to this trunk. Set to -1 to have an unlimited number of channels"),
+    _("The maximum number of channels available to this trunk. Set to -1 to have an unlimited number of channels"),
     "size=30 $def_value_maxuse maxlength=30",
-    12,
-    gettext("Number of maximum simultaneous connections")
+    12, // [Validator::class, "number"],
+    _("Number of maximum simultaneous connections")
 );
 
 $HD_Form->AddEditSelect(
-    gettext("IFMAXUSED"),
+    _("IFMAXUSED"),
     "if_max_use",
     [[_("Use failover trunk"), 0], [_("Use next trunk"), 1]],
     "",
-    gettext("Specifies which trunk to use when the maximum number of connections is reached")
+    _("Specifies which trunk to use when the maximum number of connections is reached")
 );
 
 $HD_Form->AddEditSelect(
-    gettext("STATUS"),
+    _("STATUS"),
     "status",
     getActivationList(),
     "",
-    gettext("Define if this trunk is active or not")
+    _("Define if this trunk is active or not")
 );
 
-$HD_Form->FG_INTRO_TEXT_ADITION = '';
+$HD_Form->FG_INTRO_TEXT_ADITION = "";
 $HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";
 $HD_Form->FG_LOCATION_AFTER_DELETE = "?id=";

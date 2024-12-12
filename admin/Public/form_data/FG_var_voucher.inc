@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\A2Billing;
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
 
@@ -35,160 +36,134 @@ use A2billing\Forms\FormHandler;
  *
 **/
 
+/**
+ * @var A2Billing $A2B
+ */
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
-getpost_ifset(array('id', 'creationdate', 'usedate', 'expirationdate', 'voucher', 'tag', 'credit', 'activated', 'used', 'currency'));
+$HD_Form = new FormHandler("cc_voucher", _("Voucher"));
 
-$HD_Form = new FormHandler("cc_voucher", "Voucher");
-
-$currency_list = array();
-$indcur=0;
-
-$currencies_list = get_currencies();
-
-foreach($currencies_list as $key => $cur_value) {
-	$currency_list["$key"]  = array( $cur_value["name"].' ('.$cur_value["value"].')', $key);
-	$indcur++;
-}
-
+$currency_list = getCurrenciesList();
+$currency_list_r = array_map("array_reverse", $currency_list);
 $actived_list = getActivationTrueFalseList();
 $actived_list_r = array_map("array_reverse", $actived_list);
 $used_list = [[_("NOT USED"), "0"], [_("USED"), "1"]];
 $used_list_r = array_map("array_reverse", $used_list);
 $yesno = getYesNoList();
 
-foreach($currencies_list as $key => $cur_value) {
-	$currency_list[$key]  = array( $cur_value[1].' ('.$cur_value[2].')', $key);
-	$currency_list_r[$key]  = array( $key, $cur_value[1]);
-	$currency_list_key[$key][0] = $key;
-}
+$HD_Form->FG_LIST_ADDING_BUTTON1 = true;
+$HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("add.png") ;
 
+$HD_Form->AddListValue(_("Voucher"), "voucher");
+$HD_Form->AddListValue(_("Credit"), "credit", "display_money");
+$HD_Form->AddListValue(_("Tag"), "tag");
+$HD_Form->AddListMapping(_("Activated"), "activated", $actived_list);
+$HD_Form->AddListMapping(_("Used"), "used", $used_list);
+$HD_Form->AddListValue(_("Account"), "usedcardnumber");
+$HD_Form->AddListValue(_("Created date"), "creationdate");
+$HD_Form->AddListValue(_("Used date"), "usedate");
+$HD_Form->AddListMapping(_("Currency"), "currency", $currency_list);
 
+$HD_Form->FieldViewElement([
+    "voucher",
+    "credit",
+    "tag",
+    "activated",
+    "used",
+    "usedcardnumber",
+    "creationdate",
+    "usedate",
+    "currency",
+]);
 
-$HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_voucher_multi.php";
-$HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = gettext("Generate Voucher");
-$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("cog_add.png") ;
+$form_action ??= "list";
 
-$HD_Form ->FG_LIST_ADDING_BUTTON2 = true;
-$HD_Form ->FG_LIST_ADDING_BUTTON_LINK2 = "A2B_entity_voucher.php?form_action=ask-add";
-$HD_Form ->FG_LIST_ADDING_BUTTON_ALT2 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG2 = gettext("Add Voucher");
-$HD_Form ->FG_LIST_ADDING_BUTTON_IMG2 = get_image_path("add.png") ;
-
-
-$HD_Form -> AddViewElement(gettext("ID"), "id");
-$HD_Form -> AddViewElement(gettext("VOUCHER"), "voucher");
-$HD_Form -> AddViewElement(gettext("CREDIT"), "credit");
-$HD_Form -> AddViewElement(gettext("TAG"), "tag");
-$HD_Form -> AddViewElement(gettext("ACTIVATED"), "activated", true, 0, "", "list", $actived_list);
-$HD_Form -> AddViewElement(gettext("USED"), "used", true, 0, "", "list", $used_list);
-$HD_Form -> AddViewElement(gettext("ACCOUNT USED"), "usedcardnumber");
-$HD_Form -> AddViewElement(gettext("CREATED DATE"), "creationdate", true, 16);
-$HD_Form -> AddViewElement(gettext("USED DATE"), "usedate", true, 16);
-$HD_Form -> AddViewElement(gettext("CURRENCY"), "currency", true, 0, "", "list", $currency_list_key);
-
-$HD_Form -> FieldViewElement ('id, voucher, credit, tag, activated, used, usedcardnumber, creationdate, usedate, currency');
-
+// Set the filter variables
+$HD_Form->FG_FILTER_ENABLE = true;
+$HD_Form->FG_FILTER_COLUMN = "voucher";
+$HD_Form->FG_FILTER_LABEL = _("Voucher");
 
 // Search form
-if (!($popup_select>=1))	 $HD_Form -> search_form_enabled = true;
-$HD_Form -> search_form_title = gettext('Define specific criteria to search for vouchers created.');
+$HD_Form->search_form_enabled = true;
+$HD_Form->search_form_title = _('Define specific criteria to search for vouchers created.');
 $HD_Form->AddSearchDateInput(_("Creation date"), "creationdate");
-$HD_Form -> AddSearchTextInput (gettext("VOUCHER"), 'voucher','vouchertype');
-$HD_Form -> AddSearchTextInput (gettext("ACCOUNT NUMBER"),'usedcardnumber','usedcardnumbertype');
-$HD_Form -> AddSearchTextInput (gettext("TAG"),'tag','tagtype');
-$HD_Form -> AddSearchComparisonInput (gettext("CREDIT"),'credit1','credit1type','credit2','credit2type','credit');
+$HD_Form->AddSearchTextInput(_("Voucher"), "voucher");
+$HD_Form->AddSearchTextInput(_("Card number"), "usedcardnumber");
+$HD_Form->AddSearchTextInput(_("Tag"), "tag");
+$HD_Form->AddSearchComparisonInput(_("Credit"), "credit1", "credit1type", "credit2", "credit2type", "credit");
 
-$HD_Form -> AddSearchSelectInput (gettext("SELECT STATUS"), "activated", $actived_list_r);
-$HD_Form -> AddSearchSelectInput (gettext("SELECT USED"), "used", $used_list_r);
-$HD_Form -> AddSearchSelectInput (gettext("SELECT CURRENCY"), "currency", $currency_list_r);
+$HD_Form->AddSearchSelectInput(_("Status"), "activated", $actived_list_r);
+$HD_Form->AddSearchSelectInput(_("Used"), "used", $used_list_r);
+$HD_Form->AddSearchSelectInput(_("Currency"), "currency", $currency_list_r);
 
-$HD_Form -> export_session_key = "pr_export_entity_voucher";
-$HD_Form -> FG_EXPORT_FIELD_LIST = explode(",", $A2B->config['webui']['voucher_export_field_list']);
-$HD_Form -> FG_EXPORT_CSV = true;
-$HD_Form -> FG_EXPORT_XML = true;
+$HD_Form->export_session_key = "pr_export_entity_voucher";
+$HD_Form->FG_EXPORT_FIELD_LIST = explode(",", $A2B->config['webui']['voucher_export_field_list']);
+$HD_Form->FG_EXPORT_CSV = true;
+$HD_Form->FG_EXPORT_XML = true;
 
-$HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
-$HD_Form -> FG_ENABLE_ADD_BUTTON = true;
+$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form->FG_ENABLE_ADD_BUTTON = true;
 
-if ($form_action=="ask-add") {
+$maxi = $comp_date_plus = "";
+if ($form_action === "ask-add") {
 	$card_gen = generate_unique_value($HD_Form->FG_QUERY_TABLE_NAME, LEN_VOUCHER, "voucher");
-	$maxi = "value='".$card_gen."'";
+	$maxi = "value='$card_gen'";
+    $comp_date_plus = (new DateTime("+10 years"))->format("Y-m-d H:i:s");
 }
 
 $HD_Form->AddEditElement(
-    gettext("VOUCHER"),
+    _("VOUCHER"),
     "voucher",
     "",
     "size=20 $maxi readonly maxlength=40",
-    4,
-    gettext("Insert the voucher")
+    4, // [Validator::class, "numeric"],
+    _("Insert the voucher")
 );
 
-
 $HD_Form->AddEditElement(
-    gettext("AMOUNT"),
+    _("AMOUNT"),
     "credit",
     "",
     "size=30 maxlength=30",
-    12,
-    gettext("Insert the number of credit")
+    12, // [Validator::class, "number"],
+    _("Insert the number of credit")
 );
 
-
 $HD_Form->AddEditElement(
-    gettext("TAG"),
+    _("TAG"),
     "tag",
     "",
     "size=30 maxlength=30",
-    11,
-    gettext("Insert the tag"),
+    11, // [Validator::class, "min2Chars"],
+    _("Insert the tag"),
     "",
     "NO-NULL"
 );
 
 $HD_Form->AddEditRadio(
-    gettext("ACTIVATED"),
+    _("ACTIVATED"),
     "activated",
-    [[gettext("Yes"), "t"], [gettext("No"), "f"]],
+    [[_("Yes"), "t"], [_("No"), "f"]],
     "t",
     "", "",
-    gettext("Choose if you want to activate this card")
+    _("Choose if you want to activate this card")
 );
 
-$HD_Form->AddEditSelect(gettext("CURRENCY"), "currency", $currency_list);
-
-if ($form_action=="ask-add") {
-	$begin_date = date("Y");
-	$begin_date_plus = date("Y") + 10;
-	$end_date = date("-m-d H:i:s");
-	$comp_date = "value='".$begin_date.$end_date."'";
-	$comp_date_plus = "value='".$begin_date_plus.$end_date."'";
-	$comp_zero = "value='0'";
-}
+$HD_Form->AddEditSelect(_("CURRENCY"), "currency", $currency_list);
 
 $HD_Form->AddEditElement(
-    gettext("EXPIRY DATE"),
+    _("EXPIRY DATE"),
     "expirationdate",
-    gettext("Format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
+    _("Format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
     "size=40 maxlength=40  $comp_date_plus",
-    10,
-    gettext("Insert the expiration date"),
-    "",
-    "",
-    
+    10, // [Validator::class, "dateTime"],
+    _("Insert the expiration date")
 );
 
-// Set the filter variables
-$HD_Form -> FG_FILTER_ENABLE = true;
-$HD_Form -> FG_FILTER_COLUMN = 'voucher';
-$HD_Form -> FG_FILTER_LABEL = 'voucher';
+$HD_Form->FG_INTRO_TEXT_EDITION = _("Modify the properties of the selected voucher.");
+$HD_Form->FG_INTRO_TEXT_ADITION = "";
 
-$HD_Form -> FG_INTRO_TEXT_EDITION= gettext("Modify the properties of the selected voucher.");
-$HD_Form -> FG_INTRO_TEXT_ADITION = '';
-
-$HD_Form -> FG_LOCATION_AFTER_ADD = "?id=";
-$HD_Form -> FG_LOCATION_AFTER_EDIT = "?id=";
-$HD_Form -> FG_LOCATION_AFTER_DELETE = "?id=";
-
+$HD_Form->FG_LOCATION_AFTER_ADD = "?id=";
+$HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";
+$HD_Form->FG_LOCATION_AFTER_DELETE = "?id=";
