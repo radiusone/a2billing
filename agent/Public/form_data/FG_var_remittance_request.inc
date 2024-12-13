@@ -59,11 +59,11 @@ $HD_Form->AddListActionButton(
 
 $status_list = getRemittanceStatus_List();
 $type_list = getRemittanceType_List();
-$HD_Form -> AddViewElement(gettext("ID"), "cc_agent_commission.id");
-$HD_Form -> AddViewElement(gettext("DATE"), "date", true, 30);
-$HD_Form -> AddViewElement(gettext("AMOUNT"), "amount", true, 0, "display_money");
-$HD_Form -> AddViewElement(gettext("TYPE"), "type", true, 0, "", "list", $type_list);
-$HD_Form -> AddViewElement(gettext("STATUS"), "status", true, 0, "", "list", $status_list);
+$HD_Form -> AddListValue(gettext("ID"), "cc_agent_commission.id");
+$HD_Form -> AddListValue(gettext("DATE"), "date");
+$HD_Form -> AddListValue(gettext("AMOUNT"), "amount", "display_money");
+$HD_Form -> AddListMapping(gettext("TYPE"), "type", $type_list);
+$HD_Form -> AddListMapping(gettext("STATUS"), "status", $status_list);
 
 $HD_Form -> FieldViewElement ('cc_remittance_request.id, date, amount,type, status ');
 

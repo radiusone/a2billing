@@ -55,15 +55,15 @@ if (!isset($form_action) || $form_action=="list"){
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
 $list_refill_type=getRefillType_List();
-$HD_Form -> AddViewElement(gettext("ID"), "cc_logpayment_agent.id");
-$HD_Form -> AddViewElement(gettext("AGENT"), "creator", true, 25, "", "lie", "cc_agent", "lastname, firstname", "id='%id'", "%1 %2");
-$HD_Form -> AddViewElement(gettext("LOGIN"), "login", true, 25, "", "lie", "cc_agent", "login", "id='%id'", "%1");
-$HD_Form -> AddViewElement(gettext("PAYMENT DATE"), "date", true, 30);
-$HD_Form -> AddViewElement(gettext("PAYMENT AMOUNT"), "payment");
-$HD_Form -> AddViewElement(gettext("DESCRIPTION"), "description");
-$HD_Form -> AddViewElement(gettext("PAYMENT TYPE"), "payment_type", true, 0, "", "list", $list_refill_type);
+$HD_Form -> AddListValue(gettext("ID"), "cc_logpayment_agent.id");
+$HD_Form -> AddListValue(gettext("AGENT"), "CONCAT(lastname, ', ', firstname)");
+$HD_Form -> AddListValue(gettext("LOGIN"), "login");
+$HD_Form -> AddListValue(gettext("PAYMENT DATE"), "date");
+$HD_Form -> AddListValue(gettext("PAYMENT AMOUNT"), "payment");
+$HD_Form -> AddListValue(gettext("DESCRIPTION"), "description");
+$HD_Form -> AddListMapping(gettext("PAYMENT TYPE"), "payment_type", $list_refill_type);
 
-$HD_Form -> FieldViewElement ('cc_logpayment_agent.id, agent_id, agent_id, date, payment,description ,payment_type');
+$HD_Form -> FieldViewElement ("cc_logpayment_agent.id, CONCAT(lastname, ', ', firstname), login, date, payment,description ,payment_type");
 
 
 $HD_Form -> FG_ENABLE_INFO_BUTTON = true;

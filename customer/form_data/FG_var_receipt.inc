@@ -66,9 +66,9 @@ $HD_Form -> FG_ENABLE_INFO_BUTTON = true;
 $HD_Form -> FG_INFO_BUTTON_LINK = "A2B_receipt_view.php?id=";
 
 $list_refill_type=getRefillType_List();
-$HD_Form -> AddViewElement(gettext("ID"), "cc_receipt.id");
-$HD_Form -> AddViewElement(gettext("ACCOUNT"), "username", true, 30, "display_customer_link");
-$HD_Form -> AddViewElement(gettext("DATE"), "date", true, 30);
-$HD_Form -> AddViewElement(gettext("TITLE"), "title");
-$HD_Form -> AddViewElement(gettext("AMOUNT INCL VAT"), "price", true, 30, "display_2bill");
+$HD_Form -> AddListValue(gettext("ID"), "cc_receipt.id");
+$HD_Form -> AddListValue(gettext("ACCOUNT"), "username", "display_customer_link");
+$HD_Form -> AddListValue(gettext("DATE"), "date");
+$HD_Form -> AddListValue(gettext("TITLE"), "title");
+$HD_Form -> AddListValue(gettext("AMOUNT INCL VAT"), "price","display_2bill");
 $HD_Form -> FieldViewElement ("cc_receipt.id, username, cc_receipt.date,title,total_price");

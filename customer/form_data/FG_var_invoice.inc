@@ -73,9 +73,9 @@ $HD_Form->AddListActionButton(
 
 $status_list = getInvoicePaidStatusList();
 
-$HD_Form -> AddViewElement(gettext("REFERENCE"), "cc_invoice.reference");
-$HD_Form -> AddViewElement(gettext("DATE"), "date", true, 30);
-$HD_Form -> AddViewElement(gettext("TITLE"), "title");
-$HD_Form -> AddViewElement(gettext("STATUS"), "paid_status", true, 0, "", "list", $status_list);
-$HD_Form -> AddViewElement(gettext("AMOUNT INCL VAT"), "price", true, 0, "display_2bill");
+$HD_Form -> AddListValue(gettext("REFERENCE"), "cc_invoice.reference");
+$HD_Form -> AddListValue(gettext("DATE"), "date");
+$HD_Form -> AddListValue(gettext("TITLE"), "title");
+$HD_Form -> AddListMapping(gettext("STATUS"), "paid_status", $status_list);
+$HD_Form -> AddListValue(gettext("AMOUNT INCL VAT"), "price", "display_2bill");
 $HD_Form -> FieldViewElement ("cc_invoice.reference, cc_invoice.date, title, cc_invoice.paid_status, total_price, id, cc_invoice.paid_status");

@@ -2,6 +2,7 @@
 
 use A2billing\Agent;
 use A2billing\Forms\FormHandler;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -53,14 +54,14 @@ $HD_Form->list_query_conditions["cc_agent_commission.id_agent"] = $_SESSION["age
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
 $com_list = getRefillType_List();
-$HD_Form -> AddViewElement(gettext("ID"), "cc_agent_commission.id");
-$HD_Form -> AddViewElement(gettext("ACCOUNT"), "id_card", true, 0, "display_customer_id_link");
-$HD_Form -> AddViewElement(gettext("AGENT"), "id_agent", true, 0, "display_linktoagent");
-$HD_Form -> AddViewElement(gettext("PAYMENT DATE"), "date", true, 30);
-$HD_Form -> AddViewElement(gettext("AMOUNT"), "amount");
-$HD_Form -> AddViewElement(gettext("PAID STATUS"), "paid_status", true, 0, "", "list", $com_list);
-$HD_Form -> AddViewElement(gettext("DESCRIPTION"), "description", true, 50);
-$HD_Form -> AddViewElement(gettext("LINK TO PAYMENT"), "id_payment", true, 0, "", "lie_link", "cc_logpayment", "payment, id", "id='%id'", "%1 " . BASE_CURRENCY . " (id:%2)", "A2B_entity_payment.php");
+$HD_Form -> AddListValue(gettext("ID"), "cc_agent_commission.id");
+$HD_Form -> AddListValue(gettext("ACCOUNT"), "id_card", "display_customer_id_link");
+$HD_Form -> AddListValue(gettext("AGENT"), "id_agent", "display_linktoagent");
+$HD_Form -> AddListValue(gettext("PAYMENT DATE"), "date");
+$HD_Form -> AddListValue(gettext("AMOUNT"), "amount");
+$HD_Form -> AddListMapping(gettext("PAID STATUS"), "paid_status", $com_list);
+$HD_Form -> AddListValue(gettext("DESCRIPTION"), "description", "substr", ["%X", 0, 50]);
+$HD_Form -> AddListSqlMapping(gettext("LINK TO PAYMENT"), "id_payment", new Table("cc_logpayment", ["id", "CONCAT(payment, ' ', '". BASE_CURRENCY . "', ' (id:', id, ')')"]), [], "A2B_entity_payment.php?form_action=ask-edit&id=");
 
 $HD_Form -> FieldViewElement ('cc_agent_commission.id, id_card, id_agent, date, amount, commission_type , description, id_payment');
 

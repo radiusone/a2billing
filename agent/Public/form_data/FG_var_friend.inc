@@ -80,13 +80,13 @@ $yesno = getYesNoList();
 
 
 
-$HD_Form -> AddViewElement(gettext("CARDHOLDER"), "id_cc_card", true, 25, "", "lie", "cc_card", "lastname, firstname", "id='%id'", "%1 %2");
-$HD_Form -> AddViewElement(gettext("USERNAME"), "username", true, 30, "display_customer_link");
-$HD_Form -> AddViewElement(gettext("ACCOUNTCODE"), "accountcode");
-$HD_Form -> AddViewElement(gettext("SECRET"), "secret");
-$HD_Form -> AddViewElement(gettext("CALLERID"), "callerid");
-$HD_Form -> AddViewElement(gettext("CONTEXT"), "context");
-$HD_Form -> AddViewElement(gettext("DEFAULTIP"), "defaultip");
+$HD_Form -> AddListValue(gettext("CARDHOLDER"), "CONCAT(lastname, ', ', firstname)");
+$HD_Form -> AddListValue(gettext("USERNAME"), "username", "display_customer_link");
+$HD_Form -> AddListValue(gettext("ACCOUNTCODE"), "accountcode");
+$HD_Form -> AddListValue(gettext("SECRET"), "secret");
+$HD_Form -> AddListValue(gettext("CALLERID"), "callerid");
+$HD_Form -> AddListValue(gettext("CONTEXT"), "context");
+$HD_Form -> AddListValue(gettext("DEFAULTIP"), "defaultip");
 
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_friend.php?form_action=ask-add&voip_type=sip&section=1";
@@ -99,7 +99,7 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("telephone_add.png") ;
 
 
 
-$HD_Form -> FieldViewElement ("id_cc_card, $table_name.name, accountcode, secret, callerid, context, defaultip");
+$HD_Form -> FieldViewElement ("CONCAT(lastname, ', ', firstname), $table_name.name, accountcode, secret, callerid, context, defaultip");
 
 $HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 10;
 

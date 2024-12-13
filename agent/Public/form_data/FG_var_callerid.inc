@@ -3,6 +3,7 @@
 use A2billing\Agent;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -61,12 +62,12 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_IMG2 = get_image_path("page_white_add.png") ;
 $actived_list = getActivationTrueFalseList();
 $yesno = getYesNoList();
 
-$HD_Form -> AddViewElement(gettext("CALLERID"), "cid");
-$HD_Form -> AddViewElement(gettext("ACCOUNT NUMBER"), "id_cc_card", true, 0, "", "lie_link", "cc_card", "username, id", "id='%id'", "%1", "A2B_entity_card.php");
-$HD_Form -> AddViewElement(gettext("CUSTOMER NAME"), "id_cc_card", true, 0, "", "lie_link", "cc_card", "lastname, id, firstname", "id='%id'", "%1 %3", "A2B_entity_card.php");
-$HD_Form -> AddViewElement(gettext("ACTIVATED"), "activated", true, 0, "", "list", $actived_list);
+$HD_Form -> AddListValue(gettext("CALLERID"), "cid");
+$HD_Form -> AddListValue(gettext("ACCOUNT NUMBER"), "id_cc_card", "display_customer_id_link");
+$HD_Form -> AddListValue(gettext("CUSTOMER NAME"), "CONCAT(lastname, ', ', firstname)");
+$HD_Form -> AddListMapping(gettext("ACTIVATED"), "activated", $actived_list);
 
-$HD_Form -> FieldViewElement ('cid, id_cc_card, id_cc_card, cc_callerid.activated, cc_callerid.id');
+$HD_Form -> FieldViewElement ("cid, id_cc_card, CONCAT(lastname, ', ', firstname), cc_callerid.activated, cc_callerid.id");
 
 $HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 10;
 

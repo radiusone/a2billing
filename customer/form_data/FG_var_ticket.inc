@@ -2,6 +2,7 @@
 
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
+use A2billing\Table;
 use A2billing\Ticket;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -58,13 +59,13 @@ $priority_list = Ticket::getAllPriorityListView();
 $filter_view ='v.viewed ';
 
 
-$HD_Form -> AddViewElement(gettext("ID"), "id");
-$HD_Form -> AddViewElement(gettext("TITLE"), "title");
-$HD_Form -> AddViewElement(gettext("CREATIONDATE"), "creationdate", true, 19);
-$HD_Form -> AddViewElement(gettext("COMPONENT"), "id_component", true, 15, "", "lie", "cc_support_component", "name", "id='%id'", "%1");
-$HD_Form -> AddViewElement(gettext("PRIORITY"), "priority", true, 0, "", "list", $priority_list);
-$HD_Form -> AddViewElement(gettext("VIEWED"), "viewed_cust", false, 0, "", "list", $viewed_list);
-$HD_Form -> AddViewElement(gettext("STATUS"), "status", true, 0, "", "list", $status_list);
+$HD_Form -> AddListValue(gettext("ID"), "id");
+$HD_Form -> AddListValue(gettext("TITLE"), "title");
+$HD_Form -> AddListValue(gettext("CREATIONDATE"), "creationdate");
+$HD_Form -> AddListSqlMapping(gettext("COMPONENT"), "id_component", new Table("cc_support_component", ["id", "name"]));
+$HD_Form -> AddListMapping(gettext("PRIORITY"), "priority", $priority_list);
+$HD_Form -> AddListMapping(gettext("VIEWED"), "viewed_cust", $viewed_list);
+$HD_Form -> AddListMapping(gettext("STATUS"), "status", $status_list);
 
 $HD_Form -> FieldViewElement ("cc_ticket.id, title, cc_ticket.creationdate, id_component , priority,$filter_view,status");
 

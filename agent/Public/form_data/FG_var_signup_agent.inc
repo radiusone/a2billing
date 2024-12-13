@@ -2,6 +2,7 @@
 
 use A2billing\Agent;
 use A2billing\Forms\FormHandler;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -55,10 +56,10 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("key_add.png") ;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 
 
-$HD_Form -> AddViewElement(gettext("KEY"), "code");
-$HD_Form -> AddViewElement(gettext("AGENT"), "id_agent", true, 0, "", "lie", "cc_agent", "firstname, lastname , login", "id='%id'", "%1 %2 (%3)");
-$HD_Form -> AddViewElement(gettext("CALL PLAN"), "id_tariffgroup", true, 0, "", "lie", "cc_tariffgroup", "tariffgroupname", "id='%id'", "%1");
-$HD_Form -> AddViewElement(gettext("GROUP"), "id_group", true, 0, "", "lie", "cc_card_group", "name", "id='%id'", "%1");
+$HD_Form -> AddListValue(gettext("KEY"), "code");
+$HD_Form -> AddListSqlMapping(gettext("AGENT"), "id_agent",  new Table("cc_agent", ["id", "CONCAT(firstname, ' ', lastname, '(', login, ')')"]));
+$HD_Form -> AddListSqlMapping(gettext("CALL PLAN"), "id_tariffgroup", new Table("cc_tariffgroup", ["id", "tariffgroupname"]));
+$HD_Form -> AddListSqlMapping(gettext("GROUP"), "id_group", new Table("cc_card_group", ["id", "name"]));
 
 $HD_Form -> FieldViewElement ('code, id_agent, id_tariffgroup ,id_group');
 

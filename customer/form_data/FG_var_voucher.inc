@@ -46,9 +46,9 @@ getpost_ifset(array('voucher'));
 
 $HD_Form = new FormHandler("cc_voucher", "Voucher");
 
-$HD_Form -> AddViewElement(gettext("VOUCHER"), "voucher");
-$HD_Form -> AddViewElement(gettext("CREDIT"), "credit");
-$HD_Form -> AddViewElement(gettext(CURRENCY), "currency");
+$HD_Form -> AddListValue(gettext("VOUCHER"), "voucher");
+$HD_Form -> AddListValue(gettext("CREDIT"), "credit");
+$HD_Form -> AddListValue(gettext("CURRENCY"), "currency");
 
 
 $HD_Form -> FieldViewElement ('voucher, credit, currency');

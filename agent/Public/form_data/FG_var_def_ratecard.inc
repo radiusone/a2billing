@@ -66,13 +66,13 @@ $HD_Form -> FG_QUERY_GROUPBY_COLUMNS = ["dialprefix"];
 $musiconhold_list = getMusicOnHold_List($A2B);
 $yesno = getYesNoList();
 
-if ($popup_select) $HD_Form -> AddViewElement(gettext("ID"), "id");
-$HD_Form -> AddViewElement(gettext("DESTINATION"), "destination", true, 20);
-$HD_Form -> AddViewElement("<acronym title=\"DIALING PREFIX\">" . gettext("PREFIX") . "</acronym>", "dialprefix");
-$HD_Form -> AddViewElement("<acronym title=\"SELLING RATE\">" . gettext("SR") . "</acronym>", "rateinitial");
-if (!$popup_select) $HD_Form -> AddViewElement(gettext("START-DATE"), "startdate", true, 19);
-if (!$popup_select) $HD_Form -> AddViewElement(gettext("STOP-DATE"), "stopdate", true, 19);
-if (!$popup_select) $HD_Form -> AddViewElement("<acronym title=\"CONNECT CHARGE\">" . gettext("CC") . "</acronym>", "connectcharge");
+if ($popup_select) $HD_Form -> AddListValue(gettext("ID"), "id");
+$HD_Form -> AddListValue(gettext("DESTINATION"), "destination");
+$HD_Form -> AddListValue("<acronym title=\"DIALING PREFIX\">" . gettext("PREFIX") . "</acronym>", "dialprefix");
+$HD_Form -> AddListValue("<acronym title=\"SELLING RATE\">" . gettext("SR") . "</acronym>", "rateinitial");
+if (!$popup_select) $HD_Form -> AddListValue(gettext("START-DATE"), "startdate");
+if (!$popup_select) $HD_Form -> AddListValue(gettext("STOP-DATE"), "stopdate");
+if (!$popup_select) $HD_Form -> AddListValue("<acronym title=\"CONNECT CHARGE\">" . gettext("CC") . "</acronym>", "connectcharge");
 
 if (!$popup_select) {
 	$HD_Form -> FieldViewElement ('destination, dialprefix, MIN(rateinitial) as rateinitial, startdate, stopdate, connectcharge');

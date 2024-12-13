@@ -56,9 +56,9 @@ for ($k=0;$k<=9;$k++)
 	$speeddial_list["$k"]  = array( "$k", "$k");
 
 
-$HD_Form -> AddViewElement(gettext("SPEEDDIAL"), "speeddial");
-$HD_Form -> AddViewElement(gettext("PHONE"), "phone");
-$HD_Form -> AddViewElement(gettext("NAME"), "name");
+$HD_Form -> AddListValue(gettext("SPEEDDIAL"), "speeddial");
+$HD_Form -> AddListValue(gettext("PHONE"), "phone");
+$HD_Form -> AddListValue(gettext("NAME"), "name");
 $HD_Form -> FieldViewElement ('speeddial, phone, name');
 
 $HD_Form->list_query_conditions["id_cc_card"] = $_SESSION["card_id"];

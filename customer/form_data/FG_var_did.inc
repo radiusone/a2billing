@@ -4,6 +4,7 @@ use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 use A2billing\Notification;
 use A2billing\NotificationsDAO;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -74,13 +75,13 @@ $validated_list = array();
 $validated_list["0"] = array( gettext("Pending"), "0");
 $validated_list["1"] = array( gettext("Validated"), "1");
 
-$HD_Form -> AddViewElement(gettext("DESTINATION"), "destination");
-$HD_Form -> AddViewElement(gettext("DID"), "id_cc_did", true, 15, "", "lie", "cc_did", "did", "id='%id'", "%1");
-$HD_Form -> AddViewElement(gettext("ACTIVATED"), "cc_did_destination.activated", true, 0, "", "list", $actived_list);
-$HD_Form -> AddViewElement(gettext("PRIORITY"), "priority", true, 0, "", "list", $priority_list);
-$HD_Form -> AddViewElement(gettext("USED MINUTE"), "cc_did_destination.secondusedreal", true, 30, "display_minute");
-$HD_Form -> AddViewElement(gettext("COUNTRY"), "id_cc_country", true, 15, "", "lie", "cc_country", "countryname", "id='%id'", "%1");
-$HD_Form -> AddViewElement(gettext("VALIDATED"), "validated", true, 0, "", "list", $validated_list);
+$HD_Form -> AddListValue(gettext("DESTINATION"), "destination");
+$HD_Form -> AddListSqlMapping(gettext("DID"), "id_cc_did", new Table("cc_did", ["id", "did"]));
+$HD_Form -> AddListMapping(gettext("ACTIVATED"), "cc_did_destination.activated", $actived_list);
+$HD_Form -> AddListMapping(gettext("PRIORITY"), "priority", $priority_list);
+$HD_Form -> AddListValue(gettext("USED MINUTE"), "cc_did_destination.secondusedreal", "display_minute");
+$HD_Form -> AddListSqlMapping(gettext("COUNTRY"), "id_cc_country", new Table("cc_country", ["id", "countryname"]));
+$HD_Form -> AddListMapping(gettext("VALIDATED"), "validated", $validated_list);
 
 
 if (isset($form_action) && ($form_action=='ask-edit' || $form_action=='edit')) {

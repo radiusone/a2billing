@@ -49,10 +49,10 @@ $HD_Form = new FormHandler("cc_logpayment", gettext("payment"));
 $HD_Form->list_query_conditions["card_id"] = $_SESSION["card_id"];
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
-$HD_Form -> AddViewElement(gettext("ID"), "cc_logpayment.id");
-$HD_Form -> AddViewElement(gettext("PAYMENT DATE"), "date", true, 30);
-$HD_Form -> AddViewElement(gettext("PAYMENT AMOUNT"), "payment");
-$HD_Form -> AddViewElement(gettext("DESCRIPTION"), "description");
+$HD_Form -> AddListValue(gettext("ID"), "cc_logpayment.id");
+$HD_Form -> AddListValue(gettext("PAYMENT DATE"), "date");
+$HD_Form -> AddListValue(gettext("PAYMENT AMOUNT"), "payment");
+$HD_Form -> AddListValue(gettext("DESCRIPTION"), "description");
 
 $HD_Form -> FieldViewElement ('cc_logpayment.id, date, payment,description ');
 
