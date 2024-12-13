@@ -110,13 +110,13 @@ $HD_Form->AddEditPopup(
     _("Insert the Customer ID")
 );
 
-$comp_date = $form_action === "ask-add" ? date("Y-m-d H:i:s") : "";
+$comp_date = ($form_action === "ask-add") ? "value='" . (new DateTime())->format("Y-m-d H:i:s") . "'" : "";
 
 $HD_Form->AddEditElement(
     _("INVOICE DATE"),
     "date",
     "",
-    "size=40 READONLY maxlength=40  value='$comp_date'",
+    "size=40 READONLY maxlength=40  $comp_date",
     10,
     _("Insert the current date")
 );

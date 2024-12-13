@@ -109,13 +109,13 @@ if (has_rights (Admin::ACX_MODIFY_PAYMENTS)) {
         _("Insert the Customer ID")
     );
 
-    $comp_date = ($form_action === "ask-add") ? (new DateTime())->format("Y-m-d H:i:s") : "";
+    $comp_date = ($form_action === "ask-add") ? "value='" . (new DateTime())->format("Y-m-d H:i:s") . "'" : "";
 
     $HD_Form->AddEditElement(
         _("PAYMENT DATE"),
         "date",
         "",
-        "size=40 maxlength=40 value='$comp_date'",
+        "size=40 maxlength=40 $comp_date",
         10,
         _("Insert the current date")
     );
