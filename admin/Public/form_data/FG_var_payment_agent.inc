@@ -149,7 +149,7 @@ if (has_rights (Admin::ACX_MODIFY_PAYMENTS)) {
         $HD_Form->AddEditRadio(
             _("CREATE ASSOCIATE REFILL"),
             "added_refill",
-            [[_("Yes"), "1"], [_("No"), "0"]],
+            getYesNoList(),
             "0",
             _("Refill card account"),
             "",

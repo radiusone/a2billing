@@ -82,7 +82,7 @@ $HD_Form->AddEditSqlSelect(
 $HD_Form->AddEditRadio(
     _("ACTIVATED"),
     "activated",
-    [[_("Yes"), "1"], [_("No"), "0"]],
+    getYesNoList(),
     "1",
     "",
     "",

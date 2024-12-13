@@ -69,19 +69,19 @@ $HD_Form->AddListActionButton(
 $language_list = getLanguages();
 
 $right_list = [
-    [_("VIEW CUSTOMERS"), Agent::ACX_CUSTOMER],
-    [_("BILLING"), Agent::ACX_BILLING],
-    [_("RATECARD"), Agent::ACX_RATECARD],
-    [_("CALL REPORT"), Agent::ACX_CALL_REPORT],
-    [_("MY ACCOUNT"), Agent::ACX_MYACCOUNT],
-    [_("SUPPORT"), Agent::ACX_SUPPORT],
-    [_("CREATE_CUSTOMER"), Agent::ACX_CREATE_CUSTOMER],
-    [_("EDIT CUSTOMER"), Agent::ACX_EDIT_CUSTOMER],
-    [_("DELETE CUSTOMER"), Agent::ACX_DELETE_CUSTOMER],
-    [_("GENERATE CUSTOMER"), Agent::ACX_GENERATE_CUSTOMER],
-    [_("SIGNUP"), Agent::ACX_SIGNUP],
-    [_("VOIP CONF"), Agent::ACX_VOIPCONF],
-    [_("SEE CUSTOMERS CALLERID"), Agent::ACX_SEE_CUSTOMERS_CALLERID],
+    Agent::ACX_CUSTOMER => _("VIEW CUSTOMERS"),
+    Agent::ACX_BILLING => _("BILLING"),
+    Agent::ACX_RATECARD => _("RATECARD"),
+    Agent::ACX_CALL_REPORT => _("CALL REPORT"),
+    Agent::ACX_MYACCOUNT => _("MY ACCOUNT"),
+    Agent::ACX_SUPPORT => _("SUPPORT"),
+    Agent::ACX_CREATE_CUSTOMER => _("CREATE_CUSTOMER"),
+    Agent::ACX_EDIT_CUSTOMER => _("EDIT CUSTOMER"),
+    Agent::ACX_DELETE_CUSTOMER => _("DELETE CUSTOMER"),
+    Agent::ACX_GENERATE_CUSTOMER => _("GENERATE CUSTOMER"),
+    Agent::ACX_SIGNUP => _("SIGNUP"),
+    Agent::ACX_VOIPCONF => _("VOIP CONF"),
+    Agent::ACX_SEE_CUSTOMERS_CALLERID => _("SEE CUSTOMERS CALLERID"),
 ];
 
 $len_right_list = count($right_list);
@@ -153,7 +153,7 @@ if ($popup_select) {
     $HD_Form->AddEditRadio(
         _("ACTIVE"),
         "active",
-        [[_("Yes"), "1"], [_("No"), "0"]],
+        getYesNoList(),
         "1",
         _("Enable agent"), "",
         _("Choose if you want to active this agent")

@@ -52,7 +52,7 @@ $HD_Form->FG_FK_TABLENAMES = ["cc_ticket"];
 $HD_Form->FG_FK_EDITION_CLAUSE = ["id_component"];
 $HD_Form->FG_FK_DELETE_MESSAGE = _("You have some tickets using this Support Component! Please comfirm that you really want to remove this Support Component? ");
 
-$user_type = [[_("CUSTOMERS"), "0"], [_("AGENTS"), "1"], [_("CUSTOMERS AND AGENTS"),  "2"],];
+$user_type = [_("CUSTOMERS"), _("AGENTS"), _("CUSTOMERS AND AGENTS")];
 $activated_list = getActivationList();
 
 $HD_Form->AddListValue(_("ID"), "id");

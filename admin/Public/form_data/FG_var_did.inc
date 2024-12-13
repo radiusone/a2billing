@@ -147,7 +147,7 @@ $HD_Form->AddEditSqlSelect(_("COUNTRY"), "id_cc_country", "cc_country", "country
 $HD_Form->AddEditRadio(
     gettext("ACTIVATED"),
     "activated",
-    $yesno,
+    getYesNoList(),
     "1",
     "",
     "",

@@ -59,12 +59,9 @@ $HD_Form->FG_FK_EDITION_CLAUSE = ["tariff"];
 $HD_Form->FG_FK_DELETE_MESSAGE = _("You have some cards using this Call Plan! Please comfirm that you really want to remove this Call Plan ? ");
 
 // LCD :the cheapest Provider for a given destination number
-$lcrtype_list = [[_("LCR : According to the buyer price"), 0], [_("LCD : According to the seller price"), 1]];
-$lcrtype_list_short = [[_("LCR : buyer price"), 0], [_("LCD : seller price"), 1]];
-$inter_prefix_list_short = [
-    [_("Keep prefix"), 0],
-    [_("Remove prefix"), 1],
-];
+$lcrtype_list = [_("LCR : According to the buyer price"), _("LCD : According to the seller price")];
+$lcrtype_list_short = [_("LCR : buyer price"), _("LCD : seller price")];
+$inter_prefix_list_short = [_("Keep prefix"), _("Remove prefix")];
 
 $HD_Form->AddListValue(_("ID"), "id");
 $HD_Form->AddListValue(_("Name"), "tariffgroupname");
@@ -127,7 +124,7 @@ $HD_Form->AddEditSqlSelect(
 $HD_Form->AddEditRadio(
     _("REMOVE INTER PREFIX"),
     "removeinterprefix",
-    [[_("Yes"), "1"], [_("No"), "0"]],
+    getYesNoList(),
     "0",
     _("Remove the international access prefix (00 or 011) before matching the dialled digits with the rate card. E.G. If the dialled digits were 0044 for a call to the UK, only 44 would be delivered."),
     "",

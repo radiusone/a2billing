@@ -60,41 +60,12 @@ $HD_Form->init();
 
 $HD_Form->search_session_key = "entity_archiving_selection";
 
-$language_list = [
-    ["en", _("ENGLISH")],
-    ["es", _("SPANISH")],
-    ["fr", _("FRENCH")],
-];
-
-$simultaccess_list = [0, [_("INDIVIDUAL ACCESS")], [1, _("SIMULTANEOUS ACCESS")]];
-
-$currency_list = [];
-$currency_list_key = [];
-$currencies_list = get_currencies();
-foreach ($currencies_list as $key => $cur_value) {
-    $currency_list[$key]  = [$key, $cur_value["name"]];
-    $currency_list_key[$key][0] = $key;
-}
-
-$cardstatus_list = [
-    [0, _("CANCELLED")],
-    [1, _("ACTIVE")],
-    [2, _("NEW")],
-    [3, _("WAITING-MAILCONFIRMATION")],
-    [4, _("RESERVED")],
-    [5, _("EXPIRED")],
-];
-
-$cardstatus_list_acronym = [
-    [abbr(_("CANC"), _("CANCELLED")), "0"],
-    [abbr(_("ACT"), _("ACTIVE")), "1"],
-    [_("NEW"), "2"],
-    [abbr(_("WAIT"), _("WAITING-MAILCONFIRMATION")), "3"],
-    [abbr(_("RES"), _("RESERVED")), "4"],
-    [abbr(_("EXP"), _("EXPIRED")), "5"],
-];
-
-$yesno =[1 => [_("Yes"), "1"], 0 => [_("No"), "0"]];
+$language_list = getLanguages();
+$simultaccess_list = getCardAccess_List();
+$currency_list = getCurrenciesList();
+$cardstatus_list = getCardStatus_List();
+$cardstatus_list_acronym = getCardStatus_Acronym_List();
+$yesno_list = getYesNoList();
 
 $HD_Form->AddListValue(_("ID"), "id");
 $HD_Form->AddListValue(_("Account number"), "username", "display_customer_link");
@@ -103,9 +74,9 @@ $HD_Form->AddListValue(_("Last name"), "lastname");
 $HD_Form->AddListMapping(_("Status"), "status", $cardstatus_list_acronym);
 $HD_Form->AddListValue(abbr(_("Lang"), _("Language")), "language");
 $HD_Form->AddListValue(_("In use"), "inuse");
-$HD_Form->AddListMapping(abbr(_("Cur"), _("Currency")), "currency", $currency_list_key);
-$HD_Form->AddListMapping(_("SIP"), "sip_buddy", $yesno);
-$HD_Form->AddListMapping(_("IAX"), "iax_buddy", $yesno);
+$HD_Form->AddListMapping(abbr(_("Cur"), _("Currency")), "currency", $currency_list);
+$HD_Form->AddListMapping(_("SIP"), "sip_buddy", $yesno_list);
+$HD_Form->AddListMapping(_("IAX"), "iax_buddy", $yesno_list);
 $HD_Form->AddListValue(abbr(_("Num"), _("Number of calls")), "nbused");
 $HD_Form->FieldViewElement([
     "id",

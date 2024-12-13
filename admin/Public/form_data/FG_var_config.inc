@@ -75,13 +75,13 @@ if ($form_action === "list") {
             ->getRow($HD_Form->DBHandle, ["id" => $id]);
         switch ($result["config_valuetype"]) {
             case 2:
-                $value_select = array_map(
-                    fn($v) => [$v, $v],
+                $value_select = array_combine(
+                    explode(",", $result["config_listvalues"]),
                     explode(",", $result["config_listvalues"])
                 );
                 break;
             case 1:
-                $value_select = [["Yes", 1], ["No", 0]];
+                $value_select = getYesNoList();
                 break;
             default:
                 $value_select = null;
@@ -146,7 +146,7 @@ if (is_array($value_select)) {
 $HD_Form->AddEditSelect(
     _("TYPE"),
     "config_valuetype",
-    [["Plain value", 0], ["Yes/No value", 1], ["Selectable list", 2]],
+    [_("Plain value"), _("Yes/No value"), _("Selectable list")],
 );
 
 $HD_Form->AddEditElement(

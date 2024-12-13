@@ -48,34 +48,34 @@ $HD_Form->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form->FG_LIST_ADDING_BUTTON_MSG1 = _(
 $HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("cog_add.png") ;
 
 $period_list = array_map(
-    fn ($v) => [sprintf(_("Every %d days"), $v), $v],
+    fn ($v) => sprintf(_("Every %d days"), $v),
     array_combine(range(1, 60), range(1, 60))
 );
-$period_list[1][0]  = _("Daily");
+$period_list[1]  = _("Daily");
 
 $actived_list = getActivationList();
 
 $rule_list = [
-    [_("No rule"), 0],
-    [_("Apply service if card not used in last X days"), 1],
-    [_("Apply service if card has been used in the last X Days"), 2],
-    [_("Apply Service every Y days"), 3]
+    _("No rule"),
+    _("Apply service if card not used in last X days"),
+    _("Apply service if card has been used in the last X Days"),
+    _("Apply Service every Y days"),
 ];
 
 $stopmode_list = [
-    [_("Never"), 0],
-    [_("Account balance below zero"), 1],
-    [_("Max number of cycle reach"), 2],
+    _("Never"),
+    _("Account balance below zero"),
+    _("Max number of cycle reach"),
 ];
 
 $operatemode_list = [
-    [_("Allow be charged into negative balance"), 0],
-    [_("Do partial charge but never go into negative balance"), 1],
+    _("Allow be charged into negative balance"),
+    _("Do partial charge but never go into negative balance"),
 ];
 
 $usegroup_list = [
-    [_("List of groups below"), 0],
-    [_("Any group"), 1],
+    _("List of groups below"),
+    _("Any group"),
 ];
 
 $HD_Form->AddListValue(_("Name"), "name");

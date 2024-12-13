@@ -77,7 +77,7 @@ $HD_Form->AddEditElement(
 $HD_Form->AddEditRadio(
     _("ACTIVATED"),
     "activated",
-    [[_("Yes"), "t"], [_("No"), "f"]],
+    getActivationTrueFalseList(),
     "t",
     "",
     "",

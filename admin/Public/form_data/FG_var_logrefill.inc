@@ -145,7 +145,7 @@ if (has_rights (Admin::ACX_MODIFY_REFILLS)) {
         $HD_Form->AddEditRadio(
             _("CREATE ASSOCIATE INVOICE"),
             "added_invoice",
-            [[_("Yes"), "1"], [_("No"), "0"]],
+            getYesNoList(),
             "1",
             "",
             "",

@@ -51,10 +51,7 @@ $HD_Form -> FG_TABLE_DEFAULT_ORDER = " creationdate";
 $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
 
-$speeddial_list = array();
-for ($k=0;$k<=9;$k++)
-	$speeddial_list["$k"]  = array( "$k", "$k");
-
+$speeddial_list = range(0, 9);
 
 $HD_Form -> AddListValue(gettext("SPEEDDIAL"), "speeddial");
 $HD_Form -> AddListValue(gettext("PHONE"), "phone");

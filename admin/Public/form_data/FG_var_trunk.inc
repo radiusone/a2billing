@@ -213,7 +213,7 @@ $HD_Form->AddEditElement(
 $HD_Form->AddEditSelect(
     _("IFMAXUSED"),
     "if_max_use",
-    [[_("Use failover trunk"), 0], [_("Use next trunk"), 1]],
+    [_("Use failover trunk"), _("Use next trunk")],
     "",
     _("Specifies which trunk to use when the maximum number of connections is reached")
 );

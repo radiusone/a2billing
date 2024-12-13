@@ -113,21 +113,12 @@ $table_key = new Table("cc_agent_signup", "*");
 //end check subscriber
 
 $currency_list = array ();
-$currency_list_r = array ();
 $indcur = 0;
 
 $currencies_list = get_currencies();
 
 foreach ($currencies_list as $key => $cur_value) {
-	$currency_list[$key] = array (
-		$cur_value["name"] . ' (' . $cur_value["value"] . ')',
-		$key
-	);
-	$currency_list_r[$key] = array (
-		$key,
-		$cur_value["name"]
-	);
-	$currency_list_key[$key][0] = $key;
+	$currency_list[$key] = $cur_value["name"] . ' (' . $cur_value["value"] . ')';
 }
 
 $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 10;

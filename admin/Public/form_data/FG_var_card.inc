@@ -102,14 +102,8 @@ $discount_list = getDiscount_List();
 $simultaccess_list = getCardAccess_List();
 $limits_notify_list = getLimitNotify_List($A2B);
 
-$currency_list = [];
-$currency_list_r = [];
-
-$currencies_list = get_currencies();
-foreach ($currencies_list as $key => $cur_value) {
-    $currency_list[$key]  = ["$cur_value[name] ($cur_value[value])", $key];
-    $currency_list_r[$key] = [$key, $cur_value["name"]];
-}
+$currency_list = get_currencies();
+array_walk($currency_list, fn (&$v) => $v = "$v[name] ($v[value])");
 
 $restriction_list = getRestrictionList();
 $cardstatus_list = getCardStatus_List();
@@ -267,7 +261,7 @@ if ($popup_select) {
     $HD_Form->AddSearchSelectInput(_("SELECT STATUS"), "status", $cardstatus_list);
     $HD_Form->AddSearchSelectInput(_("SELECT ACCESS"), "simultaccess", $simultaccess_list);
     $HD_Form->AddSearchSqlSelectInput(_("SELECT GROUP"), "cc_card_group", "id, name", "", "name", "ASC", "id_group");
-    $HD_Form->AddSearchSelectInput(_("SELECT CURRENCY"), "currency", $currency_list_r);
+    $HD_Form->AddSearchSelectInput(_("SELECT CURRENCY"), "currency", getCurrenciesList());
     $HD_Form->AddSearchSelectInput(_("SELECT PAYMENT TYPE"), "typepaid", $typepaid_list);
 
     $HD_Form->FG_ENABLE_INFO_BUTTON = true;
@@ -580,7 +574,7 @@ if ($popup_select) {
     $HD_Form->AddEditRadio(
         _("LOCK"),
         "block",
-        [[_("Yes"), "1"], [_("No"), "0"]],
+        getYesNoList(),
         "0",
         _("Enable lock for this account."), "",
         _("Choose if you want to enable the lock on this account")
@@ -608,7 +602,7 @@ if ($popup_select) {
     $HD_Form->AddEditRadio(
         _("RUN SERVICE"),
         "runservice",
-        [[_("Yes"), "1"], [_("No"), "0"]],
+        getYesNoList(),
         "0",
         _("Apply recurring service to this account."), "",
         _("Choose if you want to enable the service recurring on this account")
@@ -638,7 +632,7 @@ if ($popup_select) {
     $HD_Form->AddEditRadio(
         _("PERMITTED NOTIFICATIONS BY MAIL"),
         "notify_email",
-        [[_("Yes"), "1"], [_("No"), "0"]],
+        getYesNoList(),
         "0",
         _("Enable the notification by mail for this account."), "",
         _("Choose if you want to enable the notification by email for this account")
@@ -716,7 +710,7 @@ if ($popup_select) {
         $HD_Form->AddEditRadio(
             _("CREATE SIP CONFIG"),
             "sip_buddy",
-            [[_("Yes"), "1"], [_("No"), "0"]],
+            getYesNoList(),
             "0",
             _("Create the SIP config automatically"),
             "",
@@ -728,7 +722,7 @@ if ($popup_select) {
         $HD_Form->AddEditRadio(
             _("CREATE IAX CONFIG"),
             "iax_buddy",
-            [[_("Yes"), "1"], [_("No"), "0"]],
+            getYesNoList(),
             "0",
             _("Create the IAX config automatically"),
             "",
@@ -774,7 +768,7 @@ if ($popup_select) {
     $HD_Form->AddEditRadio(
         _("AUTOREFILL"),
         "autorefill",
-        [[_("Yes"), "1"], [_("No"), "0"]],
+        getYesNoList(),
         "0",
         _("Define if you want to authorize the autorefill to apply on this accout"),
         "",

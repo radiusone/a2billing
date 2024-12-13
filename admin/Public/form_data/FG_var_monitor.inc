@@ -43,8 +43,8 @@ $HD_Form = new FormHandler("cc_monitor", _("Monitoring"));
 $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("map.png") ;
 
-$mquery_type_list = [[], [_("SQL"), "1"], [_("SHELL SCRIPT"), "2"]];
-$mresult_type_list = [[], [_("TEXT2SPEECH"), "1"], [_("UNIXTIME"), "2"], [_("NUMBER"), "3"], [_("DIGIT"), "4"]];
+$mquery_type_list = [1 => _("SQL"), 2 => _("SHELL SCRIPT")];
+$mresult_type_list = [1 => _("TEXT2SPEECH"), 2 => _("UNIXTIME"), 3 => _("NUMBER"), 4 => _("DIGIT")];
 $actived_list = getActivationList() ;
 
 $HD_Form->AddListValue(_("Label"), "label");

@@ -74,28 +74,11 @@ $HD_Form = new FormHandler("cc_card", "Card");
 $HD_Form -> search_session_key = 'entity_card_selection_mail';
 $HD_Form -> init();
 $instance_cus_table = new Table("cc_card", "id, email, credit, currency, lastname, firstname, loginkey, username, useralias, uipass");
-$cardstatus_list_r = array();
-$cardstatus_list_r["0"]  = array("0", gettext("CANCELLED"));
-$cardstatus_list_r["1"]  = array("1", gettext("ACTIVE"));
-$cardstatus_list_r["2"]  = array("2", gettext("NEW"));
-$cardstatus_list_r["3"]  = array("3", gettext("WAITING-MAILCONFIRMATION"));
-$cardstatus_list_r["4"]  = array("4", gettext("RESERVED"));
-$cardstatus_list_r["5"]  = array("5", gettext("EXPIRED"));
 
-$currency_list_r = array();
-$currencies_list = get_currencies();
-foreach ($currencies_list as $key => $cur_value) {
-    $currency_list_r[$key]  = array( $key, $cur_value["name"]);
-}
-
-$simultaccess_list_r = array();
-$simultaccess_list_r["0"] = array( "0", gettext("INDIVIDUAL ACCESS"));
-$simultaccess_list_r["1"] = array( "1", gettext("SIMULTANEOUS ACCESS"));
-
-$language_list_r = array();
-$language_list_r["0"] = array("en", gettext("ENGLISH"));
-$language_list_r["1"] = array("es", gettext("SPANISH"));
-$language_list_r["2"] = array("fr", gettext("FRENCH"));
+$cardstatus_list = getCardStatus_List();
+$currencies_list = getCurrenciesList();
+$simultaccess_list = getCardAccess_List();
+$language_list = getLanguages();
 
 $HD_Form -> search_form_enabled = true;
 $HD_Form -> search_form_title = gettext('Define specific criteria to search for cards created.');
@@ -109,11 +92,11 @@ $HD_Form -> AddSearchComparisonInput(gettext("CUSTOMER ID (SERIAL)"),'id1','id1t
 $HD_Form -> AddSearchComparisonInput(gettext("CREDIT"),'credit1','credit1type','credit2','credit2type','credit');
 $HD_Form -> AddSearchComparisonInput(gettext("INUSE"),'inuse1','inuse1type','inuse2','inuse2type','inuse');
 
-$HD_Form -> AddSearchSelectInput(gettext("SELECT LANGUAGE"), "language", $language_list_r);
+$HD_Form -> AddSearchSelectInput(gettext("SELECT LANGUAGE"), "language", $language_list);
 $HD_Form -> AddSearchSqlSelectInput(gettext("SELECT TARIFF"), "cc_tariffgroup", "id, tariffgroupname, id", "", "tariffgroupname", "ASC", "tariff");
-$HD_Form -> AddSearchSelectInput(gettext("SELECT STATUS"), "status", $cardstatus_list_r);
-$HD_Form -> AddSearchSelectInput(gettext("SELECT ACCESS"), "simultaccess", $simultaccess_list_r);
-$HD_Form -> AddSearchSelectInput(gettext("SELECT CURRENCY"), "currency", $currency_list_r);
+$HD_Form -> AddSearchSelectInput(gettext("SELECT STATUS"), "status", $cardstatus_list);
+$HD_Form -> AddSearchSelectInput(gettext("SELECT ACCESS"), "simultaccess", $simultaccess_list);
+$HD_Form -> AddSearchSelectInput(gettext("SELECT CURRENCY"), "currency", $currencies_list);
 $HD_Form -> prepare_list_subselection('list');
 $nb_customer = 0;
 

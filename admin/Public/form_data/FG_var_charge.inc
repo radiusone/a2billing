@@ -67,10 +67,10 @@ $HD_Form_c->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("add.png") ;
 
 // -- chargetype : 1 - connection charge for DID setup, 2 - Montly charge for DID use, 3 - Subscription fee, 4 - Extra Charge, etc...
 $chargetype_list = [
-    1 => [_("Connection charge for DID setup"), "1"],
-    2 => [_("Monthly Charge for DID use"), "2"],
-    3 => [_("Subscription fee"), "3"],
-    4 => [_("Extra charge"), "4"],
+    1 => _("Connection charge for DID setup"),
+    2 => _("Monthly Charge for DID use"),
+    3 => _("Subscription fee"),
+    4 => _("Extra charge"),
 ];
 
 $HD_Form_c->AddListSqlMapping(_("Account holder"), "id_cc_card", new Table("cc_card", ["id", "CONCAT(lastname, ' ', firstname)"]));

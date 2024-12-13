@@ -55,10 +55,7 @@ $HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
 $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("page_white_add.png") ;
 
-$speeddial_list = array_map(
-    fn($v) => [$v, $v],
-    array_combine(range(0, 9), range(0, 9))
-);
+$speeddial_list = range(0, 9);
 
 $HD_Form->AddListValue(_("Speed dial"), "speeddial");
 $HD_Form->AddListValue(_("Phone number"), "phone");

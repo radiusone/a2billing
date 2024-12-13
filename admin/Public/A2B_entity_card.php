@@ -195,7 +195,7 @@ function sendValue(selvalue, othervalue) {
     $list_seria = $result ? $result->GetAll() : [];
 
     $list_refill_type = getRefillType_List();
-    $list_refill_type["-1"] = ["NO REFILL", "-1"];
+    $list_refill_type[-1] = _("NO REFILL");
 
     $result = $HD_Form->DBHandle->CacheExecute(300, "SELECT countrycode, countryname FROM cc_country ORDER BY countryname");
     $list_country = $result ? $result->GetAll() : [];

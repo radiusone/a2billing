@@ -44,10 +44,8 @@ Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 $HD_Form = new FormHandler("cc_voucher", _("Voucher"));
 
 $currency_list = getCurrenciesList();
-$currency_list_r = array_map("array_reverse", $currency_list);
 $actived_list = getActivationTrueFalseList();
-$used_list = [[_("NOT USED"), "0"], [_("USED"), "1"]];
-$used_list_r = array_map("array_reverse", $used_list);
+$used_list = [_("NOT USED"), _("USED")];
 
 $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("add.png") ;
@@ -91,8 +89,8 @@ $HD_Form->AddSearchTextInput(_("Tag"), "tag");
 $HD_Form->AddSearchComparisonInput(_("Credit"), "credit1", "credit1type", "credit2", "credit2type", "credit");
 
 $HD_Form->AddSearchSelectInput(_("Status"), "activated", $actived_list);
-$HD_Form->AddSearchSelectInput(_("Used"), "used", $used_list_r);
-$HD_Form->AddSearchSelectInput(_("Currency"), "currency", $currency_list_r);
+$HD_Form->AddSearchSelectInput(_("Used"), "used", $used_list);
+$HD_Form->AddSearchSelectInput(_("Currency"), "currency", $currency_list);
 
 $HD_Form->export_session_key = "pr_export_entity_voucher";
 $HD_Form->FG_EXPORT_FIELD_LIST = explode(",", $A2B->config['webui']['voucher_export_field_list']);
@@ -142,7 +140,7 @@ $HD_Form->AddEditElement(
 $HD_Form->AddEditRadio(
     _("ACTIVATED"),
     "activated",
-    [[_("Yes"), "t"], [_("No"), "f"]],
+    getActivationTrueFalseList(),
     "t",
     "", "",
     _("Choose if you want to activate this card")

@@ -46,14 +46,14 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_alarm.php?form_action=ask-a
 $HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = _("Add Alarm");
 $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("bell_add.png") ;
 
-$period_list = [1 => ["Hourly", "1"], 2 => ["Daily", "2"], 3 => ["Weekly", "3"], 4 => ["Monthly", "4"]];
-$actived_list = getActivationList() ;
+$period_list = [1 => _("Hourly"), 2 => _("Daily"), 3 => _("Weekly"), 4 => _("Monthly")];
+$actived_list = getActivationList();
 $type_list = [
-    1 => [_("Apply alarm on ALOC too low or too high"), 1],
-    2 => [_("Apply alarm on ASR too low or too high"), 2],
-    3 => [_("Apply alarm on CIC too many"), 3],
+    1 => _("Apply alarm on ALOC too low or too high"),
+    2 => _("Apply alarm on ASR too low or too high"),
+    3 => _("Apply alarm on CIC too many"),
 ];
-$daynumber_list = array_combine(range(1, 20), range(1, 20));
+$daynumber_list = getInvoiceDay_List();
 
 $HD_Form->AddListValue(_("NAME"), "name");
 $HD_Form->AddListMapping(_("PERIOD"), "periode", $period_list);

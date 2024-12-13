@@ -63,14 +63,12 @@ $billingtype_list = getBillingTypeList();
 // -- billtype: 0 = fix per month + dialoutrate, 1= fix per month, 2 = dialoutrate, 3 = free
 $billingtype_list_short = getBillingTypeShortList();
 
-$priority_list = array();
-for ($k=1;$k<=5;$k++) {
-    $priority_list["$k"]  = array( "Priority : $k", "$k");
-}
+$priority_list = array_combine(
+    range(1, 5),
+    array_map(fn ($v) => sprintf(_("Priority : %d"), $v), range(1, 5))
+);
 
-$validated_list = array();
-$validated_list["0"] = array( gettext("Pending"), "0");
-$validated_list["1"] = array( gettext("Validated"), "1");
+$validated_list = [gettext("Pending"), gettext("Validated")];
 
 $HD_Form -> AddListValue(gettext("DESTINATION"), "destination");
 $HD_Form -> AddListSqlMapping(gettext("DID"), "id_cc_did", new Table("cc_did", ["id", "did"]));
@@ -144,7 +142,7 @@ if (isset($form_action) && ($form_action=='ask-edit')) {
 $HD_Form->AddEditRadio(
     gettext("ACTIVATED"),
     "activated",
-    [[gettext("Yes"), "1"], [gettext("No"), "0"]],
+    getYesNoList(),
     "1",
     "", "",
     gettext("Choose if you want to activate this card")
@@ -155,7 +153,7 @@ $HD_Form->AddEditSelect(gettext("PRIORITY"), "priority", $priority_list);
 $HD_Form->AddEditRadio(
     gettext("VOIP CALL"),
     "voip_call",
-    [[gettext("Yes"), "1"], [gettext("No"), "0"]],
+    getYesNoList(),
     "1",
     "", "",
     gettext("Choose if you want to not use the trunk and let the asterisk call directly the destination (ie, Destination : SIP/jeremy@182.212.1.45)")

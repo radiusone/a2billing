@@ -96,18 +96,16 @@ $HD_Form = new FormHandler(
 );
 $HD_Form->init();
 
-$currencies_list = array_map(fn ($v) => array_reverse($v), getCurrenciesList());
 $dialstatus_list = getDialStatusList();
-$yesno = getYesNoList();
 $calltype_list = [
-    [0, _("STANDARD")],
-    [1, _("SIP/IAX")],
-    [2, _("DIDCALL")],
-    [3, _("DID_VOIP")],
-    [4, _("CALLBACK")],
-    [5, _("PREDICT")],
-    [6, _("AUTO DIALER")],
-    [7, _("DID-ALEG")],
+    _("STANDARD"),
+    _("SIP/IAX"),
+    _("DIDCALL"),
+    _("DID_VOIP"),
+    _("CALLBACK"),
+    _("PREDICT"),
+    _("AUTO DIALER"),
+    _("DID-ALEG"),
 ];
 
 $HD_Form->FG_QUERY_COLUMN_LIST = [

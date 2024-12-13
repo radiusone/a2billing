@@ -86,7 +86,7 @@ $HD_Form->AddEditSelect(
 $HD_Form->AddEditRadio(
     gettext("PERMITTED NOTIFICATIONS BY MAIL"),
     "notify_email",
-    [["Yes", "1"], ["No", "0"]],
+    getYesNoList(),
     "0",
     gettext("Enable Email Notification"), "",
     gettext("Choose if you want to enable the notification by email for this card")
