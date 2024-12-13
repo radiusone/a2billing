@@ -163,12 +163,12 @@ $("#delall").on("click", e => self.location.href= "A2B_package_manage_rates.php?
     </tr>
     <tr>
             <td colspan="2">
-            <?php echo gettext("PACKAGE TYPE"); ?>&nbsp;:&nbsp;<?php $pck_type = getPackagesTypeList(); echo $pck_type[$result_pack[0]['packagetype']][0]; ?>
+            <?php echo gettext("PACKAGE TYPE"); ?>&nbsp;:&nbsp;<?php $pck_type = getPackagesTypeList(); echo $pck_type[$result_pack[0]['packagetype']]; ?>
         </td>
     </tr>
     <tr>
             <td colspan="2">
-            <?php echo gettext("NUMBER"); ?>&nbsp;:&nbsp;<?php echo $result_pack[0]['freetimetocall']; ?>&nbsp;<?php $pck_type = getPackagesTypeList(); echo $pck_type[$result_pack[0]['packagetype']][0]; ?>&nbsp;<?php echo gettext('per') ?>
+            <?php echo gettext("NUMBER"); ?>&nbsp;:&nbsp;<?php echo $result_pack[0]['freetimetocall']; ?>&nbsp;<?php $pck_type = getPackagesTypeList(); echo $pck_type[$result_pack[0]['packagetype']]; ?>&nbsp;<?php echo gettext('per') ?>
                 <?php if($result_pack[0]['billingtype']==0) echo gettext("month"); else echo gettext("week"); ?>
             </td>
     </tr>

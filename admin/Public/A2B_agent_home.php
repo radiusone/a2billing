@@ -148,6 +148,7 @@ $messages = $DBHandle->GetRow("SELECT * FROM cc_message_agent WHERE id_agent = ?
 
 require_once __DIR__ . "/../templates/main.php";
 $message_types = getMsgTypeList();
+$message_classes = ["msg_info", "msg_success", "msg_warning", "msg_error"];
 ?>
 
 <form action="<?php echo '?id='.$id ?>" method="post" >
@@ -169,8 +170,8 @@ $message_types = getMsgTypeList();
                 <font style="font-weight:bold; " ><?php echo gettext("TYPE : "); ?></font>
                 <select name="type">
                  <?php
-                 foreach ($message_types as $msg_type) { ?>
-                    <option value="<?php echo $msg_type[1];?>" <?php if($type==$msg_type[1]) echo "selected"?> > <?php echo $msg_type[0];?></option>
+                 foreach ($message_types as $k=>$msg_type) { ?>
+                    <option value="<?php echo $k;?>" <?php if($type==$k) echo "selected"?> > <?php echo $msg_type;?></option>
                     <?php
                      }
                   ?>
@@ -200,7 +201,7 @@ if (!is_array($messages)) { ?>
 <?php
 foreach ($messages as $message) {
     ?>
-    <div id="msg" class="<?php echo $message_types[$message['type']][2];?>" style="margin-top:0px;position:relative;<?php if($message['logo']==0)echo 'background-image:none;padding-left:10px;'; ?>" >
+    <div id="msg" class="<?php echo $message_classes[$message['type']];?>" style="margin-top:0px;position:relative;<?php if($message['logo']==0)echo 'background-image:none;padding-left:10px;'; ?>" >
         <?php if ($message['order_display']>0) { ?>
             <img id="<?php echo $message['id']; ?>" class="up" src="<?= get_image_path("arrow_up.png") ?>"  border="0" style="position:absolute;right:60px;top:0;display:none;cursor:pointer"/>
          <?php } ?>

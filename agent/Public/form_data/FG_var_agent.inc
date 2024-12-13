@@ -47,7 +47,7 @@ $HD_Form = new FormHandler("cc_agent", $FG_INSTANCE_NAME);
 
 $HD_Form->update_query_conditions = ["id" => $_SESSION["agent_id"]];
 
-$language_list = getLanguagesList();
+$language_list = getLanguages();
 
 $yesno = getYesNoList();
 

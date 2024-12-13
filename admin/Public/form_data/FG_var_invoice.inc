@@ -102,8 +102,7 @@ $HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("money.png") ;
 
 $status_list = getInvoiceStatusList();
 $paid_status_list = getInvoicePaidStatusList();
-$paid_status_list_r = array_map("array_reverse", $paid_status_list);
-$typepaid_list_r = array_map("array_reverse", getPaidTypeList());
+$typepaid_list = getPaidTypeList();
 $invoiceday_list = getInvoiceDay_List();
 
 $HD_Form->AddListValue(_("ID"), "cc_invoice.id");
@@ -140,10 +139,10 @@ if (!$popup_select) {
 
     $HD_Form->AddSearchComparisonInput(_("AMOUNT INCL VAT"), 'total_price1', 'total_price1type', 'total_price2', 'total_price2type', 'total_price');
 
-    $HD_Form->AddSearchSelectInput(_("PAYMENT TYPE"), "typepaid", $typepaid_list_r);
+    $HD_Form->AddSearchSelectInput(_("PAYMENT TYPE"), "typepaid", $typepaid_list);
     $HD_Form->AddSearchSqlSelectInput(_("CALL PLAN"), "cc_tariffgroup", "id, tariffgroupname", "", "tariffgroupname", "ASC", "tariff");
     $HD_Form->AddSearchSelectInput(_("INVOICE DAY"), "invoiceday", $invoiceday_list);
-    $HD_Form->AddSearchSelectInput(_("PAID STATUS"), "paid_status", $paid_status_list_r);
+    $HD_Form->AddSearchSelectInput(_("PAID STATUS"), "paid_status", $paid_status_list);
 }
 
 $HD_Form->AddEditPopup(

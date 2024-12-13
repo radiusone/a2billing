@@ -46,10 +46,8 @@ $HD_Form = new FormHandler("cc_voucher", _("Voucher"));
 $currency_list = getCurrenciesList();
 $currency_list_r = array_map("array_reverse", $currency_list);
 $actived_list = getActivationTrueFalseList();
-$actived_list_r = array_map("array_reverse", $actived_list);
 $used_list = [[_("NOT USED"), "0"], [_("USED"), "1"]];
 $used_list_r = array_map("array_reverse", $used_list);
-$yesno = getYesNoList();
 
 $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("add.png") ;
@@ -92,7 +90,7 @@ $HD_Form->AddSearchTextInput(_("Card number"), "usedcardnumber");
 $HD_Form->AddSearchTextInput(_("Tag"), "tag");
 $HD_Form->AddSearchComparisonInput(_("Credit"), "credit1", "credit1type", "credit2", "credit2type", "credit");
 
-$HD_Form->AddSearchSelectInput(_("Status"), "activated", $actived_list_r);
+$HD_Form->AddSearchSelectInput(_("Status"), "activated", $actived_list);
 $HD_Form->AddSearchSelectInput(_("Used"), "used", $used_list_r);
 $HD_Form->AddSearchSelectInput(_("Currency"), "currency", $currency_list_r);
 

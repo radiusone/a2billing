@@ -97,13 +97,10 @@ if (!$popup_select && (is_admin() || has_rights(Agent::ACX_CREATE_CUSTOMER))) {
     $HD_Form->FG_LIST_ADDING_BUTTON_IMG2 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJ8SURBVDjLpZB/SFNRFMftj5IiW9saIQjGQrBiUagEFWLDydrUhAWzNNuWTZ1oKIUzf4RlzZY6sWyrLZXhfFszQ1eac2SQkYWW0yH0l1AWITSw1IXK+/beK0RBptCFD+fcyz2fc+4NARDyP6x5qInbVVEn5sw2SHdCL2ahQsiey4jhVW9IkBPDKbmfyibN6Rw8oLgrY0MnYaEofgcpPcitWldglLLQQhXqqSKdlIaNm8k8XDnBQWYMa2ZdgS5+O14YyzHVq8eQpQiFCTwUJ4YjX8SH+hh7wapNCQ0qMGdF/gh8/4SZN0Z87a+H13ENk89vwz85AiJ378xYq2ZLUEFjxv5B//t2TA87MT9KUNiZ3D9C4KFKMBz0Cbults1RxzVWoiAWv4ctCPieMsx/tKHzciwE8blPeCLz1jUFPAkRyhW35UWIPfB9noWjLBX2shQGOn898QsRSS/BET66xBWatq0ScE86NoUlORSRyYOYmJpH2xRQ7APy3gEXXgHnewCtsxPFRgXU9acgvyEMiEsOVS4LDsia0xJP6+EcWoLJCxS8JZE7QCK7j0RWFwmlmUCVU4lnviaMfnPD0K+B3CDAkfzwWkbwoTx6adqlxb1mFxS9VFeqo7KbxLkOEmdsVKyRoGu8AV0TjaBXreciDJ4cWhBgBN6KfaTffR3p6hZU988howM4aycht5KQWUgklx1Gj8+Clat7rIkW/P2IcWtB6Uhp1KJSeWsxTjEAJTW6agVHC/m441ZB51Ywxbo+xeoJaCbteWGVV6u5e9JcpsiE1i980eM5flLHAj/RuSCQZy7KaqNR585mOtOR3i//wUagLtdQ/KTH/hdr6PM/RhGjA91Gi1AAAAAASUVORK5CYII=";
 }
 
-$language_list = getLanguagesList();
-$language_list_r = array_map("array_reverse", $language_list);
+$language_list = getLanguages();
 $discount_list = getDiscount_List();
 $simultaccess_list = getCardAccess_List();
-$simultaccess_list_r = array_map("array_reverse", $simultaccess_list);
 $limits_notify_list = getLimitNotify_List($A2B);
-array_unshift($limits_notify_list, [_("NOT DEFINED"), -1]);
 
 $currency_list = [];
 $currency_list_r = [];
@@ -116,9 +113,7 @@ foreach ($currencies_list as $key => $cur_value) {
 
 $restriction_list = getRestrictionList();
 $cardstatus_list = getCardStatus_List();
-$cardstatus_list_r = array_map("array_reverse", $cardstatus_list);
 $typepaid_list = getPaidTypeList();
-$typepaid_list_r = array_map("array_reverse", $typepaid_list);
 $expire_list = getCardExpire_List();
 $yesno = getYesNoList();
 $invoiceday_list = getInvoiceDay_List();
@@ -267,14 +262,13 @@ if ($popup_select) {
     $HD_Form->AddSearchComparisonInput(_("INUSE"), 'inuse1', 'inuse1type', 'inuse2', 'inuse2type', 'inuse');
 
     $HD_Form->AddSearchSqlSelectInput(_("SELECT SERIE"), "cc_card_seria", "id, name", "", "name", "ASC", "id_seria");
-    $HD_Form->AddSearchSelectInput(_("SELECT LANGUAGE"), "language", $language_list_r);
+    $HD_Form->AddSearchSelectInput(_("SELECT LANGUAGE"), "language", $language_list);
     $HD_Form->AddSearchSqlSelectInput(_("SELECT TARIFF"), "cc_tariffgroup", "id, tariffgroupname", "", "tariffgroupname", "ASC", "tariff");
-    $HD_Form->AddSearchSelectInput(_("SELECT STATUS"), "status", $cardstatus_list_r);
-    $HD_Form->AddSearchSelectInput(_("SELECT ACCESS"), "simultaccess", $simultaccess_list_r);
+    $HD_Form->AddSearchSelectInput(_("SELECT STATUS"), "status", $cardstatus_list);
+    $HD_Form->AddSearchSelectInput(_("SELECT ACCESS"), "simultaccess", $simultaccess_list);
     $HD_Form->AddSearchSqlSelectInput(_("SELECT GROUP"), "cc_card_group", "id, name", "", "name", "ASC", "id_group");
     $HD_Form->AddSearchSelectInput(_("SELECT CURRENCY"), "currency", $currency_list_r);
-    $HD_Form->AddSearchSelectInput(_("SELECT LANGUAGE"), "language", $language_list_r);
-    $HD_Form->AddSearchSelectInput(_("SELECT PAYMENT TYPE"), "typepaid", $typepaid_list_r);
+    $HD_Form->AddSearchSelectInput(_("SELECT PAYMENT TYPE"), "typepaid", $typepaid_list);
 
     $HD_Form->FG_ENABLE_INFO_BUTTON = true;
     $HD_Form->FG_INFO_BUTTON_LINK = "A2B_card_info.php?id=";
@@ -560,7 +554,10 @@ if ($popup_select) {
     if ($form_action === 'ask-add') {
         $tz_val = array_search(SERVER_GMT, array_column($timezone_list, 1));
     }
-    array_walk($timezone_list, fn (&$v, $k) => $v = [$v[2], $k]);
+    $timezone_list = array_combine(
+        array_keys($timezone_list),
+        array_column($timezone_list, 2)
+    );
 
     $HD_Form->AddEditSelect(
         _("TIMEZONE"),

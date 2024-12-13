@@ -104,7 +104,7 @@ $smarty->display('main.tpl');
         <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
             <?php
             $list_type = getRefillType_List();
-            echo $list_type[$payment['payment_type']][0];?>
+            echo $list_type[$payment['payment_type']];?>
         </td>
    </tr>
    <tr height="20px">

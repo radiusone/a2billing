@@ -202,7 +202,7 @@ $lg_liste= getLanguages();
             <?php echo gettext("LANGUAGE") ?> :
         </td>
         <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
-            &nbsp;<?php echo $lg_liste[$agent['language']][0];?>
+            &nbsp;<?php echo $lg_liste[$agent['language']];?>
         </td>
     </tr>
  </table>

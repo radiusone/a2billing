@@ -78,7 +78,7 @@ echo get_login_button ($id);
                     <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
                         <?php
                         $list_typepaid = getPaidTypeList();
-                        echo $list_typepaid[$card['typepaid']][0];?>
+                        echo $list_typepaid[$card['typepaid']];?>
                     </td>
                </tr>
                <tr height="20px">
@@ -128,7 +128,7 @@ echo get_login_button ($id);
                     <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
                         <?php
                         $list_status = getCardStatus_List();
-                        echo $list_status[$card['status']][0];?>
+                        echo $list_status[$card['status']];?>
                     </td>
                 </tr>
                    <tr height="20px">

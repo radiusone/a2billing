@@ -995,7 +995,7 @@ class=tableBody><?php echo $ligne_number + $current_page * $FG_LIMITE_DISPLAY . 
 
                 } elseif ($FG_TABLE_COL [$i] [6] == "list") {
                     $select_list = $FG_TABLE_COL [$i] [7];
-                    $record_display = $select_list [$recordset [$i]] [0];
+                    $record_display = $select_list [$recordset [$i]];
 
                 } else {
                     $record_display = $recordset [$i];

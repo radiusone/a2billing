@@ -83,7 +83,6 @@ if ($result_nb_card[0][0] > 0) {
 
     $QUERY_INVOICE_COUNT = "SELECT DATE_FORMAT(date,'%c'),COUNT(*) FROM cc_invoice LEFT JOIN cc_card ON cc_card.id=cc_invoice.id_card LEFT JOIN cc_card_group ON cc_card_group.id = cc_card.id_group WHERE cc_card_group.id_agent = " . $_SESSION['agent_id'] . " AND cc_invoice.date >= TIMESTAMP('$checkdate') AND cc_invoice.date <= CURRENT_TIMESTAMP group by MONTH(date) ORDER BY date DESC";
     $result_invoice_count = $table->SQLExec($HD_Form->DBHandle, $QUERY_INVOICE_COUNT);
-    $list_month = getMonthList();
     $list_invoice_enough_paid = array ();
 
     $j = 0;
@@ -174,7 +173,7 @@ if ($result_nb_card[0][0] > 0) {
                         else $month_display = $now_month + (12-$i)
                         ?>
                     <tr>
-                        <td valign="top" align="center" class="tableBody" bgcolor="white"><b><?php echo $list_month[$month_display][0]; ?></b></td>
+                        <td valign="top" align="center" class="tableBody" bgcolor="white"><b><?php echo (new DateTime("2000-$month_display-01"))->format("F"); ?></b></td>
                         <td valign="top" align="center" class="tableBody" bgcolor="white"><b><?php echo $list_invoice_count[$i]; ?></b></td>
                         <td valign="top" align="center" class="tableBody" bgcolor="#5FA631"><b><?php echo $list_invoice_enough_paid[$i]; ?></b></td>
                         <td valign="top" align="center" class="tableBody" bgcolor="#DDDDDD"><b><?php echo $list_invoice_paid[$i]; ?></b></td>

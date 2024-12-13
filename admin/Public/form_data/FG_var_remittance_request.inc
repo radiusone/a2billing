@@ -65,9 +65,7 @@ $HD_Form->AddListActionButton(
 );
 
 $status_list = getRemittanceStatus_List();
-$status_revert_list = array_map("array_reverse", $status_list);
 $type_list = getRemittanceType_List();
-$type_revert_list = array_map("array_reverse", $type_list);
 
 $HD_Form->AddListValue(_("ID"), "cc_agent_commission.id");
 $HD_Form->AddListValue(_("Agent"), "id_agent", "display_linktoagent");
@@ -86,7 +84,7 @@ $HD_Form->AddSearchDateInput(_("Date"), "date");
 $HD_Form->AddSearchTextInput(_("Login"), 'login');
 $HD_Form->AddSearchTextInput(_("Last name"),'lastname');
 $HD_Form->AddSearchTextInput(_("First name"),'firstname');
-$HD_Form->AddSearchSelectInput(_("Request type"), "type", $type_revert_list);
-$HD_Form->AddSearchSelectInput(_("Request status"), "status", $status_revert_list);
+$HD_Form->AddSearchSelectInput(_("Request type"), "type", $type_list);
+$HD_Form->AddSearchSelectInput(_("Request status"), "status", $status_list);
 
 $HD_Form->CV_NO_FIELDS  = _("THERE ARE NO REMITTANCE REQUEST CREATED!");

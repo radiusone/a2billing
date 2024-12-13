@@ -824,7 +824,7 @@ class FormBO
             $date = $processed['date'];
             $card_id = $processed['card_id'];
             if ($refill_type!=0) {
-                $title = $list_refill_type[$refill_type][0]." ".gettext("REFILL");
+                $title = $list_refill_type[$refill_type]." ".gettext("REFILL");
             } else {
                 $title = gettext("REFILL");
             }
@@ -918,7 +918,7 @@ class FormBO
             $insert_values = [
                 "date" => $date,
                 "id_card" => $card_id,
-                "title" => trim(($list_refill_type[$refill_type][0] ?? "") . " " . _("REFILL")),
+                "title" => trim(($list_refill_type[$refill_type] ?? "") . " " . _("REFILL")),
                 "reference" => sprintf("%d%08d", $year, $count),
                 "description" => gettext("Invoice for refill"),
                 "status" => 1,

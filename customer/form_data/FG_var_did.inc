@@ -67,9 +67,6 @@ $priority_list = array();
 for ($k=1;$k<=5;$k++) {
     $priority_list["$k"]  = array( "Priority : $k", "$k");
 }
-$actived_list = array();
-$actived_list["1"] = array( gettext("Active"), "1");
-$actived_list["0"]  = array( gettext("Inactive"), "0");
 
 $validated_list = array();
 $validated_list["0"] = array( gettext("Pending"), "0");

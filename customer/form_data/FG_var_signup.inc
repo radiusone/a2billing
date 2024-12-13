@@ -152,7 +152,7 @@ if (isset ($form_action) && $form_action == "add") {
 	$loginkey = MDP_STRING(20);
 }
 
-$language_list = getLanguagesList();
+$language_list = getLanguages();
 if (LANGUAGE_ENABLE)  {
 $HD_Form->AddEditSelect(gettext("LANGUAGE"), "language", $language_list);
 $language_editFG = "language,";
@@ -262,21 +262,18 @@ if (ZIPCODE_ENABLE)  {
     );
     $zipcode_editFG = "zipcode,";
 }
-$timezone_list = get_timezones();
-$one_select = false;
-foreach ($timezone_list as $key => $cur_value) {
-	$timezone_list[$key] = array (
-		$cur_value[2],
-		$key
-	);
-	if ($form_action == 'ask-add') {
-		if (in_array(SERVER_GMT, $cur_value) && !$one_select) {
-			$timezone_default_val = $key;
-			$one_select = true;
-		}
-	}
-}
 if (TIMEZONE_ENABLE)  {
+    $timezone_list = get_timezones();
+    $one_select = false;
+    foreach ($timezone_list as $key => $cur_value) {
+        if ($form_action == 'ask-add') {
+            if (in_array(SERVER_GMT, $cur_value) && !$one_select) {
+                $timezone_default_val = $key;
+                $one_select = true;
+            }
+        }
+        $timezone_list[$key] = $cur_value[2];
+    }
     $id_timezone_editFG = "id_timezone,";
     $HD_Form->AddEditSelect(
         gettext("TIMEZONE"),

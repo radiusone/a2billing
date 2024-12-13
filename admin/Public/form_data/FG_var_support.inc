@@ -61,7 +61,7 @@ $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form->FG_ENABLE_ADD_BUTTON = true;
 
-$language_list = getLanguagesList();
+$language_list = getLanguages();
 
 $HD_Form->AddEditElement(
     _("NAME"),

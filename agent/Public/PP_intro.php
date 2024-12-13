@@ -48,7 +48,7 @@ $DBHandle = DbConnect();
 $table_message = new Table("cc_message_agent", "*");
 $clause_message = "id_agent = ".$_SESSION['agent_id'];
 $messages = $table_message -> get_list($DBHandle, $clause_message, 'order_display');
-$message_types = getMsgTypeList();
+$message_types = ["msg_info", "msg_success", "msg_warning", "msg_error"];
 ?>
 <br/><br/>
 <?php
@@ -56,7 +56,7 @@ if (is_array($messages)&& sizeof($messages)>0) {
     foreach ($messages as $message) {
     ?>
 
-        <div id="msg" class="<?php echo $message_types[$message['type']][2];?>" style="margin-top:0px;position:relative;<?php if($message['logo']==0)echo 'background-image:none;padding-left:10px;'; ?>" >
+        <div id="msg" class="<?php echo $message_types[$message['type']];?>" style="margin-top:0px;position:relative;<?php if($message['logo']==0)echo 'background-image:none;padding-left:10px;'; ?>" >
         <?php echo stripslashes($message['message']); ?>
         </div>
     <?php }

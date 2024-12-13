@@ -435,7 +435,7 @@ echo create_help(gettext("All calls are listed below. Search by month, day or st
 
                             } elseif ($FG_TABLE_COL[$i][6]=="list") {
                                     $select_list = $FG_TABLE_COL[$i][7];
-                                    $record_display = $select_list[$recordset[$i]][0];
+                                    $record_display = $select_list[$recordset[$i]];
 
                             } else {
                                     $record_display = $recordset[$i];

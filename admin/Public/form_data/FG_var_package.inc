@@ -46,7 +46,7 @@ $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("package_add.png") ;
 
 $packagetype_list = getPackagesTypeList();
-$billingtype_list = [[_("Monthly"), 0], [_("Weekly"), 1]];
+$billingtype_list = [_("Monthly"), _("Weekly")];
 
 $HD_Form->AddListValue(_("Label"), "label");
 $HD_Form->AddListValue(_("Creation date"), "creationdate");

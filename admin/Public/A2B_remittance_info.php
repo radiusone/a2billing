@@ -107,7 +107,7 @@ require_once __DIR__ . "/../templates/main.php";
         <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
             <?php
             $list_type = getRemittanceType_List();
-            echo $list_type[$remittance['type']][0];?>
+            echo $list_type[$remittance['type']];?>
         </td>
    </tr>
     <tr height="20px">
@@ -117,7 +117,7 @@ require_once __DIR__ . "/../templates/main.php";
         <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
             <?php
             $list_type = getRemittanceStatus_List();
-            echo $list_type[$remittance['status']][0];?>
+            echo $list_type[$remittance['status']];?>
         </td>
    </tr>
 

@@ -347,8 +347,8 @@ function sendValue(selvalue, othervalue) {
                         </div>
                         <div class="col">
                             <select name="upd_refill_type" id="upd_refill_type" class="form-select form-select-sm">
-                                <?php foreach ($list_refill_type as $v): ?>
-                                <option value="<?= $v[1] ?>" <?php if (($update_fields["refill_type"] ?? "") == $v[1]): ?>selected="selected"<?php endif?>><?= $v[0] ?></option>
+                                <?php foreach ($list_refill_type as $k => $v): ?>
+                                <option value="<?= $k ?>" <?php if (($update_fields["refill_type"] ?? "") == $k): ?>selected="selected"<?php endif?>><?= $v ?></option>
                                 <?php endforeach ?>
                             </select>
                         </div>

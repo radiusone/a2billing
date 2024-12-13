@@ -98,7 +98,6 @@ $HD_Form->init();
 
 $currencies_list = array_map(fn ($v) => array_reverse($v), getCurrenciesList());
 $dialstatus_list = getDialStatusList();
-$dialstatus_list_r = array_map(fn ($v) => array_reverse($v), $dialstatus_list);
 $yesno = getYesNoList();
 $calltype_list = [
     [0, _("STANDARD")],
@@ -190,7 +189,7 @@ $HD_Form->AddSearchTextInput(_("Phone number"), "destination");
 $HD_Form->AddSearchTextInput(_("Caller ID"), "src");
 $HD_Form->AddSearchTextInput(_("DNID"), "dnid");
 
-$HD_Form->AddSearchSelectInput(_("Disposition"), "terminatecauseid", $dialstatus_list_r);
+$HD_Form->AddSearchSelectInput(_("Disposition"), "terminatecauseid", $dialstatus_list);
 $HD_Form->AddSearchSelectInput(_("Call type"), "sipiax", $calltype_list);
 /** TODO: find some way to intercept display of records to apply these options
 $HD_Form->FG_FILTER_SEARCH_FORM_SELECT_INPUTS[] = [_("Currency"), false, "choose_currency", $currencies_list];

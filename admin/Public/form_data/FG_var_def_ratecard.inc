@@ -96,8 +96,6 @@ $HD_Form->search_session_key = "entity_ratecard_selection";
 $export_cols = $A2B->config['webui']['rate_export_field_list'];
 $HD_Form->FG_EXPORT_FIELD_LIST = explode(",", $export_cols);
 
-$yesno = getYesNoList();
-
 $HD_Form->AddListValue(_("Destination"), "destination", null, [], false)
     ->AddListValue("<abbr title=\"Dialing Prefix\">" . _("Prefix") . "</abbr>", "dialprefix")
     ->AddListValue("<abbr title=\"Buy Rate\">" . _("Buy") . "</abbr>", "buyrate")
