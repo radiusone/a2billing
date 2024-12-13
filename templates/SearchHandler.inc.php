@@ -188,9 +188,10 @@ use A2billing\Forms\FormHandler;
         <div class="col-4">
             <select name="<?= $item["input"][0] ?>" aria-label="<?= $item["label"] ?>" class="form-select form-select-sm">
                 <option value=""><?= $item["label"] ?></option>
-                <?php foreach ($item["options"] as $opt): ?>
-                    <option value="<?= $opt[0] ?>" <?php if (strcmp($processed[$item["input"][0]] ?? "zzzzzz", $opt[0]) === 0): ?>selected="selected"<?php endif ?>>
-                        <?= $opt[1] ?>
+                <?php foreach ($item["options"] as $key => $opt): ?>
+                    <?php $val = is_array($opt) ? $opt[0] : $key ?>
+                    <option value="<?= $val ?>" <?php if (strcmp($processed[$item["input"][0]] ?? "zzzzzz", $val) === 0): ?>selected="selected"<?php endif ?>>
+                        <?= is_array($opt) ? $opt[1] : $opt ?>
                     </option>
                 <?php endforeach ?>
             </select>

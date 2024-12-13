@@ -126,32 +126,39 @@ use DateTime;
                     class="form-select <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
                     <?= $row["attributes"] ?>
                 >
-                    <?php if (!empty($row["first_option"]) && count($row["first_option"]) === 2): ?>
+                    <?php if (is_array($row["first_option"] ?? "") && count($row["first_option"]) === 2): ?>
                     <option value="<?= $row["first_option"][0] ?>"><?= $row["first_option"][1] ?></option>
+                    <?php elseif (is_array($row["first_option"] ?? "")): ?>
+                    <option value="<?= array_keys($row["first_option"])[0] ?>"><?= array_values($row["first_option"])[0] ?></option>
                     <?php endif ?>
                     <?php if (is_array($options) && count($options)): ?>
-                        <?php foreach ($options as $option): ?>
+                        <?php foreach ($options as $key => $option): ?>
+                            <?php $opt = is_array($option) ? $option[0] : $option; $val = is_array($option) ? $option[1] : $key ?>
                     <option
-                        value="<?= $option[1] ?>"
+                        value="<?= $val ?>"
                             <?php if ($form->VALID_SQL_REG_EXP): ?>
                                 <?php if (str_contains($row["attributes"], "multiple")): ?>
-                                    <?php if (intval($option[1]) & intval($db_data[$i])): ?>
+                                    <?php if (intval($val) & intval($db_data[$i])): ?>
                         selected="selected"
                                     <?php endif ?>
-                                <?php elseif ($db_data[$i] == $option[1]): ?>
+                                <?php elseif ($db_data[$i] == $val): ?>
                         selected="selected"
                                 <?php endif ?>
                             <?php else: ?>
                                 <?php if (str_contains($row["attributes"], "multiple")): ?>
-                                    <?php /* TODO: WTF is this? */ if (is_array($processed[$row["name"]]) && (intval($option[1]) & array_sum($processed[$row["name"]]))): ?>
+                                    <?php /* TODO: WTF is this? */ if (is_array($processed[$row["name"]]) && (intval($val) & array_sum($processed[$row["name"]]))): ?>
                         selected="selected"
                                     <?php endif ?>
-                                <?php elseif ($processed[$row["name"]] == $option[1]): ?>
+                                <?php elseif ($processed[$row["name"]] == $val): ?>
                         selected="selected"
                                 <?php endif ?>
                             <?php endif ?>
                     >
+                            <?php if (!empty($row["select_format"]) && is_array($option)): ?>
                         <?= preg_replace_callback("/%([0-9]+)/", fn ($m) => str_replace($m[0], $option[$m[1] - 1] ?? "", $m[0]), $row["select_format"]); ?>
+                            <?php else: ?>
+                        <?= $opt ?>
+                            <?php endif ?>
                     </option>
                         <?php endforeach ?>
                     <?php else: ?>

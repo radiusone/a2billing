@@ -336,6 +336,10 @@ class FormHandler
         $this->FG_INSTANCE_NAME = $instance_name;
         $this->DBHandle = DbConnect();
         $this->FG_QUERY_PRIMARY_KEY = $primary_key;
+        if ($primary_key !== "id") {
+            $this->FG_TABLE_DEFAULT_ORDER = $primary_key;
+            $this->update_query_conditions = [$primary_key => "%id"];
+        }
         $this->query_table_joins = $joins;
 
         if (!empty($_POST)) {
@@ -721,7 +725,7 @@ class FormHandler
             "error" => $error_message,
             "select_type" => "LIST",
             "select_fields" => $options,
-            "select_format" => "%1",
+            "select_format" => "",
             "section_name" => $section_name,
             "comment" => $form_text_bottom,
             "validation_err" => true,
