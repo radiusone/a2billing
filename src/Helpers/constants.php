@@ -299,7 +299,7 @@ function getDiscount_List(): array
 {
     $discount_list = array_combine(
         range(0, 99),
-        array_map(fn ($v) => "%v%", range(0, 99))
+        array_map(fn ($v) => "$v%", range(0, 99))
     );
     $discount_list[0] = _("NO DISCOUNT");
 

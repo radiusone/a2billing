@@ -167,18 +167,19 @@ use DateTime;
                 </select>
 
             <?php elseif ($row["type"] === "RADIOBUTTON"): ?>
-                <?php foreach ($row["radio_options"] as $rad): ?>
+                <?php foreach ($row["radio_options"] as $key => $rad): ?>
+                    <?php $val = is_array($rad) ? $rad[1] : $key ?>
                 <div class="form-check">
                     <?php $check = $form->VALID_SQL_REG_EXP ? $db_data[$i] : $processed[$row["name"]] ?>
                     <input
-                        id="<?= $row["name"] ?>_<?= $rad[1] ?>"
+                        id="<?= $row["name"] ?>_<?= $val ?>"
                         class="form-check-input <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
                         type="radio"
                         name="<?= $row["name"] ?>"
-                        value="<?= $rad[1] ?>"
-                        <?php if ("$check" === "$rad[1]"): ?>checked="checked"<?php endif ?>
+                        value="<?= $val ?>"
+                        <?php if ("$check" === "$val"): ?>checked="checked"<?php endif ?>
                     />
-                    <label for="<?= $row["name"] ?>_<?= $rad[1] ?>" class="form-check-label"><?= $rad[0] ?></label>
+                    <label for="<?= $row["name"] ?>_<?= $val ?>" class="form-check-label"><?= is_array($rad) ? $rad[0] : $rad ?></label>
                 </div>
                 <?php endforeach ?>
 
