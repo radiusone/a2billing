@@ -15,9 +15,9 @@ use A2billing\Table;
 
 <form action="" id="myForm" method="post" name="myForm">
     <input type="hidden" name="id" value="<?= $processed["id"] ?>">
-    <input type="hidden" name="current_page" value="<?= $processed['current_page'] ?>">
-    <input type="hidden" name="order" value="<?= $processed['order'] ?>">
-    <input type="hidden" name="sens" value="<?= $processed['sens'] ?>">
+    <input type="hidden" name="current_page" value="<?= $processed['current_page'] ?? "" ?>">
+    <input type="hidden" name="order" value="<?= $processed['order'] ?? "" ?>">
+    <input type="hidden" name="sens" value="<?= $processed['sens'] ?? "" ?>">
     <?= $form->csrf_inputs() ?>
 
 <?php if ($form_action === "ask-del-confirm"): ?>
@@ -77,7 +77,6 @@ use A2billing\Table;
                 class="form-control"
                 readonly="readonly"
                 disabled="disabled"
-                name="<?= $row["name"] ?>"
                 <?= $row["attributes"] ?>
                 value="<?= $db_data[$i] ?>"
             />
@@ -88,7 +87,6 @@ use A2billing\Table;
                 class="form-control"
                 readonly="readonly"
                 disabled="disabled"
-                name="<?= $row["name"] ?>"
                 <?= $row["attributes"]?>
             ><?= $db_data[$i] ?></textarea>
 
@@ -101,12 +99,12 @@ use A2billing\Table;
                 <?php if ($form->FG_DEBUG >= 2): ?>
                     <br/><?php print_r($options)?><br/><?php print_r($list)?><br/>#<?= $i ?>::><?= $form->VALID_SQL_REG_EXP ?><br/><br/>::><?= $db_data[$i] ?><br/><br/>::><?= $row["name"] ?>
                 <?php endif ?>
-            <select class="form-select" disabled="disabled" name="<?= $row["name"] ?>" id="<?= $row["name"] ?>">
+            <select class="form-select" disabled="disabled" id="<?= $row["name"] ?>" <?= $row["html_attributes"] ?>>
                 <?php if (!empty($row["first_option"]) && is_array($row["first_option"]) && count($row["first_option"]) === 2): ?>
                 <option value="<?= $row["first_option"][0] ?>"><?= $row["first_option"][1] ?></option>
                 <?php elseif (!empty($row["first_option"]) && is_array($row["first_option"])): ?>
                 <option value="<?= array_keys($row["first_option"])[0] ?>"><?= array_values($row["first_option"])[0] ?></option>
-                <?php else: ?>
+                <?php elseif (!empty($row["first_option"])): ?>
                 <option value=""><?= $row["first_option"] ?></option>
                 <?php endif ?>
                 <?php if (is_array($options) && count($options)): ?>

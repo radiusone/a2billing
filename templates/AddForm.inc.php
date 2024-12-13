@@ -96,7 +96,7 @@ use DateTime;
                 <option value="<?= $row["first_option"][0] ?>"><?= $row["first_option"][1] ?></option>
             <?php elseif (!empty($row["first_option"]) && is_array($row["first_option"])): ?>
                 <option value="<?= array_keys($row["first_option"])[0] ?>"><?= array_values($row["first_option"])[0] ?></option>
-            <?php else: ?>
+            <?php elseif (!empty($row["first_option"])): ?>
                 <option value=""><?= $row["first_option"] ?></option>
             <?php endif ?>
             <?php if (is_array($options) && count($options)): ?>
