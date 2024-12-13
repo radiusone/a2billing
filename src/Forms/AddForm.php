@@ -18,7 +18,7 @@ class AddForm
         $form = $this->form;
         $processed = $this->processed;
         $list = $this->list;
-        $db_data = $list[0];
+        $db_data = $list[0] ?? [];
 
         ob_start();
         require(__DIR__ . "/../../templates/AddForm.inc.php");

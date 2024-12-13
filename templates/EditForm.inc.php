@@ -126,10 +126,12 @@ use DateTime;
                     class="form-select <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
                     <?= $row["attributes"] ?>
                 >
-                    <?php if (is_array($row["first_option"] ?? "") && count($row["first_option"]) === 2): ?>
+                    <?php if (!empty($row["first_option"]) && is_array($row["first_option"]) && count($row["first_option"]) === 2): ?>
                     <option value="<?= $row["first_option"][0] ?>"><?= $row["first_option"][1] ?></option>
-                    <?php elseif (is_array($row["first_option"] ?? "")): ?>
+                    <?php elseif (!empty($row["first_option"]) && is_array($row["first_option"])): ?>
                     <option value="<?= array_keys($row["first_option"])[0] ?>"><?= array_values($row["first_option"])[0] ?></option>
+                    <?php else: ?>
+                    <option value=""><?= $row["first_option"] ?></option>
                     <?php endif ?>
                     <?php if (is_array($options) && count($options)): ?>
                         <?php foreach ($options as $key => $option): ?>
@@ -170,7 +172,7 @@ use DateTime;
                 <?php foreach ($row["radio_options"] as $key => $rad): ?>
                     <?php $val = is_array($rad) ? $rad[1] : $key ?>
                 <div class="form-check">
-                    <?php $check = $form->VALID_SQL_REG_EXP ? $db_data[$i] : $processed[$row["name"]] ?>
+                    <?php $check = $form->VALID_SQL_REG_EXP && array_key_exists($i, $db_data) ? $db_data[$i] : ($processed[$row["name"]] ?? "") ?>
                     <input
                         id="<?= $row["name"] ?>_<?= $val ?>"
                         class="form-check-input <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"

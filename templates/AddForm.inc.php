@@ -44,7 +44,7 @@ use DateTime;
                 class="form-control <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
                 name="<?= $row["name"] ?>"
                 <?= $row["attributes"] ?>
-                value="<?= $processed[$row["name"]] ?>"
+                value="<?= $processed[$row["name"]] ?? "" ?>"
             />
 
         <?php elseif ($row["type"] === "POPUPVALUE"): ?>
@@ -92,10 +92,12 @@ use DateTime;
             <?php if (!empty($row["error_message"])): ?>
                 <option value="-1"><?= $row["error_message"] ?></option>
             <?php endif ?>
-            <?php if (is_array($row["first_option"] ?? "") && count($row["first_option"]) === 2): ?>
+            <?php if (!empty($row["first_option"]) && is_array($row["first_option"]) && count($row["first_option"]) === 2): ?>
                 <option value="<?= $row["first_option"][0] ?>"><?= $row["first_option"][1] ?></option>
-            <?php elseif (is_array($row["first_option"] ?? "")): ?>
+            <?php elseif (!empty($row["first_option"]) && is_array($row["first_option"])): ?>
                 <option value="<?= array_keys($row["first_option"])[0] ?>"><?= array_values($row["first_option"])[0] ?></option>
+            <?php else: ?>
+                <option value=""><?= $row["first_option"] ?></option>
             <?php endif ?>
             <?php if (is_array($options) && count($options)): ?>
                 <?php foreach ($options as $key => $option): ?>
@@ -120,9 +122,9 @@ use DateTime;
             <?php foreach ($row["radio_options"] as $key => $rad): ?>
                 <?php $val = is_array($rad) ? $rad[1] : $key ?>
             <div class="form-check">
-                <?php if ($processed[$row["name"]] === $val): ?>
+                <?php if ((string)($processed[$row["name"]] ?? "") === "$val"): ?>
                     <?php $check = $val ?>
-                <?php elseif ($form->VALID_SQL_REG_EXP): ?>
+                <?php elseif ($form->VALID_SQL_REG_EXP && array_key_exists($i, $db_data)): ?>
                     <?php $check = $db_data[$i] ?>
                 <?php else: ?>
                     <?php $check = $row["default"] ?>
@@ -133,7 +135,7 @@ use DateTime;
                     type="radio"
                     name="<?= $row["name"] ?>"
                     value="<?= $val ?>"
-                    <?php if ($check === $val): ?>checked="checked"<?php endif ?>
+                    <?php if ("$check" === "$val"): ?>checked="checked"<?php endif ?>
                 />
                 <label for="<?= $row["name"] ?>_<?= $val ?>" class="form-check-label"><?= is_array($rad) ? $rad[0] : $rad ?></label>
             </div>
