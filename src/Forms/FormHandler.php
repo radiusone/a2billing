@@ -466,53 +466,6 @@ class FormHandler
     // ----------------------------------------------
 
     /**
-     * Adds a table cell to the list view
-     *
-     * @param string $displayname
-     * @param string $fieldname
-     * @param bool $sortable
-     * @param int|string $char_limit string is trimmed to this size before applying callbacks; 0 = no limit
-     * @param callable $callback
-     * @param string|null $type the cell data type
-     * @param string|array|null $sql_table when type=sql|sql-link, the table to search; when type=eval, the code to evaluate; when type=list|list-conf, an array of select options
-     * @param string|null $sql_cols the columns to retrieve
-     * @param string|null $sql_where the condition to apply to the query; placeholder %id is replaced with the value being searched
-     * @param string|null $sql_display the result field to display; one-based placeholder %n is replaced with zero-based column n from the result
-     * @param string|null $destination when type=sql-link, the destination; result will be appended as query string, $sql_display will be used as link text
-     */
-    public function AddViewElement(
-        string  $displayname,
-        string  $fieldname,
-        bool    $sortable = true,
-                $char_limit = 0,
-                $callback = "",
-        ?string $type = "",
-                $sql_table = "",
-        ?string $sql_cols = "",
-        ?string $sql_where = "",
-        ?string $sql_display = "",
-        ?string $destination = ""
-    ): void
-    {
-        $this->FG_LIST_TABLE_CELLS[] = [
-            "header" => $displayname,
-            "field" => $fieldname,
-            "sortable" => $sortable,
-            "maxsize" => (int)$char_limit,
-            "type" => $type,
-            "sql_table" => $sql_table, // when type = lie or type = lie_link
-            "code" => $sql_table, // when type = eval
-            "options" => $sql_table, // when type = list or type = list-conf
-            "value" => $sql_table, // when type = value
-            "sql_columns" => $sql_cols, // when type = lie or type = lie_link
-            "sql_clause" => $sql_where, // when type = lie or type = lie_link
-            "sql_display" => $sql_display, // when type = lie or type = lie_link
-            "function" => $callback,
-            "href" => $destination, // when type = lie_link
-        ];
-    }
-
-    /**
      * Add a plain value to the list table view
      *
      * @param string $label the table column header
