@@ -61,7 +61,7 @@ $HD_Form = new FormHandler(
     "cc_card",
     _("Card"),
     "cc_card.id",
-    ["cc_card_group" => "cc_card.id_group", "cc_card_group.id"]
+    ["cc_card_group" => ["cc_card.id_group", "cc_card_group.id"]]
 );
 
 if (is_agent()) {

@@ -324,7 +324,7 @@ class FormHandler
      * @param string $tablename the table name of the object we're working with
      * @param string $instance_name a label for the object
      * @param string $primary_key the primary key of the table (if joining tables, make sure it's unambiguous)
-     * @param array $joins a list of joins formatted for use by Table::processJoinedTables()
+     * @param array<string,array<string>> $joins a list of joins formatted for use by Table::processJoinedTables()
      */
     public function __construct(string $tablename, string $instance_name, string $primary_key = "id", array $joins = [])
     {
