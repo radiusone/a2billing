@@ -55,6 +55,11 @@ $HD_Form->AddListActionButton(
     get_image_path("brick_add.png")
 );
 
+$HD_Form->help_text = create_help(
+    _("Set the caller ID so that the customer calling in is authenticated on the basis of the callerID rather than with the account number"),
+    'ListCallerID'
+);
+
 $HD_Form->AddListValue(_("CALLERID"), "cid");
 $HD_Form->AddListSqlMapping(_("ACCOUNT NUMBER"), "id_cc_card", new Table("cc_card", ["id", "username"]), [], "A2B_entity_card.php?form_action=ask-edit&id=");
 $HD_Form->AddListValue(_("CUSTOMER NAME"), "id_cc_card", "display_customer_name_id_link");

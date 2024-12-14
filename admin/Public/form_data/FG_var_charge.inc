@@ -65,6 +65,12 @@ $HD_Form_c->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form_c->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_charge.php?form_action=ask-add";
 $HD_Form_c->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("add.png") ;
 
+$HD_Form_c->help_text = create_help(
+    _("Extra charges allow the billing of one-off or re-occurring monthly charges. These may be used as setup or service charges, etc...")
+    . _("Charges will appear to the user with the description you attach. Each charge that you create for a user will decrement his account."),
+    'AddCharge'
+);
+
 // -- chargetype : 1 - connection charge for DID setup, 2 - Montly charge for DID use, 3 - Subscription fee, 4 - Extra Charge, etc...
 $chargetype_list = [
     1 => _("Connection charge for DID setup"),

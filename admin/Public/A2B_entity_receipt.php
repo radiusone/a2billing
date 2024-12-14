@@ -70,10 +70,6 @@ $list = $HD_Form->perform_action($form_action);
 
 require_once __DIR__ . "/../templates/main.php";
 
-// #### HELP SECTION
-echo create_help(_("Receipt history - The section below allows you to see and create receipt against a customer.Only the closed receipt can be see in the customer interface. Receipts are only an information for the user and aren't used in the balance of the system"), 'ViewInvoices');
-
-// #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);
 $HD_Form->create_form($form_action, $list);
 

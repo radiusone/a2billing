@@ -81,6 +81,11 @@ $HD_Form->FG_EDIT_BUTTON_CONDITION = '"|col4|" == "OPEN"';
 $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("money.png") ;
 
+$HD_Form->help_text = create_help(
+    _("Receipt history - The section below allows you to see and create receipt against a customer.Only the closed receipt can be see in the customer interface. Receipts are only an information for the user and aren't used in the balance of the system"),
+    'ViewInvoices'
+);
+
 $HD_Form->AddListValue(_("ID"), "cc_receipt.id");
 $HD_Form->AddListValue(_("Account"), "id_card", "display_customer_id_link");
 $HD_Form->AddListValue(_("Date"), "cc_receipt.date");

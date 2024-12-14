@@ -52,10 +52,6 @@ $list = $HD_Form->perform_action($form_action);
 
 require_once __DIR__ . "/../templates/main.php";
 
-// #### HELP SECTION
-echo create_help(_("SUBSCRIPTION FEE - You can bill the user  in a monthly, weekly or any time period for being subscribed on your service. The fee amount is defined here and the period through the cront configuration."), 'ListSubscription');
-
-// #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);
 $HD_Form->create_form($form_action, $list);
 

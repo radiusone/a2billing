@@ -52,13 +52,6 @@ $list = $HD_Form->perform_action($form_action);
 
 require_once __DIR__ . "/../templates/main.php";
 
-// #### HELP SECTION
-if ($form_action == 'list') {
-    echo create_help(_("CID Group list. CID can be chosen by customers through the customer interface."), 'ListCIDGroup');
-} else {
-    echo create_help(_("CID group offers customers a group of CID numbers which can be selected for a ratecard for outgoing calls"), 'EditCIDGroup');
-}
-// #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);
 $HD_Form->create_form($form_action, $list);
 

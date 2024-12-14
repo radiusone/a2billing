@@ -52,6 +52,8 @@ $HD_Form->FG_FK_TABLENAMES = ["cc_ticket"];
 $HD_Form->FG_FK_EDITION_CLAUSE = ["id_component"];
 $HD_Form->FG_FK_DELETE_MESSAGE = _("You have some tickets using this Support Component! Please comfirm that you really want to remove this Support Component? ");
 
+$HD_Form->help_text = create_help(_("Here you can see all components which you use to handle the support task. You can use components to categorise the subject of the ticket. i.e : Tarification, Payment"));
+
 $user_type = [_("CUSTOMERS"), _("AGENTS"), _("CUSTOMERS AND AGENTS")];
 $activated_list = getActivationList();
 

@@ -50,6 +50,13 @@ $used_list = [_("NOT USED"), _("USED")];
 $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("add.png") ;
 
+$HD_Form->list_help_text = create_help(
+    _("Listed below are the vouchers created on the system,.<br/>")
+    . _("Each row corresponds to a voucher and shows it's status, value and currency..")
+    . _("Create a single voucher, defining such properties as credit, tag, currency etc, click confirm when finished. <br/> The customer applies voucher credits to their account via the customer interface or via an IVR menu."),
+    'ListVoucher'
+);
+
 $HD_Form->AddListValue(_("Voucher"), "voucher");
 $HD_Form->AddListValue(_("Credit"), "credit", "display_money");
 $HD_Form->AddListValue(_("Tag"), "tag");

@@ -54,6 +54,9 @@ $HD_Form->FG_FK_TABLENAMES = ["cc_outbound_cid_list"];
 $HD_Form->FG_FK_EDITION_CLAUSE = ["outbound_cid_group"];
 $HD_Form->FG_FK_DELETE_MESSAGE = _("You have some CID using this CID Group! Please comfirm that you really want to remove this CID Group ? ");
 
+$HD_Form->list_help_text = create_help(_("CID Group list. CID can be chosen by customers through the customer interface."), 'ListCIDGroup');
+$HD_Form->help_text = create_help(_("CID group offers customers a group of CID numbers which can be selected for a ratecard for outgoing calls"), 'EditCIDGroup');
+
 $HD_Form->AddListValue(_("ID"), "id");
 $HD_Form->AddListValue(_("DIDGROUP NAME"), "group_name");
 $HD_Form->AddListValue(_("CREATION DATE"), "creationdate");

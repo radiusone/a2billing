@@ -49,11 +49,6 @@ $form_action ??= "list";
 
 require_once __DIR__ . "/../templates/main.php";
 
-echo create_help(
-    _("IVR Monitoring, an extension should be configured for the admin to call and monitor through an IVR some important data from your system."),
-    'ListMonitoring'
-);
-
 $HD_Form->init();
 $list = $HD_Form->perform_action($form_action);
 $HD_Form->create_toppage($form_action);

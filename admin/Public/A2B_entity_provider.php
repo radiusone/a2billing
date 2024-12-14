@@ -53,17 +53,9 @@ $list = $HD_Form->perform_action($form_action);
 
 require_once __DIR__ . "/../templates/main.php";
 
-// #### HELP SECTION
-if (!$popup_select) {
-    echo create_help(_("This section will allow you to create and edit VOIP Providers for reporting purposes. ") .
-        _("A provider is the company/person that provides you with termination."), 'ListProvider');
-}
-
-// #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);
 $HD_Form->create_form($form_action, $list);
 
-// #### FOOTER SECTION
 require_once __DIR__ . "/../templates/footer.php";
 ?>
 <script>
@@ -74,4 +66,3 @@ require_once __DIR__ . "/../templates/footer.php";
         window.close();
     }
 </script>
-

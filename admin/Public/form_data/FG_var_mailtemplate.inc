@@ -48,6 +48,14 @@ $HD_Form = new FormHandler("cc_templatemail", _("Mail Template"));
 $HD_Form->FG_EDIT_BUTTON_LINK = "?form_action=ask-edit&id=";
 $HD_Form->FG_DELETE_BUTTON_LINK = "?form_action=ask-delete&id=";
 
+$HD_Form->list_help_text = "";
+$HD_Form->help_text = create_help(
+    _("Configure the mail template below.")
+    . '<br/>'
+    . _("A Reminder email can be sent (see a2billing.conf) to customers having low credit, a confirmation mail can be sent to customers after their signup, etc..."),
+    'ShowMailTemplates'
+);
+
 $typemail_list = [
     Mail::$TYPE_REMINDER => _("Reminder"),
     Mail::$TYPE_SIGNUP => _("Signup"),

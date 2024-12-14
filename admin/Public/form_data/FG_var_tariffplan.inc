@@ -53,6 +53,18 @@ $HD_Form->FG_FK_TABLENAMES = ["cc_ratecard"];
 $HD_Form->FG_FK_EDITION_CLAUSE = ["idtariffplan"];
 $HD_Form->FG_FK_DELETE_MESSAGE = _("You are going as well to remove all the rates attached to this ratecard! Please comfirm that you really want to remove this ratecard and those rates ? ");
 
+$HD_Form->add_help_text = $HD_Form->edit_help_text = create_help(
+    _("A ratecard is a set of rates defined and applied according to the dialling prefix, for instance 441 & 442 : UK Landline.")
+    . '<br/>'
+    . _("Each ratecard may have as many rates as you wish, however, if a dialling prefix cannot be matched when a call is made, then the call will be terminated.")
+    . '<br/>'
+    . _('A ratecard has a "start date", an "expiry date" and a you can define a default trunk, but if no trunk is defined, the ratecard default trunk will be used.'),
+    'EditRatecard'
+);
+$HD_Form->list_help_text = create_help(
+    _("List ratecards that have been created!<br>Ensure that a ratecard is added into the call plan under 'List Ratecard'"),
+    'ListRatecard'
+);
 
 $HD_Form->AddListValue(_("ID"), "id");
 $HD_Form->AddListValue(_("Name"), "tariffname");

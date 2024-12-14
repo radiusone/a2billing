@@ -58,6 +58,18 @@ if ($voip_type === "sip") {
 	$HD_Form = new FormHandler("cc_iax_buddies", _("IAX Config"));
 }
 
+$HD_Form->list_help_text = create_help(
+    _("SIP and IAX Config will create a SIP or IAX entry on the Asterisk server, so that a customer can set up a SIP or IAX client to connect directly to the asterisk server without the need to enter an account and pin each time a call is made. When done, click on the CONFIRM DATA button, then click reload to apply the changes on the Asterisk server.<br>")
+    . _("The customer must then enter the URL/IP address of the asterisk server into the SIP/IAX client, and use the Account Number and Secret word as the username and password."),
+    'ListSIPFriend'
+);
+
+$HD_Form->help_text = create_help(
+    _("Each SIP/IAX client is identified by a number of parameters.<br><br>")
+    . _("More details on how to configure clients are on the Wiki"),
+    'EditFriend'
+);
+
 $HD_Form->AddListValue(_("Cardholder"), "id_cc_card", "display_customer_name_id_link");
 $HD_Form->AddListValue(_("Username"), "username", "display_customer_link");
 $HD_Form->AddListValue(_("Account code"), "accountcode");

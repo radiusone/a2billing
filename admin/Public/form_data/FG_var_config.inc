@@ -60,6 +60,8 @@ if ($form_action === "list") {
     $HD_Form->FG_QUERY_PRIMARY_KEY = "cc_config.id";
     $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 25;
 
+    $HD_Form->help_text = create_help(_("Here you can see and edit the different A2Billing settings."));
+
     $HD_Form->AddListValue(_("Title"), "config_title");
     $HD_Form->AddListValue(_("Key"), "config_key");
     // if config_valuetype is 1, display as yes/no

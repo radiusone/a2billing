@@ -48,10 +48,6 @@ $HD_Form -> init();
 
 require_once __DIR__ . "/../templates/main.php";
 
-// #### HELP SECTION
-echo create_help(_("This action will generate a new agi-conf configuration group, copying configurations from the first agi-conf group found."));
-
-// #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);
 
 $table = new Table(

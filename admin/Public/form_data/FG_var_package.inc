@@ -43,7 +43,9 @@ $HD_Form = new FormHandler("cc_package_offer", _("Package"));
 
 $HD_Form->FG_TABLE_DEFAULT_ORDER = "label";
 $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("package_add.png") ;
+$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("package_add.png");
+
+$HD_Form->help_text = create_help(_("PACKAGES SYSTEM - FREE MINUTES, etc..."), 'OfferPackage');
 
 $packagetype_list = getPackagesTypeList();
 $billingtype_list = [_("Monthly"), _("Weekly")];

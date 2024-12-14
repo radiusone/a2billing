@@ -52,14 +52,6 @@ $list = $HD_Form->perform_action($form_action);
 
 require_once __DIR__ . "/../templates/main.php";
 
-// #### HELP SECTION
-echo create_help(
-    _("This section allows you to define the Speed dials for the customer.") . '<br>' .
-    _("A Speed Dial will be entered on the IVR in order to make a shortcut to their preferred dialled phone number."),
-    'ListSpeeddial'
-);
-
-// #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);
 $HD_Form->create_form($form_action, $list);
 

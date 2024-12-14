@@ -51,17 +51,10 @@ $list = $HD_Form->perform_action($form_action);
 
 require_once __DIR__ . "/../templates/main.php";
 
-// #### HELP SECTION
-if ($form_action === 'list') {
-    echo create_help(_("Here is a list of all configuration groups. You can pick one and see its members"));
-}
-
+$HD_Form->create_toppage($form_action);
 if (!empty($delete_msg)) {
     echo "<div class='row pb-3'><div class='col'><div class='alert alert-success'>$delete_msg</div></div></div>";
 }
-
-// #### TOP SECTION PAGE
-$HD_Form->create_toppage($form_action);
 $HD_Form->create_form($form_action, $list);
 
 require_once __DIR__ . "/../templates/footer.php";

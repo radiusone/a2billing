@@ -49,6 +49,13 @@ $HD_Form->FG_FK_DELETE_MESSAGE = _("You have some cards using this series! Pleas
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("page_white_add.png") ;
 
+$HD_Form->help_text = create_help(
+    _("This page shows the series list.")
+    . '<br>'
+    . _("Series & serials is used for the creation of a card range specifically for accounting purposes instead of card id."),
+    'ListSeria'
+);
+
 $HD_Form->AddListValue(_("Name"), "name");
 $HD_Form->AddListValue(_("Description"), "description", "substr", ["%X", 0, 40]);
 $HD_Form->AddListValue(_("Sequence number"), "value");

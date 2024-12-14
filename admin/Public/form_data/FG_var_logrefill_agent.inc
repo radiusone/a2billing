@@ -51,6 +51,11 @@ $HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_logrefill_agent.php?form_act
 $HD_Form->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form->FG_LIST_ADDING_BUTTON_MSG1 = _("Add Refill");
 $HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("time_add.png") ;
 
+$HD_Form->help_text = create_help(
+    _("Agents Refill history - The section below allows you to add refills against an agent. Note that this changes the balance on the account."),
+    'ViewAgentRefill'
+);
+
 $list_refill_type = getRefillType_List();
 
 $HD_Form->AddListValue(_("ID"), "id");

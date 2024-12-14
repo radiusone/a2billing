@@ -52,8 +52,6 @@ $list = $HD_Form->perform_action($form_action);
 
 require_once __DIR__ . "/../templates/main.php";
 
-echo create_help(_("Status logs help you to keep track of the status of all customers. The status can be 'New, Active, Cancelled, Reserved, Waiting-MailConfirmation and Expired."), 'StatusLog');
-
 $HD_Form->create_toppage($form_action);
 if ($form_action === "list") {
     $HD_Form->create_search_form();

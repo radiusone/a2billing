@@ -37,7 +37,7 @@ use A2billing\Forms\FormHandler;
 **/
 $menu_section = 7;
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
-require_once "./form_data/FG_var_trunk.inc";
+require_once __DIR__ . "/form_data/FG_var_trunk.inc";
 /**
  * @var FormHandler $HD_Form
  */
@@ -62,25 +62,13 @@ $list = $HD_Form->perform_action($form_action);
 
 require_once __DIR__ . "/../templates/main.php";
 
-if (!$popup_select) {
-    if ($form_action === "list") {
-        echo create_help(_("Trunk List.") . '<br/>' . _("Trunks can be modified by clicking the edit button"), 'ListTrunk');
-        $HD_Form->create_search_form();
-    } else {
-        echo create_help(_("Trunks are used to terminate the call!<br>") .
-            _("The trunk and ratecard is selected by the rating engine on the basis of the dialed digits.") .
-            _("The trunk is used to dial out from your asterisk box which can be a zaptel interface or a voip provider."), 'EditTrunk');
-    }
+if ($form_action === "list" && !$popup_select) {
+    $HD_Form->create_search_form();
 }
-
-// #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);
 $HD_Form->create_form($form_action, $list);
 
-// #### FOOTER SECTION
-if (!$popup_select) {
-    require_once __DIR__ . "/../templates/footer.php";
-}
+require_once __DIR__ . "/../templates/footer.php";
 ?>
 <script>
     function sendValue(selvalue) {

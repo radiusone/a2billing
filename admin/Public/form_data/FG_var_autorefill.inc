@@ -41,6 +41,8 @@ $HD_Form = new FormHandler("cc_autorefill_report", "AutoRefill Report");
 $HD_Form->FG_QUERY_ORDERBY_COLUMNS = ["daterun"];
 $HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
 
+$HD_Form->help_text = create_help(_("Auto Refill report."), 'AutoRefillReport');
+
 $HD_Form->AddListValue(_("Date"), "daterun");
 $HD_Form->AddListValue(_("Cards Refilled"), "totalcardperform");
 $HD_Form->AddListValue(_("Credit Applied"), "totalcredit");

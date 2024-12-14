@@ -40,8 +40,6 @@ require_once __DIR__ . "/../../common/lib/admin.defines.php";
 require_once __DIR__ . "/form_data/FG_var_config.inc";
 /**
  * @var FormHandler $HD_Form
- * @var Smarty $smarty
- * @var string $id
  * @var string $form_action
  */
 
@@ -52,15 +50,10 @@ $list = $HD_Form->perform_action($form_action);
 
 require_once __DIR__ . "/../templates/main.php";
 
-echo create_help(_("Here you can see and edit the different A2Billing settings."));
-
-// #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);
-
 if ($form_action === "list") {
     $HD_Form->create_search_form(true, true);
 }
-
 $HD_Form->create_form($form_action, $list);
 
 require_once __DIR__ . "/../templates/footer.php";

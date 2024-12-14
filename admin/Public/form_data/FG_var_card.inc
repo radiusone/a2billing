@@ -97,6 +97,20 @@ if (!$popup_select && (is_admin() || has_rights(Agent::ACX_CREATE_CUSTOMER))) {
     $HD_Form->FG_LIST_ADDING_BUTTON_IMG2 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJ8SURBVDjLpZB/SFNRFMftj5IiW9saIQjGQrBiUagEFWLDydrUhAWzNNuWTZ1oKIUzf4RlzZY6sWyrLZXhfFszQ1eac2SQkYWW0yH0l1AWITSw1IXK+/beK0RBptCFD+fcyz2fc+4NARDyP6x5qInbVVEn5sw2SHdCL2ahQsiey4jhVW9IkBPDKbmfyibN6Rw8oLgrY0MnYaEofgcpPcitWldglLLQQhXqqSKdlIaNm8k8XDnBQWYMa2ZdgS5+O14YyzHVq8eQpQiFCTwUJ4YjX8SH+hh7wapNCQ0qMGdF/gh8/4SZN0Z87a+H13ENk89vwz85AiJ378xYq2ZLUEFjxv5B//t2TA87MT9KUNiZ3D9C4KFKMBz0Cbults1RxzVWoiAWv4ctCPieMsx/tKHzciwE8blPeCLz1jUFPAkRyhW35UWIPfB9noWjLBX2shQGOn898QsRSS/BET66xBWatq0ScE86NoUlORSRyYOYmJpH2xRQ7APy3gEXXgHnewCtsxPFRgXU9acgvyEMiEsOVS4LDsia0xJP6+EcWoLJCxS8JZE7QCK7j0RWFwmlmUCVU4lnviaMfnPD0K+B3CDAkfzwWkbwoTx6adqlxb1mFxS9VFeqo7KbxLkOEmdsVKyRoGu8AV0TjaBXreciDJ4cWhBgBN6KfaTffR3p6hZU988howM4aycht5KQWUgklx1Gj8+Clat7rIkW/P2IcWtB6Uhp1KJSeWsxTjEAJTW6agVHC/m441ZB51Ywxbo+xeoJaCbteWGVV6u5e9JcpsiE1i980eM5flLHAj/RuSCQZy7KaqNR585mOtOR3i//wUagLtdQ/KTH/hdr6PM/RhGjA91Gi1AAAAAASUVORK5CYII=";
 }
 
+$HD_Form->list_help_text = create_help(
+    _("Customers are listed below by account number. Each row corresponds to one customer, along with information such as their call plan, credit remaining, etc.")
+    . "<br/>"
+    . is_admin() || (is_agent() && has_rights(Agent::ACX_VOIPCONF))
+        ? _("The SIP and IAX buttons create SIP and IAX entries to allow direct VoIP connections to the Asterisk server without further authentication.")
+        : "",
+    'ListCustomers'
+);
+
+$HD_Form->help_text = create_help(
+    _("Create and edit the properties of each customer. Click CONFIRM DATA at the bottom of the page to save changes."),
+    'CreateCustomer'
+);
+
 $language_list = getLanguages();
 $discount_list = getDiscount_List();
 $simultaccess_list = getCardAccess_List();
@@ -270,14 +284,14 @@ if ($popup_select) {
     $FN_COLUMN_USERNAME = "col" . ($FG_COL_QUERY_COUNT + 1);
     $FN_COLUMN_ALIAS = "col" . ($FG_COL_QUERY_COUNT + 2);
 
-    if (!empty($A2B->config["webui"]['buddy_sip_file']) && (is_admin() || has_rights(Agent::ACX_VOIPCONF))) {
+    if (!empty($A2B->config["webui"]['buddy_sip_file']) && (is_admin() || (is_agent() && has_rights(Agent::ACX_VOIPCONF)))) {
         $HD_Form->AddListActionButton(
             "A2B_entity_friend.php?voip_type=sip&form_action=add_sip&id_cc_card=|$FN_COLUMN_ID|&cardnumber=|$FN_COLUMN_USERNAME|&useralias=|$FN_COLUMN_ALIAS|",
             _("Auto Create SIP Config"),
             "data:image/gif;base64,R0lGODlhFwALAKEDAAAAAJycnPPZ3f///yH5BAEAAAMALAAAAAAXAAsAAAItXI6pa+IPozyyWgqBFhrwDWGPNzoe+YgmSHaRWnJmBbs2HVh6mO97YFgIhYMCADs="
         );
     }
-    if (!empty($A2B->config["webui"]['buddy_iax_file']) && (is_admin() || has_rights(Agent::ACX_VOIPCONF))) {
+    if (!empty($A2B->config["webui"]['buddy_iax_file']) && (is_admin() || (is_agent() && has_rights(Agent::ACX_VOIPCONF)))) {
         $HD_Form->AddListActionButton(
             "A2B_entity_friend.php?voip_type=iax&form_action=add_iax&id_cc_card=|$FN_COLUMN_ID|&cardnumber=|$FN_COLUMN_USERNAME|&useralias=|$FN_COLUMN_ALIAS|",
             _("Auto Create IAX Config"),

@@ -56,6 +56,11 @@ $HD_Form->FG_QUERY_ORDERBY_COLUMNS = ["date"];
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("money_add.png") ;
 
+$HD_Form->help_text = create_help(
+    _("Agents Commission history - The section below allows you to add commissions against an agent. Normally the commissions are generated automatically by the customer's payment."),
+    'ViewCommissions'
+);
+
 $com_list = getRefillType_List();
 
 $HD_Form->AddListValue(_("Account"), "id_card", "display_customer_id_link");

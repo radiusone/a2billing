@@ -39,13 +39,10 @@ use A2billing\Forms\FormHandler;
 $menu_section = 13;
 
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
-/**
- * @var string $form_action
- */
-
 require_once __DIR__ . "/form_data/FG_var_autorefill.inc";
 /**
  * @var FormHandler $HD_Form
+ * @var string $form_action
  */
 
 Admin::checkPageAccess(Admin::ACX_CRONT_SERVICE);
@@ -56,7 +53,6 @@ $list = $HD_Form->perform_action($form_action);
 
 require_once __DIR__ . "/../templates/main.php";
 
-echo create_help(_("Auto Refill report."), 'AutoRefillReport');
 $HD_Form->create_toppage($form_action);
 $HD_Form->create_form($form_action, $list);
 

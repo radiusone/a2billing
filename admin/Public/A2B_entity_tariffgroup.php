@@ -53,19 +53,9 @@ $list = $HD_Form->perform_action($form_action);
 
 require_once __DIR__ . "/../templates/main.php";
 
-// #### HELP SECTION
-if (empty($popup_select)) {
-    echo create_help(
-        _("List of Call Plans, a Call Plan is a collection of ratecards. You can click on edit to add new ratecards to the Call Plan"),
-        'ListCallPlan'
-    );
-}
-
-// #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);
 $HD_Form->create_form($form_action, $list);
 
-// #### FOOTER SECTION
 require_once __DIR__ . "/../templates/footer.php";
 ?>
 <script>

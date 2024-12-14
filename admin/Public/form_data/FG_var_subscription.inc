@@ -46,6 +46,11 @@ $HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
 $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("script.png") ;
 
+$HD_Form->help_text = create_help(
+    _("SUBSCRIPTION FEE - You can bill the user  in a monthly, weekly or any time period for being subscribed on your service. The fee amount is defined here and the period through the cront configuration."),
+    'ListSubscription'
+);
+
 $actived_list = getActivationList();
 
 $HD_Form->AddListValue(_("Label"), "label");

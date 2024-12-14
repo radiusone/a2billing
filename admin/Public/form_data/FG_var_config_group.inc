@@ -53,6 +53,9 @@ $HD_Form->FG_FK_TABLENAMES = ["cc_config"];
 $HD_Form->FG_FK_EDITION_CLAUSE = ["config_group_id"];
 $HD_Form->FG_FK_DELETE_ALLOWED = true;
 
+$HD_Form->help_text = create_help(_("This action will generate a new agi-conf configuration group, copying configurations from the first agi-conf group found."));
+$HD_Form->list_help_text = create_help(_("Here is a list of all configuration groups. You can pick one and see its members"));
+
 $HD_Form->AddListValue(gettext("TITLE"), "group_title");
 $HD_Form->AddListValue(gettext("DESCRIPTION"), "group_description");
 $HD_Form->FieldViewElement(["group_title", "group_description"]);

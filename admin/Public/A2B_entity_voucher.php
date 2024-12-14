@@ -124,13 +124,7 @@ $list = $HD_Form->perform_action($form_action);
 
 require_once __DIR__ . "/../templates/main.php";
 
-// #### HELP SECTION
 if ($form_action === "list" && !$popup_select) {
-    // populate some lists for the batch update settings
-
-    echo create_help(_("Listed below are the vouchers created on the system,.<br/>") .
-        _("Each row corresponds to a voucher and shows it's status, value and currency..") .
-        _("Create a single voucher, defining such properties as credit, tag, currency etc, click confirm when finished. <br/> The customer applies voucher credits to their account via the customer interface or via an IVR menu."), 'ListVoucher');
 ?>
 <div class="row justify-content-center">
     <div class="col-auto">

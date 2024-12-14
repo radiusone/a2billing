@@ -55,6 +55,11 @@ if (has_rights (Admin::ACX_MODIFY_REFILLS)) {
 	$HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("time_add.png") ;
 }
 
+$HD_Form->help_text = create_help(
+    _("Refill history - The section below allows you to add refills against a customer. Note that this changes the balance on the account"),
+    'ViewPayments'
+);
+
 $list_refill_type = getRefillType_List();
 
 $HD_Form->AddListValue(_("ID"), "id");

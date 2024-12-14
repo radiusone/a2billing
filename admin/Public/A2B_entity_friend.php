@@ -172,9 +172,6 @@ require_once __DIR__ . "/../templates/main.php";
 
 // #### HELP SECTION
 if ($form_action === "list") {
-    echo create_help(_("SIP and IAX Config will create a SIP or IAX entry on the Asterisk server, so that a customer can set up a SIP or IAX client to connect directly to the asterisk server without the need to enter an account and pin each time a call is made. When done, click on the CONFIRM DATA button, then click reload to apply the changes on the Asterisk server.<br>") .
-        _("The customer must then enter the URL/IP address of the asterisk server into the SIP/IAX client, and use the Account Number and Secret word as the username and password."), 'ListSIPFriend');
-
     if (!USE_REALTIME) {
     ?>
 <div class="row pb-3">
@@ -279,15 +276,8 @@ if ($form_action === "list") {
 </div> <!-- .modal -->
 <!-- ** ** ** ** ** Part for the Update ** ** ** ** ** -->
 <?php
-} else {
-    echo create_help(
-        _("Each SIP/IAX client is identified by a number of parameters.<br><br>") .
-            _("More details on how to configure clients are on the Wiki"),
-        'EditFriend'
-    );
 }
 
-// #### TOP SECTION PAGE
 $HD_Form->create_toppage ($form_action);
 $HD_Form->create_form($form_action, $list) ;
 

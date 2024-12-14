@@ -88,6 +88,12 @@ $HD_Form->FG_LIST_ADDING_BUTTON2 = true;
 $HD_Form->FG_LIST_ADDING_BUTTON_LINK2 = "?ticket_type=" . ($ticket_type === "agent" ? "user" : "agent");
 $HD_Form->FG_LIST_ADDING_BUTTON_MSG2 = $ticket_type === "agent" ? _("Show user tickets") : _("Show agent tickets");
 
+if ($ticket_type === "agent") {
+    $HD_Form->list_help_text = create_help(_("You can see here, all tickets created by Agents. You can also add a new ticket for one Agent."));
+} else {
+    $HD_Form->list_help_text = create_help(_("You can see here, all tickets created. You can also add a new ticket for one customer."));
+}
+
 $priority_list = Ticket::getAllPriorityListView();
 $viewed_list = getTicketViewedList();
 $status_list = Ticket::getAllStatusListView();
@@ -139,6 +145,7 @@ $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form->FG_ENABLE_ADD_BUTTON = true;
 $HD_Form->FG_ENABLE_INFO_BUTTON = true;
 $HD_Form->FG_INFO_BUTTON_LINK = "CC_ticket_view.php?id=";
+$HD_Form -> FG_ADDITIONAL_FUNCTION_AFTER_ADD = "ticket_add";
 
 $val_default = "";
 if ($form_action === 'ask-add' && !empty($username)) {
@@ -155,7 +162,6 @@ if ($ticket_type === "agent") {
         "A2B_entity_agent.php?popup_select=1&"
     );
     $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["creator_type"] = 1;
-    $HD_Form -> FG_ADDITIONAL_FUNCTION_AFTER_ADD = "ticket_add";
 } else {
     $HD_Form->AddEditPopup(
         _("CREATOR"),
@@ -167,7 +173,6 @@ if ($ticket_type === "agent") {
         _("Insert the Customer ID")
     );
     $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["creator_type"] = 0;
-    $HD_Form -> FG_ADDITIONAL_FUNCTION_AFTER_ADD = "ticket_add";
 }
 
 $HD_Form->AddEditElement(

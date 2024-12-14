@@ -59,14 +59,10 @@ $list = $HD_Form_c->perform_action($form_action);
 if (!$wantinclude) {
     // #### HEADER SECTION
     require_once __DIR__ . "/../templates/main.php";
-
-    // #### HELP SECTION
-    echo create_help(_("Extra charges allow the billing of one-off or re-occurring monthly charges. These may be used as setup or service charges, etc...") .
-        _("Charges will appear to the user with the description you attach. Each charge that you create for a user will decrement his account."), 'AddCharge');
+    // #### TOP SECTION PAGE
+    $HD_Form_c->create_toppage($form_action);
 }
 
-// #### TOP SECTION PAGE
-$HD_Form_c->create_toppage($form_action);
 $HD_Form_c->create_form($form_action, $list);
 
 if (!$wantinclude) {

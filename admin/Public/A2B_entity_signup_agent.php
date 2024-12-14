@@ -52,14 +52,6 @@ $list = $HD_Form -> perform_action($form_action);
 
 require_once __DIR__ . "/../templates/main.php";
 
-// #### HELP SECTION
-if ($form_action === "ask-add") {
-    echo create_help(_("Generate a specific crypted URL to configure signup with a customer group and call plan."));
-} else {
-    echo create_help(_("This shows a list of all signup key create for the Agents, this key is used to identify the default paramater for the subscription on the signup page"));
-}
-
-// #### TOP SECTION PAGE
 $HD_Form -> create_toppage ($form_action);
 $HD_Form -> create_form($form_action, $list) ;
 

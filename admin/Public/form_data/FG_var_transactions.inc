@@ -54,6 +54,8 @@ $HD_Form = new FormHandler(
 $HD_Form->FG_QUERY_ORDERBY_COLUMNS = ["date_purchased"];
 $HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
 
+$HD_Form->help_text = create_help(_("You can view all the transactions through the different epayment configured systems (Paypal, MoneyBookers, etc...). "), 'ViewTransactions');
+
 $HD_Form->AddListValue(_("ID"), "id");
 $HD_Form->AddListValue(_("Date"), "date_purchased");
 if ($trans_type === "agent") {

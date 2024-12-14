@@ -52,10 +52,6 @@ $list = $HD_Form->perform_action($form_action);
 
 require_once __DIR__ . "/../templates/main.php";
 
-// #### HELP SECTION
-echo create_help(_("Agents Commission history - The section below allows you to add commissions against an agent. Normally the commissions are generated automatically by the customer's payment."), 'ViewCommissions');
-
-// #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);
 $HD_Form->create_form($form_action, $list);
 

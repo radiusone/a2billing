@@ -55,6 +55,13 @@ $HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
 $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("page_white_add.png") ;
 
+$HD_Form->help_text = create_help(
+    _("This section allows you to define the Speed dials for the customer.")
+    . '<br>'
+    . _("A Speed Dial will be entered on the IVR in order to make a shortcut to their preferred dialled phone number."),
+    'ListSpeeddial'
+);
+
 $speeddial_list = range(0, 9);
 
 $HD_Form->AddListValue(_("Speed dial"), "speeddial");

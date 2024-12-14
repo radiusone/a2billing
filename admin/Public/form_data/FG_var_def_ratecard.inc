@@ -96,6 +96,15 @@ $HD_Form->search_session_key = "entity_ratecard_selection";
 $export_cols = $A2B->config['webui']['rate_export_field_list'];
 $HD_Form->FG_EXPORT_FIELD_LIST = explode(",", $export_cols);
 
+$HD_Form->add_help_text = $HD_Form->edit_help_text = create_help(
+    _("Please fill in the fields below to set up the rate for each destination."),
+    'Rate'
+);
+$HD_Form->list_help_text = create_help(
+    _("Please select a ratecard and click on search to browse the different rates/dialing prefix of the selected ratecard."),
+    'Rate'
+);
+
 $HD_Form->AddListValue(_("Destination"), "destination", null, [], false)
     ->AddListValue("<abbr title=\"Dialing Prefix\">" . _("Prefix") . "</abbr>", "dialprefix")
     ->AddListValue("<abbr title=\"Buy Rate\">" . _("Buy") . "</abbr>", "buyrate")

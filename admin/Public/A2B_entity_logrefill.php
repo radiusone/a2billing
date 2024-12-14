@@ -42,7 +42,6 @@ require_once __DIR__ . "/form_data/FG_var_logrefill.inc";
 /**
  * @var FormHandler $HD_Form
  * @var string $form_action
- * @var string $id
  */
 
 Admin::checkPageAccess(Admin::ACX_BILLING);
@@ -55,19 +54,10 @@ $list = $HD_Form->perform_action($form_action);
 
 require_once __DIR__ . "/../templates/main.php";
 
-// #### HELP SECTION
-echo create_help(
-    _("Refill history - The section below allows you to add refills against a customer. Note that this changes the balance on the account"),
-    'ViewPayments'
-);
-
 if ($form_action === "list") {
     $HD_Form->create_search_form();
 }
-
-// #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);
-
 $HD_Form->create_form($form_action, $list);
 
 require_once __DIR__ . "/../templates/footer.php";

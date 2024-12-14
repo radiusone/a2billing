@@ -45,6 +45,8 @@ $HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
 $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("add.png");
 
+$HD_Form->help_text = create_help(_("SIGNUP SUBSCRIBER - You can make create a list of subscribers that the customers can subscribe."));
+
 $activated_list = getActivationList();
 
 $HD_Form->AddListValue(_("Label"), "label");

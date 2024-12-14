@@ -86,7 +86,6 @@ if ($action === "ask_release") {
 }
 
 if ($action !== "ask_release") {
-    echo create_help(_("List the DIDs currently in use with the customer id and their destination number <br/> You can use the search option to show the usage of a given DID or all DIDs"), 'DIDUsage');
     $list = $HD_Form->perform_action($form_action);
     $HD_Form->create_search_form();
     $HD_Form->create_form($form_action, $list) ;

@@ -52,13 +52,9 @@ $list = $HD_Form->perform_action($form_action);
 
 require_once __DIR__ . "/../templates/main.php";
 
-// #### HELP SECTION
-echo create_help(_("The system log helps you track all events on your application. Log levels are the Importance Levels for the events - 1 is lowest level and 3 is highest level. 1 is used for Login, Logout and Page Visit. 2 is used for Add, Import, Export. 3 is for Update and Delete."), 'SystemLog');
-
 if ($form_action === "list") {
     $HD_Form->create_search_form();
 }
-// #### TOP SECTION PAGE
 $HD_Form->create_toppage ($form_action);
 $HD_Form->create_form($form_action, $list);
 

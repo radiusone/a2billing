@@ -51,6 +51,15 @@ $HD_Form->FG_FK_TABLENAMES = ["cc_card"];
 $HD_Form->FG_FK_EDITION_CLAUSE = ["id_didgroup"];
 $HD_Form->FG_FK_DELETE_MESSAGE = _("You have some cards using this DID Group! Please comfirm that you really want to remove this DID Group ? ");
 
+$HD_Form->list_help_text = create_help(
+    _("DID (or DDI) Group list. DID can be chosen by customers through the customer interface."),
+    'ListDIDGroup'
+);
+$HD_Form->help_text = create_help(
+    _("DID group offers customers a group of DID numbers which can be selected by the customer"),
+    'EditDIDGroup'
+);
+
 $HD_Form->AddListValue(_("NAME"), "didgroupname");
 $HD_Form->AddListValue(_("CREATION DATE"), "creationdate");
 $HD_Form->FieldViewElement (["didgroupname", "creationdate"]);

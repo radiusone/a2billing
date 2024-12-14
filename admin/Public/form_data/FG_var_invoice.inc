@@ -100,6 +100,11 @@ $HD_Form->AddListActionButton(
 $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("money.png") ;
 
+$HD_Form->help_text = create_help(
+    _("Invoice history - The section below allows you to see and create invoices against a customer. Only the closed invoice can be seen on the customer interface"),
+    'ViewInvoices'
+);
+
 $status_list = getInvoiceStatusList();
 $paid_status_list = getInvoicePaidStatusList();
 $typepaid_list = getPaidTypeList();

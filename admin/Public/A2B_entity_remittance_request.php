@@ -111,15 +111,10 @@ $list = $HD_Form->perform_action($form_action);
 
 require_once __DIR__ . "/../templates/main.php";
 
-// #### HELP SECTION
-echo create_help(_("Agents Remittance request history - The section below allows you to confirm or refuse remittance request of an agent. The remittance reques are generated automatically by the agent."), 'ViewRemittance');
-
 if ($form_action == "list") {
     $HD_Form->create_search_form();
 }
-// #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);
-
 $HD_Form->create_form($form_action, $list);
 
 require_once __DIR__ . "/../templates/footer.php";

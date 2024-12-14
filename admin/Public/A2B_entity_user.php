@@ -41,7 +41,6 @@ require_once __DIR__ . "/../../common/lib/admin.defines.php";
 require_once "./form_data/FG_var_user.inc";
 /**
  * @var FormHandler $HD_Form
- * @var string $popup_select
  * @var string $form_action
  * @var string $groupID
  */
@@ -58,12 +57,6 @@ $list = $HD_Form->perform_action($form_action);
 
 require_once __DIR__ . "/../templates/main.php";
 
-if (!$popup_select) {
-    echo $form_action === 'ask-add'
-        ? create_help(_("Add administrator."), 'EditAdministrator')
-        : create_help(_("Administrators - this shows a list of all the Administrators who have access to the Administrator interface."), 'ShowAdministrator');
-}
-
 $HD_Form->create_toppage ($form_action);
 $HD_Form->create_form($form_action, $list);
 
@@ -78,4 +71,3 @@ require_once __DIR__ . "/../templates/footer.php";
         window.close();
     }
 </script>
-

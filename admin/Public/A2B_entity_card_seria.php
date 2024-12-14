@@ -52,11 +52,6 @@ $list = $HD_Form -> perform_action($form_action);
 
 require_once __DIR__ . "/../templates/main.php";
 
-// #### HELP SECTION
-echo create_help(_("This page shows the series list.")
-    . '<br>' . _("Series & serials is used for the creation of a card range specifically for accounting purposes instead of card id."), 'ListSeria');
-
-// #### TOP SECTION PAGE
 $HD_Form -> create_toppage ($form_action);
 $HD_Form -> create_form($form_action, $list) ;
 

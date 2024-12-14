@@ -43,6 +43,11 @@ $HD_Form = new FormHandler("cc_monitor", _("Monitoring"));
 $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("map.png") ;
 
+$HD_Form->help_text = create_help(
+    _("IVR Monitoring, an extension should be configured for the admin to call and monitor through an IVR some important data from your system."),
+    'ListMonitoring'
+);
+
 $mquery_type_list = [1 => _("SQL"), 2 => _("SHELL SCRIPT")];
 $mresult_type_list = [1 => _("TEXT2SPEECH"), 2 => _("UNIXTIME"), 3 => _("NUMBER"), 4 => _("DIGIT")];
 $actived_list = getActivationList() ;

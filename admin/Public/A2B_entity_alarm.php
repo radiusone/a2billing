@@ -52,17 +52,6 @@ $list = $HD_Form->perform_action($form_action);
 
 require_once __DIR__ . "/../templates/main.php";
 
-// #### HELP SECTION
-if ($form_action == 'ask-add') {
-    echo create_help(
-        _("Utility to apply a scheduled monitor on trunks.<br>") .
-            _("For example if you want to monitor ASR (answer seize ratio) or ALOC (average length of call) everyday on each single trunk, it can be defined here, the different parameters below will define the rules to apply the alarm."),
-        'EditAlarm'
-    );
-} else {
-    echo create_help(_("Alarms that monitors trunks at timed intervals."), 'ListAlarm');
-}
-
 // #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);
 $HD_Form->create_form($form_action, $list);

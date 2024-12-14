@@ -64,6 +64,11 @@ $HD_Form->AddListActionButton(
     0 // waiting
 );
 
+$HD_Form->help_text = create_help(
+    _("Agents Remittance request history - The section below allows you to confirm or refuse remittance request of an agent. The remittance reques are generated automatically by the agent."),
+    'ViewRemittance'
+);
+
 $status_list = getRemittanceStatus_List();
 $type_list = getRemittanceType_List();
 

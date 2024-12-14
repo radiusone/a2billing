@@ -65,9 +65,6 @@ $list = $HD_Form->perform_action($form_action);
 
 require_once __DIR__ . "/../templates/main.php";
 
-// #### HELP SECTION
-echo create_help(_("Invoice history - The section below allows you to see and create invoices against a customer. Only the closed invoice can be seen on the customer interface"), 'ViewInvoices');
-
 // #### CREATE SEARCH FORM
 if ($form_action === "list" && !$popup_select) { ?>
 <div class="row justify-content-center">

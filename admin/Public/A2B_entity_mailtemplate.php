@@ -72,39 +72,25 @@ $list = $HD_Form->perform_action($form_action);
 
 require_once __DIR__ . "/../templates/main.php";
 
-// #### HELP SECTION
-if (!$popup_select) {
-    echo create_help(
-        _("Configure the mail template below.")
-            . '<br/>'
-            . _("A Reminder email can be sent (see a2billing.conf) to customers having low credit, a confirmation mail can be sent to customers after their signup, etc..."),
-        'ShowMailTemplates'
-    );
-    if ($form_action === "list") {
-        $HD_Form->create_search_form();
-    }
-} else {
-?>
-    <script>
-        function sendValue(selvalue) {
-            $.getJSON(
-                "A2B_entity_mailtemplate.php",
-                {id: selvalue, action: "load"},
-                function(data){
-                    window.opener.document.getElementById('msg_mail').value = data.messagetext;
-                    window.opener.document.getElementById('from').value = data.fromemail;
-                    window.opener.document.getElementById('fromname').value = data.fromname;
-                    window.opener.document.getElementById('subject').value = data.subject;
-                    window.close();
-                });
-        }
-    </script>
-    <?php
+if ($form_action === "list" && !$popup_select) {
+    $HD_Form->create_search_form();
 }
-
-// #### TOP SECTION PAGE
 $HD_Form->create_toppage ($form_action);
-
 $HD_Form->create_form($form_action, $list) ;
 
 require_once __DIR__ . "/../templates/footer.php";
+?>
+<script>
+    function sendValue(selvalue) {
+        $.getJSON(
+            "A2B_entity_mailtemplate.php",
+            {id: selvalue, action: "load"},
+            function(data){
+                window.opener.document.getElementById('msg_mail').value = data.messagetext;
+                window.opener.document.getElementById('from').value = data.fromemail;
+                window.opener.document.getElementById('fromname').value = data.fromname;
+                window.opener.document.getElementById('subject').value = data.subject;
+                window.close();
+            });
+    }
+</script>

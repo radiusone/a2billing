@@ -179,13 +179,6 @@ $list_tariffgroup = $HD_Form->DBHandle->GetAll("SELECT id, tariffgroupname, lcrt
 
 require_once __DIR__ . "/../templates/main.php";
 
-// #### HELP SECTION
-if (!$popup_select) {
-    echo ($form_action === 'ask-add' || $form_action === 'ask-edit')
-        ? create_help(_("Please fill in the fields below to set up the rate for each destination."), 'Rate')
-        : create_help(_("Please select a ratecard and click on search to browse the different rates/dialing prefix of the selected ratecard."), 'Rate');
-}
-
 // DISPLAY THE UPDATE MESSAGE
 echo $update_msg ?? "";
 

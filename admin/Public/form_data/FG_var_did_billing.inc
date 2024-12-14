@@ -48,6 +48,12 @@ $HD_Form->FG_TABLE_DEFAULT_ORDER = "date";
 $HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
 $HD_Form->list_query_conditions["sipiax"] = ["IN", [2, 3]];
 
+$HD_Form->help_text = create_help(
+    _("DID list and billing list.")
+    . _("You will see which customers have used your DIDs in past months and the traffic (amount of seconds)."),
+    'DIDBilling'
+);
+
 $HD_Form->AddListValue(_("DATE"), "DATE(starttime) AS date");
 $HD_Form->AddListValue(_("DID"), "cc_did.did");
 $HD_Form->AddListValue(_("NB_CALL"), "COUNT(*) AS nb_call");

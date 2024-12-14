@@ -59,6 +59,9 @@ $HD_Form->FG_ENABLE_ADD_BUTTON = true;
 $HD_Form->FG_LOCATION_AFTER_DELETE = "?form_action=list&del=";
 $HD_Form->FG_LOCATION_AFTER_ADD = "?form_action=list&id=";
 
+$HD_Form->add_help_text = create_help(_("Generate a specific crypted URL to configure signup with a customer group and call plan."));
+$HD_Form->help_text = create_help(_("This shows a list of all signup key create for the Agents, this key is used to identify the default paramater for the subscription on the signup page"));
+
 $HD_Form->AddListValue(_("Key"), "code");
 $HD_Form->AddListValue(_("Agent"), "id_agent", "display_linktoagent");
 $HD_Form->AddListSqlMapping(_("Call plan"), "id_tariffgroup", new Table("cc_tariffgroup", ["id", "tariffgroupname"]));

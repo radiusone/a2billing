@@ -200,12 +200,6 @@ function sendValue(selvalue, othervalue) {
     $result = $HD_Form->DBHandle->CacheExecute(300, "SELECT countrycode, countryname FROM cc_country ORDER BY countryname");
     $list_country = $result ? $result->GetAll() : [];
 
-    echo create_help(
-        _("Customers are listed below by account number. Each row corresponds to one customer, along with information such as their call plan, credit remaining, etc.")
-            . "<br/>"
-            . _("The SIP and IAX buttons create SIP and IAX entries to allow direct VoIP connections to the Asterisk server without further authentication."),
-        'ListCustomers'
-    );
 ?>
 
 <div class="row justify-content-center">
@@ -609,11 +603,6 @@ function sendValue(selvalue, othervalue) {
 </div>
 <?php
     endif; // endif is_sip_iax_change
-} elseif ($form_action !== "list" && !$popup_select) {
-    echo create_help(
-        _("Create and edit the properties of each customer. Click CONFIRM DATA at the bottom of the page to save changes."),
-        'CreateCustomer'
-    );
 }
 
 $HD_Form->create_toppage($form_action);

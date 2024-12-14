@@ -52,11 +52,6 @@ $list = $HD_Form->perform_action($form_action);
 
 require_once __DIR__ . "/../templates/main.php";
 
-// #### HELP SECTION
-echo create_help(_("DID list and billing list.") .
-    _("You will see which customers have used your DIDs in past months and the traffic (amount of seconds)."), 'DIDBilling');
-
-// #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);
 $HD_Form->create_form($form_action, $list);
 

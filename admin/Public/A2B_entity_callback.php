@@ -52,13 +52,7 @@ $list = $HD_Form->perform_action($form_action);
 
 require_once __DIR__ . "/../templates/main.php";
 
-// #### HELP SECTION
-echo create_help(_("Callback will offer you an easy way to connect any phone to our Asterisk platform.
-Browse here the pending and completed callbacks. You will see that different parameters determine the callback, the way to reach the user, the time when we need to call him, the result of the last attempts, etc..."), 'ShowCallbacks');
-
-// #### TOP SECTION PAGE
 $HD_Form->create_toppage ($form_action);
-
 $HD_Form->create_form($form_action, $list) ;
 
 require_once __DIR__ . "/../templates/footer.php";

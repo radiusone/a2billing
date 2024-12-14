@@ -62,17 +62,20 @@ if ((!empty($posted_search) && !empty($inuse)) || empty($posted_search)) {
         "data:image/gif;base64,R0lGODlhIQALAKEDAPPt2ZycnAAAAP///yH+FUNyZWF0ZWQgd2l0aCBUaGUgR0lNUAAh+QQBAAADACwAAAAAIQALAAACQVyOqctoAKOctMZjs5YYCAF9IBh+nimeZDd6EemGLgwDLGnGZzmiMDt7CWU0nS1AVClTLWaus4lSoNKqzdDIah0FADs="
     );
 }
+if (($action ?? "") !== "ask_release") {
+    $HD_Form->help_text = create_help(_("List the DIDs currently in use with the customer id and their destination number <br/> You can use the search option to show the usage of a given DID or all DIDs"), 'DIDUsage');
+}
 
-$statuslist = [[_("Free"), 0], [_("Reserved"), 1]];
+$status_list = [_("Free"), _("Reserved")];
 
 $HD_Form->AddListValue(_("DID"), "did", "display_phone_number");
 $HD_Form->AddListValue(_("Card"), "id_cc_card", "display_customer_id_link");
 $HD_Form->AddListValue(_("Reservation date"), "reservationdate");
 $HD_Form->AddListValue(_("Liberation date"), "releasedate");
-$HD_Form->AddListMapping(_("Status"), "cc_did_use.activated", $statuslist);
+$HD_Form->AddListMapping(_("Status"), "cc_did_use.activated", $status_list);
 $HD_Form->FieldViewElement (["did", "id_cc_card", "reservationdate", "releasedate", "cc_did_use.activated", "id_did"]);
 
 $HD_Form->CV_NO_FIELDS = _("No DIDs in use");
 
 $HD_Form->AddSearchTextInput(_("DID"), "did", "didtype");
-$HD_Form->AddSearchSelectInput(_("Status"), "inuse", [[0, _("All DIDs")], [1, _("DIDs in use")]]);
+$HD_Form->AddSearchSelectInput(_("Status"), "inuse", [_("All DIDs"), _("DIDs in use")]);

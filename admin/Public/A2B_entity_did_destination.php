@@ -41,9 +41,7 @@ $menu_section = 8;
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
 require_once __DIR__ . "/form_data/FG_var_did_destination.inc";
 /**
- * @var A2Billing $A2B
  * @var FormHandler $HD_Form
- * @var string $id
  */
 
 Admin::checkPageAccess(Admin::ACX_DID);
@@ -56,11 +54,7 @@ $list = $HD_Form->perform_action($form_action);
 
 require_once __DIR__ . "/../templates/main.php";
 
-// #### HELP SECTION
-echo create_help(_("DID number list with destinations."), 'ListDID');
-// #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);
-
 $HD_Form->create_form($form_action, $list);
 
 require_once __DIR__ . "/../templates/footer.php";
