@@ -170,6 +170,21 @@ class FormHandler
     /** @var array<array<string,string>> An array containing button definitions for the list entries */
     public array $list_action_buttons = [];
 
+    /** @var string help text shown in all views (can be overridden for individual views) */
+    public string $help_text = "";
+
+    /** @var string help text for list view */
+    public string $list_help_text = "";
+
+    /** @var string help text for edit view */
+    public string $edit_help_text = "";
+
+    /** @var string help text for add view */
+    public string $add_help_text = "";
+
+    /** @var string help text for delete view */
+    public string $del_help_text = "";
+
     //	-------------------- DATA FOR THE EDITION --------------------
 
     /** @var array List of form elements used to create the edit form */
@@ -1777,25 +1792,39 @@ class FormHandler
 
     /**
      * Function to create the top page section
-     *
-     * @public
+     * todo: return, don't echo
      */
-    public function create_toppage($form_action)
+    public function create_toppage(string $form_action): void
     {
-        $msg = '';
+        $help = "";
+        $msg = "";
         if ($form_action === "ask-edit" || $form_action === "edit" || $form_action === "add-content" || $form_action === "del-content") {
+            if ($form_action === "ask-edit") {
+                $help = $this->edit_help_text ?: $this->help_text;
+            }
             if ($this->alarm_db_error_duplication) {
                 $msg = "<p class=\"danger\">$this->FG_TEXT_ERROR_DUPLICATION</p>";
             } else {
                 $msg = $this->FG_INTRO_TEXT_EDITION;
             }
-        } elseif ($form_action == "ask-add") {
+        } elseif ($form_action === "ask-add") {
             $msg = $this->FG_INTRO_TEXT_ADITION;
+            $help = $this->add_help_text ?: $this->help_text;
+        } elseif ($form_action === "ask-delete") {
+            $help = $this->del_help_text ?: $this->help_text;
+        } elseif ($form_action === "list") {
+            $help = $this->list_help_text ?: $this->help_text;
         }
-        $html = "<div class='row pb-3 align-items-center'><div class='col'>$msg</div></div>";
-        echo $html;
-    }
 
+        if ($help) {
+            $help = "<div class='row pb-3 align-items-center'><div class='col'>$help</div></div>";
+        }
+        if ($msg) {
+            $msg = "<div class='row pb-3 align-items-center'><div class='col'>$msg</div></div>";
+        }
+
+        echo $help . $msg;
+    }
 
     /**
      * CREATE_ACTIONFINISH : Function to display result
