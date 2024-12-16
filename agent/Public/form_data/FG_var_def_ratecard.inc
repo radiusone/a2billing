@@ -69,7 +69,7 @@ $yesno = getYesNoList();
 if ($popup_select) $HD_Form -> AddListValue(gettext("ID"), "id");
 $HD_Form -> AddListValue(gettext("DESTINATION"), "destination");
 $HD_Form -> AddListValue("<acronym title=\"DIALING PREFIX\">" . gettext("PREFIX") . "</acronym>", "dialprefix");
-$HD_Form -> AddListValue("<acronym title=\"SELLING RATE\">" . gettext("SR") . "</acronym>", "rateinitial");
+$HD_Form -> AddListValue("<acronym title=\"SELLING RATE\">" . gettext("SR") . "</acronym>", "rateinitial", "display_money_precise");
 if (!$popup_select) $HD_Form -> AddListValue(gettext("START-DATE"), "startdate");
 if (!$popup_select) $HD_Form -> AddListValue(gettext("STOP-DATE"), "stopdate");
 if (!$popup_select) $HD_Form -> AddListValue("<acronym title=\"CONNECT CHARGE\">" . gettext("CC") . "</acronym>", "connectcharge");

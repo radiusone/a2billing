@@ -103,11 +103,11 @@ $DBHandle  = DbConnect();
 $FG_TABLE_COL = array();
 $FG_TABLE_COL[]=array (gettext("DNID"), "dnid", "25%", "center", "SORT", "30");
 $FG_TABLE_COL[]=array (gettext("COUNT"),"count","15%", "center", "SORT", "30");
-$FG_TABLE_COL[]=array (gettext("AVG Rate"), "buyrate", "10%", "center", "SORT", "30", "", "", "", "", "", "display_2bill");
-$FG_TABLE_COL[]=array (gettext("AVG Sale"), "calledrate", "10%", "center", "SORT", "30", "", "", "", "", "", "display_2bill");
+$FG_TABLE_COL[]=array (gettext("AVG Rate"), "buyrate", "10%", "center", "SORT", "30", "", "", "", "", "", "display_money_precise");
+$FG_TABLE_COL[]=array (gettext("AVG Sale"), "calledrate", "10%", "center", "SORT", "30", "", "", "", "", "", "display_money_precise");
 $FG_TABLE_COL[]=array (gettext("Duration"), "sessiontime", "10%", "center", "SORT", "30", "", "", "", "", "", "display_minute");
-$FG_TABLE_COL[]=array (gettext("Buy"), "buycost", "10%", "center", "SORT", "30", "", "", "", "", "", "display_2bill");
-$FG_TABLE_COL[]=array (gettext("Sell"), "sessionbill", "10%", "center", "SORT", "30", "", "", "", "", "", "display_2bill");
+$FG_TABLE_COL[]=array (gettext("Buy"), "buycost", "10%", "center", "SORT", "30", "", "", "", "", "", "display_money_precise");
+$FG_TABLE_COL[]=array (gettext("Sell"), "sessionbill", "10%", "center", "SORT", "30", "", "", "", "", "", "display_money_precise");
 
 $FG_TABLE_DEFAULT_ORDER = "count";
 $FG_TABLE_DEFAULT_SENS = "DESC";
@@ -847,25 +847,25 @@ foreach ($asr_cic_list1 as $asr_cic_data) {
         <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$i]?>" align="right" nowrap="nowrap"><font class="fontstyle_006"><?php echo number_format ($asr_cic_list1[$j][1]/($data[3]), 2)?> </font></td>
         <!-- SELL -->
         <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$i]?>" align="right" nowrap="nowrap"><font class="fontstyle_006"><?php
-        echo get_2bill($data[2])
+        echo get_money_precise($data[2])
         ?>
         </font></td>
         <!-- BUY -->
         <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$i]?>" align="right" nowrap="nowrap"><font class="fontstyle_006"><?php
-        echo get_2bill($data[4])
+        echo get_money_precise($data[4])
         ?>
         </font></td>
         <!-- PROFIT -->
         <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$i]?>" align="right" nowrap="nowrap"><font class="fontstyle_006"><?php
-        echo get_2bill($data[2]-$data[4])
+        echo get_money_precise($data[2]-$data[4])
         ?>
         </font></td>
         <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$i]?>" align="right" nowrap="nowrap"><font class="fontstyle_006"><?php
-        if ($data[2]!=0) { echo get_2dec_percentage((($data[2]-$data[4])/$data[2])*100); } else { echo "NULL";}
+        if ($data[2]!=0) { echo get_percent((($data[2]-$data[4])/$data[2])*100); } else { echo "NULL";}
         ?>
         </font></td>
         <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$i]?>" align="right" nowrap="nowrap"><font class="fontstyle_006"><?php
-        if ($data[4]!=0) { echo get_2dec_percentage((($data[2]-$data[4])/$data[4])*100); } else { echo "NULL";}
+        if ($data[4]!=0) { echo get_percent((($data[2]-$data[4])/$data[4])*100); } else { echo "NULL";}
         ?>
         </font></td>
      <?php 	 $j++;}
@@ -890,11 +890,11 @@ foreach ($asr_cic_list1 as $asr_cic_data) {
         <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php echo $totalcall?></font></td>
         <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php echo $total_tmc?></font></td>
             <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php echo number_format($totalsuccess/$totalcall, 2)?> </font></td>
-        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php echo get_2bill($totalcost) ?></font></td>
-        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php echo get_2bill($totalbuycost) ?></font></td>
-        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php echo get_2bill($totalcost - $totalbuycost) ?></font></td>
-        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php if ($totalcost!=0) { echo get_2dec_percentage((($totalcost - $totalbuycost)/$totalcost)*100); } else { echo "NULL";} ?></font></td>
-        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php if ($totalbuycost!=0) { echo get_2dec_percentage((($totalcost - $totalbuycost)/$totalbuycost)*100);  } else { echo "NULL";} ?></font></td>
+        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php echo get_money($totalcost) ?></font></td>
+        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php echo get_money($totalbuycost) ?></font></td>
+        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php echo get_money($totalcost - $totalbuycost) ?></font></td>
+        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php if ($totalcost!=0) { echo get_percent((($totalcost - $totalbuycost)/$totalcost)*100); } else { echo "NULL";} ?></font></td>
+        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php if ($totalbuycost!=0) { echo get_percent((($totalcost - $totalbuycost)/$totalbuycost)*100);  } else { echo "NULL";} ?></font></td>
     </tr>
     <!-- END TOTAL -->
 

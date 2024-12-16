@@ -118,7 +118,7 @@ require_once __DIR__ . "/../templates/main.php";
                 </tr>
                 <tr>
                     <th scope="row"><?= _("Tax rate") ?></th>
-                    <td><?= get_2dec_percentage($agent["vat"]) ?></td>
+                    <td><?= get_percent($agent["vat"]) ?></td>
                 </tr>
                 <tr>
                     <th scope="row"><?= _("Language") ?></th>

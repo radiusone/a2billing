@@ -137,17 +137,17 @@ $HD_Form->AddListValue(_("Caller ID"), "src", "display_phone_number");
 $HD_Form->AddListValue(_("DNID"), "dnid", "display_phone_number");
 $HD_Form->AddListValue(_("Phone Number"), "calledstation", "display_phone_number");
 $HD_Form->AddListSqlMapping(_("Destination"), "cc_call.destination", new Table("cc_prefix", ["prefix", "destination"]));
-$HD_Form->AddListValue(_("Buy Rate"), "buyrate", "display_2bill");
-$HD_Form->AddListValue(_("Sell Rate"), "rateinitial", "display_2bill");
+$HD_Form->AddListValue(_("Buy Rate"), "buyrate", "display_money_precise");
+$HD_Form->AddListValue(_("Sell Rate"), "rateinitial", "display_money_precise");
 $HD_Form->AddListValue(_("Duration"), "sessiontime", "display_minute");
 $HD_Form->AddListValue(_("Account"), "card_id", "display_customer_id_link");
 $HD_Form->AddListValue(_("Trunk"), "trunkcode");
 $HD_Form->AddListMapping(_("Disposition"), "terminatecauseid", $dialstatus_list);
 $HD_Form->AddListMapping(_("CallType"), "sipiax", $calltype_list);
-$HD_Form->AddListValue(_("Buy"), "buycost", "display_2bill");
-$HD_Form->AddListValue(_("Sell"), "sessionbill", "display_2bill");
-$HD_Form->AddListValue(_("Margin"), "CASE WHEN cc_call.sessionbill != 0 THEN ((cc_call.sessionbill - cc_call.buycost) / cc_call.sessionbill) * 100 ELSE NULL END AS margin", "display_2dec_percentage");
-$HD_Form->AddListValue(_("Markup"), "CASE WHEN cc_call.buycost != 0 THEN ((cc_call.sessionbill - cc_call.buycost) / cc_call.buycost) * 100 ELSE NULL END AS markup", "display_2dec_percentage");
+$HD_Form->AddListValue(_("Buy"), "buycost", "display_money_precise");
+$HD_Form->AddListValue(_("Sell"), "sessionbill", "display_money_precise");
+$HD_Form->AddListValue(_("Margin"), "CASE WHEN cc_call.sessionbill != 0 THEN ((cc_call.sessionbill - cc_call.buycost) / cc_call.sessionbill) * 100 ELSE NULL END AS margin", "display_percent");
+$HD_Form->AddListValue(_("Markup"), "CASE WHEN cc_call.buycost != 0 THEN ((cc_call.sessionbill - cc_call.buycost) / cc_call.buycost) * 100 ELSE NULL END AS markup", "display_percent");
 
 $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form->FG_DELETE_BUTTON_LINK = "A2B_entity_call.php?form_action=ask-delete&id=";
@@ -270,12 +270,12 @@ if (count($list_total_day)):
             </td>
             <td><?= $data["nbcall"] ?></td>
             <td><?= get_minute(intval($data ["calltime"] / $data ["nbcall"])) ?></td>
-            <td><?= get_2dec_percentage($data["success_calls"] * 100 / ($data["nbcall"]) ) ?></td>
-            <td><?= get_2bill($data["sell"]) ?></td>
-            <td><?= get_2bill($data["buy"] ) ?></td>
-            <td><?= get_2bill($data["sell"] - $data["buy"]) ?></td>
-            <td><?= get_2dec_percentage($data["margin"]) ?></td>
-            <td><?= get_2dec_percentage($data["markup"]) ?></td>
+            <td><?= get_percent($data["success_calls"] * 100 / ($data["nbcall"]) ) ?></td>
+            <td><?= get_money_precise($data["sell"]) ?></td>
+            <td><?= get_money_precise($data["buy"] ) ?></td>
+            <td><?= get_money_precise($data["sell"] - $data["buy"]) ?></td>
+            <td><?= get_percent($data["margin"]) ?></td>
+            <td><?= get_percent($data["markup"]) ?></td>
         </tr>
     <?php endforeach ?>
     </tbody>
@@ -285,12 +285,12 @@ if (count($list_total_day)):
             <td colspan="2"><?= $totalminutes ?></td>
             <td><?= $totalcall ?></td>
             <td><?= $total_tmc ?></td>
-            <td><?= get_2dec_percentage($totalsuccess * 100 / $totalcall) ?></td>
-            <td><?= get_2bill($totalsell) ?></td>
-            <td><?= get_2bill($totalbuycost) ?></td>
-            <td><?= get_2bill($totalsell - $totalbuycost) ?></td>
-            <td><?= $totalsell ? get_2dec_percentage((($totalsell - $totalbuycost) / $totalsell) * 100) : _("n/a") ?></td>
-            <td><?= $totalbuycost ? get_2dec_percentage((($totalsell - $totalbuycost) / $totalbuycost) * 100) : _("n/a")?></td>
+            <td><?= get_percent($totalsuccess * 100 / $totalcall) ?></td>
+            <td><?= get_money($totalsell) ?></td>
+            <td><?= get_money($totalbuycost) ?></td>
+            <td><?= get_money($totalsell - $totalbuycost) ?></td>
+            <td><?= $totalsell ? get_percent((($totalsell - $totalbuycost) / $totalsell) * 100) : _("n/a") ?></td>
+            <td><?= $totalbuycost ? get_percent((($totalsell - $totalbuycost) / $totalbuycost) * 100) : _("n/a")?></td>
         </tr>
     </tfoot>
 </table>

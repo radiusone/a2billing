@@ -341,12 +341,12 @@ function getpost_ifset(array $test_vars, ?array &$data = null)
  * @param $currency
  * @return void
  */
-function display_money(?float $value, $currency = BASE_CURRENCY): void
+function display_money(?float $value, ?int $decimals = null, $currency = BASE_CURRENCY): void
 {
-    echo get_money($value, $currency);
+    echo get_money($value, $decimals, $currency);
 }
 
-function get_money(?float $value, $currency = BASE_CURRENCY): string
+function get_money(?float $value, ?int $decimals = null, $currency = BASE_CURRENCY): string
 {
     $value ??= 0;
     if (class_exists("NumberFormatter")) {
@@ -356,11 +356,18 @@ function get_money(?float $value, $currency = BASE_CURRENCY): string
                 getenv("LANG") ?: "en_US",
                 NumberFormatter::CURRENCY
             );
+            if (isset($decimals)) {
+                // leave at locale default unless specified
+                $formatter->setAttribute(NumberFormatter::FRACTION_DIGITS, $decimals);
+            }
             $formatter->setAttribute(NumberFormatter::ROUNDING_MODE, NumberFormatter::ROUND_HALFUP);
         }
+
         return $formatter->formatCurrency($value, BASE_CURRENCY);
     }
-    return sprintf("%0.2f %s", $value, strtoupper($currency));
+    $decimals ??= 2;
+
+    return sprintf("%0.{$decimals}f %s", $value, strtoupper($currency));
 }
 
 /**
@@ -418,12 +425,12 @@ function display_2dec(float $var)
  * @param $var
  * @return void
  */
-function display_2dec_percentage($var)
+function display_percent($var)
 {
-    echo get_2dec_percentage($var);
+    echo get_percent($var);
 }
 
-function get_2dec_percentage(?float $var): string
+function get_percent(?float $var): string
 {
     if (isset ($var)) {
         return number_format($var, 2) . "%";
@@ -437,33 +444,20 @@ function get_2dec_percentage(?float $var): string
  * @param float|int|string $amt
  * @return void
  */
-function display_2bill($amt): void
+function display_money_precise($amt): void
 {
-    echo get_2bill($amt);
+    echo get_money($amt, 4);
 }
 
 /**
- * Rounds and formats a currency amount
+ * Rounds and formats a currency amount to four decimal places
+ *
  * @param float|int|string $amt
  * @return string
  */
-function get_2bill($amt): string
+function get_money_precise($amt): string
 {
-    if (class_exists("NumberFormatter")) {
-        static $formatter = null;
-        if (is_null($formatter)) {
-            $formatter = NumberFormatter::create(
-                getenv("LANG") ?: "en_US",
-                NumberFormatter::CURRENCY
-            );
-            $formatter->setAttribute(NumberFormatter::FRACTION_DIGITS, 4);
-            $formatter->setAttribute(NumberFormatter::ROUNDING_MODE, NumberFormatter::ROUND_HALFUP);
-        }
-
-        return $formatter->formatCurrency($amt, BASE_CURRENCY);
-    }
-
-    return sprintf("%0.4f %s", $amt, BASE_CURRENCY);
+    return get_money($amt, 4);
 }
 
 /**

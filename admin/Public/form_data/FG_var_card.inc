@@ -164,7 +164,7 @@ foreach ($show_list as $field) {
             $HD_Form->AddListValue(_("Group"), "cc_card_group.name");
             break;
         case "credit":
-            $HD_Form->AddListValue(_("Balance"), "credit", "display_2bill");
+            $HD_Form->AddListValue(_("Balance"), "credit", "display_money");
             break;
         case "useralias":
             $HD_Form->AddListValue(_("Web login"), "useralias");
@@ -206,7 +206,7 @@ foreach ($show_list as $field) {
             $HD_Form->AddListValue(_("Email"), "email");
             break;
         case "discount":
-            $HD_Form->AddListValue(_("Discount"), "discount", "display_2dec_percentage");
+            $HD_Form->AddListValue(_("Discount"), "discount", "display_percent");
             break;
         case "callerid":
             $HD_Form->AddListValue(_("Caller ID"), "callerid");

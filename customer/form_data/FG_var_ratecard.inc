@@ -57,7 +57,7 @@ $HD_Form -> FG_QUERY_GROUPBY_COLUMNS = ["dialprefix"];
 
 $HD_Form -> AddListValue("<acronym title=\"DIALING PREFIX\">" . gettext("PREFIX") . "</acronym>", "dialprefix");
 $HD_Form -> AddListValue(gettext("DESTINATION"), "destination");
-$HD_Form -> AddListValue("<acronym title=\"SELLING RATE\">" . gettext("SR") . "</acronym>", "rateinitial");
+$HD_Form -> AddListValue("<acronym title=\"SELLING RATE\">" . gettext("SR") . "</acronym>", "rateinitial", "display_money_precise");
 
 $HD_Form -> FieldViewElement ('dialprefix, destination, MIN(rateinitial) as rateinitial');
 

@@ -232,7 +232,7 @@ $FG_TABLE_ALTERNATE_ROW_COLOR[1]='#EEE9E9';
                     <b><?php echo $arr_ratecard[10];?></b>
                 </td>
                 <td height="15" bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[1]?>" style="padding-left: 5px;">
-                    <?php echo round($RateEngine->ratecard_obj[$j]["rateinitial"]/$currency_value,4) ;?> <?php echo $currency; ?>
+                    <?php echo get_money($RateEngine->ratecard_obj[$j]["rateinitial"]/$currency_value,4, $currency) ;?>
                 </td>
             </tr>
 

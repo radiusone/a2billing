@@ -70,5 +70,5 @@ $HD_Form -> AddListValue(gettext("ID"), "cc_receipt.id");
 $HD_Form -> AddListValue(gettext("ACCOUNT"), "username", "display_customer_link");
 $HD_Form -> AddListValue(gettext("DATE"), "date");
 $HD_Form -> AddListValue(gettext("TITLE"), "title");
-$HD_Form -> AddListValue(gettext("AMOUNT INCL VAT"), "price","display_2bill");
+$HD_Form -> AddListValue(gettext("AMOUNT INCL VAT"), "price","display_money");
 $HD_Form -> FieldViewElement ("cc_receipt.id, username, cc_receipt.date,title,total_price");

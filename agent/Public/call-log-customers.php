@@ -119,12 +119,12 @@ if ( has_rights ( Agent::ACX_SEE_CUSTOMERS_CALLERID )) {
 $FG_TABLE_COL [] = array (gettext ( "DNID" ), "dnid", "7%", "center", "SORT", "30" );
 $FG_TABLE_COL [] = array (gettext ( "Phone Number" ), "calledstation", "13%", "center", "SORT", "30", "", "", "", "", "", "" );
 $FG_TABLE_COL [] = array (gettext ( "Destination" ), "dest","10%", "center", "SORT", "15", "lie", "cc_prefix", "destination,prefix", "prefix='%id'", "%1" );
-$FG_TABLE_COL [] = array (gettext ( "Sell Rate" ), "rateinitial", "8%", "center", "SORT", "30", "", "", "", "", "", "display_2bill" );
+$FG_TABLE_COL [] = array (gettext ( "Sell Rate" ), "rateinitial", "8%", "center", "SORT", "30", "", "", "", "", "", "display_money_precise" );
 $FG_TABLE_COL [] = array (gettext ( "Duration" ), "sessiontime", "8%", "center", "SORT", "30", "", "", "", "", "", "display_minute" );
 $FG_TABLE_COL [] = array (gettext ( "Account" ), "card_id", "10%", "center", "sort", "", "lie", "cc_card", "username,id", "id='%id'", "%1", "", "A2B_entity_card.php" );
 $FG_TABLE_COL [] = array ('<acronym title="' . gettext ( "Terminate Cause" ) . '">' . gettext ( "TC" ) . '</acronym>', "terminatecauseid", "7%", "center", "SORT", "", "list", $dialstatus_list );
 $FG_TABLE_COL [] = array (gettext ( "CallType" ), "sipiax", "10%", "center", "SORT", "", "list", $list_calltype );
-$FG_TABLE_COL [] = array (gettext ( "Sell" ), "sessionbill", "10%", "center", "SORT", "30", "", "", "", "", "", "display_2bill" );
+$FG_TABLE_COL [] = array (gettext ( "Sell" ), "sessionbill", "10%", "center", "SORT", "30", "", "", "", "", "", "display_money_precise" );
 
 if (LINK_AUDIO_FILE) {
     $FG_TABLE_COL [] = array ("", "uniqueid", "1%", "center", "", "30", "", "", "", "", "", "display_monitorfile_link" );
@@ -1247,10 +1247,10 @@ if (is_array ( $list_total_day ) && count ( $list_total_day ) > 0) {
                         <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR [$i]?>"
                             align="right" nowrap="nowrap"><font class="fontstyle_006"><?php echo $tmc?> </font></td>
                         <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR [$i]?>"
-                            align="right" nowrap="nowrap"><font class="fontstyle_006"><?php echo get_2dec_percentage ( $data [5] * 100/ ($data [3]) )?> </font></td>
+                            align="right" nowrap="nowrap"><font class="fontstyle_006"><?php echo get_percent ( $data [5] * 100/ ($data [3]) )?> </font></td>
                         <!-- SELL -->
                         <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR [$i]?>"
-                            align="right" nowrap="nowrap"><font class="fontstyle_006"><?php echo get_2bill ( $data [2] )?>
+                            align="right" nowrap="nowrap"><font class="fontstyle_006"><?php echo get_money_precise ( $data [2] )?>
                         </font></td>
 
      <?php
@@ -1279,8 +1279,8 @@ if (is_array ( $list_total_day ) && count ( $list_total_day ) > 0) {
                             class="fontstyle_003"><?php echo $totalminutes?> </font></td>
                         <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php echo $totalcall?></font></td>
                         <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php echo $total_tmc?></font></td>
-                        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php echo get_2dec_percentage ( $totalsuccess*100 / $totalcall )?> </font></td>
-                        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php echo get_2bill ( $totalcost )?></font></td>
+                        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php echo get_percent ( $totalsuccess*100 / $totalcall )?> </font></td>
+                        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php echo get_money( $totalcost )?></font></td>
                     </tr>
                     <!-- END TOTAL -->
 

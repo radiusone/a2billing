@@ -70,7 +70,7 @@ $FG_TABLE_COL[]=array (gettext("Duration"), "sessiontime", "7%", "center", "SORT
 $FG_TABLE_COL[]=array (gettext("CardUsed"), "card_id", "11%", "center", "SORT", "", "30", "", "", "", "", "display_customer_link");
 $FG_TABLE_COL[]=array (gettext("Terminatecause"), "terminatecauseid", "10%", "center", "SORT", "30");
 $FG_TABLE_COL[]=array (gettext("IAX/SIP"), "sipiax", "6%", "center", "SORT",  "", "list", $yesno);
-$FG_TABLE_COL[]=array (gettext("Cost"), "sessionbill", "10%", "center", "SORT", "30", "", "", "", "", "", "display_2bill");
+$FG_TABLE_COL[]=array (gettext("Cost"), "sessionbill", "10%", "center", "SORT", "30", "", "", "", "", "", "display_money_precise");
 
 $FG_TABLE_DEFAULT_ORDER = "t1.starttime";
 $FG_TABLE_DEFAULT_SENS = "DESC";
@@ -459,17 +459,17 @@ foreach ($table_graph as $tkey => $data) {
         <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$i]?>" align="right" nowrap="nowrap"><font face="verdana" color="#000000" size="1"><?php echo $tmc_60?> </font></td>
         <!-- SELL -->
         <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$i]?>" align="right" nowrap="nowrap"><font face="verdana" color="#000000" size="1"><?php
-        echo get_2bill($data[3])
+        echo get_money_precise($data[3])
         ?>
         </font></td>
         <!-- BUY -->
         <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$i]?>" align="right" nowrap="nowrap"><font face="verdana" color="#000000" size="1"><?php
-        echo get_2bill($data[4])
+        echo get_money_precise($data[4])
         ?>
         </font></td>
         <!-- PROFIT -->
         <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$i]?>" align="right" nowrap="nowrap"><font face="verdana" color="#000000" size="1"><?php
-        echo get_2bill($data[2])
+        echo get_money_precise($data[2])
         ?>
         </font></td>
      <?php 	 }
@@ -488,9 +488,9 @@ foreach ($table_graph as $tkey => $data) {
         <td align="center" nowrap="nowrap" colspan="2"><font class="fontstyle_003"><?php echo $total_minutes_60?> </font></td>
         <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php echo $totalcall?></font></td>
         <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php echo $total_tmc_60?></font></td>
-        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php  echo get_2bill($totalsell) ?></font></td>
-        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php  echo get_2bill($totalbuy) ?></font></td>
-        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php  echo get_2bill($totalprofit) ?></font></td>
+        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php  echo get_money($totalsell) ?></font></td>
+        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php  echo get_money($totalbuy) ?></font></td>
+        <td align="center" nowrap="nowrap"><font class="fontstyle_003"><?php  echo get_money($totalprofit) ?></font></td>
     </tr>
     <!-- FIN TOTAL -->
 

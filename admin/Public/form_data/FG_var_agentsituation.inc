@@ -50,7 +50,7 @@ $HD_Form = new FormHandler(
 );
 
 $HD_Form->AddListValue(_("Agent"), "id","display_linktoagent");
-$HD_Form->AddListValue(_("Credit"), "credit", "display_2bill");
+$HD_Form->AddListValue(_("Credit"), "credit", "display_money");
 $HD_Form->AddListValue("<abbr title=\"" . _("Commission balance") . "\">" . _("Bal") . "</abbr>", "com_balance", "display_money");
 $HD_Form->AddListValue("<abbr title=\"" . _("Total commission accrued") . "\">" . _("Total") . "</abbr>", "total", "display_money");
 $HD_Form->AddListValue("<abbr title=\"" . _("Total customer refill amount") . "\">" . _("Refills") . "</abbr>", "refills", "display_money");

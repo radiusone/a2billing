@@ -105,7 +105,7 @@ $HD_Form->AddListValue(_("Duration"), "real_sessiontime", "display_minute");
 $HD_Form->AddListValue(_("Card Used"), "card_id", "display_customer_id_link");
 $HD_Form->AddListMapping(_("Disposition"), "terminatecauseid", getDialStatusList());
 $HD_Form->AddListMapping(_("IAX/SIP"), "sipiax", getYesNoList());
-$HD_Form->AddListValue(_("Cost"), "sessionbill", "display_2bill");
+$HD_Form->AddListValue(_("Cost"), "sessionbill", "display_money_precise");
 $HD_Form->FieldViewElement([
     "starttime",
     "calledstation",

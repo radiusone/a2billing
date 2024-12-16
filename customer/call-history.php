@@ -106,7 +106,7 @@ $FG_TABLE_COL[]=array (gettext("Destination"), "destination", "14%", "center", "
 $FG_TABLE_COL[]=array (gettext("Duration"), "sessiontime", "10%", "center", "SORT", "30", "", "", "", "", "", "display_minute");
 $FG_TABLE_COL[]=array ('<acronym title="'.gettext("Terminate Cause").'">'.gettext("TC").'</acronym>', "terminatecauseid", "10%", "center", "SORT", "", "list", $dialstatus_list);
 $FG_TABLE_COL[]=array (gettext("CallType"), "sipiax", "12%", "center", "SORT",  "", "list", $list_calltype);
-$FG_TABLE_COL[]=array (gettext("Cost"), "sessionbill", "12%", "center", "SORT", "30", "", "", "", "", "", "display_2bill");
+$FG_TABLE_COL[]=array (gettext("Cost"), "sessionbill", "12%", "center", "SORT", "30", "", "", "", "", "", "display_money_precise");
 
 $FG_COL_QUERY = 't1.starttime, t1.src, t1.calledstation, t1.destination, t1.sessiontime, t1.terminatecauseid, t1.sipiax, t1.sessionbill';
 
@@ -578,7 +578,7 @@ foreach ($list_total_day as $data) {
             </td>
             <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$i]?>" align="right" nowrap="nowrap" class="fontstyle_001"><?php echo $data[3]?></td>
             <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$i]?>" align="right" nowrap="nowrap" class="fontstyle_001" ><?php echo $tmc?> </td>
-            <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$i]?>" align="right" nowrap="nowrap" class="fontstyle_001"><?php  echo get_2bill($data[2]) ?></td>
+            <td bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$i]?>" align="right" nowrap="nowrap" class="fontstyle_001"><?php  echo get_money_precise($data[2]) ?></td>
          <?php
          }
 
@@ -598,7 +598,7 @@ foreach ($list_total_day as $data) {
         <td align="center" nowrap="nowrap" colspan="2" class="callhistory_td4"><?php echo $totalminutes?> </td>
         <td align="center" nowrap="nowrap" class="callhistory_td4"><?php echo $totalcall?></td>
         <td align="center" nowrap="nowrap" class="callhistory_td4"><?php echo $total_tmc?></td>
-        <td align="center" nowrap="nowrap" class="callhistory_td4"><?php  echo get_2bill($totalcost) ?></td>
+        <td align="center" nowrap="nowrap" class="callhistory_td4"><?php  echo get_money($totalcost) ?></td>
     </tr>
 
     </table>
