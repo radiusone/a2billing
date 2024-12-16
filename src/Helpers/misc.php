@@ -597,20 +597,23 @@ function get_refill_link(?int $id): string
  */
 function display_agent_refill_link(?int $id): void
 {
+    echo get_agent_refill_link($id);
+}
+
+function get_agent_refill_link(?int $id): string
+{
     $value = htmlspecialchars(_("n/a"));
     if (empty($id)) {
-        echo $value;
-        return;
+        return $value;
     }
     $handle = DbConnect();
     $row = (new Table("cc_logrefill_agent", ["credit"]))
         ->getRow($handle, ["id" => $id]);
     if (empty($row)) {
-        echo $value;
-        return;
+        return $value;
     }
 
-    printf(
+    return sprintf(
         "<a href=\"%s%d\">%s</a>",
         "A2B_refill_info_agent.php?id=",
         $id,

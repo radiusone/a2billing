@@ -83,7 +83,7 @@ $HD_Form->FieldViewElement([
 ]);
 
 $HD_Form->FG_ENABLE_INFO_BUTTON = true;
-$HD_Form->FG_INFO_BUTTON_LINK = "A2B_payment_info_agent.php?id=";
+$HD_Form->FG_INFO_BUTTON_LINK = "A2B_info_payment.php?type=agent&id=";
 $HD_Form->FG_ENABLE_ADD_BUTTON = true;
 
 $HD_Form->search_form_enabled = !$popup_select;
