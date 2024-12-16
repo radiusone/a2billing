@@ -338,6 +338,7 @@ function getpost_ifset(array $test_vars, ?array &$data = null)
  * Used as callback for list/form elements
  *
  * @param float|null $value
+ * @param int|null $decimals
  * @param $currency
  * @return void
  */
@@ -382,6 +383,7 @@ function display_minute($sessiontime): void
 
 function get_minute($sessiontime)
 {
+    // todo: what is this?
     // see if this came in via post/get
     getpost_ifset(["resulttype"], $p);
 
@@ -392,11 +394,13 @@ function get_minute($sessiontime)
     return $sessiontime;
 }
 
-function display_timespan(int $seconds, bool $include_seconds = false)
-{
-    echo get_timespan($seconds, $include_seconds);
-}
-
+/**
+ * Return time in "d h m" format
+ *
+ * @param int $sec
+ * @param bool $include_seconds
+ * @return string
+ */
 function get_timespan(int $sec, bool $include_seconds = false): string
 {
     $days = intdiv($sec, 86400);
@@ -404,20 +408,15 @@ function get_timespan(int $sec, bool $include_seconds = false): string
     $minutes = intdiv($sec - ($days * 86400) - ($hours * 3600), 60);
     $seconds = $sec - ($days * 86400) - ($hours * 3600) - ($minutes * 60);
 
-    return $include_seconds
-        ? sprintf("%dd %dh %dm %ds", $days, $hours, $minutes, $seconds)
-        : sprintf("%dd %dh %dm", $days, $hours, $minutes);
-}
+    if ($days) {
+        return $include_seconds
+            ? sprintf("%dd %dh %dm %ds", $days, $hours, $minutes, $seconds)
+            : sprintf("%dd %dh %dm", $days, $hours, $minutes);
+    }
 
-/**
- * Used as callback for list/form elements
- *
- * @param float $var
- * @return void
- */
-function display_2dec(float $var)
-{
-    echo number_format($var, 2);
+    return $include_seconds
+        ? sprintf("%dh %dm %ds", $hours, $minutes, $seconds)
+        : sprintf("%dh %dm", $hours, $minutes);
 }
 
 /**
@@ -458,26 +457,6 @@ function display_money_precise($amt): void
 function get_money_precise($amt): string
 {
     return get_money($amt, 4);
-}
-
-/**
- * Used as callback for list/form elements
- * @param string $phonenumber
- * @return int|void
- */
-function display_without_prefix(string $phonenumber)
-{
-    if (str_starts_with($phonenumber, "011")) {
-        echo substr($phonenumber, 3);
-
-        return 1;
-    }
-    if (str_starts_with($phonenumber, "00")) {
-        echo substr($phonenumber, 2);
-
-        return 1;
-    }
-    echo $phonenumber;
 }
 
 /**
@@ -534,8 +513,10 @@ function get_customer_link($username): string
 }
 
 /**
+ * Get a link to a user page with their account number
  * Used as callback for list/form elements
- * @param string|int $id
+ *
+ * @param string|int $id the user's ID
  * @return void
  */
 function display_customer_id_link($id): void
@@ -616,8 +597,10 @@ function get_agent_refill_link(?int $id): string
 }
 
 /**
+ * Get a link to a user page with their name
  * Used as callback for list/form elements
- * @param string|int $id
+ *
+ * @param string|int $id the user's ID
  * @return void
  */
 function display_customer_name_id_link($id): void
@@ -638,16 +621,11 @@ function display_customer_name_id_link($id): void
 }
 
 /**
- * Used as callback for list elements
- * @param string|int $id
- * @return void
- * @noinspection PhpUnused
+ * Get a link to a user's info page with their name and account number
+ *
+ * @param string|int $id the user's ID
+ * @return string
  */
-function display_infocustomer_id($id): void
-{
-    echo get_infocustomer_id($id);
-}
-
 function get_infocustomer_id($id): string
 {
     $value = htmlspecialchars(_("n/a"));
@@ -1036,50 +1014,6 @@ function do_field($sql, $fld, $dbfld)
     return $sql;
 }
 
-/**
- * Builds an SQL query condition and parameter array from request variables.
- * This requires the post field (e.g. foo) to have a corresponding type field (e.g. footype).
- * For example, build_query_safe($sql, 'foo', 'bar', $params) will construct something like
- * 'WHERE bar = $_REQUEST[foo]` if $_REQUEST[footype] == 1
- *
- * @param string $sql the SQL query string; assumed to be empty or starting with WHERE
- * @param string $post_field the name to search for in $_REQUEST
- * @param string $db_column the column name to be checked
- * @param array $params an array of query parameters
- * @return void
- */
-function build_query_safe(string &$sql, string $post_field, string $db_column, array &$params): void
-{
-    $check_value = $_REQUEST[$post_field] ?? null;
-    $check_type = $_REQUEST[$post_field . "type"] ?? null;
-    $sql = trim($sql);
-
-    if (is_null($check_value) || is_null($check_type)) {
-        return;
-    }
-
-    $params[] = $check_value;
-    $sql .= ($sql === "") ? "WHERE " : " AND ";
-    switch ($check_type) {
-        case 1:
-            // matches
-            $sql .= "$db_column = ?";
-            break;
-        case 2:
-            // starts with
-            $sql .= "$db_column LIKE CONCAT(?, '%')";
-            break;
-        case 3:
-            // contains
-            $sql .= "$db_column LIKE CONCAT('%', ?, '%')";
-            break;
-        case 4:
-            // ends with
-            $sql .= "$db_column LIKE CONCAT('%', ?)";
-            break;
-    }
-}
-
 function generate_invoice_reference(): string
 {
     $handle = DbConnect();
@@ -1319,28 +1253,6 @@ function is_agent(): bool
 function is_customer(): bool
 {
     return ($_SESSION["user_type"] ?? "") === "CUST";
-}
-
-/**
- * Return an array containing the selected entries from the given array
- *
- * @param array $arr
- * @param string ...$keys
- * @return array
- */
-function extract_keys(array $arr, string ...$keys): array
-{
-    $ret = [];
-    array_map(
-        function ($v) use ($arr, &$ret) {
-            if (array_key_exists($v, $arr)) {
-                $ret[$v] = $arr[$v];
-            }
-        },
-        $keys
-    );
-
-    return $ret;
 }
 
 /**

@@ -100,7 +100,7 @@ $HD_Form->CV_NO_FIELDS = _("No matching calls found; use the fields above to ref
 
 $HD_Form->AddListValue(_("Calldate"), "starttime");
 $HD_Form->AddListValue(_("CalledNumber"), "calledstation", "display_did");
-$HD_Form->AddListValue(_("Destination"), "cc_prefix.destination", "display_without_prefix");
+$HD_Form->AddListValue(_("Destination"), "cc_prefix.destination", "preg_replace", ["/^(00|011)/", "", "%X"]);
 $HD_Form->AddListValue(_("Duration"), "real_sessiontime", "display_minute");
 $HD_Form->AddListValue(_("Card Used"), "card_id", "display_customer_id_link");
 $HD_Form->AddListMapping(_("Disposition"), "terminatecauseid", getDialStatusList());
