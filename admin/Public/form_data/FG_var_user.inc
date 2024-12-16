@@ -88,7 +88,7 @@ if (!has_rights(Admin::ACX_MODIFY_ADMINS)) {
 }
 
 $HD_Form->FG_ENABLE_ADD_BUTTON = true;
-$HD_Form->FG_INFO_BUTTON_LINK = "A2B_admin_info.php?groupID=$groupID&id=";
+$HD_Form->FG_INFO_BUTTON_LINK = "A2B_info_admin.php?groupID=$groupID&id=";
 $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
 
