@@ -40,12 +40,14 @@ Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 $HD_Form = new FormHandler(
     "cc_remittance_request",
     _("Remittance Request Agent"),
-    "cc_remittance_request",
+    "cc_remittance_request.id",
     ["cc_agent" => ["cc_remittance_request.id_agent", "cc_agent.id"]]
 );
 
 $HD_Form->FG_QUERY_ORDERBY_COLUMNS = ["date"];
 $HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
+$HD_Form->FG_ENABLE_INFO_BUTTON = true;
+$HD_Form->FG_INFO_BUTTON_LINK = "A2B_info_remittance.php?id=";
 
 $HD_Form->AddListActionButton(
     "",
@@ -72,13 +74,13 @@ $HD_Form->help_text = create_help(
 $status_list = getRemittanceStatus_List();
 $type_list = getRemittanceType_List();
 
-$HD_Form->AddListValue(_("ID"), "cc_agent_commission.id");
+$HD_Form->AddListValue(_("ID"), "cc_remittance_request.id");
 $HD_Form->AddListValue(_("Agent"), "id_agent", "display_linktoagent");
 $HD_Form->AddListValue(_("Date"), "date");
 $HD_Form->AddListValue(_("Amount"), "amount", "display_money");
 $HD_Form->AddListMapping(_("Type"), "type", $type_list);
 $HD_Form->AddListMapping(_("Status"), "status", $status_list);
-$HD_Form->FieldViewElement (["id", "id_agent", "date", "amount", "type", "status"]);
+$HD_Form->FieldViewElement (["cc_remittance_request.id", "id_agent", "date", "amount", "type", "status"]);
 
 $HD_Form->search_form_enabled = true;
 $HD_Form->search_session_key = 'remittance_agent_selection';
