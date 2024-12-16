@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\A2Billing;
 use A2billing\Admin;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -40,110 +41,100 @@ require_once __DIR__ . "/../../common/lib/admin.defines.php";
 
 Admin::checkPageAccess(Admin::ACX_MAINTENANCE);
 
-getpost_ifset(array (
-    'nb',
-    'view_log',
-    'filter'
-));
+getpost_ifset(["nb", "view_log", "filter"]);
+/**
+ * @var numeric-string|null $nb
+ * @var numeric-string|null $view_log
+ * @var string|null $filter
+ * @var A2Billing $A2B
+ */
 
 require_once __DIR__ . "/../templates/main.php";
 
 // #### HELP SECTION
-echo create_help(_("Browse your server log files.") . '<br/>' .
-    _("This tool can be used to extract and present information from various logfiles."), 'WatchLogFiles');
-?>
-<br>
-<center>
-<?php
+echo create_help(
+    _("Browse your server log files.")
+        . '<br/>'
+        . _("This tool can be used to extract and present information from various logfiles."),
+    'WatchLogFiles'
+);
 
-function array2drop_down($name, $currentvalue, $arr_value)
+function array2drop_down(string $name, array $arr_value, string $currentvalue = ""): string
 {
-    echo '<SELECT name="' . $name . '" class="form_enter">';
-    if (is_array($arr_value) && count($arr_value) >= 1) {
-        foreach ($arr_value as $ind => $value) {
-            if ($ind != $currentvalue) {
-                echo '<option value="' . $ind . '">' . $value . '</option>';
-            } else {
-                echo '<option value="' . $ind . '" selected="selected">' . $value . '</option>';
-            }
-        }
+    $name = htmlspecialchars($name);
+    $html = "<select name=\"$name\" id=\"$name\" class=\"form-select\">";
+    foreach ($arr_value as $ind => $value) {
+        $sel = $ind == $currentvalue ? "selected=\"selected\"" : "";
+        $html .= "<option value=\"$ind\" $sel\">$value</option>";
     }
-    echo '</SELECT>';
+    $html .= "</select>";
+
+    return $html;
 }
 
-$directory = '/var/log/asterisk/';
-$d = dir($directory);
-
-while (false !== ($entry = $d->read())) {
-    if (is_file($directory . $entry) && $entry != '.' && $entry != '..')
-        $arr_log[] = $directory . $entry;
+$dir = new DirectoryIterator("/var/log/asterisk/");
+foreach ($dir as $entry) {
+    if ($entry->isFile() && $entry->isReadable()) {
+        $arr_log[] = $entry->getRealPath();
+    }
 }
-$d->close();
-
 foreach ($A2B->config["log-files"] as $log_file) {
-    if (strlen(trim($log_file)) > 1) {
+    if (file_exists($log_file) && is_readable($log_file)) {
         $arr_log[] = $log_file;
     }
 }
+$arr_log = array_unique($arr_log ?? []);
 sort($arr_log);
 
-$arr_nb = array (
-    25 => 25,
-    50 => 50,
-    100 => 100,
-    250 => 250,
-    500 => 500,
-    1000 => 1000,
-    2500 => 2500
+$arr_nb = [25, 50, 100, 250, 500, 1000, 2500];
+$arr_nb = array_combine(
+    $arr_nb,
+    array_map(fn ($v) => sprintf(_("%d lines"), $v), $arr_nb)
 );
-$nb = $nb ? $nb : 50;
 
+$nb ??= 50;
+$view_log ??= "";
 ?>
 
-<form method="get">
-<?php echo gettext("Browse log file")?>&nbsp; : <?php echo array2drop_down('view_log', $view_log, $arr_log)?> -
-<?php echo array2drop_down('nb', $nb, $arr_nb)?>
-
-<?php echo gettext("Filter")?> : <input class="form_enter" name="filter" size="20" maxlength="30" value="<?php echo $filter; ?>">
-
-<input class="form_enter" style="border: 2px outset rgb(204, 51, 0);" value=" Submit Query " type="submit">
+<form method="get" class="row pb-3">
+    <div class="col-auto">
+        <label class="visually-hidden" for="view_log"><?= _("Select a log file to view") ?></label>
+        <?= array2drop_down("view_log", $arr_log, $view_log ?? "") ?>
+    </div>
+    <div class="col-auto">
+        <label class="visually-hidden" for="nb"><?= _("Select number of lines to display") ?></label>
+        <?= array2drop_down("nb", $arr_nb, $nb) ?>
+    </div>
+    <div class="col-auto">
+        <label class="visually-hidden" for="filter"><?= _("Filter lines by text") ?></label>
+        <input type="text" class="form-control" name="filter" id="filter" value="<?= $filter ?? "" ?>" placeholder="<?= _("Filter") ?>"/>
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-sm btn-primary"><?= _("View") ?></button>
+    </div>
 </form>
-<hr/>
-</center>
+
 <?php
 
 if (isset($view_log)) {
     $f = $arr_log[$view_log];
-    $arr = stat($f);
-    echo '<title>'.$f.'</title>';
-    echo '<font size="3"><pre>';
-    //echo '<a href="view-source:'.WEBROOT.'/log/'.$f.'" target="_new">'.$f.'</a> ['.compute_size($arr['size']).'] last modified: '.date('r', $arr['mtime'])."\n\n";
-    echo '<b><a href="view-source:'.WEBROOT.'/log/'.$f.'" target="_new">'.$f.'</a> ['.($arr['size']).'] last modified: '.date('r', $arr['mtime'])."</b>\n\n";
-
-    $arr = file($f);
+    $arr = file($f, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     $arr = array_reverse($arr);
-    $i = 0;
-    foreach ($arr as $k=>$v) {
-        $v = trim($v);
-        if (!empty($v)) {
-            $i++;
-            if (strlen($filter)>0) {
-                $pos1 = stripos($v, $filter);
-                if ($pos1 !== false) {
-                    $arr_tmp[] = $v;
-                }
-            } else {
-                $arr_tmp[] = $v;
-            }
-            //echo $v."\n";
-        }
-        if($i>=$nb) break;
+    array_splice($arr, $nb);
+    if (!empty($filter)) {
+        $arr = array_filter(
+            $arr,
+            fn ($v) => str_contains(strtolower($v), strtolower($filter))
+        );
     }
-    $arr_tmp = array_reverse($arr_tmp);
-    foreach($arr_tmp as $v)
-        echo $v."\n";
-
-    echo '</pre></font>';
+    array_walk($arr, fn (&$v) => $v = htmlspecialchars($v));
+    printf(
+        "<div class='row pb-3'><div class='col'><p>%s (%d Kb, last modified %s)</p><pre class='py-3'>%s</pre></div></div>",
+        $f,
+        filesize($f) / 1024,
+        get_readable_date(filemtime($f)),
+        implode("\n", $arr)
+    );
 }
 
 require_once __DIR__ . "/../templates/footer.php";

@@ -1435,7 +1435,11 @@ function sub_money(...$args): string
     return get_money(sub(...$args));
 }
 
-function get_readable_date(?string $date): string
+/**
+ * @param int|string $date
+ * @return string
+ */
+function get_readable_date($date): string
 {
     if (empty($date)) {
         return _("N/A");
