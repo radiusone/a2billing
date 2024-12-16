@@ -55,9 +55,9 @@ $HD_Form -> search_session_key = 'entity_ratecard_selection';
 $HD_Form->list_query_conditions["tariffgroup_id"] = $_SESSION["tariff"];
 $HD_Form -> FG_QUERY_GROUPBY_COLUMNS = ["dialprefix"];
 
-$HD_Form -> AddListValue("<acronym title=\"DIALING PREFIX\">" . gettext("PREFIX") . "</acronym>", "dialprefix");
+$HD_Form -> AddListValue(abbr(_("PREFIX"), _("DIALING PREFIX")), "dialprefix");
 $HD_Form -> AddListValue(gettext("DESTINATION"), "destination");
-$HD_Form -> AddListValue("<acronym title=\"SELLING RATE\">" . gettext("SR") . "</acronym>", "rateinitial", "display_money_precise");
+$HD_Form -> AddListValue(abbr(_("SR"), _("SELLING RATE")), "rateinitial", "display_money_precise");
 
 $HD_Form -> FieldViewElement ('dialprefix, destination, MIN(rateinitial) as rateinitial');
 

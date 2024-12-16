@@ -427,7 +427,7 @@ foreach ($table_graph as $tkey => $data) {
         <td align="center"><font class="fontstyle_003"><?php echo gettext("DURATION");?></font></td>
         <td align="center"><font class="fontstyle_003"><?php echo gettext("GRAPHIC");?></font></td>
         <td align="center"><font class="fontstyle_003"><?php echo gettext("CALLS");?></font></td>
-        <td align="center"><font class="fontstyle_003"> <acronym title="Average Connection Time"><?php echo gettext("ACT");?></acronym> </font></td>
+        <td align="center"><font class="fontstyle_003"> <abbr title="Average Connection Time"><?php echo gettext("ACT");?></abbr> </font></td>
         <td align="center"><font class="fontstyle_003"><?php echo gettext("TOTAL SELL");?></font></td>
         <td align="center"><font class="fontstyle_003"><?php echo gettext("TOTAL BUY");?></font></td>
         <td align="center"><font class="fontstyle_003"><?php echo gettext("TOTAL PROFIT");?></font></td>

@@ -68,11 +68,11 @@ $yesno = getYesNoList();
 
 if ($popup_select) $HD_Form -> AddListValue(gettext("ID"), "id");
 $HD_Form -> AddListValue(gettext("DESTINATION"), "destination");
-$HD_Form -> AddListValue("<acronym title=\"DIALING PREFIX\">" . gettext("PREFIX") . "</acronym>", "dialprefix");
-$HD_Form -> AddListValue("<acronym title=\"SELLING RATE\">" . gettext("SR") . "</acronym>", "rateinitial", "display_money_precise");
+$HD_Form -> AddListValue(abbr(_("PREFIX"), _("DIALING PREFIX")), "dialprefix");
+$HD_Form -> AddListValue(abbr(_("SR"), _("SELLING RATE")), "rateinitial", "display_money_precise");
 if (!$popup_select) $HD_Form -> AddListValue(gettext("START-DATE"), "startdate");
 if (!$popup_select) $HD_Form -> AddListValue(gettext("STOP-DATE"), "stopdate");
-if (!$popup_select) $HD_Form -> AddListValue("<acronym title=\"CONNECT CHARGE\">" . gettext("CC") . "</acronym>", "connectcharge");
+if (!$popup_select) $HD_Form -> AddListValue(abbr(_("CC"), _("CONNECT CHARGE")), "connectcharge");
 
 if (!$popup_select) {
 	$HD_Form -> FieldViewElement ('destination, dialprefix, MIN(rateinitial) as rateinitial, startdate, stopdate, connectcharge');

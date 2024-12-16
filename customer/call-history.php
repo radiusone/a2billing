@@ -104,7 +104,7 @@ $FG_TABLE_COL[]=array (gettext("CallerID"), "source", "14%", "center", "SORT", "
 $FG_TABLE_COL[]=array (gettext("PhoneNumber"), "calledstation", "14%", "center", "SORT", "30", "", "", "", "", "", "");
 $FG_TABLE_COL[]=array (gettext("Destination"), "destination", "14%", "center", "SORT", "30", "lie", "cc_prefix", "destination", "prefix='%id'", "%1" );
 $FG_TABLE_COL[]=array (gettext("Duration"), "sessiontime", "10%", "center", "SORT", "30", "", "", "", "", "", "display_minute");
-$FG_TABLE_COL[]=array ('<acronym title="'.gettext("Terminate Cause").'">'.gettext("TC").'</acronym>', "terminatecauseid", "10%", "center", "SORT", "", "list", $dialstatus_list);
+$FG_TABLE_COL[]=array (abbr(_("TC"), _("Terminate Cause")), "terminatecauseid", "10%", "center", "SORT", "", "list", $dialstatus_list);
 $FG_TABLE_COL[]=array (gettext("CallType"), "sipiax", "12%", "center", "SORT",  "", "list", $list_calltype);
 $FG_TABLE_COL[]=array (gettext("Cost"), "sessionbill", "12%", "center", "SORT", "30", "", "", "", "", "", "display_money_precise");
 
@@ -544,7 +544,7 @@ foreach ($list_total_day as $data) {
         <td align="center" class="callhistory_td2"><?php echo gettext("DURATION");?></td>
         <td align="center" class="callhistory_td2"><?php echo gettext("GRAPHIC");?></td>
         <td align="center" class="callhistory_td2"><?php echo gettext("CALLS");?></td>
-        <td align="center" class="callhistory_td2"><acronym title="<?php echo gettext("AVERAGE LENGTH OF CALL");?>"><?php echo gettext("ALOC");?></acronym></font></td>
+        <td align="center" class="callhistory_td2"><abbr title="<?php echo gettext("AVERAGE LENGTH OF CALL");?>"><?php echo gettext("ALOC");?></abbr></font></td>
         <td align="center" class="callhistory_td2"><?php echo gettext("TOTAL COST");?></td>
 
         <!-- LOOP -->

@@ -122,7 +122,7 @@ $FG_TABLE_COL [] = array (gettext ( "Destination" ), "dest","10%", "center", "SO
 $FG_TABLE_COL [] = array (gettext ( "Sell Rate" ), "rateinitial", "8%", "center", "SORT", "30", "", "", "", "", "", "display_money_precise" );
 $FG_TABLE_COL [] = array (gettext ( "Duration" ), "sessiontime", "8%", "center", "SORT", "30", "", "", "", "", "", "display_minute" );
 $FG_TABLE_COL [] = array (gettext ( "Account" ), "card_id", "10%", "center", "sort", "", "lie", "cc_card", "username,id", "id='%id'", "%1", "", "A2B_entity_card.php" );
-$FG_TABLE_COL [] = array ('<acronym title="' . gettext ( "Terminate Cause" ) . '">' . gettext ( "TC" ) . '</acronym>', "terminatecauseid", "7%", "center", "SORT", "", "list", $dialstatus_list );
+$FG_TABLE_COL [] = array (abbr(_("TC"), _("Terminate Cause")), "terminatecauseid", "7%", "center", "SORT", "", "list", $dialstatus_list );
 $FG_TABLE_COL [] = array (gettext ( "CallType" ), "sipiax", "10%", "center", "SORT", "", "list", $list_calltype );
 $FG_TABLE_COL [] = array (gettext ( "Sell" ), "sessionbill", "10%", "center", "SORT", "30", "", "", "", "", "", "display_money_precise" );
 
@@ -1170,28 +1170,28 @@ if (is_array ( $list_total_day ) && count ( $list_total_day ) > 0) {
                     </tr>
                     <tr class="bgcolor_019">
                         <td align="center" class="bgcolor_020"><font class="fontstyle_003"><?php echo gettext ( "DATE" ); ?></font></td>
-                        <td align="center"><font class="fontstyle_003"><acronym
+                        <td align="center"><font class="fontstyle_003"><abbr
                             title="<?php echo gettext ( "DURATION" ); ?>"><?php
     echo gettext ( "DUR" );
-    ?></acronym></font></td>
+    ?></abbr></font></td>
                         <td align="center"><font class="fontstyle_003"><?php
     echo gettext ( "GRAPHIC" );
     ?></font></td>
                         <td align="center"><font class="fontstyle_003"><?php
     echo gettext ( "CALLS" );
     ?></font></td>
-                        <td align="center"><font class="fontstyle_003"><acronym
+                        <td align="center"><font class="fontstyle_003"><abbr
                             title="<?php
     echo gettext ( "AVERAGE LENGTH OF CALL" );
     ?>"><?php
     echo gettext ( "ALOC" );
-    ?></acronym></font></td>
-                        <td align="center"><font class="fontstyle_003"><acronym
+    ?></abbr></font></td>
+                        <td align="center"><font class="fontstyle_003"><abbr
                             title="<?php
     echo gettext ( "ANSWER SEIZE RATIO" );
     ?>"><?php
     echo gettext ( "ASR" );
-    ?></acronym></font></td>
+    ?></abbr></font></td>
                         <td align="center"><font class="fontstyle_003"><?php
     echo gettext ( "SELL" );
     ?></font></td>

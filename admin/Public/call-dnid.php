@@ -802,11 +802,11 @@ foreach ($asr_cic_list1 as $asr_cic_data) {
     </tr>
     <tr class="bgcolor_019">
         <td align="center" class="bgcolor_020"><font class="fontstyle_003"><?php echo gettext("DATE");?></font></td>
-        <td align="center"><font class="fontstyle_003"><acronym title="<?php echo gettext("DURATION");?>"><?php echo gettext("DUR");?></acronym></font></td>
+        <td align="center"><font class="fontstyle_003"><abbr title="<?php echo gettext("DURATION");?>"><?php echo gettext("DUR");?></abbr></font></td>
         <td align="center"><font class="fontstyle_003"><?php echo gettext("GRAPHIC");?></font></td>
         <td align="center"><font class="fontstyle_003"><?php echo gettext("CALLS");?></font></td>
-        <td align="center"><font class="fontstyle_003"><acronym title="<?php echo gettext("AVERAGE LENGTH OF CALL");?>"><?php echo gettext("ALOC");?></acronym></font></td>
-        <td align="center"><font class="fontstyle_003"><acronym title="<?php echo gettext("ANSWER SEIZE RATIO");?>"><?php echo gettext("ASR");?></acronym></font></td>
+        <td align="center"><font class="fontstyle_003"><abbr title="<?php echo gettext("AVERAGE LENGTH OF CALL");?>"><?php echo gettext("ALOC");?></abbr></font></td>
+        <td align="center"><font class="fontstyle_003"><abbr title="<?php echo gettext("ANSWER SEIZE RATIO");?>"><?php echo gettext("ASR");?></abbr></font></td>
         <td align="center"><font class="fontstyle_003"><?php echo gettext("SELL");?></font></td>
         <td align="center"><font class="fontstyle_003"><?php echo gettext("BUY");?></font></td>
         <td align="center"><font class="fontstyle_003"><?php echo gettext("PROFIT");?></font></td>

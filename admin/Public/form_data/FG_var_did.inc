@@ -73,10 +73,10 @@ $HD_Form->AddListValue(_("Start date"), "startingdate");
 $HD_Form->AddListSqlMapping(_("DID group"), "id_cc_didgroup", new Table("cc_didgroup", ["id", "didgroupname"]));
 $HD_Form->AddListSqlMapping(_("Country"), "id_cc_country", new Table("cc_country", ["id", "countryname"]));
 $HD_Form->AddListMapping(_("Active"), "activated", $yesno);
-$HD_Form->AddListValue("<abbr title=\"" . _("Minutes Used") . "\">" . _("Min") . "</abbr>", "secondusedreal", "display_minute");
-$HD_Form->AddListMapping("<abbr title=\"" . _("Reserved") . "\">" . _("Res") . "</abbr>", "reserved", $yesno);
-$HD_Form->AddListValue("<abbr title=\"" . _("Monthly Rate") . "\">" . _("MR") . "</abbr>", "fixrate");
-$HD_Form->AddListValue("<abbr title=\"" . _("Sell Rate") . "\">" . _("SR") . "</abbr>", "selling_rate");
+$HD_Form->AddListValue(abbr(_("Min"), _("Minutes Used")), "secondusedreal", "display_minute");
+$HD_Form->AddListMapping(abbr(_("Res"), _("Reserved")), "reserved", $yesno);
+$HD_Form->AddListValue(abbr(_("MR"), _("Monthly Rate")), "fixrate");
+$HD_Form->AddListValue(abbr(_("SR"), _("Sell Rate")), "selling_rate");
 
 $HD_Form->FieldViewElement([
     "did",
