@@ -121,7 +121,7 @@ if ($popup_select) {
     );
 } elseif (has_rights (Admin::ACX_MODIFY_AGENTS)) {
 	$HD_Form->FG_ENABLE_INFO_BUTTON = true;
-	$HD_Form->FG_INFO_BUTTON_LINK = "A2B_agent_info.php?id=";
+	$HD_Form->FG_INFO_BUTTON_LINK = "A2B_info_agent.php?id=";
 	$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
 	$HD_Form->FG_ENABLE_ADD_BUTTON = true;
 	$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
