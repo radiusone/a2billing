@@ -884,6 +884,8 @@ class FormHandler
      * @return void
      */
     public function AddSearchDateInput(string $label, string $fieldname, bool $relative = false) {
+        $column = $fieldname;
+        $fieldname = str_replace(".", "^^", $fieldname);
         $inputnames = ["{$fieldname}_start", "{$fieldname}_end"];
         if ($relative) {
             unset($inputnames[0]);
@@ -893,7 +895,7 @@ class FormHandler
             "label" => $label,
             "input" => $inputnames,
             "operator" => ["{$fieldname}_start_type", "{$fieldname}_end_type"],
-            "column" => $fieldname,
+            "column" => $column,
             "type" => "DATE",
             "relative" => $relative,
         ];
@@ -907,6 +909,7 @@ class FormHandler
      */
     public function AddSearchTextInput($displayname, $fieldname, $fieldvar = null)
     {
+        $fieldname = str_replace(".", "^^", $fieldname);
         if (empty($fieldvar)) {
             $fieldvar = $fieldname . "type";
         }
@@ -920,6 +923,8 @@ class FormHandler
 
     public function AddSearchComparisonInput($displayname, $fieldname1, $fielvar1, $fieldname2, $fielvar2, $sqlfield)
     {
+        $fieldname1 = str_replace(".", "^^", $fieldname1);
+        $fieldname2 = str_replace(".", "^^", $fieldname2);
         $this->search_form_elements[] = [
             "label" => $displayname,
             "input" => [$fieldname1, $fieldname2],
@@ -938,6 +943,7 @@ class FormHandler
     public function AddSearchSqlSelectInput(string $displayname, string $table, string $fields, string $clause,
                                                    $order, $sens, $select_name)
     {
+        $select_name = str_replace(".", "^^", $select_name);
         $this->search_form_elements[] = [
             "label" => $displayname,
             "table" => $table,
@@ -952,16 +958,18 @@ class FormHandler
 
     public function AddSearchSelectInput(string $displayname, string $select_name, array $array_content = [])
     {
-            $this->search_form_elements[] = [
-                "label" => $displayname,
-                "input" => [$select_name],
-                "options" => $array_content,
-                "type" => "SELECT",
-            ];
+        $select_name = str_replace(".", "^^", $select_name);
+        $this->search_form_elements[] = [
+            "label" => $displayname,
+            "input" => [$select_name],
+            "options" => $array_content,
+            "type" => "SELECT",
+        ];
     }
 
     public function AddSearchPopupInput(string $name, string $label, string $href, int $select = 1): void
     {
+        $name = str_replace(".", "^^", $name);
         $this->search_form_elements[] = [
             "label" => $label,
             "input" => [$name],
@@ -973,6 +981,7 @@ class FormHandler
 
     public function AddSearchButton(string $name, string $label, string $value = '1', string $class = 'btn-secondary', string $onclick = ''): void
     {
+        $name = str_replace(".", "^^", $name);
         $this->search_form_elements[] = [
             "input" => [$name],
             "value" => $value,
@@ -1865,13 +1874,6 @@ class FormHandler
         $list = [];
 
         foreach ($this->search_form_elements as &$el) {
-            // can't post a dot, so temporarily replace it
-            if (is_array($el["input"])) {
-                $el["input"][0] = str_replace(".", "^^", $el["input"][0] ?? "");
-                $el["input"][1] = str_replace(".", "^^", $el["input"][1] ?? "");
-            } else {
-                $el["input"] = str_replace(".", "^^", $el["input"] ?? "");
-            }
             if ($el["type"] !== "SQL_SELECT") {
                 continue;
             }

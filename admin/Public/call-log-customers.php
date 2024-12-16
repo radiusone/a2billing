@@ -89,9 +89,9 @@ $HD_Form = new FormHandler(
     gettext("CDR"),
     "cc_call.id",
     [
-        "cc_call" => ["LEFT OUTER", "cc_call.id_trunk", "cc_trunk.id_trunk"],
+        "cc_trunk" => ["LEFT OUTER", "cc_call.id_trunk", "cc_trunk.id_trunk"],
         "cc_ratecard" => ["LEFT OUTER", "cc_call.id_ratecard", "cc_ratecard.id"],
-        "cc_card" => ["LEFT OUTER", "cc_call.id_card", "cc_card.id"],
+        "cc_card" => ["LEFT OUTER", "cc_call.card_id", "cc_card.id"],
     ]
 );
 $HD_Form->init();
