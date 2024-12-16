@@ -50,7 +50,7 @@ $HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
 $HD_Form->help_text = create_help(_("The system log helps you track all events on your application. Log levels are the Importance Levels for the events - 1 is lowest level and 3 is highest level. 1 is used for Login, Logout and Page Visit. 2 is used for Add, Import, Export. 3 is for Update and Delete."), 'SystemLog');
 
 $HD_Form->AddListValue(_("Login"), "login");
-$HD_Form->AddListMapping(_("Level"), "loglevel", [1 => _("Info"), 2 => _("Notice"), 3 =>_("Warning")]);
+$HD_Form->AddListMapping(_("Level"), "loglevel", getLogLevel_List());
 $HD_Form->AddListValue(_("Action"), "action");
 $HD_Form->AddListValue(_("Description"), "description");
 $HD_Form->AddListValue(_("Table"), "tablename");
@@ -80,4 +80,4 @@ $HD_Form->FG_ENABLE_EDIT_BUTTON = false;
 $HD_Form->FG_ENABLE_DELETE_BUTTON = false;
 $HD_Form->FG_ENABLE_ADD_BUTTON = false;
 $HD_Form->FG_ENABLE_INFO_BUTTON = true;
-$HD_Form->FG_INFO_BUTTON_LINK = "A2B_log_activity_info.php?id=";
+$HD_Form->FG_INFO_BUTTON_LINK = "A2B_info_log_viewer.php?id=";

@@ -333,3 +333,11 @@ function getMusicOnHold_List(A2Billing $A2B): array
 
     return $musiconhold_list;
 }
+
+/**
+ * @return string[]
+ */
+function getLogLevel_List(): array
+{
+    return [1 => _("Info"), 2 => _("Notice"), 3 =>_("Warning")];
+}
