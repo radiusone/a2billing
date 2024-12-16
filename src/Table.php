@@ -156,7 +156,7 @@ class Table
             || str_starts_with($value, "date(")
             || str_starts_with($value, "cast(")
             || str_starts_with($value, "(select")
-            || str_starts_with($value, "case when")
+            || (str_starts_with($value, "case ") && str_ends_with($value, " end"))
             || str_starts_with($value, "if(")
             || str_starts_with($value, "count(")
             || str_starts_with($value, "coalesce(")
