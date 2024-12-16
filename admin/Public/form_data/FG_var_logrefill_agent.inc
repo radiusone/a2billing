@@ -66,7 +66,7 @@ $HD_Form->AddListValue(_("Amount"), "credit", "display_money");
 $HD_Form->FieldViewElement(["id", "agent_id", "date", "refill_type", "credit"]);
 
 $HD_Form->FG_ENABLE_INFO_BUTTON = true;
-$HD_Form->FG_INFO_BUTTON_LINK = "A2B_refill_info_agent.php?id=";
+$HD_Form->FG_INFO_BUTTON_LINK = "A2B_info_refill.php?type=agent&id=";
 $HD_Form->FG_ENABLE_ADD_BUTTON = true;
 
 if (!$popup_select) {

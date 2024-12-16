@@ -584,7 +584,7 @@ function get_refill_link(?int $id): string
 
     return sprintf(
         "<a href=\"%s%d\">%s</a>",
-        "A2B_refill_info.php?id=",
+        "A2B_info_refill.php?id=",
         $id,
         get_money($row["credit"])
     );
@@ -615,7 +615,7 @@ function get_agent_refill_link(?int $id): string
 
     return sprintf(
         "<a href=\"%s%d\">%s</a>",
-        "A2B_refill_info_agent.php?id=",
+        "A2B_info_refill.php?type=agent&id=",
         $id,
         get_money($row["credit"])
     );

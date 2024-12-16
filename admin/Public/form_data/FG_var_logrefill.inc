@@ -82,7 +82,7 @@ if (!$popup_select) {
     $HD_Form->search_delete_enabled = false;
 
     $HD_Form->FG_ENABLE_INFO_BUTTON = true;
-    $HD_Form->FG_INFO_BUTTON_LINK = "A2B_refill_info.php?id=";
+    $HD_Form->FG_INFO_BUTTON_LINK = "A2B_info_refill.php?id=";
     $HD_Form->FG_ENABLE_ADD_BUTTON = true;
 }
 
