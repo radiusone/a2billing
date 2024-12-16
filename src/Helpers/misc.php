@@ -566,6 +566,11 @@ function display_customer_id_link($id): void
  */
 function display_refill_link(?int $id): void
 {
+    echo get_refill_link($id);
+}
+
+function get_refill_link(?int $id): string
+{
     $value = htmlspecialchars(_("n/a"));
     if (empty($id)) {
         echo $value;
@@ -577,7 +582,7 @@ function display_refill_link(?int $id): void
         echo $value;
     }
 
-    printf(
+    return sprintf(
         "<a href=\"%s%d\">%s</a>",
         "A2B_refill_info.php?id=",
         $id,
@@ -662,7 +667,7 @@ function get_infocustomer_id($id): string
             htmlspecialchars($row["lastname"]),
             htmlspecialchars($row["username"])
         );
-        $value = "<a href=\"A2B_card_info.php?id=$id\">$value</a>";
+        $value = "<a href=\"A2B_info_card.php?id=$id\">$value</a>";
     }
 
     return $value;
@@ -1425,4 +1430,16 @@ function add_money(...$args): string
 function sub_money(...$args): string
 {
     return get_money(sub(...$args));
+}
+
+function get_readable_date(?string $date): string
+{
+    if (empty($date)) {
+        return _("N/A");
+    }
+    try {
+        return (new DateTime($date))->format("D, d M y H:i:s");
+    } catch (Exception $e) {
+        return _("N/A");
+    }
 }

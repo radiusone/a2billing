@@ -279,7 +279,7 @@ if ($popup_select) {
     $HD_Form->AddSearchSelectInput(_("SELECT PAYMENT TYPE"), "typepaid", $typepaid_list);
 
     $HD_Form->FG_ENABLE_INFO_BUTTON = true;
-    $HD_Form->FG_INFO_BUTTON_LINK = "A2B_card_info.php?id=";
+    $HD_Form->FG_INFO_BUTTON_LINK = "A2B_info_card.php?id=";
     $FN_COLUMN_ID = "col" . ($FG_COL_QUERY_COUNT);//get numbers of rows for needed fields
     $FN_COLUMN_USERNAME = "col" . ($FG_COL_QUERY_COUNT + 1);
     $FN_COLUMN_ALIAS = "col" . ($FG_COL_QUERY_COUNT + 2);
