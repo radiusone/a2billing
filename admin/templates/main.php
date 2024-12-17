@@ -153,6 +153,7 @@ require_once __DIR__ . "/../../common/lib/admin.defines.php";
                             <li><a class="link-dark rounded" href="call-comp.php"><?= _("Compare Calls") ?></a></li>
                             <li><a class="link-dark rounded" href="call-daily-load.php"><?= _("Daily Traffic") ?></a></li>
                             <li><a class="link-dark rounded" href="call-last-month.php"><?= _("Monthly Traffic") ?></a></li>
+                            <li><a class="link-dark rounded" href="A2B_report_package.php"><?= _("Package Usage") ?></a></li>
                         </ul>
                     </div>
                 </li>
@@ -291,8 +292,7 @@ require_once __DIR__ . "/../../common/lib/admin.defines.php";
                     </button>
                     <div class="collapse <?= $menu_section === 12 ? "show" : "" ?>" id="package-collapse">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                            <li><a class="link-dark rounded" href="A2B_entity_package.php"><?= _("Add") ?></a></li>
-                            <li><a class="link-dark rounded" href="A2B_detail_package.php"><?= _("Details") ?></a></li>
+                            <li><a class="link-dark rounded" href="A2B_entity_package.php"><?= _("Add :: Search") ?></a></li>
                         </ul>
                     </div>
                 </li>
