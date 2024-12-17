@@ -881,9 +881,10 @@ class FormHandler
      * @param string $label the label for the input
      * @param string $fieldname the name of the database column, also used for HTML element names
      * @param bool $relative if true, this is an "x months ago" type input
+     * @param bool $recent if true, this is a "in the last x days" type input
      * @return void
      */
-    public function AddSearchDateInput(string $label, string $fieldname, bool $relative = false) {
+    public function AddSearchDateInput(string $label, string $fieldname, bool $relative = false, bool $recent = false) {
         $column = $fieldname;
         $fieldname = str_replace(".", "^^", $fieldname);
         $inputnames = ["{$fieldname}_start", "{$fieldname}_end"];
@@ -898,6 +899,7 @@ class FormHandler
             "column" => $column,
             "type" => "DATE",
             "relative" => $relative,
+            "recent" => $recent,
         ];
     }
 
@@ -1415,6 +1417,7 @@ class FormHandler
 
         foreach ($this->search_form_elements as $el) {
             foreach ($el["input"] as $i => $input) {
+                $input = str_replace("^^", ".", $input);
                 $search[$input] = $processed[$input];
                 if (!empty($el["operator"][$i])) {
                     $search[$el["operator"][$i]] = $processed[$el["operator"][$i]];

@@ -103,12 +103,10 @@ $(function() {
     ***/
     $(".date-input-enabler")
         .on("change", function() {
-            const id = this.getAttribute("id").replace(/^enable_(.*?)(_months)?/, "$1");
-            $(`#${id}`).prop("disabled", !this.checked);
-            if ($(this).hasClass("months-ago-enabler") && this.checked) {
-                $(".date-input-enabler:not(.months-ago-enabler)").prop("checked", false).change();
-            } else if (this.checked) {
-                $(".months-ago-enabler").prop("checked", false).change();
+            const id = this.getAttribute("id").replaceAll(/\^/g, "\\\^");
+            $(this).closest("div.input-group").children("input, select").prop("disabled", !this.checked);
+            if (this.checked) {
+                $(this).closest("form").find(`.date-input-enabler:not(#${id})`).prop("checked", false).change();
             }
         })
         .trigger("change");
