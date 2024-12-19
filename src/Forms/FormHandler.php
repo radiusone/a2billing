@@ -1262,7 +1262,9 @@ class FormHandler
             if (!empty($processed["order"])) {
                 $this->FG_QUERY_ORDERBY_COLUMNS = array_filter([$processed['order']]);
             }
-            $this->FG_QUERY_DIRECTION = $processed['sens'] ?? "";
+            if (in_array(strtolower($processed["sens"] ?? ""), ["asc", "desc"])) {
+                $this->FG_QUERY_DIRECTION = $processed['sens'];
+            }
             $this->CV_CURRENT_PAGE = (int)($processed['current_page'] ?? 0);
 
             $session_limit = $this->FG_QUERY_TABLE_NAME . "-displaylimit";
@@ -1324,7 +1326,7 @@ class FormHandler
                 if ($this->FG_DEBUG === 3) {
                     echo "<br>Clause : " . json_encode($this->list_query_conditions);
                 }
-                $this->FG_LIST_VIEW_ROW_COUNT = $instance_table->countRows($this->DBHandle, $this->list_query_conditions);
+                $this->FG_LIST_VIEW_ROW_COUNT = $instance_table->countRows($this->DBHandle, $this->list_query_conditions, $this->FG_QUERY_GROUPBY_COLUMNS);
 
                 if ($this->FG_DEBUG >= 1) {
                     var_dump($list);
