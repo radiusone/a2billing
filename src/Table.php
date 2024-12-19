@@ -119,33 +119,38 @@ class Table
         if (is_null($identifier)) {
             return null;
         }
-        if ($this->isSqlFunction($identifier) || is_numeric($identifier)) {
-            // something like a function call
-            return $identifier;
-        }
 
         $q = $this->db_type === "mysql" ? "`" : "\"";
         $identifier = trim($identifier);
+
+        $alias = "";
+        if (preg_match("/^(.+?) +AS +(.+)$/i", $identifier, $matches)) {
+            $identifier = $matches[1];
+            $alias = " AS $q$matches[2]$q";
+        }
+
+        if ($this->isSqlFunction($identifier) || is_numeric($identifier)) {
+            // something like a function call
+            return "$identifier $alias";
+        }
+
         $distinct = "";
-        if (str_starts_with($identifier, "DISTINCT ")) {
+        if (str_starts_with(strtoupper($identifier), "DISTINCT ")) {
             $identifier = trim(substr($identifier, 8));
             $distinct = "DISTINCT ";
         }
+
         if (str_starts_with($identifier, $q) && str_ends_with($identifier, $q)) {
             // there is plenty of room for abuse here, but assume already quoted values are ok
-            return "$distinct$identifier";
+            return "$distinct $identifier $alias";
         }
+
         $identifier = str_replace($q, "", $identifier);
         if (str_contains($identifier, ".")) {
             $identifier = implode("$q.$q", explode(".", $identifier));
         }
-        $as = "";
-        if (preg_match("/([\w.$q]+?) +AS +(\w+)/i", $identifier, $matches)) {
-            $identifier = $matches[1];
-            $as = " AS $q$matches[2]$q";
-        }
 
-        return "$distinct$q$identifier$q$as";
+        return "$distinct $q$identifier$q $alias";
     }
 
     public function isSqlFunction(string $value): bool
@@ -153,24 +158,12 @@ class Table
         $value = trim(strtolower($value));
         return str_starts_with($value, "now()")
             || str_starts_with($value, "current_timestamp")
-            || str_starts_with($value, "date(")
-            || str_starts_with($value, "cast(")
-            || str_starts_with($value, "(select")
-            || preg_match("/^case (when)?.*? end( as \w+)?$/", $value)
-            || str_starts_with($value, "if(")
-            || str_starts_with($value, "count(")
-            || str_starts_with($value, "coalesce(")
-            || str_starts_with($value, "sum(")
-            || str_starts_with($value, "left(")
-            || str_starts_with($value, "right(")
-            || str_starts_with($value, "concat(")
-            || str_starts_with($value, "replace(")
-            || str_starts_with($value, "substring(")
-            || str_starts_with($value, "substr(")
-            || str_starts_with($value, "lower(")
-            || str_starts_with($value, "upper(")
-            || str_starts_with($value, "min(")
-            || str_starts_with($value, "max(");
+            || preg_match("/^\(\s*select\s/", $value)
+            || preg_match(
+                "/(date|cast|if|count|coalesce|sum|avg|left|right|concat|replace|substr(ing)?|lower|upper|min|max)\\s*\\(/",
+                $value
+            )
+            || preg_match("/^case (when)?.*? end( as \w+)?$/", $value);
     }
 
     /*
