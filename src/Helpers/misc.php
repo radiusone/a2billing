@@ -481,7 +481,7 @@ function display_monitorfile_link($value)
     }
 
     $myfile = base64_encode($myfile);
-    echo "<a target='_blank' href='call-log-customers.php?download=file&amp;file=$myfile'>";
+    echo "<a target='_blank' href='A2B_report_calls.php?download=file&amp;file=$myfile'>";
     echo '<img alt="access recording" src="" height="18" /></a>';
 }
 
@@ -792,7 +792,7 @@ function format_phone_number(string $value): string
         $value .= "$matches[2]-$matches[3]-$matches[4]";
     }
 
-    return $value;
+    return $value ?: _("n/a");
 }
 /*
  * function MDP_STRING

@@ -110,4 +110,4 @@ $HD_Form->FG_FILTER_LABEL = "call ID";
 
 $HD_Form->FG_LOCATION_AFTER_DELETE =
 $HD_Form->FG_LOCATION_AFTER_ADD =
-$HD_Form->FG_LOCATION_AFTER_EDIT = "call-log-customers.php?nodisplay=1&posted=1";
+$HD_Form->FG_LOCATION_AFTER_EDIT = "A2B_report_calls.php?nodisplay=1&posted=1";

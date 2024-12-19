@@ -47,15 +47,11 @@ Admin::checkPageAccess(Admin::ACX_CALL_REPORT);
 
 global $letter;
 
-getpost_ifset (['current_page', 'order', 'sens', 'download', 'file', 'nodisplay']);
+getpost_ifset (["download", "file"]);
 /**
- * @var string $current_page
  * @var string $download
  * @var string $file
- * @var string $nodisplay
  */
-$current_page = (int)($current_page ?? 0);
-$nodisplay = (bool)($nodisplay ?? 0);
 
 if (($download ?? "") === "file" && !empty($file)) {
 
@@ -135,15 +131,15 @@ $DBHandle = DbConnect();
 $HD_Form->AddListValue(_("Date"), "cc_call.starttime");
 $HD_Form->AddListValue(_("Caller ID"), "src", "display_phone_number");
 $HD_Form->AddListValue(_("DNID"), "dnid", "display_phone_number");
-$HD_Form->AddListValue(_("Phone Number"), "calledstation", "display_phone_number");
+$HD_Form->AddListValue(_("Called number"), "calledstation", "display_phone_number");
 $HD_Form->AddListSqlMapping(_("Destination"), "cc_call.destination", new Table("cc_prefix", ["prefix", "destination"]));
-$HD_Form->AddListValue(_("Buy Rate"), "buyrate", "display_money_precise");
-$HD_Form->AddListValue(_("Sell Rate"), "rateinitial", "display_money_precise");
+$HD_Form->AddListValue(_("Buy rate"), "buyrate", "display_money_precise");
+$HD_Form->AddListValue(_("Sell rate"), "rateinitial", "display_money_precise");
 $HD_Form->AddListValue(_("Duration"), "sessiontime", "display_minute");
 $HD_Form->AddListValue(_("Account"), "card_id", "display_customer_id_link");
 $HD_Form->AddListValue(_("Trunk"), "trunkcode");
 $HD_Form->AddListMapping(_("Disposition"), "terminatecauseid", $dialstatus_list);
-$HD_Form->AddListMapping(_("CallType"), "sipiax", $calltype_list);
+$HD_Form->AddListMapping(_("Call type"), "sipiax", $calltype_list);
 $HD_Form->AddListValue(_("Buy"), "buycost", "display_money_precise");
 $HD_Form->AddListValue(_("Sell"), "sessionbill", "display_money_precise");
 $HD_Form->AddListValue(_("Margin"), "CASE WHEN cc_call.sessionbill != 0 THEN ((cc_call.sessionbill - cc_call.buycost) / cc_call.sessionbill) * 100 ELSE NULL END AS margin", "display_percent");
@@ -175,7 +171,7 @@ $HD_Form->search_form_enabled = true;
 $HD_Form->search_session_key = 'call_log_selection';
 $HD_Form->search_form_title = gettext('Define specific criteria to search for call records');
 
-$HD_Form->AddSearchDateInput(_("DATE"), "cc_call.starttime");
+$HD_Form->AddSearchDateInput(_("Date"), "cc_call.starttime");
 $HD_Form->AddSearchPopupInput("card_id", _("Enter the customer ID"), "A2B_entity_card.php");
 $HD_Form->AddSearchPopupInput("username", _("Enter the customer number"), "A2B_entity_card.php", 2);
 $HD_Form->AddSearchPopupInput("id_tariffgroup", _("Call Plan"), "A2B_entity_tariffgroup.php", 2);
@@ -183,9 +179,9 @@ $HD_Form->AddSearchPopupInput("id_provider", _("Provider"), "A2B_entity_provider
 $HD_Form->AddSearchPopupInput("cc_call.id_trunk", _("Trunk"), "A2B_entity_trunk.php", 2);
 $HD_Form->AddSearchPopupInput("id_ratecard", _("Rate"), "A2B_entity_def_ratecard.php", 2);
 
-$HD_Form->AddSearchTextInput(_("Phone number"), "destination");
-$HD_Form->AddSearchTextInput(_("Caller ID"), "src");
-$HD_Form->AddSearchTextInput(_("DNID"), "dnid");
+$HD_Form->AddSearchTextInput(_("Called Number"), "calledstation");
+$HD_Form->AddSearchTextInput(_("Source Number"), "src");
+$HD_Form->AddSearchTextInput(abbr(_("DNID"), _("???")), "dnid");
 
 $HD_Form->AddSearchSelectInput(_("Disposition"), "terminatecauseid", $dialstatus_list);
 $HD_Form->AddSearchSelectInput(_("Call type"), "sipiax", $calltype_list);
@@ -212,89 +208,6 @@ $HD_Form->create_search_form();
 $HD_Form->create_toppage($form_action);
 $HD_Form->create_form("list", $list);
 
-$table = new Table(
-    "cc_call",
-    [
-        "DATE(cc_call.starttime) AS day",
-        "SUM(cc_call.sessiontime) AS calltime",
-        "COUNT(*) AS nbcall",
-        "SUM(cc_call.buycost + 0) AS buy",
-        "SUM(cc_call.sessionbill + 0) AS sell",
-        "SUM(CASE WHEN sessionbill != 0 THEN ((sessionbill - buycost) / sessionbill) * 100 ELSE 0 END) AS margin",
-        "SUM(CASE WHEN buycost != 0 THEN ((sessionbill - buycost) / buycost) * 100 ELSE 0 END) AS markup",
-        "SUM(CASE WHEN cc_call.sessiontime > 0 THEN 1 ELSE 0 END) AS success_calls",
-    ]
-);
-$list_total_day = $table->getRows($DBHandle, $HD_Form->list_query_conditions, ["day"], "ASC", ["day"]);
-
-if (count($list_total_day)):
-    $mmax = max(array_column($list_total_day, "calltime"));
-    $totalcall = array_sum(array_column($list_total_day, "nbcall"));
-    $totalminutes = array_sum(array_column($list_total_day, "calltime"));
-    $totalsell = array_sum(array_column($list_total_day, "sell"));
-    $totalbuycost = array_sum(array_column($list_total_day, "buy"));
-    $totalsuccess = array_sum(array_column($list_total_day, "success_calls"));
-    $widthbar = 0;
-
-    $total_tmc = ($resulttype ?? "min") === "min"
-        ? sprintf("%02d:%02d", ($totalminutes / $totalcall) / 60, ($totalminutes / $totalcall) % 60)
-        : intval($totalminutes / $totalcall);
-
-    $totalminutes = sprintf("%02d:%02d", $totalminutes / 60, $totalminutes % 60);
-?>
-
-<table class="table table-striped caption-top">
-    <caption><?= _("Traffic Summary") ?></caption>
-    <thead>
-        <tr>
-            <th><?= _( "Date" ) ?></th>
-            <th><abbr title="<?= _( "Call duration" ) ?>"><?= _( "Time" ) ?></abbr></th>
-            <th style="width: 10vw"></th>
-            <th><?= _( "Calls" ) ?></th>
-            <th><abbr title="<?= _( "Average call length" ) ?>"><?= _( "Avg" ) ?></abbr></th>
-            <th><abbr title="<?= _( "Answer sieze ratio" ) ?>"><?= _( "ASR" ) ?></abbr></th>
-            <th><?= _( "Sell" ) ?></th>
-            <th><?= _( "Buy" ) ?></th>
-            <th><?= _( "Profit" ) ?></th>
-            <th><?= _( "Margin" ) ?></th>
-            <th><?= _( "Markup" ) ?></th>
-        </tr>
-    </thead>
-    <tbody>
-    <?php foreach ($list_total_day as $data): ?>
-        <tr>
-            <td><?= $data["day"] ?></td>
-            <td><?= get_minute($data["calltime"]) ?></td>
-            <td aria-hidden="true">
-                <div style="width: <?= $mmax ? ($data["calltime"] / $mmax) * 100 : 0 ?>%; background: darkred">&nbsp;</div>
-            </td>
-            <td><?= $data["nbcall"] ?></td>
-            <td><?= get_minute(intval($data ["calltime"] / $data ["nbcall"])) ?></td>
-            <td><?= get_percent($data["success_calls"] * 100 / ($data["nbcall"]) ) ?></td>
-            <td><?= get_money_precise($data["sell"]) ?></td>
-            <td><?= get_money_precise($data["buy"] ) ?></td>
-            <td><?= get_money_precise($data["sell"] - $data["buy"]) ?></td>
-            <td><?= get_percent($data["margin"]) ?></td>
-            <td><?= get_percent($data["markup"]) ?></td>
-        </tr>
-    <?php endforeach ?>
-    </tbody>
-    <tfoot>
-        <tr>
-            <th scope="row"><?= _( "TOTAL" ) ?></th>
-            <td colspan="2"><?= $totalminutes ?></td>
-            <td><?= $totalcall ?></td>
-            <td><?= $total_tmc ?></td>
-            <td><?= get_percent($totalsuccess * 100 / $totalcall) ?></td>
-            <td><?= get_money($totalsell) ?></td>
-            <td><?= get_money($totalbuycost) ?></td>
-            <td><?= get_money($totalsell - $totalbuycost) ?></td>
-            <td><?= $totalsell ? get_percent((($totalsell - $totalbuycost) / $totalsell) * 100) : _("n/a") ?></td>
-            <td><?= $totalbuycost ? get_percent((($totalsell - $totalbuycost) / $totalbuycost) * 100) : _("n/a")?></td>
-        </tr>
-    </tfoot>
-</table>
-<?php endif ?>
-
-<?php require_once __DIR__ . "/../templates/footer.php" ?>
+require_once __DIR__ . "/modules/call_graph.php";
+require_once __DIR__ . "/../templates/footer.php";
 
