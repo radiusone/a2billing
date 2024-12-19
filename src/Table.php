@@ -382,10 +382,14 @@ class Table
      * @param array $conditions
      * @return int
      */
-    public function countRows(ADOConnection $db, array $conditions = []): int
+    public function countRows(ADOConnection $db, array $conditions = [], array $groupby = []): int
     {
         $old_fields = $this->fields;
         $this->fields = "COUNT(*)";
+        if (count($groupby)) {
+            $data = $this->getRows($db, $conditions, [], "ASC", $groupby);
+            return count($data);
+        }
         $data = $this->getRow($db, $conditions);
         $this->fields = $old_fields;
 
