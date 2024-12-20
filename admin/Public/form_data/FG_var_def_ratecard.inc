@@ -154,8 +154,8 @@ $HD_Form->AddSearchDateInput(_("Start Date"), "startdate");
 
 $HD_Form->AddSearchTextInput(_("Tag"), 'tag');
 $HD_Form->AddSearchTextInput(_("Dialing Prefix"), 'dialprefix');
-$HD_Form->AddSearchComparisonInput(_("Buy Rate"), 'buyrate1', 'buyrate1type', 'buyrate2', 'buyrate2type', 'buyrate');
-$HD_Form->AddSearchComparisonInput(_("Initial Rate"), 'rateinitial1', 'rateinitial1type', 'rateinitial2', 'rateinitial2type', 'rateinitial');
+$HD_Form->AddSearchComparisonInput(_("Buy Rate"), 'buyrate1', 'buyrate2', 'buyrate');
+$HD_Form->AddSearchComparisonInput(_("Initial Rate"), 'rateinitial1', 'rateinitial2', 'rateinitial');
 
 $HD_Form->AddSearchSqlSelectInput('Trunk', "cc_trunk", "id_trunk, trunkcode, providerip", "", "trunkcode", "ASC", "id_trunk");
 $HD_Form->AddSearchSqlSelectInput('Rate Card', "cc_tariffplan", "id, tariffname", "", "tariffname", "ASC", "idtariffplan");

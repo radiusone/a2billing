@@ -142,7 +142,7 @@ if (!$popup_select) {
     $HD_Form->AddSearchTextInput(_("REFERENCE"), 'reference');
     $HD_Form->AddSearchTextInput(_("TITLE"), 'title');
 
-    $HD_Form->AddSearchComparisonInput(_("AMOUNT INCL VAT"), 'total_price1', 'total_price1type', 'total_price2', 'total_price2type', 'total_price');
+    $HD_Form->AddSearchComparisonInput(_("AMOUNT INCL VAT"), 'total_price1', 'total_price2', 'total_price');
 
     $HD_Form->AddSearchSelectInput(_("PAYMENT TYPE"), "typepaid", $typepaid_list);
     $HD_Form->AddSearchSqlSelectInput(_("CALL PLAN"), "cc_tariffgroup", "id, tariffgroupname", "", "tariffgroupname", "ASC", "tariff");

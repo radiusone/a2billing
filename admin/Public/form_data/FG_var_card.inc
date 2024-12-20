@@ -264,10 +264,10 @@ if ($popup_select) {
     $HD_Form->AddSearchTextInput(_("LOGIN"), 'useralias');
     $HD_Form->AddSearchTextInput(_("MACADDRESS"), 'mac_addr');
     $HD_Form->AddSearchTextInput(_("COMPANY NAME"), 'company_name');
-    $HD_Form->AddSearchComparisonInput(_("CUSTOMER ID"), 'id1', 'id1type', 'id2', 'id2type', 'cc_card.id');
-    $HD_Form->AddSearchComparisonInput(_("SERIAL"), 'serial1', 'serial1type', 'serial2', 'serial2type', 'serial');
-    $HD_Form->AddSearchComparisonInput(_("CREDIT"), 'credit1', 'credit1type', 'credit2', 'credit2type', 'credit');
-    $HD_Form->AddSearchComparisonInput(_("INUSE"), 'inuse1', 'inuse1type', 'inuse2', 'inuse2type', 'inuse');
+    $HD_Form->AddSearchComparisonInput(_("CUSTOMER ID"), 'id1', 'id2', 'cc_card.id');
+    $HD_Form->AddSearchComparisonInput(_("SERIAL"), 'serial1', 'serial2', 'serial');
+    $HD_Form->AddSearchComparisonInput(_("CREDIT"), 'credit1', 'credit2', 'credit');
+    $HD_Form->AddSearchComparisonInput(_("INUSE"), 'inuse1', 'inuse2', 'inuse');
 
     $HD_Form->AddSearchSqlSelectInput(_("SELECT SERIE"), "cc_card_seria", "id, name", "", "name", "ASC", "id_seria");
     $HD_Form->AddSearchSelectInput(_("SELECT LANGUAGE"), "language", $language_list);

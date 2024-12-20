@@ -921,14 +921,16 @@ class FormHandler
         ];
     }
 
-    public function AddSearchComparisonInput($displayname, $fieldname1, $fielvar1, $fieldname2, $fielvar2, $sqlfield)
+    public function AddSearchComparisonInput($displayname, $fieldname1, $fieldname2, $sqlfield)
     {
         $fieldname1 = str_replace(".", "^^", $fieldname1);
         $fieldname2 = str_replace(".", "^^", $fieldname2);
+        $fieldvar1 = $fieldname1 . "type";
+        $fieldvar2 = $fieldname2 . "type";
         $this->search_form_elements[] = [
             "label" => $displayname,
             "input" => [$fieldname1, $fieldname2],
-            "operator" => [$fielvar1, $fielvar2],
+            "operator" => [$fieldvar1, $fieldvar2],
             "column" => $sqlfield,
             "type" => "COMPARISON",
         ];

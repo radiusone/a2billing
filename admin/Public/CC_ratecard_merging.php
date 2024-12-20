@@ -135,8 +135,8 @@ $HD_Form->AddSearchDateInput(_("Start date"), "startdate");
 $HD_Form -> AddSearchTextInput(gettext("TAG"), 'tag');
 $HD_Form -> AddSearchTextInput(gettext("DESTINATION"), 'destination');
 $HD_Form -> AddSearchTextInput(gettext("PREFIX"), 'dialprefix');
-$HD_Form -> AddSearchComparisonInput(gettext("BUYRATE"),'buyrate1','buyrate1type','buyrate2','buyrate2type','buyrate');
-$HD_Form -> AddSearchComparisonInput(gettext("RATE INITIAL"),'rateinitial1','rateinitial1type','rateinitial2','rateinitial2type','rateinitial');
+$HD_Form -> AddSearchComparisonInput(gettext("BUYRATE"), 'buyrate1', 'buyrate2', 'buyrate');
+$HD_Form -> AddSearchComparisonInput(gettext("RATE INITIAL"), 'rateinitial1', 'rateinitial2', 'rateinitial');
 $HD_Form -> prepare_list_subselection('list');
 $HD_Form -> AddSearchSqlSelectInput('SELECT TRUNK', "cc_trunk", "id_trunk, trunkcode, providerip", "", "trunkcode", "ASC", "id_trunk");
 // todo: get rid of FG_QUERY_WHERE_CLAUSE usage

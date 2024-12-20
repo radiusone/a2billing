@@ -88,9 +88,9 @@ $HD_Form -> AddSearchTextInput(gettext("LASTNAME"), 'lastname');
 $HD_Form -> AddSearchTextInput(gettext("LOGIN"), 'useralias');
 $HD_Form -> AddSearchTextInput(gettext("MACADDRESS"), 'mac_addr');
 $HD_Form -> AddSearchTextInput(gettext("EMAIL"), 'email');
-$HD_Form -> AddSearchComparisonInput(gettext("CUSTOMER ID (SERIAL)"),'id1','id1type','id2','id2type','id');
-$HD_Form -> AddSearchComparisonInput(gettext("CREDIT"),'credit1','credit1type','credit2','credit2type','credit');
-$HD_Form -> AddSearchComparisonInput(gettext("INUSE"),'inuse1','inuse1type','inuse2','inuse2type','inuse');
+$HD_Form -> AddSearchComparisonInput(gettext("CUSTOMER ID (SERIAL)"), 'id1', 'id2', 'id');
+$HD_Form -> AddSearchComparisonInput(gettext("CREDIT"), 'credit1', 'credit2', 'credit');
+$HD_Form -> AddSearchComparisonInput(gettext("INUSE"), 'inuse1', 'inuse2', 'inuse');
 
 $HD_Form -> AddSearchSelectInput(gettext("SELECT LANGUAGE"), "language", $language_list);
 $HD_Form -> AddSearchSqlSelectInput(gettext("SELECT TARIFF"), "cc_tariffgroup", "id, tariffgroupname, id", "", "tariffgroupname", "ASC", "tariff");
