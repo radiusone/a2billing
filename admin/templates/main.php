@@ -146,7 +146,7 @@ require_once __DIR__ . "/../../common/lib/admin.defines.php";
                     <div class="collapse <?= $menu_section === 5 ? "show" : "" ?>" id="report-collapse">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                             <li><a class="link-dark rounded" href="A2B_report_calls.php"><?= _("CDRs") ?></a></li>
-                            <li><a class="link-dark rounded" href="call-count-reporting.php?nodisplay=1&amp;posted=1"><?= _("Call Count") ?></a></li>
+                            <li><a class="link-dark rounded" href="A2B_report_call_counts.php"><?= _("Call Counts") ?></a></li>
                             <li><a class="link-dark rounded" href="A2B_report_trunk.php"><?= _("Trunk") ?></a></li>
                             <li><a class="link-dark rounded" href="A2B_report_dnid.php"><?= _("DNID") ?></a></li>
                             <li><a class="link-dark rounded" href="call-pnl-report.php"><?= _("PNL") ?></a></li>
