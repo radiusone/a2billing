@@ -89,8 +89,8 @@ if (!$popup_select) {
 
     $HD_Form->AddSearchDateInput(_("Date"), "date");
     $HD_Form->AddSearchTextInput(_("Account number"), "username");
-    $HD_Form->AddSearchTextInput(_("Last name"),"lastname");
-    $HD_Form->AddSearchTextInput(_("First name"),"firstname");
+    $HD_Form->AddSearchTextInput(_("Last name"), "lastname");
+    $HD_Form->AddSearchTextInput(_("First name"), "firstname");
 }
 
 $HD_Form->FG_FILTER_ENABLE = true;

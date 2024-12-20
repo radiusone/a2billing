@@ -102,7 +102,7 @@ if ($popup_select) {
 $HD_Form -> search_form_enabled = true;
 
 $HD_Form->AddSearchDateInput(_("START DATE"), "startdate");
-$HD_Form -> AddSearchTextInput(gettext("PREFIX"),'dialprefix','dialprefixtype');
+$HD_Form -> AddSearchTextInput(gettext("PREFIX"), 'dialprefix');
 $HD_Form -> AddSearchComparisonInput(gettext("RATE INITIAL"),'rateinitial1','rateinitial1type','rateinitial2','rateinitial2type','rateinitial');
 
 $HD_Form -> AddSearchSqlSelectInput('SELECT CALLPLAN', "cc_tariffgroup,cc_agent_tariffgroup",

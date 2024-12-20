@@ -137,10 +137,10 @@ if (!$popup_select) {
 
     $HD_Form->AddSearchDateInput(_("CREATION DATE"), "date");
 
-    $HD_Form->AddSearchTextInput(_("FIRSTNAME"), 'firstname', 'firstnametype');
-    $HD_Form->AddSearchTextInput(_("LASTNAME"), 'lastname', 'lastnametype');
-    $HD_Form->AddSearchTextInput(_("REFERENCE"), 'reference', 'referencetype');
-    $HD_Form->AddSearchTextInput(_("TITLE"), 'title', 'titletype');
+    $HD_Form->AddSearchTextInput(_("FIRSTNAME"), 'firstname');
+    $HD_Form->AddSearchTextInput(_("LASTNAME"), 'lastname');
+    $HD_Form->AddSearchTextInput(_("REFERENCE"), 'reference');
+    $HD_Form->AddSearchTextInput(_("TITLE"), 'title');
 
     $HD_Form->AddSearchComparisonInput(_("AMOUNT INCL VAT"), 'total_price1', 'total_price1type', 'total_price2', 'total_price2type', 'total_price');
 

@@ -138,7 +138,7 @@ if ($ticket_type === "agent") {
 } else {
     $HD_Form->AddSearchTextInput(_("Account number"), "username");
 }
-$HD_Form -> AddSearchTextInput(_("Last name"),"lastname");
+$HD_Form -> AddSearchTextInput(_("Last name"), "lastname");
 
 $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form->FG_ENABLE_DELETE_BUTTON = true;

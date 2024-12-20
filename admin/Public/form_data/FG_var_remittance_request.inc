@@ -89,8 +89,8 @@ $HD_Form->search_delete_enabled = false;
 
 $HD_Form->AddSearchDateInput(_("Date"), "date");
 $HD_Form->AddSearchTextInput(_("Login"), 'login');
-$HD_Form->AddSearchTextInput(_("Last name"),'lastname');
-$HD_Form->AddSearchTextInput(_("First name"),'firstname');
+$HD_Form->AddSearchTextInput(_("Last name"), 'lastname');
+$HD_Form->AddSearchTextInput(_("First name"), 'firstname');
 $HD_Form->AddSearchSelectInput(_("Request type"), "type", $type_list);
 $HD_Form->AddSearchSelectInput(_("Request status"), "status", $status_list);
 

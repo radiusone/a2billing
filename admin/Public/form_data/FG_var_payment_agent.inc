@@ -91,9 +91,9 @@ $HD_Form->search_session_key = "payment_agent_selection";
 $HD_Form->search_form_title = _("Define specific criteria to search for payments created.");
 $HD_Form->search_delete_enabled = false;
 $HD_Form->AddSearchDateInput(_("DATE"), "date");
-$HD_Form->AddSearchTextInput(_("LOGIN"), "login","logintype");
-$HD_Form->AddSearchTextInput(_("LASTNAME"),"lastname","lastnametype");
-$HD_Form->AddSearchTextInput(_("FIRSTNAME"),"firstname","firstnametype");
+$HD_Form->AddSearchTextInput(_("LOGIN"), "login");
+$HD_Form->AddSearchTextInput(_("LASTNAME"), "lastname");
+$HD_Form->AddSearchTextInput(_("FIRSTNAME"), "firstname");
 
 if (has_rights (Admin::ACX_MODIFY_PAYMENTS)) {
 	$HD_Form->FG_ENABLE_EDIT_BUTTON = true;

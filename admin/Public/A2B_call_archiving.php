@@ -206,8 +206,8 @@ $HD_Form->AddSearchPopupInput("id_provider", _("Provider"), "A2B_entity_provider
 $HD_Form->AddSearchPopupInput("id_trunk", _("Trunk"), "A2B_entity_trunk.php", 2);
 $HD_Form->AddSearchPopupInput("id_ratecard", _("Rate"), "A2B_entity_def_ratecard.php", 2);
 
-$HD_Form->AddSearchTextInput(_("Destination"), "dst", "dsttype");
-$HD_Form->AddSearchTextInput(_("Source"), "src", "srctype");
+$HD_Form->AddSearchTextInput(_("Destination"), "dst");
+$HD_Form->AddSearchTextInput(_("Source"), "src");
 
 $HD_Form->AddSearchSelectInput(_("Disposition"), "calltype", [["answered", _("Answered Only")], ["all", _("All Calls")]]);
 

@@ -77,5 +77,5 @@ $HD_Form->FieldViewElement (["did", "id_cc_card", "reservationdate", "releasedat
 
 $HD_Form->CV_NO_FIELDS = _("No DIDs in use");
 
-$HD_Form->AddSearchTextInput(_("DID"), "did", "didtype");
+$HD_Form->AddSearchTextInput(_("DID"), "did");
 $HD_Form->AddSearchSelectInput(_("Status"), "inuse", [_("All DIDs"), _("DIDs in use")]);

@@ -82,9 +82,9 @@ $HD_Form -> search_session_key = 'payment_cust_selection';
 $HD_Form -> search_form_title = gettext('Define specific criteria to search for payments created.');
 
 $HD_Form->AddSearchDateInput(_("DATE"), "date");
-$HD_Form -> AddSearchTextInput(gettext("ACCOUNT NUMBER"), 'username','usernametype');
-$HD_Form -> AddSearchTextInput(gettext("LASTNAME"),'lastname','lastnametype');
-$HD_Form -> AddSearchTextInput(gettext("FIRSTNAME"),'firstname','firstnametype');
+$HD_Form -> AddSearchTextInput(gettext("ACCOUNT NUMBER"), 'username');
+$HD_Form -> AddSearchTextInput(gettext("LASTNAME"), 'lastname');
+$HD_Form -> AddSearchTextInput(gettext("FIRSTNAME"), 'firstname');
 
 
 
