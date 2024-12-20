@@ -202,7 +202,16 @@ use A2billing\Forms\FormHandler;
             <div class="row">
             <?php foreach ($item["options"] as $val => $opt): ?>
                 <div class="form-check col-6 col-lg-3 mb-1">
-                    <input type="radio" name="<?= $item["input"][0] ?>" id="<?= $item["input"][0] . $val ?>" value="<?= $val ?>" class="form-check-input"/>
+                    <input
+                        type="radio"
+                        name="<?= $item["input"][0] ?>"
+                        id="<?= $item["input"][0] . $val ?>"
+                        value="<?= $val ?>"
+                        <?php if ($val == $processed[$item["input"][0]] ?? $item["default"] ?? "zzzzzz"):?>
+                        checked="checked"
+                        <?php endif ?>
+                        class="form-check-input"
+                    />
                     <label class="form-check-label form-check-label-sm" for="<?= $item["input"][0] . $val ?>"><?= $opt ?></label>
                 </div>
             <?php endforeach ?>
@@ -221,7 +230,7 @@ use A2billing\Forms\FormHandler;
                 <option value=""><?= $item["label"] ?></option>
                 <?php foreach ($item["options"] as $key => $opt): ?>
                     <?php $val = is_array($opt) ? $opt[0] : $key ?>
-                    <option value="<?= $val ?>" <?php if (strcmp($processed[$item["input"][0]] ?? "zzzzzz", $val) === 0): ?>selected="selected"<?php endif ?>>
+                    <option value="<?= $val ?>" <?php if (strcmp($processed[$item["input"][0]] ?? $item["default"] ?? "zzzzzz", $val) === 0): ?>selected="selected"<?php endif ?>>
                         <?= is_array($opt) ? $opt[1] : $opt ?>
                     </option>
                 <?php endforeach ?>
