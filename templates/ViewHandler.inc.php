@@ -1,8 +1,6 @@
 <?php
 namespace A2billing\Forms;
 
-use A2billing\Table;
-
 /**
  * @var FormHandler $form
  * @var array $processed
@@ -13,8 +11,6 @@ use A2billing\Table;
  * @var bool $hasActionButtons
  */
 
-$cached_options = [];
-$origlist = [];
 $processed["popup_select"] ??= "0";
 $processed["popup_formname"] ??= "";
 $processed["popup_fieldname"] ??= "";
@@ -103,16 +99,16 @@ $processed["popup_fieldname"] ??= "";
             </caption>
             <thead>
                 <tr>
-                    <?php foreach ($form->FG_LIST_TABLE_CELLS as $row): ?>
+                    <?php foreach ($form->FG_LIST_TABLE_CELLS as $column): ?>
                     <th>
-                        <?php if ($row["sortable"]): ?>
+                        <?php if ($column["sortable"]): ?>
                         <a
-                            class="sort <?= $form->FG_QUERY_ORDERBY_COLUMNS[0] === $row["field"] ? strtolower($form->FG_QUERY_DIRECTION) : "" ?>"
-                            href="<?= "?" . http_build_query(["current_page" => $current_page, "letter" => $letter, "popup_select" => $processed["popup_select"], "order" => $row["field"] ?? "", "sens" => $form->FG_QUERY_DIRECTION === "ASC" ? "DESC" : "ASC"], "", "&amp;") . (str_starts_with($form->CV_FOLLOWPARAMETERS, "&") ? "" : "&amp;") . $form->CV_FOLLOWPARAMETERS ?>"
+                            class="sort <?= $form->FG_QUERY_ORDERBY_COLUMNS[0] === $column["field"] ? strtolower($form->FG_QUERY_DIRECTION) : "" ?>"
+                            href="<?= "?" . http_build_query(["current_page" => $current_page, "letter" => $letter, "popup_select" => $processed["popup_select"], "order" => $column["field"] ?? "", "sens" => $form->FG_QUERY_DIRECTION === "ASC" ? "DESC" : "ASC"], "", "&amp;") . (str_starts_with($form->CV_FOLLOWPARAMETERS, "&") ? "" : "&amp;") . $form->CV_FOLLOWPARAMETERS ?>"
                         >
                         <?php endif ?>
-                            <?= $row["header"] ?>
-                        <?php if ($row["sortable"]): ?>
+                            <?= $column["header"] ?>
+                        <?php if ($column["sortable"]): ?>
                         </a>
                         <?php endif?>
                     </th>
@@ -126,47 +122,21 @@ $processed["popup_fieldname"] ??= "";
                 </tr>
             </thead>
             <tbody>
-            <?php foreach ($list as $num => $item): ?>
+            <?php foreach ($list as $row): ?>
                 <tr>
-                <?php foreach($form->FG_LIST_TABLE_CELLS as $j => $cell):
-/** TBD start */
-                    $origlist[$num][$j] = $item[$j];
-                    if (str_starts_with($cell["type"], "lie")) {
-                        $lie_id = $item[$j] ?? "";
-                        $cached_options[$cell["field"]][$lie_id] ??= (new Table($cell["sql_table"], $cell["sql_columns"]))
-                            ->get_list($form->DBHandle, str_replace("%id", $lie_id, $cell["sql_clause"]));
-                        $options = $cached_options[$cell["field"]][$lie_id];
-                        $record_display = preg_replace_callback(
-                            "/%([0-9]+)/",
-                            fn ($m) => str_replace($m[0], $options[0][$m[1] - 1] ?? "", $m[0]),
-                            $cell["sql_display"]
-                        );
-                        if (trim($record_display) === "") {
-                            $record_display = _("n/a");
-                        }
-                        if ($cell["type"] === "lie_link" && is_array($options)) {
-                            $cell["href"] .= (str_contains($cell["href"], 'form_action') ? "?" : "?form_action=ask-edit&") . "id=" . $options[0][1];
-                        }
-/** TBD end */
-                    } elseif ($cell["type"] === "list") {
-                        $select_list = $cell["options"];
-                        $match = $select_list[$item[$j]] ?? null;
-                        // todo: this won't be an array once old methods are gone
-                        $record_display = (is_array($match) ? $match[0] : $match) ?: _("n/a");
+                <?php foreach($form->FG_LIST_TABLE_CELLS as $j => $column):
+                    if ($column["type"] === "list") {
+                        $record_display = ($column["options"][$row[$j]] ?? null) ?: _("n/a");
                     } else {
-                        $record_display = $item[$j];
+                        $record_display = $row[$j];
                     }
 
-                    /**********************   IF LENGTH OF THE VALUE IS TOO LONG IT MIGHT BE CUT ************************/
-                    if (($cell["maxsize"] ?? 0) > 0 && strlen($record_display ?? "") > $cell["maxsize"]) {
-                        $record_display = substr($record_display, 0, $cell["maxsize"]) . "…";
-                    }
                     $arg = [];
-                    foreach ($cell["arguments"] ?? [] as $argument) {
+                    foreach ($column["arguments"] ?? [] as $argument) {
                         if (is_string($argument)) {
                             $argument = preg_replace_callback(
                                 "/%([0-9]+|X)/",
-                                fn ($m) => $m[1] === "X" ? $record_display : ($item[$m[1]] ?? ""),
+                                fn ($m) => $m[1] === "X" ? $record_display : ($row[$m[1]] ?? ""),
                                 $argument
                             );
                         }
@@ -174,23 +144,23 @@ $processed["popup_fieldname"] ??= "";
                     }
                     ?>
                     <td>
-                    <?php if (!empty($cell["function"]) && is_callable($cell["function"])): ?>
-                        <?= call_user_func_array($cell["function"], $arg ?: [$record_display]) ?>
-                    <?php elseif (!empty($cell["href"])): ?>
-                        <a href="<?= $cell["href"] ?><?= str_ends_with($cell["href"], "=") ? $item[$j] : "" ?>">
+                    <?php if (!empty($column["function"]) && is_callable($column["function"])): ?>
+                        <?= call_user_func_array($column["function"], $arg ?: [$record_display]) ?>
+                    <?php elseif (!empty($column["href"])): ?>
+                        <a href="<?= $column["href"] ?><?= str_ends_with($column["href"], "=") ? $row[$j] : "" ?>">
                             <?= $record_display ?>
                         </a>
                     <?php else: ?>
                         <?= $record_display ?? "" ?>
                     <?php endif ?>
                     </td>
-                <?php $item[$j] = $record_display ?>
+                <?php $row[$j] = $record_display ?>
                 <?php endforeach ?>
                 <?php if ($hasActionButtons): ?>
                     <td>
                     <?php if($form->FG_ENABLE_INFO_BUTTON): ?>
                         <a
-                            href="<?= $form->FG_INFO_BUTTON_LINK?><?= $item["instance_primary_key"] ?? "" ?>"
+                            href="<?= $form->FG_INFO_BUTTON_LINK?><?= $row["instance_primary_key"] ?? "" ?>"
                             title="<?= sprintf(_("About this %s"), strtolower($form->FG_INSTANCE_NAME)) ?>"
                             aria-label="<?= sprintf(_("About this %s"), strtolower($form->FG_INSTANCE_NAME)) ?>"
                         >
@@ -203,7 +173,7 @@ $processed["popup_fieldname"] ??= "";
                         if (!empty($form->FG_EDIT_BUTTON_CONDITION)) {
                             $condition_eval = preg_replace_callback(
                                 "/\\|col([0-9]+)\\|/i",
-                                fn ($m) => str_replace($m[0], $item[$m[1]] ?? "", $m[0]),
+                                fn ($m) => str_replace($m[0], $row[$m[1]] ?? "", $m[0]),
                                 // only used in FG_var_invoice.inc and FG_var_receipt.inc
                                 $form->FG_EDIT_BUTTON_CONDITION
                             );
@@ -212,7 +182,7 @@ $processed["popup_fieldname"] ??= "";
                         ?>
                         <?php if($check): ?>
                         <a
-                            href="<?= $form->FG_EDIT_BUTTON_LINK?><?= $item["instance_primary_key"] ?? "" ?>"
+                            href="<?= $form->FG_EDIT_BUTTON_LINK?><?= $row["instance_primary_key"] ?? "" ?>"
                             title="<?= sprintf(_("Edit this %s"), strtolower($form->FG_INSTANCE_NAME)) ?>"
                             aria-label="<?= sprintf(_("Edit this %s"), strtolower($form->FG_INSTANCE_NAME)) ?>"
                         >
@@ -220,13 +190,13 @@ $processed["popup_fieldname"] ??= "";
                         </a>
                         <?php endif ?>
                     <?php endif ?>
-                    <?php if($form->FG_ENABLE_DELETE_BUTTON && !in_array($item["instance_primary_key"], $form->FG_DELETION_FORBIDDEN_ID)): ?>
+                    <?php if($form->FG_ENABLE_DELETE_BUTTON && !in_array($row["instance_primary_key"], $form->FG_DELETION_FORBIDDEN_ID)): ?>
                         <?php
                         $check = true;
                         if (!empty($form->FG_DELETE_BUTTON_CONDITION)) {
                             $condition_eval = preg_replace_callback(
                                 "/\\|col([0-9]+)\\|/i",
-                                fn ($m) => str_replace($m[0], $item[$m[1]] ?? "", $m[0]),
+                                fn ($m) => str_replace($m[0], $row[$m[1]] ?? "", $m[0]),
                                 $form->FG_DELETE_BUTTON_CONDITION
                             );
                             $check = eval("return $condition_eval;");
@@ -234,7 +204,7 @@ $processed["popup_fieldname"] ??= "";
                         ?>
                         <?php if ($check): ?>
                         <a
-                            href="<?= $form->FG_DELETE_BUTTON_LINK?><?= $item["instance_primary_key"] ?? "" ?>"
+                            href="<?= $form->FG_DELETE_BUTTON_LINK?><?= $row["instance_primary_key"] ?? "" ?>"
                             title="<?= sprintf(_("Delete this %s"), strtolower($form->FG_INSTANCE_NAME)) ?>"
                             aria-label="<?= sprintf(_("Delete this %s"), strtolower($form->FG_INSTANCE_NAME)) ?>"
                         >
@@ -245,21 +215,21 @@ $processed["popup_fieldname"] ??= "";
                     <?php foreach ($form->list_action_buttons as $button):
                         $check = true;
                         if (!empty($button["match_index"])) {
-                            $check = $item[$button["match_index"]] == $button["match_value"];
+                            $check = $row[$button["match_index"]] == $button["match_value"];
                         }
                         if (!$check) {
                             continue;
                         }
                         $link = "";
                         if ($button["url"] !== "") {
-                            $link = str_replace("|param|", $item["instance_primary_key"] ?? "", $button["url"]);
+                            $link = str_replace("|param|", $row["instance_primary_key"] ?? "", $button["url"]);
                             $link = preg_replace_callback(
                                 "/\\|col([0-9]+)\\|/i",
-                                fn ($m) => str_replace($m[0], $item[$m[1]] ?? "", $m[0]),
+                                fn ($m) => str_replace($m[0], $row[$m[1]] ?? "", $m[0]),
                                 $link
                             );
                             if (str_ends_with($link, "=")) {
-                                $link .= $item["instance_primary_key"] ?? "";
+                                $link .= $row["instance_primary_key"] ?? "";
                             }
                         }
                         $contents = $button["image"]
@@ -271,7 +241,7 @@ $processed["popup_fieldname"] ??= "";
                             href="<?= $link ?>"
                             title="<?= $button["label"] ?>"
                             class="<?= $button["class"] ?? "" ?>"
-                            data-primary-key="<?= $item["instance_primary_key"] ?? "" ?>"
+                            data-primary-key="<?= $row["instance_primary_key"] ?? "" ?>"
                             data-popup-select="<?= $popup_select ?>"
                             <?= $button["image"] ? "aria-label=\"$button[label]\"" : "" ?>
                         >
@@ -282,7 +252,7 @@ $processed["popup_fieldname"] ??= "";
                             type="button"
                             title="<?= $button["label"] ?>"
                             class="btn align-baseline p-0 <?= $button["class"] ?? "" ?>"
-                            data-primary-key="<?= $item["instance_primary_key"] ?? "" ?>"
+                            data-primary-key="<?= $row["instance_primary_key"] ?? "" ?>"
                             data-popup-select="<?= $popup_select ?>"
                             <?= $button["image"] ? "aria-label=\"$button[label]\"" : "" ?>
                         >

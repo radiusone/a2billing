@@ -22,8 +22,6 @@ class SearchForm
         $with_hide_button = $this->with_hide_button;
         $full_modal = $this->full_modal;
         $action = http_build_query(array_filter([
-            "s" => $processed["s"] ?? null,
-            "t" => $processed["t"] ?? null,
             "order" => $processed["order"] ?? null,
             "sens" => $processed["sens"] ?? null,
             "current_page" => $processed["current_page"] ?? null,

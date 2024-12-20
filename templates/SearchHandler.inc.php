@@ -4,7 +4,6 @@ use A2billing\Forms\FormHandler;
 /**
  * @var FormHandler $form
  * @var array $processed
- * @var array $list
  * @var bool $full_modal
  * @var bool $with_hide_button
  * @var string $action
@@ -207,7 +206,7 @@ use A2billing\Forms\FormHandler;
                         name="<?= $item["input"][0] ?>"
                         id="<?= $item["input"][0] . $val ?>"
                         value="<?= $val ?>"
-                        <?php if ($val == $processed[$item["input"][0]] ?? $item["default"] ?? "zzzzzz"):?>
+                        <?php if (strval($processed[$item["input"][0]] ?? $item["default"] ?? "zzzzzz") === "$val"):?>
                         checked="checked"
                         <?php endif ?>
                         class="form-check-input"
@@ -229,9 +228,8 @@ use A2billing\Forms\FormHandler;
             <select name="<?= $item["input"][0] ?>" aria-label="<?= $item["label"] ?>" class="form-select form-select-sm">
                 <option value=""><?= $item["label"] ?></option>
                 <?php foreach ($item["options"] as $key => $opt): ?>
-                    <?php $val = is_array($opt) ? $opt[0] : $key ?>
-                    <option value="<?= $val ?>" <?php if (strcmp($processed[$item["input"][0]] ?? $item["default"] ?? "zzzzzz", $val) === 0): ?>selected="selected"<?php endif ?>>
-                        <?= is_array($opt) ? $opt[1] : $opt ?>
+                    <option value="<?= $key ?>" <?php if (strval($processed[$item["input"][0]] ?? $item["default"] ?? "zzzzzz") === "$key"): ?>selected="selected"<?php endif ?>>
+                        <?= $opt ?>
                     </option>
                 <?php endforeach ?>
             </select>
