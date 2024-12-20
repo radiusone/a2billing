@@ -964,15 +964,17 @@ class FormHandler
      * @param string $label the label of the element
      * @param string $name the name of the element, and also the database column queried
      * @param array $options options for the element; key is used for value attribute, value used for content
+     * @param bool $process if false, this element will NOT be used in the database query
      * @return void
      */
-    public function AddSearchSelectInput(string $label, string $name, array $options = [])
+    public function AddSearchSelectInput(string $label, string $name, array $options = [], bool $process = true)
     {
         $name = str_replace(".", "^^", $name);
         $this->search_form_elements[] = [
             "label" => $label,
             "input" => [$name],
             "options" => $options,
+            "process" => $process,
             "type" => "SELECT",
         ];
     }
@@ -983,15 +985,17 @@ class FormHandler
      * @param string $label the label of the element
      * @param string $name the name of the element, and also the database column queried
      * @param array $options options for the element; key is used for value attribute, value used for content
+     * @param bool $process if false, this element will NOT be used in the database query
      * @return void
      */
-    public function AddSearchRadioInput(string $label, string $name, array $options = [])
+    public function AddSearchRadioInput(string $label, string $name, array $options = [], bool $process = true)
     {
         $name = str_replace(".", "^^", $name);
         $this->search_form_elements[] = [
             "label" => $label,
             "input" => [$name],
             "options" => $options,
+            "process" => $process,
             "type" => "RADIO",
         ];
     }
@@ -1445,6 +1449,9 @@ class FormHandler
         $search = [];
 
         foreach ($this->search_form_elements as $el) {
+            if (($el["process"] ?? true) === false) {
+                continue;
+            }
             foreach ($el["input"] as $i => $input) {
                 $input = str_replace("^^", ".", $input);
                 $search[$input] = $processed[$input];
