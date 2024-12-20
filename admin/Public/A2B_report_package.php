@@ -72,7 +72,7 @@ $HD_Form->search_form_title = gettext('Define specific criteria to search for ca
 $HD_Form->search_delete_enabled = false;
 
 $HD_Form->AddSearchPopupInput(_("Card ID"), "id_cc_card", "A2B_entity_card.php");
-$HD_Form->AddSearchSqlSelectInput(_("Package"), "cc_package_offer", "label,id", "", "", "", "id_cc_package_offer");
+$HD_Form->AddSearchSqlSelectInput(_("Package"), "id_cc_package_offer", new Table("cc_package_offer", ["id, label"]), "label");
 $HD_Form->AddSearchDateInput(_("Date"), "date_consumption");
 
 $form_action = "list";

@@ -3,6 +3,7 @@
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
 use A2billing\Mail;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -153,7 +154,7 @@ if ((int)$popup_select >= 1) {
 }
 
 $HD_Form->search_form_enabled = true;
-$HD_Form->AddSearchSqlSelectInput(_("Select language"), "cc_iso639", "code,name", "", "name", "ASC", "id_language");
+$HD_Form->AddSearchSqlSelectInput(_("Select language"), "id_language", new Table("cc_iso639", ["code", "name"]),  "name");
 
 $HD_Form->AddEditSelect(_("MAIL TYPE"), "mailtype", $typemail_list);
 

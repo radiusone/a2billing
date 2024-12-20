@@ -937,24 +937,46 @@ class FormHandler
     }
 
     /**
-     * Sets Search form select rows for the view module
+     * Add a SELECT element to a search form based on a database lookup
      *
-     * @public
-     * @ $displayname , SQL or array to fill select and the name of select box
+     * @param string $label the label of the element
+     * @param string $name the name of the element, and also the database column queried
+     * @param Table $table a database object; first 2 columns will be used for value and content
+     * @param string $order column to order by
+     * @param string $direction direction asc or desc
+     * @param array $conditions any conditions to apply to the query
+     * @return void
      */
-    public function AddSearchSqlSelectInput(string $displayname, string $table, string $fields, string $clause,
-                                                   $order, $sens, $select_name)
+    public function AddSearchSqlSelectInput(
+        string $label,
+        string $name,
+        Table $table,
+        string $order = "",
+        string $direction = "ASC",
+        array $conditions = []
+    )
     {
-        $select_name = str_replace(".", "^^", $select_name);
+        $name = str_replace(".", "^^", $name);
+        $sqlorder = [];
+        if ($order) {
+            // todo: let this default to second column
+            // will need to work on Table to get a column array available
+            $sqlorder = [$order];
+        }
+        $options = [];
+        array_map(
+            function ($v) use (&$options) {
+                $options[$v[0]] = $v[1];
+            },
+            $table->getRows($this->DBHandle, $conditions, $sqlorder, $direction)
+        );
+
         $this->search_form_elements[] = [
-            "label" => $displayname,
-            "table" => $table,
-            "columns" => $fields,
-            "where" => $clause,
-            "order" => $order,
-            "dir" => $sens,
-            "input" => [$select_name],
-            "type" => "SQL_SELECT",
+            "label" => $label,
+            "input" => [$name],
+            "options" => $options,
+            "process" => true,
+            "type" => "SELECT",
         ];
     }
 
@@ -1910,26 +1932,16 @@ class FormHandler
     {
         Console::logSpeed('Time taken to get to line ' . __LINE__);
         $processed = $this->getProcessed();
-        $list = [];
 
-        foreach ($this->search_form_elements as &$el) {
-            if ($el["type"] !== "SQL_SELECT") {
-                continue;
-            }
-            $instance_table = new Table($el["table"], $el["columns"]);
-            $list = $instance_table->get_list($this->DBHandle, $el["where"], $el["order"], $el["dir"]);
-            $el["options"] = $list;
-            $el["type"] = "SELECT";
-        }
-
-        echo new SearchForm($this, $processed, $list, $full_modal, $with_hide_button);
+        echo new SearchForm($this, $processed, $full_modal, $with_hide_button);
     }
 
     public function create_search_button(string $content = null): string
     {
+        $processed = $this->getProcessed();
         $class = "btn-outline-primary";
         $title = sprintf(_("Search %s"), $this->FG_INSTANCE_NAME);
-        if (!empty($_SESSION[$this->search_session_key])) {
+        if (!empty($processed["posted_search"]) || !empty($_SESSION[$this->search_session_key])) {
             $class = "btn-primary btn-search-active";
             $title .= " (" . _("search activated") . ")";
         }

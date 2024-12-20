@@ -157,8 +157,8 @@ $HD_Form->AddSearchTextInput(_("Dialing Prefix"), 'dialprefix');
 $HD_Form->AddSearchComparisonInput(_("Buy Rate"), 'buyrate1', 'buyrate2', 'buyrate');
 $HD_Form->AddSearchComparisonInput(_("Initial Rate"), 'rateinitial1', 'rateinitial2', 'rateinitial');
 
-$HD_Form->AddSearchSqlSelectInput('Trunk', "cc_trunk", "id_trunk, trunkcode, providerip", "", "trunkcode", "ASC", "id_trunk");
-$HD_Form->AddSearchSqlSelectInput('Rate Card', "cc_tariffplan", "id, tariffname", "", "tariffname", "ASC", "idtariffplan");
+$HD_Form->AddSearchSqlSelectInput(_("Trunk"), "id_trunk", new Table("cc_trunk", ["id_trunk", "trunkcode"]), "trunkcode");
+$HD_Form->AddSearchSqlSelectInput(_("Rate Card"), "idtariffplan", new Table("cc_tariffplan", ["id", "tariffname"]), "tariffname");
 
 $HD_Form->AddEditSqlSelect(_("Rate Card"), "idtariffplan", "cc_tariffplan", "tariffname,id");
 

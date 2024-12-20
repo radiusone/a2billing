@@ -2,6 +2,7 @@
 
 use A2billing\Agent;
 use A2billing\Forms\FormHandler;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -105,10 +106,18 @@ $HD_Form->AddSearchDateInput(_("START DATE"), "startdate");
 $HD_Form -> AddSearchTextInput(gettext("PREFIX"), 'dialprefix');
 $HD_Form -> AddSearchComparisonInput(gettext("RATE INITIAL"), 'rateinitial1', 'rateinitial2', 'rateinitial');
 
-$HD_Form -> AddSearchSqlSelectInput('SELECT CALLPLAN', "cc_tariffgroup,cc_agent_tariffgroup",
-    "cc_tariffgroup.id, cc_tariffgroup.tariffgroupname",
-    "cc_tariffgroup.id = cc_agent_tariffgroup.id_tariffgroup AND cc_agent_tariffgroup.id_agent=" . $_SESSION['agent_id'],
-    "tariffgroupname", "ASC", "tariffgroup_id");
+$HD_Form -> AddSearchSqlSelectInput(
+    'SELECT CALLPLAN',
+    "tariffgroup_id",
+    new Table(
+        "cc_tariffgroup",
+        ["cc_tariffgroup.id", "cc_tariffgroup.tariffgroupname"],
+        ["cc_agent_tariffgroup" => ["cc_tariffgroup.id", "cc_agent_tariffgroup.id_tariffgroup"]]
+    ),
+    "tariffgroupname",
+    "ASC",
+    ["cc_agent_tariffgroup.id_agent" => $_SESSION['agent_id']]
+);
 
 
 $HD_Form -> FG_INTRO_TEXT_ADITION = $HD_Form -> FG_INTRO_TEXT_EDITION = gettext("Rates must be entered in the currency base : ").strtoupper(BASE_CURRENCY);

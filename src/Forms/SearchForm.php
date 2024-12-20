@@ -5,14 +5,12 @@ class SearchForm
 {
     private FormHandler $form;
     private array $processed;
-    private array $list;
     private bool $with_hide_button;
     private bool $full_modal;
 
-    public function __construct(FormHandler $form, array $processed, array $list, bool $full_modal, bool $with_hide_button) {
+    public function __construct(FormHandler $form, array $processed, bool $full_modal, bool $with_hide_button) {
         $this->form = $form;
         $this->processed = $processed;
-        $this->list = $list;
         $this->with_hide_button = $with_hide_button;
         $this->full_modal = $full_modal;
     }
@@ -21,7 +19,6 @@ class SearchForm
     {
         $form = $this->form;
         $processed = $this->processed;
-        $list = $this->list;
         $with_hide_button = $this->with_hide_button;
         $full_modal = $this->full_modal;
         $action = http_build_query(array_filter([

@@ -96,7 +96,7 @@ $HD_Form->search_form_enabled = true;
 $HD_Form->AddSearchTextInput(_("Value"), "config_value");
 $HD_Form->AddSearchTextInput(_("Key"), "config_key");
 $HD_Form->AddSearchTextInput(_("Description"), "config_description");
-$HD_Form->AddSearchSqlSelectInput(_("Select config group"), "cc_config_group", "id,group_title", "", "group_title", "ASC", "config_group_id");
+$HD_Form->AddSearchSqlSelectInput(_("Select config group"), "config_group_id", new Table("cc_config_group", ["id", "group_title"]), "group_title");
 
 $HD_Form->AddEditSqlSelect(
     _("GROUP"),

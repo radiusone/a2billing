@@ -111,10 +111,10 @@ $HD_Form->AddSearchComparisonInput(_("Credit"), 'credit1', 'credit2', 'credit');
 $HD_Form->AddSearchComparisonInput(_("In use"), 'inuse1', 'inuse2', 'inuse');
 
 $HD_Form->AddSearchSelectInput(_("Language"), "language", $language_list);
-$HD_Form->AddSearchSqlSelectInput(_("Rate plan"), "cc_tariffgroup", "id, tariffgroupname, id", "", "tariffgroupname", "ASC", "tariff");
+$HD_Form->AddSearchSqlSelectInput(_("Rate plan"), "tariff", new Table("cc_tariffgroup", ["id, tariffgroupname"]), "tariffgroupname");
 $HD_Form->AddSearchSelectInput(_("Status"), "status", $cardstatus_list);
 $HD_Form->AddSearchSelectInput(_("Access"), "simultaccess", $simultaccess_list);
-$HD_Form->AddSearchSqlSelectInput(_("Group"), "cc_card_group", "id, name", "", "name", "ASC", "id_group");
+$HD_Form->AddSearchSqlSelectInput(_("Group"), "id_group", new Table("cc_card_group", ["id", "name"]), "name");
 $HD_Form->AddSearchSelectInput(_("Currency"), "currency", $currency_list);
 
 if ($posted_search === true && $posted_archive === false) {

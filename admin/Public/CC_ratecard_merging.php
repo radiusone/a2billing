@@ -138,7 +138,7 @@ $HD_Form -> AddSearchTextInput(gettext("PREFIX"), 'dialprefix');
 $HD_Form -> AddSearchComparisonInput(gettext("BUYRATE"), 'buyrate1', 'buyrate2', 'buyrate');
 $HD_Form -> AddSearchComparisonInput(gettext("RATE INITIAL"), 'rateinitial1', 'rateinitial2', 'rateinitial');
 $HD_Form -> prepare_list_subselection('list');
-$HD_Form -> AddSearchSqlSelectInput('SELECT TRUNK', "cc_trunk", "id_trunk, trunkcode, providerip", "", "trunkcode", "ASC", "id_trunk");
+$HD_Form -> AddSearchSqlSelectInput('SELECT TRUNK', "id_trunk", new Table("cc_trunk", ["id_trunk, trunkcode"]), "trunkcode");
 // todo: get rid of FG_QUERY_WHERE_CLAUSE usage
 $_SESSION['search_ratecard'] = json_encode($HD_Form->list_query_conditions);
 

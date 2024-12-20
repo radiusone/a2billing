@@ -269,12 +269,12 @@ if ($popup_select) {
     $HD_Form->AddSearchComparisonInput(_("CREDIT"), 'credit1', 'credit2', 'credit');
     $HD_Form->AddSearchComparisonInput(_("INUSE"), 'inuse1', 'inuse2', 'inuse');
 
-    $HD_Form->AddSearchSqlSelectInput(_("SELECT SERIE"), "cc_card_seria", "id, name", "", "name", "ASC", "id_seria");
+    $HD_Form->AddSearchSqlSelectInput(_("SELECT SERIE"), "id_seria", new Table("cc_card_seria", ["id", "name"]), "name");
     $HD_Form->AddSearchSelectInput(_("SELECT LANGUAGE"), "language", $language_list);
-    $HD_Form->AddSearchSqlSelectInput(_("SELECT TARIFF"), "cc_tariffgroup", "id, tariffgroupname", "", "tariffgroupname", "ASC", "tariff");
+    $HD_Form->AddSearchSqlSelectInput(_("SELECT TARIFF"), "tariff", new Table("cc_tariffgroup", ["id", "tariffgroupname"]), "tariffgroupname");
     $HD_Form->AddSearchSelectInput(_("SELECT STATUS"), "status", $cardstatus_list);
     $HD_Form->AddSearchSelectInput(_("SELECT ACCESS"), "simultaccess", $simultaccess_list);
-    $HD_Form->AddSearchSqlSelectInput(_("SELECT GROUP"), "cc_card_group", "id, name", "", "name", "ASC", "id_group");
+    $HD_Form->AddSearchSqlSelectInput(_("SELECT GROUP"), "id_group", new Table("cc_card_group", ["id", "name"]), "name");
     $HD_Form->AddSearchSelectInput(_("SELECT CURRENCY"), "currency", getCurrenciesList());
     $HD_Form->AddSearchSelectInput(_("SELECT PAYMENT TYPE"), "typepaid", $typepaid_list);
 

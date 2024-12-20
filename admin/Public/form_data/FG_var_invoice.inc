@@ -3,6 +3,7 @@
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -145,7 +146,7 @@ if (!$popup_select) {
     $HD_Form->AddSearchComparisonInput(_("AMOUNT INCL VAT"), 'total_price1', 'total_price2', 'total_price');
 
     $HD_Form->AddSearchSelectInput(_("PAYMENT TYPE"), "typepaid", $typepaid_list);
-    $HD_Form->AddSearchSqlSelectInput(_("CALL PLAN"), "cc_tariffgroup", "id, tariffgroupname", "", "tariffgroupname", "ASC", "tariff");
+    $HD_Form->AddSearchSqlSelectInput(_("CALL PLAN"), "tariff", new Table("cc_tariffgroup", ["id", "tariffgroupname"]), "tariffgroupname");
     $HD_Form->AddSearchSelectInput(_("INVOICE DAY"), "invoiceday", $invoiceday_list);
     $HD_Form->AddSearchSelectInput(_("PAID STATUS"), "paid_status", $paid_status_list);
 }
