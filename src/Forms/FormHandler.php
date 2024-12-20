@@ -958,14 +958,41 @@ class FormHandler
         ];
     }
 
-    public function AddSearchSelectInput(string $displayname, string $select_name, array $array_content = [])
+    /**
+     * Add a SELECT element to a search form
+     *
+     * @param string $label the label of the element
+     * @param string $name the name of the element, and also the database column queried
+     * @param array $options options for the element; key is used for value attribute, value used for content
+     * @return void
+     */
+    public function AddSearchSelectInput(string $label, string $name, array $options = [])
     {
-        $select_name = str_replace(".", "^^", $select_name);
+        $name = str_replace(".", "^^", $name);
         $this->search_form_elements[] = [
-            "label" => $displayname,
-            "input" => [$select_name],
-            "options" => $array_content,
+            "label" => $label,
+            "input" => [$name],
+            "options" => $options,
             "type" => "SELECT",
+        ];
+    }
+
+    /**
+     * Add a radio button to a search form
+     *
+     * @param string $label the label of the element
+     * @param string $name the name of the element, and also the database column queried
+     * @param array $options options for the element; key is used for value attribute, value used for content
+     * @return void
+     */
+    public function AddSearchRadioInput(string $label, string $name, array $options = [])
+    {
+        $name = str_replace(".", "^^", $name);
+        $this->search_form_elements[] = [
+            "label" => $label,
+            "input" => [$name],
+            "options" => $options,
+            "type" => "RADIO",
         ];
     }
 

@@ -197,15 +197,26 @@ use A2billing\Forms\FormHandler;
             </div>
         </div>
 
+    <?php elseif ($item["type"] === "RADIO"): ?>
+        <div class="col-8">
+            <div class="row">
+            <?php foreach ($item["options"] as $val => $opt): ?>
+                <div class="form-check col-6 col-lg-3 mb-1">
+                    <input type="radio" name="<?= $item["input"][0] ?>" id="<?= $item["input"][0] . $val ?>" value="<?= $val ?>" class="form-check-input"/>
+                    <label class="form-check-label form-check-label-sm" for="<?= $item["input"][0] . $val ?>"><?= $opt ?></label>
+                </div>
+            <?php endforeach ?>
+            </div>
+        </div>
+
     <?php endif ?>
     </div>
 <?php endforeach ?>
 
 <?php $selects = array_filter($form->search_form_elements, fn ($v) => $v["type"] === "SELECT") ?>
-<?php foreach (array_chunk($selects, 3) as $chunk): ?>
     <div class="row py-1">
-    <?php foreach ($chunk as $item): ?>
-        <div class="col-4">
+    <?php foreach ($selects as $item): ?>
+        <div class="col-4 mb-1">
             <select name="<?= $item["input"][0] ?>" aria-label="<?= $item["label"] ?>" class="form-select form-select-sm">
                 <option value=""><?= $item["label"] ?></option>
                 <?php foreach ($item["options"] as $key => $opt): ?>
@@ -218,7 +229,6 @@ use A2billing\Forms\FormHandler;
         </div>
     <?php endforeach ?>
     </div>
-<?php endforeach ?>
 
 <?php if ($full_modal): ?>
                 </div> <!-- .modal-body -->
