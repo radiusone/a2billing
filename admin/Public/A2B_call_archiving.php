@@ -200,11 +200,11 @@ $HD_Form->search_delete_enabled = false;
 
 $HD_Form->AddSearchDateInput(_("Dates"), "starttime", true);
 $HD_Form->AddSearchDateInput(_("Dates"), "starttime");
-$HD_Form->AddSearchPopupInput("card_id", _("Customer ID"), "A2B_entity_card.php");
-$HD_Form->AddSearchPopupInput("id_tariffgroup", _("Call Plan"), "A2B_entity_tariffgroup.php", 2);
-$HD_Form->AddSearchPopupInput("id_provider", _("Provider"), "A2B_entity_provider.php", 2);
-$HD_Form->AddSearchPopupInput("id_trunk", _("Trunk"), "A2B_entity_trunk.php", 2);
-$HD_Form->AddSearchPopupInput("id_ratecard", _("Rate"), "A2B_entity_def_ratecard.php", 2);
+$HD_Form->AddSearchPopupInput(_("Customer ID"), "card_id", "A2B_entity_card.php");
+$HD_Form->AddSearchPopupInput(_("Call Plan"), "id_tariffgroup", "A2B_entity_tariffgroup.php", 2);
+$HD_Form->AddSearchPopupInput(_("Provider"), "id_provider", "A2B_entity_provider.php", 2);
+$HD_Form->AddSearchPopupInput(_("Trunk"), "id_trunk", "A2B_entity_trunk.php", 2);
+$HD_Form->AddSearchPopupInput(_("Rate"), "id_ratecard", "A2B_entity_def_ratecard.php", 2);
 
 $HD_Form->AddSearchTextInput(_("Destination"), "dst");
 $HD_Form->AddSearchTextInput(_("Source"), "src");
@@ -213,8 +213,8 @@ $HD_Form->AddSearchSelectInput(_("Disposition"), "calltype", [["answered", _("An
 
 if ($posted_search === true && $posted_archive === false) {
     $HD_Form->AddSearchButton(
-        "posted_archive",
         "Archive Displayed Calls",
+        "posted_archive",
         "true", "btn-secondary",
         "return confirm('This action will archive the selected calls. Are you sure?')"
     );

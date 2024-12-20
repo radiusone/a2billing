@@ -68,7 +68,7 @@ $HD_Form->search_form_title = gettext('Define specific criteria to search for ca
 
 $HD_Form->AddSearchDateInput(_("Date"), "cc_call.starttime");
 $HD_Form->AddSearchDateInput(_("Date"), "cc_call.starttime", false, true);
-$HD_Form->AddSearchPopupInput("cc_call.id_trunk", _("Trunk"), "A2B_entity_trunk.php", 2);
+$HD_Form->AddSearchPopupInput(_("Trunk"), "cc_call.id_trunk", "A2B_entity_trunk.php", 2);
 
 $form_action = "list";
 $HD_Form->prepare_list_subselection($form_action);

@@ -71,7 +71,7 @@ $HD_Form->search_session_key = 'package_report_selection';
 $HD_Form->search_form_title = gettext('Define specific criteria to search for call records');
 $HD_Form->search_delete_enabled = false;
 
-$HD_Form->AddSearchPopupInput("id_cc_card", _("Card ID"), "A2B_entity_card.php");
+$HD_Form->AddSearchPopupInput(_("Card ID"), "id_cc_card", "A2B_entity_card.php");
 $HD_Form->AddSearchSqlSelectInput(_("Package"), "cc_package_offer", "label,id", "", "", "", "id_cc_package_offer");
 $HD_Form->AddSearchDateInput(_("Date"), "date_consumption");
 

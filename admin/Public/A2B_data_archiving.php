@@ -119,8 +119,8 @@ $HD_Form->AddSearchSelectInput(_("Currency"), "currency", $currency_list);
 
 if ($posted_search === true && $posted_archive === false) {
     $HD_Form->AddSearchButton(
-        "posted_archive",
         "Archive Displayed Calls",
+        "posted_archive",
         "true",
         "btn-secondary",
         "return confirm('This action will archive the selected customers. Are you sure?')"

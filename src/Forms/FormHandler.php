@@ -969,7 +969,7 @@ class FormHandler
         ];
     }
 
-    public function AddSearchPopupInput(string $name, string $label, string $href, int $select = 1): void
+    public function AddSearchPopupInput(string $label, string $name, string $href, int $select = 1): void
     {
         $name = str_replace(".", "^^", $name);
         $this->search_form_elements[] = [
@@ -981,7 +981,7 @@ class FormHandler
         ];
     }
 
-    public function AddSearchButton(string $name, string $label, string $value = '1', string $class = 'btn-secondary', string $onclick = ''): void
+    public function AddSearchButton(string $label, string $name, string $value = '1', string $class = 'btn-secondary', string $onclick = ''): void
     {
         $name = str_replace(".", "^^", $name);
         $this->search_form_elements[] = [

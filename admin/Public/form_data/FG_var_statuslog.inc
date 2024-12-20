@@ -73,7 +73,7 @@ $HD_Form->FG_FILTER_LABEL = _("Account number");
 
 $HD_Form->search_form_enabled = true;
 $HD_Form->search_delete_enabled = false;
-$HD_Form->AddSearchPopupInput("id_cc_card", _("Account"), "A2B_entity_card.php");
+$HD_Form->AddSearchPopupInput(_("Account"), "id_cc_card", "A2B_entity_card.php");
 $HD_Form->AddSearchDateInput(_("Dates"), "updated_date");
 $HD_Form->AddSearchSelectInput(
     _("Status"),

@@ -75,7 +75,7 @@ if (!$popup_select) {
     $HD_Form->search_form_title = _('Define specific criteria to search for refills created.');
     $HD_Form->search_delete_enabled = false;
     $HD_Form->AddSearchDateInput(_("Date"), "date");
-    $HD_Form->AddSearchPopupInput("agent_id", _("Agent"), "A2B_entity_agent.php");
+    $HD_Form->AddSearchPopupInput(_("Agent"), "agent_id", "A2B_entity_agent.php");
     $HD_Form->AddSearchTextInput(_("Last name"), "lastname");
     $HD_Form->AddSearchTextInput(_("First name"), "firstname");
 }

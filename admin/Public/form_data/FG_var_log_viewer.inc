@@ -72,7 +72,7 @@ $HD_Form->search_form_enabled = true;
 $HD_Form->search_session_key = "var_log_viewer";
 $HD_Form->search_delete_enabled = false;
 $HD_Form->AddSearchDateInput(_("Date"), "creationdate");
-$HD_Form->AddSearchPopupInput("iduser", _("Administrator"), "A2B_entity_user.php");
+$HD_Form->AddSearchPopupInput(_("Administrator"), "iduser", "A2B_entity_user.php");
 $HD_Form->AddSearchSelectInput(_("Log level"),"loglevel", [[1, _("Info")], [2, _("Notice")], [3, _("Warning")]]);
 
 $HD_Form->CV_NO_FIELDS = _("No log entries found");
