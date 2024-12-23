@@ -52,7 +52,7 @@ use Profiler_Console;
 
 class Table
 {
-    public ?string $fields = null;
+    public ?array $fields = null;
     public ?string $table = null;
     public array $joins = [];
     public string $errstr = '';
@@ -83,12 +83,11 @@ class Table
     {
         $this->writelog = defined('WRITELOG_QUERY') && WRITELOG_QUERY;
         $this->table = $table;
-        if (is_array($list_fields)) {
-            array_walk($list_fields, fn (&$v) => $v = $this->quote_identifier($v));
-            $this->fields = implode(",", $list_fields);
-        } else {
-            $this->fields = $list_fields;
+        if (is_string($list_fields)) {
+            $list_fields = explode(",", $list_fields);
+            array_walk($list_fields, "trim");
         }
+        $this->fields = $list_fields;
         $this->joins = $joins;
         if (defined("DB_TYPE") && DB_TYPE === 'postgres') {
             $this->db_type = "postgres";
@@ -256,6 +255,7 @@ class Table
      */
     public function getRows(ADOConnection $db, array $conditions = [], array $order = [], string $direction = "ASC", array $group = [], int $limit = 0, int $offset = 0): array
     {
+        $fields = implode(",", array_map([self::class, "quote_identifier"], $this->fields));
         $table = str_contains($this->table, " JOIN ") ? $this->table : $this->quote_identifier($this->table);
         $table .= " " . $this->processJoinedTables();
         $where = $this->processWhereClauseArray($conditions, $params) ?: "1=1";
@@ -277,7 +277,7 @@ class Table
         $limit_sql = $limit ? "LIMIT $limit" : "";
         $offset_sql = $offset ? "OFFSET $offset" : "";
 
-        $query = "SELECT $this->fields FROM $table WHERE $where $group_sql $order_sql $limit_sql $offset_sql";
+        $query = "SELECT $fields FROM $table WHERE $where $group_sql $order_sql $limit_sql $offset_sql";
 
         return $db->GetArray($query, $params) ?: [];
     }
@@ -301,7 +301,8 @@ class Table
      */
     public function get_list(ADOConnection $DBHandle, string $where = "", string $orderby = "", string $sens = "ASC", int $limite = 0, int $current_record = 0, array $groupby = [])
     {
-        $sql = "SELECT $this->fields FROM $this->table";
+        $fields = implode(",", $this->fields);
+        $sql = "SELECT $fields FROM $this->table";
 
         $sql_clause = "";
         if (!empty($where)) {
@@ -380,12 +381,13 @@ class Table
      *
      * @param ADOConnection $db
      * @param array $conditions
+     * @param array $groupby
      * @return int
      */
     public function countRows(ADOConnection $db, array $conditions = [], array $groupby = []): int
     {
         $old_fields = $this->fields;
-        $this->fields = "COUNT(*)";
+        $this->fields = ["COUNT(*)"];
         if (count($groupby)) {
             $data = $this->getRows($db, $conditions, [], "ASC", $groupby);
             return count($data);
@@ -448,9 +450,10 @@ class Table
     public function addRows(ADOConnection $db, array $rows, string $pk_column = "id", &$id = null): bool
     {
         $values = $rows[0];
-        $fields = array_keys($values);
-        array_walk($fields, fn (&$v) => $v = $this->quote_identifier($v));
-        $this->fields = implode(",", $fields);
+        $fields = implode(
+            ",",
+            array_map([self::class, "quote_identifier"], array_keys($values))
+        );
 
         $table = str_contains($this->table, " JOIN ") ? $this->table : $this->quote_identifier($this->table);
         $value_callback = function ($v) use (&$parameters): string {
@@ -467,7 +470,7 @@ class Table
         $parameters = [];
         $placeholders = implode(",", array_map($value_callback, $values));
 
-        $query = "INSERT INTO $table ($this->fields) VALUES ($placeholders)";
+        $query = "INSERT INTO $table ($fields) VALUES ($placeholders)";
         $statement = $db->Prepare($query);
 
         foreach ($rows as $values) {
@@ -494,9 +497,10 @@ class Table
     public function addRowsFromSelect(ADOConnection $db, Table $source, array $conditions): int
     {
         $table = $this->quote_identifier($this->table);
+        $source_fields = implode(",", array_map([self::class, "quote_identifier"], $source->fields));
         $source_table = $this->quote_identifier($source->table);
         $where = $this->processWhereClauseArray($conditions, $params);
-        $query = "INSERT INTO $table SELECT $source->fields FROM $source_table $where";
+        $query = "INSERT INTO $table SELECT $source_fields FROM $source_table $where";
         $result = $db->Execute($query, $params);
 
         return $result ? $db->Affected_Rows() : 0;
@@ -508,16 +512,16 @@ class Table
     public function Add_table(ADOConnection $DBHandle, string $value, ?string $func_fields = "", ?string $func_table = "", ?string $id_name = "", bool $subquery = false)
     {
         if (!empty($func_fields)) {
-            $this->fields = $func_fields;
+            $this->fields = explode(",", $func_fields);
         }
 
         if (!empty($func_table)) {
             $this->table = $func_table;
         }
         if ($subquery) {
-            $QUERY = "INSERT INTO " . $this->table . " (" . $this->fields . ") (" . trim($value) . ")";
+            $QUERY = "INSERT INTO " . $this->table . " ($func_fields) (" . trim($value) . ")";
         } else {
-            $QUERY = "INSERT INTO " . $this->table . " (" . $this->fields . ") values (" . trim($value) . ")";
+            $QUERY = "INSERT INTO " . $this->table . " ($func_fields) values (" . trim($value) . ")";
         }
 
         $res = $this->ExecuteQuery($DBHandle, $QUERY);
