@@ -660,12 +660,10 @@ class FormHandler
     /**
      * @param string $label_text The label text
      * @param string $fieldname The form input name
-     * @param string $sql_table The table to check
-     * @param string $sql_column The columns to retrieve
-     * @param string $sql_where A condition to apply using a WHERE clause
+     * @param Table $table The table to check
+     * @param array $conditions A condition to apply using a WHERE clause
      * @param string $default_value When adding (not editing), the value of the selected item
-     * @param array $first_option 2 element array containing a value and label for the first option in the list
-     * @param string $display_format A format string like "%1" which will be replaced with the first result column
+     * @param array $first_option array containing a value and label (k/v) for the first options in the list
      * @param string $form_text_bottom Text to display below the form input
      * @param string $html_attributes HTML attributes for the input
      * @param string $error_message A message to show if validation fails
@@ -676,18 +674,24 @@ class FormHandler
     public function AddEditSqlSelect(
         string $label_text,
         string $fieldname,
-        string $sql_table,
-        string $sql_column,
-        string $sql_where = "",
+        Table $table,
+        array $conditions = [],
         string $default_value = "",
         array $first_option = [],
-        string $display_format = "%1",
         string $form_text_bottom = "",
         string $html_attributes = "",
         string $error_message = "",
         array  $custom_query = []
     ): void
     {
+        $options = [];
+        array_map(
+            function ($v) use (&$options) {
+                $options[$v[0]] = $v[1];
+            },
+            $table->getRows($this->DBHandle, $conditions)
+        );
+
         $this->FG_EDIT_FORM_ELEMENTS[] = [
             "label" => $label_text,
             "name" => $fieldname,
@@ -696,11 +700,8 @@ class FormHandler
             "attributes" => $html_attributes,
             "regex" => null,
             "error" => $error_message,
-            "select_type" => "SQL",
-            "sql_table" => $sql_table,
-            "sql_field" => $sql_column,
-            "sql_clause" => $sql_where,
-            "select_format" => $display_format,
+            "select_type" => "LIST",
+            "select_fields" => $options,
             "custom_query" => $custom_query,
             "first_option" => $first_option,
             "comment" => $form_text_bottom,
@@ -740,7 +741,7 @@ class FormHandler
             "error" => $error_message,
             "select_type" => "LIST",
             "select_fields" => $options,
-            "select_format" => "",
+            "first_option" => [],
             "section_name" => $section_name,
             "comment" => $form_text_bottom,
             "validation_err" => true,

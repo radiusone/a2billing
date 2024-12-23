@@ -75,47 +75,32 @@ use DateTime;
             ></textarea>
 
         <?php elseif ($row["type"] === "SELECT"): ?>
-            <?php if ($row["select_type"] === "SQL"): ?>
-                <?php $options = (new Table($row["sql_table"], $row["sql_field"]))->get_list($form->DBHandle, $row["sql_clause"])?>
-            <?php else: ?>
-                <?php $options = $row["select_type"] === "LIST" ? $row["select_fields"] : [] ?>
-            <?php endif ?>
-            <?php if ($form->FG_DEBUG >= 2): ?>
-                <br/><?php print_r($options)?><br/><?php print_r($db_data)?><br/>#<?= $i ?>::><?= $db_data[$i] ?><br/><br/>::><?= $row["name"] ?>
-            <?php endif ?>
             <select
                 id="<?= $row["name"] ?>"
-                name="<?= $row["name"] ?><?php if (str_icontains($row["attributes"], "multiple")): ?>[]<?php endif ?>"
+                name="<?= $row["name"] . (str_icontains($row["attributes"], "multiple") ? "[]" : "") ?>"
                 class="form-select <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
                 <?= $row["attributes"] ?>
             >
             <?php if (!empty($row["error_message"])): ?>
-                <option value="-1"><?= $row["error_message"] ?></option>
+                <option value="" class="text-danger"><?= $row["error_message"] ?></option>
             <?php endif ?>
-            <?php if (!empty($row["first_option"]) && is_array($row["first_option"]) && count($row["first_option"]) === 2): ?>
-                <option value="<?= $row["first_option"][0] ?>"><?= $row["first_option"][1] ?></option>
-            <?php elseif (!empty($row["first_option"]) && is_array($row["first_option"])): ?>
-                <option value="<?= array_keys($row["first_option"])[0] ?>"><?= array_values($row["first_option"])[0] ?></option>
-            <?php elseif (!empty($row["first_option"])): ?>
-                <option value=""><?= $row["first_option"] ?></option>
+
+            <?php foreach ($row["first_option"] as $val => $opt): ?>
+                <option value="<?= $val ?>"><?= $opt ?></option>
+            <?php endforeach ?>
+
+            <?php if (empty($row["select_fields"])): ?>
+                <option value=""><?= gettext("No data found!!!") ?></option>
             <?php endif ?>
-            <?php if (is_array($options) && count($options)): ?>
-                <?php foreach ($options as $key => $option): ?>
-                    <?php $opt = is_array($option) ? $option[0] : $option; $val = is_array($option) ? $option[1] : $key ?>
+
+            <?php foreach ($row["select_fields"] as $opt => $val): ?>
                 <option
                     value="<?= $val ?>"
                     <?php if ($val == $row["default"]): ?>selected="selected"<?php endif ?>
                 >
-                    <?php if (!empty($row["select_format"]) && is_array($option)): ?>
-                        <?= preg_replace_callback("/%([0-9]+)/", fn ($m) => str_replace($m[0], $option[$m[1] - 1] ?? "", $m[0]), $row["select_format"]); ?>
-                    <?php else: ?>
-                        <?= $opt ?>
-                    <?php endif ?>
+                    <?= $opt ?>
                 </option>
                 <?php endforeach ?>
-            <?php else: ?>
-                <option value=""><?= gettext("No data found!!!") ?></option>
-            <?php endif ?>
             </select>
 
         <?php elseif ($row["type"] === "RADIOBUTTON"): ?>

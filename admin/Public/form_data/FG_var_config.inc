@@ -101,12 +101,10 @@ $HD_Form->AddSearchSqlSelectInput(_("Select config group"), "config_group_id", n
 $HD_Form->AddEditSqlSelect(
     _("GROUP"),
     "config_group_id",
-    "cc_config_group",
-    "group_title,id",
-    "",
+    new Table("cc_config_group", ["id", "group_title"]),
+    [],
     "",
     [],
-    "%1",
     _("Group Name of the configuration variable"),
     "readonly='readonly'",
     _("This is the group of the configuration. Not editable!")

@@ -117,12 +117,10 @@ $HD_Form->AddEditSelect(_("LC TYPE"), "lcrtype", $lcrtype_list);
 $HD_Form->AddEditSqlSelect(
     _("PACKAGE"),
     "id_cc_package_offer",
-    "cc_package_offer",
-    "label,id",
+    new Table("cc_package_offer", ["id", "label"]),
+    [],
     "",
-    "",
-    [-1, _("NOT DEFINED")],
-    "%1",
+    [-1 => _("NOT DEFINED")],
     _("Set the Package Group offer if you wish to use one with this Call Plan")
 );
 
@@ -141,12 +139,10 @@ if ($numrow > 0) {
     $HD_Form->AddEditSqlSelect(
         _("RATECARD"),
         "tariffplan",
-        "cc_tariffgroup_plan",
-        "label,id",
-        "",
+        new Table("cc_tariffgroup_plan", ["id", "label"]),
+        [],
         "",
         [],
-        "%1 : (%2)",
         "",
         "size='10' multiple='muliple'",
         "",

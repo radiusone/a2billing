@@ -185,11 +185,10 @@ $HD_Form->AddEditElement(
 $HD_Form->AddEditSqlSelect(
     _("CALL PLAN"),
     "dialplan",
-    "cc_tariffgroup",
-    "tariffgroupname,id",
+    new Table("cc_tariffgroup", ["id", "tariffgroupname"]),
+    [],
     "",
-    "",
-    [0, _("ANY")]
+    [0 => _("ANY")]
 );
 
 $HD_Form->AddEditSelect(
@@ -214,12 +213,10 @@ if ($numrow > 0) {
     $HD_Form->AddEditSqlSelect(
         _("CARD GROUP"),
         "service",
-        "cards_services",
-        "name,id",
-        "",
+        new Table("cards_services", ["id", "name"]),
+        [],
         "",
         [],
-        "%1 : (%2)",
         "",
         "size='10' multiple='multiple'",
         "", [

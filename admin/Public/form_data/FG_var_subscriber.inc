@@ -87,11 +87,10 @@ $HD_Form->AddEditPopup(
 $HD_Form->AddEditSqlSelect(
     _("ID SUBSCRIPTION SERVICE"),
     "id_subscription_fee",
-    "cc_subscription_service",
-    "label,id",
+    new Table("cc_subscription_service", ["id", "label"]),
+    [],
     "",
-    "",
-    [-1, _("NOT DEFINED")]
+    [-1 => _("NOT DEFINED")]
 );
 
 $HD_Form->AddEditElement(

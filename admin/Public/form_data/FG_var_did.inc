@@ -143,9 +143,9 @@ $HD_Form->AddEditElement(
     _("Insert the expiration date")
 );
 
-$HD_Form->AddEditSqlSelect(_("DIDGROUP"), "id_cc_didgroup", "cc_didgroup", "didgroupname,id");
+$HD_Form->AddEditSqlSelect(_("DIDGROUP"), "id_cc_didgroup", new Table("cc_didgroup", ["id", "didgroupname"]));
 
-$HD_Form->AddEditSqlSelect(_("COUNTRY"), "id_cc_country", "cc_country", "countryname,id");
+$HD_Form->AddEditSqlSelect(_("COUNTRY"), "id_cc_country", new Table("cc_country", ["id", "countryname"]));
 
 $HD_Form->AddEditRadio(
     gettext("ACTIVATED"),

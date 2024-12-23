@@ -371,19 +371,17 @@ if ($popup_select) {
     $HD_Form->AddEditSqlSelect(
         _("CUSTOMER GROUP"),
         "id_group",
-        "cc_card_group",
-        "name,id",
-        is_admin() ? "" : "id_agent='$_SESSION[agent_id]'"
+        new Table("cc_card_group", ["id", "name"]),
+        is_admin() ? [] : ["id_agent" => $_SESSION["agent_id"]]
     );
 
     $HD_Form->AddEditSqlSelect(
         _("SERIES"),
         "id_seria",
-        "cc_card_seria",
-        "name,id",
+        new Table("cc_card_seria", ["id", "name"]),
+        [],
         "",
-        "",
-        [-1, _("NOT DEFINED")]
+        [-1 => _("NOT DEFINED")]
     );
 
     $HD_Form->AddEditElement(
@@ -456,9 +454,8 @@ if ($popup_select) {
     $HD_Form->AddEditSqlSelect(
         _("COUNTRY"),
         "country",
-        "cc_country",
-        "countryname,countrycode",
-        "",
+        new Table("cc_country", ["countrycode", "countryname"]),
+        [],
         $country_default_val
     );
 
@@ -535,14 +532,13 @@ if ($popup_select) {
         $HD_Form->AddEditSqlSelect(
             _("CALL PLAN"),
             "tariff",
-            is_admin() ? "cc_tariffgroup" : "cc_tariffgroup,cc_agent_tariffgroup",
-            "tariffgroupname, id",
+            new Table("cc_tariffgroup", ["id", "tariffgroupname"], is_admin() ? []
+                : ["cc_agent_tariffgroup" => ["cc_tariffgroup.id", "cc_agent_tariffgroup.id_tariffgroup"]]),
             is_admin()
-                ? ""
-                : "cc_tariffgroup.id = cc_agent_tariffgroup.id_tariffgroup AND cc_agent_tariffgroup.id_agent = '$_SESSION[agent_id]'",
+                ? []
+                : ["cc_agent_tariffgroup.id_agent" => $_SESSION["agent_id"]],
             "",
             [],
-            "%1",
             _("Changing the call plan will result in the free minutes or free calls package being reset.")
         );
     }
@@ -550,11 +546,10 @@ if ($popup_select) {
     $HD_Form->AddEditSqlSelect(
         _("DIDGROUP"),
         "id_didgroup",
-        "cc_didgroup",
-        "didgroupname,id",
+        new Table("cc_didgroup", ["id", "didgroupname"]),
+        [],
         "",
-        "",
-        [-1, _("NOT DEFINED")]
+        [-1 => _("NOT DEFINED")]
     );
 
     $tz_val = "";
@@ -666,11 +661,10 @@ if ($popup_select) {
     $HD_Form->AddEditSqlSelect(
         _("CAMPAIGN"),
         "id_campaign",
-        "cc_campaign",
-        "name,id",
+        new Table("cc_campaign", ["id", "name"]),
+        [],
         "",
-        "",
-        [-1, _("NOT DEFINED")]
+        [-1 => _("NOT DEFINED")]
     );
 
     $HD_Form->AddEditElement(

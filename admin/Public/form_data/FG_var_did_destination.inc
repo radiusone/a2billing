@@ -2,6 +2,7 @@
 
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -107,7 +108,7 @@ if ($form_action !== "ask-edit" && $form_action !== "edit") {
         _("Insert the Customer ID")
     );
 
-    $HD_Form->AddEditSqlSelect(_("DID"), "id_cc_did", "cc_did", "did,id");
+    $HD_Form->AddEditSqlSelect(_("DID"), "id_cc_did", new Table("cc_did", ["id", "did"]));
 }
 
 $HD_Form->AddEditRadio(

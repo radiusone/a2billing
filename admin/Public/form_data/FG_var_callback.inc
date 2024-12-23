@@ -88,8 +88,7 @@ $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form->AddEditSqlSelect(
     _("SERVER GROUP"),
     "id_server_group",
-    "cc_server_group",
-    "name,id"
+    new Table("cc_server_group", ["id", "name"])
 );
 
 $HD_Form->AddEditElement(

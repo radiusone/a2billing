@@ -160,7 +160,7 @@ $HD_Form->AddSearchComparisonInput(_("Initial Rate"), 'rateinitial1', 'rateiniti
 $HD_Form->AddSearchSqlSelectInput(_("Trunk"), "id_trunk", new Table("cc_trunk", ["id_trunk", "trunkcode"]), "trunkcode");
 $HD_Form->AddSearchSqlSelectInput(_("Rate Card"), "idtariffplan", new Table("cc_tariffplan", ["id", "tariffname"]), "tariffname");
 
-$HD_Form->AddEditSqlSelect(_("Rate Card"), "idtariffplan", "cc_tariffplan", "tariffname,id");
+$HD_Form->AddEditSqlSelect(_("Rate Card"), "idtariffplan", new Table("cc_tariffplan", ["id", "tariffname"]));
 
 $HD_Form->AddEditElement(
     _("Dialing Prefix"),
@@ -550,23 +550,21 @@ $HD_Form->AddEditElement(
 $HD_Form->AddEditSqlSelect(
     _("Trunk"),
     "id_trunk",
-    "cc_trunk",
-    "trunkcode,id_trunk",
-    "",
+    new Table("cc_trunk", ["id_trunk", "trunkcode"]),
+    [],
     "",
     [-1, _("NOT DEFINED")],
-    "%1", _("Set the trunk to use for this destination, or NOT DEFINED to use the rate card trunk.")
+    _("Set the trunk to use for this destination, or NOT DEFINED to use the rate card trunk.")
 );
 
 $HD_Form->AddEditSqlSelect(
     _("CID Group"),
     "id_outbound_cidgroup",
-    "cc_outbound_cid_group",
-    "group_name,id",
+    new Table("cc_outbound_cid_group", ["id", "group_name"]),
+    [],
     "",
-    "",
-    [-1, _("NOT DEFINED")],
-    "%1", _("Set the Outgoing CID Group to use for this destination.")
+    [-1 => _("NOT DEFINED")],
+    _("Set the Outgoing CID Group to use for this destination.")
 );
 
 $HD_Form->AddEditElement(

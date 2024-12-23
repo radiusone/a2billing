@@ -161,12 +161,10 @@ $HD_Form->AddEditSelect(_("MAIL TYPE"), "mailtype", $typemail_list);
 $HD_Form->AddEditSqlSelect(
     _("LANGUAGE"),
     "id_language",
-    "cc_iso639",
-    "name,code",
-    "",
+    new Table("cc_iso639", ["code", "name"]),
+    [],
     "",
     [],
-    "%1",
     "",
     "",
     _("Insert the mail id language")

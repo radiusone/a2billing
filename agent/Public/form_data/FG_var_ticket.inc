@@ -125,7 +125,9 @@ $HD_Form->AddEditElement(
     gettext("Insert the Title of ticket ")
 );
 
-$HD_Form->AddEditSqlSelect(gettext("Insert the Title of ticket"), "id_component", "cc_support_component", "name,id");
+$HD_Form->AddEditSqlSelect(gettext("Insert the Title of ticket"), "id_component", new Table("cc_support_component", [
+    "id", "name"
+]));
 $HD_Form->AddEditSelect(gettext("PRIORITY"), "priority", $priority_list);
 
 $HD_Form->AddEditTextarea(

@@ -236,8 +236,8 @@ if (COUNTRY_ENABLE)  {
     $HD_Form->AddEditSqlSelect(
         gettext("COUNTRY"),
         "country",
-        "cc_country", "countryname,countrycode",
-        "",
+        new Table("cc_country", ["countrycode", "countryname"]),
+        [],
         $country_default_val
     );
     $country_editFG = "country,";

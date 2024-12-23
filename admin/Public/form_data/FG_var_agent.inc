@@ -3,6 +3,7 @@
 use A2billing\Admin;
 use A2billing\Agent;
 use A2billing\Forms\FormHandler;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -335,12 +336,10 @@ if ($popup_select) {
     $HD_Form->AddEditSqlSelect(
         _("CALL PLAN USABLE"),
         "tariffgroup",
-        "cc_agent_tariffgroup",
-        "label,id",
-        "",
+        new Table("cc_agent_tariffgroup", ["id", "label"]),
+        [],
         "",
         [],
-        "%1: (%2)",
         "",
         "size='10' multiple='multiple'",
         "", [

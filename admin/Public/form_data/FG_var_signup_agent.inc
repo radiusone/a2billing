@@ -78,12 +78,10 @@ $HD_Form->AddListActionButton(
 $HD_Form->AddEditSqlSelect(
     _("Agent"),
     "id_agent",
-    "cc_agent",
-    "CONCAT(login, '(', firstname, ' ', lastname, ')'), id",
-    "",
+    new Table("cc_agent", ["id", "CONCAT(login, ' - ', firstname, ' ', lastname)"]),
+    [],
     $id_agent ?? "",
-    ["", _("Select agent")],
-    "%1",
+    ["" => _("Select agent")],
     "",
     "required"
 );
@@ -92,12 +90,14 @@ if ((isset($id_agent) && is_numeric($id_agent) && ($form_action === "ask-add" ||
     $HD_Form->AddEditSqlSelect(
         _("Call Plan"),
         "id_tariffgroup",
-        "cc_tariffgroup LEFT JOIN cc_agent_tariffgroup ON cc_tariffgroup.id = cc_agent_tariffgroup.id_tariffgroup",
-        "tariffgroupname, id",
-        $form_action === "ask-delete" ? "" : "id_agent = $id_agent",
+        new Table("cc_tariffgroup", ["id", "tariffgroupname"], [
+            "cc_agent_tariffgroup" => [
+                "cc_tariffgroup.id", "cc_agent_tariffgroup.id_tariffgroup"
+            ]
+        ]),
+        $form_action === "ask-delete" ? [] : ["id_agent" => $id_agent],
         "",
-        ["", _("Select call plan")],
-        "%1",
+        ["" => _("Select call plan")],
         "",
         "required"
     );
@@ -105,12 +105,10 @@ if ((isset($id_agent) && is_numeric($id_agent) && ($form_action === "ask-add" ||
     $HD_Form->AddEditSqlSelect(
         _("Customer Group"),
         "id_group",
-        "cc_card_group",
-        "name, id",
-        $form_action === "ask-delete" ? "" : "id_agent = $id_agent",
+        new Table("cc_card_group", ["id", "name"]),
+        $form_action === "ask-delete" ? [] : ["id_agent" => $id_agent],
         "",
-        ["", _("Select group")],
-        "%1",
+        ["" => _("Select group")],
         "",
         "required"
     );

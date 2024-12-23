@@ -78,8 +78,7 @@ $HD_Form->AddEditTextarea(
 $HD_Form->AddEditSqlSelect(
     _("CIDGROUP"),
     "outbound_cid_group",
-    "cc_outbound_cid_group",
-    "group_name,id"
+    new Table("cc_outbound_cid_group", ["id", "group_name"])
 );
 
 $HD_Form->AddEditRadio(

@@ -133,9 +133,8 @@ if (isset($form_action) && $form_action === "ask-add") {
 $HD_Form->AddEditSqlSelect(
     _("VOIP PROVIDER"),
     "id_provider",
-    "cc_provider",
-    "provider_name,id",
-    "",
+    new Table("cc_provider", ["id", "provider_name"]),
+    [],
     "",
     [-1, _("NOT DEFINED")]
 );
@@ -197,12 +196,10 @@ $HD_Form->AddEditElement(
 $HD_Form->AddEditSqlSelect(
     _("FAILOVER TRUNK"),
     "failover_trunk",
-    "cc_trunk",
-    "trunkcode,id_trunk",
+    new Table("cc_trunk", ["id_trunk", "trunkcode"]),
+    [],
     "",
-    "",
-    [-1, _("NOT DEFINED")],
-    "%1",
+    [-1 => _("NOT DEFINED")],
     _("You can define another trunk in case of failover!")
 );
 

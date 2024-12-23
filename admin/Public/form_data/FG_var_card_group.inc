@@ -3,6 +3,7 @@
 use A2billing\Admin;
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -112,12 +113,10 @@ $HD_Form->AddEditTextarea(
 $HD_Form->AddEditSqlSelect(
     _("Agent"),
     "id_agent",
-    "cc_agent",
-    "login,id,firstname,lastname",
+    new Table("cc_agent", ["id", "CONCAT(login, ' - ', firstname, ' ', lastname)"]),
+    [],
     "",
-    "",
-    [-1, _("NONE")],
-    "%1 - %3 %4 (%2)"
+    [-1 => _("NONE")]
 );
 
 $HD_Form->AddEditSelect(

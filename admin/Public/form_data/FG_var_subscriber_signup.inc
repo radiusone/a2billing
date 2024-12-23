@@ -85,12 +85,10 @@ $CURRENCY = strtoupper(BASE_CURRENCY);
 $HD_Form->AddEditSqlSelect(
     _("SUBSCRIPTION OPTIONS"),
     "id_subscription",
-    "cc_subscription_service",
-    "label,id,fee",
+    new Table("cc_subscription_service", ["id", "CONCAT(label, ' - ', fee, '$CURRENCY'"]),
+    [],
     "",
-    "",
-    [-1, _("NONE")],
-    "%1 - %3 $CURRENCY (id:%2)"
+    [-1 => _("NONE")]
 );
 
 $HD_Form->AddEditTextarea(
@@ -105,12 +103,10 @@ $HD_Form->AddEditTextarea(
 $HD_Form->AddEditSqlSelect(
     _("CALL PLAN"),
     "id_callplan",
-    "cc_tariffgroup",
-    "tariffgroupname,id",
-    "",
+    new Table("cc_tariffgroup", ["id", "tariffgroupname"]),
+    [],
     "",
     [],
-    "%1",
     _("Define the callplan to associate to your Subscription")
 );
 

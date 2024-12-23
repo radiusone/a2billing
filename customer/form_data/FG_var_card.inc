@@ -2,6 +2,7 @@
 
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -115,8 +116,7 @@ $HD_Form->AddEditElement(
 $HD_Form->AddEditSqlSelect(
     gettext("COUNTRY"),
     "country",
-    "cc_country",
-    "countryname,countrycode"
+    new Table("cc_country", ["countrycode", "countryname"])
 );
 
 $HD_Form->AddEditElement(
@@ -133,8 +133,7 @@ $HD_Form->AddEditElement(
 $HD_Form->AddEditSqlSelect(
     gettext("TIMEZONE"),
     "id_timezone",
-    "cc_timezone",
-    "gmtzone,id"
+    new Table("cc_timezone", ["id", "gmtzone"])
 );
 
 $HD_Form->AddEditElement(
