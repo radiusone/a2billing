@@ -212,12 +212,13 @@ use DateTime;
                     ><?= _("Delete") ?></button>
                 </li>
             <?php endforeach ?>
-            <?php if (!empty($row["select"])):
+            <?php if (!empty($row["select"])): ?>
+                <?php
                 $res = $row["table"]->getRows($form->DBHandle);
                 $options = array_combine(array_column($res, 0), array_column($res, 1));
                 $options = array_filter($options, fn ($k) => !in_array($k, array_column($entries, 0)), ARRAY_FILTER_USE_KEY);
-                if (count($options)):
-            ?>
+                ?>
+                <?php if (count($options)): ?>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     <div class="flex-grow-1 me-3">
                         <label for="<?= $row["table"]->table ?>_<?= $row["insert"] ?>" class="form-label">
@@ -226,14 +227,14 @@ use DateTime;
                         <select
                             id="<?= $row["table"]->table ?>_<?= $row["insert"] ?>"
                             class="form-select form-select-sm"
-                    <?if (count($options) === 1): ?>
+                    <?php if (count($options) === 1): ?>
                             multiple="multiple"
                     <?php else: ?>
                             size="<?= count($options) ?>"
                     <?php endif ?>
                         >
                     <?php foreach ($options as $val => $opt): ?>
-                                <option value="<?= $val ?>"><?= $opt ?></option>
+                            <option value="<?= $val ?>"><?= $opt ?></option>
                     <?php endforeach ?>
                         </select>
                     </div>

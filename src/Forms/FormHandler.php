@@ -1815,8 +1815,8 @@ class FormHandler
         $processed = $this->getProcessed();
         if (!empty($entry["table"])) {
             /** @var Table $table */
-            if (!empty($entry["insert_table"])) {
-                $table = $entry["insert_table"];
+            if (!empty($entry["pivot_table"])) {
+                $table = $entry["pivot_table"];
                 $column = $entry["insert"];
             } else {
                 $table = $entry["table"];
