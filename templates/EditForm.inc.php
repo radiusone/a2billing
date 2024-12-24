@@ -66,7 +66,7 @@ use DateTime;
 
         <?php switch ($row["type"]): case "INPUT": ?>
             <?php if (!empty($row["custom_function"])): ?>
-                <?php $db_data[$i] = $row["custom_function"] instanceof Closure ? $row["custom_function"]($db_data[$i]) : call_user_func($row["custom_function"], $db_data[$i]) ?>
+                <?php $db_data[$i] = call_user_func($row["custom_function"], $db_data[$i]) ?>
             <?php endif ?>
             <input
                 id="<?= $row["name"] ?>"

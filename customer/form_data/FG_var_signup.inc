@@ -370,7 +370,7 @@ if (CAPTCHA_ENABLE) {
         gettext("Insert code from above picture"),
         "",
         "",
-        "",
+        null,
         CAPTCHA_ENABLE);
 	$captcha = "captchacode,";
 }
