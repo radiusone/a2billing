@@ -2,8 +2,6 @@
 
 namespace A2billing\Forms;
 
-use A2billing\Table;
-
 /**
  * @var FormHandler $form
  * @var array $processed
@@ -32,7 +30,7 @@ use A2billing\Table;
     <div class="row pb-3 justify-content-center">
         <div class="col-6">
             <p>
-                <?= gettext("You have ")?> <?= $processed["fk_count"] ?> <?= gettext(" dependent records.") ?>
+                <?= sprintf(ngettext("You have %d dependent record.", "You have %d dependent records.", $processed["fk_count"]), $processed["fk_count"]) ?>
             </p>
             <p>
                 <?= $form -> FG_FK_DELETE_MESSAGE ?>
@@ -62,16 +60,15 @@ use A2billing\Table;
     <?php endif ?>
 
     <?php foreach ($form->FG_EDIT_QUERY_HIDDEN_INPUTS as $name => $value): ?>
-        <input type="hidden" name="<?= htmlspecialchars($name) ?>" value="<?= htmlspecialchars($value) ?>"/>
+    <input type="hidden" name="<?= htmlspecialchars($name) ?>" value="<?= htmlspecialchars($value) ?>"/>
     <?php endforeach ?>
 
-    <?php foreach($form->FG_EDIT_FORM_ELEMENTS as $i=> $row): ?>
+    <?php foreach($form->FG_EDIT_FORM_ELEMENTS as $i => $row): ?>
         <?php if (!empty($row["custom_query"]) || $row["type"] === "HAS_MANY") {continue;} ?>
     <div class="row pb-3">
         <label for="<?= $row["name"] ?>" class="col-3 col-form-label"><?= $row["label"] ?></label>
         <div class="col">
-            <?php if ($form->FG_DEBUG == 1): ?><?= $row["type"] ?><?php endif ?>
-            <?php if ($row["type"] === "INPUT" || $row["type"] === "POPUPVALUE"): ?>
+            <?php switch($row["type"]): case "INPUT": case "POPUPVALUE": ?>
             <input
                 id="<?= $row["name"] ?>"
                 class="form-control"
@@ -80,8 +77,9 @@ use A2billing\Table;
                 <?= $row["attributes"] ?>
                 value="<?= $db_data[$i] ?>"
             />
+                <?php break ?>
 
-            <?php elseif ($row["type"] === "TEXTAREA"): ?>
+            <?php case "TEXTAREA": ?>
             <textarea
                 id="<?= $row["name"] ?>"
                 class="form-control"
@@ -89,64 +87,69 @@ use A2billing\Table;
                 disabled="disabled"
                 <?= $row["attributes"]?>
             ><?= $db_data[$i] ?></textarea>
+                <?php break ?>
 
-            <?php elseif ($row["type"] === "SELECT"): ?>
+            <?php case "SELECT": ?>
             <select
-                    id="<?= $row["name"] ?>"
-                    disabled="disabled"
-                    class="form-select <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
+                id="<?= $row["name"] ?>"
+                disabled="disabled"
+                class="form-select <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
                 <?= $row["attributes"] ?>
             >
                 <?php foreach ($row["first_option"] as $val => $opt): ?>
-                    <option value="<?= $val ?>"><?= $opt ?></option>
+                <option value="<?= $val ?>"><?= $opt ?></option>
                 <?php endforeach ?>
 
                 <?php if (empty($row["select_fields"])): ?>
-                    <option value=""><?= gettext("No data found!!!") ?></option>
+                <option value=""><?= gettext("No data found!!!") ?></option>
                 <?php endif ?>
+
                 <?php foreach ($row["select_fields"] as $val => $opt): ?>
-                    <option
-                        value="<?= $val ?>"
+                <option
+                    value="<?= $val ?>"
                     <?php if ($form->VALID_SQL_REG_EXP): ?>
                         <?php if (str_contains($row["attributes"], "multiple")): ?>
                             <?php if (intval($val) & intval($db_data[$i])): ?>
-                        selected="selected"
+                    selected="selected"
                             <?php endif ?>
                         <?php elseif ($db_data[$i] == $val): ?>
-                        selected="selected"
+                    selected="selected"
                         <?php endif ?>
                     <?php else: ?>
                         <?php if (str_contains($row["attributes"], "multiple")): ?>
                             <?php /* TODO: WTF is this? */ if (is_array($processed[$row["name"]]) && (intval($val) & array_sum($processed[$row["name"]]))): ?>
-                        selected="selected"
+                    selected="selected"
                             <?php endif ?>
                         <?php elseif ($processed[$row["name"]] == $val): ?>
-                        selected="selected"
+                    selected="selected"
                         <?php endif ?>
                     <?php endif ?>
-                    >
-                        <?= $opt ?>
-                    </option>
+                >
+                    <?= $opt ?>
+                </option>
                 <?php endforeach ?>
             </select>
+                <?php break ?>
 
-            <?php elseif ($row["type"] === "RADIOBUTTON"): ?>
-            <?php foreach ($row["radio_options"] as $key => $rad): ?>
-                <?php $val = is_array($rad) ? $rad[1] : $key ?>
-                <?php $check = $form->VALID_SQL_REG_EXP && array_key_exists($i, $db_data) ? $db_data[$i] : ($processed[$row["name"]] ?? "") ?>
+            <?php case "RADIOBUTTON": ?>
+                <?php foreach ($row["radio_options"] as $key => $rad): ?>
+                    <?php $val = is_array($rad) ? $rad[1] : $key ?>
+                    <?php $check = $form->VALID_SQL_REG_EXP && array_key_exists($i, $db_data) ? $db_data[$i] : ($processed[$row["name"]] ?? "") ?>
             <div class="form-check">
                 <input
-                        id="<?= $row["name"] ?>_<?= $val ?>"
-                        class="form-check-input"
-                        type="radio"
-                        value="<?= $val ?>"
-                        disabled="disabled"
-                        <?php if ("$check" === "$val"): ?>checked="checked"<?php endif ?>
+                    id="<?= $row["name"] ?>_<?= $val ?>"
+                    class="form-check-input"
+                    type="radio"
+                    value="<?= $val ?>"
+                    disabled="disabled"
+                    <?php if ("$check" === "$val"): ?>checked="checked"<?php endif ?>
                 />
                 <label for="<?= $row["name"] ?>_<?= $val ?>" class="form-check-label"><?= is_array($rad) ? $rad[0] : $rad ?></label>
             </div>
-            <?php endforeach ?>
-        <?php endif ?>
+                <?php endforeach ?>
+                <?php break ?>
+
+        <?php endswitch ?>
         </div>
     </div>
     <?php endforeach ?>

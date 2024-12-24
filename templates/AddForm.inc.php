@@ -2,7 +2,6 @@
 
 namespace A2billing\Forms;
 
-use A2billing\Table;
 use DateTime;
 
 /**
@@ -26,19 +25,19 @@ use DateTime;
 <?php endforeach ?>
 
 <?php foreach ($form->FG_EDIT_FORM_ELEMENTS as $i=>$row):?>
-    <?php if (!empty($row["section_name"]) && $row["type"] !== "HAS_MANY"): ?>
+    <?php if (!empty($row["custom_query"]) || $row["type"] === "HAS_MANY") {continue;} ?>
+    <?php if (!empty($row["section_name"])): ?>
     <div class="row mb-3">
         <h4><?= $row["section_name"] ?></h4>
     </div>
     <?php endif ?>
 
-    <?php if (count($row["custom_query"] ?? []) === 0): ?>
     <div class="row mb-3">
         <label for="<?= $row["name"] ?>" class="col-3 col-form-label">
             <?= $row["label"] ?>
         </label>
         <div class="col">
-        <?php if ($row["type"] === "INPUT"): ?>
+    <?php switch ($row["type"]): case "INPUT": ?>
             <input
                 id="<?= $row["name"] ?>"
                 class="form-control <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
@@ -46,8 +45,9 @@ use DateTime;
                 <?= $row["attributes"] ?>
                 value="<?= $processed[$row["name"]] ?? "" ?>"
             />
+            <?php break ?>
 
-        <?php elseif ($row["type"] === "POPUPVALUE"): ?>
+    <?php case "POPUPVALUE": ?>
             <div class="input-group">
                 <input
                     id="<?= $row["name"] ?>"
@@ -65,16 +65,18 @@ use DateTime;
                     <svg class="mx-auto" width="16" height="16"><use xlink:href="#popup"></use></svg>
                 </a>
             </div>
+        <?php break ?>
 
-        <?php elseif ($row["type"] === "TEXTAREA"): ?>
+    <?php case "TEXTAREA": ?>
             <textarea
                 id="<?= $row["name"] ?>"
                 class="form-control <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
                 name="<?= $row["name"] ?>"
                 <?= $row["attributes"] ?>
             ></textarea>
+        <?php break ?>
 
-        <?php elseif ($row["type"] === "SELECT"): ?>
+    <?php case "SELECT": ?>
             <select
                 id="<?= $row["name"] ?>"
                 name="<?= $row["name"] . (str_icontains($row["attributes"], "multiple") ? "[]" : "") ?>"
@@ -102,18 +104,19 @@ use DateTime;
                 </option>
                 <?php endforeach ?>
             </select>
+        <?php break ?>
 
-        <?php elseif ($row["type"] === "RADIOBUTTON"): ?>
+        <?php case "RADIOBUTTON": ?>
             <?php foreach ($row["radio_options"] as $key => $rad): ?>
                 <?php $val = is_array($rad) ? $rad[1] : $key ?>
             <div class="form-check">
-                <?php if ((string)($processed[$row["name"]] ?? "") === "$val"): ?>
-                    <?php $check = $val ?>
-                <?php elseif ($form->VALID_SQL_REG_EXP && array_key_exists($i, $db_data)): ?>
-                    <?php $check = $db_data[$i] ?>
-                <?php else: ?>
-                    <?php $check = $row["default"] ?>
-                <?php endif ?>
+            <?php if ((string)($processed[$row["name"]] ?? "") === "$val"): ?>
+                <?php $check = $val ?>
+            <?php elseif ($form->VALID_SQL_REG_EXP && array_key_exists($i, $db_data)): ?>
+                <?php $check = $db_data[$i] ?>
+            <?php else: ?>
+                <?php $check = $row["default"] ?>
+            <?php endif ?>
                 <input
                     id="<?= $row["name"] ?>_<?= $val ?>"
                     class="form-check-input <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
@@ -122,16 +125,17 @@ use DateTime;
                     value="<?= $val ?>"
                     <?php if ("$check" === "$val"): ?>checked="checked"<?php endif ?>
                 />
-                <label for="<?= $row["name"] ?>_<?= $val ?>" class="form-check-label"><?= is_array($rad) ? $rad[0] : $rad ?></label>
+                <label for="<?= $row["name"] ?>_<?= $val ?>" class="form-check-label"><?= $rad ?></label>
             </div>
-            <?php endforeach ?>
+        <?php endforeach ?>
+        <?php break ?>
 
-        <?php elseif ($row["type"] === "DAYTIME"): //used 2x in FG_var_def_ratecard.inc ?>
-            <?php
-            $value = $row["default"] ?? 0;
-            $day = intdiv($value, 1440);
-            $time = (new DateTime("@" . ($value % 1440) * 60))->format("H:i");
-            ?>
+    <?php case "DAYTIME": //used 2x in FG_var_def_ratecard.inc ?>
+        <?php
+        $value = $row["default"] ?? 0;
+        $day = intdiv($value, 1440);
+        $time = (new DateTime("@" . ($value % 1440) * 60))->format("H:i");
+        ?>
             <div class="daytime row">
                 <div class="col-6">
                     <label for="<?= $row["name"] ?>_day"><?= _("Day") ?></label>
@@ -159,8 +163,9 @@ use DateTime;
                     <input type="hidden" name="<?= $row["name"] ?>" id="<?= $row["name"] ?>" value="<?= $value ?>"/>
                 </div>
             </div>
+        <?php break ?>
 
-        <?php elseif ($row["type"] === "CAPTCHAIMAGE"): ?>
+    <?php case "CAPTCHAIMAGE": ?>
             <table>
                 <tr>
                     <td>
@@ -174,20 +179,20 @@ use DateTime;
                     </td>
                 </tr>
             </table>
-        <?php endif ?>
+        <?php break ?>
 
-            <?php if ($row["validation_err"] !== true): ?>
-                <div class="form-text invalid-feedback"><?= $row["error"] ?> - <?= $row["validation_err"] ?></div>
-            <?php endif ?>
-            <?php if ($form->FG_DEBUG == 1): ?>
-                <div class="form-text"><?= $row["type"] ?></div>
-            <?php endif ?>
-            <?php if (!empty($row["comment"])): ?>
-                <div class="form-text"><?= $row["comment"] ?></div>
-            <?php endif ?>
+    <?php endswitch ?>
+
+    <?php if ($row["validation_err"] !== true): ?>
+            <div class="form-text invalid-feedback"><?= $row["error"] ?> - <?= $row["validation_err"] ?></div>
+    <?php endif ?>
+
+    <?php if (!empty($row["comment"])): ?>
+            <div class="form-text"><?= $row["comment"] ?></div>
+    <?php endif ?>
+
         </div>
     </div>
-    <?php endif ?>
 <?php endforeach ?>
     <div class="row my-4 justify-content-between">
         <div class="col-auto">

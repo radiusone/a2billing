@@ -62,131 +62,131 @@ use DateTime;
     <?= $form->csrf_inputs() ?>
 
     <?php foreach ($form->FG_EDIT_QUERY_HIDDEN_INPUTS as $name => $value): ?>
-        <input type="hidden" name="<?= htmlspecialchars($name) ?>" value="<?= htmlspecialchars($value ?? "") ?>"/>
+    <input type="hidden" name="<?= htmlspecialchars($name) ?>" value="<?= htmlspecialchars($value ?? "") ?>"/>
     <?php endforeach ?>
 
     <?php foreach ($form->FG_EDIT_FORM_HIDDEN_INPUTS as $name => $value): ?>
-        <input type="hidden" name="<?= htmlspecialchars($name) ?>" value="<?= htmlspecialchars($value ?? "") ?>"/>
+    <input type="hidden" name="<?= htmlspecialchars($name) ?>" value="<?= htmlspecialchars($value ?? "") ?>"/>
     <?php endforeach ?>
 
     <?php foreach ($form->FG_EDIT_FORM_ELEMENTS as $i=> $row): ?>
         <?php if (!empty($row["section_name"])): ?>
-        <div class="row mb-3">
-            <h4><?= $row["section_name"] ?></h4>
-        </div>
+    <div class="row mb-3">
+        <h4><?= $row["section_name"] ?></h4>
+    </div>
         <?php endif ?>
 
         <?php if (count($row["custom_query"] ?? []) === 0): // SQL CUSTOM QUERY ?>
-        <div class="row mb-3">
-            <label for="<?= $row["name"] ?>" class="col-3 col-form-label">
-                <?= $row["label"] ?>
-            </label>
-            <div class="col">
+    <div class="row mb-3">
+        <label for="<?= $row["name"] ?>" class="col-3 col-form-label">
+            <?= $row["label"] ?>
+        </label>
+        <div class="col">
 
             <?php switch ($row["type"]): case "INPUT": ?>
                 <?php if (!empty($row["custom_function"])): ?>
                     <?php $db_data[$i] = $row["custom_function"] instanceof Closure ? $row["custom_function"]($db_data[$i]) : call_user_func($row["custom_function"], $db_data[$i]) ?>
                 <?php endif ?>
+            <input
+                id="<?= $row["name"] ?>"
+                class="form-control <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
+                name="<?= $row["name"] ?>"
+                <?= $row["attributes"] ?>
+                <?php if ($form->VALID_SQL_REG_EXP): /* what is VALID_SQL_REG_EXP */ ?>
+                value="<?= $db_data[$i] ?>"
+                <?php else: ?>
+                value="<?= $processed[$row["name"]] ?>"
+                <?php endif ?>
+            />
+                <?php break ?>
+
+            <?php case "POPUPVALUE": ?>
+            <div class="input-group">
                 <input
                     id="<?= $row["name"] ?>"
                     class="form-control <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
                     name="<?= $row["name"] ?>"
                     <?= $row["attributes"] ?>
-                    <?php if ($form->VALID_SQL_REG_EXP): /* what is VALID_SQL_REG_EXP */ ?>
-                        value="<?= $db_data[$i] ?>"
-                    <?php else: ?>
-                        value="<?= $processed[$row["name"]] ?>"
-                    <?php endif ?>
+                    value="<?= $form->VALID_SQL_REG_EXP ? $db_data[$i] : $processed[$row["name"]] ?>"
                 />
-                <?php break ?>
-
-            <?php case "POPUPVALUE": ?>
-                <div class="input-group">
-                    <input
-                        id="<?= $row["name"] ?>"
-                        class="form-control <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
-                        name="<?= $row["name"] ?>"
-                        <?= $row["attributes"] ?>
-                        value="<?= $form->VALID_SQL_REG_EXP ? $db_data[$i] : $processed[$row["name"]] ?>"
-                    />
-                    <a
-                        href="<?= $row["popup_dest"] ?>"
-                        data-window-name="<?= $row["name"] ?>Popup"
-                        data-popup-options="<?= $row["popup_params"] ?>"
-                        class="btn btn-primary popup_trigger"
-                        aria-label="<?= _("open a popup to select an item") ?>"
-                    >
-                        <svg class="mx-auto" width="16" height="16"><use xlink:href="#popup"></use></svg>
-                    </a>
-                </div>
+                <a
+                    href="<?= $row["popup_dest"] ?>"
+                    data-window-name="<?= $row["name"] ?>Popup"
+                    data-popup-options="<?= $row["popup_params"] ?>"
+                    class="btn btn-primary popup_trigger"
+                    aria-label="<?= _("open a popup to select an item") ?>"
+                >
+                    <svg class="mx-auto" width="16" height="16"><use xlink:href="#popup"></use></svg>
+                </a>
+            </div>
                 <?php break ?>
 
             <?php case "TEXTAREA": ?>
-                <textarea
-                    id="<?= $row["name"] ?>"
-                    class="form-control <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
-                    name="<?= $row["name"] ?>"
-                    <?= $row["attributes"] ?>
-                ><?= $form->VALID_SQL_REG_EXP ? $db_data[$i] : $processed[$row["name"]] ?></textarea>
+            <textarea
+                id="<?= $row["name"] ?>"
+                class="form-control <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
+                name="<?= $row["name"] ?>"
+                <?= $row["attributes"] ?>
+            ><?= $form->VALID_SQL_REG_EXP ? $db_data[$i] : $processed[$row["name"]] ?></textarea>
                 <?php break ?>
 
             <?php case "SELECT": ?>
-                <select
-                    id="<?= $row["name"] ?>"
-                    name="<?= $row["name"] . (str_contains($row["attributes"], "multiple") ? "[]" : "") ?>"
-                    class="form-select <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
-                    <?= $row["attributes"] ?>
-                >
-                    <?php foreach ($row["first_option"] as $val => $opt): ?>
-                    <option value="<?= $val ?>"><?= $opt ?></option>
-                    <?php endforeach ?>
+            <select
+                id="<?= $row["name"] ?>"
+                name="<?= $row["name"] . (str_contains($row["attributes"], "multiple") ? "[]" : "") ?>"
+                class="form-select <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
+                <?= $row["attributes"] ?>
+            >
+                <?php foreach ($row["first_option"] as $val => $opt): ?>
+                <option value="<?= $val ?>"><?= $opt ?></option>
+                <?php endforeach ?>
 
-                    <?php if (empty($row["select_fields"])): ?>
-                        <option value=""><?= gettext("No data found!!!") ?></option>
-                    <?php endif ?>
+                <?php if (empty($row["select_fields"])): ?>
+                <option value=""><?= gettext("No data found!!!") ?></option>
+                <?php endif ?>
 
-                    <?php foreach ($row["select_fields"] as $val => $opt): ?>
-                    <option
-                        value="<?= $val ?>"
-                        <?php if ($form->VALID_SQL_REG_EXP): ?>
-                            <?php if (str_contains($row["attributes"], "multiple")): ?>
-                                <?php if (intval($val) & intval($db_data[$i])): ?>
-                        selected="selected"
-                                <?php endif ?>
-                            <?php elseif ($db_data[$i] == $val): ?>
-                        selected="selected"
+                <?php foreach ($row["select_fields"] as $val => $opt): ?>
+                <option
+                    value="<?= $val ?>"
+                    <?php if ($form->VALID_SQL_REG_EXP): ?>
+                        <?php if (str_contains($row["attributes"], "multiple")): ?>
+                            <?php if (intval($val) & intval($db_data[$i])): ?>
+                    selected="selected"
                             <?php endif ?>
-                        <?php else: ?>
-                            <?php if (str_contains($row["attributes"], "multiple")): ?>
-                                <?php /* TODO: WTF is this? */ if (is_array($processed[$row["name"]]) && (intval($val) & array_sum($processed[$row["name"]]))): ?>
-                        selected="selected"
-                                <?php endif ?>
-                            <?php elseif ($processed[$row["name"]] == $val): ?>
-                        selected="selected"
-                            <?php endif ?>
+                        <?php elseif ($db_data[$i] == $val): ?>
+                    selected="selected"
                         <?php endif ?>
-                    >
-                        <?= $opt ?>
-                    </option>
-                    <?php endforeach ?>
-                </select>
+                    <?php else: ?>
+                        <?php if (str_contains($row["attributes"], "multiple")): ?>
+                            <?php /* TODO: WTF is this? */ if (is_array($processed[$row["name"]]) && (intval($val) & array_sum($processed[$row["name"]]))): ?>
+                    selected="selected"
+                            <?php endif ?>
+                        <?php elseif ($processed[$row["name"]] == $val): ?>
+                    selected="selected"
+                        <?php endif ?>
+                    <?php endif ?>
+                >
+                    <?= $opt ?>
+                </option>
+                <?php endforeach ?>
+            </select>
                 <?php break ?>
 
             <?php case "RADIOBUTTON": ?>
                 <?php foreach ($row["radio_options"] as $key => $rad): ?>
                     <?php $val = is_array($rad) ? $rad[1] : $key ?>
-                <div class="form-check">
-                    <?php $check = $form->VALID_SQL_REG_EXP && array_key_exists($i, $db_data) ? $db_data[$i] : ($processed[$row["name"]] ?? "") ?>
-                    <input
-                        id="<?= $row["name"] ?>_<?= $val ?>"
-                        class="form-check-input <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
-                        type="radio"
-                        name="<?= $row["name"] ?>"
-                        value="<?= $val ?>"
-                        <?php if ("$check" === "$val"): ?>checked="checked"<?php endif ?>
-                    />
-                    <label for="<?= $row["name"] ?>_<?= $val ?>" class="form-check-label"><?= is_array($rad) ? $rad[0] : $rad ?></label>
-                </div>
+            <div class="form-check">
+                <?php $check = $form->VALID_SQL_REG_EXP && array_key_exists($i, $db_data) ? $db_data[$i] : ($processed[$row["name"]] ?? "") ?>
+                <input
+                    id="<?= $row["name"] ?>_<?= $val ?>"
+                    class="form-check-input <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
+                    type="radio"
+                    name="<?= $row["name"] ?>"
+                    value="<?= $val ?>"
+                    <?php if ("$check" === "$val"): ?>checked="checked"<?php endif ?>
+                />
+                <label for="<?= $row["name"] ?>_<?= $val ?>" class="form-check-label"><?= is_array($rad) ? $rad[0] : $rad ?></label>
+            </div>
                 <?php endforeach ?>
                 <?php break ?>
 
@@ -196,78 +196,78 @@ use DateTime;
                     $day = intdiv($value, 1440);
                     $time = (new DateTime("@" . ($value % 1440) * 60))->format("H:i");
                 ?>
-                <div class="daytime row">
-                    <div class="col-6">
-                        <label for="<?= $row["name"] ?>_day"><?= _("Day") ?></label>
-                        <select
-                            id="<?= $row["name"] ?>_day"
-                            class="form-select <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
-                        >
-                            <option value="0" <?php if ($day === 0): ?>selected="selected"<?php endif ?>><?= _("Monday") ?></option>
-                            <option value="1" <?php if ($day === 1): ?>selected="selected"<?php endif ?>><?= _("Tuesday") ?></option>
-                            <option value="2" <?php if ($day === 2): ?>selected="selected"<?php endif ?>><?= _("Wednesday") ?></option>
-                            <option value="3" <?php if ($day === 3): ?>selected="selected"<?php endif ?>><?= _("Thursday") ?></option>
-                            <option value="4" <?php if ($day === 4): ?>selected="selected"<?php endif ?>><?= _("Friday") ?></option>
-                            <option value="5" <?php if ($day === 5): ?>selected="selected"<?php endif ?>><?= _("Saturday") ?></option>
-                            <option value="6" <?php if ($day === 6): ?>selected="selected"<?php endif ?>><?= _("Sunday") ?></option>
-                        </select>
-                    </div>
-                    <div class="col-6">
-                        <label for="<?= $row["name"] ?>_time"><?= _("Time") ?></label>
-                        <input
-                            type="time"
-                            id="<?= $row["name"] ?>_time"
-                            class="form-control <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
-                            <?= $row["attributes"] ?>
-                            value="<?= $time ?>"
-                        />
-                        <input type="hidden" name="<?= $row["name"] ?>" id="<?= $row["name"] ?>" value="<?= $value ?>"/>
-                    </div>
+            <div class="daytime row">
+                <div class="col-6">
+                    <label for="<?= $row["name"] ?>_day"><?= _("Day") ?></label>
+                    <select
+                        id="<?= $row["name"] ?>_day"
+                        class="form-select <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
+                    >
+                        <option value="0" <?php if ($day === 0): ?>selected="selected"<?php endif ?>><?= _("Monday") ?></option>
+                        <option value="1" <?php if ($day === 1): ?>selected="selected"<?php endif ?>><?= _("Tuesday") ?></option>
+                        <option value="2" <?php if ($day === 2): ?>selected="selected"<?php endif ?>><?= _("Wednesday") ?></option>
+                        <option value="3" <?php if ($day === 3): ?>selected="selected"<?php endif ?>><?= _("Thursday") ?></option>
+                        <option value="4" <?php if ($day === 4): ?>selected="selected"<?php endif ?>><?= _("Friday") ?></option>
+                        <option value="5" <?php if ($day === 5): ?>selected="selected"<?php endif ?>><?= _("Saturday") ?></option>
+                        <option value="6" <?php if ($day === 6): ?>selected="selected"<?php endif ?>><?= _("Sunday") ?></option>
+                    </select>
                 </div>
+                <div class="col-6">
+                    <label for="<?= $row["name"] ?>_time"><?= _("Time") ?></label>
+                    <input
+                        type="time"
+                        id="<?= $row["name"] ?>_time"
+                        class="form-control <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
+                        <?= $row["attributes"] ?>
+                        value="<?= $time ?>"
+                    />
+                    <input type="hidden" name="<?= $row["name"] ?>" id="<?= $row["name"] ?>" value="<?= $value ?>"/>
+                </div>
+            </div>
                 <?php break ?>
 
             <?php case "HAS_MANY": ?>
                 <?php $entries = $row["table"]->getRows($form->DBHandle, [$row["foreign_key"] => $processed["id"]]) ?>
-                <ul class="list-group">
+            <ul class="list-group">
                 <?php foreach ($entries as $entry): ?>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <?= $entry[1] ?>
-                        <button
-                            type="button"
-                            class="btn btn-sm btn-primary"
-                            onclick="deleteRow(<?= $i ?>, '<?= $entry[0] ?>')"
-                        ><?= _("Delete") ?></button>
-                    </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <?= $entry[1] ?>
+                    <button
+                        type="button"
+                        class="btn btn-sm btn-primary"
+                        onclick="deleteRow(<?= $i ?>, '<?= $entry[0] ?>')"
+                    ><?= _("Delete") ?></button>
+                </li>
                 <?php endforeach ?>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <div class="flex-grow-1 me-3">
-                            <label for="<?= $row["table"]->table ?>_<?= $row["insert"] ?>" class="form-label"><?= sprintf(_("Add a new %s"), $row["label"]) ?></label>
-                            <?php if ($row["multiline"]): ?>
-                                <textarea id="<?= $row["table"]->table ?>_<?= $row["insert"] ?>" class="form-control form-control-sm" rows="5"></textarea>
-                            <?php else: ?>
-                                <input id="<?= $row["table"]->table ?>_<?= $row["insert"] ?>" class="form-control form-control-sm"/>
-                            <?php endif ?>
-                        </div>
-                        <button
-                            type="button"
-                            class="btn btn-sm btn-primary"
-                            onclick="addRow(<?= $i ?>, '<?= $row["table"]->table ?>_<?= $row["insert"] ?>')"
-                        ><?= gettext("Add") ?> <?= $row["label"] ?></button>
-                    </li>
-                </ul>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div class="flex-grow-1 me-3">
+                        <label for="<?= $row["table"]->table ?>_<?= $row["insert"] ?>" class="form-label"><?= sprintf(_("Add a new %s"), $row["label"]) ?></label>
+                <?php if ($row["multiline"]): ?>
+                            <textarea id="<?= $row["table"]->table ?>_<?= $row["insert"] ?>" class="form-control form-control-sm" rows="5"></textarea>
+                <?php else: ?>
+                            <input id="<?= $row["table"]->table ?>_<?= $row["insert"] ?>" class="form-control form-control-sm"/>
+                <?php endif ?>
+                    </div>
+                    <button
+                        type="button"
+                        class="btn btn-sm btn-primary"
+                        onclick="addRow(<?= $i ?>, '<?= $row["table"]->table ?>_<?= $row["insert"] ?>')"
+                    ><?= gettext("Add") ?> <?= $row["label"] ?></button>
+                </li>
+            </ul>
                 <?php break ?>
 
             <?php endswitch ?>
 
             <?php if ($row["validation_err"] !== true): ?>
-                <div class="form-text invalid-feedback"><?= $row["error"] ?> - <?= $row["validation_err"] ?></div>
+            <div class="form-text invalid-feedback"><?= $row["error"] ?> - <?= $row["validation_err"] ?></div>
             <?php endif ?>
 
             <?php if (!empty($row["comment"])): ?>
-                <div class="form-text"><?= $row["comment"] ?></div>
+            <div class="form-text"><?= $row["comment"] ?></div>
             <?php endif ?>
-            </div>
         </div>
+    </div>
 
         <?php else: ?>
             <?php $table = $row["custom_query"] ?>
