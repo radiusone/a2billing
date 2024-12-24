@@ -2,8 +2,6 @@
 
 namespace A2billing\Forms;
 
-use A2billing\Table;
-use Closure;
 use DateTime;
 
 /**
@@ -150,8 +148,7 @@ use DateTime;
             <?php break ?>
 
         <?php case "RADIOBUTTON": ?>
-            <?php foreach ($row["radio_options"] as $key => $rad): ?>
-                <?php $val = is_array($rad) ? $rad[1] : $key ?>
+            <?php foreach ($row["radio_options"] as $val => $rad): ?>
             <div class="form-check">
             <?php $check = $form->all_fields_valid && array_key_exists($i, $db_data) ? $db_data[$i] : ($processed[$row["name"]] ?? "") ?>
                 <input
@@ -162,7 +159,7 @@ use DateTime;
                     value="<?= $val ?>"
                     <?php if ("$check" === "$val"): ?>checked="checked"<?php endif ?>
                 />
-                <label for="<?= $row["name"] ?>_<?= $val ?>" class="form-check-label"><?= is_array($rad) ? $rad[0] : $rad ?></label>
+                <label for="<?= $row["name"] ?>_<?= $val ?>" class="form-check-label"><?= $rad ?></label>
             </div>
             <?php endforeach ?>
             <?php break ?>

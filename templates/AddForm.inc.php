@@ -112,8 +112,7 @@ use DateTime;
         <?php break ?>
 
         <?php case "RADIOBUTTON": ?>
-            <?php foreach ($row["radio_options"] as $key => $rad): ?>
-                <?php $val = is_array($rad) ? $rad[1] : $key ?>
+            <?php foreach ($row["radio_options"] as $val => $rad): ?>
             <div class="form-check">
             <?php if ((string)($processed[$row["name"]] ?? "") === "$val"): ?>
                 <?php $check = $val ?>
