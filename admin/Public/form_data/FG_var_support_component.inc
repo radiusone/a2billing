@@ -73,7 +73,7 @@ $HD_Form->AddEditElement(
     _("NAME"),
     "name",
     "",
-    "maxlength=20",
+    ["maxlength" => 20],
     [Validator::class, "min1Char"],
     _("Insert the Support Box name ")
 );
@@ -84,7 +84,7 @@ $HD_Form->AddEditRadio(
     getYesNoList(),
     "1",
     "",
-    "",
+    [],
     _("Choose if you want to activate this component")
 );
 

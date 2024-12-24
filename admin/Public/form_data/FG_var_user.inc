@@ -97,7 +97,7 @@ $HD_Form->AddEditElement(
     _("LOGIN"),
     "login",
     "",
-    "maxlength=12",
+    ["maxlength" => 12],
     [Validator::class, "min4Chars"],
     _("Insert the username")
 );
@@ -106,7 +106,7 @@ $HD_Form->AddEditElement(
     _("PASSWORD"),
     "pwd_encoded",
     "",
-    "maxlength=30",
+    ["maxlength" => 30],
     [Validator::class, "min8Chars"],
     _("Insert the Reseller password")
 );
@@ -150,7 +150,7 @@ if ($subadmin) {
         $right_list,
         "",
         _("To select several rights in the above ListBox, hold the Control/⌘ key down while clicking the items"),
-        "size='$len_right_list' multiple='multiple'"
+        ["size" => $len_right_list, "multiple" => "multiple"]
     );
 } else {
     // 32 bits max permission value
@@ -162,7 +162,7 @@ $HD_Form->AddEditElement(
     _("NAME"),
     "name",
     "",
-    "maxlength=50",
+    ["maxlength" => 50],
     null,
     _("Insert the name")
 );
@@ -171,7 +171,7 @@ $HD_Form->AddEditElement(
     _("ADDRESS"),
     "direction",
     "",
-    "maxlength=250",
+    ["maxlength" => 250],
     null,
     _("Insert the address")
 );
@@ -180,7 +180,7 @@ $HD_Form->AddEditElement(
     _("CITY"),
     "city",
     "",
-    "maxlength=30",
+    ["maxlength" => 30],
     null,
     _("Insert the country")
 );
@@ -189,7 +189,7 @@ $HD_Form->AddEditElement(
     _("ZIPCODE"),
     "zipcode",
     "",
-    "maxlength=7",
+    ["maxlength" => 7],
     null,
     _("Insert the zip code")
 );
@@ -198,7 +198,7 @@ $HD_Form->AddEditElement(
     _("STATE"),
     "state",
     "",
-    "maxlength=30",
+    ["maxlength" => 30],
     null,
     _("Insert the state")
 );
@@ -207,7 +207,7 @@ $HD_Form->AddEditElement(
     _("COUNTRY"),
     "country",
     "",
-    "maxlength=30",
+    ["maxlength" => 30],
     null,
     _("Insert the country")
 );
@@ -216,7 +216,7 @@ $HD_Form->AddEditElement(
     _("PHONE"),
     "phone",
     "",
-    "maxlength=20",
+    ["maxlength" => 20],
     null,
     _("Insert the telephone number")
 );
@@ -225,7 +225,7 @@ $HD_Form->AddEditElement(
     _("FAX"),
     "fax",
     "",
-    "maxlength=20",
+    ["maxlength" => 20],
     null,
     _("Insert the fax number")
 );
@@ -234,7 +234,7 @@ $HD_Form->AddEditElement(
     _("EMAIL"),
     "email",
     "",
-    "maxlength=70",
+    ["maxlength" => 70],
     null,
     _("Insert the email"));
 

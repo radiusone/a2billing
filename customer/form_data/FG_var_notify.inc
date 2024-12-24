@@ -79,7 +79,7 @@ $HD_Form->AddEditSelect(
     $limits_notify,
     "",
     gettext("currency : ") . strtoupper(BASE_CURRENCY),
-    "",
+    [],
     gettext("Insert the number of credit when the customer receive a notification"),
     ""
 );
@@ -89,7 +89,8 @@ $HD_Form->AddEditRadio(
     "notify_email",
     getYesNoList(),
     "0",
-    gettext("Enable Email Notification"), "",
+    gettext("Enable Email Notification"),
+    [],
     gettext("Choose if you want to enable the notification by email for this card")
 );
 
@@ -97,7 +98,7 @@ $HD_Form->AddEditElement(
     gettext("EMAIL NOTIFICATION"),
     "email_notification",
     "",
-    "maxlength=70",
+    ["maxlength" => 70],
     [Validator::class, "email"],
     gettext("Insert the email to notify the customers"),
     "",

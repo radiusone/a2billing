@@ -75,7 +75,7 @@ $HD_Form->AddEditElement(
     gettext("NAME"),
     "name",
     gettext("Enter here the name/label that will identify this speed dial"),
-    "maxlength=50",
+    ["maxlength" => 50],
     [Validator::class, "min3Chars"],
     gettext("Insert the name")
 );
@@ -85,7 +85,7 @@ $HD_Form->AddEditElement(
     gettext("PHONE"),
     "phone",
     gettext("Enter here the phonenumber you want to call for this speed dial"),
-    "maxlength=50",
+    ["maxlength" => 50],
     [Validator::class, "numeric"],
     gettext("Insert the phone")
 );

@@ -56,7 +56,7 @@ $HD_Form->AddEditElement(
     _("CALL ID"),
     "id",
     "",
-    "size='10' maxlength='10'",
+    ["maxlength" => 10],
     [Validator::class, "phoneNumber"],
 );
 
@@ -65,7 +65,7 @@ $HD_Form->AddEditPopup(
     "card_id",
     "A2B_entity_card.php?popup_select=1&",
     _("Define the card number ID to use."),
-    "",
+    [],
     [Validator::class, "numeric"],
     _("Insert the Id CardNumber")
 );
@@ -74,7 +74,7 @@ $HD_Form->AddEditElement(
     _("CALLED NUMBER"),
     "calledstation",
     "",
-    "size='40' maxlength='30'",
+    ["maxlength" => 30],
     [Validator::class, "phoneNumber"],
 );
 
@@ -83,7 +83,7 @@ $HD_Form->AddEditElement(
     _("Source"),
     "src",
     "",
-    "size='40' maxlength='30'",
+    ["maxlength" => 30],
     [Validator::class, "phoneNumber"],
 );
 
@@ -91,7 +91,7 @@ $HD_Form->AddEditElement(
     _("Dnid"),
     "dnid",
     "",
-    "size='40' maxlength='30'",
+    ["maxlength" => 30],
     [Validator::class, "phoneNumber"],
 );
 
@@ -99,7 +99,7 @@ $HD_Form->AddEditElement(
     _("Duration"),
     "sessiontime",
     "",
-    "size='40' maxlength='30'",
+    ["maxlength" => 30],
     [Validator::class, "timeSeconds"],
 
 );

@@ -5,7 +5,6 @@ namespace A2billing\Forms;
 use A2billing\Logger;
 use A2billing\Table;
 use ADOConnection;
-use Closure;
 use Profiler_Console as Console;
 use const PASSWORD_DEFAULT;
 
@@ -197,6 +196,7 @@ class FormHandler
      *     section: string,
      *     validator: callable|null,
      *     validation_err: bool,
+     *     attributes: array<string,mixed>
      * }} List of form elements used to create the edit form
      */
     public array $FG_EDIT_FORM_ELEMENTS = [];
@@ -604,7 +604,7 @@ class FormHandler
      * @param string $label_text The label text
      * @param string $fieldname The form input name
      * @param string $form_text_bottom Text to display below the form input
-     * @param string $html_attributes HTML attributes for the input
+     * @param array<string,mixed> $html_attributes HTML attributes for the input
      * @param callable<string>|null $validator A validation method that returns true or an error message
      * @param string $error_message A message to show if validation fails
      * @param string $section_name If provided, added as a row above the input
@@ -616,7 +616,7 @@ class FormHandler
         string $label_text,
         string $fieldname,
         string $form_text_bottom = "",
-        string $html_attributes = "",
+        array $html_attributes = [],
         ?callable $validator = null,
         string $error_message = "",
         string $section_name = "",
@@ -671,7 +671,7 @@ class FormHandler
      * @param string $default_value When adding (not editing), the value of the selected item
      * @param array $first_option array containing a value and label (k/v) for the first options in the list
      * @param string $form_text_bottom Text to display below the form input
-     * @param string $html_attributes HTML attributes for the input
+     * @param array<string,mixed> $html_attributes HTML attributes for the input
      * @param string $error_message A message to show if validation fails
      * @return void
      */
@@ -683,7 +683,7 @@ class FormHandler
         string $default_value = "",
         array $first_option = [],
         string $form_text_bottom = "",
-        string $html_attributes = "",
+        array $html_attributes = [],
         string $error_message = ""
     ): void
     {
@@ -716,7 +716,7 @@ class FormHandler
      * @param array $options An array of options to build the select element with
      * @param string|int $default_value When adding (not editing) the value of the selected item
      * @param string $form_text_bottom Text to display below the form input
-     * @param string $html_attributes HTML attributes for the input
+     * @param array<string,mixed> $html_attributes HTML attributes for the input
      * @param string $error_message A message to show if validation fails
      * @param string $section_name If provided, added as a row above the input
      * @return void
@@ -727,7 +727,7 @@ class FormHandler
         array  $options,
                $default_value = "",
         string $form_text_bottom = "",
-        string $html_attributes = "",
+        array $html_attributes = [],
         string $error_message = "",
         string $section_name = ""
     ): void
@@ -754,7 +754,7 @@ class FormHandler
      * @param array $options An array of data (name, value) to build radio buttons
      * @param string $default_value When adding (not editing), the value of the selected item
      * @param string $form_text_bottom Text to display below the form input
-     * @param string $html_attributes HTML attributes for the inputs
+     * @param array<string,mixed> $html_attributes HTML attributes for the inputs
      * @param string $error_message A message to show if validation fails
      * @param string $section_name If provided, added as a row above the input
      * @return void
@@ -765,7 +765,7 @@ class FormHandler
         array  $options,
         string $default_value = "",
         string $form_text_bottom = "",
-        string $html_attributes = "",
+        array $html_attributes = [],
         string $error_message = "",
         string $section_name = ""
     ): void
@@ -789,7 +789,7 @@ class FormHandler
      * @param string $fieldname The form input name
      * @param string $href The address of the popup
      * @param string $form_text_bottom Text to display below the form input
-     * @param string $html_attributes HTML attributes for the input
+     * @param array $html_attributes HTML attributes for the input
      * @param callable<string>|null $validator A validation method that returns true or an error message
      * @param string $error_message A message to show if validation fails
      * @return void
@@ -799,7 +799,7 @@ class FormHandler
         string $fieldname,
         string $href,
         string $form_text_bottom = "",
-        string $html_attributes = "",
+        array $html_attributes = [],
         ?callable $validator = null,
         string $error_message = ""
     ): void
@@ -864,7 +864,7 @@ class FormHandler
      * @param string $label_text The label text
      * @param string $fieldname The form input name
      * @param string $form_text_bottom Text to display below the form input
-     * @param string $html_attributes HTML attributes for the input
+     * @param array $html_attributes HTML attributes for the input
      * @param callable<string>|null $validator A validation method that returns true or an error message
      * @param string $error_message A message to show if validation fails
      * @param string $section_name If provided, added as a row above the input
@@ -874,7 +874,7 @@ class FormHandler
         string $label_text,
         string $fieldname,
         string $form_text_bottom = "",
-        string $html_attributes = "",
+        array $html_attributes = [],
         ?callable $validator = null,
         string $error_message = "",
         string $section_name = ""

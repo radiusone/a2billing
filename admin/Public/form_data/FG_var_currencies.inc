@@ -61,7 +61,7 @@ $HD_Form->AddEditElement(
     gettext("Name"),
     "name",
     "",
-    "maxlength=30",
+    ["maxlength" => 30],
     [Validator::class, "min4Chars"],
     gettext("Insert the currency name")
 );
@@ -70,7 +70,7 @@ $HD_Form->AddEditElement(
     gettext("LABEL"),
     "currency",
     "",
-    "maxlength=3",
+    ["maxlength" => 3],
     [Validator::class, "min3Chars"],
     gettext("Insert the currency label")
 );
@@ -80,7 +80,7 @@ $HD_Form->AddEditElement(
     gettext("VALUE"),
     "value",
     gettext("Set the value of this currency in your base currency that the user have to pay per month.") . " " . gettext("Base currency :") . " " . strtoupper(BASE_CURRENCY),
-    "maxlength=30",
+    ["maxlength" => 30],
     [Validator::class, "number"],
     gettext("Insert the fee amount.")
 );

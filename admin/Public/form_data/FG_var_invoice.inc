@@ -156,18 +156,20 @@ $HD_Form->AddEditPopup(
     "id_card",
     "A2B_entity_card.php?popup_select=1&",
     _("Select the Customer ID"),
-    "",
+    [],
     [Validator::class, "numeric"],
     _("Insert the Customer ID")
 );
 
-$comp_date = $form_action === "ask-add" ? sprintf("value='%s'", (new DateTime())->format("Y-m-d H:i:s")) : "";
-
+$date_attr = ["readonly" => "readonly", "maxlength" => 40];
+if ($form_action === "ask-add") {
+    $date_attr["value"] = (new DateTime())->format("Y-m-d H:i:s");
+}
 $HD_Form->AddEditElement(
     _("INVOICE DATE"),
     "date",
     "",
-    "READONLY maxlength=40 $comp_date",
+    $date_attr,
     [Validator::class, "dateTime"],
     _("Insert the current date")
 );
@@ -177,7 +179,7 @@ $HD_Form->AddEditElement(
     _("TITLE"),
     "title",
     "",
-    "maxlength=50",
+    ["maxlength" => 50],
     [Validator::class, "min3Chars"],
     _("Insert the title of invoice, if you need one")
 );
@@ -186,7 +188,7 @@ $HD_Form->AddEditTextarea(
     _("DESCRIPTION"),
     "description",
     "",
-    "cols='50' rows='4'",
+    ["rows" => 4],
     null,
     _("Insert the description")
 );

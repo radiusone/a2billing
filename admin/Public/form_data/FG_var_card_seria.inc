@@ -70,7 +70,7 @@ $HD_Form->AddEditElement(
     _("NAME"),
     "name",
     "",
-    "maxlength=40",
+    ["maxlength" => 40],
     [Validator::class, "min3Chars"],
     _("Insert the Seria name")
 );
@@ -79,7 +79,7 @@ $HD_Form->AddEditTextarea(
     _("DESCRIPTION"),
     "description",
     "",
-    "cols='50' rows='4'",
+    ["rows" => 4],
     null,
     _("Insert the description")
 );

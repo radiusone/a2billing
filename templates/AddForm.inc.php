@@ -42,8 +42,10 @@ use DateTime;
                 id="<?= $row["name"] ?>"
                 class="form-control <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
                 name="<?= $row["name"] ?>"
-                <?= $row["attributes"] ?>
-                value="<?= $processed[$row["name"]] ?? "" ?>"
+                <?= array_html_attr($row["attributes"]) ?>
+        <?php if (!empty($processed[$row["name"]])): ?>
+                value="<?= $processed[$row["name"]] ?>"
+        <?php endif ?>
             />
             <?php break ?>
 
@@ -53,7 +55,10 @@ use DateTime;
                     id="<?= $row["name"] ?>"
                     class="form-control <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
                     name="<?= $row["name"] ?>"
-                    <?= $row["attributes"] ?>
+                    <?= array_html_attr($row["attributes"]) ?>
+        <?php if (!empty($processed[$row["name"]])): ?>
+                    value="<?= $processed[$row["name"]] ?>"
+        <?php endif ?>
                 />
                 <a
                     href="<?= $row["popup_dest"] ?>"
@@ -72,16 +77,16 @@ use DateTime;
                 id="<?= $row["name"] ?>"
                 class="form-control <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
                 name="<?= $row["name"] ?>"
-                <?= $row["attributes"] ?>
-            ></textarea>
+                <?= array_html_attr($row["attributes"]) ?>
+            ><?= $processed[$row["name"]] ?? "" ?></textarea>
         <?php break ?>
 
     <?php case "SELECT": ?>
             <select
                 id="<?= $row["name"] ?>"
-                name="<?= $row["name"] . (str_icontains($row["attributes"], "multiple") ? "[]" : "") ?>"
+                name="<?= $row["name"] . (array_key_exists("multiple", $row["attributes"]) ? "[]" : "") ?>"
                 class="form-select <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
-                <?= $row["attributes"] ?>
+                <?= array_html_attr($row["attributes"]) ?>
             >
             <?php if (!empty($row["error_message"])): ?>
                 <option value="" class="text-danger"><?= $row["error_message"] ?></option>
@@ -174,7 +179,13 @@ use DateTime;
                 </tr>
                 <tr>
                     <td>
-                        <input id="<?= $row["name"] ?>_captcha" class="form_input_text" name="<?= $row["name"] ?>" <?= $row["attributes"] ?> value="<?= $processed[$row["name"]] ?>">
+                        <input
+                            id="<?= $row["name"] ?>_captcha"
+                            class="form_input_text"
+                            name="<?= $row["name"] ?>"
+                            value="<?= $processed[$row["name"]] ?? "" ?>"
+                            <?= array_html_attr($row["attributes"]) ?>
+                        >
                         <label for="<?= $row["name"] ?>_captcha">Enter code from above picture here.</label>
                     </td>
                 </tr>

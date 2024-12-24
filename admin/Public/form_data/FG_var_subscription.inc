@@ -79,19 +79,11 @@ $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form->FG_ENABLE_ADD_BUTTON = true;
 
-$comp_date = $comp_date_plus = '';
-if ($form_action === "ask-add") {
-	$end_date = date("Y-m-d H:i:s");
-	$comp_date = "value='$end_date'";
-	//Max value Mysql Timestamp can store is '2038-01-19 03:14:07' UTC
-	$comp_date_plus = "value='2038-01-01 00:00:00'";
-}
-
 $HD_Form->AddEditElement(
     _("LABEL"),
     "label",
     "",
-    "maxlength=30",
+    ["maxlength" => 30],
     [Validator::class, "min4Chars"],
     _("Insert the service label")
 );
@@ -100,18 +92,22 @@ $HD_Form->AddEditElement(
     _("FEE"),
     "fee",
     _("Set the fee amount that the user have to pay per month."),
-    "maxlength=30",
+    ["maxlength" => 30],
     [Validator::class, "number"],
     _("Insert the fee amount.")
 );
 
 $HD_Form->AddEditSelect(_("STATUS"), "status", $actived_list);
 
+$date_attr = ["maxlength" => 40];
+if ($form_action === "ask-add") {
+    $date_attr["value"] = (new DateTime())->format("Y-m-d H:i:s");
+}
 $HD_Form->AddEditElement(
     _("START DATE"),
     "startdate",
     _("please use the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
-    "maxlength=40  $comp_date",
+    $date_attr,
     [Validator::class, "dateTime"],
     _("Insert the start date"),
     "",
@@ -119,11 +115,14 @@ $HD_Form->AddEditElement(
     
 );
 
+if ($form_action === "ask-add") {
+    $date_attr["value"] = (new DateTime("+10 years"))->format("Y-m-d H:i:s");
+}
 $HD_Form->AddEditElement(
     _("STOP DATE"),
     "stopdate",
     _("please use the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
-    "maxlength=40  $comp_date_plus",
+    $date_attr,
     [Validator::class, "dateTime"],
     _("Insert the stop date"),
     "",
@@ -135,7 +134,7 @@ $HD_Form->AddEditElement(
     _("EMAIL TO SEND REPORT"),
     "emailreport",
     "",
-    "maxlength=30",
+    ["maxlength" => 30],
     [Validator::class, "email"],
     _("Insert the email to send the report"),
     "",

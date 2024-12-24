@@ -109,18 +109,15 @@ $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form->FG_ENABLE_ADD_BUTTON = true;
 
-$maxi = $comp_date_plus = "";
+$vouch_attr = ["readonly" => "readonly", "maxlength" => 40];
 if ($form_action === "ask-add") {
-	$card_gen = generate_unique_value($HD_Form->FG_QUERY_TABLE_NAME, LEN_VOUCHER, "voucher");
-	$maxi = "value='$card_gen'";
-    $comp_date_plus = (new DateTime("+10 years"))->format("Y-m-d H:i:s");
+    $vouch_attr["value"] = generate_unique_value($HD_Form->FG_QUERY_TABLE_NAME, LEN_VOUCHER, "voucher");
 }
-
 $HD_Form->AddEditElement(
     _("VOUCHER"),
     "voucher",
     "",
-    "$maxi readonly maxlength=40",
+    $vouch_attr,
     [Validator::class, "numeric"],
     _("Insert the voucher")
 );
@@ -129,7 +126,7 @@ $HD_Form->AddEditElement(
     _("AMOUNT"),
     "credit",
     "",
-    "maxlength=30",
+    ["maxlength" => 30],
     [Validator::class, "number"],
     _("Insert the number of credit")
 );
@@ -138,7 +135,7 @@ $HD_Form->AddEditElement(
     _("TAG"),
     "tag",
     "",
-    "maxlength=30",
+    ["maxlength" => 30],
     [Validator::class, "min2Chars"],
     _("Insert the tag"),
     "",
@@ -150,17 +147,22 @@ $HD_Form->AddEditRadio(
     "activated",
     getActivationTrueFalseList(),
     "t",
-    "", "",
+    "",
+    [],
     _("Choose if you want to activate this card")
 );
 
 $HD_Form->AddEditSelect(_("CURRENCY"), "currency", $currency_list);
 
+$date_attr = ["maxlength" => 40];
+if ($form_action === "ask-add") {
+    $date_attr["value"] = (new DateTime("+10 years"))->format("Y-m-d H:i:s");
+}
 $HD_Form->AddEditElement(
     _("EXPIRY DATE"),
     "expirationdate",
     _("Format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
-    "maxlength=40  $comp_date_plus",
+    $date_attr,
     [Validator::class, "dateTime"],
     _("Insert the expiration date")
 );

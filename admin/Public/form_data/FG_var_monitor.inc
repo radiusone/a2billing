@@ -68,7 +68,7 @@ $HD_Form->AddEditElement(
     _("LABEL"),
     "label",
     "",
-    "maxlength=50",
+    ["maxlength" => 50],
     [Validator::class, "min4Chars"],
     _("Insert the label")
 );
@@ -77,7 +77,7 @@ $HD_Form->AddEditElement(
     _("DIAL CODE"),
     "dial_code",
     "",
-    "maxlength=3",
+    ["maxlength" => 3],
     [Validator::class, "numeric"],
     _("Insert the dial code")
 );
@@ -86,7 +86,7 @@ $HD_Form->AddEditTextarea(
     _("DESCRIPTION"),
     "description",
     "",
-    "cols='60' rows='2'",
+    ["rows" => 2],
     null,
     _("Insert the description")
 );
@@ -95,7 +95,7 @@ $HD_Form->AddEditElement(
     _("TEXT INTRO"),
     "text_intro",
     "",
-    "maxlength=50",
+    ["maxlength" => 50],
     [Validator::class, "min4Chars"],
     _("Insert the text intro")
 );
@@ -112,7 +112,7 @@ $HD_Form->AddEditTextarea(
     _("QUERY / SHELL SCRIPT"),
     "query",
     sprintf(_("Shell scripts need to be copied into the directory %s."), A2Billing::SCRIPT_CONFIG_DIR) . "<br>" . _("Do not specify the path here."),
-    "cols='80' rows='4'",
+    ["rows" => 4],
     null,
     _("Insert the description")
 );

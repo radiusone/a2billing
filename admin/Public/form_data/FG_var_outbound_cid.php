@@ -66,13 +66,12 @@ $HD_Form -> FG_SPLITABLE_FIELDS[] = "cid";
 $HD_Form->AddEditTextarea(
     _("CID"),
     "cid",
-    "",
     $form_action === "ask-add"
         ? _("Define the CallerIDs. You can define a range of CallerID. <br>80412340210-80412340218 would add all CID's between the range, whereas CIDs separated by a comma e.g. 80412340210,80412340212,80412340214 would only add the individual CID listed.")
         : _("Define the CallerIDs"),
+    ["rows" => 4],
     null,
     _("Insert the CID"),
-    "cols='50' rows='4'"
 );
 
 $HD_Form->AddEditSqlSelect(
@@ -87,7 +86,7 @@ $HD_Form->AddEditRadio(
     getYesNoList(),
     "1",
     "",
-    "",
+    [],
     _("Choose if you want to activate this CallerID")
 );
 

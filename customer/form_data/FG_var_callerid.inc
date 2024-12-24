@@ -74,7 +74,7 @@ $HD_Form->AddEditElement(
     gettext("CALLERID"),
     "cid",
     "",
-    "maxlength=30",
+    ["maxlength" => 30],
     [Validator::class, "phoneNumber"],
     gettext("Insert the CallerID")
 );
@@ -84,7 +84,8 @@ $HD_Form->AddEditRadio(
     "activated",
     getActivationTrueFalseList(),
     "t",
-    "", "",
+    "",
+    [],
     gettext("Choose if you want to activate this card")
 );
 

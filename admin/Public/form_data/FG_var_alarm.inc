@@ -83,7 +83,7 @@ $HD_Form->AddEditElement(
     _("NAME"),
     "name",
     "",
-    "",
+    [],
     [Validator::class, "min4Chars"],
     _("Insert the alarm name")
 );
@@ -101,7 +101,7 @@ $HD_Form->AddEditElement(
     _("MAX VALUE"),
     "`maxvalue`",
     _("Input the maximum value (between 0 and 1 for ASR ; > 0 for ALOC in sec ; > 0 for CIC)"),
-    "",
+    [],
     null,
     _("Insert the maximum value in")
 );
@@ -125,7 +125,7 @@ $HD_Form->AddEditElement(
     _("EMAIL TO SEND ALARM"),
     "emailreport",
     "",
-    "maxlength=40",
+    ["maxlength" => 40],
     [Validator::class, "email"],
     _("Insert the email to send the alarm")
 );

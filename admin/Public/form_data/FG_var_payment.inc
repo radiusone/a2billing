@@ -102,25 +102,25 @@ if (has_rights (Admin::ACX_MODIFY_PAYMENTS)) {
 	$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
 	$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 
-    $id_val = ($form_action === "ask-add" && !empty($card_id)) ? $card_id : "";
-
     $HD_Form->AddEditPopup(
         _("CUSTOMER ID"),
         "card_id",
         "A2B_entity_card.php?popup_select=1&",
         _("Select the Customer ID"),
-        "value='$id_val'",
+        $form_action === "ask-add" && !empty($card_id) ? ["value" => $card_id] : [],
         [Validator::class, "numeric"],
         _("Insert the Customer ID")
     );
 
-    $comp_date = ($form_action === "ask-add") ? "value='" . (new DateTime())->format("Y-m-d H:i:s") . "'" : "";
-
+    $date_attr = ["maxlength" => 40];
+    if ($form_action === "ask-add") {
+        $date_attr["value"] = (new DateTime())->format("Y-m-d H:i:s");
+    }
     $HD_Form->AddEditElement(
         _("PAYMENT DATE"),
         "date",
         "",
-        "maxlength=40 $comp_date",
+        $date_attr,
         [Validator::class, "dateTime"],
         _("Insert the current date")
     );
@@ -129,7 +129,7 @@ if (has_rights (Admin::ACX_MODIFY_PAYMENTS)) {
         _("PAYMENT AMOUNT"),
         "payment",
         _("Enter the amount in the currency base : ") . BASE_CURRENCY,
-        "maxlength=10",
+        ["maxlength" => 10],
         [Validator::class, "number"],
         _("Insert the payment amount")
     );
@@ -138,7 +138,7 @@ if (has_rights (Admin::ACX_MODIFY_PAYMENTS)) {
         _("DESCRIPTION"),
         "description",
         "",
-        "cols='50' rows='4'",
+        ["rows" => 4],
         null,
         _("Insert the description")
     );
@@ -149,7 +149,8 @@ if (has_rights (Admin::ACX_MODIFY_PAYMENTS)) {
             "added_refill",
             getYesNoList(),
             "0",
-            _("Refill card account"), "",
+            _("Refill card account"),
+            [],
             _("Choose if you want to create a refill with this payment account")
         );
 
@@ -159,7 +160,7 @@ if (has_rights (Admin::ACX_MODIFY_PAYMENTS)) {
             getYesNoList(),
             "0",
             _("Commission for agent"),
-            "",
+            [],
             _("Choose if you want to create a commission to an agent, if this customer is managed by one")
         );
 	}

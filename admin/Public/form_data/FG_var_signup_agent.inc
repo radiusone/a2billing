@@ -83,7 +83,7 @@ $HD_Form->AddEditSqlSelect(
     $id_agent ?? "",
     ["" => _("Select agent")],
     "",
-    "required"
+    ["required" => "required"]
 );
 
 if ((isset($id_agent) && is_numeric($id_agent) && ($form_action === "ask-add" || $form_action === "add")) || $form_action === "ask-delete") {
@@ -99,7 +99,7 @@ if ((isset($id_agent) && is_numeric($id_agent) && ($form_action === "ask-add" ||
         "",
         ["" => _("Select call plan")],
         "",
-        "required"
+        ["required" => "required"]
     );
 
     $HD_Form->AddEditSqlSelect(
@@ -110,7 +110,7 @@ if ((isset($id_agent) && is_numeric($id_agent) && ($form_action === "ask-add" ||
         "",
         ["" => _("Select group")],
         "",
-        "required"
+        ["required" => "required"]
     );
 
     if ($form_action === "ask-delete") {

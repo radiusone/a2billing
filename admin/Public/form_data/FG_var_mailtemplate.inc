@@ -167,7 +167,7 @@ $HD_Form->AddEditSqlSelect(
     "",
     [],
     "",
-    "",
+    [],
     _("Insert the mail id language")
 );
 
@@ -176,7 +176,7 @@ $HD_Form->AddEditElement(
     _("FROM EMAIL"),
     "fromemail",
     "",
-    "maxlength=60",
+    ["maxlength" => 60],
     [Validator::class, "email"],
     _("Insert the user fromemail")
 );
@@ -185,7 +185,7 @@ $HD_Form->AddEditElement(
     _("FROM NAME"),
     "fromname",
     "",
-    "maxlength=60",
+    ["maxlength" => 60],
     null,
     _("Insert the user fromname")
 );
@@ -194,7 +194,7 @@ $HD_Form->AddEditElement(
     _("SUBJECT"),
     "subject",
     "",
-    "maxlength=80",
+    ["maxlength" => 80],
     null,
     _("Insert the user subject")
 );
@@ -203,7 +203,7 @@ $HD_Form->AddEditTextarea(
     _("MESSAGE TEXT"),
     "messagetext",
     $message_text_bottom,
-    "cols='70' rows='10'",
+    ["rows" => 10],
     null,
     _("Insert the user subject")
 );

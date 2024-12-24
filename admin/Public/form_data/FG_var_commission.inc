@@ -82,17 +82,12 @@ $HD_Form->FieldViewElement([
 
 $HD_Form->FG_ENABLE_ADD_BUTTON = true;
 
-$id_val = "";
-if ($form_action === "ask-add" && !empty($id_card)) {
-	$id_val = "value='$id_card'";
-}
-
 $HD_Form->AddEditPopup(
     _("CUSTOMER ID"),
     "id_card",
     "A2B_entity_card.php?popup_select=1&",
     _("Select the Customer ID"),
-    "",
+    [],
     [Validator::class, "numeric"],
     _("Insert the Customer ID")
 );
@@ -102,18 +97,20 @@ $HD_Form->AddEditPopup(
     "id_agent",
     "A2B_entity_agent.php?popup_select=1&",
     _("Select the Agent ID"),
-    $id_val,
+    $form_action === "ask-add" && !empty($id_card) ? ["value" => $id_card] : [],
     [Validator::class, "numeric"],
     _("Insert the AGENT ID ")
 );
 
-$comp_date = ($form_action === "ask-add") ? "value='" . (new DateTime())->format("Y-m-d H:i:s") . "'" : "";
-
+$pay_attr = ["readonly" => "readonly", "maxlength" => 40];
+if ($form_action === "ask-add") {
+    $pay_attr["value"] = (new DateTime())->format("Y-m-d H:i:s");
+}
 $HD_Form->AddEditElement(
     _("PAYMENT DATE"),
     "date",
     "",
-    "READONLY maxlength=40 $comp_date",
+    $pay_attr,
     [Validator::class, "dateTime"],
     _("Insert the current date")
 );
@@ -122,7 +119,7 @@ $HD_Form->AddEditElement(
     _("COMMISSION AMOUNT"),
     "amount",
     _("Enter the amount in the currency base : ") . BASE_CURRENCY,
-    "maxlength=10",
+    ["maxlength" => 10],
     [Validator::class, "number"],
     _("Insert the commission amount")
 );
@@ -131,7 +128,7 @@ $HD_Form->AddEditTextarea(
     _("DESCRIPTION"),
     "description",
     "",
-    "cols='50' rows='4'",
+    ["rows" => 4],
     null,
     _("Insert the description")
 );
@@ -141,7 +138,7 @@ $HD_Form->AddEditPopup(
     "id_payment",
     "A2B_entity_payment.php?popup_select=1&",
     _("Select the Payment ID"),
-    $id_val,
+    $form_action === "ask-add" && !empty($id_card) ? ["value" => $id_card] : [],
     [Validator::class, "numeric"],
     _("Insert the Payment ID ")
 );

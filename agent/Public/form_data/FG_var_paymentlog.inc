@@ -115,7 +115,7 @@ $HD_Form->AddEditElement(
     gettext("ID"),
     "id",
     gettext("Select the ID"),
-    "READONLY maxlength=10",
+    ["readonly" => "readonly"],
     [Validator::class, "numeric"],
     gettext("Insert the Id ")
 );
@@ -125,7 +125,7 @@ $HD_Form->AddEditElement(
     gettext("DATE"),
     "creationdate",
     "",
-    "READONLY maxlength=40 ",
+    ["readonly" => "readonly"],
     [Validator::class, "dateTime"],
     gettext("Insert the creation date")
 );
@@ -135,7 +135,7 @@ $HD_Form->AddEditElement(
     gettext("PAYMENT METHOD"),
     "paymentmethod",
     gettext("Enter the payment method "),
-    "maxlength=30",
+    ["maxlength" => 30],
     [Validator::class, "min1Char"],
     gettext("Insert the payment method")
 );
@@ -146,7 +146,7 @@ $HD_Form->AddEditElement(
     gettext("OWNER"),
     "cc_owner",
     gettext("Enter the owner"),
-    "maxlength=30",
+    ["maxlength" => 30],
     [Validator::class, "number"],
     gettext("Insert the owner")
 );
@@ -156,7 +156,7 @@ $HD_Form->AddEditElement(
     gettext("AMOUNT"),
     "amount",
     gettext("Enter the amount "),
-    "maxlength=30",
+    ["maxlength" => 30],
     [Validator::class, "number"],
     gettext("Insert the amount")
 );
@@ -166,7 +166,9 @@ $HD_Form->AddEditPopup(
     "card_id",
     "A2B_entity_card.php?popup_select=1&",
     gettext("Select the Customer ID"),
-    "", [Validator::class, "numeric"], gettext("Insert the Customer ID")
+    [],
+    [Validator::class, "numeric"],
+    gettext("Insert the Customer ID")
 );
 
 $HD_Form -> FG_FILTER_ENABLE = true;

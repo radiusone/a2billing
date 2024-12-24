@@ -175,26 +175,27 @@ $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form->FG_ENABLE_ADD_BUTTON = true;
 $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
 
-$default_path = $form_action === "ask-add"
-    ? "value='" . BACKUP_PATH . "/db_" . DBNAME . "-" . date('YmdHis') . ".sql.gz'"
-    : "";
-
 $HD_Form->AddEditElement(
     _("Name"),
     "name",
     _("Name for the backup"),
-    "maxlength=50",
+    ["maxlength" => 50],
     null,
     _("Insert the name of backup")
 );
 
+
+$path_attr = ["maxlength" => 200];
+if ($form_action === "ask-add") {
+    $path_attr["value"] = BACKUP_PATH . "/db_" . DBNAME . "-" . date('YmdHis') . ".sql.gz";
+}
 $HD_Form->AddEditElement(
     _("PATH"),
     "path",
     $form_action === "ask-add"
         ? _("Path for the backup file or leave the default path set in a2billing.conf")
         : _("The backup file name"),
-    "maxlength=200 $default_path",
+    $path_attr,
     null,
     $form_action === "ask-add"
         ? _("Insert the path for the backup file or leave the default path")

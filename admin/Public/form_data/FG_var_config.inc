@@ -106,7 +106,7 @@ $HD_Form->AddEditSqlSelect(
     "",
     [],
     _("Group Name of the configuration variable"),
-    "readonly='readonly'",
+    ["readonly" => "readonly"],
     _("This is the group of the configuration. Not editable!")
 );
 
@@ -114,7 +114,7 @@ $HD_Form->AddEditElement(
     _("TITLE"),
     "config_title",
     _("Title of the configuration variable"),
-    "maxlength=100 readonly='readonly'",
+    ["readonly" => "readonly"],
     null,
     _("Insert the TITLE")
 );
@@ -123,7 +123,7 @@ $HD_Form->AddEditElement(
     _("KEY"),
     "config_key",
     _("Key name of the configuration variable"),
-    "maxlength=100 readonly='readonly'",
+    ["readonly" => "readonly"],
     null,
     _("Insert the TITLE")
 );
@@ -139,7 +139,7 @@ if (is_array($value_select)) {
         _("VALUE"),
         "config_value",
         _("Insert the Value"),
-        "maxlength=200"
+        ["maxlength" => 200]
     );
 }
 
@@ -153,7 +153,7 @@ $HD_Form->AddEditElement(
     _("LIST OF VALUES"),
     "config_listvalues",
     _("For selectable lists only, insert the comma separated list of values"),
-    "",
+    [],
     null,
     "",
     "",
@@ -165,7 +165,7 @@ $HD_Form->AddEditTextarea(
     _("DESCRIPTION"),
     "config_description",
     _("Insert the Description"),
-    "rows=5 readonly=\"readonly\""
+    ["rows" => 5, "readonly" => "readonly"],
 );
 
 $HD_Form->FG_INTRO_TEXT_EDITION = "";

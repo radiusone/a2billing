@@ -317,54 +317,62 @@ if ($popup_select) {
         );
     }
 } elseif ((is_admin() && has_rights(Admin::ACX_MODIFY_CUSTOMERS)) || (is_agent() && has_rights(Agent::ACX_EDIT_CUSTOMER))) {
-    $maxi = $maxi2 = $maxi3 = $default_initbalance = "";
-
-    if ($form_action === "ask-add") {
-        if (empty($cardnumber_length) || !is_numeric($cardnumber_length)) {
-            $cardnumber_length = min($A2B->cardnumber_range);
-        }
-        $array_card_generated = gen_card_with_alias($cardnumber_length);
-        $maxi = "value='$array_card_generated[0]'";
-        $maxi2 = "value='$array_card_generated[1]'";
-        $pass = MDP_NUMERIC(5) . MDP_STRING(15);
-        $maxi3 = "value='$pass'";
-        $default_initbalance = "value='0'";
+    if (empty($cardnumber_length) || !is_numeric($cardnumber_length)) {
+        $cardnumber_length = min($A2B->cardnumber_range);
     }
+    $array_card_generated = gen_card_with_alias($cardnumber_length);
 
+    $acct_attr = ["readonly" => "readonly"];
+    if ($form_action === "ask-add") {
+        $acct_attr["value"] = $array_card_generated[0];
+    }
     $HD_Form->AddEditElement(
         _("ACCOUNT NUMBER"),
         "username",
         '',
-        "$maxi readonly  maxlength=40",
+        $acct_attr,
         [Validator::class, "numeric"],
         _("Insert the account number"),
         _("Customer Information")
     );
 
+    $login_attr = ["maxlength" => 40];
+    if ($form_action === "ask-add") {
+        $login_attr["value"] = $array_card_generated[1];
+    }
     $HD_Form->AddEditElement(
         _("WEBUI LOGIN"),
         "useralias",
         "",
-        "$maxi2 maxlength=40",
+        $login_attr,
         [Validator::class, "numeric"],
         _("Insert the webui login")
     );
 
+    $pass_attr = ["maxlength" => 20];
+    if ($form_action === "ask-add") {
+        $pass_attr["value"] = MDP_NUMERIC(5) . MDP_STRING(15);
+    }
     $HD_Form->AddEditElement(
         _("WEBUI PASSWORD"),
         "uipass",
         _("Password for customer to access to the web interface and view the balance."),
-        "$maxi3 maxlength=20",
+        $pass_attr,
         null,
         _("Insert the password")
     );
 
-    $balance_access = ($form_action === "ask-add" || $form_action === "add") ? "value = '0'" : "readonly";
+    $balance_attr = ["maxlength" => 30];
+    if ($form_action === "ask-add") {
+        $balance_attr["value"] = 0;
+    } else {
+        $balance_attr["readonly"] = "readonly";
+    }
     $HD_Form->AddEditElement(
         _("BALANCE"),
         "credit",
         _("currency : ") . strtoupper(BASE_CURRENCY),
-        "maxlength=30 " . $balance_access,
+        $balance_attr,
         [Validator::class, "number"],
         _("Insert the number of credit")
     );
@@ -389,7 +397,7 @@ if ($popup_select) {
         _("LAST NAME"),
         "lastname",
         "",
-        "maxlength=50",
+        ["maxlength" => 50],
         [Validator::class, "min2Chars"],
         _("Insert the lastname of the customers"),
         _("Personal Information"),
@@ -400,7 +408,7 @@ if ($popup_select) {
         _("FIRST NAME"),
         "firstname",
         "",
-        "maxlength=50",
+        ["maxlength" => 50],
         [Validator::class, "min2Chars"],
         _("Insert the firstname of the customers"),
         "",
@@ -411,7 +419,7 @@ if ($popup_select) {
         _("EMAIL"),
         "email",
         "",
-        "maxlength=70",
+        ["maxlength" => 70],
         [Validator::class, "email"],
         _("Insert the email"),
         "",
@@ -422,7 +430,7 @@ if ($popup_select) {
         _("ADDRESS"),
         "address",
         "",
-        "maxlength=100",
+        ["maxlength" => 100],
         [Validator::class, "min3Chars"],
         _("Insert the address of the customers"),
         "",
@@ -433,7 +441,7 @@ if ($popup_select) {
         _("CITY"),
         "city",
         "",
-        "maxlength=40",
+        ["maxlength" => 40],
         [Validator::class, "min3Chars"],
         _("Insert the city"),
         "",
@@ -444,27 +452,26 @@ if ($popup_select) {
         _("STATE/PROVINCE"),
         "state",
         "",
-        "maxlength=40",
+        ["maxlength" => 40],
         [Validator::class, "min2Chars"],
         _("Insert the state"),
         "",
         "NO"
     );
 
-    $country_default_val = $form_action === "ask-add" ? "USA" : "";
     $HD_Form->AddEditSqlSelect(
         _("COUNTRY"),
         "country",
         new Table("cc_country", ["countrycode", "countryname"]),
         [],
-        $country_default_val
+        $form_action === "ask-add" ? "USA" : ""
     );
 
     $HD_Form->AddEditElement(
         _("ZIP/POSTAL CODE"),
         "zipcode",
         "",
-        "maxlength=20",
+        ["maxlength" => 20],
         [Validator::class, "min3Chars"],
         _("Insert the zipcode"),
         "",
@@ -475,7 +482,7 @@ if ($popup_select) {
         _("PHONE NUMBER"),
         "phone",
         "",
-        "maxlength=20",
+        ["maxlength" => 20],
         [Validator::class, "min8DigitLike"],
         _("Insert the phone number of the customers"),
         "",
@@ -486,7 +493,7 @@ if ($popup_select) {
         _("FAX NUMBER"),
         "fax",
         "",
-        "maxlength=20",
+        ["maxlength" => 20],
         null,
         _("Insert the fax number of the customers"),
         "",
@@ -497,7 +504,7 @@ if ($popup_select) {
         _("COMPANY NAME"),
         "company_name",
         "",
-        "maxlength=50",
+        ["maxlength" => 50],
         null,
         _("Insert Company name of this customer"),
         "",
@@ -508,7 +515,7 @@ if ($popup_select) {
         _("COMPANY WEBSITE"),
         "company_website",
         "",
-        "maxlength=60",
+        ["maxlength" => 60],
         null,
         _("Insert the company website of this customer"),
         "",
@@ -516,14 +523,14 @@ if ($popup_select) {
     );
 
     if ($form_action !== "edit" && is_admin()) {
-        $payment_status = ($form_action === "ask-add" || $form_action === "add") ? "" : 'disabled="disabled"';
+        $payment_attr = ($form_action === "ask-add") ? [] : ["disabled" => "disabled"];
         $HD_Form->AddEditSelect(
             _("PAYMENT TYPE"),
             "typepaid",
             $typepaid_list,
             "",
             "",
-            $payment_status,
+            $payment_attr,
             "",
             _("Customer Status")
         );
@@ -586,16 +593,20 @@ if ($popup_select) {
         "block",
         getYesNoList(),
         "0",
-        _("Enable lock for this account."), "",
+        _("Enable lock for this account."),
+        [],
         _("Choose if you want to enable the lock on this account")
     );
 
-    $lockpin_default = ($form_action === "ask-add" || $form_action === "add") ? "value = '0'" : "";
+    $lock_attr = ["maxlength" => 10];
+    if ($form_action === "ask-add") {
+        $lock_attr["value"] = 0;
+    }
     $HD_Form->AddEditElement(
         _("LOCK PIN"),
         "lock_pin",
         _("Code required to make the call if the lock is active."),
-        "maxlength=10 $lockpin_default",
+        $lock_attr,
         [Validator::class, "numeric"],
         "",
         "",
@@ -614,7 +625,8 @@ if ($popup_select) {
         "runservice",
         getYesNoList(),
         "0",
-        _("Apply recurring service to this account."), "",
+        _("Apply recurring service to this account."),
+        [],
         _("Choose if you want to enable the service recurring on this account")
     );
 
@@ -623,7 +635,7 @@ if ($popup_select) {
             _("CREDIT LIMIT"),
             "creditlimit",
             _("Credit limit is only used for the postpaid account."),
-            "maxlength=20",
+            ["maxlength" => 20],
             [Validator::class, "numeric"],
             _("Insert the credit limit"),
             "",
@@ -644,7 +656,8 @@ if ($popup_select) {
         "notify_email",
         getYesNoList(),
         "0",
-        _("Enable the notification by mail for this account."), "",
+        _("Enable the notification by mail for this account."),
+        [],
         _("Choose if you want to enable the notification by email for this account")
     );
 
@@ -652,7 +665,7 @@ if ($popup_select) {
         _("EMAIL NOTIFICATION"),
         "email_notification",
         "",
-        "maxlength=70",
+        ["maxlength" => 70],
         [Validator::class, "email"],
         _("Insert the email to notify this customer"),
         "",
@@ -672,7 +685,7 @@ if ($popup_select) {
         _("FIRST USE DATE"),
         "firstusedate",
         "",
-        "maxlength=40 readonly",
+        ["maxlength" => 40, "readonly" => "readonly"],
         null,
         "the first use date",
         "",
@@ -693,12 +706,15 @@ if ($popup_select) {
         $comp_zero = "value='0'";
         $comp_date_plus = 'value="' . (new DateTime("+10 years"))->format("Y-m-d H:i:s") . '"';
     }
-
+    $exp_attr = ["maxlength" => 40];
+    if ($form_action === "ask-add") {
+        $exp_attr["value"] = (new DateTime("+10 years"))->format("Y-m-d H:i:s");
+    }
     $HD_Form->AddEditElement(
         _("EXPIRY DATE"),
         "expirationdate",
         _("please use the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
-        "maxlength=40  $comp_date_plus",
+        $exp_attr,
         [Validator::class, "dateTime"],
         _("Insert the expiration date"),
         "",
@@ -706,11 +722,15 @@ if ($popup_select) {
 
     );
 
+    $days_attr = ["maxlength" => 6];
+    if ($form_action === "ask-add") {
+        $days_attr["value"] = 0;
+    }
     $HD_Form->AddEditElement(
         _("EXPIRY DAYS"),
         "expiredays",
         _("The number of days after which the account will expire."),
-        "maxlength=6 $comp_zero",
+        $days_attr,
         [Validator::class, "numeric"],
         _("Insert the number of days after which the account will expire")
     );
@@ -722,7 +742,7 @@ if ($popup_select) {
             getYesNoList(),
             "0",
             _("Create the SIP config automatically"),
-            "",
+            [],
             _("Choose if you want to enable the SIP account")
         );
     }
@@ -734,7 +754,7 @@ if ($popup_select) {
             getYesNoList(),
             "0",
             _("Create the IAX config automatically"),
-            "",
+            [],
             _("Choose if you want to enable the IAX account")
         );
     }
@@ -743,7 +763,7 @@ if ($popup_select) {
         _("MAC ADDRESS"),
         "mac_addr",
         _("FORMAT: 00-08-74-4C-7F-1D"),
-        "maxlength=17",
+        ["maxlength" => 17],
         null,
         _("Insert the MAC address customers' device"),
         "",
@@ -754,7 +774,7 @@ if ($popup_select) {
         _("IN USE"),
         "inuse",
         _("Updated to show the number of concurrent calls in use by this customer. If there are no currently no calls, and the system shows that there are, manually reset this field back to zero."),
-        "maxlength=5",
+        ["maxlength" => 5],
         null,
         "",
         "",
@@ -766,7 +786,7 @@ if ($popup_select) {
             _("MAX CONCURRENT CALLS"),
             "max_concurrent",
             _("Max concurrent calls (Feature not implemented)"),
-            "maxlength=5",
+            ["maxlength" => 5],
             null,
             "",
             "",
@@ -780,28 +800,44 @@ if ($popup_select) {
         getYesNoList(),
         "0",
         _("Define if you want to authorize the autorefill to apply on this accout"),
-        "",
+        [],
         _("Choose if you want to enable the autorefill on this account"),
         _("AUTOREFILL")
     );
 
+    $balance_attr = ["maxlength" => 30];
+    if ($form_action === "ask-add") {
+        $balance_attr["value"] = 0;
+    }
     $HD_Form->AddEditElement(
         _("INITIAL BALANCE"),
         "initialbalance",
         _("The initial balance is used by autorefill to reset the current balance to this amount"),
-        "$default_initbalance maxlength=30",
+        $balance_attr,
         [Validator::class, "number"],
         _("Insert the amount of the initial balance")
     );
 
-    $HD_Form->AddEditSelect(_("INVOICE DAY"), "invoiceday", $invoiceday_list, "", _("Define the day of the month when the system will generate the customer invoice."), "", "", _("Invoice Status"));
+    $HD_Form->AddEditSelect(
+        _("INVOICE DAY"),
+        "invoiceday",
+        $invoiceday_list,
+        "",
+        _("Define the day of the month when the system will generate the customer invoice."),
+        [],
+        "",
+        _("Invoice Status")
+    );
 
-    $vat_init = ($form_action === "ask-add" || $form_action === "add") ? "value = '0'" : "";
+    $vat_attr = ["maxlength" => 6];
+    if ($form_action === "ask-add") {
+        $vat_attr["value"] = 0;
+    }
     $HD_Form->AddEditElement(
         _("VAT/GST"),
         "vat",
         _("VAT to add on the invoice of this customer. it should be a decimal value '21' this will be for 21% of VAT!"),
-        "maxlength=6 $vat_init",
+        $vat_attr,
         [Validator::class, "number"],
         _("Insert the VAT")
     );
@@ -810,7 +846,7 @@ if ($popup_select) {
         _("VAT/GST REGISTRATION NUMBER "),
         "vat_rn",
         "",
-        "maxlength=40",
+        ["maxlength" => 40],
         null,
         _("Insert the VAT registration number of this customer"),
         "",
@@ -823,7 +859,7 @@ if ($popup_select) {
         _("TRAFFIC PER MONTH"),
         "traffic",
         "",
-        "maxlength=20",
+        ["maxlength" => 20],
         [Validator::class, "numeric"],
         _("Insert the traffic per month for this customer"),
         _("TARGET TRAFFIC"),
@@ -834,7 +870,7 @@ if ($popup_select) {
         _("TARGET TRAFFIC"),
         "traffic_target",
         "",
-        "cols='50' rows='4'",
+        ["rows" => 4],
         null,
         _("Insert the target traffic description")
     );
@@ -845,7 +881,7 @@ if ($popup_select) {
         $restriction_list,
         "0",
         "",
-        "",
+        [],
         "",
         _("RESTRICTED NUMBERS")
     );

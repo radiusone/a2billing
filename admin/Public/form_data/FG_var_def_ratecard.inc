@@ -166,7 +166,7 @@ $HD_Form->AddEditElement(
     _("Dialing Prefix"),
     "dialprefix",
     _("A) Add destination prefixes, ie '441' for UK Landlines.<br>B) Use 'defaultprefix' to setup a rate for all destinations where a specific rate is not provided.<br>C) if you ADD a rate, NOT an EDIT, you can define a range of prefixes. '32484-32487' adds all prefixes between 32484 and 32487. '32484,32386,32488' would add only the individual prefixes listed.<br>D) Asterisk extensions style + POSIX regex syntaxes are supported. '_447[7-9]XXXXXXXX' matches 12-digit UK mobiles. '_X{0,3}(112|999|911)' matches any 0-3 digits followed an emergency number. '_' can be used to add length, and raise the priority."),
-    "maxlength=80",
+    ["maxlength" => 80],
     [Validator::class, "numeric"],
     _("Insert the dialing prefix, such as for UK '44' or for US '1' ")
 );
@@ -176,7 +176,7 @@ $HD_Form->AddEditPopup(
     "destination",
     "A2B_entity_prefix.php?popup_select=2&",
     _("Select the prefix destination corresponding to your prefix rate.") . '<br>' . _("This is the label that appears against the Call Detail Record."),
-    "",
+    [],
     [Validator::class, "min1Char"]
 );
 
@@ -184,7 +184,7 @@ $HD_Form->AddEditElement(
     "Buy Rate",
     "buyrate",
     _("Set the carrier cost, the price you pay for minutes."),
-    "maxlength=20",
+    ["maxlength" => 20],
     [Validator::class, "number"],
     _("Insert the buy rate"),
     _("Set the carrier cost for this destination.")
@@ -195,7 +195,7 @@ $HD_Form->AddEditElement(
     _("Buy Min Duration"),
     "buyrateinitblock",
     _("Set the minimum duration charged by the carrier. (i.e. 30 secs)"),
-    "maxlength=20",
+    ["maxlength" => 20],
     [Validator::class, "numeric"],
     _("Insert the buyrate init block"),
     "",
@@ -207,7 +207,7 @@ $HD_Form->AddEditElement(
     _("Buy Billing Block"),
     "buyrateincrement",
     _("Set the billing increment, in seconds (billing block), that the carrier applies. (ie 30 secs)"),
-    "maxlength=20",
+    ["maxlength" => 20],
     [Validator::class, "numeric"],
     _("Insert the billing block"),
     "",
@@ -219,7 +219,7 @@ $HD_Form->AddEditElement(
     _("Sell Rate"),
     "rateinitial",
     _("The retail rate; or the cost per minute to apply to the customer, e.g. 0.02"),
-    "maxlength=20",
+    ["maxlength" => 20],
     [Validator::class, "number"],
     _("Insert the initial rate"),
     _("Define the selling cost for customers.")
@@ -230,7 +230,7 @@ $HD_Form->AddEditElement(
     _("Sell Min Duration"),
     "initblock",
     _("Set the minimum duration to charge the customer (ie 60 seconds)"),
-    "maxlength=20",
+    ["maxlength" => 20],
     [Validator::class, "numeric"],
     _("Insert the init block"),
     "",
@@ -242,7 +242,7 @@ $HD_Form->AddEditElement(
     _("Sell Billing Block"),
     "billingblock",
     _("Set the billing increment in seconds to bill your customer."),
-    "maxlength=20",
+    ["maxlength" => 20],
     [Validator::class, "numeric"],
     _("Insert the billing block"),
     "",
@@ -254,7 +254,7 @@ $HD_Form->AddEditElement(
     _("Connect Charge"),
     "connectcharge",
     _("Apply a connection charge"),
-    "maxlength=20",
+    ["maxlength" => 20],
     [Validator::class, "number"],
     _("Insert the connect charge"),
     "",
@@ -266,7 +266,7 @@ $HD_Form->AddEditElement(
     _("Disconnect Charge"),
     "disconnectcharge",
     _("Apply a disconnection charge"),
-    "maxlength=20",
+    ["maxlength" => 20],
     [Validator::class, "number"],
     _("Insert the disconnect charge"),
     "",
@@ -278,7 +278,7 @@ $HD_Form->AddEditElement(
     _("Disconnect Charge Threshold"),
     "disconnectcharge_after",
     _("Apply the disconnection charge if the call duration is greater than this amount of seconds. If 0, it will always apply."),
-    "maxlength=20",
+    ["maxlength" => 20],
     [Validator::class, "number"],
     _("Insert the disconnect charge threshold"),
     "",
@@ -290,7 +290,7 @@ $HD_Form->AddEditElement(
     _("Minimum Cost"),
     "minimal_cost",
     _("Apply a minimum charge for the call."),
-    "maxlength=20",
+    ["maxlength" => 20],
     [Validator::class, "number"],
     _("Insert the Minimum call cost"),
     "",
@@ -304,7 +304,7 @@ if (ADVANCED_MODE) {
         _("Initial Charge A"),
         "stepchargea",
         _("When entering in the cycle 'A', define the amount to charge for the entrance."),
-        "maxlength=20",
+        ["maxlength" => 20],
         [Validator::class, "number"],
         _("Insert the stepcharge A"),
         _("Below we have the section to create progressive rates. Progressive rate aims to bill the customer at various rates according the duration of the call. For instance you can define that you can to bill the customer 0.33dollars for the first 2 minutes and then you want to bill him 0.45dollars for the rest of the call."),
@@ -316,7 +316,7 @@ if (ADVANCED_MODE) {
         _("Rate A"),
         "chargea",
         _("When entering in the cycle 'A', define the rate to apply."),
-        "maxlength=20",
+        ["maxlength" => 20],
         [Validator::class, "number"],
         _("Insert the charge A"),
         "",
@@ -328,7 +328,7 @@ if (ADVANCED_MODE) {
         _("Duration A"),
         "timechargea",
         _("Define the duration of the cycle 'A'."),
-        "maxlength=20",
+        ["maxlength" => 20],
         [Validator::class, "numeric"],
         _("Insert the time charge A"),
         "",
@@ -340,7 +340,7 @@ if (ADVANCED_MODE) {
         _("Billing Block A"),
         "billingblocka",
         _("Define the duration of each billing block to apply the rate 'CHARGE A'."),
-        "maxlength=20",
+        ["maxlength" => 20],
         [Validator::class, "numeric"],
         _("Insert the billing block A"),
         "",
@@ -352,7 +352,7 @@ if (ADVANCED_MODE) {
         _("Initial Charge B"),
         "stepchargeb",
         _("When entering in the cycle 'B', define the amount to charge for the entrance."),
-        "maxlength=20",
+        ["maxlength" => 20],
         [Validator::class, "number"],
         _("Insert the stepcharge B"),
         "",
@@ -364,7 +364,7 @@ if (ADVANCED_MODE) {
         _("Rate B"),
         "chargeb",
         _("When entering in the cycle 'B', define the rate to apply."),
-        "maxlength=20",
+        ["maxlength" => 20],
         [Validator::class, "number"],
         _("Insert the charge B"),
         "",
@@ -376,7 +376,7 @@ if (ADVANCED_MODE) {
         _("Duration B"),
         "timechargeb",
         _("Define the duration of the cycle 'B'."),
-        "maxlength=20",
+        ["maxlength" => 20],
         [Validator::class, "numeric"],
         _("Insert the time charge B"),
         "",
@@ -388,7 +388,7 @@ if (ADVANCED_MODE) {
         _("Billing Block B"),
         "billingblockb",
         _("Define the duration of each billing block to apply the rate 'CHARGE B'."),
-        "maxlength=20",
+        ["maxlength" => 20],
         [Validator::class, "numeric"],
         _("Insert the billing block B"),
         "",
@@ -400,7 +400,7 @@ if (ADVANCED_MODE) {
         _("Initial Charge C"),
         "stepchargec",
         _("When entering in the cycle 'C', define the amount to charge for the entrance."),
-        "maxlength=20",
+        ["maxlength" => 20],
         [Validator::class, "number"],
         "Insert the stepcharge C",
         "",
@@ -412,7 +412,7 @@ if (ADVANCED_MODE) {
         _("Rate C"),
         "chargec",
         _("When entering in the cycle 'C', define the rate to apply."),
-        "maxlength=20",
+        ["maxlength" => 20],
         [Validator::class, "number"],
         _("Insert the charge C"),
         "",
@@ -424,7 +424,7 @@ if (ADVANCED_MODE) {
         _("Duration C"),
         "timechargec",
         _("Define the duration of the cycle 'C'."),
-        "maxlength=20",
+        ["maxlength" => 20],
         [Validator::class, "numeric"],
         _("Insert the time charge C"),
         "",
@@ -436,7 +436,7 @@ if (ADVANCED_MODE) {
         _("Billing Block C"),
         "billingblockc",
         _("Define the duration of each billing block to apply the rate 'CHARGE C'."),
-        "maxlength=20",
+        ["maxlength" => 20],
         [Validator::class, "numeric"],
         _("Insert the billing block C"),
         "",
@@ -448,7 +448,7 @@ if (ADVANCED_MODE) {
         _("Announce Time Correction"),
         "announce_time_correction",
         _("Define the multiplier on announce time for clients."),
-        "maxlength=20",
+        ["maxlength" => 20],
         [Validator::class, "number"],
         _("insert corection for announce time"),
         "",
@@ -457,28 +457,29 @@ if (ADVANCED_MODE) {
 
 }//ENDif (ADVANCED_MODE)
 
-$comp_date = $comp_date_plus = "";
-if ($form_action == "ask-add") {
-    $comp_date = "value='" . (new DateTime())->format("Y-m-d H:i:s") . "'";
-    $comp_date_plus = "value='" . (new DateTime("now +10 years"))->format("Y-m-d H:i:s") . "'";
+$date_attr = ["maxlength" => 40];
+if ($form_action === "ask-add") {
+    $date_attr["value"] = (new DateTime())->format("Y-m-d H:i:s");
 }
-
 $HD_Form->AddEditElement(
     _("Start Date"),
     "startdate",
     _("Format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
-    "maxlength=40  $comp_date",
+    $date_attr,
     [Validator::class, "dateTime"],
     _("Insert the starting date"),
     _("Define the period when this rate table is active.")
 );
 
 
+if ($form_action === "ask-add") {
+    $date_attr["value"] = (new DateTime("+10 years"))->format("Y-m-d H:i:s");
+}
 $HD_Form->AddEditElement(
     _("Stop Date"),
     "stopdate",
     _("Leave empty to apply this rate indefinitely. Format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00"),
-    "maxlength=40  $comp_date_plus",
+    $date_attr,
     [Validator::class, "dateTime"],
     _("Insert the stop date"),
     "",
@@ -503,7 +504,7 @@ $HD_Form->AddEditElement(
     _("Duration Rounding"),
     "rounding_calltime",
     _("Set the rounding calltime. All the selling rules will apply over this new calltime."),
-    "maxlength=40",
+    ["maxlength" => 40],
     null,
     _("Insert the rounding calltime")
 );
@@ -513,7 +514,7 @@ $HD_Form->AddEditElement(
     _("Rounding Threshold"),
     "rounding_threshold",
     _("Set the rounding threshold"),
-    "maxlength=40",
+    ["maxlength" => 40],
     null,
     _("Insert the rounding threshold")
 );
@@ -523,7 +524,7 @@ $HD_Form->AddEditElement(
     _("Additional Block Charge"),
     "additional_block_charge",
     _("Set the initial block charge"),
-    "maxlength=40",
+    ["maxlength" => 40],
     null,
     _("Insert the additional block charge")
 );
@@ -533,7 +534,7 @@ $HD_Form->AddEditElement(
     _("Additional Block Charge Time"),
     "additional_block_charge_time",
     _("Set the initial block charge time"),
-    "maxlength=40",
+    ["maxlength" => 40],
     null,
     _("Insert the additional block charge time")
 );
@@ -543,7 +544,7 @@ $HD_Form->AddEditElement(
     _("Additional Grace Time"),
     "additional_grace",
     _("Set the additional grace time in sec"),
-    "maxlength=40",
+    ["maxlength" => 40],
     null,
     _("Insert the additional grace time in sec")
 );
@@ -572,7 +573,7 @@ $HD_Form->AddEditElement(
     _("Tag"),
     "tag",
     _("Set a tag on this rate"),
-    "maxlength=40",
+    ["maxlength" => 40],
     [Validator::class, "min2Chars"],
     "",
     "",

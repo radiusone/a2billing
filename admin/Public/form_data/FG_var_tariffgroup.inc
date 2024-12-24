@@ -108,7 +108,7 @@ $HD_Form->AddEditElement(
     _("NAME"),
     "tariffgroupname",
     "",
-    "maxlength=20",
+    ["maxlength" => 20],
     [Validator::class, "min1Char"],
     _("Insert the Call Plan name ")
 );
@@ -131,7 +131,7 @@ $HD_Form->AddEditRadio(
     getYesNoList(),
     "0",
     _("Remove the international access prefix (00 or 011) before matching the dialled digits with the rate card. E.G. If the dialled digits were 0044 for a call to the UK, only 44 would be delivered."),
-    "",
+    [],
     _("Define if the international prefix will be removed to check the rate.")
 );
 

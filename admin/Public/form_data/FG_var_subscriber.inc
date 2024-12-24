@@ -63,24 +63,13 @@ $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form->FG_ENABLE_ADD_BUTTON = true;
 
-$comp_date = $comp_date_plus = $idd = "";
-if ($form_action === "ask-add") {
-	$end_date = date("Y-m-d H:i:s");
-	$comp_date = "value='$end_date'";
-    if (!empty($id)) {
-        //set passed id if any (used if called from customer screen, id is passed to pr-epopluate value
-        $idd = "value='$id'";
-    }
-	//Max value Mysql Timestamp can store is '2038-01-19 03:14:07' UTC
-	$comp_date_plus = "value='2038-01-01 00:00:00'";
-}
 
 $HD_Form->AddEditPopup(
     _("CUSTOMER ID"),
     "id_cc_card",
     "A2B_entity_card.php?popup_select=1&",
     _("Select the Customer ID"),
-    $idd,
+    $form_action === "ask-add" && !empty($id) ? ["value" => $id] : [],
     [Validator::class, "numeric"], _("Insert the Customer ID")
 );
 
@@ -93,11 +82,15 @@ $HD_Form->AddEditSqlSelect(
     [-1 => _("NOT DEFINED")]
 );
 
+$date_attr = ["maxlength" => 40];
+if ($form_action === "ask-add") {
+    $date_attr["value"] = (new DateTime())->format("Y-m-d H:i:s");
+}
 $HD_Form->AddEditElement(
     _("START DATE"),
     "startdate",
     _("please use the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
-    "maxlength=40  $comp_date",
+    $date_attr,
     [Validator::class, "dateTime"],
     _("Insert the start date"),
     "",
@@ -105,23 +98,25 @@ $HD_Form->AddEditElement(
     
 );
 
+if ($form_action === "ask-add") {
+    $date_attr["value"] = (new DateTime("+10 years"))->format("Y-m-d H:i:s");
+}
 $HD_Form->AddEditElement(
     _("STOP DATE"),
     "stopdate",
     _("please use the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
-    "maxlength=40  $comp_date_plus",
+    $date_attr,
     [Validator::class, "dateTime"],
     _("Insert the stop date"),
     "",
-    "NO-NULL",
-    
+    "NO-NULL"
 );
 
 $HD_Form->AddEditTextarea(
     _("PRODUCT LABEL"),
     "product_name",
     "",
-    "cols='50' rows='4'",
+    ["rows" => 4],
     null,
     _("Enter the name of the product wich is subscribed")
 );

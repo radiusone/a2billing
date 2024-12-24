@@ -132,7 +132,7 @@ if ($popup_select) {
         _("LOGIN"),
         "login",
         "",
-        "maxlength=12",
+        ["maxlength" => 12],
         [Validator::class, "min4Chars"],
         _("Insert the login")
     );
@@ -141,7 +141,7 @@ if ($popup_select) {
         _("PASSWORD"),
         "passwd",
         "",
-        "maxlength=15",
+        ["maxlength" => 15],
         [Validator::class, "min4Chars"],
         _("Insert the password")
     );
@@ -152,7 +152,7 @@ if ($popup_select) {
         $right_list,
         "",
         _("To select several rights in the above ListBox, hold the CTRL key down while clicking the items"),
-        "size='$len_right_list' multiple='multiple'"
+        ["size" => $len_right_list, "multiple" => "multiple"]
     );
 
     $HD_Form->AddEditRadio(
@@ -161,23 +161,24 @@ if ($popup_select) {
         getYesNoList(),
         "1",
         _("Enable agent"),
-        "",
+        [],
         _("Choose if you want to active this agent")
     );
 
+    $balance_attr = ["maxlength" => 30];
+    $comm_attr = ["readonly" => "readonly"];
 	if ($form_action =="ask-add" || $form_action=="add") {
-		$balance_access = "value = '0'";
-		$default_com_bal = "value='0'";
+        $balance_attr["value"] = 0;
+		$comm_attr["value"] = 0;
 	} else {
-		$balance_access = 'readonly';
-        $default_com_bal = "";
+        $balance_attr["readonly"] = "readonly";
 	}
 
     $HD_Form->AddEditElement(
         _("BALANCE"),
         "credit",
         _("currency : ") . strtoupper(BASE_CURRENCY),
-        "maxlength=30 $balance_access",
+        $balance_attr,
         [Validator::class, "number"],
         _("amount of credit")
     );
@@ -186,7 +187,7 @@ if ($popup_select) {
         _("COMMISSION BALANCE"),
         "com_balance",
         _("currency : ") . strtoupper(BASE_CURRENCY),
-        "readonly $default_com_bal",
+        $comm_attr,
         null,
         _("amount of commission")
     );
@@ -197,7 +198,7 @@ if ($popup_select) {
         _("COMMISSION PERCENTAGE"),
         "commission",
         _("Commission in percent"),
-        "maxlength=20",
+        ["maxlength" => 20],
         [Validator::class, "percentage"],
         _("Insert the commision"),
         "",
@@ -208,7 +209,7 @@ if ($popup_select) {
         _("THRESHOLD REMITTANCE"),
         "threshold_remittance",
         _("currency : ") . strtoupper(BASE_CURRENCY),
-        "maxlength=20",
+        ["maxlength" => 20],
         [Validator::class, "number"],
         _("threshold remittance"),
         "",
@@ -219,7 +220,7 @@ if ($popup_select) {
         _("VAT"),
         "vat",
         _("VAT"),
-        "maxlength=20",
+        ["maxlength" => 20],
         [Validator::class, "number"],
         _("Insert the VAT"),
         "",
@@ -232,7 +233,7 @@ if ($popup_select) {
         _("COMPANY"),
         "company",
         "",
-        "maxlength=50",
+        ["maxlength" => 50],
         null,
         _("Insert the company")
     );
@@ -241,7 +242,7 @@ if ($popup_select) {
         _("LAST NAME"),
         "lastname",
         "",
-        "maxlength=50",
+        ["maxlength" => 50],
         null,
         _("Insert the lastname")
     );
@@ -250,7 +251,7 @@ if ($popup_select) {
         _("FIRST NAME"),
         "firstname",
         "",
-        "maxlength=50",
+        ["maxlength" => 50],
         null,
         _("Insert the firstname")
     );
@@ -259,7 +260,7 @@ if ($popup_select) {
         _("ADDRESS"),
         "address",
         "",
-        "maxlength=250",
+        ["maxlength" => 250],
         null,
         _("Insert the address")
     );
@@ -268,7 +269,7 @@ if ($popup_select) {
         _("CITY"),
         "city",
         "",
-        "maxlength=20",
+        ["maxlength" => 20],
         null,
         _("Insert the city")
     );
@@ -277,7 +278,7 @@ if ($popup_select) {
         _("STATE"),
         "state",
         "",
-        "maxlength=40",
+        ["maxlength" => 40],
         null,
         _("Insert the state")
     );
@@ -286,7 +287,7 @@ if ($popup_select) {
         _("COUNTRY"),
         "country",
         "",
-        "maxlength=40",
+        ["maxlength" => 40],
         null,
         _("Insert the country")
     );
@@ -295,7 +296,7 @@ if ($popup_select) {
         _("ZIPCODE"),
         "zipcode",
         "",
-        "maxlength=7",
+        ["maxlength" => 7],
         null,
         _("Insert the zip code")
     );
@@ -304,7 +305,7 @@ if ($popup_select) {
         _("EMAIL"),
         "email",
         "",
-        "maxlength=70",
+        ["maxlength" => 70],
         [Validator::class, "email"],
         _("Insert the email"),
         "",
@@ -315,7 +316,7 @@ if ($popup_select) {
         _("PHONE"),
         "phone",
         "",
-        "maxlength=20",
+        ["maxlength" => 20],
         null,
         _("Insert the telephone number")
     );
@@ -324,7 +325,7 @@ if ($popup_select) {
         _("FAX"),
         "fax",
         "",
-        "maxlength=20",
+        ["maxlength" => 20],
         null,
         _("Insert the fax number")
     );
@@ -333,7 +334,7 @@ if ($popup_select) {
         _("BANK INFO"),
         "bank_info",
         "",
-        "cols='50' rows='4'",
+        ["rows" => 4],
         null,
         _("Insert the bank info of this agent")
     );

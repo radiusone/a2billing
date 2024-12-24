@@ -1286,6 +1286,28 @@ function array_kv(
     return implode($pair_sep, array_map(fn ($k, $v) => "$k$val_sep$v", $keys, $vals));
 }
 
+/**
+ * Convert an associative array to a string of HTML attributes in k="v" format
+ *
+ * @param array<string,mixed> $attributes
+ * @return string
+ */
+function array_html_attr(array $attributes): string
+{
+    $return = "";
+    foreach ($attributes as $attribute => $value) {
+        $attribute = preg_replace(
+            "/[^a-z0-9_.-]/",
+            "",
+            strtolower($attribute)
+        );
+        $value = htmlspecialchars("$value");
+        $return .= "$attribute=\"$value\" ";
+    }
+
+    return trim($return);
+}
+
 function get_image_path(string $image, bool $customer = false): string
 {
     $public_dir = $customer ? "." : "../Public";

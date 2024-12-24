@@ -73,22 +73,20 @@ $HD_Form->AddEditPopup(
     "id_card",
     "A2B_entity_card.php?popup_select=1&",
     _("Select the Customer ID"),
-    "",
+    [],
     [Validator::class, "numeric"],
     _("Insert the Customer ID")
 );
 
-$comp_date = "";
+$date_attr = ["maxlength" => 40];
 if ($form_action === "ask-add"){
-    $comp_date = date("Y-m-d");
-    $comp_date="value='$comp_date'";
+    $date_attr["value"] = date("Y-m-d");
 }
-
 $HD_Form->AddEditElement(
     _("BILLING DATE"),
     "date",
     "",
-    "size='40' maxlength='40' $comp_date",
+    $date_attr,
     [Validator::class, "min5Chars"],
     _("Insert the current date (YYYY-MM-DD)")
 );

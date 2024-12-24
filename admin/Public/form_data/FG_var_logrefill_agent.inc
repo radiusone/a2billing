@@ -89,20 +89,20 @@ if (has_rights(Admin::ACX_MODIFY_REFILLS)) {
         "agent_id",
         "A2B_entity_agent.php?popup_select=1&",
         _("Select the Agent ID"),
-        "", [Validator::class, "numeric"], _("Insert the AGENT ID "),
+        [],
+        [Validator::class, "numeric"],
+        _("Insert the AGENT ID "),
     );
 
-    $comp_date = "";
-	if (($form_action ?? "") === "ask-add") {
-		$comp_date=date("Y-m-d H:i:s");
-		$comp_date="value='$comp_date'";
-	}
-
+    $date_attr = ["maxlength" => 40];
+    if (($form_action ?? "") === "ask-add") {
+        $date_attr["value"] = (new DateTime())->format("Y-m-d H:i:s");
+    }
     $HD_Form->AddEditElement(
         _("REFILL DATE"),
         "date",
         "",
-        "maxlength=40  $comp_date",
+        $date_attr,
         [Validator::class, "dateTime"],
         _("Insert the current date")
     );
@@ -111,7 +111,7 @@ if (has_rights(Admin::ACX_MODIFY_REFILLS)) {
         _("REFILL AMOUNT"),
         "credit",
         _("Enter the amount in the currency base : ") . BASE_CURRENCY,
-        "maxlength=10",
+        ["maxlength" => 10],
         [Validator::class, "number"],
         _("Insert the credit amount")
     );
@@ -120,7 +120,7 @@ if (has_rights(Admin::ACX_MODIFY_REFILLS)) {
         _("DESCRIPTION"),
         "description",
         "",
-        "cols='50' rows='4'",
+        ["rows" => 4],
         null,
         _("Insert the description")
     );

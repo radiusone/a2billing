@@ -72,7 +72,7 @@ use DateTime;
                 id="<?= $row["name"] ?>"
                 class="form-control <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
                 name="<?= $row["name"] ?>"
-                <?= $row["attributes"] ?>
+                <?= array_html_attr($row["attributes"]) ?>
             <?php if ($form->all_fields_valid): ?>
                 value="<?= $db_data[$i] ?>"
             <?php else: /* if there was a validation error, refill the field with submitted data */ ?>
@@ -87,7 +87,7 @@ use DateTime;
                     id="<?= $row["name"] ?>"
                     class="form-control <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
                     name="<?= $row["name"] ?>"
-                    <?= $row["attributes"] ?>
+                    <?= array_html_attr($row["attributes"]) ?>
                     value="<?= $form->all_fields_valid ? $db_data[$i] : $processed[$row["name"]] ?>"
                 />
                 <a
@@ -107,16 +107,16 @@ use DateTime;
                 id="<?= $row["name"] ?>"
                 class="form-control <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
                 name="<?= $row["name"] ?>"
-                <?= $row["attributes"] ?>
+                <?= array_html_attr($row["attributes"]) ?>
             ><?= $form->all_fields_valid ? $db_data[$i] : $processed[$row["name"]] ?></textarea>
             <?php break ?>
 
         <?php case "SELECT": ?>
             <select
                 id="<?= $row["name"] ?>"
-                name="<?= $row["name"] . (str_contains($row["attributes"], "multiple") ? "[]" : "") ?>"
+                name="<?= $row["name"] . (array_key_exists("multiple", $row["attributes"]) ? "[]" : "") ?>"
                 class="form-select <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
-                <?= $row["attributes"] ?>
+                <?= array_html_attr($row["attributes"]) ?>
             >
             <?php foreach ($row["first_option"] as $val => $opt): ?>
                 <option value="<?= $val ?>"><?= $opt ?></option>
@@ -130,13 +130,13 @@ use DateTime;
                 <option
                     value="<?= $val ?>"
                 <?php if ($form->all_fields_valid): ?>
-                    <?php if (str_icontains($row["attributes"], "multiple") && (intval($val) & intval($db_data[$i]))): ?>
+                    <?php if (array_key_exists("multiple", $row["attributes"]) && (intval($val) & intval($db_data[$i]))): ?>
                     selected="selected"
                     <?php elseif ($db_data[$i] == $val): ?>
                     selected="selected"
                     <?php endif ?>
                 <?php else: /* if there was a validation error, select based on submitted data */ ?>
-                    <?php if (str_icontains($row["attributes"], "multiple") && (intval($val) & array_sum($processed[$row["name"]]))): ?>
+                    <?php if (array_key_exists("multiple", $row["attributes"]) && (intval($val) & array_sum($processed[$row["name"]]))): ?>
                     selected="selected"
                     <?php elseif ($processed[$row["name"]] == $val): ?>
                     selected="selected"
@@ -195,7 +195,6 @@ use DateTime;
                         type="time"
                         id="<?= $row["name"] ?>_time"
                         class="form-control <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
-                        <?= $row["attributes"] ?>
                         value="<?= $time ?>"
                     />
                     <input type="hidden" name="<?= $row["name"] ?>" id="<?= $row["name"] ?>" value="<?= $value ?>"/>

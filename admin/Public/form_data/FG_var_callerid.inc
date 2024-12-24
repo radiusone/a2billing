@@ -74,7 +74,7 @@ $HD_Form->AddEditElement(
     _("CALLERID"),
     "cid",
     "",
-    "maxlength=30",
+    ["maxlength" => 30],
     [Validator::class, "phoneNumber"],
     _("Insert the CallerID")
 );
@@ -85,7 +85,7 @@ $HD_Form->AddEditRadio(
     getActivationTrueFalseList(),
     "t",
     "",
-    "",
+    [],
     _("Choose if you want to activate this card")
 );
 
@@ -94,7 +94,7 @@ $HD_Form->AddEditPopup(
     "id_cc_card",
     "A2B_entity_card.php?popup_select=1&",
     _("Define the card number ID to use."),
-    "",
+    [],
     [Validator::class, "numeric"],
     _("Insert the card number ID")
 );

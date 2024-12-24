@@ -99,32 +99,25 @@ if (has_rights (Admin::ACX_MODIFY_PAYMENTS)) {
 	$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
 	$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 
-    $id_val = "";
-	if ($form_action === "ask-add" && !empty($agent_id)) {
-		$id_val = "value='$agent_id'";
-	}
-
     $HD_Form->AddEditPopup(
         _("AGENT ID"),
         "agent_id",
         "A2B_entity_agent.php?popup_select=1&",
         _("Select the Agent ID"),
-        $id_val,
+        $form_action === "ask-add" && !empty($agent_id) ? ["value" => $agent_id] : [],
         [Validator::class, "numeric"],
         _("Insert the AGENT ID ")
     );
 
-    $comp_date = "";
-	if ($form_action === "ask-add") {
-		$comp_date = date("Y-m-d H:i:s");
-		$comp_date = "value='$comp_date'";
-	}
-
+    $date_attr = ["maxlength" => 40];
+    if ($form_action === "ask-add") {
+        $date_attr["value"] = (new DateTime())->format("Y-m-d H:i:s");
+    }
     $HD_Form->AddEditElement(
         _("PAYMENT DATE"),
         "date",
         "",
-        "size='40' maxlength='40' $comp_date",
+        $date_attr,
         [Validator::class, "dateTime"],
         _("Insert the current date")
     );
@@ -133,7 +126,7 @@ if (has_rights (Admin::ACX_MODIFY_PAYMENTS)) {
         _("PAYMENT AMOUNT"),
         "payment",
         _("Enter the amount in the currency base : ") . BASE_CURRENCY,
-        "size='60' maxlength='10'",
+        ["maxlength" => 10],
         [Validator::class, "number"],
         _("Insert the payment amount")
     );
@@ -142,7 +135,7 @@ if (has_rights (Admin::ACX_MODIFY_PAYMENTS)) {
         _("DESCRIPTION"),
         "description",
         "",
-        "cols='50' rows='4'",
+        ["rows" => 4],
         null,
         _("Insert the description")
     );
@@ -154,7 +147,7 @@ if (has_rights (Admin::ACX_MODIFY_PAYMENTS)) {
             getYesNoList(),
             "0",
             _("Refill card account"),
-            "",
+            [],
             _("Choose if you want to create a refill with this payment account")
         );
 	}

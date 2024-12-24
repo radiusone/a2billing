@@ -71,7 +71,7 @@ $HD_Form->AddEditElement(
     _("CIDGROUPNAME"),
     "group_name",
     "",
-    "maxlength=70",
+    ["maxlength" => 70],
     [Validator::class, "min1Char"],
     _("Insert the CID Group Name ")
 );

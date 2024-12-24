@@ -80,7 +80,7 @@ $HD_Form->AddEditElement(
     _("LABEL"),
     "label",
     "",
-    "maxlength=30",
+    ["maxlength" => 30],
     [Validator::class, "min3Chars"],
     _("Insert the package label")
 );
@@ -88,13 +88,12 @@ $HD_Form->AddEditElement(
 $HD_Form->AddEditSelect(_("PACKAGE TYPE"), "packagetype", $packagetype_list);
 $HD_Form->AddEditSelect(_("BILLING TYPE"), "billingtype", $billingtype_list);
 
-$default_init = $form_action === "ask-add" ? "value='1'" : "";
 
 $HD_Form->AddEditElement(
     _("STARTING DAY"),
     "startday",
     _("The value will be related to billing type ; if monthly accepted value are 1-31 ; if Weekly accepted value 1-7 (Monday to Sunday) "),
-    "$default_init maxlength=5",
+    ["maxlength" => 5] + ($form_action === "ask-add" ? ["value" => 1] : []),
     [Validator::class, "numeric"],
     _("Insert the start day")
 );
@@ -104,7 +103,7 @@ $HD_Form->AddEditElement(
     _("FREE UNITS"),
     "freetimetocall",
     _("Insert the amount of free units, in seconds,for the FREE SECONDS mode. For NUMBER OF FREE CALLS insert the number of free calls"),
-    "maxlength=10",
+    ["maxlength" => 10],
     [Validator::class, "numeric"],
     _("Insert the amount of free time to call (seconds)")
 );

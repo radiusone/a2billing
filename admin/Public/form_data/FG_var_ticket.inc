@@ -147,14 +147,6 @@ $HD_Form->FG_ENABLE_INFO_BUTTON = true;
 $HD_Form->FG_INFO_BUTTON_LINK = "CC_ticket_view.php?id=";
 $HD_Form -> FG_ADDITIONAL_FUNCTION_AFTER_ADD = "ticket_add";
 
-$val_default = "";
-if ($form_action === 'ask-add' && !empty($username)) {
-    $row = (new Table("cc_card", "id"))
-        ->getRow($HD_Form->DBHandle, ["username" => $username]);
-    $id = $row["id"] ?? "";
-    $val_default = "value='$id'";
-}
-
 if ($ticket_type === "agent") {
     $HD_Form->AddEditPopup(
         _("CREATOR"),
@@ -163,12 +155,18 @@ if ($ticket_type === "agent") {
     );
     $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["creator_type"] = 1;
 } else {
+    $creator_attr = [];
+    if ($form_action === 'ask-add' && !empty($username)) {
+        $row = (new Table("cc_card", "id"))
+            ->getRow($HD_Form->DBHandle, ["username" => $username]);
+        $creator_attr["value"] = $row["id"] ?? "";
+    }
     $HD_Form->AddEditPopup(
         _("CREATOR"),
         "creator",
         "A2B_entity_card.php?popup_select=1&",
         _("Select the Customer ID"),
-        $val_default,
+        $creator_attr,
         [Validator::class, "numeric"],
         _("Insert the Customer ID")
     );
@@ -179,7 +177,7 @@ $HD_Form->AddEditElement(
     _("TITLE"),
     "title",
     "",
-    "maxlength=50",
+    ["maxlength" => 50],
     [Validator::class, "min1Char"],
     _("Insert the Title of ticket ")
 );
@@ -196,7 +194,7 @@ $HD_Form->AddEditTextarea(
     _("DESCRIPTION"),
     "description",
     "",
-    "rows='4'",
+    ["rows" => 4],
     null,
     _("Insert the description")
 );

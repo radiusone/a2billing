@@ -97,7 +97,7 @@ $HD_Form->AddEditElement(
     _("Name"),
     "name",
     "",
-    "maxlength=40",
+    ["maxlength" => 40],
     [Validator::class, "min3Chars"],
     _("Insert the provider name")
 );
@@ -106,7 +106,7 @@ $HD_Form->AddEditTextarea(
     _("Description"),
     "description",
     "",
-    "cols='50' rows='4'",
+    ["rows" => 4],
     null,
     _("Insert the description")
 );
@@ -126,7 +126,7 @@ $HD_Form->AddEditSelect(
     $right_list,
     "",
     _("To select several rights in the above ListBox, hold the CTRL key down while clicking the items"),
-    "size='$len_right_list' multiple='multiple'"
+    ["size" => $len_right_list, "multiple" => "multiple"]
 );
 
 $HD_Form->FG_LOCATION_AFTER_ADD = "?id=";

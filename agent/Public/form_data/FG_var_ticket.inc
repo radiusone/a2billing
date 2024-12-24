@@ -92,6 +92,7 @@ $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 
+$val_default = [];
 if ($form_action=='ask-add'){
 	$DBHandle_max  = DbConnect();
 	if ($username) {
@@ -102,7 +103,7 @@ if ($form_action=='ask-add'){
 
 		if ($numrow!=0) {
 			$db_row [] = $resmax -> fetchRow();
-			$val_default = "value='".$db_row[0][0]."'";
+			$val_default = ["value=" => $db_row[0][0]];
 		}
 	}
 }
@@ -120,7 +121,7 @@ $HD_Form->AddEditElement(
     gettext("TITLE"),
     "title",
     "",
-    "maxlength=50",
+    ["maxlength" => 50],
     [Validator::class, "min1Char"],
     gettext("Insert the Title of ticket ")
 );
@@ -134,7 +135,9 @@ $HD_Form->AddEditTextarea(
     gettext("DESCRIPTION"),
     "description",
     "",
-    "cols='50' rows='4'", null, gettext("Insert the description")
+    ["rows" => 4],
+    null,
+    gettext("Insert the description")
 );
 
 $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["viewed_agent"] = 0;

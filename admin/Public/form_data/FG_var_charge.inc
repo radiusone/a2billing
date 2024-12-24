@@ -91,27 +91,26 @@ $HD_Form_c->FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form_c->FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form_c->FG_ENABLE_ADD_BUTTON = true;
 
-$val_default_fixrate = "";
-if ($form_action === "ask-add" && !empty($id_did)) {
-    $row = (new Table("cc_did", "fixrate"))->getRow(DbConnect(), ["id" => $id_did]);
-    $val_default_fixrate = "value='" . ($row["fixrate"] ?? "") . "'";
-}
-
 $HD_Form_c->AddEditPopup(
     _("ID CARD"),
     "id_cc_card",
     "A2B_entity_card.php?popup_select=1&",
     _("Set the Customer ID"),
-    "",
+    [],
     [Validator::class, "numeric"],
     _("Insert the Customer ID")
 );
 
+$amt_attr = ["maxlength" => 20];
+if ($form_action === "ask-add" && !empty($id_did)) {
+    $row = (new Table("cc_did", "fixrate"))->getRow(DbConnect(), ["id" => $id_did]);
+    $amt_attr["value"] = $row["fixrate"];
+}
 $HD_Form_c->AddEditElement(
     _("AMOUNT"),
     "amount",
     "",
-    " maxlength=20 $val_default_fixrate",
+    $amt_attr,
     [Validator::class, "number"],
     _("Insert the amount")
 );
@@ -126,7 +125,7 @@ $HD_Form_c->AddEditTextarea(
     _("DESCRIPTION"),
     "description",
     "",
-    "cols='50' rows='4'",
+    ["rows" => 4],
     null,
     _("Insert the description")
 );

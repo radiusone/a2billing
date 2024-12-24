@@ -67,7 +67,7 @@ $HD_Form->AddEditElement(
     _("LABEL"),
     "label",
     "",
-    "maxlength=40",
+    ["maxlength" => 40],
     [Validator::class, "min3Chars"],
     _("Insert the provider name")
 );
@@ -78,7 +78,7 @@ $HD_Form->AddEditRadio(
     getYesNoList(),
     "1",
     "",
-    "",
+    [],
     _("Choose if you want to activate this subscriber in the signup")
 );
 
@@ -96,7 +96,7 @@ $HD_Form->AddEditTextarea(
     _("DESCRIPTION"),
     "description",
     "",
-    "cols='50' rows='4'",
+    ["rows" => 4],
     null,
     _("Insert the description")
 );

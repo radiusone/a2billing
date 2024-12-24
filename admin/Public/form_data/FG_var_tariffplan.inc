@@ -94,35 +94,32 @@ $HD_Form->AddEditElement(
     _("TARIFFNAME"),
     "tariffname",
     "",
-    "maxlength=30",
+    ["maxlength" => 30],
     [Validator::class, "min4Chars"],
     _("Insert the tariff name ")
 );
 
-$comp_date = $comp_date_plus = $val_dnidprefix = $val_calleridprefix = "";
-if ($form_action == "ask-add") {
-    $comp_date = (new DateTime())->format("Y-m-d H:i:s");
-    $comp_date_plus = (new DateTime('+10 years'))->format("Y-m-d H:i:s");
-	$comp_date = "value='$comp_date'";
-	$comp_date_plus = "value='$comp_date_plus'";
-    $val_dnidprefix = "value='all'";
-    $val_calleridprefix = "value='all'";
+$date_attr = ["maxlength" => 40];
+if ($form_action === "ask-add") {
+    $date_attr["value"] = (new DateTime())->format("Y-m-d H:i:s");
 }
-
 $HD_Form->AddEditElement(
     _("START DATE"),
     "startingdate",
     _("Please use the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
-    "maxlength=40 $comp_date",
+    $date_attr,
     [Validator::class, "dateTime"],
     _("Insert the starting date")
 );
 
+if ($form_action === "ask-add") {
+    $date_attr["value"] = (new DateTime("+10 years"))->format("Y-m-d H:i:s");
+}
 $HD_Form->AddEditElement(
     _("EXPIRY DATE"),
     "expirationdate",
     _("Format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
-    "maxlength=40  $comp_date_plus",
+    $date_attr,
     [Validator::class, "dateTime"],
     _("Insert the expiration date")
 );
@@ -137,26 +134,29 @@ $HD_Form->AddEditTextarea(
     _("DESCRIPTION"),
     "description",
     "",
-    "cols='50' rows='4'",
+    ["rows" => 4],
     null,
     _("Insert the description")
 );
 
+$id_attr = ["maxlength" => 20];
+if ($form_action === "ask-add") {
+    $id_attr["value"] = "all";
+}
 $HD_Form->AddEditElement(
     _("DNID PREFIX"),
     "dnidprefix",
     _("Set the DNID rules to choose the ratecard 'dnidprefix', by default, matches all DNID. For instance, Set the DNIDPrefix  to 900540540 to choose this ratecard when the DNID is 900540540"),
-    "$val_dnidprefix maxlength=20",
+    $id_attr,
     [Validator::class, "numericOrAll"],
     _("Insert the dnid prefix")
 );
-
 
 $HD_Form->AddEditElement(
     _("CALLERID PREFIX"),
     "calleridprefix",
     _("Set the CallerID rules to choose the ratecard 'calleridprefix', by default, matches all callerID. For instance, Set the calleridprefix to 900540540 to choose this ratecard when the CallerID is 900540540."),
-    "$val_calleridprefix maxlength=20",
+    $id_attr,
     [Validator::class, "numericOrAll"],
     _("Insert the dnid prefix")
 );

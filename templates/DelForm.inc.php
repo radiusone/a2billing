@@ -74,7 +74,7 @@ namespace A2billing\Forms;
                 class="form-control"
                 readonly="readonly"
                 disabled="disabled"
-                <?= $row["attributes"] ?>
+                <?= array_html_attr($row["attributes"]) ?>
                 value="<?= $db_data[$i] ?>"
             />
                 <?php break ?>
@@ -85,7 +85,7 @@ namespace A2billing\Forms;
                 class="form-control"
                 readonly="readonly"
                 disabled="disabled"
-                <?= $row["attributes"]?>
+                <?= array_html_attr($row["attributes"]) ?>
             ><?= $db_data[$i] ?></textarea>
                 <?php break ?>
 
@@ -94,7 +94,7 @@ namespace A2billing\Forms;
                 id="<?= $row["name"] ?>"
                 disabled="disabled"
                 class="form-select <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
-                <?= $row["attributes"] ?>
+                <?= array_html_attr($row["attributes"]) ?>
             >
                 <?php foreach ($row["first_option"] as $val => $opt): ?>
                 <option value="<?= $val ?>"><?= $opt ?></option>
@@ -108,7 +108,7 @@ namespace A2billing\Forms;
                 <option
                     value="<?= $val ?>"
                     <?php if ($form->all_fields_valid): ?>
-                        <?php if (str_contains($row["attributes"], "multiple")): ?>
+                        <?php if (array_key_exists("multiple", $row["attributes"])): ?>
                             <?php if (intval($val) & intval($db_data[$i])): ?>
                     selected="selected"
                             <?php endif ?>
@@ -116,8 +116,8 @@ namespace A2billing\Forms;
                     selected="selected"
                         <?php endif ?>
                     <?php else: ?>
-                        <?php if (str_contains($row["attributes"], "multiple")): ?>
-                            <?php /* TODO: WTF is this? */ if (is_array($processed[$row["name"]]) && (intval($val) & array_sum($processed[$row["name"]]))): ?>
+                        <?php if (array_key_exists("multiple", $row["attributes"])): ?>
+                            <?php if (is_array($processed[$row["name"]]) && (intval($val) & array_sum($processed[$row["name"]]))): ?>
                     selected="selected"
                             <?php endif ?>
                         <?php elseif ($processed[$row["name"]] == $val): ?>

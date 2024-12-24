@@ -91,7 +91,7 @@ $HD_Form->AddEditElement(
     _("Destination"),
     "destination",
     _("Enter the phone number you wish to call, or the VoIP client to reach. (ie: 347894999 or SIP/jeremy@182.212.1.45). If the call is VoIP, the VoIP_Call must be set to yes."),
-    "maxlength=120",
+    ["maxlength" => 120],
     [Validator::class, "min3Chars"],
     _("Insert the DID")
 );
@@ -103,7 +103,7 @@ if ($form_action !== "ask-edit" && $form_action !== "edit") {
         "id_cc_card",
         "A2B_entity_card.php?popup_select=1&",
         _("Select the Customer ID"),
-        "",
+        [],
         [Validator::class, "numeric"],
         _("Insert the Customer ID")
     );
@@ -117,7 +117,7 @@ $HD_Form->AddEditRadio(
     $activated_list,
     "1",
     "",
-    "",
+    [],
     _("Choose if you want to activate this card")
 );
 
@@ -131,7 +131,7 @@ $HD_Form->AddEditRadio(
     $yesno_list,
     "1",
     "",
-    "",
+    [],
     _("Choose if you want to not use the trunk and let the asterisk call directly the destination (ie, Destination : SIP/jeremy@182.212.1.45)")
 );
 
