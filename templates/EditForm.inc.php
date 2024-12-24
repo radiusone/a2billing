@@ -34,6 +34,22 @@ use DateTime;
     function sendtolittle(direction) {
         $("form#editForm").attr("action", direction).trigger("submit");
     }
+
+    function deleteRow(index, value) {
+        let form = $("form#editForm");
+        form.find("input[name=form_action]").val("del-content");
+        form.append($(`<input type="hidden" name="del-content-value" value="${value}"/>`))
+        form.trigger("submit");
+    }
+
+    function addRow(index, input_id) {
+        let form = $("form#editForm");
+        let value = form.find(`#${input_id}`).val();
+        form.find("input[name=form_action]").val("add-content");
+        form.find("input[name=form_el_index]").val(index);
+        form.append($(`<input type="hidden" name="add-content-value" value="${value}"/>`))
+        form.trigger("submit");
+    }
 </script>
 
 <form action="" method="post" name="myForm" id="editForm">
@@ -67,7 +83,7 @@ use DateTime;
             </label>
             <div class="col">
 
-            <?php if ($row["type"] === "INPUT"): ?>
+            <?php switch ($row["type"]): case "INPUT": ?>
                 <?php if (!empty($row["custom_function"])): ?>
                     <?php $db_data[$i] = $row["custom_function"] instanceof Closure ? $row["custom_function"]($db_data[$i]) : call_user_func($row["custom_function"], $db_data[$i]) ?>
                 <?php endif ?>
@@ -82,8 +98,9 @@ use DateTime;
                         value="<?= $processed[$row["name"]] ?>"
                     <?php endif ?>
                 />
+                <?php break ?>
 
-            <?php elseif ($row["type"] === "POPUPVALUE"): ?>
+            <?php case "POPUPVALUE": ?>
                 <div class="input-group">
                     <input
                         id="<?= $row["name"] ?>"
@@ -102,16 +119,18 @@ use DateTime;
                         <svg class="mx-auto" width="16" height="16"><use xlink:href="#popup"></use></svg>
                     </a>
                 </div>
+                <?php break ?>
 
-            <?php elseif ($row["type"] === "TEXTAREA"): ?>
+            <?php case "TEXTAREA": ?>
                 <textarea
                     id="<?= $row["name"] ?>"
                     class="form-control <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
                     name="<?= $row["name"] ?>"
                     <?= $row["attributes"] ?>
                 ><?= $form->VALID_SQL_REG_EXP ? $db_data[$i] : $processed[$row["name"]] ?></textarea>
+                <?php break ?>
 
-            <?php elseif ($row["type"] === "SELECT"): ?>
+            <?php case "SELECT": ?>
                 <select
                     id="<?= $row["name"] ?>"
                     name="<?= $row["name"] . (str_contains($row["attributes"], "multiple") ? "[]" : "") ?>"
@@ -151,8 +170,9 @@ use DateTime;
                     </option>
                     <?php endforeach ?>
                 </select>
+                <?php break ?>
 
-            <?php elseif ($row["type"] === "RADIOBUTTON"): ?>
+            <?php case "RADIOBUTTON": ?>
                 <?php foreach ($row["radio_options"] as $key => $rad): ?>
                     <?php $val = is_array($rad) ? $rad[1] : $key ?>
                 <div class="form-check">
@@ -168,8 +188,9 @@ use DateTime;
                     <label for="<?= $row["name"] ?>_<?= $val ?>" class="form-check-label"><?= is_array($rad) ? $rad[0] : $rad ?></label>
                 </div>
                 <?php endforeach ?>
+                <?php break ?>
 
-            <?php elseif ($row["type"] === "DAYTIME"): ?>
+            <?php case "DAYTIME": ?>
                 <?php
                     $value = ($form->VALID_SQL_REG_EXP) ? $db_data[$i] : $processed[$row["name"]];
                     $day = intdiv($value, 1440);
@@ -203,14 +224,45 @@ use DateTime;
                         <input type="hidden" name="<?= $row["name"] ?>" id="<?= $row["name"] ?>" value="<?= $value ?>"/>
                     </div>
                 </div>
+                <?php break ?>
 
-            <?php endif ?>
+            <?php case "HAS_MANY": ?>
+                <?php $entries = $row["table"]->getRows($form->DBHandle, [$row["foreign_key"] => $processed["id"]]) ?>
+                <ul class="list-group">
+                <?php foreach ($entries as $entry): ?>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <?= $entry[1] ?>
+                        <button
+                            type="button"
+                            class="btn btn-sm btn-primary"
+                            onclick="deleteRow(<?= $i ?>, '<?= $entry[0] ?>')"
+                        ><?= _("Delete") ?></button>
+                    </li>
+                <?php endforeach ?>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div class="flex-grow-1 me-3">
+                            <label for="<?= $row["table"]->table ?>_<?= $row["insert"] ?>" class="form-label"><?= sprintf(_("Add a new %s"), $row["label"]) ?></label>
+                            <?php if ($row["multiline"]): ?>
+                                <textarea id="<?= $row["table"]->table ?>_<?= $row["insert"] ?>" class="form-control form-control-sm" rows="5"></textarea>
+                            <?php else: ?>
+                                <input id="<?= $row["table"]->table ?>_<?= $row["insert"] ?>" class="form-control form-control-sm"/>
+                            <?php endif ?>
+                        </div>
+                        <button
+                            type="button"
+                            class="btn btn-sm btn-primary"
+                            onclick="addRow(<?= $i ?>, '<?= $row["table"]->table ?>_<?= $row["insert"] ?>')"
+                        ><?= gettext("Add") ?> <?= $row["label"] ?></button>
+                    </li>
+                </ul>
+                <?php break ?>
+
+            <?php endswitch ?>
+
             <?php if ($row["validation_err"] !== true): ?>
                 <div class="form-text invalid-feedback"><?= $row["error"] ?> - <?= $row["validation_err"] ?></div>
             <?php endif ?>
-            <?php if ($form->FG_DEBUG == 1): ?>
-                <div class="form-text"><?= $row["type"] ?></div>
-            <?php endif ?>
+
             <?php if (!empty($row["comment"])): ?>
                 <div class="form-text"><?= $row["comment"] ?></div>
             <?php endif ?>
@@ -274,50 +326,6 @@ use DateTime;
                 </div>
             </div>
 
-            <?php elseif ($row["type"] === "HAS_MANY"): ?>
-                <?php $col = explode(",", $table["columns"]) ?>
-            <div class="row mb-3">
-                <div class="col-3"><?= $row["label"] ?></div>
-                <div class="col">
-                    <?php $options = (new Table($table["table"], $table["columns"]))->get_list($form->DBHandle, str_replace("%id", $processed["id"], $table["where"]))?>
-                    <ul class="list-group">
-                    <?php if (is_array($options) && count($options)): ?>
-                        <?php foreach ($options as $option): ?>
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <?php if (isset($table["extra_col"]) && array_key_exists($table["extra_col"], $option)): ?>
-                                (<?= $option[$table["extra_col"]] ?>)
-                                <?php endif ?>
-                                <?= $option[0] ?>
-                                <button
-                                    onclick="sendto('del-content','<?= $i ?>','<?= $col[0] ?>','<?= $option[0] ?>');"
-                                    id="submit<?= $i ?>"
-                                    name="submit<?= $i ?>"
-                                    value="add-split"
-                                    class="btn btn-sm btn-primary"
-                                >
-                                    <?= gettext("Delete") ?>
-                                </button>
-                            </li>
-                        <?php endforeach ?>
-                    <?php else: ?>
-                        <li class="list-group-item"><?= gettext("No") ?> <?= $row["label"] ?></li>
-                    <?php endif ?>
-                        <li class="list-group-item d-flex justify-content-between align-items-end">
-                            <div class="flex-grow-1 me-3">
-                                <label for="<?= $table["name"] ?>_ADD" class="form-label"><?= gettext("Add a new") ?> <?= $row["label"] ?></label>
-                                <?php if ($row["multiline"]): ?>
-                                    <textarea id="<?= $table["name"] ?>_ADD" name="<?= $col[0] ?>" class="form-control form-control-sm" cols="40" rows="5"></textarea>
-                                <?php else: ?>
-                                    <input id="<?= $table["name"] ?>_ADD" name="<?= $col[0] ?>" class="form-control form-control-sm" size="20" maxlength="20"/>
-                                <?php endif ?>
-                            </div>
-                            <button class="btn btn-sm btn-primary" onclick="sendto('add-content', '<?= $i ?>')">
-                                <?= gettext("Add") ?> <?= $row["label"] ?>
-                            </button>
-                        </li>
-                    </ul>
-                </div>
-            </div>
             <?php endif /*  end input type selection  */ ?>
         <?php endif /*  end check for colon in custom query  */ ?>
     <?php endforeach ?>

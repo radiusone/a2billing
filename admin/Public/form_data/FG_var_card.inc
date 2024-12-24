@@ -4,6 +4,7 @@ use A2billing\A2Billing;
 use A2billing\Admin;
 use A2billing\Agent;
 use A2billing\Forms\FormHandler;
+use A2billing\Forms\Validator;
 use A2billing\Notification;
 use A2billing\NotificationsDAO;
 use A2billing\Table;
@@ -851,41 +852,32 @@ if ($popup_select) {
 
     $HD_Form->AddEditHasMany(
         _("RESTRICTED NUMBERS"),
-        [
-            "table" => "cc_restricted_phonenumber",
-            "name" => "number",
-            "columns" => "number,id_card",
-            "where" => "id_card=%id",
-            "fk" => "id_card",
-            "regex" => 0,
-        ]
+        new Table("cc_restricted_phonenumber", ["id", "number"]),
+        "number",
+        "id_card",
+        "",
+        [Validator::class, "numeric"]
     );
 
     $HD_Form->AddEditHasMany(
         _("CALLERID"),
-        [
-            "table" => "cc_callerid",
-            "name" => "cid",
-            "columns" => "cid,id_cc_card",
-            "where" => "id_cc_card=%id",
-            "fk" => "id_cc_card",
-            "regex" => 0,
-        ],
-        false,
-        _("CALLERID / CUSTOMER HISTORY")
+        new Table("cc_callerid", ["id", "cid"]),
+        "cid",
+        "id_cc_card",
+        _("CALLERID / CUSTOMER HISTORY"),
+        [Validator::class, "min3Chars"]
     );
 
     $HD_Form->AddEditHasMany(
         _("CUSTOMER HISTORY"),
-        [
-            "table" => "cc_card_history",
-            "name" => "description",
-            "columns" => "description,id_cc_card,datecreated",
-            "where" => "id_cc_card=%id",
-            "fk" => "id_cc_card",
-            "regex" => 0,
-            "extra_col" => 2,
-        ],
+        new Table(
+            "cc_card_history",
+            ["id", "CONCAT('(', datecreated, ') ', description)"]
+        ),
+        "description",
+        "id_cc_card",
+        "",
+        [Validator::class, "min3Chars"],
         true
     );
 

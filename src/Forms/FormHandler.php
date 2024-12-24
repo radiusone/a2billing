@@ -187,7 +187,18 @@ class FormHandler
 
     //	-------------------- DATA FOR THE EDITION --------------------
 
-    /** @var array List of form elements used to create the edit form */
+    /**
+     * @var array{array{
+     *     type: string,
+     *     label: string,
+     *     table: Table,
+     *     insert: string,
+     *     foreign_key: string,
+     *     section: string,
+     *     validator: callable|null,
+     *     validation_err: bool,
+     * }} List of form elements used to create the edit form
+     */
     public array $FG_EDIT_FORM_ELEMENTS = [];
 
     /** @var array A list of field names considered "splittable" during create or edit (values like e.g. 12-14 or 15;16;17) */
@@ -820,27 +831,37 @@ class FormHandler
     }
 
     /**
-     * @param string $label_text The label text
-     * @param array $query_data Data used to build the query for populating items
-     * @param bool $multiline Determines whether to use <input> or <textarea>
+     * Create a multi-part component to insert a record into a foreign table
+     *
+     * @param string $label The label text
+     * @param Table $table the table to use for display of existing records
+     * @param string $insert_column the text column to edit
+     * @param string $foreign_key new records will be created with this column set to the object's PK
      * @param string $section_name If provided, added as a row above the input
+     * @param callable|null $validator A callback to validate the value before saving it
+     * @param bool $multiline Determines whether to use <input> or <textarea>
      * @return void
      * @todo this function is only used in FG_var_card.inc
      */
     public function AddEditHasMany(
-        string $label_text,
-        array  $query_data,
-        bool   $multiline = false,
-        string $section_name = ""
+        string $label,
+        Table $table,
+        string $insert_column,
+        string $foreign_key,
+        string $section_name = "",
+        ?callable $validator = null,
+        bool $multiline = false
     ): void
     {
         $this->FG_EDIT_FORM_ELEMENTS[] = [
             "type" => "HAS_MANY",
-            "label" => $label_text,
-            "custom_query" => $query_data,
+            "label" => $label,
+            "table" => $table,
+            "insert" => $insert_column,
+            "foreign_key" => $foreign_key,
             "section" => $section_name,
             "multiline" => $multiline,
-            "regex" => null,
+            "validator" => $validator,
             "validation_err" => true,
         ];
     }
@@ -1660,7 +1681,7 @@ class FormHandler
         $instance_table = new Table($this->FG_QUERY_TABLE_NAME, "*", $this->query_table_joins);
 
         foreach ($this->FG_EDIT_FORM_ELEMENTS as $i => &$row) {
-            if (empty($row["custom_query"])) {
+            if (!empty($row["name"]) && empty($row["custom_query"])) {
                 $fields_name = $row["name"];
                 $regexp = $row["regex"];
 
@@ -1820,12 +1841,36 @@ class FormHandler
     }
 
     /**
-     * Add content from SQL selects (only used in FG_var_[tariffgroup|agent|service].inc)
+     * Add content from HasMany and custom SQL selects (only used in FG_var_[tariffgroup|agent|service|card].inc)
+     *
+     * @var int $index the index within $this->FG_EDIT_FORM_ELEMENTS
+     * @var int $id the id of the object to be used as foreign key
      */
-    public function perform_add_content($form_el_index, $id)
+    public function perform_add_content(int $index, int $id)
     {
+        $entry = $this->FG_EDIT_FORM_ELEMENTS[$index];
         $processed = $this->getProcessed();
-        $table_split = $this->FG_EDIT_FORM_ELEMENTS[$form_el_index]["custom_query"];
+        if (!empty($entry["table"])) {
+            /** @var Table $table */
+            $table = $entry["table"];
+            $column = $entry["insert"];
+            $value = $processed["add-content-value"];
+            if (is_callable($entry["validator"] ?? null)) {
+                $result = call_user_func($entry["validator"], $value);
+                if ($result !== true) {
+                    $this->VALID_SQL_REG_EXP = false;
+                    $this->FG_EDIT_FORM_ELEMENTS[$index]["validation_err"] = $result;
+
+                    return;
+                }
+            }
+            $foreign_key = $entry["foreign_key"];
+            $table->addRow($this->DBHandle, [$column => $value, $foreign_key => $id]);
+
+            return;
+        }
+
+        $table_split = $this->FG_EDIT_FORM_ELEMENTS[$index]["custom_query"];
         $instance_sub_table = new Table($table_split["table"]);
 
         $arr = is_array($processed[$table_split["name"]]) ? $processed[$table_split["name"]] : [$processed[$table_split["name"]]];
@@ -1848,11 +1893,24 @@ class FormHandler
 
     /**
      * Delete content from SQL selects (only used in FG_var_[tariffgroup|agent|service].inc)
+     *
+     * @var int $index the index within $this->FG_EDIT_FORM_ELEMENTS
+     * @var int $id the id of the object to be used as foreign key
      */
-    public function perform_del_content($form_el_index, $id)
+    public function perform_del_content(int $index, int $id)
     {
+        $entry = $this->FG_EDIT_FORM_ELEMENTS[$index];
         $processed = $this->getProcessed();
-        $table_split = $this->FG_EDIT_FORM_ELEMENTS[$form_el_index]["custom_query"];
+        if (!empty($entry["table"])) {
+            /** @var Table $table */
+            $table = $entry["table"];
+            $column = $table->fields[0];
+            $value = $processed["del-content-value"];
+            $table->deleteRow($this->DBHandle, [$column => $value]);
+
+            return;
+        }
+        $table_split = $this->FG_EDIT_FORM_ELEMENTS[$index]["custom_query"];
         $value = trim($processed[$table_split["name"] . "_hidden"] ?? $processed[$table_split["name"]]);
         (new Table($table_split["table"]))->deleteRow(
             $this->DBHandle,
@@ -1964,17 +2022,17 @@ class FormHandler
         Console::logSpeed('Time taken to get to line ' . __LINE__);
         $processed = $this->getProcessed();
 
-        // todo: is this ever not 0?
-        $form_el_index = $processed['form_el_index'] ?? 0;
+        // passed by javascript functions for add-content and del-content
+        $edit_form_index = $processed["form_el_index"] ?? 0;
 
         switch ($form_action) {
             case "add-content":
-                $this->perform_add_content($form_el_index, $processed['id']);
+                $this->perform_add_content($edit_form_index, $processed['id']);
                 echo new EditForm($this, $processed, $list);
                 break;
 
             case "del-content":
-                $this->perform_del_content($form_el_index, $processed['id']);
+                $this->perform_del_content($edit_form_index, $processed['id']);
                 echo new EditForm($this, $processed, $list);
                 break;
 
