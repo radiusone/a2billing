@@ -210,24 +210,20 @@ $HD_Form->AddEditSelect(
 $numrow = (new Table("cc_card_group"))->countRows($HD_Form->DBHandle);
 
 if ($numrow > 0) {
-    $HD_Form->AddEditSqlSelect(
-        _("CARD GROUP"),
-        "service",
-        new Table("cards_services", ["id", "name"]),
-        [],
+    $HD_Form->AddEditHasMany(
+        _("Card Group"),
+        new Table(
+            "cc_card_group",
+            ["id", "name"],
+            ["cc_cardgroup_service" => ["cc_card_group.id", "cc_cardgroup_service.id_card_group"]]
+        ),
+        "id_card_group",
+        "id_service",
         "",
-        [],
-        "",
-        "size='10' multiple='multiple'",
-        "", [
-            "table" => "cc_cardgroup_service",
-            "name" => "id_card_group",
-            "tables" => "cc_card_group LEFT JOIN cc_cardgroup_service ON cc_card_group.id=cc_cardgroup_service.id_card_group",
-            "columns" => "DISTINCT cc_card_group.name, cc_card_group.id",
-            "where" => "cc_cardgroup_service.id_service = %id",
-            "format" => "%2 - (%1)",
-            "fk" => "id_service",
-        ]
+        null,
+        false,
+        true,
+        new Table("cc_cardgroup_service")
     );
 }
 

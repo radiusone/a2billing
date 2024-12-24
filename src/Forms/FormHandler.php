@@ -678,9 +678,7 @@ class FormHandler
      * @param string $form_text_bottom Text to display below the form input
      * @param string $html_attributes HTML attributes for the input
      * @param string $error_message A message to show if validation fails
-     * @param array $custom_query If provided, an array containing values to build a custom query
      * @return void
-     * @todo $custom_query is only used in FG_var_[agent|service|tariffgroup].inc
      */
     public function AddEditSqlSelect(
         string $label_text,
@@ -691,8 +689,7 @@ class FormHandler
         array $first_option = [],
         string $form_text_bottom = "",
         string $html_attributes = "",
-        string $error_message = "",
-        array  $custom_query = []
+        string $error_message = ""
     ): void
     {
         $options = [];
@@ -713,7 +710,6 @@ class FormHandler
             "error" => $error_message,
             "select_type" => "LIST",
             "select_fields" => $options,
-            "custom_query" => $custom_query,
             "first_option" => $first_option,
             "comment" => $form_text_bottom,
             "validation_err" => true,
@@ -840,6 +836,8 @@ class FormHandler
      * @param string $section_name If provided, added as a row above the input
      * @param callable|null $validator A callback to validate the value before saving it
      * @param bool $multiline Determines whether to use <input> or <textarea>
+     * @param bool $select Determines whether to use a <select> element
+     * @param Table|null $pivot_table If set, $table is only used for display; $pivot table is used for updates
      * @return void
      * @todo this function is only used in FG_var_card.inc
      */
@@ -850,7 +848,9 @@ class FormHandler
         string $foreign_key,
         string $section_name = "",
         ?callable $validator = null,
-        bool $multiline = false
+        bool $multiline = false,
+        bool $select = false,
+        ?Table $pivot_table = null
     ): void
     {
         $this->FG_EDIT_FORM_ELEMENTS[] = [
@@ -861,6 +861,8 @@ class FormHandler
             "foreign_key" => $foreign_key,
             "section" => $section_name,
             "multiline" => $multiline,
+            "select" => $select,
+            "pivot_table" => $pivot_table,
             "validator" => $validator,
             "validation_err" => true,
         ];
@@ -1852,7 +1854,7 @@ class FormHandler
         $processed = $this->getProcessed();
         if (!empty($entry["table"])) {
             /** @var Table $table */
-            $table = $entry["table"];
+            $table = $entry["pivot_table"] ?? $entry["table"];
             $column = $entry["insert"];
             $value = $processed["add-content-value"];
             if (is_callable($entry["validator"] ?? null)) {
@@ -1903,10 +1905,16 @@ class FormHandler
         $processed = $this->getProcessed();
         if (!empty($entry["table"])) {
             /** @var Table $table */
-            $table = $entry["table"];
-            $column = $table->fields[0];
+            if (!empty($entry["insert_table"])) {
+                $table = $entry["insert_table"];
+                $column = $entry["insert"];
+            } else {
+                $table = $entry["table"];
+                $column = $table->fields[0];
+            }
             $value = $processed["del-content-value"];
-            $table->deleteRow($this->DBHandle, [$column => $value]);
+            $foreign_key = $entry["foreign_key"];
+            $table->deleteRow($this->DBHandle, [$column => $value, $foreign_key => $id]);
 
             return;
         }

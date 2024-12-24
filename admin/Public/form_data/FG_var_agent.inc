@@ -333,24 +333,20 @@ if ($popup_select) {
         "cols='50' rows='4'", null, _("Insert the bank info of this agent")
     );
 
-    $HD_Form->AddEditSqlSelect(
-        _("CALL PLAN USABLE"),
-        "tariffgroup",
-        new Table("cc_agent_tariffgroup", ["id", "label"]),
-        [],
+    $HD_Form->AddEditHasMany(
+        _("Call plans"),
+        new Table(
+            "cc_tariffgroup",
+            ["cc_tariffgroup.id", "cc_tariffgroup.tariffgroupname"],
+            ["cc_agent_tariffgroup" => ["cc_tariffgroup.id", "cc_agent_tariffgroup.id_tariffgroup"]]
+        ),
+        "id_tariffgroup",
+        "id_agent",
         "",
-        [],
-        "",
-        "size='10' multiple='multiple'",
-        "", [
-            "table" => "cc_agent_tariffgroup",
-            "name" => "id_tariffgroup",
-            "tables" => "cc_tariffgroup LEFT JOIN cc_agent_tariffgroup ON cc_tariffgroup.id=cc_agent_tariffgroup.id_tariffgroup",
-            "columns" => "DISTINCT cc_tariffgroup.tariffgroupname, cc_tariffgroup.id",
-            "where" => "cc_agent_tariffgroup.id_agent = %id",
-            "format" => "%2 - (%1)",
-            "fk" => "id_agent",
-        ]
+        null,
+        false,
+        true,
+        new Table("cc_agent_tariffgroup")
     );
 
 	$HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = 'creation_agent_refill';

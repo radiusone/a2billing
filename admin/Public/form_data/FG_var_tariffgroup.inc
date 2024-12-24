@@ -136,25 +136,20 @@ $HD_Form->AddEditRadio(
 
 $numrow = (new Table("cc_tariffplan"))->countRows($HD_Form->DBHandle);
 if ($numrow > 0) {
-    $HD_Form->AddEditSqlSelect(
-        _("RATECARD"),
-        "tariffplan",
-        new Table("cc_tariffgroup_plan", ["id", "label"]),
-        [],
+    $HD_Form->AddEditHasMany(
+        _("Ratecard"),
+        new Table(
+            "cc_tariffplan",
+            ["cc_tariffplan.id", "cc_tariffplan.tariffname"],
+            ["cc_tariffgroup_plan" => ["cc_tariffplan.id", "cc_tariffgroup_plan.idtariffplan"]]
+        ),
+        "idtariffplan",
+        "idtariffgroup",
         "",
-        [],
-        "",
-        "size='10' multiple='muliple'",
-        "",
-        [
-            "table" => "cc_tariffgroup_plan",
-            "name" => "idtariffplan",
-            "tables" => "cc_tariffplan LEFT JOIN cc_tariffgroup_plan ON cc_tariffplan.id=cc_tariffgroup_plan.idtariffplan",
-            "columns" => "DISTINCT cc_tariffplan.tariffname, cc_tariffplan.id",
-            "where" => "cc_tariffgroup_plan.idtariffgroup = %id",
-            "format" => "%2 - (%1)",
-            "fk" => "idtariffgroup",
-        ]
+        null,
+        false,
+        true,
+        new Table("cc_tariffgroup_plan")
     );
 }
 
