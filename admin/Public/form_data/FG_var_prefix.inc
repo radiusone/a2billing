@@ -72,7 +72,7 @@ $HD_Form->AddEditElement(
     _("PREFIX"),
     "prefix",
     "",
-    "size=30 maxlength=300",
+    "maxlength=300",
     null,
     _("Insert the Prefixe")
 );
@@ -81,7 +81,7 @@ $HD_Form->AddEditElement(
     _("DESTINATION"),
     "destination",
     "",
-    "size=30 maxlength=300",
+    "maxlength=300",
     null,
     _("Insert the Destination")
 );

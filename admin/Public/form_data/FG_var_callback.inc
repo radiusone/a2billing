@@ -97,7 +97,7 @@ $HD_Form->AddEditElement(
     "uniqueid",
     _("This is an identifier to cross check the callback's request.")
         . _("(useful if you have requests coming from an other platform through the API))"),
-    "size=20 maxlength=30",
+    "maxlength=30",
     [Validator::class, "min4Chars"],
     _("Insert the uniqueid")
 );
@@ -126,7 +126,7 @@ $HD_Form->AddEditElement(
     _("IP SERVER"),
     "server_ip",
     "",
-    "size=20 maxlength=30 $def_ipserver",
+    "maxlength=30 $def_ipserver",
     [Validator::class, "min2Chars"],
     _("Insert the Ip Server")
 );
@@ -136,7 +136,7 @@ $HD_Form->AddEditElement(
     _("NUMBER ATTEMPTS"),
     "num_attempt",
     "",
-    "size=5 maxlength=10 $def_nbattempt",
+    "maxlength=10 $def_nbattempt",
     [Validator::class, "numeric"],
     _("Insert the number of attempts")
 );
@@ -146,7 +146,7 @@ $HD_Form->AddEditElement(
     _("MANAGER RESULT"),
     "manager_result",
     "",
-    "size=50 maxlength=80",
+    "maxlength=80",
     [Validator::class, "min2Chars"],
     _("Insert the manager result"),
     "",
@@ -158,7 +158,7 @@ $HD_Form->AddEditElement(
     _("AGI RESULT"),
     "agi_result",
     "",
-    "size=50 maxlength=80",
+    "maxlength=80",
     [Validator::class, "min2Chars"],
     _("Insert the agi result"),
     "",
@@ -170,7 +170,7 @@ $HD_Form->AddEditElement(
     _("CALLBACK DATE"),
     "callback_time",
     _("please use the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
-    "size=20 maxlength=20  $comp_date",
+    "maxlength=20  $comp_date",
     [Validator::class, "dateTime"],
     "Insert the callback time",
     "",
@@ -183,7 +183,7 @@ $HD_Form->AddEditElement(
     _("CHANNEL"),
     "channel",
     _("Channel on which to originate the call (SIP/123@1.1.1.4)"),
-    "size=60 maxlength=70",
+    "maxlength=70",
     [Validator::class, "min2Chars"],
     _("Insert the channel"),
     _("Define all the information requested by asterisk to generate the callback")
@@ -194,7 +194,7 @@ $HD_Form->AddEditElement(
     _("EXTENSION"),
     "exten",
     _("Extension to use on connect (must use Context & Priority with it)"),
-    "size=15 maxlength=30",
+    "maxlength=30",
     [Validator::class, "min2Chars"],
     _("Insert the channel")
 );
@@ -203,7 +203,7 @@ $HD_Form->AddEditElement(
     _("CONTEXT"),
     "context",
     _("Context to use on connect (must use Exten & Priority with it)"),
-    "size=30 maxlength=50",
+    "maxlength=50",
     [Validator::class, "min2Chars"],
     _("Insert the context")
 );
@@ -213,7 +213,7 @@ $HD_Form->AddEditElement(
     _("PRIORITY"),
     "priority",
     _("Priority to use on connect (must use Context & Exten with it)"),
-    "size=10 maxlength=10",
+    "maxlength=10",
     [Validator::class, "numeric"],
     _("Insert the priority")
 );
@@ -223,7 +223,7 @@ $HD_Form->AddEditElement(
     _("APPLICATION"),
     "application",
     _("Application to use on connect : meetme or other (use Data for parameters)"),
-    "size=20 maxlength=30",
+    "maxlength=30",
     [Validator::class, "min2Chars"],
     _("Insert the application"),
     "",
@@ -235,7 +235,7 @@ $HD_Form->AddEditElement(
     _("DATA"),
     "data",
     _("Data if Application parameter is used"),
-    "size=30 maxlength=30",
+    "maxlength=30",
     [Validator::class, "min2Chars"],
     _("Insert the data"),
     "",
@@ -247,7 +247,7 @@ $HD_Form->AddEditElement(
     _("TIMEOUT"),
     "timeout",
     _("Timeout for the connection to happen (30000)"),
-    "size=10 maxlength=15",
+    "maxlength=15",
     [Validator::class, "min2Chars"],
     _("Insert the timeout"),
     "",
@@ -259,7 +259,7 @@ $HD_Form->AddEditElement(
     _("CALLERID"),
     "callerid",
     _("CallerID to use for the call"),
-    "size=20 maxlength=30",
+    "maxlength=30",
     [Validator::class, "min2Chars"],
     _("Insert the callerid"),
     "",
@@ -271,7 +271,7 @@ $HD_Form->AddEditElement(
     _("variable"),
     "variable",
     _("Callback info for Asterisk (variable list to transfer to the channel) var1=23|var2=24|var3=25"),
-    "size=80 maxlength=300",
+    "maxlength=300",
     [Validator::class, "min2Chars"],
     _("Insert the variable"),
     "",
@@ -283,7 +283,7 @@ $HD_Form->AddEditElement(
     _("account"),
     "account",
     _("Account code for the call for billing purpose"),
-    "size=20 maxlength=30",
+    "maxlength=30",
     [Validator::class, "min2Chars"],
     _("Insert the account"),
     "",
@@ -295,7 +295,7 @@ $HD_Form->AddEditElement(
     _("async"),
     "async",
     _("For the origination to be asynchronous (allows multiple calls to be generated without waiting for a response)"),
-    "size=10 maxlength=10",
+    "maxlength=10",
     [Validator::class, "min2Chars"],
     _("Insert the async"),
     "",
@@ -307,7 +307,7 @@ $HD_Form->AddEditElement(
     _("actionid"),
     "actionid",
     _("The request identifier. It allows you to identify the response to this request. You may use a number or a string. <br> Useful when you make several simultaneous requests. ActionID: ABC45678901234567890 "),
-    "size=20 maxlength=30",
+    "maxlength=30",
     [Validator::class, "min2Chars"],
     _("Insert the actionid"),
     "",

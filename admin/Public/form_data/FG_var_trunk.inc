@@ -144,7 +144,7 @@ $HD_Form->AddEditElement(
     _("LABEL"),
     "trunkcode",
     _("Unique and friendly name for the trunk"),
-    "size=45 maxlength=40",
+    "maxlength=40",
     [Validator::class, "min4Chars"],
     _("Insert the trunkcode")
 );
@@ -153,7 +153,7 @@ $HD_Form->AddEditElement(
     _("ADD PREFIX"),
     "trunkprefix",
     _("Add a prefix to the dialled digits."),
-    "size=30 maxlength=20",
+    "maxlength=20",
     null,
     _("Insert the trunkprefix")
 );
@@ -162,7 +162,7 @@ $HD_Form->AddEditElement(
     _("REMOVE PREFIX"),
     "removeprefix",
     _("Remove prefix from the dialed digits."),
-    "size=30 maxlength=20",
+    "maxlength=20",
     null,
     _("Insert the removeprefix")
 );
@@ -171,7 +171,7 @@ $HD_Form->AddEditElement(
     _("PROVIDER TECH"),
     "providertech",
     _("Technology used on the trunk (SIP,IAX2,ZAP,H323)"),
-    "size=20 maxlength=15",
+    "maxlength=15",
     [Validator::class, "min3Chars"],
     _("Insert the providertech")
 );
@@ -180,7 +180,7 @@ $HD_Form->AddEditElement(
     _("PROVIDER IP"),
     "providerip",
     _("Set the IP or URL of the VoIP provider. Alternatively, put in the name of a previously defined trunk in Asterisk or FreePBX. (MyVoiPTrunk, ZAP4G etc.) You can use the following tags to as variables: %dialingnumber%, %cardnumber%. ie g2/1644787890wwwwwwwwww%dialingnumber%"),
-    "size=80 maxlength=140",
+    "maxlength=140",
     [Validator::class, "min1Char"],
     _("Insert the providerip")
 );
@@ -189,7 +189,7 @@ $HD_Form->AddEditElement(
     _("ADDITIONAL PARAMETER"),
     "addparameter",
     _("Define any additional parameters that will be used when running the Dial Command in Asterisk. Use the following tags as variables  %dialingnumber%, %cardnumber%. ie 'D(ww%cardnumber%wwwwwwwwww%dialingnumber%)'"),
-    "size=60 maxlength=100",
+    "maxlength=100",
     null,
     _("Insert Additional parameters")
 );
@@ -208,7 +208,7 @@ $HD_Form->AddEditElement(
     _("CURRENT CONNECTIONS"),
     "inuse",
     _("Updated to show the number of channels currently in use on this trunk.If there are no channels in use, and the system shows that there are, manually reset this field back to zero."),
-    "size=30 $def_value_inuse maxlength=30",
+    "$def_value_inuse maxlength=30",
     [Validator::class, "number"],
     _("Number of current connections"));
 
@@ -216,7 +216,7 @@ $HD_Form->AddEditElement(
     _("MAXIMUM CONNECTIONS"),
     "maxuse",
     _("The maximum number of channels available to this trunk. Set to -1 to have an unlimited number of channels"),
-    "size=30 $def_value_maxuse maxlength=30",
+    "$def_value_maxuse maxlength=30",
     [Validator::class, "number"],
     _("Number of maximum simultaneous connections")
 );

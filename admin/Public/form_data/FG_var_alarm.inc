@@ -125,7 +125,7 @@ $HD_Form->AddEditElement(
     _("EMAIL TO SEND ALARM"),
     "emailreport",
     "",
-    "size=40 maxlength=40",
+    "maxlength=40",
     [Validator::class, "email"],
     _("Insert the email to send the alarm")
 );

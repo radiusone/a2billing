@@ -97,7 +97,7 @@ $HD_Form->AddEditElement(
     gettext("EMAIL NOTIFICATION"),
     "email_notification",
     "",
-    "size=30 maxlength=70",
+    "maxlength=70",
     [Validator::class, "email"],
     gettext("Insert the email to notify the customers"),
     "",

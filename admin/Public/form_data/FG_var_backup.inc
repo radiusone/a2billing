@@ -183,7 +183,7 @@ $HD_Form->AddEditElement(
     _("Name"),
     "name",
     _("Name for the backup"),
-    "size=50 maxlength=50",
+    "maxlength=50",
     null,
     _("Insert the name of backup")
 );
@@ -194,7 +194,7 @@ $HD_Form->AddEditElement(
     $form_action === "ask-add"
         ? _("Path for the backup file or leave the default path set in a2billing.conf")
         : _("The backup file name"),
-    "size=100 maxlength=200 $default_path",
+    "maxlength=200 $default_path",
     null,
     $form_action === "ask-add"
         ? _("Insert the path for the backup file or leave the default path")

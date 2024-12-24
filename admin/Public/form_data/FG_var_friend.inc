@@ -150,7 +150,7 @@ $HD_Form->AddEditElement(
     _("NAME"),
     "name",
     "",
-    "size=40 $maxi maxlength=40",
+    "$maxi maxlength=40",
     [Validator::class, "min1Char"],
     _("Insert the name")
 );
@@ -160,7 +160,7 @@ $HD_Form->AddEditElement(
     _("ACCOUNTCODE"),
     "accountcode",
     "",
-    "size=20 $maxi maxlength=50",
+    "$maxi maxlength=50",
     null,
     _("Insert the accountcode")
 );
@@ -170,7 +170,7 @@ $HD_Form->AddEditElement(
     _("REGEXTEN"),
     "regexten",
     "",
-    "size=20 maxlength=20",
+    "maxlength=20",
     null,
     _("Insert the regexten")
 );
@@ -180,7 +180,7 @@ $HD_Form->AddEditElement(
     _("CALLERID"),
     "callerid",
     "",
-    "size=40 maxlength=60",
+    "maxlength=60",
     null,
     _("Insert the callerid")
 );
@@ -190,7 +190,7 @@ $HD_Form->AddEditElement(
     _("CID NUMBER"),
     "cid_number",
     "",
-    "size=40 maxlength=40",
+    "maxlength=40",
     null,
     _("Insert the cid number")
 );
@@ -200,7 +200,7 @@ $HD_Form->AddEditElement(
     _("AMAFLAGS"),
     "amaflags",
     "(default : billing)",
-    "size=10 maxlength=7 $AMAFLAGS_default",
+    "maxlength=7 $AMAFLAGS_default",
     null,
     _("Insert the amaflags")
 );
@@ -210,7 +210,7 @@ $HD_Form->AddEditElement(
     _("SECRET"),
     "secret",
     "",
-    "size=40 maxlength=40 $pass_secret",
+    "maxlength=40 $pass_secret",
     null,
     _("Insert the secret")
 );
@@ -220,7 +220,7 @@ $HD_Form->AddEditElement(
     _("QUALIFY"),
     "qualify",
     "",
-    "size=8 maxlength=7",
+    "maxlength=7",
     null,
     _("Insert the qualify")
 );
@@ -230,7 +230,7 @@ $HD_Form->AddEditElement(
     _("DISALLOW"),
     "disallow",
     _("need to disallow=all before we can use allow. ( default : all )"),
-    "size=50 maxlength=40 $DISALLOW_default",
+    "maxlength=40 $DISALLOW_default",
     null,
     _("Insert the disallow")
 );
@@ -240,7 +240,7 @@ $HD_Form->AddEditElement(
     _("ALLOW"),
     "allow",
     _("Set allow codecs separated by a comma, e.g. gsm,alaw,ulaw ( default : ulaw,alaw,gsm,g729)"),
-    "size=50 maxlength=40 $ALLOW_default",
+    "maxlength=40 $ALLOW_default",
     null,
     _("Insert the allow")
 );
@@ -250,7 +250,7 @@ $HD_Form->AddEditElement(
     _("HOST"),
     "host",
     _("Use dynamic or set an IP ( default : dynamic )"),
-    "size=40 maxlength=31 $HOST_default",
+    "maxlength=31 $HOST_default",
     null,
     _("Insert the host")
 );
@@ -260,7 +260,7 @@ $HD_Form->AddEditElement(
     _("CONTEXT"),
     "context",
     _("set the context for this user (default : a2billing )"),
-    "size=40 maxlength=40 $CONTEXT_default",
+    "maxlength=40 $CONTEXT_default",
     null,
     _("Insert the context")
 );
@@ -270,7 +270,7 @@ $HD_Form->AddEditElement(
     _("DEFAULTIP"),
     "defaultip",
     "",
-    "size=20 maxlength=15",
+    "maxlength=15",
     null,
     _("Insert the defaultip")
 );
@@ -280,7 +280,7 @@ $HD_Form->AddEditElement(
     _("LANGUAGE"),
     "language",
     "",
-    "size=10 maxlength=4",
+    "maxlength=4",
     null,
     _("Insert the language")
 );
@@ -290,7 +290,7 @@ $HD_Form->AddEditElement(
     _("PORT"),
     "port",
     "",
-    "size=10 maxlength=5",
+    "maxlength=5",
     null,
     _("Insert the port")
 );
@@ -300,7 +300,7 @@ $HD_Form->AddEditElement(
     _("REGSECONDS"),
     "regseconds",
     "",
-    "size=50 maxlength=40 $REGSECONDS_default",
+    "maxlength=40 $REGSECONDS_default",
     null,
     _("Insert the regseconds")
 );
@@ -310,7 +310,7 @@ $HD_Form->AddEditElement(
     _("IPADDR"),
     "ipaddr",
     "",
-    "size=20 maxlength=15",
+    "maxlength=15",
     null,
     _("Insert the ipaddr")
 );
@@ -319,7 +319,7 @@ $HD_Form->AddEditElement(
     _("MOHSUGGEST"),
     "mohsuggest",
     "",
-    "size=20 maxlength=20",
+    "maxlength=20",
     null,
     _("Insert the mohsuggest")
 );
@@ -329,7 +329,7 @@ $HD_Form->AddEditElement(
     _("AUTH"),
     "auth",
     "",
-    "size=20 maxlength=20",
+    "maxlength=20",
     null,
     _("Insert the auth")
 );
@@ -339,7 +339,7 @@ $HD_Form->AddEditElement(
     _("SETVAR"),
     "setvar",
     "",
-    "size=60 maxlength=200",
+    "maxlength=200",
     null,
     _("Insert the setvar")
 );
@@ -348,7 +348,7 @@ $HD_Form->AddEditElement(
     _("TYPE"),
     "type",
     _("type = friend | peer | user ( default : friend )"),
-    "size=10 maxlength=6 $TYPE_default",
+    "maxlength=6 $TYPE_default",
     null,
     _("Insert the type")
 );
@@ -357,7 +357,7 @@ $HD_Form->AddEditElement(
     _("DENY"),
     "deny",
     "",
-    "size=60 maxlength=50",
+    "maxlength=50",
     null,
     _("Insert the deny")
 );
@@ -366,7 +366,7 @@ $HD_Form->AddEditElement(
     _("PERMIT"),
     "permit",
     "",
-    "size=60 maxlength=50",
+    "maxlength=50",
     null,
     _("Insert the permit")
 );
@@ -378,7 +378,7 @@ if ($voip_type=='sip') {
         _("USERNAME"),
         "username",
         "",
-        "size=50 $maxi maxlength=40",
+        "$maxi maxlength=40",
         null,
         _("Insert the username")
     );
@@ -388,7 +388,7 @@ if ($voip_type=='sip') {
         _("MD5SECRET"),
         "md5secret",
         "",
-        "size=60 maxlength=50",
+        "maxlength=50",
         null,
         _("Insert the md5secret")
     );
@@ -398,7 +398,7 @@ if ($voip_type=='sip') {
         _("NAT"),
         "nat",
         _("nat = yes | no | never | route ( default : yes )"),
-        "size=60 maxlength=50 $NAT_default",
+        "maxlength=50 $NAT_default",
         null,
         _("Insert the nat")
     );
@@ -408,7 +408,7 @@ if ($voip_type=='sip') {
         _("DTMFMODE"),
         "dtmfmode",
         _("dtmfmode = RFC2833 | INFO | INBAND | AUTO ( default : RFC2833 )"),
-        "size=10 maxlength=7 $DTMFMODE_default",
+        "maxlength=7 $DTMFMODE_default",
         null,
         _("Insert the dtmfmode")
     );
@@ -419,7 +419,7 @@ if ($voip_type=='sip') {
         _("CANREINVITE"),
         "canreinvite",
         _("canreinvite : yes | no ( default : yes )"),
-        "size=20 maxlength=10 $CANREINVITE_default",
+        "maxlength=10 $CANREINVITE_default",
         null,
         _("Insert the canreinvite")
     );
@@ -431,7 +431,7 @@ if ($voip_type=='sip') {
         _("CALLGROUP"),
         "callgroup",
         "",
-        "size=10 maxlength=10",
+        "maxlength=10",
         null,
         _("Insert the callgroup")
     );
@@ -443,7 +443,7 @@ if ($voip_type=='sip') {
         _("FROMUSER"),
         "fromuser",
         "",
-        "size=40 maxlength=40",
+        "maxlength=40",
         null,
         _("Insert the fromuser")
     );
@@ -453,7 +453,7 @@ if ($voip_type=='sip') {
         _("FROMDOMAIN"),
         "fromdomain",
         "",
-        "size=40 maxlength=40",
+        "maxlength=40",
         null,
         _("Insert the fromdomain")
     );
@@ -463,7 +463,7 @@ if ($voip_type=='sip') {
         _("INSECURE"),
         "insecure",
         "",
-        "size=20 maxlength=30",
+        "maxlength=30",
         null,
         _("Insert the insecure")
     );
@@ -473,7 +473,7 @@ if ($voip_type=='sip') {
         _("MAILBOX"),
         "mailbox",
         "",
-        "size=60 maxlength=50",
+        "maxlength=50",
         null,
         _("Insert the mailbox")
     );
@@ -484,7 +484,7 @@ if ($voip_type=='sip') {
         _("MASK"),
         "mask",
         "",
-        "size=60 maxlength=50",
+        "maxlength=50",
         null,
         _("Insert the mask")
     );
@@ -494,7 +494,7 @@ if ($voip_type=='sip') {
         _("PICKUPGROUP"),
         "pickupgroup",
         "",
-        "size=15 maxlength=10",
+        "maxlength=10",
         null,
         _("Insert the pickupgroup")
     );
@@ -504,7 +504,7 @@ if ($voip_type=='sip') {
         _("RESTRICTCID"),
         "restrictcid",
         "",
-        "size=7 maxlength=1",
+        "maxlength=1",
         null,
         _("Insert the restrictcid")
     );
@@ -514,7 +514,7 @@ if ($voip_type=='sip') {
         _("RTPTIMEOUT"),
         "rtptimeout",
         "",
-        "size=7 maxlength=3",
+        "maxlength=3",
         null,
         _("Insert the rtptimeout")
     );
@@ -524,7 +524,7 @@ if ($voip_type=='sip') {
         _("RTPHOLDTIMEOUT"),
         "rtpholdtimeout",
         "",
-        "size=7 maxlength=3",
+        "maxlength=3",
         null,
         _("Insert the rtpholdtimeout")
     );
@@ -534,7 +534,7 @@ if ($voip_type=='sip') {
         _("MUSICONHOLD"),
         "musiconhold",
         "",
-        "size=50 maxlength=40",
+        "maxlength=40",
         null,
         _("Insert the musiconhold")
     );
@@ -544,7 +544,7 @@ if ($voip_type=='sip') {
         _("CANCALLFORWARD"),
         "cancallforward",
         _("cancallforward = yes | no ( default : yes )"),
-        "size=7 maxlength=3 $CANCALLFORWARD_default",
+        "maxlength=3 $CANCALLFORWARD_default",
         null,
         _("Insert the cancallforward")
     );
@@ -554,7 +554,7 @@ if ($voip_type=='sip') {
         _("DEFAULTUSER"),
         "defaultuser",
         "",
-        "size=10 maxlength=10"
+        "maxlength=10"
     );
 
 
@@ -562,7 +562,7 @@ if ($voip_type=='sip') {
         _("SUBSCRIBEMWI"),
         "subscribemwi",
         "",
-        "size=10 maxlength=10"
+        "maxlength=10"
     );
 
 
@@ -570,7 +570,7 @@ if ($voip_type=='sip') {
         _("VMEXTEN"),
         "vmexten",
         "",
-        "size=20 maxlength=20"
+        "maxlength=20"
     );
 
 
@@ -578,7 +578,7 @@ if ($voip_type=='sip') {
         _("CALLINGPRES"),
         "callingpres",
         "",
-        "size=20 maxlength=20"
+        "maxlength=20"
     );
 
 
@@ -586,7 +586,7 @@ if ($voip_type=='sip') {
         _("USEREQPHONE"),
         "usereqphone",
         "",
-        "size=10 maxlength=10"
+        "maxlength=10"
     );
 
 
@@ -594,7 +594,7 @@ if ($voip_type=='sip') {
         _("INCOMINGLIMIT"),
         "incominglimit",
         "",
-        "size=10 maxlength=10"
+        "maxlength=10"
     );
 
 
@@ -602,7 +602,7 @@ if ($voip_type=='sip') {
         _("SUBSCRIBECONTEXT"),
         "subscribecontext",
         "",
-        "size=40 maxlength=40"
+        "maxlength=40"
     );
 
 
@@ -610,7 +610,7 @@ if ($voip_type=='sip') {
         _("MUSICCLASS"),
         "musicclass",
         "",
-        "size=20 maxlength=20"
+        "maxlength=20"
     );
 
 
@@ -618,7 +618,7 @@ if ($voip_type=='sip') {
         _("ALLOWTRANSFER"),
         "allowtransfer",
         "",
-        "size=20 maxlength=20"
+        "maxlength=20"
     );
 
 
@@ -626,7 +626,7 @@ if ($voip_type=='sip') {
         _("AUTOFRAMING"),
         "autoframing",
         "",
-        "size=10 maxlength=10"
+        "maxlength=10"
     );
 
 
@@ -634,7 +634,7 @@ if ($voip_type=='sip') {
         _("MAXCALLBITRATE"),
         "maxcallbitrate",
         "",
-        "size=15 maxlength=15"
+        "maxlength=15"
     );
 
 
@@ -642,7 +642,7 @@ if ($voip_type=='sip') {
         _("OUTBOUNDPROXY"),
         "outboundproxy",
         "",
-        "size=40 maxlength=40"
+        "maxlength=40"
     );
 
 
@@ -650,7 +650,7 @@ if ($voip_type=='sip') {
         _("REGSERVER"),
         "regserver",
         "",
-        "size=20 maxlength=20"
+        "maxlength=20"
     );
 
 
@@ -658,7 +658,7 @@ if ($voip_type=='sip') {
         _("RTPKEEPALIVE"),
         "rtpkeepalive",
         "",
-        "size=15 maxlength=15"
+        "maxlength=15"
     );
 
 } else {
@@ -667,7 +667,7 @@ if ($voip_type=='sip') {
         _("TRUNK"),
         "trunk",
         _("iax trunking = yes | no ( default : yes )"),
-        "size=7 maxlength=3 $TRUNK_default",
+        "maxlength=3 $TRUNK_default",
         null,
         _("Define the iax trunking")
     );
@@ -677,7 +677,7 @@ if ($voip_type=='sip') {
         _("DBSECRET"),
         "dbsecret",
         "",
-        "size=40 maxlength=40"
+        "maxlength=40"
     );
 
 
@@ -685,7 +685,7 @@ if ($voip_type=='sip') {
         _("REGCONTEXT"),
         "regcontext",
         "",
-        "size=40 maxlength=40"
+        "maxlength=40"
     );
 
 
@@ -693,14 +693,14 @@ if ($voip_type=='sip') {
         _("SOURCEADDRESS"),
         "sourceaddress",
         "",
-        "size=20 maxlength=10"
+        "maxlength=10"
     );
 
     $HD_Form->AddEditElement(
         _("MOHINTERPRET"),
         "mohinterpret",
         "",
-        "size=20 maxlength=20"
+        "maxlength=20"
     );
 
 
@@ -708,7 +708,7 @@ if ($voip_type=='sip') {
         _("INKEYS"),
         "inkeys",
         "",
-        "size=40 maxlength=40"
+        "maxlength=40"
     );
 
 
@@ -716,21 +716,21 @@ if ($voip_type=='sip') {
         _("OUTKEY"),
         "outkey",
         "",
-        "size=40 maxlength=40"
+        "maxlength=40"
     );
 
     $HD_Form->AddEditElement(
         _("SENDANI"),
         "sendani",
         "",
-        "size=10 maxlength=10"
+        "maxlength=10"
     );
 
     $HD_Form->AddEditElement(
         _("FULLNAME"),
         "fullname",
         "",
-        "size=40 maxlength=40"
+        "maxlength=40"
     );
 
 
@@ -738,7 +738,7 @@ if ($voip_type=='sip') {
         _("MAXAUTHREQ"),
         "maxauthreq",
         "",
-        "size=15 maxlength=15"
+        "maxlength=15"
     );
 
 
@@ -746,7 +746,7 @@ if ($voip_type=='sip') {
         _("ENCRYPTION"),
         "encryption",
         "",
-        "size=20 maxlength=20"
+        "maxlength=20"
     );
 
 
@@ -754,7 +754,7 @@ if ($voip_type=='sip') {
         _("TRANSFER"),
         "transfer",
         "",
-        "size=10 maxlength=10"
+        "maxlength=10"
     );
 
 
@@ -762,7 +762,7 @@ if ($voip_type=='sip') {
         _("JITTERBUFFER"),
         "jitterbuffer",
         "",
-        "size=10 maxlength=10"
+        "maxlength=10"
     );
 
 
@@ -770,7 +770,7 @@ if ($voip_type=='sip') {
         _("FORCEJITTERBUFFER"),
         "forcejitterbuffer",
         "",
-        "size=10 maxlength=10"
+        "maxlength=10"
     );
 
 
@@ -778,7 +778,7 @@ if ($voip_type=='sip') {
         _("CODECPRIORITY"),
         "codecpriority",
         "",
-        "size=40 maxlength=40"
+        "maxlength=40"
     );
 
 
@@ -786,7 +786,7 @@ if ($voip_type=='sip') {
         _("QUALIFYSMOOTHING"),
         "qualifysmoothing",
         "",
-        "size=10 maxlength=10"
+        "maxlength=10"
     );
 
 
@@ -794,7 +794,7 @@ if ($voip_type=='sip') {
         _("QUALIFYFREQOK"),
         "qualifyfreqok",
         "",
-        "size=10 maxlength=10"
+        "maxlength=10"
     );
 
 
@@ -802,7 +802,7 @@ if ($voip_type=='sip') {
         _("QUALIFYFREQNOTOK"),
         "qualifyfreqnotok",
         "",
-        "size=10 maxlength=10"
+        "maxlength=10"
     );
 
 
@@ -810,7 +810,7 @@ if ($voip_type=='sip') {
         _("TIMEZONE"),
         "timezone",
         "",
-        "size=20 maxlength=20"
+        "maxlength=20"
     );
 
 
@@ -818,7 +818,7 @@ if ($voip_type=='sip') {
         _("ADSI"),
         "adsi",
         "",
-        "size=10 maxlength=10"
+        "maxlength=10"
     );
 
 
@@ -826,7 +826,7 @@ if ($voip_type=='sip') {
         _("REQUIRE CALL TOKEN"),
         "requirecalltoken",
         _("No supported by Realtime"),
-        "size=15 maxlength=20"
+        "maxlength=20"
     );
 
 
@@ -834,7 +834,7 @@ if ($voip_type=='sip') {
         _("MAX CALL NUMBERS"),
         "maxcallnumbers",
         _("No supported by Realtime"),
-        "size=10 maxlength=10"
+        "maxlength=10"
     );
 
 
@@ -842,7 +842,7 @@ if ($voip_type=='sip') {
         _("MAX CALL NUMBERS NON VALIDATED"),
         "maxcallnumbers_nonvalidated",
         _("No supported by Realtime"),
-        "size=10 maxlength=10"
+        "maxlength=10"
     );
 }
 

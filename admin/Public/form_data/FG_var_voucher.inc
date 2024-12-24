@@ -120,7 +120,7 @@ $HD_Form->AddEditElement(
     _("VOUCHER"),
     "voucher",
     "",
-    "size=20 $maxi readonly maxlength=40",
+    "$maxi readonly maxlength=40",
     [Validator::class, "numeric"],
     _("Insert the voucher")
 );
@@ -129,7 +129,7 @@ $HD_Form->AddEditElement(
     _("AMOUNT"),
     "credit",
     "",
-    "size=30 maxlength=30",
+    "maxlength=30",
     [Validator::class, "number"],
     _("Insert the number of credit")
 );
@@ -138,7 +138,7 @@ $HD_Form->AddEditElement(
     _("TAG"),
     "tag",
     "",
-    "size=30 maxlength=30",
+    "maxlength=30",
     [Validator::class, "min2Chars"],
     _("Insert the tag"),
     "",
@@ -160,7 +160,7 @@ $HD_Form->AddEditElement(
     _("EXPIRY DATE"),
     "expirationdate",
     _("Format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
-    "size=40 maxlength=40  $comp_date_plus",
+    "maxlength=40  $comp_date_plus",
     [Validator::class, "dateTime"],
     _("Insert the expiration date")
 );

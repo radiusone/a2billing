@@ -115,7 +115,7 @@ $HD_Form->AddEditElement(
     gettext("ID"),
     "id",
     gettext("Select the ID"),
-    "size=10 READONLY maxlength=10",
+    "READONLY maxlength=10",
     [Validator::class, "numeric"],
     gettext("Insert the Id ")
 );
@@ -125,7 +125,7 @@ $HD_Form->AddEditElement(
     gettext("DATE"),
     "creationdate",
     "",
-    "size=40 READONLY maxlength=40 ",
+    "READONLY maxlength=40 ",
     [Validator::class, "dateTime"],
     gettext("Insert the creation date")
 );
@@ -135,7 +135,7 @@ $HD_Form->AddEditElement(
     gettext("PAYMENT METHOD"),
     "paymentmethod",
     gettext("Enter the payment method "),
-    "size=30 maxlength=30",
+    "maxlength=30",
     [Validator::class, "min1Char"],
     gettext("Insert the payment method")
 );
@@ -146,7 +146,7 @@ $HD_Form->AddEditElement(
     gettext("OWNER"),
     "cc_owner",
     gettext("Enter the owner"),
-    "size=30 maxlength=30",
+    "maxlength=30",
     [Validator::class, "number"],
     gettext("Insert the owner")
 );
@@ -156,7 +156,7 @@ $HD_Form->AddEditElement(
     gettext("AMOUNT"),
     "amount",
     gettext("Enter the amount "),
-    "size=30 maxlength=30",
+    "maxlength=30",
     [Validator::class, "number"],
     gettext("Insert the amount")
 );

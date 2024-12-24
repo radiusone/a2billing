@@ -91,7 +91,7 @@ $HD_Form->AddEditElement(
     _("LABEL"),
     "label",
     "",
-    "size=35 maxlength=30",
+    "maxlength=30",
     [Validator::class, "min4Chars"],
     _("Insert the service label")
 );
@@ -100,7 +100,7 @@ $HD_Form->AddEditElement(
     _("FEE"),
     "fee",
     _("Set the fee amount that the user have to pay per month."),
-    "size=30 maxlength=30",
+    "maxlength=30",
     [Validator::class, "number"],
     _("Insert the fee amount.")
 );
@@ -111,7 +111,7 @@ $HD_Form->AddEditElement(
     _("START DATE"),
     "startdate",
     _("please use the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
-    "size=40 maxlength=40  $comp_date",
+    "maxlength=40  $comp_date",
     [Validator::class, "dateTime"],
     _("Insert the start date"),
     "",
@@ -123,7 +123,7 @@ $HD_Form->AddEditElement(
     _("STOP DATE"),
     "stopdate",
     _("please use the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
-    "size=40 maxlength=40  $comp_date_plus",
+    "maxlength=40  $comp_date_plus",
     [Validator::class, "dateTime"],
     _("Insert the stop date"),
     "",
@@ -135,7 +135,7 @@ $HD_Form->AddEditElement(
     _("EMAIL TO SEND REPORT"),
     "emailreport",
     "",
-    "size=30 maxlength=30",
+    "maxlength=30",
     [Validator::class, "email"],
     _("Insert the email to send the report"),
     "",

@@ -176,7 +176,7 @@ $HD_Form->AddEditElement(
     _("FROM EMAIL"),
     "fromemail",
     "",
-    "size=30 maxlength=60",
+    "maxlength=60",
     [Validator::class, "email"],
     _("Insert the user fromemail")
 );
@@ -185,7 +185,7 @@ $HD_Form->AddEditElement(
     _("FROM NAME"),
     "fromname",
     "",
-    "size=30 maxlength=60",
+    "maxlength=60",
     null,
     _("Insert the user fromname")
 );
@@ -194,7 +194,7 @@ $HD_Form->AddEditElement(
     _("SUBJECT"),
     "subject",
     "",
-    "size=30 maxlength=80",
+    "maxlength=80",
     null,
     _("Insert the user subject")
 );

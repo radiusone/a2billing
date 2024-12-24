@@ -120,7 +120,7 @@ if (has_rights (Admin::ACX_MODIFY_PAYMENTS)) {
         _("PAYMENT DATE"),
         "date",
         "",
-        "size=40 maxlength=40 $comp_date",
+        "maxlength=40 $comp_date",
         [Validator::class, "dateTime"],
         _("Insert the current date")
     );
@@ -129,7 +129,7 @@ if (has_rights (Admin::ACX_MODIFY_PAYMENTS)) {
         _("PAYMENT AMOUNT"),
         "payment",
         _("Enter the amount in the currency base : ") . BASE_CURRENCY,
-        "size=60 maxlength=10",
+        "maxlength=10",
         [Validator::class, "number"],
         _("Insert the payment amount")
     );

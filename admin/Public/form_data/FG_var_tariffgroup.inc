@@ -108,7 +108,7 @@ $HD_Form->AddEditElement(
     _("NAME"),
     "tariffgroupname",
     "",
-    "size=30 maxlength=20",
+    "maxlength=20",
     [Validator::class, "min1Char"],
     _("Insert the Call Plan name ")
 );

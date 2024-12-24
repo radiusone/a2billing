@@ -58,7 +58,7 @@ $HD_Form->AddEditElement(
     gettext("LAST NAME"),
     "lastname",
     "",
-    "size=60 maxlength=50",
+    "maxlength=50",
     null,
     gettext("Insert the lastname")
 );
@@ -67,7 +67,7 @@ $HD_Form->AddEditElement(
     gettext("FIRST NAME"),
     "firstname",
     "",
-    "size=60 maxlength=50",
+    "maxlength=50",
     null,
     gettext("Insert the firstname")
 );
@@ -76,7 +76,7 @@ $HD_Form->AddEditElement(
     gettext("ADDRESS"),
     "address",
     "",
-    "size=60 maxlength=250",
+    "maxlength=250",
     null,
     gettext("Insert the address")
 );
@@ -85,7 +85,7 @@ $HD_Form->AddEditElement(
     gettext("CITY"),
     "city",
     "",
-    "size=20 maxlength=20",
+    "maxlength=20",
     null,
     gettext("Insert the city")
 );
@@ -94,7 +94,7 @@ $HD_Form->AddEditElement(
     gettext("STATE"),
     "state",
     "",
-    "size=20 maxlength=40",
+    "maxlength=40",
     null,
     gettext("Insert the state")
 );
@@ -103,7 +103,7 @@ $HD_Form->AddEditElement(
     gettext("COUNTRY"),
     "country",
     "",
-    "size=20 maxlength=40",
+    "maxlength=40",
     null,
     gettext("Insert the country")
 );
@@ -112,7 +112,7 @@ $HD_Form->AddEditElement(
     gettext("ZIPCODE"),
     "zipcode",
     "",
-    "size=10 maxlength=7",
+    "maxlength=7",
     null,
     gettext("Insert the zip code")
 );
@@ -121,7 +121,7 @@ $HD_Form->AddEditElement(
     gettext("EMAIL"),
     "email",
     "",
-    "size=30 maxlength=70",
+    "maxlength=70",
     [Validator::class, "email"],
     gettext("Insert the email"),
     "",
@@ -132,7 +132,7 @@ $HD_Form->AddEditElement(
     gettext("PHONE"),
     "phone",
     "",
-    "size=30 maxlength=20",
+    "maxlength=20",
     null,
     gettext("Insert the telephone number")
 );
@@ -141,7 +141,7 @@ $HD_Form->AddEditElement(
     gettext("FAX"),
     "fax",
     "",
-    "size=30 maxlength=20",
+    "maxlength=20",
     null,
     gettext("Insert the fax number")
 );
@@ -151,7 +151,7 @@ $HD_Form->AddEditElement(
     gettext("COMPANY"),
     "company",
     "",
-    "size=60 maxlength=50",
+    "maxlength=50",
     null,
     gettext("Insert the company")
 );

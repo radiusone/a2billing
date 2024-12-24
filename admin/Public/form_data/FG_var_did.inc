@@ -398,7 +398,7 @@ $HD_Form->AddEditElement(
     _("MAX CONCURRENT CALLS"),
     "max_concurrent",
     _("Max concurrent calls (Feature not implemented)"),
-    "size=5 maxlength=5",
+    "maxlength=5",
     null,
     "",
     "",

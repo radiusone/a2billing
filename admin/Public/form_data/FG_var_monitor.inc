@@ -68,7 +68,7 @@ $HD_Form->AddEditElement(
     _("LABEL"),
     "label",
     "",
-    "size=30 maxlength=50",
+    "maxlength=50",
     [Validator::class, "min4Chars"],
     _("Insert the label")
 );
@@ -77,7 +77,7 @@ $HD_Form->AddEditElement(
     _("DIAL CODE"),
     "dial_code",
     "",
-    "size=5 maxlength=3",
+    "maxlength=3",
     [Validator::class, "numeric"],
     _("Insert the dial code")
 );
@@ -95,7 +95,7 @@ $HD_Form->AddEditElement(
     _("TEXT INTRO"),
     "text_intro",
     "",
-    "size=30 maxlength=50",
+    "maxlength=50",
     [Validator::class, "min4Chars"],
     _("Insert the text intro")
 );

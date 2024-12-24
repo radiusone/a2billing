@@ -70,7 +70,7 @@ $HD_Form->AddEditElement(
     _("NAME"),
     "name",
     "",
-    "size=30 maxlength=40",
+    "maxlength=40",
     [Validator::class, "min3Chars"],
     _("Insert the Seria name")
 );

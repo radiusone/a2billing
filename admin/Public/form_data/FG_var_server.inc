@@ -67,7 +67,7 @@ $HD_Form->AddEditElement(
     _("SERVER HOSTNAME"),
     "server_ip",
     "",
-    "size=30 maxlength=40",
+    "maxlength=40",
     [Validator::class, "min4Chars"],
     _("Insert the server hostname")
 );
@@ -76,7 +76,7 @@ $HD_Form->AddEditElement(
     _("MANAGER HOST"),
     "manager_host",
     "",
-    "size=30 maxlength=40",
+    "maxlength=40",
     [Validator::class, "min1Char"],
     _("Insert the manager host")
 );
@@ -85,7 +85,7 @@ $HD_Form->AddEditElement(
     _("MANAGER USERNAME"),
     "manager_username",
     "",
-    "size=30 maxlength=40",
+    "maxlength=40",
     [Validator::class, "min1Char"],
     _("Insert the manager username")
 );
@@ -94,7 +94,7 @@ $HD_Form->AddEditElement(
     _("MANAGER SECRET"),
     "manager_secret",
     "",
-    "size=30 maxlength=40",
+    "maxlength=40",
     null,
     _("Insert the manager secret")
 );

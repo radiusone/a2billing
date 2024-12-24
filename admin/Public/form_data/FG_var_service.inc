@@ -116,7 +116,7 @@ $HD_Form->AddEditElement(
     _("NAME"),
     "name",
     "",
-    "size=35 maxlength=30",
+    "maxlength=30",
     [Validator::class, "min4Chars"],
     _("Insert the service name")
 );
@@ -125,7 +125,7 @@ $HD_Form->AddEditElement(
     _("AMOUNT CREDIT"),
     "amount",
     _("Set the amount of credit to remove from the card. 0 will remove all credit from the card use -1 for DID recurrent service."),
-    "size=30 maxlength=30",
+    "maxlength=30",
     [Validator::class, "number"],
     _("Insert the number of credit to remove from the cards.")
 );
@@ -142,7 +142,7 @@ $HD_Form->AddEditElement(
     _("DAY NUMBER (X)"),
     "daynumber",
     _("Set the number of days to apply to the rule above."),
-    "size=20 maxlength=3",
+    "maxlength=3",
     [Validator::class, "numeric"],
     _("Insert the daynumber"),
     "",
@@ -163,7 +163,7 @@ $HD_Form->AddEditElement(
     _("MAX NUMBER OF CYCLES BY CARD"),
     "maxnumbercycle",
     _("Set the maximum number of times that the service should be applied."),
-    "size=20 maxlength=3",
+    "maxlength=3",
     [Validator::class, "numeric"],
     _("Insert the max number of cycle"),
     "",
@@ -176,7 +176,7 @@ $HD_Form->AddEditElement(
     _("EMAIL TO SEND REPORT"),
     "emailreport",
     "",
-    "size=30 maxlength=30",
+    "maxlength=30",
     [Validator::class, "email"],
     _("Insert the email to send the report"),
     "",

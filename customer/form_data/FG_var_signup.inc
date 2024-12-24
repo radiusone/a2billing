@@ -170,7 +170,7 @@ $HD_Form->AddEditElement(
     gettext("LASTNAME"),
     "lastname",
     "",
-    "size=30 maxlength=50",
+    "maxlength=50",
     [Validator::class, "min2Chars"],
     gettext("Insert your lastname")
 );
@@ -181,7 +181,7 @@ $HD_Form->AddEditElement(
     gettext("FIRSTNAME"),
     "firstname",
     "",
-    "size=30 maxlength=50",
+    "maxlength=50",
     [Validator::class, "min2Chars"],
     gettext("Insert your firstname")
 );
@@ -191,7 +191,7 @@ $HD_Form->AddEditElement(
     gettext("EMAIL"),
     "email",
     "",
-    "size=30 maxlength=70",
+    "maxlength=70",
     [Validator::class, "email"],
     gettext("Insert your email")
 );
@@ -200,7 +200,7 @@ $HD_Form->AddEditElement(
     gettext("ADDRESS"),
     "address",
     "",
-    "size=30 maxlength=100",
+    "maxlength=100",
     [Validator::class, "min3Chars"],
     gettext("Insert your address")
 );
@@ -211,7 +211,7 @@ $HD_Form->AddEditElement(
     gettext("CITY"),
     "city",
     "",
-    "size=30 maxlength=40",
+    "maxlength=40",
     [Validator::class, "min3Chars"],
     gettext("Insert your city")
 );
@@ -222,7 +222,7 @@ $HD_Form->AddEditElement(
     gettext("STATE/PROVINCE"),
     "state",
     "",
-    "size=30 maxlength=40",
+    "maxlength=40",
     [Validator::class, "min2Chars"],
     gettext("Insert your state"),
     "",
@@ -248,7 +248,7 @@ if (ZIPCODE_ENABLE)  {
         gettext("ZIP/POSTAL CODE"),
         "zipcode",
         "",
-        "size=30 maxlength=20",
+        "maxlength=20",
         [Validator::class, "min3Chars"],
         gettext("Insert your zipcode")
     );
@@ -280,7 +280,7 @@ if (PHONE_ENABLE)  {
         gettext("PHONENUMBER"),
         "phone",
         "",
-        "size=30 maxlength=20",
+        "maxlength=20",
         [Validator::class, "min8DigitLike"],
         gettext("Insert your phone number")
     );
@@ -291,7 +291,7 @@ if (FAX_ENABLE)  {
         gettext("FAXNUMBER"),
         "fax",
         "",
-        "size=30 maxlength=20",
+        "maxlength=20",
         null,
         gettext("Insert your fax number")
     );
@@ -302,7 +302,7 @@ if (COMP_ENABLE)  {
         gettext("COMPANY NAME"),
         "company_name",
         "",
-        "size=40 maxlength=50",
+        "maxlength=50",
         null,
         gettext("Insert Company name of this customer"),
         "",
@@ -315,7 +315,7 @@ if (COMP_WEB_ENABLE)  {
         gettext("COMPANY WEBSITE"),
         "company_website",
         "",
-        "size=40 maxlength=60",
+        "maxlength=60",
         null,
         gettext("Insert the company website of this customer"),
         "",
@@ -328,7 +328,7 @@ if (VAT_RN_ENABLE)  {
         gettext("VAT REGISTRATION NUMBER "),
         "VAT_RN",
         "",
-        "size=40 maxlength=40",
+        "maxlength=40",
         null,
         gettext("Insert the VAT registration number of this customer"),
         "",
@@ -341,7 +341,7 @@ if (TRAFFIC_ENABLE)  {
         gettext("TRAFFIC PER MONTH"),
         "traffic",
         "",
-        "size=30 maxlength=20",
+        "maxlength=20",
         [Validator::class, "numeric"],
         gettext("Insert the traffic per month for this customer"),
         "",
@@ -365,7 +365,7 @@ if (CAPTCHA_ENABLE) {
         gettext("VERIFICATION"),
         "captchacode",
         "",
-        "size=10 maxlength=6",
+        "maxlength=6",
         [Validator::class, "captcha"],
         gettext("Insert code from above picture")
     );

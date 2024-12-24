@@ -73,7 +73,7 @@ $HD_Form->AddEditElement(
     _("PROVIDER NAME"),
     "provider_name",
     "",
-    "size=40 maxlength=40",
+    "maxlength=40",
     [Validator::class, "min3Chars"],
     _("Insert the provider name")
 );

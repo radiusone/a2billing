@@ -73,7 +73,7 @@ $HD_Form->AddEditElement(
     _("NAME"),
     "name",
     "",
-    "size=30 maxlength=20",
+    "maxlength=20",
     [Validator::class, "min1Char"],
     _("Insert the Support Box name ")
 );

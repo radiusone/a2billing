@@ -97,7 +97,7 @@ $HD_Form->AddEditElement(
     _("LOGIN"),
     "login",
     "",
-    "size=30 maxlength=12",
+    "maxlength=12",
     [Validator::class, "min4Chars"],
     _("Insert the username")
 );
@@ -106,7 +106,7 @@ $HD_Form->AddEditElement(
     _("PASSWORD"),
     "pwd_encoded",
     "",
-    "size=30 maxlength=30",
+    "maxlength=30",
     [Validator::class, "min8Chars"],
     _("Insert the Reseller password")
 );
@@ -162,7 +162,7 @@ $HD_Form->AddEditElement(
     _("NAME"),
     "name",
     "",
-    "size=60 maxlength=50",
+    "maxlength=50",
     null,
     _("Insert the name")
 );
@@ -171,7 +171,7 @@ $HD_Form->AddEditElement(
     _("ADDRESS"),
     "direction",
     "",
-    "size=60 maxlength=250",
+    "maxlength=250",
     null,
     _("Insert the address")
 );
@@ -180,7 +180,7 @@ $HD_Form->AddEditElement(
     _("CITY"),
     "city",
     "",
-    "size=30 maxlength=30",
+    "maxlength=30",
     null,
     _("Insert the country")
 );
@@ -189,7 +189,7 @@ $HD_Form->AddEditElement(
     _("ZIPCODE"),
     "zipcode",
     "",
-    "size=10 maxlength=7",
+    "maxlength=7",
     null,
     _("Insert the zip code")
 );
@@ -198,7 +198,7 @@ $HD_Form->AddEditElement(
     _("STATE"),
     "state",
     "",
-    "size=30 maxlength=30",
+    "maxlength=30",
     null,
     _("Insert the state")
 );
@@ -207,7 +207,7 @@ $HD_Form->AddEditElement(
     _("COUNTRY"),
     "country",
     "",
-    "size=30 maxlength=30",
+    "maxlength=30",
     null,
     _("Insert the country")
 );
@@ -216,7 +216,7 @@ $HD_Form->AddEditElement(
     _("PHONE"),
     "phone",
     "",
-    "size=30 maxlength=20",
+    "maxlength=20",
     null,
     _("Insert the telephone number")
 );
@@ -225,7 +225,7 @@ $HD_Form->AddEditElement(
     _("FAX"),
     "fax",
     "",
-    "size=30 maxlength=20",
+    "maxlength=20",
     null,
     _("Insert the fax number")
 );
@@ -234,7 +234,7 @@ $HD_Form->AddEditElement(
     _("EMAIL"),
     "email",
     "",
-    "size=30 maxlength=70",
+    "maxlength=70",
     null,
     _("Insert the email"));
 

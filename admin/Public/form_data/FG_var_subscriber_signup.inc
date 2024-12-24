@@ -67,7 +67,7 @@ $HD_Form->AddEditElement(
     _("LABEL"),
     "label",
     "",
-    "size=30 maxlength=40",
+    "maxlength=40",
     [Validator::class, "min3Chars"],
     _("Insert the provider name")
 );
