@@ -367,11 +367,8 @@ if (CAPTCHA_ENABLE) {
         "",
         "size=10 maxlength=6",
         [Validator::class, "captcha"],
-        gettext("Insert code from above picture"),
-        "",
-        "",
-        null,
-        CAPTCHA_ENABLE);
+        gettext("Insert code from above picture")
+    );
 	$captcha = "captchacode,";
 }
 

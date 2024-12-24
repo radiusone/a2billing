@@ -610,7 +610,6 @@ class FormHandler
      * @param string $section_name If provided, added as a row above the input
      * @param string $check_emptyvalue If set to "NO", empty values are not validated; if set to "NO-NULL" empty values are added to the SQL query as NULL
      * @param callable<string>|null $custom_function A callback to run the value through before displaying it
-     * @param bool $field_enabled If set to false, the input will not be added
      * @return void
      */
     public function AddEditElement(
@@ -622,13 +621,9 @@ class FormHandler
         string $error_message = "",
         string $section_name = "",
         string $check_emptyvalue = "",
-        callable $custom_function = null, // only used in FG_var_config.inc to convert 0/1 to yes/no
-        bool   $field_enabled = true // only used in FG_var_signup.inc for captcha
+        callable $custom_function = null // only used in FG_var_config.inc to convert 0/1 to yes/no
     )
     {
-        if (!$field_enabled) {
-            return;
-        }
         $this->FG_EDIT_FORM_ELEMENTS[] = [
             "label" => $label_text,
             "name" => $fieldname,
