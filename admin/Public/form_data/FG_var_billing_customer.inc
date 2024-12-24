@@ -89,7 +89,7 @@ $HD_Form->AddEditElement(
     "date",
     "",
     "size='40' maxlength='40' $comp_date",
-    8,
+    [Validator::class, "min5Chars"],
     _("Insert the current date (YYYY-MM-DD)")
 );
 

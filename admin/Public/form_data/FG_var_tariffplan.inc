@@ -2,6 +2,7 @@
 
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
+use A2billing\Forms\Validator;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -94,7 +95,7 @@ $HD_Form->AddEditElement(
     "tariffname",
     "",
     "size=40 maxlength=30",
-    3, // [Validator::class, "min4Chars"],
+    [Validator::class, "min4Chars"],
     _("Insert the tariff name ")
 );
 
@@ -113,7 +114,7 @@ $HD_Form->AddEditElement(
     "startingdate",
     _("Please use the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
     "size=40 maxlength=40 $comp_date",
-    10,
+    [Validator::class, "dateTime"],
     _("Insert the starting date")
 );
 
@@ -122,7 +123,7 @@ $HD_Form->AddEditElement(
     "expirationdate",
     _("Format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
     "size=40 maxlength=40  $comp_date_plus",
-    10,
+    [Validator::class, "dateTime"],
     _("Insert the expiration date")
 );
 
@@ -146,7 +147,7 @@ $HD_Form->AddEditElement(
     "dnidprefix",
     _("Set the DNID rules to choose the ratecard 'dnidprefix', by default, matches all DNID. For instance, Set the DNIDPrefix  to 900540540 to choose this ratecard when the DNID is 900540540"),
     "size=20 $val_dnidprefix maxlength=20",
-    14,
+    [Validator::class, "numericOrAll"],
     _("Insert the dnid prefix")
 );
 
@@ -156,7 +157,7 @@ $HD_Form->AddEditElement(
     "calleridprefix",
     _("Set the CallerID rules to choose the ratecard 'calleridprefix', by default, matches all callerID. For instance, Set the calleridprefix to 900540540 to choose this ratecard when the CallerID is 900540540."),
     "size=20 $val_calleridprefix maxlength=20",
-    14,
+    [Validator::class, "numericOrAll"],
     _("Insert the dnid prefix")
 );
 

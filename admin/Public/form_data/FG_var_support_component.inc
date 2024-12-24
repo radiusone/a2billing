@@ -2,6 +2,7 @@
 
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
+use A2billing\Forms\Validator;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -73,7 +74,7 @@ $HD_Form->AddEditElement(
     "name",
     "",
     "size=30 maxlength=20",
-    9, // [Validator::class, "min1Char"],
+    [Validator::class, "min1Char"],
     _("Insert the Support Box name ")
 );
 

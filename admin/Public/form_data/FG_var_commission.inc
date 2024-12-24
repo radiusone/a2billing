@@ -114,7 +114,7 @@ $HD_Form->AddEditElement(
     "date",
     "",
     "size=40 READONLY maxlength=40 $comp_date",
-    10,
+    [Validator::class, "dateTime"],
     _("Insert the current date")
 );
 
@@ -123,7 +123,7 @@ $HD_Form->AddEditElement(
     "amount",
     _("Enter the amount in the currency base : ") . BASE_CURRENCY,
     "size=60 maxlength=10",
-    12,
+    [Validator::class, "number"],
     _("Insert the commission amount")
 );
 

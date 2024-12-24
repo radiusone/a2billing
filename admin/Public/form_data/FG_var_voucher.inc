@@ -3,6 +3,7 @@
 use A2billing\A2Billing;
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
+use A2billing\Forms\Validator;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -120,7 +121,7 @@ $HD_Form->AddEditElement(
     "voucher",
     "",
     "size=20 $maxi readonly maxlength=40",
-    4, // [Validator::class, "numeric"],
+    [Validator::class, "numeric"],
     _("Insert the voucher")
 );
 
@@ -129,7 +130,7 @@ $HD_Form->AddEditElement(
     "credit",
     "",
     "size=30 maxlength=30",
-    12, // [Validator::class, "number"],
+    [Validator::class, "number"],
     _("Insert the number of credit")
 );
 
@@ -138,7 +139,7 @@ $HD_Form->AddEditElement(
     "tag",
     "",
     "size=30 maxlength=30",
-    11, // [Validator::class, "min2Chars"],
+    [Validator::class, "min2Chars"],
     _("Insert the tag"),
     "",
     "NO-NULL"
@@ -160,7 +161,7 @@ $HD_Form->AddEditElement(
     "expirationdate",
     _("Format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
     "size=40 maxlength=40  $comp_date_plus",
-    10, // [Validator::class, "dateTime"],
+    [Validator::class, "dateTime"],
     _("Insert the expiration date")
 );
 

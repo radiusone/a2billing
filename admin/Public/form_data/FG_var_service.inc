@@ -2,6 +2,7 @@
 
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
+use A2billing\Forms\Validator;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -116,7 +117,7 @@ $HD_Form->AddEditElement(
     "name",
     "",
     "size=35 maxlength=30",
-    3, // [Validator::class, "min4Chars"]
+    [Validator::class, "min4Chars"],
     _("Insert the service name")
 );
 
@@ -125,7 +126,7 @@ $HD_Form->AddEditElement(
     "amount",
     _("Set the amount of credit to remove from the card. 0 will remove all credit from the card use -1 for DID recurrent service."),
     "size=30 maxlength=30",
-    12, // [Validator::class, "number"]
+    [Validator::class, "number"],
     _("Insert the number of credit to remove from the cards.")
 );
 
@@ -142,7 +143,7 @@ $HD_Form->AddEditElement(
     "daynumber",
     _("Set the number of days to apply to the rule above."),
     "size=20 maxlength=3",
-    4, // [Validator::class, "numeric"]
+    [Validator::class, "numeric"],
     _("Insert the daynumber"),
     "",
     "NO"
@@ -163,7 +164,7 @@ $HD_Form->AddEditElement(
     "maxnumbercycle",
     _("Set the maximum number of times that the service should be applied."),
     "size=20 maxlength=3",
-    4, // [Validator::class, "numeric"]
+    [Validator::class, "numeric"],
     _("Insert the max number of cycle"),
     "",
     "NO-NULL"
@@ -176,7 +177,7 @@ $HD_Form->AddEditElement(
     "emailreport",
     "",
     "size=30 maxlength=30",
-    1, // [Validator::class, "email"]
+    [Validator::class, "email"],
     _("Insert the email to send the report"),
     "",
     "NO-NULL"

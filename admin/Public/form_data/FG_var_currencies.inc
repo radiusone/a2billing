@@ -2,6 +2,7 @@
 
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
+use A2billing\Forms\Validator;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -61,7 +62,7 @@ $HD_Form->AddEditElement(
     "name",
     "",
     "size=35 maxlength=30",
-    3,
+    [Validator::class, "min4Chars"],
     gettext("Insert the currency name")
 );
 
@@ -70,7 +71,7 @@ $HD_Form->AddEditElement(
     "currency",
     "",
     "size=3 maxlength=3",
-    0,
+    [Validator::class, "min3Chars"],
     gettext("Insert the currency label")
 );
 
@@ -80,7 +81,7 @@ $HD_Form->AddEditElement(
     "value",
     gettext("Set the value of this currency in your base currency that the user have to pay per month.") . " " . gettext("Base currency :") . " " . strtoupper(BASE_CURRENCY),
     "size=30 maxlength=30",
-    12,
+    [Validator::class, "number"],
     gettext("Insert the fee amount.")
 );
 

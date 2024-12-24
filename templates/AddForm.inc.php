@@ -112,7 +112,7 @@ use DateTime;
             <div class="form-check">
             <?php if ((string)($processed[$row["name"]] ?? "") === "$val"): ?>
                 <?php $check = $val ?>
-            <?php elseif ($form->VALID_SQL_REG_EXP && array_key_exists($i, $db_data)): ?>
+            <?php elseif ($form->all_fields_valid && array_key_exists($i, $db_data)): ?>
                 <?php $check = $db_data[$i] ?>
             <?php else: ?>
                 <?php $check = $row["default"] ?>

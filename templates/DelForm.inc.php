@@ -107,7 +107,7 @@ namespace A2billing\Forms;
                 <?php foreach ($row["select_fields"] as $val => $opt): ?>
                 <option
                     value="<?= $val ?>"
-                    <?php if ($form->VALID_SQL_REG_EXP): ?>
+                    <?php if ($form->all_fields_valid): ?>
                         <?php if (str_contains($row["attributes"], "multiple")): ?>
                             <?php if (intval($val) & intval($db_data[$i])): ?>
                     selected="selected"
@@ -134,7 +134,7 @@ namespace A2billing\Forms;
             <?php case "RADIOBUTTON": ?>
                 <?php foreach ($row["radio_options"] as $key => $rad): ?>
                     <?php $val = is_array($rad) ? $rad[1] : $key ?>
-                    <?php $check = $form->VALID_SQL_REG_EXP && array_key_exists($i, $db_data) ? $db_data[$i] : ($processed[$row["name"]] ?? "") ?>
+                    <?php $check = $form->all_fields_valid && array_key_exists($i, $db_data) ? $db_data[$i] : ($processed[$row["name"]] ?? "") ?>
             <div class="form-check">
                 <input
                     id="<?= $row["name"] ?>_<?= $val ?>"

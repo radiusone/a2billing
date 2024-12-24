@@ -92,7 +92,7 @@ $HD_Form->AddEditElement(
     "destination",
     _("Enter the phone number you wish to call, or the VoIP client to reach. (ie: 347894999 or SIP/jeremy@182.212.1.45). If the call is VoIP, the VoIP_Call must be set to yes."),
     "maxlength=120",
-    0,
+    [Validator::class, "min3Chars"],
     _("Insert the DID")
 );
 

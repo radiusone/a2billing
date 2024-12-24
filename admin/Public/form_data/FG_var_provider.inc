@@ -2,6 +2,7 @@
 
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
+use A2billing\Forms\Validator;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -73,7 +74,7 @@ $HD_Form->AddEditElement(
     "provider_name",
     "",
     "size=40 maxlength=40",
-    0, // [Validator::class, "min3Chars"]
+    [Validator::class, "min3Chars"],
     _("Insert the provider name")
 );
 

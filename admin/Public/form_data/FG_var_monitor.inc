@@ -3,6 +3,7 @@
 use A2billing\A2Billing;
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
+use A2billing\Forms\Validator;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -68,7 +69,7 @@ $HD_Form->AddEditElement(
     "label",
     "",
     "size=30 maxlength=50",
-    3, // [Validator::class, "min4Chars"]
+    [Validator::class, "min4Chars"],
     _("Insert the label")
 );
 
@@ -77,7 +78,7 @@ $HD_Form->AddEditElement(
     "dial_code",
     "",
     "size=5 maxlength=3",
-    4, // [Validator::class, "numeric"]
+    [Validator::class, "numeric"],
     _("Insert the dial code")
 );
 
@@ -95,7 +96,7 @@ $HD_Form->AddEditElement(
     "text_intro",
     "",
     "size=30 maxlength=50",
-    3, // [Validator::class, "min4Chars"]
+    [Validator::class, "min4Chars"],
     _("Insert the text intro")
 );
 

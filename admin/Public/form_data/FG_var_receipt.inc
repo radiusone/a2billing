@@ -122,7 +122,7 @@ $HD_Form->AddEditElement(
     "date",
     "",
     "size=40 READONLY maxlength=40  $comp_date",
-    10,
+    [Validator::class, "dateTime"],
     _("Insert the current date")
 );
 
@@ -131,7 +131,7 @@ $HD_Form->AddEditElement(
     "title",
     "",
     "size=30 maxlength=50",
-    0, // [Validator::class, "min3Chars"]
+    [Validator::class, "min3Chars"],
     _("Insert the title of invoice, if you need one")
 );
 

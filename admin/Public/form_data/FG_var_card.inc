@@ -336,7 +336,7 @@ if ($popup_select) {
         "username",
         '',
         "size=30 $maxi readonly  maxlength=40",
-        4, // [Validator::class, "numeric"],
+        [Validator::class, "numeric"],
         _("Insert the account number"),
         _("Customer Information")
     );
@@ -346,7 +346,7 @@ if ($popup_select) {
         "useralias",
         "",
         "size=20 $maxi2 maxlength=40",
-        4, // [Validator::class, "numeric"],
+        [Validator::class, "numeric"],
         _("Insert the webui login")
     );
 
@@ -365,7 +365,7 @@ if ($popup_select) {
         "credit",
         _("currency : ") . strtoupper(BASE_CURRENCY),
         "size=30 maxlength=30 " . $balance_access,
-        12, // [Validator::class, "number"],
+        [Validator::class, "number"],
         _("Insert the number of credit")
     );
 
@@ -390,7 +390,7 @@ if ($popup_select) {
         "lastname",
         "",
         "size=30 maxlength=50",
-        11, // [Validator::class, "min2Chars"],
+        [Validator::class, "min2Chars"],
         _("Insert the lastname of the customers"),
         _("Personal Information"),
         "NO"
@@ -401,7 +401,7 @@ if ($popup_select) {
         "firstname",
         "",
         "size=30 maxlength=50",
-        11, // [Validator::class, "min2Chars"],
+        [Validator::class, "min2Chars"],
         _("Insert the firstname of the customers"),
         "",
         "NO"
@@ -412,7 +412,7 @@ if ($popup_select) {
         "email",
         "",
         "size=30 maxlength=70",
-        1, // [Validator::class, "email"],
+        [Validator::class, "email"],
         _("Insert the email"),
         "",
         "NO"
@@ -423,7 +423,7 @@ if ($popup_select) {
         "address",
         "",
         "size=30 maxlength=100",
-        0, // [Validator::class, "min3Chars"],
+        [Validator::class, "min3Chars"],
         _("Insert the address of the customers"),
         "",
         "NO"
@@ -434,7 +434,7 @@ if ($popup_select) {
         "city",
         "",
         "size=30 maxlength=40",
-        0, // [Validator::class, "min3Chars"],
+        [Validator::class, "min3Chars"],
         _("Insert the city"),
         "",
         "NO"
@@ -445,7 +445,7 @@ if ($popup_select) {
         "state",
         "",
         "size=30 maxlength=40",
-        11, // [Validator::class, "min2Chars"],
+        [Validator::class, "min2Chars"],
         _("Insert the state"),
         "",
         "NO"
@@ -465,7 +465,7 @@ if ($popup_select) {
         "zipcode",
         "",
         "size=30 maxlength=20",
-        0, // [Validator::class, "min3Chars"],
+        [Validator::class, "min3Chars"],
         _("Insert the zipcode"),
         "",
         "NO"
@@ -476,7 +476,7 @@ if ($popup_select) {
         "phone",
         "",
         "size=30 maxlength=20",
-        7, // [Validator::class, "min8DigitLike"],
+        [Validator::class, "min8DigitLike"],
         _("Insert the phone number of the customers"),
         "",
         "NO"
@@ -596,7 +596,7 @@ if ($popup_select) {
         "lock_pin",
         _("Code required to make the call if the lock is active."),
         "size=20 maxlength=10 $lockpin_default",
-        4, // [Validator::class, "numeric"],
+        [Validator::class, "numeric"],
         "",
         "",
         "NO"
@@ -624,7 +624,7 @@ if ($popup_select) {
             "creditlimit",
             _("Credit limit is only used for the postpaid account."),
             "size=20 maxlength=20",
-            4, // [Validator::class, "numeric"],
+            [Validator::class, "numeric"],
             _("Insert the credit limit"),
             "",
             "NO-NULL"
@@ -653,7 +653,7 @@ if ($popup_select) {
         "email_notification",
         "",
         "size=30 maxlength=70",
-        1, // [Validator::class, "email"],
+        [Validator::class, "email"],
         _("Insert the email to notify this customer"),
         "",
         "NO"
@@ -699,7 +699,7 @@ if ($popup_select) {
         "expirationdate",
         _("please use the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
         "size=40 maxlength=40  $comp_date_plus",
-        10,
+        [Validator::class, "dateTime"],
         _("Insert the expiration date"),
         "",
         "NO-NULL",
@@ -711,7 +711,7 @@ if ($popup_select) {
         "expiredays",
         _("The number of days after which the account will expire."),
         "size=10 maxlength=6 $comp_zero",
-        4, // [Validator::class, "numeric"],
+        [Validator::class, "numeric"],
         _("Insert the number of days after which the account will expire")
     );
 
@@ -790,7 +790,7 @@ if ($popup_select) {
         "initialbalance",
         _("The initial balance is used by autorefill to reset the current balance to this amount"),
         "size=30 $default_initbalance maxlength=30",
-        12, // [Validator::class, "number"],
+        [Validator::class, "number"],
         _("Insert the amount of the initial balance")
     );
 
@@ -802,7 +802,7 @@ if ($popup_select) {
         "vat",
         _("VAT to add on the invoice of this customer. it should be a decimal value '21' this will be for 21% of VAT!"),
         "size=10 maxlength=6 $vat_init",
-        12, // [Validator::class, "number"],
+        [Validator::class, "number"],
         _("Insert the VAT")
     );
 
@@ -824,7 +824,7 @@ if ($popup_select) {
         "traffic",
         "",
         "size=30 maxlength=20",
-        4, // [Validator::class, "numeric"],
+        [Validator::class, "numeric"],
         _("Insert the traffic per month for this customer"),
         _("TARGET TRAFFIC"),
         "NO"

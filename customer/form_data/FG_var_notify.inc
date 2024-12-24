@@ -2,6 +2,7 @@
 
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
+use A2billing\Forms\Validator;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -97,7 +98,7 @@ $HD_Form->AddEditElement(
     "email_notification",
     "",
     "size=30 maxlength=70",
-    1,
+    [Validator::class, "email"],
     gettext("Insert the email to notify the customers"),
     "",
     "NO"

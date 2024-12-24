@@ -2,6 +2,7 @@
 
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
+use A2billing\Forms\Validator;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -170,7 +171,7 @@ $HD_Form->AddEditElement(
     "lastname",
     "",
     "size=30 maxlength=50",
-    11,
+    [Validator::class, "min2Chars"],
     gettext("Insert your lastname")
 );
 $lastname_editFG = "lastname,";
@@ -181,7 +182,7 @@ $HD_Form->AddEditElement(
     "firstname",
     "",
     "size=30 maxlength=50",
-    11,
+    [Validator::class, "min2Chars"],
     gettext("Insert your firstname")
 );
 $firstname_editFG = "firstname,";
@@ -191,7 +192,7 @@ $HD_Form->AddEditElement(
     "email",
     "",
     "size=30 maxlength=70",
-    1,
+    [Validator::class, "email"],
     gettext("Insert your email")
 );
 if (ADDRESS_ENABLE)  {
@@ -200,7 +201,7 @@ $HD_Form->AddEditElement(
     "address",
     "",
     "size=30 maxlength=100",
-    0,
+    [Validator::class, "min3Chars"],
     gettext("Insert your address")
 );
 $address_editFG = "address,";
@@ -211,7 +212,7 @@ $HD_Form->AddEditElement(
     "city",
     "",
     "size=30 maxlength=40",
-    0,
+    [Validator::class, "min3Chars"],
     gettext("Insert your city")
 );
 $city_editFG = "city,";
@@ -222,7 +223,7 @@ $HD_Form->AddEditElement(
     "state",
     "",
     "size=30 maxlength=40",
-    11,
+    [Validator::class, "min2Chars"],
     gettext("Insert your state"),
     "",
     "NO"
@@ -248,7 +249,7 @@ if (ZIPCODE_ENABLE)  {
         "zipcode",
         "",
         "size=30 maxlength=20",
-        0,
+        [Validator::class, "min3Chars"],
         gettext("Insert your zipcode")
     );
     $zipcode_editFG = "zipcode,";
@@ -280,7 +281,7 @@ if (PHONE_ENABLE)  {
         "phone",
         "",
         "size=30 maxlength=20",
-        7,
+        [Validator::class, "min8DigitLike"],
         gettext("Insert your phone number")
     );
     $phone_editFG = "phone,";
@@ -341,7 +342,7 @@ if (TRAFFIC_ENABLE)  {
         "traffic",
         "",
         "size=30 maxlength=20",
-        4,
+        [Validator::class, "numeric"],
         gettext("Insert the traffic per month for this customer"),
         "",
         "NO"
@@ -353,7 +354,9 @@ if (TRAFFIC_TARGET_ENABLE)  {
         gettext("TARGET TRAFFIC"),
         "traffic_target",
         "",
-        "cols='50' rows='4'", null, gettext("Insert the target traffic description")
+        "cols='50' rows='4'",
+        null,
+        gettext("Insert the target traffic description")
     );
     $traffic_target_editFG = "traffic_target,";
 }
@@ -363,7 +366,7 @@ if (CAPTCHA_ENABLE) {
         "captchacode",
         "",
         "size=10 maxlength=6",
-        19,
+        [Validator::class, "captcha"],
         gettext("Insert code from above picture"),
         "",
         "",

@@ -82,7 +82,7 @@ $HD_Form->AddEditElement(
     "name",
     _("Enter the name or label that will identify this speed dial"),
     "size=40 maxlength=50",
-    0, // [Validator::class, "min3Chars"],
+    [Validator::class, "min3Chars"],
     _("Insert the name")
 );
 
@@ -92,7 +92,7 @@ $HD_Form->AddEditElement(
     "phone",
     _("Enter the phone number for the speed dial."),
     "size=30 maxlength=50",
-    4, // [Validator::class, "numeric"],
+    [Validator::class, "numeric"],
     _("Insert the phone")
 );
 

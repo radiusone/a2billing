@@ -73,9 +73,9 @@ use DateTime;
                 class="form-control <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
                 name="<?= $row["name"] ?>"
                 <?= $row["attributes"] ?>
-            <?php if ($form->VALID_SQL_REG_EXP): /* what is VALID_SQL_REG_EXP */ ?>
+            <?php if ($form->all_fields_valid): ?>
                 value="<?= $db_data[$i] ?>"
-            <?php else: ?>
+            <?php else: /* if there was a validation error, refill the field with submitted data */ ?>
                 value="<?= $processed[$row["name"]] ?>"
             <?php endif ?>
             />
@@ -88,7 +88,7 @@ use DateTime;
                     class="form-control <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
                     name="<?= $row["name"] ?>"
                     <?= $row["attributes"] ?>
-                    value="<?= $form->VALID_SQL_REG_EXP ? $db_data[$i] : $processed[$row["name"]] ?>"
+                    value="<?= $form->all_fields_valid ? $db_data[$i] : $processed[$row["name"]] ?>"
                 />
                 <a
                     href="<?= $row["popup_dest"] ?>"
@@ -108,7 +108,7 @@ use DateTime;
                 class="form-control <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
                 name="<?= $row["name"] ?>"
                 <?= $row["attributes"] ?>
-            ><?= $form->VALID_SQL_REG_EXP ? $db_data[$i] : $processed[$row["name"]] ?></textarea>
+            ><?= $form->all_fields_valid ? $db_data[$i] : $processed[$row["name"]] ?></textarea>
             <?php break ?>
 
         <?php case "SELECT": ?>
@@ -129,19 +129,15 @@ use DateTime;
             <?php foreach ($row["select_fields"] as $val => $opt): ?>
                 <option
                     value="<?= $val ?>"
-                <?php if ($form->VALID_SQL_REG_EXP): ?>
-                    <?php if (str_contains($row["attributes"], "multiple")): ?>
-                        <?php if (intval($val) & intval($db_data[$i])): ?>
+                <?php if ($form->all_fields_valid): ?>
+                    <?php if (str_icontains($row["attributes"], "multiple") && (intval($val) & intval($db_data[$i]))): ?>
                     selected="selected"
-                        <?php endif ?>
                     <?php elseif ($db_data[$i] == $val): ?>
                     selected="selected"
                     <?php endif ?>
-                <?php else: ?>
-                    <?php if (str_contains($row["attributes"], "multiple")): ?>
-                        <?php /* TODO: WTF is this? */ if (is_array($processed[$row["name"]]) && (intval($val) & array_sum($processed[$row["name"]]))): ?>
+                <?php else: /* if there was a validation error, select based on submitted data */ ?>
+                    <?php if (str_icontains($row["attributes"], "multiple") && (intval($val) & array_sum($processed[$row["name"]]))): ?>
                     selected="selected"
-                        <?php endif ?>
                     <?php elseif ($processed[$row["name"]] == $val): ?>
                     selected="selected"
                     <?php endif ?>
@@ -157,7 +153,7 @@ use DateTime;
             <?php foreach ($row["radio_options"] as $key => $rad): ?>
                 <?php $val = is_array($rad) ? $rad[1] : $key ?>
             <div class="form-check">
-            <?php $check = $form->VALID_SQL_REG_EXP && array_key_exists($i, $db_data) ? $db_data[$i] : ($processed[$row["name"]] ?? "") ?>
+            <?php $check = $form->all_fields_valid && array_key_exists($i, $db_data) ? $db_data[$i] : ($processed[$row["name"]] ?? "") ?>
                 <input
                     id="<?= $row["name"] ?>_<?= $val ?>"
                     class="form-check-input <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
@@ -173,7 +169,7 @@ use DateTime;
 
         <?php case "DAYTIME": ?>
             <?php
-                $value = ($form->VALID_SQL_REG_EXP) ? $db_data[$i] : $processed[$row["name"]];
+                $value = ($form->all_fields_valid) ? $db_data[$i] : $processed[$row["name"]];
                 $day = intdiv($value, 1440);
                 $time = (new DateTime("@" . ($value % 1440) * 60))->format("H:i");
             ?>

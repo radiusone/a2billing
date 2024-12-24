@@ -2,6 +2,7 @@
 
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
+use A2billing\Forms\Validator;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -83,7 +84,7 @@ $HD_Form->AddEditElement(
     "name",
     "",
     "",
-    3,
+    [Validator::class, "min4Chars"],
     _("Insert the alarm name")
 );
 
@@ -125,7 +126,7 @@ $HD_Form->AddEditElement(
     "emailreport",
     "",
     "size=40 maxlength=40",
-    1,
+    [Validator::class, "email"],
     _("Insert the email to send the alarm")
 );
 

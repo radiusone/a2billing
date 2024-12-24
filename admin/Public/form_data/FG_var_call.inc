@@ -57,7 +57,7 @@ $HD_Form->AddEditElement(
     "id",
     "",
     "size='10' maxlength='10'",
-    18
+    [Validator::class, "phoneNumber"],
 );
 
 $HD_Form->AddEditPopup(
@@ -75,7 +75,7 @@ $HD_Form->AddEditElement(
     "calledstation",
     "",
     "size='40' maxlength='30'",
-    18
+    [Validator::class, "phoneNumber"],
 );
 
 
@@ -84,7 +84,7 @@ $HD_Form->AddEditElement(
     "src",
     "",
     "size='40' maxlength='30'",
-    18
+    [Validator::class, "phoneNumber"],
 );
 
 $HD_Form->AddEditElement(
@@ -92,7 +92,7 @@ $HD_Form->AddEditElement(
     "dnid",
     "",
     "size='40' maxlength='30'",
-    18
+    [Validator::class, "phoneNumber"],
 );
 
 $HD_Form->AddEditElement(
@@ -100,7 +100,8 @@ $HD_Form->AddEditElement(
     "sessiontime",
     "",
     "size='40' maxlength='30'",
-    18
+    [Validator::class, "timeSeconds"],
+
 );
 
 // Set the filter variables

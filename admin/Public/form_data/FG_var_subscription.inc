@@ -2,6 +2,7 @@
 
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
+use A2billing\Forms\Validator;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -91,7 +92,7 @@ $HD_Form->AddEditElement(
     "label",
     "",
     "size=35 maxlength=30",
-    3, // [Validator::class, "min4Chars"],
+    [Validator::class, "min4Chars"],
     _("Insert the service label")
 );
 
@@ -100,7 +101,7 @@ $HD_Form->AddEditElement(
     "fee",
     _("Set the fee amount that the user have to pay per month."),
     "size=30 maxlength=30",
-    12, // [Validator::class, "number"],
+    [Validator::class, "number"],
     _("Insert the fee amount.")
 );
 
@@ -111,7 +112,7 @@ $HD_Form->AddEditElement(
     "startdate",
     _("please use the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
     "size=40 maxlength=40  $comp_date",
-    10, // [Validator::class, "dateTime"],
+    [Validator::class, "dateTime"],
     _("Insert the start date"),
     "",
     "NO-NULL",
@@ -123,7 +124,7 @@ $HD_Form->AddEditElement(
     "stopdate",
     _("please use the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
     "size=40 maxlength=40  $comp_date_plus",
-    10, // [Validator::class, "dateTime"],
+    [Validator::class, "dateTime"],
     _("Insert the stop date"),
     "",
     "NO-NULL",
@@ -135,7 +136,7 @@ $HD_Form->AddEditElement(
     "emailreport",
     "",
     "size=30 maxlength=30",
-    1, // [Validator::class, "email"],
+    [Validator::class, "email"],
     _("Insert the email to send the report"),
     "",
     "NO-NULL"

@@ -2,6 +2,7 @@
 
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
+use A2billing\Forms\Validator;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -121,7 +122,7 @@ $HD_Form->AddEditElement(
     "email",
     "",
     "size=30 maxlength=70",
-    1,
+    [Validator::class, "email"],
     gettext("Insert the email"),
     "",
     "NO"

@@ -112,7 +112,7 @@ $HD_Form_c->AddEditElement(
     "amount",
     "",
     "size=20  maxlength=20 $val_default_fixrate",
-    12,
+    [Validator::class, "number"],
     _("Insert the amount")
 );
 

@@ -2,6 +2,7 @@
 
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
+use A2billing\Forms\Validator;
 use A2billing\Mail;
 use A2billing\Table;
 
@@ -176,7 +177,7 @@ $HD_Form->AddEditElement(
     "fromemail",
     "",
     "size=30 maxlength=60",
-    1,
+    [Validator::class, "email"],
     _("Insert the user fromemail")
 );
 

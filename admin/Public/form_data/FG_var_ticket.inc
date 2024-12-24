@@ -180,7 +180,7 @@ $HD_Form->AddEditElement(
     "title",
     "",
     "maxlength=50",
-    9, // [Validator::class, "min1Char"],
+    [Validator::class, "min1Char"],
     _("Insert the Title of ticket ")
 );
 

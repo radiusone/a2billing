@@ -2,6 +2,7 @@
 
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
+use A2billing\Forms\Validator;
 use A2billing\Notification;
 use A2billing\NotificationsDAO;
 use A2billing\Table;
@@ -134,7 +135,7 @@ if (isset($form_action) && ($form_action=='ask-edit')) {
         "destination",
         gettext("Enter here the phonenumber you want to call or the SIP/IAX/H323 peer to reach (ie: 347894999 or SIP/jeremy@182.212.1.45). To call SIP/IAX/H323 peer, you need to enable the voip_call below (voip_call = Yes) "),
         "size=50 maxlength=120",
-        0,
+        [Validator::class, "min3Chars"],
         gettext("Insert the Destination")
     );
 }

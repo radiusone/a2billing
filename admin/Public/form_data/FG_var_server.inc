@@ -2,6 +2,7 @@
 
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
+use A2billing\Forms\Validator;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -67,7 +68,7 @@ $HD_Form->AddEditElement(
     "server_ip",
     "",
     "size=30 maxlength=40",
-    3, // [Validator::class, "min4Chars"]
+    [Validator::class, "min4Chars"],
     _("Insert the server hostname")
 );
 
@@ -76,7 +77,7 @@ $HD_Form->AddEditElement(
     "manager_host",
     "",
     "size=30 maxlength=40",
-    9, // [Validator::class, "min1Char"]
+    [Validator::class, "min1Char"],
     _("Insert the manager host")
 );
 
@@ -85,7 +86,7 @@ $HD_Form->AddEditElement(
     "manager_username",
     "",
     "size=30 maxlength=40",
-    9, // [Validator::class, "min1Char"]
+    [Validator::class, "min1Char"],
     _("Insert the manager username")
 );
 

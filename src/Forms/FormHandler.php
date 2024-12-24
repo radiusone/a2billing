@@ -35,8 +35,8 @@ class FormHandler
 
     public ADOConnection $DBHandle;
 
-    /** @var bool ??? */
-    public bool $VALID_SQL_REG_EXP = true;
+    /** @var bool if the current submission has passed all validation checks */
+    public bool $all_fields_valid = true;
 
     /** @var bool|int The result of a non-select query (bool for update and delete, inserted ID for insert) */
     public $QUERY_RESULT = false;
@@ -605,7 +605,7 @@ class FormHandler
      * @param string $fieldname The form input name
      * @param string $form_text_bottom Text to display below the form input
      * @param string $html_attributes HTML attributes for the input
-     * @param int|null $regexpr_nb A validation method number
+     * @param callable<string>|null $validator A validation method that returns true or an error message
      * @param string $error_message A message to show if validation fails
      * @param string $section_name If provided, added as a row above the input
      * @param string $check_emptyvalue If set to "NO", empty values are not validated; if set to "NO-NULL" empty values are added to the SQL query as NULL
@@ -618,11 +618,11 @@ class FormHandler
         string $fieldname,
         string $form_text_bottom = "",
         string $html_attributes = "",
-        ?int   $regexpr_nb = null,
+        ?callable $validator = null,
         string $error_message = "",
         string $section_name = "",
         string $check_emptyvalue = "",
-               $custom_function = "",
+               $custom_function = "", // only used in FG_var_config.inc to convert 0/1 to yes/no
         bool   $field_enabled = true // only used in FG_var_signup.inc for captcha
     )
     {
@@ -630,15 +630,15 @@ class FormHandler
             return;
         }
         $this->FG_EDIT_FORM_ELEMENTS[] = [
-            "label" => $label_text, // 0
-            "name" => $fieldname, // 1
-            "type" => "INPUT", // 3
-            "attributes" => $html_attributes, // 4
-            "regex" => $regexpr_nb, // 5
-            "error" => $error_message, // 6
-            "check_empty" => strtoupper($check_emptyvalue), // 13
-            "section_name" => $section_name, // 16
-            "custom_function" => $custom_function, //15
+            "label" => $label_text,
+            "name" => $fieldname,
+            "type" => "INPUT",
+            "attributes" => $html_attributes,
+            "validator" => $validator,
+            "error" => $error_message,
+            "check_empty" => strtoupper($check_emptyvalue),
+            "section_name" => $section_name,
+            "custom_function" => $custom_function,
             "comment" => $form_text_bottom,
             "validation_err" => true,
         ];
@@ -706,7 +706,6 @@ class FormHandler
             "default" => $default_value,
             "type" => "SELECT",
             "attributes" => $html_attributes,
-            "regex" => null,
             "error" => $error_message,
             "select_type" => "LIST",
             "select_fields" => $options,
@@ -744,7 +743,6 @@ class FormHandler
             "default" => $default_value,
             "type" => "SELECT",
             "attributes" => $html_attributes,
-            "regex" => null,
             "error" => $error_message,
             "select_type" => "LIST",
             "select_fields" => $options,
@@ -783,7 +781,6 @@ class FormHandler
             "default" => $default_value,
             "type" => "RADIOBUTTON",
             "attributes" => $html_attributes,
-            "regex" => null,
             "error" => $error_message,
             "radio_options" => $options,
             "section_name" => $section_name,
@@ -1122,73 +1119,6 @@ class FormHandler
             "match_value" => "",
         ]];
     }
-
-    /**
-     * @param $rule_number
-     * @param string $value
-     * @return bool|string
-     */
-    private function validate_field($rule_number, string $value)
-    {
-        $messages = [
-            _("(at least 3 characters)"),
-            _("(must match email structure. Example : name@domain.com)"),
-            _("(at least 5 successive characters appear at the end of this string)"),
-            _("(at least 4 characters)"),
-            _("(number format)"),
-            _("(YYYY-MM-DD)"),
-            _("(only number with more that 8 digits)"),
-            _("(at least 8 digits using . or - or the space key)"),
-            _("network adress format"),
-            _("at least 1 character"),
-            _("(YYYY-MM-DD HH:MM:SS)"),
-            _("(AT LEAST 2 CARACTERS)"),
-            _("(NUMBER FORMAT WITH/WITHOUT DECIMAL, use '.' for decimal)"),
-            _("(NUMBER FORMAT OR 'defaultprefix' OR ASTERISK/POSIX REGEX FORMAT)"),
-            _("(NUMBER FORMAT OR 'all')"),
-            _("(HH:MM)"),
-            _("You must write something."),
-            _("8 characters alphanumeric"),
-            _("Phone Number format"),
-            _("(at least 6 Alphanumeric characters)"),
-            _("(HH:MM:SS)"),
-            _("(PERCENT FORMAT WITH/WITHOUT DECIMAL, use '.' for decimal and don't use '%' character. e.g.: 12.4 )"),
-            "default" => _("A validation error occurred."),
-        ];
-
-        $result = null;
-        switch ($rule_number) {
-            case 0: $result = strlen($value) >= 3; break;
-            case 1: $result = (bool)filter_var($value, FILTER_VALIDATE_EMAIL); break;
-            case 2: $pattern = "/(.)\\1{4}$/"; break;
-            case 3: $result = strlen($value) >= 4; break;
-            case 4: $pattern = "/^[0-9]+$/"; break;
-            case 5: $pattern = "/^(?:20|19)[0-9]{2}([- \\/.])(?:0[1-9]|1[012])\\1(?:0[1-9]|[12][0-9]|3[01])$/"; break;
-            case 6: $pattern = "/^[0-9]{8,}$/"; break;
-            case 7: $pattern = "/^[0-9][0-9. \\/-]{6,}[0-9]$/"; break;
-            case 8: $result = strlen($value) >= 5; break;
-            case 9: $result = strlen($value) >= 1; break;
-            case 10: $pattern = "/^(?:20|19)[0-9]{2}([- \\/.])(?:0[1-9]|1[012])\\1(?:0[1-9]|[12][0-9]|3[01]) (?:[01][0-9]|2[0-3])(?::[0-5][0-9]){2}$/"; break;
-            case 11: $result = strlen($value) >= 2; break;
-            case 12: $pattern = "/^-?[0-9]+(\\.?[0-9]+)?$/"; break;
-            // case 13: regex pattern ^(defaultprefix|[-,0-9]+|_[-[.[.][.].]0-9XZN(){}|.,_]+)$ was not valid, presumably this isn't used
-            case 14: $pattern = "/^all|[0-9]+$/"; break;
-            case 15: $pattern = "/^[0-9]{2}:[0-9]{2}$/"; break; // is this a duration or should time check be proper?
-            case 16: $result = strlen($value) >= 15; break;
-            case 17: $result = strlen($value) >= 8; break;
-            case 18: $pattern = "/^\\+[0-9]+$/"; break;
-            case 19: $pattern = "/^$_SESSION[captcha_code]$/"; break;
-            case 20: $pattern = "/^[0-9]{2}(?::[0-9]{2}){2}$/"; break;  // is this a duration or should time check be proper?
-            case 21: $result = $value >= 0 && $value <= 100; break;
-            default: return $messages["default"];
-        }
-        if (is_null($result) && isset($pattern)) {
-            $result = (bool)preg_match($pattern, $value);
-        }
-
-        return $result ?: $messages[$rule_number];
-    }
-
 
     /**
      * Adds to the conditions a comparison between a column and a posted value
@@ -1533,7 +1463,7 @@ class FormHandler
     public function perform_add(string &$form_action): void
     {
         $processed = $this->getProcessed();  //$processed['firstname']
-        $this->VALID_SQL_REG_EXP = true;
+        $this->all_fields_valid = true;
         $values = [];
         $arr_value_to_import = [];
         $instance_table = new Table($this->FG_QUERY_TABLE_NAME, "*", $this->query_table_joins);
@@ -1541,35 +1471,19 @@ class FormHandler
         foreach ($this->FG_EDIT_FORM_ELEMENTS as &$row) {
             if (empty($row["custom_query"])) {
                 $fields_name = $row["name"];
-                $regexp = $row["regex"] ?? null;
 
                 if (str_contains($row["attributes"], "multiple") && is_array($processed[$fields_name])) {
                     $total_mult_select = (int)array_sum($processed[$fields_name]);
                     $values[$fields_name] = $total_mult_select;
                 } else {
-                    // CHECK ACCORDING TO THE REGULAR EXPRESSION DEFINED
-                    if (is_numeric($regexp) && !(str_starts_with($row["check_empty"] ?? "", "NO") && $processed[$fields_name] === "")) {
-                        $row["validation_err"] = $this->validate_field($regexp, $processed[$fields_name]);
-                        if ($row["validation_err"] !== true) {
-                            $this->VALID_SQL_REG_EXP = false;
-                            if ($this->FG_DEBUG == 1) {
-                                echo "<br>-> $fields_name) Error Match";
-                            }
-                            $form_action = "ask-add";
-                        }
-                    } elseif ($regexp === "check_select" && $processed[$fields_name] == -1) {
-                        // FOR SELECT FIELD WE HAVE THE check_select THAT WILL ENSURE WE DEFINE A VALUE FOR THE SELECTABLE FIELD
-                        $row["validation_err"] = _("Validation error");
-                        $this->VALID_SQL_REG_EXP = false;
-                        $form_action = "ask-add";
-                    } elseif (!empty($row["validator"])) {
+                    if (!empty($row["validator"])) {
                         if ($processed[$fields_name] === "" && str_starts_with($row["check_empty"] ?? "", "NO")) {
                             $result = true;
                         } else {
                             $result = call_user_func($row["validator"], $processed[$fields_name]);
                         }
                         if ($result !== true) {
-                            $this->VALID_SQL_REG_EXP = false;
+                            $this->all_fields_valid = false;
                             $form_action = "ask-add";
                         }
                         $row["validation_err"] = $result;
@@ -1619,7 +1533,7 @@ class FormHandler
             $values[$name] = $value;
         }
 
-        if ($this->VALID_SQL_REG_EXP === false) {
+        if ($this->all_fields_valid === false) {
             $this->QUERY_RESULT = false;
         } elseif (($key = array_search("%check_array%", $values)) !== false) {
             foreach ($arr_value_to_import[$key] as $array_value) {
@@ -1664,7 +1578,7 @@ class FormHandler
                 array_values($values)
             );
         }
-        if (!empty($id) && ($this->VALID_SQL_REG_EXP) && (isset($this->FG_LOCATION_AFTER_ADD))) {
+        if (!empty($id) && ($this->all_fields_valid) && (isset($this->FG_LOCATION_AFTER_ADD))) {
             header("Location: " . $this->FG_LOCATION_AFTER_ADD . $id);
         }
     }
@@ -1678,28 +1592,29 @@ class FormHandler
     public function perform_edit(&$form_action)
     {
         $processed = $this->getProcessed();  //$processed['firstname']
-        $this->VALID_SQL_REG_EXP = true;
+        $this->all_fields_valid = true;
         $values = [];
         $instance_table = new Table($this->FG_QUERY_TABLE_NAME, "*", $this->query_table_joins);
 
-        foreach ($this->FG_EDIT_FORM_ELEMENTS as $i => &$row) {
+        foreach ($this->FG_EDIT_FORM_ELEMENTS as &$row) {
             if (!empty($row["name"]) && empty($row["custom_query"])) {
                 $fields_name = $row["name"];
-                $regexp = $row["regex"];
 
                 if (str_contains($row["attributes"], "multiple") && is_array($processed[$fields_name])) {
                     $total_mult_select = (int)array_sum($processed[$fields_name]);
                     $values[$fields_name] = $total_mult_select;
                 } else {
-                    if (is_numeric($regexp) && !(str_starts_with($row["check_empty"] ?? "", "NO") && ($processed[$fields_name] ?? null) === "")) {
-                        $row["validation_err"] = $this->validate_field($regexp, $processed[$fields_name]);
-                        if ($row["validation_err"] !== true) {
-                            $this->VALID_SQL_REG_EXP = false;
-                            if ($this->FG_DEBUG == 1) {
-                                echo "<br>-> $i) Error Match";
-                            }
+                    if (!empty($row["validator"])) {
+                        if ($processed[$fields_name] === "" && str_starts_with($row["check_empty"] ?? "", "NO")) {
+                            $result = true;
+                        } else {
+                            $result = call_user_func($row["validator"], $processed[$fields_name]);
+                        }
+                        if ($result !== true) {
+                            $this->all_fields_valid = false;
                             $form_action = "ask-edit";
                         }
+                        $row["validation_err"] = $result;
                     }
                     if (empty($processed[$fields_name]) && str_ends_with($row["check_empty"] ?? "", "NULL")) {
                         $values[$fields_name] = null;
@@ -1715,11 +1630,11 @@ class FormHandler
             $values[$name] = $value;
         }
 
-        if (strlen($this->FG_ADDITIONAL_FUNCTION_BEFORE_EDITION) > 0 && ($this->VALID_SQL_REG_EXP)) {
+        if (strlen($this->FG_ADDITIONAL_FUNCTION_BEFORE_EDITION) > 0 && ($this->all_fields_valid)) {
             call_user_func([FormBO::class, $this->FG_ADDITIONAL_FUNCTION_BEFORE_EDITION]);
         }
 
-        if ($this->VALID_SQL_REG_EXP) {
+        if ($this->all_fields_valid) {
             $this->QUERY_RESULT = $instance_table->updateRow(
                 $this->DBHandle,
                 $values,
@@ -1742,11 +1657,11 @@ class FormHandler
         }
 
         // CALL DEFINED FUNCTION AFTER THE ACTION ADDITION
-        if (strlen($this->FG_ADDITIONAL_FUNCTION_AFTER_EDITION) > 0 && ($this->VALID_SQL_REG_EXP)) {
+        if (strlen($this->FG_ADDITIONAL_FUNCTION_AFTER_EDITION) > 0 && ($this->all_fields_valid)) {
             call_user_func([FormBO::class, $this->FG_ADDITIONAL_FUNCTION_AFTER_EDITION]);
         }
 
-        if ($this->VALID_SQL_REG_EXP && !empty($this->FG_LOCATION_AFTER_EDIT)) {
+        if ($this->all_fields_valid && !empty($this->FG_LOCATION_AFTER_EDIT)) {
             $ext_link = '';
             if (is_numeric($processed['current_page'])) {
                 $ext_link .= "&current_page=" . $processed['current_page'];
@@ -1767,7 +1682,7 @@ class FormHandler
     public function perform_delete()
     {
         $processed = $this->getProcessed();  //$processed['firstname']
-        $this->VALID_SQL_REG_EXP = true;
+        $this->all_fields_valid = true;
 
         $tableCount = count($this->FG_FK_TABLENAMES);
         $clauseCount = count($this->FG_FK_EDITION_CLAUSE);
@@ -1860,7 +1775,7 @@ class FormHandler
             if (is_callable($entry["validator"] ?? null)) {
                 $result = call_user_func($entry["validator"], $value);
                 if ($result !== true) {
-                    $this->VALID_SQL_REG_EXP = false;
+                    $this->all_fields_valid = false;
                     $this->FG_EDIT_FORM_ELEMENTS[$index]["validation_err"] = $result;
 
                     return;

@@ -2,6 +2,7 @@
 
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
+use A2billing\Forms\Validator;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -80,7 +81,7 @@ $HD_Form->AddEditElement(
     "label",
     "",
     "size=30 maxlength=30",
-    0, // [Validator::class, "min3Chars"]
+    [Validator::class, "min3Chars"],
     _("Insert the package label")
 );
 
@@ -94,7 +95,7 @@ $HD_Form->AddEditElement(
     "startday",
     _("The value will be related to billing type ; if monthly accepted value are 1-31 ; if Weekly accepted value 1-7 (Monday to Sunday) "),
     "size=10 $default_init maxlength=5",
-    4, // [Validator::class, "numeric"]
+    [Validator::class, "numeric"],
     _("Insert the start day")
 );
 
@@ -104,7 +105,7 @@ $HD_Form->AddEditElement(
     "freetimetocall",
     _("Insert the amount of free units, in seconds,for the FREE SECONDS mode. For NUMBER OF FREE CALLS insert the number of free calls"),
     "size=10 maxlength=10",
-    4, // [Validator::class, "numeric"]
+    [Validator::class, "numeric"],
     _("Insert the amount of free time to call (seconds)")
 );
 

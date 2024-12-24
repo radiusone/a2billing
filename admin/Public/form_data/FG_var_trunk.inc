@@ -2,6 +2,7 @@
 
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
+use A2billing\Forms\Validator;
 use A2billing\Table;
 
 /**
@@ -144,7 +145,7 @@ $HD_Form->AddEditElement(
     "trunkcode",
     _("Unique and friendly name for the trunk"),
     "size=45 maxlength=40",
-    3, // [Validator::class, "min4Chars"],
+    [Validator::class, "min4Chars"],
     _("Insert the trunkcode")
 );
 
@@ -171,7 +172,7 @@ $HD_Form->AddEditElement(
     "providertech",
     _("Technology used on the trunk (SIP,IAX2,ZAP,H323)"),
     "size=20 maxlength=15",
-    0, // [Validator::class, "min3Chars"],
+    [Validator::class, "min3Chars"],
     _("Insert the providertech")
 );
 
@@ -180,7 +181,7 @@ $HD_Form->AddEditElement(
     "providerip",
     _("Set the IP or URL of the VoIP provider. Alternatively, put in the name of a previously defined trunk in Asterisk or FreePBX. (MyVoiPTrunk, ZAP4G etc.) You can use the following tags to as variables: %dialingnumber%, %cardnumber%. ie g2/1644787890wwwwwwwwww%dialingnumber%"),
     "size=80 maxlength=140",
-    9, // [Validator::class, "min1Char"],
+    [Validator::class, "min1Char"],
     _("Insert the providerip")
 );
 
@@ -208,7 +209,7 @@ $HD_Form->AddEditElement(
     "inuse",
     _("Updated to show the number of channels currently in use on this trunk.If there are no channels in use, and the system shows that there are, manually reset this field back to zero."),
     "size=30 $def_value_inuse maxlength=30",
-    12, // [Validator::class, "number"],
+    [Validator::class, "number"],
     _("Number of current connections"));
 
 $HD_Form->AddEditElement(
@@ -216,7 +217,7 @@ $HD_Form->AddEditElement(
     "maxuse",
     _("The maximum number of channels available to this trunk. Set to -1 to have an unlimited number of channels"),
     "size=30 $def_value_maxuse maxlength=30",
-    12, // [Validator::class, "number"],
+    [Validator::class, "number"],
     _("Number of maximum simultaneous connections")
 );
 

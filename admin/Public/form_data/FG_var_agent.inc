@@ -3,6 +3,7 @@
 use A2billing\Admin;
 use A2billing\Agent;
 use A2billing\Forms\FormHandler;
+use A2billing\Forms\Validator;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -132,7 +133,7 @@ if ($popup_select) {
         "login",
         "",
         "size=30 maxlength=12",
-        3,
+        [Validator::class, "min4Chars"],
         _("Insert the login")
     );
 
@@ -141,7 +142,8 @@ if ($popup_select) {
         "passwd",
         "",
         "size=30 maxlength=15",
-        3, _("Insert the password")
+        [Validator::class, "min4Chars"],
+        _("Insert the password")
     );
 
     $HD_Form->AddEditSelect(
@@ -158,7 +160,8 @@ if ($popup_select) {
         "active",
         getYesNoList(),
         "1",
-        _("Enable agent"), "",
+        _("Enable agent"),
+        "",
         _("Choose if you want to active this agent")
     );
 
@@ -175,7 +178,7 @@ if ($popup_select) {
         "credit",
         _("currency : ") . strtoupper(BASE_CURRENCY),
         "size=30 maxlength=30 $balance_access",
-        12,
+        [Validator::class, "number"],
         _("amount of credit")
     );
 
@@ -195,7 +198,7 @@ if ($popup_select) {
         "commission",
         _("Commission in percent"),
         "size=20 maxlength=20",
-        21,
+        [Validator::class, "percentage"],
         _("Insert the commision"),
         "",
         "NO-NULL"
@@ -206,7 +209,7 @@ if ($popup_select) {
         "threshold_remittance",
         _("currency : ") . strtoupper(BASE_CURRENCY),
         "size=20 maxlength=20",
-        12,
+        [Validator::class, "number"],
         _("threshold remittance"),
         "",
         "NO"
@@ -217,7 +220,7 @@ if ($popup_select) {
         "vat",
         _("VAT"),
         "size=20 maxlength=20",
-        12,
+        [Validator::class, "number"],
         _("Insert the VAT"),
         "",
         "NO-NULL"
@@ -302,7 +305,7 @@ if ($popup_select) {
         "email",
         "",
         "size=30 maxlength=70",
-        1,
+        [Validator::class, "email"],
         _("Insert the email"),
         "",
         "NO"
@@ -330,7 +333,9 @@ if ($popup_select) {
         _("BANK INFO"),
         "bank_info",
         "",
-        "cols='50' rows='4'", null, _("Insert the bank info of this agent")
+        "cols='50' rows='4'",
+        null,
+        _("Insert the bank info of this agent")
     );
 
     $HD_Form->AddEditHasMany(

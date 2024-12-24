@@ -2,6 +2,7 @@
 
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
+use A2billing\Forms\Validator;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -74,7 +75,7 @@ $HD_Form->AddEditElement(
     "cid",
     "",
     "size=20 maxlength=30",
-    18,
+    [Validator::class, "phoneNumber"],
     gettext("Insert the CallerID")
 );
 

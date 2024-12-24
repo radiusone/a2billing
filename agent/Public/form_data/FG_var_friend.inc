@@ -154,7 +154,7 @@ $HD_Form->AddEditElement(
     "name",
     "",
     "size=40 $maxi maxlength=40",
-    9,
+    [Validator::class, "min1Char"],
     gettext("Insert the name")
 );
 

@@ -2,6 +2,7 @@
 
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
+use A2billing\Forms\Validator;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -71,7 +72,7 @@ $HD_Form->AddEditElement(
     "group_name",
     "",
     "size=30 maxlength=70",
-    9,
+    [Validator::class, "min1Char"],
     _("Insert the CID Group Name ")
 );
 

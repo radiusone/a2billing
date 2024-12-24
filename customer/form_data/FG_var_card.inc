@@ -2,6 +2,7 @@
 
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
+use A2billing\Forms\Validator;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -60,7 +61,7 @@ $HD_Form->AddEditElement(
     "lastname",
     "",
     "size=30 maxlength=50",
-    11,
+    [Validator::class, "min2Chars"],
     gettext("Insert the lastname of the customers"),
     "",
     "NO"
@@ -71,7 +72,7 @@ $HD_Form->AddEditElement(
     "firstname",
     "",
     "size=30 maxlength=50",
-    11,
+    [Validator::class, "min2Chars"],
     gettext("Insert the firstname of the customers"),
     "",
     "NO"
@@ -83,7 +84,7 @@ $HD_Form->AddEditElement(
     "address",
     "",
     "size=30 maxlength=100",
-    0,
+    [Validator::class, "min3Chars"],
     gettext("Insert the address of the customers"),
     "",
     "NO"
@@ -95,7 +96,7 @@ $HD_Form->AddEditElement(
     "city",
     "",
     "size=30 maxlength=40",
-    0,
+    [Validator::class, "min3Chars"],
     gettext("Insert the city"),
     "",
     "NO"
@@ -107,7 +108,7 @@ $HD_Form->AddEditElement(
     "state",
     "",
     "size=30 maxlength=40",
-    11,
+    [Validator::class, "min2Chars"],
     gettext("Insert the state"),
     "",
     "NO"
@@ -124,7 +125,7 @@ $HD_Form->AddEditElement(
     "zipcode",
     "",
     "size=30 maxlength=20",
-    0,
+    [Validator::class, "min3Chars"],
     gettext("Insert the zipcode"),
     "",
     "NO"
@@ -141,7 +142,7 @@ $HD_Form->AddEditElement(
     "phone",
     "",
     "size=30 maxlength=20",
-    7,
+    [Validator::class, "min8DigitLike"],
     gettext("Insert the phone number of the customers"),
     "",
     "NO"

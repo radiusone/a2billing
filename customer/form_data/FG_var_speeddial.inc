@@ -2,6 +2,7 @@
 
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
+use A2billing\Forms\Validator;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -75,7 +76,7 @@ $HD_Form->AddEditElement(
     "name",
     gettext("Enter here the name/label that will identify this speed dial"),
     "size=40 maxlength=50",
-    0,
+    [Validator::class, "min3Chars"],
     gettext("Insert the name")
 );
 
@@ -85,7 +86,7 @@ $HD_Form->AddEditElement(
     "phone",
     gettext("Enter here the phonenumber you want to call for this speed dial"),
     "size=30 maxlength=50",
-    4,
+    [Validator::class, "numeric"],
     gettext("Insert the phone")
 );
 

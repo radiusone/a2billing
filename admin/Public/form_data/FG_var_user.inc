@@ -2,6 +2,7 @@
 
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
+use A2billing\Forms\Validator;
 
 /**
  * @var string $form_action
@@ -97,7 +98,7 @@ $HD_Form->AddEditElement(
     "login",
     "",
     "size=30 maxlength=12",
-    3, // [Validator::class, "min4Chars"],
+    [Validator::class, "min4Chars"],
     _("Insert the username")
 );
 
@@ -106,7 +107,7 @@ $HD_Form->AddEditElement(
     "pwd_encoded",
     "",
     "size=30 maxlength=30",
-    3, // [Validator::class, "min4Chars"],
+    [Validator::class, "min8Chars"],
     _("Insert the Reseller password")
 );
 

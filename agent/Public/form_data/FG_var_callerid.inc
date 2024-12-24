@@ -81,7 +81,7 @@ $HD_Form->AddEditElement(
     "cid",
     "",
     "size=20 maxlength=30",
-    18,
+    [Validator::class, "phoneNumber"],
     gettext("Insert the CallerID")
 );
 
