@@ -345,7 +345,7 @@ if ($popup_select) {
         "useralias",
         "",
         $login_attr,
-        [Validator::class, "numeric"],
+        [Validator::class, "min5Chars"],
         _("Insert the webui login")
     );
 

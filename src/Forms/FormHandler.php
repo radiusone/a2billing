@@ -30,6 +30,9 @@ class FormHandler
 
     private array $_vars = [];
 
+    /**
+     * @var array basically just the contents of $_REQUEST
+     */
     private array $_processed = [];
 
     public ADOConnection $DBHandle;
@@ -368,7 +371,7 @@ class FormHandler
         }
         $this->query_table_joins = $joins;
 
-        if (!empty($_POST)) {
+        if (strtolower($_SERVER["REQUEST_METHOD"]) === "post") {
             $posted_token = $_POST["csrf_token"] ?? "";
             $session_token = $_SESSION['CSRF_TOKEN'] ?? "";
 
@@ -390,8 +393,6 @@ class FormHandler
             }
         }
         $this->_vars = array_merge($_GET, $_POST);
-
-        $this->def_list();
 
         //initializing variables with _
         $this->CV_NO_FIELDS = sprintf(_("No %s has been created"), $this->FG_INSTANCE_NAME);
@@ -435,7 +436,7 @@ class FormHandler
     /**
      * Perform the execution of some actions to prepare the form generation
      *
-     * @public
+     * @todo: why isn't this just done in the constructor instead of manually calling it 100 times?
      */
     public function init()
     {
@@ -456,32 +457,17 @@ class FormHandler
         $this->FG_DELETE_BUTTON_LINK ??= "?form_action=ask-delete" . $ext_link . "&amp;id=";
     }
 
-    /**
-     * Define the list
-     *
-     * @public
-     */
-    public function def_list()
-    {
-        Console::log('FormHandler -> def_list');
-        Console::logMemory($this, 'FormHandler -> def_list : Line ' . __LINE__);
-        Console::logSpeed('FormHandler -> def_list : Line ' . __LINE__);
-    }
-
-    public function &getProcessed(): array
+    public function getProcessed(): array
     {
         foreach ($this->_vars as $key => $value) {
             if (str_contains($key, "^^")) {
-                $this->_processed[$key] = sanitize_data($value);
+                $this->_processed[$key] = $value;
+                $key = str_replace("^^", ".", $key);
             }
-            $key = str_replace("^^", ".", $key);
             if (empty($this->_processed[$key])) {
-                $this->_processed[$key] = sanitize_data($value);
-                if ($key === "username") {
-                    //rebuild the search parameter to filter character to format card number
-                    $filtered_char = [" ", "-", "_", "(", ")", "+"];
-                    $this->_processed[$key] = str_replace($filtered_char, "", $this->_processed[$key]);
-                }
+                $this->_processed[$key] = $value;
+                // this is hashing admin and agent passwords on save
+                // todo: make this a property of the input component or something
                 if ($key === "pwd_encoded" && !empty($value)) {
                     $this->_processed[$key] = password_hash($this->_processed[$key], PASSWORD_DEFAULT);
                 }
@@ -1595,7 +1581,7 @@ class FormHandler
             if (!empty($row["name"]) && empty($row["custom_query"])) {
                 $fields_name = $row["name"];
 
-                if (str_contains($row["attributes"], "multiple") && is_array($processed[$fields_name])) {
+                if (array_key_exists("multiple", $row["attributes"]) && is_array($processed[$fields_name])) {
                     $total_mult_select = (int)array_sum($processed[$fields_name]);
                     $values[$fields_name] = $total_mult_select;
                 } else {
@@ -1761,45 +1747,25 @@ class FormHandler
     public function perform_add_content(int $index, int $id)
     {
         $entry = $this->FG_EDIT_FORM_ELEMENTS[$index];
-        $processed = $this->getProcessed();
-        if (!empty($entry["table"])) {
-            /** @var Table $table */
-            $table = $entry["pivot_table"] ?? $entry["table"];
-            $column = $entry["insert"];
-            $value = $processed["add-content-value"];
-            if (is_callable($entry["validator"] ?? null)) {
-                $result = call_user_func($entry["validator"], $value);
-                if ($result !== true) {
-                    $this->all_fields_valid = false;
-                    $this->FG_EDIT_FORM_ELEMENTS[$index]["validation_err"] = $result;
-
-                    return;
-                }
-            }
-            $foreign_key = $entry["foreign_key"];
-            $table->addRow($this->DBHandle, [$column => $value, $foreign_key => $id]);
-
+        if (empty($entry["table"])) {
             return;
         }
+        $processed = $this->getProcessed();
+        /** @var Table $table */
+        $table = $entry["pivot_table"] ?? $entry["table"];
+        $column = $entry["insert"];
+        $value = $processed["add-content-value"];
+        if (is_callable($entry["validator"] ?? null)) {
+            $result = call_user_func($entry["validator"], $value);
+            if ($result !== true) {
+                $this->all_fields_valid = false;
+                $this->FG_EDIT_FORM_ELEMENTS[$index]["validation_err"] = $result;
 
-        $table_split = $this->FG_EDIT_FORM_ELEMENTS[$index]["custom_query"];
-        $instance_sub_table = new Table($table_split["table"]);
-
-        $arr = is_array($processed[$table_split["name"]]) ? $processed[$table_split["name"]] : [$processed[$table_split["name"]]];
-        foreach ($arr as $value) {
-            $result_query = $instance_sub_table->addRow(
-                $this->DBHandle,
-                [$table_split["name"] => $value, $table_split["fk"] => $id]
-            );
-
-            if (!$result_query) {
-                if (!str_contains($instance_sub_table->errstr, "duplicate")) {
-                    echo $instance_sub_table->errstr;
-                } else {
-                    $this->alarm_db_error_duplication = true;
-                }
+                return;
             }
         }
+        $foreign_key = $entry["foreign_key"];
+        $table->addRow($this->DBHandle, [$column => $value, $foreign_key => $id]);
     }
 
 
@@ -1812,28 +1778,22 @@ class FormHandler
     public function perform_del_content(int $index, int $id)
     {
         $entry = $this->FG_EDIT_FORM_ELEMENTS[$index];
-        $processed = $this->getProcessed();
-        if (!empty($entry["table"])) {
-            /** @var Table $table */
-            if (!empty($entry["pivot_table"])) {
-                $table = $entry["pivot_table"];
-                $column = $entry["insert"];
-            } else {
-                $table = $entry["table"];
-                $column = $table->fields[0];
-            }
-            $value = $processed["del-content-value"];
-            $foreign_key = $entry["foreign_key"];
-            $table->deleteRow($this->DBHandle, [$column => $value, $foreign_key => $id]);
-
+        if (empty($entry["table"])) {
             return;
         }
-        $table_split = $this->FG_EDIT_FORM_ELEMENTS[$index]["custom_query"];
-        $value = trim($processed[$table_split["name"] . "_hidden"] ?? $processed[$table_split["name"]]);
-        (new Table($table_split["table"]))->deleteRow(
-            $this->DBHandle,
-            [$table_split["name"] => $value, $table_split["fk"] => $id]
-        );
+
+        $processed = $this->getProcessed();
+        /** @var Table $table */
+        if (!empty($entry["pivot_table"])) {
+            $table = $entry["pivot_table"];
+            $column = $entry["insert"];
+        } else {
+            $table = $entry["table"];
+            $column = $table->fields[0];
+        }
+        $value = $processed["del-content-value"];
+        $foreign_key = $entry["foreign_key"];
+        $table->deleteRow($this->DBHandle, [$column => $value, $foreign_key => $id]);
     }
 
 

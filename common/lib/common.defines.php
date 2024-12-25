@@ -44,8 +44,6 @@ const LIBDIR = __DIR__;
 
 const WRITELOG_QUERY = false;
 
-sanitize_post_get();
-
 const DEBUG = false;
 $profiler = DEBUG ? new Profiler() : null;
 

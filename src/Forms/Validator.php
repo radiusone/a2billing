@@ -136,8 +136,8 @@ class Validator
     public static function dateTime(string $value)
     {
         return (
-            preg_match("/^(19|20)[0-9]{2}(\\b)(0[1-9]|1[0-2])\\2(0[1-9]|[12][0-9]|3[01]) ([01][0-9]|2[0-3]):([0-5][0-9])$/", $value, $m)
-            && \DateTime::createFromFormat("Y-m-d H:i", "$m[1]-$m[3]-$m[4] $m[5]:$m[6]")
+            preg_match("/^((?:19|20)[0-9]{2})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01]) ([01][0-9]|2[0-3]):([0-5][0-9])(:[0-5][0-9])?$/", $value, $m)
+            && \DateTime::createFromFormat("Y-m-d H:i", "$m[1]-$m[2]-$m[3] $m[4]:$m[5]")
         )
             ?: _("(must be a date/time in YYYY-MM-DD hh:mm format)");
 

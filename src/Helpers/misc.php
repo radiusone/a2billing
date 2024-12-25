@@ -43,6 +43,7 @@ use PHPMailer\PHPMailer\PHPMailer;
  * @param int $condition integer representing the permission flag
  * @param int|null $check integer representing the user's permission bits
  * @return bool whether or not the user has the right
+ * @todo replace with static method on Admin, Agent, Customer classes
  */
 function has_rights(int $condition, ?int $check = null): bool
 {
@@ -221,87 +222,6 @@ function write_log($logfile, $output)
     }
 }
 
-/**
- * function sanitize_data
- * @param array|string $input
- * @return array|string
- */
-function sanitize_data($input)
-{
-    if (is_array($input)) {
-        $output = [];
-        // Sanitize Array
-        foreach ($input as $var => $val) {
-            $output[$var] = sanitize_data($val);
-        }
-    } else {
-        // Remove whitespaces (not a must though)
-        $input = trim($input);
-        $input = str_replace('--', '', $input);
-        $input = str_replace('..', '', $input);
-        $input = str_replace(';', '', $input);
-        $input = str_replace('/*', '', $input);
-
-        // Injection sql
-        $input = str_ireplace('HAVING', '', $input);
-        $input = str_ireplace('UNION', '', $input);
-        $input = str_ireplace('SUBSTRING', '', $input);
-        $input = str_ireplace('ASCII', '', $input);
-        $input = str_ireplace('SHA1', '', $input);
-        #MD5 is used by md5secret
-        #$input = str_ireplace('MD5', '', $input);
-        $input = str_ireplace('ROW_COUNT', '', $input);
-        $input = str_ireplace('SELECT', '', $input);
-        $input = str_ireplace('INSERT', '', $input);
-        $input = str_ireplace('CASE WHEN', '', $input);
-        $input = str_ireplace('INFORMATION_SCHEMA', '', $input);
-        $input = str_ireplace('DROP', '', $input);
-        $input = str_ireplace('RLIKE', '', $input);
-        $input = str_ireplace(' IF', '', $input);
-        $input = str_ireplace(' OR ', '', $input);
-        $input = str_ireplace('\\', '', $input);
-        //$input = str_ireplace('DELETE', '', $input);
-        $input = str_ireplace('CONCAT', '', $input);
-        $input = str_ireplace('WHERE', '', $input);
-        $input = str_ireplace('UPDATE', '', $input);
-        $input = str_ireplace(' or 1', '', $input);
-        $input = str_ireplace(' or true', '', $input);
-        //Permutation - in mailing admin/Public/A2B_entity_mailtemplate.php
-        // we use url with key=$loginkey$
-        $input = str_ireplace('=$', '+$', $input);
-        $input = str_ireplace('=', '', $input);
-        $input = str_ireplace('+$', '=$', $input);
-
-        $input = strip_tags($input);
-
-        $output = addslashes($input);
-    }
-
-    return $output;
-}
-
-/*
- * Sanitize all Post Get variables
- */
-function sanitize_post_get()
-{
-    foreach ($_REQUEST as $key => $value) {
-        $key = filter_var($key, FILTER_CALLBACK, ["options" => "sanitize_data"]);
-        $value = filter_var($value, FILTER_CALLBACK, ["options" => "sanitize_data"]);
-        $key = filter_var($key, FILTER_SANITIZE_STRING);
-        if (is_array($value)) {
-            foreach ($value as $subkey => $subvalue) {
-                $subkey = filter_var($subkey, FILTER_SANITIZE_STRING);
-                $subvalue = filter_var($subvalue, FILTER_SANITIZE_STRING);
-                $value[$subkey] = $subvalue;
-            }
-        } else {
-            $value = filter_var($value, FILTER_SANITIZE_STRING);
-        }
-        $_REQUEST[$key] = $value;
-    }
-}
-
 /*
  * function getpost_ifset
  */
@@ -311,10 +231,11 @@ function getpost_ifset(array $test_vars, ?array &$data = null)
         if (!isset($_REQUEST[$test_var])) {
             continue;
         }
-        $val = sanitize_data($_REQUEST[$test_var]);
+        $val = $_REQUEST[$test_var];
         //rebuild the search parameter to filter character to format card number
         if ($test_var == 'username' || $test_var == 'filterprefix') {
             //rebuild the search parameter to filter character to format card number
+            //todo: ???
             $filtered_char = [
                 " ",
                 "-",
