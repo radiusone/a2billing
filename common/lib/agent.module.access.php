@@ -34,6 +34,7 @@
 **/
 
 use A2billing\Logger;
+use A2billing\Table;
 
 $FG_DEBUG = 0;
 error_reporting(E_ALL & ~E_NOTICE);
@@ -115,10 +116,10 @@ function login (?string $user, ?string $pass)
     if (empty($user) || empty($pass)) {
         return false;
     }
-    $QUERY = "SELECT id, perms, active, currency, vat, passwd FROM cc_agent WHERE login = ?";
 
     $DBHandle = DbConnect();
-    $row = $DBHandle->GetRow($QUERY, [$user]);
+    $table = new Table("cc_agent", ["id", "perms", "active", "currency", "vat", "passwd"]);
+    $row = $table->getRow($DBHandle, ["login" => $user]);
 
     if ($row) {
         if ($row["active"] !== "t" && $row["active"] !== "1") {
@@ -128,8 +129,13 @@ function login (?string $user, ?string $pass)
             return $row;
         }
         // fallback to legacy authentication
-        $pass = filter_var($pass, FILTER_SANITIZE_STRING);
-        if (hash('whirlpool', $pass) === $row["passwd"]) {
+        $filterpass = filter_var($pass, FILTER_SANITIZE_STRING);
+        if (hash('whirlpool', $filterpass) === $row["passwd"]) {
+            $table->updateRow(
+                $DBHandle,
+                ["passwd" => password_hash($pass, PASSWORD_DEFAULT)],
+                ["login" => $user]
+            );
             return $row;
         }
     }

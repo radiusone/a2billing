@@ -33,6 +33,8 @@
  *
 **/
 
+use A2billing\Table;
+
 $FG_DEBUG = 0;
 error_reporting(E_ALL & ~E_NOTICE);
 
@@ -70,18 +72,18 @@ if (!isset($_SESSION['pr_login']) || !isset($_SESSION['pr_password']) || !isset(
             die();
         }
 
-        $pr_login = $return[0];
+        $pr_login = $return["username"];
         $_SESSION["pr_login"] = $pr_login;
         $_SESSION["pr_password"] = $pr_password;
-        $_SESSION["cus_rights"] = empty($return[10]) ? 1 : (int)$return[10] + 1;
+        $_SESSION["cus_rights"] = (int)$return["users_perms"] + 1;
         $_SESSION["user_type"] = "CUST";
-        $_SESSION["card_id"] = $return[3];
-        $_SESSION["id_didgroup"] = $return[4];
-        $_SESSION["tariff"] = $return[5];
-        $_SESSION["vat"] = $return[6];
-        $_SESSION["gmtoffset"] = $return[7];
+        $_SESSION["card_id"] = $return["id"];
+        $_SESSION["id_didgroup"] = $return["id_didgroup"];
+        $_SESSION["tariff"] = $return["tariff"];
+        $_SESSION["vat"] = $return["vat"];
+        $_SESSION["gmtoffset"] = $return["gmtoffset"];
         $_SESSION["currency"] = $return["currency"];
-        $_SESSION["voicemail"] = $return[8];
+        $_SESSION["voicemail"] = $return["voicemail_permitted"];
     } else {
         $_SESSION["cus_rights"] = 0;
     }
@@ -92,7 +94,7 @@ if (!isset($_SESSION['pr_login']) || !isset($_SESSION['pr_password']) || !isset(
  * @param string|null $pass
  * @return bool|string[]
  */
-function login (?string $user, ?string $pass)
+function login(?string $user, ?string $pass)
 {
     $user = trim($user);
     $pass = trim($pass);
@@ -101,24 +103,24 @@ function login (?string $user, ?string $pass)
         return false;
     }
 
-    $QUERY = "SELECT cc.username, cc.credit, cc.status, cc.id, cc.id_didgroup, cc.tariff, cc.vat, ct.gmtoffset, cc.voicemail_permitted, " .
-             "cc.voicemail_activated, cc_card_group.users_perms, cc.currency, cc.uipass " .
-             "FROM cc_card cc LEFT JOIN cc_timezone AS ct ON ct.id = cc.id_timezone LEFT JOIN cc_card_group ON cc_card_group.id=cc.id_group " .
-             "WHERE cc.email = ? OR cc.useralias = ?";
-
     $DBHandle = DbConnect();
-    $row = $DBHandle->GetRow($QUERY, [$user, $user]);
+    $table = new Table(
+        "cc_card",
+        ["username", "credit", "status", "cc_card.id", "id_didgroup", "tariff", "vat", "gmtoffset", "voicemail_permitted", "voicemail_activated", "users_perms", "currency", "uipass"],
+        [
+            "cc_timezone" => ["id_timezone", "cc_timezone.id"],
+            "cc_card_group" => ["id_group", "cc_card_group.id"]
+        ]
+    );
+    $row = $table->getRow($DBHandle, [["SUB", ["email" => $user, "useralias" => $user], "OR"]]);
 
     if ($row) {
         if ($row["status"] !== "t" && $row["status"] !== "1"  && $row["status"] !== "8") {
             return false;
         }
-        if (password_verify($pass, $row["uipass"])) {
-            return $row;
-        }
-        // fallback to legacy authentication
-        $pass = filter_var($pass, FILTER_SANITIZE_STRING);
-        if (hash('whirlpool', $pass) === $row["uipass"]) {
+        $filterpass = filter_var($pass, FILTER_SANITIZE_STRING);
+        // lol wtf is security
+        if ($row["uipass"] === $filterpass) {
             return $row;
         }
     }

@@ -34,6 +34,7 @@
 **/
 
 use A2billing\Logger;
+use A2billing\Table;
 
 $FG_DEBUG = 0;
 error_reporting(E_ALL & ~E_NOTICE);
@@ -115,10 +116,12 @@ function login (?string $user, ?string $pass)
         return false;
     }
 
-    $QUERY = "SELECT userid, perms, confaddcust, groupid, login, pwd_encoded FROM cc_ui_authen WHERE login = ?";
-
     $DBHandle = DbConnect();
-    $row = $DBHandle -> GetRow($QUERY, [$user]);
+    $table = new Table(
+        "cc_ui_authen",
+        ["userid", "perms", "confaddcust", "groupid", "login", "pwd_encoded"]
+    );
+    $row = $table->getRow($DBHandle, ["login" => $user]);
 
     if ($row) {
         if (password_verify($pass, $row["pwd_encoded"])) {
@@ -126,6 +129,11 @@ function login (?string $user, ?string $pass)
         }
         // fallback to legacy authentication
         if (hash('whirlpool', $pass) === $row["pwd_encoded"]) {
+            $table->updateRow(
+                $DBHandle,
+                ["pwd_encoded" => password_hash($pass, PASSWORD_DEFAULT)],
+                ["login" => $user]
+            );
             return $row;
         }
     }
