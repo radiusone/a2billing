@@ -1332,8 +1332,7 @@ class FormHandler
                 }
 
             } else {
-                $selected_elements = array_filter($this->FG_EDIT_FORM_ELEMENTS, fn ($v) => empty($v["custom_query"]));
-                $cols = array_column($selected_elements, "name");
+                $cols = array_column($this->FG_EDIT_FORM_ELEMENTS, "name");
                 $fields = implode(",", $cols);
 
                 $instance_table = new Table($this->FG_QUERY_TABLE_NAME, $fields, $this->query_table_joins);
@@ -1488,14 +1487,15 @@ class FormHandler
         } // endforeach with reference
         unset ($row);
 
-        foreach ($this->FG_ADD_QUERY_HIDDEN_INPUTS as $name => $value) {
-            $values[$name] = $value;
-        }
-
         if ($this->all_fields_valid === false) {
             $this->QUERY_RESULT = false;
             return;
         }
+
+        foreach ($this->FG_ADD_QUERY_HIDDEN_INPUTS as $name => $value) {
+            $values[$name] = $value;
+        }
+
         if (($key = array_search("%check_array%", $values)) !== false) {
             foreach ($arr_value_to_import[$key] as $array_value) {
                 $values[$key] = $array_value;
@@ -1528,7 +1528,7 @@ class FormHandler
             Logger::insertLog(
                 $_SESSION["admin_id"],
                 2,
-                sprintf("New %s created", $this->FG_INSTANCE_NAME),
+                sprintf(_("New %s created"), $this->FG_INSTANCE_NAME),
                 _("User added a new record in database"),
                 $this->FG_QUERY_TABLE_NAME,
                 $_SERVER['REMOTE_ADDR'],
@@ -1556,57 +1556,61 @@ class FormHandler
         $instance_table = new Table($this->FG_QUERY_TABLE_NAME, "*", $this->query_table_joins);
 
         foreach ($this->FG_EDIT_FORM_ELEMENTS as &$row) {
-            if (!empty($row["name"]) && empty($row["custom_query"])) {
-                $fields_name = $row["name"];
+            $field = $row["name"];
+            $attr = $row["attributes"];
+            if (empty($field) || array_key_exists("disabled", $attr)) {
+                continue;
+            }
 
-                if (array_key_exists("multiple", $row["attributes"]) && is_array($processed[$fields_name])) {
-                    $total_mult_select = (int)array_sum($processed[$fields_name]);
-                    $values[$fields_name] = $total_mult_select;
+            if (array_key_exists("multiple", $attr) && is_array($processed[$field])) {
+                $values[$field] = (int)array_sum($processed[$field]);
+            }
+            if (!empty($row["validator"])) {
+                if ($processed[$field] === "" && str_starts_with($row["check_empty"] ?? "", "NO")) {
+                    $row["validation_err"] = true;
                 } else {
-                    if (!empty($row["validator"])) {
-                        if ($processed[$fields_name] === "" && str_starts_with($row["check_empty"] ?? "", "NO")) {
-                            $result = true;
-                        } else {
-                            $result = call_user_func($row["validator"], $processed[$fields_name]);
-                        }
-                        if ($result !== true) {
-                            $this->all_fields_valid = false;
-                            $form_action = "ask-edit";
-                        }
-                        $row["validation_err"] = $result;
-                    }
-                    if (empty($processed[$fields_name]) && str_ends_with($row["check_empty"] ?? "", "NULL")) {
-                        $values[$fields_name] = null;
-                    } elseif ($row["type"] !== "SPAN") {
-                        $values[$fields_name] = $processed[$fields_name];
+                    $result = call_user_func($row["validator"], $processed[$field]);
+                    $row["validation_err"] = $result;
+                    if ($result !== true) {
+                        $this->all_fields_valid = false;
+                        $form_action = "ask-edit";
+                        continue;
                     }
                 }
             }
+            if ($processed[$field] === "" && ($row["check_empty"] ?? "") === "NO-NULL") {
+                $values[$field] = null;
+            } else {
+                $values[$field] = $processed[$field];
+            }
         } // end foreach with reference
         unset($row);
+
+        if ($this->all_fields_valid === false) {
+            $this->QUERY_RESULT = false;
+            return;
+        }
 
         foreach ($this->FG_EDIT_QUERY_HIDDEN_INPUTS as $name => $value) {
             $values[$name] = $value;
         }
 
-        if (strlen($this->FG_ADDITIONAL_FUNCTION_BEFORE_EDITION) > 0 && ($this->all_fields_valid)) {
+        if (is_callable([FormBO::class, $this->FG_ADDITIONAL_FUNCTION_BEFORE_EDITION])) {
             call_user_func([FormBO::class, $this->FG_ADDITIONAL_FUNCTION_BEFORE_EDITION]);
         }
 
-        if ($this->all_fields_valid) {
-            $this->QUERY_RESULT = $instance_table->updateRow(
-                $this->DBHandle,
-                $values,
-                $this->update_query_conditions
-            );
-        }
+        $this->QUERY_RESULT = $instance_table->updateRow(
+            $this->DBHandle,
+            $values,
+            $this->update_query_conditions
+        );
 
         if ($this->FG_ENABLE_LOG) {
             Logger::insertLog(
                 $_SESSION["admin_id"],
                 3,
-                "A " . strtoupper($this->FG_INSTANCE_NAME) . " UPDATED",
-                "A RECORD IS UPDATED, EDITION CALUSE USED IS " . array_kv($this->update_query_conditions),
+                sprintf(_("Existing %s updated"), $this->FG_INSTANCE_NAME),
+                _("User edited a record in database"),
                 $this->FG_QUERY_TABLE_NAME,
                 $_SERVER['REMOTE_ADDR'],
                 $_SERVER['REQUEST_URI'],
@@ -1616,19 +1620,19 @@ class FormHandler
         }
 
         // CALL DEFINED FUNCTION AFTER THE ACTION ADDITION
-        if (strlen($this->FG_ADDITIONAL_FUNCTION_AFTER_EDITION) > 0 && ($this->all_fields_valid)) {
-            call_user_func([FormBO::class, $this->FG_ADDITIONAL_FUNCTION_AFTER_EDITION]);
+        if (is_callable([FormBO::class, $this->FG_ADDITIONAL_FUNCTION_AFTER_EDITION])) {
+            call_user_func([FormBO::class, $this->FG_ADDITIONAL_FUNCTION_AFTER_EDITION], $processed["id"]);
         }
 
-        if ($this->all_fields_valid && !empty($this->FG_LOCATION_AFTER_EDIT)) {
-            $ext_link = '';
-            if (is_numeric($processed['current_page'])) {
-                $ext_link .= "&current_page=" . $processed['current_page'];
+        if (!empty($this->FG_LOCATION_AFTER_EDIT)) {
+            $ext_link = "";
+            if (is_numeric($processed["current_page"])) {
+                $ext_link .= "&current_page=" . $processed["current_page"];
             }
-            if (!empty($processed['order']) && !empty($processed['sens'])) {
-                $ext_link .= "&order=" . $processed['order'] . "&sens=" . $processed['sens'];
+            if (!empty($processed["order"]) && !empty($processed["sens"])) {
+                $ext_link .= "&order=" . $processed["order"] . "&sens=" . $processed["sens"];
             }
-            header("Location: " . $this->FG_LOCATION_AFTER_EDIT . $processed['id'] . $ext_link);
+            header("Location: " . $this->FG_LOCATION_AFTER_EDIT . $processed["id"] . $ext_link);
         }
     }
 
