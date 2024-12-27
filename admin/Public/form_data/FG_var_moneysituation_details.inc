@@ -67,6 +67,6 @@ if ($type === "payment"){
     $HD_Form->list_query_conditions["cc_invoice.id_card"] = $id;
 
 	$HD_Form->AddListValue(_("Date"), "date");
-	$HD_Form->AddListValue(_("Amount (incl VAT)"), "total_price", "display_money");
+	$HD_Form->AddListValue(_("Amount (incl VAT)"), "total_price", "get_money");
 	$HD_Form-> FieldViewElement (["date", "total_price"]);
 }

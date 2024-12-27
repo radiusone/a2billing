@@ -68,8 +68,8 @@ $cardstatus_list_acronym = getCardStatus_Acronym_List();
 $yesno_list = getYesNoList();
 
 $HD_Form->AddListValue(_("ID"), "id");
-$HD_Form->AddListValue(_("Account number"), "username", "display_customer_link");
-$HD_Form->AddListValue(abbr(_("Bal"), _("Balance")), "credit", "display_money");
+$HD_Form->AddListValue(_("Account number"), "username", "get_customer_link");
+$HD_Form->AddListValue(abbr(_("Bal"), _("Balance")), "credit", "get_money");
 $HD_Form->AddListValue(_("Last name"), "lastname");
 $HD_Form->AddListMapping(_("Status"), "status", $cardstatus_list_acronym);
 $HD_Form->AddListValue(abbr(_("Lang"), _("Language")), "language");

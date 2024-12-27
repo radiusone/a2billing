@@ -58,7 +58,7 @@ $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 25;
 
 $HD_Form->AddListValue(_("Card number"), "username");
 $HD_Form->AddListValue(_("Package"), "label");
-$HD_Form->AddListValue(_("Minutes"), "SUM(used_secondes)", "display_minute");
+$HD_Form->AddListValue(_("Minutes"), "SUM(used_secondes)", "get_minute");
 $HD_Form->AddListValue(_("Calls"), "COUNT(*)");
 $HD_Form->FieldViewElement(["username", "label", "SUM(used_secondes)", "COUNT(*)"]);
 

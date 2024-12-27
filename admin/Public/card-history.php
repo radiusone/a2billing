@@ -56,7 +56,7 @@ $FG_TABLE_ALTERNATE_ROW_COLOR[] = "#FCFBFB";
 
 $DBHandle  = DbConnect();
 $FG_TABLE_COL = array();
-$FG_TABLE_COL[]=array (gettext("Account Number"), "username", "15%", "center", "sort", "", "30", "", "", "", "", "display_customer_link");
+$FG_TABLE_COL[]=array (gettext("Account Number"), "username", "15%", "center", "sort", "", "30", "", "", "", "", "get_customer_link");
 $FG_TABLE_COL[]=array (gettext("Date"), "datecreated", "20%", "center", "SORT");
 $FG_TABLE_COL[]=array (gettext("Description"), "description", "60%", "center", "SORT");
 
@@ -270,7 +270,7 @@ require_once __DIR__ . "/../templates/main.php";
                               <TD vAlign=top align="<?php echo $FG_TABLE_COL[$i][3]?>" class=tableBody>
                         <?php
                                     $record_display = $recordset[$i];
-                                    if($FG_TABLE_COL[$i][11] == "display_customer_link") echo get_customer_link(stripslashes($record_display));
+                                    if($FG_TABLE_COL[$i][11] == "get_customer_link") echo get_customer_link(stripslashes($record_display));
                                     else echo stripslashes($record_display);	?>
                             </TD>
                         <?php } ?>

@@ -103,10 +103,10 @@ $FG_TABLE_COL[]=array (gettext("Date"), "starttime", "17%", "center", "SORT", "2
 $FG_TABLE_COL[]=array (gettext("CallerID"), "source", "14%", "center", "SORT", "30");
 $FG_TABLE_COL[]=array (gettext("PhoneNumber"), "calledstation", "14%", "center", "SORT", "30", "", "", "", "", "", "");
 $FG_TABLE_COL[]=array (gettext("Destination"), "destination", "14%", "center", "SORT", "30", "lie", "cc_prefix", "destination", "prefix='%id'", "%1" );
-$FG_TABLE_COL[]=array (gettext("Duration"), "sessiontime", "10%", "center", "SORT", "30", "", "", "", "", "", "display_minute");
+$FG_TABLE_COL[]=array (gettext("Duration"), "sessiontime", "10%", "center", "SORT", "30", "", "", "", "", "", "get_minute");
 $FG_TABLE_COL[]=array (abbr(_("TC"), _("Terminate Cause")), "terminatecauseid", "10%", "center", "SORT", "", "list", $dialstatus_list);
 $FG_TABLE_COL[]=array (gettext("CallType"), "sipiax", "12%", "center", "SORT",  "", "list", $list_calltype);
-$FG_TABLE_COL[]=array (gettext("Cost"), "sessionbill", "12%", "center", "SORT", "30", "", "", "", "", "", "display_money_precise");
+$FG_TABLE_COL[]=array (gettext("Cost"), "sessionbill", "12%", "center", "SORT", "30", "", "", "", "", "", "get_money_precise");
 
 $FG_COL_QUERY = 't1.starttime, t1.src, t1.calledstation, t1.destination, t1.sessiontime, t1.terminatecauseid, t1.sipiax, t1.sessionbill';
 

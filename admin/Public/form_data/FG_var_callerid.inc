@@ -61,7 +61,7 @@ $HD_Form->help_text = create_help(
 
 $HD_Form->AddListValue(_("CALLERID"), "cid");
 $HD_Form->AddListSqlMapping(_("ACCOUNT NUMBER"), "id_cc_card", new Table("cc_card", ["id", "username"]), [], "A2B_entity_card.php?form_action=ask-edit&id=");
-$HD_Form->AddListValue(_("CUSTOMER NAME"), "id_cc_card", "display_customer_name_id_link");
+$HD_Form->AddListValue(_("CUSTOMER NAME"), "id_cc_card", "get_customer_name_id_link");
 $HD_Form->AddListMapping(_("ACTIVATED"), "activated", getActivationTrueFalseList());
 $HD_Form->FieldViewElement (["cid", "id_cc_card", "id_cc_card", "cc_callerid.activated", "cc_callerid.id"]);
 

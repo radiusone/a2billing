@@ -74,13 +74,13 @@ $calltype_list = [
     _("DID-ALEG"),
 ];
 
-$HD_Form->AddListValue(_("DNID"), "dnid", "display_phone_number");
+$HD_Form->AddListValue(_("DNID"), "dnid", "format_phone_number");
 $HD_Form->AddListValue(_("Count"), "nbcall");
-$HD_Form->AddListValue(_("Avg buy"), "AVG(buyrate)", "display_money_precise");
-$HD_Form->AddListValue(_("Avg sell"), "AVG(rateinitial)", "display_money_precise");
-$HD_Form->AddListValue(_("Duration"), "sessiontime", "display_minute");
-$HD_Form->AddListValue(_("Buy"), "buycost", "display_money_precise");
-$HD_Form->AddListValue(_("Sell"), "sessionbill", "display_money_precise");
+$HD_Form->AddListValue(_("Avg buy"), "AVG(buyrate)", "get_money_precise");
+$HD_Form->AddListValue(_("Avg sell"), "AVG(rateinitial)", "get_money_precise");
+$HD_Form->AddListValue(_("Duration"), "sessiontime", "get_minute");
+$HD_Form->AddListValue(_("Buy"), "buycost", "get_money_precise");
+$HD_Form->AddListValue(_("Sell"), "sessionbill", "get_money_precise");
 $HD_Form->FieldViewElement([
     "dnid",
     "COUNT(cc_call.*)",

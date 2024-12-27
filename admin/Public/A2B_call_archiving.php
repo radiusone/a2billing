@@ -99,13 +99,13 @@ $HD_Form->FG_QUERY_PRIMARY_KEY = "cc_call.id";
 $HD_Form->CV_NO_FIELDS = _("No matching calls found; use the fields above to refine your search.");
 
 $HD_Form->AddListValue(_("Calldate"), "starttime");
-$HD_Form->AddListValue(_("CalledNumber"), "calledstation", "display_did");
-$HD_Form->AddListValue(_("Destination"), "cc_prefix.destination", "preg_replace", ["/^(00|011)/", "", "%X"]);
-$HD_Form->AddListValue(_("Duration"), "real_sessiontime", "display_minute");
-$HD_Form->AddListValue(_("Card Used"), "card_id", "display_customer_id_link");
+$HD_Form->AddListValue(_("CalledNumber"), "calledstation", "get_formatted_did");
+$HD_Form->AddListValue(_("Destination"), "cc_prefix.destination", "format_phone_number");
+$HD_Form->AddListValue(_("Duration"), "real_sessiontime", "get_minute");
+$HD_Form->AddListValue(_("Card Used"), "card_id", "get_customer_id_link");
 $HD_Form->AddListMapping(_("Disposition"), "terminatecauseid", getDialStatusList());
 $HD_Form->AddListMapping(_("IAX/SIP"), "sipiax", getYesNoList());
-$HD_Form->AddListValue(_("Cost"), "sessionbill", "display_money_precise");
+$HD_Form->AddListValue(_("Cost"), "sessionbill", "get_money_precise");
 $HD_Form->FieldViewElement([
     "starttime",
     "calledstation",

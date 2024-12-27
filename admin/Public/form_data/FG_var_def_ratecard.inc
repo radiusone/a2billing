@@ -105,14 +105,14 @@ $HD_Form->list_help_text = create_help(
 
 $HD_Form->AddListValue(_("Destination"), "destination", null, [], false)
     ->AddListValue(abbr(_("Prefix"), _("Dialing Prefix")), "dialprefix")
-    ->AddListValue(abbr(_("Buy"), _("Buy Rate")), "buyrate", "display_money_precise")
-    ->AddListValue(abbr(_("Sell"), _("Sell Rate")), "rateinitial", "display_money_precise");
+    ->AddListValue(abbr(_("Buy"), _("Buy Rate")), "buyrate", "get_money_precise")
+    ->AddListValue(abbr(_("Sell"), _("Sell Rate")), "rateinitial", "get_money_precise");
 
 if (!$popup_select) {
     $HD_Form->AddListValue(_("Start"), "startdate")
         ->AddListValue(_("Stop"), "stopdate")
         ->AddListValue(abbr(_("Init."), _("Initial Billing Block")), "initblock")
-        ->AddListValue(abbr(_("Conn."), _("Connect Charge")), "connectcharge", "display_money")
+        ->AddListValue(abbr(_("Conn."), _("Connect Charge")), "connectcharge", "get_money")
         ->AddListSqlMapping(_("Trunk"), "id_trunk", new Table("cc_trunk", ["id_trunk", "trunkcode"]))
         ->AddListSqlMapping(_("Rate Card"), "idtariffplan", new Table("cc_tariffplan", ["id", "tariffname"]));
     if ($use_lcr_callplan) {

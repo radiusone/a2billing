@@ -68,9 +68,9 @@ $HD_Form->AddListValue(_("Item name"), "item_name");
 $HD_Form->AddListValue(_("Method"), "payment_method");
 $HD_Form->AddListValue(_("CC number"), "cc_number");
 $HD_Form->AddListSqlMapping(_("Status"), "orders_status", new Table("cc_payments_status", ["id", "status_name"]));
-$HD_Form->AddListValue(_("Amount"), "orders_amount", "display_money");
+$HD_Form->AddListValue(_("Amount"), "orders_amount", "get_money");
 $HD_Form->AddListValue(abbr(_("Cur"), _("Currency")), "currency");
-$HD_Form->AddListValue(_("Value"), "currency_value", "display_money_precise");
+$HD_Form->AddListValue(_("Value"), "currency_value", "get_money_precise");
 
 $HD_Form->FieldViewElement([
     "id",

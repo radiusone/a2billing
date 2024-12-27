@@ -58,7 +58,7 @@ $HD_Form->list_help_text = create_help(
 );
 
 $HD_Form->AddListValue(_("Voucher"), "voucher");
-$HD_Form->AddListValue(_("Credit"), "credit", "display_money");
+$HD_Form->AddListValue(_("Credit"), "credit", "get_money");
 $HD_Form->AddListValue(_("Tag"), "tag");
 $HD_Form->AddListMapping(_("Activated"), "activated", $actived_list);
 $HD_Form->AddListMapping(_("Used"), "used", $used_list);

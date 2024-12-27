@@ -74,9 +74,9 @@ $status_list = getRemittanceStatus_List();
 $type_list = getRemittanceType_List();
 
 $HD_Form->AddListValue(_("ID"), "cc_remittance_request.id");
-$HD_Form->AddListValue(_("Agent"), "id_agent", "display_linktoagent");
+$HD_Form->AddListValue(_("Agent"), "id_agent", "get_linktoagent");
 $HD_Form->AddListValue(_("Date"), "date");
-$HD_Form->AddListValue(_("Amount"), "amount", "display_money");
+$HD_Form->AddListValue(_("Amount"), "amount", "get_money");
 $HD_Form->AddListMapping(_("Type"), "type", $type_list);
 $HD_Form->AddListMapping(_("Status"), "status", $status_list);
 $HD_Form->FieldViewElement (["cc_remittance_request.id", "id_agent", "date", "amount", "type", "status"]);

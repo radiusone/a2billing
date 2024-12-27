@@ -261,13 +261,8 @@ function getpost_ifset(array $test_vars, ?array &$data = null)
  * @param float|null $value
  * @param int|null $decimals
  * @param $currency
- * @return void
+ * @return string
  */
-function display_money(?float $value, ?int $decimals = null, $currency = BASE_CURRENCY): void
-{
-    echo get_money($value, $decimals, $currency);
-}
-
 function get_money(?float $value, ?int $decimals = null, $currency = BASE_CURRENCY): string
 {
     $value ??= 0;
@@ -295,14 +290,9 @@ function get_money(?float $value, ?int $decimals = null, $currency = BASE_CURREN
 /**
  * Used as callback for list/form elements
  * @param $sessiontime
- * @return void
+ * @return string
  */
-function display_minute($sessiontime): void
-{
-    echo get_minute($sessiontime);
-}
-
-function get_minute($sessiontime)
+function get_minute($sessiontime): string
 {
     // todo: what is this?
     // see if this came in via post/get
@@ -342,14 +332,10 @@ function get_timespan(int $sec, bool $include_seconds = false): string
 
 /**
  * Used as callback for list/form elements
- * @param $var
- * @return void
+ *
+ * @param float|null $var
+ * @return string
  */
-function display_percent($var)
-{
-    echo get_percent($var);
-}
-
 function get_percent(?float $var): string
 {
     if (isset ($var)) {
@@ -360,17 +346,8 @@ function get_percent(?float $var): string
 }
 
 /**
- * Used as callback for list/form elements
- * @param float|int|string $amt
- * @return void
- */
-function display_money_precise($amt): void
-{
-    echo get_money($amt, 4);
-}
-
-/**
  * Rounds and formats a currency amount to four decimal places
+ * Used as callback for list/form elements
  *
  * @param float|int|string $amt
  * @return string
@@ -383,9 +360,9 @@ function get_money_precise($amt): string
 /**
  * Used as callback for list/form elements
  * @param $value
- * @return false|void
+ * @return string
  */
-function display_monitorfile_link($value)
+function get_monitorfile_link($value): string
 {
     $format_list = ['wav', 'gsm', 'mp3', 'sln', 'g723', 'g729'];
     $find_record = false;
@@ -398,29 +375,28 @@ function display_monitorfile_link($value)
         }
     }
     if (!$find_record) {
-        return false;
+        return "";
     }
 
     $myfile = base64_encode($myfile);
-    echo "<a target='_blank' href='A2B_report_calls.php?download=file&amp;file=$myfile'>";
-    echo '<img alt="access recording" src="" height="18" /></a>';
+
+    return <<< HTML
+        <a target='_blank' href='A2B_report_calls.php?download=file&amp;file=$myfile'>
+            <img alt="access recording" src="" height="18" />
+        </a>
+        HTML;
 }
 
 /**
  * Used as callback for list/form elements
- * @param string $value
- * @return void
+ *
+ * @param string|null $username
+ * @return string
  */
-function display_customer_link(string $value): void
-{
-    echo get_customer_link($value);
-}
-
-function get_customer_link($username): string
+function get_customer_link(?string $username): string
 {
     $value = htmlspecialchars(_("n/a"));
     if (empty($username)) {
-
         return $value;
     }
     $handle = DbConnect();
@@ -438,13 +414,13 @@ function get_customer_link($username): string
  * Used as callback for list/form elements
  *
  * @param string|int $id the user's ID
- * @return void
+ * @return string
  */
-function display_customer_id_link($id): void
+function get_customer_id_link($id): string
 {
     $value = htmlspecialchars(_("n/a"));
     if ($id <= 0) {
-        echo $value;
+        return $value;
     }
     $handle = DbConnect();
     $username = $handle->CacheGetOne(60, "SELECT username FROM cc_card WHERE id = ?", [$id]);
@@ -452,19 +428,15 @@ function display_customer_id_link($id): void
         $username = htmlspecialchars($username);
         $value = "<a href=\"A2B_entity_card.php?form_action=ask-edit&amp;id=$id\">$username</a>";
     }
-    echo $value;
+
+    return $value;
 }
 
 /**
  * Used as callback for list/form elements
  * @param string|int|null $id
- * @return void
+ * @return string
  */
-function display_refill_link(?int $id): void
-{
-    echo get_refill_link($id);
-}
-
 function get_refill_link(?int $id): string
 {
     $value = htmlspecialchars(_("n/a"));
@@ -489,13 +461,8 @@ function get_refill_link(?int $id): string
 /**
  * Used as callback for list/form elements
  * @param string|int|null $id
- * @return void
+ * @return string
  */
-function display_agent_refill_link(?int $id): void
-{
-    echo get_agent_refill_link($id);
-}
-
 function get_agent_refill_link(?int $id): string
 {
     $value = htmlspecialchars(_("n/a"));
@@ -522,13 +489,13 @@ function get_agent_refill_link(?int $id): string
  * Used as callback for list/form elements
  *
  * @param string|int $id the user's ID
- * @return void
+ * @return string
  */
-function display_customer_name_id_link($id): void
+function get_customer_name_id_link($id): string
 {
     $value = htmlspecialchars(_("n/a"));
     if ($id <= 0) {
-        echo $value;
+        return $value;
     }
     $handle = DbConnect();
     $row = $handle->CacheGetRow(60, "SELECT firstname, lastname, username FROM cc_card WHERE id = ?", [$id]);
@@ -538,7 +505,8 @@ function display_customer_name_id_link($id): void
         $l = htmlspecialchars($row["lastname"]);
         $value = "<a href=\"A2B_entity_card.php?form_action=ask-edit&amp;id=$id\" title=\"$u\">$f $l</a>";
     }
-    echo $value;
+
+    return $value;
 }
 
 /**
@@ -604,13 +572,8 @@ function get_nameofcustomer_id($id): string
 /**
  * Used as callback for list/form elements
  * @param $id
- * @return void
+ * @return string
  */
-function display_linktoagent($id): void
-{
-    echo get_linktoagent($id);
-}
-
 function get_linktoagent($id): string
 {
     $value = _("n/a");
@@ -637,11 +600,6 @@ function get_linktoagent($id): string
  * @param $id
  * @return void
  */
-function display_nameofagent($id): void
-{
-    echo get_nameofagent($id);
-}
-
 function get_nameofagent($id): string
 {
     $value = _("n/a");
@@ -659,19 +617,9 @@ function get_nameofagent($id): string
 }
 
 /**
- * Used as callback for list elements
- * @param string $did
- * @return void
- */
-function display_did(string $did): void
-{
-    echo get_formatted_did($did);
-}
-
-/**
  * Used as callback for list/form elements
  * @param string $did
- * @return void
+ * @return string
  */
 function get_formatted_did(string $did): string
 {
@@ -695,16 +643,12 @@ function get_formatted_did(string $did): string
 
 /**
  * Used as callback for list elements
- * @param string $num
- * @return void
+ * @param string $value
+ * @return string
  */
-function display_phone_number(string $num): void
-{
-    echo format_phone_number($num);
-}
-
 function format_phone_number(string $value): string
 {
+    $value = preg_replace("/^(00|011)/", "", $value);
     if (preg_match("/^(1?)([2-9]\d\d)([2-9]\d\d)(\d\d\d\d)$/",$value, $matches)) {
         $value = "";
         if ($matches[1]) {
@@ -715,6 +659,7 @@ function format_phone_number(string $value): string
 
     return $value ?: _("n/a");
 }
+
 /*
  * function MDP_STRING
  */
@@ -1025,15 +970,6 @@ function get_login_button($id): string
         HTML;
 }
 
-function str_icontains(string $haystack, string $needle): bool
-{
-    if (function_exists("str_contains")) {
-        return str_contains(strtolower($haystack), strtolower($needle));
-    } else {
-        return stripos($haystack, $needle) !== false;
-    }
-}
-
 function DbConnect(): ADOConnection
 {
     return Connection::GetDBHandler();
@@ -1275,10 +1211,6 @@ function sub(...$args): int
     return $val;
 }
 
-function add_money(...$args): string
-{
-    return get_money(add(...$args));
-}
 function sub_money(...$args): string
 {
     return get_money(sub(...$args));

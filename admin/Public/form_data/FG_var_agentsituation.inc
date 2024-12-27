@@ -49,13 +49,13 @@ $HD_Form = new FormHandler(
     ]
 );
 
-$HD_Form->AddListValue(_("Agent"), "id","display_linktoagent");
-$HD_Form->AddListValue(_("Credit"), "credit", "display_money");
-$HD_Form->AddListValue(abbr(_("Bal"), _("Commission balance")), "com_balance", "display_money");
-$HD_Form->AddListValue(abbr(_("Total"), _("Total commission accrued")), "total", "display_money");
-$HD_Form->AddListValue(abbr(_("Refills"), _("Total customer refill amount")), "refills", "display_money");
-$HD_Form->AddListValue(abbr(_("Agent refills"), _("Total agent refill amount")), "agent_refills", "display_money");
-$HD_Form->AddListValue(abbr(_("Payments"), _("Total payments taken")), "payments", "display_money");
+$HD_Form->AddListValue(_("Agent"), "id","get_linktoagent");
+$HD_Form->AddListValue(_("Credit"), "credit", "get_money");
+$HD_Form->AddListValue(abbr(_("Bal"), _("Commission balance")), "com_balance", "get_money");
+$HD_Form->AddListValue(abbr(_("Total"), _("Total commission accrued")), "total", "get_money");
+$HD_Form->AddListValue(abbr(_("Refills"), _("Total customer refill amount")), "refills", "get_money");
+$HD_Form->AddListValue(abbr(_("Agent refills"), _("Total agent refill amount")), "agent_refills", "get_money");
+$HD_Form->AddListValue(abbr(_("Payments"), _("Total payments taken")), "payments", "get_money");
 $HD_Form->FieldViewElement([
     "cc_agent.id",
     "cc_agent.credit",

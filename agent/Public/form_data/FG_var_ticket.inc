@@ -76,7 +76,7 @@ $filter_view ='v.viewed ';
 
 $HD_Form -> AddListValue(gettext("ID"), "id");
 $HD_Form -> AddListValue(gettext("CUSTOMER"), "CONCAT(lastname, ', ', firstname)");
-$HD_Form -> AddListValue(gettext("ACCOUNT NUMBER"), "username", "display_customer_link");
+$HD_Form -> AddListValue(gettext("ACCOUNT NUMBER"), "username", "get_customer_link");
 $HD_Form -> AddListValue(gettext("TITLE"), "title");
 $HD_Form -> AddListValue(gettext("CREATIONDATE"), "creationdate");
 $HD_Form -> AddListSqlMapping(gettext("COMPONENT"), "id_component", new Table("cc_support_component", ["id", "name"]));

@@ -61,7 +61,7 @@ $status_list = getRemittanceStatus_List();
 $type_list = getRemittanceType_List();
 $HD_Form -> AddListValue(gettext("ID"), "cc_agent_commission.id");
 $HD_Form -> AddListValue(gettext("DATE"), "date");
-$HD_Form -> AddListValue(gettext("AMOUNT"), "amount", "display_money");
+$HD_Form -> AddListValue(gettext("AMOUNT"), "amount", "get_money");
 $HD_Form -> AddListMapping(gettext("TYPE"), "type", $type_list);
 $HD_Form -> AddListMapping(gettext("STATUS"), "status", $status_list);
 

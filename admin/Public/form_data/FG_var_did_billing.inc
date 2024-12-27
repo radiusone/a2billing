@@ -56,8 +56,8 @@ $HD_Form->help_text = create_help(
 $HD_Form->AddListValue(_("DATE"), "DATE(starttime) AS date");
 $HD_Form->AddListValue(_("DID"), "cc_did.did");
 $HD_Form->AddListValue(_("NB_CALL"), "COUNT(*) AS nb_call");
-$HD_Form->AddListValue(_("TOTAL_DURATION"), "SUM(sessiontime) AS t_time", "display_minute");
-$HD_Form->AddListValue(_("TOTAL_COST"), "SUM(sessionbill) AS t_cost", "display_money");
+$HD_Form->AddListValue(_("TOTAL_DURATION"), "SUM(sessiontime) AS t_time", "get_minute");
+$HD_Form->AddListValue(_("TOTAL_COST"), "SUM(sessionbill) AS t_cost", "get_money");
 $HD_Form->AddListValue(_("CARDNUMBER"), "username");
 
 $HD_Form->FieldViewElement([

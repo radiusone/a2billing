@@ -55,8 +55,8 @@ $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
 $com_list = getRefillType_List();
 $HD_Form -> AddListValue(gettext("ID"), "cc_agent_commission.id");
-$HD_Form -> AddListValue(gettext("ACCOUNT"), "id_card", "display_customer_id_link");
-$HD_Form -> AddListValue(gettext("AGENT"), "id_agent", "display_linktoagent");
+$HD_Form -> AddListValue(gettext("ACCOUNT"), "id_card", "get_customer_id_link");
+$HD_Form -> AddListValue(gettext("AGENT"), "id_agent", "get_linktoagent");
 $HD_Form -> AddListValue(gettext("PAYMENT DATE"), "date");
 $HD_Form -> AddListValue(gettext("AMOUNT"), "amount");
 $HD_Form -> AddListMapping(gettext("PAID STATUS"), "paid_status", $com_list);

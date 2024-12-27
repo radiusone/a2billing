@@ -67,14 +67,14 @@ $HD_Form->add_help_text = $HD_Form->edit_help_text = create_help(_("DID can be a
 
 $yesno = getYesNoList();
 
-$HD_Form->AddListValue(_("DID"), "did", "display_did");
-$HD_Form->AddListValue(_("Customer"), "iduser", "display_customer_name_id_link");
+$HD_Form->AddListValue(_("DID"), "did", "get_formatted_did");
+$HD_Form->AddListValue(_("Customer"), "iduser", "get_customer_name_id_link");
 $HD_Form->AddListMapping(_("Billing"), "billingtype", getBillingTypeShortList());
 $HD_Form->AddListValue(_("Start date"), "startingdate");
 $HD_Form->AddListSqlMapping(_("DID group"), "id_cc_didgroup", new Table("cc_didgroup", ["id", "didgroupname"]));
 $HD_Form->AddListSqlMapping(_("Country"), "id_cc_country", new Table("cc_country", ["id", "countryname"]));
 $HD_Form->AddListMapping(_("Active"), "activated", $yesno);
-$HD_Form->AddListValue(abbr(_("Min"), _("Minutes Used")), "secondusedreal", "display_minute");
+$HD_Form->AddListValue(abbr(_("Min"), _("Minutes Used")), "secondusedreal", "get_minute");
 $HD_Form->AddListMapping(abbr(_("Res"), _("Reserved")), "reserved", $yesno);
 $HD_Form->AddListValue(abbr(_("MR"), _("Monthly Rate")), "fixrate");
 $HD_Form->AddListValue(abbr(_("SR"), _("Sell Rate")), "selling_rate");

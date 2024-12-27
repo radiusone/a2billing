@@ -54,14 +54,14 @@ $HD_Form->help_text = create_help(
 $actived_list = getActivationList();
 
 $HD_Form->AddListValue(_("Label"), "label");
-$HD_Form->AddListValue(_("Fee"), "fee", "display_money");
+$HD_Form->AddListValue(_("Fee"), "fee", "get_money");
 $HD_Form->AddListMapping(_("Status"), "status", $actived_list);
 $HD_Form->AddListValue(_("Start date"), "startdate");
 $HD_Form->AddListValue(_("Stop date"), "stopdate");
 $HD_Form->AddListValue(_("Runs"), "numberofrun");
 $HD_Form->AddListValue(_("Last run"), "datelastrun");
 $HD_Form->AddListValue(_("Cards affected"), "totalcardperform");
-$HD_Form->AddListValue(_("Total credit"), "totalcredit", "display_money");
+$HD_Form->AddListValue(_("Total credit"), "totalcredit", "get_money");
 $HD_Form->FieldViewElement([
     "label",
     "fee",

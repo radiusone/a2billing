@@ -90,7 +90,7 @@ if ($popup_select) {
 	$HD_Form->AddListValue(_("Tech"), "providertech");
 	$HD_Form->AddListValue(_("Host"), "providerip");
     $HD_Form->AddListSqlMapping(_("Provider"), "id_provider", new Table("cc_provider", ["id", "provider_name"]));
-	$HD_Form->AddListValue(abbr(_("Min"), _("Minutes used")), "secondusedreal", "display_minute");
+	$HD_Form->AddListValue(abbr(_("Min"), _("Minutes used")), "secondusedreal", "get_minute");
 	$HD_Form->AddListMapping(_("Status"), "status", getActivationList());
 	$HD_Form->AddListValue(_("Max use"), "maxuse");
 	$HD_Form->FieldViewElement([

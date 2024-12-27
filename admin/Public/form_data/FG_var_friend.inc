@@ -68,8 +68,8 @@ $HD_Form->help_text = create_help(
     . _("More details on how to configure clients are on the Wiki")
 );
 
-$HD_Form->AddListValue(_("Cardholder"), "id_cc_card", "display_customer_name_id_link");
-$HD_Form->AddListValue(_("Username"), "username", "display_customer_link");
+$HD_Form->AddListValue(_("Cardholder"), "id_cc_card", "get_customer_name_id_link");
+$HD_Form->AddListValue(_("Username"), "username", "get_customer_link");
 $HD_Form->AddListValue(_("Account code"), "accountcode");
 $HD_Form->AddListValue(_("Secret"), "secret");
 $HD_Form->AddListValue(_("Caller ID"), "callerid");

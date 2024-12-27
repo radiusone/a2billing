@@ -57,7 +57,7 @@ $HD_Form -> FG_QUERY_GROUPBY_COLUMNS = ["dialprefix"];
 
 $HD_Form -> AddListValue(abbr(_("PREFIX"), _("DIALING PREFIX")), "dialprefix");
 $HD_Form -> AddListValue(gettext("DESTINATION"), "destination");
-$HD_Form -> AddListValue(abbr(_("SR"), _("SELLING RATE")), "rateinitial", "display_money_precise");
+$HD_Form -> AddListValue(abbr(_("SR"), _("SELLING RATE")), "rateinitial", "get_money_precise");
 
 $HD_Form -> FieldViewElement ('dialprefix, destination, MIN(rateinitial) as rateinitial');
 

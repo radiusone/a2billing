@@ -77,5 +77,5 @@ $HD_Form -> AddListValue(gettext("REFERENCE"), "cc_invoice.reference");
 $HD_Form -> AddListValue(gettext("DATE"), "date");
 $HD_Form -> AddListValue(gettext("TITLE"), "title");
 $HD_Form -> AddListMapping(gettext("STATUS"), "paid_status", $status_list);
-$HD_Form -> AddListValue(gettext("AMOUNT INCL VAT"), "price", "display_money");
+$HD_Form -> AddListValue(gettext("AMOUNT INCL VAT"), "price", "get_money");
 $HD_Form -> FieldViewElement ("cc_invoice.reference, cc_invoice.date, title, cc_invoice.paid_status, total_price, id, cc_invoice.paid_status");

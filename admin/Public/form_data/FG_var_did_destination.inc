@@ -63,12 +63,12 @@ $yesno_list = getYesNoList();
 
 $HD_Form->AddListValue(_("Destination"), "destination");
 $HD_Form->AddListValue(_("Creation Date"), "cc_did_destination.creationdate");
-$HD_Form->AddListValue(_("DID"), "did", "display_did");
-$HD_Form->AddListValue(_("Account Number"), "id_cc_card", "display_customer_id_link");
+$HD_Form->AddListValue(_("DID"), "did", "get_formatted_did");
+$HD_Form->AddListValue(_("Account Number"), "id_cc_card", "get_customer_id_link");
 $HD_Form->AddListMapping(_("Active"), "cc_did_destination.activated", $activated_list);
 $HD_Form->AddListMapping(_("VoIP"), "voip_call", $yesno_list);
 $HD_Form->AddListMapping(_("Priority"), "priority", $priority_list);
-$HD_Form->AddListValue(_("Minutes Used"), "cc_did_destination.secondusedreal", "display_minute");
+$HD_Form->AddListValue(_("Minutes Used"), "cc_did_destination.secondusedreal", "get_minute");
 $HD_Form->AddListMapping(_("Validated"), "validated", $validated_list);
 
 $HD_Form->FieldViewElement([

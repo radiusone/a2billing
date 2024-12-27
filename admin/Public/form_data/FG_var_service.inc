@@ -86,13 +86,13 @@ $usegroup_list = [
 ];
 
 $HD_Form->AddListValue(_("Name"), "name");
-$HD_Form->AddListValue(_("Amount"), "amount", "display_money");
+$HD_Form->AddListValue(_("Amount"), "amount", "get_money");
 $HD_Form->AddListValue(_("Period"), "period");
 $HD_Form->AddListMapping(_("Status"), "status", $actived_list);
 $HD_Form->AddListValue(_("Runs"), "numberofrun");
 $HD_Form->AddListValue(_("Last run"), "datelastrun");
 $HD_Form->AddListValue(_("Cards affected"), "totalcardperform");
-$HD_Form->AddListValue(_("Total credit"), "totalcredit", "display_money");
+$HD_Form->AddListValue(_("Total credit"), "totalcredit", "get_money");
 $HD_Form->FieldViewElement([
     "name",
     "amount",

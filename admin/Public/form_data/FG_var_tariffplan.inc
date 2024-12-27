@@ -70,7 +70,7 @@ $HD_Form->AddListValue(_("Name"), "tariffname");
 $HD_Form->AddListValue(_("Start date"), "startingdate");
 $HD_Form->AddListValue(_("Expiry date"), "expirationdate");
 $HD_Form->AddListSqlMapping(_("Trunk"), "id_trunk", new Table("cc_trunk", ["id_trunk", "trunkcode"]));
-$HD_Form->AddListValue(_("Minutes used"), "secondusedreal", "display_minute");
+$HD_Form->AddListValue(_("Minutes used"), "secondusedreal", "get_minute");
 $HD_Form->AddListValue(_("DNID prefix"), "dnidprefix");
 $HD_Form->AddListValue(_("CID prefix"), "calleridprefix");
 $HD_Form->FieldViewElement([

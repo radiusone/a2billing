@@ -75,13 +75,13 @@ if ($groupbyday) {
     $HD_Form->AddListValue(_("Date"), "DATE(starttime)");
 }
 if ($displaytop === "card_id") {
-    $HD_Form->AddListValue(_("Account number"), "card_id", "display_customer_id_link");
+    $HD_Form->AddListValue(_("Account number"), "card_id", "get_customer_id_link");
 } else {
     $HD_Form->AddListSqlMapping(_("Destination"), "destination", new Table("cc_prefix", ["prefix", "destination"]));
 }
-$HD_Form->AddListValue(_("Duration"), "SUM(real_sessiontime)", "display_minute");
-$HD_Form->AddListValue(_("Sell"), "SUM(sessionbill)", "display_money_precise");
-$HD_Form->AddListValue(_("Buy"), "SUM(buycost)", "display_money_precise");
+$HD_Form->AddListValue(_("Duration"), "SUM(real_sessiontime)", "get_minute");
+$HD_Form->AddListValue(_("Sell"), "SUM(sessionbill)", "get_money_precise");
+$HD_Form->AddListValue(_("Buy"), "SUM(buycost)", "get_money_precise");
 $HD_Form->AddListValue(_("Calls"), "COUNT(*)");
 $cols = [
     $displaytop,

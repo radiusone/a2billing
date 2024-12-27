@@ -68,11 +68,11 @@ $HD_Form->help_text = create_help(_("Agent Payment history - The section below a
 
 $list_refill_type = getRefillType_List();
 $HD_Form->AddListValue(_("ID"), "cc_logpayment.id");
-$HD_Form->AddListValue(_("Agent"), "cc_logpayment_agent.agent_id", has_rights(Admin::ACX_ADMINISTRATOR) ? "display_linktoagent" : "display_nameofagent");
+$HD_Form->AddListValue(_("Agent"), "cc_logpayment_agent.agent_id", has_rights(Admin::ACX_ADMINISTRATOR) ? "get_linktoagent" : "get_nameofagent");
 $HD_Form->AddListValue(_("Date"), "cc_logpayment_agent.date");
-$HD_Form->AddListValue(_("Amount"), "payment", "display_money");
+$HD_Form->AddListValue(_("Amount"), "payment", "get_money");
 $HD_Form->AddListMapping(_("Type"), "payment_type", $list_refill_type);
-$HD_Form->AddListValue(_("Refill"), "cc_logrefill_agent.id AS refill_id", "display_agent_refill_link");
+$HD_Form->AddListValue(_("Refill"), "cc_logrefill_agent.id AS refill_id", "get_agent_refill_link");
 $HD_Form->FieldViewElement([
     "cc_logpayment_agent.id",
     "cc_logpayment_agent.agent_id",

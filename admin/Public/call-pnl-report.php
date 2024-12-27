@@ -433,21 +433,21 @@ if (!isset($group_id)) {
 }
 $HD_Form -> AddListValue(gettext("CallCount"), "call_count");
 $HD_Form -> AddListValue(gettext("Minutes"), "time_minutes");
-$HD_Form -> AddListValue(gettext("Toll Free Cost"), "tall_free_buy_cost", "display_money");
-$HD_Form -> AddListValue(gettext("Pay Phone Cost"), "pay_phone_buy_cost", "display_money");
-$HD_Form -> AddListValue(gettext("Origination Cost"), "orig_only", "display_money");
-$HD_Form -> AddListValue(gettext("Credits"), "credits", "display_money");
-$HD_Form -> AddListValue(gettext("Total Cost"), "orig_total", "display_money");
-$HD_Form -> AddListValue(gettext("Toll Free Revenu"), "tall_free_sell_cost", "display_money");
-$HD_Form -> AddListValue(gettext("Pay Phone Revenu"), "pay_phone_sell_cost", "display_money");
-$HD_Form -> AddListValue(gettext("Termination Revenu"), "term_only", "display_money");
-$HD_Form -> AddListValue(gettext("Extra Charges"), "charges", "display_money");
-$HD_Form -> AddListValue(gettext("Total Revenue"), "term_total", "display_money");
+$HD_Form -> AddListValue(gettext("Toll Free Cost"), "tall_free_buy_cost", "get_money");
+$HD_Form -> AddListValue(gettext("Pay Phone Cost"), "pay_phone_buy_cost", "get_money");
+$HD_Form -> AddListValue(gettext("Origination Cost"), "orig_only", "get_money");
+$HD_Form -> AddListValue(gettext("Credits"), "credits", "get_money");
+$HD_Form -> AddListValue(gettext("Total Cost"), "orig_total", "get_money");
+$HD_Form -> AddListValue(gettext("Toll Free Revenu"), "tall_free_sell_cost", "get_money");
+$HD_Form -> AddListValue(gettext("Pay Phone Revenu"), "pay_phone_sell_cost", "get_money");
+$HD_Form -> AddListValue(gettext("Termination Revenu"), "term_only", "get_money");
+$HD_Form -> AddListValue(gettext("Extra Charges"), "charges", "get_money");
+$HD_Form -> AddListValue(gettext("Total Revenue"), "term_total", "get_money");
 $HD_Form -> AddListValue(gettext("First Use"), "first_use");
-$HD_Form -> AddListValue(gettext("Avg Discount"), "discount", "display_percent");
-$HD_Form -> AddListValue(gettext("Net Revenue"), "net_revenue", "display_money");
-$HD_Form -> AddListValue(gettext("Margin"), "margin", "display_percent");
-$HD_Form -> AddListValue(gettext("Total Profit"), "profit", "display_money");
+$HD_Form -> AddListValue(gettext("Avg Discount"), "discount", "get_percent");
+$HD_Form -> AddListValue(gettext("Net Revenue"), "net_revenue", "get_money");
+$HD_Form -> AddListValue(gettext("Margin"), "margin", "get_percent");
+$HD_Form -> AddListValue(gettext("Total Profit"), "profit", "get_money");
 
 $FG_COL_QUERY="name,call_count,time_minutes,tall_free_buy_cost,pay_phone_buy_cost,orig_only,credits,orig_total,
         tall_free_sell_cost,pay_phone_sell_cost,term_only,charges,term_total,   first_use,discount,

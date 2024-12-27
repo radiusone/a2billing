@@ -52,7 +52,7 @@ $HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("text_signature.png") ;
 
 $HD_Form->help_text = create_help(_("SUBSCRIBER - You can make customers subscribe for any subscription and for a certain time."));
 
-$HD_Form->AddListValue(_("Account"), "id_cc_card", "display_customer_id_link");
+$HD_Form->AddListValue(_("Account"), "id_cc_card", "get_customer_id_link");
 $HD_Form->AddListSqlMapping(_("Service"), "id_subscription_fee", new Table("cc_subscription_service", ["id", "label"]));
 $HD_Form->AddListValue(_("Start date"), "startdate");
 $HD_Form->AddListValue(_("Stop date"), "stopdate");

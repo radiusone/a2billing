@@ -86,11 +86,11 @@ $HD_Form->help_text = create_help(
 );
 
 $HD_Form->AddListValue(_("ID"), "cc_receipt.id");
-$HD_Form->AddListValue(_("Account"), "id_card", "display_customer_id_link");
+$HD_Form->AddListValue(_("Account"), "id_card", "get_customer_id_link");
 $HD_Form->AddListValue(_("Date"), "cc_receipt.date");
 $HD_Form->AddListValue(_("Title"), "title");
 $HD_Form->AddListMapping(_("Status"), "status", getInvoiceStatusList());
-$HD_Form->AddListValue(_("Amount (incl VAT)"), "total_price", "display_money");
+$HD_Form->AddListValue(_("Amount (incl VAT)"), "total_price", "get_money");
 $HD_Form->FieldViewElement([
     "cc_receipt.id",
     "id_card",

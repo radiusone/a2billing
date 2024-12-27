@@ -62,10 +62,10 @@ $HD_Form->help_text = create_help(
 
 $com_list = getRefillType_List();
 
-$HD_Form->AddListValue(_("Account"), "id_card", "display_customer_id_link");
-$HD_Form->AddListValue(_("Agent"), "id_agent", "display_linktoagent");
+$HD_Form->AddListValue(_("Account"), "id_card", "get_customer_id_link");
+$HD_Form->AddListValue(_("Agent"), "id_agent", "get_linktoagent");
 $HD_Form->AddListValue(_("Payment date"), "date");
-$HD_Form->AddListValue(_("Amount"), "amount", "display_money");
+$HD_Form->AddListValue(_("Amount"), "amount", "get_money");
 $HD_Form->AddListMapping(_("Status"), "paid_status", $com_list);
 $HD_Form->AddListValue(_("Description"), "description");
 $HD_Form->AddListSqlMapping(_("Link to payment"), "id_payment", new Table("cc_logpayment", ["id", "payment"]), [], "A2B_entity_payment.php?form_action=ask-edit&id=");

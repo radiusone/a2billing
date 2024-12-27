@@ -129,28 +129,28 @@ $HD_Form->FG_QUERY_COLUMN_LIST = [
 $DBHandle = DbConnect();
 
 $HD_Form->AddListValue(_("Date"), "cc_call.starttime");
-$HD_Form->AddListValue(_("Caller ID"), "src", "display_phone_number");
-$HD_Form->AddListValue(_("DNID"), "dnid", "display_phone_number");
-$HD_Form->AddListValue(_("Called number"), "calledstation", "display_phone_number");
+$HD_Form->AddListValue(_("Caller ID"), "src", "format_phone_number");
+$HD_Form->AddListValue(_("DNID"), "dnid", "format_phone_number");
+$HD_Form->AddListValue(_("Called number"), "calledstation", "format_phone_number");
 $HD_Form->AddListSqlMapping(_("Destination"), "cc_call.destination", new Table("cc_prefix", ["prefix", "destination"]));
-$HD_Form->AddListValue(_("Buy rate"), "buyrate", "display_money_precise");
-$HD_Form->AddListValue(_("Sell rate"), "rateinitial", "display_money_precise");
-$HD_Form->AddListValue(_("Duration"), "sessiontime", "display_minute");
-$HD_Form->AddListValue(_("Account"), "card_id", "display_customer_id_link");
+$HD_Form->AddListValue(_("Buy rate"), "buyrate", "get_money_precise");
+$HD_Form->AddListValue(_("Sell rate"), "rateinitial", "get_money_precise");
+$HD_Form->AddListValue(_("Duration"), "sessiontime", "get_minute");
+$HD_Form->AddListValue(_("Account"), "card_id", "get_customer_id_link");
 $HD_Form->AddListValue(_("Trunk"), "trunkcode");
 $HD_Form->AddListMapping(_("Disposition"), "terminatecauseid", $dialstatus_list);
 $HD_Form->AddListMapping(_("Call type"), "sipiax", $calltype_list);
-$HD_Form->AddListValue(_("Buy"), "buycost", "display_money_precise");
-$HD_Form->AddListValue(_("Sell"), "sessionbill", "display_money_precise");
-$HD_Form->AddListValue(_("Margin"), "CASE WHEN cc_call.sessionbill != 0 THEN ((cc_call.sessionbill - cc_call.buycost) / cc_call.sessionbill) * 100 ELSE NULL END AS margin", "display_percent");
-$HD_Form->AddListValue(_("Markup"), "CASE WHEN cc_call.buycost != 0 THEN ((cc_call.sessionbill - cc_call.buycost) / cc_call.buycost) * 100 ELSE NULL END AS markup", "display_percent");
+$HD_Form->AddListValue(_("Buy"), "buycost", "get_money_precise");
+$HD_Form->AddListValue(_("Sell"), "sessionbill", "get_money_precise");
+$HD_Form->AddListValue(_("Margin"), "CASE WHEN cc_call.sessionbill != 0 THEN ((cc_call.sessionbill - cc_call.buycost) / cc_call.sessionbill) * 100 ELSE NULL END AS margin", "get_percent");
+$HD_Form->AddListValue(_("Markup"), "CASE WHEN cc_call.buycost != 0 THEN ((cc_call.sessionbill - cc_call.buycost) / cc_call.buycost) * 100 ELSE NULL END AS markup", "get_percent");
 
 $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form->FG_DELETE_BUTTON_LINK = "A2B_entity_call.php?form_action=ask-delete&id=";
 
 if (LINK_AUDIO_FILE) {
     // TODO: figure out how this works, move it into this file with custom button
-    $HD_Form->AddListValue(_("Audio"), "uniqueid", "display_monitorfile_link", [], false);
+    $HD_Form->AddListValue(_("Audio"), "uniqueid", "get_monitorfile_link", [], false);
     $HD_Form->FG_QUERY_COLUMN_LIST[] = 'cc_call.uniqueid';
 }
 

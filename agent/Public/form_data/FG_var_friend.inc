@@ -81,7 +81,7 @@ $yesno = getYesNoList();
 
 
 $HD_Form -> AddListValue(gettext("CARDHOLDER"), "CONCAT(lastname, ', ', firstname)");
-$HD_Form -> AddListValue(gettext("USERNAME"), "username", "display_customer_link");
+$HD_Form -> AddListValue(gettext("USERNAME"), "username", "get_customer_link");
 $HD_Form -> AddListValue(gettext("ACCOUNTCODE"), "accountcode");
 $HD_Form -> AddListValue(gettext("SECRET"), "secret");
 $HD_Form -> AddListValue(gettext("CALLERID"), "callerid");

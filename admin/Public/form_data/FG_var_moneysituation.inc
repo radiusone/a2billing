@@ -56,13 +56,13 @@ $HD_Form->help_text = create_help(
 );
 
 $HD_Form->AddListValue(_("ID"), "cc_card.id");
-$HD_Form->AddListValue(_("Card number"), "username", "display_customer_link");
+$HD_Form->AddListValue(_("Card number"), "username", "get_customer_link");
 $HD_Form->AddListValue(_("Alias"), "useralias");
 $HD_Form->AddListValue(_("First name"), "firstname");
 $HD_Form->AddListValue(_("Last name"), "lastname");
-$HD_Form->AddListValue(_("Credit"), "credit", "display_money");
-$HD_Form->AddListValue(_("Invoiced"), "invoiced", "display_money");
-$HD_Form->AddListValue(_("Paid"), "paid", "display_money");
+$HD_Form->AddListValue(_("Credit"), "credit", "get_money");
+$HD_Form->AddListValue(_("Invoiced"), "invoiced", "get_money");
+$HD_Form->AddListValue(_("Paid"), "paid", "get_money");
 $HD_Form->AddListValue(_("To pay"), "to_pay", "sub_money", ["%6", "%7"]);
 
 $HD_Form->FieldViewElement([

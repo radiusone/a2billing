@@ -105,9 +105,9 @@ $HD_Form->AddListSqlMapping(
     new Table($ticket_type === "agent" ? "cc_agent" : "cc_card", ["id", "CONCAT(firstname, ' ', lastname)"])
 );
 if ($ticket_type === "agent") {
-    $HD_Form->AddListValue(_("Login"), "creator", "display_linktoagent");
+    $HD_Form->AddListValue(_("Login"), "creator", "get_linktoagent");
 } else {
-    $HD_Form->AddListValue(_("Account number"), "creator", "display_customer_id_link");
+    $HD_Form->AddListValue(_("Account number"), "creator", "get_customer_id_link");
 }
 $HD_Form->AddListValue(_("Title"), "title");
 $HD_Form->AddListValue(_("Creation date"), "creationdate");

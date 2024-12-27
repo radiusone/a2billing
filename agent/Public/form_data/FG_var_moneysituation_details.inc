@@ -69,7 +69,7 @@ if ($type == 'payment') {
 	//SELECT t3.date, t3.credit, t3.reseller_id from cc_logrefill as t3 WHERE t3.card_id='1'
 	//SELECT t2.date, t2.payment, t2.reseller_id from cc_logpayment as t2 WHERE t2.card_id='1'
 	$HD_Form->AddListValue(gettext("DATE"), "date");
-	$HD_Form->AddListValue(gettext("AMOUNT INCL VAT"), "total_price", "display_money");
+	$HD_Form->AddListValue(gettext("AMOUNT INCL VAT"), "total_price", "get_money");
 	$HD_Form->FieldViewElement("cc_invoice.date, total_price");
 }
 

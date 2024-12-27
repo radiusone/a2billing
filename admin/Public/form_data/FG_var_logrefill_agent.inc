@@ -58,10 +58,10 @@ $HD_Form->help_text = create_help(
 $list_refill_type = getRefillType_List();
 
 $HD_Form->AddListValue(_("ID"), "id");
-$HD_Form->AddListValue(_("Agent"), "agent_id", has_rights (Admin::ACX_ADMINISTRATOR) ? "display_linktoagent" : "display_nameofagent");
+$HD_Form->AddListValue(_("Agent"), "agent_id", has_rights (Admin::ACX_ADMINISTRATOR) ? "get_linktoagent" : "get_nameofagent");
 $HD_Form->AddListValue(_("Date"), "date");
 $HD_Form->AddListMapping(_("Type"), "refill_type", $list_refill_type);
-$HD_Form->AddListValue(_("Amount"), "credit", "display_money");
+$HD_Form->AddListValue(_("Amount"), "credit", "get_money");
 $HD_Form->FieldViewElement(["id", "agent_id", "date", "refill_type", "credit"]);
 
 $HD_Form->FG_ENABLE_INFO_BUTTON = true;

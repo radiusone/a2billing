@@ -55,7 +55,7 @@ $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
 $list_refill_type=getRefillType_List();
 $HD_Form -> AddListValue(gettext("ID"), "cc_logrefill.id");
-$HD_Form -> AddListValue(gettext("ACCOUNT"), "username", "display_customer_link");
+$HD_Form -> AddListValue(gettext("ACCOUNT"), "username", "get_customer_link");
 $HD_Form -> AddListValue(gettext("REFILL DATE"), "date");
 $HD_Form -> AddListValue(gettext("DESCRIPTION"), "description");
 $HD_Form -> AddListMapping(gettext("REFILL TYPE"), "refill_type", $list_refill_type);

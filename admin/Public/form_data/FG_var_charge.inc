@@ -79,9 +79,9 @@ $chargetype_list = [
 ];
 
 $HD_Form_c->AddListSqlMapping(_("Account holder"), "id_cc_card", new Table("cc_card", ["id", "CONCAT(lastname, ' ', firstname)"]));
-$HD_Form_c->AddListValue(_("Account number"), "username", "display_customer_link");
+$HD_Form_c->AddListValue(_("Account number"), "username", "get_customer_link");
 $HD_Form_c->AddListValue(_("Date"), "cc_charge.creationdate");
-$HD_Form_c->AddListValue(_("Amount"), "amount", "display_money");
+$HD_Form_c->AddListValue(_("Amount"), "amount", "get_money");
 $HD_Form_c->AddListMapping(_("Charge type"), "chargetype", $chargetype_list);
 $HD_Form_c->AddListValue(_("Description"), "description");
 $HD_Form_c->FieldViewElement(["id_cc_card", "username", "cc_charge.creationdate", "amount", "chargetype", "description"]);

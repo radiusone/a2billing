@@ -68,8 +68,8 @@ if (($action ?? "") !== "ask_release") {
 
 $status_list = [_("Free"), _("Reserved")];
 
-$HD_Form->AddListValue(_("DID"), "did", "display_phone_number");
-$HD_Form->AddListValue(_("Card"), "id_cc_card", "display_customer_id_link");
+$HD_Form->AddListValue(_("DID"), "did", "format_phone_number");
+$HD_Form->AddListValue(_("Card"), "id_cc_card", "get_customer_id_link");
 $HD_Form->AddListValue(_("Reservation date"), "reservationdate");
 $HD_Form->AddListValue(_("Liberation date"), "releasedate");
 $HD_Form->AddListMapping(_("Status"), "cc_did_use.activated", $status_list);

@@ -63,11 +63,11 @@ $HD_Form->help_text = create_help(
 $list_refill_type = getRefillType_List();
 
 $HD_Form->AddListValue(_("ID"), "id");
-$HD_Form->AddListValue(_("Account"), "card_id","display_customer_id_link");
+$HD_Form->AddListValue(_("Account"), "card_id", "get_customer_id_link");
 $HD_Form->AddListValue(_("Date"), "date");
-$HD_Form->AddListValue(_("Amount"), "payment", "display_money");
+$HD_Form->AddListValue(_("Amount"), "payment", "get_money");
 $HD_Form->AddListMapping(_("Type"), "payment_type", $list_refill_type);
-$HD_Form->AddListValue(_("Refill"), "id_logrefill", "display_refill_link");
+$HD_Form->AddListValue(_("Refill"), "id_logrefill", "get_refill_link");
 $HD_Form->FieldViewElement([
     "id",
     "card_id",

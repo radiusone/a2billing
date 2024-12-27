@@ -119,15 +119,15 @@ if ( has_rights ( Agent::ACX_SEE_CUSTOMERS_CALLERID )) {
 $FG_TABLE_COL [] = array (gettext ( "DNID" ), "dnid", "7%", "center", "SORT", "30" );
 $FG_TABLE_COL [] = array (gettext ( "Phone Number" ), "calledstation", "13%", "center", "SORT", "30", "", "", "", "", "", "" );
 $FG_TABLE_COL [] = array (gettext ( "Destination" ), "dest","10%", "center", "SORT", "15", "lie", "cc_prefix", "destination,prefix", "prefix='%id'", "%1" );
-$FG_TABLE_COL [] = array (gettext ( "Sell Rate" ), "rateinitial", "8%", "center", "SORT", "30", "", "", "", "", "", "display_money_precise" );
-$FG_TABLE_COL [] = array (gettext ( "Duration" ), "sessiontime", "8%", "center", "SORT", "30", "", "", "", "", "", "display_minute" );
+$FG_TABLE_COL [] = array (gettext ( "Sell Rate" ), "rateinitial", "8%", "center", "SORT", "30", "", "", "", "", "", "get_money_precise" );
+$FG_TABLE_COL [] = array (gettext ( "Duration" ), "sessiontime", "8%", "center", "SORT", "30", "", "", "", "", "", "get_minute" );
 $FG_TABLE_COL [] = array (gettext ( "Account" ), "card_id", "10%", "center", "sort", "", "lie", "cc_card", "username,id", "id='%id'", "%1", "", "A2B_entity_card.php" );
 $FG_TABLE_COL [] = array (abbr(_("TC"), _("Terminate Cause")), "terminatecauseid", "7%", "center", "SORT", "", "list", $dialstatus_list );
 $FG_TABLE_COL [] = array (gettext ( "CallType" ), "sipiax", "10%", "center", "SORT", "", "list", $list_calltype );
-$FG_TABLE_COL [] = array (gettext ( "Sell" ), "sessionbill", "10%", "center", "SORT", "30", "", "", "", "", "", "display_money_precise" );
+$FG_TABLE_COL [] = array (gettext ( "Sell" ), "sessionbill", "10%", "center", "SORT", "30", "", "", "", "", "", "get_money_precise" );
 
 if (LINK_AUDIO_FILE) {
-    $FG_TABLE_COL [] = array ("", "uniqueid", "1%", "center", "", "30", "", "", "", "", "", "display_monitorfile_link" );
+    $FG_TABLE_COL [] = array ("", "uniqueid", "1%", "center", "", "30", "", "", "", "", "", "get_monitorfile_link" );
 }
 
 if ( has_rights ( Agent::ACX_SEE_CUSTOMERS_CALLERID )) {

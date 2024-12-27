@@ -75,7 +75,7 @@ $HD_Form -> AddListValue(gettext("DESTINATION"), "destination");
 $HD_Form -> AddListSqlMapping(gettext("DID"), "id_cc_did", new Table("cc_did", ["id", "did"]));
 $HD_Form -> AddListMapping(gettext("ACTIVATED"), "cc_did_destination.activated", $actived_list);
 $HD_Form -> AddListMapping(gettext("PRIORITY"), "priority", $priority_list);
-$HD_Form -> AddListValue(gettext("USED MINUTE"), "cc_did_destination.secondusedreal", "display_minute");
+$HD_Form -> AddListValue(gettext("USED MINUTE"), "cc_did_destination.secondusedreal", "get_minute");
 $HD_Form -> AddListSqlMapping(gettext("COUNTRY"), "id_cc_country", new Table("cc_country", ["id", "countryname"]));
 $HD_Form -> AddListMapping(gettext("VALIDATED"), "validated", $validated_list);
 

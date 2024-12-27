@@ -112,12 +112,12 @@ $invoiceday_list = getInvoiceDay_List();
 
 $HD_Form->AddListValue(_("ID"), "cc_invoice.id");
 $HD_Form->AddListValue(_("REFERENCE"), "reference");
-$HD_Form->AddListValue(_("ACCOUNT"), "id_card", "display_customer_id_link");
+$HD_Form->AddListValue(_("ACCOUNT"), "id_card", "get_customer_id_link");
 $HD_Form->AddListValue(_("DATE"), "date");
 $HD_Form->AddListValue(_("TITLE"), "title");
 $HD_Form->AddListMapping(_("PAID STATUS"), "paid_status", $paid_status_list);
 $HD_Form->AddListMapping(_("STATUS"), "status", $status_list);
-$HD_Form->AddListValue(_("AMOUNT INCL VAT"), "total_price", "display_money");
+$HD_Form->AddListValue(_("AMOUNT INCL VAT"), "total_price", "get_money");
 $HD_Form->FieldViewElement([
     "cc_invoice.id",
     "reference",
