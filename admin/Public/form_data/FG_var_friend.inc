@@ -70,7 +70,7 @@ $HD_Form->help_text = create_help(
 );
 
 $HD_Form->AddListValue(_("Cardholder"), "id_cc_card", [Customer::class, "getName"]);
-$HD_Form->AddListValue(_("Username"), "username", "get_customer_link");
+$HD_Form->AddListValue(_("Username"), "username");
 $HD_Form->AddListValue(_("Account code"), "accountcode");
 $HD_Form->AddListValue(_("Secret"), "secret");
 $HD_Form->AddListValue(_("Caller ID"), "callerid");

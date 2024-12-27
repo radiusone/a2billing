@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Agent;
+use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -55,13 +56,13 @@ $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 
 $list_refill_type=getRefillType_List();
 $HD_Form -> AddListValue(gettext("ID"), "cc_logrefill.id");
-$HD_Form -> AddListValue(gettext("ACCOUNT"), "username", "get_customer_link");
+$HD_Form -> AddListValue(gettext("ACCOUNT"), "card_id", [Customer::class, "getUsername"]);
 $HD_Form -> AddListValue(gettext("REFILL DATE"), "date");
 $HD_Form -> AddListValue(gettext("DESCRIPTION"), "description");
 $HD_Form -> AddListMapping(gettext("REFILL TYPE"), "refill_type", $list_refill_type);
 $HD_Form -> AddListValue(gettext("REFILL AMOUNT"), "cc_logrefill.credit");
 
-$HD_Form -> FieldViewElement ('cc_logrefill.id, username, date, cc_logrefill.description, cc_logrefill.refill_type as refill_type, cc_logrefill.credit');
+$HD_Form -> FieldViewElement ('cc_logrefill.id, card_id, date, cc_logrefill.description, cc_logrefill.refill_type as refill_type, cc_logrefill.credit');
 
 $HD_Form -> FG_FILTER_ENABLE = true;
 $HD_Form -> FG_FILTER_COLUMN = 'username';

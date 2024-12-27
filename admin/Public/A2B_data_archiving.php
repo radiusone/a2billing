@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 use A2billing\Table;
 
@@ -68,7 +69,7 @@ $cardstatus_list_acronym = getCardStatus_Acronym_List();
 $yesno_list = getYesNoList();
 
 $HD_Form->AddListValue(_("ID"), "id");
-$HD_Form->AddListValue(_("Account number"), "username", "get_customer_link");
+$HD_Form->AddListValue(_("Account number"), "id", [Customer::class, "getUsername"]);
 $HD_Form->AddListValue(abbr(_("Bal"), _("Balance")), "credit", "get_money");
 $HD_Form->AddListValue(_("Last name"), "lastname");
 $HD_Form->AddListMapping(_("Status"), "status", $cardstatus_list_acronym);
@@ -80,7 +81,7 @@ $HD_Form->AddListMapping(_("IAX"), "iax_buddy", $yesno_list);
 $HD_Form->AddListValue(abbr(_("Num"), _("Number of calls")), "nbused");
 $HD_Form->FieldViewElement([
     "id",
-    "username",
+    "id",
     "credit",
     "lastname",
     "status",

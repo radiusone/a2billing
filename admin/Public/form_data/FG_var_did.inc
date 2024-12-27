@@ -68,7 +68,7 @@ $HD_Form->add_help_text = $HD_Form->edit_help_text = create_help(_("DID can be a
 
 $yesno = getYesNoList();
 
-$HD_Form->AddListValue(_("DID"), "did", "get_formatted_did");
+$HD_Form->AddListValue(_("DID"), "did", "format_phone_number");
 $HD_Form->AddListValue(_("Customer"), "iduser", [Customer::class, "getName"]);
 $HD_Form->AddListMapping(_("Billing"), "billingtype", getBillingTypeShortList());
 $HD_Form->AddListValue(_("Start date"), "startingdate");

@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Agent;
+use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 use A2billing\Table;
@@ -74,9 +75,9 @@ $status_list = Ticket::getAllStatusListView();
 $filter_view ='v.viewed ';
 
 
-$HD_Form -> AddListValue(gettext("ID"), "id");
+$HD_Form -> AddListValue(gettext("ID"), "cc_ticket.id");
 $HD_Form -> AddListValue(gettext("CUSTOMER"), "CONCAT(lastname, ', ', firstname)");
-$HD_Form -> AddListValue(gettext("ACCOUNT NUMBER"), "username", "get_customer_link");
+$HD_Form -> AddListValue(gettext("ACCOUNT NUMBER"), "cc_card.id", [Customer::class, "getUsername"]);
 $HD_Form -> AddListValue(gettext("TITLE"), "title");
 $HD_Form -> AddListValue(gettext("CREATIONDATE"), "creationdate");
 $HD_Form -> AddListSqlMapping(gettext("COMPONENT"), "id_component", new Table("cc_support_component", ["id", "name"]));
@@ -84,7 +85,7 @@ $HD_Form -> AddListMapping(gettext("PRIORITY"), "priority", $priority_list);
 $HD_Form -> AddListMapping(gettext("VIEWED"), "viewed_agent", $viewed_list);
 $HD_Form -> AddListMapping(gettext("STATUS"), "status", $status_list);
 
-$HD_Form -> FieldViewElement ("cc_ticket.id, CONCAT(lastname, ', ', firstname), username, cc_ticket.title, cc_ticket.creationdate, id_component , priority ,$filter_view, cc_ticket.status");
+$HD_Form -> FieldViewElement ("cc_ticket.id, CONCAT(lastname, ', ', firstname), cc_card.id, cc_ticket.title, cc_ticket.creationdate, id_component , priority ,$filter_view, cc_ticket.status");
 
 $HD_Form->FG_ENABLE_INFO_BUTTON = true;
 $HD_Form->FG_INFO_BUTTON_LINK = "A2B_ticket_view.php?id=";

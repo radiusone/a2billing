@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Agent;
+use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 
@@ -81,7 +82,7 @@ $yesno = getYesNoList();
 
 
 $HD_Form -> AddListValue(gettext("CARDHOLDER"), "CONCAT(lastname, ', ', firstname)");
-$HD_Form -> AddListValue(gettext("USERNAME"), "username", "get_customer_link");
+$HD_Form -> AddListValue(gettext("USERNAME"), "id_cc_card", [Customer::class, "getUsername"]);
 $HD_Form -> AddListValue(gettext("ACCOUNTCODE"), "accountcode");
 $HD_Form -> AddListValue(gettext("SECRET"), "secret");
 $HD_Form -> AddListValue(gettext("CALLERID"), "callerid");
@@ -99,7 +100,7 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("telephone_add.png") ;
 
 
 
-$HD_Form -> FieldViewElement ("CONCAT(lastname, ', ', firstname), $table_name.name, accountcode, secret, callerid, context, defaultip");
+$HD_Form -> FieldViewElement ("CONCAT(lastname, ', ', firstname), $table_name.id_cc_card, accountcode, secret, callerid, context, defaultip");
 
 $HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 10;
 

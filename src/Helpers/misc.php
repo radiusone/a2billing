@@ -389,28 +389,6 @@ function get_monitorfile_link($value): string
 
 /**
  * Used as callback for list/form elements
- *
- * @param string|null $username
- * @return string
- */
-function get_customer_link(?string $username): string
-{
-    $value = htmlspecialchars(_("n/a"));
-    if (empty($username)) {
-        return $value;
-    }
-    $handle = DbConnect();
-    $id = $handle->CacheGetOne(60, "SELECT id FROM cc_card WHERE username = ?", [$username]);
-    if ($id !== false && !is_null($id)) {
-        $username = htmlspecialchars($username);
-        $value = "<a href=\"A2B_entity_card.php?form_action=ask-edit&amp;id=$id\">$username</a>";
-    }
-
-    return $value;
-}
-
-/**
- * Used as callback for list/form elements
  * @param string|int|null $id
  * @return string
  */
@@ -459,31 +437,6 @@ function get_agent_refill_link(?int $id): string
         $id,
         get_money($row["credit"])
     );
-}
-
-/**
- * Used as callback for list/form elements
- * @param string $did
- * @return string
- */
-function get_formatted_did(string $did): string
-{
-    $value = $did;
-    if (empty($did) || !is_numeric($did)) {
-
-        return $value;
-    }
-    $handle = DbConnect();
-    $cc = $handle->CacheGetOne(
-        60,
-        "SELECT countrycode FROM cc_did d LEFT JOIN cc_country c ON (c.id = d.id_cc_country) WHERE did = ? AND countryprefix = 1",
-        [$did]
-    );
-    if ($cc !== false && !is_null($cc)) {
-        $value = format_phone_number($value);
-    }
-
-    return $value;
 }
 
 /**

@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 use A2billing\Table;
@@ -79,12 +80,12 @@ $chargetype_list = [
 ];
 
 $HD_Form_c->AddListSqlMapping(_("Account holder"), "id_cc_card", new Table("cc_card", ["id", "CONCAT(lastname, ' ', firstname)"]));
-$HD_Form_c->AddListValue(_("Account number"), "username", "get_customer_link");
+$HD_Form_c->AddListValue(_("Account number"), "id_cc_card", [Customer::class, "getUsername"]);
 $HD_Form_c->AddListValue(_("Date"), "cc_charge.creationdate");
 $HD_Form_c->AddListValue(_("Amount"), "amount", "get_money");
 $HD_Form_c->AddListMapping(_("Charge type"), "chargetype", $chargetype_list);
 $HD_Form_c->AddListValue(_("Description"), "description");
-$HD_Form_c->FieldViewElement(["id_cc_card", "username", "cc_charge.creationdate", "amount", "chargetype", "description"]);
+$HD_Form_c->FieldViewElement(["id_cc_card", "id_cc_card", "cc_charge.creationdate", "amount", "chargetype", "description"]);
 
 $HD_Form_c->FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form_c->FG_ENABLE_DELETE_BUTTON = true;

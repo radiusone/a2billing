@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -56,7 +57,7 @@ $HD_Form->help_text = create_help(
 );
 
 $HD_Form->AddListValue(_("ID"), "cc_card.id");
-$HD_Form->AddListValue(_("Card number"), "username", "get_customer_link");
+$HD_Form->AddListValue(_("Card number"), "cc_card.id", [Customer::class, "getUsername"]);
 $HD_Form->AddListValue(_("Alias"), "useralias");
 $HD_Form->AddListValue(_("First name"), "firstname");
 $HD_Form->AddListValue(_("Last name"), "lastname");
@@ -67,7 +68,7 @@ $HD_Form->AddListValue(_("To pay"), "to_pay", "sub_money", ["%6", "%7"]);
 
 $HD_Form->FieldViewElement([
     "cc_card.id",
-    "username",
+    "cc_card.id",
     "useralias",
     "firstname",
     "lastname",

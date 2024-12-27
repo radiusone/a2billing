@@ -64,7 +64,7 @@ $yesno_list = getYesNoList();
 
 $HD_Form->AddListValue(_("Destination"), "destination");
 $HD_Form->AddListValue(_("Creation Date"), "cc_did_destination.creationdate");
-$HD_Form->AddListValue(_("DID"), "did", "get_formatted_did");
+$HD_Form->AddListValue(_("DID"), "did", "format_phone_number");
 $HD_Form->AddListValue(_("Account Number"), "id_cc_card", [Customer::class, "getUsername"]);
 $HD_Form->AddListMapping(_("Active"), "cc_did_destination.activated", $activated_list);
 $HD_Form->AddListMapping(_("VoIP"), "voip_call", $yesno_list);

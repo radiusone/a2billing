@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Customer;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -56,14 +57,14 @@ $FG_TABLE_ALTERNATE_ROW_COLOR[] = "#FCFBFB";
 
 $DBHandle  = DbConnect();
 $FG_TABLE_COL = array();
-$FG_TABLE_COL[]=array (gettext("Account Number"), "username", "15%", "center", "sort", "", "30", "", "", "", "", "get_customer_link");
+$FG_TABLE_COL[]=array (gettext("Account Number"), "id_cc_card", "15%", "center", "sort", "", "30", "", "", "", "", "get_customer_link");
 $FG_TABLE_COL[]=array (gettext("Date"), "datecreated", "20%", "center", "SORT");
 $FG_TABLE_COL[]=array (gettext("Description"), "description", "60%", "center", "SORT");
 
 $FG_TABLE_DEFAULT_ORDER = "ch.datecreated";
 $FG_TABLE_DEFAULT_SENS = "DESC";
 
-$FG_COL_QUERY = 'username, ch.datecreated, ch.description';
+$FG_COL_QUERY = 'id_cc_card, ch.datecreated, ch.description';
 $FG_LIMITE_DISPLAY = 25;
 $FG_NB_TABLE_COL=count($FG_TABLE_COL);
 $FG_TOTAL_TABLE_COL = $FG_NB_TABLE_COL;
@@ -270,7 +271,7 @@ require_once __DIR__ . "/../templates/main.php";
                               <TD vAlign=top align="<?php echo $FG_TABLE_COL[$i][3]?>" class=tableBody>
                         <?php
                                     $record_display = $recordset[$i];
-                                    if($FG_TABLE_COL[$i][11] == "get_customer_link") echo get_customer_link(stripslashes($record_display));
+                                    if($FG_TABLE_COL[$i][11] == "get_customer_link") echo Customer::getName(stripslashes($record_display));
                                     else echo stripslashes($record_display);	?>
                             </TD>
                         <?php } ?>

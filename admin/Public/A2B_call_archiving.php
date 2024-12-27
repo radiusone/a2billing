@@ -100,7 +100,7 @@ $HD_Form->FG_QUERY_PRIMARY_KEY = "cc_call.id";
 $HD_Form->CV_NO_FIELDS = _("No matching calls found; use the fields above to refine your search.");
 
 $HD_Form->AddListValue(_("Calldate"), "starttime");
-$HD_Form->AddListValue(_("CalledNumber"), "calledstation", "get_formatted_did");
+$HD_Form->AddListValue(_("CalledNumber"), "calledstation", "format_phone_number");
 $HD_Form->AddListValue(_("Destination"), "cc_prefix.destination", "format_phone_number");
 $HD_Form->AddListValue(_("Duration"), "real_sessiontime", "get_minute");
 $HD_Form->AddListValue(_("Card Used"), "card_id", [Customer::class, "getUsername"]);
