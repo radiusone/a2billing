@@ -96,7 +96,6 @@ $security_verify = true;
 $transaction_detail = base64_encode(serialize($_POST));
 
 $currencyObject = new currencies();
-$currencies_list = get_currencies();
 
 switch ($transaction_data[0][4]) {
     case "paypal":
@@ -182,7 +181,7 @@ switch ($transaction_data[0][4]) {
 
         $currCurrency 		= BASE_CURRENCY;
         $currAmount 		= $transaction_data[0][2];
-        $currAmount_usd		= convert_currency($currencies_list, $currAmount, BASE_CURRENCY, 'USD');
+        $currAmount_usd		= convert_currency($currAmount, BASE_CURRENCY, 'USD');
 
         $pnp_post_values = array(
             'publisher-name' => MODULE_PAYMENT_PLUGNPAY_LOGIN,
@@ -236,7 +235,7 @@ if (empty($transaction_data[0]['vat']) || !is_numeric($transaction_data[0]['vat'
 }
 
 write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."curr amount $currAmount $currCurrency BASE_CURRENCY=".BASE_CURRENCY);
-$amount_paid = convert_currency($currencies_list, $currAmount, $currCurrency, BASE_CURRENCY);
+$amount_paid = convert_currency($currAmount, $currCurrency, BASE_CURRENCY);
 $amount_without_vat = $amount_paid / (1+$VAT/100);
 
 //If security verification fails then send an email to administrator as it may be a possible attack on epayment security.

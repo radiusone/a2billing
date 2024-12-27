@@ -117,7 +117,13 @@ $card_country = $result[0][0];
 
 //Currencies check
 $currencies_list = get_currencies();
-if (!isset($currencies_list[strtoupper($curr)]["value"]) || !is_numeric($currencies_list[strtoupper($curr)]["value"])) {$mycur = 1;$display_curr=strtoupper(BASE_CURRENCY);} else {$mycur = $currencies_list[strtoupper($curr)]["value"];$display_curr=strtoupper($curr);}
+if (!isset($currencies_list[strtoupper($curr)]["value"]) || !is_numeric($currencies_list[strtoupper($curr)]["value"])) {
+    $mycur = 1;
+    $display_curr=strtoupper(BASE_CURRENCY);
+} else {
+    $mycur = $currencies_list[strtoupper($curr)]["value"];
+    $display_curr=strtoupper($curr);
+}
 
 function amount_convert($amount)
 {

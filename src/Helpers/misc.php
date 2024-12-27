@@ -173,12 +173,11 @@ function get_currencies(): array
 /**
  * Do Currency Conversion.
  *
- * @param array $currencies_list the List of currencies.
  * @param int|float $amount the amount to be converted.
  * @param string $from_cur Source Currency
  * @param string $to_cur Destination Currecny
  */
-function convert_currency(array $currencies_list, $amount, string $from_cur, string $to_cur)
+function convert_currency($amount, string $from_cur, string $to_cur)
 {
     if (!is_numeric($amount) || ($amount == 0)) {
         return 0;
@@ -186,6 +185,7 @@ function convert_currency(array $currencies_list, $amount, string $from_cur, str
     if ($from_cur == $to_cur) {
         return $amount;
     }
+    $currencies_list = get_currencies();
     // EUR -> 1.19175 : MAD -> 0.10897
     // FROM -> 2 - TO -> 0.5 =>>>> multiply 4
     $mycur_tobase = $currencies_list[strtoupper($from_cur)]["value"];

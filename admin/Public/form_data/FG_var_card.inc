@@ -3,6 +3,7 @@
 use A2billing\A2Billing;
 use A2billing\Admin;
 use A2billing\Agent;
+use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 use A2billing\Notification;
@@ -151,8 +152,9 @@ foreach ($show_list as $field) {
             $HD_Form->AddListValue(_("ID"), "cc_card.id");
             break;
         case "username":
-            $HD_Form->AddListValue(_("Account number"), "username", $popup_select ? null : "get_customer_link");
-            break;
+            $HD_Form->AddListValue(_("Account number"), "cc_card.id", $popup_select ? null : [Customer::class, "getUsername"]);
+            $FG_COL_QUERY_FIELDS[] = "cc_card.id";
+            continue(2);
         case "lastname":
             $HD_Form->AddListValue(_("Last name"), "lastname");
             break;
