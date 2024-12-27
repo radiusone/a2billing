@@ -56,8 +56,7 @@ $HD_Form->AddListActionButton(
 );
 
 $HD_Form->help_text = create_help(
-    _("Set the caller ID so that the customer calling in is authenticated on the basis of the callerID rather than with the account number"),
-    'ListCallerID'
+    _("Set the caller ID so that the customer calling in is authenticated on the basis of the callerID rather than with the account number")
 );
 
 $HD_Form->AddListValue(_("CALLERID"), "cid");

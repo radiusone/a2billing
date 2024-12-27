@@ -85,7 +85,7 @@ if (!empty($action)) {
 
 $menu_section = 0;
 require_once __DIR__ . "/../templates/main.php";
-echo create_help(_("Notification: You can see below all notifications received about some event."), 'Notificationbox');
+echo create_help(_("Notification: You can see below all notifications received about some event."));
 
 $nb_per_page = 15;
 $nb_total = NotificationsDAO::getNotificationCount();

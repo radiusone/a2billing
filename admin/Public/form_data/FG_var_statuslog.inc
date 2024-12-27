@@ -48,8 +48,7 @@ $HD_Form->FG_TABLE_DEFAULT_ORDER = "updated_date";
 $HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
 
 $HD_Form->help_text = create_help(
-    _("Status logs help you to keep track of the status of all customers. The status can be 'New, Active, Cancelled, Reserved, Waiting-MailConfirmation and Expired."),
-    'StatusLog'
+    _("Status logs help you to keep track of the status of all customers. The status can be 'New, Active, Cancelled, Reserved, Waiting-MailConfirmation and Expired.")
 );
 
 $cardstatus_list = getCardStatus_List();

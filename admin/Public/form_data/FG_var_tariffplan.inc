@@ -59,12 +59,10 @@ $HD_Form->add_help_text = $HD_Form->edit_help_text = create_help(
     . '<br/>'
     . _("Each ratecard may have as many rates as you wish, however, if a dialling prefix cannot be matched when a call is made, then the call will be terminated.")
     . '<br/>'
-    . _('A ratecard has a "start date", an "expiry date" and a you can define a default trunk, but if no trunk is defined, the ratecard default trunk will be used.'),
-    'EditRatecard'
+    . _('A ratecard has a "start date", an "expiry date" and a you can define a default trunk, but if no trunk is defined, the ratecard default trunk will be used.')
 );
 $HD_Form->list_help_text = create_help(
-    _("List ratecards that have been created!<br>Ensure that a ratecard is added into the call plan under 'List Ratecard'"),
-    'ListRatecard'
+    _("List ratecards that have been created!<br>Ensure that a ratecard is added into the call plan under 'List Ratecard'")
 );
 
 $HD_Form->AddListValue(_("ID"), "id");

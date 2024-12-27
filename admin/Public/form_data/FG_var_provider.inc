@@ -51,8 +51,7 @@ $HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("world_add.png");
 
 $HD_Form->help_text = create_help(
     _("This section will allow you to create and edit VOIP Providers for reporting purposes. ")
-    . _("A provider is the company/person that provides you with termination."),
-    'ListProvider'
+    . _("A provider is the company/person that provides you with termination.")
 );
 
 $HD_Form->AddListValue(_("Name"), "provider_name");

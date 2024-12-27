@@ -55,8 +55,7 @@ require_once __DIR__ . "/../templates/main.php";
 echo create_help(
     _("Browse your server log files.")
         . '<br/>'
-        . _("This tool can be used to extract and present information from various logfiles."),
-    'WatchLogFiles'
+        . _("This tool can be used to extract and present information from various logfiles.")
 );
 
 function array2drop_down(string $name, array $arr_value, string $currentvalue = ""): string

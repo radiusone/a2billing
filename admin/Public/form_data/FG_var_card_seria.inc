@@ -53,8 +53,7 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("page_white_add.png") ;
 $HD_Form->help_text = create_help(
     _("This page shows the series list.")
     . '<br>'
-    . _("Series & serials is used for the creation of a card range specifically for accounting purposes instead of card id."),
-    'ListSeria'
+    . _("Series & serials is used for the creation of a card range specifically for accounting purposes instead of card id.")
 );
 
 $HD_Form->AddListValue(_("Name"), "name");

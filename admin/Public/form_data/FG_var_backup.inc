@@ -149,8 +149,7 @@ if ($form_action === "add" && !empty($path)) {
 $HD_Form->FG_TABLE_DEFAULT_ORDER = "name";
 
 $HD_Form->help_text = create_help(
-    _("This section will allow you to backup an existing database context. The Backup process will export the whole database, so you can restore it later."),
-    "DatabaseBackup"
+    _("This section will allow you to backup an existing database context. The Backup process will export the whole database, so you can restore it later.")
 );
 
 $HD_Form->AddListValue(_("ID"), "id");

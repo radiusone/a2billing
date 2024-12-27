@@ -70,14 +70,12 @@ $HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = "data:image/png;base64,iVBORw0KGgoAAAANSU
 $HD_Form->list_help_text = create_help(
     _("Trunk List.")
     . '<br/>'
-    . _("Trunks can be modified by clicking the edit button"),
-    'ListTrunk'
+    . _("Trunks can be modified by clicking the edit button")
 );
 $HD_Form->help_text = create_help(
     _("Trunks are used to terminate the call!<br>")
     . _("The trunk and ratecard is selected by the rating engine on the basis of the dialed digits.")
-    . _("The trunk is used to dial out from your asterisk box which can be a zaptel interface or a voip provider."),
-    'EditTrunk'
+    . _("The trunk is used to dial out from your asterisk box which can be a zaptel interface or a voip provider.")
 );
 
 if ($popup_select) {

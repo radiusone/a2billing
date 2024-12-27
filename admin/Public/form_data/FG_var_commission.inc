@@ -57,8 +57,7 @@ $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("money_add.png") ;
 
 $HD_Form->help_text = create_help(
-    _("Agents Commission history - The section below allows you to add commissions against an agent. Normally the commissions are generated automatically by the customer's payment."),
-    'ViewCommissions'
+    _("Agents Commission history - The section below allows you to add commissions against an agent. Normally the commissions are generated automatically by the customer's payment.")
 );
 
 $com_list = getRefillType_List();

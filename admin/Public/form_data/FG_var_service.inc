@@ -48,12 +48,10 @@ $HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("cog_add.png");
 
 $HD_Form->add_help_text = create_help(
     _("Utility to apply a scheduled action on the account.<br>")
-    . _("For example if you want to remove 10 cents everyday on each single account, it can be defined here, alternatively, if you now want to remove 1 credit every week but only 7 times on each account, the different rules/parameters below will define this."),
-    'EditRecurringService'
+    . _("For example if you want to remove 10 cents everyday on each single account, it can be defined here, alternatively, if you now want to remove 1 credit every week but only 7 times on each account, the different rules/parameters below will define this.")
 );
 $HD_Form->help_text = create_help(
-    _("Recurring services that decrement an account at timed intervals."),
-    'ListRecurringService'
+    _("Recurring services that decrement an account at timed intervals.")
 );
 
 $period_list = array_map(

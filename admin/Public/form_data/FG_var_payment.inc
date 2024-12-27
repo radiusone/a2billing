@@ -57,8 +57,7 @@ if (has_rights (Admin::ACX_MODIFY_PAYMENTS)) {
 }
 
 $HD_Form->help_text = create_help(
-    _("Payment history - The section below allows you to add payments against a customer. Note that this does not change the balance on the account. Click on 'create associate refill' when you create a payment to top-up an account."),
-    'ViewPayments'
+    _("Payment history - The section below allows you to add payments against a customer. Note that this does not change the balance on the account. Click on 'create associate refill' when you create a payment to top-up an account.")
 );
 
 $list_refill_type = getRefillType_List();

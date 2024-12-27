@@ -63,7 +63,7 @@ if ((!empty($posted_search) && !empty($inuse)) || empty($posted_search)) {
     );
 }
 if (($action ?? "") !== "ask_release") {
-    $HD_Form->help_text = create_help(_("List the DIDs currently in use with the customer id and their destination number <br/> You can use the search option to show the usage of a given DID or all DIDs"), 'DIDUsage');
+    $HD_Form->help_text = create_help(_("List the DIDs currently in use with the customer id and their destination number <br/> You can use the search option to show the usage of a given DID or all DIDs"));
 }
 
 $status_list = [_("Free"), _("Reserved")];

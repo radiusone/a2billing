@@ -50,8 +50,8 @@ $HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("server_connect.png") ;
 
-$HD_Form->list_help_text = create_help(_("Outbound CID list. CID can be added by customers through the customer interface."), 'ListCIDs');
-$HD_Form->help_text = create_help(_("Outbound CID offers customers a number which will be selected randomly for a ratecard for outgoing calls"), 'EditCID');
+$HD_Form->list_help_text = create_help(_("Outbound CID list. CID can be added by customers through the customer interface."));
+$HD_Form->help_text = create_help(_("Outbound CID offers customers a number which will be selected randomly for a ratecard for outgoing calls"));
 
 $HD_Form -> AddListValue(_("CID"), "cid");
 $HD_Form -> AddListSqlMapping(_("CIDGROUP"), "outbound_cid_group", new Table("cc_outbound_cid_group", ["id", "group_name"]));

@@ -62,7 +62,7 @@ require_once __DIR__ . "/../templates/main.php";
 // #### HELP SECTION
 echo create_help(_("Currency data is automatically updated from Yahoo Financial.") .
     '<br>' . _("For more information please visit the website http://finance.yahoo.com.") .
-    '<br>' . _("The list below is based on your currency :") . ' <b>' . BASE_CURRENCY . '</b>', 'CurrencyList');
+    '<br>' . _("The list below is based on your currency :") . ' <b>' . BASE_CURRENCY . '</b>');
 
 echo $update_msg ?? "";
 

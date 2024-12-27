@@ -1139,26 +1139,26 @@ function SetLocalLanguage(): void
     define("CHARSET", $charEncoding);
 }
 
-function create_help($text, $wiki = ""): string
+function create_help($text): string
 {
     $result = DbConnect()->GetOne("SELECT config_value FROM cc_config WHERE config_key = 'show_help'");
     if ($result !== "1") {
         return "";
     }
 
-    if (!empty($wiki)) {
-        $wiki = htmlspecialchars(_("For further information please consult")) . ' <a target="_blank" href="http://www.asterisk2billing.org/documentation/">' . htmlspecialchars(_("the online documention")) . '</a>.';
-    }
+    $wiki = htmlspecialchars(_("For further information please consult")) . ' <a target="_blank" href="https://web.archive.org/web/20120324185427/http%3A%2F%2Fwww.asterisk2billing.org%2Fdocumentation%2F">' . htmlspecialchars(_("the online documention")) . '</a>.';
 
     return <<< HTML
-    <div class="alert alert-info dismissible fade show d-flex align-items-center">
-        <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Help:">
-            <use xlink:href="#question-circle"/>
-        </svg>
-        <div class="mx-2">$text $wiki</div>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    HTML;
+        <div class="alert alert-info dismissible fade show d-flex align-items-center">
+            <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Help:">
+                <use xlink:href="#question-circle"/>
+            </svg>
+            <div class="mx-2">$text</div>
+            <hr/>
+            <div class="mx-2"><small>$wiki</small></div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        HTML;
 }
 
 function is_admin(): bool

@@ -49,10 +49,9 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("bell_add.png") ;
 
 $HD_Form->add_help_text = create_help(
     _("Utility to apply a scheduled monitor on trunks.<br>") .
-    _("For example if you want to monitor ASR (answer seize ratio) or ALOC (average length of call) everyday on each single trunk, it can be defined here, the different parameters below will define the rules to apply the alarm."),
-    'EditAlarm'
+    _("For example if you want to monitor ASR (answer seize ratio) or ALOC (average length of call) everyday on each single trunk, it can be defined here, the different parameters below will define the rules to apply the alarm.")
 );
-$HD_Form->help_text = create_help(_("Alarms that monitors trunks at timed intervals."), 'ListAlarm');
+$HD_Form->help_text = create_help(_("Alarms that monitors trunks at timed intervals."));
 
 $period_list = [1 => _("Hourly"), 2 => _("Daily"), 3 => _("Weekly"), 4 => _("Monthly")];
 $actived_list = getActivationList();

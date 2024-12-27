@@ -52,8 +52,7 @@ $HD_Form->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form->FG_LIST_ADDING_BUTTON_MSG1 = _(
 $HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("time_add.png") ;
 
 $HD_Form->help_text = create_help(
-    _("Agents Refill history - The section below allows you to add refills against an agent. Note that this changes the balance on the account."),
-    'ViewAgentRefill'
+    _("Agents Refill history - The section below allows you to add refills against an agent. Note that this changes the balance on the account.")
 );
 
 $list_refill_type = getRefillType_List();

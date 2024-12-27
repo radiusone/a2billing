@@ -53,7 +53,7 @@ $list = $HD_Form->perform_action($form_action);
 $smarty->display('main.tpl');
 
 // #### HELP SECTION
-echo create_help(gettext("Agents Refill history - The section below allows you to see your refill"), 'ViewAgentRefill');
+echo create_help(gettext("Agents Refill history - The section below allows you to see your refill"));
 
 if ($form_action == "list") {
     $HD_Form->create_search_form();

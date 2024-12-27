@@ -140,7 +140,7 @@ $table_rates = new Table("cc_package_rate JOIN cc_ratecard ON cc_ratecard.id = c
 $rates_clauses = " cc_package_rate.package_id = $id";
 $result_rates=$table_rates ->get_list(DbConnect(), $rates_clauses);
 
-echo create_help(_("PACKAGES SYSTEM - FREE MINUTES, etc..."), 'OfferPackage');
+echo create_help(_("PACKAGES SYSTEM - FREE MINUTES, etc..."));
 
 ?>
 <br/>

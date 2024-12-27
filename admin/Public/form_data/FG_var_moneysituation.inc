@@ -52,8 +52,7 @@ $HD_Form->FG_QUERY_GROUPBY_COLUMNS = ["cc_card.id"];
 $HD_Form->FG_QUERY_ORDERBY_COLUMNS = ["cc_card.id"];
 
 $HD_Form->help_text = create_help(
-    _("This screen shows refills and payments made against each account, along with the current credit on each account. The initial amount of credit applied to the account is not included. The amount owing is calculated by subtracting payments from refills"),
-    'MoneySituation'
+    _("This screen shows refills and payments made against each account, along with the current credit on each account. The initial amount of credit applied to the account is not included. The amount owing is calculated by subtracting payments from refills")
 );
 
 $HD_Form->AddListValue(_("ID"), "cc_card.id");

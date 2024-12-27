@@ -53,7 +53,7 @@ $list = $HD_Form->perform_action($form_action);
 $smarty->display('main.tpl');
 
 // #### HELP SECTION
-echo create_help(gettext("Agents Commission history - The section below allows you to add commissions against an agent. Normally the commissions are generated automatically by the customer's payment."), 'ViewCommissions');
+echo create_help(gettext("Agents Commission history - The section below allows you to add commissions against an agent. Normally the commissions are generated automatically by the customer's payment."));
 
 // #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);

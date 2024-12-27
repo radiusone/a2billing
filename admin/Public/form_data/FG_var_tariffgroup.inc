@@ -53,8 +53,7 @@ $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("server_add.png") ;
 
 $HD_Form->list_help_text = create_help(
-    _("List of Call Plans, a Call Plan is a collection of ratecards. You can click on edit to add new ratecards to the Call Plan"),
-    'ListCallPlan'
+    _("List of Call Plans, a Call Plan is a collection of ratecards. You can click on edit to add new ratecards to the Call Plan")
 );
 
 $HD_Form->FG_FK_DELETE_ALLOWED = true;

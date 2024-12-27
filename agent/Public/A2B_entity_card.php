@@ -316,7 +316,7 @@ function sendValue(selvalue)
 // #### HELP SECTION
 if ($form_action=='list' && !($popup_select>=1)) {
     echo create_help(gettext("Customers are listed below by card number. Each row corresponds to one customer, along with information such as their call plan, credit remaining, etc.<br>") .
-        gettext("The SIP and IAX buttons create SIP and IAX entries to allow direct VoIP connections to the Asterisk server without further authentication."), 'ListCustomers');
+        gettext("The SIP and IAX buttons create SIP and IAX entries to allow direct VoIP connections to the Asterisk server without further authentication."));
 
 ?>
 
@@ -578,7 +578,7 @@ if ($form_action == "list" && (!($popup_select>=1))) {
 </table>
 <?php  } // endif is_sip_iax_change
 
-}elseif (!($popup_select>=1)) echo create_help(gettext("Create and edit the properties of each customer. Click <b>CONFIRM DATA</b> at the bottom of the page to save changes."), 'CreateCustomer');
+}elseif (!($popup_select>=1)) echo create_help(gettext("Create and edit the properties of each customer. Click <b>CONFIRM DATA</b> at the bottom of the page to save changes."));
 
 
 if (isset($update_msg) && strlen($update_msg)>0) echo "<br/><center>$update_msg</center>";

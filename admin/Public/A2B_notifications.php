@@ -43,7 +43,7 @@ Admin::checkPageAccess(Admin::ACX_CUSTOMER);
 
 require_once __DIR__ . "/../templates/main.php";
 
-echo create_help(_("The Notification component is responsible for informing the Customer, via e-mail, that the account has reached a minimum credit."), 'Notification');
+echo create_help(_("The Notification component is responsible for informing the Customer, via e-mail, that the account has reached a minimum credit."));
 
 ?>
 <DIV ALIGN="CENTER">

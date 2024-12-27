@@ -59,8 +59,7 @@ $HD_Form->create_toppage($form_action);
 
 if ($action === "ask_release") {
     echo create_help(
-        _("Releasing a DID puts it in free state, and the user will not be charged monthly any more."),
-        'ReleaseDID'
+        _("Releasing a DID puts it in free state, and the user will not be charged monthly any more.")
     );
     $csrf = $HD_Form->csrf_inputs();
     $text = _("If you really want release this DID, click on the release button.");

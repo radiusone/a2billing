@@ -115,7 +115,7 @@ $smarty->display('main.tpl');
 // #### HELP SECTION
 if (!$popup_select) {
 } else {
-    echo create_help(gettext("Please select a ratecard and click on search to browse the different rates/dialing prefix of the selected ratecard."), 'Rate');
+    echo create_help(gettext("Please select a ratecard and click on search to browse the different rates/dialing prefix of the selected ratecard."));
 }
 
 // DISPLAY THE UPDATE MESSAGE

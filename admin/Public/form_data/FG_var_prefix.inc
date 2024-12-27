@@ -50,7 +50,7 @@ $HD_Form->FG_TABLE_DEFAULT_ORDER = "destination";
 $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("world_add.png") ;
 
-$HD_Form->help_text = create_help(_("Prefix list with destinations."), 'BrowsePrefix');
+$HD_Form->help_text = create_help(_("Prefix list with destinations."));
 
 $HD_Form->AddListValue(_("Prefix"), "prefix");
 $HD_Form->AddListValue(_("Destination"), "destination");

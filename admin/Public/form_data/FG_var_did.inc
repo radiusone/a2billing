@@ -62,8 +62,8 @@ $HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = 'add_did_use';
 $HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_DELETE = 'did_use_delete';
 $HD_Form->FG_ADDITIONAL_FUNCTION_BEFORE_DELETE = 'is_did_in_use';
 
-$HD_Form->list_help_text = create_help(_("DID number list with destinations."), 'ListDID');
-$HD_Form->add_help_text = $HD_Form->edit_help_text = create_help(_("DID can be assigned to a customer to re-route calls to a SIP/IAX client or a PSTN number. The Priority sets the order in which the calls are to be routed to allow for failover or follow-me."), 'EditDID');
+$HD_Form->list_help_text = create_help(_("DID number list with destinations."));
+$HD_Form->add_help_text = $HD_Form->edit_help_text = create_help(_("DID can be assigned to a customer to re-route calls to a SIP/IAX client or a PSTN number. The Priority sets the order in which the calls are to be routed to allow for failover or follow-me."));
 
 $yesno = getYesNoList();
 

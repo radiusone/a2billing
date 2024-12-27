@@ -59,7 +59,7 @@ $nb_countryname = count($list_countryname);
 require_once __DIR__ . "/../templates/main.php";
 
 // #### HELP SECTION
-echo create_help(_("You can import lists of DIDs using a CSV file."), 'ImportDID');
+echo create_help(_("You can import lists of DIDs using a CSV file."));
 
 ?>
 

@@ -50,8 +50,7 @@ $HD_Form->list_query_conditions["sipiax"] = ["IN", [2, 3]];
 
 $HD_Form->help_text = create_help(
     _("DID list and billing list.")
-    . _("You will see which customers have used your DIDs in past months and the traffic (amount of seconds)."),
-    'DIDBilling'
+    . _("You will see which customers have used your DIDs in past months and the traffic (amount of seconds).")
 );
 
 $HD_Form->AddListValue(_("DATE"), "DATE(starttime) AS date");

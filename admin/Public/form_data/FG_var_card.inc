@@ -103,13 +103,11 @@ $HD_Form->list_help_text = create_help(
     . "<br/>"
     . is_admin() || (is_agent() && has_rights(Agent::ACX_VOIPCONF))
         ? _("The SIP and IAX buttons create SIP and IAX entries to allow direct VoIP connections to the Asterisk server without further authentication.")
-        : "",
-    'ListCustomers'
+        : ""
 );
 
 $HD_Form->help_text = create_help(
-    _("Create and edit the properties of each customer. Click CONFIRM DATA at the bottom of the page to save changes."),
-    'CreateCustomer'
+    _("Create and edit the properties of each customer. Click CONFIRM DATA at the bottom of the page to save changes.")
 );
 
 $language_list = getLanguages();

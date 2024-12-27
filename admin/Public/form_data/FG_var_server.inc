@@ -45,8 +45,7 @@ $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("server_add.png") ;
 
 $HD_Form->help_text = create_help(
-    _("Servers are used by the callback system through the asterisk manager in order to initiate the callback and outbound calls for your customers. You can add/modify the callback server to be used here. The AGI and callback modes need to be installed on those machines."),
-    'ShowServer'
+    _("Servers are used by the callback system through the asterisk manager in order to initiate the callback and outbound calls for your customers. You can add/modify the callback server to be used here. The AGI and callback modes need to be installed on those machines.")
 );
 
 $HD_Form->AddListValue(_("ID"), "id_group");

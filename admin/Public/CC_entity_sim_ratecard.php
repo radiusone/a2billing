@@ -104,8 +104,7 @@ if ($called && ($id_cc_card > 0 || $accountcode > 0)) {
 require_once __DIR__ . "/../templates/main.php";
 
 echo create_help(
-    _('Please select an account, then enter the number you wish to call and press the "SIMULATE" button.'),
-    'RatecardSimulator'
+    _('Please select an account, then enter the number you wish to call and press the "SIMULATE" button.')
 );
 ?>
 <form method="post" name="simulator">

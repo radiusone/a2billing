@@ -57,8 +57,7 @@ $HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("group_add.png");
 
 $HD_Form->help_text = create_help(
     _("This page shows a group list.")
-    . _("The Group field is used for grouping customers for quick search, batch update and reporting."),
-    'ListGroup'
+    . _("The Group field is used for grouping customers for quick search, batch update and reporting.")
 );
 
 $HD_Form->AddListValue(_("Name"), "name");
