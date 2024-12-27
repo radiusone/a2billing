@@ -138,9 +138,6 @@ if (!($nb_card > 0)) {
 
 write_log($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . "[Number of card found : $nb_card]");
 
-// GET the currencies to define the email
-$currencies_list = get_currencies($A2B->DBHandle);
-
 // BROWSE THROUGH THE CARD TO APPLY THE CHECK ACCOUNT SERVICE
 for ($page = 0; $page < $nbpagemax; $page++) {
 

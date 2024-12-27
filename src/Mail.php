@@ -193,7 +193,7 @@ class Mail
                 $credit = $card['real_credit'];
                 $credit = round($credit, 3);
                 $currency = $card['currency'];
-                $currencies_list = get_currencies($DBHandle);
+                $currencies_list = get_currencies();
                 if (!isset ($currencies_list[strtoupper($currency)]["value"]) || !is_numeric($currencies_list[strtoupper($currency)]["value"])) {
                     $mycur = 1;
                 } else {

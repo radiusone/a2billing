@@ -860,7 +860,7 @@ $smarty->display ( 'main.tpl' );
                 <td class="fontstyle_searchoptions"><select NAME="choose_currency"
                     size="1" class="form_input_select">
                         <?php
-                        $currencies_list = get_currencies ();
+                        $currencies_list = getCurrencyValuesList();
                         foreach ($currencies_list as $key => $cur_value) {
                             ?>
                             <option value='<?php
@@ -871,7 +871,7 @@ $smarty->display ( 'main.tpl' );
                         selected <?php
                             }
                             ?>><?php
-                            echo $cur_value ["name"] . ' (' . $cur_value ["value"] . ')'?>
+                            echo $cur_value ?>
                             </option>
                         <?php
                         }

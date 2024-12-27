@@ -341,3 +341,30 @@ function getLogLevel_List(): array
 {
     return [1 => _("Info"), 2 => _("Notice"), 3 =>_("Warning")];
 }
+
+/**
+ * @return array<string,string>
+ */
+function getCurrenciesList(): array
+{
+    $currencies_list = get_currencies();
+
+    return array_combine(
+        array_column($currencies_list, "currency"),
+        array_column($currencies_list, "name")
+    );
+}
+
+/**
+ * @return array<string,string>
+ */
+function getCurrencyValuesList(): array
+{
+    $currencies_list = get_currencies();
+    array_walk(
+        $currencies_list,
+        fn (&$v) => $v = sprintf("%s (%s)", $v["name"], $v["value"])
+    );
+
+    return $currencies_list;
+}

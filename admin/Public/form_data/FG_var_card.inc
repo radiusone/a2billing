@@ -114,10 +114,7 @@ $language_list = getLanguages();
 $discount_list = getDiscount_List();
 $simultaccess_list = getCardAccess_List();
 $limits_notify_list = getLimitNotify_List($A2B);
-
-$currency_list = get_currencies();
-array_walk($currency_list, fn (&$v) => $v = "$v[name] ($v[value])");
-
+$currency_list = getCurrencyValuesList();
 $restriction_list = getRestrictionList();
 $cardstatus_list = getCardStatus_List();
 $typepaid_list = getPaidTypeList();

@@ -271,8 +271,8 @@ $list_country = $HD_Form->DBHandle->CacheGetAll(300, "SELECT countrycode AS id, 
         </label>
         <div class="col-8">
             <select name="choose_currency" id="choose_currency" class="form-select <?= empty($errors["choose_currency"]) ? "" : "is-invalid" ?>">
-                <?php foreach (get_currencies() as $id => $val): ?>
-                <option value="<?= $id ?>" <?= ("$choose_currency" ?? "") === $id ? "selected='selected'" : "" ?>><?= $val["name"] ?> (<?= $val["value"] ?>)</option>
+                <?php foreach (getCurrencyValuesList() as $id => $val): ?>
+                <option value="<?= $id ?>" <?= ("$choose_currency" ?? "") === $id ? "selected='selected'" : "" ?>><?= $val ?></option>
                 <?php endforeach ?>
             </select>
         </div>

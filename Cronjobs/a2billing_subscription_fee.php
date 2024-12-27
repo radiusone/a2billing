@@ -120,8 +120,6 @@ if (!($nb_card > 0)) {
 
 $billdaybefor_anniversary = $A2B->config['global']['subscription_bill_days_before_anniversary'];
 
-$currencies_list = get_currencies($A2B->DBHandle);
-
 $service_array = array();
 
 for ($page = 0; $page < $nbpagemax; $page++) {

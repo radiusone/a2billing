@@ -146,9 +146,9 @@ function a2b_mail($to, $subject, $mail_content, $from = 'root@localhost', $fromn
 /**
  * @return array<string,array>
  */
-function get_currencies($handle = null): array
+function get_currencies(): array
 {
-    $handle = $handle ?? DbConnect();
+    $handle = DbConnect();
     $currencies_list = [];
     $result = $handle->CacheGetAll(900, "SELECT currency, name, `value` FROM cc_currencies ORDER BY id");
     if ($result === false || $result === []) {
@@ -168,19 +168,6 @@ function get_currencies($handle = null): array
     ];
 
     return array_replace(array_flip($top_curr), $currencies_list);
-}
-
-/**
- * @return array<string,string>
- */
-function getCurrenciesList(): array
-{
-    $currencies_list = get_currencies();
-
-    return array_combine(
-        array_column($currencies_list, "currency"),
-        array_column($currencies_list, "name")
-    );
 }
 
 /**
