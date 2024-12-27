@@ -118,6 +118,9 @@ class Table
         if (is_null($identifier)) {
             return null;
         }
+        if ($identifier === "*") {
+            return "*";
+        }
 
         $q = $this->db_type === "mysql" ? "`" : "\"";
         $identifier = trim($identifier);
@@ -154,7 +157,7 @@ class Table
 
     public function isSqlFunction(string $value): bool
     {
-        $value = trim(strtolower($value));
+        $value = strtolower($value);
         return str_starts_with($value, "now()")
             || str_starts_with($value, "current_timestamp")
             || preg_match("/^\(\s*select\s/", $value)

@@ -1447,65 +1447,43 @@ class FormHandler
         $this->all_fields_valid = true;
         $values = [];
         $arr_value_to_import = [];
-        $instance_table = new Table($this->FG_QUERY_TABLE_NAME, "*", $this->query_table_joins);
+        // ignore the joins since we're doing an insert
+        $instance_table = new Table($this->FG_QUERY_TABLE_NAME);
 
         foreach ($this->FG_EDIT_FORM_ELEMENTS as &$row) {
-            if (empty($row["custom_query"])) {
-                $fields_name = $row["name"];
+            $field = $row["name"];
+            $attr = $row["attributes"];
+            if (array_key_exists("disabled", $attr)) {
+                continue;
+            }
 
-                if (str_contains($row["attributes"], "multiple") && is_array($processed[$fields_name])) {
-                    $total_mult_select = (int)array_sum($processed[$fields_name]);
-                    $values[$fields_name] = $total_mult_select;
+            if (array_key_exists("multiple", $attr) && is_array($processed[$field])) {
+                $values[$field] = (int)array_sum($processed[$field]);
+            }
+            if (!empty($row["validator"])) {
+                if ($processed[$field] === "" && str_starts_with($row["check_empty"] ?? "", "NO")) {
+                    $row["validation_err"] = true;
                 } else {
-                    if (!empty($row["validator"])) {
-                        if ($processed[$fields_name] === "" && str_starts_with($row["check_empty"] ?? "", "NO")) {
-                            $result = true;
-                        } else {
-                            $result = call_user_func($row["validator"], $processed[$fields_name]);
-                        }
-                        if ($result !== true) {
-                            $this->all_fields_valid = false;
-                            $form_action = "ask-add";
-                        }
-                        $row["validation_err"] = $result;
-                    }
-                    // CHECK IF THIS IS A SPLITABLE FIELD LIKE 012-014 OR 15,16,17
-                    if (in_array($fields_name, $this->FG_SPLITABLE_FIELDS) && !str_starts_with($processed[$fields_name], '_')) {
-                        $value = $processed[$fields_name];
-                        $arr_value_to_import[$fields_name] = [];
-                        $items = explode(",", $value);
-                        foreach ($items as $item) {
-                            $item = trim($item);
-                            $range = explode("-", $item, 2);
-                            if (isset($range[1])) {
-                                $min = trim($range[0]);
-                                $max = trim($range[1]);
-                                // get common prefix to avoid issues with very large numeric strings like card numbers
-                                $prefix_len = strspn("$min" ^ "$max", chr(0));
-                                $prefix = substr($min, 0, $prefix_len);
-                                $min = substr($min, $prefix_len);
-                                $max = substr($max, $prefix_len);
-                                if (is_numeric($min) && is_numeric($max) && $min < $max) {
-                                    for ($i = $min; $i <= $max; $i++) {
-                                        $arr_value_to_import[$fields_name][] = $prefix . $i;
-                                    }
-                                } elseif (is_numeric($min)) {
-                                    $arr_value_to_import[$fields_name][] = $prefix . $min;
-                                } elseif (is_numeric($max)) {
-                                    $arr_value_to_import[$fields_name][] = $prefix . $max;
-                                }
-                            } else {
-                                $arr_value_to_import[$fields_name][] = $range[0];
-                            }
-                        }
-
-                        if (!empty($processed[$fields_name]) && !str_contains($row["attributes"], "disabled")) {
-                            $values[$fields_name] = "%check_array%";
-                        }
-                    } elseif (!empty($processed[$fields_name]) && !str_contains($row["attributes"], "disabled") && $row["type"] !== "CAPTCHAIMAGE") {
-                        $values[$fields_name] = $processed[$fields_name];
+                    $result = call_user_func($row["validator"], $processed[$field]);
+                    $row["validation_err"] = $result;
+                    if ($result !== true) {
+                        $this->all_fields_valid = false;
+                        $form_action = "ask-add";
+                        continue;
                     }
                 }
+            }
+            // CHECK IF THIS IS A SPLITABLE FIELD LIKE 012-014 OR 15,16,17
+            if (in_array($field, $this->FG_SPLITABLE_FIELDS)) {
+                $value = $processed[$field];
+                if (empty($value) || str_starts_with($value, "_")) {
+                    // dialprefix can be a range *or* an Asterisk-style extension pattern starting with _
+                    continue;
+                }
+                $arr_value_to_import[$field] = $this->split_ranges($value);
+                $values[$field] = "%check_array%";
+            } elseif (!empty($processed[$field]) && $row["type"] !== "CAPTCHAIMAGE") {
+                $values[$field] = $processed[$field];
             }
         } // endforeach with reference
         unset ($row);
@@ -1516,7 +1494,9 @@ class FormHandler
 
         if ($this->all_fields_valid === false) {
             $this->QUERY_RESULT = false;
-        } elseif (($key = array_search("%check_array%", $values)) !== false) {
+            return;
+        }
+        if (($key = array_search("%check_array%", $values)) !== false) {
             foreach ($arr_value_to_import[$key] as $array_value) {
                 $values[$key] = $array_value;
                 $instance_table->addRow(
@@ -1526,8 +1506,8 @@ class FormHandler
                     $id
                 );
                 // CALL DEFINED FUNCTION AFTER THE ACTION ADDITION
-                if (method_exists(FormBO::class, $this->FG_ADDITIONAL_FUNCTION_AFTER_ADD)) {
-                    call_user_func([FormBO::class, $this->FG_ADDITIONAL_FUNCTION_AFTER_ADD]);
+                if (is_callable([FormBO::class, $this->FG_ADDITIONAL_FUNCTION_AFTER_ADD])) {
+                    call_user_func([FormBO::class, $this->FG_ADDITIONAL_FUNCTION_AFTER_ADD], $id);
                 }
             }
         } else {
@@ -1538,20 +1518,18 @@ class FormHandler
                 $id
             );
             // CALL DEFINED FUNCTION AFTER THE ACTION ADDITION
-            if (method_exists(FormBO::class, $this->FG_ADDITIONAL_FUNCTION_AFTER_ADD)) {
-                call_user_func([FormBO::class, $this->FG_ADDITIONAL_FUNCTION_AFTER_ADD]);
+            if (is_callable([FormBO::class, $this->FG_ADDITIONAL_FUNCTION_AFTER_ADD])) {
+                call_user_func([FormBO::class, $this->FG_ADDITIONAL_FUNCTION_AFTER_ADD], $id);
             }
         }
-        if (!empty($id)) {
-            $this->QUERY_RESULT = $id;
-        }
+        $this->QUERY_RESULT = $id ?? true;
 
         if ($this->FG_ENABLE_LOG) {
             Logger::insertLog(
                 $_SESSION["admin_id"],
                 2,
-                "NEW " . strtoupper($this->FG_INSTANCE_NAME) . " CREATED",
-                "User added a new record in database",
+                sprintf("New %s created", $this->FG_INSTANCE_NAME),
+                _("User added a new record in database"),
                 $this->FG_QUERY_TABLE_NAME,
                 $_SERVER['REMOTE_ADDR'],
                 $_SERVER['REQUEST_URI'],
@@ -1559,7 +1537,7 @@ class FormHandler
                 array_values($values)
             );
         }
-        if (!empty($id) && ($this->all_fields_valid) && (isset($this->FG_LOCATION_AFTER_ADD))) {
+        if (!empty($id) && isset($this->FG_LOCATION_AFTER_ADD)) {
             header("Location: " . $this->FG_LOCATION_AFTER_ADD . $id);
         }
     }
@@ -2096,5 +2074,43 @@ class FormHandler
         $direction ??= $this->FG_QUERY_DIRECTION ?? "ASC";
 
         $_SESSION[$this->export_session_key] = [$columns, $table, $conditions, $group, $order, $direction];
+    }
+
+    /**
+     * Take a string such as "3-5,12,18-20" and return ["3", "4", "5", "12", "18", "19", "20"]
+     *
+     * @param string $input
+     * @return numeric-string[]
+     */
+    private function split_ranges(string $input): array
+    {
+        $array = [];
+        $items = explode(",", $input);
+        foreach ($items as $item) {
+            $item = trim($item);
+            $range = explode("-", $item, 2);
+            if (isset($range[1])) {
+                $min = trim($range[0]);
+                $max = trim($range[1]);
+                // get common prefix to avoid issues with very large numeric strings like card numbers
+                $prefix_len = strspn("$min" ^ "$max", chr(0));
+                $prefix = substr($min, 0, $prefix_len);
+                $min = substr($min, $prefix_len);
+                $max = substr($max, $prefix_len);
+                if (is_numeric($min) && is_numeric($max) && $min < $max) {
+                    for ($i = $min; $i <= $max; $i++) {
+                        $array[] = $prefix . $i;
+                    }
+                } elseif (is_numeric($min)) {
+                    $array[] = $prefix . $min;
+                } elseif (is_numeric($max)) {
+                    $array[] = $prefix . $max;
+                }
+            } elseif (is_numeric($range[0])) {
+                $array[] = $range[0];
+            }
+        }
+
+        return $array;
     }
 }
