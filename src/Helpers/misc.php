@@ -1005,24 +1005,24 @@ function get_login_button($id): string
     $password = htmlspecialchars($row["uipass"]);
     $link = CUSTOMER_UI_URL;
 
-    if (strpos($link, 'index.php') !== false) {
-        $link = substr($link, 0, strlen($link) - 9) . 'userinfo.php';
+    if (str_ends_with($link, "index.php")) {
+        $link = substr($link, 0, -9) . "userinfo.php";
     } else {
-        $link .= '/userinfo.php';
+        $link .= "/userinfo.php";
     }
     $link = htmlspecialchars($link);
     $label = htmlspecialchars(_("GO TO CUSTOMER ACCOUNT"));
 
     return <<< HTML
-    <div align="right" style="padding-right:20px;">
-        <form action="$link" method="POST" target="_blank">
-            <input type="hidden" name="done" value="submit_log"/>
-            <input type="hidden" name="pr_login" value="$username"/>
-            <input type="hidden" name="pr_password" value="$password"/>
-            <a href="#" onclick="$('form').trigger('submit');" >$label</a>
+        <form class="row" action="$link" method="POST" target="_blank">
+            <div class="col d-flex justify-content-end">
+                <input type="hidden" name="done" value="submit_log"/>
+                <input type="hidden" name="pr_login" value="$username"/>
+                <input type="hidden" name="pr_password" value="$password"/>
+                <button class="btn btn-sm btn-primary" type="submit">$label</button>
+            </div>    
         </form>
-    </div>
-HTML;
+        HTML;
 }
 
 function str_icontains(string $haystack, string $needle): bool
