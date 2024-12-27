@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Agent;
+use A2billing\Customer;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -81,9 +82,9 @@ $smarty->display('main.tpl');
         <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
             <?php
             if ( has_rights (Agent::ACX_CUSTOMER)) {
-                echo get_infocustomer_id($refill['card_id']);
+                echo Customer::getInfoLink($refill['card_id']);
             } else {
-                echo get_nameofcustomer_id($refill['card_id']);
+                echo Customer::getName($refill['card_id'], false);
             }
             ?>
         </td>

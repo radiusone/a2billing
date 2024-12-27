@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -69,7 +70,7 @@ if (($action ?? "") !== "ask_release") {
 $status_list = [_("Free"), _("Reserved")];
 
 $HD_Form->AddListValue(_("DID"), "did", "format_phone_number");
-$HD_Form->AddListValue(_("Card"), "id_cc_card", "get_customer_id_link");
+$HD_Form->AddListValue(_("Card"), "id_cc_card", [Customer::class, "getUsername"]);
 $HD_Form->AddListValue(_("Reservation date"), "reservationdate");
 $HD_Form->AddListValue(_("Liberation date"), "releasedate");
 $HD_Form->AddListMapping(_("Status"), "cc_did_use.activated", $status_list);

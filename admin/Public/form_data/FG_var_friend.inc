@@ -2,6 +2,7 @@
 
 use A2billing\A2Billing;
 use A2billing\Admin;
+use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 
@@ -68,7 +69,7 @@ $HD_Form->help_text = create_help(
     . _("More details on how to configure clients are on the Wiki")
 );
 
-$HD_Form->AddListValue(_("Cardholder"), "id_cc_card", "get_customer_name_id_link");
+$HD_Form->AddListValue(_("Cardholder"), "id_cc_card", [Customer::class, "getName"]);
 $HD_Form->AddListValue(_("Username"), "username", "get_customer_link");
 $HD_Form->AddListValue(_("Account code"), "accountcode");
 $HD_Form->AddListValue(_("Secret"), "secret");

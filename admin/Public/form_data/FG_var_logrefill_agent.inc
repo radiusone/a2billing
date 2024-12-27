@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Agent;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 
@@ -58,7 +59,7 @@ $HD_Form->help_text = create_help(
 $list_refill_type = getRefillType_List();
 
 $HD_Form->AddListValue(_("ID"), "id");
-$HD_Form->AddListValue(_("Agent"), "agent_id", has_rights (Admin::ACX_ADMINISTRATOR) ? "get_linktoagent" : "get_nameofagent");
+$HD_Form->AddListValue(_("Agent"), "agent_id", [Agent::class, "getName"], ["%X", Admin::allowed(Admin::ACX_MODIFY_AGENTS)]);
 $HD_Form->AddListValue(_("Date"), "date");
 $HD_Form->AddListMapping(_("Type"), "refill_type", $list_refill_type);
 $HD_Form->AddListValue(_("Amount"), "credit", "get_money");

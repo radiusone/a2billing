@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -53,7 +54,7 @@ $HD_Form->help_text = create_help(
 
 $cardstatus_list = getCardStatus_List();
 
-$HD_Form->AddListValue(_("Account"), "id_cc_card", "get_customer_id_link");
+$HD_Form->AddListValue(_("Account"), "id_cc_card", [Customer::class, "getUsername"]);
 $HD_Form->AddListValue(_("Last name"), "lastname");
 $HD_Form->AddListMapping(_("Status"), "cc_status_log.status", $cardstatus_list);
 $HD_Form->AddListValue(_("Date"), "updated_date");

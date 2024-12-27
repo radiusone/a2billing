@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 use A2billing\Table;
 
@@ -75,7 +76,7 @@ if ($groupbyday) {
     $HD_Form->AddListValue(_("Date"), "DATE(starttime)");
 }
 if ($displaytop === "card_id") {
-    $HD_Form->AddListValue(_("Account number"), "card_id", "get_customer_id_link");
+    $HD_Form->AddListValue(_("Account number"), "card_id", [Customer::class, "getUsername"]);
 } else {
     $HD_Form->AddListSqlMapping(_("Destination"), "destination", new Table("cc_prefix", ["prefix", "destination"]));
 }

@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 
@@ -86,7 +87,7 @@ $HD_Form->help_text = create_help(
 );
 
 $HD_Form->AddListValue(_("ID"), "cc_receipt.id");
-$HD_Form->AddListValue(_("Account"), "id_card", "get_customer_id_link");
+$HD_Form->AddListValue(_("Account"), "id_card", [Customer::class, "getUsername"]);
 $HD_Form->AddListValue(_("Date"), "cc_receipt.date");
 $HD_Form->AddListValue(_("Title"), "title");
 $HD_Form->AddListMapping(_("Status"), "status", getInvoiceStatusList());

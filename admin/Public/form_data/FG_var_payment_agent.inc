@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Agent;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 
@@ -68,7 +69,7 @@ $HD_Form->help_text = create_help(_("Agent Payment history - The section below a
 
 $list_refill_type = getRefillType_List();
 $HD_Form->AddListValue(_("ID"), "cc_logpayment.id");
-$HD_Form->AddListValue(_("Agent"), "cc_logpayment_agent.agent_id", has_rights(Admin::ACX_ADMINISTRATOR) ? "get_linktoagent" : "get_nameofagent");
+$HD_Form->AddListValue(_("Agent"), "cc_logpayment_agent.agent_id", [Agent::class, "getName"], ["%X", Admin::allowed(Admin::ACX_MODIFY_AGENTS)]);
 $HD_Form->AddListValue(_("Date"), "cc_logpayment_agent.date");
 $HD_Form->AddListValue(_("Amount"), "payment", "get_money");
 $HD_Form->AddListMapping(_("Type"), "payment_type", $list_refill_type);

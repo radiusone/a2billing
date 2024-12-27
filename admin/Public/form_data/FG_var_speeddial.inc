@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 
@@ -66,7 +67,7 @@ $speeddial_list = range(0, 9);
 $HD_Form->AddListValue(_("Speed dial"), "speeddial");
 $HD_Form->AddListValue(_("Phone number"), "phone");
 $HD_Form->AddListValue(_("Name"), "name");
-$HD_Form->AddListValue(_("Account"), "id_cc_card", "get_customer_id_link");
+$HD_Form->AddListValue(_("Account"), "id_cc_card", [Customer::class, "getUsername"]);
 $HD_Form->AddListValue(_("Date"), "cc_speeddial.creationdate");
 $HD_Form->FieldViewElement (["speeddial", "phone", "name", "id_cc_card", "cc_speeddial.creationdate"]);
 

@@ -1,6 +1,8 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Agent;
+use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 use A2billing\Table;
@@ -62,8 +64,8 @@ $HD_Form->help_text = create_help(
 
 $com_list = getRefillType_List();
 
-$HD_Form->AddListValue(_("Account"), "id_card", "get_customer_id_link");
-$HD_Form->AddListValue(_("Agent"), "id_agent", "get_linktoagent");
+$HD_Form->AddListValue(_("Account"), "id_card", [Customer::class, "getUsername"]);
+$HD_Form->AddListValue(_("Agent"), "id_agent", [Agent::class, "getName"]);
 $HD_Form->AddListValue(_("Payment date"), "date");
 $HD_Form->AddListValue(_("Amount"), "amount", "get_money");
 $HD_Form->AddListMapping(_("Status"), "paid_status", $com_list);

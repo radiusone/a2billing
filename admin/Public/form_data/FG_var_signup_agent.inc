@@ -2,6 +2,7 @@
 
 use A2billing\A2Billing;
 use A2billing\Admin;
+use A2billing\Agent;
 use A2billing\Forms\FormHandler;
 use A2billing\Table;
 
@@ -63,7 +64,7 @@ $HD_Form->add_help_text = create_help(_("Generate a specific crypted URL to conf
 $HD_Form->help_text = create_help(_("This shows a list of all signup key create for the Agents, this key is used to identify the default paramater for the subscription on the signup page"));
 
 $HD_Form->AddListValue(_("Key"), "code");
-$HD_Form->AddListValue(_("Agent"), "id_agent", "get_linktoagent");
+$HD_Form->AddListValue(_("Agent"), "id_agent", [Agent::class, "getName"]);
 $HD_Form->AddListSqlMapping(_("Call plan"), "id_tariffgroup", new Table("cc_tariffgroup", ["id", "tariffgroupname"]));
 $HD_Form->AddListSqlMapping(_("Group"), "id_group", new Table("cc_card_group", ["id" , "name"]));
 $HD_Form->FieldViewElement (["code", "id_agent", "id_tariffgroup", "id_group"]);

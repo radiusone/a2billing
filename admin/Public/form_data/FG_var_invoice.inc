@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 use A2billing\Table;
@@ -112,7 +113,7 @@ $invoiceday_list = getInvoiceDay_List();
 
 $HD_Form->AddListValue(_("ID"), "cc_invoice.id");
 $HD_Form->AddListValue(_("REFERENCE"), "reference");
-$HD_Form->AddListValue(_("ACCOUNT"), "id_card", "get_customer_id_link");
+$HD_Form->AddListValue(_("ACCOUNT"), "id_card", [Customer::class, "getUsername"]);
 $HD_Form->AddListValue(_("DATE"), "date");
 $HD_Form->AddListValue(_("TITLE"), "title");
 $HD_Form->AddListMapping(_("PAID STATUS"), "paid_status", $paid_status_list);

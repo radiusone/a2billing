@@ -72,11 +72,7 @@ require_once __DIR__ . "/../templates/main.php";
                 <tr>
                     <th scope="row"><?= _("Agent") ?></th>
                     <td>
-                        <?php if (is_admin()): ?>
-                        <?= get_linktoagent($remittance["id_agent"]) ?>
-                        <?php else: ?>
-                        <?= get_nameofagent($remittance["id_agent"]) ?>
-                        <?php endif ?>
+                        <?= Agent::getName($remittance["id_agent"], Admin::allowed(Admin::ACX_MODIFY_AGENTS)) ?>
                     </td>
                 </tr>
                 <tr>

@@ -78,7 +78,7 @@ $smarty->display('main.tpl');
             <?php echo gettext("AGENT") ?> :
         </td>
         <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif") ?>" width="70%">
-            <?php echo get_nameofagent($payment['agent_id']);?>
+            <?php echo Agent::getName($payment['agent_id'], false);?>
         </td>
    </tr>
    <tr height="20px">

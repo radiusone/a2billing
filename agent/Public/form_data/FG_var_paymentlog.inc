@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Agent;
+use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 
@@ -100,7 +101,7 @@ $HD_Form -> AddListMapping(gettext("Status"), "status", $status_list);
 $HD_Form -> AddListValue(gettext("Owner"), "cc_owner");
 $HD_Form -> AddListValue(gettext("Amount"), "amount");
 $HD_Form -> AddListValue(gettext("CardID"), "cardid");
-$HD_Form -> AddListValue(gettext("Cardnumber"), "cardid", "get_customer_id_link");
+$HD_Form -> AddListValue(gettext("Cardnumber"), "cardid", [Customer::class, "getUsername"]);
 
 // added a parameter to append  FG_TABLE_ID  ( by default ) or disable 0.
 $HD_Form -> FieldViewElement ('cc_epayment_log.id, cc_epayment_log.creationdate, paymentmethod, cc_epayment_log.status, cc_owner, amount, cardid, cardid ');

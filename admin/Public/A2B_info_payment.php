@@ -2,6 +2,7 @@
 
 use A2billing\Admin;
 use A2billing\Agent;
+use A2billing\Customer;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -78,14 +79,12 @@ require_once __DIR__ . "/../templates/main.php";
                 <tr>
                     <th scope="row"><?= $type === "agent" ? _("Agent") : _("Account number") ?></th>
                     <td>
-                        <?php if ($type === "agent" && is_admin()): ?>
-                        <?= get_linktoagent($payment["agent_id"]) ?>
-                        <?php elseif ($type === "agent"): ?>
-                        <?= get_nameofagent($payment["agent_id"]) ?>
+                        <?php if ($type === "agent"): ?>
+                        <?= Agent::getName($payment["agent_id"], Admin::allowed(Admin::ACX_MODIFY_AGENTS)) ?>
                         <?php elseif ((is_admin() && has_rights(Admin::ACX_CUSTOMER)) || (is_agent() && has_rights(Agent::ACX_CUSTOMER))): ?>
-                        <?= get_infocustomer_id($payment["card_id"]) ?>
+                        <?= Customer::getInfoLink($payment["card_id"]) ?>
                         <?php else: ?>
-                        <?= get_nameofcustomer_id($payment["card_id"]) ?>
+                        <?= Customer::getName($payment["card_id"], false) ?>
                         <?php endif ?>
                     </td>
                 </tr>

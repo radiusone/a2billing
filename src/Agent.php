@@ -62,4 +62,36 @@ class Agent extends User
             die();
         }
     }
+
+    /**
+     * Get an agent name from its ID
+     *
+     * @param numeric-string|null $id
+     * @param bool $as_link return an HTML string with a link to the agent edit page
+     * @return string
+     */
+    public static function getName(?string $id, bool $as_link = true): string
+    {
+        $na = _("n/a");
+        if (empty($id) || !is_numeric($id)) {
+            return $na;
+        }
+        $handle = DbConnect();
+        $row = $handle->CacheGetRow(60, "SELECT login, firstname, lastname FROM cc_agent WHERE id = ?", [$id]);
+        if (!$row) {
+            return $na;
+        }
+
+        if ($as_link) {
+            return sprintf(
+                "<a href=\"A2B_entity_agent.php?form_action=ask-edit&amp;id=%d\" title=\"%s\">%s %s</a>",
+                $id,
+                htmlspecialchars($row["username"]),
+                htmlspecialchars($row["firstname"]),
+                htmlspecialchars($row["lastname"])
+            );
+        }
+
+        return sprintf(_("%s %s (login: %s)"), $row["firstname"], $row["lastname"], $row["login"]);
+    }
 }

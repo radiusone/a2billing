@@ -68,4 +68,91 @@ class Customer extends User
             die();
         }
     }
+
+    /**
+     * Get a customer name from its ID
+     *
+     * @param numeric-string|null $id
+     * @param bool $as_link return an HTML string with a link to the user edit page
+     * @return string
+     */
+    public static function getName(?string $id, bool $as_link = true): string
+    {
+        $na = _("n/a");
+        if (empty($id) || !is_numeric($id)) {
+            return $na;
+        }
+        $handle = DbConnect();
+        $row = $handle->CacheGetRow(60, "SELECT username, firstname, lastname FROM cc_card WHERE id = ?", [$id]);
+        if ($row === false || $row === []) {
+            return $na;
+        }
+        if ($as_link) {
+            return sprintf(
+                "<a href=\"A2B_entity_card.php?form_action=ask-edit&amp;id=%d\" title=\"%s\">%s %s</a>",
+                $id,
+                htmlspecialchars($row["username"]),
+                htmlspecialchars($row["firstname"]),
+                htmlspecialchars($row["lastname"])
+            );
+        }
+
+        return sprintf("%s %s (%s)", $row["firstname"], $row["lastname"], $row["username"]);
+    }
+
+    /**
+     * Get a customer username from its ID
+     *
+     * @param numeric-string|null $id
+     * @param bool $as_link return an HTML string with a link to the user edit page
+     * @return string
+     */
+    public static function getUsername(?string $id, bool $as_link = true): string
+    {
+        $na = _("n/a");
+        if (empty($id) || !is_numeric($id)) {
+            return $na;
+        }
+        $handle = DbConnect();
+        $row = $handle->CacheGetRow(60, "SELECT username FROM cc_card WHERE id = ?", [$id]);
+        if ($row === false || $row === []) {
+            return $na;
+        }
+        if ($as_link) {
+            return sprintf(
+                "<a href=\"A2B_entity_card.php?form_action=ask-edit&amp;id=%d\">%s</a>",
+                $id,
+                htmlspecialchars($row["username"])
+            );
+        }
+
+        return $row["username"];
+    }
+
+    /**
+     * Get an HTML link to the customer info page
+     *
+     * @param numeric-string|null $id
+     * @param bool $as_link
+     * @return string
+     */
+    public static function getInfoLink(?string $id): string
+    {
+        $na = _("n/a");
+        if (empty($id) || !is_numeric($id)) {
+            return $na;
+        }
+        $handle = DbConnect();
+        $row = $handle->CacheGetRow(60, "SELECT username, firstname, lastname FROM cc_card WHERE id = ?", [$id]);
+        if ($row === false || $row === []) {
+            return $na;
+        }
+        return sprintf(
+            "<a href=\"A2B_info_card.php?id=%d\">%s %s (%s)</a>",
+            $id,
+            htmlspecialchars($row["firstname"]),
+            htmlspecialchars($row["lastname"]),
+            htmlspecialchars($row["username"])
+        );
+    }
 }

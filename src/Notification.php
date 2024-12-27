@@ -152,9 +152,9 @@ Class Notification {
     public function getFromDisplay(): string
     {
         switch ($this->from_type) {
-            case self::$ADMIN: return sprintf(_("ADMIN: %s"), get_nameofadmin($this->from_id));
-            case self::$AGENT: return sprintf(_("AGENT: %s"), get_nameofagent($this->from_id));
-            case self::$CUST: return sprintf(_("CUST: %s"), get_nameofcustomer_id($this->from_id));
+            case self::$ADMIN: return sprintf(_("ADMIN: %s"), Admin::getName($this->from_id));
+            case self::$AGENT: return sprintf(_("AGENT: %s"), Agent::getName($this->from_id, false));
+            case self::$CUST: return sprintf(_("CUST: %s"), Customer::getName($this->from_id, false));
             case self::$BATCH: return _("BATCH");
             case self::$SOAPSERVER: return _("SOAP-SERVER");
             default: return _("UNKNOWN");

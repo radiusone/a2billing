@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Agent;
 use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -49,7 +50,7 @@ $HD_Form = new FormHandler(
     ]
 );
 
-$HD_Form->AddListValue(_("Agent"), "id","get_linktoagent");
+$HD_Form->AddListValue(_("Agent"), "id",[Agent::class, "getName"]);
 $HD_Form->AddListValue(_("Credit"), "credit", "get_money");
 $HD_Form->AddListValue(abbr(_("Bal"), _("Commission balance")), "com_balance", "get_money");
 $HD_Form->AddListValue(abbr(_("Total"), _("Total commission accrued")), "total", "get_money");

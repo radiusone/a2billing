@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 use A2billing\Table;
 
@@ -136,7 +137,7 @@ $HD_Form->AddListSqlMapping(_("Destination"), "cc_call.destination", new Table("
 $HD_Form->AddListValue(_("Buy rate"), "buyrate", "get_money_precise");
 $HD_Form->AddListValue(_("Sell rate"), "rateinitial", "get_money_precise");
 $HD_Form->AddListValue(_("Duration"), "sessiontime", "get_minute");
-$HD_Form->AddListValue(_("Account"), "card_id", "get_customer_id_link");
+$HD_Form->AddListValue(_("Account"), "card_id", [Customer::class, "getUsername"]);
 $HD_Form->AddListValue(_("Trunk"), "trunkcode");
 $HD_Form->AddListMapping(_("Disposition"), "terminatecauseid", $dialstatus_list);
 $HD_Form->AddListMapping(_("Call type"), "sipiax", $calltype_list);

@@ -1,6 +1,8 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Agent;
+use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 use A2billing\Table;
@@ -105,9 +107,9 @@ $HD_Form->AddListSqlMapping(
     new Table($ticket_type === "agent" ? "cc_agent" : "cc_card", ["id", "CONCAT(firstname, ' ', lastname)"])
 );
 if ($ticket_type === "agent") {
-    $HD_Form->AddListValue(_("Login"), "creator", "get_linktoagent");
+    $HD_Form->AddListValue(_("Login"), "creator", [Agent::class, "getName"]);
 } else {
-    $HD_Form->AddListValue(_("Account number"), "creator", "get_customer_id_link");
+    $HD_Form->AddListValue(_("Account number"), "creator", [Customer::class, "getUsername"]);
 }
 $HD_Form->AddListValue(_("Title"), "title");
 $HD_Form->AddListValue(_("Creation date"), "creationdate");

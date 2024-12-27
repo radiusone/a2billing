@@ -71,7 +71,7 @@ require_once __DIR__ . "/../templates/main.php";
                 </tr>
                 <tr>
                     <th scope="row"><?= _("User") ?></th>
-                    <td><?= get_nameofadmin($log["iduser"]) ?></td>
+                    <td><?= Admin::getName($log["iduser"]) ?></td>
                 </tr>
                 <tr>
                     <th scope="row"><?= _("Level") ?></th>

@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Agent;
+use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 use A2billing\Table;
@@ -63,7 +64,7 @@ $actived_list = getActivationTrueFalseList();
 $yesno = getYesNoList();
 
 $HD_Form -> AddListValue(gettext("CALLERID"), "cid");
-$HD_Form -> AddListValue(gettext("ACCOUNT NUMBER"), "id_cc_card", "get_customer_id_link");
+$HD_Form -> AddListValue(gettext("ACCOUNT NUMBER"), "id_cc_card", [Customer::class, "getUsername"]);
 $HD_Form -> AddListValue(gettext("CUSTOMER NAME"), "CONCAT(lastname, ', ', firstname)");
 $HD_Form -> AddListMapping(gettext("ACTIVATED"), "activated", $actived_list);
 

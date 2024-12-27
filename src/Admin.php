@@ -78,4 +78,25 @@ class Admin extends User
             die();
         }
     }
+
+    /**
+     * Get an agent name from its ID
+     *
+     * @param numeric-string|null $id
+     * @return string
+     */
+    public static function getName(?string $id): string
+    {
+        $na = _("n/a");
+        if (empty($id)) {
+            return $na;
+        }
+        $handle = DbConnect();
+        $row = $handle->CacheGetRow(60, "SELECT login, name FROM cc_ui_authen WHERE userid = ?", [$id]);
+        if ($row !== false && $row !== []) {
+            return sprintf("%s (%s)", $row["name"], $row["login"]);
+        }
+
+        return $na;
+    }
 }

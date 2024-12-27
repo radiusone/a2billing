@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Agent;
 use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -74,7 +75,7 @@ $status_list = getRemittanceStatus_List();
 $type_list = getRemittanceType_List();
 
 $HD_Form->AddListValue(_("ID"), "cc_remittance_request.id");
-$HD_Form->AddListValue(_("Agent"), "id_agent", "get_linktoagent");
+$HD_Form->AddListValue(_("Agent"), "id_agent", [Agent::class, "getName"]);
 $HD_Form->AddListValue(_("Date"), "date");
 $HD_Form->AddListValue(_("Amount"), "amount", "get_money");
 $HD_Form->AddListMapping(_("Type"), "type", $type_list);

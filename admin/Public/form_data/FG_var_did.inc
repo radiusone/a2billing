@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 use A2billing\Table;
@@ -68,7 +69,7 @@ $HD_Form->add_help_text = $HD_Form->edit_help_text = create_help(_("DID can be a
 $yesno = getYesNoList();
 
 $HD_Form->AddListValue(_("DID"), "did", "get_formatted_did");
-$HD_Form->AddListValue(_("Customer"), "iduser", "get_customer_name_id_link");
+$HD_Form->AddListValue(_("Customer"), "iduser", [Customer::class, "getName"]);
 $HD_Form->AddListMapping(_("Billing"), "billingtype", getBillingTypeShortList());
 $HD_Form->AddListValue(_("Start date"), "startingdate");
 $HD_Form->AddListSqlMapping(_("DID group"), "id_cc_didgroup", new Table("cc_didgroup", ["id", "didgroupname"]));
