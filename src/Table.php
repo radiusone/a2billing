@@ -300,6 +300,40 @@ class Table
     }
 
     /**
+     * Get all the values of a given column, optionally indexed by another column.
+     *
+     * @param ADOConnection $db
+     * @param string $column
+     * @param string $index
+     * @param array $conditions
+     * @return array
+     */
+    public function getColumn(ADOConnection $db, string $column, string $index = "", array $conditions = []): array
+    {
+        $data = $this->getRows($db, $conditions);
+        if (empty($index)) {
+            return array_column($data, $column);
+        }
+
+        return array_combine(
+            array_column($data, $index),
+            array_column($data, $column)
+        );
+    }
+
+    /**
+     * Gets the first value of the first row in the result set
+     *
+     * @param ADOConnection $db
+     * @param array $conditions
+     * @return mixed|null
+     */
+    public function getValue(ADOConnection $db, array $conditions = [])
+    {
+        return $this->getRow($db, $conditions)[0] ?? null;
+    }
+
+    /**
      * @deprecated 3.0 Use Table::getRows()
      */
     public function get_list(ADOConnection $DBHandle, string $where = "", string $orderby = "", string $sens = "ASC", int $limite = 0, int $current_record = 0, array $groupby = [])

@@ -312,9 +312,15 @@ function get_timespan(int $sec, bool $include_seconds = false): string
             : sprintf("%dd %dh %dm", $days, $hours, $minutes);
     }
 
+    if ($hours) {
+        return $include_seconds
+            ? sprintf("%dh %dm %ds", $hours, $minutes, $seconds)
+            : sprintf("%dh %dm", $hours, $minutes);
+    }
+
     return $include_seconds
-        ? sprintf("%dh %dm %ds", $hours, $minutes, $seconds)
-        : sprintf("%dh %dm", $hours, $minutes);
+        ? sprintf("%dm %ds", $minutes, $seconds)
+        : sprintf("%dm", $minutes);
 }
 
 /**
