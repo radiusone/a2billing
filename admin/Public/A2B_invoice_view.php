@@ -42,309 +42,172 @@ require_once __DIR__ . "/../../common/lib/admin.defines.php";
 
 Admin::checkPageAccess(Admin::ACX_INVOICING);
 
-getpost_ifset(array('id','curr'));
+getpost_ifset(["id", "curr"]);
+/**
+ * @var numeric-string $id
+ * @var string $curr
+ * @var numeric-string $popup_select
+ */
 
-if (empty($id)) {
-    Header ("Location: A2B_entity_invoice.php");
+$invoice = new Invoice($id ?? 0);
+if (empty($invoice->card)) {
+    header("Location: A2B_entity_invoice.php?form_action=list");
 }
-
-$invoice = new Invoice($id);
-$items = $invoice->loadItems();
-//load customer
 $DBHandle  = DbConnect();
-$card_table = new Table('cc_card', '*');
-$card_clause = "id = ".$invoice->getCard();
-$card_result = $card_table -> get_list($DBHandle, $card_clause);
-$card = $card_result[0];
+$card = (new Table("cc_card", "*", ["cc_country" => ["country", "countrycode"]]))
+    ->getRow($DBHandle, ["id" => $invoice->card]);
 
 if (empty($card)) {
     echo "Customer doesn't exist or is not correctly defined for this invoice !";
     die();
 }
+
+$invoice_conf = (new Table("cc_invoice_conf", ["key_val", "value"]))
+    ->getColumn($DBHandle, "value", "key_val");
+
+$curr = strtoupper($curr ?? BASE_CURRENCY);
+$total_untaxed = 0;
+$total_vat = [];
+
 require_once __DIR__ . "/../templates/main.php";
-//Load invoice conf
-$invoice_conf_table = new Table('cc_invoice_conf', 'value');
-$conf_clause = "key_val = 'company_name'";
-$result = $invoice_conf_table -> get_list($DBHandle, $conf_clause);
-$company_name = $result[0][0];
-
-$conf_clause = "key_val = 'address'";
-$result = $invoice_conf_table -> get_list($DBHandle, $conf_clause);
-$address = $result[0][0];
-
-$conf_clause = "key_val = 'zipcode'";
-$result = $invoice_conf_table -> get_list($DBHandle, $conf_clause);
-$zipcode = $result[0][0];
-
-$conf_clause = "key_val = 'city'";
-$result = $invoice_conf_table -> get_list($DBHandle, $conf_clause);
-$city = $result[0][0];
-
-$conf_clause = "key_val = 'country'";
-$result = $invoice_conf_table -> get_list($DBHandle, $conf_clause);
-$country = $result[0][0];
-
-$conf_clause = "key_val = 'web'";
-$result = $invoice_conf_table -> get_list($DBHandle, $conf_clause);
-$web = $result[0][0];
-
-$conf_clause = "key_val = 'phone'";
-$result = $invoice_conf_table -> get_list($DBHandle, $conf_clause);
-$phone = $result[0][0];
-
-$conf_clause = "key_val = 'fax'";
-$result = $invoice_conf_table -> get_list($DBHandle, $conf_clause);
-$fax = $result[0][0];
-
-$conf_clause = "key_val = 'email'";
-$result = $invoice_conf_table -> get_list($DBHandle, $conf_clause);
-$email = $result[0][0];
-
-$conf_clause = "key_val = 'vat'";
-$result = $invoice_conf_table -> get_list($DBHandle, $conf_clause);
-$vat_invoice = $result[0][0];
-
-$conf_clause = "key_val = 'display_account'";
-$result = $invoice_conf_table -> get_list($DBHandle, $conf_clause);
-$display_account = $result[0][0];
-
-//country convert
-$table_country= new Table('cc_country', 'countryname');
-$country_clause = "countrycode = '".$card['country']."'";
-$result = $table_country -> get_list($DBHandle, $country_clause);
-$card_country = $result[0][0];
-
-//Currencies check
-$currencies_list = get_currencies();
-if (!isset($currencies_list[strtoupper($curr)]["value"]) || !is_numeric($currencies_list[strtoupper($curr)]["value"])) {
-    $mycur = 1;
-    $display_curr=strtoupper(BASE_CURRENCY);
-} else {
-    $mycur = $currencies_list[strtoupper($curr)]["value"];
-    $display_curr=strtoupper($curr);
-}
-
-function amount_convert($amount)
-{
-    global $mycur;
-
-    return $amount/$mycur;
-}
-
-if (!$popup_select) {
-?>
-<a id="iv_popupselect" href="#"> <img src="<?= get_image_path("printer.png") ?>" title="Print" alt="Print" border="0"></a>
-&nbsp;&nbsp;
-<?php if (strtoupper(BASE_CURRENCY)!=strtoupper($card['currency'])) { ?>
-
-    <select id="currency" class="form_input_select" name="curr" onChange="openURL('?id=<?=$id?>')">
-        <option value="<?php echo BASE_CURRENCY;?>" <?php if(BASE_CURRENCY==$curr) echo "selected";?>  ><?php echo gettext('SYSTEM CURRENCY')." : ".strtoupper(BASE_CURRENCY); ?> </option>
-        <option value="<?php echo $card['currency'];?>" <?php if($card['currency']==$curr) echo "selected";?>   ><?php echo gettext('CUSTOMER CURRENCY')." : ".strtoupper($card['currency']); ?></option>
-    </select>
-
-<?php
-    }
-
-} else {
-?>
-<P ALIGN="right"> <a href="javascript:window.print()"> <img src="<?= get_image_path("printer.png") ?>" title="Print" alt="Print" border="0"> <?php echo gettext("Print"); ?></a> &nbsp; &nbsp;</P>
-<?php
-}
 ?>
 
-<div class="invoice-wrapper">
-  <table class="invoice-table">
-  <thead>
-  <tr class="one">
-    <td class="one">
-     <h1><?php echo gettext("INVOICE"); ?></h1>
-     <div class="client-wrapper">
-         <div class="company-name break"><?php echo $card['company_name'] ?></div>
-         <div class="fullname"><?php echo $card['lastname']." ".$card['firstname'] ?></div>
-           <div class="address"><span class="street"><?php echo $card['address'] ?></span> </div>
-           <div class="zipcode-city"><span class="zipcode"><?php echo $card['zipcode'] ?></span> <span class="city"><?php echo $card['city'] ?></span></div>
-          <div class="country break"><?php echo $card_country; ?></div>
-           <?php if (!empty($card['VAT_RN'])) { ?>
-               <div class="vat-number"><?php echo gettext("VAT nr.")." : ".$card['VAT_RN']; ?></div>
-           <?php } ?>
-     </div>
-    </td>
-    <td class="two">
+<?php if (!$popup_select): ?>
+<div class="row">
+    <div class="col ms-auto">
+        <a href="?id=<?= $id ?>&curr=<?= $curr ?>&popup_select=1" target="_blank">
+            <img src="<?= get_image_path("printer.png") ?>" title="Print" alt="Print">
+        </a>
+    </div>
+</div>
+    <?php if (strtoupper(BASE_CURRENCY) !== strtoupper($card["currency"])): ?>
+<form method="get">
+    <div class="row">
+        <label class="col-4 col-form-label" for="curr"><?= _("Currency") ?></label>
+        <div class="col">
+            <input type="hidden" name="id" value="<?= $id ?>"/>
+            <select name="curr" id="curr" class="form-select" onchange="this.form.submit()">
+                <option value="<?= BASE_CURRENCY ?>"><?= _("System Currency") ?></option>
+                <option value="<?= $card["currency"] ?>" <?php if($curr === $card["currency"]): ?>selected="selected"<?php endif ?>><?= _("Customer Currency") ?></option>
+            </select>
+        </div>
+    </div>
+</form>
+    <?php endif ?>
+<?php else: ?>
+<div class="row">
+    <div class="col ms-auto">
+        <a href="javascript:window.print()">
+            <img src="<?= get_image_path("printer.png") ?>" title="Print" alt="Print">
+        </a>
+    </div>
+</div>
+<?php endif ?>
 
-    </td>
-    <td class="three">
-     <div class="supplier-wrapper">
-       <div class="company-name"><?php echo $company_name ?></div>
-       <div class="address"><span class="street"><?php echo $address ?></span> </div>
-       <div class="zipcode-city"><span class="zipcode"><?php echo $zipcode ?></span> <span class="city"><?php echo $city ?></span></div>
-       <div class="country break"><?php echo $country ?></div>
-       <div class="phone"><?php echo gettext("tel").": ".$phone ?></div>
-       <div class="fax"><?php echo gettext("fax").": ".$fax ?> </div>
-       <div class="email"><?php echo gettext("mail").": ".$email ?></div>
-       <div class="web"><?php echo $web ?></div>
-       <div class="vat-number"><?php echo gettext("VAT nr.")." : ".$vat_invoice; ?></div>
-     </div>
-    </td>
-  </tr>
-  <tr class="two">
-    <td colspan="3" class="invoice-details">
-    <br/>
-      <table class="invoice-details">
-        <tbody><tr>
-          <td class="one">
-            <strong><?php echo gettext("Date"); ?></strong>
-            <div><?php echo $invoice->getDate() ?></div>
-          </td>
-          <td class="two">
-            <strong><?php echo gettext("Invoice number"); ?></strong>
-            <div><?php echo $invoice->getReference() ?></div>
-          </td>
-          <?php if ($display_account==1) { ?>
-          <td class="three">
-              <strong><?php echo gettext("Client Account Number"); ?></strong>
-            <div><?php echo $card['username'] ?></div>
-          </td>
-          <?php } ?>
-                 </tr>
-      </tbody></table>
-    </td>
-  </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td colspan="3" class="items">
-        <table class="items">
-          <tbody>
-          <tr class="one">
-              <th style="text-align:left;"><?php echo gettext("Date"); ?></th>
-              <th class="description"><?php echo gettext("Description"); ?></th>
-              <th><?php echo gettext("Cost excl. VAT"); ?></th>
-              <th><?php echo gettext("VAT"); ?></th>
-              <th><?php echo gettext("Cost incl. VAT"); ?></th>
-          </tr>
-          <?php
-          $i=0;
-          foreach ($items as $item) { ?>
-            <tr style="vertical-align:top;" class="<?php if($i%2==0) echo "odd"; else echo "even";?>" >
-                <td style="text-align:left;">
-                    <?php echo $item->getDate(); ?>
+<div class="container invoice-wrapper" style="width: 210mm; height: 297mm">
+    <div class="row justify-content-between">
+        <div class="col-5 d-flex align-self-center">
+            <div class="company-name"><?= $card["company_name"] ?></div>
+            <div class="fullname"><?= $card["firstname"]?> <?= $card["lastname"]?></div>
+            <div class="address"><span class="street"><?= $card["address"] ?></span></div>
+            <div class="zipcode-city">
+                <span class="city"><?= $card["city"] ?></span>
+                <span class="state"><?= $card["state"] ?></span>
+                <span class="zipcode"><?= $card["zipcode"] ?></span>
+            </div>
+            <div class="country"><?= $card["countryname"] ?></div>
+            <?php if ($card["vat_rn"]): ?>
+            <div class="vat-number"><?= sprintf(_("VAT no. %s"), $card["vat_rn"]) ?></div>
+            <?php endif ?>
+        </div>
+        <div class="col-5 d-flex align-self-center">
+            <div class="company-name"><?= $invoice_conf["company_name"] ?></div>
+            <div class="address"><span class="street"><?= $invoice_conf["address"] ?></span></div>
+            <div class="zipcode-city">
+                <span class="city"><?= $invoice_conf["city"] ?></span>
+                <span class="state"><?= $invoice_conf["state"] ?></span>
+                <span class="zipcode"><?= $invoice_conf["zipcode"] ?></span>
+            </div>
+            <div class="country"><?= $invoice_conf["country"] ?></div>
+            <div class="tel"><?= $invoice_conf["tel"] ?></div>
+            <div class="email"><?= $invoice_conf["email"] ?></div>
+            <div class="web"><?= $invoice_conf["web"] ?></div>
+            <div class="vat-number"><?= sprintf(_("VAT no. %s"), $invoice_conf["vat"]) ?></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-4">
+            <strong><?= _("Date") ?></strong>
+            <div><?= $invoice->getDate() ?></div>
+        </div>
+        <div class="col-4">
+            <strong><?= _("Invoice number") ?></strong>
+            <div><?= $invoice->reference ?></div>
+        </div>
+        <?php if ($invoice_conf["display_account"]): ?>
+        <div class="col-4">
+            <strong><?= _("Client account") ?></strong>
+            <div><?= $card["username"] ?></div>
+        </div>
+        <?php endif ?>
+    </div>
+    <table class="table table-sm invoice-details">
+        <thead>
+        <tr>
+            <td></td>
+            <th><?= _("Date") ?></th>
+            <th class="description"><?= _("Description") ?></th>
+            <th><?= _("Price ex VAT") ?></th>
+            <th><?= _("VAT") ?></th>
+            <th><?= _("Total price") ?></th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($invoice->items as $item): ?>
+            <?php $total_untaxed += $item->price; $total_vat[$item->vat] += $item->price * $item->vat / 100 ?>
+            <tr>
+                <td></td>
+                <td><?= $item->getDate() ?></td>
+                <td class="description"><?= $item->description ?></td>
+                <td>
+                    <?= get_money(convert_currency($item->price, BASE_CURRENCY, $curr), null, $curr) ?>
                 </td>
-                <td class="description">
-                    <?php echo $item->getDescription(); ?>
-                </td>
-                <td align="right">
-                    <?php echo number_format(round(amount_convert($item->getPrice()),2),2); ?>
-                </td>
-                <td align="right">
-                    <?php echo number_format(round($item->getVAT(),2),2)."%"; ?>
-                </td>
-                <td align="right">
-                    <?php echo number_format(round(amount_convert($item->getPrice())*(1+($item->getVAT()/100)),2),2); ?>
+                <td><?= get_percent($item->VAT) ?></td>
+                <td>
+                    <?= get_money(convert_currency($item->price + ($item->price * $item->vat / 100), BASE_CURRENCY, $curr), null, $curr) ?>
                 </td>
             </tr>
-             <?php  $i++;} ?>
-
-        </tbody></table>
-      </td>
-    </tr>
-    <?php
-        $price_without_vat = 0;
-        $price_with_vat = 0;
-        $vat_array = array();
-        foreach ($items as $item) {
-             $price_without_vat = $price_without_vat + $item->getPrice();
-            $price_with_vat = $price_with_vat + ($item->getPrice()*(1+($item->getVAT()/100)));
-            if (array_key_exists("".$item->getVAT(),$vat_array)) {
-                $vat_array[$item->getVAT()] = $vat_array[$item->getVAT()] + $item->getPrice()*($item->getVAT()/100) ;
-            } else {
-                $vat_array[$item->getVAT()] =  $item->getPrice()*($item->getVAT()/100) ;
-            }
-         }
-
-         ?>
-
-    <tr>
-      <td colspan="3">
-        <table class="total">
-         <tbody><tr class="extotal">
-           <td class="one"></td>
-           <td class="two"><?php echo gettext("Subtotal excl. VAT:"); ?></td>
-           <td class="three"><?php echo number_format(round(amount_convert($price_without_vat)*100)/100,2)." $display_curr"; ?></td>
-         </tr>
-
-         <?php foreach ($vat_array as $key => $val) { ?>
-                 <tr class="vat">
-                   <td class="one"></td>
-                   <td class="two"><?php echo gettext("VAT ") . "$key%:" ?></td>
-                   <td class="three"><?php echo number_format(round(amount_convert($val),2),2)." $display_curr"; ?></td>
-                 </tr>
-         <?php } ?>
-         <tr class="inctotal">
-           <td class="one"></td>
-           <td class="two"><?php echo gettext("Total incl. VAT:") ?></td>
-           <td class="three"><div class="inctotal"><div class="inctotal inner"><?php echo number_format(round(amount_convert($price_with_vat)*100)/100,2)." $display_curr"; ?></div></div></td>
-         </tr>
-        </tbody></table>
-      </td>
-    </tr>
-    <tr>
-    <td colspan="3" class="additional-information">
-      <div class="invoice-description">
-      <?php echo $invoice->getDescription() ?>
-     </div></td>
-    </tr>
-  </tbody>
-  <tfoot>
-    <tr>
-      <td colspan="3" class="footer">
-        <?php echo $company_name." | ".$address.", ".$zipcode." ".$city." ".$country." | ".gettext("VAT nr.").$vat_invoice; ?>
-      </td>
-    </tr>
-  </tfoot>
-  </table></div>
-
-<script>
-
-function openURL(theLINK)
-{
-    // get the value of CARD ID
-    cardid = document.theForm.choose_list.value;
-
-    // get value of CARDNUMBER and concatenate if any of the values is numeric
-    cardnumber = document.theForm.cardnumber.value;
-
-    if ( (!IsNumeric(cardid)) && (!IsNumeric(cardnumber)) ){
-        alert('CARD ID or CARDNUMBER must be numeric');
-        return;
-    }
-
-    goURL = cardid + "&cardnumber=" +document.theForm.cardnumber.value;
-
-    addcredit = 0;
-    // get calue of credits
-    addcredit = document.theForm.addcredit.value;
-
-    description = '';
-    // get calue of credits
-    description = document.theForm.description.value;
-
-
-
-    if ( (addcredit == 0) || (!IsNumeric(parseFloat(addcredit))) ){
-        alert ('Please , Fill credit box with a numeric value');
-        return;
-    }
-
-    // redirect browser to the grabbed value (hopefully a URL)
-    self.location.href = theLINK + goURL + "&addcredit="+addcredit +"&description="+description;
-
-    return false;
-
-}
-
-$(function() {
-    var id = <?= json_encode($id) ?? "" ?>;
-    var curr = <?= json_encode($curr ?? "") ?>;
-    $("iv_popupselect").on('click', () => window.open(`?popup_select=1&id=${id}&curr=${curr}`, '', 'scrollbars=yes,resizable=yes,width=700,height=500'));
-})
-</script>
+        <?php endforeach ?>
+        </tbody>
+        <tfoot class="table-group-divider">
+            <tr>
+                <th scope="row"><?= _("Totals") ?></th>
+                <td><?= get_money(convert_currency($total_untaxed, BASE_CURRENCY, $curr), null, $curr) ?></td>
+                <td>
+                    <?php foreach ($total_vat as $per => $vat): ?>
+                        <?= sprintf("VAT %s", get_percent($per)) ?>
+                        <?= get_money(convert_currency($vat, BASE_CURRENCY, $curr), null, $curr) ?><br/>
+                    <?php endforeach ?>
+                </td>
+                <td><?= get_money(convert_currency($total_untaxed + $total_vat, BASE_CURRENCY, $curr), null, $curr) ?></td>
+            </tr>
+        </tfoot>
+    </table>
+    <div class="row additional-information">
+        <div class="col invoice-description">
+            <?= $invoice->description ?>
+        </div>
+    </div>
+    <div class="row footer">
+        <div class="col small align-center">
+            <?= $invoice_conf["company_name"] ?>
+            <span aria-hidden="true"> | </span>
+            <?= $invoice_conf["address"] ?>
+            <?= $invoice_conf["city"] ?>
+            <?= $invoice_conf["zipcode"] ?>
+            <?= $invoice_conf["country"] ?>
+            <span aria-hidden="true"> | </span>
+            <?= sprintf(_("VAT no. %s"), $invoice_conf["vat"]) ?>
+        </div>
+    </div>
+</div>

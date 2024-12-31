@@ -1,7 +1,9 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Customer;use A2billing\Forms\Validator;
 use A2billing\Invoice;
+use A2billing\InvoiceItem;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -42,307 +44,195 @@ require_once __DIR__ . "/../../common/lib/admin.defines.php";
 
 Admin::checkPageAccess(Admin::ACX_INVOICING);
 
-getpost_ifset(array('date','id','action','price','description','vat','idc'));
-
+getpost_ifset(['date','id','action','price','description','vat','idc']);
+/**
+ * @var numeric-string $id
+ * @var string|null $action
+ * @var string $date
+ * @var string $price
+ * @var string $vat
+ * @var string $description
+ * @var numeric-string|null $idc
+ */
 if (empty($id)) {
-    Header ("Location: A2B_entity_invoice.php");
+    header("Location: A2B_entity_invoice.php");
 }
 
-$error_msg ='';
-if (!empty($action)) {
-    switch ($action) {
-        case 'add':
-            if (empty($date) || strtotime($date)===FALSE) {
-                $error_msg.= gettext("Date inserted is invalid, it must respect a date format YYYY-MM-DD HH:MM:SS (time is optional).<br/>");
-            }
-            if ( !is_numeric($vat)) {
-                $error_msg.= gettext("VAT inserted is invalid, it must be a number. Check the format.<br/>");
-            }
-            if (empty($price) || !is_numeric($price)) {
-                $error_msg .= gettext("Amount inserted is invalid, it must be a number. Check the format.");
-            }
-            if(!empty($error_msg)) break;
-            $DBHandle = DbConnect();
-            $invoice = new Invoice($id);
-            $invoice->insertInvoiceItem($description,$price,$vat);
-            Header ("Location: A2B_invoice_edit.php?"."id=".$id);
-            break;
-        case 'edit':
-             if (!empty($idc) && is_numeric($idc)) {
-                $DBHandle = DbConnect();
-                $instance_sub_table = new Table("cc_invoice_item", "*");
-                $result=$instance_sub_table -> get_list($DBHandle, "id = $idc");
-                if (!is_array($result) || (sizeof($result)==0)) {
-                     Header ("Location: A2B_invoice_edit.php?"."id=".$id);
-                } else {
-                    $description=$result[0]['description'];
-                    $vat=$result[0]['VAT'];
-                    $price=$result[0]['price'];
-                    $date =$result[0]['date'];
-                }
-             }
-            break;
-        case 'delete':
-            if (!empty($idc) && is_numeric($idc)) {
-                $DBHandle  = DbConnect();
-                $instance_sub_table = new Table("cc_invoice_item", "*");
-                $instance_sub_table->deleteRow($DBHandle, ["id" => $idc]);
-            }
-            Header ("Location: A2B_invoice_edit.php?"."id=".$id);
-            break;
+$action ??= "";
+$error_msg = "";
+$invoice = new Invoice($id);
+$DBHandle = DbConnect();
 
-           case 'update':
-            if (!empty($idc) && is_numeric($idc)) {
-                if (empty($date) || strtotime($date)===FALSE) {
-                    $error_msg.= gettext("Date inserted is invalid, it must respect a date format YYYY-MM-DD HH:MM:SS (time is optional).<br/>");
-                }
-                if ( !is_numeric($vat)) {
-                    $error_msg.= gettext("VAT inserted is invalid, it must be a number. Check the format.<br/>");
-                }
-                if (empty($price) || !is_numeric($price)) {
-                    $error_msg .= gettext("Amount inserted is invalid, it must be a number. Check the format.");
-                }
-                if(!empty($error_msg)) break;
-                $DBHandle = DbConnect();
-                $instance_sub_table = new Table("cc_invoice_item", "*");
-                $instance_sub_table -> Update_table($DBHandle,"date='$date',description='$description',price='$price',vat='$vat'", "id = $idc" );
-                Header ("Location: A2B_invoice_edit.php?"."id=".$id);
-
-             }
+switch ($action) {
+    case "add":
+    case "update":
+        if (!Validator::dateTime($date)) {
+            $error_msg .= _("Date inserted is invalid, it must respect a date format YYYY-MM-DD HH:MM:SS (time is optional).");
+        }
+        if (!Validator::number($vat)) {
+            $error_msg .= _("VAT inserted is invalid, it must be a number. Check the format.");
+        }
+        if (!Validator::number($price)) {
+            $error_msg .= _("Amount inserted is invalid, it must be a number. Check the format.");
+        }
+        if ($error_msg) {
             break;
-    }
+        }
+        if ($action === "add") {
+            $invoice->insertInvoiceItem($description, $price, $vat, $date);
+        } elseif (!empty($idc)) {
+            $item = new InvoiceItem($idc, $description, $date, $price, $vat);
+            $item->save();
+        }
+        header("Location: A2B_invoice_edit.php?id=$id");
+        break;
+    case "edit":
+        if (!empty($idc)) {
+            $item = new InvoiceItem($idc);
+            $description = $item->description;
+            $vat = $item->VAT;
+            $price = $item->price;
+            $date = $item->getDate();
+            break;
+        }
+        header("Location: A2B_invoice_edit.php?id=$id");
+        break;
+
+    case "delete":
+        if (!empty($idc)) {
+            $table = new Table("cc_invoice_item");
+            $table->deleteRow($DBHandle, ["id" => $idc]);
+        }
+        header("Location: A2B_invoice_edit.php?id=$id");
+        break;
 }
 
-$invoice = new invoice($id);
-$table_card = new Table("cc_card", "vat");
-$result_vat = $table_card->get_list(DbConnect(), "id=" . $invoice->getCard());
-$card_vat =  $result_vat[0][0];
-$items = $invoice->loadItems();
+$table = new Table("cc_invoice", "*", ["cc_card" => ["cc_invoice.card_id", "cc_card.id"]]);
+
+$result_vat = (new Table("cc_card", "vat"))
+    ->getRow($DBHandle, ["id" => $invoice->getCard()]);
+$card_vat =  $result_vat["vat"];
+
+$total_untaxed = 0;
+$total_vat = [];
 
 require_once __DIR__ . "/../templates/main.php";
 
 ?>
-<table class="invoice_table" >
-    <tr class="form_invoice_head">
-        <td width="75%"><font color="#FFFFFF"><?php echo gettext("INVOICE: "); ?></font><font color="#FFFFFF"><b><?php echo $invoice->getTitle();  ?></b></font></td>
-        <td width="25%"><font color="#FFFFFF"><?php echo gettext("REF: "); ?> </font><font color="#EE6564"> <?php echo $invoice->getReference(); ?></font></td>
-    </tr>
-    <tr>
-        <td>
-        &nbsp;
-        </td>
-    </tr>
-    <tr>
-        <td >
-         <font style="font-weight:bold; " ><?php echo gettext("FOR : "); ?></font>  <?php echo $invoice->getUsernames();  ?>
-
-        </td>
-        <td>
-        <font style="font-weight:bold; " ><?php echo gettext("DATE : "); ?></font>  <?php echo $invoice->getDate();  ?>
-        </td>
-    </tr>
-    <tr>
-        <td>
-         <?php if($invoice->getStatusDisplay()==0) $color="color:#5FA631;";
-                else $color="color:#EE6564;"    ?>
-         <font style="font-weight:bold;" ><?php echo gettext("STATUS : "); ?></font> <font style="<?php echo $color; ?>" >  <?php echo $invoice->getStatusDisplay($invoice->getStatus());  ?> </font>
-         </td>
-    </tr>
-    <tr>
-        <td colspan="2">
-        <?php if($invoice->getPaidStatusDisplay()==0) $color="color:#EE6564;";
-                else $color="color:#5FA631;"    ?>
-         <font style="font-weight:bold;" ><?php echo gettext("PAID STATUS : "); ?></font> <font style="<?php echo $color; ?>" > <?php echo $invoice->getPaidStatusDisplay($invoice->getPaidStatus());  ?> </font>
-
-        </td>
-    </tr>
-    <tr>
-        <td colspan="2">
-        <br/>
-        <font style="font-weight:bold; " ><?php echo gettext("DESCRIPTION : "); ?></font>  <br/> <?php echo $invoice->getDescription();  ?></td>
-    </tr>
-
-    <tr >
-    <td colspan="2">
-        <table width="100%" cellspacing="10">
-            <tr>
-              <th  width="10%">
-                  &nbsp;
-              </th>
-              <th  width="35%">
-                  &nbsp;
-              </th>
-              <th align="right" width="17%">
-                  <font style="font-weight:bold; " >
-                      <?php echo gettext("PRICE EXCL. VAT"); ?>
-                  </font>
-              </th>
-              <th align="right" width="10%">
-                  <font style="font-weight:bold; " >
-                      <?php echo gettext("VAT"); ?>
-                  </font>
-              </th>
-               <th align="right" width="17%">
-                  <font style="font-weight:bold; " >
-                      <?php echo gettext("PRICE INCL. VAT"); ?>
-                  </font>
-              </th>
-              <th  width="10%">
-              &nbsp;
-              </th>
-            </tr>
-
-            <?php foreach ($items as $item) { ?>
-            <tr style="vertical-align:top;" >
-                <td>
-                    <?php echo $item->getDate(); ?>
-                </td>
-                <td >
-                    <?php echo $item->getDescription(); ?>
-                </td>
-                <td align="right">
-                    <?php echo number_format(round($item->getPrice(),2),2)." ".strtoupper(BASE_CURRENCY); ?>
-                </td>
-                <td align="right">
-                    <?php echo number_format(round($item->getVAT(),2),2)." %" ?>
-                </td>
-                <td align="right">
-                    <?php echo number_format(round($item->getPrice()*(1+($item->getVAT()/100)),2),2)." ".strtoupper(BASE_CURRENCY); ?>
-                </td>
-                <td align="center">
-                    <a href="?id=<?php echo $id; ?>&action=edit&idc=<?php echo $item->getId();?>"><img src="<?= get_image_path("edit.png") ?>" title="<?php echo gettext("Edit Item") ?>" alt="<?php echo gettext("Edit Item") ?>" border="0"></a>
-                    <a href="?id=<?php echo $id; ?>&action=delete&idc=<?php echo $item->getId();?>"><img src="<?= get_image_path("delete.png") ?>" title="<?php echo gettext("Delete Item") ?>" alt="<?php echo gettext("Delete Item") ?>" border="0"></a>
-                </td>
-            </tr>
-             <?php } ?>
-
-            <tr>
-                 <td colspan="6">
-                     &nbsp;
-                 </td>
-             </tr>
-        <?php
-        $price_without_vat = 0;
-        $price_with_vat = 0;
-        $vat_array = array();
-        foreach ($items as $item) {
-             $price_without_vat = $price_without_vat + $item->getPrice();
-            $price_with_vat = $price_with_vat + ($item->getPrice()*(1+($item->getVAT()/100)));
-            if (array_key_exists("".$item->getVAT(),$vat_array)) {
-                $vat_array[$item->getVAT()] = $vat_array[$item->getVAT()] + $item->getPrice()*($item->getVAT()/100) ;
-            } else {
-                $vat_array[$item->getVAT()] =  $item->getPrice()*($item->getVAT()/100) ;
-            }
-         }
-
-         ?>
-             <tr>
-                 <td colspan="2">
-                     &nbsp;
-                 </td>
-                 <td colspan="2" align="right">
-                     <?php echo gettext("TOTAL EXCL. VAT") ?>&nbsp;:
-                 </td>
-                 <td align="right" >
-                     <?php echo number_format(round($price_without_vat,2),2)." ".strtoupper(BASE_CURRENCY); ?>
-                 </td>
-                 <td >
-                     &nbsp;
-                 </td>
-             </tr>
-             <?php foreach ($vat_array as $key => $val) { ?>
-
-             <tr>
-                 <td colspan="2">
-                     &nbsp;
-                 </td>
-                 <td colspan="2" align="right">
-                     <?php echo gettext("TOTAL VAT ($key%)") ?>&nbsp;:
-                 </td>
-                 <td align="right" >
-                     <?php echo number_format(round($val,2),2)." ".strtoupper(BASE_CURRENCY); ?>
-                 </td>
-                 <td >
-                     &nbsp;
-                 </td>
-             </tr>
-
-             <?php } ?>
-             <tr>
-                 <td colspan="2">
-                     &nbsp;
-                 </td>
-                 <td colspan="2" align="right">
-                     <?php echo gettext("TOTAL INCL. VAT") ?>&nbsp;:
-                 </td>
-                 <td align="right">
-                     <?php echo number_format(round($price_with_vat,2),2)." ".strtoupper(BASE_CURRENCY); ?>
-                 </td>
-                 <td >
-                     &nbsp;
-                 </td>
-             </tr>
-
-        </table>
-
-    </td>
-    </tr>
-</table>
-
-<br/>
-<?php if (!empty($error_msg)) { ?>
-    <div class="msg_error" style="width:70%; margin-left:auto;margin-right:auto;">
-        <?php echo $error_msg ?>
+<div class="row">
+    <div class="col-8">
+        <div class="row">
+            <div class="col-4 fw-bold"><?= _("Invoice:") ?></div><div class="col"><?= $invoice->title ?></div>
+        </div>
+        <div class="row">
+            <div class="col-4 fw-bold"><?= _("For:") ?></div><div class="col"><?= Customer::getName($invoice->card) ?></div>
+        </div>
+        <div class="row">
+            <div class="col-4 fw-bold"><?= _("Status:") ?></div>
+            <div class="col <?= $invoice->status === Invoice::STATUS_OPEN ? "text-success" : "text-danger" ?>">
+                <?= $invoice->getStatusDisplay() ?>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4 fw-bold"><?= _("Paid Status:") ?></div>
+            <div class="col <?= $invoice->paid_status === Invoice::PAIDSTATUS_PAID ? "text-success" : "text-danger" ?>">
+                <?= $invoice->getPaidStatusDisplay() ?>
+            </div>
+        </div>
     </div>
-<?php } ?>
-  <form action="<?php echo '?id='.$invoice->getId(); ?>" method="post" >
-     <input id="action" type="hidden" name="action" value="<?php if(!empty($idc)) echo "update"; else echo "add" ?>"/>
-    <input id="idc" type="hidden" name="idc" value="<?php if(!empty($idc)) echo $idc;?>"/>
-    <table class="invoice_table">
-        <tr class="form_invoice_head">
-            <td colspan="2" align="center"><font color="#FFFFFF"><?php echo gettext("ADD INVOICE ITEM "); ?></font></td>
-        </tr>
-        <tr >
-            <td colspan="2">&nbsp;</td>
-        </tr>
-        <?php
-            if (empty($date)) {
-                $date = date("Y-m-d H:i:s");
-            }
-        ?>
-        <tr>
-            <td ><font style="font-weight:bold; " ><?php echo gettext("DATE : "); ?>
-             </td>
-             <td>
-             <input type="text" class="form_input_text" name="date" size="20" maxlength="20" <?php if(!empty($date)) echo 'value="'.$date.'"';?>/>
-             </td>
-        </tr>
-        <tr>
-            <td ><font style="font-weight:bold; " ><?php echo gettext("AMOUNT : "); ?>
-             </td>
-             <td>
-             <input type="text" class="form_input_text" name="price" size="10" maxlength="10" <?php if(!empty($price)) echo 'value="'.$price.'"';?>/>
-             </td>
-        </tr>
-        <tr>
-            <td ><font style="font-weight:bold; " ><?php echo gettext("VAT : "); ?>
-             </td>
-             <td>
-             <input type="text" class="form_input_text" name="vat" size="5" maxlength="5" <?php if(!empty($vat)) echo 'value="'.$vat.'"'; else echo 'value="'.$card_vat.'"';?> />
-             </td>
-        </tr>
-        <tr>
-            <td ><font style="font-weight:bold; " ><?php echo gettext("DESCRIPTION : "); ?>
-             </td>
-            <td>
-             <textarea class="form_input_textarea" name="description" cols="50" rows="5"><?php if(!empty($description)) echo $description ;?></textarea>
-             </td>
-        </tr>
-        <tr>
-            <td colspan="2" align="right">
-                <input class="form_input_button" type="submit" value="<?php if(!empty($idc)) echo gettext("UPDATE"); else echo gettext("ADD"); ?>"/>
-             </td>
-        </tr>
+    <div class="col-4">
+        <div class="row">
+            <div class="col-4 fw-bold"><?= _("Reference:") ?></div><div class="col"><?= $invoice->reference ?></div>
+        </div>
+        <div class="row">
+            <div class="col-4 fw-bold"><?= _("Date:") ?></div><div class="col"><?= $invoice->date ?></div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="row">
+            <div class="col-4 fw-bold"><?= _("Description") ?></div><div class="col"><?= $invoice->description ?></div>
+        </div>
+    </div>
+</div>
 
-    </table>
-  </form>
+<table class="table table-sm table-striped">
+    <thead>
+        <tr>
+            <td></td>
+            <th><?= _("Date") ?></th>
+            <th><?= _("Description") ?></th>
+            <th><?= _("Price ex VAT") ?></th>
+            <th><?= _("VAT") ?></th>
+            <th><?= _("Total price") ?></th>
+            <td></td>
+        </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($invoice->items as $item): ?>
+        <?php $total_untaxed += $item->price; $total_vat[$item->vat] += $item->price * $item->vat / 100 ?>
+        <tr>
+            <td></td>
+            <td><?= $item->getDate() ?></td>
+            <td><?= $item->description ?></td>
+            <td><?= get_money($item->price) ?></td>
+            <td><?= get_percent($item->VAT) ?></td>
+            <td><?= get_money($item->price + ($item->price * $item->vat / 100)) ?></td>
+            <td>
+                <a href="?action=edit&idc=<?= $item->id ?>"><?= _("Edit") ?></a>
+                <a href="?action=delete&idc=<?= $item->id ?>"><?= _("Delete") ?></a>
+            </td>
+        </tr>
+    <?php endforeach ?>
+    </tbody>
+    <tfoot class="table-group-divider">
+        <tr>
+            <th scope="row"><?= _("Totals") ?></th>
+            <td><?= get_money($total_untaxed) ?></td>
+            <td>
+                <?php foreach ($total_vat as $per => $vat): ?>
+                <?= sprintf("VAT %s", get_percent($per)) ?>
+                <?= get_money($vat) ?><br/>
+                <?php endforeach ?>
+            </td>
+            <td><?= get_money($total_untaxed + $total_vat) ?></td>
+        </tr>
+    </tfoot>
+</table>
+<form method="post">
+    <?php if (!empty($error_msg)): ?>
+    <div class="alert alert-danger">
+        <?= $error_msg ?>
+    </div>
+    <?php endif ?>
+    <div class="row pb-3">
+        <label class="col-4 col-form-label" for="date"><?= _("Date") ?></label>
+        <div class="col">
+            <input type="date" name="date" id="date" value="<?= $date ?? (new DateTime())->format("Y-m-d") ?>" class="form-control form-control-sm"/>
+        </div>
+    </div>
+    <div class="row pb-3">
+        <label class="col-4 col-form-label" for="amount"><?= _("Amount") ?></label>
+        <div class="col">
+            <input type="text" name="amount" id="amount" value="<?= $amount ?? "" ?>" class="form-control form-control-sm" pattern="[0-9]*([.][0-9]+)?"/>
+        </div>
+    </div>
+    <div class="row pb-3">
+        <label class="col-4 col-form-label" for="vat"><?= _("VAT") ?></label>
+        <div class="col">
+            <input type="number" name="vat" id="vat" value="<?= $vat ?? $card_vat ?>" class="form-control form-control-sm" min="0" max="100" step="1"/>
+        </div>
+    </div>
+    <div class="row pb-3">
+        <label class="col-4 col-form-label" for="description"><?= _("Description") ?></label>
+        <div class="col">
+            <textarea name="description" id="description" class="form-control form-control-sm"><?= $description ?? "" ?></textarea>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col ms-auto">
+            <input type="hidden" name="action" value="<?= empty($idc) ? "add" : "update" ?>"/>
+            <input type="hidden" name="idc" value="<?= $idc ?? "" ?>"/>
+            <button type="submit" class="btn btn-primary btn-sm"><?= empty($idc) ? _("Add") : _("Update") ?></button>
+        </div>
+    </div>
+</form>

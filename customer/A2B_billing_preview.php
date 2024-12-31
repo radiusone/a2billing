@@ -110,7 +110,7 @@ $result =  $table_charge -> get_list($DBHandle, $clause_charge . " AND charged_s
  $result =  $table_charge -> get_list($DBHandle, $clause_charge . " AND charged_status = 0 AND invoiced_status = 0");
     if (is_array($result) && sizeof($result)>0) {
         foreach ($result as $charge) {
-            $item = new InvoiceItem(null, gettext("CHARGE :").$charge['description'], $charge['creationdate'], $charge['amount'],$vat, 'CHARGE');
+            $item = InvoiceItem::create(null, gettext("CHARGE :").$charge['description'], $charge['creationdate'], $charge['amount'],$vat, 'CHARGE');
             $invoice_items[]= $item;
         }
 
@@ -120,7 +120,7 @@ $result =  $table_charge -> get_list($DBHandle, $clause_charge . " AND charged_s
     if ($typepaid==1 && $credit<0) {
         //GENERATE AN INVOICE TO COMPLETE THE BALANCE
     $amount = abs($credit);
-    $item = new InvoiceItem(null, $desc_billing_postpaid, gmdate("Y/m/d H:i:s"), $amount,$vat, 'POSTPAID');
+    $item = InvoiceItem::create(null, $desc_billing_postpaid, gmdate("Y/m/d H:i:s"), $amount,$vat, 'POSTPAID');
     $invoice_items[]= $item;
     }
 
