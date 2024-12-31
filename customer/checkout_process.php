@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Invoice;
 use A2billing\Table;
 use A2billing\Mail;
 use A2billing\A2bMailException;
@@ -67,8 +68,6 @@ include '../common/lib/epayment/includes/general.php';
 include '../common/lib/epayment/includes/html_output.php';
 include '../common/lib/epayment/includes/configure.php';
 include '../common/lib/epayment/includes/loadconfiguration.php';
-include '../common/lib/support/classes/invoice.php';
-include '../common/lib/support/classes/invoiceItem.php';
 
 $DBHandle_max  = DbConnect();
 $paymentTable = new Table();

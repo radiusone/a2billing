@@ -1,8 +1,7 @@
 <?php
+namespace A2billing;
 
-use A2billing\Table;
-
-class receipt
+class Receipt
 {
     private $id;
     private $title;

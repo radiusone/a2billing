@@ -1,6 +1,8 @@
 <?php
 
 use A2billing\Customer;
+use A2billing\InvoiceItem;
+use A2billing\ReceiptItem;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -37,10 +39,6 @@ use A2billing\Table;
 **/
 
 require_once __DIR__ . "/../common/lib/customer.defines.php";
-include '../common/lib/support/classes/invoice.php';
-include '../common/lib/support/classes/invoiceItem.php';
-include '../common/lib/support/classes/receipt.php';
-include '../common/lib/support/classes/receiptItem.php';
 
 if (! has_rights (Customer::ACX_INVOICES)) {
     Header ("HTTP/1.0 401 Unauthorized");

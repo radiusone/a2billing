@@ -1,8 +1,7 @@
 <?php
+namespace A2billing;
 
-use A2billing\Table;
-
-class invoice
+class Invoice
 {
     private $id;
     private $title;

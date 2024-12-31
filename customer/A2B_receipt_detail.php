@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Customer;
+use A2billing\Receipt;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -36,8 +37,6 @@ use A2billing\Customer;
 **/
 
 require_once __DIR__ . "/../common/lib/customer.defines.php";
-include '../common/lib/support/classes/receipt.php';
-include '../common/lib/support/classes/receiptItem.php';
 
 if (! has_rights (Customer::ACX_INVOICES)) {
     Header ("HTTP/1.0 401 Unauthorized");
@@ -52,7 +51,7 @@ Header ("Location: A2B_entity_receipt.php?section=13");
 }
 
 if(empty($page))$page=1;
-$receipt = new receipt($id);
+$receipt = new Receipt($id);
 if ($receipt->getCard() != $_SESSION["card_id"]) {
     Header ("HTTP/1.0 401 Unauthorized");
     Header ("Location: PP_error.php?c=accessdenied");

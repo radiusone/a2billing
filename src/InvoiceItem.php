@@ -1,19 +1,23 @@
 <?php
+namespace A2billing;
 
-class receiptItem
+class InvoiceItem
 {
     private $description;
     private $date;
     private $price;
+    private $VAT;
+    private $precision = false;
     private $ext_id;
     private $ext_type;
 
-    public function __construct($id, $desc, $date, $price,$type_ext,$id_ext=null)
+    public function __construct($id, $desc, $date, $price, $VAT,$type_ext,$id_ext=null)
     {
         $this->id = $id;
         $this->description = $desc;
         $this->date = $date;
         $this->price = $price;
+        $this->VAT = $VAT;
         $this->ext_id = $id_ext;
         $this->ext_type = $type_ext;
     }

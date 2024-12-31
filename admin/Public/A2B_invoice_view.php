@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Invoice;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -38,8 +39,6 @@ use A2billing\Table;
 
 $menu_section = 11;
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
-include '../../common/lib/support/classes/invoice.php';
-include '../../common/lib/support/classes/invoiceItem.php';
 
 Admin::checkPageAccess(Admin::ACX_INVOICING);
 
@@ -49,7 +48,7 @@ if (empty($id)) {
     Header ("Location: A2B_entity_invoice.php");
 }
 
-$invoice = new invoice($id);
+$invoice = new Invoice($id);
 $items = $invoice->loadItems();
 //load customer
 $DBHandle  = DbConnect();
