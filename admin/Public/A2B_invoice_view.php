@@ -55,7 +55,7 @@ if (empty($invoice->card)) {
 }
 $DBHandle  = DbConnect();
 $card = (new Table("cc_card", "*", ["cc_country" => ["country", "countrycode"]]))
-    ->getRow($DBHandle, ["id" => $invoice->card]);
+    ->getRow($DBHandle, ["cc_card.id" => $invoice->card]);
 
 if (empty($card)) {
     echo "Customer doesn't exist or is not correctly defined for this invoice !";
@@ -104,9 +104,10 @@ require_once __DIR__ . "/../templates/main.php";
 </div>
 <?php endif ?>
 
-<div class="container invoice-wrapper" style="width: 210mm; height: 297mm">
-    <div class="row justify-content-between">
-        <div class="col-5 d-flex align-self-center">
+<div class="container position-relative invoice-wrapper" style="width: 210mm; height: 297mm">
+    <div class="row mb-3 justify-content-between">
+        <div class="col-5 align-self-center">
+            <div class="h4 mb-auto"><?= _("INVOICE") ?></div>
             <div class="company-name"><?= $card["company_name"] ?></div>
             <div class="fullname"><?= $card["firstname"]?> <?= $card["lastname"]?></div>
             <div class="address"><span class="street"><?= $card["address"] ?></span></div>
@@ -120,7 +121,7 @@ require_once __DIR__ . "/../templates/main.php";
             <div class="vat-number"><?= sprintf(_("VAT no. %s"), $card["vat_rn"]) ?></div>
             <?php endif ?>
         </div>
-        <div class="col-5 d-flex align-self-center">
+        <div class="col-5 align-self-center text-end">
             <div class="company-name"><?= $invoice_conf["company_name"] ?></div>
             <div class="address"><span class="street"><?= $invoice_conf["address"] ?></span></div>
             <div class="zipcode-city">
@@ -135,7 +136,7 @@ require_once __DIR__ . "/../templates/main.php";
             <div class="vat-number"><?= sprintf(_("VAT no. %s"), $invoice_conf["vat"]) ?></div>
         </div>
     </div>
-    <div class="row">
+    <div class="row mb-3">
         <div class="col-4">
             <strong><?= _("Date") ?></strong>
             <div><?= $invoice->getDate() ?></div>
@@ -151,7 +152,7 @@ require_once __DIR__ . "/../templates/main.php";
         </div>
         <?php endif ?>
     </div>
-    <table class="table table-sm invoice-details">
+    <table class="table table-sm mb-3 table-striped invoice-details">
         <thead>
         <tr>
             <td></td>
@@ -172,7 +173,7 @@ require_once __DIR__ . "/../templates/main.php";
                 <td>
                     <?= get_money(convert_currency($item->price, BASE_CURRENCY, $curr), null, $curr) ?>
                 </td>
-                <td><?= get_percent($item->VAT) ?></td>
+                <td><?= get_percent($item->vat) ?></td>
                 <td>
                     <?= get_money(convert_currency($item->price + ($item->price * $item->vat / 100), BASE_CURRENCY, $curr), null, $curr) ?>
                 </td>
@@ -182,24 +183,25 @@ require_once __DIR__ . "/../templates/main.php";
         <tfoot class="table-group-divider">
             <tr>
                 <th scope="row"><?= _("Totals") ?></th>
+                <td colspan="2"></td>
                 <td><?= get_money(convert_currency($total_untaxed, BASE_CURRENCY, $curr), null, $curr) ?></td>
                 <td>
                     <?php foreach ($total_vat as $per => $vat): ?>
-                        <?= sprintf("VAT %s", get_percent($per)) ?>
+                        <?= sprintf("VAT %s", get_percent((float)$per)) ?>
                         <?= get_money(convert_currency($vat, BASE_CURRENCY, $curr), null, $curr) ?><br/>
                     <?php endforeach ?>
                 </td>
-                <td><?= get_money(convert_currency($total_untaxed + $total_vat, BASE_CURRENCY, $curr), null, $curr) ?></td>
+                <td><?= get_money(convert_currency($total_untaxed + array_sum($total_vat), BASE_CURRENCY, $curr), null, $curr) ?></td>
             </tr>
         </tfoot>
     </table>
-    <div class="row additional-information">
+    <div class="row mb-3 additional-information">
         <div class="col invoice-description">
             <?= $invoice->description ?>
         </div>
     </div>
-    <div class="row footer">
-        <div class="col small align-center">
+    <div class="row footer position-absolute bottom-0 w-100">
+        <div class="col small text-center">
             <?= $invoice_conf["company_name"] ?>
             <span aria-hidden="true"> | </span>
             <?= $invoice_conf["address"] ?>

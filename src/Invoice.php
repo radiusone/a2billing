@@ -58,7 +58,7 @@ class Invoice
         $this->status = $status ?? (int)$value["status"];
         $this->paid_status = $paid_status ?? (int)$value["paid_status"];
         $this->date = $date ?? $value["date"];
-        $this->reference = $reference ?? $value["reference"];
+        $this->reference = $reference ?? $value["reference"] ?? "";
         $this->items = $this->loadItems();
     }
 

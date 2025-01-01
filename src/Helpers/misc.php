@@ -267,7 +267,7 @@ function get_money(?float $value, ?int $decimals = null, $currency = BASE_CURREN
             $formatter->setAttribute(NumberFormatter::ROUNDING_MODE, NumberFormatter::ROUND_HALFUP);
         }
 
-        return $formatter->formatCurrency($value, BASE_CURRENCY);
+        return $formatter->formatCurrency($value, $currency);
     }
     $decimals ??= 2;
 
@@ -332,7 +332,7 @@ function get_timespan(int $sec, bool $include_seconds = false): string
 function get_percent(?float $var): string
 {
     if (isset ($var)) {
-        return number_format($var, 2) . "%";
+        return round($var, 2, PHP_ROUND_HALF_UP) . "%";
     } else {
         return "n/a";
     }

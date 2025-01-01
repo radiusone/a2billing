@@ -7,9 +7,9 @@ class InvoiceItem
     public string $description = "";
     public string $date = "";
     public float $price = 0;
-    public float $VAT = 0;
+    public float $vat = 0;
     public ?int $id_ext = null;
-    public string $type_ext = "";
+    public ?string $type_ext = null;
     public ?int $invoice_id = null;
 
     /**
@@ -29,10 +29,10 @@ class InvoiceItem
         $db = DbConnect();
         $result = (new Table("cc_invoice_item"))->getRow($db, ["id" => $id]);
         $this->invoice_id = $result["id_invoice"];
-        $this->description = $desc ?? $result["desc"];
+        $this->description = $desc ?? $result["description"];
         $this->date = $date ?? $result["date"];
         $this->price = $price ?? $result["price"];
-        $this->VAT = $VAT ?? $result["VAT"];
+        $this->vat = $VAT ?? $result["VAT"];
         $this->id_ext = $id_ext ?? $result["id_ext"];
         $this->type_ext = $type_ext ?? $result["type_ext"];
     }
@@ -43,18 +43,18 @@ class InvoiceItem
      * @param string $date
      * @param float $price
      * @param float $VAT
-     * @param $type_ext
-     * @param $id_ext
+     * @param string|null $type_ext
+     * @param int|null $id_ext
      * @return self
      */
-    public static function create($invoice, string $desc, string $date, float $price, float $VAT = 0, $type_ext = "", $id_ext = null): self
+    public static function create($invoice, string $desc, string $date, float $price, float $VAT = 0, ?string $type_ext = null, ?int $id_ext = null): self
     {
         $instance = new self();
         $instance->invoice_id = $invoice instanceof Invoice ? $invoice->id : $invoice;
         $instance->description = $desc;
         $instance->date = $date;
         $instance->price = $price;
-        $instance->VAT = $VAT;
+        $instance->vat = $VAT;
         $instance->type_ext = $type_ext;
         $instance->id_ext = $id_ext;
 
@@ -69,7 +69,7 @@ class InvoiceItem
             "description" => $this->description,
             "date" => $this->date,
             "price" => $this->price,
-            "VAT" => $this->VAT,
+            "VAT" => $this->vat,
             "type_ext" => $this->type_ext,
             "id_ext" => $this->id_ext,
         ];
@@ -105,9 +105,9 @@ class InvoiceItem
         return $this->price;
     }
 
-    public function getVAT(): float
+    public function getVat(): float
     {
-        return $this->VAT;
+        return $this->vat;
     }
 
     public function getDescription(): string

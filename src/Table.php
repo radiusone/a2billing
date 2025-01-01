@@ -126,9 +126,9 @@ class Table
         $identifier = trim($identifier);
 
         $alias = "";
-        if (preg_match("/^(.+?) +AS +(.+)$/i", $identifier, $matches)) {
+        if (preg_match("/^(.+?) +AS +(.+?)(\\b.*)$/i", $identifier, $matches)) {
             $identifier = $matches[1];
-            $alias = " AS $q$matches[2]$q";
+            $alias = " AS $q$matches[2]$q$matches[3]";
         }
 
         if ($this->isSqlFunction($identifier) || is_numeric($identifier)) {

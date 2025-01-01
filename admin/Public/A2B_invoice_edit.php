@@ -60,7 +60,7 @@ if (empty($id)) {
 
 $action ??= "";
 $error_msg = "";
-$invoice = new Invoice($id);
+$invoice = new Invoice((int)$id);
 $DBHandle = DbConnect();
 
 switch ($action) {
@@ -90,7 +90,7 @@ switch ($action) {
         if (!empty($idc)) {
             $item = new InvoiceItem($idc);
             $description = $item->description;
-            $vat = $item->VAT;
+            $vat = $item->vat;
             $price = $item->price;
             $date = $item->getDate();
             break;
@@ -115,6 +115,7 @@ $card_vat =  $result_vat["vat"];
 
 $total_untaxed = 0;
 $total_vat = [];
+$total_total = 0;
 
 require_once __DIR__ . "/../templates/main.php";
 
@@ -125,7 +126,7 @@ require_once __DIR__ . "/../templates/main.php";
             <div class="col-4 fw-bold"><?= _("Invoice:") ?></div><div class="col"><?= $invoice->title ?></div>
         </div>
         <div class="row">
-            <div class="col-4 fw-bold"><?= _("For:") ?></div><div class="col"><?= Customer::getName($invoice->card) ?></div>
+            <div class="col-4 fw-bold"><?= _("For:") ?></div><div class="col"><?= Customer::getInfoLink($invoice->card) ?></div>
         </div>
         <div class="row">
             <div class="col-4 fw-bold"><?= _("Status:") ?></div>
@@ -169,17 +170,17 @@ require_once __DIR__ . "/../templates/main.php";
     </thead>
     <tbody>
     <?php foreach ($invoice->items as $item): ?>
-        <?php $total_untaxed += $item->price; $total_vat[$item->vat] += $item->price * $item->vat / 100 ?>
+        <?php $total_untaxed += $item->price; $total_vat[$item->vat] += $item->price * $item->vat / 100; $total_total += $item->price + $item->price * $item->vat / 100 ?>
         <tr>
             <td></td>
             <td><?= $item->getDate() ?></td>
             <td><?= $item->description ?></td>
             <td><?= get_money($item->price) ?></td>
-            <td><?= get_percent($item->VAT) ?></td>
+            <td><?= get_percent($item->vat) ?></td>
             <td><?= get_money($item->price + ($item->price * $item->vat / 100)) ?></td>
             <td>
-                <a href="?action=edit&idc=<?= $item->id ?>"><?= _("Edit") ?></a>
-                <a href="?action=delete&idc=<?= $item->id ?>"><?= _("Delete") ?></a>
+                <a href="?action=edit&idc=<?= $item->id ?>"><img src="<?= get_image_path("edit.png") ?>" alt="<?= _("Edit") ?>"/></a>
+                <a href="?action=delete&idc=<?= $item->id ?>"><img src="<?= get_image_path("delete.png") ?>" alt="<?= _("Delete") ?>"/></a>
             </td>
         </tr>
     <?php endforeach ?>
@@ -187,18 +188,20 @@ require_once __DIR__ . "/../templates/main.php";
     <tfoot class="table-group-divider">
         <tr>
             <th scope="row"><?= _("Totals") ?></th>
+            <td colspan="2"></td>
             <td><?= get_money($total_untaxed) ?></td>
             <td>
-                <?php foreach ($total_vat as $per => $vat): ?>
-                <?= sprintf("VAT %s", get_percent($per)) ?>
-                <?= get_money($vat) ?><br/>
+                <?php foreach (array_filter($total_vat) as $per => $vatamt): ?>
+                <?= sprintf("VAT %s", get_percent((float)$per)) ?>
+                <?= get_money($vatamt) ?><br/>
                 <?php endforeach ?>
             </td>
-            <td><?= get_money($total_untaxed + $total_vat) ?></td>
+            <td><?= get_money($total_total) ?></td>
+            <td></td>
         </tr>
     </tfoot>
 </table>
-<form method="post">
+<form method="post" class="w-50">
     <?php if (!empty($error_msg)): ?>
     <div class="alert alert-danger">
         <?= $error_msg ?>
@@ -211,15 +214,15 @@ require_once __DIR__ . "/../templates/main.php";
         </div>
     </div>
     <div class="row pb-3">
-        <label class="col-4 col-form-label" for="amount"><?= _("Amount") ?></label>
+        <label class="col-4 col-form-label" for="price"><?= _("Amount") ?></label>
         <div class="col">
-            <input type="text" name="amount" id="amount" value="<?= $amount ?? "" ?>" class="form-control form-control-sm" pattern="[0-9]*([.][0-9]+)?"/>
+            <input type="text" name="price" id="price" value="<?= $amount ?? "" ?>" class="form-control form-control-sm" pattern="[0-9]*([.][0-9]+)?"/>
         </div>
     </div>
     <div class="row pb-3">
         <label class="col-4 col-form-label" for="vat"><?= _("VAT") ?></label>
         <div class="col">
-            <input type="number" name="vat" id="vat" value="<?= $vat ?? $card_vat ?>" class="form-control form-control-sm" min="0" max="100" step="1"/>
+            <input type="number" name="vat" id="vat" value="<?= $vat ?? $card_vat ?>" class="form-control form-control-sm" min="0" max="100" step="0.1"/>
         </div>
     </div>
     <div class="row pb-3">
