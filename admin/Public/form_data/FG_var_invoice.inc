@@ -45,7 +45,7 @@ Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
 $form_action ??= "list";
 $col6_open = sprintf("'|col6|' === '%s'", _("OPEN"));
-$join_key = "(SELECT id_invoice, SUM(price * (1 + (vat / 100))) AS total_price FROM cc_invoice_item GROUP BY id_invoice) AS items";
+$join_key = "(SELECT id_invoice, SUM(ROUND(price * (1 + vat / 100), 2)) AS total_price FROM cc_invoice_item GROUP BY id_invoice) AS items";
 
 $HD_Form = new FormHandler(
     "cc_invoice",
@@ -82,11 +82,11 @@ $HD_Form->AddListActionButton(
 );
 
 $HD_Form->AddListActionButton(
-    "",
+    "A2B_entity_invoice.php?action=lock&id=",
     _("Close this invoice"),
     get_image_path("lock.png"),
     "lock",
-    "cc_invoice_status",
+    "status",
     0 // open
 );
 
@@ -95,7 +95,7 @@ $HD_Form->AddListActionButton(
     _("Manage payments"),
     get_image_path("money.png"),
     "",
-    "cc_invoice_status",
+    "status",
     1 // closed
 );
 

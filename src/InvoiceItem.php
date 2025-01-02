@@ -28,7 +28,8 @@ class InvoiceItem
         }
         $db = DbConnect();
         $result = (new Table("cc_invoice_item"))->getRow($db, ["id" => $id]);
-        $this->invoice_id = $result["id_invoice"];
+        $this->id = $id;
+        $this->invoice_id = (int)$result["id_invoice"];
         $this->description = $desc ?? $result["description"];
         $this->date = $date ?? $result["date"];
         $this->price = $price ?? $result["price"];
@@ -90,12 +91,12 @@ class InvoiceItem
         return $this->id;
     }
 
-    public function getExtId(): int
+    public function getExtId(): ?int
     {
         return $this->id_ext;
     }
 
-    public function getExtType(): string
+    public function getExtType(): ?string
     {
         return $this->type_ext;
     }

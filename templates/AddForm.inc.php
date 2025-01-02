@@ -100,7 +100,7 @@ use DateTime;
                 <option value=""><?= gettext("No data found!!!") ?></option>
             <?php endif ?>
 
-            <?php foreach ($row["select_fields"] as $opt => $val): ?>
+            <?php foreach ($row["select_fields"] as $val => $opt): ?>
                 <option
                     value="<?= $val ?>"
                     <?php if ($val == $row["default"]): ?>selected="selected"<?php endif ?>

@@ -211,7 +211,7 @@ class Invoice
         $table = new Table(
             "cc_invoice_payment",
             "*",
-            ["cc_logpayment" => ["NATURAL", "cc_invoice_payment.id_payment", "cc_logpayment.id"]]
+            ["cc_logpayment" => ["cc_invoice_payment.id_payment", "cc_logpayment.id"]]
         );
         return $table->getRows($DBHandle, ["id_invoice" => $this->id], ["date"]);
     }

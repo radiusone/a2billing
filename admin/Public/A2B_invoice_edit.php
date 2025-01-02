@@ -120,7 +120,7 @@ $total_total = 0;
 require_once __DIR__ . "/../templates/main.php";
 
 ?>
-<div class="row">
+<div class="row mb-3">
     <div class="col-8">
         <div class="row">
             <div class="col-4 fw-bold"><?= _("Invoice:") ?></div><div class="col"><?= $invoice->title ?></div>
@@ -140,6 +140,10 @@ require_once __DIR__ . "/../templates/main.php";
                 <?= $invoice->getPaidStatusDisplay() ?>
             </div>
         </div>
+        <div class="row">
+            <div class="col-4 fw-bold"><?= _("Description:") ?></div>
+            <div class="col"><?= $invoice->description ?></div>
+        </div>
     </div>
     <div class="col-4">
         <div class="row">
@@ -147,11 +151,6 @@ require_once __DIR__ . "/../templates/main.php";
         </div>
         <div class="row">
             <div class="col-4 fw-bold"><?= _("Date:") ?></div><div class="col"><?= $invoice->date ?></div>
-        </div>
-    </div>
-    <div class="col">
-        <div class="row">
-            <div class="col-4 fw-bold"><?= _("Description") ?></div><div class="col"><?= $invoice->description ?></div>
         </div>
     </div>
 </div>
@@ -170,14 +169,18 @@ require_once __DIR__ . "/../templates/main.php";
     </thead>
     <tbody>
     <?php foreach ($invoice->items as $item): ?>
-        <?php $total_untaxed += $item->price; $total_vat[$item->vat] += $item->price * $item->vat / 100; $total_total += $item->price + $item->price * $item->vat / 100 ?>
+        <?php
+            $total_untaxed += ($rndprice = round($item->price, 2, PHP_ROUND_HALF_UP));
+            $total_vat[(string)$item->vat] ??= 0;
+            $total_vat[(string)$item->vat] += ($rndvat = round($item->price * $item->vat / 100, 2, PHP_ROUND_HALF_UP));
+        ?>
         <tr>
             <td></td>
             <td><?= $item->getDate() ?></td>
             <td><?= $item->description ?></td>
-            <td><?= get_money($item->price) ?></td>
-            <td><?= get_percent($item->vat) ?></td>
-            <td><?= get_money($item->price + ($item->price * $item->vat / 100)) ?></td>
+            <td><?= get_money($rndprice) ?></td>
+            <td><?= get_percent($rndvat) ?></td>
+            <td><?= get_money($rndprice + $rndvat) ?></td>
             <td>
                 <a href="?action=edit&idc=<?= $item->id ?>"><img src="<?= get_image_path("edit.png") ?>" alt="<?= _("Edit") ?>"/></a>
                 <a href="?action=delete&idc=<?= $item->id ?>"><img src="<?= get_image_path("delete.png") ?>" alt="<?= _("Delete") ?>"/></a>
@@ -196,11 +199,12 @@ require_once __DIR__ . "/../templates/main.php";
                 <?= get_money($vatamt) ?><br/>
                 <?php endforeach ?>
             </td>
-            <td><?= get_money($total_total) ?></td>
+            <td><?= get_money($total_untaxed + array_sum($total_vat)) ?></td>
             <td></td>
         </tr>
     </tfoot>
 </table>
+
 <form method="post" class="w-50">
     <?php if (!empty($error_msg)): ?>
     <div class="alert alert-danger">
