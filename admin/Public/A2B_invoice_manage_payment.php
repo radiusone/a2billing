@@ -41,140 +41,132 @@ require_once __DIR__ . "/../../common/lib/admin.defines.php";
 
 Admin::checkPageAccess(Admin::ACX_INVOICING);
 
-getpost_ifset(array('id','addpayment','delpayment','status'));
+getpost_ifset(["id", "addpayment", "delpayment", "status"]);
+/**
+ * @var numeric-string $id
+ * @var numeric-string $addpayment
+ * @var numeric-string $delpayment
+ * @var numeric-string $status
+ */
 
 if (empty($id)) {
-    Header ("Location: A2B_entity_invoice.php");
+    header("Location: A2B_entity_invoice.php");
 }
 
 $invoice = new Invoice($id);
-$items = $invoice->loadItems();
 
-if (isset($addpayment) && is_numeric($addpayment)) {
-    $invoice ->addPayment($addpayment);
-    Header ("Location: A2B_invoice_manage_payment.php?id=$id");
+if (is_numeric($addpayment ?? null)) {
+    $invoice->addPayment($addpayment);
+    header("Location: A2B_invoice_manage_payment.php?id=$id");
 }
 
-if (isset($delpayment) && is_numeric($delpayment)) {
-    $invoice ->delPayment($delpayment);
-    Header ("Location: A2B_invoice_manage_payment.php?id=$id");
+if (is_numeric($delpayment ?? null)) {
+    $invoice->delPayment($delpayment);
+    header("Location: A2B_invoice_manage_payment.php?id=$id");
 }
 
-if (isset($status) && is_numeric($status)) {
-    $invoice ->changeStatus($status);
-    Header ("Location: A2B_invoice_manage_payment.php?id=$id");
+if (is_numeric($status ?? null)) {
+    $invoice->changeStatus($status);
+    header("Location: A2B_invoice_manage_payment.php?id=$id");
 }
-require_once __DIR__ . "/../templates/main.php";
-
-$payments = $invoice->loadPayments();
 
 $price_without_vat = 0;
 $price_with_vat = 0;
-$vat_array = array();
-foreach ($items as $item) {
-    $price_without_vat = $price_without_vat + $item->getPrice();
-    $price_with_vat = $price_with_vat + ($item->getPrice()*(1+($item->getVAT()/100)));
-    if (array_key_exists("".$item->getVAT(),$vat_array)) {
-        $vat_array[$item->getVAT()] = $vat_array[$item->getVAT()] + $item->getPrice()*($item->getVAT()/100) ;
-    } else {
-        $vat_array[$item->getVAT()] =  $item->getPrice()*($item->getVAT()/100) ;
-    }
+$vat_array = [];
+foreach ($invoice->items as $item) {
+    $price_without_vat += ($rndprice = round($item->price, 2, PHP_ROUND_HALF_UP));
+    $vat_array[(string)$item->vat] ??= 0;
+    $vat_array[(string)$item->vat] += ($rndvat = round($item->price * $item->vat / 100, 2, PHP_ROUND_HALF_UP));
+    $price_with_vat += $rndprice + $rndvat;
 }
+$vat_array = array_filter($vat_array);
+
+$payments = $invoice->loadPayments();
 $payment_assigned = 0;
 foreach ($payments as $payment) {
-    $payment_assigned = $payment_assigned + $payment['payment'];
+    $payment_assigned += round($payment["payment"], 2, PHP_ROUND_HALF_UP);
 }
 
+require_once __DIR__ . "/../templates/main.php";
 ?>
+<div class="row mb-3">
+    <div class="col-8">
+        <?= _("Invoice:") ?> <?= $invoice->title ?>
+    </div>
+    <div class="col">
+        <?= _("Reference:") ?> <?= $invoice->reference ?>
+    </div>
+    <div class="col-1">
+        <button class="btn" id="imp_popupselect">
+            <img src="<?= get_image_path("page_white_text.png") ?>" alt="<?= _("Print") ?>"/>
+        </button>
+    </div>
+</div>
 
-<script>
-var win = null;
-$(function() {
-    var id = <?= json_encode($id) ?>;
-    var card = <?= json_encode($invoice->getCard()) ?>;
-    var status = <?= ($invoice->getPaidStatus() + 1) % 2 ?>;
-    $("a#addpayment").on('click', () => win = window.open(`A2B_entity_payment_invoice.php?popup_select=1&invoice=${id}&card=${card}`, '', 'scrollbars=yes,resizable=yes,width=700,height=500'));
-    $("a#delpayment").on('click', function() {
-        if (var p = $('#payment').val()) {
-            self.location.href= `A2B_invoice_manage_payment.php?id=${id}&delpayment=${p}`;
-        }
-    });
-    $("button#changestatus").on('click', () => self.location.href= `A2B_invoice_manage_payment.php?id=${id}&status=${status}`);
-    $("a#imp_popupselect").on('click', () => window.open(`A2B_invoice_view.php?popup_select=1&id=${id}`, '', 'scrollbars=yes,resizable=yes,width=700,height=500'))
-});
-</script>
-
-<table class="invoice_table" >
-    <tr class="form_invoice_head">
-        <td width="75%"><font color="#FFFFFF"><?php echo gettext("INVOICE: "); ?></font><font color="#FFFFFF"><b><?php echo $invoice->getTitle();  ?></b></font></td>
-        <td width="25%"><font color="#FFFFFF"><?php echo gettext("REF: "); ?> </font><font color="#EE6564"> <?php echo $invoice->getReference(); ?></font></td>
-    </tr>
+<table class="table table-sm">
     <tr>
-        <td colspan="2" align="right">
-            <a id="imp_popupselect" href="#"> <img src="<?= get_image_path("page_white_text.png") ?>" title="Print" alt="Print" border="0"></a>
+        <th scope="row"><?= _("Paid status") ?></th>
+        <td class="<?= $invoice->paid_status === Invoice::PAIDSTATUS_UNPAID ? "text-danger" : "text-success" ?>">
+            <?= $invoice->getPaidStatusDisplay() ?>
+            <button class="btn btn-primary badge" id="changestatus"><?= _("Change status") ?></button>
         </td>
     </tr>
     <tr>
-        <td colspan="2">
-            <?php echo gettext("TOTAL INVOICE EXCLUDE TVA"); ?>&nbsp;:&nbsp;<?php echo number_format(round($price_without_vat,2),2)." ".strtoupper(BASE_CURRENCY); ?>
-        </td>
-    </tr>
-    <?php foreach ($vat_array as $key => $val) { ?>
-     <tr>
-         <td  colspan="2">
-            <?php echo gettext("TOTAL VAT ($key%)") ?>&nbsp;:&nbsp;<?php echo number_format(round($val,2),2)." ".strtoupper(BASE_CURRENCY); ?>
-        </td>
-    <?php } ?>
-    <tr>
-    <td colspan="2">
-            <?php echo gettext("TOTAL INVOICE INCLUDE TVA"); ?>&nbsp;:&nbsp;<?php echo number_format(round($price_with_vat,2),2)." ".strtoupper(BASE_CURRENCY); ?>
-        </td>
-    </tr>
-
-    <tr>
-        <td  colspan="2">
-            <?php echo gettext("TOTAL OF PAYMENTS ASSIGNED"); ?>&nbsp;:&nbsp;<?php echo number_format(round($payment_assigned,2),2)." ".strtoupper(BASE_CURRENCY); ?>
-        </td>
-    </tr>
-
-    <tr>
-        <td align="center" colspan="2">
-            <br/>
-            <table>
-                <tr>
-                    <td align="center">
-                        <?php echo gettext("PAYMENTS ASSIGNED"); ?>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <select id="payment" name="payment" size="5" style="width:250px;" class="form_input_select">
-                            <?php foreach ($payments as $payment) { ?>
-                            <option value="<?php echo $payment['id'] ?>"  ><?php echo substr($payment['date'],0,10);?>&nbsp;:&nbsp;<?php echo $payment['payment']." ".strtoupper(BASE_CURRENCY); ?>&nbsp;&nbsp;<?php echo "(id : ".$payment['id'].")";?> </option>
-                            <?php } ?>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td align="center">
-                        <a id="addpayment" href="#"> <img src="<?= get_image_path("add.png") ?>" title="Add Payment" alt="Add Payment" border="0"></a>
-                        <a id="delpayment" href="#"> <img src="<?= get_image_path("del.png") ?>" title="Del Payment" alt="Del Payment" border="0"></a>
-                    </td>
-                </tr>
-            </table>
-        </td>
+        <th scope="row"><?= _("Total excluding VAT") ?></th>
+        <td><?= get_money($price_without_vat) ?></td>
     </tr>
     <tr>
-        <td colspan="2">
-        <br/>
-        <?php if($invoice->getPaidStatus()==0) $color="color:#EE6564;";
-                else $color="color:#5FA631;"    ?>
-         <font style="font-weight:bold;" ><?php echo gettext("PAID STATUS : "); ?></font> <font style="<?php echo $color; ?>" > <?php echo $invoice->getPaidStatusDisplay($invoice->getPaidStatus());  ?> </font>
-         &nbsp;&nbsp;<input id="changestatus" class="form_input_button" type="button" value="<?php echo gettext("CHANGE STATUS") ?>"/>
-        </td>
+        <th scope="row" rowspan="<?= count($vat_array) ?>"><?= _("Total VAT") ?></th>
+        <?php foreach ($vat_array as $key => $val): ?><td><?= get_money($val) ?> @<?= get_percent((float)$key) ?></td><?php endforeach ?>
+    </tr>
+    <tr>
+        <th scope="row"><?= _("Total including VAT") ?></th>
+        <td><?= get_money($price_with_vat) ?></td>
+    </tr>
+    <tr>
+        <th scope="row"><?= _("Total payments assigned") ?></th>
+        <td><?= get_money($payment_assigned) ?></td>
     </tr>
 </table>
 
-<?php
+<div class="row mb-3 justify-content-center flex-column text-center">
+    <label for="payment" class="form-label"><?= _("Payments assigned") ?></label>
+    <select id="payment" name="payment" size="5" class="form-select">
+    <?php foreach ($payments as $payment): ?>
+        <option value="<?php echo $payment["id"] ?>">
+            <?= sprintf("%s&nbsp;&nbsp;%s&nbsp;&nbsp;(ID:&nbsp;%d)", substr($payment["date"],0,10), get_money($payment["payment"]), $payment["id"]) ?>
+        </option>
+    <?php endforeach ?>
+    </select>
+    <div>
+        <button class="btn" id="addpayment"><img src="<?= get_image_path("add.png") ?>" title="<?= _("Add Payment") ?>" alt="<?= _("Add Payment") ?>"/></button>
+        <button class="btn" id="delpayment"><img src="<?= get_image_path("del.png") ?>" title="<?= _("Delete Payment") ?>" alt="<?= _("Delete Payment") ?>"/></button>
+    </div>
+</div>
 
+<script>
+    $(function() {
+        let id = <?= json_encode($id) ?>;
+        let card = <?= json_encode($invoice->getCard()) ?>;
+        let status = <?= ($invoice->getPaidStatus() + 1) % 2 ?>; // converts 0 to 1 and 1 to 0
+        let popup = "scrollbars=yes,resizable=yes,width=700,height=500";
+        $("#addpayment").on("click", function() {
+            window.open(`A2B_entity_payment_invoice.php?popup_select=1&invoice=${id}&card=${card}`, '', popup)
+        });
+        $("#delpayment").on("click", function() {
+            let p = $("#payment").val();
+            if (p) {
+                self.location.href = `A2B_invoice_manage_payment.php?id=${id}&delpayment=${p}`;
+            }
+        });
+        $("#changestatus").on('click', function() {
+            self.location.href = `A2B_invoice_manage_payment.php?id=${id}&status=${status}`
+        });
+        $("#imp_popupselect").on('click', function() {
+            window.open(`A2B_invoice_view.php?popup_select=1&id=${id}`, '', popup)
+        })
+    });
+</script>
+
+<?php
 require_once __DIR__ . "/../templates/footer.php";

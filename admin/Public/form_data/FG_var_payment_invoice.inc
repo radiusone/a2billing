@@ -49,22 +49,34 @@ getpost_ifset(["card", "invoice"]);
  * @var string $invoice
  */
 
-$HD_Form = new FormHandler("cc_logpayment", _("Payment"));
+$HD_Form = new FormHandler(
+    "cc_logpayment",
+    _("Payment"),
+    "id",
+    ["cc_invoice_payment" => ["cc_logpayment.id", "cc_invoice_payment.id_payment"]]
+);
 
 $HD_Form->FG_QUERY_ORDERBY_COLUMNS = ["date"];
 $HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
+if (!empty($card)) {
+    // only include this user's payments
+    $HD_Form->list_query_conditions["card_id"] = $card;
+}
+if (!empty($invoice)) {
+    // don't include ones already applied
+    $HD_Form->list_query_conditions["id_invoice"] = null;
+}
 
 $HD_Form->AddListValue(_("Date"), "date");
-$HD_Form->AddListValue(_("Amount"), "payment");
+$HD_Form->AddListValue(_("Amount"), "payment", "get_money");
 $HD_Form->AddListValue(_("Description"), "description");
 $HD_Form->AddListMapping(_("Type"), "payment_type", getRefillType_List());
 $HD_Form->FieldViewElement (["date", "payment", "description", "payment_type"]);
 
 if ($popup_select) {
-    $HD_Form->AddListActionButton(
-        "javascript:sendValue('|col0|')",
-        '<span style="color:red">' . _("ADD") . '</span>',
-        ""
+    $HD_Form->AddListSelectActionButton(
+        "javascript:sendValue('|param|')",
+        _("ADD")
     );
 }
 
