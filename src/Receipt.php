@@ -1,230 +1,189 @@
 <?php
 namespace A2billing;
 
+use DateTime;
+
 class Receipt
 {
-    private $id;
-    private $title;
-    private $description;
-    private $status;
-    private $card;
-    private $username;
+    public ?int $id;
+    public string $title = "";
+    public string $description = "";
+    public int $card = 0;
+    public string $date = "";
+    public string $username = "";
+    public array $items = [];
 
-    public function __construct($id)
+    public function __construct(?int $id = null, ?string $desc = null, ?string $title = null)
     {
+        if (is_null($id)) {
+            return;
+        }
         $DBHandle = DbConnect();
-        $instance_sub_table = new Table("cc_receipt", "*");
-        $QUERY = " id = " . $id;
-        $return = null;
-        $return = $instance_sub_table->get_list($DBHandle, $QUERY);
-
-        $value = $return[0];
-        if (!is_null($value)) {
-            $this->id = $value["id"];
-            $this->card = $value["id_card"];
-            $this->description = $value["description"];
-            $this->title = $value["title"];
-            $this->status = $value["status"];
-            $this->date = $value["date"];
-        }
-
-        if (!is_null($this->card)) {
-            $instance_sub_table = new Table("cc_card", "lastname, firstname,username");
-            $QUERY = " id = " . $this->card;
-            $return = null;
-            $return = $instance_sub_table->get_list($DBHandle, $QUERY);
-            $value = $return[0];
-
-            if (!is_null($value)) {
-                $this->username = $value["lastname"] . " " . $value["firstname"] . " " . "(" . $value["username"] . ")";
-            }
-        }
-
+        $value = (new Table(
+            "cc_receipt",
+            ["cc_receipt.id", "id_card", "description", "title", "date", "username"],
+            ["cc_card" => ["cc_receipt.id_card", "cc_card.id"]]
+        ))
+            ->getRow($DBHandle, ["cc_receipt.id" => $id]);
+        $this->id = (int)$value["id"];
+        $this->card = (int)$value["id_card"];
+        $this->date = $value["date"];
+        $this->description = $desc ?? $value["description"];
+        $this->title = $title ?? $value["title"];
+        $this->username = $value["username"];
+        $this->items = $this->loadItems();
     }
 
-    public function getId()
+
+    public static function create(
+        int     $card,
+        string  $description = "",
+        string  $title = "",
+        ?string $date = null
+    ): self
+    {
+        $instance = new self(null);
+        $instance->card = $card;
+        $instance->description = $description;
+        $instance->title = $title;
+        $instance->date = $date ?? (new DateTime())->format("Y-m-d H:i:s");
+
+        return $instance;
+    }
+
+    public function save(): bool
+    {
+        $table = new Table("cc_receipt");
+        $values = [
+            "id_card" => $this->card,
+            "description" => $this->description,
+            "title" => $this->title,
+            "date" => $this->date,
+        ];
+        $db = DbConnect();
+        if ($this->id) {
+            return $table->updateRow($db, $values, ["id" => $this->id]);
+        } else {
+            $id = null;
+            $result = $table->addRow($db, $values, "id", $id);
+            $this->id = $id;
+
+            return $result;
+        }
+    }
+
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
 
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->description;
     }
 
-    public function getCard()
+    public function getCard(): ?int
     {
         return $this->card;
     }
 
-    public function getStatus()
-    {
-        return $this->status;
-
-    }
-
-    public function getDate()
+    public function getDate(): string
     {
         return substr($this->date, 0, 10);
     }
 
-    public function getUsernames()
+    public function getUsername(): string
     {
         return $this->username;
     }
 
-    public function loadItems()
+    public function loadItems(): array
     {
-        if (!is_null($this->id)) {
-            $result = array ();
-            $DBHandle = DbConnect();
-            $instance_sub_table = new Table("cc_receipt_item", "*");
-            $QUERY = " id_receipt = " . $this->id;
-            $return = null;
-            $return = $instance_sub_table->get_list($DBHandle, $QUERY, "date");
-            $i = 0;
-            foreach ($return as $value) {
-                $comment = new ReceiptItem($value['id'], $value['description'], $value['date'], $value["price"],$value["type_ext"],$value["id_ext"]);
-                $result[$i] = $comment;
-                $i++;
-            }
-            //sort r�sult by date
-            return $result;
-
-        } else
-
-            return null;
-
-    }
-
-    public function loadDetailledItems($begin=null,$nb=null)
-    {
-        if (!is_null($this->id)) {
-            $result = array ();
-            $DBHandle = DbConnect();
-            $instance_sub_table = new Table("cc_receipt_item", "*");
-            $QUERY = " id_receipt = " . $this->id;
-            $return = null;
-            $return = $instance_sub_table->get_list($DBHandle, $QUERY, "date");
-            $i = 0;
-            foreach ($return as $value) {
-                if ($value['id_ext'] && $value['type_ext'] == "CALLS") {
-
-                    $billing_table = new Table("cc_billing_customer", "date,start_date");
-                    $billing_clause = "id = " . $value['id_ext'];
-                    $result_billing = $billing_table->get_list($DBHandle, $billing_clause);
-                    if (is_array($result_billing) && !empty ($result_billing[0]['date'])) {
-                        $call_table = new Table("cc_call", "*");
-                        $call_clause = " card_id = " . $this->card . " AND stoptime< '" . $result_billing[0]['date'] . "'";
-                        if (!empty ($result_billing[0]['start_date'])) {
-                            $call_clause .= " AND stoptime >= '" . $result_billing[0]['start_date'] . "'";
-                        }
-                        $return_calls = $call_table->get_list($DBHandle, $call_clause, 'starttime', 'ASC', (int)$nb, $begin);
-                        foreach ($return_calls as $call) {
-                            $min = floor($call['sessiontime'] / 60);
-                            $sec = $call['sessiontime'] % 60;
-                            $item = new ReceiptItem(null, "CALL : " . $call['calledstation'] . " DURATION : " . $min . " min " . $sec . " sec", $call['starttime'], $call["sessionbill"], $value["VAT"], true);
-                            $result[$i] = $item;
-                            $i++;
-                        }
-                    }
-                } else {
-                    $item = new ReceiptItem($value['id'], $value['description'], $value['date'], $value["price"], $value["VAT"],$value["type_ext"],$value["id_ext"]);
-                    $result[$i] = $item;
-                    $i++;
-                }
-            }
-            //sort r�sult by date
-            return $result;
-
-        } else
-
-            return null;
-
-    }
-        function nbDetailledItems()
-        {
-        if (!is_null($this->id)) {
-            $result = array ();
-            $DBHandle = DbConnect();
-            $instance_sub_table = new Table("cc_receipt_item", "*");
-            $QUERY = " id_receipt = " . $this->id;
-            $return = null;
-            $return = $instance_sub_table->get_list($DBHandle, $QUERY, "date");
-            $i = 0;
-            foreach ($return as $value) {
-                if ($value['id_ext'] && $value['type_ext'] == "CALLS") {
-
-                    $billing_table = new Table("cc_billing_customer", "date,start_date");
-                    $billing_clause = "id = " . $value['id_ext'];
-                    $result_billing = $billing_table->get_list($DBHandle, $billing_clause);
-                    if (is_array($result_billing) && !empty ($result_billing[0]['date'])) {
-                        $call_table = new Table("cc_call", "COUNT(*)");
-                        $call_clause = " card_id = " . $this->card . " AND stoptime< '" . $result_billing[0]['date'] . "'";
-                        if (!empty ($result_billing[0]['start_date'])) {
-                            $call_clause .= " AND stoptime >= '" . $result_billing[0]['start_date'] . "'";
-                        }
-                        $return_calls = $call_table->get_list($DBHandle, $call_clause, 'starttime');
-                        if(is_array($return_calls))$i=$i+$return_calls[0][0];
-
-                    }
-                } else {
-                    $i++;
-                }
-            }
-
-            return $i;
-
-        } else
-
-            return 0;
-
-    }
-
-     function SumItemsPrice()
-     {
-        if (!is_null($this->id)) {
-            $result = array ();
-            $DBHandle = DbConnect();
-            $instance_sub_table = new Table("cc_receipt_item", "SUM(price)");
-            $QUERY = " id_receipt = " . $this->id;
-            $return = null;
-            $return = $instance_sub_table->get_list($DBHandle, $QUERY, "date");
-            if(empty ($return)||!is_array($return)||empty ($return[0][0]))
-
-                return 0;
-            else
-                return $return[0][0];
-        } else {
-            return 0;
+        if (is_null($this->id)) {
+            return [];
         }
-    }
 
-    public function insertReceiptItem($desc, $price)
-    {
+        $result = [];
         $DBHandle = DbConnect();
-        $instance_sub_table = new Table("cc_receipt_item", "*");
-        $QUERY_FIELDS = 'id_receipt, description,price';
-        $QUERY_VALUES = "'$this->id', '$desc','$price'";
-        $return = $instance_sub_table->Add_table($DBHandle, $QUERY_VALUES, $QUERY_FIELDS, 'cc_receipt_item', 'id');
-
-    }
-
-    public static function getStatusDisplay($status)
-    {
-        switch ($status) {
-            case 0 :
-                return "OPEN";
-            case 1 :
-                return "CLOSE";
-
+        $instance_sub_table = new Table("cc_receipt_item", ["id"]);
+        $return = $instance_sub_table->getColumn($DBHandle, "id", "", ["id_receipt" => $this->id]);
+        foreach ($return as $id) {
+            $result[] = new ReceiptItem($id);
         }
 
+        return $result;
     }
 
+    public function loadDetailedItems($begin = 0, $nb = 5000)
+    {
+        if (is_null($this->id)) {
+            return [];
+        }
+        $result = [];
+        $count = 0;
+        $DBHandle = DbConnect();
+        foreach ($this->items as $value) {
+            if (empty($value['id_ext']) || $value['type_ext'] !== "CALLS") {
+                $result[] = $value;
+                $count++;
+                continue;
+            }
+
+            $billing = (new Table("cc_billing_customer", ["date", "start_date"]))
+                ->getRow($DBHandle, ["id" => $value["id_ext"]]);
+            if (count($billing) === 0) {
+                continue;
+            }
+
+            $conditions = ["card_id" => $this->card, "stoptime" => ["<", $billing["date"]]];
+            if (!empty($billing["start_date"])) {
+                $conditions["stoptime"] = [">=", $billing["start_date"]];
+            }
+
+            $calls = (new Table("cc_call"))->getRows($DBHandle, $conditions, ["date"], "desc", [], $nb, $begin);
+            foreach ($calls as $call) {
+                $duration = get_timespan($call["sessiontiome"]);
+                $item = ReceiptItem::create(
+                    $this,
+                    sprintf(_("Call to: %s, duration: %s"), $call['calledstation'], $duration),
+                    $call['starttime'],
+                    $call["sessionbill"],
+                    true // what does true mean? original code was just copied from invoice.php including fields that don't exist here :(
+                );
+                $result[] = $item;
+                $count += count($calls);
+            }
+        }
+        $result["count"] = $count;
+
+        return $result;
+    }
+
+    function nbDetailedItems(): int
+    {
+        $result = $this->loadDetailedItems();
+
+        return $result["count"] ?? 0;
+    }
+
+    public function sumItemsPrice(): float
+    {
+        return array_sum(array_column($this->items, "price"));
+    }
+
+    public function insertReceiptItem(string $desc, string $price, ?string $date = null): bool
+    {
+        if (is_null($this->id)) {
+            return false;
+        }
+        $date ??= (new DateTime())->format("Y-m-d H:i:s");
+        $item = ReceiptItem::create($this, $desc, $date, $price);
+
+        return $item->save();
+    }
 }

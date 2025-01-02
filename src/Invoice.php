@@ -16,7 +16,7 @@ class Invoice
     public string $date = "";
     public int $status = self::STATUS_OPEN;
     public int $paid_status = self::PAIDSTATUS_UNPAID;
-    public string $card = "";
+    public int $card = 0;
     public string $reference = "";
     /** @var InvoiceItem[] */
     public array $items = [];
@@ -168,13 +168,13 @@ class Invoice
     public function loadDetailledItems(): array
     {
         $result = [];
+        $DBHandle = DbConnect();
         foreach ($this->items as $value) {
             if (empty($value["id_ext"]) || $value["type_ext"] !== "CALLS") {
                 $result[] = $value;
                 continue;
             }
 
-            $DBHandle = DbConnect();
             $billing = (new Table("cc_billing_customer", ["date", "start_date"]))
                 ->getRow($DBHandle, ["id" => $value["id_ext"]]);
             if (count($billing) === 0) {
@@ -185,6 +185,7 @@ class Invoice
             if (!empty($billing["start_date"])) {
                 $conditions["stoptime"] = [">=", $billing["start_date"]];
             }
+
             $calls = (new Table("cc_call"))->getRows($DBHandle, $conditions);
             foreach ($calls as $call) {
                 $duration = get_timespan($call["sessiontiome"]);
@@ -194,7 +195,7 @@ class Invoice
                     $call['starttime'],
                     $call["sessionbill"],
                     $value["VAT"],
-                    true
+                    true // why is this true?
                 );
                 $result[] = $item;
             }

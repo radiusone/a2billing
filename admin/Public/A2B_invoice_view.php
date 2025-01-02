@@ -73,29 +73,29 @@ require_once __DIR__ . "/../templates/main.php";
 ?>
 
 <?php if (!$popup_select): ?>
-<div class="row">
+<div class="row mb-3">
+    <?php if (strtoupper(BASE_CURRENCY) !== strtoupper($card["currency"])): ?>
+    <form class="col" method="get">
+        <div class="row">
+            <label class="col-4 col-form-label" for="curr"><?= _("Currency") ?></label>
+            <div class="col">
+                <input type="hidden" name="id" value="<?= $id ?>"/>
+                <select name="curr" id="curr" class="form-select" onchange="this.form.submit()">
+                    <option value="<?= BASE_CURRENCY ?>"><?= _("System Currency") ?></option>
+                    <option value="<?= $card["currency"] ?>" <?php if($curr === $card["currency"]): ?>selected="selected"<?php endif ?>><?= _("Customer Currency") ?></option>
+                </select>
+            </div>
+        </div>
+    </form>
+    <?php endif ?>
     <div class="col ms-auto">
         <a href="?id=<?= $id ?>&curr=<?= $curr ?>&popup_select=1" target="_blank">
             <img src="<?= get_image_path("printer.png") ?>" title="Print" alt="Print">
         </a>
     </div>
 </div>
-    <?php if (strtoupper(BASE_CURRENCY) !== strtoupper($card["currency"])): ?>
-<form method="get">
-    <div class="row">
-        <label class="col-4 col-form-label" for="curr"><?= _("Currency") ?></label>
-        <div class="col">
-            <input type="hidden" name="id" value="<?= $id ?>"/>
-            <select name="curr" id="curr" class="form-select" onchange="this.form.submit()">
-                <option value="<?= BASE_CURRENCY ?>"><?= _("System Currency") ?></option>
-                <option value="<?= $card["currency"] ?>" <?php if($curr === $card["currency"]): ?>selected="selected"<?php endif ?>><?= _("Customer Currency") ?></option>
-            </select>
-        </div>
-    </div>
-</form>
-    <?php endif ?>
 <?php else: ?>
-<div class="row">
+<div class="row d-print-none">
     <div class="col ms-auto">
         <a href="javascript:window.print()">
             <img src="<?= get_image_path("printer.png") ?>" title="Print" alt="Print">
@@ -104,10 +104,10 @@ require_once __DIR__ . "/../templates/main.php";
 </div>
 <?php endif ?>
 
-<div class="container position-relative invoice-wrapper" style="width: 210mm; height: 297mm">
+<div class="mx-auto position-relative invoice-wrapper" style="width: 210mm; height: 297mm">
     <div class="row mb-3 justify-content-between">
         <div class="col-5 align-self-center">
-            <div class="h4 mb-auto"><?= _("INVOICE") ?></div>
+            <div class="h4 mb-auto text-uppercase"><?= _("Invoice") ?></div>
             <div class="company-name"><?= $card["company_name"] ?></div>
             <div class="fullname"><?= $card["firstname"]?> <?= $card["lastname"]?></div>
             <div class="address"><span class="street"><?= $card["address"] ?></span></div>
@@ -217,3 +217,6 @@ require_once __DIR__ . "/../templates/main.php";
         </div>
     </div>
 </div>
+
+<?php
+require_once __DIR__ . "/../templates/footer.php";

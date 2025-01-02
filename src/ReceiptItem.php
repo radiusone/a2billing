@@ -3,52 +3,89 @@ namespace A2billing;
 
 class ReceiptItem
 {
-    private $description;
-    private $date;
-    private $price;
-    private $ext_id;
-    private $ext_type;
+    public ?int $id = null;
+    public string $description = "";
+    public string $date = "";
+    public float $price = 0;
+    public ?int $id_ext = null;
+    public ?string $type_ext = null;
+    public ?int $receipt_id = null;
 
-    public function __construct($id, $desc, $date, $price,$type_ext,$id_ext=null)
+    public function __construct(
+        ?int    $id = null,
+        ?string $desc = null,
+        ?string $date = null,
+        ?float  $price = null,
+        ?string $type_ext = null,
+        ?int    $id_ext = null
+    )
     {
+        if (is_null($id)) {
+            return;
+        }
+        $db = DbConnect();
+        $result = (new Table("cc_receipt_item"))->getRow($db, ["id" => $id]);
         $this->id = $id;
-        $this->description = $desc;
-        $this->date = $date;
-        $this->price = $price;
-        $this->ext_id = $id_ext;
-        $this->ext_type = $type_ext;
+        $this->receipt_id = (int)$result["id_receipt"];
+        $this->description = $desc ?? $result["description"];
+        $this->date = $date ?? $result["date"];
+        $this->price = $price ?? (float)$result["price"];
+        $this->id_ext = $id_ext ?? $result["id_ext"];
+        $this->type_ext = $type_ext ?? $result["type_ext"];
     }
 
-    public function getId()
+    public static function create($receipt, string $desc, string $date, float $price, ?string $type_ext = null, ?int $id_ext = null): self
+    {
+        $instance = new self();
+        $instance->receipt_id = $receipt instanceof Receipt ? $receipt->id : $receipt;
+        $instance->description = $desc;
+        $instance->date = $date;
+        $instance->price = $price;
+        $instance->type_ext = $type_ext;
+        $instance->id_ext = $id_ext;
+
+        return $instance;
+    }
+
+    public function save(): bool
+    {
+        $table = new Table("cc_receipt_item");
+        $values = [
+            "id_receipt" => $this->receipt_id,
+            "description" => $this->description,
+            "date" => $this->date,
+            "price" => $this->price,
+            "type_ext" => $this->type_ext,
+            "id_ext" => $this->id_ext,
+        ];
+        $db = DbConnect();
+        if ($this->id) {
+            return $table->updateRow($db, $values, ["id" => $this->id]);
+        } else {
+            $id = null;
+            $result = $table->addRow($db, $values, "id", $id);
+            $this->id = $id;
+
+            return $result;
+        }
+    }
+
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getExtId()
-    {
-        return $this->ext_id;
-    }
-    public function getExtType()
-    {
-        return $this->ext_type;
-    }
-
-    public function getPrice()
+    public function getPrice(): float
     {
         return $this->price;
     }
 
-    public function getVAT()
-    {
-        return $this->VAT;
-    }
-
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->description;
     }
 
-    public function getDate()
+    public function getDate(): string
     {
         return substr($this->date, 0, 10);
     }

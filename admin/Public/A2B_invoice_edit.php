@@ -44,7 +44,7 @@ require_once __DIR__ . "/../../common/lib/admin.defines.php";
 
 Admin::checkPageAccess(Admin::ACX_INVOICING);
 
-getpost_ifset(['date','id','action','price','description','vat','idc']);
+getpost_ifset(["date", "id", "action", "price", "description", "vat", "idc"]);
 /**
  * @var numeric-string $id
  * @var string|null $action
@@ -182,8 +182,8 @@ require_once __DIR__ . "/../templates/main.php";
             <td><?= get_percent($rndvat) ?></td>
             <td><?= get_money($rndprice + $rndvat) ?></td>
             <td>
-                <a href="?action=edit&idc=<?= $item->id ?>"><img src="<?= get_image_path("edit.png") ?>" alt="<?= _("Edit") ?>"/></a>
-                <a href="?action=delete&idc=<?= $item->id ?>"><img src="<?= get_image_path("delete.png") ?>" alt="<?= _("Delete") ?>"/></a>
+                <a href="?action=edit&id=<?= $id ?>&idc=<?= $item->id ?>"><img src="<?= get_image_path("edit.png") ?>" alt="<?= _("Edit") ?>"/></a>
+                <a href="?action=delete&id=<?= $id ?>&idc=<?= $item->id ?>"><img src="<?= get_image_path("delete.png") ?>" alt="<?= _("Delete") ?>"/></a>
             </td>
         </tr>
     <?php endforeach ?>
@@ -211,32 +211,32 @@ require_once __DIR__ . "/../templates/main.php";
         <?= $error_msg ?>
     </div>
     <?php endif ?>
-    <div class="row pb-3">
+    <div class="row mb-3">
         <label class="col-4 col-form-label" for="date"><?= _("Date") ?></label>
         <div class="col">
             <input type="date" name="date" id="date" value="<?= $date ?? (new DateTime())->format("Y-m-d") ?>" class="form-control form-control-sm"/>
         </div>
     </div>
-    <div class="row pb-3">
+    <div class="row mb-3">
         <label class="col-4 col-form-label" for="price"><?= _("Amount") ?></label>
         <div class="col">
-            <input type="text" name="price" id="price" value="<?= $amount ?? "" ?>" class="form-control form-control-sm" pattern="[0-9]*([.][0-9]+)?"/>
+            <input type="text" name="price" id="price" value="<?= $price ?? "" ?>" class="form-control form-control-sm" pattern="[0-9]*([.][0-9]+)?"/>
         </div>
     </div>
-    <div class="row pb-3">
+    <div class="row mb-3">
         <label class="col-4 col-form-label" for="vat"><?= _("VAT") ?></label>
         <div class="col">
             <input type="number" name="vat" id="vat" value="<?= $vat ?? $card_vat ?>" class="form-control form-control-sm" min="0" max="100" step="0.1"/>
         </div>
     </div>
-    <div class="row pb-3">
+    <div class="row mb-3">
         <label class="col-4 col-form-label" for="description"><?= _("Description") ?></label>
         <div class="col">
             <textarea name="description" id="description" class="form-control form-control-sm"><?= $description ?? "" ?></textarea>
         </div>
     </div>
     <div class="row">
-        <div class="col ms-auto">
+        <div class="col-auto ms-auto">
             <input type="hidden" name="action" value="<?= empty($idc) ? "add" : "update" ?>"/>
             <input type="hidden" name="idc" value="<?= $idc ?? "" ?>"/>
             <button type="submit" class="btn btn-primary btn-sm"><?= empty($idc) ? _("Add") : _("Update") ?></button>

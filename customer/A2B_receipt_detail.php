@@ -57,11 +57,11 @@ if ($receipt->getCard() != $_SESSION["card_id"]) {
     Header ("Location: PP_error.php?c=accessdenied");
     die();
 }
-$nbitems = $receipt->nbDetailledItems();
+$nbitems = $receipt->nbDetailedItems();
 $nb_by_page =100;
 $nb_page = ceil($nbitems/$nb_by_page);
-$items = $receipt->loadDetailledItems((($page-1)*$nb_by_page),$nb_by_page);
-if($nb_page>1)$totalprice = $receipt->SumItemsPrice();
+$items = $receipt->loadDetailedItems((($page-1)*$nb_by_page),$nb_by_page);
+if($nb_page>1)$totalprice = $receipt->sumItemsPrice();
 //load customer
 $DBHandle  = DbConnect();
 

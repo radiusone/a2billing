@@ -1,7 +1,10 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Customer;
+use A2billing\Forms\Validator;
 use A2billing\Receipt;
+use A2billing\ReceiptItem;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -42,213 +45,160 @@ require_once __DIR__ . "/../../common/lib/admin.defines.php";
 
 Admin::checkPageAccess(Admin::ACX_INVOICING);
 
-getpost_ifset(array('date','id','action','price','description','idc'));
-
+getpost_ifset(["date", "id", "action", "price", "description", "vat", "idc"]);
+/**
+ * @var numeric-string $id
+ * @var string|null $action
+ * @var string $date
+ * @var string $price
+ * @var string $vat
+ * @var string $description
+ * @var numeric-string|null $idc
+ */
 if (empty($id)) {
-    Header ("Location: A2B_entity_receipt.php");
+    header("Location: A2B_entity_invoice.php");
 }
 
-if (!empty($action)) {
-    switch ($action) {
-        case 'add':
-            if (empty($date) || strtotime($date)===FALSE) {
-                $error_msg.= gettext("Date inserted is invalid, it must respect a date format YYYY-MM-DD HH:MM:SS (time is optional).<br/>");
-            }
-            if (empty($price) || !is_numeric($price)) {
-                $error_msg .= gettext("Amount inserted is invalid, it must be a number. Check the format.");
-            }
-            if(!empty($error_msg)) break;
-            $DBHandle = DbConnect();
-            $receipt = new Receipt($id);
-            $receipt->insertReceiptItem($description,$price);
-            Header ("Location: A2B_receipt_edit.php?"."id=".$id);
-            break;
-        case 'edit':
-             if (!empty($idc) && is_numeric($idc)) {
-                $DBHandle = DbConnect();
-                $instance_sub_table = new Table("cc_receipt_item", "*");
-                $result=$instance_sub_table -> get_list($DBHandle, "id = $idc");
-                if (!is_array($result) || (sizeof($result)==0)) {
-                     Header ("Location: A2B_receipt_edit.php?"."id=".$id);
-                } else {
-                    $description=$result[0]['description'];
-                    $price=$result[0]['price'];
-                    $date =$result[0]['date'];
-                }
-             }
-            break;
-        case 'delete':
-            if (!empty($idc) && is_numeric($idc)) {
-                $DBHandle  = DbConnect();
-                $instance_sub_table = new Table("cc_receipt_item", "*");
-                $instance_sub_table->deleteRow($DBHandle, ["id" => $idc]);
-            }
-            Header ("Location: A2B_receipt_edit.php?"."id=".$id);
-            break;
-            case 'update':
-            if (!empty($idc) && is_numeric($idc)) {
-                if (empty($date) || strtotime($date)===FALSE) {
-                    $error_msg.= gettext("Date inserted is invalid, it must respect a date format YYYY-MM-DD HH:MM:SS (time is optional).<br/>");
-                }
-                if (empty($price) || !is_numeric($price)) {
-                    $error_msg .= gettext("Amount inserted is invalid, it must be a number. Check the format.");
-                }
-                if(!empty($error_msg)) break;
-                $DBHandle = DbConnect();
-                $instance_sub_table = new Table("cc_receipt_item", "*");
-                $instance_sub_table -> Update_table($DBHandle,"date='$date',description='$description',price='$price'", "id = $idc" );
-                Header ("Location: A2B_receipt_edit.php?"."id=".$id);
+$action ??= "";
+$error_msg = "";
+$receipt = new Receipt((int)$id);
+$DBHandle = DbConnect();
 
-             }
+switch ($action) {
+    case "add":
+    case "update":
+        if (!Validator::dateTime($date)) {
+            $error_msg .= _("Date inserted is invalid, it must respect a date format YYYY-MM-DD HH:MM:SS (time is optional).");
+        }
+        if (!Validator::number($price)) {
+            $error_msg .= _("Amount inserted is invalid, it must be a number. Check the format.");
+        }
+        if ($error_msg) {
             break;
-    }
+        }
+        if ($action === "add") {
+            $receipt->insertReceiptItem($description, $price);
+        } elseif (!empty($idc)) {
+            $item = new ReceiptItem($idc, $description, $date, $price, null);
+            $item->save();
+        }
+        header("Location: A2B_receipt_edit.php?id=$id");
+        break;
+
+    case "edit":
+        if (!empty($idc)) {
+            $item = new ReceiptItem($idc);
+            $description = $item->description;
+            $price = $item->price;
+            $date = $item->getDate();
+            break;
+        }
+        header("Location: A2B_receipt_edit.php?id=$id");
+        break;
+
+    case "delete":
+        if (!empty($idc)) {
+            $table = new Table("cc_receipt_item");
+            $table->deleteRow($DBHandle, ["id" => $idc]);
+        }
+        header("Location: A2B_receipt_edit.php?id=$id");
+        break;
 }
 
-$receipt = new Receipt($id);
-$items = $receipt->loadItems();
+$total = 0;
 
 require_once __DIR__ . "/../templates/main.php";
 
 ?>
-<table class="invoice_table" >
-    <tr class="form_invoice_head">
-        <td width="75%" colspan="2"><font color="#FFFFFF"><?php echo gettext("RECEIPT: "); ?></font><font color="#FFFFFF"><b><?php echo $receipt->getTitle();  ?></b></font></td>
-    </tr>
-    <tr>
-        <td>
-        &nbsp;
-        </td>
-    </tr>
-    <tr>
-        <td >
-            <font style="font-weight:bold;" ><?php echo gettext("FOR : "); ?></font>  <?php echo $receipt->getUsernames();  ?>
-        </td>
-        <td align="right">
-            <font style="font-weight:bold;"><?php echo gettext("DATE : "); ?></font>  <?php echo $receipt->getDate();  ?>
-        </td>
-    </tr>
-    <tr>
-        <td colspan="2">
-        <br/>
-        <font style="font-weight:bold; " ><?php echo gettext("DESCRIPTION : "); ?></font>  <br/> <?php echo $receipt->getDescription();  ?></td>
-    </tr>
-
-    <tr >
-    <td colspan="2">
-        <table width="100%" cellspacing="10">
-            <tr>
-              <th  width="20%">
-                  &nbsp;
-              </th>
-              <th  width="50%">
-                  &nbsp;
-              </th>
-              <th align="right" width="20%">
-                  <font style="font-weight:bold; " >
-                      <?php echo gettext("PRICE"); ?>
-                  </font>
-              </th>
-              <th  width="10%">
-              &nbsp;
-              </th>
-            </tr>
-
-            <?php foreach ($items as $item) { ?>
-            <tr style="vertical-align:top;" >
-                <td>
-                    <?php echo $item->getDate(); ?>
-                </td>
-                <td >
-                    <?php echo $item->getDescription(); ?>
-                </td>
-                <td align="right">
-                    <?php echo number_format(round($item->getPrice(),2),2)." ".strtoupper(BASE_CURRENCY); ?>
-                </td>
-                <td align="center">
-                    <a href="?id=<?php echo $id; ?>&action=edit&idc=<?php echo $item->getId();?>"><img src="<?= get_image_path("edit.png") ?>" title="<?php echo gettext("Edit Item") ?>" alt="<?php echo gettext("Edit Item") ?>" border="0"></a>
-                    <a href="?id=<?php echo $id; ?>&action=delete&idc=<?php echo $item->getId();?>"><img src="<?= get_image_path("delete.png") ?>" title="<?php echo gettext("Delete Item") ?>" alt="<?php echo gettext("Delete Item") ?>" border="0"></a>
-                </td>
-            </tr>
-             <?php } ?>
-
-            <tr>
-                 <td colspan="4">
-                     &nbsp;
-                 </td>
-             </tr>
-        <?php
-        $totalprice = 0;
-        foreach ($items as $item) {
-             $totalprice = $totalprice + $item->getPrice();
-         }
-
-         ?>
-             <tr>
-                 <td >
-                     &nbsp;
-                 </td>
-                 <td  align="right">
-                     <?php echo gettext("TOTAL") ?>&nbsp;:
-                 </td>
-                 <td align="right" >
-                     <?php echo number_format(round($totalprice,2),2)." ".strtoupper(BASE_CURRENCY); ?>
-                 </td>
-                 <td >
-                     &nbsp;
-                 </td>
-             </tr>
-        </table>
-    </td>
-    </tr>
-</table>
-<br/>
-<?php if (!empty($error_msg)) { ?>
-    <div class="msg_error" style="width:70%; margin-left:auto;margin-right:auto;">
-        <?php echo $error_msg ?>
+<div class="row mb-3">
+    <div class="col-8">
+        <div class="row">
+            <div class="col-4 fw-bold"><?= _("Receipt:") ?></div><div class="col"><?= $receipt->title ?></div>
+        </div>
+        <div class="row">
+            <div class="col-4 fw-bold"><?= _("For:") ?></div><div class="col"><?= Customer::getInfoLink($receipt->card) ?></div>
+        </div>
+        <div class="row">
+            <div class="col-4 fw-bold"><?= _("Description:") ?></div>
+            <div class="col"><?= $receipt->description ?></div>
+        </div>
     </div>
-<?php } ?>
+    <div class="col-4">
+        <div class="row">
+            <div class="col-4 fw-bold"><?= _("Date:") ?></div><div class="col"><?= $receipt->date ?></div>
+        </div>
+    </div>
+</div>
 
-  <form action="<?php echo '?id='.$receipt->getId(); ?>" method="post" >
-     <input id="action" type="hidden" name="action" value="<?php if(!empty($idc)) echo "update"; else echo "add" ?>"/>
-    <input id="idc" type="hidden" name="idc" value="<?php if(!empty($idc)) echo $idc;?>"/>
-    <table class="invoice_table">
-        <tr class="form_invoice_head">
-            <td colspan="2" align="center"><font color="#FFFFFF"><?php echo gettext("ADD RECEIPT ITEM "); ?></font></td>
-        </tr>
-        <tr >
-            <td colspan="2">&nbsp;</td>
-        </tr>
-        <?php
-            if (empty($date)) {
-                $date = date("Y-m-d H:i:s");
-            }
-        ?>
+<table class="table table-sm table-striped">
+    <thead>
+    <tr>
+        <td></td>
+        <th><?= _("Date") ?></th>
+        <th><?= _("Description") ?></th>
+        <th><?= _("Price") ?></th>
+        <td></td>
+    </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($receipt->items as $item): ?>
+        <?php $total += ($rndprice = round($item->price, 2, PHP_ROUND_HALF_UP)); ?>
         <tr>
-            <td ><font style="font-weight:bold; " ><?php echo gettext("DATE : "); ?>
-             </td>
-             <td>
-             <input type="text" class="form_input_text" name="date" size="20" maxlength="20" <?php if(!empty($date)) echo 'value="'.$date.'"';?>/>
-             </td>
-        </tr>
-        <tr>
-            <td ><font style="font-weight:bold; " ><?php echo gettext("PRICE : "); ?>
-             </td>
-             <td>
-             <input type="text" class="form_input_text" name="price" size="10" maxlength="10" <?php if(!empty($price)) echo 'value="'.$price.'"';?>/>
-             </td>
-        </tr>
-        <tr>
-            <td ><font style="font-weight:bold; " ><?php echo gettext("DESCRIPTION : "); ?>
-             </td>
+            <td></td>
+            <td><?= $item->getDate() ?></td>
+            <td><?= $item->description ?></td>
+            <td><?= get_money($rndprice) ?></td>
             <td>
-             <textarea class="form_input_textarea" name="description" cols="50" rows="5"><?php if(!empty($description)) echo $description ;?></textarea>
-             </td>
+                <a href="?action=edit&id=<?= $id ?>&idc=<?= $item->id ?>"><img src="<?= get_image_path("edit.png") ?>" alt="<?= _("Edit") ?>"/></a>
+                <a href="?action=delete&id=<?= $id ?>&idc=<?= $item->id ?>"><img src="<?= get_image_path("delete.png") ?>" alt="<?= _("Delete") ?>"/></a>
+            </td>
         </tr>
-        <tr>
-            <td colspan="2" align="right">
-                <input class="form_input_button" type="submit" value="<?php if(!empty($idc)) echo gettext("UPDATE"); else echo gettext("ADD"); ?>"/>
-             </td>
-        </tr>
+    <?php endforeach ?>
+    </tbody>
+    <tfoot class="table-group-divider">
+    <tr>
+        <th scope="row"><?= _("Totals") ?></th>
+        <td colspan="2"></td>
+        <td><?= get_money($total) ?></td>
+        <td></td>
+    </tr>
+    </tfoot>
+</table>
 
-    </table>
-  </form>
+<form method="post" class="w-50">
+    <div class="row mb-3">
+        <div class="col h4">
+            <?= _("Add receipt item") ?>
+        </div>
+    </div>
+    <?php if (!empty($error_msg)): ?>
+        <div class="alert alert-danger">
+            <?= $error_msg ?>
+        </div>
+    <?php endif ?>
+    <div class="row mb-3">
+        <label class="col-4 col-form-label" for="date"><?= _("Date") ?></label>
+        <div class="col">
+            <input type="date" name="date" id="date" value="<?= $date ?? (new DateTime())->format("Y-m-d") ?>" class="form-control form-control-sm"/>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label class="col-4 col-form-label" for="price"><?= _("Amount") ?></label>
+        <div class="col">
+            <input type="text" name="price" id="price" value="<?= $price ?? "" ?>" class="form-control form-control-sm" pattern="[0-9]*([.][0-9]+)?"/>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label class="col-4 col-form-label" for="description"><?= _("Description") ?></label>
+        <div class="col">
+            <textarea name="description" id="description" class="form-control form-control-sm"><?= $description ?? "" ?></textarea>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-auto ms-auto">
+            <input type="hidden" name="action" value="<?= empty($idc) ? "add" : "update" ?>"/>
+            <input type="hidden" name="idc" value="<?= $idc ?? "" ?>"/>
+            <button type="submit" class="btn btn-primary btn-sm"><?= empty($idc) ? _("Add") : _("Update") ?></button>
+        </div>
+    </div>
+</form>
