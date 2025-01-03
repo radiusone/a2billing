@@ -290,11 +290,14 @@ class Table
      *
      * @param ADOConnection $db
      * @param array $conditions
+     * @param array $order
+     * @param string $direction
+     * @param array $group
      * @return array
      */
-    public function getRow(ADOConnection $db, array $conditions = []): array
+    public function getRow(ADOConnection $db, array $conditions = [], array $order = [], string $direction = "ASC", array $group = []): array
     {
-        $data = $this->getRows($db, $conditions, [], "", [], 1);
+        $data = $this->getRows($db, $conditions, $order, $direction, $group, 1);
 
         return $data[0] ?? [];
     }
@@ -326,11 +329,16 @@ class Table
      *
      * @param ADOConnection $db
      * @param array $conditions
+     * @param array $order
+     * @param string $direction
+     * @param array $group
      * @return mixed|null
      */
-    public function getValue(ADOConnection $db, array $conditions = [])
+    public function getValue(ADOConnection $db, array $conditions = [], array $order = [], string $direction = "ASC", array $group = [])
     {
-        return $this->getRow($db, $conditions)[0] ?? null;
+        $data = $this->getRow($db, $conditions, $order, $direction, $group);
+
+        return $data[0] ?? null;
     }
 
     /**
