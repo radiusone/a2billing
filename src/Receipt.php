@@ -5,11 +5,15 @@ use DateTime;
 
 class Receipt
 {
+    public const STATUS_OPEN = 0;
+    public const STATUS_CLOSED = 1;
+
     public ?int $id;
     public string $title = "";
     public string $description = "";
     public int $card = 0;
     public string $date = "";
+    public int $status = self::STATUS_OPEN;
     public string $username = "";
     public array $items = [];
 
@@ -21,7 +25,7 @@ class Receipt
         $DBHandle = DbConnect();
         $value = (new Table(
             "cc_receipt",
-            ["cc_receipt.id", "id_card", "description", "title", "date", "username"],
+            ["cc_receipt.id", "id_card", "description", "title", "date", "cc_receipt.status", "username"],
             ["cc_card" => ["cc_receipt.id_card", "cc_card.id"]]
         ))
             ->getRow($DBHandle, ["cc_receipt.id" => $id]);
@@ -30,6 +34,7 @@ class Receipt
         $this->date = $value["date"];
         $this->description = $desc ?? $value["description"];
         $this->title = $title ?? $value["title"];
+        $this->status = (int)$value["status"];
         $this->username = $value["username"];
         $this->items = $this->loadItems();
     }
@@ -39,6 +44,7 @@ class Receipt
         int     $card,
         string  $description = "",
         string  $title = "",
+        int     $status = self::STATUS_OPEN,
         ?string $date = null
     ): self
     {
@@ -46,6 +52,7 @@ class Receipt
         $instance->card = $card;
         $instance->description = $description;
         $instance->title = $title;
+        $instance->status = $status;
         $instance->date = $date ?? (new DateTime())->format("Y-m-d H:i:s");
 
         return $instance;
@@ -59,6 +66,7 @@ class Receipt
             "description" => $this->description,
             "title" => $this->title,
             "date" => $this->date,
+            "status" => $this->status,
         ];
         $db = DbConnect();
         if ($this->id) {
@@ -119,7 +127,7 @@ class Receipt
         return $result;
     }
 
-    public function loadDetailedItems($begin = 0, $nb = 5000)
+    public function loadDetailedItems($begin = 0, $nb = 5000): array
     {
         if (is_null($this->id)) {
             return [];
@@ -164,7 +172,7 @@ class Receipt
         return $result;
     }
 
-    function nbDetailedItems(): int
+    public function nbDetailedItems(): int
     {
         $result = $this->loadDetailedItems();
 
