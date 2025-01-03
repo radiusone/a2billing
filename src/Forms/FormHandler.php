@@ -277,10 +277,7 @@ class FormHandler
     /** @var callable|null Static method of FormBO class executed after creating */
     public $FG_ADDITIONAL_FUNCTION_AFTER_ADD = null;
 
-    /**
-     * @var callable|null Static method of FormBO class executed before deleting
-     * @todo only used in admin/Public/form_data/FG_var_did.inc
-     */
+    /** @var callable|null Static method of FormBO class executed before deleting */
     public $FG_ADDITIONAL_FUNCTION_BEFORE_DELETE = null;
 
     /** @var callable|null Static method of FormBO class executed after deleting */
@@ -1596,7 +1593,7 @@ class FormHandler
         }
 
         if (is_callable($this->FG_ADDITIONAL_FUNCTION_BEFORE_EDITION)) {
-            call_user_func($this->FG_ADDITIONAL_FUNCTION_BEFORE_EDITION);
+            call_user_func($this->FG_ADDITIONAL_FUNCTION_BEFORE_EDITION, $processed[$this->FG_QUERY_PRIMARY_KEY]);
         }
 
         $this->QUERY_RESULT = $instance_table->updateRow(
@@ -1621,7 +1618,7 @@ class FormHandler
 
         // CALL DEFINED FUNCTION AFTER THE ACTION ADDITION
         if (is_callable($this->FG_ADDITIONAL_FUNCTION_AFTER_EDITION)) {
-            call_user_func($this->FG_ADDITIONAL_FUNCTION_AFTER_EDITION, $processed["id"]);
+            call_user_func($this->FG_ADDITIONAL_FUNCTION_AFTER_EDITION, $processed[$this->FG_QUERY_PRIMARY_KEY]);
         }
 
         if (!empty($this->FG_LOCATION_AFTER_EDIT)) {
@@ -1668,8 +1665,8 @@ class FormHandler
                 $_SERVER['REQUEST_URI']
             );
         }
-        if (is_callable($this->FG_ADDITIONAL_FUNCTION_AFTER_DELETE)) {
-            call_user_func($this->FG_ADDITIONAL_FUNCTION_AFTER_DELETE);
+        if ($this->QUERY_RESULT && is_callable($this->FG_ADDITIONAL_FUNCTION_AFTER_DELETE)) {
+            call_user_func($this->FG_ADDITIONAL_FUNCTION_AFTER_DELETE, $processed[$this->FG_QUERY_PRIMARY_KEY]);
         }
         if (!$this->QUERY_RESULT) {
             echo _("error deletion");
@@ -1908,8 +1905,8 @@ class FormHandler
             case "ask-delete":
             case "ask-del-confirm":
                 if (is_callable($this->FG_ADDITIONAL_FUNCTION_BEFORE_DELETE)) {
-                    call_user_func($this->FG_ADDITIONAL_FUNCTION_BEFORE_DELETE);
-                    // @todo should this be using the return from the function?
+                    // this function can insert a warning into the page top before delete is done
+                    call_user_func($this->FG_ADDITIONAL_FUNCTION_BEFORE_DELETE, $processed[$this->FG_QUERY_PRIMARY_KEY]);
                 }
                 if ($form_action === "ask-delete") {
                     $this->check_child_records();
