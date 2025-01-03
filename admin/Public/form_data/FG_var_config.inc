@@ -38,15 +38,23 @@ use A2billing\Table;
 
 Admin::checkPageAccess(Admin::ACX_ACXSETTING);
 
-getpost_ifset(["id", "groupselect"]);
+getpost_ifset(["id", "group_title"]);
 /**
- * @var string $id
- * @var string $groupselect
+ * @var numeric-string $id
+ * @var string $group_title
  * @var string $form_action
  */
 $form_action ??= "list";
 
 $handle = DbConnect();
+
+if (isset($group_title)) {
+    $group_id = (new Table("cc_config_group", ["id"]))->getValue($handle, ["group_title" => $group_title]);
+    if ($group_id) {
+        header("Location: A2B_entity_config.php?form-action=list&posted_search=1&config_group_id=$group_id");
+        die();
+    }
+}
 
 $value_select = "";
 if ($form_action === "list") {
