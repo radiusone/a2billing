@@ -62,8 +62,17 @@ if (empty($card)) {
     die();
 }
 
-$receipt_conf = (new Table("cc_invoice_conf", ["key_val", "value"]))
-    ->getColumn($DBHandle, "value", "key_val");
+$table = new Table(
+    "cc_config",
+    ["config_key", "config_value"],
+    ["cc_config_group" => ["cc_config.config_group_id", "cc_config_group.id"]]
+);
+$receipt_conf = $table->getColumn(
+    $DBHandle,
+    "config_value",
+    "config_key",
+    ["group_title" => "invoice"]
+);
 
 $curr = strtoupper($curr ?? BASE_CURRENCY);
 $total = 0;

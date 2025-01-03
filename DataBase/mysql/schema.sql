@@ -961,19 +961,6 @@ CREATE TABLE `cc_invoice` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Table structure for table `cc_invoice_conf`
---
-
-DROP TABLE IF EXISTS `cc_invoice_conf`;
-CREATE TABLE `cc_invoice_conf` (
-    `id` int NOT NULL AUTO_INCREMENT,
-    `key_val` varchar(50) NOT NULL,
-    `value` varchar(50) NOT NULL,
-    PRIMARY KEY (`id`),
-    UNIQUE KEY (`key_val`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
 -- Table structure for table `cc_invoice_item`
 --
 

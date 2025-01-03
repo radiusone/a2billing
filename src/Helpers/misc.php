@@ -675,21 +675,21 @@ function generate_invoice_reference(): string
 {
     $handle = DbConnect();
     $year = date("Y");
-    $count = $handle->GetOne("SELECT value FROM cc_invoice_conf WHERE key_val = ?", ["count_$year"]);
+    $table = new Table("cc_config", ["config_value"]);
+    $invoice_num = $table->getValue($handle, ["config_key" => "next_number"]);
 
-    if ($count !== false && !is_null($count)) {
-        if (!is_numeric($count)) {
-            $count = 0;
-        }
-        $count++;
-        $handle->Execute("UPDATE cc_invoice_conf SET value=? WHERE key_val=?", [$count, "count_$year"]);
-    } else {
-        //insert newcount
-        $count = 1;
-        $handle->Execute("INSERT INTO cc_invoice_conf(`value`, `key_val`) VALUES(?, ?)", [$count, "count_$year"]);
+    if (empty($invoice_num) || !str_starts_with($invoice_num, $year)) {
+        $invoice_num = $year . "00000001";
     }
 
-    return $year . sprintf("%08d", $count);
+    $update = preg_replace_callback(
+        "/^($year)(\d+)$/",
+        fn ($m) => $m[1] . (intval($m[2]) + 1),
+        $invoice_num
+    );
+    $table->updateRow($handle, ["config_value" => $update], ["config_key" => "next_number"]);
+
+    return $invoice_num;
 }
 
 /**

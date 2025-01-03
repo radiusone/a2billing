@@ -30,6 +30,7 @@ INSERT INTO `cc_config_group` VALUES
 (12,'notifications','This configuration group handles the notifcations configuration'),
 (13,'dashboard','This configuration group handles the dashboard configuration'),
 (14,'webagentui','This configuration group handles Web Agent Interface.');
+(15,'invoice','This configuration group defines items displayed on invoice and receipts.');
 ALTER TABLE `cc_config_group` ENABLE KEYS;
 
 LOCK TABLES `cc_config` WRITE;
@@ -302,7 +303,20 @@ INSERT INTO `cc_config` (`config_title`, `config_key`, `config_value`, `config_d
     ('LCR Mode','lcr_mode','0','LCR Mode<br>0: Classic (Search the longer prefix of all ratecards, then LCR with all ratecards with this prefix)<br>1: Provider (LCR with the longer available prefix for every ratecard independently)<br>',0,'',11),
     ('Currency Cents Association','currency_cents_association','usd:prepaid-cents,eur:prepaid-cents,gbp:prepaid-pence,all:credit','Define all the audio (without file extensions) that you want to play according to currency for the cents (use , to separate, ie \"usd:prepaid-cents,eur:prepaid-cents,gbp:prepaid-pence,all:credit\").',0,'',11),
     ('Default Accountcode','default_accountcode','','The accountcode to apply to all calls using this AGI config. See default_accountcode_all for more control',0,NULL,11),
-    ('Default Accountcode Behaviour','default_accountcode_all','0','Use the default accountcode for all calls, even if they have an accountcode already?',1,'yes,no',11);
+    ('Default Accountcode Behaviour','default_accountcode_all','0','Use the default accountcode for all calls, even if they have an accountcode already?',1,'yes,no',11),
+    ('Company name','company_name','Example Corp','The company name',0,NULL,15),
+    ('Company address','address','123 Example Road','The company address',0,'',15),
+    ('Company city','city','Anytown','The company city',0,'',15),
+    ('Company state','state','','The company state or region',0,NULL,15),
+    ('Company postcode','zipcode','5538','The company postal code',0,NULL,15),
+    ('Company country','country','Exampland','The company country',0,NULL,15),
+    ('Company phone','phone','+353218317','The company phone number',0,NULL,15),
+    ('Company fax','fax','','The company fax number',0,NULL,15),
+    ('Company email','email','info@example.com','The company contact email',0,'',15),
+    ('Company website','web','www.example.com','The company website',0,NULL,15),
+    ('Company tax number','vat','RN000000000','The company tax registration number',0,NULL,15),
+    ('Display card number','display_account','0','Whether to include the card number on the invoice',1,'',15),
+    ('Next invoice number','next_number','0','The next invoice number; the first invoice of the year resets to 1',0,NULL,15);
 ALTER TABLE `cc_config` ENABLE KEYS;
 
 LOCK TABLES `cc_configuration` WRITE;
@@ -428,14 +442,6 @@ INSERT INTO `cc_country` (`countrycode`, `countryprefix`, `countryname`) VALUES
 ('ZMB', 260, 'Zambia'),
 ('ZWE', 263, 'Zimbabwe');
 ALTER TABLE `cc_country` ENABLE KEYS;
-
-LOCK TABLES `cc_invoice_conf` WRITE;
-ALTER TABLE `cc_invoice_conf` DISABLE KEYS;
-INSERT INTO `cc_invoice_conf` (`key_val`, `value`) VALUES
-    ('company_name','My company'), ('address','address'), ('zipcode','xxxx'), ('country','country'), ('city','city'),
-    ('phone','xxxxxxxxxxx'), ('fax','xxxxxxxxxxx'), ('email','xxxxxxx@xxxxxxx.xxx'), ('vat','xxxxxxxxxx'), ('web','www.xxxxxxx.xxx'),
-    ('display_account','0');
-ALTER TABLE `cc_invoice_conf` ENABLE KEYS;
 
 LOCK TABLES `cc_iso639` WRITE;
 ALTER TABLE `cc_iso639` DISABLE KEYS;

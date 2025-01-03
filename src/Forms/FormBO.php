@@ -898,28 +898,13 @@ class FormBO
             (new Table("cc_logpayment"))->updateRow($FormHandler->DBHandle, $insert_values, ["id" => $id_payment]);
 
             // Create invoice associated
-
-            // CREATE AND UPDATE REF NUMBER
-            $year = date("Y");
-            $invoice_conf_table = new Table("cc_invoice_conf", "value");
-            $result = $invoice_conf_table->getRow($FormHandler->DBHandle, ["key_val" => "count_$year"]);
-            if (!empty($result["value"])) {
-                // update count
-                $count = (int)$result["value"] + 1;
-                $invoice_conf_table->updateRow($FormHandler->DBHandle, ["value" => $count], ["key_val" => "count_$year"]);
-            } else {
-                // insert new count
-                $count = 1;
-                $invoice_conf_table->addRow($FormHandler->DBHandle, ["key_val" => "count_$year", "value" => $count]);
-            }
-
             $list_refill_type = getRefillType_List();
 
             $insert_values = [
                 "date" => $date,
                 "id_card" => $card_id,
                 "title" => trim(($list_refill_type[$refill_type] ?? "") . " " . _("REFILL")),
-                "reference" => sprintf("%d%08d", $year, $count),
+                "reference" => generate_invoice_reference(),
                 "description" => gettext("Invoice for refill"),
                 "status" => 1,
                 "paid_status" => 1,

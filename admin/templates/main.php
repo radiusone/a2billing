@@ -277,7 +277,7 @@ require_once __DIR__ . "/../../common/lib/admin.defines.php";
                             <li>
                                 <a class="link-dark rounded" href="A2B_entity_invoice.php"><?= _("Invoices") ?></a>
                                 <ul class="list-unstyled fw-normal ps-3 pb-1">
-                                    <li><a class="link-dark rounded" href="A2B_entity_invoice_conf.php"><?= _("Configuration") ?></a></li>
+                                    <li><a class="link-dark rounded" href="A2B_entity_config.php?group_title=invoice"><?= _("Configuration") ?></a></li>
                                 </ul>
                             </li>
                         </ul>
