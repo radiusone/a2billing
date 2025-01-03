@@ -3,6 +3,7 @@
 
 use A2billing\A2Billing;
 use A2billing\A2bMailException;
+use A2billing\Invoice;
 use A2billing\Mail;
 use A2billing\ProcessHandler;
 use A2billing\Table;
@@ -271,7 +272,7 @@ for ($page = 0; $page < $nbpagemax; $page++) {
 
                 } else {
 
-                    $reference = generate_invoice_reference();
+                    $reference = Invoice::generateReference();
 
                     //CREATE INVOICE If a new card then just an invoice item in the last invoice
                     $field_insert = "date, id_card, title, reference, description, status, paid_status";

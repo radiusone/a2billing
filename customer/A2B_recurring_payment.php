@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Invoice;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -154,7 +155,7 @@ $id_payment = $instance_sub_table->Add_table($DBHandle, $value_insert, null, nul
 write_log($epayment_logfile, basename(__FILE__) . ' line:' . __LINE__ . "-Recurring payment" . " Add_table cc_logpayment : $field_insert - VALUES $value_insert");
 
 //ADD an INVOICE
-$reference = generate_invoice_reference();
+$reference = Invoice::generateReference();
 $field_insert = "date, id_card, title ,reference, description,status,paid_status";
 $date = $nowDate;
 $card_id = $id;

@@ -66,7 +66,7 @@ class Invoice
         int     $card,
         string  $description = "",
         string  $title = "",
-        string  $reference = "",
+        ?string $reference = null,
         int     $status = self::STATUS_OPEN,
         int     $paid_status = self::PAIDSTATUS_UNPAID,
         ?string $date = null
@@ -76,7 +76,7 @@ class Invoice
         $instance->card = $card;
         $instance->description = $description;
         $instance->title = $title;
-        $instance->reference = $reference;
+        $instance->reference = $reference ?? self::generateReference();
         $instance->status = $status;
         $instance->paid_status = $paid_status;
         $instance->date = $date ?? (new DateTime())->format("Y-m-d H:i:s");
@@ -301,4 +301,30 @@ class Invoice
         }
     }
 
+    public static function generateReference(): string
+    {
+        $handle = DbConnect();
+        $year = date("Y");
+        $table = new Table(
+            "cc_config",
+            ["cc_config.id", "config_value"],
+            ["cc_config_group" => ["cc_config.config_group_id", "cc_config_group.id"]]
+        );
+        $row = $table->getRow($handle, ["config_key" => "next_number", "group_title" => "invoice"]);
+        $conf_id = $row["id"];
+        $invoice_num = $row["config_value"];
+
+        if (empty($invoice_num) || !str_starts_with($invoice_num, $year)) {
+            $invoice_num = $year . "00000001";
+        }
+
+        $update = preg_replace_callback(
+            "/^($year)(\d+)$/",
+            fn ($m) => $m[1] . str_pad(intval($m[2]) + 1, 8, "0", STR_PAD_LEFT),
+            $invoice_num
+        );
+        $table->updateRow($handle, ["config_value" => $update], ["id" => $conf_id]);
+
+        return $invoice_num;
+    }
 }

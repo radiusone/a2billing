@@ -3,6 +3,7 @@
 
 use A2billing\A2Billing;
 use A2billing\A2bMailException;
+use A2billing\Invoice;
 use A2billing\Mail;
 use A2billing\ProcessHandler;
 use A2billing\Table;
@@ -275,7 +276,7 @@ for ($page = 0; $page < $nbpagemax; $page++) {
             $result = $table_charge->get_list($A2B->DBHandle, $clause_charge . " AND charged_status = 0 AND invoiced_status = 0");
             $last_invoice = null;
             if (is_array($result) && sizeof($result) > 0) {
-                $reference = generate_invoice_reference();
+                $reference = Invoice::generateReference();
                 $field_insert = "id_card, title, reference, description, status, paid_status";
                 $title = gettext("BILLING");
                 $description = gettext("Invoice for the unpaid charges since the last billing.") . " " . $desc_billing_postpaid;
@@ -311,7 +312,7 @@ for ($page = 0; $page < $nbpagemax; $page++) {
                 if (!empty($last_invoice)) {
                     $id_invoice = $last_invoice;
                 } else {
-                    $reference = generate_invoice_reference();
+                    $reference = Invoice::generateReference();
                     $field_insert = " id_card, title, reference, description, status, paid_status";
                     $title = gettext("BILLING");
                     $description = gettext("Invoice for POSTPAID");

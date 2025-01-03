@@ -3,6 +3,7 @@
 
 use A2billing\A2Billing;
 use A2billing\A2bMailException;
+use A2billing\Invoice;
 use A2billing\Mail;
 use A2billing\ProcessHandler;
 use A2billing\Table;
@@ -191,7 +192,7 @@ foreach ($result as $mydids) {
                 } else {
                     // USER DONT HAVE ENOUGH CREDIT TO PAY FOR THE DID - WE WILL WARN HIM
 
-                    $reference = generate_invoice_reference();
+                    $reference = Invoice::generateReference();
 
                     //CREATE INVOICE If a new card then just an invoice item in the last invoice
                     if ($new_card) {

@@ -671,27 +671,6 @@ function do_field($sql, $fld, $dbfld)
     return $sql;
 }
 
-function generate_invoice_reference(): string
-{
-    $handle = DbConnect();
-    $year = date("Y");
-    $table = new Table("cc_config", ["config_value"]);
-    $invoice_num = $table->getValue($handle, ["config_key" => "next_number"]);
-
-    if (empty($invoice_num) || !str_starts_with($invoice_num, $year)) {
-        $invoice_num = $year . "00000001";
-    }
-
-    $update = preg_replace_callback(
-        "/^($year)(\d+)$/",
-        fn ($m) => $m[1] . (intval($m[2]) + 1),
-        $invoice_num
-    );
-    $table->updateRow($handle, ["config_value" => $update], ["config_key" => "next_number"]);
-
-    return $invoice_num;
-}
-
 /**
  * Checks the day of month for date related forms and reduces the day to the last valid day of the month if too large.
  *

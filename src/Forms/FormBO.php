@@ -6,6 +6,7 @@
 namespace A2billing\Forms;
 
 use A2billing\A2bMailException;
+use A2billing\Invoice;
 use A2billing\Mail;
 use A2billing\Notification;
 use A2billing\NotificationsDAO;
@@ -416,7 +417,7 @@ class FormBO
             $value_insert = "'$card_id', '$subscriber' ,'$product_name', 1 , '$startdate', '$next_bill_date','$limite_pay_date','$startdate'";
             $instance_subscription_table = new Table("cc_card_subscription", $field_insert);
             $id_card_subscription = $instance_subscription_table -> Add_table ($FormHandler->DBHandle, $value_insert, null, null, "id");
-            $reference = generate_invoice_reference();
+            $reference = Invoice::generateReference();
 
             //CREATE INVOICE If a new card then just an invoice item in the last invoice
             $field_insert = "date, id_card, title, reference, description, status, paid_status";
@@ -725,7 +726,7 @@ class FormBO
         $result =  $table_charge -> get_list($FormHandler->DBHandle, $clause_charge . " AND charged_status = 0 AND invoiced_status = 0");
         $last_invoice = null;
         if (is_array($result) && sizeof($result)>0) {
-            $reference = generate_invoice_reference();
+            $reference = Invoice::generateReference();
             $field_insert = "date, id_card, title ,reference, description,status,paid_status";
             $date = date("Y-m-d h:i:s");
             $title = gettext("BILLING CHARGES");
@@ -758,7 +759,7 @@ class FormBO
             if (!empty($last_invoice)) {
             $id_invoice = $last_invoice;
             } else {
-            $reference = generate_invoice_reference();
+            $reference = Invoice::generateReference();
             $field_insert = "date, id_card, title ,reference, description,status,paid_status";
             $date = date("Y-m-d h:i:s");
             $title = gettext("BILLING POSTPAID");
@@ -819,7 +820,7 @@ class FormBO
             //CREATE AND UPDATE REF NUMBER
             $list_refill_type=getRefillType_List();
             $refill_type = $processed['refill_type'];
-            $reference = generate_invoice_reference();
+            $reference = Invoice::generateReference();
             $field_insert = "date, id_card, title ,reference, description";
             $date = $processed['date'];
             $card_id = $processed['card_id'];
@@ -858,7 +859,7 @@ class FormBO
         $processed = $FormHandler->getProcessed();
         $id_invoice = $FormHandler -> QUERY_RESULT;
         //CREATE AND UPDATE REF NUMBER
-        $reference = generate_invoice_reference();
+        $reference = Invoice::generateReference();
         $instance_table_invoice = new Table("cc_invoice");
         $param_update_invoice = "reference = '".$reference."'";
         $clause_update_invoice = " id ='$id_invoice'";
@@ -904,7 +905,7 @@ class FormBO
                 "date" => $date,
                 "id_card" => $card_id,
                 "title" => trim(($list_refill_type[$refill_type] ?? "") . " " . _("REFILL")),
-                "reference" => generate_invoice_reference(),
+                "reference" => Invoice::generateReference(),
                 "description" => gettext("Invoice for refill"),
                 "status" => 1,
                 "paid_status" => 1,

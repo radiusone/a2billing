@@ -394,7 +394,7 @@ if ($id > 0) {
         write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."-$trans_str : Add_table cc_logpayment : $field_insert - VALUES $value_insert");
 
         //ADD an INVOICE
-        $reference = generate_invoice_reference();
+        $reference = Invoice::generateReference();
         $field_insert = "date, id_card, title ,reference, description, status, paid_status";
         $date = $nowDate;
         $card_id = $id;
