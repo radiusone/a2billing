@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Customer;
+use A2billing\Forms\FormBO;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 use A2billing\Table;
@@ -143,8 +144,8 @@ $HD_Form->FG_FILTER_LABEL = _("DID");
 
 $HD_Form->FG_INTRO_TEXT_ADITION = "";
 
-$HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = "did_destination_add";
-$HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_DELETE = "did_destination_del";
+$HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = [FormBO::class, "did_destination_add"];
+$HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_DELETE = [FormBO::class, "did_destination_del"];
 
 $HD_Form->FG_LOCATION_AFTER_ADD = "?form_action=list&id=";
 $HD_Form->FG_LOCATION_AFTER_EDIT = "?form_action=list&id=";

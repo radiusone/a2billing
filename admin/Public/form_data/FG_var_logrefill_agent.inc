@@ -2,6 +2,7 @@
 
 use A2billing\Admin;
 use A2billing\Agent;
+use A2billing\Forms\FormBO;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 
@@ -134,7 +135,7 @@ if (has_rights(Admin::ACX_MODIFY_REFILLS)) {
     );
 
 	$HD_Form->FG_INTRO_TEXT_ADITION = "";
-	$HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = "add_agent_refill";
+	$HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = [FormBO::class, "add_agent_refill"];
 
 	$HD_Form->FG_LOCATION_AFTER_ADD = "?id=";
 	$HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";

@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Customer;
+use A2billing\Forms\FormBO;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 use A2billing\Table;
@@ -59,9 +60,9 @@ $HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("telephone_add.png") ;
 
 $HD_Form->FG_TABLE_DEFAULT_ORDER = "did";
 $HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
-$HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = 'add_did_use';
-$HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_DELETE = 'did_use_delete';
-$HD_Form->FG_ADDITIONAL_FUNCTION_BEFORE_DELETE = 'is_did_in_use';
+$HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = [FormBO::class, "add_did_use"];
+$HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_DELETE = [FormBO::class, "did_use_delete"];
+$HD_Form->FG_ADDITIONAL_FUNCTION_BEFORE_DELETE = [FormBO::class, "is_did_in_use"];
 
 $HD_Form->list_help_text = create_help(_("DID number list with destinations."));
 $HD_Form->add_help_text = $HD_Form->edit_help_text = create_help(_("DID can be assigned to a customer to re-route calls to a SIP/IAX client or a PSTN number. The Priority sets the order in which the calls are to be routed to allow for failover or follow-me."));

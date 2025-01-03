@@ -3,6 +3,7 @@
 use A2billing\Admin;
 use A2billing\Agent;
 use A2billing\Customer;
+use A2billing\Forms\FormBO;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 use A2billing\Table;
@@ -147,7 +148,7 @@ $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form->FG_ENABLE_ADD_BUTTON = true;
 $HD_Form->FG_ENABLE_INFO_BUTTON = true;
 $HD_Form->FG_INFO_BUTTON_LINK = "CC_ticket_view.php?id=";
-$HD_Form -> FG_ADDITIONAL_FUNCTION_AFTER_ADD = "ticket_add";
+$HD_Form -> FG_ADDITIONAL_FUNCTION_AFTER_ADD = [FormBO::class, "ticket_add"];
 
 if ($ticket_type === "agent") {
     $HD_Form->AddEditPopup(

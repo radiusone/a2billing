@@ -4,6 +4,7 @@ use A2billing\A2Billing;
 use A2billing\Admin;
 use A2billing\Agent;
 use A2billing\Customer;
+use A2billing\Forms\FormBO;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 use A2billing\Notification;
@@ -915,10 +916,10 @@ if ($popup_select) {
     );
 
     $HD_Form->FG_INTRO_TEXT_ADITION = "";
-    $HD_Form->FG_ADDITIONAL_FUNCTION_BEFORE_EDITION = "change_card_lock";
+    $HD_Form->FG_ADDITIONAL_FUNCTION_BEFORE_EDITION = [FormBO::class, "change_card_lock"];
 
-    $HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = "processing_card_add";
-    $HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_EDITION = "create_status_log";
+    $HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = [FormBO::class, "processing_card_add"];
+    $HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_EDITION = [FormBO::class, "create_status_log"];
 
     if ($form_action === "ask-edit" || $form_action === "delete") {
         $result_card = (new Table("cc_card", ["status", "sip_buddy", "iax_buddy"]))

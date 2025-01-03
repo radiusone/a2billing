@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Forms\FormBO;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 
@@ -95,7 +96,7 @@ $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["basecurrency"] = strtoupper(BASE_CURRENCY)
 
 $HD_Form -> FG_INTRO_TEXT_ADITION = '';
 
-$HD_Form -> FG_ADDITIONAL_FUNCTION_AFTER_ADD = 'processing_refill_add';
+$HD_Form -> FG_ADDITIONAL_FUNCTION_AFTER_ADD = [FormBO::class, "processing_refill_add"];
 
 $HD_Form -> FG_LOCATION_AFTER_ADD = "?id=";
 $HD_Form -> FG_LOCATION_AFTER_EDIT = "?id=";

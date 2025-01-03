@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Customer;
+use A2billing\Forms\FormBO;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 use A2billing\Table;
@@ -465,7 +466,7 @@ $HD_Form->FG_TEXT_ADITION_CONFIRMATION = gettext("Thanks for registering with us
 $HD_Form->FG_ADD_PAGE_BOTTOM_TEXT = gettext("Click 'SIGNUP' to continue");
 $HD_Form->FG_ADD_PAGE_SAVE_BUTTON_TEXT = gettext("SIGNUP");
 
-$HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = 'processing_card_signup';
+$HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = [FormBO::class, "processing_card_signup"];
 
 $HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";
 $HD_Form->FG_LOCATION_AFTER_DELETE = "?id=";

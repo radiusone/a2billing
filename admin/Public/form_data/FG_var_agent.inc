@@ -2,6 +2,7 @@
 
 use A2billing\Admin;
 use A2billing\Agent;
+use A2billing\Forms\FormBO;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 use A2billing\Table;
@@ -355,7 +356,7 @@ if ($popup_select) {
         new Table("cc_agent_tariffgroup")
     );
 
-	$HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = 'creation_agent_refill';
+	$HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = [FormBO::class, "creation_agent_refill"];
 	$HD_Form->FG_INTRO_TEXT_ADITION = '';
 	$HD_Form->FG_LOCATION_AFTER_ADD = "?id=";
 	$HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";

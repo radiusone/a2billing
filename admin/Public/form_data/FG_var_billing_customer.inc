@@ -2,6 +2,7 @@
 
 use A2billing\Admin;
 use A2billing\Customer;
+use A2billing\Forms\FormBO;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 
@@ -97,7 +98,7 @@ $HD_Form->FG_FILTER_LABEL = "Account number";
 
 $HD_Form->FG_INTRO_TEXT_ADITION = "";
 
-$HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = "proccessing_billing_customer";
+$HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = [FormBO::class, "proccessing_billing_customer"];
 
 $HD_Form->FG_LOCATION_AFTER_ADD = "?id=";
 $HD_Form->FG_LOCATION_AFTER_DELETE = "?id=";

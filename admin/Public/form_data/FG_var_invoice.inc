@@ -2,6 +2,7 @@
 
 use A2billing\Admin;
 use A2billing\Customer;
+use A2billing\Forms\FormBO;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 use A2billing\Table;
@@ -199,7 +200,7 @@ $HD_Form->FG_FILTER_LABEL = _("Account Number");
 
 $HD_Form->FG_INTRO_TEXT_ADITION = '';
 
-$HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = 'create_invoice_reference';
+$HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = [FormBO::class, "create_invoice_reference"];
 
 $HD_Form->FG_LOCATION_AFTER_ADD = "A2B_invoice_edit.php?id=";
 $HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";

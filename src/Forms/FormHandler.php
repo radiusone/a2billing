@@ -274,23 +274,23 @@ class FormHandler
     /** @var string Text telling you to click the button */
     public string $FG_EDIT_PAGE_BOTTOM_TEXT = "Click 'Confirm Data' to continue";
 
-    /** @var string Static method of FormBO class executed after creating */
-    public string $FG_ADDITIONAL_FUNCTION_AFTER_ADD = '';
+    /** @var callable|null Static method of FormBO class executed after creating */
+    public $FG_ADDITIONAL_FUNCTION_AFTER_ADD = null;
 
     /**
-     * @var string Static method of FormBO class executed before deleting
+     * @var callable|null Static method of FormBO class executed before deleting
      * @todo only used in admin/Public/form_data/FG_var_did.inc
      */
-    public string $FG_ADDITIONAL_FUNCTION_BEFORE_DELETE = '';
+    public $FG_ADDITIONAL_FUNCTION_BEFORE_DELETE = null;
 
-    /** @var string Static method of FormBO class executed after deleting */
-    public string $FG_ADDITIONAL_FUNCTION_AFTER_DELETE = '';
+    /** @var callable|null Static method of FormBO class executed after deleting */
+    public $FG_ADDITIONAL_FUNCTION_AFTER_DELETE = null;
 
-    /** @var string Static method of FormBO class executed before editing */
-    public string $FG_ADDITIONAL_FUNCTION_BEFORE_EDITION = '';
+    /** @var callable|null Static method of FormBO class executed before editing */
+    public $FG_ADDITIONAL_FUNCTION_BEFORE_EDITION = null;
 
-    /** @var string Static method of FormBO class executed after editing */
-    public string $FG_ADDITIONAL_FUNCTION_AFTER_EDITION = '';
+    /** @var callable|null Static method of FormBO class executed after editing */
+    public $FG_ADDITIONAL_FUNCTION_AFTER_EDITION = null;
 
     /** @var bool not sure what this means, but I'm confident it would go away with proper foreign keys */
     public bool $FG_FK_DELETE_ALLOWED = false;
@@ -1506,8 +1506,8 @@ class FormHandler
                     $id
                 );
                 // CALL DEFINED FUNCTION AFTER THE ACTION ADDITION
-                if (is_callable([FormBO::class, $this->FG_ADDITIONAL_FUNCTION_AFTER_ADD])) {
-                    call_user_func([FormBO::class, $this->FG_ADDITIONAL_FUNCTION_AFTER_ADD], $id);
+                if (is_callable($this->FG_ADDITIONAL_FUNCTION_AFTER_ADD)) {
+                    call_user_func($this->FG_ADDITIONAL_FUNCTION_AFTER_ADD, $id);
                 }
             }
         } else {
@@ -1518,8 +1518,8 @@ class FormHandler
                 $id
             );
             // CALL DEFINED FUNCTION AFTER THE ACTION ADDITION
-            if (is_callable([FormBO::class, $this->FG_ADDITIONAL_FUNCTION_AFTER_ADD])) {
-                call_user_func([FormBO::class, $this->FG_ADDITIONAL_FUNCTION_AFTER_ADD], $id);
+            if (is_callable($this->FG_ADDITIONAL_FUNCTION_AFTER_ADD)) {
+                call_user_func($this->FG_ADDITIONAL_FUNCTION_AFTER_ADD, $id);
             }
         }
         $this->QUERY_RESULT = $id ?? true;
@@ -1595,8 +1595,8 @@ class FormHandler
             $values[$name] = $value;
         }
 
-        if (is_callable([FormBO::class, $this->FG_ADDITIONAL_FUNCTION_BEFORE_EDITION])) {
-            call_user_func([FormBO::class, $this->FG_ADDITIONAL_FUNCTION_BEFORE_EDITION]);
+        if (is_callable($this->FG_ADDITIONAL_FUNCTION_BEFORE_EDITION)) {
+            call_user_func($this->FG_ADDITIONAL_FUNCTION_BEFORE_EDITION);
         }
 
         $this->QUERY_RESULT = $instance_table->updateRow(
@@ -1620,8 +1620,8 @@ class FormHandler
         }
 
         // CALL DEFINED FUNCTION AFTER THE ACTION ADDITION
-        if (is_callable([FormBO::class, $this->FG_ADDITIONAL_FUNCTION_AFTER_EDITION])) {
-            call_user_func([FormBO::class, $this->FG_ADDITIONAL_FUNCTION_AFTER_EDITION], $processed["id"]);
+        if (is_callable($this->FG_ADDITIONAL_FUNCTION_AFTER_EDITION)) {
+            call_user_func($this->FG_ADDITIONAL_FUNCTION_AFTER_EDITION, $processed["id"]);
         }
 
         if (!empty($this->FG_LOCATION_AFTER_EDIT)) {
@@ -1668,8 +1668,8 @@ class FormHandler
                 $_SERVER['REQUEST_URI']
             );
         }
-        if (strlen($this->FG_ADDITIONAL_FUNCTION_AFTER_DELETE) > 0) {
-            call_user_func([FormBO::class, $this->FG_ADDITIONAL_FUNCTION_AFTER_DELETE]);
+        if (is_callable($this->FG_ADDITIONAL_FUNCTION_AFTER_DELETE)) {
+            call_user_func($this->FG_ADDITIONAL_FUNCTION_AFTER_DELETE);
         }
         if (!$this->QUERY_RESULT) {
             echo _("error deletion");
@@ -1907,8 +1907,8 @@ class FormHandler
 
             case "ask-delete":
             case "ask-del-confirm":
-                if (strlen($this->FG_ADDITIONAL_FUNCTION_BEFORE_DELETE) > 0) {
-                    call_user_func([FormBO::class, $this->FG_ADDITIONAL_FUNCTION_BEFORE_DELETE]);
+                if (is_callable($this->FG_ADDITIONAL_FUNCTION_BEFORE_DELETE)) {
+                    call_user_func($this->FG_ADDITIONAL_FUNCTION_BEFORE_DELETE);
                     // @todo should this be using the return from the function?
                 }
                 if ($form_action === "ask-delete") {
