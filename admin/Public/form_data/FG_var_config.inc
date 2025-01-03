@@ -38,7 +38,7 @@ use A2billing\Table;
 
 Admin::checkPageAccess(Admin::ACX_ACXSETTING);
 
-getpost_ifset(['id', 'groupselect']);
+getpost_ifset(["id", "groupselect"]);
 /**
  * @var string $id
  * @var string $groupselect
@@ -59,6 +59,8 @@ if ($form_action === "list") {
     $HD_Form->FG_QUERY_ORDERBY_COLUMNS = ["group_title", "config_key"];
     $HD_Form->FG_QUERY_PRIMARY_KEY = "cc_config.id";
     $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 25;
+    $HD_Form->FG_ENABLE_ADD_BUTTON = true;
+    $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
 
     $HD_Form->help_text = create_help(_("Here you can see and edit the different A2Billing settings."));
 
@@ -93,10 +95,15 @@ if ($form_action === "list") {
 
 $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form->search_form_enabled = true;
+$HD_Form->search_delete_enabled = false;
 $HD_Form->AddSearchTextInput(_("Value"), "config_value");
 $HD_Form->AddSearchTextInput(_("Key"), "config_key");
 $HD_Form->AddSearchTextInput(_("Description"), "config_description");
 $HD_Form->AddSearchSqlSelectInput(_("Select config group"), "config_group_id", new Table("cc_config_group", ["id", "group_title"]), "group_title");
+
+$readonly = ($form_action === "ask-add" || $form_action === "add")
+    ? []
+    : ["readonly" => "readonly", "disabled" => "disabled"];
 
 $HD_Form->AddEditSqlSelect(
     _("GROUP"),
@@ -106,7 +113,7 @@ $HD_Form->AddEditSqlSelect(
     "",
     [],
     _("Group Name of the configuration variable"),
-    ["readonly" => "readonly"],
+    $readonly,
     _("This is the group of the configuration. Not editable!")
 );
 
@@ -114,7 +121,7 @@ $HD_Form->AddEditElement(
     _("TITLE"),
     "config_title",
     _("Title of the configuration variable"),
-    ["readonly" => "readonly"],
+    $readonly,
     null,
     _("Insert the TITLE")
 );
@@ -123,7 +130,7 @@ $HD_Form->AddEditElement(
     _("KEY"),
     "config_key",
     _("Key name of the configuration variable"),
-    ["readonly" => "readonly"],
+    $readonly,
     null,
     _("Insert the TITLE")
 );
@@ -147,6 +154,9 @@ $HD_Form->AddEditSelect(
     _("TYPE"),
     "config_valuetype",
     [_("Plain value"), _("Yes/No value"), _("Selectable list")],
+    "",
+    "",
+    $readonly
 );
 
 $HD_Form->AddEditElement(
@@ -165,8 +175,9 @@ $HD_Form->AddEditTextarea(
     _("DESCRIPTION"),
     "config_description",
     _("Insert the Description"),
-    ["rows" => 5, "readonly" => "readonly"],
+    array_merge(["rows" => 5], $readonly),
 );
 
 $HD_Form->FG_INTRO_TEXT_EDITION = "";
 $HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";
+$HD_Form->FG_LOCATION_AFTER_ADD = "?id=";
