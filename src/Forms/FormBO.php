@@ -1,16 +1,16 @@
 <?php
-/**
- * @noinspection PhpUnused
- */
 
 namespace A2billing\Forms;
 
 use A2billing\A2bMailException;
 use A2billing\Invoice;
+use A2billing\InvoiceItem;
 use A2billing\Mail;
 use A2billing\Notification;
 use A2billing\NotificationsDAO;
 use A2billing\Realtime;
+use A2billing\Receipt;
+use A2billing\ReceiptItem;
 use A2billing\Table;
 use A2billing\Ticket;
 use Exception;
@@ -19,8 +19,8 @@ use PhpAgi\AMI as AGI_AsteriskManager;
 class FormBO
 {
     /**
-    * Function to add/modify cc_did_use and cc_did_destination if records existe
-    */
+     * Function to add/modify cc_did_use and cc_did_destination if records existe
+     */
     public static function is_did_in_use()
     {
         $FormHandler = FormHandler::GetInstance();
@@ -127,41 +127,6 @@ class FormBO
         $instance_table_card -> Update_table ($FormHandler->DBHandle, $param_update_card, $clause_update_card, $func_table = null);
     }
 
-    /**
-     * Function add_card_refill_agent
-     * @public
-     */
-    public static function add_card_refill_agent()
-    {
-        global $A2B;
-        $FormHandler = FormHandler::GetInstance();
-        $processed = $FormHandler->getProcessed();
-        $credit = $processed['credit'];
-        $card_id = $processed['card_id'];
-
-        //check if enought credit
-        $instance_table_agent = new Table("cc_agent", "credit, currency");
-        $FG_TABLE_CLAUSE_AGENT = "id = ".$_SESSION['agent_id'] ;
-        $agent_info = $instance_table_agent -> get_list ($FormHandler->DBHandle, $FG_TABLE_CLAUSE_AGENT);
-        $credit_agent = $agent_info[0][0];
-
-        if ($credit_agent >= $credit) {
-
-            //Substract credit for agent
-            $param_update_agent = "credit = credit - '".$credit."'";
-            $instance_table_agent -> Update_table ($FormHandler -> DBHandle, $param_update_agent, $FG_TABLE_CLAUSE_AGENT, $func_table = null);
-
-            // REFILL CARD
-            $instance_table_card = new Table("cc_card");
-            $param_update_card = "credit = credit + '".$credit."'";
-            $clause_update_card = " id='$card_id'";
-            $instance_table_card -> Update_table ($FormHandler->DBHandle, $param_update_card, $clause_update_card, $func_table = null);
-
-            return true;
-        }
-
-        return false;
-    }
 
     public static function ticket_add(): void
     {
@@ -187,12 +152,12 @@ class FormBO
         } elseif ($processed["creator_type"] == Ticket::ADMIN) {
             $table = new Table(
                 "cc_ui_authen", [
-                    "login AS username",
-                    "SUBSTRING(name FROM 1 FOR POSITION(' ' IN name) AS firstname",
-                    "SUBSTRING(name FROM POSITION(' ' IN name) + 1) AS lastname",
-                    "'en' AS language",
-                    "email"
-                ]);
+                "login AS username",
+                "SUBSTRING(name FROM 1 FOR POSITION(' ' IN name) AS firstname",
+                "SUBSTRING(name FROM POSITION(' ' IN name) + 1) AS lastname",
+                "'en' AS language",
+                "email"
+            ]);
         } else {
             return;
         }
@@ -283,79 +248,22 @@ class FormBO
         }
     }
 
-    public static function deletion_card_refill_agent()
-    {
-        $FormHandler = FormHandler::GetInstance();
-        $processed = $FormHandler->getProcessed();
-        //AFTER A DELETE YOU DON T HAVE ACCESS TO ANY FIELD AND YOU CAN ACCESS ONLY TO THE ID
-        //SO YOU HAVE TO LOAD THE FIELD THAT YOU NEED
-        $card_id = $processed['id'];
-        $card_table = new Table('cc_card', 'credit');
-        $card_clause = "id = ".$card_id;
-        $card_result = $card_table -> get_list($FormHandler->DBHandle, $card_clause);
-
-        $credit = $card_result[0][0];
-
-        if ($credit>0 || $credit<0) {
-            if ($credit>0) {
-                $sign="+";
-            } else {
-                $sign="-";
-            }
-            $instance_table_agent = new Table("cc_agent");
-            $param_update_agent = "credit = credit $sign '".abs($credit)."'";
-            $clause_update_agent = " id='".$_SESSION['agent_id']."'";
-            $instance_table_agent -> Update_table ($FormHandler->DBHandle, $param_update_agent, $clause_update_agent, $func_table = null);
-            $field_insert = " credit, card_id, refill_type, description";
-            $description = gettext("DELETION CARD REFILL");
-            $correction = 0-$credit;
-            $value_insert = "'$correction', '$card_id', 1 ,'$description' ";
-            $instance_refill_table = new Table("cc_logrefill", $field_insert);
-            $instance_refill_table -> Add_table ($FormHandler->DBHandle, $value_insert, null, null);
-            if ($credit>0) {
-                $table_transaction = new Table();
-                $result_agent = $table_transaction -> SQLExec($FormHandler->DBHandle,"SELECT cc_card_group.id_agent FROM cc_card LEFT JOIN cc_card_group ON cc_card_group.id = cc_card.id_group WHERE cc_card.id = $card_id");
-
-                if (is_array($result_agent)&& !is_null($result_agent[0]['id_agent']) && $result_agent[0]['id_agent']>0 ) {
-                    // test if the agent exist and get its commission
-                    $id_agent = $result_agent[0]['id_agent'];
-                    $agent_table = new Table("cc_agent", "commission");
-                    $agent_clause = "id = ".$id_agent;
-                    $result_agent= $agent_table -> get_list($FormHandler->DBHandle, $agent_clause);
-
-                    if (is_array($result_agent) && is_numeric($result_agent[0]['commission']) && $result_agent[0]['commission']>0) {
-                        $field_insert = "id_payment, id_card, amount,description,id_agent";
-                        $commission = a2b_round($credit * ($result_agent[0]['commission']/100));
-                        $description_commission = gettext("CORRECT COMMISSION AFTER CARD DELETED!");
-                        $description_commission.= "\nID CARD : ".$card_id;
-                        $description_commission.= "\n AMOUNT: ".$credit;
-                        $description_commission.= "\nCOMMISSION APPLIED: ".$result_agent[0]['commission'];
-                        $value_insert = "'-1', '$card_id', '-$commission','$description_commission','$id_agent'";
-                        $commission_table = new Table("cc_agent_commission", $field_insert);
-                        $id_commission = $commission_table -> Add_table ($FormHandler->DBHandle, $value_insert, null, null,"id");
-                        $table_agent = new Table('cc_agent');
-                        $param_update_agent = "com_balance = com_balance - '".$commission."'";
-                        $clause_update_agent = " id='".$id_agent."'";
-                        $table_agent -> Update_table ($FormHandler->DBHandle, $param_update_agent, $clause_update_agent, $func_table = null);
-                    }
-                }
-            }
-        }
-    }
-
+    /**
+     * Run after creation of an agent
+     *
+     * @return void
+     */
     public static function creation_agent_refill()
     {
         $FormHandler = FormHandler::GetInstance();
         $processed = $FormHandler->getProcessed();
-        $credit = $processed['credit'];
+        $credit = $processed["credit"];
 
-        if ($credit>0) {
-            $field_insert = " credit,agent_id, description";
-            $agent_id = $FormHandler -> QUERY_RESULT;
+        if ($credit > 0) {
+            $agent_id = $FormHandler->QUERY_RESULT;
             $description = gettext("CREATION AGENT REFILL");
-            $value_insert = "'$credit', '$agent_id', '$description' ";
-            $instance_refill_table = new Table("cc_logrefill_agent", $field_insert);
-            $instance_refill_table -> Add_table ($FormHandler->DBHandle, $value_insert, null, null);
+            (new Table("cc_log_refill_agent"))
+                ->addRow($FormHandler->DBHandle, compact("credit", "agent_id", "description"));
         }
     }
 
@@ -485,21 +393,11 @@ class FormBO
             $table_agent -> Update_table ($FormHandler->DBHandle, $param_update_agent, $clause_update_agent, $func_table = null);
         }
     }
+
     public static function processing_card_add()
     {
         self::create_sipiax_friends();
         self::creation_card_refill();
-        self::create_lock_card();
-    }
-
-    public static function processing_card_del_agent()
-    {
-        self::deletion_card_refill_agent();
-    }
-
-    public static function processing_card_add_agent()
-    {
-        self::create_sipiax_friends();
         self::create_lock_card();
     }
 
@@ -623,248 +521,201 @@ class FormBO
         }
     }
 
+    /**
+     * Run after creating a recurring billing item
+     *
+     * @return void
+     * @throws A2bMailException
+     */
     public static function proccessing_billing_customer()
     {
-        global $A2B;
-        $FormHandler = FormHandler::GetInstance();
-        $processed = $FormHandler->getProcessed();
+        $form = FormHandler::GetInstance();
+        $processed = $form->getProcessed();
         //find the last billing
-        $card_id = $processed['id_card'];
-        $date_bill=$processed['date'];
+        $card_id = $processed["id_card"];
+        $date_bill = $processed["date"];
+        $new_billing = $form->QUERY_RESULT;
+        $date = date("Y-m-d h:i:s");
+        $db = $form->DBHandle;
 
         //GET VAT
-        $card_table = new Table('cc_card', 'vat, typepaid, credit');
-        $card_clause = "id = ".$card_id;
-        $card_result = $card_table -> get_list($FormHandler->DBHandle, $card_clause);
+        $card_table = new Table("cc_card", ["vat", "typepaid", "credit"]);
+        $card_result = $card_table->getRow($db, ["id" => $card_id]);
+        $vat = $card_result[0] ?? 0;
 
-        if(!is_array($card_result)||empty($card_result[0]['vat'])||!is_numeric($card_result[0]['vat']))
-            $vat=0;
-        else
-            $vat = $card_result[0][0];
+        // FIND THE LAST BILLING for this card
+        $last_billing_date = (new Table("cc_billing_customer", ["date"]))
+            ->getValue(
+                $db,
+                ["id_card" => $card_id, "id" => ["!=", $new_billing]],
+                ["date"],
+                "desc"
+            );
+        $call_conditions = ["card_id" => $card_id, "stop_time" => ["<", $date_bill]];
+        $charge_conditions = ["id_cc_card" => $card_id, "creationdate" => ["<", $date_bill], "charged_status" => 1];
+        $start_date = null;
 
-        // FIND THE LAST BILLING
-        $billing_table = new Table('cc_billing_customer', 'id,date');
-        $clause_last_billing = "id_card = $card_id AND id != ".$FormHandler -> QUERY_RESULT;
-        $result = $billing_table -> get_list($FormHandler->DBHandle, $clause_last_billing, "date", "desc");
-        $call_table = new Table('cc_call', ' COALESCE(SUM(sessionbill),0)');
-        $clause_call_billing ="card_id = $card_id AND ";
-        $clause_charge = "id_cc_card = $card_id AND ";
-        $desc_billing="";
-        $desc_billing_postpaid="";
-        $start_date =null;
-
-        if (is_array($result) && !empty($result[0][0])) {
-            $clause_call_billing .= "stoptime >= '" .$result[0][1]."' AND ";
-            $clause_charge .= "creationdate >= '".$result[0][1]."' AND  ";
-            $desc_billing = "Calls cost between the ".$result[0][1]." and  $date_bill" ;
-            $desc_billing_postpaid="Amount for period between the ".date("Y-m-d", strtotime($result[0][1]))." and $date_bill";
-            $start_date = $result[0][1];
+        if ($last_billing_date) {
+            $call_conditions["stoptime"] = [">=", $last_billing_date];
+            $charge_conditions["creationdate"] = [">=", $last_billing_date];
+            $desc_billing = sprintf(_("Call costs between %s and %s"), $last_billing_date, $date_bill);
+            $desc_billing_postpaid = sprintf(_("Charges between %s and %s"), substr($last_billing_date, 0, 10), $date_bill);
+            $start_date = $last_billing_date;
         } else {
-            $desc_billing = "Calls cost before the $date_bill" ;
-            $desc_billing_postpaid="Amount for period before the $date_bill" ;
+            $desc_billing = sprintf(_("Calls cost before %s"), $date_bill);
+            $desc_billing_postpaid = sprintf(_("Amount for period before %s"), $date_bill);
         }
-        $lastpostpaid_amount = 0;
-        $query_table = "cc_billing_customer LEFT JOIN cc_invoice ON cc_billing_customer.id_invoice = cc_invoice.id ";
-        $query_table .= "LEFT JOIN (SELECT st1.id_invoice, TRUNCATE(SUM(st1.price),2) as total_price FROM cc_invoice_item AS st1 WHERE st1.type_ext ='POSTPAID' GROUP BY st1.id_invoice ) as items ON items.id_invoice = cc_invoice.id";
-        $invoice_table = new Table($query_table, 'SUM( items.total_price) as total');
-        $lastinvoice_clause = "cc_billing_customer.id_card = $card_id AND cc_invoice.paid_status=0 AND cc_billing_customer.id != ".$FormHandler -> QUERY_RESULT;
-        $result_lastinvoice = $invoice_table ->get_list($FormHandler->DBHandle, $lastinvoice_clause);
-        if (is_array($result_lastinvoice)&& !empty($result_lastinvoice[0][0])) {
-            $lastpostpaid_amount = $result_lastinvoice [0][0];
-        }
-        $clause_call_billing .= "stoptime < '$date_bill' ";
-        $clause_charge .= "creationdate < '$date_bill' ";
 
+        $invoice_table = new Table(
+            "cc_billing_customer",
+            ["SUM(items.total_price) AS total"],
+            [
+                "cc_invoice" => ["cc_billing_customer.id_invoice", "cc_invoice.id"],
+                "(SELECT id_invoice, ROUND(SUM(price), 2) AS total_price FROM cc_invoice_item WHERE type_ext = 'POSTPAID' GROUP BY id_invoice ) AS items" => ["cc_invoice.id", "items.id_invoice"],
+            ]
+        );
+        $lastpostpaid_amount = $invoice_table->getValue(
+            $db,
+            [
+                "cc_billing_customer.id_card" => $card_id,
+                "cc_invoice.paid_status" => Invoice::PAIDSTATUS_UNPAID,
+                "cc_billing_customer.id" => ["!=", $new_billing]
+            ],
+            ["cc_invoice.date"],
+            "desc"
+        ) ?? 0;
 
-        $result =  $call_table -> get_list($FormHandler->DBHandle, $clause_call_billing);
+        $call_table = new Table("cc_call", ["COALESCE(SUM(sessionbill), 0)"]);
+        $amount_calls = $call_table->getValue($db, $call_conditions);
         // COMMON BEHAVIOUR FOR PREPAID AND POSTPAID ... GENERATE A RECEIPT FOR THE CALLS OF THE MONTH
-        if (is_array($result) && is_numeric($result[0][0])) {
-            $amount_calls = $result[0][0];
-            $amount_calls = ceil($amount_calls*100)/100;
-            $date = date("Y-m-d h:i:s");
+        if ($amount_calls) {
             /// create receipt
-            $field_insert = "date, id_card, title, description,status";
-            $title = gettext("SUMMARY OF CALLS");
-            $description = gettext("Summary of the calls charged since the last billing");
-            $value_insert = " '$date' , '$card_id', '$title','$description',1";
-            $instance_table = new Table("cc_receipt", $field_insert);
-            $id_receipt = $instance_table -> Add_table ($FormHandler->DBHandle, $value_insert, null, null,"id");
-            if (!empty($id_receipt)&& is_numeric($id_receipt)) {
-                $description = $desc_billing;
-                $field_insert = "date, id_receipt,price,description,id_ext,type_ext";
-                $instance_table = new Table("cc_receipt_item", $field_insert);
-                $value_insert = " '$date' , '$id_receipt', '$amount_calls','$description','".$FormHandler -> QUERY_RESULT."','CALLS'";
-                $instance_table -> Add_table ($FormHandler->DBHandle, $value_insert, null, null,"id");
+            $title = _("SUMMARY OF CALLS");
+            $description = _("Summary of the calls charged since the last billing");
+            $receipt = Receipt::create($card_id, $description, $title, Receipt::STATUS_CLOSED);
+            if ($receipt->save()) {
+                $item = ReceiptItem::create($receipt, $desc_billing, $date, $amount_calls, "CALLS", $new_billing);
+                $item->save();
             }
         }
+
         // GENERATE RECEIPT FOR CHARGE ALREADY CHARGED
-        $table_charge = new Table("cc_charge", "*");
-        $result =  $table_charge -> get_list($FormHandler->DBHandle, $clause_charge . " AND charged_status = 1");
-        if (is_array($result)) {
-            $field_insert = "date, id_card, title, description,status";
-            $title = gettext("SUMMARY OF CHARGE");
-            $date = date("Y-m-d h:i:s");
-            $description = gettext("Summary of the charge charged since the last billing.");
-            $value_insert = " '$date' , '$card_id', '$title','$description',1";
-            $instance_table = new Table("cc_receipt", $field_insert);
-            $id_receipt = $instance_table -> Add_table ($FormHandler->DBHandle, $value_insert, null, null,"id");
-            if (!empty($id_receipt)&& is_numeric($id_receipt)) {
-                foreach ($result as $charge) {
-                    $description = gettext("CHARGE :").$charge['description'];
-                    $amount = $charge['amount'];
-                    $field_insert = "date, id_receipt,price,description,id_ext,type_ext";
-                    $instance_table = new Table("cc_receipt_item", $field_insert);
-                    $value_insert = " '".$charge['creationdate']."' , '$id_receipt', '$amount','$description','".$charge['id']."','CHARGE'";
-                    $instance_table -> Add_table ($FormHandler->DBHandle, $value_insert, null, null,"id");
+        $charges_table = new Table("cc_charge", ["id", "amount", "description", "creationdate"]);
+        $charges = $charges_table->getRows($db, $charge_conditions);
+        if (count($charges)) {
+            $title = _("SUMMARY OF CHARGES");
+            $description = _("Summary of the charge charged since the last billing.");
+            $receipt = Receipt::create($card_id, $description, $title, Receipt::STATUS_CLOSED);
+            if ($receipt->save()) {
+                foreach ($charges as $charge) {
+                    $item = ReceiptItem::create($receipt, $charge["description"], $charge["creationdate"], $charge["amount"], "CHARGE", $charge["id"]);
+                    $item->save();
                 }
             }
         }
-        $total =0;
-        $total_vat =0;
+
+        $total = 0;
+        $total_vat = 0;
         // GENERATE INVOICE FOR CHARGE NOT YET CHARGED
-        $table_charge = new Table("cc_charge", "*");
-        $result =  $table_charge -> get_list($FormHandler->DBHandle, $clause_charge . " AND charged_status = 0 AND invoiced_status = 0");
-        $last_invoice = null;
-        if (is_array($result) && sizeof($result)>0) {
+        $charge_conditions["charged_status"] = 0;
+        $charge_conditions["invoiced_status"] = 0;
+        $charges = (new Table("cc_charge"))->getRows($db, $charge_conditions);
+        $invoice = new Invoice(null);
+        if (count($charges)) {
             $reference = Invoice::generateReference();
-            $field_insert = "date, id_card, title ,reference, description,status,paid_status";
-            $date = date("Y-m-d h:i:s");
-            $title = gettext("BILLING CHARGES");
-            $description = gettext("This invoice is for some charges unpaid since the last billing.")." ".$desc_billing_postpaid;
-            $invoice_title = $title;
-            $invoice_reference =$reference;
-            $invoice_description = $description;
-            $value_insert = " '$date' , '$card_id', '$title','$reference','$description',1,0";
-            $instance_table = new Table("cc_invoice", $field_insert);
-            $id_invoice = $instance_table -> Add_table ($FormHandler->DBHandle, $value_insert, null, null,"id");
-            if (!empty($id_invoice)&& is_numeric($id_invoice)) {
-                $last_invoice = $id_invoice;
-                        foreach ($result as $charge) {
-                            $description = gettext("CHARGE :").$charge['description'];
-                            $amount = $charge['amount'];
-                            $total = $total + $amount;
-                            $total_vat =$total_vat + round($amount *(1+($vat/100)),2);
-                            $field_insert = "date, id_invoice,price,vat,description,id_ext,type_ext";
-                            $instance_table = new Table("cc_invoice_item", $field_insert);
-                            $value_insert = " '".$charge['creationdate']."' , '$id_invoice', '$amount','$vat','$description','".$charge['id']."','CHARGE'";
-                            $instance_table -> Add_table ($FormHandler->DBHandle, $value_insert, null, null,"id");
-                        }
-                    }
+            $title = _("BILLING CHARGES");
+            $description = _("This invoice is for some charges unpaid since the last billing.")." ".$desc_billing_postpaid;
+            $invoice = Invoice::create($card_id, $description, $title, $reference, Invoice::STATUS_CLOSED);
+            if ($invoice->save()) {
+                foreach ($charges as $charge) {
+                    $item = InvoiceItem::create($invoice, $charge["description"], $date, $charge["amount"], $vat, "CHARGE", $charge["id"]);
+                    $item->save();
+                    $total += round($charge["amount"], 2);
+                    $total_vat += round($charge["amount"] + ($charge["amount"] * $vat / 100), 2);
+                }
+            }
         }
 
         // behaviour postpaid
-        if ($card_result[0]['typepaid']==1 && is_numeric($card_result[0]['credit']) && ($card_result[0]['credit']+$lastpostpaid_amount)<0) {
+        if ($card_result["typepaid"] == 1 && $card_result["credit"] + $lastpostpaid_amount < 0) {
 
             //GENERATE AN INVOICE TO COMPLETE THE BALANCE
-            if (!empty($last_invoice)) {
-            $id_invoice = $last_invoice;
-            } else {
-            $reference = Invoice::generateReference();
-            $field_insert = "date, id_card, title ,reference, description,status,paid_status";
-            $date = date("Y-m-d h:i:s");
-            $title = gettext("BILLING POSTPAID");
-            $description = gettext("Invoice for POSTPAID");
-            $invoice_title = $title;
-            $invoice_reference =$reference;
-            $invoice_description = $description;
-            $value_insert = " '$date' , '$card_id', '$title','$reference','$description',1,0";
-            $instance_table = new Table("cc_invoice", $field_insert);
-            $id_invoice = $instance_table -> Add_table ($FormHandler->DBHandle, $value_insert, null, null,"id");
+            if (empty($invoice->id)) {
+                $reference = Invoice::generateReference();
+                $title = gettext("BILLING POSTPAID");
+                $description = gettext("Invoice for POSTPAID");
+                $invoice = Invoice::create($card_id, $description, $title, $reference, Invoice::STATUS_CLOSED);
+                $invoice->save();
             }
 
-            if (!empty($id_invoice)&& is_numeric($id_invoice)) {
-                $last_invoice = $id_invoice;
+            if (!empty($invoice->id)) {
                 $description = $desc_billing_postpaid;
-                $amount = abs($card_result[0]['credit']+$lastpostpaid_amount);
-                $total = $total + $amount;
+                $amount = abs($card_result["credit"] + $lastpostpaid_amount);
+                $total += $amount;
                 $total_vat =$total_vat + round($amount *(1+($vat/100)),2);
-                $field_insert = "date, id_invoice,price,vat,description,id_ext,type_ext";
-                $instance_table = new Table("cc_invoice_item", $field_insert);
-                $value_insert = " '$date' , '$id_invoice', '$amount','$vat','$description','".$FormHandler -> QUERY_RESULT."','POSTPAID'";
-                $instance_table -> Add_table ($FormHandler->DBHandle, $value_insert, null, null,"id");
+                $item = InvoiceItem::create($invoice, $description, $date, $amount, $vat, "POSTPAID", $new_billing);
+                $item->save();
             }
         }
-        if (!empty($last_invoice)) {
-            $param_update_billing = "id_invoice = '".$last_invoice."'";
-            $clause_update_billing = " id= ".$FormHandler -> QUERY_RESULT;
-            $billing_table ->Update_table($FormHandler->DBHandle,$param_update_billing,$clause_update_billing);
-        }
-        //Send a mail for invoice to pay
-        if (!empty($last_invoice)) {
+
+        if (!empty($invoice->id)) {
+            $values = ["id_invoice" => $invoice->id];
+            if ($start_date) {
+                $values["start_date"] = $start_date;
+            }
+            (new Table("cc_billing_customer"))->updateRow($db, $values, ["id" => $new_billing]);
+
+            //Send a mail for invoice to pay
             $total = round($total,2);
             $mail = new Mail(Mail::$TYPE_INVOICE_TO_PAY, $card_id);
-            $mail->replaceInEmail(Mail::$INVOICE_REFERENCE_KEY, $invoice_reference);
-            $mail->replaceInEmail(Mail::$INVOICE_TITLE_KEY, $invoice_title);
-            $mail->replaceInEmail(Mail::$INVOICE_DESCRIPTION_KEY, $invoice_description);
+            $mail->replaceInEmail(Mail::$INVOICE_REFERENCE_KEY, $invoice->reference);
+            $mail->replaceInEmail(Mail::$INVOICE_TITLE_KEY, $invoice->title);
+            $mail->replaceInEmail(Mail::$INVOICE_DESCRIPTION_KEY, $invoice->description);
             $mail->replaceInEmail(Mail::$INVOICE_TOTAL_KEY, $total);
             $mail->replaceInEmail(Mail::$INVOICE_TOTAL_VAT_KEY, $total_vat);
-            $mail -> send();
-        }
-
-        //Update billing ...
-        if (!empty($start_date)) {
-                $param_update_billing = "start_date = '".$start_date."'";
-                $clause_update_billing = " id= ".$FormHandler -> QUERY_RESULT;
-                $billing_table ->Update_table($FormHandler->DBHandle,$param_update_billing,$clause_update_billing);
+            $mail->send();
         }
     }
 
-
     public static function create_invoice_after_refill()
     {
-        global $A2B;
-        $FormHandler = FormHandler::GetInstance();
-        $processed = $FormHandler->getProcessed();
+        $form = FormHandler::GetInstance();
+        $processed = $form->getProcessed();
+        $db = $form->DBHandle;
 
-        if ($processed['added_invoice']==1) {
-            //CREATE AND UPDATE REF NUMBER
-            $list_refill_type=getRefillType_List();
-            $refill_type = $processed['refill_type'];
-            $reference = Invoice::generateReference();
-            $field_insert = "date, id_card, title ,reference, description";
-            $date = $processed['date'];
-            $card_id = $processed['card_id'];
-            if ($refill_type!=0) {
-                $title = $list_refill_type[$refill_type]." ".gettext("REFILL");
-            } else {
-                $title = gettext("REFILL");
-            }
-            $description = gettext("Invoice for refill");
+        if (!$processed['added_invoice']) {
+            return;
+        }
+        //CREATE AND UPDATE REF NUMBER
+        $refills = getRefillType_List();
+        $type = (int)$processed['refill_type'];
+        $reference = Invoice::generateReference();
+        $date = $processed['date'];
+        $card_id = $processed['card_id'];
+        $title = sprintf(_("%s REFILL"), $refills[$type] ?? "");
+        $description = gettext("Invoice for refill");
 
-            $value_insert = " '$date' , '$card_id', '$title','$reference','$description' ";
-            $instance_table = new Table("cc_invoice", $field_insert);
-            $id_invoice = $instance_table -> Add_table ($FormHandler->DBHandle, $value_insert, null, null,"id");
-            //load vat of this card
-            if (!empty($id_invoice)&& is_numeric($id_invoice)) {
-                $amount = $processed['credit'];
-                $description = $processed['description'];
-                $card_table = new Table('cc_card', 'vat');
-                $card_clause = "id = ".$card_id;
-                $card_result = $card_table -> get_list($FormHandler->DBHandle, $card_clause);
-                if(!is_array($card_result)||empty($card_result[0][0])||!is_numeric($card_result[0][0])) $vat=0;
-                else $vat = $card_result[0][0];
-                $field_insert = "date, id_invoice ,price,vat, description";
-                $instance_table = new Table("cc_invoice_item", $field_insert);
-                $value_insert = " '$date' , '$id_invoice', '$amount','$vat','$description' ";
-                $instance_table -> Add_table ($FormHandler->DBHandle, $value_insert, null, null,"id");
-            }
+        $invoice = Invoice::create($card_id, $description, $title, $reference, Invoice::STATUS_OPEN, Invoice::PAIDSTATUS_UNPAID, $date);
+        //load vat of this card
+        if ($invoice->save()) {
+            $amount = $processed['credit'];
+            $description = $processed['description'];
+            $vat = (new Table("cc_card", ["vat"]))->getValue($db, ["id" => $card_id]) ?? 0;
+            $item = InvoiceItem::create($invoice, $description, $date, $amount, $vat);
+            $item->save();
         }
     }
 
 
     public static function create_invoice_reference()
     {
-        global $A2B;
-        $FormHandler = FormHandler::GetInstance();
-        $processed = $FormHandler->getProcessed();
-        $id_invoice = $FormHandler -> QUERY_RESULT;
+        $form = FormHandler::GetInstance();
+        $id_invoice = $form->QUERY_RESULT;
         //CREATE AND UPDATE REF NUMBER
         $reference = Invoice::generateReference();
-        $instance_table_invoice = new Table("cc_invoice");
-        $param_update_invoice = "reference = '".$reference."'";
-        $clause_update_invoice = " id ='$id_invoice'";
-        $instance_table_invoice-> Update_table ($FormHandler->DBHandle, $param_update_invoice, $clause_update_invoice, $func_table = null);
-
+        $invoice = new Invoice($id_invoice);
+        $invoice->reference = $reference;
+        $invoice->save();
     }
 
 
@@ -874,139 +725,130 @@ class FormBO
      */
     public static function create_refill_after_payment()
     {
-        $FormHandler = FormHandler::GetInstance();
-        $processed = $FormHandler->getProcessed();
-        if ((int)$processed['added_refill'] === 1) {
-            $id_payment = $FormHandler->QUERY_RESULT;
+        $form = FormHandler::GetInstance();
+        $processed = $form->getProcessed();
+        $db = $form->DBHandle;
+        $date = $processed["date"];
+        $card_id = $processed["card_id"];
+        $amount = $processed["payment"];
+        $id_payment = $form->QUERY_RESULT;
+
+        if (!$processed["added_refill"] && !$processed["added_commission"]) {
+            return;
+        }
+
+        if ($processed["added_refill"]) {
             // CREATE REFILL
-            $date = $processed['date'];
-            $card_id = $processed['card_id'];
             $refill_type = (int)$processed['payment_type'];
             $description = $processed['description'];
-            $card_result = (new Table("cc_card", "vat"))->getRow($FormHandler->DBHandle, ["id" => $card_id]);
-            $vat = (int)($card_result["vat"] ?? 0);
-            $credit = $processed['payment'] / (1 + $vat / 100);
+            $vat = (new Table("cc_card", "vat"))->getValue($db, ["id" => $card_id]) ?? 0;
+            $credit = $amount / (1 + $vat / 100);
 
             $insert_values = compact("date", "credit", "card_id", "refill_type", "description");
-            (new Table("cc_logrefill"))->addRow($FormHandler->DBHandle, $insert_values, "id", $id_refill);
+            (new Table("cc_logrefill"))->addRow($db, $insert_values, "id", $id_refill);
 
             // REFILL CARD - UPDATE CARD
             $insert_values = ["credit" => ["credit + ?", $credit]];
-            (new Table("cc_card"))->updateRow($FormHandler->DBHandle, $insert_values, ["id" => $card_id]);
+            (new Table("cc_card"))->updateRow($db, $insert_values, ["id" => $card_id]);
 
             // LINK THE REFILL TO THE PAYMENT .. UPADTE PAYMENT
             $insert_values = ["id_logrefill" => $id_refill];
-            (new Table("cc_logpayment"))->updateRow($FormHandler->DBHandle, $insert_values, ["id" => $id_payment]);
+            (new Table("cc_logpayment"))->updateRow($db, $insert_values, ["id" => $id_payment]);
 
             // Create invoice associated
-            $list_refill_type = getRefillType_List();
-
-            $insert_values = [
-                "date" => $date,
-                "id_card" => $card_id,
-                "title" => trim(($list_refill_type[$refill_type] ?? "") . " " . _("REFILL")),
-                "reference" => Invoice::generateReference(),
-                "description" => gettext("Invoice for refill"),
-                "status" => 1,
-                "paid_status" => 1,
-            ];
-            (new Table("cc_invoice"))->addRow($FormHandler->DBHandle, $insert_values, "id", $id_invoice);
-
-            //add payment to this invoice
-            $insert_values = compact("id_invoice", "id_payment");
-            (new Table("cc_invoice_payment"))->addRow($FormHandler->DBHandle, $insert_values);
-
-            //load vat of this card
-            if (!empty($id_invoice) && is_numeric($id_invoice)) {
-                $insert_values = [
-                    "date" => $date,
-                    "id_invoice" => $id_invoice,
-                    "price" => $credit,
-                    "vat" => $vat,
-                    "description" => $description
-                ];
-                (new Table("cc_invoice_item"))->addRow($FormHandler->DBHandle, $insert_values);
+            $refills = getRefillType_List();
+            $title = sprintf(_("%s REFILL"), $refills[$refill_type] ?? "");
+            $reference = Invoice::generateReference();
+            $description = gettext("Invoice for refill");
+            $invoice = Invoice::create($card_id, $description, $title, $reference, Invoice::STATUS_CLOSED, Invoice::PAIDSTATUS_PAID, $date);
+            if ($invoice->save()) {
+                //add payment to this invoice
+                (new Table("cc_invoice_payment"))
+                    ->addRow($db, ["id_invoice" => $invoice->id, "id_payment" => $id_payment]);
+                $item = InvoiceItem::create($invoice, $description, $date, $credit, $vat);
+                $item->save();
             }
         }
 
-        if ($processed['added_commission']==1) {
-            $card_id = $processed['card_id'];
-            $table_transaction = new Table();
-            $result_agent = $table_transaction -> SQLExec($FormHandler->DBHandle,"SELECT cc_card_group.id_agent FROM cc_card LEFT JOIN cc_card_group ON cc_card_group.id = cc_card.id_group WHERE cc_card.id = $card_id");
+        if (!$processed["added_commission"]) {
+            return;
+        }
+        $table = new Table("cc_card", "id_agent", ["cc_card_group" => ["cc_card.id_group", "cc_card_group.id"]]);
+        $id_agent = $table->getValue($db, ["cc_card.id" => $card_id]);
 
-            if (is_array($result_agent)&& !is_null($result_agent[0]['id_agent']) && $result_agent[0]['id_agent']>0 ) {
+        if ($id_agent) {
+            // update refill & payment to keep a trace of agent in the timeline
+            if (!empty($id_refill)) {
+                (new Table("cc_logrefill"))
+                    ->updateRow($db, ["agent_id" => $id_agent], ["id" => $id_refill]);
+            }
+            (new Table("cc_logpayment"))
+                ->updateRow($db, ["agent_id" => $id_agent], ["id" => $id_payment]);
 
-                // test if the agent exist and get its commission
-                $id_agent = $result_agent[0]['id_agent'];
-                // update refill & payment to keep a trace of agent in the timeline
-                $table_refill = new Table("cc_logrefill");
-                $table_payment = new Table("cc_logpayment");
-                $param_update = "agent_id = '".$id_agent."'";
-                if (!empty($id_refill)) {
-                    $clause_update_refill_agent = " id ='$id_refill'";
-                    $table_refill-> Update_table ($FormHandler->DBHandle, $param_update, $clause_update_refill_agent, $func_table = null);
-                }
-                $clause_update_payment_agent = " id ='$id_payment'";
-                $table_payment-> Update_table ($FormHandler->DBHandle, $param_update, $clause_update_payment_agent, $func_table = null);
+            $comm = (new Table("cc_agent", ["commission"]))
+                ->getValue($db, ["id" => $id_agent]);
 
-                $agent_table = new Table("cc_agent", "commission");
-                $agent_clause = "id = ".$id_agent;
-                $result_agent= $agent_table -> get_list($FormHandler->DBHandle, $agent_clause);
-
-                if (is_array($result_agent) && is_numeric($result_agent[0]['commission']) && $result_agent[0]['commission']>0) {
-                    $field_insert = "id_payment, id_card, amount,description,id_agent";
-                    $commission = a2b_round($processed['payment'] * ($result_agent[0]['commission']/100));
-                    $description_commission = gettext("AUTOMATICALY GENERATED COMMISSION!");
-                    $description_commission.= "\nID CARD : ".$card_id;
-                    $description_commission.= "\nID PAYMENT : ".$id_payment;
-                    $description_commission.= "\nPAYMENT AMOUNT: ".$amount_paid;
-                    $description_commission.= "\nCOMMISSION APPLIED: ".$result_agent[0]['commission'];
-                    $value_insert = "'".$id_payment."', '$card_id', '$commission','$description_commission','$id_agent'";
-                    $commission_table = new Table("cc_agent_commission", $field_insert);
-                    $id_commission = $commission_table -> Add_table ($FormHandler->DBHandle, $value_insert, null, null,"id");
-                    $table_agent = new Table('cc_agent');
-                    $param_update_agent = "com_balance = com_balance + '".$commission."'";
-                    $clause_update_agent = " id='".$id_agent."'";
-                    $table_agent -> Update_table ($FormHandler->DBHandle, $param_update_agent, $clause_update_agent, $func_table = null);
-                }
+            if ($comm) {
+                $commission = $amount * ($comm / 100);
+                $description = sprintf(
+                    "%s\n%s\n%s\n%s\n%s\n%s",
+                    _("AUTOMATICALY GENERATED COMMISSION!"),
+                    sprintf(_("Card ID: %s"), $card_id),
+                    sprintf(_("Payment ID: %s"), $id_payment),
+                    sprintf(_("Payment amount: %s"), get_money($amount)),
+                    sprintf(_("Commission applied: %s"), get_percent($comm)),
+                    sprintf(_("Commission paid: %s"), get_money($commission))
+                );
+                $insert_values = [
+                    "id_payment" => $id_payment,
+                    "id_card" => $card_id,
+                    "amount" => $commission,
+                    "description" => $description,
+                    "id_agent" => $id_agent
+                ];
+                (new Table("cc_agent_commission"))->addRow($db, $insert_values);
+                (new Table("cc_agent"))
+                    ->updateRow(
+                        $db,
+                        ["com_balance" => ["com_balance + ?", $commission]],
+                        ["id" => $id_agent]
+                    );
             }
         }
     }
 
     public static function create_agent_refill()
     {
-        global $A2B;
-        $FormHandler = FormHandler::GetInstance();
-        $processed = $FormHandler->getProcessed();
+        $form = FormHandler::GetInstance();
+        $processed = $form->getProcessed();
+        $id_payment = $form->QUERY_RESULT;
+        $db = $form->DBHandle;
 
-        if ($processed['added_refill']==1) {
-            $id_payment = $FormHandler -> QUERY_RESULT;
-
-            //CREATE REFILL
-            $field_insert = "date, credit, agent_id ,refill_type, description";
-            $date = $processed['date'];
-            $credit = $processed['payment'];
-            $agent_id = $processed['agent_id'];
-            $refill_type= $processed['payment_type'];
-            $description = $processed['description'];
-            $value_insert = " '$date' , '$credit', '$agent_id','$refill_type', '$description' ";
-            $instance_sub_table = new Table("cc_logrefill_agent", $field_insert);
-            $id_refill = $instance_sub_table -> Add_table ($FormHandler->DBHandle, $value_insert, null, null,"id");
-
-            //REFILL AGENT .. UPADTE AGENT
-            $instance_table_agent = new Table("cc_agent");
-            $param_update_agent = "credit = credit + '".$credit."'";
-            $clause_update_agent = " id='$agent_id'";
-            $instance_table_agent -> Update_table ($FormHandler->DBHandle, $param_update_agent, $clause_update_agent, $func_table = null);
-
-            //LINK THE REFILL TO THE PAYMENT .. UPADTE PAYMENT
-            $instance_table_pay = new Table("cc_logpayment_agent");
-            $param_update_pay = "id_logrefill = '".$id_refill."'";
-            $clause_update_pay = " id ='$id_payment'";
-            $instance_table_pay-> Update_table ($FormHandler->DBHandle, $param_update_pay, $clause_update_pay, $func_table = null);
+        if (!$processed["added_refill"]) {
+            return;
         }
-    }
+        $date = $processed["date"];
+        $credit = $processed["payment"];
+        $agent_id = $processed["agent_id"];
+        $refill_type = $processed["payment_type"];
+        $description = $processed["description"];
+        //CREATE REFILL
+        (new Table("cc_logrefill_agent"))
+            ->addRow(
+                $db,
+                compact("date", "credit", "agent_id", "refill_type", "description"),
+                "id",
+                $id_refill
+            );
 
+        //REFILL AGENT .. UPADTE AGENT
+        (new Table("cc_agent"))
+            ->updateRow($db, ["credit" => ["credit + ?", $credit]], ["id" => $agent_id]);
+
+        //LINK THE REFILL TO THE PAYMENT .. UPADTE PAYMENT
+        (new Table("cc_logpayment_agent"))
+            ->updateRow($db, ["id_logrefill" => $id_refill], ["id" => $id_payment]);
+    }
 
     /**
      * Function to edit the fields
@@ -1014,7 +856,6 @@ class FormBO
      */
     public static function create_sipiax_friends()
     {
-        global $A2B;
         $FormHandler = FormHandler::GetInstance();
         $processed = $FormHandler->getProcessed();
         $id = $FormHandler -> QUERY_RESULT; // DEFINED BEFORE FG_ADDITIONAL_FUNCTION_AFTER_ADD
@@ -1025,58 +866,50 @@ class FormBO
         if (strlen($FormHandler -> REALTIME_SIP_IAX_INFO[0])>0) {
             $username 	= $FormHandler -> REALTIME_SIP_IAX_INFO[0];
             $uipass 	= $FormHandler -> REALTIME_SIP_IAX_INFO[2];
-            $useralias 	= $FormHandler -> REALTIME_SIP_IAX_INFO[1];
         } else {
             $username 	= $processed['username'];
             $uipass 	= $processed['uipass'];
-            $useralias 	= $processed['useralias'];
         }
 
         $instance_realtime = new Realtime();
 
-        $instance_realtime -> insert_voip_config ($sip, $iax, $id, $username, $uipass);
+        $instance_realtime->insert_voip_config ($sip, $iax, $id, $username, $uipass);
 
         // Save info in table and in sip file
         if ($sip == 1) {
-            $instance_realtime -> create_trunk_config_file ('sip');
+            $instance_realtime->create_trunk_config_file();
         }
 
         // Save info in table and in iax file
         if ($iax == 1) {
-            $instance_realtime -> create_trunk_config_file ('iax');
+            $instance_realtime->create_trunk_config_file('iax');
         }
     }
 
     public static function create_lock_card()
     {
-        global $A2B;
-        $FormHandler = FormHandler::GetInstance();
-        $processed = $FormHandler->getProcessed();
-        $id = $FormHandler -> QUERY_RESULT;
-        if ($processed['block'] == 1) {
-            $instance_sub_table = new Table("cc_card");
-            $param_update_card = "lock_date = NOW()";
-            $clause_update_card = "id = $id";
-            $instance_sub_table -> Update_table ($FormHandler->DBHandle, $param_update_card, $clause_update_card, $func_table = null);
+        $form = FormHandler::GetInstance();
+        $processed = $form->getProcessed();
+        $id = $form->QUERY_RESULT;
+        $db = $form->DBHandle;
+        if (!$processed["block"]) {
+            return;
         }
+        (new Table("cc_card"))
+            ->updateRow($db, ["lock_date" => "CURRENT_TIMESTAMP"], ["id" => $id]);
     }
 
     public static function change_card_lock()
     {
-        global $A2B;
-        $FormHandler = FormHandler::GetInstance();
-        $processed = $FormHandler->getProcessed();
-        $instance_sub_table = new Table("cc_card", "block");
-        $FG_TABLE_CLAUSE_CARD = "id = ".$processed['id'];
-        $card_info = $instance_sub_table -> get_list ($FormHandler->DBHandle, $FG_TABLE_CLAUSE_CARD);
-        if (is_array($result) && !empty($result[0][0])) {
-            $card_lock_info = $card_info[0][0];
-
-            if ($card_lock_info != $processed['block'] && $processed['block'] == 1) {
-                $param_update_card = "lock_date = NOW()";
-                $clause_update_card = "id = ".$processed['id'];
-                $instance_sub_table -> Update_table ($FormHandler->DBHandle, $param_update_card, $clause_update_card, $func_table = null);
-            }
+        $form = FormHandler::GetInstance();
+        $processed = $form->getProcessed();
+        $db = $form->DBHandle;
+        $card = $processed["id"];
+        $instance_sub_table = new Table("cc_card", ["block"]);
+        $card_lock_info = $instance_sub_table->getValue($db, ["id" => $card]);
+        if ($card_lock_info != $processed["block"] && $processed["block"] == 1) {
+            $instance_sub_table
+                ->updateRow($db, ["lock_date" => "CURRENT_TIMESTAMP"], ["id" => $card]);
         }
     }
 
@@ -1086,9 +919,15 @@ class FormBO
      */
     public static function create_notification_signup()
     {
-        global $A2B;
-        $FormHandler = FormHandler::GetInstance();
-        $id_card = $FormHandler -> QUERY_RESULT;
-        NotificationsDAO::addNotification("added_new_signup",Notification::$MEDIUM,Notification::$CUST,$id_card,Notification::$LINK_CARD,$id_card);
+        $form = FormHandler::GetInstance();
+        $id_card = $form->QUERY_RESULT;
+        NotificationsDAO::addNotification(
+            "added_new_signup",
+            Notification::$MEDIUM,
+            Notification::$CUST,
+            $id_card,
+            Notification::$LINK_CARD,
+            $id_card
+        );
     }
 }
