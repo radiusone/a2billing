@@ -44,6 +44,7 @@ require_once __DIR__ . "/form_data/FG_var_config_group.inc";
  * @var string $form_action
  */
 
+$form_action ??= "";
 $HD_Form -> init();
 
 require_once __DIR__ . "/../templates/main.php";
@@ -102,10 +103,13 @@ $new_group_title = $config[0]["new_title"];
 </table>
 <?php endif ?>
 
-<div class="row my-4 justify-content-end">
+<form class="row my-4 justify-content-end" method="post" action="A2B_entity_config_group.php">
     <div class="col-auto">
-        <a class="btn btn-primary" href="A2B_entity_config_group.php?form_action=list&amp;agi_conf=<?= $new_group_title ?>&amp;from_conf=<?= $first_group_title ?>"><?= sprintf(_("Create %s"), $new_group_title) ?></a>
+        <input type="hidden" name="agi_conf" value="<?= $new_group_title ?>"/>
+        <input type="hidden" name="from_conf" value="agi-conf1"/>
+        <button type="submit" class="btn btn-primary"><?= sprintf(_("Create %s"), $new_group_title) ?></button>
     </div>
-</div>
+</form>
+
 <?php
 require_once __DIR__ . "/../templates/footer.php";
