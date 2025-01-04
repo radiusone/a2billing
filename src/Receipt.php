@@ -1,22 +1,11 @@
 <?php
 namespace A2billing;
 
+use A2billing\Payments\PaymentDocument;
 use DateTime;
 
-class Receipt
+class Receipt extends PaymentDocument
 {
-    public const STATUS_OPEN = 0;
-    public const STATUS_CLOSED = 1;
-
-    public ?int $id;
-    public string $title = "";
-    public string $description = "";
-    public int $card = 0;
-    public string $date = "";
-    public int $status = self::STATUS_OPEN;
-    public string $username = "";
-    public array $items = [];
-
     public function __construct(?int $id = null, ?string $desc = null, ?string $title = null)
     {
         if (is_null($id)) {
@@ -38,7 +27,6 @@ class Receipt
         $this->username = $value["username"];
         $this->items = $this->loadItems();
     }
-
 
     public static function create(
         int     $card,
@@ -78,36 +66,6 @@ class Receipt
 
             return $result;
         }
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    public function getTitle(): string
-    {
-        return $this->title;
-    }
-
-    public function getDescription(): string
-    {
-        return $this->description;
-    }
-
-    public function getCard(): ?int
-    {
-        return $this->card;
-    }
-
-    public function getDate(): string
-    {
-        return substr($this->date, 0, 10);
-    }
-
-    public function getUsername(): string
-    {
-        return $this->username;
     }
 
     public function loadItems(): array

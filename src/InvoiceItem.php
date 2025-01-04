@@ -1,15 +1,10 @@
 <?php
 namespace A2billing;
 
-class InvoiceItem
+use A2billing\Payments\PaymentDocumentItem;
+
+class InvoiceItem extends PaymentDocumentItem
 {
-    public ?int $id = null;
-    public string $description = "";
-    public string $date = "";
-    public float $price = 0;
-    public float $vat = 0;
-    public ?int $id_ext = null;
-    public ?string $type_ext = null;
     public ?int $invoice_id = null;
 
     /**
@@ -84,40 +79,5 @@ class InvoiceItem
 
             return $result;
         }
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    public function getExtId(): ?int
-    {
-        return $this->id_ext;
-    }
-
-    public function getExtType(): ?string
-    {
-        return $this->type_ext;
-    }
-
-    public function getPrice(): float
-    {
-        return $this->price;
-    }
-
-    public function getVat(): float
-    {
-        return $this->vat;
-    }
-
-    public function getDescription(): string
-    {
-        return $this->description;
-    }
-
-    public function getDate(): string
-    {
-        return substr($this->date, 0, 10);
     }
 }

@@ -1,14 +1,10 @@
 <?php
 namespace A2billing;
 
-class ReceiptItem
+use A2billing\Payments\PaymentDocumentItem;
+
+class ReceiptItem extends PaymentDocumentItem
 {
-    public ?int $id = null;
-    public string $description = "";
-    public string $date = "";
-    public float $price = 0;
-    public ?int $id_ext = null;
-    public ?string $type_ext = null;
     public ?int $receipt_id = null;
 
     public function __construct(
@@ -69,25 +65,4 @@ class ReceiptItem
             return $result;
         }
     }
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    public function getPrice(): float
-    {
-        return $this->price;
-    }
-
-    public function getDescription(): string
-    {
-        return $this->description;
-    }
-
-    public function getDate(): string
-    {
-        return substr($this->date, 0, 10);
-    }
-
 }

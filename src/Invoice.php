@@ -1,25 +1,16 @@
 <?php
 namespace A2billing;
 
+use A2billing\Payments\PaymentDocument;
 use DateTime;
 
-class Invoice
+class Invoice extends PaymentDocument
 {
-    public const STATUS_OPEN = 0;
-    public const STATUS_CLOSED = 1;
     public const PAIDSTATUS_UNPAID = 0;
     public const PAIDSTATUS_PAID = 1;
 
-    public ?int $id = null;
-    public string $title = "";
-    public string $description = "";
-    public string $date = "";
-    public int $status = self::STATUS_OPEN;
     public int $paid_status = self::PAIDSTATUS_UNPAID;
-    public int $card = 0;
     public string $reference = "";
-    /** @var InvoiceItem[] */
-    public array $items = [];
 
     /**
      * Create a new empty invoice item or fetch one from the database
@@ -108,45 +99,14 @@ class Invoice
         }
     }
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
     public function getReference(): string
     {
         return $this->reference;
     }
 
-    public function getTitle(): string
-    {
-        return $this->title;
-    }
-
-    public function getDescription(): string
-    {
-        return $this->description;
-    }
-
-    public function getCard(): string
-    {
-        return $this->card;
-    }
-
-    public function getStatus(): int
-    {
-        return $this->status;
-
-    }
     public function getPaidStatus(): int
     {
         return $this->paid_status;
-
-    }
-
-    public function getDate(): string
-    {
-        return substr($this->date, 0, 10);
     }
 
     public function loadItems(): array
@@ -275,18 +235,6 @@ class Invoice
         $item = InvoiceItem::create($this, $desc, $date, $price, $VAT);
 
         return $item->save();
-    }
-
-    public function getStatusDisplay(): string
-    {
-        switch ($this->status) {
-            case self::STATUS_OPEN:
-                return _("OPEN");
-            case self::STATUS_CLOSED:
-                return _("CLOSED");
-            default:
-                return "";
-        }
     }
 
     public function getPaidStatusDisplay(): string
