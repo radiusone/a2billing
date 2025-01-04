@@ -1,11 +1,13 @@
 <?php
-namespace A2billing;
+namespace A2billing\Payments;
 
-use A2billing\Payments\PaymentDocument;
+use A2billing\Table;
 use DateTime;
 
 class Receipt extends PaymentDocument
 {
+    protected string $table = "cc_receipt";
+
     public function __construct(?int $id = null, ?string $desc = null, ?string $title = null)
     {
         if (is_null($id)) {
@@ -48,7 +50,6 @@ class Receipt extends PaymentDocument
 
     public function save(): bool
     {
-        $table = new Table("cc_receipt");
         $values = [
             "id_card" => $this->card,
             "description" => $this->description,
@@ -56,16 +57,8 @@ class Receipt extends PaymentDocument
             "date" => $this->date,
             "status" => $this->status,
         ];
-        $db = DbConnect();
-        if ($this->id) {
-            return $table->updateRow($db, $values, ["id" => $this->id]);
-        } else {
-            $id = null;
-            $result = $table->addRow($db, $values, "id", $id);
-            $this->id = $id;
 
-            return $result;
-        }
+        return $this->saveOrUpdate($values);
     }
 
     public function loadItems(): array
@@ -117,8 +110,8 @@ class Receipt extends PaymentDocument
                 $item = ReceiptItem::create(
                     $this,
                     sprintf(_("Call to: %s, duration: %s"), $call['calledstation'], $duration),
-                    $call['starttime'],
                     $call["sessionbill"],
+                    $call['starttime'],
                     true // what does true mean? original code was just copied from invoice.php including fields that don't exist here :(
                 );
                 $result[] = $item;
@@ -137,18 +130,12 @@ class Receipt extends PaymentDocument
         return $result["count"] ?? 0;
     }
 
-    public function sumItemsPrice(): float
-    {
-        return array_sum(array_column($this->items, "price"));
-    }
-
     public function insertReceiptItem(string $desc, string $price, ?string $date = null): bool
     {
         if (is_null($this->id)) {
             return false;
         }
-        $date ??= (new DateTime())->format("Y-m-d H:i:s");
-        $item = ReceiptItem::create($this, $desc, $date, $price);
+        $item = ReceiptItem::create($this, $desc, $price, $date);
 
         return $item->save();
     }

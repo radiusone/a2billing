@@ -1,8 +1,8 @@
 <?php
 
 use A2billing\Customer;
-use A2billing\InvoiceItem;
-use A2billing\ReceiptItem;
+use A2billing\Payments\InvoiceItem;
+use A2billing\Payments\ReceiptItem;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -287,10 +287,10 @@ function amount_convert($amount)
                     <?php echo number_format(round(amount_convert($item->getPrice()),6),6); ?>
                 </td>
                 <td align="right">
-                    <?php echo number_format(round($item->getVat(),2),2)."%"; ?>
+                    <?php echo number_format(round($item->getVatRate(),2),2)."%"; ?>
                 </td>
                 <td align="right">
-                    <?php echo number_format(round(amount_convert($item->getPrice())*(1+($item->getVat()/100)),6),6); ?>
+                    <?php echo number_format(round(amount_convert($item->getPrice())*(1+($item->getVatRate()/100)),6),6); ?>
                 </td>
             </tr>
              <?php  $i++;} ?>
@@ -304,11 +304,11 @@ function amount_convert($amount)
         $vat_array = array();
         foreach ($invoice_items as $item) {
             $price_without_vat = $price_without_vat + $item->getPrice();
-            $price_with_vat = $price_with_vat + ($item->getPrice()*(1+($item->getVat()/100)));
-            if (array_key_exists("".$item->getVat(),$vat_array)) {
-                $vat_array[$item->getVat()] = $vat_array[$item->getVat()] + $item->getPrice()*($item->getVat()/100) ;
+            $price_with_vat = $price_with_vat + ($item->getPrice()*(1+($item->getVatRate()/100)));
+            if (array_key_exists("".$item->getVatRate(),$vat_array)) {
+                $vat_array[$item->getVatRate()] = $vat_array[$item->getVatRate()] + $item->getPrice()*($item->getVatRate()/100) ;
             } else {
-                $vat_array[$item->getVat()] =  $item->getPrice()*($item->getVat()/100) ;
+                $vat_array[$item->getVatRate()] =  $item->getPrice()*($item->getVatRate()/100) ;
             }
         }
     ?>

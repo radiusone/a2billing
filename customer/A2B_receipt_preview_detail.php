@@ -1,7 +1,7 @@
 <?php
 
 use A2billing\Customer;
-use A2billing\ReceiptItem;
+use A2billing\Payments\ReceiptItem;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */

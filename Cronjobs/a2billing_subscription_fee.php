@@ -3,8 +3,8 @@
 
 use A2billing\A2Billing;
 use A2billing\A2bMailException;
-use A2billing\Invoice;
 use A2billing\Mail;
+use A2billing\Payments\Invoice;
 use A2billing\ProcessHandler;
 use A2billing\Table;
 

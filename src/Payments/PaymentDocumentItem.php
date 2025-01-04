@@ -2,6 +2,8 @@
 
 namespace A2billing\Payments;
 
+use A2billing\Table;
+
 abstract class PaymentDocumentItem
 {
     public ?int $id = null;
@@ -18,6 +20,8 @@ abstract class PaymentDocumentItem
 
     public ?string $type_ext = null;
 
+    use Database;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -28,7 +32,7 @@ abstract class PaymentDocumentItem
         return round($this->price, 2, PHP_ROUND_HALF_UP);
     }
 
-    public function getVat(): float
+    public function getVatRate(): float
     {
         return $this->vat;
     }

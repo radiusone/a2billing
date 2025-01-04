@@ -1,11 +1,12 @@
 <?php
-namespace A2billing;
+namespace A2billing\Payments;
 
-use A2billing\Payments\PaymentDocumentItem;
+use A2billing\Table;
 
 class InvoiceItem extends PaymentDocumentItem
 {
     public ?int $invoice_id = null;
+    protected string $table = "cc_invoice_item";
 
     /**
      * @param int|null $id
@@ -59,7 +60,6 @@ class InvoiceItem extends PaymentDocumentItem
 
     public function save(): bool
     {
-        $table = new Table("cc_invoice_item");
         $values = [
             "id_invoice" => $this->invoice_id,
             "description" => $this->description,
@@ -69,15 +69,7 @@ class InvoiceItem extends PaymentDocumentItem
             "type_ext" => $this->type_ext,
             "id_ext" => $this->id_ext,
         ];
-        $db = DbConnect();
-        if ($this->id) {
-            return $table->updateRow($db, $values, ["id" => $this->id]);
-        } else {
-            $id = null;
-            $result = $table->addRow($db, $values, "id", $id);
-            $this->id = $id;
 
-            return $result;
-        }
+        return $this->saveOrUpdate($values);
     }
 }

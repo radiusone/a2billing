@@ -1,7 +1,7 @@
 <?php
 
 use A2billing\Customer;
-use A2billing\Receipt;
+use A2billing\Payments\Receipt;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -61,7 +61,7 @@ $nbitems = $receipt->nbDetailedItems();
 $nb_by_page =100;
 $nb_page = ceil($nbitems/$nb_by_page);
 $items = $receipt->loadDetailedItems((($page-1)*$nb_by_page),$nb_by_page);
-if($nb_page>1)$totalprice = $receipt->sumItemsPrice();
+if($nb_page>1)$totalprice = $receipt->getTotalPrice();
 //load customer
 $DBHandle  = DbConnect();
 

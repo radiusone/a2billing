@@ -1,7 +1,7 @@
 <?php
 
 use A2billing\Admin;
-use A2billing\Invoice;
+use A2billing\Payments\Invoice;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -70,16 +70,7 @@ if (is_numeric($status ?? null)) {
     header("Location: A2B_invoice_manage_payment.php?id=$id");
 }
 
-$price_without_vat = 0;
-$price_with_vat = 0;
-$vat_array = [];
-foreach ($invoice->items as $item) {
-    $price_without_vat += ($rndprice = round($item->price, 2, PHP_ROUND_HALF_UP));
-    $vat_array[(string)$item->vat] ??= 0;
-    $vat_array[(string)$item->vat] += ($rndvat = round($item->price * $item->vat / 100, 2, PHP_ROUND_HALF_UP));
-    $price_with_vat += $rndprice + $rndvat;
-}
-$vat_array = array_filter($vat_array);
+$vat_array = $invoice->getTotalVat();
 
 $payments = $invoice->loadPayments();
 $payment_assigned = 0;
@@ -113,7 +104,7 @@ require_once __DIR__ . "/../templates/main.php";
     </tr>
     <tr>
         <th scope="row"><?= _("Total excluding VAT") ?></th>
-        <td><?= get_money($price_without_vat) ?></td>
+        <td><?= get_money($invoice->getTotalPrice()) ?></td>
     </tr>
     <tr>
         <th scope="row" rowspan="<?= count($vat_array) ?>"><?= _("Total VAT") ?></th>
@@ -121,7 +112,7 @@ require_once __DIR__ . "/../templates/main.php";
     </tr>
     <tr>
         <th scope="row"><?= _("Total including VAT") ?></th>
-        <td><?= get_money($price_with_vat) ?></td>
+        <td><?= get_money($invoice->getTotalAmount()) ?></td>
     </tr>
     <tr>
         <th scope="row"><?= _("Total payments assigned") ?></th>

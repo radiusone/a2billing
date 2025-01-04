@@ -4,14 +4,14 @@ namespace A2billing\Forms;
 
 use A2billing\A2bMailException;
 use A2billing\Customer;
-use A2billing\Invoice;
-use A2billing\InvoiceItem;
 use A2billing\Mail;
 use A2billing\Notification;
 use A2billing\NotificationsDAO;
+use A2billing\Payments\Invoice;
+use A2billing\Payments\InvoiceItem;
+use A2billing\Payments\Receipt;
+use A2billing\Payments\ReceiptItem;
 use A2billing\Realtime;
-use A2billing\Receipt;
-use A2billing\ReceiptItem;
 use A2billing\Table;
 use A2billing\Ticket;
 use DateTimeImmutable;
@@ -702,7 +702,7 @@ class FormBO
             $description = _("Summary of the calls charged since the last billing");
             $receipt = Receipt::create($card_id, $description, $title, Receipt::STATUS_CLOSED);
             if ($receipt->save()) {
-                $item = ReceiptItem::create($receipt, $desc_billing, $date, $amount_calls, "CALLS", $new_billing);
+                $item = ReceiptItem::create($receipt, $desc_billing, $amount_calls, $date, "CALLS", $new_billing);
                 $item->save();
             }
         }
@@ -716,7 +716,7 @@ class FormBO
             $receipt = Receipt::create($card_id, $description, $title, Receipt::STATUS_CLOSED);
             if ($receipt->save()) {
                 foreach ($charges as $charge) {
-                    $item = ReceiptItem::create($receipt, $charge["description"], $charge["creationdate"], $charge["amount"], "CHARGE", $charge["id"]);
+                    $item = ReceiptItem::create($receipt, $charge["description"], $charge["amount"], $charge["creationdate"], "CHARGE", $charge["id"]);
                     $item->save();
                 }
             }

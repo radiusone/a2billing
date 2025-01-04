@@ -1,7 +1,7 @@
 <?php
 
 use A2billing\Admin;
-use A2billing\Invoice;
+use A2billing\Payments\Invoice;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -75,8 +75,6 @@ $invoice_conf = $table->getColumn(
 );
 
 $curr = strtoupper($curr ?? BASE_CURRENCY);
-$total_untaxed = 0;
-$total_vat = [];
 
 require_once __DIR__ . "/../templates/main.php";
 ?>
@@ -174,21 +172,16 @@ require_once __DIR__ . "/../templates/main.php";
         </thead>
         <tbody>
         <?php foreach ($invoice->items as $item): ?>
-            <?php
-                $total_untaxed += ($rndprice = round($item->price, 2, PHP_ROUND_HALF_UP));
-                $total_vat[(string)$item->vat] ??= 0;
-                $total_vat[(string)$item->vat] += ($rndvat = round($item->price * $item->vat / 100, 2, PHP_ROUND_HALF_UP));
-            ?>
             <tr>
                 <td></td>
                 <td><?= $item->getDate() ?></td>
                 <td class="description"><?= $item->description ?></td>
                 <td>
-                    <?= get_money(convert_currency($rndprice, BASE_CURRENCY, $curr), null, $curr) ?>
+                    <?= get_money(convert_currency($item->getPrice(), BASE_CURRENCY, $curr), null, $curr) ?>
                 </td>
                 <td><?= get_percent($item->vat) ?></td>
                 <td>
-                    <?= get_money(convert_currency($rndprice + $rndvat, BASE_CURRENCY, $curr), null, $curr) ?>
+                    <?= get_money(convert_currency($item->getTotalPrice(), BASE_CURRENCY, $curr), null, $curr) ?>
                 </td>
             </tr>
         <?php endforeach ?>
@@ -197,14 +190,14 @@ require_once __DIR__ . "/../templates/main.php";
             <tr>
                 <th scope="row"><?= _("Totals") ?></th>
                 <td colspan="2"></td>
-                <td><?= get_money(convert_currency($total_untaxed, BASE_CURRENCY, $curr), null, $curr) ?></td>
+                <td><?= get_money(convert_currency($invoice->getTotalPrice(), BASE_CURRENCY, $curr), null, $curr) ?></td>
                 <td>
-                    <?php foreach (array_filter($total_vat) as $per => $vatamt): ?>
+                    <?php foreach ($invoice->getTotalVat() as $per => $vatamt): ?>
                         <?= sprintf("VAT %s", get_percent((float)$per)) ?>
                         <?= get_money(convert_currency($vatamt, BASE_CURRENCY, $curr), null, $curr) ?><br/>
                     <?php endforeach ?>
                 </td>
-                <td><?= get_money(convert_currency($total_untaxed + array_sum($total_vat), BASE_CURRENCY, $curr), null, $curr) ?></td>
+                <td><?= get_money(convert_currency($invoice->getTotalAmount(), BASE_CURRENCY, $curr), null, $curr) ?></td>
             </tr>
         </tfoot>
     </table>

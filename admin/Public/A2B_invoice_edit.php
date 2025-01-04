@@ -1,9 +1,10 @@
 <?php
 
 use A2billing\Admin;
-use A2billing\Customer;use A2billing\Forms\Validator;
-use A2billing\Invoice;
-use A2billing\InvoiceItem;
+use A2billing\Customer;
+use A2billing\Forms\Validator;
+use A2billing\Payments\Invoice;
+use A2billing\Payments\InvoiceItem;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -113,10 +114,6 @@ $result_vat = (new Table("cc_card", "vat"))
     ->getRow($DBHandle, ["id" => $invoice->getCard()]);
 $card_vat =  $result_vat["vat"];
 
-$total_untaxed = 0;
-$total_vat = [];
-$total_total = 0;
-
 require_once __DIR__ . "/../templates/main.php";
 
 ?>
@@ -169,18 +166,13 @@ require_once __DIR__ . "/../templates/main.php";
     </thead>
     <tbody>
     <?php foreach ($invoice->items as $item): ?>
-        <?php
-            $total_untaxed += ($rndprice = round($item->price, 2, PHP_ROUND_HALF_UP));
-            $total_vat[(string)$item->vat] ??= 0;
-            $total_vat[(string)$item->vat] += ($rndvat = round($item->price * $item->vat / 100, 2, PHP_ROUND_HALF_UP));
-        ?>
         <tr>
             <td></td>
             <td><?= $item->getDate() ?></td>
             <td><?= $item->description ?></td>
-            <td><?= get_money($rndprice) ?></td>
-            <td><?= get_percent($rndvat) ?></td>
-            <td><?= get_money($rndprice + $rndvat) ?></td>
+            <td><?= get_money($item->getPrice()) ?></td>
+            <td><?= get_percent($item->getVatRate()) ?></td>
+            <td><?= get_money($item->getTotalPrice()) ?></td>
             <td>
                 <a href="?action=edit&id=<?= $id ?>&idc=<?= $item->id ?>"><img src="<?= get_image_path("edit.png") ?>" alt="<?= _("Edit") ?>"/></a>
                 <a href="?action=delete&id=<?= $id ?>&idc=<?= $item->id ?>"><img src="<?= get_image_path("delete.png") ?>" alt="<?= _("Delete") ?>"/></a>
@@ -192,14 +184,14 @@ require_once __DIR__ . "/../templates/main.php";
         <tr>
             <th scope="row"><?= _("Totals") ?></th>
             <td colspan="2"></td>
-            <td><?= get_money($total_untaxed) ?></td>
+            <td><?= get_money($invoice->getTotalPrice()) ?></td>
             <td>
-                <?php foreach (array_filter($total_vat) as $per => $vatamt): ?>
+                <?php foreach ($invoice->getTotalVat() as $per => $vatamt): ?>
                 <?= sprintf("VAT %s", get_percent((float)$per)) ?>
                 <?= get_money($vatamt) ?><br/>
                 <?php endforeach ?>
             </td>
-            <td><?= get_money($total_untaxed + array_sum($total_vat)) ?></td>
+            <td><?= get_money($invoice->getTotalAmount()) ?></td>
             <td></td>
         </tr>
     </tfoot>

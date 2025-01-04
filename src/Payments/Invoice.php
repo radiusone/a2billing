@@ -1,7 +1,7 @@
 <?php
-namespace A2billing;
+namespace A2billing\Payments;
 
-use A2billing\Payments\PaymentDocument;
+use A2billing\Table;
 use DateTime;
 
 class Invoice extends PaymentDocument
@@ -11,6 +11,7 @@ class Invoice extends PaymentDocument
 
     public int $paid_status = self::PAIDSTATUS_UNPAID;
     public string $reference = "";
+    protected string $table = "cc_invoice";
 
     /**
      * Create a new empty invoice item or fetch one from the database
@@ -77,7 +78,6 @@ class Invoice extends PaymentDocument
 
     public function save(): bool
     {
-        $table = new Table("cc_invoice");
         $values = [
             "id_card" => $this->card,
             "description" => $this->description,
@@ -87,16 +87,8 @@ class Invoice extends PaymentDocument
             "date" => $this->date,
             "reference" => $this->reference,
         ];
-        $db = DbConnect();
-        if ($this->id) {
-            return $table->updateRow($db, $values, ["id" => $this->id]);
-        } else {
-            $id = null;
-            $result = $table->addRow($db, $values, "id", $id);
-            $this->id = $id;
 
-            return $result;
-        }
+        return $this->saveOrUpdate($values);
     }
 
     public function getReference(): string

@@ -1,11 +1,13 @@
 <?php
-namespace A2billing;
+namespace A2billing\Payments;
 
-use A2billing\Payments\PaymentDocumentItem;
+use A2billing\Table;
+use DateTime;
 
 class ReceiptItem extends PaymentDocumentItem
 {
     public ?int $receipt_id = null;
+    protected string $table = "cc_receipt_item";
 
     public function __construct(
         ?int    $id = null,
@@ -30,12 +32,12 @@ class ReceiptItem extends PaymentDocumentItem
         $this->type_ext = $type_ext ?? $result["type_ext"];
     }
 
-    public static function create($receipt, string $desc, string $date, float $price, ?string $type_ext = null, ?int $id_ext = null): self
+    public static function create($receipt, string $desc, float $price, ?string $date = null, ?string $type_ext = null, ?int $id_ext = null): self
     {
         $instance = new self();
         $instance->receipt_id = $receipt instanceof Receipt ? $receipt->id : $receipt;
         $instance->description = $desc;
-        $instance->date = $date;
+        $instance->date = $date ?? (new DateTime())->format("Y-m-d H:i:s");
         $instance->price = $price;
         $instance->type_ext = $type_ext;
         $instance->id_ext = $id_ext;
@@ -45,7 +47,6 @@ class ReceiptItem extends PaymentDocumentItem
 
     public function save(): bool
     {
-        $table = new Table("cc_receipt_item");
         $values = [
             "id_receipt" => $this->receipt_id,
             "description" => $this->description,
@@ -54,15 +55,7 @@ class ReceiptItem extends PaymentDocumentItem
             "type_ext" => $this->type_ext,
             "id_ext" => $this->id_ext,
         ];
-        $db = DbConnect();
-        if ($this->id) {
-            return $table->updateRow($db, $values, ["id" => $this->id]);
-        } else {
-            $id = null;
-            $result = $table->addRow($db, $values, "id", $id);
-            $this->id = $id;
 
-            return $result;
-        }
+        return $this->saveOrUpdate($values);
     }
 }

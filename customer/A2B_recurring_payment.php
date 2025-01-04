@@ -1,6 +1,6 @@
 <?php
 
-use A2billing\Invoice;
+use A2billing\Payments\Invoice;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */

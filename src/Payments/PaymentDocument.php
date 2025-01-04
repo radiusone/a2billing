@@ -24,6 +24,8 @@ abstract class PaymentDocument
     /** @var PaymentDocumentItem[] */
     public array $items = [];
 
+    use Database;
+
     abstract public function save():bool;
     abstract public function loadItems(): array;
 
@@ -72,5 +74,39 @@ abstract class PaymentDocument
             default:
                 return "";
         }
+    }
+
+    public function getTotalPrice(): float
+    {
+        $total = 0.00;
+        foreach ($this->items as $item) {
+            $total += $item->getPrice();
+        }
+
+        return $total;
+    }
+
+    /**
+     * @param bool $array
+     * @return array|float
+     */
+    public function getTotalVat(bool $array = true)
+    {
+        $total = 0.00;
+        $categories = [];
+        foreach ($this->items as $item) {
+            $key = (string)$item->getVatRate();
+            $vat = $item->getVatAmount();
+            $categories[$key] ??= 0;
+            $categories[$key] += $vat;
+            $total += $vat;
+        }
+
+        return $array ? array_filter($categories) : $total;
+    }
+
+    public function getTotalAmount(): float
+    {
+        return $this->getTotalPrice() + $this->getTotalVat(false);
     }
 }
