@@ -1430,7 +1430,7 @@ class FormHandler
      ******************************************/
     public function Delete_Selected()
     {
-        $instance_table = new Table($this->FG_QUERY_TABLE_NAME, $this->FG_QUERY_COLUMN_LIST, $this->query_table_joins);
+        $instance_table = new Table($this->FG_QUERY_TABLE_NAME, ["*"], $this->query_table_joins);
         $instance_table->deleteRow($this->DBHandle, $this->list_query_conditions);
     }
 
@@ -1496,44 +1496,47 @@ class FormHandler
         if (($key = array_search("%check_array%", $values)) !== false) {
             foreach ($arr_value_to_import[$key] as $array_value) {
                 $values[$key] = $array_value;
-                $instance_table->addRow(
+                $result = $instance_table->addRow(
                     $this->DBHandle,
                     $values,
                     $this->FG_QUERY_PRIMARY_KEY,
                     $id
                 );
                 // CALL DEFINED FUNCTION AFTER THE ACTION ADDITION
-                if (is_callable($this->FG_ADDITIONAL_FUNCTION_AFTER_ADD)) {
-                    call_user_func($this->FG_ADDITIONAL_FUNCTION_AFTER_ADD, $id);
+                if ($result && is_callable($this->FG_ADDITIONAL_FUNCTION_AFTER_ADD)) {
+                    ($this->FG_ADDITIONAL_FUNCTION_AFTER_ADD)($id);
                 }
             }
         } else {
-            $instance_table->addRow(
+            $result = $instance_table->addRow(
                 $this->DBHandle,
                 $values,
                 $this->FG_QUERY_PRIMARY_KEY,
                 $id
             );
             // CALL DEFINED FUNCTION AFTER THE ACTION ADDITION
-            if (is_callable($this->FG_ADDITIONAL_FUNCTION_AFTER_ADD)) {
-                call_user_func($this->FG_ADDITIONAL_FUNCTION_AFTER_ADD, $id);
+            if ($result && is_callable($this->FG_ADDITIONAL_FUNCTION_AFTER_ADD)) {
+                ($this->FG_ADDITIONAL_FUNCTION_AFTER_ADD)($id);
             }
         }
-        $this->QUERY_RESULT = $id ?? true;
+        $this->QUERY_RESULT = $id ?? false;
 
-        if ($this->FG_ENABLE_LOG) {
-            Logger::insertLog(
-                $_SESSION["admin_id"],
-                2,
-                sprintf(_("New %s created"), $this->FG_INSTANCE_NAME),
-                _("User added a new record in database"),
-                $this->FG_QUERY_TABLE_NAME,
-                $_SERVER['REMOTE_ADDR'],
-                $_SERVER['REQUEST_URI'],
-                array_keys($values),
-                array_values($values)
-            );
+        if ($this->QUERY_RESULT) {
+            if ($this->FG_ENABLE_LOG) {
+                Logger::insertLog(
+                    $_SESSION["admin_id"],
+                    2,
+                    sprintf(_("New %s created"), $this->FG_INSTANCE_NAME),
+                    _("User added a new record in database"),
+                    $this->FG_QUERY_TABLE_NAME,
+                    $_SERVER['REMOTE_ADDR'],
+                    $_SERVER['REQUEST_URI'],
+                    array_keys($values),
+                    array_values($values)
+                );
+            }
         }
+
         if (!empty($id) && isset($this->FG_LOCATION_AFTER_ADD)) {
             header("Location: " . $this->FG_LOCATION_AFTER_ADD . $id);
         }
@@ -1593,7 +1596,7 @@ class FormHandler
         }
 
         if (is_callable($this->FG_ADDITIONAL_FUNCTION_BEFORE_EDITION)) {
-            call_user_func($this->FG_ADDITIONAL_FUNCTION_BEFORE_EDITION, $processed[$this->FG_QUERY_PRIMARY_KEY]);
+            ($this->FG_ADDITIONAL_FUNCTION_BEFORE_EDITION)($processed[$this->FG_QUERY_PRIMARY_KEY]);
         }
 
         $this->QUERY_RESULT = $instance_table->updateRow(
@@ -1602,25 +1605,26 @@ class FormHandler
             $this->update_query_conditions
         );
 
-        if ($this->FG_ENABLE_LOG) {
-            Logger::insertLog(
-                $_SESSION["admin_id"],
-                3,
-                sprintf(_("Existing %s updated"), $this->FG_INSTANCE_NAME),
-                _("User edited a record in database"),
-                $this->FG_QUERY_TABLE_NAME,
-                $_SERVER['REMOTE_ADDR'],
-                $_SERVER['REQUEST_URI'],
-                array_keys($values),
-                array_values($values)
-            );
-        }
+        if ($this->QUERY_RESULT) {
+            if ($this->FG_ENABLE_LOG) {
+                Logger::insertLog(
+                    $_SESSION["admin_id"],
+                    3,
+                    sprintf(_("Existing %s updated"), $this->FG_INSTANCE_NAME),
+                    _("User edited a record in database"),
+                    $this->FG_QUERY_TABLE_NAME,
+                    $_SERVER['REMOTE_ADDR'],
+                    $_SERVER['REQUEST_URI'],
+                    array_keys($values),
+                    array_values($values)
+                );
+            }
 
-        // CALL DEFINED FUNCTION AFTER THE ACTION ADDITION
-        if (is_callable($this->FG_ADDITIONAL_FUNCTION_AFTER_EDITION)) {
-            call_user_func($this->FG_ADDITIONAL_FUNCTION_AFTER_EDITION, $processed[$this->FG_QUERY_PRIMARY_KEY]);
+            // CALL DEFINED FUNCTION AFTER THE ACTION ADDITION
+            if (is_callable($this->FG_ADDITIONAL_FUNCTION_AFTER_EDITION)) {
+                ($this->FG_ADDITIONAL_FUNCTION_AFTER_EDITION)($processed[$this->FG_QUERY_PRIMARY_KEY]);
+            }
         }
-
         if (!empty($this->FG_LOCATION_AFTER_EDIT)) {
             $ext_link = "";
             if (is_numeric($processed["current_page"])) {
@@ -1654,21 +1658,22 @@ class FormHandler
         $instance_table->FK_DELETE = !$this->FG_FK_WARNONLY;
 
         $this->QUERY_RESULT = $instance_table->deleteRow($this->DBHandle, $this->update_query_conditions);
-        if ($this->FG_ENABLE_LOG) {
-            Logger::insertLog(
-                $_SESSION["admin_id"],
-                3,
-                "A " . strtoupper($this->FG_INSTANCE_NAME) . " DELETED",
-                "A RECORD IS DELETED, EDITION CLAUSE USED IS " . array_kv($this->update_query_conditions),
-                $this->FG_QUERY_TABLE_NAME,
-                $_SERVER['REMOTE_ADDR'],
-                $_SERVER['REQUEST_URI']
-            );
-        }
-        if ($this->QUERY_RESULT && is_callable($this->FG_ADDITIONAL_FUNCTION_AFTER_DELETE)) {
-            call_user_func($this->FG_ADDITIONAL_FUNCTION_AFTER_DELETE, $processed[$this->FG_QUERY_PRIMARY_KEY]);
-        }
-        if (!$this->QUERY_RESULT) {
+        if ($this->QUERY_RESULT) {
+            if ($this->FG_ENABLE_LOG) {
+                Logger::insertLog(
+                    $_SESSION["admin_id"],
+                    3,
+                    "A " . strtoupper($this->FG_INSTANCE_NAME) . " DELETED",
+                    "A RECORD IS DELETED, EDITION CLAUSE USED IS " . array_kv($this->update_query_conditions),
+                    $this->FG_QUERY_TABLE_NAME,
+                    $_SERVER['REMOTE_ADDR'],
+                    $_SERVER['REQUEST_URI']
+                );
+            }
+            if (is_callable($this->FG_ADDITIONAL_FUNCTION_AFTER_DELETE)) {
+                ($this->FG_ADDITIONAL_FUNCTION_AFTER_DELETE)($processed[$this->FG_QUERY_PRIMARY_KEY]);
+            }
+        } else {
             echo _("error deletion");
         }
 
@@ -1906,7 +1911,7 @@ class FormHandler
             case "ask-del-confirm":
                 if (is_callable($this->FG_ADDITIONAL_FUNCTION_BEFORE_DELETE)) {
                     // this function can insert a warning into the page top before delete is done
-                    call_user_func($this->FG_ADDITIONAL_FUNCTION_BEFORE_DELETE, $processed[$this->FG_QUERY_PRIMARY_KEY]);
+                    ($this->FG_ADDITIONAL_FUNCTION_BEFORE_DELETE)($processed[$this->FG_QUERY_PRIMARY_KEY]);
                 }
                 if ($form_action === "ask-delete") {
                     $this->check_child_records();

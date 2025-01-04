@@ -3,6 +3,7 @@
 namespace A2billing\Forms;
 
 use A2billing\A2bMailException;
+use A2billing\Customer;
 use A2billing\Invoice;
 use A2billing\InvoiceItem;
 use A2billing\Mail;
@@ -13,143 +14,114 @@ use A2billing\Receipt;
 use A2billing\ReceiptItem;
 use A2billing\Table;
 use A2billing\Ticket;
+use DateTimeImmutable;
 use Exception;
 use PhpAgi\AMI as AGI_AsteriskManager;
 
 class FormBO
 {
     /**
-     * Function to add/modify cc_did_use and cc_did_destination if records existe
+     * Run before DID deletion
+     *
+     * @var numeric-string|int $id
+     * @return void
      */
-    public static function is_did_in_use()
+    public static function is_did_in_use($did_id)
     {
-        $FormHandler = FormHandler::GetInstance();
-        $processed = $FormHandler->getProcessed();
-        $row = (new Table("cc_did", "id_cc_card"))->getRow(
-            $FormHandler->DBHandle,
-            ["id_did" => $processed["id"], "releasedate" => null, "activated" => 1]
-        );
+        $form = FormHandler::GetInstance();
+        $db = $form->DBHandle;
+        $id_cc_card = (new Table("cc_did_use", "id_cc_card"))
+            ->getValue($db, ["id_did" => $did_id, "releasedate" => null, "activated" => 1]);
         if (!empty($row)) {
-            $FormHandler->FG_INTRO_TEXT_ASK_DELETION = sprintf(
-                _("This DID is in use by customer ID %s, If you really want remove this DID, click on the delete button."),
-                $row["id_cc_card"]
+            $form->FG_INTRO_TEXT_ASK_DELETION = sprintf(
+                _("This DID is in use by customer %s, If you really want remove this DID, click on the delete button."),
+                Customer::getName($id_cc_card, false)
             );
         }
     }
 
-    public static function did_use_delete(): void
+    /**
+     * Run after DID deletion
+     *
+     * @param numeric-string|int $did_id
+     * @return void
+     */
+    public static function did_use_delete($did_id): void
     {
-        $FormHandler = FormHandler::GetInstance();
-        $processed = $FormHandler->getProcessed();
-        $did_id = $processed['id'];
-        (new Table("cc_did_use"))->updateRow(
-            $FormHandler->DBHandle,
-            ["releasedate" => "now()"],
+        $form = FormHandler::GetInstance();
+        $db = $form->DBHandle;
+        (new Table("cc_did_use"))
+            ->updateRow(
+            $db,
+            ["releasedate" => "CURRENT_TIMESTAMP"],
             ["id_did" => $did_id, "releasedate" => null]
         );
-        (new Table("cc_did_destination"))->deleteRow($FormHandler->DBHandle, ["id_cc_did" => $did_id]);
-    }
-
-    public static function add_did_use()
-    {
-        $FormHandler = FormHandler::GetInstance();
-        $processed = $FormHandler->getProcessed();
-        (new Table("cc_did_use"))->addRow(
-            $FormHandler->DBHandle,
-            ["id_did" => $FormHandler->QUERY_RESULT, "activated" => $processed["activated"] ?? 0]
-        );
+        (new Table("cc_did_destination"))->deleteRow($db, ["id_cc_did" => $did_id]);
     }
 
     /**
-     * Function create_status_log
-     * @public
+     * Run after DID creation
+     *
+     * @param numeric-string|int $did_id
+     * @return void
      */
-    public static function create_status_log()
+    public static function add_did_use($did_id)
     {
-        $FormHandler = FormHandler::GetInstance();
-        $processed = $FormHandler->getProcessed();
+        $form = FormHandler::GetInstance();
+        $processed = $form->getProcessed();
+        $db = $form->DBHandle;
+        (new Table("cc_did_use"))
+            ->addRow($db, ["id_did" => $did_id, "activated" => $processed["activated"] ?? 0]);
+    }
+
+    /**
+     * Run after card edit by admin or agent
+     *
+     * @param numeric-string|int $card_id
+     * @return void
+     */
+    public static function create_status_log($card_id)
+    {
+        $form = FormHandler::GetInstance();
+        $processed = $form->getProcessed();
+        $db = $form->DBHandle;
         $status = $processed['status'];
         $oldstatus = $processed['oldstatus'];
-        if ($oldstatus != $status) {
-            if ($FormHandler -> QUERY_RESULT && !(is_object($FormHandler -> QUERY_RESULT)) )
-                $id = $FormHandler -> QUERY_RESULT; // DEFINED BEFORE FG_ADDITIONAL_FUNCTION_AFTER_ADD
-            else
-                $id = $processed['id']; // DEFINED BEFORE FG_ADDITIONAL_FUNCTION_AFTER_ADD
-
-            $value = "'$status','$id'";
-            $func_fields = "status,id_cc_card";
-            $func_table = 'cc_status_log';
-            $id_name = "";
-            $instance_table = new Table();
-            $inserted_id = $instance_table -> Add_table ($FormHandler->DBHandle, $value, $func_fields, $func_table, $id_name);
+        if ("$oldstatus" === "$status") {
+            return;
         }
+        (new Table("cc_status_log"))
+            ->addRow($db, ["status" => $status, "id_cc_card" => $card_id]);
     }
 
     /**
-     * Function create_sipiax_friends_reload
-     * @public
+     * Run after ticket creation
+     *
+     * @param numeric-string|int $ticket_id
+     * @return void
      */
-    public static function create_sipiax_friends_reload()
+    public static function ticket_add($ticket_id): void
     {
-        $FormHandler = FormHandler::GetInstance();
-        self :: create_sipiax_friends();
-
-        $as = new AGI_AsteriskManager();
-        // && CONNECTING  connect($server=NULL, $username=NULL, $secret=NULL)
-        $res =@  $as->connect(MANAGER_HOST,MANAGER_USERNAME,MANAGER_SECRET);
-        if ($res) {
-            $res = $as->Command('sip reload');
-            $res = $as->Command('iax2 reload');
-            // && DISCONNECTING
-            $as->disconnect();
-        } else {
-            echo "Error : Manager Connection";
-        }
-    }
-
-    /**
-     * Function add_card_refill
-     * @public
-     */
-    public static function add_card_refill()
-    {
-
-        global $A2B;
-        $FormHandler = FormHandler::GetInstance();
-        $processed = $FormHandler->getProcessed();
-        $credit = $processed['credit'];
-        $card_id = $processed['card_id'];
-
-        // REFILL CARD
-        $instance_table_card = new Table("cc_card");
-        $param_update_card = "credit = credit + '".$credit."'";
-        $clause_update_card = " id='$card_id'";
-        $instance_table_card -> Update_table ($FormHandler->DBHandle, $param_update_card, $clause_update_card, $func_table = null);
-    }
-
-
-    public static function ticket_add(): void
-    {
-        $FormHandler = FormHandler::GetInstance();
-        $id_ticket = $FormHandler->QUERY_RESULT;
-        $processed = $FormHandler->getProcessed();
+        $form = FormHandler::GetInstance();
+        $processed = $form->getProcessed();
+        $db = $form->DBHandle;
         $title = $processed['title'];
         $card_id = $processed['creator'];
         $priority = $processed['priority'];
         $description = $processed['description'];
         $component_id = $processed['id_component'];
 
-        if ($processed["creator_type"] == Ticket::CUSTOMER) {
+        if ((int)$processed["creator_type"] === Ticket::CUSTOMER) {
             $table = new Table(
                 "cc_card",
                 ["username", "firstname", "lastname", "language", "email"]
             );
-        } elseif ($processed["creator_type"] == Ticket::AGENT) {
+        } elseif ((int)$processed["creator_type"] === Ticket::AGENT) {
             $table = new Table(
                 "cc_agent",
                 ["login AS username", "firstname", "lastname", "language", "email"]
             );
-        } elseif ($processed["creator_type"] == Ticket::ADMIN) {
+        } elseif ((int)$processed["creator_type"] === Ticket::ADMIN) {
             $table = new Table(
                 "cc_ui_authen", [
                 "login AS username",
@@ -161,14 +133,14 @@ class FormBO
         } else {
             return;
         }
-        $result = $table->getRow($FormHandler->DBHandle, ["id" => $card_id]);
+        $result = $table->getRow($db, ["id" => $card_id]);
 
         $owner = $result[0]['username']." (".$result[0]['firstname']." ".$result[0]['lastname'].")";
 
         try {
             self::send_new_ticket_email(
                 $owner,
-                (int)$id_ticket,
+                (int)$ticket_id,
                 $description,
                 (int)$priority,
                 $title,
@@ -176,7 +148,7 @@ class FormBO
                 $result["email"]
             );
         } catch (Exception $e) {
-            $FormHandler->FG_TEXT_ADITION_ERROR = $e->getMessage();
+            $form->FG_TEXT_ADITION_ERROR = $e->getMessage();
         }
 
         $component_table = new Table(
@@ -185,12 +157,12 @@ class FormBO
             ["cc_support" => ["id_support", "cc_support.id"]]
         );
         $result = $component_table
-            ->getRow($FormHandler->DBHandle, ["cc_support_component.id" => $component_id]);
+            ->getRow($db, ["cc_support_component.id" => $component_id]);
 
         try {
             self::send_new_ticket_email(
                 $owner,
-                (int)$id_ticket,
+                (int)$ticket_id,
                 $description,
                 (int)$priority,
                 $title,
@@ -198,11 +170,13 @@ class FormBO
                 $result["email"]
             );
         } catch (Exception $e) {
-            $FormHandler->FG_TEXT_ADITION_ERROR = $e->getMessage();
+            $form->FG_TEXT_ADITION_ERROR = $e->getMessage();
         }
     }
 
     /**
+     * Used internally to send emails
+     *
      * @throws Exception
      */
     private static function send_new_ticket_email(string $owner, int $id_ticket, string $description, int $priority, string $title, string $language, string $email): void
@@ -217,208 +191,349 @@ class FormBO
         $mail->send($email);
     }
 
+    /**
+     * Run after an agent refill
+     *
+     * @return void
+     */
     public static function add_agent_refill()
     {
-        global $A2B;
-        $FormHandler = FormHandler::GetInstance();
-        $processed = $FormHandler->getProcessed();
+        $form = FormHandler::GetInstance();
+        $processed = $form->getProcessed();
+        $db = $form->DBHandle;
         $credit = $processed['credit'];
         $agent_id = $processed['agent_id'];
 
         //REFILL CARD .. UPADTE AGENT
-        $instance_table_agent = new Table("cc_agent");
-        $param_update_agent = "credit = credit + '".$credit."'";
-        $clause_update_agent = " id='$agent_id'";
-        $instance_table_agent -> Update_table ($FormHandler->DBHandle, $param_update_agent, $clause_update_agent, $func_table = null);
-    }
-
-    public static function creation_card_refill()
-    {
-        $FormHandler = FormHandler::GetInstance();
-        $processed = $FormHandler->getProcessed();
-        $credit = $processed['credit'];
-
-        if ($credit>0) {
-            $field_insert = " credit, card_id, description";
-            $card_id = $FormHandler -> QUERY_RESULT;
-            $description = gettext("CREATION CARD REFILL");
-            $value_insert = "'$credit', '$card_id', '$description' ";
-            $instance_refill_table = new Table("cc_logrefill", $field_insert);
-            $instance_refill_table -> Add_table ($FormHandler->DBHandle, $value_insert, null, null);
-        }
+        (new Table("cc_agent"))
+            ->updateRow($db, ["credit" => ["credit + ?", $credit]], ["id" => $agent_id]);
     }
 
     /**
      * Run after creation of an agent
      *
+     * @param numeric-string|int $agent_id
      * @return void
      */
-    public static function creation_agent_refill()
+    public static function creation_agent_refill($agent_id)
     {
-        $FormHandler = FormHandler::GetInstance();
-        $processed = $FormHandler->getProcessed();
+        $form = FormHandler::GetInstance();
+        $processed = $form->getProcessed();
+        $db = $form->DBHandle;
         $credit = $processed["credit"];
 
         if ($credit > 0) {
-            $agent_id = $FormHandler->QUERY_RESULT;
-            $description = gettext("CREATION AGENT REFILL");
+            $description = _("CREATION AGENT REFILL");
             (new Table("cc_log_refill_agent"))
-                ->addRow($FormHandler->DBHandle, compact("credit", "agent_id", "description"));
+                ->addRow($db, compact("credit", "agent_id", "description"));
         }
     }
 
-    public static function processing_card_signup()
+    /**
+     * Run after user self-signup
+     *
+     * @param numeric-string|int $id_card
+     * @return void
+     * @throws \DateMalformedStringException
+     * @throws A2bMailException
+     */
+    public static function processing_card_signup($id_card)
     {
-        $FormHandler = FormHandler::GetInstance();
         if (RELOAD_ASTERISK_IF_SIPIAX_CREATED) {
-            self::create_sipiax_friends_reload();
+            self::create_sipiax_friends_reload($id_card);
         } else {
-            self::create_sipiax_friends();
+            self::create_sipiax_friends($id_card);
         }
 
-        self::create_subscriptions();
-        self::create_notification_signup();
-    }
-
-    public static function create_subscriptions()
-    {
+        // create subscriptions
         global $A2B;
-        $FormHandler = FormHandler::GetInstance();
-        $processed = $FormHandler->getProcessed();
-        $subscriber = $processed['subscriber_signup'];
-        $table_subscription = new Table("cc_subscription_service", "*");
-        $subscription_clause = "id = ".$subscriber;
-        $result_sub = $table_subscription->get_list($FormHandler->DBHandle, $subscription_clause);
+        $form = FormHandler::GetInstance();
+        $processed = $form->getProcessed();
+        $db = $form->DBHandle;
+        $subscriber = $processed["subscriber_signup"];
+        $sub = (new Table("cc_subscription_service", ["id", "fee", "label"]))
+            ->getRow($db, ["id" => $subscriber]);
 
-        if (is_numeric($subscriber) && is_array($result_sub) && $result_sub[0]['fee'] > 0) {
+        if (is_numeric($subscriber) && $sub && $sub["fee"] > 0) {
+            $amount = $sub["fee"];
+            $product_name = $sub["label"];
 
-            $subscription = $result_sub[0];
-            $billdaybefor_anniversery = $A2B->config['global']['subscription_bill_days_before_anniversary'];
+            $billdaybefor_anniversery = (int)$A2B->config['global']['subscription_bill_days_before_anniversary'];
+            $start = new DateTimeImmutable();
+            $startdate = $start->format("Y-m-d");
+            $day_startdate = $start->format("j");
 
-            $unix_startdate = time();
-            $startdate = date("Y-m-d",$unix_startdate);
-            $day_startdate = date("j",$unix_startdate);
-            $month_startdate = date("m",$unix_startdate);
-            $year_startdate= date("Y",$unix_startdate);
-            $lastday_of_startdate_month = lastDayOfMonth($month_startdate,$year_startdate,"j");
+            $next = $start->modify("first day of next month");
+            $lastday_of_next_month = $next->format("t");
 
-            $next_bill_date = strtotime("01-$month_startdate-$year_startdate + 1 month");
-            $lastday_of_next_month= lastDayOfMonth(date("m",$next_bill_date),date("Y",$next_bill_date),"j");
-            $limite_pay_date = date("Y-m-d",strtotime(" + $billdaybefor_anniversery day")) ;
+            $limite_pay_date = $start->modify(" +$billdaybefor_anniversery days")->format("Y-m-d");
 
             if ($day_startdate > $lastday_of_next_month) {
-                $next_limite_pay_date = date ("$lastday_of_next_month-m-Y" ,$next_bill_date);
+                // eg subscription starts on March 31, can't bill on April 31
+                $next_limite_pay_date = $next->modify("last day of this month");
             } else {
-                $next_limite_pay_date = date ("$day_startdate-m-Y" ,$next_bill_date);
+                $next_limite_pay_date = $start->modify("next month");
             }
+            $next_bill_date = $next_limite_pay_date->modify("+$billdaybefor_anniversery days");
 
-            $next_bill_date = date("Y-m-d",strtotime("$next_limite_pay_date - $billdaybefor_anniversery day")) ;
+            (new Table("cc_card"))
+                ->updateRow($db, ["status" => 8], ["id" => $id_card]);
+            (new Table("cc_card_subscription"))
+                ->addRow(
+                    $db,
+                    [
+                        "id_cc_card" => $id_card,
+                        "id_subscription_fee" => $subscriber,
+                        "product_name" => $product_name,
+                        "paid_status" => 1,
+                        "startdate" => $startdate,
+                        "next_billing_date" => $next_bill_date,
+                        "limit_pay_date" => $limite_pay_date,
+                        "last_run" => $startdate
+                    ],
+                    "id",
+                    $id_card_subscription
+                );
 
-            $field_insert = " id_cc_card, id_subscription_fee, product_name, paid_status, startdate, next_billing_date, limit_pay_date, last_run";
-            $card_id = $FormHandler -> QUERY_RESULT;
-
-            $instance_table = new Table("cc_card", "");
-            $QUERY = "UPDATE cc_card SET status=8 WHERE id=$card_id";
-            $instance_table->SQLExec($FormHandler->DBHandle, $QUERY, 0);
-
-            $product_name = $subscription['label'];
-            $value_insert = "'$card_id', '$subscriber' ,'$product_name', 1 , '$startdate', '$next_bill_date','$limite_pay_date','$startdate'";
-            $instance_subscription_table = new Table("cc_card_subscription", $field_insert);
-            $id_card_subscription = $instance_subscription_table -> Add_table ($FormHandler->DBHandle, $value_insert, null, null, "id");
             $reference = Invoice::generateReference();
+            $title = _("SUBSCRIPTION INVOICE REMINDER");
+            $description = sprintf(
+                _("You have %d days to pay your subscription with this invoice (REF: %s) or the account will be automatically deactived"),
+                $billdaybefor_anniversery,
+                $reference
+            );
 
             //CREATE INVOICE If a new card then just an invoice item in the last invoice
-            $field_insert = "date, id_card, title, reference, description, status, paid_status";
-            $date = date("Y-m-d h:i:s");
-            $title = gettext("SUBSCRIPTION INVOICE REMINDER");
-            $description = "You have $billdaybefor_anniversery days to pay your subscription with this invoice (REF: $reference ) or the account will be automatically disactived \n\n";
-            $value_insert = " '$date' , '$card_id', '$title','$reference','$description',1,0";
-            $instance_table = new Table("cc_invoice", $field_insert);
-            $id_invoice = $instance_table->Add_table($FormHandler->DBHandle, $value_insert, null, null, "id");
-
-            if (!empty ($id_invoice) && is_numeric($id_invoice)) {
+            $invoice = Invoice::create($id_card, $description, $title, $reference, Invoice::STATUS_CLOSED);
+            if ($invoice->save()) {
                 $description = "Subscription service";
-                $amount = $subscription['fee'];
-                $vat = 0;
-                $field_insert = "date, id_invoice, price, vat, description, id_ext, type_ext";
-                $instance_table = new Table("cc_invoice_item", $field_insert);
-                $value_insert = " '$date' , '$id_invoice', '$amount','$vat','$description','$id_card_subscription','SUBSCR'";
-                if ($verbose_level >= 1)
-                    echo "INSERT INVOICE ITEM : $field_insert =>	$value_insert \n";
-                $instance_table->Add_table($FormHandler->DBHandle, $value_insert, null, null, "id");
+                $date = $start->format("Y-m-d H:i:s");
+                $item = InvoiceItem::create($invoice, $description, $date, $amount, 0, "SUBSCR", $id_card_subscription);
+                $item->save();
             }
 
-            $mail = new Mail(Mail::$TYPE_SUBSCRIPTION_UNPAID,$card_id );
-            $mail -> replaceInEmail(Mail::$DAY_REMAINING_KEY,$day_remaining );
-            $mail -> replaceInEmail(Mail::$INVOICE_REF_KEY,$reference);
-            $mail -> replaceInEmail(Mail::$SUBSCRIPTION_FEE,$subscription['fee']);
-            $mail -> replaceInEmail(Mail::$SUBSCRIPTION_ID,$subscription['id']);
-            $mail -> replaceInEmail(Mail::$SUBSCRIPTION_LABEL,$subscription['product_name']);
-
             //insert charge
-            $QUERY = "INSERT INTO cc_charge (id_cc_card, amount, chargetype, id_cc_card_subscription, invoiced_status) VALUES ('" . $card_id . "', '" . $subscription['fee']  . "', '3','" . $subscription['card_subscription_id'] . "',1)";
-            $instance_table->SQLExec($FormHandler->DBHandle, $QUERY, 0);
+            (new Table("cc_charge"))
+                ->addRow(
+                    $db,
+                    [
+                        "id_cc_card" => $id_card,
+                        "amount" => $amount,
+                        "chargetype" => 3,
+                        "id_cc_card_subscription" => $sub["id"],
+                        "invoiced_status" => 1,
+                    ]
+                );
 
+            $mail = new Mail(Mail::$TYPE_SUBSCRIPTION_UNPAID,$id_card);
+            // what's this???
+            $mail -> replaceInEmail(Mail::$DAY_REMAINING_KEY,$day_remaining ?? "");
+            $mail -> replaceInEmail(Mail::$INVOICE_REF_KEY,$reference);
+            $mail -> replaceInEmail(Mail::$SUBSCRIPTION_FEE,get_money($amount));
+            $mail -> replaceInEmail(Mail::$SUBSCRIPTION_ID,$sub['id']);
+            $mail -> replaceInEmail(Mail::$SUBSCRIPTION_LABEL,$product_name);
             try {
                 $mail -> send();
             } catch (A2bMailException $e) {
             }
         }
+
+        // create notification
+        NotificationsDAO::addNotification(
+            "added_new_signup",
+            Notification::$MEDIUM,
+            Notification::$CUST,
+            $id_card,
+            Notification::$LINK_CARD,
+            $id_card
+        );
+
+        self::create_sipiax_friends($id_card);
     }
 
-    public static function processing_commission_add()
+    /**
+     * Run after agent commission added
+     *
+     * @param numeric-string|int $agent_commission_id
+     * @return void
+     */
+    public static function processing_commission_add($agent_commission_id)
     {
-        $FormHandler = FormHandler::GetInstance();
-        $processed = $FormHandler->getProcessed();
-        $id_agent = $processed['id_agent'];
-        $id = $FormHandler -> QUERY_RESULT;
-        $type_com =  $processed['commission_type'];
+        $form = FormHandler::GetInstance();
+        $processed = $form->getProcessed();
+        $db = $form->DBHandle;
+        $id_agent = $processed["id_agent"];
         if (!empty($id_agent)) {
             //update record with agent commission
             $table_agent = new Table('cc_agent', 'commission');
-            $agent_clause = "id = ".$id_agent;
-            $agent_result = $table_agent -> get_list($FormHandler->DBHandle, $agent_clause);
-            $agent_com = $agent_result[0][0];
-            if (empty($agent_com) ) {
-                $table_commission = new Table("cc_agent_commission");
-                $param_update_commission = "commission_percent = $agent_com";
-                $clause_update_commission = " id='".$id."'";
-                $table_commission -> Update_table ($FormHandler->DBHandle, $param_update_commission, $clause_update_commission, $func_table = null);
+            $agent_com = $table_agent->getValue($db, ["id" => $id_agent]) ?? 0;
+            // todo: this should be a negative check?
+            if (empty($agent_com)) {
+                (new Table("cc_agent_commission"))
+                    ->updateRow(
+                        $db,
+                        ["commission_percent" => $agent_com],
+                        ["id" => $agent_commission_id]
+                    );
             }
             $amount = $processed['amount'];
-            if($amount>0)$sign="+";
-            else $sign="-";
-            $param_update_agent = "com_balance = com_balance $sign '".abs($amount)."'";
-            $clause_update_agent = " id='".$id_agent."'";
-            $table_agent -> Update_table ($FormHandler->DBHandle, $param_update_agent, $clause_update_agent, $func_table = null);
+            $sign = $amount > 0 ? "+" : "-";
+            $table_agent->updateRow(
+                $db,
+                ["com_balance" => ["com_balance $sign ?", abs($amount)]],
+                ["id" => $id_agent]
+            );
         }
     }
 
-    public static function processing_card_add()
+    /**
+     * Run after card creation by admin
+     *
+     * @param numeric-string|int $card_id
+     * @return void
+     */
+    public static function processing_card_add($card_id)
     {
-        self::create_sipiax_friends();
-        self::creation_card_refill();
-        self::create_lock_card();
+        self::create_sipiax_friends($card_id);
+
+        $form = FormHandler::GetInstance();
+        $processed = $form->getProcessed();
+        $db = $form->DBHandle;
+        $credit = $processed['credit'];
+
+        if ($credit) {
+            $description = _("CREATION CARD REFILL");
+            (new Table("cc_logrefill"))
+                ->addRow($db, compact("credit", "card_id", "description"));
+        }
+
+        self::create_lock_card($card_id);
     }
 
+    /**
+     * Run after card deleted by agent
+     *
+     * @param numeric-string|int $card_id
+     * @return void
+     */
+    public static function processing_card_del_agent($card_id)
+    {
+        $form = FormHandler::GetInstance();
+        $db = $form->DBHandle;
+        $credit = (new Table("cc_card"))->getValue($db, ["id" => $card_id]);
+        if ($credit != 0) {
+            $sign = $credit > 0 ? "+" : "-";
+            (new Table("cc_agent"))
+                ->updateRow($db, ["credit" => ["credit $sign ?", abs($credit)]], ["id" => $_SESSION["agent_id"]]);
+
+            $description = gettext("DELETION CARD REFILL");
+            $correction = 0 - $credit;
+            (new Table("cc_logrefill"))
+                ->addRow($db, ["credit" => $correction, "card_id" => $card_id, "refill_type" => 1, "description" => $description]);
+            if ($credit > 0) {
+                $table = new Table(
+                    "cc_card",
+                    ["id_agent"],
+                    ["cc_card_group" => ["cc_card.id_group", "cc_card_group.id"]]
+                );
+                $id_agent = $table->getValue($db, ["cc_card.id" => $card_id]);
+
+                if ($id_agent) {
+                    // test if the agent exist and get its commission
+                    $comm = (new Table("cc_agent", ["commission"]))->getValue($db, ["id" => $id_agent]);
+                    if ($comm) {
+                        $commission = a2b_round($credit * ($comm / 100));
+                        $description = sprintf(
+                            "%s\n%s\n%s\n%s",
+                            _("CORRECT COMMISSION AFTER CARD DELETED!"),
+                            sprintf(_("Card ID: %s"), $card_id),
+                            sprintf(_("Amount: %s"), get_money($credit)),
+                            sprintf(_("Commission applied: %s"), get_percent($comm))
+                        );
+                        (new Table("cc_agent_commission"))
+                            ->addRow(
+                                $db,
+                                [
+                                    "id_payment" => -1,
+                                    "id_card" => $card_id,
+                                    "amount" => $commission * -1,
+                                    "description" => $description,
+                                    "id_agent" => $id_agent
+                                ]
+                            );
+
+                        (new Table("cc_agent"))
+                            ->updateRow(
+                                $db,
+                                ["com_balance" => ["com_balance - ?", $commission]],
+                                ["id" => $id_agent]
+                            );
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Run after card creation by agent
+     *
+     * @param numeric-string|int $card_id
+     * @return void
+     */
+    public static function processing_card_add_agent($card_id)
+    {
+        self::create_sipiax_friends($card_id);
+        self::create_lock_card($card_id);
+    }
+
+    /**
+     * Run after refill created
+     * @return void
+     */
     public static function processing_refill_add()
     {
-        $FormHandler = FormHandler::GetInstance();
-        self::add_card_refill();
+        $form = FormHandler::GetInstance();
+        $processed = $form->getProcessed();
+        $db = $form->DBHandle;
+        $credit = $processed["credit"];
+        $card_id = $processed["card_id"];
+
+        (new Table("cc_card"))
+            ->updateRow($db, ["credit" => ["credit + ?", $credit]], ["id" => $card_id]);
+
         //add invoice
-        self::create_invoice_after_refill();
+        if (!$processed['added_invoice']) {
+            return;
+        }
+        //CREATE AND UPDATE REF NUMBER
+        $refills = getRefillType_List();
+        $type = (int)$processed['refill_type'];
+        $reference = Invoice::generateReference();
+        $date = $processed['date'];
+        $title = sprintf(_("%s REFILL"), $refills[$type] ?? "");
+        $description = gettext("Invoice for refill");
+
+        $invoice = Invoice::create($card_id, $description, $title, $reference, Invoice::STATUS_OPEN, Invoice::PAIDSTATUS_UNPAID, $date);
+        //load vat of this card
+        if ($invoice->save()) {
+            $description = $processed['description'];
+            $vat = (new Table("cc_card", ["vat"]))->getValue($db, ["id" => $card_id]) ?? 0;
+            $item = InvoiceItem::create($invoice, $description, $date, $credit, $vat);
+            $item->save();
+        }
     }
 
-    /*
-     * static public function to add a new DID Destination and set the DID use & Charge correctly
+    /**
+     * Run after DID destination creation
+     *
+     * @return void
      */
     public static function did_destination_add()
     {
-        global $A2B;
-        $FormHandler = FormHandler::GetInstance();
-        $processed = $FormHandler->getProcessed();
+        $form = FormHandler::GetInstance();
+        $processed = $form->getProcessed();
+        $db = $form->DBHandle;
 
-        $instance_table = new Table();
         $id_cc_did = $processed['id_cc_did'];
         $id_cc_card = $processed['id_cc_card'];
 
@@ -427,96 +542,89 @@ class FormBO
         // the DID is used by an other user, we might want to change
         // the DID is new nothing in cc_did_use
 
-        $QUERY_DID = "SELECT cc_did_use.id, cc_did_use.id_cc_card, cc_did.fixrate, billingtype, releasedate ".
-                     "FROM cc_did_use ".
-                     "LEFT JOIN cc_did ON cc_did.id = cc_did_use.id_did ".
-                     "WHERE id_did ='".$id_cc_did."'" .
-                     "ORDER BY cc_did_use.id DESC";
-
-        $result_did = $instance_table -> SQLExec($FormHandler->DBHandle, $QUERY_DID);
-
-        if (is_array($result_did) && count($result_did)>0) {
-
+        $did_table = new Table(
+            "cc_did_use",
+            ["cc_did_use.id", "id_cc_card", "fixrate", "billingtype", "releasedate"],
+            ["cc_did" => ["cc_did_use.id_did", "cc_did.id"]]
+        );
+        $did = $did_table->getRow($db, ["id_did" => $id_cc_did], ["cc_did_use.id"], "desc");
+        if ($did) {
             // check the id_cc_card, if id_cc_card is null it means it has been released
-            if ((isset($result_did[0]['id_cc_card'])) && (strlen($result_did[0]['id_cc_card']) > 0)) {
-                // echo("DID $did_id is in use by customer id:".$existing_owner_id);
-                $existing_owner_id = $result_did[0]['id_cc_card'];
-
-            } else {
-                // did_use without a registered card
-                // echo("DID $did_id has been freed");
-                $existing_owner_id = -1;
-            }
+            // otherwise did_is used without a registered card
+            $existing_owner_id = $did["id_cc_card"] ?: -1;
         } else {
             // No result, the DID hasnt been purchased yet
             $existing_owner_id = -2;
         }
 
         if ($existing_owner_id >= -2 && $existing_owner_id != $id_cc_card) {
-
             // The did ownership has changed and we need to update. (regardless of how it's billed)
-            if ($result_did[0]['billingtype'] == 0 || $result_did[0]['billingtype'] == 1) {
-                $rate = $result_did[0]['fixrate'];
-                $QUERY1 = "INSERT INTO cc_charge (id_cc_card, amount, chargetype, id_cc_did) VALUES ".
-                           "('" . $id_cc_card . "', '" . $rate . "', '2','" . $id_cc_did . "')";
-                $result = $instance_table->SQLExec($FormHandler->DBHandle, $QUERY1, 0);
+            if ($did['billingtype'] == 0 || $did['billingtype'] == 1) {
+                $rate = $did['fixrate'];
+                (new Table("cc_charge"))
+                    ->addRow($db, ["id_cc_card" => $id_cc_card, "amount" => $rate, "chargetype" => 2, "id_cc_did" => $id_cc_did]);
 
-                $QUERY1 = "UPDATE cc_card set credit = credit -" . $rate . " where id = '" . $id_cc_card . "'";
-                $result = $instance_table->SQLExec($FormHandler->DBHandle, $QUERY1, 0);
+                (new Table("cc_card"))
+                    ->updateRow($db, ["credit" => ["credit - ?", $rate]], ["id" => $id_cc_card]);
             }
 
-            $QUERY1 = "UPDATE cc_did set iduser = " . $id_cc_card . ",reserved=1 where id = '" . $id_cc_did . "'";
-            $result = $instance_table->SQLExec($FormHandler->DBHandle, $QUERY1, 0);
+            (new Table("cc_did"))
+                ->updateRow($db, ["iduser" => $id_cc_card, "reserved" => 1], ["id" => $id_cc_did]);
 
-            $QUERY1 = "UPDATE cc_did_use set releasedate = now() where id_did = '" . $id_cc_did . "' and activated = 0";
-            $result = $instance_table->SQLExec($FormHandler->DBHandle, $QUERY1, 0);
+            (new Table("cc_did_use"))
+                ->updateRow($db, ["releasedate" => "CURRENT_TIMESTAMP"], ["id_did" => $id_cc_did, "activated" => 0]);
 
             // Should we do something special when billing != 0 or 1?
-            $QUERY1 = "INSERT INTO cc_did_use (activated, id_cc_card, id_did, month_payed) values ('1','" . $id_cc_card . "','" . $id_cc_did . "', 1)";
-            $result = $instance_table->SQLExec($FormHandler->DBHandle, $QUERY1, 0);
+            (new Table("cc_did_use"))
+                ->addRow($db, ["activated" => 1, "id_cc_card" => $id_cc_card, "id_did" => $id_cc_did, "month_payed" => 1]);
         }
         // else existing_owner_id is already correctly set due to prior destinations on the same DID
     }
 
-    /*
-     * static public function to release a DID and set the DID use correctly
+    /**
+     * Run after DID destination deletion
+     * Release a DID and set the DID use correctly
+     *
+     * @param numeric-string|int $did_destination_id
+     * @return void
      */
-    public static function did_destination_del()
+    public static function did_destination_del($did_destination_id)
     {
-        global $A2B;
-        $FormHandler = FormHandler::GetInstance();
-        $processed = $FormHandler->getProcessed();
+        $form = FormHandler::GetInstance();
+        $db = $form->DBHandle;
 
-        $instance_table = new Table();
-        $did_destination_id = $processed['id'];
-
-        $QUERY_did = "SELECT cc_did.id AS did_id, dg.dest_count AS destination_count ".
-                     "FROM cc_did ".
-                     "LEFT JOIN cc_did_destination ON cc_did_destination.id_cc_did = cc_did.id ".
-                     "LEFT JOIN ( SELECT st1.id, count(*) AS dest_count ".
-                                  "FROM cc_did AS st1 ".
-                                  "INNER JOIN cc_did_destination AS st2 ON st2.id_cc_did = st1.id ".
-                                  "GROUP BY st1.id ".
-                                ") AS dg ON dg.id = cc_did.id ".
-                     "WHERE cc_did_destination.id = '". $did_destination_id ."'";
+        $QUERY_did = <<< SQL
+            SELECT cc_did.id AS did_id, dg.dest_count AS destination_count
+            FROM cc_did
+            LEFT JOIN cc_did_destination ON cc_did_destination.id_cc_did = cc_did.id
+            LEFT JOIN (
+                SELECT st1.id, count(*) AS dest_count
+                FROM cc_did AS st1
+                INNER JOIN cc_did_destination AS st2 ON st2.id_cc_did = st1.id
+                GROUP BY st1.id
+            ) AS dg ON dg.id = cc_did.id
+            WHERE cc_did_destination.id = ?
+            SQL;
+        // todo: this comment probably just means someone didn't know how joins work? left query as-is for now
         // Also possible to do FROM cc_did_destination AS dest1 JOIN cc_did JOIN cc_did_destination AS dest2 GROUP BY dest1.id, cc_did.id
         // To get the count but NULL and NO row behavoir is flaky no matter the types of joins used. Therefore using SubSelect.
-        $result_did_dest = $instance_table -> SQLExec($FormHandler->DBHandle, $QUERY_did );
+        $result_did_dest = $db->GetArray($QUERY_did, [$did_destination_id]);
 
-        if (is_array($result_did_dest) && !is_null($result_did_dest[0]['did_id'])) {
-            if ($result_did_dest[0]['destination_count'] < 2) {
+        if ($result_did_dest) {
+            $row = $result_did_dest[0];
+            if ($row["destination_count"] < 2) {
                 // Only remove did from card if this is the LAST destination connecting the two.
                 // < 2, not 1 because destination is deleted after this call.
-                $choose_did = $result_did_dest[0]['did_id'];
+                $choose_did = $row['did_id'];
 
-                $QUERY = "UPDATE cc_did SET iduser = 0, reserved=0 WHERE id=$choose_did";
-                $result = $instance_table->SQLExec($FormHandler->DBHandle, $QUERY, 0);
+                (new Table("cc_did"))
+                    ->updateRow($db, ["iduser" => 0, "reserved" => 0], ["id" => $choose_did]);
 
-                $QUERY = "UPDATE cc_did_use SET releasedate = now() WHERE id_did =$choose_did and activated = 1";
-                $result = $instance_table->SQLExec($FormHandler->DBHandle, $QUERY, 0);
+                (new Table("cc_did_use"))
+                    ->updateRow($db, ["releasedate" => "CURRENT_TIMESTAMP"], ["id_did" => $choose_did, "activated" => 1]);
 
-                $QUERY = "INSERT INTO cc_did_use (activated, id_did) VALUES ('0','" . $choose_did . "')";
-                $result = $instance_table->SQLExec($FormHandler->DBHandle, $QUERY, 0);
+                (new Table("cc_did_use"))
+                    ->addRow($db, ["activated" => 0, "id_did" => $choose_did]);
             }
         }
     }
@@ -524,17 +632,17 @@ class FormBO
     /**
      * Run after creating a recurring billing item
      *
+     * @param numeric-string|int $new_billing
      * @return void
      * @throws A2bMailException
      */
-    public static function proccessing_billing_customer()
+    public static function proccessing_billing_customer($new_billing)
     {
         $form = FormHandler::GetInstance();
         $processed = $form->getProcessed();
         //find the last billing
         $card_id = $processed["id_card"];
         $date_bill = $processed["date"];
-        $new_billing = $form->QUERY_RESULT;
         $date = date("Y-m-d h:i:s");
         $db = $form->DBHandle;
 
@@ -677,40 +785,15 @@ class FormBO
         }
     }
 
-    public static function create_invoice_after_refill()
+    /**
+     * Run after invoice creation
+     * Adds a reference number to the invoice
+     *
+     * @param numeric-string|int $id_invoice
+     * @return void
+     */
+    public static function create_invoice_reference($id_invoice)
     {
-        $form = FormHandler::GetInstance();
-        $processed = $form->getProcessed();
-        $db = $form->DBHandle;
-
-        if (!$processed['added_invoice']) {
-            return;
-        }
-        //CREATE AND UPDATE REF NUMBER
-        $refills = getRefillType_List();
-        $type = (int)$processed['refill_type'];
-        $reference = Invoice::generateReference();
-        $date = $processed['date'];
-        $card_id = $processed['card_id'];
-        $title = sprintf(_("%s REFILL"), $refills[$type] ?? "");
-        $description = gettext("Invoice for refill");
-
-        $invoice = Invoice::create($card_id, $description, $title, $reference, Invoice::STATUS_OPEN, Invoice::PAIDSTATUS_UNPAID, $date);
-        //load vat of this card
-        if ($invoice->save()) {
-            $amount = $processed['credit'];
-            $description = $processed['description'];
-            $vat = (new Table("cc_card", ["vat"]))->getValue($db, ["id" => $card_id]) ?? 0;
-            $item = InvoiceItem::create($invoice, $description, $date, $amount, $vat);
-            $item->save();
-        }
-    }
-
-
-    public static function create_invoice_reference()
-    {
-        $form = FormHandler::GetInstance();
-        $id_invoice = $form->QUERY_RESULT;
         //CREATE AND UPDATE REF NUMBER
         $reference = Invoice::generateReference();
         $invoice = new Invoice($id_invoice);
@@ -718,12 +801,13 @@ class FormBO
         $invoice->save();
     }
 
-
     /**
-     * Function create_refill
-     * @public
+     * Run after a payment is made
+     *
+     * @param numeric-string|int $id_payment
+     * @return void
      */
-    public static function create_refill_after_payment()
+    public static function create_refill_after_payment($id_payment)
     {
         $form = FormHandler::GetInstance();
         $processed = $form->getProcessed();
@@ -731,7 +815,6 @@ class FormBO
         $date = $processed["date"];
         $card_id = $processed["card_id"];
         $amount = $processed["payment"];
-        $id_payment = $form->QUERY_RESULT;
 
         if (!$processed["added_refill"] && !$processed["added_commission"]) {
             return;
@@ -817,11 +900,16 @@ class FormBO
         }
     }
 
-    public static function create_agent_refill()
+    /**
+     * Run after an agent refill is created
+     *
+     * @param numeric-string|int $id_payment
+     * @return void
+     */
+    public static function create_agent_refill($id_payment)
     {
         $form = FormHandler::GetInstance();
         $processed = $form->getProcessed();
-        $id_payment = $form->QUERY_RESULT;
         $db = $form->DBHandle;
 
         if (!$processed["added_refill"]) {
@@ -851,21 +939,20 @@ class FormBO
     }
 
     /**
-     * Function to edit the fields
-     * @public
+     * @param numeric-string|int $card_id
+     * @return void
      */
-    public static function create_sipiax_friends()
+    public static function create_sipiax_friends($card_id)
     {
-        $FormHandler = FormHandler::GetInstance();
-        $processed = $FormHandler->getProcessed();
-        $id = $FormHandler -> QUERY_RESULT; // DEFINED BEFORE FG_ADDITIONAL_FUNCTION_AFTER_ADD
+        $form = FormHandler::GetInstance();
+        $processed = $form->getProcessed();
         $sip = stripslashes($processed['sip_buddy']);
         $iax = stripslashes($processed['iax_buddy']);
 
         // $FormHandler -> FG_QUERY_EXTRA_HIDDED - username, useralias, uipass, loginkey
-        if (strlen($FormHandler -> REALTIME_SIP_IAX_INFO[0])>0) {
-            $username 	= $FormHandler -> REALTIME_SIP_IAX_INFO[0];
-            $uipass 	= $FormHandler -> REALTIME_SIP_IAX_INFO[2];
+        if (strlen($form -> REALTIME_SIP_IAX_INFO[0])>0) {
+            $username 	= $form -> REALTIME_SIP_IAX_INFO[0];
+            $uipass 	= $form -> REALTIME_SIP_IAX_INFO[2];
         } else {
             $username 	= $processed['username'];
             $uipass 	= $processed['uipass'];
@@ -873,7 +960,7 @@ class FormBO
 
         $instance_realtime = new Realtime();
 
-        $instance_realtime->insert_voip_config ($sip, $iax, $id, $username, $uipass);
+        $instance_realtime->insert_voip_config ($sip, $iax, $card_id, $username, $uipass);
 
         // Save info in table and in sip file
         if ($sip == 1) {
@@ -886,48 +973,58 @@ class FormBO
         }
     }
 
-    public static function create_lock_card()
+    /**
+     * @return void
+     */
+    public static function create_sipiax_friends_reload($card_id)
+    {
+        self::create_sipiax_friends($card_id);
+
+        $as = new AGI_AsteriskManager();
+        $res = $as->connect(MANAGER_HOST,MANAGER_USERNAME,MANAGER_SECRET);
+        if ($res) {
+            $as->Command('sip reload');
+            $as->Command('iax2 reload');
+            $as->disconnect();
+        } else {
+            echo "Error : Manager Connection";
+        }
+    }
+
+    /**
+     * Run after card creation
+     * Updates the lock date if card was created locked
+     *
+     * @param numeric-string|int $card_id
+     * @return void
+     */
+    public static function create_lock_card($card_id)
     {
         $form = FormHandler::GetInstance();
         $processed = $form->getProcessed();
-        $id = $form->QUERY_RESULT;
         $db = $form->DBHandle;
         if (!$processed["block"]) {
             return;
         }
         (new Table("cc_card"))
-            ->updateRow($db, ["lock_date" => "CURRENT_TIMESTAMP"], ["id" => $id]);
+            ->updateRow($db, ["lock_date" => "CURRENT_TIMESTAMP"], ["id" => $card_id]);
     }
 
-    public static function change_card_lock()
+    /**
+     * Run before card edit is processed
+     * Updates the lock date if the card is being locked
+     * @return void
+     */
+    public static function change_card_lock($card)
     {
         $form = FormHandler::GetInstance();
         $processed = $form->getProcessed();
         $db = $form->DBHandle;
-        $card = $processed["id"];
         $instance_sub_table = new Table("cc_card", ["block"]);
         $card_lock_info = $instance_sub_table->getValue($db, ["id" => $card]);
         if ($card_lock_info != $processed["block"] && $processed["block"] == 1) {
             $instance_sub_table
                 ->updateRow($db, ["lock_date" => "CURRENT_TIMESTAMP"], ["id" => $card]);
         }
-    }
-
-    /**
-     * Function to added new sign-ups in the notification
-     * @public
-     */
-    public static function create_notification_signup()
-    {
-        $form = FormHandler::GetInstance();
-        $id_card = $form->QUERY_RESULT;
-        NotificationsDAO::addNotification(
-            "added_new_signup",
-            Notification::$MEDIUM,
-            Notification::$CUST,
-            $id_card,
-            Notification::$LINK_CARD,
-            $id_card
-        );
     }
 }
