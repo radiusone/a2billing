@@ -59,7 +59,7 @@ getpost_ifset (['pr_login', 'pr_password']);
  * @var string $pr_password
  */
 
-if (!isset($_SESSION['pr_login']) || !isset($_SESSION['pr_password']) || !isset($_SESSION['cus_rights']) || ($_POST["done"] ?? "") === "submit_log") {
+if (!isset($_SESSION['pr_login']) || !isset($_SESSION['pr_password']) || !isset($_SESSION['rights']) || ($_POST["done"] ?? "") === "submit_log") {
 
     if (($_POST["done"] ?? "") === "submit_log") {
 
@@ -75,7 +75,7 @@ if (!isset($_SESSION['pr_login']) || !isset($_SESSION['pr_password']) || !isset(
         $pr_login = $return["username"];
         $_SESSION["pr_login"] = $pr_login;
         $_SESSION["pr_password"] = $pr_password;
-        $_SESSION["cus_rights"] = (int)$return["users_perms"] + 1;
+        $_SESSION["rights"] = (int)$return["users_perms"] + 1;
         $_SESSION["user_type"] = "CUST";
         $_SESSION["card_id"] = $return["id"];
         $_SESSION["id_didgroup"] = $return["id_didgroup"];
@@ -85,7 +85,7 @@ if (!isset($_SESSION['pr_login']) || !isset($_SESSION['pr_password']) || !isset(
         $_SESSION["currency"] = $return["currency"];
         $_SESSION["voicemail"] = $return["voicemail_permitted"];
     } else {
-        $_SESSION["cus_rights"] = 0;
+        $_SESSION["rights"] = 0;
     }
 }
 
@@ -115,7 +115,7 @@ function login(?string $user, ?string $pass)
     $row = $table->getRow($DBHandle, [["SUB", ["email" => $user, "useralias" => $user], "OR"]]);
 
     if ($row) {
-        if ($row["status"] !== "t" && $row["status"] !== "1"  && $row["status"] !== "8") {
+        if ($row["status"] !== "t" && $row["status"] != 1  && $row["status"] != 8) {
             return false;
         }
         $filterpass = filter_var($pass, FILTER_SANITIZE_STRING);

@@ -304,7 +304,7 @@ $payment_modules = new payment($transaction_data[0][4]);
 // load the before_process function from the payment modules
 //$payment_modules->before_process();
 
-$QUERY = "SELECT username, credit, lastname, firstname, address, city, state, country, zipcode, phone, email, fax, lastuse, activated, currency, useralias, uipass FROM cc_card WHERE id = '".$transaction_data[0][1]."'";
+$QUERY = "SELECT username, credit, lastname, firstname, address, city, state, country, zipcode, phone, email, fax, lastuse, NULL, currency, useralias, uipass FROM cc_card WHERE id = '".$transaction_data[0][1]."'";
 $resmax = $DBHandle_max -> Execute($QUERY);
 if ($resmax) {
     $numrow = $resmax -> RecordCount();

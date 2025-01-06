@@ -58,3 +58,5 @@ INSERT INTO cc_config VALUES(
 );
 
 DROP TABLE cc_invoice_conf;
+
+ALTER TABLE cc_card_archive DROP COLUMN `activatedbyuser`;

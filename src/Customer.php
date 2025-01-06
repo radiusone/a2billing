@@ -40,7 +40,7 @@ class Customer extends User
      */
     public static function allowed(?int $rights): bool
     {
-        if (($_SESSION["user_type"] ?? "") !== "CUSTOMER") {
+        if (($_SESSION["user_type"] ?? "") !== "CUST") {
             return false;
         }
         if (!is_null($rights) && !has_rights($rights)) {

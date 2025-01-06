@@ -757,7 +757,7 @@ class Soap
      */
     //Default values ($activated = true, $status = 1, $simultaccess = 0, $typepaid =0, $sip=1, $iax=1, $voicemail_enabled = true)
     //$status : 1 Active
-    public function Create_Customer($security_key, $instance, $id_callplan, $id_didgroup, $units, $accountnumber_len, $balance, $activated, $status,  $simultaccess, $currency, $typepaid, $sip, $iax,  $language, $voicemail_enabled, $country)
+    public function Create_Customer($security_key, $instance, $id_callplan, $id_didgroup, $units, $accountnumber_len, $balance, $status,  $simultaccess, $currency, $typepaid, $sip, $iax,  $language, $voicemail_enabled, $country)
     {
         $arr_check = $this->Check_KeyInstance($security_key, $instance);
         if ($arr_check[0] == 'ERROR') {
@@ -783,15 +783,10 @@ class Soap
         else
             $language = 'en';
 
-        if ($activated)
-            $activated = 't';
-        else
-            $activated = 'f';
-
         $instance_realtime = new Realtime();
 
         $FG_ADITION_SECOND_ADD_TABLE = "cc_card";
-        $FG_ADITION_SECOND_ADD_FIELDS = "username, useralias, credit, tariff, country, language, activated, simultaccess, currency, typepaid, uipass, id_group, id_didgroup, sip_buddy, iax_buddy";
+        $FG_ADITION_SECOND_ADD_FIELDS = "username, useralias, credit, tariff, country, language, simultaccess, currency, typepaid, uipass, id_group, id_didgroup, sip_buddy, iax_buddy";
 
         $instance_sub_table = new Table($FG_ADITION_SECOND_ADD_TABLE, $FG_ADITION_SECOND_ADD_FIELDS);
 
@@ -817,7 +812,7 @@ class Soap
                 $balance = 0;
             $passui_secret = MDP_NUMERIC(5).MDP_STRING(10).MDP_NUMERIC(5);
 
-            $FG_ADITION_SECOND_ADD_VALUE = "'$accountnumber', '$useralias', '$balance', '$id_callplan', '$country', '$language', '$activated', ".
+            $FG_ADITION_SECOND_ADD_VALUE = "'$accountnumber', '$useralias', '$balance', '$id_callplan', '$country', '$language', ".
                                  " $simultaccess, '$currency', $typepaid, '$passui_secret', '$id_group', '$id_didgroup', $sip_buddy, $iax_buddy";
 
             $id_cc_card = $instance_sub_table->Add_table($this->DBHandle, $FG_ADITION_SECOND_ADD_VALUE, null, null, 'id');
