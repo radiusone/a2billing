@@ -73,9 +73,6 @@ $popup_formname ??= "";
 $popup_fieldname ??= "";
 $form_action ??= null;
 
-// Enable UI Logger
-const ENABLE_LOG = true;
-
 // SETTINGS FOR DATABASE CONNECTION
 define ("HOST", $A2B->config['database']['hostname'] ?? null);
 define ("PORT", $A2B->config['database']['port'] ?? null);

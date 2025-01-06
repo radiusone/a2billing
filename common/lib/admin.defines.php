@@ -40,6 +40,9 @@ session_start();
 
 const BINDTEXTDOMAIN = __DIR__ . "/../admin_ui_locale";
 
+// Enable UI Logger
+const ENABLE_LOG = true;
+
 require_once __DIR__ . "/common.defines.php";
 
 if (PHP_SAPI !== "cli") {

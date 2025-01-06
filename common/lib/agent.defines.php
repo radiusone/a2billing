@@ -47,6 +47,9 @@ if (PHP_SAPI !== "cli") {
     Agent::checkPageAccess();
 }
 
+// Enable UI Logger
+const ENABLE_LOG = true;
+
 //Enable Disable Captcha
 define ("CAPTCHA_ENABLE", $A2B->config["signup"]['enable_captcha'] ?? 0);
 
