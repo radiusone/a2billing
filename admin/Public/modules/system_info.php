@@ -45,7 +45,7 @@ $info_tmp = explode(' ', $distro_info, 4);
 $OS = $info_tmp[0] . ' ' . $info_tmp[2];
 
 $info_tmp = explode(" - ", COPYRIGHT);
-$UI = $info_tmp[0] . ' ' . $info_tmp[1];
+$UI = $info_tmp[0] . ' ' . ($info_tmp[1] ?? "");
 
 $UI_path = substr(__DIR__, 0, strpos(__DIR__, "/admin"));
 

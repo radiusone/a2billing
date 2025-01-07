@@ -34,10 +34,6 @@
 **/
 
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
-/**
- * @var Smarty $smarty
- */
-
 require_once __DIR__ . "/../templates/main.php";
 ?>
 

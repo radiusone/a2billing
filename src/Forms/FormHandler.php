@@ -445,11 +445,11 @@ class FormHandler
         Console::logMemory(false, 'FormHandler -> init : Line ' . __LINE__);
         Console::logSpeed('FormHandler -> init : Line ' . __LINE__);
 
-        if (!empty($processed['section'])) {
-            $section = $processed['section'];
-            $_SESSION["menu_section"] = intval($section);
-        }
-        $ext_link = "&amp;" . http_build_query(["current_page" => $processed["current_page"] ?? "", "order" => $processed["order"] ?? "", "sens" => $processed["sens"] ?? ""], "", "&amp;");
+        $qs = array_filter(
+            ["current_page" => $processed["current_page"] ?? null, "order" => $processed["order"] ?? null, "sens" => $processed["sens"] ?? null],
+            fn ($v) => !is_null($v)
+        );
+        $ext_link = "&amp;" . http_build_query($qs, "", "&amp;");
         $this->FG_EDIT_BUTTON_LINK ??= "?form_action=ask-edit" . $ext_link . "&amp;id=";
         $this->FG_DELETE_BUTTON_LINK ??= "?form_action=ask-delete" . $ext_link . "&amp;id=";
     }
@@ -1556,8 +1556,8 @@ class FormHandler
         $instance_table = new Table($this->FG_QUERY_TABLE_NAME, "*", $this->query_table_joins);
 
         foreach ($this->FG_EDIT_FORM_ELEMENTS as &$row) {
-            $field = $row["name"];
-            $attr = $row["attributes"];
+            $field = $row["name"] ?? "";
+            $attr = $row["attributes"] ?? [];
             if (empty($field) || array_key_exists("disabled", $attr)) {
                 continue;
             }
@@ -1596,7 +1596,7 @@ class FormHandler
         }
 
         if (is_callable($this->FG_ADDITIONAL_FUNCTION_BEFORE_EDITION)) {
-            ($this->FG_ADDITIONAL_FUNCTION_BEFORE_EDITION)($processed[$this->FG_QUERY_PRIMARY_KEY]);
+            ($this->FG_ADDITIONAL_FUNCTION_BEFORE_EDITION)($processed["id"]);
         }
 
         $this->QUERY_RESULT = $instance_table->updateRow(
@@ -1622,7 +1622,7 @@ class FormHandler
 
             // CALL DEFINED FUNCTION AFTER THE ACTION ADDITION
             if (is_callable($this->FG_ADDITIONAL_FUNCTION_AFTER_EDITION)) {
-                ($this->FG_ADDITIONAL_FUNCTION_AFTER_EDITION)($processed[$this->FG_QUERY_PRIMARY_KEY]);
+                ($this->FG_ADDITIONAL_FUNCTION_AFTER_EDITION)($processed["id"]);
             }
         }
         if (!empty($this->FG_LOCATION_AFTER_EDIT)) {
@@ -1671,7 +1671,7 @@ class FormHandler
                 );
             }
             if (is_callable($this->FG_ADDITIONAL_FUNCTION_AFTER_DELETE)) {
-                ($this->FG_ADDITIONAL_FUNCTION_AFTER_DELETE)($processed[$this->FG_QUERY_PRIMARY_KEY]);
+                ($this->FG_ADDITIONAL_FUNCTION_AFTER_DELETE)($processed["id"]);
             }
         } else {
             echo _("error deletion");
