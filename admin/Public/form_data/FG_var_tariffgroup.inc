@@ -78,7 +78,6 @@ $HD_Form->AddListSqlMapping(_("Package"), "id_cc_package_offer", new Table("cc_p
 $HD_Form->AddListMapping(_("Prefix"), "removeinterprefix", $inter_prefix_list_short);
 if ($popup_select) {
 	$HD_Form->FG_LIST_VIEW_PAGE_SIZE = 7;
-	$HD_Form->CV_FOLLOWPARAMETERS = "&popup_select=$popup_select&popup_formname=$popup_formname&popup_fieldname=$popup_fieldname";
 
     $HD_Form->AddListSelectActionButton("javascript:sendValue('|param|')");
 } else {

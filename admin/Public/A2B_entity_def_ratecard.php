@@ -521,7 +521,7 @@ $("#sendopener").on('click', function () {
 </script>
 
 <?php
-$HD_Form->CV_FOLLOWPARAMETERS .= "&package=" . $package ?? "";
+$HD_Form->CV_FOLLOWPARAMETERS = array_filter(["package" => $package ?? ""]);
 /********************************* END BATCH ASSIGNED ***********************************/
 elseif ($popup_select === "2"):
 ?>

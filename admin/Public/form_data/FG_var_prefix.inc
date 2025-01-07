@@ -57,7 +57,6 @@ $HD_Form->AddListValue(_("Destination"), "destination");
 
 if ($popup_select) {
 	$HD_Form->FG_LIST_VIEW_PAGE_SIZE = 7;
-    $HD_Form->CV_FOLLOWPARAMETERS = http_build_query(compact("popup_select", "popup_formname", "popup_fieldname"), "", "&amp;");
     $HD_Form->AddListSelectActionButton(
         $popup_select === "1" ? "javascript:sendValue('|param|');" : "javascript:sendValue('|col0|');",
     );

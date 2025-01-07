@@ -219,8 +219,6 @@ $HD_Form->AddListHiddenValue("cc_card.id AS id_")
     ->AddListHiddenValue("username AS username_")
     ->AddListHiddenValue("useralias AS alias_");
 
-$HD_Form->CV_FOLLOWPARAMETERS = "&popup_select=$popup_select&popup_formname=$popup_formname&popup_fieldname=$popup_fieldname";
-
 $HD_Form->FG_FILTER_ENABLE = true;
 $HD_Form->FG_FILTER_COLUMN = 'username';
 $HD_Form->FG_FILTER_LABEL = _('Account Number');

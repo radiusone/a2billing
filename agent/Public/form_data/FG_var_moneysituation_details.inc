@@ -73,7 +73,7 @@ if ($type == 'payment') {
 	$HD_Form->FieldViewElement("cc_invoice.date, total_price");
 }
 
-$HD_Form->CV_FOLLOWPARAMETERS = "&popup_select=" . $popup_select . "&id=$id&type=$type";
+$HD_Form->CV_FOLLOWPARAMETERS = array_filter(["id" => $id ?? 0, "type" => $type ?? ""]);
 $HD_Form->FG_ENABLE_EDIT_BUTTON = false;
 $HD_Form->FG_ENABLE_DELETE_BUTTON = false;
 $HD_Form->FG_ENABLE_ADD_BUTTON = false;

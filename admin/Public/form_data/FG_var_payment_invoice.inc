@@ -79,9 +79,4 @@ if ($popup_select) {
     );
 }
 
-$HD_Form->CV_FOLLOWPARAMETERS = http_build_query([
-    "popup_select" => $popup_select ?? "",
-    "popup_formname" => $popup_formname ?? "",
-    "popup_fieldname" => $popup_fieldname ?? "",
-    "invoice" => $invoice ?? "",
-]);
+$HD_Form->CV_FOLLOWPARAMETERS = array_filter(["invoice" => $invoice ?? ""]);

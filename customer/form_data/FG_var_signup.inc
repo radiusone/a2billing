@@ -132,8 +132,6 @@ if (!($popup_select >= 1))
 if (($popup_select >= 1))
 	$HD_Form->FG_LIST_VIEW_PAGE_SIZE = 7;
 
-$HD_Form->CV_FOLLOWPARAMETERS = "&popup_select=" . $popup_select . "&popup_formname=" . $popup_formname . "&popup_fieldname=" . $popup_fieldname;
-
 $maxi = '';
 $maxi2 = '';
 $maxi3 = '';

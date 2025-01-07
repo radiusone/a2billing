@@ -116,7 +116,6 @@ if ($popup_select) {
 
 if ($popup_select) {
 	$HD_Form->FG_LIST_VIEW_PAGE_SIZE = 7;
-	$HD_Form->CV_FOLLOWPARAMETERS = "&amp;popup_select=$popup_select&amp;popup_formname=$popup_formname&amp;popup_fieldname=$popup_fieldname";
     $HD_Form->AddListSelectActionButton(
         $popup_select == 1 ? "javascript:sendValue('|param|')" : "javascript:sendValue('|col0|')"
     );

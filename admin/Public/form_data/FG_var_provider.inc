@@ -59,7 +59,6 @@ $HD_Form->AddListValue(_("Creation date"), "creationdate");
 $HD_Form->AddListValue(_("Description"), "description");
 
 if ($popup_select) {
-	$HD_Form->CV_FOLLOWPARAMETERS = "&popup_select=" . $popup_select . "&popup_formname=" . $popup_formname . "&popup_fieldname=" . $popup_fieldname;
     $HD_Form->AddListSelectActionButton("javascript:sendValue('|param|')");
 } else {
 	$HD_Form->FG_ENABLE_EDIT_BUTTON = true;

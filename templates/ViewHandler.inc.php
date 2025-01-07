@@ -11,22 +11,35 @@ namespace A2billing\Forms;
  * @var bool $hasActionButtons
  */
 
-$processed["popup_select"] ??= "0";
-$processed["popup_formname"] ??= "";
-$processed["popup_fieldname"] ??= "";
+$query_params = [
+    "current_page" => $processed["current_page"] ?? null,
+    "order" => $processed["order"] ?? null,
+    "sens" => $processed["sens"] ?? null,
+    "filterprefix" => $processed["filterprefix"] ?? null,
+    "filterprefix2" => $processed["filterprefix"] ?? null,
+    "popup_select" => $processed["popup_select"] ?? null,
+    "popup_formname" => $processed["popup_formname"] ?? null,
+    "popup_fieldname" => $processed["popup_fieldname"] ?? null,
+];
+$query_params = array_filter($query_params, fn ($v) => !is_null($v));
+foreach($form->CV_FOLLOWPARAMETERS as $k => $v) {
+    $query_params[$k] = $v;
+}
+$sort_params = $pagination_params = $query_params;
+$pagination_params["current_page"] = "%s";
 ?>
 
 <?php if (($form -> FG_FILTER_ENABLE || $form -> FG_FILTER2_ENABLE) || ($popup_select < 1 && ($form->FG_LIST_ADDING_BUTTON1 || $form->FG_LIST_ADDING_BUTTON2))): ?>
 <div class="row pb-3 align-items-end">
     <?php if ($form->FG_LIST_VIEW_ROW_COUNT > 0 && ($form -> FG_FILTER_ENABLE || $form -> FG_FILTER2_ENABLE)): ?>
     <form name="theFormFilter" action="" class="col">
-        <input type="hidden" name="popup_select" value="<?= $processed['popup_select'] ?>"/>
-        <input type="hidden" name="popup_formname" value="<?= $processed['popup_formname'] ?>"/>
-        <input type="hidden" name="popup_fieldname" value="<?= $processed['popup_fieldname'] ?>"/>
         <input type="hidden" name="form_action" value="list"/>
+        <?php foreach ($query_params as $key => $val): ?>
+        <input type="hidden" name="<?= $key ?>" value="<?= $val ?>"/>
+        <?php endforeach ?>
         <?php foreach ($processed as $key => $val): ?>
             <?php if (!empty($key) && $key !== 'current_page' && $key !== 'id' && !is_array($val)): ?>
-            <input type="hidden" name="<?= $key?>" value="<?= $val?>"/>
+        <input type="hidden" name="<?= $key?>" value="<?= $val?>"/>
             <?php endif ?>
         <?php endforeach ?>
         <div class="row align-items-end">
@@ -56,7 +69,7 @@ $processed["popup_fieldname"] ??= "";
                     type="text"
                     id="filterprefix2"
                     name="filterprefix2"
-                    value=""
+                    value="<?= $processed["filterprefix2"] ?? "" ?>"
                     class="form-control form-control-sm"
                 />
             </div>
@@ -102,9 +115,13 @@ $processed["popup_fieldname"] ??= "";
                     <?php foreach ($form->FG_LIST_TABLE_CELLS as $column): ?>
                     <th>
                         <?php if ($column["sortable"]): ?>
+                        <?php
+                            $sort_params["order"] = $column["field"]; //todo: use the column index instead?
+                            $sort_params["sens"] = $form->FG_QUERY_DIRECTION === "ASC" ?  "DESC" : "ASC";
+                        ?>
                         <a
                             class="sort <?= $form->FG_QUERY_ORDERBY_COLUMNS[0] === $column["field"] ? strtolower($form->FG_QUERY_DIRECTION) : "" ?>"
-                            href="<?= "?" . http_build_query(["current_page" => $current_page, "letter" => $letter, "popup_select" => $processed["popup_select"], "order" => $column["field"] ?? "", "sens" => $form->FG_QUERY_DIRECTION === "ASC" ? "DESC" : "ASC"], "", "&amp;") . (str_starts_with($form->CV_FOLLOWPARAMETERS, "&") ? "" : "&amp;") . $form->CV_FOLLOWPARAMETERS ?>"
+                            href="<?= "?" . http_build_query($sort_params, "", "&amp;") ?>"
                         >
                         <?php endif ?>
                             <?= $column["header"] ?>
@@ -273,7 +290,7 @@ $processed["popup_fieldname"] ??= "";
         <?= FormHandler::printPages(
             $form->CV_CURRENT_PAGE + 1,
             $form->FG_LIST_VIEW_PAGE_COUNT,
-            "?" . http_build_query(["current_page" => "%s", "filterprefix" => $processed["filterprefix"] ?? "", "order" => $processed["order"] ?? "", "sens" => $processed["sens"] ?? ""], "", "&amp;") . (str_starts_with($form->CV_FOLLOWPARAMETERS, "&") ? "" : "&amp;") . $form->CV_FOLLOWPARAMETERS
+            "?" . http_build_query($pagination_params, "", "&amp;")
 //            "?current_page=%s&amp;filterprefix=$processed[filterprefix]&amp;order=$processed[order]&amp;sens=$processed[sens]&amp;mydisplaylimit=$processed[mydisplaylimit]&amp;popup_select=$processed[popup_select]&amp;letter=$letter" . (str_starts_with($form->CV_FOLLOWPARAMETERS, "&") ? "" : "&amp;") . $form->CV_FOLLOWPARAMETERS
         ) ?>
     </div>

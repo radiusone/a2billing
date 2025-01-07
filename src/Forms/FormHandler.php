@@ -50,8 +50,8 @@ class FormHandler
 
     public string $CV_TITLE_TEXT = '';
 
-    /** @var string Parameters to add to the URL of the list view sorting/pagination buttons */
-    public string $CV_FOLLOWPARAMETERS = '';
+    /** @var string[] Parameters to add to the URL of the list view sorting/pagination buttons */
+    public array $CV_FOLLOWPARAMETERS = [];
 
     /**
      * @var int Tracks the current page for pagination and DB queries

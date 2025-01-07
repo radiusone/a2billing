@@ -102,7 +102,6 @@ $HD_Form->AddSearchSelectInput(_("Status"), "status", [[0, _("Inactive")], [1, _
 
 if ($popup_select) {
 	$HD_Form->FG_LIST_VIEW_PAGE_SIZE = 7;
-	$HD_Form->CV_FOLLOWPARAMETERS = "&popup_select=$popup_select&popup_formname=$popup_formname&popup_fieldname=$popup_fieldname";
     $HD_Form->AddListSelectActionButton("javascript:sendValue('|param|')");
 } else {
 	$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
