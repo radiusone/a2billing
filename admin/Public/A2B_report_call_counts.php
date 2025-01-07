@@ -84,18 +84,7 @@ $HD_Form->AddListValue(_("Duration"), "SUM(real_sessiontime)", "get_minute");
 $HD_Form->AddListValue(_("Sell"), "SUM(sessionbill)", "get_money_precise");
 $HD_Form->AddListValue(_("Buy"), "SUM(buycost)", "get_money_precise");
 $HD_Form->AddListValue(_("Calls"), "COUNT(*)");
-$cols = [
-    $displaytop,
-    "SUM(real_sessiontime)",
-    "SUM(sessionbill)",
-    "SUM(buycost)",
-    "COUNT(*)",
-    "DATE(starttime) AS day"
-];
-if ($groupbyday) {
-    array_unshift($cols, "DATE(starttime)");
-}
-$HD_Form->FieldViewElement($cols);
+$HD_Form->AddListHiddenValue("DATE(starttime) AS day");
 
 $HD_Form->search_form_enabled = true;
 $HD_Form->AddSearchDateInput(_("Date"), "starttime");

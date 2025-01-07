@@ -64,7 +64,6 @@ $HD_Form->help_text = create_help(
 
 $HD_Form->AddListValue(_("ACCOUNT"), "id_card", [Customer::class, "getUsername"]);
 $HD_Form->AddListValue(_("BILLING DATE"), "cc_billing_customer.date");
-$HD_Form->FieldViewElement(["id_card", "cc_billing_customer.date"]);
 
 $HD_Form->FG_ENABLE_ADD_BUTTON = true;
 $HD_Form->FG_ENABLE_DELETE_BUTTON = true;

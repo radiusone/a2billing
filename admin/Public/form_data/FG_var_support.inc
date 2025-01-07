@@ -58,7 +58,6 @@ $HD_Form->AddListValue(_("ID"), "id");
 $HD_Form->AddListValue(_("Name"), "name");
 $HD_Form->AddListValue(_("Email"), "email");
 $HD_Form->AddListValue(_("Language"), "language");
-$HD_Form->FieldViewElement(["id", "name", "email", "language"]);
 
 $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form->FG_ENABLE_DELETE_BUTTON = true;

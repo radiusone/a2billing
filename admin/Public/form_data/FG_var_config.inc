@@ -78,7 +78,7 @@ if ($form_action === "list") {
     $HD_Form->AddListValue(_("Value"), "config_value", "str_replace_conditional", [[0, 1], [_("No"), _("Yes")], "%X", "%5", 1]);
     $HD_Form->AddListValue(_("Description"), "config_description");
     $HD_Form->AddListValue(_("Group"), "group_title");
-    $HD_Form->FieldViewElement(["config_title", "config_key", "config_value", "config_description", "group_title", "config_valuetype"]);
+    $HD_Form->AddListHiddenValue("config_valuetype");
 } else {
     $HD_Form = new FormHandler("cc_config", _("Configuration"));
 

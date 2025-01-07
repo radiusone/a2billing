@@ -57,7 +57,6 @@ $HD_Form->help_text = create_help(
 $HD_Form->AddListValue(_("Name"), "provider_name");
 $HD_Form->AddListValue(_("Creation date"), "creationdate");
 $HD_Form->AddListValue(_("Description"), "description");
-$HD_Form->FieldViewElement(["provider_name", "creationdate", "description"]);
 
 if ($popup_select) {
 	$HD_Form->CV_FOLLOWPARAMETERS = "&popup_select=" . $popup_select . "&popup_formname=" . $popup_formname . "&popup_fieldname=" . $popup_fieldname;

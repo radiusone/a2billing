@@ -131,7 +131,6 @@ $HD_Form->AddListValue(_("ID"), "id");
 $HD_Form->AddListMapping(_("Type"), "mailtype", $typemail_list);
 $HD_Form->AddListValue(_("From email"), "fromemail");
 $HD_Form->AddListValue(_("Subject"), "subject");
-$HD_Form->FieldViewElement (["id", "mailtype", "fromemail", "subject"]);
 
 if ((int)$popup_select >= 1) {
     $HD_Form->AddListSelectActionButton("javascript:sendValue('|param|')", _("SELECT TEXT"));

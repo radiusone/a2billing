@@ -64,12 +64,10 @@ $HD_Form->help_text = create_help(
 $list_refill_type = getRefillType_List();
 
 $HD_Form->AddListValue(_("ID"), "id");
-$HD_Form->AddListValue(_("Account"), "username", [Customer::class, "getUsername"]);
+$HD_Form->AddListValue(_("Account"), "card_id", [Customer::class, "getUsername"]);
 $HD_Form->AddListValue(_("REFILL DATE"), "date");
 $HD_Form->AddListValue(_("REFILL AMOUNT"), "credit", "get_money");
 $HD_Form->AddListMapping(_("REFILL TYPE"), "refill_type", $list_refill_type);
-
-$HD_Form->FieldViewElement(["id", "card_id", "date", "credit", "refill_type"]);
 
 if (!$popup_select) {
     $HD_Form->search_form_enabled = true;

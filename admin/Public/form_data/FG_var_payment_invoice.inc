@@ -71,7 +71,6 @@ $HD_Form->AddListValue(_("Date"), "date");
 $HD_Form->AddListValue(_("Amount"), "payment", "get_money");
 $HD_Form->AddListValue(_("Description"), "description");
 $HD_Form->AddListMapping(_("Type"), "payment_type", getRefillType_List());
-$HD_Form->FieldViewElement (["date", "payment", "description", "payment_type"]);
 
 if ($popup_select) {
     $HD_Form->AddListSelectActionButton(

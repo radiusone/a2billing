@@ -93,16 +93,6 @@ $HD_Form->AddListValue(_("Runs"), "numberofrun");
 $HD_Form->AddListValue(_("Last run"), "datelastrun");
 $HD_Form->AddListValue(_("Cards affected"), "totalcardperform");
 $HD_Form->AddListValue(_("Total credit"), "totalcredit", "get_money");
-$HD_Form->FieldViewElement([
-    "name",
-    "amount",
-    "period",
-    "status",
-    "numberofrun",
-    "datelastrun",
-    "totalcardperform",
-    "totalcredit",
-]);
 
 $HD_Form->FG_ENABLE_ADD_BUTTON = true;
 $HD_Form->FG_ENABLE_EDIT_BUTTON = true;

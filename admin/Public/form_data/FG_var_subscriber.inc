@@ -58,7 +58,6 @@ $HD_Form->AddListSqlMapping(_("Service"), "id_subscription_fee", new Table("cc_s
 $HD_Form->AddListValue(_("Start date"), "startdate");
 $HD_Form->AddListValue(_("Stop date"), "stopdate");
 $HD_Form->AddListValue(_("Product"), "product_name");
-$HD_Form->FieldViewElement (["id_cc_card", "id_subscription_fee", "startdate", "stopdate", "product_name"]);
 
 $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form->FG_ENABLE_DELETE_BUTTON = true;

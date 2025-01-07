@@ -463,7 +463,6 @@ $FG_COL_QUERY_SUM=str_replace('name)',"'TOTAL'",$FG_COL_QUERY_SUM);
 $HD_Form -> FG_FILTER_SEARCH_SESSION_NAME = 'pnl_selection';
 $HD_Form -> FG_FK_DELETE_CONFIRM = true;
 $HD_Form -> FG_FK_DELETE_ALLOWED = true;
-$HD_Form -> FieldViewElement($FG_COL_QUERY);
 
 $HD_Form -> CV_NO_FIELDS  = gettext("NO INFO!");
 

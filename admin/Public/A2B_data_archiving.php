@@ -79,19 +79,6 @@ $HD_Form->AddListMapping(abbr(_("Cur"), _("Currency")), "currency", $currency_li
 $HD_Form->AddListMapping(_("SIP"), "sip_buddy", $yesno_list);
 $HD_Form->AddListMapping(_("IAX"), "iax_buddy", $yesno_list);
 $HD_Form->AddListValue(abbr(_("Num"), _("Number of calls")), "nbused");
-$HD_Form->FieldViewElement([
-    "id",
-    "id",
-    "credit",
-    "lastname",
-    "status",
-    "language",
-    "inuse",
-    "currency",
-    "sip_buddy",
-    "iax_buddy",
-    "nbused",
-]);
 
 $HD_Form->CV_NO_FIELDS  = _("NO CUSTOMER SEARCHED!");
 $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 30;

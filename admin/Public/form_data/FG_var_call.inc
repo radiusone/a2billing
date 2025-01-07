@@ -46,7 +46,6 @@ $HD_Form = new FormHandler("cc_call", _("Call"));
 $HD_Form->AddListValue(_("ID"), "id");
 $HD_Form->AddListValue(_("Called station"), "calledstation");
 $HD_Form->AddListSqlMapping(_("Account"), "card_id", new Table("cc_card", ["username,id"]), [], "A2B_entity_card.php?form-action=ask-edit&id=");
-$HD_Form->FieldViewElement (["id", "calledstation", "card_id"]);
 
 $HD_Form->FG_ENABLE_ADD_BUTTON = false;
 $HD_Form->FG_ENABLE_EDIT_BUTTON = false;

@@ -52,7 +52,6 @@ if ($type === "payment"){
 
 	$HD_Form->AddListValue(_("Date"), "date");
 	$HD_Form->AddListValue(_("Amount"), "payment");
-	$HD_Form->FieldViewElement (["date", "payment"]);
 } else {
     $join = "(SELECT id_invoice, SUM(price * (1 + (vat / 100))) AS total_price FROM cc_invoice_item GROUP BY id_invoice) AS items";
 	$HD_Form = new FormHandler(
@@ -68,5 +67,4 @@ if ($type === "payment"){
 
 	$HD_Form->AddListValue(_("Date"), "date");
 	$HD_Form->AddListValue(_("Amount (incl VAT)"), "total_price", "get_money");
-	$HD_Form-> FieldViewElement (["date", "total_price"]);
 }

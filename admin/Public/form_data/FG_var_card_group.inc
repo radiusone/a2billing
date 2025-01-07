@@ -62,7 +62,6 @@ $HD_Form->help_text = create_help(
 
 $HD_Form->AddListValue(_("Name"), "name");
 $HD_Form->AddListValue(_("Description"), "description", "substr", ["%1", "0", "150"]);
-$HD_Form->FieldViewElement (["name", "description"]);
 
 $HD_Form->FG_ENABLE_ADD_BUTTON = true;
 $HD_Form->FG_ENABLE_EDIT_BUTTON = true;

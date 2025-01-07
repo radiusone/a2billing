@@ -76,15 +76,6 @@ $HD_Form->AddListValue(_("Secret"), "secret");
 $HD_Form->AddListValue(_("Caller ID"), "callerid");
 $HD_Form->AddListValue(_("Context"), "context");
 $HD_Form->AddListValue(_("Default IP"), "defaultip");
-$HD_Form->FieldViewElement([
-    "id_cc_card",
-    "username",
-    "accountcode",
-    "secret",
-    "callerid",
-    "context",
-    "defaultip",
-]);
 
 $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_friend.php?form_action=ask-add&voip_type=$voip_type";

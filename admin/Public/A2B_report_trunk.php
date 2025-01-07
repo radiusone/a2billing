@@ -51,16 +51,10 @@ $HD_Form = new FormHandler(
     ]
 );
 
-$HD_Form->AddListValue(abbr(_("ASR"), _("Answer ratio")), "asr");
-$HD_Form->AddListValue(abbr(_("ALOC"), _("Average length of call")), "aloc");
-$HD_Form->AddListValue(abbr(_("CIC"), _("???")), "cic");
-$HD_Form->AddListValue(_("Total calls"), "total_calls");
-$HD_Form->FieldViewElement([
-    "COUNT(answered.id) / COUNT(cc_call.id) AS asr",
-    "SUM(cc_call.real_sessiontime) / COUNT(cc_call.id) AS aloc",
-    "COUNT(cic.id) AS cic",
-    "COUNT(cc_call.id) AS total_calls",
-]);
+$HD_Form->AddListValue(abbr(_("ASR"), _("Answer ratio")), "COUNT(answered.id) / COUNT(cc_call.id) AS asr");
+$HD_Form->AddListValue(abbr(_("ALOC"), _("Average length of call")), "SUM(cc_call.real_sessiontime) / COUNT(cc_call.id) AS aloc");
+$HD_Form->AddListValue(abbr(_("CIC"), _("???")), "COUNT(cic.id) AS cic");
+$HD_Form->AddListValue(_("Total calls"), "COUNT(cc_call.id) AS total_calls");
 
 $HD_Form->search_form_enabled = true;
 $HD_Form->search_session_key = 'call_log_selection';

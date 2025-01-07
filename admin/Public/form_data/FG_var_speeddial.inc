@@ -69,7 +69,6 @@ $HD_Form->AddListValue(_("Phone number"), "phone");
 $HD_Form->AddListValue(_("Name"), "name");
 $HD_Form->AddListValue(_("Account"), "id_cc_card", [Customer::class, "getUsername"]);
 $HD_Form->AddListValue(_("Date"), "cc_speeddial.creationdate");
-$HD_Form->FieldViewElement (["speeddial", "phone", "name", "id_cc_card", "cc_speeddial.creationdate"]);
 
 $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form->FG_ENABLE_DELETE_BUTTON = true;

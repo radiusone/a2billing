@@ -70,7 +70,6 @@ $HD_Form->AddListValue(_("MIN"), "minvalue");
 $HD_Form->AddListMapping(_("STATUS"), "status", $actived_list);
 $HD_Form->AddListValue(_("TRUNK"), "id_trunk");
 $HD_Form->AddListValue(_("CREATION DATE"), "datecreate");
-$HD_Form->FieldViewElement (["name", "periode", "type", "maxvalue", "minvalue", "status", "id_trunk", "datecreate"]);
 
 $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form->FG_ENABLE_DELETE_BUTTON = true;

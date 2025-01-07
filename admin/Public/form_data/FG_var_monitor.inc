@@ -57,7 +57,6 @@ $HD_Form->AddListValue(_("Dial code"), "dial_code");
 $HD_Form->AddListValue(_("Description"), "description", "substr", ["%X", 0, 70]);
 $HD_Form->AddListValue(_("Text"), "text_intro", "substr", ["%X", 0, 70]);
 $HD_Form->AddListMapping(_("ENABLE"), "enable", $actived_list);
-$HD_Form->FieldViewElement (["label", "dial_code", "description", "text_intro", "enable"]);
 
 $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form->FG_ENABLE_DELETE_BUTTON = true;

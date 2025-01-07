@@ -57,16 +57,6 @@ $HD_Form->AddListValue(_("Table"), "tablename");
 $HD_Form->AddListValue(_("Page"), "pagename");
 $HD_Form->AddListValue(_("IP address"), "ipaddress");
 $HD_Form->AddListValue(_("Date"), "creationdate");
-$HD_Form->FieldViewElement([
-    "login",
-    "loglevel",
-    "action",
-    "description",
-    "tablename",
-    "pagename",
-    "ipaddress",
-    "creationdate",
-]);
 
 $HD_Form->search_form_enabled = true;
 $HD_Form->search_session_key = "var_log_viewer";

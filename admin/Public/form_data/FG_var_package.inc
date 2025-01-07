@@ -56,16 +56,9 @@ $HD_Form->AddListValue(_("Creation date"), "creationdate");
 $HD_Form->AddListMapping(_("Type"), "packagetype", $packagetype_list);
 $HD_Form->AddListMapping(_("Billing"), "billingtype", $billingtype_list);
 $HD_Form->AddListValue(_("Starting day"), "startday");
-$HD_Form->AddListValue(_("Free calls"), "freetimetocall");
-$HD_Form-> FieldViewElement([
-    "label",
-    "creationdate",
-    "packagetype",
-    "billingtype",
-    "startday",
-    // If packagetype == NUMBER OF FREE CALL -> concat unit with "times"
-    "CASE packagetype WHEN 0 THEN 'ALL' WHEN 1 THEN CONCAT( freetimetocall, ' times') ELSE CONCAT(freetimetocall, ' sec') END"
-]);
+// If packagetype == NUMBER OF FREE CALL -> concat unit with "times"
+$HD_Form->AddListValue(_("Free calls"), "freetimetocall", fn($type, $num) => $type ? sprintf($type == 1 ? _("%d times") : _("%d seconds"), $num) : _("ALL"), ["%6", "%X"]);
+$HD_Form->AddListHiddenValue("packagetype");
 
 $HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;

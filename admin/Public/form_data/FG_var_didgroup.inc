@@ -61,7 +61,6 @@ $HD_Form->help_text = create_help(
 
 $HD_Form->AddListValue(_("NAME"), "didgroupname");
 $HD_Form->AddListValue(_("CREATION DATE"), "creationdate");
-$HD_Form->FieldViewElement (["didgroupname", "creationdate"]);
 
 $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form->FG_ENABLE_DELETE_BUTTON = true;

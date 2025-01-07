@@ -75,8 +75,6 @@ $HD_Form->AddListValue(_("User ID"), "userid");
 $HD_Form->AddListValue(_("Login"), "login");
 $HD_Form->AddListValue(_("Name"), "name");
 
-$HD_Form->FieldViewElement('userid, login, name');
-
 if ($popup_select) {
     $HD_Form->AddListSelectActionButton("javascript:sendValue('|param|')");
     exit;

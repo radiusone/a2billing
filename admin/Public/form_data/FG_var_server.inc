@@ -54,7 +54,6 @@ $HD_Form->AddListValue(_("Hostname"), "server_ip");
 $HD_Form->AddListValue(_("Manager host"), "manager_host");
 $HD_Form->AddListValue(_("Manager username"), "manager_username");
 $HD_Form->AddListValue(_("Last used"), "lasttime_used");
-$HD_Form->FieldViewElement (["id_group", "id_group", "server_ip", "manager_host", "manager_username", "lasttime_used"]);
 
 $HD_Form->FG_ENABLE_ADD_BUTTON = true;
 $HD_Form->FG_ENABLE_EDIT_BUTTON = true;

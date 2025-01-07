@@ -85,7 +85,6 @@ $HD_Form_c->AddListValue(_("Date"), "cc_charge.creationdate");
 $HD_Form_c->AddListValue(_("Amount"), "amount", "get_money");
 $HD_Form_c->AddListMapping(_("Charge type"), "chargetype", $chargetype_list);
 $HD_Form_c->AddListValue(_("Description"), "description");
-$HD_Form_c->FieldViewElement(["id_cc_card", "id_cc_card", "cc_charge.creationdate", "amount", "chargetype", "description"]);
 
 $HD_Form_c->FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form_c->FG_ENABLE_DELETE_BUTTON = true;

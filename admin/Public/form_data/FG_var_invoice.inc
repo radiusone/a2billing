@@ -115,21 +115,11 @@ $invoiceday_list = getInvoiceDay_List();
 $HD_Form->AddListValue(_("ID"), "cc_invoice.id");
 $HD_Form->AddListValue(_("REFERENCE"), "reference");
 $HD_Form->AddListValue(_("ACCOUNT"), "id_card", [Customer::class, "getUsername"]);
-$HD_Form->AddListValue(_("DATE"), "date");
+$HD_Form->AddListValue(_("DATE"), "cc_invoice.date");
 $HD_Form->AddListValue(_("TITLE"), "title");
 $HD_Form->AddListMapping(_("PAID STATUS"), "paid_status", $paid_status_list);
 $HD_Form->AddListMapping(_("STATUS"), "status", $status_list);
 $HD_Form->AddListValue(_("AMOUNT INCL VAT"), "total_price", "get_money");
-$HD_Form->FieldViewElement([
-    "cc_invoice.id",
-    "reference",
-    "id_card",
-    "cc_invoice.date",
-    "title",
-    "paid_status",
-    "status",
-    "total_price",
-]);
 
 if (!$popup_select) {
     $HD_Form->search_form_enabled = true;

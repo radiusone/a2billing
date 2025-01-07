@@ -73,16 +73,6 @@ $HD_Form->AddListSqlMapping(_("Trunk"), "id_trunk", new Table("cc_trunk", ["id_t
 $HD_Form->AddListValue(_("Minutes used"), "secondusedreal", "get_minute");
 $HD_Form->AddListValue(_("DNID prefix"), "dnidprefix");
 $HD_Form->AddListValue(_("CID prefix"), "calleridprefix");
-$HD_Form->FieldViewElement([
-    "id",
-    "tariffname",
-    "startingdate",
-    "expirationdate",
-    "id_trunk",
-    "secondusedreal",
-    "dnidprefix",
-    "calleridprefix",
-]);
 
 $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form->FG_ENABLE_DELETE_BUTTON = true;

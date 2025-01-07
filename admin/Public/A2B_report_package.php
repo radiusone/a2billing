@@ -60,7 +60,6 @@ $HD_Form->AddListValue(_("Card number"), "username");
 $HD_Form->AddListValue(_("Package"), "label");
 $HD_Form->AddListValue(_("Minutes"), "SUM(used_secondes)", "get_minute");
 $HD_Form->AddListValue(_("Calls"), "COUNT(*)");
-$HD_Form->FieldViewElement(["username", "label", "SUM(used_secondes)", "COUNT(*)"]);
 
 $HD_Form->FG_EXPORT_CSV = true;
 $HD_Form->FG_EXPORT_XML = true;

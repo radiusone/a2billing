@@ -59,7 +59,6 @@ $HD_Form->help_text = create_help(
 $HD_Form->AddListValue(_("Name"), "name");
 $HD_Form->AddListValue(_("Description"), "description", "substr", ["%X", 0, 40]);
 $HD_Form->AddListValue(_("Sequence number"), "value");
-$HD_Form->FieldViewElement(["name", "description", "value"]);
 
 $HD_Form->FG_ENABLE_ADD_BUTTON = true;
 $HD_Form->FG_ENABLE_EDIT_BUTTON = true;

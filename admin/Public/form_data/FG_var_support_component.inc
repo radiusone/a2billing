@@ -61,9 +61,8 @@ $activated_list = getActivationList();
 $HD_Form->AddListValue(_("ID"), "id");
 $HD_Form->AddListValue(_("Name"), "name");
 $HD_Form->AddListMapping(_("Activated"), "activated", $activated_list);
-$HD_Form->AddListMapping(_("User type"), "activated", $user_type);
+$HD_Form->AddListMapping(_("User type"), "type_user", $user_type);
 $HD_Form->AddListSqlMapping(_("Support box"), "id_support", new Table("cc_support", ["id", "name"]));
-$HD_Form->FieldViewElement (["id", "name", "activated", "type_user", "id_support"]);
 
 $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form->FG_ENABLE_DELETE_BUTTON = true;

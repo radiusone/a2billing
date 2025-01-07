@@ -64,7 +64,6 @@ $HD_Form->AddListValue(_("Agent"), "agent_id", [Agent::class, "getName"], ["%X",
 $HD_Form->AddListValue(_("Date"), "date");
 $HD_Form->AddListMapping(_("Type"), "refill_type", $list_refill_type);
 $HD_Form->AddListValue(_("Amount"), "credit", "get_money");
-$HD_Form->FieldViewElement(["id", "agent_id", "date", "refill_type", "credit"]);
 
 $HD_Form->FG_ENABLE_INFO_BUTTON = true;
 $HD_Form->FG_INFO_BUTTON_LINK = "A2B_info_refill.php?type=agent&id=";

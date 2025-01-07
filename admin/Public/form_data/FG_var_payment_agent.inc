@@ -69,20 +69,12 @@ $HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("money_add.png") ;
 $HD_Form->help_text = create_help(_("Agent Payment history - The section below allows you to add payments against an agent. Note that this does not change the balance on the account. Click on 'create associate refill' when you create  a payment to top-up an account."));
 
 $list_refill_type = getRefillType_List();
-$HD_Form->AddListValue(_("ID"), "cc_logpayment.id");
+$HD_Form->AddListValue(_("ID"), "cc_logpayment_agent.id");
 $HD_Form->AddListValue(_("Agent"), "cc_logpayment_agent.agent_id", [Agent::class, "getName"], ["%X", Admin::allowed(Admin::ACX_MODIFY_AGENTS)]);
 $HD_Form->AddListValue(_("Date"), "cc_logpayment_agent.date");
 $HD_Form->AddListValue(_("Amount"), "payment", "get_money");
 $HD_Form->AddListMapping(_("Type"), "payment_type", $list_refill_type);
 $HD_Form->AddListValue(_("Refill"), "cc_logrefill_agent.id AS refill_id", "get_agent_refill_link");
-$HD_Form->FieldViewElement([
-    "cc_logpayment_agent.id",
-    "cc_logpayment_agent.agent_id",
-    "cc_logpayment_agent.date",
-    "payment",
-    "payment_type",
-    "cc_logrefill_agent.id AS refill_id",
-]);
 
 $HD_Form->FG_ENABLE_INFO_BUTTON = true;
 $HD_Form->FG_INFO_BUTTON_LINK = "A2B_info_payment.php?type=agent&id=";

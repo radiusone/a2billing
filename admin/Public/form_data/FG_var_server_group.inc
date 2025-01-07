@@ -51,8 +51,6 @@ $HD_Form->AddListValue(_("ID"), "id");
 $HD_Form->AddListValue(_("Name"), "name");
 $HD_Form->AddListValue(_("Description"), "description");
 
-$HD_Form->FieldViewElement ('id, name, description');
-
 $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form->FG_ENABLE_ADD_BUTTON = true;

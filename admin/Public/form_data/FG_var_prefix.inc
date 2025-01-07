@@ -54,7 +54,6 @@ $HD_Form->help_text = create_help(_("Prefix list with destinations."));
 
 $HD_Form->AddListValue(_("Prefix"), "prefix");
 $HD_Form->AddListValue(_("Destination"), "destination");
-$HD_Form->FieldViewElement ('prefix, destination');
 
 if ($popup_select) {
 	$HD_Form->FG_LIST_VIEW_PAGE_SIZE = 7;

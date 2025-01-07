@@ -46,12 +46,12 @@ $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("page_white_add.png") ;
 
 $HD_Form->AddListActionButton(
-    "A2B_entity_payment.php?form_action=ask-add&card_id=|col1|",
+    "A2B_entity_payment.php?form_action=ask-add&card_id=|col4|",
     _('ADD PAYMENT'),
     get_image_path("money.png")
 );
 $HD_Form->AddListActionButton(
-    "A2B_entity_logrefill.php?form_action=ask-add&card_id=|col1|",
+    "A2B_entity_logrefill.php?form_action=ask-add&card_id=|col4|",
     _("ADD REFILL"),
     get_image_path("brick_add.png")
 );
@@ -60,11 +60,12 @@ $HD_Form->help_text = create_help(
     _("Set the caller ID so that the customer calling in is authenticated on the basis of the callerID rather than with the account number")
 );
 
-$HD_Form->AddListValue(_("CALLERID"), "cid");
-$HD_Form->AddListSqlMapping(_("ACCOUNT NUMBER"), "id_cc_card", new Table("cc_card", ["id", "username"]), [], "A2B_entity_card.php?form_action=ask-edit&id=");
-$HD_Form->AddListValue(_("CUSTOMER NAME"), "id_cc_card", [Customer::class, "getName"]);
-$HD_Form->AddListMapping(_("ACTIVATED"), "activated", getActivationTrueFalseList());
-$HD_Form->FieldViewElement (["cid", "id_cc_card", "id_cc_card", "cc_callerid.activated", "cc_callerid.id"]);
+$HD_Form->AddListValue(_("CALLERID"), "cid")
+    ->AddListSqlMapping(_("ACCOUNT NUMBER"), "id_cc_card", new Table("cc_card", ["id", "username"]), [], "A2B_entity_card.php?form_action=ask-edit&id=")
+    ->AddListValue(_("CUSTOMER NAME"), "id_cc_card", [Customer::class, "getName"])
+    ->AddListMapping(_("ACTIVATED"), "cc_callerid.activated", getActivationTrueFalseList())
+    ->AddListHiddenValue("id_cc_card");
+
 
 $HD_Form->FG_ENABLE_ADD_BUTTON = true;
 $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
@@ -107,6 +108,3 @@ $HD_Form->FG_FILTER_LABEL = _('CALLERID');
 $HD_Form->FG_LOCATION_AFTER_ADD = "?id=";
 $HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";
 $HD_Form->FG_LOCATION_AFTER_DELETE = "?id=";
-
-
-

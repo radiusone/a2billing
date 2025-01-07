@@ -103,10 +103,10 @@ $HD_Form->list_help_text = create_help(
     _("Please select a ratecard and click on search to browse the different rates/dialing prefix of the selected ratecard.")
 );
 
-$HD_Form->AddListValue(_("Destination"), "destination", null, [], false)
-    ->AddListValue(abbr(_("Prefix"), _("Dialing Prefix")), "dialprefix")
+$HD_Form->AddListValue(_("Destination"), $use_lcr_callplan ? "cc_prefix.destination" : "destination", null, [], false)
+    ->AddListValue(abbr(_("Prefix"), _("Dialing Prefix")), $use_lcr_callplan ? "cc_ratecard.dialprefix" : "dialprefix")
     ->AddListValue(abbr(_("Buy"), _("Buy Rate")), "buyrate", "get_money_precise")
-    ->AddListValue(abbr(_("Sell"), _("Sell Rate")), "rateinitial", "get_money_precise");
+    ->AddListValue(abbr(_("Sell"), _("Sell Rate")), $use_lcr_callplan ? "MIN(rateinitial)" : "rateinitial", "get_money_precise");
 
 if (!$popup_select) {
     $HD_Form->AddListValue(_("Start"), "startdate")
@@ -115,13 +115,8 @@ if (!$popup_select) {
         ->AddListValue(abbr(_("Conn."), _("Connect Charge")), "connectcharge", "get_money")
         ->AddListSqlMapping(_("Trunk"), "id_trunk", new Table("cc_trunk", ["id_trunk", "trunkcode"]))
         ->AddListSqlMapping(_("Rate Card"), "idtariffplan", new Table("cc_tariffplan", ["id", "tariffname"]));
-    if ($use_lcr_callplan) {
-        $HD_Form->FieldViewElement(["destination", "dialprefix", "buyrate", "MIN(rateinitial) AS rateinitial", "startdate", "stopdate", "initblock", "connectcharge", "id_trunk", "idtariffplan"]);
-    } else {
-        $HD_Form->FieldViewElement(["cc_prefix.destination", "cc_ratecard.dialprefix", "buyrate", "rateinitial", "startdate", "stopdate", "initblock", "connectcharge", "id_trunk", "idtariffplan"]);
-        if ($key = array_search("destination", $HD_Form->FG_EXPORT_FIELD_LIST)) {
-            $HD_Form->FG_EXPORT_FIELD_LIST[$key] = "cc_prefix.destination";
-        }
+    if (!$use_lcr_callplan && $key = array_search("destination", $HD_Form->FG_EXPORT_FIELD_LIST)) {
+        $HD_Form->FG_EXPORT_FIELD_LIST[$key] = "cc_prefix.destination";
     }
     $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
     $HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_def_ratecard.php?form_action=ask-add";
@@ -139,11 +134,6 @@ if (!$popup_select) {
     $HD_Form->AddListSelectActionButton(
         $popup_select == 1 ? "javascript:sendValue('|param|')" : "javascript:sendValue('|col0|')",
     );
-    if ($use_lcr_callplan) {
-        $HD_Form->FieldViewElement(["destination", "dialprefix", "buyrate", "MIN(rateinitial) AS rateinitial"]);
-    } else {
-        $HD_Form->FieldViewElement(["cc_prefix.destination", "cc_ratecard.dialprefix", "buyrate", "rateinitial"]);
-    }
 }
 
 // Search form

@@ -56,7 +56,6 @@ $HD_Form->help_text = create_help(_("Outbound CID offers customers a number whic
 $HD_Form -> AddListValue(_("CID"), "cid");
 $HD_Form -> AddListSqlMapping(_("CIDGROUP"), "outbound_cid_group", new Table("cc_outbound_cid_group", ["id", "group_name"]));
 $HD_Form -> AddListMapping(_("STATUS"), "activated", getActivationList());
-$HD_Form -> FieldViewElement (["cid", "outbound_cid_group", "activated"]);
 
 $HD_Form -> FG_ENABLE_ADD_BUTTON = true;
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;

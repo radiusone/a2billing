@@ -82,7 +82,6 @@ if ($popup_select) {
 	$HD_Form->AddListValue(_("ID"), "id_trunk");
 	$HD_Form->AddListValue(_("Label"), "trunkcode");
 	$HD_Form->AddListSqlMapping(_("Provider"), "id_provider", new Table("cc_provider", ["id", "provider_name"]));
-	$HD_Form->FieldViewElement(["id_trunk", "trunkcode", "id_provider"]);
 } else {
     $HD_Form->AddListValue(_("Label"), "trunkcode");
 	$HD_Form->AddListValue(abbr(_("+"), _("Added prefix")), "trunkprefix");
@@ -93,17 +92,6 @@ if ($popup_select) {
 	$HD_Form->AddListValue(abbr(_("Min"), _("Minutes used")), "secondusedreal", "get_minute");
 	$HD_Form->AddListMapping(_("Status"), "status", getActivationList());
 	$HD_Form->AddListValue(_("Max use"), "maxuse");
-	$HD_Form->FieldViewElement([
-        "trunkcode",
-        "trunkprefix",
-        "removeprefix",
-        "providertech",
-        "providerip",
-        "id_provider",
-        "secondusedreal",
-        "status",
-        "maxuse",
-    ]);
 }
 
 $HD_Form->search_form_enabled = true;

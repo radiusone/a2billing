@@ -76,23 +76,7 @@ if (!$popup_select) {
 $HD_Form->AddListMapping(abbr(_("LCR"), _("Least cost routing type")), "lcrtype", $lcrtype_list_short);
 $HD_Form->AddListSqlMapping(_("Package"), "id_cc_package_offer", new Table("cc_package_offer", ["id", "label"]));
 $HD_Form->AddListMapping(_("Prefix"), "removeinterprefix", $inter_prefix_list_short);
-$HD_Form->FieldViewElement([
-    "id",
-    "tariffgroupname",
-    "creationdate",
-    "lcrtype",
-    "id_cc_package_offer",
-    "removeinterprefix",
-]);
 if ($popup_select) {
-    $HD_Form->FieldViewElement([
-        "id",
-        "tariffgroupname",
-        "lcrtype",
-        "id_cc_package_offer",
-        "removeinterprefix",
-    ]);
-
 	$HD_Form->FG_LIST_VIEW_PAGE_SIZE = 7;
 	$HD_Form->CV_FOLLOWPARAMETERS = "&popup_select=$popup_select&popup_formname=$popup_formname&popup_fieldname=$popup_fieldname";
 

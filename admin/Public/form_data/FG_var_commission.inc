@@ -69,18 +69,9 @@ $HD_Form->AddListValue(_("Account"), "id_card", [Customer::class, "getUsername"]
 $HD_Form->AddListValue(_("Agent"), "id_agent", [Agent::class, "getName"]);
 $HD_Form->AddListValue(_("Payment date"), "date");
 $HD_Form->AddListValue(_("Amount"), "amount", "get_money");
-$HD_Form->AddListMapping(_("Status"), "paid_status", $com_list);
+$HD_Form->AddListMapping(_("Status"), "commission_type", $com_list);
 $HD_Form->AddListValue(_("Description"), "description");
 $HD_Form->AddListSqlMapping(_("Link to payment"), "id_payment", new Table("cc_logpayment", ["id", "payment"]), [], "A2B_entity_payment.php?form_action=ask-edit&id=");
-$HD_Form->FieldViewElement([
-    "id_card",
-    "id_agent",
-    "date",
-    "amount",
-    "commission_type",
-    "description",
-    "id_payment",
-]);
 
 $HD_Form->FG_ENABLE_ADD_BUTTON = true;
 

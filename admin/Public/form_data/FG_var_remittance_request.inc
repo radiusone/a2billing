@@ -80,7 +80,6 @@ $HD_Form->AddListValue(_("Date"), "date");
 $HD_Form->AddListValue(_("Amount"), "amount", "get_money");
 $HD_Form->AddListMapping(_("Type"), "type", $type_list);
 $HD_Form->AddListMapping(_("Status"), "status", $status_list);
-$HD_Form->FieldViewElement (["cc_remittance_request.id", "id_agent", "date", "amount", "type", "status"]);
 
 $HD_Form->search_form_enabled = true;
 $HD_Form->search_session_key = 'remittance_agent_selection';

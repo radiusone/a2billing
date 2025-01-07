@@ -52,8 +52,6 @@ $HD_Form->AddListValue(_("Currency"), "currency");
 $HD_Form->AddListValue(_("Detail"), "name");
 $HD_Form->AddListValue(_("Value"), "value");
 
-$HD_Form->FieldViewElement(["currency", "name", "value"]);
-
 $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form->FG_ENABLE_ADD_BUTTON = true;

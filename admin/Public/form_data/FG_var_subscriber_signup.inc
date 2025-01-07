@@ -55,7 +55,6 @@ $HD_Form->AddListMapping(_("Activity"), "enable", $activated_list);
 $HD_Form->AddListValue(_("Description"), "description");
 $HD_Form->AddListSqlMapping(_("Service"), "id_subscription", new Table("cc_subscription_service", ["id", "label"]));
 $HD_Form->AddListSqlMapping(_("Call plan"), "id_callplan", new Table("cc_tariffgroup", ["id", "tariffgroupname"]));
-$HD_Form->FieldViewElement (["label", "enable", "description", "id_subscription", "id_callplan"]);
 
 $HD_Form->CV_NO_FIELDS  = _("NO SUBSCRIPTION IN SIGNUP CREATED!");
 

@@ -81,20 +81,6 @@ $HD_Form->AddListMapping(abbr(_("Res"), _("Reserved")), "reserved", $yesno);
 $HD_Form->AddListValue(abbr(_("MR"), _("Monthly Rate")), "fixrate");
 $HD_Form->AddListValue(abbr(_("SR"), _("Sell Rate")), "selling_rate");
 
-$HD_Form->FieldViewElement([
-    "did",
-    "iduser",
-    "billingtype",
-    "startingdate",
-    "id_cc_didgroup",
-    "id_cc_country",
-    "activated",
-    "secondusedreal",
-    "reserved",
-    "fixrate",
-    "selling_rate",
-]);
-
 $HD_Form->FG_ENABLE_ADD_BUTTON = true;
 $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form->FG_ENABLE_DELETE_BUTTON = true;

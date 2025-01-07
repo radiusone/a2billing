@@ -156,7 +156,6 @@ $HD_Form->AddListValue(_("ID"), "id");
 $HD_Form->AddListValue(_("Name"), "name");
 $HD_Form->AddListValue(_("File"), "path");
 $HD_Form->AddListValue(_("Creation date"), "creationdate");
-$HD_Form->FieldViewElement (["id", "name", "path", "creationdate"]);
 
 $HD_Form->AddListActionButton(
     "?form_action=restore&id=",

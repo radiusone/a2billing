@@ -61,7 +61,6 @@ $HD_Form->help_text = create_help(_("CID group offers customers a group of CID n
 $HD_Form->AddListValue(_("ID"), "id");
 $HD_Form->AddListValue(_("DIDGROUP NAME"), "group_name");
 $HD_Form->AddListValue(_("CREATION DATE"), "creationdate");
-$HD_Form->FieldViewElement(["id", "group_name", "creationdate"]);
 
 $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form->FG_ENABLE_DELETE_BUTTON = true;

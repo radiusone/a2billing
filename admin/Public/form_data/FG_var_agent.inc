@@ -100,8 +100,7 @@ if ($popup_select) {
         ->AddListValue(_("FIRST NAME"), "firstname")
         ->AddListValue(_("LAST NAME"), "lastname")
         ->AddListValue(_("CURRENCY"), "currency")
-        ->AddListMapping(_("ACTIVE"), "active", $yesno)
-        ->FieldViewElement ('id, login, passwd, lastname, currency, active');
+        ->AddListMapping(_("ACTIVE"), "active", $yesno);
 } else {
 	$HD_Form->AddListValue(_("ID"), "id")
         ->AddListValue(_("DATE"), "datecreation")
@@ -112,8 +111,7 @@ if ($popup_select) {
         ->AddListValue(_("CREDIT"), "credit", "get_money")
         ->AddListValue(_("COMMISSION"), "com_balance", "get_money")
         ->AddListValue(_("CURRENCY"), "currency")
-        ->AddListMapping(_("ACTIVE"), "active", $yesno)
-        ->FieldViewElement ('id, datecreation, login, passwd, firstname, lastname, credit, com_balance, currency, active');
+        ->AddListMapping(_("ACTIVE"), "active", $yesno);
 }
 
 if ($popup_select) {

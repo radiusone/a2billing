@@ -62,21 +62,9 @@ $HD_Form->AddListValue(_("Alias"), "useralias");
 $HD_Form->AddListValue(_("First name"), "firstname");
 $HD_Form->AddListValue(_("Last name"), "lastname");
 $HD_Form->AddListValue(_("Credit"), "credit", "get_money");
-$HD_Form->AddListValue(_("Invoiced"), "invoiced", "get_money");
-$HD_Form->AddListValue(_("Paid"), "paid", "get_money");
-$HD_Form->AddListValue(_("To pay"), "to_pay", "sub_money", ["%6", "%7"]);
-
-$HD_Form->FieldViewElement([
-    "cc_card.id",
-    "cc_card.id",
-    "useralias",
-    "firstname",
-    "lastname",
-    "credit",
-    "SUM(cc_invoice_item.price * (1 + (cc_invoice_item.vat / 100))) AS invoiced",
-    "SUM(cc_logpayment.payment) AS paid",
-    "cc_card.id",
-]);
+$HD_Form->AddListValue(_("Invoiced"), "SUM(cc_invoice_item.price * (1 + (cc_invoice_item.vat / 100)))", "get_money");
+$HD_Form->AddListValue(_("Paid"), "SUM(cc_logpayment.payment)", "get_money");
+$HD_Form->AddListValue(_("To pay"), "", "sub_money", ["%6", "%7"]);
 
 $HD_Form->AddListActionButton(
     "javascript:window.open('A2B_entity_moneysituation_details.php?type=invoice&form_action=list&displayheader=0&popup_select=1&id=|param|','','scrollbars=yes,resizable=yes,width=500,height=270')",

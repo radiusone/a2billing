@@ -146,7 +146,6 @@ if ($popup_select) {
 }
 
 // loop through the shown data and add the table cells
-$FG_COL_QUERY_FIELDS = [];
 foreach ($show_list as $field) {
     switch ($field) {
         case "id":
@@ -154,8 +153,7 @@ foreach ($show_list as $field) {
             break;
         case "username":
             $HD_Form->AddListValue(_("Account number"), "cc_card.id", $popup_select ? null : [Customer::class, "getUsername"]);
-            $FG_COL_QUERY_FIELDS[] = "cc_card.id";
-            continue(2);
+            break;
         case "lastname":
             $HD_Form->AddListValue(_("Last name"), "lastname");
             break;
@@ -208,19 +206,18 @@ foreach ($show_list as $field) {
             $HD_Form->AddListValue(_("Discount"), "discount", "get_percent");
             break;
         case "callerid":
-            $HD_Form->AddListValue(_("Caller ID"), "callerid");
-            $FG_COL_QUERY_FIELDS[] = "(SELECT GROUP_CONCAT(cid SEPARATOR '<br/>') FROM cc_callerid WHERE id_cc_card = cc_card.id) AS callerid";
-            continue(2);
+            $HD_Form->AddListValue(_("Caller ID"), "(SELECT GROUP_CONCAT(cid SEPARATOR '<br/>') FROM cc_callerid WHERE id_cc_card = cc_card.id) AS callerid");
+            break;
         default:
             continue(2);
     }
-    $FG_COL_QUERY_FIELDS[] = $field;
 }
+$column_count = count($HD_Form->FG_QUERY_COLUMN_LIST);
 
-$FG_COL_QUERY_COUNT = count($FG_COL_QUERY_FIELDS);
 // need these in a fixed position for action button links
-$FG_COL_QUERY_FIELDS = array_merge($FG_COL_QUERY_FIELDS, ["cc_card.id AS id_", "username AS username_", "useralias AS alias_"]);
-$HD_Form->FieldViewElement($FG_COL_QUERY_FIELDS);
+$HD_Form->AddListHiddenValue("cc_card.id AS id_")
+    ->AddListHiddenValue("username AS username_")
+    ->AddListHiddenValue("useralias AS alias_");
 
 $HD_Form->CV_FOLLOWPARAMETERS = "&popup_select=$popup_select&popup_formname=$popup_formname&popup_fieldname=$popup_fieldname";
 
@@ -279,9 +276,9 @@ if ($popup_select) {
 
     $HD_Form->FG_ENABLE_INFO_BUTTON = true;
     $HD_Form->FG_INFO_BUTTON_LINK = "A2B_info_card.php?id=";
-    $FN_COLUMN_ID = "col" . ($FG_COL_QUERY_COUNT);//get numbers of rows for needed fields
-    $FN_COLUMN_USERNAME = "col" . ($FG_COL_QUERY_COUNT + 1);
-    $FN_COLUMN_ALIAS = "col" . ($FG_COL_QUERY_COUNT + 2);
+    $FN_COLUMN_ID = "col" . ($column_count);//get numbers of rows for needed fields
+    $FN_COLUMN_USERNAME = "col" . ($column_count + 1);
+    $FN_COLUMN_ALIAS = "col" . ($column_count + 2);
 
     if (!empty($A2B->config["webui"]['buddy_sip_file']) && (is_admin() || (is_agent() && has_rights(Agent::ACX_VOIPCONF)))) {
         $HD_Form->AddListActionButton(

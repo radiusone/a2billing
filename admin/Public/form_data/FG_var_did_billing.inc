@@ -60,15 +60,6 @@ $HD_Form->AddListValue(_("TOTAL_DURATION"), "SUM(sessiontime) AS t_time", "get_m
 $HD_Form->AddListValue(_("TOTAL_COST"), "SUM(sessionbill) AS t_cost", "get_money");
 $HD_Form->AddListValue(_("CARDNUMBER"), "username");
 
-$HD_Form->FieldViewElement([
-    "DATE(starttime) AS date",
-    "cc_did.did",
-    "COUNT(*) AS nb_call",
-    "SUM(sessiontime) AS t_time",
-    "sum(sessionbill) AS t_cost",
-    "username",
-]);
-
 $HD_Form->FG_QUERY_GROUPBY_COLUMNS = ["cc_card.username", "cc_did.did", "date"];
 
 $HD_Form->FG_ENABLE_EDIT_BUTTON = false;

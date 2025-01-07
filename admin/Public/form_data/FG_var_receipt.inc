@@ -90,16 +90,8 @@ $HD_Form->AddListValue(_("ID"), "cc_receipt.id");
 $HD_Form->AddListValue(_("Account"), "id_card", [Customer::class, "getUsername"]);
 $HD_Form->AddListValue(_("Date"), "cc_receipt.date");
 $HD_Form->AddListValue(_("Title"), "title");
-$HD_Form->AddListMapping(_("Status"), "status", getInvoiceStatusList());
-$HD_Form->AddListValue(_("Amount (incl VAT)"), "total_price", "get_money");
-$HD_Form->FieldViewElement([
-    "cc_receipt.id",
-    "id_card",
-    "cc_receipt.date",
-    "title",
-    "cc_receipt.status",
-    "SUM(price) AS total_price",
-]);
+$HD_Form->AddListMapping(_("Status"), "cc_receipt.status", getInvoiceStatusList());
+$HD_Form->AddListValue(_("Amount (incl VAT)"), "SUM(price)", "get_money");
 
 $HD_Form->FG_ENABLE_ADD_BUTTON = true;
 $HD_Form->FG_ENABLE_EDIT_BUTTON = true;

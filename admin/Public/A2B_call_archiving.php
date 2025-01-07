@@ -107,16 +107,6 @@ $HD_Form->AddListValue(_("Card Used"), "card_id", [Customer::class, "getUsername
 $HD_Form->AddListMapping(_("Disposition"), "terminatecauseid", getDialStatusList());
 $HD_Form->AddListMapping(_("IAX/SIP"), "sipiax", getYesNoList());
 $HD_Form->AddListValue(_("Cost"), "sessionbill", "get_money_precise");
-$HD_Form->FieldViewElement([
-    "starttime",
-    "calledstation",
-    "cc_prefix.destination",
-    "real_sessiontime",
-    "card_id",
-    "terminatecauseid",
-    "sipiax",
-    "sessionbill",
-]);
 
 // TODO: this shouldn't be necessary; $HD_Form->perform_list_subselection() should
 // populate $HD_Form->list_query_conditions from the search form, but it seems to

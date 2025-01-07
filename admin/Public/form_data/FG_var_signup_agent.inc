@@ -67,7 +67,6 @@ $HD_Form->AddListValue(_("Key"), "code");
 $HD_Form->AddListValue(_("Agent"), "id_agent", [Agent::class, "getName"]);
 $HD_Form->AddListSqlMapping(_("Call plan"), "id_tariffgroup", new Table("cc_tariffgroup", ["id", "tariffgroupname"]));
 $HD_Form->AddListSqlMapping(_("Group"), "id_group", new Table("cc_card_group", ["id" , "name"]));
-$HD_Form->FieldViewElement (["code", "id_agent", "id_tariffgroup", "id_group"]);
 
 $url = htmlspecialchars(json_encode($A2B->config["signup"]["urlcustomerinterface"]));
 $HD_Form->AddListActionButton(

@@ -72,20 +72,6 @@ $HD_Form->AddListValue(_("Amount"), "orders_amount", "get_money");
 $HD_Form->AddListValue(abbr(_("Cur"), _("Currency")), "currency");
 $HD_Form->AddListValue(_("Value"), "currency_value", "get_money_precise");
 
-$HD_Form->FieldViewElement([
-    "id",
-    "date_purchased",
-    $trans_type === "agent" ? "cc_agent.login" : "cc_card.username",
-    "CONCAT(firstname, ' ', lastname)",
-    "item_name",
-    "payment_method",
-    "cc_number",
-    "orders_status",
-    "orders_amount",
-    "currency",
-    "currency_value",
-]);
-
 $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "?trans_type=" . ($trans_type === "agent" ? "user" : "agent"); 
 $HD_Form->FG_LIST_ADDING_BUTTON_MSG1 = $trans_type === "agent" ? _("Show user transactions") : _("Show agent transactions");

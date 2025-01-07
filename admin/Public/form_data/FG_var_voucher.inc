@@ -67,18 +67,6 @@ $HD_Form->AddListValue(_("Created date"), "creationdate");
 $HD_Form->AddListValue(_("Used date"), "usedate");
 $HD_Form->AddListMapping(_("Currency"), "currency", $currency_list);
 
-$HD_Form->FieldViewElement([
-    "voucher",
-    "credit",
-    "tag",
-    "activated",
-    "used",
-    "usedcardnumber",
-    "creationdate",
-    "usedate",
-    "currency",
-]);
-
 $form_action ??= "list";
 
 // Set the filter variables

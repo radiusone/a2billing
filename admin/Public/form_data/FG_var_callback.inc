@@ -60,26 +60,12 @@ $HD_Form->AddListValue(_("ENTRY TIME"), "entry_time");
 $HD_Form->AddListValue(_("STATUS"), "status");
 $HD_Form->AddListValue(_("SERVER IP"), "server_ip");
 $HD_Form->AddListValue(abbr(_("NA"),_("NUMBER OF ATTEMPT")), "num_attempt");
-$HD_Form->AddListValue(abbr(_("AR"), _("AGI RESULT")), "agi_result");
+$HD_Form->AddListValue(abbr(_("AR"), _("AGI RESULT")), "manager_result"); // not sure why this isn't agi_result?
 $HD_Form->AddListValue(_("CALLBACK TIME"), "callback_time");
 $HD_Form->AddListValue(_("LAST_ATTEMPT"), "last_attempt_time");
 $HD_Form->AddListValue(_("CHANNEL"), "channel");
 $HD_Form->AddListValue(_("CONTEXT"), "context");
 $HD_Form->AddListSqlMapping(_("SERVER"), "id_server", new Table("cc_server_manager", ["id", "server_ip"]));
-$HD_Form->FieldViewElement([
-    "id",
-    "uniqueid",
-    "entry_time",
-    "status",
-    "server_ip",
-    "num_attempt",
-    "manager_result",
-    "callback_time",
-    "last_attempt_time",
-    "channel",
-    "context",
-    "id_server",
-]);
 
 $HD_Form->FG_ENABLE_ADD_BUTTON = true;
 $HD_Form->FG_ENABLE_EDIT_BUTTON = true;

@@ -70,14 +70,6 @@ $HD_Form->AddListValue(_("Date"), "date");
 $HD_Form->AddListValue(_("Amount"), "payment", "get_money");
 $HD_Form->AddListMapping(_("Type"), "payment_type", $list_refill_type);
 $HD_Form->AddListValue(_("Refill"), "id_logrefill", "get_refill_link");
-$HD_Form->FieldViewElement([
-    "id",
-    "card_id",
-    "date",
-    "payment",
-    "payment_type",
-    "id_logrefill",
-]);
 
 $HD_Form->FG_ENABLE_INFO_BUTTON = true;
 $HD_Form->FG_INFO_BUTTON_LINK = "A2B_info_payment.php?id=";

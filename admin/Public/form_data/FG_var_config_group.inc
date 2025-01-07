@@ -58,7 +58,6 @@ $HD_Form->list_help_text = create_help(_("Here is a list of all configuration gr
 
 $HD_Form->AddListValue(gettext("TITLE"), "group_title");
 $HD_Form->AddListValue(gettext("DESCRIPTION"), "group_description");
-$HD_Form->FieldViewElement(["group_title", "group_description"]);
 
 $HD_Form->FG_ENABLE_EDIT_BUTTON = false;
 $HD_Form->FG_ENABLE_ADD_BUTTON = false;

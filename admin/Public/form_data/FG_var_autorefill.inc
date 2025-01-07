@@ -46,7 +46,6 @@ $HD_Form->help_text = create_help(_("Auto Refill report."));
 $HD_Form->AddListValue(_("Date"), "daterun");
 $HD_Form->AddListValue(_("Cards Refilled"), "totalcardperform");
 $HD_Form->AddListValue(_("Credit Applied"), "totalcredit");
-$HD_Form->FieldViewElement('daterun, totalcardperform, totalcredit');
 
 $HD_Form->FG_ENABLE_EDIT_BUTTON = false;
 $HD_Form->FG_ENABLE_DELETE_BUTTON = false;

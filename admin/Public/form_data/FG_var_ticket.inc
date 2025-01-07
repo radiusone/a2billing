@@ -101,7 +101,7 @@ $priority_list = Ticket::getAllPriorityListView();
 $viewed_list = getTicketViewedList();
 $status_list = Ticket::getAllStatusListView();
 
-$HD_Form->AddListValue(_("ID"), "id");
+$HD_Form->AddListValue(_("ID"), "cc_ticket.id");
 $HD_Form->AddListSqlMapping(
     $ticket_type === "agent" ? _("Agent") : _("Customer"),
     "creator",
@@ -113,22 +113,11 @@ if ($ticket_type === "agent") {
     $HD_Form->AddListValue(_("Account number"), "creator", [Customer::class, "getUsername"]);
 }
 $HD_Form->AddListValue(_("Title"), "title");
-$HD_Form->AddListValue(_("Creation date"), "creationdate");
+$HD_Form->AddListValue(_("Creation date"), "cc_ticket.creationdate");
 $HD_Form->AddListSqlMapping(_("Component"), "id_component", new Table("cc_support_component", ["id", "name"]));
 $HD_Form->AddListMapping(_("Priority"), "priority", $priority_list);
-$HD_Form->AddListMapping(_("Viewed"), "viewed", $viewed_list, false);
-$HD_Form->AddListMapping(_("Status"), "status", $status_list);
-$HD_Form->FieldViewElement([
-    "cc_ticket.id",
-    "creator",
-    "creator",
-    "title",
-    "cc_ticket.creationdate",
-    "id_component",
-    "priority",
-    "v.viewed",
-    "cc_ticket.status",
-]);
+$HD_Form->AddListMapping(_("Viewed"), "v.viewed", $viewed_list, false);
+$HD_Form->AddListMapping(_("Status"), "cc_ticket.status", $status_list);
 
 $HD_Form->search_form_enabled = !$popup_select;
 $HD_Form->search_delete_enabled = false;
