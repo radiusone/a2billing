@@ -492,6 +492,9 @@ class FormHandler
      */
     public function AddListValue(string $label, string $field, callable $callback = null, array $arguments = [], bool $sortable = true): self
     {
+        if ($field) {
+            $this->FG_QUERY_COLUMN_LIST[] = $field;
+        }
         $this->FG_LIST_TABLE_CELLS[] = [
             "type" => "",
             "header" => $label,
@@ -515,6 +518,9 @@ class FormHandler
      */
     public function AddListMapping(string $label, string $field, array $map, bool $sortable = true): self
     {
+        if ($field) {
+            $this->FG_QUERY_COLUMN_LIST[] = $field;
+        }
         $this->FG_LIST_TABLE_CELLS[] = [
             "type" => "list",
             "header" => $label,
@@ -546,6 +552,9 @@ class FormHandler
         bool $sortable = true
     ): self
     {
+        if ($field) {
+            $this->FG_QUERY_COLUMN_LIST[] = $field;
+        }
         $result = $table->getRows($this->DBHandle, $conditions);
         $map = array_combine(
             array_column($result, 0),
@@ -565,8 +574,21 @@ class FormHandler
     }
 
     /**
-     * Sets query field names for the View module
-     * Some items sent to AddViewElement have fake names, so this overrides them?
+     * Add a column to the database query for use in callback
+     * arguments (%n) or action button conditions (|coln|)
+     *
+     * @param string $field
+     * @return $this
+     */
+    public function AddListHiddenValue(string $field): self
+    {
+        $this->FG_QUERY_COLUMN_LIST[] = $field;
+
+        return $this;
+    }
+
+    /**
+     * Overrides query field names for the list view
      *
      * @param string|array $fields array or comma-separated list of column names used for list view
      * @return void
@@ -1274,6 +1296,10 @@ class FormHandler
             }
 
             if ($form_action === "list") {
+                if (!in_array("$this->FG_QUERY_PRIMARY_KEY AS instance_primary_key", $this->FG_QUERY_COLUMN_LIST)) {
+                    // instance_primary_key is used to fill in links for edit/delete buttons
+                    $this->FG_QUERY_COLUMN_LIST[] = "$this->FG_QUERY_PRIMARY_KEY AS instance_primary_key";
+                }
 
                 $instance_table = new Table($this->FG_QUERY_TABLE_NAME, $this->FG_QUERY_COLUMN_LIST, $this->query_table_joins);
 
