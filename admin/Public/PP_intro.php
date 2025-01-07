@@ -9,7 +9,7 @@
  * powered by Star2billing S.L. <http://www.star2billing.com/>
  *
  * @copyright   Copyright © 2004-2015 - Star2billing S.L.
- * @copyright   Copyright © 2022 RadiusOne Inc.
+ * @copyright   Copyright © 2022-2025 RadiusOne Inc.
  * @author      Belaid Arezqui <areski@gmail.com>
  * @author      Michael Newton <mnewton@goradiusone.com>
  * @license     http://www.fsf.org/licensing/licenses/agpl-3.0.html
@@ -46,7 +46,7 @@ require_once __DIR__ . "/../templates/main.php";
     <div class="col-8">
         This software is based on A2billing, a  commercial, open-source, telecom billing platform.<br/>
         Originally created by Star2billing S.L. and copyright 2004-2015.<br/>
-        Modifications by Michael Newton, copyright 2022 RadiusOne Inc.<br/>
+        Modifications by Michael Newton, copyright 2022-2025 RadiusOne Inc.<br/>
         This software is licensed under the GNU Affero General Public License, version 3.0.<br/>
     </div>
 </div>
