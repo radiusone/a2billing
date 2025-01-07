@@ -40,7 +40,7 @@ Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
 $HD_Form = new FormHandler("cc_alarm", _("Alarms"));
 
-$HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
+$HD_Form->list_query_order_direction = "DESC";
 
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_alarm.php?form_action=ask-add";

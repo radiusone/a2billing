@@ -51,8 +51,8 @@ $HD_Form = new FormHandler(
     $trans_type === "agent" ? ["cc_agent" => ["agent_id", "cc_agent.id"]] : ["cc_card" => ["customers_id", "cc_card.id"]]
 );
 
-$HD_Form->FG_QUERY_ORDERBY_COLUMNS = ["date_purchased"];
-$HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
+$HD_Form->list_query_order_columns = ["date_purchased"];
+$HD_Form->list_query_order_direction = "DESC";
 
 $HD_Form->help_text = create_help(_("You can view all the transactions through the different epayment configured systems (Paypal, MoneyBookers, etc...). "));
 

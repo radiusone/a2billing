@@ -46,14 +46,14 @@ getpost_ifset(array('destination', 'dialprefix', 'rateinitial','posted','tariffp
 
 $HD_Form = new FormHandler("cc_callplan_lcr", _("Rates"), 'ratecard_id');
 
-$HD_Form -> FG_TABLE_DEFAULT_ORDER = "destination";
+$HD_Form ->list_query_order_columns = ["destination"];
 $HD_Form -> search_session_key = 'entity_ratecard_selection';
 
 
 
 
 $HD_Form->list_query_conditions["tariffgroup_id"] = $_SESSION["tariff"];
-$HD_Form -> FG_QUERY_GROUPBY_COLUMNS = ["dialprefix"];
+$HD_Form -> list_query_group_columns = ["dialprefix"];
 
 $HD_Form -> AddListValue(abbr(_("PREFIX"), _("DIALING PREFIX")), "dialprefix");
 $HD_Form -> AddListValue(gettext("DESTINATION"), "destination");

@@ -44,8 +44,8 @@ $HD_Form = new FormHandler(
     ]
 );
 
-$HD_Form->FG_TABLE_DEFAULT_ORDER = "date";
-$HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
+$HD_Form->list_query_order_columns = ["date"];
+$HD_Form->list_query_order_direction = "DESC";
 $HD_Form->list_query_conditions["sipiax"] = ["IN", [2, 3]];
 
 $HD_Form->help_text = create_help(
@@ -60,7 +60,7 @@ $HD_Form->AddListValue(_("TOTAL_DURATION"), "SUM(sessiontime) AS t_time", "get_m
 $HD_Form->AddListValue(_("TOTAL_COST"), "SUM(sessionbill) AS t_cost", "get_money");
 $HD_Form->AddListValue(_("CARDNUMBER"), "username");
 
-$HD_Form->FG_QUERY_GROUPBY_COLUMNS = ["cc_card.username", "cc_did.did", "date"];
+$HD_Form->list_query_group_columns = ["cc_card.username", "cc_did.did", "date"];
 
 $HD_Form->FG_ENABLE_EDIT_BUTTON = false;
 $HD_Form->FG_ENABLE_DELETE_BUTTON = false;

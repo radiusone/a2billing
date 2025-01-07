@@ -54,7 +54,7 @@ if (!isset($form_action) || $form_action=="list") {
 }
 
 $HD_Form->list_query_conditions["id_card"] = $_SESSION["card_id"];
-$HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
+$HD_Form -> list_query_order_direction = "DESC";
 
 $HD_Form -> FG_FK_DELETE_ALLOWED = true;
 $HD_Form -> FG_FK_DELETE_CONFIRM = true;

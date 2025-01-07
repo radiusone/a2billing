@@ -237,7 +237,7 @@ if (!isset ($action_release) || $action_release == "confirm_release" || $action_
     // #### TOP SECTION PAGE
     $HD_Form->create_toppage($form_action);
 
-    $instance_table = new Table($HD_Form->FG_QUERY_TABLE_NAME, $HD_Form->FG_QUERY_COLUMN_LIST);
+    $instance_table = new Table($HD_Form->FG_QUERY_TABLE_NAME, $HD_Form->list_query_columns);
     $nb_record = $instance_table->countRows($HD_Form->DBHandle, $HD_Form->list_query_conditions);
 
     if ($nb_record <= $FG_LIMITE_DISPLAY) {

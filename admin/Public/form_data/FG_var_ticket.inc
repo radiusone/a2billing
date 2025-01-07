@@ -74,8 +74,8 @@ if ($form_action === "list") {
     }
 }
 
-$HD_Form->FG_TABLE_DEFAULT_ORDER = "cc_ticket.creationdate";
-$HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
+$HD_Form->list_query_order_columns = ["cc_ticket.creationdate"];
+$HD_Form->list_query_order_direction = "DESC";
 $HD_Form->list_query_conditions["cc_ticket.creator_type"] = $ticket_type === "agent" ? 1 : 0;
 
 $HD_Form->FG_FK_DELETE_ALLOWED = true;

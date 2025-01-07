@@ -52,7 +52,7 @@ if (!isset($form_action) || $form_action=="list") {
 	$HD_Form = new FormHandler("cc_logrefill_agent", _("Refill Agent"));
 }
 
-$HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
+$HD_Form -> list_query_order_direction = "DESC";
 
 $list_refill_type=getRefillType_List();
 $HD_Form -> AddListValue(gettext("ID"), "cc_logrefill_agent.id");

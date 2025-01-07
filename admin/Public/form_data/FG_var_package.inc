@@ -42,7 +42,7 @@ $form_action ??= "list";
 
 $HD_Form = new FormHandler("cc_package_offer", _("Package"));
 
-$HD_Form->FG_TABLE_DEFAULT_ORDER = "label";
+$HD_Form->list_query_order_columns = ["label"];
 $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("package_add.png");
 

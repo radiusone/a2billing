@@ -117,10 +117,10 @@ $pagination_params["current_page"] = "%s";
                         <?php if ($column["sortable"]): ?>
                         <?php
                             $sort_params["order"] = $column["field"]; //todo: use the column index instead?
-                            $sort_params["sens"] = $form->FG_QUERY_DIRECTION === "ASC" ?  "DESC" : "ASC";
+                            $sort_params["sens"] = $form->list_query_order_direction === "ASC" ?  "DESC" : "ASC";
                         ?>
                         <a
-                            class="sort <?= $form->FG_QUERY_ORDERBY_COLUMNS[0] === $column["field"] ? strtolower($form->FG_QUERY_DIRECTION) : "" ?>"
+                            class="sort <?= $form->list_query_order_columns[0] === $column["field"] ? strtolower($form->list_query_order_direction) : "" ?>"
                             href="<?= "?" . http_build_query($sort_params, "", "&amp;") ?>"
                         >
                         <?php endif ?>
@@ -288,7 +288,7 @@ $pagination_params["current_page"] = "%s";
 <div class="row pb-3">
     <div class="col">
         <?= FormHandler::printPages(
-            $form->CV_CURRENT_PAGE + 1,
+            (int)($processed['current_page'] ?? 0) + 1,
             $form->FG_LIST_VIEW_PAGE_COUNT,
             "?" . http_build_query($pagination_params, "", "&amp;")
 //            "?current_page=%s&amp;filterprefix=$processed[filterprefix]&amp;order=$processed[order]&amp;sens=$processed[sens]&amp;mydisplaylimit=$processed[mydisplaylimit]&amp;popup_select=$processed[popup_select]&amp;letter=$letter" . (str_starts_with($form->CV_FOLLOWPARAMETERS, "&") ? "" : "&amp;") . $form->CV_FOLLOWPARAMETERS

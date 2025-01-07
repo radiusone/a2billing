@@ -51,7 +51,7 @@ $HD_Form = new FormHandler(
         : []
 );
 
-$HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
+$HD_Form->list_query_order_direction = "DESC";
 
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_billing_customer.php?form_action=ask-add";

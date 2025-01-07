@@ -58,11 +58,11 @@ $HD_Form = new FormHandler("cc_callplan_lcr LEFT JOIN cc_agent_tariffgroup ON ta
 
 
 $HD_Form->list_query_conditions["cc_agent_tariffgroup.id_agent"] = $_SESSION["agent_id"];
-$HD_Form -> FG_TABLE_DEFAULT_ORDER = " dialprefix";
+$HD_Form ->list_query_order_columns = ["dialprefix"];
 
 $HD_Form -> search_session_key = 'entity_ratecard_selection';
 
-$HD_Form -> FG_QUERY_GROUPBY_COLUMNS = ["dialprefix"];
+$HD_Form -> list_query_group_columns = ["dialprefix"];
 
 $musiconhold_list = getMusicOnHold_List($A2B);
 $yesno = getYesNoList();

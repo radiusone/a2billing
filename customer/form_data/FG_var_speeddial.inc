@@ -48,8 +48,8 @@ getpost_ifset(array('id', 'speeddial', 'id_cc_card', 'name', 'phone','popup_sele
 $HD_Form = new FormHandler("cc_speeddial", "speeddial");
 
 // FAQ
-$HD_Form -> FG_TABLE_DEFAULT_ORDER = " creationdate";
-$HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
+$HD_Form ->list_query_order_columns = ["creationdate"];
+$HD_Form -> list_query_order_direction = "DESC";
 
 
 $speeddial_list = range(0, 9);

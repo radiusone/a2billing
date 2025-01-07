@@ -53,7 +53,7 @@ $HD_Form = new FormHandler(
         "cc_logpayment" => ["cc_card.id", "cc_logpayment.card_id"]
     ],
 );
-$HD_Form->FG_QUERY_GROUPBY_COLUMNS = ["cc_card.id"];
+$HD_Form->list_query_group_columns = ["cc_card.id"];
 $HD_Form->list_query_conditions["cc_card_group.id_agent"] = $_SESSION["agent_id"];
 
 $HD_Form->AddListValue(_("ID"), "cc_card.id");

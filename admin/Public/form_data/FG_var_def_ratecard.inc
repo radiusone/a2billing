@@ -80,7 +80,7 @@ if (($tariffgroup || !empty($_SESSION['def_ratecard_tariffgroup'])) && $form_act
     $HD_Form->FG_QUERY_TABLE_NAME = "cc_callplan_lcr";
     $HD_Form->query_table_joins = [];
     $use_lcr_callplan = true;
-    $HD_Form->FG_QUERY_GROUPBY_COLUMNS = ["dialprefix"];
+    $HD_Form->list_query_group_columns = ["dialprefix"];
     if (!empty($tariffgroup)) {
         $tariffgroup = (int)$tariffgroup;
         $HD_Form->list_query_conditions["tariffgroup_id"] = $tariffgroup;
@@ -91,7 +91,7 @@ if (($tariffgroup || !empty($_SESSION['def_ratecard_tariffgroup'])) && $form_act
     }
 }
 
-$HD_Form->FG_TABLE_DEFAULT_ORDER = "dialprefix";
+$HD_Form->list_query_order_columns = ["dialprefix"];
 $HD_Form->search_session_key = "entity_ratecard_selection";
 $export_cols = $A2B->config['webui']['rate_export_field_list'];
 $HD_Form->FG_EXPORT_FIELD_LIST = explode(",", $export_cols);

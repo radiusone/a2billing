@@ -212,7 +212,7 @@ foreach ($show_list as $field) {
             continue(2);
     }
 }
-$column_count = count($HD_Form->FG_QUERY_COLUMN_LIST);
+$column_count = count($HD_Form->list_query_columns);
 
 // need these in a fixed position for action button links
 $HD_Form->AddListHiddenValue("cc_card.id AS id_")

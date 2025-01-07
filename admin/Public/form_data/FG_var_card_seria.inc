@@ -40,7 +40,7 @@ Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
 $HD_Form = new FormHandler("cc_card_seria", _("Card series"));
 
-$HD_Form->FG_TABLE_DEFAULT_ORDER = "name";
+$HD_Form->list_query_order_columns = ["name"];
 
 $HD_Form->FG_FK_DELETE_CONFIRM = true;
 $HD_Form->FG_FK_TABLENAMES = ["cc_card"];

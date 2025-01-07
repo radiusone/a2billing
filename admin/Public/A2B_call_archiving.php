@@ -93,8 +93,8 @@ $HD_Form = new FormHandler(
 
 $HD_Form->init();
 
-$HD_Form->FG_TABLE_DEFAULT_ORDER = "starttime";
-$HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
+$HD_Form->list_query_order_columns = ["starttime"];
+$HD_Form->list_query_order_direction = "DESC";
 $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 30;
 $HD_Form->FG_QUERY_PRIMARY_KEY = "cc_call.id";
 $HD_Form->CV_NO_FIELDS = _("No matching calls found; use the fields above to refine your search.");

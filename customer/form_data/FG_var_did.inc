@@ -50,8 +50,8 @@ getpost_ifset(array('id', 'billingtype', 'did', 'startingdate', 'expirationdate'
 
 $HD_Form = new FormHandler("cc_did_destination", "destination");
 
-$HD_Form -> FG_TABLE_DEFAULT_ORDER = "did";
-$HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
+$HD_Form ->list_query_order_columns = ["did"];
+$HD_Form -> list_query_order_direction = "DESC";
 
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
@@ -114,7 +114,7 @@ if (isset($form_action) && ($form_action=='ask-edit' || $form_action=='edit')) {
 	$validated = 0;
 }
 
-$HD_Form -> FG_QUERY_COLUMN_LIST = [
+$HD_Form -> list_query_columns = [
     'destination',
     'id_cc_did',
     'cc_did_destination.activated',

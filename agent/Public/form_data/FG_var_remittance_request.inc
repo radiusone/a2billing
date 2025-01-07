@@ -46,7 +46,7 @@ getpost_ifset(array('id','id_agent','date', 'amount,type', 'status'));
 $HD_Form = new FormHandler("cc_remittance_request", _("Remittance Request Agent"));
 $HD_Form->list_query_conditions["id_agent"] = $_SESSION["agent_id"];
 
-$HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
+$HD_Form -> list_query_order_direction = "DESC";
 
 $HD_Form->AddListActionButton(
     "",

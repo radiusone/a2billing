@@ -53,12 +53,6 @@ class FormHandler
     /** @var string[] Parameters to add to the URL of the list view sorting/pagination buttons */
     public array $CV_FOLLOWPARAMETERS = [];
 
-    /**
-     * @var int Tracks the current page for pagination and DB queries
-     * @todo this is barely used; could it be replaced with a variable?
-     */
-    public int $CV_CURRENT_PAGE = 0;
-
     /** @var int debug level 0 (none) - 3 (lots) */
     public int $FG_DEBUG = 0;
 
@@ -75,22 +69,19 @@ class FormHandler
     public array $query_table_joins;
 
     /** @var array list of columns from the SQL query to display in the list */
-    public array $FG_QUERY_COLUMN_LIST = [];
+    public array $list_query_columns = [];
 
     /** @var array columns/values to be used as a condition in list queries */
     public array $list_query_conditions = [];
 
     /** @var array List of columns for the list display query to be grouped by */
-    public array $FG_QUERY_GROUPBY_COLUMNS = [];
-    /** @var array List of columns for the list display query to be ordered by */
-    public array $FG_QUERY_ORDERBY_COLUMNS = [];
-    /** @var string|null Direction (ASC or DESC) for the list display query ordering */
-    public ?string $FG_QUERY_DIRECTION = '';
-    /** @var string Default sort order */
-    public string $FG_TABLE_DEFAULT_ORDER = "id";
-    /** @var string Default sort direction */
-    public string $FG_TABLE_DEFAULT_SENS = "ASC";
+    public array $list_query_group_columns = [];
 
+    /** @var array List of columns for the list display query to be ordered by */
+    public array $list_query_order_columns = [];
+
+    /** @var string Direction (ASC or DESC) for the list display query ordering */
+    public string $list_query_order_direction = "ASC";
 
     /** @var array Data used to build the list view table */
     public array $FG_LIST_TABLE_CELLS = [];
@@ -363,7 +354,7 @@ class FormHandler
         $this->DBHandle = DbConnect();
         $this->FG_QUERY_PRIMARY_KEY = $primary_key;
         if ($primary_key !== "id") {
-            $this->FG_TABLE_DEFAULT_ORDER = $primary_key;
+            $this->list_query_order_columns = [$primary_key];
             $this->update_query_conditions = [$primary_key => "%id"];
         }
         $this->query_table_joins = $joins;
@@ -493,7 +484,7 @@ class FormHandler
     public function AddListValue(string $label, string $field, callable $callback = null, array $arguments = [], bool $sortable = true): self
     {
         if ($field) {
-            $this->FG_QUERY_COLUMN_LIST[] = $field;
+            $this->list_query_columns[] = $field;
         }
         $this->FG_LIST_TABLE_CELLS[] = [
             "type" => "",
@@ -519,7 +510,7 @@ class FormHandler
     public function AddListMapping(string $label, string $field, array $map, bool $sortable = true): self
     {
         if ($field) {
-            $this->FG_QUERY_COLUMN_LIST[] = $field;
+            $this->list_query_columns[] = $field;
         }
         $this->FG_LIST_TABLE_CELLS[] = [
             "type" => "list",
@@ -553,7 +544,7 @@ class FormHandler
     ): self
     {
         if ($field) {
-            $this->FG_QUERY_COLUMN_LIST[] = $field;
+            $this->list_query_columns[] = $field;
         }
         $result = $table->getRows($this->DBHandle, $conditions);
         $map = array_combine(
@@ -582,7 +573,7 @@ class FormHandler
      */
     public function AddListHiddenValue(string $field): self
     {
-        $this->FG_QUERY_COLUMN_LIST[] = $field;
+        $this->list_query_columns[] = $field;
 
         return $this;
     }
@@ -597,12 +588,12 @@ class FormHandler
     public function FieldViewElement($fields): void
     {
         if (is_string($fields)) {
-            $this->FG_QUERY_COLUMN_LIST = array_map("trim", explode(",", $fields));
+            $this->list_query_columns = array_map("trim", explode(",", $fields));
         } elseif (is_array($fields)) {
-            $this->FG_QUERY_COLUMN_LIST = $fields;
+            $this->list_query_columns = $fields;
         }
         // instance_primary_key is used to fill in links for edit/delete buttons
-        $this->FG_QUERY_COLUMN_LIST[] = "$this->FG_QUERY_PRIMARY_KEY AS instance_primary_key";
+        $this->list_query_columns[] = "$this->FG_QUERY_PRIMARY_KEY AS instance_primary_key";
     }
 
     /**
@@ -1267,12 +1258,13 @@ class FormHandler
             $form_action === "ask-del-confirm"
         ) {
             if (!empty($processed["order"])) {
-                $this->FG_QUERY_ORDERBY_COLUMNS = array_filter([$processed['order']]);
+                $this->list_query_order_columns = array_filter([$processed['order']]);
             }
             if (in_array(strtolower($processed["sens"] ?? ""), ["asc", "desc"])) {
-                $this->FG_QUERY_DIRECTION = $processed['sens'];
+                $this->list_query_order_direction = $processed["sens"];
             }
-            $this->CV_CURRENT_PAGE = (int)($processed['current_page'] ?? 0);
+
+            $current_page = (int)($processed["current_page"] ?? 0);
 
             $session_limit = $this->FG_QUERY_TABLE_NAME . "-displaylimit";
             if (array_key_exists($session_limit, $_SESSION) && (int)$_SESSION[$session_limit]) {
@@ -1288,29 +1280,12 @@ class FormHandler
                 $_SESSION[$this->FG_QUERY_TABLE_NAME . "-displaylimit"] = $this->FG_LIST_VIEW_PAGE_SIZE;
             }
 
-            if (empty($this->FG_QUERY_ORDERBY_COLUMNS)) {
-                $this->FG_QUERY_ORDERBY_COLUMNS = array_filter([$this->FG_TABLE_DEFAULT_ORDER]);
-            }
-            if (empty($this->FG_QUERY_DIRECTION)) {
-                $this->FG_QUERY_DIRECTION = $this->FG_TABLE_DEFAULT_SENS;
-            }
-
             if ($form_action === "list") {
-                if (!in_array("$this->FG_QUERY_PRIMARY_KEY AS instance_primary_key", $this->FG_QUERY_COLUMN_LIST)) {
+                if (!in_array("$this->FG_QUERY_PRIMARY_KEY AS instance_primary_key", $this->list_query_columns)) {
                     // instance_primary_key is used to fill in links for edit/delete buttons
-                    $this->FG_QUERY_COLUMN_LIST[] = "$this->FG_QUERY_PRIMARY_KEY AS instance_primary_key";
+                    $this->list_query_columns[] = "$this->FG_QUERY_PRIMARY_KEY AS instance_primary_key";
                 }
 
-                $instance_table = new Table($this->FG_QUERY_TABLE_NAME, $this->FG_QUERY_COLUMN_LIST, $this->query_table_joins);
-
-                if ($this->FG_DEBUG) {
-                    $params = [];
-                    echo "<pre>";
-                    echo json_encode($this->list_query_conditions, JSON_PRETTY_PRINT) . "\n";
-                    echo "WHERE " . $instance_table->processWhereClauseArray($this->list_query_conditions, $params) . "\n";
-                    echo json_encode($params, JSON_PRETTY_PRINT);
-                    echo "</pre>";
-                }
                 $this->prepare_list_subselection($form_action);
 
                 // Code here to call the Delete Selected items Fucntion
@@ -1318,43 +1293,26 @@ class FormHandler
                     $this->Delete_Selected();
                 }
 
-                if ($this->FG_DEBUG >= 2) {
-                    echo "FG_ORDER = " . $this->FG_QUERY_ORDERBY_COLUMNS[0] . "<br>";
-                    echo "FG_SENS = " . $this->FG_QUERY_DIRECTION . "<br>";
-                    echo "FG_LIMITE_DISPLAY = " . $this->FG_LIST_VIEW_PAGE_SIZE . "<br>";
-                    echo "CV_CURRENT_PAGE = " . $this->CV_CURRENT_PAGE . "<br>";
-                }
-
+                $instance_table = new Table($this->FG_QUERY_TABLE_NAME, $this->list_query_columns, $this->query_table_joins);
                 $list = $instance_table->getRows(
                     $this->DBHandle,
                     $this->list_query_conditions,
-                    $this->FG_QUERY_ORDERBY_COLUMNS,
-                    $this->FG_QUERY_DIRECTION,
-                    $this->FG_QUERY_GROUPBY_COLUMNS,
+                    $this->list_query_order_columns,
+                    $this->list_query_order_direction,
+                    $this->list_query_group_columns,
                     $this->FG_LIST_VIEW_PAGE_SIZE,
-                    $this->CV_CURRENT_PAGE * $this->FG_LIST_VIEW_PAGE_SIZE
+                    $current_page * $this->FG_LIST_VIEW_PAGE_SIZE
                 );
-                if ($this->FG_DEBUG === 3) {
-                    echo "<br>Clause : " . json_encode($this->list_query_conditions);
-                }
-                $this->FG_LIST_VIEW_ROW_COUNT = $instance_table->countRows($this->DBHandle, $this->list_query_conditions, $this->FG_QUERY_GROUPBY_COLUMNS);
 
-                if ($this->FG_DEBUG >= 1) {
-                    var_dump($list);
-                }
+                $this->FG_LIST_VIEW_ROW_COUNT = $instance_table->countRows($this->DBHandle, $this->list_query_conditions, $this->list_query_group_columns);
 
                 if ($this->FG_LIST_VIEW_ROW_COUNT <= $this->FG_LIST_VIEW_PAGE_SIZE) {
                     $this->FG_LIST_VIEW_PAGE_COUNT = 1;
                 } else {
                     $this->FG_LIST_VIEW_PAGE_COUNT = ceil($this->FG_LIST_VIEW_ROW_COUNT / $this->FG_LIST_VIEW_PAGE_SIZE);
                 }
-
-                if ($this->FG_DEBUG === 3) {
-                    echo "<br>Nb_record : " . $this->FG_LIST_VIEW_ROW_COUNT;
-                    echo "<br>Nb_record_max : " . $this->FG_LIST_VIEW_PAGE_COUNT;
-                }
-
             } else {
+                //todo: when is this code run and why?
                 $cols = array_column($this->FG_EDIT_FORM_ELEMENTS, "name");
                 $fields = implode(",", $cols);
 
@@ -1367,10 +1325,6 @@ class FormHandler
                     $list[0][$index] = "";
                     $list[0]["pwd_encoded"] = "";
                 }
-            }
-
-            if ($this->FG_DEBUG >= 2) {
-                print_r($list);
             }
         }
 
@@ -1704,16 +1658,13 @@ class FormHandler
         }
 
         if (!empty($this->FG_LOCATION_AFTER_DELETE)) {
-            if ($this->FG_DEBUG == 1) {
-                echo "<br> GOTO ; " . $this->FG_LOCATION_AFTER_DELETE . $processed['id'];
-            }
-            $ext_link = '';
-            if (is_numeric($processed['current_page'])) {
-                $ext_link = "&current_page=" . $processed['current_page'];
-            }
-            if (!empty($processed['order']) && !empty($processed['sens'])) {
-                $ext_link .= "&order=" . $processed['order'] . "&sens=" . $processed['sens'];
-            }
+            $params = [
+                "current_page" => $processed["current_page"] ?? 0,
+                "order" => $processed["order"] ?? "",
+                "sens" => $processed["sens"] ?? "",
+            ];
+            $ext_link = (str_contains($this->FG_LOCATION_AFTER_DELETE, "?") ? "&amp;" : "?")
+                . http_build_query(array_filter($params), "", "&amp;");
             if (str_ends_with($this->FG_LOCATION_AFTER_DELETE, "id=")) {
                 header("Location: " . $this->FG_LOCATION_AFTER_DELETE . $processed['id'] . $ext_link);
             } else {
@@ -2101,9 +2052,9 @@ class FormHandler
         $columns ??= $this->FG_EXPORT_FIELD_LIST;
         $table ??= $this->FG_QUERY_TABLE_NAME;
         $conditions ??= $this->list_query_conditions;
-        $group ??= $this->FG_QUERY_GROUPBY_COLUMNS;
-        $order ??= $this->FG_QUERY_ORDERBY_COLUMNS;
-        $direction ??= $this->FG_QUERY_DIRECTION ?? "ASC";
+        $group ??= $this->list_query_group_columns;
+        $order ??= $this->list_query_order_columns;
+        $direction ??= $this->list_query_order_direction;
 
         $_SESSION[$this->export_session_key] = [$columns, $table, $conditions, $group, $order, $direction];
     }

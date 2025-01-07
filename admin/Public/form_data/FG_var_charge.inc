@@ -58,9 +58,9 @@ $HD_Form_c = new FormHandler(
 );
 
 if ($wantinclude && isset($order)) {
-    $HD_Form_c->FG_TABLE_DEFAULT_ORDER = $order;
+    $HD_Form_c->list_query_order_columns = [$order];
 } else {
-    $HD_Form_c->FG_TABLE_DEFAULT_ORDER = "id_cc_card";
+    $HD_Form_c->list_query_order_columns = ["id_cc_card"];
 }
 $HD_Form_c->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form_c->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_charge.php?form_action=ask-add";

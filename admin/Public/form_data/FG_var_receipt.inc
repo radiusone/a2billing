@@ -48,9 +48,9 @@ $HD_Form = new FormHandler(
         : []
 );
 
-$HD_Form->FG_QUERY_ORDERBY_COLUMNS = ["date"];
-$HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
-$HD_Form->FG_QUERY_GROUPBY_COLUMNS = ["cc_receipt.id"];
+$HD_Form->list_query_order_columns = ["date"];
+$HD_Form->list_query_order_direction = "DESC";
+$HD_Form->list_query_group_columns = ["cc_receipt.id"];
 
 $HD_Form->FG_FK_DELETE_ALLOWED = true;
 $HD_Form->FG_FK_DELETE_CONFIRM = true;

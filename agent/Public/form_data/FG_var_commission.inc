@@ -52,7 +52,7 @@ getpost_ifset(array('id', 'card_id', 'date', 'payment','description','added_refi
 $HD_Form = new FormHandler("cc_agent_commission", "Commission");
 
 $HD_Form->list_query_conditions["cc_agent_commission.id_agent"] = $_SESSION["agent_id"];
-$HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
+$HD_Form -> list_query_order_direction = "DESC";
 
 $com_list = getRefillType_List();
 $HD_Form -> AddListValue(gettext("ID"), "cc_agent_commission.id");

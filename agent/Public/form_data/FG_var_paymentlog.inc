@@ -52,8 +52,8 @@ $HD_Form = new FormHandler("cc_epayment_log,cc_card LEFT JOIN cc_card_group ON c
 $HD_Form->list_query_conditions["cc_card.id"] = "`cc_epayment_log`.`cardid`";
 $HD_Form->list_query_conditions["cc_card_group.id_agent"] = $_SESSION["agent_id"];
 
-$HD_Form -> FG_TABLE_DEFAULT_ORDER = "cc_epayment_log.creationdate";
-$HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
+$HD_Form ->list_query_order_columns = ["cc_epayment_log.creationdate"];
+$HD_Form -> list_query_order_direction = "DESC";
 $HD_Form->update_query_conditions = ["cc_epayment_log.id" => "%id"];
 
 $date_clause = "";

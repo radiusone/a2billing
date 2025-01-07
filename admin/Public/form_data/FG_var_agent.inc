@@ -51,7 +51,7 @@ getpost_ifset(["form_action", "popup_select", "popup_formname", "popup_fieldname
 
 $HD_Form = new FormHandler("cc_agent", _("Agent"));
 
-$HD_Form->FG_TABLE_DEFAULT_ORDER = "datecreation";
+$HD_Form->list_query_order_columns = ["datecreation"];
 
 $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_agent.php?form_action=ask-add&groupID=0";

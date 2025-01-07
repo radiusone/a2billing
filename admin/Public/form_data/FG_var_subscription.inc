@@ -42,7 +42,7 @@ $form_action ??= "list";
 
 $HD_Form = new FormHandler("cc_subscription_service", _("Subscription Service"));
 
-$HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
+$HD_Form->list_query_order_direction = "DESC";
 
 $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("script.png") ;

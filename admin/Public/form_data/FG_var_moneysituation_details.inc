@@ -48,7 +48,7 @@ $type ??= "refill";
 if ($type === "payment"){
 	$HD_Form = new FormHandler("cc_logpayment", _("Payment"));
     $HD_Form->list_query_conditions["card_id"] = $id;
-	$HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
+	$HD_Form -> list_query_order_direction = "DESC";
 
 	$HD_Form->AddListValue(_("Date"), "date");
 	$HD_Form->AddListValue(_("Amount"), "payment");
@@ -62,7 +62,7 @@ if ($type === "payment"){
             "$join" => ["items.id_invoice", "cc_invoice.id"]
         ]
     );
-	$HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
+	$HD_Form -> list_query_order_direction = "DESC";
     $HD_Form->list_query_conditions["cc_invoice.id_card"] = $id;
 
 	$HD_Form->AddListValue(_("Date"), "date");

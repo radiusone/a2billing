@@ -51,8 +51,8 @@ $HD_Form = new FormHandler(
     "cc_did_use.id",
     ["cc_did" => ["cc_did_use.id_did", "cc_did.id"]]
 );
-$HD_Form->FG_TABLE_DEFAULT_ORDER = "reservationdate";
-$HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
+$HD_Form->list_query_order_columns = ["reservationdate"];
+$HD_Form->list_query_order_direction = "DESC";
 
 if ((!empty($posted_search) && !empty($inuse)) || empty($posted_search)) {
     $HD_Form->list_query_conditions[] = ["SUB", ["releasedate" => [[null], ["<", "1984-01-01"]]], "OR"];

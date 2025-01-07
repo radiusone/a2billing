@@ -45,8 +45,8 @@ Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
 $HD_Form = new FormHandler("cc_logrefill_agent", "Agent Refill");
 
-$HD_Form->FG_QUERY_ORDERBY_COLUMNS = ["date"];
-$HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
+$HD_Form->list_query_order_columns = ["date"];
+$HD_Form->list_query_order_direction = "DESC";
 
 $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_logrefill_agent.php?form_action=ask-add";

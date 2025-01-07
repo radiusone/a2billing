@@ -48,7 +48,7 @@ $form_action ??= "list";
 
 $HD_Form = new FormHandler("cc_logrefill", _("Refill"));
 
-$HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
+$HD_Form->list_query_order_direction = "DESC";
 
 if (has_rights (Admin::ACX_MODIFY_REFILLS)) {
 	$HD_Form->FG_LIST_ADDING_BUTTON1 = true;

@@ -41,7 +41,7 @@ Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
 $HD_Form = new FormHandler("cc_currencies", _("Currencies"));
 
-$HD_Form->FG_TABLE_DEFAULT_ORDER = "currency";
+$HD_Form->list_query_order_columns = ["currency"];
 $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_currencies.php?form_action=ask-add";
 $HD_Form->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = _("Add Rate");

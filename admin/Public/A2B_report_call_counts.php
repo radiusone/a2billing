@@ -56,21 +56,21 @@ $posted_search ??= 0;
 $HD_Form = new FormHandler("cc_call", _("Call Count Report"));
 
 if ($displaytop === "card_id") {
-    $HD_Form->FG_QUERY_GROUPBY_COLUMNS = ["card_id"];
+    $HD_Form->list_query_group_columns = ["card_id"];
     $HD_Form->CV_TITLE_TEXT = $groupbyday ? _("Top users by day") : _("Top users");
 } elseif ($displaytop === "destination") {
-    $HD_Form->FG_QUERY_GROUPBY_COLUMNS = ["destination"];
+    $HD_Form->list_query_group_columns = ["destination"];
     $HD_Form->CV_TITLE_TEXT = $groupbyday ? _("Top destinations by day") : _("Top destinations");
 } else {
     $displaytop = null;
 }
 if ($groupbyday) {
-    $HD_Form->FG_QUERY_GROUPBY_COLUMNS[] = "DATE(starttime)";
-    $HD_Form->FG_QUERY_ORDERBY_COLUMNS = ["DATE(starttime)"];
+    $HD_Form->list_query_group_columns[] = "DATE(starttime)";
+    $HD_Form->list_query_order_columns = ["DATE(starttime)"];
 } else {
-    $HD_Form->FG_QUERY_ORDERBY_COLUMNS = ["COUNT(*)"];
+    $HD_Form->list_query_order_columns = ["COUNT(*)"];
 }
-$HD_Form->FG_QUERY_DIRECTION = "DESC";
+$HD_Form->list_query_order_direction = "DESC";
 
 if ($groupbyday) {
     $HD_Form->AddListValue(_("Date"), "DATE(starttime)");

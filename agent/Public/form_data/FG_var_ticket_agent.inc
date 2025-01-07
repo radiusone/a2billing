@@ -57,8 +57,8 @@ $HD_Form = new FormHandler(" cc_ticket LEFT JOIN
 
 $plang='en';
 
-$HD_Form -> FG_TABLE_DEFAULT_ORDER = " cc_ticket.id";
-$HD_Form -> FG_TABLE_DEFAULT_SENS = "DESC";
+$HD_Form ->list_query_order_columns = ["cc_ticket.id"];
+$HD_Form -> list_query_order_direction = "DESC";
 $HD_Form->list_query_conditions["cc_ticket.creator_type"] = 1;
 $HD_Form->list_query_conditions["cc_card_group.id_agent"] = $_SESSION["agent_id"];
 

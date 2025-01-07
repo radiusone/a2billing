@@ -50,9 +50,8 @@ $DBHandle  = DbConnect();
 
 $HD_Form = new FormHandler("cc_trunk", _("Trunk"), "id_trunk");
 
-$HD_Form->FG_TABLE_DEFAULT_ORDER = " id_trunk";
+$HD_Form->list_query_order_columns = ["id_trunk"];
 $HD_Form->update_query_conditions = ["id_trunk" => "%id"];
-$HD_Form->FG_TABLE_DEFAULT_SENS = "ASC";
 
 // Dependent Tables
 $HD_Form->FG_FK_DELETE_ALLOWED = true;

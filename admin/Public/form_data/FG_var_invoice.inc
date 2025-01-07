@@ -57,7 +57,7 @@ $HD_Form = new FormHandler(
         : [$join_key => ["cc_invoice.id", "items.id_invoice"]]
 );
 
-$HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
+$HD_Form->list_query_order_direction = "DESC";
 
 $HD_Form->FG_FK_DELETE_ALLOWED = true;
 $HD_Form->FG_FK_DELETE_CONFIRM = true;

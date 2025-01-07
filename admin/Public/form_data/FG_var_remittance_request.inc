@@ -45,8 +45,8 @@ $HD_Form = new FormHandler(
     ["cc_agent" => ["cc_remittance_request.id_agent", "cc_agent.id"]]
 );
 
-$HD_Form->FG_QUERY_ORDERBY_COLUMNS = ["date"];
-$HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
+$HD_Form->list_query_order_columns = ["date"];
+$HD_Form->list_query_order_direction = "DESC";
 $HD_Form->FG_ENABLE_INFO_BUTTON = true;
 $HD_Form->FG_INFO_BUTTON_LINK = "A2B_info_remittance.php?id=";
 

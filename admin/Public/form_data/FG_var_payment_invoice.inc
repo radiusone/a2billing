@@ -56,8 +56,8 @@ $HD_Form = new FormHandler(
     ["cc_invoice_payment" => ["cc_logpayment.id", "cc_invoice_payment.id_payment"]]
 );
 
-$HD_Form->FG_QUERY_ORDERBY_COLUMNS = ["date"];
-$HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
+$HD_Form->list_query_order_columns = ["date"];
+$HD_Form->list_query_order_direction = "DESC";
 if (!empty($card)) {
     // only include this user's payments
     $HD_Form->list_query_conditions["card_id"] = $card;

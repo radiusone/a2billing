@@ -105,7 +105,7 @@ $calltype_list = [
     _("DID-ALEG"),
 ];
 
-$HD_Form->FG_QUERY_COLUMN_LIST = [
+$HD_Form->list_query_columns = [
     'cc_call.starttime',
     'cc_call.src',
     'cc_call.dnid',
@@ -152,15 +152,15 @@ $HD_Form->FG_DELETE_BUTTON_LINK = "A2B_entity_call.php?form_action=ask-delete&id
 if (LINK_AUDIO_FILE) {
     // TODO: figure out how this works, move it into this file with custom button
     $HD_Form->AddListValue(_("Audio"), "uniqueid", "get_monitorfile_link", [], false);
-    $HD_Form->FG_QUERY_COLUMN_LIST[] = 'cc_call.uniqueid';
+    $HD_Form->list_query_columns[] = 'cc_call.uniqueid';
 }
 
 $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 25;
 
 $HD_Form->CV_TITLE_TEXT = _("Call Logs");
 
-$HD_Form->FG_TABLE_DEFAULT_ORDER = "cc_call.starttime";
-$HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
+$HD_Form->list_query_order_columns = ["cc_call.starttime"];
+$HD_Form->list_query_order_direction = "DESC";
 
 // EXPORT
 $HD_Form->FG_EXPORT_CSV = true;

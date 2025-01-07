@@ -51,7 +51,7 @@ $form_action ??= "list";
 
 $HD_Form = new FormHandler("cc_logpayment", _("Payment"));
 
-$HD_Form->FG_TABLE_DEFAULT_SENS = "DESC";
+$HD_Form->list_query_order_direction = "DESC";
 
 if (has_rights (Admin::ACX_MODIFY_PAYMENTS)) {
 	$HD_Form->FG_LIST_ADDING_BUTTON1 = true;

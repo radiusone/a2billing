@@ -58,7 +58,7 @@ $HD_Form = new FormHandler(
     "userid"
 );
 
-$HD_Form->FG_TABLE_DEFAULT_ORDER = "login";
+$HD_Form->list_query_order_columns = ["login"];
 
 $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_user.php?form_action=ask-add&amp;groupID=$groupID";
