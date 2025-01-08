@@ -53,9 +53,6 @@ class FormHandler
     /** @var string[] Parameters to add to the URL of the list view sorting/pagination buttons */
     public array $CV_FOLLOWPARAMETERS = [];
 
-    /** @var int debug level 0 (none) - 3 (lots) */
-    public int $FG_DEBUG = 0;
-
     /** @var string The name of the element you are managing */
     public string $FG_INSTANCE_NAME = "";
 
@@ -376,9 +373,6 @@ class FormHandler
             // Initializing anti csrf token (Generate a key, concat it with salt and hash it)
             $this->FG_CSRF_TOKEN = hash('SHA256', CSRF_SALT . $this->genCsrfTokenKey());
             $_SESSION['CSRF_TOKEN'] = $this->FG_CSRF_TOKEN;
-            if ($this->FG_DEBUG) {
-                echo 'CSRF NEW TOKEN : ' . $this->FG_CSRF_TOKEN . '<br />';
-            }
         }
         $this->_vars = array_merge($_GET, $_POST);
 
@@ -1701,9 +1695,6 @@ class FormHandler
             $rowcount += $instance_table->countRows($this->DBHandle, [$this->FG_FK_EDITION_CLAUSE[$i] => $processed['id']]);
         }
         $this->FG_FK_RECORDS_COUNT = $rowcount;
-        if ($this->FG_DEBUG == 1) {
-            echo "<br>$this->FG_FK_RECORDS_COUNT children found";
-        }
 
         return ($rowcount > 0);
     }
@@ -2042,11 +2033,6 @@ class FormHandler
         }
 
         return "";
-    }
-
-    public function set_debug(int $level = 1): void
-    {
-        $this->FG_DEBUG = $level;
     }
 
     public function setup_export(
