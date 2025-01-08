@@ -1187,12 +1187,23 @@ class FormHandler
     }
 
     /**
-     * Function to execture the appropriate action
+     * Function to execture the appropriate action:
+     *  ask-add: show the form for adding a new item
+     *  add: save the new item
+     *  ask-edit: show the form for editing an item
+     *  edit: save the changes to the item
+     *  ask-delete: show the form asking to delete the item
+     *  ask-delete-confirm: second confirmation for foreign key records
+     *  delete: delete the item
+     *  add-content: add an item to a has-many element
+     *  del-content: delete and item from a has-many element
      *
-     * @public
+     * @var string $form_action
+     * @return array
      */
     public function perform_action(string &$form_action): array
     {
+        $processed = $this->getProcessed();
         //security check
         $self = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_URL);
         switch ($form_action) {
@@ -1205,7 +1216,7 @@ class FormHandler
                 break;
             case "ask-edit":
             case "edit":
-                if (!$this->FG_ENABLE_EDIT_BUTTON) {
+                if (!$this->FG_ENABLE_EDIT_BUTTON || empty($processed["id"])) {
                     header("Location: $self");
                     die();
                 }
@@ -1213,14 +1224,13 @@ class FormHandler
             case "ask-del-confirm":
             case "ask-delete":
             case "delete":
-                if (!$this->FG_ENABLE_DELETE_BUTTON) {
+                if (!$this->FG_ENABLE_DELETE_BUTTON || empty($processed["id"])) {
                     header("Location: $self");
                     die();
                 }
                 break;
         }
 
-        $processed = $this->getProcessed();
         if (!empty($processed["id"])) {
             $this->update_query_conditions = array_map(
                 fn ($v) => str_replace("%id", $processed["id"], $v),
@@ -1422,9 +1432,9 @@ class FormHandler
         $instance_table = new Table($this->FG_QUERY_TABLE_NAME);
 
         foreach ($this->FG_EDIT_FORM_ELEMENTS as &$row) {
-            $field = $row["name"];
-            $attr = $row["attributes"];
-            if (array_key_exists("disabled", $attr)) {
+            $field = $row["name"] ?? "";
+            $attr = $row["attributes"] ?? [];
+            if (empty($field) || array_key_exists("disabled", $attr)) {
                 continue;
             }
 
@@ -1454,7 +1464,7 @@ class FormHandler
                 $arr_value_to_import[$field] = $this->split_ranges($value);
                 $values[$field] = "%check_array%";
             } elseif (!empty($processed[$field]) && $row["type"] !== "CAPTCHAIMAGE") {
-                $values[$field] = $processed[$field];
+                $values[$field] ??= $processed[$field];
             }
         } // endforeach with reference
         unset ($row);
@@ -1510,10 +1520,9 @@ class FormHandler
                     array_values($values)
                 );
             }
-            $this->gotoLocation($this->FG_LOCATION_AFTER_ADD ?? "?form_action=ask-edit&id=");
+            $this->gotoLocation($this->FG_LOCATION_AFTER_ADD ?? "?form_action=ask-edit&id=", $this->QUERY_RESULT);
         }
     }
-
 
     /**
      * Function to edit the fields
@@ -1601,7 +1610,6 @@ class FormHandler
         }
     }
 
-
     /**
      * Function to delete a record
      *
@@ -1644,7 +1652,14 @@ class FormHandler
         }
     }
 
-    private function gotoLocation(string $location): void
+    /**
+     * Redirect to a location after add/edit/delete, appending current page state
+     *
+     * @param string $location
+     * @param string|int|null $id
+     * @return void
+     */
+    private function gotoLocation(string $location, $id = null): void
     {
         if (empty($location)) {
             return;
@@ -1657,8 +1672,11 @@ class FormHandler
         ];
         $qs = (str_contains($location, "?") ? "&" : "?")
             . http_build_query(array_filter($params));
+        if ($qs === "?" || $qs === "&") {
+            $qs = "";
+        }
         if (str_ends_with($location, "id=")) {
-            $location .= urlencode($processed["id"]);
+            $location .= urlencode($id ?? $processed["id"] ?? "");
         }
         header("Location: $location$qs");
         die();

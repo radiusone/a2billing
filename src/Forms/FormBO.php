@@ -347,8 +347,6 @@ class FormBO
             Notification::$LINK_CARD,
             $id_card
         );
-
-        self::create_sipiax_friends($id_card);
     }
 
     /**
@@ -948,6 +946,9 @@ class FormBO
         $processed = $form->getProcessed();
         $sip = stripslashes($processed['sip_buddy']);
         $iax = stripslashes($processed['iax_buddy']);
+        if (!$sip && !$iax) {
+            return;
+        }
 
         // $FormHandler -> FG_QUERY_EXTRA_HIDDED - username, useralias, uipass, loginkey
         if (strlen($form -> REALTIME_SIP_IAX_INFO[0])>0) {
