@@ -1243,12 +1243,7 @@ class FormHandler
         $processed = $this->getProcessed();
 
         if ($form_action === "ask-delete" && in_array($processed['id'], $this->FG_DELETION_FORBIDDEN_ID)) {
-            if (!empty($this->FG_LOCATION_AFTER_DELETE)) {
-                header("Location: " . $this->FG_LOCATION_AFTER_DELETE . $processed['id']);
-            } else {
-                header("Location: $self");
-            }
-            die();
+            $this->gotoLocation($this->FG_LOCATION_AFTER_DELETE ?? $self);
         }
 
         $list = [];
@@ -1515,10 +1510,7 @@ class FormHandler
                     array_values($values)
                 );
             }
-        }
-
-        if (!empty($id) && isset($this->FG_LOCATION_AFTER_ADD)) {
-            header("Location: " . $this->FG_LOCATION_AFTER_ADD . $id);
+            $this->gotoLocation($this->FG_LOCATION_AFTER_ADD ?? "?form_action=ask-edit&id=");
         }
     }
 
@@ -1604,16 +1596,8 @@ class FormHandler
             if (is_callable($this->FG_ADDITIONAL_FUNCTION_AFTER_EDITION)) {
                 ($this->FG_ADDITIONAL_FUNCTION_AFTER_EDITION)($processed["id"]);
             }
-        }
-        if (!empty($this->FG_LOCATION_AFTER_EDIT)) {
-            $ext_link = "";
-            if (is_numeric($processed["current_page"])) {
-                $ext_link .= "&current_page=" . $processed["current_page"];
-            }
-            if (!empty($processed["order"]) && !empty($processed["sens"])) {
-                $ext_link .= "&order=" . $processed["order"] . "&sens=" . $processed["sens"];
-            }
-            header("Location: " . $this->FG_LOCATION_AFTER_EDIT . $processed["id"] . $ext_link);
+
+            $this->gotoLocation($this->FG_LOCATION_AFTER_EDIT ?? "?form_action=list");
         }
     }
 
@@ -1653,24 +1637,31 @@ class FormHandler
             if (is_callable($this->FG_ADDITIONAL_FUNCTION_AFTER_DELETE)) {
                 ($this->FG_ADDITIONAL_FUNCTION_AFTER_DELETE)($processed["id"]);
             }
+
+            $this->gotoLocation($this->FG_LOCATION_AFTER_DELETE ?? "?form_action=list");
         } else {
             echo _("error deletion");
         }
+    }
 
-        if (!empty($this->FG_LOCATION_AFTER_DELETE)) {
-            $params = [
-                "current_page" => $processed["current_page"] ?? 0,
-                "order" => $processed["order"] ?? "",
-                "sens" => $processed["sens"] ?? "",
-            ];
-            $ext_link = (str_contains($this->FG_LOCATION_AFTER_DELETE, "?") ? "&amp;" : "?")
-                . http_build_query(array_filter($params), "", "&amp;");
-            if (str_ends_with($this->FG_LOCATION_AFTER_DELETE, "id=")) {
-                header("Location: " . $this->FG_LOCATION_AFTER_DELETE . $processed['id'] . $ext_link);
-            } else {
-                header("Location: " . $this->FG_LOCATION_AFTER_DELETE . $ext_link);
-            }
+    private function gotoLocation(string $location): void
+    {
+        if (empty($location)) {
+            return;
         }
+        $processed = $this->getProcessed();
+        $params = [
+            "current_page" => $processed["current_page"] ?? 0,
+            "order" => $processed["order"] ?? "",
+            "sens" => $processed["sens"] ?? "",
+        ];
+        $qs = (str_contains($location, "?") ? "&" : "?")
+            . http_build_query(array_filter($params));
+        if (str_ends_with($location, "id=")) {
+            $location .= urlencode($processed["id"]);
+        }
+        header("Location: $location$qs");
+        die();
     }
 
     /**

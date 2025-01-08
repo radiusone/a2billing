@@ -168,8 +168,4 @@ if (has_rights (Admin::ACX_MODIFY_PAYMENTS)) {
 
 	$HD_Form->FG_INTRO_TEXT_ADITION = "";
 	$HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = [FormBO::class, "create_refill_after_payment"];
-
-	$HD_Form->FG_LOCATION_AFTER_ADD = "?id=";
-	$HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";
-	$HD_Form->FG_LOCATION_AFTER_DELETE = "?id=";
 }

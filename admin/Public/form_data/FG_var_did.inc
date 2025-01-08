@@ -404,7 +404,3 @@ $HD_Form->FG_FILTER_LABEL = "did";
 
 $HD_Form->FG_INTRO_TEXT_EDITION= "";
 $HD_Form->FG_INTRO_TEXT_ADITION = "";
-
-$HD_Form->FG_LOCATION_AFTER_ADD = "?form_action=list&amp;id=";
-$HD_Form->FG_LOCATION_AFTER_EDIT = "?form_action=list&amp;id=";
-$HD_Form->FG_LOCATION_AFTER_DELETE = "?form_action=list&amp;id=";

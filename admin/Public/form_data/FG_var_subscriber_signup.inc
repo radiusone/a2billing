@@ -109,7 +109,3 @@ $HD_Form->AddEditSqlSelect(
     [],
     _("Define the callplan to associate to your Subscription")
 );
-
-$HD_Form->FG_LOCATION_AFTER_ADD = "?id=";
-$HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";
-$HD_Form->FG_LOCATION_AFTER_DELETE = "?id=";

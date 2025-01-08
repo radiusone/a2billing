@@ -80,10 +80,6 @@ $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_config_generate_confirm.php";
 $HD_Form->FG_LIST_ADDING_BUTTON_MSG1 = _("Add new agi-conf");
 
-$HD_Form->FG_LOCATION_AFTER_ADD = "?id=";
-$HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";
-$HD_Form->FG_LOCATION_AFTER_DELETE = "?";
-
 function add_agi_confx(string $group_title, ?string $from_conf): void
 {
     $group_desc = 'This configuration group handles the AGI Configuration.';

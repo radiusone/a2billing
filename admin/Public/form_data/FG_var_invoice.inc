@@ -193,5 +193,5 @@ $HD_Form->FG_INTRO_TEXT_ADITION = '';
 $HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = [FormBO::class, "create_invoice_reference"];
 
 $HD_Form->FG_LOCATION_AFTER_ADD = "A2B_invoice_edit.php?id=";
-$HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";
-$HD_Form->FG_LOCATION_AFTER_DELETE = "?id=";
+$HD_Form->FG_LOCATION_AFTER_EDIT = "A2B_entity_invoice.php?form_action=list";
+$HD_Form->FG_LOCATION_AFTER_DELETE = "A2B_entity_invoice.php?form_action=list";

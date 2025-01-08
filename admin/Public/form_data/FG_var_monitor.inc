@@ -131,7 +131,3 @@ $HD_Form->AddEditRadio(
 );
 
 $HD_Form->FG_INTRO_TEXT_ADITION = _("Add the Monitoring below");
-
-$HD_Form->FG_LOCATION_AFTER_ADD = "?id=";
-$HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";
-$HD_Form->FG_LOCATION_AFTER_DELETE = "?id=";

@@ -128,7 +128,3 @@ $HD_Form->AddEditElement(
     "",
     "NO-NULL"
 );
-
-$HD_Form->FG_LOCATION_AFTER_ADD = "?id=";
-$HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";
-$HD_Form->FG_LOCATION_AFTER_DELETE = "?id=";

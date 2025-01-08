@@ -104,7 +104,3 @@ $HD_Form->AddEditPopup(
 $HD_Form->FG_FILTER_ENABLE = true;
 $HD_Form->FG_FILTER_COLUMN = 'cid';
 $HD_Form->FG_FILTER_LABEL = _('CALLERID');
-
-$HD_Form->FG_LOCATION_AFTER_ADD = "?id=";
-$HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";
-$HD_Form->FG_LOCATION_AFTER_DELETE = "?id=";

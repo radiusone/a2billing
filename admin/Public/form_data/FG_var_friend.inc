@@ -829,7 +829,7 @@ $HD_Form->FG_INTRO_TEXT_ADITION = '';
 
 
 
-$HD_Form->FG_LOCATION_AFTER_ADD = "?voip_type=$voip_type&id=";
-$HD_Form->FG_LOCATION_AFTER_EDIT = "?voip_type=$voip_type&id=";
-$HD_Form->FG_LOCATION_AFTER_DELETE = "?voip_type=$voip_type&id=";
+$HD_Form->FG_LOCATION_AFTER_ADD = "?voip_type=$voip_type&form_action=ask-edit&id=";
+$HD_Form->FG_LOCATION_AFTER_EDIT = "?voip_type=$voip_type&form_action=ask-edit&id=";
+$HD_Form->FG_LOCATION_AFTER_DELETE = "?voip_type=$voip_type&form_action=list";
 

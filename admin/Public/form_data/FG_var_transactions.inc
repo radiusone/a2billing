@@ -83,5 +83,3 @@ $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form->FG_FILTER_ENABLE = true;
 $HD_Form->FG_FILTER_COLUMN = "id";
 $HD_Form->FG_FILTER_LABEL = _("Transaction ID");
-
-$HD_Form->FG_LOCATION_AFTER_DELETE = "?id=";

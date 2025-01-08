@@ -126,7 +126,3 @@ $HD_Form->AddEditSelect(
     _("To select several rights in the above ListBox, hold the CTRL key down while clicking the items"),
     ["size" => $len_right_list, "multiple" => "multiple"]
 );
-
-$HD_Form->FG_LOCATION_AFTER_ADD = "?id=";
-$HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";
-$HD_Form->FG_LOCATION_AFTER_DELETE = "?id=";

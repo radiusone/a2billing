@@ -110,5 +110,3 @@ $HD_Form->FG_FILTER_COLUMN = "username";
 $HD_Form->FG_FILTER_LABEL = _("Account Number");
 
 $HD_Form->FG_INTRO_TEXT_ADITION = '';
-
-$HD_Form->FG_LOCATION_AFTER_DELETE = $HD_Form->FG_LOCATION_AFTER_EDIT = $HD_Form->FG_LOCATION_AFTER_ADD = "?id=";

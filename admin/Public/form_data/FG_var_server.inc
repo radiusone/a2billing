@@ -103,7 +103,3 @@ $HD_Form->FG_FILTER_COLUMN = "id_group";
 $HD_Form->FG_FILTER_LABEL = "Server ID Group";
 
 $HD_Form->FG_INTRO_TEXT_ADITION = "";
-
-$HD_Form->FG_LOCATION_AFTER_ADD = "?id=";
-$HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";
-$HD_Form->FG_LOCATION_AFTER_DELETE = "?id=";

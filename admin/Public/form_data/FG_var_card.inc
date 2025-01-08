@@ -227,10 +227,6 @@ $HD_Form->FG_ENABLE_ADD_BUTTON = true;
 $HD_Form->FG_ENABLE_EDIT_BUTTON = !$popup_select && ((is_admin() && has_rights(Admin::ACX_MODIFY_CUSTOMERS)) || (is_agent() && has_rights(Agent::ACX_EDIT_CUSTOMER)));
 $HD_Form->FG_ENABLE_DELETE_BUTTON = !$popup_select && ((is_admin() && has_rights(Admin::ACX_MODIFY_CUSTOMERS)) || (is_agent() && has_rights(Agent::ACX_DELETE_CUSTOMER)));
 
-$HD_Form->FG_LOCATION_AFTER_ADD = "?id=";
-$HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";
-$HD_Form->FG_LOCATION_AFTER_DELETE = "?id=";
-
 $form_action ??= "list";
 
 if ($popup_select) {

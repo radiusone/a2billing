@@ -116,7 +116,3 @@ $HD_Form->AddListActionButton(
     _("ADD REFILL"),
     get_image_path("brick_add.png")
 );
-
-$HD_Form -> FG_LOCATION_AFTER_ADD = "?id=";
-$HD_Form -> FG_LOCATION_AFTER_EDIT = "?id=";
-$HD_Form -> FG_LOCATION_AFTER_DELETE = "?id=";

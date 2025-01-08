@@ -465,8 +465,3 @@ $HD_Form->FG_ADD_PAGE_BOTTOM_TEXT = gettext("Click 'SIGNUP' to continue");
 $HD_Form->FG_ADD_PAGE_SAVE_BUTTON_TEXT = gettext("SIGNUP");
 
 $HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = [FormBO::class, "processing_card_signup"];
-
-$HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";
-$HD_Form->FG_LOCATION_AFTER_DELETE = "?id=";
-
-
