@@ -5,34 +5,18 @@ namespace A2billing\Forms;
  * @var FormHandler $form
  * @var array $processed
  * @var array $list
- * @var string $letter
- * @var string $current_page
  * @var int $popup_select
  * @var bool $hasActionButtons
+ * @var array<string,mixed> $query_params
+ * @var array<string,mixed> $sort_params
+ * @var array<string,mixed> $pagination_params
  */
-
-$query_params = [
-    "current_page" => $processed["current_page"] ?? null,
-    "order" => $processed["order"] ?? null,
-    "sens" => $processed["sens"] ?? null,
-    "filterprefix" => $processed["filterprefix"] ?? null,
-    "filterprefix2" => $processed["filterprefix"] ?? null,
-    "popup_select" => $processed["popup_select"] ?? null,
-    "popup_formname" => $processed["popup_formname"] ?? null,
-    "popup_fieldname" => $processed["popup_fieldname"] ?? null,
-];
-$query_params = array_filter($query_params, fn ($v) => !is_null($v));
-foreach($form->CV_FOLLOWPARAMETERS as $k => $v) {
-    $query_params[$k] = $v;
-}
-$sort_params = $pagination_params = $query_params;
-$pagination_params["current_page"] = "%s";
 ?>
 
-<?php if (($form -> FG_FILTER_ENABLE || $form -> FG_FILTER2_ENABLE) || ($popup_select < 1 && ($form->FG_LIST_ADDING_BUTTON1 || $form->FG_LIST_ADDING_BUTTON2))): ?>
+<?php if (($form->FG_FILTER_ENABLE || $form->FG_FILTER2_ENABLE) || ($popup_select < 1 && ($form->FG_LIST_ADDING_BUTTON1 || $form->FG_LIST_ADDING_BUTTON2))): ?>
 <div class="row pb-3 align-items-end">
-    <?php if ($form->FG_LIST_VIEW_ROW_COUNT > 0 && ($form -> FG_FILTER_ENABLE || $form -> FG_FILTER2_ENABLE)): ?>
-    <form name="theFormFilter" action="" class="col">
+    <?php if ($form->FG_LIST_VIEW_ROW_COUNT > 0 && ($form->FG_FILTER_ENABLE || $form->FG_FILTER2_ENABLE)): ?>
+    <form action="" class="col">
         <input type="hidden" name="form_action" value="list"/>
         <?php foreach ($query_params as $key => $val): ?>
         <input type="hidden" name="<?= $key ?>" value="<?= $val ?>"/>
@@ -46,8 +30,7 @@ $pagination_params["current_page"] = "%s";
             <?php if ($form->FG_FILTER_ENABLE): ?>
             <div class="col-auto">
                 <label for="filterprefix" class="form-label">
-                    <?= gettext("Filter on") ?>
-                    <?= $form->FG_FILTER_LABEL ?>:
+                    <?= sprintf(_("Filter on %s"), $form->FG_FILTER_LABEL) ?>
                 </label>
                 <input
                     type="text"
@@ -62,8 +45,7 @@ $pagination_params["current_page"] = "%s";
             <?php if ($form->FG_FILTER2_ENABLE): ?>
             <div class="col-auto">
                 <label for="filterprefix2" class="form-label">
-                    <?= gettext("Filter on");?>
-                    <?= $form->FG_FILTER2_LABEL ?>:
+                    <?= sprintf(_("Filter on %s"), $form->FG_FILTER2_LABEL) ?>
                 </label>
                 <input
                     type="text"
@@ -80,7 +62,7 @@ $pagination_params["current_page"] = "%s";
         </div>
     </form>
     <?php endif ?>
-    <?php if ($popup_select < 1 && $form->FG_LIST_ADDING_BUTTON1 && !empty($form->FG_LIST_ADDING_BUTTON_MSG1)): ?>
+    <?php if ($popup_select < 1 && $form->FG_LIST_ADDING_BUTTON1): ?>
         <div class="col-auto ms-auto">
             <a href="<?= $form->FG_LIST_ADDING_BUTTON_LINK1 ?>" class="text-decoration-none">
                 <?= $form->FG_LIST_ADDING_BUTTON_MSG1 ?>
@@ -108,7 +90,7 @@ $pagination_params["current_page"] = "%s";
     <div class="col table-responsive">
         <table class="table table-bordered table-striped table-hover caption-top <?php if ($popup_select): ?>table-sm<?php endif ?>">
             <caption>
-                <?= $form->CV_TITLE_TEXT ?> – <?= $form->FG_LIST_VIEW_ROW_COUNT ?> <?= gettext("Records") ?>
+                <?= $form->CV_TITLE_TEXT ?> – <?= sprintf(_("%d records"), $form->FG_LIST_VIEW_ROW_COUNT) ?>
             </caption>
             <thead>
                 <tr>
@@ -132,7 +114,7 @@ $pagination_params["current_page"] = "%s";
                     <?php endforeach ?>
                     <?php if ($hasActionButtons): ?>
                     <th>
-                        <strong> <?= gettext("Action") ?></strong>
+                        <strong> <?= _("Action") ?></strong>
                     </th>
                     <?php endif ?>
 
@@ -303,6 +285,9 @@ $pagination_params["current_page"] = "%s";
             <input type="hidden" name="id" value="<?= $processed["id"] ?? "" ?>"/>
             <input type="hidden" name="form_action" value="list"/>
             <input type="hidden" name="current_page" value="0"/>
+            <?php foreach ($query_params as $key => $val): ?>
+            <input type="hidden" name="<?= $key ?>" value="<?= $val ?>"/>
+            <?php endforeach ?>
             <?php foreach ($processed as $key => $val): ?>
                 <?php if ($key !== 'current_page' && $key !== 'id'): ?>
                     <input type="hidden" name="<?= $key ?>" value="<?= $val ?>">

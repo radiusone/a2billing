@@ -5,42 +5,41 @@ namespace A2billing\Forms;
 class ViewForm
 {
     private FormHandler $form;
-    private array $processed;
     private array $list;
-    private string $letter;
-    private string $current_page;
-    private int $popup_select;
 
-    public function __construct(FormHandler $form, array $processed, array $list) {
+    /**
+     * @param FormHandler $form
+     * @param array $list the list of database records to be displayed
+     */
+    public function __construct(FormHandler $form, array $list) {
         $this->form = $form;
-        $this->processed = $processed;
         $this->list = $list;
-
-        global $letter;
-        global $current_page;
-        global $popup_select;
-
-        getpost_ifset(['letter', 'current_page', 'popup_select']);
-        /**
-         * @var string $letter
-         * @var string $current_page
-         * @var string $popup_select
-         */
-        $this->letter = $letter ?? "";
-        $this->current_page = $current_page ?? "";
-        $this->popup_select = (int)($popup_select ?? 0);
     }
 
     public function __toString(): string
     {
         $form = $this->form;
-        $processed = $this->processed;
+        $processed = $form->getProcessed();
         $list = $this->list;
-        $letter = $this->letter;
-        $current_page = $this->current_page;
-        $popup_select = $this->popup_select;
+        $popup_select = (int)($processed["popup_select"] ?? 0);
 
-        $origlist = [];
+        $query_params = [
+            "current_page" => $processed["current_page"] ?? null,
+            "order" => $processed["order"] ?? null,
+            "sens" => $processed["sens"] ?? null,
+            "filterprefix" => $processed["filterprefix"] ?? null,
+            "filterprefix2" => $processed["filterprefix"] ?? null,
+            "popup_select" => $processed["popup_select"] ?? null,
+            "popup_formname" => $processed["popup_formname"] ?? null,
+            "popup_fieldname" => $processed["popup_fieldname"] ?? null,
+        ];
+        $query_params = array_filter($query_params, fn ($v) => !is_null($v));
+        foreach($form->CV_FOLLOWPARAMETERS as $k => $v) {
+            $query_params[$k] = $v;
+        }
+        $sort_params = $pagination_params = $query_params;
+        $pagination_params["current_page"] = "%s";
+
         $hasActionButtons = (
             $form->FG_ENABLE_DELETE_BUTTON || $form->FG_ENABLE_INFO_BUTTON || $form->FG_ENABLE_EDIT_BUTTON
             || count($form->list_action_buttons)

@@ -1898,7 +1898,7 @@ class FormHandler
                 break;
 
             case "list":
-                echo new ViewForm($this, $processed, $list);
+                echo new ViewForm($this, $list);
                 break;
 
             case "delete":
