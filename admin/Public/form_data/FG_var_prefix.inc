@@ -57,9 +57,7 @@ $HD_Form->AddListValue(_("Destination"), "destination");
 
 if ($popup_select) {
 	$HD_Form->FG_LIST_VIEW_PAGE_SIZE = 7;
-    $HD_Form->AddListSelectActionButton(
-        $popup_select === "1" ? "javascript:sendValue('|param|');" : "javascript:sendValue('|col0|');",
-    );
+    $HD_Form->AddListSelectActionButton("javascript:sendValue('|param|')");
 } else {
 	$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
 	$HD_Form->FG_ENABLE_DELETE_BUTTON = true;

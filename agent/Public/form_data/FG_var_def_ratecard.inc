@@ -83,10 +83,7 @@ if (!$popup_select) {
 
 if ($popup_select) {
 	$HD_Form -> FG_LIST_VIEW_PAGE_SIZE = 7;
-
-    $HD_Form->AddListSelectActionButton(
-        $popup_select == 1 ? "javascript:sendValue('|param|')" : "javascript:sendValue('|col0|');",
-    );
+    $HD_Form->AddListSelectActionButton("javascript:sendValue('|param|')");
 } else {
     $export_cols = $A2B->config['webui']['rate_export_field_list'];
     if (str_contains($HD_Form->FG_QUERY_TABLE_NAME, "cc_callplan_lcr")) {

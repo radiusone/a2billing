@@ -130,9 +130,7 @@ if (!$popup_select) {
     $HD_Form->FG_ENABLE_ADD_BUTTON = true;
 } else {
     $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 7;
-    $HD_Form->AddListSelectActionButton(
-        $popup_select == 1 ? "javascript:sendValue('|param|')" : "javascript:sendValue('|col0|')",
-    );
+    $HD_Form->AddListSelectActionButton("javascript:sendValue('|param|')");
 }
 
 // Search form
@@ -161,7 +159,7 @@ $HD_Form->AddEditElement(
 $HD_Form->AddEditPopup(
     _("Destination Prefix"),
     "destination",
-    "A2B_entity_prefix.php?popup_select=2&",
+    "A2B_entity_prefix.php?popup_select=1&",
     _("Select the prefix destination corresponding to your prefix rate.") . '<br>' . _("This is the label that appears against the Call Detail Record."),
     [],
     [Validator::class, "min1Char"]

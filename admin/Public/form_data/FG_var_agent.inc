@@ -116,9 +116,7 @@ if ($popup_select) {
 
 if ($popup_select) {
 	$HD_Form->FG_LIST_VIEW_PAGE_SIZE = 7;
-    $HD_Form->AddListSelectActionButton(
-        $popup_select == 1 ? "javascript:sendValue('|param|')" : "javascript:sendValue('|col0|')"
-    );
+    $HD_Form->AddListSelectActionButton("javascript:sendValue('|param|')");
 } elseif (has_rights (Admin::ACX_MODIFY_AGENTS)) {
 	$HD_Form->FG_ENABLE_INFO_BUTTON = true;
 	$HD_Form->FG_INFO_BUTTON_LINK = "A2B_info_agent.php?id=";

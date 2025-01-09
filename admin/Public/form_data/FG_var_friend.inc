@@ -95,7 +95,7 @@ $adding = ($form_action === "ask-add" || $form_action === "add_sip" || $form_act
 $HD_Form->AddEditPopup(
     _("CARD ID"),
     "id_cc_card",
-    "A2B_entity_card.php?popup_select=1&",
+    "A2B_entity_card.php?popup_select=3&",
     _("Define the card number ID to use."),
     [],
     [Validator::class, "numeric"],

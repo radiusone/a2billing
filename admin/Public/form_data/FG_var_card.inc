@@ -136,13 +136,12 @@ foreach ($show_list_temp as $value) {
     }
 }
 
-// force some in popup view
+// force some as first columns in popup view
 if ($popup_select) {
     foreach (array_reverse(["username", "lastname", "id_group", "credit"]) as $field) {
-        if (!in_array($field, $show_list)) {
-            array_unshift($show_list, $field);
-        }
+        array_unshift($show_list, $field);
     }
+    $show_list = array_unique($show_list);
 }
 
 // loop through the shown data and add the table cells
@@ -152,7 +151,11 @@ foreach ($show_list as $field) {
             $HD_Form->AddListValue(_("ID"), "cc_card.id");
             break;
         case "username":
-            $HD_Form->AddListValue(_("Account number"), "cc_card.id", $popup_select ? null : [Customer::class, "getUsername"]);
+            if ($popup_select) {
+                $HD_Form->AddListValue(_("Account number"), "username");
+            } else {
+                $HD_Form->AddListValue(_("Account number"), "cc_card.id", [Customer::class, "getUsername"]);
+            }
             break;
         case "lastname":
             $HD_Form->AddListValue(_("Last name"), "lastname");
@@ -232,9 +235,13 @@ $form_action ??= "list";
 if ($popup_select) {
     // popup window
     $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 6;
-    $HD_Form->AddListSelectActionButton(
-        $popup_select == 1 ? "javascript:sendValue('|param|', '|col1|', 'accountcode')" : "javascript:sendValue('|col1|')",
-    );
+    switch ($popup_select) {
+        case 1: $HD_Form->AddListSelectActionButton("javascript:sendValue('|param|')"); break;
+        // username is always first column on popups
+        case 2: $HD_Form->AddListSelectActionButton("javascript:sendValue('|col0|')"); break;
+        // populate 2 fields, for A2B_entity_friend.php
+        case 3: $HD_Form->AddListSelectActionButton("javascript:sendValue('|param|', '|col0|', 'accountcode')"); break;
+    }
 } elseif ($form_action === "list") {
     $HD_Form->export_session_key = "pr_export_entity_card";
     $HD_Form->FG_EXPORT_CSV = is_admin();
