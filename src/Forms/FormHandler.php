@@ -1556,7 +1556,7 @@ class FormHandler
             if ($processed[$field] === "" && ($row["check_empty"] ?? "") === "NO-NULL") {
                 $values[$field] = null;
             } else {
-                $values[$field] = $processed[$field];
+                $values[$field] ??= $processed[$field];
             }
         } // end foreach with reference
         unset($row);

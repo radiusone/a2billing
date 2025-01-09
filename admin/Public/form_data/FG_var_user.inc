@@ -110,7 +110,7 @@ $HD_Form->AddEditElement(
 );
 
 if ($subadmin) {
-    $rights = [
+    $rights_list = [
         Admin::ACX_CUSTOMER => _("CUSTOMERS"),
         Admin::ACX_BILLING => _("BILLING"),
         Admin::ACX_RATECARD => _("RATECARD"),
@@ -136,16 +136,13 @@ if ($subadmin) {
         Admin::ACX_MODIFY_ADMINS => _("EDIT/DELETE ADMIN"),
         Admin::ACX_MODIFY_AGENTS => _("EDIT/DELETE AGENT"),
     ];
-    foreach ($rights as $k => $v) {
-        $right_list[$k] = [$v, $k];
-    }
 
-    $len_right_list = count($right_list);
+    $len_right_list = count($rights_list);
 
     $HD_Form->AddEditSelect(
         _("PERMISSION"),
         "perms",
-        $right_list,
+        $rights_list,
         "",
         _("To select several rights in the above ListBox, hold the Control/⌘ key down while clicking the items"),
         ["size" => $len_right_list, "multiple" => "multiple"]
