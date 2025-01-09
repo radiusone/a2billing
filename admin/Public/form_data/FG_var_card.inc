@@ -233,7 +233,7 @@ if ($popup_select) {
     // popup window
     $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 6;
     $HD_Form->AddListSelectActionButton(
-        $popup_select == 1 ? "javascript:sendValue('|param|', '|col1|')" : "javascript:sendValue('|col1|')",
+        $popup_select == 1 ? "javascript:sendValue('|param|', '|col1|', 'accountcode')" : "javascript:sendValue('|col1|')",
     );
 } elseif ($form_action === "list") {
     $HD_Form->export_session_key = "pr_export_entity_card";

@@ -81,16 +81,16 @@ $HD_Form->create_form($form_action, $list) ;
 require_once __DIR__ . "/../templates/footer.php";
 ?>
 <script>
-    function sendValue(selvalue) {
-        $.getJSON(
-            "A2B_entity_mailtemplate.php",
-            {id: selvalue, action: "load"},
-            function(data){
-                window.opener.document.getElementById('msg_mail').value = data.messagetext;
-                window.opener.document.getElementById('from').value = data.fromemail;
-                window.opener.document.getElementById('fromname').value = data.fromname;
-                window.opener.document.getElementById('subject').value = data.subject;
-                window.close();
-            });
-    }
+function getMailData(template_id) {
+    $.getJSON(
+        "A2B_entity_mailtemplate.php",
+        {id: template_id, action: "load"},
+        function(data){
+            window.opener.document.getElementById('msg_mail').value = data.messagetext;
+            window.opener.document.getElementById('from').value = data.fromemail;
+            window.opener.document.getElementById('fromname').value = data.fromname;
+            window.opener.document.getElementById('subject').value = data.subject;
+            window.close();
+        });
+}
 </script>

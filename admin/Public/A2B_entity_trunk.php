@@ -69,13 +69,3 @@ $HD_Form->create_toppage($form_action);
 $HD_Form->create_form($form_action, $list);
 
 require_once __DIR__ . "/../templates/footer.php";
-?>
-<script>
-    function sendValue(selvalue) {
-        const formname = <?= json_encode($popup_formname ?? "") ?>;
-        const fieldname = <?= json_encode($popup_fieldname ?? "") ?>;
-        $(`form[name='${formname}'] [name='${fieldname}']`, window.opener.document).val(selvalue);
-        window.close();
-    }
-</script>
-

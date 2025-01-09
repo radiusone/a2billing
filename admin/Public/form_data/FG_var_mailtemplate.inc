@@ -133,7 +133,7 @@ $HD_Form->AddListValue(_("From email"), "fromemail");
 $HD_Form->AddListValue(_("Subject"), "subject");
 
 if ((int)$popup_select >= 1) {
-    $HD_Form->AddListSelectActionButton("javascript:sendValue('|param|')", _("SELECT TEXT"));
+    $HD_Form->AddListSelectActionButton("javascript:getMailData('|param|')", _("SELECT TEXT"));
 } else {
     $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
     $HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_mailtemplate.php?form_action=ask-add";
@@ -207,5 +207,3 @@ $HD_Form->AddEditTextarea(
 );
 
 $HD_Form->FG_INTRO_TEXT_ADITION = _("Add a new mail template");
-$HD_Form->FG_LOCATION_AFTER_ADD = "?id=";
-$HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";

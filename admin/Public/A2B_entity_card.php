@@ -168,18 +168,6 @@ $list = $HD_Form->perform_action($form_action);
 require_once __DIR__ . "/../templates/main.php";
 ?>
 
-<script>
-function sendValue(selvalue, othervalue) {
-    const formname = <?= json_encode($popup_formname ?? "") ?>;
-    const fieldname = <?= json_encode($popup_fieldname ?? "") ?>;
-    $(`form[name='${formname}'] [name='${fieldname}']`, window.opener.document).val(selvalue);
-    if (othervalue) {
-        $(`form[name=${formname}] [name=accountcode]`, window.opener.document).val(othervalue);
-    }
-    window.close();
-}
-</script>
-
 <?php if ($form_action === "list" && !$popup_select) {
     // populate some lists for the batch update settings
     $result = $HD_Form->DBHandle->CacheExecute(300, "SELECT id, tariffgroupname FROM cc_tariffgroup ORDER BY tariffgroupname");

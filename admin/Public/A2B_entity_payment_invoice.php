@@ -49,7 +49,7 @@ Admin::checkPageAccess(Admin::ACX_INVOICING);
 
 $HD_Form->init();
 
-$form_action ??= "list";
+$form_action = "list";
 $list = $HD_Form->perform_action($form_action);
 
 require_once __DIR__ . "/../templates/main.php";
@@ -61,10 +61,11 @@ $HD_Form->create_form($form_action, $list);
 require_once __DIR__ . "/../templates/footer.php";
 ?>
 <script>
-    function sendValue(selvalue)
-    {
-        // redirect browser to the grabbed value (hopefully a URL)
-        window.opener.location.href = "A2B_invoice_manage_payment.php?id=<?= $invoice ?>&addpayment=" + selvalue;
-        self.location.href = "?popup_select=1&invoice=<?= $invoice ?>&card= <?= $card ?>";
-    }
+function gotoAddPage(payment_id)
+{
+    let invoice_id = <?= json_encode($invoice) ?>;
+    let card_id = <?= json_encode($card) ?>;
+    window.opener.location.href = `A2B_invoice_manage_payment.php?id=${invoice_id}&addpayment=${payment_id}`;
+    self.location.href = `?popup_select=1&invoice=${invoice_id}&card=${card_id}`;
+}
 </script>

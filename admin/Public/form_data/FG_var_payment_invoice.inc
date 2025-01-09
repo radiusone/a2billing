@@ -72,11 +72,9 @@ $HD_Form->AddListValue(_("Amount"), "payment", "get_money");
 $HD_Form->AddListValue(_("Description"), "description");
 $HD_Form->AddListMapping(_("Type"), "payment_type", getRefillType_List());
 
-if ($popup_select) {
-    $HD_Form->AddListSelectActionButton(
-        "javascript:sendValue('|param|')",
-        _("ADD")
-    );
-}
+$HD_Form->AddListSelectActionButton(
+    "javascript:gotoAddPage('|param|')",
+    _("ADD")
+);
 
 $HD_Form->CV_FOLLOWPARAMETERS = array_filter(["invoice" => $invoice ?? ""]);

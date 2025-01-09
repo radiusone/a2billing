@@ -123,19 +123,6 @@ if (isset ($update_msg) && strlen($update_msg) > 0) {
     echo $update_msg;
 }
 
-if ($popup_select) {
-?>
-<SCRIPT LANGUAGE="javascript">
-<!--
-function sendValue(selvalue) {
-    window.opener.document.<?php echo $popup_formname ?>.<?php echo $popup_fieldname ?>.value = selvalue;
-    window.close();
-}
--->
-</script>
-<?php
-}
-
 if (!$popup_select) {
     // #### CREATE SEARCH FORM
     if ($form_action == "list") {

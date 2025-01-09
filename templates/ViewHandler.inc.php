@@ -326,4 +326,15 @@ namespace A2billing\Forms;
 $(function() {
     $("#displaylimit").on("change", () => $("#displaylimit_form").trigger("submit"));
 });
+
+function sendValue(selvalue, othervalue, otherfield) {
+    const formname = <?= json_encode($processed["popup_formname"] ?? "") ?>;
+    const fieldname = <?= json_encode($processed["popup_fieldname"] ?? "") ?>;
+    $(`form[name='${formname}'] [name='${fieldname}']`, window.opener.document).val(selvalue);
+    if (othervalue && otherfield) {
+        $(`form[name=${formname}] [name=${otherfield}]`, window.opener.document).val(othervalue);
+    }
+    window.close();
+}
+
 </script>

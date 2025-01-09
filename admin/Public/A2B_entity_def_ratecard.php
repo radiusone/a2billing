@@ -523,17 +523,6 @@ $("#sendopener").on('click', function () {
 <?php
 $HD_Form->CV_FOLLOWPARAMETERS = array_filter(["package" => $package ?? ""]);
 /********************************* END BATCH ASSIGNED ***********************************/
-elseif ($popup_select === "2"):
-?>
-<script>
-    function sendValue(selvalue) {
-    const formname = <?= json_encode($popup_formname ?? "") ?>;
-    const fieldname = <?= json_encode($popup_fieldname ?? "") ?>;
-    $(`form[name='${formname}'] [name='${fieldname}']`, window.opener.document).val(selvalue);
-    window.close();
-    }
-</script>
-<?php
 endif;
 
 // #### TOP SECTION PAGE
