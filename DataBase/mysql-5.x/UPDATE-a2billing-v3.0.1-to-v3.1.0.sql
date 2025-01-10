@@ -29,6 +29,7 @@
 
 UPDATE cc_version SET version = '3.1.0' LIMIT 1;
 
+-- move invoice config into standard config table
 INSERT IGNORE INTO cc_config_group VALUES (null, 'invoice', 'Configuration for invoices and receipts');
 SELECT LAST_INSERT_ID() INTO @groupid;
 
@@ -59,4 +60,26 @@ INSERT INTO cc_config VALUES(
 
 DROP TABLE cc_invoice_conf;
 
+-- this column used to correspond to activated column in cc_card, now gone
 ALTER TABLE cc_card_archive DROP COLUMN `activatedbyuser`;
+
+-- remove remaining float columns to maintain precision with money
+ALTER TABLE cc_alarm CHANGE COLUMN `minvalue` `minvalue` decimal(15,5) NOT NULL;
+ALTER TABLE cc_alarm CHANGE COLUMN `maxvalue` `maxvalue` decimal(15,5) NOT NULL DEFAULT -1;
+ALTER TABLE cc_alarm_report CHANGE COLUMN `calculatedvalue` `calculatedvalue` decimal(15,5) NOT NULL DEFAULT -1;
+ALTER TABLE cc_call CHANGE COLUMN sessionbill sessionbill decimal(15,5) DEFAULT NULL;
+ALTER TABLE cc_call_archive CHANGE COLUMN sessionbill sessionbill decimal(15,5) DEFAULT NULL;
+ALTER TABLE cc_card CHANGE COLUMN vat vat decimal(15,5) NOT NULL DEFAULT 0;
+ALTER TABLE cc_card_archive CHANGE COLUMN vat vat decimal(15,5) NOT NULL DEFAULT 0;
+ALTER TABLE cc_charge CHANGE COLUMN amount amount decimal(15,5) NOT NULL DEFAULT 0;
+ALTER TABLE cc_did CHANGE COLUMN fixrate fixrate decimal(15,5) NOT NULL DEFAULT 0;
+ALTER TABLE cc_epayment_log CHANGE COLUMN vat vat decimal(15,5) NOT NULL DEFAULT 0;
+ALTER TABLE cc_epayment_log_agent CHANGE COLUMN vat vat decimal(15,5) NOT NULL DEFAULT 0;
+ALTER TABLE cc_ratecard CHANGE COLUMN stepchargec stepchargec decimal(15,5) NOT NULL DEFAULT 0;
+ALTER TABLE cc_ratecard CHANGE COLUMN chargec chargec decimal(15,5) NOT NULL DEFAULT 0;
+ALTER TABLE cc_service CHANGE COLUMN amount amount decimal(15,5) NOT NULL;
+ALTER TABLE cc_service CHANGE COLUMN totalcredit totalcredit decimal(15,5) NOT NULL DEFAULT 0;
+ALTER TABLE cc_service_report CHANGE COLUMN totalcredit totalcredit decimal(15,5) DEFAULT NULL;
+ALTER TABLE cc_subscription_service CHANGE COLUMN fee fee decimal(15,5) NOT NULL DEFAULT 0;
+ALTER TABLE cc_subscription_service CHANGE COLUMN totalcredit totalcredit decimal(15,5) NOT NULL DEFAULT 0;
+ALTER TABLE cc_voucher CHANGE COLUMN credit credit decimal(15,5) NOT NULL DEFAULT 0;
