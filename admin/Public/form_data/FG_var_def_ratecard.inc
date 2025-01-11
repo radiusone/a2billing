@@ -2,6 +2,8 @@
 
 use A2billing\A2Billing;
 use A2billing\Admin;
+use A2billing\Agent;
+use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 use A2billing\Table;
@@ -45,50 +47,69 @@ use A2billing\Table;
  * @var string $popup_formname
  * @var string $popup_fieldname
  */
-Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
+if (is_admin()) {
+    Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
+} elseif (is_agent()) {
+    Agent::checkPageAccess(Agent::ACX_ACCESS);
+} else {
+    Customer::checkPageAccess(Customer::ACX_RATECARD);
+}
 
-getpost_ifset(["tariffgroup", "posted", "cancelsearch_callplanlcr", "deleteselected", "posted_search"]);
+getpost_ifset(["tariffgroup", "posted", "cancelsearch_callplanlcr", "deleteselected", "letter"]);
 /**
- * @var string $tariffgroup
+ * @var numeric-string $tariffgroup
  * @var string $posted
  * @var string $cancelsearch_callplanlcr
  * @var string $deleteselected
- * @var string $posted_search
+ * @var string $letter
  */
 
 $form_action ??= "list";
-$tariffgroup ??= 0;
 
-$HD_Form = new FormHandler(
-    "cc_ratecard",
-    _("Rates"),
-    "id",
-    $form_action === "list" && !isset($deleteselected)
-        ? ["cc_prefix" => ["prefix", "cc_ratecard.destination"]]
-        : []
-);
+if (is_admin()) {
+    $HD_Form = new FormHandler(
+        "cc_ratecard",
+        _("Rates"),
+        "id",
+        $form_action === "list" && !isset($deleteselected)
+            ? ["cc_prefix" => ["prefix", "cc_ratecard.destination"]]
+            : []
+    );
+    $use_lcr_callplan = false;
+} elseif (is_agent()) {
+    $HD_Form = new FormHandler(
+        "cc_callplan_lcr",
+        _("Rates"),
+        "id",
+        ["cc_agent_tariffgroup" => ["cc_callplan_lcr.tariffgroup_id", "cc_agent_tariffgroup.id_tariffgroup"]]
+    );
+    $HD_Form->list_query_conditions["cc_agent_tariffgroup.id_agent"] = $_SESSION["agent_id"];
+    $HD_Form->list_query_group_columns = ["dialprefix"];
+    $use_lcr_callplan = true;
+} else {
+    $HD_Form = new FormHandler("cc_callplan_lcr", _("Rates"));
+    $HD_Form->list_query_conditions["tariffgroup_id"] = $_SESSION["tariff"];
+    $HD_Form ->list_query_group_columns = ["dialprefix"];
+    if (isset($letter)) {
+        $HD_Form->list_query_conditions["LOWER(SUBSTRING(`destination`, 1, 1))"] = strtolower($letter);
+    }
+    $use_lcr_callplan = true;
+}
 
 if (!empty($cancelsearch_callplanlcr) || (isset($posted) && empty($tariffgroup))) {
     $_SESSION["def_ratecard_tariffgroup"] = "";
 }
 
-$use_lcr_callplan = false;
-
-if (($tariffgroup || !empty($_SESSION['def_ratecard_tariffgroup'])) && $form_action === "list") {
+if ((!empty($tariffgroup) || !empty($_SESSION['def_ratecard_tariffgroup'])) && $form_action === "list") {
     // "Export call plan with LCR" is active, whatever that means
     // It certainly isn't "exporting" anything
     $HD_Form->FG_QUERY_TABLE_NAME = "cc_callplan_lcr";
     $HD_Form->query_table_joins = [];
     $use_lcr_callplan = true;
     $HD_Form->list_query_group_columns = ["dialprefix"];
-    if (!empty($tariffgroup)) {
-        $tariffgroup = (int)$tariffgroup;
-        $HD_Form->list_query_conditions["tariffgroup_id"] = $tariffgroup;
-        $_SESSION['def_ratecard_tariffgroup'] = $HD_Form->list_query_conditions;
-    } else {
-        $tariffgroup = (int)$_SESSION['def_ratecard_tariffgroup'];
-        $HD_Form->list_query_conditions = $_SESSION["def_ratecard_tariffgroup"];
-    }
+    $tariffgroup = (int)($tariffgroup ?? $_SESSION["def_ratecard_tariffgroup"]);
+    $HD_Form->list_query_conditions["tariffgroup_id"] = $tariffgroup;
+    $_SESSION['def_ratecard_tariffgroup'] = $tariffgroup;
 }
 
 $HD_Form->list_query_order_columns = ["dialprefix"];
@@ -100,15 +121,19 @@ $HD_Form->add_help_text = $HD_Form->edit_help_text = create_help(
     _("Please fill in the fields below to set up the rate for each destination.")
 );
 $HD_Form->list_help_text = create_help(
-    _("Please select a ratecard and click on search to browse the different rates/dialing prefix of the selected ratecard.")
+    is_customer()
+        ? _("View rates")
+        : _("Please select a ratecard and click on search to browse the different rates/dialing prefix of the selected ratecard.")
 );
 
-$HD_Form->AddListValue(_("Destination"), $use_lcr_callplan ? "cc_prefix.destination" : "destination", null, [], false)
-    ->AddListValue(abbr(_("Prefix"), _("Dialing Prefix")), $use_lcr_callplan ? "cc_ratecard.dialprefix" : "dialprefix")
-    ->AddListValue(abbr(_("Buy"), _("Buy Rate")), "buyrate", "get_money_precise")
-    ->AddListValue(abbr(_("Sell"), _("Sell Rate")), $use_lcr_callplan ? "MIN(rateinitial)" : "rateinitial", "get_money_precise");
+$HD_Form->AddListValue(_("Destination"), $use_lcr_callplan ? "destination" : "cc_prefix.destination", null, [], false)
+    ->AddListValue(abbr(_("Prefix"), _("Dialing Prefix")), "dialprefix");
+if (is_admin()) {
+    $HD_Form->AddListValue(abbr(_("Buy"), _("Buy Rate")), "buyrate", "get_money_precise");
+}
+$HD_Form->AddListValue(abbr(_("Sell"), _("Sell Rate")), $use_lcr_callplan ? "MIN(rateinitial)" : "rateinitial", "get_money_precise");
 
-if (!$popup_select) {
+if (!$popup_select && is_admin()) {
     $HD_Form->AddListValue(_("Start"), "startdate")
         ->AddListValue(_("Stop"), "stopdate")
         ->AddListValue(abbr(_("Init."), _("Initial Billing Block")), "initblock")
@@ -128,24 +153,46 @@ if (!$popup_select) {
     $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
     $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
     $HD_Form->FG_ENABLE_ADD_BUTTON = true;
-} else {
+} elseif (!$popup_select && is_agent()) {
+    $HD_Form->AddListValue(_("Start"), "startdate");
+    $HD_Form->AddListValue(_("Stop"), "stopdate");
+    $HD_Form->AddListValue(abbr(_("Conn."), _("Connect Charge")), "connectcharge", "get_money");
+} elseif ($popup_select) {
     $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 7;
     $HD_Form->AddListSelectActionButton("javascript:sendValue('|param|')");
 }
 
 // Search form
 $HD_Form->search_form_enabled = true;
-$HD_Form->AddSearchDateInput(_("Start Date"), "startdate");
-
-$HD_Form->AddSearchTextInput(_("Tag"), 'tag');
+if (!is_customer()) {
+    $HD_Form->AddSearchDateInput(_("Start Date"), "startdate");
+}
+if (is_admin()) {
+    $HD_Form->AddSearchTextInput(_("Tag"), 'tag');
+}
 $HD_Form->AddSearchTextInput(_("Dialing Prefix"), 'dialprefix');
-$HD_Form->AddSearchComparisonInput(_("Buy Rate"), 'buyrate1', 'buyrate2', 'buyrate');
+if (is_admin()) {
+    $HD_Form->AddSearchComparisonInput(_("Buy Rate"), 'buyrate1', 'buyrate2', 'buyrate');
+}
 $HD_Form->AddSearchComparisonInput(_("Initial Rate"), 'rateinitial1', 'rateinitial2', 'rateinitial');
-
-$HD_Form->AddSearchSqlSelectInput(_("Trunk"), "id_trunk", new Table("cc_trunk", ["id_trunk", "trunkcode"]), "trunkcode");
-$HD_Form->AddSearchSqlSelectInput(_("Rate Card"), "idtariffplan", new Table("cc_tariffplan", ["id", "tariffname"]), "tariffname");
-
-$HD_Form->AddEditSqlSelect(_("Rate Card"), "idtariffplan", new Table("cc_tariffplan", ["id", "tariffname"]));
+if (is_admin()) {
+    $HD_Form->AddSearchSqlSelectInput(_("Trunk"), "id_trunk", new Table("cc_trunk", ["id_trunk", "trunkcode"]), "trunkcode");
+    $HD_Form->AddSearchSqlSelectInput(_("Rate Card"), "idtariffplan", new Table("cc_tariffplan", ["id", "tariffname"]), "tariffname");
+} elseif (is_agent()) {
+    $HD_Form->AddSearchSqlSelectInput(
+        _("Call Plan"),
+        "tariffgroup_id",
+        new Table(
+            "cc_tariffgroup",
+            ["id", "tariffgroupname"],
+            ["cc_agent_tariffgroup" => ["cc_tariffgroup.id", "cc_agent_tariffgroup.id_tariffgroup"]]
+        ),
+        "tariffgroupname",
+        "asc",
+        ["id_agent" => $_SESSION["agent_id"]]
+    );
+    $HD_Form->AddEditSqlSelect(_("Rate Card"), "idtariffplan", new Table("cc_tariffplan", ["id", "tariffname"]));
+}
 
 $HD_Form->AddEditElement(
     _("Dialing Prefix"),

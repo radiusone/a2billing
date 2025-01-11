@@ -25,6 +25,7 @@ namespace A2billing\Forms;
             <?php if (!empty($key) && $key !== 'current_page' && $key !== 'id' && !is_array($val)): ?>
         <input type="hidden" name="<?= $key?>" value="<?= $val?>"/>
             <?php endif ?>
+        <input type="hidden" name="current_page" value="0"/>
         <?php endforeach ?>
         <div class="row align-items-end">
             <?php if ($form->FG_FILTER_ENABLE): ?>

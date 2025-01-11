@@ -123,7 +123,7 @@ class Validator
      */
     public static function min1Char(string $value)
     {
-        return strlen($value)
+        return strlen($value) >= 1
             ?: _("(must be at least 1 character)");
     }
 

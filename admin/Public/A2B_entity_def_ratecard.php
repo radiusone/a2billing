@@ -43,31 +43,17 @@ require_once __DIR__ . "/../../common/lib/admin.defines.php";
 require_once __DIR__ . "/form_data/FG_var_def_ratecard.inc";
 /**
  * @var A2Billing $A2B
- * @var Smarty $smarty
  * @var FormHandler $HD_Form
- * @var string $order
- * @var string $sens
- * @var string $current_page
- * @var int $tariffgroup
+ * @var string $popup_select
+ * @var string $popup_formname
+ * @var string $popup_fieldname
  */
 
 Admin::checkPageAccess(Admin::ACX_RATECARD);
 
-getpost_ifset([
-    'package',
-    'popup_select',
-    'popup_formname',
-    'popup_fieldname',
-    'filterprefix',
-    'posted_search',
-]);
+getpost_ifset(["package"]);
 /**
  * @var string $package
- * @var string $popup_select
- * @var string $popup_formname
- * @var string $popup_fieldname
- * @var string $filterprefix
- * @var string $posted_search
  */
 /********************************* BATCH UPDATE ***********************************/
 $bu = [];
@@ -208,7 +194,7 @@ if ($form_action === "list" && !$popup_select): ?>
     <?php endif ?>
     <div class="col-auto">
         <button
-            class="btn btn-outline-primary btn-sm <?= empty($_SESSION["def_ratecard_tariffgroup"]) ? "btn-outline-primary" : "btn-primary" ?>"
+            class="btn btn-sm <?= empty($_SESSION["def_ratecard_tariffgroup"]) ? "btn-outline-primary" : "btn-primary btn-search-active" ?>"
             data-bs-toggle="modal"
             data-bs-target="#exportModal"
         >
@@ -241,9 +227,6 @@ if ($form_action === "list" && !$popup_select): ?>
             <div class="modal-body">
                 <form class="container-fluid form-striped" name="updateForm" id="updateForm" action="" method="post">
                     <input type="hidden" name="batchupdate" value="1"/>
-                    <input type="hidden" name="popup_select" value="<?= $popup_select ?>"/>
-                    <input type="hidden" name="popup_formname" value="<?= $popup_formname ?>"/>
-                    <input type="hidden" name="popup_fieldname" value="<?= $popup_fieldname ?>"/>
                     <input type="hidden" name="form_action" value="<?= $form_action ?>"/>
                     <input type="hidden" name="filterprefix" value="<?= $filterprefix ?? "" ?>"/>
                     <?= $HD_Form->csrf_inputs() ?>
@@ -361,13 +344,13 @@ if ($form_action === "list" && !$popup_select): ?>
                     <?= $HD_Form->csrf_inputs() ?>
                     <div class="row">
                         <div class="col">
-                            <?php if (!empty($tariffgroup)): ?>
-                                <strong><?= sprintf(_("Current LCR call plan: %s"), $list_tariffgroup[$tariffgroup]["tariffgroupname"]) ?></strong><br/>
+                            <?php if (!empty($_SESSION['def_ratecard_tariffgroup'])): ?>
+                                <strong><?= sprintf(_("Current LCR call plan: %s"), $list_tariffgroup[$_SESSION['def_ratecard_tariffgroup']]["tariffgroupname"]) ?></strong><br/>
                             <?php endif ?>
                             <select name="tariffgroup" id="tariffgroup" aria-label="<?= _("Choose a call plan") ?>" class="form-select form-select-sm">
                                 <option value=""><?= _("Choose a call plan") ?></option>
                                 <?php foreach ($list_tariffgroup as $v): ?>
-                                <option value="<?= $v["id"] ?>" <?php if ($tariffgroup == $v["id"]): ?>selected="selected" <?php endif?>>
+                                <option value="<?= $v["id"] ?>" <?php if ($_SESSION['def_ratecard_tariffgroup'] ?? 0 == $v["id"]): ?>selected="selected"<?php endif?>>
                                     <?= $v["tariffgroupname"] ?>
                                 </option>
                                 <?php endforeach ?>
