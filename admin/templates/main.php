@@ -81,7 +81,7 @@ $menu_section ??= 0;
                     <div class="collapse <?= $menu_section === 1 ? "show" : "" ?>" id="customer-collapse">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                             <li><a class="link-dark rounded" href="A2B_entity_card.php"><?= _("Add :: Search") ?></a></li>
-                            <li><a class="link-dark rounded" href="CC_card_import.php"><?= _("Import") ?></a></li>
+                            <li><a class="link-dark rounded" href="A2B_import_card.php"><?= _("Import") ?></a></li>
                             <li><a class="link-dark rounded" href="A2B_entity_friend.php?voip_conf=sip"><?= _("VoIP Settings") ?></a></li>
                             <li><a class="link-dark rounded" href="A2B_entity_callerid.php"><?= _("Caller-ID") ?></a></li>
                             <li><a class="link-dark rounded" href="A2B_notifications.php"><?= _("Credit Notification") ?></a></li>

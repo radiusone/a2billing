@@ -1,6 +1,8 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Logger;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -36,24 +38,160 @@ use A2billing\Admin;
 **/
 
 $menu_section = 1;
-// Common includes
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
-/**
- * @var Smarty $smarty
- */
 
 set_time_limit(0);
 
 Admin::checkPageAccess(Admin::ACX_CUSTOMER);
 
-$FG_DEBUG = 0;
+
+getpost_ifset(['search_sources', 'task', 'uploadedfile_name']);
+/**
+ * @var string $search_sources
+ * @var string $task
+ * @var string $uploadedfile_name
+ */
+
+$search_sources ??= "nochange";
+$task ??= "";
+$fieldtoimport = "";
+$field_names = [
+    "username",
+    "useralias",
+    "uipass",
+    "credit",
+    "lastname",
+    "firstname",
+    "status",
+];
+if ($search_sources !== "nochange") {
+    $field_names = array_merge($field_names, explode("|", $search_sources));
+}
+
+$nb_imported = 0;
+$import_time = 0;
 $DBHandle = DbConnect();
+$the_file = "";
+$assoc_csv = [];
+
+if ($task) {
+    $start_time = microtime(true);
+    if (!empty($_FILES["the_file"])) {
+        $errortext = validate_upload($_FILES["the_file"]["tmp_name"] ?? "", $_FILES["the_file"]["type"] ?? "");
+        if ($errortext) {
+            echo $errortext;
+            exit;
+        }
+        $the_file = tempnam(sys_get_temp_dir(), "cc_card");
+        if (!move_uploaded_file($_FILES["the_file"]["tmp_name"], $the_file)) {
+            echo sprintf(_("File Save Failed, FILE=%s"), $the_file);
+            exit;
+        }
+    } else {
+        $the_file = $uploadedfile_name;
+    }
+
+    $insert_data = [];
+
+    $file_data = file($the_file, FILE_IGNORE_NEW_LINES);
+    foreach ($file_data as $line) {
+        $line = trim($line);
+        if (str_starts_with($line, "#")) {
+            continue;
+        }
+        $values = str_getcsv($line, ",", "\"", "");
+        if (count($values) !== count($field_names)) {
+            continue;
+        }
+        $assoc_csv = array_combine($field_names, $values);
+        if (empty($assoc_csv["useralias"])) {
+            $assoc_csv["useralias"] = $assoc_csv["username"];
+        }
+        if (empty($assoc_csv["id_group"]) || $assoc_csv["id_group"] < 1) {
+            // default user group
+            $assoc_csv["id_group"] = 1;
+        }
+
+        $insert_data[] = $assoc_csv;
+        if ($task === "preview") {
+            break;
+        }
+    }
+
+    if ($task === "upload") {
+        (new Table("cc_card"))->addRows($DBHandle, $insert_data);
+        $nb_imported = count($insert_data);
+        Logger::insertLog($_SESSION["admin_id"], 2, "CARDs IMPORTED", $nb_imported." New CARDS Imported Successfully", '', $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI']);
+    }
+    $stop_time = microtime(true);
+    $import_time = $stop_time - $start_time;
+}
+
 $my_max_file_size = (int)MY_MAX_FILE_SIZE_IMPORT;
 
 require_once __DIR__ . "/../templates/main.php";
 ?>
+<?php if ($task === "preview" && empty($assoc_csv)): ?>
+    <div class="row mb-3">
+        <div class="col">
+            <p class="text-danger"><?= _("No valid rows were found for import. Ensure the number of values in the CSV matches the number of fields selected for import.") ?></p>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col">
+            <a class="btn btn-danger" href="A2B_import_card.php"><?= _("Return") ?></a>
+        </div>
+    </div>
 
-<form class="container align-center" id="prefs" name="prefs" enctype="multipart/form-data" method="post" action="CC_card_import_analyse.php">
+<?php elseif ($task === "preview"): ?>
+    <div class="row mb-3">
+        <div class="col">
+            <p><?= _("The first line of your import is previewed below, please check to ensure that every column is correct.") ?></p>
+        </div>
+    </div>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col"><?= _("FIELD") ?></th>
+            <th scope="col"><?= _("VALUE") ?></th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($assoc_csv as $key => $data): ?>
+            <tr>
+                <th scope="row"><?= _($key) ?></th>
+                <td><?= htmlspecialchars($data) ?></td>
+            </tr>
+        <?php endforeach ?>
+        </tbody>
+    </table>
+    <div class="row mb-3">
+        <div class="col">
+            <form method="post">
+                <input type="hidden" name="search_sources" value="<?= $search_sources ?>"/>
+                <input type="hidden" name="uploadedfile_name" value="<?= $the_file ?>"/>
+                <input type="hidden" name="task" value="upload">
+                <p><?= _("Confirm the data is correct, or press cancel to return to the previous page.") ?></p>
+                <button class="btn btn-primary" type="submit"><?= _("Import") ?></button>
+                <a class="btn btn-danger" href="A2B_import_card.php"><?= _("Cancel") ?></a>
+            </form>
+        </div>
+    </div>
+
+<?php elseif ($task === "upload"): ?>
+    <div class="row mb-3">
+        <div class="col">
+            <p><?= sprintf(_("Success, %d new cards have been imported in %0.4f seconds."), $nb_imported, $import_time) ?></p>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col">
+            <a class="btn btn-success" href="A2B_entity_card.php"><?= _("Continue") ?></a>
+        </div>
+    </div>
+
+<?php else: ?>
+<form class="container align-center" id="prefs" name="prefs" enctype="multipart/form-data" method="post" action="">
     <div class="row mb-3">
         <div class="col">
             <h5><?= _("New Cards have to be imported from a CSV file") ?></h5>
@@ -62,14 +200,14 @@ require_once __DIR__ . "/../templates/main.php";
     <div class="row mb-3">
         <div class="col">
             <label class="form-label" for="bydefault"><?= _("These fields are mandatory") ?></label>
-            <select name="bydefault" id="bydefault" class="form-select" multiple="multiple" size="5" disabled="disabled">
-                <option value="bb1"><?= _("username") ?></option>
-                <option value="bb2"><?= _("useralias") ?></option>
-                <option value="bb3"><?= _("uipass") ?></option>
-                <option value="bb4"><?= _("credit") ?></option>
-                <option value="bb5"><?= _("lastname") ?></option>
-                <option value="bb6"><?= _("firstname") ?></option>
-                <option value="bb8"><?= _("status") ?></option>
+            <select class="form-select" multiple="multiple" size="5" disabled="disabled">
+                <option><?= _("username") ?></option>
+                <option><?= _("useralias") ?></option>
+                <option><?= _("uipass") ?></option>
+                <option><?= _("credit") ?></option>
+                <option><?= _("lastname") ?></option>
+                <option><?= _("firstname") ?></option>
+                <option><?= _("status") ?></option>
             </select>
         </div>
     </div>
@@ -177,5 +315,6 @@ require_once __DIR__ . "/../templates/main.php";
 </form>
 
 <?php
+endif;
 
 require_once __DIR__ . "/../templates/footer.php";
