@@ -177,7 +177,7 @@ $menu_section ??= 0;
                             <li>
                                 <a class="link-dark rounded" href="A2B_entity_def_ratecard.php"><?= _("Rates") ?></a>
                                 <ul class="list-unstyled fw-normal ps-3 pb-1">
-                                    <li><a class="link-dark rounded" href="CC_ratecard_import.php"><?= _("Import") ?></a></li>
+                                    <li><a class="link-dark rounded" href="A2B_import_ratecard.php"><?= _("Import") ?></a></li>
                                     <li><a class="link-dark rounded" href="CC_entity_sim_ratecard.php"><?= _("Simulator") ?></a></li>
                                 </ul>
                             </li>
