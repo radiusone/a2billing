@@ -83,3 +83,7 @@ ALTER TABLE cc_service_report CHANGE COLUMN totalcredit totalcredit decimal(15,5
 ALTER TABLE cc_subscription_service CHANGE COLUMN fee fee decimal(15,5) NOT NULL DEFAULT 0;
 ALTER TABLE cc_subscription_service CHANGE COLUMN totalcredit totalcredit decimal(15,5) NOT NULL DEFAULT 0;
 ALTER TABLE cc_voucher CHANGE COLUMN credit credit decimal(15,5) NOT NULL DEFAULT 0;
+
+-- setting to show/hide invalid rates
+INSERT INTO cc_config (`config_title`, `config_key`, `config_value`, `config_description`, `config_valuetype`, `config_listvalues`, `config_group_id`)
+    VALUES ('Hide Expired Rates','hide_expired_rates','0','Hide expired and future rates when viewing the rate list',1,'yes,no', (SELECT id FROM cc_config_group WHERE group_title = 'webui'));

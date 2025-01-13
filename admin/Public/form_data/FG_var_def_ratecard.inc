@@ -112,6 +112,11 @@ if ((!empty($tariffgroup) || !empty($_SESSION['def_ratecard_tariffgroup'])) && $
     $_SESSION['def_ratecard_tariffgroup'] = $tariffgroup;
 }
 
+if ($A2B->config["webui"]["hide_expired_rates"]) {
+    $HD_Form->list_query_conditions[] = ["SUB", ["startdate" => [[null], ["<", "CURRENT_TIMESTAMP"]]], "OR"];
+    $HD_Form->list_query_conditions[] = ["SUB", ["stopdate" => [[null], [">", "CURRENT_TIMESTAMP"]]], "OR"];
+}
+
 $HD_Form->list_query_order_columns = ["dialprefix"];
 $HD_Form->search_session_key = "entity_ratecard_selection";
 $export_cols = $A2B->config['webui']['rate_export_field_list'];

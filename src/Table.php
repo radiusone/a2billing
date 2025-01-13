@@ -133,7 +133,7 @@ class Table
 
         if ($this->isSqlFunction($identifier) || is_numeric($identifier)) {
             // something like a function call
-            return "$identifier $alias";
+            return trim("$identifier $alias");
         }
 
         $distinct = "";
@@ -144,7 +144,7 @@ class Table
 
         if (str_starts_with($identifier, $q) && str_ends_with($identifier, $q)) {
             // there is plenty of room for abuse here, but assume already quoted values are ok
-            return "$distinct $identifier $alias";
+            return trim("$distinct $identifier $alias");
         }
 
         $identifier = str_replace($q, "", $identifier);
@@ -152,7 +152,7 @@ class Table
             $identifier = implode("$q.$q", explode(".", $identifier));
         }
 
-        return "$distinct $q$identifier$q $alias";
+        return trim("$distinct $q$identifier$q $alias");
     }
 
     public function isSqlFunction(string $value): bool
