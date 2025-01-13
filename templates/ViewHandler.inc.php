@@ -16,7 +16,7 @@ namespace A2billing\Forms;
 <?php if (($form->FG_FILTER_ENABLE || $form->FG_FILTER2_ENABLE) || ($popup_select < 1 && ($form->FG_LIST_ADDING_BUTTON1 || $form->FG_LIST_ADDING_BUTTON2))): ?>
 <div class="row pb-3 align-items-end">
     <?php if ($form->FG_LIST_VIEW_ROW_COUNT > 0 && ($form->FG_FILTER_ENABLE || $form->FG_FILTER2_ENABLE)): ?>
-    <form action="" class="col">
+    <form method="post" action="<?= $_SERVER["PHP_SELF"] ?>" class="col">
         <input type="hidden" name="form_action" value="list"/>
         <?php foreach ($query_params as $key => $val): ?>
         <input type="hidden" name="<?= $key ?>" value="<?= $val ?>"/>
@@ -26,6 +26,7 @@ namespace A2billing\Forms;
         <input type="hidden" name="<?= $key?>" value="<?= $val?>"/>
             <?php endif ?>
         <input type="hidden" name="current_page" value="0"/>
+        <?= $form->csrf_inputs() ?>
         <?php endforeach ?>
         <div class="row align-items-end">
             <?php if ($form->FG_FILTER_ENABLE): ?>

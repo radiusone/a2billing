@@ -28,12 +28,12 @@ class ViewForm
             "order" => $processed["order"] ?? null,
             "sens" => $processed["sens"] ?? null,
             "filterprefix" => $processed["filterprefix"] ?? null,
-            "filterprefix2" => $processed["filterprefix"] ?? null,
+            "filterprefix2" => $processed["filterprefix2"] ?? null,
             "popup_select" => $processed["popup_select"] ?? null,
             "popup_formname" => $processed["popup_formname"] ?? null,
             "popup_fieldname" => $processed["popup_fieldname"] ?? null,
         ];
-        $query_params = array_filter($query_params, fn ($v) => !is_null($v));
+        $query_params = array_filter($query_params, fn ($v) => !is_null($v) && $v !== "");
         foreach($form->CV_FOLLOWPARAMETERS as $k => $v) {
             $query_params[$k] = $v;
         }
