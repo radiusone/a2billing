@@ -245,9 +245,7 @@ namespace A2billing\Forms;
                             data-primary-key="<?= $row["instance_primary_key"] ?? "" ?>"
                             data-popup-select="<?= $popup_select ?>"
                             <?= $button["image"] ? "aria-label=\"$button[label]\"" : "" ?>
-                        >
-                            <?= $contents ?>
-                        </a>
+                        ><?= $contents ?></a>
                         <?php else: ?>
                         <button
                             type="button"
@@ -256,9 +254,7 @@ namespace A2billing\Forms;
                             data-primary-key="<?= $row["instance_primary_key"] ?? "" ?>"
                             data-popup-select="<?= $popup_select ?>"
                             <?= $button["image"] ? "aria-label=\"$button[label]\"" : "" ?>
-                        >
-                            <?= $contents ?>
-                        </button>
+                        ><?= $contents ?></button>
                         <?php endif ?>
                     <?php endforeach ?>
                     </td>
