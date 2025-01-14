@@ -38,7 +38,7 @@ use A2billing\Forms\FormHandler;
 
 $menu_section = 10;
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
-require_once __DIR__ . "/form_data/FG_var_charge.inc";
+require_once __DIR__ . "/../../common/form_data/FG_var_charge.inc";
 /**
  * @var FormHandler $HD_Form_c named differently because of the page include nonsense
  * @var bool $wantinclude set in A2B_entity_did_billing which includes this page

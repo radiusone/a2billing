@@ -42,7 +42,7 @@ require_once __DIR__ . "/../../common/lib/admin.defines.php";
 /**
  * @var A2Billing $A2B
  */
-require_once __DIR__ . "/form_data/FG_var_currencies.inc";
+require_once __DIR__ . "/../../common/form_data/FG_var_currencies.inc";
 /**
  * @var FormHandler $HD_Form
  */

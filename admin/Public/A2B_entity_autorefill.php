@@ -39,7 +39,7 @@ use A2billing\Forms\FormHandler;
 $menu_section = 13;
 
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
-require_once __DIR__ . "/form_data/FG_var_autorefill.inc";
+require_once __DIR__ . "/../../common/form_data/FG_var_autorefill.inc";
 /**
  * @var FormHandler $HD_Form
  * @var string $form_action

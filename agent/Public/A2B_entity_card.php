@@ -37,7 +37,7 @@ use A2billing\Table;
 **/
 
 require_once __DIR__ . "/../../common/lib/agent.defines.php";
-require_once __DIR__ . "/../../admin/Public/form_data/FG_var_card.inc";
+require_once __DIR__ . "/../../common/form_data/FG_var_card.inc";
 
 if (! has_rights (Agent::ACX_CUSTOMER)) {
     Header ("HTTP/1.0 401 Unauthorized");

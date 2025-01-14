@@ -39,7 +39,7 @@ use A2billing\Table;
 
 $menu_section = 8;
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
-require_once __DIR__ . "/form_data/FG_var_diduse.inc";
+require_once __DIR__ . "/../../common/form_data/FG_var_diduse.inc";
 /**
  * @var FormHandler $HD_Form
  * @var string $action set when the release button is used

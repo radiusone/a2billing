@@ -200,7 +200,7 @@ class FormHandler
 
     /**
      * @var array list of key/value pairs that will be added to the edit form as hidden inputs
-     * @todo only used in admin/Public/form_data/FG_var_card.inc; why not just use fg_edit_query_hidden_inputs?
+     * @todo only used in common/form_data/FG_var_card.inc; why not just use fg_edit_query_hidden_inputs?
      */
     public array $FG_EDIT_FORM_HIDDEN_INPUTS = [];
 
@@ -630,7 +630,7 @@ class FormHandler
     }
 
     /**
-     * Add a split day/time field, used in admin/Public/form_data/FG_var_def_ratecard.inc
+     * Add a split day/time field, used in common/form_data/FG_var_def_ratecard.inc
      */
     public function AddEditDayTime(
         string $label_text,

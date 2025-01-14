@@ -39,7 +39,7 @@ use A2billing\Table;
 
 $menu_section = 17;
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
-require_once "./form_data/FG_var_mailtemplate.inc";
+require_once __DIR__ . "/../../common/form_data/FG_var_mailtemplate.inc";
 /**
  * @var FormHandler $HD_Form
  */

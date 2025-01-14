@@ -40,7 +40,7 @@ use A2billing\Table;
 
 $menu_section = 6;
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
-require_once __DIR__ . "/form_data/FG_var_def_ratecard.inc";
+require_once __DIR__ . "/../../common/form_data/FG_var_def_ratecard.inc";
 /**
  * @var A2Billing $A2B
  * @var FormHandler $HD_Form
