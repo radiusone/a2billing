@@ -199,14 +199,14 @@ require_once __DIR__ . "/../templates/main.php";
     <div class="row mb-3">
         <div class="col">
             <label class="form-label" for="bydefault"><?= _("These fields are mandatory") ?></label>
-            <select class="form-select" multiple="multiple" size="5" disabled="disabled">
-                <option><?= _("username") ?></option>
-                <option><?= _("useralias") ?></option>
-                <option><?= _("uipass") ?></option>
-                <option><?= _("credit") ?></option>
-                <option><?= _("lastname") ?></option>
-                <option><?= _("firstname") ?></option>
-                <option><?= _("status") ?></option>
+            <select class="form-select csv-import" id="bydefault" multiple="multiple" size="5" disabled="disabled">
+                <option>username - <?= _("Username") ?></option>
+                <option>useralias - <?= _("User alias") ?></option>
+                <option>uipass - <?= _("Web password") ?></option>
+                <option>credit - <?= _("Credit") ?></option>
+                <option>lastname - <?= _("Last name") ?></option>
+                <option>firstname - <?= _("First name") ?></option>
+                <option>status - <?= _("Status (see sample)") ?></option>
             </select>
         </div>
     </div>
@@ -217,36 +217,36 @@ require_once __DIR__ . "/../templates/main.php";
     </div>
     <div class="row mb-3">
         <div class="col-5">
-            <select class="form-select" id="unselected_cols" multiple="multiple" size="10" aria-labelledby="unselected_label">
+            <select class="form-select csv-import" id="unselected_cols" multiple="multiple" size="10" aria-labelledby="unselected_label">
                 <optgroup id="unselected_label" label="<?= _("Unselected fields…") ?>">
-                    <option value="expirationdate"><?= _("expirationdate") ?></option>
-                    <option value="enableexpire"><?= _("enableexpire") ?></option>
-                    <option value="expiredays"><?= _("expiredays") ?></option>
-                    <option value="tariff"><?= _("tariff") ?></option>
-                    <option value="id_didgroup"><?= _("id_didgroup") ?></option>
-                    <option value="id_group"><?= _("id_group") ?></option>
-                    <option value="address"><?= _("address") ?></option>
-                    <option value="city"><?= _("city") ?></option>
-                    <option value="state"><?= _("state") ?></option>
-                    <option value="country"><?= _("country") ?></option>
-                    <option value="zipcode"><?= _("zipcode") ?></option>
-                    <option value="phone"><?= _("phone") ?></option>
-                    <option value="email"><?= _("email") ?></option>
-                    <option value="fax"><?= _("fax") ?></option>
-                    <option value="simultaccess"><?= _("simultaccess") ?></option>
-                    <option value="currency"><?= _("currency") ?></option>
-                    <option value="typepaid"><?= _("typepaid") ?></option>
-                    <option value="creditlimit"><?= _("creditlimit") ?></option>
-                    <option value="voipcall"><?= _("voipcall") ?></option>
-                    <option value="sip_buddy"><?= _("sip_buddy") ?></option>
-                    <option value="iax_buddy"><?= _("iax_buddy") ?></option>
-                    <option value="language"><?= _("language") ?></option>
-                    <option value="id_campaign"><?= _("id_campaign") ?></option>
-                    <option value="vat"><?= _("vat") ?></option>
-                    <option value="initialbalance"><?= _("initialbalance") ?></option>
-                    <option value="invoiceday"><?= _("invoiceday") ?></option>
-                    <option value="autorefill"><?= _("autorefill") ?></option>
-                    <option value="loginkey"><?= _("loginkey") ?></option>
+                    <option value="expirationdate">expirationdate - <?= _("Expiration date (Y-m-d H:m:s)") ?></option>
+                    <option value="enableexpire">enableexpire - <?= _("Enable expiry (0 or 1)") ?></option>
+                    <option value="expiredays">expiredays - <?= _("Expire in x days") ?></option>
+                    <option value="tariff">tariff - <?= _("Call plan") ?></option>
+                    <option value="id_didgroup">id_didgroup - <?= _("DID group ID") ?></option>
+                    <option value="id_group">id_group - <?= _("Card group ID") ?></option>
+                    <option value="address">address - <?= _("Address") ?></option>
+                    <option value="city">city - <?= _("City") ?></option>
+                    <option value="state">state - <?= _("State") ?></option>
+                    <option value="country">country - <?= _("Country") ?></option>
+                    <option value="zipcode">zipcode - <?= _("Post code") ?></option>
+                    <option value="phone">phone - <?= _("Phone") ?></option>
+                    <option value="email">email - <?= _("Email") ?></option>
+                    <option value="fax">fax - <?= _("Fax") ?></option>
+                    <option value="simultaccess">simultaccess - <?= _("Simultaneous access (0 or 1)") ?></option>
+                    <option value="currency">currency - <?= _("Currency") ?></option>
+                    <option value="typepaid">typepaid - <?= _("Type (0 prepaid or 1 postpaid)") ?></option>
+                    <option value="creditlimit">creditlimit - <?= _("Credit limit") ?></option>
+                    <option value="voipcall">voipcall</option>
+                    <option value="sip_buddy">sip_buddy</option>
+                    <option value="iax_buddy">iax_buddy</option>
+                    <option value="language">language - <?= _("Language") ?></option>
+                    <option value="id_campaign">id_campaign - <?= _("Campaign ID") ?></option>
+                    <option value="vat">vat - <?= _("VAT rate") ?></option>
+                    <option value="initialbalance">initalbalance - <?= _("Initial balance") ?></option>
+                    <option value="invoiceday">invoiceday - <?= _("Invoice day") ?></option>
+                    <option value="autorefill"> autorefill - <?= _("Enable autorefill (0 or 1)") ?></option>
+                    <option value="loginkey"> loginkey - <?= _("Login key") ?></option>
                 </optgroup>
             </select>
         </div>
@@ -261,7 +261,7 @@ require_once __DIR__ . "/../templates/main.php";
             </div>
         </div>
         <div class="col-5">
-            <select class="form-select" id="selected_cols" multiple="multiple" size="10" aria-labelledby="selected_label">
+            <select class="form-select csv-import" name="selected_cols[]" id="selected_cols" multiple="multiple" size="10" aria-labelledby="selected_label">
                 <optgroup id="selected_label" label="<?= _("Selected fields…") ?>">
                     <option value="" disabled="disabled">&nbsp;</option>
                 </optgroup>

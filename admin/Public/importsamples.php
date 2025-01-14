@@ -41,6 +41,16 @@ $cardSample_Simple = <<< CSV
     CSV;
 
 $cardSample_Complex = <<< CSV
+    # status types:
+    # 0 - Cancelled
+    # 1 - Active
+    # 2 - New
+    # 3 - Pending confirmation
+    # 4 - Reserved
+    # 5 - Expired
+    # 6 - Suspended (payment)
+    # 7 - Suspended (litigation)
+    # 8 - Pending payment
     # username, useralias, uipass, credit, lastname, firstname, status, expirationdate, enableexpire, expiredays, tariff, id_didgroup, id_group, address, city, state, country, zipcode, phone, email, fax, simultaccess, currency, typepaid, creditlimit, voipcall, sip_buddy, iax_buddy, language, id_campaign, vat, initialbalance, invoiceday, autorefill, loginkey
     1321321321, wchurch, "Churchill,332", 12, Churchill, Winston, 1, 2006-07-03 23:27:01, 0, 0, 1, -1, -1, 150 10th Street NW, Washington, DC , USA, 54000, 4592300610, winston@example.com, , 0, USD, 0, 0, 0, 1, 1, en, 0, 21, 0, 1, 1, asd234asd3
     6434353300, rcarrette, "Raumon""852", 12, Raumon, Carrette, 1, , 1, 31, 1, -1, -1, 150 14th NW, New York, NY , USA, 54000, 4592300613, Raumon@example.com, 4257009990, 0, USD, 0, 0, 0, 1, 1, en, 0, 0, 0, 1, 1, asd98866

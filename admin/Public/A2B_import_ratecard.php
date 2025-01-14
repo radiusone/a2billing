@@ -299,10 +299,10 @@ require_once __DIR__ . "/../templates/main.php";
     <div class="row mb-3">
         <div class="col">
             <label class="form-label" for="bydefault"><?= _("These fields are mandatory") ?></label>
-            <select name="bydefault" id="bydefault" class="form-select" multiple="multiple" size="5" disabled="disabled">
-                <option value="bb1"><?= _("dialprefix") ?></option>
-                <option value="bb2"><?= _("destination") ?></option>
-                <option value="bb3"><?= _("selling rate") ?></option>
+            <select class="form-select csv-import" id="bydefault" multiple="multiple" size="5" disabled="disabled">
+                <option>dialprefix - <?= _("Dial prefix") ?></option>
+                <option>destination - <?= _("Destination") ?></option>
+                <option>rateinitial - <?= _("Selling rate") ?></option>
             </select>
         </div>
     </div>
@@ -313,47 +313,51 @@ require_once __DIR__ . "/../templates/main.php";
     </div>
     <div class="row mb-3">
         <div class="col-5">
-            <select class="form-select" name="unselected_cols" id="unselected_cols" multiple="multiple" size="10" aria-labelledby="unselected_label">
+            <select class="form-select csv-import" id="unselected_cols" multiple="multiple" size="10" aria-labelledby="unselected_label">
                 <optgroup id="unselected_label" label="<?= _("Unselected fields…") ?>">
-                    <option value="buyrate"><?= _("buyrate") ?></option>
-                    <option value="buyrateinitblock"><?= _("buyrate min duration") ?></option>
-                    <option value="buyrateincrement"><?= _("buyrate billing block") ?></option>
+                    <option value="buyrate">buyrate - <?= _("Buying rate") ?></option>
+                    <option value="buyrateinitblock">buyrateinitblock - <?= _("Buying min duration") ?></option>
+                    <option value="buyrateincrement">buyrateincrement - <?= _("Buying billing block") ?></option>
 
-                    <option value="initblock"><?= _("sellrate min duration") ?></option>
-                    <option value="billingblock"><?= _("sellrate billing block") ?></option>
+                    <option value="initblock">initblock - <?= _("Selling min duration") ?></option>
+                    <option value="billingblock">billingblock - <?= _("Selling billing block") ?></option>
 
-                    <option value="connectcharge"><?= _("connect charge") ?></option>
-                    <option value="disconnectcharge"><?= _("disconnect charge") ?></option>
-                    <option value="disconnectcharge_after"><?= _("disconnect charge threshold") ?></option>
+                    <option value="connectcharge">connectcharge - <?= _("Connect charge") ?></option>
+                    <option value="disconnectcharge">disconnectcharge - <?= _("Disconnect charge") ?></option>
+                    <option value="disconnectcharge_after">disconnectcharge_after - <?= _("Disconnect charge threshold (seconds)") ?></option>
 
-                    <option value="minimal_cost"><?= _("minimum call cost") ?></option>
+                    <option value="minimal_cost">minimal_cost - <?= _("Minimum call cost") ?></option>
 
-                    <option value="stepchargea"><?= _("step charge a") ?></option>
-                    <option value="chargea"><?= _("charge a") ?></option>
-                    <option value="timechargea"><?= _("time charge a") ?></option>
-                    <option value="billingblocka"><?= _("billing block a") ?></option>
+<?php if (ADVANCED_MODE): ?>
+                    <option value="stepchargea">stepchargea - <?= _("Step charge A") ?></option>
+                    <option value="chargea">chargea - <?= _("Charge A") ?></option>
+                    <option value="timechargea">timechargea - <?= _("Time charge A") ?></option>
+                    <option value="billingblocka">billingblocka - <?= _("Billing block A") ?></option>
 
-                    <option value="stepchargeb"><?= _("step charge b") ?></option>
-                    <option value="chargeb"><?= _("charge b") ?></option>
-                    <option value="timechargeb"><?= _("time charge b") ?></option>
-                    <option value="billingblockb"><?= _("billing block b") ?></option>
+                    <option value="stepchargeb">stepchargeb - <?= _("Step charge B") ?></option>
+                    <option value="chargeb">chargeb - <?= _("Charge B") ?></option>
+                    <option value="timechargeb">timechargeb - <?= _("Time charge B") ?></option>
+                    <option value="billingblockb">billingblockb - <?= _("Billing block B") ?></option>
 
-                    <option value="stepchargec"><?= _("step charge c") ?></option>
-                    <option value="chargec"><?= _("charge c") ?></option>
-                    <option value="timechargec"><?= _("time charge c") ?></option>
-                    <option value="billingblockc"><?= _("billing block c") ?></option>
+                    <option value="stepchargec">stepchargec - <?= _("Step charge C") ?></option>
+                    <option value="chargec">chargec - <?= _("Charge C") ?></option>
+                    <option value="timechargec">timechargec - <?= _("Time charge C") ?></option>
+                    <option value="billingblockc">billingblockc - <?= _("Billing block C") ?></option>
+<?php endif ?>
 
-                    <option value="startdate"><?= _("start date") ?></option>
-                    <option value="stopdate"><?= _("stop date") ?></option>
-                    <option value="additional_grace"><?= _("additional grace") ?></option>
-                    <option value="starttime"><?= _("start time") ?></option>
-                    <option value="endtime"><?= _("end time") ?></option>
-                    <option value="tag"><?= _("tag") ?></option>
-                    <option value="rounding_calltime"><?= _("rounding calltime") ?></option>
-                    <option value="rounding_threshold"><?= _("rounding threshold") ?></option>
-                    <option value="additional_block_charge"><?= _("additional block charge") ?></option>
-                    <option value="additional_block_charge_time"><?= _("additional block charge time") ?></option>
-                    <option value="announce_time_correction"><?= _("announce time correction") ?></option>
+                    <option value="startdate">startdate - <?= _("Start date (Y-m-d H:m:s)") ?></option>
+                    <option value="stopdate">stopdate - <?= _("Stop date (Y-m-d H:m:s)") ?></option>
+                    <option value="additional_grace">additional_grace - <?= _("Additional grace time (seconds)") ?></option>
+                    <option value="starttime">starttime - <?= _("Start time (0 = 12:00:00 Monday)") ?></option>
+                    <option value="endtime">endtime - <?= _("End time (10079 = 23:59:59 on Sunday)") ?></option>
+                    <option value="tag">tag - <?= _("Tag") ?></option>
+                    <option value="rounding_calltime">rounding_calltime - <?= _("Rounding calltime") ?></option>
+                    <option value="rounding_threshold">rounding_threshold - <?= _("Rounding threshold") ?></option>
+                    <option value="additional_block_charge">additional_block_charge - <?= _("Additional block charge") ?></option>
+                    <option value="additional_block_charge_time">additional_block_charge_time - <?= _("Additional block charge time") ?></option>
+<?php if (ADVANCED_MODE): ?>
+                    <option value="announce_time_correction">announce_time_correction - <?= _("Announce time correction") ?></option>
+<?php endif ?>
                 </optgroup>
             </select>
         </div>
@@ -368,7 +372,7 @@ require_once __DIR__ . "/../templates/main.php";
             </div>
         </div>
         <div class="col-5">
-            <select class="form-select" name="selected_cols" id="selected_cols" multiple="multiple" size="10" aria-labelledby="selected_label">
+            <select class="form-select csv-import" name="selected_cols[]" id="selected_cols" multiple="multiple" size="10" aria-labelledby="selected_label">
                 <optgroup id="selected_label" label="<?= _("Selected fields…") ?>">
                     <option value="" disabled="disabled">&nbsp;</option>
                 </optgroup>
