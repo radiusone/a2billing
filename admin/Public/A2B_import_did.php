@@ -37,41 +37,45 @@ use A2billing\Table;
  *
 **/
 
-$menu_section = 1;
+$menu_section = 8;
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
 
 set_time_limit(0);
 
-Admin::checkPageAccess(Admin::ACX_CUSTOMER);
+Admin::checkPageAccess(Admin::ACX_DID);
 
-getpost_ifset(['search_sources', 'task', 'uploadedfile_name']);
+getpost_ifset(["search_sources", "task", "uploadedfile_name", "id_cc_didgroup", "id_cc_country"]);
 /**
  * @var string $search_sources
  * @var string $task
  * @var string $uploadedfile_name
+ * @var numeric-string $id_cc_didgroup
+ * @var numeric-string $id_cc_country
  */
 
 $search_sources ??= "nochange";
 $task ??= "";
 $fieldtoimport = "";
 $field_names = [
-    "username",
-    "useralias",
-    "uipass",
-    "credit",
-    "lastname",
-    "firstname",
-    "status",
+    "did",
+    "fixrate",
 ];
 if ($search_sources !== "nochange") {
     $field_names = array_merge($field_names, explode("|", $search_sources));
 }
+$field_names = array_merge($field_names, ["id_cc_didgroup", "id_cc_country"]);
 
 $nb_imported = 0;
 $import_time = 0;
 $DBHandle = DbConnect();
 $the_file = "";
 $assoc_csv = [];
+$import_error = "";
+
+$group_list = (new Table("cc_didgroup", ["id", "didgroupname"]))
+    ->getColumn($DBHandle, "didgroupname", "id");
+$country_list = (new Table("cc_country", ["id", "countryname"]))
+    ->getColumn($DBHandle, "countryname", "id");
 
 if ($task) {
     $start_time = microtime(true);
@@ -81,7 +85,7 @@ if ($task) {
             echo $errortext;
             exit;
         }
-        $the_file = tempnam(sys_get_temp_dir(), "cc_card");
+        $the_file = tempnam(sys_get_temp_dir(), "cc_did");
         if (!move_uploaded_file($_FILES["the_file"]["tmp_name"], $the_file)) {
             echo sprintf(_("File Save Failed, FILE=%s"), $the_file);
             exit;
@@ -99,16 +103,16 @@ if ($task) {
             continue;
         }
         $values = str_getcsv($line, ",", "\"", "");
+        $values = array_merge($values, [$id_cc_didgroup, $id_cc_country]);
         if (count($values) !== count($field_names)) {
             continue;
         }
         $assoc_csv = array_combine($field_names, $values);
-        if (empty($assoc_csv["useralias"])) {
-            $assoc_csv["useralias"] = $assoc_csv["username"];
+        if (empty($assoc_csv["startingdate"])) {
+            $assoc_csv["startingdate"] = (new DateTime())->format("Y-m-d H:i:s");
         }
-        if (empty($assoc_csv["id_group"]) || $assoc_csv["id_group"] < 1) {
-            // default user group
-            $assoc_csv["id_group"] = 1;
+        if (empty($assoc_csv["expirationdate"])) {
+            $assoc_csv["expirationdate"] = (new DateTime("+10 years"))->format("Y-m-d H:i:s");
         }
 
         $insert_data[] = $assoc_csv;
@@ -118,95 +122,130 @@ if ($task) {
     }
 
     if ($task === "upload") {
-        (new Table("cc_card"))->addRows($DBHandle, $insert_data);
+        (new Table("cc_did"))->addRows($DBHandle, $insert_data);
         $nb_imported = count($insert_data);
-        Logger::insertLog($_SESSION["admin_id"], 2, "CARDs IMPORTED", $nb_imported." New CARDS Imported Successfully", '', $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI']);
+        Logger::insertLog($_SESSION["admin_id"], 2, "DIDs IMPORTED", $nb_imported." New DIDs Imported Successfully", '', $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI']);
     }
     $stop_time = microtime(true);
     $import_time = $stop_time - $start_time;
+} else {
+    $my_max_file_size = (int)MY_MAX_FILE_SIZE_IMPORT;
+
+    echo create_help(_("You can import lists of DIDs using a CSV file."));
 }
 
-$my_max_file_size = (int)MY_MAX_FILE_SIZE_IMPORT;
-
 require_once __DIR__ . "/../templates/main.php";
+
 ?>
+
 <?php if ($task === "preview" && empty($assoc_csv)): ?>
-    <div class="row mb-3">
-        <div class="col">
-            <p class="text-danger"><?= _("No valid rows were found for import. Ensure the number of values in the CSV matches the number of fields selected for import.") ?></p>
-        </div>
+<div class="row mb-3">
+    <div class="col">
+        <p class="text-danger"><?= _("No valid rows were found for import. Ensure the number of values in the CSV matches the number of fields selected for import.") ?></p>
     </div>
-    <div class="row mb-3">
-        <div class="col">
-            <a class="btn btn-danger" href="A2B_import_card.php"><?= _("Return") ?></a>
-        </div>
+</div>
+<div class="row mb-3">
+    <div class="col">
+        <a class="btn btn-danger" href="A2B_import_ratecard.php"><?= _("Return") ?></a>
     </div>
+</div>
 
 <?php elseif ($task === "preview"): ?>
-    <div class="row mb-3">
-        <div class="col">
-            <p><?= _("The first line of your import is previewed below, please check to ensure that every column is correct.") ?></p>
-        </div>
+<div class="row mb-3">
+    <div class="col">
+        <p><?= create_help(("As a preview for the import, we have made a quick analyze of the first line of your csv file.<br/>
+        Please check out if everything look correct!")) ?></p>
     </div>
-    <table class="table table-striped">
-        <thead>
+</div>
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th scope="col"><?= _("FIELD") ?></th>
+        <th scope="col"><?= _("VALUE") ?></th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($assoc_csv as $key => $data): ?>
         <tr>
-            <th scope="col"><?= _("FIELD") ?></th>
-            <th scope="col"><?= _("VALUE") ?></th>
+            <th scope="row"><?= _($key) ?></th>
+            <td><?= htmlspecialchars($data) ?></td>
         </tr>
-        </thead>
-        <tbody>
-        <?php foreach ($assoc_csv as $key => $data): ?>
-            <tr>
-                <th scope="row"><?= _($key) ?></th>
-                <td><?= htmlspecialchars($data) ?></td>
-            </tr>
-        <?php endforeach ?>
-        </tbody>
-    </table>
-    <div class="row mb-3">
-        <div class="col">
-            <form method="post">
-                <input type="hidden" name="search_sources" value="<?= $search_sources ?>"/>
-                <input type="hidden" name="uploadedfile_name" value="<?= $the_file ?>"/>
-                <input type="hidden" name="task" value="upload">
-                <p><?= _("Confirm the data is correct, or press cancel to return to the previous page.") ?></p>
-                <button class="btn btn-primary" type="submit"><?= _("Import") ?></button>
-                <a class="btn btn-danger" href="A2B_import_card.php"><?= _("Cancel") ?></a>
-            </form>
-        </div>
+    <?php endforeach ?>
+    </tbody>
+</table>
+<div class="row mb-3">
+    <div class="col">
+        <form method="post">
+            <input type="hidden" name="search_sources" value="<?= $search_sources ?>"/>
+            <input type="hidden" name="uploadedfile_name" value="<?= $the_file ?>"/>
+            <input type="hidden" name="id_cc_didgroup" value="<?= $id_cc_didgroup ?>"/>
+            <input type="hidden" name="id_cc_country" value="<?= $id_cc_country ?>"/>
+            <input type="hidden" name="task" value="upload">
+            <p><?= _("Confirm the data is correct, or press cancel to return to the previous page.") ?></p>
+            <button class="btn btn-primary" type="submit"><?= _("Import") ?></button>
+            <a class="btn btn-danger" href="A2B_import_did.php"><?= _("Cancel") ?></a>
+        </form>
     </div>
+</div>
+
+<?php elseif ($task === "upload" && $import_error === ""): ?>
+<div class="row mb-3">
+    <div class="col">
+        <p><?= sprintf(_("Success, %d new rates have been imported in %0.4f seconds."), $nb_imported, $import_time) ?></p>
+    </div>
+</div>
+<div class="row mb-3">
+    <div class="col">
+        <a class="btn btn-success" href="A2B_entity_did.php"><?= _("Continue") ?></a>
+    </div>
+</div>
 
 <?php elseif ($task === "upload"): ?>
-    <div class="row mb-3">
-        <div class="col">
-            <p><?= sprintf(_("Success, %d new cards have been imported in %0.4f seconds."), $nb_imported, $import_time) ?></p>
-        </div>
+<div class="row mb-3">
+    <div class="col">
+        <p><?= _("There were errors importing the DIDs.") ?></p>
+        <p><?= $import_error ?></p>
     </div>
-    <div class="row mb-3">
-        <div class="col">
-            <a class="btn btn-success" href="A2B_entity_card.php"><?= _("Continue") ?></a>
-        </div>
+</div>
+<div class="row mb-3">
+    <div class="col">
+        <a class="btn btn-danger" href="A2B_import_did.php"><?= _("Continue") ?></a>
     </div>
+</div>
 
 <?php else: ?>
 <form class="container align-center" id="prefs" name="prefs" enctype="multipart/form-data" method="post" action="">
     <div class="row mb-3">
         <div class="col">
-            <h5><?= _("New Cards have to be imported from a CSV file") ?></h5>
+            <h5><?= _("New rates can be imported from a CSV file") ?></h5>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-6">
+            <label class="form-label" for="id_cc_didgroup"><?= _("Choose a DID group to use") ?></label>
+            <select id="id_cc_didgroup" name="id_cc_didgroup" class="form-select" required="required">
+                <option value=""><?= _("Choose a DID group") ?></option>
+                <?php foreach ($group_list as $group): ?>
+                <option value="<?= $group["id"] ?>"<?= $group["id"] == $id_cc_didgroup ? "checked=\"checked\"" : "" ?>><?= htmlspecialchars($group["didgroupname"]) ?></option>
+                <?php endforeach ?>
+            </select>
+        </div>
+        <div class="col-6">
+            <label class="form-label" for="id_cc_country"><?= _("Choose a country to use") ?></label>
+            <select id="id_cc_country" name="id_cc_country" class="form-select">
+                <option value=""><?= _("Use rate card default") ?></option>
+                <?php foreach ($country_list as $country): ?>
+                <option value="<?= $country["id"] ?>" <?= $country["id"] == $id_cc_country ? "checked=\"checked\"" : "" ?>><?= htmlspecialchars($country["countryname"]) ?></option>
+                <?php endforeach ?>
+            </select>
         </div>
     </div>
     <div class="row mb-3">
         <div class="col">
             <label class="form-label" for="bydefault"><?= _("These fields are mandatory") ?></label>
-            <select class="form-select" multiple="multiple" size="5" disabled="disabled">
-                <option><?= _("username") ?></option>
-                <option><?= _("useralias") ?></option>
-                <option><?= _("uipass") ?></option>
-                <option><?= _("credit") ?></option>
-                <option><?= _("lastname") ?></option>
-                <option><?= _("firstname") ?></option>
-                <option><?= _("status") ?></option>
+            <select class="form-select csv-import" id="bydefault" multiple="multiple" size="5" disabled="disabled">
+                <option>did - <?= _("DID") ?></option>
+                <option>fixrate - <?= _("Monthly charge") ?></option>
             </select>
         </div>
     </div>
@@ -217,36 +256,15 @@ require_once __DIR__ . "/../templates/main.php";
     </div>
     <div class="row mb-3">
         <div class="col-5">
-            <select class="form-select" id="unselected_cols" multiple="multiple" size="10" aria-labelledby="unselected_label">
+            <select class="form-select csv-import" id="unselected_cols" multiple="multiple" size="10" aria-labelledby="unselected_label">
                 <optgroup id="unselected_label" label="<?= _("Unselected fields…") ?>">
-                    <option value="expirationdate"><?= _("expirationdate") ?></option>
-                    <option value="enableexpire"><?= _("enableexpire") ?></option>
-                    <option value="expiredays"><?= _("expiredays") ?></option>
-                    <option value="tariff"><?= _("tariff") ?></option>
-                    <option value="id_didgroup"><?= _("id_didgroup") ?></option>
-                    <option value="id_group"><?= _("id_group") ?></option>
-                    <option value="address"><?= _("address") ?></option>
-                    <option value="city"><?= _("city") ?></option>
-                    <option value="state"><?= _("state") ?></option>
-                    <option value="country"><?= _("country") ?></option>
-                    <option value="zipcode"><?= _("zipcode") ?></option>
-                    <option value="phone"><?= _("phone") ?></option>
-                    <option value="email"><?= _("email") ?></option>
-                    <option value="fax"><?= _("fax") ?></option>
-                    <option value="simultaccess"><?= _("simultaccess") ?></option>
-                    <option value="currency"><?= _("currency") ?></option>
-                    <option value="typepaid"><?= _("typepaid") ?></option>
-                    <option value="creditlimit"><?= _("creditlimit") ?></option>
-                    <option value="voipcall"><?= _("voipcall") ?></option>
-                    <option value="sip_buddy"><?= _("sip_buddy") ?></option>
-                    <option value="iax_buddy"><?= _("iax_buddy") ?></option>
-                    <option value="language"><?= _("language") ?></option>
-                    <option value="id_campaign"><?= _("id_campaign") ?></option>
-                    <option value="vat"><?= _("vat") ?></option>
-                    <option value="initialbalance"><?= _("initialbalance") ?></option>
-                    <option value="invoiceday"><?= _("invoiceday") ?></option>
-                    <option value="autorefill"><?= _("autorefill") ?></option>
-                    <option value="loginkey"><?= _("loginkey") ?></option>
+                    <option value="activated">activated - <?= _("Active (0 or 1)") ?></option>
+                    <option value="startingdate">startingdate - <?= _("Start date (Y-m-d H:m:s)") ?></option>
+                    <option value="expirationdate">expirationdate - <?= _("Expiry date (Y-m-d H:m:s)") ?></option>
+                    <option value="billingtype">billingtype - <?= _("Billing type (see sample)") ?></option>
+                    <option value="description">description - <?= _("Description") ?></option>
+                    <option value="selling_rate">selling_rate - <?= _("Per-minute charge") ?></option>
+                    <option value="connection_charge">connection_charge - <?= _("Connection charge") ?></option>
                 </optgroup>
             </select>
         </div>
@@ -261,7 +279,7 @@ require_once __DIR__ . "/../templates/main.php";
             </div>
         </div>
         <div class="col-5">
-            <select class="form-select" id="selected_cols" multiple="multiple" size="10" aria-labelledby="selected_label">
+            <select class="form-select csv-import" name="selected_cols[]" id="selected_cols" multiple="multiple" size="10" aria-labelledby="selected_label">
                 <optgroup id="selected_label" label="<?= _("Selected fields…") ?>">
                     <option value="" disabled="disabled">&nbsp;</option>
                 </optgroup>
@@ -289,10 +307,10 @@ require_once __DIR__ . "/../templates/main.php";
                 <?= _("Lines starting with a hash <code>#</code> are ignored.")?>
             </p>
             <p>
-                <a href="importsamples.php?sample=Card_Complex" target="demoframe"><?php echo _("Complex Sample");?></a> -
-                <a href="importsamples.php?sample=Card_Simple" target="demoframe"> <?php echo _("Simple Sample");?></a>
+                <a href="importsamples.php?sample=did_Complex" target="demoframe"><?php echo _("Complex Sample");?></a> -
+                <a href="importsamples.php?sample=did_Simple" target="demoframe"> <?php echo _("Simple Sample");?></a>
             </p>
-            <iframe class="w-100" height="80" name="demoframe" src="importsamples.php?sample=Card_Simple"></iframe>
+            <iframe class="w-100" height="80" name="demoframe" src="importsamples.php?sample=RateCard_Simple"></iframe>
         </div>
     </div>
     <div class="row mb-3">
@@ -308,7 +326,7 @@ require_once __DIR__ . "/../templates/main.php";
     </div>
     <div class="row">
         <div class="col">
-            <button type="submit" class="btn btn-primary"><?= _("Import customers") ?></button>
+            <button type="submit" class="btn btn-primary" id="sendtoupload"><?= _("Import DIDs") ?></button>
         </div>
     </div>
 </form>

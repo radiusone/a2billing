@@ -62,17 +62,24 @@ $ratecardSample_Complex = <<< CSV
     CSV;
 
 $didSample_Simple = <<< CSV
-    2001, 103
-    2002, 104
-    2003, 108
-    2004, 105
+    # did, fixrate
+    2001, 10
+    2002, 10
+    2003, 10
+    2004, 10
     CSV;
 
 $didSample_Complex = <<< CSV
-    200, 12, 1, 2006-07-17 19:48:07, 2031-07-17 19:48:07, 1
-    300, 12, 1, 2006-07-17 19:48:07, 2031-07-17 19:48:07, 1
-    400, 12, 1, 2006-07-17 19:48:07, 2031-07-17 19:48:07, 1
-    500, 12, 1, 2006-07-17 19:48:07, 2031-07-17 19:48:07, 1
+    # billing types:
+    # 0 - monthly fee plus per-minute fee
+    # 1 - monthly fee only
+    # 2 - per-minute fee only
+    # 3 - free
+    # did, fixrate, expirationdate, billingtype, selling_rate
+    200, 10, 2029-07-17 19:48:07, 0, 0.03
+    300, 15, 2029-07-17 19:48:07, 1, 0
+    400, 0, 2029-07-17 19:48:07, 2, 0.25
+    500, 12, 2029-07-17 19:48:07, 3, 0
     CSV;
 
 $phonebookSample_Simple = <<< CSV

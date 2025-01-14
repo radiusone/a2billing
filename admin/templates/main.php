@@ -211,7 +211,7 @@ $menu_section ??= 0;
                             <li><a class="link-dark rounded" href="A2B_entity_did.php"><?= _("Add :: Search") ?></a></li>
                             <li><a class="link-dark rounded" href="A2B_entity_didgroup.php"><?= _("Groups") ?></a></li>
                             <li><a class="link-dark rounded" href="A2B_entity_did_destination.php"><?= _("Destination") ?></a></li>
-                            <li><a class="link-dark rounded" href="A2B_entity_did_import.php"><?= _("Import [CSV]") ?></a></li>
+                            <li><a class="link-dark rounded" href="A2B_import_did.php"><?= _("Import") ?></a></li>
                             <li><a class="link-dark rounded" href="A2B_entity_did_use.php"><?= _("Usage") ?></a></li>
                             <li><a class="link-dark rounded" href="A2B_entity_did_billing.php"><?= _("Billing") ?></a></li>
                         </ul>
