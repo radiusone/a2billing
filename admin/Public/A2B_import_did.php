@@ -129,6 +129,8 @@ if ($task) {
     $stop_time = microtime(true);
     $import_time = $stop_time - $start_time;
 } else {
+    $id_cc_didgroup ??= 0;
+    $id_cc_country ??= 0;
     $my_max_file_size = (int)MY_MAX_FILE_SIZE_IMPORT;
 
     echo create_help(_("You can import lists of DIDs using a CSV file."));
@@ -225,8 +227,8 @@ require_once __DIR__ . "/../templates/main.php";
             <label class="form-label" for="id_cc_didgroup"><?= _("Choose a DID group to use") ?></label>
             <select id="id_cc_didgroup" name="id_cc_didgroup" class="form-select" required="required">
                 <option value=""><?= _("Choose a DID group") ?></option>
-                <?php foreach ($group_list as $group): ?>
-                <option value="<?= $group["id"] ?>"<?= $group["id"] == $id_cc_didgroup ? "checked=\"checked\"" : "" ?>><?= htmlspecialchars($group["didgroupname"]) ?></option>
+                <?php foreach ($group_list as $id => $group): ?>
+                <option value="<?= $id ?>" <?= $id == $id_cc_didgroup ? "checked=\"checked\"" : "" ?>><?= htmlspecialchars($group) ?></option>
                 <?php endforeach ?>
             </select>
         </div>
@@ -234,8 +236,8 @@ require_once __DIR__ . "/../templates/main.php";
             <label class="form-label" for="id_cc_country"><?= _("Choose a country to use") ?></label>
             <select id="id_cc_country" name="id_cc_country" class="form-select">
                 <option value=""><?= _("Use rate card default") ?></option>
-                <?php foreach ($country_list as $country): ?>
-                <option value="<?= $country["id"] ?>" <?= $country["id"] == $id_cc_country ? "checked=\"checked\"" : "" ?>><?= htmlspecialchars($country["countryname"]) ?></option>
+                <?php foreach ($country_list as $id => $country): ?>
+                <option value="<?= $id ?>" <?= $id == $id_cc_country ? "checked=\"checked\"" : "" ?>><?= htmlspecialchars($country) ?></option>
                 <?php endforeach ?>
             </select>
         </div>
@@ -310,7 +312,7 @@ require_once __DIR__ . "/../templates/main.php";
                 <a href="importsamples.php?sample=did_Complex" target="demoframe"><?php echo _("Complex Sample");?></a> -
                 <a href="importsamples.php?sample=did_Simple" target="demoframe"> <?php echo _("Simple Sample");?></a>
             </p>
-            <iframe class="w-100" height="80" name="demoframe" src="importsamples.php?sample=RateCard_Simple"></iframe>
+            <iframe class="w-100" height="80" name="demoframe" src="importsamples.php?sample=did_Simple"></iframe>
         </div>
     </div>
     <div class="row mb-3">
