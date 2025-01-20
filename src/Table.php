@@ -478,7 +478,7 @@ class Table
      */
     public function addRow(ADOConnection $db, array $values, string $pk_column = "id", &$id = null): bool
     {
-        return $this->addRows($db, [$values], $pk_column, $id);
+        return $this->addRows($db, [$values], $pk_column, $id) === 1;
     }
 
     /**
@@ -490,9 +490,9 @@ class Table
      * @param array<array<string,mixed>> $rows
      * @param string $pk_column
      * @param null $id
-     * @return bool
+     * @return int
      */
-    public function addRows(ADOConnection $db, array $rows, string $pk_column = "id", &$id = null): bool
+    public function addRows(ADOConnection $db, array $rows, string $pk_column = "id", &$id = null): int
     {
         $values = $rows[0];
         $fields = implode(
@@ -505,30 +505,28 @@ class Table
             // temporary workaround while there are still things like "now()" in value lists
             if (is_null($v)) {
                 $v = "NULL";
-            } elseif ($this->quote_identifier($v) !== $v) {
-                $parameters[] = $v;
+            } elseif ($this->quote_identifier($v) !== trim("$v")) {
+                $parameters[] = trim("$v");
                 $v = "?";
             }
 
-            return $v;
+            return trim("$v");
         };
-        $parameters = [];
-        $placeholders = implode(",", array_map($value_callback, $values));
 
-        $query = "INSERT INTO $table ($fields) VALUES ($placeholders)";
-        $statement = $db->Prepare($query);
-
+        $counter = 0;
         foreach ($rows as $values) {
             $parameters = [];
-            array_map($value_callback, $values);
-            $result = $db->Execute($statement, $parameters);
+            $placeholders = implode(",", array_map($value_callback, $values));
+            $query = "INSERT INTO $table ($fields) VALUES ($placeholders)";
+            $result = $db->Execute($query, $parameters);
             if ($result === false) {
-                return false;
+                return $counter;
             }
             $id = $db->Insert_ID($this->table, $pk_column);
+            $counter++;
         }
 
-        return true;
+        return $counter;
     }
 
     /**
@@ -605,13 +603,13 @@ class Table
                 $v = $v[0];
             } elseif (is_null($v)) {
                 $v = "NULL";
-            } elseif ($this->quote_identifier($v) !== $v) {
+            } elseif ($this->quote_identifier($v) !== trim("$v")) {
                 // temporary workaround while there are still things like "now()" in value lists
-                $parameters[] = $v;
+                $parameters[] = trim("$v");
                 $v = "?";
             }
 
-            return $v;
+            return trim("$v");
         };
 
         $parameters = [];
@@ -674,13 +672,13 @@ class Table
 
         $params = array_filter(
             array_values($conditions),
-            fn ($v) => $this->quote_identifier($v) !== $v
+            fn ($v) => $this->quote_identifier($v) !== trim("$v")
         );
         $where = count($conditions) > 0
             ? array_kv(
                 $conditions,
                 [$this, "quote_identifier"],
-                fn ($v) => $this->quote_identifier($v) === $v ? $v : "?",
+                fn ($v) => $this->quote_identifier($v) === trim("$v") ? trim("$v") : "?",
                 " = ",
                 " AND "
             )
@@ -806,12 +804,12 @@ class Table
                 $operator = "IS NOT";
             }
             $placeholder = "NULL";
-        } elseif ($this->quote_identifier("$value") === "$value") {
+        } elseif ($this->quote_identifier("$value") === trim("$value")) {
             // something like a column name passed as RHS
-            $placeholder = $value;
+            $placeholder = trim("$value");
         } else {
             $placeholder = "?";
-            $params[] = $value;
+            $params[] = trim("$value");
         }
 
         return " $col $operator $placeholder ";

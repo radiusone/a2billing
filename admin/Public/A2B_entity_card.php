@@ -154,7 +154,7 @@ if ($batchupdate == 1 && count($check)) {
     } else {
         $update_msg = _('The batch update has been successfully perform!');
         if (!empty($refill_cards)) {
-            if (!(new Table("cc_logrefill"))->addRows($HD_Form->DBHandle, $refill_cards)) {
+            if ((new Table("cc_logrefill"))->addRows($HD_Form->DBHandle, $refill_cards) === 0) {
                 $update_msg = _('Could not perform refill log for the batch update!');
             }
         }
