@@ -117,7 +117,6 @@ $HD_Form->AddEditTextarea(
     "product_name",
     "",
     ["rows" => 4],
-    null,
     _("Enter the name of the product wich is subscribed")
 );
 

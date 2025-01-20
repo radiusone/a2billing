@@ -855,8 +855,9 @@ class FormHandler
      * @param string $fieldname The form input name
      * @param string $form_text_bottom Text to display below the form input
      * @param array $html_attributes HTML attributes for the input
-     * @param callable<string>|null $validator A validation method that returns true or an error message
      * @param string $error_message A message to show if validation fails
+     * @param string $default_value When adding (not editing) the value of the input
+     * @param callable<string>|null $validator A validation method that returns true or an error message
      * @param string $section_name If provided, added as a row above the input
      * @return void
      */
@@ -865,8 +866,9 @@ class FormHandler
         string $fieldname,
         string $form_text_bottom = "",
         array $html_attributes = [],
-        ?callable $validator = null,
         string $error_message = "",
+        string $default_value = "",
+        ?callable $validator = null,
         string $section_name = ""
     ): void
     {
@@ -880,6 +882,7 @@ class FormHandler
             "validator" => $validator,
             "error" => $error_message,
             "validation_err" => true,
+            "default" => $default_value,
         ];
     }
 

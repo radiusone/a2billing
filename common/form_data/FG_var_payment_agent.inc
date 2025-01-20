@@ -130,7 +130,6 @@ if (has_rights (Admin::ACX_MODIFY_PAYMENTS)) {
         "description",
         "",
         ["rows" => 4],
-        null,
         _("Insert the description")
     );
 

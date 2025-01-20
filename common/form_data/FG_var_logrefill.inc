@@ -131,7 +131,6 @@ if (has_rights (Admin::ACX_MODIFY_REFILLS)) {
         "description",
         "",
         ["rows" => 4],
-        null,
         _("Insert the description")
     );
 

@@ -354,7 +354,6 @@ if (TRAFFIC_TARGET_ENABLE)  {
         "traffic_target",
         "",
         ["rows" => 4],
-        null,
         gettext("Insert the target traffic description")
     );
     $traffic_target_editFG = "traffic_target,";

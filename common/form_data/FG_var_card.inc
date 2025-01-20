@@ -867,7 +867,6 @@ if ($popup_select) {
         "traffic_target",
         "",
         ["rows" => 4],
-        null,
         _("Insert the target traffic description")
     );
 

@@ -78,7 +78,7 @@ use DateTime;
                 class="form-control <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
                 name="<?= $row["name"] ?>"
                 <?= array_html_attr($row["attributes"]) ?>
-            ><?= $processed[$row["name"]] ?? "" ?></textarea>
+            ><?= $processed[$row["name"]] ?? $row["default"] ?? "" ?></textarea>
         <?php break ?>
 
     <?php case "SELECT": ?>

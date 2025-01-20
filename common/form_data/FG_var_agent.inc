@@ -331,7 +331,6 @@ if ($popup_select) {
         "bank_info",
         "",
         ["rows" => 4],
-        null,
         _("Insert the bank info of this agent")
     );
 

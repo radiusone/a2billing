@@ -183,7 +183,7 @@ $HD_Form->AddEditTextarea(
     _("DESCRIPTION"),
     "config_description",
     _("Insert the Description"),
-    array_merge(["rows" => 5], $readonly),
+    array_merge(["rows" => 5], $readonly)
 );
 
 $HD_Form->FG_INTRO_TEXT_EDITION = "";

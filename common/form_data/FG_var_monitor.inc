@@ -85,7 +85,6 @@ $HD_Form->AddEditTextarea(
     "description",
     "",
     ["rows" => 2],
-    null,
     _("Insert the description")
 );
 
@@ -111,7 +110,6 @@ $HD_Form->AddEditTextarea(
     "query",
     sprintf(_("Shell scripts need to be copied into the directory %s."), A2Billing::SCRIPT_CONFIG_DIR) . "<br>" . _("Do not specify the path here."),
     ["rows" => 4],
-    null,
     _("Insert the description")
 );
 

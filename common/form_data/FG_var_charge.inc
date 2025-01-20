@@ -125,7 +125,6 @@ $HD_Form_c->AddEditTextarea(
     "description",
     "",
     ["rows" => 4],
-    null,
     _("Insert the description")
 );
 
