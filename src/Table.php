@@ -623,22 +623,6 @@ class Table
     }
 
     /**
-     * @deprecated 3.0 Use Table::updateRow()
-     */
-    public function Update_table(ADOConnection $DBHandle, string $param_update, string $clause, ?string $func_table = "")
-    {
-
-        if (!empty($func_table)) {
-            $this->table = $func_table;
-        }
-
-        $QUERY = "UPDATE " . $this->table . " SET " . trim($param_update) . " WHERE " . trim($clause);
-        $res = $this->ExecuteQuery($DBHandle, $QUERY);
-
-        return($res);
-    }
-
-    /**
      * Delete a row with a proper parameterized statement
      *
      * @param ADOConnection $db

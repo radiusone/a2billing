@@ -63,12 +63,12 @@ getpost_ifset(array("id_cc_card", "cardnumber", "useralias"));
 if ( (isset ($id_cc_card) && (is_numeric($id_cc_card)  != "")) && ( $form_action == "add_sip" || $form_action == "add_iax") ) {
 
     if ($form_action == "add_sip") {
-        $friend_param_update=" sip_buddy='1' ";
+        $friend_param_update=["sip_buddy" => 1];
         if (!USE_REALTIME) {
             $key = "sip_changed";
         }
     } else {
-        $friend_param_update=" iax_buddy='1' ";
+        $friend_param_update=["iax_buddy" => 1];
         if (!USE_REALTIME) {
             $key = "iax_changed";
         }
@@ -80,7 +80,7 @@ if ( (isset ($id_cc_card) && (is_numeric($id_cc_card)  != "")) && ( $form_action
     }
 
     $instance_table_friend = new Table('cc_card');
-    $instance_table_friend -> Update_table ($HD_Form -> DBHandle, $friend_param_update, "id='$id_cc_card'", $func_table = null);
+    $instance_table_friend->updateRow($HD_Form -> DBHandle, $friend_param_update, ["id" => $id_cc_card]);
 
     if ( $form_action == "add_sip" ) {
         $TABLE_BUDDY = 'cc_sip_buddies';

@@ -299,10 +299,10 @@ $id = $customer_info[0];
 if ($id > 0) {
     $addcredit = $transaction_data[0][2];
     $instance_table = new Table("cc_agent", "");
-    $param_update .= " credit = credit + '".$amount_without_vat."'";
-    $FG_EDITION_CLAUSE = " id='$id'";
-    $instance_table -> Update_table ($DBHandle, $param_update, $FG_EDITION_CLAUSE, $func_table = null);
-    write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."-transactionID=$transactionID"." Update_table cc_card : $param_update - CLAUSE : $FG_EDITION_CLAUSE");
+    $param_update = ["credit" => ["credit + ?", $amount_without_vat]];
+    $FG_EDITION_CLAUSE = ["id" => $id];
+    $instance_table->updateRow($DBHandle, $param_update, $FG_EDITION_CLAUSE);
+    write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."-transactionID=$transactionID"." Update_table cc_card : " . json_encode($param_update) ." - CLAUSE : " . json_encode($FG_EDITION_CLAUSE));
 
     $field_insert = "date, credit, agent_id, description";
     $value_insert = "'$nowDate', '".$amount_without_vat."', '$id', '".$transaction_data[0][4]."'";

@@ -341,11 +341,11 @@ for ($page = 0; $page < $nbpagemax; $page++) {
             }
 
             if (!empty($last_invoice)) {
-                $param_update_billing = "id_invoice = '".$last_invoice."'";
-                $clause_update_billing = " id= ".$id_billing;
-                $billing_table ->Update_table($A2B->DBHandle,$param_update_billing,$clause_update_billing);
+                $param_update_billing = ["id_invoice" => $last_invoice];
+                $clause_update_billing = ["id" => $id_billing];
+                $billing_table->updateRow($A2B->DBHandle,$param_update_billing,$clause_update_billing);
                 if ($verbose_level >= 2)
-                    echo "\n Update Billing :> " . $param_update_billing . " WHERE " . $clause_update_billing;
+                    echo "\n Update Billing :> " . json_encode($param_update_billing) . " WHERE " . json_encode($clause_update_billing);
             }
 
             // Send a mail for invoice to pay

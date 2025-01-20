@@ -366,10 +366,10 @@ if ($id > 0) {
         #Payment not related to a Postpaid invoice
         $addcredit = $transaction_data[0][2];
         $instance_table = new Table("cc_card", "username, id");
-        $param_update .= " credit = credit+'".$amount_without_vat."'";
-        $FG_EDITION_CLAUSE = " id='$id'";
-        $instance_table -> Update_table ($DBHandle, $param_update, $FG_EDITION_CLAUSE, $func_table = null);
-        write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."-$trans_str : Update_table cc_card : $param_update - CLAUSE : $FG_EDITION_CLAUSE");
+        $param_update = ["credit" => ["credit + ?", $amount_without_vat]];
+        $FG_EDITION_CLAUSE = ["id" => $id];
+        $instance_table->updateRow($DBHandle, $param_update, $FG_EDITION_CLAUSE);
+        write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."-$trans_str : Update_table cc_card : " . json_encode($param_update) ." - CLAUSE : " . json_encode($FG_EDITION_CLAUSE));
 
         $table_transaction = new Table();
         $result_agent = $table_transaction -> SQLExec($DBHandle,"SELECT cc_card_group.id_agent FROM cc_card LEFT JOIN cc_card_group ON cc_card_group.id = cc_card.id_group WHERE cc_card.id = $id");
@@ -445,10 +445,10 @@ if ($id > 0) {
                 write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."-$trans_str : Add_table cc_agent_commission : $field_insert - VALUES $value_insert");
 
                 $table_agent = new Table('cc_agent');
-                $param_update_agent = "com_balance = com_balance + '".$commission."'";
-                $clause_update_agent = " id='".$id_agent."'";
-                $table_agent -> Update_table ($DBHandle, $param_update_agent, $clause_update_agent, $func_table = null);
-                write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."-$trans_str : Update_table cc_agent : $param_update_agent - CLAUSE : $clause_update_agent");
+                $param_update_agent = ["com_balance" => ["com_balance + ?", $commission]];
+                $clause_update_agent = ["id" => $id_agent];
+                $table_agent->updateRow($DBHandle, $param_update_agent, $clause_update_agent);
+                write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."-$trans_str : Update_table cc_agent : " . json_encode($param_update_agent) . " - CLAUSE : " . json_encode($clause_update_agent));
             }
 
         }

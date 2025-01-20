@@ -137,10 +137,10 @@ $Query = "INSERT INTO cc_payments ( customers_id, customers_name, customers_emai
 $result = $DBHandle->Execute($Query);
 
 $instance_table = new Table("cc_card", "username, id");
-$param_update = " credit = credit+'" . $amount_without_vat . "'";
-$FG_EDITION_CLAUSE = " id='$id'";
-$instance_table->Update_table($DBHandle, $param_update, $FG_EDITION_CLAUSE, $func_table = null);
-write_log($epayment_logfile, basename(__FILE__) . ' line:' . __LINE__ . "-Recurring payment" . " Update_table cc_card : $param_update - CLAUSE : $FG_EDITION_CLAUSE");
+$param_update = ["credit" => ["credit + ?", $amount_without_vat]];
+$FG_EDITION_CLAUSE = ["id" => $id];
+$instance_table->updateRow($DBHandle, $param_update, $FG_EDITION_CLAUSE);
+write_log($epayment_logfile, basename(__FILE__) . ' line:' . __LINE__ . "-Recurring payment" . " Update_table cc_card : " . json_encode($param_update) . " - CLAUSE : " . json_encode($FG_EDITION_CLAUSE));
 
 $field_insert = "date, credit, card_id, description";
 $value_insert = "'$nowDate', '" . $amount_without_vat . "', '$id', '" . gettext("Reccurring payment : automated refill") . "'";
