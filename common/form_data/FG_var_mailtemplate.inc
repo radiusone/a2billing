@@ -40,9 +40,11 @@ use A2billing\Table;
 
 Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
+getpost_ifset(["from_id"]);
 /**
  * @var string $form_action
- * @var string $popup_select
+ * @var numeric-string $popup_select
+ * @var numeric-string $from_id
  */
 
 $HD_Form = new FormHandler("cc_templatemail", _("Mail Template"));
@@ -144,25 +146,33 @@ if ((int)$popup_select >= 1) {
     $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
     $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 
-    // not sure why this was specified but disabled?
-//    $HD_Form->AddListActionButton(
-//        "A2B_entity_translate.php?form_action=ask-add&amp;id=|param|&amp;mailtype=|col0|",
-//        _("Translate"),
-//        ""
-//    );
+    $HD_Form->AddListActionButton(
+        "A2B_entity_mailtemplate.php?form_action=ask-add&amp;from_id=|param|",
+        _("Copy"),
+        ""
+    );
 }
 
 $HD_Form->search_form_enabled = true;
 $HD_Form->AddSearchSqlSelectInput(_("Select language"), "id_language", new Table("cc_iso639", ["code", "name"]),  "name");
 
-$HD_Form->AddEditSelect(_("MAIL TYPE"), "mailtype", $typemail_list);
+$source = [];
+if ($form_action === "ask-add" && !empty($from_id)) {
+    $source = (new Table("cc_templatemail"))->getRow($HD_Form->DBHandle, ["id" => $from_id]);
+}
+$HD_Form->AddEditSelect(
+    _("MAIL TYPE"),
+    "mailtype",
+    $typemail_list,
+    $source["mailtype"] ?? ""
+);
 
 $HD_Form->AddEditSqlSelect(
     _("LANGUAGE"),
     "id_language",
     new Table("cc_iso639", ["code", "name"]),
     [],
-    "",
+    $source["id_language"] ?? "en",
     [],
     "",
     [],
@@ -174,7 +184,7 @@ $HD_Form->AddEditElement(
     _("FROM EMAIL"),
     "fromemail",
     "",
-    ["maxlength" => 60],
+    array_merge(["maxlength" => 60], $source ? ["value" => $source["fromemail"]] : []),
     [Validator::class, "email"],
     _("Insert the user fromemail")
 );
@@ -183,7 +193,7 @@ $HD_Form->AddEditElement(
     _("FROM NAME"),
     "fromname",
     "",
-    ["maxlength" => 60],
+    array_merge(["maxlength" => 60], $source ? ["value" => $source["fromname"]] : []),
     null,
     _("Insert the user fromname")
 );
@@ -192,7 +202,7 @@ $HD_Form->AddEditElement(
     _("SUBJECT"),
     "subject",
     "",
-    ["maxlength" => 80],
+    array_merge(["maxlength" => 80], $source ? ["value" => $source["subject"]] : []),
     null,
     _("Insert the user subject")
 );
@@ -202,8 +212,13 @@ $HD_Form->AddEditTextarea(
     "messagetext",
     $message_text_bottom,
     ["rows" => 10],
-    null,
-    _("Insert the user subject")
+    _("Insert the user subject"),
+    $source["messagetext"] ?? ""
 );
 
 $HD_Form->FG_INTRO_TEXT_ADITION = _("Add a new mail template");
+
+if ($source) {
+    $HD_Form->FG_INTRO_TEXT_ADITION = _("Copy an existing mail template");
+    $HD_Form->FG_ADD_PAGE_SAVE_BUTTON_TEXT = _("Save Copy");
+}
