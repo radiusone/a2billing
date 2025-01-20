@@ -261,7 +261,7 @@ class Table
         $fields = implode(",", array_map([self::class, "quote_identifier"], $this->fields));
         $table = str_contains($this->table, " JOIN ") ? $this->table : $this->quote_identifier($this->table);
         $table .= " " . $this->processJoinedTables();
-        $where = $this->processWhereClauseArray($conditions, $params) ?: "1=1";
+        $where = $this->processWhereClauseArray($conditions, $params);
         $direction = strtoupper($direction) === "ASC" ? "ASC" : "DESC";
         $orderings = array_filter($order);
         if (!empty($orderings)) {
@@ -615,15 +615,7 @@ class Table
         $parameters = [];
         $table = str_contains($this->table, " JOIN ") ? $this->table : $this->quote_identifier($this->table);
         $updates = array_kv($values, [$this, "quote_identifier"], $value_callback);
-        $where = count($conditions) > 0
-            ? array_kv(
-                $conditions,
-                [$this, "quote_identifier"],
-                $value_callback,
-                " = ",
-                " AND "
-            )
-            : "1=1";
+        $where = $this->processWhereClauseArray($conditions, $parameters);
 
         $query = "UPDATE $table SET $updates WHERE $where";
 
@@ -670,19 +662,7 @@ class Table
 
         $table = str_contains($this->table, " JOIN ") ? $this->table : $this->quote_identifier($this->table);
 
-        $params = array_filter(
-            array_values($conditions),
-            fn ($v) => $this->quote_identifier($v) !== trim("$v")
-        );
-        $where = count($conditions) > 0
-            ? array_kv(
-                $conditions,
-                [$this, "quote_identifier"],
-                fn ($v) => $this->quote_identifier($v) === trim("$v") ? trim("$v") : "?",
-                " = ",
-                " AND "
-            )
-            : "1=1";
+        $where = $this->processWhereClauseArray($conditions, $params);
         $query = "DELETE FROM $table WHERE $where";
 
         return $db->Execute($query, $params) !== false;
@@ -705,6 +685,9 @@ class Table
     public function processWhereClauseArray(array $where, ?array &$params, string $operator = "AND"): string
     {
         $params ??= [];
+        if (count($where) === 0) {
+            return "1=1";
+        }
         $query_clauses = [];
         foreach ($where as $col => $data) {
             if (is_numeric($col) && is_array($data) && count($data) > 1 && $data[0] === "SUB") {
@@ -741,6 +724,8 @@ class Table
      *  - $col="mycol",$condition=["IN", ["value1", "value2"]] `mycol` IN (?, ?)
      *  - $col="mycol",$condition=["CASE", [3 => "value1", "x" => "value2"]] CASE `mycol` WHEN 3 THEN ? WHEN "x" THEN ? END
      *  - $col="mycol",$condition=["CASE", [3 => "`col2`", "else" => "value2"]] CASE `mycol` WHEN 3 THEN `col2` ELSE ? END
+     *  - $col="mycol",$condition=[">", ["othercol + ?", 12]] `mycol` > othercol + ?
+     *  - $col="mycol",$condition=["=", ["othercol"]] `mycol` = othercol
      *
      * @param string $col the column name
      * @param mixed $condition either a value or an array with operator and value
@@ -804,6 +789,11 @@ class Table
                 $operator = "IS NOT";
             }
             $placeholder = "NULL";
+        } elseif (is_array($value) && str_contains($value[0], "?")) {
+            $placeholder = $value[0];
+            $params[] = $value[1];
+        } elseif (is_array($value)) {
+            $placeholder = $value[0];
         } elseif ($this->quote_identifier("$value") === trim("$value")) {
             // something like a column name passed as RHS
             $placeholder = trim("$value");
