@@ -319,7 +319,7 @@ class A2Billing
 
         $this->DbConnect();
         $this->currencies_list = $this->get_currencies();
-        $query = "SELECT config_key, config_value, group_title, config_valuetype FROM cc_config LEFT JOIN mya2billing.cc_config_group ccg ON config_group_id = ccg.id";
+        $query = "SELECT config_key, config_value, group_title, config_valuetype FROM cc_config LEFT JOIN cc_config_group ccg ON config_group_id = ccg.id";
         $config_res = $this->DBHandle->GetAll($query);
         if ($config_res === false || $config_res === []) {
             echo 'Error : cannot load conf : load_conf_db';
