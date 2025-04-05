@@ -77,7 +77,7 @@ if (!isset($_SESSION['pr_login']) || !isset($_SESSION['pr_password']) || !isset(
         $admin_id = (int)$return["userid"];
 
         if ($return["groupid"] === "0") {
-            $rights = 33554431;
+            $rights = 4294967295;
         } else {
             $rights = $return["perms"];
         }
