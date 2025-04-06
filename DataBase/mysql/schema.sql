@@ -523,7 +523,6 @@ CREATE TABLE `cc_card_archive` (
     `invoiceday` int DEFAULT 1,
     `autorefill` int DEFAULT 0,
     `loginkey` varchar(40) DEFAULT NULL,
-    `activatedbyuser` varchar(1) NOT NULL DEFAULT 't',
     `id_timezone` int DEFAULT 0,
     `tag` varchar(50) DEFAULT NULL,
     `voicemail_permitted` int NOT NULL DEFAULT 0,
