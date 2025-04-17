@@ -105,7 +105,6 @@ if ($popup_select) {
 	$HD_Form->AddListValue(_("ID"), "id")
         ->AddListValue(_("DATE"), "datecreation")
         ->AddListValue(_("LOGIN"), "login")
-        ->AddListValue(_("PASSWORD"), "pwd_encoded")
         ->AddListValue(_("FIRST NAME"), "firstname")
         ->AddListValue(_("LAST NAME"), "lastname")
         ->AddListValue(_("CREDIT"), "credit", "get_money")
@@ -136,8 +135,9 @@ if ($popup_select) {
     $HD_Form->AddEditElement(
         _("PASSWORD"),
         "pwd_encoded",
-        _("Insert a new password to overwrite the old one"),
+        $form_action === "ask-edit" ? _("Enter a new password or leave blank to keep the old one") : _("Enter a new password"),
         ["maxlength" => 32],
+        $form_action === "ask-edit" ? [Validator::class, "min8CharsOptional"] : [Validator::class, "min8Chars"]
     );
 
     $HD_Form->AddEditSelect(

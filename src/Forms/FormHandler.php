@@ -454,8 +454,12 @@ class FormHandler
                 $this->_processed[$key] = $value;
                 // this is hashing admin and agent passwords on save
                 // todo: make this a property of the input component or something
-                if ($key === "pwd_encoded" && !empty($value)) {
-                    $this->_processed[$key] = password_hash($this->_processed[$key], PASSWORD_DEFAULT);
+                if ($key === "pwd_encoded") {
+                    if (!empty($value)) {
+                        $this->_processed["pwd_encoded"] = password_hash($this->_processed[$key], PASSWORD_DEFAULT);
+                    } else {
+                        unset($this->_processed["pwd_encoded"]);
+                    }
                 }
             }
         }
@@ -1543,7 +1547,7 @@ class FormHandler
         foreach ($this->FG_EDIT_FORM_ELEMENTS as &$row) {
             $field = $row["name"] ?? "";
             $attr = $row["attributes"] ?? [];
-            if (empty($field) || array_key_exists("disabled", $attr)) {
+            if (empty($field) || array_key_exists("disabled", $attr) || !array_key_exists($field, $processed)) {
                 continue;
             }
 

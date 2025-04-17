@@ -228,6 +228,16 @@ class Validator
     }
 
     /**
+     * @param string $value
+     * @return bool|string
+     */
+    public static function min8CharsOptional(string $value)
+    {
+        return $value === "" || strlen($value) >= 8
+            ?: sprintf(_("(must be at least %d characters)"), 8);
+    }
+
+    /**
      * validate_field 18
      *
      * @param string $value

@@ -103,10 +103,9 @@ $HD_Form->AddEditElement(
 $HD_Form->AddEditElement(
     _("PASSWORD"),
     "pwd_encoded",
-    "",
-    ["maxlength" => 30],
-    [Validator::class, "min8Chars"],
-    _("Insert the Reseller password")
+    $form_action === "ask-edit" ? _("Enter a new password or leave blank to keep the old one") : _("Enter a new password"),
+    ["maxlength" => 32],
+    $form_action === "ask-edit" ? [Validator::class, "min8CharsOptional"] : [Validator::class, "min8Chars"]
 );
 
 if ($subadmin) {
