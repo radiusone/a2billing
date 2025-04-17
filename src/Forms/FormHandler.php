@@ -342,9 +342,11 @@ class FormHandler
      */
     public function __construct(string $tablename, string $instance_name, string $primary_key = "id", array $joins = [])
     {
-        Console::log('Construct FormHandler');
-        Console::logMemory($this, 'FormHandler Class : Line ' . __LINE__);
-        Console::logSpeed('FormHandler Class : Line ' . __LINE__);
+        if (class_exists(Console::class)) {
+            Console::log('Construct FormHandler');
+            Console::logMemory($this, 'FormHandler Class : Line ' . __LINE__);
+            Console::logSpeed('FormHandler Class : Line ' . __LINE__);
+        }
         self::$Instance = $this;
         $this->FG_QUERY_TABLE_NAME = $tablename;
         $this->FG_INSTANCE_NAME = $instance_name;
@@ -426,9 +428,11 @@ class FormHandler
 
         $processed = $this->getProcessed();
 
-        Console::log('FormHandler -> init');
-        Console::logMemory(false, 'FormHandler -> init : Line ' . __LINE__);
-        Console::logSpeed('FormHandler -> init : Line ' . __LINE__);
+        if (class_exists(Console::class)) {
+            Console::log('FormHandler -> init');
+            Console::logMemory(false, 'FormHandler -> init : Line ' . __LINE__);
+            Console::logSpeed('FormHandler -> init : Line ' . __LINE__);
+        }
 
         $qs = array_filter(
             ["current_page" => $processed["current_page"] ?? null, "order" => $processed["order"] ?? null, "sens" => $processed["sens"] ?? null],
@@ -1831,7 +1835,9 @@ class FormHandler
 
     public function create_search_form(bool $full_modal = false, bool $with_hide_button = true)
     {
-        Console::logSpeed('Time taken to get to line ' . __LINE__);
+        if (class_exists(Console::class)) {
+            Console::logSpeed('Time taken to get to line ' . __LINE__);
+        }
         $processed = $this->getProcessed();
 
         echo new SearchForm($this, $processed, $full_modal, $with_hide_button);
@@ -1861,7 +1867,9 @@ class FormHandler
      */
     public function create_form(string $form_action, array $list)
     {
-        Console::logSpeed('Time taken to get to line ' . __LINE__);
+        if (class_exists(Console::class)) {
+            Console::logSpeed('Time taken to get to line ' . __LINE__);
+        }
         $processed = $this->getProcessed();
 
         // passed by javascript functions for add-content and del-content

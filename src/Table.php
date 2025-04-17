@@ -5,7 +5,7 @@ namespace A2billing;
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 use ADOConnection;
-use Profiler_Console;
+use Profiler_Console as Console;
 
 /**
  * This file is part of A2Billing (http://www.a2billing.net/)
@@ -56,15 +56,6 @@ class Table
     public ?string $table = null;
     public array $joins = [];
     public string $errstr = '';
-    public bool $debug_st = false;
-    public int $debug_st_stop = 0;
-    public string $start_message_debug = "<table style=\"float : left;\"><tr><td>QUERY: \n";
-    public string $end_message_debug = "\n</td></tr></table><br><br><br>";
-    public float $alert_query_time = 0.1;
-    public int $alert_query_long_time = 2;
-
-    public bool $writelog = false;
-
     public array $FK_TABLES = [];
     public ?array $FK_EDITION_CLAUSE = null;
     // FALSE if you want to delete the dependent Records, TRUE if you want to update
@@ -81,7 +72,6 @@ class Table
      */
     public function __construct(string $table = null, $list_fields = "*", array $joins = [])
     {
-        $this->writelog = defined('WRITELOG_QUERY') && WRITELOG_QUERY;
         $this->table = $table;
         if (is_string($list_fields)) {
             $list_fields = explode(",", $list_fields);
@@ -173,49 +163,22 @@ class Table
      */
     public function ExecuteQuery(ADOConnection $DBHandle, string $QUERY, int $cache = 0)
     {
-        global $A2B;
-
-        $time_start = microtime(true);
-
         if ($this->db_type === 'postgres') {
             // convert MySQLisms to be Postgres compatible
             $mytopg = new MytoPg(0); // debug level 0 logs only >30ms CPU hogs
             $mytopg->My_to_Pg($QUERY);
         }
 
-        if ($this->debug_st) {
-            echo $this->start_message_debug . $QUERY . $this->end_message_debug;
-        }
         if ($cache > 0) {
             $res = $DBHandle->CacheExecute($cache, $QUERY);
         } else {
-            Profiler_Console::logQuery($QUERY);
+            class_exists(Console::class) && Console::logQuery($QUERY);
             $res = $DBHandle->Execute($QUERY);
-            Profiler_Console::logQuery($QUERY);
+            class_exists(Console::class) && Console::logQuery($QUERY);
         }
 
         if ($DBHandle->ErrorNo() != 0) {
             $this->errstr = $DBHandle->ErrorMsg();
-            if ($this->debug_st) {
-                echo $DBHandle->ErrorMsg();
-            }
-            if ($this->debug_st_stop) {
-                exit;
-            }
-        }
-
-        if ($this->writelog) {
-            $time_end = microtime(true);
-            $time = $time_end - $time_start;
-            if ($time > $this->alert_query_time) {
-                if ($time > $this->alert_query_long_time) {
-                    $A2B->debug(A2Billing::WARN, "EXTRA_TOOLONG_DB_QUERY - RUNNING TIME = $time");
-                }
-                else {
-                    $A2B->debug(A2Billing::WARN, "TOOLONG_DB_QUERY - RUNNING TIME = $time");
-                }
-            }
-            $A2B->debug(A2Billing::DEBUG, "Running time=$time - QUERY=\n$QUERY\n");
         }
 
         return $res;
@@ -281,8 +244,11 @@ class Table
         $offset_sql = $offset ? "OFFSET $offset" : "";
 
         $query = "SELECT $fields FROM $table WHERE $where $group_sql $order_sql $limit_sql $offset_sql";
+        class_exists(Console::class) && Console::logQuery($query);
+        $result = $db->GetArray($query, $params) ?: [];
+        class_exists(Console::class) && Console::logQuery($query);
 
-        return $db->GetArray($query, $params) ?: [];
+        return $result;
     }
 
     /**
@@ -435,6 +401,7 @@ class Table
         $this->fields = ["COUNT(*)"];
         if (count($groupby)) {
             $data = $this->getRows($db, $conditions, [], "ASC", $groupby);
+
             return count($data);
         }
         $data = $this->getRow($db, $conditions);
@@ -518,7 +485,9 @@ class Table
             $parameters = [];
             $placeholders = implode(",", array_map($value_callback, $values));
             $query = "INSERT INTO $table ($fields) VALUES ($placeholders)";
+            class_exists(Console::class) && Console::logQuery($query);
             $result = $db->Execute($query, $parameters);
+            class_exists(Console::class) && Console::logQuery($query);
             if ($result === false) {
                 return $counter;
             }
@@ -544,7 +513,9 @@ class Table
         $source_table = $this->quote_identifier($source->table);
         $where = $this->processWhereClauseArray($conditions, $params);
         $query = "INSERT INTO $table SELECT $source_fields FROM $source_table $where";
+        class_exists(Console::class) && Console::logQuery($query);
         $result = $db->Execute($query, $params);
+        class_exists(Console::class) && Console::logQuery($query);
 
         return $result ? $db->Affected_Rows() : 0;
     }
@@ -574,13 +545,7 @@ class Table
 
         // Fix that , make PEAR complaint
         if (!empty($id_name)) {
-            $insertid = $DBHandle->Insert_ID($this->table, $id_name);
-
-            if ($this->debug_st) {
-                echo "\n <br> insert_id = $insertid";
-            }
-
-            return $insertid;
+            return $DBHandle->Insert_ID($this->table, $id_name);
         }
 
         return true;
@@ -618,8 +583,11 @@ class Table
         $where = $this->processWhereClauseArray($conditions, $parameters);
 
         $query = "UPDATE $table SET $updates WHERE $where";
+        class_exists(Console::class) && Console::logQuery($query);
+        $result = $db->Execute($query, $parameters);
+        class_exists(Console::class) && Console::logQuery($query);
 
-        return $db->Execute($query, $parameters) !== false;
+        return $result !== false;
     }
 
     /**
@@ -648,8 +616,11 @@ class Table
 
         $where = $this->processWhereClauseArray($conditions, $params);
         $query = "DELETE FROM $table WHERE $where";
+        class_exists(Console::class) && Console::logQuery($query);
+        $result = $db->Execute($query, $params);
+        class_exists(Console::class) && Console::logQuery($query);
 
-        return $db->Execute($query, $params) !== false;
+        return $result !== false;
     }
 
     /**
