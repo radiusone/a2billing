@@ -156,7 +156,7 @@
 	{/if}
 		<ul>
 			<li><ul>
-					<li><a href="call-log-customers.php?nodisplay=1&posted=1&section=6">{_("CDR Report")}</a></li>
+					<li><a href="A2B_report_calls.php?section=6">{_("CDR Report")}</a></li>
 					<li><a href="call-last-month.php?section=6">{_("Monthly Traffic")}</a></li>
 			</ul></li>
 		</ul>

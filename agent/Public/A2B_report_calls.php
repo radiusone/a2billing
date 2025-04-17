@@ -1,9 +1,7 @@
 <?php
 
-use A2billing\Admin;
-use A2billing\Customer;
+use A2billing\Agent;
 use A2billing\Forms\FormHandler;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -36,61 +34,31 @@ use A2billing\Table;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
-**/
+ **/
 
-$menu_section = 5;
-require_once __DIR__ . "/../../common/lib/admin.defines.php";
+$menu_section = 6;
+require_once __DIR__ . "/../../common/lib/agent.defines.php";
 require_once __DIR__ . "/../../common/form_data/report_calls.inc";
 /**
  * @var FormHandler $HD_Form
+ * @var Smarty $smarty
  */
 
-Admin::checkPageAccess(Admin::ACX_CALL_REPORT);
-
-getpost_ifset (["download", "file"]);
-/**
- * @var string $download
- * @var string $file
- */
-
-if (($download ?? "") === "file" && !empty($file)) {
-
-    $value_de = base64_decode($file);
-    if (str_contains($file, '/') || $value_de === false || str_contains($value_de, '..')) {
-        exit;
-    }
-
-    $dl_full = MONITOR_PATH . "/" . $value_de;
-
-    if (!is_readable($dl_full)) {
-        echo _("ERROR: Cannot download file $dl_full, it does not exist.");
-        exit ();
-    }
-
-    header("Content-Type: application/octet-stream");
-    header("Content-Disposition: attachment; filename=$value_de");
-    header("Content-Length: " . filesize($dl_full));
-    header("Accept-Ranges: bytes");
-    header("Pragma: no-cache");
-    header("Expires: 0");
-    header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-    header("Content-transfer-encoding: binary");
-
-    readfile($dl_full);
-    exit ();
-}
+Agent::checkPageAccess(Agent::ACX_CALL_REPORT);
 
 $HD_Form->init();
 
 $form_action ??= "list";
+$HD_Form->prepare_list_subselection("list");
 
 $list = $HD_Form->perform_action($form_action);
 
-require_once __DIR__ . "/../templates/main.php";
+$smarty->display( "main.tpl");
 
 $HD_Form->create_search_form();
+
 $HD_Form->create_toppage($form_action);
 $HD_Form->create_form("list", $list);
 
 require_once __DIR__ . "/../../common/page_modules/call_graph.php";
-require_once __DIR__ . "/../templates/footer.php";
+$smarty->display( "footer.tpl");
