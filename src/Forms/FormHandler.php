@@ -1393,6 +1393,9 @@ class FormHandler
             }
             foreach ($el["input"] as $i => $input) {
                 $input = str_replace("^^", ".", $input);
+                if (!isset($processed[$input])) {
+                    continue;
+                }
                 $search[$input] = $processed[$input];
                 if (!empty($el["operator"][$i])) {
                     $search[$el["operator"][$i]] = $processed[$el["operator"][$i]];
