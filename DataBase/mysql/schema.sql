@@ -17,7 +17,7 @@ CREATE TABLE `cc_agent` (
     `datecreation` datetime NOT NULL DEFAULT current_timestamp(),
     `active` varchar(1) NOT NULL DEFAULT 'f',
     `login` varchar(20) NOT NULL,
-    `passwd` varchar(40) DEFAULT NULL,
+    `pwd_encoded` varchar(250) NOT NULL,
     `location` text DEFAULT NULL,
     `language` varchar(5) DEFAULT 'en',
     `id_tariffgroup` bigint DEFAULT NULL,

@@ -118,22 +118,22 @@ function login (?string $user, ?string $pass)
     }
 
     $DBHandle = DbConnect();
-    $table = new Table("cc_agent", ["id", "perms", "active", "currency", "vat", "passwd"]);
+    $table = new Table("cc_agent", ["id", "perms", "active", "currency", "vat", "pwd_encoded"]);
     $row = $table->getRow($DBHandle, ["login" => $user]);
 
     if ($row) {
         if ($row["active"] !== "t" && $row["active"] !== "1") {
             return false;
         }
-        if (password_verify($pass, $row["passwd"])) {
+        if (password_verify($pass, $row["pwd_encoded"])) {
             return $row;
         }
         // fallback to legacy authentication
         $filterpass = filter_var($pass, FILTER_SANITIZE_STRING);
-        if (hash('whirlpool', $filterpass) === $row["passwd"]) {
+        if (hash('whirlpool', $filterpass) === $row["pwd_encoded"] || $filterpass === $row["pwd_encoded"]) {
             $table->updateRow(
                 $DBHandle,
-                ["passwd" => password_hash($pass, PASSWORD_DEFAULT)],
+                ["pwd_encoded" => password_hash($pass, PASSWORD_DEFAULT)],
                 ["login" => $user]
             );
             return $row;

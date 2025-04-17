@@ -87,3 +87,6 @@ ALTER TABLE cc_voucher CHANGE COLUMN credit credit decimal(15,5) NOT NULL DEFAUL
 -- setting to show/hide invalid rates
 INSERT INTO cc_config (`config_title`, `config_key`, `config_value`, `config_description`, `config_valuetype`, `config_listvalues`, `config_group_id`)
     VALUES ('Hide Expired Rates','hide_expired_rates','0','Hide expired and future rates when viewing the rate list',1,'yes,no', (SELECT id FROM cc_config_group WHERE group_title = 'webui'));
+
+-- update password field
+ALTER TABLE cc_agent CHANGE COLUMN `passwd` `pwd_encoded` varchar(250) NOT NULL;

@@ -51,10 +51,10 @@ $DBHandle  = DbConnect();
 if ($form_action=="ask-modif") {
 
     $instance_sub_table = new Table('cc_agent', "id");
-    $check_old_pwd = "id = '".$_SESSION["agent_id"]."' AND passwd = '$OldPassword'";
+    $check_old_pwd = "id = '".$_SESSION["agent_id"]."'";
     $result_check=$instance_sub_table -> get_list ($DBHandle, $check_old_pwd);
-    if (is_array($result_check)) {
-        $QUERY = "UPDATE cc_agent SET passwd= '".$NewPassword."' WHERE ( ID = ".$_SESSION["agent_id"]."  ) ";
+    if (is_array($result_check) && password_verify($OldPassword, $result_check["pwd_encoded"])) {
+        $QUERY = "UPDATE cc_agent SET pwd_encoded= '".password_hash($NewPassword, PASSWORD_DEFAULT)."' WHERE ( ID = ".$_SESSION["agent_id"]."  ) ";
         $result = $instance_sub_table -> SQLExec ($DBHandle, $QUERY, 0);
     }
 }
