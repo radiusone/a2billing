@@ -136,10 +136,8 @@ if ($popup_select) {
     $HD_Form->AddEditElement(
         _("PASSWORD"),
         "pwd_encoded",
-        "",
-        ["maxlength" => 15],
-        [Validator::class, "min4Chars"],
-        _("Insert the new password to overwrite the old one")
+        _("Insert a new password to overwrite the old one"),
+        ["maxlength" => 32],
     );
 
     $HD_Form->AddEditSelect(
