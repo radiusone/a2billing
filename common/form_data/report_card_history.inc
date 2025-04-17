@@ -29,7 +29,7 @@ $HD_Form->search_delete_enabled = false;
 $HD_Form->search_session_key = 'card_history_selection';
 $HD_Form->search_form_title = gettext('Define specific criteria to search for card history');
 
-if (!is_customer()) {
+if (is_admin()) {
     $HD_Form->AddSearchPopupInput(_("Enter the customer ID"), "cc_card_history.id_cc_card", "A2B_entity_card.php");
 }
 $HD_Form->AddSearchDateInput(_("Date"), "cc_card_history.datecreated");

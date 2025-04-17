@@ -55,7 +55,7 @@
 				<li><a href="A2B_entity_card.php?section=1">{_("List Customers")}</a></li>
 				<li><a href="A2B_entity_callerid.php?section=1">{_("Caller-ID")}</a></li>
 				{if ($ACXCALLREPORT > 0) }
-				<li><a href="card-history.php?section=1">{_("Card History")}</a></li>
+				<li><a href="A2B_report_card_history?section=1">{_("Card History")}</a></li>
 				{/if}
 				{if ($ACXVOIPCONF > 0) }
 				<li><a href="A2B_entity_friend.php?section=1">{_("VOIP Config")}</a></li>
