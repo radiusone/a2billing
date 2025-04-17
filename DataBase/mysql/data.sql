@@ -29278,7 +29278,7 @@ ALTER TABLE `cc_ui_authen` ENABLE KEYS;
 LOCK TABLES `cc_version` WRITE;
 ALTER TABLE `cc_version` DISABLE KEYS;
 INSERT INTO `cc_version` (`version`) VALUES
-    ('3.0.0');
+    ('3.1.0');
 ALTER TABLE `cc_version` ENABLE KEYS;
 
 UNLOCK TABLES;
