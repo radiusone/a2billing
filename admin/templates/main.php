@@ -88,7 +88,7 @@ $menu_section ??= 0;
                             <li><a class="link-dark rounded" href="A2B_entity_card_group.php"><?= _("Groups") ?></a></li>
                             <li><a class="link-dark rounded" href="A2B_entity_card_seria.php"><?= _("Card series") ?></a></li>
                             <li><a class="link-dark rounded" href="A2B_entity_speeddial.php"><?= _("Speed Dial") ?></a></li>
-                            <li><a class="link-dark rounded" href="card-history.php"><?= _("History") ?></a></li>
+                            <li><a class="link-dark rounded" href="A2B_report_card_history.php"><?= _("History") ?></a></li>
                             <li><a class="link-dark rounded" href="A2B_entity_statuslog.php"><?= _("Status") ?></a></li>
                         </ul>
                     </div>
