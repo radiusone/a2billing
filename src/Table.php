@@ -472,6 +472,8 @@ class Table
             // temporary workaround while there are still things like "now()" in value lists
             if (is_null($v)) {
                 $v = "NULL";
+            } elseif (is_numeric(trim("$v")) && str_starts_with(trim("$v"), "0")) {
+                $v = "'$v'";
             } elseif ($this->quote_identifier($v) !== trim("$v")) {
                 $parameters[] = trim("$v");
                 $v = "?";
@@ -568,6 +570,8 @@ class Table
                 $v = $v[0];
             } elseif (is_null($v)) {
                 $v = "NULL";
+            } elseif (is_numeric(trim("$v")) && str_starts_with(trim("$v"), "0")) {
+                $v = "'$v'";
             } elseif ($this->quote_identifier($v) !== trim("$v")) {
                 // temporary workaround while there are still things like "now()" in value lists
                 $parameters[] = trim("$v");
