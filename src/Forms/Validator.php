@@ -29,18 +29,6 @@ class Validator
     }
 
     /**
-     * validate_field 2
-     *
-     * @param string $value
-     * @return bool|string
-     */
-    public static function end5Repeating(string $value)
-    {
-        return preg_match("/(.)\\1{4}$/", $value)
-            ?: _("(must end with 5 repeated characters)");
-    }
-
-    /**
      * validate_field 3
      *
      * @param string $value
@@ -80,18 +68,6 @@ class Validator
     }
 
     /**
-     * validate_field 6
-     *
-     * @param string $value
-     * @return bool|string
-     */
-    public static function min8Digits(string $value)
-    {
-        return preg_match("/^[0-9]{8,}$/", $value) === 1
-            ?: _("(must be a number at least 8 digits long)");
-    }
-
-    /**
      * validate_field 7
      *
      * @param string $value
@@ -119,7 +95,7 @@ class Validator
      * validate_field 9
      *
      * @param string $value
-     * @return int|string
+     * @return bool|string
      */
     public static function min1Char(string $value)
     {
@@ -175,7 +151,7 @@ class Validator
      */
     public static function asteriskExtension(string $value)
     {
-        return preg_match("/^(defaultprefix|[-,0-9]+|_(\[\\d+(-\\d+)?\]|[0-9XZN])+[.!]?)$/", $value) === 1
+        return preg_match("/^(defaultprefix|[-,0-9]+|_(\[\\d+(-\\d+)?]|[0-9XZN])+[.!]?)$/", $value) === 1
             ?: _("(must be a number, Asterisk pattern, or the special value 'defaultprefix')");
     }
 
@@ -201,18 +177,6 @@ class Validator
     {
         return preg_match("/^([01][0-9]|2[0-3]):([0-5][0-9])$/", $value) === 1
             ?: _("(must be a time in hh:mm format");
-    }
-
-    /**
-     * validate_field 16
-     *
-     * @param string $value
-     * @return bool|string
-     */
-    public static function min15Chars(string $value)
-    {
-        return strlen($value) >= 15
-            ?: sprintf(_("(must be at least %d characters)"), 15);
     }
 
     /**
