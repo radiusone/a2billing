@@ -381,42 +381,37 @@ if ($id > 0) {
             $id_agent_insert = "NULL";
         }
 
-        $field_insert = "date, credit, card_id, description, agent_id";
-        $value_insert = "'$nowDate', '".$amount_without_vat."', '$id', '".$transaction_data[0][4]."',$id_agent_insert";
-        $instance_sub_table = new Table("cc_logrefill", $field_insert);
-        $id_logrefill = $instance_sub_table -> Add_table ($DBHandle, $value_insert, null, null, 'id');
-        write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."-$trans_str : Add_table cc_logrefill : $field_insert - VALUES $value_insert");
+        $instance_sub_table = new Table("cc_logrefill");
+        $values = ["date" => $nowDate, "credit" => $amount_without_vat, "card_id" => $id, "description" => $transaction_data[0][4], "agent_id" => $id_agent_insert];
+        $instance_sub_table->addRow($DBHandle, $values, "id", $id_logrefill);
+        write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."-$trans_str : Add_table cc_logrefill : " . json_encode($values));
 
-        $field_insert = "date, payment, card_id, id_logrefill, description, agent_id";
-        $value_insert = "'$nowDate', '".$amount_paid."', '$id', '$id_logrefill', '".$transaction_data[0][4]."',$id_agent_insert ";
-        $instance_sub_table = new Table("cc_logpayment", $field_insert);
-        $id_payment = $instance_sub_table -> Add_table ($DBHandle, $value_insert, null, null,"id");
-        write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."-$trans_str : Add_table cc_logpayment : $field_insert - VALUES $value_insert");
+        $instance_sub_table = new Table("cc_logpayment");
+        $values = ["date" => $nowDate, "payment" => $amount_paid, "card_id" => $id, "id_logrefill" => $id_logrefill, "description" => $transaction_data[0][4], "agent_id" => $id_agent_insert];
+        $instance_sub_table->addRow($DBHandle, $values, "id", $id_payment);
+        write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."-$trans_str : Add_table cc_logpayment : " . json_encode($values));
 
         //ADD an INVOICE
         $reference = Invoice::generateReference();
-        $field_insert = "date, id_card, title ,reference, description, status, paid_status";
         $date = $nowDate;
         $card_id = $id;
         $title = gettext("CUSTOMER REFILL");
         $description = gettext("Invoice for refill");
-        $value_insert = " '$date' , '$card_id', '$title','$reference','$description',1,1 ";
-        $instance_table = new Table("cc_invoice", $field_insert);
-        $id_invoice = $instance_table -> Add_table ($DBHandle, $value_insert, null, null,"id");
+        $instance_table = new Table("cc_invoice");
+        $values = ["date" => $date, "id_card" => $card_id, "title" => $title, "reference" => $reference, "description" => $description, "status" => 1, "paid_status" => 1];
+        $instance_table->addRow($DBHandle, $values, "id", $id_invoice);
         //load vat of this card
         if (!empty($id_invoice)&& is_numeric($id_invoice)) {
             $amount = $amount_without_vat;
             $description = gettext("Refill ONLINE")." : ".$transaction_data[0][4];
-            $field_insert = "date, id_invoice ,price,vat, description";
-            $instance_table = new Table("cc_invoice_item", $field_insert);
-            $value_insert = " '$date' , '$id_invoice', '$amount','$VAT','$description' ";
-            $instance_table -> Add_table ($DBHandle, $value_insert, null, null,"id");
+            $instance_table = new Table("cc_invoice_item");
+            $values = ["date" => $date, "id_invoice" => $id_invoice, "price" => $amount, "vat" => $VAT, "description" => $description];
+            $instance_table->addRow($DBHandle, $values);
         }
         //link payment to this invoice
-        $table_payment_invoice = new Table("cc_invoice_payment", "*");
-        $fields = " id_invoice , id_payment";
-        $values = " $id_invoice, $id_payment	";
-        $table_payment_invoice->Add_table($DBHandle, $values, $fields);
+        $table_payment_invoice = new Table("cc_invoice_payment");
+        $values = compact("id_invoice", "id_payment");
+        $table_payment_invoice->addRow($DBHandle, $values);
         //END INVOICE
 
         // Agent commision
@@ -429,7 +424,6 @@ if ($id > 0) {
             $result_agent= $agent_table -> get_list($DBHandle, $agent_clause);
             if (is_array($result_agent) && is_numeric($result_agent[0]['commission']) && $result_agent[0]['commission']>0) {
 
-                $field_insert = "id_payment, id_card, amount,description,id_agent,commission_percent,commission_type";
                 $commission = ceil(($amount_without_vat * ($result_agent[0]['commission'])/100)*100)/100;
                 $commission_percent = $result_agent[0]['commission'];
 
@@ -439,10 +433,10 @@ if ($id > 0) {
                 $description_commission.= "\nPAYMENT AMOUNT: ".$amount_without_vat;
                 $description_commission.= "\nCOMMISSION APPLIED: ".$commission_percent;
 
-                $value_insert = "'".$id_payment."', '$id', '$commission','$description_commission','$id_agent','$commission_percent','0'";
-                $commission_table = new Table("cc_agent_commission", $field_insert);
-                $id_commission = $commission_table -> Add_table ($DBHandle, $value_insert, null, null,"id");
-                write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."-$trans_str : Add_table cc_agent_commission : $field_insert - VALUES $value_insert");
+                $commission_table = new Table("cc_agent_commission");
+                $values = ["id_payment" => $id_payment, "id_card" => $id, "amount" => $commission, "description" => $description_commission, "id_agent" => $id_agent, "commission_percent" => $commission_percent, "commission_type" => 0];
+                $commission_table->addRow($DBHandle, $values, "id", $id_commission);
+                write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."-$trans_str : Add_table cc_agent_commission : " . json_encode($values));
 
                 $table_agent = new Table('cc_agent');
                 $param_update_agent = ["com_balance" => ["com_balance + ?", $commission]];
@@ -462,11 +456,10 @@ if ($id > 0) {
             if (is_array($result_invoice) && sizeof($result_invoice)==1) {
                 $reference =$result_invoice[0][0];
 
-                $field_insert = "date, payment, card_id, description";
-                $value_insert = "'$nowDate', '".$amount_paid."', '$id', '(".$transaction_data[0][4].") ".gettext('Invoice Payment Ref: ')."$reference '";
-                $instance_sub_table = new Table("cc_logpayment", $field_insert);
-                $id_payment = $instance_sub_table -> Add_table ($DBHandle, $value_insert, null, null,"id");
-                write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."-$trans_str : Add_table cc_logpayment : $field_insert - VALUES $value_insert");
+                $instance_sub_table = new Table("cc_logpayment");
+                $values = ["date" => $nowDate, "payment" => $amount_paid, "card_id" => $id, "description" => '(' . $transaction_data[0][4] . ') ' . _('Invoice Payment Ref: ').$reference];
+                $instance_sub_table->addRow($DBHandle, $values, "id", $id_payment);
+                write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."-$trans_str : Add_table cc_logpayment : " . json_encode($values));
 
                 //update invoice to paid
                 $invoice = new Invoice($item_id);

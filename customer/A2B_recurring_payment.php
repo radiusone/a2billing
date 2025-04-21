@@ -142,44 +142,39 @@ $FG_EDITION_CLAUSE = ["id" => $id];
 $instance_table->updateRow($DBHandle, $param_update, $FG_EDITION_CLAUSE);
 write_log($epayment_logfile, basename(__FILE__) . ' line:' . __LINE__ . "-Recurring payment" . " Update_table cc_card : " . json_encode($param_update) . " - CLAUSE : " . json_encode($FG_EDITION_CLAUSE));
 
-$field_insert = "date, credit, card_id, description";
-$value_insert = "'$nowDate', '" . $amount_without_vat . "', '$id', '" . gettext("Reccurring payment : automated refill") . "'";
-$instance_sub_table = new Table("cc_logrefill", $field_insert);
-$id_logrefill = $instance_sub_table->Add_table($DBHandle, $value_insert, null, null, 'id');
-write_log($epayment_logfile, basename(__FILE__) . ' line:' . __LINE__ . "-Recurring payment" . " Add_table cc_logrefill : $field_insert - VALUES $value_insert");
+$instance_sub_table = new Table("cc_logrefill");
+$values = ["date" => $nowDate, "credit" => $amount_without_vat, "card_id" => $id, "description" => _("Reccurring payment : automated refill")];
+$instance_sub_table->addRow($DBHandle, $values, "id", $id_logrefill);
+write_log($epayment_logfile, basename(__FILE__) . ' line:' . __LINE__ . "-Recurring payment" . " Add_table cc_logrefill : " . json_encode($values));
 
-$field_insert = "date, payment, card_id, id_logrefill, description";
-$value_insert = "'$nowDate', '" . $amount_paid . "', '$id', '$id_logrefill', '" . gettext("Reccurring payment : automated refill") . "'";
-$instance_sub_table = new Table("cc_logpayment", $field_insert);
-$id_payment = $instance_sub_table->Add_table($DBHandle, $value_insert, null, null, "id");
-write_log($epayment_logfile, basename(__FILE__) . ' line:' . __LINE__ . "-Recurring payment" . " Add_table cc_logpayment : $field_insert - VALUES $value_insert");
+$instance_sub_table = new Table("cc_logpayment");
+$values = ["date" => $nowDate, "payment" => $amount_paid, "card_id" => $id, "id_logrefill" => $id_logrefill, "description" => _("Reccurring payment : automated refill")];
+$instance_sub_table->addRow($DBHandle, $values, "id", $id_payment);
+write_log($epayment_logfile, basename(__FILE__) . ' line:' . __LINE__ . "-Recurring payment" . " Add_table cc_logpayment : " . json_encode($values));
 
 //ADD an INVOICE
 $reference = Invoice::generateReference();
-$field_insert = "date, id_card, title ,reference, description,status,paid_status";
 $date = $nowDate;
 $card_id = $id;
 $title = gettext("CUSTOMER REFILL");
 $description = gettext("Invoice for refill");
-$value_insert = " '$date' , '$card_id', '$title','$reference','$description',1,1 ";
-$instance_table = new Table("cc_invoice", $field_insert);
-$id_invoice = $instance_table->Add_table($DBHandle, $value_insert, null, null, "id");
+$instance_table = new Table("cc_invoice");
+$values = ["date" => $date, "id_card" => $card_id, "title" => $title, "reference" => $reference, "description" => $description, "status" => 1, "paid_status" => 1];
+$instance_table->addRow($DBHandle, $values, "id", $id_invoice);
 
 //load vat of this card
 if (!empty ($id_invoice) && is_numeric($id_invoice)) {
     $amount = $amount_without_vat;
     $description = gettext("Automated Refill : recurring payment");
-    $field_insert = "date, id_invoice ,price,vat, description";
-    $instance_table = new Table("cc_invoice_item", $field_insert);
-    $value_insert = " '$date' , '$id_invoice', '$amount','$VAT','$description' ";
-    $instance_table->Add_table($DBHandle, $value_insert, null, null, "id");
+    $instance_table = new Table("cc_invoice_item");
+    $values = ["date" => $date, "id_invoice" => $id_invoice, "price" => $amount, "vat" => $VAT, "description" => $description];
+    $instance_table->addRow($DBHandle, $values);
 }
 
 //link payment to this invoice
-$table_payment_invoice = new Table("cc_invoice_payment", "*");
-$fields = " id_invoice , id_payment";
-$values = " $id_invoice, $id_payment	";
-$table_payment_invoice->Add_table($DBHandle, $values, $fields);
+$table_payment_invoice = new Table("cc_invoice_payment");
+$values = compact("id_invoice", $id_payment);
+$table_payment_invoice->addRow($DBHandle, $values);
 
 //END INVOICE
 //Agent commision
@@ -195,15 +190,14 @@ if (is_array($result_agent) && !is_null($result_agent[0]['id_agent']) && $result
     $result_agent = $agent_table->get_list($DBHandle, $agent_clause);
 
     if (is_array($result_agent) && is_numeric($result_agent[0]['commission']) && $result_agent[0]['commission'] > 0) {
-        $field_insert = "id_payment, id_card, amount,description,id_agent";
         $commission = ceil(($amount_paid * ($result_agent[0]['commission']) / 100) * 100) / 100;
         $description_commission = gettext("AUTOMATICALY GENERATED COMMISSION!");
         $description_commission .= "\nID CARD : " . $id;
         $description_commission .= "\nID PAYMENT : " . $id_payment;
         $description_commission .= "\nPAYMENT AMOUNT: " . $amount_paid;
         $description_commission .= "\nCOMMISSION APPLIED: " . $result_agent[0]['commission'];
-        $value_insert = "'" . $id_payment . "', '$id', '$commission','$description_commission','$id_agent'";
-        $commission_table = new Table("cc_agent_commission", $field_insert);
-        $id_commission = $commission_table->Add_table($DBHandle, $value_insert, null, null, "id");
+        $commission_table = new Table("cc_agent_commission");
+        $values = ["id_payment" => $id_payment, "id_card" => $id, "amount" => $commission, "description" => $description_commission, "id_agent" => $id_agent];
+        $commission_table->addRow($DBHandle, $values, "id", $id_commission);
     }
 }

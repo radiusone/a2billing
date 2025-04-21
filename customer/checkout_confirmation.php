@@ -105,22 +105,20 @@ $HD_Form -> init();
 $_SESSION["p_module"] = $payment;
 $_SESSION["p_amount"] = 3;
 
-$paymentTable = new Table();
+$paymentTable = new Table("cc_epayment_log");
 $time_stamp = date("Y-m-d H:i:s");
 $amount_string = sprintf("%.3F", $total_amount);
 
+$values = ["cardid" => $_SESSION["card_id"], "amount" => $amount_string, "vat" => $_SESSION["vat"], "paymentmethod" => $payment, "creationdate" => $time_stamp, "currency" => BASE_CURRENCY, "item_id" => $item_id, "item_type" => $item_type];
 if (strtoupper($payment)=='PLUGNPAY') {
-    $QUERY_FIELDS = "cardid, amount, vat, paymentmethod, cc_owner, cc_number, cc_expires, creationdate, cvv, credit_card_type, currency , item_id , item_type";
-    $QUERY_VALUES = "'".$_SESSION["card_id"]."','$amount_string', '".$_SESSION["vat"]."', '$payment','$plugnpay_cc_owner','".substr($plugnpay_cc_number,0,4)."XXXXXXXXXXXX','".$plugnpay_cc_expires_month."-".$plugnpay_cc_expires_year."','$time_stamp', '$cvv', '$credit_card_type', '".BASE_CURRENCY."' , '$item_id', '$item_type'";
+    $values += ["cc_owner" => $plugnpay_cc_owner, "cc_number" => substr($plugnpay_cc_number,0,4)."XXXXXXXXXXXX", "cc_expires" => $plugnpay_cc_expires_month."-".$plugnpay_cc_expires_year, "cvv" => $cvv, "credit_card_type" => $credit_card_type];
 } elseif (strtoupper($payment)=='IRIDIUM') {
-    $QUERY_FIELDS = "cardid, amount, vat, paymentmethod, cc_owner, cc_number, cc_expires, creationdate, currency, item_id, item_type";
-    $QUERY_VALUES = "'".$_SESSION["card_id"]."','$amount_string', '".$_SESSION["vat"]."', '$payment','$CardName','".substr($CardNumber,0,4)."XXXXXXXXXXXX','".$ExpiryDateMonth."-".$ExpiryDateYear."','$time_stamp', '".BASE_CURRENCY."' , '$item_id','$item_type'";
+    $values += ["cc_owner" => $CardName, "cc_number" => substr($CardNumber,0,4)."XXXXXXXXXXXX", "cc_expires" => $ExpiryDateMonth."-".$ExpiryDateYear];
 } else {
-    $QUERY_FIELDS = "cardid, amount, vat, paymentmethod, cc_owner, cc_number, cc_expires, creationdate, currency, item_id, item_type";
-    $QUERY_VALUES = "'".$_SESSION["card_id"]."','$amount_string', '".$_SESSION["vat"]."', '$payment','$authorizenet_cc_owner','".substr($authorizenet_cc_number,0,4)."XXXXXXXXXXXX','".$authorizenet_cc_expires_month."-".$authorizenet_cc_expires_year."','$time_stamp', '".BASE_CURRENCY."' , '$item_id','$item_type'";
+    $values += ["cc_owner" => $authorizenet_cc_owner, "cc_number" => substr($authorizenet_cc_number,0,4)."XXXXXXXXXXXX", "cc_expires" => $authorizenet_cc_expires_month."-".$authorizenet_cc_expires_year];
 }
 
-$transaction_no = $paymentTable -> Add_table($HD_Form -> DBHandle, $QUERY_VALUES, $QUERY_FIELDS, 'cc_epayment_log', 'id');
+$paymentTable->addRow($HD_Form->DBHandle, $values, "id", $transaction_no);
 
 $key = securitykey(EPAYMENT_TRANSACTION_KEY, $time_stamp."^".$transaction_no."^".$amount_string."^".$_SESSION["card_id"]."^".$item_id."^".$item_type);
 if (empty($transaction_no)) {
