@@ -57,12 +57,14 @@ $totalminutes = sprintf("%02d:%02d", intval($totalminutes / 60), $totalminutes %
         <th style="width: 10vw"></th>
         <th><?= _( "Calls" ) ?></th>
         <th><abbr title="<?= _( "Average call length" ) ?>"><?= _( "Avg" ) ?></abbr></th>
+<?php if (($basic_chart ?? false) === false): ?>
         <th><abbr title="<?= _( "Answer sieze ratio" ) ?>"><?= _( "ASR" ) ?></abbr></th>
         <th><?= _( "Sell" ) ?></th>
         <th><?= _( "Buy" ) ?></th>
         <th><?= _( "Profit" ) ?></th>
         <th><?= _( "Margin" ) ?></th>
         <th><?= _( "Markup" ) ?></th>
+<?php endif ?>
     </tr>
     </thead>
     <tbody>
@@ -75,12 +77,14 @@ $totalminutes = sprintf("%02d:%02d", intval($totalminutes / 60), $totalminutes %
             </td>
             <td><?= $data["nbcall"] ?></td>
             <td><?= get_minute(intval($data ["calltime"] / $data ["nbcall"])) ?></td>
+<?php if (($basic_chart ?? false) === false): ?>
             <td><?= get_percent($data["success_calls"] * 100 / ($data["nbcall"]) ) ?></td>
             <td><?= get_money_precise($data["sell"]) ?></td>
             <td><?= get_money_precise($data["buy"] ) ?></td>
             <td><?= get_money_precise($data["sell"] - $data["buy"]) ?></td>
             <td><?= get_percent($data["margin"]) ?></td>
             <td><?= get_percent($data["markup"]) ?></td>
+<?php endif ?>
         </tr>
     <?php endforeach ?>
     </tbody>
@@ -90,12 +94,14 @@ $totalminutes = sprintf("%02d:%02d", intval($totalminutes / 60), $totalminutes %
         <td colspan="2"><?= $totalminutes ?></td>
         <td><?= $totalcall ?></td>
         <td><?= $total_tmc ?></td>
+<?php if (($basic_chart ?? false) === false): ?>
         <td><?= get_percent($totalsuccess * 100 / $totalcall) ?></td>
         <td><?= get_money($totalsell) ?></td>
         <td><?= get_money($totalbuycost) ?></td>
         <td><?= get_money($totalsell - $totalbuycost) ?></td>
         <td><?= $totalsell ? get_percent((($totalsell - $totalbuycost) / $totalsell) * 100) : _("n/a") ?></td>
         <td><?= $totalbuycost ? get_percent((($totalsell - $totalbuycost) / $totalbuycost) * 100) : _("n/a")?></td>
+<?php endif ?>
     </tr>
     </tfoot>
 </table>
