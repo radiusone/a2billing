@@ -203,16 +203,14 @@ for ($page = 0; $page < $nbpagemax; $page++) {
             }
 
             // INSERT CUSTOMER BILLING
-            $field_insert = "id_card";
-            $value_insert = " '$card_id'";
+            $values = ["id_card" => $card_id];
             if (!empty ($start_date)) {
-                $field_insert .= ", start_date";
-                $value_insert .= ", '".$start_date."'";
+                $values["start_date"] = $start_date;
             }
-            $instance_table = new Table("cc_billing_customer", $field_insert);
-            $id_billing = $instance_table->Add_table($A2B->DBHandle, $value_insert, null, null, "id");
+            $instance_table = new Table("cc_billing_customer");
+            $instance_table->addRow($A2B->DBHandle, $values, "id", $id_billing);
             if ($verbose_level >= 2)
-                    echo "\n Add billing -> Id card : " . $value_insert;
+                    echo "\n Add billing -> Id card : " . json_encode($values);
 
             $clause_call_billing .= "stoptime < '" . $date_now . "' ";
             $clause_charge .= "creationdate < '" . $date_now . "' ";
@@ -223,23 +221,21 @@ for ($page = 0; $page < $nbpagemax; $page++) {
                 $amount_calls = $result[0][0];
                 $amount_calls = ceil($amount_calls * 100) / 100;
                 /// create receipt
-                $field_insert = "id_card, title, description,status";
                 $title = gettext("SUMMARY OF CALLS");
                 $description = gettext("Summary of the calls charged since the last billing");
-                $value_insert = "  '$card_id', '$title','$description',1";
-                $instance_table = new Table("cc_receipt", $field_insert);
-                $id_receipt = $instance_table->Add_table($A2B->DBHandle, $value_insert, null, null, "id");
+                $instance_table = new Table("cc_receipt");
+                $values = ["id_card" => $card_id, "title" => $title, "description" => $description, "status" => 1];
+                $instance_table->addRow($A2B->DBHandle, $values, "id", $id_receipt);
                 if ($verbose_level >= 2)
-                        echo "\n Add Receipt for the call of the last period :> " . $value_insert;
+                        echo "\n Add Receipt for the call of the last period :> " . json_encode($values);
 
                 if (!empty ($id_receipt) && is_numeric($id_receipt)) {
                     $description = $desc_billing;
-                    $field_insert = " id_receipt, price, description, id_ext, type_ext";
-                    $instance_table = new Table("cc_receipt_item", $field_insert);
-                    $value_insert = " '$id_receipt', '$amount_calls','$description','" . $id_billing . "','CALLS'";
-                    $instance_table->Add_table($A2B->DBHandle, $value_insert, null, null, "id");
+                    $instance_table = new Table("cc_receipt_item");
+                    $values = ["id_receipt" => $id_receipt, "price" => $amount_calls, "description" => $description, "id_ext" => $id_billing, "type_ext" => "CALLS"];
+                    $instance_table->addRow($A2B->DBHandle, $values);
                     if ($verbose_level >= 2)
-                        echo "\n Add Receipt Items for the call of the last period :> " . $value_insert;
+                        echo "\n Add Receipt Items for the call of the last period :> " . json_encode($values);
                 }
             }
 
@@ -247,25 +243,23 @@ for ($page = 0; $page < $nbpagemax; $page++) {
             $table_charge = new Table("cc_charge", "*");
             $result = $table_charge->get_list($A2B->DBHandle, $clause_charge . " AND charged_status = 1");
             if (is_array($result)) {
-                $field_insert = " id_card, title, description, status";
                 $title = gettext("SUMMARY OF CHARGE");
                 $description = gettext("Summary of the paid charges since the last billing.");
-                $value_insert = " '$card_id', '$title', '$description', 1";
-                $instance_table = new Table("cc_receipt", $field_insert);
-                $id_receipt = $instance_table->Add_table($A2B->DBHandle, $value_insert, null, null, "id");
+                $instance_table = new Table("cc_receipt");
+                $values = ["id_card" => $card_id, "title" => $title, "description" => $description, "status" => 1];
+                $instance_table->addRow($A2B->DBHandle, $values, "id", $id_receipt);
                 if ($verbose_level >= 2)
-                    echo "\n Add Receipt for the charges already paid :> " . $value_insert;
+                    echo "\n Add Receipt for the charges already paid :> " . json_encode($values);
 
                 if (!empty ($id_receipt) && is_numeric($id_receipt)) {
                     foreach ($result as $charge) {
                         $description = gettext("CHARGE :") . $charge['description'];
                         $amount = $charge['amount'];
-                        $field_insert = "date, id_receipt, price, description, id_ext, type_ext";
-                        $instance_table = new Table("cc_receipt_item", $field_insert);
-                        $value_insert = " '" . $charge['creationdate'] . "' , '$id_receipt', '$amount','$description','" . $charge['id'] . "','CHARGE'";
-                        $instance_table->Add_table($A2B->DBHandle, $value_insert, null, null, "id");
+                        $instance_table = new Table("cc_receipt_item");
+                        $values = ["date" => $charge["creationdate"], "id_receipt" => $id_receipt, "price" => $amount, "description" => $description, "id_ext" => $charge["id"], "type_ext" => "CHARGE"];
+                        $instance_table->addRow($A2B->DBHandle, $values);
                         if ($verbose_level >= 2)
-                            echo "\n Add Receipt Items for the charges already paid :> " . $value_insert;
+                            echo "\n Add Receipt Items for the charges already paid :> " . json_encode($values);
                     }
                 }
             }
@@ -277,17 +271,16 @@ for ($page = 0; $page < $nbpagemax; $page++) {
             $last_invoice = null;
             if (is_array($result) && sizeof($result) > 0) {
                 $reference = Invoice::generateReference();
-                $field_insert = "id_card, title, reference, description, status, paid_status";
                 $title = gettext("BILLING");
                 $description = gettext("Invoice for the unpaid charges since the last billing.") . " " . $desc_billing_postpaid;
                 $invoice_title = $title;
                 $invoice_reference =$reference;
                 $invoice_description = $description;
-                $value_insert = " '$card_id', '$title', '$reference', '$description', 1, 0";
-                $instance_table = new Table("cc_invoice", $field_insert);
-                $id_invoice = $instance_table->Add_table($A2B->DBHandle, $value_insert, null, null, "id");
+                $instance_table = new Table("cc_invoice");
+                $values = ["id_card" => $card_id, "title" => $title, "reference" => $reference, "description" => $description, "status" => 1, "paid_status" => 0];
+                $instance_table->addRow($A2B->DBHandle, $values, "id", $id_invoice);
                 if ($verbose_level >= 2)
-                    echo "\n Add Invoice for the unpaid charges :> " . $value_insert;
+                    echo "\n Add Invoice for the unpaid charges :> " . json_encode($values);
 
                 if (!empty ($id_invoice) && is_numeric($id_invoice)) {
                     $last_invoice = $id_invoice;
@@ -296,12 +289,11 @@ for ($page = 0; $page < $nbpagemax; $page++) {
                         $amount = $charge['amount'];
                         $total = $total + $amount;
                         $total_vat =$total_vat + round($amount *(1+($vat/100)),2);
-                        $field_insert = "date, id_invoice, price, vat, description, id_ext, type_ext";
-                        $instance_table = new Table("cc_invoice_item", $field_insert);
-                        $value_insert = " '" . $charge['creationdate'] . "' , '$id_invoice', '$amount', '$vat', '$description', '" . $charge['id'] . "', 'CHARGE'";
-                        $instance_table->Add_table($A2B->DBHandle, $value_insert, null, null, "id");
+                        $instance_table = new Table("cc_invoice_item");
+                        $values = ["date" => $charge["creationdate"], "id_invoice" => $id_invoice, "price" => $amount, "vat" => $vat, "description" => $description, "id_ext" => $charge["id"], "type_ext" => "CHARGE"];
+                        $instance_table->addRow($A2B->DBHandle, $values);
                         if ($verbose_level >= 2)
-                            echo "\n Add Invoice Items for the unpaid charges :> " . $value_insert;
+                            echo "\n Add Invoice Items for the unpaid charges :> " . json_encode($values);
                     }
                 }
             }
@@ -313,17 +305,16 @@ for ($page = 0; $page < $nbpagemax; $page++) {
                     $id_invoice = $last_invoice;
                 } else {
                     $reference = Invoice::generateReference();
-                    $field_insert = " id_card, title, reference, description, status, paid_status";
                     $title = gettext("BILLING");
                     $description = gettext("Invoice for POSTPAID");
                     $invoice_title = $title;
                     $invoice_reference =$reference;
                     $invoice_description = $description;
-                    $value_insert = " '$card_id', '$title','$reference','$description',1,0";
-                    $instance_table = new Table("cc_invoice", $field_insert);
-                    $id_invoice = $instance_table->Add_table($A2B->DBHandle, $value_insert, null, null, "id");
+                    $instance_table = new Table("cc_invoice");
+                    $values = ["id_card" => $card_id, "title" => $title, "reference" => $reference, "description" => $description, "status" => 1, "paid_status" => 0];
+                    $instance_table->addRow($A2B->DBHandle, $values, "id", $id_invoice);
                     if ($verbose_level >= 2)
-                        echo "\n Add Invoice :> " . $value_insert;
+                        echo "\n Add Invoice :> " . json_encode($values);
                 }
                 if (!empty ($id_invoice) && is_numeric($id_invoice)) {
                     $last_invoice = $id_invoice;
@@ -331,12 +322,11 @@ for ($page = 0; $page < $nbpagemax; $page++) {
                     $amount = abs($Customer['credit']+$lastpostpaid_amount);
                     $total = $total + $amount;
                     $total_vat =$total_vat + round($amount *(1+($vat/100)),2);
-                    $field_insert = " id_invoice, price, vat, description, id_ext, type_ext";
-                    $instance_table = new Table("cc_invoice_item", $field_insert);
-                    $value_insert = " '$id_invoice', '$amount','$vat','$description','" . $id_billing . "','POSTPAID'";
-                    $instance_table->Add_table($A2B->DBHandle, $value_insert, null, null, "id");
+                    $instance_table = new Table("cc_invoice_item");
+                    $values = ["id_invoice" => $id_invoice, "price" => $amount, "vat" => $vat, "description" => $description, "id_ext" => $id_billing, "type_ext" => "POSTPAID"];
+                    $instance_table->addRow($A2B->DBHandle, $values);
                     if ($verbose_level >= 2)
-                        echo "\n Add Invoice Item :> " . $value_insert;
+                        echo "\n Add Invoice Item :> " . json_encode($values);
                 }
             }
 

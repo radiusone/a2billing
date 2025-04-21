@@ -308,7 +308,11 @@ for ($page = 0; $page < $nbpage; $page++) {
                     $num_attempt = 0;
                     $variable = "CALLED=$destination|USERNAME=$phone[8]|USERID=$phone[6]|CBID=$uniqueid|PHONENUMBER_ID=" . $phone['cc_phonenumber_id'] . "|CAMPAIGN_ID=" . $phone['cc_campaign_id'];
 
-                    $res = $instance_table->Add_table($A2B->DBHandle, "'$uniqueid', '$status', '$server_ip', '$num_attempt', '$channel', '$exten', '$context', '$priority', '$variable', '$id_server_group',  now(), '$account', '$callerid', '30000'", "uniqueid, status, server_ip, num_attempt, channel, exten, context, priority, variable, id_server_group, callback_time, account, callerid, timeout", "cc_callback_spool", "id");
+                    $instance_table = new Table("cc_callback_spool");
+                    $values = compact("uniqueid", "status", "server_ip", "num_attempt", "channel", "exten", "context", "priority", "variable", "id_server_group", "account", "callerid");
+                    $values["callback_time"] = date("Y-m-d H:i:s");
+                    $values["timeout"] = 30000;
+                    $res = $instance_table->addRow($A2B->DBHandle, $values);
 
                     if (!$res) {
                         if ($verbose_level >= 1)

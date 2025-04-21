@@ -196,17 +196,16 @@ foreach ($result as $mydids) {
 
                     //CREATE INVOICE If a new card then just an invoice item in the last invoice
                     if ($new_card) {
-                        $field_insert = "date, id_card, title, reference, description, status, paid_status";
                         $date = date("Y-m-d h:i:s");
                         $card_id = $last_idcard;
                         $title = gettext("DID INVOICE REMINDER");
                         $description = "Your credit was not enough to pay yours DID numbers automatically.\n";
                         $description .= "You have " . date("d", $day_remaining) . " days to pay this invoice (REF: $reference ) or the DID will be automatically released \n\n";
-                        $value_insert = " '$date' , '$card_id', '$title','$reference','$description',1,0";
-                        $instance_table = new Table("cc_invoice", $field_insert);
+                        $instance_table = new Table("cc_invoice");
+                        $values = ["date" => $date, "id_card" => $card_id, "title" => $title, "reference" => $reference, "description" => $description, "status" => 1, "paid_status" => 0];
                         if ($verbose_level >= 1)
-                            echo "INSERT INVOICE : $field_insert =>	$value_insert \n";
-                        $id_invoice = $instance_table->Add_table($A2B->DBHandle, $value_insert, null, null, "id");
+                            echo "INSERT INVOICE : " . json_encode($values) . "\n";
+                        $instance_table->addRow($A2B->DBHandle, $values, "id", $id_invoice);
                         $last_invoice = $id_invoice;
                     }
 
@@ -214,12 +213,11 @@ foreach ($result as $mydids) {
                         $description = "DID number (" . $mydids[7] . ")";
                         $amount = $mydids[3];
                         $vat = 0;
-                        $field_insert = "date, id_invoice, price, vat, description, id_ext, type_ext";
-                        $instance_table = new Table("cc_invoice_item", $field_insert);
-                        $value_insert = " '$date' , '$last_invoice', '$amount','$vat','$description','" . $mydids[0] . "','DID'";
+                        $instance_table = new Table("cc_invoice_item");
+                        $values = ["date" => $date, "id_invoice" => $last_invoice, "price" => $amount, "vat" => $vat, "description" => $description, "id_ext" => $mydids[0], "type_ext" => "DID"];
                         if ($verbose_level >= 1)
-                            echo "INSERT INVOICE ITEM : $field_insert =>	$value_insert \n";
-                        $instance_table->Add_table($A2B->DBHandle, $value_insert, null, null, "id");
+                            echo "INSERT INVOICE ITEM : " . json_encode($values) . "\n";
+                        $instance_table->addRow($A2B->DBHandle, $values);
                     }
 
                     $mail_user = true;

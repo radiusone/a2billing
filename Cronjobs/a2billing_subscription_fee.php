@@ -275,29 +275,27 @@ for ($page = 0; $page < $nbpagemax; $page++) {
                     $reference = Invoice::generateReference();
 
                     //CREATE INVOICE If a new card then just an invoice item in the last invoice
-                    $field_insert = "date, id_card, title, reference, description, status, paid_status";
                     $date = date("Y-m-d h:i:s");
                     $card_id = $card['id'];
                     $title = gettext("SUBSCRIPTION INVOICE REMINDER");
                     $description = "Your credit was not enough to pay yours subscription automatically.\n";
                     $description .= "You have $billdaybefor_anniversary days to pay this invoice (REF: $reference ) or the account will be automatically disactived \n\n";
-                    $value_insert = " '$date' , '$card_id', '$title','$reference','$description',1,0";
-                    $instance_table = new Table("cc_invoice", $field_insert);
+                    $instance_table = new Table("cc_invoice");
+                    $values = ["date" => $date, "id_card" => $card_id, "title"=> $title, "reference" => $reference, "description" => $description, "status" => 1, "paid_status" => 0];
 
                     if ($verbose_level >= 1)
-                        echo "INSERT INVOICE : $field_insert =>	$value_insert \n";
-                    $id_invoice = $instance_table->Add_table($A2B->DBHandle, $value_insert, null, null, "id");
+                        echo "INSERT INVOICE : " . json_encode($values) . "\n";
+                    $instance_table->addRow($A2B->DBHandle, $values, "id", $id_invoice);
 
                     if (!empty ($id_invoice) && is_numeric($id_invoice)) {
                         $description = "Subscription (" . $subscription['product_name'] . ")";
                         $amount = $subscription['fee'];
                         $vat = 0;
-                        $field_insert = "date, id_invoice, price, vat, description, id_ext, type_ext";
-                        $instance_table = new Table("cc_invoice_item", $field_insert);
-                        $value_insert = " '$date' , '$id_invoice', '$amount','$vat','$description','" . $subscription['card_subscription_id'] . "','SUBSCR'";
+                        $instance_table = new Table("cc_invoice_item");
+                        $values = ["date" => $date, "id_invoice", $id_invoice, "price" => $amount, "vat" => $vat, "description" => $description, "id_ext" => $subscription["card_subscription_id"], "type_ext" => "SUBSCR"];
                         if ($verbose_level >= 1)
-                            echo "INSERT INVOICE ITEM : $field_insert =>	$value_insert \n";
-                        $instance_table->Add_table($A2B->DBHandle, $value_insert, null, null, "id");
+                            echo "INSERT INVOICE ITEM : " . json_encode($values) . "\n";
+                        $instance_table->addRow($A2B->DBHandle, $values);
                     }
 
                     $mail = new Mail(Mail::$TYPE_SUBSCRIPTION_UNPAID, $card['id'] );

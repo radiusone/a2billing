@@ -175,15 +175,14 @@ class Realtime
             }
         }
 
+        if ($sip || $iax) {
+            $values = compact("amaflags", "context", "dtmfmode", "host", "type", "allow", "nat", "qualify");
+            $values += ["name" => $accountnumber, "accountcode" => $accountnumber, "regexten" => $accountnumber, "callerid" => "", "username" => $accountnumber, "secret" => $passui_secret, "id_cc_card" => $id_card];
+        }
         // Insert data for sip_buddy
         if ($sip) {
-
-            $FG_QUERY_ADITION_SIP_FIELDS = "name, accountcode, regexten, amaflags, callerid, context, dtmfmode, host, type, username, allow, secret, id_cc_card, nat, qualify";
-            $instance_sip_table = new Table($FG_TABLE_SIP_NAME, $FG_QUERY_ADITION_SIP_FIELDS);
-
-            $FG_QUERY_ADITION_SIP_IAX_VALUE = "'$accountnumber', '$accountnumber', '$accountnumber', '$amaflags', '', '$context', '$dtmfmode','$host', '$type', ".
-                                                "'$accountnumber', '$allow', '$passui_secret', '$id_card', '$nat', '$qualify'";
-            $result_query1 = $instance_sip_table->Add_table($this->DBHandler, $FG_QUERY_ADITION_SIP_IAX_VALUE, null, null, null);
+            $instance_sip_table = new Table($FG_TABLE_SIP_NAME);
+            $result_query1 = $instance_sip_table->addRow($this->DBHandler, $values);
             if (USE_REALTIME) {
                 $_SESSION["is_sip_iax_change"] = 1;
                 $_SESSION["is_sip_changed"] = 1;
@@ -192,13 +191,9 @@ class Realtime
 
         // Insert data for iax_buddy
         if ($iax) {
-
-            $FG_QUERY_ADITION_IAX_FIELDS = "name, accountcode, regexten, amaflags, callerid, context, host, type, username, allow, secret, id_cc_card, qualify";
-            $instance_iax_table = new Table($FG_TABLE_IAX_NAME, $FG_QUERY_ADITION_IAX_FIELDS);
-
-            $FG_QUERY_ADITION_SIP_IAX_VALUE = "'$accountnumber', '$accountnumber', '$accountnumber', '$amaflags', '', '$context', '$host', '$type', ".
-                                               "'$accountnumber', '$allow', '$passui_secret', '$id_card', '$qualify'";
-            $result_query2 = $instance_iax_table->Add_table($this->DBHandler, $FG_QUERY_ADITION_SIP_IAX_VALUE, null, null, null);
+            $instance_iax_table = new Table($FG_TABLE_IAX_NAME);
+            unset($values["dtmfmode"], $values["nat"]);
+            $result_query2 = $instance_iax_table->addRow($this->DBHandler, $values);
             if (USE_REALTIME) {
                 $_SESSION["is_sip_iax_change"] = 1;
                 $_SESSION["is_iax_changed"] = 1;
