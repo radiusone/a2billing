@@ -181,10 +181,9 @@ if (($form_action == "addcredit") && ($addcredit > 0) && ($id > 0 || $cardnumber
 
                 $update_msg ='<span style="color:green; font-weight: bold">' . gettext("Refill executed ") . '</span>';
                 $id_agent = $_SESSION['agent_id'];
-                $field_insert = "date, credit, card_id, description, refill_type,agent_id";
-                $value_insert = "now(), '$addcredit', '$id','$description','3','$id_agent'";
-                $instance_sub_table = new Table("cc_logrefill", $field_insert);
-                $id_refill = $instance_sub_table -> Add_table ($HD_Form -> DBHandle, $value_insert, null, null,'id');
+                $instance_sub_table = new Table("cc_logrefill");
+                $values = ["credit" => $addcredit, "card_id" => $id, "description" => $description, "refill_type" => 3, "agent_id" => $id_agent];
+                $instance_sub_table->addRow($HD_Form->DBHandle, $values, "id", $id_refill);
 
                 $agent_table = new Table("cc_agent", "commission");
 
@@ -192,16 +191,15 @@ if (($form_action == "addcredit") && ($addcredit > 0) && ($id > 0 || $cardnumber
                 $result_agent= $agent_table -> get_list($HD_Form->DBHandle, $agent_clause);
 
                 if (is_array($result_agent) && is_numeric($result_agent[0]['commission']) && $result_agent[0]['commission']>0) {
-                    $field_insert = "id_payment, id_card, amount,description,id_agent";
                     $commission = a2b_round($addcredit * ($result_agent[0]['commission']/100));
                     $description_commission = gettext("GENERATED COMMISSION OF AN CUSTOMER REFILLED BY AN AGENT!");
                     $description_commission.= "\nID CARD : ".$id;
                     $description_commission.= "\nID REFILL : ".$id_refill;
                     $description_commission.= "\REFILL AMOUNT: ".$addcredit;
                     $description_commission.= "\nCOMMISSION APPLIED: ".$result_agent[0]['commission'];
-                    $value_insert = "'-1', '$id', '$commission','$description_commission','$id_agent'";
-                    $commission_table = new Table("cc_agent_commission", $field_insert);
-                    $id_commission = $commission_table -> Add_table ($HD_Form -> DBHandle, $value_insert, null, null,"id");
+                    $commission_table = new Table("cc_agent_commission");
+                    $values = ["id_payment" => -1, "id_card" => $id, "amount" => $commission, "description" => $description_commission, "id_agent" => $id_agent];
+                    $commission_table->addRow($HD_Form->DBHandle, $values, "id", $id_commission);
                     $table_agent = new Table('cc_agent');
                     $param_update_agent = ["com_balance" => ["com_balance + ?", $commission]];
                     $clause_update_agent = ["id" => $id_agent];

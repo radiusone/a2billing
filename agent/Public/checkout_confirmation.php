@@ -79,17 +79,16 @@ $HD_Form -> init();
 $_SESSION["p_module"] = $payment;
 $_SESSION["p_amount"] = 3;
 
-$paymentTable = new Table();
+$paymentTable = new Table("cc_epayment_log_agent");
 $time_stamp = date("Y-m-d H:i:s");
 
+$values = ["agent_id" => $_SESSION["agent_id"], "amount" => $total_amount, "vat" => $_SESSION["vat"], "paymentmethod" => $payment, "creationdate" => $time_stamp, "currency" => BASE_CURRENCY];
 if (strtoupper($payment)=='PLUGNPAY') {
-    $QUERY_FIELDS = "agent_id, amount, vat, paymentmethod, cc_owner, cc_number, cc_expires, creationdate, cvv, credit_card_type, currency";
-    $QUERY_VALUES = "'".$_SESSION["agent_id"]."','$total_amount', '".$_SESSION["vat"]."', '$payment','$plugnpay_cc_owner','".substr($plugnpay_cc_number,0,4)."XXXXXXXXXXXX','".$plugnpay_cc_expires_month."-".$plugnpay_cc_expires_year."','$time_stamp', '$cvv', '$credit_card_type', '".BASE_CURRENCY."'";
+    $values += ["cc_owner" => $plugnpay_cc_owner, "cc_number" => substr($plugnpay_cc_number,0,4)."XXXXXXXXXXXX", "cc_expires" => $plugnpay_cc_expires_month."-".$plugnpay_cc_expires_year, "cvv" => $cvv, "credit_card_type" => $credit_card_type];
 } else {
-    $QUERY_FIELDS = "agent_id, amount, vat, paymentmethod, cc_owner, cc_number, cc_expires, creationdate, currency";
-    $QUERY_VALUES = "'".$_SESSION["agent_id"]."','$total_amount', '".$_SESSION["vat"]."', '$payment','$authorizenet_cc_owner','".substr($authorizenet_cc_number,0,4)."XXXXXXXXXXXX','".$authorizenet_cc_expires_month."-".$authorizenet_cc_expires_year."','$time_stamp', '".BASE_CURRENCY."'";
+    $values += ["cc_owner" => $authorizenet_cc_owner, "cc_number" => substr($authorizenet_cc_number,0,4)."XXXXXXXXXXXX", "cc_expires" => $authorizenet_cc_expires_month."-".$authorizenet_cc_expires_year];
 }
-$transaction_no = $paymentTable->Add_table ($HD_Form -> DBHandle, $QUERY_VALUES, $QUERY_FIELDS, 'cc_epayment_log_agent', 'id');
+$paymentTable->addRow($HD_Form->DBHandle, $values, "id", $transaction_no);
 
 $key = securitykey(EPAYMENT_TRANSACTION_KEY, $time_stamp."^".$transaction_no."^".$total_amount."^".$_SESSION["agent_id"]);
 

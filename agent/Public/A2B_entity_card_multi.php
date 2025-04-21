@@ -91,45 +91,14 @@ if ($action=="generate") {
 }
 $nbcard = $nb_to_create;
 if ($nbcard>0 && $action=="generate" && $nb_error==0) {
-
-    $FG_ADITION_SECOND_ADD_TABLE  = "cc_card";
-    $FG_ADITION_SECOND_ADD_FIELDS = "username, useralias, credit, tariff, lastname, firstname, email, address, city, state, country, zipcode, phone, simultaccess, currency, typepaid , creditlimit, enableexpire, expirationdate, expiredays, uipass, runservice, tag,id_group, discount, id_seria";
-
-    $FG_TABLE_SIP_NAME="cc_sip_buddies";
-    $FG_TABLE_IAX_NAME="cc_iax_buddies";
-
-    $FG_QUERY_ADITION_SIP_IAX_FIELDS = "name, accountcode, regexten, amaflags, callerid, context, dtmfmode, host, type, username, allow, secret, id_cc_card, nat,  qualify";
-    if (isset($sip)) {
-        $FG_ADITION_SECOND_ADD_FIELDS .= ", sip_buddy";
-        $instance_sip_table = new Table($FG_TABLE_SIP_NAME, $FG_QUERY_ADITION_SIP_IAX_FIELDS);
-    }
-
-    if (isset($iax)) {
-        $FG_ADITION_SECOND_ADD_FIELDS .= ", iax_buddy";
-        $instance_iax_table = new Table($FG_TABLE_IAX_NAME, $FG_QUERY_ADITION_SIP_IAX_FIELDS);
-    }
-
-    if (isset($sip) ||  isset($iax)) {
-        $list_names = explode(",",$FG_QUERY_ADITION_SIP_IAX);
-        $type = FRIEND_TYPE;
-        $allow = FRIEND_ALLOW;
-        $context = FRIEND_CONTEXT;
-        $nat = FRIEND_NAT;
-        $amaflags = FRIEND_AMAFLAGS;
-        $qualify = FRIEND_QUALIFY;
-        $host = FRIEND_HOST;
-        $dtmfmode = FRIEND_DTMFMODE;
-    }
-
-    $instance_sub_table = new Table($FG_ADITION_SECOND_ADD_TABLE, $FG_ADITION_SECOND_ADD_FIELDS);
+    $instance_sub_table = new Table("cc_card");
     $gen_id = time();
     $_SESSION["IDfilter"]=$gen_id;
 
     $creditlimit = is_numeric($creditlimit) ? $creditlimit : 0;
     //initialize refill parameter
     $description_refill = gettext("CREATION CARD REFILL");
-    $field_insert_refill = " credit,card_id, description";
-    $instance_refill_table = new Table("cc_logrefill", $field_insert_refill);
+    $instance_refill_table = new Table("cc_logrefill");
 
     for ($k=0; $k<$nbcard; $k++) {
         $arr_card_alias = gen_card_with_alias($cardnumberlength_list);
@@ -137,23 +106,73 @@ if ($nbcard>0 && $action=="generate" && $nb_error==0) {
         $useralias = $arr_card_alias[1];
         $addcredit=0;
         $passui_secret = MDP_NUMERIC(5).MDP_STRING(10).MDP_NUMERIC(5);
-        $FG_ADITION_SECOND_ADD_VALUE  = "'$cardnum', '$useralias', '$addcredit', '$choose_tariff', 't', '$gen_id', '', '', '', '', '', '', '', '', $choose_simultaccess, '$choose_currency', $choose_typepaid, $creditlimit, $enableexpire, '$expirationdate', $expiredays, '$passui_secret', '$runservice', '$tag', '$id_group', '$discount', '$id_seria'";
-
-        if (isset($sip)) $FG_ADITION_SECOND_ADD_VALUE .= ", 1";
-        if (isset($iax)) $FG_ADITION_SECOND_ADD_VALUE .= ", 1";
-
-        $id_cc_card = $instance_sub_table -> Add_table ($HD_Form -> DBHandle, $FG_ADITION_SECOND_ADD_VALUE, null, null, $HD_Form -> FG_QUERY_PRIMARY_KEY);
+        $values = [
+            "username" => $cardnum,
+            "useralias" => $useralias,
+            "credit" => $addcredit,
+            "tariff" => $choose_tariff,
+            "lastname" => $gen_id,
+            "simultaccess" => $choose_simultaccess,
+            "currency" => $choose_currency,
+            "typepaid" => $choose_typepaid,
+            "creditlimit" => $creditlimit,
+            "enableexpire" => $enableexpire,
+            "expirationdate" => $expirationdate,
+            "expiredays" => $expiredays,
+            "uipass" => $passui_secret,
+            "runservice" => $runservice,
+            "tag" => $tag,
+            "id_group" => $id_group,
+            "discount" => $discount,
+            "id_seria" => $id_seria,
+        ];
+        if (isset($sip)) {
+            $values["sip_buddy"] = 1;
+        }
+        if (isset($iax)) {
+            $values["iax_buddy"] = 1;
+        }
+        $instance_sub_table->addRow($HD_Form->DBHandle, $values, $HD_Form->FG_QUERY_PRIMARY_KEY, $id_cc_card);
         //create refill for each cards
 
         if ($addcredit > 0) {
-            $value_insert_refill = "'$addcredit', '$id_cc_card', '$description_refill' ";
-            $instance_refill_table -> Add_table ($HD_Form -> DBHandle, $value_insert_refill, null, null);
+            $values = ["credit" => $addcredit, "card_id" => $id_cc_card, "description" => $description_refill];
+            $instance_refill_table->addRow($HD_Form->DBHandle, $values);
         }
 
+        if (isset($sip) || isset($iax)) {
+            $type = FRIEND_TYPE;
+            $allow = FRIEND_ALLOW;
+            $context = FRIEND_CONTEXT;
+            $nat = FRIEND_NAT;
+            $amaflags = FRIEND_AMAFLAGS;
+            $qualify = FRIEND_QUALIFY;
+            $host = FRIEND_HOST;
+            $dtmfmode = FRIEND_DTMFMODE;
+
+            $sipiax_values = [
+                "name" => $cardnum,
+                "accountcode" => $cardnum,
+                "regexten" => $cardnum,
+                "amaflags" => $amaflags,
+                "callerid" => $cardnum,
+                "context" => $context,
+                "dtmfmode" => $dtmfmode,
+                "host" => $host,
+                "type" => $type,
+                "username" => $cardnum,
+                "allow" => $allow,
+                "secret" => $passui_secret,
+                "id_cc_card" => $id_cc_card,
+                "nat" => $nat,
+                "qualify" => $qualify,
+            ];
+            $list_names = array_keys($sipiax_values);
+        }
         // Insert data for sip_buddy
         if (isset($sip)) {
-            $FG_QUERY_ADITION_SIP_IAX_VALUE = "'$cardnum', '$cardnum', '$cardnum', '$amaflags', '$cardnum', '$context', '$dtmfmode','$host', '$type', '$cardnum', '$allow', '".$passui_secret."', '$id_cc_card', '$nat', '$qualify'";
-            $result_query1 = $instance_sip_table -> Add_table ($HD_Form ->DBHandle, $FG_QUERY_ADITION_SIP_IAX_VALUE, null, null, null);
+            $instance_sip_table = new Table("cc_sip_buddies");
+            $result_query1 = $instance_sip_table->addRow($HD_Form->DBHandle, $sipiax_values);
             if (USE_REALTIME) {
                   $_SESSION["is_sip_iax_change"]=1;
                   $_SESSION["is_sip_changed"]=1;
@@ -162,9 +181,9 @@ if ($nbcard>0 && $action=="generate" && $nb_error==0) {
 
         // Insert data for iax_buddy
         if (isset($iax)) {
-            //$FG_QUERY_ADITION_SIP_IAX_VALUE = "'$cardnum', '$cardnum', '$cardnum', '$amaflag', '$cardnum', '$context', 'RFC2833','dynamic', 'friend', '$cardnum', 'g729,ulaw,alaw,gsm','".$passui_secret."'";
-            $FG_QUERY_ADITION_SIP_IAX_VALUE = "'$cardnum', '$cardnum', '$cardnum', '$amaflags', '$cardnum', '$context', '$dtmfmode','$host', '$type', '$cardnum', '$allow', '".$passui_secret."', '$id_cc_card', '$nat', '$qualify'";
-            $result_query2 = $instance_iax_table -> Add_table ($HD_Form ->DBHandle, $FG_QUERY_ADITION_SIP_IAX_VALUE, null, null, null);
+            $instance_iax_table = new Table("cc_iax_buddies");
+            $result_query2 = $instance_iax_table->addRow($HD_Form->DBHandle, $sipiax_values);
+            unset($sipiax_values["dtmfmode"], $sipiax_values["nat"]);
             if (USE_REALTIME) {
                 $_SESSION["is_sip_iax_change"]=1;
                 $_SESSION["is_iax_changed"]=1;
@@ -176,7 +195,7 @@ if ($nbcard>0 && $action=="generate" && $nb_error==0) {
     if (isset($sip)) {
         $buddyfile = BUDDY_SIP_FILE;
 
-        $instance_table_friend = new Table($FG_TABLE_SIP_NAME, 'id, ' . $FG_QUERY_ADITION_SIP_IAX);
+        $instance_table_friend = new Table("cc_sip_buddies", 'id, ' . implode(",", array_keys($sipiax_values)));
         $list_friend = $instance_table_friend -> get_list ($HD_Form ->DBHandle);
         if (is_array($list_friend)) {
             $fd=fopen($buddyfile,"w");
@@ -216,7 +235,7 @@ if ($nbcard>0 && $action=="generate" && $nb_error==0) {
     if (isset($iax)) {
         $buddyfile = BUDDY_IAX_FILE;
 
-        $instance_table_friend = new Table($FG_TABLE_IAX_NAME, 'id, ' . $FG_QUERY_ADITION_SIP_IAX);
+        $instance_table_friend = new Table("cc_iax_buddies", 'id, ' . implode(",", array_keys($sipiax_values)));
         $list_friend = $instance_table_friend -> get_list ($HD_Form ->DBHandle);
 
         if (is_array($list_friend)) {

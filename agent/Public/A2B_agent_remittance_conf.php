@@ -112,9 +112,8 @@ if (!$remittance_in_progress) {
         if($remittance_type == "BANK") $type =1;
         else $type =0;
         $table_remittance = new Table("cc_remittance_request");
-        $fields = "id_agent,amount,type";
-        $values =  $_SESSION['agent_id'].",'$amount_gobal_cur',$type";
-        $id= $table_remittance -> Add_table($DBHandle_max,$values,$fields,"cc_remittance_request","id");
+        $values =  ["id_agent" => $_SESSION['agent_id'], "amount" => $amount_gobal_cur, "type" => $type];
+        $table_remittance->addRow($DBHandle_max, $values, "id", $id);
         if(is_numeric($id) && $id>0) $insert= true;
         else $insert = false;
         NotificationsDAO :: AddNotification("remittance_added_agent", Notification :: $MEDIUM, Notification :: $AGENT, $_SESSION['agent_id'],Notification::$LINK_REMITTANCE,$id);

@@ -304,17 +304,15 @@ if ($id > 0) {
     $instance_table->updateRow($DBHandle, $param_update, $FG_EDITION_CLAUSE);
     write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."-transactionID=$transactionID"." Update_table cc_card : " . json_encode($param_update) ." - CLAUSE : " . json_encode($FG_EDITION_CLAUSE));
 
-    $field_insert = "date, credit, agent_id, description";
-    $value_insert = "'$nowDate', '".$amount_without_vat."', '$id', '".$transaction_data[0][4]."'";
-    $instance_sub_table = new Table("cc_logrefill_agent", $field_insert);
-    $id_logrefill = $instance_sub_table -> Add_table ($DBHandle, $value_insert, null, null, 'id');
-    write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."-transactionID=$transactionID"." Add_table cc_logrefill : $field_insert - VALUES $value_insert");
+    $instance_sub_table = new Table("cc_logrefill_agent");
+    $values = ["date" => $nowDate, "credit" => $amount_without_vat, "agent_id" => $id, "description" => $transaction_data[0][4]];
+    $instance_sub_table->addRow($DBHandle, $values, "id", $id_logrefill);
+    write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."-transactionID=$transactionID"." Add_table cc_logrefill : " . json_encode($values));
 
-    $field_insert = "date, payment, agent_id, id_logrefill, description";
-    $value_insert = "'$nowDate', '".$amount_paid."', '$id', '$id_logrefill', '".$transaction_data[0][4]."'";
-    $instance_sub_table = new Table("cc_logpayment_agent", $field_insert);
-    $id_payment = $instance_sub_table -> Add_table ($DBHandle, $value_insert, null, null,"id");
-    write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."-transactionID=$transactionID"." Add_table cc_logpayment : $field_insert - VALUES $value_insert");
+    $instance_sub_table = new Table("cc_logpayment_agent");
+    $values = ["date" => $nowDate, "payment" => $amount_paid, "agent_id" => $id, "id_logrefill" => $id_logrefill, "description" => $transaction_data[0][4]];
+    $instance_sub_table->addRow($DBHandle, $values, "id", $id_payment);
+    write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."-transactionID=$transactionID"." Add_table cc_logpayment : " . json_encode($values));
 }
 
 $_SESSION["p_amount"] = null;

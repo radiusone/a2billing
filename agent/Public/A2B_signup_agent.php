@@ -60,9 +60,8 @@ $disabled =false;
 if ($task=="generate" && !empty($tariffplan) && !empty($group)) {
     $code = generate_unique_value('cc_agent_signup',10,'code');
     $table_signup = new Table('cc_agent_signup');
-    $fields = "code,id_agent,id_tariffgroup,id_group";
-    $values =  "'$code','".$_SESSION['agent_id']."', '$tariffplan','$group'";
-    $result_insert = $table_signup -> Add_table($DBHandle,$values,$fields);
+    $values = ["code" => $code, "id_agent" => $_SESSION["agent_id"], "tariffgroup" => $tariffplan, "id_group" => $group];
+    $result_insert = $table_signup->addRow($DBHandle, $values);
     if($result_insert)$URL = $A2B->config['signup']['urlcustomerinterface']."signup.php?key=$code";
 }
 

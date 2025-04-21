@@ -57,10 +57,9 @@ $HD_Form -> init();
 // ADD Ticket
 if (strlen($description)>0  && is_numeric($priority) && strlen($title)>0  && is_numeric($component)) {
 
-        $fields = "creator,creator_type,title, description, id_component, priority, viewed_agent";
-        $ticket_table = new Table('cc_ticket', $fields);
-        $values = "'".$_SESSION["agent_id"]."',1, '".$title."', '".$description."', '".$component."', '".$priority ."' ,'0'";
-        $id_ticket = $ticket_table ->Add_table($HD_Form -> DBHandle, $values, null, null, "id");
+        $ticket_table = new Table('cc_ticket');
+        $values = ["creator" => $_SESSION["agent_id"], "creator_type" => 1, "title" => $title, "description" => $description, "id_component" => $component, "priority" => $priority, "viewed_agent" => 0];
+        $ticket_table->addRow($HD_Form->DBHandle, $values, "id", $id_ticket);
         NotificationsDAO::AddNotification("ticket_added_agent",Notification::$MEDIUM,Notification::$AGENT,$_SESSION['agent_id'],Notification::$LINK_TICKET_AGENT,$id_ticket);
         $table_agent =new Table("cc_agent", "firstname,lastname,language,email");
         $agent_clause = "id = ".$_SESSION["agent_id"];
