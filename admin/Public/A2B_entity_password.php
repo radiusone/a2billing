@@ -36,128 +36,101 @@ use A2billing\Table;
 **/
 
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
+/**
+ * @var string $form_action
+ */
 
-getpost_ifset(array (
-    'OldPassword',
-    'NewPassword'
-));
+getpost_ifset(["OldPassword", "NewPassword", "NewPassword2"]);
+/**
+ * @var string $OldPassword
+ * @var string $NewPassword
+ * @var string $NewPassword2
+ */
 
 $DBHandle = DbConnect();
+$msg = "";
 
 if ($form_action == "ask-modif") {
-    $table_old_pwd = new Table("cc_ui_authen", " login");
-    $OldPwd_encoded = hash('whirlpool', $OldPassword);
-    $clause_old_pwd = "login = '" . $_SESSION["pr_login"] . "' AND pwd_encoded = '" . $OldPwd_encoded . "'";
-    $result_old_pwd = $table_old_pwd->get_list($DBHandle, $clause_old_pwd);
-
-    if (!empty ($result_old_pwd)) {
-        $instance_sub_table = new Table('cc_ui_authen');
-        $NewPwd_encoded = hash('whirlpool', $NewPassword);
-        $QUERY = "UPDATE cc_ui_authen SET  pwd_encoded= '" . $NewPwd_encoded . "' WHERE ( login = '" . $_SESSION["pr_login"] . "' ) ";
-        $result = $instance_sub_table->SQLExec($DBHandle, $QUERY, 0);
+    if ($OldPassword === "" || $NewPassword === "" || strlen($NewPassword) < 8 || $NewPassword !== $NewPassword2) {
+        $msg = '<p class="alert alert-danger">' . _("Check entries, ensure new password is at least 8 characters") . '</p>';
     } else {
-        $OldPasswordFaild = true;
+        $table = new Table("cc_ui_authen");
+        $result = $table->getRow($DBHandle, ["login" => $_SESSION["pr_login"]]);
+
+        if ($result && password_verify($OldPassword, $result["pwd_encoded"])) {
+            $result = $table->updateRow(
+                $DBHandle,
+                ["pwd_encoded" => password_hash($NewPassword, PASSWORD_DEFAULT)],
+                ["login" => $_SESSION["pr_login"]]
+            );
+            if ($result) {
+                $msg = '<p class="alert alert-success">' . _("Your password has been updated") . '</p>';
+            } else {
+                $msg = '<p class="alert alert-danger">' . _("An error occurred while updating the password") . '</p>';
+            }
+        } else {
+            $msg = '<p class="alert alert-danger">' . _("Old password was not correct") . '</p>';
+        }
     }
 }
 
 require_once __DIR__ . "/../templates/main.php";
 ?>
-<script>
-$(function() {
-    $("#checkpassword").on('click', function () {
-        var np = $("#NewPassword");
-        var cnp = $("#CNewPassword");
+<div class="row pb-3 align-items-center" role="alert">
+    <div class="col">
+        <?= $msg ?>
+    </div>
+</div>
+<form method="post" id="pwdchange">
+    <div class="row mb-3">
+        <label class="col-3 col-form-label" for="OldPassword"><?= _("Old Password") ?></label>
+        <div class="col">
+            <input type="password" id="OldPassword" name="OldPassword" class="form-control" required="required" autocomplete="current-password"/>
+            <div class="form-text invalid-feedback"></div>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label class="col-3 col-form-label" for="NewPassword"><?= _("New Password") ?></label>
+        <div class="col">
+            <input type="password" id="NewPassword" name="NewPassword" class="form-control" required="required" minlength="8" maxlength="32" autocomplete="new-password"/>
+            <div class="form-text invalid-feedback"></div>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label class="col-3 col-form-label" for="NewPassword2"><?= _("Confirm New Password") ?></label>
+        <div class="col">
+            <input type="password" id="NewPassword2" name="NewPassword2" class="form-control" required="required" minlength="8" maxlength="32" autocomplete="new-password" data-invalid="<?= _("New and old passwords must match") ?>"/>
+            <div class="form-text invalid-feedback"></div>
+        </div>
+    </div>
+    <div class="row my-4">
+        <div class="col-auto ms-auto">
+            <button type="submit" class="btn btn-primary" name="form_action" value="ask-modif"><?= _("Change Password") ?></button>
+        </div>
+    </div>
+</form>
 
-        if (!np.val()) {
-            alert('<?php echo gettext("No value in New Password entered")?>');
-            np.focus();
-            return false;
-        }
-        if (!cnp.val()) {
-            alert('<?php echo gettext("No Value in Confirm New Password entered")?>');
-            cnp.focus();
-            return false;
-        }
-        if (np.val().length < 5) {
-            alert('<?php echo gettext("Password length should be greater than or equal to 5")?>');
-            np.focus();
-            return false;
-        }
-        if (np.val() !== cnp.val()) {
-            alert('<?php echo gettext("Value mismatch, New Password should be equal to Confirm New Password")?>');
-            np.focus();
-            return false;
-        }
-        return true;
-    });
-    $("#NewPassword").focus();
+<script>
+document.getElementById("pwdchange").addEventListener("submit", function(e) {
+    /** @var {HTMLInputElement} */
+    let newp = document.getElementById("NewPassword");
+    /** @var {HTMLInputElement} */
+    let conf = document.getElementById("NewPassword2");
+    if (newp.value !== conf.value) {
+        conf.value = "";
+        conf.ariaInvalid = "true";
+        conf.classList.add("is-invalid");
+        conf.nextElementSibling.textContent = conf.dataset.invalid;
+        e.stopPropagation();
+        e.preventDefault();
+        conf.focus();
+    } else {
+        conf.ariaInvalid = "false";
+        conf.classList.remove("is-invalid");
+        conf.nextElementSibling.textContent = "";
+    }
 });
 </script>
 
 <?php
-
-if ($form_action == "ask-modif") {
-
-    if (isset ($result)) {
-?>
-<script language="JavaScript">
-alert("<?php echo gettext("Your password is updated successfully.")?>");
-</script>
-<?php
-    } elseif (isset ($OldPasswordFaild)) {
-?>
-<script language="JavaScript">
-alert("<?php echo gettext("Wrong old password.")?>");
-</script>
-<?php
-    } else {
-?>
-<script language="JavaScript">
-alert("<?php echo gettext("System is failed to update your password.")?>");
-</script>
-<?php
-    }
-}
-?>
-<br>
-<form method="post" action="<?php  echo $_SERVER["PHP_SELF"]?>" name="frmPass">
-    <input type="hidden" name="form_action" value="ask-modif"/>
-<center>
-<table class="changepassword_maintable" align=center>
-<tr class="bgcolor_009">
-    <td align=left colspan=2><b><font color="#ffffff">- <?php echo gettext("Change Password")?>&nbsp; -</b></td>
-</tr>
-<tr>
-    <td align="center" colspan=2>&nbsp;<p class="liens"><?php echo gettext("Do not use \" or = characters in your password");?></p></td>
-</tr>
-<tr>
-    <td align=right><font class="fontstyle_002"><?php echo gettext("Old Password")?>&nbsp; :</font></td>
-    <td align=left><input id="OldPassword" name="OldPassword" type="password" class="form_input_text" ></td>
-</tr>
-<tr>
-    <td align=right><font class="fontstyle_002"><?php echo gettext("New Password")?>&nbsp; :</font></td>
-    <td align=left><input id="NewPassword" name="NewPassword" type="password" class="form_input_text" ></td>
-</tr>
-<tr>
-    <td align=right><font class="fontstyle_002"><?php echo gettext("Confirm Password")?>&nbsp; :</font></td>
-    <td align=left><input id="CNewPassword" name="CNewPassword" type="password" class="form_input_text" ></td>
-</tr>
-<tr>
-    <td align=left colspan=2>&nbsp;</td>
-</tr>
-<tr>
-    <td align=center colspan=2 ><input type="submit" id="checkpassword" name="submitPassword" value="&nbsp;<?php echo gettext("Save")?>&nbsp;" class="form_input_button">&nbsp;&nbsp;<input type="reset" name="resetPassword" value="&nbsp;Reset&nbsp;" class="form_input_button" > </td>
-</tr>
-<tr>
-    <td align=left colspan=2>&nbsp;</td>
-</tr>
-
-</table>
-</center>
-</form>
-
-<br><br><br>
-
-<?php
-
 require_once __DIR__ . "/../templates/footer.php";
