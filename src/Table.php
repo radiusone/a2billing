@@ -411,30 +411,6 @@ class Table
     }
 
     /**
-     * @deprecated 3.0 Use Table::countRows()
-     */
-    public function Table_count(ADOConnection $DBHandle, ?string $clause = "", ?string $compare = "", int $cache = 0)
-    {
-        $sql = "SELECT count(*) FROM $this->table";
-
-        $sql_clause = '';
-        if (!empty($clause)) {
-            $sql_clause = empty($compare) ? " WHERE $clause" : " WHERE $clause = $compare";
-        }
-
-        $QUERY = $sql . $sql_clause;
-
-        $res = $this->ExecuteQuery($DBHandle, $QUERY, $cache);
-        if (!$res) {
-            return false;
-        }
-
-        $row = $res->fetchRow();
-
-        return $row[0];
-    }
-
-    /**
      * Add a row with a proper parameterized statement
      *
      * @param ADOConnection $db
