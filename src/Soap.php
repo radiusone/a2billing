@@ -366,11 +366,8 @@ class Soap
             return array(false, "EXISTING GROUP WITH SAME NAME AND KEY");
         }
 
-        $value = "'$instance_key'";
-        $func_fields = "name";
-        $func_table = 'cc_card_group';
-        $id_name = "id";
-        $inserted = $this->instance_table->Add_table($this->DBHandle, $value, $func_fields, $func_table, $id_name);
+        $values = ["name" => $instance_key];
+        $inserted = (new Table("cc_card_group"))->addRow($this->DBHandle, $values);
 
         if (!$inserted) {
             return array(false, "ERROR CREATING ACCOUNT GROUP");
@@ -616,17 +613,14 @@ class Soap
             return $arr_check;
         }
 
-        $value = "'$instance'";
-        $func_fields = "didgroupname";
-        $func_table = 'cc_didgroup';
-        $id_name = "id";
-        $inserted = $this->instance_table->Add_table($this->DBHandle, $value, $func_fields, $func_table, $id_name);
+        $values = ["didgroupname" => $instance];
+        $inserted = (new Table("cc_didgroup"))->addRow($this->DBHandle, $values, "id", $group_id);
 
         if (!$inserted) {
             return array(false, "ERROR CREATING DID GROUP");
         }
 
-        return array($inserted, "Create_DIDGroup SUCCESS");
+        return array($group_id, "Create_DIDGroup SUCCESS");
     }
 
     /*
@@ -639,17 +633,14 @@ class Soap
             return $arr_check;
         }
 
-        $value = "'$instance'";
-        $func_fields = "provider_name";
-        $func_table = 'cc_provider';
-        $id_name = "id";
-        $inserted = $this->instance_table->Add_table($this->DBHandle, $value, $func_fields, $func_table, $id_name);
+        $values = ["provider_name" => $instance];
+        $inserted = (new Table("cc_provider"))->addRow($this->DBHandle, $values, "id", $provider_id);
 
         if (!$inserted) {
             return array(false, "ERROR CREATING PROVIDER");
         }
 
-        return array($inserted, "Create_Provider SUCCESS");
+        return array($provider_id, "Create_Provider SUCCESS");
     }
 
     /*
@@ -668,17 +659,14 @@ class Soap
         $startingdate = $begin_date.$end_date;
         $expirationdate = $begin_date_plus.$end_date;
 
-        $value = "'$instance', '$startingdate', '$expirationdate'";
-        $func_fields = "tariffname, startingdate, expirationdate";
-        $func_table = 'cc_tariffplan';
-        $id_name = "id";
-        $inserted = $this->instance_table->Add_table($this->DBHandle, $value, $func_fields, $func_table, $id_name);
+        $values = ["tariffname" => $instance, "startingdate" => $startingdate, "expirationdate" => $expirationdate];
+        $inserted = (new Table("cc_tariffplan"))->addRow($this->DBHandle, $values, "id", $plan_id);
 
         if (!$inserted) {
             return array(false, "ERROR CREATING RATECARD");
         }
 
-        return array($inserted, "Create_Ratecard SUCCESS");
+        return array($plan_id, "Create_Ratecard SUCCESS");
     }
 
     /*
@@ -695,22 +683,15 @@ class Soap
             return array("ERROR", "NO ID_RATECARD PROVIDED");
         }
 
-        $value = "'$instance'";
-        $func_fields = "tariffgroupname";
-        $func_table = 'cc_tariffgroup';
-        $id_name = "id";
-        $inserted = $this->instance_table->Add_table($this->DBHandle, $value, $func_fields, $func_table, $id_name);
+        $values = ["tariffgroupname" => $instance];
+        $inserted = (new Table("cc_tariffgroup"))->addRow($this->DBHandle, $values, "id", $id_callplan);
 
         if (!$inserted) {
             return array(false, "ERROR CREATING CALLPLAN");
         }
-        $id_callplan = $inserted;
 
-        $value = "'$inserted', '$id_ratecard'";
-        $func_fields = "idtariffgroup, idtariffplan";
-        $func_table = 'cc_tariffgroup_plan';
-        $id_name = "id";
-        $inserted = $this->instance_table->Add_table($this->DBHandle, $value, $func_fields, $func_table, $id_name);
+        $values = ["id_tarffgroup" => $id_callplan, "idtariffplan" => $id_ratecard];
+        $inserted = (new Table("cc_tariffgroup_plan"))->addRow($this->DBHandle, $values);
 
         if (!$inserted) {
             return array(false, "ERROR ATTACHING CALLPLAN AND RATECARD");
@@ -729,20 +710,18 @@ class Soap
         }
 
         $func_table  = "cc_voucher";
-        $func_fields = "voucher, credit, activated, currency, expirationdate";
-        $id_name = "id";
 
         $begin_date_plus = date("Y") + 10;
         $end_date = date("-m-d H:i:s");
         $expirationdate = $begin_date_plus.$end_date;
         $arr_voucher = array();
+        $instance_table = new Table("cc_voucher");
 
         for ($k=0;$k < $units;$k++) {
             $vouchernum = generate_unique_value($func_table, LEN_VOUCHER, 'voucher');
-            $value  = "'$vouchernum', '$credit', 't', '$currency', '$expirationdate'";
-
             $arr_voucher[$k] = $vouchernum;
-            $inserted = $this->instance_table->Add_table($this->DBHandle, $value, $func_fields, $func_table, $id_name);
+            $values = ["voucher" => $vouchernum, "credit" => $credit, "activated" => "t", "currency" => $currency, "expirationdate" => $expirationdate];
+            $inserted = $instance_table->addRow($this->DBHandle, $values);
 
             if (!$inserted) {
                 return array(false, "ERROR CREATING VOUCHER (".$k." Vouchers created)");
@@ -785,10 +764,7 @@ class Soap
 
         $instance_realtime = new Realtime();
 
-        $FG_ADITION_SECOND_ADD_TABLE = "cc_card";
-        $FG_ADITION_SECOND_ADD_FIELDS = "username, useralias, credit, tariff, country, language, simultaccess, currency, typepaid, uipass, id_group, id_didgroup, sip_buddy, iax_buddy";
-
-        $instance_sub_table = new Table($FG_ADITION_SECOND_ADD_TABLE, $FG_ADITION_SECOND_ADD_FIELDS);
+        $instance_sub_table = new Table("cc_card");
 
         $sip_buddy = $iax_buddy = 0;
 
@@ -798,10 +774,6 @@ class Soap
         if (isset ($iax) && $iax == 1)
             $iax_buddy = 1;
 
-        //initialize refill parameter
-        $description_refill = gettext("CREATION CARD REFILL");
-        $field_insert_refill = "credit, card_id, description";
-        $instance_refill_table = new Table("cc_logrefill", $field_insert_refill);
         $arr_account = array();
 
         for ($k = 0; $k < $units; $k++) {
@@ -812,12 +784,25 @@ class Soap
                 $balance = 0;
             $passui_secret = MDP_NUMERIC(5).MDP_STRING(10).MDP_NUMERIC(5);
 
-            $FG_ADITION_SECOND_ADD_VALUE = "'$accountnumber', '$useralias', '$balance', '$id_callplan', '$country', '$language', ".
-                                 " $simultaccess, '$currency', $typepaid, '$passui_secret', '$id_group', '$id_didgroup', $sip_buddy, $iax_buddy";
+            $values = [
+                "username" => $accountnumber,
+                "useralias" => $useralias,
+                "credit" => $balance,
+                "tariff" => $id_callplan,
+                "country" => $country,
+                "language" => $language,
+                "simultaccess" => $simultaccess,
+                "currency" => $currency,
+                "typepaid" => $typepaid,
+                "uipass" => $passui_secret,
+                "id_group" => $id_group,
+                "id_didgroup" => $id_didgroup,
+                "sip_buddy" => $sip_buddy,
+                "iax_buddy" => $iax_buddy,
+            ];
+            $result = $instance_sub_table->addRow($this->DBHandle, $values, "id", $id_cc_card);
 
-            $id_cc_card = $instance_sub_table->Add_table($this->DBHandle, $FG_ADITION_SECOND_ADD_VALUE, null, null, 'id');
-
-            if (!$id_cc_card) {
+            if (!$result) {
                 return array(false, "ERROR CREATING ACCOUNT (".$k." Accounts created)");
             }
 
@@ -825,8 +810,11 @@ class Soap
 
             // create refill for card
             if ($balance > 0) {
-                $value_insert_refill = "'$balance', '$id_cc_card', '$description_refill' ";
-                $instance_refill_table->Add_table($this->DBHandle, $value_insert_refill, null, null);
+                //initialize refill parameter
+                $description_refill = gettext("CREATION CARD REFILL");
+                $instance_refill_table = new Table("cc_logrefill");
+                $values = ["credit" => $balance, "card_id" => $id_cc_card, "description" => $description_refill];
+                $instance_refill_table->addRow($this->DBHandle, $values);
             }
 
             $instance_realtime -> insert_voip_config ($sip_buddy, $iax_buddy, $id_cc_card, $accountnumber, $passui_secret);
@@ -902,6 +890,8 @@ class Soap
         $expirationdate = $begin_date_plus.$end_date;
         $lensuf = strlen($did_suffix);
         $increment_did = 0;
+        $instance_table = new Table("cc_did");
+        $instance_table_dest = new Table("cc_did_destination");
         foreach ($account_id as $val_account_id) {
 
             $did_suffix_inc = $did_suffix + $increment_did;
@@ -910,12 +900,18 @@ class Soap
             $did_to_create = "$did_prefix"."$did_suffix_inc";
             $increment_did++;
 
-            $func_table  = "cc_did";
-            $func_fields = "id_cc_didgroup, id_cc_country, iduser, did, startingdate, expirationdate, billingtype, connection_charge, selling_rate";
-            $id_name = "id";
-            $value  = "'$id_didgroup', '$id_country', '$val_account_id', '$did_to_create', '$startingdate', '$expirationdate', 2, $connection_charge, $rate";
-
-            $inserted = $this->instance_table->Add_table($this->DBHandle, $value, $func_fields, $func_table, $id_name);
+            $values = [
+                "id_cc_didgroup" => $id_didgroup,
+                "id_cc_country" => $id_country,
+                "iduser" => $val_account_id,
+                "did" => $did_to_create,
+                "startingdate" => $startingdate,
+                "expirationdate" => $expirationdate,
+                "billingtype" => 2,
+                "connection_charge" => $connection_charge,
+                "selling_rate" => $rate
+            ];
+            $inserted = $instance_table->addRow($this->DBHandle, $values, "id", $did_id);
 
             if (!$inserted) {
                 return array(false, "ERROR CREATING DID (".$increment_did." DIDs created)");
@@ -928,12 +924,8 @@ class Soap
             }
             $username = $result[0][0];
 
-            $func_table  = "cc_did_destination";
-            $func_fields = "destination, priority, id_cc_card, id_cc_did, creationdate, activated, secondusedreal, voip_call";
-            $id_name = "id";
-            $value  = "'SIP/$username', 1, '$val_account_id', '$inserted', NOW(), 1, 0, 1";
-
-            $inserted = $this->instance_table->Add_table($this->DBHandle, $value, $func_fields, $func_table, $id_name);
+            $values = ["destination" => "SIP/$username", "priority" => 1, "id_cc_card" => $val_account_id, "id_cc_did" => $did_id, "voip_call" => 1];
+            $inserted = $instance_table_dest->addRow($this->DBHandle, $values);
 
             if (!$inserted) {
                 return array(false, "ERROR CREATING DID DESTINATION (".$increment_did." DID_DESTINATIONs created)");
@@ -1089,11 +1081,8 @@ class Soap
             }
 
             // ADD NEW TRUNK IN DATABASE
-            $func_fields = "trunkcode, providertech, providerip";
-            $func_table = 'cc_trunk';
-            $id_name = "id_trunk";
-            $value = "'$instance', 'SIP', '$trunk_name'";
-            $inserted = $this->instance_table->Add_table($this->DBHandle, $value, $func_fields, $func_table, $id_name);
+            $values = ["trunkcode" => $instance, "providertech" => "SIP", "providerip" => $trunk_name];
+            $inserted = (new Table("cc_trunk"))->addRow($this->DBHandle, $values);
 
             if (!$inserted) {
                 return array(false, "ERROR CREATING TRUNK");
@@ -1130,11 +1119,8 @@ class Soap
             }
 
             // ADD NEW TRUNK IN DATABASE
-            $func_fields = "trunkcode, providertech, providerip";
-            $func_table = 'cc_trunk';
-            $id_name = "id_trunk";
-            $value = "'$instance', 'IAX', '$trunk_name'";
-            $inserted = $this->instance_table->Add_table($this->DBHandle, $value, $func_fields, $func_table, $id_name);
+            $values = ["trunkcode" => $instance, "providertech" => "IAX", "providerip" => $trunk_name];
+            $inserted = (new Table("cc_trunk"))->addRow($this->DBHandle, $values);
 
             if (!$inserted) {
                 return array(false, "ERROR CREATING TRUNK");
@@ -1253,6 +1239,8 @@ class Soap
             return array(false, "ERROR RATES VALIDITY, LINE $nb_rates. ENSURE THAT ALL RATES HAVE A CORRECT FORMAT!");
         }
 
+        $instance_table_prefix = new Table("cc_prefix");
+        $instance_table = new Table("cc_ratecard");
         // START RATES IMPORT
         foreach ($arr_rates as $arr_rates_val) {
 
@@ -1262,25 +1250,25 @@ class Soap
             $sellrate = trim($arr_rates_val[3]);
 
             // ADD PREFIX
-            $instance_table_prefix = new Table("cc_prefix");
-            $FG_ADITION_SECOND_ADD_FIELDS_PREFIX = 'prefix, destination';
-
-            $FG_ADITION_SECOND_ADD_VALUE_PREFIX = "'" . intval($dialprefix) . "', '$destination'";
-            $TT_QUERY_PREFIX = "INSERT INTO " . $FG_ADITION_SECOND_ADD_TABLE_PREFIX . " (" . $FG_ADITION_SECOND_ADD_FIELDS_PREFIX . ") values (" . $FG_ADITION_SECOND_ADD_VALUE_PREFIX . ") ";
-            $instance_table_prefix -> Add_table ($this->DBHandle, $FG_ADITION_SECOND_ADD_VALUE_PREFIX, $FG_ADITION_SECOND_ADD_FIELDS_PREFIX);
+            $values = ["prefix" => $dialprefix, "destination" => $destination];
+            $instance_table_prefix->addRow($this->DBHandle, $values);
 
             // ADD RATES
-            $FG_ADITION_SECOND_ADD_TABLE = 'cc_ratecard';
-            $FG_ADITION_SECOND_ADD_FIELDS = 'idtariffplan, id_trunk, dialprefix, destination, buyrate, rateinitial, startdate, stopdate';
-
             $startdate = date("Y-m-d H:i:s");
             $stopdate_prefix = date("Y") + 30;
             $stopdate_suffix = date("-m-d H:i:s");
 
-            $FG_ADITION_SECOND_ADD_VALUE = "'$id_ratecard', '$id_trunk', '$dialprefix', '".intval($dialprefix)."', '$buyrate', '$sellrate', '$startdate', '$stopdate_prefix$stopdate_suffix'";
-            $TT_QUERY = "INSERT INTO " . $FG_ADITION_SECOND_ADD_TABLE . " (" . $FG_ADITION_SECOND_ADD_FIELDS . ") values (" . $FG_ADITION_SECOND_ADD_VALUE . ") ";
-
-            $result_query = $this->DBHandle->Execute($TT_QUERY);
+            $values = [
+                "idtariffplan" => $id_ratecard,
+                "id_trunk" => $id_trunk,
+                "dialprefix" => $dialprefix,
+                "destination" => $dialprefix,
+                "buyrate" => $buyrate,
+                "sellrate" => $sellrate,
+                "startdate" => $startdate,
+                "stopdate" => "$stopdate_prefix$stopdate_suffix"
+            ];
+            $result_query = $instance_table->addRow($this->DBHandle, $values);
 
             if ($result_query === false) {
                 return array(false, "ERROR RATES CREATION ($nb_to_import Rates imported)");
@@ -1329,7 +1317,11 @@ class Soap
         $DEL_QUERY = "DELETE FROM cc_ratecard WHERE idtariffplan=$id_ratecard";
         $result_query = $this->DBHandle->Execute($DEL_QUERY);
 
+        $instance_table_prefix = new Table("cc_prefix");
+        $instance_table = new Table("cc_ratecard");
+
         // REIMPORT RATES
+        $nb_to_import = 0;
         foreach ($arr_rates as $arr_rates_val) {
 
             $dialprefix = trim($arr_rates_val[0]);
@@ -1338,12 +1330,8 @@ class Soap
             $sellrate = trim($arr_rates_val[3]);
 
             // ADD PREFIX
-            $instance_table_prefix = new Table("cc_prefix");
-            $FG_ADITION_SECOND_ADD_FIELDS_PREFIX = 'prefix, destination';
-
-            $FG_ADITION_SECOND_ADD_VALUE_PREFIX = "'" . intval($dialprefix) . "', '$destination'";
-            $TT_QUERY_PREFIX = "INSERT INTO " . $FG_ADITION_SECOND_ADD_TABLE_PREFIX . " (" . $FG_ADITION_SECOND_ADD_FIELDS_PREFIX . ") values (" . $FG_ADITION_SECOND_ADD_VALUE_PREFIX . ") ";
-            $instance_table_prefix -> Add_table ($this->DBHandle, $FG_ADITION_SECOND_ADD_VALUE_PREFIX, $FG_ADITION_SECOND_ADD_FIELDS_PREFIX);
+            $values = ["prefix" => $dialprefix, "destination" => $destination];
+            $instance_table_prefix->addRow($this->DBHandle, $values);
 
             // ADD RATES
             $FG_ADITION_SECOND_ADD_TABLE = 'cc_ratecard';
@@ -1353,10 +1341,17 @@ class Soap
             $stopdate_prefix = date("Y") + 30;
             $stopdate_suffix = date("-m-d H:i:s");
 
-            $FG_ADITION_SECOND_ADD_VALUE = "'$id_ratecard', '$id_trunk', '$dialprefix', '".intval($dialprefix)."', '$buyrate', '$sellrate', '$startdate', '$stopdate_prefix$stopdate_suffix'";
-            $TT_QUERY = "INSERT INTO " . $FG_ADITION_SECOND_ADD_TABLE . " (" . $FG_ADITION_SECOND_ADD_FIELDS . ") values (" . $FG_ADITION_SECOND_ADD_VALUE . ") ";
-
-            $result_query = $this->DBHandle->Execute($TT_QUERY);
+            $values = [
+                "idtariffplan" => $id_ratecard,
+                "id_trunk" => $id_trunk,
+                "dialprefix" => $dialprefix,
+                "destination" => $dialprefix,
+                "buyrate" => $buyrate,
+                "rateinitial" => $sellrate,
+                "startdate" => $startdate,
+                "stopdate" => "$stopdate_prefix$stopdate_suffix",
+            ];
+            $result_query = $instance_table->addRow($this->DBHandle, $values);
 
             if ($result_query === false) {
                 return array(false, "ERROR RATES CREATION ($nb_to_import Rates imported)");
@@ -1421,13 +1416,8 @@ class Soap
 
         }
 
-        $func_table  = "cc_callerid";
-        $func_fields = "id_cc_card, cid, activated";
-        $id_name = "id";
-        $activated = "t";
-        $value = "'$id_cc_card', '$callerid', '$activated'";
-
-        $inserted = $this->instance_table->Add_table($this->DBHandle, $value, $func_fields, $func_table, $id_name);
+        $values = ["id_cc_card" => $id_cc_card, "cid" => $callerid, "activated" => "t"];
+        $inserted = (new Table("cc_callerid"))->addRow($this->DBHandle, $values);
 
         if (!$inserted) {
             return array(false, "ERROR ADDING CID");
