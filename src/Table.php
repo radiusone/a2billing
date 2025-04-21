@@ -499,37 +499,6 @@ class Table
     }
 
     /**
-     * @deprecated 3.0 Use Table::addRow()
-     */
-    public function Add_table(ADOConnection $DBHandle, string $value, ?string $func_fields = "", ?string $func_table = "", ?string $id_name = "", bool $subquery = false)
-    {
-        if (!empty($func_fields)) {
-            $this->fields = explode(",", $func_fields);
-        }
-
-        if (!empty($func_table)) {
-            $this->table = $func_table;
-        }
-        if ($subquery) {
-            $QUERY = "INSERT INTO " . $this->table . " ($func_fields) (" . trim($value) . ")";
-        } else {
-            $QUERY = "INSERT INTO " . $this->table . " ($func_fields) values (" . trim($value) . ")";
-        }
-
-        $res = $this->ExecuteQuery($DBHandle, $QUERY);
-        if (!$res) {
-            return false;
-        }
-
-        // Fix that , make PEAR complaint
-        if (!empty($id_name)) {
-            return $DBHandle->Insert_ID($this->table, $id_name);
-        }
-
-        return true;
-    }
-
-    /**
      * Update a row with a proper parameterized statement
      *
      * @param ADOConnection $db
