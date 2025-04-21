@@ -120,6 +120,12 @@ use A2billing\Forms\FormHandler;
             </div>
         </div>
 
+    <?php elseif ($item["type"] === "SINGLEDATE"): ?>
+        <div class="col-8">
+            <input type="date" name="<?= $item["input"][0] ?>" id="<?= $item["input"][0] ?>" value="<?= $processed[$item["input"][0]] ?? date("Y-m-d") ?>" class="form-control form-control-sm"/>
+            <input type="hidden" name="<?= $item["operator"][0] ?>" value="2"/><!-- starts with -->
+        </div>
+
     <?php elseif ($item["type"] === "DATE"): ?>
         <?php if (!$item["relative"] && !$item["recent"]): ?>
         <div class="col-4">

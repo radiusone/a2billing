@@ -921,6 +921,22 @@ class FormHandler
     }
 
     /**
+     * @param string $label the label for the input
+     * @param string $fieldname the name of the database column, also used for HTML element names
+     * @return void
+     */
+    public function AddSearchSingleDateInput(string $label, string $fieldname) {
+        $fieldname = str_replace(".", "^^", $fieldname);
+        $fieldvar = $fieldname . "type";
+        $this->search_form_elements[] = [
+            "label" => $label,
+            "input" => [$fieldname],
+            "operator" => [$fieldvar],
+            "type" => "SINGLEDATE",
+        ];
+    }
+
+    /**
      * Sets Search form fieldnames for the view module
      *
      * @public
@@ -1404,7 +1420,7 @@ class FormHandler
                 if (!empty($el["operator"][$i])) {
                     $search[$el["operator"][$i]] = $processed[$el["operator"][$i]];
                 }
-                if ($el["type"] === "TEXT") {
+                if ($el["type"] === "TEXT" || $el["type"] === "SINGLEDATE") {
                     $this->do_field($input, $el["operator"][$i]);
                 } elseif ($el["type"] === "COMPARISON" || ($el["type"] === "DATE" && !empty($processed["enable_$input"]))) {
                     $this->do_field_duration($el["column"], $el["operator"][$i], $input);
