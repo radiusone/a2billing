@@ -116,6 +116,8 @@ class Table
         $identifier = trim($identifier);
 
         $alias = "";
+        // todo: should not catch the date in "cast(foo as date) as bar" or "cast(foo as date)"
+        // maybe try "/^(.+?) +AS +[`\"]?(\\w+)[`\"]?$/i"
         if (preg_match("/^(.+?) +AS +(.+?)(\\b.*)$/i", $identifier, $matches)) {
             $identifier = $matches[1];
             $alias = " AS $q$matches[2]$q$matches[3]";
