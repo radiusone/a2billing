@@ -152,7 +152,7 @@ class Table
             || str_starts_with($value, "current_timestamp")
             || preg_match("/^\(\s*select\s/", $value)
             || preg_match(
-                "/(date|cast|if|count|coalesce|sum|avg|left|right|concat|replace|substr(ing)?|lower|upper|min|max)\\s*\\(/",
+                "/(date|cast|if|count|coalesce|sum|avg|left|right|concat|replace|substr(ing)?|lower|upper|min|max|hour|minute|second)\\s*\\(/",
                 $value
             )
             || preg_match("/^case (when)?.*? end( as \w+)?$/", $value);
