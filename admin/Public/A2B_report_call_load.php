@@ -268,16 +268,3 @@ function createGraphBody($title): Graph {
 
     return $graph;
 }
-
-function graphToDataUri(Graph $graph): string {
-    $resource = $graph->Stroke("__handle");
-    if (is_resource($resource) || get_class($resource) === "GdImage") {
-        ob_start();
-        imagepng($resource);
-        $img = ob_get_clean();
-
-        return "data:image/png;base64," . base64_encode($img);
-    }
-
-    return "";
-}

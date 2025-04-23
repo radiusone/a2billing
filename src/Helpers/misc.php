@@ -2,6 +2,7 @@
 
 use A2billing\Connection;
 use A2billing\Table;
+use Amenadiel\JpGraph\Graph\Graph;
 use PHPMailer\PHPMailer\PHPMailer;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -1000,4 +1001,28 @@ function get_readable_date($date): string
     } catch (Exception $e) {
         return _("N/A");
     }
+}
+
+/**
+ * Take a jpgraph object and turn it into a data URI
+ *
+ * @param Graph $graph
+ * @return string
+ */
+function graphToDataUri(Graph $graph): string {
+    try {
+        $resource = $graph->Stroke("__handle");
+    } catch (Exception $e) {
+        // todo: error message?
+        return "";
+    }
+    if (is_resource($resource) || get_class($resource) === "GdImage") {
+        ob_start();
+        imagepng($resource);
+        $img = ob_get_clean();
+
+        return "data:image/png;base64," . base64_encode($img);
+    }
+
+    return "";
 }
