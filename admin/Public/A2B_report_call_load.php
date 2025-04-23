@@ -76,8 +76,8 @@ $HD_Form->AddSearchPopupInput(_("Provider"), "id_provider", "A2B_entity_provider
 $HD_Form->AddSearchPopupInput(_("Trunk"), "cc_call.id_trunk", "A2B_entity_trunk.php", 2);
 $HD_Form->AddSearchPopupInput(_("Rate"), "id_ratecard", "A2B_entity_def_ratecard.php", 2);
 $HD_Form->AddSearchTextInput(_("Called Number"), "calledstation");
-$HD_Form->AddSearchSelectInput(_("Hour Details"), "hour_detail", $hours, false);
-$HD_Form->AddSearchSelectInput(_("Hour Detail Type"), "hour_detail_type", $types, false);
+$HD_Form->AddSearchSelectInput(_("Hour Details"), "hour_detail", $hours, null, false);
+$HD_Form->AddSearchSelectInput(_("Hour Detail Type"), "hour_detail_type", $types, "watch-call", false);
 
 $HD_Form->search_delete_enabled = false;
 

@@ -1019,16 +1019,18 @@ class FormHandler
      * @param string $label the label of the element
      * @param string $name the name of the element, and also the database column queried
      * @param array $options options for the element; key is used for value attribute, value used for content
+     * @param string|int $default if no current values, this item will be selected
      * @param bool $process if false, this element will NOT be used in the database query
      * @return void
      */
-    public function AddSearchSelectInput(string $label, string $name, array $options = [], bool $process = true)
+    public function AddSearchSelectInput(string $label, string $name, array $options = [], $default = null, bool $process = true)
     {
         $name = str_replace(".", "^^", $name);
         $this->search_form_elements[] = [
             "label" => $label,
             "input" => [$name],
             "options" => $options,
+            "default" => $default,
             "process" => $process,
             "type" => "SELECT",
         ];
