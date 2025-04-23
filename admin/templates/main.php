@@ -153,7 +153,7 @@ $menu_section ??= 0;
                             <li><a class="link-dark rounded" href="call-pnl-report.php"><?= _("PNL") ?></a></li>
                             <li><a class="link-dark rounded" href="call-comp.php"><?= _("Compare Calls") ?></a></li>
                             <li><a class="link-dark rounded" href="A2B_report_call_load.php"><?= _("Daily Traffic") ?></a></li>
-                            <li><a class="link-dark rounded" href="call-last-month.php"><?= _("Monthly Traffic") ?></a></li>
+                            <li><a class="link-dark rounded" href="A2B_report_monthly.php"><?= _("Monthly Traffic") ?></a></li>
                             <li><a class="link-dark rounded" href="A2B_report_package.php"><?= _("Package Usage") ?></a></li>
                         </ul>
                     </div>
