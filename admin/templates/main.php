@@ -54,7 +54,7 @@ $menu_section ??= 0;
                         </a>
                         <ul class="dropdown-menu shadow" aria-labelledby="dropdownUser">
                             <li>
-                                <a href="A2B_entity_password.php?form_action=ask-edit" class="dropdown-item">
+                                <a href="A2B_update_password.php?form_action=ask-edit" class="dropdown-item">
                                     <?= _("Change Password") ?>
                                 </a>
                             </li>
