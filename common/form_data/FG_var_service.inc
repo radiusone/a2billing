@@ -98,7 +98,7 @@ $HD_Form->FG_ENABLE_ADD_BUTTON = true;
 $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form->FG_ENABLE_INFO_BUTTON = true;
-$HD_Form->FG_INFO_BUTTON_LINK = "javascript:window.open('CC_entity_service_details.php?displayfooter=0&popup_select=1&displayheader=0&id=|param|','','scrollbars=yes,resizable=yes,width=600,height=350')";
+$HD_Form->FG_INFO_BUTTON_LINK = "A2B_info_service.php?id=";
 
 $HD_Form->AddEditElement(
     _("NAME"),
