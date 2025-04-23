@@ -325,9 +325,9 @@ if (empty($item_type)) {
     $transaction_type = $item_type;
     //Check amount
     $table_invoice_item = new Table("cc_invoice_item", "COALESCE(SUM(price*(1+(vat/100))),0)");
-    $clause_invoice_item = "id_invoice = ".$item_id;
-    $result= $table_invoice_item -> get_list($DBHandle, $clause_invoice_item);
-    $inv_amount = ceil($result[0][0] * 100) / 100;
+    $clause_invoice_item = ["id_invoice" => $item_id];
+    $result= $table_invoice_item -> getValue($DBHandle, $clause_invoice_item) ?? 0;
+    $inv_amount = ceil($result * 100) / 100;
     $inv_vat_amount= $inv_amount * $VAT / 100;
     $inv_total_amount = $inv_amount + ($inv_amount * $VAT / 100);
     if ($inv_total_amount != $amount) {
@@ -348,11 +348,11 @@ $result = $DBHandle_max -> Execute($Query);
 $id = 0;
 if ($customer_info[0] > 0 && $orderStatus == 2) {
     /* CHECK IF THE CARDNUMBER IS ON THE DATABASE */
-    $instance_table_card = new Table("cc_card", "username, id");
-    $FG_TABLE_CLAUSE_card = " username='".$customer_info[0]."'";
-    $list_tariff_card = $instance_table_card -> get_list ($DBHandle, $FG_TABLE_CLAUSE_card);
-    if ($customer_info[0] == $list_tariff_card[0][0]) {
-        $id = $list_tariff_card[0][1];
+    $instance_table_card = new Table("cc_card", ["username", "id"]);
+    $FG_TABLE_CLAUSE_card = ["username" => $customer_info[0]];
+    $list_tariff_card = $instance_table_card -> getRow ($DBHandle, $FG_TABLE_CLAUSE_card);
+    if ($customer_info[0] == $list_tariff_card["username"]) {
+        $id = $list_tariff_card["id"];
     }
     write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."-$trans_str : CARD FOUND IN DB ($id)");
 } else {
@@ -420,12 +420,11 @@ if ($id > 0) {
 
             //test if the agent exist and get its commission
             $agent_table = new Table("cc_agent", "commission");
-            $agent_clause = "id = ".$id_agent;
-            $result_agent= $agent_table -> get_list($DBHandle, $agent_clause);
-            if (is_array($result_agent) && is_numeric($result_agent[0]['commission']) && $result_agent[0]['commission']>0) {
+            $agent_clause = ["id" => $id_agent];
+            $commission_percent = $agent_table -> getValue($DBHandle, $agent_clause) ?? 0;
+            if ($commission_percent>0) {
 
-                $commission = ceil(($amount_without_vat * ($result_agent[0]['commission'])/100)*100)/100;
-                $commission_percent = $result_agent[0]['commission'];
+                $commission = ceil(($amount_without_vat * $commission_percent/100)*100)/100;
 
                 $description_commission = gettext("AUTOMATICALY GENERATED COMMISSION!");
                 $description_commission.= "\nID CARD : ".$id;
@@ -450,11 +449,10 @@ if ($id > 0) {
         #Payment related to a Postpaid invoice
         if ($item_id > 0) {
             $invoice_table = new Table('cc_invoice', 'reference');
-            $invoice_clause = "id = ".$item_id;
-            $result_invoice = $invoice_table->get_list($DBHandle, $invoice_clause);
+            $invoice_clause = ["id" => $item_id];
+            $reference = $invoice_table->getValue($DBHandle, $invoice_clause);
 
-            if (is_array($result_invoice) && sizeof($result_invoice)==1) {
-                $reference =$result_invoice[0][0];
+            if ($reference) {
 
                 $instance_sub_table = new Table("cc_logpayment");
                 $values = ["date" => $nowDate, "payment" => $amount_paid, "card_id" => $id, "description" => '(' . $transaction_data[0][4] . ') ' . _('Invoice Payment Ref: ').$reference];
@@ -476,10 +474,9 @@ if ($id > 0) {
                         //Load subscription
                         write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."- Type SUBSCR");
                         $table_subsc = new Table('cc_card_subscription', 'paid_status');
-                        $subscr_clause = "id = ".$item -> getExtId();
-                        $result_subscr = $table_subsc -> get_list($DBHandle, $subscr_clause);
-                        if (is_array($result_subscr)) {
-                            $subscription = $result_subscr[0];
+                        $subscr_clause = ["id" => $item -> getExtId()];
+                        $subscription = $table_subsc -> getValue($DBHandle, $subscr_clause);
+                        if (!is_null($subscription)) {
                             write_log($epayment_logfile, basename(__FILE__).' line:'.__LINE__."- cc_card_subscription paid_status : ".$subscription['paid_status']);
                             if ($subscription['paid_status']==3) {
                                 $billdaybefor_anniversery = $A2B->config['global']['subscription_bill_days_before_anniversary'];

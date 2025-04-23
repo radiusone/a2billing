@@ -53,9 +53,9 @@ if (empty($id)) {
 $DBHandle  = DbConnect();
 
 $refill_table = new Table('cc_logrefill_agent', '*');
-$refill_clause = "id = ".$id;
-$refill_result = $refill_table -> get_list($DBHandle, $refill_clause);
-$refill = $refill_result[0];
+$refill_clause = ["id" => $id];
+$refill_result = $refill_table -> getRow($DBHandle, $refill_clause);
+$refill = $refill_result;
 
 if (empty($refill)) {
     header("Location: A2B_entity_logrefill_agent.php?section=2");

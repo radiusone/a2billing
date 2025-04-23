@@ -47,13 +47,13 @@ if (!Agent::allowed(Agent::ACX_ACCESS)) {
 $smarty->display('main.tpl');
 $DBHandle = DbConnect();
 $table_message = new Table("cc_message_agent", "*");
-$clause_message = "id_agent = ".$_SESSION['agent_id'];
-$messages = $table_message -> get_list($DBHandle, $clause_message, 'order_display');
+$clause_message = ["id_agent" => $_SESSION['agent_id']];
+$messages = $table_message -> getRows($DBHandle, $clause_message, ['order_display']);
 $message_types = ["msg_info", "msg_success", "msg_warning", "msg_error"];
 ?>
 <br/><br/>
 <?php
-if (is_array($messages)&& sizeof($messages)>0) {
+if (sizeof($messages)>0) {
     foreach ($messages as $message) {
     ?>
 

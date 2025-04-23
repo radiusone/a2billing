@@ -54,66 +54,58 @@ if (empty($_SESSION["card_id"])) {
 
 $DBHandle  = DbConnect();
 
-$card_table = new Table('cc_card', 'vat,typepaid,credit');
-$card_clause = "id = ".$_SESSION["card_id"];
-$card_result = $card_table -> get_list($DBHandle, $card_clause);
+$card_table = new Table('cc_card', ['vat','typepaid','credit']);
+$card_clause = ["id" => $_SESSION["card_id"]];
+$card_result = $card_table -> getRow($DBHandle, $card_clause);
 
-if(!is_array($card_result)||empty($card_result[0]['vat'])||!is_numeric($card_result[0]['vat'])) $vat=0;
-    else $vat = $card_result[0][0];
-if(!is_array($card_result)||empty($card_result[0]['typepaid'])||!is_numeric($card_result[0]['typepaid'])) $typepaid=0;
-    else $typepaid = $card_result[0][1];
-if(!is_array($card_result)||empty($card_result[0]['credit'])||!is_numeric($card_result[0]['credit'])) $credit=0;
-    else $credit = $card_result[0][2];
+$vat = $card_result["vat"] ?? 0;
+$typepaid = $card_result["typepaid"] ?? 0;
+$credit = $card_result["credit"]?? 0;
 //find the last billing
 
-$billing_table = new Table('cc_billing_customer', 'id,date');
-$clause_last_billing = "id_card = ".$_SESSION["card_id"];
-$result = $billing_table -> get_list($DBHandle, $clause_last_billing, "date", "desc");
-$call_table = new Table('cc_call', 'COALESCE(SUM(sessionbill),0)');
-$clause_call_billing ="card_id = ".$_SESSION["card_id"]." AND ";
-$clause_charge = "id_cc_card = ".$_SESSION["card_id"]." AND ";
+$now = date("Y-m-d H:i:s");
+$billing_table = new Table('cc_billing_customer', ['id','date']);
+$clause_last_billing = ["id_card" => $_SESSION["card_id"]];
+$result = $billing_table -> getRow($DBHandle, $clause_last_billing, ["date"], "desc");
+$clause_call_billing = ["card_id" => $_SESSION["card_id"]];
+$clause_charge = ["id_cc_card" => $_SESSION["card_id"]];
 $desc_billing="";
 $desc_billing_postpaid="";
 $start_date =null;
-if (is_array($result) && !empty($result[0][0])) {
-    $clause_call_billing .= "stoptime >= '" .$result[0][1]."' AND ";
-    $clause_charge .= "creationdate >= '".$result[0][1]."' AND  ";
+if (!empty($result["id"])) {
+    $clause_call_billing[] = ["SUB", "stoptime" => [[">=", $result["date"]], ["<", $now]]];
+    $clause_charge[] = ["SUB", "creationdate" => [[">=", $result["date"]], ["<", $now]]];
     $desc_billing = gettext("Cost of calls between the "). get_date_with_offset($result[0][1], $_SESSION["gmtoffset"]) ." and ". get_date_with_offset(gmdate("Y/m/d H:i:s"), $_SESSION["gmtoffset"]) ;
-    $desc_billing_postpaid="Amount for periode between the ".date("Y-m-d",strptime($result[0][1]))." and $date_bill";
+    $desc_billing_postpaid="Amount for periode between the ".date("Y-m-d",strptime($result["date"]))." and $date_bill";
     $start_date = $result[0][1];
 } else {
     $desc_billing = gettext("Cost of calls before the "). get_date_with_offset(gmdate("Y/m/d H:i:s"), $_SESSION["gmtoffset"]) ;
+    $clause_call_billing["stoptime"] = ["<", $now];
+    $clause_charge["creationdate"] = ["<", $now];
 }
-$clause_call_billing .= "stoptime < NOW() ";
-$clause_charge .= "creationdate < NOW() ";
-$result_calls =  $call_table -> get_list($DBHandle, $clause_call_billing);
+$call_table = new Table('cc_call', ['COALESCE(SUM(sessionbill),0)']);
+$calls_price =  $call_table -> getValue($DBHandle, $clause_call_billing);
 $receipt_items = array();
 
 // COMMON BEHAVIOUR FOR PREPAID AND POSTPAID ... GENERATE A RECEIPT FOR THE CALLS OF THE MONTH
-if (is_array($result_calls)) {
-    $item = new ReceiptItem(null, $desc_billing, gmdate("Y/m/d H:i:s"), $result_calls[0][0], 'CALLS');
+if ($calls_price) {
+    $item = new ReceiptItem(null, $desc_billing, gmdate("Y/m/d H:i:s"), $calls_price, 'CALLS');
     $receipt_items[]= $item;
 }
 
 // GENERATE RECEIPT FOR CHARGE ALREADY CHARGED
 
-$table_charge = new Table("cc_charge", "*");
-$result =  $table_charge -> get_list($DBHandle, $clause_charge . " AND charged_status = 1");
-    if (is_array($result)) {
-        foreach ($result as $charge) {
+$table_charge = new Table("cc_charge", ["description", "creationdate", "amount"]);
+$result =  $table_charge -> getRows($DBHandle, $clause_charge + ["charged_status" => 1]);
+    foreach ($result as $charge) {
         $item = new ReceiptItem(null, gettext("CHARGE :").$charge['description'], $charge['creationdate'], $charge['amount'], 'CHARGE');
         $receipt_items[]= $item;
-        }
     }
  // GENERATE RECEIPT FOR CHARGE NOT CHARGED YET
- $table_charge = new Table("cc_charge", "*");
- $result =  $table_charge -> get_list($DBHandle, $clause_charge . " AND charged_status = 0 AND invoiced_status = 0");
-    if (is_array($result) && sizeof($result)>0) {
-        foreach ($result as $charge) {
-            $item = InvoiceItem::create(null, gettext("CHARGE :").$charge['description'], $charge['creationdate'], $charge['amount'],$vat, 'CHARGE');
-            $invoice_items[]= $item;
-        }
-
+$result =  $table_charge -> getRows($DBHandle, $clause_charge + ["charged_status" => 1, "invoiced_status" => 0]);
+    foreach ($result as $charge) {
+        $item = InvoiceItem::create(null, gettext("CHARGE :").$charge['description'], $charge['creationdate'], $charge['amount'],$vat, 'CHARGE');
+        $invoice_items[]= $item;
     }
  // behaviour postpaid
 

@@ -66,10 +66,10 @@ if (empty ($key))
 
 $result = null;
 $instance_sub_table = new Table('cc_card', "username, lastname, firstname, email, uipass, credit, useralias, loginkey, status, id");
-$QUERY = "( loginkey = '" . $key . "' )";
-$list = $instance_sub_table->get_list($HD_Form->DBHandle, $QUERY);
+$QUERY = ["loginkey" => $key];
+$list = $instance_sub_table->getRow($HD_Form->DBHandle, $QUERY);
 
-if (isset ($key) && $list[0][8] != "1") {
+if (isset ($key) && $list["status"] != "1") {
     if ($A2B->config["signup"]['activated']) {
         // Status : 1 - Active
         $QUERY = "UPDATE cc_card SET status = 1 WHERE ( status = 2 OR status = 3 ) AND loginkey = '" . $key . "' ";
@@ -80,9 +80,9 @@ if (isset ($key) && $list[0][8] != "1") {
     $result = $instance_sub_table->SQLExec($HD_Form->DBHandle, $QUERY, 0);
 }
 
-if ($list[0][8] != "1" && isset ($result) && $result != null) {
+if ($list["status"] != "1" && isset ($result) && $result != null) {
 
-    list ($username, $lastname, $firstname, $email, $uipass, $credit, $cardalias, $loginkey, $status, $idcard) = $list[0];
+    list ($username, $lastname, $firstname, $email, $uipass, $credit, $cardalias, $loginkey, $status, $idcard) = $list;
     if ($FG_DEBUG == 1) {
         echo "<br/># $username, $lastname, $firstname, $email, $uipass, $credit, $cardalias #<br/>";
     }
@@ -103,13 +103,13 @@ if ($list[0][8] != "1" && isset ($result) && $result != null) {
     <div align="center"><br/><br/>
      <font color="#FF0000"><b><?php echo gettext("Welcome! Your account has been successfully activated. Thank you!"); ?></b></font><br/>
           <br/><br/>
-          <?php echo $list[0][2]; ?> <?php echo $list[0][1]; ?>, <?php echo gettext("Thank you for registering with us !");?><br/>
-          <?php echo gettext("An email confirming your information has been sent to"); ?> <b><?php echo $list[0][3]; ?></b><br/><br/>
+          <?php echo $lastname; ?> <?php echo $firstname; ?>, <?php echo gettext("Thank you for registering with us !");?><br/>
+          <?php echo gettext("An email confirming your information has been sent to"); ?> <b><?php echo $email; ?></b><br/><br/>
             <h3>
-              <?php echo gettext("Your cardnumber is "); ?> <b><font color="#00AA00"><?php echo $list[0][0]; ?></font></b><br/><br/><br/>
+              <?php echo gettext("Your cardnumber is "); ?> <b><font color="#00AA00"><?php echo $username; ?></font></b><br/><br/><br/>
               <?php echo gettext("To login to your account :"); ?><br/>
-              <?php echo gettext("Your card alias (login) is "); ?> <b><font color="#00AA00"><?php echo $list[0][6]; ?></font></b><br/>
-              <?php echo gettext("Your password is "); ?> <b><font color="#00AA00"><?php echo $list[0][4]; ?></font></b><br/>
+              <?php echo gettext("Your card alias (login) is "); ?> <b><font color="#00AA00"><?php echo $cardalias; ?></font></b><br/>
+              <?php echo gettext("Your password is "); ?> <b><font color="#00AA00"><?php echo $uipass; ?></font></b><br/>
             </h3>
 
             <br/><br/>
@@ -134,7 +134,7 @@ if ($list[0][8] != "1" && isset ($result) && $result != null) {
 <td bgcolor="#EEEEEE">
 <b>
 <?php
-if ($list[0][9] == "1") {
+if ($list["id"] == "1") {
     echo gettext("Your account is already activated.")." <br/>";
 } elseif (isset($result) || $result != null) {
     // nothing

@@ -65,9 +65,9 @@ if ($form_action=="ask-delete") {
 if ($form_action != "list" && isset($id)) {
     if (!empty($id)&& $id>0) {
         $table_agent_security = new Table("cc_card LEFT JOIN cc_card_group ON cc_card.id_group=cc_card_group.id ", " cc_card_group.id_agent");
-        $clause_agent_security = "cc_card.id= ".$id;
-        $result_security= $table_agent_security -> get_list ($HD_Form->DBHandle, $clause_agent_security);
-        if ($result_security[0][0] != $_SESSION['agent_id']) {
+        $clause_agent_security = ["cc_card.id" => $id];
+        $result_security= $table_agent_security -> getValue ($HD_Form->DBHandle, $clause_agent_security);
+        if ($result_security != $_SESSION['agent_id']) {
             Header ("Location: A2B_entity_card.php?section=1");
             die();
         }
@@ -149,17 +149,17 @@ if (($form_action == "addcredit") && ($addcredit > 0) && ($id > 0 || $cardnumber
 
     if ($cardnumber>0) {
         /* CHECK IF THE CARDNUMBER IS ON THE DATABASE */
-        $FG_TABLE_CLAUSE_card = "username='".$cardnumber."'";
-        $list_tariff_card = $instance_table -> get_list ($HD_Form->DBHandle, $FG_TABLE_CLAUSE_card);
-        if ($cardnumber == $list_tariff_card[0][0]) $id = $list_tariff_card[0][1];
+        $FG_TABLE_CLAUSE_card = ["username=" => $cardnumber];
+        $list_tariff_card = $instance_table -> getRow ($HD_Form->DBHandle, $FG_TABLE_CLAUSE_card);
+        if ($cardnumber == $list_tariff_card["username"]) $id = $list_tariff_card["id"];
     }
 
     if ($id > 0) {
 
         $instance_check_card_agent = new Table("cc_card LEFT JOIN cc_card_group ON cc_card.id_group=cc_card_group.id", " cc_card_group.id_agent");
-        $FG_TABLE_CLAUSE_check = "cc_card.id= ".$id;
-        $list_check= $instance_check_card_agent -> get_list ($HD_Form->DBHandle, $FG_TABLE_CLAUSE_check);
-        if ($list_check[0][0] == $_SESSION['agent_id']) {
+        $FG_TABLE_CLAUSE_check = ["cc_card.id" => $id];
+        $list_check= $instance_check_card_agent -> getValue($HD_Form->DBHandle, $FG_TABLE_CLAUSE_check);
+        if ($list_check == $_SESSION['agent_id']) {
 
             //check if enought credit
             $instance_table_agent = new Table("cc_agent", "credit, currency");
@@ -187,16 +187,16 @@ if (($form_action == "addcredit") && ($addcredit > 0) && ($id > 0 || $cardnumber
 
                 $agent_table = new Table("cc_agent", "commission");
 
-                $agent_clause = "id = ".$id_agent;
-                $result_agent= $agent_table -> get_list($HD_Form->DBHandle, $agent_clause);
+                $agent_clause = ["id" => $id_agent];
+                $commission_amt = $agent_table -> getValue($HD_Form->DBHandle, $agent_clause) ?? 0;
 
-                if (is_array($result_agent) && is_numeric($result_agent[0]['commission']) && $result_agent[0]['commission']>0) {
-                    $commission = a2b_round($addcredit * ($result_agent[0]['commission']/100));
+                if ($commission_amt) {
+                    $commission = a2b_round($addcredit * ($commission_amt/100));
                     $description_commission = gettext("GENERATED COMMISSION OF AN CUSTOMER REFILLED BY AN AGENT!");
                     $description_commission.= "\nID CARD : ".$id;
                     $description_commission.= "\nID REFILL : ".$id_refill;
                     $description_commission.= "\REFILL AMOUNT: ".$addcredit;
-                    $description_commission.= "\nCOMMISSION APPLIED: ".$result_agent[0]['commission'];
+                    $description_commission.= "\nCOMMISSION APPLIED: ".$commission_amt;
                     $commission_table = new Table("cc_agent_commission");
                     $values = ["id_payment" => -1, "id_card" => $id, "amount" => $commission, "description" => $description_commission, "id_agent" => $id_agent];
                     $commission_table->addRow($HD_Form->DBHandle, $values, "id", $id_commission);

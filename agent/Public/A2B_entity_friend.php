@@ -88,9 +88,9 @@ if ( (isset ($id_cc_card) && (is_numeric($id_cc_card)  != "")) && ( $form_action
         $TABLE_BUDDY = 'cc_iax_buddies';
     }
     $instance_table_friend = new Table($TABLE_BUDDY, '*');
-    $list_friend = $instance_table_friend -> get_list ($HD_Form->DBHandle, "id_cc_card='$id_cc_card'");
+    $list_friend = $instance_table_friend -> getRows ($HD_Form->DBHandle, ["id_cc_card" => $id_cc_card]);
 
-    if (is_array($list_friend) && count($list_friend)>0) {
+    if ($list_friend) {
         Header ("Location: A2B_entity_card.php?id="); exit();
     }
 

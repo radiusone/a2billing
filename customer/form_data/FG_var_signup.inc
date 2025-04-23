@@ -62,16 +62,20 @@ elseif (!empty ($_SESSION["key"])) {
 }
 
 if (!empty ($agentkey)) {
-	$table_key = new Table("cc_agent_signup", "*");
-	$data = $table_key->get_list($HD_Form->DBHandle, "code= '" . $agentkey . "'");
-	if (is_array($data)) {
-		$groupid = $data[0]['id_group'];
-		$tariffid = $data[0]['id_tariffgroup'];
-		$agentid = $data[0]['id_agent'];
+	$table_key = new Table("cc_agent_signup", ["id_group", "id_tariffgroup", "id_agent"]);
+	$data = $table_key->getRow($HD_Form->DBHandle, ["code" => $agentkey]);
+	if ($data) {
+		$groupid = $data['id_group'];
+		$tariffid = $data['id_tariffgroup'];
+		$agentid = $data['id_agent'];
 		// check if groupid and tarif in already in this agent
-		$instance_table_agent_check = new Table("cc_agent JOIN cc_agent_tariffgroup ON cc_agent_tariffgroup.id_agent =  cc_agent.id JOIN cc_card_group ON cc_card_group.id_agent =  cc_agent.id  ", "cc_agent.id");
-		$list_agent_check = $instance_table_agent_check->get_list($HD_Form->DBHandle, "cc_agent.id= $agentid AND cc_agent_tariffgroup.id_tariffgroup = $tariffid  AND cc_card_group.id = $groupid", "cc_agent.id");
-		if (is_array($list_agent_check)) {
+		$instance_table_agent_check = new Table(
+            "cc_agent",
+            ["COUNT(*)"],
+            ["cc_agent_tariffgroup" => ["cc_agent_tariffgroup.id_agent", "cc_agent.id"], "cc_card_group" => ["cc_card_group.id_agent", "cc_agent.id"]]
+        );
+		$list_agent_check = $instance_table_agent_check->getValue($HD_Form->DBHandle, ["cc_agent.id" => $agentid, "cc_agent_tariffgroup.id_tariffgroup" => $tariffid, "cc_card_group.id" => $groupid]);
+		if ($list_agent_check) {
 			if (!empty ($groupid) && is_numeric($groupid) && !empty ($tariffid) && is_numeric($tariffid)) {
 				$agent_conf = true;
 			} else {
@@ -84,12 +88,12 @@ if (!empty ($agentkey)) {
 }
 
 if (!$agent_conf) {
-	$callPlan_idlist = isset ($A2B->config["signup"]['callplan_id_list']) ? $A2B->config["signup"]['callplan_id_list'] : null;
+	$callPlan_idlist = explode(", ", $A2B->config["signup"]['callplan_id_list'] ?? "");
 	if (strlen($callPlan_idlist) == 0) {
 		exit ("No Call Plan Defined.");
 	}
 	$call_table = new Table("cc_tariffgroup", "tariffgroupname,id");
-	$callPlan_list = $call_table->get_list($HD_Form->DBHandle, "id in ($callPlan_idlist)");
+	$callPlan_list = $call_table->getRows($HD_Form->DBHandle, ["id" => ["in", $callPlan_idlist]]);
 
 	if (!is_array($callPlan_list) && count($callPlan_list) <= 0) {
 		exit (gettext("No Call Plan id are defined"));
@@ -152,7 +156,7 @@ if (CURRENCY_ENABLE)  {
 $HD_Form->AddEditSelect(gettext("CURRENCY"), "currency", $currency_list);
 $currency_editFG = "currency,";
 }
-if (!$agent_conf && strpos($callPlan_idlist, ',') !== false && !($subscriber_signup>0)) {
+if (!$agent_conf && count($callPlan_idlist) && !($subscriber_signup>0)) {
     $HD_Form->AddEditSelect(gettext("CALL PLAN"), "tariff", $callPlan_list);
 }
 $comp_zero = $comp_date_plus = '';
@@ -388,7 +392,7 @@ $mytariff = '';
 $mycredit = '';
 
 $myexpirationdate = $comp_date_plus;
-$mytariff = $callPlan_idlist;
+$mytariff = implode(",", $callPlan_idlist);
 $mysimultaccess = $A2B->config["signup"]['simultaccess'];
 $mytypepaid = $A2B->config["signup"]['typepaid'];
 $mycreditlimit = $A2B->config["signup"]['creditlimit'];
@@ -448,9 +452,9 @@ if (!is_numeric($subscriber_signup)) {
 if (is_numeric($subscriber_signup)) {
 
 	$table_subscribe = new Table("cc_subscription_signup", "id_callplan");
-	$data = $table_subscribe->get_list($HD_Form->DBHandle, "id='" . $subscriber_signup . "'");
-	if (is_array($data)) {
-		$id_callplan = $data[0]['id_callplan'];
+	$data = $table_subscribe->getRow($HD_Form->DBHandle, ["id" => $subscriber_signup]);
+	if ($data) {
+		$id_callplan = $data['id_callplan'];
         $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["tariff"] = $id_callplan;
 	}
 

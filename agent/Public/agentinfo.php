@@ -45,8 +45,6 @@ if (! has_rights (Agent::ACX_ACCESS)) {
 }
 
 $QUERY = "SELECT  credit, currency, lastname, firstname, address, city, state, country, zipcode, phone, email, fax, id, com_balance FROM cc_agent WHERE login = '".$_SESSION["pr_login"]."'";
-$table_remittance = new Table("cc_remittance_request", '*');
-$remittance_clause = "id_agent = ".$_SESSION['agent_id']." AND status = 0";
 
 $DBHandle_max = DbConnect();
 $numrow = 0;
@@ -70,10 +68,11 @@ if (!isset($currencies_list[strtoupper($agent_info [1])]["value"]) || !is_numeri
 $credit_cur = $agent_info[0] / $mycur;
 $credit_cur = round($credit_cur,3);
 
-$result_remittance = $table_remittance -> get_list($DBHandle_max, $remittance_clause);
-if (is_array($result_remittance) && sizeof($result_remittance)>=1 ) {
+$table_remittance = new Table("cc_remittance_request", ["amount"]);
+$remittance_clause = ["id_agent" => $_SESSION['agent_id'], "status" => 0];
+$remittance_value = $table_remittance -> getValue($DBHandle_max, $remittance_clause) ?? 0;
+if ($remittance_value) {
     $remittance_in_progress=true;
-    $remittance_value = $result_remittance[0]['amount'];
 } else {
     $remittance_in_progress=false;
 }

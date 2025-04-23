@@ -195,9 +195,9 @@ if ($nbcard>0 && $action=="generate" && $nb_error==0) {
     if (isset($sip)) {
         $buddyfile = BUDDY_SIP_FILE;
 
-        $instance_table_friend = new Table("cc_sip_buddies", 'id, ' . implode(",", array_keys($sipiax_values)));
-        $list_friend = $instance_table_friend -> get_list ($HD_Form ->DBHandle);
-        if (is_array($list_friend)) {
+        $instance_table_friend = new Table("cc_sip_buddies", ["id"] + array_keys($sipiax_values));
+        $list_friend = $instance_table_friend -> getRows ($HD_Form ->DBHandle);
+        if ($list_friend) {
             $fd=fopen($buddyfile,"w");
             if (!$fd) {
                 $error_msg= '<p style="text-align: center; font-weight: bold; color: red">' . gettext("Could not open buddy file") . " " . $buddyfile . '</p>';
@@ -235,10 +235,10 @@ if ($nbcard>0 && $action=="generate" && $nb_error==0) {
     if (isset($iax)) {
         $buddyfile = BUDDY_IAX_FILE;
 
-        $instance_table_friend = new Table("cc_iax_buddies", 'id, ' . implode(",", array_keys($sipiax_values)));
-        $list_friend = $instance_table_friend -> get_list ($HD_Form ->DBHandle);
+        $instance_table_friend = new Table("cc_iax_buddies", ["id"] + array_keys($sipiax_values));
+        $list_friend = $instance_table_friend -> getRows ($HD_Form ->DBHandle);
 
-        if (is_array($list_friend)) {
+        if ($list_friend) {
             $fd=fopen($buddyfile,"w");
             if (!$fd) {
                 $error_msg= "<br><center><b><font color=red>".gettext("Could not open buddy file"). $buddyfile."</font></b></center>";
@@ -291,12 +291,12 @@ $smarty->display('main.tpl');
 echo create_help(gettext("Bulk create customers in a single step. <br> Set the properties of the batch such as initial credit, account type and currency, then click on the GENERATE CUSTOMERS button to create the batch."));
 
 $instance_table_tariff = new Table("cc_tariffgroup LEFT JOIN cc_agent_tariffgroup ON cc_agent_tariffgroup.id_tariffgroup = cc_tariffgroup.id ", "id, tariffgroupname");
-$FG_TABLE_CLAUSE = "cc_agent_tariffgroup.id_agent = ".$_SESSION['agent_id'];
-$list_tariff = $instance_table_tariff -> get_list ($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "tariffgroupname");
+$FG_TABLE_CLAUSE = ["cc_agent_tariffgroup.id_agent" => $_SESSION['agent_id']];
+$list_tariff = $instance_table_tariff -> getRows ($HD_Form->DBHandle, $FG_TABLE_CLAUSE, ["tariffgroupname"]);
 $nb_tariff = count($list_tariff);
-$FG_TABLE_CLAUSE =  "cc_card_group.id_agent=".$_SESSION['agent_id'] ;
+$FG_TABLE_CLAUSE =  ["cc_card_group.id_agent" => $_SESSION['agent_id']] ;
 $instance_table_group=  new Table("cc_card_group", " id, name ");
-$list_group = $instance_table_group  -> get_list ($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "name");
+$list_group = $instance_table_group  -> getRows ($HD_Form->DBHandle, $FG_TABLE_CLAUSE, ["name"]);
 
 // FORM FOR THE GENERATION
 ?>

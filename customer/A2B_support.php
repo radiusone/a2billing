@@ -67,35 +67,35 @@ if ((strlen($description) > 0 || strlen($title) > 0) && is_numeric($priority) &&
     $ticket_table->addRow($HD_Form->DBHandle, $values, "id", $id_ticket);
     NotificationsDAO::AddNotification("ticket_added_cust", Notification::$LOW, Notification::$CUST, $_SESSION['card_id'], Notification::$LINK_TICKET_CUST, $id_ticket);
     $table_card =new Table("cc_card", "firstname, lastname, language, email");
-    $card_clause = "id = ".$_SESSION["card_id"];
-    $result=$table_card -> get_list($HD_Form->DBHandle, $card_clause);
-    $owner = $_SESSION["pr_login"]." (".$result[0]['firstname']." ".$result[0]['lastname'].")";
+    $card_clause = ["id" => $_SESSION["card_id"]];
+    $result=$table_card -> getRow($HD_Form->DBHandle, $card_clause);
+    $owner = $_SESSION["pr_login"]." (".$result['firstname']." ".$result['lastname'].")";
 
     try {
-        $mail = new Mail(Mail::$TYPE_TICKET_NEW, null, $result[0]['language']);
+        $mail = new Mail(Mail::$TYPE_TICKET_NEW, null, $result['language']);
         $mail->replaceInEmail(Mail::$TICKET_OWNER_KEY, $owner);
         $mail->replaceInEmail(Mail::$TICKET_NUMBER_KEY, $id_ticket);
         $mail->replaceInEmail(Mail::$TICKET_DESCRIPTION_KEY, $description);
         $mail->replaceInEmail(Mail::$TICKET_PRIORITY_KEY, Ticket::DisplayPriority($priority));
         $mail->replaceInEmail(Mail::$TICKET_STATUS_KEY,"NEW");
         $mail->replaceInEmail(Mail::$TICKET_TITLE_KEY, $title);
-        $mail->send($result[0]['email']);
+        $mail->send($result['email']);
     } catch (A2bMailException $e) {
         $error_msg = $e->getMessage();
     }
-    $component_table = new Table('cc_support_component LEFT JOIN cc_support ON id_support = cc_support.id', "email");
-    $component_clause = "cc_support_component.id = ".$component;
-    $result= $component_table -> get_list($HD_Form->DBHandle, $component_clause);
+    $component_table = new Table('cc_support_component LEFT JOIN cc_support ON id_support = cc_support.id', ["email"]);
+    $component_clause = ["cc_support_component.id" => $component];
+    $email = $component_table -> getValue($HD_Form->DBHandle, $component_clause);
 
     try {
-        $mail = new Mail(Mail::$TYPE_TICKET_NEW, null, $result[0]['language']);
+        $mail = new Mail(Mail::$TYPE_TICKET_NEW, null, $result['language']);
         $mail->replaceInEmail(Mail::$TICKET_OWNER_KEY, $owner);
         $mail->replaceInEmail(Mail::$TICKET_NUMBER_KEY, $id_ticket);
         $mail->replaceInEmail(Mail::$TICKET_DESCRIPTION_KEY, $description);
         $mail->replaceInEmail(Mail::$TICKET_PRIORITY_KEY, Ticket::DisplayPriority($priority));
         $mail->replaceInEmail(Mail::$TICKET_STATUS_KEY,"NEW");
         $mail->replaceInEmail(Mail::$TICKET_TITLE_KEY, $title);
-        $mail->send($result[0]['email']);
+        $mail->send($email);
     } catch (A2bMailException $e) {
         $error_msg = $e->getMessage();
     }
@@ -154,10 +154,9 @@ if ($form_action == "list") {
          <select NAME="component" class="form_input_select">
              <?php
                      $DBHandle  = DbConnect();
-                    $instance_sub_table = new Table("cc_support_component", "*");
-                 $QUERY = " activated = 1 AND (type_user = 0 OR type_user = 2)";
-                 $return = null;
-                 $return = $instance_sub_table -> get_list($DBHandle, $QUERY);
+                    $instance_sub_table = new Table("cc_support_component", ["id", "name"]);
+                 $QUERY = ["activated" => 1, "type_user" => ["IN", [0, 2]]];
+                 $return = $instance_sub_table -> getRows($DBHandle, $QUERY);
                      foreach ($return as $value) {
                         echo	'<option class=input value=" '. $value["id"].'"  > ' . $value["name"]. '  </option>' ;
                      }

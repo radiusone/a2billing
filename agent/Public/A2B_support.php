@@ -61,25 +61,25 @@ if (strlen($description)>0  && is_numeric($priority) && strlen($title)>0  && is_
         $values = ["creator" => $_SESSION["agent_id"], "creator_type" => 1, "title" => $title, "description" => $description, "id_component" => $component, "priority" => $priority, "viewed_agent" => 0];
         $ticket_table->addRow($HD_Form->DBHandle, $values, "id", $id_ticket);
         NotificationsDAO::AddNotification("ticket_added_agent",Notification::$MEDIUM,Notification::$AGENT,$_SESSION['agent_id'],Notification::$LINK_TICKET_AGENT,$id_ticket);
-        $table_agent =new Table("cc_agent", "firstname,lastname,language,email");
-        $agent_clause = "id = ".$_SESSION["agent_id"];
-        $result=$table_agent ->get_list($HD_Form->DBHandle, $agent_clause);
-        $owner = $_SESSION["pr_login"]." (".$result[0]['firstname']." ".$result[0]['lastname'].")";
+        $table_agent =new Table("cc_agent", ["firstname","lastname","language","email"]);
+        $agent_clause = ["id" => $_SESSION["agent_id"]];
+        $result=$table_agent ->getRow($HD_Form->DBHandle, $agent_clause);
+        $owner = $_SESSION["pr_login"]." (".$result['firstname']." ".$result['lastname'].")";
         try {
-            $mail = new Mail(Mail::$TYPE_TICKET_NEW, null, $result[0]['language']);
+            $mail = new Mail(Mail::$TYPE_TICKET_NEW, null, $result['language']);
             $mail->replaceInEmail(Mail::$TICKET_OWNER_KEY, $owner);
             $mail->replaceInEmail(Mail::$TICKET_NUMBER_KEY, $id_ticket);
             $mail->replaceInEmail(Mail::$TICKET_PRIORITY_KEY, Ticket::DisplayPriority($priority));
             $mail->replaceInEmail(Mail::$TICKET_DESCRIPTION_KEY, $description);
             $mail->replaceInEmail(Mail::$TICKET_STATUS_KEY,"NEW");
             $mail->replaceInEmail(Mail::$TICKET_TITLE_KEY, $title);
-            $mail->send($result[0]['email']);
+            $mail->send($result['email']);
         } catch (A2bMailException $e) {
             $error_msg = $e->getMessage();
         }
         $component_table = new Table('cc_support_component LEFT JOIN cc_support ON id_support = cc_support.id', "email");
-        $component_clause = "cc_support_component.id = ".$component;
-        $result= $component_table -> get_list($HD_Form->DBHandle, $component_clause);
+        $component_clause = ["cc_support_component.id" => $component];
+        $result= $component_table -> getValue($HD_Form->DBHandle, $component_clause);
 
         try {
             $mail = new Mail(Mail::$TYPE_TICKET_NEW, null, $result[0]['language']);
@@ -89,7 +89,7 @@ if (strlen($description)>0  && is_numeric($priority) && strlen($title)>0  && is_
             $mail->replaceInEmail(Mail::$TICKET_DESCRIPTION_KEY, $description);
             $mail->replaceInEmail(Mail::$TICKET_STATUS_KEY,"NEW");
             $mail->replaceInEmail(Mail::$TICKET_TITLE_KEY, $title);
-            $mail->send($result[0]['email']);
+            $mail->send($result);
         } catch (A2bMailException $e) {
             $error_msg = $e->getMessage();
         }
@@ -143,10 +143,10 @@ if ($form_action == "list") {
          <select NAME="component" class="form_input_select">
              <?php
                      $DBHandle  = DbConnect();
-                    $instance_sub_table = new Table("cc_support_component", "*");
-                 $QUERY = " activated = 1 AND (type_user = 1 OR type_user = 2)";
+                    $instance_sub_table = new Table("cc_support_component", ["id", "name"]);
+                 $QUERY = ["activated" => 1, "type_user" => ["in", [1, 2]]];
                  $return = null;
-                 $return = $instance_sub_table -> get_list($DBHandle, $QUERY);
+                 $return = $instance_sub_table -> getRows($DBHandle, $QUERY);
                      foreach ($return as $value) {
 
                         echo	'<option class=input value=" '. $value["id"].'"  > ' . $value["name"]. '  </option>' ;

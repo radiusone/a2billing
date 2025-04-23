@@ -399,9 +399,8 @@ $FG_TABLE_ALTERNATE_ROW_COLOR[] = "#F2F8FF";
 function linktonext_1($value) {
     $handle = DbConnect();
         $inst_table = new Table("cc_card_group", "id");
-        $FG_TABLE_CLAUSE = "name = '$value'";
-        $list_group = $inst_table -> get_list ($handle, $FG_TABLE_CLAUSE);
-        $id = $list_group[0][0];
+        $FG_TABLE_CLAUSE = ["name" => $value];
+        $id = $inst_table -> getValue ($handle, $FG_TABLE_CLAUSE);
     if ($id > 0) {
         echo "<a href=\"call-pnl-report.php?group_id=$id&report_type=1\">$value</a>";
     } else {
@@ -412,9 +411,8 @@ function linktonext_1($value) {
 function linktonext_2($value) {
         $handle = DbConnect();
         $inst_table = new Table("cc_tariffgroup", "id");
-        $FG_TABLE_CLAUSE = "tariffgroupname = '$value'";
-        $list_group = $inst_table -> get_list ($handle, $FG_TABLE_CLAUSE);
-        $id = $list_group[0][0];
+        $FG_TABLE_CLAUSE = ["tariffgroupname" => $value];
+        $id = $inst_table -> getValue ($handle, $FG_TABLE_CLAUSE) ?? 0;
     if ($id > 0) {
         echo "<a href=\"call-pnl-report.php?group_id=$id&report_type=2\">$value</a>";
     } else {

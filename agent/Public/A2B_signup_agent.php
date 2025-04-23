@@ -43,17 +43,12 @@ $FG_DEBUG = 0;
 
 $DBHandle  = DbConnect();
 
-$instance_table_tariffname = new Table("cc_tariffgroup LEFT JOIN cc_agent_tariffgroup ON cc_tariffgroup.id = cc_agent_tariffgroup.id_tariffgroup", "id, tariffgroupname");
+$instance_table_tariffname = new Table("cc_tariffgroup", ["id", "tariffgroupname"], ["cc_agent_tariffgroup" => ["cc_tariffgroup.id", "cc_agent_tariffgroup.id_tariffgroup"]]);
+$FG_TABLE_CLAUSE = ["id_agent" => $_SESSION['agent_id']];
+$list_tariffname = $instance_table_tariffname  -> getRows ($DBHandle, $FG_TABLE_CLAUSE, ["tariffgroupname"]);
 
-$FG_TABLE_CLAUSE = "id_agent = ".$_SESSION['agent_id'];
-
-$list_tariffname = $instance_table_tariffname  -> get_list ($DBHandle, $FG_TABLE_CLAUSE, "tariffgroupname");
-
-$instance_table_group = new Table("cc_card_group", "id, name");
-
-$FG_TABLE_CLAUSE = "id_agent = ".$_SESSION['agent_id'];
-
-$list_group = $instance_table_group -> get_list ($DBHandle, $FG_TABLE_CLAUSE, "id");
+$instance_table_group = new Table("cc_card_group", ["id", "name"]);
+$list_group = $instance_table_group -> getRows ($DBHandle, $FG_TABLE_CLAUSE, ["id"]);
 
 $disabled =false;
 

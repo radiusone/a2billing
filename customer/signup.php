@@ -61,10 +61,9 @@ getpost_ifset(array ('subscriber_signup'));
 
 if (!is_numeric($subscriber_signup)) {
     //check subscriber_signup
-    $table_check_subscriber = new Table("cc_subscription_signup", "COUNT(*)");
-    $clause_check_subscriber = "";
-    $result_check_subscriber = $table_check_subscriber->get_list(DbConnect(), $clause_check_subscriber);
-    $check_subscriber = $result_check_subscriber[0][0];
+    $table_check_subscriber = new Table("cc_subscription_signup", "COUNT(*) AS ct");
+    $result_check_subscriber = $table_check_subscriber->getRow(DbConnect());
+    $check_subscriber = $result_check_subscriber["ct"] ?? 0;
     if ($check_subscriber > 0) {
         Header("Location: signup_service.php");
         die();

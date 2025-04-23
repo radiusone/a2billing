@@ -54,9 +54,9 @@ if (empty($id)) {
 $DBHandle  = DbConnect();
 
 $payment_table = new Table('cc_logpayment', '*');
-$payment_clause = "id = ".$id;
-$payment_result = $payment_table -> get_list($DBHandle, $payment_clause);
-$payment = $payment_result[0];
+$payment_clause = ["id" => $id];
+$payment_result = $payment_table -> getRow($DBHandle, $payment_clause);
+$payment = $payment_result;
 
 if (empty($payment)) {
     header("Location: A2B_entity_payment.php?section=2");

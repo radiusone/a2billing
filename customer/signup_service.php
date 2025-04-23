@@ -48,9 +48,9 @@ $HD_Form = new FormHandler();
 $HD_Form->init();
 
 //check subscriber
-$table_subscriber = new Table("cc_subscription_signup", "*");
-$clause_subscriber = "enable = 1";
-$result_subscriber = $table_subscriber->get_list(DbConnect(), $clause_subscriber);
+$table_subscriber = new Table("cc_subscription_signup");
+$clause_subscriber = ["enable" => 1];
+$result_subscriber = $table_subscriber->getRows(DbConnect(), $clause_subscriber);
 
 // #### HEADER SECTION
 $smarty->display('signup_header.tpl');

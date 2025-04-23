@@ -101,22 +101,22 @@ if (!$fp) {
 fclose($fp);
 $DBHandle = DbConnect();
 $table_card = new Table("cc_card", "username,useralias,creationdate,vat,firstname,lastname");
-$card_clause = "id = $id";
-$result = $table_card->get_list($DBHandle, $card_clause);
+$card_clause = ["id" => $id];
+$result = $table_card->getRow($DBHandle, $card_clause);
 
-if (!is_array($result)) {
+if (!$result) {
     write_log($epayment_logfile, basename(__FILE__) . ' line:' . __LINE__ . "-PAYPAL Reccurring Payment Failed : card id( $id ) not found");
     die();
 }
 
-$card = $result[0];
-$username = $result[0]['username'];
-$creationdate = strtotime($result[0]['creationdate']);
-$useralias = $result[0]['useralias'];
-$vat = $result[0]['vat'];
-$firstname = $result[0]['firstname'];
-$lastname = $result[0]['lastname'];
-$email = $result[0]['email'];
+$card = $result;
+$username = $card['username'];
+$creationdate = strtotime($card['creationdate']);
+$useralias = $card['useralias'];
+$vat = $card['vat'];
+$firstname = $card['firstname'];
+$lastname = $card['lastname'];
+$email = $card['email'];
 $newkey = securitykey(EPAYMENT_TRANSACTION_KEY, $username . "^" . $id . "^" . $useralias . "^" . $creationdate);
 
 if ($newkey == $key) {
@@ -186,16 +186,16 @@ if (is_array($result_agent) && !is_null($result_agent[0]['id_agent']) && $result
     //test if the agent exist and get its commission
     $id_agent = $result_agent[0]['id_agent'];
     $agent_table = new Table("cc_agent", "commission");
-    $agent_clause = "id = " . $id_agent;
-    $result_agent = $agent_table->get_list($DBHandle, $agent_clause);
+    $agent_clause = ["id" => $id_agent];
+    $commission_amt = $agent_table->getValue($DBHandle, $agent_clause) ?? 0;
 
-    if (is_array($result_agent) && is_numeric($result_agent[0]['commission']) && $result_agent[0]['commission'] > 0) {
-        $commission = ceil(($amount_paid * ($result_agent[0]['commission']) / 100) * 100) / 100;
+    if ($commission_amt > 0) {
+        $commission = ceil(($amount_paid * ($commission_amt) / 100) * 100) / 100;
         $description_commission = gettext("AUTOMATICALY GENERATED COMMISSION!");
         $description_commission .= "\nID CARD : " . $id;
         $description_commission .= "\nID PAYMENT : " . $id_payment;
         $description_commission .= "\nPAYMENT AMOUNT: " . $amount_paid;
-        $description_commission .= "\nCOMMISSION APPLIED: " . $result_agent[0]['commission'];
+        $description_commission .= "\nCOMMISSION APPLIED: " . $commission_amt;
         $commission_table = new Table("cc_agent_commission");
         $values = ["id_payment" => $id_payment, "id_card" => $id, "amount" => $commission, "description" => $description_commission, "id_agent" => $id_agent];
         $commission_table->addRow($DBHandle, $values, "id", $id_commission);

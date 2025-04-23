@@ -63,12 +63,12 @@ if (isset ($choose_did_rate) && strlen($choose_did_rate) != 0) {
     $choose_did = $did_rate[0];
 
     // LIST FREE DID TO ADD PHONENUMBER
-    $instance_table_did = new Table("cc_did", "DISTINCT cc_did.id, did, fixrate, connection_charge, selling_rate, aleg_retail_connect_charge, aleg_retail_cost_min");
-    $FG_TABLE_CLAUSE = "id_cc_country=$choose_country and id_cc_didgroup='" . $_SESSION["id_didgroup"] . "' AND reserved=0 AND cc_did.id='" . $choose_did . "'";
-    $list_did = $instance_table_did->get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "did");
+    $instance_table_did = new Table("cc_did", ["DISTINCT cc_did.id", "did", "fixrate", "connection_charge", "selling_rate", "aleg_retail_connect_charge", "aleg_retail_cost_min"]);
+    $FG_TABLE_CLAUSE = ["id_cc_country" => $choose_country, "id_cc_didgroup" => $_SESSION["id_didgroup"], "reserved" => 0, "cc_did.id" => $choose_did];
+    $list_did = $instance_table_did->getRow($HD_Form->DBHandle, $FG_TABLE_CLAUSE, ["did"]);
     if ($list_did){
-        $choose_did = $list_did[0][0];
-        $rate = $list_did[0][2];
+        $choose_did = $list_did["id"];
+        $rate = $list_did["fixrate"];
     } else {
         $rate = $did_rate[1];
         if (!is_numeric($rate) || $rate < 0) {
@@ -250,9 +250,9 @@ if (!isset ($action_release) || $action_release == "confirm_release" || $action_
         }
     }
 
-    $instance_table_country = new Table("cc_country, cc_did", "cc_country.id, countryname");
-    $FG_TABLE_CLAUSE = "id_cc_country=cc_country.id and cc_did.reserved=0 group by cc_country.id, countryname ";
-    $list_country = $instance_table_country->get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "countryname");
+    $instance_table_country = new Table("cc_country", ["cc_country.id", "countryname"], ["cc_did" => ["cc_country.id", "id_cc_country"]]);
+    $FG_TABLE_CLAUSE = ["cc_did.reserved" => 0];
+    $list_country = $instance_table_country->getRows($HD_Form->DBHandle, $FG_TABLE_CLAUSE, ["countryname"], "asc", ["cc_country.id", "countryname"]);
     $nb_country = count($list_country);
 
     if (!isset ($new_did_page) || ($new_did_page == "")) {
@@ -264,16 +264,20 @@ if (!isset ($action_release) || $action_release == "confirm_release" || $action_
 
     if (isset ($choose_country)) {
         // LIST FREE DID TO ADD PHONENUMBER
-        $instance_table_did = new Table("cc_did", "DISTINCT cc_did.id, did, fixrate, connection_charge, selling_rate, aleg_retail_connect_charge, aleg_retail_cost_min");
-        $FG_TABLE_CLAUSE = "id_cc_country=$choose_country and id_cc_didgroup='" . $_SESSION["id_didgroup"] . "' and reserved=0";
-        $list_did = $instance_table_did->get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "did");
+        $instance_table_did = new Table("cc_did", ["DISTINCT cc_did.id", "did", "fixrate", "connection_charge", "selling_rate", "aleg_retail_connect_charge", "aleg_retail_cost_min"]);
+        $FG_TABLE_CLAUSE = ["id_cc_country" => $choose_country, "id_cc_didgroup" => $_SESSION["id_didgroup"], "reserved" => 0];
+        $list_did = $instance_table_did->getRows($HD_Form->DBHandle, $FG_TABLE_CLAUSE, ["did"]);
         $nb_did = count($list_did);
     } elseif ($assign >= 2) {
         // LIST USED DID TO ADD PHONENUMBER
-        $instance_table_did = new Table("cc_did LEFT JOIN cc_did_use ON id_did=cc_did.id", "cc_did.id, did, fixrate");
-        $FG_TABLE_CLAUSE = "id_cc_didgroup='" . $_SESSION["id_didgroup"] . "' and id_cc_card='" . $_SESSION["card_id"] . "' and cc_did_use.activated=1 AND ( releasedate IS NULL OR releasedate < '1984-01-01 00:00:00')  GROUP BY cc_did.id, did, fixrate ";
-        //$instance_table_did -> debug_st = 1;
-        $list_did = $instance_table_did->get_list($HD_Form->DBHandle, $FG_TABLE_CLAUSE, "did");
+        $instance_table_did = new Table("cc_did", ["cc_did.id", "did", "fixrate"], ["cc_did_use" => ["id_did", "cc_did.id"]]);
+        $FG_TABLE_CLAUSE = [
+            "id_cc_didgroup" => $_SESSION["id_didgroup"],
+            "id_cc_card" => $_SESSION["card_id"],
+            "cc_did_use.activated" => 1,
+            ["SUB", "releasedate" => [[null], ["<", "1984-01-01 00:00:00"]]]
+        ];
+        $list_did = $instance_table_did->getRows($HD_Form->DBHandle, $FG_TABLE_CLAUSE, ["did"], "asc", ["cc_did.id", "did", "fixrate"]);
         $nb_did = count($list_did);
     }
 ?>

@@ -53,19 +53,17 @@ if (strlen($voucher)>0) {
     if (is_numeric($voucher)) {
 
         sleep(2);
-        $FG_VOUCHER_TABLE  = "cc_voucher";
-        $FG_VOUCHER_FIELDS = "voucher, credit, activated, tag, currency, expirationdate";
-        $instance_sub_table = new Table($FG_VOUCHER_TABLE, $FG_VOUCHER_FIELDS);
+        $instance_sub_table = new Table("cc_voucher", ["currency", "credit"]);
 
-        $FG_TABLE_CLAUSE_VOUCHER = "expirationdate >= CURRENT_TIMESTAMP AND activated='t' AND voucher='$voucher'";
+        $FG_TABLE_CLAUSE_VOUCHER = ["expirationdate" =>  [">=", "CURRENT_TIMESTAMP"], "activated" => 't', "voucher" => $voucher];
 
-        $list_voucher = $instance_sub_table -> get_list ($HD_Form->DBHandle, $FG_TABLE_CLAUSE_VOUCHER, $order ?? "", $sens ?? "", (int)$limite ?? 0, (int)$current_record ?? 0);
+        $list_voucher = $instance_sub_table -> getValue($HD_Form->DBHandle, $FG_TABLE_CLAUSE_VOUCHER, [$order ?? ""], $sens ?? "asc", [], (int)($limite ?? 0), (int)($current_record ?? 0));
 
-        if ($list_voucher[0][0]==$voucher) {
-            if (!isset ($currencies_list[strtoupper($list_voucher[0][4])]["value"])) {
+        if ($list_voucher) {
+            if (!isset ($currencies_list[strtoupper($list_voucher["currency"])]["value"])) {
                 $error_msg = '<font face="Arial, Helvetica, sans-serif" size="2" color="red"><b>'.gettext("System Error : the currency table is incomplete!").'</b></font><br><br>';
             } else {
-                $add_credit = $list_voucher[0][1]*$currencies_list[strtoupper($list_voucher[0][4])]["value"];
+                $add_credit = $list_voucher["credit"]*$currencies_list[strtoupper($list_voucher["currency"])]["value"];
                 $QUERY = "UPDATE cc_voucher SET activated='f', usedcardnumber='".$_SESSION["pr_login"]."', usedate=now() WHERE voucher='".$voucher."'";
                 $result = $instance_sub_table -> SQLExec ($HD_Form -> DBHandle, $QUERY, 0);
 

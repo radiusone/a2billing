@@ -148,7 +148,7 @@ $instance_table_tariffname = new Table("cc_tariffplan", "id, tariffname");
 
 $con = "";
 
-$list_tariffname = $instance_table_tariffname  -> get_list ($HD_Form->DBHandle, $con, "tariffname");
+$list_tariffname = $instance_table_tariffname  -> getRows ($HD_Form->DBHandle, [], ["tariffname"]);
 
 $nb_tariffname = count($list_tariffname);
 
@@ -206,7 +206,7 @@ $(function() {
                           <select id="ratecard_source" NAME="ratecard_source" size="1"  style="width=250" class="form_input_select">
                             <option value=''><?php echo gettext("SOURCE RATECARD");?></option>
                             <?php foreach ($list_tariffname as $recordset) {?>
-                                <option class=input value='<?php  echo $recordset[0]?>' <?php if ($recordset[0]==$tariffplan) echo "selected";?>><?php echo $recordset[1]?></option>
+                                <option class=input value='<?php  echo $recordset["id"]?>' <?php if ($recordset["id"]==$tariffplan) echo "selected";?>><?php echo $recordset["tariffname"]?></option>
                             <?php }?>
                         </select>
                      </td>
@@ -217,7 +217,7 @@ $(function() {
                           <select id="ratecard_destination" NAME="ratecard_destination" size="1"  style="width=250" class="form_input_select">
                             <option value=''><?php echo gettext("DESTINATION RATECARD");?></option>
                             <?php foreach ($list_tariffname as $recordset) {?>
-                                <option class=input value='<?php  echo $recordset[0]?>' <?php if ($recordset[0]==$tariffplan) echo "selected";?>><?php echo $recordset[1]?></option>
+                                <option class=input value='<?php  echo $recordset["id"]?>' <?php if ($recordset["id"]==$tariffplan) echo "selected";?>><?php echo $recordset["tariffname"]?></option>
                             <?php }?>
                         </select>
                      </td>

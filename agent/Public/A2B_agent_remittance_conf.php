@@ -82,12 +82,12 @@ $commision_bal_cur = round($commision_bal_cur,3);
 $threshold_cur  =  $agent_info['threshold-remittance'] / $mycur;
 $threshold_cur = round($threshold_cur,3);
 $smarty->display( 'main.tpl');
-$table_remittance = $table_remittance = new Table("cc_remittance_request", '*');
-$remittance_clause = "id_agent = ".$_SESSION['agent_id']." AND status = 0";
-$result_remittance = $table_remittance -> get_list($DBHandle_max, $remittance_clause);
-if (is_array($result_remittance) && sizeof($result_remittance)>=1 ) {
+$table_remittance = $table_remittance = new Table("cc_remittance_request", ["amount"]);
+$remittance_clause = ["id_agent" => $_SESSION['agent_id'], "status" => 0];
+$result_remittance = $table_remittance -> getValue($DBHandle_max, $remittance_clause);
+if ($result_remittance) {
     $remittance_in_progress=true;
-    $remittance_value = $result_remittance[0]['amount'];
+    $remittance_value = $result_remittance;
 } else {
     $remittance_in_progress=false;
 }

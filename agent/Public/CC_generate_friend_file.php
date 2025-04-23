@@ -95,11 +95,12 @@ disallow, allow, host, callgroup, context, defaultip, fromuser, fromdomain, inse
 restrictcid, rtptimeout, rtpholdtimeout, musiconhold, regseconds, ipaddr, cancallforward';
 
     $list_names = explode(",",$FG_QUERY_EDITION);
+    array_walk($list_names, "trim");
 
-    $instance_table_friend = new Table($TABLE_BUDDY, 'id, ' . $FG_QUERY_EDITION);
-    $list_friend = $instance_table_friend -> get_list ($DBHandle, 'id > 0');
+    $instance_table_friend = new Table($TABLE_BUDDY, ["id"] + $list_names);
+    $list_friend = $instance_table_friend -> getRows ($DBHandle, ["id" => [">", 0]]);
 
-    if (!is_array($list_friend) || count($list_friend)==0) {
+    if (!$list_friend) {
         $error_msg= '<p style="text-align: center; font-weight: bold; color: red">' . gettext("There is no ") . $voip_type . '</p>';
     } else {
 

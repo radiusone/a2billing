@@ -76,13 +76,13 @@ $static_amount = false;
 $amount=0;
 if ($item_type == "invoice" && is_numeric($item_id)) {
     $table_invoice = new Table("cc_invoice", "status, paid_status");
-    $clause_invoice = "id = ".$item_id;
-    $result= $table_invoice -> get_list($DBHandle, $clause_invoice);
-    if (is_array($result) && $result[0]['status']==1 && $result[0]['paid_status']==0 ) {
+    $clause_invoice = ["id" => $item_id];
+    $result= $table_invoice -> getRow($DBHandle, $clause_invoice);
+    if (count($result) && $result['status']==1 && $result['paid_status']==0 ) {
         $table_invoice_item = new Table("cc_invoice_item", "COALESCE(SUM(price*(1+(vat/100))),0)");
-        $clause_invoice_item = "id_invoice = ".$item_id;
-        $result= $table_invoice_item -> get_list($DBHandle, $clause_invoice_item);
-        $amount = ceil($result[0][0] * 100) / 100;
+        $clause_invoice_item = ["id_invoice" => $item_id];
+        $result= $table_invoice_item -> getValue($DBHandle, $clause_invoice_item) ?? 0;
+        $amount = ceil($result * 100) / 100;
         $static_amount = true;
     } else {
         Header ("Location: userinfo.php");
