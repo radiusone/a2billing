@@ -4,8 +4,7 @@ namespace A2billing;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
-use Exception;
-use phpmailerException;
+use PHPMailer\PHPMailer\Exception;
 
 /**
  * This file is part of A2Billing (http://www.a2billing.net/)
@@ -48,87 +47,87 @@ class Mail
     private $to_email = '';
 
     //mail type
-    public static $TYPE_PAYMENT = 'payment';
-    public static $TYPE_REMINDER = 'reminder';
-    public static $TYPE_SIGNUP = 'signup';
-    public static $TYPE_FORGETPASSWORD = 'forgetpassword';
-    public static $TYPE_SIGNUPCONFIRM = 'signupconfirmed';
-    public static $TYPE_EPAYMENTVERIFY = 'epaymentverify';
-    public static $TYPE_REMINDERCALL = 'reminder';
-    public static $TYPE_SUBSCRIPTION_PAID = 'subscription_paid';
-    public static $TYPE_SUBSCRIPTION_UNPAID = 'subscription_unpaid';
-    public static $TYPE_SUBSCRIPTION_DISABLE_CARD = 'subscription_disable_card';
+    public static string $TYPE_PAYMENT = 'payment';
+    public static string $TYPE_REMINDER = 'reminder';
+    public static string $TYPE_SIGNUP = 'signup';
+    public static string $TYPE_FORGETPASSWORD = 'forgetpassword';
+    public static string $TYPE_SIGNUPCONFIRM = 'signupconfirmed';
+    public static string $TYPE_EPAYMENTVERIFY = 'epaymentverify';
+    public static string $TYPE_REMINDERCALL = 'reminder';
+    public static string $TYPE_SUBSCRIPTION_PAID = 'subscription_paid';
+    public static string $TYPE_SUBSCRIPTION_UNPAID = 'subscription_unpaid';
+    public static string $TYPE_SUBSCRIPTION_DISABLE_CARD = 'subscription_disable_card';
 
-    public static $TYPE_DID_PAID = 'did_paid';
-    public static $TYPE_DID_UNPAID = 'did_unpaid';
-    public static $TYPE_DID_RELEASED = 'did_released';
-    public static $TYPE_TICKET_NEW = 'new_ticket';
-    public static $TYPE_TICKET_MODIFY = 'modify_ticket';
-    public static $TYPE_INVOICE_TO_PAY = 'invoice_to_pay';
+    public static string $TYPE_DID_PAID = 'did_paid';
+    public static string $TYPE_DID_UNPAID = 'did_unpaid';
+    public static string $TYPE_DID_RELEASED = 'did_released';
+    public static string $TYPE_TICKET_NEW = 'new_ticket';
+    public static string $TYPE_TICKET_MODIFY = 'modify_ticket';
+    public static string $TYPE_INVOICE_TO_PAY = 'invoice_to_pay';
 
     //Used by mail type = invoice_to_pay
-    public static $INVOICE_TITLE_KEY = '$invoice_title$';
-    public static $INVOICE_REFERENCE_KEY = '$invoice_reference$';
-    public static $INVOICE_DESCRIPTION_KEY = '$invoice_description$';
-    public static $INVOICE_TOTAL_KEY = '$invoice_total$';
-    public static $INVOICE_TOTAL_VAT_KEY = '$invoice_total_vat$';
+    public static string $INVOICE_TITLE_KEY = '$invoice_title$';
+    public static string $INVOICE_REFERENCE_KEY = '$invoice_reference$';
+    public static string $INVOICE_DESCRIPTION_KEY = '$invoice_description$';
+    public static string $INVOICE_TOTAL_KEY = '$invoice_total$';
+    public static string $INVOICE_TOTAL_VAT_KEY = '$invoice_total_vat$';
 
     //Used by mail type = new_ticket AND modify_ticket
-    public static $TICKET_NUMBER_KEY = '$ticket_id$';
-    public static $TICKET_OWNER_KEY = '$ticket_owner$';
-    public static $TICKET_PRIORITY_KEY = '$ticket_priority$';
-    public static $TICKET_STATUS_KEY = '$ticket_status$';
-    public static $TICKET_TITLE_KEY = '$ticket_title$';
-    public static $TICKET_DESCRIPTION_KEY = '$ticket_description$';
+    public static string $TICKET_NUMBER_KEY = '$ticket_id$';
+    public static string $TICKET_OWNER_KEY = '$ticket_owner$';
+    public static string $TICKET_PRIORITY_KEY = '$ticket_priority$';
+    public static string $TICKET_STATUS_KEY = '$ticket_status$';
+    public static string $TICKET_TITLE_KEY = '$ticket_title$';
+    public static string $TICKET_DESCRIPTION_KEY = '$ticket_description$';
 
     //Used by mail type = modify_ticket
-    public static $TICKET_COMMENT_CREATOR_KEY = '$comment_creator$';
-    public static $TICKET_COMMENT_DESCRIPTION_KEY = '$comment_description$';
+    public static string $TICKET_COMMENT_CREATOR_KEY = '$comment_creator$';
+    public static string $TICKET_COMMENT_DESCRIPTION_KEY = '$comment_description$';
 
     //Used by mail type = did_paid
-    public static $BALANCE_REMAINING_KEY = '$balance_remaining$';
+    public static string $BALANCE_REMAINING_KEY = '$balance_remaining$';
 
     //Used by mail type = subscription_paid OR subscription_unpaid
-    public static $SUBSCRIPTION_LABEL = '$subscription_label$';
-    public static $SUBSCRIPTION_ID = '$subscription_id$';
-    public static $SUBSCRIPTION_FEE = '$subscription_fee$';
+    public static string $SUBSCRIPTION_LABEL = '$subscription_label$';
+    public static string $SUBSCRIPTION_ID = '$subscription_id$';
+    public static string $SUBSCRIPTION_FEE = '$subscription_fee$';
 
     //Used by mail type = did_paid OR did_unpaid OR did_released
-    public static $DID_NUMBER_KEY = '$did$';
-    public static $DID_COST_KEY = '$did_cost$';
+    public static string $DID_NUMBER_KEY = '$did$';
+    public static string $DID_COST_KEY = '$did_cost$';
 
     //Used by mail type = did_unpaid  & subscription_unpaid
-    public static $DAY_REMAINING_KEY = '$days_remaining$';
-    public static $INVOICE_REF_KEY = '$invoice_ref$';
+    public static string $DAY_REMAINING_KEY = '$days_remaining$';
+    public static string $INVOICE_REF_KEY = '$invoice_ref$';
 
     //Used by mail type = epaymentverify
-    public static $TIME_KEY = '$time$';
-    public static $PAYMENTGATEWAY_KEY = '$paymentgateway$';
+    public static string $TIME_KEY = '$time$';
+    public static string $PAYMENTGATEWAY_KEY = '$paymentgateway$';
 
     //Used by mail type = payment
-    public static $ITEM_NAME_KEY = '$itemName$';
-    public static $ITEM_ID_KEY = '$itemID$';
-    public static $PAYMENT_METHOD_KEY = '$paymentMethod$';
-    public static $PAYMENT_STATUS_KEY = '$paymentStatus$';
+    public static string $ITEM_NAME_KEY = '$itemName$';
+    public static string $ITEM_ID_KEY = '$itemID$';
+    public static string $PAYMENT_METHOD_KEY = '$paymentMethod$';
+    public static string $PAYMENT_STATUS_KEY = '$paymentStatus$';
 
     //used by type = payment and type = epaymentverify
-    public static $ITEM_AMOUNT_KEY = '$itemAmount$';
+    public static string $ITEM_AMOUNT_KEY = '$itemAmount$';
 
     //used in all mail
-    public static $CUSTOMER_EMAIL_KEY = '$email$';
-    public static $CUSTOMER_FIRSTNAME_KEY = '$firstname$';
-    public static $CUSTOMER_LASTNAME_KEY = '$lastname$';
-    public static $CUSTOMER_CREDIT_BASE_CURRENCY_KEY = '$credit$';
-    public static $CUSTOMER_CREDIT_IN_OWN_CURRENCY_KEY = '$creditcurrency$';
-    public static $CUSTOMER_CURRENCY = '$currency$';
-    public static $CUSTOMER_CARDNUMBER_KEY = '$cardnumber$';
-    public static $CUSTOMER_PASSWORD_KEY = '$password$';
-    public static $CUSTOMER_LOGIN = '$login$';
-    public static $CUSTOMER_LOGINKEY = '$loginkey$';
-    public static $CUSTOMER_CREDIT_NOTIFICATION = '$credit_notification$';
+    public static string $CUSTOMER_EMAIL_KEY = '$email$';
+    public static string $CUSTOMER_FIRSTNAME_KEY = '$firstname$';
+    public static string $CUSTOMER_LASTNAME_KEY = '$lastname$';
+    public static string $CUSTOMER_CREDIT_BASE_CURRENCY_KEY = '$credit$';
+    public static string $CUSTOMER_CREDIT_IN_OWN_CURRENCY_KEY = '$creditcurrency$';
+    public static string $CUSTOMER_CURRENCY = '$currency$';
+    public static string $CUSTOMER_CARDNUMBER_KEY = '$cardnumber$';
+    public static string $CUSTOMER_PASSWORD_KEY = '$password$';
+    public static string $CUSTOMER_LOGIN = '$login$';
+    public static string $CUSTOMER_LOGINKEY = '$loginkey$';
+    public static string $CUSTOMER_CREDIT_NOTIFICATION = '$credit_notification$';
 
     //used in all mail
-    public static $SYSTEM_CURRENCY = '$base_currency$';
+    public static string $SYSTEM_CURRENCY = '$base_currency$';
 
     public function __construct($type, $id_card = null, $lg = null, $msg = null, $title = null)
     {
@@ -202,20 +201,20 @@ class Mail
                 $credit_currency = $credit / $mycur;
                 $credit_currency = round($credit_currency, 3);
                 $this->to_email = $card['email'];
-                $this->replaceInEmail(self :: $CUSTOMER_CARDNUMBER_KEY, $card['username']);
-                $this->replaceInEmail(self :: $CUSTOMER_EMAIL_KEY, $card['email']);
-                $this->replaceInEmail(self :: $CUSTOMER_FIRSTNAME_KEY, $card['firstname']);
-                $this->replaceInEmail(self :: $CUSTOMER_LASTNAME_KEY, $card['lastname']);
-                $this->replaceInEmail(self :: $CUSTOMER_LOGIN, $card['useralias']);
-                $this->replaceInEmail(self :: $CUSTOMER_LOGINKEY, $card['loginkey']);
-                $this->replaceInEmail(self :: $CUSTOMER_PASSWORD_KEY, $card['uipass']);
-                $this->replaceInEmail(self :: $CUSTOMER_CREDIT_IN_OWN_CURRENCY_KEY, $credit_currency);
-                $this->replaceInEmail(self :: $CUSTOMER_CREDIT_BASE_CURRENCY_KEY, $credit);
-                $this->replaceInEmail(self :: $CUSTOMER_CURRENCY, $currency);
-                $this->replaceInEmail(self :: $CUSTOMER_CREDIT_NOTIFICATION, $card['credit_notification']);
+                $this->replaceInEmail(self::$CUSTOMER_CARDNUMBER_KEY, $card['username']);
+                $this->replaceInEmail(self::$CUSTOMER_EMAIL_KEY, $card['email']);
+                $this->replaceInEmail(self::$CUSTOMER_FIRSTNAME_KEY, $card['firstname']);
+                $this->replaceInEmail(self::$CUSTOMER_LASTNAME_KEY, $card['lastname']);
+                $this->replaceInEmail(self::$CUSTOMER_LOGIN, $card['useralias']);
+                $this->replaceInEmail(self::$CUSTOMER_LOGINKEY, $card['loginkey']);
+                $this->replaceInEmail(self::$CUSTOMER_PASSWORD_KEY, $card['uipass']);
+                $this->replaceInEmail(self::$CUSTOMER_CREDIT_IN_OWN_CURRENCY_KEY, $credit_currency);
+                $this->replaceInEmail(self::$CUSTOMER_CREDIT_BASE_CURRENCY_KEY, $credit);
+                $this->replaceInEmail(self::$CUSTOMER_CURRENCY, $currency);
+                $this->replaceInEmail(self::$CUSTOMER_CREDIT_NOTIFICATION, $card['credit_notification']);
 
             }
-            $this->replaceInEmail(self :: $SYSTEM_CURRENCY, BASE_CURRENCY);
+            $this->replaceInEmail(self::$SYSTEM_CURRENCY, BASE_CURRENCY);
         }
     }
 
@@ -292,10 +291,8 @@ class Mail
         }
         try {
             a2b_mail($this->to_email, $this->title, $this->message, $this->from_email, $this->from_name);
-        } catch (phpmailerException $e) {
+        } catch (Exception $e) {
             throw new A2bMailException("Error sent mail : ".$e->getMessage()."\n");
         }
-
     }
-
 }
