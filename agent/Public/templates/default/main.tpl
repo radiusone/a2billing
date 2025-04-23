@@ -157,7 +157,7 @@
 		<ul>
 			<li><ul>
 					<li><a href="A2B_report_calls.php?section=6">{_("CDR Report")}</a></li>
-					<li><a href="call-last-month.php?section=6">{_("Monthly Traffic")}</a></li>
+					<li><a href="A2B_report_monthly.php?section=6">{_("Monthly Traffic")}</a></li>
 			</ul></li>
 		</ul>
 	</div>

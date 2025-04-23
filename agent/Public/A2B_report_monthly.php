@@ -1,6 +1,6 @@
 <?php
 
-use A2billing\Admin;
+use A2billing\Agent;
 use A2billing\Forms\FormHandler;
 use Amenadiel\JpGraph\Graph\Graph;
 
@@ -37,24 +37,23 @@ use Amenadiel\JpGraph\Graph\Graph;
  *
  **/
 
-$menu_section = 5;
-require_once __DIR__ . "/../../common/lib/admin.defines.php";
+$menu_section = 6;
+require_once __DIR__ . "/../../common/lib/agent.defines.php";
+/**
+ * @var Smarty $smarty
+ */
 require_once __DIR__ . "/../../common/form_data/report_monthly.inc";
 /**
  * @var FormHandler $HD_Form
  * @var array $time_data
  * @var Graph $time_graph
- * @var array $profit_data
- * @var Graph $profit_graph
  * @var array $revenue_data
  * @var Graph $revenue_graph
- * @var array $cost_data
- * @var Graph $cost_graph
  */
 
-Admin::checkPageAccess(Admin::ACX_CALL_REPORT);
+Agent::checkPageAccess(Agent::ACX_CALL_REPORT);
 
-require_once __DIR__ . "/../templates/main.php";
+$smarty->display('main.tpl');
 
 $HD_Form->create_search_form();
 $HD_Form->create_toppage("list");
@@ -72,30 +71,12 @@ $HD_Form->create_toppage("list");
 <div class="row">
     <div class="mb-3">
         <img
-            src="<?= graphToDataUri($profit_graph) ?>"
-            alt=""
-            data-graphdata="<?= htmlspecialchars(json_encode($profit_data)) ?>"
-        />
-    </div>
-</div>
-<div class="row">
-    <div class="mb-3">
-        <img
             src="<?= graphToDataUri($revenue_graph) ?>"
             alt=""
             data-graphdata="<?= htmlspecialchars(json_encode($revenue_data)) ?>"
         />
     </div>
 </div>
-<div class="row">
-    <div class="mb-3">
-        <img
-            src="<?= graphToDataUri($cost_graph) ?>"
-            alt=""
-            data-graphdata="<?= htmlspecialchars(json_encode($cost_data)) ?>"
-        />
-    </div>
-</div>
 
 <?php
-require_once __DIR__ . "/../templates/footer.php";
+$smarty->display('footer.tpl');
