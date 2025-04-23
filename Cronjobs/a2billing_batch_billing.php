@@ -165,27 +165,27 @@ for ($page = 0; $page < $nbpagemax; $page++) {
                 $vat = $Customer['vat'];
 
             // FIND THE LAST BILLING
-            $billing_table = new Table('cc_billing_customer', 'id, date, id_invoice');
-            $clause_last_billing = "id_card = " . $card_id;
-            $result = $billing_table->get_list($A2B->DBHandle, $clause_last_billing, "date", "desc");
+            $billing_table = new Table('cc_billing_customer', ['id', 'date', 'id_invoice']);
+            $clause_last_billing = ["id_card" => $card_id];
+            $result = $billing_table->getRow($A2B->DBHandle, $clause_last_billing, ["date"], "desc");
 
-            $call_table = new Table('cc_call', ' COALESCE(SUM(sessionbill),0)');
-            $clause_call_billing = "card_id = " . $card_id . " AND ";
-            $clause_charge = "id_cc_card = " . $card_id . " AND ";
+            $call_table = new Table('cc_call', ['COALESCE(SUM(sessionbill),0)']);
+            $clause_call_billing = ["card_id" => $card_id];
+            $clause_charge = ["id_cc_card" => $card_id];
             $desc_billing = "";
             $desc_billing_postpaid = "";
             $start_date = null;
             $lastbilling_invoice = null;
-            if (is_array($result) && !empty ($result[0][0])) {
+            if ($result) {
                 if ($verbose_level >= 1)
-                    echo "\n Find the last billing -> Id card : " . $result[0][0];
+                    echo "\n Find the last billing -> Id card : " . $result["id"];
 
-                $clause_call_billing .= "stoptime >= '" . $result[0][1] . "' AND ";
-                $clause_charge .= "creationdate >= '" . $result[0][1] . "' AND  ";
-                $desc_billing = "Calls cost between the " . $result[0][1] . " and " . $date_now;
-                $desc_billing_postpaid = "Amount for period between the " .date("Y-m-d", strtotime($result[0][1])). " and " . $date_now;
-                $start_date = $result[0][1];
-                $lastbilling_invoice = $result[0][2];
+                $clause_call_billing[] = ["SUB", "stoptime" =>[[">=", $result["date"], ["<", $date_now]]]];
+                $clause_charge[] = ["SUB", "creationdate" => [[">=", $result["date"], ["<", $date_now]]]];
+                $desc_billing = "Calls cost between the " . $result["date"] . " and " . $date_now;
+                $desc_billing_postpaid = "Amount for period between the " .date("Y-m-d", strtotime($result["date"])). " and " . $date_now;
+                $start_date = $result["date"];
+                $lastbilling_invoice = $result["id_invoice"];
             } else {
                 $desc_billing = "Calls cost before the " . $date_now;
                 $desc_billing_postpaid = "Amount for period before the " . $date_now;
@@ -193,13 +193,18 @@ for ($page = 0; $page < $nbpagemax; $page++) {
 
             // RETRIEVE THE LAST POSTPAID AMOUNT -SUM OF ALL INVOICE ITEMS UNPAID FOR A POSTPAID USER
             $lastpostpaid_amount = 0;
-            $query_table = "cc_billing_customer LEFT JOIN cc_invoice ON cc_billing_customer.id_invoice = cc_invoice.id ";
-            $query_table .= "LEFT JOIN (SELECT st1.id_invoice, TRUNCATE(SUM(st1.price),2) as total_price FROM cc_invoice_item AS st1 WHERE st1.type_ext ='POSTPAID' GROUP BY st1.id_invoice ) as items ON items.id_invoice = cc_invoice.id";
-            $invoice_table = new Table($query_table, 'SUM( items.total_price) as total');
-            $lastinvoice_clause = "cc_billing_customer.id_card = $card_id AND cc_invoice.paid_status=0";
-            $result_lastinvoice = $invoice_table ->get_list($A2B->DBHandle, $lastinvoice_clause);
-            if (is_array($result_lastinvoice) && !empty($result_lastinvoice[0][0])) {
-                $lastpostpaid_amount = $result_lastinvoice [0][0];
+            $invoice_table = new Table(
+                "cc_billing_customer",
+                ["SUM(items.total_price) as total"],
+                [
+                    "cc_invoice" => ["cc_billing_customer.id_invoice", "cc_invoice.id"],
+                    "(SELECT id_invoice, SUM(price) as total_price FROM cc_invoice_item WHERE type_ext ='POSTPAID' GROUP BY id_invoice) AS items" => ["items.id_invoice", "cc_invoice.id"]
+                ]
+            );
+            $lastinvoice_clause = ["cc_billing_customer.id_card" => $card_id, "cc_invoice.paid_status" => 0];
+            $result_lastinvoice = $invoice_table ->getRow($A2B->DBHandle, $lastinvoice_clause);
+            if ($result_lastinvoice) {
+                $lastpostpaid_amount = $result_lastinvoice["total"];
             }
 
             // INSERT CUSTOMER BILLING
@@ -212,9 +217,7 @@ for ($page = 0; $page < $nbpagemax; $page++) {
             if ($verbose_level >= 2)
                     echo "\n Add billing -> Id card : " . json_encode($values);
 
-            $clause_call_billing .= "stoptime < '" . $date_now . "' ";
-            $clause_charge .= "creationdate < '" . $date_now . "' ";
-            $result = $call_table->get_list($A2B->DBHandle, $clause_call_billing);
+            $result = $call_table->getRows($A2B->DBHandle, $clause_call_billing);
 
             // COMMON BEHAVIOUR FOR PREPAID AND POSTPAID -> GENERATE A RECEIPT FOR THE CALLS OF THE LAST PERIOD
             if (is_array($result) && is_numeric($result[0][0])) {
@@ -241,8 +244,8 @@ for ($page = 0; $page < $nbpagemax; $page++) {
 
             // GENERATE RECEIPT FOR CHARGE ALREADY PAID
             $table_charge = new Table("cc_charge", "*");
-            $result = $table_charge->get_list($A2B->DBHandle, $clause_charge . " AND charged_status = 1");
-            if (is_array($result)) {
+            $result = $table_charge->getRows($A2B->DBHandle, $clause_charge + ["charged_status" => 1]);
+            if ($result) {
                 $title = gettext("SUMMARY OF CHARGE");
                 $description = gettext("Summary of the paid charges since the last billing.");
                 $instance_table = new Table("cc_receipt");
@@ -267,9 +270,9 @@ for ($page = 0; $page < $nbpagemax; $page++) {
             $total_vat =0;
             // GENERATE INVOICE FOR CHARGE NOT YET CHARGED
             $table_charge = new Table("cc_charge", "*");
-            $result = $table_charge->get_list($A2B->DBHandle, $clause_charge . " AND charged_status = 0 AND invoiced_status = 0");
+            $result = $table_charge->getRows($A2B->DBHandle, $clause_charge + ["charged_status" => 0, "invoiced_status" => 0]);
             $last_invoice = null;
-            if (is_array($result) && sizeof($result) > 0) {
+            if ($result) {
                 $reference = Invoice::generateReference();
                 $title = gettext("BILLING");
                 $description = gettext("Invoice for the unpaid charges since the last billing.") . " " . $desc_billing_postpaid;

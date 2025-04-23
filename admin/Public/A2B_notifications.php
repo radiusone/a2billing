@@ -71,19 +71,17 @@ echo create_help(_("The Notification component is responsible for informing the 
 $key= "cron_notifications";
 $DBHandle  = DbConnect();
 $instance_config_table = new Table("cc_config", "id, config_value");
-$QUERY = " config_key = '".$key."' ";
-$return = null;
-$return = $instance_config_table -> get_list($DBHandle, $QUERY);
-$id_config = $return[0]["id"];
+$return = $instance_config_table->getRow($DBHandle, ["config_key" => $key]);
 
-if (!is_null($return)&& (!empty($return)>0)) {
+if ($return) {
+    $id_config = $return["id"];
 ?>
 
 <table align="center"  class="bgcolor_001" border="0" width="65%">
 <tr>
     <td>
     <?php
-        if($return[0]["config_value"]) echo gettext("Currently, the cron process of notifications is activated.");
+        if($return["config_value"]) echo gettext("Currently, the cron process of notifications is activated.");
         else echo gettext("Currently, the cron process of notification is deactivated.");
         echo '<br/>';
         echo gettext("Make sure that the cron files are correctly configured in the crontab!");
@@ -109,15 +107,12 @@ if (!is_null($return)&& (!empty($return)>0)) {
 
 // Load the list of values in the config table ! key=values_notifications
 $key= "values_notifications";
-$DBHandle  = DbConnect();
 $instance_config_table = new Table("cc_config", "id, config_value");
-$QUERY = " config_key = '".$key."' ";
-$return = null;
-$return = $instance_config_table -> get_list($DBHandle, $QUERY);
-$id_config = $return[0]["id"];
+$return = $instance_config_table->getRow($DBHandle, ["config_key" => $key]);
 
-if (!is_null($return)&& (!empty($return)>0) ) {
-    $values = explode(":",$return[0]["config_value"]);
+if ($return) {
+    $id_config = $return["id"];
+    $values = explode(":",$return["config_value"]);
 ?>
 <table align="center"  class="bgcolor_001" border="0" width="65%">
     <tr>
@@ -150,21 +145,18 @@ if (!is_null($return)&& (!empty($return)>0) ) {
 <?php
 // Load the list of values in the config table ! key=values_notifications
 $key= "delay_notifications";
-$DBHandle  = DbConnect();
 $instance_config_table = new Table("cc_config", "id, config_value");
-$QUERY = " config_key = '".$key."' ";
-$return = null;
-$return = $instance_config_table -> get_list($DBHandle, $QUERY);
-$id_config = $return[0]["id"];
+$return = $instance_config_table->getRow($DBHandle, ["config_key" => $key]);
 
-if (!is_null($return)&& (!empty($return)>0)) {
+if ($return) {
+    $id_config = $return["id"];
 ?>
 <table align="center"  class="bgcolor_001" border="0" width="65%">
 <tr>
     <td>
     <?php
-        $msg= gettext("Currently, the periodicity of notification is ").$return[0]["config_value"];
-        if($return[0]["config_value"] == 1) $msg.=gettext(" day");
+        $msg= gettext("Currently, the periodicity of notification is ").$return["config_value"];
+        if($return["config_value"] == 1) $msg.=gettext(" day");
         else $msg.=gettext(" days");
         $msg.='.';
         echo $msg;

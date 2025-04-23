@@ -136,9 +136,15 @@ require_once __DIR__ . "/../templates/main.php";
 //load rates
 $DBHandle = DbConnect();
 
-$table_rates = new Table("cc_package_rate JOIN cc_ratecard ON cc_ratecard.id = cc_package_rate.rate_id LEFT JOIN cc_prefix ON cc_prefix.prefix = cc_ratecard.destination ", "DISTINCT cc_ratecard.id,cc_prefix.destination, cc_ratecard.dialprefix");
-$rates_clauses = " cc_package_rate.package_id = $id";
-$result_rates=$table_rates ->get_list(DbConnect(), $rates_clauses);
+$table_rates = new Table(
+    "cc_package_rate",
+    ["DISTINCT cc_ratecard.id", "cc_prefix.destination", "cc_ratecard.dialprefix"],
+    [
+        "cc_ratecard" => ["cc_ratecard.id", "cc_package_rate.rate_id"],
+        "cc_prefix" => ["cc_prefix.prefix", "cc_ratecard.destination"],
+    ]
+);
+$result_rates = $table_rates->getRows(DbConnect(), ["cc_package_rate.package_id" => $id]);
 
 echo create_help(_("PACKAGES SYSTEM - FREE MINUTES, etc..."));
 

@@ -109,11 +109,11 @@ if (count($HD_Form->list_query_conditions)) {
     }
     $list_customer = $instance_cus_table -> getRows ($HD_Form->DBHandle, $HD_Form->list_query_conditions, [""], "ASC", [], $limit_massmail);
 } else {
-    $sql_clause = "email <> ''";
-    if ($_REQUEST['id']!=null) {
-        $sql_clause .= " AND id = '".$_REQUEST['id']."'";
+    $sql_clause = ["email" => ["!=", ""]];
+    if (isset($_REQUEST['id'])) {
+        $sql_clause["id"] = $_REQUEST["id"];
     }
-    $list_customer = $instance_cus_table -> get_list ($HD_Form->DBHandle, $sql_clause, "", "ASC", $limit_massmail);
+    $list_customer = $instance_cus_table->getRows($HD_Form->DBHandle, $sql_clause, [], "ASC", [], $limit_massmail);
 }
 
 $nb_customer = sizeof($list_customer);

@@ -78,7 +78,7 @@ class Realtime
             $table_name = $this -> FG_TABLE_IAX_NAME;
 
             $this -> instance_table = new Table($table_name, 'id, ' . $this->FG_QUERY_ADITION_IAX);
-            $list_friend = $this -> instance_table -> get_list($this->DBHandler);
+            $list_friend = $this -> instance_table -> getRows($this->DBHandler);
             $list_names = explode(",",$this -> FG_QUERY_ADITION_IAX);
 
         } else {
@@ -86,12 +86,12 @@ class Realtime
             $table_name = $this -> FG_TABLE_SIP_NAME;
 
             $this -> instance_table = new Table($table_name, 'id, ' . $this->FG_QUERY_ADITION_SIP);
-            $list_friend = $this -> instance_table -> get_list($this->DBHandler);
+            $list_friend = $this -> instance_table -> getRows($this->DBHandler);
             $list_names = explode(",",$this -> FG_QUERY_ADITION_SIP);
 
         }
 
-        if (is_array($list_friend)) {
+        if ($list_friend) {
             $fd =@ fopen($buddyfile, "w");
             if (!$fd) {
                 $error_msg = '<p style="text-align: center; font-weight: bold; color: red">' . gettext("Could not open buddy file") . $buddyfile . '</p>';

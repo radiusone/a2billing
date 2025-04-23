@@ -136,11 +136,11 @@ class Mail
 
         if (!empty ($type)) {
             $tmpl_table = new Table("cc_templatemail", "*");
-            $tmpl_clause = " mailtype = '$type'";
+            $tmpl_clause = ["mailtype" => $type];
             $order = null;
             $order_field = "";
             if (!empty ($lg)) {
-                $tmpl_clause .= " AND ( id_language = '$lg' OR  id_language = 'en' )";
+                $tmpl_clause["id_language"] = ["IN", [$lg, 'en']];
                 $order_field = 'id_language';
                 if (strcasecmp($lg, 'en') < 0) {
                     $order = 'ASC';
@@ -149,13 +149,13 @@ class Mail
                 }
             } elseif (!is_null($id_card) && is_numeric($id_card)) {
                 $card_table = new Table("cc_card", "*, IF((typepaid=1) AND (creditlimit IS NOT NULL), credit + creditlimit, credit) AS real_credit");
-                $card_clause = " id = " . $id_card;
-                $result_card = $card_table->get_list($DBHandle, $card_clause);
-                if (is_array($result_card) && sizeof($result_card) > 0)
-                    $card = $result_card[0];
+                $card_clause = ["id" => $id_card];
+                $result_card = $card_table->getRow($DBHandle, $card_clause);
+                if ($result_card)
+                    $card = $result_card;
                 $language = $card['language'];
                 if (!empty ($language)) {
-                    $tmpl_clause .= " AND ( id_language = '$language' OR  id_language = 'en' )";
+                    $tmpl_clause["id_language"] = ["IN", [$lg, 'en']];
                     $order_field = 'id_language';
                     if (strcasecmp($language, 'en') < 0) {
                         $order = 'ASC';
@@ -164,9 +164,9 @@ class Mail
                     }
                 }
             }
-            $result_tmpl = $tmpl_table->get_list($DBHandle, $tmpl_clause, $order_field, $order);
-            if (is_array($result_tmpl) && sizeof($result_tmpl) > 0) {
-                $mail_tmpl = $result_tmpl[0];
+            $result_tmpl = $tmpl_table->getRow($DBHandle, $tmpl_clause, [$order_field], $order);
+            if ($result_tmpl) {
+                $mail_tmpl = $result_tmpl;
                 $this->message = $mail_tmpl['messagetext'];
                 $this->title = $mail_tmpl['subject'];
                 $this->from_email = $mail_tmpl['fromemail'];
@@ -185,10 +185,10 @@ class Mail
                 $this->id_card = $id_card;
                 if (is_null($card)) {
                     $card_table = new Table("cc_card", "*, IF((typepaid=1) AND (creditlimit IS NOT NULL), credit + creditlimit, credit) AS real_credit");
-                    $card_clause = " id = " . $id_card;
-                    $result_card = $card_table->get_list($DBHandle, $card_clause);
-                    if (is_array($result_card) && sizeof($result_card) > 0)
-                        $card = $result_card[0];
+                    $card_clause = ["id" => $id_card];
+                    $result_card = $card_table->getRow($DBHandle, $card_clause);
+                    if ($result_card)
+                        $card = $result_card;
                 }
                 $credit = $card['real_credit'];
                 $credit = round($credit, 3);

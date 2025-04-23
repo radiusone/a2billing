@@ -226,13 +226,13 @@ for ($page = 0; $page < $nbpagemax; $page++) {
             case "bill" :
                 //select card
                 $table_card = new Table('cc_card', '*');
-                $card_clause = "id = ".$subscription['card_id'];
-                $result_card = $table_card -> get_list($A2B->DBHandle, $card_clause);
+                $card_clause = ["id" => $subscription['card_id']];
+                $result_card = $table_card -> getRow($A2B->DBHandle, $card_clause);
 
-                if (!is_array($result_card))
+                if (!$result_card)
                     break;
                 else
-                    $card = $result_card[0];
+                    $card = $result_card;
 
                 if (($card['credit'] + $card['typepaid'] * $card['creditlimit']) >= $subscription['fee']) {
 

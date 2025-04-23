@@ -19,10 +19,10 @@ Class payment {
     public function __construct($module = '')
     {
       global $payment, $language;
-      $instance_sub_table = new Table("cc_payment_methods", "payment_filename");
+      $instance_sub_table = new Table("cc_payment_methods", ["payment_filename"]);
       $DBHandle  = DbConnect();
       $return = null;
-      $return = $instance_sub_table -> get_list($DBHandle, $QUERY);
+      $return = $instance_sub_table -> getRows($DBHandle, $QUERY);
       $this ->modules = array();
 
       if (is_array($return)) {
