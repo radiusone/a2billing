@@ -29,7 +29,7 @@ INSERT INTO `cc_config_group` VALUES
 (11,'agi-conf1','This configuration group handles the AGI Configuration.'),
 (12,'notifications','This configuration group handles the notifcations configuration'),
 (13,'dashboard','This configuration group handles the dashboard configuration'),
-(14,'webagentui','This configuration group handles Web Agent Interface.');
+(14,'webagentui','This configuration group handles Web Agent Interface.'),
 (15,'invoice','This configuration group defines items displayed on invoice and receipts.');
 ALTER TABLE `cc_config_group` ENABLE KEYS;
 
@@ -29263,7 +29263,7 @@ INSERT INTO `cc_timezone` (`gmtzone`, `gmttime`, `gmtoffset`) VALUES
     ('(GMT+10:00) Hobart', 'GMT+10:00', 36000), 
     ('(GMT+10:00) Vladivostok', 'GMT+10:00', 36000), 
     ('(GMT+11:00) Magadan,  Solomon Is.,  New Caledonia', 'GMT+11:00', 39600), 
-    ('(GMT+12:00) Auckland,  Wellington', 'GMT+1200', 43200), 
+    ('(GMT+12:00) Auckland,  Wellington', 'GMT+12:00', 43200), 
     ('(GMT+12:00) Fiji,  Kamchatka,  Marshall Is.', 'GMT+12:00', 43200), 
     ('(GMT+13:00) Nuku alofa', 'GMT+13:00', 46800);
 ALTER TABLE `cc_timezone` ENABLE KEYS;
