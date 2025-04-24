@@ -199,7 +199,7 @@ if ($hour_detail_type === "fluctuation") {
     $graph = createBarGraph($change_load, $title);
 } else {
     // this is a line graph where each call gets a horizontal line covering its duration
-    $graph = createGraphBody($title);
+    $graph = createBarGraphBody($title);
     $graph->yscale->SetIntScale();
     $graph->yaxis->SetLabelFormatString("%1d call");
     $graph->yaxis->HideFirstLastLabel();
@@ -228,43 +228,3 @@ if ($hour_detail_type === "fluctuation") {
 <?php
 require_once __DIR__ . "/../templates/footer.php";
 
-function createBarGraph(array $data, string $title): Graph
-{
-    $graph = createGraphBody($title);
-
-    $graph->yaxis->SetTickPositions(range(0, ceil(max($data) * 1.1)));
-    $graph->xaxis->SetTickLabels(array_keys($data));
-
-    $bplot = new BarPlot(array_values($data));
-    $bplot->SetColor("yellow@0.3");
-    $bplot->SetWeight(2);
-    $bplot->SetFillColor('orange');
-    $bplot->SetShadow();
-    $bplot->value->SetFormat("%d");
-    $bplot->value->SetAlign("center");
-    $bplot->value->Show();
-    $graph->Add($bplot);
-
-    return $graph;
-}
-
-function createGraphBody($title): Graph {
-    $graph = new Graph(800, 600);
-    $graph->SetMargin(60, 60, 45, 90); //droit,gauche,haut,bas
-    $graph->SetMarginColor('white');
-    $graph->SetScale("textlin");
-    $graph->SetFrame(false);
-    $graph->SetBackgroundGradient('#FFFFFF', '#CDDEFF:0.8', GRAD_HOR, BGRAD_PLOT);
-    $graph->tabtitle->Set($title);
-    $graph->tabtitle->SetWidth(TABTITLE_WIDTHFULL);
-
-    $graph->xgrid->Show();
-    $graph->xgrid->SetColor('gray@0.5');
-    $graph->ygrid->SetColor('gray@0.5');
-    $graph->ygrid->SetFill(true, '#EFEFEF@0.5', '#CDDEFF@0.5');
-
-    $graph->yaxis->scale->SetGrace(3);
-    $graph->xaxis->SetLabelAngle(90);
-
-    return $graph;
-}

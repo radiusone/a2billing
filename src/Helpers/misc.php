@@ -3,6 +3,7 @@
 use A2billing\Connection;
 use A2billing\Table;
 use Amenadiel\JpGraph\Graph\Graph;
+use Amenadiel\JpGraph\Plot\BarPlot;
 use PHPMailer\PHPMailer\PHPMailer;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -1025,4 +1026,71 @@ function graphToDataUri(Graph $graph): string {
     }
 
     return "";
+}
+
+/**
+ * @param array $data keys are ignored
+ * @param Graph|null $graph if supplied, plot will be appended to this graph
+ * @return BarPlot
+ */
+function createBarPlot(array $data, Graph $graph = null): BarPlot
+{
+    $bplot = new BarPlot(array_values($data));
+    $bplot->SetColor("yellow@0.3");
+    $bplot->SetWeight(2);
+    $bplot->SetFillColor('orange');
+    $bplot->SetShadow();
+    $bplot->value->SetFormat("%d");
+    $bplot->value->SetAlign("center");
+    $bplot->value->Show();
+    if ($graph) {
+        $graph->Add($bplot);
+    }
+
+    return $bplot;
+}
+
+/**
+ * @param array $data associative array of data
+ * @param string $title the title of the graph, if creating one
+ * @param Graph|null $graph the graph object will be created if not passed
+ * @return Graph
+ */
+function createBarGraph(array $data, string $title, Graph $graph = null): Graph
+{
+    $graph ??= createBarGraphBody($title);
+
+    $graph->yaxis->SetTickPositions(range(0, ceil(max($data) * 1.1)));
+    $graph->xaxis->SetTickLabels(array_keys($data));
+
+    createBarPlot($data, $graph);
+
+    return $graph;
+}
+
+/**
+ * Create a graph body, for applying plots to
+ *
+ * @param $title
+ * @return Graph
+ */
+function createBarGraphBody($title): Graph {
+    $graph = new Graph(800, 600);
+    $graph->SetMargin(60, 60, 45, 90); //droit,gauche,haut,bas
+    $graph->SetMarginColor('white');
+    $graph->SetScale("textlin");
+    $graph->SetFrame(false);
+    $graph->SetBackgroundGradient('#FFFFFF', '#CDDEFF:0.8', GRAD_HOR, BGRAD_PLOT);
+    $graph->tabtitle->Set($title);
+    $graph->tabtitle->SetWidth(TABTITLE_WIDTHFULL);
+
+    $graph->xgrid->Show();
+    $graph->xgrid->SetColor('gray@0.5');
+    $graph->ygrid->SetColor('gray@0.5');
+    $graph->ygrid->SetFill(true, '#EFEFEF@0.5', '#CDDEFF@0.5');
+
+    $graph->yaxis->scale->SetGrace(3);
+    $graph->xaxis->SetLabelAngle(90);
+
+    return $graph;
 }
