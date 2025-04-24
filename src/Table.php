@@ -160,10 +160,15 @@ class Table
             || preg_match("/^case (when)?.*? end( as \w+)?$/", $value);
     }
 
-    /*
-     * ExecuteQuery
+    /**
+     * @param ADOConnection $DBHandle
+     * @param string $QUERY
+     * @param int $select If $select is not supplied then function check numrows so expect a SELECT query.
+     * @param int $cache
+     * @return array|bool
+     * @deprecated 3.2 use (get|add|update|delete)Row instead
      */
-    public function ExecuteQuery(ADOConnection $DBHandle, string $QUERY, int $cache = 0)
+    public function SQLExec(ADOConnection $DBHandle, string $QUERY, $select = 1, int $cache = 0)
     {
         if ($this->db_type === 'postgres') {
             // convert MySQLisms to be Postgres compatible
@@ -183,15 +188,6 @@ class Table
             $this->errstr = $DBHandle->ErrorMsg();
         }
 
-        return $res;
-    }
-
-    // If $select is not supplied then function check numrows
-    // so expect a SELECT query.
-
-    public function SQLExec(ADOConnection $DBHandle, string $QUERY, $select = 1, int $cache = 0)
-    {
-        $res = $this->ExecuteQuery($DBHandle, $QUERY, $cache);
         if (!$res) {
             return false;
         }
@@ -207,7 +203,6 @@ class Table
 
         return true;
     }
-
 
     /**
      * Fetch one or more rows with a proper parameterized statement
@@ -307,86 +302,6 @@ class Table
         $data = $this->getRow($db, $conditions, $order, $direction, $group);
 
         return $data[0] ?? null;
-    }
-
-    /**
-     * @deprecated 3.0 Use Table::getRows()
-     */
-    public function get_list(ADOConnection $DBHandle, string $where = "", string $orderby = "", string $sens = "ASC", int $limite = 0, int $current_record = 0, array $groupby = [])
-    {
-        $fields = implode(",", $this->fields);
-        $sql = "SELECT $fields FROM $this->table";
-
-        $sql_clause = "";
-        if (!empty($where)) {
-            $sql_clause = " WHERE $where";
-        }
-
-        $sql_orderby = "";
-        $sens = strtoupper($sens);
-        if ($sens !== "ASC" && $sens !== "DESC") {
-            $sens = "ASC";
-        }
-        $order = explode(",", $orderby);
-        if (is_array($order)) {
-            $order = array_filter($order);
-            array_walk(
-                $order,
-                fn (&$v) => $v = (str_contains($v, "(") ? $v : $this->quote_identifier($v)) . " $sens"
-            );
-            if (count($order)) {
-                $orderby = implode(",", $order);
-                $sql_orderby = " ORDER BY $orderby ";
-            }
-        }
-
-        $sql_limit = "";
-        if (is_numeric($limite) && $limite > 0 && is_numeric($current_record)) {
-            $sql_limit = " LIMIT $limite OFFSET $current_record";
-        }
-
-        $sql_group = "";
-        $groupby = array_filter($groupby);
-        if (count($groupby)) {
-            foreach($groupby as &$col) {
-                if (str_contains($col, "(")) {
-                    // don't want to parse function calls
-                    continue;
-                }
-                $col = str_replace(
-                    ".",
-                    $this->quote_identifier("."),
-                    $this->quote_identifier(trim($col))
-                );
-            }
-            $sql_group = "GROUP BY " . implode(",", $groupby);
-        }
-
-        $QUERY = $sql . $sql_clause . $sql_group;
-
-        if (!str_contains($QUERY, '%ORDER%')) {
-            $QUERY .= $sql_orderby;
-        } else {
-            $QUERY = str_replace("%ORDER%", $sql_orderby, $QUERY);
-        }
-
-        if (!str_contains($QUERY, '%LIMIT%')) {
-            $QUERY .= $sql_limit;
-        } else {
-            $QUERY = str_replace("%LIMIT%", $sql_limit, $QUERY);
-        }
-
-        $res = $this->ExecuteQuery($DBHandle, $QUERY);
-        if (!$res) {
-            return false;
-        }
-
-        $num = $res->RecordCount();
-        if ($num == 0) {
-            return [];
-        }
-
-        return $res->GetAll();
     }
 
     /**
