@@ -77,6 +77,8 @@ require_once __DIR__ . "/../templates/main.php";
 
 $HD_Form->create_search_form();
 
+// fake this since the report query is all aggregated but the conditions fetch multiple rows
+$HD_Form->FG_LIST_VIEW_PAGE_COUNT = 1;
 $HD_Form->create_toppage($form_action);
 $HD_Form->create_form("list", $list);
 
