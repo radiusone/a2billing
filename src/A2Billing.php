@@ -348,7 +348,7 @@ class A2Billing
         // add default values to config for uninitialized values
         //Card Number Length Code
         $card_length_range = $this->config['global']['interval_len_cardnumber'] ?? null;
-        $this->cardnumber_range = split_data($card_length_range);
+        $this->cardnumber_range = split_data($card_length_range) ?: 10;
 
         if (!count($this->cardnumber_range)) {
             echo gettext("Invalid card number length list defined in configuration.");

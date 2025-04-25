@@ -57,7 +57,7 @@ function get_cardlength(): int
     $db = DbConnect();
     $len = $db->CacheGetOne(86400, "SELECT config_value FROM cc_config WHERE config_key = 'interval_len_cardnumber' LIMIT 1");
     if ($len) {
-        $len = min(split_data($len));
+        $len = min(split_data($len) ?: 10);
     } else {
         $len = 10;
     }
@@ -65,15 +65,15 @@ function get_cardlength(): int
     return $len;
 }
 
-/*
-* function splitable_data
-* used by parameter like interval_len_cardnumber : 8-10, 12-18, 20
-* it will build an array with the different interval
-*/
+/**
+ * Converts a range string to array, e.g. "1-4,7,9" => [1, 2, 3, 4, 7, 9]
+ * @param string|null $values
+ * @return int[]
+ */
 function split_data(?string $values): array
 {
     $return = [];
-    $values_array = explode(",", $values);
+    $values_array = explode(",", "$values");
     foreach ($values_array as $value) {
         $minmax = explode("-", trim($value), 2);
         $minmax = array_filter($minmax, 'is_numeric');
@@ -86,7 +86,7 @@ function split_data(?string $values): array
     }
     sort($return);
 
-    return empty($return) ? [10] : array_unique($return);
+    return array_unique($return);
 }
 
 /*
