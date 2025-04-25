@@ -164,7 +164,11 @@ if (!$popup_select && is_admin()) {
     $HD_Form->AddListValue(abbr(_("Conn."), _("Connect Charge")), "connectcharge", "get_money");
 } elseif ($popup_select) {
     $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 7;
-    $HD_Form->AddListSelectActionButton("javascript:sendValue('|param|')");
+    $HD_Form->AddListSelectActionButton("javascript:sendRateToPackage('|param|')");
+} else {
+    $HD_Form->FG_FILTER_ENABLE = true;
+    $HD_Form->FG_FILTER_COLUMN = 'dialprefix';
+    $HD_Form->FG_FILTER_LABEL = _("Dial Prefix");
 }
 
 // Search form
@@ -626,7 +630,3 @@ if (ADVANCED_MODE) {
 $HD_Form->FG_SPLITABLE_FIELDS[] = 'dialprefix';
 
 $HD_Form->FG_INTRO_TEXT_ADITION = $HD_Form->FG_INTRO_TEXT_EDITION = sprintf(_("Rates must be entered in the base currency (%s)"), (BASE_CURRENCY));
-
-$HD_Form->FG_FILTER_ENABLE = true;
-$HD_Form->FG_FILTER_COLUMN = 'dialprefix';
-$HD_Form->FG_FILTER_LABEL = _("Dial Prefix");

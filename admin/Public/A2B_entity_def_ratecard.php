@@ -374,11 +374,11 @@ if ($form_action === "list" && !$popup_select): ?>
 <?php endif; // END if ($form_action == "list" && !$popup_select)
 
 /********************************* BATCH ASSIGNED ***********************************/
-if ($popup_select === "1"): // only triggered from A2B_package_manage_rates.php ?>
+if ($popup_select === "1"): // only triggered from A2B_info_package.php ?>
 <div class="row justify-content-center">
     <div class="col-auto">
         <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#batchAssignModal">
-            <?= _("Batch Assigned") ?>
+            <?= _("Batch Assign to Package") ?>
         </button>
     </div>
 </div>
@@ -387,11 +387,12 @@ if ($popup_select === "1"): // only triggered from A2B_package_manage_rates.php 
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modal-title-assign"><?= _("Batch Assign") ?></h5>
+                <h5 class="modal-title" id="modal-title-assign"><?= _("Batch Assign Rates to Package") ?></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form class="container-fluid form-striped" name="assignForm" id="assignForm" action="" method="post">
+                    <?= $HD_Form->csrf_inputs() ?>
                     <div class="row mb-1">
                         <div class="col">
                             <?= $HD_Form->FG_LIST_VIEW_ROW_COUNT ?> <?= _("rates selected!") ?>
@@ -468,38 +469,46 @@ if ($popup_select === "1"): // only triggered from A2B_package_manage_rates.php 
             </div> <!-- .modal-body -->
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?= _("Close") ?></button>
-                <button id="sendopener" class="btn btn-primary"><?= _("Batch Assigned") ?></button>
+                <button id="batchassign" class="btn btn-primary"><?= _("Batch Assign") ?></button>
             </div>
         </div> <!-- .modal-content -->
     </div> <!-- .modal-dialog -->
 </div> <!-- .modal -->
 
 <script>
-$("#sendopener").on('click', function () {
-    let id_trunk = "";
-    let id_tariffplan = "";
-    let tag = "";
-    let prefix = "";
-    const pack = '<?= $package ?>';
+function sendRateToPackage(rate) {
+    const pack = <?= (int)$package ?>;
+    window.opener.location.href = `A2B_info_package.php?id=${pack}&addrate=${rate}`;
+    window.close();
+}
 
-    if ($("#check[assign_id_trunk]:checked")) {
-        id_trunk = $("#assign_id_trunk").val();
+document.getElementById("batchassign").addEventListener('click', function () {
+    const pack = <?= (int)$package ?>;
+    let url = `A2B_info_package.php?id=${pack}&addbatchrate=true`;
+
+    if (document.getElementById("check[assign_id_trunk]")?.checked) {
+        const id_trunk = encodeURIComponent(document.getElementById("assign_id_trunk").value);
+        url += `&id_trunk=${id_trunk}`;
     }
 
-    if ($("#check[assign_idtariffplan]:checked").length) {
-        id_tariffplan = $("#assign_idtariffplan").val();
+    if (document.getElementById("check[assign_idtariffplan]")?.checked) {
+        const id_tariffplan = encodeURIComponent(document.getElementById("assign_idtariffplan").value);
+        url += `&id_tariffplan=${id_tariffplan}`;
     }
 
-    if ($("#check[assign_tag]:checked").length) {
-        tag = $("#assign_tag").val();
+    if (document.getElementById("check[assign_tag]")?.checked) {
+        const tag = encodeURIComponent(document.getElementById("assign_tag").value);
+        url += `&tag=${tag}`;
     }
 
-    if ($("#check[assign_prefix]:checked").length) {
-        const rb_prefix = $("#rbPrefix").val();
-        const assign_prefix = $("form[name=assignForm] *[name=assign_prefix]").val();
-        prefix = `${assign_prefix}&rbPrefix=${rb_prefix}`;
+    if (document.getElementById("check[assign_prefix]")?.checked) {
+        const rb_prefix = encodeURIComponent(document.getElementById("rbPrefix").value);
+        const assign_prefix = encodeURIComponent(document.getElementById("assign_prefix").value);
+        url += `&prefix=${assign_prefix}&rbPrefix=${rb_prefix}`;
     }
-    window.opener.location.href = `A2B_package_manage_rates.php?id=${pack}&addbatchrate=true&id_trunk=${id_trunk}&id_tariffplan=${id_tariffplan}&tag=${tag}&prefix=${prefix}`;
+
+    window.opener.location.href = url;
+    window.close();
 });
 </script>
 

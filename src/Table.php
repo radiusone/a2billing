@@ -407,7 +407,7 @@ class Table
         $source_fields = implode(",", array_map([self::class, "quote_identifier"], $source->fields));
         $source_table = $this->quote_identifier($source->table);
         $where = $this->processWhereClauseArray($conditions, $params);
-        $query = "INSERT INTO $table SELECT $source_fields FROM $source_table $where";
+        $query = "INSERT INTO $table SELECT $source_fields FROM $source_table WHERE $where";
         class_exists(Console::class) && Console::logQuery($query);
         $result = $db->Execute($query, $params);
         class_exists(Console::class) && Console::logQuery($query);
