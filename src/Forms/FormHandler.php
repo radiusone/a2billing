@@ -897,26 +897,46 @@ class FormHandler
     /**
      * @param string $label the label for the input
      * @param string $fieldname the name of the database column, also used for HTML element names
-     * @param bool $relative if true, this is an "x months ago" type input
-     * @param bool $recent if true, this is a "in the last x days" type input
      * @return void
      */
-    public function AddSearchDateInput(string $label, string $fieldname, bool $relative = false, bool $recent = false) {
+    public function AddSearchDateInput(string $label, string $fieldname)
+    {
         $column = $fieldname;
         $fieldname = str_replace(".", "^^", $fieldname);
         $inputnames = ["{$fieldname}_start", "{$fieldname}_end"];
-        if ($relative) {
-            unset($inputnames[0]);
-            $inputnames[1] .= "_months";
-        }
         $this->search_form_elements[] = [
             "label" => $label,
             "input" => $inputnames,
             "operator" => ["{$fieldname}_start_type", "{$fieldname}_end_type"],
             "column" => $column,
             "type" => "DATE",
-            "relative" => $relative,
-            "recent" => $recent,
+        ];
+    }
+
+    /**
+     * Adds a search input to look for relative values compared to the current date
+     * This can be used to search for e.g. calls from the last week, or cards not
+     * created in the last year
+     *
+     * @param string $label
+     * @param string $fieldname
+     * @param bool $start determines if current date is the start or end of the search range
+     * @param bool $months range will be 1-12 months if true, more recent otherwise (e.g. 1 hour, 1 day, 1 week, etc)
+     * @return void
+     */
+    public function AddSearchRelativeDateInput(string $label, string $fieldname, bool $start = false, bool $months = true): void
+    {
+        $column = $fieldname;
+        $fieldname .= $start ? "_start" : "_end";
+        $fieldname = str_replace(".", "^^", $fieldname);
+        $this->search_form_elements[] = [
+            "label" => $label,
+            "input" => [$fieldname],
+            "operator" => ["{$fieldname}_type"],
+            "column" => $column,
+            "type" => "RELATIVEDATE",
+            "start" => $start,
+            "months" => $months,
         ];
     }
 
@@ -1414,6 +1434,7 @@ class FormHandler
                 continue;
             }
             foreach ($el["input"] as $i => $input) {
+                $orig_input = $input;
                 $input = str_replace("^^", ".", $input);
                 if (!isset($processed[$input])) {
                     continue;
@@ -1422,12 +1443,26 @@ class FormHandler
                 if (!empty($el["operator"][$i])) {
                     $search[$el["operator"][$i]] = $processed[$el["operator"][$i]];
                 }
-                if ($el["type"] === "TEXT" || $el["type"] === "SINGLEDATE") {
-                    $this->do_field($input, $el["operator"][$i]);
-                } elseif ($el["type"] === "COMPARISON" || ($el["type"] === "DATE" && !empty($processed["enable_$input"]))) {
-                    $this->do_field_duration($el["column"], $el["operator"][$i], $input);
-                } elseif ($el["type"] === "SELECT" || $el["type"] === "SQL_SELECT" || $el["type"] === "POPUP") {
-                    $this->do_field($input);
+                switch ($el["type"]) {
+                    case "TEXT":
+                    case "SINGLEDATE":
+                        $this->do_field($input, $el["operator"][$i]);
+                        break;
+                    case "COMPARISON":
+                        $this->do_field_duration($el["column"], $el["operator"][$i], $input);
+                        break;
+                    case "RELATIVEDATE":
+                    case "DATE":
+                        if (!empty($processed["enable_$input"])) {
+                            // add a fake input so we know which enabling checkbox to check
+                            $this->_processed["{$orig_input}_relative"] = $el["type"] === "RELATIVEDATE";
+                            $this->do_field_duration($el["column"], $el["operator"][$i], $input);
+                        }
+                        break;
+                    case "SELECT":
+                    case "POPUP":
+                        $this->do_field($input);
+                        break;
                 }
             }
         }

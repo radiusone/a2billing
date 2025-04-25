@@ -189,7 +189,7 @@ $HD_Form->search_session_key = 'call_archive_selection';
 $HD_Form->search_form_title = gettext('Define specific criteria to search for call records');
 $HD_Form->search_delete_enabled = false;
 
-$HD_Form->AddSearchDateInput(_("Dates"), "starttime", true);
+$HD_Form->AddSearchRelativeDateInput(_("Dates"), "starttime");
 $HD_Form->AddSearchDateInput(_("Dates"), "starttime");
 $HD_Form->AddSearchPopupInput(_("Customer ID"), "card_id", "A2B_entity_card.php");
 $HD_Form->AddSearchPopupInput(_("Call Plan"), "id_tariffgroup", "A2B_entity_tariffgroup.php", 2);

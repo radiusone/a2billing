@@ -61,7 +61,7 @@ $HD_Form->search_session_key = 'call_log_selection';
 $HD_Form->search_form_title = gettext('Define specific criteria to search for call records');
 
 $HD_Form->AddSearchDateInput(_("Date"), "cc_call.starttime");
-$HD_Form->AddSearchDateInput(_("Date"), "cc_call.starttime", false, true);
+$HD_Form->AddSearchRelativeDateInput(_("Date"), "cc_call.starttime", true, false);
 $HD_Form->AddSearchPopupInput(_("Trunk"), "cc_call.id_trunk", "A2B_entity_trunk.php", 2);
 
 $form_action = "list";

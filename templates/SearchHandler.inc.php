@@ -126,8 +126,64 @@ use A2billing\Forms\FormHandler;
             <input type="hidden" name="<?= $item["operator"][0] ?>" value="2"/><!-- starts with -->
         </div>
 
+    <?php elseif ($item["type"] === "RELATIVEDATE"): ?>
+        <div class="col-8">
+            <div class="input-group">
+                <div class="input-group-text">
+                    <input
+                        type="checkbox"
+                        name="enable_<?= $item["input"][0] ?>"
+                        id="enable_<?= $item["input"][0] ?>_relative"
+                        value="true"
+                        aria-label="<?= _("enable the relative date search") ?>"
+                        <?php if (!empty($processed[$item["input"][0] . "_relative"]) && !empty($processed["enable_" . $item["input"][0]])): ?>checked="checked"<?php endif ?>
+                        class="form-check-input m-0 date-input-enabler relative-date"
+                    />&nbsp;<label for="enable_<?= $item["input"][0] ?>_relative" class="form-label form-label-sm m-0">
+                        <?= ($item["start"]) ? _("Since") : _("Before") ?>
+                    </label>
+                </div>
+                <select name="<?= $item["input"][0] ?>" id="<?= $item["input"][0] ?>_relative" class="form-select form-select-sm" aria-labelledby="item<?= $k ?>_label">
+            <?php if ($item["months"]): ?>
+                <?php for ($i = 1; $i <= 12; $i++): ?>
+                    <option value="<?= $val = (new DateTime("$i months ago"))->format("Y-m-d") ?>" <?php if (($processed[$item["input"][0]] ?? 0) === "$val"): ?>selected="selected"<?php endif ?>>
+                        <?= sprintf(ngettext("%d month ago", "%d months ago", $i), $i) ?>
+                    </option>
+                <?php endfor ?>
+            <?php else: ?>
+                    <option value="<?= $val = (new DateTime("1 hour ago"))->format("Y-m-d H:i") ?>" <?php if (($processed[$item["input"][0]] ?? 0) === "$val"): ?>selected="selected"<?php endif ?>>
+                        <?= sprintf(ngettext("%d hour ago", "%d hours ago", 1), 1) ?>
+                    </option>
+                    <option value="<?= $val = (new DateTime("6 hours ago"))->format("Y-m-d H:i") ?>" <?php if (($processed[$item["input"][0]] ?? 0) === "$val"): ?>selected="selected"<?php endif ?>>
+                        <?= sprintf(ngettext("%d hour ago", "%d hours ago", 6), 6) ?>
+                    </option>
+                    <option value="<?= $val = (new DateTime("1 day ago"))->format("Y-m-d H:00") ?>" <?php if (($processed[$item["input"][0]] ?? 0) === "$val"): ?>selected="selected"<?php endif ?>>
+                        <?= sprintf(ngettext("%d day ago", "%d days ago", 1), 1) ?>
+                    </option>
+                    <option value="<?= $val = (new DateTime("1 week ago"))->format("Y-m-d H:00") ?>" <?php if (($processed[$item["input"][0]] ?? 0) === "$val"): ?>selected="selected"<?php endif ?>>
+                        <?= sprintf(ngettext("%d week ago", "%d weeks ago", 1), 1) ?>
+                    </option>
+                    <option value="<?= $val = (new DateTime("1 month ago"))->format("Y-m-d") ?>" <?php if (($processed[$item["input"][0]] ?? 0) === "$val"): ?>selected="selected"<?php endif ?>>
+                        <?= sprintf(ngettext("%d month ago", "%d month ago", 1), 1) ?>
+                    </option>
+                    <option value="<?= $val = (new DateTime("2 months ago"))->format("Y-m-d") ?>" <?php if (($processed[$item["input"][0]] ?? 0) === "$val"): ?>selected="selected"<?php endif ?>>
+                        <?= sprintf(ngettext("%d month ago", "%d month ago", 2), 2) ?>
+                    </option>
+                    <option value="<?= $val = (new DateTime("3 months ago"))->format("Y-m-d") ?>" <?php if (($processed[$item["input"][0]] ?? 0) === "$val"): ?>selected="selected"<?php endif ?>>
+                        <?= sprintf(ngettext("%d month ago", "%d month ago", 3), 3) ?>
+                    </option>
+                    <option value="<?= $val = (new DateTime("6 months ago"))->format("Y-m-d") ?>" <?php if (($processed[$item["input"][0]] ?? 0) === "$val"): ?>selected="selected"<?php endif ?>>
+                        <?= sprintf(ngettext("%d month ago", "%d month ago", 6), 6) ?>
+                    </option>
+                    <option value="<?= $val = (new DateTime("1 year ago"))->format("Y-m-d") ?>" <?php if (($processed[$item["input"][0]] ?? 0) === "$val"): ?>selected="selected"<?php endif ?>>
+                        <?= sprintf(ngettext("%d year ago", "%d years ago", 1), 1) ?>
+                    </option>
+            <?php endif ?>
+                </select>
+                <input type="hidden" name="<?= $item["operator"][0] ?>" value="<?= $item["start"] ? 5 : 3 ?>"/><!-- gte or lt; assume they want midnight cutoff -->
+            </div>
+        </div>
+
     <?php elseif ($item["type"] === "DATE"): ?>
-        <?php if (!$item["relative"] && !$item["recent"]): ?>
         <div class="col-4">
             <div class="input-group">
                 <div class="input-group-text">
@@ -137,7 +193,7 @@ use A2billing\Forms\FormHandler;
                         id="enable_<?= $item["input"][0] ?>"
                         value="true"
                         aria-label="<?= _("enable the search start date")?>"
-                        <?php if ($processed["enable_" . $item["input"][0]] ?? ""): ?>checked="checked"<?php endif ?>
+                        <?php if (empty($processed[$item["input"][0] . "_relative"]) && !empty($processed["enable_" . $item["input"][0]])): ?>checked="checked"<?php endif ?>
                         class="form-check-input m-0 date-input-enabler"
                     />&nbsp;<label for="enable_<?= $item["input"][0] ?>" class="form-label form-label-sm m-0"><?=_("From") ?></label>
                 </div>
@@ -145,60 +201,23 @@ use A2billing\Forms\FormHandler;
                 <input type="hidden" name="<?= $item["operator"][0] ?>" value="5"/><!-- >= -->
             </div>
         </div>
-        <?php endif ?>
-
-        <div class="<?= $item["relative"] || $item["recent"] ? "col-8" : "col-4" ?>">
+        <div class="col-4">
             <div class="input-group">
                 <div class="input-group-text">
                     <input
                         type="checkbox"
                         name="enable_<?= $item["input"][1] ?>"
-                        id="enable_<?= $item["input"][1] . ($item["relative"] ? "_relative" : ($item["recent"] ? "_recent" : "")) ?>"
+                        id="enable_<?= $item["input"][1] ?>"
                         value="true"
                         aria-label="<?= _("enable the search end date") ?>"
-                        <?php if ($processed["enable_" . $item["input"][1]] ?? ""): ?>checked="checked"<?php endif ?>
-                        class="form-check-input m-0 date-input-enabler <?= $item["relative"] || $item["recent"] ? "relative-date" : "" ?>"
+                        <?php if (empty($processed[$item["input"][1] . "_relative"]) && !empty($processed["enable_" . $item["input"][1]])): ?>checked="checked"<?php endif ?>
+                        class="form-check-input m-0 date-input-enabler"
                     />&nbsp;<label for="enable_<?= $item["input"][1] ?>" class="form-label form-label-sm m-0">
-                        <?php if ($item["relative"]): ?>
-                        <?= _("Before") ?>
-                        <?php elseif ($item["recent"]): ?>
-                        <?= _("Since") ?>
-                        <?php else: ?>
                         <?= _("To") ?>
-                        <?php endif ?>
                     </label>
                 </div>
-            <?php if ($item["relative"]): ?>
-                <select name="<?= $item["input"][1] ?>" id="<?= $item["input"][1] ?>_relative" class="form-select form-select-sm" aria-labelledby="item<?= $k ?>_label">
-                    <?php for ($i = 1; $i <= 12; $i++): ?>
-                    <?php $val = (new DateTime("$i months ago"))->format("Y-m-d") ?>
-                        <option
-                            <?php if (($processed[$item["input"][1]] ?? 0) === "$val"): ?>selected="selected"<?php endif ?>
-                            value="<?= $val ?>"
-                        >
-                            <?= sprintf(ngettext("%d month ago", "%d months ago", $i), $i) ?>
-                        </option>
-                    <?php endfor ?>
-                </select>
-            <?php elseif ($item["recent"]): ?>
-                <select name="<?= $item["input"][1] ?>" id="<?= $item["input"][1] ?>_recent" class="form-select form-select-sm" aria-labelledby="item<?= $k ?>_label">
-                    <option value="<?= $val = (new DateTime("1 hour ago"))->format("Y-m-d H:00") ?>" <?= ($processed[$item["input"][1]] ?? 0) === "$val" ? "selected=\"selected\"" : "" ?>>
-                        <?= sprintf(ngettext("%d hour ago", "%d hours ago", 1), 1) ?>
-                    </option>
-                    <option value="<?= $val = (new DateTime("6 hours ago"))->format("Y-m-d H:00") ?>" <?= ($processed[$item["input"][1]] ?? 0) === "$val" ? "selected=\"selected\"" : "" ?>>
-                        <?= sprintf(ngettext("%d hour ago", "%d hours ago", 6), 6) ?>
-                    </option>
-                    <option value="<?= $val = (new DateTime("1 day ago"))->format("Y-m-d H:00") ?>" <?= ($processed[$item["input"][1]] ?? 0) === "$val" ? "selected=\"selected\"" : "" ?>>
-                        <?= sprintf(ngettext("%d day ago", "%d days ago", 1), 1) ?>
-                    </option>
-                    <option value="<?= $val = (new DateTime("1 week ago"))->format("Y-m-d H:00") ?>" <?= ($processed[$item["input"][1]] ?? 0) === "$val" ? "selected=\"selected\"" : "" ?>>
-                        <?= sprintf(ngettext("%d week ago", "%d weeks ago", 1), 1) ?>
-                    </option>
-                </select>
-            <?php else: ?>
                 <input type="date" name="<?= $item["input"][1] ?>" id="<?= $item["input"][1] ?>" value="<?= $processed[$item["input"][1]] ?? (new DateTime('first day of next month'))->format("Y-m-d") ?>" aria-label="<?= _("search end date") ?>" class="form-control form-control-sm"/>
-            <?php endif ?>
-                <input type="hidden" name="<?= $item["operator"][1] ?>" value="<?= $item["recent"] ? 5 : 2 ?>"/><!-- >= (recent) or <= -->
+                <input type="hidden" name="<?= $item["operator"][1] ?>" value="2"/><!-- <= -->
             </div>
         </div>
 
