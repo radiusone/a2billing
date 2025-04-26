@@ -182,8 +182,8 @@ $HD_Form->AddEditElement(
 $HD_Form->AddEditElement(
     _("QUALIFY"),
     "qualify",
-    "",
-    ["maxlength" => 7],
+    "( default : see 'qualify' key in System Settings group 'peer_friend' )",
+    ["maxlength" => 7] + ($adding ? ["value" => $A2B->config["peer_friend"]['qualify']] : []),
     null,
     _("Insert the qualify")
 );
@@ -202,8 +202,8 @@ $HD_Form->AddEditElement(
 $HD_Form->AddEditElement(
     _("ALLOW"),
     "allow",
-    _("Set allow codecs separated by a comma, e.g. gsm,alaw,ulaw ( default : ulaw,alaw,gsm,g729)"),
-    ["maxlength" => 40] + ($adding ? ["value" => "ulaw,alaw,gsm,g729"] : []),
+    _("Set allow codecs separated by a comma, e.g. gsm,alaw,ulaw ( default : see 'allow' key in System Settings group 'peer_friend')"),
+    ["maxlength" => 40] + ($adding ? ["value" => $A2B->config["peer_friend"]['allow']] : []),
     null,
     _("Insert the allow")
 );
@@ -212,8 +212,8 @@ $HD_Form->AddEditElement(
 $HD_Form->AddEditElement(
     _("HOST"),
     "host",
-    _("Use dynamic or set an IP ( default : dynamic )"),
-    ["maxlength" => 31] + ($adding ? ["value" => "dynamic"] : []),
+    _("Use dynamic or set an IP ( default : see 'host' key in System Settings group 'peer_friend' )"),
+    ["maxlength" => 31] + ($adding ? ["value" => $A2B->config["peer_friend"]['host']] : []),
     null,
     _("Insert the host")
 );
@@ -222,7 +222,7 @@ $HD_Form->AddEditElement(
 $HD_Form->AddEditElement(
     _("CONTEXT"),
     "context",
-    _("set the context for this user (default : a2billing )"),
+    _("set the context for this user (default : see 'context' key in System Settings group 'peer_friend' )"),
     ["maxlength" => 40] + ($adding ? ["value" => $A2B->config["peer_friend"]['context']] : []),
     null,
     _("Insert the context")
@@ -310,8 +310,8 @@ $HD_Form->AddEditElement(
 $HD_Form->AddEditElement(
     _("TYPE"),
     "type",
-    _("type = friend | peer | user ( default : friend )"),
-    ["maxlength" => 6] + ($adding ? ["value" => "friend"] : []),
+    _("type = friend | peer | user ( default : see 'type' key in System Settings group 'peer_friend' )"),
+    ["maxlength" => 6] + ($adding ? ["value" => $A2B->config["peer_friend"]['type']] : []),
     null,
     _("Insert the type")
 );
@@ -358,8 +358,8 @@ if ($voip_type === "sip") {
     $HD_Form->AddEditElement(
         _("NAT"),
         "nat",
-        _("nat = yes | no | never | route ( default : yes )"),
-        ["maxlength" => 50] + ($adding ? ["value" => "yes"] : []),
+        _("nat = yes | no | never | route ( default : see 'nat' key in System Settings group 'peer_friend' )"),
+        ["maxlength" => 50] + ($adding ? ["value" => $A2B->config["peer_friend"]['nat']] : []),
         null,
         _("Insert the nat")
     );
@@ -368,8 +368,8 @@ if ($voip_type === "sip") {
     $HD_Form->AddEditElement(
         _("DTMFMODE"),
         "dtmfmode",
-        _("dtmfmode = RFC2833 | INFO | INBAND | AUTO ( default : RFC2833 )"),
-        ["maxlength" => 7] + ($adding ? ["value" => "RFC2833"] : []),
+        _("dtmfmode = RFC2833 | INFO | INBAND | AUTO ( default : see 'dtmfmode' key in System Settings group 'peer_friend' )"),
+        ["maxlength" => 7] + ($adding ? ["value" => $A2B->config["peer_friend"]['dtmfmode']] : []),
         null,
         _("Insert the dtmfmode")
     );
@@ -807,17 +807,6 @@ if ($voip_type === "sip") {
     );
 }
 
-
-$field_list_edit = 'id_cc_card, name, accountcode, regexten, callerid, cid_number, amaflags, secret, qualify, disallow, allow, host, context, defaultip, language, port, regseconds, ipaddr, mohsuggest, auth, setvar, type, deny, permit';
-
-if ($voip_type=='sip') {
-	$field_list_edit .= ', username, md5secret, nat, dtmfmode, canreinvite, callgroup, fromuser, fromdomain, insecure, mailbox, mask, pickupgroup, restrictcid, rtptimeout, rtpholdtimeout, ' .
-			'musiconhold,  cancallforward, defaultuser, subscribemwi, vmexten, callingpres, usereqphone, incominglimit, subscribecontext, musicclass, allowtransfer, ' .
-			'autoframing, maxcallbitrate, outboundproxy, regserver, rtpkeepalive';
-} else {
-	$field_list_edit .= ', trunk, dbsecret, regcontext, sourceaddress, mohinterpret, inkeys, outkey,  sendani, fullname,  maxauthreq, encryption, transfer, jitterbuffer, ' .
-			'forcejitterbuffer, codecpriority, qualifysmoothing, qualifyfreqok, qualifyfreqnotok, timezone, adsi, requirecalltoken, maxcallnumbers, maxcallnumbers_nonvalidated';
-}
 
 $HD_Form->FG_FILTER_ENABLE = true;
 $HD_Form->FG_FILTER_COLUMN = 'name';
