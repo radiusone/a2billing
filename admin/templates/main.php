@@ -171,7 +171,7 @@ $menu_section ??= 0;
                             <li>
                                 <a class="link-dark rounded" href="A2B_entity_tariffplan.php"><?= _("RateCards") ?></a>
                                 <ul class="list-unstyled fw-normal ps-3 pb-1">
-                                    <li><a class="link-dark rounded" href="CC_ratecard_merging.php"><?= _("Merge") ?></a></li>
+                                    <li><a class="link-dark rounded" href="A2B_merge_ratecard.php"><?= _("Merge") ?></a></li>
                                 </ul>
                             </li>
                             <li>
