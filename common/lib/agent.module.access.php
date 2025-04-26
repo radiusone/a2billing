@@ -68,7 +68,7 @@ getpost_ifset (['pr_login', 'pr_password']);
 if (!isset($_SESSION['pr_login']) || !isset($_SESSION['pr_password']) || !isset($_SESSION['rights']) || ($_POST["done"] ?? "") === "submit_log") {
     if (($_POST["done"] ?? "") === "submit_log") {
 
-        $return = login ($pr_login, $pr_password);
+        $return = login($pr_login, $pr_password);
 
         if (!is_array($return)) {
             header ("HTTP/1.0 401 Unauthorized");
@@ -76,8 +76,8 @@ if (!isset($_SESSION['pr_login']) || !isset($_SESSION['pr_password']) || !isset(
             die();
         }
 
-        $agent_id = $return[0];
-        $rights = $return[1];
+        $agent_id = (int)$return["id"];
+        $rights = (int)$return["perms"];
 
         $_SESSION["pr_login"] = $pr_login;
         $_SESSION["pr_password"] = $pr_password;
@@ -136,6 +136,7 @@ function login (?string $user, ?string $pass)
                 ["pwd_encoded" => password_hash($pass, PASSWORD_DEFAULT)],
                 ["login" => $user]
             );
+
             return $row;
         }
     }
