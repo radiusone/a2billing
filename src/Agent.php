@@ -4,6 +4,7 @@ namespace A2billing;
 
 class Agent extends User
 {
+    public const ACX_NOACCESS = 0;
     public const ACX_ACCESS = 1;
     public const ACX_CUSTOMER = 1;
     public const ACX_BILLING = 2;
@@ -18,6 +19,7 @@ class Agent extends User
     public const ACX_SIGNUP = 1024;
     public const ACX_VOIPCONF = 2048;
     public const ACX_SEE_CUSTOMERS_CALLERID = 4096;
+    public const ACX_ALL_RIGHTS = 2 ^ 32 - 1;
 
     /** @var array|string[] pages that don't require authentication */
     private static array $open_pages = [

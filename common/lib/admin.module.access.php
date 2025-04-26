@@ -33,6 +33,7 @@
  *
 **/
 
+use A2billing\Agent;
 use A2billing\Logger;
 use A2billing\Table;
 
@@ -68,23 +69,18 @@ if (!isset($_SESSION['pr_login']) || !isset($_SESSION['pr_password']) || !isset(
 
         $return = login ($pr_login, $pr_password);
 
-        if (!is_array($return) || $return["perms"] === "0" || $return["groupid"] > 1 ) {
+        if (!is_array($return) || (int)$return["perms"] === Agent::ACX_NOACCESS || $return["groupid"] > 1 ) {
             header ("HTTP/1.0 401 Unauthorized");
             header ("Location: index.php?error=1");
             die();
         }
 
         $admin_id = (int)$return["userid"];
-
-        if ($return["groupid"] === "0") {
-            $rights = 33554431;
-        } else {
-            $rights = $return["perms"];
-        }
+        $groupid = (int)$return["groupid"];
 
         $_SESSION["pr_login"] = $return["login"];
         $_SESSION["pr_password"] = $pr_password;
-        $_SESSION["rights"] = $rights;
+        $_SESSION["rights"] = $groupid ? (int)$return["perms"] : Agent::ACX_ALL_RIGHTS;
         $_SESSION["is_admin"] = 1;
         $_SESSION["user_type"] = "ADMIN";
         $_SESSION["admin_id"] = $admin_id;
