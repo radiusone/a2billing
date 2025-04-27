@@ -29,7 +29,7 @@
 	<ul>
 		<li><ul>
 				<li><a href="agentinfo.php?section=4">{_("Account information")}</a></li>
-				<li><a href="A2B_entity_password.php?section=4">{_("Password")}</a></li>
+				<li><a href="A2B_update_password.php?section=4">{_("Password")}</a></li>
 				<li><a href="A2B_entity_remittance_request.php?section=4">{_("Historic Remittance")}</a></li>
 		</ul></li>
 	</ul>
