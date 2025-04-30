@@ -1524,7 +1524,7 @@ class FormHandler
                 }
                 $arr_value_to_import[$field] = $this->split_ranges($value);
                 $values[$field] = "%check_array%";
-            } elseif (!empty($processed[$field]) && $row["type"] !== "CAPTCHAIMAGE") {
+            } elseif ((isset($processed[$field]) && $processed[$field] !== "") && $row["type"] !== "CAPTCHAIMAGE") {
                 $values[$field] ??= $processed[$field];
             }
         } // endforeach with reference
