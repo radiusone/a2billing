@@ -36,6 +36,7 @@ use A2billing\Table;
  *
 **/
 
+$menu_section = 1;
 require_once __DIR__ . "/../../common/lib/agent.defines.php";
 require_once __DIR__ . "/../../common/form_data/FG_var_card.inc";
 
@@ -285,7 +286,7 @@ $form_action ??= "list";
 $list = $HD_Form -> perform_action($form_action);
 
 // #### HEADER SECTION
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 
 // #### HELP SECTION
 echo create_help(gettext("Bulk create customers in a single step. <br> Set the properties of the batch such as initial credit, account type and currency, then click on the GENERATE CUSTOMERS button to create the batch."));
@@ -467,4 +468,4 @@ $HD_Form -> create_form($form_action, $list);
 $HD_Form->setup_export();
 
 // #### FOOTER SECTION
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";

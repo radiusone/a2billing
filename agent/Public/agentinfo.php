@@ -79,7 +79,7 @@ if ($remittance_value) {
 $remittance_value_cur = $remittance_value/$mycur;
 $commision_bal_cur  =  $agent_info[13] / $mycur;
 $commision_bal_cur = round($commision_bal_cur,3);
-$smarty->display( 'main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 ?>
 
 <div>
@@ -228,4 +228,4 @@ if ($A2B->config["epayment_method"]['enable']) { ?>
 ?>
 </div>
 <?php
-$smarty->display( 'footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";

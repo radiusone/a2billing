@@ -41,7 +41,6 @@ $menu_section = 6;
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
 /**
  * @var A2Billing $A2B
- * @var Smarty $smarty
  */
 
 Admin::checkPageAccess(Admin::ACX_RATECARD);

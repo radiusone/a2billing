@@ -35,6 +35,7 @@ use A2billing\Table;
  *
 **/
 
+$menu_section = 8;
 require_once __DIR__ . "/../../common/lib/agent.defines.php";
 
 getpost_ifset(array( 'tariffplan', 'group','task'));
@@ -62,7 +63,7 @@ if ($task=="generate" && !empty($tariffplan) && !empty($group)) {
 
 ?>
 <?php
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 
 ?>
 <script type="text/javascript">
@@ -166,7 +167,7 @@ function submit_form(form)
 </center>
 
 <?php
-    $smarty->display('footer.tpl');
+    require_once __DIR__ . "/../templates/footer.php";
 ?>
 
 <script>

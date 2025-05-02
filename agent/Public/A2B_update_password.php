@@ -38,7 +38,6 @@ use A2billing\Table;
 require_once __DIR__ . "/../../common/lib/agent.defines.php";
 /**
  * @var string $form_action
- * @var Smarty $smarty
  */
 
 getpost_ifset(["NewPassword", "NewPassword2", "OldPassword"]);
@@ -75,7 +74,7 @@ if ($form_action === "ask-modif") {
     }
 }
 
-$smarty->display("main.tpl");
+require_once __DIR__ . "/../templates/main.php";
 ?>
     <div class="row pb-3 align-items-center" role="alert">
         <div class="col">
@@ -134,4 +133,4 @@ $smarty->display("main.tpl");
     </script>
 
 <?php
-$smarty->display("footer.tpl");
+require_once __DIR__ . "/../templates/footer.php";

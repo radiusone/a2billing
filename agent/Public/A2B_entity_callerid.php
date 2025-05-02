@@ -35,6 +35,7 @@ use A2billing\Agent;
  *
 **/
 
+$menu_section = 1;
 require_once __DIR__ . "/../../common/lib/agent.defines.php";
 require_once __DIR__ . "/form_data/FG_var_callerid.inc";
 
@@ -50,7 +51,7 @@ $form_action ??= "list";
 $list = $HD_Form -> perform_action($form_action);
 
 // #### HEADER SECTION
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 
 // #### HELP SECTION
 echo  create_help(gettext("Set the caller ID so that the customer calling in is authenticated on the basis of the callerID rather than with the account number"));
@@ -61,4 +62,4 @@ $HD_Form -> create_toppage ($form_action);
 $HD_Form -> create_form($form_action, $list) ;
 
 // #### FOOTER SECTION
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";

@@ -45,9 +45,9 @@ if (!isset($err_type)) {
 //Error Type == 0 Mean Critical Error dont need to show left menu.
 //Error Type == 1 Mean User generated error.and it will show menu to him too.
 if ($err_type == 0) {
-    $smarty->display('header.tpl');
+    require_once __DIR__ . "/../templates/header.php";
 } else {
-        $smarty->display('main.tpl');
+    require_once __DIR__ . "/../templates/main.php";
 }
 
 if (!isset($c))	$c="0";
@@ -94,5 +94,5 @@ if ($err_type == 0) {
     </div>
 <?php
 } else {
-    $smarty->display('footer.tpl');
+    require_once __DIR__ . "/../templates/footer.php";
 }

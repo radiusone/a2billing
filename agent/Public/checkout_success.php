@@ -46,7 +46,7 @@ getpost_ifset(array('errcode'));
 $epayment_logfile = $A2B->config['log-files']['epayment'] ?? "/tmp/a2billing_epayment_log";
 
 // #### HEADER SECTION
-$smarty->display( 'main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 ?>
 
 <br>
@@ -100,4 +100,4 @@ $smarty->display( 'main.tpl');
 </table>
 <?php
 // #### FOOTER SECTION
-$smarty->display( 'footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";
