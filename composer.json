@@ -31,7 +31,8 @@
     "ext-pdo": "*",
     "ext-pdo_sqlite": "*",
     "ext-posix": "*",
-    "ext-soap": "*"
+    "ext-soap": "*",
+    "twbs/bootstrap-icons": "^1.11"
   },
   "license": "AGPL",
   "authors": [
