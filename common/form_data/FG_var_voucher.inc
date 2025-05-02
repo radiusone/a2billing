@@ -40,7 +40,6 @@ use A2billing\Forms\Validator;
 /**
  * @var A2Billing $A2B
  */
-Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
 $HD_Form = new FormHandler("cc_voucher", _("Voucher"));
 

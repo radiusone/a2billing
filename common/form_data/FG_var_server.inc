@@ -37,8 +37,6 @@ use A2billing\Table;
  *
 **/
 
-Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
-
 $HD_Form = new FormHandler("cc_server_manager", _("Callback Server"));
 
 $HD_Form->FG_LIST_ADDING_BUTTON1 = true;

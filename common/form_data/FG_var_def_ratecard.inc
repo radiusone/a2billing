@@ -47,13 +47,6 @@ use A2billing\Table;
  * @var string $popup_formname
  * @var string $popup_fieldname
  */
-if (is_admin()) {
-    Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
-} elseif (is_agent()) {
-    Agent::checkPageAccess(Agent::ACX_ACCESS);
-} else {
-    Customer::checkPageAccess(Customer::ACX_RATECARD);
-}
 
 getpost_ifset(["tariffgroup", "posted", "cancelsearch_callplanlcr", "deleteselected", "letter"]);
 /**

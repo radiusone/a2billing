@@ -43,8 +43,6 @@ use A2billing\Table;
  * @var string $popup_fieldname
  */
 
-Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
-
 $HD_Form = new FormHandler("cc_tariffgroup", _("Call Plan"));
 
 $HD_Form->list_query_order_columns = ["tariffgroupname"];

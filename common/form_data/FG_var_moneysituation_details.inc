@@ -35,8 +35,6 @@ use A2billing\Forms\FormHandler;
  *
 **/
 
-Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
-
 getpost_ifset(["id", "type"]);
 /**
  * @var numeric-string|null $id

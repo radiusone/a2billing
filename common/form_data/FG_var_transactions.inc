@@ -36,8 +36,6 @@ use A2billing\Table;
  *
 **/
 
-Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
-
 getpost_ifset(["trans_type"]);
 /**
  * @var string|null $trans_type

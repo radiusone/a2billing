@@ -41,7 +41,6 @@ use A2billing\Forms\Validator;
 /**
  * @var numeric-string|null $popup_select
  */
-Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
 $HD_Form = new FormHandler("cc_logrefill_agent", "Agent Refill");
 

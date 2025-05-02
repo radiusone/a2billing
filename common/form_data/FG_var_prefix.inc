@@ -41,8 +41,6 @@ use A2billing\Forms\FormHandler;
  * @var string $popup_fieldname
  */
 
-Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
-
 $HD_Form = new FormHandler("cc_prefix", _("Prefix"), "prefix");
 
 $HD_Form->list_query_order_columns = ["destination"];

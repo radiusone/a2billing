@@ -40,7 +40,6 @@ use A2billing\Table;
 /**
  * @var A2Billing $A2B
  */
-Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
 getpost_ifset(["id_agent"]);
 /**

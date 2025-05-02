@@ -37,8 +37,6 @@ use A2billing\Table;
  *
 **/
 
-Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
-
 $HD_Form = new FormHandler("cc_service", _("Recurring Service"));
 
 $HD_Form->list_query_order_direction = "DESC";

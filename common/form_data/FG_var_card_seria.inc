@@ -36,8 +36,6 @@ use A2billing\Forms\Validator;
  *
 **/
 
-Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
-
 $HD_Form = new FormHandler("cc_card_seria", _("Card series"));
 
 $HD_Form->list_query_order_columns = ["name"];

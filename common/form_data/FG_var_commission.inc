@@ -44,8 +44,6 @@ use A2billing\Table;
  * @var numeric-string|null $form_action
  */
 
-Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
-
 getpost_ifset(["id_card"]);
 /**
  * @var numeric-string|null $id_card

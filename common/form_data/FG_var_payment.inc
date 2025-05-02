@@ -41,7 +41,6 @@ use A2billing\Forms\Validator;
  * @var numeric-string $popup_select
  * @var string $form_action
  */
-Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
 getpost_ifset(["card_id"]);
 /**

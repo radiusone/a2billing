@@ -42,7 +42,6 @@ use A2billing\Forms\Validator;
  * @var numeric-string $popup_select
  * @var string $form_action
  */
-Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
 $form_action ??= "list";
 

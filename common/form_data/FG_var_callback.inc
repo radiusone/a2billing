@@ -41,8 +41,6 @@ use A2billing\Table;
  * @var string $form_action
  */
 
-Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
-
 $HD_Form = new FormHandler("cc_callback_spool", _("Callback"));
 $HD_Form->list_query_order_columns = ["entry_time"];
 $HD_Form->list_query_order_direction  = "DESC";

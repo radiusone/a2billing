@@ -37,8 +37,6 @@ use A2billing\Table;
  *
 **/
 
-Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
-
 getpost_ifset(['id', 'calledstation', 'id_cc_card']);
 
 $HD_Form = new FormHandler("cc_call", _("Call"));

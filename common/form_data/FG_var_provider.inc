@@ -42,8 +42,6 @@ use A2billing\Forms\Validator;
  * @var string $popup_formname
  */
 
-Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
-
 $HD_Form = new FormHandler("cc_provider", _("Provider"));
 
 $HD_Form->FG_LIST_ADDING_BUTTON1 = true;

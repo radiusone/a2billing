@@ -42,7 +42,6 @@ use A2billing\Forms\Validator;
  * @var A2Billing $A2B
  * @var string $form_action
  */
-Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
 getpost_ifset(["voip_type", "friend_id"]);
 /**

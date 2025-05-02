@@ -36,7 +36,6 @@ use A2billing\Forms\Validator;
  *
  *
 **/
-Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
 $form_action ??= "list";
 $HD_Form = new FormHandler(

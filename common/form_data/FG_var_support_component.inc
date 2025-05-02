@@ -37,8 +37,6 @@ use A2billing\Table;
  *
 **/
 
-Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
-
 $HD_Form = new FormHandler("cc_support_component", _("Support Component"));
 
 $HD_Form->list_query_order_columns = ["name"];

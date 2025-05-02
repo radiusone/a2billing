@@ -37,8 +37,6 @@ use A2billing\Forms\Validator;
  *
 **/
 
-Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
-
 $HD_Form = new FormHandler("cc_currencies", _("Currencies"));
 
 $HD_Form->list_query_order_columns = ["currency"];

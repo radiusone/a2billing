@@ -42,8 +42,6 @@ use A2billing\Table;
 getpost_ifset(["popup_select"]);
 $popup_select ??= "";
 
-Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
-
 $form_action ??= "list";
 $col6_open = sprintf("'|col6|' === '%s'", _("OPEN"));
 $join_key = "(SELECT id_invoice, SUM(ROUND(price * (1 + vat / 100), 2)) AS total_price FROM cc_invoice_item GROUP BY id_invoice) AS items";

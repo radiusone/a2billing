@@ -37,8 +37,6 @@ use A2billing\Forms\Validator;
  *
  **/
 
-Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
-
 $HD_Form = new FormHandler("cc_monitor", _("Monitoring"));
 
 $HD_Form->FG_LIST_ADDING_BUTTON1 = true;

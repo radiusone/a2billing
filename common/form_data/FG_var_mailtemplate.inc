@@ -38,8 +38,6 @@ use A2billing\Table;
  *
 **/
 
-Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
-
 getpost_ifset(["from_id"]);
 /**
  * @var string $form_action

@@ -36,8 +36,6 @@ use A2billing\Forms\FormHandler;
  *
 **/
 
-Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
-
 $HD_Form = new FormHandler(
     "cc_agent",
     _("Agent"),

@@ -34,7 +34,6 @@ use A2billing\Forms\FormHandler;
  *
  *
 **/
-Admin::checkPageAccess(Admin::ACX_ACXSETTING);
 
 getpost_ifset(["agi_conf", "from_conf"]);
 /**

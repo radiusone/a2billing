@@ -41,8 +41,6 @@ use A2billing\Forms\FormHandler;
  * @var string $popup_fieldname
  */
 
-Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
-
 getpost_ifset(["card", "invoice"]);
 /**
  * @var string $card

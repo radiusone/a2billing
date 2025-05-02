@@ -40,8 +40,6 @@ use A2billing\Table;
  * @var string $form_action
  */
 
-Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
-
 $HD_Form = new FormHandler("cc_outbound_cid_list", _("CallerID"));
 
 $HD_Form ->list_query_order_columns = ["cid"];

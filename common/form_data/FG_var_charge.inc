@@ -40,7 +40,6 @@ use A2billing\Table;
 /**
  * @var string $form_action
  */
-Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
 $form_action ??= "list";
 $wantinclude ??= false;

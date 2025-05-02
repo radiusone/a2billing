@@ -39,8 +39,6 @@ use A2billing\Table;
  *
 **/
 
-Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
-
 getpost_ifset(["form_action", "popup_select", "popup_formname", "popup_fieldname"]);
 /**
  * @var string $form_action

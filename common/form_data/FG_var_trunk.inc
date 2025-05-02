@@ -44,8 +44,6 @@ use A2billing\Table;
  *
 **/
 
-Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
-
 $DBHandle  = DbConnect();
 
 $HD_Form = new FormHandler("cc_trunk", _("Trunk"), "id_trunk");

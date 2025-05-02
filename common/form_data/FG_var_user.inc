@@ -38,8 +38,6 @@ use A2billing\Forms\Validator;
  *
 **/
 
-Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
-
 getpost_ifset(['groupID', 'popup_select']);
 /**
  * @var numeric-string $groupID

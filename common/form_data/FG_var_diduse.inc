@@ -36,8 +36,6 @@ use A2billing\Forms\FormHandler;
  *
 **/
 
-Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
-
 getpost_ifset(["inuse", "did", "action", "posted_search"]);
 /**
  * @var string $inuse

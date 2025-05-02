@@ -36,8 +36,6 @@ use A2billing\Table;
  *
 **/
 
-Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
-
 getpost_ifset(["path", "id"]);
 /**
  * @var string $path

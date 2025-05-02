@@ -38,8 +38,6 @@ use A2billing\Table;
  *
 **/
 
-Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
-
 $HD_Form = new FormHandler("cc_card_group", "Customer Group");
 
 $HD_Form->list_query_order_columns = ["name"];

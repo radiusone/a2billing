@@ -45,7 +45,6 @@ use A2billing\Ticket;
  * @var string $popup_select
  * @var string $form_action
  */
-Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
 
 getpost_ifset(["username", "ticket_type"]);
 /**

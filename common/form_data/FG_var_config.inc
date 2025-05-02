@@ -36,8 +36,6 @@ use A2billing\Table;
  *
 **/
 
-Admin::checkPageAccess(Admin::ACX_ACXSETTING);
-
 getpost_ifset(["id", "group_title"]);
 /**
  * @var numeric-string $id

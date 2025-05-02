@@ -35,8 +35,6 @@ use A2billing\Forms\FormHandler;
  *
 **/
 
-Admin::checkPageAccess(Admin::ACX_ADMINISTRATOR);
-
 $HD_Form = new FormHandler("cc_autorefill_report", "AutoRefill Report");
 $HD_Form->list_query_order_columns = ["daterun"];
 $HD_Form->list_query_order_direction = "DESC";
