@@ -185,7 +185,7 @@ if ($callback) {
 }
 $customer = $_SESSION["pr_login"];
 
-$smarty->display( 'main.tpl');
+require_once __DIR__ . "/templates/main.php";
 
 echo create_help(gettext("Callback : Entre your phone number and the phone number you wish to call."));
 
@@ -223,4 +223,4 @@ echo create_help(gettext("Callback : Entre your phone number and the phone numbe
 <br/><br><br/><br>
 <?php
 
-$smarty->display( 'footer.tpl');
+require_once __DIR__ . "/templates/footer.php";

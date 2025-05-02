@@ -134,7 +134,7 @@ if (is_array($payment_modules->modules)) {
 }
 
 // #### HEADER SECTION
-$smarty->display( 'main.tpl');
+require_once __DIR__ . "/templates/main.php";
 
 if (isset($$payment->form_action_url)) {
     $form_action_url = $$payment->form_action_url;
@@ -218,4 +218,4 @@ if (is_array($payment_modules->modules)) {
 <?php
 
 // #### FOOTER SECTION
-$smarty->display( 'footer.tpl');
+require_once __DIR__ . "/templates/footer.php";

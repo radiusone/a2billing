@@ -72,7 +72,7 @@ $additional_sip = explode("|", SIP_ADDITIONAL_PARAMETERS);
 $additional_iax = explode("|", IAX_ADDITIONAL_PARAMETERS);
 
 // #### HEADER SECTION
-$smarty->display('main.tpl');
+require_once __DIR__ . "/templates/main.php";
 
 echo create_help(gettext("Configuration information for SIP and IAX Client. You can simply copy and paste it in your configuration files and do necessary modifications."));
 ?>
@@ -173,4 +173,4 @@ if (count($additional_sip) > 0) {
 
 <?php
 
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/templates/footer.php";

@@ -85,5 +85,3 @@ define('JS_ERROR_NO_PAYMENT_MODULE_SELECTED', '* '.gettext('Please select a paym
 define ("ADMIN_EMAIL", $A2B->config["global"]['admin_email'] ?? null);
 
 const ENABLE_LOG = false;
-
-require_once __DIR__ . "/customer.smarty.php";

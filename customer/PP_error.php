@@ -35,7 +35,7 @@
 
 require_once __DIR__ . "/../common/lib/customer.defines.php";
 
-$smarty->display('header.tpl');
+require_once __DIR__ . "/templates/header.php";
 session_destroy();
 
 getpost_ifset(array('c'));
@@ -82,4 +82,4 @@ $error["accessdenied"] = gettext("Sorry, you don't have access to this page !");
 
 <?php
 
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/templates/footer.php";

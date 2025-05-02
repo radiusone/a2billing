@@ -50,7 +50,7 @@ $form_action ??= "list";
 $list = $HD_Form->perform_action($form_action);
 
 // #### HEADER SECTION
-$smarty->display('main.tpl');
+require_once __DIR__ . "/templates/main.php";
 
 // #### HELP SECTION
 echo create_help(gettext("Notification settings.") . '<br>' . gettext("You can update your notification settings here."));
@@ -73,4 +73,4 @@ if ($message == "success") {
 }
 
 // #### FOOTER SECTION
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/templates/footer.php";

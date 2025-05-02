@@ -91,7 +91,7 @@ $useralias = $customer_info['useralias'];
 $creation_date = strtotime($customer_info['creationdate']);
 $username = $customer_info['username'];
 
-$smarty->display('main.tpl');
+require_once __DIR__ . "/templates/main.php";
 ?>
 
 <div>
@@ -332,4 +332,4 @@ if (!is_array($arr_purchase_amount)) {
 </div>
 
 <?php
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/templates/footer.php";

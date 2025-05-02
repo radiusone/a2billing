@@ -108,7 +108,7 @@ switch ($error) {
         break;
 }
 
-$smarty->display('header.tpl');
+require_once __DIR__ . "/templates/header.php";
 
 ?>
 
@@ -181,4 +181,4 @@ $smarty->display('header.tpl');
 
 <?php
 
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/templates/footer.php";

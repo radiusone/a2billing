@@ -53,7 +53,7 @@ $clause_subscriber = ["enable" => 1];
 $result_subscriber = $table_subscriber->getRows(DbConnect(), $clause_subscriber);
 
 // #### HEADER SECTION
-$smarty->display('signup_header.tpl');
+require_once __DIR__ . "/templates/signup_header.php";
 
 ?>
 
@@ -121,4 +121,4 @@ $smarty->display('signup_header.tpl');
 <?php
 
 // #### FOOTER SECTION
-$smarty->display('signup_footer.tpl');
+require_once __DIR__ . "/templates/footer.php";

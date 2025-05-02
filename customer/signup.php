@@ -83,7 +83,7 @@ if ($form_action == "add") {
 }
 
 // #### HEADER SECTION
-$smarty->display('signup_header.tpl');
+require_once __DIR__ . "/templates/signup_header.php";
 
 // #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);
@@ -91,4 +91,4 @@ $HD_Form->create_toppage($form_action);
 $HD_Form->create_form($form_action, $list);
 
 // #### FOOTER SECTION
-$smarty->display('signup_footer.tpl');
+require_once __DIR__ . "/templates/footer.php";

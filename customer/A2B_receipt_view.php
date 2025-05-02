@@ -37,8 +37,8 @@ use A2billing\Table;
  *
  **/
 
-$menu_section = 11;
-require_once __DIR__ . "/../common/lib/admin.defines.php";
+$menu_section = 5;
+require_once __DIR__ . "/../common/lib/customer.defines.php";
 
 Customer::checkPageAccess(Customer::ACX_INVOICES);
 
@@ -49,7 +49,7 @@ getpost_ifset(["id"]);
  */
 
 if (empty($id)) {
-    header("Location: A2B_entity_receipt.php?section=13");
+    header("Location: A2B_entity_receipt.php");
 }
 $receipt = new Receipt($id);
 if ($receipt->getCard() != $_SESSION["card_id"]) {
@@ -67,7 +67,7 @@ if (empty($card)) {
     die();
 }
 
-$smarty->display('main.tpl');
+require_once __DIR__ . "/templates/main.php";
 //Load receipt conf
 $table = new Table(
     "cc_config",
@@ -200,4 +200,4 @@ $total = 0;
 
 <?php
 
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/templates/footer.php";

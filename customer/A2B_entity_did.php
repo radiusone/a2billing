@@ -123,7 +123,7 @@ if ($action_release == "confirm_release") {
 
 if ($action_release == "ask_release") {
     // #### HEADER SECTION
-    $smarty->display('main.tpl');
+    require_once __DIR__ . "/templates/main.php";
 
     echo create_help(gettext("After confirmation, the release of the did will be done immediately and you will not be monthly charged any more."));
 ?>
@@ -227,7 +227,7 @@ if (!isset ($action_release) || $action_release == "confirm_release" || $action_
     $list = $HD_Form->perform_action($form_action);
 
     // #### HEADER SECTION
-    $smarty->display('main.tpl');
+    require_once __DIR__ . "/templates/main.php";
 
     // #### HELP SECTION
     if ($form_action == 'list') {
@@ -492,4 +492,4 @@ function CheckCountry(Source)
             } // End Switch
 
 // #### FOOTER SECTION
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/templates/footer.php";

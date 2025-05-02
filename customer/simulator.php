@@ -128,7 +128,7 @@ $instance_table_tariffname = new Table("cc_tariffplan", ["id", "tariffname"]);
 $list_tariffname = $instance_table_tariffname->getRows($DBHandle, [], ["tariffname"]);
 $nb_tariffname = count($list_tariffname);
 
-$smarty->display('main.tpl');
+require_once __DIR__ . "/templates/main.php";
 
 // #### HELP SECTION
 echo create_help(gettext("Simulate the calling process to discover the cost per minute of a call, and the number of minutes you can call that number with your current credit."));
@@ -255,4 +255,4 @@ $FG_TABLE_ALTERNATE_ROW_COLOR[1]='#EEE9E9';
 
 <?php
 
-$smarty->display( 'footer.tpl');
+require_once __DIR__ . "/templates/footer.php";
