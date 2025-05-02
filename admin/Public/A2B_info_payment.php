@@ -81,7 +81,7 @@ require_once __DIR__ . "/../templates/main.php";
                     <td>
                         <?php if ($type === "agent"): ?>
                         <?= Agent::getName($payment["agent_id"], Admin::allowed(Admin::ACX_MODIFY_AGENTS)) ?>
-                        <?php elseif ((is_admin() && has_rights(Admin::ACX_CUSTOMER)) || (is_agent() && has_rights(Agent::ACX_CUSTOMER))): ?>
+                        <?php elseif (Admin::allowed(Admin::ACX_CUSTOMER) || Agent::allowed(Agent::ACX_CUSTOMER)): ?>
                         <?= Customer::getInfoLink($payment["card_id"]) ?>
                         <?php else: ?>
                         <?= Customer::getName($payment["card_id"], false) ?>

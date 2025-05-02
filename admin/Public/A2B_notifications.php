@@ -50,7 +50,7 @@ echo create_help(_("The Notification component is responsible for informing the 
 <table align="center"  class="bgcolor_001" border="0" width="65%">
     <tr>
          <td>
-        <?php if ( has_rights (Admin::ACX_ACXSETTING)) {
+        <?php if ( Admin::allowed(Admin::ACX_ACXSETTING)) {
                 echo gettext("All parameters relating to the Notifications module can be set using the Global Config available in System Settings menu.");
         ?>
                 <br/>
@@ -87,7 +87,7 @@ if ($return) {
         echo gettext("Make sure that the cron files are correctly configured in the crontab!");
         echo '<br/>';
 
-        if ( has_rights (Admin::ACX_ACXSETTING)) {
+        if (Admin::allowed(Admin::ACX_ACXSETTING)) {
             echo gettext("Press");
             echo ' <a href="A2B_entity_config.php?form_action=ask-edit&id='.$id_config.'">';
             echo gettext("Modify") ."</a> ". gettext("to change enable or disable periodical notifications");
@@ -119,7 +119,7 @@ if ($return) {
         <td width="70%"><?php echo gettext("This box shows the possible values to choose from when the user receives a notification");?>
         <br/><br/>
         <?php
-            if ( has_rights (Admin::ACX_ACXSETTING)) {
+            if (Admin::allowed(Admin::ACX_ACXSETTING)) {
                     echo gettext("Press");
                     echo ' <a href="A2B_entity_config.php?form_action=ask-edit&id='.$id_config.'">';
                     echo gettext("Modify") ."</a> ". gettext("to change the values.");
@@ -162,7 +162,7 @@ if ($return) {
         echo $msg;
 
         echo '<br/>';
-        if ( has_rights (Admin::ACX_ACXSETTING)) {
+        if (Admin::allowed(Admin::ACX_ACXSETTING)) {
             echo gettext("Press");
             echo ' <a href="A2B_entity_config.php?form_action=ask-edit&id='.$id_config.'">';
             echo gettext("Modify") ."</a> ". gettext("to change the periodicity");

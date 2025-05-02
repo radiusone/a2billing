@@ -80,7 +80,7 @@ if (!$popup_select) {
     $HD_Form->AddSearchTextInput(_("First name"), "firstname");
 }
 
-if (has_rights(Admin::ACX_MODIFY_REFILLS)) {
+if (Admin::allowed(Admin::ACX_MODIFY_REFILLS)) {
 	$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
 	$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 
