@@ -50,7 +50,7 @@ $HD_Form = new FormHandler("cc_logrefill", _("Refill"));
 
 $HD_Form->list_query_order_direction = "DESC";
 
-if (has_rights (Admin::ACX_MODIFY_REFILLS)) {
+if (Admin::allowed(Admin::ACX_MODIFY_REFILLS)) {
 	$HD_Form->FG_LIST_ADDING_BUTTON1 = true;
 	$HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_logrefill.php?form_action=ask-add";
 	$HD_Form->FG_LIST_ADDING_BUTTON_MSG1 = _("Add Refill");
@@ -90,7 +90,7 @@ $HD_Form->FG_FILTER_COLUMN = "username";
 $HD_Form->FG_FILTER_LABEL = _("Account number");
 
 // what is the point of this, if editing or deleting a refill doesn't change the card balance?
-if (has_rights (Admin::ACX_MODIFY_REFILLS)) {
+if (Admin::allowed(Admin::ACX_MODIFY_REFILLS)) {
 	$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
 	$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 

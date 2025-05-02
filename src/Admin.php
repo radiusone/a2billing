@@ -55,6 +55,9 @@ class Admin extends User
         if (($_SESSION["user_type"] ?? "") !== "ADMIN") {
             return false;
         }
+        if (has_rights(self::ACX_ALL_RIGHTS)) {
+            return true;
+        }
         if (!is_null($rights) && !has_rights($rights)) {
             return false;
         }

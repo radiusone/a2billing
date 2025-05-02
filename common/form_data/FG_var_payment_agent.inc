@@ -89,7 +89,7 @@ $HD_Form->AddSearchTextInput(_("LOGIN"), "login");
 $HD_Form->AddSearchTextInput(_("LASTNAME"), "lastname");
 $HD_Form->AddSearchTextInput(_("FIRSTNAME"), "firstname");
 
-if (has_rights (Admin::ACX_MODIFY_PAYMENTS)) {
+if (Admin::allowed(Admin::ACX_MODIFY_PAYMENTS)) {
 	$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
 	$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 

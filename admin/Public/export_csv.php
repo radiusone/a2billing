@@ -39,7 +39,7 @@ use A2billing\Logger;
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
 require_once '../../common/lib/iam_csvdump.php';
 
-Admin::checkPageAccess(Admin::ACX_CALL_REPORT) && !has_rights(Admin::ACX_CUSTOMER);
+Admin::checkPageAccess(Admin::ACX_CALL_REPORT | Admin::ACX_CUSTOMER);
 
 getpost_ifset(array ( 'var_export', 'var_export_type' ));
 

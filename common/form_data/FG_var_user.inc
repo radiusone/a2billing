@@ -82,7 +82,7 @@ if ($popup_select) {
 
 $HD_Form->FG_ENABLE_INFO_BUTTON = true;
 
-if (!has_rights(Admin::ACX_MODIFY_ADMINS)) {
+if (!Admin::allowed(Admin::ACX_MODIFY_ADMINS)) {
     exit;
 }
 
