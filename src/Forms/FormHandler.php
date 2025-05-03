@@ -1499,29 +1499,21 @@ class FormHandler
                 continue;
             }
 
-            $value = $processed[$field];
-            $check_empty = $row["check_empty"] ?? "";
-
-            if (array_key_exists("multiple", $attr) && is_array($value)) {
-                $values[$field] = (int)array_sum($value);
+            if (array_key_exists("multiple", $attr) && is_array($processed[$field])) {
+                $values[$field] = (int)array_sum($processed[$field]);
             }
-
+            
             if (!empty($row["validator"])) {
-                $result = call_user_func($row["validator"], $value);
-                $row["validation_err"] = $result;
-                if ($result !== true) {
-                    $this->all_fields_valid = false;
-                    $form_action = "ask-add";
-                    continue;
-                }
-            } elseif ($value === "") {
-                if ($check_empty === "NO-NULL") {
-                    $value = null;
-                } elseif ($check_empty === "NO") {
+                if ($processed[$field] === "" && str_starts_with($row["check_empty"] ?? "", "NO")) {
                     $row["validation_err"] = true;
-                    $this->all_fields_valid = false;
-                    $form_action = "ask-add";
-                    continue;
+                } else {
+                    $result = call_user_func($row["validator"], $processed[$field]);
+                    $row["validation_err"] = $result;
+                    if ($result !== true) {
+                        $this->all_fields_valid = false;
+                        $form_action = "ask-edit";
+                        continue;
+                    }
                 }
             }
 
@@ -1534,7 +1526,11 @@ class FormHandler
                 $arr_value_to_import[$field] = $this->split_ranges($value);
                 $values[$field] = "%check_array%";
             } elseif ($row["type"] !== "CAPTCHAIMAGE") {
-                $values[$field] ??= $value;
+                if ($processed[$field] === "" && ($row["check_empty"] ?? "") === "NO-NULL") {
+                    $values[$field] = null;
+                } else {
+                    $values[$field] ??= $processed[$field];
+                }
             }
         } // endforeach with reference
         unset ($row);
