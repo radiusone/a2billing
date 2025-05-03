@@ -1511,7 +1511,7 @@ class FormHandler
                     $row["validation_err"] = $result;
                     if ($result !== true) {
                         $this->all_fields_valid = false;
-                        $form_action = "ask-edit";
+                        $form_action = "ask-add";
                         continue;
                     }
                 }
@@ -1519,6 +1519,7 @@ class FormHandler
 
             // CHECK IF THIS IS A SPLITABLE FIELD LIKE 012-014 OR 15,16,17
             if (in_array($field, $this->FG_SPLITABLE_FIELDS)) {
+                $value = $processed[$field];
                 if (empty($value) || str_starts_with($value, "_")) {
                     // dialprefix can be a range *or* an Asterisk-style extension pattern starting with _
                     continue;
