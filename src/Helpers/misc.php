@@ -858,13 +858,13 @@ function create_help($text): string
 
     return <<< HTML
         <div class="alert alert-info dismissible fade show d-flex align-items-center">
-            <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Help:">
-                <use xlink:href="#question-circle"/>
-            </svg>
-            <div class="mx-2">$text</div>
-            <hr/>
-            <div class="mx-2"><small>$wiki</small></div>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <div class="bi bi-question-circle flex-shrink-0 me-2 fs-1"><?= __("Help") ?></div>
+            <div class="flex-grow-1 mx-2">
+                <div class="mx-2">$text</div>
+                <hr class="m-2"/>
+                <div class="mx-2"><small>$wiki</small></div>
+            </div>
+            <button type="button" class="btn-close mb-auto" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
         HTML;
 }

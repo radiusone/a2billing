@@ -21,18 +21,14 @@ $menu_section ??= 0;
                 </h4>
                 <ul class="nav col-12 col-lg-auto my-2 justify-content-center my-md-0 text-small">
                     <li>
-                        <a href="PP_intro.php" class="nav-link text-secondary">
-                            <svg class="bi d-block mx-auto mb-1" width="24" height="24">
-                                <use xlink:href="#home"></use>
-                            </svg>
+                        <a href="PP_intro.php" class="nav-link <?= $_SERVER["PHP_SELF"] === "PP_intro.php" ? "text-secondary" : "text-light" ?>">
+                            <div class="bi bi-house fs-4 mb-1 text-center" aria-hidden="true"></div>
                             <?= _("Home") ?>
                         </a>
                     </li>
                     <li class="dropdown">
                         <a href="#" id="dropdownUser" class="nav-link text-white dropdown-toggle" data-bs-toggle="dropdown">
-                            <svg class="bi d-block mx-auto mb-1" width="24" height="24">
-                                <use xlink:href="#people-circle"></use>
-                            </svg>
+                            <div class="bi bi-person-circle fs-4 mb-1 text-center" aria-hidden="true"></div>
                             <?= _("Account") ?>
                         </a>
                         <ul class="dropdown-menu shadow" aria-labelledby="dropdownUser">

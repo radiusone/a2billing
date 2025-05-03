@@ -95,7 +95,7 @@ use DateTime;
                     class="btn btn-primary popup_trigger"
                     aria-label="<?= _("open a popup to select an item") ?>"
                 >
-                    <svg class="mx-auto" width="16" height="16"><use xlink:href="#popup"></use></svg>
+                    <span class="bi bi-box-arrow-up-right fw-bolder fs-6"></span>
                 </a>
             </div>
             <?php break ?>
