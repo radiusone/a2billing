@@ -1495,13 +1495,14 @@ class FormHandler
         foreach ($this->FG_EDIT_FORM_ELEMENTS as &$row) {
             $field = $row["name"] ?? "";
             $attr = $row["attributes"] ?? [];
-            if (empty($field) || array_key_exists("disabled", $attr)) {
+            if (empty($field) || array_key_exists("disabled", $attr) || !array_key_exists($field, $processed)) {
                 continue;
             }
 
             if (array_key_exists("multiple", $attr) && is_array($processed[$field])) {
                 $values[$field] = (int)array_sum($processed[$field]);
             }
+            
             if (!empty($row["validator"])) {
                 if ($processed[$field] === "" && str_starts_with($row["check_empty"] ?? "", "NO")) {
                     $row["validation_err"] = true;
@@ -1510,22 +1511,26 @@ class FormHandler
                     $row["validation_err"] = $result;
                     if ($result !== true) {
                         $this->all_fields_valid = false;
-                        $form_action = "ask-add";
+                        $form_action = "ask-edit";
                         continue;
                     }
                 }
             }
+
             // CHECK IF THIS IS A SPLITABLE FIELD LIKE 012-014 OR 15,16,17
             if (in_array($field, $this->FG_SPLITABLE_FIELDS)) {
-                $value = $processed[$field];
                 if (empty($value) || str_starts_with($value, "_")) {
                     // dialprefix can be a range *or* an Asterisk-style extension pattern starting with _
                     continue;
                 }
                 $arr_value_to_import[$field] = $this->split_ranges($value);
                 $values[$field] = "%check_array%";
-            } elseif (!empty($processed[$field]) && $row["type"] !== "CAPTCHAIMAGE") {
-                $values[$field] ??= $processed[$field];
+            } elseif ($row["type"] !== "CAPTCHAIMAGE") {
+                if ($processed[$field] === "" && ($row["check_empty"] ?? "") === "NO-NULL") {
+                    $values[$field] = null;
+                } else {
+                    $values[$field] ??= $processed[$field];
+                }
             }
         } // endforeach with reference
         unset ($row);
