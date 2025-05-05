@@ -54,6 +54,7 @@ $HD_Form->AddListActionButton(
     "",
     _("ACCEPT THIS REQUEST"),
     get_image_path("accept.png"),
+    "",
     "accept_click",
     "status",
     0 // waiting
@@ -62,6 +63,7 @@ $HD_Form->AddListActionButton(
     "",
     _("REFUSE THIS REQUEST"),
     get_image_path("cancel.png"),
+    "",
     "refuse_click",
     "status",
     0 // waiting

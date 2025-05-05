@@ -86,6 +86,7 @@ $HD_Form->AddListActionButton(
     "A2B_entity_invoice.php?action=lock&id=",
     _("Close this invoice"),
     get_image_path("lock.png"),
+    "",
     "lock",
     "status",
     0 // open
@@ -95,6 +96,7 @@ $HD_Form->AddListActionButton(
     "A2B_invoice_manage_payment.php?id=",
     _("Manage payments"),
     get_image_path("money.png"),
+    "",
     "",
     "status",
     1 // closed

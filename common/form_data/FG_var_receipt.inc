@@ -66,6 +66,7 @@ $HD_Form->AddListActionButton(
     _("Edit receipt items"),
     get_image_path("edit.png"),
     "",
+    "",
     "status",
     0 // open
 );
@@ -73,6 +74,7 @@ $HD_Form->AddListActionButton(
     "",
     _("Close this receipt"),
     get_image_path("lock.png"),
+    "",
     "lock",
     "status",
     0 // open

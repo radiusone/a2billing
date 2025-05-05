@@ -65,8 +65,7 @@ $HD_Form -> FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form->AddListActionButton(
     "A2B_info_package.php?id=|param|",
-    _("Add rates"),
-    ""
+    _("Add rates")
 );
 
 $HD_Form->AddEditElement(

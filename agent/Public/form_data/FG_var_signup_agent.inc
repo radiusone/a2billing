@@ -64,8 +64,7 @@ $HD_Form -> AddListSqlMapping(gettext("GROUP"), "id_group", new Table("cc_card_g
 $HD_Form -> FieldViewElement ('code, id_agent, id_tariffgroup ,id_group');
 
 $HD_Form->AddListActionButton(
-    "javascript:alert(".json_encode($A2B->config['signup']['urlcustomerinterface'])." + 'signup.php?key=|col0|',400);",
-    '<span style="color:red">' . _("URL") . '</span>',
-    ""
+    "javascript:alert(" . json_encode($A2B->config['signup']['urlcustomerinterface']) . " + 'signup.php?key=|col0|',400);",
+    '<span style="color:red">' . _("URL") . '</span>'
 );
 

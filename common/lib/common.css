@@ -8,20 +8,18 @@ header .nav svg.bi {
     fill: currentColor;
 }
 
-.alert > svg.bi {
-    width: 3em;
-    height: 3em;
-    fill: currentColor;
-}
-
 div.bi::before {
     display: block !important;
 }
 
-.popup_trigger svg {
-    margin-top: 4px; /* 16px image in 24 px box */
-    vertical-align: top;
-    fill: currentColor;
+.bi.bi-16 {
+    font-size: 1rem !important;
+}
+.bi.bi-32 {
+    font-size: 2rem !important;
+}
+.bi.bi-40 {
+    font-size: 2.5rem !important;
 }
 
 .popup-select-button {

@@ -80,13 +80,11 @@ $HD_Form -> FieldViewElement([
 
 $HD_Form->AddListActionButton(
     "javascript:window.open('A2B_entity_moneysituation_details.php?type=invoice&form_action=list&displayheader=0&popup_select=1&id=|param|','','scrollbars=yes,resizable=yes,width=500,height=270')",
-    _("INVOICE"),
-    ""
+    _("INVOICE")
 );
 $HD_Form->AddListActionButton(
     "javascript:window.open('A2B_entity_moneysituation_details.php?type=payment&form_action=list&displayheader=0&popup_select=1&id=|param|','','scrollbars=yes,resizable=yes,width=500,height=270')",
-    _("PAYMENT"),
-    ""
+    _("PAYMENT")
 );
 
 $HD_Form -> FG_FILTER_ENABLE = true;

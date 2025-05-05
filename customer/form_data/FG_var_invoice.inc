@@ -66,6 +66,7 @@ $HD_Form->AddListActionButton(
     _("Pay"),
     get_image_path("money.png", true),
     "",
+    "",
     "paid_status",
     0 // unpaid
 );

@@ -52,6 +52,7 @@ $HD_Form->AddListActionButton(
     "",
     _("CANCEL THIS REQUEST"),
     get_image_path("cancel.png"),
+    "",
     "cancel_click",
     "status",
     0 // waiting
