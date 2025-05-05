@@ -209,7 +209,7 @@ namespace A2billing\Forms;
                             title="<?= sprintf(_("Delete this %s"), strtolower($form->FG_INSTANCE_NAME)) ?>"
                             aria-label="<?= sprintf(_("Delete this %s"), strtolower($form->FG_INSTANCE_NAME)) ?>"
                         >
-                            <span class="bi bi-16 bi-x-circle-fill text-danger" aria-hidden="true"></span>
+                            <span class="bi bi-16 bi-trash3-fill text-danger" aria-hidden="true"></span>
                         </a>
                         <?php endif ?>
                     <?php endif ?>

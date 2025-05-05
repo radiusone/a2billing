@@ -69,7 +69,8 @@ $url = htmlspecialchars(json_encode($A2B->config["signup"]["urlcustomerinterface
 $HD_Form->AddListActionButton(
     "javascript:alert($url + 'signup.php?key=|col0|')",
     _("URL"),
-    get_image_path("link.png")
+    "",
+    "link"
 );
 
 $HD_Form->AddEditSqlSelect(

@@ -53,18 +53,18 @@ $HD_Form->FG_INFO_BUTTON_LINK = "A2B_info_remittance.php?id=";
 $HD_Form->AddListActionButton(
     "",
     _("ACCEPT THIS REQUEST"),
-    get_image_path("accept.png"),
     "",
-    "accept_click",
+    "check-circle-fill",
+    "accept_click text-success",
     "status",
     0 // waiting
 );
 $HD_Form->AddListActionButton(
     "",
     _("REFUSE THIS REQUEST"),
-    get_image_path("cancel.png"),
     "",
-    "refuse_click",
+    "x-circle-fill",
+    "refuse_click text-danger",
     "status",
     0 // waiting
 );

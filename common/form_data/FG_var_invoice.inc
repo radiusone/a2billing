@@ -79,14 +79,15 @@ $HD_Form->FG_ENABLE_ADD_BUTTON = true;
 $HD_Form->AddListActionButton(
     "A2B_invoice_edit.php?id=",
     _("Edit invoice items"),
-    get_image_path("page_white_gear.png")
+    "",
+    "receipt"
 );
 
 $HD_Form->AddListActionButton(
     "A2B_entity_invoice.php?action=lock&id=",
     _("Close this invoice"),
-    get_image_path("lock.png"),
     "",
+    "file-earmark-lock",
     "lock",
     "status",
     0 // open
@@ -95,9 +96,9 @@ $HD_Form->AddListActionButton(
 $HD_Form->AddListActionButton(
     "A2B_invoice_manage_payment.php?id=",
     _("Manage payments"),
-    get_image_path("money.png"),
     "",
-    "",
+    "cash-stack",
+    "text-success",
     "status",
     1 // closed
 );

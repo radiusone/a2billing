@@ -51,9 +51,9 @@ $HD_Form -> list_query_order_direction = "DESC";
 $HD_Form->AddListActionButton(
     "",
     _("CANCEL THIS REQUEST"),
-    get_image_path("cancel.png"),
     "",
-    "cancel_click",
+    "x-circle-fill",
+    "cancel_click text-danger",
     "status",
     0 // waiting
 );

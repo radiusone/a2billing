@@ -48,12 +48,16 @@ $HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("page_white_add.png") ;
 $HD_Form->AddListActionButton(
     "A2B_entity_payment.php?form_action=ask-add&card_id=|col4|",
     _('ADD PAYMENT'),
-    get_image_path("money.png")
+    "",
+    "cash",
+    "text-success"
 );
 $HD_Form->AddListActionButton(
     "A2B_entity_logrefill.php?form_action=ask-add&card_id=|col4|",
     _("ADD REFILL"),
-    get_image_path("brick_add.png")
+    "",
+    "cash-stack",
+    "text-success"
 );
 
 $HD_Form->help_text = create_help(
