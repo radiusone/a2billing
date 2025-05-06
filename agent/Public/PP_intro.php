@@ -41,15 +41,21 @@ require_once __DIR__ . "/../templates/main.php";
 
 $DBHandle = DbConnect();
 $table_message = new Table("cc_message_agent");
-$messages = $table_message -> getRows($DBHandle, ["id_agent" => $_SESSION["agent_id"]], ["order_display"]);
+$messages = $table_message->getRows($DBHandle, ["id_agent" => $_SESSION["agent_id"]], ["order_display"]);
 $message_types = ["alert-info", "alert-success", "alert-warning", "alert-danger"];
+$message_logos = ["bi-info-circle-fill text-info", "bi-check-circle-fill text-success", "bi-exclamation-circle-fill text-warning", "bi-x-circle-fill text-danger"];
 ?>
 
 <div class="row pb-3">
     <div class="col">
     <?php foreach ($messages as $message): ?>
-        <div class="alert <?= $message_types[$message['type']] ?>" role="alert">
-            <?= htmlspecialchars($message["message"]) ?>
+        <div class="alert <?= $message_types[$message["type"]] ?> d-flex align-items-center">
+            <?php if ($message["logo"]): ?>
+            <div class="bi bi-32 <?= $message_logos[$message["type"]] ?> flex-shrink-0 me-2" aria-hidden="true"></div>
+            <?php endif ?>
+            <div class="flex-grow-1 mx-2">
+                <?= $message["message"] ?>
+            </div>
         </div>
     <?php endforeach ?>
     </div>
