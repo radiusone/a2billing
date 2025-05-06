@@ -104,7 +104,7 @@ switch ($action) {
 
     case "delete":
         $order = $DBHandle->GetOne("SELECT order_display FROM cc_message_agent WHERE id = ?", [$id_msg]);
-        if ($order) {
+        if ($order !== false) {
             $result = $DBHandle->Execute("DELETE FROM cc_message_agent WHERE id = ?", [$id_msg]);
             $result = $DBHandle->Execute(
                 "UPDATE cc_message_agent SET order_display = order_display - 1 WHERE id_agent = ? AND order_display > ?",
@@ -133,7 +133,7 @@ switch ($action) {
 
     case "down":
         $order = $DBHandle->GetOne("SELECT order_display FROM cc_message_agent WHERE id = ?", [$id_msg]);
-        if ($order) {
+        if ($order !== false) {
             $result = $DBHandle->Execute(
                 "UPDATE cc_message_agent SET order_display = order_display - 1 WHERE id_agent = ? AND order_display = ?",
                 [$id, $order + 1]
