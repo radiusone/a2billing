@@ -119,7 +119,8 @@ echo create_help(_("Click reload to commit changes to Asterisk"));
     ?>
 
     <br><br><br>
-    <a href="<?php  echo "?voip_type=$voip_type&action=reload";?>"><img src="<?= get_image_path("icon_refresh.gif") ?>" />
+    <a href="<?php  echo "?voip_type=$voip_type&action=reload";?>">
+        <div class="bi bi-32 bi-arrow-clockwise" aria-hidden="true"></div>
         <?php echo gettext("Click here to reload your asterisk server"); ?>
     </a>
 

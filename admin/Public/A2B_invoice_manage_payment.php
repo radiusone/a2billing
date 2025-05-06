@@ -89,7 +89,7 @@ require_once __DIR__ . "/../templates/main.php";
     </div>
     <div class="col-1">
         <button class="btn" id="imp_popupselect">
-            <img src="<?= get_image_path("page_white_text.png") ?>" alt="<?= _("Print") ?>"/>
+            <span class="bi bi-16 bi-printer" aria-label="<?= _("Print") ?>"></span>
         </button>
     </div>
 </div>
@@ -130,8 +130,8 @@ require_once __DIR__ . "/../templates/main.php";
     <?php endforeach ?>
     </select>
     <div>
-        <button class="btn" id="addpayment"><img src="<?= get_image_path("add.png") ?>" title="<?= _("Add Payment") ?>" alt="<?= _("Add Payment") ?>"/></button>
-        <button class="btn" id="delpayment"><img src="<?= get_image_path("del.png") ?>" title="<?= _("Delete Payment") ?>" alt="<?= _("Delete Payment") ?>"/></button>
+        <button class="btn" id="addpayment"><span class="bi bi-16 bi-plus-circle-fill text-success" aria-label="<?= _("Add Payment") ?>" title="<?= _("Add Payment") ?>"></span></button>
+        <button class="btn" id="delpayment"><span class="bi bi-16 bi-dash-circle-fill text-danger" aria-label="<?= _("Delete Payment") ?>" title="<?= _("Delete Payment") ?>"></span></button>
     </div>
 </div>
 

@@ -52,7 +52,7 @@ require_once __DIR__ . "/../templates/main.php";
     <?php  for ($i=1;$i<=$A2B->config['webui']['num_musiconhold_class'];$i++) { ?>
     <tr>
         <td class="bgcolor_006" height="31" align="center">
-            <img src="<?= get_image_path("kicons/stock-panel-multimedia.gif") ?>"/>
+            <div class="bi bi-32 bi-cassette" aria-hidden="true"></div>
         </td>
         <td class="bgcolor_006" height="31" align="center">
             <a href="CC_upload.php?acc=<?php echo $i?>"><?php echo gettext("CUSTOM THE MUSICONHOLD CLASS");?> : <b>ACC_<?php echo $i?></b></a>
