@@ -92,7 +92,6 @@ $menu_section ??= 0;
                     <div class="collapse <?= $menu_section === 8 ? "show" : "" ?>" id="agent-collapse">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                             <li><a class="link-dark rounded" href="A2B_entity_signup_agent.php"><?= _("Signup URLs") ?></a></li>
-                            <li><a class="link-dark rounded" href="A2B_signup_agent.php"><?= _("Add New Signup URL") ?></a></li>
                         </ul>
                     </div>
                 </li>

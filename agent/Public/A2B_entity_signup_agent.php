@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Agent;
+use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -37,29 +38,21 @@ use A2billing\Agent;
 
 $menu_section = 8;
 require_once __DIR__ . "/../../common/lib/agent.defines.php";
-require_once __DIR__ . "/form_data/FG_var_signup_agent.inc";
-
-if (! has_rights (Agent::ACX_SIGNUP)) {
-       Header ("HTTP/1.0 401 Unauthorized");
-       Header ("Location: PP_error.php?c=accessdenied");
-       die();
-}
+require_once __DIR__ . "/../../common/form_data/FG_var_signup_agent.inc";
+/**
+ * @var FormHandler $HD_Form
+ * @var string|null $form_action
+ */
+Agent::checkPageAccess(Agent::ACX_SIGNUP);
 
 $HD_Form -> init();
 
 $form_action ??= "list";
 $list = $HD_Form -> perform_action($form_action);
 
-// #### HEADER SECTION
 require_once __DIR__ . "/../templates/main.php";
 
-// #### HELP SECTION
-echo create_help(gettext("This shows a list of all signup key create for this agent, this key is used to identify the default paramater for the subscription on the signup page"));
+$HD_Form-> create_toppage($form_action);
+$HD_Form-> create_form($form_action, $list) ;
 
-// #### TOP SECTION PAGE
-$HD_Form -> create_toppage ($form_action);
-
-$HD_Form -> create_form($form_action, $list) ;
-
-// #### FOOTER SECTION
 require_once __DIR__ . "/../templates/footer.php";
