@@ -944,33 +944,26 @@ class FormBO
     {
         $form = FormHandler::GetInstance();
         $processed = $form->getProcessed();
-        $sip = stripslashes($processed['sip_buddy']);
-        $iax = stripslashes($processed['iax_buddy']);
+        $sip = intval($processed['sip_buddy']);
+        $iax = intval($processed['iax_buddy']);
         if (!$sip && !$iax) {
             return;
         }
 
-        // $FormHandler -> FG_QUERY_EXTRA_HIDDED - username, useralias, uipass, loginkey
-        if (strlen($form -> REALTIME_SIP_IAX_INFO[0])>0) {
-            $username 	= $form -> REALTIME_SIP_IAX_INFO[0];
-            $uipass 	= $form -> REALTIME_SIP_IAX_INFO[2];
-        } else {
-            $username 	= $processed['username'];
-            $uipass 	= $processed['uipass'];
-        }
+        $username = $form->REALTIME_SIP_IAX_INFO[0] ?? $processed['username'];
+        $uipass = $form->REALTIME_SIP_IAX_INFO[2] ?? $processed['uipass'];
 
         $instance_realtime = new Realtime();
-
-        $instance_realtime->insert_voip_config ($sip, $iax, $card_id, $username, $uipass);
+        $instance_realtime->insert_voip_config((bool)$sip, (bool)$iax, $card_id, $username, $uipass);
 
         // Save info in table and in sip file
-        if ($sip == 1) {
+        if ($sip) {
             $instance_realtime->create_trunk_config_file();
         }
 
         // Save info in table and in iax file
-        if ($iax == 1) {
-            $instance_realtime->create_trunk_config_file('iax');
+        if ($iax) {
+            $instance_realtime->create_trunk_config_file("iax");
         }
     }
 

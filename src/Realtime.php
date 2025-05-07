@@ -2,6 +2,8 @@
 
 namespace A2billing;
 
+use ADOConnection;
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
@@ -36,170 +38,133 @@ namespace A2billing;
 
 class Realtime
 {
-    private $DBHandler;
+    private ADOConnection $DBHandler;
 
-    private $instance_table;
-
-    private $FG_TABLE_SIP_NAME = "cc_sip_buddies";
-    private $FG_TABLE_IAX_NAME = "cc_iax_buddies";
-
-    private $FG_QUERY_ADITION_SIP;
-
-    private $FG_QUERY_ADITION_IAX;
-
-    // Construct
     public function __construct()
     {
-        $this -> DBHandler = DBConnect();
-        $this -> instance_table = new Table();
-
-        $this -> FG_QUERY_ADITION_SIP = 'name, accountcode, regexten, amaflags, callgroup, callerid, canreinvite, context, DEFAULTip, dtmfmode, fromuser, fromdomain, host, insecure, language, ' .
-                'mailbox, md5secret, nat, deny, permit, mask, pickupgroup, port, qualify, restrictcid, rtptimeout, rtpholdtimeout, secret, type, username, disallow, allow, musiconhold, regseconds, ' .
-                'ipaddr, cancallforward, fullcontact, setvar, lastms, regserver, defaultuser, auth, subscribemwi, vmexten, cid_number, callingpres, usereqphone, incominglimit, subscribecontext, ' .
-                'musicclass, mohsuggest, allowtransfer, autoframing, maxcallbitrate, outboundproxy, rtpkeepalive';
-
-        $this -> FG_QUERY_ADITION_IAX = 'name, accountcode, regexten, amaflags, callerid, context, DEFAULTip, host, language, mask, port, qualify, secret, username, disallow, allow, regseconds, ' .
-                'ipaddr, trunk, dbsecret, regcontext, sourceaddress, mohinterpret, mohsuggest, inkeys, outkey, cid_number, sendani, fullname, auth, maxauthreq, encryption, transfer, jitterbuffer, ' .
-                'forcejitterbuffer, codecpriority, qualifysmoothing, qualifyfreqok, qualifyfreqnotok, timezone, adsi, setvar, type, deny, permit, requirecalltoken, maxcallnumbers, ' .
-                'maxcallnumbers_nonvalidated';
-
+        $this->DBHandler = DbConnect();
     }
 
-    // create_iax_config
-    // $type - Value : sip, iax
-    public function create_trunk_config_file ($type = 'sip')
+    /**
+     * @param 'sip'|'iax' $type
+     */
+    public function create_trunk_config_file (string $type = "sip"): void
     {
-        if (USE_REALTIME) {
-            return false;
+        if (USE_REALTIME || ($type !== "sip" && $type !== "iax")) {
+            return;
         }
 
-        if ($type == 'iax') {
+        $sip_cols = [
+            "name", "accountcode", "regexten", "amaflags", "callgroup", "callerid", "canreinvite", "context", "DEFAULTip",
+            "dtmfmode", "fromuser", "fromdomain", "host", "insecure", "language", "mailbox", "md5secret", "nat", "deny",
+            "permit", "mask", "pickupgroup", "port", "qualify", "restrictcid", "rtptimeout", "rtpholdtimeout", "secret",
+            "type", "username", "disallow", "allow", "musiconhold", "regseconds", "ipaddr", "cancallforward", "fullcontact",
+            "setvar", "lastms", "regserver", "defaultuser", "auth", "subscribemwi", "vmexten", "cid_number", "callingpres",
+            "usereqphone", "incominglimit", "subscribecontext", "musicclass", "mohsuggest", "allowtransfer", "autoframing",
+            "maxcallbitrate", "outboundproxy", "rtpkeepalive",
+        ];
+        $iax_cols = ["name", "accountcode", "regexten", "amaflags", "callerid", "context", "DEFAULTip", "host", "language",
+            "mask", "port", "qualify", "secret", "username", "disallow", "allow", "regseconds", "ipaddr", "trunk", "dbsecret",
+            "regcontext", "sourceaddress", "mohinterpret", "mohsuggest", "inkeys", "outkey", "cid_number", "sendani",
+            "fullname", "auth", "maxauthreq", "encryption", "transfer", "jitterbuffer", "forcejitterbuffer", "codecpriority",
+            "qualifysmoothing", "qualifyfreqok", "qualifyfreqnotok", "timezone", "adsi", "setvar", "type", "deny", "permit",
+            "requirecalltoken", "maxcallnumbers", "maxcallnumbers_nonvalidated",
+        ];
+
+        if ($type === "iax") {
             $buddyfile = BUDDY_IAX_FILE;
-            $table_name = $this -> FG_TABLE_IAX_NAME;
-
-            $this -> instance_table = new Table($table_name, 'id, ' . $this->FG_QUERY_ADITION_IAX);
-            $list_friend = $this -> instance_table -> getRows($this->DBHandler);
-            $list_names = explode(",",$this -> FG_QUERY_ADITION_IAX);
-
+            $table_name = "cc_iax_buddies";
+            $cols = $iax_cols;
         } else {
             $buddyfile = BUDDY_SIP_FILE;
-            $table_name = $this -> FG_TABLE_SIP_NAME;
-
-            $this -> instance_table = new Table($table_name, 'id, ' . $this->FG_QUERY_ADITION_SIP);
-            $list_friend = $this -> instance_table -> getRows($this->DBHandler);
-            $list_names = explode(",",$this -> FG_QUERY_ADITION_SIP);
-
+            $table_name = "cc_sip_buddies";
+            $cols = $sip_cols;
         }
+
+        $instance_table = new Table($table_name, $cols);
+        $list_friend = $instance_table->getRows($this->DBHandler);
+        // todo: once all queries are associative this won't be needed
+        $list_friend = array_filter($list_friend, fn($k) => !is_numeric($k), ARRAY_FILTER_USE_KEY);
 
         if ($list_friend) {
-            $fd =@ fopen($buddyfile, "w");
-            if (!$fd) {
-                $error_msg = '<p style="text-align: center; font-weight: bold; color: red">' . gettext("Could not open buddy file") . $buddyfile . '</p>';
-            } else {
-                foreach ($list_friend as $data) {
-                    $line = "\n\n[" . $data[1] . "]\n";
-                    if (fwrite($fd, $line) === FALSE) {
-                        echo "Impossible to write to the file ($buddyfile)";
-                        break;
-                    } else {
-                        for ($i = 1; $i < count($data) - 1; $i++) {
-                            if (isset($data[$i +1]) && strlen($data[$i +1]) > 0) {
-                                if (trim($list_names[$i]) == 'allow') {
-                                    $codecs = explode(",", $data[$i +1]);
-                                    $line = "";
-                                    foreach ($codecs as $value)
-                                        $line .= trim($list_names[$i]) . '=' . $value . "\n";
-                                } else {
-                                    $line = (trim($list_names[$i]) . '=' . $data[$i +1] . "\n");
-                                }
-                                if (fwrite($fd, $line) === FALSE) {
-                                    echo gettext("Impossible to write to the file") . " ($buddyfile)";
-                                    break;
-                                }
+            if (file_exists($buddyfile) && is_writable($buddyfile)) {
+                foreach ($list_friend as $row) {
+                    $line = "\n\n[$row[accountcode]]\n";
+                    foreach ($row as $key => $value) {
+                        if ($key === "allow") {
+                            foreach(explode(",", $value) as $codec) {
+                                $line .= "allow=$codec\n";
                             }
+                        } else {
+                            $line .= "$key=$value";
                         }
                     }
+                    file_put_contents($buddyfile, $line);
                 }
-                fclose($fd);
             }
-        } // end if is_array
+        }
     }
 
-    // insert_voip_config
-    // sip : 1 / 0
-    // iax : 1 / 0
-    public function insert_voip_config ($sip, $iax, $id_card, $accountnumber, $passui_secret)
+    public function insert_voip_config (bool $sip, bool $iax, int $id_card, string $accountnumber, string $passui_secret): void
     {
-        $who_id = '';
-        if (!isset ($sip))
-            $sip = 0;
+        if (!$sip && !$iax) {
+            return;
+        }
 
-        if (!isset ($iax))
-            $iax = 0;
-
-        // SIP / IAX FRIENDS TABLE
-        $FG_TABLE_SIP_NAME = "cc_sip_buddies";
-        $FG_TABLE_IAX_NAME = "cc_iax_buddies";
-
-        if ((isset ($sip)) || (isset ($iax))) {
-
-            $type = FRIEND_TYPE;
-            $allow = str_replace(' ', '', FRIEND_ALLOW);
-            $context = FRIEND_CONTEXT;
-            $nat = FRIEND_NAT;
-            $amaflags = FRIEND_AMAFLAGS;
-            $qualify = FRIEND_QUALIFY;
-            $host = FRIEND_HOST;
-            $dtmfmode = FRIEND_DTMFMODE;
-
-            if (!USE_REALTIME) {
-                if(($sip == 1) && ($iax == 1))
-                    $key = "sip_iax_changed";
-                elseif ($sip == 1)
-                    $key = "sip_changed";
-                elseif ($iax == 1)
-                    $key = "iax_changed";
-
-                //check who
-                if (isset($_SESSION["user_type"]) && $_SESSION["user_type"]=="ADMIN") {
-                    $who = Notification::$ADMIN;
-                    $who_id = $_SESSION['admin_id'];
-                } elseif (isset($_SESSION["user_type"]) && $_SESSION["user_type"]=="AGENT") {
-                    $who = Notification::$AGENT;
-                    $who_id = $_SESSION['agent_id'];
-                } else {
-                    $who=Notification::$UNKNOWN;
-                    $id=-1;
-                }
-                NotificationsDAO::addNotification($key, Notification::$HIGH, $who, $who_id);
+        if (!USE_REALTIME) {
+            if($sip && $iax) {
+                $key = "sip_iax_changed";
             }
+            elseif ($sip) {
+                $key = "sip_changed";
+            }
+            else {
+                $key = "iax_changed";
+            }
+
+            //check who
+            if (is_admin()) {
+                $who = Notification::$ADMIN;
+                $who_id = $_SESSION["admin_id"];
+            } elseif (is_agent()) {
+                $who = Notification::$AGENT;
+                $who_id = $_SESSION["agent_id"];
+            } else {
+                $who = Notification::$UNKNOWN;
+                $who_id = -1;
+            }
+            NotificationsDAO::addNotification($key, Notification::$HIGH, $who, $who_id);
+        } else {
+            $_SESSION["is_sip_iax_change"] = 1;
+            $_SESSION["is_sip_changed"] = (int)$sip;
+            $_SESSION["is_iax_changed"] = (int)$iax;
         }
 
-        if ($sip || $iax) {
-            $values = compact("amaflags", "context", "dtmfmode", "host", "type", "allow", "nat", "qualify");
-            $values += ["name" => $accountnumber, "accountcode" => $accountnumber, "regexten" => $accountnumber, "callerid" => "", "username" => $accountnumber, "secret" => $passui_secret, "id_cc_card" => $id_card];
-        }
-        // Insert data for sip_buddy
+        $values = [
+            "type" => FRIEND_TYPE,
+            "allow" => str_replace(" ", "", FRIEND_ALLOW),
+            "context" => FRIEND_CONTEXT,
+            "nat" => FRIEND_NAT,
+            "amaflags" => FRIEND_AMAFLAGS,
+            "qualify" => FRIEND_QUALIFY,
+            "host" => FRIEND_HOST,
+            "dtmfmode" => FRIEND_DTMFMODE,
+            "name" => $accountnumber,
+            "accountcode" => $accountnumber,
+            "regexten" => $accountnumber,
+            "callerid" => "",
+            "username" => $accountnumber,
+            "secret" => $passui_secret,
+            "id_cc_card" => $id_card,
+        ];
+
         if ($sip) {
-            $instance_sip_table = new Table($FG_TABLE_SIP_NAME);
-            $result_query1 = $instance_sip_table->addRow($this->DBHandler, $values);
-            if (USE_REALTIME) {
-                $_SESSION["is_sip_iax_change"] = 1;
-                $_SESSION["is_sip_changed"] = 1;
-            }
+            (new Table("cc_sip_buddies"))->addRow($this->DBHandler, $values);
         }
 
-        // Insert data for iax_buddy
         if ($iax) {
-            $instance_iax_table = new Table($FG_TABLE_IAX_NAME);
             unset($values["dtmfmode"], $values["nat"]);
-            $result_query2 = $instance_iax_table->addRow($this->DBHandler, $values);
-            if (USE_REALTIME) {
-                $_SESSION["is_sip_iax_change"] = 1;
-                $_SESSION["is_iax_changed"] = 1;
-            }
+            (new Table("cc_iax_buddies"))->addRow($this->DBHandler, $values);
         }
-
     }
-
 }
