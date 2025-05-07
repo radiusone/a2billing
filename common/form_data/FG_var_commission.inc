@@ -1,6 +1,5 @@
 <?php
 
-use A2billing\Admin;
 use A2billing\Agent;
 use A2billing\Customer;
 use A2billing\Forms\FormBO;
@@ -52,10 +51,14 @@ getpost_ifset(["id_card"]);
 $form_action ??= "list";
 
 $HD_Form = new FormHandler("cc_agent_commission", _("Agent Commission"));
-
+if (is_agent()) {
+    $HD_Form->list_query_conditions["id_agent"] = $_SESSION["agent_id"];
+}
 $HD_Form->list_query_order_columns = ["date"];
-$HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("money_add.png") ;
+$HD_Form->list_query_order_direction = "desc";
+
+$HD_Form->FG_ENABLE_ADD_BUTTON = is_admin();
+$HD_Form ->FG_LIST_ADDING_BUTTON1 = is_admin();
 
 $HD_Form->help_text = create_help(
     _("Agents Commission history - The section below allows you to add commissions against an agent. Normally the commissions are generated automatically by the customer's payment.")
@@ -64,14 +67,20 @@ $HD_Form->help_text = create_help(
 $com_list = getRefillType_List();
 
 $HD_Form->AddListValue(_("Account"), "id_card", [Customer::class, "getUsername"]);
-$HD_Form->AddListValue(_("Agent"), "id_agent", [Agent::class, "getName"]);
+if (is_admin()) {
+    $HD_Form->AddListValue(_("Agent"), "id_agent", [Agent::class, "getName"]);
+}
 $HD_Form->AddListValue(_("Payment date"), "date");
 $HD_Form->AddListValue(_("Amount"), "amount", "get_money");
 $HD_Form->AddListMapping(_("Status"), "commission_type", $com_list);
 $HD_Form->AddListValue(_("Description"), "description");
-$HD_Form->AddListSqlMapping(_("Link to payment"), "id_payment", new Table("cc_logpayment", ["id", "payment"]), [], "A2B_entity_payment.php?form_action=ask-edit&id=");
-
-$HD_Form->FG_ENABLE_ADD_BUTTON = true;
+$HD_Form->AddListSqlMapping(
+    _("Link to payment"),
+    "id_payment",
+    new Table("cc_logpayment", ["id", "payment"]),
+    [],
+    "A2B_entity_payment.php?form_action=ask-edit&id="
+);
 
 $HD_Form->AddEditPopup(
     _("CUSTOMER ID"),
