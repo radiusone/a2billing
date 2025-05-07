@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Agent;
+use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -36,44 +37,29 @@ use A2billing\Agent;
 **/
 
 require_once __DIR__ . "/../../common/lib/agent.defines.php";
-require_once __DIR__ . "/form_data/FG_var_agent.inc";
+require_once __DIR__ . "/../../common/form_data/FG_var_agent.inc";
+/**
+ * @var FormHandler $HD_Form
+ */
 
-if (! has_rights (Agent::ACX_ACCESS)) {
-    Header ("HTTP/1.0 401 Unauthorized");
-    Header ("Location: PP_error.php?c=accessdenied");
-    die();
+Agent::checkPageAccess(Agent::ACX_MYACCOUNT);
+
+getpost_ifset(["id"]);
+/**
+ * @var numeric-string|null $id
+ */
+
+$form_action ??= "ask-edit";
+if ($form_action !== "edit" && $form_action !== "ask-edit" || (isset($id) && (int)$id !== (int)$_SESSION["agent_id"])) {
+    header("Location: agentinfo.php");
 }
 
 $HD_Form -> init();
+$list = $HD_Form->perform_action($form_action);
 
-getpost_ifset(array('message'));
-
-$form_action ??= "list";
-if ($message != "success") {
-    $list = $HD_Form -> perform_action($form_action);
-}
-
-// #### HEADER SECTION
 require_once __DIR__ . "/../templates/main.php";
 
-// #### HELP SECTION
-echo create_help(gettext("Personal information.") . '<br>' . gettext("You can update your personal information here."));
+$HD_Form->create_toppage($form_action);
+$HD_Form->create_form($form_action, $list);
 
-// #### TOP SECTION PAGE
-$HD_Form -> create_toppage ($form_action);
-
-if ($message == "success") {
-
-?>
-<br/>
-<div class="block_centered" >
-<?php echo gettext("Your personal information is updated successfully.")?>
-</div>
-
-<?php
-} else {
-    $HD_Form -> create_form($form_action, $list) ;
-}
-
-// #### FOOTER SECTION
 require_once __DIR__ . "/../templates/footer.php";

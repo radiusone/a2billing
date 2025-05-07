@@ -108,7 +108,7 @@ require_once __DIR__ . "/../templates/main.php";
     </td>
     <td align="right">
         <?php if ($A2B->config["webagentui"]['personalinfo']) { ?>
-        <a href="A2B_entity_agent.php?form_action=ask-edit"><span class="cssbutton"><font color="red"><?php echo gettext("EDIT PERSONAL INFORMATION");?></font></span></a>
+        <a href="A2B_entity_agent.php?form_action=ask-edit&id=<?= $_SESSION["agent_id"]?>"><span class="cssbutton"><font color="red"><?php echo gettext("EDIT PERSONAL INFORMATION");?></font></span></a>
         <?php } ?>
     </td>
 </tr>

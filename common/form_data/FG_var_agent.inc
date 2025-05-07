@@ -39,24 +39,25 @@ use A2billing\Table;
  *
 **/
 
-getpost_ifset(["form_action", "popup_select", "popup_formname", "popup_fieldname"]);
+getpost_ifset(["form_action", "popup_select"]);
 /**
  * @var string $form_action
  * @var string $popup_select
- * @var string $popup_formname
- * @var string $popup_fieldname
  */
 
-$HD_Form = new FormHandler("cc_agent", _("Agent"));
+$HD_Form = new FormHandler("cc_agent", is_admin() ? _("Agent") : _("personal information"));
+if (is_agent()) {
+    $HD_Form->update_query_conditions = ["id" => $_SESSION["agent_id"]];
+}
 
 $HD_Form->list_query_order_columns = ["datecreation"];
 
-$HD_Form->FG_LIST_ADDING_BUTTON1 = true;
+$HD_Form->FG_LIST_ADDING_BUTTON1 = is_admin();
 $HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_agent.php?form_action=ask-add&groupID=0";
-$HD_Form->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form->FG_LIST_ADDING_BUTTON_MSG1 = _("Add AGENT");
-$HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJfSURBVDjLpZNrSFNhGMelD34op67Lp4I+RKBREkUNIR2po7LOztlxbY1amstyXWw2m06b6Ra1llpqBJrlJdNFVyqxixZmIQ5npVE20DCkYqaDDBVy77+zDQbCmEUffvC8L/x/z/Pw8oYACPkfAl5mKmWl+cJFMMTzoNsUBnXsQqhk4qt/JVCrUosMVBQs2yJg5igWhUMbH4a0uKVQ7VWUzSnQswJc4II6LqT1Eg6NkI99GyPArF1M5hRoBZGkpTIPI60WdFYexO4NfKTGLoEidhl2rotEmXbXgqCCqj3LXa6P7Rjrvo7vr2thr8/B4P1ijPa3ojFjxURf3aHQoIJqxWrbuK0Jzp5bmHzbzGH11uP2ZlSnx/QEXcGaxM5/tnlrx5NMAaZ7ajD1/p6XyTc38FwjgFWY/KJRKOUFFJQnpfE7RFSNk6Ux5fiEvmPJaMnd7sVT/7J14ytDozMx+WJ9nCJylsCcIp03oNHWfpMwgOMD0PUSaKoFrlSAVJwDMRfCfe0ySPcrfGEY8iCBKq1LpEL9grYtjJGky4BHd3xwQVRagBIjcDofKMgGjh8AuVQCd4kJP9Nk5K6IPusX9J6MmnE+zANOnQAsRT7OFPjO+iwgOwNQK+FWSoAsFcYeF6IrJ3raL3hniCbjT40gSm6FqnIQLkg8XXWHQTT7QXRH4OYm8HT/IWfhajPBlruK+AX9DUf1dv3K3zOcYDSFBs4XB2SEZuCgGPQWxkxzGdOsV/hsVfPa5dI1TSLl8AArJ0M0iyGxBIOUBI4dLPrFMnI7QTHRyqasH76p5gX9jf/CH9NZtVjmGMuRAAAAAElFTkSuQmCC";
 
-$HD_Form->help_text = create_help(_("Agents - this shows a list of all of the Agents who have access to the Agent interface"));
+$HD_Form->help_text = is_admin()
+    ? create_help(_("Agents - this shows a list of all of the Agents who have access to the Agent interface"))
+    : create_help(_("Personal information") . "<br/>" . _("You can update your personal information here"));
 
 $HD_Form->AddListActionButton(
     "A2B_agent_home.php?id=",
@@ -117,121 +118,115 @@ if ($popup_select) {
 if ($popup_select) {
 	$HD_Form->FG_LIST_VIEW_PAGE_SIZE = 7;
     $HD_Form->AddListSelectActionButton("javascript:sendValue('|param|')");
-} elseif (Admin::allowed(Admin::ACX_MODIFY_AGENTS)) {
-	$HD_Form->FG_ENABLE_INFO_BUTTON = true;
-	$HD_Form->FG_INFO_BUTTON_LINK = "A2B_info_agent.php?id=";
-	$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
-	$HD_Form->FG_ENABLE_ADD_BUTTON = true;
-	$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
+} elseif (Admin::allowed(Admin::ACX_MODIFY_AGENTS) || Agent::allowed(Agent::ACX_MYACCOUNT)) {
+    $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
+    if (is_admin()) {
+        $HD_Form->FG_ENABLE_INFO_BUTTON = true;
+        $HD_Form->FG_INFO_BUTTON_LINK = "A2B_info_agent.php?id=";
+        $HD_Form->FG_ENABLE_ADD_BUTTON = true;
+        $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 
-	$HD_Form->AddEditElement(
-        _("LOGIN"),
-        "login",
-        "",
-        ["maxlength" => 12],
-        [Validator::class, "min4Chars"],
-        _("Insert the login")
-    );
+        $HD_Form->AddEditElement(
+            _("LOGIN"),
+            "login",
+            "",
+            ["maxlength" => 12],
+            [Validator::class, "min4Chars"],
+            _("Insert the login")
+        );
 
-    $HD_Form->AddEditElement(
-        _("PASSWORD"),
-        "pwd_encoded",
-        $form_action === "ask-edit" ? _("Enter a new password or leave blank to keep the old one") : _("Enter a new password"),
-        ["maxlength" => 32],
-        $form_action === "ask-edit" ? [Validator::class, "min8CharsOptional"] : [Validator::class, "min8Chars"]
-    );
+        $HD_Form->AddEditElement(
+            _("PASSWORD"),
+            "pwd_encoded",
+            $form_action === "ask-edit" ? _("Enter a new password or leave blank to keep the old one")
+                : _("Enter a new password"),
+            ["maxlength" => 32],
+            $form_action === "ask-edit" ? [Validator::class, "min8CharsOptional"] : [Validator::class, "min8Chars"]
+        );
 
-    $HD_Form->AddEditSelect(
-        _("PERMISSION"),
-        "perms",
-        $right_list,
-        "",
-        _("To select several rights in the above ListBox, hold the CTRL key down while clicking the items"),
-        ["size" => $len_right_list, "multiple" => "multiple"]
-    );
+        $HD_Form->AddEditSelect(
+            _("PERMISSION"),
+            "perms",
+            $right_list,
+            "",
+            _("To select several rights in the above ListBox, hold the CTRL key down while clicking the items"),
+            ["size" => $len_right_list, "multiple" => "multiple"]
+        );
 
-    $HD_Form->AddEditRadio(
-        _("ACTIVE"),
-        "active",
-        getYesNoList(),
-        "1",
-        _("Enable agent"),
-        [],
-        _("Choose if you want to active this agent")
-    );
+        $HD_Form->AddEditRadio(
+            _("ACTIVE"),
+            "active",
+            getYesNoList(),
+            "1",
+            _("Enable agent"),
+            [],
+            _("Choose if you want to active this agent")
+        );
 
-    $balance_attr = ["maxlength" => 30];
-    $comm_attr = ["readonly" => "readonly"];
-	if ($form_action =="ask-add" || $form_action=="add") {
-        $balance_attr["value"] = 0;
-		$comm_attr["value"] = 0;
-	} else {
-        $balance_attr["readonly"] = "readonly";
-	}
+        $balance_attr = ["maxlength" => 30];
+        $comm_attr = ["readonly" => "readonly"];
+        if ($form_action == "ask-add" || $form_action == "add") {
+            $balance_attr["value"] = 0;
+            $comm_attr["value"] = 0;
+        } else {
+            $balance_attr["readonly"] = "readonly";
+        }
 
-    $HD_Form->AddEditElement(
-        _("BALANCE"),
-        "credit",
-        _("currency : ") . strtoupper(BASE_CURRENCY),
-        $balance_attr,
-        [Validator::class, "number"],
-        _("amount of credit")
-    );
+        $HD_Form->AddEditElement(
+            _("BALANCE"),
+            "credit",
+            _("currency : ") . strtoupper(BASE_CURRENCY),
+            $balance_attr,
+            [Validator::class, "number"],
+            _("amount of credit")
+        );
 
-    $HD_Form->AddEditElement(
-        _("COMMISSION BALANCE"),
-        "com_balance",
-        _("currency : ") . strtoupper(BASE_CURRENCY),
-        $comm_attr,
-        null,
-        _("amount of commission")
-    );
+        $HD_Form->AddEditElement(
+            _("COMMISSION BALANCE"),
+            "com_balance",
+            _("currency : ") . strtoupper(BASE_CURRENCY),
+            $comm_attr,
+            null,
+            _("amount of commission")
+        );
 
-    $HD_Form->AddEditSelect(_("CURRENCY"), "currency", $currency_list, "", _("Currency used at the customer end."));
+        $HD_Form->AddEditSelect(_("CURRENCY"), "currency", $currency_list, "", _("Currency used at the customer end."));
 
-    $HD_Form->AddEditElement(
-        _("COMMISSION PERCENTAGE"),
-        "commission",
-        _("Commission in percent"),
-        ["maxlength" => 20],
-        [Validator::class, "percentage"],
-        _("Insert the commision"),
-        "",
-        "NO-NULL"
-    );
+        $HD_Form->AddEditElement(
+            _("COMMISSION PERCENTAGE"),
+            "commission",
+            _("Commission in percent"),
+            ["maxlength" => 20],
+            [Validator::class, "percentage"],
+            _("Insert the commision"),
+            "",
+            "NO-NULL"
+        );
 
-    $HD_Form->AddEditElement(
-        _("THRESHOLD REMITTANCE"),
-        "threshold_remittance",
-        _("currency : ") . strtoupper(BASE_CURRENCY),
-        ["maxlength" => 20],
-        [Validator::class, "number"],
-        _("threshold remittance"),
-        "",
-        "NO"
-    );
+        $HD_Form->AddEditElement(
+            _("THRESHOLD REMITTANCE"),
+            "threshold_remittance",
+            _("currency : ") . strtoupper(BASE_CURRENCY),
+            ["maxlength" => 20],
+            [Validator::class, "number"],
+            _("threshold remittance"),
+            "",
+            "NO"
+        );
 
-    $HD_Form->AddEditElement(
-        _("VAT"),
-        "vat",
-        _("VAT"),
-        ["maxlength" => 20],
-        [Validator::class, "number"],
-        _("Insert the VAT"),
-        "",
-        "NO-NULL"
-    );
+        $HD_Form->AddEditElement(
+            _("VAT"),
+            "vat",
+            _("VAT"),
+            ["maxlength" => 20],
+            [Validator::class, "number"],
+            _("Insert the VAT"),
+            "",
+            "NO-NULL"
+        );
 
-    $HD_Form->AddEditSelect(_("LANGUAGE"), "language", $language_list);
-
-    $HD_Form->AddEditElement(
-        _("COMPANY"),
-        "company",
-        "",
-        ["maxlength" => 50],
-        null,
-        _("Insert the company")
-    );
+        $HD_Form->AddEditSelect(_("LANGUAGE"), "language", $language_list);
+    }
 
     $HD_Form->AddEditElement(
         _("LAST NAME"),
@@ -249,6 +244,15 @@ if ($popup_select) {
         ["maxlength" => 50],
         null,
         _("Insert the firstname")
+    );
+
+    $HD_Form->AddEditElement(
+        _("COMPANY"),
+        "company",
+        "",
+        ["maxlength" => 50],
+        null,
+        _("Insert the company")
     );
 
     $HD_Form->AddEditElement(
@@ -325,30 +329,32 @@ if ($popup_select) {
         _("Insert the fax number")
     );
 
-    $HD_Form->AddEditTextarea(
-        _("BANK INFO"),
-        "bank_info",
-        "",
-        ["rows" => 4],
-        _("Insert the bank info of this agent")
-    );
+    if (is_admin()) {
+        $HD_Form->AddEditTextarea(
+            _("BANK INFO"),
+            "bank_info",
+            "",
+            ["rows" => 4],
+            _("Insert the bank info of this agent")
+        );
 
-    $HD_Form->AddEditHasMany(
-        _("Call plans"),
-        new Table(
-            "cc_tariffgroup",
-            ["cc_tariffgroup.id", "cc_tariffgroup.tariffgroupname"],
-            ["cc_agent_tariffgroup" => ["cc_tariffgroup.id", "cc_agent_tariffgroup.id_tariffgroup"]]
-        ),
-        "id_tariffgroup",
-        "id_agent",
-        "",
-        null,
-        false,
-        true,
-        new Table("cc_agent_tariffgroup")
-    );
+        $HD_Form->AddEditHasMany(
+            _("Call plans"),
+            new Table(
+                "cc_tariffgroup",
+                ["cc_tariffgroup.id", "cc_tariffgroup.tariffgroupname"],
+                ["cc_agent_tariffgroup" => ["cc_tariffgroup.id", "cc_agent_tariffgroup.id_tariffgroup"]]
+            ),
+            "id_tariffgroup",
+            "id_agent",
+            "",
+            null,
+            false,
+            true,
+            new Table("cc_agent_tariffgroup")
+        );
 
-	$HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = [FormBO::class, "creation_agent_refill"];
-	$HD_Form->FG_INTRO_TEXT_ADITION = '';
+        $HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = [FormBO::class, "creation_agent_refill"];
+        $HD_Form->FG_INTRO_TEXT_ADITION = '';
+    }
 }
