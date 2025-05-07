@@ -51,35 +51,32 @@ require_once __DIR__ . "/../../common/form_data/FG_var_card.inc";
 Admin::checkPageAccess(Admin::ACX_CUSTOMER);
 
 getpost_ifset([
-    'nb_to_create', 'creditlimit', 'cardnum', 'addcredit', 'choose_tariff', 'gen_id', 'choose_simultaccess',
-    'choose_currency', 'choose_typepaid', 'creditlimit', 'enableexpire', 'expirationdate', 'expiredays', 'runservice', 'sip', 'iax',
-    'cardnumber_length', 'tag', 'id_group', 'discount', 'id_seria', 'id_didgroup', 'vat', 'id_country',
+    "nb_to_create", "creditlimit", "addcredit", "choose_tariff", "choose_simultaccess", "choose_currency",
+    "choose_typepaid", "enableexpire", "expirationdate", "expiredays", "runservice", "sip", "iax",
+    "cardnumber_length", "tag", "id_group", "discount", "id_seria", "id_didgroup", "vat", "id_country",
 ]);
 /**
- * @var string $nb_to_create
- * @var string $creditlimit
- * @var string $cardnum
- * @var string $addcredit
- * @var string $choose_tariff
- * @var string $gen_id
- * @var string $choose_simultaccess
- * @var string $choose_currency
- * @var string $choose_typepaid
- * @var string $creditlimit
- * @var string $enableexpire
- * @var string $expirationdate
- * @var string $expiredays
- * @var string $runservice
- * @var string $sip
- * @var string $iax
- * @var string $cardnumber_length
- * @var string $tag
- * @var string $id_group
- * @var string $discount
- * @var string $id_seria
- * @var string $id_didgroup
- * @var string $vat
- * @var string $id_country
+ * @var numeric-string|null $nb_to_create
+ * @var numeric-string|null $creditlimit
+ * @var numeric-string|null $addcredit
+ * @var numeric-string|null $choose_tariff
+ * @var numeric-string|null $choose_simultaccess
+ * @var numeric-string|null $choose_currency
+ * @var numeric-string|null $choose_typepaid
+ * @var numeric-string|null $enableexpire
+ * @var string|null $expirationdate
+ * @var numeric-string|null $expiredays
+ * @var numeric-string|null $runservice
+ * @var numeric-string|null $sip
+ * @var numeric-string|null $iax
+ * @var numeric-string|null $cardnumber_length
+ * @var string|null $tag
+ * @var numeric-string|null $id_group
+ * @var numeric-string|null $discount
+ * @var numeric-string|null $id_seria
+ * @var numeric-string|null $id_didgroup
+ * @var numeric-string|null $vat
+ * @var numeric-string|null $id_country
  */
 
 $id_group = (int)($id_group ?? 0);
@@ -97,7 +94,7 @@ $instance_realtime = new Realtime();
 
 $errors = [];
 
-if ($action == "generate") {
+if ($action === "generate") {
     if ($id_group < 1) {
         $errors["id_group"] = _("Choose a GROUP for the customers");
     }
@@ -122,8 +119,8 @@ $_SESSION["IDfilter"] = 'NODEFINED';
 
 if ($nb_to_create > 0 && $action === "generate" && count($errors) === 0) {
     $_SESSION["IDfilter"] = $gen_id = time();
-    $sip_buddy = !empty($sip) ? 1 : 0;
-    $iax_buddy = !empty($iax) ? 1 : 0;
+    $sip_buddy = $sip ? 1 : 0;
+    $iax_buddy = $iax ? 1 : 0;
     $creditlimit = (int)($creditlimit ?? 0);
 
     for ($k = 0; $k < $nb_to_create; $k++) {
@@ -154,16 +151,16 @@ if ($nb_to_create > 0 && $action === "generate" && count($errors) === 0) {
             );
         }
 
-        if ($sip || $iax) {
-            $instance_realtime->insert_voip_config($sip, $iax, $id_cc_card, $accountnumber, $passui_secret);
+        if (isset($sip) || isset($iax)) {
+            $instance_realtime->insert_voip_config((bool)$sip, (bool)$iax, $id_cc_card, $accountnumber, $passui_secret);
         }
     }
 
-    if ($sip) {
+    if (isset($sip)) {
         $instance_realtime->create_trunk_config_file();
     }
-    if (isset ($iax)) {
-        $instance_realtime->create_trunk_config_file('iax');
+    if (isset($iax)) {
+        $instance_realtime->create_trunk_config_file("iax");
     }
 }
 
@@ -333,7 +330,7 @@ $list_country = $HD_Form->DBHandle->CacheGetAll(300, "SELECT countrycode AS id, 
                 name="expiredays"
                 id="expiredays"
                 class="form-control <?= empty($errors["expiredays"]) ? "" : "is-invalid" ?>"
-                value="<?= empty($errors["expiredays"]) ? $addcredit : "0" ?>"
+                value="<?= empty($errors["expiredays"]) ? $expiredays : "0" ?>"
                 min="0"
                 max="999"
             />
