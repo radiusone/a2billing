@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Agent;
+use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -37,109 +38,24 @@ use A2billing\Agent;
 
 $menu_section = 3;
 require_once __DIR__ . "/../../common/lib/agent.defines.php";
-require_once __DIR__ . "/form_data/FG_var_def_ratecard.inc";
+require_once __DIR__ . "/../../common/form_data/FG_var_def_ratecard.inc";
+/**
+ * @var FormHandler $HD_Form
+ */
 
-if (!has_rights(Agent::ACX_RATECARD)) {
-    Header("HTTP/1.0 401 Unauthorized");
-    Header("Location: PP_error.php?c=accessdenied");
-    die();
-}
-
-getpost_ifset(array (
-    'popup_select',
-    'popup_formname',
-    'popup_fieldname',
-    'posted',
-    'Period',
-    'frommonth',
-    'fromstatsmonth',
-    'tomonth',
-    'tostatsmonth',
-    'fromday',
-    'fromstatsday_sday',
-    'fromstatsmonth_sday',
-    'today',
-    'tostatsday_sday',
-    'tostatsmonth_sday',
-    'current_page',
-    'removeallrate',
-    'removetariffplan',
-    'definecredit',
-    'IDCust',
-    'mytariff_id',
-    'destination',
-    'dialprefix',
-    'buyrate1',
-    'buyrate2',
-    'buyrate1type',
-    'buyrate2type',
-    'rateinitial1',
-    'rateinitial2',
-    'rateinitial1type',
-    'rateinitial2type',
-    'id_trunk',
-    "check",
-    "type",
-    "mode"
-));
+Agent::checkPageAccess(Agent::ACX_RATECARD);
 
 $HD_Form->init();
 
 $form_action ??= "list";
-if (is_string($tariffgroup) && strlen(trim($tariffgroup)) > 0) {
-    [$mytariffgroup_id, $mytariffgroupname, $mytariffgrouplcrtype] = preg_split('/-:-/', $tariffgroup);
-    $_SESSION["mytariffgroup_id"] = $mytariffgroup_id;
-    $_SESSION["mytariffgroupname"] = $mytariffgroupname;
-    $_SESSION["tariffgrouplcrtype"] = $mytariffgrouplcrtype;
-} else {
-    $mytariffgroup_id = $_SESSION["mytariffgroup_id"];
-    $mytariffgroupname = $_SESSION["mytariffgroupname"];
-    $mytariffgrouplcrtype = $_SESSION["tariffgrouplcrtype"];
-}
-
-if (($form_action == "list") && ($HD_Form->search_form_enabled) && ($_POST['posted_search'] == 1) && is_numeric($mytariffgroup_id)) {
-    $HD_Form->list_query_conditions["idtariffplan"] = $mytariff_id;
-
-    /*
-    SELECT t1.destination, min(t1.rateinitial), t1.dialprefix FROM cc_ratecard t1, cc_tariffplan t4, cc_tariffgroup t5,
-    cc_tariffgroup_plan t6
-    WHERE t4.id = t6.idtariffplan AND t6.idtariffplan=t1.idtariffplan AND t6.idtariffgroup = '3'
-    GROUP BY t1.dialprefix
-    */
-}
-
 $list = $HD_Form->perform_action($form_action);
 
-// #### HEADER SECTION
 require_once __DIR__ . "/../templates/main.php";
 
-// #### HELP SECTION
-if (!$popup_select) {
-} else {
-    echo create_help(gettext("Please select a ratecard and click on search to browse the different rates/dialing prefix of the selected ratecard."));
-}
-
-// DISPLAY THE UPDATE MESSAGE
-if (isset ($update_msg) && strlen($update_msg) > 0) {
-    echo $update_msg;
-}
-
-if (!$popup_select) {
-    // #### CREATE SEARCH FORM
-    if ($form_action == "list") {
-        $HD_Form->create_search_form();
-    }
-}
-?>
-
-<br>
-<?php
-
-// #### TOP SECTION PAGE
+$HD_Form->create_search_form(true);
 $HD_Form->create_toppage($form_action);
 
 $HD_Form->create_form($form_action, $list);
 $HD_Form->setup_export();
 
-// #### FOOTER SECTION
 require_once __DIR__ . "/../templates/footer.php";
