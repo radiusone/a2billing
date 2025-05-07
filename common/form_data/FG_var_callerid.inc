@@ -1,10 +1,8 @@
 <?php
 
-use A2billing\Admin;
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -38,18 +36,29 @@ use A2billing\Table;
  *
 **/
 
-$HD_Form = new FormHandler("cc_callerid", "CallerID");
+if (is_admin()) {
+    $HD_Form = new FormHandler("cc_callerid", "CallerID");
+} else {
+    $HD_Form = new FormHandler(
+        "cc_callerid",
+        _("Caller ID"),
+        "cc_callerid.id",
+        ["cc_card" => ["cc_card.id", "cc_callerid.id_cc_card"], "cc_card_group" => ["cc_card.id_group", "cc_card_group.id"]]
+    );
+    $HD_Form->list_query_conditions["cc_card_group.id_agent"] = $_SESSION["agent_id"];
+}
 
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("page_white_add.png") ;
 
-$HD_Form->AddListActionButton(
-    "A2B_entity_payment.php?form_action=ask-add&card_id=|col4|",
-    _('ADD PAYMENT'),
-    "",
-    "cash",
-    "text-success"
-);
+if (is_admin()) {
+    $HD_Form->AddListActionButton(
+        "A2B_entity_payment.php?form_action=ask-add&card_id=|col4|",
+        _('ADD PAYMENT'),
+        "",
+        "cash",
+        "text-success"
+    );
+}
 $HD_Form->AddListActionButton(
     "A2B_entity_logrefill.php?form_action=ask-add&card_id=|col4|",
     _("ADD REFILL"),
@@ -63,11 +72,10 @@ $HD_Form->help_text = create_help(
 );
 
 $HD_Form->AddListValue(_("CALLERID"), "cid")
-    ->AddListSqlMapping(_("ACCOUNT NUMBER"), "id_cc_card", new Table("cc_card", ["id", "username"]), [], "A2B_entity_card.php?form_action=ask-edit&id=")
+    ->AddListValue(_("ACCOUNT NUMBER"), "id_cc_card", [Customer::class, "getUsername"])
     ->AddListValue(_("CUSTOMER NAME"), "id_cc_card", [Customer::class, "getName"])
     ->AddListMapping(_("ACTIVATED"), "cc_callerid.activated", getActivationTrueFalseList())
     ->AddListHiddenValue("id_cc_card");
-
 
 $HD_Form->FG_ENABLE_ADD_BUTTON = true;
 $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
