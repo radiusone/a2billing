@@ -48,8 +48,17 @@ getpost_ifset(["card_id"]);
  */
 $form_action ??= "list";
 
-$HD_Form = new FormHandler("cc_logpayment", _("Payment"));
-
+if (is_admin()) {
+    $HD_Form = new FormHandler("cc_logpayment", _("Payment"));
+} else {
+    $HD_Form = new FormHandler(
+        "cc_logpayment",
+        _("Payment"),
+        "cc_logpayment.id",
+        ["cc_card" => ["cc_card.id", "cc_logpayment.card_id"], "cc_card_group" => ["cc_card.id_group", "cc_card_group.id"]]
+    );
+    $HD_Form->list_query_conditions["cc_card_group.id_agent"] = $_SESSION["agent_id"];
+}
 $HD_Form->list_query_order_direction = "DESC";
 
 if (Admin::allowed(Admin::ACX_MODIFY_PAYMENTS)) {
@@ -58,22 +67,23 @@ if (Admin::allowed(Admin::ACX_MODIFY_PAYMENTS)) {
 }
 
 $HD_Form->help_text = create_help(
-    _("Payment history - The section below allows you to add payments against a customer. Note that this does not change the balance on the account. Click on 'create associate refill' when you create a payment to top-up an account.")
+    is_admin()
+        ? _("Payment history - The section below allows you to add payments against a customer. Note that this does not change the balance on the account. Click on 'create associate refill' when you create a payment to top-up an account.")
+        : _("Payment history - The section below allows you to add payments against a customer. Note that this does not change the balance on the card. Click refill under customer list to top-up a card.")
 );
 
 $list_refill_type = getRefillType_List();
 
-$HD_Form->AddListValue(_("ID"), "id");
+$HD_Form->AddListValue(_("ID"), "cc_logpayment.id");
 $HD_Form->AddListValue(_("Account"), "card_id", [Customer::class, "getUsername"]);
 $HD_Form->AddListValue(_("Date"), "date");
 $HD_Form->AddListValue(_("Amount"), "payment", "get_money");
 $HD_Form->AddListMapping(_("Type"), "payment_type", $list_refill_type);
 $HD_Form->AddListValue(_("Refill"), "id_logrefill", "get_refill_link");
 
-$HD_Form->FG_ENABLE_INFO_BUTTON = true;
-$HD_Form->FG_INFO_BUTTON_LINK = "A2B_info_payment.php?id=";
-
 if (!$popup_select) {
+    $HD_Form->FG_ENABLE_INFO_BUTTON = true;
+    $HD_Form->FG_INFO_BUTTON_LINK = "A2B_info_payment.php?id=";
 	$HD_Form->search_form_enabled = true;
     $HD_Form->search_session_key = "payment_cust_selection";
     $HD_Form->search_delete_enabled = false;
@@ -83,13 +93,15 @@ if (!$popup_select) {
     $HD_Form->AddSearchTextInput(_("Account number"), "username");
     $HD_Form->AddSearchTextInput(_("Last name"), "lastname");
     $HD_Form->AddSearchTextInput(_("First name"), "firstname");
+} else {
+    $HD_Form->AddListSelectActionButton("javascript:sendValue('|param|')");
 }
 
 $HD_Form->FG_FILTER_ENABLE = true;
 $HD_Form->FG_FILTER_COLUMN = "username";
-$HD_Form->FG_FILTER_LABEL = "account number";
+$HD_Form->FG_FILTER_LABEL = _("Account number");
 
-if (Admin::allowed(Admin::ACX_MODIFY_PAYMENTS)) {
+if (Admin::allowed(Admin::ACX_MODIFY_PAYMENTS) && !$popup_select) {
 	$HD_Form->FG_ENABLE_ADD_BUTTON = true;
 	$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
 	$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
