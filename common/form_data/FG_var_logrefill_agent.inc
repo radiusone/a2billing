@@ -43,30 +43,41 @@ use A2billing\Forms\Validator;
  */
 
 $HD_Form = new FormHandler("cc_logrefill_agent", "Agent Refill");
+if (is_agent()) {
+    $HD_Form->list_query_conditions["agent_id"] = $_SESSION["agent_id"];
+}
 
 $HD_Form->list_query_order_columns = ["date"];
 $HD_Form->list_query_order_direction = "DESC";
 
-$HD_Form->FG_LIST_ADDING_BUTTON1 = true;
+$HD_Form->FG_LIST_ADDING_BUTTON1 = is_admin();
 $HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_logrefill_agent.php?form_action=ask-add";
 $HD_Form->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form->FG_LIST_ADDING_BUTTON_MSG1 = _("Add Refill");
-$HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("time_add.png") ;
 
 $HD_Form->help_text = create_help(
-    _("Agents Refill history - The section below allows you to add refills against an agent. Note that this changes the balance on the account.")
+    is_admin()
+        ? _("Agents Refill history - The section below allows you to add refills against an agent. Note that this changes the balance on the account.")
+        : _("Agents Refill history - The section below allows you to see your refill")
 );
 
 $list_refill_type = getRefillType_List();
 
 $HD_Form->AddListValue(_("ID"), "id");
-$HD_Form->AddListValue(_("Agent"), "agent_id", [Agent::class, "getName"], ["%X", Admin::allowed(Admin::ACX_MODIFY_AGENTS)]);
+if (is_admin()) {
+    $HD_Form->AddListValue(
+        _("Agent"),
+        "agent_id",
+        [Agent::class, "getName"],
+        ["%X", Admin::allowed(Admin::ACX_MODIFY_AGENTS)]
+    );
+}
 $HD_Form->AddListValue(_("Date"), "date");
 $HD_Form->AddListMapping(_("Type"), "refill_type", $list_refill_type);
 $HD_Form->AddListValue(_("Amount"), "credit", "get_money");
 
 $HD_Form->FG_ENABLE_INFO_BUTTON = true;
 $HD_Form->FG_INFO_BUTTON_LINK = "A2B_info_refill.php?type=agent&id=";
-$HD_Form->FG_ENABLE_ADD_BUTTON = true;
+$HD_Form->FG_ENABLE_ADD_BUTTON = is_admin();
 
 if (!$popup_select) {
     $HD_Form->search_form_enabled = true;

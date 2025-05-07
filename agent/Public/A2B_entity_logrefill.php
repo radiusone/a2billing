@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Agent;
+use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -37,33 +38,20 @@ use A2billing\Agent;
 
 $menu_section = 2;
 require_once __DIR__ . "/../../common/lib/agent.defines.php";
-require_once __DIR__ . "/form_data/FG_var_logrefill.inc";
+require_once __DIR__ . "/../../common/form_data/FG_var_logrefill.inc";
+/**
+ * @var FormHandler $HD_Form
+ */
+Agent::checkPageAccess(Agent::ACX_BILLING);
 
-if (! has_rights (Agent::ACX_BILLING)) {
-    Header ("HTTP/1.0 401 Unauthorized");
-    Header ("Location: PP_error.php?c=accessdenied");
-    die();
-}
-
-$HD_Form -> init();
-
+$HD_Form->init();
 $form_action ??= "list";
-$list = $HD_Form -> perform_action($form_action);
+$list = $HD_Form->perform_action($form_action);
 
-// #### HEADER SECTION
 require_once __DIR__ . "/../templates/main.php";
 
-// #### HELP SECTION
-echo create_help(gettext("Payment history - The section below allows you to add payments against a customer. Note that this does not change the balance on the card. Click refill under customer list to top-up a card."));
+$HD_Form->create_search_form();
+$HD_Form->create_toppage ($form_action);
+$HD_Form->create_form($form_action, $list) ;
 
-if ($form_action == "list") {
-    $HD_Form -> create_search_form();
-}
-
-// #### TOP SECTION PAGE
-$HD_Form -> create_toppage ($form_action);
-
-$HD_Form -> create_form($form_action, $list) ;
-
-// #### FOOTER SECTION
 require_once __DIR__ . "/../templates/footer.php";
