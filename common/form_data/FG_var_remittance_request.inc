@@ -42,27 +42,32 @@ $HD_Form = new FormHandler(
     "cc_remittance_request.id",
     ["cc_agent" => ["cc_remittance_request.id_agent", "cc_agent.id"]]
 );
+if (is_agent()) {
+    $HD_Form->list_query_conditions["id_agent"] = $_SESSION["agent_id"];
+}
 
 $HD_Form->list_query_order_columns = ["date"];
 $HD_Form->list_query_order_direction = "DESC";
 $HD_Form->FG_ENABLE_INFO_BUTTON = true;
 $HD_Form->FG_INFO_BUTTON_LINK = "A2B_info_remittance.php?id=";
 
-$HD_Form->AddListActionButton(
-    "",
-    _("ACCEPT THIS REQUEST"),
-    "",
-    "check-circle-fill",
-    "accept_click text-success",
-    "status",
-    0 // waiting
-);
+if (is_admin()) {
+    $HD_Form->AddListActionButton(
+        "",
+        _("ACCEPT THIS REQUEST"),
+        "",
+        "check-circle-fill",
+        "accept_click text-success",
+        "status",
+        0 // waiting
+    );
+}
 $HD_Form->AddListActionButton(
     "",
     _("REFUSE THIS REQUEST"),
     "",
     "x-circle-fill",
-    "refuse_click text-danger",
+    "text-danger " . (is_admin() ? "refuse_click" : "cancel_click"),
     "status",
     0 // waiting
 );
@@ -75,7 +80,9 @@ $status_list = getRemittanceStatus_List();
 $type_list = getRemittanceType_List();
 
 $HD_Form->AddListValue(_("ID"), "cc_remittance_request.id");
-$HD_Form->AddListValue(_("Agent"), "id_agent", [Agent::class, "getName"]);
+if (is_admin()) {
+    $HD_Form->AddListValue(_("Agent"), "id_agent", [Agent::class, "getName"]);
+}
 $HD_Form->AddListValue(_("Date"), "date");
 $HD_Form->AddListValue(_("Amount"), "amount", "get_money");
 $HD_Form->AddListMapping(_("Type"), "type", $type_list);

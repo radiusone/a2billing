@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Agent;
+use A2billing\Forms\FormHandler;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -37,27 +38,25 @@ use A2billing\Table;
 **/
 
 require_once __DIR__ . "/../../common/lib/agent.defines.php";
-require_once __DIR__ . "/form_data/FG_var_remittance_request.inc";
+require_once __DIR__ . "/../../common/form_data/FG_var_remittance_request.inc";
+/**
+ * @var FormHandler $HD_Form
+ */
 
-if (!has_rights (Agent::ACX_ACCESS)) {
-    Header("HTTP/1.0 401 Unauthorized");
-    Header("Location: PP_error.php?c=accessdenied");
-    die();
-}
-getpost_ifset(array (
-    'id',
-    'action'
-));
+Agent::checkPageAccess(Agent::ACX_ACCESS);
 
-$DBHandle = DbConnect();
+getpost_ifset(["action", "id"]);
+/**
+ * @var string|null $action
+ * @var numeric-string|null $id
+ */
+$action ??= "";
+$id ??= null;
 
-if ($action == "cancel") {
-    if (!empty ($id) && is_numeric($id)) {
-        $instance_table_remittance = new Table("cc_remittance_request");
-        $param_update_remittance = ["status" => 3];
-        $clause_update_remittance = ["id" => $id];
-        $instance_table_remittance->updateRow($DBHandle, $param_update_remittance, $clause_update_remittance);
-    }
+if ($action === "cancel" && $id) {
+    $DBHandle = DbConnect();
+    (new Table("cc_remittance_request"))
+        ->updateRow($DBHandle, ["status" => 3], ["id" => $id, "id_agent" => $_SESSION["agent_id"]]);
     die();
 }
 $HD_Form->init();
@@ -65,24 +64,19 @@ $HD_Form->init();
 $form_action ??= "list";
 $list = $HD_Form->perform_action($form_action);
 
-// #### HEADER SECTION
 require_once __DIR__ . "/../templates/main.php";
 
-// #### HELP SECTION
-echo create_help(gettext("Agents Remittance request history - The section below allows you to confirm or refuse remittance request of an agent. The remittance reques are generated automatically by the agent."));
-
-// #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);
-
 $HD_Form->create_form($form_action, $list);
-
-// #### FOOTER SECTION
-require_once __DIR__ . "/../templates/footer.php";
 ?>
+
 <script>
-$(function () {
-    $('.cancel_click').on('click', function () {
-        $.get("A2B_entity_remittance_request.php", { id: this.dataset.primaryKey, action: "cancel" }, data => location.reload(true));
+document.querySelectorAll(".cancel_click").forEach(function (el) {
+    el.addEventListener("click", function() {
+        fetch(`A2B_entity_remittance_request.php?id=${this.dataset.primaryKey}&action=cancel`).then(() => location.reload());
     });
 });
 </script>
+
+<?php
+require_once __DIR__ . "/../templates/footer.php";
