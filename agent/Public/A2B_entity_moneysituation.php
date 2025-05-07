@@ -36,6 +36,7 @@ use A2billing\Table;
  *
 **/
 
+$menu_section = 2;
 require_once __DIR__ . "/../../common/lib/agent.defines.php";
 require_once __DIR__ . "/form_data/FG_var_moneysituation.inc";
 
@@ -51,7 +52,7 @@ $form_action ??= "list";
 $list = $HD_Form->perform_action($form_action);
 
 // #### HEADER SECTION
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 
 // #### HELP SECTION
 echo create_help(gettext("This screen shows refills and payments made against each account, along with the current credit on each card. The initial amount of credit applied to the card is not included. The amount owing is calculated by subtracting payments from refills"));
@@ -188,4 +189,4 @@ if ($result_nb_card[0][0] > 0) {
 <?php
 }
 // #### FOOTER SECTION
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";

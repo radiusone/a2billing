@@ -86,7 +86,7 @@ if ($result_remittance) {
     $remittance_in_progress = false;
 }
 $remittance_value_cur = $remittance_value / $mycur;
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 
 echo create_help(gettext("On this page you will be able to create a remittance Remittance Request according to the commission accrued on your account.If the commission accrued is higher than a predefined threshold then it will be possible to ask a transfer on your balance or by a funds transfer."));
 
@@ -214,4 +214,4 @@ function CheckForm()
 
 <?php
 
-$smarty->display( 'footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";

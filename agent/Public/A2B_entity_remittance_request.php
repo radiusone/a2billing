@@ -66,7 +66,7 @@ $form_action ??= "list";
 $list = $HD_Form->perform_action($form_action);
 
 // #### HEADER SECTION
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 
 // #### HELP SECTION
 echo create_help(gettext("Agents Remittance request history - The section below allows you to confirm or refuse remittance request of an agent. The remittance reques are generated automatically by the agent."));
@@ -77,7 +77,7 @@ $HD_Form->create_toppage($form_action);
 $HD_Form->create_form($form_action, $list);
 
 // #### FOOTER SECTION
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";
 ?>
 <script>
 $(function () {

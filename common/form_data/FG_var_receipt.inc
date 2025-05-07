@@ -63,7 +63,8 @@ $HD_Form->FG_INFO_BUTTON_LINK = "A2B_receipt_view.php?id=";
 $HD_Form->AddListActionButton(
     "A2B_receipt_edit.php?id=",
     _("Edit receipt items"),
-    get_image_path("edit.png"),
+    "",
+    "receipt",
     "",
     "status",
     0 // open
@@ -71,7 +72,8 @@ $HD_Form->AddListActionButton(
 $HD_Form->AddListActionButton(
     "",
     _("Close this receipt"),
-    get_image_path("lock.png"),
+    "",
+    "file-earmark-lock",
     "lock",
     "status",
     0 // open

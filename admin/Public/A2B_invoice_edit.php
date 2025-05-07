@@ -174,8 +174,8 @@ require_once __DIR__ . "/../templates/main.php";
             <td><?= get_percent($item->getVatRate()) ?></td>
             <td><?= get_money($item->getTotalPrice()) ?></td>
             <td>
-                <a href="?action=edit&id=<?= $id ?>&idc=<?= $item->id ?>"><img src="<?= get_image_path("edit.png") ?>" alt="<?= _("Edit") ?>"/></a>
-                <a href="?action=delete&id=<?= $id ?>&idc=<?= $item->id ?>"><img src="<?= get_image_path("delete.png") ?>" alt="<?= _("Delete") ?>"/></a>
+                <a href="?action=edit&id=<?= $id ?>&idc=<?= $item->id ?>"><span class="bi bi-16 bi-pencil-fill" aria-label="<?= _("Edit") ?>"></span></a>
+                <a href="?action=delete&id=<?= $id ?>&idc=<?= $item->id ?>"><span class="bi bi-16 bi-x-circle-fill text-danger" aria-label="<?= _("Delete") ?>"></span></a>
             </td>
         </tr>
     <?php endforeach ?>

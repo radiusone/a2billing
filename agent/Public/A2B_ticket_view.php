@@ -37,6 +37,7 @@ use A2billing\Ticket;
  *
 **/
 
+$menu_section = 7;
 require_once __DIR__ . "/../../common/lib/agent.defines.php";
 
 if (! has_rights (Agent::ACX_SUPPORT)) {
@@ -81,7 +82,7 @@ foreach ($comments as $comment) {
     $comment->markViewed(Comment::AGENT);
 }
 
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 
 ?>
 <table class="epayment_conf_table">
@@ -222,4 +223,4 @@ foreach ($comments as $comment) {
 
 }
 
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";

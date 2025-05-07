@@ -97,7 +97,7 @@ require_once __DIR__ . "/../templates/main.php";
     <?php endif ?>
     <div class="col ms-auto">
         <a href="?id=<?= $id ?>&curr=<?= $curr ?>&popup_select=1" target="_blank">
-            <img src="<?= get_image_path("printer.png") ?>" title="Print" alt="Print">
+            <span class="bi bi-16 bi-printer" aria-label="<?= _("Print") ?>" title="<?= _("Print") ?>"></span>
         </a>
     </div>
 </div>
@@ -105,7 +105,7 @@ require_once __DIR__ . "/../templates/main.php";
 <div class="row d-print-none">
     <div class="col ms-auto">
         <a href="javascript:window.print()">
-            <img src="<?= get_image_path("printer.png") ?>" title="Print" alt="Print">
+            <span class="bi bi-16 bi-printer" aria-label="<?= _("Print") ?>" title="<?= _("Print") ?>"></span>
         </a>
     </div>
 </div>

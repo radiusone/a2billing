@@ -35,6 +35,7 @@ use A2billing\Customer;
  *
 **/
 
+$menu_section = 5;
 require_once __DIR__ . "/../common/lib/customer.defines.php";
 require_once __DIR__ . "/form_data/FG_var_receipt.inc";
 
@@ -50,7 +51,7 @@ $form_action ??= "list";
 $list = $HD_Form->perform_action($form_action);
 
 // #### HEADER SECTION
-$smarty->display('main.tpl');
+require_once __DIR__ . "/templates/main.php";
 
 // #### HELP SECTION
 echo create_help(gettext("Receipt history - The section below allows you to see the receipt that you received. you can see in them the summary of some withdrawal"));
@@ -61,7 +62,7 @@ $HD_Form->create_toppage($form_action);
 $HD_Form->create_form($form_action, $list);
 
 // #### FOOTER SECTION
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/templates/footer.php";
 ?>
 
 <script>

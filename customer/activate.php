@@ -59,7 +59,7 @@ $HD_Form = new FormHandler("cc_card", "User");
 $HD_Form->init();
 
 // HEADER SECTION
-$smarty->display('signup_header.tpl');
+require_once __DIR__ . "/templates/signup_header.php";
 
 if (empty ($key))
     $key = null;
@@ -156,4 +156,4 @@ if ($list["id"] == "1") {
 }
 
 // #### FOOTER SECTION
-$smarty->display('signup_footer.tpl');
+require_once __DIR__ . "/templates/footer.php";

@@ -97,7 +97,7 @@ try {
     $error_msg = $e->getMessage();
 }
 
-$smarty->display('signup_header.tpl');
+require_once __DIR__ . "/templates/signup_header.php";
 ?>
 
 <blockquote>
@@ -127,4 +127,4 @@ $smarty->display('signup_header.tpl');
 
 <?php
 
-$smarty->display('signup_footer.tpl');
+require_once __DIR__ . "/templates/footer.php";

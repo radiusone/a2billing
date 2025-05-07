@@ -39,9 +39,6 @@ use Amenadiel\JpGraph\Graph\Graph;
 
 $menu_section = 6;
 require_once __DIR__ . "/../../common/lib/agent.defines.php";
-/**
- * @var Smarty $smarty
- */
 require_once __DIR__ . "/../../common/form_data/report_monthly.inc";
 /**
  * @var FormHandler $HD_Form
@@ -53,7 +50,7 @@ require_once __DIR__ . "/../../common/form_data/report_monthly.inc";
 
 Agent::checkPageAccess(Agent::ACX_CALL_REPORT);
 
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 
 $HD_Form->create_search_form();
 $HD_Form->create_toppage("list");
@@ -79,4 +76,4 @@ $HD_Form->create_toppage("list");
 </div>
 
 <?php
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";

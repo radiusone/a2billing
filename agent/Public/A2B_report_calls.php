@@ -41,7 +41,6 @@ require_once __DIR__ . "/../../common/lib/agent.defines.php";
 require_once __DIR__ . "/../../common/form_data/report_calls.inc";
 /**
  * @var FormHandler $HD_Form
- * @var Smarty $smarty
  */
 
 Agent::checkPageAccess(Agent::ACX_CALL_REPORT);
@@ -53,7 +52,7 @@ $HD_Form->prepare_list_subselection("list");
 
 $list = $HD_Form->perform_action($form_action);
 
-$smarty->display( "main.tpl");
+require_once __DIR__ . "/../templates/main.php";
 
 $HD_Form->create_search_form();
 
@@ -61,4 +60,4 @@ $HD_Form->create_toppage($form_action);
 $HD_Form->create_form("list", $list);
 
 require_once __DIR__ . "/../../common/page_modules/call_graph.php";
-$smarty->display( "footer.tpl");
+require_once __DIR__ . "/../templates/footer.php";

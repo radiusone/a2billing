@@ -114,5 +114,6 @@ $HD_Form -> FG_FILTER_LABEL = gettext('CALLERID');
 $HD_Form->AddListActionButton(
     "A2B_entity_logrefill.php?form_action=ask-add&card_id=|col1|",
     _("ADD REFILL"),
-    get_image_path("brick_add.png")
+    "",
+    "cash-stack"
 );

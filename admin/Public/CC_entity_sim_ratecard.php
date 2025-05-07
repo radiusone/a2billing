@@ -41,7 +41,6 @@ $menu_section = 6;
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
 /**
  * @var A2Billing $A2B
- * @var Smarty $smarty
  */
 
 Admin::checkPageAccess(Admin::ACX_RATECARD);
@@ -134,7 +133,7 @@ echo create_help(
             <div class="input-group">
                 <input type="text" name="id_cc_card" id="id_cc_card" class="form-control" value="<?= $id_cc_card ?? "" ?>" pattern="[0-9]*"/>
                 <a href="A2B_entity_card.php" data-window-name="destinationPopup" data-form-name="simulator" data-field-name="id_cc_card" data-popup-options="width=750,height=450,top=50,left=100,scrollbars=1" class="btn btn-primary popup_trigger" aria-label="open a popup to select an item">
-                    <svg class="mx-auto" width="16" height="16"><use xlink:href="#popup"></use></svg>
+                    <span class="bi bi-box-arrow-up-right fw-bolder fs-6"></span>
                 </a>
             </div>
         </div>

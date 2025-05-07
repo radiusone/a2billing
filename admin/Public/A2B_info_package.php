@@ -171,9 +171,9 @@ $result_rates = $table_rates->getRows(DbConnect(), ["cc_package_rate.package_id"
             <?php endforeach ?>
         </select>
         <div class="d-flex justify-content-around">
-            <button class="btn btn-sm" id="addrate" aria-label="<?= _("add a rate") ?>"><img src="<?= get_image_path("add.png") ?>"/></button>
-            <button class="btn btn-sm" id="delrate" aria-label="<?= _("delete a rate") ?>"><img src="<?= get_image_path("del.png") ?>"/></button>
-            <button class="btn btn-sm" id="delall" aria-label="<?= _("delete all rates") ?>"><img src="<?= get_image_path("delete.png") ?>"/></button>
+            <button class="btn btn-sm" id="addrate" aria-label="<?= _("add a rate") ?>"><span class="bi bi-16 bi-file-earmark-plus" aria-hidden="true"></span></button>
+            <button class="btn btn-sm" id="delrate" aria-label="<?= _("delete a rate") ?>"><span class="bi bi-16 bi-file-earmark-minus" aria-hidden="true"></span></button>
+            <button class="btn btn-sm" id="delall" aria-label="<?= _("delete all rates") ?>"><span class="bi bi-16 bi-folder-minus" aria-hidden="true"></span></button>
         </div>
     </div>
 </div>

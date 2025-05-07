@@ -64,8 +64,9 @@ $HD_Form -> FG_INFO_BUTTON_LINK = "A2B_invoice_view.php?id=";
 $HD_Form->AddListActionButton(
     "checkout_payment.php?item_type=invoice&item_id=",
     _("Pay"),
-    get_image_path("money.png", true),
     "",
+    "cash-stack",
+    "text-success",
     "paid_status",
     0 // unpaid
 );

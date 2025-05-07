@@ -346,10 +346,10 @@ echo get_login_button ($id);
                     <td><?= get_money($sub["fee"]) ?></td>
                     <td>
                         <a href="A2B_entity_subscriber.php?form_action=ask-edit&id=<?= $sub["id"]?>">
-                            <img src="<?= get_image_path("link.png")?>" alt="<?php echo  gettext("Link to subscription")?>"/>
+                            <div class="bi bi-16 bi-link" aria-label="<?= _("Link to subscription") ?>" title="<?= _("Link to subscription") ?>"></div>
                         </a>
                         <a href="A2B_entity_subscriber.php?form_action=ask-delete&id=<?= $sub["'id"]?>">
-                            <img src="<?= get_image_path("delete.png")?>" alt="<?php echo  gettext("Delete subscription")?>"/>
+                            <div class="bi bi-16 bi-x-circle-fill text-danger" aria-label="<?= _("Delete subscription") ?>" title="<?= _("Delete subscription") ?>"></div>
                         </a>
                     </td>
                 </tr>

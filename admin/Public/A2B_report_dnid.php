@@ -38,9 +38,6 @@ use A2billing\Forms\FormHandler;
 
 $menu_section = 5;
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
-/**
- * @var Smarty $smarty
- */
 
 Admin::checkPageAccess(Admin::ACX_CALL_REPORT);
 

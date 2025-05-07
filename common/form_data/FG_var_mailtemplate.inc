@@ -147,7 +147,8 @@ if ((int)$popup_select >= 1) {
     $HD_Form->AddListActionButton(
         "A2B_entity_mailtemplate.php?form_action=ask-add&amp;from_id=|param|",
         _("Copy"),
-        ""
+        "",
+        "clipboard-check"
     );
 }
 

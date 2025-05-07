@@ -157,13 +157,13 @@ $HD_Form->AddListValue(_("Creation date"), "creationdate");
 
 $HD_Form->AddListActionButton(
     "?form_action=restore&id=",
-    _("Restore"),
-    get_image_path("icon-restore.gif")
+    _("Restore")
 );
 $HD_Form->AddListActionButton(
     "?form_action=download&id=",
     _("Download"),
-    get_image_path("dl.gif")
+    "",
+    "cloud-arrow-down"
 );
 
 $HD_Form->FG_ENABLE_EDIT_BUTTON = true;

@@ -102,7 +102,7 @@ foreach ($comments as $comment) {
     $comment->markViewed(Comment::CUSTOMER);
 }
 
-$smarty->display('main.tpl');
+require_once __DIR__ . "/templates/main.php";
 
 ?>
 <table class="epayment_conf_table">
@@ -234,4 +234,4 @@ foreach ($comments as $comment) {
 
 }
 
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/templates/footer.php";

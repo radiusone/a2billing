@@ -38,6 +38,7 @@ use A2billing\Table;
  *
 **/
 
+$menu_section = 5;
 require_once __DIR__ . "/../common/lib/customer.defines.php";
 
 if (! has_rights (Customer::ACX_INVOICES)) {
@@ -116,7 +117,7 @@ $result =  $table_charge -> getRows($DBHandle, $clause_charge + ["charged_status
     $invoice_items[]= $item;
     }
 
-$smarty->display('main.tpl');
+require_once __DIR__ . "/templates/main.php";
 
 $curr = $_SESSION['currency'];
 $currencies_list = get_currencies();
@@ -343,4 +344,4 @@ function amount_convert($amount)
 <?php
 }
 // #### FOOTER SECTION
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/templates/footer.php";

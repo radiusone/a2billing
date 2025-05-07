@@ -8,8 +8,6 @@
 
 # PhpStorm
 .idea/
-*.iml
-/vendor/
 
-# Smarty cache directories
-**/template_c/
+# Composer
+/vendor/

@@ -37,6 +37,7 @@ use A2billing\Table;
  *
  **/
 
+$menu_section = 5;
 require_once __DIR__ . "/../common/lib/customer.defines.php";
 
 if (! has_rights (Customer::ACX_INVOICES)) {
@@ -143,7 +144,7 @@ if ($nb_page>1) $totalprice = SumDetailledItems($start_date);
 //load customer
 $DBHandle  = DbConnect();
 
-$smarty->display('main.tpl');
+require_once __DIR__ . "/templates/main.php";
 
 //Currencies check
 $curr = $_SESSION['currency'];

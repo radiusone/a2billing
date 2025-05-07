@@ -8,16 +8,18 @@ header .nav svg.bi {
     fill: currentColor;
 }
 
-.alert > svg.bi {
-    width: 3em;
-    height: 3em;
-    fill: currentColor;
+div.bi::before {
+    display: block !important;
 }
 
-.popup_trigger svg {
-    margin-top: 4px; /* 16px image in 24 px box */
-    vertical-align: top;
-    fill: currentColor;
+.bi.bi-16 {
+    font-size: 1rem !important;
+}
+.bi.bi-32 {
+    font-size: 2rem !important;
+}
+.bi.bi-40 {
+    font-size: 2.5rem !important;
 }
 
 .popup-select-button {
@@ -39,7 +41,7 @@ header .nav svg.bi {
 }
 
 .btn-toggle {
-    display: inline-flex;
+    display: flex;
     align-items: center;
     padding: .25rem .5rem;
     font-weight: 600;
@@ -56,6 +58,10 @@ header .nav svg.bi {
 .btn-toggle::before {
     width: 1.25em;
     line-height: 0;
+    content: "";
+}
+
+.btn-toggle[data-bs-toggle=collapse]::before {
     content: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%280,0,0,.5%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 14l6-6-6-6'/%3e%3c/svg%3e");
     transition: transform .35s ease;
     transform-origin: .5em 50%;

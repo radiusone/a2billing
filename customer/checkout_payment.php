@@ -90,7 +90,7 @@ if ($item_type == "invoice" && is_numeric($item_id)) {
     }
 }
 // #### HEADER SECTION
-$smarty->display( 'main.tpl');
+require_once __DIR__ . "/templates/main.php";
 
 $HD_Form -> create_toppage ($form_action);
 
@@ -379,4 +379,4 @@ echo tep_draw_form('checkout_amount', $form_action_url, 'post', 'onsubmit="check
 <?php
 
 // #### FOOTER SECTION
-$smarty->display( 'footer.tpl');
+require_once __DIR__ . "/templates/footer.php";

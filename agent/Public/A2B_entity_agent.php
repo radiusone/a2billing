@@ -54,7 +54,7 @@ if ($message != "success") {
 }
 
 // #### HEADER SECTION
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 
 // #### HELP SECTION
 echo create_help(gettext("Personal information.") . '<br>' . gettext("You can update your personal information here."));
@@ -76,4 +76,4 @@ if ($message == "success") {
 }
 
 // #### FOOTER SECTION
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";

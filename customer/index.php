@@ -31,21 +31,100 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
-**/
-
-$disable_load_conf = true;
+ **/
 
 require_once __DIR__ . "/../common/lib/customer.defines.php";
 
 if (is_customer()) {
     // already logged in
     header("Location: userinfo.php");
+    die();
 }
 
-getpost_ifset(["error", "password", "username"]);
+getpost_ifset(["error"]);
+/**
+ * @var numeric-string|null $error
+ */
+$error = (int)($error ?? 0);
+$lang = $_SESSION["ui_language"] ?? "english";
 
-$smarty->assign("error", $error);
-$smarty->assign("username", $username);
-$smarty->assign("password", $password);
+require_once __DIR__ . "/templates/header.php";
+?>
+<div class="container-fluid">
+<div class="row">
+<main class="col">
 
-$smarty->display('index.tpl');
+<form method="post" action="userinfo.php">
+    <input type="hidden" name="done" value="submit_log"/>
+    <div class="modal show d-block" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="authTitle" aria-hidden="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content shadow">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="authTitle"><?= _("Authentication") ?></h3>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <?php if (!empty($error)): ?>
+                            <div class="row pb-3">
+                                <div class="col p-3 bg-danger bg-gradient text-white">
+                                    <strong>
+                                        <?php if ($error === 1): ?>
+                                            <?= _("AUTHENTICATION REFUSED, please check your user/password!") ?>
+                                        <?php elseif ($error === 2): ?>
+                                            <?= _("INACTIVE ACCOUNT, Please activate your account!") ?>
+                                        <?php elseif ($error === 3): ?>
+                                            <?= _("BLOCKED ACCOUNT, Please contact the administrator!") ?>
+                                        <?php elseif ($error === 4): ?>
+                                            <?= _("NEW ACCOUNT, Your account has not been validated yet!") ?>
+                                        <?php endif ?>
+                                    </strong>
+                                </div>
+                            </div>
+                        <?php endif ?>
+                        <div class="row pb-3">
+                            <label class="col-4 col-form-label" for="pr_login"><?= _("User") ?></label>
+                            <div class="col">
+                                <input type="text" name="pr_login" id="pr_login" autofocus="autofocus" autocomplete="on" class="form-control"/>
+                            </div>
+                        </div>
+                        <div class="row pb-3">
+                            <label class="col-4 col-form-label" for="pr_password"><?= _("Password") ?></label>
+                            <div class="col">
+                                <input type="password" name="pr_password" id="pr_password" class="form-control"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <select name="ui_language" id="ui_language" class="form-select w-50" aria-label="<?= _("Select the application language") ?>">
+                        <option value="english" <?php if ($lang === "english"): ?>selected="selected"<?php endif ?>>🇬🇧 <?= _("English") ?></option>
+                        <option value="spanish" <?php if ($lang === "spanish"): ?>selected="selected"<?php endif ?>>🇪🇸 <?= _("Spanish") ?></option>
+                        <option value="french" <?php if ($lang === "french"): ?>selected="selected"<?php endif ?>>🇫🇷 <?= _("French") ?></option>
+                        <option value="german" <?php if ($lang === "german"): ?>selected="selected"<?php endif ?>>🇩🇪 <?= _("German") ?></option>
+                        <option value="portuguese" <?php if ($lang === "portuguese"): ?>selected="selected"<?php endif ?>>🇵🇹 <?= _("Portuguese") ?></option>
+                        <option value="brazilian" <?php if ($lang === "brazilian"): ?>selected="selected"<?php endif ?>>🇧🇷 <?= _("Brazilian") ?></option>
+                        <option value="italian" <?php if ($lang === "italian"): ?>selected="selected"<?php endif ?>>🇮🇹 <?= _("Italian") ?></option>
+                        <option value="chinese" <?php if ($lang === "chinese"): ?>selected="selected"<?php endif ?>>🇨🇳 <?= _("Chinese") ?></option>
+                        <option value="romanian" <?php if ($lang === "romanian"): ?>selected="selected"<?php endif ?>>🇷🇴 <?= _("Romanian") ?></option>
+                        <option value="polish" <?php if ($lang === "polish"): ?>selected="selected"<?php endif ?>>🇵🇱 <?= _("Polish") ?></option>
+                        <option value="russian" <?php if ($lang === "russian"): ?>selected="selected"<?php endif ?>>🇷🇺 <?= _("Russian") ?></option>
+                        <option value="turkish" <?php if ($lang === "turkish"): ?>selected="selected"<?php endif ?>>🇹🇷 <?= _("Turkish") ?></option>
+                        <option value="urdu" <?php if ($lang === "urdu"): ?>selected="selected"<?php endif ?>>🇵🇰 <?= _("Urdu") ?></option>
+                        <option value="ukrainian" <?php if ($lang === "ukrainian"): ?>selected="selected"<?php endif ?>>🇺🇦 <?= _("Ukrainian") ?></option>
+                        <option value="greek" <?php if ($lang === "greek"): ?>selected="selected"<?php endif ?>>🇬🇷 <?= _("Greek") ?></option>
+                        <option value="indonesian" <?php if ($lang === "indonesian"): ?>selected="selected"<?php endif ?>>🇮🇩 <?= _("Indonesian") ?></option>
+                    </select>
+                    <button type="submit" class="btn btn-primary"><?= _("Log In") ?></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+document.getElementById("ui_language").addEventListener("change", function () {
+    self.location.href = `?ui_language=${document.getElementById("ui_language")?.value}`;
+})
+</script>
+
+<?php
+require_once __DIR__ . "/templates/footer.php";

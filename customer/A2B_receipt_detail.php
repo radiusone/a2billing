@@ -65,7 +65,7 @@ if($nb_page>1)$totalprice = $receipt->getTotalPrice();
 //load customer
 $DBHandle  = DbConnect();
 
-$smarty->display('main.tpl');
+require_once __DIR__ . "/templates/main.php";
 
 //Currencies check
 $curr = $_SESSION['currency'];

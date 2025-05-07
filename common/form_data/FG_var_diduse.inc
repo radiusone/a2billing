@@ -58,7 +58,8 @@ if ((!empty($posted_search) && !empty($inuse)) || empty($posted_search)) {
     $HD_Form->AddListActionButton(
         "A2B_entity_did_use.php?action=ask_release&did=|col5|",
         _("Release this did"),
-        "data:image/gif;base64,R0lGODlhIQALAKEDAPPt2ZycnAAAAP///yH+FUNyZWF0ZWQgd2l0aCBUaGUgR0lNUAAh+QQBAAADACwAAAAAIQALAAACQVyOqctoAKOctMZjs5YYCAF9IBh+nimeZDd6EemGLgwDLGnGZzmiMDt7CWU0nS1AVClTLWaus4lSoNKqzdDIah0FADs="
+        "",
+        "telephone-outbound-fill"
     );
 }
 if (($action ?? "") !== "ask_release") {

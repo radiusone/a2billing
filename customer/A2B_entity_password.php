@@ -62,7 +62,7 @@ if ($form_action=="ask-modif") {
     }
 }
 // #### HEADER SECTION
-$smarty->display( 'main.tpl');
+require_once __DIR__ . "/templates/main.php";
 
 // #### HELP SECTION
 echo create_help(gettext("On this page you will be able to change your password, You have to enter the New Password and Confirm it."));
@@ -155,4 +155,4 @@ document.frmPass.NewPassword.focus();
 <?php
 
 // #### FOOTER SECTION
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/templates/footer.php";

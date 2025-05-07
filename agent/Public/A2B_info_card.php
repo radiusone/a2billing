@@ -37,9 +37,6 @@ use A2billing\Agent;
 
 $menu_section = 1;
 require_once __DIR__ . "/../../common/lib/agent.defines.php";
-/**
- * @var Smarty $smarty
- */
 
 Agent::checkPageAccess(Agent::ACX_CUSTOMER);
 
@@ -72,7 +69,7 @@ $dids = $DBHandle->GetAll(
     [$id]
 );
 
-$smarty->display('main.tpl');
+require_once __DIR__ . "/../templates/main.php";
 
 echo get_login_button ($id);
 ?>
@@ -424,4 +421,4 @@ echo get_login_button ($id);
 </div>
 
 <?php
-$smarty->display('footer.tpl');
+require_once __DIR__ . "/../templates/footer.php";

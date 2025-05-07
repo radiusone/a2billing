@@ -22,34 +22,26 @@ $menu_section ??= 0;
                 </h4>
                 <ul class="nav col-12 col-lg-auto my-2 justify-content-center my-md-0 text-small">
                     <li>
-                        <a href="PP_intro.php" class="nav-link text-secondary">
-                            <svg class="bi d-block mx-auto mb-1" width="24" height="24">
-                                <use xlink:href="#home"></use>
-                            </svg>
+                        <a href="PP_intro.php" class="nav-link  <?= $_SERVER["PHP_SELF"] === "PP_intro.php" ? "text-secondary" : "text-light" ?>">
+                            <div class="bi bi-house fs-4 mb-1 text-center" aria-hidden="true"></div>
                             <?= _("Home") ?>
                         </a>
                     </li>
                     <li>
-                        <a href="dashboard.php" class="nav-link text-white">
-                            <svg class="bi d-block mx-auto mb-1" width="24" height="24">
-                                <use xlink:href="#speedometer2"></use>
-                            </svg>
+                        <a href="dashboard.php" class="nav-link  <?= $_SERVER["PHP_SELF"] === "dashboard.php" ? "text-secondary" : "text-light" ?>">
+                            <div class="bi bi-speedometer2 fs-4 mb-1 text-center" aria-hidden="true"></div>
                             <?= _("Dashboard") ?>
                         </a>
                     </li>
                     <li>
-                        <a href="A2B_notification.php" class="nav-link text-white">
-                            <svg class="bi d-block mx-auto mb-1 <?= NotificationsDAO::hasUnreadNotifications($_SESSION["admin_id"]) ? "text-danger" : "" ?>" width="24" height="24">
-                                <use xlink:href="#notify"></use>
-                            </svg>
+                        <a href="A2B_notification.php" class="nav-link  <?= $_SERVER["PHP_SELF"] === "A2B_notification.php" ? "text-secondary" : "text-light" ?>">
+                            <div class="bi bi-bell fs-4 mb-1 text-center <?= NotificationsDAO::hasUnreadNotifications($_SESSION["admin_id"]) ? "text-danger" : "" ?>" aria-hidden="true"></div>
                             <?= _("Notification") ?>
                         </a>
                     </li>
                     <li class="dropdown">
-                        <a href="#" id="dropdownUser" class="nav-link text-white dropdown-toggle" data-bs-toggle="dropdown">
-                            <svg class="bi d-block mx-auto mb-1" width="24" height="24">
-                                <use xlink:href="#people-circle"></use>
-                            </svg>
+                        <a href="#" id="dropdownUser" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                            <div class="bi bi-person-circle fs-4 mb-1 text-center" aria-hidden="true"></div>
                             <?= _("Account") ?>
                         </a>
                         <ul class="dropdown-menu shadow" aria-labelledby="dropdownUser">

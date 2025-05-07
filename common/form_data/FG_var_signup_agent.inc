@@ -51,7 +51,6 @@ $form_action ??= "list";
 $HD_Form = new FormHandler("cc_agent_signup", _("Signup Key"));
 
 $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("key_add.png");
 $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form->FG_ENABLE_EDIT_BUTTON = false;
 $HD_Form->FG_ENABLE_ADD_BUTTON = true;
@@ -60,7 +59,9 @@ $HD_Form->add_help_text = create_help(_("Generate a specific crypted URL to conf
 $HD_Form->help_text = create_help(_("This shows a list of all signup key create for the Agents, this key is used to identify the default paramater for the subscription on the signup page"));
 
 $HD_Form->AddListValue(_("Key"), "code");
-$HD_Form->AddListValue(_("Agent"), "id_agent", [Agent::class, "getName"]);
+if (is_admin()) {
+    $HD_Form->AddListValue(_("Agent"), "id_agent", [Agent::class, "getName"]);
+}
 $HD_Form->AddListSqlMapping(_("Call plan"), "id_tariffgroup", new Table("cc_tariffgroup", ["id", "tariffgroupname"]));
 $HD_Form->AddListSqlMapping(_("Group"), "id_group", new Table("cc_card_group", ["id" , "name"]));
 
@@ -68,20 +69,25 @@ $url = htmlspecialchars(json_encode($A2B->config["signup"]["urlcustomerinterface
 $HD_Form->AddListActionButton(
     "javascript:alert($url + 'signup.php?key=|col0|')",
     _("URL"),
-    get_image_path("link.png")
-);
-
-$HD_Form->AddEditSqlSelect(
-    _("Agent"),
-    "id_agent",
-    new Table("cc_agent", ["id", "CONCAT(login, ' - ', firstname, ' ', lastname)"]),
-    [],
-    $id_agent ?? "",
-    ["" => _("Select agent")],
     "",
-    ["required" => "required"]
+    "link"
 );
 
+if (is_admin()) {
+    $HD_Form->AddEditSqlSelect(
+        _("Agent"),
+        "id_agent",
+        new Table("cc_agent", ["id", "CONCAT(login, ' - ', firstname, ' ', lastname)"]),
+        [],
+        $id_agent ?? "",
+        ["" => _("Select agent")],
+        "",
+        ["required" => "required"]
+    );
+} else {
+    $id_agent = $_SESSION["agent_id"] ?? "";
+    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["id_agent"] = $id_agent;
+}
 if ((isset($id_agent) && is_numeric($id_agent) && ($form_action === "ask-add" || $form_action === "add")) || $form_action === "ask-delete") {
     $HD_Form->AddEditSqlSelect(
         _("Call Plan"),
@@ -112,7 +118,5 @@ if ((isset($id_agent) && is_numeric($id_agent) && ($form_action === "ask-add" ||
     if ($form_action === "ask-delete") {
         $HD_Form->AddEditElement(_("Code"), "code");
     }
-    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS = [
-        "code" => generate_unique_value("cc_agent_signup", 10, "code"),
-    ];
+    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["code"] = generate_unique_value("cc_agent_signup", 10, "code");
 }
