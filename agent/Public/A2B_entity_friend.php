@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Agent;
+use A2billing\Forms\FormHandler;
 use A2billing\Table;
 use A2billing\NotificationsDAO;
 use A2billing\Notification;
@@ -39,64 +40,58 @@ use A2billing\Notification;
 **/
 
 require_once __DIR__ . "/../../common/lib/agent.defines.php";
-require_once __DIR__ . "/form_data/FG_var_friend.inc";
+require_once __DIR__ . "/../../common/form_data/FG_var_friend.inc";
+/**
+ * @var FormHandler $HD_Form
+ * @var string|null $form_action
+ * @var string|null $voip_type
+ */
 
-if (! has_rights (Agent::ACX_CUSTOMER)) {
-    Header ("HTTP/1.0 401 Unauthorized");
-    Header ("Location: PP_error.php?c=accessdenied");
-    die();
-}
-
-if ($form_action=="add_sip" || $voip_type=="sip" || $form_action=="add_iax" || $voip_type=="iax") {
-    if (! has_rights (Agent::ACX_VOIPCONF)) {
-        Header ("HTTP/1.0 401 Unauthorized");
-        Header ("Location: PP_error.php?c=accessdenied");
-        die();
-    }
-}
+Agent::checkPageAccess(Agent::ACX_VOIPCONF);
+$form_action ??= "list";
+$voip_type ??= "";
 
 $HD_Form -> init();
 
 /********************************* ADD SIP / IAX FRIEND ***********************************/
-getpost_ifset(array("id_cc_card", "cardnumber", "useralias"));
+getpost_ifset(["id_cc_card", "cardnumber", "useralias"]);
+/**
+ * @var numeric-string|null $id_cc_card
+ * @var string|null $cardnumber
+ * @var string|null $useralias
+ */
 
-if ( (isset ($id_cc_card) && (is_numeric($id_cc_card)  != "")) && ( $form_action == "add_sip" || $form_action == "add_iax") ) {
-
+if (!empty($id_cc_card) && ($form_action === "add_sip" || $form_action === "add_iax")) {
     if ($form_action == "add_sip") {
-        $friend_param_update=["sip_buddy" => 1];
-        if (!USE_REALTIME) {
-            $key = "sip_changed";
-        }
+        $friend_param_update = ["sip_buddy" => 1];
+        $key = "sip_changed";
+        $TABLE_BUDDY = 'cc_sip_buddies';
     } else {
-        $friend_param_update=["iax_buddy" => 1];
-        if (!USE_REALTIME) {
-            $key = "iax_changed";
-        }
+        $friend_param_update = ["iax_buddy" => 1];
+        $key = "iax_changed";
+        $TABLE_BUDDY = 'cc_iax_buddies';
     }
 
     if (!USE_REALTIME) {
-        $who= Notification::$AGENT;$who_id=$_SESSION['agent_id'];
-        NotificationsDAO::AddNotification($key,Notification::$HIGH,$who,$who_id);
+        $who = Notification::$AGENT;
+        $who_id = $_SESSION['agent_id'];
+        NotificationsDAO::addNotification($key,Notification::$HIGH,$who,$who_id);
     }
 
     $instance_table_friend = new Table('cc_card');
-    $instance_table_friend->updateRow($HD_Form -> DBHandle, $friend_param_update, ["id" => $id_cc_card]);
+    $instance_table_friend->updateRow($HD_Form->DBHandle, $friend_param_update, ["id" => $id_cc_card]);
 
-    if ( $form_action == "add_sip" ) {
-        $TABLE_BUDDY = 'cc_sip_buddies';
-    } else {
-        $TABLE_BUDDY = 'cc_iax_buddies';
-    }
-    $instance_table_friend = new Table($TABLE_BUDDY, '*');
-    $list_friend = $instance_table_friend -> getRows ($HD_Form->DBHandle, ["id_cc_card" => $id_cc_card]);
+    $instance_table_friend = new Table($TABLE_BUDDY);
+    $list_friend = $instance_table_friend->getRows($HD_Form->DBHandle, ["id_cc_card" => $id_cc_card]);
 
     if ($list_friend) {
-        Header ("Location: A2B_entity_card.php?id="); exit();
+        header("Location: A2B_entity_card.php?id=$id_cc_card");
+        exit();
     }
 
     $form_action = "add";
 
-    $_POST['accountcode'] = $_POST['username']= $_POST['name']= $_POST['cardnumber'] = $cardnumber;
+    $_POST['accountcode'] = $_POST['username'] = $_POST['name'] = $_POST['cardnumber'] = $cardnumber;
     $_POST['allow'] = FRIEND_ALLOW;
     $_POST['context'] = FRIEND_CONTEXT;
     $_POST['nat'] = FRIEND_NAT;
@@ -107,98 +102,69 @@ if ( (isset ($id_cc_card) && (is_numeric($id_cc_card)  != "")) && ( $form_action
     $_POST['qualify'] = FRIEND_QUALIFY;
     $_POST['host'] = FRIEND_HOST;
     $_POST['dtmfmode'] = FRIEND_DTMFMODE;
-    $_POST['secret'] = MDP_NUMERIC(5).MDP_STRING(10).MDP_NUMERIC(5);
+    $_POST['secret'] = MDP_NUMERIC(5) . MDP_STRING(10) . MDP_NUMERIC(5);
 
     // for the getProcessed var
     $HD_Form->init();
 }
 
-$HD_Form -> FG_EDIT_BUTTON_LINK	= "?form_action=ask-edit&voip_type=$voip_type&id=";
-$HD_Form -> FG_DELETE_BUTTON_LINK = "?form_action=ask-delete&voip_type=$voip_type&id=";
+$HD_Form->FG_EDIT_BUTTON_LINK	= "?form_action=ask-edit&voip_type=$voip_type&id=";
+$HD_Form->FG_DELETE_BUTTON_LINK = "?form_action=ask-delete&voip_type=$voip_type&id=";
 
-$form_action ??= "list";
 if (!USE_REALTIME) {
     // CHECK THE ACTION AND SET THE IS_SIP_IAX_CHANGE IF WE ADD/EDIT/REMOVE A RECORD
-    if ($form_action == "add" || $form_action == "edit" || $form_action == "delete") {
-        $_SESSION["is_sip_iax_change"]=1;
-        if ($voip_type=='sip') {
-            $_SESSION["is_sip_changed"]=1;
+    if ($form_action === "add" || $form_action === "edit" || $form_action === "delete") {
+        $_SESSION["is_sip_iax_change"] = 1;
+        if ($voip_type === "sip") {
+            $_SESSION["is_sip_changed"] = 1;
         } else {
-            $_SESSION["is_iax_changed"]=1;
+            $_SESSION["is_iax_changed"] = 1;
         }
     }
 }
 
 $list = $HD_Form -> perform_action($form_action);
 
-// #### HEADER SECTION
 require_once __DIR__ . "/../templates/main.php";
-
-// #### HELP SECTION
-if ($form_action=='list') {
-    echo create_help(gettext("Voip Config will create a SIP or IAX entry on the Asterisk server, so that a customer can set up a SIP or IAX client to connect directly to the asterisk server without the need to enter an account and pin each time a call is made. When done, click on the CONFIRM DATA button, then click reload to apply the changes on the Asterisk server.<br>") .
-        gettext("The customer must then enter the URL/IP address of the asterisk server into the SIP/IAX client and use the account number and secret as the username and password."));
-
-    if ( isset($_SESSION["is_sip_iax_change"]) && $_SESSION["is_sip_iax_change"]) { ?>
-        <table  border="0" align="center" cellpadding="0" cellspacing="0" >
-            <TR><TD style="border-bottom: medium dotted #ED2525" align="center"> <?php echo gettext("Changes detected on SIP/IAX Friends")?></TD></TR>
-            <TR>
-                <FORM NAME="sipfriend">
-                <?= $HD_Form->csrf_inputs() ?>
-                <td height="31" style="padding-left: 5px; padding-right: 3px;" align="center" class="bgcolor_013">
-                <font color=white><b>
-                <?php  if ( isset($_SESSION["is_sip_changed"]) && $_SESSION["is_sip_changed"] ) { ?>
-                SIP : <input class="form_input_button"  TYPE="button" VALUE=" GENERATE ADDITIONAL_A2BILLING_SIP.CONF "
-                onClick="self.location.href='./CC_generate_friend_file.php?voip_type=sipfriend';">
-                <?php }
-                if ( isset($_SESSION["is_iax_changed"]) && $_SESSION["is_iax_changed"] ) { ?>
-                IAX : <input class="form_input_button"  TYPE="button" VALUE=" GENERATE ADDITIONAL_A2BILLING_IAX.CONF "
-                onClick="self.location.href='./CC_generate_friend_file.php?voip_type=iaxfriend';">
-                <?php } ?>
-                </b></font></td>
-                </FORM>
-            </TR>
-        </table>
-    <?php  } // endif is_sip_iax_change
-
-}else echo create_help(gettext("Each SIP/IAX client is identified by a number of parameters.</br></br>") .
-    gettext("More details on how to configure clients are on the Wiki") . ' -> <a href="http://voip-info.org/wiki-Asterisk+config+sip.conf" target="_blank">sip.conf</a> &
-<a href="http://voip-info.org/wiki-Asterisk+config+iax.conf" target="_blank">iax.conf</a>');
-
-
-if ($form_action=='list') {
 ?>
-<div align="center">
-<table width="40%" border="0" align="center" cellpadding="0" cellspacing="1">
-    <tr>
-      <td  class="bgcolor_021">
-      <table width="100%" border="0" cellspacing="1" cellpadding="0">
-          <form name="form1" method="post" action="">
-          <?= $HD_Form->csrf_inputs() ?>
-          <tr>
-            <td bgcolor="#FFFFFF" class="fontstyle_006" width="100%">&nbsp;<?php echo gettext("CONFIGURATION TYPE")?> </td>
-            <td bgcolor="#FFFFFF" class="fontstyle_006" align="center">
-               <select name="voip_type" id="col_configtype" onChange="window.document.form1.elements['PMChange'].value='Change';window.document.form1.submit();">
-                 <option value="iax" <?php if($voip_type == "iax")echo "selected"?>><?php echo gettext("IAX")?></option>
-                 <option value="sip" <?php if($voip_type == "sip")echo "selected"?>><?php echo gettext("SIP")?></option>
-               </select>
-              <input name="PMChange" type="hidden" id="PMChange">
 
-            </td>
-          </tr>
-          </form>
-      </table></td>
-    </tr>
-</table>
+<?php if ($form_action === "list" && !empty($_SESSION["is_sip_iax_change"])): ?>
+
+<div class="row pb-3">
+    <div class="col d-flex justify-content-around">
+        <?php if (!empty($_SESSION["is_sip_changed"])): ?>
+        <a href="CC_generate_friend_file.php?voip_type=sipfriend" class="btn btn-sm btn-outline-primary">
+            <?= _("GENERATE ADDITIONAL_A2BILLING_SIP.CONF") ?>
+        </a>
+        <?php endif ?>
+        <?php if (!empty($_SESSION["is_iax_changed"])): ?>
+        <a href="CC_generate_friend_file.php?voip_type=iaxfriend" class="btn btn-sm btn-outline-primary">
+            <?= _("GENERATE ADDITIONAL_A2BILLING_IAX.CONF") ?>
+        </a>
+        <?php endif ?>
+    </div>
 </div>
 
+<?php endif ?>
+
+<?php if ($form_action=='list'): ?>
+
+<form method="get" class="form form-horizontal">
+    <div class="row pb-3">
+        <label for="voip_type" class="col-2 col-form-label"><?= _("CONFIGURATION TYPE") ?></label>
+        <div class="col">
+            <select name="voip_type" id="voip_type" class="form-select" onchange="this.form.submit()">
+                <option value="iax" <?= $voip_type === "iax" ? "selected=\"selected\"" : ""?>><?= _("IAX")?></option>
+                <option value="sip" <?= $voip_type === "sip" ? "selected=\"selected\"" : ""?>><?= _("SIP")?></option>
+            </select>
+        </div>
+    </div>
+</form>
+
+<?php endif ?>
+
 <?php
-}
+$HD_Form->create_toppage($form_action);
+$HD_Form->create_form($form_action, $list);
 
-// #### TOP SECTION PAGE
-$HD_Form -> create_toppage ($form_action);
-
-$HD_Form -> create_form($form_action, $list) ;
-
-// #### FOOTER SECTION
 require_once __DIR__ . "/../templates/footer.php";

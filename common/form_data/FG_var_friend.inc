@@ -53,11 +53,24 @@ $form_action ??= "list";
 $voip_type ??= "sip";
 
 if ($voip_type === "sip") {
-	$HD_Form = new FormHandler("cc_sip_buddies", _("SIP Config"));
+    $table = "cc_sip_buddies";
+    $desc = _("SIP Config");
 } else {
-	$HD_Form = new FormHandler("cc_iax_buddies", _("IAX Config"));
+    $table = "cc_iax_buddies";
+    $desc = _("IAX Config");
 }
-
+$HD_Form = new FormHandler(
+    $table,
+    $desc,
+    "$table.id",
+    [
+        "cc_card" => ["$table.id_cc_card", "cc_card.id"],
+        "cc_card_group" => ["cc_card.id_group", "cc_card_group.id"],
+    ]
+);
+if (is_agent()) {
+    $HD_Form->list_query_conditions["cc_card_group.id_agent"] = $_SESSION["agent_id"];
+}
 $HD_Form->list_help_text = create_help(
     _("SIP and IAX Config will create a SIP or IAX entry on the Asterisk server, so that a customer can set up a SIP or IAX client to connect directly to the asterisk server without the need to enter an account and pin each time a call is made. When done, click on the CONFIRM DATA button, then click reload to apply the changes on the Asterisk server.<br>")
     . _("The customer must then enter the URL/IP address of the asterisk server into the SIP/IAX client, and use the Account Number and Secret word as the username and password.")
@@ -781,29 +794,30 @@ if ($voip_type === "sip") {
         ["maxlength" => 10]
     );
 
-
-    $HD_Form->AddEditElement(
-        _("REQUIRE CALL TOKEN"),
-        "requirecalltoken",
-        _("No supported by Realtime"),
-        ["maxlength" => 20]
-    );
-
-
-    $HD_Form->AddEditElement(
-        _("MAX CALL NUMBERS"),
-        "maxcallnumbers",
-        _("No supported by Realtime"),
-        ["maxlength" => 10]
-    );
+    if (is_admin()) {
+        $HD_Form->AddEditElement(
+            _("REQUIRE CALL TOKEN"),
+            "requirecalltoken",
+            _("No supported by Realtime"),
+            ["maxlength" => 20]
+        );
 
 
-    $HD_Form->AddEditElement(
-        _("MAX CALL NUMBERS NON VALIDATED"),
-        "maxcallnumbers_nonvalidated",
-        _("No supported by Realtime"),
-        ["maxlength" => 10]
-    );
+        $HD_Form->AddEditElement(
+            _("MAX CALL NUMBERS"),
+            "maxcallnumbers",
+            _("No supported by Realtime"),
+            ["maxlength" => 10]
+        );
+
+
+        $HD_Form->AddEditElement(
+            _("MAX CALL NUMBERS NON VALIDATED"),
+            "maxcallnumbers_nonvalidated",
+            _("No supported by Realtime"),
+            ["maxlength" => 10]
+        );
+    }
 }
 
 
