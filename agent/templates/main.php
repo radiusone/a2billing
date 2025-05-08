@@ -34,7 +34,7 @@ $menu_section ??= 0;
                         <ul class="dropdown-menu shadow" aria-labelledby="dropdownUser">
                         <?php if (Agent::allowed(Agent::ACX_MYACCOUNT)): ?>
                             <li>
-                                <a href="agentinfo.php" class="dropdown-item">
+                                <a href="A2B_info_agent.php" class="dropdown-item">
                                     <?= _("Account Information") ?>
                                 </a>
                             </li>
