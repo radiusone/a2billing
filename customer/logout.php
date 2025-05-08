@@ -35,4 +35,9 @@
 
 require_once __DIR__ . "/../common/lib/customer.defines.php";
 
- Header ("Location: index.php");
+session_destroy();
+$C_RETURN_URL_DISTANT_LOGIN = "index.php";
+if (defined("RETURN_URL_DISTANT_LOGIN") && !empty(RETURN_URL_DISTANT_LOGIN)) {
+    $C_RETURN_URL_DISTANT_LOGIN = RETURN_URL_DISTANT_LOGIN;
+}
+header("Location: $C_RETURN_URL_DISTANT_LOGIN");

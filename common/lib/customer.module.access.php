@@ -45,14 +45,6 @@ if (defined("RETURN_URL_DISTANT_LOGIN") && !empty(RETURN_URL_DISTANT_LOGIN)) {
     $C_RETURN_URL_DISTANT_LOGIN = RETURN_URL_DISTANT_LOGIN . (str_contains(RETURN_URL_DISTANT_LOGIN, '?') ? "&" : "?");
 }
 
-if (($_GET["logout"] ?? "") === "true") {
-    $C_RETURN_URL_DISTANT_LOGIN .=  "cssname=" . $_SESSION['stylefile'] ?? "";
-    session_destroy();
-    header("HTTP/1.0 401 Unauthorized");
-    header("Location: $C_RETURN_URL_DISTANT_LOGIN");
-    die();
-}
-
 getpost_ifset (['pr_login', 'pr_password']);
 /**
  * @var string $pr_login

@@ -51,7 +51,7 @@ $menu_section ??= 0;
                                 </a>
                             </li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="logout.php?logout=true"><?= _("Logout") ?></a></li>
+                            <li><a class="dropdown-item" href="logout.php"><?= _("Logout") ?></a></li>
                         </ul>
                     </li>
                 </ul>

@@ -68,6 +68,7 @@ $menu_section ??= 0;
             <?php if (Customer::allowed(Customer::ACX_NOTIFICATION)): ?>
             <a class="btn btn-toggle mb-1" href="A2B_notification.php"><?= _("Notifications") ?></a>
             <?php endif ?>
+            <a class="btn btn-toggle mb-1" href="logout.php"><?= _("Logout") ?></a>
             <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#language-collapse" aria-expanded="false">
                 <?= _("Language") ?>
             </button>

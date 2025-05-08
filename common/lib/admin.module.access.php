@@ -42,22 +42,6 @@ error_reporting(E_ALL & ~E_NOTICE);
 
 header("Expires: Sat, Jan 01 2000 01:01:01 GMT");
 
-if (($_GET["logout"] ?? "") === "true") {
-    Logger::insertLog(
-        $_SESSION["admin_id"],
-        1,
-        "USER LOGGED OUT",
-        "User Logged out from website",
-        '',
-        $_SERVER['REMOTE_ADDR'],
-        $_SERVER['REQUEST_URI']
-    );
-    session_destroy();
-    header("HTTP/1.0 401 Unauthorized");
-    header("Location: index.php");
-    die();
-}
-
 getpost_ifset (['pr_login', 'pr_password']);
 /**
  * @var string $pr_login
