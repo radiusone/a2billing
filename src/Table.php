@@ -105,11 +105,8 @@ class Table
 
     public function quote_identifier(?string $identifier): ?string
     {
-        if (is_null($identifier)) {
-            return null;
-        }
-        if ($identifier === "*") {
-            return "*";
+        if (is_null($identifier) || preg_match("/^(\\w+\\.)?\\*$/", $identifier)) {
+            return $identifier;
         }
 
         $q = $this->db_type === "mysql" ? "`" : "\"";
