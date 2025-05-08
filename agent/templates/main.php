@@ -154,8 +154,8 @@ $menu_section ??= 0;
                     </button>
                     <div class="collapse <?= $menu_section === 7 ? "show" : "" ?>" id="support-collapse">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                            <li><a class="link-dark rounded" href="A2B_ticket.php"><?= _("Customer Tickets") ?></a></li>
-                            <li><a class="link-dark rounded" href="A2B_support.php"><?= _("View and Create Tickets") ?></a></li>
+                            <li><a class="link-dark rounded" href="A2B_entity_ticket.php?ticket_type=user"><?= _("Customer Tickets") ?></a></li>
+                            <li><a class="link-dark rounded" href="A2B_entity_ticket.php?ticket_type=agent"><?= _("View and Create Tickets") ?></a></li>
                         </ul>
                     </div>
                 </li>

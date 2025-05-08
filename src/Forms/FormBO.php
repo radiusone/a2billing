@@ -123,32 +123,36 @@ class FormBO
             );
         } elseif ((int)$processed["creator_type"] === Ticket::ADMIN) {
             $table = new Table(
-                "cc_ui_authen", [
-                "login AS username",
-                "SUBSTRING(name FROM 1 FOR POSITION(' ' IN name) AS firstname",
-                "SUBSTRING(name FROM POSITION(' ' IN name) + 1) AS lastname",
-                "'en' AS language",
-                "email"
-            ]);
+                "cc_ui_authen",
+                [
+                    "userid AS id",
+                    "login AS username",
+                    "SUBSTRING(name FROM 1 FOR POSITION(' ' IN name) AS firstname",
+                    "SUBSTRING(name FROM POSITION(' ' IN name) + 1) AS lastname",
+                    "'en' AS language",
+                    "email"
+                ]
+            );
         } else {
             return;
         }
+
         $result = $table->getRow($db, ["id" => $card_id]);
-
-        $owner = $result[0]['username']." (".$result[0]['firstname']." ".$result[0]['lastname'].")";
-
-        try {
-            self::send_new_ticket_email(
-                $owner,
-                (int)$ticket_id,
-                $description,
-                (int)$priority,
-                $title,
-                $result["language"],
-                $result["email"]
-            );
-        } catch (Exception $e) {
-            $form->FG_TEXT_ADITION_ERROR = $e->getMessage();
+        if (!empty($result["email"])) {
+            $owner = $result['username'] . " (" . $result['firstname'] . " " . $result['lastname'] . ")";
+            try {
+                self::send_new_ticket_email(
+                    $owner,
+                    (int)$ticket_id,
+                    $description,
+                    (int)$priority,
+                    $title,
+                    $result["language"],
+                    $result["email"]
+                );
+            } catch (Exception $e) {
+                $form->FG_TEXT_ADITION_ERROR = $e->getMessage();
+            }
         }
 
         $component_table = new Table(
@@ -159,18 +163,20 @@ class FormBO
         $result = $component_table
             ->getRow($db, ["cc_support_component.id" => $component_id]);
 
-        try {
-            self::send_new_ticket_email(
-                $owner,
-                (int)$ticket_id,
-                $description,
-                (int)$priority,
-                $title,
-                $result["language"],
-                $result["email"]
-            );
-        } catch (Exception $e) {
-            $form->FG_TEXT_ADITION_ERROR = $e->getMessage();
+        if (!empty($result["email"])) {
+            try {
+                self::send_new_ticket_email(
+                    $owner,
+                    (int)$ticket_id,
+                    $description,
+                    (int)$priority,
+                    $title,
+                    $result["language"],
+                    $result["email"]
+                );
+            } catch (Exception $e) {
+                $form->FG_TEXT_ADITION_ERROR = $e->getMessage();
+            }
         }
     }
 

@@ -184,7 +184,7 @@ Class Notification {
             case self::$LINK_REMITTANCE: return "A2B_info_remittance.php?id=" . $this->link_id;
             case self::$LINK_DID_DESTINATION: return "A2B_entity_did_destination.php?form_action=ask-edit&id=" . $this->link_id;
             case self::$LINK_TICKET_CUST:
-            case self::$LINK_TICKET_AGENT: return "CC_ticket_view.php?id=" . $this->link_id;
+            case self::$LINK_TICKET_AGENT: return "A2B_info_ticket.php?id=" . $this->link_id;
             case self::$LINK_CARD: return "A2B_entity_card.php?form_action=ask-edit&id=" . $this->link_id;
             case self::$LINK_NONE:
             default: return "";

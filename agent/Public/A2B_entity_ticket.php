@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Agent;
+use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -37,27 +38,25 @@ use A2billing\Agent;
 
 $menu_section = 7;
 require_once __DIR__ . "/../../common/lib/agent.defines.php";
-require_once __DIR__ . "/form_data/FG_var_ticket.inc";
+require_once __DIR__ . "/../../common/form_data/FG_var_ticket.inc";
+/**
+ * @var FormHandler $HD_Form
+ */
 
-if (! has_rights (Agent::ACX_SUPPORT)) {
-    Header ("HTTP/1.0 401 Unauthorized");
-    Header ("Location: PP_error.php?c=accessdenied");
-    die();
-}
+Agent::checkPageAccess(Agent::ACX_SUPPORT);
 
-$HD_Form -> init();
+$HD_Form->init();
 
 $form_action ??= "list";
-$list = $HD_Form -> perform_action($form_action);
+$action = $action ?? $form_action;
+
+$list = $HD_Form->perform_action($form_action);
 require_once __DIR__ . "/../templates/main.php";
 
-// #### HELP SECTION
-echo create_help(gettext("You can see here, all tickets created. You can also add a new ticket for one customer."));
+if ($form_action === "list") {
+    $HD_Form->create_search_form(true);
+}
+$HD_Form->create_toppage($form_action);
+$HD_Form->create_form($form_action, $list);
 
-// #### TOP SECTION PAGE
-$HD_Form -> create_toppage ($form_action);
-
-$HD_Form -> create_form($form_action, $list) ;
-
-// #### FOOTER SECTION
 require_once __DIR__ . "/../templates/footer.php";

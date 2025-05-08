@@ -1,6 +1,5 @@
 <?php
 
-use A2billing\Admin;
 use A2billing\Agent;
 use A2billing\Customer;
 use A2billing\Forms\FormBO;
@@ -55,14 +54,41 @@ getpost_ifset(["username", "ticket_type"]);
 $ticket_type ??= "user";
 $form_action ??= "list";
 
-$HD_Form = new FormHandler("cc_ticket", _("Ticket"), "cc_ticket.id");
+$HD_Form = new FormHandler(
+    "cc_ticket",
+    $ticket_type === "agent" ? _("Agent Ticket") : _("User Ticket"),
+    "cc_ticket.id"
+);
+
 if ($form_action === "list") {
-    $virtual = <<< SQL
+    if (is_admin()) {
+        $virtual = <<< SQL
         SELECT aa.id, CASE WHEN MAX(aa.viewed_admin) = 1 OR SUM(bb.viewed_admin) > 0 THEN 1 ELSE 0 END AS viewed
         FROM cc_ticket aa
         LEFT JOIN cc_ticket_comment bb ON aa.id = bb.id_ticket
         GROUP BY aa.id
         SQL;
+    } elseif ($ticket_type === "agent") {
+        $agent_id = (int)$_SESSION["agent_id"];
+        $virtual = <<< SQL
+        SELECT aa.id, CASE WHEN MAX(aa.viewed_agent) = 1 OR SUM(bb.viewed_agent) > 0 THEN 1 ELSE 0 END AS viewed
+        FROM cc_ticket aa
+        LEFT JOIN cc_ticket_comment bb ON aa.id = bb.id_ticket
+        WHERE aa.creator = $agent_id
+        GROUP BY aa.id
+        SQL;
+    } else {
+        $agent_id = (int)$_SESSION["agent_id"];
+        $virtual = <<< SQL
+        SELECT aa.id, CASE WHEN MAX(aa.viewed_agent) = 1 OR SUM(bb.viewed_agent) > 0 THEN 1 ELSE 0 END AS viewed
+        FROM cc_ticket aa
+        LEFT JOIN cc_ticket_comment bb ON aa.id = bb.id_ticket
+        LEFT JOIN cc_card dd ON dd.id = aa.creator
+        LEFT JOIN cc_card_group ee ON dd.id_group = ee.id
+        WHERE ee.id_agent = $agent_id
+        GROUP BY aa.id
+        SQL;
+    }
     $HD_Form->query_table_joins = [
         "($virtual) AS v" => ["cc_ticket.id", "v.id"],
     ];
@@ -77,7 +103,7 @@ $HD_Form->list_query_order_columns = ["cc_ticket.creationdate"];
 $HD_Form->list_query_order_direction = "DESC";
 $HD_Form->list_query_conditions["cc_ticket.creator_type"] = $ticket_type === "agent" ? 1 : 0;
 
-$HD_Form->FG_FK_DELETE_ALLOWED = true;
+$HD_Form->FG_FK_DELETE_ALLOWED = is_admin();
 $HD_Form->FG_FK_DELETE_CONFIRM = true;
 $HD_Form->FG_FK_WARNONLY = true;
 $HD_Form->FG_FK_TABLENAMES = ["cc_ticket_comment"];
@@ -85,7 +111,6 @@ $HD_Form->FG_FK_EDITION_CLAUSE = ["id_ticket"];
 
 $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "?form_action=ask-add&ticket_type=$ticket_type";
-$HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("note_add.png");
 $HD_Form->FG_LIST_ADDING_BUTTON2 = true;
 $HD_Form->FG_LIST_ADDING_BUTTON_LINK2 = "?ticket_type=" . ($ticket_type === "agent" ? "user" : "agent");
 $HD_Form->FG_LIST_ADDING_BUTTON_MSG2 = $ticket_type === "agent" ? _("Show user tickets") : _("Show agent tickets");
@@ -96,20 +121,21 @@ if ($ticket_type === "agent") {
     $HD_Form->list_help_text = create_help(_("You can see here, all tickets created. You can also add a new ticket for one customer."));
 }
 
-$priority_list = Ticket::getAllPriorityListView();
+$priority_list = Ticket::getAllPriority();
 $viewed_list = getTicketViewedList();
-$status_list = Ticket::getAllStatusListView();
+$status_list = Ticket::getAllStatus();
 
 $HD_Form->AddListValue(_("ID"), "cc_ticket.id");
-$HD_Form->AddListSqlMapping(
-    $ticket_type === "agent" ? _("Agent") : _("Customer"),
-    "creator",
-    new Table($ticket_type === "agent" ? "cc_agent" : "cc_card", ["id", "CONCAT(firstname, ' ', lastname)"])
-);
-if ($ticket_type === "agent") {
-    $HD_Form->AddListValue(_("Login"), "creator", [Agent::class, "getName"]);
-} else {
+if (is_admin() || $ticket_type === "user") {
+    $HD_Form->AddListSqlMapping(
+        $ticket_type === "agent" ? _("Agent") : _("Customer"),
+        "creator",
+        new Table($ticket_type === "agent" ? "cc_agent" : "cc_card", ["id", "CONCAT(firstname, ' ', lastname)"])
+    );
     $HD_Form->AddListValue(_("Account number"), "creator", [Customer::class, "getUsername"]);
+}
+if (is_admin() && $ticket_type === "agent") {
+    $HD_Form->AddListValue(_("Login"), "creator", [Agent::class, "getName"]);
 }
 $HD_Form->AddListValue(_("Title"), "title");
 $HD_Form->AddListValue(_("Creation date"), "cc_ticket.creationdate");
@@ -131,19 +157,23 @@ if ($ticket_type === "agent") {
 }
 $HD_Form -> AddSearchTextInput(_("Last name"), "lastname");
 
-$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form->FG_ENABLE_EDIT_BUTTON = is_admin();
+$HD_Form->FG_ENABLE_DELETE_BUTTON = is_admin();
 $HD_Form->FG_ENABLE_ADD_BUTTON = true;
 $HD_Form->FG_ENABLE_INFO_BUTTON = true;
-$HD_Form->FG_INFO_BUTTON_LINK = "CC_ticket_view.php?id=";
+$HD_Form->FG_INFO_BUTTON_LINK = "A2B_info_ticket.php?id=";
 $HD_Form -> FG_ADDITIONAL_FUNCTION_AFTER_ADD = [FormBO::class, "ticket_add"];
 
 if ($ticket_type === "agent") {
-    $HD_Form->AddEditPopup(
-        _("CREATOR"),
-        "creator",
-        "A2B_entity_agent.php?popup_select=1&"
-    );
+    if (is_admin()) {
+        $HD_Form->AddEditPopup(
+            _("CREATOR"),
+            "creator",
+            "A2B_entity_agent.php?popup_select=1&"
+        );
+    } else {
+        $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["creator"] = $_SESSION["agent_id"];
+    }
     $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["creator_type"] = 1;
 } else {
     $creator_attr = [];
@@ -199,6 +229,10 @@ if ($ticket_type === "agent") {
     $HD_Form->FG_FILTER_LABEL = _("Account number");
 }
 
-$HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["viewed_admin"] = 0;
+if (is_admin()) {
+    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["viewed_admin"] = 0;
+} else {
+    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["viewed_agent"] = 0;
+}
 $HD_Form->FG_INTRO_TEXT_EDITION= "";
 $HD_Form->FG_INTRO_TEXT_ADITION = "";
