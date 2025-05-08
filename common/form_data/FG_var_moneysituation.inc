@@ -1,6 +1,5 @@
 <?php
 
-use A2billing\Admin;
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 
@@ -43,12 +42,16 @@ $HD_Form = new FormHandler(
     [
         "cc_invoice" => ["cc_card.id", "cc_invoice.id_card"],
         "cc_invoice_item" => ["cc_invoice.id", "cc_invoice_item.id_invoice"],
-        "cc_logpayment" => ["cc_card.id", "cc_logpayment.card_id"]
+        "cc_logpayment" => ["cc_card.id", "cc_logpayment.card_id"],
+        "cc_card_group" => ["cc_card.id_group", "cc_card_group.id"],
     ],
 );
 
 $HD_Form->list_query_group_columns = ["cc_card.id"];
 $HD_Form->list_query_order_columns = ["cc_card.id"];
+if (is_agent()) {
+    $HD_Form->list_query_conditions["cc_card_group.id_agent"] = $_SESSION["agent_id"];
+}
 
 $HD_Form->help_text = create_help(
     _("This screen shows refills and payments made against each account, along with the current credit on each account. The initial amount of credit applied to the account is not included. The amount owing is calculated by subtracting payments from refills")
@@ -56,27 +59,25 @@ $HD_Form->help_text = create_help(
 
 $HD_Form->AddListValue(_("ID"), "cc_card.id");
 $HD_Form->AddListValue(_("Card number"), "cc_card.id", [Customer::class, "getUsername"]);
-$HD_Form->AddListValue(_("Alias"), "useralias");
+if (is_admin()) {
+    $HD_Form->AddListValue(_("Alias"), "useralias");
+}
 $HD_Form->AddListValue(_("First name"), "firstname");
 $HD_Form->AddListValue(_("Last name"), "lastname");
 $HD_Form->AddListValue(_("Credit"), "credit", "get_money");
+if (is_agent()) {
+    $HD_Form->AddListValue(
+        _("Commission"),
+        "(SELECT COALESCE(SUM(amount),0) FROM cc_agent_commission WHERE id_card = cc_card.id) AS commission",
+        "get_money"
+    );
+}
 $HD_Form->AddListValue(_("Invoiced"), "SUM(cc_invoice_item.price * (1 + (cc_invoice_item.vat / 100)))", "get_money");
 $HD_Form->AddListValue(_("Paid"), "SUM(cc_logpayment.payment)", "get_money");
 $HD_Form->AddListValue(_("To pay"), "", "sub_money", ["%6", "%7"]);
 
-$HD_Form->AddListActionButton(
-    "javascript:window.open('A2B_entity_moneysituation_details.php?type=invoice&form_action=list&displayheader=0&popup_select=1&id=|param|','','scrollbars=yes,resizable=yes,width=500,height=270')",
-    _("Invoice"),
-    "",
-    "receipt"
-);
-$HD_Form->AddListActionButton(
-    "javascript:window.open('A2B_entity_moneysituation_details.php?type=payment&form_action=list&displayheader=0&popup_select=1&id=|param|','','scrollbars=yes,resizable=yes,width=500,height=270')",
-    _("Payment"),
-    "",
-    "cash-stack",
-    "text-success"
-);
+$HD_Form->AddListActionButton("", _("Invoice"), "", "receipt", "popup-invoice");
+$HD_Form->AddListActionButton("#", _("Payment"), "", "cash-stack", "text-success popup-payment");
 
 $HD_Form->FG_FILTER_ENABLE = true;
 $HD_Form->FG_FILTER_COLUMN = "username";

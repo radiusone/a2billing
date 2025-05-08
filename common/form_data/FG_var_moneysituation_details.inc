@@ -43,13 +43,25 @@ getpost_ifset(["id", "type"]);
 
 $type ??= "refill";
 
-if ($type === "payment"){
-	$HD_Form = new FormHandler("cc_logpayment", _("Payment"));
-    $HD_Form->list_query_conditions["card_id"] = $id;
-	$HD_Form -> list_query_order_direction = "DESC";
+if ($type === "payment") {
+    $HD_Form = new FormHandler(
+        "cc_logpayment",
+        _("Payments"),
+        "cc_logpayment.id",
+        [
+            "cc_card" => ["cc_logpayment.card_id", "cc_card.id"],
+            "cc_card_group" => ["cc_card.id_group", "cc_card_group.id"],
+        ]
+    );
+    if (is_agent()) {
+        $HD_Form->list_query_conditions["cc_card_group.id_agent"] = $_SESSION["agent_id"];
+    }
+    $HD_Form->list_query_conditions["cc_logpayment.card_id"] = $id;
+    $HD_Form->list_query_order_columns = ["date"];
+	$HD_Form->list_query_order_direction = "DESC";
 
-	$HD_Form->AddListValue(_("Date"), "date");
-	$HD_Form->AddListValue(_("Amount"), "payment");
+	$HD_Form->AddListValue(_("Date"), "cc_logpayment.date");
+	$HD_Form->AddListValue(_("Amount"), "cc_logpayment.payment");
 } else {
     $join = "(SELECT id_invoice, SUM(price * (1 + (vat / 100))) AS total_price FROM cc_invoice_item GROUP BY id_invoice) AS items";
 	$HD_Form = new FormHandler(
@@ -57,11 +69,17 @@ if ($type === "payment"){
         _("Invoice"),
         "cc_invoice.id",
         [
-            "$join" => ["items.id_invoice", "cc_invoice.id"]
+            "$join" => ["items.id_invoice", "cc_invoice.id"],
+            "cc_card" => ["cc_invoice.id_card", "cc_card.id"],
+            "cc_card_group" => ["cc_card.id_group", "cc_card_group.id"],
         ]
     );
-	$HD_Form -> list_query_order_direction = "DESC";
+    if (is_agent()) {
+        $HD_Form->list_query_conditions["cc_card_group.id_agent"] = $_SESSION["agent_id"];
+    }
     $HD_Form->list_query_conditions["cc_invoice.id_card"] = $id;
+    $HD_Form->list_query_order_columns = ["date"];
+    $HD_Form->list_query_order_direction = "DESC";
 
 	$HD_Form->AddListValue(_("Date"), "date");
 	$HD_Form->AddListValue(_("Amount (incl VAT)"), "total_price", "get_money");

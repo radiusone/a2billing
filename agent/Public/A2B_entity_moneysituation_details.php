@@ -1,7 +1,7 @@
 <?php
 
 use A2billing\Agent;
-use A2billing\Table;
+use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -37,37 +37,21 @@ use A2billing\Table;
 **/
 
 require_once __DIR__ . "/../../common/lib/agent.defines.php";
-require_once __DIR__ . "/form_data/FG_var_moneysituation_details.inc";
+require_once __DIR__ . "/../../common/form_data/FG_var_moneysituation_details.inc";
+/**
+ * @var FormHandler $HD_Form
+ */
 
-if (!has_rights(Agent::ACX_BILLING)) {
-    Header("HTTP/1.0 401 Unauthorized");
-    Header("Location: PP_error.php?c=accessdenied");
-    die();
-}
+Agent::checkPageAccess(Agent::ACX_BILLING);
 
 $DBHandle = DbConnect();
 
-if (isset ($id)) {
-    if (!empty ($id) && $id > 0) {
-        $table_agent_security = new Table("cc_card LEFT JOIN cc_card_group ON cc_card.id_group=cc_card_group.id ", " cc_card_group.id_agent");
-        $clause_agent_security = ["cc_card.id" => $id];
-        $result_security = $table_agent_security->getValue($DBHandle, $clause_agent_security);
-        if ($result_security != $_SESSION['agent_id']) {
-            Header("Location: A2B_entity_moneysituation.php?section=10");
-            die();
-        }
-    }
-}
-
 $HD_Form->init();
 
-$form_action ??= "list";
+$form_action = "list";
 $list = $HD_Form->perform_action($form_action);
 
-// #### HEADER SECTION
 require_once __DIR__ . "/../templates/main.php";
 
-// #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);
-
 $HD_Form->create_form($form_action, $list);
