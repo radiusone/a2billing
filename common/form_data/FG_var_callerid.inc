@@ -1,8 +1,10 @@
 <?php
 
+use A2billing\A2Billing;
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -36,50 +38,69 @@ use A2billing\Forms\Validator;
  *
 **/
 
-if (is_admin()) {
-    $HD_Form = new FormHandler("cc_callerid", "CallerID");
-} else {
-    $HD_Form = new FormHandler(
-        "cc_callerid",
-        _("Caller ID"),
-        "cc_callerid.id",
-        ["cc_card" => ["cc_card.id", "cc_callerid.id_cc_card"], "cc_card_group" => ["cc_card.id_group", "cc_card_group.id"]]
-    );
+/**
+ * @var A2Billing $A2B
+ */
+
+$HD_Form = new FormHandler(
+    "cc_callerid",
+    _("Caller ID"),
+    "cc_callerid.id",
+    ["cc_card" => ["cc_card.id", "cc_callerid.id_cc_card"], "cc_card_group" => ["cc_card.id_group", "cc_card_group.id"]]
+);
+if (is_customer()) {
+    $HD_Form->list_query_conditions["cc_callerid.id_cc_card"] = $_SESSION["card_id"];
+} elseif (is_agent()) {
     $HD_Form->list_query_conditions["cc_card_group.id_agent"] = $_SESSION["agent_id"];
 }
 
-$HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
+if (is_customer()) {
+    $cid_count = (new Table("cc_callerid", ["COUNT(*)"]))
+        ->getValue($HD_Form->DBHandle, ["id_cc_card" => $_SESSION["card_id"]]);
+    $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
+    if ($cid_count < $A2B->config["webcustomerui"]['limit_callerid']) {
+        $HD_Form->FG_ENABLE_ADD_BUTTON = true;
+    } else {
+        $HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "javascript:alert(" . htmlspecialchars(json_encode(_("You are not allowed to add more CallerID."))) . ")";
+    }
+    $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
+    $HD_Form->add_help_text = _("You can add your home phone or cellphone number below to allow you to call in, be automatically recognized, and use your telephony services without having to enter your PIN.");
+    $HD_Form->AddListValue(_("CALLERID"), "cid")
+        ->AddListMapping(_("ACTIVATED"), "cc_callerid.activated", getActivationTrueFalseList());
+} else {
+    $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
 
-if (is_admin()) {
+    if (is_admin()) {
+        $HD_Form->AddListActionButton(
+            "A2B_entity_payment.php?form_action=ask-add&card_id=|col4|",
+            _('ADD PAYMENT'),
+            "",
+            "cash",
+            "text-success"
+        );
+    }
     $HD_Form->AddListActionButton(
-        "A2B_entity_payment.php?form_action=ask-add&card_id=|col4|",
-        _('ADD PAYMENT'),
+        "A2B_entity_logrefill.php?form_action=ask-add&card_id=|col4|",
+        _("ADD REFILL"),
         "",
-        "cash",
+        "cash-stack",
         "text-success"
     );
+
+    $HD_Form->help_text = create_help(
+        _("Set the caller ID so that the customer calling in is authenticated on the basis of the callerID rather than with the account number")
+    );
+
+    $HD_Form->AddListValue(_("CALLERID"), "cid")
+        ->AddListValue(_("ACCOUNT NUMBER"), "id_cc_card", [Customer::class, "getUsername"])
+        ->AddListValue(_("CUSTOMER NAME"), "id_cc_card", [Customer::class, "getName"])
+        ->AddListMapping(_("ACTIVATED"), "cc_callerid.activated", getActivationTrueFalseList())
+        ->AddListHiddenValue("id_cc_card");
+
+    $HD_Form->FG_ENABLE_ADD_BUTTON = true;
+    $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
+    $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 }
-$HD_Form->AddListActionButton(
-    "A2B_entity_logrefill.php?form_action=ask-add&card_id=|col4|",
-    _("ADD REFILL"),
-    "",
-    "cash-stack",
-    "text-success"
-);
-
-$HD_Form->help_text = create_help(
-    _("Set the caller ID so that the customer calling in is authenticated on the basis of the callerID rather than with the account number")
-);
-
-$HD_Form->AddListValue(_("CALLERID"), "cid")
-    ->AddListValue(_("ACCOUNT NUMBER"), "id_cc_card", [Customer::class, "getUsername"])
-    ->AddListValue(_("CUSTOMER NAME"), "id_cc_card", [Customer::class, "getName"])
-    ->AddListMapping(_("ACTIVATED"), "cc_callerid.activated", getActivationTrueFalseList())
-    ->AddListHiddenValue("id_cc_card");
-
-$HD_Form->FG_ENABLE_ADD_BUTTON = true;
-$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 
 $HD_Form->AddEditElement(
     _("CALLERID"),
@@ -97,20 +118,25 @@ $HD_Form->AddEditRadio(
     "t",
     "",
     [],
-    _("Choose if you want to activate this card")
+    _("Choose if you want to activate this caller ID")
 );
 
-$HD_Form->AddEditPopup(
-    _("CARD ID"),
-    "id_cc_card",
-    "A2B_entity_card.php?popup_select=1&",
-    _("Define the card number ID to use."),
-    [],
-    [Validator::class, "numeric"],
-    _("Insert the card number ID")
-);
+if (is_customer()) {
+    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["id_cc_card"] = $_SESSION["card_id"];
+    $HD_Form->FG_EDIT_QUERY_HIDDEN_INPUTS["id_cc_card"] = $_SESSION["card_id"];
+} else {
+    $HD_Form->AddEditPopup(
+        _("CARD ID"),
+        "id_cc_card",
+        "A2B_entity_card.php?popup_select=1&",
+        _("Define the card number ID to use."),
+        [],
+        [Validator::class, "numeric"],
+        _("Insert the card number ID")
+    );
 
-// Set the filter variables
-$HD_Form->FG_FILTER_ENABLE = true;
-$HD_Form->FG_FILTER_COLUMN = 'cid';
-$HD_Form->FG_FILTER_LABEL = _('CALLERID');
+    // Set the filter variables
+    $HD_Form->FG_FILTER_ENABLE = true;
+    $HD_Form->FG_FILTER_COLUMN = 'cid';
+    $HD_Form->FG_FILTER_LABEL = _('CALLERID');
+}
