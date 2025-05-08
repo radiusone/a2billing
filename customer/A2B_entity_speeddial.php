@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Customer;
+use A2billing\Forms\FormHandler;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -37,91 +38,21 @@ use A2billing\Table;
 **/
 
 require_once __DIR__ . "/../common/lib/customer.defines.php";
-require_once __DIR__ . "/form_data/FG_var_speeddial.inc";
+require_once __DIR__ . "/../common/form_data/FG_var_speeddial.inc";
+/**
+ * @var FormHandler $HD_Form
+ */
 
-if (!has_rights(Customer::ACX_SPEED_DIAL)) {
-    Header("HTTP/1.0 401 Unauthorized");
-    Header("Location: PP_error.php?c=accessdenied");
-    die();
-}
+Customer::checkPageAccess(Customer::ACX_SPEED_DIAL);
 
-getpost_ifset(array ('destination',	'choose_speeddial',	'name'));
+$form_action ??= "list";
 
 $HD_Form->init();
-
-// ADD SPEED DIAL
-if (strlen($destination) > 0 && is_numeric($choose_speeddial)) {
-
-    $FG_SPEEDDIAL_TABLE = "cc_speeddial";
-    $FG_SPEEDDIAL_FIELDS = "speeddial";
-    $instance_sub_table = new Table($FG_SPEEDDIAL_TABLE, $FG_SPEEDDIAL_FIELDS);
-
-    $QUERY = "INSERT INTO cc_speeddial (id_cc_card, phone, name, speeddial) VALUES ('" . $_SESSION["card_id"] . "', '" . $destination . "', '" . $name . "', '" . $choose_speeddial . "')";
-
-    $result = $instance_sub_table->SQLExec($HD_Form->DBHandle, $QUERY, 0);
-}
-
-if (!isset ($form_action))
-    $form_action = "list";
-
-if (!isset ($action))
-    $action = $form_action;
-
 $list = $HD_Form->perform_action($form_action);
 
-// #### HEADER SECTION
 require_once __DIR__ . "/templates/main.php";
 
-// #### HELP SECTION
-if ($form_action == 'list') {
-    echo create_help(gettext("Map single digit to your most dialed numbers."));
-}
+$HD_Form->create_toppage ($form_action);
+$HD_Form->create_form($form_action, $list) ;
 
-if ($form_action == "list") {
-    // My code for Creating two functionalities in a page
-    $HD_Form->create_toppage("ask-add");
-
-     if (isset($update_msg) && strlen($update_msg)>0)
-         echo $update_msg;
-?>
-      <center><font class="error_message"><?php echo gettext("Enter the number which you wish to assign to the code here"); ?></font></center>
-      <center>
-       <table align="center" class="speeddial_table1">
-        <form name="theForm" action="<?php  $_SERVER["PHP_SELF"]?>">
-        <tr class="bgcolor_001">
-        <td align="left" valign="bottom">
-        <font class="fontstyle_002"> <?php echo gettext("Speed Dial code");?> : </font><select NAME="choose_speeddial" class="form_input_select">
-                    <?php
-                       foreach ($speeddial_list as $recordset) {
-                    ?>
-                        <option class=input value='<?php echo $recordset[1]?>' ><?php echo $recordset[1]?> </option>
-                    <?php
-                     }
-                    ?>
-                </select>
-        </td>
-        <td align="left" valign="top">
-                <font class="fontstyle_002"><?php echo gettext("Destination");?> :</font>
-                <input class="form_input_text" name="destination" size="15" maxlength="60" >
-                - <font class="fontstyle_002"><?php echo gettext("Name");?> :</font>
-                <input class="form_input_text" name="name" size="15" maxlength="40" >
-            </td>
-            <td align="center" valign="middle">
-                        <input class="form_input_button"  value="<?php echo gettext("ASSIGN NUMBER TO SPEEDDIAL");?>"  type="submit">
-        </td>
-        </tr>
-    </form>
-      </table>
-      </center>
-      <br>
-    <?php
-    // END END END My code for Creating two functionalities in a page
-}
-
-// #### TOP SECTION PAGE
-$HD_Form -> create_toppage ($form_action);
-
-$HD_Form -> create_form($form_action, $list) ;
-
-// #### FOOTER SECTION
 require_once __DIR__ . "/templates/footer.php";

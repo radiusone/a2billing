@@ -1,9 +1,9 @@
 <?php
 
-use A2billing\Admin;
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -42,35 +42,44 @@ $form_action ??= "list";
 $HD_Form = new FormHandler(
     "cc_speeddial",
     _("Speed Dial"),
-    "cc_speeddial.id",
-    $form_action === "list"
-        ? ["cc_card" => ["cc_speeddial.id_cc_card", "cc_card.id"]]
-        : []
+    "cc_speeddial.id"
 );
+if (is_customer()) {
+    $HD_Form->list_query_conditions["id_cc_card"] = $_SESSION["card_id"];
+}
 
 $HD_Form->list_query_order_columns = ["creationdate"];
 $HD_Form->list_query_order_direction = "DESC";
 
 $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("page_white_add.png") ;
 
-$HD_Form->help_text = create_help(
-    _("This section allows you to define the Speed dials for the customer.")
-    . '<br>'
-    . _("A Speed Dial will be entered on the IVR in order to make a shortcut to their preferred dialled phone number.")
-);
+if (is_customer()) {
+    $HD_Form->help_text = create_help(_("Map single digit to your most dialed numbers."));
+} else {
+    $HD_Form->help_text = create_help(
+        _("This section allows you to define the Speed dials for the customer.")
+        . '<br>'
+        . _("A Speed Dial will be entered on the IVR in order to make a shortcut to their preferred dialled phone number.")
+    );
+}
 
 $speeddial_list = range(0, 9);
 
 $HD_Form->AddListValue(_("Speed dial"), "speeddial");
 $HD_Form->AddListValue(_("Phone number"), "phone");
 $HD_Form->AddListValue(_("Name"), "name");
-$HD_Form->AddListValue(_("Account"), "id_cc_card", [Customer::class, "getUsername"]);
-$HD_Form->AddListValue(_("Date"), "cc_speeddial.creationdate");
+if (!is_customer()) {
+    $HD_Form->AddListValue(_("Account"), "id_cc_card", [Customer::class, "getUsername"]);
+    $HD_Form->AddListValue(_("Date"), "cc_speeddial.creationdate");
+    $HD_Form->FG_ENABLE_ADD_BUTTON = true;
+} else {
+    $sd_count = (new Table("cc_speeddial", ["COUNT(*)"]))
+        ->getValue($HD_Form->DBHandle, ["id_cc_card" => $_SESSION["card_id"]]);
+    $HD_Form->FG_ENABLE_ADD_BUTTON = $sd_count < 10;
+}
 
 $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
-$HD_Form->FG_ENABLE_ADD_BUTTON = true;
 
 $HD_Form->AddEditSelect(_("SPEED DIAL"), "speeddial", $speeddial_list);
 
@@ -93,18 +102,25 @@ $HD_Form->AddEditElement(
     _("Insert the phone")
 );
 
-$HD_Form->AddEditPopup(
-    _("CARD ID"),
-    "id_cc_card",
-    "A2B_entity_card.php?popup_select=1&",
-    _("Define the card number ID to use."),
-    [],
-    [Validator::class, "numeric"],
-    _("Insert the card number ID")
-);
+if (is_customer()) {
+    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["id_cc_card"] = $_SESSION["card_id"];
+    $HD_Form->FG_EDIT_QUERY_HIDDEN_INPUTS["id_cc_card"] = $_SESSION["card_id"];
+    $HD_Form->update_query_conditions["id_cc_card"] = $_SESSION["card_id"];
+    $HD_Form->FG_LOCATION_AFTER_EDIT = $HD_Form->FG_LOCATION_AFTER_ADD = "?form_action=list";
+} else {
+    $HD_Form->AddEditPopup(
+        _("CARD ID"),
+        "id_cc_card",
+        "A2B_entity_card.php?popup_select=1&",
+        _("Define the card number ID to use."),
+        [],
+        [Validator::class, "numeric"],
+        _("Insert the card number ID")
+    );
 
-$HD_Form->FG_FILTER_ENABLE = true;
-$HD_Form->FG_FILTER_COLUMN = "username";
-$HD_Form->FG_FILTER_LABEL = _("Account Number");
+    $HD_Form->FG_FILTER_ENABLE = true;
+    $HD_Form->FG_FILTER_COLUMN = "username";
+    $HD_Form->FG_FILTER_LABEL = _("Account Number");
+}
 
 $HD_Form->FG_INTRO_TEXT_ADITION = '';
