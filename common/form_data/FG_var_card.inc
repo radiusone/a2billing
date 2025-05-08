@@ -69,10 +69,13 @@ $HD_Form = new FormHandler(
 
 if (is_agent()) {
     $HD_Form->list_query_conditions["id_agent"] = $_SESSION["agent_id"] ?? 0;
+} elseif (is_customer()) {
+    // shouldn't be needed, but just in case
+    $HD_Form->list_query_conditions["cc_card.id"] = $_SESSION["card_id"];
 }
 $HD_Form->search_session_key = 'entity_card_selection';
 $HD_Form->FG_FK_DELETE_CONFIRM = true;
-$HD_Form->FG_FK_DELETE_ALLOWED = true;
+$HD_Form->FG_FK_DELETE_ALLOWED = !is_customer();
 $HD_Form->FG_FK_TABLENAMES = ['cc_iax_buddies', 'cc_sip_buddies', 'cc_callerid', 'cc_card_history', 'cc_status_log'];
 $HD_Form->FG_FK_EDITION_CLAUSE = ["id_cc_card", "id_cc_card", "id_cc_card", "id_cc_card", "id_cc_card"];
 // DEFINE IF WE WANT TO DELETE THE CARD OR NOT
@@ -111,6 +114,11 @@ $HD_Form->list_help_text = create_help(
 $HD_Form->help_text = create_help(
     _("Create and edit the properties of each customer. Click CONFIRM DATA at the bottom of the page to save changes.")
 );
+
+if (is_customer()) {
+    $HD_Form->edit_help_text = create_help(_("Personal information.") . '<br>' . _("You can update your personal information here."));
+    $HD_Form->FG_LOCATION_AFTER_EDIT = "A2B_info_card.php";
+}
 
 $language_list = getLanguages();
 $discount_list = getDiscount_List();
@@ -226,8 +234,8 @@ $HD_Form->FG_FILTER_ENABLE = true;
 $HD_Form->FG_FILTER_COLUMN = 'username';
 $HD_Form->FG_FILTER_LABEL = _('Account Number');
 
-$HD_Form->FG_ENABLE_ADD_BUTTON = true;
-$HD_Form->FG_ENABLE_EDIT_BUTTON = !$popup_select && (Admin::allowed(Admin::ACX_MODIFY_CUSTOMERS) || Agent::allowed(Agent::ACX_EDIT_CUSTOMER));
+$HD_Form->FG_ENABLE_ADD_BUTTON = !is_customer();
+$HD_Form->FG_ENABLE_EDIT_BUTTON = !$popup_select && (Admin::allowed(Admin::ACX_MODIFY_CUSTOMERS) || Agent::allowed(Agent::ACX_EDIT_CUSTOMER) || Customer::allowed(Customer::ACX_PERSONALINFO));
 $HD_Form->FG_ENABLE_DELETE_BUTTON = !$popup_select && (Admin::allowed(Admin::ACX_MODIFY_CUSTOMERS) || Agent::allowed(Agent::ACX_DELETE_CUSTOMER));
 
 $form_action ??= "list";
@@ -316,7 +324,7 @@ if ($popup_select) {
             "envelope"
         );
     }
-} elseif (Admin::allowed(Admin::ACX_MODIFY_CUSTOMERS) || Agent::allowed(Agent::ACX_EDIT_CUSTOMER)) {
+} elseif (Admin::allowed(Admin::ACX_MODIFY_CUSTOMERS) || Agent::allowed(Agent::ACX_EDIT_CUSTOMER) || Customer::allowed(Customer::ACX_PERSONALINFO)) {
     if (empty($cardnumber_length) || !is_numeric($cardnumber_length)) {
         $cardnumber_length = min($A2B->cardnumber_range);
     }
@@ -326,72 +334,74 @@ if ($popup_select) {
     if ($form_action === "ask-add") {
         $acct_attr["value"] = $array_card_generated[0];
     }
-    $HD_Form->AddEditElement(
-        _("ACCOUNT NUMBER"),
-        "username",
-        '',
-        $acct_attr,
-        [Validator::class, "numeric"],
-        _("Insert the account number"),
-        _("Customer Information")
-    );
+    if (!is_customer()) {
+        $HD_Form->AddEditElement(
+            _("ACCOUNT NUMBER"),
+            "username",
+            '',
+            $acct_attr,
+            [Validator::class, "numeric"],
+            _("Insert the account number"),
+            _("Customer Information")
+        );
 
-    $login_attr = ["maxlength" => 40];
-    if ($form_action === "ask-add") {
-        $login_attr["value"] = $array_card_generated[1];
+        $login_attr = ["maxlength" => 40];
+        if ($form_action === "ask-add") {
+            $login_attr["value"] = $array_card_generated[1];
+        }
+        $HD_Form->AddEditElement(
+            _("WEBUI LOGIN"),
+            "useralias",
+            "",
+            $login_attr,
+            [Validator::class, "min5Chars"],
+            _("Insert the webui login")
+        );
+
+        $pass_attr = ["maxlength" => 20];
+        if ($form_action === "ask-add") {
+            $pass_attr["value"] = MDP_NUMERIC(5) . MDP_STRING(15);
+        }
+        $HD_Form->AddEditElement(
+            _("WEBUI PASSWORD"),
+            "uipass",
+            _("Password for customer to access to the web interface and view the balance."),
+            $pass_attr,
+            null,
+            _("Insert the password")
+        );
+
+        $balance_attr = ["maxlength" => 30];
+        if ($form_action === "ask-add") {
+            $balance_attr["value"] = 0;
+        } else {
+            $balance_attr["readonly"] = "readonly";
+        }
+        $HD_Form->AddEditElement(
+            _("BALANCE"),
+            "credit",
+            _("currency : ") . strtoupper(BASE_CURRENCY),
+            $balance_attr,
+            [Validator::class, "number"],
+            _("Insert the number of credit")
+        );
+
+        $HD_Form->AddEditSqlSelect(
+            _("CUSTOMER GROUP"),
+            "id_group",
+            new Table("cc_card_group", ["id", "name"]),
+            is_admin() ? [] : ["id_agent" => $_SESSION["agent_id"]]
+        );
+
+        $HD_Form->AddEditSqlSelect(
+            _("SERIES"),
+            "id_seria",
+            new Table("cc_card_seria", ["id", "name"]),
+            [],
+            "",
+            [-1 => _("NOT DEFINED")]
+        );
     }
-    $HD_Form->AddEditElement(
-        _("WEBUI LOGIN"),
-        "useralias",
-        "",
-        $login_attr,
-        [Validator::class, "min5Chars"],
-        _("Insert the webui login")
-    );
-
-    $pass_attr = ["maxlength" => 20];
-    if ($form_action === "ask-add") {
-        $pass_attr["value"] = MDP_NUMERIC(5) . MDP_STRING(15);
-    }
-    $HD_Form->AddEditElement(
-        _("WEBUI PASSWORD"),
-        "uipass",
-        _("Password for customer to access to the web interface and view the balance."),
-        $pass_attr,
-        null,
-        _("Insert the password")
-    );
-
-    $balance_attr = ["maxlength" => 30];
-    if ($form_action === "ask-add") {
-        $balance_attr["value"] = 0;
-    } else {
-        $balance_attr["readonly"] = "readonly";
-    }
-    $HD_Form->AddEditElement(
-        _("BALANCE"),
-        "credit",
-        _("currency : ") . strtoupper(BASE_CURRENCY),
-        $balance_attr,
-        [Validator::class, "number"],
-        _("Insert the number of credit")
-    );
-
-    $HD_Form->AddEditSqlSelect(
-        _("CUSTOMER GROUP"),
-        "id_group",
-        new Table("cc_card_group", ["id", "name"]),
-        is_admin() ? [] : ["id_agent" => $_SESSION["agent_id"]]
-    );
-
-    $HD_Form->AddEditSqlSelect(
-        _("SERIES"),
-        "id_seria",
-        new Table("cc_card_seria", ["id", "name"]),
-        [],
-        "",
-        [-1 => _("NOT DEFINED")]
-    );
 
     $HD_Form->AddEditElement(
         _("LAST NAME"),
@@ -500,6 +510,39 @@ if ($popup_select) {
         "NO"
     );
 
+    $tz_val = "";
+    $timezone_list = get_timezones();
+    if ($form_action === 'ask-add') {
+        $tz_val = array_search(SERVER_GMT, array_column($timezone_list, 1));
+    }
+    $timezone_list = array_combine(
+        array_keys($timezone_list),
+        array_column($timezone_list, 2)
+    );
+
+    $HD_Form->AddEditSelect(
+        _("TIMEZONE"),
+        "id_timezone",
+        $timezone_list,
+        $tz_val
+    );
+
+    if (is_customer()) {
+        if (ACT_VOICEMAIL) {
+            $HD_Form->AddEditRadio(
+                gettext("ACTIVE VOICEMAIL SERVICE"),
+                "voicemail_activated",
+                getYesNoList(),
+                "0",
+                gettext("Customer can enable the voicemail for this card."),
+                [],
+                gettext("Customer can choose to enable the voicemail for this card")
+            );
+        }
+
+        return;
+    }
+
     $HD_Form->AddEditElement(
         _("COMPANY NAME"),
         "company_name",
@@ -558,23 +601,6 @@ if ($popup_select) {
         [],
         "",
         [-1 => _("NOT DEFINED")]
-    );
-
-    $tz_val = "";
-    $timezone_list = get_timezones();
-    if ($form_action === 'ask-add') {
-        $tz_val = array_search(SERVER_GMT, array_column($timezone_list, 1));
-    }
-    $timezone_list = array_combine(
-        array_keys($timezone_list),
-        array_column($timezone_list, 2)
-    );
-
-    $HD_Form->AddEditSelect(
-        _("TIMEZONE"),
-        "id_timezone",
-        $timezone_list,
-        $tz_val
     );
 
     $HD_Form->AddEditSelect(_("LANGUAGE"), "language", $language_list);

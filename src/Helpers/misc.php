@@ -723,9 +723,9 @@ function get_login_button($id): string
     $link = CUSTOMER_UI_URL;
 
     if (str_ends_with($link, "index.php")) {
-        $link = substr($link, 0, -9) . "userinfo.php";
+        $link = substr($link, 0, -9) . "A2B_info_card.php";
     } else {
-        $link .= "/userinfo.php";
+        $link .= "/A2B_info_card.php";
     }
     $link = htmlspecialchars($link);
     $label = htmlspecialchars(_("GO TO CUSTOMER ACCOUNT"));

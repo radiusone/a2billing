@@ -37,7 +37,7 @@ require_once __DIR__ . "/../common/lib/customer.defines.php";
 
 if (is_customer()) {
     // already logged in
-    header("Location: userinfo.php");
+    header("Location: A2B_info_card.php");
     die();
 }
 
@@ -54,7 +54,7 @@ require_once __DIR__ . "/templates/header.php";
 <div class="row">
 <main class="col">
 
-<form method="post" action="userinfo.php">
+<form method="post" action="A2B_info_card.php">
     <input type="hidden" name="done" value="submit_log"/>
     <div class="modal show d-block" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="authTitle" aria-hidden="false">
         <div class="modal-dialog modal-dialog-centered">

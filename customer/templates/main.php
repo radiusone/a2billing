@@ -16,7 +16,7 @@ $menu_section ??= 0;
 <div class="container-fluid">
     <div class="row">
         <nav class="col-md-3 col-lg-2 flex-shrink-0 p-3 bg-light">
-            <a class="btn btn-toggle mb-1" href="userinfo.php"><?= _("Account Info") ?></a>
+            <a class="btn btn-toggle mb-1" href="A2B_info_card.php"><?= _("Account Info") ?></a>
             <?php if ($_SESSION["voicemail"] ?? false): ?>
             <a class="btn btn-toggle mb-1" href="A2B_entity_voicemail.php"><?= _("Voicemail") ?></a>
             <?php endif ?>

@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Customer;
+use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -36,43 +37,30 @@ use A2billing\Customer;
 **/
 
 require_once __DIR__ . "/../common/lib/customer.defines.php";
-require_once __DIR__ . "/form_data/FG_var_card.inc";
+require_once __DIR__ . "/../common/form_data/FG_var_card.inc";
+/**
+ * @var FormHandler $HD_Form
+ */
 
-if (! has_rights (Customer::ACX_ACCESS)) {
-    Header ("HTTP/1.0 401 Unauthorized");
-    Header ("Location: PP_error.php?c=accessdenied");
-    die();
+Customer::checkPageAccess(Customer::ACX_PERSONALINFO);
+
+getpost_ifset(["id"]);
+/**
+ * @var numeric-string|null $id
+ */
+
+$form_action ??= "ask-edit";
+$id ??= $_GET["id"] = $_SESSION["card_id"];
+if (($form_action !== "edit" && $form_action !== "ask-edit") || (int)$id !== (int)$_SESSION["card_id"]) {
+    header("Location: A2B_info_card.php");
 }
 
-$HD_Form -> init();
+$HD_Form->init();
+$list = $HD_Form->perform_action($form_action);
 
-$form_action ??= "list";
-if ($message != "success") {
-    $list = $HD_Form -> perform_action($form_action);
-}
-
-// #### HEADER SECTION
 require_once __DIR__ . "/templates/main.php";
 
-// #### HELP SECTION
-echo create_help(gettext("Personal information.") . '<br>' . gettext("You can update your personal information here."));
+$HD_Form->create_toppage($form_action);
+$HD_Form->create_form($form_action, $list);
 
-// #### TOP SECTION PAGE
-$HD_Form -> create_toppage ($form_action);
-
-if ($message == "success") {
-
-?>
-<table width="50%" align="center">
-<tr height="100px">
-<td align="center"><?php echo gettext("Your personal information has successfully been updated.")?></td>
-</tr>
-</table>
-
-<?php
-} else {
-    $HD_Form -> create_form($form_action, $list) ;
-}
-
-// #### FOOTER SECTION
 require_once __DIR__ . "/templates/footer.php";

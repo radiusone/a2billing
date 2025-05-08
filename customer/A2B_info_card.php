@@ -1,0 +1,189 @@
+<?php
+
+use A2billing\A2Billing;
+use A2billing\Customer;
+use A2billing\Table;
+
+/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
+
+/**
+ * This file is part of A2Billing (http://www.a2billing.net/)
+ *
+ * A2Billing, Commercial Open Source Telecom Billing platform,
+ * powered by Star2billing S.L. <http://www.star2billing.com/>
+ *
+ * @copyright   Copyright © 2004-2015 - Star2billing S.L.
+ * @copyright   Copyright © 2022-2025 RadiusOne Inc.
+ * @author      Belaid Arezqui <areski@gmail.com>
+ * @author      Michael Newton <mnewton@goradiusone.com>
+ * @license     http://www.fsf.org/licensing/licenses/agpl-3.0.html
+ * @package     A2Billing
+ *
+ * Software License Agreement (GNU Affero General Public License)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *
+**/
+
+require_once __DIR__ . "/../common/lib/customer.defines.php";
+/**
+ * @var A2Billing $A2B
+ */
+
+Customer::checkPageAccess(Customer::ACX_ACCESS);
+
+$inst_table = new Table();
+
+$DBHandle = DbConnect();
+$table = new Table(
+    "cc_card",
+    ["cc_card.*", "cc_package_offer.label", "cc_package_offer.packagetype", "cc_package_offer.freetimetocall"],
+    [
+        "cc_tariffgroup" => ["cc_card.tariff", "cc_tariffgroup.id"],
+        "cc_package_offer" => ["cc_tariffgroup.id_cc_package_offer", "cc_package_offer.id"],
+    ]
+);
+$customer_info = $table->getRow($DBHandle, ["cc_card.id" => $_SESSION["card_id"]]);
+
+if (!$customer_info) {
+    echo gettext("Error loading your account information!");
+    exit ();
+}
+
+if ($customer_info["status"] != "1" && $customer_info["status"] != "8") {
+    header("HTTP/1.0 401 Unauthorized");
+    header("Location: PP_error.php?c=accessdenied");
+    die();
+}
+
+$credit_cur = get_money($customer_info["credit"], 2, $customer_info["currency"]);
+$freetimetocall_used = 0;
+if ($customer_info["freetimetocall"] > 0) {
+    $freetimetocall_used = $A2B->free_calls_used((int)$customer_info["id"], (int)$customer_info["id_cc_package_offer"], (int)$customer_info["billingtype"], (int)$customer_info["startday"], "time");
+    if ((int)$customer_info["packagetype"] === 0 || (int)$customer_info["packagetype"] === 1) {
+        $freetimetocall_used = sprintf("%s of %s", get_timespan($customer_info["freetimetocall"] - $freetimetocall_used), get_timespan($customer_info["freetimetocall"]));
+    } else {
+        $freetimetocall_used = get_timespan($freetimetocall_used);
+    }
+}
+
+require_once __DIR__ . "/templates/main.php";
+?>
+
+<div class="row pb-3 gx-5">
+    <div class="col-6">
+        <table class="table table-sm caption-top">
+            <caption class="fw-bold fs-5"><?= _("Customer Info") ?></caption>
+            <tbody>
+            <tr>
+                <th scope="row"><?= _("Last name") ?></th>
+                <td><?= $customer_info["lastname"] ?></td>
+            </tr>
+            <tr>
+                <th scope="row"><?= _("First name") ?></th>
+                <td><?= $customer_info["firstname"] ?></td>
+            </tr>
+            <tr>
+                <th scope="row"><?= _("Address") ?></th>
+                <td><?= $customer_info["address"] ?></td>
+            </tr>
+            <tr>
+                <th scope="row"><?= _("City") ?></th>
+                <td><?= $customer_info["city"] ?></td>
+            </tr>
+            <tr>
+                <th scope="row"><?= _("Region") ?></th>
+                <td><?= $customer_info["state"] ?></td>
+            </tr>
+            <tr>
+                <th scope="row"><?= _("Postcode") ?></th>
+                <td><?= $customer_info["zipcode"] ?></td>
+            </tr>
+            <tr>
+                <th scope="row"><?= _("Country") ?></th>
+                <td><?= $customer_info["country"] ?></td>
+            </tr>
+            <tr>
+                <th scope="row"><?= _("Email") ?></th>
+                <td><?= $customer_info["email"] ?></td>
+            </tr>
+            <tr>
+                <th scope="row"><?= _("Phone") ?></th>
+                <td><?= $customer_info["phone"] ?></td>
+            </tr>
+            <tr>
+                <th scope="row"><?= _("Mobile/fax") ?></th>
+                <td><?= $customer_info["fax"] ?></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-6">
+        <table class="table table-sm caption-top">
+            <caption class="fw-bold fs-5"><?= _("Account Info") ?></caption>
+            <tbody>
+                <tr>
+                    <th scope="row"><?= _("Card number") ?></th>
+                    <td><?= $customer_info["username"] ?></td>
+                </tr>
+                <tr>
+                    <th scope="row"><?= _("Balance") ?></th>
+                    <td><?= $credit_cur ?></td>
+                </tr>
+                <?php if ($customer_info["freetimetocall"] > 0): ?>
+                <tr>
+                    <th scope="row"><?= _("Calling package") ?></th>
+                    <td><?= $customer_info["label"] ?></td>
+                </tr>
+                <tr>
+                    <?php if ((int)$customer_info["packagetype"] === 0 || (int)$customer_info["packagetype"] === 1): ?>
+                    <th scope="row"><?= _("Package minutes remaining") ?></th>
+                    <?php else: ?>
+                    <th scope="row"><?= _("Package minutes used") ?></th>
+                    <?php endif ?>
+                    <td><?= $freetimetocall_used ?></td>
+                </tr>
+                <?php endif ?>
+                <tr>
+                    <th scope="row"><?= _("Creation date") ?></th>
+                    <td><?= get_readable_date($customer_info["creationdate"]) ?></td>
+                </tr>
+                <tr>
+                    <th scope="row"><?= _("Expiration date") ?></th>
+                    <td><?= get_readable_date($customer_info["expirationdate"]) ?></td>
+                </tr>
+                <tr>
+                    <th scope="row"><?= _("First use date") ?></th>
+                    <td><?= get_readable_date($customer_info["firstusedate"]) ?></td>
+                </tr>
+                <tr>
+                    <th scope="row"><?= _("Last use date") ?></th>
+                    <td><?= get_readable_date($customer_info["lastuse"]) ?></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<?php if (has_rights (Customer::ACX_PERSONALINFO)): ?>
+<div class="row pb-3 gx-5">
+    <div class="col text-end">
+        <a href="A2B_entity_card.php?form_action=ask-edit"><?php echo gettext("EDIT PERSONAL INFORMATION");?></a>
+    </div>
+</div>
+<?php endif ?>
+
+<?php
+require_once __DIR__ . "/templates/footer.php";
