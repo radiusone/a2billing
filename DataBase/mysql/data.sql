@@ -20,7 +20,6 @@ INSERT INTO `cc_config_group` VALUES
 (2,'callback','This configuration group handles calllback settings.'),
 (3,'webcustomerui','This configuration group handles Web Customer User Interface.'),
 (4,'sip-iax-info','SIP & IAX client configuration information.'),
-(5,'epayment_method','Epayment Methods Configuration.'),
 (6,'signup','This configuration group handles the signup related settings.'),
 (7,'backup','This configuration group handles the backup/restore related settings.'),
 (8,'webui','This configuration group handles the WEBUI and API Configuration.'),
@@ -73,26 +72,6 @@ INSERT INTO `cc_config` (`config_title`, `config_key`, `config_value`, `config_d
     ('Host','sip_iax_info_host','YourDomain.com','Host information.',0,NULL,4),
     ('IAX Parms','iax_additional_parameters','canreinvite = no','IAX Additional Parameters.',0,NULL,4),
     ('SIP Parms','sip_additional_parameters','trustrpid = yes | sendrpid = yes | canreinvite = no','SIP Additional Parameters.',0,NULL,4),
-    ('Enable','enable','0','Enable/Disable.',1,'yes,no',5),
-    ('HTTP Server Customer','http_server','http://www.example.com','Set the Server Address of Customer Website, It should be empty for productive Servers.',0,NULL,5),
-    ('HTTPS Server Customer','https_server','https://www.example.com','https://localhost - Enter here your Secure Customers Server Address, should not be empty for productive servers.',0,NULL,5),
-    ('Server Customer IP/Domain','http_cookie_domain','192.168.1.1','Enter your Domain Name or IP Address for the Customers application, eg, 26.63.165.200.',0,NULL,5),
-    ('Secure Server Customer IP/Domain','https_cookie_domain','192.168.1.1','Enter your Secure server Domain Name or IP Address for the Customers application, eg, 26.63.165.200.',0,NULL,5),
-    ('Application Customer Path','http_cookie_path','/customer/','Enter the Physical path of your Customers Application on your server.',0,NULL,5),
-    ('Secure Application Customer Path','https_cookie_path','/customer/','Enter the Physical path of your Customers Application on your Secure Server.',0,NULL,5),
-    ('Application Customer Physical Path','dir_ws_http_catalog','/customer/','Enter the Physical path of your Customers Application on your server.',0,NULL,5),
-    ('Secure Application Customer Physical Path','dir_ws_https_catalog','/customer/','Enter the Physical path of your Customers Application on your Secure server.',0,NULL,5),
-    ('Enable SSL','enable_ssl','1','secure webserver for checkout procedure?',1,'yes,no',5),
-    ('HTTP Domain','http_domain','192.168.1.1','Http Address.',0,NULL,5),
-    ('Directory Path','dir_ws_http','/customer/','Directory Path.',0,NULL,5),
-    ('Payment Amount','purchase_amount','1:2:5:10:20','define the different amount of purchase that would be available - 5 amount maximum (5:10:15).',0,NULL,5),
-    ('Item Name','item_name','Credit Purchase','Item name that would be display to the user when he will buy credit.',0,NULL,5),
-    ('Currency Code','currency_code','USD','Currency for the Credit purchase, only one can be define here.',0,NULL,5),
-    ('Paypal Payment URL','paypal_payment_url','https://www.paypal.com/cgi-bin/webscr','Define here the URL of paypal gateway the payment (to test with paypal sandbox).',0,NULL,5),
-    ('Paypal Verify URL','paypal_verify_url','ssl://www.paypal.com','paypal transaction verification url.',0,NULL,5),
-    ('Authorize.NET Payment URL','authorize_payment_url','https://secure.authorize.net/gateway/transact.dll','Define here the URL of Authorize gateway.',0,NULL,5),
-    ('PayPal Store Name','store_name','Asterisk2Billing','paypal store name to show in the paypal site when customer will go to pay.',0,NULL,5),
-    ('Transaction Key','transaction_key','xxx','Transaction Key for security of Epayment Max length of 60 Characters.',0,NULL,5),
     ('Enable','enable_signup','0','Enable Signup Module.',1,'yes,no',6),
     ('Captcha Security','enable_captcha','1','enable Captcha on the signup module (value : YES or NO).',1,'yes,no',6),
     ('Credit','credit','0','amount of credit applied to a new user.',0,NULL,6),
@@ -155,9 +134,6 @@ INSERT INTO `cc_config` (`config_title`, `config_key`, `config_value`, `config_d
     ('Subscription Fee Log File','cront_subscriptionfee','/var/log/a2billing/cront_a2b_subscription_fee.log','To disable application logging, remove/comment the log file name aside service.',0,NULL,10),
     ('Invoice Cront Log File','cront_invoice','/var/log/a2billing/cront_a2b_invoice.log','To disable application logging, remove/comment the log file name aside service.',0,NULL,10),
     ('Cornt Log File','cront_check_account','/var/log/a2billing/cront_a2b_check_account.log','To disable application logging, remove/comment the log file name aside service .',0,NULL,10),
-    ('Paypal Log File','paypal','/var/log/a2billing/a2billing_paypal.log','paypal log file, to log all the transaction & error.',0,NULL,10),
-    ('EPayment Log File','epayment','/var/log/a2billing/a2billing_epayment.log','epayment log file, to log all the transaction & error .',0,NULL,10),
-    ('ECommerce Log File','api_ecommerce','/var/log/a2billing/a2billing_api_ecommerce_request.log','Log file to store the ecommerce API requests .',0,NULL,10),
     ('Callback Log File','api_callback','/var/log/a2billing/a2billing_api_callback_request.log','Log file to store the CallBack API requests.',0,NULL,10),
     ('Webservice Card Log File','api_card','/var/log/a2billing/a2billing_api_card.log','Log file to store the Card Webservice Logs',0,NULL,10),
     ('AGI Log File','agi','/var/log/a2billing/a2billing_agi.log','File to log.',0,NULL,10),
@@ -218,13 +194,11 @@ INSERT INTO `cc_config` (`config_title`, `config_key`, `config_value`, `config_d
     ('Notifications Modules','notification','1','Enable or Disable the module of notification for the customers',1,'yes,no',3),
     ('Notications Cron Module','cron_notifications','1','Enable or Disable the cron module of notification for the customers. If it correctly configured in the crontab',2,'yes,no',12),
     ('Notications Delay','delay_notifications','1','Delay in number of days to send an other notification for the customers. If the value is 0, it will notify the user everytime the cront is running.',0,NULL,12),
-    ('Payment Amount','purchase_amount_agent','100:200:500:1000','define the different amount of purchase that would be available.',0,NULL,5),
     ('Max Time For Unlimited Calls','maxtime_tounlimited_calls','5400','For unlimited calls, limit the duration: amount in seconds .',0,NULL,11),
     ('Max Time For Free Calls','maxtime_tofree_calls','5400','For free calls, limit the duration: amount in seconds .',0,NULL,11),
     ('CallPlan threshold Deck switch','callplan_deck_minute_threshold','','CallPlan threshold Deck switch. <br/>This option will switch the user callplan from one call plan ID to and other Callplan ID\nThe parameters are as follow : <br/>\n-- ID of the first callplan : called seconds needed to switch to the next CallplanID <br/>\n-- ID of the second callplan : called seconds needed to switch to the next CallplanID <br/>\n-- if not needed seconds are defined it will automatically switch to the next one <br/>\n-- if defined we will sum the previous needed seconds and check if',0,NULL,11),
     ('Menu Language Order','conf_order_menulang','en:fr:es','Enter the list of languages authorized for the menu.Use the code language separate by a colon charactere e.g: en:es:fr',0,NULL,11),
     ('Disable annoucement the second of the times that the card can call','disable_announcement_seconds','0','Desactived the annoucement of the seconds when there are more of one minutes (values : yes - no)',1,'yes,no',11),
-    ('Charge for the paypal extra fees','charge_paypal_fee','0','Actived, if you want assum the fee of paypal and don\'t apply it on the customer (values : yes - no)',1,'yes,no',5),
     ('Context Campaign\'s Callback','context_campaign_callback','a2billing-campaign-callback','Context to use in Campaign of Callback',0,NULL,2),
     ('Default Context forward Campaign\'s Callback ','default_context_campaign','campaign','Context to use by default to forward the call in Campaign of Callback',0,NULL,2),
     ('Card Show Fields','card_show_field_list','id,username,useralias,lastname,id_group,id_agent,credit,tariff, status, language','Fields to show in Customer. Order is important.<br/>You can use:<br/> id,username, useralias, lastname, id_group, id_agent, credit, tariff, status, language, inuse, currency, sip_buddy, iax_buddy, nbused, firstname, email, discount, callerid, id_seria, serial',0,NULL,8),
@@ -238,17 +212,9 @@ INSERT INTO `cc_config` (`config_title`, `config_key`, `config_value`, `config_d
     ('Enable info module about refills','refill_info_enabled','CENTER','If you want enabled the info module refills and place it somewhere on the home page.',2,'NONE,LEFT,CENTER,RIGHT',13),
     ('Enable info module about payments','payment_info_enabled','CENTER','If you want enabled the info module payments and place it somewhere on the home page.',2,'NONE,LEFT,CENTER,RIGHT',13),
     ('Enable info module about calls','call_info_enabled','RIGHT','If you want enabled the info module calls and place it somewhere on the home page.',2,'NONE,LEFT,CENTER,RIGHT',13),
-    ('PlugnPay Payment URL','plugnpay_payment_url','https://pay1.plugnpay.com/payment/pnpremote.cgi','Define here the URL of PlugnPay gateway.',0,NULL,5),
     ('Card Serial Pad Length','card_serial_length','7','Value of zero padding for serial. If this value set to 3 serial wil looks like 001',0,NULL,8),
     ('Dial Balance reservation','dial_balance_reservation','0.25','Credit to reserve from the balance when a call is made. This will prevent negative balance on huge peak.',0,NULL,11),
     ('Rate Export Fields','rate_export_field_list','destination, dialprefix, rateinitial','Fields to export in csv format from rates table.Use dest_name from prefix name',0,NULL,8),
-    ('HTTP Server Agent','http_server_agent','http://www.example.com','Set the Server Address of Agent Website, It should be empty for productive Servers.',0,NULL,5),
-    ('HTTPS Server Agent','https_server_agent','https://www.example.com','https://localhost - Enter here your Secure Agents Server Address, should not be empty for productive servers.',0,NULL,5),
-    ('Secure Server Agent IP/Domain','https_cookie_domain_agent','192.168.1.1','Enter your Secure server Domain Name or IP Address for the Agents application, eg, 26.63.165.200.',0,NULL,5),
-    ('Application Agent Path','http_cookie_path_agent','/agent/Public/','Enter the Physical path of your Agents Application on your server.',0,NULL,5),
-    ('Secure Application Agent Path','https_cookie_path_agent','/agent/Public/','Enter the Physical path of your Agents Application on your Secure Server.',0,NULL,5),
-    ('Application Agent Physical Path','dir_ws_http_catalog_agent','/agent/Public/','Enter the Physical path of your Agents Application on your server.',0,NULL,5),
-    ('Secure Application Agent Physical Path','dir_ws_https_catalog_agent','/agent/Public/','Enter the Physical path of your Agents Application on your Secure server.',0,NULL,5),
     ('Personal Info','personalinfo','1','Enable or disable the page which allow agent to modify its personal information.',2,'yes,no',14),
     ('Return URL distant Login','return_url_distant_login','','URL for specific return if an error occur after login',0,NULL,3),
     ('Return URL distant Forget Password','return_url_distant_forgetpassword','','URL for specific return if an error occur after forgetpassword',0,NULL,3),
@@ -264,11 +230,6 @@ INSERT INTO `cc_config` (`config_title`, `config_key`, `config_value`, `config_d
     ('Auto Create Card Credit','cid_auto_create_card_credit','0','amount of credit of the new card.',0,NULL,11),
     ('Auto Create Card Limit','cid_auto_create_card_credit_limit','0','if postpay, define the credit limit for the card.',0,NULL,11),
     ('Auto Create Card TariffGroup','cid_auto_create_card_tariffgroup','1','the tariffgroup to use for the new card (this is the ID that you can find on the admin web interface) .',0,NULL,11),
-    ('Paypal Amount Subscription','paypal_subscription_amount','10','amount to billed each recurrence of payment ',0,NULL,5),
-    ('Paypal Subscription Time period number','paypal_subscription_period_number','1','number of time periods between each recurrence',0,NULL,5),
-    ('Paypal Subscription Time period','paypal_subscription_time_period','M','time period (D=days, W=weeks, M=months, Y=years)',0,NULL,5),
-    ('Enable PayPal subscription','paypal_subscription_enabled','0','Enable Paypal subscription on the User home page, you need a Premier or Business account.',1,'yes,no',5),
-    ('Paypal Subscription account','paypal_subscription_account','','Your PayPal ID or an email address associated with your PayPal account. Email addresses must be confirmed and bound to a Premier or Business Verified Account.',0,NULL,5),
     ('Base Country','base_country','USA','Define the country code in 3 letters where you are located (ISO 3166-1 : \"USA\" for United States)',0,'',1),
     ('Base Language','base_language','en','Define your language code in 2 letters (ISO 639 : \"en\" for English)',0,'',1),
     ('Authorize Remittance Request','remittance_request','1','Enable or disable the link which allow agent to submit a remittance request',2,'yes,no',14),
@@ -319,34 +280,6 @@ INSERT INTO `cc_config` (`config_title`, `config_key`, `config_value`, `config_d
     ('Display card number','display_account','0','Whether to include the card number on the invoice',1,'',15),
     ('Next invoice number','next_number','0','The next invoice number; the first invoice of the year resets to 1',0,NULL,15);
 ALTER TABLE `cc_config` ENABLE KEYS;
-
-LOCK TABLES `cc_configuration` WRITE;
-ALTER TABLE `cc_configuration` DISABLE KEYS;
-INSERT INTO `cc_configuration` (`configuration_title`, `configuration_key`, `configuration_value`, `configuration_description`, `configuration_type`, `use_function`, `set_function`) VALUES
-    ('Login Username','MODULE_PAYMENT_AUTHORIZENET_LOGIN','testing','The login username used for the Authorize.net service',0,NULL,NULL),
-    ('Transaction Key','MODULE_PAYMENT_AUTHORIZENET_TXNKEY','Test','Transaction Key used for encrypting TP data',0,NULL,NULL),
-    ('Transaction Mode','MODULE_PAYMENT_AUTHORIZENET_TESTMODE','Test','Transaction mode used for processing orders',0,NULL,'tep_cfg_select_option(array(\'Test\', \'Production\'), '),
-    ('Transaction Method','MODULE_PAYMENT_AUTHORIZENET_METHOD','Credit Card','Transaction method used for processing orders',0,NULL,'tep_cfg_select_option(array(\'Credit Card\', \'eCheck\'), '),
-    ('Customer Notifications','MODULE_PAYMENT_AUTHORIZENET_EMAIL_CUSTOMER','False','Should Authorize.Net e-mail a receipt to the customer?',0,NULL,'tep_cfg_select_option(array(\'True\', \'False\'), '),
-    ('Enable Authorize.net Module','MODULE_PAYMENT_AUTHORIZENET_STATUS','False','Do you want to accept Authorize.net payments?',0,NULL,'tep_cfg_select_option(array(\'True\', \'False\'), '),
-    ('Enable PayPal Module','MODULE_PAYMENT_PAYPAL_STATUS','True','Do you want to accept PayPal payments?',0,NULL,'tep_cfg_select_option(array(\'True\', \'False\'), '),
-    ('E-Mail Address','MODULE_PAYMENT_PAYPAL_ID','you@yourbusiness.com','The e-mail address to use for the PayPal service',0,NULL,NULL),
-    ('E-Mail Address','MODULE_PAYMENT_MONEYBOOKERS_ID','you@yourbusiness.com','The eMail address to use for the moneybookers service',0,NULL,NULL),
-    ('Referral ID','MODULE_PAYMENT_MONEYBOOKERS_REFID','989999','Your personal Referral ID from moneybookers.com',0,NULL,NULL),
-    ('Transaction Language','MODULE_PAYMENT_MONEYBOOKERS_LANGUAGE','Selected Language','The default language for the payment transactions',0,NULL,'tep_cfg_select_option(array(\'Selected Language\',\'EN\', \'DE\', \'ES\', \'FR\'), '),
-    ('Enable moneybookers Module','MODULE_PAYMENT_MONEYBOOKERS_STATUS','True','Do you want to accept moneybookers payments?',0,NULL,'tep_cfg_select_option(array(\'True\', \'False\'), '),
-    ('Enable PlugnPay Module','MODULE_PAYMENT_PLUGNPAY_STATUS','True','Do you want to accept payments through PlugnPay?',0,NULL,'tep_cfg_select_option(array(\'True\', \'False\'), '),
-    ('Login Username','MODULE_PAYMENT_PLUGNPAY_LOGIN','Your Login Name','Enter your PlugnPay account username',0,NULL,NULL),
-    ('Publisher Email','MODULE_PAYMENT_PLUGNPAY_PUBLISHER_EMAIL','Enter Your Email Address','The email address you want PlugnPay conformations sent to',0,NULL,NULL),
-    ('cURL Setup','MODULE_PAYMENT_PLUGNPAY_CURL','Not Compiled','Whether cURL is compiled into PHP or not.  Windows users, select not compiled.',0,NULL,'tep_cfg_select_option(array(\'Not Compiled\', \'Compiled\'), '),
-    ('cURL Path','MODULE_PAYMENT_PLUGNPAY_CURL_PATH','The Path To cURL','For Not Compiled mode only, input path to the cURL binary (i.e. c:/curl/curl)',0,NULL,NULL),
-    ('Transaction Mode','MODULE_PAYMENT_PLUGNPAY_TESTMODE','Test','Transaction mode used for processing orders',0,NULL,'tep_cfg_select_option(array(\'Test\', \'Test And Debug\', \'Production\'), '),
-    ('Require CVV','MODULE_PAYMENT_PLUGNPAY_CVV','yes','Ask For CVV information',0,NULL,'tep_cfg_select_option(array(\'yes\', \'no\'), '),
-    ('Transaction Method','MODULE_PAYMENT_PLUGNPAY_PAYMETHOD','credit','Transaction method used for processing orders.<br><b>NOTE:</b> Selecting \'onlinecheck\' assumes you\'ll offer \'credit\' as well.',0,NULL,'tep_cfg_select_option(array(\'credit\', \'onlinecheck\'), '),
-    ('Authorization Type','MODULE_PAYMENT_PLUGNPAY_CCMODE','authpostauth','Credit card processing mode',0,NULL,'tep_cfg_select_option(array(\'authpostauth\', \'authonly\'), '),
-    ('Customer Notifications','MODULE_PAYMENT_PLUGNPAY_DONTSNDMAIL','yes','Should PlugnPay not email a receipt to the customer?',0,NULL,'tep_cfg_select_option(array(\'yes\', \'no\'), '),
-    ('Accepted Credit Cards','MODULE_PAYMENT_PLUGNPAY_ACCEPTED_CC','Mastercard, Visa','The credit cards you currently accept',0,NULL,'_selectOptions(array(\'Amex\',\'Discover\', \'Mastercard\', \'Visa\'), ');
-ALTER TABLE `cc_configuration` ENABLE KEYS;
 
 LOCK TABLES `cc_currencies` WRITE;
 ALTER TABLE `cc_currencies` DISABLE KEYS;
@@ -476,13 +409,6 @@ INSERT INTO `cc_iso639` (`code`, `name`) VALUES
 ('vi','Vietnamese'), ('vo','Volapuk'), ('wo','Wolof'), ('xh','Xhosa'), ('yi','Yiddish'),
 ('yo','Yoruba'), ('za','Zhuang'), ('zh','Chinese'), ('zu','Zulu');
 ALTER TABLE `cc_iso639` ENABLE KEYS;
-
-LOCK TABLES `cc_payments_status` WRITE;
-ALTER TABLE `cc_payments_status` DISABLE KEYS;
-INSERT INTO `cc_payments_status` (`status_id`, `status_name`) VALUES
-    (-2,'Failed'), (-1,'Denied'), (0,'Pending'), (1,'In-Progress'),
-    (2,'Completed'), (3,'Processed'), (4,'Refunded'), (5,'Unknown');
-ALTER TABLE `cc_payments_status` ENABLE KEYS;
 
 LOCK TABLES `cc_prefix` WRITE;
 ALTER TABLE `cc_prefix` DISABLE KEYS;
