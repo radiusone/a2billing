@@ -61,17 +61,6 @@ $HD_Form -> list_query_order_direction = "DESC";
 $HD_Form -> FG_ENABLE_INFO_BUTTON = true;
 $HD_Form -> FG_INFO_BUTTON_LINK = "A2B_invoice_view.php?id=";
 
-$HD_Form->AddListActionButton(
-    "checkout_payment.php?item_type=invoice&item_id=",
-    _("Pay"),
-    "",
-    "cash-stack",
-    "text-success",
-    "paid_status",
-    0 // unpaid
-);
-
-
 $status_list = getInvoicePaidStatusList();
 
 $HD_Form -> AddListValue(gettext("REFERENCE"), "cc_invoice.reference");
