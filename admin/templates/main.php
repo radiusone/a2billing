@@ -236,7 +236,6 @@ $menu_section ??= 0;
                             <li>
                                 <a class="link-dark rounded" href="A2B_entity_moneysituation.php"><?= _("Customers Balance") ?></a>
                                 <ul class="list-unstyled fw-normal ps-3 pb-1">
-                                    <li><a class="link-dark rounded" href="A2B_entity_transactions.php?trans_type=user"><?= _("Transactions") ?></a></li>
                                     <li><a class="link-dark rounded" href="A2B_entity_billing_customer.php"><?= _("Billings") ?></a></li>
                                     <li><a class="link-dark rounded" href="A2B_entity_logrefill.php"><?= _("Refills") ?></a></li>
                                     <li><a class="link-dark rounded" href="A2B_entity_payment.php"><?= _("Payments") ?></a></li>
@@ -248,7 +247,6 @@ $menu_section ??= 0;
                                 <ul class="list-unstyled fw-normal ps-3 pb-1">
                                     <li><a class="link-dark rounded" href="A2B_entity_commission_agent.php"><?= _("Commissions") ?></a></li>
                                     <li><a class="link-dark rounded" href="A2B_entity_remittance_request.php"><?= _("Remittance Request") ?></a></li>
-                                    <li><a class="link-dark rounded" href="A2B_entity_transactions.php?trans_type=agent"><?= _("Transactions") ?></a></li>
                                     <li><a class="link-dark rounded" href="A2B_entity_logrefill_agent.php"><?= _("Refills") ?></a></li>
                                     <li><a class="link-dark rounded" href="A2B_entity_payment_agent.php"><?= _("Payments") ?></a></li>
                                 </ul>
