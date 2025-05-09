@@ -109,7 +109,6 @@ $menu_section ??= 0;
                             <li><a class="link-dark rounded" href="A2B_entity_payment_agent.php"><?= _("Own Payments") ?></a></li>
                             <li><a class="link-dark rounded" href="A2B_entity_logrefill.php"><?= _("Customer Refills") ?></a></li>
                             <li><a class="link-dark rounded" href="A2B_entity_payment.php"><?= _("Customer Payments") ?></a></li>
-                            <li><a class="link-dark rounded" href="A2B_entity_paymentlog.php"><?= _("Payment Log") ?></a></li>
                             <li><a class="link-dark rounded" href="A2B_entity_commission.php"><?= _("Commissions") ?></a></li>
                         </ul>
                     </div>
