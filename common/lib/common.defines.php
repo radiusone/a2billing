@@ -129,22 +129,6 @@ define ("CUSTOMER_UI_URL", $A2B->config['global']['customer_ui_url'] ?? null);
 
 define ("API_SECURITY_KEY", $A2B->config['webui']['api_security_key'] ?? null);
 
-// EPayment Module Settings
-define ("HTTP_SERVER", $A2B->config["epayment_method"]['http_server_agent'] ?? null);
-define ("HTTPS_SERVER", $A2B->config["epayment_method"]['https_server_agent'] ?? null);
-define ("HTTP_COOKIE_DOMAIN", $A2B->config["epayment_method"]['http_cookie_domain_agent'] ?? null);
-define ("HTTPS_COOKIE_DOMAIN", $A2B->config["epayment_method"]['https_cookie_domain_agent'] ?? null);
-define ("DIR_WS_HTTP_CATALOG", $A2B->config["epayment_method"]['dir_ws_http_catalog_agent'] ?? null);
-define ("DIR_WS_HTTPS_CATALOG", $A2B->config["epayment_method"]['dir_ws_https_catalog_agent'] ?? null);
-define ("ENABLE_SSL", $A2B->config["epayment_method"]['enable_ssl'] ?? null);
-define ("EPAYMENT_TRANSACTION_KEY", $A2B->config["epayment_method"]['transaction_key'] ?? null);
-define ("PAYPAL_VERIFY_URL", $A2B->config["epayment_method"]['paypal_verify_url'] ?? null);
-define ("MONEYBOOKERS_SECRETWORD", $A2B->config["epayment_method"]['moneybookers_secretword'] ?? null);
-define ("EPAYMENT_PURCHASE_AMOUNT", $A2B->config['epayment_method']['purchase_amount_agent'] ?? null);
-
-const CC_OWNER_MIN_LENGTH = '2';
-const CC_NUMBER_MIN_LENGTH = '15';
-
 //SIP/IAX Info
 define ("SIP_IAX_INFO_TRUNKNAME", $A2B->config['sip-iax-info']['sip_iax_info_trunkname'] ?? null);
 define ("SIP_IAX_INFO_ALLOWCODEC", $A2B->config['sip-iax-info']['sip_iax_info_allowcodec'] ?? null);
