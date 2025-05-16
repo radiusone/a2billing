@@ -120,12 +120,11 @@ $HD_Form->create_form($form_action, $list);
 require_once __DIR__ . "/../templates/footer.php";
 ?>
 <script>
-$(function () {
-    $('.accept_click').on('click', function () {
-        $.get("A2B_entity_remittance_request.php", {id: this.dataset.primaryKey, action: "accept"}, () => location.reload);
-    });
-    $('.refuse_click').on('click', function () {
-        $.get("A2B_entity_remittance_request.php", {id: this.dataset.primaryKey, action: "refuse"}, () => location.reload);
+document.querySelectorAll(".accept_click, .refuse_click").forEach(function (el) {
+    el.addEventListener("click", function () {
+        const action = this.classList.contains("accept_click") ? "accept" : "refuse";
+        fetch(`A2B_entity_remittance_request.php?action=${action}&id=${this.dataset.primaryKey}`)
+            .then(() => location.reload());
     });
 });
 </script>

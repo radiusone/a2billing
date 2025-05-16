@@ -63,10 +63,3 @@ $HD_Form->create_form($form_action, $list);
 
 // #### FOOTER SECTION
 require_once __DIR__ . "/templates/footer.php";
-?>
-
-<script>
-$(function () {
-    $('.lock').on('click', e => alert(this.id));
-});
-</script>

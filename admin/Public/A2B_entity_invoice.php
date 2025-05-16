@@ -89,13 +89,3 @@ $HD_Form->create_toppage($form_action);
 $HD_Form->create_form($form_action, $list);
 
 require_once __DIR__ . "/../templates/footer.php";
-?>
-
-<script>
-$(function () {
-    $('.lock').on('click', function () {
-        $.get("A2B_entity_invoice.php", {id: this.dataset.primaryKey, action: "lock"}, () => location.reload());
-        return false;
-    });
-});
-</script>

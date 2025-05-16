@@ -1,169 +1,143 @@
-$(function() {
+document.addEventListener("DOMContentLoaded", function() {
     /**
      * event listeners for CSV imports
      */
-    let resetHidden = function() {
-        $("#selected_cols option, #unselected_cols option")
-            .prop("selected", false)
-            .filter((i, el) => el.value.match(/^\s*$/))
-            .remove();
-        let selected = $("#selected_cols option");
+    let resetHidden = function () {
+        document.querySelectorAll("#selected_cols option, #unselected_cols option").forEach(function (el) {
+            el.selected = false;
+            if (el.value.match(/^\s*$/)) {
+                el.remove();
+            }
+        });
+        const source = document.querySelector("#search_sources");
+        const selected = document.querySelectorAll("#selected_cols option");
         if (selected.length === 0) {
-            $("#selected_cols optgroup").append("<option value='' disabled='disabled'>&nbsp;</option>");
-            $("#search_sources").val("nochange");
+            const opt = document.createElement("option");
+            opt.disabled = true;
+            opt.value = "";
+            opt.textContent = " ";
+            document.querySelector("#selected_cols optgroup")?.append(opt);
+            source.value = "nochange";
         } else {
-            $("#search_sources").val(selected.map((i, el) => el.value).get().join("|"));
+            source.value = Array.from(selected).map(el => el.value).join("|");
         }
     };
 
-    let swapSelects = function(/** @param {jQuery} */ opt) {
-        opt.appendTo(
-            opt.closest("select#selected_cols").length
-                ? $("#unselected_cols optgroup")
-                : $("#selected_cols optgroup")
-        );
+    let swapSelects = function (/** @param {HTMLOptionElement} */ opt) {
+        if (opt.closest("select#selected_cols")) {
+            document.querySelector("#unselected_cols optgroup").append(opt);
+        } else {
+            document.querySelector("#selected_cols optgroup").append(opt);
+        }
         resetHidden();
     };
 
-    $("#unselected_cols option, #selected_cols option").on("dblclick", function() {
-        swapSelects($(this));
+    document.querySelectorAll("#unselected_cols option, #selected_cols option").forEach(function (el) {
+        el.addEventListener("dblclick", function () {
+            swapSelects(this);
+        });
     });
 
-    $("#add_col").on("click", function () {
-        let opts = $("#unselected_cols option:selected");
+    document.querySelector("#add_col")?.addEventListener("click", function () {
+        const opts = document.querySelector("#unselected_cols").selectedOptions;
         if (opts.length) {
-            opts.appendTo($("#selected_cols optgroup"));
+            Array.from(opts).forEach(function (el) {
+                document.querySelector("#selected_cols optgroup").append(el);
+            });
             resetHidden();
         }
     });
 
-    $("#remove_col").on("click", function () {
-        let opts = $("#selected_cols option:selected");
+    document.querySelector("#remove_col")?.addEventListener("click", function () {
+        const opts = document.querySelector("#selected_cols").selectedOptions;
         if (opts.length) {
-            opts.appendTo($("#unselected_cols optgroup"));
+            Array.from(opts).forEach(function (el) {
+                document.querySelector("#unselected_cols optgroup").append(el);
+            });
             resetHidden();
         }
     });
 
-    $("#move_col_up").on("click", function () {
-        let selectedOption = $("#selected_cols option:selected").first();
-        let prev = selectedOption.prev("option");
-
-        if (selectedOption.length && prev.length) {
-            selectedOption.insertBefore(prev);
+    document.querySelector("#move_col_up")?.addEventListener("click", function () {
+        const selectedOption = document.querySelector("#selected_cols").selectedOptions.item(0);
+        const prev = selectedOption?.previousElementSibling;
+        if (selectedOption && prev) {
+            prev.before(selectedOption);
             resetHidden();
-            selectedOption.prop("selected", true);
+            selectedOption.selected = true;
         }
     });
 
-    $("#move_col_down").on("click", function () {
-        let selectedOption = $("#selected_cols option:selected").first();
-        let next = selectedOption.next("option");
-
-        if (selectedOption.length && next.length) {
-            selectedOption.insertAfter(next);
+    document.querySelector("#move_col_down")?.addEventListener("click", function () {
+        const selectedOption = document.querySelector("#selected_cols").selectedOptions.item(0);
+        const next = selectedOption?.nextElementSibling;
+        if (selectedOption && next) {
+            next.after(selectedOption);
             resetHidden();
-            selectedOption.prop("selected", true);
+            selectedOption.selected = true;
         }
     });
 
     /**
-     * Day/time split inputs
+     * Day/time split inputs for rate card properties
      */
-    $("div.daytime select, div.daytime input[type=time]").on("change", function() {
-        let day = $(this).closest("div.daytime").find("select").val();
-        let time = $(this).closest("div.daytime").find("input[type=time]").val();
-        let hidden = $(this).closest("div.daytime").find("input[type=hidden]");
-        let [hour, min] = time.split(":");
-        hidden.val((parseInt(day, 10) * 1440) + (parseInt(hour, 10) * 60) + parseInt(min, 10));
+    document.querySelectorAll("div.daytime select, div.daytime input[type=time]").forEach(function (el) {
+        el.addEventListener("change", function () {
+            let day = this.closest("div.daytime").querySelector("select").value;
+            let time = this.closest("div.daytime").querySelector("input[type=time]").value;
+            let hidden = this.closest("div.daytime").querySelector("input[type=hidden]");
+            let [hour, min] = time.split(":");
+            hidden.value = (parseInt(day, 10) * 1440) + (parseInt(hour, 10) * 60) + parseInt(min, 10);
+        });
     });
 
-    /*
-    Standard popups
+    /**
+     * Standard popups
      */
-    $("a.popup_trigger").on("click", function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        const uri = $(this).attr("href") || $(this).data("uri");
-        const pu_sel = $(this).data("select") || "1";
-        const pu_form = $(this).data("formName") || $(this).parents("form").attr("name");
-        const pu_field = $(this).data("fieldName") || $(this).prev("input,select").attr("name");
-        const uri_extra = $(this).data("uriExtra") || "";
-        const pu_name = $(this).data("windowName") || "";
-        const pu_options = $(this).data("popupOptions") || "scrollbars=1,width=750,height=450,top=50,left=100,scrollbars=1";
-        window.open(
-            `${uri}?popup_select=${pu_sel}&popup_formname=${pu_form}&popup_fieldname=${pu_field}${uri_extra}`,
-            pu_name,
-            pu_options
-        );
+    document.querySelectorAll("a.popup_trigger").forEach(function (el) {
+        el.addEventListener("click", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const uri = this.href ?? this.dataset.uri;
+            const pu_sel = this.dataset.select ?? "1";
+            const pu_form = this.dataset.formName ?? this.closest("form")?.name;
+            const pu_field = this.dataset.fieldName ?? this.parentNode.querySelector("input,select")?.name;
+            const uri_extra = this.dataset.uriExtra ?? "";
+            const pu_name = this.dataset.windowName ?? "";
+            const pu_options = this.dataset.popupOptions ?? "scrollbars=1,width=750,height=450,top=50,left=100,scrollbars=1";
+            window.open(
+                `${uri}?popup_select=${pu_sel}&popup_formname=${pu_form}&popup_fieldname=${pu_field}${uri_extra}`,
+                pu_name,
+                pu_options
+            );
+        });
     });
 
-    /***
-    Search form dates
-    ***/
-    $(".date-input-enabler")
-        .on("change", function() {
+    /**
+     * Search form date enabling
+     */
+    document.querySelectorAll(".date-input-enabler").forEach(function (el) {
+        el.addEventListener("change", function () {
             const id = this.getAttribute("id").replaceAll(/\^/g, "\\\^");
-            $(this).closest("div.input-group").children("input, select").prop("disabled", !this.checked);
+            this.closest("div.input-group").querySelector("input, select").disabled = !this.checked;
             if (this.checked) {
-                $(this).closest("form").find(`.date-input-enabler:not(#${id})`).prop("checked", false).change();
+                // todo: I think this was originally meant for the archiving pages, to prevent
+                // simultaneous selection of relative and absolute dates but needs fixing for e.g. card search form
+                this.form.querySelectorAll(`.date-input-enabler:not(#${id})`).forEach(function (el) {
+                    el.checked = false;
+                });
             }
-        })
-        .trigger("change");
+        });
+        el.dispatchEvent(new InputEvent("change"));
+    });
 
-    /* Old search form dates */
-
-    function setValidDay(monthEl, dayEl)
-    {
-        let ym = monthEl.val().split(/-/);
-        if (!ym[1]) {
-            return;
-        }
-        const year = parseInt(ym[0]);
-        const month = parseInt(ym[1]);
-        let limit;
-        const days = ["31", "28", "31", "30", "31", "30", "31", "31", "30", "31", "30", "31"];
-        limit = days[month - 1];
-        if (month === 2 && year % 4 === 0 && year % 100 > 0) {
-            limit = 29;
-        }
-        if (parseInt(dayEl.val()) > limit) {
-            dayEl.val(limit.toString());
-        }
-    }
-
-    const fromDayCheck = $("#search_fromday");
-    const fromDay = $("#fromstatsday_sday");
-    const fromMonth = $("#fromstatsmonth_sday");
-    const toDayCheck = $("#search_today");
-    const toDay = $("#tostatsday_sday");
-    const toMonth = $("#tostatsmonth_sday");
-
-    fromDay.add(fromMonth).prop("disabled", true);
-    fromDayCheck.on("change", e => fromDay.add(fromMonth).prop("disabled", !e.target.checked));
-    fromMonth.on("change", () => setValidDay(fromMonth, fromDay));
-
-    toDay.add(toMonth).prop("disabled", true);
-    toDayCheck.on("change", e => toDay.add(toMonth).prop("disabled", !e.target.checked));
-    toMonth.on("change", () => setValidDay(toMonth, toDay));
-
-    const fromDayCheck2 = $("#search_fromday_bis");
-    const fromDay2 = $("#fromstatsday_sday_bis");
-    const fromMonth2 = $("#fromstatsmonth_sday_bis");
-    const toDayCheck2 = $("#search_today_bis");
-    const toDay2 = $("#tostatsday_sday_bis");
-    const toMonth2 = $("#tostatsmonth_sday_bis");
-
-    fromDay2.add(fromMonth2).prop("disabled", true);
-    fromDayCheck2.on("change", e => fromDay2.add(fromMonth2).prop("disabled", !e.target.checked));
-    fromMonth2.on("change", () => setValidDay(fromMonth2, fromDay2));
-
-    toDay2.add(toMonth2).prop("disabled", true);
-    toDayCheck2.on("change", e => toDay2.add(toMonth2).prop("disabled", !e.target.checked));
-    toMonth2.on("change", () => setValidDay(toMonth2, toDay2));
-
-    fromDayCheck.trigger("change");
-    toDayCheck.trigger("change");
-    fromDayCheck2.trigger("change");
-    toDayCheck2.trigger("change");
+    /**
+     * Invoice/Receipt lock buttons
+     */
+    document.querySelectorAll(".lock").forEach(function (el) {
+        el.addEventListener("click", function() {
+            fetch(`A2B_entity_invoice.php?action=lock&id=${this.dataset.primaryKey}`)
+                .then(() => location.reload());
+        });
+    });
 });
