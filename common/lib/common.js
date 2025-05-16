@@ -140,4 +140,54 @@ document.addEventListener("DOMContentLoaded", function() {
                 .then(() => location.reload());
         });
     });
+
+    /**
+     * "Has Many" edits (e.g. restricted numbers in card properties)
+     */
+    document.querySelectorAll("button.has-many-add").forEach(function (el) {
+        el.addEventListener("click", function () {
+            const index = this.dataset.index;
+            const value = this.dataset.value;
+            const form = document.getElementById("editForm");
+            form.querySelector("input[name=form_action]").value = "del-content";
+            form.querySelector("input[name=form_el_index]").value = index;
+            const hidden = document.createElement("input");
+            hidden.type = "hidden";
+            hidden.name = "del-content-value";
+            hidden.value = value;
+            form.append(hidden);
+            form.dispatchEvent(new SubmitEvent("submit"));
+        });
+    });
+
+    document.querySelectorAll("button.has-many-delete").forEach(function (el) {
+        el.addEventListener("click", function () {
+            const index = this.dataset.index;
+            const input_id = this.dataset.inputId;
+            const value = document.getElementById(input_id).value;
+            const form = document.getElementById("editForm");
+            form.querySelector("input[name=form_action]").value = "add-content";
+            form.querySelector("input[name=form_el_index]").value = index;
+            const hidden = document.createElement("input");
+            hidden.type = "hidden";
+            hidden.name = "add-content-value";
+            hidden.value = value;
+            form.append(hidden);
+            form.dispatchEvent(new SubmitEvent("submit"));
+        });
+    });
+
+    /**
+     * Confirm action; used on search page delete, all data archive
+     */
+    document.querySelectorAll("a.confirm-with-message").forEach(function (el) {
+        el.addEventListener("click", function (e) {
+            const msg = this.dataset.message;
+            if (confirm(msg) !== true) {
+                e.stopPropagation();
+                e.preventDefault();
+                return false;
+            }
+        });
+    });
 });

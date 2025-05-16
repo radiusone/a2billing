@@ -271,7 +271,7 @@ use A2billing\Forms\FormHandler;
 <?php endif ?>
             <?php if (strlen($_SESSION[$form->search_session_key] ?? "") > 10): ?>
                 <?php if ($form->search_delete_enabled): ?>
-                    <a class="btn btn-danger" href="?deleteselected=true" onclick="return confirm('<?= "Are you sure you want to delete " . $form->FG_LIST_VIEW_ROW_COUNT . " selected records?" ?>')"><?= _("Delete") ?></a>
+                    <a class="btn btn-danger confirm-with-message" href="?deleteselected=true" data-message="<?= htmlspecialchars(sprintf(_("Are you sure you want to delete %d selected records?"), $form->FG_LIST_VIEW_ROW_COUNT)) ?>"><?= _("Delete") ?></a>
                 <?php endif ?>
             <a class="btn btn-secondary" href="?cancelsearch=true"><?= _("Clear Search") ?></a>
             <?php endif ?>

@@ -12,26 +12,6 @@ use DateTime;
  */
 
 ?>
-
-<script>
-    function deleteRow(index, value) {
-        let form = $("form#editForm");
-        form.find("input[name=form_action]").val("del-content");
-        form.find("input[name=form_el_index]").val(index);
-        form.append($(`<input type="hidden" name="del-content-value" value="${value}"/>`))
-        form.trigger("submit");
-    }
-
-    function addRow(index, input_id) {
-        let form = $("form#editForm");
-        let value = form.find(`#${input_id}`).val();
-        form.find("input[name=form_action]").val("add-content");
-        form.find("input[name=form_el_index]").val(index);
-        form.append($(`<input type="hidden" name="add-content-value" value="${value}"/>`))
-        form.trigger("submit");
-    }
-</script>
-
 <form action="" method="post" name="myForm" id="editForm">
     <input type="hidden" name="id" value="<?= $processed["id"] ?>"/>
     <input type="hidden" name="form_action" value="edit"/>
@@ -207,8 +187,9 @@ use DateTime;
                     <?= $entry[1] ?>
                     <button
                         type="button"
-                        class="btn btn-sm btn-primary"
-                        onclick="deleteRow(<?= $i ?>, '<?= $entry[0] ?>')"
+                        class="btn btn-sm btn-primary has-many-delete"
+                        data-index="<?= $i ?>"
+                        data-value="<?= $entry[0] ?>"
                     ><?= _("Delete") ?></button>
                 </li>
             <?php endforeach ?>
@@ -240,8 +221,9 @@ use DateTime;
                     </div>
                     <button
                             type="button"
-                            class="btn btn-sm btn-primary"
-                            onclick="addRow(<?= $i ?>, '<?= $row["table"]->table ?>_<?= $row["insert"] ?>')"
+                            class="btn btn-sm btn-primary has-many-add"
+                            data-index="<?= $i ?>"
+                            data-input-id="<?= $row["table"]->table ?>_<?= $row["insert"] ?>"
                     ><?= gettext("Add") ?> <?= $row["label"] ?></button>
                 </li>
                 <?php endif ?>
@@ -257,8 +239,9 @@ use DateTime;
                     </div>
                     <button
                         type="button"
-                        class="btn btn-sm btn-primary"
-                        onclick="addRow(<?= $i ?>, '<?= $row["table"]->table ?>_<?= $row["insert"] ?>')"
+                        class="btn btn-sm btn-primary has-many-add"
+                        data-index="<?= $i ?>"
+                        data-input-id="<?= $row["table"]->table ?>_<?= $row["insert"] ?>"
                     ><?= gettext("Add") ?> <?= $row["label"] ?></button>
                 </li>
             <?php endif ?>

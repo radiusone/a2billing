@@ -148,7 +148,7 @@ $HD_Form->create_search_form();
         <form name="theFormFilter" action="">
             <input type="hidden" name="archive_all" value="true"/>
             <input type="hidden" name="posted_archive" value="true"/>
-            <button type="submit" class="btn btn-primary" onclick="return confirm(<?= json_encode(_("This action will archive all cards, are you sure?")) ?>)">
+            <button type="submit" class="btn btn-primary confirm-with-message" data-message="<?= htmlspecialchars(_("This action will archive all cards, are you sure?")) ?>">
                 <?= _("Archive All");?>
             </button>
         </form>
