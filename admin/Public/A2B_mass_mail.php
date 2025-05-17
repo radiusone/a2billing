@@ -187,13 +187,10 @@ if (!isset($submit)) {
 ?>
 
 <script>
-var win = null;
-$(function() {
-    $("#loadtmp").on('click', function () {
-        //test if windows is still open and close on refresh
-        win = window.open('A2B_entity_mailtemplate.php?popup_select=1', '', 'scrollbars=yes,resizable=yes,width=700,height=500');
-    });
-});
+document.getElementById("loadtmpl").addEventListener("click", function() {
+    //test if windows is still open and close on refresh
+    window.open('A2B_entity_mailtemplate.php?popup_select=1', '', 'scrollbars=yes,resizable=yes,width=700,height=500');
+})
 </script>
 
 <?php

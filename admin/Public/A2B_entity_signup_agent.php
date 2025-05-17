@@ -60,9 +60,9 @@ require_once __DIR__ . "/../templates/footer.php";
 if ($form_action === "ask-add") {
 ?>
 <script>
-    $("#id_agent").on("change", function() {
-        window.location.href = "A2B_entity_signup_agent.php?form_action=ask-add&id_agent=" + this.value;
-    });
+document.getElementById("id_agent")?.addEventListener("change", function () {
+    window.location.href = "A2B_entity_signup_agent.php?form_action=ask-add&id_agent=" + this.value;
+});
 </script>
 <?php
 }

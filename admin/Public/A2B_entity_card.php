@@ -625,15 +625,21 @@ $HD_Form->setup_export();
 function toggleUpdateField(el) {
     // convert check[foo] into foo
     let elname = el.getAttribute("name").slice(6, -1);
-    $(`[name='${elname}']`).closest('.row').find("[name]:not([name^='check'])").attr("disabled", !el.checked);
+    document.querySelector(`[name='${elname}']`)?.closest(".row")?.querySelectorAll("[name]:not([name^='check'])").forEach(el => el.disabled = !el.checked);
 }
-$("#batchUpdateModal input[type='checkbox'][name^='check']")
-    .each((i, el) => toggleUpdateField(el))
-    .on("change", ev => toggleUpdateField(ev.target));
+document.querySelectorAll("#batchUpdateModal input[type='checkbox'][name^='check']").forEach(function (el) {
+    toggleUpdateField(el);
+    el.addEventListener("change", ev => toggleUpdateField(ev.target));
+});
 // special case
-$("#check\\[upd_credit\\]")
-    .each((i, el) => $("#upd_refill_type, #upd_description").attr("disabled", !el.checked))
-    .on("change", ev => $("#upd_refill_type, #upd_description").attr("disabled", !ev.target.checked));
+document.querySelectorAll("#check\\[upd_credit\\]").forEach(function (el) {
+    document.getElementById("upd_refill_type").disabled = !el.checked;
+    document.getElementById("upd_description").disabled = !el.checked;
+    el.addEventListener("change", function (ev) {
+        document.getElementById("upd_refill_type").disabled = !ev.target.checked;
+        document.getElementById("upd_description").disabled = !ev.target.checked;
+    });
+});
 </script>
 
 <?php require_once __DIR__ . "/../templates/footer.php";

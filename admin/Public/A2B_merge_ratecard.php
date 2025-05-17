@@ -267,29 +267,5 @@ $HD_Form->create_search_form();
 <?php endif ?>
 <?php endif ?>
 
-<script>
-    $(function() {
-        $("a#addsource").on('click', function () {
-            $("#unselected_search_sources option:selected").appendTo($("#selected_search_sources"));
-            resetHidden();
-        });
-
-        $("a#removesource").on('click', function () {
-            $("#selected_search_sources option:selected").appendTo($("#unselected_search_sources"));
-            resetHidden();
-        });
-
-        $("#selected_search_sources, #unselected_search_sources").on('change', function() {
-            $("#selected_search_sources option:first, #unselected_search_sources option:first").prop("selected", false);
-        });
-
-        function resetHidden() {
-            let tmp = [];
-            $("#selected_search_sources option").each(() => tmp.push(this.value));
-            $("#search_sources").val(tmp.join("\t"));
-        }
-    });
-</script>
-
 <?php
 require_once __DIR__ . "/../templates/footer.php";

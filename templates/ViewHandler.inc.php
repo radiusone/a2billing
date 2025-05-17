@@ -90,7 +90,11 @@ namespace A2billing\Forms;
 <?php if ($form->FG_LIST_VIEW_ROW_COUNT > 0): ?>
 <div class="row pb-3">
     <div class="col table-responsive">
-        <table class="table table-bordered table-striped table-hover caption-top <?php if ($popup_select): ?>table-sm<?php endif ?>">
+        <table
+            class="list-view-table table table-bordered table-striped table-hover caption-top <?php if ($popup_select): ?>table-sm<?php endif ?>"
+            data-popup-formname="<?= $processed["popup_formname"] ?? "" ?>"
+            data-popup-fieldname="<?= $processed["popup_fieldname"] ?? "" ?>"
+        >
             <caption>
                 <?= $form->CV_TITLE_TEXT ?> – <?= sprintf(_("%d records"), $form->FG_LIST_VIEW_ROW_COUNT) ?>
             </caption>
@@ -323,20 +327,3 @@ namespace A2billing\Forms;
     <?php endif ?>
 </div>
 <?php endif ?>
-
-<script>
-$(function() {
-    $("#displaylimit").on("change", () => $("#displaylimit_form").trigger("submit"));
-});
-
-function sendValue(selvalue, othervalue, otherfield) {
-    const formname = <?= json_encode($processed["popup_formname"] ?? "") ?>;
-    const fieldname = <?= json_encode($processed["popup_fieldname"] ?? "") ?>;
-    $(`form[name='${formname}'] [name='${fieldname}']`, window.opener.document).val(selvalue);
-    if (othervalue && otherfield) {
-        $(`form[name=${formname}] [name=${otherfield}]`, window.opener.document).val(othervalue);
-    }
-    window.close();
-}
-
-</script>

@@ -136,27 +136,27 @@ require_once __DIR__ . "/../templates/main.php";
 </div>
 
 <script>
-    $(function() {
-        let id = <?= json_encode($id) ?>;
-        let card = <?= json_encode($invoice->getCard()) ?>;
-        let status = <?= ($invoice->getPaidStatus() + 1) % 2 ?>; // converts 0 to 1 and 1 to 0
-        let popup = "scrollbars=yes,resizable=yes,width=700,height=500";
-        $("#addpayment").on("click", function() {
-            window.open(`A2B_entity_payment_invoice.php?popup_select=1&invoice=${id}&card=${card}`, '', popup)
-        });
-        $("#delpayment").on("click", function() {
-            let p = $("#payment").val();
-            if (p) {
-                self.location.href = `A2B_invoice_manage_payment.php?id=${id}&delpayment=${p}`;
-            }
-        });
-        $("#changestatus").on('click', function() {
-            self.location.href = `A2B_invoice_manage_payment.php?id=${id}&status=${status}`
-        });
-        $("#imp_popupselect").on('click', function() {
-            window.open(`A2B_invoice_view.php?popup_select=1&id=${id}`, '', popup)
-        })
+document.addEventListener("DOMContentLoaded", function() {
+    let id = <?= json_encode($id) ?>;
+    let card = <?= json_encode($invoice->getCard()) ?>;
+    let status = <?= ($invoice->getPaidStatus() + 1) % 2 ?>; // converts 0 to 1 and 1 to 0
+    let popup = "scrollbars=yes,resizable=yes,width=700,height=500";
+    document.getElementById("addpayment").addEventListener("click", function() {
+        window.open(`A2B_entity_payment_invoice.php?popup_select=1&invoice=${id}&card=${card}`, '', popup)
     });
+    document.getElementById("delpayment").addEventListener("click", function () {
+        let p = document.getElementById("payment")?.value;
+        if (p) {
+            self.location.href = `A2B_invoice_manage_payment.php?id=${id}&delpayment=${p}`;
+        }
+    });
+    document.getElementById("changestatus").addEventListener("click", function () {
+        self.location.href = `A2B_invoice_manage_payment.php?id=${id}&status=${status}`;
+    })
+    document.getElementById("imp_popupselect").addEventListener("click", function () {
+        window.open(`A2B_invoice_view.php?popup_select=1&id=${id}`, '', popup)
+    })
+});
 </script>
 
 <?php
