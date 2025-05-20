@@ -97,21 +97,25 @@ require_once __DIR__ . "/../templates/main.php";
 <?php endforeach ?>
 </div>
 
+<script src="../../common/lib/jquery/jquery.min.js"></script>
+<script src="../../common/lib/flot/js/jquery.flot.min.js"></script>
+<script src="../../common/lib/flot/js/plugins/jquery.flot.time.min.js"></script>
+
 <script>
 let previousPoint = null;
 const curr = <?= json_encode($A2B->config["global"]["base_currency"]) ?>;
 
-$(function () {
-    $(".dashgraph")
-        .width(function() {return Math.min($(this).parent("div").width(), $(this).parent("div").innerWidth) - 10;})
-        .height(function() {return Math.floor($(this).width() / 2);})
-        .on("plothover", function (event, pos, item) {
+document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll(".dashgraph").forEach(function (/** @var {HTMLDivElement} el */ el) {
+        el.style.width = String(Math.min(el.closest("div").clientWidth, el.closest("div").innerWidth) - 10) + "px";
+        el.style.height = String(Math.floor(el.clientWidth / 2)) + "px";
+        document.addEventListener("plothover", function (event, pos, item) {
             if (item) {
                 if (previousPoint !== item.datapoint) {
                     let y;
-                    const format = $(this).data("tooltipFormat");
+                    const format = this.dataset.tooltipFormat;
                     previousPoint = item.datapoint;
-                    $("#tooltip").remove();
+                    document.getElementById("tooltip").remove();
                     if (format === "time") {
                         y = item.datapoint[1].toFixed(0);
                         const hour = Math.floor(y / 3600);
@@ -127,37 +131,43 @@ $(function () {
                     }
                 }
             } else {
-                $("#tooltip").remove();
+                document.getElementById("tooltip").remove();
                 previousPoint = null;
             }
         });
-
-    $('.update_graph').on('click', function() {
-        const graph = $($(this).data("graph"));
-        $.getJSON(
-            $(this).data("uri") + "?t=" + Date.now(),
-            {type: this.id, view_type: graph.data("period")},
-            function(data) {
-                const graph_max = data.max;
-                const graph_data = data.data;
-                graph.data("tooltipFormat", data.format);
-                plot_graph(graph_data, graph_max, graph);
-            }
-        );
     });
 
-    $('.period_graph').on('change', function () {
-        const graph = $($(this).data("graph"));
-        graph.data("period", $(this).val());
-        $(".update_graph", graph.parent()).filter(":checked").click();
+    document.querySelectorAll(".update_graph").forEach(function (el) {
+        el.addEventListener("click", function () {
+            const graph = document.querySelector(this.dataset.graph);
+            fetch(`${this.dataset.uri}?t=${Date.now()}&type=${this.id}&view_type=${graph.dataset.period}`)
+                .then(function(data) {
+                    const graph_max = data.max;
+                    const graph_data = data.data;
+                    graph.dataset.tooltipFormat = data.format;
+                    plot_graph(graph_data, graph_max, graph);
+                });
+        });
     });
 
-    $(".dashgraph").data("period", "day").data("xformat", "%d-%m");
-    $(".update_graph[checked=checked]").click();
+    document.querySelectorAll(".period_graph").forEach(function (el) {
+        el.addEventListener("change", function () {
+            const graph = document.querySelector(this.dataset.graph);
+            graph.dataset.period = this.value;
+            graph.parentNode.querySelectorAll(".update_graph:checked").forEach(el => el.dispatchEvent(new MouseEvent("click")));
+        });
+    });
+
+    document.querySelectorAll(".dashgraph").forEach(function (el) {
+        el.dataset.period = "day";
+        el.dataset.xformat = "%d-%m";
+    });
+
+    document.querySelectorAll(".update_graph[checked=checked]").forEach(el => el.dispatchEvent(new MouseEvent("click")));
 
     function plot_graph(data, max, graph) {
         const d = data;
-        const period_val = graph.data("period");
+        const period_val = graph.dataset.period;
         const max_data = (max + 5 - (max % 5));
 
         const min_month = <?= $mingraph_month->format("U") ?> * 1000; // <?= $mingraph_month->format("Y-m-d H:i:s") ?>
@@ -179,6 +189,7 @@ $(function () {
             time_format = "%b";
         }
 
+        // todo: there's a server-side graphing library used on some other pages, why not use it and get rid of this dependency?
         $.plot(
             graph,
             [{
@@ -195,20 +206,19 @@ $(function () {
     }
 
     function showTooltip(x, y, contents) {
-        $('<div id="tooltip">')
-            .css({
-                position: 'absolute',
-                display: 'none',
-                top: y + 5,
-                left: x + 5,
-                border: '1px solid #fdd',
-                padding: '2px',
-                backgroundColor: '#fee',
-                opacity: 0.80
-            })
-            .html(contents)
-            .appendTo("body")
-            .fadeIn(200);
+        const div = document.createElement("div");
+        div.classList.add("fade");
+        div.id = "tooltip";
+        div.style.position = "absolute";
+        div.style.top = String(y + 5) + "px";
+        div.style.left = String(x + 5) + "px";
+        div.style.border = "1px solid #fdd";
+        div.style.padding = "2px";
+        div.style.backgroundColor = "#fee";
+        div.style.opacity = 0.80;
+        div.innerHTML = contents;
+        document.body.append(div);
+        div.classList.add("show");
     }
 });
 </script>
