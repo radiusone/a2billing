@@ -195,7 +195,7 @@ document.addEventListener("DOMContentLoaded", function() {
      * Page count display
      */
     document.getElementById("displaylimit")
-        .addEventListener("change", function () {
+        ?.addEventListener("change", function () {
             document.getElementById("displaylimit_form").dispatchEvent(new SubmitEvent("submit"));
         });
 

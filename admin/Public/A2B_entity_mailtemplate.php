@@ -59,6 +59,7 @@ if ($action === "load") {
     if (!empty($id)) {
         $result = (new Table("cc_templatemail", "messagetext, fromemail, fromname, subject"))
             ->getRow($DBHandle, ["id" => $id]);
+        $result = array_filter($result, fn ($k) => !is_numeric($k), ARRAY_FILTER_USE_KEY);
         header("Content-Type: application/json");
         echo json_encode($result);
     }
@@ -83,8 +84,8 @@ require_once __DIR__ . "/../templates/footer.php";
 <script>
 function getMailData(template_id) {
     fetch(`A2B_entity_mailtemplate.php?action=load&id=${template_id}`)
-        .then(function (json) {
-            const data = JSON.parse(json);
+        .then(response => response.json())
+        .then(function(data) {
             window.opener.document.getElementById('msg_mail').value = data.messagetext;
             window.opener.document.getElementById('from').value = data.fromemail;
             window.opener.document.getElementById('fromname').value = data.fromname;

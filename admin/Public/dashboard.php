@@ -141,6 +141,7 @@ document.addEventListener("DOMContentLoaded", function() {
         el.addEventListener("click", function () {
             const graph = document.querySelector(this.dataset.graph);
             fetch(`${this.dataset.uri}?t=${Date.now()}&type=${this.id}&view_type=${graph.dataset.period}`)
+                .then(response => response.json())
                 .then(function(data) {
                     const graph_max = data.max;
                     const graph_data = data.data;
