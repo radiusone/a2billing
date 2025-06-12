@@ -950,8 +950,8 @@ class FormBO
     {
         $form = FormHandler::GetInstance();
         $processed = $form->getProcessed();
-        $sip = intval($processed['sip_buddy']);
-        $iax = intval($processed['iax_buddy']);
+        $sip = intval($processed['sip_buddy'] ?? 0);
+        $iax = intval($processed['iax_buddy'] ?? 0);
         if (!$sip && !$iax) {
             return;
         }
