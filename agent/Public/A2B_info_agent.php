@@ -135,7 +135,7 @@ require_once __DIR__ . "/../templates/main.php";
 <?php if ($A2B->config["webagentui"]['remittance_request'] && $agent_info["remit"] <= 0 && $agent_info["com_balance"] > $agent_info["threshold_remittance"]): ?>
 <div class="row pb-3 gx-5">
     <div class="col text-end">
-        <a href="A2B_agent_remittance_req.php"><?= _("REMITTANCE REQUEST");?></a>
+        <a href="A2B_remittance_request.php"><?= _("REMITTANCE REQUEST");?></a>
     </div>
 </div>
 <?php endif ?>
