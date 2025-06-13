@@ -318,21 +318,27 @@ class FormHandler
     public string $FG_LIST_ADDING_BUTTON_IMG1 = "";
 
     /** @var string */
+    public string $FG_LIST_ADDING_BUTTON_ICON1 = "";
+
+    /** @var string */
     public string $FG_LIST_ADDING_BUTTON_MSG1 = "Add \"#FG_INSTANCE_NAME#\"";
 
     public bool $FG_LIST_ADDING_BUTTON2 = false;
 
     /** @var string */
-    public string $FG_LIST_ADDING_BUTTON_LINK2;
+    public string $FG_LIST_ADDING_BUTTON_LINK2 = "";
 
     /** @var string */
-    public string $FG_LIST_ADDING_BUTTON_ALT2;
+    public string $FG_LIST_ADDING_BUTTON_ALT2 = "";
 
     /** @var string */
-    public string $FG_LIST_ADDING_BUTTON_IMG2;
+    public string $FG_LIST_ADDING_BUTTON_IMG2 = "";
 
     /** @var string */
-    public string $FG_LIST_ADDING_BUTTON_MSG2;
+    public string $FG_LIST_ADDING_BUTTON_ICON2 = "";
+
+    /** @var string */
+    public string $FG_LIST_ADDING_BUTTON_MSG2 = "";
 
     /**
      * @param string $tablename the table name of the object we're working with

@@ -68,18 +68,29 @@ namespace A2billing\Forms;
         <div class="col-auto ms-auto">
             <a href="<?= $form->FG_LIST_ADDING_BUTTON_LINK1 ?>" class="text-decoration-none">
                 <?= $form->FG_LIST_ADDING_BUTTON_MSG1 ?>
-                <?php if (!empty($form->FG_LIST_ADDING_BUTTON_IMG1)): ?>
-                    <img src="<?= $form->FG_LIST_ADDING_BUTTON_IMG1 ?>" alt="<?= $form->FG_LIST_ADDING_BUTTON_ALT1 ?? "" ?>">
+                <?php if ($form->FG_LIST_ADDING_BUTTON_ICON1): ?>
+                    <span
+                        class="bi bi-16 bi-<?= $form->FG_LIST_ADDING_BUTTON_ICON1 ?>"
+                        <?php if (!$form->FG_LIST_ADDING_BUTTON_MSG1): ?>
+                        aria-label="<?= $form->FG_LIST_ADDING_BUTTON_ALT1 ?>"
+                        <?php else: ?>
+                        aria-hidden="true"
+                        <?php endif ?>
+                    ></span>
+                <?php elseif ($form->FG_LIST_ADDING_BUTTON_IMG1): ?>
+                    <img src="<?= $form->FG_LIST_ADDING_BUTTON_IMG1 ?>" alt="<?= $form->FG_LIST_ADDING_BUTTON_ALT1 ?>">
                 <?php endif ?>
             </a>
         </div>
     <?php endif ?>
-    <?php if($popup_select < 1 && $form->FG_LIST_ADDING_BUTTON2 && !empty($form->FG_LIST_ADDING_BUTTON_MSG2)): ?>
+    <?php if($popup_select < 1 && $form->FG_LIST_ADDING_BUTTON2 && $form->FG_LIST_ADDING_BUTTON_MSG2): ?>
         <div class="col-auto ms-auto">
             <a href="<?= $form->FG_LIST_ADDING_BUTTON_LINK2 ?>" class="text-decoration-none">
                 <?= $form->FG_LIST_ADDING_BUTTON_MSG2 ?>
-                <?php if (!empty($form->FG_LIST_ADDING_BUTTON_IMG2)): ?>
-                    <img src="<?= $form->FG_LIST_ADDING_BUTTON_IMG2 ?>" alt="<?= $form->FG_LIST_ADDING_BUTTON_ALT2 ?? "" ?>">
+                <?php if ($form->FG_LIST_ADDING_BUTTON_ICON2): ?>
+                    <span class="bi bi-16 bi-<?= $form->FG_LIST_ADDING_BUTTON_ICON2 ?>" aria-hidden="true"></span>
+                <?php elseif ($form->FG_LIST_ADDING_BUTTON_IMG2): ?>
+                    <img src="<?= $form->FG_LIST_ADDING_BUTTON_IMG2 ?>" alt="<?= $form->FG_LIST_ADDING_BUTTON_ALT2 ?>">
                 <?php endif ?>
             </a>
         </div>
