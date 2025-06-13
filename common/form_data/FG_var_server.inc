@@ -95,8 +95,6 @@ $HD_Form->AddEditElement(
 );
 
 // Set the filter variables
-$HD_Form->FG_FILTER_ENABLE = true;
-$HD_Form->FG_FILTER_COLUMN = "id_group";
-$HD_Form->FG_FILTER_LABEL = "Server ID Group";
+$HD_Form->AddListFilter("id_group", _("Server ID Group"));
 
 $HD_Form->FG_INTRO_TEXT_ADITION = "";

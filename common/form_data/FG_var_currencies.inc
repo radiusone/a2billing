@@ -80,9 +80,7 @@ $HD_Form->AddEditElement(
 
 
 // Set the filter variables
-$HD_Form -> FG_FILTER_ENABLE = true;
-$HD_Form -> FG_FILTER_COLUMN = 'currency';
-$HD_Form -> FG_FILTER_LABEL = 'currency';
+$HD_Form->AddListFilter("currency", _("Currency"));
 
 $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["basecurrency"] = strtoupper(BASE_CURRENCY);
 

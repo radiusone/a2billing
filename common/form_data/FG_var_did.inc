@@ -396,9 +396,7 @@ $HD_Form->AddEditElement(
 );
 
 // Set the filter variables
-$HD_Form->FG_FILTER_ENABLE = true;
-$HD_Form->FG_FILTER_COLUMN = "did";
-$HD_Form->FG_FILTER_LABEL = "did";
+$HD_Form->AddListFilter("did", _("DID"));
 
 $HD_Form->FG_INTRO_TEXT_EDITION= "";
 $HD_Form->FG_INTRO_TEXT_ADITION = "";

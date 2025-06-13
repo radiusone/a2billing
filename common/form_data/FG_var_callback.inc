@@ -298,8 +298,6 @@ $HD_Form->AddEditElement(
 );
 
 // Set the filter variables
-$HD_Form->FG_FILTER_ENABLE = true;
-$HD_Form->FG_FILTER_COLUMN = 'uniqueid';
-$HD_Form->FG_FILTER_LABEL = _('uniqueid');
+$HD_Form->AddListFilter("uniqueid", _("Unique ID"));
 
 $HD_Form->FG_INTRO_TEXT_ADITION = '';

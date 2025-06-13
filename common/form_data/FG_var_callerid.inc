@@ -136,7 +136,5 @@ if (is_customer()) {
     );
 
     // Set the filter variables
-    $HD_Form->FG_FILTER_ENABLE = true;
-    $HD_Form->FG_FILTER_COLUMN = 'cid';
-    $HD_Form->FG_FILTER_LABEL = _('CALLERID');
+    $HD_Form->AddListFilter("cid", _("Caller ID"));
 }

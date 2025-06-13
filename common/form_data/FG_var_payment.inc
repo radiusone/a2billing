@@ -96,9 +96,7 @@ if (!$popup_select) {
     $HD_Form->AddListSelectActionButton("javascript:sendValue('|param|')");
 }
 
-$HD_Form->FG_FILTER_ENABLE = true;
-$HD_Form->FG_FILTER_COLUMN = "username";
-$HD_Form->FG_FILTER_LABEL = _("Account number");
+$HD_Form->AddListFilter("username", _("Account number"));
 
 if (Admin::allowed(Admin::ACX_MODIFY_PAYMENTS) && !$popup_select) {
 	$HD_Form->FG_ENABLE_ADD_BUTTON = true;

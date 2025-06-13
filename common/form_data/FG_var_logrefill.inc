@@ -94,9 +94,7 @@ if (!$popup_select) {
     $HD_Form->FG_ENABLE_ADD_BUTTON = Admin::allowed(Admin::ACX_MODIFY_REFILLS);
 }
 
-$HD_Form->FG_FILTER_ENABLE = true;
-$HD_Form->FG_FILTER_COLUMN = "username";
-$HD_Form->FG_FILTER_LABEL = _("Account number");
+$HD_Form->AddListFilter("username", _("Account number"));
 
 // what is the point of this, if editing or deleting a refill doesn't change the card balance?
 if (Admin::allowed(Admin::ACX_MODIFY_REFILLS)) {

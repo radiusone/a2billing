@@ -822,9 +822,7 @@ if ($voip_type === "sip") {
 }
 
 
-$HD_Form->FG_FILTER_ENABLE = true;
-$HD_Form->FG_FILTER_COLUMN = 'name';
-$HD_Form->FG_FILTER_LABEL = _('username');
+$HD_Form->AddListFilter("name", _('Username'));
 
 $HD_Form->FG_INTRO_TEXT_EDITION= '';
 $HD_Form->FG_INTRO_TEXT_ADITION = '';

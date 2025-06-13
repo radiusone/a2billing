@@ -102,7 +102,7 @@ class FormHandler
 
     /** @var bool Whether to place an edit button in the list view's action column */
     public bool $FG_ENABLE_EDIT_BUTTON = false;
-    /** @var string|null The link for the edit button */
+    /** @var string|null The link for the edit button, expected to end with "&id=" */
     public ?string $FG_EDIT_BUTTON_LINK = null;
     /** @var string Code which is eval'd to decide whether to show the edit button */
     public string $FG_EDIT_BUTTON_CONDITION = '';
@@ -113,22 +113,9 @@ class FormHandler
     public int $FG_LIST_VIEW_PAGE_COUNT = 0;
     /** @var int Number of rows in the current list view */
     public int $FG_LIST_VIEW_ROW_COUNT = 0;
-    
-    /** @var bool Whether to enable the list view filter form */
-    public bool $FG_FILTER_ENABLE = false;
-    /** @var string The column that will be checked for a matching value */
-    public string $FG_FILTER_COLUMN = '';
-    /** @var string Text used to label the form (prefixed by "Filter on ") */
-    public string $FG_FILTER_LABEL = '';
 
-    /** @var bool Whether to enable the second filter (only used in FG_var_did_billing.inc */
-    public bool $FG_FILTER2_ENABLE = false;
-
-    /** @var string The column that will be checked for a matching value */
-    public string $FG_FILTER2_COLUMN = '';
-
-    /** @var string Text used to label the form (prefixed by "Filter on ") */
-    public string $FG_FILTER2_LABEL = '';
+    /** @var list<array<string,string>> filters added to the list view */
+    public array $list_filters = [];
 
     /** @var bool Whether to show a search popup at the top of the list view */
     public bool $search_form_enabled = false;
@@ -1069,6 +1056,11 @@ class FormHandler
         ];
     }
 
+    public function AddListFilter(string $column, string $label): void
+    {
+        $this->list_filters[] = compact("column", "label");
+    }
+
     /**
      * Add a button to the top of the list view table
      *
@@ -1373,7 +1365,7 @@ class FormHandler
     {
         $processed = $this->getProcessed();
 
-        if ($form_action !== "list" || (!$this->search_form_enabled && !$this->FG_FILTER_ENABLE)) {
+        if ($form_action !== "list" || (!$this->search_form_enabled && count($this->list_filters) === 0)) {
             return;
         }
 
@@ -1381,19 +1373,10 @@ class FormHandler
             $_SESSION[$this->search_session_key] = '';
         }
 
-        if ($this->FG_FILTER_ENABLE) {
-            $filtercolumn = $this->FG_FILTER_COLUMN;
-            $filterprefix = $processed["filterprefix"] ?? "";
-            if ($filtercolumn && $filterprefix) {
-                $this->list_query_conditions[$filtercolumn] = ["LIKE", "$filterprefix%"];
-            }
-        }
-
-        if ($this->FG_FILTER2_ENABLE) {
-            $filtercolumn = $this->FG_FILTER2_COLUMN;
-            $filterprefix = $processed["filterprefix2"];
-            if ($filtercolumn && $filterprefix) {
-                $this->list_query_conditions[$filtercolumn] = ["LIKE", "$filterprefix%"];
+        foreach ($this->list_filters as $i => $filter) {
+            $val = $processed["filterprefix$i"] ?? "";
+            if ($val) {
+                $this->list_query_conditions[$filter["column"]] = ["LIKE", "$val%"];
             }
         }
 
