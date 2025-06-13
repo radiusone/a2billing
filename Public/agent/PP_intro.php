@@ -63,7 +63,7 @@ $message_logos = ["bi-info-circle-fill text-info", "bi-check-circle-fill text-su
 
 <div class="row pb-3 justify-content-center">
     <div class="col-auto text-center">
-        <img src="images/logo/a2billing.png" alt=""/>
+        <img src="../common/images/logo/a2billing.png" alt=""/>
         <p>A2Billing is licensed under <a href="https://www.fsf.org/licensing/licenses/agpl-3.0.html" target="_blank">AGPL 3</a>.</p>
     </div>
 </div>
