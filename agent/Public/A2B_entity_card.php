@@ -325,7 +325,7 @@ if ($form_action=='list' && !($popup_select>=1)) {
     <form NAME="theForm">
        <table width="90%" border="0" align="center">
         <tr>
-           <td align="left" width="5%"><img src="<?= get_image_path("kicons/pipe.gif") ?>">
+           <td align="left" width="5%">
            </td>
           <td align="left" width="35%" class="bgcolor_001">
                <table>
