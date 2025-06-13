@@ -55,11 +55,10 @@ if ($form_action == "ask-modif") {
         $msg = '<p class="alert alert-danger">' . _("Check entries, ensure new password is at least 8 characters") . '</p>';
     } else {
         $table = new Table("cc_ui_authen");
-        $result = $table->getRow($DBHandle, ["login" => $_SESSION["pr_login"]]);
+        $result = $table->getRow(["login" => $_SESSION["pr_login"]]);
 
         if ($result && password_verify($OldPassword, $result["pwd_encoded"])) {
             $result = $table->updateRow(
-                $DBHandle,
                 ["pwd_encoded" => password_hash($NewPassword, PASSWORD_DEFAULT)],
                 ["login" => $_SESSION["pr_login"]]
             );

@@ -63,7 +63,7 @@ $conditions[] = [
 ];
 
 $call_list = (new Table($HD_Form->FG_QUERY_TABLE_NAME, $HD_Form->list_query_columns, $HD_Form->query_table_joins))
-    ->getRows($HD_Form->DBHandle, $conditions, ["month"], "DESC", ["month"]);
+    ->getRows($conditions, ["month"], "DESC", ["month"]);
 
 $time_data = [];
 $time_legend = [];

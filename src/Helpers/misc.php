@@ -393,9 +393,8 @@ function get_refill_link(?int $id): string
     if (empty($id)) {
         echo $value;
     }
-    $handle = DbConnect();
     $row = (new Table("cc_logrefill", ["credit"]))
-        ->getRow($handle, ["id" => $id]);
+        ->getRow(["id" => $id]);
     if (empty($row)) {
         echo $value;
     }
@@ -419,9 +418,8 @@ function get_agent_refill_link(?int $id): string
     if (empty($id)) {
         return $value;
     }
-    $handle = DbConnect();
     $row = (new Table("cc_logrefill_agent", ["credit"]))
-        ->getRow($handle, ["id" => $id]);
+        ->getRow(["id" => $id]);
     if (empty($row)) {
         return $value;
     }

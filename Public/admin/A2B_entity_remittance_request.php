@@ -58,10 +58,10 @@ if ($action === "accept") {
     if (is_numeric($id)) {
         $DBHandle = DbConnect();
         (new Table("cc_remittance_request"))
-            ->updateRow($DBHandle, ["status" => 1], ["id" => $id]);
+            ->updateRow(["status" => 1], ["id" => $id]);
 
         $result = (new Table("cc_remittance_request"))
-            ->getRow($DBHandle, ["id" => $id]);
+            ->getRow(["id" => $id]);
 
         $type = $result["type"];
         $agent_id = $result["id_agent"];
@@ -71,7 +71,6 @@ if ($action === "accept") {
             // insert refill
             (new Table("cc_logrefill_agent"))
                 ->addRow(
-                    $DBHandle,
                     [
                         "credit" => $credit,
                         "agent_id" => $agent_id,
@@ -82,7 +81,6 @@ if ($action === "accept") {
             //REFILL... UPDATE AGENT
             (new Table("cc_agent"))
                 ->updateRow(
-                    $DBHandle,
                     ["credit" => ["credit + ?", $credit], "com_balance" => ["com_balance - ?", $credit]],
                     ["id" => $agent_id]
                 );
@@ -90,7 +88,6 @@ if ($action === "accept") {
             //UPDATE AGENT
             (new Table("cc_agent"))
                 ->updateRow(
-                    $DBHandle,
                     ["com_balance" => ["com_balance - ?", $credit]],
                     ["id" => $agent_id]
                 );
@@ -100,7 +97,7 @@ if ($action === "accept") {
 } elseif ($action === "refuse") {
     if (is_numeric($id)) {
         (new Table("cc_remittance_request"))
-            ->updateRow(DbConnect(), ["status" => 2], ["id" => $id]);
+            ->updateRow(["status" => 2], ["id" => $id]);
     }
     die();
 }

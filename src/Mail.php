@@ -131,8 +131,6 @@ class Mail
 
     public function __construct($type, $id_card = null, $lg = null, $msg = null, $title = null)
     {
-        $DBHandle = DbConnect();
-
         if (!empty ($type)) {
             $tmpl_table = new Table("cc_templatemail", "*");
             $tmpl_clause = ["mailtype" => $type];
@@ -149,7 +147,7 @@ class Mail
             } elseif (!is_null($id_card) && is_numeric($id_card)) {
                 $card_table = new Table("cc_card", "*, IF((typepaid=1) AND (creditlimit IS NOT NULL), credit + creditlimit, credit) AS real_credit");
                 $card_clause = ["id" => $id_card];
-                $result_card = $card_table->getRow($DBHandle, $card_clause);
+                $result_card = $card_table->getRow($card_clause);
                 if ($result_card)
                     $card = $result_card;
                 $language = $card['language'];
@@ -163,7 +161,7 @@ class Mail
                     }
                 }
             }
-            $result_tmpl = $tmpl_table->getRow($DBHandle, $tmpl_clause, [$order_field], $order);
+            $result_tmpl = $tmpl_table->getRow($tmpl_clause, [$order_field], $order);
             if ($result_tmpl) {
                 $mail_tmpl = $result_tmpl;
                 $this->message = $mail_tmpl['messagetext'];
@@ -185,7 +183,7 @@ class Mail
                 if (is_null($card)) {
                     $card_table = new Table("cc_card", "*, IF((typepaid=1) AND (creditlimit IS NOT NULL), credit + creditlimit, credit) AS real_credit");
                     $card_clause = ["id" => $id_card];
-                    $result_card = $card_table->getRow($DBHandle, $card_clause);
+                    $result_card = $card_table->getRow($card_clause);
                     if ($result_card)
                         $card = $result_card;
                 }

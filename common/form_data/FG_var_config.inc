@@ -44,10 +44,8 @@ getpost_ifset(["id", "group_title"]);
  */
 $form_action ??= "list";
 
-$handle = DbConnect();
-
 if (isset($group_title)) {
-    $group_id = (new Table("cc_config_group", ["id"]))->getValue($handle, ["group_title" => $group_title]);
+    $group_id = (new Table("cc_config_group", ["id"]))->getValue(["group_title" => $group_title]);
     if ($group_id) {
         header("Location: A2B_entity_config.php?form-action=list&posted_search=1&config_group_id=$group_id");
         die();
@@ -82,7 +80,7 @@ if ($form_action === "list") {
 
     if ($form_action === "ask-edit") {
         $result = (new Table("cc_config", ["config_valuetype", "config_listvalues"]))
-            ->getRow($HD_Form->DBHandle, ["id" => $id]);
+            ->getRow(["id" => $id]);
         switch ($result["config_valuetype"]) {
             case 2:
                 $value_select = array_combine(

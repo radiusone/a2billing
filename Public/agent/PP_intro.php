@@ -39,9 +39,8 @@ use A2billing\Table;
 require_once __DIR__ . "/../../common/lib/agent.defines.php";
 require_once __DIR__ . "/templates/main.php";
 
-$DBHandle = DbConnect();
 $table_message = new Table("cc_message_agent");
-$messages = $table_message->getRows($DBHandle, ["id_agent" => $_SESSION["agent_id"]], ["order_display"]);
+$messages = $table_message->getRows(["id_agent" => $_SESSION["agent_id"]], ["order_display"]);
 $message_types = ["alert-info", "alert-success", "alert-warning", "alert-danger"];
 $message_logos = ["bi-info-circle-fill text-info", "bi-check-circle-fill text-success", "bi-exclamation-circle-fill text-warning", "bi-x-circle-fill text-danger"];
 ?>

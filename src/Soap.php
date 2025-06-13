@@ -367,7 +367,7 @@ class Soap
         }
 
         $values = ["name" => $instance_key];
-        $inserted = (new Table("cc_card_group"))->addRow($this->DBHandle, $values);
+        $inserted = (new Table("cc_card_group"))->addRow($values);
 
         if (!$inserted) {
             return array(false, "ERROR CREATING ACCOUNT GROUP");
@@ -614,7 +614,7 @@ class Soap
         }
 
         $values = ["didgroupname" => $instance];
-        $inserted = (new Table("cc_didgroup"))->addRow($this->DBHandle, $values, "id", $group_id);
+        $inserted = (new Table("cc_didgroup"))->addRow($values, "id", $group_id);
 
         if (!$inserted) {
             return array(false, "ERROR CREATING DID GROUP");
@@ -634,7 +634,7 @@ class Soap
         }
 
         $values = ["provider_name" => $instance];
-        $inserted = (new Table("cc_provider"))->addRow($this->DBHandle, $values, "id", $provider_id);
+        $inserted = (new Table("cc_provider"))->addRow($values, "id", $provider_id);
 
         if (!$inserted) {
             return array(false, "ERROR CREATING PROVIDER");
@@ -660,7 +660,7 @@ class Soap
         $expirationdate = $begin_date_plus.$end_date;
 
         $values = ["tariffname" => $instance, "startingdate" => $startingdate, "expirationdate" => $expirationdate];
-        $inserted = (new Table("cc_tariffplan"))->addRow($this->DBHandle, $values, "id", $plan_id);
+        $inserted = (new Table("cc_tariffplan"))->addRow($values, "id", $plan_id);
 
         if (!$inserted) {
             return array(false, "ERROR CREATING RATECARD");
@@ -684,14 +684,14 @@ class Soap
         }
 
         $values = ["tariffgroupname" => $instance];
-        $inserted = (new Table("cc_tariffgroup"))->addRow($this->DBHandle, $values, "id", $id_callplan);
+        $inserted = (new Table("cc_tariffgroup"))->addRow($values, "id", $id_callplan);
 
         if (!$inserted) {
             return array(false, "ERROR CREATING CALLPLAN");
         }
 
         $values = ["id_tarffgroup" => $id_callplan, "idtariffplan" => $id_ratecard];
-        $inserted = (new Table("cc_tariffgroup_plan"))->addRow($this->DBHandle, $values);
+        $inserted = (new Table("cc_tariffgroup_plan"))->addRow($values);
 
         if (!$inserted) {
             return array(false, "ERROR ATTACHING CALLPLAN AND RATECARD");
@@ -721,7 +721,7 @@ class Soap
             $vouchernum = generate_unique_value($func_table, LEN_VOUCHER, 'voucher');
             $arr_voucher[$k] = $vouchernum;
             $values = ["voucher" => $vouchernum, "credit" => $credit, "activated" => "t", "currency" => $currency, "expirationdate" => $expirationdate];
-            $inserted = $instance_table->addRow($this->DBHandle, $values);
+            $inserted = $instance_table->addRow($values);
 
             if (!$inserted) {
                 return array(false, "ERROR CREATING VOUCHER (".$k." Vouchers created)");
@@ -800,7 +800,7 @@ class Soap
                 "sip_buddy" => $sip_buddy,
                 "iax_buddy" => $iax_buddy,
             ];
-            $result = $instance_sub_table->addRow($this->DBHandle, $values, "id", $id_cc_card);
+            $result = $instance_sub_table->addRow($values, "id", $id_cc_card);
 
             if (!$result) {
                 return array(false, "ERROR CREATING ACCOUNT (".$k." Accounts created)");
@@ -814,7 +814,7 @@ class Soap
                 $description_refill = gettext("CREATION CARD REFILL");
                 $instance_refill_table = new Table("cc_logrefill");
                 $values = ["credit" => $balance, "card_id" => $id_cc_card, "description" => $description_refill];
-                $instance_refill_table->addRow($this->DBHandle, $values);
+                $instance_refill_table->addRow($values);
             }
 
             $instance_realtime -> insert_voip_config ($sip_buddy, $iax_buddy, $id_cc_card, $accountnumber, $passui_secret);
@@ -911,7 +911,7 @@ class Soap
                 "connection_charge" => $connection_charge,
                 "selling_rate" => $rate
             ];
-            $inserted = $instance_table->addRow($this->DBHandle, $values, "id", $did_id);
+            $inserted = $instance_table->addRow($values, "id", $did_id);
 
             if (!$inserted) {
                 return array(false, "ERROR CREATING DID (".$increment_did." DIDs created)");
@@ -925,7 +925,7 @@ class Soap
             $username = $result[0][0];
 
             $values = ["destination" => "SIP/$username", "priority" => 1, "id_cc_card" => $val_account_id, "id_cc_did" => $did_id, "voip_call" => 1];
-            $inserted = $instance_table_dest->addRow($this->DBHandle, $values);
+            $inserted = $instance_table_dest->addRow($values);
 
             if (!$inserted) {
                 return array(false, "ERROR CREATING DID DESTINATION (".$increment_did." DID_DESTINATIONs created)");
@@ -1082,7 +1082,7 @@ class Soap
 
             // ADD NEW TRUNK IN DATABASE
             $values = ["trunkcode" => $instance, "providertech" => "SIP", "providerip" => $trunk_name];
-            $inserted = (new Table("cc_trunk"))->addRow($this->DBHandle, $values);
+            $inserted = (new Table("cc_trunk"))->addRow($values);
 
             if (!$inserted) {
                 return array(false, "ERROR CREATING TRUNK");
@@ -1120,7 +1120,7 @@ class Soap
 
             // ADD NEW TRUNK IN DATABASE
             $values = ["trunkcode" => $instance, "providertech" => "IAX", "providerip" => $trunk_name];
-            $inserted = (new Table("cc_trunk"))->addRow($this->DBHandle, $values);
+            $inserted = (new Table("cc_trunk"))->addRow($values);
 
             if (!$inserted) {
                 return array(false, "ERROR CREATING TRUNK");
@@ -1251,7 +1251,7 @@ class Soap
 
             // ADD PREFIX
             $values = ["prefix" => $dialprefix, "destination" => $destination];
-            $instance_table_prefix->addRow($this->DBHandle, $values);
+            $instance_table_prefix->addRow($values);
 
             // ADD RATES
             $startdate = date("Y-m-d H:i:s");
@@ -1268,7 +1268,7 @@ class Soap
                 "startdate" => $startdate,
                 "stopdate" => "$stopdate_prefix$stopdate_suffix"
             ];
-            $result_query = $instance_table->addRow($this->DBHandle, $values);
+            $result_query = $instance_table->addRow($values);
 
             if ($result_query === false) {
                 return array(false, "ERROR RATES CREATION ($nb_to_import Rates imported)");
@@ -1331,7 +1331,7 @@ class Soap
 
             // ADD PREFIX
             $values = ["prefix" => $dialprefix, "destination" => $destination];
-            $instance_table_prefix->addRow($this->DBHandle, $values);
+            $instance_table_prefix->addRow($values);
 
             // ADD RATES
             $FG_ADITION_SECOND_ADD_TABLE = 'cc_ratecard';
@@ -1351,7 +1351,7 @@ class Soap
                 "startdate" => $startdate,
                 "stopdate" => "$stopdate_prefix$stopdate_suffix",
             ];
-            $result_query = $instance_table->addRow($this->DBHandle, $values);
+            $result_query = $instance_table->addRow($values);
 
             if ($result_query === false) {
                 return array(false, "ERROR RATES CREATION ($nb_to_import Rates imported)");
@@ -1417,7 +1417,7 @@ class Soap
         }
 
         $values = ["id_cc_card" => $id_cc_card, "cid" => $callerid, "activated" => "t"];
-        $inserted = (new Table("cc_callerid"))->addRow($this->DBHandle, $values);
+        $inserted = (new Table("cc_callerid"))->addRow($values);
 
         if (!$inserted) {
             return array(false, "ERROR ADDING CID");

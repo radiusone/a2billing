@@ -56,9 +56,6 @@ if (empty($id)) {
     header("Location: $page");
 }
 
-$DBHandle  = DbConnect();
-
-
 if ($type === "agent") {
     $table = new Table("cc_logrefill_agent");
     $cond = ["agent_id" => $_SESSION["agent_id"], "id" => $id];
@@ -70,8 +67,7 @@ if ($type === "agent") {
     );
     $cond = ["cc_card_group.id_agent" => $_SESSION["agent_id"], "cc_logrefill.id" => $id];
 }
-$DBHandle  = DbConnect();
-$refill = $table->getRow($DBHandle, $cond);
+$refill = $table->getRow($cond);
 
 if (empty($refill)) {
     header("Location: $page");

@@ -49,11 +49,8 @@ if (empty($id)) {
     header("Location: A2B_entity_logrefill.php");
 }
 
-$DBHandle  = DbConnect();
-
-$remittance = $DBHandle->GetRow("SELECT * FROM cc_remittance_request WHERE id = ?", [$id]);
 $remittance = (new Table("cc_remittance_request"))
-    ->getRow($DBHandle, ["id" => $id, "id_agent" => $_SESSION["agent_id"]]);
+    ->getRow(["id" => $id, "id_agent" => $_SESSION["agent_id"]]);
 if (empty($remittance)) {
     header("Location: A2B_entity_remittance_request.php");
 }

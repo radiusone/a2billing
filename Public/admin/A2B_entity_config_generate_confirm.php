@@ -63,7 +63,6 @@ $table = new Table(
     ["cc_config_group" => ["config_group_id", "cc_config_group.id"]]
 );
 $config = $table->getRows(
-    $HD_Form->DBHandle,
     ["group_title" => "agi-conf1"],
     ["config_key"],
     "ASC",

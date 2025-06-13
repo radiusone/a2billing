@@ -49,8 +49,6 @@ if (! has_rights (Agent::ACX_CUSTOMER)) {
     die();
 }
 
-$DBHandle  = DbConnect();
-
 if ($action == "reload") {
 
     $as = new AGI_AsteriskManager();
@@ -98,7 +96,7 @@ restrictcid, rtptimeout, rtpholdtimeout, musiconhold, regseconds, ipaddr, cancal
     array_walk($list_names, "trim");
 
     $instance_table_friend = new Table($TABLE_BUDDY, ["id"] + $list_names);
-    $list_friend = $instance_table_friend -> getRows ($DBHandle, ["id" => [">", 0]]);
+    $list_friend = $instance_table_friend -> getRows (["id" => [">", 0]]);
 
     if (!$list_friend) {
         $error_msg= '<p style="text-align: center; font-weight: bold; color: red">' . gettext("There is no ") . $voip_type . '</p>';

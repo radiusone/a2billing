@@ -947,7 +947,7 @@ if ($popup_select) {
 
     if ($form_action === "ask-edit" || $form_action === "delete") {
         $result_card = (new Table("cc_card", ["status", "sip_buddy", "iax_buddy"]))
-            ->getRow($HD_Form->DBHandle, ["id" => $id]);
+            ->getRow(["id" => $id]);
 
         if ($form_action === "ask-edit") {
             $HD_Form->FG_EDIT_FORM_HIDDEN_INPUTS["oldstatus"] = $result_card["status"] ?? "";

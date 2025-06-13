@@ -67,7 +67,7 @@ if (empty ($key))
 $result = null;
 $instance_sub_table = new Table('cc_card', "username, lastname, firstname, email, uipass, credit, useralias, loginkey, status, id");
 $QUERY = ["loginkey" => $key];
-$list = $instance_sub_table->getRow($HD_Form->DBHandle, $QUERY);
+$list = $instance_sub_table->getRow($QUERY);
 
 if (isset ($key) && $list["status"] != "1") {
     if ($A2B->config["signup"]['activated']) {

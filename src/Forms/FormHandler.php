@@ -502,7 +502,7 @@ class FormHandler
         if ($field) {
             $this->list_query_columns[] = $field;
         }
-        $result = $table->getRows($this->DBHandle, $conditions);
+        $result = $table->getRows($conditions);
         $map = array_combine(
             array_column($result, 0),
             array_column($result, 1)
@@ -644,7 +644,7 @@ class FormHandler
             function ($v) use (&$options) {
                 $options[$v[0]] = $v[1];
             },
-            $table->getRows($this->DBHandle, $conditions)
+            $table->getRows($conditions)
         );
 
         $this->FG_EDIT_FORM_ELEMENTS[] = [
@@ -975,7 +975,7 @@ class FormHandler
             function ($v) use (&$options) {
                 $options[$v[0]] = $v[1];
             },
-            $table->getRows($this->DBHandle, $conditions, $sqlorder, $direction)
+            $table->getRows($conditions, $sqlorder, $direction)
         );
 
         $this->search_form_elements[] = [
@@ -1320,7 +1320,6 @@ class FormHandler
 
                 $instance_table = new Table($this->FG_QUERY_TABLE_NAME, $this->list_query_columns, $this->query_table_joins);
                 $list = $instance_table->getRows(
-                    $this->DBHandle,
                     $this->list_query_conditions,
                     $this->list_query_order_columns,
                     $this->list_query_order_direction,
@@ -1329,7 +1328,7 @@ class FormHandler
                     $current_page * $this->FG_LIST_VIEW_PAGE_SIZE
                 );
 
-                $this->FG_LIST_VIEW_ROW_COUNT = $instance_table->countRows($this->DBHandle, $this->list_query_conditions, $this->list_query_group_columns);
+                $this->FG_LIST_VIEW_ROW_COUNT = $instance_table->countRows($this->list_query_conditions, $this->list_query_group_columns);
 
                 if ($this->FG_LIST_VIEW_ROW_COUNT <= $this->FG_LIST_VIEW_PAGE_SIZE) {
                     $this->FG_LIST_VIEW_PAGE_COUNT = 1;
@@ -1342,7 +1341,7 @@ class FormHandler
                 $fields = implode(",", $cols);
 
                 $instance_table = new Table($this->FG_QUERY_TABLE_NAME, $fields, $this->query_table_joins);
-                $list = $instance_table->getRows($this->DBHandle, $this->update_query_conditions);
+                $list = $instance_table->getRows($this->update_query_conditions);
 
                 //PATCH TO CLEAN THE IMPORT OF PASSWORD FROM THE DATABASE
                 $index = array_search("pwd_encoded", $cols);
@@ -1445,7 +1444,7 @@ class FormHandler
     public function Delete_Selected()
     {
         $instance_table = new Table($this->FG_QUERY_TABLE_NAME, ["*"], $this->query_table_joins);
-        $instance_table->deleteRow($this->DBHandle, $this->list_query_conditions);
+        $instance_table->deleteRow($this->list_query_conditions);
     }
 
     /**
@@ -1517,7 +1516,6 @@ class FormHandler
             foreach ($arr_value_to_import[$key] as $array_value) {
                 $values[$key] = $array_value;
                 $result = $instance_table->addRow(
-                    $this->DBHandle,
                     $values,
                     $this->FG_QUERY_PRIMARY_KEY,
                     $id
@@ -1529,7 +1527,6 @@ class FormHandler
             }
         } else {
             $result = $instance_table->addRow(
-                $this->DBHandle,
                 $values,
                 $this->FG_QUERY_PRIMARY_KEY,
                 $id
@@ -1616,7 +1613,6 @@ class FormHandler
         }
 
         $this->QUERY_RESULT = $instance_table->updateRow(
-            $this->DBHandle,
             $values,
             $this->update_query_conditions
         );
@@ -1664,7 +1660,7 @@ class FormHandler
         }
         $instance_table->FK_DELETE = !$this->FG_FK_WARNONLY;
 
-        $this->QUERY_RESULT = $instance_table->deleteRow($this->DBHandle, $this->update_query_conditions);
+        $this->QUERY_RESULT = $instance_table->deleteRow($this->update_query_conditions);
         if ($this->QUERY_RESULT) {
             if ($this->FG_ENABLE_LOG) {
                 Logger::insertLog(
@@ -1733,7 +1729,7 @@ class FormHandler
         $rowcount = 0;
         foreach ($this->FG_FK_TABLENAMES as $i => $table) {
             $instance_table = new Table($table);
-            $rowcount += $instance_table->countRows($this->DBHandle, [$this->FG_FK_EDITION_CLAUSE[$i] => $processed['id']]);
+            $rowcount += $instance_table->countRows([$this->FG_FK_EDITION_CLAUSE[$i] => $processed['id']]);
         }
         $this->FG_FK_RECORDS_COUNT = $rowcount;
 
@@ -1767,7 +1763,7 @@ class FormHandler
             }
         }
         $foreign_key = $entry["foreign_key"];
-        $table->addRow($this->DBHandle, [$column => $value, $foreign_key => $id]);
+        $table->addRow([$column => $value, $foreign_key => $id]);
     }
 
 
@@ -1795,7 +1791,7 @@ class FormHandler
         }
         $value = $processed["del-content-value"];
         $foreign_key = $entry["foreign_key"];
-        $table->deleteRow($this->DBHandle, [$column => $value, $foreign_key => $id]);
+        $table->deleteRow([$column => $value, $foreign_key => $id]);
     }
 
 

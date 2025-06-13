@@ -102,7 +102,7 @@ switch ($action) {
     case "delete":
         if (!empty($idc)) {
             $table = new Table("cc_invoice_item");
-            $table->deleteRow($DBHandle, ["id" => $idc]);
+            $table->deleteRow(["id" => $idc]);
         }
         header("Location: A2B_invoice_edit.php?id=$id");
         break;
@@ -111,7 +111,7 @@ switch ($action) {
 $table = new Table("cc_invoice", "*", ["cc_card" => ["cc_invoice.card_id", "cc_card.id"]]);
 
 $result_vat = (new Table("cc_card", "vat"))
-    ->getRow($DBHandle, ["id" => $invoice->getCard()]);
+    ->getRow(["id" => $invoice->getCard()]);
 $card_vat =  $result_vat["vat"];
 
 require_once __DIR__ . "/templates/main.php";

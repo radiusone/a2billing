@@ -214,7 +214,6 @@ class Table
     /**
      * Fetch one or more rows with a proper parameterized statement
      *
-     * @param ADOConnection $db
      * @param array $conditions values to match placeholders in $where
      * @param array $order the column(s) to order by
      * @param string $direction either "asc" or "desc"
@@ -223,7 +222,7 @@ class Table
      * @param int $offset
      * @return array
      */
-    public function getRows(ADOConnection $db, array $conditions = [], array $order = [], string $direction = "ASC", array $group = [], int $limit = 0, int $offset = 0): array
+    public function getRows(array $conditions = [], array $order = [], string $direction = "ASC", array $group = [], int $limit = 0, int $offset = 0): array
     {
         $db = $this->getConnection();
         $fields = implode(",", array_map([self::class, "quote_identifier"], $this->fields));
@@ -259,17 +258,15 @@ class Table
     /**
      * Get a single row
      *
-     * @param ADOConnection $db
      * @param array $conditions
      * @param array $order
      * @param string $direction
      * @param array $group
      * @return array
      */
-    public function getRow(ADOConnection $db, array $conditions = [], array $order = [], string $direction = "ASC", array $group = []): array
+    public function getRow(array $conditions = [], array $order = [], string $direction = "ASC", array $group = []): array
     {
-        $db = $this->getConnection();
-        $data = $this->getRows($db, $conditions, $order, $direction, $group, 1);
+        $data = $this->getRows($conditions, $order, $direction, $group, 1);
 
         return $data[0] ?? [];
     }
@@ -277,16 +274,14 @@ class Table
     /**
      * Get all the values of a given column, optionally indexed by another column.
      *
-     * @param ADOConnection $db
      * @param string $column
      * @param string $index
      * @param array $conditions
      * @return array
      */
-    public function getColumn(ADOConnection $db, string $column, string $index = "", array $conditions = []): array
+    public function getColumn(string $column, string $index = "", array $conditions = []): array
     {
-        $db = $this->getConnection();
-        $data = $this->getRows($db, $conditions);
+        $data = $this->getRows($conditions);
         if (empty($index)) {
             return array_column($data, $column);
         }
@@ -300,17 +295,15 @@ class Table
     /**
      * Gets the first value of the first row in the result set
      *
-     * @param ADOConnection $db
      * @param array $conditions
      * @param array $order
      * @param string $direction
      * @param array $group
      * @return mixed|null
      */
-    public function getValue(ADOConnection $db, array $conditions = [], array $order = [], string $direction = "ASC", array $group = [])
+    public function getValue(array $conditions = [], array $order = [], string $direction = "ASC", array $group = [])
     {
-        $db = $this->getConnection();
-        $data = $this->getRow($db, $conditions, $order, $direction, $group);
+        $data = $this->getRow($conditions, $order, $direction, $group);
 
         return $data[0] ?? null;
     }
@@ -318,22 +311,20 @@ class Table
     /**
      * Count matching rows
      *
-     * @param ADOConnection $db
      * @param array $conditions
      * @param array $groupby
      * @return int
      */
-    public function countRows(ADOConnection $db, array $conditions = [], array $groupby = []): int
+    public function countRows(array $conditions = [], array $groupby = []): int
     {
-        $db = $this->getConnection();
         $old_fields = $this->fields;
         $this->fields = ["COUNT(*)"];
         if (count($groupby)) {
-            $data = $this->getRows($db, $conditions, [], "ASC", $groupby);
+            $data = $this->getRows($conditions, [], "ASC", $groupby);
 
             return count($data);
         }
-        $data = $this->getRow($db, $conditions);
+        $data = $this->getRow($conditions);
         $this->fields = $old_fields;
 
         return $data[0] ?? 0;
@@ -342,17 +333,14 @@ class Table
     /**
      * Add a row with a proper parameterized statement
      *
-     * @param ADOConnection $db
      * @param array<string,mixed> $values
      * @param string $pk_column
      * @param null $id
      * @return bool
      */
-    public function addRow(ADOConnection $db, array $values, string $pk_column = "id", &$id = null): bool
+    public function addRow(array $values, string $pk_column = "id", &$id = null): bool
     {
-        $db = $this->getConnection();
-
-        return $this->addRows($db, [$values], $pk_column, $id) === 1;
+        return $this->addRows([$values], $pk_column, $id) === 1;
     }
 
     /**
@@ -360,13 +348,12 @@ class Table
      * This assumes that all rows are identically structured
      * including things like function calls, subqueries, etc.
      *
-     * @param ADOConnection $db
      * @param array<array<string,mixed>> $rows
      * @param string $pk_column
      * @param null $id
      * @return int
      */
-    public function addRows(ADOConnection $db, array $rows, string $pk_column = "id", &$id = null): int
+    public function addRows(array $rows, string $pk_column = "id", &$id = null): int
     {
         $db = $this->getConnection();
         $values = $rows[0];
@@ -411,12 +398,11 @@ class Table
     /**
      * Add rows using INSERT ... SELECT with paramaterized statements
      *
-     * @param ADOConnection $db
      * @param Table $source
      * @param array $conditions
      * @return int
      */
-    public function addRowsFromSelect(ADOConnection $db, Table $source, array $conditions): int
+    public function addRowsFromSelect(Table $source, array $conditions): int
     {
         $db = $this->getConnection();
         $table = $this->quote_identifier($this->table);
@@ -434,12 +420,11 @@ class Table
     /**
      * Update a row with a proper parameterized statement
      *
-     * @param ADOConnection $db
      * @param array $values values indexed by column name
      * @param array $conditions values indexed by column name (will be joined with AND)
      * @return bool
      */
-    public function updateRow(ADOConnection $db, array $values, array $conditions = []): bool
+    public function updateRow(array $values, array $conditions = []): bool
     {
         $db = $this->getConnection();
         $value_callback = function ($v) use (&$parameters): string {
@@ -476,11 +461,10 @@ class Table
     /**
      * Delete a row with a proper parameterized statement
      *
-     * @param ADOConnection $db
      * @param array $conditions values to match placeholders in $where
      * @return bool
      */
-    public function deleteRow(ADOConnection $db, array $conditions = []): bool
+    public function deleteRow(array $conditions = []): bool
     {
         $db = $this->getConnection();
         // temporary until proper foreign keys are set up

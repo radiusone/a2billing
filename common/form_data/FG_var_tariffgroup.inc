@@ -114,7 +114,7 @@ $HD_Form->AddEditRadio(
     _("Define if the international prefix will be removed to check the rate.")
 );
 
-$numrow = (new Table("cc_tariffplan"))->countRows($HD_Form->DBHandle);
+$numrow = (new Table("cc_tariffplan"))->countRows();
 if ($numrow > 0) {
     $HD_Form->AddEditHasMany(
         _("Ratecard"),

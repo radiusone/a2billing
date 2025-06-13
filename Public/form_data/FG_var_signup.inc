@@ -63,7 +63,7 @@ elseif (!empty ($_SESSION["key"])) {
 
 if (!empty ($agentkey)) {
 	$table_key = new Table("cc_agent_signup", ["id_group", "id_tariffgroup", "id_agent"]);
-	$data = $table_key->getRow($HD_Form->DBHandle, ["code" => $agentkey]);
+	$data = $table_key->getRow(["code" => $agentkey]);
 	if ($data) {
 		$groupid = $data['id_group'];
 		$tariffid = $data['id_tariffgroup'];
@@ -74,7 +74,7 @@ if (!empty ($agentkey)) {
             ["COUNT(*)"],
             ["cc_agent_tariffgroup" => ["cc_agent_tariffgroup.id_agent", "cc_agent.id"], "cc_card_group" => ["cc_card_group.id_agent", "cc_agent.id"]]
         );
-		$list_agent_check = $instance_table_agent_check->getValue($HD_Form->DBHandle, ["cc_agent.id" => $agentid, "cc_agent_tariffgroup.id_tariffgroup" => $tariffid, "cc_card_group.id" => $groupid]);
+		$list_agent_check = $instance_table_agent_check->getValue(["cc_agent.id" => $agentid, "cc_agent_tariffgroup.id_tariffgroup" => $tariffid, "cc_card_group.id" => $groupid]);
 		if ($list_agent_check) {
 			if (!empty ($groupid) && is_numeric($groupid) && !empty ($tariffid) && is_numeric($tariffid)) {
 				$agent_conf = true;
@@ -93,7 +93,7 @@ if (!$agent_conf) {
 		exit ("No Call Plan Defined.");
 	}
 	$call_table = new Table("cc_tariffgroup", "tariffgroupname,id");
-	$callPlan_list = $call_table->getRows($HD_Form->DBHandle, ["id" => ["in", $callPlan_idlist]]);
+	$callPlan_list = $call_table->getRows(["id" => ["in", $callPlan_idlist]]);
 
 	if (!is_array($callPlan_list) && count($callPlan_list) <= 0) {
 		exit (gettext("No Call Plan id are defined"));
@@ -452,7 +452,7 @@ if (!is_numeric($subscriber_signup)) {
 if (is_numeric($subscriber_signup)) {
 
 	$table_subscribe = new Table("cc_subscription_signup", "id_callplan");
-	$data = $table_subscribe->getRow($HD_Form->DBHandle, ["id" => $subscriber_signup]);
+	$data = $table_subscribe->getRow(["id" => $subscriber_signup]);
 	if ($data) {
 		$id_callplan = $data['id_callplan'];
         $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["tariff"] = $id_callplan;

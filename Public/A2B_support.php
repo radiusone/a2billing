@@ -64,11 +64,11 @@ if ((strlen($description) > 0 || strlen($title) > 0) && is_numeric($priority) &&
 
     $ticket_table = new Table('cc_ticket');
     $values = ["creator" => $_SESSION["card_id"], "title" => $title, "description" => $description, "id_component" => $component, "priority" => $priority, "viewed_cust" => 0];
-    $ticket_table->addRow($HD_Form->DBHandle, $values, "id", $id_ticket);
+    $ticket_table->addRow($values, "id", $id_ticket);
     NotificationsDAO::AddNotification("ticket_added_cust", Notification::$LOW, Notification::$CUST, $_SESSION['card_id'], Notification::$LINK_TICKET_CUST, $id_ticket);
     $table_card =new Table("cc_card", "firstname, lastname, language, email");
     $card_clause = ["id" => $_SESSION["card_id"]];
-    $result=$table_card -> getRow($HD_Form->DBHandle, $card_clause);
+    $result=$table_card -> getRow($card_clause);
     $owner = $_SESSION["pr_login"]." (".$result['firstname']." ".$result['lastname'].")";
 
     try {
@@ -85,7 +85,7 @@ if ((strlen($description) > 0 || strlen($title) > 0) && is_numeric($priority) &&
     }
     $component_table = new Table('cc_support_component LEFT JOIN cc_support ON id_support = cc_support.id', ["email"]);
     $component_clause = ["cc_support_component.id" => $component];
-    $email = $component_table -> getValue($HD_Form->DBHandle, $component_clause);
+    $email = $component_table -> getValue($component_clause);
 
     try {
         $mail = new Mail(Mail::$TYPE_TICKET_NEW, null, $result['language']);
@@ -156,7 +156,7 @@ if ($form_action == "list") {
                      $DBHandle  = DbConnect();
                     $instance_sub_table = new Table("cc_support_component", ["id", "name"]);
                  $QUERY = ["activated" => 1, "type_user" => ["IN", [0, 2]]];
-                 $return = $instance_sub_table -> getRows($DBHandle, $QUERY);
+                 $return = $instance_sub_table -> getRows($QUERY);
                      foreach ($return as $value) {
                         echo	'<option class=input value=" '. $value["id"].'"  > ' . $value["name"]. '  </option>' ;
                      }

@@ -56,10 +56,9 @@ class NotificationsDAO
         int $link_id = null
     ): bool
     {
-        $DBHandle = DbConnect();
         $table = new Table("cc_notification");
 
-        return $table->addRow($DBHandle, [
+        return $table->addRow([
             "key_value" => $key,
             "priority" => $priority,
             "from_type" => $from_type,
@@ -77,9 +76,8 @@ class NotificationsDAO
      */
     public static function deleteNotification(int $id): bool
     {
-        $DBHandle = DbConnect();
-        if ((new Table("cc_notification_admin"))->deleteRow($DBHandle, ["id_notification" => $id])) {
-            if ((new Table("cc_notification"))->deleteRow($DBHandle, ["id" => $id])) {
+        if ((new Table("cc_notification_admin"))->deleteRow(["id_notification" => $id])) {
+            if ((new Table("cc_notification"))->deleteRow(["id" => $id])) {
                 return true;
             }
         }
@@ -96,11 +94,8 @@ class NotificationsDAO
      */
     public static function markNotificationRead(int $notification_id, int $admin_id = 0): bool
     {
-        $DBHandle = DbConnect();
-
         return (new Table("cc_notification_admin"))
             ->addRow(
-                $DBHandle,
                 [
                     "id_notification" => $notification_id,
                     "id_admin" => $admin_id,
@@ -115,10 +110,9 @@ class NotificationsDAO
      */
     public static function getNotificationCount(): int
     {
-        $DBHandle = DbConnect();
         $table = new Table("cc_notification");
 
-        return $table->countRows($DBHandle);
+        return $table->countRows();
     }
 
     /**
@@ -129,7 +123,6 @@ class NotificationsDAO
      */
     public static function hasUnreadNotifications(int $admin_id): bool
     {
-        $DBHandle = DbConnect();
         $table = new Table(
             "cc_notification",
             "*",
@@ -140,7 +133,7 @@ class NotificationsDAO
                 ]
             ]
         );
-        $return = $table->countRows($DBHandle, ["viewed" => null]);
+        $return = $table->countRows(["viewed" => null]);
 
         return $return > 0;
     }
@@ -155,7 +148,6 @@ class NotificationsDAO
      */
     public static function getNotifications(int $admin_id = 0, int $current_page = 0, int $page_count = 10): array
     {
-        $DBHandle = DbConnect();
         $joins = [
             "cc_notification_admin" => [["cc_notification.id", "cc_notification_admin.id_notification"]]
         ];
@@ -164,7 +156,6 @@ class NotificationsDAO
         }
         $table = new Table("cc_notification", "*", $joins);
         $return = $table->getRows(
-            $DBHandle,
             [],
             ["date", "id"],
             "DESC",

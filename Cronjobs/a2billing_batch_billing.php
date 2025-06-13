@@ -167,7 +167,7 @@ for ($page = 0; $page < $nbpagemax; $page++) {
             // FIND THE LAST BILLING
             $billing_table = new Table('cc_billing_customer', ['id', 'date', 'id_invoice']);
             $clause_last_billing = ["id_card" => $card_id];
-            $result = $billing_table->getRow($A2B->DBHandle, $clause_last_billing, ["date"], "desc");
+            $result = $billing_table->getRow($clause_last_billing, ["date"], "desc");
 
             $call_table = new Table('cc_call', ['COALESCE(SUM(sessionbill),0)']);
             $clause_call_billing = ["card_id" => $card_id];
@@ -202,7 +202,7 @@ for ($page = 0; $page < $nbpagemax; $page++) {
                 ]
             );
             $lastinvoice_clause = ["cc_billing_customer.id_card" => $card_id, "cc_invoice.paid_status" => 0];
-            $result_lastinvoice = $invoice_table ->getRow($A2B->DBHandle, $lastinvoice_clause);
+            $result_lastinvoice = $invoice_table ->getRow($lastinvoice_clause);
             if ($result_lastinvoice) {
                 $lastpostpaid_amount = $result_lastinvoice["total"];
             }
@@ -213,11 +213,11 @@ for ($page = 0; $page < $nbpagemax; $page++) {
                 $values["start_date"] = $start_date;
             }
             $instance_table = new Table("cc_billing_customer");
-            $instance_table->addRow($A2B->DBHandle, $values, "id", $id_billing);
+            $instance_table->addRow($values, "id", $id_billing);
             if ($verbose_level >= 2)
                     echo "\n Add billing -> Id card : " . json_encode($values);
 
-            $result = $call_table->getRows($A2B->DBHandle, $clause_call_billing);
+            $result = $call_table->getRows($clause_call_billing);
 
             // COMMON BEHAVIOUR FOR PREPAID AND POSTPAID -> GENERATE A RECEIPT FOR THE CALLS OF THE LAST PERIOD
             if (is_array($result) && is_numeric($result[0][0])) {
@@ -228,7 +228,7 @@ for ($page = 0; $page < $nbpagemax; $page++) {
                 $description = gettext("Summary of the calls charged since the last billing");
                 $instance_table = new Table("cc_receipt");
                 $values = ["id_card" => $card_id, "title" => $title, "description" => $description, "status" => 1];
-                $instance_table->addRow($A2B->DBHandle, $values, "id", $id_receipt);
+                $instance_table->addRow($values, "id", $id_receipt);
                 if ($verbose_level >= 2)
                         echo "\n Add Receipt for the call of the last period :> " . json_encode($values);
 
@@ -236,7 +236,7 @@ for ($page = 0; $page < $nbpagemax; $page++) {
                     $description = $desc_billing;
                     $instance_table = new Table("cc_receipt_item");
                     $values = ["id_receipt" => $id_receipt, "price" => $amount_calls, "description" => $description, "id_ext" => $id_billing, "type_ext" => "CALLS"];
-                    $instance_table->addRow($A2B->DBHandle, $values);
+                    $instance_table->addRow($values);
                     if ($verbose_level >= 2)
                         echo "\n Add Receipt Items for the call of the last period :> " . json_encode($values);
                 }
@@ -244,13 +244,13 @@ for ($page = 0; $page < $nbpagemax; $page++) {
 
             // GENERATE RECEIPT FOR CHARGE ALREADY PAID
             $table_charge = new Table("cc_charge", "*");
-            $result = $table_charge->getRows($A2B->DBHandle, $clause_charge + ["charged_status" => 1]);
+            $result = $table_charge->getRows($clause_charge + ["charged_status" => 1]);
             if ($result) {
                 $title = gettext("SUMMARY OF CHARGE");
                 $description = gettext("Summary of the paid charges since the last billing.");
                 $instance_table = new Table("cc_receipt");
                 $values = ["id_card" => $card_id, "title" => $title, "description" => $description, "status" => 1];
-                $instance_table->addRow($A2B->DBHandle, $values, "id", $id_receipt);
+                $instance_table->addRow($values, "id", $id_receipt);
                 if ($verbose_level >= 2)
                     echo "\n Add Receipt for the charges already paid :> " . json_encode($values);
 
@@ -260,7 +260,7 @@ for ($page = 0; $page < $nbpagemax; $page++) {
                         $amount = $charge['amount'];
                         $instance_table = new Table("cc_receipt_item");
                         $values = ["date" => $charge["creationdate"], "id_receipt" => $id_receipt, "price" => $amount, "description" => $description, "id_ext" => $charge["id"], "type_ext" => "CHARGE"];
-                        $instance_table->addRow($A2B->DBHandle, $values);
+                        $instance_table->addRow($values);
                         if ($verbose_level >= 2)
                             echo "\n Add Receipt Items for the charges already paid :> " . json_encode($values);
                     }
@@ -270,7 +270,7 @@ for ($page = 0; $page < $nbpagemax; $page++) {
             $total_vat =0;
             // GENERATE INVOICE FOR CHARGE NOT YET CHARGED
             $table_charge = new Table("cc_charge", "*");
-            $result = $table_charge->getRows($A2B->DBHandle, $clause_charge + ["charged_status" => 0, "invoiced_status" => 0]);
+            $result = $table_charge->getRows($clause_charge + ["charged_status" => 0, "invoiced_status" => 0]);
             $last_invoice = null;
             if ($result) {
                 $reference = Invoice::generateReference();
@@ -281,7 +281,7 @@ for ($page = 0; $page < $nbpagemax; $page++) {
                 $invoice_description = $description;
                 $instance_table = new Table("cc_invoice");
                 $values = ["id_card" => $card_id, "title" => $title, "reference" => $reference, "description" => $description, "status" => 1, "paid_status" => 0];
-                $instance_table->addRow($A2B->DBHandle, $values, "id", $id_invoice);
+                $instance_table->addRow($values, "id", $id_invoice);
                 if ($verbose_level >= 2)
                     echo "\n Add Invoice for the unpaid charges :> " . json_encode($values);
 
@@ -294,7 +294,7 @@ for ($page = 0; $page < $nbpagemax; $page++) {
                         $total_vat =$total_vat + round($amount *(1+($vat/100)),2);
                         $instance_table = new Table("cc_invoice_item");
                         $values = ["date" => $charge["creationdate"], "id_invoice" => $id_invoice, "price" => $amount, "vat" => $vat, "description" => $description, "id_ext" => $charge["id"], "type_ext" => "CHARGE"];
-                        $instance_table->addRow($A2B->DBHandle, $values);
+                        $instance_table->addRow($values);
                         if ($verbose_level >= 2)
                             echo "\n Add Invoice Items for the unpaid charges :> " . json_encode($values);
                     }
@@ -315,7 +315,7 @@ for ($page = 0; $page < $nbpagemax; $page++) {
                     $invoice_description = $description;
                     $instance_table = new Table("cc_invoice");
                     $values = ["id_card" => $card_id, "title" => $title, "reference" => $reference, "description" => $description, "status" => 1, "paid_status" => 0];
-                    $instance_table->addRow($A2B->DBHandle, $values, "id", $id_invoice);
+                    $instance_table->addRow($values, "id", $id_invoice);
                     if ($verbose_level >= 2)
                         echo "\n Add Invoice :> " . json_encode($values);
                 }
@@ -327,7 +327,7 @@ for ($page = 0; $page < $nbpagemax; $page++) {
                     $total_vat =$total_vat + round($amount *(1+($vat/100)),2);
                     $instance_table = new Table("cc_invoice_item");
                     $values = ["id_invoice" => $id_invoice, "price" => $amount, "vat" => $vat, "description" => $description, "id_ext" => $id_billing, "type_ext" => "POSTPAID"];
-                    $instance_table->addRow($A2B->DBHandle, $values);
+                    $instance_table->addRow($values);
                     if ($verbose_level >= 2)
                         echo "\n Add Invoice Item :> " . json_encode($values);
                 }
@@ -336,7 +336,7 @@ for ($page = 0; $page < $nbpagemax; $page++) {
             if (!empty($last_invoice)) {
                 $param_update_billing = ["id_invoice" => $last_invoice];
                 $clause_update_billing = ["id" => $id_billing];
-                $billing_table->updateRow($A2B->DBHandle,$param_update_billing,$clause_update_billing);
+                $billing_table->updateRow($param_update_billing, $clause_update_billing);
                 if ($verbose_level >= 2)
                     echo "\n Update Billing :> " . json_encode($param_update_billing) . " WHERE " . json_encode($clause_update_billing);
             }

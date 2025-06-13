@@ -145,7 +145,7 @@ if ($task) {
     }
 
     if ($task === "upload") {
-        $result = (new Table("cc_ratecard"))->addRows($DBHandle, $insert_data);
+        $result = (new Table("cc_ratecard"))->addRows($insert_data);
         if (!$result) {
             $import_error = $DBHandle->ErrorMsg();
         } else {
@@ -173,10 +173,10 @@ if ($task) {
         ["SUB", ["startingdate" => [[null], ["<", "CURRENT_TIMESTAMP"]]], "OR"],
         ["SUB", ["expirationdate" => [[null], [">", "CURRENT_TIMESTAMP"]]], "OR"],
     ];
-    $list_tariffname = (new Table("cc_tariffplan", "id, tariffname"))->getRows($DBHandle, $where, ["tariffname"]);
+    $list_tariffname = (new Table("cc_tariffplan", "id, tariffname"))->getRows($where, ["tariffname"]);
 
     // GET TRUNK LIST
-    $list_trunk = (new Table("cc_trunk", "id_trunk, trunkcode"))->getRows($DBHandle, ["status" => 1], ["trunkcode"]);
+    $list_trunk = (new Table("cc_trunk", "id_trunk, trunkcode"))->getRows(["status" => 1], ["trunkcode"]);
 
     echo create_help(
         _("This section is a utility to import ratecards from a CSV file.")

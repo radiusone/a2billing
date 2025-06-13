@@ -95,7 +95,6 @@ function login(?string $user, ?string $pass)
         return false;
     }
 
-    $DBHandle = DbConnect();
     $table = new Table(
         "cc_card",
         ["username", "credit", "status", "cc_card.id", "id_didgroup", "tariff", "vat", "gmtoffset", "voicemail_permitted", "voicemail_activated", "users_perms", "currency", "uipass"],
@@ -104,7 +103,7 @@ function login(?string $user, ?string $pass)
             "cc_card_group" => ["id_group", "cc_card_group.id"]
         ]
     );
-    $row = $table->getRow($DBHandle, [["SUB", ["email" => $user, "useralias" => $user], "OR"]]);
+    $row = $table->getRow([["SUB", ["email" => $user, "useralias" => $user], "OR"]]);
 
     if ($row) {
         if ($row["status"] !== "t" && $row["status"] != 1  && $row["status"] != 8) {

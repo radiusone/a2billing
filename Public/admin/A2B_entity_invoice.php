@@ -55,7 +55,7 @@ getpost_ifset(['id', 'action']);
 
 if (($action ?? "") === "lock" && is_numeric($id ?? "")) {
     // called by XHR
-    (new Table("cc_invoice"))->updateRow($HD_Form->DBHandle, ["status" => 1], ["id" => $id]);
+    (new Table("cc_invoice"))->updateRow(["status" => 1], ["id" => $id]);
     die();
 }
 

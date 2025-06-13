@@ -90,6 +90,10 @@ if ($A2B->config["database"]["dbtype"] === "postgres") {
 }
 
 $func_fields = "sessionid, uniqueid, card_id, nasipaddress, starttime, stoptime, sessiontime, calledstation, sessionbill, id_tariffgroup, id_tariffplan, id_ratecard, id_trunk, sipiax, src, id_did, buycost, id_card_package_offer, real_sessiontime, dnid, terminatecauseid, destination, a2b_custom1, a2b_custom2";
-(new Table("cc_call_archive"))->addRowsFromSelect($A2B->DBHandle, new Table("cc_call", $func_fields), ["starttime" => ["<=", "CURRENT_TIMESTAMP - INTERVAL $interval"]]);
-(new Table("cc_call"))->deleteRow($A2B->DBHandle, ["starttime" => ["<=", "CURRENT_TIMESTAMP - INTERVAL $interval"]]);
+(new Table("cc_call_archive"))->addRowsFromSelect(new Table("cc_call", $func_fields), [
+    "starttime" => [
+        "<=", "CURRENT_TIMESTAMP - INTERVAL $interval"
+    ]
+]);
+(new Table("cc_call"))->deleteRow(["starttime" => ["<=", "CURRENT_TIMESTAMP - INTERVAL $interval"]]);
 write_log($logfile_cront_archive, basename(__FILE__) . ' line:' . __LINE__ . "[#### ARCHIVING DATA END ####]");

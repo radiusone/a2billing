@@ -50,7 +50,7 @@ $HD_Form->init();
 //check subscriber
 $table_subscriber = new Table("cc_subscription_signup");
 $clause_subscriber = ["enable" => 1];
-$result_subscriber = $table_subscriber->getRows(DbConnect(), $clause_subscriber);
+$result_subscriber = $table_subscriber->getRows($clause_subscriber);
 
 // #### HEADER SECTION
 require_once __DIR__ . "/templates/signup_header.php";

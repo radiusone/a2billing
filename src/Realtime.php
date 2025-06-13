@@ -82,7 +82,7 @@ class Realtime
         }
 
         $instance_table = new Table($table_name, $cols);
-        $list_friend = $instance_table->getRows($this->DBHandler);
+        $list_friend = $instance_table->getRows();
         // todo: once all queries are associative this won't be needed
         $list_friend = array_filter($list_friend, fn($k) => !is_numeric($k), ARRAY_FILTER_USE_KEY);
 
@@ -159,12 +159,12 @@ class Realtime
         ];
 
         if ($sip) {
-            (new Table("cc_sip_buddies"))->addRow($this->DBHandler, $values);
+            (new Table("cc_sip_buddies"))->addRow($values);
         }
 
         if ($iax) {
             unset($values["dtmfmode"], $values["nat"]);
-            (new Table("cc_iax_buddies"))->addRow($this->DBHandler, $values);
+            (new Table("cc_iax_buddies"))->addRow($values);
         }
     }
 }

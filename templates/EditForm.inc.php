@@ -180,7 +180,7 @@ use DateTime;
             <?php break ?>
 
         <?php case "HAS_MANY": ?>
-            <?php $entries = $row["table"]->getRows($form->DBHandle, [$row["foreign_key"] => $processed["id"]]) ?>
+            <?php $entries = $row["table"]->getRows([$row["foreign_key"] => $processed["id"]]) ?>
             <ul class="list-group" aria-labelledby="item<?=$i?>_label">
             <?php foreach ($entries as $entry): ?>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -195,7 +195,7 @@ use DateTime;
             <?php endforeach ?>
             <?php if (!empty($row["select"])): ?>
                 <?php
-                $res = $row["table"]->getRows($form->DBHandle);
+                $res = $row["table"]->getRows();
                 $options = array_combine(array_column($res, 0), array_column($res, 1));
                 $options = array_filter($options, fn ($k) => !in_array($k, array_column($entries, 0)), ARRAY_FILTER_USE_KEY);
                 ?>

@@ -57,7 +57,7 @@ $id ??= null;
 if ($action === "lock") {
     if (is_numeric($id)) {
         (new Table("cc_receipt"))
-            ->updateRow(DbConnect(), ["status" => 1], ["id" => $id]);
+            ->updateRow(["status" => 1], ["id" => $id]);
     }
     die();
 }

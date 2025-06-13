@@ -37,12 +37,11 @@ class Invoice extends PaymentDocument
         if (is_null($id)) {
             return;
         }
-        $DBHandle = DbConnect();
         $value = (new Table(
             "cc_invoice",
             ["id", "id_card", "description", "title", "status", "paid_status", "date", "reference"]
         ))
-            ->getRow($DBHandle, ["id" => $id]);
+            ->getRow(["id" => $id]);
         $this->id = (int)$value["id"];
         $this->card = (int)$value["id_card"];
         $this->description = $description ?? $value["description"];
@@ -107,9 +106,8 @@ class Invoice extends PaymentDocument
             return [];
         }
         $result = [];
-        $DBHandle = DbConnect();
         $instance_sub_table = new Table("cc_invoice_item", ["id"]);
-        $return = $instance_sub_table->getRows($DBHandle, ["id_invoice" => $this->id]);
+        $return = $instance_sub_table->getRows(["id_invoice" => $this->id]);
         foreach ($return as $value) {
             $result[] = new InvoiceItem($value["id"]);
         }
@@ -120,7 +118,6 @@ class Invoice extends PaymentDocument
     public function loadDetailledItems(): array
     {
         $result = [];
-        $DBHandle = DbConnect();
         foreach ($this->items as $value) {
             if (empty($value["id_ext"]) || $value["type_ext"] !== "CALLS") {
                 $result[] = $value;
@@ -128,7 +125,7 @@ class Invoice extends PaymentDocument
             }
 
             $billing = (new Table("cc_billing_customer", ["date", "start_date"]))
-                ->getRow($DBHandle, ["id" => $value["id_ext"]]);
+                ->getRow(["id" => $value["id_ext"]]);
             if (count($billing) === 0) {
                 continue;
             }
@@ -138,7 +135,7 @@ class Invoice extends PaymentDocument
                 $conditions["stoptime"] = [">=", $billing["start_date"]];
             }
 
-            $calls = (new Table("cc_call"))->getRows($DBHandle, $conditions);
+            $calls = (new Table("cc_call"))->getRows($conditions);
             foreach ($calls as $call) {
                 $duration = get_timespan($call["sessiontiome"]);
                 $item = InvoiceItem::create(
@@ -160,13 +157,12 @@ class Invoice extends PaymentDocument
         if (empty($this->id)) {
             return null;
         }
-        $DBHandle = DbConnect();
         $table = new Table(
             "cc_invoice_payment",
             "*",
             ["cc_logpayment" => ["cc_invoice_payment.id_payment", "cc_logpayment.id"]]
         );
-        return $table->getRows($DBHandle, ["id_invoice" => $this->id], ["date"]);
+        return $table->getRows(["id_invoice" => $this->id], ["date"]);
     }
 
     public function delPayment($idpayment): bool
@@ -174,9 +170,8 @@ class Invoice extends PaymentDocument
         if (is_null($this->id)) {
             return false;
         }
-        $DBHandle = DbConnect();
         return (new Table("cc_invoice_payment"))
-            ->deleteRow($DBHandle, ["id_invoice" => $this->id, "id_payment" => $idpayment]);
+            ->deleteRow(["id_invoice" => $this->id, "id_payment" => $idpayment]);
     }
 
     public function addPayment($idpayment): bool
@@ -184,9 +179,8 @@ class Invoice extends PaymentDocument
         if (is_null($this->id)) {
             return false;
         }
-        $DBHandle = DbConnect();
         return (new Table("cc_invoice_payment"))
-            ->addRow($DBHandle, ["id_invoice" => $this->id, "id_payment" => $idpayment]);
+            ->addRow(["id_invoice" => $this->id, "id_payment" => $idpayment]);
     }
 
     public function changeStatus(int $status): bool
@@ -194,15 +188,13 @@ class Invoice extends PaymentDocument
         if (is_null($this->id)) {
             return false;
         }
-        $DBHandle = DbConnect();
         $result = (new Table("cc_invoice"))
-            ->updateRow($DBHandle, ["paid_status" => $status], ["id" => $this->id]);
+            ->updateRow(["paid_status" => $status], ["id" => $this->id]);
         if ($this->paid_status !== $status) {
             foreach ($this->items as $item) {
                 if ($item->getExtType() === "DID" && $item->getExtId()) {
                     $result = (new Table("cc_did_use"))
                         ->updateRow(
-                            $DBHandle,
                             [
                                 "reminded" => $status ? 0 : 1,
                                 "month_payed" => $status
@@ -243,14 +235,13 @@ class Invoice extends PaymentDocument
 
     public static function generateReference(): string
     {
-        $handle = DbConnect();
         $year = date("Y");
         $table = new Table(
             "cc_config",
             ["cc_config.id", "config_value"],
             ["cc_config_group" => ["cc_config.config_group_id", "cc_config_group.id"]]
         );
-        $row = $table->getRow($handle, ["config_key" => "next_number", "group_title" => "invoice"]);
+        $row = $table->getRow(["config_key" => "next_number", "group_title" => "invoice"]);
         $conf_id = $row["id"];
         $invoice_num = $row["config_value"];
 
@@ -263,7 +254,7 @@ class Invoice extends PaymentDocument
             fn ($m) => $m[1] . str_pad(intval($m[2]) + 1, 8, "0", STR_PAD_LEFT),
             $invoice_num
         );
-        $table->updateRow($handle, ["config_value" => $update], ["id" => $conf_id]);
+        $table->updateRow(["config_value" => $update], ["id" => $conf_id]);
 
         return $invoice_num;
     }

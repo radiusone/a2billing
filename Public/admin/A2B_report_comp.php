@@ -121,7 +121,7 @@ $HD_Form->create_toppage("list");
 require_once __DIR__ . "/../../common/page_modules/call_graph.php";
 
 $call_list = (new Table($HD_Form->FG_QUERY_TABLE_NAME, $HD_Form->list_query_columns, $HD_Form->query_table_joins))
-    ->getRows($HD_Form->DBHandle, $HD_Form->list_query_conditions, ["starttime"], "DESC");
+    ->getRows($HD_Form->list_query_conditions, ["starttime"], "DESC");
 
 $graph_data = [];
 $legends = [];

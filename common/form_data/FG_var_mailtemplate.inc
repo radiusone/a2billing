@@ -154,7 +154,7 @@ $HD_Form->AddSearchSqlSelectInput(_("Select language"), "id_language", new Table
 
 $source = [];
 if ($form_action === "ask-add" && !empty($from_id)) {
-    $source = (new Table("cc_templatemail"))->getRow($HD_Form->DBHandle, ["id" => $from_id]);
+    $source = (new Table("cc_templatemail"))->getRow(["id" => $from_id]);
 }
 $HD_Form->AddEditSelect(
     _("MAIL TYPE"),

@@ -49,7 +49,7 @@ getpost_ifset(["id", "delallrate", "delrate", "addrate"]);
  * @var numeric-string|null $addrate
  */
 
-$package = (new Table("cc_package_offer"))->getRow(DbConnect(), ["id" => $id ?? 0]);
+$package = (new Table("cc_package_offer"))->getRow(["id" => $id ?? 0]);
 if (!$package) {
     header("Location: A2B_entity_package.php");
 }
@@ -87,25 +87,25 @@ if ($addbatchrate ?? false) {
         }
     }
     (new Table("cc_package_rate", ["package_id", "rate_id"]))
-        ->addRowsFromSelect($DBHandle, new Table("cc_ratecard", [$id, "id"]), $rates_clauses);
+        ->addRowsFromSelect(new Table("cc_ratecard", [$id, "id"]), $rates_clauses);
     header("Location: A2B_info_package.php?id=$id");
 }
 
 if (is_numeric($addrate ?? null)) {
     $DBHandle = DbConnect();
-    (new Table("cc_package_rate"))->addRow($DBHandle, ["package_id" => $id, "rate_id" => $addrate]);
+    (new Table("cc_package_rate"))->addRow(["package_id" => $id, "rate_id" => $addrate]);
     header("Location: A2B_info_package.php?id=$id");
 }
 
 if (is_numeric($delrate ?? null)) {
     $DBHandle = DbConnect();
-    (new Table("cc_package_rate"))->deleteRow($DBHandle, ["package_id" => $id, "rate_id" => ["IN", $delrate]]);
+    (new Table("cc_package_rate"))->deleteRow(["package_id" => $id, "rate_id" => ["IN", $delrate]]);
     header("Location: A2B_info_package.php?id=$id");
 }
 
 if ($delallrate ?? false) {
     $DBHandle = DbConnect();
-    (new Table("cc_package_rate"))->deleteRow($DBHandle, ["package_id" => $id]);
+    (new Table("cc_package_rate"))->deleteRow(["package_id" => $id]);
     header("Location: A2B_info_package.php?id=$id");
 }
 
@@ -122,7 +122,7 @@ $table_rates = new Table(
         "cc_prefix" => ["cc_prefix.prefix", "cc_ratecard.destination"],
     ]
 );
-$result_rates = $table_rates->getRows(DbConnect(), ["cc_package_rate.package_id" => $id]);
+$result_rates = $table_rates->getRows(["cc_package_rate.package_id" => $id]);
 ?>
 <div class="row pb-3">
     <div class="col-2">

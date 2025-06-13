@@ -46,7 +46,6 @@ Customer::checkPageAccess(Customer::ACX_ACCESS);
 
 $inst_table = new Table();
 
-$DBHandle = DbConnect();
 $table = new Table(
     "cc_card",
     ["cc_card.*", "cc_package_offer.label", "cc_package_offer.packagetype", "cc_package_offer.freetimetocall"],
@@ -55,7 +54,7 @@ $table = new Table(
         "cc_package_offer" => ["cc_tariffgroup.id_cc_package_offer", "cc_package_offer.id"],
     ]
 );
-$customer_info = $table->getRow($DBHandle, ["cc_card.id" => $_SESSION["card_id"]]);
+$customer_info = $table->getRow(["cc_card.id" => $_SESSION["card_id"]]);
 
 if (!$customer_info) {
     echo gettext("Error loading your account information!");

@@ -193,7 +193,7 @@ $HD_Form->AddEditSelect(
     _("Select first option(default) to manualy select groups or select second option to use service for any group, discarding list below")
 );
 
-$numrow = (new Table("cc_card_group"))->countRows($HD_Form->DBHandle);
+$numrow = (new Table("cc_card_group"))->countRows();
 
 if ($numrow > 0) {
     $HD_Form->AddEditHasMany(

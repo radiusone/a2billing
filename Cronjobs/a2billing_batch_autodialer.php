@@ -312,7 +312,7 @@ for ($page = 0; $page < $nbpage; $page++) {
                     $values = compact("uniqueid", "status", "server_ip", "num_attempt", "channel", "exten", "context", "priority", "variable", "id_server_group", "account", "callerid");
                     $values["callback_time"] = date("Y-m-d H:i:s");
                     $values["timeout"] = 30000;
-                    $res = $instance_table->addRow($A2B->DBHandle, $values);
+                    $res = $instance_table->addRow($values);
 
                     if (!$res) {
                         if ($verbose_level >= 1)

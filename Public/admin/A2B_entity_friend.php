@@ -88,7 +88,7 @@ if ($batchupdate === "1" && count($check)) {
         }
         $updates[$col] = $val;
     }
-    if (!(new Table($HD_Form->FG_QUERY_TABLE_NAME))->updateRow($HD_Form->DBHandle, $updates, $HD_Form->list_query_conditions)) {
+    if (!(new Table($HD_Form->FG_QUERY_TABLE_NAME))->updateRow($updates, $HD_Form->list_query_conditions)) {
         $update_msg = _('Could not perform the batch update!');
     } else {
         $update_msg = _('The batch update has been successfully perform!');
@@ -116,10 +116,10 @@ if ($batchupdate === "1" && count($check)) {
     }
 
     (new Table("cc_card"))
-        ->updateRow($HD_Form->DBHandle, $friend_param_update, ["id" => $id_cc_card]);
+        ->updateRow($friend_param_update, ["id" => $id_cc_card]);
 
     $list_friend = (new Table($HD_Form->FG_QUERY_TABLE_NAME))
-        ->getRows($HD_Form->DBHandle, ["id_cc_card" => $id_cc_card]);
+        ->getRows(["id_cc_card" => $id_cc_card]);
 
     if (count($list_friend)) {
         header("Location: A2B_entity_card.php?voip_type=card&id=");

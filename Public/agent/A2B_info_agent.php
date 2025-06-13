@@ -44,7 +44,6 @@ require_once __DIR__ . "/../../common/lib/agent.defines.php";
 
 Agent::checkPageAccess(Agent::ACX_ACCESS);
 
-$DBHandle = DbConnect();
 $table = new Table(
     "cc_agent",
     [
@@ -53,7 +52,7 @@ $table = new Table(
         "(SELECT COALESCE(SUM(amount), 0) FROM cc_remittance_request WHERE status = 0 AND id_agent = cc_agent.id) AS remit"
     ],
 );
-$agent_info = $table->getRow($DBHandle, ["id" => $_SESSION["agent_id"]]);
+$agent_info = $table->getRow(["id" => $_SESSION["agent_id"]]);
 if (!$agent_info) {
     exit();
 }

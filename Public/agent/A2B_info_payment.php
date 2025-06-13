@@ -65,8 +65,7 @@ if ($type === "agent") {
     );
     $cond = ["cc_card_group.id_agent" => $_SESSION["agent_id"], "cc_logpayment.id" => $id];
 }
-$DBHandle  = DbConnect();
-$payment = $table->getRow($DBHandle, $cond);
+$payment = $table->getRow($cond);
 
 if (empty($payment)) {
     header("Location: $page");

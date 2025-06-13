@@ -74,7 +74,7 @@ if (!is_customer()) {
     $HD_Form->AddListTopButton();
 } else {
     $sd_count = (new Table("cc_speeddial"))
-        ->countRows($HD_Form->DBHandle, ["id_cc_card" => $_SESSION["card_id"]]);
+        ->countRows(["id_cc_card" => $_SESSION["card_id"]]);
     if ($sd_count < 10) {
         $HD_Form->AddListTopButton();
     }

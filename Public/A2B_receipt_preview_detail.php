@@ -56,13 +56,12 @@ function loadDetailledItems($startdate,$begin=null,$nb=null)
 {
     $result = array ();
     global $card_id;
-    $DBHandle = DbConnect();
     $now = date("Y-m-d H:i:s");
     $call_table = new Table("cc_call", ["starttime", "sessiontime", "calledstation", "sessionbill"]);
     $call_clause = ["card_id" => $card_id];
     if(!empty($startdate)) $call_clause[] = ["SUB", "stoptime" => [[">=", $startdate], ["<", $now]]];
     else $call_clause["stoptime"] = ["<", $now];
-    $return_calls = $call_table->getRows($DBHandle, $call_clause, ['starttime'], 'ASC', [], (int)$nb, (int)$begin);
+    $return_calls = $call_table->getRows($call_clause, ['starttime'], 'ASC', [], (int)$nb, (int)$begin);
     foreach ($return_calls as $call) {
         $min = floor($call['sessiontime'] / 60);
         $sec = $call['sessiontime'] % 60;
@@ -74,7 +73,7 @@ function loadDetailledItems($startdate,$begin=null,$nb=null)
     if(!empty($startdate)) $clause_charge[] = ["SUB", "creationdate" => [[">=", $startdate], ["<", $now]]];
     else $clause_charge["creationdate"] = ["<", $now];
     $clause_charge["charged_status"] = 1;
-    $return_charges = $charge_table->getRows($DBHandle, $clause_charge);
+    $return_charges = $charge_table->getRows($clause_charge);
     foreach ($return_charges as $charge) {
         $item = new ReceiptItem(null, gettext("CHARGE :").$charge['description'], $charge['creationdate'], $charge['amount'], 'CHARGE');
         $result[]= $item;
@@ -92,13 +91,13 @@ function nbDetailledItems($startdate)
     $call_clause = ["card_id" => $card_id];
     if(!empty($startdate)) $call_clause[] = ["SUB", "stoptime" => [[">=", $startdate], ["<", $now]]];
     else $call_clause["stoptime"] = ["<", $now];
-    $i = $call_table->getValue($DBHandle, $call_clause, ['starttime']) ?? 0;
+    $i = $call_table->getValue($call_clause, ['starttime']) ?? 0;
     $charge_table = new Table("cc_charge", ["COUNT(*)"]);
     $clause_charge = ["id_cc_card" => $card_id];
     if(!empty($startdate)) $clause_charge[] = ["SUB", "creationdate" => [[">=", $startdate], ["<", $now]]];
     else $clause_charge["creationdate"] = ["<", $now];
     $clause_charge["charged_status"] = 1;
-    $i += $charge_table->getValue($DBHandle, $clause_charge) ?? 0;
+    $i += $charge_table->getValue($clause_charge) ?? 0;
 
     return $i;
 }
@@ -112,13 +111,13 @@ function SumDetailledItems($startdate)
     $call_clause = ["card_id" => $card_id];
     if(!empty($startdate)) $call_clause[] = ["SUB", "stoptime" => [[">=", $startdate], ["<", $now]]];
     else $call_clause["stoptime"] = ["<", $now];
-    $i = $call_table->getValue($DBHandle, $call_clause) ?? 0;
+    $i = $call_table->getValue($call_clause) ?? 0;
     $charge_table = new Table("cc_charge", ["SUM(amount)"]);
     $clause_charge = ["id_cc_card" => $card_id];
     if(!empty($startdate)) $clause_charge[] = ["SUB", "creationdate" => [[">=", $startdate], ["<", $now]]];
     else $clause_charge["creationdate"] = ["<", $now];
     $clause_charge["charged_status"] = 1;
-    $i += $charge_table->getValue($DBHandle, $clause_charge) ?? 0;
+    $i += $charge_table->getValue($clause_charge) ?? 0;
 
     return $i;
 }
@@ -132,7 +131,7 @@ function amount_convert($amount)
 
 $billing_table = new Table('cc_billing_customer', ['date']);
 $clause_last_billing = ["id_card" => $_SESSION["card_id"]];
-$start_date = $billing_table -> getRow($DBHandle, $clause_last_billing, ["date"], "desc");
+$start_date = $billing_table -> getRow($clause_last_billing, ["date"], "desc");
 $call_table = new Table('cc_call', 'COALESCE(SUM(sessionbill),0)');
 
 $nbitems = nbDetailledItems($start_date);

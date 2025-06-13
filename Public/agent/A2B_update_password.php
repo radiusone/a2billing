@@ -47,7 +47,6 @@ getpost_ifset(["NewPassword", "NewPassword2", "OldPassword"]);
  * @var string $NewPassword2
  */
 
-$DBHandle = DbConnect();
 $msg = "";
 
 if ($form_action === "ask-modif") {
@@ -55,11 +54,10 @@ if ($form_action === "ask-modif") {
         $msg = '<p class="alert alert-danger">' . _("Check entries, ensure new password is at least 8 characters") . '</p>';
     } else {
         $table = new Table("cc_agent");
-        $result = $table->getRow($DBHandle, ["id" => $_SESSION["id_agent"]]);
+        $result = $table->getRow(["id" => $_SESSION["id_agent"]]);
 
         if ($result && password_verify($OldPassword, $result["pwd_encoded"])) {
             $result = $table->updateRow(
-                $DBHandle,
                 ["pwd_encoded" => password_hash($NewPassword, PASSWORD_DEFAULT)],
                 ["id" => $_SESSION["id_agent"]]
             );

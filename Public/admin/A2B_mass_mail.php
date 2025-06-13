@@ -96,7 +96,7 @@ $conditions["email"] = ["<>", ""];
 if (isset($id)) {
     $conditions["id"] = $id;
 }
-$list_customer = $instance_cus_table->getRows($HD_Form->DBHandle, $conditions, [], "ASC", [], $limit_massmail);
+$list_customer = $instance_cus_table->getRows($conditions, [], "ASC", [], $limit_massmail);
 
 $nb_customer = sizeof($list_customer);
 

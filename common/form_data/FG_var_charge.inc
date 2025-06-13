@@ -99,7 +99,7 @@ $HD_Form_c->AddEditPopup(
 
 $amt_attr = ["maxlength" => 20];
 if ($form_action === "ask-add" && !empty($id_did)) {
-    $row = (new Table("cc_did", "fixrate"))->getRow(DbConnect(), ["id" => $id_did]);
+    $row = (new Table("cc_did", "fixrate"))->getRow(["id" => $id_did]);
     $amt_attr["value"] = $row["fixrate"];
 }
 $HD_Form_c->AddEditElement(

@@ -72,7 +72,7 @@ $condition = [
         "OR",
     ],
 ];
-$nb_card = $instance_table->countRows($A2B->DBHandle, $condition);
+$nb_card = $instance_table->countRows($condition);
 $nbpagemax = ceil($nb_card / $groupcard);
 
 if ($nb_card === 0) {
@@ -88,16 +88,16 @@ $totalcredit = 0;
 // BROWSE THROUGH THE CARD TO APPLY THE AUTO REFILL
 for ($page = 0; $page < $nbpagemax; $page++) {
     $result_card = $instance_table
-        ->getRows($A2B->DBHandle, $condition, ["id"], "ASC", [], $groupcard, $page * $groupcard);
+        ->getRows($condition, ["id"], "ASC", [], $groupcard, $page * $groupcard);
 
     foreach ($result_card as $mycard) {
         $refill_amount = $mycard["initialbalance"] - $mycard["credit"];
-        $instance_table->updateRow($A2B->DBHandle, ["credit" => "`initialbalance`"], ["id" => $mycard["id"]]);
+        $instance_table->updateRow(["credit" => "`initialbalance`"], ["id" => $mycard["id"]]);
         $totalcredit += $refill_amount;
         $totalcardperform++;
 
         // INSERT LOG REFILL INTO THE DATABASE
-        (new Table("cc_logrefill"))->addRow($A2B->DBHandle, ["credit" => $refill_amount, "card_id" => $mycard["id"]]);
+        (new Table("cc_logrefill"))->addRow(["credit" => $refill_amount, "card_id" => $mycard["id"]]);
     }
     // Little bit of rest
     sleep(5);
@@ -108,7 +108,7 @@ write_log($log, basename(__FILE__) . ' line:' . __LINE__ . "[Auto Refill finish]
 if ($totalcredit !== 0) {
 // INSERT REPORT SERVICE INTO THE DATABASE
     (new Table("cc_autorefill_report"))
-        ->addRow($A2B->DBHandle, ["totalcardperform" => $totalcardperform, "totalcredit" => $totalcredit]);
+        ->addRow(["totalcardperform" => $totalcardperform, "totalcredit" => $totalcredit]);
     write_log($log, basename(__FILE__) . ' line:' . __LINE__ . "[Service report : 'totalcardperform=$totalcardperform', 'totalcredit=$totalcredit']");
 }
 

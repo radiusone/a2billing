@@ -75,13 +75,13 @@ if ($action === "ask_release") {
         HTML;
 } elseif ($action === "confirmed_release") {
     (new Table("cc_did"))
-        ->updateRow($HD_Form->DBHandle, ["iduser" => 0, "reserved" => 0], ["id" => $did]);
+        ->updateRow(["iduser" => 0, "reserved" => 0], ["id" => $did]);
     (new Table("cc_did_use"))
-        ->updateRow($HD_Form->DBHandle, ["releasedate" => "CURRENT_TIMESTAMP"], ["id_did" => $did, "activated" => 1]);
+        ->updateRow(["releasedate" => "CURRENT_TIMESTAMP"], ["id_did" => $did, "activated" => 1]);
     (new Table("cc_did_use"))
-        ->addRow($HD_Form->DBHandle, ["activated" => 0, "id_did" => $did]);
+        ->addRow(["activated" => 0, "id_did" => $did]);
     (new Table("cc_did_destination"))
-        ->deleteRow($HD_Form->DBHandle, ["id_cc_did" => $did]);
+        ->deleteRow(["id_cc_did" => $did]);
 }
 
 if ($action !== "ask_release") {

@@ -95,7 +95,7 @@ if ($batchupdate == 1 && count($check)) {
     if (isset($check["upd_credit"]) && strlen($update_fields["credit"] ?? "") > 0) {
         // we will be updating card credit, prepare the refill query
         $current_cards = (new Table("cc_card", ["id", "credit"]))
-            ->getRows($HD_Form->DBHandle, $HD_Form->list_query_conditions);
+            ->getRows($HD_Form->list_query_conditions);
         $refill_cards = [];
         foreach ($current_cards as $v) {
             switch ($type["upd_credit"]) {
@@ -149,12 +149,12 @@ if ($batchupdate == 1 && count($check)) {
         }
     }
 
-    if (!(new Table("cc_card"))->updateRow($HD_Form->DBHandle, $updates, $HD_Form->list_query_conditions)) {
+    if (!(new Table("cc_card"))->updateRow($updates, $HD_Form->list_query_conditions)) {
         $update_msg = _('Could not perform the batch update!');
     } else {
         $update_msg = _('The batch update has been successfully perform!');
         if (!empty($refill_cards)) {
-            if ((new Table("cc_logrefill"))->addRows($HD_Form->DBHandle, $refill_cards) === 0) {
+            if ((new Table("cc_logrefill"))->addRows($refill_cards) === 0) {
                 $update_msg = _('Could not perform refill log for the batch update!');
             }
         }

@@ -73,9 +73,9 @@ $assoc_csv = [];
 $import_error = "";
 
 $group_list = (new Table("cc_didgroup", ["id", "didgroupname"]))
-    ->getColumn($DBHandle, "didgroupname", "id");
+    ->getColumn("didgroupname", "id");
 $country_list = (new Table("cc_country", ["id", "countryname"]))
-    ->getColumn($DBHandle, "countryname", "id");
+    ->getColumn("countryname", "id");
 
 if ($task) {
     $start_time = microtime(true);
@@ -122,7 +122,7 @@ if ($task) {
     }
 
     if ($task === "upload") {
-        (new Table("cc_did"))->addRows($DBHandle, $insert_data);
+        (new Table("cc_did"))->addRows($insert_data);
         $nb_imported = count($insert_data);
         Logger::insertLog($_SESSION["admin_id"], 2, "DIDs IMPORTED", $nb_imported." New DIDs Imported Successfully", '', $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI']);
     }

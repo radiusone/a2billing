@@ -55,12 +55,11 @@ getpost_ifset(['posted', 'tariffplan', 'balance', 'id_cc_card', 'called' , 'acco
  * @var string $accountcode
  */
 
-$DBHandle  = DbConnect();
 $error_msg = "";
 
 if ($called && ($id_cc_card > 0 || $accountcode > 0)) {
     if ($accountcode > 0) {
-        $list_tariff_card = (new Table("cc_card", "username, id"))->getRow($DBHandle, ["username" => $accountcode]);
+        $list_tariff_card = (new Table("cc_card", "username, id"))->getRow(["username" => $accountcode]);
         if ($list_tariff_card) {
             $id_cc_card = $list_tariff_card["id"] ?? 0;
         }
@@ -68,7 +67,7 @@ if ($called && ($id_cc_card > 0 || $accountcode > 0)) {
 
     if (!empty($called) && is_numeric($called)) {
         $num = 0;
-        $card = (new Table("cc_card", "username, tariff, credit"))->getRow($DBHandle, ["id" => $id_cc_card]);
+        $card = (new Table("cc_card", "username, tariff, credit"))->getRow(["id" => $id_cc_card]);
         if (empty($card)) {
             $error_msg = '<span style="color:red; font-weight: bold">' . _("Card lookup error") . '</span>';
         } else {
@@ -209,7 +208,7 @@ if (!empty($RateEngine->ratecard_obj)) {
             <?php endif ?>
                 <tr>
                     <th scope="row"><?= _("Destination") ?></th>
-                    <td><?= (new Table("cc_prefix", "destination"))->getRow($DBHandle, ["prefix" => $ratecard["destination"]])["destination"] ?? "" ?></td>
+                    <td><?= (new Table("cc_prefix", "destination"))->getRow(["prefix" => $ratecard["destination"]])["destination"] ?? "" ?></td>
                 </tr>
             <?php foreach ($arr_ratecard as $col => $label): ?>
                 <tr>

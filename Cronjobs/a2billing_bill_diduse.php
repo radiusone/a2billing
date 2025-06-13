@@ -205,7 +205,7 @@ foreach ($result as $mydids) {
                         $values = ["date" => $date, "id_card" => $card_id, "title" => $title, "reference" => $reference, "description" => $description, "status" => 1, "paid_status" => 0];
                         if ($verbose_level >= 1)
                             echo "INSERT INVOICE : " . json_encode($values) . "\n";
-                        $instance_table->addRow($A2B->DBHandle, $values, "id", $id_invoice);
+                        $instance_table->addRow($values, "id", $id_invoice);
                         $last_invoice = $id_invoice;
                     }
 
@@ -217,7 +217,7 @@ foreach ($result as $mydids) {
                         $values = ["date" => $date, "id_invoice" => $last_invoice, "price" => $amount, "vat" => $vat, "description" => $description, "id_ext" => $mydids[0], "type_ext" => "DID"];
                         if ($verbose_level >= 1)
                             echo "INSERT INVOICE ITEM : " . json_encode($values) . "\n";
-                        $instance_table->addRow($A2B->DBHandle, $values);
+                        $instance_table->addRow($values);
                     }
 
                     $mail_user = true;

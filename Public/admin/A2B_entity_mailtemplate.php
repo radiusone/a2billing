@@ -58,7 +58,7 @@ if ($action === "load") {
     $DBHandle=DbConnect();
     if (!empty($id)) {
         $result = (new Table("cc_templatemail", "messagetext, fromemail, fromname, subject"))
-            ->getRow($DBHandle, ["id" => $id]);
+            ->getRow(["id" => $id]);
         $result = array_filter($result, fn ($k) => !is_numeric($k), ARRAY_FILTER_USE_KEY);
         header("Content-Type: application/json");
         echo json_encode($result);

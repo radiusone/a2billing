@@ -94,7 +94,7 @@ $table = new Table(
     "cc_card_package_offer",
     ["DATE(date_consumption) AS day", "SUM(used_secondes) AS used_secondes", "COUNT(*) AS nbcall"]
 );
-$list_total_day = $table->getRows(DbConnect(), $HD_Form->list_query_conditions, ["day"], "ASC", ["day"]);
+$list_total_day = $table->getRows($HD_Form->list_query_conditions, ["day"], "ASC", ["day"]);
 
 if (count($list_total_day)):
     $mmax = max(array_column($list_total_day, "used_secondes"));

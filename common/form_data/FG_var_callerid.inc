@@ -56,7 +56,7 @@ if (is_customer()) {
 
 if (is_customer()) {
     $cid_count = (new Table("cc_callerid"))
-        ->countRows($HD_Form->DBHandle, ["id_cc_card" => $_SESSION["card_id"]]);
+        ->countRows(["id_cc_card" => $_SESSION["card_id"]]);
     if ($cid_count < $A2B->config["webcustomerui"]['limit_callerid']) {
         $HD_Form->AddListTopButton();
         $HD_Form->FG_ENABLE_ADD_BUTTON = true;

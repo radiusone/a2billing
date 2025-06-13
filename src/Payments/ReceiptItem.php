@@ -21,8 +21,7 @@ class ReceiptItem extends PaymentDocumentItem
         if (is_null($id)) {
             return;
         }
-        $db = DbConnect();
-        $result = (new Table("cc_receipt_item"))->getRow($db, ["id" => $id]);
+        $result = (new Table("cc_receipt_item"))->getRow(["id" => $id]);
         $this->id = $id;
         $this->receipt_id = (int)$result["id_receipt"];
         $this->description = $desc ?? $result["description"];

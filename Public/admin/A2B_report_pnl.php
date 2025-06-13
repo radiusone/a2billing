@@ -305,16 +305,14 @@ $db->Execute("SET autocommit = 0");
 $db->Execute("CREATE TEMPORARY TABLE pnl_report AS $QUERY");
 
 function linktonext_1($value) {
-    $handle = DbConnect();
     $inst_table = new Table("cc_card_group", "id");
-    $id = $inst_table->getValue($handle, ["name" => $value]) ?? 0;
+    $id = $inst_table->getValue(["name" => $value]) ?? 0;
     return $id ? "<a href=\"?group_id=$id&report_type=1\">$value</a>" : $value;
 }
 
 function linktonext_2($value) {
-    $handle = DbConnect();
     $inst_table = new Table("cc_tariffgroup", "id");
-    $id = $inst_table->getValue ($handle, ["tariffgroupname" => $value]) ?? 0;
+    $id = $inst_table->getValue (["tariffgroupname" => $value]) ?? 0;
     return $id ? "<a href=\"?group_id=$id&report_type=2\">$value</a>" : $value;
 }
 

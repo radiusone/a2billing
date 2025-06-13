@@ -99,9 +99,8 @@ function login (?string $user, ?string $pass)
         return false;
     }
 
-    $DBHandle = DbConnect();
     $table = new Table("cc_agent", ["id", "perms", "active", "currency", "vat", "pwd_encoded"]);
-    $row = $table->getRow($DBHandle, ["login" => $user]);
+    $row = $table->getRow(["login" => $user]);
 
     if ($row) {
         if ($row["active"] !== "t" && $row["active"] !== "1") {
@@ -114,7 +113,6 @@ function login (?string $user, ?string $pass)
         $filterpass = filter_var($pass, FILTER_SANITIZE_STRING);
         if (hash('whirlpool', $filterpass) === $row["pwd_encoded"] || $filterpass === $row["pwd_encoded"]) {
             $table->updateRow(
-                $DBHandle,
                 ["pwd_encoded" => password_hash($pass, PASSWORD_DEFAULT)],
                 ["login" => $user]
             );

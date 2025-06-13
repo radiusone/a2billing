@@ -22,8 +22,7 @@ class InvoiceItem extends PaymentDocumentItem
         if (is_null($id)) {
             return;
         }
-        $db = DbConnect();
-        $result = (new Table("cc_invoice_item"))->getRow($db, ["id" => $id]);
+        $result = (new Table("cc_invoice_item"))->getRow(["id" => $id]);
         $this->id = $id;
         $this->invoice_id = (int)$result["id_invoice"];
         $this->description = $desc ?? $result["description"];

@@ -55,7 +55,7 @@ if (empty($receipt->card)) {
 }
 $DBHandle  = DbConnect();
 $card = (new Table("cc_card", "*", ["cc_country" => ["country", "countrycode"]]))
-    ->getRow($DBHandle, ["cc_card.id" => $receipt->card]);
+    ->getRow(["cc_card.id" => $receipt->card]);
 
 if (empty($card)) {
     echo "Customer doesn't exist or is not correctly defined for this receipt !";
@@ -68,7 +68,6 @@ $table = new Table(
     ["cc_config_group" => ["cc_config.config_group_id", "cc_config_group.id"]]
 );
 $receipt_conf = $table->getColumn(
-    $DBHandle,
     "config_value",
     "config_key",
     ["group_title" => "invoice"]

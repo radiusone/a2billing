@@ -179,7 +179,7 @@ if ($ticket_type === "agent") {
     $creator_attr = [];
     if ($form_action === 'ask-add' && !empty($username)) {
         $row = (new Table("cc_card", "id"))
-            ->getRow($HD_Form->DBHandle, ["username" => $username]);
+            ->getRow(["username" => $username]);
         $creator_attr["value"] = $row["id"] ?? "";
     }
     $HD_Form->AddEditPopup(

@@ -53,11 +53,9 @@ if (empty($_SESSION["card_id"])) {
     die();
 }
 
-$DBHandle  = DbConnect();
-
 $card_table = new Table('cc_card', ['vat','typepaid','credit']);
 $card_clause = ["id" => $_SESSION["card_id"]];
-$card_result = $card_table -> getRow($DBHandle, $card_clause);
+$card_result = $card_table -> getRow($card_clause);
 
 $vat = $card_result["vat"] ?? 0;
 $typepaid = $card_result["typepaid"] ?? 0;
@@ -67,7 +65,7 @@ $credit = $card_result["credit"]?? 0;
 $now = date("Y-m-d H:i:s");
 $billing_table = new Table('cc_billing_customer', ['id','date']);
 $clause_last_billing = ["id_card" => $_SESSION["card_id"]];
-$result = $billing_table -> getRow($DBHandle, $clause_last_billing, ["date"], "desc");
+$result = $billing_table -> getRow($clause_last_billing, ["date"], "desc");
 $clause_call_billing = ["card_id" => $_SESSION["card_id"]];
 $clause_charge = ["id_cc_card" => $_SESSION["card_id"]];
 $desc_billing="";
@@ -85,7 +83,7 @@ if (!empty($result["id"])) {
     $clause_charge["creationdate"] = ["<", $now];
 }
 $call_table = new Table('cc_call', ['COALESCE(SUM(sessionbill),0)']);
-$calls_price =  $call_table -> getValue($DBHandle, $clause_call_billing);
+$calls_price =  $call_table -> getValue($clause_call_billing);
 $receipt_items = array();
 
 // COMMON BEHAVIOUR FOR PREPAID AND POSTPAID ... GENERATE A RECEIPT FOR THE CALLS OF THE MONTH
@@ -97,13 +95,13 @@ if ($calls_price) {
 // GENERATE RECEIPT FOR CHARGE ALREADY CHARGED
 
 $table_charge = new Table("cc_charge", ["description", "creationdate", "amount"]);
-$result =  $table_charge -> getRows($DBHandle, $clause_charge + ["charged_status" => 1]);
+$result =  $table_charge -> getRows($clause_charge + ["charged_status" => 1]);
     foreach ($result as $charge) {
         $item = new ReceiptItem(null, gettext("CHARGE :").$charge['description'], $charge['creationdate'], $charge['amount'], 'CHARGE');
         $receipt_items[]= $item;
     }
  // GENERATE RECEIPT FOR CHARGE NOT CHARGED YET
-$result =  $table_charge -> getRows($DBHandle, $clause_charge + ["charged_status" => 1, "invoiced_status" => 0]);
+$result =  $table_charge -> getRows($clause_charge + ["charged_status" => 1, "invoiced_status" => 0]);
     foreach ($result as $charge) {
         $item = InvoiceItem::create(null, gettext("CHARGE :").$charge['description'], $charge['creationdate'], $charge['amount'],$vat, 'CHARGE');
         $invoice_items[]= $item;

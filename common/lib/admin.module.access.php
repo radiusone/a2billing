@@ -96,12 +96,11 @@ function login (?string $user, ?string $pass)
         return false;
     }
 
-    $DBHandle = DbConnect();
     $table = new Table(
         "cc_ui_authen",
         ["userid", "perms", "confaddcust", "groupid", "login", "pwd_encoded"]
     );
-    $row = $table->getRow($DBHandle, ["login" => $user]);
+    $row = $table->getRow(["login" => $user]);
 
     if ($row) {
         if (password_verify($pass, $row["pwd_encoded"])) {
@@ -110,7 +109,6 @@ function login (?string $user, ?string $pass)
         // fallback to legacy authentication
         if (hash('whirlpool', $pass) === $row["pwd_encoded"]) {
             $table->updateRow(
-                $DBHandle,
                 ["pwd_encoded" => password_hash($pass, PASSWORD_DEFAULT)],
                 ["login" => $user]
             );

@@ -118,7 +118,7 @@ if ($task) {
     }
 
     if ($task === "upload") {
-        (new Table("cc_card"))->addRows($DBHandle, $insert_data);
+        (new Table("cc_card"))->addRows($insert_data);
         $nb_imported = count($insert_data);
         Logger::insertLog($_SESSION["admin_id"], 2, "CARDs IMPORTED", $nb_imported." New CARDS Imported Successfully", '', $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI']);
     }

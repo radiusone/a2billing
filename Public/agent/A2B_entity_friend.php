@@ -79,10 +79,10 @@ if (!empty($id_cc_card) && ($form_action === "add_sip" || $form_action === "add_
     }
 
     $instance_table_friend = new Table('cc_card');
-    $instance_table_friend->updateRow($HD_Form->DBHandle, $friend_param_update, ["id" => $id_cc_card]);
+    $instance_table_friend->updateRow($friend_param_update, ["id" => $id_cc_card]);
 
     $instance_table_friend = new Table($TABLE_BUDDY);
-    $list_friend = $instance_table_friend->getRows($HD_Form->DBHandle, ["id_cc_card" => $id_cc_card]);
+    $list_friend = $instance_table_friend->getRows(["id_cc_card" => $id_cc_card]);
 
     if ($list_friend) {
         header("Location: A2B_entity_card.php?id=$id_cc_card");

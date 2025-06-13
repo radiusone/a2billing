@@ -13,13 +13,12 @@ class Receipt extends PaymentDocument
         if (is_null($id)) {
             return;
         }
-        $DBHandle = DbConnect();
         $value = (new Table(
             "cc_receipt",
             ["cc_receipt.id", "id_card", "description", "title", "date", "cc_receipt.status", "username"],
             ["cc_card" => ["cc_receipt.id_card", "cc_card.id"]]
         ))
-            ->getRow($DBHandle, ["cc_receipt.id" => $id]);
+            ->getRow(["cc_receipt.id" => $id]);
         $this->id = (int)$value["id"];
         $this->card = (int)$value["id_card"];
         $this->date = $value["date"];
@@ -68,9 +67,8 @@ class Receipt extends PaymentDocument
         }
 
         $result = [];
-        $DBHandle = DbConnect();
         $instance_sub_table = new Table("cc_receipt_item", ["id"]);
-        $return = $instance_sub_table->getColumn($DBHandle, "id", "", ["id_receipt" => $this->id]);
+        $return = $instance_sub_table->getColumn("id", "", ["id_receipt" => $this->id]);
         foreach ($return as $id) {
             $result[] = new ReceiptItem($id);
         }
@@ -85,7 +83,6 @@ class Receipt extends PaymentDocument
         }
         $result = [];
         $count = 0;
-        $DBHandle = DbConnect();
         foreach ($this->items as $value) {
             if (empty($value['id_ext']) || $value['type_ext'] !== "CALLS") {
                 $result[] = $value;
@@ -94,7 +91,7 @@ class Receipt extends PaymentDocument
             }
 
             $billing = (new Table("cc_billing_customer", ["date", "start_date"]))
-                ->getRow($DBHandle, ["id" => $value["id_ext"]]);
+                ->getRow(["id" => $value["id_ext"]]);
             if (count($billing) === 0) {
                 continue;
             }
@@ -104,7 +101,7 @@ class Receipt extends PaymentDocument
                 $conditions["stoptime"] = [">=", $billing["start_date"]];
             }
 
-            $calls = (new Table("cc_call"))->getRows($DBHandle, $conditions, ["date"], "desc", [], $nb, $begin);
+            $calls = (new Table("cc_call"))->getRows($conditions, ["date"], "desc", [], $nb, $begin);
             foreach ($calls as $call) {
                 $duration = get_timespan($call["sessiontiome"]);
                 $item = ReceiptItem::create(

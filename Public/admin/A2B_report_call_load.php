@@ -102,7 +102,7 @@ require_once __DIR__ . "/../../common/page_modules/call_graph.php";
 // create full day bargraph
 $cols = ["SUBSTRING(starttime, 0, 10) AS date", "SUBSTRING(starttime, 12, 2) AS hour", "COUNT(id) AS call_count", "SUM(sessiontime) AS call_time"];
 $call_list = (new Table($HD_Form->FG_QUERY_TABLE_NAME, $cols, $HD_Form->query_table_joins))
-    ->getRows($HD_Form->DBHandle, $HD_Form->list_query_conditions, [], "ASC", ["HOUR(starttime)"]);
+    ->getRows($HD_Form->list_query_conditions, [], "ASC", ["HOUR(starttime)"]);
 $graph_data = array_combine(
     array_map(fn ($v) => sprintf("%02d", $v), range(0, 23)),
     array_fill(0, 24, 0)
@@ -155,7 +155,7 @@ $conditions[] = [
     ["starttime" => [[">=", "$starttime $hour_detail:00:00"], ["<=", "$starttime $hour_detail:59:59"]]]
 ];
 $call_list = (new Table($HD_Form->FG_QUERY_TABLE_NAME, $cols, $HD_Form->query_table_joins))
-    ->getRows($HD_Form->DBHandle, $conditions, ["starttime"]);
+    ->getRows($conditions, ["starttime"]);
 
 $empty_minutes = array_combine(
     array_map(fn ($v) => sprintf("%02d", $v), range(0, 59)),

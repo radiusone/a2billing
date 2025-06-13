@@ -140,7 +140,7 @@ if ($form_action === "add" && !empty($path)) {
 
     if (move_uploaded_file($_FILES['databasebackup']['tmp_name'], $uploadfile)) {
         (new Table("cc_backup"))
-            ->addRow($HD_Form->DBHandle, ["name" => "Custom" . date("Ymd-His"), "path" => $uploadfile]);
+            ->addRow(["name" => "Custom" . date("Ymd-His"), "path" => $uploadfile]);
     } else {
         $error_upload = _("Error uploading file");
     }

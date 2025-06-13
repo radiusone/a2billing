@@ -103,14 +103,12 @@ if (!empty($posted)) {
         $instance_table = new Table("cc_ratecard", ["id"]);
 
         $source_result = (new Table("cc_ratecard", $fieldtomerge))->getRows(
-            $HD_Form->DBHandle,
             $condition,
             ["dialprefix", "id"]
         );
 
         foreach ($source_result as $source_rate) {
             $check = $instance_table->getValue(
-                $HD_Form->DBHandle,
                 ["idtariffplan" => $ratecard_des_val, "dialprefix" => $source_rate["dialprefix"], "is_merged" => 0],
                 ["dialprefix", "id"]
             );
@@ -118,10 +116,10 @@ if (!empty($posted)) {
                 // so not actually "merging" but updating dest from source only if the dialprefix already exists
                 $count++;
                 $source_rate["is_merged"] = 1;
-                $instance_table->updateRow($HD_Form->DBHandle, $source_rate, ["id" => $check]);
+                $instance_table->updateRow($source_rate, ["id" => $check]);
             }
         }
-        $instance_table->updateRow($HD_Form->DBHandle, ["is_merged" => 0]);
+        $instance_table->updateRow(["is_merged" => 0]);
 
         if($count > 0) {
             $msgs[] = sprintf(_("Ratecard is successfully merged, %d records updated."), $count);
@@ -148,7 +146,7 @@ $list = $HD_Form->perform_action($form_action);
 $_SESSION['search_ratecard'] = json_encode($HD_Form->list_query_conditions);
 
 $list_tariffname = (new Table("cc_tariffplan", "id, tariffname"))
-    ->getRows ($HD_Form->DBHandle, [], ["tariffname"]);
+    ->getRows ([], ["tariffname"]);
 
 require_once __DIR__ . "/templates/main.php";
 $HD_Form->create_search_form();

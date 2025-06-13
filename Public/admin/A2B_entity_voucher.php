@@ -93,7 +93,7 @@ if ($action === "batchupdate" && is_array($check)) {
         }
     }
 
-    if (!(new Table("cc_voucher"))->updateRow($HD_Form->DBHandle, $updates, $HD_Form->list_query_conditions)) {
+    if (!(new Table("cc_voucher"))->updateRow($updates, $HD_Form->list_query_conditions)) {
         $update_msg = _('Could not perform the batch update!');
     } else {
         $update_msg = _('The batch update has been successfully perform!');
@@ -115,7 +115,7 @@ if ($action === "generate") {
         if (isset($gen["expirationdate"])) {
             $gen["expirationdate"] = str_replace('T', ' ', $gen["expirationdate"]);
         }
-        $table->addRow($HD_Form->DBHandle, $gen);
+        $table->addRow($gen);
     }
 }
 

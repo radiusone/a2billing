@@ -227,7 +227,7 @@ for ($page = 0; $page < $nbpagemax; $page++) {
                 //select card
                 $table_card = new Table('cc_card', '*');
                 $card_clause = ["id" => $subscription['card_id']];
-                $result_card = $table_card -> getRow($A2B->DBHandle, $card_clause);
+                $result_card = $table_card -> getRow($card_clause);
 
                 if (!$result_card)
                     break;
@@ -285,7 +285,7 @@ for ($page = 0; $page < $nbpagemax; $page++) {
 
                     if ($verbose_level >= 1)
                         echo "INSERT INVOICE : " . json_encode($values) . "\n";
-                    $instance_table->addRow($A2B->DBHandle, $values, "id", $id_invoice);
+                    $instance_table->addRow($values, "id", $id_invoice);
 
                     if (!empty ($id_invoice) && is_numeric($id_invoice)) {
                         $description = "Subscription (" . $subscription['product_name'] . ")";
@@ -295,7 +295,7 @@ for ($page = 0; $page < $nbpagemax; $page++) {
                         $values = ["date" => $date, "id_invoice", $id_invoice, "price" => $amount, "vat" => $vat, "description" => $description, "id_ext" => $subscription["card_subscription_id"], "type_ext" => "SUBSCR"];
                         if ($verbose_level >= 1)
                             echo "INSERT INVOICE ITEM : " . json_encode($values) . "\n";
-                        $instance_table->addRow($A2B->DBHandle, $values);
+                        $instance_table->addRow($values);
                     }
 
                     $mail = new Mail(Mail::$TYPE_SUBSCRIPTION_UNPAID, $card['id'] );

@@ -99,7 +99,7 @@ switch ($action) {
     case "delete":
         if (!empty($idc)) {
             $table = new Table("cc_receipt_item");
-            $table->deleteRow($DBHandle, ["id" => $idc]);
+            $table->deleteRow(["id" => $idc]);
         }
         header("Location: A2B_receipt_edit.php?id=$id");
         break;

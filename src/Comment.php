@@ -28,8 +28,7 @@ class Comment
 
     public static function getComment(int $id): ?self
     {
-        $DBHandle = DbConnect();
-        $result = (new Table("cc_ticket_comment"))->getRow($DBHandle, ["id" => $id]);
+        $result = (new Table("cc_ticket_comment"))->getRow(["id" => $id]);
         if (!$result) {
             return null;
         }
@@ -47,17 +46,17 @@ class Comment
 
         if (!empty($creatorid)) {
             if ($creator_type === self::ADMIN) {
-                $user = (new Table("cc_ui_authen"))->getRow($DBHandle, ["userid" => $creatorid]);
+                $user = (new Table("cc_ui_authen"))->getRow(["userid" => $creatorid]);
                 if ($user) {
                     $comment->setCreatorname(_("(ADMINISTRATOR) ") . $user["name"]);
                 }
             } elseif ($creator_type === self::CUSTOMER) {
-                $user = (new Table("cc_card"))->getRow($DBHandle, ["id" => $creatorid]);
+                $user = (new Table("cc_card"))->getRow(["id" => $creatorid]);
                 if ($user) {
                     $comment->setCreatorname($user["lastname"] . " " . $user["firstname"]);
                 }
             } elseif ($creator_type === self::AGENT) {
-                $user = (new Table("cc_agent"))->getRow($DBHandle, ["id" => $creatorid]);
+                $user = (new Table("cc_agent"))->getRow(["id" => $creatorid]);
                 if ($user) {
                     $comment->setCreatorname(_("(AGENT)") . " " . $user["firstname"] . " " . $user["lastname"]);
                 }
@@ -112,10 +111,9 @@ class Comment
             default:
                 return false;
         }
-        $dbHandle = DbConnect();
 
         return (new Table("cc_ticket_comment"))
-            ->updateRow($dbHandle, $value, ["id" => $this->id]);
+            ->updateRow($value, ["id" => $this->id]);
     }
 
     public function getCreationdate()

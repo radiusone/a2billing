@@ -7,8 +7,6 @@ use A2billing\Table;
  * @var FormHandler $HD_Form
  */
 
-$DBHandle = DbConnect();
-
 $table = new Table(
     "cc_call",
     [
@@ -24,7 +22,6 @@ $table = new Table(
     ["cc_trunk" => ["cc_call.id_trunk", "cc_trunk.id_trunk"]]
 );
 $list_total_day = $table->getRows(
-    $DBHandle,
     $HD_Form->list_query_conditions,
     ["day"],
     "ASC",

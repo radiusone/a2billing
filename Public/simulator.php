@@ -68,7 +68,6 @@ $QUERY = "SELECT value from cc_currencies where currency=?";
 $currency_value = $DBHandle_max->GetOne($QUERY, [$currency]);
 
 $FG_DEBUG = 0;
-$DBHandle = DbConnect();
 
 if ($called && $id_cc_card) {
 
@@ -125,7 +124,7 @@ if ($called && $id_cc_card) {
 /**************************************************************/
 
 $instance_table_tariffname = new Table("cc_tariffplan", ["id", "tariffname"]);
-$list_tariffname = $instance_table_tariffname->getRows($DBHandle, [], ["tariffname"]);
+$list_tariffname = $instance_table_tariffname->getRows([], ["tariffname"]);
 $nb_tariffname = count($list_tariffname);
 
 require_once __DIR__ . "/templates/main.php";

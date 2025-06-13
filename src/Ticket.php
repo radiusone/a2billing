@@ -42,8 +42,7 @@ class Ticket
 
     public function __construct(int $id)
     {
-        $DBHandle = DbConnect();
-        $value = (new Table("cc_ticket"))->getRow($DBHandle, ["id" => $id]);
+        $value = (new Table("cc_ticket"))->getRow(["id" => $id]);
         if (count($value)) {
             $this->id = (int)$value["id"];
             $this->creatorid = (int)$value["creator"];
@@ -62,7 +61,7 @@ class Ticket
             $this->creator_type = (int)$value["creator_type"];
             switch ($this->creator_type) {
                 case self::CUSTOMER:
-                    $value = (new Table("cc_card"))->getRow($DBHandle, ["id" => $this->creatorid]);
+                    $value = (new Table("cc_card"))->getRow(["id" => $this->creatorid]);
                     if (count($value)) {
                         $this->creator_name = $value["lastname"] . " " . $value["firstname"];
                         $this->creator_login = $value["username"];
@@ -73,7 +72,7 @@ class Ticket
                     }
                     break;
                 case self::AGENT:
-                    $value = (new Table("cc_agent"))->getRow($DBHandle, ["id" => $this->creatorid]);
+                    $value = (new Table("cc_agent"))->getRow(["id" => $this->creatorid]);
                     if (count($value)) {
                         $this->creator_name = _("(AGENT)") . " " . $value["firstname"] . " " . $value["lastname"];
                         $this->creator_login = $value["login"];
@@ -92,7 +91,7 @@ class Ticket
                 "cc_support_component.name,email,language",
                 ["cc_support" => ["id_support", "cc_support.id"]]
             );
-            $value = $component_table->getRow($DBHandle, ["cc_support_component.id" => $this->componentid]);
+            $value = $component_table->getRow(["cc_support_component.id" => $this->componentid]);
 
             if (count($value)) {
                 $this->componentname = $value["name"];
@@ -104,8 +103,7 @@ class Ticket
 
     public static function getTicket(int $id): ?self
     {
-        $dbHandle = DbConnect();
-        $result = (new Table("cc_ticket"))->getRow($dbHandle, ["id" => $id]);
+        $result = (new Table("cc_ticket"))->getRow(["id" => $id]);
         if (!$result) {
             return null;
         }
@@ -148,9 +146,8 @@ class Ticket
         if (!self::getStatusDisplay($status)) {
             return false;
         }
-        $dbHandle = DbConnect();
 
-        return (new Table("cc_ticket"))->updateRow($dbHandle, ["status" => $status]);
+        return (new Table("cc_ticket"))->updateRow(["status" => $status]);
     }
 
     /**
@@ -188,10 +185,9 @@ class Ticket
             default:
                 return false;
         }
-        $dbHandle = DbConnect();
 
         return (new Table("cc_ticket"))
-            ->updateRow($dbHandle, $value, ["id" => $this->id]);
+            ->updateRow($value, ["id" => $this->id]);
 
     }
 
@@ -240,9 +236,8 @@ class Ticket
     public function loadComments(): array
     {
         $result = [];
-        $DBHandle = DbConnect();
         $return = (new Table("cc_ticket_comment", "id"))
-            ->getRows($DBHandle, ["id_ticket" => $this->id], ["date"], "DESC");
+            ->getRows(["id_ticket" => $this->id], ["date"], "DESC");
         foreach ($return as $value) {
             $result[] = Comment::getComment($value["id"]);
         }
@@ -252,7 +247,6 @@ class Ticket
 
     public function insertComment(string $desc, int $creator, int $creator_type)
     {
-        $DBHandle = DbConnect();
         $values = ["id_ticket" => $this->id, "description" => $desc, "creator" => $creator, "creator_type" => $creator_type];
         switch ($creator_type) {
             case Comment::CUSTOMER:
@@ -267,24 +261,24 @@ class Ticket
             default:
                 return;
         }
-        (new Table("cc_ticket_comment"))->addRow($DBHandle, $values);
+        (new Table("cc_ticket_comment"))->addRow($values);
 
         $owner_comment = "";
         switch ($creator_type) {
             case Comment::CUSTOMER:
-                $value = (new Table("cc_card"))->getRow($DBHandle, ["id" => $creator]);
+                $value = (new Table("cc_card"))->getRow(["id" => $creator]);
                 if ($value) {
                     $owner_comment = $value["lastname"] . " " . $value["firstname"];
                 }
                 break;
             case Comment::ADMIN:
-                $value = (new Table("cc_ui_authen"))->getRow($DBHandle, ["userid" => $creator]);
+                $value = (new Table("cc_ui_authen"))->getRow(["userid" => $creator]);
                 if ($value) {
                     $owner_comment = _("(ADMINISTRATOR) ") . $value["login"];
                 }
                 break;
             case Comment::AGENT:
-                $value = (new Table("cc_agent"))->getRow($DBHandle, ["id" => $creator]);
+                $value = (new Table("cc_agent"))->getRow(["id" => $creator]);
                 if ($value) {
                     $owner_comment = _("(AGENT) ") . $value["login"] . " - " . $value["firstname"] . " " . $value["lastname"];
                 }

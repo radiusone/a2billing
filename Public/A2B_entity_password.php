@@ -53,7 +53,7 @@ $DBHandle  = DbConnect();
 if ($form_action=="ask-modif") {
     $instance_sub_table = new Table('cc_card', "id");
     $check_old_pwd = ["id" => $_SESSION["card_id"],  "uipass" => $OldPassword];
-    $result_check=$instance_sub_table -> getRow ($DBHandle, $check_old_pwd);
+    $result_check=$instance_sub_table -> getRow ($check_old_pwd);
     if ($result_check) {
         $QUERY = "UPDATE cc_card SET  uipass= '".$NewPassword."' WHERE ( ID = ".$_SESSION["card_id"]." ) ";
         $result = $instance_sub_table -> SQLExec ($DBHandle, $QUERY, 0);

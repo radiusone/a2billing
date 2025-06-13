@@ -69,9 +69,8 @@ echo create_help(_("The Notification component is responsible for informing the 
 <?php
 // Load the list of values in the config table ! key=values_notifications
 $key= "cron_notifications";
-$DBHandle  = DbConnect();
 $instance_config_table = new Table("cc_config", "id, config_value");
-$return = $instance_config_table->getRow($DBHandle, ["config_key" => $key]);
+$return = $instance_config_table->getRow(["config_key" => $key]);
 
 if ($return) {
     $id_config = $return["id"];
@@ -108,7 +107,7 @@ if ($return) {
 // Load the list of values in the config table ! key=values_notifications
 $key= "values_notifications";
 $instance_config_table = new Table("cc_config", "id, config_value");
-$return = $instance_config_table->getRow($DBHandle, ["config_key" => $key]);
+$return = $instance_config_table->getRow(["config_key" => $key]);
 
 if ($return) {
     $id_config = $return["id"];
@@ -146,7 +145,7 @@ if ($return) {
 // Load the list of values in the config table ! key=values_notifications
 $key= "delay_notifications";
 $instance_config_table = new Table("cc_config", "id, config_value");
-$return = $instance_config_table->getRow($DBHandle, ["config_key" => $key]);
+$return = $instance_config_table->getRow(["config_key" => $key]);
 
 if ($return) {
     $id_config = $return["id"];
