@@ -312,12 +312,6 @@ class FormHandler
     public string $FG_LIST_ADDING_BUTTON_LINK1 = "?form_action=ask-add";
 
     /** @var string */
-    public string $FG_LIST_ADDING_BUTTON_ALT1 = "";
-
-    /** @var string */
-    public string $FG_LIST_ADDING_BUTTON_IMG1 = "";
-
-    /** @var string */
     public string $FG_LIST_ADDING_BUTTON_ICON1 = "";
 
     /** @var string */
@@ -327,12 +321,6 @@ class FormHandler
 
     /** @var string */
     public string $FG_LIST_ADDING_BUTTON_LINK2 = "";
-
-    /** @var string */
-    public string $FG_LIST_ADDING_BUTTON_ALT2 = "";
-
-    /** @var string */
-    public string $FG_LIST_ADDING_BUTTON_IMG2 = "";
 
     /** @var string */
     public string $FG_LIST_ADDING_BUTTON_ICON2 = "";
