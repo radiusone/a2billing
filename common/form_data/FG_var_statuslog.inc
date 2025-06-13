@@ -63,9 +63,7 @@ $HD_Form->FG_ENABLE_EDIT_BUTTON = false;
 $HD_Form->FG_ENABLE_DELETE_BUTTON = false;
 $HD_Form->FG_ENABLE_ADD_BUTTON = false;
 
-$HD_Form->FG_FILTER_ENABLE = true;
-$HD_Form->FG_FILTER_COLUMN = "username";
-$HD_Form->FG_FILTER_LABEL = _("Account number");
+$HD_Form->AddListFilter("username", _("Account number"));
 
 $HD_Form->search_form_enabled = true;
 $HD_Form->search_delete_enabled = false;

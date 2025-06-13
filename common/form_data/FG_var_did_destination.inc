@@ -123,9 +123,7 @@ $HD_Form->AddEditRadio(
 );
 
 // Set the filter variables
-$HD_Form->FG_FILTER_ENABLE = true;
-$HD_Form->FG_FILTER_COLUMN = "cc_did.did";
-$HD_Form->FG_FILTER_LABEL = _("DID");
+$HD_Form->AddListFilter("cc_did.did", _("DID"));
 
 $HD_Form->FG_INTRO_TEXT_ADITION = "";
 

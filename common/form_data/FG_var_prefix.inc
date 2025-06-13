@@ -81,9 +81,7 @@ $HD_Form->AddEditElement(
 
 $HD_Form->update_query_conditions = ["prefix" => "%id"];
 
-$HD_Form->FG_FILTER_ENABLE = true;
-$HD_Form->FG_FILTER_COLUMN = "prefix";
-$HD_Form->FG_FILTER_LABEL = _("Prefix");
+$HD_Form->AddListFilter("prefix", _("Prefix"));
 
 $HD_Form->FG_INTRO_TEXT_EDITION= "";
 $HD_Form->FG_INTRO_TEXT_ADITION = "";

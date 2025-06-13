@@ -3,9 +3,9 @@ namespace A2billing\Forms;
 
 /**
  * @var FormHandler $form
- * @var array $processed
- * @var array $list
- * @var int $popup_select
+ * @var array $processed values from $_GET or $_POST
+ * @var array $list the rows from the query
+ * @var int $popup_select will be > 0 if it's a popup window
  * @var bool $hasActionButtons
  * @var array<string,mixed> $query_params
  * @var array<string,mixed> $sort_params
@@ -13,9 +13,9 @@ namespace A2billing\Forms;
  */
 ?>
 
-<?php if (($form->FG_FILTER_ENABLE || $form->FG_FILTER2_ENABLE) || ($popup_select < 1 && count($form->list_top_buttons) > 0)): ?>
-<div class="row pb-3 align-items-end">
-    <?php if ($form->FG_LIST_VIEW_ROW_COUNT > 0 && ($form->FG_FILTER_ENABLE || $form->FG_FILTER2_ENABLE)): ?>
+<?php if (count($form->list_filters) > 0 || ($popup_select < 1 && count($form->list_top_buttons) > 0)): ?>
+<div class="row pb-3 align-items-end" id="list-filter-container">
+    <?php if ($form->FG_LIST_VIEW_ROW_COUNT > 0 && count($form->list_filters) > 0): ?>
     <form method="post" action="<?= $_SERVER["PHP_SELF"] ?>" class="col">
         <input type="hidden" name="form_action" value="list"/>
         <?php foreach ($query_params as $key => $val): ?>
@@ -29,35 +29,19 @@ namespace A2billing\Forms;
         <input type="hidden" name="current_page" value="0"/>
         <?= $form->csrf_inputs() ?>
         <div class="row align-items-end">
-            <?php if ($form->FG_FILTER_ENABLE): ?>
+            <?php foreach ($form->list_filters as $i => $filter): ?>
             <div class="col-auto">
-                <label for="filterprefix" class="form-label">
-                    <?= sprintf(_("Filter on %s"), $form->FG_FILTER_LABEL) ?>
-                </label>
                 <input
                     type="text"
-                    id="filterprefix"
-                    name="filterprefix"
-                    value="<?= $processed['filterprefix'] ?? "" ?>"
+                    id="filterprefix<?= $i ?>"
+                    name="filterprefix<?= $i ?>"
+                    value="<?= $processed["filterprefix$i"] ?? "" ?>"
                     class="form-control form-control-sm"
+                    placeholder="<?= $filter["label"] ?>"
+                    aria-label="<?= sprintf(_("Filter on %s"), $filter["label"]) ?>"
                 />
             </div>
-            <?php endif ?>
-
-            <?php if ($form->FG_FILTER2_ENABLE): ?>
-            <div class="col-auto">
-                <label for="filterprefix2" class="form-label">
-                    <?= sprintf(_("Filter on %s"), $form->FG_FILTER2_LABEL) ?>
-                </label>
-                <input
-                    type="text"
-                    id="filterprefix2"
-                    name="filterprefix2"
-                    value="<?= $processed["filterprefix2"] ?? "" ?>"
-                    class="form-control form-control-sm"
-                />
-            </div>
-            <?php endif ?>
+            <?php endforeach; ?>
             <div class="col-auto">
                 <button type="submit" class="btn btn-sm btn-primary"><?= _("Apply Filter") ?></button>
             </div>
@@ -80,7 +64,7 @@ namespace A2billing\Forms;
 <?php endif ?>
 
 <?php if ($form->FG_LIST_VIEW_ROW_COUNT > 0): ?>
-<div class="row pb-3">
+<div class="row pb-3" id="list-table-container">
     <div class="col table-responsive">
         <table
             class="list-view-table table table-bordered table-striped table-hover caption-top <?php if ($popup_select): ?>table-sm<?php endif ?>"
@@ -265,7 +249,7 @@ namespace A2billing\Forms;
         </table>
     </div>
 </div>
-<div class="row pb-3">
+<div class="row pb-3" id="list-pagination-container">
     <div class="col">
         <?= FormHandler::printPages(
             (int)($processed['current_page'] ?? 0) + 1,
@@ -276,7 +260,7 @@ namespace A2billing\Forms;
     </div>
 </div>
 
-<div class="row pb-3 justify-content-start align-items-center">
+<div class="row pb-3 justify-content-start align-items-center" id="list-export-container">
     <div class="col-4">
         <form id="displaylimit_form" action="">
             <label for="displaylimit" class="form-label d-inline"><?= gettext("Display");?></label>

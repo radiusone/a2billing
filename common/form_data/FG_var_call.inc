@@ -102,9 +102,7 @@ $HD_Form->AddEditElement(
 );
 
 // Set the filter variables
-$HD_Form->FG_FILTER_ENABLE = true;
-$HD_Form->FG_FILTER_COLUMN = "id";
-$HD_Form->FG_FILTER_LABEL = "call ID";
+$HD_Form->AddListFilter("id", _("Call ID"));
 
 $HD_Form->FG_LOCATION_AFTER_DELETE =
 $HD_Form->FG_LOCATION_AFTER_ADD =

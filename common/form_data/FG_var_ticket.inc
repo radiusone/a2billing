@@ -220,13 +220,10 @@ $HD_Form->AddEditTextarea(
 );
 
 // Set the filter variables
-$HD_Form->FG_FILTER_ENABLE = true;
 if ($ticket_type === "agent") {
-    $HD_Form->FG_FILTER_COLUMN = "login";
-    $HD_Form->FG_FILTER_LABEL = _("Login");
+    $HD_Form->AddListFilter("login", _("Login"));
 } else {
-    $HD_Form->FG_FILTER_COLUMN = "username";
-    $HD_Form->FG_FILTER_LABEL = _("Account number");
+    $HD_Form->AddListFilter("username", _("Account number"));
 }
 
 if (is_admin()) {

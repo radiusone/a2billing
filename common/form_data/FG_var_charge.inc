@@ -125,8 +125,6 @@ $HD_Form_c->AddEditTextarea(
     _("Insert the description")
 );
 
-$HD_Form_c->FG_FILTER_ENABLE = true;
-$HD_Form_c->FG_FILTER_COLUMN = "username";
-$HD_Form_c->FG_FILTER_LABEL = _("Account number");
+$HD_Form_c->AddListFilter("username", _("Account number"));
 
 $HD_Form_c->FG_INTRO_TEXT_ADITION = "";

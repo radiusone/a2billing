@@ -79,6 +79,4 @@ $HD_Form->AddListValue(_("To pay"), "", "sub_money", ["%6", "%7"]);
 $HD_Form->AddListActionButton("", _("Invoice"), "", "receipt", "popup-invoice");
 $HD_Form->AddListActionButton("#", _("Payment"), "", "cash-stack", "text-success popup-payment");
 
-$HD_Form->FG_FILTER_ENABLE = true;
-$HD_Form->FG_FILTER_COLUMN = "username";
-$HD_Form->FG_FILTER_LABEL = "cardnumber";
+$HD_Form->AddListFilter("username", _("Card number"));

@@ -66,11 +66,6 @@ $HD_Form->FG_ENABLE_EDIT_BUTTON = false;
 $HD_Form->FG_ENABLE_DELETE_BUTTON = false;
 $HD_Form->FG_ENABLE_ADD_BUTTON = false;
 
-$HD_Form->FG_FILTER_ENABLE = true;
-$HD_Form->FG_FILTER_COLUMN = "username";
-$HD_Form->FG_FILTER_LABEL = "cardnumber";
-
-$HD_Form->FG_FILTER2_ENABLE = true;
-$HD_Form->FG_FILTER2_COLUMN = "cc_did.did";
-$HD_Form->FG_FILTER2_LABEL = "did";
+$HD_Form->AddListFilter("username", _("Card number"));
+$HD_Form->AddListFilter("cc_did.did", _("DID"));
 

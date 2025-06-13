@@ -155,9 +155,7 @@ if ($popup_select) {
     $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 7;
     $HD_Form->AddListSelectActionButton("javascript:sendRateToPackage('|param|')");
 } else {
-    $HD_Form->FG_FILTER_ENABLE = true;
-    $HD_Form->FG_FILTER_COLUMN = 'dialprefix';
-    $HD_Form->FG_FILTER_LABEL = _("Dial Prefix");
+    $HD_Form->AddListFilter("dialprefix", _("Dial Prefix"));
     $HD_Form->search_form_enabled = true;
     $HD_Form->search_delete_enabled = is_admin();
 }

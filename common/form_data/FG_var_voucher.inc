@@ -68,9 +68,7 @@ $HD_Form->AddListMapping(_("Currency"), "currency", $currency_list);
 $form_action ??= "list";
 
 // Set the filter variables
-$HD_Form->FG_FILTER_ENABLE = true;
-$HD_Form->FG_FILTER_COLUMN = "voucher";
-$HD_Form->FG_FILTER_LABEL = _("Voucher");
+$HD_Form->AddListFilter("voucher", _("Voucher"));
 
 // Search form
 $HD_Form->search_form_enabled = true;

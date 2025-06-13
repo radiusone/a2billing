@@ -224,9 +224,7 @@ $HD_Form->AddListHiddenValue("cc_card.id AS id_")
     ->AddListHiddenValue("username AS username_")
     ->AddListHiddenValue("useralias AS alias_");
 
-$HD_Form->FG_FILTER_ENABLE = true;
-$HD_Form->FG_FILTER_COLUMN = 'username';
-$HD_Form->FG_FILTER_LABEL = _('Account Number');
+$HD_Form->AddListFilter("username", _("Account Number"));
 
 $HD_Form->FG_ENABLE_ADD_BUTTON = !is_customer();
 $HD_Form->FG_ENABLE_EDIT_BUTTON = !$popup_select && (Admin::allowed(Admin::ACX_MODIFY_CUSTOMERS) || Agent::allowed(Agent::ACX_EDIT_CUSTOMER) || Customer::allowed(Customer::ACX_PERSONALINFO));
