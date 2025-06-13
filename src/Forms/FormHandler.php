@@ -249,10 +249,6 @@ class FormHandler
     /** @var string Error text for the add page */
     public string $FG_TEXT_ADITION_ERROR = 'Your new #FG_INSTANCE_NAME# has not been inserted.';
 
-    /** @var string Error text for the add page */
-    public string $FG_TEXT_ERROR_DUPLICATION = "You cannot choose more than one !";
-
-
     /** @var string Text telling you to click the button */
     public string $FG_ADD_PAGE_BOTTOM_TEXT = "Click 'Confirm Data' to continue";
 
@@ -303,8 +299,6 @@ class FormHandler
 
     /** @var string The CSRF token for the current request */
     public string $FG_CSRF_TOKEN;
-
-    private bool $alarm_db_error_duplication = false;
 
     public bool $FG_LIST_ADDING_BUTTON1 = false;
 
@@ -383,7 +377,6 @@ class FormHandler
         $this->FG_TEXT_ADITION_CONFIRMATION = sprintf(_("Your new %s has been inserted"), $this->FG_INSTANCE_NAME);
         $this->FG_TEXT_ADITION_ERROR = sprintf(_("Your new %s hasn't been inserted"), $this->FG_INSTANCE_NAME);
 
-        $this->FG_TEXT_ERROR_DUPLICATION = _("You cannot choose more than one !");
         $this->search_form_title = _("Define the search criteria");
         $this->FG_ADD_PAGE_BOTTOM_TEXT = _("Click 'Confirm Data' to continue");
         $this->FG_EDIT_PAGE_BOTTOM_TEXT = _("Click 'Confirm Data' to continue");
@@ -1840,11 +1833,7 @@ class FormHandler
             if ($form_action === "ask-edit") {
                 $help = $this->edit_help_text ?: $this->help_text;
             }
-            if ($this->alarm_db_error_duplication) {
-                $msg = "<p class=\"danger\">$this->FG_TEXT_ERROR_DUPLICATION</p>";
-            } else {
-                $msg = $this->FG_INTRO_TEXT_EDITION;
-            }
+            $msg = $this->FG_INTRO_TEXT_EDITION;
         } elseif ($form_action === "ask-add") {
             $msg = $this->FG_INTRO_TEXT_ADITION;
             $help = $this->add_help_text ?: $this->help_text;
