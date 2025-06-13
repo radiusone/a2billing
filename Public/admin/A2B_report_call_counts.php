@@ -106,7 +106,7 @@ $HD_Form->AddSearchRadioInput(
     false
 );
 
-require_once __DIR__ . "/../templates/main.php";
+require_once __DIR__ . "/templates/main.php";
 
 $form_action = "list";
 if ($posted_search) {
@@ -118,4 +118,4 @@ if ($posted_search) {
     $HD_Form->create_form($form_action, $list);
 }
 
-require_once __DIR__ . "/../templates/footer.php";
+require_once __DIR__ . "/templates/footer.php";

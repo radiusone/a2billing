@@ -107,7 +107,7 @@ switch ($action) {
 
 $total = 0;
 
-require_once __DIR__ . "/../templates/main.php";
+require_once __DIR__ . "/templates/main.php";
 
 ?>
 <div class="row mb-3">

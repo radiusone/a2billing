@@ -57,9 +57,9 @@ if ($form_action !== "edit" && $form_action !== "ask-edit" || (isset($id) && (in
 $HD_Form -> init();
 $list = $HD_Form->perform_action($form_action);
 
-require_once __DIR__ . "/../templates/main.php";
+require_once __DIR__ . "/templates/main.php";
 
 $HD_Form->create_toppage($form_action);
 $HD_Form->create_form($form_action, $list);
 
-require_once __DIR__ . "/../templates/footer.php";
+require_once __DIR__ . "/templates/footer.php";

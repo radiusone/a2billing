@@ -174,7 +174,7 @@ $form_action ??= "list";
 
 $list = $HD_Form->perform_action($form_action);
 
-require_once __DIR__ . "/../templates/main.php";
+require_once __DIR__ . "/templates/main.php";
 
 $HD_Form->list_help_text = create_help(
     _("Bulk create customers in a single step. <br> Set the properties of the batch such as initial credit, account type and currency, then click on the GENERATE CUSTOMERS button to create the batch.")
@@ -454,4 +454,4 @@ $list_country = $HD_Form->DBHandle->CacheGetAll(300, "SELECT countrycode AS id, 
 $HD_Form->create_form($form_action, $list) ;
 $HD_Form->setup_export();
 
-require_once __DIR__ . "/../templates/footer.php";
+require_once __DIR__ . "/templates/footer.php";

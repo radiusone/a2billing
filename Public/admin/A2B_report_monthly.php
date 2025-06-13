@@ -54,7 +54,7 @@ require_once __DIR__ . "/../../common/form_data/report_monthly.inc";
 
 Admin::checkPageAccess(Admin::ACX_CALL_REPORT);
 
-require_once __DIR__ . "/../templates/main.php";
+require_once __DIR__ . "/templates/main.php";
 
 $HD_Form->create_search_form();
 $HD_Form->create_toppage("list");
@@ -98,4 +98,4 @@ $HD_Form->create_toppage("list");
 </div>
 
 <?php
-require_once __DIR__ . "/../templates/footer.php";
+require_once __DIR__ . "/templates/footer.php";

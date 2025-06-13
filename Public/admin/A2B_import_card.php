@@ -128,7 +128,7 @@ if ($task) {
 
 $my_max_file_size = (int)MY_MAX_FILE_SIZE_IMPORT;
 
-require_once __DIR__ . "/../templates/main.php";
+require_once __DIR__ . "/templates/main.php";
 ?>
 <?php if ($task === "preview" && empty($assoc_csv)): ?>
     <div class="row mb-3">
@@ -316,4 +316,4 @@ require_once __DIR__ . "/../templates/main.php";
 <?php
 endif;
 
-require_once __DIR__ . "/../templates/footer.php";
+require_once __DIR__ . "/templates/footer.php";

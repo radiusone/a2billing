@@ -58,7 +58,7 @@ $list = $HD_Form_c->perform_action($form_action);
 
 if (!$wantinclude) {
     // #### HEADER SECTION
-    require_once __DIR__ . "/../templates/main.php";
+    require_once __DIR__ . "/templates/main.php";
     // #### TOP SECTION PAGE
     $HD_Form_c->create_toppage($form_action);
 }
@@ -66,5 +66,5 @@ if (!$wantinclude) {
 $HD_Form_c->create_form($form_action, $list);
 
 if (!$wantinclude) {
-    require_once __DIR__ . "/../templates/footer.php";
+    require_once __DIR__ . "/templates/footer.php";
 }

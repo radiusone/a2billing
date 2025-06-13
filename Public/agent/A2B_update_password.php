@@ -74,7 +74,7 @@ if ($form_action === "ask-modif") {
     }
 }
 
-require_once __DIR__ . "/../templates/main.php";
+require_once __DIR__ . "/templates/main.php";
 ?>
     <div class="row pb-3 align-items-center" role="alert">
         <div class="col">
@@ -133,4 +133,4 @@ require_once __DIR__ . "/../templates/main.php";
     </script>
 
 <?php
-require_once __DIR__ . "/../templates/footer.php";
+require_once __DIR__ . "/templates/footer.php";

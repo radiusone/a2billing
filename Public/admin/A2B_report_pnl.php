@@ -368,7 +368,7 @@ $HD_Form->setup_export(["*"], "pnl_report");
 $form_action ??= "list";
 $list = $HD_Form->perform_action($form_action);
 
-require_once __DIR__ . "/../templates/main.php";
+require_once __DIR__ . "/templates/main.php";
 
 $HD_Form->create_search_form();
 $HD_Form->create_toppage ($form_action);
@@ -442,4 +442,4 @@ $row = $res ? $res->FetchRow() : false;
 <?php endif ?>
 
 <?php
-require_once __DIR__ . "/../templates/footer.php";
+require_once __DIR__ . "/templates/footer.php";

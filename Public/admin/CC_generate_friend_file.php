@@ -93,7 +93,7 @@ if ($action == "reload") {
 
 }
 
-require_once __DIR__ . "/../templates/main.php";
+require_once __DIR__ . "/templates/main.php";
 
 echo create_help(_("Click reload to commit changes to Asterisk"));
 
@@ -140,4 +140,4 @@ echo create_help(_("Click reload to commit changes to Asterisk"));
 
 <?php
 
-require_once __DIR__ . "/../templates/footer.php";
+require_once __DIR__ . "/templates/footer.php";

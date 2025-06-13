@@ -73,7 +73,7 @@ $dids = $DBHandle->GetAll(
     [$id]
 );
 
-require_once __DIR__ . "/../templates/main.php";
+require_once __DIR__ . "/templates/main.php";
 echo get_login_button ($id);
 ?>
 
@@ -463,4 +463,4 @@ echo get_login_button ($id);
 </div>
 
 <?php
-require_once __DIR__ . "/../templates/footer.php";
+require_once __DIR__ . "/templates/footer.php";

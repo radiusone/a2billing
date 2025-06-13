@@ -136,7 +136,7 @@ if ($task) {
     echo create_help(_("You can import lists of DIDs using a CSV file."));
 }
 
-require_once __DIR__ . "/../templates/main.php";
+require_once __DIR__ . "/templates/main.php";
 
 ?>
 
@@ -336,4 +336,4 @@ require_once __DIR__ . "/../templates/main.php";
 <?php
 endif;
 
-require_once __DIR__ . "/../templates/footer.php";
+require_once __DIR__ . "/templates/footer.php";

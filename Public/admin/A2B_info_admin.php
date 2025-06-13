@@ -58,7 +58,7 @@ if (!$admin) {
     header("Location: A2B_entity_user.php?groupID=$groupID");
 }
 
-require_once __DIR__ . "/../templates/main.php";
+require_once __DIR__ . "/templates/main.php";
 
 ?>
 <div class="row pb-3 gx-5">
@@ -120,4 +120,4 @@ require_once __DIR__ . "/../templates/main.php";
 </div>
 
 <?php
-require_once __DIR__ . "/../templates/footer.php";
+require_once __DIR__ . "/templates/footer.php";

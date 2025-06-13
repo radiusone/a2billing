@@ -41,7 +41,7 @@ require_once __DIR__ . "/../../common/lib/admin.defines.php";
 
 Admin::checkPageAccess(Admin::ACX_CUSTOMER);
 
-require_once __DIR__ . "/../templates/main.php";
+require_once __DIR__ . "/templates/main.php";
 
 echo create_help(_("The Notification component is responsible for informing the Customer, via e-mail, that the account has reached a minimum credit."));
 
@@ -178,4 +178,4 @@ if ($return) {
 ?>
 </DIV>
 <?php
-require_once __DIR__ . "/../templates/footer.php";
+require_once __DIR__ . "/templates/footer.php";

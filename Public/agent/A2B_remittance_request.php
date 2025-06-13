@@ -129,7 +129,7 @@ if (!$remittance_in_progress && ($action === "check" || $action === "add")) {
     }
 }
 
-require_once __DIR__ . "/../templates/main.php";
+require_once __DIR__ . "/templates/main.php";
 
 if (empty($action)) {
     echo create_help(gettext("On this page you will be able to create a remittance Remittance Request according to the commission accrued on your account.If the commission accrued is higher than a predefined threshold then it will be possible to ask a transfer on your balance or by a funds transfer."));
@@ -270,4 +270,4 @@ if (empty($action)) {
 
 <?php
 
-require_once __DIR__ . "/../templates/footer.php";
+require_once __DIR__ . "/templates/footer.php";

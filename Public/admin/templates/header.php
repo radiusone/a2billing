@@ -5,8 +5,8 @@
     <title>..:: <?= _("A2Billing Portal") ?> ::..</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <?php /* pages will all be served from /admin/Public, set path accordingly */?>
-    <link href="../../common/lib/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css"/>
-    <link href="../../common/lib/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet" type="text/css"/>
-    <link href="../../common/lib/common.css" rel="stylesheet"/>
+    <link href="../../../common/lib/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../common/lib/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../common/lib/common.css" rel="stylesheet"/>
 </head>
 <body>

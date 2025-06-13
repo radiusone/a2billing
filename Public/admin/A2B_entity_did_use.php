@@ -52,7 +52,7 @@ $HD_Form->init();
 $form_action ??= "list";
 $action ??= "";
 
-require_once __DIR__ . "/../templates/main.php";
+require_once __DIR__ . "/templates/main.php";
 
 // #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);
@@ -90,4 +90,4 @@ if ($action !== "ask_release") {
     $HD_Form->create_form($form_action, $list) ;
 }
 
-require_once __DIR__ . "/../templates/footer.php";
+require_once __DIR__ . "/templates/footer.php";

@@ -185,7 +185,7 @@ if ($task) {
     );
 }
 
-require_once __DIR__ . "/../templates/main.php";
+require_once __DIR__ . "/templates/main.php";
 ?>
 
 <?php if ($task === "preview" && empty($assoc_csv)): ?>
@@ -440,4 +440,4 @@ require_once __DIR__ . "/../templates/main.php";
 <?php
 endif;
 
-require_once __DIR__ . "/../templates/footer.php";
+require_once __DIR__ . "/templates/footer.php";

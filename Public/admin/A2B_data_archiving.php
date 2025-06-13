@@ -136,7 +136,7 @@ if ($posted_archive) {
 $form_action ??= "list";
 $list = $HD_Form->perform_action($form_action);
 
-require_once __DIR__ . "/../templates/main.php";
+require_once __DIR__ . "/templates/main.php";
 echo create_help(_("Here you can archive the data. The Default listing will show you the previous 3 months data. But you can also search the data and archive it."));
 
 $HD_Form->create_search_form();
@@ -162,7 +162,7 @@ if ($archive_message) {
 
 $HD_Form->create_form($form_action, $list);
 
-require_once __DIR__ . "/../templates/footer.php";
+require_once __DIR__ . "/templates/footer.php";
 
 function archive_data(string $where, array $params = []): bool
 {

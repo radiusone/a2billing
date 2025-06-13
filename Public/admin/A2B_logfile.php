@@ -49,7 +49,7 @@ getpost_ifset(["nb", "view_log", "filter"]);
  * @var A2Billing $A2B
  */
 
-require_once __DIR__ . "/../templates/main.php";
+require_once __DIR__ . "/templates/main.php";
 
 // #### HELP SECTION
 echo create_help(
@@ -136,4 +136,4 @@ if (isset($view_log)) {
     );
 }
 
-require_once __DIR__ . "/../templates/footer.php";
+require_once __DIR__ . "/templates/footer.php";

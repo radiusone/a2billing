@@ -79,7 +79,7 @@ if ( !empty($A2B->config["dashboard"]["system_info_enable"]) && $A2B->config["da
     put_display($A2B->config["dashboard"]["system_info_enable"], gettext("System"), ["./modules/system_info.php"], $boxes);
 }
 
-require_once __DIR__ . "/../templates/main.php";
+require_once __DIR__ . "/templates/main.php";
 
 ?>
 <div class="row">
@@ -225,4 +225,4 @@ document.addEventListener("DOMContentLoaded", function() {
 </script>
 <?php
 
-require_once __DIR__ . "/../templates/footer.php";
+require_once __DIR__ . "/templates/footer.php";

@@ -37,7 +37,7 @@ use A2billing\Table;
 **/
 
 require_once __DIR__ . "/../../common/lib/agent.defines.php";
-require_once __DIR__ . "/../templates/main.php";
+require_once __DIR__ . "/templates/main.php";
 
 $DBHandle = DbConnect();
 $table_message = new Table("cc_message_agent");
@@ -69,4 +69,4 @@ $message_logos = ["bi-info-circle-fill text-info", "bi-check-circle-fill text-su
 </div>
 
 <?php
-require_once __DIR__ . "/../templates/footer.php";
+require_once __DIR__ . "/templates/footer.php";

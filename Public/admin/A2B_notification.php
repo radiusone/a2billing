@@ -83,7 +83,7 @@ if (!empty($action)) {
     die();
 }
 
-require_once __DIR__ . "/../templates/main.php";
+require_once __DIR__ . "/templates/main.php";
 echo create_help(_("Notification: You can see below all notifications received about some event."));
 
 $nb_per_page = 15;
@@ -100,7 +100,7 @@ if ($nb_total === 0) {
         </div>
     </div>
     HTML;
-    require_once __DIR__ . "/../templates/footer.php";
+    require_once __DIR__ . "/templates/footer.php";
     die();
 }
 ?>
@@ -213,4 +213,4 @@ document.querySelectorAll("button.delete_notification").forEach(el => el.addEven
 }));
 </script>
 <?php
-require_once __DIR__ . "/../templates/footer.php";
+require_once __DIR__ . "/templates/footer.php";

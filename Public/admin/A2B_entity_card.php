@@ -165,7 +165,7 @@ $id = $id ?? 0;
 $form_action ??= "list";
 $list = $HD_Form->perform_action($form_action);
 
-require_once __DIR__ . "/../templates/main.php";
+require_once __DIR__ . "/templates/main.php";
 ?>
 
 <?php if ($form_action === "list" && !$popup_select) {
@@ -642,4 +642,4 @@ document.querySelectorAll("#check\\[upd_credit\\]").forEach(function (el) {
 });
 </script>
 
-<?php require_once __DIR__ . "/../templates/footer.php";
+<?php require_once __DIR__ . "/templates/footer.php";

@@ -12,7 +12,7 @@
         </div> <!-- div.container -->
         <?php !empty($profiler) && $profiler->display() ?>
     </body>
-    <?php /* pages will all be served from /admin/Public, set path accordingly */?>
-    <script src="../../common/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="../../common/lib/common.js"></script>
+    <?php /* pages will all be served from /agent/Public, set path accordingly */?>
+    <script src="../../../common/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../../../common/lib/common.js"></script>
 </html>

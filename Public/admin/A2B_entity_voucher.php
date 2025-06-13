@@ -122,7 +122,7 @@ if ($action === "generate") {
 $form_action ??= "list";
 $list = $HD_Form->perform_action($form_action);
 
-require_once __DIR__ . "/../templates/main.php";
+require_once __DIR__ . "/templates/main.php";
 
 if ($form_action === "list" && !$popup_select) {
 ?>
@@ -397,4 +397,4 @@ echo $update_msg ?? "";
 $HD_Form->create_form($form_action, $list);
 $HD_Form->setup_export();
 
-require_once __DIR__ . "/../templates/footer.php";
+require_once __DIR__ . "/templates/footer.php";

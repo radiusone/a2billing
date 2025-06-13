@@ -47,7 +47,7 @@ require_once __DIR__ . "/../../common/form_data/FG_var_config_group.inc";
 $form_action ??= "";
 $HD_Form -> init();
 
-require_once __DIR__ . "/../templates/main.php";
+require_once __DIR__ . "/templates/main.php";
 
 $HD_Form->create_toppage($form_action);
 
@@ -112,4 +112,4 @@ $new_group_title = $config[0]["new_title"];
 </form>
 
 <?php
-require_once __DIR__ . "/../templates/footer.php";
+require_once __DIR__ . "/templates/footer.php";

@@ -52,7 +52,7 @@ $form_action ??= "list";
 
 $list = $HD_Form->perform_action($form_action);
 
-require_once __DIR__ . "/../templates/main.php";
+require_once __DIR__ . "/templates/main.php";
 
 if ($form_action === "list") {
     $HD_Form->create_search_form();
@@ -60,4 +60,4 @@ if ($form_action === "list") {
 $HD_Form->create_toppage($form_action);
 $HD_Form->create_form($form_action, $list);
 
-require_once __DIR__ . "/../templates/footer.php";
+require_once __DIR__ . "/templates/footer.php";

@@ -40,11 +40,11 @@ require_once __DIR__ . "/../../common/lib/admin.defines.php";
 Admin::checkPageAccess(Admin::ACX_PREDICTIVE_DIALER);
 
 
-require_once __DIR__ . "/../templates/main.php";
+require_once __DIR__ . "/templates/main.php";
 
 
 echo "<br/><br/>";
 echo "<center>Campaigns and Voice Broadcasting is obsolete in A2Billing, and has been replaced by Newfies-Dialer.<br/>";
 echo '<br/>More information at <a target="_blank" href="http://www.newfies-dialer.org/">http://www.newfies-dialer.org/</a><br/><br/><br/>';
 
-require_once __DIR__ . "/../templates/footer.php";
+require_once __DIR__ . "/templates/footer.php";

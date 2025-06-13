@@ -76,7 +76,7 @@ $invoice_conf = $table->getColumn(
 
 $curr = strtoupper($curr ?? BASE_CURRENCY);
 
-require_once __DIR__ . "/../templates/main.php";
+require_once __DIR__ . "/templates/main.php";
 ?>
 
 <?php if (!$popup_select): ?>
@@ -221,4 +221,4 @@ require_once __DIR__ . "/../templates/main.php";
 </div>
 
 <?php
-require_once __DIR__ . "/../templates/footer.php";
+require_once __DIR__ . "/templates/footer.php";

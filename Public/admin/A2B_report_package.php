@@ -83,7 +83,7 @@ if (empty($HD_Form->list_query_conditions)) {
 
 $list = $HD_Form->perform_action($form_action);
 
-require_once __DIR__ . "/../templates/main.php";
+require_once __DIR__ . "/templates/main.php";
 
 $HD_Form->create_search_form();
 
@@ -140,5 +140,5 @@ if (count($list_total_day)):
 </table>
 <?php endif ?>
 
-<?php require_once __DIR__ . "/../templates/footer.php" ?>
+<?php require_once __DIR__ . "/templates/footer.php" ?>
 

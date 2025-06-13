@@ -52,11 +52,11 @@ $HD_Form->prepare_list_subselection("list");
 
 $list = $HD_Form->perform_action($form_action);
 
-require_once __DIR__ . "/../templates/main.php";
+require_once __DIR__ . "/templates/main.php";
 
 $HD_Form->create_search_form();
 
 $HD_Form->create_toppage($form_action);
 $HD_Form->create_form("list", $list);
 
-require_once __DIR__ . "/../templates/footer.php";
+require_once __DIR__ . "/templates/footer.php";

@@ -78,7 +78,7 @@ foreach ($payments as $payment) {
     $payment_assigned += round($payment["payment"], 2, PHP_ROUND_HALF_UP);
 }
 
-require_once __DIR__ . "/../templates/main.php";
+require_once __DIR__ . "/templates/main.php";
 ?>
 <div class="row mb-3">
     <div class="col-8">
@@ -160,4 +160,4 @@ document.addEventListener("DOMContentLoaded", function() {
 </script>
 
 <?php
-require_once __DIR__ . "/../templates/footer.php";
+require_once __DIR__ . "/templates/footer.php";

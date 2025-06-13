@@ -242,7 +242,7 @@ $list = $HD_Form -> perform_action($form_action);
 
 
 // #### HEADER SECTION
-require_once __DIR__ . "/../templates/main.php";
+require_once __DIR__ . "/templates/main.php";
 
 
 
@@ -619,4 +619,4 @@ $HD_Form -> create_form($form_action, $list) ;
 $HD_Form->setup_export();
 
 // #### FOOTER SECTION
-if (!($popup_select>=1)) require_once __DIR__ . "/../templates/footer.php";
+if (!($popup_select>=1)) require_once __DIR__ . "/templates/footer.php";

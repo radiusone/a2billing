@@ -39,7 +39,7 @@ $menu_section = 16;
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
 
 Admin::checkPageAccess(Admin::ACX_MAINTENANCE);
-require_once __DIR__ . "/../templates/main.php";
+require_once __DIR__ . "/templates/main.php";
 
 ob_start();
 phpinfo(INFO_GENERAL | INFO_MODULES | INFO_ENVIRONMENT);
@@ -64,4 +64,4 @@ $css = str_replace("div.phpinfo body", "div.phpinfo", $css);
 echo "<style>$css</style>";
 echo "<div class=\"phpinfo\">$body</div>";
 
-require_once(__DIR__ . "/../templates/footer.php");
+require_once(__DIR__ . "/templates/footer.php");

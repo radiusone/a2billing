@@ -91,7 +91,7 @@ $form_action ??= "list";
 
 $list = $HD_Form->perform_action($form_action);
 
-require_once __DIR__ . "/../templates/main.php";
+require_once __DIR__ . "/templates/main.php";
 
 $HD_Form->create_search_form();
 $HD_Form->create_toppage($form_action);
@@ -132,7 +132,7 @@ $graph = createBarGraph(
 
 <?php
 if (!isset($hour_detail)) {
-    require_once __DIR__ . "/../templates/footer.php";
+    require_once __DIR__ . "/templates/footer.php";
     exit;
 }
 
@@ -226,5 +226,5 @@ if ($hour_detail_type === "fluctuation") {
 </div>
 
 <?php
-require_once __DIR__ . "/../templates/footer.php";
+require_once __DIR__ . "/templates/footer.php";
 

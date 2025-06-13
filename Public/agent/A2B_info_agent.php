@@ -62,7 +62,7 @@ $credit_cur = get_money($agent_info["credit"], 2, $agent_info["currency"]);
 $remittance_value_cur = get_money($agent_info["remit"], 2, $agent_info["currency"]);
 $commision_bal_cur  =  get_money($agent_info["com_balance"], 2, $agent_info["currency"]);
 
-require_once __DIR__ . "/../templates/main.php";
+require_once __DIR__ . "/templates/main.php";
 ?>
 <div class="row pb-3 gx-5">
     <div class="col-6">
@@ -141,4 +141,4 @@ require_once __DIR__ . "/../templates/main.php";
 <?php endif ?>
 
 <?php
-require_once __DIR__ . "/../templates/footer.php";
+require_once __DIR__ . "/templates/footer.php";

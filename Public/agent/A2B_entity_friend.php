@@ -125,7 +125,7 @@ if (!USE_REALTIME) {
 
 $list = $HD_Form -> perform_action($form_action);
 
-require_once __DIR__ . "/../templates/main.php";
+require_once __DIR__ . "/templates/main.php";
 ?>
 
 <?php if ($form_action === "list" && !empty($_SESSION["is_sip_iax_change"])): ?>
@@ -167,4 +167,4 @@ require_once __DIR__ . "/../templates/main.php";
 $HD_Form->create_toppage($form_action);
 $HD_Form->create_form($form_action, $list);
 
-require_once __DIR__ . "/../templates/footer.php";
+require_once __DIR__ . "/templates/footer.php";

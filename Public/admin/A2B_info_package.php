@@ -109,7 +109,7 @@ if ($delallrate ?? false) {
     header("Location: A2B_info_package.php?id=$id");
 }
 
-require_once __DIR__ . "/../templates/main.php";
+require_once __DIR__ . "/templates/main.php";
 
 //load rates
 $DBHandle = DbConnect();
@@ -205,4 +205,4 @@ document.getElementById("delall").addEventListener("click", function() {
 </script>
 
 <?php
-require_once __DIR__ . "/../templates/footer.php";
+require_once __DIR__ . "/templates/footer.php";

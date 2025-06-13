@@ -163,7 +163,7 @@ $list_trunk = $HD_Form->DBHandle->GetAll("SELECT id_trunk, trunkcode, providerip
 $list_cid_group = $HD_Form->DBHandle->GetAll("SELECT id, group_name FROM cc_outbound_cid_group ORDER BY group_name") ?: [];
 $list_tariffgroup = $HD_Form->DBHandle->GetAll("SELECT id, tariffgroupname, lcrtype FROM cc_tariffgroup ORDER BY tariffgroupname") ?: [];
 
-require_once __DIR__ . "/../templates/main.php";
+require_once __DIR__ . "/templates/main.php";
 
 // DISPLAY THE UPDATE MESSAGE
 echo $update_msg ?? "";
@@ -522,4 +522,4 @@ $HD_Form->create_toppage($form_action);
 $HD_Form->create_form($form_action, $list);
 $HD_Form->setup_export();
 
-require_once __DIR__ . "/../templates/footer.php";
+require_once __DIR__ . "/templates/footer.php";

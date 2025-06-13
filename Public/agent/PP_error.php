@@ -48,9 +48,9 @@ $c ??= 0;
 //Error Type == 0 Mean Critical Error dont need to show left menu.
 //Error Type == 1 Mean User generated error.and it will show menu to him too.
 if ($err_type == 0) {
-    require_once __DIR__ . "/../templates/header.php";
+    require_once __DIR__ . "/templates/header.php";
 } else {
-    require_once __DIR__ . "/../templates/main.php";
+    require_once __DIR__ . "/templates/main.php";
 }
 
 $error["0"] 			= gettext("ERROR : ACCESS REFUSED");
@@ -82,5 +82,5 @@ $error["ERR-0002"] 		= gettext("No such card number found. Please check your car
 if ($err_type == 0) {
     echo '</body></html>';
 } else {
-    require_once __DIR__ . "/../templates/footer.php";
+    require_once __DIR__ . "/templates/footer.php";
 }

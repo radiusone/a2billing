@@ -155,7 +155,7 @@ switch ($action) {
 
 $messages = $DBHandle->GetAll("SELECT * FROM cc_message_agent WHERE id_agent = ? ORDER BY order_display", [$id]);
 
-require_once __DIR__ . "/../templates/main.php";
+require_once __DIR__ . "/templates/main.php";
 $message_types = getMsgTypeList();
 $message_classes = ["alert-info", "alert-success", "alert-warning", "alert-danger"];
 $message_logos = ["bi-info-circle-fill text-info", "bi-check-circle-fill text-success", "bi-exclamation-circle-fill text-warning", "bi-x-circle-fill text-danger"];
@@ -271,4 +271,4 @@ document.querySelectorAll("button.edit")?.forEach(function(el) {
 </script>
 
 <?php
-require_once __DIR__ . "/../templates/footer.php";
+require_once __DIR__ . "/templates/footer.php";

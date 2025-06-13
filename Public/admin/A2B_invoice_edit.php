@@ -114,7 +114,7 @@ $result_vat = (new Table("cc_card", "vat"))
     ->getRow($DBHandle, ["id" => $invoice->getCard()]);
 $card_vat =  $result_vat["vat"];
 
-require_once __DIR__ . "/../templates/main.php";
+require_once __DIR__ . "/templates/main.php";
 
 ?>
 <div class="row mb-3">

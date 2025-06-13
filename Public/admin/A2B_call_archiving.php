@@ -211,7 +211,7 @@ if ($posted_search === true && $posted_archive === false) {
     );
 }
 
-require_once __DIR__ . "/../templates/main.php";
+require_once __DIR__ . "/templates/main.php";
 $HD_Form->create_search_form();
 
 if ($archive_message) {
@@ -221,7 +221,7 @@ if ($archive_message) {
 $list = $HD_Form->perform_action($form_action);
 $HD_Form->create_form($form_action, $list) ;
 
-require_once __DIR__ . "/../templates/footer.php";
+require_once __DIR__ . "/templates/footer.php";
 
 /*
  * Function use to archive data and call records

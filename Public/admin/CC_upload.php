@@ -209,7 +209,7 @@ require_once __DIR__ . "/../templates/main.php";
     <?php
     for ($i=0;$i<count($file_ext_allow);$i++) {
         if (($i<>count($file_ext_allow)-1))$commas=", ";else $commas="";
-        list($key,$value)=each($file_ext_allow);
+        [$key,$value]=each($file_ext_allow);
         echo $value.$commas;
     }
     ?>   </td>

@@ -44,7 +44,7 @@ require_once __DIR__ . "/../../common/lib/admin.defines.php";
  */
 
 Admin::checkPageAccess(Admin::ACX_MAINTENANCE);
-require_once __DIR__ . "/../templates/main.php";
+require_once __DIR__ . "/templates/main.php";
 
 getpost_ifset(["info"]);
 $info ??= "summary";
@@ -223,4 +223,4 @@ function buildAsteriskInfo(AMI $astman): string
     HTML;
 }
 
-require_once __DIR__ . "/../templates/footer.php";
+require_once __DIR__ . "/templates/footer.php";

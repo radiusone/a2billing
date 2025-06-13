@@ -65,7 +65,7 @@ if (($action ?? "") === "change") {
     die();
 }
 
-require_once __DIR__ . "/../templates/main.php";
+require_once __DIR__ . "/templates/main.php";
 ?>
 <div class="row pb-3 gx-5">
     <div class="col-6">
@@ -171,4 +171,4 @@ require_once __DIR__ . "/../templates/main.php";
 
 <?php
 
-require_once __DIR__ . "/../templates/footer.php";
+require_once __DIR__ . "/templates/footer.php";

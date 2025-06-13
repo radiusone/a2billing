@@ -144,7 +144,7 @@ if (isset($submit)) {
     }
 }
 
-require_once __DIR__ . "/../templates/main.php";
+require_once __DIR__ . "/templates/main.php";
 
 $HD_Form->create_search_form(true);
 ?>
@@ -241,4 +241,4 @@ $HD_Form->create_search_form(true);
 
 <?php
 
-require_once __DIR__ . "/../templates/footer.php";
+require_once __DIR__ . "/templates/footer.php";
