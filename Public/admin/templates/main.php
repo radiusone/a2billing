@@ -4,7 +4,7 @@ use A2billing\Admin;
 use A2billing\NotificationsDAO;
 
 require_once("header.php");
-require_once __DIR__ . "/../../common/lib/admin.defines.php";
+require_once __DIR__ . "/../../../common/lib/admin.defines.php";
 /**
  * @var string $popup_select
  * @var int|null $menu_section

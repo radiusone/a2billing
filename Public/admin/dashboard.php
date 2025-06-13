@@ -97,9 +97,9 @@ require_once __DIR__ . "/templates/main.php";
 <?php endforeach ?>
 </div>
 
-<script src="../../common/lib/jquery/jquery.min.js"></script>
-<script src="../../common/lib/flot/js/jquery.flot.min.js"></script>
-<script src="../../common/lib/flot/js/plugins/jquery.flot.time.min.js"></script>
+<script src="../common/jquery/jquery.min.js"></script>
+<script src="../common/flot/js/jquery.flot.min.js"></script>
+<script src="../common/flot/js/plugins/jquery.flot.time.min.js"></script>
 
 <script>
 let previousPoint = null;
