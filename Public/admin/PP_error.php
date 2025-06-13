@@ -42,12 +42,8 @@ getpost_ifset(['err_type','c']);
  * @var string $c
  */
 
-if (!isset($err_type)) {
-    $err_type = 0;
-}
-if (!isset($c))	{
-    $c = 0;
-}
+$err_type ??= 0;
+$c ??= 0;
 
 //Error Type == 0 Mean Critical Error dont need to show left menu.
 //Error Type == 1 Mean User generated error.and it will show menu to him too.

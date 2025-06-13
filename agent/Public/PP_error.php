@@ -31,16 +31,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
-**/
+ **/
 
 require_once __DIR__ . "/../../common/lib/agent.defines.php";
 
 session_destroy();
-getpost_ifset(array('err_type','c'));
+getpost_ifset(['err_type','c']);
+/**
+ * @var int $err_type
+ * @var string $c
+ */
 
-if (!isset($err_type)) {
-    $err_type = 0;
-}
+$err_type ??= 0;
+$c ??= 0;
 
 //Error Type == 0 Mean Critical Error dont need to show left menu.
 //Error Type == 1 Mean User generated error.and it will show menu to him too.
@@ -49,8 +52,6 @@ if ($err_type == 0) {
 } else {
     require_once __DIR__ . "/../templates/main.php";
 }
-
-if (!isset($c))	$c="0";
 
 $error["0"] 			= gettext("ERROR : ACCESS REFUSED");
 $error["syst"] 			= gettext("Sorry a problem occur on our system, please try later!");
@@ -61,38 +62,25 @@ $error["ERR-0002"] 		= gettext("No such card number found. Please check your car
 
 ?>
 
-<div id="login-wrapper" class="login-border-up">
-    <div class="login-border-down">
-    <div class="login-border-center">
-    <table>
-    <tr>
-        <td class="login-title" colspan="2">
-            <font size="3"> <?php echo gettext("ERROR PAGE");?> </font>
-        </td>
-    </tr>
-    <tr>
-        <td width="70px" align="center">
-            <img src="<?= get_image_path("kicons/system-config-rootpassword.png") ?>">
-        </td>
-        <td align="center">
-            <b><font size="2"><?php echo $error[$c]?></font></b>
-        </td>
-    </tr>
-
-          </table>
-          </div>
-          </div>
-          <div style="text-align:right;padding-right:10px;" >
-              <a href="index.php" ><?php echo gettext("GO TO LOGIN PAGE"); ?>&nbsp;<img src="<?= get_image_path("key_go.png") ?>"> </a>
-          </div>
+    <div class="modal show d-block" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="authTitle" aria-hidden="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content shadow">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="authTitle"><?= _("Error Page") ?></h4>
+                </div>
+                <div class="modal-body">
+                    <?= $error[$c] ?>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-primary" href="index.php"><?= _("Go to Login Page") ?></a>
+                </div>
+            </div>
+        </div>
     </div>
 
 <?php
 if ($err_type == 0) {
-?>
-    </div>
-    </div>
-<?php
+    echo '</body></html>';
 } else {
     require_once __DIR__ . "/../templates/footer.php";
 }
