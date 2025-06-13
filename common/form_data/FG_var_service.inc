@@ -41,8 +41,7 @@ $HD_Form = new FormHandler("cc_service", _("Recurring Service"));
 
 $HD_Form->list_query_order_direction = "DESC";
 
-$HD_Form->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form->FG_LIST_ADDING_BUTTON_ICON1 = "alarm-fill";
+$HD_Form->AddListTopButton(null, null, "alarm-fill");
 
 $HD_Form->add_help_text = create_help(
     _("Utility to apply a scheduled action on the account.<br>")

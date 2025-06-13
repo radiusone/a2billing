@@ -57,8 +57,10 @@ if (is_agent()) {
 $HD_Form->list_query_order_columns = ["date"];
 $HD_Form->list_query_order_direction = "desc";
 
-$HD_Form->FG_ENABLE_ADD_BUTTON = is_admin();
-$HD_Form ->FG_LIST_ADDING_BUTTON1 = is_admin();
+if (is_admin()) {
+    $HD_Form->FG_ENABLE_ADD_BUTTON = true;
+    $HD_Form->AddListTopButton();
+}
 
 $HD_Form->help_text = create_help(
     _("Agents Commission history - The section below allows you to add commissions against an agent. Normally the commissions are generated automatically by the customer's payment.")

@@ -45,8 +45,7 @@ $HD_Form->FG_FK_TABLENAMES = ["cc_card"];
 $HD_Form->FG_FK_EDITION_CLAUSE = [" id_seria "];
 $HD_Form->FG_FK_DELETE_MESSAGE = _("You have some cards using this series! Please comfirm that you really want to remove this series.");
 
-$HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form ->FG_LIST_ADDING_BUTTON_ICON1 = "card-list";
+$HD_Form->AddListTopButton(null, null, "card-list");
 
 $HD_Form->help_text = create_help(
     _("This page shows the series list.")

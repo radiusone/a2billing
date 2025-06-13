@@ -66,7 +66,7 @@ if ($form_action === "list") {
     $HD_Form->FG_QUERY_PRIMARY_KEY = "cc_config.id";
     $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 25;
     $HD_Form->FG_ENABLE_ADD_BUTTON = true;
-    $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
+    $HD_Form->AddListTopButton();
 
     $HD_Form->help_text = create_help(_("Here you can see and edit the different A2Billing settings."));
 

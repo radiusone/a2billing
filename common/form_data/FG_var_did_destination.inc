@@ -51,10 +51,7 @@ $HD_Form = new FormHandler(
 $HD_Form->list_query_order_columns = ["destination"];
 $HD_Form->list_query_order_direction = "DESC";
 
-$HD_Form->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_did_destination.php?form_action=ask-add";
-$HD_Form->FG_LIST_ADDING_BUTTON_MSG1 = _("Add Destination");
-$HD_Form->FG_LIST_ADDING_BUTTON_ICON1 = "telephone-inbound-fill";
+$HD_Form->AddListTopButton("A2B_entity_did_destination.php?form_action=ask-add", _("Add Destination"), "telephone-inbound-fill");
 
 $HD_Form->help_text = create_help(_("DID number list with destinations."));
 

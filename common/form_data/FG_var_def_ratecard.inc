@@ -138,7 +138,7 @@ if (!$popup_select && is_admin()) {
     if (!$use_lcr_callplan && $key = array_search("destination", $HD_Form->FG_EXPORT_FIELD_LIST)) {
         $HD_Form->FG_EXPORT_FIELD_LIST[$key] = "cc_prefix.destination";
     }
-    $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
+    $HD_Form->AddListTopButton();
     $HD_Form->FG_EXPORT_CSV = true;
     $HD_Form->FG_EXPORT_XML = true;
     $HD_Form->export_session_key = "pr_export_entity_rates";

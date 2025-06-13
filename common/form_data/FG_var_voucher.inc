@@ -47,8 +47,7 @@ $currency_list = getCurrenciesList();
 $actived_list = getActivationTrueFalseList();
 $used_list = [_("NOT USED"), _("USED")];
 
-$HD_Form->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form->FG_LIST_ADDING_BUTTON_ICON1 = "postcard-heart";
+$HD_Form->AddListTopButton(null, null, "postcard-heart");
 
 $HD_Form->list_help_text = create_help(
     _("Listed below are the vouchers created on the system,.<br/>")

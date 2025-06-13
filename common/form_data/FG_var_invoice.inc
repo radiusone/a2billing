@@ -101,8 +101,7 @@ $HD_Form->AddListActionButton(
     1 // closed
 );
 
-$HD_Form->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form->FG_LIST_ADDING_BUTTON_ICON1 = "receipt-cutoff";
+$HD_Form->AddListTopButton(null, null, "receipt-cutoff");
 
 $HD_Form->help_text = create_help(
     _("Invoice history - The section below allows you to see and create invoices against a customer. Only the closed invoice can be seen on the customer interface")

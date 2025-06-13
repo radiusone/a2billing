@@ -45,8 +45,7 @@ $HD_Form = new FormHandler("cc_outbound_cid_list", _("CallerID"));
 $HD_Form ->list_query_order_columns = ["cid"];
 $HD_Form -> list_query_order_direction = "DESC";
 
-$HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form ->FG_LIST_ADDING_BUTTON_ICON1 = "telephone-outbound-fill";
+$HD_Form->AddListTopButton(null, null, "telephone-outbound-fill");
 
 $HD_Form->list_help_text = create_help(_("Outbound CID list. CID can be added by customers through the customer interface."));
 $HD_Form->help_text = create_help(_("Outbound CID offers customers a number which will be selected randomly for a ratecard for outgoing calls"));

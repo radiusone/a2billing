@@ -61,9 +61,7 @@ if ($wantinclude && isset($order)) {
 } else {
     $HD_Form_c->list_query_order_columns = ["id_cc_card"];
 }
-$HD_Form_c->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form_c->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_charge.php?form_action=ask-add";
-$HD_Form_c->FG_LIST_ADDING_BUTTON_ICON1 = "cash text-success";
+$HD_Form_c->AddListTopButton("A2B_entity_charge.php?form_action=ask-add", null, "cash text-success");
 
 $HD_Form_c->help_text = create_help(
     _("Extra charges allow the billing of one-off or re-occurring monthly charges. These may be used as setup or service charges, etc...")

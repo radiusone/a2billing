@@ -63,10 +63,10 @@ if (is_agent()) {
 $HD_Form->list_query_order_columns = ["date"];
 $HD_Form->list_query_order_direction = "DESC";
 
-$HD_Form->FG_ENABLE_ADD_BUTTON = is_admin();
-$HD_Form->FG_LIST_ADDING_BUTTON1 = is_admin();
-$HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_payment_agent.php?form_action=ask-add";
-$HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = _("Add Payment");
+if (is_admin()) {
+    $HD_Form->FG_ENABLE_ADD_BUTTON = true;
+    $HD_Form->AddListTopButton("A2B_entity_payment_agent.php?form_action=ask-add", _("Add Payment"));
+}
 
 $HD_Form->help_text = create_help(
     is_admin()

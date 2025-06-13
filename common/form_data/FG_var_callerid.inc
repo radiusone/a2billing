@@ -55,20 +55,20 @@ if (is_customer()) {
 }
 
 if (is_customer()) {
-    $cid_count = (new Table("cc_callerid", ["COUNT(*)"]))
-        ->getValue($HD_Form->DBHandle, ["id_cc_card" => $_SESSION["card_id"]]);
-    $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
+    $cid_count = (new Table("cc_callerid"))
+        ->countRows($HD_Form->DBHandle, ["id_cc_card" => $_SESSION["card_id"]]);
     if ($cid_count < $A2B->config["webcustomerui"]['limit_callerid']) {
+        $HD_Form->AddListTopButton();
         $HD_Form->FG_ENABLE_ADD_BUTTON = true;
     } else {
-        $HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "javascript:alert(" . htmlspecialchars(json_encode(_("You are not allowed to add more CallerID."))) . ")";
+        $HD_Form->AddListTopButton("javascript:alert(" . htmlspecialchars(json_encode(_("You are not allowed to add more CallerID."))) . ")");
     }
     $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
     $HD_Form->add_help_text = _("You can add your home phone or cellphone number below to allow you to call in, be automatically recognized, and use your telephony services without having to enter your PIN.");
     $HD_Form->AddListValue(_("CALLERID"), "cid")
         ->AddListMapping(_("ACTIVATED"), "cc_callerid.activated", getActivationTrueFalseList());
 } else {
-    $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
+    $HD_Form->AddListTopButton();
 
     if (is_admin()) {
         $HD_Form->AddListActionButton(

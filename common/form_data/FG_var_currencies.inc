@@ -40,11 +40,7 @@ use A2billing\Forms\Validator;
 $HD_Form = new FormHandler("cc_currencies", _("Currencies"));
 
 $HD_Form->list_query_order_columns = ["currency"];
-$HD_Form->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_currencies.php?form_action=ask-add";
-$HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = _("Add Rate");
-$HD_Form->FG_LIST_ADDING_BUTTON_ICON1 = "currency-exchange";
-
+$HD_Form->AddListTopButton("A2B_currencies.php?form_action=ask-add", _("Add Rate"), "currency-exchange");
 
 $HD_Form->AddListValue(_("Currency"), "currency");
 $HD_Form->AddListValue(_("Detail"), "name");

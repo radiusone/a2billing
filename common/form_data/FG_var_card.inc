@@ -90,17 +90,11 @@ if (DELETE_FK_CARD) {
 }
 
 if (!$popup_select && (is_admin() || Agent::allowed(Agent::ACX_GENERATE_CUSTOMER))) {
-    $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
-    $HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_card_multi.php";
-    $HD_Form->FG_LIST_ADDING_BUTTON_MSG1 = _("Generate Customers");
-    $HD_Form->FG_LIST_ADDING_BUTTON_ICON1 = "people-fill";
+    $HD_Form->AddListTopButton("A2B_entity_card_multi.php", _("Generate Customers"), "people-fill");
 }
 
 if (!$popup_select && (is_admin() || Agent::allowed(Agent::ACX_CREATE_CUSTOMER))) {
-    $HD_Form->FG_LIST_ADDING_BUTTON2 = true;
-    $HD_Form->FG_LIST_ADDING_BUTTON_LINK2 = "A2B_entity_card.php?form_action=ask-add";
-    $HD_Form->FG_LIST_ADDING_BUTTON_MSG2 = _("Add Customer");
-    $HD_Form->FG_LIST_ADDING_BUTTON_ICON2 = "person-fill";
+    $HD_Form->AddListTopButton("A2B_entity_card.php?form_action=ask-add", _("Add Customer"), "person-fill");
 }
 
 $HD_Form->list_help_text = create_help(

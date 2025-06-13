@@ -45,8 +45,7 @@ $HD_Form = new FormHandler("cc_prefix", _("Prefix"), "prefix");
 
 $HD_Form->list_query_order_columns = ["destination"];
 
-$HD_Form->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form->FG_LIST_ADDING_BUTTON_ICON1 = "geo-alt-fill";
+$HD_Form->AddListTopButton(null, null, "geo-alt-fill");
 
 $HD_Form->help_text = create_help(_("Prefix list with destinations."));
 

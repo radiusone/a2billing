@@ -59,10 +59,7 @@ $HD_Form->FG_FK_TABLENAMES = ["cc_ratecard"];
 $HD_Form->FG_FK_EDITION_CLAUSE = ["id_trunk"];
 $HD_Form->FG_FK_DELETE_MESSAGE = _("You have some rates attached to this Trunk! Please comfirm that you really want to remove this Trunk? ");
 
-$HD_Form->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_trunk.php?form_action=ask-add";
-$HD_Form->FG_LIST_ADDING_BUTTON_MSG1 = _("Add Trunk");
-$HD_Form->FG_LIST_ADDING_BUTTON_ICON1 = "hdd-network-fill";
+$HD_Form->AddListTopButton("A2B_entity_trunk.php?form_action=ask-add", _("Add Trunk"), "hdd-network-fill");
 
 $HD_Form->list_help_text = create_help(
     _("Trunk List.")

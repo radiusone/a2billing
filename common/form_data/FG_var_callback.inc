@@ -45,8 +45,7 @@ $HD_Form = new FormHandler("cc_callback_spool", _("Callback"));
 $HD_Form->list_query_order_columns = ["entry_time"];
 $HD_Form->list_query_order_direction  = "DESC";
 
-$HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form ->FG_LIST_ADDING_BUTTON_ICON1 = "telephone-outbound-fill";
+$HD_Form->AddListTopButton(null, null, "telephone-outbound-fill");
 
 $HD_Form->help_text = create_help(
     _("Callback will offer you an easy way to connect any phone to our Asterisk platform. Browse here the pending and completed callbacks. You will see that different parameters determine the callback, the way to reach the user, the time when we need to call him, the result of the last attempts, etc...")

@@ -41,8 +41,7 @@ $form_action ??= "list";
 $HD_Form = new FormHandler("cc_package_offer", _("Package"));
 
 $HD_Form->list_query_order_columns = ["label"];
-$HD_Form->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form ->FG_LIST_ADDING_BUTTON_ICON1 = "box-seam";
+$HD_Form->AddListTopButton(null, null, "box-seam");
 
 $HD_Form->help_text = create_help(_("PACKAGES SYSTEM - FREE MINUTES, etc..."));
 

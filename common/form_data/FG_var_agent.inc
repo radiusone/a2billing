@@ -52,9 +52,9 @@ if (is_agent()) {
 
 $HD_Form->list_query_order_columns = ["datecreation"];
 
-$HD_Form->FG_LIST_ADDING_BUTTON1 = is_admin();
-$HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_agent.php?form_action=ask-add&groupID=0";
-
+if (is_admin()) {
+    $HD_Form->AddListTopButton("A2B_entity_agent.php?form_action=ask-add&groupID=0");
+}
 $HD_Form->help_text = is_admin()
     ? create_help(_("Agents - this shows a list of all of the Agents who have access to the Agent interface"))
     : create_help(_("Personal information") . "<br/>" . _("You can update your personal information here"));

@@ -109,11 +109,11 @@ $HD_Form->FG_FK_WARNONLY = true;
 $HD_Form->FG_FK_TABLENAMES = ["cc_ticket_comment"];
 $HD_Form->FG_FK_EDITION_CLAUSE = ["id_ticket"];
 
-$HD_Form->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "?form_action=ask-add&ticket_type=$ticket_type";
-$HD_Form->FG_LIST_ADDING_BUTTON2 = true;
-$HD_Form->FG_LIST_ADDING_BUTTON_LINK2 = "?ticket_type=" . ($ticket_type === "agent" ? "user" : "agent");
-$HD_Form->FG_LIST_ADDING_BUTTON_MSG2 = $ticket_type === "agent" ? _("Show user tickets") : _("Show agent tickets");
+$HD_Form->AddListTopButton("?form_action=ask-add&ticket_type=$ticket_type");
+$HD_Form->AddListTopButton(
+    "?ticket_type=" . ($ticket_type === "agent" ? "user" : "agent"),
+    $ticket_type === "agent" ? _("Show user tickets") : _("Show agent tickets")
+);
 
 if ($ticket_type === "agent") {
     $HD_Form->list_help_text = create_help(_("You can see here, all tickets created by Agents. You can also add a new ticket for one Agent."));

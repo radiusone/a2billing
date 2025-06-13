@@ -58,9 +58,7 @@ $HD_Form = new FormHandler(
 
 $HD_Form->list_query_order_columns = ["login"];
 
-$HD_Form->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_user.php?form_action=ask-add&amp;groupID=$groupID";
-$HD_Form->FG_LIST_ADDING_BUTTON_ICON1 = "person-fill";
+$HD_Form->AddListTopButton("A2B_entity_user.php?form_action=ask-add&amp;groupID=$groupID", null, "person-fill");
 
 $HD_Form->add_help_text = create_help(_("Add administrator."));
 $HD_Form->list_help_text = create_help(_("Administrators - this shows a list of all the Administrators who have access to the Administrator interface."));

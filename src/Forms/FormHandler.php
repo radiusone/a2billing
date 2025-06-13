@@ -160,6 +160,9 @@ class FormHandler
     /** @var array<array<string,string>> An array containing button definitions for the list entries */
     public array $list_action_buttons = [];
 
+    /** @var array<array<string,string>> An array containing button definitions for the list view */
+    public array $list_top_buttons = [];
+
     /** @var string help text shown in all views (can be overridden for individual views) */
     public string $help_text = "";
 
@@ -300,28 +303,6 @@ class FormHandler
     /** @var string The CSRF token for the current request */
     public string $FG_CSRF_TOKEN;
 
-    public bool $FG_LIST_ADDING_BUTTON1 = false;
-
-    /** @var string */
-    public string $FG_LIST_ADDING_BUTTON_LINK1 = "?form_action=ask-add";
-
-    /** @var string */
-    public string $FG_LIST_ADDING_BUTTON_ICON1 = "";
-
-    /** @var string */
-    public string $FG_LIST_ADDING_BUTTON_MSG1 = "Add \"#FG_INSTANCE_NAME#\"";
-
-    public bool $FG_LIST_ADDING_BUTTON2 = false;
-
-    /** @var string */
-    public string $FG_LIST_ADDING_BUTTON_LINK2 = "";
-
-    /** @var string */
-    public string $FG_LIST_ADDING_BUTTON_ICON2 = "";
-
-    /** @var string */
-    public string $FG_LIST_ADDING_BUTTON_MSG2 = "";
-
     /**
      * @param string $tablename the table name of the object we're working with
      * @param string $instance_name a label for the object
@@ -373,7 +354,6 @@ class FormHandler
         $this->FG_INTRO_TEXT_ASK_DELETION = sprintf(_("If you really want to remove this %s, click the delete button"), $this->FG_INSTANCE_NAME);
         $this->FG_INTRO_TEXT_DELETION = sprintf(_("One %s has been deleted"), $this->FG_INSTANCE_NAME);
         $this->FG_INTRO_TEXT_ADITION = sprintf(_("Add a %s now"), $this->FG_INSTANCE_NAME);
-        $this->FG_LIST_ADDING_BUTTON_MSG1 = sprintf(_("Add %s"), $this->FG_INSTANCE_NAME);
         $this->FG_TEXT_ADITION_CONFIRMATION = sprintf(_("Your new %s has been inserted"), $this->FG_INSTANCE_NAME);
         $this->FG_TEXT_ADITION_ERROR = sprintf(_("Your new %s hasn't been inserted"), $this->FG_INSTANCE_NAME);
 
@@ -1087,6 +1067,21 @@ class FormHandler
             "onclick" => $onclick,
             "type" => "BUTTON",
         ];
+    }
+
+    /**
+     * Add a button to the top of the list view table
+     *
+     * @param string|null $url
+     * @param string|null $label
+     * @param string|null $icon
+     * @return void
+     */
+    public function AddListTopButton(?string $url = null, ?string $label = null, ?string $icon = null): void
+    {
+        $url ??= "?form_action=ask-add";
+        $label ??= sprintf(_("Add %s"), $this->FG_INSTANCE_NAME);
+        $this->list_top_buttons[] = compact($url, $label, $icon);
     }
 
     /**

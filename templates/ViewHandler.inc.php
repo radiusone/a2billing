@@ -13,7 +13,7 @@ namespace A2billing\Forms;
  */
 ?>
 
-<?php if (($form->FG_FILTER_ENABLE || $form->FG_FILTER2_ENABLE) || ($popup_select < 1 && ($form->FG_LIST_ADDING_BUTTON1 || $form->FG_LIST_ADDING_BUTTON2))): ?>
+<?php if (($form->FG_FILTER_ENABLE || $form->FG_FILTER2_ENABLE) || ($popup_select < 1 && count($form->list_top_buttons) > 0)): ?>
 <div class="row pb-3 align-items-end">
     <?php if ($form->FG_LIST_VIEW_ROW_COUNT > 0 && ($form->FG_FILTER_ENABLE || $form->FG_FILTER2_ENABLE)): ?>
     <form method="post" action="<?= $_SERVER["PHP_SELF"] ?>" class="col">
@@ -64,25 +64,17 @@ namespace A2billing\Forms;
         </div>
     </form>
     <?php endif ?>
-    <?php if ($popup_select < 1 && $form->FG_LIST_ADDING_BUTTON1): ?>
-        <div class="col-auto ms-auto">
-            <a href="<?= $form->FG_LIST_ADDING_BUTTON_LINK1 ?>" class="text-decoration-none">
-                <?= $form->FG_LIST_ADDING_BUTTON_MSG1 ?>
-                <?php if ($form->FG_LIST_ADDING_BUTTON_ICON1): ?>
-                    <span class="bi bi-16 bi-<?= $form->FG_LIST_ADDING_BUTTON_ICON1 ?>" aria-hidden="true"></span>
-                <?php endif ?>
-            </a>
-        </div>
-    <?php endif ?>
-    <?php if($popup_select < 1 && $form->FG_LIST_ADDING_BUTTON2 && $form->FG_LIST_ADDING_BUTTON_MSG2): ?>
-        <div class="col-auto ms-auto">
-            <a href="<?= $form->FG_LIST_ADDING_BUTTON_LINK2 ?>" class="text-decoration-none">
-                <?= $form->FG_LIST_ADDING_BUTTON_MSG2 ?>
-                <?php if ($form->FG_LIST_ADDING_BUTTON_ICON2): ?>
-                    <span class="bi bi-16 bi-<?= $form->FG_LIST_ADDING_BUTTON_ICON2 ?>" aria-hidden="true"></span>
-                <?php endif ?>
-            </a>
-        </div>
+    <?php if ($popup_select < 1): ?>
+    <?php foreach ($form->list_top_buttons as $button): ?>
+    <div class="col-auto ms-auto">
+        <a href="<?= $button["url"] ?>" class="text-decoration-none">
+            <?= htmlspecialchars($button["label"]) ?>
+            <?php if ($button["icon"]): ?>
+            <span class="bi bi-16 bi-<?= $button["icon"] ?>" aria-hidden="true"></span>
+            <?php endif ?>
+        </a>
+    </div>
+    <?php endforeach ?>
     <?php endif ?>
 </div>
 <?php endif ?>

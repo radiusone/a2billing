@@ -169,7 +169,7 @@ $HD_Form->AddListActionButton(
 $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form->FG_ENABLE_ADD_BUTTON = true;
-$HD_Form->FG_LIST_ADDING_BUTTON1 = true;
+$HD_Form->AddListTopButton();
 
 $HD_Form->AddEditElement(
     _("Name"),

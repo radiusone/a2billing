@@ -62,8 +62,7 @@ if (is_admin()) {
 $HD_Form->list_query_order_direction = "DESC";
 
 if (Admin::allowed(Admin::ACX_MODIFY_PAYMENTS)) {
-	$HD_Form->FG_LIST_ADDING_BUTTON1 = true;
-	$HD_Form->FG_LIST_ADDING_BUTTON_ICON1 = "cash-stack text-success";
+	$HD_Form->AddListTopButton(null, null, "cash-stack text-success");
 }
 
 $HD_Form->help_text = create_help(

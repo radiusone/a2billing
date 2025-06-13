@@ -41,8 +41,7 @@ $HD_Form = new FormHandler("cc_support_component", _("Support Component"));
 
 $HD_Form->list_query_order_columns = ["name"];
 
-$HD_Form->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form->FG_LIST_ADDING_BUTTON_ICON1 = "boxes";
+$HD_Form->AddListTopButton(null, null, "boxes");
 
 $HD_Form->FG_FK_DELETE_ALLOWED = true;
 $HD_Form->FG_FK_DELETE_CONFIRM = true;

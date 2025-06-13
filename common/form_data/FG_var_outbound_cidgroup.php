@@ -41,8 +41,7 @@ $HD_Form = new FormHandler("cc_outbound_cid_group", _("Outbound CID Group"));
 $HD_Form->list_query_order_columns = ["group_name"];
 $HD_Form->list_query_order_direction = "DESC";
 
-$HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form ->FG_LIST_ADDING_BUTTON_ICON1 = "telephone-outbound-fill";
+$HD_Form->AddListTopButton(null, null, "telephone-outbound-fill");
 
 // Code Here for Deleting the Dependent Records
 // Dependent Tables

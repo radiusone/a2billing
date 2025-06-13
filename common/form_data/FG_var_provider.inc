@@ -44,8 +44,7 @@ use A2billing\Forms\Validator;
 
 $HD_Form = new FormHandler("cc_provider", _("Provider"));
 
-$HD_Form->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form->FG_LIST_ADDING_BUTTON_ICON1 = "outlet";
+$HD_Form->AddListTopButton(null, null, "outlet");
 
 $HD_Form->help_text = create_help(
     _("This section will allow you to create and edit VOIP Providers for reporting purposes. ")

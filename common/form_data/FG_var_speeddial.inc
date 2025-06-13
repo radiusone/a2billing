@@ -51,7 +51,6 @@ if (is_customer()) {
 $HD_Form->list_query_order_columns = ["creationdate"];
 $HD_Form->list_query_order_direction = "DESC";
 
-$HD_Form->FG_LIST_ADDING_BUTTON1 = true;
 
 if (is_customer()) {
     $HD_Form->help_text = create_help(_("Map single digit to your most dialed numbers."));
@@ -72,10 +71,13 @@ if (!is_customer()) {
     $HD_Form->AddListValue(_("Account"), "id_cc_card", [Customer::class, "getUsername"]);
     $HD_Form->AddListValue(_("Date"), "cc_speeddial.creationdate");
     $HD_Form->FG_ENABLE_ADD_BUTTON = true;
+    $HD_Form->AddListTopButton();
 } else {
-    $sd_count = (new Table("cc_speeddial", ["COUNT(*)"]))
-        ->getValue($HD_Form->DBHandle, ["id_cc_card" => $_SESSION["card_id"]]);
-    $HD_Form->FG_ENABLE_ADD_BUTTON = $sd_count < 10;
+    $sd_count = (new Table("cc_speeddial"))
+        ->countRows($HD_Form->DBHandle, ["id_cc_card" => $_SESSION["card_id"]]);
+    if ($sd_count < 10) {
+        $HD_Form->AddListTopButton();
+    }
 }
 
 $HD_Form->FG_ENABLE_EDIT_BUTTON = true;

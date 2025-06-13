@@ -50,7 +50,7 @@ $form_action ??= "list";
 
 $HD_Form = new FormHandler("cc_agent_signup", _("Signup Key"));
 
-$HD_Form->FG_LIST_ADDING_BUTTON1 = true;
+$HD_Form->AddListTopButton();
 $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form->FG_ENABLE_EDIT_BUTTON = false;
 $HD_Form->FG_ENABLE_ADD_BUTTON = true;
