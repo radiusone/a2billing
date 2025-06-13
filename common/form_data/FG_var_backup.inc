@@ -130,6 +130,8 @@ if ($form_action === "add" && !empty($path)) {
         header("Content-Length: " . filesize($path));
         header("Content-Disposition: attachment; filename=\"" . $filename . "\"");
         readfile($path);
+    } else {
+        http_response_code(file_exists($path) ? 403 : 404);
     }
     exit;
 } elseif ($form_action === "upload") {

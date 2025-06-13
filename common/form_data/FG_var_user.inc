@@ -71,13 +71,13 @@ $HD_Form->AddListValue(_("Name"), "name");
 
 if ($popup_select) {
     $HD_Form->AddListSelectActionButton("javascript:sendValue('|param|')");
-    exit;
+    return;
 }
 
 $HD_Form->FG_ENABLE_INFO_BUTTON = true;
 
 if (!Admin::allowed(Admin::ACX_MODIFY_ADMINS)) {
-    exit;
+    return;
 }
 
 $HD_Form->FG_ENABLE_ADD_BUTTON = true;

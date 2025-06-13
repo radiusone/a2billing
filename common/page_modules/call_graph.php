@@ -32,7 +32,7 @@ $list_total_day = $table->getRows(
 );
 
 if (!count($list_total_day)) {
-    exit;
+    return;
 }
 $mmax = max(array_column($list_total_day, "calltime"));
 $totalcall = array_sum(array_column($list_total_day, "nbcall"));
