@@ -40,7 +40,7 @@ use A2billing\Forms\Validator;
 $HD_Form = new FormHandler("cc_monitor", _("Monitoring"));
 
 $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("map.png") ;
+$HD_Form->FG_LIST_ADDING_BUTTON_ICON1 = "diagram-3-fill";
 
 $HD_Form->help_text = create_help(
     _("IVR Monitoring, an extension should be configured for the admin to call and monitor through an IVR some important data from your system.")

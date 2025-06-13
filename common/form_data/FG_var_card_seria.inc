@@ -46,7 +46,7 @@ $HD_Form->FG_FK_EDITION_CLAUSE = [" id_seria "];
 $HD_Form->FG_FK_DELETE_MESSAGE = _("You have some cards using this series! Please comfirm that you really want to remove this series.");
 
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("page_white_add.png") ;
+$HD_Form ->FG_LIST_ADDING_BUTTON_ICON1 = "card-list";
 
 $HD_Form->help_text = create_help(
     _("This page shows the series list.")

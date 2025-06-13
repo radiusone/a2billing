@@ -92,7 +92,7 @@ $HD_Form->AddListValue(_("Default IP"), "defaultip");
 $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_friend.php?form_action=ask-add&voip_type=$voip_type";
 $HD_Form->FG_LIST_ADDING_BUTTON_MSG1 = $voip_type === "sip" ? _("Add SIP Config") : _("Add IAX Config");
-$HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("telephone_add.png") ;
+$HD_Form->FG_LIST_ADDING_BUTTON_ICON1 = "telephone-fill";
 
 if (!empty($friend_id) && $friend_id !== "all") {
     $HD_Form->list_query_conditions["name"] = $friend_id;

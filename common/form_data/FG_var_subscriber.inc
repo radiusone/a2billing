@@ -47,7 +47,7 @@ $form_action ??= "list";
 $HD_Form = new FormHandler("cc_card_subscription", _("Subscriber"));
 
 $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("text_signature.png") ;
+$HD_Form->FG_LIST_ADDING_BUTTON_ICON1 = "box-seam";
 
 $HD_Form->help_text = create_help(_("SUBSCRIBER - You can make customers subscribe for any subscription and for a certain time."));
 

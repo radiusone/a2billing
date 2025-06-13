@@ -39,7 +39,7 @@ use A2billing\Forms\Validator;
 $HD_Form = new FormHandler("cc_server_group", _("Callback Server Group"));
 
 $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("server_add.png") ;
+$HD_Form->FG_LIST_ADDING_BUTTON_ICON1 = "hdd-stack-fill";
 
 $HD_Form->help_text = create_help(
     _("Server Groups define the set of servers that are going to be used by the callback system. A callback is bound to a server group which will be used to dispatch the callback requests.")

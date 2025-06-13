@@ -42,8 +42,8 @@ $HD_Form->list_query_order_direction = "DESC";
 
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
 $HD_Form ->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_alarm.php?form_action=ask-add";
-$HD_Form ->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = _("Add Alarm");
-$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("bell_add.png") ;
+$HD_Form ->FG_LIST_ADDING_BUTTON_MSG1 = _("Add Alarm");
+$HD_Form ->FG_LIST_ADDING_BUTTON_ICON1 = "bell-fill";
 
 $HD_Form->add_help_text = create_help(
     _("Utility to apply a scheduled monitor on trunks.<br>") .

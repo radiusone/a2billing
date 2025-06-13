@@ -137,8 +137,8 @@ if ((int)$popup_select >= 1) {
 } else {
     $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
     $HD_Form->FG_LIST_ADDING_BUTTON_LINK1 = "A2B_entity_mailtemplate.php?form_action=ask-add";
-    $HD_Form->FG_LIST_ADDING_BUTTON_ALT1 = $HD_Form->FG_LIST_ADDING_BUTTON_MSG1 = _("Add MAIL TEMPLATE");
-    $HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("email_add.png") ;
+    $HD_Form->FG_LIST_ADDING_BUTTON_MSG1 = _("Add MAIL TEMPLATE");
+    $HD_Form->FG_LIST_ADDING_BUTTON_ICON1 = "envelope-open-fill";
 
     $HD_Form->FG_ENABLE_ADD_BUTTON = true;
     $HD_Form->FG_ENABLE_EDIT_BUTTON = true;

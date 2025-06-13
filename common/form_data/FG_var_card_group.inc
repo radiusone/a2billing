@@ -51,7 +51,7 @@ $HD_Form->FG_FK_EDITION_CLAUSE = ["id_group"];
 $HD_Form->FG_FK_DELETE_MESSAGE = _("You have some cards using this Customers Group! Please comfirm that you really want to remove this Customers Group ? ");
 
 $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("group_add.png");
+$HD_Form->FG_LIST_ADDING_BUTTON_ICON1 = "people-fill";
 
 $HD_Form->help_text = create_help(
     _("This page shows a group list.")

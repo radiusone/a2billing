@@ -42,7 +42,7 @@ $HD_Form = new FormHandler("cc_subscription_signup", _("Subscription in Signup")
 $HD_Form->list_query_order_direction = "DESC";
 
 $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("add.png");
+$HD_Form->FG_LIST_ADDING_BUTTON_ICON1 = "box-seam";
 
 $HD_Form->help_text = create_help(_("SIGNUP SUBSCRIBER - You can make create a list of subscribers that the customers can subscribe."));
 

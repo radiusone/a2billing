@@ -43,7 +43,7 @@ $HD_Form = new FormHandler("cc_subscription_service", _("Subscription Service"))
 $HD_Form->list_query_order_direction = "DESC";
 
 $HD_Form->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("script.png") ;
+$HD_Form->FG_LIST_ADDING_BUTTON_ICON1 = "box-seam";
 
 $HD_Form->help_text = create_help(
     _("SUBSCRIPTION FEE - You can bill the user  in a monthly, weekly or any time period for being subscribed on your service. The fee amount is defined here and the period through the cront configuration.")

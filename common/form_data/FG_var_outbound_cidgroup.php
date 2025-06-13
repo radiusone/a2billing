@@ -42,7 +42,7 @@ $HD_Form->list_query_order_columns = ["group_name"];
 $HD_Form->list_query_order_direction = "DESC";
 
 $HD_Form ->FG_LIST_ADDING_BUTTON1 = true;
-$HD_Form ->FG_LIST_ADDING_BUTTON_IMG1 = get_image_path("server_connect.png") ;
+$HD_Form ->FG_LIST_ADDING_BUTTON_ICON1 = "telephone-outbound-fill";
 
 // Code Here for Deleting the Dependent Records
 // Dependent Tables
