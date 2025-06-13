@@ -1081,7 +1081,7 @@ class FormHandler
     {
         $url ??= "?form_action=ask-add";
         $label ??= sprintf(_("Add %s"), $this->FG_INSTANCE_NAME);
-        $this->list_top_buttons[] = compact($url, $label, $icon);
+        $this->list_top_buttons[] = compact("url", "label", "icon");
     }
 
     /**
