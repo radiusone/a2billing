@@ -65,12 +65,14 @@ class Table
 
     public string $db_type = 'mysql';
 
+    protected static ?ADOConnection $connection = null;
+
     /**
      * @param string|null $table the table we're working with
      * @param array|string $list_fields when selecting, what fields will be selected
      * @param array $joins tables to join to the query; see Table::processJoinedTables() for usage
      */
-    public function __construct(string $table = null, $list_fields = "*", array $joins = [])
+    public function __construct(string $table = null, $list_fields = "*", array $joins = [], ADOConnection $db = null)
     {
         $this->table = $table;
         if (is_string($list_fields)) {
@@ -82,6 +84,14 @@ class Table
         if (defined("DB_TYPE") && DB_TYPE === 'postgres') {
             $this->db_type = "postgres";
         }
+        self::$connection = $db;
+    }
+
+    public static function getConnection(): ADOConnection
+    {
+        self::$connection ??= Connection::GetDBHandler();
+
+        return self::$connection;
     }
 
     /**
@@ -215,6 +225,7 @@ class Table
      */
     public function getRows(ADOConnection $db, array $conditions = [], array $order = [], string $direction = "ASC", array $group = [], int $limit = 0, int $offset = 0): array
     {
+        $db = $this->getConnection();
         $fields = implode(",", array_map([self::class, "quote_identifier"], $this->fields));
         $table = str_contains($this->table, " JOIN ") ? $this->table : $this->quote_identifier($this->table);
         $table .= " " . $this->processJoinedTables();
@@ -257,6 +268,7 @@ class Table
      */
     public function getRow(ADOConnection $db, array $conditions = [], array $order = [], string $direction = "ASC", array $group = []): array
     {
+        $db = $this->getConnection();
         $data = $this->getRows($db, $conditions, $order, $direction, $group, 1);
 
         return $data[0] ?? [];
@@ -273,6 +285,7 @@ class Table
      */
     public function getColumn(ADOConnection $db, string $column, string $index = "", array $conditions = []): array
     {
+        $db = $this->getConnection();
         $data = $this->getRows($db, $conditions);
         if (empty($index)) {
             return array_column($data, $column);
@@ -296,6 +309,7 @@ class Table
      */
     public function getValue(ADOConnection $db, array $conditions = [], array $order = [], string $direction = "ASC", array $group = [])
     {
+        $db = $this->getConnection();
         $data = $this->getRow($db, $conditions, $order, $direction, $group);
 
         return $data[0] ?? null;
@@ -311,6 +325,7 @@ class Table
      */
     public function countRows(ADOConnection $db, array $conditions = [], array $groupby = []): int
     {
+        $db = $this->getConnection();
         $old_fields = $this->fields;
         $this->fields = ["COUNT(*)"];
         if (count($groupby)) {
@@ -335,6 +350,8 @@ class Table
      */
     public function addRow(ADOConnection $db, array $values, string $pk_column = "id", &$id = null): bool
     {
+        $db = $this->getConnection();
+
         return $this->addRows($db, [$values], $pk_column, $id) === 1;
     }
 
@@ -351,6 +368,7 @@ class Table
      */
     public function addRows(ADOConnection $db, array $rows, string $pk_column = "id", &$id = null): int
     {
+        $db = $this->getConnection();
         $values = $rows[0];
         $fields = implode(
             ",",
@@ -400,6 +418,7 @@ class Table
      */
     public function addRowsFromSelect(ADOConnection $db, Table $source, array $conditions): int
     {
+        $db = $this->getConnection();
         $table = $this->quote_identifier($this->table);
         $source_fields = implode(",", array_map([self::class, "quote_identifier"], $source->fields));
         $source_table = $this->quote_identifier($source->table);
@@ -422,6 +441,7 @@ class Table
      */
     public function updateRow(ADOConnection $db, array $values, array $conditions = []): bool
     {
+        $db = $this->getConnection();
         $value_callback = function ($v) use (&$parameters): string {
             if (is_array($v)) {
                 // this allows updates like ["usage" => ["usage + ?", 1]]
@@ -462,6 +482,7 @@ class Table
      */
     public function deleteRow(ADOConnection $db, array $conditions = []): bool
     {
+        $db = $this->getConnection();
         // temporary until proper foreign keys are set up
         foreach ($this->FK_TABLES as $i=>$table) {
             $table = $this->quote_identifier($table);
