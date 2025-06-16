@@ -97,10 +97,7 @@ require_once __DIR__ . "/templates/main.php";
 <?php endforeach ?>
 </div>
 
-<script src="../common/jquery/jquery.min.js"></script>
-<script src="../common/flot/js/jquery.flot.min.js"></script>
-<script src="../common/flot/js/plugins/jquery.flot.time.min.js"></script>
-
+<script src="../common/flot.js"></script>
 <script>
 let previousPoint = null;
 const curr = <?= json_encode($A2B->config["global"]["base_currency"]) ?>;
@@ -109,32 +106,6 @@ document.addEventListener("DOMContentLoaded", function() {
     document.querySelectorAll(".dashgraph").forEach(function (/** @var {HTMLDivElement} el */ el) {
         el.style.width = String(Math.min(el.closest("div").clientWidth, el.closest("div").innerWidth) - 10) + "px";
         el.style.height = String(Math.floor(el.clientWidth / 2)) + "px";
-        document.addEventListener("plothover", function (event, pos, item) {
-            if (item) {
-                if (previousPoint !== item.datapoint) {
-                    let y;
-                    const format = this.dataset.tooltipFormat;
-                    previousPoint = item.datapoint;
-                    document.getElementById("tooltip").remove();
-                    if (format === "time") {
-                        y = item.datapoint[1].toFixed(0);
-                        const hour = Math.floor(y / 3600);
-                        const min = Math.floor(y / 60) % 60;
-                        const sec = y % 60;
-                        showTooltip(item.pageX, item.pageY, `${hour}h ${min}m ${sec}s<br/>(${y} sec)`);
-                    } else if (format === "money") {
-                        y = item.datapoint[1].toFixed(2);
-                        showTooltip(item.pageX, item.pageY, y + " " + curr);
-                    } else {
-                        y = item.datapoint[1].toFixed(0);
-                        showTooltip(item.pageX, item.pageY, y);
-                    }
-                }
-            } else {
-                document.getElementById("tooltip").remove();
-                previousPoint = null;
-            }
-        });
     });
 
     document.querySelectorAll(".update_graph").forEach(function (el) {
@@ -190,8 +161,7 @@ document.addEventListener("DOMContentLoaded", function() {
             time_format = "%b";
         }
 
-        // todo: there's a server-side graphing library used on some other pages, why not use it and get rid of this dependency?
-        $.plot(
+        new Plot(
             graph,
             [{
                 data: d,
@@ -203,7 +173,32 @@ document.addEventListener("DOMContentLoaded", function() {
                 selection: {mode: "y"},
                 grid: {hoverable: true, clickable: true}
             }
-        );
+        ).bind("plothover", function (event, pos, item) {
+            if (item) {
+                if (previousPoint !== item.datapoint) {
+                    let y;
+                    const format = event.target.dataset.tooltipFormat;
+                    previousPoint = item.datapoint;
+                    document.getElementById("tooltip")?.remove();
+                    if (format === "time") {
+                        y = item.datapoint[1].toFixed(0);
+                        const hour = Math.floor(y / 3600);
+                        const min = Math.floor(y / 60) % 60;
+                        const sec = y % 60;
+                        showTooltip(item.pageX, item.pageY, `${hour}h ${min}m ${sec}s<br/>(${y} sec)`);
+                    } else if (format === "money") {
+                        y = item.datapoint[1].toFixed(2);
+                        showTooltip(item.pageX, item.pageY, y + " " + curr);
+                    } else {
+                        y = item.datapoint[1].toFixed(0);
+                        showTooltip(item.pageX, item.pageY, y);
+                    }
+                }
+            } else {
+                document.getElementById("tooltip")?.remove();
+                previousPoint = null;
+            }
+        });
     }
 
     function showTooltip(x, y, contents) {
