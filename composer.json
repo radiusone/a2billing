@@ -16,6 +16,7 @@
     "phpmailer/phpmailer": "^6.0",
     "symfony/polyfill-php80": "^1.0",
     "symfony/polyfill-php81": "^1.0",
+    "symfony/polyfill-php82": "^1.0",
     "twbs/bootstrap": "^5.1",
     "radiusone/phpagi": "^3.0",
     "ext-curl": "*",
