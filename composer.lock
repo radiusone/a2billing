@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "34b7908b0f34ada5e0e4c9a68e1f82f3",
+    "content-hash": "495f5144c6c1bac5b8a0bfcb1a4dfeff",
     "packages": [
         {
             "name": "adodb/adodb-php",
@@ -208,462 +208,6 @@
                 }
             ],
             "time": "2022-12-30T00:15:36+00:00"
-        },
-        {
-            "name": "pear/archive_tar",
-            "version": "1.5.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/pear/Archive_Tar.git",
-                "reference": "b439c859564f5cbb0f64ad6002d0afe84a889602"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/pear/Archive_Tar/zipball/b439c859564f5cbb0f64ad6002d0afe84a889602",
-                "reference": "b439c859564f5cbb0f64ad6002d0afe84a889602",
-                "shasum": ""
-            },
-            "require": {
-                "pear/pear-core-minimal": "^1.10.0alpha2",
-                "php": ">=5.2.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "*"
-            },
-            "suggest": {
-                "ext-bz2": "Bz2 compression support.",
-                "ext-xz": "Lzma2 compression support.",
-                "ext-zlib": "Gzip compression support."
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.4.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "Archive_Tar": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "include-path": [
-                "./"
-            ],
-            "license": [
-                "BSD-2-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Vincent Blavet",
-                    "email": "vincent@phpconcept.net"
-                },
-                {
-                    "name": "Greg Beaver",
-                    "email": "greg@chiaraquartet.net"
-                },
-                {
-                    "name": "Michiel Rook",
-                    "email": "mrook@php.net"
-                }
-            ],
-            "description": "Tar file management class with compression support (gzip, bzip2, lzma2)",
-            "homepage": "https://github.com/pear/Archive_Tar",
-            "keywords": [
-                "archive",
-                "tar"
-            ],
-            "support": {
-                "issues": "http://pear.php.net/bugs/search.php?cmd=display&package_name[]=Archive_Tar",
-                "source": "https://github.com/pear/Archive_Tar"
-            },
-            "time": "2024-03-16T16:21:40+00:00"
-        },
-        {
-            "name": "pear/console_getopt",
-            "version": "v1.4.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/pear/Console_Getopt.git",
-                "reference": "a41f8d3e668987609178c7c4a9fe48fecac53fa0"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/pear/Console_Getopt/zipball/a41f8d3e668987609178c7c4a9fe48fecac53fa0",
-                "reference": "a41f8d3e668987609178c7c4a9fe48fecac53fa0",
-                "shasum": ""
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Console": "./"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "include-path": [
-                "./"
-            ],
-            "license": [
-                "BSD-2-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Andrei Zmievski",
-                    "email": "andrei@php.net",
-                    "role": "Lead"
-                },
-                {
-                    "name": "Stig Bakken",
-                    "email": "stig@php.net",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Greg Beaver",
-                    "email": "cellog@php.net",
-                    "role": "Helper"
-                }
-            ],
-            "description": "More info available on: http://pear.php.net/package/Console_Getopt",
-            "support": {
-                "issues": "http://pear.php.net/bugs/search.php?cmd=display&package_name[]=Console_Getopt",
-                "source": "https://github.com/pear/Console_Getopt"
-            },
-            "time": "2019-11-20T18:27:48+00:00"
-        },
-        {
-            "name": "pear/pear",
-            "version": "v1.10.16",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/pear/pear-core.git",
-                "reference": "9d3ac5eb137633e015d6c0d4e6deeca830f1ccc2"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/pear/pear-core/zipball/9d3ac5eb137633e015d6c0d4e6deeca830f1ccc2",
-                "reference": "9d3ac5eb137633e015d6c0d4e6deeca830f1ccc2",
-                "shasum": ""
-            },
-            "require": {
-                "ext-pcre": "*",
-                "ext-xml": "*",
-                "pear/archive_tar": "*",
-                "pear/console_getopt": "*",
-                "pear/structures_graph": "*",
-                "pear/xml_util": "*",
-                "php": ">=5.4"
-            },
-            "replace": {
-                "pear/pear-core-minimal": "*",
-                "pear/pear-exception": "*"
-            },
-            "suggest": {
-                "pear/pear_frontend_gtk": "For GTK support",
-                "pear/pear_frontend_web": "For Web support"
-            },
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "./"
-                ],
-                "exclude-from-classmap": [
-                    "/tests/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "include-path": [
-                "./"
-            ],
-            "license": [
-                "BSD-2-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Greg Beaver",
-                    "email": "cellog@php.net",
-                    "role": "Lead"
-                },
-                {
-                    "name": "Pierre-Alain Joye",
-                    "email": "pierre@php.net",
-                    "role": "Lead"
-                },
-                {
-                    "name": "Stig Bakken",
-                    "email": "stig@php.net",
-                    "role": "Lead"
-                },
-                {
-                    "name": "Tomas V.V.Cox",
-                    "email": "cox@idecnet.com",
-                    "role": "Lead"
-                },
-                {
-                    "name": "Helgi Thormar",
-                    "email": "dufuz@php.net",
-                    "role": "Lead"
-                },
-                {
-                    "name": "Tias Guns",
-                    "email": "tias@php.net",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Tim Jackson",
-                    "email": "timj@php.net",
-                    "role": "Helper"
-                },
-                {
-                    "name": "Bertrand Gugger",
-                    "email": "toggg@php.net",
-                    "role": "Helper"
-                },
-                {
-                    "name": "Martin Jansen",
-                    "email": "mj@php.net",
-                    "role": "Helper"
-                }
-            ],
-            "description": "This is the definitive source of PEAR's core files.",
-            "support": {
-                "issues": "http://pear.php.net/bugs/search.php?cmd=display&package_name[]=PEAR",
-                "source": "https://github.com/pear/PEAR"
-            },
-            "time": "2024-11-24T22:10:16+00:00"
-        },
-        {
-            "name": "pear/pear_exception",
-            "version": "v1.0.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/pear/PEAR_Exception.git",
-                "reference": "b14fbe2ddb0b9f94f5b24cf08783d599f776fff0"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/pear/PEAR_Exception/zipball/b14fbe2ddb0b9f94f5b24cf08783d599f776fff0",
-                "reference": "b14fbe2ddb0b9f94f5b24cf08783d599f776fff0",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.2.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "<9"
-            },
-            "type": "class",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0.x-dev"
-                }
-            },
-            "autoload": {
-                "classmap": [
-                    "PEAR/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "include-path": [
-                "."
-            ],
-            "license": [
-                "BSD-2-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Helgi Thormar",
-                    "email": "dufuz@php.net"
-                },
-                {
-                    "name": "Greg Beaver",
-                    "email": "cellog@php.net"
-                }
-            ],
-            "description": "The PEAR Exception base class.",
-            "homepage": "https://github.com/pear/PEAR_Exception",
-            "keywords": [
-                "exception"
-            ],
-            "support": {
-                "issues": "http://pear.php.net/bugs/search.php?cmd=display&package_name[]=PEAR_Exception",
-                "source": "https://github.com/pear/PEAR_Exception"
-            },
-            "time": "2021-03-21T15:43:46+00:00"
-        },
-        {
-            "name": "pear/soap",
-            "version": "0.14.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/pear/SOAP.git",
-                "reference": "43780efed9b0c0c1843ec967a2d71d230d64e808"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/pear/SOAP/zipball/43780efed9b0c0c1843ec967a2d71d230d64e808",
-                "reference": "43780efed9b0c0c1843ec967a2d71d230d64e808",
-                "shasum": ""
-            },
-            "require": {
-                "pear/pear": "*",
-                "pear/pear_exception": "*"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "*"
-            },
-            "suggest": {
-                "pear/mail": "Install optionally via your project's composer.json"
-            },
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "./"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "PHP License"
-            ],
-            "authors": [
-                {
-                    "name": "Chuck Hagenbuch",
-                    "email": "chuck@horde.org",
-                    "role": "Lead"
-                },
-                {
-                    "name": "Jan Schneider",
-                    "email": "jan@horde.org",
-                    "role": "Lead"
-                },
-                {
-                    "name": "Shane Caraveo",
-                    "email": "shane@php.net",
-                    "role": "Lead"
-                },
-                {
-                    "name": "Al Baker",
-                    "email": "abaker@php.net",
-                    "role": "Lead"
-                },
-                {
-                    "name": "Arnaud Limbourg",
-                    "email": "arnaud@php.net",
-                    "role": "Lead"
-                }
-            ],
-            "description": "More info available on: http://pear.php.net/package/SOAP",
-            "support": {
-                "issues": "http://pear.php.net/bugs/search.php?cmd=display&package_name[]=SOAP",
-                "source": "https://github.com/pear/SOAP"
-            },
-            "time": "2018-08-16T18:42:56+00:00"
-        },
-        {
-            "name": "pear/structures_graph",
-            "version": "v1.2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/pear/Structures_Graph.git",
-                "reference": "66368ac2fdb88f00b58e1cca1ead1b20f6d3b250"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/pear/Structures_Graph/zipball/66368ac2fdb88f00b58e1cca1ead1b20f6d3b250",
-                "reference": "66368ac2fdb88f00b58e1cca1ead1b20f6d3b250",
-                "shasum": ""
-            },
-            "require": {
-                "pear/pear-core-minimal": "^1.10.1",
-                "php": ">=5.3"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "@stable"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Structures": "./"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "include-path": [
-                "./"
-            ],
-            "license": [
-                "LGPL-3.0-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "Sérgio Carvalho",
-                    "email": "sergiosgc@gmail.com",
-                    "role": "Lead"
-                }
-            ],
-            "description": "More info available on: http://pear.php.net/package/Structures_Graph",
-            "homepage": "http://pear.php.net/package/Structures_Graph",
-            "support": {
-                "source": "https://github.com/pear/Structures_Graph"
-            },
-            "time": "2024-06-02T15:12:16+00:00"
-        },
-        {
-            "name": "pear/xml_util",
-            "version": "v1.4.5",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/pear/XML_Util.git",
-                "reference": "90052e3e7c099ffce3bc83ec4210f88a40b8419a"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/pear/XML_Util/zipball/90052e3e7c099ffce3bc83ec4210f88a40b8419a",
-                "reference": "90052e3e7c099ffce3bc83ec4210f88a40b8419a",
-                "shasum": ""
-            },
-            "require": {
-                "pear/pear-core-minimal": "^1.10.1",
-                "php": ">=5.4"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "<=7"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "XML_Util": "./"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "include-path": [
-                "./"
-            ],
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Chuck Burgess",
-                    "email": "ashnazg@php.net",
-                    "role": "Lead"
-                },
-                {
-                    "name": "Stephan Schmidt",
-                    "email": "schst@php-tools.net",
-                    "role": "Lead"
-                },
-                {
-                    "name": "Davey Shafik",
-                    "email": "davey@php.net",
-                    "role": "Helper"
-                }
-            ],
-            "description": "Methods to work with XML documents",
-            "homepage": "http://pear.php.net/package/XML_Util",
-            "support": {
-                "issues": "http://pear.php.net/bugs/search.php?cmd=display&package_name[]=XML_Util",
-                "source": "https://github.com/pear/XML_Util"
-            },
-            "time": "2020-04-19T15:08:27+00:00"
         },
         {
             "name": "phpmailer/phpmailer",
@@ -1013,6 +557,82 @@
             "time": "2024-09-09T11:45:10+00:00"
         },
         {
+            "name": "symfony/polyfill-php83",
+            "version": "v1.32.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/polyfill-php83.git",
+                "reference": "2fb86d65e2d424369ad2905e83b236a8805ba491"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/polyfill-php83/zipball/2fb86d65e2d424369ad2905e83b236a8805ba491",
+                "reference": "2fb86d65e2d424369ad2905e83b236a8805ba491",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2"
+            },
+            "type": "library",
+            "extra": {
+                "thanks": {
+                    "url": "https://github.com/symfony/polyfill",
+                    "name": "symfony/polyfill"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "bootstrap.php"
+                ],
+                "psr-4": {
+                    "Symfony\\Polyfill\\Php83\\": ""
+                },
+                "classmap": [
+                    "Resources/stubs"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony polyfill backporting some PHP 8.3+ features to lower PHP versions",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "compatibility",
+                "polyfill",
+                "portable",
+                "shim"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/polyfill-php83/tree/v1.32.0"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2024-09-09T11:45:10+00:00"
+        },
+        {
             "name": "twbs/bootstrap",
             "version": "v5.3.6",
             "source": {
@@ -1173,8 +793,7 @@
         "ext-pcntl": "*",
         "ext-pdo": "*",
         "ext-pdo_sqlite": "*",
-        "ext-posix": "*",
-        "ext-soap": "*"
+        "ext-posix": "*"
     },
     "platform-dev": {},
     "plugin-api-version": "2.6.0"
