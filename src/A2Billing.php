@@ -386,12 +386,6 @@ class A2Billing
         $default["signup"]["enableexpire"] = '0';
         $default["signup"]["expiredays"] = '0';
 
-        // Conf for Paypal
-        $default["paypal"]["item_name"] = 'Credit Purchase';
-        $default["paypal"]["currency_code"] = 'USD';
-        $default["paypal"]["purchase_amount"] = '5;10;15';
-        $default["paypal"]["paypal_fees"] = '1';
-
         // Conf for Backup
         $default["backup"]["backup_path"] = '/tmp';
         $default["backup"]["gzip_exe"] = '/bin/gzip';
@@ -410,7 +404,6 @@ class A2Billing
         // conf for the web ui
         $default["webui"]["buddy_sip_file"] = '/etc/asterisk/additional_a2billing_sip.conf';
         $default["webui"]["buddy_iax_file"] = '/etc/asterisk/additional_a2billing_iax.conf';
-        $default["webui"]["api_logfile"] = '/tmp/api_ecommerce_request.log';
 
         $default["webui"]["dir_store_mohmp3"] = '/var/lib/asterisk/mohmp3';
         $default["webui"]["num_musiconhold_class"] = 10;
@@ -462,9 +455,6 @@ class A2Billing
         }
         if (isset($this->config['webui']['file_ext_allow_musiconhold'])) {
             $this->config['webui']['file_ext_allow_musiconhold'] = explode(",", $this->config['webui']['file_ext_allow_musiconhold']);
-        }
-        if (isset($this->config['webui']['api_ip_auth'])) {
-            $this->config['webui']['api_ip_auth'] = explode(";", $this->config['webui']['api_ip_auth']);
         }
 
         // conf for the AGI

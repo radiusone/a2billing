@@ -103,8 +103,6 @@ define ("FRIEND_QUALIFY", $A2B->config['peer_friend']['qualify'] ?? null);
 define ("FRIEND_HOST", $A2B->config['peer_friend']['host'] ?? null);
 define ("FRIEND_DTMFMODE", $A2B->config['peer_friend']['dtmfmode'] ?? null);
 
-define ("API_LOGFILE", $A2B->config['webui']['api_logfile'] ?? "/var/log/a2billing/");
-
 // BUDDY ASTERISK FILES
 define ("BUDDY_SIP_FILE", $A2B->config['webui']['buddy_sip_file'] ?? null);
 define ("BUDDY_IAX_FILE", $A2B->config['webui']['buddy_iax_file'] ?? null);
@@ -126,8 +124,6 @@ define ("MANAGER_USERNAME", $A2B->config['global']['manager_username'] ?? null);
 define ("MANAGER_SECRET", $A2B->config['global']['manager_secret'] ?? null);
 define ("SERVER_GMT", $A2B->config['global']['server_GMT'] ?? null);
 define ("CUSTOMER_UI_URL", $A2B->config['global']['customer_ui_url'] ?? null);
-
-define ("API_SECURITY_KEY", $A2B->config['webui']['api_security_key'] ?? null);
 
 //SIP/IAX Info
 define ("SIP_IAX_INFO_TRUNKNAME", $A2B->config['sip-iax-info']['sip_iax_info_trunkname'] ?? null);
