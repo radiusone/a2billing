@@ -105,55 +105,49 @@ $tab_day = array (
 $num_day = date('N');
 $name_day = $tab_day[$num_day];
 
-$instance_table = new Table();
-
-$QUERY_COUNT_PHONENUMBERS = 'SELECT count(*) FROM cc_phonenumber , cc_phonebook , cc_campaign_phonebook, cc_campaign WHERE ';
-$QUERY_COUNT_PHONENUMBERS .= 'cc_phonenumber.id_phonebook = cc_phonebook.id AND cc_campaign_phonebook.id_phonebook = cc_phonebook.id AND cc_campaign_phonebook.id_campaign = cc_campaign.id ';
-$QUERY_COUNT_PHONENUMBERS .= 'AND cc_campaign.status = 1 AND cc_campaign.startingdate <= CURRENT_TIMESTAMP AND cc_campaign.expirationdate > CURRENT_TIMESTAMP ';
-//SCHEDULE CLAUSE
-$QUERY_COUNT_PHONENUMBERS .= "AND cc_campaign.$name_day = 1 AND  cc_campaign.daily_start_time <= CURRENT_TIME  AND cc_campaign.daily_stop_time > CURRENT_TIME  ";
-
-//NUMBER CLAUSE
-$QUERY_COUNT_PHONENUMBERS .= 'AND cc_phonenumber.status = 1 ';
-
-if ($verbose_level >= 1)
-    echo "SQL QUERY: $QUERY_COUNT_PHONENUMBERS  \n";
-
-$result_count_phonenumbers = $instance_table->SQLExec($A2B->DBHandle, $QUERY_COUNT_PHONENUMBERS);
-if ($verbose_level >= 1)
-    print_r($result_count_phonenumbers);
-
-if ($result_count_phonenumbers[0][0] == 0) {
+$instance_table = new Table(
+    "cc_phonenumber AS pn",
+    ["pn.id AS cc_phonenumber_id", "pn.number", "c.id AS cc_campaign_id", "c.frequency", "c.forward_number", "c.id_cid_group", "cc_card.id AS cc_card_id", "cc_card.tariff", "cc_card.username"],
+    [
+        "cc_phonebook AS pb" => ["pn.id_phonebook", "pb.id"],
+        "cc_campaign_phonebook AS cpb" => ["cpb.id_phonebook", "pn.id"],
+        "cc_campaign AS c" => ["cpb.id_campaign", "c.id"],
+        "cc_card" => ["c.id_card", "cc_card.id"],
+    ]
+);
+$conditions = [
+    "c.status" => 1,
+    "c.startingdate" => ["<=", "CURRENT_TIMESTAMP"],
+    "c.expirationdate" => [">", "CURRENT_TIMESTAMP"],
+    "`c`.`$name_day`" => 1,
+    "c.daily_start_time" => ["<=", "CURRENT_TIME"],
+    "c.daily_stop_time" => [">", "CURRENT_TIME"],
+    "pn.status" => 1,
+];
+$result_phonenumbers_all = $instance_table->getRows($conditions);
+if (!$result_phonenumbers_all) {
     if ($verbose_level >= 1)
         echo "[No phonenumbers to call now]\n";
     write_log($logfile_cront_batch, basename(__FILE__) . ' line:' . __LINE__ . "[No phonenumbers to call now]");
     exit ();
 }
 
-$nb_record = $result_count_phonenumbers[0][0];
+$nb_record = count($result_phonenumbers_all);
 $nbpage = (ceil($nb_record / $group));
-
-$QUERY_PHONENUMBERS = 'SELECT cc_phonenumber.id as cc_phonenumber_id, cc_phonenumber.number, cc_campaign.id as cc_campaign_id, cc_campaign.frequency , cc_campaign.forward_number  ,cc_campaign.id_cid_group , cc_card.id , cc_card.tariff, cc_card.username FROM cc_phonenumber , cc_phonebook , cc_campaign_phonebook, cc_campaign, cc_card WHERE ';
-$QUERY_PHONENUMBERS .= 'cc_phonenumber.id_phonebook = cc_phonebook.id AND cc_campaign_phonebook.id_phonebook = cc_phonebook.id AND cc_campaign_phonebook.id_campaign = cc_campaign.id AND cc_campaign.id_card = cc_card.id ';
-$QUERY_PHONENUMBERS .= 'AND cc_campaign.status = 1 AND cc_campaign.startingdate <= CURRENT_TIMESTAMP AND cc_campaign.expirationdate > CURRENT_TIMESTAMP ';
-//SCHEDULE CLAUSE
-$QUERY_PHONENUMBERS .= "AND cc_campaign.$name_day = 1 AND  cc_campaign.daily_start_time <= CURRENT_TIME  AND cc_campaign.daily_stop_time > CURRENT_TIME  ";
-//NUMBER CLAUSE
-$QUERY_PHONENUMBERS .= 'AND cc_phonenumber.status = 1 ';
-
+$balance_table = new Table(
+    "cc_card AS c",
+    ["flatrate", "credit"],
+    [
+        "cc_card_group AS cg" => ["c.id_group", "cg.id"],
+        "cc_campaignconf_cardgroup AS cc_cg" => ["cg.id", "cc_cg.id_card_group"],
+        "cc_campaign_config AS cc" => ["cc_cg.id_campaign_config", "cc.id"]
+    ]
+);
+$status_table = new Table("cc_campaign_phonestatus", ["status", "lastuse"]);
 // BROWSE THROUGH THE CARD TO APPLY THE CHECK ACCOUNT SERVICE
 for ($page = 0; $page < $nbpage; $page++) {
 
-    if ($A2B->config["database"]['dbtype'] == "postgres") {
-        $sql = $QUERY_PHONENUMBERS . " LIMIT $group OFFSET " . $page * $group;
-    } else {
-        $sql = $QUERY_PHONENUMBERS . " LIMIT " . $page * $group . ", $group";
-    }
-
-    if ($verbose_level >= 1)
-        echo "==> SELECT QUERY : $sql\n";
-
-    $result_phonenumbers = $instance_table->SQLExec($A2B->DBHandle, $sql);
+    $result_phonenumbers = array_slice($result_phonenumbers_all, $page * $group, $group);
 
     foreach ($result_phonenumbers as $phone) {
 
@@ -161,50 +155,40 @@ for ($page = 0; $page < $nbpage; $page++) {
             print_r($phone);
 
         // check the balance
-        $query_balance = "SELECT cc_campaign_config.flatrate, cc_card.credit FROM  cc_card,cc_card_group,cc_campaignconf_cardgroup,cc_campaign_config WHERE cc_card.id = $phone[6] AND cc_card.id_group = cc_card_group.id AND cc_campaignconf_cardgroup.id_card_group = cc_card_group.id  AND cc_campaignconf_cardgroup.id_campaign_config = cc_campaign_config.id ";
-        $result_balance = $instance_table->SQLExec($A2B->DBHandle, $query_balance);
-
-        if ($verbose_level >= 1)
-            echo "\n CHECK BALANCE :" . $query_balance;
+        $result_balance = $balance_table->getRow(["c.id" => $phone["cc_card_id"]]);
 
         if ($result_balance) {
-            if ($result_balance[0][1] < $result_balance[0][0]) {
-                write_log($logfile_cront_batch, basename(__FILE__) . ' line:' . __LINE__ . "[ user $phone[8] don't have engouh credit ]");
+            if ($result_balance["credit"] < $result_balance["flatrate"]) {
+                write_log($logfile_cront_batch, basename(__FILE__) . ' line:' . __LINE__ . "[ user $phone[username] don't have engouh credit ]");
                 if ($verbose_level >= 1)
-                    echo "\n[ Error : Can't send callback -> user $phone[8] don't have enough credit ]";
+                    echo "\n[ Error : Can't send callback -> user $phone[username] don't have enough credit ]";
                 continue;
             }
 
         } else {
-            write_log($logfile_cront_batch, basename(__FILE__) . ' line:' . __LINE__ . "[ user $phone[8] don't have a group correctly defined ]");
+            write_log($logfile_cront_batch, basename(__FILE__) . ' line:' . __LINE__ . "[ user $phone[username] don't have a group correctly defined ]");
             if ($verbose_level >= 1)
-                echo "\n[ Error : Can't send callback -> user $phone[8] don't have a group correctly defined ]";
+                echo "\n[ Error : Can't send callback -> user $phone[username] don't have a group correctly defined ]";
             continue;
         }
 
         //test if you have to inject it again
-        $frequency_sec = sprintf("%d SECOND", $phone['frequency'] * 60);
-        if ($A2B->config["database"]['dbtype'] == "postgres") {
-            $frequency_sec = "'$frequency_sec'";
-        }
-        $query_searche_phonestatus = "SELECT status, lastuse < CURRENT_TIMESTAMP - INTERVAL $frequency_sec FROM cc_campaign_phonestatus WHERE id_campaign = " . $phone[2] . " AND id_phonenumber = " . $phone[0];
-        $result_search_phonestatus = $instance_table->SQLExec($A2B->DBHandle, $query_searche_phonestatus);
+        $result_search_phonestatus = $status_table->getRow(["id_campaign" => $phone["cc_campaign_id"], "id_phonenumber" => $phone["cc_phonenumber_id"]]);
 
-        if ($verbose_level >= 1)
-            echo "\nSEARCH PHONESTATUS QUERY : " . $query_searche_phonestatus;
         if ($verbose_level >= 1)
             echo "\nSEARCH PHONESTATUS RESULT : " . print_r($result_search_phonestatus);
 
         //check callback spool
         $action = '';
         if ($result_search_phonestatus) {
+            $lastuse = DateTime::createFromFormat("Y-m-d H:i:s", $result_search_phonestatus["lastuse"]);
             $action = "update";
             //Filter phone number holded and stoped
-            if ($result_search_phonestatus[0][0] == 1 || $result_search_phonestatus[0][0] == 2)
+            if ($result_search_phonestatus["status"] == 1 || $result_search_phonestatus["status"] == 2)
                 continue;
-            if ($result_search_phonestatus[0][1] == 0) {
+            if ($lastuse >= (new DateTime())->modify("-$phone[frequency] minutes")) {
                 if ($verbose_level >= 1)
-                    echo "\n[  Can't send callback -> number $phone[1] is not in the frequency ]";
+                    echo "\n[  Can't send callback -> number $phone[number] is not in the frequency ]";
                 continue;
             }
 
@@ -213,7 +197,6 @@ for ($page = 0; $page < $nbpage; $page++) {
         }
 
         // Search Road...
-        $A2B->set_table($instance_table);
         $A2B->cardnumber = $phone["username"];
         $error_msg = '';
 
@@ -288,17 +271,7 @@ for ($page = 0; $page < $nbpage; $page++) {
                     //default callerid
                     $callerid = '111111111';
                     $cidgroupid = $phone["id_cid_group"];
-                    if ($A2B->config["database"]['dbtype'] == "postgres") {
-                        $QUERY = "SELECT cid FROM cc_outbound_cid_list WHERE activated = 1 AND outbound_cid_group = $cidgroupid ORDER BY RANDOM() LIMIT 1";
-                    } else {
-                        $QUERY = "SELECT cid FROM cc_outbound_cid_list WHERE activated = 1 AND outbound_cid_group = $cidgroupid ORDER BY RAND() LIMIT 1";
-                    }
-                    $instance_cid_table = new Table();
-                    echo "QUERY CID : " . $QUERY;
-                    $cidresult = $instance_cid_table->SQLExec($A2B->DBHandle, $QUERY);
-                    if (is_array($cidresult) && count($cidresult) > 0) {
-                        $callerid = $cidresult[0][0];
-                    }
+                    $callerid = (new Table("cc_outbound_cid_list", ["cid"]))->getValue(["activated" => 1, "outbound_cid_group" => $cidgroupid], ["RAND()"]);
 
                     $account = $_SESSION["pr_login"];
 
@@ -306,13 +279,13 @@ for ($page = 0; $page < $nbpage; $page++) {
                     $status = 'PENDING';
                     $server_ip = 'localhost';
                     $num_attempt = 0;
-                    $variable = "CALLED=$destination|USERNAME=$phone[8]|USERID=$phone[6]|CBID=$uniqueid|PHONENUMBER_ID=" . $phone['cc_phonenumber_id'] . "|CAMPAIGN_ID=" . $phone['cc_campaign_id'];
+                    $variable = "CALLED=$destination|USERNAME=$phone[username]|USERID=$phone[cc_card_id]|CBID=$uniqueid|PHONENUMBER_ID=" . $phone['cc_phonenumber_id'] . "|CAMPAIGN_ID=" . $phone['cc_campaign_id'];
 
                     $instance_table = new Table("cc_callback_spool");
                     $values = compact("uniqueid", "status", "server_ip", "num_attempt", "channel", "exten", "context", "priority", "variable", "id_server_group", "account", "callerid");
                     $values["callback_time"] = date("Y-m-d H:i:s");
                     $values["timeout"] = 30000;
-                    $res = $instance_table->addRow($values);
+                    $instance_table->addRow($values, "id", $res);
 
                     if (!$res) {
                         if ($verbose_level >= 1)
@@ -322,13 +295,16 @@ for ($page = 0; $page < $nbpage; $page++) {
                             echo "[Your callback request has been queued correctly!]";
 
                         if ($action == "update")
-                            $query = "UPDATE cc_campaign_phonestatus SET id_callback = '$uniqueid', lastuse = CURRENT_TIMESTAMP WHERE id_phonenumber =$phone[0] AND id_campaign = $phone[2] ";
+                            $res = (new Table("cc_campaign_phonestatus"))
+                                ->updateRow(
+                                    ["id_callback" => $uniqueid, "lastuse" => "CURRENT_TIMESTAMP"],
+                                    ["id_phonenumber" => $phone["cc_phonenumber_id"], "id_campaign" => $phone["cc_campaign_id"]]
+                                );
                         else
-                            $query = "INSERT INTO cc_campaign_phonestatus (id_phonenumber ,id_campaign ,id_callback ,status) VALUES ( $phone[0], $phone[2], $res , '0') ";
-
-                        if ($verbose_level >= 1)
-                            echo "\nINSERT PHONESTATUS QUERY : $query";
-                        $res = $A2B->DBHandle->Execute($query);
+                            $res = (new Table("cc_campaign_phonestatus"))
+                                ->addRow(
+                                    ["id_phonenumber" => $phone["cc_phonenumber_id"], "id_campaign" => $phone["cc_campaign_id"], "id_callback" => $res, "status" => 0]
+                                );
                     }
 
                 } else {

@@ -96,7 +96,7 @@ if (!$A2B->DbConnect()) {
     exit;
 }
 
-$instance_table = new Table();
+$instance_table = new Table("cc_call");
 
 if ($A2B->config["global"]['cache_enabled']) {
     if (empty ($A2B->config["global"]['cache_path'])) {
@@ -125,55 +125,24 @@ if ($A2B->config["global"]['cache_enabled']) {
             // Select CDR
             $result = $db->Execute("SELECT rowid , * from cc_call limit $nb_record");
             if ($result) {
-                $column = "";
-                $values = "";
-                $delete_id = "( ";
+                $values = [];
+                $delete_id = "";
                 $i = 0;
                 while($row = $result->FetchRow()) {
-                    $j = 0;
-                    if ($i === 0) {
-                        $values .= "( ";
-                    }
-                    else {
-                        $values .= ",( ";
-                    }
-
-                    $delete_id .= $row['rowid'];
-                    if ($i < $result->RowCount() - 1) {
-                        $delete_id .= " , ";
-                    }
-
-                    foreach ($row as $key => $value) {
-                        $j++;
-                        if ($key === "rowid") {
-                            continue;
-                        }
-                        if ($i === 0) {
-                            $column .= " $key ";
-                            if ($j < count($row)) {
-                                $column .= ",";
-                            }
-                        }
-                        $values .= " '$value' ";
-                        if ($j < count($row)) {
-                            $values .= ",";
-                        }
-
-                    }
-                    $values .= " )";
+                    $delete_id .= $row['rowid'] . ",";
+                    unset($row["rowid"]);
+                    $values[] = $row;
                     $i++;
                 }
-                $delete_id .= " )";
-                $INSERT_QUERY = "INSERT INTO cc_call ( $column ) VALUES $values";
-                if ($verbose_level >= 1) {
-                    echo "QUERY INSERT : [$INSERT_QUERY]\n";
-                }
-                $instance_table->SQLExec($A2B->DBHandle, $INSERT_QUERY);
+                $delete_id = "(" . trim($delete_id, ",") . ")";
+                $instance_table->addRows($values);
+
                 $DELETE_QUERY = "DELETE FROM cc_call WHERE rowid in $delete_id";
                 if ($verbose_level >= 1) {
                     echo "QUERY DELETE : [$DELETE_QUERY]\n";
                 }
                 $db->Execute($DELETE_QUERY);
+
             }
             echo "Waiting ....\n";
             sleep($wait_time);

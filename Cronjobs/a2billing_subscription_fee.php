@@ -92,8 +92,17 @@ if (!$A2B->DbConnect()) {
     exit;
 }
 
-$instance_table = new Table();
-
+$instance_table = new Table(
+    "cc_card c",
+    [
+        "c.id AS card_id", "ss.id AS service_id", "cs.id AS card_subscription_id", "ss.label", "ss.fee", "ss.emailreport",
+        "cs.startdate", "cs.paid_status", "cs.last_run", "cs.next_billing_date", "cs.limit_pay_date", "cs.product_name",
+    ],
+    [
+        "cc_card_subscription cs" => ["INNER", "c.id", "cs.id_cc_card"],
+        "cc_subscription_service ss" => ["INNER", "cs.id_subscription_fee", "ss.id"],
+    ]
+);
 /*
     Pay_Status :
         0 : First USE
@@ -101,13 +110,16 @@ $instance_table = new Table();
         2 : Paid
         3 : UnPaid
 */
+$condition = [
+    "ss.status" => 1,
+    "cs.startdate" => ["<", "CURRENT_TIMESTAMP"],
+    ["SUB", ["cs.stopdate" => [[null], [">", "CURRENT_TIMESTAMP"]]]],
+    "ss.startdate" => ["<", "CURRENT_TIMESTAMP"],
+    ["SUB", ["ss.stopdate" => [[null], [">", "CURRENT_TIMESTAMP"]]]],
+    "cs.paid_status" => ["!=", 3]
+];
+$nb_card = $instance_table->countRows($condition);
 
-$QUERY = 'SELECT count(*) FROM cc_card INNER JOIN cc_card_subscription ON cc_card.id = cc_card_subscription.id_cc_card INNER JOIN cc_subscription_service ON cc_card_subscription.id_subscription_fee=cc_subscription_service.id' .
-' WHERE cc_subscription_service.status=1 AND cc_card_subscription.startdate < NOW() AND (cc_card_subscription.stopdate IS NULL OR cc_card_subscription.stopdate > NOW())'.
-' AND cc_subscription_service.startdate < NOW() AND (cc_subscription_service.stopdate IS NULL OR cc_subscription_service.stopdate > NOW()) AND cc_card_subscription.paid_status !=3';
-
-$result = $instance_table->SQLExec($A2B->DBHandle, $QUERY);
-$nb_card = $result[0][0];
 $nbpagemax = (ceil($nb_card / $groupcard));
 if ($verbose_level >= 1)
     echo "===> NB_CARD : $nb_card - NBPAGEMAX:$nbpagemax\n";
@@ -124,25 +136,12 @@ $billdaybefor_anniversary = $A2B->config['global']['subscription_bill_days_befor
 $service_array = array();
 
 for ($page = 0; $page < $nbpagemax; $page++) {
-
-    $sql = 'SELECT cc_card.id card_id ,cc_subscription_service.id service_id, cc_subscription_service.label, cc_subscription_service.fee, cc_subscription_service.emailreport,DATE(cc_card_subscription.startdate) startdate , cc_card_subscription.paid_status , cc_card_subscription.last_run, cc_card_subscription.next_billing_date , cc_card_subscription.limit_pay_date , cc_card_subscription.id card_subscription_id, cc_card_subscription.product_name product_name'.
-    ' FROM cc_card INNER JOIN cc_card_subscription ON cc_card.id = cc_card_subscription.id_cc_card  INNER JOIN cc_subscription_service ON cc_card_subscription.id_subscription_fee=cc_subscription_service.id '  .
-    ' WHERE cc_subscription_service.status=1 AND cc_card_subscription.startdate < NOW() AND (cc_card_subscription.stopdate IS NULL OR cc_card_subscription.stopdate > NOW())'.
-    ' AND cc_subscription_service.startdate < NOW() AND (cc_subscription_service.stopdate IS NULL OR cc_subscription_service.stopdate > NOW()) AND cc_card_subscription.paid_status !=3'.
-    ' ORDER BY cc_card.id';
-
-    if ($A2B->config["database"]['dbtype'] == "postgres") {
-        $sql .= " LIMIT $groupcard OFFSET " . $page * $groupcard;
-    } else {
-        $sql .= " LIMIT " . $page * $groupcard . ", $groupcard";
-    }
-
-    $result_subscriptions = $instance_table->SQLExec($A2B->DBHandle, $sql);
+    $result_subscriptions = $instance_table->getRows($condition, ["c.id"], "ASC", [], $groupcard, $page * $groupcard);
 
     foreach ($result_subscriptions as $subscription) {
         $service_id = $subscription['service_id'];
 
-        if (!is_array($service_array[$service_id])) $service_array[$service_id] = array("totalcardperform" => 0 , "totalcredit" => 0 );
+        if (empty($service_array[$service_id])) $service_array[$service_id] = array("totalcardperform" => 0 , "totalcredit" => 0 );
 
         $action = "";
 
@@ -240,22 +239,13 @@ for ($page = 0; $page < $nbpagemax; $page++) {
                     $service_array[$service_id]['totalcardperform']++;
                     $service_array[$service_id]['totalcredit']+= $subscription['fee'];
 
-                    $QUERY = "UPDATE cc_card SET credit=credit-'" . $subscription['fee'] . "' WHERE id=" . $card['id'];
-                    $result = $instance_table->SQLExec($A2B->DBHandle, $QUERY, 0);
-                    if ($verbose_level >= 1)
-                        echo "==> UPDATE CARD QUERY: 	$QUERY\n";
+                    (new Table("cc_card"))->updateRow(["credit" => ["credit - ?", $subscription["fee"]]], ["id" => $card["id"]]);
+                    (new Table("cc_charge"))
+                        ->addRow(
+                            ["id_cc_card" => $card["id"], "amount" => $subscription["fee"], "chargetype" => 3, "id_cc_card_subscription" => $subscription["card_subscription_id"], "charged_status" => 1, "description" => $subscription["product_name"]]
+                        );
+                    (new Table("cc_card_subscription"))->updateRow(["paid_status" => 2], ["id" => $subscription["card_subscription_id"]]);
 
-                    $QUERY = "INSERT INTO cc_charge (id_cc_card, amount, chargetype, id_cc_card_subscription, charged_status, description) VALUES ('" .
-                                $card['id'] . "', '" . $subscription['fee']  . "', '3','" . $subscription['card_subscription_id'] . "',1, '" . $subscription['product_name'] . "')";
-                    if ($verbose_level >= 1)
-                        echo "==> INSERT CHARGE QUERY: 	$QUERY\n";
-
-                    $result = $instance_table->SQLExec($A2B->DBHandle, $QUERY, 0);
-                    $QUERY = "UPDATE cc_card_subscription SET paid_status = 2 WHERE id=" . $subscription['card_subscription_id'];
-                    if ($verbose_level >= 1)
-                        echo "==> UPDATE SUBSCRIPTION QUERY: 	$QUERY\n";
-
-                    $result = $instance_table->SQLExec($A2B->DBHandle, $QUERY, 0);
                     $mail = new Mail(Mail::$TYPE_SUBSCRIPTION_PAID,$card['id'] );
                     $mail -> replaceInEmail(Mail::$SUBSCRIPTION_FEE,$subscription['fee']);
                     $mail -> replaceInEmail(Mail::$SUBSCRIPTION_ID,$subscription['id']);
@@ -305,14 +295,11 @@ for ($page = 0; $page < $nbpagemax; $page++) {
                     $mail -> replaceInEmail(Mail::$SUBSCRIPTION_ID, $subscription['id']);
                     $mail -> replaceInEmail(Mail::$SUBSCRIPTION_LABEL, $subscription['product_name']);
                     //insert charge
-                    $QUERY = "INSERT INTO cc_charge (id_cc_card, amount, chargetype, id_cc_card_subscription, invoiced_status, description) VALUES ('" . $card['id'] . "', '" . $subscription['fee']  . "', '3','" . $subscription['card_subscription_id'] . "',1, '" . $subscription['product_name'] . "')";
-                    if ($verbose_level >= 1)
-                        echo "==> INSERT CHARGE QUERY: 	$QUERY\n";
-                    $instance_table->SQLExec($A2B->DBHandle, $QUERY, 0);
-                    $QUERY = "UPDATE cc_card_subscription SET paid_status = 1 WHERE id=" . $subscription['card_subscription_id'];
-                    if ($verbose_level >= 1)
-                        echo "==> UPDATE SUBSCRIPTION QUERY : $QUERY\n";
-                    $result = $instance_table->SQLExec($A2B->DBHandle, $QUERY, 0);
+                    (new Table("cc_charge"))
+                        ->addRow(
+                            ["id_cc_card" => $card["id"], "amount" => $subscription["fee"], "chargetype" => 3, "id_cc_card_subscription" => $subscription["card_subscription_id"], "invoiced_status" => 1, "description" => $subscription["product_name"]]
+                        );
+                    (new Table("cc_card_subscription"))->updateRow(["paid_status" => 1], ["id" => $subscription["card_subscription_id"]]);
 
                     try {
                         $mail -> send();
@@ -322,26 +309,15 @@ for ($page = 0; $page < $nbpagemax; $page++) {
                         write_log($logfile_cront_subfee, basename(__FILE__) . ' line:' . __LINE__ . "[Sent mail failed : $e]");
                     }
                 }
-                $QUERY = "UPDATE cc_card_subscription SET last_run = '$last_run', next_billing_date = '$next_bill_date', limit_pay_date = '$limite_pay_date' WHERE id=" . $subscription['card_subscription_id'];
-                if ($verbose_level >= 1)
-                        echo "==> UPDATE SUBSCRIPTION QUERY : 	$QUERY\n";
-                $result = $instance_table->SQLExec($A2B->DBHandle, $QUERY, 0);
+                (new Table("cc_card_subscription"))->updateRow(["last_run" => $last_run, "next_billing_date" => $next_bill_date, "limit_pay_date" => $limite_pay_date], ["id" => $subscription["card_subscription_id"]]);
 
                 break;
 
             case "unpaid" :
                 // block the card
-                $QUERY = "UPDATE cc_card SET status = 8 WHERE id=" . $subscription['card_id'];
-                $result = $instance_table->SQLExec($A2B->DBHandle, $QUERY, 0);
-                if ($verbose_level >= 1)
-                    echo "==> UPDATE CARD QUERY: 	$QUERY\n";
+                (new Table("cc_card"))->updateRow(["status" => 8], ["id" => $subscription["card_id"]]);
+                (new Table("cc_card_subscription"))->updateRow(["paid_status" => 3], ["id" => $subscription["card_subscription_id"]]);
 
-                $QUERY = "UPDATE cc_card_subscription SET paid_status = 3 WHERE id=" . $subscription['card_subscription_id'];
-                if ($verbose_level >= 1)
-                    echo "==> UPDATE SUBSCRIPTION QUERY: 	$QUERY\n";
-                $result = $instance_table->SQLExec($A2B->DBHandle, $QUERY, 0);
-                if ($verbose_level >= 1)
-                    echo "==> UPDATE CARD QUERY: 	$QUERY\n";
                 $mail = new Mail(Mail::$TYPE_SUBSCRIPTION_DISABLE_CARD, $subscription('card_id'));
                 $mail -> replaceInEmail(Mail::$SUBSCRIPTION_FEE, $subscription['fee']);
                 $mail -> replaceInEmail(Mail::$SUBSCRIPTION_ID, $subscription['id']);
@@ -363,9 +339,11 @@ for ($page = 0; $page < $nbpagemax; $page++) {
 
 // UPDATE THE SERVICE
 foreach ($service_array as $key => $value) {
-        $QUERY = "UPDATE cc_subscription_service SET datelastrun=now(), numberofrun=numberofrun+1, totalcardperform=totalcardperform+" . $value['totalcardperform'] .
-                ", totalcredit = totalcredit + '".$value['totalcredit'] ."' WHERE id=$key";
-    $result = $instance_table->SQLExec($A2B->DBHandle, $QUERY, 0);
+    (new Table("cc_subscription_service"))
+        ->updateRow(
+            ["datelastrun" => "CURRENT_TIMESTAMP", "numberofrun" => ["numberofrun + ?", 1], "totalcardperform" => ["totalcardperform + ?", $value["totalcardperform"]], "totalcredit" => ["totalcredit + ?", $value["totalcredit"]]],
+            ["id" => $key]
+        );
 }
 
 if ($verbose_level >= 1)

@@ -95,10 +95,7 @@ if (!$A2B->DbConnect()) {
 $instance_table = new Table();
 
 // CHECK COUNT OF CARD ON WHICH APPLY THE SERVICE
-$QUERY = 'SELECT count(*) FROM cc_card';
-
-$result = $instance_table->SQLExec($A2B->DBHandle, $QUERY);
-$nb_card = $result[0][0];
+$nb_card = (new Table("cc_card"))->countRows();
 $nbpagemax = (ceil($nb_card / $groupcard));
 
 if ($verbose_level >= 1)
@@ -118,17 +115,10 @@ write_log ($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . "[Invoice B
 for ($page = 0; $page < $nbpagemax; $page++) {
     if ($verbose_level >= 1)
         echo "$page <= $nbpagemax \n";
-    $Query_Customers = "SELECT id, vat, invoiceday, typepaid, credit FROM cc_card";
+    $resmax = (new Table("cc_card", ["id", "vat", "invoiceday", "typepaid", "credit"]))
+        ->getRows([], [], "ASC", [], $page, $page * $groupcard);
 
-    if ($A2B->config["database"]['dbtype'] == "postgres") {
-        $Query_Customers .= " LIMIT $groupcard OFFSET " . $page * $groupcard;
-    } else {
-        $Query_Customers .= " LIMIT " . $page * $groupcard . ", $groupcard";
-    }
-
-    $resmax = $instance_table->SQLExec($A2B->DBHandle, $Query_Customers);
-
-    if (is_array($resmax)) {
+    if ($resmax) {
         $numrow = count($resmax);
         if ($verbose_level >= 2)
             print_r($resmax[0]);

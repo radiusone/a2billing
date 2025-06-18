@@ -98,7 +98,7 @@ if (empty ($A2B->config['notifications']['cron_notifications'])) {
 }
 
 //$A2B -> DBHandle
-$instance_table = new Table();
+$instance_table = new Table("cc_card");
 
 // Prepare the date interval to filter the card that don't have to receive a notification;
 $Delay_Clause = "( ";
@@ -108,23 +108,15 @@ if ($A2B->config["database"]['dbtype'] == "postgres") {
     $CURRENT_DATE = "CURDATE()";
 }
 
+$condition = ["notify_email" => 1, "status" => 1, "CASE WHEN typepaid = 1 AND creditlimit IS NOT NULL THEN credit + creditlimit ELSE credit END" => ["<", ["credit_notification"]]];
 if ($A2B->config['notifications']['delay_notifications'] <= 0) {
-    $Delay_Clause .= "last_notification < $CURRENT_DATE + 1 OR ";
+    $condition[] = ["SUB", ["last_notification" => [null], ["<", "$CURRENT_DATE + 1"]], "OR"];
 } else {
-    $Delay_Clause .= "last_notification < $CURRENT_DATE - " . $A2B->config['notifications']['delay_notifications'] . " OR ";
+    $condition[] = ["SUB", ["last_notification" => [null], ["<", "$CURRENT_DATE - " . $A2B->config['notifications']['delay_notifications']]], "OR"];
 }
 
-$Delay_Clause .= "last_notification IS NULL )";
 // CHECK AMOUNT OF CARD ON WHICH APPLY THE CHECK ACCOUNT SERVICE
-$QUERY = "SELECT count(*) FROM cc_card WHERE notify_email = 1 AND status = 1 AND (IF((typepaid=1) AND (creditlimit IS NOT NULL), credit + creditlimit, credit)) < credit_notification AND " . $Delay_Clause;
-
-if ($verbose_level >= 1) {
-    echo "[QUERY COUNT]\n";
-    echo "$QUERY\n";
-}
-
-$result = $instance_table->SQLExec($A2B->DBHandle, $QUERY);
-$nb_card = $result[0][0];
+$nb_card = $instance_table->countRows($condition);
 $nbpagemax = (ceil($nb_card / $groupcard));
 if ($verbose_level >= 1)
     echo "===> NB_CARD : $nb_card - NBPAGEMAX:$nbpagemax\n";
@@ -141,19 +133,7 @@ write_log($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . "[Number of 
 // BROWSE THROUGH THE CARD TO APPLY THE CHECK ACCOUNT SERVICE
 for ($page = 0; $page < $nbpagemax; $page++) {
 
-    $sql = "SELECT id, email_notification, email FROM cc_card WHERE notify_email = 1 AND status = 1 AND (IF((typepaid=1) AND (creditlimit IS NOT NULL), credit + creditlimit, credit)) < credit_notification AND " . $Delay_Clause . " ORDER BY id  ";
-
-    if ($A2B->config["database"]['dbtype'] == "postgres") {
-        $sql .= " LIMIT $groupcard OFFSET " . $page * $groupcard;
-    } else {
-        $sql .= " LIMIT " . $page * $groupcard . ", $groupcard";
-    }
-
-    if ($verbose_level >= 1)
-        echo "==> SELECT CARD QUERY : $sql\n";
-
-    $result_card = $instance_table->SQLExec($A2B->DBHandle, $sql);
-
+    $result_card = $instance_table->getRows($condition);
     foreach ($result_card as $mycard) {
 
         if ($verbose_level >= 1)
@@ -166,7 +146,7 @@ for ($page = 0; $page < $nbpagemax; $page++) {
 
             // Sent Mail
             try {
-                $mail = new Mail(Mail :: $TYPE_REMINDER, $mycard['id']);
+                $mail = new Mail(Mail::$TYPE_REMINDER, $mycard['id']);
             } catch (Exception $e) {
                 if ($verbose_level >= 1)
                     echo "[Cannot find a template mail for reminder]\n";
@@ -181,17 +161,10 @@ for ($page = 0; $page < $nbpagemax; $page++) {
                     $mail->send($mycard['email']);
 
                 //update the card with the date of last notification
-                if ($A2B->config["database"]['dbtype'] == "postgres") {
-                    $now = "CURRENT_TIMESTAMP";
-                } else {
-                    $now = "now()";
-                }
-                $sql_update_card = "UPDATE cc_card SET last_notification = " . $now . " WHERE id = " . $mycard['id'];
-                $instance_table->SQLExec($A2B->DBHandle, $sql_update_card);
+                $instance_table->updateRow(["last_notification" => "CURRENT_TIMESTAMP"], ["id" => $mycard["id"]]);
 
                 if ($verbose_level >= 1) {
                     echo "[UPDATE CARD ID < " . $mycard['id'] . " > : last_notification]\n";
-                    echo "$sql_update_card\n";
                 }
             } catch (A2bMailException $e) {
                 $error_msg = $e->getMessage();

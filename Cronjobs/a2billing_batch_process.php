@@ -94,36 +94,32 @@ if (!$A2B->DbConnect()) {
     exit;
 }
 
-$instance_table = new Table();
-
 $interval = 24 + $time_checks . " HOUR";
 if ($A2B->config["database"]["dbtype"] === "postgres") {
     $interval = "'$interval'";
 }
 $service_lastrun = "";
 
-// CHECK THE SERVICES
-$QUERY = "SELECT DISTINCT id, name, amount, period, rule, daynumber, stopmode, maxnumbercycle, status, numberofrun, datecreate, " .
-        "datelastrun, emailreport, totalcredit, totalcardperform, dialplan, operate_mode, use_group " .
-        "FROM cc_service " .
-        "WHERE status=1 AND cc_service.datelastrun < CURRENT_TIMESTAMP - INTERVAL $interval ORDER BY id DESC";
-if ($verbose_level >= 1)
-    echo $QUERY;
-
-$result = $instance_table->SQLExec($A2B->DBHandle, $QUERY);
+$instance_table = new Table(
+    "cc_service",
+    [
+        "DISTINCT id", "name", "amount", "period", "rule", "daynumber", "stopmode", "maxnumbercycle", "status", "numberofrun",
+        "datecreate", "datelastrun", "emailreport", "totalcredit", "totalcardperform", "dialplan", "operate_mode", "use_group",
+    ]
+);
+$result = $instance_table->getRows(
+    ["status" => 1, "datelastrun" => ["<", "CURRENT_TIMESTAMP - INTERVAL $interval"]],
+    ["id"],
+    "DESC"
+);
 if ($verbose_level >= 1)
     print_r($result);
 
-if (!is_array($result)) {
+if (!$result) {
     echo "[No Recurring service to run]\n";
     write_log($logfile_cront_batch, basename(__FILE__) . ' line:' . __LINE__ . "[ No Recurring service to run]");
     exit ();
 }
-
-// 0 id, 1 name, 2 amount, 3 period, 4 rule, 5 daynumber, 6 stopmode,  7 maxnumbercycle, 8 status, 9 numberofrun,
-// 10 datecreate, 11 datelastrun, 12 emailreport, 13 totalcredit, 14 totalcardperform, 15 dialplan 16 operate_mode
-
-write_log($logfile_cront_batch, basename(__FILE__) . ' line:' . __LINE__ . "[Number of card found : $nb_card]");
 
 // mail variable for user notification
 
@@ -133,19 +129,18 @@ foreach ($result as $myservice) {
     $totalcardperform = 0;
     $totalcredit = 0;
 
-    write_log($logfile_cront_batch, basename(__FILE__) . ' line:' . __LINE__ . "[Service : " . $myservice[1] . " ]");
-    $filters 		= '';
-    $service_name 	= $myservice[1];
-    $period 		= $myservice[3];
-    $rule 			= $myservice[4];
-    $rule_day 		= $myservice[5];
-    $stopmode 		= $myservice[6];
-    $maxnumbercycle = $myservice[7];
-    $dialplan		= $myservice[15];
-    $operate_mode	= $myservice[16];
-    $use_group		= $myservice[17];
-    $amount			= $myservice[2];
-    $filter			= '';
+    write_log($logfile_cront_batch, basename(__FILE__) . ' line:' . __LINE__ . "[Service : " . $myservice["name"] . " ]");
+    $service_name 	= $myservice["name"];
+    $period 		= $myservice["period"];
+    $rule 			= $myservice["rule"];
+    $rule_day 		= $myservice["daynumber"];
+    $stopmode 		= $myservice["stopmode"];
+    $maxnumbercycle = $myservice["maxnumbercycle"];
+    $dialplan		= $myservice["dialplan"];
+    $operate_mode	= $myservice["operate_mode"];
+    $use_group		= $myservice["use_group"];
+    $amount			= $myservice["amount"];
+    $filter			= [];
     if ($verbose_level >= 1)
         echo "[ rule $rule  $rule_day ]";
 
@@ -155,55 +150,59 @@ foreach ($result as $myservice) {
         if ($A2B->config["database"]['dbtype'] == "postgres") {
             $interval = "'$interval'";
         }
-        $filter .= " -- card last run date <= period
-                 AND servicelastrun <= CURRENT_TIMESTAMP - INTERVAL $interval \n";
+        // card last run date <= period
+        $filter["servicelastrun"] = ["<=", "CURRENT_TIMESTAMP - INTERVAL $interval"];
     }
     if (($rule == 1) && ($rule_day > 0)) {
         $interval = "1 DAY";
         if ($A2B->config["database"]['dbtype'] == "postgres") {
             $interval = "'$interval'";
         }
-        $filter .= " -- Apply service if card NO used in last y days
-                AND lastuse < CURRENT_TIMESTAMP - INTERVAL $interval \n";
+        // Apply service if card NO used in last y days
+        $filter["lastuse"] = ["<", "CURRENT_TIMESTAMP - INTERVAL $interval"];
     }
     if (($rule == 2) && ($rule_day > 0)) {
         $interval = "1 DAY";
         if ($A2B->config["database"]['dbtype'] == "postgres") {
             $interval = "'$interval'";
         }
-        $filter .= " -- Apply service if card used in last y days
-                        AND lastuse >= CURRENT_TIMESTAMP - INTERVAL $interval \n";
+        // Apply service if card used in last y days
+        $filter["lastuse"] = [">=", "CURRENT_TIMESTAMP - INTERVAL $interval"];
     }
     //stopmode variants
     if ($stopmode == 2) {
-        $filter .= " -- NBSERVICE <= MAXNUMBERCYCLE  STOPMODE Max number of cycle reach
-                AND nbservice <= " . $myservice[7] ."\n";
+        // NBSERVICE <= MAXNUMBERCYCLE  STOPMODE Max number of cycle reach
+        $filter["nbservice"] = ["<=", $myservice["maxnumbercycle"]];
     }
     if ($stopmode == 1) {
-        $filter .= " -- CREDIT <= 0 STOPMODE Account balance below zero
-                        AND credit>0 \n";
+        // CREDIT <= 0 STOPMODE Account balance below zero
+        $filter["credit"] = [">", 0];
     }
     // dialplan
     if ($dialplan > 0) {
-        $filter .= " -- dialplan check
-                AND tariff = $dialplan \n";
+        // dialplan check
+        $filter["tariff"] = $dialplan;
     }
     $sql = "";
-    $first_usedate = " AND firstusedate IS NOT NULL AND firstusedate>'1984-01-01 00:00:00'";
+    $filter[] = [
+        "SUB",
+        [
+            "firstusedate" => [["!=", null], [">", "1984-01-01"]]
+        ],
+        "AND"
+    ];
+    $filter["runservice"] = 1;
     if ($use_group == 0) {
-        $sql = "SELECT id, credit, nbservice, lastuse, username, servicelastrun, email
-                         FROM cc_card , cc_cardgroup_service WHERE id_group = id_card_group AND id_service = " . $myservice[0] .
-                        " $first_usedate AND runservice=1 $filter \n";
+        $filter["id_service"] = $myservice["id"];
+        $result_card = (new Table("cc_card", ["id", "credit", "nbservice", "lastuse", "username", "servicelastrun", "email"], ["cc_cardgroup_service" => ["id_group", "id_card_group"]]))
+            ->getRows($filter);
     } else {
-        $sql = "SELECT id, credit, nbservice, lastuse, username, servicelastrun, email
-                         FROM cc_card WHERE runservice=1 $first_usedate $filter \n";
+        $result_card = (new Table("cc_card", ["id", "credit", "nbservice", "lastuse", "username", "servicelastrun", "email"]))
+            ->getRows($filter);
     }
 
-    if ($verbose_level >= 1)
-        echo "==> SELECT CARD QUERY : $sql\n";
-
-    $result_card = $instance_table->SQLExec($A2B->DBHandle, $sql);
-    $instance_table->SQLExec($A2B->DBHandle, "begin;");
+    $instance_table = new Table();
+    $instance_table->begin();
     $query_count=0;
 
     foreach ($result_card as $mycard) {
@@ -211,26 +210,26 @@ foreach ($result as $myservice) {
         $query_count=$query_count+1;
 
         if ($query_count>=$groupcard) {
-            $instance_table->SQLExec($A2B->DBHandle, "commit");
+            $instance_table->end();
             if ($verbose_level >= 1)
                             echo "------>|< commit & wait \n";
             sleep($groupwait);
-            $instance_table->SQLExec($A2B->DBHandle, "begin;");
+            $instance_table->begin();
             $query_count=0;
         }
 
         if ($verbose_level >= 1)
             print_r($mycard);
 
-        $card_id = $mycard[0];
+        $card_id = $mycard["id"];
         if ($verbose_level >= 1)
-            echo "------>>>  ID = $card_id - CARD =" . $mycard[4] . " - BALANCE =" . $mycard[1] . " \n";
+            echo "------>>>  ID = $card_id - CARD =" . $mycard["username"] . " - BALANCE =" . $mycard["credit"] . " \n";
 
         // UPDATE THE CARD CREDIT AND SERVICE LAST RUN
         $refill_amount = 0;
         if ($operate_mode == 1) {
-            $credit_sql = " case when credit<$amount and credit >0  then 0 when credit<=0 then credit else credit-$amount end ";
-            $current_amount = $mycard[1];
+            $credit_sql = ["CASE WHEN credit < ? AND credit > 0 THEN 0 WHEN credit <= 0 THEN credit ELSE credit - ? END", $amount, $amount];
+            $current_amount = $mycard["credit"];
             if ($current_amount > $amount) {
                 $refill_amount = $amount;
             } else {
@@ -239,65 +238,55 @@ foreach ($result as $myservice) {
                 }
             }
         } else {
-            $credit_sql = " credit-$amount ";
+            $credit_sql = ["credit - ?", $amount];
             $refill_amount = $amount;
         }
 
         if ($refill_amount > 0) {
-            $QUERY = "INSERT INTO cc_logrefill (credit,card_id,description,refill_type) VALUES (-$refill_amount,$card_id,'Recurrent $service_name ',2)";
-            if ($verbose_level >= 1)
-                echo "==> CARD REFILL QUERY:    $QUERY\n";
             if ($run) {
-                $result = $instance_table->SQLExec($A2B->DBHandle, $QUERY, 0);
+                $result = (new Table("cc_logrefill"))
+                    ->addRow(["credit" => -$refill_amount, "card_id" => $card_id, "description" => "Recurrent $service_name ", "refill_type" => 2]);
             }
             $totalcredit += $refill_amount;
         }
 
-        $QUERY = "UPDATE cc_card SET nbservice=nbservice+1, credit= $credit_sql, servicelastrun=current_timestamp WHERE id=" . $mycard[0];
         if ($run) {
-            $result = $instance_table->SQLExec($A2B->DBHandle, $QUERY, 0);
+            $result = (new Table("cc_card"))
+                ->updateRow(["nbservice" => ["nbservice + ?", 1], "credit" => $credit_sql, "servicelastrun" => "CURRENT_TIMESTAMP"], ["id" => $mycard["id"]]);
         }
-        if ($verbose_level >= 1)
-            echo "==> UPDATE CARD QUERY: 	$QUERY\n";
         $totalcardperform++;
     }
 
-    $instance_table->SQLExec($A2B->DBHandle, "commit");
+    $instance_table->end();
 
     write_log($logfile_cront_batch, basename(__FILE__) . ' line:' . __LINE__ . "[Service finish]");
 
     // INSERT REPORT SERVICE INTO THE DATABASE
-    $QUERY = "INSERT INTO cc_service_report (cc_service_id, totalcardperform, totalcredit, daterun) " .
-    "VALUES ('" . $myservice[0] . "', '$totalcardperform', '$totalcredit', current_timestamp)";
     if ($run) {
-        $result_insert = $instance_table->SQLExec($A2B->DBHandle, $QUERY, 0);
+        $result_insert = (new Table("cc_service_report"))
+            ->addRow(["cc_service_id" => $myservice["id"], "totalcardperform" => $totalcardperform, "totalcredit" => $totalcredit, "daterun" => "CURRENT_TIMESTAMP"]);
     }
-    if ($verbose_level >= 1)
-        echo "==> INSERT SERVICE REPORT QUERY=$QUERY\n";
 
     write_log($logfile_cront_batch, basename(__FILE__) . ' line:' . __LINE__ . "[Service report : 'totalcardperform=$totalcardperform', 'totalcredit=$totalcredit']");
 
-    // UPDATE THE SERVICE
-    $QUERY = "UPDATE cc_service SET datelastrun=current_timestamp, numberofrun=numberofrun+1, totalcardperform=totalcardperform+" . $totalcardperform .
-             ", totalcredit = totalcredit + '" . $totalcredit . "' WHERE id=" . $myservice[0];
-
     if ($run)
-        $result = $instance_table->SQLExec($A2B->DBHandle, $QUERY, 0);
-
-    if ($verbose_level >= 1)
-        echo "==> SERVICE UPDATE QUERY: 	$QUERY\n";
+        $result = (new Table("cc_service"))
+            ->updateRow(
+                ["datelastrun" => "CURRENT_TIMESTAMP", "numberofrun" => ["numberofrun + ?", 1], "totalcardperform" => ["totalcardperform + ?", $totalcardperform], "totalcredit" => ["totalcredit + ?", $totalcredit]],
+                ["id" => $myservice["id"]]
+            );
 
     // SEND REPORT
-    if (strlen($myservice[12]) > 0) {
+    if (strlen($myservice["emailreport"]) > 0) {
         $mail_subject = "RECURRING SERVICES : REPORT";
 
-        $mail_content = "SERVICE NAME = " . $myservice[1];
+        $mail_content = "SERVICE NAME = " . $myservice["name"];
         $mail_content .= "\n\nTotal card updated = " . $totalcardperform;
         $mail_content .= "\nTotal credit removed = " . $totalcredit;
 
         try {
             $mail = new Mail(null, null, null, $mail_content, $mail_subject);
-            $mail -> send($myservice[12]);
+            $mail -> send($myservice["emailreport"]);
         } catch (A2bMailException $e) {
             if ($verbose_level >= 1)
                 echo "[Sent mail failed : $e]";
