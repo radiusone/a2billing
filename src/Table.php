@@ -169,50 +169,6 @@ class Table
             || preg_match("/^case (when)?.*? end( as \w+)?$/", $value);
     }
 
-    /**
-     * @param ADOConnection $DBHandle
-     * @param string $QUERY
-     * @param int $select If $select is not supplied then function check numrows so expect a SELECT query.
-     * @param int $cache
-     * @return array|bool
-     * @deprecated 3.2 use (get|add|update|delete)Row instead
-     */
-    public function SQLExec(ADOConnection $DBHandle, string $QUERY, $select = 1, int $cache = 0)
-    {
-        if ($this->db_type === 'postgres') {
-            // convert MySQLisms to be Postgres compatible
-            $mytopg = new MytoPg(0); // debug level 0 logs only >30ms CPU hogs
-            $mytopg->My_to_Pg($QUERY);
-        }
-
-        if ($cache > 0) {
-            $res = $DBHandle->CacheExecute($cache, $QUERY);
-        } else {
-            class_exists(Console::class) && Console::logQuery($QUERY);
-            $res = $DBHandle->Execute($QUERY);
-            class_exists(Console::class) && Console::logQuery($QUERY);
-        }
-
-        if ($DBHandle->ErrorNo() != 0) {
-            $this->errstr = $DBHandle->ErrorMsg();
-        }
-
-        if (!$res) {
-            return false;
-        }
-
-        if ($select) {
-            $num = $res->RecordCount();
-            if ($num === 0) {
-                return false;
-            }
-
-            return $res->GetAll();
-        }
-
-        return true;
-    }
-
     public function begin(): bool
     {
         return $this->getConnection()->BeginTrans();
