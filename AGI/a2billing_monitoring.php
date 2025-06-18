@@ -95,17 +95,9 @@ $agi->answer();
 if ($mode == 'standard') {
 
     //GET MONITORING SETTINGS
-    $QUERY = "SELECT dial_code, label, text_intro, query_type, query, result_type FROM cc_monitor WHERE enable=1";
-    $A2B->debug(A2Billing::DEBUG, "QUERY : $QUERY");
-    $result = $A2B->table->SQLExec($A2B->DBHandle, $QUERY, 1, 0); // 300 ?
-
-    foreach ($result as $res_monitor) {
-        $arr_monitor[$res_monitor[0]] = array("label" => $res_monitor[1],
-                                               "text_intro" => $res_monitor[2],
-                                               "query_type" => $res_monitor[3],
-                                               "query" => $res_monitor[4],
-                                               "result_type" => $res_monitor[5]);
-    }
+    $result = (new Table("cc_monitor", ["dial_code", "label", "text_intro", "query_type", "query", "result_type"]))
+        ->getRows(["enable" => 1]);
+    $arr_monitor = array_combine(array_column($result, "dial_code"), $result);
 
     if (!is_array($arr_monitor)) {
         $A2B->debug(A2Billing::DEBUG, "No monitoring configuration found!");
@@ -137,8 +129,8 @@ if ($mode == 'standard') {
 
             $QUERY = $arr_monitor[$dial_code]["query"];
             $A2B->debug(A2Billing::DEBUG, "QUERY : $QUERY");
-            $result = $A2B->table->SQLExec($A2B->DBHandle, $QUERY, 1, 10);
-            $get_result = $result[0][0];
+            // todo: this is ugly
+            $get_result = $A2B->DBHandle->GetOne($QUERY);
 
             $A2B->debug(A2Billing::DEBUG, "SAYING RESULT");
 
@@ -184,14 +176,12 @@ if ($mode == 'standard') {
 } elseif ($mode == 'saydid') {
     $accountcode = $agi->request['agi_accountcode'];
 
-    $QUERY = "SELECT did FROM cc_did LEFT JOIN cc_card ON cc_card.id=cc_did.iduser WHERE cc_card.username='$accountcode'";
-    $A2B->debug(A2Billing::DEBUG, "QUERY : $QUERY");
-    $result = $A2B->table->SQLExec($A2B->DBHandle, $QUERY, 1, 0); // 300 ?
+    $did = (new Table("cc_did", ["did"], ["cc_card" => ["cc_card.id", "cc_did.iduser"]]))
+        ->getValue(["cc_card.username" => $accountcode]);
 
-    if (!is_array($result) or strlen($result[0][0]) == 0) {
+    if (!$did) {
         $agi->espeak('There is No Phone number provisioned.', '#');
     } else {
-        $did = $result[0][0];
         $agi->espeak("Your Phone number is ", '#');
         $res_say = $agi->exec("SayDigits " . $did);
     }

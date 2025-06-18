@@ -49,23 +49,22 @@ if (! has_rights (Customer::ACX_SIP_IAX)) {
 
 getpost_ifset(array('configtype'));
 
-$DBHandle = DbConnect();
 $HD_Form -> init();
 if ($configtype == "") {
     $configtype = "SIP";
 }
-$table_instance = new Table();
 if ($configtype == "IAX") {
     $config_name = gettext("IAX Config");
     $config_file = gettext("iax.conf");
-    $QUERY = "SELECT iax.id, iax.username, iax.secret, iax.disallow, iax.allow, iax.type, iax.host, iax.context FROM cc_iax_buddies iax WHERE iax.id_cc_card = ".$_SESSION["card_id"];
+    $table = "cc_iax_buddies";
 } else {
     $config_name = gettext("SIP Config");
     $config_file = gettext("sip.conf");
-    $QUERY = "SELECT sip.id, sip.username, sip.secret, sip.disallow, sip.allow, sip.type, sip.host, sip.context FROM cc_sip_buddies sip where sip.id_cc_card = ".$_SESSION["card_id"];
+    $table = "cc_sip_buddies";
 }
 
-$sip_iax_data = $table_instance->SQLExec ($DBHandle, $QUERY);
+$sip_iax_data = (new Table($table, ["id", "username", "secret", "disallow", "allow", "type", "host", "context"]))
+    ->getRow(["id_cc_card" => $_SESSION["card_id"]]);
 
 //Additonal parameters
 $additional_sip = explode("|", SIP_ADDITIONAL_PARAMETERS);
@@ -113,21 +112,21 @@ echo create_help(gettext("Configuration information for SIP and IAX Client. You 
           <tr>
             <td colspan="2" bgcolor="#FFFFFF" class="fontstyle_006" align="center">
                 <br><b><?php echo $configtype;?> URI :</b> <?php echo SIP_IAX_INFO_HOST; ?><br>
-                <br><b><?php echo gettext("Username")?> :</b> <?php echo $sip_iax_data[0][1]?><br>
-                <br><b><?php echo gettext("Password")?> :</b> <?php echo $sip_iax_data[0][2]?><br><br>
+                <br><b><?php echo gettext("Username")?> :</b> <?php echo $sip_iax_data["username"]?><br>
+                <br><b><?php echo gettext("Password")?> :</b> <?php echo $sip_iax_data["secret"]?><br><br>
 
                 <br><?php echo gettext("To configure your Asterisk server, copy and paste this into your ")?> <?php echo $config_file;?><br>
 
-                <textarea name="textfield" cols="80" rows="12" class="form_input_text" ><?php if (is_array($sip_iax_data)){ ?><?php if ($configtype == "IAX") { ?>[<?php echo SIP_IAX_INFO_TRUNKNAME; ?>]
-username=<?php echo $sip_iax_data[0][1]?>
+                <textarea name="textfield" cols="80" rows="12" class="form_input_text" ><?php if ($sip_iax_data){ ?><?php if ($configtype == "IAX") { ?>[<?php echo SIP_IAX_INFO_TRUNKNAME; ?>]
+username=<?php echo $sip_iax_data["username"]?>
 
 type=friend
-secret=<?php echo $sip_iax_data[0][2]?>
+secret=<?php echo $sip_iax_data["secret"]?>
 
 host=<?php echo SIP_IAX_INFO_HOST; ?>
 
 disallow=all
-context=<?php echo $sip_iax_data[0][7]?> ; change for proper context
+context=<?php echo $sip_iax_data["context"]?> ; change for proper context
 allow=<?php echo SIP_IAX_INFO_ALLOWCODEC?> ; we support ulaw,alaw,ilbc,gsm,g723.1,g726,g729a
 <?php
 if (count($additional_iax) > 0) {
@@ -137,16 +136,16 @@ if (count($additional_iax) > 0) {
 }
 ?>
 <?php } else { ?>[<?php echo SIP_IAX_INFO_TRUNKNAME; ?>]
-username=<?php echo $sip_iax_data[0][1]?>
+username=<?php echo $sip_iax_data["username"]?>
 
 type=friend
-secret=<?php echo $sip_iax_data[0][2]?>
+secret=<?php echo $sip_iax_data["secret"]?>
 
 host=<?php echo SIP_IAX_INFO_HOST; ?>
 
-fromuser=<?php echo $sip_iax_data[0][1]?>
+fromuser=<?php echo $sip_iax_data["username"]?>
 
-context=<?php echo $sip_iax_data[0][7]?> ; change for proper context
+context=<?php echo $sip_iax_data["context"]?> ; change for proper context
 allow=<?php echo SIP_IAX_INFO_ALLOWCODEC?> ; we support ulaw,alaw,ilbc,gsm,g723.1,g726,g729a
 <?php
 if (count($additional_sip) > 0) {

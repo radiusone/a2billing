@@ -64,11 +64,9 @@ if (strlen($voucher)>0) {
                 $error_msg = '<font face="Arial, Helvetica, sans-serif" size="2" color="red"><b>'.gettext("System Error : the currency table is incomplete!").'</b></font><br><br>';
             } else {
                 $add_credit = $list_voucher["credit"]*$currencies_list[strtoupper($list_voucher["currency"])]["value"];
-                $QUERY = "UPDATE cc_voucher SET activated='f', usedcardnumber='".$_SESSION["pr_login"]."', usedate=now() WHERE voucher='".$voucher."'";
-                $result = $instance_sub_table -> SQLExec ($HD_Form -> DBHandle, $QUERY, 0);
+                $result = $instance_sub_table->updateRow(["activated" => "f", "usedcardnumber" => $_SESSION["pr_login"], "usedate" => "CURRENT_TIMESTAMP"], ["voucher" => $voucher]);
 
-                $QUERY = "UPDATE cc_card SET credit=credit+'".$add_credit."' WHERE username='".$_SESSION["pr_login"]."'";
-                $result = $instance_sub_table -> SQLExec ($HD_Form -> DBHandle, $QUERY, 0);
+                $result = (new Table("cc_card"))->updateRow(["credit" => ["credit + ?", $add_credit]], ["username" => $_SESSION["pr_login"]]);
 
                 $error_msg = '<font face="Arial, Helvetica, sans-serif" size="2" color="green"><b>'.gettext("The voucher").'('.$voucher.') '.gettext("has been used, We added").' '.$add_credit.' '.gettext("credit on your account!").'</b></font><br><br>';
             }

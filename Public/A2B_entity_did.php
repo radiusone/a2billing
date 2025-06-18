@@ -90,22 +90,10 @@ if ($row !== false && $row !== []) {
 if ($action_release == "confirm_release") {
 
     $message = "\n\n" . gettext("The following Destinaton-DID has been relesed:") . "\n\n";
-    $instance_table = new Table();
-    $QUERY = "UPDATE cc_did SET iduser = 0, reserved=0 WHERE id=$choose_did";
-    $result = $instance_table->SQLExec($HD_Form->DBHandle, $QUERY, 0);
-    $message .= "QUERY on cc_did : $QUERY \n\n";
-
-    $QUERY = "UPDATE cc_did_use SET releasedate = now() WHERE id_did =$choose_did and activated = 1";
-    $result = $instance_table->SQLExec($HD_Form->DBHandle, $QUERY, 0);
-    $message .= "QUERY on cc_did_use : $QUERY \n\n";
-
-    $QUERY = "INSERT INTO cc_did_use (activated, id_did) VALUES ('0','" . $choose_did . "')";
-    $result = $instance_table->SQLExec($HD_Form->DBHandle, $QUERY, 0);
-    $message .= "INSERT new free entrie in cc_did use : $QUERY \n\n";
-
-    $QUERY = "DELETE FROM cc_did_destination WHERE id_cc_did =" . $choose_did;
-    $result = $instance_table->SQLExec($HD_Form->DBHandle, $QUERY, 0);
-    $message .= "DELETE all DID destination: $QUERY \n\n";
+    (new Table("cc_did"))->updateRow(["id_user" => 0, "reserved" => 0], ["id" => $choose_did]);
+    (new Table("cc_did_use"))->updateRow(["releasedate" => "CURRENT_TIMESTAMP"], ["id_did" => $choose_did, "activated" => 1]);
+    (new Table("cc_did_use"))->addRow(["activated" => 0, "id_did" => $choose_did]);
+    (new Table("cc_did_destination"))->deleteRow(["id_cc_did" => $choose_did]);
 
     $date = date("D M j G:i:s T Y", time());
     $from = 'a2billing_alert@localhost';
@@ -162,31 +150,24 @@ if (!isset ($action_release) || $action_release == "confirm_release" || $action_
 
     if (is_numeric($voip_call) && ($confirm_buy_did >= 2) && ($voip_call==0 || ($voip_call==1 && strpos(substr($destination, strpos( $destination, '@')),'.')))) {
 
-        $instance_table_did_use = new Table();
         $validated = ($voip_call==1) ? 0 : 1;
 
         if ($voip_call==0)
             $destination = (intval($destination) > 0) ? $destination : 'no valid';
 
-        $QUERY = "INSERT INTO cc_did_destination (activated, id_cc_card, id_cc_did, destination, priority, voip_call, validated) VALUES ('1', '" . $_SESSION["card_id"] . "', '" . $choose_did . "', '" . $destination . "', '1', '" . $voip_call . "', '$validated')";
-
-        $result = $instance_table_did_use->SQLExec($HD_Form->DBHandle, $QUERY, 0);
+        $result = (new Table("cc_did_destination"))
+            ->addRow(["activated" => 1, "id_cc_card" => $_SESSION["card_id"], "id_cc_did" => $choose_did, "destination" => $destination, "priority" => 1, "voip_call" => $voip_call, "validated" => $validated]);
         if ($confirm_buy_did == 2) {
-            $QUERY1 = "INSERT INTO cc_charge (id_cc_card, amount, chargetype, id_cc_did) " .
-                    "VALUES ('" . $_SESSION["card_id"] . "', '" . abs($rate) . "', '2','" . $choose_did . "')";
-            $result = $instance_table_did_use->SQLExec($HD_Form->DBHandle, $QUERY1, 0);
-
-            $QUERY1 = "UPDATE cc_did set iduser = " . $_SESSION["card_id"] . ",reserved=1 where id = '" . $choose_did . "'";
-            $result = $instance_table_did_use->SQLExec($HD_Form->DBHandle, $QUERY1, 0);
-
-            $QUERY1 = "UPDATE cc_card set credit = credit -" . abs($rate) . " where id = '" . $_SESSION["card_id"] . "'";
-            $result = $instance_table_did_use->SQLExec($HD_Form->DBHandle, $QUERY1, 0);
-
-            $QUERY1 = "UPDATE cc_did_use set releasedate = now() where id_did = '" . $choose_did . "' and activated = 0";
-            $result = $instance_table_did_use->SQLExec($HD_Form->DBHandle, $QUERY1, 0);
-
-            $QUERY1 = "INSERT INTO cc_did_use (activated, id_cc_card, id_did, month_payed) values ('1','" . $_SESSION["card_id"] . "','" . $choose_did . "', 1)";
-            $result = $instance_table_did_use->SQLExec($HD_Form->DBHandle, $QUERY1, 0);
+            (new Table("cc_charge"))
+                ->addRow(["id_cc_card" => $_SESSION["card_id"], "amount" => abs($rate), "chargetype" => 2, "id_cc_did" => $choose_did]);
+            (new Table("cc_did"))
+                ->updateRow(["id_user" => $_SESSION["card_id"], "reserved" => 1], ["id" => $choose_did]);
+            (new Table("cc_card"))
+                ->updateRow(["credit" => ["credit - ?", abs($rate)]], ["id" => $_SESSION["card_id"]]);
+            (new Table("cc_did_use"))
+                ->updateRow(["releasedate" => "CURRENT_TIMESTAMP"], ["id_did" => $choose_did, "activated" => 0]);
+            (new Table("cc_did_use"))
+                ->addRow(["activated" => 1, "id_cc_card" => $_SESSION["card_id"], "id_did" => $choose_did, "month_payed" => 1]);
         }
         $date = date("D M j G:i:s T Y", time());
         $message = "\n\n" . gettext("The following Destinaton for your DID has been added:") . "\n\n";

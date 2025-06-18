@@ -80,16 +80,17 @@ if ($called && $id_cc_card) {
         $A2B->set_table($instance_table);
         $num = 0;
 
-        $result = $A2B->table->SQLExec($A2B->DBHandle, "SELECT username, tariff FROM cc_card where id='$customer_info[15]'");
-        if (!is_array($result) || count($result) == 0) {
+        $result = (new Table("cc_card", ["username", "tariff"]))
+            ->getValue(["id" => $customer_info[15]]);
+        if (!$result) {
             echo gettext("Error card !!!");
             exit ();
         }
 
-        $A2B->cardnumber = $result[0][0];
+        $A2B->cardnumber = $result;
         $A2B->credit = $balance;
         if ($FG_DEBUG == 1)
-            echo "cardnumber = " . $result[0][0] . " - balance=$balance<br>";
+            echo "cardnumber = " . $result . " - balance=$balance<br>";
 
         if ($A2B->callingcard_ivr_authenticate_light($error_msg)) {
             $RateEngine = $A2B->rateEngine();
@@ -193,11 +194,8 @@ $FG_TABLE_ALTERNATE_ROW_COLOR[1]='#EEE9E9';
         <?php
         for ($j=0;$j<count($RateEngine->ratecard_obj);$j++) {
 
-            $result = $A2B->table -> SQLExec ($A2B -> DBHandle,
-                "SELECT destination FROM cc_prefix where prefix='".$RateEngine->ratecard_obj[$j]["destination"]."'");
-            if (is_array($result)){
-                $destination = $result[0][0];
-            }
+            $destination = (new Table("cc_prefix", ["destination"]))
+                ->getValue(["prefix" => $RateEngine->ratecard_obj[$j]["destination"]]);
         ?>
             <TR>
               <td height="15" bgcolor="" style="padding-left: 5px;" colspan="2">

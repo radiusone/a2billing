@@ -65,30 +65,23 @@ if (empty ($key))
     $key = null;
 
 $result = null;
-$instance_sub_table = new Table('cc_card', "username, lastname, firstname, email, uipass, credit, useralias, loginkey, status, id");
+$instance_sub_table = new Table('cc_card', "username, lastname, firstname, email, uipass, credit, useralias AS cardalias, loginkey, status, id AS idcard");
 $QUERY = ["loginkey" => $key];
 $list = $instance_sub_table->getRow($QUERY);
 
 if (isset ($key) && $list["status"] != "1") {
-    if ($A2B->config["signup"]['activated']) {
-        // Status : 1 - Active
-        $QUERY = "UPDATE cc_card SET status = 1 WHERE ( status = 2 OR status = 3 ) AND loginkey = '" . $key . "' ";
-    } else {
-        // Status : 2 - New
-        $QUERY = "UPDATE cc_card SET status = 2 WHERE ( status = 2 OR status = 3 ) AND loginkey = '" . $key . "' ";
-    }
-    $result = $instance_sub_table->SQLExec($HD_Form->DBHandle, $QUERY, 0);
+    $result = (new Table("cc_card"))->updateRow(["status" => $A2B->config["signup"]['activated'] ? 1 : 2], ["status" => ["IN", [2, 3]], "loginkey" => $key]);
 }
 
-if ($list["status"] != "1" && isset ($result) && $result != null) {
+if ($list["status"] != "1" && $result) {
 
-    list ($username, $lastname, $firstname, $email, $uipass, $credit, $cardalias, $loginkey, $status, $idcard) = $list;
+    extract($list);
     if ($FG_DEBUG == 1) {
         echo "<br/># $username, $lastname, $firstname, $email, $uipass, $credit, $cardalias #<br/>";
     }
 
     try {
-        $mail = new Mail(Mail :: $TYPE_SIGNUPCONFIRM, $idcard);
+        $mail = new Mail(Mail::$TYPE_SIGNUPCONFIRM, $idcard);
         $mail->send($email);
 
         $mail->setTitle("NEW ACCOUNT CREATED : " . $mail->getTitle());

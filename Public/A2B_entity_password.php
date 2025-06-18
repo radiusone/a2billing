@@ -55,8 +55,7 @@ if ($form_action=="ask-modif") {
     $check_old_pwd = ["id" => $_SESSION["card_id"],  "uipass" => $OldPassword];
     $result_check=$instance_sub_table -> getRow ($check_old_pwd);
     if ($result_check) {
-        $QUERY = "UPDATE cc_card SET  uipass= '".$NewPassword."' WHERE ( ID = ".$_SESSION["card_id"]." ) ";
-        $result = $instance_sub_table -> SQLExec ($DBHandle, $QUERY, 0);
+        (new Table("cc_card"))->updateRow(["uipass" => $NewPassword], ["id" => $_SESSION["card_id"]]);
         // update Session password
         $_SESSION["pr_password"] = $NewPassword;
     }
