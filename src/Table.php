@@ -159,9 +159,11 @@ class Table
         $value = strtolower($value);
         return str_starts_with($value, "now()")
             || str_starts_with($value, "current_timestamp")
+            || str_starts_with($value, "current_time")
+            || str_starts_with($value, "current_date")
             || preg_match("/^\(\s*select\s/", $value)
             || preg_match(
-                "/(date|cast|if|count|coalesce|sum|avg|left|right|concat|replace|substr(ing)?|lower|upper|min|max|hour|minute|second)\\s*\\(/",
+                "/(date|cast|if|count|coalesce|sum|avg|left|right|concat|replace|substr(ing)?|lower|upper|min|max|hour|minute|second|rand)\\s*\\(/",
                 $value
             )
             || preg_match("/^case (when)?.*? end( as \w+)?$/", $value);
@@ -209,6 +211,21 @@ class Table
         }
 
         return true;
+    }
+
+    public function begin(): bool
+    {
+        return $this->getConnection()->BeginTrans();
+    }
+
+    public function end(): bool
+    {
+        return $this->getConnection()->CommitTrans();
+    }
+
+    public function abort(): bool
+    {
+        return $this->getConnection()->CommitTrans(false);
     }
 
     /**
@@ -570,6 +587,9 @@ class Table
                 implode(",", array_fill(0, count($value), "?"))
             );
             $params = array_merge($params, $value);
+        } elseif ($operator === "BETWEEN" && is_array($value) && count($value) === 2) {
+            $placeholder = "? AND ?";
+            $params = array_merge($params, $value);
         } elseif ($operator === "CASE") {
             $conditions = "";
             $else = "";
@@ -612,9 +632,9 @@ class Table
                 $operator = "IS NOT";
             }
             $placeholder = "NULL";
-        } elseif (is_array($value) && str_contains($value[0], "?")) {
+        } elseif (is_array($value) && str_contains($value[0], "?") && count($value) > 1) {
             $placeholder = $value[0];
-            $params[] = $value[1];
+            $params = array_merge($params, array_slice($value, 1));
         } elseif (is_array($value)) {
             $placeholder = $value[0];
         } elseif ($this->quote_identifier("$value") === trim("$value")) {
