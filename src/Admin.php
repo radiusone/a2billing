@@ -96,9 +96,9 @@ class Admin extends User
         if (empty($id)) {
             return $na;
         }
-        $handle = DbConnect();
-        $row = $handle->CacheGetRow(60, "SELECT login, name FROM cc_ui_authen WHERE userid = ?", [$id]);
-        if ($row !== false && $row !== []) {
+        $row = (new Table("cc_ui_authen", ["name", "login"]))
+            ->getRow(["userid" => $id]);
+        if ($row) {
             return sprintf("%s (%s)", $row["name"], $row["login"]);
         }
 

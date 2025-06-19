@@ -78,8 +78,8 @@ class Agent extends User
         if (empty($id) || !is_numeric($id)) {
             return $na;
         }
-        $handle = DbConnect();
-        $row = $handle->CacheGetRow(60, "SELECT login, firstname, lastname FROM cc_agent WHERE id = ?", [$id]);
+        $row = (new Table("cc_agent", ["login", "firstname", "lastname"]))
+            ->getRow(["id" => $id]);
         if (!$row) {
             return $na;
         }

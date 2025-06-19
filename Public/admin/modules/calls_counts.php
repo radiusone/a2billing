@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\A2Billing;
 use A2billing\Admin;
 use A2billing\Table;
 
@@ -37,33 +38,34 @@ use A2billing\Table;
 **/
 
 require_once __DIR__ . "/../../../common/lib/admin.defines.php";
+/**
+ * @var A2Billing $A2B
+ */
 
 Admin::checkPageAccess(Admin::ACX_DASHBOARD);
 
-$QUERY_COUNT_CALL_ALL = "select terminatecauseid, COUNT(*) from cc_call WHERE starttime >= DATE(NOW()) GROUP BY terminatecauseid";
-$QUERY_COUNT_CALL_BILL = "SELECT SUM(sessiontime), SUM(sessionbill), SUM(buycost) FROM cc_call WHERE starttime >= DATE(NOW())";
-
-$DBHandle = DbConnect();
-$result = $DBHandle->GetAll($QUERY_COUNT_CALL_ALL);
+$result = (new Table("cc_call", ["terminatecauseid", "COUNT(*) AS ct"]))
+    ->getRows(["starttime" => [">=", "CURRENT_DATE"]], [], "ASC", ["terminatecauseid"]);
 
 $count_total = 0;
 $counts = [];
-if ($result === false) {
+if (!$result) {
     die();
 }
 foreach ($result as $row) {
-    $count_total += $row[1];
-    $counts[$row[0]] = $row[1];
+    $count_total += $row["ct"];
+    $counts[$row["terminatecauseid"]] = $row["ct"];
     // 1 = answered, 2= no answer, 3 = cancelled, 4 = congested, 5 = busy, 6 = chanunavil
 }
 
-$row = $DBHandle->GetRow($QUERY_COUNT_CALL_BILL);
-if ($row === false) {
+$row = (new Table("cc_call", ["SUM(sessiontime) AS sessiontime", "SUM(sessionbill) AS sessionbill", "SUM(buycost) AS buycost"]))
+    ->getRow(["starttime" => [">=", "CURRENT_DATE"]]);
+if (!$row) {
     die();
 }
-$call_times = $row[0];
-$call_sell = a2b_round($row[1]);
-$call_buy = a2b_round($row[2]);
+$call_times = $row["sessiontime"];
+$call_sell = a2b_round($row["sessionbill"]);
+$call_buy = a2b_round($row["buycost"]);
 $call_profit = $call_sell - $call_buy;
 $curr = strtoupper($A2B->config["global"]["base_currency"]);
 ?>

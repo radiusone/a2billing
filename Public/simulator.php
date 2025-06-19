@@ -43,16 +43,10 @@ if (!has_rights(Customer::ACX_SIMULATOR)) {
     Header("Location: PP_error.php?c=accessdenied");
     die();
 }
+$customer_info = (new Table("cc_card", ["id", "username", "status", "tariff", "credit", "currency"]))
+    ->getRow(["username" => $_SESSION["pr_login"]]);
 
-$QUERY = "SELECT  username, credit, lastname, firstname, address, city, state, country, zipcode, phone, email, fax, lastuse, activated, status, id, tariff, currency FROM cc_card WHERE username = ? AND uipass = ?";
-
-$DBHandle_max = DbConnect();
-$customer_info = $DBHandle_max->GetRow($QUERY, [$_SESSION["pr_login"], $_SESSION["pr_password"]]);
-if ($customer_info === false || $customer_info === []) {
-    exit;
-}
-
-if ($customer_info[14] != "1" && $customer_info[14] != "8") {
+if (!$customer_info || ($customer_info["status"] != "1" && $customer_info["status"] != "8")) {
     Header("HTTP/1.0 401 Unauthorized");
     Header("Location: PP_error.php?c=accessdenied");
     die();
@@ -60,12 +54,10 @@ if ($customer_info[14] != "1" && $customer_info[14] != "8") {
 
 getpost_ifset(array('posted', 'tariffplan', 'balance', 'id_cc_card', 'called'));
 
-$id_cc_card = $customer_info[15];
-$tariffplan = $customer_info[16];
-$balance = (int)$customer_info[1];
-$currency = $customer_info[17];
-$QUERY = "SELECT value from cc_currencies where currency=?";
-$currency_value = $DBHandle_max->GetOne($QUERY, [$currency]);
+$id_cc_card = $customer_info["id"];
+$tariffplan = $customer_info["tariff"];
+$balance = (int)$customer_info["credit"];
+$currency = $customer_info["currency"];
 
 $FG_DEBUG = 0;
 
@@ -80,17 +72,10 @@ if ($called && $id_cc_card) {
         $A2B->set_table($instance_table);
         $num = 0;
 
-        $result = (new Table("cc_card", ["username", "tariff"]))
-            ->getValue(["id" => $customer_info[15]]);
-        if (!$result) {
-            echo gettext("Error card !!!");
-            exit ();
-        }
-
-        $A2B->cardnumber = $result;
+        $A2B->cardnumber = $customer_info["username"];
         $A2B->credit = $balance;
         if ($FG_DEBUG == 1)
-            echo "cardnumber = " . $result . " - balance=$balance<br>";
+            echo "cardnumber = " . $customer_info["username"] . " - balance=$balance<br>";
 
         if ($A2B->callingcard_ivr_authenticate_light($error_msg)) {
             $RateEngine = $A2B->rateEngine();
@@ -106,7 +91,7 @@ if ($called && $id_cc_card) {
             if ($A2B->removeinterprefix)
                 $A2B->destination = $A2B->apply_rules($A2B->destination);
 
-            $resfindrate = $RateEngine->rate_engine_findrates($A2B->destination, (int)$result[0][1]);
+            $resfindrate = $RateEngine->rate_engine_findrates($A2B->destination, (int)$customer_info["tariff"]);
             if ($FG_DEBUG == 1)
                 echo "resfindrate=$resfindrate";
 
@@ -228,7 +213,7 @@ $FG_TABLE_ALTERNATE_ROW_COLOR[1]='#EEE9E9';
                     <b><?php echo $arr_ratecard[10];?></b>
                 </td>
                 <td height="15" bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[1]?>" style="padding-left: 5px;">
-                    <?php echo get_money($RateEngine->ratecard_obj[$j]["rateinitial"]/$currency_value,4, $currency) ;?>
+                    <?php echo get_money(convert_currency($RateEngine->ratecard_obj[$j]["rateinitial"], BASE_CURRENCY, $currency),4, $currency) ;?>
                 </td>
             </tr>
 

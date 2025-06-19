@@ -53,22 +53,15 @@ $HD_Form->update_query_conditions = ["id" => $_SESSION["card_id"]];
 $HD_Form -> FG_INTRO_TEXT_EDITION = '';
 
 $HD_Form -> FG_ENABLE_EDIT_BUTTON= true;
-$QUERY = "SELECT status, currency FROM cc_card  WHERE username = '".$_SESSION["pr_login"]."' AND uipass = '".$_SESSION["pr_password"]."'";
-$DBHandle  = DbConnect();
-$numrow = 0;
-$resmax = $DBHandle -> Execute($QUERY);
-if ($resmax)
-	$numrow = $resmax -> RecordCount();
-
-if ($numrow == 0) exit();
-$customer_info =$resmax -> fetchRow();
-
-
+$currency = (new Table("cc_card", ["currency"]))->getValue(["username" => $_SESSION["pr_login"]]);
+if (is_null($currency)) {
+    exit();
+}
 
 $currencies_list = get_currencies();
 
-if (!isset($currencies_list[strtoupper($customer_info [1])]["value"]) || !is_numeric($currencies_list[strtoupper($customer_info [1])]["value"])) $mycur = 1;
-else $mycur = $currencies_list[strtoupper($customer_info [1])]["value"];
+if (!isset($currencies_list[strtoupper($currency)]["value"]) || !is_numeric($currencies_list[strtoupper($currency)]["value"])) $mycur = 1;
+else $mycur = $currencies_list[strtoupper($currency)]["value"];
 
 
 $limits_notify = getLimitNotify_List($A2B);

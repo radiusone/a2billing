@@ -41,17 +41,16 @@ require_once __DIR__ . "/../../../common/lib/admin.defines.php";
 
 Admin::checkPageAccess(Admin::ACX_DASHBOARD);
 
-$QUERY_COUNT_CARD_ALL = "SELECT status, COUNT(*) FROM cc_card GROUP BY status";
-
-$result = DbConnect()->GetAll($QUERY_COUNT_CARD_ALL);
+$result = (new Table("cc_card", ["status", "COUNT(*) AS ct"]))
+    ->getRows([], [], "ASC", ["status"]);
 $count_total = 0;
 $states = [];
-if ($result === false) {
+if (!$result) {
     die();
 }
 foreach ($result as $row) {
-    $count_total += $row[1];
-    $states[$row[0]] = $row[1];
+    $count_total += $row["ct"];
+    $states[$row["status"]] = $row["ct"];
     // 0 = cancelled, 1 = active, 2 = new, 3 = waiting, 4 = reserved, 5 = expired, 6|7 = suspended
 }
 ?>

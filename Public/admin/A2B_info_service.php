@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -49,10 +50,8 @@ if (empty($id)) {
     header("Location: A2B_entity_service.php");
 }
 
-$DBHandle  = DbConnect();
-
-$service = $DBHandle->GetRow("SELECT * FROM cc_service WHERE id = ?", [$id]);
-$items = $DBHandle->GetAll("SELECT * FROM cc_service_report WHERE cc_service_id = ?", [$id]);
+$service = (new Table("cc_service"))->getRow(["id" => $id]);
+$items = (new Table("cc_service_report"))->getRows(["cc_service_id" => $id]);
 
 if (empty($service)) {
     header("Location: A2B_entity_service.php");

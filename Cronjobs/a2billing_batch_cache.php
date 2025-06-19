@@ -118,12 +118,12 @@ if ($A2B->config["global"]['cache_enabled']) {
     }
 
     // Open Sqlite
-    $db = NewADOConnection("pdo");
-    if ($db->Connect("sqlite:" . $A2B->config["global"]['cache_path'])) {
+    $sqlite = NewADOConnection("pdo");
+    if ($sqlite->Connect("sqlite:" . $A2B->config["global"]['cache_path'])) {
 
         for (;;) {
             // Select CDR
-            $result = $db->Execute("SELECT rowid , * from cc_call limit $nb_record");
+            $result = $sqlite->Execute("SELECT rowid , * from cc_call limit $nb_record");
             if ($result) {
                 $values = [];
                 $delete_id = "";
@@ -141,7 +141,7 @@ if ($A2B->config["global"]['cache_enabled']) {
                 if ($verbose_level >= 1) {
                     echo "QUERY DELETE : [$DELETE_QUERY]\n";
                 }
-                $db->Execute($DELETE_QUERY);
+                $sqlite->Execute($DELETE_QUERY);
 
             }
             echo "Waiting ....\n";
@@ -150,9 +150,9 @@ if ($A2B->config["global"]['cache_enabled']) {
 
     } else {
         if ($verbose_level >= 1) {
-            echo "[Error to connect to cache : " . $db->ErrorMsg() . "]\n";
+            echo "[Error to connect to cache : " . $sqlite->ErrorMsg() . "]\n";
         }
-        write_log($logfile_cront_batch, basename(__FILE__) . ' line:' . __LINE__ . "[Error to connect to cache : " . $db->ErrorMsg() . "]\n");
+        write_log($logfile_cront_batch, basename(__FILE__) . ' line:' . __LINE__ . "[Error to connect to cache : " . $sqlite->ErrorMsg() . "]\n");
     }
 
 }

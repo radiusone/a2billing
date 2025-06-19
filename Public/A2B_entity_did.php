@@ -77,13 +77,12 @@ if (isset ($choose_did_rate) && strlen($choose_did_rate) != 0) {
     }
 }
 
-$QUERY = "SELECT credit, creditlimit, typepaid FROM cc_card	WHERE username = ? AND uipass = ?";
-$DBHandle_max = DbConnect();
-$row = $DBHandle_max->GetRow($QUERY, [$_SESSION["pr_login"], $_SESSION["pr_password"]]);
-if ($row !== false && $row !== []) {
-    $user_credit = $row[0];
-    $user_creditlimit = $row[1];
-    $user_typepaid = $row[2];
+$row = (new Table("cc_card", ["credit", "creditlimit", "typepaid"]))
+    ->getRow(["username" => $_SESSION["pr_login"]]);
+if ($row) {
+    $user_credit = $row["credit"];
+    $user_creditlimit = $row["creditlimit"];
+    $user_typepaid = $row["typepaid"];
 }
 
 // release the choosen did

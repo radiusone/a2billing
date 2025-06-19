@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -50,28 +51,31 @@ if (empty($id)) {
 }
 
 $DBHandle  = DbConnect();
-$card = $DBHandle->GetRow("SELECT * FROM cc_card WHERE id = ?", [$id]);
-
+$card = (new Table("cc_card"))->getRow(["id" => $id]);
 if (empty($card)) {
     header("Location: A2B_entity_card.php");
 }
 
-$callerid = $DBHandle->GetAll("SELECT cid, activated FROM cc_callerid WHERE id_cc_card = ?", [$id]);
-$speeddial = $DBHandle->GetAll("SELECT speeddial, name, phone FROM cc_speeddial WHERE id_cc_card = ?", [$id]);
-$voipconf = $DBHandle->GetAll(
-    "SELECT 'SIP' AS type, username, secret FROM cc_sip_buddies WHERE id_cc_card = ? UNION SELECT 'IAX' AS type, username, secret FROM cc_iax_buddies WHERE id_cc_card = ?",
-    [$id, $id]
-);
-$subscriptions = $DBHandle->GetAll(
-    "SELECT cc_card_subscription.id, cc_card_subscription.startdate, product_name, fee FROM cc_card_subscription LEFT JOIN cc_subscription_service ON cc_card_subscription.id_subscription_fee = cc_subscription_service.id WHERE id_cc_card = ? ORDER BY startdate DESC",
-    [$id]
-);
-$payments = $DBHandle->GetAll("SELECT id, date, payment, description, id_logrefill FROM cc_logpayment WHERE card_id = ? ORDER BY date DESC LIMIT 10", [$id]);
-$refills = $DBHandle->GetAll("SELECT id, date, credit, description FROM cc_logrefill WHERE card_id = ? ORDER BY date DESC LIMIT 10", [$id]);
-$dids = $DBHandle->GetAll(
-    "SELECT did, destination, cc_did.activated, voip_call FROM cc_did_destination LEFT JOIN cc_did ON cc_did_destination.id_cc_did = cc_did.id WHERE cc_did_destination.id_cc_card = ?",
-    [$id]
-);
+$callerid = (new Table("cc_callerid", ["cid", "activated"]))->getRows(["id_cc_card" => $id]);
+$speeddial = (new Table("cc_speeddial", ["speeddial", "name", "phone"]))->getRows(["id_cc_card" => $id]);
+$voipconf = (new Table("cc_sip_buddies", ["type", "username", "secret"]))->getRows(["id_cc_card" => $id]);
+$voipconf += (new Table("cc_iax_buddies", ["type", "username", "secret"]))->getRows(["id_cc_card" => $id]);
+$subscriptions = (new Table(
+    "cc_card_subscription AS cs",
+    ["cs.id", "cs.startdate", "product_name", "fee"],
+    ["cc_subscription_service AS ss" => ["cs.id_subscription_fee", "ss.id"]]
+))
+    ->getRows(["id_cc_card" => $id], ["startdate"], "DESC");
+$payments = (new Table("cc_logpayment", ["id", "date", "payment", "description", "id_logrefill"]))
+    ->getRows(["card_id" => $id], ["date"], "DESC", [], 10);
+$refills = (new Table("cc_logrefill", ["id", "date", "credit", "description"]))
+    ->getRows(["card_id" => $id], ["date"], "DESC", [], 10);
+$dids = (new Table(
+    "cc_did_destination",
+    ["did", "cc_did.activated", "voip_call"],
+    ["cc_did" => ["id_cc_did", "cc_did.id"]]
+))
+    ->getRows(["cc_did_destination.id_cc_card" => $id]);
 
 require_once __DIR__ . "/templates/main.php";
 echo get_login_button ($id);

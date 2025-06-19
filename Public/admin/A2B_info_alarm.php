@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -51,8 +52,8 @@ if (empty($id)) {
 
 $DBHandle  = DbConnect();
 
-$alarm = $DBHandle->GetRow("SELECT * FROM cc_alarm WHERE id = ?", [$id]);
-$items = $DBHandle->GetAll("SELECT * FROM cc_alarm_report WHERE cc_alarm_id = ?", [$id]);
+$alarm = (new Table("cc_alarm"))->getRow(["id" => $id]);
+$items = (new Table("cc_alarm_report"))->getRows(["cc_alarm_id" => $id]);
 
 if (empty($alarm)) {
     header("Location: A2B_entity_alarm.php");

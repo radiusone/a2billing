@@ -119,14 +119,24 @@ $HD_Form->prepare_list_subselection('list');
 
 $archive_message = "";
 if ($posted_archive) {
-    $condition = "";
-    $params = [];
+    $condition = [];
     if (!$archive_all) {
-        $condition = (new Table())->processWhereClauseArray($HD_Form->list_query_conditions, $params);
-        $condition = " WHERE $condition";
+        $condition = $HD_Form->list_query_conditions;
     }
-    $rec = archive_data($condition, $params);
-    if ($rec) {
+    (new Table())->begin();
+    $res = (new Table("cc_card_archive"))
+        ->addRowsFromSelect(new Table("cc_card"), $condition);
+    if ($res) {
+        $res = (new Table("cc_card"))->deleteRow($condition);
+        if ($res) {
+            (new Table())->end();
+        } else {
+            (new Table())->abort();
+        }
+    } else {
+        (new Table())->abort();
+    }
+    if ($res) {
         $HD_Form->CV_NO_FIELDS = _("The data has been successfully archived");
     } else {
         $archive_message = _("There was an error archiving the data");
@@ -163,13 +173,3 @@ if ($archive_message) {
 $HD_Form->create_form($form_action, $list);
 
 require_once __DIR__ . "/templates/footer.php";
-
-function archive_data(string $where, array $params = []): bool
-{
-    $handle = DbConnect();
-    $handle->BeginTrans();
-    $handle->Execute("INSERT INTO cc_card_archive SELECT id, creationdate, firstusedate, expirationdate, enableexpire, expiredays, username, useralias, uipass, credit, tariff, id_didgroup, status, lastname, firstname, address, city, state, country, zipcode, phone, email, fax, inuse, simultaccess, currency, lastuse, nbused, typepaid, creditlimit, voipcall, sip_buddy, iax_buddy, language, redial, runservice, nbservice, id_campaign, num_trials_done, vat, servicelastrun, initialbalance, invoiceday, autorefill, loginkey, id_timezone, tag, voicemail_permitted, voicemail_activated, last_notification, email_notification, notify_email, credit_notification, id_group, company_name, company_website, VAT_RN, traffic, traffic_target, discount, restriction, mac_addr FROM cc_card $where", $params);
-    $handle->Execute("DELETE FROM cc_call $where", $params);
-
-    return $handle->CommitTrans();
-}

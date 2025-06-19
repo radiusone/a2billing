@@ -174,9 +174,18 @@ if (empty($HD_Form->list_query_conditions)) {
 
 $archive_message = "";
 if ($posted_archive === true) {
-    $params = [];
-    $param_condition = (new Table())->processWhereClauseArray($HD_Form->list_query_conditions, $params);
-    $res = archive_data("WHERE " . $param_condition ?: "1=1", $params);
+    (new Table())->begin();
+    $res = (new Table("cc_call_archive"))->addRowsFromSelect(new Table("cc_call"), $HD_Form->list_query_conditions);
+    if ($res) {
+        $res = (new Table("cc_call"))->deleteRow($HD_Form->list_query_conditions);
+        if ($res) {
+            (new Table())->end();
+        } else {
+            (new Table())->abort();
+        }
+    } else {
+        (new Table())->abort();
+    }
     if ($res) {
         $HD_Form->CV_NO_FIELDS = _("The data has been successfully archived");
     } else {
@@ -222,21 +231,3 @@ $list = $HD_Form->perform_action($form_action);
 $HD_Form->create_form($form_action, $list) ;
 
 require_once __DIR__ . "/templates/footer.php";
-
-/*
- * Function use to archive data and call records
- * Insert in cc_call_archive and cc_card_archive on seletion criteria
- * Delete from cc_call and cc_card
- * Used in
- * 1. A2Billing_UI/Public/A2B_data_archving.php
- * 2. A2Billing_UI/Public/A2B_call_archiving.php
- */
-function archive_data(string $where, array $params = []): bool
-{
-    $handle = DbConnect();
-    $handle->BeginTrans();
-    $handle->Execute("INSERT INTO cc_call_archive SELECT * FROM cc_call $where", $params);
-    $handle->Execute("DELETE FROM cc_call $where", $params);
-
-    return $handle->CommitTrans();
-}

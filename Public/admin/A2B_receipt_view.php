@@ -53,7 +53,6 @@ $receipt = new Receipt($id ?? 0);
 if (empty($receipt->card)) {
     header("Location: A2B_entity_receipt.php?form_action=list");
 }
-$DBHandle  = DbConnect();
 $card = (new Table("cc_card", "*", ["cc_country" => ["country", "countrycode"]]))
     ->getRow(["cc_card.id" => $receipt->card]);
 

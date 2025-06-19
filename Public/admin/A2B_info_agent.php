@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -49,9 +50,7 @@ if (empty($id)) {
     header("Location: A2B_entity_agent.php");
 }
 
-$DBHandle  = DbConnect();
-
-$agent = $DBHandle->GetRow("SELECT * FROM cc_agent WHERE id = ?", [$id]);
+$agent = (new Table("cc_agent"))->getRow(["id" => $id]);
 
 if (empty($agent)) {
     header("Location: A2B_entity_agent.php");

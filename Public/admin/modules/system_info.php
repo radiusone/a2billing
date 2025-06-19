@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -54,7 +55,7 @@ $ver = $DBHandle->GetOne('SELECT VERSION()');
 $info_tmp = explode('-', $ver);
 $mysql = $info_tmp[1] . ' ' . $info_tmp[0];
 
-$database = $DBHandle->GetOne('SELECT version FROM cc_version');
+$database = (new Table("cc_version", "version"))->getValue();
 
 $asterisk = str_replace("Asterisk ", "", `asterisk -V`);
 $php = phpversion();

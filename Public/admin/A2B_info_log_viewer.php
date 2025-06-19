@@ -50,9 +50,7 @@ if (empty($id)) {
     header("Location: A2B_entity_log_viewer.php");
 }
 
-$DBHandle  = DbConnect();
-
-$log = $DBHandle->GetRow("SELECT * FROM cc_system_log WHERE id = ?", [$id]);
+$log = (new Table("cc_system_log"))->getRow(["id" => $id]);
 
 if (empty($log)) {
     header("Location: A2B_entity_log_viewer.php");

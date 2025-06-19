@@ -2,6 +2,7 @@
 
 use A2billing\Mail;
 use A2billing\A2bMailException;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -59,21 +60,15 @@ if (isset ($pr_email) && isset ($action)) {
             exit ();
         }
         $show_message = true;
-        $DBHandle = DbConnect();
-        $QUERY = "SELECT id,username, lastname, firstname, email, uipass, useralias FROM cc_card WHERE email=?";
-
-        $list = $DBHandle->GetAll($QUERY, [$pr_email]);
-        if ($list === false || $list === []) {
+        $list = (new Table("cc_card", ["id"]))
+            ->getColumn("id", "", ["email" => $pr_email]);
+        if (!$list) {
             $error = 1;
             sleep(4);
         } else {
-            foreach ($list as $recordset) {
-                list ($id_card, $username, $lastname, $firstname, $email, $uipass, $cardalias) = $recordset;
-
-                if ($FG_DEBUG == 1)
-                    echo "<br># $username, $lastname, $firstname, $email, $uipass, $credit, $cardalias #<br>";
+            foreach ($list as $id_card) {
                 try {
-                    $mail = new Mail(Mail :: $TYPE_FORGETPASSWORD, $id_card);
+                    $mail = new Mail(Mail::$TYPE_FORGETPASSWORD, $id_card);
                     $mail -> send();
                 } catch (A2bMailException $e) {
                     echo "<br>" . gettext("Error : Mail sender");

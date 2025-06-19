@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -52,8 +53,7 @@ if (empty($id)) {
     header("Location: A2B_entity_user.php?groupID=$groupID");
 }
 
-$DBHandle  = DbConnect();
-$admin = $DBHandle->GetRow("SELECT * FROM cc_ui_authen WHERE userid = ?", [$id]);
+$admin = (new Table("cc_ui_authen"))->getRow(["userid" => $id]);
 if (!$admin) {
     header("Location: A2B_entity_user.php?groupID=$groupID");
 }

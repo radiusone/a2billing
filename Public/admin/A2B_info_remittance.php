@@ -2,6 +2,7 @@
 
 use A2billing\Admin;
 use A2billing\Agent;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -56,9 +57,9 @@ if (empty($id)) {
 
 $DBHandle  = DbConnect();
 
-$remittance = $DBHandle->GetRow("SELECT * FROM cc_remittance_request WHERE id = ?", [$id]);
+$remittance = (new Table("cc_remittance_request"))->getRow(["id" => $id]);
 
-if (empty($remittance)) {
+if (!$remittance) {
     header("Location: A2B_entity_remittance_request.php");
 }
 

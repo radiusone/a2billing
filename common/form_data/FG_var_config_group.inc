@@ -2,6 +2,7 @@
 
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -80,21 +81,18 @@ $HD_Form->AddListTopButton("A2B_entity_config_generate_confirm.php", _("Add new 
 
 function add_agi_confx(string $group_title, ?string $from_conf): void
 {
-    $group_desc = 'This configuration group handles the AGI Configuration.';
-    $handle = DbConnect();
-    $handle->Execute("INSERT INTO cc_config_group (group_title, group_description) VALUES (?, ?)", [$group_title, $group_desc]);
-    $group_id = $handle->Insert_ID("cc_config_group", "id");
+    $group_description = 'This configuration group handles the AGI Configuration.';
+    (new Table("cc_config_group"))
+        ->addRow(compact("group_title", "group_description"), "id", $group_id);
     if (!empty($from_conf)) {
-        $query = <<< SQL
-            INSERT INTO cc_config (
-                config_title, config_key, config_value, config_description, config_valuetype, config_group_id, config_listvalues
-            )
-            SELECT config_title, config_key, config_value, config_description, config_valuetype, ?, config_listvalues
-            FROM cc_config c
-                LEFT JOIN cc_config_group g ON c.config_group_id = g.id
-            WHERE g.group_title = ?
-            SQL;
-        $params = [$group_id, $from_conf];
-        $handle->Execute($query, $params);
+        (new Table("cc_config"))
+            ->addRowsFromSelect(
+                new Table(
+                    "cc_config AS c",
+                    ["config_title", "config_key", "config_value", "config_description", "config_valuetype", "$group_id AS config_group_id", "config_listvalues"],
+                    ["cc_config_group AS g" => ["c.config_group_id", "g.id"]]
+                ),
+                ["group_title" => $from_conf]
+            );
     }
 }

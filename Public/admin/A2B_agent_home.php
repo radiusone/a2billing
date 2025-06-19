@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -62,25 +63,20 @@ if (in_array($action, ["down", "up", "delete"]) && !is_numeric($id_msg)) {
     echo "false";
     die();
 }
-$DBHandle = DbConnect();
+$table = new Table("cc_message_agent", ["order_display", "id", "id_agent", "message", "type", "logo"]);
 
 switch ($action) {
     case "add":
-        $result_param = false;
-        $count = $DBHandle->GetOne("SELECT COUNT(*) FROM cc_message_agent WHERE id_agent = ?", [$id]);
-        if ($count !== false) {
-            $result = $DBHandle->Execute(
-                "INSERT INTO cc_message_agent (id_agent, type, message, order_display, logo) VALUES (?, ?, ?, ?, ?)",
-                [$id, $type, $message, $count, $logo]
-            );
-            $result_param = $result ? "success" : "faild";
-        }
+        $count = $table->countRows(["id_agent" => $id]);
+        $result = (new Table("cc_message_agent"))
+            ->addRow(["id_agent" => $id, "type" => $type, "message" => $message, "order_display" => $count, "logo" => $logo]);
+        $result_param = $result ? "success" : "faild";
         header("Location: A2B_agent_home.php?id=$id&result=$result_param");
         die();
 
     case "ask-edit":
         if (is_numeric($id_msg)) {
-            $row = $DBHandle->GetRow("SELECT message, type, logo FROM cc_message_agent WHERE id = ?", [$id_msg]);
+            $row = $table->getRow(["id" => $id_msg]);
             if ($row) {
                 $message = $row['message'];
                 $type = $row['type'];
@@ -93,55 +89,37 @@ switch ($action) {
     case "edit":
         $result_param = false;
         if (is_numeric($id_msg)) {
-            $result = $DBHandle->Execute(
-                "UPDATE cc_message_agent SET type = ?, message = ?, logo = ? WHERE id = ?",
-                [$type, $message, $logo, $id_msg]
-            );
+            $result = $table->updateRow(["type" => $type, "message" => $message, "logo" => $logo], ["id" => $id_msg]);
             $result_param = $result ? "success" : "faild";
         }
         header("Location: A2B_agent_home.php?id=$id&result=$result_param");
         die();
 
     case "delete":
-        $order = $DBHandle->GetOne("SELECT order_display FROM cc_message_agent WHERE id = ?", [$id_msg]);
+        $order = $table->getValue(["id" => $id_msg]);
         if ($order !== false) {
-            $result = $DBHandle->Execute("DELETE FROM cc_message_agent WHERE id = ?", [$id_msg]);
-            $result = $DBHandle->Execute(
-                "UPDATE cc_message_agent SET order_display = order_display - 1 WHERE id_agent = ? AND order_display > ?",
-                [$id, $order]
-            );
+            $table->deleteRow(["id" => $id_msg]);
+            $table->updateRow(["order_display" => ["order_display - ?", 1]], ["id_agent" => $id, "order_display" => [">", $order]]);
             die("true");
         }
         http_response_code(500);
         die("false");
 
     case "up":
-        $order = $DBHandle->GetOne("SELECT order_display FROM cc_message_agent WHERE id = ?", [$id_msg]);
+        $order = $table->getValue(["id" => $id_msg]);
         if ($order) {
-            $result = $DBHandle->Execute(
-                "UPDATE cc_message_agent SET order_display = order_display + 1 WHERE id_agent = ? AND order_display = ?",
-                [$id, $order - 1]
-            );
-            $result = $DBHandle->Execute(
-                "UPDATE cc_message_agent SET order_display = order_display - 1 WHERE id_agent = ? AND order_display = ? AND id = ?",
-                [$id, $order, $id_msg]
-            );
+            $table->updateRow(["order_display" => ["order_display + ?", 1]], ["id_agent" => $id, "order_display" => $order - 1]);
+            $table->updateRow(["order_display" => ["order_display - ?", 1]], ["id_agent" => $id, "order_display" => $order, "id" => $id_msg]);
             die("true");
         }
         http_response_code(500);
         die("false");
 
     case "down":
-        $order = $DBHandle->GetOne("SELECT order_display FROM cc_message_agent WHERE id = ?", [$id_msg]);
+        $order = $table->getValue(["id" => $id_msg]);
         if ($order !== false) {
-            $result = $DBHandle->Execute(
-                "UPDATE cc_message_agent SET order_display = order_display - 1 WHERE id_agent = ? AND order_display = ?",
-                [$id, $order + 1]
-            );
-            $result = $DBHandle->Execute(
-                "UPDATE cc_message_agent SET order_display = order_display + 1 WHERE id_agent = ? AND order_display = ? AND id = ?",
-                [$id, $order, $id_msg]
-            );
+            $table->updateRow(["order_display" => ["order_display - ?", 1]], ["id_agent" => $id, "order_display" => $order + 1]);
+            $table->updateRow(["order_display" => ["order_display + ?", 1]], ["id_agent" => $id, "order_display" => $order, "id" => $id_msg]);
             die("true");
         }
         http_response_code(500);
@@ -153,7 +131,7 @@ switch ($action) {
 }
 
 
-$messages = $DBHandle->GetAll("SELECT * FROM cc_message_agent WHERE id_agent = ? ORDER BY order_display", [$id]);
+$messages = $table->getRows(["id_agent" => $id]);
 
 require_once __DIR__ . "/templates/main.php";
 $message_types = getMsgTypeList();

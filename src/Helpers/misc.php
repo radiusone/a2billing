@@ -54,8 +54,8 @@ function has_rights(int $condition, ?int $check = null): bool
 
 function get_cardlength(): int
 {
-    $db = DbConnect();
-    $len = $db->CacheGetOne(86400, "SELECT config_value FROM cc_config WHERE config_key = 'interval_len_cardnumber' LIMIT 1");
+    $len = (new Table("cc_config", ["config_value"]))
+        ->getValue(["config_key" => "interval_len_cardnumber"]);
     if ($len) {
         $len = min(split_data($len) ?: 10);
     } else {
@@ -150,12 +150,8 @@ function a2b_mail($to, $subject, $mail_content, $from = 'root@localhost', $fromn
  */
 function get_currencies(): array
 {
-    $handle = DbConnect();
     $currencies_list = [];
-    $result = $handle->CacheGetAll(900, "SELECT currency, name, `value` FROM cc_currencies ORDER BY id");
-    if ($result === false || $result === []) {
-        return [];
-    }
+    $result = (new Table("cc_currencies", ["currency", "name", "value"]))->getRows();
     array_walk(
         $result,
         function ($v) use (&$currencies_list) {
@@ -506,7 +502,6 @@ function MDP($chrs = 0): string
  */
 function generate_unique_value($table = "cc_card", $len = 0, $field = "username")
 {
-    $DBHandle = DbConnect();
     if (empty($len)) {
         $len = get_cardlength();
     }
@@ -514,9 +509,8 @@ function generate_unique_value($table = "cc_card", $len = 0, $field = "username"
     for ($k = 0; $k <= 200; $k++) {
         $card_gen = MDP($len);
 
-        $query = "SELECT `$field` FROM `$table` WHERE `$field` = ?";
-        $val = $DBHandle->GetOne($query, [$card_gen]);
-        if (is_null($val)) {
+        (new Table($table, [$field]))->getValue([$field => $card_gen]);
+        if (empty($val)) {
 
             return $card_gen;
         }
@@ -607,18 +601,15 @@ function securitykey(string $key, string $data): string
 */
 function get_timezones(): array
 {
-    $db = DbConnect();
-    $result = $db->CacheGetAll(900, "SELECT id, gmttime, gmtzone, gmtoffset FROM cc_timezone ORDER by id");
+    $result = (new Table("cc_timezone", ["id", "gmttime", "gmtzone", "gmtoffset"]))->getRows();
     $timezone_list = [];
 
-    if ($result !== false && $result !== []) {
-        foreach ($result as $row) {
-            $timezone_list[$row["id"]] = [
-                1 => $row["gmttime"],
-                2 => $row["gmtzone"],
-                3 => $row["gmtoffset"],
-            ];
-        }
+    foreach ($result as $row) {
+        $timezone_list[$row["id"]] = [
+            1 => $row["gmttime"],
+            2 => $row["gmtzone"],
+            3 => $row["gmtoffset"],
+        ];
     }
 
     return $timezone_list;
@@ -629,12 +620,7 @@ function get_date_with_offset($currDate, $user_offset = null)
     if (is_null($user_offset)) {
         $user_offset = $_SESSION["gmtoffset"] ?? 0;
     }
-    $server_offset = 0;
-    $handle = DbConnect();
-    $val = $handle->CacheGetOne(300, "SELECT gmtoffset FROM cc_timezone WHERE gmttime = ?", [SERVER_GMT]);
-    if (!is_null($val)) {
-        $server_offset = $val;
-    }
+    $server_offset = (new Table("cc_timezone", ["gmtoffset"]))->getValue(["gmttime" => SERVER_GMT]) ?: 0;
     // TODO: proper date math
     $timestamp = strtotime($currDate) - ($server_offset - $user_offset);
 
@@ -711,9 +697,9 @@ function lastDayOfMonth($month = null, $year = null, string $format = 'd-m-Y'): 
 
 function get_login_button($id): string
 {
-    $handle = DbConnect();
-    $row = $handle->GetRow("SELECT useralias, uipass FROM cc_card WHERE id=?", [$id]);
-    if ($row === false || $row === []) {
+    $row = (new Table("cc_card", ["useralias", "userpass"]))
+        ->getRow(["id" => $id]);
+    if (!$row) {
         return "";
     }
     $username = htmlspecialchars($row["useralias"]);
@@ -847,7 +833,8 @@ function SetLocalLanguage(): void
 
 function create_help($text): string
 {
-    $result = DbConnect()->GetOne("SELECT config_value FROM cc_config WHERE config_key = 'show_help'");
+    $result = (new Table("cc_config", "config_value"))
+        ->getValue(["config_key" => "show_help"]);
     if ($result !== "1") {
         return "";
     }

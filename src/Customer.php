@@ -82,9 +82,9 @@ class Customer extends User
         if (empty($id) || !is_numeric($id)) {
             return $na;
         }
-        $handle = DbConnect();
-        $row = $handle->CacheGetRow(60, "SELECT username, firstname, lastname FROM cc_card WHERE id = ?", [$id]);
-        if ($row === false || $row === []) {
+        $row = (new Table("cc_card", ["username", "firstname", "lastname"]))
+            ->getRow(["id" => $id]);
+        if (!$row) {
             return $na;
         }
         if ($as_link) {
@@ -113,9 +113,9 @@ class Customer extends User
         if (empty($id) || !is_numeric($id)) {
             return $na;
         }
-        $handle = DbConnect();
-        $row = $handle->CacheGetRow(60, "SELECT username FROM cc_card WHERE id = ?", [$id]);
-        if ($row === false || $row === []) {
+        $row = (new Table("cc_card", ["username", "firstname", "lastname"]))
+            ->getRow(["id" => $id]);
+        if (!$row) {
             return $na;
         }
         if ($as_link) {
@@ -142,9 +142,9 @@ class Customer extends User
         if (empty($id) || !is_numeric($id)) {
             return $na;
         }
-        $handle = DbConnect();
-        $row = $handle->CacheGetRow(60, "SELECT username, firstname, lastname FROM cc_card WHERE id = ?", [$id]);
-        if ($row === false || $row === []) {
+        $row = (new Table("cc_card", ["username", "firstname", "lastname"]))
+            ->getRow(["id" => $id]);
+        if (!$row) {
             return $na;
         }
         return sprintf(

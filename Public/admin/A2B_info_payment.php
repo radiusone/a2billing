@@ -3,6 +3,7 @@
 use A2billing\Admin;
 use A2billing\Agent;
 use A2billing\Customer;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -59,12 +60,7 @@ if (empty($id)) {
     header("Location: $page");
 }
 
-$DBHandle  = DbConnect();
-
-$payment = ($type === "agent")
-    ? $DBHandle->GetRow("SELECT * FROM cc_logpayment_agent WHERE id = ?", [$id])
-    : $DBHandle->GetRow("SELECT * FROM cc_logpayment WHERE id = ?", [$id]);
-
+$payment = (new Table($type === "agent" ? "cc_logpayment_agent" : "cc_logpayment"))->getRow(["id" => $id]);
 if (empty($payment)) {
     header("Location: $page");
 }

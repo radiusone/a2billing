@@ -2,6 +2,7 @@
 
 use A2billing\Mail;
 use A2billing\A2bMailException;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -75,11 +76,9 @@ try {
     exit ();
 }
 
-$QUERY = "SELECT username, lastname, firstname, email, uipass, credit, useralias, loginkey FROM cc_card WHERE id=?";
-
-$list = $DBHandle->GetRow($QUERY, [$_SESSION["id_signup"]]);
-
-if ($list === false || $list === []) {
+$list = (new Table("cc_card", ["username", "lastname", "firstname", "email", "uipass", "useralias"]))
+    ->getRow(["id" => $_SESSION["id_signup"]]);
+if (!$list) {
     echo "<br>" . gettext("Error : No such user found in database");
     exit ();
 }
@@ -87,9 +86,7 @@ if ($list === false || $list === []) {
 if ($FG_DEBUG == 1)
     echo "<br><b>BELOW THE CARD PROPERTIES </b><hr><br>";
 
-list ($username, $lastname, $firstname, $email, $uipass, $credit, $cardalias, $loginkey) = $list;
-if ($FG_DEBUG == 1)
-    echo "<br># $username, $lastname, $firstname, $email, $uipass, $credit, $cardalias #<br>";
+extract($list);
 
 try {
     $mail->send();
@@ -114,7 +111,7 @@ require_once __DIR__ . "/templates/signup_header.php";
             <h3>
               <?php echo gettext("Your cardnumber is "); ?> <b><font color="#00AA00"><?php echo $username ?></font></b><br><br><br>
               <?php echo gettext("To login to your account :"); ?><br>
-              <?php echo gettext("Your card alias (login) is "); ?> <b><font color="#00AA00"><?php echo $cardalias ?></font></b><br>
+              <?php echo gettext("Your card alias (login) is "); ?> <b><font color="#00AA00"><?php echo $useralias ?></font></b><br>
               <?php echo gettext("Your password is "); ?> <b><font color="#00AA00"><?php echo $uipass ?></font></b><br>
             </h3>
     <?php } ?>

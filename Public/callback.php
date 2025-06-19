@@ -49,20 +49,10 @@ if (! has_rights (Customer::ACX_CALL_BACK)) {
 $FG_DEBUG = 0;
 $color_msg = 'red';
 
-$QUERY = "SELECT username, credit, lastname, firstname, address, city, state, country, zipcode, phone, email, fax, lastuse, activated, status FROM cc_card WHERE username = '".$_SESSION["pr_login"]."' AND uipass = '".$_SESSION["pr_password"]."'";
 
-$DBHandle_max = DbConnect();
-$numrow = 0;
-$resmax = $DBHandle_max -> Execute($QUERY);
-if ($resmax) {
-    $numrow = $resmax -> RecordCount();
-}
-if ($numrow == 0) {
-    exit();
-}
-$customer_info =$resmax -> fetchRow();
+$status = (new Table("cc_card", ["status"]))->getValue(["username" => $_SESSION["pr_login"]]);
 
-if ($customer_info[14] != "1" && $customer_info[14] != "8") {
+if (!$status || ($status != "1" && $status != "8")) {
     Header("HTTP/1.0 401 Unauthorized");
     Header("Location: PP_error.php?c=accessdenied");
     die();
@@ -153,14 +143,16 @@ if ($callback) {
                     $status = 'PENDING';
                     $server_ip = 'localhost';
                     $num_attempt = 0;
+                    $timeout = 30000;
+                    $callback_time = "CURRENT_TIMESTAMP";
 
                     $variable = "CALLED=$called,CALLING=$calling,CBID=$uniqueid,LEG=".$A2B->cardnumber;
 
-                    $QUERY = " INSERT INTO cc_callback_spool (uniqueid, status, server_ip, num_attempt, channel, exten, context, priority," .
-                        " variable, id_server_group, callback_time, account, callerid, timeout ) " .
-                        " VALUES ('$uniqueid', '$status', '$server_ip', '$num_attempt', '$channel', '$exten', '$context', '$priority'," .
-                        " '$variable', '$id_server_group',  now(), '$account', '$callerid', '30000')";
-                    $res = $A2B -> DBHandle -> Execute($QUERY);
+                    $res = (new Table("cc_callback_spool"))
+                        ->addRow(compact(
+                            "uniqueid", "status", "server_ip", "num_attempt", "channel", "exten", "context", "priority",
+                            "variable", "id_server_group", "callback_time", "account", "callerid", "timeout"
+                        ));
 
                     if (!$res) {
                         $error_msg= gettext("Cannot insert the callback request in the spool!");

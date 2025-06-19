@@ -105,7 +105,7 @@ if ($task) {
         $dialprefix = $values[0];
         $destination = $values[1];
         unset($values[1]);
-        $prefix_values[] = [$dialprefix, $destination];
+        $prefix_values[] = ["prefix" => $dialprefix, "destination" => $destination];
 
         $values = array_merge($values, [$tariffplan, $trunk, $dialprefix]);
         if (count($values) !== count($field_names)) {
@@ -151,16 +151,7 @@ if ($task) {
         } else {
             $nb_imported = count($insert_data);
             Logger::insertLog($_SESSION["admin_id"], 2, "RATES IMPORTED", $nb_imported . " New RATES Imported Successfully", '', $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI']);
-            // todo: this is ugly, should be a better way
-            if (DB_TYPE === "postgres") {
-                $query = "INSERT INTO cc_prefix (prefix, destination) VALUES (?, ?) ON CONFLICT DO NOTHING";
-            } else {
-                $query = "INSERT IGNORE INTO cc_prefix (prefix, destination) VALUES (?, ?)";
-            }
-            $statement = $DBHandle->Prepare($query);
-            foreach ($prefix_values as $prefix) {
-                $DBHandle->Execute($statement, $prefix);
-            }
+            (new Table("cc_prefix"))->addRows($prefix_values, null, $id, true);
         }
     }
     $stop_time = microtime(true);

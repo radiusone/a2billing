@@ -87,12 +87,8 @@ if (isset($form_action) && ($form_action=='ask-edit' || $form_action=='edit')) {
 
 	if ($voip_call == 1) {
 	    // It's a Voip Call
-	    $DBHandle_max = DbConnect();
-	    $numrow = 0;
-	    $resmax = $DBHandle_max -> Execute("SELECT * FROM cc_did_destination WHERE id='$id' AND destination='$destination' AND validated=1");
-
-	    if ( $resmax )
-		    $numrow = $resmax -> RecordCount( );
+        $numrow = (new Table("cc_did_destination"))
+            ->countRows(["id" => $id, "destination" => $destination, "validated" => 1]);
         $validated = ($numrow == 1) ? 1 : 0;
 
 	    if ($validated)

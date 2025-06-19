@@ -37,11 +37,8 @@ namespace A2billing;
 
 class Logger
 {
-    public static bool $do_debug = false;
-
     public static function insertLog($userID, $logLevel, $actionPerformed, $description, $tableName, $ipAddress, $pageName, $fields = '', $values = [], $agent = false)
     {
-        $DB_Handle = DbConnect();
         $pageName = preg_replace("/\?.*/", "", basename($pageName));
         $data = $fields;
         if (is_array($fields)) {
@@ -58,12 +55,6 @@ class Logger
             $columns[] = "agent";
             $params[] = 1;
         }
-        $query = "INSERT INTO cc_system_log (" . implode(",", $columns) . ") VALUES (";
-        $query .= implode(",", array_fill(0, count($columns), "?")) . ")";
-        if (self::$do_debug) {
-            echo $query;
-        }
-
-        $DB_Handle->Execute($query, $params);
+        (new Table("cc_system_log"))->addRow(array_combine($columns, $params));
     }
 }
