@@ -434,10 +434,11 @@ class Table
     /**
      * Delete a row with a proper parameterized statement
      *
-     * @param array $conditions values to match placeholders in $where
+     * @param array $conditions values indexed by column name
+     * @param int $limit
      * @return bool
      */
-    public function deleteRow(array $conditions = []): bool
+    public function deleteRow(array $conditions = [], int $limit = 0): bool
     {
         $db = $this->getConnection();
         // temporary until proper foreign keys are set up
@@ -457,6 +458,9 @@ class Table
 
         $where = $this->processWhereClauseArray($conditions, $params);
         $query = "DELETE FROM $table WHERE $where";
+        if ($limit) {
+            $query .= " LIMIT $limit";
+        }
         class_exists(Console::class) && Console::logQuery($query);
         $result = $db->Execute($query, $params);
         class_exists(Console::class) && Console::logQuery($query);
