@@ -128,7 +128,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 });
             }
         });
-        el.dispatchEvent(new InputEvent("change"));
     });
 
     /**
