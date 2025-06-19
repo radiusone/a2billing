@@ -4,6 +4,7 @@ use A2billing\Admin;
 use A2billing\A2Billing;
 use A2billing\Forms\FormHandler;
 use A2billing\Realtime;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -127,28 +128,19 @@ if ($nb_to_create > 0 && $action === "generate" && count($errors) === 0) {
         [$accountnumber, $useralias] = gen_card_with_alias($cardnumber_length);
         $passui_secret = MDP_NUMERIC(5) . MDP_STRING(10) . MDP_NUMERIC(5);
 
-        $HD_Form->DBHandle->enableLastInsertID();
-        $result = $HD_Form->DBHandle->Execute(
-            "INSERT INTO cc_card (
-                 username, useralias, credit, tariff, lastname, firstname, email, address, city, state, country, 
-                 zipcode, phone, simultaccess, currency, typepaid, creditlimit, enableexpire, expirationdate, expiredays, 
-                 uipass, runservice, tag,id_group, discount, id_seria, id_didgroup, sip_buddy, iax_buddy, vat
-             )
-            VALUES (?, ?, ?, ?, ?, '', '', '', '', '', ?, '', '', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            [
-                $accountnumber, $useralias, $addcredit, $choose_tariff, $gen_id, $id_country, $choose_simultaccess,
-                $choose_currency, $choose_typepaid, $creditlimit, $enableexpire, $expirationdate, $expiredays, $passui_secret,
-                $runservice, $tag, $id_group, $discount, $id_seria, $id_didgroup, $sip_buddy, $iax_buddy, $vat,
-            ]
-        );
-        $id_cc_card = $HD_Form->DBHandle->Insert_ID();
+        (new Table("cc_card"))->addRow([
+            "username" => $accountnumber, "useralias" => $useralias, "credit" => $addcredit, "tariff" => $choose_tariff,
+            "lastname" => $gen_id, "country" => $id_country, "simultaccess" => $choose_simultaccess, "currency" => $choose_currency,
+            "typepaid" => $choose_typepaid, "creditlimit" => $creditlimit, "enableexpire" => $enableexpire,
+            "expirationdate" => $expirationdate, "expiredays" => $expiredays, "uipass" => $passui_secret, "runservice" => $runservice,
+            "tag" => $tag, "id_group" => $id_group, "discount" => $discount, "id_seria" => $id_seria, "id_didgroup" => $id_didgroup,
+            "sip_buddy" => $sip_buddy, "iax_buddy" => $iax_buddy, "vat" => $vat,
+        ], "id", $id_cc_card);
 
         //create refill for each cards
         if ($addcredit > 0) {
-            $HD_Form->DBHandle->Execute(
-                "INSERT INTO cc_logrefill (credit, card_id, description) VALUES (?, ?, ?)",
-                [$addcredit, $id_cc_card, _("CREATION CARD REFILL")]
-            );
+            (new Table("cc_logrefill"))
+                ->addRow(["credit" => $addcredit, "card_id" => $id_cc_card, "description" => _("CREATION CARD REFILL")]);
         }
 
         if (isset($sip) || isset($iax)) {
@@ -181,12 +173,12 @@ $HD_Form->list_help_text = create_help(
 );
 $HD_Form->create_toppage($form_action);
 
-$list_tariff = $HD_Form->DBHandle->CacheGetAll(300, "SELECT id, tariffgroupname AS name FROM cc_tariffgroup ORDER BY tariffgroupname") ?: [];
-$list_group = $HD_Form->DBHandle->CacheGetAll(300, "SELECT id, name FROM cc_card_group ORDER BY name") ?: [];
-$list_agent = $HD_Form->DBHandle->CacheGetAll(300, "SELECT id, login AS name FROM cc_agent ORDER BY login") ?: [];
-$list_seria = $HD_Form->DBHandle->CacheGetAll(300, "SELECT id, name FROM cc_card_seria ORDER BY name") ?: [];
-$list_didgroup = $HD_Form->DBHandle->CacheGetAll(300, "SELECT id, didgroupname AS name FROM cc_didgroup ORDER BY didgroupname");
-$list_country = $HD_Form->DBHandle->CacheGetAll(300, "SELECT countrycode AS id, countryname AS name FROM cc_country ORDER BY countryname") ?: [];
+$list_tariff = (new Table("cc_tariffgroup", ["id", "tariffgroupname AS name"]))->getRows([], ["tariffgroupname"]);
+$list_group = (new Table("cc_card_group", ["id", "name"]))->getRows([], ["name"]);
+$list_agent = (new Table("cc_agent", ["id", "login AS name"]))->getRows([], ["login"]);
+$list_seria = (new Table("cc_card_seria", ["id", "name"]))->getRows([], ["name"]);
+$list_didgroup = (new Table("cc_didgroup", ["id", "didgroupname AS name"]))->getRows([], ["didgroupname"]);
+$list_country = (new Table("cc_country", ["countrycode", "countryname AS name"]))->getRows([], ["countryname"]);
 
 // FORM FOR THE GENERATION
 ?>

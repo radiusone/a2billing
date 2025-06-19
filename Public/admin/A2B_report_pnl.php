@@ -373,19 +373,15 @@ $HD_Form->create_toppage ($form_action);
 $HD_Form->create_form($form_action, $list) ;
 
 // create the totals row
-$totals_query = <<<SQL
-SELECT
-    SUM(call_count) AS call_count, SUM(time_minutes) AS time_minutes, SUM(toll_free_buy_cost) AS toll_free_buy_cost,
-    SUM(pay_phone_buy_cost) AS pay_phone_buy_cost, SUM(orig_only) AS orig_only, SUM(credits) AS credits,
-    SUM(orig_total) AS orig_total, SUM(toll_free_sell_cost) AS toll_free_sell_cost, SUM(pay_phone_sell_cost) AS pay_phone_sell_cost,
-    SUM(term_only) AS term_only, SUM(charges) AS charges, SUM(term_total) AS term_total, SUM(first_use) AS first_use,
-    (1 - SUM(net_revenue) / SUM(term_total)) * 100 AS average_discount, SUM(net_revenue) AS net_revenue,
-    SUM(profit) / SUM(net_revenue) * 100 AS margin, SUM(profit) AS profit
-FROM pnl_report
-SQL;
-
-$res = $HD_Form->DBHandle->Execute($totals_query);
-$row = $res ? $res->FetchRow() : false;
+$row = (new Table(
+    "pnl_report",
+    ["SUM(call_count) AS call_count", "SUM(time_minutes) AS time_minutes", "SUM(toll_free_buy_cost) AS toll_free_buy_cost",
+    "SUM(pay_phone_buy_cost) AS pay_phone_buy_cost", "SUM(orig_only) AS orig_only", "SUM(credits) AS credits",
+    "SUM(orig_total) AS orig_total", "SUM(toll_free_sell_cost) AS toll_free_sell_cost", "SUM(pay_phone_sell_cost) AS pay_phone_sell_cost",
+    "SUM(term_only) AS term_only", "SUM(charges) AS charges", "SUM(term_total) AS term_total", "SUM(first_use) AS first_use",
+    "(1 - SUM(net_revenue) / SUM(term_total)) * 100 AS average_discount", "SUM(net_revenue) AS net_revenue",
+    "SUM(profit) / SUM(net_revenue) * 100 AS margin", "SUM(profit) AS profit"]
+))->getRow();
 ?>
 
 <?php if ($row): ?>

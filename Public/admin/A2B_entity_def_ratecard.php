@@ -113,40 +113,36 @@ if (($bu["batchupdate"] ?? false) && is_array($bu["check"])) {
 
     $sql_sets = [];
     $sql_params = [];
+    $values = [];
 
     foreach ($selected_updates as $ind_field) {
         if (!array_key_exists($ind_field, $bu)) {
             continue;
         }
-        $col = str_replace("upd_", "", $ind_field);
+        $col = (new Table())->quote_identifier(substr($ind_field,4));
         $val = $bu[$ind_field];
         $mode = $bu["mode"][$ind_field] ?? "1";
         $type = $bu["type"][$ind_field] ?? "1";
 
         // Standard update mode
         if ($mode === "1") {
-            $sql_sets[] = "$col = ?";
-            $sql_params[] = $type[$ind_field] ?? $val;
+            $values[$col] = $type[$ind_field] ?? $val;
             // Mode 2 - Equal - Add - Substract
         } elseif ($mode === "2" && $type === "1") {
-            $sql_sets[] = "$col = ?";
-            $sql_params[] = $val;
+            $values[$col] = $val;
         } elseif ($mode === "2") {
             if ($type === "3") {
-                $val = "-$val";
+                $val = -$val;
             }
             if (str_ends_with($val, "%")) {
-                $sql_sets[] = "$col = ROUND($col + ($col * (? / 100)), 4)";
+                $values[$col] = ["ROUND($col + ($col * (? / 100)), 4)", str_replace("%", "", $val)];
             } else {
-                $sql_sets[] = "$col = $col + ?";
+                $values[$col] = ["$col + ?", $val];
             }
-            $sql_params[] = str_replace("%", "", $val);
         }
     }
 
-    $updates = implode(", ", $sql_sets);
-    $where = (new Table())->processWhereClauseArray($HD_Form->list_query_conditions, $sql_params) ?: "1=1";
-    $result = $HD_Form->DBHandle->Execute("UPDATE cc_ratecard SET $updates $where", $sql_params);
+    $result = (new Table("cc_ratecard"))->updateRow($values, $HD_Form->list_query_conditions);
     if ($result === false) {
         $update_msg = "<div class='alert alert-danger'>" . _("Could not perform the batch update") . "</div>";
     } else {
@@ -158,10 +154,10 @@ $form_action ??= "list";
 
 $list = $HD_Form->perform_action($form_action);
 
-$list_tariffname = $HD_Form->DBHandle->GetAll("SELECT id, tariffname FROM cc_tariffplan ORDER BY tariffname") ?: [];
-$list_trunk = $HD_Form->DBHandle->GetAll("SELECT id_trunk, trunkcode, providerip FROM cc_trunk ORDER BY trunkcode") ?: [];
-$list_cid_group = $HD_Form->DBHandle->GetAll("SELECT id, group_name FROM cc_outbound_cid_group ORDER BY group_name") ?: [];
-$list_tariffgroup = $HD_Form->DBHandle->GetAll("SELECT id, tariffgroupname, lcrtype FROM cc_tariffgroup ORDER BY tariffgroupname") ?: [];
+$list_tariffname = (new Table("cc_tariffplan", ["id", "tariffname"]))->getRows([], ["tariffname"]);
+$list_trunk = (new Table("cc_trunk", ["id_trunk", "trunkcode", "providerip"]))->getRows([], ["trunkcode"]);
+$list_cid_group = (new Table("cc_outbound_cid_group", ["id", "group_name"]))->getRows([], ["group_name"]);
+$list_tariffgroup = (new Table("cc_tariffgroup", ["id", "tariffgroupname AS name"]))->getRows([], ["tariffgroupname"]);
 
 require_once __DIR__ . "/templates/main.php";
 

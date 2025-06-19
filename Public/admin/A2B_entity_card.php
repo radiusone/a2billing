@@ -170,23 +170,18 @@ require_once __DIR__ . "/templates/main.php";
 
 <?php if ($form_action === "list" && !$popup_select) {
     // populate some lists for the batch update settings
-    $result = $HD_Form->DBHandle->CacheExecute(300, "SELECT id, tariffgroupname FROM cc_tariffgroup ORDER BY tariffgroupname");
-    $list_tariff = $result ? $result->GetAll() : [];
+    $list_tariff = (new Table("cc_tariffgroup", ["id", "tariffgroupname"]))->getRows([], ["tariffgroupname"]);
 
-    $result = $HD_Form->DBHandle->CacheExecute(300, "SELECT id, name FROM cc_card_group ORDER BY name");
-    $list_group = $result ? $result->GetAll() : [];
+    $list_group = (new Table("cc_card_group", ["id", "name"]))->getRows([], ["name"]);
 
-    $result = $HD_Form->DBHandle->CacheExecute(300, "SELECT id, login FROM cc_agent ORDER BY login");
-    $list_agent = $result ? $result->GetAll() : [];
+    $list_agent = (new Table("cc_agent", ["id", "login"]))->getRows([], ["login"]);
 
-    $result = $HD_Form->DBHandle->CacheExecute(300, "SELECT id, name FROM cc_card_seria ORDER BY name");
-    $list_seria = $result ? $result->GetAll() : [];
+    $list_seria = (new Table("cc_card_seria", ["id", "name"]))->getRows([], ["name"]);
 
     $list_refill_type = getRefillType_List();
     $list_refill_type[-1] = _("NO REFILL");
 
-    $result = $HD_Form->DBHandle->CacheExecute(300, "SELECT countrycode, countryname FROM cc_country ORDER BY countryname");
-    $list_country = $result ? $result->GetAll() : [];
+    $list_country = (new Table("cc_country", ["countrycode", "countryname"]))->getRows([], ["countryname"]);
 
 ?>
 

@@ -26,7 +26,7 @@ $QUERY_INVOICE_ENOUGH_PAID = <<< SQL
     GROUP BY EXTRACT(MONTH FROM sub.invoice_date)
     ORDER BY sub.invoice_date DESC
     SQL;
-$result_invoice_enough_paid = $HD_Form->DBHandle->GetArray(
+$result_invoice_enough_paid = DbConnect()->GetArray(
     $QUERY_INVOICE_ENOUGH_PAID,
     [$checkdate, is_agent() ? 1 : 0, $_SESSION["agent_id"] ?? 0]
 ) ?: [];
@@ -45,7 +45,7 @@ $QUERY_INVOICE_COUNT = <<< SQL
     GROUP BY EXTRACT(MONTH FROM cc_invoice.date)
     ORDER BY cc_invoice.date DESC
     SQL;
-$result_invoice_count = $HD_Form->DBHandle->GetArray(
+$result_invoice_count = DbConnect()->GetArray(
     $QUERY_INVOICE_COUNT,
     [$checkdate, is_agent() ? 1 : 0, $_SESSION["agent_id"] ?? 0]
 ) ?: [];

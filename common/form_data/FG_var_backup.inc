@@ -95,12 +95,12 @@ if ($form_action === "add" && !empty($path)) {
         $HD_Form->FG_TEXT_ADITION_CONFIRMATION .= _("An error occur when the system tried to compress the backup realized.") . "<br>" . _("Please check yours system settings for the backup section ");
     }
 } elseif ($form_action === "delete") {
-    $path = $HD_Form->DBHandle->GetOne("SELECT path FROM cc_backup WHERE id = ?", [$id]);
+    $path = (new Table("cc_backup", ["path"]))->getValue(["id" => $id]);
     if (!is_readable($path) || !unlink($path)) {
         echo _("Error deleting file");
     }
 } elseif ($form_action === "restore") {
-    $path = $HD_Form->DBHandle->GetOne("SELECT path FROM cc_backup WHERE id = ?", [$id]);
+    $path = (new Table("cc_backup", ["path"]))->getValue(["id" => $id]);
 
     if (str_ends_with($path, ".gz")) {
         // WE NEED TO GZIP
@@ -122,7 +122,7 @@ if ($form_action === "add" && !empty($path)) {
 
     exec($run_restore);
 } elseif ($form_action === "download") {
-    $path = $HD_Form->DBHandle->GetOne("SELECT path FROM cc_backup WHERE id = ?", [$id]);
+    $path = (new Table("cc_backup", ["path"]))->getValue(["id" => $id]);
     if (is_readable($path)) {
         $filename = basename($path);
         $len = filesize($path);

@@ -117,20 +117,13 @@ if ($nb_to_create > 0 && $action === "generate" && count($errors) === 0) {
         [$accountnumber, $useralias] = gen_card_with_alias($cardnumber_length);
         $passui_secret = MDP_NUMERIC(5) . MDP_STRING(10) . MDP_NUMERIC(5);
 
-        $HD_Form->DBHandle->enableLastInsertID();
-        $result = $HD_Form->DBHandle->Execute(
-            "INSERT INTO cc_card (
-                 username, useralias, tariff, lastname, simultaccess, currency, typepaid, creditlimit, enableexpire,
-                 expirationdate, expiredays, uipass, runservice, tag, id_group, discount, sip_buddy, iax_buddy
-             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            [
-                $accountnumber, $useralias, $choose_tariff, $gen_id, $choose_simultaccess, $choose_currency,
-                $choose_typepaid, $creditlimit, $enableexpire, $expirationdate, $expiredays, $passui_secret,
-                $runservice, $tag, $id_group, $discount, $sip_buddy, $iax_buddy,
-            ]
-        );
-        $id_cc_card = $HD_Form->DBHandle->Insert_ID();
+        (new Table("cc_card"))->addRow([
+            "username" => $accountnumber, "useralias" => $useralias, "tariff" => $choose_tariff, "lastname" => $gen_id,
+            "simultaccess" => $choose_simultaccess, "currency" => $choose_currency, "typepaid" => $choose_typepaid,
+            "creditlimit" => $creditlimit, "enableexpire" => $enableexpire, "expirationdate" => $expirationdate,
+            "expiredays" => $expiredays, "uipass" => $passui_secret, "runservice" => $runservice, "tag" => $tag,
+            "id_group" => $id_group, "discount" => $discount, "sip_buddy" => $sip_buddy, "iax_buddy" => $iax_buddy
+        ], "id", $id_cc_card);
 
         if (!empty($sip) || !empty($iax)) {
             $instance_realtime->insert_voip_config((bool)$sip, (bool)$iax, $id_cc_card, $accountnumber, $passui_secret);

@@ -52,8 +52,6 @@ Admin::checkPageAccess(Admin::ACX_BILLING);
 $HD_Form -> init();
 
 /********************************* BATCH UPDATE CURRENCY TABLE ***********************************/
-$A2B -> DBHandle = $HD_Form -> DBHandle;
-
 $form_action ??= "list";
 $list = $HD_Form -> perform_action($form_action);
 

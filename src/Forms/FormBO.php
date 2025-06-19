@@ -573,42 +573,25 @@ class FormBO
      */
     public static function did_destination_del($did_destination_id)
     {
-        $form = FormHandler::GetInstance();
-        $db = $form->DBHandle;
+        $row = (new Table(
+            "cc_did_destination AS t1",
+            ["t1.id_cc_did AS did_id", "COUNT(*) AS destination_count"],
+            ["cc_did_destination AS t2" => ["t1.id_cc_did", "t2.id_cc_did"]]
+        ))->getRow(["t2.id" => $did_destination_id]);
 
-        $QUERY_did = <<< SQL
-            SELECT cc_did.id AS did_id, dg.dest_count AS destination_count
-            FROM cc_did
-            LEFT JOIN cc_did_destination ON cc_did_destination.id_cc_did = cc_did.id
-            LEFT JOIN (
-                SELECT st1.id, count(*) AS dest_count
-                FROM cc_did AS st1
-                INNER JOIN cc_did_destination AS st2 ON st2.id_cc_did = st1.id
-                GROUP BY st1.id
-            ) AS dg ON dg.id = cc_did.id
-            WHERE cc_did_destination.id = ?
-            SQL;
-        // todo: this comment probably just means someone didn't know how joins work? left query as-is for now
-        // Also possible to do FROM cc_did_destination AS dest1 JOIN cc_did JOIN cc_did_destination AS dest2 GROUP BY dest1.id, cc_did.id
-        // To get the count but NULL and NO row behavoir is flaky no matter the types of joins used. Therefore using SubSelect.
-        $result_did_dest = $db->GetArray($QUERY_did, [$did_destination_id]);
+        if ($row && $row["destination_count"] < 2) {
+            // Only remove did from card if this is the LAST destination connecting the two.
+            // < 2, not 1 because destination is deleted after this call.
+            $choose_did = $row['did_id'];
 
-        if ($result_did_dest) {
-            $row = $result_did_dest[0];
-            if ($row["destination_count"] < 2) {
-                // Only remove did from card if this is the LAST destination connecting the two.
-                // < 2, not 1 because destination is deleted after this call.
-                $choose_did = $row['did_id'];
+            (new Table("cc_did"))
+                ->updateRow(["iduser" => 0, "reserved" => 0], ["id" => $choose_did]);
 
-                (new Table("cc_did"))
-                    ->updateRow(["iduser" => 0, "reserved" => 0], ["id" => $choose_did]);
+            (new Table("cc_did_use"))
+                ->updateRow(["releasedate" => "CURRENT_TIMESTAMP"], ["id_did" => $choose_did, "activated" => 1]);
 
-                (new Table("cc_did_use"))
-                    ->updateRow(["releasedate" => "CURRENT_TIMESTAMP"], ["id_did" => $choose_did, "activated" => 1]);
-
-                (new Table("cc_did_use"))
-                    ->addRow(["activated" => 0, "id_did" => $choose_did]);
-            }
+            (new Table("cc_did_use"))
+                ->addRow(["activated" => 0, "id_did" => $choose_did]);
         }
     }
 

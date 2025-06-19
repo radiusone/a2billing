@@ -97,45 +97,32 @@ if ($batchupdate == 1 && is_array($check)) {
     ];
 
     // Array ( [upd_simultaccess] => on [upd_currency] => on )
-    $i = 0;
-    $update_sql = "UPDATE $HD_Form->FG_QUERY_TABLE_NAME SET";
-    $update_params = [];
+    $values = [];
     foreach ($check as $ind_field => $ind_val) {
         if (!in_array($ind_field, $authorized_field)) {
             continue;
         }
         $myfield = (new Table())->quote_identifier(substr($ind_field,4));
-        if ($i !== 0) {
-            $update_sql .= ',';
-        }
         $val = $$ind_field;
 
         // Standard update mode
         if (($mode[$ind_field] ?? 1) == 1) {
-            $update_sql .= " $myfield = ?";
-            if (!isset($type[$ind_field])) {
-                $update_params[] = $val;
-            } else {
-                $update_params[] = $type[$ind_field];
-            }
+            $values[$myfield] = $type[$ind_field] ?? $val;
             // Mode 2 - Equal - Add - Subtract
         } elseif ($mode[$ind_field] == 2) {
             if (($type[$ind_field] ?? 1) == 1) {
-                $update_sql .= " $myfield = ?";
+                $values[$myfield] = $val;
             } elseif ($type[$ind_field] == 2) {
-                $update_sql .= " $myfield = $myfield + ?";
+                $values[$myfield] = ["$myfield + ?", $val];
             } elseif ($type[$ind_field] == 3) {
-                $update_sql .= " $myfield = $myfield - ?";
+                $values[$myfield] = ["$myfield - ?", $val];
             }
-            $update_params[] = $val;
         }
-        $i++;
     }
 
-    $where = (new Table())->processWhereClauseArray($HD_Form->list_query_conditions, $update_params) ?: "1=1";
-    $update_sql .= "WHERE $where";
+    $res = (new Table("cc_card"))->updateRow($values, $HD_Form->list_query_conditions);
 
-    if (! $res = $HD_Form -> DBHandle -> Execute($update_sql, $update_params)) {
+    if (! $res) {
         $update_msg = '<p style="text-align:center; font-weight: bold; color: red">' . gettext('Could not perform the batch update!') . '</p>';
     } else {
         $update_msg = '<p style="text-align:center; font-weight: bold; color: green">' . gettext('The batch update has been successfully perform!') . '</p>';
