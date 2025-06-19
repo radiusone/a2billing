@@ -4,7 +4,6 @@ namespace A2billing\Forms;
 
 use A2billing\Logger;
 use A2billing\Table;
-use ADOConnection;
 use Profiler_Console as Console;
 use const PASSWORD_DEFAULT;
 
@@ -34,8 +33,6 @@ class FormHandler
      * @var array basically just the contents of $_REQUEST
      */
     private array $_processed = [];
-
-    public ADOConnection $DBHandle;
 
     /** @var bool if the current submission has passed all validation checks */
     public bool $all_fields_valid = true;
@@ -306,7 +303,6 @@ class FormHandler
         self::$Instance = $this;
         $this->FG_QUERY_TABLE_NAME = $tablename;
         $this->FG_INSTANCE_NAME = $instance_name;
-        $this->DBHandle = DbConnect();
         $this->FG_QUERY_PRIMARY_KEY = $primary_key;
         if ($primary_key !== "id") {
             $this->list_query_order_columns = [$primary_key];
