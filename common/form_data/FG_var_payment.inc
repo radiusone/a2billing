@@ -106,7 +106,7 @@ if (Admin::allowed(Admin::ACX_MODIFY_PAYMENTS) && !$popup_select) {
     $HD_Form->AddEditPopup(
         _("CUSTOMER ID"),
         "card_id",
-        "A2B_entity_card.php?popup_select=1&",
+        "A2B_entity_card.php",
         _("Select the Customer ID"),
         $form_action === "ask-add" && !empty($card_id) ? ["value" => $card_id] : [],
         [Validator::class, "numeric"],

@@ -66,7 +66,7 @@ $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form->AddEditPopup(
     _("CUSTOMER ID"),
     "id_card",
-    "A2B_entity_card.php?popup_select=1&",
+    "A2B_entity_card.php",
     _("Select the Customer ID"),
     [],
     [Validator::class, "numeric"],

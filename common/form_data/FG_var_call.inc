@@ -60,7 +60,7 @@ $HD_Form->AddEditElement(
 $HD_Form->AddEditPopup(
     _("CARD ID"),
     "card_id",
-    "A2B_entity_card.php?popup_select=1&",
+    "A2B_entity_card.php",
     _("Define the card number ID to use."),
     [],
     [Validator::class, "numeric"],

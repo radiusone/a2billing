@@ -90,7 +90,7 @@ $HD_Form_c->FG_ENABLE_ADD_BUTTON = true;
 $HD_Form_c->AddEditPopup(
     _("ID CARD"),
     "id_cc_card",
-    "A2B_entity_card.php?popup_select=1&",
+    "A2B_entity_card.php",
     _("Set the Customer ID"),
     [],
     [Validator::class, "numeric"],

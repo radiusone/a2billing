@@ -97,7 +97,7 @@ if (Admin::allowed(Admin::ACX_MODIFY_REFILLS)) {
     $HD_Form->AddEditPopup(
         _("AGENT ID"),
         "agent_id",
-        "A2B_entity_agent.php?popup_select=1&",
+        "A2B_entity_agent.php",
         _("Select the Agent ID"),
         [],
         [Validator::class, "numeric"],

@@ -88,7 +88,7 @@ if ($form_action !== "ask-edit" && $form_action !== "edit") {
     $HD_Form->AddEditPopup(
         _("Customer"),
         "id_cc_card",
-        "A2B_entity_card.php?popup_select=1&",
+        "A2B_entity_card.php",
         _("Select the Customer ID"),
         [],
         [Validator::class, "numeric"],

@@ -203,7 +203,7 @@ $HD_Form->AddEditElement(
 $HD_Form->AddEditPopup(
     _("Destination Prefix"),
     "destination",
-    "A2B_entity_prefix.php?popup_select=1&",
+    "A2B_entity_prefix.php",
     _("Select the prefix destination corresponding to your prefix rate.") . '<br>' . _("This is the label that appears against the Call Detail Record."),
     [],
     [Validator::class, "min1Char"]

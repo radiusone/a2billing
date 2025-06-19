@@ -169,7 +169,7 @@ if ($ticket_type === "agent") {
         $HD_Form->AddEditPopup(
             _("CREATOR"),
             "creator",
-            "A2B_entity_agent.php?popup_select=1&"
+            "A2B_entity_agent.php"
         );
     } else {
         $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["creator"] = $_SESSION["agent_id"];
@@ -185,7 +185,7 @@ if ($ticket_type === "agent") {
     $HD_Form->AddEditPopup(
         _("CREATOR"),
         "creator",
-        "A2B_entity_card.php?popup_select=1&",
+        "A2B_entity_card.php",
         _("Select the Customer ID"),
         $creator_attr,
         [Validator::class, "numeric"],

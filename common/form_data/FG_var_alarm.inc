@@ -108,7 +108,7 @@ $HD_Form->AddEditElement(
 $HD_Form->AddEditPopup(
     _("TRUNK"),
     "id_trunk",
-    "A2B_entity_trunk.php?popup_select=1&",
+    "A2B_entity_trunk.php",
     _("Set if you want to apply the alarm on a specific trunk or leave empty for all trunk.")
 );
 

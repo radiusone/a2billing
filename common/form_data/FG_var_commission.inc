@@ -87,7 +87,7 @@ $HD_Form->AddListSqlMapping(
 $HD_Form->AddEditPopup(
     _("CUSTOMER ID"),
     "id_card",
-    "A2B_entity_card.php?popup_select=1&",
+    "A2B_entity_card.php",
     _("Select the Customer ID"),
     [],
     [Validator::class, "numeric"],
@@ -97,7 +97,7 @@ $HD_Form->AddEditPopup(
 $HD_Form->AddEditPopup(
     _("AGENT ID"),
     "id_agent",
-    "A2B_entity_agent.php?popup_select=1&",
+    "A2B_entity_agent.php",
     _("Select the Agent ID"),
     $form_action === "ask-add" && !empty($id_card) ? ["value" => $id_card] : [],
     [Validator::class, "numeric"],
@@ -137,7 +137,7 @@ $HD_Form->AddEditTextarea(
 $HD_Form->AddEditPopup(
     _("PAYMENT ID"),
     "id_payment",
-    "A2B_entity_payment.php?popup_select=1&",
+    "A2B_entity_payment.php",
     _("Select the Payment ID"),
     $form_action === "ask-add" && !empty($id_card) ? ["value" => $id_card] : [],
     [Validator::class, "numeric"],
