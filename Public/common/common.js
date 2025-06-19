@@ -198,18 +198,17 @@ document.addEventListener("DOMContentLoaded", function() {
             document.getElementById("displaylimit_form").dispatchEvent(new SubmitEvent("submit"));
         });
 
-
     /**
      * Used by <SELECT> buttons on popup windows to send a value back to the opener
      */
-    function sendValue(selvalue, othervalue, otherfield) {
+    window.sendValue = function(selvalue, othervalue, otherfield) {
         const table = document.querySelector("table.list-view-table");
         const formname = table.dataset.popupFormname;
-        const fieldname = table.dataset.popupFieldName;
-        window.opener.document.querySelector(`form[name='${formname}'] [name='${fieldname}']`).value = selvalue;
+        const fieldname = table.dataset.popupFieldname;
+        window.opener.document.querySelector(`form[name=${CSS.escape(formname)}] [name=${CSS.escape(fieldname)}]`).value = selvalue;
         if (othervalue && otherfield) {
             // only used in A2B_entity_card popups called from A2B_entity_friend
-            window.opener.document.querySelector(`form[name=${formname}] [name=${otherfield}]`).value = othervalue;
+            window.opener.document.querySelector(`form[name=${CSS.escape(formname)}] [name=${CSS.escape(otherfield)}]`).value = othervalue;
         }
         window.close();
     }
