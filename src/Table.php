@@ -323,10 +323,11 @@ class Table
      *
      * @param array<array<string,mixed>> $rows
      * @param string $pk_column
-     * @param null $id
+     * @param null $id the primary key of the last inserted row
+     * @param bool $ignore ignore errors during the insert
      * @return int
      */
-    public function addRows(array $rows, string $pk_column = "id", &$id = null): int
+    public function addRows(array $rows, string $pk_column = "id", &$id = null, bool $ignore = false): int
     {
         $db = $this->getConnection();
         $values = $rows[0];
@@ -358,12 +359,13 @@ class Table
             class_exists(Console::class) && Console::logQuery($query);
             $result = $db->Execute($query, $parameters);
             class_exists(Console::class) && Console::logQuery($query);
-            if ($result === false) {
+            if ($result === false && !$ignore) {
+                $id = $db->Insert_ID($this->table, $pk_column);
                 return $counter;
             }
-            $id = $db->Insert_ID($this->table, $pk_column);
             $counter++;
         }
+        $id = $db->Insert_ID($this->table, $pk_column);
 
         return $counter;
     }
