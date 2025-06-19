@@ -433,9 +433,9 @@ function get_agent_refill_link(?int $id): string
  * @param string $value
  * @return string
  */
-function format_phone_number(string $value): string
+function format_phone_number(?string $value): string
 {
-    $value = preg_replace("/^(00|011)/", "", $value);
+    $value = preg_replace("/^(00|011)/", "", $value ?? "");
     if (preg_match("/^(1?)([2-9]\d\d)([2-9]\d\d)(\d\d\d\d)$/",$value, $matches)) {
         $value = "";
         if ($matches[1]) {
