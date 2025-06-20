@@ -58,25 +58,28 @@ if (!empty($type) && !empty($view_type)) {
     $ck_dt = $view_type === "month" ? $checkdate_month : $checkdate_day;
     $dt_fmt = $view_type === "month" ? "%Y-%m-01" : "%Y-%m-%d";
     switch ($type) {
-        // todo: date_format() doesn't exist in pgsql
         case "payments_count":
-            $query = "SELECT UNIX_TIMESTAMP(DATE_FORMAT(date, ?)) * 1000 AS period, COUNT(*) FROM cc_logpayment WHERE date >= ? AND date <= CURRENT_TIMESTAMP GROUP BY period ORDER BY period";
+            $column = "COUNT(*)";
             break;
         case 'payments_amount':
-            $query = "SELECT UNIX_TIMESTAMP(DATE_FORMAT(date, ?)) * 1000 AS period, SUM(payment) FROM cc_logpayment WHERE date >= ? AND date <= CURRENT_TIMESTAMP GROUP BY period ORDER BY period";
+            $column = "SUM(payment)";
             $format='money';
             break;
         default:
             die();
     }
 
-    $result = DbConnect()->GetAll($query, [$dt_fmt, $ck_dt]);
-    if ($result === false) {
+    // todo: date_format() doesn't exist in pgsql
+    $columns = ["UNIX_TIMESTAMP(DATE_FORMAT(date, $dt_fmt) * 1000 AS period", "$column AS agg"];
+    $conditions = ["date" => ["BETWEEN", [$ck_dt, "CURRENT_TIMESTAMP"]]];
+    $result = (new Table("cc_logpayment", $columns))
+        ->getRows($conditions, ["period"], "ASC", ["period"]);
+    if (!$result) {
         die();
     }
     foreach ($result as $row) {
-        $max = max($max, $row[1]);
-        $data[] = [intval($row[0]), floatval($row[1])];
+        $max = max($max, $row["agg"]);
+        $data[] = [intval($row["period"]), floatval($row["agg"])];
     }
     $response = ["max" => floatval($max), "data" => $data , "format" => $format];
     header("Content-Type: application/json");

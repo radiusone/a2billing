@@ -58,27 +58,30 @@ if (!empty($type) && !empty($view_type)) {
     $ck_dt = $view_type === "month" ? $checkdate_month : $checkdate_day;
     $dt_fmt = $view_type === "month" ? "%Y-%m-01" : "%Y-%m-%d";
     switch ($type) {
-        // todo: date_format() doesn't exist in pgsql
         case "card_creation":
-            $query = "SELECT UNIX_TIMESTAMP(DATE_FORMAT(creationdate, ?)) * 1000 AS period, COUNT(*) FROM cc_card WHERE creationdate >= ? AND creationdate <= CURRENT_TIMESTAMP GROUP BY period ORDER BY period";
+            $column = "creationdate";
             break;
         case "card_expiration":
-            $query = "SELECT UNIX_TIMESTAMP(DATE_FORMAT(expirationdate, ?)) * 1000 AS period, COUNT(*) FROM cc_card WHERE expirationdate >= ? AND expirationdate <= CURRENT_TIMESTAMP GROUP BY period ORDER BY period";
+            $column = "expirationdate";
             break;
         case "card_firstuse":
-            $query = "SELECT UNIX_TIMESTAMP(DATE_FORMAT(firstusedate, ?)) * 1000 AS period, COUNT(*) FROM cc_card WHERE firstusedate >= ? AND firstusedate <= CURRENT_TIMESTAMP GROUP BY period ORDER BY period";
+            $column = "firstusedate";
             break;
         default:
             die();
     }
 
-    $result = DbConnect()->GetAll($query, [$dt_fmt, $ck_dt]);
-    if ($result === false) {
+    // todo: date_format() doesn't exist in pgsql
+    $columns = ["UNIX_TIMESTAMP(DATE_FORMAT($column, $dt_fmt) * 1000 AS period", "COUNT(*) AS agg"];
+    $conditions = [$column => ["BETWEEN", [$ck_dt, "CURRENT_TIMESTAMP"]]];
+    $result = (new Table("cc_card", $columns))
+        ->getRows($conditions, ["period"], "ASC", ["period"]);
+    if (!$result) {
         die();
     }
     foreach ($result as $row) {
-        $max = max($max, $row[1]);
-        $data[] = [intval($row[0]), floatval($row[1])];
+        $max = max($max, $row["agg"]);
+        $data[] = [intval($row["period"]), floatval($row["agg"])];
     }
     $response = ["max" => floatval($max), "data" => $data , "format" => $format];
     header("Content-Type: application/json");
