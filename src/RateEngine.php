@@ -1260,14 +1260,14 @@ class RateEngine
 
         if ($this->a2b->config["global"]['cache_enabled']) {
              //insert query in the cache system
-            $db = NewADOConnection("pdo");
-            if ($db->Connect("sqlite:" . $this->a2b->config["global"]["cache_path"])) {
+            $sqlite = NewADOConnection("pdo");
+            if ($sqlite->Connect("sqlite:" . $this->a2b->config["global"]["cache_path"])) {
                 if (!file_exists($this->a2b->config["global"]['cache_path'])) {
-                    $db->Execute("CREATE TABLE cc_call ($QUERY_COLUMN)");
+                    $sqlite->Execute("CREATE TABLE cc_call ($QUERY_COLUMN)");
                 }
-                $db->Execute($QUERY);
+                $sqlite->Execute($QUERY);
             } else {
-                $this->a2b->debug(A2Billing::ERROR, "[Error to connect to cache : " . $db->ErrorMsg() . "]\n");
+                $this->a2b->debug(A2Billing::ERROR, "[Error to connect to cache : " . $sqlite->ErrorMsg() . "]\n");
             }
         } else {
             $result = $this->a2b->DBHandle->Execute($QUERY, $params);

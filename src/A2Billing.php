@@ -72,9 +72,6 @@ class A2Billing
     /** @var bool|ADOConnection */
     public $DBHandle;
 
-    /** @var Table */
-    public Table $table;
-
     /** @var string the file name to store the logs */
     public string $log_file = '';
 
@@ -275,14 +272,6 @@ class A2Billing
             $string_log = "[$date] $line_file_info $output\n";
             error_log($string_log, 3, $this->log_file);
         }
-    }
-
-    /*
-    * set_instance_table
-    */
-    public function set_table($table): void
-    {
-        $this->table = $table;
     }
 
     /*
@@ -3332,9 +3321,6 @@ class A2Billing
         if ($this->config['database']['dbtype'] === "mysql") {
             $this->DBHandle->Execute('SET AUTOCOMMIT = 1');
         }
-        if (empty($this->table)) {
-            $this->table = new Table();
-        }
         return true;
     }
 
@@ -3375,9 +3361,6 @@ class A2Billing
             }
             if ($this->config['database']['dbtype'] === "mysql") {
                 $this->DBHandle->Execute('SET AUTOCOMMIT = 1');
-            }
-            if (empty($this->table)) {
-                $this->table = new Table();
             }
 
             $this->debug(self::DEBUG, "[NO DB CONNECTION] - RECONNECT OK]");

@@ -87,8 +87,6 @@ if (!$A2B->DbConnect()) {
 }
 
 define("WRITELOG_QUERY", false);
-$instance_table = new Table();
-$A2B->set_table($instance_table);
 
 $agi->answer();
 
@@ -130,7 +128,7 @@ if ($mode == 'standard') {
             $QUERY = $arr_monitor[$dial_code]["query"];
             $A2B->debug(A2Billing::DEBUG, "QUERY : $QUERY");
             // todo: this is ugly
-            $get_result = $A2B->DBHandle->GetOne($QUERY);
+            $get_result = DbConnect()->GetOne($QUERY);
 
             $A2B->debug(A2Billing::DEBUG, "SAYING RESULT");
 

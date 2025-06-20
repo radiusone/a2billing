@@ -67,9 +67,6 @@ if ($called && $id_cc_card) {
 
     if (strlen($calling) > 2 && is_numeric($calling)) {
 
-        $A2B->DBHandle = DbConnect();
-        $instance_table = new Table();
-        $A2B->set_table($instance_table);
         $num = 0;
 
         $A2B->cardnumber = $customer_info["username"];

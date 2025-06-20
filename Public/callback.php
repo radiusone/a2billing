@@ -62,9 +62,6 @@ if ($callback) {
 
     if (strlen($called)>1 && strlen($calling)>1 && is_numeric($called) && is_numeric($calling)) {
 
-        $A2B -> DBHandle = DbConnect();
-        $instance_table = new Table();
-        $A2B -> set_table ($instance_table);
         $A2B -> cardnumber = $_SESSION["pr_login"];
 
         if ($A2B -> callingcard_ivr_authenticate_light ($error_msg)) {
