@@ -123,11 +123,9 @@ class Table
         $identifier = trim($identifier);
 
         $alias = "";
-        // todo: should not catch the date in "cast(foo as date) as bar" or "cast(foo as date)"
-        // maybe try "/^(.+?) +AS +[`\"]?(\\w+)[`\"]?$/i"
-        if (preg_match("/^(.+?) +AS +(.+?)(\\b.*)$/i", $identifier, $matches)) {
+        if (preg_match("/^(.+?) +AS +[`\"]?(\\w+)[`\"]?$/i", $identifier, $matches)) {
             $identifier = $matches[1];
-            $alias = " AS $q$matches[2]$q$matches[3]";
+            $alias = " AS $q$matches[2]$q";
         }
 
         if ($this->isSqlFunction($identifier) || is_numeric($identifier)) {
@@ -550,8 +548,19 @@ class Table
             );
             $params = array_merge($params, $value);
         } elseif ($operator === "BETWEEN" && is_array($value) && count($value) === 2) {
-            $placeholder = "? AND ?";
-            $params = array_merge($params, $value);
+            if ($this->quote_identifier($value[0]) !== "$value[0]") {
+                $params[] = $value[0];
+                $placeholder = "?";
+            } else {
+                $placeholder = $value[0];
+            }
+            $placeholder .= " AND ";
+            if ($this->quote_identifier($value[1]) !== "$value[1]") {
+                $params[] = $value[1];
+                $placeholder .= "?";
+            } else {
+                $placeholder .= $value[1];
+            }
         } elseif ($operator === "CASE") {
             $conditions = "";
             $else = "";
