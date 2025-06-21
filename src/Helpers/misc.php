@@ -601,18 +601,7 @@ function securitykey(string $key, string $data): string
 */
 function get_timezones(): array
 {
-    $result = (new Table("cc_timezone", ["id", "gmttime", "gmtzone", "gmtoffset"]))->getRows();
-    $timezone_list = [];
-
-    foreach ($result as $row) {
-        $timezone_list[$row["id"]] = [
-            1 => $row["gmttime"],
-            2 => $row["gmtzone"],
-            3 => $row["gmtoffset"],
-        ];
-    }
-
-    return $timezone_list;
+    return (new Table("cc_timezone", ["id", "gmtzone"]))->getColumn("gmtzone", "id");
 }
 
 function get_date_with_offset($currDate, $user_offset = null)

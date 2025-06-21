@@ -502,21 +502,12 @@ if ($popup_select) {
         "NO"
     );
 
-    $tz_val = "";
-    $timezone_list = get_timezones();
-    if ($form_action === 'ask-add') {
-        $tz_val = array_search(SERVER_GMT, array_column($timezone_list, 1));
-    }
-    $timezone_list = array_combine(
-        array_keys($timezone_list),
-        array_column($timezone_list, 2)
-    );
-
     $HD_Form->AddEditSelect(
         _("TIMEZONE"),
         "id_timezone",
-        $timezone_list,
-        $tz_val
+        get_timezones(),
+        "",
+        _("Leave blank to use system default") . " " . SERVER_GMT,
     );
 
     if (is_customer()) {

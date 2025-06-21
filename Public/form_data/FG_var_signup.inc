@@ -258,24 +258,10 @@ if (ZIPCODE_ENABLE)  {
     $zipcode_editFG = "zipcode,";
 }
 if (TIMEZONE_ENABLE)  {
-    $timezone_list = get_timezones();
-    $one_select = false;
-    foreach ($timezone_list as $key => $cur_value) {
-        if ($form_action == 'ask-add') {
-            if (in_array(SERVER_GMT, $cur_value) && !$one_select) {
-                $timezone_default_val = $key;
-                $one_select = true;
-            }
-        }
-        $timezone_list[$key] = $cur_value[2];
-    }
-    $id_timezone_editFG = "id_timezone,";
     $HD_Form->AddEditSelect(
         gettext("TIMEZONE"),
         "id_timezone",
-        $timezone_list,
-        $timezone_default_val,
-        ""
+        get_timezones()
     );
 }
 if (PHONE_ENABLE)  {
