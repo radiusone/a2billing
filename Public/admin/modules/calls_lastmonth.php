@@ -49,56 +49,61 @@ getpost_ifset(["type", "view_type"]);
 
 if (!empty($type) && !empty($view_type)) {
     $format = "";
-    $max = 0;
     $data = [];
+    $table = "cc_call";
+    $period_column = "starttime";
 
     $checkdate_month = (new DateTime('midnight first day of this month -6 months 15 days'))->format("Y-m-d");
     $checkdate_day = (new DateTime('midnight -10 days'))->format("Y-m-d");
 
-    $ck_dt = $view_type === "month" ? $checkdate_month : $checkdate_day;
-    $dt_fmt = $view_type === "month" ? "%Y-%m-01" : "%Y-%m-%d";
-    $conditions = ["starttime" => ["BETWEEN", [$ck_dt, "CURRENT_TIMESTAMP"]]];
     switch ($type) {
         case "call_answer":
-            $column = "COUNT(*)";
+            $agg_column = "COUNT(*)";
             $conditions["terminatecauseid"] = 1;
             break;
         case "call_incomplet":
-            $column = "COUNT(*)";
+            $agg_column = "COUNT(*)";
             $conditions["terminatecauseid"] = ["!=", 1];
             break;
         case "call_times":
-            $column = "SUM(sessiontime)";
+            $agg_column = "SUM(sessiontime)";
             $format = "time";
             break;
         case "call_sell":
-            $column = "SUM(sessionbill)";
+            $agg_column = "SUM(sessionbill)";
             $format = "money";
             break;
         case "call_buy":
-            $column = "SUM(buycost)";
+            $agg_column = "SUM(buycost)";
             $format = "money";
             break;
         case "call_profit":
-            $column = "SUM(sessionbill) - SUM(buycost)";
+            $agg_column = "SUM(sessionbill) - SUM(buycost)";
             $format = "money";
             break;
         default:
             die();
     }
 
-    // todo: date_format() doesn't exist in pgsql
-    $columns = ["UNIX_TIMESTAMP(DATE_FORMAT(starttime, $dt_fmt) * 1000 AS period", "$column AS agg"];
-    $result = (new Table("cc_call", $columns))
-        ->getRows($conditions, ["period"], "ASC", ["period"]);
-    if (!$result) {
-        die();
-    }
+    $columns = $view_type === "month"
+        ? ["CONCAT(CAST($period_column AS VARCHAR(8)), '01') AS period", "$agg_column AS agg"]
+        : ["CAST($period_column AS VARCHAR(10)) AS period", "$agg_column AS agg"];
+    $conditions = [$period_column => ["BETWEEN", [$view_type === "month" ? $checkdate_month : $checkdate_day, "CURRENT_TIMESTAMP"]]];
+
+    $result = (new Table($table, $columns))
+        ->getRows($conditions, ["period"], "ASC", ["period"]) ?: [["period" => 0, "agg" => 0]];
     foreach ($result as $row) {
-        $max = max($max, $row["agg"]);
-        $data[] = [intval($row["period"]), floatval($row["agg"])];
+        $period = DateTime::createFromFormat("Y-m-d", $row["period"]);
+        $data[] = [
+            $period ? intval($period->format("U")) * 1000 : 0,
+            floatval($row["agg"]),
+        ];
     }
-    $response = ["max" => floatval($max), "data" => $data , "format" => $format];
+    $response = [
+        "max" => floatval(max(array_column($data, 1))),
+        "data" => $data,
+        "format" => $format,
+    ];
     header("Content-Type: application/json");
     echo json_encode($response);
     die();

@@ -44,18 +44,14 @@ Admin::checkPageAccess(Admin::ACX_DASHBOARD);
 $result = (new Table("cc_card", ["status", "COUNT(*) AS ct"]))
     ->getRows([], [], "ASC", ["status"]);
 $count_total = 0;
-$states = [];
-if (!$result) {
-    die();
-}
+$states = [0, 0, 0, 0, 0, 0, 0];
 foreach ($result as $row) {
-    $count_total += $row["ct"];
-    $states[$row["status"]] = $row["ct"];
+    $states[(int)$row["status"]] = (int)$row["ct"];
     // 0 = cancelled, 1 = active, 2 = new, 3 = waiting, 4 = reserved, 5 = expired, 6|7 = suspended
 }
 ?>
 <div class="card-text small">
-    <strong><?= _("Total Number of Accounts") ?>:</strong>&nbsp;<?= $count_total ?><br/>
+    <strong><?= _("Total Number of Accounts") ?>:</strong>&nbsp;<?= array_sum($states) ?><br/>
     <?php if (!empty($states[1])): ?><strong><?= _("Total Number of Active Accounts") ?>:</strong>&nbsp;<?= $states[1] ?><br/><?php endif ?>
     <?php if (!empty($states[0])): ?><strong><?= _("Cancelled Accounts") ?>:</strong>&nbsp;<?= $states[0] ?><br/><?php endif ?>
     <?php if (!empty($states[2])): ?><strong><?= _("New Accounts") ?>:</strong>&nbsp;<?= $states[2] ?><br/><?php endif ?>

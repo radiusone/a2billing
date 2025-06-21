@@ -50,46 +50,25 @@ $checkdate_day = (new DateTime('midnight -10 days'))->format("Y-m-d");
 $mingraph_day = (new DateTime('midnight -10 days -12 hours'));
 $maxgraph_day = (new DateTime('midnight +1 day'));
 
-$boxes = ["left" => [], "center" => [], "right" => []];
-
-function put_display($position, $title, $links, &$boxes)
-{
-    if ($position === "LEFT") {
-        $boxes["left"][] = compact("title", "links");
-    } elseif ($position === "CENTER") {
-        $boxes["center"][] = compact("title", "links");
-    } elseif ($position === "RIGHT") {
-        $boxes["right"][] = compact("title", "links");
-    }
-}
-
-if ( !empty($A2B->config["dashboard"]["customer_info_enabled"]) && $A2B->config["dashboard"]["customer_info_enabled"]!="NONE") {
-    put_display($A2B->config["dashboard"]["customer_info_enabled"], gettext("Accounts"), ["./modules/customers_numbers.php", "./modules/customers_lastmonth.php"], $boxes);
-}
-if ( !empty($A2B->config["dashboard"]["refill_info_enabled"]) && $A2B->config["dashboard"]["refill_info_enabled"]!="NONE") {
-    put_display($A2B->config["dashboard"]["refill_info_enabled"], gettext("Refills"), ["./modules/refills_lastmonth.php"], $boxes);
-}
-if ( !empty($A2B->config["dashboard"]["payment_info_enabled"]) && $A2B->config["dashboard"]["payment_info_enabled"]!="NONE") {
-    put_display($A2B->config["dashboard"]["payment_info_enabled"], gettext("Payments"), ["./modules/payments_lastmonth.php"], $boxes);
-}
-if ( !empty($A2B->config["dashboard"]["call_info_enabled"]) && $A2B->config["dashboard"]["call_info_enabled"]!="NONE") {
-    put_display($A2B->config["dashboard"]["call_info_enabled"], gettext("Calls"), ["./modules/calls_counts.php", "./modules/calls_lastmonth.php"], $boxes);
-}
-if ( !empty($A2B->config["dashboard"]["system_info_enable"]) && $A2B->config["dashboard"]["system_info_enable"]!="NONE") {
-    put_display($A2B->config["dashboard"]["system_info_enable"], gettext("System"), ["./modules/system_info.php"], $boxes);
-}
+$boxes = ["LEFT" => [], "CENTER" => [], "RIGHT" => [], "NONE" => []];
+$boxes[$A2B->config["dashboard"]["customer_info_enabled"] ?? "" ?: "NONE"][] = [_("Accounts"), ["./modules/customers_numbers.php", "./modules/customers_lastmonth.php"]];
+$boxes[$A2B->config["dashboard"]["refill_info_enabled"] ?? "" ?: "NONE"][] = [_("Refills"), ["./modules/refills_lastmonth.php"]];
+$boxes[$A2B->config["dashboard"]["payment_info_enabled"] ?? "" ?: "NONE"][] = [_("Payments"), ["./modules/payments_lastmonth.php"]];
+$boxes[$A2B->config["dashboard"]["call_info_enabled"] ?? "" ?: "NONE"][] = [_("Calls"), ["./modules/calls_counts.php", "./modules/calls_lastmonth.php"]];
+$boxes[$A2B->config["dashboard"]["system_info_enable"] ?? "" ?: "NONE"][] = [_("System"), ["./modules/system_info.php"]];
+unset($boxes["NONE"]);
 
 require_once __DIR__ . "/templates/main.php";
 
 ?>
 <div class="row">
-<?php foreach ($boxes as $col): ?>
-    <div class="col-4">
+<?php foreach ($boxes as $pos => $col): ?>
+    <div class="col-4" id="dashboard-col-<?= $pos ?>">
         <?php foreach ($col as $box): ?>
         <div class="card mb-3">
-            <h5 class="card-header text-center"><?= $box["title"] ?></h5>
+            <h5 class="card-header text-center"><?= $box[0] ?></h5>
             <div class="card-body">
-                <?php foreach ($box["links"] as $link) require_once $link ?>
+                <?php foreach ($box[1] as $link) require_once $link ?>
             </div>
         </div>
         <?php endforeach ?>
@@ -109,7 +88,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     document.querySelectorAll(".update_graph").forEach(function (el) {
-        el.addEventListener("click", function () {
+        el.addEventListener("change", function () {
             const graph = document.querySelector(this.dataset.graph);
             fetch(`${this.dataset.uri}?t=${Date.now()}&type=${this.id}&view_type=${graph.dataset.period}`)
                 .then(response => response.json())
@@ -126,7 +105,13 @@ document.addEventListener("DOMContentLoaded", function() {
         el.addEventListener("change", function () {
             const graph = document.querySelector(this.dataset.graph);
             graph.dataset.period = this.value;
-            graph.parentNode.querySelectorAll(".update_graph:checked").forEach(el => el.dispatchEvent(new MouseEvent("click")));
+            graph.parentNode.querySelectorAll(".update_graph:checked").forEach(el => el.dispatchEvent(new InputEvent("change")));
+            // change periods on all graphs at the same time
+            const sel = `.period_graph[value=${CSS.escape(this.value)}]:not(#${CSS.escape(this.id)}):not(:checked)`;
+            document.querySelectorAll(sel).forEach(function (el) {
+                el.checked = true;
+                el.dispatchEvent(new InputEvent("change"));
+            });
         });
     });
 
@@ -135,7 +120,7 @@ document.addEventListener("DOMContentLoaded", function() {
         el.dataset.xformat = "%d-%m";
     });
 
-    document.querySelectorAll(".update_graph[checked=checked]").forEach(el => el.dispatchEvent(new MouseEvent("click")));
+    document.querySelectorAll(".update_graph[checked=checked]").forEach(el => el.dispatchEvent(new InputEvent("change")));
 
     function plot_graph(data, max, graph) {
         const d = data;

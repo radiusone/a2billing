@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -35,8 +36,6 @@ use A2billing\Admin;
  *
 **/
 
-use A2billing\Table;
-
 require_once __DIR__ . "/../../../common/lib/admin.defines.php";
 
 Admin::checkPageAccess(Admin::ACX_DASHBOARD);
@@ -49,39 +48,44 @@ getpost_ifset(["type", "view_type"]);
 
 if (!empty($type) && !empty($view_type)) {
     $format = "";
-    $max = 0;
     $data = [];
+    $table = "cc_logrefill";
+    $period_column = "date";
 
     $checkdate_month = (new DateTime('midnight first day of this month -6 months 15 days'))->format("Y-m-d");
     $checkdate_day = (new DateTime('midnight -10 days'))->format("Y-m-d");
 
-    $ck_dt = $view_type === "month" ? $checkdate_month : $checkdate_day;
-    $dt_fmt = $view_type === "month" ? "%Y-%m-01" : "%Y-%m-%d";
     switch ($type) {
         case "refills_count":
-            $column = "COUNT(*)";
+            $agg_column = "COUNT(*)";
             break;
         case "refills_amount":
-            $column = "SUM(credit)";
+            $agg_column = "SUM(credit)";
             $format = "money";
             break;
         default:
             die();
     }
 
-    // todo: date_format() doesn't exist in pgsql
-    $columns = ["UNIX_TIMESTAMP(DATE_FORMAT(date, $dt_fmt) * 1000 AS period", "$column AS agg"];
-    $conditions = ["date" => ["BETWEEN", [$ck_dt, "CURRENT_TIMESTAMP"]]];
-    $result = (new Table("cc_logpayment", $columns))
-        ->getRows($conditions, ["period"], "ASC", ["period"]);
-    if (!$result) {
-        die();
-    }
+    $columns = $view_type === "month"
+        ? ["CONCAT(CAST($period_column AS VARCHAR(8)), '01') AS period", "$agg_column AS agg"]
+        : ["CAST($period_column AS VARCHAR(10)) AS period", "$agg_column AS agg"];
+    $conditions = [$period_column => ["BETWEEN", [$view_type === "month" ? $checkdate_month : $checkdate_day, "CURRENT_TIMESTAMP"]]];
+
+    $result = (new Table($table, $columns))
+        ->getRows($conditions, ["period"], "ASC", ["period"]) ?: [["period" => 0, "agg" => 0]];
     foreach ($result as $row) {
-        $max = max($max, $row["agg"]);
-        $data[] = [intval($row["period"]), floatval($row["agg"])];
+        $period = DateTime::createFromFormat("Y-m-d", $row["period"]);
+        $data[] = [
+            $period ? intval($period->format("U")) * 1000 : 0,
+            floatval($row["agg"]),
+        ];
     }
-    $response = ["max" => floatval($max), "data" => $data , "format" => $format];
+    $response = [
+        "max" => floatval(max(array_column($data, 1))),
+        "data" => $data,
+        "format" => $format,
+    ];
     header("Content-Type: application/json");
     echo json_encode($response);
     die();

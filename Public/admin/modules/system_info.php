@@ -39,36 +39,25 @@ require_once __DIR__ . "/../../../common/lib/admin.defines.php";
 
 Admin::checkPageAccess(Admin::ACX_DASHBOARD);
 
-exec("uname -a 2> /dev/null", $output);
-
-$distro_info = $output[0];
+$distro_info = `uname -a`;
 $info_tmp = explode(' ', $distro_info, 4);
 $OS = $info_tmp[0] . ' ' . $info_tmp[2];
-
-$info_tmp = explode(" - ", COPYRIGHT);
-$UI = $info_tmp[0] . ' ' . ($info_tmp[1] ?? "");
-
-$UI_path = substr(__DIR__, 0, strpos(__DIR__, "/admin"));
-
-$DBHandle = DbConnect();
-$ver = $DBHandle->GetOne('SELECT VERSION()');
-$info_tmp = explode('-', $ver);
-$mysql = $info_tmp[1] . ' ' . $info_tmp[0];
-
+$UI = COPYRIGHT;
+$UI_path = substr(__DIR__, 0, strrpos(__DIR__, "Public/admin/modules"));
+$mysql = DbConnect()->ServerInfo()["version"];
 $database = (new Table("cc_version", "version"))->getValue();
-
 $asterisk = str_replace("Asterisk ", "", `asterisk -V`);
 $php = phpversion();
 $server_name = $_SERVER['SERVER_NAME'];
 
 ?>
 <div class="card-text small">
-    <strong><?= _("Operation System Version") ?>:</strong>&nbsp;<?= $OS ?><br/>
+    <strong><?= _("Server Name") ?>:</strong>&nbsp;<?= $server_name ?><br/>
+    <strong><?= _("Operating System Version") ?>:</strong>&nbsp;<?= $OS ?><br/>
     <strong><?= _("Asterisk Version") ?>:</strong>&nbsp;<?= $asterisk ?><br/>
     <strong><?= _("PHP Version") ?>:</strong>&nbsp;<?= $php ?><br/>
+    <strong><?= _("Database Version") ?>:</strong>&nbsp;<?= $mysql ?><br/>
     <strong><?= _("A2B Database Version") ?>:</strong>&nbsp;<?= $database ?><br/>
-    <strong><?= _("User Interface") ?>:</strong>&nbsp;<?= $UI ?><br/>
-    <strong><?= _("User Interface Path") ?>:</strong>&nbsp;<?= $UI_path ?><br/><br/>
-    <strong><?= _("Server Name") ?>:</strong>&nbsp;<?= $server_name ?><br/>
-    <strong><?= _("Database") ?>:</strong>&nbsp;<?= $mysql ?><br/>
+    <strong><?= _("User Interface Path") ?>:</strong>&nbsp;<?= $UI_path ?><br/>
+    <strong><?= _("Copyright") ?>:</strong>&nbsp;<?= $UI ?><br/>
 </div>

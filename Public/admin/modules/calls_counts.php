@@ -1,6 +1,5 @@
 <?php
 
-use A2billing\A2Billing;
 use A2billing\Admin;
 use A2billing\Table;
 
@@ -38,36 +37,25 @@ use A2billing\Table;
 **/
 
 require_once __DIR__ . "/../../../common/lib/admin.defines.php";
-/**
- * @var A2Billing $A2B
- */
 
 Admin::checkPageAccess(Admin::ACX_DASHBOARD);
 
 $result = (new Table("cc_call", ["terminatecauseid", "COUNT(*) AS ct"]))
     ->getRows(["starttime" => [">=", "CURRENT_DATE"]], [], "ASC", ["terminatecauseid"]);
 
-$count_total = 0;
-$counts = [];
-if (!$result) {
-    die();
-}
+$counts = [0, 0, 0, 0, 0, 0, 0];
 foreach ($result as $row) {
-    $count_total += $row["ct"];
     $counts[$row["terminatecauseid"]] = $row["ct"];
     // 1 = answered, 2= no answer, 3 = cancelled, 4 = congested, 5 = busy, 6 = chanunavil
 }
+$count_total = array_sum($counts);
 
 $row = (new Table("cc_call", ["SUM(sessiontime) AS sessiontime", "SUM(sessionbill) AS sessionbill", "SUM(buycost) AS buycost"]))
     ->getRow(["starttime" => [">=", "CURRENT_DATE"]]);
-if (!$row) {
-    die();
-}
-$call_times = $row["sessiontime"];
-$call_sell = a2b_round($row["sessionbill"]);
-$call_buy = a2b_round($row["buycost"]);
-$call_profit = $call_sell - $call_buy;
-$curr = strtoupper($A2B->config["global"]["base_currency"]);
+$call_times = $row["sessiontime"] ?? 0;
+$call_sell = get_money($row["sessionbill"] ?? 0);
+$call_buy = get_money($row["buycost"] ?? 0);
+$call_profit = get_money($row["sessionbill"] - $row["buycost"]);
 ?>
 
 <div class="card-text small">
@@ -80,8 +68,8 @@ $curr = strtoupper($A2B->config["global"]["base_currency"]);
     <strong><?= _("Unavailable") ?>:</strong>&nbsp;<?= $counts[6] ?? 0 ?>
 </div>
 <div class="card-text small">
-    <strong><?= _("Sell") ?>:</strong>&nbsp;<?= $call_sell ?? 0 ?>&nbsp;<?= $curr ?>
-    <strong><?= _("Cost") ?>:</strong>&nbsp;<?= $call_buy ?? 0 ?>&nbsp;<?= $curr ?>
-    <strong><?= _("Profit") ?>:</strong>&nbsp;<?= $call_profit ?? 0 ?>&nbsp;<?= $curr ?>
-    <strong><?= _("Duration") ?>:</strong>&nbsp;<?= $call_times ?? 0 ?>&nbsp;<?= _("sec") ?>
+    <strong><?= _("Sell") ?>:</strong>&nbsp;<?= $call_sell ?>
+    <strong><?= _("Cost") ?>:</strong>&nbsp;<?= $call_buy ?>
+    <strong><?= _("Profit") ?>:</strong>&nbsp;<?= $call_profit ?>
+    <strong><?= _("Duration") ?>:</strong>&nbsp;<?= get_timespan($call_times) ?>
 </div>
