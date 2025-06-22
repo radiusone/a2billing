@@ -911,8 +911,8 @@ class FormBO
             return;
         }
 
-        $username = $form->REALTIME_SIP_IAX_INFO[0] ?? $processed['username'];
-        $uipass = $form->REALTIME_SIP_IAX_INFO[2] ?? $processed['uipass'];
+        $username = $form->REALTIME_SIP_IAX_INFO["username"] ?? $processed['username'];
+        $uipass = $form->REALTIME_SIP_IAX_INFO["secret"] ?? $processed['uipass'];
 
         $instance_realtime = new Realtime();
         $instance_realtime->insert_voip_config((bool)$sip, (bool)$iax, $card_id, $username, $uipass);

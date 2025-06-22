@@ -1,6 +1,5 @@
 <?php
 
-use A2billing\Customer;
 use A2billing\Forms\FormBO;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
@@ -38,158 +37,89 @@ use A2billing\Table;
  *
 **/
 
-if (! has_rights (Customer::ACX_ACCESS)) {
-    Header ("HTTP/1.0 401 Unauthorized");
-    Header ("Location: PP_error.php?c=accessdenied");
-    die();
-}
-
-getpost_ifset(array('id','subscriber_signup', 'username', 'useralias', 'uipass', 'credit', 'language', 'tariff', 'simultaccess', 'currency', 'typepaid', 'creditlimit', 'lastname', 'firstname', 'email', 'address', 'city', 'state', 'country', 'zipcode', 'phone', 'fax', 'inuse', 'cid', 'runservice', 'firstusedate', 'expirationdate', 'enableexpire', 'expiredays','company_name' , 'company_website' , 'VAT_RN' , 'traffic' , 'traffic_target','captchacode','groupid', 'key'));
-
-//put parameter in session
+getpost_ifset(["subscriber_signup", "key"]);
+/**
+ * @var numeric-string|null $subscriber_signup
+ * @var string|null $key
+ */
 $HD_Form = new FormHandler("cc_card", "User");
-
-$HD_Form->search_session_key = 'entity_card_selection';
 $HD_Form->FG_ENABLE_ADD_BUTTON = true;
 
-$agent_conf = false;
-if (!empty ($key)) {
-	$agentkey = $key;
-	$_SESSION["key"] = $agentkey;
-}
-elseif (!empty ($_SESSION["key"])) {
-	$agentkey = $_SESSION["key"];
-}
+$form_action ??= "ask-add";
+$groupid = null;
+$tariffid = null;
 
-if (!empty ($agentkey)) {
-	$table_key = new Table("cc_agent_signup", ["id_group", "id_tariffgroup", "id_agent"]);
+$_SESSION["key"] = $agentkey = $key ?? $_SESSION["key"] ?? null;
+
+if ($agentkey) {
+	$table_key = new Table(
+        "cc_agent_signup AS s",
+        ["g.id AS id_group", "t.id_tariffgroup"],
+        [
+            "cc_agent_tariffgroup AS t" => ["s.id_agent", "t.id_agent"],
+            "cc_card_group AS g" => ["s.id_group", "g.id"],
+        ]
+    );
 	$data = $table_key->getRow(["code" => $agentkey]);
 	if ($data) {
-		$groupid = $data['id_group'];
-		$tariffid = $data['id_tariffgroup'];
-		$agentid = $data['id_agent'];
-		// check if groupid and tarif in already in this agent
-		$instance_table_agent_check = new Table(
-            "cc_agent",
-            ["COUNT(*)"],
-            ["cc_agent_tariffgroup" => ["cc_agent_tariffgroup.id_agent", "cc_agent.id"], "cc_card_group" => ["cc_card_group.id_agent", "cc_agent.id"]]
-        );
-		$list_agent_check = $instance_table_agent_check->getValue(["cc_agent.id" => $agentid, "cc_agent_tariffgroup.id_tariffgroup" => $tariffid, "cc_card_group.id" => $groupid]);
-		if ($list_agent_check) {
-			if (!empty ($groupid) && is_numeric($groupid) && !empty ($tariffid) && is_numeric($tariffid)) {
-				$agent_conf = true;
-			} else {
-				$agent_conf = false;
-			}
-		} else {
-			$agent_conf = false;
-		}
+        // check if groupid and tarif in already in this agent
+		$groupid = $data['id_group'] ?? 0;
+		$tariffid = $data['id_tariffgroup'] ?? 0;
 	}
 }
 
-if (!$agent_conf) {
-	$callPlan_idlist = explode(", ", $A2B->config["signup"]['callplan_id_list'] ?? "");
-	if (strlen($callPlan_idlist) == 0) {
-		exit ("No Call Plan Defined.");
-	}
-	$call_table = new Table("cc_tariffgroup", "tariffgroupname,id");
-	$callPlan_list = $call_table->getRows(["id" => ["in", $callPlan_idlist]]);
+$callPlan_list = [];
+if (!$tariffid) {
+	$callPlan_idlist = explode(",", $A2B->config["signup"]['callplan_id_list'] ?? "");
+	$callPlan_list = (new Table("cc_tariffgroup", ["tariffgroupname", "id"]))
+        ->getRows(["id" => ["in", array_map("trim", $callPlan_idlist)]]);
 
-	if (!is_array($callPlan_list) && count($callPlan_list) <= 0) {
+	if (!$callPlan_list) {
 		exit (gettext("No Call Plan id are defined"));
 	}
-	$flag_callplan = 0;
-	if ($tariff != "" || $tariff != null) {
-		$callPlan_count = count($callPlan_list);
-		for ($i = 0; $i < $callPlan_count; $i++) {
-			if ($callPlan_list[$i][1] == trim($tariff, "\'")) {
-				$flag_callplan = 1;
-			}
-		}
-		if ($flag_callplan == 0) {
-			exit ("Invalid Call Plan Id");
-		}
-	}
 }
 
-//check subscriber
-
-$table_key = new Table("cc_agent_signup", "*");
-
-//end check subscriber
-
-$currency_list = array ();
-$indcur = 0;
-
-$currencies_list = get_currencies();
-
-foreach ($currencies_list as $key => $cur_value) {
-	$currency_list[$key] = $cur_value["name"] . ' (' . $cur_value["value"] . ')';
-}
-
-$HD_Form->FG_LIST_VIEW_PAGE_SIZE = 10;
-if (!($popup_select >= 1))
-	$HD_Form->FG_EXPORT_CSV = true;
-if (!($popup_select >= 1))
-	$HD_Form->FG_EXPORT_XML = true;
-
-if (($popup_select >= 1))
-	$HD_Form->FG_LIST_VIEW_PAGE_SIZE = 7;
-
-$maxi = '';
-$maxi2 = '';
-$maxi3 = '';
-if (isset ($form_action) && $form_action == "add") {
-	$array_card_generated = gen_card_with_alias();
-	$maxi = $array_card_generated[0];
-	$maxi2 = $array_card_generated[1];
-	$pass = MDP_NUMERIC(10);
-	$loginkey = MDP_STRING(20);
-}
-
-$language_list = getLanguages();
 if (LANGUAGE_ENABLE)  {
-$HD_Form->AddEditSelect(gettext("LANGUAGE"), "language", $language_list);
-$language_editFG = "language,";
+    $language_list = getLanguages();
+    $HD_Form->AddEditSelect(gettext("LANGUAGE"), "language", $language_list);
 }
+
 if (CURRENCY_ENABLE)  {
-$HD_Form->AddEditSelect(gettext("CURRENCY"), "currency", $currency_list);
-$currency_editFG = "currency,";
+    $currency_list = [];
+    $currencies_list = get_currencies();
+
+    foreach ($currencies_list as $key => $cur_value) {
+        $currency_list[$key] = $cur_value["name"] . ' (' . $cur_value["value"] . ')';
+    }
+    $HD_Form->AddEditSelect(gettext("CURRENCY"), "currency", $currency_list);
 }
-if (!$agent_conf && count($callPlan_idlist) && !($subscriber_signup>0)) {
+
+if (count($callPlan_list) && !$subscriber_signup) {
     $HD_Form->AddEditSelect(gettext("CALL PLAN"), "tariff", $callPlan_list);
 }
-$comp_zero = $comp_date_plus = '';
-if (isset ($form_action) && $form_action == "ask-add") {
-	$begin_date = date("Y");
-	$begin_date_plus = date("Y") + 10;
-	$end_date = date("-m-d H:i:s");
-	$comp_date = "value='" . $begin_date . $end_date . "'";
-	$comp_date_plus = "value='" . $begin_date_plus . $end_date . "'";
-	$comp_zero = "value='0'";
-}
+
 if (LASTNAME_ENABLE)  {
-$HD_Form->AddEditElement(
-    gettext("LASTNAME"),
-    "lastname",
-    "",
-    ["maxlength" => 50],
-    [Validator::class, "min2Chars"],
-    gettext("Insert your lastname")
-);
-$lastname_editFG = "lastname,";
+    $HD_Form->AddEditElement(
+        gettext("LASTNAME"),
+        "lastname",
+        "",
+        ["maxlength" => 50],
+        [Validator::class, "min2Chars"],
+        gettext("Insert your lastname")
+    );
 }
+
 if (FIRSTNAME_ENABLE)  {
-$HD_Form->AddEditElement(
-    gettext("FIRSTNAME"),
-    "firstname",
-    "",
-    ["maxlength" => 50],
-    [Validator::class, "min2Chars"],
-    gettext("Insert your firstname")
-);
-$firstname_editFG = "firstname,";
+    $HD_Form->AddEditElement(
+        gettext("FIRSTNAME"),
+        "firstname",
+        "",
+        ["maxlength" => 50],
+        [Validator::class, "min2Chars"],
+        gettext("Insert your firstname")
+    );
 }
+
 $HD_Form->AddEditElement(
     gettext("EMAIL"),
     "email",
@@ -198,54 +128,53 @@ $HD_Form->AddEditElement(
     [Validator::class, "email"],
     gettext("Insert your email")
 );
+
 if (ADDRESS_ENABLE)  {
-$HD_Form->AddEditElement(
-    gettext("ADDRESS"),
-    "address",
-    "",
-    ["maxlength" => 100],
-    [Validator::class, "min3Chars"],
-    gettext("Insert your address")
-);
-$address_editFG = "address,";
+    $HD_Form->AddEditElement(
+        gettext("ADDRESS"),
+        "address",
+        "",
+        ["maxlength" => 100],
+        [Validator::class, "min3Chars"],
+        gettext("Insert your address")
+    );
 }
+
 if (CITY_ENABLE)  {
-$HD_Form->AddEditElement(
-    gettext("CITY"),
-    "city",
-    "",
-    ["maxlength" => 40],
-    [Validator::class, "min3Chars"],
-    gettext("Insert your city")
-);
-$city_editFG = "city,";
+    $HD_Form->AddEditElement(
+        gettext("CITY"),
+        "city",
+        "",
+        ["maxlength" => 40],
+        [Validator::class, "min3Chars"],
+        gettext("Insert your city")
+    );
 }
+
 if (STATE_ENABLE)  {
-$HD_Form->AddEditElement(
-    gettext("STATE/PROVINCE"),
-    "state",
-    "",
-    ["maxlength" => 40],
-    [Validator::class, "min2Chars"],
-    gettext("Insert your state"),
-    "",
-    "NO"
-);
-$state_editFG = "state,";
+    $HD_Form->AddEditElement(
+        gettext("STATE/PROVINCE"),
+        "state",
+        "",
+        ["maxlength" => 40],
+        [Validator::class, "min2Chars"],
+        gettext("Insert your state"),
+        "",
+        "NO"
+    );
 }
-if ($form_action == 'ask-add') {
-	$country_default_val = 'USA';
-}
+
 if (COUNTRY_ENABLE)  {
     $HD_Form->AddEditSqlSelect(
         gettext("COUNTRY"),
         "country",
         new Table("cc_country", ["countrycode", "countryname"]),
         [],
-        $country_default_val
+        $form_action === "ask-add" ? "CAN" : ""
     );
     $country_editFG = "country,";
 }
+
 if (ZIPCODE_ENABLE)  {
     $HD_Form->AddEditElement(
         gettext("ZIP/POSTAL CODE"),
@@ -255,8 +184,8 @@ if (ZIPCODE_ENABLE)  {
         [Validator::class, "min3Chars"],
         gettext("Insert your zipcode")
     );
-    $zipcode_editFG = "zipcode,";
 }
+
 if (TIMEZONE_ENABLE)  {
     $HD_Form->AddEditSelect(
         gettext("TIMEZONE"),
@@ -264,6 +193,7 @@ if (TIMEZONE_ENABLE)  {
         get_timezones()
     );
 }
+
 if (PHONE_ENABLE)  {
     $HD_Form->AddEditElement(
         gettext("PHONENUMBER"),
@@ -273,8 +203,8 @@ if (PHONE_ENABLE)  {
         [Validator::class, "min8DigitLike"],
         gettext("Insert your phone number")
     );
-    $phone_editFG = "phone,";
 }
+
 if (FAX_ENABLE)  {
     $HD_Form->AddEditElement(
         gettext("FAXNUMBER"),
@@ -284,8 +214,8 @@ if (FAX_ENABLE)  {
         null,
         gettext("Insert your fax number")
     );
-    $fax_editFG = "fax,";
 }
+
 if (COMP_ENABLE)  {
     $HD_Form->AddEditElement(
         gettext("COMPANY NAME"),
@@ -297,8 +227,8 @@ if (COMP_ENABLE)  {
         "",
         "NO"
     );
-    $company_name_editFG = "company_name,";
 }
+
 if (COMP_WEB_ENABLE)  {
     $HD_Form->AddEditElement(
         gettext("COMPANY WEBSITE"),
@@ -310,8 +240,8 @@ if (COMP_WEB_ENABLE)  {
         "",
         "NO"
     );
-    $company_website_editFG = "company_website,";
 }
+
 if (VAT_RN_ENABLE)  {
     $HD_Form->AddEditElement(
         gettext("VAT REGISTRATION NUMBER "),
@@ -323,8 +253,8 @@ if (VAT_RN_ENABLE)  {
         "",
         "NO"
     );
-    $VAT_RN_editFG = "VAT_RN,";
 }
+
 if (TRAFFIC_ENABLE)  {
     $HD_Form->AddEditElement(
         gettext("TRAFFIC PER MONTH"),
@@ -336,8 +266,8 @@ if (TRAFFIC_ENABLE)  {
         "",
         "NO"
     );
-    $traffic_editFG = "traffic,";
 }
+
 if (TRAFFIC_TARGET_ENABLE)  {
     $HD_Form->AddEditTextarea(
         gettext("TARGET TRAFFIC"),
@@ -346,8 +276,8 @@ if (TRAFFIC_TARGET_ENABLE)  {
         ["rows" => 4],
         gettext("Insert the target traffic description")
     );
-    $traffic_target_editFG = "traffic_target,";
 }
+
 if (CAPTCHA_ENABLE) {
     $HD_Form->AddEditElement(
         gettext("VERIFICATION"),
@@ -357,100 +287,59 @@ if (CAPTCHA_ENABLE) {
         [Validator::class, "captcha"],
         gettext("Insert code from above picture")
     );
-	$captcha = "captchacode,";
 }
 
-if (!isset ($myusername))
-	$myusername = '';
+if ($form_action === "add") {
+    $array_card_generated = gen_card_with_alias();
+    $cardnumber = $array_card_generated[0];
+    $cardalias = $array_card_generated[1];
+    $pass = MDP_NUMERIC(10);
+    $loginkey = MDP_STRING(20);
 
-//Code here for Getting Data from configuration files
-$comp_date_plus = $A2B->config["signup"]['expirationdate'];
+    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["iax_buddy"] = $A2B->config["signup"]['iax_account'] ? 1 : 0;
+    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["sip_buddy"] = $A2B->config["signup"]['sip_account'] ? 1 : 0;
+    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["expiredays"] = $A2B->config["signup"]['expiredays'];
+    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["expirationdate"] = $A2B->config["signup"]['expirationdate'] ?? ""
+        ?: (new DateTime("+10 years"))->format("Y-m-d H:i:s");
+    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["typepaid"] = $A2B->config["signup"]['typepaid'];
+    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["enableexpire"] = $A2B->config["signup"]['enableexpire'] ? 1 : 0;
+    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["runservice"] = $A2B->config["signup"]['runservice'] ? 1 : 0;
+    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["simultaccess"] = $A2B->config["signup"]['simultaccess'] ? 1 : 0;
+    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["credit"] = $A2B->config["signup"]['credit'];
+    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["username"] = $cardnumber;
+    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["useralias"] = $cardalias;
+    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["uipass"] = $pass;
+    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["loginkey"] = $loginkey;
+    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["status"] = $A2B->config["signup"]['activated']
+        ? ($A2B->config["signup"]['activatedbyuser'] ? '1' : '3')
+        : ($A2B->config["signup"]['activatedbyuser'] ? '2' : '3');
 
-if (!$A2B->config["signup"]['expirationdate']) {
-	$comp_date_plus = '';
-	$begin_date = date("Y");
-	$begin_date_plus = date("Y") + 10;
-	$end_date = date("-m-d H:i:s");
-	$comp_date_plus = $begin_date_plus . $end_date;
+    if ($groupid) {
+        $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["id_group"] = $groupid;
+    }
+
+    if (!is_numeric($subscriber_signup)) {
+        if (!empty($callPlan_idlist)) {
+            $mytariff = implode(",", $callPlan_idlist);
+            $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["tariff"] = $mytariff;
+        } elseif ($tariffid) {
+            $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["tariff"] = $tariffid;
+        }
+    }
+
+    // If Service - find the callplan associate
+    if (is_numeric($subscriber_signup)) {
+        $table_subscribe = new Table("cc_subscription_signup", "id_callplan");
+        $id_callplan = $table_subscribe->getValue(["id" => $subscriber_signup]);
+        $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["tariff"] = $id_callplan ?? "";
+        $HD_Form->FG_ADD_FORM_HIDDEN_INPUTS["subscriber_signup"] = $subscriber_signup;
+    }
+
+    $HD_Form->REALTIME_SIP_IAX_INFO = ["username" => $cardnumber, "secret" => $pass];
+    $HD_Form->FG_TEXT_ADITION_CONFIRMATION = _("Thanks for registering with us.<br>A email with your information has been sent to your account ") . $_POST["email"] . "<br><br><b>" . gettext("Your card number is ") . $cardnumber . "</b><br><b>" . gettext("Your password is ") . $pass . "</b>";
+    $HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = [FormBO::class, "processing_card_signup"];
 }
 
-$mytariff = '';
-$mycredit = '';
-
-$myexpirationdate = $comp_date_plus;
-$mytariff = implode(",", $callPlan_idlist);
-$mysimultaccess = $A2B->config["signup"]['simultaccess'];
-$mytypepaid = $A2B->config["signup"]['typepaid'];
-$mycreditlimit = $A2B->config["signup"]['creditlimit'];
-$myrunservice = $A2B->config["signup"]['runservice'];
-$myenableexpire = $A2B->config["signup"]['enableexpire'];
-$myexpiredays = $A2B->config["signup"]['expiredays'];
-$mycredit = $A2B->config["signup"]['credit'];
-$sip_account = $A2B->config["signup"]['sip_account'] ? 1 : 0;
-$iax_account = $A2B->config["signup"]['iax_account'] ? 1 : 0;
-$amaflag = $A2B->config["signup"]['amaflag'];
-$context = $A2B->config["signup"]['context'];
-
-if ($A2B->config["signup"]['activated']) {
-	// Status : 1 - Active
-	$status = $A2B->config["signup"]['activatedbyuser'] ? '1' : '3';
-} else {
-	// Status : 2 - New
-	$status = $A2B->config["signup"]['activatedbyuser'] ? '2' : '3';
-}
-
-$HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["iax_buddy"] = $iax_account;
-$HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["sip_buddy"] = $sip_account;
-$HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["expiredays"] = $myexpiredays;
-$HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["expirationdate"] = $myexpirationdate;
-$HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["typepaid"] = $mytypepaid;
-$HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["enableexpire"] = $myenableexpire;
-$HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["runservice"] = $myrunservice;
-$HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["simultaccess"] = $mysimultaccess;
-$HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["credit"] = $mycredit;
-$HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["username"] = $maxi;
-$HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["useralias"] = $maxi2;
-$HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["uipass"] = $pass;
-$HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["loginkey"] = $loginkey;
-$HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["status"] = $status;
-
-if ($agent_conf) {
-    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["id_group"] = $groupid;
-}
-
-// username, useralias, uipass, loginkey
-$HD_Form->REALTIME_SIP_IAX_INFO = array (
-	$maxi,
-	$maxi2,
-	$pass,
-	$loginkey
-);
-
-if (!is_numeric($subscriber_signup)) {
-	if (!$agent_conf && strpos($callPlan_idlist, ',') === false) {
-        $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["tariff"] = $mytariff;
-	} elseif ($agent_conf) {
-        $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["tariff"] = $tariffid;
-	}
-}
-
-// If Service - find the callplan associate
-if (is_numeric($subscriber_signup)) {
-
-	$table_subscribe = new Table("cc_subscription_signup", "id_callplan");
-	$data = $table_subscribe->getRow(["id" => $subscriber_signup]);
-	if ($data) {
-		$id_callplan = $data['id_callplan'];
-        $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["tariff"] = $id_callplan;
-	}
-
-	// HIDDEN VALUE
-    $HD_Form->FG_ADD_FORM_HIDDEN_INPUTS["subscriber_signup"] = $subscriber_signup;
-}
-
-$HD_Form->FG_INTRO_TEXT_ADITION = '';
-$HD_Form->FG_TEXT_ADITION_CONFIRMATION = gettext("Thanks for registering with us.<br>A email with your information has been sent to your account ") . $_POST["email"] . "<br><br><b>" . gettext("Your card number is ") . $maxi . "</b><br><b>" . gettext("Your password is ") . $pass . "</b>";
-$HD_Form->FG_ADD_PAGE_BOTTOM_TEXT = gettext("Click 'SIGNUP' to continue");
-$HD_Form->FG_ADD_PAGE_SAVE_BUTTON_TEXT = gettext("SIGNUP");
-
-$HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = [FormBO::class, "processing_card_signup"];
+$HD_Form->FG_INTRO_TEXT_ADITION = "";
+$HD_Form->FG_ADD_PAGE_BOTTOM_TEXT = _("Click 'SIGNUP' to continue");
+$HD_Form->FG_ADD_PAGE_SAVE_BUTTON_TEXT = _("SIGNUP");
