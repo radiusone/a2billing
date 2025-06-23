@@ -604,64 +604,6 @@ function get_timezones(): array
     return (new Table("cc_timezone", ["id", "gmtzone"]))->getColumn("gmtzone", "id");
 }
 
-function get_date_with_offset($currDate, $user_offset = null)
-{
-    if (is_null($user_offset)) {
-        $user_offset = $_SESSION["gmtoffset"] ?? 0;
-    }
-    $server_offset = (new Table("cc_timezone", ["gmtoffset"]))->getValue(["gmttime" => SERVER_GMT]) ?: 0;
-    // TODO: proper date math
-    $timestamp = strtotime($currDate) - ($server_offset - $user_offset);
-
-    return date("Y-m-d H:i:s", $timestamp);
-}
-
-/*
- * Apparently builds SQL out of global variables, typically populated by POST.
- * Used a lot, will have to wait to replace it.
- * A2b, A2b, how do I inject thee? Let me count the ways...
- */
-function do_field($sql, $fld, $dbfld)
-{
-    $glob_value = str_replace("'", "\\'", $GLOBALS[$fld] ?? "");
-    $glob_type = $GLOBALS[$fld . "type"];
-
-    if ($glob_value) {
-        $sql .= strpos($sql, "WHERE") ? " AND " : " WHERE ";
-        switch ($glob_type) {
-            case 1:
-                $sql .= " $dbfld='$glob_value'";
-                break;
-            case 2:
-                $sql .= " $dbfld LIKE '$glob_value%'";
-                break;
-            default:
-                $sql .= " $dbfld LIKE '%$glob_value%'";
-                break;
-            case 4:
-                $sql .= " $dbfld LIKE '%$glob_value'";
-        }
-    }
-
-    return $sql;
-}
-
-/**
- * Checks the day of month for date related forms and reduces the day to the last valid day of the month if too large.
- *
- * @param null|int|string &$day day from '01' to '31'
- * @param null|string $year_month: 'xxxx-mm'
- * @return int normalized day
- */
-function normalize_day_of_month(&$day, ?string $year_month = "")
-{
-    if (!empty($year_month)) {
-        $check_date = DateTime::createFromFormat("Y-m-d", "$year_month-01");
-        $day = min($day, $check_date->format("t"));
-    }
-    return $day;
-}
-
 /**
  * Get the last day of the month
  *

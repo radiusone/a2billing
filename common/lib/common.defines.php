@@ -122,7 +122,6 @@ define ("BASE_CURRENCY", $A2B->config['global']['base_currency'] ?? null);
 define ("MANAGER_HOST", $A2B->config['global']['manager_host'] ?? null);
 define ("MANAGER_USERNAME", $A2B->config['global']['manager_username'] ?? null);
 define ("MANAGER_SECRET", $A2B->config['global']['manager_secret'] ?? null);
-define ("SERVER_GMT", $A2B->config['global']['server_GMT'] ?? null);
 define ("CUSTOMER_UI_URL", $A2B->config['global']['customer_ui_url'] ?? null);
 
 //SIP/IAX Info

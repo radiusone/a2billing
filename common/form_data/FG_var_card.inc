@@ -507,7 +507,7 @@ if ($popup_select) {
         "id_timezone",
         get_timezones(),
         "",
-        _("Leave blank to use system default") . " " . SERVER_GMT,
+        _("Leave blank to use system default") . " " . (new DateTime())->getTimezone()->getName(),
     );
 
     if (is_customer()) {

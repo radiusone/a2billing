@@ -73,7 +73,7 @@ if (!isset($_SESSION['pr_login']) || !isset($_SESSION['pr_password']) || !isset(
         $_SESSION["id_didgroup"] = $return["id_didgroup"];
         $_SESSION["tariff"] = $return["tariff"];
         $_SESSION["vat"] = $return["vat"];
-        $_SESSION["gmtoffset"] = $return["gmtoffset"];
+        $_SESSION["zone"] = $return["zone"] ?: (new DateTime())->getTimezone()->getName();
         $_SESSION["currency"] = $return["currency"];
         $_SESSION["voicemail"] = $return["voicemail_permitted"];
     } else {
@@ -97,7 +97,7 @@ function login(?string $user, ?string $pass)
 
     $table = new Table(
         "cc_card",
-        ["username", "credit", "status", "cc_card.id", "id_didgroup", "tariff", "vat", "gmtoffset", "voicemail_permitted", "voicemail_activated", "users_perms", "currency", "uipass"],
+        ["username", "credit", "status", "cc_card.id", "id_didgroup", "tariff", "vat", "zone", "voicemail_permitted", "voicemail_activated", "users_perms", "currency", "uipass"],
         [
             "cc_timezone" => ["id_timezone", "cc_timezone.id"],
             "cc_card_group" => ["id_group", "cc_card_group.id"]

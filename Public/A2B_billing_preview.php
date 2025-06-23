@@ -72,13 +72,13 @@ $desc_billing="";
 $desc_billing_postpaid="";
 $start_date =null;
 if (!empty($result["id"])) {
-    $clause_call_billing[] = ["SUB", "stoptime" => [[">=", $result["date"]], ["<", $now]]];
-    $clause_charge[] = ["SUB", "creationdate" => [[">=", $result["date"]], ["<", $now]]];
-    $desc_billing = gettext("Cost of calls between the "). get_date_with_offset($result[0][1], $_SESSION["gmtoffset"]) ." and ". get_date_with_offset(gmdate("Y/m/d H:i:s"), $_SESSION["gmtoffset"]) ;
-    $desc_billing_postpaid="Amount for periode between the ".date("Y-m-d",strptime($result["date"]))." and $date_bill";
-    $start_date = $result[0][1];
+    $clause_call_billing["stoptime"] = ["BETWEEN", [$result["date"], $now]];
+    $clause_charge["creationdate"] = ["BETWEEN", [$result["date"], $now]];
+    $desc_billing = gettext("Cost of calls between "). Customer::date($result["date"])->format("Y-m-d H:i:s") ." and ". Customer::date($now)->format("Y-m-d H:i:s");
+    $desc_billing_postpaid="Amount for period between " . Customer::date($now)->format("Y-m-d H:i:s") . " and " . Customer::date($result["date"])->format("Y-m-d H:i:s");
+    $start_date = $result["date"];
 } else {
-    $desc_billing = gettext("Cost of calls before the "). get_date_with_offset(gmdate("Y/m/d H:i:s"), $_SESSION["gmtoffset"]) ;
+    $desc_billing = gettext("Cost of calls before ") . Customer::date($now)->format("Y-m-d H:i:s");
     $clause_call_billing["stoptime"] = ["<", $now];
     $clause_charge["creationdate"] = ["<", $now];
 }
@@ -88,7 +88,7 @@ $receipt_items = array();
 
 // COMMON BEHAVIOUR FOR PREPAID AND POSTPAID ... GENERATE A RECEIPT FOR THE CALLS OF THE MONTH
 if ($calls_price) {
-    $item = new ReceiptItem(null, $desc_billing, gmdate("Y/m/d H:i:s"), $calls_price, 'CALLS');
+    $item = new ReceiptItem(null, $desc_billing, $now, $calls_price, 'CALLS');
     $receipt_items[]= $item;
 }
 
@@ -111,7 +111,7 @@ $result =  $table_charge -> getRows($clause_charge + ["charged_status" => 1, "in
     if ($typepaid==1 && $credit<0) {
         //GENERATE AN INVOICE TO COMPLETE THE BALANCE
     $amount = abs($credit);
-    $item = InvoiceItem::create(null, $desc_billing_postpaid, gmdate("Y/m/d H:i:s"), $amount,$vat, 'POSTPAID');
+    $item = InvoiceItem::create(null, $desc_billing_postpaid, Customer::date($now)->format("Y-m-d H:i:s"), $amount,$vat, 'POSTPAID');
     $invoice_items[]= $item;
     }
 

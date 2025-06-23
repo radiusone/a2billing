@@ -2,6 +2,11 @@
 
 namespace A2billing;
 
+use DateTimeImmutable;
+use DateTimeInterface;
+use DateTimeZone;
+use Exception;
+
 class Customer extends User
 {
     public const ACX_ACCESS = 1;
@@ -154,5 +159,32 @@ class Customer extends User
             htmlspecialchars($row["lastname"]),
             htmlspecialchars($row["username"])
         );
+    }
+
+    /**
+     * Takes a date in system timezone and applies the user timezone to it
+     *
+     * @param string|DateTimeInterface $date
+     * @return DateTimeInterface
+     */
+    public static function date($date): DateTimeInterface
+    {
+        if ($date instanceof DateTimeInterface::class) {
+            $date = clone $date;
+        } else {
+            try {
+                $date = new DateTimeImmutable($date);
+            } catch (Exception $e) {
+                $date = new DateTimeImmutable();
+            }
+        }
+
+        try {
+            $user_zone = new DateTimeZone($_SESSION["zone"]);
+        } catch (Exception $e) {
+            return $date;
+        }
+
+        return $date->setTimezone($user_zone);
     }
 }
