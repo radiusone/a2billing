@@ -1,6 +1,7 @@
 <?php
 
-/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
+use A2billing\Admin;
+use A2billing\Logger;
 
 /**
  * This file is part of A2Billing (http://www.a2billing.net/)
@@ -34,6 +35,41 @@
 **/
 
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
+
+getpost_ifset (["pr_login", "pr_password", "done"]);
+/**
+ * @var string|null $pr_login
+ * @var string|null $pr_password
+ * @var string|null $action
+ */
+
+if (($action ?? "") === "login") {
+    $return = Admin::checkLogin($pr_login, $pr_password);
+
+    if (!$return || (int)$return["perms"] === Admin::ACX_NOACCESS || $return["groupid"] > 1 ) {
+        header ("HTTP/1.0 401 Unauthorized");
+        header ("Location: index.php?error=1");
+        die();
+    }
+
+    $admin_id = (int)$return["userid"];
+    $groupid = (int)$return["groupid"];
+
+    $_SESSION["pr_login"] = $return["login"];
+    $_SESSION["rights"] = $groupid ? (int)$return["perms"] : Admin::ACX_ALL_RIGHTS;
+    $_SESSION["user_type"] = "ADMIN";
+    $_SESSION["admin_id"] = $admin_id;
+    Logger::insertLog(
+        $admin_id,
+        1,
+        "User Logged In",
+        "User Logged in to website",
+        '',
+        $_SERVER['REMOTE_ADDR'],
+        'PP_Intro.php'
+    );
+}
+
 require_once __DIR__ . "/templates/main.php";
 ?>
 

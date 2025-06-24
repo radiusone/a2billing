@@ -55,7 +55,6 @@ $lang = $_SESSION["ui_language"] ?? "english";
 </head>
 <body>
 	<form method="post" action="PP_intro.php">
-		<input type="hidden" name="done" value="submit_log"/>
 		<div class="modal show d-block" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="authTitle" aria-hidden="false">
 			<div class="modal-dialog modal-dialog-centered">
 				<div class="modal-content shadow">
@@ -104,7 +103,7 @@ $lang = $_SESSION["ui_language"] ?? "english";
 							<option value="italian" <?php if ($lang === "italian"): ?>selected="selected"<?php endif ?>>🇮🇹 <?= _("Italian") ?></option>
 							<option value="chinese" <?php if ($lang === "chinese"): ?>selected="selected"<?php endif ?>>🇨🇳 <?= _("Chinese") ?></option>
 						</select>
-						<button type="submit" class="btn btn-primary"><?= _("Log In") ?></button>
+						<button type="submit" class="btn btn-primary" name="action" value="login"><?= _("Log In") ?></button>
 					</div>
 				</div>
 			</div>

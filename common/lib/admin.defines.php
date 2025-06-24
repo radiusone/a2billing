@@ -46,7 +46,6 @@ const ENABLE_LOG = true;
 require_once __DIR__ . "/common.defines.php";
 
 if (PHP_SAPI !== "cli") {
-    require_once __DIR__ . "/admin.module.access.php";
     Admin::checkPageAccess();
 }
 

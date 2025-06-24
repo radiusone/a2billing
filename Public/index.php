@@ -55,7 +55,6 @@ require_once __DIR__ . "/templates/header.php";
 <main class="col">
 
 <form method="post" action="A2B_info_card.php">
-    <input type="hidden" name="done" value="submit_log"/>
     <div class="modal show d-block" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="authTitle" aria-hidden="false">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content shadow">
@@ -114,7 +113,7 @@ require_once __DIR__ . "/templates/header.php";
                         <option value="greek" <?php if ($lang === "greek"): ?>selected="selected"<?php endif ?>>🇬🇷 <?= _("Greek") ?></option>
                         <option value="indonesian" <?php if ($lang === "indonesian"): ?>selected="selected"<?php endif ?>>🇮🇩 <?= _("Indonesian") ?></option>
                     </select>
-                    <button type="submit" class="btn btn-primary"><?= _("Log In") ?></button>
+                    <button type="submit" class="btn btn-primary" name="action" value="login"><?= _("Log In") ?></button>
                 </div>
             </div>
         </div>

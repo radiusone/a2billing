@@ -43,7 +43,6 @@ const BINDTEXTDOMAIN = __DIR__ . '/../common/agent_ui_locale';
 require_once __DIR__ . "/common.defines.php";
 
 if (PHP_SAPI !== "cli") {
-    require_once __DIR__ . "/agent.module.access.php";
     Agent::checkPageAccess();
 }
 

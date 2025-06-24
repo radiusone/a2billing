@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Agent;
+use A2billing\Logger;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -37,6 +38,44 @@ use A2billing\Table;
 **/
 
 require_once __DIR__ . "/../../common/lib/agent.defines.php";
+
+getpost_ifset (["pr_login", "pr_password", "action"]);
+/**
+ * @var string|null $pr_login
+ * @var string|null $pr_password
+ * @var string|null $action
+ */
+
+if (($action ?? "") === "login") {
+
+    $return = Agent::checkLogin($pr_login, $pr_password);
+
+    if (!$return) {
+        header("HTTP/1.0 401 Unauthorized");
+        header("Location: index.php?error=1");
+        die();
+    }
+
+    $_SESSION["pr_login"] = $pr_login;
+    $_SESSION["rights"] = (int)$return["perms"];
+    $_SESSION["agent_id"] = (int)$return["id"];
+    $_SESSION["user_type"] = "AGENT";
+    $_SESSION["currency"] = $return["currency"];
+    $_SESSION["vat"] = $return["vat"];
+    Logger::insertLog(
+        (int)$return["id"],
+        1,
+        "Agent Logged In",
+        "Agent Logged in to website",
+        '',
+        $_SERVER['REMOTE_ADDR'],
+        'PP_Intro.php',
+        '',
+        [],
+        true
+    );
+}
+
 require_once __DIR__ . "/templates/main.php";
 
 $table_message = new Table("cc_message_agent");
