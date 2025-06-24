@@ -132,6 +132,8 @@ if (!($nb_card > 0)) {
 }
 
 $billdaybefor_anniversary = $A2B->config['global']['subscription_bill_days_before_anniversary'];
+$limite_pay_date = (new DateTimeImmutable())->modify("+$billdaybefor_anniversary days");
+$last_run = new DateTimeImmutable();
 
 $service_array = array();
 
@@ -146,39 +148,27 @@ for ($page = 0; $page < $nbpagemax; $page++) {
         $action = "";
 
         switch ($subscription['paid_status']) {
-
             case 0:
                 //firstuse : billed
                 $action = "bill";
-                $unix_startdate = strtotime($subscription['startdate']);
-                $day_now = date("j");
-                $last_run = date("Y-m-d");
-                $day_startdate = date("j",$unix_startdate);
-                $month_startdate = date("m",$unix_startdate);
-                $year_startdate= date("Y",$unix_startdate);
-                $lastday_of_startdate_month = lastDayOfMonth($month_startdate,$year_startdate,"j");
-
-                $next_bill_date = strtotime("01-$month_startdate-$year_startdate + 1 month");
-                $lastday_of_next_month= lastDayOfMonth(date("m",$next_bill_date),date("Y",$next_bill_date),"j");
-
-                $limite_pay_date = date("Y-m-d",strtotime(" + $billdaybefor_anniversary day")) ;
-
-                if ($day_startdate>$lastday_of_next_month) {
-                    $next_limite_pay_date = date ("$lastday_of_next_month-m-Y" ,$next_bill_date);
+                $startdate = DateTimeImmutable::createFromFormat("Y-m-d H:i:s", $subscription["startdate"]);
+                $billday = $startdate->format("j");
+                $lastday_nextmonth = $startdate->modify("last day of next month")->format("j");
+                if ($billday > $lastday_nextmonth) {
+                    $next_bill_date = $startdate->modify("last day of next month");
                 } else {
-                    $next_limite_pay_date = date ("$day_startdate-m-Y" ,$next_bill_date);
+                    $billday -= 1;
+                    $next_bill_date = $startdate->modify("first day of next month")->modify("+$billday days");
                 }
-
-                $next_bill_date = date("Y-m-d",strtotime("$next_limite_pay_date - $billdaybefor_anniversary day")) ;
+                $next_bill_date = $next_bill_date->modify("-$billdaybefor_anniversary days");
                 break;
 
             case 1:
                 // billed : check if out of date -> unpaid
-                // date('m',strtotime($mycard['last_run']));
-                $unix_limit = strtotime($subscription['limit_pay_date']);
-                $unix_now = strtotime(date("d-m-Y"));
+                $limit = DateTimeImmutable::createFromFormat("Y-m-d H:i:s", $subscription["limit_pay_date"]);
+                $now = new DateTimeImmutable();
 
-                if ($unix_now>$unix_limit) {
+                if ($now > $limit) {
                     $action = "unpaid";
                 }
 
@@ -186,38 +176,26 @@ for ($page = 0; $page < $nbpagemax; $page++) {
 
             case 2:
                 // paid : check if the system have to bill it again
-                $unix_bill_time = strtotime($subscription['next_billing_date']);
-                $unix_now = strtotime(date("d-m-Y"));
-                if ($unix_now>=$unix_bill_time) {
+                $next = DateTimeImmutable::createFromFormat("Y-m-d H:i:s", $subscription["next_billing_date"]);
+                $now = new DateTimeImmutable();
+                if ($now >= $next) {
                     $action = "bill";
-
-                    $unix_startdate = strtotime($subscription['startdate']);
-                    $last_run = date("Y-m-d");
-
-                    $day_startdate = date("j",$unix_startdate);
-                    $month_lastbill_date = date("m",$unix_bill_time);
-                    $year_lastbill_date = date("Y",$unix_bill_time);
-                    $lastday_of_next_billmonth = lastDayOfMonth($month_lastbill_date,$year_lastbill_date,"j");
-
-                    $next_bill_date = strtotime("01-$month_lastbill_date-$year_lastbill_date + 1 month");
-                    $lastday_of_next_month= lastDayOfMonth(date("m",$next_bill_date),date("Y",$next_bill_date),"j");
-
-                    $limite_pay_date = date("Y-m-d",strtotime(" + $billdaybefor_anniversary day")) ;
-
-                    if ($day_startdate>$lastday_of_next_month) {
-                        $next_limite_pay_date = date ("$lastday_of_next_month-m-Y" ,$next_bill_date);
+                    $startdate = DateTimeImmutable::createFromFormat("Y-m-d H:i:s", $subscription["startdate"]);
+                    $billday = $startdate->format("j");
+                    $next_bill_date = DateTimeImmutable::createFromFormat("Y-m-d H:i:s", $subscription["next_billing_date"]);
+                    $lastday_nextmonth = $next_bill_date->modify("last day of next month")->format("j");
+                    if ($billday > $lastday_nextmonth) {
+                        $next_bill_date = $next_bill_date->modify("last day of next month");
                     } else {
-                        $next_limite_pay_date = date ("$day_startdate-m-Y" ,$next_bill_date);
+                        $billday -= 1;
+                        $next_bill_date = $next_bill_date->modify("first day of next month")->modify("+$billday days");
                     }
-
-                    $next_bill_date = date("Y-m-d",strtotime("$next_limite_pay_date - $billdaybefor_anniversary day")) ;
-
+                    $next_bill_date = $next_bill_date->modify("-$billdaybefor_anniversary days");
                 }
                 break;
 
             default:
-                continue;
-                break;
+                continue 2;
         }
 
         switch ($action) {
@@ -240,10 +218,16 @@ for ($page = 0; $page < $nbpagemax; $page++) {
                     $service_array[$service_id]['totalcredit']+= $subscription['fee'];
 
                     (new Table("cc_card"))->updateRow(["credit" => ["credit - ?", $subscription["fee"]]], ["id" => $card["id"]]);
-                    (new Table("cc_charge"))
-                        ->addRow(
-                            ["id_cc_card" => $card["id"], "amount" => $subscription["fee"], "chargetype" => 3, "id_cc_card_subscription" => $subscription["card_subscription_id"], "charged_status" => 1, "description" => $subscription["product_name"]]
-                        );
+                    (new Table("cc_charge"))->addRow(
+                        [
+                            "id_cc_card" => $card["id"],
+                            "amount" => $subscription["fee"],
+                            "chargetype" => 3,
+                            "id_cc_card_subscription" => $subscription["card_subscription_id"],
+                            "charged_status" => 1,
+                            "description" => $subscription["product_name"],
+                        ]
+                    );
                     (new Table("cc_card_subscription"))->updateRow(["paid_status" => 2], ["id" => $subscription["card_subscription_id"]]);
 
                     $mail = new Mail(Mail::$TYPE_SUBSCRIPTION_PAID,$card['id'] );
@@ -265,7 +249,7 @@ for ($page = 0; $page < $nbpagemax; $page++) {
                     $reference = Invoice::generateReference();
 
                     //CREATE INVOICE If a new card then just an invoice item in the last invoice
-                    $date = date("Y-m-d h:i:s");
+                    $date = (new DateTimeImmutable())->format("Y-m-d h:i:s");
                     $card_id = $card['id'];
                     $title = gettext("SUBSCRIPTION INVOICE REMINDER");
                     $description = "Your credit was not enough to pay yours subscription automatically.\n";
@@ -282,7 +266,15 @@ for ($page = 0; $page < $nbpagemax; $page++) {
                         $amount = $subscription['fee'];
                         $vat = 0;
                         $instance_table = new Table("cc_invoice_item");
-                        $values = ["date" => $date, "id_invoice", $id_invoice, "price" => $amount, "vat" => $vat, "description" => $description, "id_ext" => $subscription["card_subscription_id"], "type_ext" => "SUBSCR"];
+                        $values = [
+                            "date" => $date,
+                            "id_invoice" => $id_invoice,
+                            "price" => $amount,
+                            "vat" => $vat,
+                            "description" => $description,
+                            "id_ext" => $subscription["card_subscription_id"],
+                            "type_ext" => "SUBSCR"
+                        ];
                         if ($verbose_level >= 1)
                             echo "INSERT INVOICE ITEM : " . json_encode($values) . "\n";
                         $instance_table->addRow($values);
@@ -309,7 +301,14 @@ for ($page = 0; $page < $nbpagemax; $page++) {
                         write_log($logfile_cront_subfee, basename(__FILE__) . ' line:' . __LINE__ . "[Sent mail failed : $e]");
                     }
                 }
-                (new Table("cc_card_subscription"))->updateRow(["last_run" => $last_run, "next_billing_date" => $next_bill_date, "limit_pay_date" => $limite_pay_date], ["id" => $subscription["card_subscription_id"]]);
+                (new Table("cc_card_subscription"))->updateRow(
+                    [
+                        "last_run" => $last_run->format("Y-m-d"),
+                        "next_billing_date" => $next_bill_date->format("Y-m-d"),
+                        "limit_pay_date" => $limite_pay_date->format("Y-m-d")
+                    ],
+                    ["id" => $subscription["card_subscription_id"]]
+                );
 
                 break;
 

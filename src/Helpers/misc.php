@@ -604,28 +604,6 @@ function get_timezones(): array
     return (new Table("cc_timezone", ["id", "gmtzone"]))->getColumn("gmtzone", "id");
 }
 
-/**
- * Get the last day of the month
- *
- * @param string|int $month
- * @param string|int $year
- * @param string $format
- * @return string
- */
-function lastDayOfMonth($month = null, $year = null, string $format = 'd-m-Y'): string
-{
-    if (empty($month)) {
-        $month = date('m');
-    }
-    if (empty($year)) {
-        $year = date('Y');
-    }
-    $format = str_replace("d", "t", $format);
-    $date = sprintf("%04d-%02d-01", $year, $month);
-
-    return DateTime::createFromFormat("Y-m-d", $date)->format($format);
-}
-
 function get_login_button($id): string
 {
     $row = (new Table("cc_card", ["useralias", "userpass"]))
