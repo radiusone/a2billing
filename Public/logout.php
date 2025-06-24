@@ -1,5 +1,7 @@
 <?php
 
+use A2billing\A2Billing;
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
@@ -34,10 +36,11 @@
 **/
 
 require_once __DIR__ . "/../common/lib/customer.defines.php";
+/**
+ * @var A2billing $A2B
+ */
 
+unset($_SESSION);
 session_destroy();
-$C_RETURN_URL_DISTANT_LOGIN = "index.php";
-if (defined("RETURN_URL_DISTANT_LOGIN") && !empty(RETURN_URL_DISTANT_LOGIN)) {
-    $C_RETURN_URL_DISTANT_LOGIN = RETURN_URL_DISTANT_LOGIN;
-}
-header("Location: $C_RETURN_URL_DISTANT_LOGIN");
+session_regenerate_id();
+header("Location: " . $A2B->config["webcustomerui"]['return_url_distant_login'] ?? "index.php");

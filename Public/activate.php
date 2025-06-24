@@ -85,7 +85,7 @@ if ($list["status"] != "1" && $result) {
         $mail->send($email);
 
         $mail->setTitle("NEW ACCOUNT CREATED : " . $mail->getTitle());
-        $mail->send(ADMIN_EMAIL);
+        $mail->send($A2B->config["global"]['admin_email'] ?? "");
 
     } catch (A2bMailException $e) {
         echo "Error : sent mail!";

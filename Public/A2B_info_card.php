@@ -50,14 +50,11 @@ getpost_ifset (["pr_login", "pr_password", "action"]);
  */
 
 if (($action ?? "") === "login") {
-    $C_RETURN_URL_DISTANT_LOGIN = 'index.php?';
-    if (defined("RETURN_URL_DISTANT_LOGIN") && !empty(RETURN_URL_DISTANT_LOGIN)) {
-        $C_RETURN_URL_DISTANT_LOGIN = RETURN_URL_DISTANT_LOGIN . (str_contains(RETURN_URL_DISTANT_LOGIN, '?') ? "&" : "?");
-    }
-
     $return = Customer::checkLogin($pr_login, $pr_password);
 
     if (!$return) {
+        $C_RETURN_URL_DISTANT_LOGIN = $A2B->config["webcustomerui"]['return_url_distant_login'] ?? "index.php";
+        $C_RETURN_URL_DISTANT_LOGIN .= (str_contains($C_RETURN_URL_DISTANT_LOGIN, "?") ? "&" : "?");
         sleep(2);
         header("HTTP/1.0 401 Unauthorized");
         header("Location: {$C_RETURN_URL_DISTANT_LOGIN}error=$return");

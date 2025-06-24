@@ -38,7 +38,7 @@ use A2billing\Logger;
 session_name("UIAGENTSESSION");
 session_start();
 
-const BINDTEXTDOMAIN = __DIR__ . '/../common/agent_ui_locale';
+const BINDTEXTDOMAIN = __DIR__ . '/../agent_ui_locale';
 
 require_once __DIR__ . "/common.defines.php";
 

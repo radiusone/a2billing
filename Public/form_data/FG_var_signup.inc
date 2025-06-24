@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\A2Billing;
 use A2billing\Forms\FormBO;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
@@ -36,6 +37,10 @@ use A2billing\Table;
  *
  *
 **/
+
+/**
+ * @var A2Billing $A2B
+ */
 
 getpost_ifset(["subscriber_signup", "key"]);
 /**
@@ -79,12 +84,12 @@ if (!$tariffid) {
 	}
 }
 
-if (LANGUAGE_ENABLE)  {
+if ($A2B->config["signup"]['field_language'] ?? 0)  {
     $language_list = getLanguages();
     $HD_Form->AddEditSelect(gettext("LANGUAGE"), "language", $language_list);
 }
 
-if (CURRENCY_ENABLE)  {
+if ($A2B->config["signup"]['field_currency'] ?? 0)  {
     $currency_list = [];
     $currencies_list = get_currencies();
 
@@ -98,7 +103,7 @@ if (count($callPlan_list) && !$subscriber_signup) {
     $HD_Form->AddEditSelect(gettext("CALL PLAN"), "tariff", $callPlan_list);
 }
 
-if (LASTNAME_ENABLE)  {
+if ($A2B->config["signup"]['field_lastname'] ?? 0)  {
     $HD_Form->AddEditElement(
         gettext("LASTNAME"),
         "lastname",
@@ -109,7 +114,7 @@ if (LASTNAME_ENABLE)  {
     );
 }
 
-if (FIRSTNAME_ENABLE)  {
+if ($A2B->config["signup"]['field_firstname'] ?? 0)  {
     $HD_Form->AddEditElement(
         gettext("FIRSTNAME"),
         "firstname",
@@ -129,7 +134,7 @@ $HD_Form->AddEditElement(
     gettext("Insert your email")
 );
 
-if (ADDRESS_ENABLE)  {
+if ($A2B->config["signup"]['field_address'] ?? 0)  {
     $HD_Form->AddEditElement(
         gettext("ADDRESS"),
         "address",
@@ -140,7 +145,7 @@ if (ADDRESS_ENABLE)  {
     );
 }
 
-if (CITY_ENABLE)  {
+if ($A2B->config["signup"]['field_city'] ?? 0)  {
     $HD_Form->AddEditElement(
         gettext("CITY"),
         "city",
@@ -151,7 +156,7 @@ if (CITY_ENABLE)  {
     );
 }
 
-if (STATE_ENABLE)  {
+if ($A2B->config["signup"]['field_state'] ?? 0)  {
     $HD_Form->AddEditElement(
         gettext("STATE/PROVINCE"),
         "state",
@@ -164,7 +169,7 @@ if (STATE_ENABLE)  {
     );
 }
 
-if (COUNTRY_ENABLE)  {
+if ($A2B->config["signup"]['field_country'] ?? 0)  {
     $HD_Form->AddEditSqlSelect(
         gettext("COUNTRY"),
         "country",
@@ -175,7 +180,7 @@ if (COUNTRY_ENABLE)  {
     $country_editFG = "country,";
 }
 
-if (ZIPCODE_ENABLE)  {
+if ($A2B->config["signup"]['field_zipcode'] ?? 0)  {
     $HD_Form->AddEditElement(
         gettext("ZIP/POSTAL CODE"),
         "zipcode",
@@ -186,7 +191,7 @@ if (ZIPCODE_ENABLE)  {
     );
 }
 
-if (TIMEZONE_ENABLE)  {
+if ($A2B->config["signup"]['field_id_timezone'] ?? 0)  {
     $HD_Form->AddEditSelect(
         gettext("TIMEZONE"),
         "id_timezone",
@@ -194,7 +199,7 @@ if (TIMEZONE_ENABLE)  {
     );
 }
 
-if (PHONE_ENABLE)  {
+if ($A2B->config["signup"]['field_phone'] ?? 0)  {
     $HD_Form->AddEditElement(
         gettext("PHONENUMBER"),
         "phone",
@@ -205,7 +210,7 @@ if (PHONE_ENABLE)  {
     );
 }
 
-if (FAX_ENABLE)  {
+if ($A2B->config["signup"]['field_fax'] ?? 0)  {
     $HD_Form->AddEditElement(
         gettext("FAXNUMBER"),
         "fax",
@@ -216,7 +221,7 @@ if (FAX_ENABLE)  {
     );
 }
 
-if (COMP_ENABLE)  {
+if ( $A2B->config["signup"]['field_company'] ?? 0)  {
     $HD_Form->AddEditElement(
         gettext("COMPANY NAME"),
         "company_name",
@@ -229,7 +234,7 @@ if (COMP_ENABLE)  {
     );
 }
 
-if (COMP_WEB_ENABLE)  {
+if ($A2B->config["signup"]['field_company_website'] ?? 0)  {
     $HD_Form->AddEditElement(
         gettext("COMPANY WEBSITE"),
         "company_website",
@@ -242,7 +247,7 @@ if (COMP_WEB_ENABLE)  {
     );
 }
 
-if (VAT_RN_ENABLE)  {
+if ($A2B->config["signup"]['field_VAT_RN'] ?? 0)  {
     $HD_Form->AddEditElement(
         gettext("VAT REGISTRATION NUMBER "),
         "VAT_RN",
@@ -255,7 +260,7 @@ if (VAT_RN_ENABLE)  {
     );
 }
 
-if (TRAFFIC_ENABLE)  {
+if ($A2B->config["signup"]['field_traffic'] ?? 0)  {
     $HD_Form->AddEditElement(
         gettext("TRAFFIC PER MONTH"),
         "traffic",
@@ -268,7 +273,7 @@ if (TRAFFIC_ENABLE)  {
     );
 }
 
-if (TRAFFIC_TARGET_ENABLE)  {
+if ($A2B->config["signup"]['field_traffic_target'] ?? 0)  {
     $HD_Form->AddEditTextarea(
         gettext("TARGET TRAFFIC"),
         "traffic_target",
@@ -278,7 +283,7 @@ if (TRAFFIC_TARGET_ENABLE)  {
     );
 }
 
-if (CAPTCHA_ENABLE) {
+if ($A2B->config["signup"]['enable_captcha'] ?? 0) {
     $HD_Form->AddEditElement(
         gettext("VERIFICATION"),
         "captchacode",

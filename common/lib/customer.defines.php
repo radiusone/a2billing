@@ -41,36 +41,6 @@ const BINDTEXTDOMAIN = __DIR__ . '/../cust_ui_locale';
 
 require_once __DIR__ . "/common.defines.php";
 
-// these constants are used in the included file
-define ("RETURN_URL_DISTANT_LOGIN", $A2B->config["webcustomerui"]['return_url_distant_login'] ?? null);
-define ("RETURN_URL_DISTANT_FORGETPASSWORD", $A2B->config["webcustomerui"]['return_url_distant_forgetpassword'] ?? null);
-
 if (PHP_SAPI !== "cli") {
     Customer::checkPageAccess();
 }
-
-//Enable Disable Captcha
-define ("CAPTCHA_ENABLE", $A2B->config["signup"]['enable_captcha'] ?? 0);
-
-//Enable Disable
-define ("LANGUAGE_ENABLE", $A2B->config["signup"]['field_language'] ?? 0);
-define ("CURRENCY_ENABLE", $A2B->config["signup"]['field_currency'] ?? 0);
-define ("LASTNAME_ENABLE", $A2B->config["signup"]['field_lastname'] ?? 0);
-define ("FIRSTNAME_ENABLE", $A2B->config["signup"]['field_firstname'] ?? 0);
-define ("ADDRESS_ENABLE", $A2B->config["signup"]['field_address'] ?? 0);
-define ("CITY_ENABLE", $A2B->config["signup"]['field_city'] ?? 0);
-define ("STATE_ENABLE", $A2B->config["signup"]['field_state'] ?? 0);
-define ("COUNTRY_ENABLE", $A2B->config["signup"]['field_country'] ?? 0);
-define ("ZIPCODE_ENABLE", $A2B->config["signup"]['field_zipcode'] ?? 0);
-define ("TIMEZONE_ENABLE", $A2B->config["signup"]['field_id_timezone'] ?? 0);
-define ("PHONE_ENABLE", $A2B->config["signup"]['field_phone'] ?? 0);
-define ("FAX_ENABLE", $A2B->config["signup"]['field_fax'] ?? 0);
-define ("COMP_ENABLE", $A2B->config["signup"]['field_company'] ?? 0);
-define ("COMP_WEB_ENABLE", $A2B->config["signup"]['field_company_website'] ?? 0);
-define ("VAT_RN_ENABLE", $A2B->config["signup"]['field_VAT_RN'] ?? 0);
-define ("TRAFFIC_ENABLE", $A2B->config["signup"]['field_traffic'] ?? 0);
-define ("TRAFFIC_TARGET_ENABLE", $A2B->config["signup"]['field_traffic_target'] ?? 0);
-
-define ("ADMIN_EMAIL", $A2B->config["global"]['admin_email'] ?? null);
-
-const ENABLE_LOG = false;

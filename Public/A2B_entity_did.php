@@ -96,7 +96,7 @@ if ($action_release == "confirm_release") {
     $subject = "[$date] Release-DID notification";
     $messagetext = '';
     try {
-        a2b_mail(ADMIN_EMAIL, $subject, $messagetext, $from, $fromname);
+        a2b_mail($A2B->config["global"]['admin_email'] ?? "", $subject, $messagetext, $from, $fromname);
     } catch (Exception $e) {
         echo gettext("Error : Sending mail");
     }

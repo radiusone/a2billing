@@ -83,8 +83,10 @@ if (isset ($pr_email) && isset ($action)) {
     $error = 3;
 }
 
-if (strlen(RETURN_URL_DISTANT_FORGETPASSWORD) > 1 && $show_message) {
-    Header("Location: $URL_CALLBACK_FORGETPASSWORD?error=$error");
+$URL_CALLBACK_FORGETPASSWORD = $A2B->config["webcustomerui"]['return_url_distant_forgetpassword'] ?? null;
+if ($URL_CALLBACK_FORGETPASSWORD && $show_message) {
+    $URL_CALLBACK_FORGETPASSWORD .= (str_contains($URL_CALLBACK_FORGETPASSWORD, "?") ? "&" : "?");
+    header("Location: ${URL_CALLBACK_FORGETPASSWORD}error=$error");
     die();
 }
 
