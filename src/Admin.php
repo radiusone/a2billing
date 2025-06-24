@@ -104,4 +104,44 @@ class Admin extends User
 
         return $na;
     }
+
+
+    /**
+     * @param string $user
+     * @param string $pass
+     * @return false|array<string,string>
+     */
+    public static function checkLogin(string $user, string $pass)
+    {
+        $user = trim($user);
+        $pass = trim($pass);
+
+        if (empty($user) || empty($pass)) {
+            return false;
+        }
+
+        $table = new Table(
+            "cc_ui_authen",
+            ["userid", "perms", "confaddcust", "groupid", "login", "pwd_encoded"]
+        );
+        $row = $table->getRow(["login" => $user]);
+
+        if ($row) {
+            if (password_verify($pass, $row["pwd_encoded"])) {
+                return $row;
+            }
+            // fallback to legacy authentication
+            if (hash("whirlpool", $pass) === $row["pwd_encoded"]) {
+                $table->updateRow(
+                    ["pwd_encoded" => password_hash($pass, PASSWORD_DEFAULT)],
+                    ["login" => $user]
+                );
+
+                return $row;
+            }
+        }
+
+        return false;
+    }
+
 }
