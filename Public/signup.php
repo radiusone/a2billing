@@ -43,13 +43,6 @@ if (!isset ($form_action))
 if (!isset ($action))
     $action = $form_action;
 
-// PROVISION TEST DATA
-if (false) {
-    $_POST["lastname"] = $_POST["firstname"] = $_POST["address"] = $_POST["city"] = $_POST["state"] = $_POST["country"] = 'SIGN-' . MDP_STRING(5) . '-' . MDP_NUMERIC(3);
-    $_POST["email"] = MDP_STRING(10) . '@sign-up.com';
-    $_POST["zipcode"] = $_POST["phone"] = '12345667789';
-}
-
 require_once __DIR__ . "/form_data/FG_var_signup.inc";
 
 if (!$A2B->config["signup"]['enable_signup']) {

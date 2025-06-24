@@ -772,7 +772,7 @@ if ($mode === "standard") {
 
                     $channel = get_dialstring($RateEngine->ratecard_obj[0], $A2B);
                     $exten = $groupid;
-                    $uniqueid = MDP_NUMERIC(5) . "-" . MDP_STRING(7);
+                    $uniqueid = generate_random_value("#####-XXXXXXX");
                     $variable = sprintf(
                         "IDCONF=%s,CALLED=%s,%s,%s,CBID=%s,LEG=%s",
                         $idconfig, $A2B->destination, $CALLING_VAR, $MODE_VAR, $uniqueid, $A2B->username
@@ -848,7 +848,7 @@ if ($mode === "standard") {
                 // MAKE THE CALL
                 $channel = get_dialstring($RateEngine->ratecard_obj[0], $A2B);
                 $exten = $groupid;
-                $uniqueid = MDP_NUMERIC(5) . "-" . MDP_STRING(7);
+                $uniqueid = generate_random_value("#####-XXXXXXX");
                 $variable = sprintf(
                     "IDCONF=%s,CALLED=%s,MODE=ALL,CBID=%s,TARIFF=%s,LEG=%s",
                     $idconfig, $A2B->destination, $uniqueid, $A2B->tariff, $A2B->username
@@ -1089,7 +1089,7 @@ if ($mode === "standard") {
                             $context = "a2billing-conference-member";
                             $id_server_group = $A2B->config["callback"]["id_server_group"];
                             $callerid = $called_party;
-                            $uniqueid = $callback_uniqueid . "-" . MDP_NUMERIC(5);
+                            $uniqueid = generate_random_value("$callback_uniqueid-#####");
 
                             $variable = sprintf(
                                 "CALLED=%s,CALLING=%s,CBID=%s,TARIFF=%s,LEG=%s,ACCOUNTCODE=%s,ROOMNUMBER=%s",

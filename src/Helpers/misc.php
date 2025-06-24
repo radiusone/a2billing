@@ -5,6 +5,7 @@ use A2billing\Table;
 use Amenadiel\JpGraph\Graph\Graph;
 use Amenadiel\JpGraph\Plot\BarPlot;
 use PHPMailer\PHPMailer\PHPMailer;
+use Random\RandomException;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -447,58 +448,32 @@ function format_phone_number(?string $value): string
     return $value ?: _("n/a");
 }
 
-/*
- * function MDP_STRING
+/**
+ * @param string $format
+ * @return string
+ * @throws RandomException
  */
-function MDP_STRING($chrs = 0): string
+function generate_random_value(string $format): string
 {
-    if (empty($chrs)) {
-        $chrs = get_cardlength();
-    }
-
-    $pwd = "";
-    mt_srand((double)microtime() * 1000000);
-    while (strlen($pwd) < $chrs) {
-        $chr = chr(mt_rand(48, 122));
-        if (preg_match("/^[0-9a-z]$/i", $chr)) {
-            $pwd = $pwd . $chr;
+    $output = "";
+    foreach (str_split($format) as $char) {
+        if ($char === "#") {
+            $output .= random_int(0, 9);
+        } elseif ($char = "X") {
+            do {
+                $chr = chr(random_int(48, 122));
+            } while (!preg_match("/^[0-9a-z]$/i", $chr));
+            $output .= $chr;
+        } else {
+            $output .= $char;
         }
     }
 
-    return strtolower($pwd);
+    return $output;
 }
 
-/*
- * function MDP_NUMERIC
- */
-function MDP_NUMERIC($chrs = 0): string
-{
-    if (empty($chrs)) {
-        $chrs = get_cardlength();
-    }
-
-    $myrand = "";
-    for ($i = 0; $i < $chrs; $i++) {
-        $myrand .= mt_rand(0, 9);
-    }
-
-    return $myrand;
-}
-
-/*
- * function MDP
- */
-function MDP($chrs = 0): string
-{
-    if (empty($chrs)) {
-        $chrs = get_cardlength();
-    }
-
-    return MDP_NUMERIC($chrs);
-}
-
-/*
- * function generate_unique_value
+/**
+ * @throws RandomException
  */
 function generate_unique_value($table = "cc_card", $len = 0, $field = "username")
 {
@@ -507,7 +482,7 @@ function generate_unique_value($table = "cc_card", $len = 0, $field = "username"
     }
 
     for ($k = 0; $k <= 200; $k++) {
-        $card_gen = MDP($len);
+        $card_gen = generate_random_value(str_repeat("#", $len));
 
         (new Table($table, [$field]))->getValue([$field => $card_gen]);
         if (empty($val)) {
@@ -519,8 +494,8 @@ function generate_unique_value($table = "cc_card", $len = 0, $field = "username"
     exit ();
 }
 
-/*
- * function gen_card_with_alias
+/**
+ * @throws RandomException
  */
 function gen_card_with_alias($length_cardnumber = null)
 {
@@ -531,8 +506,8 @@ function gen_card_with_alias($length_cardnumber = null)
     }
 
     for ($k = 0; $k <= 200; $k++) {
-        $card_gen = MDP($length_cardnumber);
-        $alias_gen = MDP(LEN_ALIASNUMBER);
+        $card_gen = generate_random_value(str_repeat("#", $length_cardnumber));
+        $alias_gen = generate_random_value(str_repeat("#", LEN_ALIASNUMBER));
 
         $query = "SELECT username FROM cc_card WHERE username=? OR useralias=? OR username=? OR useralias=?";
         $val = $DBHandle->GetOne($query, [$card_gen, $alias_gen, $alias_gen, $card_gen]);
@@ -576,29 +551,6 @@ function validate_upload(string $the_file, string $the_file_type): string
     return $error ? sprintf(_("ERROR: %s"), $error) : "";
 }
 
-function securitykey(string $key, string $data): string
-{
-    // RFC 2104 HMAC implementation for php.
-    // Creates an md5 HMAC.
-    // Eliminates the need to install mhash to compute a HMAC
-    // Hacked by Lance Rushing
-
-    $b = 64; // byte length for md5
-    if (strlen($key) > $b) {
-        $key = pack("H*", md5($key));
-    }
-    $key = str_pad($key, $b, chr(0x00));
-    $ipad = str_pad('', $b, chr(0x36));
-    $opad = str_pad('', $b, chr(0x5c));
-    $k_ipad = $key ^ $ipad;
-    $k_opad = $key ^ $opad;
-
-    return md5($k_opad . pack("H*", md5($k_ipad . $data)));
-}
-
-/*
-    public Function to show GMT DateTime.
-*/
 function get_timezones(): array
 {
     return (new Table("cc_timezone", ["id", "gmtzone"]))->getColumn("gmtzone", "id");

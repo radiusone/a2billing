@@ -352,7 +352,7 @@ if ($popup_select) {
 
         $pass_attr = ["maxlength" => 20];
         if ($form_action === "ask-add") {
-            $pass_attr["value"] = MDP_NUMERIC(5) . MDP_STRING(15);
+            $pass_attr["value"] = generate_random_value("#####XXXXXXXXXXXXXXX");
         }
         $HD_Form->AddEditElement(
             _("WEBUI PASSWORD"),

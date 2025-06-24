@@ -2,9 +2,9 @@
 
 require_once "../../common/lib/customer.defines.php";
 
-$code = MDP_STRING(6);
+$code = generate_random_value("XXXXXX");
 $_SESSION["captcha_code"] = $code;
-$seed = MDP_NUMERIC(6);
+$seed = generate_random_value("######");
 
 $captcha_gd = 1;
 

@@ -115,7 +115,7 @@ if ($nb_to_create > 0 && $action === "generate" && count($errors) === 0) {
 
     for ($k = 0; $k < $nb_to_create; $k++) {
         [$accountnumber, $useralias] = gen_card_with_alias($cardnumber_length);
-        $passui_secret = MDP_NUMERIC(5) . MDP_STRING(10) . MDP_NUMERIC(5);
+        $passui_secret = generate_random_value("#####XXXXXXXXXX#####");
 
         (new Table("cc_card"))->addRow([
             "username" => $accountnumber, "useralias" => $useralias, "tariff" => $choose_tariff, "lastname" => $gen_id,

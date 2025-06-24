@@ -293,8 +293,8 @@ if ($form_action === "add") {
     $array_card_generated = gen_card_with_alias();
     $cardnumber = $array_card_generated[0];
     $cardalias = $array_card_generated[1];
-    $pass = MDP_NUMERIC(10);
-    $loginkey = MDP_STRING(20);
+    $pass = generate_random_value("##########");
+    $loginkey = generate_random_value("XXXXXXXXXXXXXXXXXXXX");
 
     $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["iax_buddy"] = $A2B->config["signup"]['iax_account'] ? 1 : 0;
     $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["sip_buddy"] = $A2B->config["signup"]['sip_account'] ? 1 : 0;

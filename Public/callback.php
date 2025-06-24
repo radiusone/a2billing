@@ -136,7 +136,7 @@ if ($callback) {
                     $callerid = $A2B -> config["callback"]['callerid'];
                     $account = $_SESSION["pr_login"];
 
-                    $uniqueid 	=  MDP_NUMERIC(5).'-'.MDP_STRING(7);
+                    $uniqueid = generate_random_value("#####-XXXXXXX");
                     $status = 'PENDING';
                     $server_ip = 'localhost';
                     $num_attempt = 0;

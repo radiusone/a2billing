@@ -102,7 +102,7 @@ if (!empty($id_cc_card) && ($form_action === "add_sip" || $form_action === "add_
     $_POST['qualify'] = FRIEND_QUALIFY;
     $_POST['host'] = FRIEND_HOST;
     $_POST['dtmfmode'] = FRIEND_DTMFMODE;
-    $_POST['secret'] = MDP_NUMERIC(5) . MDP_STRING(10) . MDP_NUMERIC(5);
+    $_POST["secret"] = generate_random_value("#####XXXXXXXXXX#####");
 
     // for the getProcessed var
     $HD_Form->init();
