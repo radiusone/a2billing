@@ -52,8 +52,6 @@ if ($form_action=="ask-modif") {
     $result_check=$instance_sub_table -> getRow ($check_old_pwd);
     if ($result_check) {
         (new Table("cc_card"))->updateRow(["uipass" => $NewPassword], ["id" => $_SESSION["card_id"]]);
-        // update Session password
-        $_SESSION["pr_password"] = $NewPassword;
     }
 }
 // #### HEADER SECTION

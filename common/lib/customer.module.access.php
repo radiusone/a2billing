@@ -33,40 +33,36 @@
  *
 **/
 
-use A2billing\Table;
+use A2billing\Customer;
 
 $FG_DEBUG = 0;
 error_reporting(E_ALL & ~E_NOTICE);
-
-header("Expires: Sat, Jan 01 2000 01:01:01 GMT");
 
 $C_RETURN_URL_DISTANT_LOGIN = 'index.php?';
 if (defined("RETURN_URL_DISTANT_LOGIN") && !empty(RETURN_URL_DISTANT_LOGIN)) {
     $C_RETURN_URL_DISTANT_LOGIN = RETURN_URL_DISTANT_LOGIN . (str_contains(RETURN_URL_DISTANT_LOGIN, '?') ? "&" : "?");
 }
 
-getpost_ifset (['pr_login', 'pr_password']);
+getpost_ifset (["pr_login", "pr_password"]);
 /**
  * @var string $pr_login
  * @var string $pr_password
  */
 
-if (!isset($_SESSION['pr_login']) || !isset($_SESSION['pr_password']) || !isset($_SESSION['rights']) || ($_POST["done"] ?? "") === "submit_log") {
+if (!isset($_SESSION['pr_login']) || !isset($_SESSION['rights']) || ($_POST["done"] ?? "") === "submit_log") {
 
     if (($_POST["done"] ?? "") === "submit_log") {
 
-        $return = login($pr_login, $pr_password);
+        $return = Customer::checkLogin($pr_login, $pr_password);
 
-        if (!is_array($return)) {
+        if (!$return) {
             sleep(2);
             header("HTTP/1.0 401 Unauthorized");
             header("Location: {$C_RETURN_URL_DISTANT_LOGIN}error=$return");
             die();
         }
 
-        $pr_login = $return["username"];
-        $_SESSION["pr_login"] = $pr_login;
-        $_SESSION["pr_password"] = $pr_password;
+        $_SESSION["pr_login"] = $return["username"];
         $_SESSION["rights"] = (int)$return["users_perms"] + 1;
         $_SESSION["user_type"] = "CUST";
         $_SESSION["card_id"] = $return["id"];
@@ -81,40 +77,3 @@ if (!isset($_SESSION['pr_login']) || !isset($_SESSION['pr_password']) || !isset(
     }
 }
 
-/**
- * @param string|null $user
- * @param string|null $pass
- * @return bool|string[]
- */
-function login(?string $user, ?string $pass)
-{
-    $user = trim($user);
-    $pass = trim($pass);
-
-    if (empty($user) || empty($pass)) {
-        return false;
-    }
-
-    $table = new Table(
-        "cc_card",
-        ["username", "credit", "status", "cc_card.id", "id_didgroup", "tariff", "vat", "zone", "voicemail_permitted", "voicemail_activated", "users_perms", "currency", "uipass"],
-        [
-            "cc_timezone" => ["id_timezone", "cc_timezone.id"],
-            "cc_card_group" => ["id_group", "cc_card_group.id"]
-        ]
-    );
-    $row = $table->getRow([["SUB", ["email" => $user, "useralias" => $user], "OR"]]);
-
-    if ($row) {
-        if ($row["status"] !== "t" && $row["status"] != 1  && $row["status"] != 8) {
-            return false;
-        }
-        $filterpass = filter_var($pass, FILTER_SANITIZE_STRING);
-        // lol wtf is security
-        if ($row["uipass"] === $filterpass) {
-            return $row;
-        }
-    }
-
-    return false;
-}

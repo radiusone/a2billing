@@ -187,4 +187,34 @@ class Customer extends User
 
         return $date->setTimezone($user_zone);
     }
+
+    /**
+     * @param string $user
+     * @param string $pass
+     * @return false|array<string,string>
+     * @todo store passwords properly
+     */
+    public static function checkLogin(string $user, string $pass)
+    {
+        $user = trim($user);
+        $pass = trim($pass);
+
+        if (empty($user) || empty($pass)) {
+            return false;
+        }
+
+        $table = new Table(
+            "cc_card",
+            ["username", "credit", "status", "cc_card.id", "id_didgroup", "tariff", "vat", "zone", "voicemail_permitted", "voicemail_activated", "users_perms", "currency", "uipass"],
+            [
+                "cc_timezone" => ["id_timezone", "cc_timezone.id"],
+                "cc_card_group" => ["id_group", "cc_card_group.id"]
+            ]
+        );
+        $row = $table->getRow([["SUB", ["email" => $user, "useralias" => $user], "OR"]]);
+
+        return (in_array($row["status"] ?? "", ["t", 1, 8]) && "$row[uipass]" === "$pass")
+            ? $row
+            : false;
+    }
 }
