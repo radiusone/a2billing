@@ -96,4 +96,44 @@ class Agent extends User
 
         return sprintf(_("%s %s (login: %s)"), $row["firstname"], $row["lastname"], $row["login"]);
     }
+
+
+    /**
+     * @param string $user
+     * @param string $pass
+     * @return false|string[]
+     */
+    public static function checkLogin(string $user, string $pass)
+    {
+        $user = trim($user);
+        $pass = trim($pass);
+
+        if (empty($user) || empty($pass)) {
+            return false;
+        }
+
+        $table = new Table("cc_agent", ["id", "perms", "active", "currency", "vat", "pwd_encoded"]);
+        $row = $table->getRow(["login" => $user]);
+
+        if ($row) {
+            if ($row["active"] !== "t" && $row["active"] !== "1") {
+                return false;
+            }
+            if (password_verify($pass, $row["pwd_encoded"])) {
+                return $row;
+            }
+            // fallback to ugly legacy authentication
+            $filterpass = htmlspecialchars($pass);
+            if (hash("whirlpool", $filterpass) === $row["pwd_encoded"] || $filterpass === $row["pwd_encoded"]) {
+                $table->updateRow(
+                    ["pwd_encoded" => password_hash($pass, PASSWORD_DEFAULT)],
+                    ["login" => $user]
+                );
+
+                return $row;
+            }
+        }
+
+        return false;
+    }
 }

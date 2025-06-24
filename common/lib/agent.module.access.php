@@ -33,43 +33,37 @@
  *
 **/
 
+use A2billing\Agent;
 use A2billing\Logger;
-use A2billing\Table;
 
 $FG_DEBUG = 0;
 error_reporting(E_ALL & ~E_NOTICE);
 
-header("Expires: Sat, Jan 01 2000 01:01:01 GMT");
-
-getpost_ifset (['pr_login', 'pr_password']);
+getpost_ifset (["pr_login", "pr_password"]);
 /**
  * @var string $pr_login
  * @var string $pr_password
  */
 
-if (!isset($_SESSION['pr_login']) || !isset($_SESSION['pr_password']) || !isset($_SESSION['rights']) || ($_POST["done"] ?? "") === "submit_log") {
+if (!isset($_SESSION["pr_login"]) || !isset($_SESSION["rights"]) || ($_POST["done"] ?? "") === "submit_log") {
     if (($_POST["done"] ?? "") === "submit_log") {
 
-        $return = login($pr_login, $pr_password);
+        $return = Agent::checkLogin($pr_login, $pr_password);
 
-        if (!is_array($return)) {
-            header ("HTTP/1.0 401 Unauthorized");
-            header ("Location: index.php?error=1");
+        if (!$return) {
+            header("HTTP/1.0 401 Unauthorized");
+            header("Location: index.php?error=1");
             die();
         }
 
-        $agent_id = (int)$return["id"];
-        $rights = (int)$return["perms"];
-
         $_SESSION["pr_login"] = $pr_login;
-        $_SESSION["pr_password"] = $pr_password;
-        $_SESSION["rights"] = $rights;
-        $_SESSION["agent_id"] = $agent_id;
+        $_SESSION["rights"] = (int)$return["perms"];
+        $_SESSION["agent_id"] = (int)$return["id"];
         $_SESSION["user_type"] = "AGENT";
         $_SESSION["currency"] = $return["currency"];
         $_SESSION["vat"] = $return["vat"];
         Logger::insertLog(
-            $agent_id,
+            (int)$return["id"],
             1,
             "Agent Logged In",
             "Agent Logged in to website",
@@ -81,45 +75,9 @@ if (!isset($_SESSION['pr_login']) || !isset($_SESSION['pr_password']) || !isset(
             true
         );
     } else {
-        $_SESSION["rights"] = 0;
+        unset($_SESSION);
+        session_regenerate_id();
+        session_destroy();
     }
 }
 
-/**
- * @param string|null $user
- * @param string|null $pass
- * @return bool|string[]
- */
-function login (?string $user, ?string $pass)
-{
-    $user = trim($user);
-    $pass = trim($pass);
-
-    if (empty($user) || empty($pass)) {
-        return false;
-    }
-
-    $table = new Table("cc_agent", ["id", "perms", "active", "currency", "vat", "pwd_encoded"]);
-    $row = $table->getRow(["login" => $user]);
-
-    if ($row) {
-        if ($row["active"] !== "t" && $row["active"] !== "1") {
-            return false;
-        }
-        if (password_verify($pass, $row["pwd_encoded"])) {
-            return $row;
-        }
-        // fallback to legacy authentication
-        $filterpass = filter_var($pass, FILTER_SANITIZE_STRING);
-        if (hash('whirlpool', $filterpass) === $row["pwd_encoded"] || $filterpass === $row["pwd_encoded"]) {
-            $table->updateRow(
-                ["pwd_encoded" => password_hash($pass, PASSWORD_DEFAULT)],
-                ["login" => $user]
-            );
-
-            return $row;
-        }
-    }
-
-    return false;
-}
