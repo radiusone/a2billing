@@ -169,7 +169,7 @@ class Customer extends User
      */
     public static function date($date): DateTimeInterface
     {
-        if ($date instanceof DateTimeInterface::class) {
+        if ($date instanceof DateTimeInterface) {
             $date = clone $date;
         } else {
             try {
