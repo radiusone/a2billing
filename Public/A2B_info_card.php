@@ -176,7 +176,7 @@ require_once __DIR__ . "/templates/main.php";
     </div>
 </div>
 
-<?php if (has_rights (Customer::ACX_PERSONALINFO)): ?>
+<?php if (Customer::allowed(Customer::ACX_PERSONALINFO)): ?>
 <div class="row pb-3 gx-5">
     <div class="col text-end">
         <a href="A2B_entity_card.php?form_action=ask-edit"><?php echo gettext("EDIT PERSONAL INFORMATION");?></a>

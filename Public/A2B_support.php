@@ -44,11 +44,7 @@ use A2billing\Ticket;
 require_once __DIR__ . "/../common/lib/customer.defines.php";
 require_once __DIR__ . "/form_data/FG_var_ticket.inc";
 
-if (!has_rights(Customer::ACX_SUPPORT)) {
-    Header("HTTP/1.0 401 Unauthorized");
-    Header("Location: PP_error.php?c=accessdenied");
-    die();
-}
+Customer::checkPageAccess(Customer::ACX_SUPPORT);
 
 getpost_ifset(array (
     'title',

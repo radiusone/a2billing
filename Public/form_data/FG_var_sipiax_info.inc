@@ -35,12 +35,6 @@ use A2billing\Forms\FormHandler;
  *
 **/
 
-if (! has_rights (Customer::ACX_ACCESS)) {
-    Header ("HTTP/1.0 401 Unauthorized");
-    Header ("Location: PP_error.php?c=accessdenied");
-    die();
-}
-
 getpost_ifset(array('voucher'));
 
 $plang='en';

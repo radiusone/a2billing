@@ -7,8 +7,6 @@ use Amenadiel\JpGraph\Plot\BarPlot;
 use PHPMailer\PHPMailer\PHPMailer;
 use Random\RandomException;
 
-/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
-
 /**
  * This file is part of A2Billing (http://www.a2billing.net/)
  *
@@ -40,25 +38,12 @@ use Random\RandomException;
  *
  **/
 
-/**
- * Determine if a user is entitled to certain rights
- *
- * @param int $condition integer representing the permission flag
- * @param int|null $check integer representing the user's permission bits
- * @return bool whether or not the user has the right
- * @todo replace with static method on Admin, Agent, Customer classes
- */
-function has_rights(int $condition, ?int $check = null): bool
-{
-    return (bool)(($check ?? $_SESSION["rights"] ?? 0) & $condition);
-}
-
 function get_cardlength(): int
 {
     $len = (new Table("cc_config", ["config_value"]))
         ->getValue(["config_key" => "interval_len_cardnumber"]);
     if ($len) {
-        $len = min(split_data($len) ?: 10);
+        $len = min(split_data($len) ?: [10]);
     } else {
         $len = 10;
     }
@@ -90,19 +75,22 @@ function split_data(?string $values): array
     return array_unique($return);
 }
 
-/*
+/**
  * a2b_round: specific function to use the same precision everywhere
+ *
+ * @param int|float|null $number
+ * @param int $PRECISION
+ * @return float
  */
-function a2b_round($number, $PRECISION = 6): float
+function a2b_round($number, int $PRECISION = 6): float
 {
 
     return round($number ?? 0, $PRECISION);
 }
 
-/*
- * a2b_mail - function mail used in a2billing
- */
 /**
+ * a2b_mail - function mail used in a2billing
+ *
  * @throws \PHPMailer\PHPMailer\Exception
  */
 function a2b_mail($to, $subject, $mail_content, $from = 'root@localhost', $fromname = '', $contenttype = 'multipart/alternative')
@@ -199,12 +187,21 @@ function convert_currency($amount, string $from_cur, string $to_cur)
 /*
  * Write log into file
  */
-function write_log($logfile, $output)
+function write_log(string $logfile, string $output)
 {
-    // echo "<br>$output<br>";
-    if (strlen($logfile) > 1) {
-        $string_log = "[" . date("d/m/Y H:i:s") . "]:[$output]\n";
-        error_log($string_log . "\n", 3, $logfile);
+    $result = true;
+    if (!file_exists($logfile)) {
+        $result = touch($logfile);
+    }
+    $string_log = sprintf(
+        "[%s]:[%s]\n",
+        (new DateTime())->format("d/m/Y H:i:s"),
+        $output
+    );
+    if ($result && is_writable($logfile)) {
+        error_log($string_log, 3, $logfile);
+    } else {
+        error_log($string_log);
     }
 }
 
@@ -590,106 +587,6 @@ function get_login_button($id): string
 function DbConnect(): ADOConnection
 {
     return Connection::GetDBHandler();
-}
-
-function SetLocalLanguage(): void
-{
-    switch ($_SESSION["ui_language"] ?? "") {
-        case "brazilian":
-            $languageEncoding = "pt_BR.UTF-8";
-            $slectedLanguage = "pt_BR";
-            $charEncoding = "UTF-8";
-            break;
-        case "chinese":
-            $languageEncoding = "zh_CN.UTF-8";
-            $slectedLanguage = "zh_CN";
-            $charEncoding = "UTF-8";
-            break;
-        case "spanish":
-            $languageEncoding = "es_ES.iso88591";
-            $slectedLanguage = "es_ES";
-            $charEncoding = "UTF-8";
-            break;
-        case "french":
-            $languageEncoding = "fr_FR.iso88591";
-            $slectedLanguage = "fr_FR";
-            $charEncoding = "iso-8859-1";
-            break;
-        case "german":
-            $languageEncoding = "de_DE.iso88591";
-            $slectedLanguage = "de_DE";
-            $charEncoding = "iso-8859-1";
-            break;
-        case "italian":
-            $languageEncoding = "it_IT.iso8859-1";
-            $slectedLanguage = "it_IT";
-            $charEncoding = "iso88591";
-            break;
-        case "polish":
-            $languageEncoding = "pt_PT.iso88591";
-            $slectedLanguage = "pl_PL";
-            $charEncoding = "iso88591";
-            break;
-        case "romanian":
-            $languageEncoding = "ro_RO.iso88591";
-            $slectedLanguage = "ro_RO";
-            $charEncoding = "iso88591";
-            break;
-        case "russian":
-            $languageEncoding = "ru_RU.UTF-8";
-            $slectedLanguage = "ru_RU";
-            $charEncoding = "UTF-8";
-            break;
-        case "turkish":
-            // issues with Turkish
-            // http://forum.elxis.org/index.php?action=printpage%3Btopic=3090.0
-            // http://bugs.php.net/bug.php?id=39993
-            $languageEncoding = "tr_TR.UTF-8";
-            $slectedLanguage = "tr_TR.UTF-8";
-            $charEncoding = "UTF-8";
-            break;
-        case "urdu":
-            $languageEncoding = "ur.UTF-8";
-            $slectedLanguage = "ur_PK";
-            $charEncoding = "UTF-8";
-            break;
-        case "ukrainian": // provided by Oleh Miniv  email: oleg-min@ukr.net
-            $languageEncoding = "uk_UA.UTF8";
-            $slectedLanguage = "uk_UA";
-            $charEncoding = "UTF8";
-            break;
-        case "farsi":
-            $languageEncoding = "fa_IR.UTF-8";
-            $slectedLanguage = "fa_IR";
-            $charEncoding = "UTF-8";
-            break;
-        case "greek":
-            $languageEncoding = "el_GR.UTF-8";
-            $slectedLanguage = "el_GR";
-            $charEncoding = "UTF-8";
-            break;
-        case "indonesian":
-            $languageEncoding = "id_ID.iso88591";
-            $slectedLanguage = "id_ID";
-            $charEncoding = "iso88591";
-            break;
-        default:
-            $languageEncoding = "en_US.iso88591";
-            $slectedLanguage = "en_US";
-            $charEncoding = "iso88591";
-            break;
-    }
-
-    setlocale(LC_TIME, $languageEncoding);
-    putenv("LANG=$slectedLanguage");
-    putenv("LANGUAGE=$slectedLanguage");
-    setlocale(LC_ALL, $slectedLanguage);
-    setlocale(LC_MESSAGES, $languageEncoding);
-
-    textdomain("messages");
-    bindtextdomain("messages", BINDTEXTDOMAIN);
-    bind_textdomain_codeset("messages", $charEncoding);
-    define("CHARSET", $charEncoding);
 }
 
 function create_help($text): string

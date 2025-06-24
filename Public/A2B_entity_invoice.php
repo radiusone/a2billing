@@ -39,11 +39,7 @@ $menu_section = 5;
 require_once __DIR__ . "/../common/lib/customer.defines.php";
 require_once __DIR__ . "/form_data/FG_var_invoice.inc";
 
-if (!has_rights(Customer::ACX_INVOICES)) {
-    Header("HTTP/1.0 401 Unauthorized");
-    Header("Location: PP_error.php?c=accessdenied");
-    die();
-}
+Customer::checkPageAccess(Customer::ACX_INVOICES);
 
 $HD_Form->init();
 

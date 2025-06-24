@@ -40,11 +40,7 @@ require_once __DIR__ . "/../common/lib/customer.defines.php";
 
 getpost_ifset(array('callback', 'called', 'calling'));
 
-if (! has_rights (Customer::ACX_CALL_BACK)) {
-    Header ("HTTP/1.0 401 Unauthorized");
-    Header ("Location: PP_error.php?c=accessdenied");
-    die();
-}
+Customer::checkPageAccess(Customer::ACX_CALL_BACK);
 
 $FG_DEBUG = 0;
 $color_msg = 'red';

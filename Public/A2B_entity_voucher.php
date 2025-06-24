@@ -39,11 +39,7 @@ use A2billing\Table;
 require_once __DIR__ . "/../common/lib/customer.defines.php";
 require_once __DIR__ . "/form_data/FG_var_voucher.inc";
 
-if (! has_rights (Customer::ACX_VOUCHER)) {
-    Header ("HTTP/1.0 401 Unauthorized");
-    Header ("Location: PP_error.php?c=accessdenied");
-    die();
-}
+Customer::checkPageAccess(Customer::ACX_VOUCHER);
 
 $HD_Form -> init();
 $currencies_list = get_currencies();

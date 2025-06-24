@@ -40,26 +40,14 @@ $menu_section = 1;
 require_once __DIR__ . "/../../common/lib/agent.defines.php";
 require_once __DIR__ . "/../../common/form_data/FG_var_card.inc";
 
-if (! has_rights (Agent::ACX_CUSTOMER)) {
-    Header ("HTTP/1.0 401 Unauthorized");
-    Header ("Location: PP_error.php?c=accessdenied");
-    die();
-}
+Agent::checkPageAccess(Agent::ACX_CUSTOMER);
 
 if ($form_action=="ask-edit") {
-    if (! has_rights (Agent::ACX_EDIT_CUSTOMER)) {
-        Header ("HTTP/1.0 401 Unauthorized");
-        Header ("Location: PP_error.php?c=accessdenied");
-        die();
-    }
+    Agent::checkPageAccess(Agent::ACX_EDIT_CUSTOMER);
 }
 
 if ($form_action=="ask-delete") {
-    if (! has_rights (Agent::ACX_DELETE_CUSTOMER)) {
-        Header ("HTTP/1.0 401 Unauthorized");
-        Header ("Location: PP_error.php?c=accessdenied");
-        die();
-    }
+    Agent::checkPageAccess(Agent::ACX_DELETE_CUSTOMER);
 }
 
 // SECURTY CHECK FOR AGENT

@@ -39,7 +39,7 @@ class Agent extends User
         if (($_SESSION["user_type"] ?? "") !== "AGENT") {
             return false;
         }
-        if (!is_null($rights) && !has_rights($rights)) {
+        if (!is_null($rights) && !(intval($_SESSION["rights"] ?? 0) & $rights)) {
             return false;
         }
 

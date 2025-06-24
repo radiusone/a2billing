@@ -40,11 +40,7 @@ use A2billing\Table;
 $menu_section = 5;
 require_once __DIR__ . "/../common/lib/customer.defines.php";
 
-if (! has_rights (Customer::ACX_INVOICES)) {
-    Header ("HTTP/1.0 401 Unauthorized");
-    Header ("Location: PP_error.php?c=accessdenied");
-    die();
-}
+Customer::checkPageAccess(Customer::ACX_INVOICES);
 
 getpost_ifset(array('page'));
 
