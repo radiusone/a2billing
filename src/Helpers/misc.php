@@ -110,11 +110,7 @@ function a2b_mail($to, $subject, $mail_content, $from = 'root@localhost', $fromn
     $mail->Port = $A2B->config['global']['smtp_port'] ?? '25';
     $mail->SMTPSecure = $A2B->config['global']['smtp_secure'] ?? null;
     $mail->CharSet = 'UTF-8';
-
-    if (!empty(SMTP_USERNAME)) {
-        $mail->SMTPAuth = true;
-    }
-
+    $mail->SMTPAuth = !empty($mail->Username);
     $mail->From = $from;
     $mail->FromName = $fromname;
     $mail->Subject = $subject;
