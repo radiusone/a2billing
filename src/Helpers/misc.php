@@ -381,22 +381,17 @@ function get_monitorfile_link($value): string
  */
 function get_refill_link(?int $id): string
 {
-    $value = htmlspecialchars(_("n/a"));
-    if (empty($id)) {
-        echo $value;
-    }
-    $row = (new Table("cc_logrefill", ["credit"]))
-        ->getRow(["id" => $id]);
-    if (empty($row)) {
-        echo $value;
-    }
+    $credit = (new Table("cc_logrefill", ["credit"]))
+        ->getValue(["id" => $id ?? 0]);
 
-    return sprintf(
-        "<a href=\"%s%d\">%s</a>",
-        "A2B_info_refill.php?id=",
-        $id,
-        get_money($row["credit"])
-    );
+    return is_null($credit)
+        ? htmlspecialchars(_("n/a"))
+        : sprintf(
+            "<a href=\"%s%d\">%s</a>",
+            "A2B_info_refill.php?id=",
+            $id,
+            get_money(floatval($credit))
+        );
 }
 
 /**
@@ -406,22 +401,17 @@ function get_refill_link(?int $id): string
  */
 function get_agent_refill_link(?int $id): string
 {
-    $value = htmlspecialchars(_("n/a"));
-    if (empty($id)) {
-        return $value;
-    }
-    $row = (new Table("cc_logrefill_agent", ["credit"]))
-        ->getRow(["id" => $id]);
-    if (empty($row)) {
-        return $value;
-    }
+    $credit = (new Table("cc_logrefill_agent", ["credit"]))
+        ->getValue(["id" => $id ?? 0]);
 
-    return sprintf(
-        "<a href=\"%s%d\">%s</a>",
-        "A2B_info_refill.php?type=agent&id=",
-        $id,
-        get_money($row["credit"])
-    );
+    return is_null($credit)
+        ? htmlspecialchars(_("n/a"))
+        : sprintf(
+            "<a href=\"%s%d\">%s</a>",
+            "A2B_info_refill.php?type=agent&id=",
+            $id,
+            get_money(floatval($credit))
+        );
 }
 
 /**
