@@ -237,14 +237,15 @@ class FormBO
      */
     public static function processing_card_signup($id_card)
     {
-        if (RELOAD_ASTERISK_IF_SIPIAX_CREATED) {
+        global $A2B;
+
+        if ($A2B->config["signup"]['reload_asterisk_if_sipiax_created'] ?? false) {
             self::create_sipiax_friends_reload($id_card);
         } else {
             self::create_sipiax_friends($id_card);
         }
 
         // create subscriptions
-        global $A2B;
         $form = FormHandler::GetInstance();
         $processed = $form->getProcessed();
         $subscriber = $processed["subscriber_signup"];

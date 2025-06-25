@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\A2Billing;
 use A2billing\Admin;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -37,10 +38,16 @@ use A2billing\Admin;
 
 $menu_section = 16;
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
+/**
+ * @var A2Billing $A2B
+ */
 
 Admin::checkPageAccess(Admin::ACX_MAINTENANCE);
 
 getpost_ifset(array ('acc', 'method', 'file', 'to'));
+
+$file_ext_allow = is_array($A2B->config['webui']['file_ext_allow']) ? $A2B->config['webui']['file_ext_allow'] : null;
+$file_ext_allow_musiconhold = is_array($A2B->config['webui']['file_ext_allow_musiconhold']) ? $A2B->config['webui']['file_ext_allow_musiconhold'] : null;
 
 //Show the number of files to upload
 $files_to_upload = 1;
@@ -48,17 +55,17 @@ $files_to_upload = 1;
 //Directory where the uploaded files have to come
 //RECOMMENDED TO SET ANOTHER DIRECTORY THEN THE DIRECTORY WHERE THIS SCRIPT IS IN!!
 # the upload store directory (chmod 777)
-$upload_dir = DIR_STORE_AUDIO; //"/var/www/html/all/divers/simpleupload/upload";
+$upload_dir = $A2B->config['webui']['dir_store_audio'] ?? ""; //"/var/www/html/all/divers/simpleupload/upload";
 
 # Handle the MusicOnHold
 if (isset ($acc) && ($acc > 0)) {
     $file_ext_allow = $file_ext_allow_musiconhold;
     $pass_param = "acc=$acc";
-    $upload_dir = DIR_STORE_MOHMP3 . "/acc_$acc";
+    $upload_dir = ($A2B->config['webui']['dir_store_mohmp3'] ?? "") . "/acc_$acc";
 }
 
 # individual file size limit - in bytes (102400 bytes = 100KB)
-$file_size_ind = MY_MAX_FILE_SIZE_AUDIO;
+$file_size_ind = $A2B->config['webui']['my_max_file_size_audio'] ?? 0;
 
 # PHP.INI
 # ; Maximum allowed size for uploaded files.

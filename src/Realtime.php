@@ -54,6 +54,7 @@ class Realtime
             return;
         }
 
+        $A2B = new A2Billing();
         $sip_cols = [
             "name", "accountcode", "regexten", "amaflags", "callgroup", "callerid", "canreinvite", "context", "DEFAULTip",
             "dtmfmode", "fromuser", "fromdomain", "host", "insecure", "language", "mailbox", "md5secret", "nat", "deny",
@@ -72,11 +73,11 @@ class Realtime
         ];
 
         if ($type === "iax") {
-            $buddyfile = BUDDY_IAX_FILE;
+            $buddyfile = $A2B->config['webui']['buddy_iax_file'];
             $table_name = "cc_iax_buddies";
             $cols = $iax_cols;
         } else {
-            $buddyfile = BUDDY_SIP_FILE;
+            $buddyfile = $A2B->config['webui']['buddy_sip_file'];
             $table_name = "cc_sip_buddies";
             $cols = $sip_cols;
         }
@@ -140,15 +141,16 @@ class Realtime
             $_SESSION["is_iax_changed"] = (int)$iax;
         }
 
+        $A2B = new A2Billing();
         $values = [
-            "type" => FRIEND_TYPE,
-            "allow" => str_replace(" ", "", FRIEND_ALLOW),
-            "context" => FRIEND_CONTEXT,
-            "nat" => FRIEND_NAT,
-            "amaflags" => FRIEND_AMAFLAGS,
-            "qualify" => FRIEND_QUALIFY,
-            "host" => FRIEND_HOST,
-            "dtmfmode" => FRIEND_DTMFMODE,
+            "type" => $A2B->config['peer_friend']['type'],
+            "allow" => str_replace(" ", "", $A2B->config['peer_friend']['allow']),
+            "context" => $A2B->config['peer_friend']['context'],
+            "nat" => $A2B->config['peer_friend']['nat'],
+            "amaflags" => $A2B->config['peer_friend']['amaflags'],
+            "qualify" => $A2B->config['peer_friend']['qualify'],
+            "host" => $A2B->config['peer_friend']['host'],
+            "dtmfmode" => $A2B->config['peer_friend']['dtmfmode'],
             "name" => $accountnumber,
             "accountcode" => $accountnumber,
             "regexten" => $accountnumber,

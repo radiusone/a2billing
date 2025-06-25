@@ -1,6 +1,6 @@
 <?php
 
-use A2billing\Admin;
+use A2billing\A2Billing;
 use A2billing\Forms\FormHandler;
 use A2billing\Table;
 
@@ -36,6 +36,10 @@ use A2billing\Table;
  *
 **/
 
+/**
+ * @var A2Billing $A2B
+ */
+
 getpost_ifset(["path", "id"]);
 /**
  * @var string $path
@@ -62,7 +66,7 @@ if ($form_action === "add" && !empty($path)) {
     if (DB_TYPE !== "postgres") {
         $run_backup = sprintf(
             "%s -al --databases %s -u %s -p%s > %s",
-            escapeshellcmd(MYSQLDUMP),
+            escapeshellcmd($A2B->config['backup']['mysqldump']),
             escapeshellarg(DBNAME),
             escapeshellarg(USER),
             escapeshellarg(PASS),
@@ -72,7 +76,7 @@ if ($form_action === "add" && !empty($path)) {
         putenv("PGPASSWORD='".PASS."'");
         $run_backup = sprintf(
             "%s -c -d -U %s -h %s -f %s %s",
-            escapeshellcmd(PG_DUMP),
+            escapeshellcmd($A2B->config['backup']['pg_dump']),
             escapeshellarg(USER),
             escapeshellarg(HOST),
             escapeshellarg($backup_file),
@@ -83,7 +87,7 @@ if ($form_action === "add" && !empty($path)) {
 
     if ($do_gzip) {
         // Compress file
-        $run_gzip = sprintf("%s %s", escapeshellcmd(GZIP_EXE), escapeshellarg($backup_file));
+        $run_gzip = sprintf("%s %s", escapeshellcmd($A2B->config['backup']['gzip_exe']), escapeshellarg($backup_file));
         exec($run_gzip,$output,$error_zip);
     }
 
@@ -104,7 +108,7 @@ if ($form_action === "add" && !empty($path)) {
 
     if (str_ends_with($path, ".gz")) {
         // WE NEED TO GZIP
-        $output = escapeshellcmd(GZIP_EXE) . " -c " . escapeshellarg($path) . " | ";
+        $output = escapeshellcmd($A2B->config['backup']['gzip_exe']) . " -c " . escapeshellarg($path) . " | ";
     } else {
         $output = "cat " . escapeshellarg($path) . " | ";
     }
@@ -114,10 +118,10 @@ if ($form_action === "add" && !empty($path)) {
     $db = escapeshellarg(DBNAME);
     $host = escapeshellarg(HOST);
     if (DB_TYPE !== "postgres") {
-        $run_restore = $output . escapeshellcmd(MYSQL) . " -D $db -u $user -p$pass -h $host";
+        $run_restore = $output . escapeshellcmd($A2B->config['backup']['mysql']) . " -D $db -u $user -p$pass -h $host";
     } else {
         putenv("PGPASSWORD=$pass");
-        $run_restore = $output . escapeshellcmd(PSQL) . " -d $db -U $user -h $host";
+        $run_restore = $output . escapeshellcmd($A2B->config['backup']['psql']) . " -d $db -U $user -h $host";
     }
 
     exec($run_restore);
@@ -135,7 +139,7 @@ if ($form_action === "add" && !empty($path)) {
     }
     exit;
 } elseif ($form_action === "upload") {
-    $uploaddir = BACKUP_PATH . "/";
+    $uploaddir = $A2B->config['backup']['backup_path'] . "/";
     $uploadfile = $uploaddir . basename($_FILES['databasebackup']['name']);
 
     if (move_uploaded_file($_FILES['databasebackup']['tmp_name'], $uploadfile)) {
@@ -185,7 +189,7 @@ $HD_Form->AddEditElement(
 
 $path_attr = ["maxlength" => 200];
 if ($form_action === "ask-add") {
-    $path_attr["value"] = BACKUP_PATH . "/db_" . DBNAME . "-" . date('YmdHis') . ".sql.gz";
+    $path_attr["value"] = $A2B->config['backup']['backup_path'] . "/db_" . DBNAME . "-" . date('YmdHis') . ".sql.gz";
 }
 $HD_Form->AddEditElement(
     _("PATH"),

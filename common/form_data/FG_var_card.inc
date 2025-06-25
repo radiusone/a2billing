@@ -79,9 +79,9 @@ $HD_Form->FG_FK_DELETE_ALLOWED = !is_customer();
 $HD_Form->FG_FK_TABLENAMES = ['cc_iax_buddies', 'cc_sip_buddies', 'cc_callerid', 'cc_card_history', 'cc_status_log'];
 $HD_Form->FG_FK_EDITION_CLAUSE = ["id_cc_card", "id_cc_card", "id_cc_card", "id_cc_card", "id_cc_card"];
 // DEFINE IF WE WANT TO DELETE THE CARD OR NOT
-$HD_Form->FG_FK_WARNONLY = !(DELETE_FK_CARD);
+$HD_Form->FG_FK_WARNONLY = !($A2B->config['webui']['delete_fk_card'] ?? true);
 
-if (DELETE_FK_CARD) {
+if (!$HD_Form->FG_FK_WARNONLY) {
     // WE WILL DELETE THE FK
     $HD_Form->FG_FK_DELETE_MESSAGE = _("You are going as well to remove all the SIP/IAX accounts & CallerIDs attached to this card! Please confirm that you really want to remove this card ? ");
 } else {

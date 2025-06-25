@@ -90,7 +90,7 @@ if (is_admin()) {
 $HD_Form->FG_ENABLE_DELETE_BUTTON = is_admin() || (is_agent() && Agent::allowed(Agent::ACX_DELETE_CUSTOMER));
 $HD_Form->FG_DELETE_BUTTON_LINK = "A2B_entity_call.php?form_action=ask-delete&id=";
 
-if (LINK_AUDIO_FILE) {
+if ($A2B->config['webui']['link_audio_file'] ?? false) {
     // TODO: figure out how this works, move it into this file with custom button
     $HD_Form->AddListValue(_("Audio"), "uniqueid", "get_monitorfile_link", [], false);
     $HD_Form->list_query_columns[] = 'cc_call.uniqueid';

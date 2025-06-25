@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\A2Billing;
 use A2billing\Admin;
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
@@ -40,6 +41,9 @@ use A2billing\Table;
 
 $menu_section = 5;
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
+/**
+ * @var A2Billing $A2B
+ */
 require_once __DIR__ . "/../../common/form_data/report_calls.inc";
 /**
  * @var FormHandler $HD_Form
@@ -60,7 +64,7 @@ if (($download ?? "") === "file" && !empty($file)) {
         exit;
     }
 
-    $dl_full = MONITOR_PATH . "/" . $value_de;
+    $dl_full = ($A2B->config['webui']['monitor_path'] ?? "") . "/" . $value_de;
 
     if (!is_readable($dl_full)) {
         echo _("ERROR: Cannot download file $dl_full, it does not exist.");

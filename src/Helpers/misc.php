@@ -98,17 +98,17 @@ function a2b_mail($to, $subject, $mail_content, $from = 'root@localhost', $fromn
 
     $mail = new PHPMailer(true);
 
-    if (SMTP_SERVER) {
+    if ($A2B->config['global']['smtp_server'] ?? false) {
         $mail->Mailer = "smtp";
     } else {
         $mail->Mailer = "sendmail";
     }
 
-    $mail->Host = SMTP_HOST;
-    $mail->Username = SMTP_USERNAME;
-    $mail->Password = SMTP_PASSWORD;
-    $mail->Port = SMTP_PORT;
-    $mail->SMTPSecure = SMTP_SECURE;
+    $mail->Host = $A2B->config['global']['smtp_host'] ?? null;
+    $mail->Username = $A2B->config['global']['smtp_username'] ?? "";
+    $mail->Password = $A2B->config['global']['smtp_password'] ?? "";
+    $mail->Port = $A2B->config['global']['smtp_port'] ?? '25';
+    $mail->SMTPSecure = $A2B->config['global']['smtp_secure'] ?? null;
     $mail->CharSet = 'UTF-8';
 
     if (!empty(SMTP_USERNAME)) {
@@ -353,11 +353,13 @@ function get_money_precise($amt): string
  */
 function get_monitorfile_link($value): string
 {
+    $MONITOR_PATH = (new Table("cc_config", ["config_value"]))
+        ->getValue(["config_key" => "monitor_path"]) ?: "/";
     $format_list = ['wav', 'gsm', 'mp3', 'sln', 'g723', 'g729'];
     $find_record = false;
     foreach ($format_list as $c_format) {
         $myfile = "/$value.$c_format";
-        $dl_full = MONITOR_PATH . $myfile;
+        $dl_full = $MONITOR_PATH . $myfile;
         if (file_exists($dl_full)) {
             $find_record = true;
             break;
@@ -496,6 +498,8 @@ function generate_unique_value($table = "cc_card", $len = 0, $field = "username"
  */
 function gen_card_with_alias($length_cardnumber = null)
 {
+    global $A2B;
+
     $DBHandle = DbConnect();
 
     if (empty($length_cardnumber)) {
@@ -504,7 +508,7 @@ function gen_card_with_alias($length_cardnumber = null)
 
     for ($k = 0; $k <= 200; $k++) {
         $card_gen = generate_random_value(str_repeat("#", $length_cardnumber));
-        $alias_gen = generate_random_value(str_repeat("#", LEN_ALIASNUMBER));
+        $alias_gen = generate_random_value(str_repeat("#", $A2B->config['global']['len_aliasnumber'] ?? 10));
 
         $query = "SELECT username FROM cc_card WHERE username=? OR useralias=? OR username=? OR useralias=?";
         $val = $DBHandle->GetOne($query, [$card_gen, $alias_gen, $alias_gen, $card_gen]);
@@ -555,6 +559,8 @@ function get_timezones(): array
 
 function get_login_button($id): string
 {
+    global $A2B;
+
     $row = (new Table("cc_card", ["useralias", "userpass"]))
         ->getRow(["id" => $id]);
     if (!$row) {
@@ -562,7 +568,7 @@ function get_login_button($id): string
     }
     $username = htmlspecialchars($row["useralias"]);
     $password = htmlspecialchars($row["uipass"]);
-    $link = CUSTOMER_UI_URL;
+    $link = $A2B->config['global']['customer_ui_url'];
 
     if (str_ends_with($link, "index.php")) {
         $link = substr($link, 0, -9) . "A2B_info_card.php";

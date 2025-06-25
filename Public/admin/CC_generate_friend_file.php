@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\A2Billing;
 use A2billing\Admin;
 use A2billing\Realtime;
 use PhpAgi\AMI as AGI_AsteriskManager;
@@ -38,6 +39,9 @@ use PhpAgi\AMI as AGI_AsteriskManager;
 **/
 
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
+/**
+ * @var A2Billing $A2B
+ */
 
 getpost_ifset(array('action', 'voip_type'));
 
@@ -73,7 +77,7 @@ if ($action == "reload") {
 
     if ($voip_type == "sipfriend") {
 
-        $buddyfile = BUDDY_SIP_FILE;
+        $buddyfile = $A2B->config['webui']['buddy_sip_file'];
         $instance_realtime -> create_trunk_config_file ('sip');
 
         $_SESSION["is_sip_changed"]=0;
@@ -82,7 +86,7 @@ if ($action == "reload") {
         }
     } else {
 
-        $buddyfile = BUDDY_IAX_FILE;
+        $buddyfile = $A2B->config['webui']['buddy_iax_file'];
         $instance_realtime -> create_trunk_config_file ('iax');
 
         $_SESSION["is_iax_changed"]=0;

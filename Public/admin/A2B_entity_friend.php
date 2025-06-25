@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\A2Billing;
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
 use A2billing\NotificationsDAO;
@@ -41,6 +42,10 @@ use A2billing\Table;
 
 $menu_section = 1;
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
+/**
+ * @var A2Billing $A2B
+ */
+
 require_once __DIR__ . "/../../common/form_data/FG_var_friend.inc";
 /**
  * @var FormHandler $HD_Form
@@ -129,16 +134,16 @@ if ($batchupdate === "1" && count($check)) {
     $form_action = "add";
 
     $_POST['accountcode'] = $_POST['username'] = $_POST['name'] = $_POST['cardnumber'] = $cardnumber;
-    $_POST['allow'] = FRIEND_ALLOW;
-    $_POST['context'] = FRIEND_CONTEXT;
-    $_POST['nat'] = FRIEND_NAT;
-    $_POST['amaflags'] = FRIEND_AMAFLAGS;
+    $_POST['allow'] = $A2B->config['peer_friend']['allow'];
+    $_POST['context'] = $A2B->config['peer_friend']['context'];
+    $_POST['nat'] = $A2B->config['peer_friend']['nat'];
+    $_POST['amaflags'] = $A2B->config['peer_friend']['amaflags'];
     $_POST['regexten'] = $cardnumber;
     $_POST['id_cc_card'] = $id_cc_card;
     $_POST['callerid'] = $useralias;
-    $_POST['qualify'] = FRIEND_QUALIFY;
-    $_POST['host'] = FRIEND_HOST;
-    $_POST['dtmfmode'] = FRIEND_DTMFMODE;
+    $_POST['qualify'] = $A2B->config['peer_friend']['qualify'];
+    $_POST['host'] = $A2B->config['peer_friend']['host'];
+    $_POST['dtmfmode'] = $A2B->config['peer_friend']['dtmfmode'];
     $_POST['secret'] = strtr(base64_encode(bin2hex(random_bytes(16))), "+/=", "   ");
 
     // for the getProcessed var

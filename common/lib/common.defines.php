@@ -38,6 +38,65 @@ use Profiler_Profiler as Profiler;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
+// $profiler = new Profiler();
+
+// LOAD THE CONFIGURATION
+$A2B = new A2Billing();
+
+// GLOBAL POST/GET VARIABLE
+getpost_ifset (['form_action', 'action', 'form_el_index', 'current_page', 'order', 'sens', 'mydisplaylimit', 'popup_select', 'popup_formname', 'popup_fieldname', 'ui_language', 'msg', 'exporttype']);
+/**
+ * @var string|null $form_action
+ * @var string|null $action
+ * @var string|null $form_el_index
+ * @var string|null $current_page
+ * @var string|null $order
+ * @var string|null $sens
+ * @var string|null $mydisplaylimit
+ * @var string|null $popup_select
+ * @var string|null $popup_formname
+ * @var string|null $popup_fieldname
+ * @var string|null $ui_language
+ * @var string|null $msg
+ * @var string|null $exporttype
+ */
+$popup_select ??= "0";
+$popup_formname ??= "";
+$popup_fieldname ??= "";
+$form_action ??= null;
+
+// SETTINGS FOR DATABASE CONNECTION
+define ("HOST", $A2B->config['database']['hostname'] ?? null);
+define ("PORT", $A2B->config['database']['port'] ?? null);
+define ("USER", $A2B->config['database']['user'] ?? null);
+define ("PASS", $A2B->config['database']['password'] ?? null);
+define ("DBNAME", $A2B->config['database']['dbname'] ?? null);
+define ("DB_TYPE", $A2B->config['database']['dbtype'] ?? null);
+define ("CSRF_SALT", $A2B->config['csrf']['csrf_token_salt'] ?? 'YOURSALT');
+
+// SETTING FOR REALTIME
+define ("USE_REALTIME", $A2B->config['global']['use_realtime'] ?? 0);
+
+define ("BASE_CURRENCY", $A2B->config['global']['base_currency'] ?? null);
+define ("MANAGER_HOST", $A2B->config['global']['manager_host'] ?? null);
+define ("MANAGER_USERNAME", $A2B->config['global']['manager_username'] ?? null);
+define ("MANAGER_SECRET", $A2B->config['global']['manager_secret'] ?? null);
+
+// VOICEMAIL
+const ACT_VOICEMAIL = false;
+
+// WEB DEFINE FROM THE A2BILLING.CONF FILE
+define ("MY_MAX_FILE_SIZE_IMPORT", $A2B->config['webui']['my_max_file_size_import'] ?? null);
+define ("ADVANCED_MODE", $A2B->config['webui']['advanced_mode'] ?? null);
+
+// Language Selection
+if (isset($ui_language)) {
+    $_SESSION["ui_language"] = $ui_language;
+    setcookie("ui_language", $ui_language);
+} elseif (!isset($_SESSION["ui_language"])) {
+    $_SESSION["ui_language"] = $_COOKIE["ui_language"] ?? "english";
+}
+
 switch ($_SESSION["ui_language"] ?? "") {
     case "brazilian":
         $languageEncoding = "pt_BR.UTF-8";
@@ -133,156 +192,6 @@ setlocale(LC_MESSAGES, $languageEncoding);
 textdomain("messages");
 bindtextdomain("messages", BINDTEXTDOMAIN);
 bind_textdomain_codeset("messages", $charEncoding);
-define("CHARSET", $charEncoding);
-
-const LIBDIR = __DIR__;
-
-const WRITELOG_QUERY = false;
-
-const DEBUG = false;
-$profiler = DEBUG ? new Profiler() : null;
-
-// LOAD THE CONFIGURATION
-$A2B = new A2Billing();
-
-// GLOBAL POST/GET VARIABLE
-getpost_ifset (['form_action', 'action', 'form_el_index', 'current_page', 'order', 'sens', 'mydisplaylimit', 'cssname', 'popup_select', 'popup_formname', 'popup_fieldname', 'ui_language', 'msg', 'exporttype']);
-/**
- * @var string $form_action
- * @var string $action
- * @var string $form_el_index
- * @var string $current_page
- * @var string $order
- * @var string $sens
- * @var string $mydisplaylimit
- * @var string $cssname
- * @var string $popup_select
- * @var string $popup_formname
- * @var string $popup_fieldname
- * @var string $ui_language
- * @var string $msg
- * @var string $exporttype
- */
-$popup_select ??= "0";
-$popup_formname ??= "";
-$popup_fieldname ??= "";
-$form_action ??= null;
-
-// SETTINGS FOR DATABASE CONNECTION
-define ("HOST", $A2B->config['database']['hostname'] ?? null);
-define ("PORT", $A2B->config['database']['port'] ?? null);
-define ("USER", $A2B->config['database']['user'] ?? null);
-define ("PASS", $A2B->config['database']['password'] ?? null);
-define ("DBNAME", $A2B->config['database']['dbname'] ?? null);
-define ("DB_TYPE", $A2B->config['database']['dbtype'] ?? null);
-define ("CSRF_SALT", $A2B->config['csrf']['csrf_token_salt'] ?? 'YOURSALT');
-
-// SETTINGS FOR SMTP
-define ("SMTP_SERVER", $A2B->config['global']['smtp_server'] ?? null);
-define ("SMTP_HOST", $A2B->config['global']['smtp_host'] ?? null);
-define ("SMTP_USERNAME", $A2B->config['global']['smtp_username'] ?? null);
-define ("SMTP_PASSWORD", $A2B->config['global']['smtp_password'] ?? null);
-define ("SMTP_PORT", $A2B->config['global']['smtp_port'] ?? '25');
-define ("SMTP_SECURE", $A2B->config['global']['smtp_secure'] ?? null);
-
-// SETTING FOR REALTIME
-define ("USE_REALTIME", $A2B->config['global']['use_realtime'] ?? 0);
-
-// SIP IAX FRIEND CREATION
-define ("FRIEND_TYPE", $A2B->config['peer_friend']['type'] ?? null);
-define ("FRIEND_ALLOW", $A2B->config['peer_friend']['allow'] ?? null);
-define ("FRIEND_CONTEXT", $A2B->config['peer_friend']['context'] ?? null);
-define ("FRIEND_NAT", $A2B->config['peer_friend']['nat'] ?? null);
-define ("FRIEND_AMAFLAGS", $A2B->config['peer_friend']['amaflags'] ?? null);
-define ("FRIEND_QUALIFY", $A2B->config['peer_friend']['qualify'] ?? null);
-define ("FRIEND_HOST", $A2B->config['peer_friend']['host'] ?? null);
-define ("FRIEND_DTMFMODE", $A2B->config['peer_friend']['dtmfmode'] ?? null);
-
-// BUDDY ASTERISK FILES
-define ("BUDDY_SIP_FILE", $A2B->config['webui']['buddy_sip_file'] ?? null);
-define ("BUDDY_IAX_FILE", $A2B->config['webui']['buddy_iax_file'] ?? null);
-
-// BACKUP
-define ("BACKUP_PATH", $A2B->config['backup']['backup_path'] ?? null);
-define ("GZIP_EXE", $A2B->config['backup']['gzip_exe'] ?? null);
-define ("GUNZIP_EXE", $A2B->config['backup']['gunzip_exe'] ?? null);
-define ("MYSQLDUMP", $A2B->config['backup']['mysqldump'] ?? null);
-define ("PG_DUMP", $A2B->config['backup']['pg_dump'] ?? null);
-define ("MYSQL", $A2B->config['backup']['mysql'] ?? null);
-define ("PSQL", $A2B->config['backup']['psql'] ?? null);
-
-define ("LEN_ALIASNUMBER", $A2B->config['global']['len_aliasnumber'] ?? null);
-define ("LEN_VOUCHER", $A2B->config['global']['len_voucher'] ?? null);
-define ("BASE_CURRENCY", $A2B->config['global']['base_currency'] ?? null);
-define ("MANAGER_HOST", $A2B->config['global']['manager_host'] ?? null);
-define ("MANAGER_USERNAME", $A2B->config['global']['manager_username'] ?? null);
-define ("MANAGER_SECRET", $A2B->config['global']['manager_secret'] ?? null);
-define ("CUSTOMER_UI_URL", $A2B->config['global']['customer_ui_url'] ?? null);
-
-//SIP/IAX Info
-define ("SIP_IAX_INFO_TRUNKNAME", $A2B->config['sip-iax-info']['sip_iax_info_trunkname'] ?? null);
-define ("SIP_IAX_INFO_ALLOWCODEC", $A2B->config['sip-iax-info']['sip_iax_info_allowcodec'] ?? null);
-define ("SIP_IAX_INFO_HOST", $A2B->config['sip-iax-info']['sip_iax_info_host'] ?? null);
-define ("IAX_ADDITIONAL_PARAMETERS", $A2B->config['sip-iax-info']['iax_additional_parameters'] ?? null);
-define ("SIP_ADDITIONAL_PARAMETERS", $A2B->config['sip-iax-info']['sip_additional_parameters'] ?? null);
-
-// VOICEMAIL
-const ACT_VOICEMAIL = false;
-
-// WEB DEFINE FROM THE A2BILLING.CONF FILE
-define ("EMAIL_ADMIN", $A2B->config['webui']['email_admin'] ?? 'root@localhost');
-define ("SHOW_HELP", $A2B->config['webui']['show_help'] ?? null);
-define ("MY_MAX_FILE_SIZE_IMPORT", $A2B->config['webui']['my_max_file_size_import'] ?? null);
-define ("DIR_STORE_MOHMP3", $A2B->config['webui']['dir_store_mohmp3'] ?? null);
-define ("DIR_STORE_AUDIO", $A2B->config['webui']['dir_store_audio'] ?? null);
-define ("MY_MAX_FILE_SIZE_AUDIO", $A2B->config['webui']['my_max_file_size_audio'] ?? null);
-$file_ext_allow = is_array($A2B->config['webui']['file_ext_allow'])?$A2B->config['webui']['file_ext_allow']:null;
-$file_ext_allow_musiconhold = is_array($A2B->config['webui']['file_ext_allow_musiconhold'])?$A2B->config['webui']['file_ext_allow_musiconhold']:null;
-define ("LINK_AUDIO_FILE", $A2B->config['webui']['link_audio_file'] ?? null);
-define ("MONITOR_PATH", $A2B->config['webui']['monitor_path'] ?? null);
-define ("ADVANCED_MODE", $A2B->config['webui']['advanced_mode'] ?? null);
-define ("DELETE_FK_CARD", $A2B->config['webui']['delete_fk_card'] ?? null);
-define ("CARD_EXPORT_FIELD_LIST", $A2B->config['webui']['card_export_field_list'] ?? null);
-define ("RATE_EXPORT_FIELD_LIST", $A2B->config['webui']['rate_export_field_list'] ?? null);
-define ("VOUCHER_EXPORT_FIELD_LIST", $A2B->config['webui']['voucher_export_field_list'] ?? null);
-
-define ("RELOAD_ASTERISK_IF_SIPIAX_CREATED", $A2B->config["signup"]['reload_asterisk_if_sipiax_created'] ?? 0);
-
-# define the amount of emails you want to send per period. If 0, batch processing
-# is disabled and messages are sent out as fast as possible
-const MAILQUEUE_BATCH_SIZE = 0;
-
-# define the length of one batch processing period, in seconds (3600 is an hour)
-const MAILQUEUE_BATCH_PERIOD = 3600;
-
-# to avoid overloading the server that sends your email, you can add a little delay
-# between messages that will spread the load of sending
-# you will need to find a good value for your own server
-# value is in seconds (or you can play with the autothrottle below)
-const MAILQUEUE_THROTTLE = 0;
-
-// Language Selection
-if (isset($ui_language)) {
-    $_SESSION["ui_language"] = $ui_language;
-    setcookie("ui_language", $ui_language);
-} elseif (!isset($_SESSION["ui_language"])) {
-    $_SESSION["ui_language"] = $_COOKIE["ui_language"] ?? "english";
-}
-
-// Open menu
-if (!empty($section)) {
-    $_SESSION["menu_section"] = intval($section);
-}
-
-if (!empty($cssname)) {
-    if ($_SESSION["stylefile"] !== $cssname) {
-        foreach (glob("./templates_c/*.*") as $filename) {
-            unlink($filename);
-        }
-    }
-    $_SESSION["stylefile"] = $cssname;
-}
-$_SESSION["stylefile"] ??= "default";
 
 /*
  *		GLOBAL USED VARIABLE

@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\A2Billing;
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
 use A2billing\Table;
@@ -39,6 +40,10 @@ use A2billing\Table;
 
 $menu_section = 10;
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
+/**
+ * @var A2Billing $A2B
+ */
+
 require_once __DIR__ . "/../../common/form_data/FG_var_voucher.inc";
 /**
  * @var FormHandler $HD_Form
@@ -321,7 +326,7 @@ if ($form_action === "list" && !$popup_select) {
                             </label>
                         </div>
                         <div class="col">
-                            <input type="number" name="length" id="gen_length" value="<?= LEN_VOUCHER ?>" min="8" max="20" class="form-control form-control-sm" required="required"/>
+                            <input type="number" name="length" id="gen_length" value="<?= $A2B->config['global']['len_voucher'] ?>" min="8" max="20" class="form-control form-control-sm" required="required"/>
                         </div>
                     </div>
 

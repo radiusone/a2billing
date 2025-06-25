@@ -94,7 +94,7 @@ $HD_Form->FG_ENABLE_ADD_BUTTON = true;
 
 $vouch_attr = ["readonly" => "readonly", "maxlength" => 40];
 if ($form_action === "ask-add") {
-    $vouch_attr["value"] = generate_unique_value($HD_Form->FG_QUERY_TABLE_NAME, LEN_VOUCHER, "voucher");
+    $vouch_attr["value"] = generate_unique_value($HD_Form->FG_QUERY_TABLE_NAME, $A2B->config['global']['len_voucher'] ?? 0, "voucher");
 }
 $HD_Form->AddEditElement(
     _("VOUCHER"),

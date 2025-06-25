@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\A2Billing;
 use A2billing\A2bMailException;
 use A2billing\Admin;
 use A2billing\Forms\FormHandler;
@@ -41,6 +42,22 @@ use A2billing\Table;
 
 $menu_section = 17;
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
+/**
+ * @var A2Billing $A2B
+ */
+
+# define the amount of emails you want to send per period. If 0, batch processing
+# is disabled and messages are sent out as fast as possible
+const MAILQUEUE_BATCH_SIZE = 0;
+
+# define the length of one batch processing period, in seconds (3600 is an hour)
+const MAILQUEUE_BATCH_PERIOD = 3600;
+
+# to avoid overloading the server that sends your email, you can add a little delay
+# between messages that will spread the load of sending
+# you will need to find a good value for your own server
+# value is in seconds (or you can play with the autothrottle below)
+const MAILQUEUE_THROTTLE = 0;
 
 Admin::checkPageAccess(Admin::ACX_MAIL);
 
@@ -180,7 +197,7 @@ $HD_Form->create_search_form(true);
     <div class="row mb-3">
         <label class="col-3 col-form-label" for="from"><?= _("From Email") ?></label>
         <div class="col">
-            <input name="from" id="from" type="email" class="form-control" value="<?= EMAIL_ADMIN ?>"/>
+            <input name="from" id="from" type="email" class="form-control" value="<?= $A2B->config["webui"]["email_admin"] ?? "root@localhost" ?>"/>
         </div>
     </div>
 

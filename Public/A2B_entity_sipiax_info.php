@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\A2Billing;
 use A2billing\Customer;
 use A2billing\Table;
 
@@ -37,6 +38,10 @@ use A2billing\Table;
 **/
 
 require_once __DIR__ . "/../common/lib/customer.defines.php";
+/**
+ * @var A2Billing $A2B
+ */
+
 require_once __DIR__ . "/form_data/FG_var_sipiax_info.inc";
 
 Customer::checkPageAccess(Customer::ACX_SIP_IAX);
@@ -63,8 +68,8 @@ $sip_iax_data = (new Table($table, ["id", "username", "secret", "disallow", "all
     ->getRow(["id_cc_card" => $_SESSION["card_id"]]);
 
 //Additonal parameters
-$additional_sip = explode("|", SIP_ADDITIONAL_PARAMETERS);
-$additional_iax = explode("|", IAX_ADDITIONAL_PARAMETERS);
+$additional_sip = explode("|", $A2B->config['sip-iax-info']['sip_additional_parameters'] ?? "");
+$additional_iax = explode("|", $A2B->config['sip-iax-info']['iax_additional_parameters'] ?? "");
 
 // #### HEADER SECTION
 require_once __DIR__ . "/templates/main.php";
@@ -107,23 +112,23 @@ echo create_help(gettext("Configuration information for SIP and IAX Client. You 
           </tr>
           <tr>
             <td colspan="2" bgcolor="#FFFFFF" class="fontstyle_006" align="center">
-                <br><b><?php echo $configtype;?> URI :</b> <?php echo SIP_IAX_INFO_HOST; ?><br>
+                <br><b><?php echo $configtype;?> URI :</b> <?php echo $A2B->config['sip-iax-info']['sip_iax_info_host']; ?><br>
                 <br><b><?php echo gettext("Username")?> :</b> <?php echo $sip_iax_data["username"]?><br>
                 <br><b><?php echo gettext("Password")?> :</b> <?php echo $sip_iax_data["secret"]?><br><br>
 
                 <br><?php echo gettext("To configure your Asterisk server, copy and paste this into your ")?> <?php echo $config_file;?><br>
 
-                <textarea name="textfield" cols="80" rows="12" class="form_input_text" ><?php if ($sip_iax_data){ ?><?php if ($configtype == "IAX") { ?>[<?php echo SIP_IAX_INFO_TRUNKNAME; ?>]
+                <textarea name="textfield" cols="80" rows="12" class="form_input_text" ><?php if ($sip_iax_data){ ?><?php if ($configtype == "IAX") { ?>[<?php echo $A2B->config['sip-iax-info']['sip_iax_info_trunkname']; ?>]
 username=<?php echo $sip_iax_data["username"]?>
 
 type=friend
 secret=<?php echo $sip_iax_data["secret"]?>
 
-host=<?php echo SIP_IAX_INFO_HOST; ?>
+host=<?php echo $A2B->config['sip-iax-info']['sip_iax_info_host']; ?>
 
 disallow=all
 context=<?php echo $sip_iax_data["context"]?> ; change for proper context
-allow=<?php echo SIP_IAX_INFO_ALLOWCODEC?> ; we support ulaw,alaw,ilbc,gsm,g723.1,g726,g729a
+allow=<?php echo $A2B->config['sip-iax-info']['sip_iax_info_allowcodec']?> ; we support ulaw,alaw,ilbc,gsm,g723.1,g726,g729a
 <?php
 if (count($additional_iax) > 0) {
     for ($i = 0; $i< count($additional_iax); $i++) {
@@ -131,18 +136,18 @@ if (count($additional_iax) > 0) {
     }
 }
 ?>
-<?php } else { ?>[<?php echo SIP_IAX_INFO_TRUNKNAME; ?>]
+<?php } else { ?>[<?php echo $A2B->config['sip-iax-info']['sip_iax_info_trunkname']; ?>]
 username=<?php echo $sip_iax_data["username"]?>
 
 type=friend
 secret=<?php echo $sip_iax_data["secret"]?>
 
-host=<?php echo SIP_IAX_INFO_HOST; ?>
+host=<?php echo $A2B->config['sip-iax-info']['sip_iax_info_host']; ?>
 
 fromuser=<?php echo $sip_iax_data["username"]?>
 
 context=<?php echo $sip_iax_data["context"]?> ; change for proper context
-allow=<?php echo SIP_IAX_INFO_ALLOWCODEC?> ; we support ulaw,alaw,ilbc,gsm,g723.1,g726,g729a
+allow=<?php echo $A2B->config['sip-iax-info']['sip_iax_info_allowcodec']?> ; we support ulaw,alaw,ilbc,gsm,g723.1,g726,g729a
 <?php
 if (count($additional_sip) > 0) {
     for ($i = 0; $i< count($additional_sip); $i++) {
