@@ -2,6 +2,7 @@
 
 use A2billing\A2bMailException;
 use A2billing\Customer;
+use A2billing\Forms\FormHandler;
 use A2billing\Mail;
 use A2billing\Notification;
 use A2billing\NotificationsDAO;
@@ -42,150 +43,20 @@ use A2billing\Ticket;
 **/
 
 require_once __DIR__ . "/../common/lib/customer.defines.php";
-require_once __DIR__ . "/form_data/FG_var_ticket.inc";
+require_once __DIR__ . "/../common/form_data/FG_var_ticket.inc";
+/**
+ * @var FormHandler $HD_Form
+ */
 
 Customer::checkPageAccess(Customer::ACX_SUPPORT);
 
-getpost_ifset(array (
-    'title',
-    'description',
-    'priority',
-    'component'
-));
-
 $HD_Form->init();
-
-// ADD TICKET
-if ((strlen($description) > 0 || strlen($title) > 0) && is_numeric($priority) && is_numeric($component)) {
-
-    $ticket_table = new Table('cc_ticket');
-    $values = ["creator" => $_SESSION["card_id"], "title" => $title, "description" => $description, "id_component" => $component, "priority" => $priority, "viewed_cust" => 0];
-    $ticket_table->addRow($values, "id", $id_ticket);
-    NotificationsDAO::AddNotification("ticket_added_cust", Notification::$LOW, Notification::$CUST, $_SESSION['card_id'], Notification::$LINK_TICKET_CUST, $id_ticket);
-    $table_card =new Table("cc_card", "firstname, lastname, language, email");
-    $card_clause = ["id" => $_SESSION["card_id"]];
-    $result=$table_card -> getRow($card_clause);
-    $owner = $_SESSION["pr_login"]." (".$result['firstname']." ".$result['lastname'].")";
-
-    try {
-        $mail = new Mail(Mail::$TYPE_TICKET_NEW, null, $result['language']);
-        $mail->replaceInEmail(Mail::$TICKET_OWNER_KEY, $owner);
-        $mail->replaceInEmail(Mail::$TICKET_NUMBER_KEY, $id_ticket);
-        $mail->replaceInEmail(Mail::$TICKET_DESCRIPTION_KEY, $description);
-        $mail->replaceInEmail(Mail::$TICKET_PRIORITY_KEY, Ticket::DisplayPriority($priority));
-        $mail->replaceInEmail(Mail::$TICKET_STATUS_KEY,"NEW");
-        $mail->replaceInEmail(Mail::$TICKET_TITLE_KEY, $title);
-        $mail->send($result['email']);
-    } catch (A2bMailException $e) {
-        $error_msg = $e->getMessage();
-    }
-    $component_table = new Table('cc_support_component LEFT JOIN cc_support ON id_support = cc_support.id', ["email"]);
-    $component_clause = ["cc_support_component.id" => $component];
-    $email = $component_table -> getValue($component_clause);
-
-    try {
-        $mail = new Mail(Mail::$TYPE_TICKET_NEW, null, $result['language']);
-        $mail->replaceInEmail(Mail::$TICKET_OWNER_KEY, $owner);
-        $mail->replaceInEmail(Mail::$TICKET_NUMBER_KEY, $id_ticket);
-        $mail->replaceInEmail(Mail::$TICKET_DESCRIPTION_KEY, $description);
-        $mail->replaceInEmail(Mail::$TICKET_PRIORITY_KEY, Ticket::DisplayPriority($priority));
-        $mail->replaceInEmail(Mail::$TICKET_STATUS_KEY,"NEW");
-        $mail->replaceInEmail(Mail::$TICKET_TITLE_KEY, $title);
-        $mail->send($email);
-    } catch (A2bMailException $e) {
-        $error_msg = $e->getMessage();
-    }
-    $update_msg = gettext("Ticket added successfully");
-
-} elseif ((strlen($description) + strlen($title) == 0)) {
-    $update_msg = gettext("Please complete the title and description portions of the form.");
-} else {
-    $update_msg = gettext("Sorry, There was a problem creating your ticket.");
-}
 
 $form_action ??= "list";
 $list = $HD_Form->perform_action($form_action);
-
-// #### HEADER SECTION
 require_once __DIR__ . "/templates/main.php";
 
-// #### HELP SECTION
-echo create_help(gettext("On this page, you can open a support ticket and consult the status of your existing ticket."));
+$HD_Form->create_toppage($form_action);
+$HD_Form->create_form($form_action, $list);
 
-if ($form_action == "list") {
-    $HD_Form -> create_toppage ("ask-add");
-
-?>
-      <center><font class="error_message"><?php echo gettext("Create support ticket"); ?></font></center>
-      <center>
-       <table align="center" >
-        <form name="theForm" action="<?php  $_SERVER["PHP_SELF"]?>">
-
-        <tr class="bgcolor_001">
-        <td align="left" valign="bottom">
-        <font class="fontstyle_002"><?php echo gettext("Title");?> :</font>
-        </td>
-        <td>
-            <input class="form_input_text" name="title" size="100" maxlength="100" />
-        </td>
-        </tr>
-        <tr>
-         <td>
-             <font class="fontstyle_002"><?php echo gettext("Priority");?> :</font>
-         </td>
-         <td>
-               <select NAME="priority" class="form_input_select">
-                <option class=input value='0' ><?php echo gettext("NONE");?> </option>
-                <option class=input value='1' ><?php echo gettext("LOW");?> </option>
-                <option class=input value='2' ><?php echo gettext("MEDIUM");?> </option>
-                <option class=input value='3' ><?php echo gettext("HIGH");?> </option>
-            </select>
-         </td>
-        </tr>
-          <tr class="bgcolor_001">
-         <td>
-             <font class="fontstyle_002"><?php echo gettext("Component");?> :</font>
-         </td>
-         <td>
-         <select NAME="component" class="form_input_select">
-             <?php
-                     $DBHandle  = DbConnect();
-                    $instance_sub_table = new Table("cc_support_component", ["id", "name"]);
-                 $QUERY = ["activated" => 1, "type_user" => ["IN", [0, 2]]];
-                 $return = $instance_sub_table -> getRows($QUERY);
-                     foreach ($return as $value) {
-                        echo	'<option class=input value=" '. $value["id"].'"  > ' . $value["name"]. '  </option>' ;
-                     }
-            ?>
-                </select>
-
-         </td>
-        </tr>
-        <tr>
-        <td align="left" valign="top">
-                <font class="fontstyle_002"><?php echo gettext("Description");?> :</font>
-            </td>
-            <td>
-                 <textarea class="form_input_text" name="description" cols="100" rows="6"></textarea>
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2" align="right" valign="middle">
-                        <input class="form_input_button"  value="<?php echo gettext("CREATE");?>"  type="submit">
-        </td>
-        </tr>
-    </form>
-      </table>
-      </center>
-      <br>
-<center><font class="error_message"><?php if (isset($update_msg) && strlen($update_msg)>0) echo $update_msg; ?></font></center>
-    <?php
-}
-
-// #### TOP SECTION PAGE
-$HD_Form -> create_toppage ($form_action);
-
-$HD_Form -> create_form($form_action, $list) ;
-
-// #### FOOTER SECTION
 require_once __DIR__ . "/templates/footer.php";

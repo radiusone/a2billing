@@ -68,7 +68,7 @@ if ($form_action === "list") {
         LEFT JOIN cc_ticket_comment bb ON aa.id = bb.id_ticket
         GROUP BY aa.id
         SQL;
-    } elseif ($ticket_type === "agent") {
+    } elseif (is_agent() && $ticket_type === "agent") {
         $agent_id = (int)$_SESSION["agent_id"];
         $virtual = <<< SQL
         SELECT aa.id, CASE WHEN MAX(aa.viewed_agent) = 1 OR SUM(bb.viewed_agent) > 0 THEN 1 ELSE 0 END AS viewed
@@ -77,7 +77,7 @@ if ($form_action === "list") {
         WHERE aa.creator = $agent_id
         GROUP BY aa.id
         SQL;
-    } else {
+    } elseif (is_agent()) {
         $agent_id = (int)$_SESSION["agent_id"];
         $virtual = <<< SQL
         SELECT aa.id, CASE WHEN MAX(aa.viewed_agent) = 1 OR SUM(bb.viewed_agent) > 0 THEN 1 ELSE 0 END AS viewed
@@ -86,6 +86,16 @@ if ($form_action === "list") {
         LEFT JOIN cc_card dd ON dd.id = aa.creator
         LEFT JOIN cc_card_group ee ON dd.id_group = ee.id
         WHERE ee.id_agent = $agent_id
+        GROUP BY aa.id
+        SQL;
+    } elseif (is_customer()) {
+        $creator_type = Ticket::CUSTOMER;
+        $card_id = (int)$_SESSION["card_id"];
+        $virtual = <<< SQL
+        SELECT aa.id, CASE WHEN MAX(aa.viewed_cust) = 1 OR SUM(bb.viewed_cust) > 0 THEN 1 ELSE 0 END as viewed
+        FROM cc_ticket aa
+        LEFT JOIN cc_ticket_comment bb ON aa.id = bb.id_ticket
+        WHERE aa.creator_type = $creator_type AND aa.creator = $card_id
         GROUP BY aa.id
         SQL;
     }
@@ -101,7 +111,11 @@ if ($form_action === "list") {
 
 $HD_Form->list_query_order_columns = ["cc_ticket.creationdate"];
 $HD_Form->list_query_order_direction = "DESC";
-$HD_Form->list_query_conditions["cc_ticket.creator_type"] = $ticket_type === "agent" ? 1 : 0;
+$HD_Form->list_query_conditions["cc_ticket.creator_type"] = $ticket_type === "agent" ? Ticket::AGENT : Ticket::CUSTOMER;
+if (is_customer()) {
+    $HD_Form->list_query_conditions["cc_ticket.creator"] = $_SESSION["card_id"];
+    $HD_Form->update_query_conditions["cc_ticket.creator"] = $_SESSION["card_id"];
+}
 
 $HD_Form->FG_FK_DELETE_ALLOWED = is_admin();
 $HD_Form->FG_FK_DELETE_CONFIRM = true;
@@ -109,24 +123,28 @@ $HD_Form->FG_FK_WARNONLY = true;
 $HD_Form->FG_FK_TABLENAMES = ["cc_ticket_comment"];
 $HD_Form->FG_FK_EDITION_CLAUSE = ["id_ticket"];
 
-$HD_Form->AddListTopButton("?form_action=ask-add&ticket_type=$ticket_type");
-$HD_Form->AddListTopButton(
-    "?ticket_type=" . ($ticket_type === "agent" ? "user" : "agent"),
-    $ticket_type === "agent" ? _("Show user tickets") : _("Show agent tickets")
-);
+if (!is_customer()) {
+    $HD_Form->AddListTopButton("?form_action=ask-add&ticket_type=$ticket_type");
+    $HD_Form->AddListTopButton(
+        "?ticket_type=" . ($ticket_type === "agent" ? "user" : "agent"),
+        $ticket_type === "agent" ? _("Show user tickets") : _("Show agent tickets")
+    );
 
-if ($ticket_type === "agent") {
-    $HD_Form->list_help_text = create_help(_("You can see here, all tickets created by Agents. You can also add a new ticket for one Agent."));
+    if ($ticket_type === "agent") {
+        $HD_Form->list_help_text = create_help(_("You can see here, all tickets created by Agents. You can also add a new ticket for one Agent."));
+    } else {
+        $HD_Form->list_help_text = create_help(_("You can see here, all tickets created. You can also add a new ticket for one customer."));
+    }
 } else {
-    $HD_Form->list_help_text = create_help(_("You can see here, all tickets created. You can also add a new ticket for one customer."));
+    $HD_Form->AddListTopButton();
+    $HD_Form->list_help_text = create_help(_("On this page, you can open a support ticket and consult the status of your existing ticket."));
 }
-
 $priority_list = Ticket::getAllPriority();
 $viewed_list = getTicketViewedList();
 $status_list = Ticket::getAllStatus();
 
 $HD_Form->AddListValue(_("ID"), "cc_ticket.id");
-if (is_admin() || $ticket_type === "user") {
+if (is_admin() || (is_agent() && $ticket_type === "user")) {
     $HD_Form->AddListSqlMapping(
         $ticket_type === "agent" ? _("Agent") : _("Customer"),
         "creator",
@@ -144,7 +162,7 @@ $HD_Form->AddListMapping(_("Priority"), "priority", $priority_list);
 $HD_Form->AddListMapping(_("Viewed"), "v.viewed", $viewed_list, false);
 $HD_Form->AddListMapping(_("Status"), "cc_ticket.status", $status_list);
 
-$HD_Form->search_form_enabled = !$popup_select;
+$HD_Form->search_form_enabled = !$popup_select && !is_customer();
 $HD_Form->search_delete_enabled = false;
 $HD_Form->search_session_key = 'ticket_cust_selection';
 $HD_Form->search_form_title = _('Define specific criteria to search for ticket created.');
@@ -174,8 +192,8 @@ if ($ticket_type === "agent") {
     } else {
         $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["creator"] = $_SESSION["agent_id"];
     }
-    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["creator_type"] = 1;
-} else {
+    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["creator_type"] = Ticket::AGENT;
+} elseif (!is_customer()) {
     $creator_attr = [];
     if ($form_action === 'ask-add' && !empty($username)) {
         $row = (new Table("cc_card", "id"))
@@ -191,7 +209,10 @@ if ($ticket_type === "agent") {
         [Validator::class, "numeric"],
         _("Insert the Customer ID")
     );
-    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["creator_type"] = 0;
+    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["creator_type"] = Ticket::CUSTOMER;
+} else {
+    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["creator_type"] = Ticket::CUSTOMER;
+    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["creator"] = $_SESSION["card_id"];
 }
 
 $HD_Form->AddEditElement(
@@ -222,14 +243,16 @@ $HD_Form->AddEditTextarea(
 // Set the filter variables
 if ($ticket_type === "agent") {
     $HD_Form->AddListFilter("login", _("Login"));
-} else {
+} elseif (!is_customer()) {
     $HD_Form->AddListFilter("username", _("Account number"));
 }
 
 if (is_admin()) {
     $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["viewed_admin"] = 0;
-} else {
+} elseif (is_agent()) {
     $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["viewed_agent"] = 0;
+} else {
+    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["viewed_cust"] = 0;
 }
-$HD_Form->FG_INTRO_TEXT_EDITION= "";
+$HD_Form->FG_INTRO_TEXT_EDITION = "";
 $HD_Form->FG_INTRO_TEXT_ADITION = "";
