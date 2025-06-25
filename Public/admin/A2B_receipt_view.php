@@ -136,7 +136,7 @@ require_once __DIR__ . "/templates/main.php";
                 <span class="zipcode"><?= $receipt_conf["zipcode"] ?></span>
             </div>
             <div class="country"><?= $receipt_conf["country"] ?></div>
-            <div class="tel"><?= $receipt_conf["tel"] ?></div>
+            <div class="tel"><?= $receipt_conf["phone"] ?></div>
             <div class="email"><?= $receipt_conf["email"] ?></div>
             <div class="web"><?= $receipt_conf["web"] ?></div>
             <div class="vat-number"><?= sprintf(_("VAT no. %s"), $receipt_conf["vat"]) ?></div>
@@ -165,11 +165,11 @@ require_once __DIR__ . "/templates/main.php";
         </thead>
         <tbody>
         <?php foreach ($receipt->items as $item): ?>
-            <?php $total += ($rndprice = round($item->price, 2, PHP_ROUND_HALF_UP)) ?>
+            <?php $total += ($rndprice = round($item->getPrice(), 2, PHP_ROUND_HALF_UP)) ?>
             <tr>
                 <td></td>
                 <td><?= $item->getDate() ?></td>
-                <td class="description"><?= $item->description ?></td>
+                <td class="description"><?= $item->getDescription() ?></td>
                 <td>
                     <?= get_money(convert_currency($rndprice, BASE_CURRENCY, $curr), null, $curr) ?>
                 </td>

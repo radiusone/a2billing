@@ -129,7 +129,7 @@ $total = 0;
                     <span class="zipcode"><?= $receipt_conf["zipcode"] ?></span>
                 </div>
                 <div class="country"><?= $receipt_conf["country"] ?></div>
-                <div class="tel"><?= $receipt_conf["tel"] ?></div>
+                <div class="tel"><?= $receipt_conf["phone"] ?></div>
                 <div class="email"><?= $receipt_conf["email"] ?></div>
                 <div class="web"><?= $receipt_conf["web"] ?></div>
                 <div class="vat-number"><?= sprintf(_("VAT no. %s"), $receipt_conf["vat"]) ?></div>

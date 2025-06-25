@@ -135,7 +135,7 @@ require_once __DIR__ . "/templates/main.php";
                 <span class="zipcode"><?= $invoice_conf["zipcode"] ?></span>
             </div>
             <div class="country"><?= $invoice_conf["country"] ?></div>
-            <div class="tel"><?= $invoice_conf["tel"] ?></div>
+            <div class="tel"><?= $invoice_conf["phone"] ?></div>
             <div class="email"><?= $invoice_conf["email"] ?></div>
             <div class="web"><?= $invoice_conf["web"] ?></div>
             <div class="vat-number"><?= sprintf(_("VAT no. %s"), $invoice_conf["vat"]) ?></div>
