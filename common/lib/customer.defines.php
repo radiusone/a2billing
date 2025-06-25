@@ -44,3 +44,5 @@ require_once __DIR__ . "/common.defines.php";
 if (PHP_SAPI !== "cli") {
     Customer::checkPageAccess();
 }
+
+const ENABLE_LOG = false;
