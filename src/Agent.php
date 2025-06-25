@@ -26,6 +26,7 @@ class Agent extends User
         "index.php",
         "logout.php",
         "PP_error.php",
+        "PP_intro.php",
     ];
 
     /**

@@ -35,6 +35,7 @@ class Customer extends User
         "index.php",
         "logout.php",
         "PP_error.php",
+        "A2B_info_card.php",
     ];
 
     /**
