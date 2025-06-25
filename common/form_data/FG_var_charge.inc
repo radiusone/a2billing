@@ -38,7 +38,9 @@ use A2billing\Table;
  *
 **/
 /**
- * @var string $form_action
+ * @var string|null $form_action
+ * @var bool|null $wantinclude set in A2B_entity_did_billing which includes this page
+ * @var string|null $order set in A2B_entity_did_billing which includes this page
  */
 
 $form_action ??= "list";
@@ -46,9 +48,11 @@ $wantinclude ??= false;
 
 getpost_ifset(["id", "id_did"]);
 /**
+ * @var numeric-string|null $id
  * @var numeric-string|null $id_did
  */
 
+/** @var FormHandler $HD_Form_c named differently because of the page include nonsense */
 $HD_Form_c = new FormHandler(
     "cc_charge",
     _("Charge"),
@@ -99,8 +103,7 @@ $HD_Form_c->AddEditPopup(
 
 $amt_attr = ["maxlength" => 20];
 if ($form_action === "ask-add" && !empty($id_did)) {
-    $row = (new Table("cc_did", "fixrate"))->getRow(["id" => $id_did]);
-    $amt_attr["value"] = $row["fixrate"];
+    $amt_attr["value"] = (new Table("cc_did", ["fixrate"]))->getValue(["id" => $id_did]) ?? 0;
 }
 $HD_Form_c->AddEditElement(
     _("AMOUNT"),

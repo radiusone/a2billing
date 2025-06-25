@@ -50,7 +50,11 @@ Admin::checkPageAccess(Admin::ACX_BILLING);
 $HD_Form_c->init();
 
 if (!empty($id)) {
-    $HD_Form_c->update_query_conditions["id"] = str_replace("%id", $id, $HD_Form_c->update_query_conditions["id"]);
+    $HD_Form_c->update_query_conditions[$HD_Form_c->FG_QUERY_PRIMARY_KEY] = str_replace(
+        "%id",
+        $id,
+        $HD_Form_c->update_query_conditions[$HD_Form_c->FG_QUERY_PRIMARY_KEY]
+    );
 }
 
 $form_action ??= "list";
