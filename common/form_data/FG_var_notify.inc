@@ -1,11 +1,8 @@
 <?php
 
-use A2billing\Customer;
+use A2billing\A2Billing;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
-use A2billing\Table;
-
-/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
  * This file is part of A2Billing (http://www.a2billing.net/)
@@ -37,63 +34,60 @@ use A2billing\Table;
  *
 **/
 
+/**
+ * @var A2Billing $A2B
+ */
 
-
-
-getpost_ifset(array('id', 'email_notification','credit_notification','notify_email', 'message'));
-
+getpost_ifset(["id", "email_notification", "credit_notification", "notify_email", "message"]);
+/**
+ * @var numeric-string|null $id
+ * @var string|null $email_notification
+ * @var string|null $credit_notification
+ * @var string|null $notify_email
+ * @var string|null $message
+ */
 
 $HD_Form = new FormHandler("cc_card", "Card");
-$HD_Form->update_query_conditions = ["id" => $_SESSION["card_id"]];
-$HD_Form -> FG_INTRO_TEXT_EDITION = '';
+$HD_Form->list_query_conditions = $HD_Form->update_query_conditions = ["id" => $_SESSION["card_id"]];
 
-$HD_Form -> FG_ENABLE_EDIT_BUTTON= true;
-$currency = (new Table("cc_card", ["currency"]))->getValue(["username" => $_SESSION["pr_login"]]);
-if (is_null($currency)) {
-    exit();
-}
-
-$currencies_list = get_currencies();
-
-if (!isset($currencies_list[strtoupper($currency)]["value"]) || !is_numeric($currencies_list[strtoupper($currency)]["value"])) $mycur = 1;
-else $mycur = $currencies_list[strtoupper($currency)]["value"];
-
+$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form->help_text = _("Notification settings.") . '<br>' . _("You can update your notification settings here.");
 
 $limits_notify = getLimitNotify_List($A2B);
 
 $HD_Form->AddEditSelect(
-    gettext("LIMIT CREDIT NOTIFICATION"),
+    _("LIMIT CREDIT NOTIFICATION"),
     "credit_notification",
     $limits_notify,
     "",
-    gettext("currency : ") . strtoupper(BASE_CURRENCY),
+    _("currency : ") . strtoupper(BASE_CURRENCY),
     [],
     gettext("Insert the number of credit when the customer receive a notification"),
     ""
 );
 
 $HD_Form->AddEditRadio(
-    gettext("PERMITTED NOTIFICATIONS BY MAIL"),
+    _("PERMITTED NOTIFICATIONS BY MAIL"),
     "notify_email",
     getYesNoList(),
     "0",
-    gettext("Enable Email Notification"),
+    _("Enable Email Notification"),
     [],
-    gettext("Choose if you want to enable the notification by email for this card")
+    _("Choose if you want to enable the notification by email for this card")
 );
 
 $HD_Form->AddEditElement(
-    gettext("EMAIL NOTIFICATION"),
+    _("EMAIL NOTIFICATION"),
     "email_notification",
     "",
     ["maxlength" => 70],
     [Validator::class, "email"],
-    gettext("Insert the email to notify the customers"),
+    _("Insert the email to notify the customers"),
     "",
     "NO"
 );
 
-$HD_Form -> FG_INTRO_TEXT_ADITION = '';
-$HD_Form -> FG_TEXT_ADITION_CONFIRMATION = gettext("Your record has been updated.")."<br>";
+$HD_Form->FG_INTRO_TEXT_ADITION = "";
+$HD_Form->FG_TEXT_ADITION_CONFIRMATION = _("Your record has been updated.");
 
-$HD_Form -> FG_LOCATION_AFTER_EDIT = "A2B_notification.php?message=success";
+$HD_Form->FG_LOCATION_AFTER_EDIT = "A2B_notification.php?form_action=ask-edit&id=$_SESSION[card_id]&message=success";

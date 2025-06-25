@@ -43,79 +43,95 @@ require_once __DIR__ . "/../common/lib/customer.defines.php";
 
 Customer::checkPageAccess(Customer::ACX_INVOICES);
 
-if (empty($_SESSION["card_id"])) {
-    Header ("HTTP/1.0 401 Unauthorized");
-    Header ("Location: PP_error.php?c=accessdenied");
-    die();
-}
+$card_id = $_SESSION["card_id"];
 
-$card_table = new Table('cc_card', ['vat','typepaid','credit']);
-$card_clause = ["id" => $_SESSION["card_id"]];
-$card_result = $card_table -> getRow($card_clause);
+$card_result = (new Table('cc_card', ['vat','typepaid','credit']))
+    ->getRow(["id" => $card_id]);
 
-$vat = $card_result["vat"] ?? 0;
-$typepaid = $card_result["typepaid"] ?? 0;
-$credit = $card_result["credit"]?? 0;
+$vat = $card_result["vat"];
+$typepaid = $card_result["typepaid"];
+$credit = $card_result["credit"];
 //find the last billing
 
-$now = date("Y-m-d H:i:s");
-$billing_table = new Table('cc_billing_customer', ['id','date']);
-$clause_last_billing = ["id_card" => $_SESSION["card_id"]];
-$result = $billing_table -> getRow($clause_last_billing, ["date"], "desc");
-$clause_call_billing = ["card_id" => $_SESSION["card_id"]];
-$clause_charge = ["id_cc_card" => $_SESSION["card_id"]];
-$desc_billing="";
-$desc_billing_postpaid="";
-$start_date =null;
+$now = (new DateTimeImmutable())->format("Y-m-d H:i:s");
+$result = (new Table('cc_billing_customer', ['id','date']))
+    ->getRow(["id_card" => $card_id], ["date"], "desc");
+$clause_call_billing = ["card_id" => $card_id];
+$clause_charge = ["id_cc_card" => $card_id];
+$desc_billing = "";
+$desc_billing_postpaid = "";
 if (!empty($result["id"])) {
     $clause_call_billing["stoptime"] = ["BETWEEN", [$result["date"], $now]];
     $clause_charge["creationdate"] = ["BETWEEN", [$result["date"], $now]];
-    $desc_billing = gettext("Cost of calls between "). Customer::date($result["date"])->format("Y-m-d H:i:s") ." and ". Customer::date($now)->format("Y-m-d H:i:s");
-    $desc_billing_postpaid="Amount for period between " . Customer::date($now)->format("Y-m-d H:i:s") . " and " . Customer::date($result["date"])->format("Y-m-d H:i:s");
-    $start_date = $result["date"];
+    $desc_billing = sprintf(_("Cost of calls between %s and %s"), Customer::date($result["date"])->format("Y-m-d H:i:s"), Customer::date($now)->format("Y-m-d H:i:s"));
+    $desc_billing_postpaid = sprintf(_("Amount for period between %s and %s"), Customer::date($now)->format("Y-m-d H:i:s"), Customer::date($result["date"])->format("Y-m-d H:i:s"));
 } else {
-    $desc_billing = gettext("Cost of calls before ") . Customer::date($now)->format("Y-m-d H:i:s");
+    $desc_billing = sprintf(_("Cost of calls before %s"), Customer::date($now)->format("Y-m-d H:i:s"));
     $clause_call_billing["stoptime"] = ["<", $now];
     $clause_charge["creationdate"] = ["<", $now];
 }
-$call_table = new Table('cc_call', ['COALESCE(SUM(sessionbill),0)']);
-$calls_price =  $call_table -> getValue($clause_call_billing);
-$receipt_items = array();
+$calls_price =  (new Table('cc_call', ['COALESCE(SUM(sessionbill),0)']))
+    ->getValue($clause_call_billing);
+$receipt_items = [];
+$invoice_items = [];
 
 // COMMON BEHAVIOUR FOR PREPAID AND POSTPAID ... GENERATE A RECEIPT FOR THE CALLS OF THE MONTH
 if ($calls_price) {
-    $item = new ReceiptItem(null, $desc_billing, $now, $calls_price, 'CALLS');
-    $receipt_items[]= $item;
+    $receipt_items[] = new ReceiptItem(null, $desc_billing, $now, $calls_price, 'CALLS');
 }
 
 // GENERATE RECEIPT FOR CHARGE ALREADY CHARGED
-
 $table_charge = new Table("cc_charge", ["description", "creationdate", "amount"]);
-$result =  $table_charge -> getRows($clause_charge + ["charged_status" => 1]);
+$clause_charge["charged_status"] = 1;
+$result =  $table_charge->getRows($clause_charge);
     foreach ($result as $charge) {
-        $item = new ReceiptItem(null, gettext("CHARGE :").$charge['description'], $charge['creationdate'], $charge['amount'], 'CHARGE');
-        $receipt_items[]= $item;
+        $receipt_items[] = new ReceiptItem(
+            null,
+            gettext("CHARGE :") . $charge['description'],
+            $charge['creationdate'],
+            $charge['amount'],
+            'CHARGE'
+        );
     }
- // GENERATE RECEIPT FOR CHARGE NOT CHARGED YET
-$result =  $table_charge -> getRows($clause_charge + ["charged_status" => 1, "invoiced_status" => 0]);
-    foreach ($result as $charge) {
-        $item = InvoiceItem::create(null, gettext("CHARGE :").$charge['description'], $charge['creationdate'], $charge['amount'],$vat, 'CHARGE');
-        $invoice_items[]= $item;
-    }
- // behaviour postpaid
+// GENERATE RECEIPT FOR CHARGE NOT CHARGED YET
+$clause_charge["invoiced_status"] = 0;
+$result =  $table_charge -> getRows($clause_charge);
+foreach ($result as $charge) {
+    $invoice_items[] = InvoiceItem::create(
+        null,
+        gettext("CHARGE :") . $charge['description'],
+        $charge['creationdate'],
+        $charge['amount'],
+        $vat,
+        'CHARGE'
+    );
+}
+// behaviour postpaid
 
-    if ($typepaid==1 && $credit<0) {
-        //GENERATE AN INVOICE TO COMPLETE THE BALANCE
+if ($typepaid == 1 && $credit < 0) {
+    //GENERATE AN INVOICE TO COMPLETE THE BALANCE
     $amount = abs($credit);
-    $item = InvoiceItem::create(null, $desc_billing_postpaid, Customer::date($now)->format("Y-m-d H:i:s"), $amount,$vat, 'POSTPAID');
-    $invoice_items[]= $item;
-    }
+    $invoice_items[] = InvoiceItem::create(
+        null,
+        $desc_billing_postpaid,
+        Customer::date($now)->format("Y-m-d H:i:s"),
+        $amount,
+        $vat,
+        'POSTPAID'
+    );
+}
 
 require_once __DIR__ . "/templates/main.php";
 
 $curr = $_SESSION['currency'];
 $currencies_list = get_currencies();
-if (!isset($currencies_list[strtoupper($curr)]["value"]) || !is_numeric($currencies_list[strtoupper($curr)]["value"])) {$mycur = 1;$display_curr=strtoupper(BASE_CURRENCY);} else {$mycur = $currencies_list[strtoupper($curr)]["value"];$display_curr=strtoupper($curr);}
+if (!isset($currencies_list[strtoupper($curr)]["value"]) || !is_numeric($currencies_list[strtoupper($curr)]["value"])) {
+    $mycur = 1;
+    $display_curr = strtoupper(BASE_CURRENCY);
+} else {
+    $mycur = $currencies_list[strtoupper($curr)]["value"];
+    $display_curr = strtoupper($curr);
+}
 
 function amount_convert($amount)
 {

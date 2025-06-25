@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Customer;
+use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -36,7 +37,10 @@ use A2billing\Customer;
 **/
 
 require_once __DIR__ . "/../common/lib/customer.defines.php";
-require_once __DIR__ . "/form_data/FG_var_notify.inc";
+require_once __DIR__ . "/../common/form_data/FG_var_notify.inc";
+/**
+ * @var FormHandler $HD_Form
+ */
 
 Customer::checkPageAccess(Customer::ACX_NOTIFICATION);
 
@@ -45,28 +49,17 @@ $HD_Form->init();
 $form_action ??= "list";
 $list = $HD_Form->perform_action($form_action);
 
-// #### HEADER SECTION
 require_once __DIR__ . "/templates/main.php";
-
-// #### HELP SECTION
-echo create_help(gettext("Notification settings.") . '<br>' . gettext("You can update your notification settings here."));
-
-// #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);
 
-if ($message == "success") {
+if (($message ?? "") == "success") {
 ?>
-<center>
-<table width="50%" align="center">
-    <tr height="100px">
-        <td align="center"><?php echo gettext("Your notification settings has successfully been updated.")?></td>
-    </tr>
-</table>
-</center>
+<div class="alert alert-success">
+    <p><?= _("Your notification settings has successfully been updated.") ?></p>
+</div>
 <?php
-} else {
-    $HD_Form -> create_form($form_action, $list) ;
 }
 
-// #### FOOTER SECTION
+$HD_Form->create_form($form_action, $list);
+
 require_once __DIR__ . "/templates/footer.php";

@@ -5,7 +5,7 @@ use A2billing\Customer;
 require_once("header.php");
 require_once __DIR__ . "/../../common/lib/customer.defines.php";
 /**
- * @var string $popup_select
+ * @var numeric-string $popup_select
  * @var int|null $menu_section
  */
 $menu_section ??= 0;
@@ -66,7 +66,7 @@ $menu_section ??= 0;
             <a class="btn btn-toggle mb-1" href="A2B_support.php"><?= _("Support") ?></a>
             <?php endif ?>
             <?php if (Customer::allowed(Customer::ACX_NOTIFICATION)): ?>
-            <a class="btn btn-toggle mb-1" href="A2B_notification.php"><?= _("Notifications") ?></a>
+            <a class="btn btn-toggle mb-1" href="A2B_notification.php?form_action=ask-edit&id=<?= $_SESSION["card_id"] ?>"><?= _("Notifications") ?></a>
             <?php endif ?>
             <a class="btn btn-toggle mb-1" href="logout.php"><?= _("Logout") ?></a>
             <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#language-collapse" aria-expanded="false">
