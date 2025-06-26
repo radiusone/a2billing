@@ -1121,6 +1121,7 @@ class FormHandler
             "url" => $url,
             "label" => $label ?: _("select"),
             "image" => "",
+            "icon" => "",
             "class" => "popup-select-button",
             "match_index" => "",
             "match_value" => "",
