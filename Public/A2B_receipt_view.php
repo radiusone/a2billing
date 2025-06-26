@@ -84,29 +84,18 @@ $curr = $card['currency'];
 $total = 0;
 
 ?>
-
-<?php if (!$popup_select): ?>
-    <div class="row mb-3">
-        <div class="col-auto ms-auto">
-            <a href="?id=<?= $id ?>&curr=<?= $curr ?>&popup_select=1" target="_blank">
-                <img src="<?= get_image_path("printer.png") ?>" title="Print" alt="Print">
-            </a>
-        </div>
-    </div>
-<?php else: ?>
-    <div class="row d-print-none">
-        <div class="col-auto ms-auto">
-            <a href="javascript:window.print()">
-                <img src="<?= get_image_path("printer.png") ?>" title="Print" alt="Print">
-            </a>
-        </div>
-    </div>
-<?php endif ?>
-
     <div class="mx-auto position-relative invoice-wrapper" style="width: 210mm; height: 297mm">
         <div class="row mb-3 justify-content-between">
             <div class="col-5 align-self-top">
-                <div class="h4 mb-auto text-uppercase"><?= _("Receipt") ?></div>
+                <div class="h4 mb-auto text-uppercase">
+                    <?= _("Receipt") ?>
+                <?php if (!$popup_select): ?>
+                    <a href="" class="popup_trigger me-2" data-uri-extra="&id=<?= $id ?>&curr=<?= $curr ?>&popup_select=1" aria-label="<?= _("Print") ?>"><span class="bi bi-16 bi-printer-fill" aria-hidden="true"></span></a>
+                    <a href="A2B_receipt_detail.php" class="popup_trigger" data-uri-extra="&id=<?= $id ?>" aria-label="<?= _("Details") ?>"><span class="bi bi-16 bi-search text-info" aria-hidden="true"></span></a>
+                <?php else: ?>
+                    <a href="javascript:window.print()" class="d-print-none"><span class="bi bi-16 bi-printer-fill" aria-hidden="true"></span></a>
+                <?php endif ?>
+                </div>
                 <div class="company-name"><?= $card["company_name"] ?></div>
                 <div class="fullname"><?= $card["firstname"]?> <?= $card["lastname"]?></div>
                 <div class="address"><span class="street"><?= $card["address"] ?></span></div>

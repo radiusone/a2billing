@@ -40,154 +40,116 @@ require_once __DIR__ . "/../common/lib/customer.defines.php";
 
 Customer::checkPageAccess(Customer::ACX_INVOICES);
 
-getpost_ifset(array('id','page'));
-
+getpost_ifset(["id", "page"]);
+/**
+ * @var numeric-string|null $id
+ * @var numeric-string|null $page
+ */
 if (empty($id)) {
-Header ("Location: A2B_entity_receipt.php?section=13");
+    header("Location: A2B_entity_receipt.php");
 }
 
-if(empty($page))$page=1;
-$receipt = new Receipt($id);
+$page = intval($page ?? 1);
+$receipt = new Receipt((int)$id);
 if ($receipt->getCard() != $_SESSION["card_id"]) {
-    Header ("HTTP/1.0 401 Unauthorized");
-    Header ("Location: PP_error.php?c=accessdenied");
+    header("HTTP/1.0 401 Unauthorized");
+    header("Location: PP_error.php?c=accessdenied");
     die();
 }
 $nbitems = $receipt->nbDetailedItems();
-$nb_by_page =100;
-$nb_page = ceil($nbitems/$nb_by_page);
-$items = $receipt->loadDetailedItems((($page-1)*$nb_by_page),$nb_by_page);
-if($nb_page>1)$totalprice = $receipt->getTotalPrice();
-//load customer
-$DBHandle  = DbConnect();
+$nb_by_page = 100;
+$nb_page = ceil($nbitems / $nb_by_page);
+$items = $receipt->loadDetailedItems((($page - 1) * $nb_by_page), $nb_by_page);
+$totalprice = $receipt->getTotalPrice();
 
 require_once __DIR__ . "/templates/main.php";
 
 //Currencies check
 $curr = $_SESSION['currency'];
-$currencies_list = get_currencies();
-if (!isset($currencies_list[strtoupper($curr)]["value"]) || !is_numeric($currencies_list[strtoupper($curr)]["value"])) {$mycur = 1;$display_curr=strtoupper(BASE_CURRENCY);} else {$mycur = $currencies_list[strtoupper($curr)]["value"];$display_curr=strtoupper($curr);}
-
-function amount_convert($amount)
-{
-    global $mycur;
-
-    return $amount/$mycur;
-}
-
+$pagetotal = 0;
 ?>
 
-<?php if ($nb_page>1) { ?>
-<table width="90%" style ="margin-left:auto;margin-right:auto;" >
-    <tr>
-        <td colspan="3" align="left">
-        <?php if ($page>1) { ?>
-            <a href="A2B_receipt_detail.php?popup_select=1&id=<?php echo $id; ?>&page=<?php echo $page-1; ?>"> &lt; <?php echo gettext("Page") ?>&nbsp;<?php echo $page-1; ?> </a>
-        <?php } ?>
-        &nbsp;
-        </td>
-        <td colspan="3" align="right">
-        &nbsp;
-                <?php if ($page<$nb_page) { ?>
-        <a href="A2B_receipt_detail.php?popup_select=1&id=<?php echo $id; ?>&page=<?php echo $page+1; ?>"><?php echo gettext("Page") ?>&nbsp;<?php echo $page+1; ?> &gt;</a>
-        <?php } ?>
-                </td>
-    </tr>
-</table>
-<?php } ?>
+<?php if ($nb_page > 1): ?>
+<nav aria-label="<?= _("page navigation") ?>">
+    <ul class="pagination justify-content-center">
+        <li class="page-item <?= $page <= 1 ? "disabled" : "" ?>">
+            <?php if ($page <= 1): ?>
+                <span class="page-link" aria-hidden="true"><span class="bi bi-16 bi-skip-backward-fill"></span></span>
+            <?php else: ?>
+                <a class="page-link" href="?popup_select=1&page=1" aria-label="<?= _("First") ?>"><span class="bi bi-16 bi-skip-backward-fill" aria-hidden="true"></span></a>
+            <?php endif ?>
+        </li>
+        <li class="page-item <?= $page === 1 ? "disabled" : "" ?>">
+            <?php if ($page === 1): ?>
+                <span class="page-link" aria-hidden="true"><span class="bi bi-16 bi-rewind-fill"></span></span>
+            <?php else: ?>
+                <a class="page-link" href="?popup_select=1&page=<?= $page - 1 ?>" aria-label="<?= _("Previous") ?>"><span class="bi bi-16 bi-rewind-fill" aria-hidden="true"></span></a>
+            <?php endif ?>
+        </li>
+        <li class="page-item disabled"><span class="page-link"><?= sprintf(_("Page %d/%d"), $page, $nb_page) ?></span></li>
+        <li class="page-item <?= $page >= $nb_page ? "disabled" : "" ?>">
+            <?php if ($page >= $nb_page): ?>
+                <span class="page-link" aria-hidden="true"><span class="bi bi-16 bi-fast-forward-fill"></span></span>
+            <?php else: ?>
+                <a class="page-link" href="?popup_select=1&page=<?= $page + 1 ?>" aria-label="<?= _("Next") ?>"><span class="bi bi-16 bi-fast-forward-fill" aria-hidden="true"></span></a>
+            <?php endif ?>
+        </li>
+        <li class="page-item <?= $page >= $nb_page ? "disabled" : "" ?>">
+            <?php if ($page >= $nb_page): ?>
+                <span class="page-link" aria-hidden="true"><span class="bi bi-16 bi-skip-forward-fill"></span></span>
+            <?php else: ?>
+                <a class="page-link" href="?popup_select=1&page=<?= $nb_page ?>" aria-label="<?= _("Last") ?>"><span class="bi bi-16 bi-skip-forward-fill" aria-hidden="true"></span></a>
+            <?php endif ?>
+        </li>
+    </ul>
+</nav>
+<?php endif ?>
+
+<div class="row">
+    <div class="col">
+        <h4><?= _("Receipt Detail") ?></h4>
+    </div>
+</div>
 
 <div class="receipt-wrapper">
-  <table class="receipt-table">
-  <thead>
-  <tr class="one">
-    <td class="one">
-     <h1><?php echo gettext("RECEIPT DETAIL"); ?></h1>
-
-    </td>
-  </tr>
-  <tr class="two">
-    <td colspan="3" class="receipt-details">
-      <table class="receipt-details">
-        <tbody><tr>
-          <td class="one">
-            <strong><?php echo gettext("Date"); ?></strong>
-            <div><?php echo $receipt->getDate() ?></div>
-          </td>
-
-          <td class="three">
-           <strong>Client number</strong>
-            <div><?php echo $_SESSION['pr_login'] ?></div>
-          </td>
-                 </tr>
-      </tbody></table>
-    </td>
-  </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td colspan="3" class="items">
-        <table class="items">
-          <tbody>
-          <tr class="one">
-              <th style="text-align:left;" width="20%"><?php echo gettext("Date"); ?></th>
-              <th class="description" width="60%"><?php echo gettext("Description"); ?></th>
-              <th width="20%" ><?php echo gettext("Cost"); ?></th>
-          </tr>
-          <?php
-          $i=0;
-          foreach ($items as $item) { ?>
-            <tr style="vertical-align:top;" class="<?php if($i%2==0) echo "odd"; else echo "even";?>" >
-                <td style="text-align:left;">
-                    <?php echo $item->getDate(); ?>
-                </td>
-                <td class="description">
-                    <?php echo $item->getDescription(); ?>
-                </td>
-                <td align="right">
-                    <?php echo number_format(amount_convert($item->getPrice()),6); ?>
-                </td>
+    <table class="table table-sm table-striped caption-top receipt-table">
+        <caption>
+            <strong><?= _("Id") ?></strong>
+            <?= $receipt->getId() ?>
+            <br/>
+            <strong><?= _("Date") ?></strong>
+            <?= $receipt->getDate() ?>
+            <br/>
+            <strong><?= _("Client number") ?></strong>
+            <?= $_SESSION["pr_login"] ?>
+        </caption>
+        <thead>
+        <tr>
+            <th scope="col"><?= _("Date") ?></th>
+            <th scope="col"><?= _("Description") ?></th>
+            <th scope="col"><?= _("Cost") ?></th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($items as $item): ?>
+            <tr>
+                <td><?= $item->date ?></td>
+                <td><?= $item->getDescription() ?></td>
+                <td><?= get_money(convert_currency($pagetotal += $item->getPrice(), BASE_CURRENCY, $curr), null, $curr) ?></td>
             </tr>
-             <?php  $i++;} ?>
-
-        </tbody></table>
-      </td>
-    </tr>
-    <?php
-        $price= 0;
-        foreach ($items as $item) {
-             $price = $price + $item->getPrice();
-         }
-         if($nb_page<=1)$totalprice=$price;
-         ?>
-    <tr>
-      <td colspan="3">
-        <table class="total">
-          <tbody>
-          <?php if ($nb_page>1) { ?>
-          <tr class="extotal">
-            <td class="one"></td>
-            <td class="two"><?php echo gettext("Total Page");" "+$page ?></td>
-            <td class="three">
-              <div class="inctotal inner">
-                <?php echo number_format(amount_convert($price),2)." $display_curr"; ?>
-              </div>
-            </td>
-          </tr>
-          <?php } else { ?>
-          <?php } ?>
-          <tr class="inctotal">
-            <td class="one"></td>
-            <td class="two"><?php echo gettext("Total Receipt :") ?></td>
-            <td class="three">
-              <div class="inctotal inner">
-                <?php echo number_format(amount_convert($totalprice),2)." $display_curr"; ?>
-              </div>
-            </td>
-          </tr>
-        </tbody></table>
-      </td>
-    </tr>
-
-  </tbody>
-
-  </table></div>
+        <?php endforeach ?>
+        </tbody>
+        <tfoot class="table-group-divider">
+        <?php if ($nb_page > 1): ?>
+            <tr>
+                <th scope="row" colspan="2"><?= sprintf(_("Page %d total"), $page) ?></th>
+                <td><?= get_money(convert_currency($pagetotal, BASE_CURRENCY, $curr), null, $curr) ?></td>
+            </tr>
+        <?php endif ?>
+        <tr>
+            <th scope="row" colspan="2"><?= _("Receipt total") ?></th>
+            <td><?= get_money(convert_currency($totalprice, BASE_CURRENCY, $curr), null, $curr) ?></td>
+        </tr>
+        </tfoot>
+    </table>
+</div>

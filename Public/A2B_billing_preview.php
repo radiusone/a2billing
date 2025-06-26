@@ -1,7 +1,9 @@
 <?php
 
 use A2billing\Customer;
+use A2billing\Payments\Invoice;
 use A2billing\Payments\InvoiceItem;
+use A2billing\Payments\Receipt;
 use A2billing\Payments\ReceiptItem;
 use A2billing\Table;
 
@@ -45,313 +47,248 @@ Customer::checkPageAccess(Customer::ACX_INVOICES);
 
 $card_id = $_SESSION["card_id"];
 
-$card_result = (new Table('cc_card', ['vat','typepaid','credit']))
-    ->getRow(["id" => $card_id]);
+$card = (new Table("cc_card", ["*"], ["cc_country" => ["country", "countrycode"]]))
+    ->getRow(["cc_card.id" => $card_id]);
 
-$vat = $card_result["vat"];
-$typepaid = $card_result["typepaid"];
-$credit = $card_result["credit"];
+$vat = $card["vat"];
+$typepaid = $card["typepaid"];
+$credit = $card["credit"];
+
 //find the last billing
-
 $now = (new DateTimeImmutable())->format("Y-m-d H:i:s");
-$result = (new Table('cc_billing_customer', ['id','date']))
-    ->getRow(["id_card" => $card_id], ["date"], "desc");
+$last_bill_date = (new Table('cc_billing_customer', ["date"]))
+    ->getValue(["id_card" => $card_id], ["date"], "desc");
 $clause_call_billing = ["card_id" => $card_id];
 $clause_charge = ["id_cc_card" => $card_id];
-$desc_billing = "";
-$desc_billing_postpaid = "";
-if (!empty($result["id"])) {
-    $clause_call_billing["stoptime"] = ["BETWEEN", [$result["date"], $now]];
-    $clause_charge["creationdate"] = ["BETWEEN", [$result["date"], $now]];
-    $desc_billing = sprintf(_("Cost of calls between %s and %s"), Customer::date($result["date"])->format("Y-m-d H:i:s"), Customer::date($now)->format("Y-m-d H:i:s"));
-    $desc_billing_postpaid = sprintf(_("Amount for period between %s and %s"), Customer::date($now)->format("Y-m-d H:i:s"), Customer::date($result["date"])->format("Y-m-d H:i:s"));
+
+if (!empty($last_bill_date)) {
+    $clause_call_billing["stoptime"] = ["BETWEEN", [$last_bill_date, $now]];
+    $clause_charge["creationdate"] = ["BETWEEN", [$last_bill_date, $now]];
+    $desc_billing = sprintf(_("Cost of calls between %s and %s"), Customer::date($last_bill_date)->format("Y-m-d H:i:s"), Customer::date($now)->format("Y-m-d H:i:s"));
+    $desc_billing_postpaid = sprintf(_("Amount for period between %s and %s"), Customer::date($now)->format("Y-m-d H:i:s"), Customer::date($last_bill_date)->format("Y-m-d H:i:s"));
 } else {
-    $desc_billing = sprintf(_("Cost of calls before %s"), Customer::date($now)->format("Y-m-d H:i:s"));
     $clause_call_billing["stoptime"] = ["<", $now];
     $clause_charge["creationdate"] = ["<", $now];
+    $desc_billing = sprintf(_("Cost of calls before %s"), Customer::date($now)->format("Y-m-d H:i:s"));
+    $desc_billing_postpaid = "";
 }
-$calls_price =  (new Table('cc_call', ['COALESCE(SUM(sessionbill),0)']))
+$calls_price = (new Table('cc_call', ['COALESCE(SUM(sessionbill),0)']))
     ->getValue($clause_call_billing);
-$receipt_items = [];
-$invoice_items = [];
+$receipt = Receipt::create($card_id, _("Summary of the charge charged since the last billing."));
+$invoice = Invoice::create($card_id, _("This invoice is for some charges unpaid since the last billing, and for the negative balance."));
 
 // COMMON BEHAVIOUR FOR PREPAID AND POSTPAID ... GENERATE A RECEIPT FOR THE CALLS OF THE MONTH
 if ($calls_price) {
-    $receipt_items[] = new ReceiptItem(null, $desc_billing, $now, $calls_price, 'CALLS');
+    $receipt->items[] = ReceiptItem::create(null, $desc_billing, floatval($calls_price), $now, 'CALLS');
 }
 
-// GENERATE RECEIPT FOR CHARGE ALREADY CHARGED
-$table_charge = new Table("cc_charge", ["description", "creationdate", "amount"]);
-$clause_charge["charged_status"] = 1;
+$table_charge = new Table("cc_charge", ["description", "creationdate", "amount", "charged_status", "invoiced_status"]);
 $result =  $table_charge->getRows($clause_charge);
-    foreach ($result as $charge) {
-        $receipt_items[] = new ReceiptItem(
+foreach ($result as $charge) {
+    if ((int)$charge["charged_status"] === 1) {
+        // GENERATE RECEIPT FOR CHARGE ALREADY CHARGED
+        $receipt->items[] = ReceiptItem::create(
+            null,
+            gettext("CHARGE :") . $charge['description'],
+            floatval($charge['amount']),
+            $charge['creationdate'],
+        );
+    } elseif ((int)$charge["charged_status"] === 0 && (int)$charge["invoiced_status"] === 0) {
+        // GENERATE RECEIPT FOR CHARGE NOT CHARGED YET
+        $invoice->items[] = InvoiceItem::create(
             null,
             gettext("CHARGE :") . $charge['description'],
             $charge['creationdate'],
-            $charge['amount'],
-            'CHARGE'
+            floatval($charge['amount']),
+            floatval($vat),
         );
     }
-// GENERATE RECEIPT FOR CHARGE NOT CHARGED YET
-$clause_charge["invoiced_status"] = 0;
-$result =  $table_charge -> getRows($clause_charge);
-foreach ($result as $charge) {
-    $invoice_items[] = InvoiceItem::create(
-        null,
-        gettext("CHARGE :") . $charge['description'],
-        $charge['creationdate'],
-        $charge['amount'],
-        $vat,
-        'CHARGE'
-    );
 }
 // behaviour postpaid
-
-if ($typepaid == 1 && $credit < 0) {
+if ((int)$typepaid === 1 && $credit < 0) {
     //GENERATE AN INVOICE TO COMPLETE THE BALANCE
     $amount = abs($credit);
-    $invoice_items[] = InvoiceItem::create(
+    $invoice->items[] = InvoiceItem::create(
         null,
         $desc_billing_postpaid,
         Customer::date($now)->format("Y-m-d H:i:s"),
-        $amount,
-        $vat,
+        floatval($amount),
+        floatval($vat),
         'POSTPAID'
     );
 }
 
+$table = new Table(
+    "cc_config",
+    ["config_key", "config_value"],
+    ["cc_config_group" => ["cc_config.config_group_id", "cc_config_group.id"]]
+);
+$invoice_conf = $table->getColumn(
+    "config_value",
+    "config_key",
+    ["group_title" => "invoice"]
+);
+
 require_once __DIR__ . "/templates/main.php";
 
 $curr = $_SESSION['currency'];
-$currencies_list = get_currencies();
-if (!isset($currencies_list[strtoupper($curr)]["value"]) || !is_numeric($currencies_list[strtoupper($curr)]["value"])) {
-    $mycur = 1;
-    $display_curr = strtoupper(BASE_CURRENCY);
-} else {
-    $mycur = $currencies_list[strtoupper($curr)]["value"];
-    $display_curr = strtoupper($curr);
-}
-
-function amount_convert($amount)
-{
-    global $mycur;
-
-    return $amount/$mycur;
-}
-
 ?>
+<?php if (count($receipt->items) > 0): ?>
+<div class="row">
+    <div class="col">
+        <h4>
+            <?= _("Preview Next Receipt") ?>
+            <button type="button" class="btn receipt-preview-detail" aria-label="<?= _("View detailed charges") ?>">
+                <span class="bi bi-16 bi-search text-info" aria-hidden="true"></span>
+            </button>
+        </h4>
+    </div>
+</div>
 
-<div class="receipt-wrapper">
-    <table class="receipt-table" style="border-bottom: dotted gray 1px;">
-  <thead>
-  <tr class="one">
-    <td class="one">
-     <h1><?php echo gettext("PREVIEW NEXT RECEIPT"); ?>
-     <a href="javascript:;" onClick="window.open('A2B_receipt_preview_detail.php?popup_select=1','','scrollbars=yes,resizable=yes,width=700,height=500')" > <img src="<?= get_image_path("info.png", true) ?>" title="Details" alt="Details" border="0"></a>
-     </h1>
-   </td>
-  </tr>
-  <tr class="two">
-    <td colspan="3" class="receipt-details">
-      <table class="receipt-details">
-        <tbody><tr>
-          <td class="one">
-            <strong><?php echo gettext("Date"); ?></strong>
-            <div><?php echo date("Y-m-d H:i:s") ?></div>
-          </td>
-          <td class="two">
-            &nbsp;
-          </td>
-          <td class="three">
-           <strong><?php echo gettext("Client number"); ?></strong>
-            <div><?php echo $_SESSION['pr_login'] ?></div>
-          </td>
-                 </tr>
-      </tbody></table>
-    </td>
-  </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td colspan="3" class="items">
-        <table class="items">
-          <tbody>
-          <tr class="one">
-              <th style="text-align:left;" width="20%"><?php echo gettext("Date"); ?></th>
-              <th class="description" width="60%"><?php echo gettext("Description"); ?></th>
-              <th width="20%" ><?php echo gettext("Cost"); ?></th>
-          </tr>
-          <?php
-          $i=0;
-          foreach ($receipt_items as $item) { ?>
-            <tr style="vertical-align:top;" class="<?php if($i%2==0) echo "odd"; else echo "even";?>" >
-                <td style="text-align:left;">
-                    <?php echo $item->getDate(); ?>
-                </td>
-                <td class="description">
-                    <?php echo $item->getDescription(); ?>
-                </td>
-                <td align="right">
-                    <?php echo number_format(ceil(amount_convert($item->getPrice())*100)/100,2)  ?>
-                </td>
-            </tr>
-             <?php  $i++;} ?>
-
-        </tbody></table>
-      </td>
-    </tr>
-
-    <?php
-        $price = 0;
-        foreach ($receipt_items as $item) {
-            $price = $price + $item->getPrice();
-        }
-    ?>
-
-    <tr>
-      <td colspan="3">
-        <table class="total">
-         <tbody>
-         <tr class="inctotal">
-           <td class="one"></td>
-           <td class="two"><?php echo gettext("Total:") ?></td>
-           <td class="three"><div class="inctotal"><div class="inctotal inner"><?php echo number_format(ceil(amount_convert($price)*100)/100,2)." $display_curr"; ?></div></div></td>
-         </tr>
-        </tbody></table>
-      </td>
-    </tr>
-    <tr>
-    <td colspan="3" class="additional-information">
-      <div class="receipt-description">
-    <?php echo gettext("Summary of the charge charged since the last billing."); ?>
-    <br/>
-    <?php echo gettext("Summary of calls since the last billing."); ?>
-    <br/>
-    <br/>
-     </div></td>
-    </tr>
-  </tbody>
-  </table></div>
-
-<?php if (sizeof($invoice_items)>0) {?>
-<div class="invoice-wrapper">
-  <table class="invoice-table">
-  <thead>
-  <tr class="one">
-    <td class="one">
-     <h1><?php echo gettext("PREVIEW NEXT INVOICE"); ?></h1>
-
-    </td>
-  </tr>
-  <tr class="two">
-    <td colspan="3" class="invoice-details">
-      <table class="invoice-details">
-        <tbody><tr>
-          <td class="one">
-            <strong><?php echo gettext("Date"); ?></strong>
-            <div><?php echo date("Y-m-d H:i:s") ?></div>
-          </td>
-          <td class="two">
-            &nbsp;
-          </td>
-          <td class="three">
-           <strong><?php echo gettext("Client number"); ?></strong>
-            <div><?php echo $_SESSION['pr_login'] ?></div>
-          </td>
-        </tr></tbody>
-      </table>
-    </td>
-  </tr>
-  </thead>
- <tbody>
-    <tr>
-      <td colspan="3" class="items">
-        <table class="items">
-          <tbody>
-          <tr class="one">
-              <th style="text-align:left;"><?php echo gettext("Date"); ?></th>
-              <th class="description"><?php echo gettext("Description"); ?></th>
-              <th><?php echo gettext("Cost excl. VAT"); ?></th>
-              <th><?php echo gettext("VAT"); ?></th>
-              <th><?php echo gettext("Cost incl. VAT"); ?></th>
-          </tr>
-          <?php
-          $i=0;
-          foreach ($invoice_items as $item) { ?>
-            <tr style="vertical-align:top;" class="<?php if($i%2==0) echo "odd"; else echo "even";?>" >
-                <td style="text-align:left;">
-                    <?php echo $item->getDate(); ?>
-                </td>
-                <td class="description">
-                    <?php echo $item->getDescription(); ?>
-                </td>
-                <td align="right">
-                    <?php echo number_format(round(amount_convert($item->getPrice()),6),6); ?>
-                </td>
-                <td align="right">
-                    <?php echo number_format(round($item->getVatRate(),2),2)."%"; ?>
-                </td>
-                <td align="right">
-                    <?php echo number_format(round(amount_convert($item->getPrice())*(1+($item->getVatRate()/100)),6),6); ?>
+<div class="mx-auto position-relative invoice-wrapper" style="width: 210mm; height: 297mm">
+    <div class="row mb-3 justify-content-between">
+        <div class="col-5 align-self-center">
+            <div class="h4 mb-auto text-uppercase"><?= _("Invoice") ?></div>
+            <div class="company-name"><?= $card["company_name"] ?></div>
+            <div class="fullname"><?= $card["firstname"]?> <?= $card["lastname"]?></div>
+            <div class="address"><span class="street"><?= $card["address"] ?></span></div>
+            <div class="zipcode-city">
+                <span class="city"><?= $card["city"] ?></span>
+                <span class="state"><?= $card["state"] ?></span>
+                <span class="zipcode"><?= $card["zipcode"] ?></span>
+            </div>
+            <div class="country"><?= $card["countryname"] ?></div>
+            <?php if ($card["vat_rn"]): ?>
+                <div class="vat-number"><?= sprintf(_("VAT no. %s"), $card["vat_rn"]) ?></div>
+            <?php endif ?>
+        </div>
+        <div class="col-5 align-self-center text-end">
+            <div class="company-name"><?= $invoice_conf["company_name"] ?></div>
+            <div class="address"><span class="street"><?= $invoice_conf["address"] ?></span></div>
+            <div class="zipcode-city">
+                <span class="city"><?= $invoice_conf["city"] ?></span>
+                <span class="state"><?= $invoice_conf["state"] ?></span>
+                <span class="zipcode"><?= $invoice_conf["zipcode"] ?></span>
+            </div>
+            <div class="country"><?= $invoice_conf["country"] ?></div>
+            <div class="tel"><?= $invoice_conf["phone"] ?></div>
+            <div class="email"><?= $invoice_conf["email"] ?></div>
+            <div class="web"><?= $invoice_conf["web"] ?></div>
+            <div class="vat-number"><?= sprintf(_("VAT no. %s"), $invoice_conf["vat"]) ?></div>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-4">
+            <strong><?= _("Date") ?></strong>
+            <div><?= $receipt->getDate() ?></div>
+        </div>
+        <?php if ($invoice_conf["display_account"]): ?>
+            <div class="col-4">
+                <strong><?= _("Client account") ?></strong>
+                <div><?= $card["username"] ?></div>
+            </div>
+        <?php endif ?>
+    </div>
+    <table class="table table-sm mb-3 table-striped invoice-details">
+        <thead>
+        <tr>
+            <td></td>
+            <th><?= _("Date") ?></th>
+            <th class="description"><?= _("Description") ?></th>
+            <th><?= _("Price") ?></th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($receipt->items as $item): ?>
+            <tr>
+                <td></td>
+                <td><?= $item->getDate() ?></td>
+                <td class="description"><?= $item->getDescription() ?></td>
+                <td>
+                    <?= get_money(convert_currency($item->getPrice(), BASE_CURRENCY, $curr), null, $curr) ?>
                 </td>
             </tr>
-             <?php  $i++;} ?>
+        <?php endforeach ?>
+        </tbody>
+        <tfoot class="table-group-divider">
+        <tr>
+            <th scope="row"><?= _("Total") ?></th>
+            <td colspan="2"></td>
+            <td><?= get_money(convert_currency($receipt->getTotalPrice(), BASE_CURRENCY, $curr), null, $curr) ?></td>
+        </tr>
+        </tfoot>
+    </table>
+    <div class="row mb-3 additional-information">
+        <div class="col invoice-description">
+            <?= $receipt->description ?>
+        </div>
+    </div>
+</div>
+<?php endif ?>
 
-        </tbody></table>
-      </td>
-    </tr>
-    <?php
-        $price_without_vat = 0;
-        $price_with_vat = 0;
-        $vat_array = array();
-        foreach ($invoice_items as $item) {
-            $price_without_vat = $price_without_vat + $item->getPrice();
-            $price_with_vat = $price_with_vat + ($item->getPrice()*(1+($item->getVatRate()/100)));
-            if (array_key_exists("".$item->getVatRate(),$vat_array)) {
-                $vat_array[$item->getVatRate()] = $vat_array[$item->getVatRate()] + $item->getPrice()*($item->getVatRate()/100) ;
-            } else {
-                $vat_array[$item->getVatRate()] =  $item->getPrice()*($item->getVatRate()/100) ;
-            }
-        }
-    ?>
-    <tr>
-      <td colspan="3">
-        <table class="total">
-         <tbody><tr class="extotal">
-           <td class="one"></td>
-           <td class="two"><?php echo gettext("Subtotal excl. VAT:"); ?></td>
-           <td class="three"><?php echo number_format(ceil(amount_convert(ceil($price_without_vat*100)/100)*100)/100,2)." $display_curr"; ?></td>
-         </tr>
+<?php if (count($invoice->items) > 0): ?>
+<div class="row">
+    <div class="col">
+        <h4><?= _("Preview Next Invoice") ?></h4>
+    </div>
+</div>
+<div class="mx-auto position-relative invoice-wrapper" style="width: 210mm; height: 297mm">
+    <table class="table table-sm mb-3 table-striped invoice-details">
+        <thead>
+        <tr>
+            <td></td>
+            <th><?= _("Date") ?></th>
+            <th class="description"><?= _("Description") ?></th>
+            <th><?= _("Price ex VAT") ?></th>
+            <th><?= _("VAT") ?></th>
+            <th><?= _("Total price") ?></th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($invoice->items as $item): ?>
+            <tr>
+                <td></td>
+                <td><?= $item->getDate() ?></td>
+                <td class="description"><?= $item->description ?></td>
+                <td>
+                    <?= get_money(convert_currency($item->getPrice(), BASE_CURRENCY, $curr), null, $curr) ?>
+                </td>
+                <td><?= get_percent($item->getVatRate()) ?></td>
+                <td>
+                    <?= get_money(convert_currency($item->getTotalPrice(), BASE_CURRENCY, $curr), null, $curr) ?>
+                </td>
+            </tr>
+        <?php endforeach ?>
+        </tbody>
+        <tfoot class="table-group-divider">
+        <tr>
+            <th scope="row"><?= _("Totals") ?></th>
+            <td colspan="2"></td>
+            <td><?= get_money(convert_currency($invoice->getTotalPrice(), BASE_CURRENCY, $curr), null, $curr) ?></td>
+            <td>
+                <?php foreach ($invoice->getTotalVat() as $per => $vatamt): ?>
+                    <?= sprintf("VAT %s", get_percent((float)$per)) ?>
+                    <?= get_money(convert_currency($vatamt, BASE_CURRENCY, $curr), null, $curr) ?><br/>
+                <?php endforeach ?>
+            </td>
+            <td><?= get_money(convert_currency($invoice->getTotalAmount(), BASE_CURRENCY, $curr), null, $curr) ?></td>
+        </tr>
+        </tfoot>
+    </table>
+    <div class="row mb-3 additional-information">
+        <div class="col invoice-description">
+            <?= $invoice->description ?>
+        </div>
+    </div>
+</div>
+<?php endif ?>
 
-         <?php
-            foreach ($vat_array as $key => $val) {
-          ?>
-             <tr class="vat">
-               <td class="one"></td>
-               <td class="two"><?php echo gettext("VAT $key%:") ?></td>
-               <td class="three"><?php echo number_format(round(amount_convert($val),2),2)." $display_curr"; ?></td>
-             </tr>
-         <?php } ?>
-         <tr class="inctotal">
-           <td class="one"></td>
-           <td class="two"><?php echo gettext("Total incl. VAT:") ?></td>
-           <td class="three"><div class="inctotal"><div class="inctotal inner"><?php echo number_format(ceil(amount_convert(ceil($price_with_vat*100)/100)*100)/100,2)." $display_curr"; ?></div></div></td>
-         </tr>
-        </tbody></table>
-      </td>
-    </tr>
-     <tr>
-    <td colspan="3" class="additional-information">
-      <div class="invoice-description">
-      <?php echo gettext("This invoice is for some charges unpaid since the last billing, and for the negative balance.") ?>;
-     </div></td>
-    </tr>
-
-  </tbody>
-  </table></div>
+<script>
+    document.querySelector(".btn.receipt-preview-detail")
+        .addEventListener("click", function () {
+            window.open("A2B_receipt_preview_detail.php?popup_select=1", "previewdetail", "scrollbars=yes,resizable=yes,width=700,height=500");
+        });
+</script>
 
 <?php
-}
-// #### FOOTER SECTION
 require_once __DIR__ . "/templates/footer.php";

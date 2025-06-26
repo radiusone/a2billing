@@ -42,229 +42,190 @@ require_once __DIR__ . "/../common/lib/customer.defines.php";
 
 Customer::checkPageAccess(Customer::ACX_INVOICES);
 
-getpost_ifset(array('page'));
+getpost_ifset(["page"]);
+/**
+ * @var numeric-string|null $page
+ */
 
-if (empty($page))$page=1;
+$page = intval($page ?? 1);
 
-$card_id = $_SESSION["card_id"];
-
-function loadDetailledItems($startdate,$begin=null,$nb=null)
+/**
+ * These functions basically just fake the methods in A2billing\Receipt because there isn't an actual receipt
+ *
+ * @param string|null $startdate
+ * @param int $begin
+ * @param int $nb
+ * @return list<ReceiptItem>
+ */
+function loadDetailledItems(?string $startdate = null, int $begin = 0, int $nb = 0): array
 {
-    $result = array ();
-    global $card_id;
-    $now = date("Y-m-d H:i:s");
-    $call_table = new Table("cc_call", ["starttime", "sessiontime", "calledstation", "sessionbill"]);
+    $result = [];
+    $card_id = $_SESSION["card_id"];
+
+    $call_table = new Table("cc_call", ["starttime AS itemdate", "sessiontime", "calledstation", "sessionbill"]);
     $call_clause = ["card_id" => $card_id];
-    if(!empty($startdate)) $call_clause[] = ["SUB", "stoptime" => [[">=", $startdate], ["<", $now]]];
-    else $call_clause["stoptime"] = ["<", $now];
-    $return_calls = $call_table->getRows($call_clause, ['starttime'], 'ASC', [], (int)$nb, (int)$begin);
-    foreach ($return_calls as $call) {
-        $min = floor($call['sessiontime'] / 60);
-        $sec = $call['sessiontime'] % 60;
-        $item = new ReceiptItem(null, "CALL : " . $call['calledstation'] . " DURATION : " . $min . " min " . $sec . " sec", $call['starttime'], $call["sessionbill"], $value["VAT"], true);
-        $result[] = $item;
+    if(!empty($startdate)) {
+        $call_clause["stoptime"] = [">=", $startdate];
     }
-    $charge_table = new Table("cc_charge", ["description", "creationdate", "amount"]);
-    $clause_charge = ["id_cc_card" => $card_id];
-    if(!empty($startdate)) $clause_charge[] = ["SUB", "creationdate" => [[">=", $startdate], ["<", $now]]];
-    else $clause_charge["creationdate"] = ["<", $now];
-    $clause_charge["charged_status"] = 1;
+    $return_calls = $call_table->getRows($call_clause);
+    foreach ($return_calls as $call) {
+        $result[] = ReceiptItem::create(
+            null,
+            sprintf(_("Call to %s for %s"), format_phone_number($call['calledstation']), get_timespan($call["sessiontime"])),
+            floatval($call["sessionbill"]),
+            $call["itemdate"],
+        );
+    }
+
+    $charge_table = new Table("cc_charge", ["description", "creationdate AS itemdate", "amount"]);
+    $clause_charge = ["id_cc_card" => $card_id, "charged_status" => 1];
+    if(!empty($startdate)) {
+        $clause_charge["itemdate"] = [">=", $startdate];
+    }
     $return_charges = $charge_table->getRows($clause_charge);
     foreach ($return_charges as $charge) {
-        $item = new ReceiptItem(null, gettext("CHARGE :").$charge['description'], $charge['creationdate'], $charge['amount'], 'CHARGE');
-        $result[]= $item;
+        $result[] = ReceiptItem::create(
+            null,
+            sprintf(_("Charge: %s"), $charge['description']),
+            $charge['itemdate'],
+            floatval($charge['amount']),
+            'CHARGE'
+        );
     }
     //sort r�sult by date
-    return $result;
+    usort($result, fn (ReceiptItem $a, ReceiptItem $b) => $a->getDate() <=> $b->getDate());
+
+    return array_slice($result, $begin, $nb);
 }
 
-function nbDetailledItems($startdate)
+function nbDetailledItems(?string $startdate): int
 {
-    global $card_id;
-    $DBHandle = DbConnect();
-    $now = date("Y-m-d H:i:s");
-    $call_table = new Table("cc_call", ["COUNT(*)"]);
+    $card_id = $_SESSION["card_id"];
+    $call_table = new Table("cc_call");
     $call_clause = ["card_id" => $card_id];
-    if(!empty($startdate)) $call_clause[] = ["SUB", "stoptime" => [[">=", $startdate], ["<", $now]]];
-    else $call_clause["stoptime"] = ["<", $now];
-    $i = $call_table->getValue($call_clause, ['starttime']) ?? 0;
-    $charge_table = new Table("cc_charge", ["COUNT(*)"]);
-    $clause_charge = ["id_cc_card" => $card_id];
-    if(!empty($startdate)) $clause_charge[] = ["SUB", "creationdate" => [[">=", $startdate], ["<", $now]]];
-    else $clause_charge["creationdate"] = ["<", $now];
-    $clause_charge["charged_status"] = 1;
-    $i += $charge_table->getValue($clause_charge) ?? 0;
+    if(!empty($startdate)) {
+        $call_clause["stoptime"] = [">=", $startdate];
+    }
+    $i = $call_table->countRows($call_clause);
+
+    $charge_table = new Table("cc_charge");
+    $clause_charge = ["id_cc_card" => $card_id, "charged_status" => 1];
+    if(!empty($startdate)) {
+        $clause_charge["creationdate"] = [">=", $startdate];
+    }
+    $i += $charge_table->countRows($clause_charge);
 
     return $i;
 }
 
-function SumDetailledItems($startdate)
+function SumDetailledItems(?string $startdate): int
 {
-    global $card_id;
-    $DBHandle = DbConnect();
-    $now = date("Y-m-d H:i:s");
+    $card_id = $_SESSION["card_id"];
     $call_table = new Table("cc_call", ["SUM(sessionbill)"]);
     $call_clause = ["card_id" => $card_id];
-    if(!empty($startdate)) $call_clause[] = ["SUB", "stoptime" => [[">=", $startdate], ["<", $now]]];
-    else $call_clause["stoptime"] = ["<", $now];
-    $i = $call_table->getValue($call_clause) ?? 0;
+    if(!empty($startdate)) {
+        $call_clause["stoptime"] = [">=", $startdate];
+    }
+    $i = intval($call_table->getValue($call_clause) ?? 0);
+
     $charge_table = new Table("cc_charge", ["SUM(amount)"]);
-    $clause_charge = ["id_cc_card" => $card_id];
-    if(!empty($startdate)) $clause_charge[] = ["SUB", "creationdate" => [[">=", $startdate], ["<", $now]]];
-    else $clause_charge["creationdate"] = ["<", $now];
-    $clause_charge["charged_status"] = 1;
-    $i += $charge_table->getValue($clause_charge) ?? 0;
+    $clause_charge = ["id_cc_card" => $card_id, "charged_status" => 1];
+    if(!empty($startdate)) {
+        $clause_charge["creationdate"] = [">=", $startdate];
+    }
+    $i += intval($charge_table->getValue($clause_charge) ?? 0);
 
     return $i;
-}
-
-function amount_convert($amount)
-{
-    global $mycur;
-
-    return $amount/$mycur;
 }
 
 $billing_table = new Table('cc_billing_customer', ['date']);
-$clause_last_billing = ["id_card" => $_SESSION["card_id"]];
-$start_date = $billing_table -> getRow($clause_last_billing, ["date"], "desc");
-$call_table = new Table('cc_call', 'COALESCE(SUM(sessionbill),0)');
+$start_date = $billing_table->getValue(["id_card" => $_SESSION["card_id"]], ["date"], "desc");
 
 $nbitems = nbDetailledItems($start_date);
-$nb_by_page =100;
-$nb_page = ceil($nbitems/$nb_by_page);
-$items = loadDetailledItems($start_date,(($page-1)*$nb_by_page),$nb_by_page);
-if ($nb_page>1) $totalprice = SumDetailledItems($start_date);
-
-//load customer
-$DBHandle  = DbConnect();
+$nb_by_page = 100;
+$nb_page = ceil($nbitems / $nb_by_page);
+$items = loadDetailledItems($start_date,(($page - 1) * $nb_by_page), $nb_by_page);
+$totalprice = SumDetailledItems($start_date);
 
 require_once __DIR__ . "/templates/main.php";
 
-//Currencies check
 $curr = $_SESSION['currency'];
-$currencies_list = get_currencies();
-
-if (!isset($currencies_list[strtoupper($curr)]["value"]) || !is_numeric($currencies_list[strtoupper($curr)]["value"])) {
-    $mycur = 1;
-    $display_curr=strtoupper(BASE_CURRENCY);
-} else {
-    $mycur = $currencies_list[strtoupper($curr)]["value"];
-    $display_curr=strtoupper($curr);
-}
-
+$pagetotal = 0;
 ?>
+<?php if ($nb_page > 1): ?>
+<nav aria-label="<?= _("page navigation") ?>">
+    <ul class="pagination justify-content-center">
+        <li class="page-item <?= $page <= 1 ? "disabled" : "" ?>">
+            <?php if ($page <= 1): ?>
+                <span class="page-link" aria-hidden="true"><span class="bi bi-16 bi-skip-backward-fill"></span></span>
+            <?php else: ?>
+                <a class="page-link" href="?popup_select=1&page=1" aria-label="<?= _("First") ?>"><span class="bi bi-16 bi-skip-backward-fill" aria-hidden="true"></span></a>
+            <?php endif ?>
+        </li>
+        <li class="page-item <?= $page === 1 ? "disabled" : "" ?>">
+            <?php if ($page === 1): ?>
+                <span class="page-link" aria-hidden="true"><span class="bi bi-16 bi-rewind-fill"></span></span>
+            <?php else: ?>
+                <a class="page-link" href="?popup_select=1&page=<?= $page - 1 ?>" aria-label="<?= _("Previous") ?>"><span class="bi bi-16 bi-rewind-fill" aria-hidden="true"></span></a>
+            <?php endif ?>
+        </li>
+        <li class="page-item disabled"><span class="page-link"><?= sprintf(_("Page %d/%d"), $page, $nb_page) ?></span></li>
+        <li class="page-item <?= $page >= $nb_page ? "disabled" : "" ?>">
+            <?php if ($page >= $nb_page): ?>
+                <span class="page-link" aria-hidden="true"><span class="bi bi-16 bi-fast-forward-fill"></span></span>
+            <?php else: ?>
+                <a class="page-link" href="?popup_select=1&page=<?= $page + 1 ?>" aria-label="<?= _("Next") ?>"><span class="bi bi-16 bi-fast-forward-fill" aria-hidden="true"></span></a>
+            <?php endif ?>
+        </li>
+        <li class="page-item <?= $page >= $nb_page ? "disabled" : "" ?>">
+            <?php if ($page >= $nb_page): ?>
+                <span class="page-link" aria-hidden="true"><span class="bi bi-16 bi-skip-forward-fill"></span></span>
+            <?php else: ?>
+                <a class="page-link" href="?popup_select=1&page=<?= $nb_page ?>" aria-label="<?= _("Last") ?>"><span class="bi bi-16 bi-skip-forward-fill" aria-hidden="true"></span></a>
+            <?php endif ?>
+        </li>
+    </ul>
+</nav>
+<?php endif ?>
 
-<?php if ($nb_page>1) { ?>
-<table width="90%" style ="margin-left:auto;margin-right:auto;" >
-    <tr>
-        <td colspan="3" align="left">
-                <?php if ($page>1) { ?>
-            <a href="A2B_receipt_detail.php?popup_select=1&id=<?php echo $id; ?>&page=<?php echo $page-1; ?>"> &lt; <?php echo gettext("Page") ?>&nbsp;<?php echo $page-1; ?> </a>
-        <?php } ?>
-            &nbsp;
-        </td>
-        <td colspan="3" align="right">
-            &nbsp;
-                <?php if ($page<$nb_page) { ?>
-            <a href="A2B_receipt_detail.php?popup_select=1&id=<?php echo $id; ?>&page=<?php echo $page+1; ?>"><?php echo gettext("Page") ?>&nbsp;<?php echo $page+1; ?> &gt;</a>
-        <?php } ?>
-        </td>
-    </tr>
-</table>
-    <?php } ?>
+<div class="row">
+    <div class="col">
+        <h4><?= _("Preview Next Receipt Detail") ?></h4>
+    </div>
+</div>
 
 <div class="receipt-wrapper">
-    <table class="receipt-table">
+    <table class="table table-sm table-striped caption-top receipt-table">
+        <caption>
+            <strong><?= _("Client number") ?></strong> <?= $_SESSION["pr_login"] ?>
+        </caption>
         <thead>
-            <tr class="one">
-                <td class="one">
-                    <h1><?php echo gettext("PREVIEW NEXT RECEIPT DETAIL"); ?></h1>
-
-                </td>
-            </tr>
-            <tr class="two">
-                <td colspan="3" class="receipt-details">
-                    <table class="receipt-details">
-                        <tbody>
-                            <tr>
-                                <td class="one">
-                                    &nbsp;
-                                </td>
-                                <td class="three" align="right">
-                                    <strong>Client number</strong>
-                                    <div><?php echo $_SESSION['pr_login'] ?></div>
-                                </td>
-                            </tr>
-                        </tbody></table>
-                </td>
+            <tr>
+                <th scope="col"><?= _("Date") ?></th>
+                <th scope="col"><?= _("Description") ?></th>
+                <th scope="col"><?= _("Cost") ?></th>
             </tr>
         </thead>
         <tbody>
+        <?php foreach ($items as $item): ?>
             <tr>
-                <td colspan="3" class="items">
-                    <table class="items">
-                        <tbody>
-                            <tr class="one">
-                                <th style="text-align:left;" width="20%"><?php echo gettext("Date"); ?></th>
-                                <th class="description" width="60%"><?php echo gettext("Description"); ?></th>
-                                <th width="20%" ><?php echo gettext("Cost"); ?></th>
-                            </tr>
-                            <?php
-                            $i=0;
-                            foreach ($items as $item) { ?>
-                            <tr style="vertical-align:top;" class="<?php if($i%2==0) echo "odd"; else echo "even";?>" >
-                                <td style="text-align:left;">
-                                    <?php echo $item->getDate(); ?>
-                                </td>
-                                <td class="description">
-                                    <?php echo $item->getDescription(); ?>
-                                </td>
-                                <td align="right">
-                                    <?php echo number_format(amount_convert($item->getPrice()),6); ?>
-                                </td>
-                            </tr>
-                            <?php
-                            $i++;
-                            } ?>
-                        </tbody>
-                    </table>
-                </td>
+                <td><?= $item->date ?></td>
+                <td><?= $item->getDescription() ?></td>
+                <td><?= get_money(convert_currency($pagetotal += $item->getPrice(), BASE_CURRENCY, $curr), null, $curr) ?></td>
             </tr>
-            <?php
-            $price= 0;
-            foreach ($items as $item) {
-                $price = $price + $item->getPrice();
-            }
-            if ($nb_page<=1) $totalprice = $price;
-            ?>
-            <tr>
-                <td colspan="3">
-                    <table class="total">
-                        <tbody>
-            <?php if ($nb_page > 1) { ?>
-                            <tr class="extotal">
-                                <td class="one"></td>
-                                <td class="two"><?php echo gettext("Total Page")." ".$page ?></td>
-                                <td class="three"><div class="inctotal">
-                                    <div class="inctotal inner">
-                                        <?php echo number_format(amount_convert($price),2)." $display_curr"; ?></div>
-                                    </div>
-                                </td>
-                            </tr>
-            <?php } ?>
-                            <tr class="inctotal">
-                                <td class="one"></td>
-                                <td class="two"><?php echo gettext("Total Receipt :") ?></td>
-                                <td class="three">
-                                    <div class="inctotal inner"><?php echo number_format(amount_convert($totalprice),2)." $display_curr"; ?>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody></table>
-                </td>
-            </tr>
-
+        <?php endforeach ?>
         </tbody>
-
-    </table></div>
+        <tfoot class="table-group-divider">
+        <?php if ($nb_page > 1): ?>
+            <tr>
+                <th scope="row" colspan="2"><?= sprintf(_("Page %d total"), $page) ?></th>
+                <td><?= get_money(convert_currency($pagetotal, BASE_CURRENCY, $curr), null, $curr) ?></td>
+            </tr>
+        <?php endif ?>
+            <tr>
+                <th scope="row" colspan="2"><?= _("Receipt total") ?></th>
+                <td><?= get_money(convert_currency($totalprice, BASE_CURRENCY, $curr), null, $curr) ?></td>
+            </tr>
+        </tfoot>
+    </table>
+</div>

@@ -76,22 +76,25 @@ class Receipt extends PaymentDocument
         return $result;
     }
 
-    public function loadDetailedItems($begin = 0, $nb = 5000): array
+    /**
+     * @param int $begin
+     * @param int $nb
+     * @return list<ReceiptItem>
+     */
+    public function loadDetailedItems(int $begin = 0, int $nb = 5000): array
     {
         if (is_null($this->id)) {
             return [];
         }
         $result = [];
-        $count = 0;
         foreach ($this->items as $value) {
-            if (empty($value['id_ext']) || $value['type_ext'] !== "CALLS") {
+            if (empty($value->getExtId()) || $value->getExtType() !== "CALLS") {
                 $result[] = $value;
-                $count++;
                 continue;
             }
 
             $billing = (new Table("cc_billing_customer", ["date", "start_date"]))
-                ->getRow(["id" => $value["id_ext"]]);
+                ->getRow(["id" => $value->getExtId()]);
             if (count($billing) === 0) {
                 continue;
             }
@@ -112,19 +115,15 @@ class Receipt extends PaymentDocument
                     true // what does true mean? original code was just copied from invoice.php including fields that don't exist here :(
                 );
                 $result[] = $item;
-                $count += count($calls);
             }
         }
-        $result["count"] = $count;
 
         return $result;
     }
 
     public function nbDetailedItems(): int
     {
-        $result = $this->loadDetailedItems();
-
-        return $result["count"] ?? 0;
+        return count($this->loadDetailedItems());
     }
 
     public function insertReceiptItem(string $desc, string $price, ?string $date = null): bool
