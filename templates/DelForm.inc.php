@@ -70,7 +70,6 @@ namespace A2billing\Forms;
         <div class="col">
             <?php switch($row["type"]): case "INPUT": case "POPUPVALUE": ?>
             <input
-                id="<?= $row["name"] ?>"
                 class="form-control"
                 readonly="readonly"
                 disabled="disabled"
@@ -81,7 +80,6 @@ namespace A2billing\Forms;
 
             <?php case "TEXTAREA": ?>
             <textarea
-                id="<?= $row["name"] ?>"
                 class="form-control"
                 readonly="readonly"
                 disabled="disabled"
@@ -91,7 +89,6 @@ namespace A2billing\Forms;
 
             <?php case "SELECT": ?>
             <select
-                id="<?= $row["name"] ?>"
                 disabled="disabled"
                 class="form-select <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
                 <?= array_html_attr($row["attributes"]) ?>

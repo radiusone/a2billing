@@ -47,7 +47,6 @@ use DateTime;
                 <?php $db_data[$i] = call_user_func($row["custom_function"], $db_data[$i]) ?>
             <?php endif ?>
             <input
-                id="<?= $row["name"] ?>"
                 class="form-control <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
                 name="<?= $row["name"] ?>"
                 <?= array_html_attr($row["attributes"]) ?>
@@ -62,7 +61,6 @@ use DateTime;
             <?php case "POPUPVALUE": ?>
             <div class="input-group">
                 <input
-                    id="<?= $row["name"] ?>"
                     class="form-control <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
                     name="<?= $row["name"] ?>"
                     <?= array_html_attr($row["attributes"]) ?>
@@ -82,7 +80,6 @@ use DateTime;
 
         <?php case "TEXTAREA": ?>
             <textarea
-                id="<?= $row["name"] ?>"
                 class="form-control <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
                 name="<?= $row["name"] ?>"
                 <?= array_html_attr($row["attributes"]) ?>
@@ -91,7 +88,6 @@ use DateTime;
 
         <?php case "SELECT": ?>
             <select
-                id="<?= $row["name"] ?>"
                 name="<?= $row["name"] . (array_key_exists("multiple", $row["attributes"]) ? "[]" : "") ?>"
                 class="form-select <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
                 <?= array_html_attr($row["attributes"]) ?>

@@ -39,7 +39,6 @@ use DateTime;
         <div class="col">
     <?php switch ($row["type"]): case "INPUT": ?>
             <input
-                id="<?= $row["name"] ?>"
                 class="form-control <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
                 name="<?= $row["name"] ?>"
                 <?= array_html_attr($row["attributes"]) ?>
@@ -52,7 +51,6 @@ use DateTime;
     <?php case "POPUPVALUE": ?>
             <div class="input-group">
                 <input
-                    id="<?= $row["name"] ?>"
                     class="form-control <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
                     name="<?= $row["name"] ?>"
                     <?= array_html_attr($row["attributes"]) ?>
@@ -74,7 +72,6 @@ use DateTime;
 
     <?php case "TEXTAREA": ?>
             <textarea
-                id="<?= $row["name"] ?>"
                 class="form-control <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
                 name="<?= $row["name"] ?>"
                 <?= array_html_attr($row["attributes"]) ?>
