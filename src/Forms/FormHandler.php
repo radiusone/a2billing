@@ -621,6 +621,9 @@ class FormHandler
      * @param string $form_text_bottom Text to display below the form input
      * @param array<string,mixed> $html_attributes HTML attributes for the input
      * @param string $error_message A message to show if validation fails
+     * @param callable(array ):array|null $callback the callback is passed the DB row array,
+     * indices 0 and 1 of the return are used to create the option value and label, otherwise
+     * first two indices of the database array are used
      * @return void
      */
     public function AddEditSqlSelect(
@@ -632,16 +635,16 @@ class FormHandler
         array $first_option = [],
         string $form_text_bottom = "",
         array $html_attributes = [],
-        string $error_message = ""
+        string $error_message = "",
+        ?callable $callback = null
     ): void
     {
         $options = [];
-        array_map(
-            function ($v) use (&$options) {
-                $options[$v[0]] = $v[1];
-            },
-            $table->getRows($conditions)
-        );
+        $callback ??= fn (array $v) => [$v[$table->fields[0]], $v[$table->fields[1]]];
+        foreach ($table->getRows($conditions) as $row) {
+            $ret = $callback($row);
+            $options[$ret[0]] = $ret[1];
+        }
 
         $this->FG_EDIT_FORM_ELEMENTS[] = [
             "label" => $label_text,

@@ -52,7 +52,7 @@ use Profiler_Console as Console;
 
 class Table
 {
-    public ?array $fields = null;
+    public array $fields = [];
     public ?string $table = null;
     public array $joins = [];
     public string $errstr = '';
@@ -72,12 +72,16 @@ class Table
      * @param array|string $list_fields when selecting, what fields will be selected
      * @param array $joins tables to join to the query; see Table::processJoinedTables() for usage
      */
-    public function __construct(string $table = null, $list_fields = "*", array $joins = [], ADOConnection $db = null)
+    public function __construct(string $table = null, $list_fields = [], array $joins = [], ADOConnection $db = null)
     {
         $this->table = $table;
         if (is_string($list_fields)) {
             $list_fields = explode(",", $list_fields);
             array_walk($list_fields, "trim");
+            $list_fields = array_filter($list_fields);
+        }
+        if (empty($list_fields) || !is_array($list_fields)) {
+            $list_fields = ["*"];
         }
         $this->fields = $list_fields;
         $this->joins = $joins;
