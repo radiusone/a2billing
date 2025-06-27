@@ -80,7 +80,6 @@ use DateTime;
 
     <?php case "SELECT": ?>
             <select
-                id="<?= $row["name"] ?>"
                 name="<?= $row["name"] . (array_key_exists("multiple", $row["attributes"]) ? "[]" : "") ?>"
                 class="form-select <?php if ($row["validation_err"] !== true): ?>is-invalid<?php endif?>"
                 <?= array_html_attr($row["attributes"]) ?>
