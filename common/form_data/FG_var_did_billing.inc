@@ -60,7 +60,7 @@ $HD_Form->AddListValue(_("TOTAL_DURATION"), "SUM(sessiontime) AS t_time", "get_m
 $HD_Form->AddListValue(_("TOTAL_COST"), "SUM(sessionbill) AS t_cost", "get_money");
 $HD_Form->AddListValue(_("CARDNUMBER"), "username");
 
-$HD_Form->list_query_group_columns = ["cc_card.username", "cc_did.did", "date"];
+$HD_Form->list_query_group_columns = ["cc_card.username", "cc_did.did", "DATE(starttime)"];
 
 $HD_Form->FG_ENABLE_EDIT_BUTTON = false;
 $HD_Form->FG_ENABLE_DELETE_BUTTON = false;
@@ -68,4 +68,3 @@ $HD_Form->FG_ENABLE_ADD_BUTTON = false;
 
 $HD_Form->AddListFilter("username", _("Card number"));
 $HD_Form->AddListFilter("cc_did.did", _("DID"));
-

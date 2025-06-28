@@ -60,8 +60,9 @@ $HD_Form_c = new FormHandler(
     ["cc_card" => ["cc_charge.id_cc_card", "cc_card.id"]]
 );
 
-if ($wantinclude && isset($order)) {
-    $HD_Form_c->list_query_order_columns = [$order];
+if ($wantinclude) {
+    $HD_Form_c->list_query_order_columns = ["cc_charge.creationdate"];
+    $HD_Form_c->list_query_order_direction = "DESC";
 } else {
     $HD_Form_c->list_query_order_columns = ["id_cc_card"];
 }

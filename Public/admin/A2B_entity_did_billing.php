@@ -57,7 +57,6 @@ $HD_Form->create_form($form_action, $list);
 
 // Include other file ( TODO , find a better way to include files )
 $wantinclude = true;
-$order = "id";
 include_once "A2B_entity_charge.php";
 
 require_once __DIR__ . "/templates/footer.php";
