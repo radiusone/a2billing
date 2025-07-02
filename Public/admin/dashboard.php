@@ -112,6 +112,14 @@ document.addEventListener("DOMContentLoaded", function() {
                 el.checked = true;
                 el.dispatchEvent(new InputEvent("change"));
             });
+            document.querySelectorAll(".period_data").forEach(function (el) {
+                fetch(`${el.dataset.uri}?t=${Date.now()}&type=${el.id}&view_type=${graph.dataset.period}`)
+                    .then(response => response.text())
+                    .then(function(html) {
+                        el.innerHTML = html;
+                    });
+
+            });
         });
     });
 

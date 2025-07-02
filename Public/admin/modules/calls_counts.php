@@ -40,8 +40,22 @@ require_once __DIR__ . "/../../../common/lib/admin.defines.php";
 
 Admin::checkPageAccess(Admin::ACX_DASHBOARD);
 
+getpost_ifset(["type", "view_type"]);
+/**
+ * @var string $type
+ * @var string $view_type
+ */
+$view_type ??= "days";
+$checkdate_month = (new DateTime('midnight first day of this month -6 months 15 days'))->format("Y-m-d");
+$checkdate_day = (new DateTime('midnight -10 days'))->format("Y-m-d");
+
 $result = (new Table("cc_call", ["terminatecauseid", "COUNT(*) AS ct"]))
-    ->getRows(["starttime" => [">=", "CURRENT_DATE"]], [], "ASC", ["terminatecauseid"]);
+    ->getRows(
+        ["starttime" => ["BETWEEN", [$view_type === "month" ? $checkdate_month : $checkdate_day, "CURRENT_TIMESTAMP"]]],
+        [],
+        "ASC",
+        ["terminatecauseid"]
+    );
 
 $counts = [0, 0, 0, 0, 0, 0, 0];
 foreach ($result as $row) {
@@ -51,25 +65,26 @@ foreach ($result as $row) {
 $count_total = array_sum($counts);
 
 $row = (new Table("cc_call", ["SUM(sessiontime) AS sessiontime", "SUM(sessionbill) AS sessionbill", "SUM(buycost) AS buycost"]))
-    ->getRow(["starttime" => [">=", "CURRENT_DATE"]]);
+    ->getRow(["starttime" => ["BETWEEN", [$view_type === "month" ? $checkdate_month : $checkdate_day, "CURRENT_TIMESTAMP"]]]);
 $call_times = $row["sessiontime"] ?? 0;
 $call_sell = get_money($row["sessionbill"] ?? 0);
 $call_buy = get_money($row["buycost"] ?? 0);
 $call_profit = get_money($row["sessionbill"] - $row["buycost"]);
 ?>
-
-<div class="card-text small">
-    <strong><?= _("Total Calls") ?>:</strong>&nbsp;<?= $count_total ?>
-    <strong><?= _("Answered") ?>:</strong>&nbsp;<?= $counts[1] ?? 0 ?>
-    <strong><?= _("Busy") ?>:</strong>&nbsp;<?= $counts[5] ?? 0 ?>
-    <strong><?= _("Unanswered") ?>:</strong>&nbsp;<?= $counts[2] ?? 0 ?>
-    <strong><?= _("Cancelled") ?>:</strong>&nbsp;<?= $counts[3] ?? 0 ?>
-    <strong><?= _("Congestion") ?>:</strong>&nbsp;<?= $counts[4] ?? 0 ?>
-    <strong><?= _("Unavailable") ?>:</strong>&nbsp;<?= $counts[6] ?? 0 ?>
-</div>
-<div class="card-text small">
-    <strong><?= _("Sell") ?>:</strong>&nbsp;<?= $call_sell ?>
-    <strong><?= _("Cost") ?>:</strong>&nbsp;<?= $call_buy ?>
-    <strong><?= _("Profit") ?>:</strong>&nbsp;<?= $call_profit ?>
-    <strong><?= _("Duration") ?>:</strong>&nbsp;<?= get_timespan($call_times) ?>
+<div class="period_data" data-uri="modules/calls_counts.php">
+    <div class="card-text small">
+        <strong><?= _("Total Calls") ?>:</strong>&nbsp;<?= $count_total ?>
+        <strong><?= _("Answered") ?>:</strong>&nbsp;<?= $counts[1] ?? 0 ?>
+        <strong><?= _("Busy") ?>:</strong>&nbsp;<?= $counts[5] ?? 0 ?>
+        <strong><?= _("Unanswered") ?>:</strong>&nbsp;<?= $counts[2] ?? 0 ?>
+        <strong><?= _("Cancelled") ?>:</strong>&nbsp;<?= $counts[3] ?? 0 ?>
+        <strong><?= _("Congestion") ?>:</strong>&nbsp;<?= $counts[4] ?? 0 ?>
+        <strong><?= _("Unavailable") ?>:</strong>&nbsp;<?= $counts[6] ?? 0 ?>
+    </div>
+    <div class="card-text small">
+        <strong><?= _("Sell") ?>:</strong>&nbsp;<?= $call_sell ?>
+        <strong><?= _("Cost") ?>:</strong>&nbsp;<?= $call_buy ?>
+        <strong><?= _("Profit") ?>:</strong>&nbsp;<?= $call_profit ?>
+        <strong><?= _("Duration") ?>:</strong>&nbsp;<?= get_timespan($call_times) ?>
+    </div>
 </div>
