@@ -64,7 +64,10 @@ $HD_Form = new FormHandler(
     "cc_card",
     _("Card"),
     "cc_card.id",
-    ["cc_card_group" => ["cc_card.id_group", "cc_card_group.id"]]
+    [
+        "cc_card_group" => ["cc_card.id_group", "cc_card_group.id"],
+        "cc_agent" => ["cc_card_group.id_agent", "cc_agent.id"],
+    ]
 );
 
 if (is_agent()) {
@@ -130,7 +133,7 @@ $serial_pad_length = $A2B->config["webui"]['card_serial_length'];
 // The list view can be customized to only show certain fields, making things more complicated
 // extract the user-defined list of fields we're showing
 $show_list = [];
-$show_list_temp = explode(',', $A2B->config["webui"]['card_show_field_list']);
+$show_list_temp = explode(',', $A2B->config["webui"]["card_show_field_list"]);
 foreach ($show_list_temp as $value) {
     $value = strtolower(trim($value));
     if ($value) {
@@ -144,6 +147,11 @@ if ($popup_select) {
         array_unshift($show_list, $field);
     }
     $show_list = array_unique($show_list);
+}
+
+// sensible default
+if (count($show_list) === 0) {
+    $show_list = ["username", "lastname", "id_group", "credit", "tariff", "status"];
 }
 
 // loop through the shown data and add the table cells
@@ -160,13 +168,18 @@ foreach ($show_list as $field) {
             }
             break;
         case "lastname":
-            $HD_Form->AddListValue(_("Last name"), "lastname");
+            $HD_Form->AddListValue(_("Last name"), "cc_card.lastname");
             break;
         case "id_group":
             $HD_Form->AddListValue(_("Group"), "cc_card_group.name");
             break;
+        case "id_agent":
+            if (is_admin()) {
+                $HD_Form->AddListValue(_("Agent"), "cc_agent.id", [Agent::class, "getName"]);
+            }
+            break;
         case "credit":
-            $HD_Form->AddListValue(_("Balance"), "credit", "get_money");
+            $HD_Form->AddListValue(_("Balance"), "cc_card.credit", "get_money");
             break;
         case "useralias":
             $HD_Form->AddListValue(_("Web login"), "useralias");
@@ -195,7 +208,7 @@ foreach ($show_list as $field) {
         case "sip_buddy":
             $HD_Form->AddListMapping(_("SIP"), "sip_buddy", $yesno);
             break;
-        case "aix_buddy":
+        case "iax_buddy":
             $HD_Form->AddListMapping(_("AIX"), "aix_buddy", $yesno);
             break;
         case "nbused":

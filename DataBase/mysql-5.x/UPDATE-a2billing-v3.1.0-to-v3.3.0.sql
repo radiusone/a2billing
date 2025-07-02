@@ -14,6 +14,9 @@ DELETE FROM cc_config WHERE config_group_id = (SELECT id FROM cc_config_group WH
 DELETE FROM cc_config_group WHERE group_title = 'epayment_method';
 DELETE FROM cc_config WHERE config_key LIKE 'paypal%' OR config_key LIKE 'api_%' OR config_key = 'epayment';
 
+-- remove old help text
+UPDATE cc_config SET config_description = 'Fields to show in Customer. Order is important.<br/>You can use:<br/> id,username, useralias, lastname, id_group, id_agent, credit, tariff, status, language, inuse, currency, sip_buddy, iax_buddy, nbused, firstname, email, discount, callerid, id_seria, serial' WHERE config_key = 'card_show_field_list';
+
 -- match cc_card table columns
 ALTER TABLE cc_card_archive ADD COLUMN IF NOT EXISTS `id_seria` bigint(20) DEFAULT NULL;
 ALTER TABLE cc_card_archive ADD COLUMN IF NOT EXISTS `serial` bigint(20) DEFAULT NULL;
