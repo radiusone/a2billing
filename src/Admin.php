@@ -35,7 +35,7 @@ class Admin extends User
     public const ACX_DELETE_CDR = 4194304;
     public const ACX_MODIFY_ADMINS = 8388608;
     public const ACX_MODIFY_AGENTS = 16777216;
-    public const ACX_ALL_RIGHTS = 2 ^ 32 - 1;
+    public const ACX_ALL_RIGHTS = 2 ** 32 - 1;
 
     /** @var array|string[] pages that don't require authentication */
     private static array $open_pages = [
