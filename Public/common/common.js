@@ -195,9 +195,7 @@ document.addEventListener("DOMContentLoaded", function() {
      * Page count display
      */
     document.getElementById("displaylimit")
-        ?.addEventListener("change", function () {
-            document.getElementById("displaylimit_form").dispatchEvent(new SubmitEvent("submit"));
-        });
+        ?.addEventListener("change", e => e.target.form.requestSubmit());
 
     /**
      * Used by <SELECT> buttons on popup windows to send a value back to the opener
