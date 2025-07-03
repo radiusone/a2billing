@@ -287,14 +287,14 @@ namespace A2billing\Forms;
 
     <div class="col-3 list-export-container d-flex align-items-center justify-content-end">
         <?php if ($form->FG_EXPORT_CSV): ?>
-            <a href="export_csv.php?var_export=<?= $form->export_session_key ?>&amp;var_export_type=type_csv" target="_blank" class="mx-2 text-decoration-none">
+            <a href="export_csv.php?export_session=<?= $form->export_session_key ?>&amp;export_type=csv" target="_blank" class="mx-2 text-decoration-none">
                 <div class="bi bi-24 bi-filetype-xls text-center mb-1" aria-hidden="true"></div>
                 <?= gettext("Export CSV") ?>
             </a>
         <?php endif ?>
 
         <?php if ($form->FG_EXPORT_XML): ?>
-            <a href="export_csv.php?var_export=<?= $form->export_session_key ?>&amp;var_export_type=type_xml" target="_blank" class="mx-2 text-decoration-none">
+            <a href="export_csv.php?export_session=<?= $form->export_session_key ?>&amp;export_type=xml" target="_blank" class="mx-2 text-decoration-none">
                 <div class="bi bi-24 bi-filetype-xml text-center mb-1" aria-hidden="true"></div>
                 <?= gettext("Export XML") ?>
             </a>

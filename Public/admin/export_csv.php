@@ -2,6 +2,7 @@
 
 use A2billing\Admin;
 use A2billing\Logger;
+use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -37,32 +38,73 @@ use A2billing\Logger;
 **/
 
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
-require_once '../../common/lib/iam_csvdump.php';
 
 Admin::checkPageAccess(Admin::ACX_CALL_REPORT | Admin::ACX_CUSTOMER);
 
-getpost_ifset(array ( 'var_export', 'var_export_type' ));
+getpost_ifset(["export_session", "export_type"]);
 
-if (strlen($var_export) == 0) {
-    $var_export = 'pr_sql_export';
-}
+$export_session ??= "export_data";
+$export_type ??= "csv";
 
-#  Set the parameters: SQL Query, hostname, databasename, dbuser and password
-$dumpfile = new iam_csvdump;
-
-#  Call the CSV Dumping function and THAT'S IT!!!!  A file named dump.csv is sent to the user for download
-
-if (strlen($_SESSION[$var_export]) < 10) {
+if (!is_array($_SESSION[$export_session])) {
     echo gettext("ERROR CSV EXPORT");
 } else {
-    if (strcmp($var_export_type, "type_csv") == 0) {
-        $myfileName = "Dump_" . date("Y-m-d");
-        Logger::insertLog($_SESSION["admin_id"], 2, "FILE EXPORTED", "A File in CSV Format is exported by User, File Name= " . $myfileName . ".csv", '', $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI'], '');
-        $dumpfile->dump($_SESSION[$var_export], $myfileName, "csv", DBNAME, USER, PASS, HOST, DB_TYPE);
-    } elseif (strcmp($var_export_type, "type_xml") == 0) {
-        $myfileName = "Dump_" . date("Y-m-d");
-        Logger::insertLog($_SESSION["admin_id"], 2, "FILE EXPORTED", "A File in XML Format is exported by User, File Name= " . $myfileName . ".xml", '', $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI'], '');
-        $dumpfile->dump($_SESSION[$var_export], $myfileName, "xml", DBNAME, USER, PASS, HOST, DB_TYPE);
+    [$columns, $table, $conditions, $group, $order, $direction] = $_SESSION[$export_session];
+
+    $date = (new DateTime())->format("Y-m-d");
+    $myfileName = "dump $date.$export_type";
+
+    $export_data = (new Table($table, $columns))
+        ->getRows($conditions, $order, $direction, $group);
+
+    if (empty($export_data)) {
+        $db = DbConnect();
+        if ($err = $db->ErrorMsg()) {
+            $export_data = [["error" => $err]];
+        }
     }
-    $log = null;
+
+    // while DB is still returning numeric indices (should be close to done with that)
+    foreach ($export_data as &$row) {
+        $row = array_filter($row, fn($k) => !is_numeric($k), ARRAY_FILTER_USE_KEY);
+    }
+    unset($row);
+
+    if ($export_type === "csv") {
+        header("Content-Type: text/csv");
+        header("Content-Disposition: attachment;filename=$myfileName");
+        $out = fopen("php://output", "w");
+        foreach ($export_data as $line) {
+            fputcsv($out, $line, ",", "\"", "");
+        }
+    } else {
+        header("Content-Type: application/xml");
+        header("Content-Disposition: attachment;filename=$myfileName");
+        $dom = new DOMDocument();
+        $data = $dom->createElement("data");
+        $head = $dom->createElement("header");
+        foreach (array_keys($export_data[0]) as $col) {
+            $column = $dom->createElement("column");
+            $column->setAttribute("name", $col);
+            $head->appendChild($column);
+        }
+        $data->appendChild($head);
+        $records = $dom->createElement("records");
+        foreach ($export_data as $line) {
+            $row = $dom->createElement("row");
+            foreach ($line as $col => $value) {
+                $column = $dom->createElement("column", $value);
+                $column->setAttribute("name", $col);
+                $row->appendChild($column);
+            }
+            $records->appendChild($row);
+        }
+        $data->appendChild($records);
+        $dom->appendChild($data);
+        $dom->formatOutput = true;
+        echo $dom->saveXML();
+    }
+
+    Logger::insertLog($_SESSION["admin_id"], 2, "FILE EXPORTED", "A File is exported by User, File Name= " . $myfileName, '', $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI'], '');
+    die();
 }
