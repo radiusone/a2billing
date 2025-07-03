@@ -197,28 +197,28 @@ foreach ($show_list as $field) {
             $HD_Form->AddListMapping(_("Status"), "status", getCardStatus_Acronym_List());
             break;
         case "language":
-            $HD_Form->AddListMapping(_("Language"), "language", getLanguages());
+            $HD_Form->AddListMapping(_("Language"), "cc_card.language", getLanguages());
             break;
         case "inuse":
             $HD_Form->AddListValue(_("In use"), "inuse");
             break;
         case "currency":
-            $HD_Form->AddListMapping(_("Currency"), "currency", $currency_list);
+            $HD_Form->AddListMapping(_("Currency"), "cc_card.currency", $currency_list);
             break;
         case "sip_buddy":
             $HD_Form->AddListMapping(_("SIP"), "sip_buddy", $yesno);
             break;
         case "iax_buddy":
-            $HD_Form->AddListMapping(_("AIX"), "aix_buddy", $yesno);
+            $HD_Form->AddListMapping(_("AIX"), "iax_buddy", $yesno);
             break;
         case "nbused":
             $HD_Form->AddListValue(_("Calls"), "nbused");
             break;
         case "firstname":
-            $HD_Form->AddListValue(_("First name"), "firstname");
+            $HD_Form->AddListValue(_("First name"), "cc_card.firstname");
             break;
         case "email":
-            $HD_Form->AddListValue(_("Email"), "email");
+            $HD_Form->AddListValue(_("Email"), "cc_card.email");
             break;
         case "discount":
             $HD_Form->AddListValue(_("Discount"), "discount", "get_percent");
