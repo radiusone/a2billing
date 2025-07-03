@@ -118,14 +118,15 @@ document.addEventListener("DOMContentLoaded", function() {
      */
     document.querySelectorAll(".date-input-enabler").forEach(function (el) {
         el.addEventListener("change", function () {
-            const id = this.getAttribute("id").replaceAll(/\^/g, "\\\^");
             this.closest("div.input-group").querySelector("input, select").disabled = !this.checked;
             if (this.checked) {
-                // todo: I think this was originally meant for the archiving pages, to prevent
-                // simultaneous selection of relative and absolute dates but needs fixing for e.g. card search form
-                this.form.querySelectorAll(`.date-input-enabler:not(#${id})`).forEach(function (el) {
-                    el.checked = false;
-                });
+                let checks;
+                if (this.classList.contains("relative-date")) {
+                    checks = this.closest("form").querySelectorAll(".date-input-enabler:not(.relative-date)");
+                } else {
+                    checks = this.closest("form").querySelectorAll(".date-input-enabler.relative-date");
+                }
+                checks.forEach(el => el.checked = false);
             }
         });
     });
