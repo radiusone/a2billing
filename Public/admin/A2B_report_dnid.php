@@ -72,7 +72,7 @@ $calltype_list = [
 ];
 
 $HD_Form->AddListValue(_("DNID"), "dnid", "format_phone_number");
-$HD_Form->AddListValue(_("Count"), "COUNT(cc_call.*)");
+$HD_Form->AddListValue(_("Count"), "COUNT(*)");
 $HD_Form->AddListValue(_("Avg buy"), "AVG(buyrate)", "get_money_precise");
 $HD_Form->AddListValue(_("Avg sell"), "AVG(rateinitial)", "get_money_precise");
 $HD_Form->AddListValue(_("Duration"), "SUM(sessiontime)", "get_minute");
