@@ -39,26 +39,27 @@ require_once __DIR__ . "/../../../common/lib/admin.defines.php";
 
 Admin::checkPageAccess(Admin::ACX_DASHBOARD);
 
-$os_file = '/etc/os-release';
+$os_file = "/etc/os-release";
 $release = is_readable($os_file) ? parse_ini_file($os_file) : [];
-$OS = $release['PRETTY_NAME'] ?? null;
-$version = $release['VERSION_ID'] ?? null;
-$name = $release['ID'] ?? null;
+$OS = $release["PRETTY_NAME"] ?? null;
+$version = $release["VERSION_ID"] ?? null;
+$name = $release["ID"] ?? null;
 
-if (!$OS && is_executable('/usr/bin/lsb_release')) {
-    $OS = trim(shell_exec('lsb_release -s -d'));
+if (!$OS && is_executable("/usr/bin/lsb_release")) {
+    $OS = trim(`lsb_release -s -d`);
+} elseif (is_readable("/etc/redhat-release")) {
+    $OS = file_get_contents("/etc/redhat-release");
 }
 
-if ($OS && $version && $name === 'debian') {
-    $debian_file = '/etc/debian_version';
+if ($OS && $version && $name === "debian") {
+    $debian_file = "/etc/debian_version";
     if (is_readable($debian_file)) {
-        $debian_version = @file_get_contents($debian_file);
+        $debian_version = file_get_contents($debian_file);
         $OS = str_replace($version, trim($debian_version), $OS);
     }
 }
 
-exec('uname -r 2>/dev/null', $output);
-$kernel = $output[0] ?? '';
+$kernel = `uname -r`;
 
 $UI = COPYRIGHT;
 $UI_path = substr(__DIR__, 0, strrpos(__DIR__, "Public/admin/modules"));
@@ -66,12 +67,12 @@ $mysql = DbConnect()->ServerInfo()["version"];
 $database = (new Table("cc_version", "version"))->getValue();
 $asterisk = str_replace("Asterisk ", "", `asterisk -V`);
 $php = phpversion();
-$server_name = $_SERVER['SERVER_NAME'];
+$server_name = $_SERVER["SERVER_NAME"];
 
 ?>
 <div class="card-text small">
     <strong><?= _("Server Name") ?>:</strong>&nbsp;<?= $server_name ?><br/>
-    <strong><?= _("Operating System") ?>:</strong>&nbsp;<?= $OS ?><br/>
+    <?php if ($OS): ?><strong><?= _("Operating System") ?>:</strong>&nbsp;<?= $OS ?><br/><?php endif ?>
     <strong><?= _("Kernel Version") ?>:</strong>&nbsp;<?= $kernel ?><br/>
     <strong><?= _("Asterisk Version") ?>:</strong>&nbsp;<?= $asterisk ?><br/>
     <strong><?= _("PHP Version") ?>:</strong>&nbsp;<?= $php ?><br/>
