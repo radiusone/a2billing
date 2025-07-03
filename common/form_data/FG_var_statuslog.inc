@@ -1,6 +1,5 @@
 <?php
 
-use A2billing\Admin;
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 
@@ -69,8 +68,4 @@ $HD_Form->search_form_enabled = true;
 $HD_Form->search_delete_enabled = false;
 $HD_Form->AddSearchPopupInput(_("Account"), "id_cc_card", "A2B_entity_card.php");
 $HD_Form->AddSearchDateInput(_("Dates"), "updated_date");
-$HD_Form->AddSearchSelectInput(
-    _("Status"),
-    "cc_status_log.status",
-    array_map("array_reverse", $cardstatus_list)
-);
+$HD_Form->AddSearchSelectInput(_("Status"), "cc_status_log.status", $cardstatus_list);

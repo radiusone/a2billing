@@ -188,7 +188,7 @@ function getDialStatusList(): array
 }
 
 /**
- * @return string[]
+ * @return array<int,string>
  */
 function getCardStatus_List(): array
 {

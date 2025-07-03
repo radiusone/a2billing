@@ -950,7 +950,7 @@ class FormHandler
      * @param Table $table a database object; first 2 columns will be used for value and content
      * @param string $order column to order by
      * @param string $direction direction asc or desc
-     * @param array $conditions any conditions to apply to the query
+     * @param array<array-key,string|string[]> $conditions any conditions to apply to the query
      * @return void
      */
     public function AddSearchSqlSelectInput(
@@ -991,7 +991,7 @@ class FormHandler
      *
      * @param string $label the label of the element
      * @param string $name the name of the element, and also the database column queried
-     * @param array $options options for the element; key is used for value attribute, value used for content
+     * @param array<array-key,string> $options options for the element; key is used for value attribute, value used for content
      * @param string|int $default if no current values, this item will be selected
      * @param bool $process if false, this element will NOT be used in the database query
      * @return void
@@ -1014,7 +1014,7 @@ class FormHandler
      *
      * @param string $label the label of the element
      * @param string $name the name of the element, and also the database column queried
-     * @param array $options options for the element; key is used for value attribute, value used for content
+     * @param array<array-key,string> $options options for the element; key is used for value attribute, value used for content
      * @param bool $process if false, this element will NOT be used in the database query
      * @return void
      */
