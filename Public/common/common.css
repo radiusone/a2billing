@@ -15,6 +15,9 @@ div.bi::before {
 .bi.bi-16 {
     font-size: 1rem !important;
 }
+.bi.bi-24 {
+    font-size: 1.5rem !important;
+}
 .bi.bi-32 {
     font-size: 2rem !important;
 }

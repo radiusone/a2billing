@@ -63,7 +63,7 @@ namespace A2billing\Forms;
 </div>
 <?php endif ?>
 
-<?php if ($form->FG_LIST_VIEW_ROW_COUNT > 0): ?>
+<?php if (count($list) > 0): ?>
 <div class="row pb-3" id="list-table-container">
     <div class="col table-responsive">
         <table
@@ -249,21 +249,11 @@ namespace A2billing\Forms;
         </table>
     </div>
 </div>
-<div class="row pb-3" id="list-pagination-container">
-    <div class="col">
-        <?= FormHandler::printPages(
-            (int)($processed['current_page'] ?? 0) + 1,
-            $form->FG_LIST_VIEW_PAGE_COUNT,
-            "?" . http_build_query($pagination_params, "", "&amp;")
-//            "?current_page=%s&amp;filterprefix=$processed[filterprefix]&amp;order=$processed[order]&amp;sens=$processed[sens]&amp;mydisplaylimit=$processed[mydisplaylimit]&amp;popup_select=$processed[popup_select]&amp;letter=$letter" . (str_starts_with($form->CV_FOLLOWPARAMETERS, "&") ? "" : "&amp;") . $form->CV_FOLLOWPARAMETERS
-        ) ?>
-    </div>
-</div>
 
-<div class="row pb-3 justify-content-start align-items-center" id="list-export-container">
-    <div class="col-4">
-        <form id="displaylimit_form" action="">
-            <label for="displaylimit" class="form-label d-inline"><?= gettext("Display");?></label>
+<div class="row pb-3 justify-content-between align-items-center">
+    <div class="col-3" id="list-displaylimit-container">
+        <form id="displaylimit_form" action="" class="row">
+            <label for="displaylimit" class="col-auto col-form-label-sm"><?= gettext("Display");?></label>
             <input type="hidden" name="id" value="<?= $processed["id"] ?? "" ?>"/>
             <input type="hidden" name="form_action" value="list"/>
             <input type="hidden" name="current_page" value="0"/>
@@ -275,31 +265,40 @@ namespace A2billing\Forms;
                     <input type="hidden" name="<?= $key ?>" value="<?= $val ?>">
                 <?php endif ?>
             <?php endforeach ?>
-            <select id="displaylimit" name="mydisplaylimit" size="1" class="form-select form-select-sm d-inline w-50">
-                <option value="10" <?= (int)($_SESSION["$form->FG_QUERY_TABLE_NAME-displaylimit"] ?? 10) < 50 ? 'selected="selected"' : "" ?>>10</option>
-                <option value="50" <?= (int)($_SESSION["$form->FG_QUERY_TABLE_NAME-displaylimit"] ?? 10) === 50 ? 'selected="selected"' : "" ?>>50</option>
-                <option value="100" <?= (int)($_SESSION["$form->FG_QUERY_TABLE_NAME-displaylimit"] ?? 10) === 100 ? 'selected="selected"' : "" ?>>100</option>
-                <option value="ALL" <?= (int)($_SESSION["$form->FG_QUERY_TABLE_NAME-displaylimit"] ?? 10) > 100 ? 'selected="selected"' : "" ?>>All</option>
-            </select>
+            <div class="col-auto">
+                <select id="displaylimit" name="mydisplaylimit" class="form-select form-select-sm">
+                    <option value="10" <?= (int)($_SESSION["$form->FG_QUERY_TABLE_NAME-displaylimit"] ?? 10) < 50 ? 'selected="selected"' : "" ?>>10</option>
+                    <option value="50" <?= (int)($_SESSION["$form->FG_QUERY_TABLE_NAME-displaylimit"] ?? 10) === 50 ? 'selected="selected"' : "" ?>>50</option>
+                    <option value="100" <?= (int)($_SESSION["$form->FG_QUERY_TABLE_NAME-displaylimit"] ?? 10) === 100 ? 'selected="selected"' : "" ?>>100</option>
+                    <option value="ALL" <?= (int)($_SESSION["$form->FG_QUERY_TABLE_NAME-displaylimit"] ?? 10) > 100 ? 'selected="selected"' : "" ?>>All</option>
+                </select>
+            </div>
         </form>
     </div>
 
-    <?php if ($form->FG_EXPORT_CSV): ?>
-    <div class="col-auto">
-        <a href="export_csv.php?var_export=<?= $form->export_session_key ?>&amp;var_export_type=type_csv" target="_blank" class="text-decoration-none">
-            <div class="bi bi-40 bi-filetype-xls text-center mb-1" aria-hidden="true"></div>
-            <?= gettext("Export CSV") ?>
-        </a>
+    <div class="col-6" id="list-pagination-container">
+        <?= FormHandler::printPages(
+            (int)($processed['current_page'] ?? 0) + 1,
+            $form->FG_LIST_VIEW_PAGE_COUNT,
+            "?" . http_build_query($pagination_params, "", "&amp;")
+//            "?current_page=%s&amp;filterprefix=$processed[filterprefix]&amp;order=$processed[order]&amp;sens=$processed[sens]&amp;mydisplaylimit=$processed[mydisplaylimit]&amp;popup_select=$processed[popup_select]&amp;letter=$letter" . (str_starts_with($form->CV_FOLLOWPARAMETERS, "&") ? "" : "&amp;") . $form->CV_FOLLOWPARAMETERS
+        ) ?>
     </div>
-    <?php endif ?>
 
-    <?php if ($form->FG_EXPORT_XML): ?>
-    <div class="col-auto">
-        <a href="export_csv.php?var_export=<?= $form->export_session_key ?>&amp;var_export_type=type_xml" target="_blank" class="text-decoration-none">
-            <div class="bi bi-40 bi-filetype-xml text-center mb-1" aria-hidden="true"></div>
-            <?= gettext("Export XML") ?>
-        </a>
+    <div class="col-3 list-export-container d-flex align-items-center justify-content-end">
+        <?php if ($form->FG_EXPORT_CSV): ?>
+            <a href="export_csv.php?var_export=<?= $form->export_session_key ?>&amp;var_export_type=type_csv" target="_blank" class="mx-2 text-decoration-none">
+                <div class="bi bi-24 bi-filetype-xls text-center mb-1" aria-hidden="true"></div>
+                <?= gettext("Export CSV") ?>
+            </a>
+        <?php endif ?>
+
+        <?php if ($form->FG_EXPORT_XML): ?>
+            <a href="export_csv.php?var_export=<?= $form->export_session_key ?>&amp;var_export_type=type_xml" target="_blank" class="mx-2 text-decoration-none">
+                <div class="bi bi-24 bi-filetype-xml text-center mb-1" aria-hidden="true"></div>
+                <?= gettext("Export XML") ?>
+            </a>
+        <?php endif ?>
     </div>
-    <?php endif ?>
 </div>
 <?php endif ?>

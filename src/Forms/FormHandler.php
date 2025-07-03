@@ -1955,14 +1955,13 @@ class FormHandler
      * @param int $page the page currently viewed (one-based, unlike URL parameter which is zero-based)
      * @param int $pages the total number of pages
      * @param string $url the url to refer to with the page number inserted
-     * @param int $max_width the number of pages to make available at any one time (default = 10)
      */
-    public static function printPages(int $page, int $pages, string $url, int $max_width = 10): string
+    public static function printPages(int $page, int $pages, string $url): string
     {
         // the number of pages on either side of the current page
-        $window = intdiv($max_width, 2);
+        $window = 4;
 
-        if ($page < 0 || $page > $pages || $pages <= 1 || $max_width <= 0) {
+        if ($pages <= 1) {
             return "";
         }
 
@@ -1980,7 +1979,7 @@ class FormHandler
             str_replace("%s", 0, $url),
             $firstlabel
         );
-        if ($page === 1) {
+        if ($page <= 1) {
             $prevdis = "disabled";
             $prevlink = sprintf("<span class='page-link'>%s</span>", $prevlabel);
             $firstlink = sprintf("<span class='page-link'>%s</span>", $firstlabel);
@@ -2007,7 +2006,7 @@ class FormHandler
 
         $ret = <<< HTML
         <nav aria-label="page navigation">
-            <ul class="pagination justify-content-center">
+            <ul class="pagination pagination-sm justify-content-center m-0">
                 <li class="page-item $prevdis">
                     $firstlink
                 </li>
