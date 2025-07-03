@@ -39,9 +39,27 @@ require_once __DIR__ . "/../../../common/lib/admin.defines.php";
 
 Admin::checkPageAccess(Admin::ACX_DASHBOARD);
 
-$distro_info = `uname -a`;
-$info_tmp = explode(' ', $distro_info, 4);
-$OS = $info_tmp[0] . ' ' . $info_tmp[2];
+$os_file = '/etc/os-release';
+$release = is_readable($os_file) ? parse_ini_file($os_file) : [];
+$OS = $release['PRETTY_NAME'] ?? null;
+$version = $release['VERSION_ID'] ?? null;
+$name = $release['ID'] ?? null;
+
+if (!$OS && is_executable('/usr/bin/lsb_release')) {
+    $OS = trim(shell_exec('lsb_release -s -d'));
+}
+
+if ($OS && $version && $name === 'debian') {
+    $debian_file = '/etc/debian_version';
+    if (is_readable($debian_file)) {
+        $debian_version = @file_get_contents($debian_file);
+        $OS = str_replace($version, trim($debian_version), $OS);
+    }
+}
+
+exec('uname -r 2>/dev/null', $output);
+$kernel = $output[0] ?? '';
+
 $UI = COPYRIGHT;
 $UI_path = substr(__DIR__, 0, strrpos(__DIR__, "Public/admin/modules"));
 $mysql = DbConnect()->ServerInfo()["version"];
@@ -53,7 +71,8 @@ $server_name = $_SERVER['SERVER_NAME'];
 ?>
 <div class="card-text small">
     <strong><?= _("Server Name") ?>:</strong>&nbsp;<?= $server_name ?><br/>
-    <strong><?= _("Operating System Version") ?>:</strong>&nbsp;<?= $OS ?><br/>
+    <strong><?= _("Operating System") ?>:</strong>&nbsp;<?= $OS ?><br/>
+    <strong><?= _("Kernel Version") ?>:</strong>&nbsp;<?= $kernel ?><br/>
     <strong><?= _("Asterisk Version") ?>:</strong>&nbsp;<?= $asterisk ?><br/>
     <strong><?= _("PHP Version") ?>:</strong>&nbsp;<?= $php ?><br/>
     <strong><?= _("Database Version") ?>:</strong>&nbsp;<?= $mysql ?><br/>
