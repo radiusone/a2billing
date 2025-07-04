@@ -46,7 +46,7 @@ $FG_DEBUG = 0;
 $color_msg = 'red';
 
 
-$status = (new Table("cc_card", ["status"]))->getValue(["username" => $_SESSION["pr_login"]]);
+$status = (new Table("cc_card", ["status"]))->getValue(["username" => Customer::card()]);
 
 if (!$status || ($status != "1" && $status != "8")) {
     Header("HTTP/1.0 401 Unauthorized");
@@ -58,7 +58,7 @@ if ($callback) {
 
     if (strlen($called)>1 && strlen($calling)>1 && is_numeric($called) && is_numeric($calling)) {
 
-        $A2B -> cardnumber = $_SESSION["pr_login"];
+        $A2B -> cardnumber = Customer::card();
 
         if ($A2B -> callingcard_ivr_authenticate_light ($error_msg)) {
 
@@ -66,7 +66,7 @@ if ($callback) {
             $RateEngine -> webui = false;
             // LOOKUP RATE : FIND A RATE FOR THIS DESTINATION
 
-            $A2B -> agiconfig['accountcode'] = $_SESSION["pr_login"];
+            $A2B -> agiconfig['accountcode'] = Customer::card();
             $A2B -> agiconfig['use_dnid'] = 1;
             $A2B -> agiconfig['say_timetocall'] = 0;
             $A2B -> extension = $A2B -> dnid = $A2B -> destination = $called;
@@ -130,7 +130,7 @@ if ($callback) {
                     $timeout = $A2B -> config["callback"]['timeout']*1000;
                     $application = '';
                     $callerid = $A2B -> config["callback"]['callerid'];
-                    $account = $_SESSION["pr_login"];
+                    $account = Customer::card();
 
                     $uniqueid = generate_random_value("#####-XXXXXXX");
                     $status = 'PENDING';
@@ -168,7 +168,7 @@ if ($callback) {
 
     }
 }
-$customer = $_SESSION["pr_login"];
+$customer = Customer::card();
 
 require_once __DIR__ . "/templates/main.php";
 

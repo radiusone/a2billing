@@ -40,7 +40,7 @@ require_once __DIR__ . "/../common/lib/customer.defines.php";
 
 Customer::checkPageAccess(Customer::ACX_SIMULATOR);
 $customer_info = (new Table("cc_card", ["id", "username", "status", "tariff", "credit", "currency"]))
-    ->getRow(["username" => $_SESSION["pr_login"]]);
+    ->getRow(["username" => Customer::card()]);
 
 if (!$customer_info || ($customer_info["status"] != "1" && $customer_info["status"] != "8")) {
     Header("HTTP/1.0 401 Unauthorized");

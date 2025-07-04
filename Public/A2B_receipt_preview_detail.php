@@ -197,7 +197,7 @@ $pagetotal = 0;
 <div class="receipt-wrapper">
     <table class="table table-sm table-striped caption-top receipt-table">
         <caption>
-            <strong><?= _("Client number") ?></strong> <?= $_SESSION["pr_login"] ?>
+            <strong><?= _("Client number") ?></strong> <?= Customer::card() ?>
         </caption>
         <thead>
             <tr>

@@ -74,7 +74,7 @@ if (isset ($choose_did_rate) && strlen($choose_did_rate) != 0) {
 }
 
 $row = (new Table("cc_card", ["credit", "creditlimit", "typepaid"]))
-    ->getRow(["username" => $_SESSION["pr_login"]]);
+    ->getRow(["username" => Customer::card()]);
 if ($row) {
     $user_credit = $row["credit"];
     $user_creditlimit = $row["creditlimit"];

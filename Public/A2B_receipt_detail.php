@@ -121,7 +121,7 @@ $pagetotal = 0;
             <?= $receipt->getDate() ?>
             <br/>
             <strong><?= _("Client number") ?></strong>
-            <?= $_SESSION["pr_login"] ?>
+            <?= Customer::card() ?>
         </caption>
         <thead>
         <tr>

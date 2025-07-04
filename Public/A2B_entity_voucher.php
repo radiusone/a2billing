@@ -60,9 +60,9 @@ if (strlen($voucher)>0) {
                 $error_msg = '<font face="Arial, Helvetica, sans-serif" size="2" color="red"><b>'.gettext("System Error : the currency table is incomplete!").'</b></font><br><br>';
             } else {
                 $add_credit = $list_voucher["credit"]*$currencies_list[strtoupper($list_voucher["currency"])]["value"];
-                $result = $instance_sub_table->updateRow(["activated" => "f", "usedcardnumber" => $_SESSION["pr_login"], "usedate" => "CURRENT_TIMESTAMP"], ["voucher" => $voucher]);
+                $result = $instance_sub_table->updateRow(["activated" => "f", "usedcardnumber" => Customer::card(), "usedate" => "CURRENT_TIMESTAMP"], ["voucher" => $voucher]);
 
-                $result = (new Table("cc_card"))->updateRow(["credit" => ["credit + ?", $add_credit]], ["username" => $_SESSION["pr_login"]]);
+                $result = (new Table("cc_card"))->updateRow(["credit" => ["credit + ?", $add_credit]], ["username" => Customer::card()]);
 
                 $error_msg = '<font face="Arial, Helvetica, sans-serif" size="2" color="green"><b>'.gettext("The voucher").'('.$voucher.') '.gettext("has been used, We added").' '.$add_credit.' '.gettext("credit on your account!").'</b></font><br><br>';
             }

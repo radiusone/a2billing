@@ -2,6 +2,7 @@
 <?php
 
 use A2billing\A2Billing;
+use A2billing\Customer;
 use A2billing\ProcessHandler;
 use A2billing\Table;
 
@@ -273,7 +274,7 @@ for ($page = 0; $page < $nbpage; $page++) {
                     $cidgroupid = $phone["id_cid_group"];
                     $callerid = (new Table("cc_outbound_cid_list", ["cid"]))->getValue(["activated" => 1, "outbound_cid_group" => $cidgroupid], ["RAND()"]);
 
-                    $account = $_SESSION["pr_login"];
+                    $account = Customer::card();
 
                     $uniqueid = generate_random_value("#####-XXXXXXX");
                     $status = 'PENDING';

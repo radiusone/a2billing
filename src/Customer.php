@@ -146,6 +146,16 @@ class Customer extends User
     }
 
     /**
+     * Get the logged in customer's card number
+     *
+     * @return numeric-string
+     */
+    public static function card(): string
+    {
+        return $_SESSION["pr_login"] ?? "0";
+    }
+
+    /**
      * Get an HTML link to the customer info page
      *
      * @param numeric-string|null $id

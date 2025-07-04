@@ -85,7 +85,7 @@ echo create_help(gettext("Configuration information for SIP and IAX Client. You 
       <table width="100%" border="0" cellspacing="1" cellpadding="0">
           <tr>
             <td width="50%" bgcolor="#FFFFFF" class="fontstyle_006">&nbsp;<?php echo gettext("CARD")?></td>
-            <td width="50%" bgcolor="#FFFFFF" class="fontstyle_006"><?php echo $_SESSION["pr_login"]?></td>
+            <td width="50%" bgcolor="#FFFFFF" class="fontstyle_006"><?php echo Customer::card() ?></td>
           </tr>
           <tr>
             <td bgcolor="#FFFFFF" class="fontstyle_006">&nbsp;<?php echo gettext("CONFIGURATION TYPE")?> </td>
