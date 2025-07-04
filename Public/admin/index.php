@@ -41,9 +41,10 @@ if (is_admin()) {
     die();
 }
 
-getpost_ifset(["error"]);
+getpost_ifset(["error", "c"]);
 $error = (int)($error ?? 0);
 $lang = $_SESSION["ui_language"] ?? "english";
+
 ?>
 <!DOCTYPE html>
 <html lang="<?= getenv("LANG") ?: "en_US" ?>">
@@ -54,7 +55,12 @@ $lang = $_SESSION["ui_language"] ?? "english";
 	<link href="../common/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
-	<form method="post" action="PP_intro.php">
+    <?php if (isset($c)): ?>
+    <div class="container py-2">
+        <p class="alert alert-danger"><?= _("You must log in to continue") ?></p>
+    </div>
+    <?php endif ?>
+	<form method="post" action="login.php">
 		<div class="modal show d-block" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="authTitle" aria-hidden="false">
 			<div class="modal-dialog modal-dialog-centered">
 				<div class="modal-content shadow">
