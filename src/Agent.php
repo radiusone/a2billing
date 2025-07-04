@@ -88,7 +88,7 @@ class Agent extends User
             return sprintf(
                 "<a href=\"A2B_entity_agent.php?form_action=ask-edit&amp;id=%d\" title=\"%s\">%s %s</a>",
                 $id,
-                htmlspecialchars($row["username"]),
+                htmlspecialchars($row["login"]),
                 htmlspecialchars($row["firstname"]),
                 htmlspecialchars($row["lastname"])
             );

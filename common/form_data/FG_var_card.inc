@@ -60,6 +60,8 @@ getpost_ifset(["id", "cardnumber_length"]);
  * @var string $cardnumber_length
  */
 
+$form_action ??= "list";
+
 $HD_Form = new FormHandler(
     "cc_card",
     _("Card"),
@@ -242,8 +244,6 @@ $HD_Form->AddListFilter("username", _("Account Number"));
 $HD_Form->FG_ENABLE_ADD_BUTTON = !is_customer();
 $HD_Form->FG_ENABLE_EDIT_BUTTON = !$popup_select && (Admin::allowed(Admin::ACX_MODIFY_CUSTOMERS) || Agent::allowed(Agent::ACX_EDIT_CUSTOMER) || Customer::allowed(Customer::ACX_PERSONALINFO));
 $HD_Form->FG_ENABLE_DELETE_BUTTON = !$popup_select && (Admin::allowed(Admin::ACX_MODIFY_CUSTOMERS) || Agent::allowed(Agent::ACX_DELETE_CUSTOMER));
-
-$form_action ??= "list";
 
 if ($popup_select) {
     // popup window
