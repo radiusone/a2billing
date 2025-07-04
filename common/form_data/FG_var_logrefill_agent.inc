@@ -44,7 +44,7 @@ use A2billing\Forms\Validator;
 
 $HD_Form = new FormHandler("cc_logrefill_agent", "Agent Refill");
 if (is_agent()) {
-    $HD_Form->list_query_conditions["agent_id"] = $_SESSION["agent_id"];
+    $HD_Form->list_query_conditions["agent_id"] = Agent::id();
 }
 
 $HD_Form->list_query_order_columns = ["date"];

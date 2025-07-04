@@ -412,7 +412,7 @@ class FormBO
         if ($credit != 0) {
             $sign = $credit > 0 ? "+" : "-";
             (new Table("cc_agent"))
-                ->updateRow(["credit" => ["credit $sign ?", abs($credit)]], ["id" => $_SESSION["agent_id"]]);
+                ->updateRow(["credit" => ["credit $sign ?", abs($credit)]], ["id" => Agent::id()]);
 
             $description = gettext("DELETION CARD REFILL");
             $correction = 0 - $credit;

@@ -79,7 +79,7 @@ if (!empty($id_cc_card) && ($form_action === "add_sip" || $form_action === "add_
 
     if (!USE_REALTIME) {
         $who = Notification::$AGENT;
-        $who_id = $_SESSION['agent_id'];
+        $who_id = Agent::id();
         NotificationsDAO::addNotification($key,Notification::$HIGH,$who,$who_id);
     }
 

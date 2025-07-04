@@ -1,7 +1,6 @@
 <?php
 
 use A2billing\A2Billing;
-use A2billing\Admin;
 use A2billing\Agent;
 use A2billing\Forms\FormHandler;
 use A2billing\Table;
@@ -74,21 +73,22 @@ $HD_Form->AddListActionButton(
 );
 
 if (is_admin()) {
+    $id_agent ??= 0;
     $HD_Form->AddEditSqlSelect(
         _("Agent"),
         "id_agent",
         new Table("cc_agent", ["id", "CONCAT(login, ' - ', firstname, ' ', lastname)"]),
         [],
-        $id_agent ?? "",
+        $id_agent,
         ["" => _("Select agent")],
         "",
         ["required" => "required"]
     );
 } else {
-    $id_agent = $_SESSION["agent_id"] ?? "";
+    $id_agent = Agent::id();
     $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["id_agent"] = $id_agent;
 }
-if ((isset($id_agent) && is_numeric($id_agent) && ($form_action === "ask-add" || $form_action === "add")) || $form_action === "ask-delete") {
+if ($id_agent && ($form_action === "ask-add" || $form_action === "add") || $form_action === "ask-delete") {
     $HD_Form->AddEditSqlSelect(
         _("Call Plan"),
         "id_tariffgroup",

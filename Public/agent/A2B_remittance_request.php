@@ -61,7 +61,7 @@ getpost_ifset(["amount","remittance_type","action"]);
 
 $DBHandle_max = DbConnect();
 $agent_info = (new Table("cc_agent", ["credit", "currency", "com_balance", "threshold_remittance", "firstname", "lastname", "address", "bank_info"]))
-    ->getRow(["id" => $_SESSION["agent_id"]]);
+    ->getRow(["id" => Agent::id()]);
 if (!$agent_info) {
     exit();
 }
@@ -78,7 +78,7 @@ $commision_bal_cur = $agent_info['com_balance'] / $mycur;
 $threshold_cur = $agent_info['threshold_remittance'] / $mycur;
 
 $result = (new Table("cc_remittance_request", "amount"))
-    ->getValue(["id_agent" => $_SESSION['agent_id'], "status" => 0]);
+    ->getValue(["id_agent" => Agent::id(), "status" => 0]);
 
 if ($result) {
     $remittance_in_progress = true;
@@ -113,7 +113,7 @@ if (!$remittance_in_progress && ($action === "check" || $action === "add")) {
         $type = $remittance_type == "BANK" ? 1 : 0;
         $insert = (new Table("cc_remittance_request"))
             ->addRow(
-                ["id_agent" => $_SESSION['agent_id'], "amount" => $amount_gobal_cur, "type" => $type],
+                ["id_agent" => Agent::id(), "amount" => $amount_gobal_cur, "type" => $type],
                 "id",
                 $id
             );
@@ -121,7 +121,7 @@ if (!$remittance_in_progress && ($action === "check" || $action === "add")) {
             "remittance_added_agent",
             Notification::$MEDIUM,
             Notification::$AGENT,
-            $_SESSION["agent_id"],
+            Agent::id(),
             Notification::$LINK_REMITTANCE,
             $id
         );

@@ -1,7 +1,7 @@
 <?php
 
 use A2billing\A2Billing;
-use A2billing\Admin;
+use A2billing\Agent;
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
@@ -69,7 +69,7 @@ $HD_Form = new FormHandler(
     ]
 );
 if (is_agent()) {
-    $HD_Form->list_query_conditions["cc_card_group.id_agent"] = $_SESSION["agent_id"];
+    $HD_Form->list_query_conditions["cc_card_group.id_agent"] = Agent::id();
 }
 $HD_Form->list_help_text = create_help(
     _("SIP and IAX Config will create a SIP or IAX entry on the Asterisk server, so that a customer can set up a SIP or IAX client to connect directly to the asterisk server without the need to enter an account and pin each time a call is made. When done, click on the CONFIRM DATA button, then click reload to apply the changes on the Asterisk server.<br>")

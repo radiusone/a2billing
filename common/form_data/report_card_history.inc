@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Agent;
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 
@@ -40,7 +41,7 @@ if (empty($HD_Form->list_query_conditions)) {
     $HD_Form->list_query_conditions["cc_card_history.datecreated"] = [">=", $date];
 }
 if (is_agent()) {
-    $HD_Form->list_query_conditions["cc_card_group.id_agent"] = $_SESSION["agent_id"] ?? 0;
+    $HD_Form->list_query_conditions["cc_card_group.id_agent"] = Agent::id();
 } elseif (is_customer()) {
     $HD_Form->list_query_conditions["cc_card_history.id_cc_card"] = Customer::id();
 }

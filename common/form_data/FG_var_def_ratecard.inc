@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\A2Billing;
+use A2billing\Agent;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 use A2billing\Table;
@@ -73,7 +74,7 @@ if (is_admin()) {
         "id",
         ["cc_agent_tariffgroup" => ["cc_callplan_lcr.tariffgroup_id", "cc_agent_tariffgroup.id_tariffgroup"]]
     );
-    $HD_Form->list_query_conditions["cc_agent_tariffgroup.id_agent"] = $_SESSION["agent_id"];
+    $HD_Form->list_query_conditions["cc_agent_tariffgroup.id_agent"] = Agent::id();
     $HD_Form->list_query_group_columns = ["dialprefix"];
     $use_lcr_callplan = true;
 } else {
@@ -178,7 +179,7 @@ if (is_admin()) {
         ),
         "tariffgroupname",
         "asc",
-        ["id_agent" => $_SESSION["agent_id"]]
+        ["id_agent" => Agent::id()]
     );
     $HD_Form->AddEditSqlSelect(_("Rate Card"), "idtariffplan", new Table("cc_tariffplan", ["id", "tariffname"]));
 }

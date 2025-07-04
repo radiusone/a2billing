@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Agent;
 use A2billing\Customer;
 use A2billing\Forms\FormBO;
 use A2billing\Forms\FormHandler;
@@ -57,7 +58,7 @@ if (is_admin()) {
         "cc_logpayment.id",
         ["cc_card" => ["cc_card.id", "cc_logpayment.card_id"], "cc_card_group" => ["cc_card.id_group", "cc_card_group.id"]]
     );
-    $HD_Form->list_query_conditions["cc_card_group.id_agent"] = $_SESSION["agent_id"];
+    $HD_Form->list_query_conditions["cc_card_group.id_agent"] = Agent::id();
 }
 $HD_Form->list_query_order_direction = "DESC";
 

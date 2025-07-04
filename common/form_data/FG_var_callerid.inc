@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\A2Billing;
+use A2billing\Agent;
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
@@ -51,7 +52,7 @@ $HD_Form = new FormHandler(
 if (is_customer()) {
     $HD_Form->list_query_conditions["cc_callerid.id_cc_card"] = Customer::id();
 } elseif (is_agent()) {
-    $HD_Form->list_query_conditions["cc_card_group.id_agent"] = $_SESSION["agent_id"];
+    $HD_Form->list_query_conditions["cc_card_group.id_agent"] = Agent::id();
 }
 
 if (is_customer()) {

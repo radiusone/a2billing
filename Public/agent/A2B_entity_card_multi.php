@@ -154,9 +154,9 @@ $HD_Form->list_help_text = create_help(
 $HD_Form->create_toppage($form_action);
 
 $list_tariff = (new Table("cc_tariffgroup", ["id", "tariffgroupname"], ["cc_agent_tariffgroup" => ["cc_agent_tariffgroup.id_tariffgroup", "cc_tariffgroup.id"]]))
-    ->getRows(["cc_agent_tariffgroup.id_agent" => $_SESSION["agent_id"]], ["tariffgroupname"]);
+    ->getRows(["cc_agent_tariffgroup.id_agent" => Agent::id()], ["tariffgroupname"]);
 $list_group = (new Table("cc_card_group", ["id", "name"]))
-    ->getRows(["id_agent" => $_SESSION["agent_id"]]);
+    ->getRows(["id_agent" => Agent::id()]);
 
 // FORM FOR THE GENERATION
 ?>

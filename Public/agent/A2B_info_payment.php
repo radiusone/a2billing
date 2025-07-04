@@ -56,14 +56,14 @@ if (empty($id)) {
 
 if ($type === "agent") {
     $table = new Table("cc_logpayment_agent");
-    $cond = ["agent_id" => $_SESSION["agent_id"], "id" => $id];
+    $cond = ["agent_id" => Agent::id(), "id" => $id];
 } else {
     $table = new Table(
         "cc_logpayment",
         ["*"],
         ["cc_card" => ["cc_card.id", "cc_logpayment.card_id"], "cc_card_group" => ["cc_card.id_group", "cc_card_group.id"]]
     );
-    $cond = ["cc_card_group.id_agent" => $_SESSION["agent_id"], "cc_logpayment.id" => $id];
+    $cond = ["cc_card_group.id_agent" => Agent::id(), "cc_logpayment.id" => $id];
 }
 $payment = $table->getRow($cond);
 

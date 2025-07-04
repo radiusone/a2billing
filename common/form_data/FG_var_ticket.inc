@@ -69,7 +69,7 @@ if ($form_action === "list") {
         GROUP BY aa.id
         SQL;
     } elseif (is_agent() && $ticket_type === "agent") {
-        $agent_id = (int)$_SESSION["agent_id"];
+        $agent_id = Agent::id();
         $virtual = <<< SQL
         SELECT aa.id, CASE WHEN MAX(aa.viewed_agent) = 1 OR SUM(bb.viewed_agent) > 0 THEN 1 ELSE 0 END AS viewed
         FROM cc_ticket aa
@@ -78,7 +78,7 @@ if ($form_action === "list") {
         GROUP BY aa.id
         SQL;
     } elseif (is_agent()) {
-        $agent_id = (int)$_SESSION["agent_id"];
+        $agent_id = Agent::id();
         $virtual = <<< SQL
         SELECT aa.id, CASE WHEN MAX(aa.viewed_agent) = 1 OR SUM(bb.viewed_agent) > 0 THEN 1 ELSE 0 END AS viewed
         FROM cc_ticket aa
@@ -190,7 +190,7 @@ if ($ticket_type === "agent") {
             "A2B_entity_agent.php"
         );
     } else {
-        $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["creator"] = $_SESSION["agent_id"];
+        $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["creator"] = Agent::id();
     }
     $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["creator_type"] = Ticket::AGENT;
 } elseif (!is_customer()) {

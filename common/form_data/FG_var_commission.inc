@@ -52,7 +52,7 @@ $form_action ??= "list";
 
 $HD_Form = new FormHandler("cc_agent_commission", _("Agent Commission"));
 if (is_agent()) {
-    $HD_Form->list_query_conditions["id_agent"] = $_SESSION["agent_id"];
+    $HD_Form->list_query_conditions["id_agent"] = Agent::id();
 }
 $HD_Form->list_query_order_columns = ["date"];
 $HD_Form->list_query_order_direction = "desc";

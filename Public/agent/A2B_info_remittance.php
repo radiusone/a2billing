@@ -50,7 +50,7 @@ if (empty($id)) {
 }
 
 $remittance = (new Table("cc_remittance_request"))
-    ->getRow(["id" => $id, "id_agent" => $_SESSION["agent_id"]]);
+    ->getRow(["id" => $id, "id_agent" => Agent::id()]);
 if (empty($remittance)) {
     header("Location: A2B_entity_remittance_request.php");
 }

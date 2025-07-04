@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Agent;
 use A2billing\Comment;
 use A2billing\Ticket;
 
@@ -59,7 +60,7 @@ if (!$ticket) {
 if (($action ?? "") === "change") {
     $ticket->setStatus($status);
     if ($comment_text) {
-        $ticket->insertComment($comment_text, $_SESSION["agent_id"], Comment::ADMIN);
+        $ticket->insertComment($comment_text, Agent::id(), Comment::ADMIN);
     }
     header("Location: A2B_info_ticket.php?id=$id&result=success");
     die();

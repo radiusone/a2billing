@@ -1,6 +1,7 @@
 <?php
 
-/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
+use A2billing\Agent;
+use A2billing\Logger;
 
 /**
  * This file is part of A2Billing (http://www.a2billing.net/)
@@ -33,12 +34,10 @@
  *
 **/
 
-use A2billing\Logger;
-
 require_once __DIR__ . "/../../common/lib/agent.defines.php";
 
 Logger::insertLog(
-    $_SESSION["agent_id"],
+    Agent::id(),
     1, "AGENT LOGGED OUT",
     "User Logged out from website",
     '',

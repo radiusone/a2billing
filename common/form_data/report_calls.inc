@@ -144,7 +144,7 @@ if (empty($HD_Form->list_query_conditions)) {
     $HD_Form->list_query_conditions["terminatecauseid"] = 1;
 }
 if (is_agent()) {
-    $HD_Form->list_query_conditions["cc_card_group.id_agent"] = $_SESSION["agent_id"] ?? 0;
+    $HD_Form->list_query_conditions["cc_card_group.id_agent"] = Agent::id();
 } elseif (is_customer()) {
     $HD_Form->list_query_conditions["cc_call.card_id"] = Customer::id();
 }

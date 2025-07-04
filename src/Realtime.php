@@ -129,7 +129,7 @@ class Realtime
                 $who_id = $_SESSION["admin_id"];
             } elseif (is_agent()) {
                 $who = Notification::$AGENT;
-                $who_id = $_SESSION["agent_id"];
+                $who_id = Agent::id();
             } else {
                 $who = Notification::$UNKNOWN;
                 $who_id = -1;

@@ -56,7 +56,7 @@ $id ??= null;
 if ($action === "cancel" && $id) {
     $DBHandle = DbConnect();
     (new Table("cc_remittance_request"))
-        ->updateRow(["status" => 3], ["id" => $id, "id_agent" => $_SESSION["agent_id"]]);
+        ->updateRow(["status" => 3], ["id" => $id, "id_agent" => Agent::id()]);
     die();
 }
 $HD_Form->init();

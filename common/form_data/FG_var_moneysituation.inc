@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Agent;
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 
@@ -50,7 +51,7 @@ $HD_Form = new FormHandler(
 $HD_Form->list_query_group_columns = ["cc_card.id"];
 $HD_Form->list_query_order_columns = ["cc_card.id"];
 if (is_agent()) {
-    $HD_Form->list_query_conditions["cc_card_group.id_agent"] = $_SESSION["agent_id"];
+    $HD_Form->list_query_conditions["cc_card_group.id_agent"] = Agent::id();
 }
 
 $HD_Form->help_text = create_help(

@@ -57,7 +57,7 @@ $HD_Form = new FormHandler(
         : []
 );
 if (is_agent()) {
-    $HD_Form->list_query_conditions["cc_agent.id"] = $_SESSION["agent_id"];
+    $HD_Form->list_query_conditions["cc_agent.id"] = Agent::id();
 }
 
 $HD_Form->list_query_order_columns = ["date"];

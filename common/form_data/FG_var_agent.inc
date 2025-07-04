@@ -47,7 +47,7 @@ getpost_ifset(["form_action", "popup_select"]);
 
 $HD_Form = new FormHandler("cc_agent", is_admin() ? _("Agent") : _("personal information"));
 if (is_agent()) {
-    $HD_Form->update_query_conditions = ["id" => $_SESSION["agent_id"]];
+    $HD_Form->update_query_conditions = ["id" => Agent::id()];
 }
 
 $HD_Form->list_query_order_columns = ["datecreation"];

@@ -1,4 +1,6 @@
 <?php
+use A2billing\Agent;
+
 /**
  * @var \A2billing\Forms\FormHandler $HD_Form
  */
@@ -28,7 +30,7 @@ $QUERY_INVOICE_ENOUGH_PAID = <<< SQL
     SQL;
 $result_invoice_enough_paid = DbConnect()->GetArray(
     $QUERY_INVOICE_ENOUGH_PAID,
-    [$checkdate, is_agent() ? 1 : 0, $_SESSION["agent_id"] ?? 0]
+    [$checkdate, is_agent() ? 1 : 0, Agent::id()]
 ) ?: [];
 
 $QUERY_INVOICE_COUNT = <<< SQL
@@ -47,7 +49,7 @@ $QUERY_INVOICE_COUNT = <<< SQL
     SQL;
 $result_invoice_count = DbConnect()->GetArray(
     $QUERY_INVOICE_COUNT,
-    [$checkdate, is_agent() ? 1 : 0, $_SESSION["agent_id"] ?? 0]
+    [$checkdate, is_agent() ? 1 : 0, Agent::id()]
 ) ?: [];
 
 $table_data = [];

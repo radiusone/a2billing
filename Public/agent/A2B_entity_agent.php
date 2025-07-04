@@ -50,7 +50,7 @@ getpost_ifset(["id"]);
  */
 
 $form_action ??= "ask-edit";
-if ($form_action !== "edit" && $form_action !== "ask-edit" || (isset($id) && (int)$id !== (int)$_SESSION["agent_id"])) {
+if ($form_action !== "edit" && $form_action !== "ask-edit" || (isset($id) && (int)$id !== Agent::id())) {
     header("Location: A2B_info_agent.php");
 }
 

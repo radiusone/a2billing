@@ -2,6 +2,7 @@
 
 use A2billing\A2Billing;
 use A2billing\Admin;
+use A2billing\Agent;
 use A2billing\Forms\FormHandler;
 use A2billing\NotificationsDAO;
 use A2billing\Notification;
@@ -162,7 +163,7 @@ if (!USE_REALTIME) {
             $id = $_SESSION['admin_id'];
         } elseif (is_agent()) {
             $who = Notification::$AGENT;
-            $id = $_SESSION['agent_id'];
+            $id = Agent::id();
         } else {
             $who = Notification::$UNKNOWN;
             $id = -1;

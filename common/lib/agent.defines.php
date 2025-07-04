@@ -52,6 +52,6 @@ const ENABLE_LOG = true;
 //Enable Disable Captcha
 define ("CAPTCHA_ENABLE", $A2B->config["signup"]['enable_captcha'] ?? 0);
 
-if (ENABLE_LOG && !str_contains($_SERVER['REQUEST_URI'], "Public/index.php") && !empty($_SESSION["agent_id"])) {
-    Logger::insertLog($_SESSION["agent_id"], 1, "Page Visit", "Agent Visited the Page", '', $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI'], '', [], true);
+if (ENABLE_LOG && !str_contains($_SERVER['REQUEST_URI'], "Public/index.php") && Agent::id()) {
+    Logger::insertLog(Agent::id(), 1, "Page Visit", "Agent Visited the Page", '', $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI'], '', [], true);
 }

@@ -59,7 +59,7 @@ if (!$ticket) {
 if (($action ?? "") === "change") {
     $ticket->setStatus($status);
     if ($newcomment) {
-        $ticket->insertComment($newcomment, $_SESSION["agent_id"], Comment::AGENT);
+        $ticket->insertComment($newcomment, Agent::id(), Comment::AGENT);
     }
     header("Location: A2B_info_ticket.php?id=$id&result=success");
     die();

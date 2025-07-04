@@ -56,7 +56,7 @@ if ($form_action != "list" && isset($id)) {
         $table_agent_security = new Table("cc_card LEFT JOIN cc_card_group ON cc_card.id_group=cc_card_group.id ", " cc_card_group.id_agent");
         $clause_agent_security = ["cc_card.id" => $id];
         $result_security= $table_agent_security -> getValue ($clause_agent_security);
-        if ($result_security != $_SESSION['agent_id']) {
+        if ($result_security != Agent::id()) {
             Header ("Location: A2B_entity_card.php?section=1");
             die();
         }
@@ -135,11 +135,11 @@ if (($form_action == "addcredit") && ($addcredit > 0) && ($id > 0 || $cardnumber
         $instance_check_card_agent = new Table("cc_card LEFT JOIN cc_card_group ON cc_card.id_group=cc_card_group.id", " cc_card_group.id_agent");
         $FG_TABLE_CLAUSE_check = ["cc_card.id" => $id];
         $list_check= $instance_check_card_agent -> getValue($FG_TABLE_CLAUSE_check);
-        if ($list_check == $_SESSION['agent_id']) {
+        if ($list_check == Agent::id()) {
 
             //check if enought credit
             $instance_table_agent = new Table("cc_agent", "credit, currency");
-            $FG_TABLE_CLAUSE_AGENT = ["id" => $_SESSION['agent_id']];
+            $FG_TABLE_CLAUSE_AGENT = ["id" => Agent::id()];
             $agent_info = $instance_table_agent->getRows($FG_TABLE_CLAUSE_AGENT);
             $credit_agent = $agent_info[0][0];
             if ($credit_agent >= $addcredit) {
@@ -150,13 +150,13 @@ if (($form_action == "addcredit") && ($addcredit > 0) && ($id > 0 || $cardnumber
                // Add credit to Customer
                 $param_update = ["credit" => ["credit + ?", $addcredit]];
 
-                $FG_EDITION_CLAUSE = ["id" => $id]; // AND id_agent=".$_SESSION['agent_id'];
+                $FG_EDITION_CLAUSE = ["id" => $id]; // AND id_agent=".Agent::id();
 
                 $instance_table = new Table("cc_card", "username, id");
                 $instance_table->updateRow($param_update, $FG_EDITION_CLAUSE);
 
                 $update_msg ='<span style="color:green; font-weight: bold">' . gettext("Refill executed ") . '</span>';
-                $id_agent = $_SESSION['agent_id'];
+                $id_agent = Agent::id();
                 $instance_sub_table = new Table("cc_logrefill");
                 $values = ["credit" => $addcredit, "card_id" => $id, "description" => $description, "refill_type" => 3, "agent_id" => $id_agent];
                 $instance_sub_table->addRow($values, "id", $id_refill);

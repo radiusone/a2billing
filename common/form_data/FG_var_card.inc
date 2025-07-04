@@ -73,7 +73,7 @@ $HD_Form = new FormHandler(
 );
 
 if (is_agent()) {
-    $HD_Form->list_query_conditions["id_agent"] = $_SESSION["agent_id"] ?? 0;
+    $HD_Form->list_query_conditions["id_agent"] = Agent::id();
 } elseif (is_customer()) {
     // shouldn't be needed, but just in case
     $HD_Form->list_query_conditions["cc_card.id"] = Customer::id();
@@ -390,7 +390,7 @@ if ($popup_select) {
             _("CUSTOMER GROUP"),
             "id_group",
             new Table("cc_card_group", ["id", "name"]),
-            is_admin() ? [] : ["id_agent" => $_SESSION["agent_id"]]
+            is_admin() ? [] : ["id_agent" => Agent::id()]
         );
 
         $HD_Form->AddEditSqlSelect(
@@ -578,7 +578,7 @@ if ($popup_select) {
                 : ["cc_agent_tariffgroup" => ["cc_tariffgroup.id", "cc_agent_tariffgroup.id_tariffgroup"]]),
             is_admin()
                 ? []
-                : ["cc_agent_tariffgroup.id_agent" => $_SESSION["agent_id"]],
+                : ["cc_agent_tariffgroup.id_agent" => Agent::id()],
             "",
             [],
             _("Changing the call plan will result in the free minutes or free calls package being reset.")
@@ -970,7 +970,7 @@ if ($popup_select) {
                 $who_id = $_SESSION["admin_id"];
             } elseif (is_agent()) {
                 $who = Notification::$AGENT;
-                $who_id = $_SESSION["agent_id"];
+                $who_id = Agent::id();
             }
             NotificationsDAO::addNotification($key, Notification::$HIGH, $who, $who_id);
         }

@@ -52,7 +52,7 @@ $table = new Table(
         "(SELECT COALESCE(SUM(amount), 0) FROM cc_remittance_request WHERE status = 0 AND id_agent = cc_agent.id) AS remit"
     ],
 );
-$agent_info = $table->getRow(["id" => $_SESSION["agent_id"]]);
+$agent_info = $table->getRow(["id" => Agent::id()]);
 if (!$agent_info) {
     exit();
 }
@@ -127,7 +127,7 @@ require_once __DIR__ . "/templates/main.php";
 <?php if ($A2B->config["webagentui"]['personalinfo']): ?>
 <div class="row pb-3 gx-5">
     <div class="col text-end">
-        <a href="A2B_entity_agent.php?form_action=ask-edit&id=<?= $_SESSION["agent_id"]?>"><?= _("EDIT PERSONAL INFORMATION");?></a>
+        <a href="A2B_entity_agent.php?form_action=ask-edit&id=<?= Agent::id()?>"><?= _("EDIT PERSONAL INFORMATION");?></a>
     </div>
 </div>
 <?php endif ?>
