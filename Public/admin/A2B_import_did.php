@@ -124,7 +124,7 @@ if ($task) {
     if ($task === "upload") {
         (new Table("cc_did"))->addRows($insert_data);
         $nb_imported = count($insert_data);
-        Logger::insertLog($_SESSION["admin_id"], 2, "DIDs IMPORTED", $nb_imported." New DIDs Imported Successfully", '', $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI']);
+        Logger::insertLog(Admin::id(), 2, "DIDs IMPORTED", $nb_imported." New DIDs Imported Successfully", '', $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI']);
     }
     $stop_time = microtime(true);
     $import_time = $stop_time - $start_time;

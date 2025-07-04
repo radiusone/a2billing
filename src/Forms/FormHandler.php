@@ -2,6 +2,7 @@
 
 namespace A2billing\Forms;
 
+use A2billing\Admin;
 use A2billing\Logger;
 use A2billing\Table;
 use Profiler_Console as Console;
@@ -1538,7 +1539,7 @@ class FormHandler
         if ($this->QUERY_RESULT) {
             if ($this->FG_ENABLE_LOG) {
                 Logger::insertLog(
-                    $_SESSION["admin_id"],
+                    Admin::id(),
                     2,
                     sprintf(_("New %s created"), $this->FG_INSTANCE_NAME),
                     _("User added a new record in database"),
@@ -1617,7 +1618,7 @@ class FormHandler
         if ($this->QUERY_RESULT) {
             if ($this->FG_ENABLE_LOG) {
                 Logger::insertLog(
-                    $_SESSION["admin_id"],
+                    Admin::id(),
                     3,
                     sprintf(_("Existing %s updated"), $this->FG_INSTANCE_NAME),
                     _("User edited a record in database"),
@@ -1661,7 +1662,7 @@ class FormHandler
         if ($this->QUERY_RESULT) {
             if ($this->FG_ENABLE_LOG) {
                 Logger::insertLog(
-                    $_SESSION["admin_id"],
+                    Admin::id(),
                     3,
                     "A " . strtoupper($this->FG_INSTANCE_NAME) . " DELETED",
                     "A RECORD IS DELETED, EDITION CLAUSE USED IS " . array_kv($this->update_query_conditions),

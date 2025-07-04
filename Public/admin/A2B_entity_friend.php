@@ -117,7 +117,7 @@ if ($batchupdate === "1" && count($check)) {
 
     if (!USE_REALTIME) {
         $who = Notification::$ADMIN;
-        $who_id = $_SESSION['admin_id'];
+        $who_id = Admin::id();
         NotificationsDAO::addNotification($key, Notification::$HIGH, $who, $who_id);
     }
 
@@ -160,7 +160,7 @@ if (!USE_REALTIME) {
         $key = $voip_type === "sip" ? "sip_changed" : "iax_changed";
         if (is_admin()) {
             $who = Notification::$ADMIN;
-            $id = $_SESSION['admin_id'];
+            $id = Admin::id();
         } elseif (is_agent()) {
             $who = Notification::$AGENT;
             $id = Agent::id();

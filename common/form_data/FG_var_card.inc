@@ -967,7 +967,7 @@ if ($popup_select) {
             $who_id = -1;
             if (is_admin()) {
                 $who = Notification::$ADMIN;
-                $who_id = $_SESSION["admin_id"];
+                $who_id = Admin::id();
             } elseif (is_agent()) {
                 $who = Notification::$AGENT;
                 $who_id = Agent::id();

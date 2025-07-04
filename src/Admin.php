@@ -113,7 +113,7 @@ class Admin extends User
      */
     public static function id(): int
     {
-        return intval($_SESSION["admin_id"] ?? 0);
+        return intval(Admin::id() ?? 0);
     }
 
     /**

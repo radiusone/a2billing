@@ -50,7 +50,7 @@ getpost_ifset(["id", "page", "action", "ids"]);
 $id = (int)($id ?? 0);
 $page = (int)($page ?? 1);
 $ids ??= [];
-$admin_id = (int)$_SESSION["admin_id"];
+$admin_id = Admin::id();
 
 if (!empty($action)) {
     $result = false;

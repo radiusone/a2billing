@@ -105,6 +105,6 @@ if (!is_array($_SESSION[$export_session])) {
         echo $dom->saveXML();
     }
 
-    Logger::insertLog($_SESSION["admin_id"], 2, "FILE EXPORTED", "A File is exported by User, File Name= " . $myfileName, '', $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI'], '');
+    Logger::insertLog(Admin::id(), 2, "FILE EXPORTED", "A File is exported by User, File Name= " . $myfileName, '', $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI'], '');
     die();
 }

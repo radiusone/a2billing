@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Admin;
 use A2billing\Logger;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -38,7 +39,7 @@ use A2billing\Logger;
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
 
 Logger::insertLog(
-    $_SESSION["admin_id"],
+    Admin::id(),
     1,
     "USER LOGGED OUT",
     "User Logged out from website",

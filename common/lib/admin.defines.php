@@ -49,6 +49,6 @@ if (PHP_SAPI !== "cli") {
     Admin::checkPageAccess();
 }
 
-if (!empty($_SESSION["admin_id"]) && ENABLE_LOG && !str_contains($_SERVER['REQUEST_URI'], "Public/index.php")) {
-    Logger::insertLog($_SESSION["admin_id"], 1, "Page Visit", "User Visited the Page", '', $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI']);
+if (Admin::id() && ENABLE_LOG && !str_contains($_SERVER['REQUEST_URI'], "Public/index.php")) {
+    Logger::insertLog(Admin::id(), 1, "Page Visit", "User Visited the Page", '', $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI']);
 }
