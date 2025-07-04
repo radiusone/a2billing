@@ -151,18 +151,18 @@ if (!isset ($action_release) || $action_release == "confirm_release" || $action_
             $destination = (intval($destination) > 0) ? $destination : 'no valid';
 
         $result = (new Table("cc_did_destination"))
-            ->addRow(["activated" => 1, "id_cc_card" => $_SESSION["card_id"], "id_cc_did" => $choose_did, "destination" => $destination, "priority" => 1, "voip_call" => $voip_call, "validated" => $validated]);
+            ->addRow(["activated" => 1, "id_cc_card" => Customer::id(), "id_cc_did" => $choose_did, "destination" => $destination, "priority" => 1, "voip_call" => $voip_call, "validated" => $validated]);
         if ($confirm_buy_did == 2) {
             (new Table("cc_charge"))
-                ->addRow(["id_cc_card" => $_SESSION["card_id"], "amount" => abs($rate), "chargetype" => 2, "id_cc_did" => $choose_did]);
+                ->addRow(["id_cc_card" => Customer::id(), "amount" => abs($rate), "chargetype" => 2, "id_cc_did" => $choose_did]);
             (new Table("cc_did"))
-                ->updateRow(["id_user" => $_SESSION["card_id"], "reserved" => 1], ["id" => $choose_did]);
+                ->updateRow(["id_user" => Customer::id(), "reserved" => 1], ["id" => $choose_did]);
             (new Table("cc_card"))
-                ->updateRow(["credit" => ["credit - ?", abs($rate)]], ["id" => $_SESSION["card_id"]]);
+                ->updateRow(["credit" => ["credit - ?", abs($rate)]], ["id" => Customer::id()]);
             (new Table("cc_did_use"))
                 ->updateRow(["releasedate" => "CURRENT_TIMESTAMP"], ["id_did" => $choose_did, "activated" => 0]);
             (new Table("cc_did_use"))
-                ->addRow(["activated" => 1, "id_cc_card" => $_SESSION["card_id"], "id_did" => $choose_did, "month_payed" => 1]);
+                ->addRow(["activated" => 1, "id_cc_card" => Customer::id(), "id_did" => $choose_did, "month_payed" => 1]);
         }
         $date = date("D M j G:i:s T Y", time());
         $message = "\n\n" . gettext("The following Destinaton for your DID has been added:") . "\n\n";
@@ -198,7 +198,7 @@ if (!isset ($action_release) || $action_release == "confirm_release" || $action_
     // TODO integrate in Framework
     if ($form_action == "delete") {
         $HD_Form->FG_QUERY_TABLE_NAME = "cc_did_destination";
-        $HD_Form->update_query_conditions = ["id_cc_card" => $_SESSION["card_id"], "id" => $id];
+        $HD_Form->update_query_conditions = ["id_cc_card" => Customer::id(), "id" => $id];
     }
     $list = $HD_Form->perform_action($form_action);
 
@@ -249,9 +249,9 @@ if (!isset ($action_release) || $action_release == "confirm_release" || $action_
         $instance_table_did = new Table("cc_did", ["cc_did.id", "did", "fixrate"], ["cc_did_use" => ["id_did", "cc_did.id"]]);
         $FG_TABLE_CLAUSE = [
             "id_cc_didgroup" => $_SESSION["id_didgroup"],
-            "id_cc_card" => $_SESSION["card_id"],
+            "id_cc_card" => Customer::id(),
             "cc_did_use.activated" => 1,
-            ["SUB", "releasedate" => [[null], ["<", "1984-01-01 00:00:00"]]]
+            ["SUB", ["releasedate" => [[null], ["<", "1984-01-01 00:00:00"]]], "OR"]
         ];
         $list_did = $instance_table_did->getRows($FG_TABLE_CLAUSE, ["did"], "asc", ["cc_did.id", "did", "fixrate"]);
         $nb_did = count($list_did);

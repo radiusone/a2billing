@@ -42,5 +42,5 @@ if (empty($HD_Form->list_query_conditions)) {
 if (is_agent()) {
     $HD_Form->list_query_conditions["cc_card_group.id_agent"] = $_SESSION["agent_id"] ?? 0;
 } elseif (is_customer()) {
-    $HD_Form->list_query_conditions["cc_card_history.id_cc_card"] = $_SESSION["card_id"] ?? 0;
+    $HD_Form->list_query_conditions["cc_card_history.id_cc_card"] = Customer::id();
 }

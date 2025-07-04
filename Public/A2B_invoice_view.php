@@ -53,7 +53,7 @@ if (empty($id)) {
 }
 
 $invoice = new Invoice($id);
-if ($invoice->getCard() != $_SESSION["card_id"]) {
+if ($invoice->getCard() !== Customer::id()) {
     header("HTTP/1.0 401 Unauthorized");
     header("Location: PP_error.php?c=accessdenied");
     die();
@@ -61,7 +61,7 @@ if ($invoice->getCard() != $_SESSION["card_id"]) {
 
 //load customer
 $card = (new Table("cc_card", "*", ["cc_country" => ["country", "countrycode"]]))
-    ->getRow(["cc_card.id" => $_SESSION["card_id"]]);
+    ->getRow(["cc_card.id" => Customer::id()]);
 
 if (empty($card)) {
     echo "Customer doesn't exist or is not correctly defined for this invoice !";

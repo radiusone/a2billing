@@ -45,7 +45,7 @@ require_once __DIR__ . "/../common/lib/customer.defines.php";
 
 Customer::checkPageAccess(Customer::ACX_INVOICES);
 
-$card_id = $_SESSION["card_id"];
+$card_id = Customer::id();
 
 $card = (new Table("cc_card", ["*"], ["cc_country" => ["country", "countrycode"]]))
     ->getRow(["cc_card.id" => $card_id]);

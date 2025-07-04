@@ -86,7 +86,7 @@ if (isset($form_action) && ($form_action=='ask-edit' || $form_action=='edit')) {
         $validated = ($numrow == 1) ? 1 : 0;
 
 	    if ($validated)
-	        NotificationsDAO::AddNotification("did_destination_edited_cust", Notification::$LOW, Notification::$CUST, $_SESSION['card_id'], Notification::$LINK_DID_DESTINATION, $id);
+	        NotificationsDAO::AddNotification("did_destination_edited_cust", Notification::$LOW, Notification::$CUST, Customer::id(), Notification::$LINK_DID_DESTINATION, $id);
 
 	    //$HD_Form->_processed['destination'] = intval($destination);
 
@@ -98,8 +98,8 @@ if (isset($form_action) && ($form_action=='ask-edit' || $form_action=='edit')) {
 
 } else {
 	$HD_Form -> FG_QUERY_TABLE_NAME = "cc_did_destination, cc_did";
-    $HD_Form->list_query_conditions = ["id_cc_card" => $_SESSION["card_id"], "cc_did_destination.id_cc_did" => "`cc_did`.`id`"];
-    $HD_Form->update_query_conditions = ["id_cc_card" => $_SESSION["card_id"], "cc_did_destination.id_cc_did" => "`cc_did`.`id`"];
+    $HD_Form->list_query_conditions = ["id_cc_card" => Customer::id(), "cc_did_destination.id_cc_did" => "`cc_did`.`id`"];
+    $HD_Form->update_query_conditions = ["id_cc_card" => Customer::id(), "cc_did_destination.id_cc_did" => "`cc_did`.`id`"];
 	$country_field = ' id_cc_country,';
 	$validated = 0;
 }

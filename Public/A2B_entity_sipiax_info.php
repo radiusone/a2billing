@@ -65,7 +65,7 @@ if ($configtype == "IAX") {
 }
 
 $sip_iax_data = (new Table($table, ["id", "username", "secret", "disallow", "allow", "type", "host", "context"]))
-    ->getRow(["id_cc_card" => $_SESSION["card_id"]]);
+    ->getRow(["id_cc_card" => Customer::id()]);
 
 //Additonal parameters
 $additional_sip = explode("|", $A2B->config['sip-iax-info']['sip_additional_parameters'] ?? "");

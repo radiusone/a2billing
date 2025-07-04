@@ -50,14 +50,14 @@ getpost_ifset(["result", "id", "action", "status", "newcomment"]);
  */
 
 $ticket = Ticket::getTicket($id ?? 0);
-if (!$ticket || $ticket->getCreatorId() !== $_SESSION["card_id"]) {
+if (!$ticket || $ticket->getCreatorId() !== Customer::id()) {
     exit(_("Ticket ID not found"));
 }
 
 if (($action ?? "") === "change") {
     $ticket->setStatus($status);
     if ($newcomment) {
-        $ticket->insertComment($newcomment, $_SESSION["card_id"], Comment::CUSTOMER);
+        $ticket->insertComment($newcomment, Customer::id(), Comment::CUSTOMER);
     }
     header("Location: A2B_info_ticket.php?id=$id&result=success");
     die();

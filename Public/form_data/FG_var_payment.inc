@@ -40,7 +40,7 @@ getpost_ifset(array('id', 'card_id', 'date', 'payment','description','added_refi
 
 $HD_Form = new FormHandler("cc_logpayment", gettext("payment"));
 
-$HD_Form->list_query_conditions["card_id"] = $_SESSION["card_id"];
+$HD_Form->list_query_conditions["card_id"] = Customer::id();
 $HD_Form -> list_query_order_direction = "DESC";
 
 $HD_Form -> AddListValue(gettext("ID"), "cc_logpayment.id");

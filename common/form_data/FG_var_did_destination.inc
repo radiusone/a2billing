@@ -49,8 +49,8 @@ $HD_Form = new FormHandler(
 $HD_Form->list_query_order_columns = ["destination"];
 $HD_Form->list_query_order_direction = "DESC";
 if (is_customer()) {
-    $HD_Form->list_query_conditions["id_cc_card"] = $_SESSION["card_id"];
-    $HD_Form->update_query_conditions["id_cc_card"] = $_SESSION["card_id"];
+    $HD_Form->list_query_conditions["id_cc_card"] = Customer::id();
+    $HD_Form->update_query_conditions["id_cc_card"] = Customer::id();
 }
 
 $HD_Form->AddListTopButton("A2B_entity_did_destination.php?form_action=ask-add", _("Add Destination"), "telephone-inbound-fill");
@@ -101,13 +101,13 @@ if (!is_customer() && $form_action !== "ask-edit" && $form_action !== "edit") {
 
     $HD_Form->AddEditSqlSelect(_("DID"), "id_cc_did", new Table("cc_did", ["id", "did"]));
 } elseif ($form_action !== "ask-edit" && $form_action !== "edit") {
-    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["id_cc_card"] = $_SESSION["card_id"];
+    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["id_cc_card"] = Customer::id();
 
     $HD_Form->AddEditSqlSelect(
         _("Use an existing DID"),
         "id_cc_did",
         new Table("cc_did", ["id", "did"]),
-        ["iduser" => $_SESSION["card_id"]],
+        ["iduser" => Customer::id()],
         "",
         ["" => ""],
         "",

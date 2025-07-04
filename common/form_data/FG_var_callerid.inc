@@ -49,14 +49,14 @@ $HD_Form = new FormHandler(
     ["cc_card" => ["cc_card.id", "cc_callerid.id_cc_card"], "cc_card_group" => ["cc_card.id_group", "cc_card_group.id"]]
 );
 if (is_customer()) {
-    $HD_Form->list_query_conditions["cc_callerid.id_cc_card"] = $_SESSION["card_id"];
+    $HD_Form->list_query_conditions["cc_callerid.id_cc_card"] = Customer::id();
 } elseif (is_agent()) {
     $HD_Form->list_query_conditions["cc_card_group.id_agent"] = $_SESSION["agent_id"];
 }
 
 if (is_customer()) {
     $cid_count = (new Table("cc_callerid"))
-        ->countRows(["id_cc_card" => $_SESSION["card_id"]]);
+        ->countRows(["id_cc_card" => Customer::id()]);
     if ($cid_count < $A2B->config["webcustomerui"]['limit_callerid']) {
         $HD_Form->AddListTopButton();
         $HD_Form->FG_ENABLE_ADD_BUTTON = true;
@@ -122,8 +122,8 @@ $HD_Form->AddEditRadio(
 );
 
 if (is_customer()) {
-    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["id_cc_card"] = $_SESSION["card_id"];
-    $HD_Form->FG_EDIT_QUERY_HIDDEN_INPUTS["id_cc_card"] = $_SESSION["card_id"];
+    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["id_cc_card"] = Customer::id();
+    $HD_Form->FG_EDIT_QUERY_HIDDEN_INPUTS["id_cc_card"] = Customer::id();
 } else {
     $HD_Form->AddEditPopup(
         _("CARD ID"),

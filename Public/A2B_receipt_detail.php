@@ -51,7 +51,7 @@ if (empty($id)) {
 
 $page = intval($page ?? 1);
 $receipt = new Receipt((int)$id);
-if ($receipt->getCard() != $_SESSION["card_id"]) {
+if ($receipt->getCard() !== Customer::id()) {
     header("HTTP/1.0 401 Unauthorized");
     header("Location: PP_error.php?c=accessdenied");
     die();

@@ -45,7 +45,7 @@ $HD_Form = new FormHandler(
     "cc_speeddial.id"
 );
 if (is_customer()) {
-    $HD_Form->list_query_conditions["id_cc_card"] = $_SESSION["card_id"];
+    $HD_Form->list_query_conditions["id_cc_card"] = Customer::id();
 }
 
 $HD_Form->list_query_order_columns = ["creationdate"];
@@ -74,7 +74,7 @@ if (!is_customer()) {
     $HD_Form->AddListTopButton();
 } else {
     $sd_count = (new Table("cc_speeddial"))
-        ->countRows(["id_cc_card" => $_SESSION["card_id"]]);
+        ->countRows(["id_cc_card" => Customer::id()]);
     if ($sd_count < 10) {
         $HD_Form->AddListTopButton();
     }
@@ -105,9 +105,9 @@ $HD_Form->AddEditElement(
 );
 
 if (is_customer()) {
-    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["id_cc_card"] = $_SESSION["card_id"];
-    $HD_Form->FG_EDIT_QUERY_HIDDEN_INPUTS["id_cc_card"] = $_SESSION["card_id"];
-    $HD_Form->update_query_conditions["id_cc_card"] = $_SESSION["card_id"];
+    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["id_cc_card"] = Customer::id();
+    $HD_Form->FG_EDIT_QUERY_HIDDEN_INPUTS["id_cc_card"] = Customer::id();
+    $HD_Form->update_query_conditions["id_cc_card"] = Customer::id();
     $HD_Form->FG_LOCATION_AFTER_EDIT = $HD_Form->FG_LOCATION_AFTER_ADD = "?form_action=list";
 } else {
     $HD_Form->AddEditPopup(

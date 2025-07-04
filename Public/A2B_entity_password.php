@@ -48,10 +48,10 @@ $DBHandle  = DbConnect();
 
 if ($form_action=="ask-modif") {
     $instance_sub_table = new Table('cc_card', "id");
-    $check_old_pwd = ["id" => $_SESSION["card_id"],  "uipass" => $OldPassword];
+    $check_old_pwd = ["id" => Customer::id(),  "uipass" => $OldPassword];
     $result_check=$instance_sub_table -> getRow ($check_old_pwd);
     if ($result_check) {
-        (new Table("cc_card"))->updateRow(["uipass" => $NewPassword], ["id" => $_SESSION["card_id"]]);
+        (new Table("cc_card"))->updateRow(["uipass" => $NewPassword], ["id" => Customer::id()]);
     }
 }
 // #### HEADER SECTION

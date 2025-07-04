@@ -90,7 +90,7 @@ if ($form_action === "list") {
         SQL;
     } elseif (is_customer()) {
         $creator_type = Ticket::CUSTOMER;
-        $card_id = (int)$_SESSION["card_id"];
+        $card_id = Customer::id();
         $virtual = <<< SQL
         SELECT aa.id, CASE WHEN MAX(aa.viewed_cust) = 1 OR SUM(bb.viewed_cust) > 0 THEN 1 ELSE 0 END as viewed
         FROM cc_ticket aa
@@ -113,8 +113,8 @@ $HD_Form->list_query_order_columns = ["cc_ticket.creationdate"];
 $HD_Form->list_query_order_direction = "DESC";
 $HD_Form->list_query_conditions["cc_ticket.creator_type"] = $ticket_type === "agent" ? Ticket::AGENT : Ticket::CUSTOMER;
 if (is_customer()) {
-    $HD_Form->list_query_conditions["cc_ticket.creator"] = $_SESSION["card_id"];
-    $HD_Form->update_query_conditions["cc_ticket.creator"] = $_SESSION["card_id"];
+    $HD_Form->list_query_conditions["cc_ticket.creator"] = Customer::id();
+    $HD_Form->update_query_conditions["cc_ticket.creator"] = Customer::id();
 }
 
 $HD_Form->FG_FK_DELETE_ALLOWED = is_admin();
@@ -212,7 +212,7 @@ if ($ticket_type === "agent") {
     $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["creator_type"] = Ticket::CUSTOMER;
 } else {
     $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["creator_type"] = Ticket::CUSTOMER;
-    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["creator"] = $_SESSION["card_id"];
+    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["creator"] = Customer::id();
 }
 
 $HD_Form->AddEditElement(

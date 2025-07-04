@@ -50,8 +50,8 @@ getpost_ifset(["id"]);
  */
 
 $form_action ??= "ask-edit";
-$id ??= $_GET["id"] = $_SESSION["card_id"];
-if (($form_action !== "edit" && $form_action !== "ask-edit") || (int)$id !== (int)$_SESSION["card_id"]) {
+$id ??= $_GET["id"] = Customer::id();
+if (($form_action !== "edit" && $form_action !== "ask-edit") || (int)$id !== Customer::id()) {
     header("Location: A2B_info_card.php");
 }
 

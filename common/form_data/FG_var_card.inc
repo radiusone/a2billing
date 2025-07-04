@@ -76,7 +76,7 @@ if (is_agent()) {
     $HD_Form->list_query_conditions["id_agent"] = $_SESSION["agent_id"] ?? 0;
 } elseif (is_customer()) {
     // shouldn't be needed, but just in case
-    $HD_Form->list_query_conditions["cc_card.id"] = $_SESSION["card_id"];
+    $HD_Form->list_query_conditions["cc_card.id"] = Customer::id();
 }
 $HD_Form->search_session_key = 'entity_card_selection';
 $HD_Form->FG_FK_DELETE_CONFIRM = true;

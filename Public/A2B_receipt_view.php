@@ -52,14 +52,14 @@ if (empty($id)) {
     header("Location: A2B_entity_receipt.php");
 }
 $receipt = new Receipt($id);
-if ($receipt->getCard() != $_SESSION["card_id"]) {
+if ($receipt->getCard() !== Customer::id()) {
     header("HTTP/1.0 401 Unauthorized");
     header("Location: PP_error.php?c=accessdenied");
     die();
 }
 //load customer
 $card = (new Table("cc_card", "*", ["cc_country" => ["country", "countrycode"]]))
-    ->getRow(["cc_card.id" => $_SESSION["card_id"]]);
+    ->getRow(["cc_card.id" => Customer::id()]);
 
 if (empty($card)) {
     echo "Customer doesn't exist or is not correctly defined for this receipt !";

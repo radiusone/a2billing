@@ -60,7 +60,7 @@ $page = intval($page ?? 1);
 function loadDetailledItems(?string $startdate = null, int $begin = 0, int $nb = 0): array
 {
     $result = [];
-    $card_id = $_SESSION["card_id"];
+    $card_id = Customer::id();
 
     $call_table = new Table("cc_call", ["starttime AS itemdate", "sessiontime", "calledstation", "sessionbill"]);
     $call_clause = ["card_id" => $card_id];
@@ -100,7 +100,7 @@ function loadDetailledItems(?string $startdate = null, int $begin = 0, int $nb =
 
 function nbDetailledItems(?string $startdate): int
 {
-    $card_id = $_SESSION["card_id"];
+    $card_id = Customer::id();
     $call_table = new Table("cc_call");
     $call_clause = ["card_id" => $card_id];
     if(!empty($startdate)) {
@@ -120,7 +120,7 @@ function nbDetailledItems(?string $startdate): int
 
 function SumDetailledItems(?string $startdate): int
 {
-    $card_id = $_SESSION["card_id"];
+    $card_id = Customer::id();
     $call_table = new Table("cc_call", ["SUM(sessionbill)"]);
     $call_clause = ["card_id" => $card_id];
     if(!empty($startdate)) {
@@ -139,7 +139,7 @@ function SumDetailledItems(?string $startdate): int
 }
 
 $billing_table = new Table('cc_billing_customer', ['date']);
-$start_date = $billing_table->getValue(["id_card" => $_SESSION["card_id"]], ["date"], "desc");
+$start_date = $billing_table->getValue(["id_card" => Customer::id()], ["date"], "desc");
 
 $nbitems = nbDetailledItems($start_date);
 $nb_by_page = 100;

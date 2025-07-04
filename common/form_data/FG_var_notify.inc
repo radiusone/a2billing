@@ -48,7 +48,7 @@ getpost_ifset(["id", "email_notification", "credit_notification", "notify_email"
  */
 
 $HD_Form = new FormHandler("cc_card", "Card");
-$HD_Form->list_query_conditions = $HD_Form->update_query_conditions = ["id" => $_SESSION["card_id"]];
+$HD_Form->list_query_conditions = $HD_Form->update_query_conditions = ["id" => Customer::id()];
 
 $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form->help_text = _("Notification settings.") . '<br>' . _("You can update your notification settings here.");

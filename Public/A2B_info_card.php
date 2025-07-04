@@ -85,7 +85,7 @@ $table = new Table(
         "cc_package_offer" => ["cc_tariffgroup.id_cc_package_offer", "cc_package_offer.id"],
     ]
 );
-$customer_info = $table->getRow(["cc_card.id" => $_SESSION["card_id"]]);
+$customer_info = $table->getRow(["cc_card.id" => Customer::id()]);
 
 if (!$customer_info) {
     echo gettext("Error loading your account information!");
