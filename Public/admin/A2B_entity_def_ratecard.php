@@ -371,7 +371,7 @@ if ($form_action === "list" && !$popup_select): ?>
 
 /********************************* BATCH ASSIGNED ***********************************/
 if ($popup_select === "1"): // only triggered from A2B_info_package.php ?>
-<div class="row justify-content-center">
+<div class="row pb-3 justify-content-center">
     <div class="col-auto">
         <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#batchAssignModal">
             <?= _("Batch Assign to Package") ?>
