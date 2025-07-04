@@ -6,8 +6,6 @@ use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 use A2billing\Table;
 
-/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
-
 /**
  * This file is part of A2Billing (http://www.a2billing.net/)
  *
@@ -50,6 +48,10 @@ $HD_Form = new FormHandler(
 
 $HD_Form->list_query_order_columns = ["destination"];
 $HD_Form->list_query_order_direction = "DESC";
+if (is_customer()) {
+    $HD_Form->list_query_conditions["id_cc_card"] = $_SESSION["card_id"];
+    $HD_Form->update_query_conditions["id_cc_card"] = $_SESSION["card_id"];
+}
 
 $HD_Form->AddListTopButton("A2B_entity_did_destination.php?form_action=ask-add", _("Add Destination"), "telephone-inbound-fill");
 
@@ -60,10 +62,12 @@ $priority_list = range(1, 5);
 $validated_list = [_("Pending"), _("Validated")];
 $yesno_list = getYesNoList();
 
+$HD_Form->AddListValue(_("DID"), "cc_did.did", "format_phone_number");
+if (!is_customer()) {
+    $HD_Form->AddListValue(_("Account Number"), "id_cc_card", [Customer::class, "getUsername"]);
+}
 $HD_Form->AddListValue(_("Destination"), "destination");
 $HD_Form->AddListValue(_("Creation Date"), "cc_did_destination.creationdate");
-$HD_Form->AddListValue(_("DID"), "cc_did.did", "format_phone_number");
-$HD_Form->AddListValue(_("Account Number"), "id_cc_card", [Customer::class, "getUsername"]);
 $HD_Form->AddListMapping(_("Active"), "cc_did_destination.activated", $activated_list);
 $HD_Form->AddListMapping(_("VoIP"), "voip_call", $yesno_list);
 $HD_Form->AddListMapping(_("Priority"), "priority", $priority_list);
@@ -83,7 +87,7 @@ $HD_Form->AddEditElement(
     _("Insert the DID")
 );
 
-if ($form_action !== "ask-edit" && $form_action !== "edit") {
+if (!is_customer() && $form_action !== "ask-edit" && $form_action !== "edit") {
 
     $HD_Form->AddEditPopup(
         _("Customer"),
@@ -96,6 +100,62 @@ if ($form_action !== "ask-edit" && $form_action !== "edit") {
     );
 
     $HD_Form->AddEditSqlSelect(_("DID"), "id_cc_did", new Table("cc_did", ["id", "did"]));
+} elseif ($form_action !== "ask-edit" && $form_action !== "edit") {
+    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["id_cc_card"] = $_SESSION["card_id"];
+
+    $HD_Form->AddEditSqlSelect(
+        _("Use an existing DID"),
+        "id_cc_did",
+        new Table("cc_did", ["id", "did"]),
+        ["iduser" => $_SESSION["card_id"]],
+        "",
+        ["" => ""],
+        "",
+        ["id" => "id_cc_did_old"],
+        "",
+        fn (array $row) => [$row["id"], format_phone_number($row["did"])]
+    );
+
+    $HD_Form->AddEditSqlSelect(
+        _("Add a new DID"),
+        "id_cc_did",
+        new Table(
+            "cc_did",
+            ["id", "did", "fixrate", "connection_charge", "selling_rate", "aleg_retail_connect_charge", "aleg_retail_cost_min"]
+        ),
+        ["id_cc_didgroup" => $_SESSION["id_didgroup"], "reserved" => 0],
+        "",
+        ["" => ""],
+        "",
+        ["id" => "id_cc_did_new"],
+        "",
+        function (array $row) {
+            $text = format_phone_number($row["did"]) . " (";
+            if ($row["fixrate"] > 0) {
+                $text .= sprintf(_("Monthly: %s"), get_money($row["fixrate"]));
+                $text .= " ";
+            }
+            if ($row["connection_charge"] > 0) {
+                $text .= sprintf(_("B-Leg connect: %s"), get_money($row["connection_charge"]));
+                $text .= " ";
+            }
+            if ($row["selling_rate"] > 0) {
+                $text .= sprintf(_("B-Leg rate: %s"), get_money($row["selling_rate"]));
+                $text .= " ";
+            }
+            if ($row["aleg_retail_connect_charge"] > 0) {
+                $text .= sprintf(_("A-Leg connect: %s"), get_money($row["aleg_retail_connect_charge"]));
+                $text .= " ";
+            }
+            if ($row["aleg_retail_cost_min"] > 0) {
+                $text .= sprintf(_("A-Leg rate: %s"), get_money($row["aleg_retail_cost_min"]));
+                $text .= " ";
+            }
+            $text = str_replace(" ()", "", trim($text) . ")");
+
+            return [$row["id"], $text];
+        }
+    );
 }
 
 $HD_Form->AddEditRadio(
@@ -105,11 +165,12 @@ $HD_Form->AddEditRadio(
     "1",
     "",
     [],
-    _("Choose if you want to activate this card")
+    _("Choose if you want to activate this destination")
 );
 
-$HD_Form->AddEditRadio(_("Validated"), "validated", $validated_list, "1");
-
+if (!is_customer()) {
+    $HD_Form->AddEditRadio(_("Validated"), "validated", $validated_list, "1");
+}
 $HD_Form->AddEditSelect(_("Priority"), "priority", $priority_list);
 
 $HD_Form->AddEditRadio(
