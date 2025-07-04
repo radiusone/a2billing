@@ -152,7 +152,7 @@ class Customer extends User
      */
     public static function card(): string
     {
-        return $_SESSION["pr_login"] ?? "0";
+        return $_SESSION["username"] ?? "0";
     }
 
     /**

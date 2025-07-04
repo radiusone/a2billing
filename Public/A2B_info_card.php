@@ -61,7 +61,7 @@ if (($action ?? "") === "login") {
         die();
     }
 
-    $_SESSION["pr_login"] = $return["username"];
+    $_SESSION["username"] = $return["username"];
     $_SESSION["rights"] = (int)$return["users_perms"] + 1;
     $_SESSION["user_type"] = "CUST";
     $_SESSION["card_id"] = $return["id"];

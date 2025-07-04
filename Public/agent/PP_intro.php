@@ -56,9 +56,8 @@ if (($action ?? "") === "login") {
         die();
     }
 
-    $_SESSION["pr_login"] = $pr_login;
-    $_SESSION["rights"] = (int)$return["perms"];
     $_SESSION["agent_id"] = (int)$return["id"];
+    $_SESSION["rights"] = (int)$return["perms"];
     $_SESSION["user_type"] = "AGENT";
     $_SESSION["currency"] = $return["currency"];
     $_SESSION["vat"] = $return["vat"];

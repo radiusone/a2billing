@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Agent;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -50,16 +51,16 @@ getpost_ifset(["NewPassword", "NewPassword2", "OldPassword"]);
 $msg = "";
 
 if ($form_action === "ask-modif") {
-    if ($OldPassword === "" || $NewPassword === "" || strlen($NewPassword) < 8 || $NewPassword !== $NewPassword2) {
+    if (strlen($NewPassword) < 8 || $NewPassword !== $NewPassword2) {
         $msg = '<p class="alert alert-danger">' . _("Check entries, ensure new password is at least 8 characters") . '</p>';
     } else {
-        $table = new Table("cc_agent");
-        $result = $table->getRow(["id" => $_SESSION["id_agent"]]);
+        $table = new Table("cc_agent", ["pwd_encoded"]);
+        $result = $table->getValue(["id" => Agent::id()]);
 
-        if ($result && password_verify($OldPassword, $result["pwd_encoded"])) {
+        if (password_verify($OldPassword, $result)) {
             $result = $table->updateRow(
                 ["pwd_encoded" => password_hash($NewPassword, PASSWORD_DEFAULT)],
-                ["id" => $_SESSION["id_agent"]]
+                ["id" => Agent::id()]
             );
             if ($result) {
                 $msg = '<p class="alert alert-success">' . _("Your password has been updated") . '</p>';

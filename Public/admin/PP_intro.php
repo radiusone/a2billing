@@ -55,7 +55,6 @@ if (($action ?? "") === "login") {
     $admin_id = (int)$return["userid"];
     $groupid = (int)$return["groupid"];
 
-    $_SESSION["pr_login"] = $return["login"];
     $_SESSION["rights"] = $groupid ? (int)$return["perms"] : Admin::ACX_ALL_RIGHTS;
     $_SESSION["user_type"] = "ADMIN";
     $_SESSION["admin_id"] = $admin_id;
