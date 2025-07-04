@@ -23,9 +23,8 @@ class Agent extends User
     /** @var array|string[] pages that don't require authentication */
     private static array $open_pages = [
         "index.php",
+        "login.php",
         "logout.php",
-        "PP_error.php",
-        "PP_intro.php",
     ];
 
     /**
@@ -60,7 +59,7 @@ class Agent extends User
             && !self::allowed($rights)
         ) {
             header("HTTP/1.0 401 Unauthorised");
-            header("Location: PP_error.php?c=accessdenied");
+            header("Location: index.php?c=accessdenied");
             die();
         }
     }

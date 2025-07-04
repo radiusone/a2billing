@@ -4,6 +4,8 @@ use A2billing\Agent;
 use A2billing\Logger;
 use A2billing\Table;
 
+/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
+
 /**
  * This file is part of A2Billing (http://www.a2billing.net/)
  *
@@ -33,41 +35,44 @@ use A2billing\Table;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
-**/
+ **/
 
 require_once __DIR__ . "/../../common/lib/agent.defines.php";
 
-Agent::checkPageAccess(Agent::ACX_ACCESS);
+getpost_ifset (["pr_login", "pr_password"]);
+/**
+ * @var string|null $pr_login
+ * @var string|null $pr_password
+ */
 
-require_once __DIR__ . "/templates/main.php";
+if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+    header("Location: index.php");
+}
 
-$table_message = new Table("cc_message_agent");
-$messages = $table_message->getRows(["id_agent" => Agent::id()], ["order_display"]);
-$message_types = ["alert-info", "alert-success", "alert-warning", "alert-danger"];
-$message_logos = ["bi-info-circle-fill text-info", "bi-check-circle-fill text-success", "bi-exclamation-circle-fill text-warning", "bi-x-circle-fill text-danger"];
-?>
+$return = Agent::checkLogin($pr_login, $pr_password);
 
-<div class="row pb-3">
-    <div class="col">
-    <?php foreach ($messages as $message): ?>
-        <div class="alert <?= $message_types[$message["type"]] ?> d-flex align-items-center">
-            <?php if ($message["logo"]): ?>
-            <div class="bi bi-32 <?= $message_logos[$message["type"]] ?> flex-shrink-0 me-2" aria-hidden="true"></div>
-            <?php endif ?>
-            <div class="flex-grow-1 mx-2">
-                <?= $message["message"] ?>
-            </div>
-        </div>
-    <?php endforeach ?>
-    </div>
-</div>
+if (!$return) {
+    header("HTTP/1.0 401 Unauthorized");
+    header("Location: index.php?error=1");
+    die();
+}
 
-<div class="row pb-3 justify-content-center">
-    <div class="col-auto text-center">
-        <img src="../common/images/logo/a2billing.png" alt=""/>
-        <p>A2Billing is licensed under <a href="https://www.fsf.org/licensing/licenses/agpl-3.0.html" target="_blank">AGPL 3</a>.</p>
-    </div>
-</div>
+$_SESSION["agent_id"] = (int)$return["id"];
+$_SESSION["rights"] = (int)$return["perms"];
+$_SESSION["user_type"] = "AGENT";
+$_SESSION["currency"] = $return["currency"];
+$_SESSION["vat"] = $return["vat"];
+Logger::insertLog(
+    (int)$return["id"],
+    1,
+    "Agent Logged In",
+    "Agent Logged in to website",
+    "",
+    $_SERVER["REMOTE_ADDR"],
+    "PP_Intro.php",
+    "",
+    [],
+    true
+);
 
-<?php
-require_once __DIR__ . "/templates/footer.php";
+header("Location: PP_intro.php");

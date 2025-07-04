@@ -48,7 +48,7 @@ Agent::checkPageAccess(Agent::ACX_ACCESS);
 
 if (!$A2B->config["webagentui"]['remittance_request']) {
     header("HTTP/1.0 401 Unauthorized");
-    header("Location: PP_error.php?c=accessdenied");
+    header("Location: index.php?c=accessdenied");
     die();
 }
 
