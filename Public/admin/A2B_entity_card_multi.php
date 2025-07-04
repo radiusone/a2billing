@@ -443,12 +443,15 @@ $list_country = (new Table("cc_country", ["countrycode", "countryname AS name"])
 </form>
 
 <?php
+$export_columns = array_map(
+    fn ($v) => "`cc_card`.`" . trim(str_replace("`", "", $v)) . "`",
+    explode(",", $A2B->config['webui']['card_export_field_list'] ?? "")
+);
 $HD_Form->setup_export(
     "pr_export_entity_card",
     is_admin(),
     is_admin(),
-    // Code here for adding the fields in the Export File
-    array_map("trim", explode(",", $A2B->config['webui']['card_export_field_list'] ?? ""))
+    $export_columns
 );
 $HD_Form->create_form($form_action, $list) ;
 

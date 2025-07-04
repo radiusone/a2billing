@@ -513,13 +513,22 @@ $HD_Form->CV_FOLLOWPARAMETERS = array_filter(["package" => $package ?? ""]);
 /********************************* END BATCH ASSIGNED ***********************************/
 endif;
 
-// #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);
+$export_columns = array_map(
+    fn ($v) => "`cc_ratecard`.`" . trim(str_replace("`", "", $v)) . "`",
+    explode(",", $A2B->config['webui']['rate_export_field_list'] ?? "")
+);
+if (
+    !isset($deleteselected) &&
+    ($key = array_search("`cc_ratecard`.`destination`", $export_columns)) !== false
+) {
+    $export_columns[$key] = "`cc_prefix`.`destination`";
+}
 $HD_Form->setup_export(
     "pr_export_entity_rates",
     true,
     true,
-    array_map("trim", explode(",", $A2B->config['webui']['rate_export_field_list'] ?? ""))
+    $export_columns
 );
 $HD_Form->create_form($form_action, $list);
 
