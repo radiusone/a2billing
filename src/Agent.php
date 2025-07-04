@@ -97,6 +97,15 @@ class Agent extends User
         return sprintf(_("%s %s (login: %s)"), $row["firstname"], $row["lastname"], $row["login"]);
     }
 
+    /**
+     * Get the logged in agent's ID
+     *
+     * @return int
+     */
+    public static function id(): int
+    {
+        return intval($_SESSION["agent_id"] ?? 0);
+    }
 
     /**
      * @param string $user

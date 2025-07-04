@@ -106,6 +106,15 @@ class Admin extends User
         return $na;
     }
 
+    /**
+     * Get the logged in admin's ID
+     *
+     * @return int
+     */
+    public static function id(): int
+    {
+        return intval($_SESSION["admin_id"] ?? 0);
+    }
 
     /**
      * @param string $user

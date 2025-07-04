@@ -136,6 +136,16 @@ class Customer extends User
     }
 
     /**
+     * Get the logged in customer's ID
+     *
+     * @return int
+     */
+    public static function id(): int
+    {
+        return intval($_SESSION["card_id"] ?? 0);
+    }
+
+    /**
      * Get an HTML link to the customer info page
      *
      * @param numeric-string|null $id
