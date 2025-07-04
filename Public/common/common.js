@@ -196,7 +196,7 @@ document.addEventListener("DOMContentLoaded", function() {
      */
     document.getElementById("displaylimit")
         ?.addEventListener("change", function () {
-            document.getElementById("displaylimit_form").dispatchEvent(new SubmitEvent("submit"));
+            document.getElementById("displaylimit_form")?.requestSubmit();
         });
 
     /**
