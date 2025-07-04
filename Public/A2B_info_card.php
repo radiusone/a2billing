@@ -42,37 +42,6 @@ require_once __DIR__ . "/../common/lib/customer.defines.php";
  * @var A2Billing $A2B
  */
 
-getpost_ifset (["pr_login", "pr_password", "action"]);
-/**
- * @var string|null $pr_login
- * @var string|null $pr_password
- * @var string|null $action
- */
-
-if (($action ?? "") === "login") {
-    $return = Customer::checkLogin($pr_login, $pr_password);
-
-    if (!$return) {
-        $C_RETURN_URL_DISTANT_LOGIN = $A2B->config["webcustomerui"]['return_url_distant_login'] ?? "index.php";
-        $C_RETURN_URL_DISTANT_LOGIN .= (str_contains($C_RETURN_URL_DISTANT_LOGIN, "?") ? "&" : "?");
-        sleep(2);
-        header("HTTP/1.0 401 Unauthorized");
-        header("Location: {$C_RETURN_URL_DISTANT_LOGIN}error=$return");
-        die();
-    }
-
-    $_SESSION["username"] = $return["username"];
-    $_SESSION["rights"] = (int)$return["users_perms"] + 1;
-    $_SESSION["user_type"] = "CUST";
-    $_SESSION["card_id"] = $return["id"];
-    $_SESSION["id_didgroup"] = $return["id_didgroup"];
-    $_SESSION["tariff"] = $return["tariff"];
-    $_SESSION["vat"] = $return["vat"];
-    $_SESSION["zone"] = $return["zone"] ?: (new DateTime())->getTimezone()->getName();
-    $_SESSION["currency"] = $return["currency"];
-    $_SESSION["voicemail"] = $return["voicemail_permitted"];
-}
-
 Customer::checkPageAccess(Customer::ACX_ACCESS);
 
 $inst_table = new Table();
@@ -90,12 +59,6 @@ $customer_info = $table->getRow(["cc_card.id" => Customer::id()]);
 if (!$customer_info) {
     echo gettext("Error loading your account information!");
     exit ();
-}
-
-if ($customer_info["status"] != "1" && $customer_info["status"] != "8") {
-    header("HTTP/1.0 401 Unauthorized");
-    header("Location: PP_error.php?c=accessdenied");
-    die();
 }
 
 $credit_cur = get_money($customer_info["credit"], 2, $customer_info["currency"]);

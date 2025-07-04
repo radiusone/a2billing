@@ -44,7 +44,7 @@ $customer_info = (new Table("cc_card", ["id", "username", "status", "tariff", "c
 
 if (!$customer_info || ($customer_info["status"] != "1" && $customer_info["status"] != "8")) {
     Header("HTTP/1.0 401 Unauthorized");
-    Header("Location: PP_error.php?c=accessdenied");
+    Header("Location: index.php?c=accessdenied");
     die();
 }
 

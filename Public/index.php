@@ -41,15 +41,21 @@ if (is_customer()) {
     die();
 }
 
-getpost_ifset(["error"]);
+getpost_ifset(["error", "c"]);
 /**
  * @var numeric-string|null $error
+ * @var string|null $c
  */
 $error = (int)($error ?? 0);
 $lang = $_SESSION["ui_language"] ?? "english";
 
 require_once __DIR__ . "/templates/header.php";
 ?>
+<?php if (isset($c)): ?>
+<div class="container py-2">
+    <p class="alert alert-danger"><?= _("You must log in to continue") ?></p>
+</div>
+<?php endif ?>
 <div class="container-fluid">
 <div class="row">
 <main class="col">
@@ -121,7 +127,7 @@ require_once __DIR__ . "/templates/header.php";
 </form>
 <script>
 document.getElementById("ui_language").addEventListener("change", function () {
-    self.location.href = `?ui_language=${document.getElementById("ui_language")?.value}`;
+    self.location.href = `?ui_language=${this.value}`;
 })
 </script>
 

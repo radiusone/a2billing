@@ -55,7 +55,7 @@ if (empty($id)) {
 $invoice = new Invoice($id);
 if ($invoice->getCard() !== Customer::id()) {
     header("HTTP/1.0 401 Unauthorized");
-    header("Location: PP_error.php?c=accessdenied");
+    header("Location: index.php?c=accessdenied");
     die();
 }
 

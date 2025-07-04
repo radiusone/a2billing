@@ -50,7 +50,7 @@ $status = (new Table("cc_card", ["status"]))->getValue(["username" => Customer::
 
 if (!$status || ($status != "1" && $status != "8")) {
     Header("HTTP/1.0 401 Unauthorized");
-    Header("Location: PP_error.php?c=accessdenied");
+    Header("Location: index.php?c=accessdenied");
     die();
 }
 
