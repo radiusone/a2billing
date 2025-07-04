@@ -130,16 +130,13 @@ class FormHandler
     public bool $search_delete_enabled = true;
 
     /** @var bool Whether to enable a CSV export button at the bottom of a list view */
-    public bool $FG_EXPORT_CSV = false;
+    public bool $export_enable_csv = false;
 
     /** @var bool Whether to enable an XML export button at the bottom of a list view */
-    public bool $FG_EXPORT_XML = false;
+    public bool $export_enable_xml = false;
 
     /** @var string A session variable used to hold export info */
     public string $export_session_key = "export_data";
-
-    /** @var array List of columns to use in the export */
-    public array $FG_EXPORT_FIELD_LIST = [];
 
     /** @var array<array<string,string>> An array containing button definitions for the list entries */
     public array $list_action_buttons = [];
@@ -2071,23 +2068,49 @@ class FormHandler
         return "";
     }
 
+    /**
+     * Prepare session variables that will be checked by export code
+     * This must be run after FormHandler::prepare_list_subselection which
+     * sets up the condition and order properties
+     *
+     * @param string|null $session_key
+     * @param bool $export_csv
+     * @param bool $export_xml
+     * @param array|null $columns
+     * @param string|null $table
+     * @param array|null $joins
+     * @param array|null $conditions
+     * @param array|null $order
+     * @param string|null $direction
+     * @param array|null $group
+     * @return void
+     */
     public function setup_export(
+        string $session_key = null,
+        bool $export_csv = true,
+        bool $export_xml = true,
         ?array $columns = null,
         ?string $table = null,
+        ?array $joins = null,
         ?array $conditions = null,
-        ?array $group = null,
         ?array $order = null,
-        ?string $direction = null
+        ?string $direction = null,
+        ?array $group = null
     ): void
     {
-        $columns ??= $this->FG_EXPORT_FIELD_LIST;
+        $this->export_session_key = $session_key ?? "export_data";
+        $this->export_enable_csv = $export_csv;
+        $this->export_enable_xml = $export_xml;
+
+        $columns ??= $this->list_query_columns;
         $table ??= $this->FG_QUERY_TABLE_NAME;
+        $joins ??= $this->query_table_joins;
         $conditions ??= $this->list_query_conditions;
         $group ??= $this->list_query_group_columns;
         $order ??= $this->list_query_order_columns;
         $direction ??= $this->list_query_order_direction;
 
-        $_SESSION[$this->export_session_key] = [$columns, $table, $conditions, $group, $order, $direction];
+        $_SESSION[$this->export_session_key] = [$columns, $table, $joins, $conditions, $group, $order, $direction];
     }
 
     /**

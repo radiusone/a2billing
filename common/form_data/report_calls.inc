@@ -103,12 +103,6 @@ $HD_Form->CV_TITLE_TEXT = _("Call Logs");
 $HD_Form->list_query_order_columns = ["cc_call.starttime"];
 $HD_Form->list_query_order_direction = "DESC";
 
-// EXPORT
-$HD_Form->FG_EXPORT_CSV = true;
-$HD_Form->FG_EXPORT_XML = true;
-$HD_Form->export_session_key = "pr_export_entity_call";
-/************************/
-
 $HD_Form->search_form_enabled = true;
 $HD_Form->search_session_key = 'call_log_selection';
 $HD_Form->search_form_title = gettext('Define specific criteria to search for call records');

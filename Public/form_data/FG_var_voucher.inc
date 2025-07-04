@@ -1,6 +1,5 @@
 <?php
 
-use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -51,7 +50,6 @@ $HD_Form -> FieldViewElement ('voucher, credit, currency');
 $HD_Form->list_query_conditions["usedcardnumber"] = $_SESSION["pr_login"];
 
 $HD_Form -> CV_NO_FIELDS  = gettext("No vouchers have been used!");
-$HD_Form -> FG_EXPORT_CSV = false;
 
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = false;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = false;

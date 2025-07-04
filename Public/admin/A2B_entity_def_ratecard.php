@@ -515,7 +515,12 @@ endif;
 
 // #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);
+$HD_Form->setup_export(
+    "pr_export_entity_rates",
+    true,
+    true,
+    array_map("trim", explode(",", $A2B->config['webui']['rate_export_field_list'] ?? ""))
+);
 $HD_Form->create_form($form_action, $list);
-$HD_Form->setup_export();
 
 require_once __DIR__ . "/templates/footer.php";

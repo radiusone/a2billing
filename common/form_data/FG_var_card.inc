@@ -256,11 +256,6 @@ if ($popup_select) {
         case 3: $HD_Form->AddListSelectActionButton("javascript:sendValue('|param|', '|col0|', 'accountcode')"); break;
     }
 } elseif ($form_action === "list") {
-    $HD_Form->export_session_key = "pr_export_entity_card";
-    $HD_Form->FG_EXPORT_CSV = is_admin();
-    $HD_Form->FG_EXPORT_XML = is_admin();
-    // Code here for adding the fields in the Export File
-    $HD_Form->FG_EXPORT_FIELD_LIST = explode(",", $A2B->config['webui']['card_export_field_list']);
     $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 10;
     $HD_Form->search_form_enabled = true;
 

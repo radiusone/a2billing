@@ -109,8 +109,6 @@ if ($A2B->config["webui"]["hide_expired_rates"]) {
 
 $HD_Form->list_query_order_columns = ["dialprefix"];
 $HD_Form->search_session_key = "entity_ratecard_selection";
-$export_cols = $A2B->config['webui']['rate_export_field_list'];
-$HD_Form->FG_EXPORT_FIELD_LIST = explode(",", $export_cols);
 
 $HD_Form->add_help_text = $HD_Form->edit_help_text = create_help(
     _("Please fill in the fields below to set up the rate for each destination.")
@@ -135,13 +133,7 @@ if (!$popup_select && is_admin()) {
         ->AddListValue(abbr(_("Conn."), _("Connect Charge")), "connectcharge", "get_money")
         ->AddListSqlMapping(_("Trunk"), "id_trunk", new Table("cc_trunk", ["id_trunk", "trunkcode"]))
         ->AddListSqlMapping(_("Rate Card"), "idtariffplan", new Table("cc_tariffplan", ["id", "tariffname"]));
-    if (!$use_lcr_callplan && $key = array_search("destination", $HD_Form->FG_EXPORT_FIELD_LIST)) {
-        $HD_Form->FG_EXPORT_FIELD_LIST[$key] = "cc_prefix.destination";
-    }
     $HD_Form->AddListTopButton();
-    $HD_Form->FG_EXPORT_CSV = true;
-    $HD_Form->FG_EXPORT_XML = true;
-    $HD_Form->export_session_key = "pr_export_entity_rates";
     $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
     $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
     $HD_Form->FG_ENABLE_ADD_BUTTON = true;

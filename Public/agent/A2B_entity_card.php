@@ -591,7 +591,6 @@ if ($form_action=='ask-edit') {
 }
 
 $HD_Form -> create_form($form_action, $list) ;
-$HD_Form->setup_export();
 
 // #### FOOTER SECTION
 if (!($popup_select>=1)) require_once __DIR__ . "/templates/footer.php";

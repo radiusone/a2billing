@@ -49,12 +49,12 @@ $export_type ??= "csv";
 if (!is_array($_SESSION[$export_session])) {
     echo gettext("ERROR CSV EXPORT");
 } else {
-    [$columns, $table, $conditions, $group, $order, $direction] = $_SESSION[$export_session];
+    [$columns, $table, $joins, $conditions, $group, $order, $direction] = $_SESSION[$export_session];
 
     $date = (new DateTime())->format("Y-m-d");
     $myfileName = "dump $date.$export_type";
 
-    $export_data = (new Table($table, $columns))
+    $export_data = (new Table($table, $columns, $joins))
         ->getRows($conditions, $order, $direction, $group);
 
     if (empty($export_data)) {

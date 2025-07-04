@@ -355,14 +355,6 @@ $HD_Form->search_session_key = 'pnl_selection';
 
 $HD_Form->CV_NO_FIELDS  = gettext("NO INFO!");
 
-// Code here for adding the fields in the Export File
-$HD_Form->FG_EXPORT_FIELD_LIST = $HD_Form->list_query_columns;
-$HD_Form->FG_EXPORT_CSV = true;
-$HD_Form->FG_EXPORT_XML = true;
-$HD_Form->export_session_key = "pr_export_pnl_report";
-// todo: this may be broken for now; export should match $QUERY which should be in a temp table
-$HD_Form->setup_export(["*"], "pnl_report");
-
 $form_action ??= "list";
 $list = $HD_Form->perform_action($form_action);
 
@@ -370,6 +362,14 @@ require_once __DIR__ . "/templates/main.php";
 
 $HD_Form->create_search_form();
 $HD_Form->create_toppage ($form_action);
+$HD_Form->setup_export(
+    "pr_export_pnl_report",
+    false,
+    false,
+    // todo: this is broken for now because it's using a temp table
+    ["*"],
+    "pnl_report"
+);
 $HD_Form->create_form($form_action, $list) ;
 
 // create the totals row

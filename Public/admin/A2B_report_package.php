@@ -61,10 +61,6 @@ $HD_Form->AddListValue(_("Package"), "label");
 $HD_Form->AddListValue(_("Minutes"), "SUM(used_secondes)", "get_minute");
 $HD_Form->AddListValue(_("Calls"), "COUNT(*)");
 
-$HD_Form->FG_EXPORT_CSV = true;
-$HD_Form->FG_EXPORT_XML = true;
-$HD_Form->export_session_key = "pr_export_package_report";
-
 $HD_Form->search_form_enabled = true;
 $HD_Form->search_session_key = 'package_report_selection';
 $HD_Form->search_form_title = gettext('Define specific criteria to search for call records');
@@ -88,6 +84,7 @@ require_once __DIR__ . "/templates/main.php";
 $HD_Form->create_search_form();
 
 $HD_Form->create_toppage($form_action);
+$HD_Form->setup_export("pr_export_package_report");
 $HD_Form->create_form("list", $list);
 
 $table = new Table(

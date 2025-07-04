@@ -399,7 +399,12 @@ if ($form_action === "list" && !$popup_select) {
 $HD_Form->create_toppage($form_action);
 echo $update_msg ?? "";
 
+$HD_Form->setup_export(
+    "pr_export_entity_voucher",
+    true,
+    true,
+    explode(",", $A2B->config['webui']['voucher_export_field_list'] ?? "")
+);
 $HD_Form->create_form($form_action, $list);
-$HD_Form->setup_export();
 
 require_once __DIR__ . "/templates/footer.php";

@@ -114,7 +114,6 @@ $HD_Form -> create_toppage ($form_action);
 // #### CREATE FORM OR LIST
 
 $HD_Form -> create_form($form_action, $list) ;
-$HD_Form->setup_export();
 
 // #### FOOTER SECTION
 require_once __DIR__ . "/templates/footer.php";

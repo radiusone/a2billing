@@ -612,8 +612,14 @@ if ($form_action === "ask-edit") {
     echo get_login_button($id);
 }
 
+$HD_Form->setup_export(
+    "pr_export_entity_card",
+    is_admin(),
+    is_admin(),
+    // Code here for adding the fields in the Export File
+    array_map("trim", explode(",", $A2B->config['webui']['card_export_field_list'] ?? ""))
+);
 $HD_Form->create_form($form_action, $list);
-$HD_Form->setup_export();
 ?>
 
 <script>

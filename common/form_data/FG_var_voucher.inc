@@ -1,7 +1,6 @@
 <?php
 
 use A2billing\A2Billing;
-use A2billing\Admin;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 
@@ -82,11 +81,6 @@ $HD_Form->AddSearchComparisonInput(_("Credit"), "credit1", "credit2", "credit");
 $HD_Form->AddSearchSelectInput(_("Status"), "activated", $actived_list);
 $HD_Form->AddSearchSelectInput(_("Used"), "used", $used_list);
 $HD_Form->AddSearchSelectInput(_("Currency"), "currency", $currency_list);
-
-$HD_Form->export_session_key = "pr_export_entity_voucher";
-$HD_Form->FG_EXPORT_FIELD_LIST = explode(",", $A2B->config['webui']['voucher_export_field_list']);
-$HD_Form->FG_EXPORT_CSV = true;
-$HD_Form->FG_EXPORT_XML = true;
 
 $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form->FG_ENABLE_DELETE_BUTTON = true;

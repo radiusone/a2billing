@@ -359,6 +359,5 @@ $list_group = (new Table("cc_card_group", ["id", "name"]))
 
 <?php
 $HD_Form->create_form($form_action, $list) ;
-$HD_Form->setup_export();
 
 require_once __DIR__ . "/templates/footer.php";
