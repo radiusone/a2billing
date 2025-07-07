@@ -256,7 +256,8 @@ class Table
      */
     public function getColumn(string $column = "", string $index = "", array $conditions = []): array
     {
-        $data = $this->getRows($conditions);
+        $order = $column !== "" ? [$column] : [];
+        $data = $this->getRows($conditions, $order);
         if (count($data) === 0) {
             return $data;
         }
@@ -269,6 +270,8 @@ class Table
 
         if ($column === "") {
             $column = $columns[0];
+            // not great but can't do a DB sort if we don't know the column name
+            usort($data, fn (array $a, array $b) => $a[$column] <=> $b[$column]);
         }
         if ($index === "" && count($columns) <= 1) {
             return array_column($data, $column);
