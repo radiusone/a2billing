@@ -144,7 +144,7 @@ document.addEventListener("DOMContentLoaded", function() {
     /**
      * "Has Many" edits (e.g. restricted numbers in card properties)
      */
-    document.querySelectorAll("button.has-many-add").forEach(function (el) {
+    document.querySelectorAll("button.has-many-delete").forEach(function (el) {
         el.addEventListener("click", function () {
             const index = this.dataset.index;
             const value = this.dataset.value;
@@ -156,11 +156,11 @@ document.addEventListener("DOMContentLoaded", function() {
             hidden.name = "del-content-value";
             hidden.value = value;
             form.append(hidden);
-            form.dispatchEvent(new SubmitEvent("submit"));
+            form.requestSubmit();
         });
     });
 
-    document.querySelectorAll("button.has-many-delete").forEach(function (el) {
+    document.querySelectorAll("button.has-many-add").forEach(function (el) {
         el.addEventListener("click", function () {
             const index = this.dataset.index;
             const input_id = this.dataset.inputId;
@@ -173,7 +173,7 @@ document.addEventListener("DOMContentLoaded", function() {
             hidden.name = "add-content-value";
             hidden.value = value;
             form.append(hidden);
-            form.dispatchEvent(new SubmitEvent("submit"));
+            form.requestSubmit();
         });
     });
 
