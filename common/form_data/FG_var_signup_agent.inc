@@ -77,7 +77,7 @@ if (is_admin()) {
     $HD_Form->AddEditSqlSelect(
         _("Agent"),
         "id_agent",
-        new Table("cc_agent", ["id", "CONCAT(login, ' - ', firstname, ' ', lastname)"]),
+        new Table("cc_agent", ["CONCAT(login, ' - ', firstname, ' ', lastname)", "id"]),
         [],
         $id_agent,
         ["" => _("Select agent")],
@@ -92,7 +92,7 @@ if ($id_agent && ($form_action === "ask-add" || $form_action === "add") || $form
     $HD_Form->AddEditSqlSelect(
         _("Call Plan"),
         "id_tariffgroup",
-        new Table("cc_tariffgroup", ["id", "tariffgroupname"], [
+        new Table("cc_tariffgroup", ["tariffgroupname", "id"], [
             "cc_agent_tariffgroup" => [
                 "cc_tariffgroup.id", "cc_agent_tariffgroup.id_tariffgroup"
             ]
@@ -107,7 +107,7 @@ if ($id_agent && ($form_action === "ask-add" || $form_action === "add") || $form
     $HD_Form->AddEditSqlSelect(
         _("Customer Group"),
         "id_group",
-        new Table("cc_card_group", ["id", "name"]),
+        new Table("cc_card_group", ["name", "id"]),
         $form_action === "ask-delete" ? [] : ["id_agent" => $id_agent],
         "",
         ["" => _("Select group")],

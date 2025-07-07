@@ -137,7 +137,7 @@ if (!$popup_select) {
     $HD_Form->AddSearchComparisonInput(_("AMOUNT INCL VAT"), 'total_price1', 'total_price2', 'total_price');
 
     $HD_Form->AddSearchSelectInput(_("PAYMENT TYPE"), "typepaid", $typepaid_list);
-    $HD_Form->AddSearchSqlSelectInput(_("CALL PLAN"), "tariff", new Table("cc_tariffgroup", ["id", "tariffgroupname"]), "tariffgroupname");
+    $HD_Form->AddSearchSqlSelectInput(_("CALL PLAN"), "tariff", new Table("cc_tariffgroup", ["tariffgroupname", "id"]));
     $HD_Form->AddSearchSelectInput(_("INVOICE DAY"), "invoiceday", $invoiceday_list);
     $HD_Form->AddSearchSelectInput(_("PAID STATUS"), "paid_status", $paid_status_list);
 }

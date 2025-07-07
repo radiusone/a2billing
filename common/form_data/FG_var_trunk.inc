@@ -91,8 +91,8 @@ if ($popup_select) {
 $HD_Form->search_form_enabled = true;
 $HD_Form->search_form_title = _("Search");
 $HD_Form->AddSearchTextInput(_("IP or Host"), 'providerip');
-$HD_Form->AddSearchSqlSelectInput(_("Provider"), "id_provider", new Table("cc_provider", ["id", "provider_name"]), "provider_name");
-$HD_Form->AddSearchSelectInput(_("Status"), "status", [[0, _("Inactive")], [1, _("Active")]]);
+$HD_Form->AddSearchSqlSelectInput(_("Provider"), "id_provider", new Table("cc_provider", ["provider_name", "id"]));
+$HD_Form->AddSearchSelectInput(_("Status"), "status", [_("Inactive"), _("Active")]);
 
 if ($popup_select) {
 	$HD_Form->FG_LIST_VIEW_PAGE_SIZE = 7;
@@ -107,7 +107,7 @@ if ($popup_select) {
 $HD_Form->AddEditSqlSelect(
     _("VOIP PROVIDER"),
     "id_provider",
-    new Table("cc_provider", ["id", "provider_name"]),
+    new Table("cc_provider", ["provider_name", "id"]),
     [],
     "",
     [-1, _("NOT DEFINED")]
@@ -170,7 +170,7 @@ $HD_Form->AddEditElement(
 $HD_Form->AddEditSqlSelect(
     _("FAILOVER TRUNK"),
     "failover_trunk",
-    new Table("cc_trunk", ["id_trunk", "trunkcode"]),
+    new Table("cc_trunk", ["trunkcode", "id_trunk"]),
     [],
     "",
     [-1 => _("NOT DEFINED")],

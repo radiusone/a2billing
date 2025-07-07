@@ -72,10 +72,10 @@ $the_file = "";
 $assoc_csv = [];
 $import_error = "";
 
-$group_list = (new Table("cc_didgroup", ["id", "didgroupname"]))
-    ->getColumn("didgroupname", "id");
-$country_list = (new Table("cc_country", ["id", "countryname"]))
-    ->getColumn("countryname", "id");
+$group_list = (new Table("cc_didgroup", ["didgroupname", "id"]))
+    ->getColumn();
+$country_list = (new Table("cc_country", ["countryname", "id"]))
+    ->getColumn();
 
 if ($task) {
     $start_time = microtime(true);

@@ -108,7 +108,7 @@ $HD_Form->AddEditTextarea(
 $HD_Form->AddEditSqlSelect(
     _("Agent"),
     "id_agent",
-    new Table("cc_agent", ["id", "CONCAT(login, ' - ', firstname, ' ', lastname)"]),
+    new Table("cc_agent", ["CONCAT(login, ' - ', firstname, ' ', lastname)", "id"]),
     [],
     "",
     [-1 => _("NONE")]

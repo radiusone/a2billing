@@ -56,7 +56,7 @@ $HD_Form->FG_ENABLE_ADD_BUTTON = true;
 $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 
-$HD_Form->AddEditSqlSelect(_("SERVER GROUP"), "id_group", new Table("cc_server_group", ["id", "name"]));
+$HD_Form->AddEditSqlSelect(_("SERVER GROUP"), "id_group", new Table("cc_server_group", ["name", "id"]));
 
 $HD_Form->AddEditElement(
     _("SERVER HOSTNAME"),

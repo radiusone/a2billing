@@ -274,12 +274,12 @@ if ($popup_select) {
     $HD_Form->AddSearchComparisonInput(_("CREDIT"), 'credit1', 'credit2', 'credit');
     $HD_Form->AddSearchComparisonInput(_("INUSE"), 'inuse1', 'inuse2', 'inuse');
 
-    $HD_Form->AddSearchSqlSelectInput(_("SELECT SERIE"), "id_seria", new Table("cc_card_seria", ["id", "name"]), "name");
+    $HD_Form->AddSearchSqlSelectInput(_("SELECT SERIE"), "id_seria", new Table("cc_card_seria", ["name", "id"]));
     $HD_Form->AddSearchSelectInput(_("SELECT LANGUAGE"), "language", $language_list);
-    $HD_Form->AddSearchSqlSelectInput(_("SELECT TARIFF"), "tariff", new Table("cc_tariffgroup", ["id", "tariffgroupname"]), "tariffgroupname");
+    $HD_Form->AddSearchSqlSelectInput(_("SELECT TARIFF"), "tariff", new Table("cc_tariffgroup", ["tariffgroupname", "id"]));
     $HD_Form->AddSearchSelectInput(_("SELECT STATUS"), "status", $cardstatus_list);
     $HD_Form->AddSearchSelectInput(_("SELECT ACCESS"), "simultaccess", $simultaccess_list);
-    $HD_Form->AddSearchSqlSelectInput(_("SELECT GROUP"), "id_group", new Table("cc_card_group", ["id", "name"]), "name");
+    $HD_Form->AddSearchSqlSelectInput(_("SELECT GROUP"), "id_group", new Table("cc_card_group", ["name", "id"]));
     $HD_Form->AddSearchSelectInput(_("SELECT CURRENCY"), "currency", getCurrenciesList());
     $HD_Form->AddSearchSelectInput(_("SELECT PAYMENT TYPE"), "typepaid", $typepaid_list);
 
@@ -389,14 +389,14 @@ if ($popup_select) {
         $HD_Form->AddEditSqlSelect(
             _("CUSTOMER GROUP"),
             "id_group",
-            new Table("cc_card_group", ["id", "name"]),
+            new Table("cc_card_group", ["name", "id"]),
             is_admin() ? [] : ["id_agent" => Agent::id()]
         );
 
         $HD_Form->AddEditSqlSelect(
             _("SERIES"),
             "id_seria",
-            new Table("cc_card_seria", ["id", "name"]),
+            new Table("cc_card_seria", ["name", "id"]),
             [],
             "",
             [-1 => _("NOT DEFINED")]
@@ -472,7 +472,7 @@ if ($popup_select) {
     $HD_Form->AddEditSqlSelect(
         _("COUNTRY"),
         "country",
-        new Table("cc_country", ["countrycode", "countryname"]),
+        new Table("cc_country", ["countryname", "countrycode"]),
         [],
         $form_action === "ask-add" ? "USA" : ""
     );
@@ -574,7 +574,7 @@ if ($popup_select) {
         $HD_Form->AddEditSqlSelect(
             _("CALL PLAN"),
             "tariff",
-            new Table("cc_tariffgroup", ["id", "tariffgroupname"], is_admin() ? []
+            new Table("cc_tariffgroup", ["tariffgroupname", "id"], is_admin() ? []
                 : ["cc_agent_tariffgroup" => ["cc_tariffgroup.id", "cc_agent_tariffgroup.id_tariffgroup"]]),
             is_admin()
                 ? []
@@ -588,7 +588,7 @@ if ($popup_select) {
     $HD_Form->AddEditSqlSelect(
         _("DIDGROUP"),
         "id_didgroup",
-        new Table("cc_didgroup", ["id", "didgroupname"]),
+        new Table("cc_didgroup", ["didgroupname", "id"]),
         [],
         "",
         [-1 => _("NOT DEFINED")]
@@ -692,7 +692,7 @@ if ($popup_select) {
     $HD_Form->AddEditSqlSelect(
         _("CAMPAIGN"),
         "id_campaign",
-        new Table("cc_campaign", ["id", "name"]),
+        new Table("cc_campaign", ["name", "id"]),
         [],
         "",
         [-1 => _("NOT DEFINED")]

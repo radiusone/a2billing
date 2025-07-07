@@ -97,7 +97,7 @@ $HD_Form->AddEditSelect(_("LC TYPE"), "lcrtype", $lcrtype_list);
 $HD_Form->AddEditSqlSelect(
     _("PACKAGE"),
     "id_cc_package_offer",
-    new Table("cc_package_offer", ["id", "label"]),
+    new Table("cc_package_offer", ["label", "id"]),
     [],
     "",
     [-1 => _("NOT DEFINED")],

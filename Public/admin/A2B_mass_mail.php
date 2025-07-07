@@ -95,7 +95,7 @@ $HD_Form->AddSearchComparisonInput(gettext("CREDIT"), 'credit1', 'credit2', 'cre
 $HD_Form->AddSearchComparisonInput(gettext("INUSE"), 'inuse1', 'inuse2', 'inuse');
 
 $HD_Form->AddSearchSelectInput(gettext("SELECT LANGUAGE"), "language", $language_list);
-$HD_Form->AddSearchSqlSelectInput(gettext("SELECT TARIFF"), "tariff", new Table("cc_tariffgroup", ["id", "tariffgroupname"]), "tariffgroupname");
+$HD_Form->AddSearchSqlSelectInput(gettext("SELECT TARIFF"), "tariff", new Table("cc_tariffgroup", ["tariffgroupname", "id"]));
 $HD_Form->AddSearchSelectInput(gettext("SELECT STATUS"), "status", $cardstatus_list);
 $HD_Form->AddSearchSelectInput(gettext("SELECT ACCESS"), "simultaccess", $simultaccess_list);
 $HD_Form->AddSearchSelectInput(gettext("SELECT CURRENCY"), "currency", $currencies_list);

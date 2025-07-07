@@ -112,7 +112,7 @@ $HD_Form->AddEditElement(
 $HD_Form->AddEditSqlSelect(
     _("TRUNK"),
     "id_trunk",
-    new Table("cc_trunk", ["id_trunk", "trunkcode"])
+    new Table("cc_trunk", ["trunkcode", "id_trunk"])
 );
 
 $HD_Form->AddEditTextarea(

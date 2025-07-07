@@ -166,8 +166,8 @@ if (is_admin()) {
 }
 $HD_Form->AddSearchComparisonInput(_("Initial Rate"), 'rateinitial1', 'rateinitial2', 'rateinitial');
 if (is_admin()) {
-    $HD_Form->AddSearchSqlSelectInput(_("Trunk"), "id_trunk", new Table("cc_trunk", ["id_trunk", "trunkcode"]), "trunkcode");
-    $HD_Form->AddSearchSqlSelectInput(_("Rate Card"), "idtariffplan", new Table("cc_tariffplan", ["id", "tariffname"]), "tariffname");
+    $HD_Form->AddSearchSqlSelectInput(_("Trunk"), "id_trunk", new Table("cc_trunk", ["trunkcode", "id_trunk"]));
+    $HD_Form->AddSearchSqlSelectInput(_("Rate Card"), "idtariffplan", new Table("cc_tariffplan", ["tariffname", "id"]));
 } elseif (is_agent()) {
     $HD_Form->AddSearchSqlSelectInput(
         _("Call Plan"),
@@ -177,11 +177,9 @@ if (is_admin()) {
             ["id", "tariffgroupname"],
             ["cc_agent_tariffgroup" => ["cc_tariffgroup.id", "cc_agent_tariffgroup.id_tariffgroup"]]
         ),
-        "tariffgroupname",
-        "asc",
         ["id_agent" => Agent::id()]
     );
-    $HD_Form->AddEditSqlSelect(_("Rate Card"), "idtariffplan", new Table("cc_tariffplan", ["id", "tariffname"]));
+    $HD_Form->AddEditSqlSelect(_("Rate Card"), "idtariffplan", new Table("cc_tariffplan", ["tariffname", "id"]));
 }
 
 $HD_Form->AddEditElement(
@@ -574,7 +572,7 @@ $HD_Form->AddEditElement(
 $HD_Form->AddEditSqlSelect(
     _("Trunk"),
     "id_trunk",
-    new Table("cc_trunk", ["id_trunk", "trunkcode"]),
+    new Table("cc_trunk", ["trunkcode", "id_trunk"]),
     [],
     "",
     [-1, _("NOT DEFINED")],
@@ -584,7 +582,7 @@ $HD_Form->AddEditSqlSelect(
 $HD_Form->AddEditSqlSelect(
     _("CID Group"),
     "id_outbound_cidgroup",
-    new Table("cc_outbound_cid_group", ["id", "group_name"]),
+    new Table("cc_outbound_cid_group", ["group_name", "id"]),
     [],
     "",
     [-1 => _("NOT DEFINED")],

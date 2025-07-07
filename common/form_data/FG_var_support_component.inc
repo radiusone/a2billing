@@ -87,7 +87,7 @@ $HD_Form->AddEditRadio(
 $HD_Form->AddEditSqlSelect(
     _("Support Box"),
     "id_support",
-    new Table("cc_support", ["id", "name"])
+    new Table("cc_support", ["name", "id"])
 );
 
 $HD_Form->AddEditSelect(

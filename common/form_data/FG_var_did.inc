@@ -130,13 +130,13 @@ $HD_Form->AddEditElement(
 $HD_Form->AddEditSqlSelect(
     _("DIDGROUP"),
     "id_cc_didgroup",
-    new Table("cc_didgroup", ["id", "didgroupname"])
+    new Table("cc_didgroup", ["didgroupname", "id"])
 );
 
 $HD_Form->AddEditSqlSelect(
     _("COUNTRY"),
     "id_cc_country",
-    new Table("cc_country", ["id", "countryname"])
+    new Table("cc_country", ["countryname", "id"])
 );
 
 $HD_Form->AddEditRadio(

@@ -99,14 +99,14 @@ if (!is_customer() && $form_action !== "ask-edit" && $form_action !== "edit") {
         _("Insert the Customer ID")
     );
 
-    $HD_Form->AddEditSqlSelect(_("DID"), "id_cc_did", new Table("cc_did", ["id", "did"]));
+    $HD_Form->AddEditSqlSelect(_("DID"), "id_cc_did", new Table("cc_did", ["did", "id"]));
 } elseif ($form_action !== "ask-edit" && $form_action !== "edit") {
     $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["id_cc_card"] = Customer::id();
 
     $HD_Form->AddEditSqlSelect(
         _("Use an existing DID"),
         "id_cc_did",
-        new Table("cc_did", ["id", "did"]),
+        new Table("cc_did", ["did", "id"]),
         ["iduser" => Customer::id()],
         "",
         ["" => ""],

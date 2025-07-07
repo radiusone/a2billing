@@ -227,7 +227,7 @@ $HD_Form->AddEditElement(
 $HD_Form->AddEditSqlSelect(
     _("COMPONENT"),
     "id_component",
-    new Table("cc_support_component", ["id", "name"])
+    new Table("cc_support_component", ["name", "id"])
 );
 
 $HD_Form->AddEditSelect(_("PRIORITY"), "priority", $priority_list);

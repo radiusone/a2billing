@@ -171,7 +171,7 @@ $HD_Form->AddEditElement(
 $HD_Form->AddEditSqlSelect(
     _("CALL PLAN"),
     "dialplan",
-    new Table("cc_tariffgroup", ["id", "tariffgroupname"]),
+    new Table("cc_tariffgroup", ["tariffgroupname", "id"]),
     [],
     "",
     [0 => _("ANY")]

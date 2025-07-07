@@ -150,7 +150,7 @@ if ((int)$popup_select >= 1) {
 }
 
 $HD_Form->search_form_enabled = true;
-$HD_Form->AddSearchSqlSelectInput(_("Select language"), "id_language", new Table("cc_iso639", ["code", "name"]),  "name");
+$HD_Form->AddSearchSqlSelectInput(_("Select language"), "id_language", new Table("cc_iso639", ["name", "code"]));
 
 $source = [];
 if ($form_action === "ask-add" && !empty($from_id)) {
@@ -166,7 +166,7 @@ $HD_Form->AddEditSelect(
 $HD_Form->AddEditSqlSelect(
     _("LANGUAGE"),
     "id_language",
-    new Table("cc_iso639", ["code", "name"]),
+    new Table("cc_iso639", ["name", "code"]),
     [],
     $source["id_language"] ?? "en",
     [],

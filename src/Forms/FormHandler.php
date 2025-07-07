@@ -602,7 +602,7 @@ class FormHandler
      * @param array<string,mixed> $html_attributes HTML attributes for the input
      * @param string $error_message A message to show if validation fails
      * @param callable(array ):array|null $callback the callback is passed the DB row array,
-     * indices 0 and 1 of the return are used to create the option value and label, otherwise
+     * indices 0 and 1 of the return are used to create the option label and value, otherwise
      * first two indices of the database array are used
      * @return void
      */
@@ -620,10 +620,13 @@ class FormHandler
     ): void
     {
         $options = [];
-        $callback ??= fn (array $v) => [$v[$table->fields[0]], $v[$table->fields[1]]];
-        foreach ($table->getRows($conditions) as $row) {
-            $ret = $callback($row);
-            $options[$ret[0]] = $ret[1];
+        if ($callback) {
+            foreach ($table->getRows($conditions) as $row) {
+                $ret = $callback($row);
+                $options[$ret[1]] = $ret[0];
+            }
+        } else {
+            $options = $table->getColumn("", "", $conditions);
         }
 
         $this->FG_EDIT_FORM_ELEMENTS[] = [
@@ -927,9 +930,7 @@ class FormHandler
      *
      * @param string $label the label of the element
      * @param string $name the name of the element, and also the database column queried
-     * @param Table $table a database object; first 2 columns will be used for value and content
-     * @param string $order column to order by
-     * @param string $direction direction asc or desc
+     * @param Table $table a database object; first 2 columns will be used for content and value
      * @param array<array-key,string|string[]> $conditions any conditions to apply to the query
      * @return void
      */
@@ -937,25 +938,11 @@ class FormHandler
         string $label,
         string $name,
         Table $table,
-        string $order = "",
-        string $direction = "ASC",
         array $conditions = []
     )
     {
         $name = str_replace(".", "^^", $name);
-        $sqlorder = [];
-        if ($order) {
-            // todo: let this default to second column
-            // will need to work on Table to get a column array available
-            $sqlorder = [$order];
-        }
-        $options = [];
-        array_map(
-            function ($v) use (&$options) {
-                $options[$v[0]] = $v[1];
-            },
-            $table->getRows($conditions, $sqlorder, $direction)
-        );
+        $options = $table->getColumn("", "", $conditions);
 
         $this->search_form_elements[] = [
             "label" => $label,

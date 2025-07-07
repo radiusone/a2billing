@@ -173,7 +173,7 @@ if ($A2B->config["signup"]['field_country'] ?? 0)  {
     $HD_Form->AddEditSqlSelect(
         gettext("COUNTRY"),
         "country",
-        new Table("cc_country", ["countrycode", "countryname"]),
+        new Table("cc_country", ["countryname", "countrycode"]),
         [],
         $form_action === "ask-add" ? "CAN" : ""
     );
