@@ -21,8 +21,6 @@ $HD_Form->AddListValue(_("Description"), "cc_card_history.description");
 
 $HD_Form->list_query_order_columns = ["cc_card_history.datecreated"];
 $HD_Form->list_query_order_direction = "DESC";
-
-$HD_Form->list_query_columns = ["cc_card_history.id_cc_card", "cc_card_history.datecreated", "cc_card_history.description"];
 $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 25;
 
 $HD_Form->search_form_enabled = true;

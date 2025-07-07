@@ -29,32 +29,6 @@ $calltype_list = [
     _("DID-ALEG"),
 ];
 
-$HD_Form->list_query_columns = array_filter([
-    "cc_call.starttime",
-    is_admin() || is_customer() || Agent::allowed(Agent::ACX_SEE_CUSTOMERS_CALLERID) ? "cc_call.src" : null,
-    is_admin() || is_agent() ? "cc_call.dnid" : null,
-    "cc_call.calledstation",
-    "cc_call.destination AS dest",
-    is_admin() ? "cc_ratecard.buyrate" : null,
-    "cc_ratecard.rateinitial",
-    "cc_call.sessiontime",
-    is_admin() || is_agent() ? "cc_call.card_id" : null,
-    is_admin() ? "cc_trunk.trunkcode" : null,
-    "cc_call.terminatecauseid",
-    "cc_call.sipiax",
-    is_admin() ? "cc_call.buycost" : null,
-    "cc_call.sessionbill",
-    is_admin()
-        ? "CASE WHEN cc_call.sessionbill != 0 THEN ((cc_call.sessionbill - cc_call.buycost) / cc_call.sessionbill) * 100 ELSE NULL END AS margin"
-        : null,
-    is_admin()
-        ? "CASE WHEN cc_call.buycost != 0 THEN ((cc_call.sessionbill - cc_call.buycost) / cc_call.buycost) * 100 ELSE NULL END AS markup"
-        : null,
-    "cc_call.id",
-    "cc_trunk.id_provider",
-    "cc_trunk.id_trunk AS trunk_id",
-]);
-
 $DBHandle = DbConnect();
 
 $HD_Form->AddListValue(_("Date"), "cc_call.starttime");
@@ -93,7 +67,6 @@ $HD_Form->FG_DELETE_BUTTON_LINK = "A2B_entity_call.php?form_action=ask-delete&id
 if ($A2B->config['webui']['link_audio_file'] ?? false) {
     // TODO: figure out how this works, move it into this file with custom button
     $HD_Form->AddListValue(_("Audio"), "uniqueid", "get_monitorfile_link", [], false);
-    $HD_Form->list_query_columns[] = 'cc_call.uniqueid';
 }
 
 $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 25;
