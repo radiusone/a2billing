@@ -250,8 +250,9 @@ use A2billing\Forms\FormHandler;
     <div class="row py-1">
     <?php foreach ($selects as $item): ?>
         <div class="col-4 mb-1">
-            <select name="<?= $item["input"][0] ?>" aria-label="<?= $item["label"] ?>" class="form-select form-select-sm">
-                <option value=""><?= $item["label"] ?></option>
+            <label for="<?= $item["input"][0] ?>" class="form-label form-label-sm"><?= $item["label"] ?></label>
+            <select name="<?= $item["input"][0] ?>" id="<?= $item["input"][0] ?>" class="form-select form-select-sm">
+                <option value=""></option>
                 <?php foreach ($item["options"] as $key => $opt): ?>
                     <option value="<?= $key ?>" <?php if (strval($processed[$item["input"][0]] ?? $item["default"] ?? "zzzzzz") === "$key"): ?>selected="selected"<?php endif ?>>
                         <?= $opt ?>
