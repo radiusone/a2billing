@@ -249,16 +249,33 @@ class Table
     /**
      * Get all the values of a given column, optionally indexed by another column.
      *
-     * @param string $column
-     * @param string $index
+     * @param string $column column name or empty string to use the first column of the result set
+     * @param string $index column name or empty string to use the second column of the result set when available
      * @param array $conditions
      * @return array
      */
-    public function getColumn(string $column, string $index = "", array $conditions = []): array
+    public function getColumn(string $column = "", string $index = "", array $conditions = []): array
     {
         $data = $this->getRows($conditions);
-        if (empty($index)) {
+        if (count($data) === 0) {
+            return $data;
+        }
+        $columns = array_keys($data[0]);
+        // todo: remove this when no more numeric keys
+        $columns = array_values(array_filter(
+            array_keys($data[0]),
+            fn ($v) => !is_numeric($v)
+        ));
+
+        if ($column === "") {
+            $column = $columns[0];
+        }
+        if ($index === "" && count($columns) <= 1) {
             return array_column($data, $column);
+        }
+
+        if ($index === "") {
+            $index = $columns[1];
         }
 
         return array_combine(
