@@ -249,12 +249,12 @@ class Table
     /**
      * Get all the values of a given column, optionally indexed by another column.
      *
+     * @param array $conditions
      * @param string $column column name or empty string to use the first column of the result set
      * @param string $index column name or empty string to use the second column of the result set when available
-     * @param array $conditions
      * @return array
      */
-    public function getColumn(string $column = "", string $index = "", array $conditions = []): array
+    public function getColumn(array $conditions = [], string $column = "", string $index = ""): array
     {
         $order = $column !== "" ? [$column] : [];
         $data = $this->getRows($conditions, $order);

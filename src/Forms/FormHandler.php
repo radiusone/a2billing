@@ -626,7 +626,7 @@ class FormHandler
                 $options[$ret[1]] = $ret[0];
             }
         } else {
-            $options = $table->getColumn("", "", $conditions);
+            $options = $table->getColumn($conditions);
         }
 
         $this->FG_EDIT_FORM_ELEMENTS[] = [
@@ -942,7 +942,7 @@ class FormHandler
     )
     {
         $name = str_replace(".", "^^", $name);
-        $options = $table->getColumn("", "", $conditions);
+        $options = $table->getColumn($conditions);
 
         $this->search_form_elements[] = [
             "label" => $label,

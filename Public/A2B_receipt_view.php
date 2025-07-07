@@ -70,14 +70,10 @@ require_once __DIR__ . "/templates/main.php";
 //Load receipt conf
 $table = new Table(
     "cc_config",
-    ["config_key", "config_value"],
+    ["config_value", "config_key"],
     ["cc_config_group" => ["cc_config.config_group_id", "cc_config_group.id"]]
 );
-$receipt_conf = $table->getColumn(
-    "config_value",
-    "config_key",
-    ["group_title" => "invoice"]
-);
+$receipt_conf = $table->getColumn(["group_title" => "invoice"]);
 
 //Currencies check
 $curr = $card['currency'];

@@ -540,7 +540,7 @@ function validate_upload(string $the_file, string $the_file_type): string
 
 function get_timezones(): array
 {
-    return (new Table("cc_timezone", ["id", "gmtzone"]))->getColumn("gmtzone", "id");
+    return (new Table("cc_timezone", ["gmtzone", "id"]))->getColumn();
 }
 
 function get_login_button($id): string

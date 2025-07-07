@@ -68,7 +68,7 @@ class Receipt extends PaymentDocument
 
         $result = [];
         $instance_sub_table = new Table("cc_receipt_item", ["id"]);
-        $return = $instance_sub_table->getColumn("id", "", ["id_receipt" => $this->id]);
+        $return = $instance_sub_table->getColumn(["id_receipt" => $this->id]);
         foreach ($return as $id) {
             $result[] = new ReceiptItem($id);
         }

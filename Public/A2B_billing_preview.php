@@ -120,14 +120,10 @@ if ((int)$typepaid === 1 && $credit < 0) {
 
 $table = new Table(
     "cc_config",
-    ["config_key", "config_value"],
+    ["config_value", "config_key"],
     ["cc_config_group" => ["cc_config.config_group_id", "cc_config_group.id"]]
 );
-$invoice_conf = $table->getColumn(
-    "config_value",
-    "config_key",
-    ["group_title" => "invoice"]
-);
+$invoice_conf = $table->getColumn(["group_title" => "invoice"]);
 
 require_once __DIR__ . "/templates/main.php";
 

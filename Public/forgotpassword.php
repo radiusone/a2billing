@@ -61,7 +61,7 @@ if (isset ($pr_email) && isset ($action)) {
         }
         $show_message = true;
         $list = (new Table("cc_card", ["id"]))
-            ->getColumn("id", "", ["email" => $pr_email]);
+            ->getColumn(["email" => $pr_email]);
         if (!$list) {
             $error = 1;
             sleep(4);
