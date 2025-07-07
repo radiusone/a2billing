@@ -81,8 +81,8 @@ $chargetype_list = [
     4 => _("Extra charge"),
 ];
 
-$HD_Form_c->AddListSqlMapping(_("Account holder"), "id_cc_card", new Table("cc_card", ["id", "CONCAT(lastname, ' ', firstname)"]));
-$HD_Form_c->AddListValue(_("Account number"), "id_cc_card", [Customer::class, "getUsername"]);
+$HD_Form_c->AddListValue(_("Account holder"), "id_cc_card", [Customer::class, "getName"], ["%X", false]);
+$HD_Form_c->AddListValue(_("Account number"), "cc_card.username", [Customer::class, "getLinkFromUsername"]);
 $HD_Form_c->AddListValue(_("Date"), "cc_charge.creationdate");
 $HD_Form_c->AddListValue(_("Amount"), "amount", "get_money");
 $HD_Form_c->AddListMapping(_("Charge type"), "chargetype", $chargetype_list);

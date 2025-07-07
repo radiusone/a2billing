@@ -135,6 +135,31 @@ class Customer extends User
     }
 
     /**
+     * Turn a username into a link
+     *
+     * @param string|null $username
+     * @return string
+     */
+    public static function getLinkFromUsername(?string $username): string
+    {
+        $na = _("n/a");
+        if (empty($username) || !is_numeric($username)) {
+            return $na;
+        }
+        $row = (new Table("cc_card", ["id", "firstname", "lastname"]))
+            ->getRow(["username" => $username]);
+        if (!$row) {
+            return $na;
+        }
+
+        return sprintf(
+            "<a href=\"A2B_entity_card.php?form_action=ask-edit&amp;id=%d\">%s</a>",
+            $row["id"],
+            htmlspecialchars($username)
+        );
+    }
+
+    /**
      * Get the logged in customer's ID
      *
      * @return int

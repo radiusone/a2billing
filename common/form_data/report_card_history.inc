@@ -15,7 +15,7 @@ $HD_Form = new FormHandler(
 );
 
 $DBHandle = DbConnect();
-$HD_Form->AddListValue(_("Account number"), "cc_card_history.id_cc_card", [Customer::class, "getUsername"]);
+$HD_Form->AddListValue(_("Account number"), "cc_card.username", [Customer::class, "getLinkFromUsername"]);
 $HD_Form->AddListValue(_("Date"), "cc_card_history.datecreated");
 $HD_Form->AddListValue(_("Description"), "cc_card_history.description");
 

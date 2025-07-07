@@ -163,11 +163,11 @@ foreach ($show_list as $field) {
             $HD_Form->AddListValue(_("ID"), "cc_card.id");
             break;
         case "username":
-            if ($popup_select) {
-                $HD_Form->AddListValue(_("Account number"), "username");
-            } else {
-                $HD_Form->AddListValue(_("Account number"), "cc_card.id", [Customer::class, "getUsername"]);
-            }
+            $HD_Form->AddListValue(
+                _("Account number"),
+                "username",
+                $popup_select ? null : [Customer::class, "getLinkFromUsername"]
+            );
             break;
         case "lastname":
             $HD_Form->AddListValue(_("Last name"), "cc_card.lastname");

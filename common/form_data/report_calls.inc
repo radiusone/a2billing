@@ -72,7 +72,7 @@ if (is_admin()) {
 $HD_Form->AddListValue(_("Sell rate"), "rateinitial", "get_money_precise");
 $HD_Form->AddListValue(_("Duration"), "sessiontime", "get_minute");
 if (is_admin() || is_agent()) {
-    $HD_Form->AddListValue(_("Account"), "card_id", [Customer::class, "getUsername"]);
+    $HD_Form->AddListValue(_("Account"), "cc_card.username", [Customer::class, "getLinkFromUsername"]);
 }
 if (is_admin()) {
     $HD_Form->AddListValue(_("Trunk"), "trunkcode");

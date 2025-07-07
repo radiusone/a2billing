@@ -59,7 +59,7 @@ $HD_Form->help_text = create_help(
 );
 
 $HD_Form->AddListValue(_("ID"), "cc_card.id");
-$HD_Form->AddListValue(_("Card number"), "cc_card.id", [Customer::class, "getUsername"]);
+$HD_Form->AddListValue(_("Card number"), "cc_card.username", [Customer::class, "getLinkFromUsername"]);
 if (is_admin()) {
     $HD_Form->AddListValue(_("Alias"), "useralias");
 }

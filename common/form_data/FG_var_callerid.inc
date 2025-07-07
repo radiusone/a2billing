@@ -93,7 +93,8 @@ if (is_customer()) {
     );
 
     $HD_Form->AddListValue(_("CALLERID"), "cid")
-        ->AddListValue(_("ACCOUNT NUMBER"), "id_cc_card", [Customer::class, "getUsername"])
+        ->AddListValue(_("ACCOUNT NUMBER"), "cc_card.username", [Customer::class, "getLinkFromUsername"])
+        // todo: table can't be sorted by customer name
         ->AddListValue(_("CUSTOMER NAME"), "id_cc_card", [Customer::class, "getName"])
         ->AddListMapping(_("ACTIVATED"), "cc_callerid.activated", getActivationTrueFalseList())
         ->AddListHiddenValue("id_cc_card");

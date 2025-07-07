@@ -51,7 +51,7 @@ $HD_Form->help_text = create_help(
 
 $cardstatus_list = getCardStatus_List();
 
-$HD_Form->AddListValue(_("Account"), "id_cc_card", [Customer::class, "getUsername"]);
+$HD_Form->AddListValue(_("Account"), "cc_card.username", [Customer::class, "getLinkFromUsername"]);
 $HD_Form->AddListValue(_("Last name"), "lastname");
 $HD_Form->AddListMapping(_("Status"), "cc_status_log.status", $cardstatus_list);
 $HD_Form->AddListValue(_("Date"), "updated_date");
