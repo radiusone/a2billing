@@ -45,9 +45,6 @@ $HD_Form -> AddListValue(gettext("VOUCHER"), "voucher");
 $HD_Form -> AddListValue(gettext("CREDIT"), "credit");
 $HD_Form -> AddListValue(gettext("CURRENCY"), "currency");
 
-
-$HD_Form -> FieldViewElement ('voucher, credit, currency');
-
 $HD_Form->list_query_conditions["usedcardnumber"] = Customer::card();
 
 $HD_Form -> CV_NO_FIELDS  = gettext("No vouchers have been used!");

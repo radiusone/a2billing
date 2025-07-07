@@ -52,8 +52,6 @@ $HD_Form -> list_query_group_columns = ["dialprefix"];
 
 $HD_Form -> AddListValue(abbr(_("PREFIX"), _("DIALING PREFIX")), "dialprefix");
 $HD_Form -> AddListValue(gettext("DESTINATION"), "destination");
-$HD_Form -> AddListValue(abbr(_("SR"), _("SELLING RATE")), "rateinitial", "get_money_precise");
-
-$HD_Form -> FieldViewElement ('dialprefix, destination, MIN(rateinitial) as rateinitial');
+$HD_Form -> AddListValue(abbr(_("SR"), _("SELLING RATE")), "MIN(rateinitial) AS rateinitial", "get_money_precise");
 
 $HD_Form -> CV_NO_FIELDS  = gettext("THERE IS NO RATECARD CREATED!");

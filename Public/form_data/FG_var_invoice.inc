@@ -59,8 +59,9 @@ $HD_Form -> FG_INFO_BUTTON_LINK = "A2B_invoice_view.php?id=";
 $status_list = getInvoicePaidStatusList();
 
 $HD_Form -> AddListValue(gettext("REFERENCE"), "cc_invoice.reference");
-$HD_Form -> AddListValue(gettext("DATE"), "date");
+$HD_Form -> AddListValue(gettext("DATE"), "cc_invoice.date");
 $HD_Form -> AddListValue(gettext("TITLE"), "title");
-$HD_Form -> AddListMapping(gettext("STATUS"), "paid_status", $status_list);
-$HD_Form -> AddListValue(gettext("AMOUNT INCL VAT"), "price", "get_money");
-$HD_Form -> FieldViewElement ("cc_invoice.reference, cc_invoice.date, title, cc_invoice.paid_status, total_price, id, cc_invoice.paid_status");
+$HD_Form -> AddListMapping(gettext("STATUS"), "cc_invoice.paid_status", $status_list);
+$HD_Form -> AddListValue(gettext("AMOUNT INCL VAT"), "total_price", "get_money");
+$HD_Form->AddListHiddenValue("id");
+$HD_Form->AddListHiddenValue("cc_invoice.paid_status");

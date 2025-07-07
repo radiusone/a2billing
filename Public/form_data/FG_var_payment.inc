@@ -48,8 +48,6 @@ $HD_Form -> AddListValue(gettext("PAYMENT DATE"), "date");
 $HD_Form -> AddListValue(gettext("PAYMENT AMOUNT"), "payment");
 $HD_Form -> AddListValue(gettext("DESCRIPTION"), "description");
 
-$HD_Form -> FieldViewElement ('cc_logpayment.id, date, payment,description ');
-
 $HD_Form -> CV_TITLE_TEXT = gettext("Payment list");
 $HD_Form -> CV_NO_FIELDS  = gettext("No payments have been made!");
 

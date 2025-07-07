@@ -529,24 +529,6 @@ class FormHandler
     }
 
     /**
-     * Overrides query field names for the list view
-     *
-     * @param string|array $fields array or comma-separated list of column names used for list view
-     * @return void
-     * @todo figure out where this is required and work around it
-     */
-    public function FieldViewElement($fields): void
-    {
-        if (is_string($fields)) {
-            $this->list_query_columns = array_map("trim", explode(",", $fields));
-        } elseif (is_array($fields)) {
-            $this->list_query_columns = $fields;
-        }
-        // instance_primary_key is used to fill in links for edit/delete buttons
-        $this->list_query_columns[] = "$this->FG_QUERY_PRIMARY_KEY AS instance_primary_key";
-    }
-
-    /**
      * @param string $label_text The label text
      * @param string $fieldname The form input name
      * @param string $form_text_bottom Text to display below the form input
