@@ -139,7 +139,7 @@ class Validator
      */
     public static function number(string $value)
     {
-        return preg_match("/^-?[0-9]+(\\.?[0-9]+)?$/", $value) === 1
+        return preg_match("/^-?[0-9]*?\\.?[0-9]+$/", $value) === 1
             ?: _("(must be a number – use . for decimals)");
     }
 
