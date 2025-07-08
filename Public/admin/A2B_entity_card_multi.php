@@ -173,12 +173,11 @@ $HD_Form->list_help_text = create_help(
 );
 $HD_Form->create_toppage($form_action);
 
-$list_tariff = (new Table("cc_tariffgroup", ["id", "tariffgroupname AS name"]))->getRows([], ["tariffgroupname"]);
-$list_group = (new Table("cc_card_group", ["id", "name"]))->getRows([], ["name"]);
-$list_agent = (new Table("cc_agent", ["id", "login AS name"]))->getRows([], ["login"]);
-$list_seria = (new Table("cc_card_seria", ["id", "name"]))->getRows([], ["name"]);
-$list_didgroup = (new Table("cc_didgroup", ["id", "didgroupname AS name"]))->getRows([], ["didgroupname"]);
-$list_country = (new Table("cc_country", ["countrycode", "countryname AS name"]))->getRows([], ["countryname"]);
+$list_tariff = (new Table("cc_tariffgroup", ["tariffgroupname", "id"]))->getColumn();
+$list_group = (new Table("cc_card_group", ["name", "id"]))->getColumn();
+$list_seria = (new Table("cc_card_seria", ["name", "id"]))->getColumn();
+$list_didgroup = (new Table("cc_didgroup", ["didgroupname", "id"]))->getColumn();
+$list_country = (new Table("cc_country", ["countryname", "countrycode"]))->getColumn();
 
 // FORM FOR THE GENERATION
 ?>
@@ -221,8 +220,8 @@ $list_country = (new Table("cc_country", ["countrycode", "countryname AS name"])
         <div class="col-8">
             <select name="choose_tariff" id="choose_tariff" class="form-select <?= empty($errors["choose_tariff"]) ? "" : "is-invalid" ?>">
                 <option value=""><?= _("Choose a call plan") ?></option>
-                <?php foreach ($list_tariff as $plan): ?>
-                <option value="<?= $plan["id"] ?>" <?= ($plan["id"] === "$choose_tariff" ?? "") ? 'selected="selected"' : "" ?>><?= $plan["name"] ?></option>
+                <?php foreach ($list_tariff as $id => $name): ?>
+                <option value="<?= $id ?>" <?= ("$id" === strval($choose_tariff ?? "")) ? 'selected="selected"' : "" ?>><?= $name ?></option>
                 <?php endforeach ?>
             </select>
         </div>
@@ -369,8 +368,8 @@ $list_country = (new Table("cc_country", ["countrycode", "countryname AS name"])
         <div class="col-8">
             <select name="id_group" id="id_group" class="form-select <?= empty($errors["id_group"]) ? "" : "is-invalid" ?>">
                 <option value=""><?= _("Choose a group") ?></option>
-                <?php foreach ($list_group as $group): ?>
-                    <option value="<?= $group["id"] ?>" <?= ($group["id"] === "$id_group" ?? "") ? 'selected="selected"' : "" ?>><?= $group["name"] ?></option>
+                <?php foreach ($list_group as $id => $name): ?>
+                    <option value="<?= $id ?>" <?= ("$id" === strval($id_group ?? "")) ? 'selected="selected"' : "" ?>><?= $name ?></option>
                 <?php endforeach ?>
             </select>
         </div>
@@ -383,7 +382,7 @@ $list_country = (new Table("cc_country", ["countrycode", "countryname AS name"])
             <select name="discount" id="discount" class="form-select">
                 <option value="0"><?= _("No discount") ?></option>
                 <?php for ($i = 1; $i < 100; $i++): ?>
-                    <option value="<?= $i ?>"<?= ($i === "$discount" ?? "0") ? 'selected="selected"' : "" ?>><?= $i ?>%</option>
+                    <option value="<?= $i ?>"<?= ("$i" === strval($discount ?? 0)) ? 'selected="selected"' : "" ?>><?= $i ?>%</option>
                 <?php endfor ?>
             </select>
         </div>
@@ -395,8 +394,8 @@ $list_country = (new Table("cc_country", ["countrycode", "countryname AS name"])
         <div class="col-8">
             <select name="id_seria" id="id_seria" class="form-select">
                 <option value=""><?= _("Choose a series") ?></option>
-                <?php foreach ($list_seria as $group): ?>
-                    <option value="<?= $group["id"] ?>" <?= ($group["id"] === "$id_seria" ?? "") ? 'selected="selected"' : "" ?>><?= $group["name"] ?></option>
+                <?php foreach ($list_seria as $id => $name): ?>
+                    <option value="<?= $id ?>" <?= ("$id" === strval($id_seria ?? "")) ? 'selected="selected"' : "" ?>><?= $name ?></option>
                 <?php endforeach ?>
             </select>
         </div>
@@ -408,8 +407,8 @@ $list_country = (new Table("cc_country", ["countrycode", "countryname AS name"])
         <div class="col-8">
             <select name="id_didgroup" id="id_didgroup" class="form-select <?= empty($errors["id_didgroup"]) ? "" : "is-invalid" ?>">
                 <option value=""><?= _("Choose a DID group") ?></option>
-                <?php foreach ($list_didgroup as $group): ?>
-                    <option value="<?= $group["id"] ?>" <?= ($group["id"] === "$id_didgroup" ?? "") ? 'selected="selected"' : "" ?>><?= $group["name"] ?></option>
+                <?php foreach ($list_didgroup as $id => $name): ?>
+                    <option value="<?= $id ?>" <?= ("$id" === strval($id_didgroup ?? "")) ? 'selected="selected"' : "" ?>><?= $name ?></option>
                 <?php endforeach ?>
             </select>
         </div>
@@ -429,8 +428,8 @@ $list_country = (new Table("cc_country", ["countrycode", "countryname AS name"])
         <div class="col-8">
             <select name="id_country" id="id_country" class="form-select <?= empty($errors["id_country"]) ? "" : "is-invalid" ?>">
                 <option value="0"><?= _("Choose a country") ?></option>
-                <?php foreach ($list_country as $country): ?>
-                    <option value="<?= $country["id"] ?>" <?= ($country["id"] === $id_country ?? "") ? 'selected="selected"' : "" ?>><?= $country["name"] ?></option>
+                <?php foreach ($list_country as $id => $name): ?>
+                    <option value="<?= $id ?>" <?= ("$id" === strval($id_country ?? "")) ? 'selected="selected"' : "" ?>><?= $name ?></option>
                 <?php endforeach ?>
             </select>
         </div>

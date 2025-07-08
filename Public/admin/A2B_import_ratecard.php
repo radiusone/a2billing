@@ -164,10 +164,10 @@ if ($task) {
         ["SUB", ["startingdate" => [[null], ["<", "CURRENT_TIMESTAMP"]]], "OR"],
         ["SUB", ["expirationdate" => [[null], [">", "CURRENT_TIMESTAMP"]]], "OR"],
     ];
-    $list_tariffname = (new Table("cc_tariffplan", "id, tariffname"))->getRows($where, ["tariffname"]);
+    $list_tariffname = (new Table("cc_tariffplan", ["tariffname", "id"]))->getColumn($where);
 
     // GET TRUNK LIST
-    $list_trunk = (new Table("cc_trunk", "id_trunk, trunkcode"))->getRows(["status" => 1], ["trunkcode"]);
+    $list_trunk = (new Table("cc_trunk", ["trunkcode", "id_trunk"]))->getColumn(["status" => 1]);
 
     echo create_help(
         _("This section is a utility to import ratecards from a CSV file.")
@@ -272,8 +272,8 @@ require_once __DIR__ . "/templates/main.php";
             <label class="form-label" for="tariffplan"><?= _("Choose the rate card to add rates to") ?></label>
             <select id="tariffplan" name="tariffplan" class="form-select" required="required">
                 <option value=""><?= _("Choose a rate card") ?></option>
-                <?php foreach ($list_tariffname as $tariff): ?>
-                <option value="<?= $tariff["id"] ?>"><?= htmlspecialchars($tariff["tariffname"]) ?></option>
+                <?php foreach ($list_tariffname as $id => $name): ?>
+                <option value="<?= $id ?>"><?= htmlspecialchars($name) ?></option>
                 <?php endforeach ?>
             </select>
         </div>
@@ -281,8 +281,8 @@ require_once __DIR__ . "/templates/main.php";
             <label class="form-label" for="trunk"><?= _("Choose the trunk to use for imported rates") ?></label>
             <select id="trunk" name="trunk" class="form-select">
                 <option value="-1"><?= _("Use rate card default") ?></option>
-                <?php foreach ($list_trunk as $trunk): ?>
-                <option value="<?= $trunk["id_trunk"] ?>"><?= htmlspecialchars($trunk["trunkcode"]) ?></option>
+                <?php foreach ($list_trunk as $id => $name): ?>
+                <option value="<?= $id ?>"><?= htmlspecialchars($name) ?></option>
                 <?php endforeach ?>
             </select>
         </div>

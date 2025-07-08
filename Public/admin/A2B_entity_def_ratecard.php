@@ -154,10 +154,10 @@ $form_action ??= "list";
 
 $list = $HD_Form->perform_action($form_action);
 
-$list_tariffname = (new Table("cc_tariffplan", ["id", "tariffname"]))->getRows([], ["tariffname"]);
-$list_trunk = (new Table("cc_trunk", ["id_trunk", "trunkcode", "providerip"]))->getRows([], ["trunkcode"]);
-$list_cid_group = (new Table("cc_outbound_cid_group", ["id", "group_name"]))->getRows([], ["group_name"]);
-$list_tariffgroup = (new Table("cc_tariffgroup", ["id", "tariffgroupname AS name"]))->getRows([], ["tariffgroupname"]);
+$list_tariffname = (new Table("cc_tariffplan", ["tariffname", "id"]))->getColumn();
+$list_trunk = (new Table("cc_trunk", ["CONCAT(trunkcode, ' (', providerip, ')')", "id_trunk"]))->getColumn();
+$list_cid_group = (new Table("cc_outbound_cid_group", ["group_name", "id"]))->getColumn();
+$list_tariffgroup = (new Table("cc_tariffgroup", ["tariffgroupname", "id"]))->getColumn();
 
 require_once __DIR__ . "/templates/main.php";
 
@@ -244,8 +244,8 @@ if ($form_action === "list" && !$popup_select): ?>
                         <div class="col">
                             <select name="upd_id_trunk" id="upd_id_trunk" class="form-select form-select-sm">
                                 <option value="-1"><?= _("Not Defined") ?></option>
-                                <?php foreach ($list_trunk as $v): ?>
-                                    <option value="<?= $v[0] ?>" <?php if (($bu["upd_id_trunk"] ?? "") == $v[0]): ?>selected="selected"<?php endif ?>><?= $v[1] ?> (<?= $v[2] ?>)</option>
+                                <?php foreach ($list_trunk as $id => $name): ?>
+                                    <option value="<?= $id ?>" <?php if (strval($bu["upd_id_trunk"] ?? "") === "$id"): ?>selected="selected"<?php endif ?>><?= $name ?></option>
                                 <?php endforeach ?>
                             </select>
                         </div>
@@ -260,8 +260,8 @@ if ($form_action === "list" && !$popup_select): ?>
                         </div>
                         <div class="col">
                             <select name="upd_idtariffplan" id="upd_idtariffplan" class="form-select form-select-sm">
-                                <?php foreach ($list_tariffname as $v): ?>
-                                    <option value="<?= $v[0] ?>" <?php if (($bu["upd_idtariffplan"] ?? "") == $v[0]): ?>selected="selected"<?php endif ?>><?= $v[1] ?></option>
+                                <?php foreach ($list_tariffname as $id => $name): ?>
+                                    <option value="<?= $id ?>" <?php if (strval($bu["upd_idtariffplan"] ?? "") === "$id"): ?>selected="selected"<?php endif ?>><?= $name ?></option>
                                 <?php endforeach ?>
                             </select>
                         </div>
@@ -276,8 +276,8 @@ if ($form_action === "list" && !$popup_select): ?>
                         </div>
                         <div class="col">
                             <select name="upd_id_outbound_cidgroup" id="upd_id_outbound_cidgroup" class="form-select form-select-sm">
-                                <?php foreach ($list_cid_group as $v): ?>
-                                    <option value="<?= $v[0] ?>" <?php if (($bu["upd_id_outbound_cidgroup"] ?? "") == $v[0]): ?>selected="selected"<?php endif ?>><?= $v[1] ?></option>
+                                <?php foreach ($list_cid_group as $id => $name): ?>
+                                    <option value="<?= $id ?>" <?php if (strval($bu["upd_id_outbound_cidgroup"] ?? "") === "$id"): ?>selected="selected"<?php endif ?>><?= $name ?></option>
                                 <?php endforeach ?>
                             </select>
                         </div>
@@ -345,9 +345,9 @@ if ($form_action === "list" && !$popup_select): ?>
                             <?php endif ?>
                             <select name="tariffgroup" id="tariffgroup" aria-label="<?= _("Choose a call plan") ?>" class="form-select form-select-sm">
                                 <option value=""><?= _("Choose a call plan") ?></option>
-                                <?php foreach ($list_tariffgroup as $v): ?>
-                                <option value="<?= $v["id"] ?>" <?php if ($_SESSION['def_ratecard_tariffgroup'] ?? 0 == $v["id"]): ?>selected="selected"<?php endif?>>
-                                    <?= $v["tariffgroupname"] ?>
+                                <?php foreach ($list_tariffgroup as $id => $name): ?>
+                                <option value="<?= $id ?>" <?php if (strval($_SESSION['def_ratecard_tariffgroup'] ?? 0) === "$id"): ?>selected="selected"<?php endif?>>
+                                    <?= $name ?>
                                 </option>
                                 <?php endforeach ?>
                             </select>
@@ -406,8 +406,8 @@ if ($popup_select === "1"): // only triggered from A2B_info_package.php ?>
                         <div class="col">
                             <select id="assign_id_trunk" class="form-select form-select-sm">
                                 <option value="-1"><?= _("Not Defined") ?></option>
-                                <?php foreach ($list_trunk as $v): ?>
-                                    <option value="<?= $v[0] ?>"><?= $v[1] ?> (<?= $v[2] ?>)</option>
+                                <?php foreach ($list_trunk as $id => $name): ?>
+                                    <option value="<?= $id ?>"><?= $name ?></option>
                                 <?php endforeach ?>
                             </select>
                         </div>
@@ -422,8 +422,8 @@ if ($popup_select === "1"): // only triggered from A2B_info_package.php ?>
                         </div>
                         <div class="col">
                             <select id="assign_idtariffplan" class="form-select form-select-sm">
-                                <?php foreach ($list_tariffname as $v): ?>
-                                    <option value="<?= $v[0] ?>"><?= $v[1] ?></option>
+                                <?php foreach ($list_tariffname as $id => $name): ?>
+                                    <option value="<?= $id ?>"><?= $name ?></option>
                                 <?php endforeach ?>
                             </select>
                         </div>

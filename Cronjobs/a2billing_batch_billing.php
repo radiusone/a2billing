@@ -207,11 +207,10 @@ for ($page = 0; $page < $nbpagemax; $page++) {
             if ($verbose_level >= 2)
                     echo "\n Add billing -> Id card : " . json_encode($values);
 
-            $result = $call_table->getRows($clause_call_billing);
+            $amount_calls = $call_table->getValue($clause_call_billing);
 
             // COMMON BEHAVIOUR FOR PREPAID AND POSTPAID -> GENERATE A RECEIPT FOR THE CALLS OF THE LAST PERIOD
-            if (is_array($result) && is_numeric($result[0][0])) {
-                $amount_calls = $result[0][0];
+            if (!is_null($amount_calls)) {
                 $amount_calls = ceil($amount_calls * 100) / 100;
                 /// create receipt
                 $title = gettext("SUMMARY OF CALLS");
@@ -233,7 +232,7 @@ for ($page = 0; $page < $nbpagemax; $page++) {
             }
 
             // GENERATE RECEIPT FOR CHARGE ALREADY PAID
-            $table_charge = new Table("cc_charge", "*");
+            $table_charge = new Table("cc_charge");
             $result = $table_charge->getRows($clause_charge + ["charged_status" => 1]);
             if ($result) {
                 $title = gettext("SUMMARY OF CHARGE");
@@ -259,7 +258,7 @@ for ($page = 0; $page < $nbpagemax; $page++) {
             $total =0;
             $total_vat =0;
             // GENERATE INVOICE FOR CHARGE NOT YET CHARGED
-            $table_charge = new Table("cc_charge", "*");
+            $table_charge = new Table("cc_charge");
             $result = $table_charge->getRows($clause_charge + ["charged_status" => 0, "invoiced_status" => 0]);
             $last_invoice = null;
             if ($result) {

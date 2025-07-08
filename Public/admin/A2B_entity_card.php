@@ -170,18 +170,13 @@ require_once __DIR__ . "/templates/main.php";
 
 <?php if ($form_action === "list" && !$popup_select) {
     // populate some lists for the batch update settings
-    $list_tariff = (new Table("cc_tariffgroup", ["id", "tariffgroupname"]))->getRows([], ["tariffgroupname"]);
-
-    $list_group = (new Table("cc_card_group", ["id", "name"]))->getRows([], ["name"]);
-
-    $list_agent = (new Table("cc_agent", ["id", "login"]))->getRows([], ["login"]);
-
-    $list_seria = (new Table("cc_card_seria", ["id", "name"]))->getRows([], ["name"]);
-
+    $list_tariff = (new Table("cc_tariffgroup", ["tariffgroupname", "id"]))->getColumn();
+    $list_group = (new Table("cc_card_group", ["name", "id"]))->getColumn();
+    $list_seria = (new Table("cc_card_seria", ["name", "id"]))->getColumn();
     $list_refill_type = getRefillType_List();
     $list_refill_type[-1] = _("NO REFILL");
-
-    $list_country = (new Table("cc_country", ["countrycode", "countryname"]))->getRows([], ["countryname"]);
+    ksort($list_refill_type);
+    $list_country = (new Table("cc_country", ["countryname", "countrycode"]))->getColumn();
 
 ?>
 
@@ -248,8 +243,8 @@ require_once __DIR__ . "/templates/main.php";
                         </div>
                         <div class="col">
                             <select name="upd_status" id="upd_status" class="form-select form-select-sm">
-                                <?php foreach ($cardstatus_list as $v): ?>
-                                <option value="<?= $v[1] ?>" <?php if (($update_fields["status"] ?? "") == $v[1]): ?>selected="selected"<?php endif ?>><?= $v[0] ?></option>
+                                <?php foreach ($cardstatus_list as $k => $v): ?>
+                                <option value="<?= $k ?>" <?php if (($update_fields["status"] ?? "") == $k): ?>selected="selected"<?php endif ?>><?= $v ?></option>
                                 <?php endforeach ?>
                             </select>
                         </div>
@@ -265,8 +260,8 @@ require_once __DIR__ . "/templates/main.php";
                         </div>
                         <div class="col">
                             <select name="upd_language" id="upd_language" class="form-select form-select-sm">
-                                <?php foreach ($language_list as $v): ?>
-                                    <option value="<?= $v[1] ?>" <?php if (($update_fields["language"] ?? "") == $v[1]): ?>selected="selected"<?php endif ?>><?= $v[0] ?></option>
+                                <?php foreach ($language_list as $k => $v): ?>
+                                    <option value="<?= $k ?>" <?php if (($update_fields["language"] ?? "") == $k): ?>selected="selected"<?php endif ?>><?= $v ?></option>
                                 <?php endforeach ?>
                             </select>
                         </div>
@@ -282,8 +277,8 @@ require_once __DIR__ . "/templates/main.php";
                         </div>
                         <div class="col">
                             <select name="upd_tariff" id="upd_tariff" class="form-select form-select-sm">
-                                <?php foreach ($list_tariff as $v): ?>
-                                    <option value="<?= $v[0] ?>" <?php if (($update_fields["tariff"] ?? "") == $v[0]): ?>selected="selected"<?php endif ?>><?= $v[1] ?></option>
+                                <?php foreach ($list_tariff as $k => $v): ?>
+                                    <option value="<?= $k ?>" <?php if (($update_fields["tariff"] ?? "") == $k): ?>selected="selected"<?php endif ?>><?= $v ?></option>
                                 <?php endforeach ?>
                             </select>
                         </div>
@@ -480,8 +475,8 @@ require_once __DIR__ . "/templates/main.php";
                         </div>
                         <div class="col">
                             <select name="upd_id_group" id="upd_id_group" class="form-select form-select-sm">
-                                <?php foreach ($list_group as $v): ?>
-                                    <option value="<?= $v[0] ?>" <?php if (($update_fields["id_group"] ?? "") == $v[0]): ?>selected="selected"<?php endif ?>><?= $v[1] ?></option>
+                                <?php foreach ($list_group as $k => $v): ?>
+                                    <option value="<?= $k ?>" <?php if (($update_fields["id_group"] ?? "") == $k): ?>selected="selected"<?php endif ?>><?= $v ?></option>
                                 <?php endforeach ?>
                             </select>
                         </div>
@@ -511,8 +506,8 @@ require_once __DIR__ . "/templates/main.php";
                         </div>
                         <div class="col">
                             <select name="upd_id_seria" id="upd_id_seria" class="form-select form-select-sm">
-                                <?php foreach ($list_seria as $v): ?>
-                                    <option value="<?= $v[0] ?>" <?php if (($update_fields["id_seria"] ?? "") === $v[0]): ?>selected="selected"<?php endif ?>><?= $v[1] ?></option>
+                                <?php foreach ($list_seria as $k => $v): ?>
+                                    <option value="<?= $k ?>" <?php if (($update_fields["id_seria"] ?? "") === $k): ?>selected="selected"<?php endif ?>><?= $v ?></option>
                                 <?php endforeach ?>
                             </select>
                         </div>
@@ -629,7 +624,7 @@ $HD_Form->create_form($form_action, $list);
 function toggleUpdateField(el) {
     // convert check[foo] into foo
     let elname = el.getAttribute("name").slice(6, -1);
-    document.querySelector(`[name='${elname}']`)?.closest(".row")?.querySelectorAll("[name]:not([name^='check'])").forEach(el => el.disabled = !el.checked);
+    document.querySelector(`[name='${elname}']`)?.closest(".row")?.querySelectorAll("[name]:not([name^='check'])").forEach(inp => inp.disabled = !el.checked);
 }
 document.querySelectorAll("#batchUpdateModal input[type='checkbox'][name^='check']").forEach(function (el) {
     toggleUpdateField(el);

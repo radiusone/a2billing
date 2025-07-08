@@ -145,8 +145,7 @@ $HD_Form->prepare_list_subselection($form_action = "list");
 $list = $HD_Form->perform_action($form_action);
 $_SESSION['search_ratecard'] = json_encode($HD_Form->list_query_conditions);
 
-$list_tariffname = (new Table("cc_tariffplan", "id, tariffname"))
-    ->getRows ([], ["tariffname"]);
+$list_tariffname = (new Table("cc_tariffplan", ["tariffname", "id"]))->getColumn();
 
 require_once __DIR__ . "/templates/main.php";
 $HD_Form->create_search_form();
@@ -184,7 +183,7 @@ $HD_Form->create_search_form();
         </label>
         <div class="col-4">
             <select name="ratecard_destination" class="form-select">
-                <?php foreach ($list_tariffname as $rc): ?><option value="<?= $rc["id"] ?>"><?= htmlspecialchars($rc["tariffname"]) ?></option><?php endforeach ?>
+                <?php foreach ($list_tariffname as $id => $name): ?><option value="<?= $id ?>"><?= htmlspecialchars($name) ?></option><?php endforeach ?>
             </select>
         </div>
     </div>

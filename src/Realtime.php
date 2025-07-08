@@ -85,7 +85,10 @@ class Realtime
         $instance_table = new Table($table_name, $cols);
         $list_friend = $instance_table->getRows();
         // todo: once all queries are associative this won't be needed
-        $list_friend = array_filter($list_friend, fn($k) => !is_numeric($k), ARRAY_FILTER_USE_KEY);
+        array_walk(
+            $list_friend,
+            fn ($f) => array_filter($f, fn($k) => !is_numeric($k), ARRAY_FILTER_USE_KEY)
+        );
 
         if ($list_friend) {
             if (file_exists($buddyfile) && is_writable($buddyfile)) {

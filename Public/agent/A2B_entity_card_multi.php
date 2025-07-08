@@ -153,10 +153,10 @@ $HD_Form->list_help_text = create_help(
 );
 $HD_Form->create_toppage($form_action);
 
-$list_tariff = (new Table("cc_tariffgroup", ["id", "tariffgroupname"], ["cc_agent_tariffgroup" => ["cc_agent_tariffgroup.id_tariffgroup", "cc_tariffgroup.id"]]))
-    ->getRows(["cc_agent_tariffgroup.id_agent" => Agent::id()], ["tariffgroupname"]);
-$list_group = (new Table("cc_card_group", ["id", "name"]))
-    ->getRows(["id_agent" => Agent::id()]);
+$list_tariff = (new Table("cc_tariffgroup", ["tariffgroupname", "id"], ["cc_agent_tariffgroup" => ["cc_agent_tariffgroup.id_tariffgroup", "cc_tariffgroup.id"]]))
+    ->getColumn(["cc_agent_tariffgroup.id_agent" => Agent::id()]);
+$list_group = (new Table("cc_card_group", ["name", "id"]))
+    ->getColumn(["id_agent" => Agent::id()]);
 
 // FORM FOR THE GENERATION
 ?>
@@ -199,8 +199,8 @@ $list_group = (new Table("cc_card_group", ["id", "name"]))
             <div class="col-8">
                 <select name="choose_tariff" id="choose_tariff" class="form-select <?= empty($errors["choose_tariff"]) ? "" : "is-invalid" ?>">
                     <option value=""><?= _("Choose a call plan") ?></option>
-                    <?php foreach ($list_tariff as $plan): ?>
-                        <option value="<?= $plan["id"] ?>" <?= ($plan["id"] === "$choose_tariff" ?? "") ? 'selected="selected"' : "" ?>><?= $plan["name"] ?></option>
+                    <?php foreach ($list_tariff as $id => $name): ?>
+                        <option value="<?= $id ?>" <?= ("$id" === "$choose_tariff" ?? "") ? 'selected="selected"' : "" ?>><?= $name ?></option>
                     <?php endforeach ?>
                 </select>
             </div>
@@ -331,8 +331,8 @@ $list_group = (new Table("cc_card_group", ["id", "name"]))
             <div class="col-8">
                 <select name="id_group" id="id_group" class="form-select <?= empty($errors["id_group"]) ? "" : "is-invalid" ?>">
                     <option value=""><?= _("Choose a group") ?></option>
-                    <?php foreach ($list_group as $group): ?>
-                        <option value="<?= $group["id"] ?>" <?= ($group["id"] === "$id_group" ?? "") ? 'selected="selected"' : "" ?>><?= $group["name"] ?></option>
+                    <?php foreach ($list_group as $id => $name): ?>
+                        <option value="<?= $id ?>" <?= ("$id" === "$id_group" ?? "") ? 'selected="selected"' : "" ?>><?= $name ?></option>
                     <?php endforeach ?>
                 </select>
             </div>
