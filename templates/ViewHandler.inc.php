@@ -16,7 +16,7 @@ namespace A2billing\Forms;
 <?php if (count($form->list_filters) > 0 || ($popup_select < 1 && count($form->list_top_buttons) > 0)): ?>
 <div class="row pb-3 align-items-end" id="list-filter-container">
     <?php if ($form->FG_LIST_VIEW_ROW_COUNT > 0 && count($form->list_filters) > 0): ?>
-    <form method="post" action="<?= $_SERVER["PHP_SELF"] ?>" class="col">
+    <form method="get" action="<?= $_SERVER["PHP_SELF"] ?>" class="col">
         <input type="hidden" name="form_action" value="list"/>
         <?php foreach ($query_params as $key => $val): ?>
         <input type="hidden" name="<?= $key ?>" value="<?= $val ?>"/>
@@ -27,7 +27,6 @@ namespace A2billing\Forms;
             <?php endif ?>
         <?php endforeach ?>
         <input type="hidden" name="current_page" value="0"/>
-        <?= $form->csrf_inputs() ?>
         <div class="row align-items-end">
             <?php foreach ($form->list_filters as $i => $filter): ?>
             <div class="col-auto">
