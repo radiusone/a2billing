@@ -28,6 +28,9 @@ ALTER TABLE cc_card_archive ADD COLUMN IF NOT EXISTS `max_concurrent` int(11) NO
 -- rely on a properly configured PHP installation
 DELETE FROM cc_config WHERE config_key = 'server_GMT';
 
+-- set a default value
+ALTER TABLE cc_ratecard MODIFY musiconhold VARCHAR(100) NOT NULL DEFAULT '';
+
 -- add proper timezones, make a few corrections
 ALTER TABLE cc_timezone DROP COLUMN gmttime;
 ALTER TABLE cc_timezone DROP COLUMN gmtoffset;

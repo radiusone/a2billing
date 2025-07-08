@@ -1239,7 +1239,7 @@ CREATE TABLE `cc_ratecard` (
     `starttime` smallint unsigned DEFAULT 0,
     `endtime` smallint unsigned DEFAULT 10079,
     `id_trunk` bigint DEFAULT NULL,
-    `musiconhold` varchar(100) NOT NULL,
+    `musiconhold` varchar(100) NOT NULL DEFAULT '',
     `id_outbound_cidgroup` bigint DEFAULT NULL,
     `rounding_calltime` int NOT NULL DEFAULT 0,
     `rounding_threshold` int NOT NULL DEFAULT 0,
