@@ -179,8 +179,8 @@ if (is_admin()) {
         ),
         ["id_agent" => Agent::id()]
     );
-    $HD_Form->AddEditSqlSelect(_("Rate Card"), "idtariffplan", new Table("cc_tariffplan", ["tariffname", "id"]));
 }
+$HD_Form->AddEditSqlSelect(_("Rate Card"), "idtariffplan", new Table("cc_tariffplan", ["tariffname", "id"]));
 
 $HD_Form->AddEditElement(
     _("Dialing Prefix"),
