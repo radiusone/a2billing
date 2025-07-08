@@ -138,10 +138,10 @@ if (($form_action == "addcredit") && ($addcredit > 0) && ($id > 0 || $cardnumber
         if ($list_check == Agent::id()) {
 
             //check if enought credit
-            $instance_table_agent = new Table("cc_agent", "credit, currency");
+            $instance_table_agent = new Table("cc_agent", ["credit", "currency"]);
             $FG_TABLE_CLAUSE_AGENT = ["id" => Agent::id()];
-            $agent_info = $instance_table_agent->getRows($FG_TABLE_CLAUSE_AGENT);
-            $credit_agent = $agent_info[0][0];
+            $agent_info = $instance_table_agent->getRow($FG_TABLE_CLAUSE_AGENT);
+            $credit_agent = $agent_info["credit"];
             if ($credit_agent >= $addcredit) {
                //Substract credit for agent
                 $param_update_agent = ["credit" => ["credit - ?", $addcredit]];
@@ -191,15 +191,15 @@ if (($form_action == "addcredit") && ($addcredit > 0) && ($id > 0 || $cardnumber
 
                 $currencies_list = get_currencies();
 
-                if (!isset($currencies_list[strtoupper($agent_info [0][1])]["value"]) || !is_numeric($currencies_list[strtoupper($agent_info [0][1])]["value"]))
+                if (!isset($currencies_list[strtoupper($agent_info["currency"])]["value"]) || !is_numeric($currencies_list[strtoupper($agent_info["currency"])]["value"]))
                     $mycur = 1;
                 else
-                    $mycur = $currencies_list[strtoupper($agent_info [0][1])]["value"];
+                    $mycur = $currencies_list[strtoupper($agent_info["currency"])]["value"];
 
-                $credit_cur = $agent_info[0][0] / $mycur;
+                $credit_cur = $agent_info["credit"] / $mycur;
                 $credit_cur = round($credit_cur,3);
 
-                $update_msg ='<span style="font-weight: bold; color: red">' . gettext("You don't have enough credit to do this refill. You have ") . $credit_cur . ' ' . $agent_info[0][1] . ' </span>';
+                $update_msg ='<span style="font-weight: bold; color: red">' . gettext("You don't have enough credit to do this refill. You have ") . $credit_cur . ' ' . $agent_info["currency"] . ' </span>';
             }
 
         } else {
