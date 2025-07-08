@@ -34,10 +34,17 @@ class ViewForm
         for ($i = 0; $i < count($form->list_filters); $i++) {
             $query_params["filterprefix$i"] = $processed["filterprefix$i"] ?? null;
         }
-        $query_params = array_filter($query_params, fn ($v) => !is_null($v) && $v !== "");
+        foreach ($processed as $k => $v) {
+            if ($k !== "csrf_token" && !array_key_exists($k, $query_params)) {
+                $query_params[$k] = $v;
+            }
+        }
         foreach($form->CV_FOLLOWPARAMETERS as $k => $v) {
             $query_params[$k] = $v;
         }
+        $query_params = array_unique(
+            array_filter($query_params, fn ($v) => !is_null($v) && $v !== "")
+        );
         $sort_params = $pagination_params = $query_params;
         $pagination_params["current_page"] = "%s";
 
