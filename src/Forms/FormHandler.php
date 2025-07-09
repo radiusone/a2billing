@@ -1484,7 +1484,7 @@ class FormHandler
             } elseif ($row["type"] !== "CAPTCHAIMAGE") {
                 if ($processed[$field] === "" && ($row["check_empty"] ?? "") === "NO-NULL") {
                     $values[$field] = null;
-                } else {
+                } elseif ($processed[$field] !== "") {
                     $values[$field] ??= $processed[$field];
                 }
             }
