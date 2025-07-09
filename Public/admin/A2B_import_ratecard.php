@@ -151,7 +151,7 @@ if ($task) {
         } else {
             $nb_imported = count($insert_data);
             Logger::insertLog(Admin::id(), 2, "RATES IMPORTED", $nb_imported . " New RATES Imported Successfully", '', $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI']);
-            (new Table("cc_prefix"))->addRows($prefix_values, "", $id, true);
+            (new Table("cc_prefix"))->addRows($prefix_values, "prefix", $id, true);
         }
     }
     $stop_time = microtime(true);

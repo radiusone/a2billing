@@ -344,12 +344,12 @@ class Table
      * including things like function calls, subqueries, etc.
      *
      * @param array<array<string,mixed>> $rows
-     * @param string $pk_column
+     * @param string $pk_column the primary key of the table
      * @param null $id the primary key of the last inserted row
-     * @param bool $ignore ignore errors during the insert
+     * @param bool $replace delete rows with the same primary key before inserting
      * @return int
      */
-    public function addRows(array $rows, string $pk_column = "id", &$id = null, bool $ignore = false): int
+    public function addRows(array $rows, string $pk_column = "id", &$id = null, bool $replace = false): int
     {
         $db = $this->getConnection();
         $values = $rows[0];
@@ -375,13 +375,18 @@ class Table
 
         $counter = 0;
         foreach ($rows as $values) {
+            if ($replace && $pk_column && array_key_exists($pk_column, $values)) {
+                $col = $this->quote_identifier($pk_column);
+                $query = "DELETE FROM $table WHERE $col = ?";
+                $db->Execute($query, [$values[$pk_column]]);
+            }
             $parameters = [];
             $placeholders = implode(",", array_map($value_callback, $values));
             $query = "INSERT INTO $table ($fields) VALUES ($placeholders)";
             class_exists(Console::class) && Console::logQuery($query);
             $result = $db->Execute($query, $parameters);
             class_exists(Console::class) && Console::logQuery($query);
-            if ($result === false && !$ignore) {
+            if ($result === false) {
                 $id = $db->Insert_ID($this->table, $pk_column);
                 return $counter;
             }
