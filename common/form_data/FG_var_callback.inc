@@ -300,4 +300,4 @@ $HD_Form->AddEditElement(
 // Set the filter variables
 $HD_Form->AddListFilter("uniqueid", _("Unique ID"));
 
-$HD_Form->FG_INTRO_TEXT_ADITION = '';
+$HD_Form->add_message_intro = "";

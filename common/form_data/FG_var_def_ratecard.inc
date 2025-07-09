@@ -608,4 +608,4 @@ if (ADVANCED_MODE) {
 
 $HD_Form->FG_SPLITABLE_FIELDS[] = 'dialprefix';
 
-$HD_Form->FG_INTRO_TEXT_ADITION = $HD_Form->FG_INTRO_TEXT_EDITION = sprintf(_("Rates must be entered in the base currency (%s)"), (BASE_CURRENCY));
+$HD_Form->add_message_intro = $HD_Form->edit_message_intro = sprintf(_("Rates must be entered in the base currency (%s)"), (BASE_CURRENCY));

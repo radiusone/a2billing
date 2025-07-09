@@ -182,6 +182,6 @@ $HD_Form->AddEditTextarea(
     array_merge(["rows" => 5], $readonly)
 );
 
-$HD_Form->FG_INTRO_TEXT_EDITION = "";
+$HD_Form->edit_message_intro = "";
 $HD_Form->FG_LOCATION_AFTER_EDIT = "?id=";
 $HD_Form->FG_LOCATION_AFTER_ADD = "?id=";

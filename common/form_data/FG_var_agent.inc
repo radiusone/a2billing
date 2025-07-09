@@ -355,6 +355,6 @@ if ($popup_select) {
         );
 
         $HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = [FormBO::class, "creation_agent_refill"];
-        $HD_Form->FG_INTRO_TEXT_ADITION = '';
+        $HD_Form->add_message_intro = "";
     }
 }

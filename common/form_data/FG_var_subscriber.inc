@@ -117,4 +117,4 @@ $HD_Form->AddEditTextarea(
     _("Enter the name of the product wich is subscribed")
 );
 
-$HD_Form->FG_INTRO_TEXT_ADITION = _("Apply subscription to account");
+$HD_Form->add_message_intro = _("Apply subscription to account");

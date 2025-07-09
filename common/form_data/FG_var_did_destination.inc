@@ -186,7 +186,7 @@ $HD_Form->AddEditRadio(
 // Set the filter variables
 $HD_Form->AddListFilter("cc_did.did", _("DID"));
 
-$HD_Form->FG_INTRO_TEXT_ADITION = "";
+$HD_Form->add_message_intro = "";
 
 $HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = [FormBO::class, "did_destination_add"];
 $HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_DELETE = [FormBO::class, "did_destination_del"];

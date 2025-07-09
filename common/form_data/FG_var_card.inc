@@ -933,7 +933,7 @@ if ($popup_select) {
         true
     );
 
-    $HD_Form->FG_INTRO_TEXT_ADITION = "";
+    $HD_Form->add_message_intro = "";
     $HD_Form->FG_ADDITIONAL_FUNCTION_BEFORE_EDITION = [FormBO::class, "change_card_lock"];
 
     if (is_admin()) {

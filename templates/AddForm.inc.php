@@ -202,10 +202,11 @@ use DateTime;
 <?php endforeach ?>
     <div class="row my-4 justify-content-between">
         <div class="col-auto">
-            <?= $form->FG_ADD_PAGE_BOTTOM_TEXT ?>
+            <?= $form->add_message_bottom ?>
         </div>
         <div class="col-auto">
-            <button type="submit" class="btn btn-primary"><?= $form->FG_ADD_PAGE_SAVE_BUTTON_TEXT ?></button>
+            <a class="btn btn-secondary" href="?form_action=list"><?= $form->cancel_button_text ?></a>
+            <button type="submit" class="btn btn-primary"><?= $form->save_button_text ?></button>
         </div>
     </div>
 </form>

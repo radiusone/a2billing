@@ -157,5 +157,5 @@ if (!isset($form_action) && ($form_action!=='ask-edit')) {
     $HD_Form->FG_EDIT_QUERY_HIDDEN_INPUTS["validated"] = $validated;
 }
 
-$HD_Form -> FG_INTRO_TEXT_EDITION= '';
-$HD_Form -> FG_INTRO_TEXT_ADITION = '';
+$HD_Form -> edit_message_intro= "";
+$HD_Form -> add_message_intro = "";

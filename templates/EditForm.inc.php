@@ -186,7 +186,7 @@ use DateTime;
                         class="btn btn-sm btn-primary has-many-delete"
                         data-index="<?= $i ?>"
                         data-value="<?= $entry[0] ?>"
-                    ><?= _("Delete") ?></button>
+                    ><?= $form->delete_button_text ?></button>
                 </li>
             <?php endforeach ?>
             <?php if (!empty($row["select"])): ?>
@@ -220,7 +220,7 @@ use DateTime;
                             class="btn btn-sm btn-primary has-many-add"
                             data-index="<?= $i ?>"
                             data-input-id="<?= $row["table"]->table ?>_<?= $row["insert"] ?>"
-                    ><?= gettext("Add") ?> <?= $row["label"] ?></button>
+                    ><?= $form->add_button_text ?> <?= $row["label"] ?></button>
                 </li>
                 <?php endif ?>
             <?php else: ?>
@@ -238,7 +238,7 @@ use DateTime;
                         class="btn btn-sm btn-primary has-many-add"
                         data-index="<?= $i ?>"
                         data-input-id="<?= $row["table"]->table ?>_<?= $row["insert"] ?>"
-                    ><?= gettext("Add") ?> <?= $row["label"] ?></button>
+                    ><?= $form->add_button_text ?> <?= $row["label"] ?></button>
                 </li>
             <?php endif ?>
             </ul>
@@ -260,10 +260,11 @@ use DateTime;
 
     <div class="row my-4 justify-content-between">
         <div class="col-auto">
-            <?= $form->FG_EDIT_PAGE_BOTTOM_TEXT ?>
+            <?= $form->edit_message_bottom ?>
         </div>
         <div class="col-auto">
-            <button type="submit" class="btn btn-primary"><?= _("Confirm Data") ?></button>
+            <a class="btn btn-secondary" href="?form_action=list"><?= $form->cancel_button_text ?></a>
+            <button type="submit" class="btn btn-primary"><?= $form->save_button_text ?></button>
         </div>
     </div>
 </form>

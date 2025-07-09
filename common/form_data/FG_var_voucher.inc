@@ -144,5 +144,5 @@ $HD_Form->AddEditElement(
     _("Insert the expiration date")
 );
 
-$HD_Form->FG_INTRO_TEXT_EDITION = _("Modify the properties of the selected voucher.");
-$HD_Form->FG_INTRO_TEXT_ADITION = "";
+$HD_Form->edit_message_intro = _("Modify the properties of the selected voucher.");
+$HD_Form->add_message_intro = "";

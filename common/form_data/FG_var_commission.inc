@@ -153,4 +153,4 @@ $HD_Form->AddEditSelect(
 );
 
 $HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = [FormBO::class, "processing_commission_add"];
-$HD_Form->FG_INTRO_TEXT_ADITION = "";
+$HD_Form->add_message_intro = "";

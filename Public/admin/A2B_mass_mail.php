@@ -102,7 +102,7 @@ $HD_Form->AddSearchSelectInput(gettext("SELECT CURRENCY"), "currency", $currenci
 $HD_Form->prepare_list_subselection('list');
 
 $limit_massmail = 2000;
-$HD_Form->FG_INTRO_TEXT_EDITION = sprintf(
+$HD_Form->edit_message_intro = sprintf(
     _("The mass mail tool is limited to %d mails. You can use the search module to send on different group of customer and overpass this limit."),
     $limit_massmail
 );

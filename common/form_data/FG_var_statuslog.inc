@@ -57,7 +57,7 @@ $HD_Form->AddListMapping(_("Status"), "cc_status_log.status", $cardstatus_list);
 $HD_Form->AddListValue(_("Date"), "updated_date");
 
 $HD_Form->CV_NO_FIELDS  = _("THERE IS NO STATUS LOG AVAILABLE!");
-$HD_Form->FG_INTRO_TEXT_EDITION = "";
+$HD_Form->edit_message_intro = "";
 $HD_Form->FG_ENABLE_EDIT_BUTTON = false;
 $HD_Form->FG_ENABLE_DELETE_BUTTON = false;
 $HD_Form->FG_ENABLE_ADD_BUTTON = false;

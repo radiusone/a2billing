@@ -123,4 +123,4 @@ $HD_Form->AddEditElement(
     _("Insert the email to send the alarm")
 );
 
-$HD_Form->FG_INTRO_TEXT_ADITION = _("Add an alarm below");
+$HD_Form->add_message_intro = _("Add an alarm below");

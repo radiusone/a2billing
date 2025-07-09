@@ -131,4 +131,4 @@ $HD_Form_c->AddEditTextarea(
 
 $HD_Form_c->AddListFilter("username", _("Account number"));
 
-$HD_Form_c->FG_INTRO_TEXT_ADITION = "";
+$HD_Form_c->add_message_intro = "";

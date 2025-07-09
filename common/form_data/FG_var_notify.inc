@@ -87,7 +87,7 @@ $HD_Form->AddEditElement(
     "NO"
 );
 
-$HD_Form->FG_INTRO_TEXT_ADITION = "";
-$HD_Form->FG_TEXT_ADITION_CONFIRMATION = _("Your record has been updated.");
+$HD_Form->add_message_intro = "";
+$HD_Form->add_message_result = _("Your record has been updated.");
 
 $HD_Form->FG_LOCATION_AFTER_EDIT = "A2B_notification.php?form_action=ask-edit&id=$_SESSION[card_id]&message=success";

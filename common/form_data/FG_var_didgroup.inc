@@ -72,4 +72,4 @@ $HD_Form->AddEditElement(
     _("Insert the DID group name ")
 );
 
-$HD_Form->FG_INTRO_TEXT_ADITION = "";
+$HD_Form->add_message_intro = "";

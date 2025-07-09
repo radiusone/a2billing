@@ -69,4 +69,4 @@ $HD_Form->AddEditTextarea(
     _("Insert the description")
 );
 
-$HD_Form->FG_INTRO_TEXT_ADITION = "";
+$HD_Form->add_message_intro = "";

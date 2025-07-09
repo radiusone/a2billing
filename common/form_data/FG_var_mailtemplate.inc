@@ -212,9 +212,9 @@ $HD_Form->AddEditTextarea(
     $source["messagetext"] ?? ""
 );
 
-$HD_Form->FG_INTRO_TEXT_ADITION = _("Add a new mail template");
+$HD_Form->add_message_intro = _("Add a new mail template");
 
 if ($source) {
-    $HD_Form->FG_INTRO_TEXT_ADITION = _("Copy an existing mail template");
-    $HD_Form->FG_ADD_PAGE_SAVE_BUTTON_TEXT = _("Save Copy");
+    $HD_Form->add_message_intro = _("Copy an existing mail template");
+    $HD_Form->save_button_text = _("Save Copy");
 }

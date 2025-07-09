@@ -139,7 +139,7 @@ $HD_Form->AddEditTextarea(
 
 $HD_Form->AddListFilter("username", _("Account number"));
 
-$HD_Form->FG_INTRO_TEXT_ADITION = "";
+$HD_Form->add_message_intro = "";
 
 $HD_Form->FG_LOCATION_AFTER_ADD = "A2B_receipt_edit.php?id=";
 $HD_Form->FG_LOCATION_AFTER_EDIT = "A2B_entity_receipt.php?form_action=list";

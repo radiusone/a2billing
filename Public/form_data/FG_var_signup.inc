@@ -341,10 +341,10 @@ if ($form_action === "add") {
     }
 
     $HD_Form->REALTIME_SIP_IAX_INFO = ["username" => $cardnumber, "secret" => $pass];
-    $HD_Form->FG_TEXT_ADITION_CONFIRMATION = _("Thanks for registering with us.<br>A email with your information has been sent to your account ") . $_POST["email"] . "<br><br><b>" . gettext("Your card number is ") . $cardnumber . "</b><br><b>" . gettext("Your password is ") . $pass . "</b>";
+    $HD_Form->add_message_result = _("Thanks for registering with us.<br>A email with your information has been sent to your account ") . $_POST["email"] . "<br><br><b>" . gettext("Your card number is ") . $cardnumber . "</b><br><b>" . gettext("Your password is ") . $pass . "</b>";
     $HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = [FormBO::class, "processing_card_signup"];
 }
 
-$HD_Form->FG_INTRO_TEXT_ADITION = "";
-$HD_Form->FG_ADD_PAGE_BOTTOM_TEXT = _("Click 'SIGNUP' to continue");
-$HD_Form->FG_ADD_PAGE_SAVE_BUTTON_TEXT = _("SIGNUP");
+$HD_Form->add_message_intro = "";
+$HD_Form->add_message_bottom = _("Click 'SIGNUP' to continue");
+$HD_Form->save_button_text = _("SIGNUP");

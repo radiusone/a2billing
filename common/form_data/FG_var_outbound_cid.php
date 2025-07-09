@@ -85,5 +85,5 @@ $HD_Form->AddEditRadio(
     _("Choose if you want to activate this CallerID")
 );
 
-$HD_Form -> FG_INTRO_TEXT_EDITION = "";
-$HD_Form -> FG_INTRO_TEXT_ADITION = "";
+$HD_Form -> edit_message_intro = "";
+$HD_Form -> add_message_intro = "";

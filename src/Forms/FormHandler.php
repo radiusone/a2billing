@@ -216,32 +216,47 @@ class FormHandler
     /** @var string Where to redirect the user after editing a record; expected to end with = and will have ID appended */
     public string $FG_LOCATION_AFTER_EDIT;
 
-    /** @var string Message text for the edit page */
-    public string $FG_INTRO_TEXT_EDITION = "You can modify, through the following form, the different properties of your #FG_INSTANCE_NAME#<br>";
+    /** @var string Header text for the add page */
+    public string $add_message_intro;
 
-    /** @var string Message text for the delete page */
-    public string $FG_INTRO_TEXT_ASK_DELETION = "If you really want to remove this #FG_INSTANCE_NAME#, click on the delete button.";
+    /** @var string Header text for the edit page */
+    public string $edit_message_intro;
 
-    /** @var string Result text for the delete page */
-    public string $FG_INTRO_TEXT_DELETION = "One #FG_INSTANCE_NAME# has been deleted!";
-
-    /** @var string Message text for the add page */
-    public string $FG_INTRO_TEXT_ADITION = "Add a \"#FG_INSTANCE_NAME#\" now.";
+    /** @var string Header text for the delete page */
+    public string $delete_message_intro;
 
     /** @var string Result text for the add page */
-    public string $FG_TEXT_ADITION_CONFIRMATION = "Your new #FG_INSTANCE_NAME# has been inserted.";
+    public string $add_message_result;
+
+    /** @var string Result text for the delete page */
+    public string $delete_message_result = "";
 
     /** @var string Error text for the add page */
-    public string $FG_TEXT_ADITION_ERROR = 'Your new #FG_INSTANCE_NAME# has not been inserted.';
+    public string $add_message_error;
+
+    /** @var string Error text for the delete page */
+    public string $delete_message_error;
+
+    /** @var string Text telling you to click the button on the add page */
+    public string $add_message_bottom;
 
     /** @var string Text telling you to click the button */
-    public string $FG_ADD_PAGE_BOTTOM_TEXT = "Click 'Confirm Data' to continue";
-
-    /** @var string Label for the "save" button when creating a new item */
-    public string $FG_ADD_PAGE_SAVE_BUTTON_TEXT = 'Confirm Data';
+    public string $edit_message_bottom;
 
     /** @var string Text telling you to click the button */
-    public string $FG_EDIT_PAGE_BOTTOM_TEXT = "Click 'Confirm Data' to continue";
+    public string $delete_message_bottom;
+
+    /** @var string Label for the "add" button */
+    public string $add_button_text;
+
+    /** @var string Label for the "save" button */
+    public string $save_button_text;
+
+    /** @var string Label for the "delete" button */
+    public string $delete_button_text;
+
+    /** @var string Label for the "cancel" button */
+    public string $cancel_button_text;
 
     /** @var callable|null Static method of FormBO class executed after creating */
     public $FG_ADDITIONAL_FUNCTION_AFTER_ADD = null;
@@ -329,22 +344,28 @@ class FormHandler
         $this->_vars = array_merge($_GET, $_POST);
 
         //initializing variables with _
-        $this->CV_NO_FIELDS = sprintf(_("No %s has been created"), $this->FG_INSTANCE_NAME);
-        $this->CV_TITLE_TEXT = sprintf(_("%s list"), $this->FG_INSTANCE_NAME);
-        $this->FG_INTRO_TEXT_EDITION = sprintf(_("Use this form to modify your %s."), $this->FG_INSTANCE_NAME);
-        $this->FG_INTRO_TEXT_ASK_DELETION = sprintf(_("If you really want to remove this %s, click the delete button"), $this->FG_INSTANCE_NAME);
-        $this->FG_INTRO_TEXT_DELETION = sprintf(_("One %s has been deleted"), $this->FG_INSTANCE_NAME);
-        $this->FG_INTRO_TEXT_ADITION = sprintf(_("Add a %s now"), $this->FG_INSTANCE_NAME);
-        $this->FG_TEXT_ADITION_CONFIRMATION = sprintf(_("Your new %s has been inserted"), $this->FG_INSTANCE_NAME);
-        $this->FG_TEXT_ADITION_ERROR = sprintf(_("Your new %s hasn't been inserted"), $this->FG_INSTANCE_NAME);
+        $inst = strtolower($this->FG_INSTANCE_NAME);
+        $this->CV_NO_FIELDS = sprintf(_("No %s have been created"), $inst);
+        $this->CV_TITLE_TEXT = sprintf(_("%s list"), $inst);
+        $this->edit_message_intro = sprintf(_("Editing %s"), $inst);
+        $this->delete_message_result = sprintf(_("Your %s has been deleted."), $inst);
+        $this->delete_message_intro = sprintf(_("If you really want to remove this %s, click the delete button"), $inst);
+        $this->add_message_intro = sprintf(_("Creating new %s"), $inst);
+        $this->add_message_result = sprintf(_("Your new %s has been created."), $inst);
+        $this->add_message_error = sprintf(_("There was an error creating your %s."), $inst);
+        $this->delete_message_error = sprintf(_("There was an error deleting your %s."), $inst);
 
         $this->search_form_title = _("Define the search criteria");
-        $this->FG_ADD_PAGE_BOTTOM_TEXT = _("Click 'Confirm Data' to continue");
-        $this->FG_EDIT_PAGE_BOTTOM_TEXT = _("Click 'Confirm Data' to continue");
-        $this->FG_FK_DELETE_MESSAGE = _("Are you sure you want to delete all records connected to this instance?");
+        $this->add_message_bottom = _("Click 'Confirm Data' to continue");
+        $this->edit_message_bottom = _("Click 'Confirm Data' to continue");
+        $this->delete_message_bottom = _("Click 'Confirm Data' to continue");
 
-        /* only modified once in admin/FG_var_signup.inc */
-        $this->FG_ADD_PAGE_SAVE_BUTTON_TEXT = _('Confirm Data');
+        $this->save_button_text = _("Save");
+        $this->add_button_text = _("Add");
+        $this->delete_button_text = _("Delete");
+        $this->cancel_button_text = _("Cancel");
+
+        $this->FG_FK_DELETE_MESSAGE = _("Are you sure you want to delete all records connected to this instance?");
     }
 
     /*
@@ -1522,7 +1543,7 @@ class FormHandler
             }
             $this->gotoLocation($this->FG_LOCATION_AFTER_ADD ?? "?form_action=ask-edit&id=", $this->QUERY_RESULT);
         } else {
-            $this->FG_TEXT_ADITION_ERROR .= (" " . _("There was a database error."));
+            $this->add_message_error .= (" " . _("There was a database error."));
         }
     }
 
@@ -1649,7 +1670,7 @@ class FormHandler
 
             $this->gotoLocation($this->FG_LOCATION_AFTER_DELETE ?? "?form_action=list");
         } else {
-            $this->FG_TEXT_DELETION_ERROR .= (" " . _("There was a database error."));
+            $this->delete_message_error .= (" " . _("There was a database error."));
         }
     }
 
@@ -1777,21 +1798,22 @@ class FormHandler
             if ($form_action === "ask-edit") {
                 $help = $this->edit_help_text ?: $this->help_text;
             }
-            $msg = $this->FG_INTRO_TEXT_EDITION;
+            $msg = $this->edit_message_intro;
         } elseif ($form_action === "ask-add") {
-            $msg = $this->FG_INTRO_TEXT_ADITION;
+            $msg = $this->add_message_intro;
             $help = $this->add_help_text ?: $this->help_text;
         } elseif ($form_action === "ask-delete") {
+            $msg = $this->delete_message_intro;
             $help = $this->del_help_text ?: $this->help_text;
         } elseif ($form_action === "list") {
             $help = $this->list_help_text ?: $this->help_text;
         }
 
         if ($help) {
-            $help = "<div class='row pb-3 align-items-center'><div class='col'>$help</div></div>";
+            $help = "<div class='row pb-3 align-items-center' id='create_toppage_help'><div class='col'>$help</div></div>";
         }
         if ($msg) {
-            $msg = "<div class='row pb-3 align-items-center'><div class='col'>$msg</div></div>";
+            $msg = "<div class='row pb-3 align-items-center' id='create_toppage'><div class='col'>$msg</div></div>";
         }
 
         echo $help . $msg;
@@ -1805,16 +1827,16 @@ class FormHandler
         $class = $this->QUERY_RESULT ? "success" : "danger";
         if ($form_action === "delete") {
             $msg = $this->QUERY_RESULT
-                ? $this->FG_INTRO_TEXT_DELETION
-                : $this->FG_TEXT_DELETION_ERROR;
+                ? $this->delete_message_result
+                : $this->delete_message_error;
         } elseif ($form_action === "add") {
             $msg = $this->QUERY_RESULT
-                ? $this->FG_TEXT_ADITION_CONFIRMATION
-                : $this->FG_TEXT_ADITION_ERROR;
+                ? $this->add_message_result
+                : $this->add_message_error;
         } else {
             return;
         }
-        $html = "<div class='row pb-3'><div class='col'><p class='alert alert-$class'>$msg</p></div></div>";
+        $html = "<div class='row pb-3' id='create_actionfinish'><div class='col'><p class='alert alert-$class'>$msg</p></div></div>";
         echo $html;
     }
 
@@ -1826,7 +1848,7 @@ class FormHandler
     public function create_custom($form_action)
     {
         $msg = "$form_action " . _("Done");
-        $html = "<div class='row pb-3 align-items-center'><div class='col'><strong>$msg</strong></div></div>";
+        $html = "<div class='row pb-3 align-items-center' id='create_custom'><div class='col'><strong>$msg</strong></div></div>";
         echo $html;
     }
 

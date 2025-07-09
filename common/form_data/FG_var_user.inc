@@ -229,7 +229,7 @@ $HD_Form->AddEditElement(
 $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["groupID"] = $groupID;
 $HD_Form->FG_EDIT_QUERY_HIDDEN_INPUTS["groupID"] = $groupID;
 
-$HD_Form->FG_INTRO_TEXT_ADITION = "";
+$HD_Form->add_message_intro = "";
 
 $HD_Form->FG_LOCATION_AFTER_ADD = "?groupID=$groupID&form_action=ask-edit&id=";
 $HD_Form->FG_LOCATION_AFTER_EDIT = "?groupID=$groupID&form_action=list";

@@ -71,8 +71,8 @@ $HD_Form->AddListActionButton(
     "search"
 );
 
-$HD_Form->FG_INTRO_TEXT_EDITION = "";
-$HD_Form->FG_INTRO_TEXT_ADITION = "";
+$HD_Form->edit_message_intro = "";
+$HD_Form->add_message_intro = "";
 
 $HD_Form->AddEditElement(_("Title"), "group_title");
 $HD_Form->AddEditElement(_("Description"), "group_description");

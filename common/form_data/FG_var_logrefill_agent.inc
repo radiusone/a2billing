@@ -142,7 +142,7 @@ if (Admin::allowed(Admin::ACX_MODIFY_REFILLS)) {
         _("Define type for payment and refill,if created.")
     );
 
-	$HD_Form->FG_INTRO_TEXT_ADITION = "";
+	$HD_Form->add_message_intro = "";
 	$HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = [FormBO::class, "add_agent_refill"];
 }
 

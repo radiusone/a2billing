@@ -97,4 +97,4 @@ $HD_Form->AddEditElement(
     _("Insert the amount of free time to call (seconds)")
 );
 
-$HD_Form -> FG_INTRO_TEXT_ADITION = "";
+$HD_Form -> add_message_intro = "";

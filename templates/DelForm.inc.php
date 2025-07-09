@@ -46,12 +46,6 @@ namespace A2billing\Forms;
 
 <?php else: ?>
 
-    <div class="row pb-3">
-        <div class="col">
-            <strong><?= $form->FG_INTRO_TEXT_ASK_DELETION ?></strong>
-        </div>
-    </div>
-
     <?php if ($form->FG_FK_RECORDS_COUNT > 0 && $form->FG_FK_DELETE_ALLOWED && $form->FG_FK_DELETE_CONFIRM): ?>
     <input type="hidden" name="fk_count" value="<?= $form->FG_FK_RECORDS_COUNT ?>">
 	<input type="hidden" name="form_action" value="ask-del-confirm">
@@ -150,10 +144,13 @@ namespace A2billing\Forms;
     </div>
     <?php endforeach ?>
 
-    <div class="row my-4 justify-content-end">
+    <div class="row my-4 justify-content-between">
         <div class="col-auto">
-            <a class="btn btn-secondary" href="?form_action=list"><?= _("Cancel") ?></a>
-            <button type="submit" class="btn btn-danger"><?= _("Delete") ?></button>
+            <?= $form->delete_message_bottom ?>
+        </div>
+        <div class="col-auto">
+            <a class="btn btn-secondary" href="?form_action=list"><?= $form->cancel_button_text ?></a>
+            <button type="submit" class="btn btn-danger"><?= $form->delete_button_text ?></button>
         </div>
     </div>
 

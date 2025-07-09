@@ -123,4 +123,4 @@ if (is_customer()) {
     $HD_Form->AddListFilter("username", _("Account Number"));
 }
 
-$HD_Form->FG_INTRO_TEXT_ADITION = '';
+$HD_Form->add_message_intro = "";

@@ -32,7 +32,7 @@ class FormBO
         $id_cc_card = (new Table("cc_did_use", "id_cc_card"))
             ->getValue(["id_did" => $did_id, "releasedate" => null, "activated" => 1]);
         if (!empty($row)) {
-            $form->FG_INTRO_TEXT_ASK_DELETION = sprintf(
+            $form->delete_message_intro = sprintf(
                 _("This DID is in use by customer %s, If you really want remove this DID, click on the delete button."),
                 Customer::getName($id_cc_card, false)
             );
@@ -145,7 +145,7 @@ class FormBO
                     $result["email"]
                 );
             } catch (Exception $e) {
-                $form->FG_TEXT_ADITION_ERROR = $e->getMessage();
+                $form->add_message_error = $e->getMessage();
             }
         }
 
@@ -169,7 +169,7 @@ class FormBO
                     $result["email"]
                 );
             } catch (Exception $e) {
-                $form->FG_TEXT_ADITION_ERROR = $e->getMessage();
+                $form->add_message_error = $e->getMessage();
             }
         }
     }

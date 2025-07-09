@@ -162,6 +162,6 @@ if (Admin::allowed(Admin::ACX_MODIFY_REFILLS)) {
         );
 	}
 
-	$HD_Form->FG_INTRO_TEXT_ADITION = "";
+	$HD_Form->add_message_intro = "";
 	$HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = [FormBO::class, "processing_refill_add"];
 }

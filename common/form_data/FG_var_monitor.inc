@@ -125,4 +125,4 @@ $HD_Form->AddEditRadio(
     "0"
 );
 
-$HD_Form->FG_INTRO_TEXT_ADITION = _("Add the Monitoring below");
+$HD_Form->add_message_intro = _("Add the Monitoring below");

@@ -91,12 +91,12 @@ if ($form_action === "add" && !empty($path)) {
         exec($run_gzip,$output,$error_zip);
     }
 
-    $HD_Form->FG_TEXT_ADITION_CONFIRMATION = "";
+    $HD_Form->add_message_result = "";
     if ($error !== 0) {
-        $HD_Form->FG_TEXT_ADITION_CONFIRMATION .= _("An error occur when the system tried to backup of the database.") . "<br>" . _("Please check yours system settings for the backup section ");
+        $HD_Form->add_message_result .= _("An error occur when the system tried to backup of the database.") . "<br>" . _("Please check yours system settings for the backup section ");
     }
     if ($error_zip !== 0) {
-        $HD_Form->FG_TEXT_ADITION_CONFIRMATION .= _("An error occur when the system tried to compress the backup realized.") . "<br>" . _("Please check yours system settings for the backup section ");
+        $HD_Form->add_message_result .= _("An error occur when the system tried to compress the backup realized.") . "<br>" . _("Please check yours system settings for the backup section ");
     }
 } elseif ($form_action === "delete") {
     $path = (new Table("cc_backup", ["path"]))->getValue(["id" => $id]);

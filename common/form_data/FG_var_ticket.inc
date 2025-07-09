@@ -254,5 +254,5 @@ if (is_admin()) {
 } else {
     $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["viewed_cust"] = 0;
 }
-$HD_Form->FG_INTRO_TEXT_EDITION = "";
-$HD_Form->FG_INTRO_TEXT_ADITION = "";
+$HD_Form->edit_message_intro = "";
+$HD_Form->add_message_intro = "";
