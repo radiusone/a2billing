@@ -1479,6 +1479,7 @@ class FormHandler
             $values[$name] = $value;
         }
 
+        $id = null;
         if (($key = array_search("%check_array%", $values)) !== false) {
             foreach ($arr_value_to_import[$key] as $array_value) {
                 $values[$key] = $array_value;
@@ -1503,7 +1504,7 @@ class FormHandler
                 ($this->FG_ADDITIONAL_FUNCTION_AFTER_ADD)($id);
             }
         }
-        $this->QUERY_RESULT = $id ?? false;
+        $this->QUERY_RESULT = $id ?: false;
 
         if ($this->QUERY_RESULT) {
             if ($this->FG_ENABLE_LOG) {
@@ -1520,6 +1521,8 @@ class FormHandler
                 );
             }
             $this->gotoLocation($this->FG_LOCATION_AFTER_ADD ?? "?form_action=ask-edit&id=", $this->QUERY_RESULT);
+        } else {
+            $this->FG_TEXT_ADITION_ERROR .= (" " . _("There was a database error."));
         }
     }
 
@@ -1646,7 +1649,7 @@ class FormHandler
 
             $this->gotoLocation($this->FG_LOCATION_AFTER_DELETE ?? "?form_action=list");
         } else {
-            echo _("error deletion");
+            $this->FG_TEXT_DELETION_ERROR .= (" " . _("There was a database error."));
         }
     }
 
@@ -1795,22 +1798,23 @@ class FormHandler
     }
 
     /**
-     * CREATE_ACTIONFINISH : Function to display result
-     * I think the only time this is used is if there is a database error when adding from A2B_entity_friend.php ???
-     * @public
+     * Display a result message after add or delete is complete
      */
-    public function create_actionfinish($form_action)
+    public function create_actionfinish($form_action): void
     {
+        $class = $this->QUERY_RESULT ? "success" : "danger";
         if ($form_action === "delete") {
-            $msg1 = "$this->FG_INSTANCE_NAME " . _("Deletion");
-            $msg2 = $this->FG_INTRO_TEXT_DELETION;
+            $msg = $this->QUERY_RESULT
+                ? $this->FG_INTRO_TEXT_DELETION
+                : $this->FG_TEXT_DELETION_ERROR;
         } elseif ($form_action === "add") {
-            $msg1 = _("Insert New ") . $this->FG_INSTANCE_NAME;
-            $msg2 = empty($this->QUERY_RESULT) ? "<span class='danger'>$this->FG_TEXT_ADITION_ERROR</span>" : $this->FG_INTRO_TEXT_ADITION;
+            $msg = $this->QUERY_RESULT
+                ? $this->FG_TEXT_ADITION_CONFIRMATION
+                : $this->FG_TEXT_ADITION_ERROR;
         } else {
             return;
         }
-        $html = "<div class='row pb-3'><div class='col'><p>$msg1</p><p>$msg2</p></div></div>";
+        $html = "<div class='row pb-3'><div class='col'><p class='alert alert-$class'>$msg</p></div></div>";
         echo $html;
     }
 
