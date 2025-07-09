@@ -1821,6 +1821,7 @@ class FormHandler
 
     /**
      * Display a result message after add or delete is complete
+     * I think the only time this is used is if there is a database error when adding from A2B_entity_friend.php ???
      */
     public function create_actionfinish($form_action): void
     {
