@@ -259,28 +259,28 @@ if ($popup_select) {
     $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 10;
     $HD_Form->search_form_enabled = true;
 
-    $HD_Form->search_form_title = _('Define specific criteria to search for cards created.');
+    $HD_Form->search_form_title = _("Define specific criteria to search for cards created.");
     $HD_Form->AddSearchDateInput(_("Creation date"), "creationdate");
     $HD_Form->AddSearchDateInput(_("First use date"), "firstusedate");
-    $HD_Form->AddSearchTextInput(_("ACCOUNT NUMBER"), 'username');
-    $HD_Form->AddSearchTextInput(_("EMAIL"), 'email');
-    $HD_Form->AddSearchTextInput(_("LASTNAME"), 'lastname');
-    $HD_Form->AddSearchTextInput(_("FIRSTNAME"), 'firstname');
-    $HD_Form->AddSearchTextInput(_("LOGIN"), 'useralias');
-    $HD_Form->AddSearchTextInput(_("MACADDRESS"), 'mac_addr');
-    $HD_Form->AddSearchTextInput(_("COMPANY NAME"), 'company_name');
-    $HD_Form->AddSearchComparisonInput(_("CUSTOMER ID"), 'id1', 'id2', 'cc_card.id');
-    $HD_Form->AddSearchComparisonInput(_("SERIAL"), 'serial1', 'serial2', 'serial');
-    $HD_Form->AddSearchComparisonInput(_("CREDIT"), 'credit1', 'credit2', 'credit');
-    $HD_Form->AddSearchComparisonInput(_("INUSE"), 'inuse1', 'inuse2', 'inuse');
+    $HD_Form->AddSearchTextInput(_("ACCOUNT NUMBER"), "username");
+    $HD_Form->AddSearchTextInput(_("EMAIL"), "cc_card.email");
+    $HD_Form->AddSearchTextInput(_("LASTNAME"), "cc_card.lastname");
+    $HD_Form->AddSearchTextInput(_("FIRSTNAME"), "cc_card.firstname");
+    $HD_Form->AddSearchTextInput(_("LOGIN"), "useralias");
+    $HD_Form->AddSearchTextInput(_("MACADDRESS"), "mac_addr");
+    $HD_Form->AddSearchTextInput(_("COMPANY NAME"), "company_name");
+    $HD_Form->AddSearchComparisonInput(_("CUSTOMER ID"), "id1", "id2", "cc_card.id");
+    $HD_Form->AddSearchComparisonInput(_("SERIAL"), "serial1", "serial2", "serial");
+    $HD_Form->AddSearchComparisonInput(_("CREDIT"), "credit1", "credit2", "cc_card.credit");
+    $HD_Form->AddSearchComparisonInput(_("INUSE"), "inuse1", "inuse2", "inuse");
 
     $HD_Form->AddSearchSqlSelectInput(_("SELECT SERIE"), "id_seria", new Table("cc_card_seria", ["name", "id"]));
-    $HD_Form->AddSearchSelectInput(_("SELECT LANGUAGE"), "language", $language_list);
+    $HD_Form->AddSearchSelectInput(_("SELECT LANGUAGE"), "cc_card.language", $language_list);
     $HD_Form->AddSearchSqlSelectInput(_("SELECT TARIFF"), "tariff", new Table("cc_tariffgroup", ["tariffgroupname", "id"]));
     $HD_Form->AddSearchSelectInput(_("SELECT STATUS"), "status", $cardstatus_list);
     $HD_Form->AddSearchSelectInput(_("SELECT ACCESS"), "simultaccess", $simultaccess_list);
     $HD_Form->AddSearchSqlSelectInput(_("SELECT GROUP"), "id_group", new Table("cc_card_group", ["name", "id"]));
-    $HD_Form->AddSearchSelectInput(_("SELECT CURRENCY"), "currency", getCurrenciesList());
+    $HD_Form->AddSearchSelectInput(_("SELECT CURRENCY"), "cc_card.currency", getCurrenciesList());
     $HD_Form->AddSearchSelectInput(_("SELECT PAYMENT TYPE"), "typepaid", $typepaid_list);
 
     $HD_Form->FG_ENABLE_INFO_BUTTON = true;
