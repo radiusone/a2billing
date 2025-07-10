@@ -125,7 +125,6 @@ if ($numrow > 0) {
         ),
         "idtariffplan",
         "idtariffgroup",
-        "",
         null,
         false,
         true,

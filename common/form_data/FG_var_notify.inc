@@ -62,8 +62,7 @@ $HD_Form->AddEditSelect(
     "",
     _("currency : ") . strtoupper(BASE_CURRENCY),
     [],
-    gettext("Insert the number of credit when the customer receive a notification"),
-    ""
+    gettext("Insert the number of credit when the customer receive a notification")
 );
 
 $HD_Form->AddEditRadio(
@@ -83,7 +82,6 @@ $HD_Form->AddEditElement(
     ["maxlength" => 70],
     [Validator::class, "email"],
     _("Insert the email to notify the customers"),
-    "",
     "NO"
 );
 

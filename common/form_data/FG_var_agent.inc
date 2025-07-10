@@ -199,7 +199,6 @@ if ($popup_select) {
             ["maxlength" => 20],
             [Validator::class, "percentage"],
             _("Insert the commision"),
-            "",
             "NO-NULL"
         );
 
@@ -210,7 +209,6 @@ if ($popup_select) {
             ["maxlength" => 20],
             [Validator::class, "number"],
             _("threshold remittance"),
-            "",
             "NO"
         );
 
@@ -221,7 +219,6 @@ if ($popup_select) {
             ["maxlength" => 20],
             [Validator::class, "number"],
             _("Insert the VAT"),
-            "",
             "NO-NULL"
         );
 
@@ -307,7 +304,6 @@ if ($popup_select) {
         ["maxlength" => 70],
         [Validator::class, "email"],
         _("Insert the email"),
-        "",
         "NO"
     );
 
@@ -347,7 +343,6 @@ if ($popup_select) {
             ),
             "id_tariffgroup",
             "id_agent",
-            "",
             null,
             false,
             true,

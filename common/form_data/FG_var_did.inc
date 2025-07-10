@@ -174,7 +174,6 @@ $HD_Form->AddEditElement(
     $rate_attr,
     [Validator::class, "number"],
     _("Insert the connect charge"),
-    "",
     "NO"
 );
    // On Net Charges is where one customer calls another customer without any external carrier being involved in the call
@@ -217,7 +216,6 @@ $HD_Form->AddEditElement(
     $rate_attr,
     [Validator::class, "number"],
     _("Insert the connect cost"),
-    "",
     "NO"
 );
 
@@ -229,7 +227,6 @@ $HD_Form->AddEditElement(
     ["maxlength" => 20],
     [Validator::class, "numeric"],
     _("Insert the buyrate init block"),
-    "",
     "NO"
 );
 
@@ -241,7 +238,6 @@ $HD_Form->AddEditElement(
     ["maxlength" => 20],
     [Validator::class, "numeric"],
     _("Insert the billing block"),
-    "",
     "NO"
 );
 
@@ -263,7 +259,6 @@ $HD_Form->AddEditElement(
     $rate_attr,
     [Validator::class, "number"],
     _("Insert the connect cost"),
-    "",
     "NO"
 );
 
@@ -275,7 +270,6 @@ $HD_Form->AddEditElement(
     ["maxlength" => 20],
     [Validator::class, "numeric"],
     _("Insert the init block"),
-    "",
     "NO"
 );
 
@@ -287,7 +281,6 @@ $HD_Form->AddEditElement(
     ["maxlength" => 20],
     [Validator::class, "numeric"],
     _("Insert the billing block"),
-    "",
     "NO"
 );
 
@@ -310,7 +303,6 @@ $HD_Form->AddEditElement(
     $rate_attr,
     [Validator::class, "number"],
     _("Insert the connect cost"),
-    "",
     "NO"
 );
 
@@ -322,7 +314,6 @@ $HD_Form->AddEditElement(
     ["maxlength" => 20],
     [Validator::class, "numeric"],
     _("Insert the buyrate init block"),
-    "",
     "NO"
 );
 
@@ -334,7 +325,6 @@ $HD_Form->AddEditElement(
     ["maxlength" => 20],
     [Validator::class, "numeric"],
     _("Insert the billing block"),
-    "",
     "NO"
 );
 
@@ -356,7 +346,6 @@ $HD_Form->AddEditElement(
     $rate_attr,
     [Validator::class, "number"],
     _("Insert the connect cost"),
-    "",
     "NO"
 );
 
@@ -368,7 +357,6 @@ $HD_Form->AddEditElement(
     ["maxlength" => 20],
     [Validator::class, "numeric"],
     _("Insert the init block"),
-    "",
     "NO"
 );
 
@@ -380,7 +368,6 @@ $HD_Form->AddEditElement(
     ["maxlength" => 20],
     [Validator::class, "numeric"],
     _("Insert the billing block"),
-    "",
     "NO"
 );
 

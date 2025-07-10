@@ -556,7 +556,6 @@ class FormHandler
      * @param array<string,mixed> $html_attributes HTML attributes for the input
      * @param callable<string>|null $validator A validation method that returns true or an error message
      * @param string $error_message A message to show if validation fails
-     * @param string $section_name If provided, added as a row above the input
      * @param string $check_emptyvalue If set to "NO", empty values are not validated; if set to "NO-NULL" empty values are added to the SQL query as NULL
      * @param callable<string>|null $custom_function A callback to run the value through before displaying it
      * @return void
@@ -568,7 +567,6 @@ class FormHandler
         array $html_attributes = [],
         ?callable $validator = null,
         string $error_message = "",
-        string $section_name = "",
         string $check_emptyvalue = "",
         callable $custom_function = null // only used in FG_var_config.inc to convert 0/1 to yes/no
     )
@@ -581,7 +579,6 @@ class FormHandler
             "validator" => $validator,
             "error" => $error_message,
             "check_empty" => strtoupper($check_emptyvalue),
-            "section_name" => $section_name,
             "custom_function" => $custom_function,
             "comment" => $form_text_bottom,
             "validation_err" => true,
@@ -596,8 +593,7 @@ class FormHandler
         string $fieldname,
         string $form_text_bottom = "",
         string $default_value = "",
-        string $error_message = "",
-        string $section_name = ""
+        string $error_message = ""
     )
     {
         $this->FG_EDIT_FORM_ELEMENTS[] = [
@@ -605,7 +601,6 @@ class FormHandler
             "name" => $fieldname,
             "type" => "DAYTIME",
             "error" => $error_message,
-            "section_name" => $section_name,
             "comment" => $form_text_bottom,
             "validation_err" => true,
             "default" => $default_value,
@@ -673,7 +668,6 @@ class FormHandler
      * @param string $form_text_bottom Text to display below the form input
      * @param array<string,mixed> $html_attributes HTML attributes for the input
      * @param string $error_message A message to show if validation fails
-     * @param string $section_name If provided, added as a row above the input
      * @return void
      */
     public function AddEditSelect(
@@ -683,8 +677,7 @@ class FormHandler
                $default_value = "",
         string $form_text_bottom = "",
         array $html_attributes = [],
-        string $error_message = "",
-        string $section_name = ""
+        string $error_message = ""
     ): void
     {
         $this->FG_EDIT_FORM_ELEMENTS[] = [
@@ -697,7 +690,6 @@ class FormHandler
             "select_type" => "LIST",
             "select_fields" => $options,
             "first_option" => [],
-            "section_name" => $section_name,
             "comment" => $form_text_bottom,
             "validation_err" => true,
         ];
@@ -711,7 +703,6 @@ class FormHandler
      * @param string $form_text_bottom Text to display below the form input
      * @param array<string,mixed> $html_attributes HTML attributes for the inputs
      * @param string $error_message A message to show if validation fails
-     * @param string $section_name If provided, added as a row above the input
      * @return void
      */
     public function AddEditRadio(
@@ -721,8 +712,7 @@ class FormHandler
         string $default_value = "",
         string $form_text_bottom = "",
         array $html_attributes = [],
-        string $error_message = "",
-        string $section_name = ""
+        string $error_message = ""
     ): void
     {
         $this->FG_EDIT_FORM_ELEMENTS[] = [
@@ -733,7 +723,6 @@ class FormHandler
             "attributes" => $html_attributes,
             "error" => $error_message,
             "radio_options" => $options,
-            "section_name" => $section_name,
             "comment" => $form_text_bottom,
             "validation_err" => true,
         ];
@@ -780,7 +769,6 @@ class FormHandler
      * @param Table $table the table to use for display of existing records
      * @param string $insert_column the text column to edit
      * @param string $foreign_key new records will be created with this column set to the object's PK
-     * @param string $section_name If provided, added as a row above the input
      * @param callable|null $validator A callback to validate the value before saving it
      * @param bool $multiline Determines whether to use <input> or <textarea>
      * @param bool $select Determines whether to use a <select> element
@@ -793,7 +781,6 @@ class FormHandler
         Table $table,
         string $insert_column,
         string $foreign_key,
-        string $section_name = "",
         ?callable $validator = null,
         bool $multiline = false,
         bool $select = false,
@@ -806,7 +793,6 @@ class FormHandler
             "table" => $table,
             "insert" => $insert_column,
             "foreign_key" => $foreign_key,
-            "section" => $section_name,
             "multiline" => $multiline,
             "select" => $select,
             "pivot_table" => $pivot_table,
@@ -823,7 +809,6 @@ class FormHandler
      * @param string $error_message A message to show if validation fails
      * @param string $default_value When adding (not editing) the value of the input
      * @param callable<string>|null $validator A validation method that returns true or an error message
-     * @param string $section_name If provided, added as a row above the input
      * @return void
      */
     public function AddEditTextarea(
@@ -833,15 +818,13 @@ class FormHandler
         array $html_attributes = [],
         string $error_message = "",
         string $default_value = "",
-        ?callable $validator = null,
-        string $section_name = ""
+        ?callable $validator = null
     ): void
     {
         $this->FG_EDIT_FORM_ELEMENTS[] = [
             "name" => $fieldname,
             "type" => "TEXTAREA",
             "label" => $label_text,
-            "section" => $section_name,
             "attributes" => array_merge(["id" => $fieldname], $html_attributes),
             "comment" => $form_text_bottom,
             "validator" => $validator,

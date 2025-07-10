@@ -90,7 +90,6 @@ $HD_Form->AddEditElement(
     $date_attr,
     [Validator::class, "dateTime"],
     _("Insert the start date"),
-    "",
     "NO-NULL",
     
 );
@@ -105,7 +104,6 @@ $HD_Form->AddEditElement(
     $date_attr,
     [Validator::class, "dateTime"],
     _("Insert the stop date"),
-    "",
     "NO-NULL"
 );
 

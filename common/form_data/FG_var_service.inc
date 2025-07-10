@@ -130,7 +130,6 @@ $HD_Form->AddEditElement(
     ["maxlength" => 3],
     [Validator::class, "numeric"],
     _("Insert the daynumber"),
-    "",
     "NO"
 );
 
@@ -151,7 +150,6 @@ $HD_Form->AddEditElement(
     ["maxlength" => 3],
     [Validator::class, "numeric"],
     _("Insert the max number of cycle"),
-    "",
     "NO-NULL"
 );
 
@@ -164,7 +162,6 @@ $HD_Form->AddEditElement(
     ["maxlength" => 30],
     [Validator::class, "email"],
     _("Insert the email to send the report"),
-    "",
     "NO-NULL"
 );
 
@@ -205,7 +202,6 @@ if ($numrow > 0) {
         ),
         "id_card_group",
         "id_service",
-        "",
         null,
         false,
         true,

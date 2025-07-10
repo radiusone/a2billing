@@ -164,7 +164,6 @@ if ($A2B->config["signup"]['field_state'] ?? 0)  {
         ["maxlength" => 40],
         [Validator::class, "min2Chars"],
         gettext("Insert your state"),
-        "",
         "NO"
     );
 }
@@ -229,7 +228,6 @@ if ( $A2B->config["signup"]['field_company'] ?? 0)  {
         ["maxlength" => 50],
         null,
         gettext("Insert Company name of this customer"),
-        "",
         "NO"
     );
 }
@@ -242,7 +240,6 @@ if ($A2B->config["signup"]['field_company_website'] ?? 0)  {
         ["maxlength" => 60],
         null,
         gettext("Insert the company website of this customer"),
-        "",
         "NO"
     );
 }
@@ -255,7 +252,6 @@ if ($A2B->config["signup"]['field_VAT_RN'] ?? 0)  {
         ["maxlength" => 40],
         null,
         gettext("Insert the VAT registration number of this customer"),
-        "",
         "NO"
     );
 }
@@ -268,7 +264,6 @@ if ($A2B->config["signup"]['field_traffic'] ?? 0)  {
         ["maxlength" => 20],
         [Validator::class, "numeric"],
         gettext("Insert the traffic per month for this customer"),
-        "",
         "NO"
     );
 }

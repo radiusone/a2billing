@@ -129,7 +129,6 @@ $HD_Form->AddEditElement(
     ["maxlength" => 80],
     [Validator::class, "min2Chars"],
     _("Insert the manager result"),
-    "",
     "NO"
 );
 
@@ -141,7 +140,6 @@ $HD_Form->AddEditElement(
     ["maxlength" => 80],
     [Validator::class, "min2Chars"],
     _("Insert the agi result"),
-    "",
     "NO"
 );
 
@@ -156,7 +154,6 @@ $HD_Form->AddEditElement(
     $date_attr,
     [Validator::class, "dateTime"],
     "Insert the callback time",
-    "",
     "NO-NULL",
     
 );
@@ -209,7 +206,6 @@ $HD_Form->AddEditElement(
     ["maxlength" => 30],
     [Validator::class, "min2Chars"],
     _("Insert the application"),
-    "",
     "NO"
 );
 
@@ -221,7 +217,6 @@ $HD_Form->AddEditElement(
     ["maxlength" => 30],
     [Validator::class, "min2Chars"],
     _("Insert the data"),
-    "",
     "NO"
 );
 
@@ -233,7 +228,6 @@ $HD_Form->AddEditElement(
     ["maxlength" => 15],
     [Validator::class, "min2Chars"],
     _("Insert the timeout"),
-    "",
     "NO"
 );
 
@@ -245,7 +239,6 @@ $HD_Form->AddEditElement(
     ["maxlength" => 30],
     [Validator::class, "min2Chars"],
     _("Insert the callerid"),
-    "",
     "NO"
 );
 
@@ -257,7 +250,6 @@ $HD_Form->AddEditElement(
     ["maxlength" => 300],
     [Validator::class, "min2Chars"],
     _("Insert the variable"),
-    "",
     "NO"
 );
 
@@ -269,7 +261,6 @@ $HD_Form->AddEditElement(
     ["maxlength" => 30],
     [Validator::class, "min2Chars"],
     _("Insert the account"),
-    "",
     "NO"
 );
 
@@ -281,7 +272,6 @@ $HD_Form->AddEditElement(
     ["maxlength" => 10],
     [Validator::class, "min2Chars"],
     _("Insert the async"),
-    "",
     "NO"
 );
 
@@ -293,7 +283,6 @@ $HD_Form->AddEditElement(
     ["maxlength" => 30],
     [Validator::class, "min2Chars"],
     _("Insert the actionid"),
-    "",
     "NO"
 );
 

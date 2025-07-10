@@ -171,7 +171,6 @@ $HD_Form->AddEditElement(
     null,
     "",
     "",
-    "",
     fn ($v) => $v === "yes,no" || $v === "no,yes" ? "" : $v
 );
 

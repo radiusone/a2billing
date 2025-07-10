@@ -413,7 +413,6 @@ if ($popup_select) {
         ["maxlength" => 50],
         [Validator::class, "min2Chars"],
         _("Insert the lastname of the customers"),
-        "",
         "NO"
     );
 
@@ -424,7 +423,6 @@ if ($popup_select) {
         ["maxlength" => 50],
         [Validator::class, "min2Chars"],
         _("Insert the firstname of the customers"),
-        "",
         "NO"
     );
 
@@ -435,7 +433,6 @@ if ($popup_select) {
         ["maxlength" => 70],
         [Validator::class, "email"],
         _("Insert the email"),
-        "",
         "NO"
     );
 
@@ -446,7 +443,6 @@ if ($popup_select) {
         ["maxlength" => 100],
         [Validator::class, "min3Chars"],
         _("Insert the address of the customers"),
-        "",
         "NO"
     );
 
@@ -457,7 +453,6 @@ if ($popup_select) {
         ["maxlength" => 40],
         [Validator::class, "min3Chars"],
         _("Insert the city"),
-        "",
         "NO"
     );
 
@@ -468,7 +463,6 @@ if ($popup_select) {
         ["maxlength" => 40],
         [Validator::class, "min2Chars"],
         _("Insert the state"),
-        "",
         "NO"
     );
 
@@ -487,7 +481,6 @@ if ($popup_select) {
         ["maxlength" => 20],
         [Validator::class, "min3Chars"],
         _("Insert the zipcode"),
-        "",
         "NO"
     );
 
@@ -498,7 +491,6 @@ if ($popup_select) {
         ["maxlength" => 20],
         [Validator::class, "min8DigitLike"],
         _("Insert the phone number of the customers"),
-        "",
         "NO"
     );
 
@@ -509,7 +501,6 @@ if ($popup_select) {
         ["maxlength" => 20],
         null,
         _("Insert the fax number of the customers"),
-        "",
         "NO"
     );
 
@@ -544,7 +535,6 @@ if ($popup_select) {
         ["maxlength" => 50],
         null,
         _("Insert Company name of this customer"),
-        "",
         "NO"
     );
 
@@ -555,7 +545,6 @@ if ($popup_select) {
         ["maxlength" => 60],
         null,
         _("Insert the company website of this customer"),
-        "",
         "NO"
     );
 
@@ -629,7 +618,6 @@ if ($popup_select) {
         $lock_attr,
         [Validator::class, "numeric"],
         "",
-        "",
         "NO"
     );
 
@@ -658,7 +646,6 @@ if ($popup_select) {
             ["maxlength" => 20],
             [Validator::class, "numeric"],
             _("Insert the credit limit"),
-            "",
             "NO-NULL"
         );
     }
@@ -688,7 +675,6 @@ if ($popup_select) {
         ["maxlength" => 70],
         [Validator::class, "email"],
         _("Insert the email to notify this customer"),
-        "",
         "NO"
     );
 
@@ -708,7 +694,6 @@ if ($popup_select) {
         ["maxlength" => 40, "readonly" => "readonly"],
         null,
         "the first use date",
-        "",
         "NO-NULL",
 
     );
@@ -732,7 +717,6 @@ if ($popup_select) {
         $exp_attr,
         [Validator::class, "dateTime"],
         _("Insert the expiration date"),
-        "",
         "NO-NULL",
 
     );
@@ -780,7 +764,6 @@ if ($popup_select) {
         _("Updated to show the number of concurrent calls in use by this customer. If there are no currently no calls, and the system shows that there are, manually reset this field back to zero."),
         ["maxlength" => 5],
         null,
-        "",
         "",
         "NO"
     );
@@ -840,7 +823,6 @@ if ($popup_select) {
         ["maxlength" => 40],
         null,
         _("Insert the VAT registration number of this customer"),
-        "",
         "NO"
     );
 
@@ -855,7 +837,6 @@ if ($popup_select) {
         ["maxlength" => 20],
         [Validator::class, "numeric"],
         _("Insert the traffic per month for this customer"),
-        "",
         "NO"
     );
 
@@ -881,7 +862,6 @@ if ($popup_select) {
         new Table("cc_restricted_phonenumber", ["id", "number"]),
         "number",
         "id_card",
-        "",
         [Validator::class, "numeric"]
     );
 
@@ -891,7 +871,6 @@ if ($popup_select) {
         new Table("cc_callerid", ["id", "cid"]),
         "cid",
         "id_cc_card",
-        "",
         [Validator::class, "min3Chars"]
     );
 
@@ -903,7 +882,6 @@ if ($popup_select) {
         ),
         "description",
         "id_cc_card",
-        "",
         [Validator::class, "min3Chars"],
         true
     );

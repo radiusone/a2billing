@@ -80,7 +80,6 @@ $HD_Form->AddEditElement(
     ["maxlength" => 70],
     [Validator::class, "email"],
     _("Insert the email"),
-    "",
     "NO"
 );
 

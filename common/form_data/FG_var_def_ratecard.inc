@@ -219,7 +219,6 @@ $HD_Form->AddEditElement(
     ["maxlength" => 20],
     [Validator::class, "numeric"],
     _("Insert the buyrate init block"),
-    "",
     "NO"
 );
 
@@ -231,7 +230,6 @@ $HD_Form->AddEditElement(
     ["maxlength" => 20],
     [Validator::class, "numeric"],
     _("Insert the billing block"),
-    "",
     "NO"
 );
 
@@ -253,7 +251,6 @@ $HD_Form->AddEditElement(
     ["maxlength" => 20],
     [Validator::class, "numeric"],
     _("Insert the init block"),
-    "",
     "NO"
 );
 
@@ -265,7 +262,6 @@ $HD_Form->AddEditElement(
     ["maxlength" => 20],
     [Validator::class, "numeric"],
     _("Insert the billing block"),
-    "",
     "NO"
 );
 
@@ -277,7 +273,6 @@ $HD_Form->AddEditElement(
     ["maxlength" => 20],
     [Validator::class, "number"],
     _("Insert the connect charge"),
-    "",
     "NO"
 );
 
@@ -289,7 +284,6 @@ $HD_Form->AddEditElement(
     ["maxlength" => 20],
     [Validator::class, "number"],
     _("Insert the disconnect charge"),
-    "",
     "NO"
 );
 
@@ -301,7 +295,6 @@ $HD_Form->AddEditElement(
     ["maxlength" => 20],
     [Validator::class, "number"],
     _("Insert the disconnect charge threshold"),
-    "",
     "NO"
 );
 
@@ -313,7 +306,6 @@ $HD_Form->AddEditElement(
     ["maxlength" => 20],
     [Validator::class, "number"],
     _("Insert the Minimum call cost"),
-    "",
     "NO"
 );
 
@@ -329,7 +321,6 @@ if (ADVANCED_MODE) {
         ["maxlength" => 20],
         [Validator::class, "number"],
         _("Insert the stepcharge A"),
-        "",
         "NO"
     );
 
@@ -341,7 +332,6 @@ if (ADVANCED_MODE) {
         ["maxlength" => 20],
         [Validator::class, "number"],
         _("Insert the charge A"),
-        "",
         "NO"
     );
 
@@ -353,7 +343,6 @@ if (ADVANCED_MODE) {
         ["maxlength" => 20],
         [Validator::class, "numeric"],
         _("Insert the time charge A"),
-        "",
         "NO"
     );
 
@@ -365,7 +354,6 @@ if (ADVANCED_MODE) {
         ["maxlength" => 20],
         [Validator::class, "numeric"],
         _("Insert the billing block A"),
-        "",
         "NO"
     );
 
@@ -377,7 +365,6 @@ if (ADVANCED_MODE) {
         ["maxlength" => 20],
         [Validator::class, "number"],
         _("Insert the stepcharge B"),
-        "",
         "NO"
     );
 
@@ -389,7 +376,6 @@ if (ADVANCED_MODE) {
         ["maxlength" => 20],
         [Validator::class, "number"],
         _("Insert the charge B"),
-        "",
         "NO"
     );
 
@@ -401,7 +387,6 @@ if (ADVANCED_MODE) {
         ["maxlength" => 20],
         [Validator::class, "numeric"],
         _("Insert the time charge B"),
-        "",
         "NO"
     );
 
@@ -413,7 +398,6 @@ if (ADVANCED_MODE) {
         ["maxlength" => 20],
         [Validator::class, "numeric"],
         _("Insert the billing block B"),
-        "",
         "NO"
     );
 
@@ -425,7 +409,6 @@ if (ADVANCED_MODE) {
         ["maxlength" => 20],
         [Validator::class, "number"],
         "Insert the stepcharge C",
-        "",
         "NO"
     );
 
@@ -437,7 +420,6 @@ if (ADVANCED_MODE) {
         ["maxlength" => 20],
         [Validator::class, "number"],
         _("Insert the charge C"),
-        "",
         "NO"
     );
 
@@ -449,7 +431,6 @@ if (ADVANCED_MODE) {
         ["maxlength" => 20],
         [Validator::class, "numeric"],
         _("Insert the time charge C"),
-        "",
         "NO"
     );
 
@@ -461,7 +442,6 @@ if (ADVANCED_MODE) {
         ["maxlength" => 20],
         [Validator::class, "numeric"],
         _("Insert the billing block C"),
-        "",
         "NO"
     );
 
@@ -473,7 +453,6 @@ if (ADVANCED_MODE) {
         ["maxlength" => 20],
         [Validator::class, "number"],
         _("insert corection for announce time"),
-        "",
         "NO"
     );
 
@@ -505,7 +484,6 @@ $HD_Form->AddEditElement(
     $date_attr,
     [Validator::class, "dateTime"],
     _("Insert the stop date"),
-    "",
     "NO-NULL"
 );
 
@@ -598,7 +576,6 @@ $HD_Form->AddEditElement(
     _("Set a tag on this rate"),
     ["maxlength" => 40],
     [Validator::class, "min2Chars"],
-    "",
     "",
     "NO"
 );
