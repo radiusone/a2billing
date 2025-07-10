@@ -200,14 +200,15 @@ $HD_Form->AddEditPopup(
     [Validator::class, "min1Char"]
 );
 
+$HD_Form->AddEditSection(_("Carrier Costs"));
+
 $HD_Form->AddEditElement(
     "Buy Rate",
     "buyrate",
     _("Set the carrier cost, the price you pay for minutes."),
     ["maxlength" => 20],
     [Validator::class, "number"],
-    _("Insert the buy rate"),
-    _("Set the carrier cost for this destination.")
+    _("Insert the buy rate")
 );
 
 
@@ -234,15 +235,14 @@ $HD_Form->AddEditElement(
     "NO"
 );
 
-
+$HD_Form->AddEditSection(_("Retail Prices"));
 $HD_Form->AddEditElement(
     _("Sell Rate"),
     "rateinitial",
     _("The retail rate; or the cost per minute to apply to the customer, e.g. 0.02"),
     ["maxlength" => 20],
     [Validator::class, "number"],
-    _("Insert the initial rate"),
-    _("Define the selling cost for customers.")
+    _("Insert the initial rate")
 );
 
 
@@ -320,14 +320,16 @@ $HD_Form->AddEditElement(
 
 if (ADVANCED_MODE) {
 
+    $HD_Form->AddEditSection(_("Progressive Rates"));
+
     $HD_Form->AddEditElement(
         _("Initial Charge A"),
         "stepchargea",
-        _("When entering in the cycle 'A', define the amount to charge for the entrance."),
+        _("Progressive rate aims to bill the customer at various rates according the duration of the call. For instance you can define that you can to bill the customer 0.33dollars for the first 2 minutes and then you want to bill him 0.45dollars for the rest of the call.") . "<br/>" . _("When entering in the cycle 'A', define the amount to charge for the entrance."),
         ["maxlength" => 20],
         [Validator::class, "number"],
         _("Insert the stepcharge A"),
-        _("Below we have the section to create progressive rates. Progressive rate aims to bill the customer at various rates according the duration of the call. For instance you can define that you can to bill the customer 0.33dollars for the first 2 minutes and then you want to bill him 0.45dollars for the rest of the call."),
+        "",
         "NO"
     );
 
@@ -477,6 +479,8 @@ if (ADVANCED_MODE) {
 
 }//ENDif (ADVANCED_MODE)
 
+$HD_Form->AddEditSection(_("Activity Period"));
+
 $date_attr = ["maxlength" => 40];
 if ($form_action === "ask-add") {
     $date_attr["value"] = (new DateTime())->format("Y-m-d H:i:s");
@@ -487,8 +491,7 @@ $HD_Form->AddEditElement(
     _("Format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
     $date_attr,
     [Validator::class, "dateTime"],
-    _("Insert the starting date"),
-    _("Define the period when this rate table is active.")
+    _("Insert the starting date")
 );
 
 

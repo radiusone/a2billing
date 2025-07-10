@@ -335,14 +335,15 @@ if ($popup_select) {
         $acct_attr["value"] = $array_card_generated[0];
     }
     if (!is_customer()) {
+        $HD_Form->AddEditSection(_("Customer Information"));
+
         $HD_Form->AddEditElement(
             _("Account number"),
             "username",
             '',
             $acct_attr,
             [Validator::class, "numeric"],
-            _("Insert the account number"),
-            _("Customer Information")
+            _("Insert the account number")
         );
 
         $login_attr = ["maxlength" => 40];
@@ -403,6 +404,8 @@ if ($popup_select) {
         );
     }
 
+    $HD_Form->AddEditSection(_("Personal Information"));
+
     $HD_Form->AddEditElement(
         _("Last name"),
         "lastname",
@@ -410,7 +413,7 @@ if ($popup_select) {
         ["maxlength" => 50],
         [Validator::class, "min2Chars"],
         _("Insert the lastname of the customers"),
-        _("Personal Information"),
+        "",
         "NO"
     );
 
@@ -556,6 +559,8 @@ if ($popup_select) {
         "NO"
     );
 
+    $HD_Form->AddEditSection(_("Customer Status"));
+
     if ($form_action !== "edit" && is_admin()) {
         $payment_attr = ($form_action === "ask-add") ? [] : ["disabled" => "disabled"];
         $HD_Form->AddEditSelect(
@@ -564,9 +569,7 @@ if ($popup_select) {
             $typepaid_list,
             "",
             "",
-            $payment_attr,
-            "",
-            _("Customer Status")
+            $payment_attr
         );
     }
 
@@ -782,6 +785,8 @@ if ($popup_select) {
         "NO"
     );
 
+    $HD_Form->AddEditSection("Auto Refill");
+
     $HD_Form->AddEditRadio(
         _("Auto refill"),
         "autorefill",
@@ -789,8 +794,7 @@ if ($popup_select) {
         "0",
         _("Define if you want to authorize the autorefill to apply on this accout"),
         [],
-        _("Choose if you want to enable the autorefill on this account"),
-        _("AUTOREFILL")
+        _("Choose if you want to enable the autorefill on this account")
     );
 
     $balance_attr = ["maxlength" => 30];
@@ -806,15 +810,14 @@ if ($popup_select) {
         _("Insert the amount of the initial balance")
     );
 
+    $HD_Form->AddEditSection(_("Invoice Status"));
+
     $HD_Form->AddEditSelect(
         _("Invoice day"),
         "invoiceday",
         $invoiceday_list,
         "",
-        _("Define the day of the month when the system will generate the customer invoice."),
-        [],
-        "",
-        _("Invoice Status")
+        _("Define the day of the month when the system will generate the customer invoice.")
     );
 
     $vat_attr = ["maxlength" => 6];
@@ -843,6 +846,8 @@ if ($popup_select) {
 
     $HD_Form->AddEditSelect(_("Discount"), "discount", $discount_list);
 
+    $HD_Form->AddEditSection(_("Traffic Targets"));
+
     $HD_Form->AddEditElement(
         _("Monthly traffic target"),
         "traffic",
@@ -850,7 +855,7 @@ if ($popup_select) {
         ["maxlength" => 20],
         [Validator::class, "numeric"],
         _("Insert the traffic per month for this customer"),
-        _("TARGET TRAFFIC"),
+        "",
         "NO"
     );
 
@@ -862,15 +867,13 @@ if ($popup_select) {
         _("Insert the target traffic description")
     );
 
+    $HD_Form->AddEditSection(_("Restricted Numbers"));
+
     $HD_Form->AddEditSelect(
         _("Restrict calls"),
         "restriction",
         $restriction_list,
-        "0",
-        "",
-        [],
-        "",
-        _("RESTRICTED NUMBERS")
+        "0"
     );
 
     $HD_Form->AddEditHasMany(
@@ -882,12 +885,13 @@ if ($popup_select) {
         [Validator::class, "numeric"]
     );
 
+    $HD_Form->AddEditSection("Caller ID / Customer History");
     $HD_Form->AddEditHasMany(
         _("Caller ID"),
         new Table("cc_callerid", ["id", "cid"]),
         "cid",
         "id_cc_card",
-        _("CALLERID / CUSTOMER HISTORY"),
+        "",
         [Validator::class, "min3Chars"]
     );
 

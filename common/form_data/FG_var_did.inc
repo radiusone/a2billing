@@ -149,6 +149,8 @@ $HD_Form->AddEditRadio(
     gettext("Choose if you want to activate this card")
 );
 
+$HD_Form->AddEditSection(_("Retail Prices"));
+
 $rate_attr = ["maxlength" => 20];
 if ($form_action === "purchase") {
     $rate_attr["value"] = $fixrate;
@@ -161,8 +163,7 @@ $HD_Form->AddEditElement(
     _("currency : ") . strtoupper(BASE_CURRENCY),
     $rate_attr,
     [Validator::class, "number"],
-    _("Insert the monthly rate"),
-    _("Define the renting cost for the customers.")
+    _("Insert the monthly rate")
 );
 
 
@@ -173,7 +174,7 @@ $HD_Form->AddEditElement(
     $rate_attr,
     [Validator::class, "number"],
     _("Insert the connect charge"),
-    _("DID On Net Charges"),
+    "",
     "NO"
 );
    // On Net Charges is where one customer calls another customer without any external carrier being involved in the call
@@ -187,16 +188,17 @@ $HD_Form->AddEditElement(
     _("Insert the rate")
 );
 
+$HD_Form->AddEditSection(_("Peak Hours"));
+
 $HD_Form->AddEditTextarea(
     _("TIME INTERVAL"),
     "aleg_timeinterval",
     _("The format is \"start_time;day_of_week;day_of_month;month;time_interval_type\" e.g. 7:00-19:00|mon-fri|*|*|p for peak hours or *|*|24|dec|o for off peak during Xmas day and so on. The last character indicates time interval type where \"p\" means PEAK and \"o\" OFF-PEAK. More definition one per line are supported. If there are PEAK and OFF-PEAK time interval definitions overlaps, than the OFF-PEAK is used."),
     ["rows" => 4],
-    _("Insert time definition for peak and off peak time intervals."),
-    "",
-    null,
-    _("Peak / Off Peak Time definition"),
+    _("Insert time definition for peak and off peak time intervals.")
 );
+
+$HD_Form->AddEditSection(_("Peak Ingress Charges"));
 
 $HD_Form->AddEditElement(
     _("CARRIER CONNECTION CHARGE"),
@@ -204,8 +206,7 @@ $HD_Form->AddEditElement(
     _("The connection charge can be negative or positive"),
     $rate_attr,
     [Validator::class, "number"],
-    _("Insert a rate"),
-    _("DID Ingress Charges Peak")
+    _("Insert a rate")
 );
 
 
@@ -290,6 +291,7 @@ $HD_Form->AddEditElement(
     "NO"
 );
 
+$HD_Form->AddEditSection(_("Off-Peak Ingress Charges"));
 
 $HD_Form->AddEditElement(
     _("CARRIER CONNECTION CHARGE OFF PEAK"),
@@ -297,8 +299,7 @@ $HD_Form->AddEditElement(
     _("The connection charge can be negative or positive"),
     $rate_attr,
     [Validator::class, "number"],
-    _("Insert a rate"),
-    _("DID Ingress Charges Off Peak")
+    _("Insert a rate")
 );
 
 

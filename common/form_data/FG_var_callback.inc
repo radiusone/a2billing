@@ -161,6 +161,7 @@ $HD_Form->AddEditElement(
     
 );
 
+$HD_Form->AddEditSection(_("Asterisk Settings"));
 
 $HD_Form->AddEditElement(
     _("CHANNEL"),
@@ -168,8 +169,7 @@ $HD_Form->AddEditElement(
     _("Channel on which to originate the call (SIP/123@1.1.1.4)"),
     ["maxlength" => 70],
     [Validator::class, "min2Chars"],
-    _("Insert the channel"),
-    _("Define all the information requested by asterisk to generate the callback")
+    _("Insert the channel")
 );
 
 
