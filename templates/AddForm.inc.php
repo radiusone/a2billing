@@ -31,6 +31,7 @@ use DateTime;
         <h4><?= $row["section_name"] ?></h4>
     </div>
     <?php endif ?>
+    <?php if ($row["type"] === "SECTION") {continue;} ?>
 
     <div class="row mb-3">
         <label for="<?= $row["name"] ?>" class="col-3 col-form-label">
