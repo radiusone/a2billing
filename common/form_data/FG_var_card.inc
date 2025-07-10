@@ -267,7 +267,6 @@ if ($popup_select) {
     $HD_Form->AddSearchTextInput(_("LASTNAME"), "cc_card.lastname");
     $HD_Form->AddSearchTextInput(_("FIRSTNAME"), "cc_card.firstname");
     $HD_Form->AddSearchTextInput(_("LOGIN"), "useralias");
-    $HD_Form->AddSearchTextInput(_("MACADDRESS"), "mac_addr");
     $HD_Form->AddSearchTextInput(_("COMPANY NAME"), "company_name");
     $HD_Form->AddSearchComparisonInput(_("CUSTOMER ID"), "id1", "id2", "cc_card.id");
     $HD_Form->AddSearchComparisonInput(_("SERIAL"), "serial1", "serial2", "serial");
@@ -775,17 +774,6 @@ if ($popup_select) {
             _("Choose if you want to enable the IAX account")
         );
     }
-
-    $HD_Form->AddEditElement(
-        _("MAC ADDRESS"),
-        "mac_addr",
-        _("FORMAT: 00-08-74-4C-7F-1D"),
-        ["maxlength" => 17],
-        null,
-        _("Insert the MAC address customers' device"),
-        "",
-        "NO"
-    );
 
     $HD_Form->AddEditElement(
         _("IN USE"),

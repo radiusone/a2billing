@@ -88,7 +88,6 @@ $HD_Form->AddSearchDateInput(_("Creation date"), "creationdate");
 $HD_Form->AddSearchTextInput(gettext("ACCOUNT NUMBER"), 'username');
 $HD_Form->AddSearchTextInput(gettext("LASTNAME"), 'lastname');
 $HD_Form->AddSearchTextInput(gettext("LOGIN"), 'useralias');
-$HD_Form->AddSearchTextInput(gettext("MACADDRESS"), 'mac_addr');
 $HD_Form->AddSearchTextInput(gettext("EMAIL"), 'email');
 $HD_Form->AddSearchComparisonInput(gettext("CUSTOMER ID (SERIAL)"), 'id1', 'id2', 'id');
 $HD_Form->AddSearchComparisonInput(gettext("CREDIT"), 'credit1', 'credit2', 'credit');
