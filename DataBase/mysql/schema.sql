@@ -444,7 +444,6 @@ CREATE TABLE `cc_card` (
     `block` tinyint NOT NULL DEFAULT 0,
     `lock_pin` varchar(15) DEFAULT NULL,
     `lock_date` datetime DEFAULT NULL,
-    `max_concurrent` int NOT NULL DEFAULT 10,
     PRIMARY KEY (`id`),
     UNIQUE KEY (`username`),
     UNIQUE KEY (`useralias`),
@@ -527,7 +526,7 @@ CREATE TABLE `cc_card_archive` (
     `voicemail_permitted` int NOT NULL DEFAULT 0,
     `voicemail_activated` smallint NOT NULL DEFAULT 0,
     `last_notification` datetime DEFAULT NULL,
-   `email_notification` varchar(70) NOT NULL DEFAULT '',
+    `email_notification` varchar(70) NOT NULL DEFAULT '',
     `notify_email` smallint NOT NULL DEFAULT 0,
     `credit_notification` int NOT NULL DEFAULT -1,
     `id_group` bigint DEFAULT NULL,
@@ -543,7 +542,6 @@ CREATE TABLE `cc_card_archive` (
     `block` tinyint NOT NULL DEFAULT 0,
     `lock_pin` varchar(15) DEFAULT NULL,
     `lock_date` datetime DEFAULT NULL,
-    `max_concurrent` int NOT NULL DEFAULT 10,
     PRIMARY KEY (`id`),
     UNIQUE KEY (`username`),
     UNIQUE KEY (`useralias`),
@@ -761,7 +759,6 @@ CREATE TABLE `cc_did` (
     `aleg_carrier_increment_offp` int NOT NULL DEFAULT 0,
     `aleg_retail_initblock_offp` int NOT NULL DEFAULT 0,
     `aleg_retail_increment_offp` int NOT NULL DEFAULT 0,
-    `max_concurrent` int NOT NULL DEFAULT 10,
     PRIMARY KEY (`id`),
     UNIQUE KEY (`did`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

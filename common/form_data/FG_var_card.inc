@@ -786,19 +786,6 @@ if ($popup_select) {
         "NO"
     );
 
-    if (is_admin()) {
-        $HD_Form->AddEditElement(
-            _("MAX CONCURRENT CALLS"),
-            "max_concurrent",
-            _("Max concurrent calls (Feature not implemented)"),
-            ["maxlength" => 5],
-            null,
-            "",
-            "",
-            "NO"
-        );
-    }
-
     $HD_Form->AddEditRadio(
         _("AUTOREFILL"),
         "autorefill",

@@ -31,9 +31,12 @@ DELETE FROM cc_config WHERE config_key = 'server_GMT';
 -- set a default value
 ALTER TABLE cc_ratecard MODIFY musiconhold VARCHAR(100) NOT NULL DEFAULT '';
 
--- remove this unused column
+-- remove unused columns
 ALTER TABLE cc_card DROP COLUMN mac_addr;
 ALTER TABLE cc_card_archive DROP COLUMN mac_addr;
+ALTER TABLE cc_card DROP COLUMN max_concurrent;
+ALTER TABLE cc_card_archive DROP COLUMN max_concurrent;
+ALTER TABLE cc_did DROP COLUMN max_concurrent;
 
 -- add proper timezones, make a few corrections
 ALTER TABLE cc_timezone DROP COLUMN gmttime;

@@ -383,18 +383,6 @@ $HD_Form->AddEditElement(
     "NO"
 );
 
-
-$HD_Form->AddEditElement(
-    _("MAX CONCURRENT CALLS"),
-    "max_concurrent",
-    _("Max concurrent calls (Feature not implemented)"),
-    ["maxlength" => 5],
-    null,
-    "",
-    "",
-    "NO"
-);
-
 // Set the filter variables
 $HD_Form->AddListFilter("did", _("DID"));
 
