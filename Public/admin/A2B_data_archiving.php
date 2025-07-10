@@ -94,9 +94,9 @@ $HD_Form->AddSearchTextInput(_("Last name"), 'lastname');
 $HD_Form->AddSearchTextInput(_("Login"), 'useralias');
 $HD_Form->AddSearchTextInput(_("MAC address"), 'mac_addr');
 $HD_Form->AddSearchTextInput(_("Email"), 'email');
-$HD_Form->AddSearchComparisonInput(_("Card"), 'id1', 'id2', 'id');
-$HD_Form->AddSearchComparisonInput(_("Credit"), 'credit1', 'credit2', 'credit');
-$HD_Form->AddSearchComparisonInput(_("In use"), 'inuse1', 'inuse2', 'inuse');
+$HD_Form->AddSearchComparisonInput(_("Card"), 'id');
+$HD_Form->AddSearchComparisonInput(_("Credit"), 'credit');
+$HD_Form->AddSearchComparisonInput(_("In use"), 'inuse');
 
 $HD_Form->AddSearchSelectInput(_("Language"), "language", $language_list);
 $HD_Form->AddSearchSqlSelectInput(_("Rate plan"), "tariff", new Table("cc_tariffgroup", ["tariffgroupname", "id"]));

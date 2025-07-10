@@ -162,9 +162,9 @@ if (is_admin()) {
 }
 $HD_Form->AddSearchTextInput(_("Dialing Prefix"), 'dialprefix');
 if (is_admin()) {
-    $HD_Form->AddSearchComparisonInput(_("Buy Rate"), 'buyrate1', 'buyrate2', 'buyrate');
+    $HD_Form->AddSearchComparisonInput(_("Buy Rate"), 'buyrate');
 }
-$HD_Form->AddSearchComparisonInput(_("Initial Rate"), 'rateinitial1', 'rateinitial2', 'rateinitial');
+$HD_Form->AddSearchComparisonInput(_("Initial Rate"), 'rateinitial');
 if (is_admin()) {
     $HD_Form->AddSearchSqlSelectInput(_("Trunk"), "id_trunk", new Table("cc_trunk", ["trunkcode", "id_trunk"]));
     $HD_Form->AddSearchSqlSelectInput(_("Rate Card"), "idtariffplan", new Table("cc_tariffplan", ["tariffname", "id"]));

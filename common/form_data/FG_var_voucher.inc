@@ -76,7 +76,7 @@ $HD_Form->AddSearchDateInput(_("Creation date"), "creationdate");
 $HD_Form->AddSearchTextInput(_("Voucher"), "voucher");
 $HD_Form->AddSearchTextInput(_("Card number"), "usedcardnumber");
 $HD_Form->AddSearchTextInput(_("Tag"), "tag");
-$HD_Form->AddSearchComparisonInput(_("Credit"), "credit1", "credit2", "credit");
+$HD_Form->AddSearchComparisonInput(_("Credit"), "credit");
 
 $HD_Form->AddSearchSelectInput(_("Status"), "activated", $actived_list);
 $HD_Form->AddSearchSelectInput(_("Used"), "used", $used_list);

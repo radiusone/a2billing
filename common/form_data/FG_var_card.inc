@@ -268,10 +268,10 @@ if ($popup_select) {
     $HD_Form->AddSearchTextInput(_("First name"), "cc_card.firstname");
     $HD_Form->AddSearchTextInput(_("Login"), "useralias");
     $HD_Form->AddSearchTextInput(_("Company"), "company_name");
-    $HD_Form->AddSearchComparisonInput(_("Customer ID"), "id1", "id2", "cc_card.id");
-    $HD_Form->AddSearchComparisonInput(_("Serial"), "serial1", "serial2", "serial");
-    $HD_Form->AddSearchComparisonInput(_("Balance"), "credit1", "credit2", "cc_card.credit");
-    $HD_Form->AddSearchComparisonInput(_("In use"), "inuse1", "inuse2", "inuse");
+    $HD_Form->AddSearchComparisonInput(_("Customer ID"), "cc_card.id");
+    $HD_Form->AddSearchComparisonInput(_("Serial"), "serial");
+    $HD_Form->AddSearchComparisonInput(_("Balance"), "cc_card.credit");
+    $HD_Form->AddSearchComparisonInput(_("In use"), "inuse");
 
     $HD_Form->AddSearchSqlSelectInput(_("Card series"), "id_seria", new Table("cc_card_seria", ["name", "id"]));
     $HD_Form->AddSearchSelectInput(_("Language"), "cc_card.language", $language_list);
