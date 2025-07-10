@@ -27,7 +27,7 @@ use DateTime;
 <?php foreach ($form->FG_EDIT_FORM_ELEMENTS as $i=>$row):?>
     <?php if ($row["type"] === "HAS_MANY") {continue;} ?>
     <?php if (!empty($row["section_name"])): ?>
-    <div class="row mb-3">
+    <div class="row mb-3 border-bottom">
         <h4><?= $row["section_name"] ?></h4>
     </div>
     <?php endif ?>

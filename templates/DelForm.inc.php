@@ -59,6 +59,11 @@ namespace A2billing\Forms;
 
     <?php foreach($form->FG_EDIT_FORM_ELEMENTS as $i => $row): ?>
         <?php if ($row["type"] === "HAS_MANY") {continue;} ?>
+        <?php if (!empty($row["section_name"])): ?>
+    <div class="row mb-3 border-bottom">
+        <h4><?= $row["section_name"] ?></h4>
+    </div>
+        <?php endif ?>
     <div class="row pb-3">
         <label for="<?= $row["name"] ?>" class="col-3 col-form-label"><?= $row["label"] ?></label>
         <div class="col">

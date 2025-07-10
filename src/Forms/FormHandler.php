@@ -851,6 +851,11 @@ class FormHandler
         ];
     }
 
+    public function AddEditSection(string $label)
+    {
+        $this->FG_EDIT_FORM_ELEMENTS[] = ["type" => "SECTION", "section_name" => $label];
+    }
+
     /**
      * @param string $label the label for the input
      * @param string $fieldname the name of the database column, also used for HTML element names
