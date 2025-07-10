@@ -262,25 +262,26 @@ if ($popup_select) {
     $HD_Form->search_form_title = _("Define specific criteria to search for cards created.");
     $HD_Form->AddSearchDateInput(_("Creation date"), "creationdate");
     $HD_Form->AddSearchDateInput(_("First use date"), "firstusedate");
-    $HD_Form->AddSearchTextInput(_("ACCOUNT NUMBER"), "username");
-    $HD_Form->AddSearchTextInput(_("EMAIL"), "cc_card.email");
-    $HD_Form->AddSearchTextInput(_("LASTNAME"), "cc_card.lastname");
-    $HD_Form->AddSearchTextInput(_("FIRSTNAME"), "cc_card.firstname");
-    $HD_Form->AddSearchTextInput(_("LOGIN"), "useralias");
-    $HD_Form->AddSearchTextInput(_("COMPANY NAME"), "company_name");
-    $HD_Form->AddSearchComparisonInput(_("CUSTOMER ID"), "id1", "id2", "cc_card.id");
-    $HD_Form->AddSearchComparisonInput(_("SERIAL"), "serial1", "serial2", "serial");
-    $HD_Form->AddSearchComparisonInput(_("CREDIT"), "credit1", "credit2", "cc_card.credit");
-    $HD_Form->AddSearchComparisonInput(_("INUSE"), "inuse1", "inuse2", "inuse");
+    $HD_Form->AddSearchTextInput(_("Account number"), "username");
+    $HD_Form->AddSearchTextInput(_("Email"), "cc_card.email");
+    $HD_Form->AddSearchTextInput(_("Last name"), "cc_card.lastname");
+    $HD_Form->AddSearchTextInput(_("First name"), "cc_card.firstname");
+    $HD_Form->AddSearchTextInput(_("Login"), "useralias");
+    $HD_Form->AddSearchTextInput(_("Company"), "company_name");
+    $HD_Form->AddSearchComparisonInput(_("Customer ID"), "id1", "id2", "cc_card.id");
+    $HD_Form->AddSearchComparisonInput(_("Serial"), "serial1", "serial2", "serial");
+    $HD_Form->AddSearchComparisonInput(_("Balance"), "credit1", "credit2", "cc_card.credit");
+    $HD_Form->AddSearchComparisonInput(_("In use"), "inuse1", "inuse2", "inuse");
 
-    $HD_Form->AddSearchSqlSelectInput(_("SELECT SERIE"), "id_seria", new Table("cc_card_seria", ["name", "id"]));
-    $HD_Form->AddSearchSelectInput(_("SELECT LANGUAGE"), "cc_card.language", $language_list);
-    $HD_Form->AddSearchSqlSelectInput(_("SELECT TARIFF"), "tariff", new Table("cc_tariffgroup", ["tariffgroupname", "id"]));
-    $HD_Form->AddSearchSelectInput(_("SELECT STATUS"), "status", $cardstatus_list);
-    $HD_Form->AddSearchSelectInput(_("SELECT ACCESS"), "simultaccess", $simultaccess_list);
-    $HD_Form->AddSearchSqlSelectInput(_("SELECT GROUP"), "id_group", new Table("cc_card_group", ["name", "id"]));
-    $HD_Form->AddSearchSelectInput(_("SELECT CURRENCY"), "cc_card.currency", getCurrenciesList());
-    $HD_Form->AddSearchSelectInput(_("SELECT PAYMENT TYPE"), "typepaid", $typepaid_list);
+    $HD_Form->AddSearchSqlSelectInput(_("Card series"), "id_seria", new Table("cc_card_seria", ["name", "id"]));
+    $HD_Form->AddSearchSelectInput(_("Language"), "cc_card.language", $language_list);
+    $HD_Form->AddSearchSqlSelectInput(_("Call plan"), "tariff", new Table("cc_tariffgroup", ["tariffgroupname", "id"]));
+    $HD_Form->AddSearchSelectInput(_("Status"), "status", $cardstatus_list);
+    $HD_Form->AddSearchSelectInput(_("Access"), "simultaccess", $simultaccess_list);
+    $HD_Form->AddSearchSqlSelectInput(_("Group"), "id_group", new Table("cc_card_group", ["name", "id"]));
+    $HD_Form->AddSearchSelectInput(_("Currency"), "cc_card.currency", getCurrenciesList());
+    $HD_Form->AddSearchSelectInput(_("Account type"), "typepaid", $typepaid_list);
+    $HD_Form->AddSearchSqlSelectInput(_("Agent"), "id_agent", new Table("cc_agent", ["CONCAT(firstname, ' ', lastname)", "id"]));
 
     $HD_Form->FG_ENABLE_INFO_BUTTON = true;
     $HD_Form->FG_INFO_BUTTON_LINK = "A2B_info_card.php?id=";
@@ -335,7 +336,7 @@ if ($popup_select) {
     }
     if (!is_customer()) {
         $HD_Form->AddEditElement(
-            _("ACCOUNT NUMBER"),
+            _("Account number"),
             "username",
             '',
             $acct_attr,
@@ -349,7 +350,7 @@ if ($popup_select) {
             $login_attr["value"] = $array_card_generated[1];
         }
         $HD_Form->AddEditElement(
-            _("WEBUI LOGIN"),
+            _("Login"),
             "useralias",
             "",
             $login_attr,
@@ -362,7 +363,7 @@ if ($popup_select) {
             $pass_attr["value"] = generate_random_value("#####XXXXXXXXXXXXXXX");
         }
         $HD_Form->AddEditElement(
-            _("WEBUI PASSWORD"),
+            _("Password"),
             "uipass",
             _("Password for customer to access to the web interface and view the balance."),
             $pass_attr,
@@ -377,7 +378,7 @@ if ($popup_select) {
             $balance_attr["readonly"] = "readonly";
         }
         $HD_Form->AddEditElement(
-            _("BALANCE"),
+            _("Balance"),
             "credit",
             _("currency : ") . strtoupper(BASE_CURRENCY),
             $balance_attr,
@@ -386,14 +387,14 @@ if ($popup_select) {
         );
 
         $HD_Form->AddEditSqlSelect(
-            _("CUSTOMER GROUP"),
+            _("Group"),
             "id_group",
             new Table("cc_card_group", ["name", "id"]),
             is_admin() ? [] : ["id_agent" => Agent::id()]
         );
 
         $HD_Form->AddEditSqlSelect(
-            _("SERIES"),
+            _("Card series"),
             "id_seria",
             new Table("cc_card_seria", ["name", "id"]),
             [],
@@ -403,7 +404,7 @@ if ($popup_select) {
     }
 
     $HD_Form->AddEditElement(
-        _("LAST NAME"),
+        _("Last name"),
         "lastname",
         "",
         ["maxlength" => 50],
@@ -414,7 +415,7 @@ if ($popup_select) {
     );
 
     $HD_Form->AddEditElement(
-        _("FIRST NAME"),
+        _("First name"),
         "firstname",
         "",
         ["maxlength" => 50],
@@ -425,7 +426,7 @@ if ($popup_select) {
     );
 
     $HD_Form->AddEditElement(
-        _("EMAIL"),
+        _("Email"),
         "email",
         "",
         ["maxlength" => 70],
@@ -436,7 +437,7 @@ if ($popup_select) {
     );
 
     $HD_Form->AddEditElement(
-        _("ADDRESS"),
+        _("Address"),
         "address",
         "",
         ["maxlength" => 100],
@@ -447,7 +448,7 @@ if ($popup_select) {
     );
 
     $HD_Form->AddEditElement(
-        _("CITY"),
+        _("City"),
         "city",
         "",
         ["maxlength" => 40],
@@ -458,7 +459,7 @@ if ($popup_select) {
     );
 
     $HD_Form->AddEditElement(
-        _("STATE/PROVINCE"),
+        _("Province/State"),
         "state",
         "",
         ["maxlength" => 40],
@@ -469,7 +470,7 @@ if ($popup_select) {
     );
 
     $HD_Form->AddEditSqlSelect(
-        _("COUNTRY"),
+        _("Country"),
         "country",
         new Table("cc_country", ["countryname", "countrycode"]),
         [],
@@ -477,7 +478,7 @@ if ($popup_select) {
     );
 
     $HD_Form->AddEditElement(
-        _("ZIP/POSTAL CODE"),
+        _("Postal code"),
         "zipcode",
         "",
         ["maxlength" => 20],
@@ -488,7 +489,7 @@ if ($popup_select) {
     );
 
     $HD_Form->AddEditElement(
-        _("PHONE NUMBER"),
+        _("Phone number"),
         "phone",
         "",
         ["maxlength" => 20],
@@ -499,7 +500,7 @@ if ($popup_select) {
     );
 
     $HD_Form->AddEditElement(
-        _("FAX NUMBER"),
+        _("Fax number"),
         "fax",
         "",
         ["maxlength" => 20],
@@ -510,7 +511,7 @@ if ($popup_select) {
     );
 
     $HD_Form->AddEditSelect(
-        _("TIMEZONE"),
+        _("Timezone"),
         "id_timezone",
         get_timezones(),
         "",
@@ -520,7 +521,7 @@ if ($popup_select) {
     if (is_customer()) {
         if (ACT_VOICEMAIL) {
             $HD_Form->AddEditRadio(
-                gettext("ACTIVE VOICEMAIL SERVICE"),
+                gettext("Activate voicemail"),
                 "voicemail_activated",
                 getYesNoList(),
                 "0",
@@ -534,7 +535,7 @@ if ($popup_select) {
     }
 
     $HD_Form->AddEditElement(
-        _("COMPANY NAME"),
+        _("Company name"),
         "company_name",
         "",
         ["maxlength" => 50],
@@ -545,7 +546,7 @@ if ($popup_select) {
     );
 
     $HD_Form->AddEditElement(
-        _("COMPANY WEBSITE"),
+        _("Company website"),
         "company_website",
         "",
         ["maxlength" => 60],
@@ -558,7 +559,7 @@ if ($popup_select) {
     if ($form_action !== "edit" && is_admin()) {
         $payment_attr = ($form_action === "ask-add") ? [] : ["disabled" => "disabled"];
         $HD_Form->AddEditSelect(
-            _("PAYMENT TYPE"),
+            _("Account type"),
             "typepaid",
             $typepaid_list,
             "",
@@ -571,7 +572,7 @@ if ($popup_select) {
 
     if (is_admin() || $form_action === "add" || $form_action === "ask-add") {
         $HD_Form->AddEditSqlSelect(
-            _("CALL PLAN"),
+            _("Call plan"),
             "tariff",
             new Table("cc_tariffgroup", ["tariffgroupname", "id"], is_admin() ? []
                 : ["cc_agent_tariffgroup" => ["cc_tariffgroup.id", "cc_agent_tariffgroup.id_tariffgroup"]]),
@@ -585,7 +586,7 @@ if ($popup_select) {
     }
 
     $HD_Form->AddEditSqlSelect(
-        _("DIDGROUP"),
+        _("DID group"),
         "id_didgroup",
         new Table("cc_didgroup", ["didgroupname", "id"]),
         [],
@@ -593,19 +594,19 @@ if ($popup_select) {
         [-1 => _("NOT DEFINED")]
     );
 
-    $HD_Form->AddEditSelect(_("LANGUAGE"), "language", $language_list);
+    $HD_Form->AddEditSelect(_("Language"), "language", $language_list);
 
     $HD_Form->AddEditSelect(
-        _("CURRENCY"),
+        _("Currency"),
         "currency",
         $currency_list,
         "", _("Currency used at the customer end.")
     );
 
-    $HD_Form->AddEditSelect(_("STATUS"), "status", $cardstatus_list);
+    $HD_Form->AddEditSelect(_("Status"), "status", $cardstatus_list);
 
     $HD_Form->AddEditRadio(
-        _("LOCK"),
+        _("Lock"),
         "block",
         getYesNoList(),
         "0",
@@ -619,7 +620,7 @@ if ($popup_select) {
         $lock_attr["value"] = 0;
     }
     $HD_Form->AddEditElement(
-        _("LOCK PIN"),
+        _("Lock PIN"),
         "lock_pin",
         _("Code required to make the call if the lock is active."),
         $lock_attr,
@@ -630,14 +631,14 @@ if ($popup_select) {
     );
 
     $HD_Form->AddEditSelect(
-        _("SIMULTANEOUS ACCESS"),
+        _("Access"),
         "simultaccess",
         $simultaccess_list,
         "1"
     );
 
     $HD_Form->AddEditRadio(
-        _("RUN SERVICE"),
+        _("Run services"),
         "runservice",
         getYesNoList(),
         "0",
@@ -648,7 +649,7 @@ if ($popup_select) {
 
     if (is_admin()) {
         $HD_Form->AddEditElement(
-            _("CREDIT LIMIT"),
+            _("Credit limit"),
             "creditlimit",
             _("Credit limit is only used for the postpaid account."),
             ["maxlength" => 20],
@@ -660,7 +661,7 @@ if ($popup_select) {
     }
 
     $HD_Form->AddEditSelect(
-        _("CREDIT LIMIT NOTIFICATION"),
+        _("Credit limit notification"),
         "credit_notification",
         $limits_notify_list,
         "",
@@ -668,7 +669,7 @@ if ($popup_select) {
     );
 
     $HD_Form->AddEditRadio(
-        _("PERMITTED NOTIFICATIONS BY MAIL"),
+        _("Enable email notifications"),
         "notify_email",
         getYesNoList(),
         "0",
@@ -678,7 +679,7 @@ if ($popup_select) {
     );
 
     $HD_Form->AddEditElement(
-        _("EMAIL NOTIFICATION"),
+        _("Notification email"),
         "email_notification",
         "",
         ["maxlength" => 70],
@@ -689,7 +690,7 @@ if ($popup_select) {
     );
 
     $HD_Form->AddEditSqlSelect(
-        _("CAMPAIGN"),
+        _("Campaign"),
         "id_campaign",
         new Table("cc_campaign", ["name", "id"]),
         [],
@@ -698,7 +699,7 @@ if ($popup_select) {
     );
 
     $HD_Form->AddEditElement(
-        _("FIRST USE DATE"),
+        _("First use date"),
         "firstusedate",
         "",
         ["maxlength" => 40, "readonly" => "readonly"],
@@ -710,24 +711,19 @@ if ($popup_select) {
     );
 
     $HD_Form->AddEditSelect(
-        _("ENABLE EXPIRY"),
+        _("Account expiry"),
         "enableexpire",
         $expire_list,
         "",
         _("Select method of expiry for the account.")
     );
 
-    $comp_zero = $comp_date_plus = '';
-    if (isset($form_action) && $form_action === "ask-add") {
-        $comp_zero = "value='0'";
-        $comp_date_plus = 'value="' . (new DateTime("+10 years"))->format("Y-m-d H:i:s") . '"';
-    }
     $exp_attr = ["maxlength" => 40];
     if ($form_action === "ask-add") {
         $exp_attr["value"] = (new DateTime("+10 years"))->format("Y-m-d H:i:s");
     }
     $HD_Form->AddEditElement(
-        _("EXPIRY DATE"),
+        _("Expiry date"),
         "expirationdate",
         _("please use the format YYYY-MM-DD HH:MM:SS. For instance, '2004-12-31 00:00:00'"),
         $exp_attr,
@@ -743,7 +739,7 @@ if ($popup_select) {
         $days_attr["value"] = 0;
     }
     $HD_Form->AddEditElement(
-        _("EXPIRY DAYS"),
+        _("Expiry days"),
         "expiredays",
         _("The number of days after which the account will expire."),
         $days_attr,
@@ -753,7 +749,7 @@ if ($popup_select) {
 
     if (!empty($A2B->config["webui"]['buddy_sip_file']) && (is_admin() || Agent::allowed(Agent::ACX_VOIPCONF))) {
         $HD_Form->AddEditRadio(
-            _("CREATE SIP CONFIG"),
+            _("Create SIP config"),
             "sip_buddy",
             getYesNoList(),
             "0",
@@ -765,7 +761,7 @@ if ($popup_select) {
 
     if (!empty($A2B->config["webui"]['buddy_iax_file']) && (is_admin() || Agent::allowed(Agent::ACX_VOIPCONF))) {
         $HD_Form->AddEditRadio(
-            _("CREATE IAX CONFIG"),
+            _("Create IAX config"),
             "iax_buddy",
             getYesNoList(),
             "0",
@@ -776,7 +772,7 @@ if ($popup_select) {
     }
 
     $HD_Form->AddEditElement(
-        _("IN USE"),
+        _("In use"),
         "inuse",
         _("Updated to show the number of concurrent calls in use by this customer. If there are no currently no calls, and the system shows that there are, manually reset this field back to zero."),
         ["maxlength" => 5],
@@ -787,7 +783,7 @@ if ($popup_select) {
     );
 
     $HD_Form->AddEditRadio(
-        _("AUTOREFILL"),
+        _("Auto refill"),
         "autorefill",
         getYesNoList(),
         "0",
@@ -802,7 +798,7 @@ if ($popup_select) {
         $balance_attr["value"] = 0;
     }
     $HD_Form->AddEditElement(
-        _("INITIAL BALANCE"),
+        _("Initial balance"),
         "initialbalance",
         _("The initial balance is used by autorefill to reset the current balance to this amount"),
         $balance_attr,
@@ -811,7 +807,7 @@ if ($popup_select) {
     );
 
     $HD_Form->AddEditSelect(
-        _("INVOICE DAY"),
+        _("Invoice day"),
         "invoiceday",
         $invoiceday_list,
         "",
@@ -835,7 +831,7 @@ if ($popup_select) {
     );
 
     $HD_Form->AddEditElement(
-        _("VAT/GST REGISTRATION NUMBER "),
+        _("VAT/GST registration number"),
         "vat_rn",
         "",
         ["maxlength" => 40],
@@ -845,10 +841,10 @@ if ($popup_select) {
         "NO"
     );
 
-    $HD_Form->AddEditSelect(_("DISCOUNT"), "discount", $discount_list);
+    $HD_Form->AddEditSelect(_("Discount"), "discount", $discount_list);
 
     $HD_Form->AddEditElement(
-        _("TRAFFIC PER MONTH"),
+        _("Monthly traffic target"),
         "traffic",
         "",
         ["maxlength" => 20],
@@ -859,7 +855,7 @@ if ($popup_select) {
     );
 
     $HD_Form->AddEditTextarea(
-        _("TARGET TRAFFIC"),
+        _("Traffic target"),
         "traffic_target",
         "",
         ["rows" => 4],
@@ -867,7 +863,7 @@ if ($popup_select) {
     );
 
     $HD_Form->AddEditSelect(
-        _("RESTRICTION"),
+        _("Restrict calls"),
         "restriction",
         $restriction_list,
         "0",
@@ -878,7 +874,7 @@ if ($popup_select) {
     );
 
     $HD_Form->AddEditHasMany(
-        _("RESTRICTED NUMBERS"),
+        _("Call restriction list"),
         new Table("cc_restricted_phonenumber", ["id", "number"]),
         "number",
         "id_card",
@@ -887,7 +883,7 @@ if ($popup_select) {
     );
 
     $HD_Form->AddEditHasMany(
-        _("CALLERID"),
+        _("Caller ID"),
         new Table("cc_callerid", ["id", "cid"]),
         "cid",
         "id_cc_card",
@@ -896,7 +892,7 @@ if ($popup_select) {
     );
 
     $HD_Form->AddEditHasMany(
-        _("CUSTOMER HISTORY"),
+        _("Customer history"),
         new Table(
             "cc_card_history",
             ["id", "CONCAT('(', datecreated, ') ', description)"]
