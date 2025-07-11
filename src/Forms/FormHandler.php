@@ -227,7 +227,7 @@ class FormHandler
     public string $add_message_result;
 
     /** @var string Result text for the delete page */
-    public string $delete_message_result = "";
+    public string $delete_message_result;
 
     /** @var string Error text for the add page */
     public string $add_message_error;
@@ -888,7 +888,7 @@ class FormHandler
      */
     public function AddSearchSingleDateInput(string $label, string $fieldname) {
         $fieldname = str_replace(".", "^^", $fieldname);
-        $fieldvar = $fieldname . "type";
+        $fieldvar = $fieldname . "_type";
         $this->search_form_elements[] = [
             "label" => $label,
             "input" => [$fieldname],
@@ -906,7 +906,7 @@ class FormHandler
     public function AddSearchTextInput($displayname, $fieldname)
     {
         $fieldname = str_replace(".", "^^", $fieldname);
-        $fieldvar = $fieldname . "type";
+        $fieldvar = $fieldname . "_type";
         $this->search_form_elements[] = [
             "label" => $displayname,
             "input" => [$fieldname],
@@ -927,7 +927,7 @@ class FormHandler
         $this->search_form_elements[] = [
             "label" => $label,
             "input" => ["{$fieldname}0", "{$fieldname}1"],
-            "operator" => ["{$fieldname}0type", "{$fieldname}1type"],
+            "operator" => ["{$fieldname}0_type", "{$fieldname}1_type"],
             "column" => $fieldname,
             "type" => "COMPARISON",
         ];
