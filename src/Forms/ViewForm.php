@@ -59,7 +59,7 @@ class ViewForm
         $output = ob_get_clean() ?: "Template error!";
 
         if (empty($list)) {
-            $output .=  "<div class='row pb-3 justify-content-center'><div class='col-8'>$form->CV_NO_FIELDS</div></div>";
+            $output .=  "<div class='row pb-3 justify-content-center'><div class='col-8'>$form->list_message_empty</div></div>";
         }
 
         return $output;

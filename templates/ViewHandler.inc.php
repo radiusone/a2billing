@@ -71,7 +71,7 @@ namespace A2billing\Forms;
             data-popup-fieldname="<?= $processed["popup_fieldname"] ?? "" ?>"
         >
             <caption>
-                <?= $form->CV_TITLE_TEXT ?> – <?= sprintf(_("%d records"), $form->FG_LIST_VIEW_ROW_COUNT) ?>
+                <?= $form->list_message_intro ?> – <?= sprintf(_("%d records"), $form->FG_LIST_VIEW_ROW_COUNT) ?>
             </caption>
             <thead>
                 <tr>

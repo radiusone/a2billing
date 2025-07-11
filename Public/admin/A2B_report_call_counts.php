@@ -57,10 +57,10 @@ $HD_Form = new FormHandler("cc_call", _("Call Count Report"));
 
 if ($displaytop === "card_id") {
     $HD_Form->list_query_group_columns = ["card_id"];
-    $HD_Form->CV_TITLE_TEXT = $groupbyday ? _("Top users by day") : _("Top users");
+    $HD_Form->list_message_intro = $groupbyday ? _("Top users by day") : _("Top users");
 } elseif ($displaytop === "destination") {
     $HD_Form->list_query_group_columns = ["destination"];
-    $HD_Form->CV_TITLE_TEXT = $groupbyday ? _("Top destinations by day") : _("Top destinations");
+    $HD_Form->list_message_intro = $groupbyday ? _("Top destinations by day") : _("Top destinations");
 } else {
     $displaytop = null;
 }

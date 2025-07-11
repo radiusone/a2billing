@@ -47,7 +47,7 @@ $HD_Form -> AddListValue(gettext("CURRENCY"), "currency");
 
 $HD_Form->list_query_conditions["usedcardnumber"] = Customer::card();
 
-$HD_Form -> CV_NO_FIELDS  = gettext("No vouchers have been used!");
+$HD_Form -> list_message_empty  = gettext("No vouchers have been used!");
 
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = false;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = false;

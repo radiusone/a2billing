@@ -63,7 +63,7 @@ $HD_Form->AddSearchDateInput(_("Date"), "creationdate");
 $HD_Form->AddSearchPopupInput(_("Administrator"), "iduser", "A2B_entity_user.php");
 $HD_Form->AddSearchSelectInput(_("Log level"),"loglevel", [[1, _("Info")], [2, _("Notice")], [3, _("Warning")]]);
 
-$HD_Form->CV_NO_FIELDS = _("No log entries found");
+$HD_Form->list_message_empty = _("No log entries found");
 $HD_Form->FG_ENABLE_EDIT_BUTTON = false;
 $HD_Form->FG_ENABLE_DELETE_BUTTON = false;
 $HD_Form->FG_ENABLE_ADD_BUTTON = false;

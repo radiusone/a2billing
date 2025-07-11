@@ -97,7 +97,7 @@ $HD_Form->list_query_order_columns = ["starttime"];
 $HD_Form->list_query_order_direction = "DESC";
 $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 30;
 $HD_Form->FG_QUERY_PRIMARY_KEY = "cc_call.id";
-$HD_Form->CV_NO_FIELDS = _("No matching calls found; use the fields above to refine your search.");
+$HD_Form->list_message_empty = _("No matching calls found; use the fields above to refine your search.");
 
 $HD_Form->AddListValue(_("Calldate"), "starttime");
 $HD_Form->AddListValue(_("CalledNumber"), "calledstation", "format_phone_number");
@@ -187,7 +187,7 @@ if ($posted_archive === true) {
         (new Table())->abort();
     }
     if ($res) {
-        $HD_Form->CV_NO_FIELDS = _("The data has been successfully archived");
+        $HD_Form->list_message_empty = _("The data has been successfully archived");
     } else {
         $archive_message = _("There was an error archiving the data");
     }

@@ -71,7 +71,7 @@ if ($A2B->config['webui']['link_audio_file'] ?? false) {
 
 $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 25;
 
-$HD_Form->CV_TITLE_TEXT = _("Call Logs");
+$HD_Form->list_message_intro = _("Call Logs");
 
 $HD_Form->list_query_order_columns = ["cc_call.starttime"];
 $HD_Form->list_query_order_direction = "DESC";

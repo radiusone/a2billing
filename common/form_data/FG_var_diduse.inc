@@ -75,7 +75,7 @@ $HD_Form->AddListValue(_("DID"), "did", "format_phone_number")
     ->AddListMapping(_("Status"), "cc_did_use.activated", $status_list)
     ->AddListHiddenValue("id_did");
 
-$HD_Form->CV_NO_FIELDS = _("No DIDs in use");
+$HD_Form->list_message_empty = _("No DIDs in use");
 
 $HD_Form->AddSearchTextInput(_("DID"), "did");
 $HD_Form->AddSearchSelectInput(_("Status"), "inuse", [_("All DIDs"), _("DIDs in use")]);

@@ -81,7 +81,7 @@ $HD_Form->AddListValue(_("Sell"), "SUM(sessionbill)", "get_money_precise");
 
 $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 25;
 
-$HD_Form->CV_TITLE_TEXT = _("DNID Report");
+$HD_Form->list_message_intro = _("DNID Report");
 
 $HD_Form->list_query_order_columns = ["dnid"];
 $HD_Form->list_query_group_columns = ["dnid"];

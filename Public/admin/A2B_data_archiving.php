@@ -80,7 +80,7 @@ $HD_Form->AddListMapping(_("SIP"), "sip_buddy", $yesno_list);
 $HD_Form->AddListMapping(_("IAX"), "iax_buddy", $yesno_list);
 $HD_Form->AddListValue(abbr(_("Num"), _("Number of calls")), "nbused");
 
-$HD_Form->CV_NO_FIELDS  = _("NO CUSTOMER SEARCHED!");
+$HD_Form->list_message_empty  = _("NO CUSTOMER SEARCHED!");
 $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 30;
 
 $HD_Form->search_form_enabled = true;
@@ -137,7 +137,7 @@ if ($posted_archive) {
         (new Table())->abort();
     }
     if ($res) {
-        $HD_Form->CV_NO_FIELDS = _("The data has been successfully archived");
+        $HD_Form->list_message_empty = _("The data has been successfully archived");
     } else {
         $archive_message = _("There was an error archiving the data");
     }

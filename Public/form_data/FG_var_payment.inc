@@ -48,8 +48,8 @@ $HD_Form -> AddListValue(gettext("PAYMENT DATE"), "date");
 $HD_Form -> AddListValue(gettext("PAYMENT AMOUNT"), "payment");
 $HD_Form -> AddListValue(gettext("DESCRIPTION"), "description");
 
-$HD_Form -> CV_TITLE_TEXT = gettext("Payment list");
-$HD_Form -> CV_NO_FIELDS  = gettext("No payments have been made!");
+$HD_Form -> list_message_intro = gettext("Payment list");
+$HD_Form -> list_message_empty  = gettext("No payments have been made!");
 
 $HD_Form -> FG_ENABLE_EDIT_BUTTON = false;
 $HD_Form -> FG_ENABLE_DELETE_BUTTON = false;

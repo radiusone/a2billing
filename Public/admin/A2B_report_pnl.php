@@ -353,7 +353,7 @@ $HD_Form->AddSearchRelativeDateInput(_("Date"), "starttime", true, false);
 $HD_Form->AddSearchSelectInput(_("Report type"), "report_type", [1 => _("Card Group"), 2 => _("Call Plan")], false);
 $HD_Form->search_session_key = 'pnl_selection';
 
-$HD_Form->CV_NO_FIELDS  = gettext("NO INFO!");
+$HD_Form->list_message_empty  = gettext("NO INFO!");
 
 $form_action ??= "list";
 $list = $HD_Form->perform_action($form_action);

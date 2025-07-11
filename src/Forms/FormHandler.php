@@ -44,9 +44,9 @@ class FormHandler
     /* CONFIG THE VIEWER : CV */
 
     /** @var string Message to display if there's no data found for list view */
-    public string $CV_NO_FIELDS = "THERE IS NO RECORD !";
+    public string $list_message_empty = "THERE IS NO RECORD !";
 
-    public string $CV_TITLE_TEXT = '';
+    public string $list_message_intro = '';
 
     /** @var string[] Parameters to add to the URL of the list view sorting/pagination buttons */
     public array $CV_FOLLOWPARAMETERS = [];
@@ -350,8 +350,8 @@ class FormHandler
         $this->cancel_button_text = _("Cancel");
 
         $inst = strtolower($this->FG_INSTANCE_NAME);
-        $this->CV_NO_FIELDS = sprintf(_("No %s have been created"), $inst);
-        $this->CV_TITLE_TEXT = sprintf(_("%s list"), $this->FG_INSTANCE_NAME);
+        $this->list_message_empty = sprintf(_("No %s have been created"), $inst);
+        $this->list_message_intro = sprintf(_("%s list"), ucfirst($inst));
         $this->edit_message_intro = sprintf(_("Editing %s"), $inst);
         $this->delete_message_result = sprintf(_("Your %s has been deleted."), $inst);
         $this->delete_message_intro = sprintf(_("If you really want to remove this %s, click the “%s” button"), $inst, $this->delete_button_text);

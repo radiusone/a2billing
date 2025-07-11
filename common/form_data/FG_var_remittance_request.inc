@@ -99,4 +99,4 @@ $HD_Form->AddSearchTextInput(_("First name"), 'firstname');
 $HD_Form->AddSearchSelectInput(_("Request type"), "type", $type_list);
 $HD_Form->AddSearchSelectInput(_("Request status"), "status", $status_list);
 
-$HD_Form->CV_NO_FIELDS  = _("THERE ARE NO REMITTANCE REQUEST CREATED!");
+$HD_Form->list_message_empty  = _("THERE ARE NO REMITTANCE REQUEST CREATED!");
