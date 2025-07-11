@@ -47,7 +47,7 @@ $HD_Form->FG_FK_DELETE_CONFIRM = true;
 $HD_Form->FG_FK_WARNONLY = true;
 $HD_Form->FG_FK_TABLENAMES = ["cc_support_component"];
 $HD_Form->FG_FK_EDITION_CLAUSE = ["id_support"];
-$HD_Form->FG_FK_DELETE_MESSAGE = _("You have some components using this Support Box! Please comfirm that you really want to remove this Support Box? ");
+$HD_Form->delete_message_confirm_fk = _("You have some components using this Support Box! Please comfirm that you really want to remove this Support Box? ");
 
 $HD_Form->help_text = create_help(_("You can see here the Support Box, you need at least one support box to start support activity."));
 

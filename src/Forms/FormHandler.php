@@ -291,7 +291,7 @@ class FormHandler
     public bool $FG_FK_WARNONLY = false;
 
     // Delete Message for FK
-    public string $FG_FK_DELETE_MESSAGE = "Are you sure to delete all records connected to this instance.";
+    public string $delete_message_confirm_fk;
 
     private bool $FG_ENABLE_LOG = ENABLE_LOG;
 
@@ -362,7 +362,7 @@ class FormHandler
         $this->edit_message_bottom =
         $this->delete_message_bottom = sprintf(_("Click “%s” to continue"), $this->save_button_text);
 
-        $this->FG_FK_DELETE_MESSAGE = _("Are you sure you want to delete all records connected to this instance?");
+        $this->delete_message_confirm_fk = _("Are you sure you want to delete all records connected to this instance?");
     }
 
     /*

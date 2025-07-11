@@ -49,7 +49,7 @@ $HD_Form->FG_FK_DELETE_ALLOWED = true;
 $HD_Form->FG_FK_DELETE_CONFIRM = true;
 $HD_Form->FG_FK_TABLENAMES = ["cc_ratecard"];
 $HD_Form->FG_FK_EDITION_CLAUSE = ["idtariffplan"];
-$HD_Form->FG_FK_DELETE_MESSAGE = _("You are going as well to remove all the rates attached to this ratecard! Please comfirm that you really want to remove this ratecard and those rates ? ");
+$HD_Form->delete_message_confirm_fk = _("You are going as well to remove all the rates attached to this ratecard! Please comfirm that you really want to remove this ratecard and those rates ? ");
 
 $HD_Form->add_help_text = $HD_Form->edit_help_text = create_help(
     _("A ratecard is a set of rates defined and applied according to the dialling prefix, for instance 441 & 442 : UK Landline.")

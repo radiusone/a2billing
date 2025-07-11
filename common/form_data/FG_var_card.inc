@@ -88,10 +88,10 @@ $HD_Form->FG_FK_WARNONLY = !($A2B->config['webui']['delete_fk_card'] ?? true);
 
 if (!$HD_Form->FG_FK_WARNONLY) {
     // WE WILL DELETE THE FK
-    $HD_Form->FG_FK_DELETE_MESSAGE = _("You are going as well to remove all the SIP/IAX accounts & CallerIDs attached to this card! Please confirm that you really want to remove this card ? ");
+    $HD_Form->delete_message_confirm_fk = _("You are going as well to remove all the SIP/IAX accounts & CallerIDs attached to this card! Please confirm that you really want to remove this card ? ");
 } else {
     // WE JUST NOTIFY
-    $HD_Form->FG_FK_DELETE_MESSAGE = _("You are going to remove a card that have SIP/IAX accounts and/or CallerIDs attached to it ! Please confirm that you really want to remove this card ? ");
+    $HD_Form->delete_message_confirm_fk = _("You are going to remove a card that have SIP/IAX accounts and/or CallerIDs attached to it ! Please confirm that you really want to remove this card ? ");
 }
 
 if (!$popup_select && (is_admin() || Agent::allowed(Agent::ACX_GENERATE_CUSTOMER))) {

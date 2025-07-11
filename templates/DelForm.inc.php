@@ -33,7 +33,7 @@ namespace A2billing\Forms;
                 <?= sprintf(ngettext("You have %d dependent record.", "You have %d dependent records.", $processed["fk_count"]), $processed["fk_count"]) ?>
             </p>
             <p>
-                <?= $form -> FG_FK_DELETE_MESSAGE ?>
+                <?= $form -> delete_message_confirm_fk ?>
             </p>
         </div>
     </div>
