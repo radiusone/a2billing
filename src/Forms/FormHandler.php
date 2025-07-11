@@ -28,8 +28,6 @@ class FormHandler
 {
     private static self $Instance;
 
-    private array $_vars = [];
-
     /**
      * @var array basically just the contents of $_REQUEST
      */
@@ -341,7 +339,6 @@ class FormHandler
             $this->FG_CSRF_TOKEN = hash('SHA256', CSRF_SALT . $this->genCsrfTokenKey());
             $_SESSION['CSRF_TOKEN'] = $this->FG_CSRF_TOKEN;
         }
-        $this->_vars = array_merge($_GET, $_POST);
 
         //initializing variables with _
         $this->save_button_text = _("Save");
@@ -393,8 +390,6 @@ class FormHandler
      */
     public function init()
     {
-        $this->_vars = array_merge($_GET, $_POST);
-
         $processed = $this->getProcessed();
 
         if (class_exists(Console::class)) {
@@ -414,7 +409,8 @@ class FormHandler
 
     public function getProcessed(): array
     {
-        foreach ($this->_vars as $key => $value) {
+        $vars = array_merge($_GET, $_POST);
+        foreach ($vars as $key => $value) {
             if (str_contains($key, "^^")) {
                 $this->_processed[$key] = $value;
                 $key = str_replace("^^", ".", $key);
