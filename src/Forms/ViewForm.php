@@ -35,16 +35,28 @@ class ViewForm
             $query_params["filterprefix$i"] = $processed["filterprefix$i"] ?? null;
         }
         foreach ($processed as $k => $v) {
-            if ($k !== "csrf_token" && !array_key_exists($k, $query_params)) {
-                $query_params[$k] = $v;
+            if ($k !== "csrf_token") {
+                $query_params[$k] ??= $v;
             }
+        }
+        foreach ($form->search_form_elements as $search) {
+            // array_filter will remove empty search items but
+            // this ensures the matching operator columns are also removed
+            foreach ($search["operator"] ?? [] as $i => $op) {
+                $in = $search["input"][$i];
+                if (
+                    ($processed[$in] ?? "") === ""
+                    || (($search["type"] ?? "") === "DATE" && !array_key_exists("enable_$in", $processed))
+                ) {
+                    unset($query_params[$in], $query_params[$op]);
+                }
+            }
+            // also don't include date fields that aren't enabled
         }
         foreach($form->CV_FOLLOWPARAMETERS as $k => $v) {
             $query_params[$k] = $v;
         }
-        $query_params = array_unique(
-            array_filter($query_params, fn ($v) => !is_null($v) && $v !== "")
-        );
+        $query_params = array_filter($query_params, fn ($v) => !is_null($v) && $v !== "");
         $sort_params = $pagination_params = $query_params;
         $pagination_params["current_page"] = "%s";
 

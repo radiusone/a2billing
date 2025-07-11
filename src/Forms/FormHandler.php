@@ -412,21 +412,19 @@ class FormHandler
         $vars = array_merge($_GET, $_POST);
         foreach ($vars as $key => $value) {
             if (str_contains($key, "^^")) {
-                $this->_processed[$key] = $value;
+                $this->_processed[$key] ??= $value;
                 $key = str_replace("^^", ".", $key);
             }
-            if (empty($this->_processed[$key])) {
-                $this->_processed[$key] = $value;
-                // this is hashing admin and agent passwords on save
-                // todo: make this a property of the input component or something
-                if ($key === "pwd_encoded") {
-                    if (!empty($value)) {
-                        $this->_processed["pwd_encoded"] = password_hash($this->_processed[$key], PASSWORD_DEFAULT);
-                    } else {
-                        unset($this->_processed["pwd_encoded"]);
-                    }
+            // this is hashing admin and agent passwords on save
+            // todo: make this a property of the input component or something
+            if ($key === "pwd_encoded") {
+                if ($value) {
+                    $value = password_hash($value, PASSWORD_DEFAULT);
+                } else {
+                    continue;
                 }
             }
+            $this->_processed[$key] ??= $value;
         }
 
         return $this->_processed;
@@ -1354,18 +1352,18 @@ class FormHandler
             }
         }
 
-        // RETRIEVE THE CONTENT OF THE SEARCH SESSION AND
-        if (($processed['posted_search'] ?? 0) != 1 && !empty($_SESSION[$this->search_session_key])) {
-            $element_arr = json_decode($_SESSION[$this->search_session_key], true);
-            foreach ($element_arr as $entity_name => $entity_value) {
-                $this->_processed[$entity_name] = $entity_value;
-                $processed[$entity_name] = $entity_value;
-                $_POST[$entity_name] = $entity_value;
-                $processed['posted_search'] = 1;
+        // we have not posted a new search
+        if (intval($processed['posted_search'] ?? 0) !== 1) {
+            if (!empty($_SESSION[$this->search_session_key])) {
+                // there was a previous search, load the inputs from the session
+                $element_arr = json_decode($_SESSION[$this->search_session_key], true);
+                foreach ($element_arr as $entity_name => $entity_value) {
+                    $this->_processed[$entity_name] = $entity_value;
+                    // for subsequent calls to $this->getProcessed()
+                    $_POST[$entity_name] = $entity_value;
+                }
             }
-        }
-
-        if (($processed['posted_search'] ?? 0) != 1) {
+            // this isn't a newly posted search, so we're done
             return;
         }
 
