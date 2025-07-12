@@ -538,7 +538,10 @@ require_once __DIR__ . "/templates/main.php";
                         <div class="col">
                             <select name="upd_country" id="upd_country" class="form-select form-select-sm">
                                 <?php foreach ($list_country as $v): ?>
-                                    <option value="<?= $v[0] ?>" <?php if (($update_fields["country"] ?? $A2B->config["global"]["base_country"] ?? "") === $v[0]): ?>selected="selected"<?php endif ?>><?= $v[1] ?></option>
+                                    <option
+                                        value="<?= $v["countrycode"] ?>"
+                                        <?php if (strval($update_fields["country"] ?? $A2B->config["global"]["base_country"] ?? "") === $v["countrycode"]): ?>selected="selected"<?php endif ?>
+                                    ><?= $v["countryname"] ?></option>
                                 <?php endforeach ?>
                             </select>
                         </div>
@@ -553,7 +556,7 @@ require_once __DIR__ . "/templates/main.php";
     </div> <!-- .modal-dialog -->
 </div> <!-- .modal -->
 
-    <?php if (!USE_REALTIME && isset($_SESSION["is_sip_iax_change"]) && $_SESSION["is_sip_iax_change"]): ?>
+    <?php if (!USE_REALTIME && $_SESSION["is_sip_iax_change"] ?? 0): ?>
 <div class="modal show" aria-labelledby="modal-title-sip" aria-hidden="false">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -565,12 +568,12 @@ require_once __DIR__ . "/templates/main.php";
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?= _("Close") ?></button>
-                <?php  if (!empty($_SESSION["is_sip_changed"])): ?>
+                <?php  if ($_SESSION["is_sip_changed"] ?? 0): ?>
                     <a class="btn btn-primary" href="CC_generate_friend_file.php?voip_type=sipfriend">
                         <?= _("Generate additional_a2billing_sip.conf") ?>
                     </a>
                 <?php endif ?>
-                <?php if (!empty($_SESSION["is_iax_changed"])): ?>
+                <?php if ($_SESSION["is_iax_changed"] ?? 0): ?>
                     <a class="btn btn-primary" href="CC_generate_friend_file.php?voip_type=iaxfriend">
                         <?= _("Generate additional_a2billing_iax.conf") ?>
                     </a>

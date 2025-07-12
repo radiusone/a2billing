@@ -69,8 +69,8 @@ $config = $table->getRows(
     [],
     20
 );
-$new_group_title = $config[0]["new_title"];
-
+if (count($config)) {
+    $new_group_title = $config[0]["new_title"] ?? "";
 ?>
 <div class="row-pb-3">
     <div class="col">
@@ -78,7 +78,6 @@ $new_group_title = $config[0]["new_title"];
     </div>
 </div>
 
-<?php if (count($config)): ?>
 <table class="table caption-top">
     <caption><?= _("Partial list of configuration values (copied from agi-conf1)") ?></caption>
     <thead>
@@ -100,7 +99,6 @@ $new_group_title = $config[0]["new_title"];
     <?php endforeach ?>
     </tbody>
 </table>
-<?php endif ?>
 
 <form class="row my-4 justify-content-end" method="post" action="A2B_entity_config_group.php">
     <div class="col-auto">
@@ -111,4 +109,5 @@ $new_group_title = $config[0]["new_title"];
 </form>
 
 <?php
+}
 require_once __DIR__ . "/templates/footer.php";

@@ -186,9 +186,9 @@ if ($form_action === "list" && !$popup_select) {
                         </div>
                         <div class="col">
                             <select name="upd_used" id="upd_used" class="form-select form-select-sm">
-                                <?php foreach ($used_list as $v): ?>
-                                    <option value="<?= $v[1] ?>" <?php if (($update_fields["status"] ?? "") == $v[1]): ?>selected="selected"<?php endif ?>>
-                                        <?= $v[0] ?>
+                                <?php foreach ($used_list as $k => $v): ?>
+                                    <option value="<?= $k ?>" <?php if (intval($update_fields["status"] ?? "-1") === $k): ?>selected="selected"<?php endif ?>>
+                                        <?= $v ?>
                                     </option>
                                 <?php endforeach ?>
                             </select>
@@ -205,9 +205,9 @@ if ($form_action === "list" && !$popup_select) {
                         </div>
                         <div class="col">
                             <select name="upd_activated" id="upd_activated" class="form-select form-select-sm">
-                                <?php foreach ($actived_list as $v): ?>
-                                    <option value="<?= $v[1] ?>" <?php if (($update_fields["activated"] ?? "") == $v[1]): ?>selected="selected"<?php endif ?>>
-                                        <?= $v[0] ?>
+                                <?php foreach ($actived_list as $k => $v): ?>
+                                    <option value="<?= $k ?>" <?php if (strval($update_fields["activated"] ?? "-1") === $k): ?>selected="selected"<?php endif ?>>
+                                        <?= $v ?>
                                     </option>
                                 <?php endforeach ?>
                             </select>
