@@ -615,7 +615,7 @@ class FormBO
         //GET VAT
         $card_table = new Table("cc_card", ["vat", "typepaid", "credit"]);
         $card_result = $card_table->getRow(["id" => $card_id]);
-        $vat = $card_result[0] ?? 0;
+        $vat = $card_result["vat"] ?? 0;
 
         // FIND THE LAST BILLING for this card
         $last_billing_date = (new Table("cc_billing_customer", ["date"]))

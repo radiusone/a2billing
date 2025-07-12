@@ -1,8 +1,7 @@
 <?php
 
+use A2billing\A2Billing;
 use A2billing\Admin;
-
-/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
  * This file is part of A2Billing (http://www.a2billing.net/)
@@ -36,7 +35,9 @@ use A2billing\Admin;
 **/
 
 require_once __DIR__ . "/../../common/lib/admin.defines.php";
-
+/**
+ * @var A2Billing $A2B
+ */
 Admin::checkPageAccess(Admin::ACX_DASHBOARD);
 
 //month view
@@ -51,11 +52,11 @@ $mingraph_day = (new DateTime('midnight -10 days -12 hours'));
 $maxgraph_day = (new DateTime('midnight +1 day'));
 
 $boxes = ["LEFT" => [], "CENTER" => [], "RIGHT" => [], "NONE" => []];
-$boxes[$A2B->config["dashboard"]["customer_info_enabled"] ?? "" ?: "NONE"][] = [_("Accounts"), ["./modules/customers_numbers.php", "./modules/customers_lastmonth.php"]];
-$boxes[$A2B->config["dashboard"]["refill_info_enabled"] ?? "" ?: "NONE"][] = [_("Refills"), ["./modules/refills_lastmonth.php"]];
-$boxes[$A2B->config["dashboard"]["payment_info_enabled"] ?? "" ?: "NONE"][] = [_("Payments"), ["./modules/payments_lastmonth.php"]];
-$boxes[$A2B->config["dashboard"]["call_info_enabled"] ?? "" ?: "NONE"][] = [_("Calls"), ["./modules/calls_counts.php", "./modules/calls_lastmonth.php"]];
-$boxes[$A2B->config["dashboard"]["system_info_enable"] ?? "" ?: "NONE"][] = [_("System"), ["./modules/system_info.php"]];
+$boxes[($A2B->config["dashboard"]["customer_info_enabled"] ?? "") ?: "NONE"][] = ["title" => _("Accounts"), "inc" => ["./modules/customers_numbers.php", "./modules/customers_lastmonth.php"]];
+$boxes[($A2B->config["dashboard"]["refill_info_enabled"] ?? "") ?: "NONE"][] = ["title" => _("Refills"), "inc" => ["./modules/refills_lastmonth.php"]];
+$boxes[($A2B->config["dashboard"]["payment_info_enabled"] ?? "") ?: "NONE"][] = ["title" => _("Payments"), "inc" => ["./modules/payments_lastmonth.php"]];
+$boxes[($A2B->config["dashboard"]["call_info_enabled"] ?? "") ?: "NONE"][] = ["title" => _("Calls"), "inc" => ["./modules/calls_counts.php", "./modules/calls_lastmonth.php"]];
+$boxes[($A2B->config["dashboard"]["system_info_enable"] ?? "") ?: "NONE"][] = ["title" => _("System"), "inc" => ["./modules/system_info.php"]];
 unset($boxes["NONE"]);
 
 require_once __DIR__ . "/templates/main.php";
@@ -66,9 +67,9 @@ require_once __DIR__ . "/templates/main.php";
     <div class="col-4" id="dashboard-col-<?= $pos ?>">
         <?php foreach ($col as $box): ?>
         <div class="card mb-3">
-            <h5 class="card-header text-center"><?= $box[0] ?></h5>
+            <h5 class="card-header text-center"><?= $box["title"] ?></h5>
             <div class="card-body">
-                <?php foreach ($box[1] as $link) require_once $link ?>
+                <?php foreach ($box["inc"] as $link) require_once $link ?>
             </div>
         </div>
         <?php endforeach ?>

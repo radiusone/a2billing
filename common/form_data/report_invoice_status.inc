@@ -58,15 +58,15 @@ for ($i = 0; $i <= $nb_month; $i++) {
     $mo = (int)$dt->format("m");
     $ct_row = array_values(
         array_filter($result_invoice_count, fn ($v) => (int)$v["mo"] === $mo)
-    );
+    )[0] ?? [];
     $table_data[] = [
-        $dt->format("F"),
-        $ct_row[0]["total_ct"] ?? 0,
-        array_values(
+        "month" => $dt->format("F"),
+        "count" => $ct_row["total_ct"] ?? 0,
+        "enough" => array_values(
             array_filter($result_invoice_enough_paid, fn ($v) => (int)$v["mo"] === $mo)
         )[0]["ct"] ?? 0,
-        $ct_row[0]["paid_ct"] ?? 0,
-        $ct_row[0]["unpaid_ct"] ?? 0,
+        "paid" => $ct_row["paid_ct"] ?? 0,
+        "unpaid" => $ct_row["unpaid_ct"] ?? 0,
     ];
 }
 ?>
@@ -85,11 +85,11 @@ for ($i = 0; $i <= $nb_month; $i++) {
         <tbody class="table-group-divider">
         <?php foreach ($table_data as $row): ?>
             <tr>
-                <th scope="row"><?= $row[0] ?></th>
-                <td><?= $row[1] ?></td>
-                <td class="table-success"><?= $row[2] ?></td>
-                <td class="table-secondary"><?= $row[3] ?></td>
-                <td class="table-danger"><?= $row[4] ?></td>
+                <th scope="row"><?= $row["month"] ?></th>
+                <td><?= $row["count"] ?></td>
+                <td class="table-success"><?= $row["enough"] ?></td>
+                <td class="table-secondary"><?= $row["paid"] ?></td>
+                <td class="table-danger"><?= $row["unpaid"] ?></td>
             </tr>
         <?php endforeach ?>
         </tbody>
