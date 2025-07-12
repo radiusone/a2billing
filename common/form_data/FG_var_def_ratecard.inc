@@ -556,7 +556,7 @@ $HD_Form->AddEditSqlSelect(
     new Table("cc_trunk", ["trunkcode", "id_trunk"]),
     [],
     "",
-    [-1, _("NOT DEFINED")],
+    [-1 => _("NOT DEFINED")],
     _("Set the trunk to use for this destination, or NOT DEFINED to use the rate card trunk.")
 );
 

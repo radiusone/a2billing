@@ -110,7 +110,7 @@ $HD_Form->AddEditSqlSelect(
     new Table("cc_provider", ["provider_name", "id"]),
     [],
     "",
-    [-1, _("NOT DEFINED")]
+    [-1 => _("NOT DEFINED")]
 );
 
 $HD_Form->AddEditElement(
