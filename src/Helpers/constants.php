@@ -326,7 +326,7 @@ function getLimitNotify_List(A2Billing $A2B): array
 function getMusicOnHold_List(A2Billing $A2B): array
 {
     $ct = $A2B->config['webui']['num_musiconhold_class'];
-    $musiconhold_list = ["No MusicOnHold"];
+    $musiconhold_list = ["" => _("No Music On Hold")];
     for ($i = 1; $i <= $ct; $i++) {
         $musiconhold_list["acc_$i"]  = "MUSICONHOLD CLASS ACC_$i";
     }
