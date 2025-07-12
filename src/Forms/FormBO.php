@@ -915,17 +915,16 @@ class FormBO
         $username = $form->REALTIME_SIP_IAX_INFO["username"] ?? $processed['username'];
         $uipass = $form->REALTIME_SIP_IAX_INFO["secret"] ?? $processed['uipass'];
 
-        $instance_realtime = new Realtime();
-        $instance_realtime->insert_voip_config((bool)$sip, (bool)$iax, $card_id, $username, $uipass);
+        Realtime::insert_voip_config((bool)$sip, (bool)$iax, $card_id, $username, $uipass);
 
         // Save info in table and in sip file
         if ($sip) {
-            $instance_realtime->create_trunk_config_file();
+            Realtime::create_trunk_config_file();
         }
 
         // Save info in table and in iax file
         if ($iax) {
-            $instance_realtime->create_trunk_config_file("iax");
+            Realtime::create_trunk_config_file("iax");
         }
     }
 

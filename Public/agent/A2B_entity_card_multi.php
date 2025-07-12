@@ -83,7 +83,6 @@ try {
     $expirationdate = null;
 }
 $nb_to_create = (int)($nb_to_create ?? 0);
-$instance_realtime = new Realtime();
 
 $errors = [];
 
@@ -126,15 +125,15 @@ if ($nb_to_create > 0 && $action === "generate" && count($errors) === 0) {
         ], "id", $id_cc_card);
 
         if (!empty($sip) || !empty($iax)) {
-            $instance_realtime->insert_voip_config((bool)$sip, (bool)$iax, $id_cc_card, $accountnumber, $passui_secret);
+            Realtime::insert_voip_config((bool)$sip, (bool)$iax, $id_cc_card, $accountnumber, $passui_secret);
         }
     }
 
     if (!empty($sip)) {
-        $instance_realtime->create_trunk_config_file();
+        Realtime::create_trunk_config_file();
     }
     if (!empty($iax)) {
-        $instance_realtime->create_trunk_config_file("iax");
+        Realtime::create_trunk_config_file("iax");
     }
 }
 

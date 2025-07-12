@@ -5,8 +5,6 @@ use A2billing\Admin;
 use A2billing\Realtime;
 use PhpAgi\AMI as AGI_AsteriskManager;
 
-/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
-
 /**
  * This file is part of A2Billing (http://www.a2billing.net/)
  *
@@ -43,105 +41,70 @@ require_once __DIR__ . "/../../common/lib/admin.defines.php";
  * @var A2Billing $A2B
  */
 
-getpost_ifset(array('action', 'voip_type'));
-
 Admin::checkPageAccess(Admin::ACX_CUSTOMER);
 
-$DBHandle  = DbConnect();
+getpost_ifset(["action", "voip_type"]);
+/**
+ * @var string|null $action
+ * @var string|null $voip_type
+ */
+$action ??= "";
+$voip_type ??= "";
+$error_msg = "";
+$buddyfile = "";
 
-if ($action == "reload") {
-
+if ($action === "reload") {
     $as = new AGI_AsteriskManager();
-
-    $res = $as->connect(MANAGER_HOST, MANAGER_USERNAME, MANAGER_SECRET);
-
-    if ($res) {
-        if ($voip_type == "sipfriend") {
-            $res = $as->Command('sip reload');
-        } elseif ($voip_type == "iaxfriend") {
-            $res = $as->Command('iax2 reload');
+    if ($as->connect(MANAGER_HOST, MANAGER_USERNAME, MANAGER_SECRET)) {
+        if ($voip_type === "sipfriend") {
+            $as->Command('sip reload');
+        } elseif ($voip_type === "iaxfriend") {
+            $as->Command('iax2 reload');
         } else {
-            $res = $as->Command('sip reload');
-            $res = $as->Command('iax2 reload');
+            $as->Command('sip reload');
+            $as->Command('iax2 reload');
         }
-        $actiondone=1;
-
-        // && DISCONNECTING
         $as->disconnect();
     } else {
-        $error_msg= '<p style="text-align: center; font-weight: bold; color: red">' . gettext("Cannot connect to the asterisk manager!<br>Please check your manager configuration.") . '</p>';
+        $error_msg= _("Cannot connect to the asterisk manager! Please check your manager configuration.");
     }
+} elseif ($voip_type == "sipfriend") {
+    $buddyfile = $A2B->config["webui"]["buddy_sip_file"];
+    Realtime::create_trunk_config_file ("sip", $error_msg);
 } else {
-
-    $instance_realtime = new Realtime();
-
-    if ($voip_type == "sipfriend") {
-
-        $buddyfile = $A2B->config['webui']['buddy_sip_file'];
-        $instance_realtime -> create_trunk_config_file ('sip');
-
-        $_SESSION["is_sip_changed"]=0;
-        if ($_SESSION["is_iax_changed"]==0) {
-            $_SESSION["is_sip_iax_change"]=0;
-        }
-    } else {
-
-        $buddyfile = $A2B->config['webui']['buddy_iax_file'];
-        $instance_realtime -> create_trunk_config_file ('iax');
-
-        $_SESSION["is_iax_changed"]=0;
-        if ($_SESSION["is_sip_changed"]==0) {
-            $_SESSION["is_sip_iax_change"]=0;
-        }
-    }
-
+    $buddyfile = $A2B->config["webui"]["buddy_iax_file"];
+    Realtime::create_trunk_config_file ("iax", $error_msg);
 }
 
 require_once __DIR__ . "/templates/main.php";
 
 echo create_help(_("Click reload to commit changes to Asterisk"));
-
 ?>
-<center>
-<table width="60%" border="0" align="center" cellpadding="0" cellspacing="0" >
-<TR>
-  <TD style="border-bottom: medium dotted #555555">&nbsp; </TD>
-</TR>
-<tr><FORM NAME="sipfriend">
-    <td height="31" class="bgcolor_001" style="padding-left: 5px; padding-right: 3px;" align=center>
-    <br><br>
-    <b>
-    <?php
-        if (strlen($error_msg)>0) {
-            echo $error_msg;
-        } elseif ($action != "reload") {
-            if ($voip_type == "sipfriend") {
-                echo gettext("The sipfriend file has been generated : ").'<br/>'.$buddyfile;
-            } else {
-                echo gettext("The iaxfriend file has been generated : ").'<br/>'.$buddyfile;
-            }
-    ?>
+<div class="row pb-3">
+    <div class="col">
+<?php if ($error_msg): ?>
+        <p class="alert alert-danger"><?= $error_msg ?></p>
+<?php else: ?>
+        <p class="alert alert-success">
+    <?php if ($action !== "reload" && $voip_type === "sipfriend"): ?>
+            <?= sprintf(_("The SIP config file %s has been generated"), $buddyfile) ?>
+    <?php elseif ($action !== "reload" && $voip_type === "iaxfriend"): ?>
+            <?= sprintf(_("The IAX config file %s has been generated"), $buddyfile) ?>
+    <?php elseif ($action == "reload"): ?>
+            <?= _("Asterisk has been reloaded") ?>
+    <?php endif ?>
+        </p>
+<?php endif ?>
+    </div>
+</div>
 
-    <br><br><br>
-    <a href="<?php  echo "?voip_type=$voip_type&action=reload";?>">
-        <div class="bi bi-32 bi-arrow-clockwise" aria-hidden="true"></div>
-        <?php echo gettext("Click here to reload your asterisk server"); ?>
-    </a>
-
-    <?php
-        } else {
-            echo gettext("Asterisk has been reloaded.");
-        }
-    ?>
-    <br><br><br>
-    </b>
-    </td></FORM>
-  </tr>
-</table>
-</center>
-
-<br><br><br>
+<div class="row pb-3 justify-content-center">
+    <div class="col-auto">
+        <a href="?action=reload&voip_type=<?= $voip_type ?>" class="btn btn-primary">
+            <?= _("Click to reload your Asterisk server") ?>
+        </a>
+    </div>
+</div>
 
 <?php
-
 require_once __DIR__ . "/templates/footer.php";

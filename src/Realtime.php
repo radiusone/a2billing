@@ -2,10 +2,6 @@
 
 namespace A2billing;
 
-use ADOConnection;
-
-/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
-
 /**
  * This file is part of A2Billing (http://www.a2billing.net/)
  *
@@ -38,20 +34,17 @@ use ADOConnection;
 
 class Realtime
 {
-    private ADOConnection $DBHandler;
-
-    public function __construct()
-    {
-        $this->DBHandler = DbConnect();
-    }
-
     /**
      * @param 'sip'|'iax' $type
+     * @param string|null $err error messages, if any
+     * @return bool
      */
-    public function create_trunk_config_file (string $type = "sip"): void
+    public static function create_trunk_config_file(string $type = "sip", string &$err = null): bool
     {
         if (USE_REALTIME || ($type !== "sip" && $type !== "iax")) {
-            return;
+            $err = _("Invalid usage");
+
+            return false;
         }
 
         $A2B = new A2Billing();
@@ -64,7 +57,8 @@ class Realtime
             "usereqphone", "incominglimit", "subscribecontext", "musicclass", "mohsuggest", "allowtransfer", "autoframing",
             "maxcallbitrate", "outboundproxy", "rtpkeepalive",
         ];
-        $iax_cols = ["name", "accountcode", "regexten", "amaflags", "callerid", "context", "DEFAULTip", "host", "language",
+        $iax_cols = [
+            "name", "accountcode", "regexten", "amaflags", "callerid", "context", "DEFAULTip", "host", "language",
             "mask", "port", "qualify", "secret", "username", "disallow", "allow", "regseconds", "ipaddr", "trunk", "dbsecret",
             "regcontext", "sourceaddress", "mohinterpret", "mohsuggest", "inkeys", "outkey", "cid_number", "sendani",
             "fullname", "auth", "maxauthreq", "encryption", "transfer", "jitterbuffer", "forcejitterbuffer", "codecpriority",
@@ -90,26 +84,54 @@ class Realtime
             fn ($f) => array_filter($f, fn($k) => !is_numeric($k), ARRAY_FILTER_USE_KEY)
         );
 
-        if ($list_friend) {
-            if (file_exists($buddyfile) && is_writable($buddyfile)) {
-                foreach ($list_friend as $row) {
-                    $line = "\n\n[$row[accountcode]]\n";
-                    foreach ($row as $key => $value) {
-                        if ($key === "allow") {
-                            foreach(explode(",", $value) as $codec) {
-                                $line .= "allow=$codec\n";
-                            }
-                        } else {
-                            $line .= "$key=$value";
-                        }
+        if (!$list_friend) {
+            $err = _("No entries found");
+
+            return false;
+        }
+        if (!file_exists($buddyfile) || !is_writable($buddyfile)) {
+            $err = sprintf(_("Could not write to file %s"), $buddyfile);
+
+            return false;
+        }
+
+        foreach ($list_friend as $row) {
+            $line = "\n\n[$row[accountcode]]\n";
+            foreach ($row as $key => $value) {
+                if ($key === "allow" || $key === "disallow") {
+                    foreach(explode(",", $value) as $codec) {
+                        $line .= "$key=$codec\n";
                     }
-                    file_put_contents($buddyfile, $line);
+                } else {
+                    $line .= "$key=$value\n";
                 }
             }
+            file_put_contents($buddyfile, $line);
         }
+
+        if ($type === "sip") {
+            $_SESSION["is_sip_changed"] = 0;
+            if ($_SESSION["is_iax_changed"] === 0) {
+                $_SESSION["is_sip_iax_change"] = 0;
+            }
+        } else {
+            $_SESSION["is_iax_changed"] = 0;
+            if ($_SESSION["is_sip_changed"] === 0) {
+                $_SESSION["is_sip_iax_change"] = 0;
+            }
+        }
+
+        return true;
     }
 
-    public function insert_voip_config (bool $sip, bool $iax, int $id_card, string $accountnumber, string $passui_secret): void
+    public static function insert_voip_config(
+        bool $sip,
+        bool $iax,
+        int $id_card,
+        string $accountnumber,
+        #[\SensitiveParameter]
+        string $passui_secret
+    ): void
     {
         if (!$sip && !$iax) {
             return;
