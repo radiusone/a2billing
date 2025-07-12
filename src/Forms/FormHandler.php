@@ -565,7 +565,7 @@ class FormHandler
         callable $custom_function = null // only used in FG_var_config.inc to convert 0/1 to yes/no
     )
     {
-        $this->FG_EDIT_FORM_ELEMENTS[] = [
+        $this->FG_EDIT_FORM_ELEMENTS[$fieldname] = [
             "label" => $label_text,
             "name" => $fieldname,
             "type" => "INPUT",
@@ -590,7 +590,7 @@ class FormHandler
         string $error_message = ""
     )
     {
-        $this->FG_EDIT_FORM_ELEMENTS[] = [
+        $this->FG_EDIT_FORM_ELEMENTS[$fieldname] = [
             "label" => $label_text,
             "name" => $fieldname,
             "type" => "DAYTIME",
@@ -639,7 +639,7 @@ class FormHandler
             $options = $table->getColumn($conditions);
         }
 
-        $this->FG_EDIT_FORM_ELEMENTS[] = [
+        $this->FG_EDIT_FORM_ELEMENTS[$fieldname] = [
             "label" => $label_text,
             "name" => $fieldname,
             "default" => $default_value,
@@ -674,7 +674,7 @@ class FormHandler
         string $error_message = ""
     ): void
     {
-        $this->FG_EDIT_FORM_ELEMENTS[] = [
+        $this->FG_EDIT_FORM_ELEMENTS[$fieldname] = [
             "label" => $label_text,
             "name" => $fieldname,
             "default" => $default_value,
@@ -709,7 +709,7 @@ class FormHandler
         string $error_message = ""
     ): void
     {
-        $this->FG_EDIT_FORM_ELEMENTS[] = [
+        $this->FG_EDIT_FORM_ELEMENTS[$fieldname] = [
             "label" => $label_text,
             "name" => $fieldname,
             "default" => $default_value,
@@ -742,7 +742,7 @@ class FormHandler
         string $error_message = ""
     ): void
     {
-        $this->FG_EDIT_FORM_ELEMENTS[] = [
+        $this->FG_EDIT_FORM_ELEMENTS[$fieldname] = [
             "label" => $label_text,
             "name" => $fieldname,
             "popup_dest" => $href,
@@ -768,7 +768,8 @@ class FormHandler
      * @param bool $select Determines whether to use a <select> element
      * @param Table|null $pivot_table If set, $table is only used for display; $pivot table is used for updates
      * @return void
-     * @todo this function is only used in FG_var_card.inc
+     * @see perform_add_content()
+     * @see perform_del_content()
      */
     public function AddEditHasMany(
         string $label,
@@ -781,9 +782,11 @@ class FormHandler
         ?Table $pivot_table = null
     ): void
     {
-        $this->FG_EDIT_FORM_ELEMENTS[] = [
+        $index = $table->table . "." . $insert_column;
+        $this->FG_EDIT_FORM_ELEMENTS[$index] = [
             "type" => "HAS_MANY",
             "label" => $label,
+            "name" => $index,
             "table" => $table,
             "insert" => $insert_column,
             "foreign_key" => $foreign_key,
@@ -815,7 +818,7 @@ class FormHandler
         ?callable $validator = null
     ): void
     {
-        $this->FG_EDIT_FORM_ELEMENTS[] = [
+        $this->FG_EDIT_FORM_ELEMENTS[$fieldname] = [
             "name" => $fieldname,
             "type" => "TEXTAREA",
             "label" => $label_text,
@@ -830,7 +833,7 @@ class FormHandler
 
     public function AddEditSection(string $label)
     {
-        $this->FG_EDIT_FORM_ELEMENTS[] = ["type" => "SECTION", "section_name" => $label];
+        $this->FG_EDIT_FORM_ELEMENTS[] = ["type" => "SECTION", "section_name" => $label, "name" => ""];
     }
 
     /**
@@ -1715,10 +1718,10 @@ class FormHandler
     /**
      * Add content from HasMany and custom SQL selects (only used in FG_var_[tariffgroup|agent|service|card].inc)
      *
-     * @var int $index the index within $this->FG_EDIT_FORM_ELEMENTS
+     * @var string $index the index within $this->FG_EDIT_FORM_ELEMENTS
      * @var int $id the id of the object to be used as foreign key
      */
-    public function perform_add_content(int $index, int $id)
+    public function perform_add_content(string $index, int $id)
     {
         $entry = $this->FG_EDIT_FORM_ELEMENTS[$index];
         if (empty($entry["table"])) {
@@ -1746,10 +1749,10 @@ class FormHandler
     /**
      * Delete content from SQL selects (only used in FG_var_[tariffgroup|agent|service].inc)
      *
-     * @var int $index the index within $this->FG_EDIT_FORM_ELEMENTS
+     * @var string $index the index within $this->FG_EDIT_FORM_ELEMENTS
      * @var int $id the id of the object to be used as foreign key
      */
-    public function perform_del_content(int $index, int $id)
+    public function perform_del_content(string $index, int $id)
     {
         $entry = $this->FG_EDIT_FORM_ELEMENTS[$index];
         if (empty($entry["table"])) {
