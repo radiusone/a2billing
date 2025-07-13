@@ -1361,20 +1361,23 @@ class RateEngine
                 $ifmaxuse       = (int)$ratecard["tp_if_max_use"];
             }
 
-            $timeout        = $ratecard["timeout"];
+            $timeout        = (int)$ratecard["timeout"];
             $musiconhold    = $ratecard["musiconhold"];
-            $cidgroupid     = $ratecard["id_outbound_cidgroup"];
+            $cidgroupid     = (int)$ratecard["id_outbound_cidgroup"];
+            $recordcall     = (bool)$conf["record_call"];
 
             if (str_starts_with($destination, $removeprefix)) {
                 $destination = substr($destination, strlen($removeprefix));
             }
 
-            //$dialparams = "|30|HS($timeout)"; // L(" . $timeout*1000 . ":61000:30000)
             $dialparams = str_replace(
                 ["%timeout%", "%timeoutsec%"],
                 [min($timeout * 1000, $max_long), min($timeout, $max_long)],
-                $conf['dialcommand_param']
+                trim($conf['dialcommand_param'] ?? "")
             );
+            if ($dialparams !== "" && !str_starts_with($dialparams, ",")) {
+                $dialparams = ",$dialparams";
+            }
 
             if (strlen($musiconhold) > 0 && $musiconhold !== "selected") {
                 $dialparams .= "m";
@@ -1382,8 +1385,8 @@ class RateEngine
                 $this->a2b->debug(A2Billing::DEBUG, "EXEC SETMUSICONHOLD $musiconhold");
             }
 
-            if ($conf['record_call'] == 1) {
-                $command_mixmonitor = "MixMonitor $this->a2b->uniqueid.{$conf['monitor_formatfile']},b";
+            if ($recordcall) {
+                $command_mixmonitor = sprintf("MixMonitor %s.%s,b", $this->a2b->uniqueid, $conf["monitor_formatfile"]);
                 $this->agi->exec($command_mixmonitor);
                 $this->a2b->debug(A2Billing::INFO, $command_mixmonitor);
             }
@@ -1398,12 +1401,11 @@ class RateEngine
             if (str_contains($ratecard_ipaddress, "%dialingnumber%")) {
                 $dialstr = "$tech/$ipaddress$dialparams";
             } elseif ($conf['switchdialcommand'] == 1) {
-                $dialstr = "$tech/$prefix$destination@$ipaddress" . $dialparams;
+                $dialstr = "$tech/$prefix$destination@$ipaddress$dialparams";
             } else {
-                $dialstr = "$tech/$ipaddress/$prefix$destination" . $dialparams;
+                $dialstr = "$tech/$ipaddress/$prefix$destination$dialparams";
             }
 
-            //ADDITIONAL PARAMETER             %dialingnumber%, %cardnumber%
             $dialstr .= str_replace(
                 ["%cardnumber%", "%dialingnumber%"],
                 [$this->a2b->cardnumber, "$prefix$destination"],
@@ -1412,37 +1414,21 @@ class RateEngine
 
             $this->a2b->debug(A2Billing::INFO, "app_callingcard: Dialing '$dialstr' with timeout of '$timeout'.\n");
 
-            //# Channel: technology/number@ip_of_gw_to PSTN
-            //# Channel: SIP/3465078XXXXX@11.150.54.xxx   /     SIP/phone1@192.168.1.6
-            // exten => 1879,1,Dial(SIP/34650XXXXX@255.XX.7.XX,20,tr)
-            // Dial(IAX2/guest@misery.digium.com/s@default)
-            //$myres = $agi->agi_exec("EXEC DIAL SIP/3465078XXXXX@254.20.7.28|30|HL(" . ($timeout * 60 * 1000) . ":60000:30000)");
-
             $query = "SELECT cid FROM cc_outbound_cid_list WHERE activated = 1 AND outbound_cid_group = ? ORDER BY RAND() LIMIT 1";
             $params = [$cidgroupid];
             $outcid = $this->a2b->DBHandle->GetOne($query, $params) ?: 0;
             $this->a2b->debug(A2Billing::DEBUG, "Query: $query", $params);
             if ($outcid) {
-                # Uncomment this line if you want to save the outbound_cid in the CDR
-                //$this->a2b->CallerID = $outcid;
                 $this->agi->set_callerid($outcid);
                 $this->a2b->debug(A2Billing::DEBUG, "[EXEC SetCallerID : $outcid]");
             }
             $this->a2b->debug(A2Billing::DEBUG, "app_callingcard: CIDGROUPID='$cidgroupid' OUTBOUND CID SELECTED IS '$outcid'.");
 
             if ($maxuse === -1 || $inuse < $maxuse) {
-                // Count this call on the trunk
                 $this->trunk_start_inuse(true);
-
                 $this->agi->exec("DIAL $dialstr");
-                //exec('Dial', trim("$type/$identifier|$timeout|$options|$url", '|'));
-
                 $this->a2b->debug(A2Billing::INFO, "DIAL $dialstr");
-
-                // check connection after dial(long pause)
                 $this->a2b->DbReConnect();
-
-                // Count this call on the trunk
                 $this->trunk_start_inuse(false);
             } elseif ($ifmaxuse === 1) {
                 $this->a2b->debug(A2Billing::WARN, "This trunk cannot be used because maximum number of connections is reached. Now use next trunk\n");
