@@ -218,15 +218,19 @@ class A2Billing
         $this->debug(self::INFO, "HANGUP DETECTED!\n");
     }
 
-    /*
-    * Debug
-    */
+    /**
+     * Logs items to file and/or AGI depending on settings
+     *
+     * @param int $level
+     * @param mixed ...$data
+     * @return void
+     */
     public function debug(int $level, ...$data): void
     {
         if (
             count($data) === 0
-            || $this->agiconfig['verbosity_level'] < $level
-            || $this->agiconfig['logging_level'] < $level
+            || !isset($this->agi)
+            || ($this->agiconfig['verbosity_level'] < $level && $this->agiconfig['logging_level'] < $level)
         ) {
             return;
         }
@@ -235,9 +239,9 @@ class A2Billing
         $file = $st[0]["file"];
         $line = $st[0]["line"];
         $st = $st[1] ?? $st[0];
-        $func = basename(str_replace("\\", "/", $st["class"] ?? "")) . ($st["type"] ?? "") . $st["function"] . "()";
+        $func = ($st["class"] ?? "") . ($st["type"] ?? "") . $st["function"] . "()";
         $file = basename($file);
-        $u = $this->uniqueid ?? "n/a";
+        $prefix = sprintf("%s %s:%d %s", $func, $file, $line, isset($this->uniqueid) ? "[" . $this->uniqueid . "]" : "");
         // VERBOSE
         if ($this->agi && $this->agiconfig['verbosity_level'] >= $level) {
             foreach ($data as $item) {
@@ -246,18 +250,20 @@ class A2Billing
                 }
                 $chunks = str_split($output, 1024);
                 foreach ($chunks as $key => $chunk) {
-                    $part = $key > 0 ? sprintf(" %d/%d", $key + 1, count($chunks)) : "";
-                    $this->agi->verbose("$func $file:$line [$u]$part $chunk");
+                    if ($key > 0) {
+                        $prefix .= sprintf("%d/%d", $key + 1, count($chunks));
+                    }
+                    $this->agi->verbose("$prefix $chunk");
                 }
             }
         }
         // LOG INTO FILE
-        foreach ($data as $item) {
-            if ($this->agiconfig['logging_level'] >= $level) {
-                if (!is_string($output =$item)) {
-                    $output = print_r($output, true);
-                }
-                $this->write_log($output, "$func $file:$line [$u]");
+        if ($this->agiconfig['logging_level'] >= $level) {
+            foreach ($data as $item) {
+                $output = is_string($item)
+                    ? $item
+                    : json_encode($item, JSON_PRETTY_PRINT);
+                $this->write_log($output, $prefix);
             }
         }
     }
