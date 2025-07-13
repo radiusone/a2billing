@@ -274,9 +274,9 @@ class RateEngine
             if ($this->webui) {
                 $this->a2b->debug(A2Billing::DEBUG, "[rate-engine: MYRESULT before sort \n" . json_encode($result));
             }
-            // 3 - tariff plan, 5 - dialprefix
-            // uh no, 5 is destination; 7 is dialprefix
-            $sorted_result = $this->array_csort($result, '3', SORT_NUMERIC, '5', SORT_NUMERIC, SORT_DESC);
+
+            // sort result by call plan, then by most specific dial prefix
+            $sorted_result = $this->array_csort($result, "idtariffplan", SORT_NUMERIC, "destination", SORT_NUMERIC, SORT_DESC);
             if ($this->webui) {
                 $this->a2b->debug(A2Billing::DEBUG, "[rate-engine: MYRESULT after sort \n" . json_encode($sorted_result));
             }
@@ -359,14 +359,12 @@ class RateEngine
         }
 
         //2) TAKE THE VALUE OF LCTYPE
-        //LCR : According to the buyer price -0 buyrate [col 6]
-        //LCD : According to the seller price -1 rateinitial [col 9]
-
-        // Thanks for the fix from the wiki :D next time email me, lol
+        //LCR : According to the buyer price -0 buyrate
+        //LCD : According to the seller price -1 rateinitial
         if (empty($result[0]["lcrtype"])) {
-            $result = $this->array_csort($result, '9', SORT_ASC); //1
+            $result = $this->array_csort($result, "buyrate", SORT_ASC);
         } else {
-            $result = $this->array_csort($result, '12', SORT_ASC); //1
+            $result = $this->array_csort($result, "rateinitial", SORT_ASC);
         }
 
         // WE ADD THE DEFAULTPREFIX WE REMOVE BEFORE
