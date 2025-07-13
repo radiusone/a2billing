@@ -1390,14 +1390,15 @@ class RateEngine
                 $this->a2b->debug(A2Billing::INFO, $command_mixmonitor);
             }
 
+            $ratecard_ipaddress = $ipaddress;
             $ipaddress = str_replace(
                 ["%cardnumber%", "%dialingnumber%"],
                 [$this->a2b->cardnumber, "$prefix$destination"],
                 $ipaddress
             );
 
-            if (str_contains($ipaddress, "%dialingnumber%")) {
-                $dialstr = "$tech/$ipaddress" . $dialparams;
+            if (str_contains($ratecard_ipaddress, "%dialingnumber%")) {
+                $dialstr = "$tech/$ipaddress$dialparams";
             } elseif ($conf['switchdialcommand'] == 1) {
                 $dialstr = "$tech/$prefix$destination@$ipaddress" . $dialparams;
             } else {
