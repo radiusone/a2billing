@@ -903,7 +903,7 @@ if ($popup_select) {
 
         if ($form_action === "ask-edit") {
             $HD_Form->FG_EDIT_FORM_HIDDEN_INPUTS["oldstatus"] = $result_card["status"] ?? "";
-        } elseif (USE_REALTIME) {
+        } elseif (!USE_REALTIME) {
             $sip_buddy = $result_card['sip_buddy'] ?? "";
             $iax_buddy = $result_card['iax_buddy'] ?? "";
             if ($sip_buddy && $iax_buddy) {
