@@ -146,7 +146,7 @@ class RateEngine
 
                 cc_tariffplan.id_trunk AS tp_id_trunk, tp_trunk.trunkprefix AS tp_trunkprefix, tp_trunk.providertech AS tp_providertech,
                 tp_trunk.providerip AS tp_providerip, tp_trunk.removeprefix AS tp_removeprefix, tp_trunk.trunkcode AS tp_trunkcode,
-                tp_trunk.failover_trunk AS tp_failover_trunk, tp_trunk.addparameter AS tp_addparameter_trunk, tp_trunk.status,
+                tp_trunk.failover_trunk AS tp_failover_trunk, tp_trunk.addparameter AS tp_addparameter_trunk, tp_trunk.tp_status,
                 tp_trunk.inuse AS tp_inuse, tp_trunk.maxuse AS tp_maxuse, tp_trunk.if_max_use AS tp_if_max_use, 
 
                 cc_ratecard.id_trunk AS rt_id_trunk, rt_trunk.trunkprefix AS rt_trunkprefix, rt_trunk.providertech AS rt_providertech,
@@ -378,7 +378,7 @@ class RateEngine
         $mylistoftrunk = [];
         foreach ($result as $i => $row) {
             if ((int)$row["rt_id_trunk"] === -1) {
-                $status = (int)$row["status"];
+                $status = (int)$row["tp_status"];
                 $mycurrenttrunk = (int)$row["tp_id_trunk"];
             } else {
                 $status = (int)$row["rt_status"];
