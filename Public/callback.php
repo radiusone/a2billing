@@ -63,7 +63,6 @@ if ($callback) {
         if ($A2B -> callingcard_ivr_authenticate_light ($error_msg)) {
 
             $RateEngine = $A2B->rateEngine();
-            $RateEngine -> webui = false;
             // LOOKUP RATE : FIND A RATE FOR THIS DESTINATION
 
             $A2B -> agiconfig['accountcode'] = Customer::card();

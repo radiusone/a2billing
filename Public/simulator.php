@@ -75,8 +75,6 @@ if ($called && $id_cc_card) {
             if ($FG_DEBUG == 1)
                 $RateEngine->debug_st = true;
 
-            $RateEngine->webui = true;
-
             $A2B->agiconfig['accountcode'] = $A2B->cardnumber;
             $A2B->agiconfig['use_dnid'] = 1;
             $A2B->agiconfig['say_timetocall'] = 0;

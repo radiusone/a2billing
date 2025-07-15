@@ -58,7 +58,6 @@ class RateEngine
     public int $real_answeredtime   = 0;
     public string $dialstatus       = "";
     public int $usedratecard        = 0;
-    public bool $webui              = true;
     public int $usedtrunk           = 0;
     public int $freetimetocall_used = 0;
 
@@ -102,9 +101,7 @@ class RateEngine
             $tariffgroupid = $this->a2b->tariff = $conf['force_callplan_id'];
         }
 
-        if ($this->webui) {
-            $this->a2b->debug(A2Billing::DEBUG, "[CC_asterisk_rate-engine: ($tariffgroupid, $phonenumber)]");
-        }
+        $this->a2b->debug(A2Billing::DEBUG, "[CC_asterisk_rate-engine: ($tariffgroupid, $phonenumber)]");
 
         /***  0 ) CODE TO RETURN THE DAY OF WEEK + CREATE THE CLAUSE  ***/
 
@@ -122,9 +119,7 @@ class RateEngine
             $mycallerid = $this->a2b->CallerID;
         }
 
-        if ($this->webui) {
-            $this->a2b->debug(A2Billing::DEBUG, "[CC_asterisk_rate-engine - CALLERID : " . $this->a2b->CallerID . "]");
-        }
+        $this->a2b->debug(A2Billing::DEBUG, "[CC_asterisk_rate-engine - CALLERID : " . $this->a2b->CallerID . "]");
 
         // $prefixclause to allow good DB servers to use an index rather than sequential scan
         // justification at http://forum.asterisk2billing.org/viewtopic.php?p=9620#9620
@@ -237,9 +232,7 @@ class RateEngine
         if ($this->debug_st) {
             echo "::> Count Total result " . count($result) . "\n\n";
         }
-        if ($this->webui) {
-            $this->a2b->debug(A2Billing::DEBUG, "[rate-engine: Count Total result " . count($result) . "]");
-        }
+        $this->a2b->debug(A2Billing::DEBUG, "[rate-engine: Count Total result " . count($result) . "]");
 
         // CHECK IF THERE IS OTHER RATE THAT 'DEFAULT', IF YES REMOVE THE DEFAULT RATES
         // NOT NOT REMOVE SHIFT THEM TO THE END :P
@@ -271,70 +264,50 @@ class RateEngine
             $result = array_slice($result, 0, $i);
         } elseif ($conf['lcr_mode'] == 1) {
             //1) REMOVE THOSE THAT HAVE THE LOWEST COST
-            if ($this->webui) {
-                $this->a2b->debug(A2Billing::DEBUG, "[rate-engine: MYRESULT before sort \n" . json_encode($result));
-            }
+            $this->a2b->debug(A2Billing::DEBUG, "[rate-engine: MYRESULT before sort \n" . json_encode($result));
 
             // sort result by call plan, then by most specific dial prefix
             $sorted_result = $this->array_csort($result, "idtariffplan", SORT_NUMERIC, "destination", SORT_NUMERIC, SORT_DESC);
-            if ($this->webui) {
-                $this->a2b->debug(A2Billing::DEBUG, "[rate-engine: MYRESULT after sort \n" . json_encode($sorted_result));
-            }
+            $this->a2b->debug(A2Billing::DEBUG, "[rate-engine: MYRESULT after sort \n" . json_encode($sorted_result));
             $mysearchvalue = [];
             $countdelete = 0;
             $resultcount = 0;
             for ($ii = 0; $ii < count($result) - 1; $ii++) {
                 if (empty($sorted_result[$ii])) {
-                    if ($this->webui) {
-                        $this->a2b->debug(A2Billing::DEBUG, "[rate-engine: Skipping for ii value " . $ii . " due to missing value]");
-                    }
+                    $this->a2b->debug(A2Billing::DEBUG, "[rate-engine: Skipping for ii value " . $ii . " due to missing value]");
                     continue;
                 }
                 $row = $sorted_result[$ii];
                 $mysearchvalue[$resultcount] = $row;
-                if ($this->webui) {
-                    $this->a2b->debug(A2Billing::DEBUG, "[rate-engine: Begin for ii value " . $ii . "]");
-                    $this->a2b->debug(A2Billing::DEBUG, "[rate-engine: MYSEARCHCVALUE \n" . json_encode($mysearchvalue) . "]");
-                }
+                $this->a2b->debug(A2Billing::DEBUG, "[rate-engine: Begin for ii value " . $ii . "]");
+                $this->a2b->debug(A2Billing::DEBUG, "[rate-engine: MYSEARCHCVALUE \n" . json_encode($mysearchvalue) . "]");
                 if (count($sorted_result) > 0) {
                     foreach ($sorted_result as $j=>$i) {
-                        if ($this->webui) {
-                            $this->a2b->debug(A2Billing::DEBUG, "[rate-engine: foreach J=$j]");
-                            $this->a2b->debug(A2Billing::DEBUG, "[rate-engine:mysearchvalue[4]=$row[tariffname], i[4]=$i[tariffname]");
-                            $this->a2b->debug(A2Billing::DEBUG, "[rate-engine:mysearchvalue[3]=$row[idtariffplan], i[3]=$i[idtariffplan]");
-                            $this->a2b->debug(A2Billing::DEBUG, "[rate-engine:mysearchvalue[7]=$row[dialprefix], i[7]=$i[dialprefix]");
-                        }
+                        $this->a2b->debug(A2Billing::DEBUG, "[rate-engine: foreach J=$j]");
+                        $this->a2b->debug(A2Billing::DEBUG, "[rate-engine:mysearchvalue[4]=$row[tariffname], i[4]=$i[tariffname]");
+                        $this->a2b->debug(A2Billing::DEBUG, "[rate-engine:mysearchvalue[3]=$row[idtariffplan], i[3]=$i[idtariffplan]");
+                        $this->a2b->debug(A2Billing::DEBUG, "[rate-engine:mysearchvalue[7]=$row[dialprefix], i[7]=$i[dialprefix]");
                         if ($row["idtariffplan"] === $i["idtariffplan"]) {
                             if (strlen($row["dialprefix"]) !== strlen($i["dialprefix"])) {
                                 unset($sorted_result[$j]);
                                 $countdelete = $countdelete + 1;
-                                if ($this->webui) {
-                                    $this->a2b->debug(A2Billing::DEBUG, "[rate-engine: foreach: COUNTDELETE: " . $countdelete . "]");
-                                    $this->a2b->debug(A2Billing::DEBUG, "[rate-engine: foreach: MYRESULT count after delete: " . count($sorted_result) . "]");
-                                }
+                                $this->a2b->debug(A2Billing::DEBUG, "[rate-engine: foreach: COUNTDELETE: " . $countdelete . "]");
+                                $this->a2b->debug(A2Billing::DEBUG, "[rate-engine: foreach: MYRESULT count after delete: " . count($sorted_result) . "]");
                             }
                         }
                     } //end foreach
                     $sorted_result = array_values($sorted_result);
                     $this->a2b->debug(A2Billing::DEBUG, "[rate-engine: MYRESULT  after foreach \n" . json_encode($sorted_result));
                     $resultcount++;
-                    if ($this->webui) {
-                        $this->a2b->debug(A2Billing::DEBUG, "[rate-engine: Count MYRESULT after foreach=" . count($sorted_result) . "]");
-                        $this->a2b->debug(A2Billing::DEBUG, "[rate-engine: RESULTCOUNT=" . $resultcount . "]");
-                    }
+                    $this->a2b->debug(A2Billing::DEBUG, "[rate-engine: Count MYRESULT after foreach=" . count($sorted_result) . "]");
+                    $this->a2b->debug(A2Billing::DEBUG, "[rate-engine: RESULTCOUNT=" . $resultcount . "]");
                 }
-                if ($this->webui) {
-                    $this->a2b->debug(A2Billing::DEBUG, "[rate-engine: End for II value " . $ii . "]");
-                }
+                $this->a2b->debug(A2Billing::DEBUG, "[rate-engine: End for II value " . $ii . "]");
             }  //end for
-            if ($this->webui) {
-                $this->a2b->debug(A2Billing::DEBUG, "[rate-engine: COUNTDELETE=" . $countdelete . "]");
-                $this->a2b->debug(A2Billing::DEBUG, "[rate-engine: MYRESULT  before unset \n" . json_encode($sorted_result));
-            }
+            $this->a2b->debug(A2Billing::DEBUG, "[rate-engine: COUNTDELETE=" . $countdelete . "]");
+            $this->a2b->debug(A2Billing::DEBUG, "[rate-engine: MYRESULT  before unset \n" . json_encode($sorted_result));
             if (count($result) > 1 and $countdelete != 0) {
-                if ($this->webui) {
-                    $this->a2b->debug(A2Billing::DEBUG, "[rate-engine: LAST UNSET");
-                }
+                $this->a2b->debug(A2Billing::DEBUG, "[rate-engine: LAST UNSET");
                 unset($mysearchvalue[$resultcount]);
                 foreach ($mysearchvalue as $key => $value) {
                     if (is_null($value) or $value === "") {
@@ -344,18 +317,14 @@ class RateEngine
                 $mysearchvalue = array_values($mysearchvalue);
                 unset($sorted_result);
             }
-            if ($this->webui) {
-                $this->a2b->debug(A2Billing::DEBUG, "[rate-engine: RESULTCOUNT" . $resultcount . "]");
-                $this->a2b->debug(A2Billing::DEBUG, "[rate-engine: MYRESULT  after delete \n" . json_encode($sorted_result ?? null));
-                $this->a2b->debug(A2Billing::DEBUG, "[rate-engine: MYSEARCHVALUE after delete \n" . json_encode($mysearchvalue));
-                $this->a2b->debug(A2Billing::DEBUG, "[rate-engine: Count Total result after 4 " . count($sorted_result ?? []) . "]");
-            }
+            $this->a2b->debug(A2Billing::DEBUG, "[rate-engine: RESULTCOUNT" . $resultcount . "]");
+            $this->a2b->debug(A2Billing::DEBUG, "[rate-engine: MYRESULT  after delete \n" . json_encode($sorted_result ?? null));
+            $this->a2b->debug(A2Billing::DEBUG, "[rate-engine: MYSEARCHVALUE after delete \n" . json_encode($mysearchvalue));
+            $this->a2b->debug(A2Billing::DEBUG, "[rate-engine: Count Total result after 4 " . count($sorted_result ?? []) . "]");
             if (count($result) > 1 and $countdelete != 0) {
                 $result = $mysearchvalue;
             }
-            if ($this->webui) {
-                $this->a2b->debug(A2Billing::DEBUG, "[rate-engine: RESULT  after delete \n" . json_encode($result));
-            }
+            $this->a2b->debug(A2Billing::DEBUG, "[rate-engine: RESULT  after delete \n" . json_encode($result));
         }
 
         //2) TAKE THE VALUE OF LCTYPE
@@ -415,10 +384,9 @@ class RateEngine
         if ($this->debug_st) {
             echo "::> Count Total distinct_result " . count($distinct_result) . "\n\n";
         }
-        if ($this->webui) {
-            $this->a2b->debug(A2Billing::DEBUG, "[CC_asterisk_rate-engine: Count Total result " . count($distinct_result) . "]");
-            $this->a2b->debug(A2Billing::DEBUG, "[CC_asterisk_rate-engine: number_trunk " . $this->number_trunk . "]");
-        }
+        $this->a2b->debug(A2Billing::DEBUG, "[CC_asterisk_rate-engine: Count Total result " . count($distinct_result) . "]");
+        $this->a2b->debug(A2Billing::DEBUG, "[CC_asterisk_rate-engine: number_trunk " . $this->number_trunk . "]");
+
         return 1;
     }
 
@@ -429,18 +397,14 @@ class RateEngine
     */
     public function rate_engine_all_calcultimeout(int $credit): bool
     {
-        if ($this->webui) {
-            $this->a2b->debug(A2Billing::DEBUG, "[CC_RATE_ENGINE_ALL_CALCULTIMEOUT ($credit)]");
-        }
+        $this->a2b->debug(A2Billing::DEBUG, "[CC_RATE_ENGINE_ALL_CALCULTIMEOUT ($credit)]");
         if (count($this->ratecard_obj) === 0) {
             return false;
         }
 
         for ($k = 0; $k < count($this->ratecard_obj); $k++) {
             $res_calcultimeout = $this->rate_engine_calcultimeout($credit, $k);
-            if ($this->webui) {
-                $this->a2b->debug(A2Billing::DEBUG, "[CC_RATE_ENGINE_ALL_CALCULTIMEOUT: k=$k - res_calcultimeout:$res_calcultimeout]");
-            }
+            $this->a2b->debug(A2Billing::DEBUG, "[CC_RATE_ENGINE_ALL_CALCULTIMEOUT: k=$k - res_calcultimeout:$res_calcultimeout]");
 
             if (substr($res_calcultimeout, 0, 5) == 'ERROR') {
                 return false;
