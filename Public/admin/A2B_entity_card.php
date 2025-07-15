@@ -537,11 +537,11 @@ require_once __DIR__ . "/templates/main.php";
                         </div>
                         <div class="col">
                             <select name="upd_country" id="upd_country" class="form-select form-select-sm">
-                                <?php foreach ($list_country as $v): ?>
+                                <?php foreach ($list_country as $k => $v): ?>
                                     <option
-                                        value="<?= $v["countrycode"] ?>"
-                                        <?php if (strval($update_fields["country"] ?? $A2B->config["global"]["base_country"] ?? "") === $v["countrycode"]): ?>selected="selected"<?php endif ?>
-                                    ><?= $v["countryname"] ?></option>
+                                        value="<?= $k ?>"
+                                        <?php if (strval($update_fields["country"] ?? $A2B->config["global"]["base_country"] ?? "") === "$k"): ?>selected="selected"<?php endif ?>
+                                    ><?= $v ?></option>
                                 <?php endforeach ?>
                             </select>
                         </div>
@@ -556,7 +556,7 @@ require_once __DIR__ . "/templates/main.php";
     </div> <!-- .modal-dialog -->
 </div> <!-- .modal -->
 
-    <?php if (!USE_REALTIME && $_SESSION["is_sip_iax_change"] ?? 0): ?>
+    <?php if (!USE_REALTIME && ($_SESSION["is_sip_iax_change"] ?? 0)): ?>
 <div class="modal show" aria-labelledby="modal-title-sip" aria-hidden="false">
     <div class="modal-dialog">
         <div class="modal-content">
