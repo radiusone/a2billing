@@ -3336,41 +3336,31 @@ class A2Billing
     */
     public function DbReConnect(): bool
     {
-        $res = $this->DBHandle->Execute("select 1");
+        $res = $this->DBHandle->Execute("SELECT 1");
         if (!$res) {
-            $this->debug(self::DEBUG, "[DB CONNECTION LOST] - RECONNECT ATTEMPT");
+            $this->debug(self::DEBUG, "[DB connection lost] Reconnecting");
             $this->DBHandle->Close();
-            $scheme = $this->config['database']['dbtype'] === "postgres" ? "pgsql" : "mysqli";
-            $datasource = sprintf(
-                "%s://%s:%s@%s/%s",
-                $scheme,
-                $this->config["database"]["user"],
-                $this->config["database"]["password"],
-                $this->config["database"]["hostname"],
-                $this->config["database"]["dbname"]
-            );
             $count = 1;
             $sleep = 1;
             do {
-                $this->DBHandle = NewADOConnection($datasource);
-                if ($this->DBHandle !== false) {
+                $result = $this->DbConnect();
+                if ($result !== false) {
                     break;
                 }
-                $this->debug(self::DEBUG, "[DB CONNECTION LOST]- RECONNECT FAILED ,ATTEMPT $count sleep for $sleep ");
+                $this->debug(
+                    self::DEBUG,
+                    sprintf("[DB connection lost] Reconnect attempt %d failed, pause %d seconds", $count, $sleep)
+                );
                 sleep($sleep);
                 $count++;
                 $sleep *= 2;
             } while ($count < 5);
             if ($this->DBHandle === false) {
-                $this->debug(self::FATAL, "[DB CONNECTION LOST] CDR NOT POSTED");
+                $this->debug(self::FATAL, "[DB connection lost] CDR not posted");
+
                 return false;
             }
-            if ($this->config['database']['dbtype'] === "mysql") {
-                $this->DBHandle->Execute('SET AUTOCOMMIT = 1');
-            }
-
-            $this->debug(self::DEBUG, "[NO DB CONNECTION] - RECONNECT OK]");
-
+            $this->debug(self::DEBUG, "[DB connection lost] Reconnection successful");
         } else {
             $res->Close();
         }
