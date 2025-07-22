@@ -1287,6 +1287,189 @@ class RateEngine
         $this->a2b->DBHandle->Execute($QUERY, [$this->usedtrunk]);
     }
 
+    /**
+     * Make the call; loop through the rate cards and their trunks
+     * until a successful call is made
+     *
+     * @param string $destination
+     * @return bool
+     */
+    public function call(string $destination): bool
+    {
+        $this->usedratecard = 0;
+        foreach ($this->ratecard_obj as $rc_index => $ratecard) {
+            $this->usedratecard = $rc_index;
+            $this->a2b->debug(A2Billing::INFO, sprintf("Trying rate %d", $ratecard["ratecard_id"]));
+            $trunkdata = [];
+            foreach ($ratecard as $k => $v) {
+                // if trunk is not defined on the rate, use the ratecard
+                $prefix = (int)$ratecard["rt_id_trunk"] < 0 ? "tp_" : "rt_";
+                if (str_starts_with($k, $prefix)) {
+                    $k = str_replace($prefix, "", $k);
+                    $trunkdata[$k] = $v;
+                }
+            }
+            $max_long = 36000000;
+            $original_destination = $destination;
+            // main trunk doesn't count towards the limit
+            $loop_failover = -1;
+            $conf = $this->a2b->agiconfig;
+            $timeout = (int)$ratecard["timeout"];
+            $musiconhold = $ratecard["musiconhold"] ?? "";
+            $cidgroupid = (int)$ratecard["id_outbound_cidgroup"];
+            $recordcall = (bool)$conf["record_call"];
+
+            $dialparams = str_replace(
+                ["%timeout%", "%timeoutsec%"],
+                [min($timeout * 1000, $max_long), min($timeout, $max_long)],
+                $conf["dialcommand_param"] ?? ""
+            );
+            if (strlen($musiconhold) > 0 && $musiconhold !== "selected") {
+                $dialparams .= "m";
+                $this->agi->exec("MusicOnHold", ["$musiconhold"]);
+            }
+
+            if ($recordcall) {
+                $file = sprintf("%s.%s", $this->a2b->uniqueid, $conf["monitor_formatfile"]);
+                $this->agi->exec("MixMonitor", [$file, "b"]);
+            }
+
+            $query = "SELECT cid FROM cc_outbound_cid_list WHERE activated = 1 AND outbound_cid_group = ?";
+            $params = [$cidgroupid];
+            $outcid = array_rand($this->a2b->DBHandle->GetCol($query, $params) ?: [0]);
+            $this->a2b->debug(A2Billing::DEBUG, "Query: $query", $params);
+            if ($outcid) {
+                $this->a2b->debug(
+                    A2Billing::DEBUG,
+                    sprintf("Setting outbound Caller ID from group %d: %s", $cidgroupid, $outcid)
+                );
+                $this->agi->set_callerid($outcid);
+            }
+
+            do {
+                $loop_failover++;
+                $destination = "$original_destination";
+                $this->usedtrunk = (int)$trunkdata["id_trunk"];
+                $trunkname = $trunkdata["trunkcode"];
+                $prefix = $trunkdata["trunkprefix"];
+                $tech = $trunkdata["providertech"];
+                $ipaddress = $trunkdata["providerip"];
+                $removeprefix = $trunkdata["removeprefix"];
+                $failover_trunk = (int)$trunkdata["failover_trunk"];
+                $status = (int)$trunkdata["status"];
+                $addparameter = $trunkdata["addparameter_trunk"];
+                $inuse = (int)$trunkdata["inuse"];
+                $maxuse = (int)$trunkdata["maxuse"];
+                $use_next_on_max_use = (int)$trunkdata["if_max_use"] === 1;
+
+                $this->a2b->debug(A2Billing::INFO, sprintf("Trying call on trunk %s", $trunkname));
+                if ($status === 0) {
+                    // this is only for failovers, rate/plan trunk is always enabled
+                    $this->a2b->debug(A2Billing::WARN, "Trunk is disabled; using next ratecard");
+                    continue 2;
+                }
+
+                if (str_starts_with($destination, $removeprefix)) {
+                    $destination = substr($destination, strlen($removeprefix));
+                }
+                $destination = "$prefix" . $destination;
+
+                $ipaddress = str_replace("%cardnumber%", $this->a2b->cardnumber, $ipaddress);
+
+                if (str_contains($ipaddress, "%dialingnumber%")) {
+                    $ipaddress = str_replace("%dialingnumber%", $destination, $ipaddress);
+                    $dialstr = "$tech/$ipaddress";
+                } elseif (intval($conf["switchdialcommand"]) === 1) {
+                    $dialstr = "$tech/$destination@$ipaddress";
+                } else {
+                    $dialstr = "$tech/$ipaddress/$destination";
+                }
+
+                $dialparams .= str_replace(
+                    ["%cardnumber%", "%dialingnumber%"],
+                    [$this->a2b->cardnumber, "$destination"],
+                    $addparameter
+                );
+
+                $this->a2b->debug(
+                    A2Billing::INFO,
+                    sprintf("Dialing %s with timeout of %d", $dialstr, $timeout)
+                );
+
+                if ($maxuse === -1 || $inuse < $maxuse) {
+                    $this->trunk_start_inuse(true);
+                    $this->agi->exec("Dial", [$dialstr, $dialparams]);
+                    $this->a2b->DbReConnect();
+                    $this->trunk_start_inuse(false);
+                } elseif ($use_next_on_max_use) {
+                    $this->a2b->debug(
+                        A2Billing::WARN,
+                        "Trunk has reached maximum number of connections; using next ratecard"
+                    );
+                    continue 2;
+                } else {
+                    $this->a2b->debug(
+                        A2Billing::WARN,
+                        "Trunk has reached maximum number of connections; using next failover"
+                    );
+                    if ($failover_trunk > 0) {
+                        $query = <<< SQL
+                        SELECT id_trunk, trunkcode, trunkprefix, providertech, providerip, removeprefix, 
+                               failover_trunk, status, addparameter AS addparameter_trunk, inuse, maxuse, if_max_use 
+                        FROM cc_trunk
+                        WHERE id_trunk = ?
+                        SQL;
+                        $params = [$failover_trunk];
+                        $this->a2b->debug(A2Billing::DEBUG, "Query: $query", $params);
+                        $trunkdata = $this->a2b->DBHandle->GetRow($query, $params);
+                    }                    
+                    continue;
+                }
+
+                if ($recordcall) {
+                    $this->agi->exec("StopMixMonitor");
+                }
+
+                $this->real_answeredtime = $this->answeredtime = (int)$this->agi->get_variable("ANSWEREDTIME", true);
+                $this->dialstatus = $this->agi->get_variable("DIALSTATUS", true);
+            } while (
+                $loop_failover <= $conf["failover_recursive_limit"]
+                && $failover_trunk > 0
+                && ($this->dialstatus === "CHANUNAVAIL" || $this->dialstatus === "CONGESTION" || ($inuse >= $maxuse && $maxuse != -1))
+            );
+
+            // completed trunk loop
+            if ($this->dialstatus === "BUSY") {
+                $this->real_answeredtime = $this->answeredtime = 0;
+                if ($conf["busy_timeout"] > 0) {
+                    $this->agi->exec("Busy", [$conf["busy_timeout"]]);
+                }
+                $this->agi->stream_file("prepaid-isbusy", "#");
+            } elseif ($this->dialstatus === "NOANSWER") {
+                $this->real_answeredtime = $this->answeredtime = 0;
+                $this->agi->stream_file("prepaid-noanswer", "#");
+            } elseif ($this->dialstatus === "CANCEL") {
+                $this->real_answeredtime = $this->answeredtime = 0;
+            } elseif ($this->dialstatus === "CHANUNAVAIL" || $this->dialstatus === "CONGESTION") {
+                $this->real_answeredtime = $this->answeredtime = 0;
+                if ($conf["failover_lc_prefix"]) {
+                    continue;
+                }
+
+                return false;
+            }
+            $this->a2b->debug(
+                A2Billing::DEBUG,
+                sprintf("Call status %s, answered time %d", $this->dialstatus, $this->answeredtime)
+            );
+
+            return true;
+        }
+        $this->a2b->debug(A2Billing::DEBUG, "Failure with all rates");
+
+        return false;
+    }
+
     /*
         RATE ENGINE - PERFORM CALLS
     */
@@ -1334,7 +1517,9 @@ class RateEngine
                 $destination = substr($destination, strlen($removeprefix));
             }
 
+            // this is a global setting so shouldn't be constructed in the loop
             $dialparams = str_replace(
+                // timeoutsec isn't actually documented anywhere
                 ["%timeout%", "%timeoutsec%"],
                 [min($timeout * 1000, $max_long), min($timeout, $max_long)],
                 trim($conf['dialcommand_param'] ?? "")
@@ -1345,6 +1530,7 @@ class RateEngine
 
             if (strlen($musiconhold) > 0 && $musiconhold !== "selected") {
                 $dialparams .= "m";
+                // this application doesn't exist?
                 $this->agi->exec("SETMUSICONHOLD $musiconhold");
                 $this->a2b->debug(A2Billing::DEBUG, "EXEC SETMUSICONHOLD $musiconhold");
             }
@@ -1378,6 +1564,7 @@ class RateEngine
 
             $this->a2b->debug(A2Billing::INFO, "app_callingcard: Dialing '$dialstr' with timeout of '$timeout'.\n");
 
+            // rand() is mysql only
             $query = "SELECT cid FROM cc_outbound_cid_list WHERE activated = 1 AND outbound_cid_group = ? ORDER BY RAND() LIMIT 1";
             $params = [$cidgroupid];
             $outcid = $this->a2b->DBHandle->GetOne($query, $params) ?: 0;
@@ -1402,6 +1589,7 @@ class RateEngine
             }
 
             if ($conf['record_call'] == 1) {
+                // why stop the recording before trying the failover trunks?
                 $this->agi->exec("StopMixMonitor");
                 $this->a2b->debug(A2Billing::INFO, "EXEC StopMixMonitor (" . $this->a2b->uniqueid . ")");
             }
