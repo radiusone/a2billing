@@ -1173,7 +1173,7 @@ class RateEngine
         $card_id = $this->a2b->id_card < 1 ? '-1' : $this->a2b->id_card;
         $real_sessiontime = $this->real_answeredtime;
         $id_tariffgroup = $id_tariffgroup < 1 ? null : $id_tariffgroup;
-        $id_tariffplan = $id_tariffplan ? null : $id_tariffplan;
+        $id_tariffplan = $id_tariffplan < 1 ? null : $id_tariffplan;
         $id_ratecard = $id_ratecard < 1 ? null : $id_ratecard;
         $trunk_id = $this->usedtrunk < 1 ? null : $this->usedtrunk;
         $id_card_package_offer = $id_card_package_offer < 1 ? null : $id_card_package_offer;
