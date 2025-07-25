@@ -1312,8 +1312,14 @@ class FormHandler
                     $this->FG_LIST_VIEW_PAGE_COUNT = ceil($this->FG_LIST_VIEW_ROW_COUNT / $this->FG_LIST_VIEW_PAGE_SIZE);
                 }
             } else {
-                //todo: when is this code run and why?
-                $cols = array_column($this->FG_EDIT_FORM_ELEMENTS, "name");
+                $cols = array_column(
+                    array_filter(
+                        $this->FG_EDIT_FORM_ELEMENTS,
+                        // these have a fake index
+                        fn ($v) => $v["type"] !== "HAS_MANY"
+                    ),
+                    "name"
+                );
                 $fields = implode(",", $cols);
 
                 $instance_table = new Table($this->FG_QUERY_TABLE_NAME, $fields, $this->query_table_joins);
