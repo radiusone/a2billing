@@ -80,8 +80,8 @@ $totalminutes = sprintf("%02d:%02d", intval($totalminutes / 60), $totalminutes %
             <td><?= get_money_precise($data["sell"]) ?></td>
             <td><?= get_money_precise($data["buy"] ) ?></td>
             <td><?= get_money_precise($data["sell"] - $data["buy"]) ?></td>
-            <td><?= get_percent($data["margin"]) ?></td>
-            <td><?= get_percent($data["markup"]) ?></td>
+            <td><?= $data["sell"] != 0 ? get_percent((($data["sell"] - $data["buy"]) / $data["sell"]) * 100) : _("n/a") ?></td>
+            <td><?= $data["buy"] != 0 ? get_percent((($data["sell"] - $data["buy"]) / $data["buy"]) * 100) : _("n/a") ?></td>
 <?php endif ?>
         </tr>
     <?php endforeach ?>
