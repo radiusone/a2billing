@@ -138,9 +138,9 @@ foreach ($call_list as $call) {
     }
     $graph_data[$day]["minutes"][$hour] += $call["sessiontime"];
     $graph_data[$day]["calls"][$hour]++;
-    $graph_data[$day]["profits"][$hour] += $call["profits"];
+    $graph_data[$day]["profits"][$hour] += $call["profit"];
     $graph_data[$day]["revenue"][$hour] += $call["revenue"];
-    $graph_data[$day]["costs"][$hour] += $call["costs"];
+    $graph_data[$day]["costs"][$hour] += $call["cost"];
     $legends[$day] = (new DateTime($call["starttime"]))->format("M j");
 }
 
