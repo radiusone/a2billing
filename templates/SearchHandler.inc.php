@@ -163,16 +163,16 @@ use A2billing\Forms\FormHandler;
                         <?= sprintf(ngettext("%d week ago", "%d weeks ago", 1), 1) ?>
                     </option>
                     <option value="<?= $val = (new DateTime("1 month ago"))->format("Y-m-d") ?>" <?php if (($processed[$item["input"][0]] ?? 0) === "$val"): ?>selected="selected"<?php endif ?>>
-                        <?= sprintf(ngettext("%d month ago", "%d month ago", 1), 1) ?>
+                        <?= sprintf(ngettext("%d month ago", "%d months ago", 1), 1) ?>
                     </option>
                     <option value="<?= $val = (new DateTime("2 months ago"))->format("Y-m-d") ?>" <?php if (($processed[$item["input"][0]] ?? 0) === "$val"): ?>selected="selected"<?php endif ?>>
-                        <?= sprintf(ngettext("%d month ago", "%d month ago", 2), 2) ?>
+                        <?= sprintf(ngettext("%d month ago", "%d months ago", 2), 2) ?>
                     </option>
                     <option value="<?= $val = (new DateTime("3 months ago"))->format("Y-m-d") ?>" <?php if (($processed[$item["input"][0]] ?? 0) === "$val"): ?>selected="selected"<?php endif ?>>
-                        <?= sprintf(ngettext("%d month ago", "%d month ago", 3), 3) ?>
+                        <?= sprintf(ngettext("%d month ago", "%d months ago", 3), 3) ?>
                     </option>
                     <option value="<?= $val = (new DateTime("6 months ago"))->format("Y-m-d") ?>" <?php if (($processed[$item["input"][0]] ?? 0) === "$val"): ?>selected="selected"<?php endif ?>>
-                        <?= sprintf(ngettext("%d month ago", "%d month ago", 6), 6) ?>
+                        <?= sprintf(ngettext("%d month ago", "%d months ago", 6), 6) ?>
                     </option>
                     <option value="<?= $val = (new DateTime("1 year ago"))->format("Y-m-d") ?>" <?php if (($processed[$item["input"][0]] ?? 0) === "$val"): ?>selected="selected"<?php endif ?>>
                         <?= sprintf(ngettext("%d year ago", "%d years ago", 1), 1) ?>
@@ -193,7 +193,7 @@ use A2billing\Forms\FormHandler;
                         id="enable_<?= $item["input"][0] ?>"
                         value="true"
                         aria-label="<?= _("enable the search start date")?>"
-                        <?php if (empty($processed["enable_" . $item["input"][0]])): ?>checked="checked"<?php endif ?>
+                        <?php if (!empty($processed["enable_" . $item["input"][0]])): ?>checked="checked"<?php endif ?>
                         class="form-check-input m-0 date-input-enabler"
                     />&nbsp;<label for="enable_<?= $item["input"][0] ?>" class="form-label form-label-sm m-0"><?=_("From") ?></label>
                 </div>
