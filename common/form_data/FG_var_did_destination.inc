@@ -113,7 +113,7 @@ if (!is_customer() && $form_action !== "ask-edit" && $form_action !== "edit") {
         "",
         ["id" => "id_cc_did_old"],
         "",
-        fn (array $row) => [$row["id"], format_phone_number($row["did"])]
+        fn (array $row) => [format_phone_number($row["did"]), $row["id"]]
     );
 
     $HD_Form->AddEditSqlSelect(
@@ -153,7 +153,7 @@ if (!is_customer() && $form_action !== "ask-edit" && $form_action !== "edit") {
             }
             $text = str_replace(" ()", "", trim($text) . ")");
 
-            return [$row["id"], $text];
+            return [$text, $row["id"]];
         }
     );
 }
