@@ -15,8 +15,8 @@ $table = new Table(
         "COUNT(*) AS nbcall",
         "SUM(cc_call.buycost + 0) AS buy",
         "SUM(cc_call.sessionbill + 0) AS sell",
-        "SUM(CASE WHEN sessionbill != 0 THEN ((sessionbill - buycost) / sessionbill) * 100 ELSE 0 END) AS margin",
-        "SUM(CASE WHEN buycost != 0 THEN ((sessionbill - buycost) / buycost) * 100 ELSE 0 END) AS markup",
+        "CASE WHEN SUM(sessionbill) != 0 THEN (SUM(sessionbill) - SUM(buycost)) / SUM(sessionbill) * 100 ELSE 0 END AS margin",
+        "CASE WHEN SUM(buycost) != 0 THEN (SUM(sessionbill) - SUM(buycost)) / SUM(buycost) * 100 ELSE 0 END AS markup",
         "SUM(CASE WHEN cc_call.sessiontime > 0 THEN 1 ELSE 0 END) AS success_calls",
     ],
     ["cc_trunk" => ["cc_call.id_trunk", "cc_trunk.id_trunk"]]
