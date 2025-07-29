@@ -60,7 +60,7 @@ require_once __DIR__ . "/templates/header.php";
 <div class="row">
 <main class="col">
 
-<form method="post" action="A2B_info_card.php">
+<form method="post" action="index.php">
     <div class="modal show d-block" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="authTitle" aria-hidden="false">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content shadow">

@@ -43,4 +43,4 @@ require_once __DIR__ . "/../common/lib/customer.defines.php";
 unset($_SESSION);
 session_destroy();
 session_regenerate_id();
-header("Location: " . $A2B->config["webcustomerui"]['return_url_distant_login'] ?? "index.php");
+header("Location: " . ($A2B->config["webcustomerui"]['return_url_distant_login'] ?: "index.php"));
