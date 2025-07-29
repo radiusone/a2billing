@@ -49,21 +49,21 @@ require_once __DIR__ . "/../../common/lib/admin.defines.php";
 Admin::checkPageAccess(Admin::ACX_CALL_REPORT);
 
 getpost_ifset([
-    "enable_starttime_start", "starttime_start", "enable_starttime_end", "starttime_end", "enable_starttime_end_recent", "starttime_end_recent", "report_type", "group_id", "posted_search",
+    "enable_starttime_start", "starttime_start", "enable_starttime_end", "starttime_end", "enable_starttime_start_relative", "starttime_start_relative", "report_type", "group_id", "posted_search",
 ]);
 /**
  * @var 'true'|null $enable_starttime_start
  * @var string|null $starttime_start
  * @var 'true'|null $enable_starttime_end
  * @var string|null $starttime_end
- * @var 'true'|null $enable_starttime_end_recent
- * @var string|null $starttime_end_recent
+ * @var 'true'|null $enable_starttime_start_relative
+ * @var string|null $starttime_start_relative
  * @var string|null $report_type
  * @var numeric-string|null $group_id
  * @var numeric-string|null $posted_search
  */
 $conditions = ["1 = 1"];
-// these need to be manually processed to build the temp table
+// these need to be manually processed as strings to build the temp table
 if (isset($enable_starttime_start) || isset($enable_starttime_end)) {
     if (isset($enable_starttime_start) && isset($starttime_start)) {
         $starttime_start = (new DateTime($starttime_start))->format("Y-m-d H:i:s");
@@ -73,6 +73,9 @@ if (isset($enable_starttime_start) || isset($enable_starttime_end)) {
         $starttime_end = (new DateTime($starttime_end))->format("Y-m-d H:i:s");
         $conditions[] = "starttime <= '$starttime_end'";
     }
+} elseif (isset($enable_starttime_start_relative)) {
+    $starttime_start = (new DateTime($starttime_start_relative))->format("Y-m-d H:i:s");
+    $conditions[] = "starttime >= '$starttime_start_relative'";
 }
 $condition = implode(" AND ", $conditions);
 
@@ -380,7 +383,7 @@ $row = (new Table(
     "SUM(orig_total) AS orig_total", "SUM(toll_free_sell_cost) AS toll_free_sell_cost", "SUM(pay_phone_sell_cost) AS pay_phone_sell_cost",
     "SUM(term_only) AS term_only", "SUM(charges) AS charges", "SUM(term_total) AS term_total", "SUM(first_use) AS first_use",
     "(1 - SUM(net_revenue) / SUM(term_total)) * 100 AS average_discount", "SUM(net_revenue) AS net_revenue",
-    "SUM(profit) / SUM(net_revenue) * 100 AS margin", "SUM(profit) AS profit"]
+    "CASE WHEN SUM(net_revenue) != 0 THEN SUM(profit) / SUM(net_revenue) * 100 ELSE NULL AS margin", "SUM(profit) AS profit"]
 ))->getRow();
 ?>
 
@@ -424,9 +427,9 @@ $row = (new Table(
                     <td><?= get_money($row["charges"]) ?></td>
                     <td><?= get_money($row["term_total"]) ?></td>
                     <td><?= get_money($row["first_use"]) ?></td>
-                    <td><?= get_money($row["average_discount"]) ?></td>
+                    <td><?= get_percent($row["average_discount"]) ?></td>
                     <td><?= get_money($row["net_revenue"]) ?></td>
-                    <td><?= get_money($row["margin"]) ?></td>
+                    <td><?= get_percent($row["margin"]) ?></td>
                     <td><?= get_money($row["profit"]) ?></td>
                 </tr>
                 </tbody>
