@@ -565,7 +565,7 @@ class FormHandler
         callable $custom_function = null // only used in FG_var_config.inc to convert 0/1 to yes/no
     )
     {
-        $this->FG_EDIT_FORM_ELEMENTS[$fieldname] = [
+        $el = [
             "label" => $label_text,
             "name" => $fieldname,
             "type" => "INPUT",
@@ -577,6 +577,12 @@ class FormHandler
             "comment" => $form_text_bottom,
             "validation_err" => true,
         ];
+
+        if (array_key_exists($fieldname, $this->FG_EDIT_FORM_ELEMENTS)) {
+            $this->FG_EDIT_FORM_ELEMENTS[] = $el;
+        } else {
+            $this->FG_EDIT_FORM_ELEMENTS[$fieldname] = $el;
+        }
     }
 
     /**
@@ -590,7 +596,7 @@ class FormHandler
         string $error_message = ""
     )
     {
-        $this->FG_EDIT_FORM_ELEMENTS[$fieldname] = [
+        $el = [
             "label" => $label_text,
             "name" => $fieldname,
             "type" => "DAYTIME",
@@ -599,6 +605,12 @@ class FormHandler
             "validation_err" => true,
             "default" => $default_value,
         ];
+
+        if (array_key_exists($fieldname, $this->FG_EDIT_FORM_ELEMENTS)) {
+            $this->FG_EDIT_FORM_ELEMENTS[] = $el;
+        } else {
+            $this->FG_EDIT_FORM_ELEMENTS[$fieldname] = $el;
+        }
     }
 
     /**
@@ -639,7 +651,7 @@ class FormHandler
             $options = $table->getColumn($conditions);
         }
 
-        $this->FG_EDIT_FORM_ELEMENTS[$fieldname] = [
+        $el = [
             "label" => $label_text,
             "name" => $fieldname,
             "default" => $default_value,
@@ -652,6 +664,12 @@ class FormHandler
             "comment" => $form_text_bottom,
             "validation_err" => true,
         ];
+
+        if (array_key_exists($fieldname, $this->FG_EDIT_FORM_ELEMENTS)) {
+            $this->FG_EDIT_FORM_ELEMENTS[] = $el;
+        } else {
+            $this->FG_EDIT_FORM_ELEMENTS[$fieldname] = $el;
+        }
     }
 
     /**
@@ -674,7 +692,7 @@ class FormHandler
         string $error_message = ""
     ): void
     {
-        $this->FG_EDIT_FORM_ELEMENTS[$fieldname] = [
+        $el = [
             "label" => $label_text,
             "name" => $fieldname,
             "default" => $default_value,
@@ -687,6 +705,12 @@ class FormHandler
             "comment" => $form_text_bottom,
             "validation_err" => true,
         ];
+
+        if (array_key_exists($fieldname, $this->FG_EDIT_FORM_ELEMENTS)) {
+            $this->FG_EDIT_FORM_ELEMENTS[] = $el;
+        } else {
+            $this->FG_EDIT_FORM_ELEMENTS[$fieldname] = $el;
+        }
     }
 
     /**
@@ -709,7 +733,7 @@ class FormHandler
         string $error_message = ""
     ): void
     {
-        $this->FG_EDIT_FORM_ELEMENTS[$fieldname] = [
+        $el = [
             "label" => $label_text,
             "name" => $fieldname,
             "default" => $default_value,
@@ -720,6 +744,12 @@ class FormHandler
             "comment" => $form_text_bottom,
             "validation_err" => true,
         ];
+
+        if (array_key_exists($fieldname, $this->FG_EDIT_FORM_ELEMENTS)) {
+            $this->FG_EDIT_FORM_ELEMENTS[] = $el;
+        } else {
+            $this->FG_EDIT_FORM_ELEMENTS[$fieldname] = $el;
+        }
     }
 
     /**
@@ -742,7 +772,7 @@ class FormHandler
         string $error_message = ""
     ): void
     {
-        $this->FG_EDIT_FORM_ELEMENTS[$fieldname] = [
+        $el = [
             "label" => $label_text,
             "name" => $fieldname,
             "popup_dest" => $href,
@@ -754,6 +784,12 @@ class FormHandler
             "comment" => $form_text_bottom,
             "validation_err" => true,
         ];
+
+        if (array_key_exists($fieldname, $this->FG_EDIT_FORM_ELEMENTS)) {
+            $this->FG_EDIT_FORM_ELEMENTS[] = $el;
+        } else {
+            $this->FG_EDIT_FORM_ELEMENTS[$fieldname] = $el;
+        }
     }
 
     /**
@@ -783,7 +819,7 @@ class FormHandler
     ): void
     {
         $index = $table->table . "." . $insert_column;
-        $this->FG_EDIT_FORM_ELEMENTS[$index] = [
+        $el = [
             "type" => "HAS_MANY",
             "label" => $label,
             "name" => $index,
@@ -796,6 +832,12 @@ class FormHandler
             "validator" => $validator,
             "validation_err" => true,
         ];
+
+        if (array_key_exists($index, $this->FG_EDIT_FORM_ELEMENTS)) {
+            $this->FG_EDIT_FORM_ELEMENTS[] = $el;
+        } else {
+            $this->FG_EDIT_FORM_ELEMENTS[$index] = $el;
+        }
     }
 
     /**
@@ -818,7 +860,7 @@ class FormHandler
         ?callable $validator = null
     ): void
     {
-        $this->FG_EDIT_FORM_ELEMENTS[$fieldname] = [
+        $el = [
             "name" => $fieldname,
             "type" => "TEXTAREA",
             "label" => $label_text,
@@ -829,6 +871,12 @@ class FormHandler
             "validation_err" => true,
             "default" => $default_value,
         ];
+
+        if (array_key_exists($fieldname, $this->FG_EDIT_FORM_ELEMENTS)) {
+            $this->FG_EDIT_FORM_ELEMENTS[] = $el;
+        } else {
+            $this->FG_EDIT_FORM_ELEMENTS[$fieldname] = $el;
+        }
     }
 
     public function AddEditSection(string $label)
@@ -1315,14 +1363,14 @@ class FormHandler
                 $cols = array_column(
                     array_filter(
                         $this->FG_EDIT_FORM_ELEMENTS,
-                        // these have a fake index
-                        fn ($v) => $v["type"] !== "HAS_MANY"
+                        // "has many" have a fake index, some fields may have a numeric one
+                        fn ($v, $k) => $v["type"] !== "HAS_MANY" && !is_numeric($k),
+                        ARRAY_FILTER_USE_BOTH
                     ),
                     "name"
                 );
-                $fields = implode(",", $cols);
 
-                $instance_table = new Table($this->FG_QUERY_TABLE_NAME, $fields, $this->query_table_joins);
+                $instance_table = new Table($this->FG_QUERY_TABLE_NAME, $cols, $this->query_table_joins);
                 $list = $instance_table->getRows($this->update_query_conditions);
 
                 //PATCH TO CLEAN THE IMPORT OF PASSWORD FROM THE DATABASE
