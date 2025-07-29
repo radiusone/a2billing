@@ -72,18 +72,18 @@ $HD_Form->AddListValue(_("ID"), "id");
 $HD_Form->AddListValue(_("Account number"), "username", [Customer::class, "getLinkFromUsername"]);
 $HD_Form->AddListValue(abbr(_("Bal"), _("Balance")), "credit", "get_money");
 $HD_Form->AddListValue(_("Last name"), "lastname");
+$HD_Form->AddListValue(_("Created"), "creationdate");
 $HD_Form->AddListMapping(_("Status"), "status", $cardstatus_list_acronym);
-$HD_Form->AddListValue(abbr(_("Lang"), _("Language")), "language");
 $HD_Form->AddListValue(_("In use"), "inuse");
-$HD_Form->AddListMapping(abbr(_("Cur"), _("Currency")), "currency", $currency_list);
 $HD_Form->AddListMapping(_("SIP"), "sip_buddy", $yesno_list);
 $HD_Form->AddListMapping(_("IAX"), "iax_buddy", $yesno_list);
-$HD_Form->AddListValue(abbr(_("Num"), _("Number of calls")), "nbused");
+$HD_Form->AddListValue(_("Calls"), "nbused");
 
 $HD_Form->list_message_empty  = _("NO CUSTOMER SEARCHED!");
 $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 30;
 
 $HD_Form->search_form_enabled = true;
+$HD_Form->search_delete_enabled = false;
 $HD_Form->search_form_title = _('Define specific criteria to search for cards created.');
 
 $HD_Form->AddSearchRelativeDateInput(_("Creation date"), "creationdate");
@@ -107,7 +107,7 @@ $HD_Form->AddSearchSelectInput(_("Currency"), "currency", $currency_list);
 
 if ($posted_search === true && $posted_archive === false) {
     $HD_Form->AddSearchButton(
-        "Archive Displayed Calls",
+        "Archive Displayed Customers",
         "posted_archive",
         "true",
         "btn-secondary",
@@ -151,6 +151,7 @@ echo create_help(_("Here you can archive the data. The Default listing will show
 
 $HD_Form->create_search_form();
 
+if ($posted_search === false) {
 ?>
 
 <div class="row pb-3">
@@ -165,6 +166,7 @@ $HD_Form->create_search_form();
     </div>
 </div>
 <?php
+}
 
 if ($archive_message) {
     print "<div class='row'><div class='col text-center'>$archive_message</div></div>";
