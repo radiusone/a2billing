@@ -133,16 +133,16 @@ use A2billing\Forms\FormHandler;
                     <input
                         type="checkbox"
                         name="enable_<?= $item["input"][0] ?>"
-                        id="enable_<?= $item["input"][0] ?>_relative"
+                        id="enable_<?= $item["input"][0] ?>"
                         value="true"
                         aria-label="<?= _("enable the relative date search") ?>"
-                        <?php if (!empty($processed[$item["input"][0] . "_relative"]) && !empty($processed["enable_" . $item["input"][0]])): ?>checked="checked"<?php endif ?>
+                        <?php if (!empty($processed["enable_" . $item["input"][0]])): ?>checked="checked"<?php endif ?>
                         class="form-check-input m-0 date-input-enabler relative-date"
-                    />&nbsp;<label for="enable_<?= $item["input"][0] ?>_relative" class="form-label form-label-sm m-0">
+                    />&nbsp;<label for="enable_<?= $item["input"][0] ?>" class="form-label form-label-sm m-0">
                         <?= ($item["start"]) ? _("Since") : _("Before") ?>
                     </label>
                 </div>
-                <select name="<?= $item["input"][0] ?>" id="<?= $item["input"][0] ?>_relative" class="form-select form-select-sm" aria-labelledby="item<?= $k ?>_label">
+                <select name="<?= $item["input"][0] ?>" id="<?= $item["input"][0] ?>" class="form-select form-select-sm" aria-labelledby="item<?= $k ?>_label">
             <?php if ($item["months"]): ?>
                 <?php for ($i = 1; $i <= 12; $i++): ?>
                     <option value="<?= $val = (new DateTime("$i months ago"))->format("Y-m-d") ?>" <?php if (($processed[$item["input"][0]] ?? 0) === "$val"): ?>selected="selected"<?php endif ?>>
@@ -193,7 +193,7 @@ use A2billing\Forms\FormHandler;
                         id="enable_<?= $item["input"][0] ?>"
                         value="true"
                         aria-label="<?= _("enable the search start date")?>"
-                        <?php if (empty($processed[$item["input"][0] . "_relative"]) && !empty($processed["enable_" . $item["input"][0]])): ?>checked="checked"<?php endif ?>
+                        <?php if (empty($processed["enable_" . $item["input"][0]])): ?>checked="checked"<?php endif ?>
                         class="form-check-input m-0 date-input-enabler"
                     />&nbsp;<label for="enable_<?= $item["input"][0] ?>" class="form-label form-label-sm m-0"><?=_("From") ?></label>
                 </div>
@@ -210,7 +210,7 @@ use A2billing\Forms\FormHandler;
                         id="enable_<?= $item["input"][1] ?>"
                         value="true"
                         aria-label="<?= _("enable the search end date") ?>"
-                        <?php if (empty($processed[$item["input"][1] . "_relative"]) && !empty($processed["enable_" . $item["input"][1]])): ?>checked="checked"<?php endif ?>
+                        <?php if (!empty($processed["enable_" . $item["input"][1]])): ?>checked="checked"<?php endif ?>
                         class="form-check-input m-0 date-input-enabler"
                     />&nbsp;<label for="enable_<?= $item["input"][1] ?>" class="form-label form-label-sm m-0">
                         <?= _("To") ?>

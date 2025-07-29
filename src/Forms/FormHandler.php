@@ -857,19 +857,19 @@ class FormHandler
 
     /**
      * Adds a search input to look for relative values compared to the current date
-     * This can be used to search for e.g. calls from the last week, or cards not
-     * created in the last year
+     * This can be used to search for e.g. calls from the last week, or cards
+     * created more than 8 months ago
      *
      * @param string $label
      * @param string $fieldname
-     * @param bool $start determines if current date is the start or end of the search range
+     * @param bool $start determines if input date is the start (current date is end) or end (no start) of the search range
      * @param bool $months range will be 1-12 months if true, more recent otherwise (e.g. 1 hour, 1 day, 1 week, etc)
      * @return void
      */
     public function AddSearchRelativeDateInput(string $label, string $fieldname, bool $start = false, bool $months = true): void
     {
         $column = $fieldname;
-        $fieldname .= $start ? "_start" : "_end";
+        $fieldname .= $start ? "_start_relative" : "_end_relative";
         $fieldname = str_replace(".", "^^", $fieldname);
         $this->search_form_elements[] = [
             "label" => $label,
@@ -1401,10 +1401,15 @@ class FormHandler
                         $this->do_field_duration($el["column"], $el["operator"][$i], $input);
                         break;
                     case "RELATIVEDATE":
-                    case "DATE":
                         if (!empty($processed["enable_$input"])) {
                             // add a fake input so we know which enabling checkbox to check
-                            $this->_processed["{$orig_input}_relative"] = $el["type"] === "RELATIVEDATE";
+                            $this->_processed["{$orig_input}_relative"] = true;
+                            $input = preg_replace("/_relative$/", "", $input);
+                            $this->do_field_duration($el["column"], $el["operator"][$i], $input);
+                        }
+                        break;
+                    case "DATE":
+                        if (!empty($processed["enable_$input"])) {
                             $this->do_field_duration($el["column"], $el["operator"][$i], $input);
                         }
                         break;

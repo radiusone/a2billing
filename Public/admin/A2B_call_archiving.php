@@ -45,7 +45,7 @@ Admin::checkPageAccess(Admin::ACX_MAINTENANCE);
 
 getpost_ifset([
     "posted_search", "posted_archive", "enable_starttime_start", "starttime_start", "enable_starttime_end",
-    "starttime_end", "enable_starttime_end_months", "starttime_end_months", "card_id", "id_provider",
+    "starttime_end", "enable_starttime_end_relative", "starttime_end_relative", "card_id", "id_provider",
     "id_tariffgroup", "id_trunk", "id_ratecard", "dst", "dsttype", "src", "srctype", "calltype"
 ]);
 /**
@@ -55,8 +55,8 @@ getpost_ifset([
  * @var string $starttime_start
  * @var bool|string $enable_starttime_end
  * @var string $starttime_end
- * @var bool|string $enable_starttime_end_months
- * @var string $starttime_end_months
+ * @var bool|string $enable_starttime_end_relative
+ * @var string $starttime_end_relative
  * @var string $card_id
  * @var string $id_provider
  * @var string $id_tariffgroup
@@ -69,11 +69,11 @@ getpost_ifset([
  * @var string $calltype
  */
 
-$posted_search = (bool)($posted_search ?? false);
-$posted_archive = (bool)($posted_archive ?? false);
-$enable_starttime_start = (bool)($enable_starttime_start ?? false);
-$enable_starttime_end = (bool)($enable_starttime_end ?? false);
-$enable_starttime_end_months = (bool)($enable_starttime_end_months ?? false);
+$posted_search = isset($posted_search);
+$posted_archive = isset($posted_archive);
+$enable_starttime_start = isset($enable_starttime_start);
+$enable_starttime_end = isset($enable_starttime_end);
+$enable_starttime_end_relative = isset($enable_starttime_end_relative);
 $card_id = (int)($card_id ?? 0);
 $id_provider = (int)($id_provider ?? 0);
 $id_tariffgroup = (int)($id_tariffgroup ?? 0);
@@ -132,18 +132,15 @@ if (!empty($dst)) {
     $HD_Form->list_query_conditions["dst"] = [$op, $dst];
 }
 
-if ($enable_starttime_start && !empty($starttime_start)) {
-    $HD_Form->list_query_conditions[] = ["SUB", ["starttime" => [">=", $starttime_start]]];
-}
-if ($enable_starttime_end && !empty($starttime_end)) {
-    $HD_Form->list_query_conditions[] = ["SUB", ["starttime" => ["<=", "$starttime_end 23:59:59"]]];
-}
-if ($enable_starttime_end_months) {
-    $interval = "$starttime_end_months MONTH";
-    if (DB_TYPE == "postgres") {
-        $interval = "'$interval'";
+if (($enable_starttime_start && !empty($starttime_start)) || ($enable_starttime_end && !empty($starttime_end))) {
+    if ($enable_starttime_start && !empty($starttime_start)) {
+        $HD_Form->list_query_conditions[] = ["SUB", ["starttime" => [">=", $starttime_start]]];
     }
-    $HD_Form->list_query_conditions["starttime"] = ["<=", "CURRENT_TIMESTAMP - INTERVAL $interval"];
+    if ($enable_starttime_end && !empty($starttime_end)) {
+        $HD_Form->list_query_conditions[] = ["SUB", ["starttime" => ["<=", "$starttime_end 23:59:59"]]];
+    }
+} elseif ($enable_starttime_end_relative && !empty($starttime_end_relative)) {
+    $HD_Form->list_query_conditions["starttime"] = ["<=", "$starttime_end_relative 23:59:59"];
 }
 
 if (!empty($card_id)) {
