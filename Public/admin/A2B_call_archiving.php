@@ -209,7 +209,7 @@ $HD_Form->AddSearchPopupInput(_("Rate"), "id_ratecard", "A2B_entity_def_ratecard
 $HD_Form->AddSearchTextInput(_("Destination"), "dst");
 $HD_Form->AddSearchTextInput(_("Source"), "src");
 
-$HD_Form->AddSearchSelectInput(_("Disposition"), "calltype", [["answered", _("Answered Only")], ["all", _("All Calls")]]);
+$HD_Form->AddSearchSelectInput(_("Disposition"), "calltype", ["answered" => _("Answered Only"), "all" => _("All Calls")]);
 
 if ($posted_search === true && $posted_archive === false) {
     $HD_Form->AddSearchButton(
