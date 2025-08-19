@@ -3,12 +3,14 @@
 namespace A2billing\Forms;
 
 use A2billing\A2bMailException;
+use A2billing\Agent;
 use A2billing\Customer;
 use A2billing\Mail;
 use A2billing\Notification;
 use A2billing\NotificationsDAO;
 use A2billing\Payments\Invoice;
 use A2billing\Payments\InvoiceItem;
+use A2billing\Payments\PaymentDocument;
 use A2billing\Payments\Receipt;
 use A2billing\Payments\ReceiptItem;
 use A2billing\Realtime;
@@ -23,7 +25,7 @@ class FormBO
     /**
      * Run before DID deletion
      *
-     * @var numeric-string|int $id
+     * @param numeric-string|int $did_id
      * @return void
      */
     public static function is_did_in_use($did_id)
@@ -31,12 +33,27 @@ class FormBO
         $form = FormHandler::GetInstance();
         $id_cc_card = (new Table("cc_did_use", "id_cc_card"))
             ->getValue(["id_did" => $did_id, "releasedate" => null, "activated" => 1]);
-        if (!empty($row)) {
-            $form->delete_message_intro = sprintf(
-                _("This DID is in use by customer %s, If you really want remove this DID, click on the delete button."),
-                Customer::getName($id_cc_card, false)
-            );
+        if (empty($id_cc_card)) {
+            return;
         }
+        if (is_customer()) {
+            $destinations = (new Table("cc_did_destination", ["destination"]))
+                ->getRows(["id_did" => $did_id, "id_cc_card" => Customer::id(), "activated" => 1]);
+            if (empty($destinations)) {
+                return;
+            }
+            $form->delete_message_intro = sprintf(
+            _("This DID is in use for the following %s. If you really want remove this DID, click on the delete button: %s"),
+                ngettext(_("destination"), _("destinations"), count($destinations)),
+                implode(", ", array_column($destinations, "destination"))
+            );
+
+            return;
+        }
+        $form->delete_message_intro = sprintf(
+            _("This DID is in use by customer %s. If you really want remove this DID, click on the delete button."),
+            Customer::getName($id_cc_card, false)
+        );
     }
 
     /**
@@ -47,7 +64,6 @@ class FormBO
      */
     public static function did_use_delete($did_id): void
     {
-        $form = FormHandler::GetInstance();
         (new Table("cc_did_use"))
             ->updateRow(
                 ["releasedate" => "CURRENT_TIMESTAMP"],
@@ -131,6 +147,7 @@ class FormBO
             return;
         }
 
+        $owner = "";
         $result = $table->getRow(["id" => $card_id]);
         if (!empty($result["email"])) {
             $owner = $result['username'] . " (" . $result['firstname'] . " " . $result['lastname'] . ")";
@@ -232,7 +249,6 @@ class FormBO
      *
      * @param numeric-string|int $id_card
      * @return void
-     * @throws \DateMalformedStringException
      * @throws A2bMailException
      */
     public static function processing_card_signup($id_card)
@@ -301,7 +317,7 @@ class FormBO
             );
 
             //CREATE INVOICE If a new card then just an invoice item in the last invoice
-            $invoice = Invoice::create($id_card, $description, $title, $reference, Invoice::STATUS_CLOSED);
+            $invoice = Invoice::create($id_card, $description, $title, $reference, PaymentDocument::STATUS_CLOSED);
             if ($invoice->save()) {
                 $description = "Subscription service";
                 $date = $start->format("Y-m-d H:i:s");
@@ -498,7 +514,7 @@ class FormBO
         $title = sprintf(_("%s REFILL"), $refills[$type] ?? "");
         $description = gettext("Invoice for refill");
 
-        $invoice = Invoice::create($card_id, $description, $title, $reference, Invoice::STATUS_OPEN, Invoice::PAIDSTATUS_UNPAID, $date);
+        $invoice = Invoice::create($card_id, $description, $title, $reference, PaymentDocument::STATUS_OPEN, Invoice::PAIDSTATUS_UNPAID, $date);
         //load vat of this card
         if ($invoice->save()) {
             $description = $processed['description'];
@@ -664,7 +680,7 @@ class FormBO
             /// create receipt
             $title = _("SUMMARY OF CALLS");
             $description = _("Summary of the calls charged since the last billing");
-            $receipt = Receipt::create($card_id, $description, $title, Receipt::STATUS_CLOSED);
+            $receipt = Receipt::create($card_id, $description, $title, PaymentDocument::STATUS_CLOSED);
             if ($receipt->save()) {
                 $item = ReceiptItem::create($receipt, $desc_billing, $amount_calls, $date, "CALLS", $new_billing);
                 $item->save();
@@ -677,7 +693,7 @@ class FormBO
         if (count($charges)) {
             $title = _("SUMMARY OF CHARGES");
             $description = _("Summary of the charge charged since the last billing.");
-            $receipt = Receipt::create($card_id, $description, $title, Receipt::STATUS_CLOSED);
+            $receipt = Receipt::create($card_id, $description, $title, PaymentDocument::STATUS_CLOSED);
             if ($receipt->save()) {
                 foreach ($charges as $charge) {
                     $item = ReceiptItem::create($receipt, $charge["description"], $charge["amount"], $charge["creationdate"], "CHARGE", $charge["id"]);
@@ -697,7 +713,7 @@ class FormBO
             $reference = Invoice::generateReference();
             $title = _("BILLING CHARGES");
             $description = _("This invoice is for some charges unpaid since the last billing.")." ".$desc_billing_postpaid;
-            $invoice = Invoice::create($card_id, $description, $title, $reference, Invoice::STATUS_CLOSED);
+            $invoice = Invoice::create($card_id, $description, $title, $reference, PaymentDocument::STATUS_CLOSED);
             if ($invoice->save()) {
                 foreach ($charges as $charge) {
                     $item = InvoiceItem::create($invoice, $charge["description"], $date, $charge["amount"], $vat, "CHARGE", $charge["id"]);
@@ -716,7 +732,7 @@ class FormBO
                 $reference = Invoice::generateReference();
                 $title = gettext("BILLING POSTPAID");
                 $description = gettext("Invoice for POSTPAID");
-                $invoice = Invoice::create($card_id, $description, $title, $reference, Invoice::STATUS_CLOSED);
+                $invoice = Invoice::create($card_id, $description, $title, $reference, PaymentDocument::STATUS_CLOSED);
                 $invoice->save();
             }
 
@@ -806,7 +822,7 @@ class FormBO
             $title = sprintf(_("%s REFILL"), $refills[$refill_type] ?? "");
             $reference = Invoice::generateReference();
             $description = gettext("Invoice for refill");
-            $invoice = Invoice::create($card_id, $description, $title, $reference, Invoice::STATUS_CLOSED, Invoice::PAIDSTATUS_PAID, $date);
+            $invoice = Invoice::create($card_id, $description, $title, $reference, PaymentDocument::STATUS_CLOSED, Invoice::PAIDSTATUS_PAID, $date);
             if ($invoice->save()) {
                 //add payment to this invoice
                 (new Table("cc_invoice_payment"))
