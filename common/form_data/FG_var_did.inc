@@ -64,6 +64,12 @@ $HD_Form->FG_ADDITIONAL_FUNCTION_BEFORE_DELETE = [FormBO::class, "is_did_in_use"
 $HD_Form->list_help_text = create_help(_("DID number list with destinations."));
 $HD_Form->add_help_text = $HD_Form->edit_help_text = create_help(_("DID can be assigned to a customer to re-route calls to a SIP/IAX client or a PSTN number. The Priority sets the order in which the calls are to be routed to allow for failover or follow-me."));
 
+// Set the filter variables
+$HD_Form->AddListFilter("did", _("DID"));
+
+$HD_Form->edit_message_intro= "";
+$HD_Form->add_message_intro = "";
+
 $yesno = getYesNoList();
 
 $HD_Form->AddListValue(_("DID"), "did", "format_phone_number");
@@ -370,9 +376,3 @@ $HD_Form->AddEditElement(
     _("Insert the billing block"),
     "NO"
 );
-
-// Set the filter variables
-$HD_Form->AddListFilter("did", _("DID"));
-
-$HD_Form->edit_message_intro= "";
-$HD_Form->add_message_intro = "";
