@@ -1850,6 +1850,11 @@ class FormHandler
             $msg = $this->add_message_intro;
             $help = $this->add_help_text ?: $this->help_text;
         } elseif ($form_action === "ask-delete") {
+            if (is_callable($this->FG_ADDITIONAL_FUNCTION_BEFORE_DELETE)) {
+                // this function can insert a warning into the page top before delete is done
+                $processed = $this->getProcessed();
+                ($this->FG_ADDITIONAL_FUNCTION_BEFORE_DELETE)($processed[$this->FG_QUERY_PRIMARY_KEY]);
+            }
             $msg = $this->delete_message_intro;
             $help = $this->del_help_text ?: $this->help_text;
         } elseif ($form_action === "list") {
@@ -1964,10 +1969,6 @@ class FormHandler
 
             case "ask-delete":
             case "ask-del-confirm":
-                if (is_callable($this->FG_ADDITIONAL_FUNCTION_BEFORE_DELETE)) {
-                    // this function can insert a warning into the page top before delete is done
-                    ($this->FG_ADDITIONAL_FUNCTION_BEFORE_DELETE)($processed[$this->FG_QUERY_PRIMARY_KEY]);
-                }
                 if ($form_action === "ask-delete") {
                     $this->check_child_records();
                 }
