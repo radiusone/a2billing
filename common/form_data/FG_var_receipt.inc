@@ -1,6 +1,5 @@
 <?php
 
-use A2billing\Admin;
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
@@ -38,15 +37,27 @@ use A2billing\Forms\Validator;
 **/
 
 $form_action ??= "list";
-$HD_Form = new FormHandler(
-    "cc_receipt",
-    _("Receipt"),
-    "cc_receipt.id",
-    $form_action === "list"
-        ? ["cc_receipt_item" => ["cc_receipt_item.id_receipt", "cc_receipt.id"]]
-        : []
-);
-
+if (is_customer()) {
+    $join_key = "(SELECT id_receipt, SUM(price) AS total_price FROM cc_receipt_items GROUP BY id_receipt) AS items";
+    $HD_Form = new FormHandler(
+        "cc_receipt",
+        _("Receipt"),
+        "cc_receipt.id",
+        $form_action === "list"
+            ? ["cc_card" => ["cc_card.id", "cc_receipt.id_card"], $join_key => ["cc_receipt.id", "items.id_receipt"]]
+            : []
+    );
+    $HD_Form->list_query_conditions["id_card"] = Customer::id();
+} else {
+    $HD_Form = new FormHandler(
+        "cc_receipt",
+        _("Receipt"),
+        "cc_receipt.id",
+        $form_action === "list"
+            ? ["cc_receipt_item" => ["cc_receipt_item.id_receipt", "cc_receipt.id"]]
+            : []
+    );
+}
 $HD_Form->list_query_order_columns = ["date"];
 $HD_Form->list_query_order_direction = "DESC";
 $HD_Form->list_query_group_columns = ["cc_receipt.id"];
@@ -60,42 +71,48 @@ $HD_Form->FG_FK_EDITION_CLAUSE = ["id_receipt"];
 $HD_Form->FG_ENABLE_INFO_BUTTON = true;
 $HD_Form->FG_INFO_BUTTON_LINK = "A2B_receipt_view.php?id=";
 
-$HD_Form->AddListActionButton(
-    "A2B_receipt_edit.php?id=",
-    _("Edit receipt items"),
-    "",
-    "receipt",
-    "",
-    "status",
-    0 // open
-);
-$HD_Form->AddListActionButton(
-    "",
-    _("Close this receipt"),
-    "",
-    "file-earmark-lock",
-    "lock",
-    "status",
-    0 // open
-);
-$HD_Form->FG_EDIT_BUTTON_CONDITION = '"|col4|" == "OPEN"';
+if (is_customer()) {
+    $HD_Form->help_text = _("Receipt history - The section below allows you to see the receipt that you received. you can see in them the summary of some withdrawal");
+} else {
+    $HD_Form->AddListActionButton(
+        "A2B_receipt_edit.php?id=",
+        _("Edit receipt items"),
+        "",
+        "receipt",
+        "",
+        "status",
+        0 // open
+    );
+    $HD_Form->AddListActionButton(
+        "",
+        _("Close this receipt"),
+        "",
+        "file-earmark-lock",
+        "lock",
+        "status",
+        0 // open
+    );
+    $HD_Form->FG_EDIT_BUTTON_CONDITION = '"|col4|" == "OPEN"';
 
-$HD_Form->AddListTopButton(null, null, "receipt");
+    $HD_Form->AddListTopButton(null, null, "receipt");
 
-$HD_Form->help_text = create_help(
-    _("Receipt history - The section below allows you to see and create receipt against a customer.Only the closed receipt can be see in the customer interface. Receipts are only an information for the user and aren't used in the balance of the system")
-);
+    $HD_Form->help_text = create_help(
+        _("Receipt history - The section below allows you to see and create receipt against a customer.Only the closed receipt can be see in the customer interface. Receipts are only an information for the user and aren't used in the balance of the system")
+    );
+}
 
 $HD_Form->AddListValue(_("ID"), "cc_receipt.id");
-$HD_Form->AddListValue(_("Account"), "id_card", [Customer::class, "getUsername"]);
+if (!is_customer()) {
+    $HD_Form->AddListValue(_("Account"), "id_card", [Customer::class, "getUsername"]);
+}
 $HD_Form->AddListValue(_("Date"), "cc_receipt.date");
 $HD_Form->AddListValue(_("Title"), "title");
 $HD_Form->AddListMapping(_("Status"), "cc_receipt.status", getInvoiceStatusList());
 $HD_Form->AddListValue(_("Amount (incl VAT)"), "SUM(price)", "get_money");
 
-$HD_Form->FG_ENABLE_ADD_BUTTON = true;
-$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form->FG_ENABLE_ADD_BUTTON = !is_customer();
+$HD_Form->FG_ENABLE_EDIT_BUTTON = !is_customer();
+$HD_Form->FG_ENABLE_DELETE_BUTTON = !is_customer();
 
 $HD_Form->AddEditPopup(
     _("CUSTOMER ID"),
@@ -137,7 +154,9 @@ $HD_Form->AddEditTextarea(
     _("Insert the description")
 );
 
-$HD_Form->AddListFilter("username", _("Account number"));
+if (!is_customer()) {
+    $HD_Form->AddListFilter("username", _("Account number"));
+}
 
 $HD_Form->add_message_intro = "";
 
