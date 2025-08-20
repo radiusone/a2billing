@@ -1,9 +1,8 @@
 <?php
 
 use A2billing\Customer;
+use A2billing\Forms\FormHandler;
 use A2billing\Table;
-
-/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
  * This file is part of A2Billing (http://www.a2billing.net/)
@@ -34,86 +33,67 @@ use A2billing\Table;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
-**/
+ */
 
 require_once __DIR__ . "/../common/lib/customer.defines.php";
-require_once __DIR__ . "/form_data/FG_var_voucher.inc";
+require_once __DIR__ . "/../common/form_data/FG_var_voucher.inc";
+/**
+ * @var FormHandler $HD_Form
+ */
 
 Customer::checkPageAccess(Customer::ACX_VOUCHER);
 
+getpost_ifset(["voucher"]);
+/**
+ * @var numeric-string|null $voucher
+ */
 $HD_Form -> init();
 $currencies_list = get_currencies();
+$success = "";
+$error = "";
 
-if (strlen($voucher)>0) {
+if (!empty($voucher)) {
+    $result = (new Table("cc_voucher", ["currency", "credit"]))
+        ->getRow(["expirationdate" =>  [">=", "CURRENT_TIMESTAMP"], "activated" => 't', "voucher" => $voucher]);
 
-    if (is_numeric($voucher)) {
-
-        sleep(2);
-        $instance_sub_table = new Table("cc_voucher", ["currency", "credit"]);
-
-        $FG_TABLE_CLAUSE_VOUCHER = ["expirationdate" =>  [">=", "CURRENT_TIMESTAMP"], "activated" => 't', "voucher" => $voucher];
-
-        $list_voucher = $instance_sub_table -> getValue($FG_TABLE_CLAUSE_VOUCHER, [$order ?? ""], $sens ?? "asc", [], (int)($limite ?? 0), (int)($current_record ?? 0));
-
-        if ($list_voucher) {
-            if (!isset ($currencies_list[strtoupper($list_voucher["currency"])]["value"])) {
-                $error_msg = '<font face="Arial, Helvetica, sans-serif" size="2" color="red"><b>'.gettext("System Error : the currency table is incomplete!").'</b></font><br><br>';
-            } else {
-                $add_credit = $list_voucher["credit"]*$currencies_list[strtoupper($list_voucher["currency"])]["value"];
-                $result = $instance_sub_table->updateRow(["activated" => "f", "usedcardnumber" => Customer::card(), "usedate" => "CURRENT_TIMESTAMP"], ["voucher" => $voucher]);
-
-                $result = (new Table("cc_card"))->updateRow(["credit" => ["credit + ?", $add_credit]], ["username" => Customer::card()]);
-
-                $error_msg = '<font face="Arial, Helvetica, sans-serif" size="2" color="green"><b>'.gettext("The voucher").'('.$voucher.') '.gettext("has been used, We added").' '.$add_credit.' '.gettext("credit on your account!").'</b></font><br><br>';
-            }
-        } else {
-            $error_msg = '<font face="Arial, Helvetica, sans-serif" size="2" color="red"><b>'.gettext("This voucher doesn't exist !").'</b></font><br><br>';
-        }
+    if ($result) {
+        $credit = convert_currency($result["credit"], $result["currency"], BASE_CURRENCY);
+        (new Table("cc_voucher"))
+            ->updateRow(["activated" => "f", "usedcardnumber" => Customer::card(), "usedate" => "CURRENT_TIMESTAMP"], ["voucher" => $voucher]);
+        (new Table("cc_card"))
+            ->updateRow(["credit" => ["credit + ?", $credit]], ["username" => Customer::card()]);
+        $success = sprintf(_("The voucher %s has been processed; we added %s to your account"), $voucher, get_money($credit));
     } else {
-        $error_msg = '<font face="Arial, Helvetica, sans-serif" size="2" color="red"><b>'.gettext("The voucher should be a number !").'</b></font><br><br>';
+        sleep(2);
+        $error = _("Invalid voucher");
     }
 }
 
 $form_action ??= "list";
-$list = $HD_Form -> perform_action($form_action);
+$list = $HD_Form->perform_action($form_action);
 
-// #### HEADER SECTION
 require_once __DIR__ . "/templates/main.php";
 
-// #### HELP SECTION
-if ($form_action=='list') {
-    echo create_help(gettext("Enter your voucher number to top up your card."));
-}
-
-// #### TOP SECTION PAGE
-$HD_Form -> create_toppage ($form_action);
-
+$HD_Form->create_toppage ($form_action);
 ?>
 
-  <br>
-    <center><?php echo $error_msg ?> </center>
-    <center>
-       <table class="voucher_table1" align="center">
-        <tbody><tr>
-        <form name="theForm" action="A2B_entity_voucher.php">
-          <td align="left" width="75%">
-              <strong> <?php echo gettext("VOUCHER");?> :</strong>
-            <input class="form_input_text" name="voucher" size="50" maxlength="40" >
-            <br/>
-        </td>
-        <td align="left" valign="bottom">
-        <input class="form_input_button"  value=" <?php echo gettext("USE VOUCHER");?> " type="submit">
-        </td>
-     </form>
-        </tr>
-      </tbody></table></center>
-      <br>
+<?php if ($success): ?>
+    <div class="row mb-3"><div class="col"><p class="alert alert-success"><?= $success ?></p></div></div>
+<?php endif ?>
+<?php if ($error): ?>
+    <div class="row mb-3"><div class="col"><p class="alert alert-danger"><?= $error ?></p></div></div>
+<?php endif ?>
+<form class="row mb-3">
+    <label for="voucher" class="col-2 col-form-label-sm"><?= _("Voucher") ?></label>
+    <div class="col-8">
+        <input type="text" name="voucher" id="voucher" class="form-control form-control-sm w-100" value="<?= $voucher ?? "" ?>" pattern="[0-9]{8,20}"/>
+    </div>
+    <div class="col-2">
+        <button type="submit" class="btn btn-primary btn-sm"><?= _("Use Voucher") ?></button>
+    </div>
+</form>
 
 <?php
+$HD_Form->create_form($form_action, $list);
 
-// #### CREATE FORM OR LIST
-
-$HD_Form -> create_form($form_action, $list) ;
-
-// #### FOOTER SECTION
 require_once __DIR__ . "/templates/footer.php";

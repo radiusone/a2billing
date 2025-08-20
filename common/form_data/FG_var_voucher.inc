@@ -1,10 +1,9 @@
 <?php
 
 use A2billing\A2Billing;
+use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
-
-/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
  * This file is part of A2Billing (http://www.a2billing.net/)
@@ -34,7 +33,7 @@ use A2billing\Forms\Validator;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
-**/
+ */
 
 /**
  * @var A2Billing $A2B
@@ -46,23 +45,30 @@ $currency_list = getCurrenciesList();
 $actived_list = getActivationTrueFalseList();
 $used_list = [_("NOT USED"), _("USED")];
 
-$HD_Form->AddListTopButton(null, null, "postcard-heart");
+if (is_customer()) {
+    $HD_Form->list_query_conditions["usedcardnumber"] = Customer::card();
+    $HD_Form->list_help_text = create_help(_("Enter your voucher number to top up your card."));
+} else {
+    $HD_Form->AddListTopButton(null, null, "postcard-heart");
 
-$HD_Form->list_help_text = create_help(
-    _("Listed below are the vouchers created on the system,.<br/>")
-    . _("Each row corresponds to a voucher and shows it's status, value and currency..")
-    . _("Create a single voucher, defining such properties as credit, tag, currency etc, click confirm when finished. <br/> The customer applies voucher credits to their account via the customer interface or via an IVR menu.")
-);
+    $HD_Form->list_help_text = create_help(
+        _("Listed below are the vouchers created on the system,.<br/>")
+        . _("Each row corresponds to a voucher and shows it's status, value and currency..")
+        . _("Create a single voucher, defining such properties as credit, tag, currency etc, click confirm when finished. <br/> The customer applies voucher credits to their account via the customer interface or via an IVR menu.")
+    );
+}
 
 $HD_Form->AddListValue(_("Voucher"), "voucher");
 $HD_Form->AddListValue(_("Credit"), "credit", "get_money");
-$HD_Form->AddListValue(_("Tag"), "tag");
-$HD_Form->AddListMapping(_("Activated"), "activated", $actived_list);
-$HD_Form->AddListMapping(_("Used"), "used", $used_list);
-$HD_Form->AddListValue(_("Account"), "usedcardnumber");
-$HD_Form->AddListValue(_("Created date"), "creationdate");
-$HD_Form->AddListValue(_("Used date"), "usedate");
 $HD_Form->AddListMapping(_("Currency"), "currency", $currency_list);
+$HD_Form->AddListValue(_("Used date"), "usedate");
+if (!is_customer()) {
+    $HD_Form->AddListMapping(_("Activated"), "activated", $actived_list);
+    $HD_Form->AddListMapping(_("Used"), "used", $used_list);
+    $HD_Form->AddListValue(_("Account"), "usedcardnumber");
+    $HD_Form->AddListValue(_("Created date"), "creationdate");
+    $HD_Form->AddListValue(_("Tag"), "tag");
+}
 
 $form_action ??= "list";
 
@@ -70,7 +76,7 @@ $form_action ??= "list";
 $HD_Form->AddListFilter("voucher", _("Voucher"));
 
 // Search form
-$HD_Form->search_form_enabled = true;
+$HD_Form->search_form_enabled = !is_customer();
 $HD_Form->search_form_title = _('Define specific criteria to search for vouchers created.');
 $HD_Form->AddSearchDateInput(_("Creation date"), "creationdate");
 $HD_Form->AddSearchTextInput(_("Voucher"), "voucher");
@@ -82,9 +88,9 @@ $HD_Form->AddSearchSelectInput(_("Status"), "activated", $actived_list);
 $HD_Form->AddSearchSelectInput(_("Used"), "used", $used_list);
 $HD_Form->AddSearchSelectInput(_("Currency"), "currency", $currency_list);
 
-$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
-$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
-$HD_Form->FG_ENABLE_ADD_BUTTON = true;
+$HD_Form->FG_ENABLE_EDIT_BUTTON = !is_customer();
+$HD_Form->FG_ENABLE_DELETE_BUTTON = !is_customer();
+$HD_Form->FG_ENABLE_ADD_BUTTON = !is_customer();
 
 $vouch_attr = ["readonly" => "readonly", "maxlength" => 40];
 if ($form_action === "ask-add") {

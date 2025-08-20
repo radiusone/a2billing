@@ -252,7 +252,7 @@ if ($form_action === "list" && !$popup_select) {
                         <div class="col">
                             <select name="upd_currency" id="upd_currency" class="form-select form-select-sm">
                                 <?php foreach (getCurrencyValuesList() as $k=>$v): ?>
-                                    <option value="<?= $k ?>" <?php if (($update_fields["currency"] ?? "") === $k): ?>selected="selected"<?php endif ?>><?= $v["name"] ?></option>
+                                    <option value="<?= $k ?>" <?php if (($update_fields["currency"] ?? "") === $k): ?>selected="selected"<?php endif ?>><?= $v ?></option>
                                 <?php endforeach ?>
                             </select>
                         </div>
