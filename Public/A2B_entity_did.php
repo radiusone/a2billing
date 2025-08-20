@@ -1,6 +1,9 @@
 <?php
 
+use A2billing\A2bMailException;
 use A2billing\Customer;
+use A2billing\Forms\FormHandler;
+use A2billing\Mail;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -36,436 +39,77 @@ use A2billing\Table;
  *
 **/
 
+$menu_section = 8;
 require_once __DIR__ . "/../common/lib/customer.defines.php";
-require_once __DIR__ . "/form_data/FG_var_did.inc";
+require_once __DIR__ . "/../common/form_data/FG_var_customer_did.inc";
+/**
+ * @var FormHandler $HD_Form
+ */
 
 Customer::checkPageAccess(Customer::ACX_DID);
 
 $HD_Form->init();
 
 $form_action ??= "list";
-$FG_LIMITE_DISPLAY = 10;
-if (isset ($mydisplaylimit) && (is_numeric($mydisplaylimit) || ($mydisplaylimit == 'ALL'))) {
-    if ($mydisplaylimit == 'ALL') {
-        $FG_LIMITE_DISPLAY = 5000;
-    } else {
-        $FG_LIMITE_DISPLAY = $mydisplaylimit;
-    }
-}
+$message = "";
+if ($form_action === "add") {
+    // we don't want to actually add a DID, so intercept this
+    /** @var numeric-string|null $did_id */
+    getpost_ifset(["did_id"]);
+    $rate = (new Table("cc_did", ["fixrate"]))->getValue(["id" => $did_id]);
+    (new Table("cc_charge"))
+        ->addRow(["id_cc_card" => Customer::id(), "amount" => abs($rate), "chargetype" => 2, "id_cc_did" => $did_id]);
+    (new Table("cc_did"))
+        ->updateRow(["iduser" => Customer::id(), "reserved" => 1], ["id" => $did_id]);
+    (new Table("cc_card"))
+        ->updateRow(["credit" => ["credit - ?", abs($rate)]], ["id" => Customer::id()]);
+    (new Table("cc_did_use"))
+        ->updateRow(["releasedate" => "CURRENT_TIMESTAMP"], ["id_did" => $did_id, "activated" => 0]);
+    (new Table("cc_did_use"))
+        ->addRow(["activated" => 1, "id_cc_card" => Customer::id(), "id_did" => $did_id, "month_payed" => 1]);
 
+    $message = _("The DID has been added to your account");
+    $form_action = "list";
+} elseif ($form_action === "delete") {
+    // we don't want to actually delete a DID, so intercept this
+    /** @var numeric-string|null $id */
+    getpost_ifset(["id"]);
+    (new Table("cc_did"))
+        ->updateRow(["iduser" => 0, "reserved" => 0], ["id" => $id]);
+    (new Table("cc_did_use"))
+        ->updateRow(
+            ["releasedate" => "CURRENT_TIMESTAMP", "activated" => 0],
+            ["id_cc_card" => Customer::id(), "id_did" => $id, "activated" => 1]
+        );
+    // why ???
+    (new Table("cc_did_use"))
+        ->addRow(["id_did" => $id, "activated" => 0]);
+    (new Table("cc_did_destination"))
+        ->deleteRow(["id_cc_did" => $id, "id_cc_card" => Customer::id()]);
 
-if (isset ($choose_did_rate) && strlen($choose_did_rate) != 0) {
-    $did_rate = explode("CUR", $choose_did_rate);
-    $choose_did = $did_rate[0];
-
-    // LIST FREE DID TO ADD PHONENUMBER
-    $instance_table_did = new Table("cc_did", ["DISTINCT cc_did.id", "did", "fixrate", "connection_charge", "selling_rate", "aleg_retail_connect_charge", "aleg_retail_cost_min"]);
-    $FG_TABLE_CLAUSE = ["id_cc_country" => $choose_country, "id_cc_didgroup" => $_SESSION["id_didgroup"], "reserved" => 0, "cc_did.id" => $choose_did];
-    $list_did = $instance_table_did->getRow($FG_TABLE_CLAUSE, ["did"]);
-    if ($list_did){
-        $choose_did = $list_did["id"];
-        $rate = $list_did["fixrate"];
-    } else {
-        $rate = $did_rate[1];
-        if (!is_numeric($rate) || $rate < 0) {
-            $rate = 0;
-        }
-    }
-}
-
-$row = (new Table("cc_card", ["credit", "creditlimit", "typepaid"]))
-    ->getRow(["username" => Customer::card()]);
-if ($row) {
-    $user_credit = $row["credit"];
-    $user_creditlimit = $row["creditlimit"];
-    $user_typepaid = $row["typepaid"];
-}
-
-// release the choosen did
-if ($action_release == "confirm_release") {
-
-    $message = "\n\n" . gettext("The following Destinaton-DID has been relesed:") . "\n\n";
-    (new Table("cc_did"))->updateRow(["id_user" => 0, "reserved" => 0], ["id" => $choose_did]);
-    (new Table("cc_did_use"))->updateRow(["releasedate" => "CURRENT_TIMESTAMP"], ["id_did" => $choose_did, "activated" => 1]);
-    (new Table("cc_did_use"))->addRow(["activated" => 0, "id_did" => $choose_did]);
-    (new Table("cc_did_destination"))->deleteRow(["id_cc_did" => $choose_did]);
-
-    $date = date("D M j G:i:s T Y", time());
-    $from = 'a2billing_alert@localhost';
-    $fromname = 'A2BILLING ALERT';
-    $subject = "[$date] Release-DID notification";
-    $messagetext = '';
+    // not sure why there's a mail for release but not add
+    $did = (new Table("cc_did", ["did"]))->getValue(["id" => $id]);
     try {
-        a2b_mail($A2B->config["global"]['admin_email'] ?? "", $subject, $messagetext, $from, $fromname);
-    } catch (Exception $e) {
-        echo gettext("Error : Sending mail");
+        $mail = new Mail(Mail::$TYPE_DID_RELEASED,Customer::id());
+        $mail->replaceInEmail(Mail::$DID_NUMBER_KEY, $did);
+        $mail->send();
+    } catch (A2bMailException $e) {
     }
+
+    $message = _("The DID has been removed from your account");
+    $form_action = "list";
 }
 
-/***********************************************************/
+$list = $HD_Form->perform_action($form_action);
 
-if ($action_release == "ask_release") {
-    // #### HEADER SECTION
-    require_once __DIR__ . "/templates/main.php";
+require_once __DIR__ . "/templates/main.php";
 
-    echo create_help(gettext("After confirmation, the release of the did will be done immediately and you will not be monthly charged any more."));
-?>
-    <FORM action="A2B_entity_did.php" name="form1">
-        <INPUT type="hidden" name="choose_did" value="<?php echo $choose_did?>">
-        <INPUT type="hidden" name="action_release" value="confirm_release"><br><br>
-        <br><br>
-        <TABLE cellspacing="0" class="delform_table5">
-            <tr>
-                <td width="434" class="text_azul"><?php echo gettext("If you really want release this DID , Click on the release button.")?>
-                </td>
-            </tr>
-            <tr height="2">
-                <td style="border-bottom: medium dotted rgb(255, 119, 102);">&nbsp; </td>
-            </tr>
-            <tr>
-                    <td width="190" align="right" class="text"><INPUT title="<?php echo gettext("Release the DID ");?> " alt="<?php echo gettext("Release the DID "); ?>" hspace=2 name=submit src="<?= get_image_path("btn_release_did_94x20.gif", true) ?>" type="image"></td>
-            </tr>
-        </TABLE>
-    </FORM>
-<?php
-
+if ($message) {
+    echo <<< HTML
+    <div class='row pb-3' id='create_actionfinish'><div class='col'><p class='alert alert-info'>$message</p></div></div>
+    HTML;
 }
+$HD_Form->create_toppage($form_action);
+$HD_Form->create_form($form_action, $list);
 
-if (!isset ($action_release) || $action_release == "confirm_release" || $action_release == "") {
-
-    if ((isset ($confirm_buy_did)) && ($confirm_buy_did == 1)) {
-        if ($rate <= $user_credit || ($user_typepaid == 1 && $rate <= $user_credit + $user_creditlimit))
-            $confirm_buy_did = 2;
-        else
-            $confirm_buy_did = 0;
-    } else {
-        if ($confirm_buy_did != 4)
-            $confirm_buy_did = 0;
-    }
-
-    if (is_numeric($voip_call) && ($confirm_buy_did >= 2) && ($voip_call==0 || ($voip_call==1 && strpos(substr($destination, strpos( $destination, '@')),'.')))) {
-
-        $validated = ($voip_call==1) ? 0 : 1;
-
-        if ($voip_call==0)
-            $destination = (intval($destination) > 0) ? $destination : 'no valid';
-
-        $result = (new Table("cc_did_destination"))
-            ->addRow(["activated" => 1, "id_cc_card" => Customer::id(), "id_cc_did" => $choose_did, "destination" => $destination, "priority" => 1, "voip_call" => $voip_call, "validated" => $validated]);
-        if ($confirm_buy_did == 2) {
-            (new Table("cc_charge"))
-                ->addRow(["id_cc_card" => Customer::id(), "amount" => abs($rate), "chargetype" => 2, "id_cc_did" => $choose_did]);
-            (new Table("cc_did"))
-                ->updateRow(["id_user" => Customer::id(), "reserved" => 1], ["id" => $choose_did]);
-            (new Table("cc_card"))
-                ->updateRow(["credit" => ["credit - ?", abs($rate)]], ["id" => Customer::id()]);
-            (new Table("cc_did_use"))
-                ->updateRow(["releasedate" => "CURRENT_TIMESTAMP"], ["id_did" => $choose_did, "activated" => 0]);
-            (new Table("cc_did_use"))
-                ->addRow(["activated" => 1, "id_cc_card" => Customer::id(), "id_did" => $choose_did, "month_payed" => 1]);
-        }
-        $date = date("D M j G:i:s T Y", time());
-        $message = "\n\n" . gettext("The following Destinaton for your DID has been added:") . "\n\n";
-        $message .= "$QUERY";
-
-        // email header
-        $em_headers = "From: A2BILLING ALERT <a2billing_alert@localhost>\n";
-        $em_headers .= "X-Priority: 3\n";
-
-        if (strlen($A2B->config["webcustomerui"]['error_email']) > 3)
-            mail($A2B->config["webcustomerui"]['error_email'], "[$date] Destinaton-DID notification", $message, $em_headers);
-
-    } else {
-        if ($voip_call==1 && strpos(substr($destination, strpos( $destination, '@')),'.') === false) {
-            $confirm_buy_did = 5;
-        } elseif ($confirm_buy_did != 4) {
-            $confirm_buy_did = 0;
-        }
-    }
-
-    if (!isset ($current_page) || ($current_page == "")) {
-        $current_page = 0;
-    }
-
-    if ($id != "" || !is_null($id)) {
-        if (isset ($form_action) && ($form_action == 'ask-edit' || $form_action == 'edit')) {
-            $HD_Form->update_query_conditions = ["id" => $id];
-        } else {
-            $HD_Form->update_query_conditions["cc_did_destination.id"] = $id;
-        }
-    }
-
-    // TODO integrate in Framework
-    if ($form_action == "delete") {
-        $HD_Form->FG_QUERY_TABLE_NAME = "cc_did_destination";
-        $HD_Form->update_query_conditions = ["id_cc_card" => Customer::id(), "id" => $id];
-    }
-    $list = $HD_Form->perform_action($form_action);
-
-    // #### HEADER SECTION
-    require_once __DIR__ . "/templates/main.php";
-
-    // #### HELP SECTION
-    if ($form_action == 'list') {
-        echo create_help(gettext("Select the country below where you would like a DID, select a DID from the list and enter the destination you would like to assign it to."));
-    }
-
-    // #### TOP SECTION PAGE
-    $HD_Form->create_toppage($form_action);
-
-    $instance_table = new Table($HD_Form->FG_QUERY_TABLE_NAME, $HD_Form->list_query_columns);
-    $nb_record = $instance_table->countRows($HD_Form->list_query_conditions);
-
-    if ($nb_record <= $FG_LIMITE_DISPLAY) {
-        $nb_record_max = 1;
-    } else {
-        if ($nb_record % $FG_LIMITE_DISPLAY == 0) {
-            $nb_record_max = (intval($nb_record / $FG_LIMITE_DISPLAY));
-        } else {
-            $nb_record_max = (intval($nb_record / $FG_LIMITE_DISPLAY) + 1);
-        }
-    }
-
-    $instance_table_country = new Table("cc_country", ["cc_country.id", "countryname"], ["cc_did" => ["cc_country.id", "id_cc_country"]]);
-    $FG_TABLE_CLAUSE = ["cc_did.reserved" => 0];
-    $list_country = $instance_table_country->getRows($FG_TABLE_CLAUSE, ["countryname"], "asc", ["cc_country.id", "countryname"]);
-    $nb_country = count($list_country);
-
-    if (!isset ($new_did_page) || ($new_did_page == "")) {
-        $new_did_page = 0;
-    }
-
-    if (!isset ($assign))
-        $assign = 1;
-
-    if (isset ($choose_country)) {
-        // LIST FREE DID TO ADD PHONENUMBER
-        $instance_table_did = new Table("cc_did", ["DISTINCT cc_did.id", "did", "fixrate", "connection_charge", "selling_rate", "aleg_retail_connect_charge", "aleg_retail_cost_min"]);
-        $FG_TABLE_CLAUSE = ["id_cc_country" => $choose_country, "id_cc_didgroup" => $_SESSION["id_didgroup"], "reserved" => 0];
-        $list_did = $instance_table_did->getRows($FG_TABLE_CLAUSE, ["did"]);
-        $nb_did = count($list_did);
-    } elseif ($assign >= 2) {
-        // LIST USED DID TO ADD PHONENUMBER
-        $instance_table_did = new Table("cc_did", ["cc_did.id", "did", "fixrate"], ["cc_did_use" => ["id_did", "cc_did.id"]]);
-        $FG_TABLE_CLAUSE = [
-            "id_cc_didgroup" => $_SESSION["id_didgroup"],
-            "id_cc_card" => Customer::id(),
-            "cc_did_use.activated" => 1,
-            ["SUB", ["releasedate" => [[null], ["<", "1984-01-01 00:00:00"]]], "OR"]
-        ];
-        $list_did = $instance_table_did->getRows($FG_TABLE_CLAUSE, ["did"], "asc", ["cc_did.id", "did", "fixrate"]);
-        $nb_did = count($list_did);
-    }
-?>
-<script language="JavaScript" type="text/JavaScript">
-<!--
-
-// Function to validate is a string is numeric
-function IsNumeric(sText)
-{
-    var ValidChars = "0123456789.";
-    var IsNumber=true;
-    var Char;
-
-    for (i = 0; i < sText.length && IsNumber == true; i++) {
-        Char = sText.charAt(i);
-        if (ValidChars.indexOf(Char) == -1) {
-            IsNumber = false;
-        }
-    }
-
-    return IsNumber;
-}
-
-function NextPage()
-{
-    if (document.theForm.new_did_page.value < 2)
-    document.theForm.new_did_page.value++;
-    else
-    document.theForm.new_did_page.value=0;
-}
-
-function CheckCountry(Source)
-{
-    var country,test=false;
-    if ((Source == 'select') || (Source == 'NextButton1')) {
-        var index = document.theForm.choose_country.selectedIndex;
-        country = document.theForm.choose_country.options[index].value;
-        if (country == '') return false;
-        if (IsNumeric(country)) test=true;
-    }
-    if ((Source == 'NextButton') || (Source == 'NextButton1')) {
-        var index = document.theForm.choose_country.selectedIndex;
-        var indexdid = document.theForm.choose_did_rate.selectedIndex;
-        destination = document.theForm.destination.value;
-        if ((destination == '') || (indexdid <= 0)) return false;
-        else test=true;
-        NextPage();
-    }
-    if (Source == 'Add') {
-        destination = document.theForm.destination.value;
-        document.theForm.confirm_buy_did.value=4;
-        if (destination == '') {
-            return false;
-        } else test=true;
-    }
-    if (Source == 'did_release') {
-        document.theForm.action_release.value = 'ask_release';
-        document.theForm.assign.value=1;
-        did = document.theForm.choose_did_rate.value;
-        if (did == '') {
-            return false;
-        } else test=true;
-    }
-    if (test) document.theForm.submit();
-    return false;
-}
-
-//-->
-</script>
-      <center><?php echo $error_msg;?>
-      <a href="A2B_entity_did.php?assign=1"><input type="radio" value="1" <?php if ($assign==1) echo 'checked'; ?>/><?php echo gettext("Buy New DID");?> </a> - <a href="A2B_entity_did.php?assign=2"><input type="radio" value="2" <?php if ($assign==2) echo 'checked'; ?>/><?php echo gettext("Add Phone Number to your DID");?></a> - <a href="A2B_entity_did.php?assign=3"><input type="radio" value="3" <?php if ($assign==3) echo 'checked'; ?>/><?php echo gettext("Release DID");?></a>
-
-       <table align="center"  border="0" class="bgcolor_006" width="75%">
-        <form name="theForm" action="A2B_entity_did.php">
-        <INPUT type="hidden" name="assign" value="<?php echo $assign ?>">
-        <INPUT type="hidden" name="new_did_page" value="<?php echo $new_did_page?>">
-        <INPUT type="hidden" name="confirm_buy_did" value="0">
-        <INPUT type="hidden" name="action_release">
-        <?php
-        switch ($new_did_page) {
-
-            case 0:
-            if ($assign==1) { ?>
-        <tr class="bgcolor_001">
-          <td align="left" width="80%" colspan="2">
-                <select NAME="choose_country" size="1" class="form_input_select"  onChange="JavaScript:CheckCountry('select');">
-                    <option value=''><?php echo gettext("Select Country");?></option>
-                    <?php
-                       foreach ($list_country as $recordset) {
-                    ?>
-                        <option class=input value='<?php echo $recordset[0]?>' <?php if ($choose_country==$recordset[0]) echo 'selected'; ?>><?php echo $recordset[1]?></option>
-                    <?php
-                        }
-                    ?>
-                </select>
-            </td>
-        </tr>
-            <?php
-                }
-            ?>
-        <tr class="did_maintable_tr2" valign="top">
-            <td align="left" valign="top" colspan="2">
-                <select NAME="choose_did_rate" size="3" class="form_input_select">
-                    <option value=''><?php echo gettext("Select Virtual Phone Number");?></option>
-
-                    <?php
-                    foreach ($list_did as $recordset) {
-                        // fixrate, connection_charge, selling_rate, aleg_retail_connect_charge, aleg_retail_cost_min
-                        $price_annoucement = gettext("Monthly:").$recordset[2].' '.BASE_CURRENCY;
-                        $price_annoucement .= ';'.gettext("B-Leg Connect:").$recordset[3].' '.BASE_CURRENCY;
-                        $price_annoucement .= ';'.gettext("B-Leg Rate:").$recordset[4].' '.BASE_CURRENCY;
-                        $price_annoucement .= ';'.gettext("A-Leg Connect:").$recordset[5].' '.BASE_CURRENCY;
-                        $price_annoucement .= ';'.gettext("A-Leg Rate:").$recordset[6].' '.BASE_CURRENCY;
-                    ?>
-
-                        <option class=input value='<?php echo $recordset[0]."CUR".$recordset[2] ?>'<?php
-                        if ($choose_did_rate == $recordset[0]."CUR".$recordset[2]) echo 'selected';?>><?php echo $recordset[1]?>  (<?php echo $price_annoucement; ?>)</option>
-                    <?php
-                        }
-                    ?>
-                </select>
-            </td>
-        </tr>
-        <tr class="bgcolor_007">
-        <?php if ($assign<=2) { ?> <td align="left" valign="bottom"> <?php } ?>
-
-        <?php if ($assign<=2) {
-
-            echo gettext("VOIP CALL : ");?> <?php echo gettext("Yes");?><input class="form_enter" name="voip_call" value="1" type="radio" <?php if ((isset($voip_call)) && ($voip_call == 1)) echo "checked" ?>> - <?php echo gettext("NO");?> <input class="form_enter" name="voip_call" value="0" type="radio" <?php if (!isset($voip_call)) { echo "checked";} else {if ($voip_call == 0) echo "checked"; }?>>
-                <br>
-                <?php echo gettext("Destination");?> :
-
-                <input class="form_input_text" name="destination" size="40" maxlength="120"  <?php if (isset($destination) && ($confirm_buy_did!=4)) {?>value="<?php echo $destination; }?>">
-                <br/><center><font color="red"><?php echo gettext("Enter the phone number you wish to call, or the SIP/IAX client to reach  (ie: 347894999 or SIP/jeremy@182.212.1.45). In order to call a VoIP number, you will need to enable voip_call");?> </font></center>
-            </td>
-        <?php } else { ?>
-            <td align="left" valign="middle">
-                <center><font color="red"><?php echo "<br>".gettext("If you release the did you will not be monthly charged any more.")."<br><br>";?></font></center>
-            </td>
-        <?php }
-
-                echo '<td align="center" valign="middle">';
-                echo '<input class="form_input_button" value="' ;
-                switch ($assign) {
-                    case 1:echo gettext("Next").'" type="button" onclick="CheckCountry(\'NextButton1\')">';
-                    break;
-                    case 2:echo gettext("Add phone number").'" Type="button" onclick="CheckCountry(\'Add\')">';
-                    break;
-                    case 3: echo gettext("Ok").'" Type="button" onclick="CheckCountry(\'did_release\')">';
-                    break;
-                }?>
-            </td>
-        </tr>
-        <?php
-        break;
-        case 1:
-        ?>
-        <INPUT type="hidden" name="choose_did_rate" value="<?php echo $choose_did_rate ?>">
-        <INPUT type="hidden" name="destination" value="<?php echo $destination ?>">
-        <INPUT type="hidden" name="voip_call" value="<?php echo $voip_call ?>">
-        <INPUT type="hidden" name="choose_country" value="<?php echo $choose_country ?>">
-        <INPUT type="hidden" name="confirm_buy_did" value="1">
-        <tr class="bgcolor_007" valign="middle">
-            <td colspan="2" height="40">
-                <center><font color="black"><?php echo gettext("Confirm the purchase of the DID ");?> </font></center>
-            </td>
-        </tr>
-        <tr class="did_maintable_tr2">
-            <td colspan="2" height="40">
-                <center><font color="red"><?php echo gettext("A monthly fee of ").number_format($rate,2,".",",")." ".BASE_CURRENCY."<br>".gettext(" will be carried out from your acount");?> </font></center>
-            </td>
-        </tr>
-        <tr class="bgcolor_007">
-            <td align="center" valign="middle">
-                <input class="form_input_button"  value=" <?php echo gettext("Ok");?> "type="button" onclick="CheckCountry('NextButton')">
-            </td>
-        </tr>
-        <?php
-        break;
-
-        case 2:
-        ?>
-        <tr class="did_maintable_tr2" valign="middle">
-            <td colspan="2" height="40">
-                <?php
-                if ($confirm_buy_did == 2) {?><center><font color="black"><?php echo gettext("The purchase of the DID is done ")?> </font></center>
-                <?php } elseif ($confirm_buy_did == 5) {?><center><font color="red"><?php echo "<br>".gettext("The purchase of the DID cannot be done, the VoIP destination have to be a proper URI");?> </font></center>
-                <?php } else {?><center><font color="red"><?php echo "<br>".gettext("The purchase of the DID cannot be done, your credit of  ").number_format($user_credit,2,".",",")." ".BASE_CURRENCY.gettext(" is lower than Fixerate of the DID  ").number_format($rate,2,".",",")." ".BASE_CURRENCY." <br> <hr>".gettext("Please reload your account ");?> </font></center>
-                <?php } ?>
-            </td>
-        </tr>
-        <INPUT type="hidden" name="choose_did_rate" value="">
-        <INPUT type="hidden" name="destination" value=" ">
-        <INPUT type="hidden" name="voip_call" value="">
-        <INPUT type="hidden" name="choose_country" value="">
-        <tr class="bgcolor_007">
-            <td align="center" valign="middle">
-                <input class="form_input_button"  value=" <?php echo gettext("Ok");?> "type="button" onclick="CheckCountry('NextButton')">
-            </td>
-        </tr>
-        <?php
-        break;
-        } ?>
-
-    </form>
-  </table>
-  </center>
-  <br>
-
-<?php
-                $HD_Form->create_form($form_action, $list);
-            } // End Switch
-
-// #### FOOTER SECTION
 require_once __DIR__ . "/templates/footer.php";

@@ -45,7 +45,15 @@ $menu_section ??= 0;
             </div>
             <?php endif ?>
             <?php if (Customer::allowed(Customer::ACX_DID)): ?>
-            <a class="btn btn-toggle mb-1" href="A2B_entity_did.php"><?= _("DIDs") ?></a>
+            <button class="btn btn-toggle align-items-center rouded collapsed" data-bs-toggle="collapse" data-bs-target="#did-collapse" aria-expanded="<?= $menu_section === 8 ? "true" : "false" ?>">
+                <?= _("DIDs") ?>
+            </button>
+            <div class="collapse <?= $menu_section === 8 ? "show" : "" ?>" id="did-collapse">
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li><a class="link-dark rounded" href="A2B_entity_did.php"><?= _("DIDs") ?></a></li>
+                    <li><a class="link-dark rounded" href="A2B_entity_did_destination.php"><?= _("Inbound Destinations") ?></a></li>
+                </ul>
+            </div>
             <?php endif ?>
             <?php if (Customer::allowed(Customer::ACX_SPEED_DIAL)): ?>
             <a class="btn btn-toggle mb-1" href="A2B_entity_speeddial.php"><?= _("Speed Dials") ?></a>
