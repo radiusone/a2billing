@@ -2,8 +2,6 @@
 
 namespace A2billing;
 
-/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
-
 use PHPMailer\PHPMailer\Exception;
 
 /**
@@ -35,7 +33,7 @@ use PHPMailer\PHPMailer\Exception;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
-**/
+ **/
 
 class Mail
 {
@@ -129,9 +127,12 @@ class Mail
     //used in all mail
     public static string $SYSTEM_CURRENCY = '$base_currency$';
 
+    /**
+     * @throws A2bMailException
+     */
     public function __construct($type, $id_card = null, $lg = null, $msg = null, $title = null)
     {
-        if (!empty ($type)) {
+        if (!empty($type)) {
             $tmpl_table = new Table("cc_templatemail", "*");
             $tmpl_clause = ["mailtype" => $type];
             $order = null;
@@ -144,13 +145,14 @@ class Mail
                 } else {
                     $order = 'DESC';
                 }
-            } elseif (!is_null($id_card) && is_numeric($id_card)) {
-                $card_table = new Table("cc_card", "*, IF((typepaid=1) AND (creditlimit IS NOT NULL), credit + creditlimit, credit) AS real_credit");
+            } elseif (is_numeric($id_card)) {
+                $card_table = new Table("cc_card", ["*", "CASE WHEN typepaid = 1 AND creditlimit IS NOT NULL THEN credit + creditlimit ELSE credit END AS real_credit"]);
                 $card_clause = ["id" => $id_card];
                 $result_card = $card_table->getRow($card_clause);
-                if ($result_card)
+                if ($result_card) {
                     $card = $result_card;
-                $language = $card['language'];
+                    $language = $card['language'];
+                }
                 if (!empty ($language)) {
                     $tmpl_clause["id_language"] = ["IN", [$lg, 'en']];
                     $order_field = 'id_language';
@@ -171,21 +173,25 @@ class Mail
             } else {
                 throw new A2bMailException("Template Type '$type' cannot be found into the database!");
             }
-        } elseif (!empty ($msg) || !empty ($title)) {
+        } elseif (!empty($msg) || !empty($title)) {
             $this->message = $msg;
             $this->title = $title;
         } else {
             throw new A2bMailException("Error : no Type defined and neither message or subject is provided!");
         }
-        if (!empty ($this->message) || !empty ($this->title)) {
-            if (!is_null($id_card) && is_numeric($id_card)) {
+
+        if (!empty($this->message) || !empty($this->title)) {
+            if (is_numeric($id_card)) {
                 $this->id_card = $id_card;
-                if (is_null($card)) {
-                    $card_table = new Table("cc_card", "*, IF((typepaid=1) AND (creditlimit IS NOT NULL), credit + creditlimit, credit) AS real_credit");
+                if (!isset($card)) {
+                    $card_table = new Table("cc_card", ["*", "CASE WHEN typepaid = 1 AND creditlimit IS NOT NULL THEN credit + creditlimit ELSE credit END AS real_credit"]);
                     $card_clause = ["id" => $id_card];
                     $result_card = $card_table->getRow($card_clause);
-                    if ($result_card)
+                    if ($result_card) {
                         $card = $result_card;
+                    } else {
+                        return;
+                    }
                 }
                 $credit = $card['real_credit'];
                 $credit = round($credit, 3);
@@ -282,6 +288,9 @@ class Mail
         $this->from_name = $from_name;
     }
 
+    /**
+     * @throws A2bMailException
+     */
     public function send($to_email = null)
     {
         if (!empty ($to_email)) {
