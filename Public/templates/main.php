@@ -27,7 +27,7 @@ $menu_section ??= 0;
             <a class="btn btn-toggle mb-1" href="call-history.php"><?= _("Call History") ?></a>
             <?php endif ?>
             <?php if (Customer::allowed(Customer::ACX_PAYMENT_HISTORY)): ?>
-            <a class="btn btn-toggle mb-1" href="payment-history.php"><?= _("Payment History") ?></a>
+            <a class="btn btn-toggle mb-1" href="A2B_entity_payment.php"><?= _("Payment History") ?></a>
             <?php endif ?>
             <?php if (Customer::allowed(Customer::ACX_VOUCHER)): ?>
             <a class="btn btn-toggle mb-1" href="A2B_entity_voucher.php"><?= _("Vouchers") ?></a>

@@ -1,8 +1,7 @@
 <?php
 
 use A2billing\Customer;
-
-/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
+use A2billing\Forms\FormHandler;
 
 /**
  * This file is part of A2Billing (http://www.a2billing.net/)
@@ -33,10 +32,13 @@ use A2billing\Customer;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
-**/
+ */
 
 require_once __DIR__ . "/../common/lib/customer.defines.php";
-require_once __DIR__ . "/form_data/FG_var_payment.inc";
+require_once __DIR__ . "/../common/form_data/FG_var_payment.inc";
+/**
+ * @var FormHandler $HD_Form
+ */
 
 Customer::checkPageAccess(Customer::ACX_PAYMENT_HISTORY);
 
@@ -45,16 +47,9 @@ $HD_Form->init();
 $form_action ??= "list";
 $list = $HD_Form->perform_action($form_action);
 
-// #### HEADER SECTION
 require_once __DIR__ . "/templates/main.php";
 
-// #### HELP SECTION
-echo create_help(gettext("Payment history - Record of payments made."));
-
-// #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);
-
 $HD_Form->create_form($form_action, $list);
 
-// #### FOOTER SECTION
 require_once __DIR__ . "/templates/footer.php";
