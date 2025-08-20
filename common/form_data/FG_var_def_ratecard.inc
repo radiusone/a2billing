@@ -81,8 +81,13 @@ if (is_admin()) {
     $HD_Form = new FormHandler("cc_callplan_lcr", _("Rates"));
     $HD_Form->list_query_conditions["tariffgroup_id"] = $_SESSION["tariff"];
     $HD_Form ->list_query_group_columns = ["dialprefix"];
-    if (isset($letter)) {
-        $HD_Form->list_query_conditions["LOWER(SUBSTRING(`destination`, 1, 1))"] = strtolower($letter);
+    $letter ??= "";
+    if ($letter) {
+        if ($letter === "1") {
+            $HD_Form->list_query_conditions["SUBSTRING(`destination`, 1, 1)"] = ["IN", ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']];
+        } else {
+            $HD_Form->list_query_conditions["LOWER(SUBSTRING(`destination`, 1, 1))"] = strtolower($letter);
+        }
     }
     $use_lcr_callplan = true;
 }
@@ -164,7 +169,7 @@ $HD_Form->AddSearchTextInput(_("Dialing Prefix"), 'dialprefix');
 if (is_admin()) {
     $HD_Form->AddSearchComparisonInput(_("Buy Rate"), 'buyrate');
 }
-$HD_Form->AddSearchComparisonInput(_("Initial Rate"), 'rateinitial');
+$HD_Form->AddSearchComparisonInput(_("Sell Rate"), 'rateinitial');
 if (is_admin()) {
     $HD_Form->AddSearchSqlSelectInput(_("Trunk"), "id_trunk", new Table("cc_trunk", ["trunkcode", "id_trunk"]));
     $HD_Form->AddSearchSqlSelectInput(_("Rate Card"), "idtariffplan", new Table("cc_tariffplan", ["tariffname", "id"]));
