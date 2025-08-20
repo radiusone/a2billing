@@ -1,10 +1,10 @@
 <?php
 
-use A2billing\Admin;
 use A2billing\Customer;
 use A2billing\Forms\FormBO;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
+use A2billing\Payments\Invoice;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -54,7 +54,11 @@ $HD_Form = new FormHandler(
         ? []
         : [$join_key => ["cc_invoice.id", "items.id_invoice"]]
 );
-
+if (is_customer()) {
+    $HD_Form->list_query_conditions["id_card"] = Customer::id();
+    // original code set this, but why limit it to paid invoices?
+    $HD_Form->list_query_conditions["status"] = Invoice::PAIDSTATUS_PAID;
+}
 $HD_Form->list_query_order_direction = "DESC";
 
 $HD_Form->FG_FK_DELETE_ALLOWED = true;
@@ -66,62 +70,69 @@ $HD_Form->FG_FK_EDITION_CLAUSE = ["id_invoice"];
 $HD_Form->FG_ENABLE_INFO_BUTTON = true;
 $HD_Form->FG_INFO_BUTTON_LINK = "A2B_invoice_view.php?id=";
 
-$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
+$HD_Form->FG_ENABLE_EDIT_BUTTON = !is_customer();
 $HD_Form->FG_EDIT_BUTTON_CONDITION = $col6_open;
 
-$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
+$HD_Form->FG_ENABLE_DELETE_BUTTON = !is_customer();
 $HD_Form->FG_DELETE_BUTTON_CONDITION = $col6_open;
 
-$HD_Form->FG_ENABLE_ADD_BUTTON = true;
+$HD_Form->FG_ENABLE_ADD_BUTTON = !is_customer();
 
-$HD_Form->AddListActionButton(
-    "A2B_invoice_edit.php?id=",
-    _("Edit invoice items"),
-    "",
-    "receipt"
-);
+if (is_customer()) {
+    $HD_Form->help_text = _("Invoice history - The section below allows you to see the invoices on your account.");
+} else {
+    $HD_Form->AddListActionButton(
+        "A2B_invoice_edit.php?id=",
+        _("Edit invoice items"),
+        "",
+        "receipt"
+    );
 
-$HD_Form->AddListActionButton(
-    "A2B_entity_invoice.php?action=lock&id=",
-    _("Close this invoice"),
-    "",
-    "file-earmark-lock",
-    "lock",
-    "status",
-    0 // open
-);
+    $HD_Form->AddListActionButton(
+        "A2B_entity_invoice.php?action=lock&id=",
+        _("Close this invoice"),
+        "",
+        "file-earmark-lock",
+        "lock",
+        "status",
+        0 // open
+    );
 
-$HD_Form->AddListActionButton(
-    "A2B_invoice_manage_payment.php?id=",
-    _("Manage payments"),
-    "",
-    "cash-stack",
-    "text-success",
-    "status",
-    1 // closed
-);
+    $HD_Form->AddListActionButton(
+        "A2B_invoice_manage_payment.php?id=",
+        _("Manage payments"),
+        "",
+        "cash-stack",
+        "text-success",
+        "status",
+        1 // closed
+    );
 
-$HD_Form->AddListTopButton(null, null, "receipt-cutoff");
+    $HD_Form->AddListTopButton(null, null, "receipt-cutoff");
 
-$HD_Form->help_text = create_help(
-    _("Invoice history - The section below allows you to see and create invoices against a customer. Only the closed invoice can be seen on the customer interface")
-);
+    $HD_Form->help_text = create_help(
+        _("Invoice history - The section below allows you to see and create invoices against a customer. Only the closed invoice can be seen on the customer interface")
+    );
+}
 
 $status_list = getInvoiceStatusList();
 $paid_status_list = getInvoicePaidStatusList();
 $typepaid_list = getPaidTypeList();
 $invoiceday_list = getInvoiceDay_List();
 
-$HD_Form->AddListValue(_("ID"), "cc_invoice.id");
 $HD_Form->AddListValue(_("REFERENCE"), "reference");
-$HD_Form->AddListValue(_("ACCOUNT"), "id_card", [Customer::class, "getUsername"]);
+if (!is_customer()) {
+    $HD_Form->AddListValue(_("ACCOUNT"), "id_card", [Customer::class, "getUsername"]);
+}
 $HD_Form->AddListValue(_("DATE"), "cc_invoice.date");
 $HD_Form->AddListValue(_("TITLE"), "title");
-$HD_Form->AddListMapping(_("PAID STATUS"), "paid_status", $paid_status_list);
+if (!is_customer()) {
+    $HD_Form->AddListMapping(_("PAID STATUS"), "paid_status", $paid_status_list);
+}
 $HD_Form->AddListMapping(_("STATUS"), "status", $status_list);
 $HD_Form->AddListValue(_("AMOUNT INCL VAT"), "total_price", "get_money");
 
-if (!$popup_select) {
+if (!$popup_select && !is_customer()) {
     $HD_Form->search_form_enabled = true;
     $HD_Form->search_delete_enabled = false;
 
@@ -165,7 +176,6 @@ $HD_Form->AddEditElement(
     _("Insert the current date")
 );
 
-
 $HD_Form->AddEditElement(
     _("TITLE"),
     "title",
@@ -183,8 +193,11 @@ $HD_Form->AddEditTextarea(
     _("Insert the description")
 );
 
-$HD_Form->AddListFilter("username", _("Account Number"));
-
+if (is_customer()) {
+    $HD_Form->AddListFilter("reference", _("Reference"));
+} else {
+    $HD_Form->AddListFilter("username", _("Account Number"));
+}
 $HD_Form->add_message_intro = "";
 
 $HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = [FormBO::class, "create_invoice_reference"];

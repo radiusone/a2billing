@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Customer;
+use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -37,7 +38,10 @@ use A2billing\Customer;
 
 $menu_section = 5;
 require_once __DIR__ . "/../common/lib/customer.defines.php";
-require_once __DIR__ . "/form_data/FG_var_invoice.inc";
+require_once __DIR__ . "/../common/form_data/FG_var_invoice.inc";
+/**
+ * @var FormHandler $HD_Form
+ */
 
 Customer::checkPageAccess(Customer::ACX_INVOICES);
 
@@ -46,16 +50,9 @@ $HD_Form->init();
 $form_action ??= "list";
 $list = $HD_Form->perform_action($form_action);
 
-// #### HEADER SECTION
 require_once __DIR__ . "/templates/main.php";
 
-// #### HELP SECTION
-echo create_help(gettext("Invoice history - The section below allows you to see and pay the invoices that you have to pay."));
-
-// #### TOP SECTION PAGE
 $HD_Form->create_toppage($form_action);
-
 $HD_Form->create_form($form_action, $list);
 
-// #### FOOTER SECTION
 require_once __DIR__ . "/templates/footer.php";
