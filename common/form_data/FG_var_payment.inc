@@ -49,15 +49,13 @@ getpost_ifset(["card_id"]);
  */
 $form_action ??= "list";
 
-if (is_admin()) {
-    $HD_Form = new FormHandler("cc_logpayment", _("Payment"));
-} else {
-    $HD_Form = new FormHandler(
-        "cc_logpayment",
-        _("Payment"),
-        "cc_logpayment.id",
-        ["cc_card" => ["cc_card.id", "cc_logpayment.card_id"], "cc_card_group" => ["cc_card.id_group", "cc_card_group.id"]]
-    );
+$HD_Form = new FormHandler(
+    "cc_logpayment",
+    _("Payment"),
+    "cc_logpayment.id",
+    ["cc_card" => ["cc_card.id", "cc_logpayment.card_id"], "cc_card_group" => ["cc_card.id_group", "cc_card_group.id"]]
+);
+if (!is_admin()) {
     $HD_Form->list_query_conditions["cc_card_group.id_agent"] = Agent::id();
 }
 $HD_Form->list_query_order_direction = "DESC";
