@@ -359,8 +359,8 @@ class FormHandler
 
         $this->search_form_title = _("Define the search criteria");
         $this->add_message_bottom =
-        $this->edit_message_bottom =
-        $this->delete_message_bottom = sprintf(_("Click “%s” to continue"), $this->save_button_text);
+        $this->edit_message_bottom = sprintf(_("Click “%s” to continue"), $this->save_button_text);
+        $this->delete_message_bottom = sprintf(_("Click “%s” to continue"), $this->delete_button_text);
 
         $this->delete_message_confirm_fk = _("Are you sure you want to delete all records connected to this instance?");
     }
