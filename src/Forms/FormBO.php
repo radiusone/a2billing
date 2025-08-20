@@ -38,7 +38,7 @@ class FormBO
         }
         if (is_customer()) {
             $destinations = (new Table("cc_did_destination", ["destination"]))
-                ->getRows(["id_did" => $did_id, "id_cc_card" => Customer::id(), "activated" => 1]);
+                ->getRows(["id_cc_did" => $did_id, "id_cc_card" => Customer::id(), "activated" => 1]);
             if (empty($destinations)) {
                 return;
             }
