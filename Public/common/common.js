@@ -100,7 +100,7 @@ document.addEventListener("DOMContentLoaded", function() {
             e.stopPropagation();
             const uri = this.href ?? this.dataset.uri;
             const pu_sel = this.dataset.select ?? "1";
-            const pu_form = this.dataset.formName ?? this.closest("form")?.name;
+            const pu_form = this.dataset.formName ?? this.closest("form")?.getAttribute("name");
             const pu_field = this.dataset.fieldName ?? this.parentNode.querySelector("input,select")?.name;
             const uri_extra = this.dataset.uriExtra ?? "";
             const pu_name = this.dataset.windowName ?? "";
