@@ -672,12 +672,6 @@ function array_html_attr(array $attributes): string
     return trim($return);
 }
 
-function get_image_path(string $image, bool $customer = false): string
-{
-    $public_dir = $customer ? "." : "../Public";
-    return "$public_dir/templates/default/images/" . trim($image, "/");
-}
-
 function abbr(string $content, string $title, string $class = ""): string
 {
     return sprintf(

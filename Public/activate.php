@@ -123,7 +123,7 @@ if ($list["status"] != "1" && $result) {
 <tr><td colspan="2" bgcolor="#DDDDDD"></td></tr>
 <tr><td colspan="2" bgcolor="#DDDDDD"></td></tr>
 <tr>
-<td bgcolor="#EEEEEE"><img src="<?= get_image_path("kicons/khelpcenter.gif", true) ?>"/></td>
+<td bgcolor="#EEEEEE"></td>
 <td bgcolor="#EEEEEE">
 <b>
 <?php

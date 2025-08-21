@@ -66,7 +66,7 @@ require_once __DIR__ . "/templates/signup_header.php";
 <div align="center">
 <table  style="width : 80%;" class="editform_table1">
    <tr>
-       <th colspan="2" background="<?= get_image_path("background_cells.gif", true) ?>">
+       <th colspan="2">
            <?php echo gettext("SELECT THE SERVICE THAT YOU WANT SUBSCRIBE") ?>
        </th>
    </tr>
@@ -79,7 +79,7 @@ require_once __DIR__ . "/templates/signup_header.php";
         <td  class="form_head">
             &nbsp;<?php echo gettext("SERVICE") ?> :
         </td>
-        <td class="tableBodyRight"  background="<?= get_image_path("background_cells.gif", true) ?>" width="70%">
+        <td class="tableBodyRight" width="70%">
             <table>
             <?php
             $i=0;
@@ -103,9 +103,8 @@ require_once __DIR__ . "/templates/signup_header.php";
         </td>
     </tr>
      <tr>
-        <td colspan="2" align="right" class="tableBodyRight"  background="<?= get_image_path("background_cells.gif", true) ?>" width="70%">
+        <td colspan="2" align="right" class="tableBodyRight" width="70%">
             <a class="cssbutton_big" onClick="javascript:document.myForm.submit();"  href="#">
-                <img src="<?= get_image_path("icon_arrow_orange.gif", true) ?>"/>
                 <?php echo gettext("SUBSCRIBE THIS SERVICE"); ?>
             </a>
         </td>
