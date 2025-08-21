@@ -1,8 +1,8 @@
 <?php
 
+use A2billing\A2Billing;
+use A2billing\Forms\FormHandler;
 use A2billing\Table;
-
-/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
  * This file is part of A2Billing (http://www.a2billing.net/)
@@ -33,32 +33,33 @@ use A2billing\Table;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
-**/
+ */
 
 require_once __DIR__ . "/../common/lib/customer.defines.php";
-
-if (!isset ($form_action))
-    $form_action = "ask-add";
-
-if (!isset ($action))
-    $action = $form_action;
-
-require_once __DIR__ . "/form_data/FG_var_signup.inc";
+require_once __DIR__ . "/../common/form_data/FG_var_signup.inc";
+/**
+ * @var A2Billing $A2B
+ * @var FormHandler $HD_Form
+ */
 
 if (!$A2B->config["signup"]['enable_signup']) {
-    echo ("No Signup page!");
+    http_response_code(404);
     exit;
 }
 
-getpost_ifset(array ('subscriber_signup'));
+$form_action ??= "ask-add";
+
+getpost_ifset(["subscriber_signup"]);
+/**
+ * @var string|null $subscriber_signup
+ */
+$subscriber_signup ??= "";
 
 if (!is_numeric($subscriber_signup)) {
     //check subscriber_signup
-    $table_check_subscriber = new Table("cc_subscription_signup", "COUNT(*) AS ct");
-    $result_check_subscriber = $table_check_subscriber->getRow();
-    $check_subscriber = $result_check_subscriber["ct"] ?? 0;
-    if ($check_subscriber > 0) {
-        Header("Location: signup_service.php");
+    $check_subscriber = (new Table("cc_subscription_signup"))->countRows();
+    if ($check_subscriber) {
+        header("Location: signup_service.php");
         die();
     }
 }
@@ -67,7 +68,7 @@ $HD_Form->init();
 
 $list = $HD_Form->perform_action($form_action);
 
-if ($form_action == "add") {
+if ($form_action === "add") {
     unset ($_SESSION["cardnumber_signup"]);
     $_SESSION["language_code"] = $_POST["language"];
     $_SESSION["cardnumber_signup"] = $maxi;
