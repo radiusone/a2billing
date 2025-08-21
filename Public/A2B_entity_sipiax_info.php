@@ -4,8 +4,6 @@ use A2billing\A2Billing;
 use A2billing\Customer;
 use A2billing\Table;
 
-/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
-
 /**
  * This file is part of A2Billing (http://www.a2billing.net/)
  *
@@ -35,32 +33,28 @@ use A2billing\Table;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
-**/
+ */
 
 require_once __DIR__ . "/../common/lib/customer.defines.php";
 /**
  * @var A2Billing $A2B
  */
 
-require_once __DIR__ . "/form_data/FG_var_sipiax_info.inc";
-
 Customer::checkPageAccess(Customer::ACX_SIP_IAX);
 
 /***********************************************************************************/
 
-getpost_ifset(array('configtype'));
+getpost_ifset(["configtype"]);
 
-$HD_Form -> init();
-if ($configtype == "") {
-    $configtype = "SIP";
-}
-if ($configtype == "IAX") {
-    $config_name = gettext("IAX Config");
-    $config_file = gettext("iax.conf");
+$configtype ??= "SIP";
+
+if ($configtype === "IAX") {
+    $config_name = _("IAX Config");
+    $config_file = _("iax.conf");
     $table = "cc_iax_buddies";
 } else {
-    $config_name = gettext("SIP Config");
-    $config_file = gettext("sip.conf");
+    $config_name = _("SIP Config");
+    $config_file = _("sip.conf");
     $table = "cc_sip_buddies";
 }
 
@@ -71,106 +65,96 @@ $sip_iax_data = (new Table($table, ["id", "username", "secret", "disallow", "all
 $additional_sip = explode("|", $A2B->config['sip-iax-info']['sip_additional_parameters'] ?? "");
 $additional_iax = explode("|", $A2B->config['sip-iax-info']['iax_additional_parameters'] ?? "");
 
-// #### HEADER SECTION
 require_once __DIR__ . "/templates/main.php";
 
-echo create_help(gettext("Configuration information for SIP and IAX Client. You can simply copy and paste it in your configuration files and do necessary modifications."));
+echo create_help(_("Configuration information for SIP and IAX clients"));
 ?>
-<form name="form1">
+<?php if (!$sip_iax_data): ?>
+<div class="row mb-3">
+    <div class="col">
+        <p class="alert alert-info"><?= sprintf(_("The %s peer is not configured."), $configtype) ?></p>
+    </div>
+</div>
+<?php endif ?>
 
-<center>
-<table width="60%" border="0" align="center" cellpadding="0" cellspacing="1">
-    <tr>
-      <td  class="bgcolor_021">
-      <table width="100%" border="0" cellspacing="1" cellpadding="0">
-          <tr>
-            <td width="50%" bgcolor="#FFFFFF" class="fontstyle_006">&nbsp;<?php echo gettext("CARD")?></td>
-            <td width="50%" bgcolor="#FFFFFF" class="fontstyle_006"><?php echo Customer::card() ?></td>
-          </tr>
-          <tr>
-            <td bgcolor="#FFFFFF" class="fontstyle_006">&nbsp;<?php echo gettext("CONFIGURATION TYPE")?> </td>
-            <td bgcolor="#FFFFFF" class="fontstyle_006"><form name="form1" method="post" action="">
-               <select name="configtype" id="col_configtype" onChange="window.document.form1.elements['PMChange'].value='Change';window.document.form1.submit();">
-                 <option value="IAX" <?php if($configtype == "IAX")echo "selected"?>><?php echo gettext("IAX")?></option>
-                 <option value="SIP" <?php if($configtype == "SIP")echo "selected"?>><?php echo gettext("SIP")?></option>
-               </select>
-              <input name="PMChange" type="hidden" id="PMChange">
-            </form>
-            </td>
-          </tr>
-      </table></td>
-    </tr>
-</table>
-
-<br>
-<table width="60%" border="0" align="center" cellpadding="0" cellspacing="1">
-    <tr>
-      <td  class="bgcolor_021">
-      <table width="100%" border="0" cellspacing="1" cellpadding="0">
-          <tr>
-            <td colspan="2" class="fontstyle_008">&nbsp;<strong><?php echo $config_name;?></strong> </td>
-          </tr>
-          <tr>
-            <td colspan="2" bgcolor="#FFFFFF" class="fontstyle_006" align="center">
-                <br><b><?php echo $configtype;?> URI :</b> <?php echo $A2B->config['sip-iax-info']['sip_iax_info_host']; ?><br>
-                <br><b><?php echo gettext("Username")?> :</b> <?php echo $sip_iax_data["username"]?><br>
-                <br><b><?php echo gettext("Password")?> :</b> <?php echo $sip_iax_data["secret"]?><br><br>
-
-                <br><?php echo gettext("To configure your Asterisk server, copy and paste this into your ")?> <?php echo $config_file;?><br>
-
-                <textarea name="textfield" cols="80" rows="12" class="form_input_text" ><?php if ($sip_iax_data){ ?><?php if ($configtype == "IAX") { ?>[<?php echo $A2B->config['sip-iax-info']['sip_iax_info_trunkname']; ?>]
-username=<?php echo $sip_iax_data["username"]?>
-
-type=friend
-secret=<?php echo $sip_iax_data["secret"]?>
-
-host=<?php echo $A2B->config['sip-iax-info']['sip_iax_info_host']; ?>
-
-disallow=all
-context=<?php echo $sip_iax_data["context"]?> ; change for proper context
-allow=<?php echo $A2B->config['sip-iax-info']['sip_iax_info_allowcodec']?> ; we support ulaw,alaw,ilbc,gsm,g723.1,g726,g729a
-<?php
-if (count($additional_iax) > 0) {
-    for ($i = 0; $i< count($additional_iax); $i++) {
-        echo trim($additional_iax[$i]).chr(10);
-    }
-}
-?>
-<?php } else { ?>[<?php echo $A2B->config['sip-iax-info']['sip_iax_info_trunkname']; ?>]
-username=<?php echo $sip_iax_data["username"]?>
-
-type=friend
-secret=<?php echo $sip_iax_data["secret"]?>
-
-host=<?php echo $A2B->config['sip-iax-info']['sip_iax_info_host']; ?>
-
-fromuser=<?php echo $sip_iax_data["username"]?>
-
-context=<?php echo $sip_iax_data["context"]?> ; change for proper context
-allow=<?php echo $A2B->config['sip-iax-info']['sip_iax_info_allowcodec']?> ; we support ulaw,alaw,ilbc,gsm,g723.1,g726,g729a
-<?php
-if (count($additional_sip) > 0) {
-    for ($i = 0; $i< count($additional_sip); $i++) {
-        echo trim($additional_sip[$i]).chr(10);
-    }
-}
-?>
-<?php } ?>
-<?php } else {
-    echo gettext("The peer is not defined, please contact your Administrator!");
-    }
-?>
-</textarea>
-<br><br>
-</td>
-            </tr>
-
-      </table></td>
-    </tr>
-  </table>
-</center>
+<form id="configform" class="row mb-3">
+    <label for="configtype" class="col-2 col-form-label-sm"><?= _("Configuration Type") ?></label>
+    <div class="col-8">
+        <select name="configtype" id="configtype" class="form-select form-select-sm w-100">
+            <option <?= $configtype === "SIP" ? "selected=\"selected\"" : "" ?>>SIP</option>
+            <option <?= $configtype === "IAX" ? "selected=\"selected\"" : "" ?>>IAX</option>
+        </select>
+    </div>
 </form>
 
-<?php
+<script>
+    document.getElementById("configtype").addEventListener("change", e => e.target.form.requestSubmit());
+</script>
 
+<?php
+if (!$sip_iax_data) {
+    require_once __DIR__ . "/templates/footer.php";
+
+    return;
+} ?>
+
+<div class="row">
+    <div class="col"><strong><?= (sprintf(_("%s URI"), $configtype)) ?>:</strong></div>
+    <div class="col"><?= $A2B->config["sip-iax-info"]["sip_iax_info_host"] ?></div>
+</div>
+<div class="row">
+    <div class="col"><strong><?= _("Username") ?>:</strong></div>
+    <div class="col"><?= $sip_iax_data["username"] ?></div>
+</div>
+<div class="row mb-3">
+    <div class="col"><strong><?= _("Password") ?>:</strong></div>
+    <div class="col"><?= $sip_iax_data["secret"] ?></div>
+</div>
+<div class="row mb-3">
+    <div class="col">
+        <p><?= sprintf(_("To configure your Asterisk server, copy and paste this into your %s file"), $config_file) ?></p>
+        <p>
+            <textarea class="form-control w-100" rows="10">
+<?php if ($configtype === "IAX"): ?>
+[<?= $A2B->config["sip-iax-info"]["sip_iax_info_trunkname"]; ?>]
+username=<?= $sip_iax_data["username"] ?>
+type=friend
+secret=<?= $sip_iax_data["secret"] ?>
+
+host=<?= $A2B->config["sip-iax-info"]["sip_iax_info_host"] ?>
+
+disallow=all
+context=<?= $sip_iax_data["context"] ?> ; change for proper context
+allow=<?= $A2B->config["sip-iax-info"]["sip_iax_info_allowcodec"] ?>
+
+<?php foreach ($additional_iax as $v): ?>
+<?= trim($v) ?>
+
+<?php endforeach ?>
+<?php else: ?>
+[<?= $A2B->config["sip-iax-info"]["sip_iax_info_trunkname"]; ?>]
+username=<?= $sip_iax_data["username"] ?>
+
+type=friend
+secret=<?= $sip_iax_data["secret"] ?>
+
+host=<?= $A2B->config["sip-iax-info"]["sip_iax_info_host"] ?>
+
+fromuser=<?= $sip_iax_data["username"] ?>
+
+disallow=all
+context=<?= $sip_iax_data["context"] ?> ; change for proper context
+allow=<?= $A2B->config["sip-iax-info"]["sip_iax_info_allowcodec"] ?>
+
+<?php foreach ($additional_sip as $v): ?>
+<?= trim($v) ?>
+
+<?php endforeach ?>
+<?php endif ?>
+            </textarea>
+        </p>
+    </div>
+</div>
+
+<?php
 require_once __DIR__ . "/templates/footer.php";
