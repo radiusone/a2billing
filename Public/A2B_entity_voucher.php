@@ -54,12 +54,12 @@ $error = "";
 
 if (!empty($voucher)) {
     $result = (new Table("cc_voucher", ["currency", "credit"]))
-        ->getRow(["expirationdate" =>  [">=", "CURRENT_TIMESTAMP"], "activated" => 't', "voucher" => $voucher]);
+        ->getRow(["expirationdate" =>  [">=", "CURRENT_TIMESTAMP"], "available" => 1, "voucher" => $voucher]);
 
     if ($result) {
         $credit = convert_currency($result["credit"], $result["currency"], BASE_CURRENCY);
         (new Table("cc_voucher"))
-            ->updateRow(["activated" => "f", "usedcardnumber" => Customer::card(), "usedate" => "CURRENT_TIMESTAMP"], ["voucher" => $voucher]);
+            ->updateRow(["available" => 0, "usedcardnumber" => Customer::card(), "usedate" => "CURRENT_TIMESTAMP"], ["voucher" => $voucher]);
         (new Table("cc_card"))
             ->updateRow(["credit" => ["credit + ?", $credit]], ["username" => Customer::card()]);
         $success = sprintf(_("The voucher %s has been processed; we added %s to your account"), $voucher, get_money($credit));

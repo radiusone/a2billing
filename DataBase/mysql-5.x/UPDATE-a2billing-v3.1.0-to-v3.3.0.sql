@@ -32,16 +32,22 @@ DELETE FROM cc_config WHERE config_key = 'server_GMT';
 ALTER TABLE cc_ratecard MODIFY musiconhold VARCHAR(100) NOT NULL DEFAULT '';
 
 -- remove unused columns
-ALTER TABLE cc_card DROP COLUMN mac_addr;
-ALTER TABLE cc_card_archive DROP COLUMN mac_addr;
-ALTER TABLE cc_card DROP COLUMN max_concurrent;
-ALTER TABLE cc_card_archive DROP COLUMN max_concurrent;
-ALTER TABLE cc_did DROP COLUMN max_concurrent;
+ALTER TABLE cc_card DROP COLUMN IF EXISTS mac_addr;
+ALTER TABLE cc_card_archive DROP COLUMN IF EXISTS mac_addr;
+ALTER TABLE cc_card DROP COLUMN IF EXISTS max_concurrent;
+ALTER TABLE cc_card_archive DROP COLUMN IF EXISTS max_concurrent;
+ALTER TABLE cc_did DROP COLUMN IF EXISTS max_concurrent;
+ALTER TABLE cc_voucher DROP COLUMN IF EXISTS used;
+
+UPDATE cc_config SET config_value = REPLACE(config_value, 'activated', 'available'), config_description = REPLACE(config_description, 'Vouvher', 'Voucher') WHERE config_key = 'voucher_export_field_list';
+UPDATE cc_voucher SET activated = '0' WHERE activated = 'f';
+UPDATE cc_voucher SET activated = '1' WHERE activated = 't';
+ALTER TABLE cc_voucher CHANGE COLUMN activated available boolean NOT NULL DEFAULT 1;
 
 -- add proper timezones, make a few corrections
-ALTER TABLE cc_timezone DROP COLUMN gmttime;
-ALTER TABLE cc_timezone DROP COLUMN gmtoffset;
-ALTER TABLE cc_timezone ADD COLUMN zone VARCHAR(64);
+ALTER TABLE cc_timezone DROP COLUMN IF EXISTS gmttime;
+ALTER TABLE cc_timezone DROP COLUMN IF EXISTS gmtoffset;
+ALTER TABLE cc_timezone ADD COLUMN IF NOT EXISTS zone VARCHAR(64);
 UPDATE cc_timezone SET zone = 'Etc/GMT+12' WHERE gmtzone = '(GMT-12:00) International Date Line West';
 UPDATE cc_timezone SET zone = 'Pacific/Samoa' WHERE gmtzone = '(GMT-11:00) Midway Island, Samoa';
 UPDATE cc_timezone SET zone = 'Pacific/Honolulu' WHERE gmtzone = '(GMT-10:00) Hawaii';

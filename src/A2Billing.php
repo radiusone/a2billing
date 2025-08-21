@@ -2173,7 +2173,7 @@ class A2Billing
 
         $this->debug(self::DEBUG, "VOUCHER NUMBER : " . $vouchernumber);
 
-        $query = "SELECT voucher, credit, currency FROM cc_voucher WHERE expirationdate >= CURRENT_TIMESTAMP AND activated = 't' AND voucher = ?";
+        $query = "SELECT voucher, credit, currency FROM cc_voucher WHERE expirationdate >= CURRENT_TIMESTAMP AND available = 1 AND voucher = ?";
         $params = [$vouchernumber];
 
         $row = $this->DBHandle->GetRow($query, $params);
@@ -2186,7 +2186,7 @@ class A2Billing
             } else {
                 // DISABLE THE VOUCHER
                 $add_credit = $row["credit"] * $this->currencies_list[strtoupper($row["currency"])];
-                $query = "UPDATE cc_voucher SET activated = 'f', usedcardnumber = ?, used = 1, usedate = CURRENT_TIMESTAMP WHERE voucher = ?";
+                $query = "UPDATE cc_voucher SET available = 0, usedcardnumber = ?, usedate = CURRENT_TIMESTAMP WHERE voucher = ?";
                 $params = [$this->accountcode, $vouchernumber];
                 $this->DBHandle->Execute($query, $params);
                 $this->debug(self::DEBUG, "Query: $query", $params);

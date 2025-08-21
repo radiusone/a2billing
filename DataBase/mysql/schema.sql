@@ -1779,8 +1779,7 @@ CREATE TABLE `cc_voucher` (
     `usedcardnumber` varchar(50) DEFAULT NULL,
     `tag` varchar(50) DEFAULT NULL,
     `credit` decimal(15,5) NOT NULL DEFAULT 0,
-    `activated` varchar(1) NOT NULL DEFAULT 'f',
-    `used` int DEFAULT 0,
+    `available` bool NOT NULL DEFAULT 1,
     `currency` varchar(3) DEFAULT 'USD',
     PRIMARY KEY (`id`),
     UNIQUE KEY (`voucher`)

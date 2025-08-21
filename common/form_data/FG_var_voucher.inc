@@ -42,8 +42,7 @@ use A2billing\Forms\Validator;
 $HD_Form = new FormHandler("cc_voucher", _("Voucher"));
 
 $currency_list = getCurrenciesList();
-$actived_list = getActivationTrueFalseList();
-$used_list = [_("NOT USED"), _("USED")];
+$yesno_list = getYesNoList();
 
 if (is_customer()) {
     $HD_Form->list_query_conditions["usedcardnumber"] = Customer::card();
@@ -63,10 +62,9 @@ $HD_Form->AddListValue(_("Credit"), "credit", "get_money");
 $HD_Form->AddListMapping(_("Currency"), "currency", $currency_list);
 $HD_Form->AddListValue(_("Used date"), "usedate");
 if (!is_customer()) {
-    $HD_Form->AddListMapping(_("Activated"), "activated", $actived_list);
-    $HD_Form->AddListMapping(_("Used"), "used", $used_list);
     $HD_Form->AddListValue(_("Account"), "usedcardnumber");
     $HD_Form->AddListValue(_("Created date"), "creationdate");
+    $HD_Form->AddListValue(_("Expiry date"), "expirationdate");
     $HD_Form->AddListValue(_("Tag"), "tag");
 }
 
@@ -84,8 +82,7 @@ $HD_Form->AddSearchTextInput(_("Card number"), "usedcardnumber");
 $HD_Form->AddSearchTextInput(_("Tag"), "tag");
 $HD_Form->AddSearchComparisonInput(_("Credit"), "credit");
 
-$HD_Form->AddSearchSelectInput(_("Status"), "activated", $actived_list);
-$HD_Form->AddSearchSelectInput(_("Used"), "used", $used_list);
+$HD_Form->AddSearchSelectInput(_("Available"), "available", $yesno_list);
 $HD_Form->AddSearchSelectInput(_("Currency"), "currency", $currency_list);
 
 $HD_Form->FG_ENABLE_EDIT_BUTTON = !is_customer();
@@ -125,13 +122,13 @@ $HD_Form->AddEditElement(
 );
 
 $HD_Form->AddEditRadio(
-    _("ACTIVATED"),
-    "activated",
-    getActivationTrueFalseList(),
-    "t",
+    _("AVAILABLE"),
+    "available",
+    getYesNoList(),
+    "1",
     "",
     [],
-    _("Choose if you want to activate this card")
+    _("Choose if voucher is available for use")
 );
 
 $HD_Form->AddEditSelect(_("CURRENCY"), "currency", $currency_list);

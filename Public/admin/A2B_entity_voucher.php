@@ -49,7 +49,7 @@ require_once __DIR__ . "/../../common/form_data/FG_var_voucher.inc";
  * @var FormHandler $HD_Form
  * @var numeric-string $popup_select
  * @var array $used_list
- * @var array $actived_list
+ * @var array $yesno_list
  */
 
 Admin::checkPageAccess(Admin::ACX_BILLING);
@@ -72,7 +72,7 @@ if ($action === "batchupdate" && is_array($check)) {
 
     $uf = [];
     getpost_ifset(
-        ["upd_tag", "upd_currency", "upd_credit", "upd_activated", "upd_used", "upd_credittype"],
+        ["upd_tag", "upd_currency", "upd_credit", "upd_available"],
         $uf
     );
     $update_fields = [];
@@ -115,8 +115,7 @@ if ($action === "generate") {
     unset($gen["count"], $gen["length"]);
     for ($i = 0; $i < $count; $i++) {
         $gen["voucher"] = generate_unique_value("cc_voucher", $length, "voucher");
-        $gen["usedcardnumber"] = "";
-        $gen["activated"] = "t";
+        $gen["available"] = 1;
         if (isset($gen["expirationdate"])) {
             $gen["expirationdate"] = str_replace('T', ' ', $gen["expirationdate"]);
         }
@@ -179,34 +178,15 @@ if ($form_action === "list" && !$popup_select) {
 
                     <div class="row mb-1">
                         <div class="col-4">
-                            <input name="check[upd_used]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if (!empty($check["upd_used"])): ?> checked="checked"<?php endif ?> class="form-check-input"/>
-                            <label class="form-label form-label-sm" for="upd_used">
-                                <?= _("Used") ?>
+                            <input name="check[upd_available]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if (!empty($check["upd_available"])): ?> checked="checked"<?php endif ?> class="form-check-input"/>
+                            <label class="form-label form-label-sm" for="upd_available">
+                                <?= _("Available") ?>
                             </label>
                         </div>
                         <div class="col">
-                            <select name="upd_used" id="upd_used" class="form-select form-select-sm">
-                                <?php foreach ($used_list as $k => $v): ?>
-                                    <option value="<?= $k ?>" <?php if (intval($update_fields["status"] ?? "-1") === $k): ?>selected="selected"<?php endif ?>>
-                                        <?= $v ?>
-                                    </option>
-                                <?php endforeach ?>
-                            </select>
-                        </div>
-                    </div>
-
-
-                    <div class="row mb-1">
-                        <div class="col-4">
-                            <input name="check[upd_activated]" type="checkbox" value="on" aria-label="check to enable updates to this field" <?php if (!empty($check["upd_activated"])): ?> checked="checked"<?php endif ?> class="form-check-input"/>
-                            <label class="form-label form-label-sm" for="upd_activated">
-                                <?= _("Activated") ?>
-                            </label>
-                        </div>
-                        <div class="col">
-                            <select name="upd_activated" id="upd_activated" class="form-select form-select-sm">
-                                <?php foreach ($actived_list as $k => $v): ?>
-                                    <option value="<?= $k ?>" <?php if (strval($update_fields["activated"] ?? "-1") === $k): ?>selected="selected"<?php endif ?>>
+                            <select name="upd_available" id="upd_available" class="form-select form-select-sm">
+                                <?php foreach ($yesno_list as $k => $v): ?>
+                                    <option value="<?= $k ?>" <?php if (intval($update_fields["available"] ?? "-1") === $k): ?>selected="selected"<?php endif ?>>
                                         <?= $v ?>
                                     </option>
                                 <?php endforeach ?>

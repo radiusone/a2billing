@@ -112,7 +112,7 @@ INSERT INTO `cc_config` (`config_title`, `config_key`, `config_value`, `config_d
     ('Monitor Format','monitor_formatfile','gsm','FORMAT OF THE RECORDED MONITOR FILE.',0,NULL,8),
     ('Currency','currency_choose','usd, eur, cad, hkd','Allow the customer to chose the most appropriate currency (\"all\" can be used).',0,NULL,8),
     ('Card Export Fields','card_export_field_list','card.id, username, useralias, lastname, credit, tariff, activated, language, inuse, currency, sip_bu','Fields to export in csv format from cc_card table.',0,NULL,8),
-    ('Vouvher Export Fields','voucher_export_field_list','voucher, credit, tag, activated, usedcardnumber, usedate, currency','Field to export in csv format from cc_voucher table.',0,NULL,8),
+    ('Voucher Export Fields','voucher_export_field_list','voucher, credit, tag, available, usedcardnumber, usedate, currency','Field to export in csv format from cc_voucher table.',0,NULL,8),
     ('Advance Mode','advanced_mode','0','Advanced mode - Display additional configuration options on the ratecard (progressive rates, musiconhold, ...).',1,'yes,no',8),
     ('SIP/IAX Delete','delete_fk_card','1','Delete the SIP/IAX Friend & callerid when a card is deleted.',1,'yes,no',8),
     ('Hide Expired Rates','hide_expired_rates','0','Hide expired and future rates when viewing the rate list',1,'yes,no',8),
