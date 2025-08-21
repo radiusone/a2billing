@@ -63,13 +63,15 @@ $HD_Form = new FormHandler(
     $table,
     $desc,
     "$table.id",
-    [
-        "cc_card" => ["$table.id_cc_card", "cc_card.id"],
-        "cc_card_group" => ["cc_card.id_group", "cc_card_group.id"],
-    ]
+    $form_action === "list"
+        ? ["cc_card" => ["$table.id_cc_card", "cc_card.id"]]
+        : []
 );
 if (is_agent()) {
-    $HD_Form->list_query_conditions["cc_card_group.id_agent"] = Agent::id();
+    $HD_Form->query_table_joins["cc_card_group"] = ["cc_card.id_group", "cc_card_group.id"];
+    $HD_Form->list_query_conditions["cc_card_group.id_agent"]
+        = $HD_Form->update_query_conditions["cc_card_group.id_agent"]
+        = Agent::id();
 }
 $HD_Form->list_help_text = create_help(
     _("SIP and IAX Config will create a SIP or IAX entry on the Asterisk server, so that a customer can set up a SIP or IAX client to connect directly to the asterisk server without the need to enter an account and pin each time a call is made. When done, click on the CONFIRM DATA button, then click reload to apply the changes on the Asterisk server.<br>")
@@ -81,13 +83,13 @@ $HD_Form->help_text = create_help(
     . _("More details on how to configure clients are on the Wiki")
 );
 
-$HD_Form->AddListValue(_("Cardholder"), "id_cc_card", [Customer::class, "getName"]);
-$HD_Form->AddListValue(_("Username"), "username");
-$HD_Form->AddListValue(_("Account code"), "accountcode");
-$HD_Form->AddListValue(_("Secret"), "secret");
-$HD_Form->AddListValue(_("Caller ID"), "callerid");
-$HD_Form->AddListValue(_("Context"), "context");
-$HD_Form->AddListValue(_("Default IP"), "defaultip");
+$HD_Form->AddListValue(_("Cardholder"), "$table.id_cc_card", [Customer::class, "getName"]);
+$HD_Form->AddListValue(_("Username"), "$table.username");
+$HD_Form->AddListValue(_("Account code"), "$table.accountcode");
+$HD_Form->AddListValue(_("Secret"), "$table.secret");
+$HD_Form->AddListValue(_("Caller ID"), "$table.callerid");
+$HD_Form->AddListValue(_("Context"), "$table.context");
+$HD_Form->AddListValue(_("Default IP"), "$table.defaultip");
 
 $HD_Form->AddListTopButton(
     "A2B_entity_friend.php?form_action=ask-add&voip_type=$voip_type",
@@ -95,8 +97,8 @@ $HD_Form->AddListTopButton(
     "telephone-fill"
 );
 
-if (!empty($friend_id) && $friend_id !== "all") {
-    $HD_Form->list_query_conditions["name"] = $friend_id;
+if (($friend_id ?? "all") !== "all") {
+    $HD_Form->list_query_conditions["$table.name"] = $friend_id;
 }
 
 $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
@@ -822,13 +824,10 @@ if ($voip_type === "sip") {
 }
 
 
-$HD_Form->AddListFilter("name", _('Username'));
+$HD_Form->AddListFilter("$table.name", _('Username'));
 
 $HD_Form->edit_message_intro= "";
 $HD_Form->add_message_intro = "";
-
-
-
 
 $HD_Form->FG_LOCATION_AFTER_ADD = "?voip_type=$voip_type&form_action=ask-edit&id=";
 $HD_Form->FG_LOCATION_AFTER_EDIT = "?voip_type=$voip_type&form_action=ask-edit&id=";
