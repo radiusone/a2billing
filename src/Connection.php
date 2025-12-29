@@ -3,6 +3,7 @@
 namespace A2billing;
 
 use ADOConnection;
+use Illuminate\Database\Capsule\Manager;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -39,6 +40,7 @@ use ADOConnection;
 class Connection
 {
     private static ADOConnection $DBHandler;
+    private static Manager $manager;
 
     private static function initDB(): void
     {
@@ -66,6 +68,28 @@ class Connection
         if (empty(self::$DBHandler)) {
             self::initDB();
         }
+
         return self::$DBHandler;
+    }
+
+    public static function getConnection(): \Illuminate\Database\Connection
+    {
+        if (!isset(self::$manager)) {
+            $conn = new Manager();
+            $conn->addConnection([
+                "driver" => "mysql",
+                "host" => HOST,
+                "port" => PORT,
+                "username" => USER,
+                "password" => PASS,
+                "database" => DBNAME,
+                "charset" => "utf8mb4",
+                "collation" => "utf8_unicode_ci"
+            ]);
+            $conn->setAsGlobal();
+            self::$manager = $conn;
+        }
+
+        return self::$manager->getConnection();
     }
 }
