@@ -69,7 +69,6 @@ $field_names = array_merge($field_names, ["idtariffplan", "id_trunk", "destinati
 $nb_imported = 0;
 $import_error = "";
 $import_time = 0;
-$DBHandle = DbConnect();
 $the_file = "";
 $assoc_csv = [];
 $prefix_values = [];
@@ -147,7 +146,7 @@ if ($task) {
     if ($task === "upload") {
         $result = (new Table("cc_ratecard"))->addRows($insert_data);
         if (!$result) {
-            $import_error = $DBHandle->ErrorMsg();
+            $import_error = Table::getLastError();
         } else {
             $nb_imported = count($insert_data);
             Logger::insertLog(Admin::id(), 2, "RATES IMPORTED", $nb_imported . " New RATES Imported Successfully", '', $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI']);

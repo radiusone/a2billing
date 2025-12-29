@@ -98,6 +98,11 @@ class Table
         return self::$connection;
     }
 
+    public static function getLastError(): string
+    {
+        return self::$connection->ErrorMsg();
+    }
+
     /**
      * Configure the table for deleting records using (fake) foreign keys
      *

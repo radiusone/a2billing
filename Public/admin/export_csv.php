@@ -58,8 +58,7 @@ if (!is_array($_SESSION[$export_session])) {
         ->getRows($conditions, $order, $direction, $group);
 
     if (empty($export_data)) {
-        $db = DbConnect();
-        if ($err = $db->ErrorMsg()) {
+        if ($err = Table::getLastError()) {
             $export_data = [["error" => $err]];
         }
     }

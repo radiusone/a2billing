@@ -5,8 +5,7 @@ use A2billing\A2Billing;
 use A2billing\A2bMailException;
 use A2billing\Mail;
 use A2billing\PhpAgi\Agi;
-
-/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
+use A2billing\Table;
 
 /**
  * This file is part of A2Billing (http://www.a2billing.net/)
@@ -1252,27 +1251,30 @@ function insert_callback(A2Billing $A2B, string $uniqueid, string $channel, stri
     $account = $A2B->accountcode;
     $caller_id = $callerid ?? $A2B->config["callback"]["callerid"];
     $timeout = $A2B->config["callback"]["timeout"] * 1000;
-    $db = DbConnect();
     $interval = "$callback_time SECOND";
     if ($A2B->config["database"]["dbtype"] === "postgres") {
         $interval = "'$interval'";
     }
 
-    $query = "INSERT INTO cc_callback_spool (status, server_ip, num_attempt, priority, uniqueid, channel, exten, context, variable, id_server_group, callback_time, account, callerid, timeout)";
-    $query .= " VALUES ('PENDING', 'localhost', 0, 1, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP + INTERVAL $interval, ?, ?, ?)";
     $params = [
-        $uniqueid,
-        $channel,
-        $exten,
-        $context,
-        $variable,
-        $id_server_group,
-        $account,
-        $caller_id,
-        $timeout,
+        "status" => "PENDING",
+        "server_ip" => "localhost",
+        "num_attempt" => 0,
+        "priority" => 1,
+        "uniqueid" => $uniqueid,
+        "channel" => $channel,
+        "exten" => $exten,
+        "context" => $context,
+        "variable" => $variable,
+        "id_server_group" => $id_server_group,
+        "callback_time" => "CURRENT_TIMESTAMP + INTERVAL $interval",
+        "account" => $account,
+        "callerid" => $caller_id,
+        "timeout" => $timeout,
     ];
-    $A2B->debug(A2Billing::DEBUG, "[CALLBACK-ALL : INSERT CALLBACK REQUEST IN SPOOL : QUERY=$query, PARAMS=" . json_encode($params) . "]");
-    $res = $db->Execute($query, $params);
+    $A2B->debug(A2Billing::DEBUG, "[CALLBACK-ALL : INSERT CALLBACK REQUEST IN SPOOL : PARAMS=" . json_encode($params) . "]");
+    $res = (new Table("cc_callback_spool"))
+        ->addRow($params);
 
     if (!$res) {
         $error_msg = "Cannot insert the callback request in the spool!";

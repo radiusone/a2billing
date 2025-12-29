@@ -486,8 +486,6 @@ function gen_card_with_alias($length_cardnumber = null)
 {
     global $A2B;
 
-    $DBHandle = DbConnect();
-
     if (empty($length_cardnumber)) {
         $length_cardnumber = get_cardlength();
     }
@@ -496,8 +494,10 @@ function gen_card_with_alias($length_cardnumber = null)
         $card_gen = generate_random_value(str_repeat("#", $length_cardnumber));
         $alias_gen = generate_random_value(str_repeat("#", $A2B->config['global']['len_aliasnumber'] ?? 10));
 
-        $query = "SELECT username FROM cc_card WHERE username=? OR useralias=? OR username=? OR useralias=?";
-        $val = $DBHandle->GetOne($query, [$card_gen, $alias_gen, $alias_gen, $card_gen]);
+        $val = (new Table("cc_card"))
+            ->getValue(
+                [["SUB", ["username" => ["IN", [$card_gen, $alias_gen]], "useralias" => ["IN", [$card_gen, $alias_gen]]], "OR"]],
+            );
         if (is_null($val)) {
 
             return [$card_gen, $alias_gen];
