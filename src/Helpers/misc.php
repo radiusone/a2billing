@@ -576,11 +576,6 @@ function get_login_button($id): string
         HTML;
 }
 
-function DbConnect(): ADOConnection
-{
-    return Connection::GetDBHandler();
-}
-
 function create_help($text): string
 {
     $result = (new Table("cc_config", "config_value"))
