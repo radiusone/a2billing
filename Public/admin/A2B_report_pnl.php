@@ -2,6 +2,7 @@
 
 use A2billing\A2Billing;
 use A2billing\Admin;
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 use A2billing\Table;
 
@@ -303,9 +304,9 @@ SQL;
     die;
 }
 
-$db = DbConnect();
-$db->Execute("SET autocommit = 0");
-$db->Execute("CREATE TEMPORARY TABLE pnl_report AS $QUERY");
+$db = Connection::getConnection();
+$db->statement("SET autocommit = 0");
+$db->statement("CREATE TEMPORARY TABLE pnl_report AS $QUERY");
 
 function linktonext_1($value) {
     $inst_table = new Table("cc_card_group", "id");

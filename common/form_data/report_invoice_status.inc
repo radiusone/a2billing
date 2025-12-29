@@ -1,5 +1,6 @@
 <?php
 use A2billing\Agent;
+use A2billing\Connection;
 
 /**
  * @var \A2billing\Forms\FormHandler $HD_Form
@@ -28,7 +29,7 @@ $QUERY_INVOICE_ENOUGH_PAID = <<< SQL
     GROUP BY EXTRACT(MONTH FROM sub.invoice_date)
     ORDER BY sub.invoice_date DESC
     SQL;
-$result_invoice_enough_paid = DbConnect()->GetArray(
+$result_invoice_enough_paid = Connection::getConnection()->select(
     $QUERY_INVOICE_ENOUGH_PAID,
     [$checkdate, is_agent() ? 1 : 0, Agent::id()]
 ) ?: [];
@@ -47,7 +48,7 @@ $QUERY_INVOICE_COUNT = <<< SQL
     GROUP BY EXTRACT(MONTH FROM cc_invoice.date)
     ORDER BY cc_invoice.date DESC
     SQL;
-$result_invoice_count = DbConnect()->GetArray(
+$result_invoice_count = Connection::getConnection()->select(
     $QUERY_INVOICE_COUNT,
     [$checkdate, is_agent() ? 1 : 0, Agent::id()]
 ) ?: [];

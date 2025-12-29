@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Connection;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -63,7 +64,7 @@ $kernel = `uname -r`;
 
 $UI = COPYRIGHT;
 $UI_path = substr(__DIR__, 0, strrpos(__DIR__, "Public/admin/modules"));
-$mysql = DbConnect()->ServerInfo()["version"];
+$mysql = Connection::getConnection()->scalar("SELECT VERSION()");
 $database = (new Table("cc_version", "version"))->getValue();
 $asterisk = str_replace("Asterisk ", "", `asterisk -V`);
 $php = phpversion();

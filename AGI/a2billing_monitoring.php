@@ -2,6 +2,7 @@
 <?php
 
 use A2billing\A2Billing;
+use A2billing\Connection;
 use A2billing\Table;
 use A2billing\PhpAgi\Agi;
 
@@ -128,7 +129,7 @@ if ($mode == 'standard') {
             $QUERY = $arr_monitor[$dial_code]["query"];
             $A2B->debug(A2Billing::DEBUG, "QUERY : $QUERY");
             // todo: this is ugly
-            $get_result = DbConnect()->GetOne($QUERY);
+            $get_result = Connection::getConnection()->selectOne($QUERY);
 
             $A2B->debug(A2Billing::DEBUG, "SAYING RESULT");
 
