@@ -202,5 +202,3 @@ A2Billing v3.0 is licensed under the <a href="https://www.gnu.org/licenses/agpl-
 Copyright © 2004-2015 Star2billing SL, © 2022-2025 RadiusOne Inc.
 HTML;
 define ("CCMAINTITLE", gettext("A2Billing Portal"));
-
-$DBHandle = DbConnect();

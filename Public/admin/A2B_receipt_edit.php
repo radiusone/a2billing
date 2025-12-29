@@ -62,7 +62,6 @@ if (empty($id)) {
 $action ??= "";
 $error_msg = "";
 $receipt = new Receipt((int)$id);
-$DBHandle = DbConnect();
 
 switch ($action) {
     case "add":

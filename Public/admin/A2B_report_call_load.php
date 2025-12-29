@@ -61,7 +61,6 @@ $HD_Form = new FormHandler(
 $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 5000;
 $HD_Form->list_query_columns = ["starttime", "sessiontime"];
 
-$DBHandle = DbConnect();
 $instance_table_graph = new Table("cc_call", ["starttime", "sessiontime"]);
 
 $hours = range(0, 23);

@@ -55,7 +55,6 @@ getpost_ifset(["popup_select", "form_action", "action", "id"]);
  */
 
 if ($action === "load") {
-    $DBHandle=DbConnect();
     if (!empty($id)) {
         $result = (new Table("cc_templatemail", "messagetext, fromemail, fromname, subject"))
             ->getRow(["id" => $id]);

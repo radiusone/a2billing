@@ -67,7 +67,6 @@ $field_names = array_merge($field_names, ["id_cc_didgroup", "id_cc_country"]);
 
 $nb_imported = 0;
 $import_time = 0;
-$DBHandle = DbConnect();
 $the_file = "";
 $assoc_csv = [];
 $import_error = "";

@@ -28,8 +28,6 @@ $HD_Form->list_query_columns = [
     "SUBSTRING(starttime, 6, 2) AS month"
 ];
 
-$DBHandle = DbConnect();
-
 $months = array_combine(
     range(1, 12),
     array_map(

@@ -56,7 +56,6 @@ $id ??= null;
 
 if ($action === "accept") {
     if (is_numeric($id)) {
-        $DBHandle = DbConnect();
         (new Table("cc_remittance_request"))
             ->updateRow(["status" => 1], ["id" => $id]);
 

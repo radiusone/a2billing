@@ -50,8 +50,6 @@ if (empty($id)) {
     header("Location: A2B_entity_alarm.php");
 }
 
-$DBHandle  = DbConnect();
-
 $alarm = (new Table("cc_alarm"))->getRow(["id" => $id]);
 $items = (new Table("cc_alarm_report"))->getRows(["cc_alarm_id" => $id]);
 

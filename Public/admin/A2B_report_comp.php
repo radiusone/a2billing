@@ -69,8 +69,6 @@ $HD_Form->list_query_columns = [
     "SUBSTRING(starttime, 12, 2) AS hour",
 ];
 
-$DBHandle = DbConnect();
-
 $days = array_combine(
     range(1, 7),
     array_map(

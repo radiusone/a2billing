@@ -50,7 +50,6 @@ if (empty($id)) {
     header("Location: A2B_entity_card.php");
 }
 
-$DBHandle  = DbConnect();
 $card = (new Table("cc_card"))->getRow(["id" => $id]);
 if (empty($card)) {
     header("Location: A2B_entity_card.php");

@@ -44,8 +44,6 @@ Customer::checkPageAccess(Customer::ACX_PASSWORD);
 
 getpost_ifset(array('NewPassword','OldPassword'));
 
-$DBHandle  = DbConnect();
-
 if ($form_action=="ask-modif") {
     $instance_sub_table = new Table('cc_card', "id");
     $check_old_pwd = ["id" => Customer::id(),  "uipass" => $OldPassword];

@@ -69,7 +69,6 @@ if ($search_sources !== "nochange") {
 
 $nb_imported = 0;
 $import_time = 0;
-$DBHandle = DbConnect();
 $the_file = "";
 $assoc_csv = [];
 

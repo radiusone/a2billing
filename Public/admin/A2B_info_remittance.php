@@ -55,8 +55,6 @@ if (empty($id)) {
     header("Location: A2B_entity_logrefill.php");
 }
 
-$DBHandle  = DbConnect();
-
 $remittance = (new Table("cc_remittance_request"))->getRow(["id" => $id]);
 
 if (!$remittance) {

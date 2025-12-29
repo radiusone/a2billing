@@ -44,8 +44,6 @@ use A2billing\Table;
  *
 **/
 
-$DBHandle  = DbConnect();
-
 $HD_Form = new FormHandler("cc_trunk", _("Trunk"), "id_trunk");
 
 $HD_Form->list_query_order_columns = ["id_trunk"];

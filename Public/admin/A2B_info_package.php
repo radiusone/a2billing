@@ -65,8 +65,6 @@ getpost_ifset(["addbatchrate", "id_trunk", "id_tariffplan", "tag", "prefix", "rb
  * @var numeric-string|null $rbPrefix
  */
 if ($addbatchrate ?? false) {
-    $DBHandle = DbConnect();
-
     $rates_clauses = [];
     if ((int)($id_trunk ?? "0")) {
         $rates_clauses["id_trunk"] = $id_trunk;
@@ -92,19 +90,16 @@ if ($addbatchrate ?? false) {
 }
 
 if (is_numeric($addrate ?? null)) {
-    $DBHandle = DbConnect();
     (new Table("cc_package_rate"))->addRow(["package_id" => $id, "rate_id" => $addrate]);
     header("Location: A2B_info_package.php?id=$id");
 }
 
 if (is_numeric($delrate ?? null)) {
-    $DBHandle = DbConnect();
     (new Table("cc_package_rate"))->deleteRow(["package_id" => $id, "rate_id" => ["IN", $delrate]]);
     header("Location: A2B_info_package.php?id=$id");
 }
 
 if ($delallrate ?? false) {
-    $DBHandle = DbConnect();
     (new Table("cc_package_rate"))->deleteRow(["package_id" => $id]);
     header("Location: A2B_info_package.php?id=$id");
 }
@@ -112,8 +107,6 @@ if ($delallrate ?? false) {
 require_once __DIR__ . "/templates/main.php";
 
 //load rates
-$DBHandle = DbConnect();
-
 $table_rates = new Table(
     "cc_package_rate",
     ["DISTINCT cc_ratecard.id", "cc_prefix.destination", "cc_ratecard.dialprefix"],

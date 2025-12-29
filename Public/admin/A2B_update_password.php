@@ -48,7 +48,6 @@ getpost_ifset(["OldPassword", "NewPassword", "NewPassword2"]);
  * @var string $NewPassword2
  */
 
-$DBHandle = DbConnect();
 $msg = "";
 
 if ($form_action == "ask-modif") {

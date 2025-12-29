@@ -44,8 +44,6 @@ require_once __DIR__ . "/../../common/form_data/FG_var_moneysituation_details.in
 
 Agent::checkPageAccess(Agent::ACX_BILLING);
 
-$DBHandle = DbConnect();
-
 $HD_Form->init();
 
 $form_action = "list";

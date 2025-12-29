@@ -58,7 +58,6 @@ if (!isset ($_SESSION["cardnumber_signup"]) || strlen($_SESSION["cardnumber_sign
 }
 
 $FG_DEBUG = 0;
-$DBHandle = DbConnect();
 
 $activatedbyuser = $A2B->config["signup"]['activatedbyuser'];
 

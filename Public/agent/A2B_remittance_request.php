@@ -59,7 +59,6 @@ getpost_ifset(["amount","remittance_type","action"]);
  * @var string|null $action
  */
 
-$DBHandle_max = DbConnect();
 $agent_info = (new Table("cc_agent", ["credit", "currency", "com_balance", "threshold_remittance", "firstname", "lastname", "address", "bank_info"]))
     ->getRow(["id" => Agent::id()]);
 if (!$agent_info) {

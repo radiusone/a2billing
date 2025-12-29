@@ -29,8 +29,6 @@ $calltype_list = [
     _("DID-ALEG"),
 ];
 
-$DBHandle = DbConnect();
-
 $HD_Form->AddListValue(_("Date"), "cc_call.starttime");
 if (is_admin() || is_customer() || Agent::allowed(Agent::ACX_SEE_CUSTOMERS_CALLERID)) {
     $HD_Form->AddListValue(_("Caller ID"), "src", "format_phone_number");
