@@ -86,7 +86,7 @@ class Connection
                 "password" => $config["database"]["password"] ?? "a2billing",
                 "database" => $config["database"]["dbname"] ?? "a2billing",
                 "charset" => "utf8mb4",
-                "collation" => "utf8_unicode_ci"
+                "collation" => "utf8mb4_unicode_ci"
             ]);
             // match old defaults for now
             $conn->setFetchMode(PDO::FETCH_BOTH);
