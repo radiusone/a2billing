@@ -280,17 +280,27 @@ class A2Billing
         }
     }
 
+    public static function parseConfigurationFile(): array
+    {
+        $config = self::DEFAULT_A2BILLING_CONFIG;
+        if (!is_readable($config)) {
+            echo "Error : A2Billing configuration file $config is missing!";
+            exit;
+        }
+
+        $result = parse_ini_file($config, true);
+        if (!$result) {
+            echo "Error : A2Billing configuration file $config is malformed!";
+            exit;
+        }
+
+        return $result;
+    }
     /*
     * load_conf
     */
     public function load_conf(array $optconfig = []): void
     {
-        $config = self::DEFAULT_A2BILLING_CONFIG;
-
-        if (!is_readable($config)) {
-            echo "Error : A2Billing configuration file $config is missing!";
-            exit;
-        }
 
         $idconfig = $this->idconfig;
         if (!empty($this->config["agi-conf$idconfig"])) {
@@ -298,8 +308,7 @@ class A2Billing
             $this->agiconfig = $this->config["agi-conf$idconfig"];
             return;
         }
-
-        $this->config = parse_ini_file($config, true);
+        $this->config = self::parseConfigurationFile();
 
         // conf for the database connection
         $default = [

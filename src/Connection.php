@@ -4,6 +4,7 @@ namespace A2billing;
 
 use ADOConnection;
 use Illuminate\Database\Capsule\Manager;
+use PDO;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -75,17 +76,20 @@ class Connection
     public static function getConnection(): \Illuminate\Database\Connection
     {
         if (!isset(self::$manager)) {
+            $config = A2Billing::parseConfigurationFile();
             $conn = new Manager();
             $conn->addConnection([
                 "driver" => "mysql",
-                "host" => HOST,
-                "port" => PORT,
-                "username" => USER,
-                "password" => PASS,
-                "database" => DBNAME,
+                "host" => $config["database"]["hostname"] ?? "localhost",
+                "port" => $config["database"]["port"] ?? 3306,
+                "username" => $config["database"]["user"] ?? "a2billing",
+                "password" => $config["database"]["password"] ?? "a2billing",
+                "database" => $config["database"]["dbname"] ?? "a2billing",
                 "charset" => "utf8mb4",
                 "collation" => "utf8_unicode_ci"
             ]);
+            // match old defaults for now
+            $conn->setFetchMode(PDO::FETCH_BOTH);
             $conn->setAsGlobal();
             self::$manager = $conn;
         }
