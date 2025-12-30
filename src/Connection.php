@@ -5,6 +5,7 @@ namespace A2billing;
 use ADOConnection;
 use Illuminate\Database\Capsule\Manager;
 use PDO;
+use ReflectionObject;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -88,8 +89,10 @@ class Connection
                 "charset" => "utf8mb4",
                 "collation" => "utf8mb4_unicode_ci"
             ]);
+            $prop = (new ReflectionObject($conn->getConnection()))->getProperty("fetchMode");
+            $prop->setAccessible(true);
             // match old defaults for now
-            $conn->setFetchMode(PDO::FETCH_BOTH);
+            $prop->setValue($conn->getConnection(), PDO::FETCH_BOTH);
             $conn->setAsGlobal();
             self::$manager = $conn;
         }
