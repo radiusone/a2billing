@@ -2,10 +2,8 @@
 
 namespace A2billing;
 
-/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
-
-use ADOConnection;
 use Profiler_Console as Console;
+use Throwable;
 
 /**
  * This file is part of A2Billing (http://www.a2billing.net/)
@@ -65,7 +63,9 @@ class Table
 
     public string $db_type = 'mysql';
 
-    protected ADOConnection $connection;
+    protected \Illuminate\Database\Connection $connection;
+
+    protected string $error = "";
 
     /**
      * @param string|null $table the table we're working with
@@ -88,12 +88,12 @@ class Table
         if (defined("DB_TYPE") && DB_TYPE === 'postgres') {
             $this->db_type = "postgres";
         }
-        $this->connection = Connection::GetDBHandler();
+        $this->connection = Connection::getConnection();
     }
 
     public function getLastError(): string
     {
-        return $this->connection->ErrorMsg();
+        return $this->error;
     }
 
     /**
@@ -171,17 +171,37 @@ class Table
 
     public function begin(): bool
     {
-        return $this->connection->BeginTrans();
+        try {
+            return $this->connection->beginTransaction();
+        } catch (Throwable $e) {
+            $this->error = $e->getMessage();
+
+            return false;
+        }
     }
 
     public function end(): bool
     {
-        return $this->connection->CommitTrans();
+        try {
+            return $this->connection->commit();
+        } catch (Throwable $e) {
+            $this->error = $e->getMessage();
+
+            return false;
+        }
     }
 
     public function abort(): bool
     {
-        return $this->connection->CommitTrans(false);
+        try {
+            $this->connection->rollBack();
+
+            return true;
+        } catch (Throwable $e) {
+            $this->error = $e->getMessage();
+
+            return false;
+        }
     }
 
     /**
@@ -221,7 +241,12 @@ class Table
 
         $query = "SELECT $fields FROM $table WHERE $where $group_sql $order_sql $limit_sql $offset_sql";
         class_exists(Console::class) && Console::logQuery($query);
-        $result = $this->connection->GetArray($query, $params) ?: [];
+        try {
+            $result = $this->connection->select($query, $params);
+        } catch (Throwable $e) {
+            $this->error = $e->getMessage();
+            $result = [];
+        }
         class_exists(Console::class) && Console::logQuery($query);
 
         return $result;
@@ -293,7 +318,7 @@ class Table
      * @param array $group
      * @return mixed|null
      */
-    public function getValue(array $conditions = [], array $order = [], string $direction = "ASC", array $group = [])
+    public function getValue(array $conditions = [], array $order = [], string $direction = "ASC", array $group = []): mixed
     {
         $data = $this->getRow($conditions, $order, $direction, $group);
 
@@ -374,21 +399,29 @@ class Table
             if ($replace && $pk_column && array_key_exists($pk_column, $values)) {
                 $col = $this->quote_identifier($pk_column);
                 $query = "DELETE FROM $table WHERE $col = ?";
-                $this->connection->Execute($query, [$values[$pk_column]]);
+                try {
+                    $this->connection->delete($query, [$values[$pk_column]]);
+                } catch (Throwable $e) {
+                    $this->error = $e->getMessage();
+                }
             }
             $parameters = [];
             $placeholders = implode(",", array_map($value_callback, $values));
             $query = "INSERT INTO $table ($fields) VALUES ($placeholders)";
             class_exists(Console::class) && Console::logQuery($query);
-            $result = $this->connection->Execute($query, $parameters);
+            try {
+                $result = $this->connection->insert($query, $parameters);
+                $id = $this->connection->getRawPdo()->lastInsertId();
+            } catch (Throwable $e) {
+                $this->error = $e->getMessage();
+                $result = false;
+            }
             class_exists(Console::class) && Console::logQuery($query);
             if ($result === false) {
-                $id = $this->connection->Insert_ID($this->table, $pk_column);
                 return $counter;
             }
             $counter++;
         }
-        $id = $this->connection->Insert_ID($this->table, $pk_column);
 
         return $counter;
     }
@@ -408,10 +441,15 @@ class Table
         $where = $this->processWhereClauseArray($conditions, $params);
         $query = "INSERT INTO $table SELECT $source_fields FROM $source_table WHERE $where";
         class_exists(Console::class) && Console::logQuery($query);
-        $result = $this->connection->Execute($query, $params);
+        try {
+            $result = $this->connection->affectingStatement($query, $params);
+        } catch (Throwable $e) {
+            $result = 0;
+            $this->error = $e->getMessage();
+        }
         class_exists(Console::class) && Console::logQuery($query);
 
-        return $result ? $this->connection->Affected_Rows() : 0;
+        return $result;
     }
 
     /**
@@ -448,10 +486,15 @@ class Table
 
         $query = "UPDATE $table SET $updates WHERE $where";
         class_exists(Console::class) && Console::logQuery($query);
-        $result = $this->connection->Execute($query, $parameters);
+        try {
+            $result = $this->connection->update($query, $parameters);
+        } catch (Throwable $e) {
+            $this->error = $e->getMessage();
+            $result = 0;
+        }
         class_exists(Console::class) && Console::logQuery($query);
 
-        return $result !== false;
+        return $result > 0;
     }
 
     /**
@@ -473,7 +516,11 @@ class Table
             } else {
                 $query = "UPDATE $table SET $local_key = -1 WHERE $local_key = ?";
             }
-            $this->connection->Execute($query, [$foreign_key]);
+            try {
+                $this->connection->delete($query, [$foreign_key]);
+            } catch (Throwable $e) {
+                $this->error = $e->getMessage();
+            }
         }
 
         $table = str_contains($this->table, " JOIN ") ? $this->table : $this->quote_identifier($this->table);
@@ -484,10 +531,15 @@ class Table
             $query .= " LIMIT $limit";
         }
         class_exists(Console::class) && Console::logQuery($query);
-        $result = $this->connection->Execute($query, $params);
+        try {
+            $result = $this->connection->delete($query, $params);
+        } catch (Throwable $e) {
+            $this->error = $e->getMessage();
+            $result = 0;
+        }
         class_exists(Console::class) && Console::logQuery($query);
 
-        return $result !== false;
+        return $result > 0;
     }
 
     /**
