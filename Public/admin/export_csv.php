@@ -54,11 +54,11 @@ if (!is_array($_SESSION[$export_session])) {
     $date = (new DateTime())->format("Y-m-d");
     $myfileName = "dump $date.$export_type";
 
-    $export_data = (new Table($table, $columns, $joins))
-        ->getRows($conditions, $order, $direction, $group);
+    $table = new Table($table, $columns, $joins);
+    $export_data = $table->getRows($conditions, $order, $direction, $group);
 
     if (empty($export_data)) {
-        if ($err = Table::getLastError()) {
+        if ($err = $table->getLastError()) {
             $export_data = [["error" => $err]];
         }
     }

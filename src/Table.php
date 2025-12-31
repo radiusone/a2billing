@@ -65,14 +65,14 @@ class Table
 
     public string $db_type = 'mysql';
 
-    protected static ?ADOConnection $connection = null;
+    protected ADOConnection $connection;
 
     /**
      * @param string|null $table the table we're working with
      * @param array|string $list_fields when selecting, what fields will be selected
      * @param array $joins tables to join to the query; see Table::processJoinedTables() for usage
      */
-    public function __construct(string $table = null, $list_fields = [], array $joins = [], ADOConnection $db = null)
+    public function __construct(string $table = null, $list_fields = [], array $joins = [])
     {
         $this->table = $table;
         if (is_string($list_fields)) {
@@ -88,19 +88,12 @@ class Table
         if (defined("DB_TYPE") && DB_TYPE === 'postgres') {
             $this->db_type = "postgres";
         }
-        self::$connection = $db;
+        $this->connection = Connection::GetDBHandler();
     }
 
-    public static function getConnection(): ADOConnection
+    public function getLastError(): string
     {
-        self::$connection ??= Connection::GetDBHandler();
-
-        return self::$connection;
-    }
-
-    public static function getLastError(): string
-    {
-        return self::$connection->ErrorMsg();
+        return $this->connection->ErrorMsg();
     }
 
     /**
@@ -178,17 +171,17 @@ class Table
 
     public function begin(): bool
     {
-        return $this->getConnection()->BeginTrans();
+        return $this->connection->BeginTrans();
     }
 
     public function end(): bool
     {
-        return $this->getConnection()->CommitTrans();
+        return $this->connection->CommitTrans();
     }
 
     public function abort(): bool
     {
-        return $this->getConnection()->CommitTrans(false);
+        return $this->connection->CommitTrans(false);
     }
 
     /**
@@ -204,7 +197,6 @@ class Table
      */
     public function getRows(array $conditions = [], array $order = [], string $direction = "ASC", array $group = [], int $limit = 0, int $offset = 0): array
     {
-        $db = $this->getConnection();
         $fields = implode(",", array_map([self::class, "quote_identifier"], $this->fields));
         $table = str_contains($this->table, " JOIN ") ? $this->table : $this->quote_identifier($this->table);
         $table .= " " . $this->processJoinedTables();
@@ -229,7 +221,7 @@ class Table
 
         $query = "SELECT $fields FROM $table WHERE $where $group_sql $order_sql $limit_sql $offset_sql";
         class_exists(Console::class) && Console::logQuery($query);
-        $result = $db->GetArray($query, $params) ?: [];
+        $result = $this->connection->GetArray($query, $params) ?: [];
         class_exists(Console::class) && Console::logQuery($query);
 
         return $result;
@@ -356,7 +348,6 @@ class Table
      */
     public function addRows(array $rows, string $pk_column = "id", &$id = null, bool $replace = false): int
     {
-        $db = $this->getConnection();
         $values = $rows[0];
         $fields = implode(
             ",",
@@ -383,21 +374,21 @@ class Table
             if ($replace && $pk_column && array_key_exists($pk_column, $values)) {
                 $col = $this->quote_identifier($pk_column);
                 $query = "DELETE FROM $table WHERE $col = ?";
-                $db->Execute($query, [$values[$pk_column]]);
+                $this->connection->Execute($query, [$values[$pk_column]]);
             }
             $parameters = [];
             $placeholders = implode(",", array_map($value_callback, $values));
             $query = "INSERT INTO $table ($fields) VALUES ($placeholders)";
             class_exists(Console::class) && Console::logQuery($query);
-            $result = $db->Execute($query, $parameters);
+            $result = $this->connection->Execute($query, $parameters);
             class_exists(Console::class) && Console::logQuery($query);
             if ($result === false) {
-                $id = $db->Insert_ID($this->table, $pk_column);
+                $id = $this->connection->Insert_ID($this->table, $pk_column);
                 return $counter;
             }
             $counter++;
         }
-        $id = $db->Insert_ID($this->table, $pk_column);
+        $id = $this->connection->Insert_ID($this->table, $pk_column);
 
         return $counter;
     }
@@ -411,17 +402,16 @@ class Table
      */
     public function addRowsFromSelect(Table $source, array $conditions): int
     {
-        $db = $this->getConnection();
         $table = $this->quote_identifier($this->table);
         $source_fields = implode(",", array_map([self::class, "quote_identifier"], $source->fields));
         $source_table = $this->quote_identifier($source->table);
         $where = $this->processWhereClauseArray($conditions, $params);
         $query = "INSERT INTO $table SELECT $source_fields FROM $source_table WHERE $where";
         class_exists(Console::class) && Console::logQuery($query);
-        $result = $db->Execute($query, $params);
+        $result = $this->connection->Execute($query, $params);
         class_exists(Console::class) && Console::logQuery($query);
 
-        return $result ? $db->Affected_Rows() : 0;
+        return $result ? $this->connection->Affected_Rows() : 0;
     }
 
     /**
@@ -433,7 +423,6 @@ class Table
      */
     public function updateRow(array $values, array $conditions = []): bool
     {
-        $db = $this->getConnection();
         $value_callback = function ($v) use (&$parameters): string {
             if (is_array($v)) {
                 // this allows updates like ["usage" => ["usage + ?", 1]]
@@ -459,7 +448,7 @@ class Table
 
         $query = "UPDATE $table SET $updates WHERE $where";
         class_exists(Console::class) && Console::logQuery($query);
-        $result = $db->Execute($query, $parameters);
+        $result = $this->connection->Execute($query, $parameters);
         class_exists(Console::class) && Console::logQuery($query);
 
         return $result !== false;
@@ -474,7 +463,6 @@ class Table
      */
     public function deleteRow(array $conditions = [], int $limit = 0): bool
     {
-        $db = $this->getConnection();
         // temporary until proper foreign keys are set up
         foreach ($this->FK_TABLES as $i=>$table) {
             $table = $this->quote_identifier($table);
@@ -485,7 +473,7 @@ class Table
             } else {
                 $query = "UPDATE $table SET $local_key = -1 WHERE $local_key = ?";
             }
-            $db->Execute($query, [$foreign_key]);
+            $this->connection->Execute($query, [$foreign_key]);
         }
 
         $table = str_contains($this->table, " JOIN ") ? $this->table : $this->quote_identifier($this->table);
@@ -496,7 +484,7 @@ class Table
             $query .= " LIMIT $limit";
         }
         class_exists(Console::class) && Console::logQuery($query);
-        $result = $db->Execute($query, $params);
+        $result = $this->connection->Execute($query, $params);
         class_exists(Console::class) && Console::logQuery($query);
 
         return $result !== false;

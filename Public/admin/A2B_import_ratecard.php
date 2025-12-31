@@ -144,9 +144,10 @@ if ($task) {
     }
 
     if ($task === "upload") {
-        $result = (new Table("cc_ratecard"))->addRows($insert_data);
+        $table = new Table("cc_ratecard");
+        $result = $table->addRows($insert_data);
         if (!$result) {
-            $import_error = Table::getLastError();
+            $import_error = $table->getLastError();
         } else {
             $nb_imported = count($insert_data);
             Logger::insertLog(Admin::id(), 2, "RATES IMPORTED", $nb_imported . " New RATES Imported Successfully", '', $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI']);
