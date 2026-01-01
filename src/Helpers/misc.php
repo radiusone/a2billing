@@ -436,17 +436,25 @@ function format_phone_number(?string $value): string
 /**
  * @param string $format
  * @return string
- * @throws RandomException
  */
 function generate_random_value(string $format): string
 {
     $output = "";
     foreach (str_split($format) as $char) {
         if ($char === "#") {
-            $output .= random_int(0, 9);
+            try {
+                $output .= random_int(0, 9);
+            } catch (RandomException) {
+                $output .= rand(0, 9);
+            }
         } elseif ($char = "X") {
             do {
-                $chr = chr(random_int(48, 122));
+                try {
+                    $randint = random_int(48, 122);
+                } catch (RandomException) {
+                    $randint = rand(48, 122);
+                }
+                $chr = chr($randint);
             } while (!preg_match("/^[0-9a-z]$/i", $chr));
             $output .= $chr;
         } else {
@@ -457,9 +465,6 @@ function generate_random_value(string $format): string
     return $output;
 }
 
-/**
- * @throws RandomException
- */
 function generate_unique_value($table = "cc_card", $len = 0, $field = "username")
 {
     if (empty($len)) {
@@ -479,9 +484,6 @@ function generate_unique_value($table = "cc_card", $len = 0, $field = "username"
     exit ();
 }
 
-/**
- * @throws RandomException
- */
 function gen_card_with_alias($length_cardnumber = null)
 {
     global $A2B;
