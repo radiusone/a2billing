@@ -469,7 +469,7 @@ function generate_unique_value($table = "cc_card", $len = 0, $field = "username"
     for ($k = 0; $k <= 200; $k++) {
         $card_gen = generate_random_value(str_repeat("#", $len));
 
-        (new Table($table, [$field]))->getValue([$field => $card_gen]);
+        $val = (new Table($table, [$field]))->getValue([$field => $card_gen]);
         if (empty($val)) {
 
             return $card_gen;
