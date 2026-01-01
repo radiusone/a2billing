@@ -9,7 +9,6 @@
     },
     "require": {
         "php": "^8.2",
-        "adodb/adodb-php": "^5.20",
         "amenadiel/jpgraph": "^4.0",
         "illuminate/database": "^12.0",
         "phpmailer/phpmailer": "^6.0",

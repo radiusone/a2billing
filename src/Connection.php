@@ -2,7 +2,6 @@
 
 namespace A2billing;
 
-use ADOConnection;
 use Illuminate\Database\Capsule\Manager;
 use PDO;
 use ReflectionObject;
@@ -41,38 +40,7 @@ use ReflectionObject;
 
 class Connection
 {
-    private static ADOConnection $DBHandler;
     private static Manager $manager;
-
-    private static function initDB(): void
-    {
-        if (DB_TYPE == "postgres") {
-            $datasource = 'pgsql://' . USER . ':' . PASS . '@' . HOST . '/' . DBNAME;
-        } else {
-            $datasource = 'mysqli://' . USER . ':' . PASS . '@' . HOST . '/' . DBNAME;
-        }
-
-        $DBHandle = NewADOConnection($datasource);
-        if (!$DBHandle) {
-            die("Connection failed");
-        }
-
-        if (DB_TYPE === "mysql") {
-            $DBHandle->Execute('SET AUTOCOMMIT=1');
-            $DBHandle->Execute("SET NAMES 'UTF8'");
-        }
-
-        self::$DBHandler = $DBHandle;
-    }
-
-    public static function GetDBHandler(): ADOConnection
-    {
-        if (empty(self::$DBHandler)) {
-            self::initDB();
-        }
-
-        return self::$DBHandler;
-    }
 
     public static function getConnection(): \Illuminate\Database\Connection
     {
@@ -92,7 +60,7 @@ class Connection
             $prop = (new ReflectionObject($conn->getConnection()))->getProperty("fetchMode");
             $prop->setAccessible(true);
             // match old defaults for now
-            $prop->setValue($conn->getConnection(), PDO::FETCH_BOTH);
+            $prop->setValue($conn->getConnection(), PDO::FETCH_ASSOC);
             $conn->setAsGlobal();
             self::$manager = $conn;
         }
