@@ -6,7 +6,6 @@ use A2billing\A2bMailException;
 use A2billing\Connection;
 use A2billing\Mail;
 use A2billing\PhpAgi\Agi;
-use A2billing\Table;
 
 /**
  * This file is part of A2Billing (http://www.a2billing.net/)
@@ -474,7 +473,7 @@ if ($mode === "standard") {
                                     if (($res_dtmf["result"] ?? 0) === "1") {
                                         $A2B->debug(A2Billing::DEBUG, "ACTION : " . $action);
                                         if ($action == "insert") {
-                                            $QUERY = "INSERT INTO cc_speeddial (id_cc_card, phone, speeddial) VALUES (?, ?, ?)";
+                                            $QUERY = "INSERT INTO cc_speeddial (id_cc_card, phone, speeddial, name) VALUES (?, ?, ?, '')";
                                             $params = [$A2B->id_card, $assigned_number, $speeddial_number];
                                         } else {
                                             $QUERY = "UPDATE cc_speeddial SET phone = ? WHERE id = ?";
@@ -565,12 +564,12 @@ if ($mode === "standard") {
                     WHERE id_cc_did=cc_did.id AND cc_card.status = 1 AND cc_card.id = id_cc_card AND cc_did_destination.activated = 1
                       AND cc_did.activated = 1 AND did = ? AND cc_did.startingdate <= CURRENT_TIMESTAMP AND cc_did_destination.validated = 1 
                       AND (cc_did.expirationdate > CURRENT_TIMESTAMP OR cc_did.expirationdate IS NULL)
-                    ORDER BY priority ASC
+                    ORDER BY priority
                     SQL;
                     $A2B->debug(A2Billing::DEBUG, $QUERY);
                     $result = $db->select($QUERY, [$A2B->destination]);
 
-                    if ($result !== false && $result !== []) {
+                    if ($result !== []) {
                         //On Net
                         $A2B->call_2did($result);
                         if ($A2B->set_inuse) {
@@ -617,13 +616,13 @@ if ($mode === "standard") {
         WHERE id_cc_did = cc_did.id AND cc_card.status = 1 AND cc_card.id = id_cc_card AND cc_did_destination.activated = 1
           AND cc_did.activated = 1 AND did = ? AND cc_did.startingdate <= CURRENT_TIMESTAMP AND cc_did_destination.validated = 1 
           AND (cc_did.expirationdate > CURRENT_TIMESTAMP OR cc_did.expirationdate IS NULL)
-        ORDER BY priority ASC
+        ORDER BY priority
         SQL;
         $A2B->debug(A2Billing::DEBUG, $QUERY);
         $result = $db->select($QUERY, [$mydnid]);
         $A2B->debug(A2Billing::DEBUG, $result);
 
-        if ($result !== false && $result !== []) {
+        if ($result !== []) {
             //Off Net
             $A2B->call_did($result);
             if ($A2B->set_inuse) {
@@ -1256,10 +1255,8 @@ function insert_callback(A2Billing $A2B, string $uniqueid, string $channel, stri
     $account = $A2B->accountcode;
     $caller_id = $callerid ?? $A2B->config["callback"]["callerid"];
     $timeout = $A2B->config["callback"]["timeout"] * 1000;
-    $interval = "$callback_time SECOND";
-    if ($A2B->config["database"]["dbtype"] === "postgres") {
-        $interval = "'$interval'";
-    }
+    $now = new DateTimeImmutable();
+    $interval = new DateInterval("P{$callback_time}S");
 
     $params = [
         "status" => "PENDING",
@@ -1272,14 +1269,13 @@ function insert_callback(A2Billing $A2B, string $uniqueid, string $channel, stri
         "context" => $context,
         "variable" => $variable,
         "id_server_group" => $id_server_group,
-        "callback_time" => "CURRENT_TIMESTAMP + INTERVAL $interval",
+        "callback_time" => $now->add($interval),
         "account" => $account,
         "callerid" => $caller_id,
         "timeout" => $timeout,
     ];
     $A2B->debug(A2Billing::DEBUG, "[CALLBACK-ALL : INSERT CALLBACK REQUEST IN SPOOL : PARAMS=" . json_encode($params) . "]");
-    $res = (new Table("cc_callback_spool"))
-        ->addRow($params);
+    $res = Connection::getConnection()->table("cc_callback_spool")->insert($params);
 
     if (!$res) {
         $error_msg = "Cannot insert the callback request in the spool!";
@@ -1290,7 +1286,7 @@ function insert_callback(A2Billing $A2B, string $uniqueid, string $channel, stri
     return true;
 }
 
-function attempt_call(A2Billing $A2B)
+function attempt_call(A2Billing $A2B): void
 {
     $RateEngine = $A2B->rateEngine();
     $agi = $A2B->agi();

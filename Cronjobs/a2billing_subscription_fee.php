@@ -3,10 +3,11 @@
 
 use A2billing\A2Billing;
 use A2billing\A2bMailException;
+use A2billing\Connection;
 use A2billing\Mail;
 use A2billing\Payments\Invoice;
 use A2billing\ProcessHandler;
-use A2billing\Table;
+use Illuminate\Database\Query\Builder;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -81,28 +82,30 @@ $verbose_level = 1;
 
 $groupcard = 5000;
 
-$A2B = new A2Billing($idconfig);
+$A2B = new A2Billing();
 $logfile_cront_subfee = $A2B->config['log-files']['cront_subscriptionfee'] ?? "/tmp/a2billing_cront_subfee_log";
 
 write_log($logfile_cront_subfee, basename(__FILE__) . ' line:' . __LINE__ . "[#### BATCH BEGIN ####]");
 
-if (!$A2B->DbConnect()) {
-    echo "[Cannot connect to the database]\n";
-    write_log($logfile_cront_subfee, basename(__FILE__) . ' line:' . __LINE__ . "[Cannot connect to the database]");
-    exit;
+try {
+    $db = Connection::getConnection();
+} catch (Throwable) {
+    $db = null;
 }
 
-$instance_table = new Table(
-    "cc_card c",
-    [
+if (!$db) {
+    echo "[Cannot connect to the database]\n";
+    write_log($logfile_cront_subfee, basename(__FILE__) . ' line:' . __LINE__ . "[Cannot connect to the database]");
+    exit(1);
+}
+
+$instance_table = $db->table("cc_card", "c")
+    ->select([
         "c.id AS card_id", "ss.id AS service_id", "cs.id AS card_subscription_id", "ss.label", "ss.fee", "ss.emailreport",
         "cs.startdate", "cs.paid_status", "cs.last_run", "cs.next_billing_date", "cs.limit_pay_date", "cs.product_name",
-    ],
-    [
-        "cc_card_subscription cs" => ["INNER", "c.id", "cs.id_cc_card"],
-        "cc_subscription_service ss" => ["INNER", "cs.id_subscription_fee", "ss.id"],
-    ]
-);
+    ])
+    ->join("cc_card_subscription cs", "c.id", "cs.id_cc_card")
+    ->join("cc_subscription_service ss", "cs.id_subscription_fee", "ss.id");
 /*
     Pay_Status :
         0 : First USE
@@ -110,40 +113,54 @@ $instance_table = new Table(
         2 : Paid
         3 : UnPaid
 */
-$condition = [
-    "ss.status" => 1,
-    "cs.startdate" => ["<", "CURRENT_TIMESTAMP"],
-    ["SUB", ["cs.stopdate" => [[null], [">", "CURRENT_TIMESTAMP"]]]],
-    "ss.startdate" => ["<", "CURRENT_TIMESTAMP"],
-    ["SUB", ["ss.stopdate" => [[null], [">", "CURRENT_TIMESTAMP"]]]],
-    "cs.paid_status" => ["!=", 3]
-];
-$nb_card = $instance_table->countRows($condition);
+$now = new DateTimeImmutable();
+
+$instance_table
+    ->where("ss.status", 1)
+    ->where("cs.startdate", "<", $now)
+    ->where(
+        fn (Builder $q) => $q->whereNull("cs.stopdate")->orWhere("cs.stopdate", ">", $now)
+    )
+    ->where("ss.startdate", "<", $now)
+    ->where(
+        fn (Builder $q) => $q->whereNull("ss.stopdate")->orWhere("ss.stopdate", ">", $now)
+    )
+    ->where("cs.paid_status", "!=", 3);
+$nb_card = $instance_table->count();
 
 $nbpagemax = (ceil($nb_card / $groupcard));
-if ($verbose_level >= 1)
+if ($verbose_level >= 1) {
     echo "===> NB_CARD : $nb_card - NBPAGEMAX:$nbpagemax\n";
+}
 
 if (!($nb_card > 0)) {
-    if ($verbose_level >= 1)
+    if ($verbose_level >= 1) {
         echo "[No card to run the Subscription service]\n";
+    }
     write_log($logfile_cront_subfee, basename(__FILE__) . ' line:' . __LINE__ . "[No card to run the Subscription Feeservice]");
-    exit ();
+    exit();
 }
 
 $billdaybefor_anniversary = $A2B->config['global']['subscription_bill_days_before_anniversary'];
-$limite_pay_date = (new DateTimeImmutable())->modify("+$billdaybefor_anniversary days");
-$last_run = new DateTimeImmutable();
+$now = new DateTimeImmutable();
+$interval = new DateInterval("P{$billdaybefor_anniversary}D");
+$limite_pay_date = $now->add($interval);
 
-$service_array = array();
+$service_array = [];
 
 for ($page = 0; $page < $nbpagemax; $page++) {
-    $result_subscriptions = $instance_table->getRows($condition, ["c.id"], "ASC", [], $groupcard, $page * $groupcard);
+    $result_subscriptions = $instance_table
+        ->orderBy("c.id")
+        ->limit($groupcard)
+        ->offset($page * $groupcard)
+        ->get();
 
     foreach ($result_subscriptions as $subscription) {
         $service_id = $subscription['service_id'];
 
-        if (empty($service_array[$service_id])) $service_array[$service_id] = array("totalcardperform" => 0 , "totalcredit" => 0 );
+        if (empty($service_array[$service_id])) {
+            $service_array[$service_id] = ["totalcardperform" => 0, "totalcredit" => 0];
+        }
 
         $action = "";
 
@@ -166,7 +183,6 @@ for ($page = 0; $page < $nbpagemax; $page++) {
             case 1:
                 // billed : check if out of date -> unpaid
                 $limit = DateTimeImmutable::createFromFormat("Y-m-d H:i:s", $subscription["limit_pay_date"]);
-                $now = new DateTimeImmutable();
 
                 if ($now > $limit) {
                     $action = "unpaid";
@@ -177,7 +193,6 @@ for ($page = 0; $page < $nbpagemax; $page++) {
             case 2:
                 // paid : check if the system have to bill it again
                 $next = DateTimeImmutable::createFromFormat("Y-m-d H:i:s", $subscription["next_billing_date"]);
-                $now = new DateTimeImmutable();
                 if ($now >= $next) {
                     $action = "bill";
                     $startdate = DateTimeImmutable::createFromFormat("Y-m-d H:i:s", $subscription["startdate"]);
@@ -202,14 +217,14 @@ for ($page = 0; $page < $nbpagemax; $page++) {
 
             case "bill" :
                 //select card
-                $table_card = new Table('cc_card', '*');
-                $card_clause = ["id" => $subscription['card_id']];
-                $result_card = $table_card -> getRow($card_clause);
+                $result_card = $db->table("cc_card")
+                    ->where("id", $subscription["card_id"])
+                    ->first();
 
-                if (!$result_card)
+                if (!$result_card) {
                     break;
-                else
-                    $card = $result_card;
+                }
+                $card = $result_card;
 
                 if (($card['credit'] + $card['typepaid'] * $card['creditlimit']) >= $subscription['fee']) {
 
@@ -217,8 +232,8 @@ for ($page = 0; $page < $nbpagemax; $page++) {
                     $service_array[$service_id]['totalcardperform']++;
                     $service_array[$service_id]['totalcredit']+= $subscription['fee'];
 
-                    (new Table("cc_card"))->updateRow(["credit" => ["credit - ?", $subscription["fee"]]], ["id" => $card["id"]]);
-                    (new Table("cc_charge"))->addRow(
+                    $db->table("cc_card")->where("id", $card["id"])->decrement("credit", $subscription["fee"]);
+                    $db->table("cc_charge")->insert(
                         [
                             "id_cc_card" => $card["id"],
                             "amount" => $subscription["fee"],
@@ -228,7 +243,7 @@ for ($page = 0; $page < $nbpagemax; $page++) {
                             "description" => $subscription["product_name"],
                         ]
                     );
-                    (new Table("cc_card_subscription"))->updateRow(["paid_status" => 2], ["id" => $subscription["card_subscription_id"]]);
+                    $db->table("cc_card_subscription")->where("id", $subscription["card_subscription_id"])->update(["paid_status" => 2]);
 
                     $mail = new Mail(Mail::$TYPE_SUBSCRIPTION_PAID,$card['id'] );
                     $mail -> replaceInEmail(Mail::$SUBSCRIPTION_FEE,$subscription['fee']);
@@ -254,18 +269,19 @@ for ($page = 0; $page < $nbpagemax; $page++) {
                     $title = gettext("SUBSCRIPTION INVOICE REMINDER");
                     $description = "Your credit was not enough to pay yours subscription automatically.\n";
                     $description .= "You have $billdaybefor_anniversary days to pay this invoice (REF: $reference ) or the account will be automatically disactived \n\n";
-                    $instance_table = new Table("cc_invoice");
+                    $instance_table = $db->table("cc_invoice");
                     $values = ["date" => $date, "id_card" => $card_id, "title"=> $title, "reference" => $reference, "description" => $description, "status" => 1, "paid_status" => 0];
 
-                    if ($verbose_level >= 1)
+                    if ($verbose_level >= 1) {
                         echo "INSERT INVOICE : " . json_encode($values) . "\n";
-                    $instance_table->addRow($values, "id", $id_invoice);
+                    }
+                    $id_invoice = $instance_table->insertGetId($values);
 
                     if (!empty ($id_invoice) && is_numeric($id_invoice)) {
                         $description = "Subscription (" . $subscription['product_name'] . ")";
                         $amount = $subscription['fee'];
                         $vat = 0;
-                        $instance_table = new Table("cc_invoice_item");
+                        $instance_table = $db->table("cc_invoice_item");
                         $values = [
                             "date" => $date,
                             "id_invoice" => $id_invoice,
@@ -275,9 +291,10 @@ for ($page = 0; $page < $nbpagemax; $page++) {
                             "id_ext" => $subscription["card_subscription_id"],
                             "type_ext" => "SUBSCR"
                         ];
-                        if ($verbose_level >= 1)
+                        if ($verbose_level >= 1) {
                             echo "INSERT INVOICE ITEM : " . json_encode($values) . "\n";
-                        $instance_table->addRow($values);
+                        }
+                        $instance_table->insert($values);
                     }
 
                     $mail = new Mail(Mail::$TYPE_SUBSCRIPTION_UNPAID, $card['id'] );
@@ -287,11 +304,18 @@ for ($page = 0; $page < $nbpagemax; $page++) {
                     $mail -> replaceInEmail(Mail::$SUBSCRIPTION_ID, $subscription['id']);
                     $mail -> replaceInEmail(Mail::$SUBSCRIPTION_LABEL, $subscription['product_name']);
                     //insert charge
-                    (new Table("cc_charge"))
-                        ->addRow(
-                            ["id_cc_card" => $card["id"], "amount" => $subscription["fee"], "chargetype" => 3, "id_cc_card_subscription" => $subscription["card_subscription_id"], "invoiced_status" => 1, "description" => $subscription["product_name"]]
+                    $db->table("cc_charge")
+                        ->insert(
+                            [
+                                "id_cc_card" => $card["id"],
+                                "amount" => $subscription["fee"],
+                                "chargetype" => 3,
+                                "id_cc_card_subscription" => $subscription["card_subscription_id"],
+                                "invoiced_status" => 1,
+                                "description" => $subscription["product_name"],
+                            ]
                         );
-                    (new Table("cc_card_subscription"))->updateRow(["paid_status" => 1], ["id" => $subscription["card_subscription_id"]]);
+                    $db->table("cc_card_subscription")->where("id", $subscription["card_subscription_id"])->update(["paid_status" => 1]);
 
                     try {
                         $mail -> send();
@@ -301,21 +325,21 @@ for ($page = 0; $page < $nbpagemax; $page++) {
                         write_log($logfile_cront_subfee, basename(__FILE__) . ' line:' . __LINE__ . "[Sent mail failed : $e]");
                     }
                 }
-                (new Table("cc_card_subscription"))->updateRow(
-                    [
-                        "last_run" => $last_run->format("Y-m-d"),
-                        "next_billing_date" => $next_bill_date->format("Y-m-d"),
-                        "limit_pay_date" => $limite_pay_date->format("Y-m-d")
-                    ],
-                    ["id" => $subscription["card_subscription_id"]]
+                $db->table("cc_card_subscription")
+                    ->where("id", $subscription["card_subscription_id"])
+                    ->update([
+                        "last_run" => $now,
+                        "next_billing_date" => $next_bill_date,
+                        "limit_pay_date" => $limite_pay_date,
+                    ]
                 );
 
                 break;
 
             case "unpaid" :
                 // block the card
-                (new Table("cc_card"))->updateRow(["status" => 8], ["id" => $subscription["card_id"]]);
-                (new Table("cc_card_subscription"))->updateRow(["paid_status" => 3], ["id" => $subscription["card_subscription_id"]]);
+                $db->table("cc_card")->where("id", $subscription["card_id"])->update(["status" => 8]);
+                $db->table("cc_card_subscription")->where("id", $subscription["card_subscription_id"])->update(["paid_status" => 3]);
 
                 $mail = new Mail(Mail::$TYPE_SUBSCRIPTION_DISABLE_CARD, $subscription('card_id'));
                 $mail -> replaceInEmail(Mail::$SUBSCRIPTION_FEE, $subscription['fee']);
@@ -324,8 +348,9 @@ for ($page = 0; $page < $nbpagemax; $page++) {
                 try {
                     $mail -> send();
                 } catch (A2bMailException $e) {
-                    if ($verbose_level >= 1)
+                    if ($verbose_level >= 1) {
                         echo "[Sent mail failed : $e]";
+                    }
                     write_log($logfile_cront_subfee, basename(__FILE__) . ' line:' . __LINE__ . "[Sent mail failed : $e]");
                 }
                 break;
@@ -338,14 +363,17 @@ for ($page = 0; $page < $nbpagemax; $page++) {
 
 // UPDATE THE SERVICE
 foreach ($service_array as $key => $value) {
-    (new Table("cc_subscription_service"))
-        ->updateRow(
-            ["datelastrun" => "CURRENT_TIMESTAMP", "numberofrun" => ["numberofrun + ?", 1], "totalcardperform" => ["totalcardperform + ?", $value["totalcardperform"]], "totalcredit" => ["totalcredit + ?", $value["totalcredit"]]],
-            ["id" => $key]
-        );
+    $db->table("cc_subscription_service")
+        ->where("id", $key)
+        ->incrementEach([
+            "numberofrun" => 1,
+            "totalcardperform" => $value["totalcardperform"],
+            "totalcredit" => $value["totalcredit"],
+        ], ["datelastrun" => $now]);
 }
 
-if ($verbose_level >= 1)
+if ($verbose_level >= 1) {
     echo "#### END SUBSCRIPTION SERVICES \n";
+}
 
 write_log($logfile_cront_subfee, basename(__FILE__) . ' line:' . __LINE__ . "[#### BATCH PROCESS END ####]");

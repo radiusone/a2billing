@@ -3,9 +3,9 @@
 
 use A2billing\A2Billing;
 use A2billing\A2bMailException;
+use A2billing\Connection;
 use A2billing\Mail;
 use A2billing\ProcessHandler;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -75,28 +75,35 @@ if ($pH->isActive()) {
 $verbose_level = 0;
 $groupcard = 5000;
 
-$A2B = new A2Billing($idconfig);
+$A2B = new A2Billing();
 $cron_logfile = $A2B->config['log-files']['cront_alarm'] ?? "/tmp/a2billing_cront_alarm_log";
 write_log($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . "[#### BATCH BEGIN ####]");
 
-if (!$A2B->DbConnect()) {
+try {
+    $db = Connection::getConnection();
+} catch (Throwable) {
+    $db = null;
+}
+
+if (!$db) {
     echo "[Cannot connect to the database]\n";
     write_log($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . "[Cannot connect to the database]");
-    exit;
+    exit(1);
 }
-//$A2B -> DBHandle
-$instance_table = new Table();
 
 // CHECK THE ALARMS
-$result = (new Table("cc_alarm", ["id", "name", "periode", "type", "maxvalue", "minvalue", "id_trunk", "status", "numberofrun", "datecreate", "datelastrun", "emailreport"]))
-    ->getRows(["status" => 1]);
-if ($verbose_level >= 1)
+$result = $db->table("cc_alarm")
+    ->select(["id", "name", "periode", "type", "maxvalue", "minvalue", "id_trunk", "status", "numberofrun", "datecreate", "datelastrun", "emailreport"])
+    ->where("status", 1)
+    ->get();
+if ($verbose_level >= 1) {
     print_r($result);
+}
 
 if (!$result) {
     echo "[No Alarm to run]\n";
     write_log($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . "[ No Alarm to run]");
-    exit ();
+    exit();
 }
 // 0 id, 1 name, 2 period, 3 type, 4 maxvalue, 5 minvalue, 6 id_trunk, 7 status, 8 numberofrun, 9 datecreate, 10 datelastrun, 11 emailreport
 
@@ -106,10 +113,10 @@ $now = new DateTimeImmutable();
 
 // BROWSE THROUGH THE ALARMS
 foreach ($result as $myalarm) {
-    $SQL_CLAUSE = [];
-    $timestamp_lastsend = strtotime($myalarm["datelastrun"]);
-    if ($verbose_level >= 3)
-        echo "timestamp_lastsend = $timestamp_lastsend" . " ; now = " . time();
+    $query = $db->table("cc_call")->select(["terminatecauseid", "sessiontime"]);
+    $lastrun = empty($myalarm["datelastrun"])
+        ? null
+        : new DateTimeImmutable($myalarm["datelastrun"]);
 
     //  1 "Daily", 2 "Weekly", 3 "Monthly"
     $run_alarm = false;
@@ -117,75 +124,89 @@ foreach ($result as $myalarm) {
     switch ($myalarm["periode"]) {
         // Hourly
         case 1 :
-            if (date("G", time()) != date("G", $timestamp_lastsend) || $myalarm["datelastrun"] == "") {
+            if (is_null($lastrun)) {
                 $run_alarm = true;
-                $SQL_CLAUSE["starttime"] = [
-                    "BETWEEN", [
-                        (new DateTimeImmutable($timestamp_lastsend))->format("Y-m-d H:i:s"),
-                        $now->format("Y-m-d H:i:s"),
-                    ]];
+            } elseif ($now->format("G") !== $lastrun->format("G")) {
+                $run_alarm = true;
+                $query->whereBetween("starttime", [
+                    $lastrun,
+                    $now,
+                ]);
             }
-            if ($verbose_level >= 1)
-                echo "\n\n TODAY :" . date("G", time()) . " LAST RUN DAY :" . date("G", $timestamp_lastsend);
+            if ($verbose_level >= 1) {
+                echo "\n\n TODAY :" . $now->format("G") . " LAST RUN DAY :" . $lastrun?->format("G") ?? "never";
+            }
             break;
             // Daily
         case 2 :
-            if (date("j", time()) != date("j", $timestamp_lastsend) || $myalarm["datelastrun"] == "") {
+            if (is_null($lastrun)) {
                 $run_alarm = true;
-                $SQL_CLAUSE["starttime"] = [
-                    "BETWEEN", [
-                        $now->setTime(0, 0)->format("Y-m-d H:i:s"),
-                        $now->setTime(23, 59, 59)->format("Y-m-d H:i:s"),
-                    ]];
             }
-            if ($verbose_level >= 1)
-                echo "\n\n TODAY :" . date("j", time()) . " LAST RUN DAY :" . date("j", $timestamp_lastsend);
+            if ($now->format("j") !== $lastrun->format("j")) {
+                $run_alarm = true;
+                $query->whereBetween("starttime", [
+                    $now->setTime(0, 0),
+                    $now->setTime(23, 59, 59),
+                ]);
+            }
+            if ($verbose_level >= 1) {
+                echo "\n\n TODAY :" . $now->format("j") . " LAST RUN DAY :" . $lastrun?->format("j") ?? "never";
+            }
             break;
             //Weekly -> will run only monday and check if the week is not the same
         case 3 :
-            if (((date("w", time()) == 1) && (date("W", time()) != date("W", $timestamp_lastsend))) || $myalarm["datelastrun"] == "") {
+            if (is_null($lastrun)) {
                 $run_alarm = true;
-                $SQL_CLAUSE["starttime"] = [
-                    "BETWEEN", [
-                        $now->modify("last week")->setTime(0, 0)->format("Y-m-d H:i:s"),
-                        $now->modify("last week")->setTime(23, 59, 59)->format("Y-m-d H:i:s"),
-                    ]];
             }
-            if ($verbose_level >= 1)
-                echo "\n\n TODAY :" . date("w", time()) . " WEEK:" . date("W", time()) .
-                " LAST RUN DAY :" . date("w", $timestamp_lastsend) . " LAST RUN WEEK :" . date("W", $timestamp_lastsend);
+            if ($now->format("w") === "1" && $now->format("W") !== $lastrun->format("W")) {
+                $run_alarm = true;
+                $query->whereBetween("starttime", [
+                    $now->modify("last week")->setTime(0, 0),
+                    $now->modify("last week")->setTime(23, 59, 59),
+                ]);
+            }
+            if ($verbose_level >= 1) {
+                echo "\n\n TODAY :" . $now->format("w") . " WEEK:" . $now->format("W") .
+                    " LAST RUN DAY :" . $lastrun?->format("w") ?? "never" . " LAST RUN WEEK :" . $lastrun?->format("W") ?? "never";
+            }
             break;
             //Monthly
         case 4 :
-            if (((date("j", time()) == 1) && (date("m", time()) != date("m", $timestamp_lastsend))) || $myalarm["datelastrun"] == "") {
+            if (is_null($lastrun)) {
                 $run_alarm = true;
-                $SQL_CLAUSE["starttime"] = [
-                    "BETWEEN", [
-                        $now->modify("-1 month")->setTime(0, 0)->format("Y-m-d H:i:s"),
-                        $now->setTime(0, 0)->modify("-1 second")->format("Y-m-d H:i:s")
-                    ]];
             }
-            if ($verbose_level >= 1)
-                echo "\n\n THIS MONTH :" . date("m", time()) . " LAST RUN MONTH :" . date("m", $timestamp_lastsend);
+            if ($now->format("j") == "1" && $now->format("m") !== $lastrun->format("m")) {
+                $run_alarm = true;
+                $query->whereBetween("starttime", [
+                    $now->modify("-1 month")->setTime(0, 0),
+                    $now->setTime(0, 0)->modify("-1 second"),
+                ]);
+            }
+            if ($verbose_level >= 1) {
+                echo "\n\n THIS MONTH :" . $now->format("m") . " LAST RUN MONTH :" . $lastrun?->format("m") ?? "never";
+            }
             break;
     }
 
     if ($run_alarm) {
 
-        if (!empty($myalarm["id_trunk"]))
-            $SQL_CLAUSE["id_trunk"] = $myalarm["id_trunk"];
+        if (!empty($myalarm["id_trunk"])) {
+            $query->where("id_trunk", $myalarm["id_trunk"]);
+        }
         write_log($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . "[Alarm : " . $myalarm[1] . " ]");
 
-        $nb_card = (new Table("cc_call"))->countRows($SQL_CLAUSE);
+        $nb_card = $query->count();
         $nbpagemax = (ceil($nb_card / $groupcalls));
-        if ($verbose_level >= 1)
+        if ($verbose_level >= 1) {
             echo "===> NB_CARD : $nb_card - NBPAGEMAX:$nbpagemax\n";
+        }
 
         if (!($nb_card > 0)) {
-            if ($verbose_level >= 1)
+            if ($verbose_level >= 1) {
                 echo "[No call to run the Alarm Service]\n";
+            }
             write_log($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . "[No call to run the Alarm service]");
-            exit ();
+            exit();
         }
 
         $totalsuccess = 0;
@@ -193,34 +214,35 @@ foreach ($result as $myalarm) {
         $totaltime = 0;
         $max_fail = 0;
         $max = 0;
-        $update = array ();
-        $table = new Table("cc_call", ["terminatecauseid", "sessiontime"]);
+        $update = [];
         for ($page = 0; $page < $nbpagemax; $page++) {
             // REST AFTER $groupcalls CARD HANDLED
-            if ($page > 0)
+            if ($page > 0) {
                 sleep(15);
+            }
 
-            $res = $table->getRows($SQL_CLAUSE, [], "ASC", [], $groupcard, $page * $groupcard);
-            for ($i = 0; $i < count($res); $i++) {
-                $totalsuccess += $res[$i]["terminatecauseid"] == 1 ? 1 : 0;
-                $totalfail += $res[$i]["terminatecauseid"] == 1 ? 0: 1;
-                $totaltime += $res[$i]["sessiontime"];
+            $calls = $query
+                ->limit($groupcard)
+                ->offset($page * $groupcard)
+                ->get();
+            foreach ($calls as $call) {
+                $totalsuccess += $call["terminatecauseid"] == 1 ? 1 : 0;
+                $totalfail += $call["terminatecauseid"] == 1 ? 0: 1;
+                $totaltime += $call["sessiontime"];
                 // FIND THE CIC (Consecutive Incomplete Calls)
-                if ($res[$i]["terminatecauseid"] != 1)
+                if ($call["terminatecauseid"] != 1) {
                     $max++;
-                if ($res[$i]["terminatecauseid"] == 1) {
-                    if ($max > $max_fail)
-                        $max_fail = $max;
+                } else {
+                    $max_fail = max($max, $max_fail);
                     $max = 0;
                 }
             }
-            if ($max > $max_fail)
-                $max_fail = $max;
-
+            $max_fail = max($max, $max_fail);
         } // LOOP FOR THE CALLS
 
-        if ($max_fail == 1)
+        if ($max_fail === 1) {
             $max_fail = 0;
+        }
 
         $ASR = $totalsuccess / ($totalsuccess + $totalfail);
         $ALOC = $totaltime / $totalsuccess;
@@ -252,19 +274,21 @@ foreach ($result as $myalarm) {
                 $content = "\n\n The Max Consecutive Incomplete Calls : " . $max_fail . " calls is greater than the max: " . $myalarm["maxvalue"] . " defined in the alarm";
                 break;
         }
-        if ($verbose_level >= 1)
+        if ($verbose_level >= 1) {
             echo "content = $content\n";
+        }
         write_log($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . "[Alarm finish]");
         // INSERT REPORT ALARM INTO THE DATABASE
-        (new Table("cc_alarm_report"))->addRow(["cc_alarm_id" => $myalarm["id"], "calculatedvalue" => $value]);
+        $db->table("cc_alarm_report")->insert(["cc_alarm_id" => $myalarm["id"], "calculatedvalue" => $value]);
 
         write_log($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . "[Alarm report : 'Alarm name=$myalarm[name]', 'Alarm type=$myalarm[type]', 'Calculated value=$value']");
 
-        $values = ["numberofrun" => ["=", ["numberofrun + ?", 1]], "datelastrun" => "CURRENT_TIMESTAMP"];
-        // UPDATE THE ALARM
-        if ($send_alarm)
-            $values["numberofalarm"] = ["=", ["numberofalarm + ?", 1]];
-        (new Table("cc_alarm"))->updateRow($values, ["id" => $myalarm["id"]]);
+        $db->table("cc_alarm")->where("id", $myalarm["id"])
+            ->incrementEach([
+                "numberofrun" => 1,
+                // UPDATE THE ALARM
+                "numberofalarm" => $send_alarm ? 1 : 0
+            ], ["datelastrun" => $now]);
 
         // SEND REPORT
         if (($send_alarm) && (strlen($myalarm[7]) > 0)) {
@@ -287,6 +311,7 @@ foreach ($result as $myalarm) {
 
 } // MAIN LOOP FOR THE ALARM
 
-if ($verbose_level >= 1)
+if ($verbose_level >= 1) {
     echo "#### END ALARMS \n";
+}
 write_log($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . "[#### ALARM END ####]");

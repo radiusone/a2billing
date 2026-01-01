@@ -3,9 +3,10 @@
 
 use A2billing\A2Billing;
 use A2billing\A2bMailException;
+use A2billing\Connection;
 use A2billing\Mail;
 use A2billing\ProcessHandler;
-use A2billing\Table;
+use Illuminate\Database\Query\Builder;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -80,15 +81,21 @@ if ($pH->isActive()) {
 $verbose_level = 0;
 $groupcard = 5000;
 
-$A2B = new A2Billing($idconfig);
+$A2B = new A2Billing();
 $cron_logfile = $A2B->config['log-files']['cront_check_account'] ?? "/tmp/a2billing_cront_checkaccount_log";
 
 write_log($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . "[#### BATCH BEGIN ####]");
 
-if (!$A2B->DbConnect()) {
+try {
+    $db = Connection::getConnection();
+} catch (Throwable) {
+    $db = null;
+}
+
+if (!$db) {
     echo "[Cannot connect to the database]\n";
     write_log($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . "[Cannot connect to the database]");
-    exit;
+    exit(1);
 }
 
 //Check if the notifications is Enable or Disable
@@ -97,35 +104,33 @@ if (empty ($A2B->config['notifications']['cron_notifications'])) {
     exit;
 }
 
-//$A2B -> DBHandle
-$instance_table = new Table("cc_card");
+$instance_table = $db->table("cc_card")
+    ->where("notify_email", 1)
+    ->where("status", 1)
+    ->whereRaw("CASE WHEN typepaid = 1 AND creditlimit IS NOT NULL THEN credit + creditlimit ELSE credit END < credit_notification");
 
 // Prepare the date interval to filter the card that don't have to receive a notification;
-$Delay_Clause = "( ";
-if ($A2B->config["database"]['dbtype'] == "postgres") {
-    $CURRENT_DATE = "CURRENT_DATE";
-} else {
-    $CURRENT_DATE = "CURDATE()";
-}
-
-$condition = ["notify_email" => 1, "status" => 1, "CASE WHEN typepaid = 1 AND creditlimit IS NOT NULL THEN credit + creditlimit ELSE credit END" => ["<", ["credit_notification"]]];
-if ($A2B->config['notifications']['delay_notifications'] <= 0) {
-    $condition[] = ["SUB", ["last_notification" => [null], ["<", "$CURRENT_DATE + 1"]], "OR"];
-} else {
-    $condition[] = ["SUB", ["last_notification" => [null], ["<", "$CURRENT_DATE - " . $A2B->config['notifications']['delay_notifications']]], "OR"];
+$now = new DateTimeImmutable();
+if ((int)$A2B->config['notifications']['delay_notifications'] > 0) {
+    $interval = new DateInterval("P" . $A2B->config['notifications']['delay_notifications'] . "D");
+    $instance_table->where(
+        fn (Builder $q) => $q->whereNull("last_notification")->orWhereDate("last_notification", "<", $now->sub($interval))
+    );
 }
 
 // CHECK AMOUNT OF CARD ON WHICH APPLY THE CHECK ACCOUNT SERVICE
-$nb_card = $instance_table->countRows($condition);
+$nb_card = $instance_table->count();
 $nbpagemax = (ceil($nb_card / $groupcard));
-if ($verbose_level >= 1)
+if ($verbose_level >= 1) {
     echo "===> NB_CARD : $nb_card - NBPAGEMAX:$nbpagemax\n";
+}
 
 if (!($nb_card > 0)) {
-    if ($verbose_level >= 1)
+    if ($verbose_level >= 1) {
         echo "[No card to run the Recurring service]\n";
+    }
     write_log($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . "[No card to run the check account service]");
-    exit ();
+    exit();
 }
 
 write_log($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . "[Number of card found : $nb_card]");
@@ -133,13 +138,15 @@ write_log($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . "[Number of 
 // BROWSE THROUGH THE CARD TO APPLY THE CHECK ACCOUNT SERVICE
 for ($page = 0; $page < $nbpagemax; $page++) {
 
-    $result_card = $instance_table->getRows($condition);
+    $result_card = $instance_table->get();
     foreach ($result_card as $mycard) {
 
-        if ($verbose_level >= 1)
+        if ($verbose_level >= 1) {
             print_r($mycard);
-        if ($verbose_level >= 1)
+        }
+        if ($verbose_level >= 1) {
             echo "------>>>  ID = " . $mycard['id'] . " - CARD =" . $mycard['username'] . " - BALANCE =" . $mycard['credit'] . " \n";
+        }
 
         // SEND NOTIFICATION
         if (strlen($mycard['email_notification']) > 0 || strlen($mycard['email']) > 0) { // ADD CHECK EMAIL
@@ -148,28 +155,31 @@ for ($page = 0; $page < $nbpagemax; $page++) {
             try {
                 $mail = new Mail(Mail::$TYPE_REMINDER, $mycard['id']);
             } catch (Exception $e) {
-                if ($verbose_level >= 1)
+                if ($verbose_level >= 1) {
                     echo "[Cannot find a template mail for reminder]\n";
+                }
                 write_log($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . "[Cannot find a template mail for reminder]");
                 exit;
             }
 
             try {
-                if (strlen($mycard['email_notification']) > 0)
+                if (strlen($mycard['email_notification']) > 0) {
                     $mail->send($mycard['email_notification']);
-                else
+                } else {
                     $mail->send($mycard['email']);
+                }
 
                 //update the card with the date of last notification
-                $instance_table->updateRow(["last_notification" => "CURRENT_TIMESTAMP"], ["id" => $mycard["id"]]);
+                $db->table("cc_card")->where("id", $mycard["id"])->update(["last_notification" => $now]);
 
                 if ($verbose_level >= 1) {
                     echo "[UPDATE CARD ID < " . $mycard['id'] . " > : last_notification]\n";
                 }
             } catch (A2bMailException $e) {
                 $error_msg = $e->getMessage();
-                if ($verbose_level >= 1)
+                if ($verbose_level >= 1) {
                     echo "$error_msg\n";
+                }
                 write_log($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . $mycard['email_notification']." - $error_msg");
             }
 

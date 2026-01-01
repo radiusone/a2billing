@@ -3,9 +3,11 @@
 
 use A2billing\A2Billing;
 use A2billing\A2bMailException;
+use A2billing\Connection;
 use A2billing\Mail;
 use A2billing\ProcessHandler;
 use A2billing\Table;
+use Illuminate\Database\Query\Builder;
 
 /**
  * This file is part of A2Billing (http://www.a2billing.net/)
@@ -56,23 +58,28 @@ $groupcard = 1000;
 $A2B = new A2Billing();
 $log = $A2B->config['log-files']['cront_autorefill'] ?? "/tmp/a2billing_cront_autorefill_log";
 
+try {
+    $db = Connection::getConnection();
+} catch (Throwable) {
+    $db = null;
+}
+
+if (!$db) {
+    echo "[Cannot connect to the database]\n";
+    write_log($log, basename(__FILE__) . ' line:' . __LINE__ . "[Cannot connect to the database]");
+    exit(1);
+}
+
 write_log($log, basename(__FILE__) . ' line:' . __LINE__ . "[#### BATCH BEGIN ####]");
 
-$instance_table = new Table("cc_card", "id, credit, initialbalance");
-
+$instance_table = $db->table("cc_card")->select("id, credit, initialbalance")
+    ->where("autorefill", 1)
+    ->where(function (Builder $q) {
+        $q->where(fn (Builder $q) => $q->where(["typepaid" => 0, ["initialbalance", ">", 0], ["credit", "<", "initialbalance"]]))
+            ->orWhere("typepaid", 1);
+    });
 // CHECK NUMBER OF CARD
-$condition = [
-    "autorefill" => 1,
-    [
-        "SUB",
-        [
-            ["SUB", ["typepaid" => 0, "initialbalance" => [">", 0], "credit" => ["<", "`initialbalance`"]]],
-            "typepaid" => 1,
-        ],
-        "OR",
-    ],
-];
-$nb_card = $instance_table->countRows($condition);
+$nb_card = $instance_table->count();
 $nbpagemax = ceil($nb_card / $groupcard);
 
 if ($nb_card === 0) {
@@ -87,17 +94,16 @@ $totalcredit = 0;
 
 // BROWSE THROUGH THE CARD TO APPLY THE AUTO REFILL
 for ($page = 0; $page < $nbpagemax; $page++) {
-    $result_card = $instance_table
-        ->getRows($condition, ["id"], "ASC", [], $groupcard, $page * $groupcard);
+    $result_card = $instance_table->orderBy("id")->limit($groupcard)->offset($page * $groupcard)->get();
 
     foreach ($result_card as $mycard) {
         $refill_amount = $mycard["initialbalance"] - $mycard["credit"];
-        $instance_table->updateRow(["credit" => "`initialbalance`"], ["id" => $mycard["id"]]);
+        $db->table("cc_card")->where("id", $mycard["id"])->update(["credit" => $db->raw("initialbalance")]);
         $totalcredit += $refill_amount;
         $totalcardperform++;
 
         // INSERT LOG REFILL INTO THE DATABASE
-        (new Table("cc_logrefill"))->addRow(["credit" => $refill_amount, "card_id" => $mycard["id"]]);
+        $db->table("cc_logrefill")->insert(["credit" => $refill_amount, "card_id" => $mycard["id"]]);
     }
     // Little bit of rest
     sleep(5);

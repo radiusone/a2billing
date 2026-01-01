@@ -2,8 +2,8 @@
 <?php
 
 use A2billing\A2Billing;
+use A2billing\Connection;
 use A2billing\ProcessHandler;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -83,20 +83,24 @@ $verbose_level = 1;
 $nb_record = 100;
 $wait_time = 10;
 
-$A2B = new A2Billing($idconfig);
+$A2B = new A2Billing();
 $logfile_cront_batch = $A2B->config['log-files']['cront_batch_process'] ?? "/tmp/a2billing_cront_batch_log";
 
 write_log($logfile_cront_batch, basename(__FILE__) . ' line:' . __LINE__ . "[#### IMPORT CACHE CRONT START ####]");
 
-if (!$A2B->DbConnect()) {
+try {
+    $db = Connection::getConnection();
+} catch (Throwable) {
+    $db = null;
+}
+
+if (!$db) {
     if ($verbose_level >= 1) {
         echo "[Cannot connect to the database]\n";
     }
     write_log($logfile_cront_batch, basename(__FILE__) . ' line:' . __LINE__ . "[Cannot connect to the database]");
-    exit;
+    exit(1);
 }
-
-$instance_table = new Table("cc_call");
 
 if ($A2B->config["global"]['cache_enabled']) {
     if (empty ($A2B->config["global"]['cache_path'])) {
@@ -118,41 +122,39 @@ if ($A2B->config["global"]['cache_enabled']) {
     }
 
     // Open Sqlite
-    $sqlite = NewADOConnection("pdo");
-    if ($sqlite->Connect("sqlite:" . $A2B->config["global"]['cache_path'])) {
-
-        for (;;) {
-            // Select CDR
-            $result = $sqlite->Execute("SELECT rowid , * from cc_call limit $nb_record");
-            if ($result) {
-                $values = [];
-                $delete_id = "";
-                $i = 0;
-                while($row = $result->FetchRow()) {
-                    $delete_id .= $row['rowid'] . ",";
-                    unset($row["rowid"]);
-                    $values[] = $row;
-                    $i++;
-                }
-                $delete_id = "(" . trim($delete_id, ",") . ")";
-                $instance_table->addRows($values);
-
-                $DELETE_QUERY = "DELETE FROM cc_call WHERE rowid in $delete_id";
-                if ($verbose_level >= 1) {
-                    echo "QUERY DELETE : [$DELETE_QUERY]\n";
-                }
-                $sqlite->Execute($DELETE_QUERY);
-
-            }
-            echo "Waiting ....\n";
-            sleep($wait_time);
-        }
-
-    } else {
+    try {
+        $sqlite = new PDO("sqlite:" . $A2B->config["global"]['cache_path']);
+    } catch (PDOException $e) {
         if ($verbose_level >= 1) {
-            echo "[Error to connect to cache : " . $sqlite->ErrorMsg() . "]\n";
+            echo "[Error to connect to cache]\n";
         }
-        write_log($logfile_cront_batch, basename(__FILE__) . ' line:' . __LINE__ . "[Error to connect to cache : " . $sqlite->ErrorMsg() . "]\n");
+        write_log($logfile_cront_batch, basename(__FILE__) . ' line:' . __LINE__ . "[Error to connect to cache]\n");
+        exit(1);
+    }
+
+    for (;;) {
+        // Select CDR
+        $result = $sqlite->query("SELECT rowid, * from cc_call limit $nb_record");
+        if ($result) {
+            $values = [];
+            $delete_ids = [];
+            while($row = $result->fetch(PDO::FETCH_ASSOC)) {
+                $delete_ids[] = $row['rowid'];
+                unset($row["rowid"]);
+                $values[] = $row;
+            }
+            $delete_id = "(" . implode(",", $delete_ids) . ")";
+            $db->table("cc_call")->insert($values);
+
+            $DELETE_QUERY = "DELETE FROM cc_call WHERE rowid in $delete_id";
+            if ($verbose_level >= 1) {
+                echo "QUERY DELETE : [$DELETE_QUERY]\n";
+            }
+            $sqlite->exec($DELETE_QUERY);
+
+        }
+        echo "Waiting ....\n";
+        sleep($wait_time);
     }
 
 }

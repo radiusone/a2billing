@@ -3,7 +3,6 @@
 
 use A2billing\A2Billing;
 use A2billing\Connection;
-use A2billing\Table;
 use A2billing\PhpAgi\Agi;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -70,11 +69,11 @@ $A2B->agiconfig['verbosity_level'] = 4;
 $A2B->agiconfig['logging_level'] = 0;
 $A2B->debug(A2Billing::INFO, "START MORNITORING");
 
-define("DB_TYPE", isset($A2B->config["database"]['dbtype']) ? $A2B->config["database"]['dbtype'] : null);
-define("SMTP_SERVER", isset($A2B->config['global']['smtp_server']) ? $A2B->config['global']['smtp_server'] : null);
-define("SMTP_HOST", isset($A2B->config['global']['smtp_host']) ? $A2B->config['global']['smtp_host'] : null);
-define("SMTP_USERNAME", isset($A2B->config['global']['smtp_username']) ? $A2B->config['global']['smtp_username'] : null);
-define("SMTP_PASSWORD", isset($A2B->config['global']['smtp_password']) ? $A2B->config['global']['smtp_password'] : null);
+define("DB_TYPE", $A2B->config["database"]['dbtype'] ?? null);
+define("SMTP_SERVER", $A2B->config['global']['smtp_server'] ?? null);
+define("SMTP_HOST", $A2B->config['global']['smtp_host'] ?? null);
+define("SMTP_USERNAME", $A2B->config['global']['smtp_username'] ?? null);
+define("SMTP_PASSWORD", $A2B->config['global']['smtp_password'] ?? null);
 
 // Print header
 $A2B->debug(A2Billing::DEBUG, "AGI Request:\n" . json_encode($agi->request));
@@ -82,23 +81,29 @@ $A2B->debug(A2Billing::DEBUG, "AGI Request:\n" . json_encode($agi->request));
 /* GET THE AGI PARAMETER */
 $A2B->get_agi_request_parameter();
 
-if (!$A2B->DbConnect()) {
+try {
+    $db = Connection::getConnection();
+} catch (Throwable) {
+    $db = null;
+}
+
+if (!$db) {
     $agi->stream_file('prepaid-final', '#');
     exit;
 }
 
-define("WRITELOG_QUERY", false);
-
 $agi->answer();
 
-if ($mode == 'standard') {
+if ($mode === 'standard') {
 
     //GET MONITORING SETTINGS
-    $result = (new Table("cc_monitor", ["dial_code", "label", "text_intro", "query_type", "query", "result_type"]))
-        ->getRows(["enable" => 1]);
-    $arr_monitor = array_combine(array_column($result, "dial_code"), $result);
+    $arr_monitor = $db->table("cc_monitor")
+        ->select(["dial_code", "label", "text_intro", "query_type", "query", "result_type"])
+        ->where(["enable" => 1])
+        ->get()
+        ->keyBy("dial_code");
 
-    if (!is_array($arr_monitor)) {
+    if (!count($arr_monitor)) {
         $A2B->debug(A2Billing::DEBUG, "No monitoring configuration found!");
         $agi->stream_file('prepaid-final', '#');
         exit;
@@ -114,13 +119,13 @@ if ($mode == 'standard') {
             continue;
         }
 
-        if (!is_array($arr_monitor[$dial_code])) {
+        if (!$arr_monitor->has($dial_code)) {
             $agi->stream_file('prepaid-no-dialcode', '#');
             $A2B->debug(A2Billing::DEBUG, "Dial code : $dial_code not configured in monitoring");
             continue;
         }
 
-        $agi->espeak($arr_monitor[$dial_code]["text_intro"], '#', 8000);
+        $agi->espeak($arr_monitor[$dial_code]["text_intro"], '#');
 
         # query_type : 1 SQL ; 2 for shell script
         if ($arr_monitor[$dial_code]["query_type"] == "1") {
@@ -129,7 +134,7 @@ if ($mode == 'standard') {
             $QUERY = $arr_monitor[$dial_code]["query"];
             $A2B->debug(A2Billing::DEBUG, "QUERY : $QUERY");
             // todo: this is ugly
-            $get_result = Connection::getConnection()->selectOne($QUERY);
+            $get_result = $db->selectOne($QUERY);
 
             $A2B->debug(A2Billing::DEBUG, "SAYING RESULT");
 
@@ -145,6 +150,8 @@ if ($mode == 'standard') {
             exec(A2Billing::SCRIPT_CONFIG_DIR . $shellscript . " 2> /dev/null", $output);
 
             $get_result = $output[0];
+        } else {
+            exit(1);
         }
 
         $A2B->debug(A2Billing::DEBUG, "SAY RESULT (" . $arr_monitor[$dial_code]["result_type"] . "): $get_result");
@@ -152,7 +159,7 @@ if ($mode == 'standard') {
         # result_type : 1 Text2Speech, 2 Date, 3 Number, 4 Digits
         if ($arr_monitor[$dial_code]["result_type"] == "1") {
             // Text2Speech
-            $res_say = $agi->espeak($get_result, '#', 8000);
+            $res_say = $agi->espeak($get_result, '#');
 
         } elseif ($arr_monitor[$dial_code]["result_type"] == "2") {
             // Date
@@ -165,6 +172,8 @@ if ($mode == 'standard') {
         } elseif ($arr_monitor[$dial_code]["result_type"] == "4") {
             // Digits
             $res_say = $agi->exec("SayDigits " . $get_result);
+        } else {
+            exit(1);
         }
 
         if (!$res_say) {
@@ -175,8 +184,11 @@ if ($mode == 'standard') {
 } elseif ($mode == 'saydid') {
     $accountcode = $agi->request['agi_accountcode'];
 
-    $did = (new Table("cc_did", ["did"], ["cc_card" => ["cc_card.id", "cc_did.iduser"]]))
-        ->getValue(["cc_card.username" => $accountcode]);
+    $did = $db->table("cc_did")
+        ->select("did")
+        ->leftJoin("cc_card", "cc_card.id", "cc_did.iduser")
+        ->where("cc_card.username", $accountcode)
+        ->value("did");
 
     if (!$did) {
         $agi->espeak('There is No Phone number provisioned.', '#');

@@ -1,12 +1,11 @@
-#!/usr/bin/php -q
 <?php
 
 use A2billing\A2Billing;
 use A2billing\A2bMailException;
+use A2billing\Connection;
 use A2billing\Mail;
 use A2billing\Payments\Invoice;
 use A2billing\ProcessHandler;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -81,283 +80,294 @@ $verbose_level = 0;
 $groupcard = 5000;
 $oneday = 24 * 60 * 60;
 
-$A2B = new A2Billing($idconfig);
+$A2B = new A2Billing();
 $cron_logfile = $A2B->config['log-files']['cront_invoice'] ?? "/tmp/a2billing_cront_invoice_log";
 
 write_log ($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . "[#### CRONT BILLING BEGIN ####]");
 
-if (!$A2B->DbConnect()) {
+try {
+    $db = Connection::getConnection();
+} catch (Throwable) {
+    $db = null;
+}
+
+if (!$db) {
     echo "[Cannot connect to the database]\n";
     write_log ($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . "[Cannot connect to the database]");
-    exit;
+    exit(1);
 }
-
-$instance_table = new Table();
 
 // CHECK COUNT OF CARD ON WHICH APPLY THE SERVICE
-$nb_card = (new Table("cc_card"))->countRows();
+$nb_card = $db->table("cc_card")->count();
 $nbpagemax = (ceil($nb_card / $groupcard));
 
-if ($verbose_level >= 1)
+if ($verbose_level >= 1) {
     echo "===> NB_CARD : $nb_card - NBPAGEMAX:$nbpagemax\n";
-
-if (!($nb_card > 0)) {
-    if ($verbose_level >= 1)
-        echo "[No card to run the Invoice Billing Service]\n";
-    write_log ($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . "[No card to run the Invoice Billing service]");
-    exit ();
 }
 
-if ($verbose_level >= 1)
-    echo ("[Invoice Billing Service analyze cards on which to apply billing]");
+if ($nb_card <= 0) {
+    if ($verbose_level >= 1) {
+        echo "[No card to run the Invoice Billing Service]\n";
+    }
+    write_log ($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . "[No card to run the Invoice Billing service]");
+    exit();
+}
+
+if ($verbose_level >= 1) {
+    echo "[Invoice Billing Service analyze cards on which to apply billing]";
+}
 write_log ($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . "[Invoice Billing Service analyze cards on which to apply billing]");
 
+$now = new DateTimeImmutable();
 for ($page = 0; $page < $nbpagemax; $page++) {
-    if ($verbose_level >= 1)
+    if ($verbose_level >= 1) {
         echo "$page <= $nbpagemax \n";
-    $resmax = (new Table("cc_card", ["id", "vat", "invoiceday", "typepaid", "credit"]))
-        ->getRows([], [], "ASC", [], $page, $page * $groupcard);
+    }
+    $resmax = $db->table("cc_card")
+        ->select(["id", "vat", "invoiceday", "typepaid", "credit"])
+        ->limit($page)->offset($page * $groupcard)
+        ->get();
 
-    if ($resmax) {
+    if (count($resmax)) {
         $numrow = count($resmax);
-        if ($verbose_level >= 2)
+        if ($verbose_level >= 2) {
             print_r($resmax[0]);
+        }
     } else {
-        $numrow = 0;
+        if ($verbose_level >= 1) {
+            echo "\n[No card to run the Invoice Billing Service]\n";
+        }
+        write_log ($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . "[No card to run the Invoice Billing service]");
+        exit();
     }
 
-    if ($numrow == 0) {
-        if ($verbose_level >= 1)
-            echo "\n[No card to run the Invoice Billing Service]\n";
-        write_log ($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . "[No card to run the Invoice Billing service]");
-        exit ();
+    foreach ($resmax as $Customer) {
+        $invoiceday = (is_numeric($Customer['invoiceday']) && $Customer['invoiceday'] >= 1 && $Customer['invoiceday'] <= 28) ? $Customer['invoiceday'] : 1;
+        if ($verbose_level >= 1) {
+            echo "\n Invoiceday = $invoiceday  -  Invoiceday db = " . $Customer['invoiceday'];
+        }
 
-    } else {
+        // the value of invoiceday is between 1..28, dont make sense to bill customer on 29, 30, 31
+        if ($now->format("j") != $invoiceday) {
+            if ($verbose_level >= 1) {
+                echo "\n We dont create an invoice today for this customer : " . $Customer['invoiceday'];
+            }
+            continue;
+        }
 
-        foreach ($resmax as $Customer) {
-            $invoiceday = (is_numeric($Customer['invoiceday']) && $Customer['invoiceday'] >= 1 && $Customer['invoiceday'] <= 28) ? $Customer['invoiceday'] : 1;
-            if ($verbose_level >= 1)
-                echo "\n Invoiceday = $invoiceday  -  Invoiceday db = " . $Customer['invoiceday'];
+        //find the last billing
+        $card_id = $Customer['id'];
+        $date_now = date("Y-m-d");
+        if (empty ($Customer['vat']) || !is_numeric($Customer['vat'])) {
+            $vat = 0;
+        } else {
+            $vat = $Customer['vat'];
+        }
 
-            // the value of invoiceday is between 1..28, dont make sense to bill customer on 29, 30, 31
-            if (date("j", time()) != $invoiceday) {
-                if ($verbose_level >= 1)
-                    echo "\n We dont create an invoice today for this customer : " . $Customer['invoiceday'];
-                continue;
+        // FIND THE LAST BILLING
+        $billing_table = $db->table('cc_billing_customer')
+            ->select(['id', 'date', 'id_invoice'])
+            ->where("id_card", $card_id)
+            ->orderBy("date", "desc");
+
+        $call_table = $db->table('cc_call')
+            ->selectRaw('COALESCE(SUM(sessionbill), 0) AS sessionbill')
+            ->where("card_id", $card_id);
+
+        $table_charge = $db->table("cc_charge")
+            ->where("id_cc_card", $card_id);
+
+        $desc_billing = "";
+        $desc_billing_postpaid = "";
+        $start_date = null;
+        $lastbilling_invoice = null;
+        $result = $billing_table->first();
+        if ($result) {
+            if ($verbose_level >= 1) {
+                echo "\n Find the last billing -> Id card : " . $result["id"];
             }
 
-            //find the last billing
-            $card_id = $Customer['id'];
-            $date_now = date("Y-m-d");
-            if (empty ($Customer['vat']) || !is_numeric($Customer['vat']))
-                $vat = 0;
-            else
-                $vat = $Customer['vat'];
+            $call_table->where("stoptime", ">=", $result["date"]);
+            $table_charge->where("creationdate", ">=", $result["date"]);
+            $desc_billing = "Calls cost between the " . $result["date"] . " and " . $date_now;
+            $desc_billing_postpaid = "Amount for period between the " .date("Y-m-d", strtotime($result["date"])). " and " . $date_now;
+            $start_date = $result["date"];
+            $lastbilling_invoice = $result["id_invoice"];
+        } else {
+            $desc_billing = "Calls cost before the " . $date_now;
+            $desc_billing_postpaid = "Amount for period before the " . $date_now;
+        }
 
-            // FIND THE LAST BILLING
-            $billing_table = new Table('cc_billing_customer', ['id', 'date', 'id_invoice']);
-            $clause_last_billing = ["id_card" => $card_id];
-            $result = $billing_table->getRow($clause_last_billing, ["date"], "desc");
+        // RETRIEVE THE LAST POSTPAID AMOUNT -SUM OF ALL INVOICE ITEMS UNPAID FOR A POSTPAID USER
+        $lastpostpaid_amount = $db->table("cc_billing_customer")
+            ->select(["SUM(items.total_price) as total"])
+            ->leftJoin("cc_invoice", "cc_billing_customer.id_invoice", "cc_invoice.id")
+            ->joinSub(
+                $db->table("cc_invoice_item")->select("id_invoice")->selectRaw("SUM(price) AS total_price")->where("type_ext", "POSTPAID")->groupBy("id_invoice"),
+                "items",
+                "items.id_invoice",
+                "cc_invoice.id"
+            )
+            ->where(["cc_billing_customer.id_card" => $card_id, "cc_invoice.paid_status" => 0])
+            ->value("total") ?: 0;
 
-            $call_table = new Table('cc_call', ['COALESCE(SUM(sessionbill),0)']);
-            $clause_call_billing = ["card_id" => $card_id];
-            $clause_charge = ["id_cc_card" => $card_id];
-            $desc_billing = "";
-            $desc_billing_postpaid = "";
-            $start_date = null;
-            $lastbilling_invoice = null;
-            if ($result) {
-                if ($verbose_level >= 1)
-                    echo "\n Find the last billing -> Id card : " . $result["id"];
+        // INSERT CUSTOMER BILLING
+        $values = ["id_card" => $card_id];
+        if (!empty ($start_date)) {
+            $values["start_date"] = $start_date;
+        }
+        $id_billing = $db->table("cc_billing_customer")->insertGetId($values);
+        if ($verbose_level >= 2) {
+            echo "\n Add billing -> Id card : " . json_encode($values);
+        }
 
-                $clause_call_billing[] = ["SUB", "stoptime" =>[[">=", $result["date"], ["<", $date_now]]]];
-                $clause_charge[] = ["SUB", "creationdate" => [[">=", $result["date"], ["<", $date_now]]]];
-                $desc_billing = "Calls cost between the " . $result["date"] . " and " . $date_now;
-                $desc_billing_postpaid = "Amount for period between the " .date("Y-m-d", strtotime($result["date"])). " and " . $date_now;
-                $start_date = $result["date"];
-                $lastbilling_invoice = $result["id_invoice"];
-            } else {
-                $desc_billing = "Calls cost before the " . $date_now;
-                $desc_billing_postpaid = "Amount for period before the " . $date_now;
+        $amount_calls = $call_table->where("stoptime", "<", $now)
+            ->value("sessionbill");
+
+        // COMMON BEHAVIOUR FOR PREPAID AND POSTPAID -> GENERATE A RECEIPT FOR THE CALLS OF THE LAST PERIOD
+        if (!is_null($amount_calls)) {
+            $amount_calls = ceil($amount_calls * 100) / 100;
+            /// create receipt
+            $title = gettext("SUMMARY OF CALLS");
+            $description = gettext("Summary of the calls charged since the last billing");
+            $values = ["id_card" => $card_id, "title" => $title, "description" => $description, "status" => 1];
+            $id_receipt = $db->table("cc_receipt")->insertGetId($values);
+            if ($verbose_level >= 2) {
+                echo "\n Add Receipt for the call of the last period :> " . json_encode($values);
             }
 
-            // RETRIEVE THE LAST POSTPAID AMOUNT -SUM OF ALL INVOICE ITEMS UNPAID FOR A POSTPAID USER
-            $lastpostpaid_amount = 0;
-            $invoice_table = new Table(
-                "cc_billing_customer",
-                ["SUM(items.total_price) as total"],
-                [
-                    "cc_invoice" => ["cc_billing_customer.id_invoice", "cc_invoice.id"],
-                    "(SELECT id_invoice, SUM(price) as total_price FROM cc_invoice_item WHERE type_ext ='POSTPAID' GROUP BY id_invoice) AS items" => ["items.id_invoice", "cc_invoice.id"]
-                ]
-            );
-            $lastinvoice_clause = ["cc_billing_customer.id_card" => $card_id, "cc_invoice.paid_status" => 0];
-            $result_lastinvoice = $invoice_table ->getRow($lastinvoice_clause);
-            if ($result_lastinvoice) {
-                $lastpostpaid_amount = $result_lastinvoice["total"];
-            }
-
-            // INSERT CUSTOMER BILLING
-            $values = ["id_card" => $card_id];
-            if (!empty ($start_date)) {
-                $values["start_date"] = $start_date;
-            }
-            $instance_table = new Table("cc_billing_customer");
-            $instance_table->addRow($values, "id", $id_billing);
-            if ($verbose_level >= 2)
-                    echo "\n Add billing -> Id card : " . json_encode($values);
-
-            $amount_calls = $call_table->getValue($clause_call_billing);
-
-            // COMMON BEHAVIOUR FOR PREPAID AND POSTPAID -> GENERATE A RECEIPT FOR THE CALLS OF THE LAST PERIOD
-            if (!is_null($amount_calls)) {
-                $amount_calls = ceil($amount_calls * 100) / 100;
-                /// create receipt
-                $title = gettext("SUMMARY OF CALLS");
-                $description = gettext("Summary of the calls charged since the last billing");
-                $instance_table = new Table("cc_receipt");
-                $values = ["id_card" => $card_id, "title" => $title, "description" => $description, "status" => 1];
-                $instance_table->addRow($values, "id", $id_receipt);
+            if (!empty ($id_receipt) && is_numeric($id_receipt)) {
+                $description = $desc_billing;
+                $values = ["id_receipt" => $id_receipt, "price" => $amount_calls, "description" => $description, "id_ext" => $id_billing, "type_ext" => "CALLS"];
+                $db->table("cc_receipt_item")->insert($values);
                 if ($verbose_level >= 2)
-                        echo "\n Add Receipt for the call of the last period :> " . json_encode($values);
+                    echo "\n Add Receipt Items for the call of the last period :> " . json_encode($values);
+            }
+        }
 
-                if (!empty ($id_receipt) && is_numeric($id_receipt)) {
-                    $description = $desc_billing;
-                    $instance_table = new Table("cc_receipt_item");
-                    $values = ["id_receipt" => $id_receipt, "price" => $amount_calls, "description" => $description, "id_ext" => $id_billing, "type_ext" => "CALLS"];
-                    $instance_table->addRow($values);
-                    if ($verbose_level >= 2)
-                        echo "\n Add Receipt Items for the call of the last period :> " . json_encode($values);
-                }
+        // GENERATE RECEIPT FOR CHARGE ALREADY PAID
+        $result = $table_charge->clone()->where("creationdate", "<", $now)
+            ->where("charged_status", 1)
+            ->get();
+        if (count($result)) {
+            $title = gettext("SUMMARY OF CHARGE");
+            $description = gettext("Summary of the paid charges since the last billing.");
+            $values = ["id_card" => $card_id, "title" => $title, "description" => $description, "status" => 1];
+            $id_receipt = $db->table("cc_receipt")->insertGetId($values);
+            if ($verbose_level >= 2) {
+                echo "\n Add Receipt for the charges already paid :> " . json_encode($values);
             }
 
-            // GENERATE RECEIPT FOR CHARGE ALREADY PAID
-            $table_charge = new Table("cc_charge");
-            $result = $table_charge->getRows($clause_charge + ["charged_status" => 1]);
-            if ($result) {
-                $title = gettext("SUMMARY OF CHARGE");
-                $description = gettext("Summary of the paid charges since the last billing.");
-                $instance_table = new Table("cc_receipt");
-                $values = ["id_card" => $card_id, "title" => $title, "description" => $description, "status" => 1];
-                $instance_table->addRow($values, "id", $id_receipt);
-                if ($verbose_level >= 2)
-                    echo "\n Add Receipt for the charges already paid :> " . json_encode($values);
-
-                if (!empty ($id_receipt) && is_numeric($id_receipt)) {
-                    foreach ($result as $charge) {
-                        $description = gettext("CHARGE :") . $charge['description'];
-                        $amount = $charge['amount'];
-                        $instance_table = new Table("cc_receipt_item");
-                        $values = ["date" => $charge["creationdate"], "id_receipt" => $id_receipt, "price" => $amount, "description" => $description, "id_ext" => $charge["id"], "type_ext" => "CHARGE"];
-                        $instance_table->addRow($values);
-                        if ($verbose_level >= 2)
-                            echo "\n Add Receipt Items for the charges already paid :> " . json_encode($values);
+            if (!empty ($id_receipt) && is_numeric($id_receipt)) {
+                foreach ($result as $charge) {
+                    $description = gettext("CHARGE :") . $charge['description'];
+                    $amount = $charge['amount'];
+                    $values = ["date" => $charge["creationdate"], "id_receipt" => $id_receipt, "price" => $amount, "description" => $description, "id_ext" => $charge["id"], "type_ext" => "CHARGE"];
+                    $db->table("cc_receipt_item")->insert($values);
+                    if ($verbose_level >= 2) {
+                        echo "\n Add Receipt Items for the charges already paid :> " . json_encode($values);
                     }
                 }
             }
-            $total =0;
-            $total_vat =0;
-            // GENERATE INVOICE FOR CHARGE NOT YET CHARGED
-            $table_charge = new Table("cc_charge");
-            $result = $table_charge->getRows($clause_charge + ["charged_status" => 0, "invoiced_status" => 0]);
-            $last_invoice = null;
-            if ($result) {
+        }
+        $total =0;
+        $total_vat =0;
+        // GENERATE INVOICE FOR CHARGE NOT YET CHARGED
+        $result = $table_charge->where(["charged_status" => 0, "invoiced_status" => 0])->get();
+        $last_invoice = null;
+        if (count($result)) {
+            $reference = Invoice::generateReference();
+            $title = gettext("BILLING");
+            $description = gettext("Invoice for the unpaid charges since the last billing.") . " " . $desc_billing_postpaid;
+            $invoice_title = $title;
+            $invoice_reference =$reference;
+            $invoice_description = $description;
+            $values = ["id_card" => $card_id, "title" => $title, "reference" => $reference, "description" => $description, "status" => 1, "paid_status" => 0];
+            $id_invoice = $db->table("cc_invoice")->insertGetId($values);
+            if ($verbose_level >= 2) {
+                echo "\n Add Invoice for the unpaid charges :> " . json_encode($values);
+            }
+
+            if (!empty ($id_invoice) && is_numeric($id_invoice)) {
+                $last_invoice = $id_invoice;
+                foreach ($result as $charge) {
+                    $description = gettext("CHARGE :") . $charge['description'];
+                    $amount = $charge['amount'];
+                    $total = $total + $amount;
+                    $total_vat =$total_vat + round($amount *(1+($vat/100)),2);
+                    $values = ["date" => $charge["creationdate"], "id_invoice" => $id_invoice, "price" => $amount, "vat" => $vat, "description" => $description, "id_ext" => $charge["id"], "type_ext" => "CHARGE"];
+                    $db->table("cc_invoice_item")->insert($values);
+                    if ($verbose_level >= 2) {
+                        echo "\n Add Invoice Items for the unpaid charges :> " . json_encode($values);
+                    }
+                }
+            }
+        }
+
+        // POSTPAID BILLING
+        if ($Customer['typepaid'] == 1 && is_numeric($Customer['credit']) && ($Customer['credit']+$lastpostpaid_amount) < 0) {
+            // GENERATE AN INVOICE TO COMPLETE THE BALANCE
+            if (!empty($last_invoice)) {
+                $id_invoice = $last_invoice;
+            } else {
                 $reference = Invoice::generateReference();
                 $title = gettext("BILLING");
-                $description = gettext("Invoice for the unpaid charges since the last billing.") . " " . $desc_billing_postpaid;
+                $description = gettext("Invoice for POSTPAID");
                 $invoice_title = $title;
                 $invoice_reference =$reference;
                 $invoice_description = $description;
-                $instance_table = new Table("cc_invoice");
                 $values = ["id_card" => $card_id, "title" => $title, "reference" => $reference, "description" => $description, "status" => 1, "paid_status" => 0];
-                $instance_table->addRow($values, "id", $id_invoice);
+                $id_invoice = $db->table("cc_invoice")->insertGetId($values);
+                if ($verbose_level >= 2) {
+                    echo "\n Add Invoice :> " . json_encode($values);
+                }
+            }
+            if (!empty ($id_invoice) && is_numeric($id_invoice)) {
+                $last_invoice = $id_invoice;
+                $description = $desc_billing_postpaid;
+                $amount = abs($Customer['credit']+$lastpostpaid_amount);
+                $total = $total + $amount;
+                $total_vat =$total_vat + round($amount *(1+($vat/100)),2);
+                $values = ["id_invoice" => $id_invoice, "price" => $amount, "vat" => $vat, "description" => $description, "id_ext" => $id_billing, "type_ext" => "POSTPAID"];
+                $db->table("cc_invoice_item")->insert($values);
+                if ($verbose_level >= 2) {
+                    echo "\n Add Invoice Item :> " . json_encode($values);
+                }
+            }
+        }
+
+        if (!empty($last_invoice)) {
+            $billing_table->where("id", $id_billing)->update(["id_invoice" => $last_invoice]);
+        }
+
+        // Send a mail for invoice to pay
+        if (!empty($last_invoice)) {
+            $total = round($total,2);
+            try {
+                $mail = new Mail(Mail::$TYPE_INVOICE_TO_PAY, $card_id);
+                $mail->replaceInEmail(Mail::$INVOICE_REFERENCE_KEY, $invoice_reference);
+                $mail->replaceInEmail(Mail::$INVOICE_TITLE_KEY, $invoice_title);
+                $mail->replaceInEmail(Mail::$INVOICE_DESCRIPTION_KEY, $invoice_description);
+                $mail->replaceInEmail(Mail::$INVOICE_TOTAL_KEY, $total);
+                $mail->replaceInEmail(Mail::$INVOICE_TOTAL_VAT_KEY, $total_vat);
+                $mail->send();
                 if ($verbose_level >= 2)
-                    echo "\n Add Invoice for the unpaid charges :> " . json_encode($values);
-
-                if (!empty ($id_invoice) && is_numeric($id_invoice)) {
-                    $last_invoice = $id_invoice;
-                    foreach ($result as $charge) {
-                        $description = gettext("CHARGE :") . $charge['description'];
-                        $amount = $charge['amount'];
-                        $total = $total + $amount;
-                        $total_vat =$total_vat + round($amount *(1+($vat/100)),2);
-                        $instance_table = new Table("cc_invoice_item");
-                        $values = ["date" => $charge["creationdate"], "id_invoice" => $id_invoice, "price" => $amount, "vat" => $vat, "description" => $description, "id_ext" => $charge["id"], "type_ext" => "CHARGE"];
-                        $instance_table->addRow($values);
-                        if ($verbose_level >= 2)
-                            echo "\n Add Invoice Items for the unpaid charges :> " . json_encode($values);
-                    }
-                }
+                    echo "\n Email sent for invoice to pay, card id :> ".$card_id;
+            } catch (A2bMailException $e) {
+                $error_msg = $e->getMessage();
+                if ($verbose_level >= 1)
+                    echo "Sent mail error : ".$error_msg;
             }
+        }
 
-            // POSTPAID BILLING
-            if ($Customer['typepaid'] == 1 && is_numeric($Customer['credit']) && ($Customer['credit']+$lastpostpaid_amount) < 0) {
-                // GENERATE AN INVOICE TO COMPLETE THE BALANCE
-                if (!empty($last_invoice)) {
-                    $id_invoice = $last_invoice;
-                } else {
-                    $reference = Invoice::generateReference();
-                    $title = gettext("BILLING");
-                    $description = gettext("Invoice for POSTPAID");
-                    $invoice_title = $title;
-                    $invoice_reference =$reference;
-                    $invoice_description = $description;
-                    $instance_table = new Table("cc_invoice");
-                    $values = ["id_card" => $card_id, "title" => $title, "reference" => $reference, "description" => $description, "status" => 1, "paid_status" => 0];
-                    $instance_table->addRow($values, "id", $id_invoice);
-                    if ($verbose_level >= 2)
-                        echo "\n Add Invoice :> " . json_encode($values);
-                }
-                if (!empty ($id_invoice) && is_numeric($id_invoice)) {
-                    $last_invoice = $id_invoice;
-                    $description = $desc_billing_postpaid;
-                    $amount = abs($Customer['credit']+$lastpostpaid_amount);
-                    $total = $total + $amount;
-                    $total_vat =$total_vat + round($amount *(1+($vat/100)),2);
-                    $instance_table = new Table("cc_invoice_item");
-                    $values = ["id_invoice" => $id_invoice, "price" => $amount, "vat" => $vat, "description" => $description, "id_ext" => $id_billing, "type_ext" => "POSTPAID"];
-                    $instance_table->addRow($values);
-                    if ($verbose_level >= 2)
-                        echo "\n Add Invoice Item :> " . json_encode($values);
-                }
-            }
+        if ($verbose_level >= 2)
+            echo "\n Go to next Customer";
 
-            if (!empty($last_invoice)) {
-                $param_update_billing = ["id_invoice" => $last_invoice];
-                $clause_update_billing = ["id" => $id_billing];
-                $billing_table->updateRow($param_update_billing, $clause_update_billing);
-                if ($verbose_level >= 2)
-                    echo "\n Update Billing :> " . json_encode($param_update_billing) . " WHERE " . json_encode($clause_update_billing);
-            }
-
-            // Send a mail for invoice to pay
-            if (!empty($last_invoice)) {
-                $total = round($total,2);
-                try {
-                    $mail = new Mail(Mail::$TYPE_INVOICE_TO_PAY, $card_id);
-                    $mail->replaceInEmail(Mail::$INVOICE_REFERENCE_KEY, $invoice_reference);
-                    $mail->replaceInEmail(Mail::$INVOICE_TITLE_KEY, $invoice_title);
-                    $mail->replaceInEmail(Mail::$INVOICE_DESCRIPTION_KEY, $invoice_description);
-                    $mail->replaceInEmail(Mail::$INVOICE_TOTAL_KEY, $total);
-                    $mail->replaceInEmail(Mail::$INVOICE_TOTAL_VAT_KEY, $total_vat);
-                    $mail->send();
-                    if ($verbose_level >= 2)
-                        echo "\n Email sent for invoice to pay, card id :> ".$card_id;
-                } catch (A2bMailException $e) {
-                    $error_msg = $e->getMessage();
-                    if ($verbose_level >= 1)
-                        echo "Sent mail error : ".$error_msg;
-                }
-            }
-
-            if ($verbose_level >= 2)
-                echo "\n Go to next Customer";
-
-        } // END foreach($resmax as $Customer)
-    }
+    } // END foreach($resmax as $Customer)
 }
 
-if ($verbose_level >= 1)
+if ($verbose_level >= 1) {
     echo "------- CRONT BILLING END ------- \n";
+}
 
 write_log($cron_logfile, basename(__FILE__) . ' line:' . __LINE__ . "------- CRONT BILLING END -------");

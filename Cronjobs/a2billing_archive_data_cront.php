@@ -2,8 +2,8 @@
 <?php
 
 use A2billing\A2Billing;
+use A2billing\Connection;
 use A2billing\ProcessHandler;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -71,29 +71,40 @@ if ($pH->isActive()) {
     $pH->activate();
 }
 
-$A2B = new A2Billing($idconfig);
+$A2B = new A2Billing();
 $logfile_cront_archive = $A2B->config['log-files']['cront_archive_data'] ?? "/tmp/a2billing_cront_archive_log";
 
 write_log($logfile_cront_archive, basename(__FILE__) . ' line:' . __LINE__ . "[#### ARCHIVING DATA BEGIN ####]");
 
-if (!$A2B->DbConnect()) {
+try {
+    $db = Connection::getConnection();
+} catch (Throwable) {
+    $db = null;
+}
+
+if (!$db) {
     echo "[Cannot connect to the database]\n";
     write_log($logfile_cront_archive, basename(__FILE__) . ' line:' . __LINE__ . "[Cannot connect to the database]");
+    exit(1);
+}
+
+$prior_x_month = (int)$A2B->config["backup"]['archive_call_prior_x_month'];
+
+$func_fields = ["sessionid", "uniqueid", "card_id", "nasipaddress", "starttime", "stoptime", "sessiontime", "calledstation", "sessionbill", "id_tariffgroup", "id_tariffplan", "id_ratecard", "id_trunk", "sipiax", "src", "id_did", "buycost", "id_card_package_offer", "real_sessiontime", "dnid", "terminatecauseid", "destination", "a2b_custom1", "a2b_custom2"];
+try {
+    $interval = new DateInterval("P{$prior_x_month}M");
+    $time = (new DateTimeImmutable())->sub($interval);
+    $db->beginTransaction();
+    $db->table("cc_call_archive")
+        ->insertUsing(
+            $func_fields,
+            $db->table("cc_call")->select($func_fields)->where("starttime", "<=", $time)
+        );
+    $db->table("cc_call")->where("starttime", "<=", $time)->delete();
+    $db->commit();
+    write_log($logfile_cront_archive, basename(__FILE__) . ' line:' . __LINE__ . "[#### ARCHIVING DATA END ####]");
+} catch (Throwable $e) {
+    echo "[Error archiving data]\n";
+    write_log($logfile_cront_archive, basename(__FILE__) . ' line:' . __LINE__ . "[Error archiving data]");
     exit;
 }
-
-$prior_x_month = $A2B->config["backup"]['archive_call_prior_x_month'];
-
-$interval = "$prior_x_month MONTH";
-if ($A2B->config["database"]["dbtype"] === "postgres") {
-    $interval = "'$interval'";
-}
-
-$func_fields = "sessionid, uniqueid, card_id, nasipaddress, starttime, stoptime, sessiontime, calledstation, sessionbill, id_tariffgroup, id_tariffplan, id_ratecard, id_trunk, sipiax, src, id_did, buycost, id_card_package_offer, real_sessiontime, dnid, terminatecauseid, destination, a2b_custom1, a2b_custom2";
-(new Table("cc_call_archive"))->addRowsFromSelect(new Table("cc_call", $func_fields), [
-    "starttime" => [
-        "<=", "CURRENT_TIMESTAMP - INTERVAL $interval"
-    ]
-]);
-(new Table("cc_call"))->deleteRow(["starttime" => ["<=", "CURRENT_TIMESTAMP - INTERVAL $interval"]]);
-write_log($logfile_cront_archive, basename(__FILE__) . ' line:' . __LINE__ . "[#### ARCHIVING DATA END ####]");

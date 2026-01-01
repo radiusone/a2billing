@@ -2,9 +2,9 @@
 <?php
 
 use A2billing\A2Billing;
+use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\ProcessHandler;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -83,113 +83,114 @@ $verbose_level = 1;
 $timing = 6;
 $group = 20;
 
-$A2B = new A2Billing($idconfig);
+$A2B = new A2Billing();
 $logfile_cront_batch = $A2B->config['log-files']['cront_batch_process'] ?? "/tmp/a2billing_cront_batch_log";
 
 write_log($logfile_cront_batch, basename(__FILE__) . ' line:' . __LINE__ . "[#### BATCH BEGIN ####]");
 
-if (!$A2B->DbConnect()) {
-    echo "[Cannot connect to the database]\n";
-    write_log($logfile_cront_batch, basename(__FILE__) . ' line:' . __LINE__ . "[Cannot connect to the database]");
-    exit;
+try {
+    $db = Connection::getConnection();
+} catch (Throwable) {
+    $db = null;
 }
 
-$tab_day = array (
-    1 => 'monday',
-    'tuesday',
-    'wednesday',
-    'thursday',
-    'friday',
-    'saturday',
-    'sunday'
-);
-$num_day = date('N');
-$name_day = $tab_day[$num_day];
+if (!$db) {
+    echo "[Cannot connect to the database]\n";
+    write_log($logfile_cront_batch, basename(__FILE__) . ' line:' . __LINE__ . "[Cannot connect to the database]");
+    exit(1);
+}
 
-$instance_table = new Table(
-    "cc_phonenumber AS pn",
-    ["pn.id AS cc_phonenumber_id", "pn.number", "c.id AS cc_campaign_id", "c.frequency", "c.forward_number", "c.id_cid_group", "cc_card.id AS cc_card_id", "cc_card.tariff", "cc_card.username"],
-    [
-        "cc_phonebook AS pb" => ["pn.id_phonebook", "pb.id"],
-        "cc_campaign_phonebook AS cpb" => ["cpb.id_phonebook", "pn.id"],
-        "cc_campaign AS c" => ["cpb.id_campaign", "c.id"],
-        "cc_card" => ["c.id_card", "cc_card.id"],
-    ]
-);
-$conditions = [
-    "c.status" => 1,
-    "c.startingdate" => ["<=", "CURRENT_TIMESTAMP"],
-    "c.expirationdate" => [">", "CURRENT_TIMESTAMP"],
-    "`c`.`$name_day`" => 1,
-    "c.daily_start_time" => ["<=", "CURRENT_TIME"],
-    "c.daily_stop_time" => [">", "CURRENT_TIME"],
-    "pn.status" => 1,
-];
-$result_phonenumbers_all = $instance_table->getRows($conditions);
-if (!$result_phonenumbers_all) {
-    if ($verbose_level >= 1)
+$now = new DateTimeImmutable();
+$num_day = $now->format("N");
+$name_day = ["", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"][$num_day];
+
+$result_phonenumbers_all = $db->table("cc_phonenumber", "pn")
+    ->select(["pn.id AS cc_phonenumber_id", "pn.number", "c.id AS cc_campaign_id", "c.frequency", "c.forward_number", "c.id_cid_group", "cc_card.id AS cc_card_id", "cc_card.tariff", "cc_card.username"])
+    ->leftJoin("cc_phonebook AS pb", "pn.id_phonebook", "pb.id")
+    ->leftJoin("cc_campaign_phonebook AS cpb", "cpb.id_phonebook", "pn.id")
+    ->leftJoin("cc_campaign AS c", "cpb.id_campaign", "c.id")
+    ->leftJoin("cc_card", "c.id_card", "cc_card.id")
+    ->where([
+        "c.status" => 1,
+        ["c.startingdate", "<=", $now],
+        ["c.expirationdate", ">", $now],
+        "c.$name_day" => 1,
+        ["c.daily_start_time", "<=", $now->format("H:i:s")],
+        ["c.daily_stop_time", ">", $now->format("H:i:s")],
+        "pn.status" => 1,
+    ])
+    ->get();
+
+if (count($result_phonenumbers_all) === 0) {
+    if ($verbose_level >= 1) {
         echo "[No phonenumbers to call now]\n";
+    }
     write_log($logfile_cront_batch, basename(__FILE__) . ' line:' . __LINE__ . "[No phonenumbers to call now]");
-    exit ();
+    exit();
 }
 
 $nb_record = count($result_phonenumbers_all);
 $nbpage = (ceil($nb_record / $group));
-$balance_table = new Table(
-    "cc_card AS c",
-    ["flatrate", "credit"],
-    [
-        "cc_card_group AS cg" => ["c.id_group", "cg.id"],
-        "cc_campaignconf_cardgroup AS cc_cg" => ["cg.id", "cc_cg.id_card_group"],
-        "cc_campaign_config AS cc" => ["cc_cg.id_campaign_config", "cc.id"]
-    ]
-);
-$status_table = new Table("cc_campaign_phonestatus", ["status", "lastuse"]);
+$balance_table = $db->table("cc_card", "c")
+    ->select(["flatrate", "credit"])
+    ->leftJoin("cc_card_group AS cg", "c.id_group", "cg.id")
+    ->leftJoin("cc_campaignconf_cardgroup AS cc_cg", "cg.id", "cc_cg.id_card_group")
+    ->leftJoin("cc_campaign_config AS cc", "cc_cg.id_campaign_config", "cc.id");
+$status_table = $db->table("cc_campaign_phonestatus")->select(["status", "lastuse"]);
 // BROWSE THROUGH THE CARD TO APPLY THE CHECK ACCOUNT SERVICE
 for ($page = 0; $page < $nbpage; $page++) {
 
-    $result_phonenumbers = array_slice($result_phonenumbers_all, $page * $group, $group);
+    $result_phonenumbers = $result_phonenumbers_all->slice($page * $group, $group);
 
     foreach ($result_phonenumbers as $phone) {
 
-        if ($verbose_level >= 1)
+        if ($verbose_level >= 1) {
             print_r($phone);
+        }
 
         // check the balance
-        $result_balance = $balance_table->getRow(["c.id" => $phone["cc_card_id"]]);
+        $result_balance = $balance_table->clone()->where("c.id", $phone["cc_card_id"])->first();
 
         if ($result_balance) {
             if ($result_balance["credit"] < $result_balance["flatrate"]) {
                 write_log($logfile_cront_batch, basename(__FILE__) . ' line:' . __LINE__ . "[ user $phone[username] don't have engouh credit ]");
-                if ($verbose_level >= 1)
+                if ($verbose_level >= 1) {
                     echo "\n[ Error : Can't send callback -> user $phone[username] don't have enough credit ]";
+                }
                 continue;
             }
 
         } else {
             write_log($logfile_cront_batch, basename(__FILE__) . ' line:' . __LINE__ . "[ user $phone[username] don't have a group correctly defined ]");
-            if ($verbose_level >= 1)
+            if ($verbose_level >= 1) {
                 echo "\n[ Error : Can't send callback -> user $phone[username] don't have a group correctly defined ]";
+            }
             continue;
         }
 
         //test if you have to inject it again
-        $result_search_phonestatus = $status_table->getRow(["id_campaign" => $phone["cc_campaign_id"], "id_phonenumber" => $phone["cc_phonenumber_id"]]);
+        $result_search_phonestatus = $status_table->clone()
+            ->where(["id_campaign" => $phone["cc_campaign_id"], "id_phonenumber" => $phone["cc_phonenumber_id"]])
+            ->first();
 
-        if ($verbose_level >= 1)
-            echo "\nSEARCH PHONESTATUS RESULT : " . print_r($result_search_phonestatus);
+        if ($verbose_level >= 1) {
+            echo "\nSEARCH PHONESTATUS RESULT : " . print_r($result_search_phonestatus, 1);
+        }
 
         //check callback spool
         $action = '';
         if ($result_search_phonestatus) {
-            $lastuse = DateTime::createFromFormat("Y-m-d H:i:s", $result_search_phonestatus["lastuse"]);
+            $lastuse = DateTimeImmutable::createFromFormat("Y-m-d H:i:s", $result_search_phonestatus["lastuse"]);
             $action = "update";
             //Filter phone number holded and stoped
-            if ($result_search_phonestatus["status"] == 1 || $result_search_phonestatus["status"] == 2)
+            if ($result_search_phonestatus["status"] == 1 || $result_search_phonestatus["status"] == 2) {
                 continue;
-            if ($lastuse >= (new DateTime())->modify("-$phone[frequency] minutes")) {
-                if ($verbose_level >= 1)
+            }
+            $interval = new DateInterval("P{$phone["frequency"]}M");
+            if ($lastuse >= $now->sub($interval)) {
+                if ($verbose_level >= 1) {
                     echo "\n[  Can't send callback -> number $phone[number] is not in the frequency ]";
+                }
                 continue;
             }
 
@@ -244,14 +245,13 @@ for ($page = 0; $page < $nbpage; $page++) {
                     $ipaddress = str_replace("%cardnumber%", $A2B->cardnumber, $ipaddress);
                     $ipaddress = str_replace("%dialingnumber%", $prefix . $destination, $ipaddress);
 
+                    $dialparams = "";
                     if ($pos_dialingnumber !== false) {
                         $dialstr = "$tech/$ipaddress" . $dialparams;
+                    } elseif ($A2B->agiconfig['switchdialcommand'] == 1) {
+                        $dialstr = "$tech/$prefix$destination@$ipaddress" . $dialparams;
                     } else {
-                        if ($A2B->agiconfig['switchdialcommand'] == 1) {
-                            $dialstr = "$tech/$prefix$destination@$ipaddress" . $dialparams;
-                        } else {
-                            $dialstr = "$tech/$ipaddress/$prefix$destination" . $dialparams;
-                        }
+                        $dialstr = "$tech/$ipaddress/$prefix$destination" . $dialparams;
                     }
 
                     //ADDITIONAL PARAMETER 			%dialingnumber%,	%cardnumber%
@@ -271,7 +271,10 @@ for ($page = 0; $page < $nbpage; $page++) {
                     //default callerid
                     $callerid = '111111111';
                     $cidgroupid = $phone["id_cid_group"];
-                    $callerid = (new Table("cc_outbound_cid_list", ["cid"]))->getValue(["activated" => 1, "outbound_cid_group" => $cidgroupid], ["RAND()"]);
+                    $callerid = $db->table("cc_outbound_cid_list")
+                        ->where(["activated" => 1, "outbound_cid_group" => $cidgroupid])
+                        ->inRandomOrder()
+                        ->value("cid");
 
                     $account = Customer::card();
 
@@ -281,44 +284,48 @@ for ($page = 0; $page < $nbpage; $page++) {
                     $num_attempt = 0;
                     $variable = "CALLED=$destination|USERNAME=$phone[username]|USERID=$phone[cc_card_id]|CBID=$uniqueid|PHONENUMBER_ID=" . $phone['cc_phonenumber_id'] . "|CAMPAIGN_ID=" . $phone['cc_campaign_id'];
 
-                    $instance_table = new Table("cc_callback_spool");
+                    $instance_table = $db->table("cc_callback_spool");
                     $values = compact("uniqueid", "status", "server_ip", "num_attempt", "channel", "exten", "context", "priority", "variable", "id_server_group", "account", "callerid");
                     $values["callback_time"] = date("Y-m-d H:i:s");
                     $values["timeout"] = 30000;
-                    $instance_table->addRow($values, "id", $res);
+                    $res = $instance_table->insertGetId($values);
 
                     if (!$res) {
-                        if ($verbose_level >= 1)
+                        if ($verbose_level >= 1) {
                             echo "[Cannot insert the callback request in the spool!]";
+                        }
                     } else {
-                        if ($verbose_level >= 1)
+                        if ($verbose_level >= 1) {
                             echo "[Your callback request has been queued correctly!]";
+                        }
 
-                        if ($action == "update")
-                            $res = (new Table("cc_campaign_phonestatus"))
-                                ->updateRow(
-                                    ["id_callback" => $uniqueid, "lastuse" => "CURRENT_TIMESTAMP"],
-                                    ["id_phonenumber" => $phone["cc_phonenumber_id"], "id_campaign" => $phone["cc_campaign_id"]]
-                                );
-                        else
-                            $res = (new Table("cc_campaign_phonestatus"))
-                                ->addRow(
-                                    ["id_phonenumber" => $phone["cc_phonenumber_id"], "id_campaign" => $phone["cc_campaign_id"], "id_callback" => $res, "status" => 0]
-                                );
+                        if ($action == "update") {
+                            $res = $db->table("cc_campaign_phonestatus")
+                                ->where([
+                                    "id_phonenumber" => $phone["cc_phonenumber_id"],
+                                    "id_campaign" => $phone["cc_campaign_id"],
+                                ])
+                                ->update(["id_callback" => $uniqueid, "lastuse" => $now]);
+                        } else {
+                            $res = $db->table("cc_campaign_phonestatus")
+                                ->insert([
+                                    "id_phonenumber" => $phone["cc_phonenumber_id"],
+                                    "id_campaign" => $phone["cc_campaign_id"],
+                                    "id_callback" => $res,
+                                    "status" => 0,
+                                ]);
+                        }
                     }
 
-                } else {
-                    if ($verbose_level >= 1)
-                        echo "Error : You don t have enough credit to call you back!";
+                } elseif ($verbose_level >= 1) {
+                    echo "Error : You don t have enough credit to call you back!";
                 }
-            } else {
-                if ($verbose_level >= 1)
-                    echo "Error : There is no route to call back your phonenumber!";
+            } elseif ($verbose_level >= 1) {
+                echo "Error : There is no route to call back your phonenumber!";
             }
 
-        } else {
-            if ($verbose_level >= 1)
-                echo "Error : " . $error_msg;
+        } elseif ($verbose_level >= 1) {
+            echo "Error : " . $error_msg;
         }
 
         // End Search Road....
