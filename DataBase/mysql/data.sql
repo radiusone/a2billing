@@ -197,8 +197,6 @@ INSERT INTO `cc_config` (`config_title`, `config_key`, `config_value`, `config_d
     ('Context Campaign\'s Callback','context_campaign_callback','a2billing-campaign-callback','Context to use in Campaign of Callback',0,NULL,2),
     ('Default Context forward Campaign\'s Callback ','default_context_campaign','campaign','Context to use by default to forward the call in Campaign of Callback',0,NULL,2),
     ('Card Show Fields','card_show_field_list','id,username,useralias,lastname,id_group,id_agent,credit,tariff, status, language','Fields to show in Customer. Order is important.<br/>You can use:<br/> id,username, useralias, lastname, id_group, id_agent, credit, tariff, status, language, inuse, currency, sip_buddy, iax_buddy, nbused, firstname, email, discount, callerid, id_seria, serial',0,NULL,8),
-    ('Enable CDR local cache','cache_enabled','0','If you want enabled the local cache to save the CDR in a SQLite Database.',1,'yes,no',1),
-    ('Path for the CDR cache file','cache_path','/etc/asterisk/cache_a2billing','Defined the file that you want use for the CDR cache to save the CDR in a local SQLite database.',0,NULL,1),
     ('PNL Pay Phones','report_pnl_pay_phones','(0.02,0.06)','Info for PNL report. Must be in form \"(number1,buycost,sellcost),(number2,buycost,sellcost)\", number can be prefix, i.e 1800',0,NULL,8),
     ('PNL Toll Free Numbers','report_pnl_toll_free','(0.1,0),(0.1,0)','Info for PNL report. must be in form \"(number1,buycost,sellcost),(number2,buycost,sellcost)\", number can be prefix, i.e 1800',0,NULL,8),
     ('Verbosity','verbosity_level','0','0 = FATAL; 1 = ERROR; WARN = 2 ; INFO = 3 ; DEBUG = 4',0,NULL,11),

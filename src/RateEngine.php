@@ -1180,15 +1180,6 @@ class RateEngine
         $id_card_package_offer = $id_card_package_offer < 1 ? null : $id_card_package_offer;
         $calldestination = (!is_numeric($calldestination)) ? 'DEFAULT' : $calldestination;
 
-        if ($this->a2b->config["global"]['cache_enabled']) {
-            // sqlite syntax
-            $starttime = " datetime(strftime('%s', 'now') - ?, 'unixepoch', 'localtime')";
-            $stoptime = "datetime('now', 'localtime')";
-        } else {
-            $starttime = "SUBDATE(CURRENT_TIMESTAMP, INTERVAL ? SECOND) ";
-            $stoptime = "now()";
-        }
-        $QUERY_COLUMN = "";
         $QUERY = <<<SQL
             INSERT INTO cc_call (
                 uniqueid, sessionid, card_id, nasipaddress, starttime, sessiontime, real_sessiontime, calledstation, 
@@ -1196,7 +1187,7 @@ class RateEngine
                 sipiax, buycost, id_card_package_offer, dnid, destination {$this->a2b->CDR_CUSTOM_SQL}
             )
             VALUES (
-                ?, ?, ?, ?, $starttime, ?, ?, ?, ?, $stoptime, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? {$this->a2b->CDR_CUSTOM_VAL}
+                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? {$this->a2b->CDR_CUSTOM_VAL}
             )
             SQL;
         $params = [
@@ -1204,11 +1195,12 @@ class RateEngine
             $this->a2b->channel,
             $card_id,
             $this->a2b->hostname,
-            $sessiontime,
+            (new DateTime())->sub(new \DateInterval("P{$sessiontime}S"))->format("Y-m-d H:i:s"),
             $sessiontime,
             $real_sessiontime,
             $calledstation,
             $terminatecauseid,
+            (new DateTime())->format("Y-m-d H:i:s"),
             a2b_round($cost * -1),
             $id_tariffgroup,
             $id_tariffplan,
@@ -1221,26 +1213,13 @@ class RateEngine
             $this->a2b->dnid, $calldestination,
         ];
 
-        if ($this->a2b->config["global"]['cache_enabled']) {
-             //insert query in the cache system
-            try {
-                $sqlite = new PDO("sqlite:" . $this->a2b->config["global"]["cache_path"]);
-                if (!file_exists($this->a2b->config["global"]['cache_path'])) {
-                    $sqlite->exec("CREATE TABLE cc_call ($QUERY_COLUMN)");
-                }
-                $sqlite->exec($QUERY);
-            } catch (Throwable $e) {
-                $this->a2b->debug(A2Billing::ERROR, "[Error to connect to cache : " . $e->getMessage() . "]\n");
-            }
-        } else {
-            $result = $this->a2b->DBHandle->insert($QUERY, $params);
-            $this->a2b->debug(
-                A2Billing::INFO,
-                "[CC_asterisk_stop : SQL: DONE : result=" . ($result ? "ok"
-                    : $this->a2b->DBHandle->getPdo()->errorCode()) . "]"
-            );
-            $this->a2b->debug(A2Billing::DEBUG, "[CC_asterisk_stop : SQL: $QUERY]");
-        }
+        $result = $this->a2b->DBHandle->insert($QUERY, $params);
+        $this->a2b->debug(
+            A2Billing::INFO,
+            "[CC_asterisk_stop : SQL: DONE : result=" . ($result ? "ok"
+                : $this->a2b->DBHandle->getPdo()->errorCode()) . "]"
+        );
+        $this->a2b->debug(A2Billing::DEBUG, "[CC_asterisk_stop : SQL: $QUERY]");
 
         if ($sessiontime > 0) {
             //Update the global credit
