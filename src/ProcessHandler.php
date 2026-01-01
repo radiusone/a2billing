@@ -2,8 +2,6 @@
 
 namespace A2billing;
 
-/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
-
 /**
  * This file is part of A2Billing (http://www.a2billing.net/)
  *
@@ -35,62 +33,51 @@ namespace A2billing;
  *
 **/
 
-class ProcessHandler
+readonly class ProcessHandler
 {
-    private $pidfile;
-
-    public function __construct($pidfile = null)
+    public function __construct(protected string|null $pidfile = null)
     {
-        $this->pidfile = $pidfile;
     }
 
-    public function isActive()
+    /**
+     * Checks if the current process is running, optionally activating it if not
+     *
+     * @param bool $activate
+     * @return bool
+     */
+    public function isActive(bool $activate = true): bool
     {
-        $pid = $this->getPID();
 
-        if ($pid == null) {
-            $ret = false;
-        } else {
-            $ret = posix_kill ( $pid, 0 );
-        }
+        $ret = ($pid = $this->getPID()) && posix_kill($pid, 0);
 
-        if ($ret == false) {
+        if ($ret === false && $activate) {
             $this->activate();
         }
 
         return $ret;
     }
 
-    public function activate()
+    /**
+     * Writes the PID for the current process to a pidfile
+     *
+     * @return void
+     */
+    public function activate(): void
     {
-        $pid = $this->getPID();
-
-        if ($pid != null && $pid == getmypid()) {
-            return "Already running!\n";
-        } else {
-            $fp = fopen($this->pidfile,"w+");
-
-            if ($fp) {
-                if (!fwrite($fp,"<"."?php\n\$pid = ".getmypid().";\n?".">")) {
-                    die("Can not create pid file!\n");
-                }
-
-                fclose($fp);
-            } else {
+        if ($this->getPID() !== ($pid = getmypid())) {
+            if (!file_put_contents($this->pidfile,$pid)) {
                 die("Can not create pid file!\n");
             }
         }
     }
 
-    public function getPID()
+    /**
+     * Get the PID for the current process
+     *
+     * @return int|null the PID or null on failure
+     */
+    public function getPID(): int|null
     {
-        if (file_exists($this->pidfile)) {
-            require($this->pidfile);
-
-            return $pid;
-        } else {
-            return null;
-        }
+        return intval(file_get_contents($this->pidfile)) ?: null;
     }
-
 }
