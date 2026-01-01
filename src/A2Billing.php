@@ -5,7 +5,6 @@ namespace A2billing;
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 use A2billing\PhpAgi\Agi;
-use ADOConnection;
 use const DEBUG_BACKTRACE_IGNORE_ARGS;
 
 /**
@@ -69,8 +68,7 @@ class A2Billing
     /** @var string */
     public string $CallerID = "";
 
-    /** @var bool|ADOConnection */
-    public $DBHandle;
+    public \Illuminate\Database\Connection $DBHandle;
 
     /** @var string the file name to store the logs */
     public string $log_file = '';
@@ -201,7 +199,7 @@ class A2Billing
         $this->idconfig = $idconfig ?? 1;
         $this->load_conf($optconfig);
         // populate the $DBHandle property
-        $this->DbConnect();
+        $this->DBHandle = Connection::getConnection();
     }
 
     /* Init */
@@ -321,10 +319,9 @@ class A2Billing
         ];
         $this->config["database"] = array_merge($default, $this->config["database"]);
 
-        $this->DbConnect();
         $this->currencies_list = $this->get_currencies();
         $query = "SELECT config_key, config_value, group_title, config_valuetype FROM cc_config LEFT JOIN cc_config_group ccg ON config_group_id = ccg.id";
-        $config_res = $this->DBHandle->GetAll($query);
+        $config_res = $this->DBHandle->select($query);
         if ($config_res === false || $config_res === []) {
             echo 'Error : cannot load conf : load_conf_db';
             exit;
@@ -738,7 +735,7 @@ class A2Billing
         }
         $params = [$upd_balance, $this->username];
 
-        $this->DBHandle->Execute($query, $params);
+        $this->DBHandle->update($query, $params);
         $this->debug(self::DEBUG, "Query: $query", $params);
     }
 
@@ -756,7 +753,7 @@ class A2Billing
         } elseif ($this->credit <= -$this->creditlimit) {
             $query = "SELECT id_cc_package_offer FROM cc_tariffgroup WHERE id = ?";
             $params = [$this->tariff];
-            $val = $this->DBHandle->GetOne($query, $params);
+            $val = $this->DBHandle->scalar($query, $params);
             $this->debug(self::DEBUG, "Query: $query", $params, $val);
             return (int)$val > 0;
         } else {
@@ -811,7 +808,7 @@ class A2Billing
         if (strlen($this->destination) <= 2 && is_numeric($this->destination) && $this->destination >= 0) {
             $query = "SELECT phone FROM cc_speeddial WHERE id_cc_card = ? AND speeddial = ?";
             $params = [$this->id_card, $this->destination];
-            $val = $this->DBHandle->GetOne($query, $params);
+            $val = $this->DBHandle->scalar($query, $params);
             $this->debug(self::DEBUG, "Query: $query", $params, $val);
             if ($val !== false && !is_null($val)) {
                 $this->destination = $val;
@@ -831,7 +828,7 @@ class A2Billing
                 $query .= " OR ? LIKE number";
                 $params[] = $this->apply_rules($this->destination);
             }
-            $count = $this->DBHandle->GetOne($query, $params);
+            $count = $this->DBHandle->scalar($query, $params);
             $this->debug(self::DEBUG, "Query: $query", $params, $count);
 
             if (($this->restriction === 1 && $count !== false && !is_null($count)) || ($this->restriction === 2 && is_null($count))) {
@@ -858,7 +855,7 @@ class A2Billing
                     AND (cc_did.expirationdate > CURRENT_TIMESTAMP OR cc_did.expirationdate IS NULL)
                 SQL;
             $params = [$this->destination];
-            $row = $this->DBHandle->GetRow($query, $params);
+            $row = $this->DBHandle->selectOne($query, $params);
             $this->debug(self::DEBUG, "Query: $query", $params, $row);
             if ($row !== false && $row !== []) {
                 $iscall2did = true;
@@ -901,7 +898,7 @@ class A2Billing
                 WHERE cc_card.id = ?
                 SQL;
             $params = [$this->id_card];
-            $row = $this->DBHandle->GetRow($query, $params);
+            $row = $this->DBHandle->selectOne($query, $params);
             $this->debug(self::DEBUG, "Query: $query", $params, $row);
             if ($row !== false && $row !== []) {
                 [$freetime, $packagetype, $billingtype, $startday, $id_cc_package_offer] = $row;
@@ -1071,7 +1068,7 @@ class A2Billing
 
         $query = "SELECT name, cc_card.username FROM cc_iax_buddies JOIN cc_card ON id_cc_card = cc_card.id WHERE useralias = ?";
         $params = [$this->destination];
-        $row = $this->DBHandle->GetRow($query, $params);
+        $row = $this->DBHandle->selectOne($query, $params);
         $this->debug(self::DEBUG, "Query: $query", $params, $row);
 
         if ($row !== false && $row !== []) {
@@ -1082,7 +1079,7 @@ class A2Billing
         $card_alias = $this->destination;
         $query = "SELECT name, cc_card.username FROM cc_sip_buddies JOIN cc_card ON id_cc_card = cc_card.id WHERE useralias = ?";
         $params = [$this->destination];
-        $row = $this->DBHandle->GetRow($query, $params);
+        $row = $this->DBHandle->selectOne($query, $params);
         $this->debug(self::DEBUG, "Query: $query", $params, $row);
 
         if ($row !== false && $row !== []) {
@@ -1176,7 +1173,7 @@ class A2Billing
                     )
                     SQL;
                 $params = [$this->uniqueid, $this->channel, $this->id_card, $this->hostname, $answeredtime, $answeredtime, $card_alias, $terminatecauseid, $this->CallerID];
-                $this->DBHandle->Execute($query, $params);
+                $this->DBHandle->insert($query, $params);
                 $this->debug(self::DEBUG, "Query: $query", $params);
 
                 return 1;
@@ -1325,19 +1322,19 @@ class A2Billing
                         SQL;
 
                     $params = [$this->uniqueid, $this->channel, $this->id_card, $this->hostname, $answeredtime, $answeredtime, $dest["destination"], $terminatecauseid, $this->CallerID];
-                    $this->DBHandle->Execute($query, $params);
+                    $this->DBHandle->insert($query, $params);
                     $this->debug(self::DEBUG, "Query: $query", $params);
 
                     // CC_DID & CC_DID_DESTINATION - cc_did.id, cc_did_destination.id
                     $query = "UPDATE cc_did SET secondusedreal = secondusedreal + ? WHERE id = ?";
                     $params = [$answeredtime, $dest["id_cc_did"]];
-                    $this->DBHandle->Execute($query, $params);
+                    $this->DBHandle->update($query, $params);
                     $this->debug(self::DEBUG, "Query: $query", $params);
                     $this->debug(self::INFO, "UPDATE DID");
 
                     $query = "UPDATE cc_did_destination SET secondusedreal = secondusedreal + ? WHERE id = ?";
                     $params = [$answeredtime, $dest["id"]];
-                    $this->DBHandle->Execute($query, $params);
+                    $this->DBHandle->update($query, $params);
                     $this->debug(self::DEBUG, "Query: $query", $params);
                     $this->debug(self::INFO, "UPDATE DID_DESTINATION");
 
@@ -1378,13 +1375,13 @@ class A2Billing
                     // CC_DID & CC_DID_DESTINATION - cc_did.id, cc_did_destination.id
                     $query = "UPDATE cc_did SET secondusedreal = secondusedreal + ? WHERE id = ?";
                     $params = [$this->rateEngine->answeredtime, $dest["id_cc_did"]];
-                    $this->DBHandle->Execute($query, $params);
+                    $this->DBHandle->update($query, $params);
                     $this->debug(self::DEBUG, "Query: $query", $params);
                     $this->debug(self::DEBUG, "UPDATE DID");
 
                     $query = "UPDATE cc_did_destination SET secondusedreal = secondusedreal + ? WHERE id = ?";
                     $params = [$this->rateEngine->answeredtime, $dest["id"]];
-                    $this->DBHandle->Execute($query, $params);
+                    $this->DBHandle->update($query, $params);
                     $this->debug(self::DEBUG, "Query: $query", $params);
                     $this->debug(self::DEBUG, "UPDATE DID_DESTINATION");
 
@@ -1595,7 +1592,7 @@ class A2Billing
                         $cost,
                         $this->CallerID,
                     ];
-                    $this->DBHandle->Execute($query, $params);
+                    $this->DBHandle->insert($query, $params);
                     $this->debug(self::DEBUG, "Query: $query", $params);
 
                     // Update the account
@@ -1606,18 +1603,18 @@ class A2Billing
                         WHERE username = ?
                         SQL;
                     $params = [a2b_round(abs($cost)), $card_number];
-                    $this->DBHandle->Execute($query, $params);
+                    $this->DBHandle->update($query, $params);
                     $this->debug(self::DEBUG, "Query: $query", $params);
 
                     // CC_DID & CC_DID_DESTINATION - cc_did.id, cc_did_destination.id
                     $query = "UPDATE cc_did SET secondusedreal = secondusedreal + ? WHERE id = ?";
                     $params = [$answeredtime, $dest["id_cc_did"]];
-                    $this->DBHandle->Execute($query, $params);
+                    $this->DBHandle->update($query, $params);
                     $this->debug(self::DEBUG, "Query: $query", $params);
 
                     $query = "UPDATE cc_did_destination SET secondusedreal = secondusedreal + ? WHERE id = ?";
                     $params = [$answeredtime, $dest["id"]];
-                    $this->DBHandle->Execute($query, $params);
+                    $this->DBHandle->update($query, $params);
                     $this->debug(self::DEBUG, "Query: $query", $params);
 
                     #This is a call from user to DID
@@ -1660,12 +1657,12 @@ class A2Billing
                     // CC_DID & CC_DID_DESTINATION - cc_did.id, cc_did_destination.id
                     $query = "UPDATE cc_did SET secondusedreal = secondusedreal + ? WHERE id = ?";
                     $params = [$this->rateEngine->answeredtime, $dest["id_cc_did"]];
-                    $this->DBHandle->Execute($query, $params);
+                    $this->DBHandle->update($query, $params);
                     $this->debug(self::DEBUG, "Query: $query", $params);
 
                     $query = "UPDATE cc_did_destination SET secondusedreal = secondusedreal + ? WHERE id = ?";
                     $params = [$this->rateEngine->answeredtime, $dest["id"]];
-                    $this->DBHandle->Execute($query, $params);
+                    $this->DBHandle->update($query, $params);
                     $this->debug(self::DEBUG, "Query: $query", $params);
 
                     $answeredtime = (int)($this->agi->get_variable("ANSWEREDTIME", true) ?? 0);
@@ -1694,7 +1691,7 @@ class A2Billing
                         )
                         SQL;
                     $params = [$this->uniqueid, $this->channel, $this->id_card, $this->hostname, $answeredtime, $answeredtime, $cdr_dest, $terminatecauseid, $cost, $this->CallerID];
-                    $this->DBHandle->Execute($query, $params);
+                    $this->DBHandle->insert($query, $params);
                     $this->debug(self::DEBUG, "Query: $query", $params);
 
                     $query = <<<SQL
@@ -1704,7 +1701,7 @@ class A2Billing
                         WHERE username = ?
                         SQL;
                     $params = [a2b_round(abs($cost)), $card_number];
-                    $this->DBHandle->Execute($query, $params);
+                    $this->DBHandle->update($query, $params);
                     $this->debug(self::DEBUG, "Query: $query", $params);
 
                     #This is a call from user to DID, we dont want to charge the A-leg
@@ -1831,7 +1828,7 @@ class A2Billing
                 // update card
                 $query = "UPDATE cc_card SET credit= credit - ? WHERE username = ?";
                 $params = [a2b_round($aleg_retail_cost), $this->username];
-                $this->DBHandle->Execute($query, $params);
+                $this->DBHandle->update($query, $params);
                 $this->debug(self::DEBUG, "Query: $query", $params);
                 $this->debug(self::INFO, "[DID CALL - (id_card=$this->id_card)]");
             }
@@ -1865,7 +1862,7 @@ class A2Billing
             $this->dnid
         ];
 
-        $this->DBHandle->Execute($query, $params);
+        $this->DBHandle->insert($query, $params);
         $this->debug(self::DEBUG, "Query: $query", $params);
         $this->debug(self::INFO, "[DID CALL ZERO]");
     }
@@ -2185,7 +2182,7 @@ class A2Billing
         $query = "SELECT voucher, credit, currency FROM cc_voucher WHERE expirationdate >= CURRENT_TIMESTAMP AND available = 1 AND voucher = ?";
         $params = [$vouchernumber];
 
-        $row = $this->DBHandle->GetRow($query, $params);
+        $row = $this->DBHandle->selectOne($query, $params);
         $this->debug(self::DEBUG, "Query: $query", $params, $row);
         if ($row !== false && $row !== []) {
             if (!isset($this->currencies_list[strtoupper($row["currency"])])) {
@@ -2197,13 +2194,13 @@ class A2Billing
                 $add_credit = $row["credit"] * $this->currencies_list[strtoupper($row["currency"])];
                 $query = "UPDATE cc_voucher SET available = 0, usedcardnumber = ?, usedate = CURRENT_TIMESTAMP WHERE voucher = ?";
                 $params = [$this->accountcode, $vouchernumber];
-                $this->DBHandle->Execute($query, $params);
+                $this->DBHandle->update($query, $params);
                 $this->debug(self::DEBUG, "Query: $query", $params);
 
                 // UPDATE THE CARD AND THE CREDIT PROPERTY OF THE CLASS
                 $query = "UPDATE cc_card SET credit = credit + ? WHERE username = ?";
                 $params = [$add_credit, $this->accountcode];
-                $this->DBHandle->Execute($query, $params);
+                $this->DBHandle->update($query, $params);
                 $this->debug(self::DEBUG, "Query: $query", $params);
                 $this->credit += $add_credit;
 
@@ -2285,7 +2282,7 @@ class A2Billing
                 AND id_cc_package_offer = ?
             SQL;
         $params = [$billingtype, $clause_param, $id_cc_card, $id_cc_package_offer];
-        $result = $this->DBHandle->GetRow($query, $params);
+        $result = $this->DBHandle->selectOne($query, $params);
         $this->debug(self::DEBUG, "Query: $query", $params, $result);
         if ($result !== false && $result !== []) {
             $number_calls_used = intval($result[0]);
@@ -2358,7 +2355,7 @@ class A2Billing
                 ORDER BY 1
                 SQL;
             $params = [$this->username];
-            $result1 = $this->DBHandle->GetCol($query, $params);
+            $result1 = $this->DBHandle->select($query, $params);
             $this->debug(self::DEBUG, "Query: $query", $params, $result1);
         }
 
@@ -2377,7 +2374,7 @@ class A2Billing
                 ORDER BY 1
                 SQL;
             $params = [$this->username];
-            $result2 = $this->DBHandle->GetCol($query, $params);
+            $result2 = $this->DBHandle->select($query, $params);
             $this->debug(self::DEBUG, "Query: $query", $params, $result2);
         }
 
@@ -2385,7 +2382,10 @@ class A2Billing
             $this->debug(self::DEBUG, "[CID_SANITIZE - CID: NO DATA]");
             return '';
         }
-        $result = array_merge($result1, $result2);
+        $result = array_merge(
+            array_column($result1, "cid"),
+            array_column($result2, "did")
+        );
         $this->debug(self::DEBUG, "RESULT MERGE->" . json_encode($result));
 
         foreach ($result as $res) {
@@ -2479,7 +2479,7 @@ class A2Billing
                 AND cc_campaign.id = ?
             SQL;
         $params = [$userid, $campaign_id];
-        $row = $this->DBHandle->GetRow($query, $params);
+        $row = $this->DBHandle->selectOne($query, $params);
         $this->debug(self::DEBUG, "Query: $query", $params, $row);
 
         $cost = 0;
@@ -2495,7 +2495,7 @@ class A2Billing
         //update balance
         $query = "UPDATE cc_card SET credit = credit + ?, lastuse = CURRENT_TIMESTAMP WHERE username = ?";
         $params = [a2b_round($cost), $username];
-        $this->DBHandle->Execute($query, $params);
+        $this->DBHandle->update($query, $params);
         $this->debug(self::DEBUG, "Query: $query", $params);
 
         //dial other context
@@ -2520,7 +2520,7 @@ class A2Billing
             $duration,
             $duration,
         ];
-        $this->DBHandle->Execute($query, $params);
+        $this->DBHandle->insert($query, $params);
         $this->debug(self::DEBUG, "Query: $query", $params);
     }
 
@@ -2555,7 +2555,7 @@ class A2Billing
                 WHERE cc_callerid.cid = ?
                 SQL;
             $params = [$this->CallerID];
-            $row = $this->DBHandle->GetRow($query, $params);
+            $row = $this->DBHandle->selectOne($query, $params);
             $this->debug(self::DEBUG, "Query: $query", $params, $row);
 
             if ($row === false || $row === []) {
@@ -2576,7 +2576,7 @@ class A2Billing
                         $card_alias = $this->MDP($this->agiconfig['cid_auto_create_card_len']);
                         $query = "SELECT username, useralias FROM cc_card WHERE username = ? OR useralias = ?";
                         $params = [$card_gen, $card_alias];
-                        $resmax = $this->DBHandle->GetRow($query, $params);
+                        $resmax = $this->DBHandle->selectOne($query, $params);
                         $this->debug(self::DEBUG, "Query: $query", $params, $resmax);
                         if ($resmax === false || $resmax === []) {
                             $this->debug(self::INFO, "[CN:$card_gen|CA:$card_alias] No card found, using these values");
@@ -2606,17 +2606,17 @@ class A2Billing
                         $query = str_replace(["currency", "?)"], ["currency, id_group", "?, ?)"], $query);
                         $params[] = $this->group_id;
                     }
-                    $this->DBHandle->Execute($query, $params);
+                    $this->DBHandle->insert($query, $params);
                     $this->debug(self::DEBUG, "Query: $query", $params);
-                    $result = $this->DBHandle->Insert_ID();
+                    $result = $this->DBHandle->getPdo()->lastInsertId();
                     $this->debug(self::INFO, "[CARDNUMBER:$card_gen]:[CREATED:$result]");
 
                     //CREATE A CARD AND AN INSTANCE IN CC_CALLERID
                     $query = "INSERT INTO cc_callerid (cid, id_cc_card) VALUES(?, ?)";
                     $params = [$this->CallerID, $result];
-                    $this->DBHandle->Execute($query, $params);
+                    $this->DBHandle->insert($query, $params);
                     $this->debug(self::DEBUG, "Query: $query", $params);
-                    $result = $this->DBHandle->Insert_ID();
+                    $result = $this->DBHandle->getPdo()->lastInsertId();
                     if (!$result) {
                         $this->debug(self::ERROR, "[CALLERID CREATION ERROR TABLE cc_callerid]");
                         $this->debug(self::DEBUG, "prepaid-auth-fail");
@@ -2724,7 +2724,7 @@ class A2Billing
                         $this->status = 5;
                         $query = "UPDATE cc_card SET status = '5' WHERE id = ?";
                         $params = [$this->id_card];
-                        $this->DBHandle->Execute($query, $params);
+                        $this->DBHandle->update($query, $params);
                         $this->debug(self::DEBUG, "Query: $query", $params);
                     }
                 }
@@ -2790,7 +2790,7 @@ class A2Billing
                         WHERE username = ?
                         SQL;
                     $params = [$this->cardnumber];
-                    $row = $this->DBHandle->GetRow($query, $params);
+                    $row = $this->DBHandle->selectOne($query, $params);
                     $this->debug(self::DEBUG, "Query: $query", $params, $row);
 
                     if ($row === false || $row === []) {
@@ -2806,7 +2806,7 @@ class A2Billing
                         }
                         $query = " SELECT cid, id_cc_card, activated FROM cc_callerid WHERE cid = ? AND id_cc_card = ?";
                         $params = [$this->CallerID, $row["id_card"]];
-                        $result_check_cid = $this->DBHandle->GetRow($query, $params);
+                        $result_check_cid = $this->DBHandle->selectOne($query, $params);
                         $this->debug(self::DEBUG, "Query: $query", $params, $result_check_cid);
 
                         if ($result_check_cid === false || $result_check_cid === []) {
@@ -2891,7 +2891,7 @@ class A2Billing
                         $this->status = 5;
                         $query = "UPDATE cc_card SET status = '5' WHERE id = ?";
                         $params = [$this->id_card];
-                        $this->DBHandle->Execute($query, $params);
+                        $this->DBHandle->update($query, $params);
                         $this->debug(self::DEBUG, "Query: $query", $params);
                     }
                 }
@@ -2977,7 +2977,7 @@ class A2Billing
                     WHERE username = ?
                     SQL;
                 $params = [$this->cardnumber];
-                $row = $this->DBHandle->GetRow($query, $params);
+                $row = $this->DBHandle->selectOne($query, $params);
                 $this->debug(self::DEBUG, "Query: $query", $params, $row);
 
                 if ($row === false || $row === []) {
@@ -2993,7 +2993,7 @@ class A2Billing
                     }
                     $query = " SELECT cid, id_cc_card, activated FROM cc_callerid WHERE cid = ? AND id_cc_card = ?";
                     $params = [$this->CallerID, $row["id_card"]];
-                    $result_check_cid = $this->DBHandle->GetRow($query, $params);
+                    $result_check_cid = $this->DBHandle->selectOne($query, $params);
                     $this->debug(self::DEBUG, "Query: $query", $params, $result_check_cid);
 
                     if ($result_check_cid === false || $result_check_cid === []) {
@@ -3078,7 +3078,7 @@ class A2Billing
                         $this->status = 5;
                         $query = "UPDATE cc_card SET status = '5' WHERE id = ?";
                         $params = [$this->id_card];
-                        $this->DBHandle->Execute($query, $params);
+                        $this->DBHandle->update($query, $params);
                         $this->debug(self::DEBUG, "Query: $query", $params);
                     }
                 }
@@ -3088,14 +3088,14 @@ class A2Billing
 
                     $query = "SELECT COUNT(*) FROM cc_callerid WHERE id_cc_card = ?";
                     $params = [$this->id_card];
-                    $count = $this->DBHandle->GetOne($query, $params);
+                    $count = $this->DBHandle->scalar($query, $params);
                     $this->debug(self::DEBUG, "Query: $query", $params, $count);
 
                     // CHECK IF THE AMOUNT OF CALLERID IS LESS THAN THE LIMIT
                     if ($count !== false && $count < $this->config["webcustomerui"]['limit_callerid']) {
                         $query = "INSERT INTO cc_callerid (cid, id_cc_card) VALUES(?, ?)";
                         $params = [$this->CallerID, $this->id_card];
-                        $result = $this->DBHandle->Execute($query, $params);
+                        $result = $this->DBHandle->insert($query, $params);
                         $this->debug(self::DEBUG, "Query: $query", $params);
                         if ($result === false) {
                             $this->debug(self::WARN, "[CALLERID CREATION ERROR TABLE cc_callerid]");
@@ -3115,7 +3115,7 @@ class A2Billing
                     $this->ask_other_cardnumber = false;
                     $query = "UPDATE cc_callerid SET id_cc_card = ? WHERE cid = ?";
                     $params = [$this->id_card, $this->CallerID];
-                    $this->DBHandle->Execute($query, $params);
+                    $this->DBHandle->update($query, $params);
                     $this->debug(self::DEBUG, "Query: $query", $params);
                 }
 
@@ -3160,7 +3160,7 @@ class A2Billing
             WHERE username = ?
             SQL;
         $params = [$this->cardnumber];
-        $row = $this->DBHandle->GetRow($query, $params);
+        $row = $this->DBHandle->selectOne($query, $params);
         $this->debug(self::DEBUG, "Query: $query", $params, $row);
 
         if ($row === false || $row === []) {
@@ -3277,7 +3277,7 @@ class A2Billing
 
         $query = "SELECT SUM(sessiontime) AS sessionsum, COUNT(*) AS sessioncount FROM cc_call WHERE card_id = ?";
         $params = [$this->id_card];
-        $row = $this->DBHandle->GetRow($query, $params);
+        $row = $this->DBHandle->selectOne($query, $params);
         $this->debug(self::DEBUG, "Query: $query", $params, $row);
         if ($row === false || $row === []) {
             return false;
@@ -3304,38 +3304,12 @@ class A2Billing
                 $this->debug(self::DEBUG, "[DECK SWITCH] : UPDATE CARD TO CALLPLAN ID = " . $arr_value_deck_callplan[$ind_deck]);
                 $query = "UPDATE cc_card SET tariff = ? WHERE id = ?";
                 $params = [$arr_value_deck_callplan[$ind_deck], $this->id_card];
-                $this->DBHandle->Execute($query, $params);
+                $this->DBHandle->update($query, $params);
                 $this->debug(self::DEBUG, "Query: $query", $params);
                 $this->tariff = $arr_value_deck_callplan[$ind_deck];
             }
         }
 
-        return true;
-    }
-
-
-    /*
-    * Function DbConnect
-    * Returns: true / false if connection has been established
-    */
-    public function DbConnect(): bool
-    {
-        $scheme = $this->config['database']['dbtype'] === "postgres" ? "pgsql" : "mysqli";
-        $datasource = sprintf(
-            "%s://%s:%s@%s/%s",
-            $scheme,
-            $this->config["database"]["user"],
-            $this->config["database"]["password"],
-            $this->config["database"]["hostname"],
-            $this->config["database"]["dbname"]
-        );
-        $this->DBHandle = NewADOConnection($datasource);
-        if (!$this->DBHandle) {
-            return false;
-        }
-        if ($this->config['database']['dbtype'] === "mysql") {
-            $this->DBHandle->Execute('SET AUTOCOMMIT = 1');
-        }
         return true;
     }
 
@@ -3345,36 +3319,7 @@ class A2Billing
     */
     public function DbReConnect(): bool
     {
-        $res = $this->DBHandle->Execute("SELECT 1");
-        if (!$res) {
-            $this->debug(self::DEBUG, "[DB connection lost] Reconnecting");
-            $this->DBHandle->Close();
-            $count = 1;
-            $sleep = 1;
-            do {
-                $result = $this->DbConnect();
-                if ($result !== false) {
-                    break;
-                }
-                $this->debug(
-                    self::DEBUG,
-                    sprintf("[DB connection lost] Reconnect attempt %d failed, pause %d seconds", $count, $sleep)
-                );
-                sleep($sleep);
-                $count++;
-                $sleep *= 2;
-            } while ($count < 5);
-            if ($this->DBHandle === false) {
-                $this->debug(self::FATAL, "[DB connection lost] CDR not posted");
-
-                return false;
-            }
-            $this->debug(self::DEBUG, "[DB connection lost] Reconnection successful");
-        } else {
-            $res->Close();
-        }
-
-        return true;
+        return $this->DBHandle->reconnect();
     }
 
     /*
@@ -3382,7 +3327,7 @@ class A2Billing
     */
     public function DbDisconnect()
     {
-        $this->DBHandle->Disconnect();
+        $this->DBHandle->disconnect();
     }
 
     public function save_redial_number(string $number): void
@@ -3392,7 +3337,7 @@ class A2Billing
         }
         $query = "UPDATE cc_card SET redial = ? WHERE username = ?";
         $params = [$number, $this->accountcode];
-        $this->DBHandle->Execute($query, $params);
+        $this->DBHandle->update($query, $params);
         $this->debug(self::DEBUG, "Query: $query", $params);
     }
 
@@ -3590,7 +3535,7 @@ class A2Billing
 
     private function get_currencies(): array
     {
-        $result = $this->DBHandle->CacheGetAll(900, "SELECT currency, `value` FROM cc_currencies ORDER BY id");
+        $result = $this->DBHandle->select("SELECT currency, `value` FROM cc_currencies ORDER BY id");
 
         return array_combine(
             array_column($result, "currency"),

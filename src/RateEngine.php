@@ -3,8 +3,9 @@
 namespace A2billing;
 
 use A2billing\PhpAgi\Agi;
-use ADORecordSet;
 use DateTime;
+use PDO;
+use Throwable;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -222,7 +223,7 @@ class RateEngine
                 $tariffgroupid,
             ]
         );
-        $result = $this->a2b->DBHandle->GetAll($QUERY, $params);
+        $result = $this->a2b->DBHandle->select($QUERY, $params);
 
         if ($result === false || $result === []) {
 
@@ -459,7 +460,7 @@ class RateEngine
                                 " AND cc_package_offer.id = cc_package_rate.package_id AND cc_package_rate.rate_id = ?" .
                                 " ORDER BY packagetype ASC";
             $this->a2b->debug(A2Billing::DEBUG, "[PACKAGE IN:$query_pakages ]");
-            $result_packages = $this->a2b->DBHandle->GetAll($query_pakages, [$id_cc_package_offer, $id_rate]);
+            $result_packages = $this->a2b->DBHandle->select($query_pakages, [$id_cc_package_offer, $id_rate]);
             $idx_pack = 0;
 
             if ($result_packages !== false && $result_packages !== []) {
@@ -1123,11 +1124,11 @@ class RateEngine
 
                 $query = "INSERT INTO cc_card_package_offer (id_cc_card, id_cc_package_offer, used_secondes) VALUES (?, ?, ?)";
                 $params = [$this->a2b->id_card, $id_package_offer, $this->freetimetocall_used];
-                $result = $this->a2b->DBHandle->Execute($query, $params);
+                $result = $this->a2b->DBHandle->insert($query, $params);
                 $this->a2b->debug(A2Billing::DEBUG, "Query: $query", $params);
                 $this->a2b->debug(
                     A2Billing::INFO,
-                    ":[ID_CARD_PACKAGE_OFFER CREATED : " . ($result instanceof ADORecordSet ? "ok" : $this->a2b->DBHandle->ErrorMsg()) . "]"
+                    ":[ID_CARD_PACKAGE_OFFER CREATED : " . ($result ? "ok" : $this->a2b->DBHandle->getPdo()->errorCode()) . "]"
                 );
             } else {
                 $this->rate_engine_calculcost($sessiontime);
@@ -1222,21 +1223,21 @@ class RateEngine
 
         if ($this->a2b->config["global"]['cache_enabled']) {
              //insert query in the cache system
-            $sqlite = NewADOConnection("pdo");
-            if ($sqlite->Connect("sqlite:" . $this->a2b->config["global"]["cache_path"])) {
+            try {
+                $sqlite = new PDO("sqlite:" . $this->a2b->config["global"]["cache_path"]);
                 if (!file_exists($this->a2b->config["global"]['cache_path'])) {
-                    $sqlite->Execute("CREATE TABLE cc_call ($QUERY_COLUMN)");
+                    $sqlite->exec("CREATE TABLE cc_call ($QUERY_COLUMN)");
                 }
-                $sqlite->Execute($QUERY);
-            } else {
-                $this->a2b->debug(A2Billing::ERROR, "[Error to connect to cache : " . $sqlite->ErrorMsg() . "]\n");
+                $sqlite->exec($QUERY);
+            } catch (Throwable $e) {
+                $this->a2b->debug(A2Billing::ERROR, "[Error to connect to cache : " . $e->getMessage() . "]\n");
             }
         } else {
-            $result = $this->a2b->DBHandle->Execute($QUERY, $params);
+            $result = $this->a2b->DBHandle->insert($QUERY, $params);
             $this->a2b->debug(
                 A2Billing::INFO,
-                "[CC_asterisk_stop : SQL: DONE : result=" . ($result instanceof ADORecordSet ? "ok"
-                    : $this->a2b->DBHandle->ErrorMsg()) . "]"
+                "[CC_asterisk_stop : SQL: DONE : result=" . ($result ? "ok"
+                    : $this->a2b->DBHandle->getPdo()->errorCode()) . "]"
             );
             $this->a2b->debug(A2Billing::DEBUG, "[CC_asterisk_stop : SQL: $QUERY]");
         }
@@ -1257,17 +1258,17 @@ class RateEngine
                 $calledstation,
                 $this->a2b->username
             ];
-            $this->a2b->DBHandle->Execute($query, $params);
+            $this->a2b->DBHandle->update($query, $params);
             $this->a2b->debug(A2Billing::DEBUG, "Query: $query", $params);
 
             $query = "UPDATE cc_trunk SET secondusedreal = secondusedreal + ? WHERE id_trunk = ?";
             $params = [$sessiontime, $this->usedtrunk];
-            $this->a2b->DBHandle->Execute($query, $params);
+            $this->a2b->DBHandle->update($query, $params);
             $this->a2b->debug(A2Billing::DEBUG, "Query: $query", $params);
 
             $query = "UPDATE cc_tariffplan SET secondusedreal = secondusedreal + ? WHERE id = ?";
             $params = [$sessiontime, $id_tariffplan];
-            $this->a2b->DBHandle->Execute($query, $params);
+            $this->a2b->DBHandle->update($query, $params);
             $this->a2b->debug(A2Billing::DEBUG, "Query: $query", $params);
         }
     }
@@ -1284,7 +1285,7 @@ class RateEngine
         }
 
         $this->a2b->debug(A2Billing::DEBUG, "[TRUNK STATUS UPDATE : $QUERY]");
-        $this->a2b->DBHandle->Execute($QUERY, [$this->usedtrunk]);
+        $this->a2b->DBHandle->update($QUERY, [$this->usedtrunk]);
     }
 
     /**
@@ -1336,7 +1337,7 @@ class RateEngine
 
             $query = "SELECT cid FROM cc_outbound_cid_list WHERE activated = 1 AND outbound_cid_group = ?";
             $params = [$cidgroupid];
-            $outcid = array_rand($this->a2b->DBHandle->GetCol($query, $params) ?: [0]);
+            $outcid = array_rand(array_column($this->a2b->DBHandle->select($query, $params), "cid") ?: [0]);
             $this->a2b->debug(A2Billing::DEBUG, "Query: $query", $params);
             if ($outcid) {
                 $this->a2b->debug(
@@ -1421,7 +1422,7 @@ class RateEngine
                         SQL;
                         $params = [$failover_trunk];
                         $this->a2b->debug(A2Billing::DEBUG, "Query: $query", $params);
-                        $trunkdata = $this->a2b->DBHandle->GetRow($query, $params);
+                        $trunkdata = $this->a2b->DBHandle->selectOne($query, $params);
                     }                    
                     continue;
                 }
@@ -1567,7 +1568,7 @@ class RateEngine
             // rand() is mysql only
             $query = "SELECT cid FROM cc_outbound_cid_list WHERE activated = 1 AND outbound_cid_group = ? ORDER BY RAND() LIMIT 1";
             $params = [$cidgroupid];
-            $outcid = $this->a2b->DBHandle->GetOne($query, $params) ?: 0;
+            $outcid = $this->a2b->DBHandle->scalar($query, $params) ?: 0;
             $this->a2b->debug(A2Billing::DEBUG, "Query: $query", $params);
             if ($outcid) {
                 $this->agi->set_callerid($outcid);
@@ -1610,7 +1611,7 @@ class RateEngine
 
                 $query = "SELECT trunkprefix, providertech, providerip, removeprefix, failover_trunk, status, inuse, maxuse, if_max_use FROM cc_trunk WHERE id_trunk = ?";
                 $params = [$failover_trunk];
-                $row = $this->a2b->DBHandle->GetRow($query, $params);
+                $row = $this->a2b->DBHandle->selectOne($query, $params);
                 $this->a2b->debug(A2Billing::DEBUG, "Query: $query", $params);
 
 

@@ -3,6 +3,7 @@
 
 use A2billing\A2Billing;
 use A2billing\A2bMailException;
+use A2billing\Connection;
 use A2billing\Mail;
 use A2billing\PhpAgi\Agi;
 use A2billing\Table;
@@ -116,13 +117,17 @@ $A2B->debug(A2Billing::DEBUG, "[INFO : $agi_version]");
 /* GET THE AGI PARAMETER */
 $A2B->get_agi_request_parameter();
 
-if (!$A2B->DbConnect()) {
+try {
+    $db = Connection::getConnection();
+} catch (Throwable) {
+    $db = null;
+}
+if (!$db ) {
     $A2B->debug(A2Billing::FATAL, "Database connection error");
     $agi->stream_file("prepaid-final", "#");
     exit;
 }
 
-$db = $A2B->DBHandle;
 $send_reminder = false;
 $callback_mode = null;
 $callback_leg = null;
@@ -196,7 +201,7 @@ if ($mode === "standard") {
             if ($A2B->agiconfig["ivr_enable_locking_option"]) {
                 $QUERY = "SELECT block, lock_pin FROM cc_card WHERE username = ?";
                 $A2B->debug(A2Billing::DEBUG, "[QUERY] : " . $QUERY);
-                $row = $db->GetRow($QUERY, [$A2B->username]);
+                $row = $db->selectOne($QUERY, [$A2B->username]);
 
                 // Check if the locking option is enabled for this account
                 if ($row !== false && $row !== [] && $row["block"] === "1" && !empty($row["lock_pin"])) {
@@ -242,7 +247,7 @@ if ($mode === "standard") {
                 if ($res_dtmf["result"] === "4") {
                     $QUERY = "SELECT lastuse, lock_date, firstusedate FROM cc_card WHERE username = ? LIMIT 1";
                     $A2B->debug(A2Billing::DEBUG, "[QUERY] : " . $QUERY);
-                    $card_info = $db->GetRow($QUERY, [$A2B->username]);
+                    $card_info = $db->selectOne($QUERY, [$A2B->username]);
 
                     if ($card_info !== false && $card_info !== []) {
                         do {
@@ -261,7 +266,7 @@ if ($mode === "standard") {
                             switch ($res_dtmf) {
                                 case "1" :
                                     $QUERY = "SELECT starttime, sessiontime FROM cc_call WHERE card_id = ? ORDER BY starttime DESC LIMIT 1";
-                                    $val = $db->GetOne($QUERY, [$A2B->id_card]);
+                                    $val = $db->selectOne($QUERY, [$A2B->id_card]);
                                     if ($val !== false && !is_null($val)) {
                                         $A2B->debug(A2Billing::DEBUG, "[INFORMATION MENU]:[OPTION 1]");
                                         $agi->stream_file("prepaid-lastcall", "#"); //Your last call was made
@@ -336,7 +341,7 @@ if ($mode === "standard") {
                         switch ($res_dtmf) {
                             case 1 :
                                 $QUERY = "UPDATE cc_card SET block = 1, lock_pin = ?, lock_date = NOW() WHERE username = ?";
-                                $db->Execute($QUERY, [$lock_pin, $A2B->username]);
+                                $db->update($QUERY, [$lock_pin, $A2B->username]);
                                 $A2B->debug(A2Billing::DEBUG, "[QUERY]:[$QUERY]");
                                 $agi->stream_file("prepaid-locking-accepted", "#"); // Your locking code has been accepted
                                 $return = true;
@@ -424,7 +429,7 @@ if ($mode === "standard") {
                                 $action = "insert";
                                 $QUERY = "SELECT phone, id FROM cc_speeddial WHERE id_cc_card = ? AND speeddial = ?";
                                 $A2B->debug(A2Billing::DEBUG, $QUERY);
-                                $row = $db->GetRow($QUERY, [$A2B->id_card, $speeddial_number]);
+                                $row = $db->selectOne($QUERY, [$A2B->id_card, $speeddial_number]);
                                 $id_speeddial = null;
                                 if ($row !== false && $row !== []) {
                                     $id_speeddial = $row["id"];
@@ -477,7 +482,7 @@ if ($mode === "standard") {
                                         }
 
                                         $A2B->debug(A2Billing::DEBUG, $QUERY);
-                                        $db->Execute($QUERY, $params);
+                                        $db->insert($QUERY, $params);
                                         $agi->stream_file("prepaid-speeddial-saved"); //The speed dial number has been successfully saved.
                                         $return_mainmenu = true;
                                         break;
@@ -563,7 +568,7 @@ if ($mode === "standard") {
                     ORDER BY priority ASC
                     SQL;
                     $A2B->debug(A2Billing::DEBUG, $QUERY);
-                    $result = $db->GetAll($QUERY, [$A2B->destination]);
+                    $result = $db->select($QUERY, [$A2B->destination]);
 
                     if ($result !== false && $result !== []) {
                         //On Net
@@ -615,7 +620,7 @@ if ($mode === "standard") {
         ORDER BY priority ASC
         SQL;
         $A2B->debug(A2Billing::DEBUG, $QUERY);
-        $result = $db->GetAll($QUERY, [$mydnid]);
+        $result = $db->select($QUERY, [$mydnid]);
         $A2B->debug(A2Billing::DEBUG, $result);
 
         if ($result !== false && $result !== []) {
@@ -922,7 +927,7 @@ if ($mode === "standard") {
     $A2B->debug(A2Billing::INFO, "[CALLBACK]:[GET VARIABLE : CALLED=$called_party | CALLING=$calling_party | MODE=$callback_mode | TARIFF=$callback_tariff | CBID=$callback_uniqueid | LEG=$callback_leg | CALLERID=" . $A2B->CallerID . "]");
 
     $QUERY = "UPDATE cc_callback_spool SET agi_result='AGI PROCESSING' WHERE uniqueid= ?";
-    $res = $db->Execute($QUERY, [$callback_uniqueid]);
+    $res = $db->update($QUERY, [$callback_uniqueid]);
     $A2B->debug(A2Billing::DEBUG, "[CALLBACK : UPDATE CALLBACK AGI_RESULT : QUERY=$QUERY]");
 
 
@@ -1042,7 +1047,7 @@ if ($mode === "standard") {
     }
 
     $QUERY = "UPDATE cc_callback_spool SET agi_result = 'AGI PROCESSING' WHERE uniqueid = ?";
-    $res = $db->Execute($QUERY, [$callback_uniqueid]);
+    $res = $db->update($QUERY, [$callback_uniqueid]);
     $A2B->debug(A2Billing::DEBUG, "[CALLBACK : UPDATE CALLBACK AGI_RESULT : QUERY = $QUERY]");
 
 
