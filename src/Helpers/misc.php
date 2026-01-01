@@ -1,10 +1,10 @@
 <?php
 
 use A2billing\Connection;
-use A2billing\Table;
 use Amenadiel\JpGraph\Graph\Graph;
 use Amenadiel\JpGraph\Plot\BarPlot;
 use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception as PHPMailerException;
 use Random\RandomException;
 
 /**
@@ -40,8 +40,9 @@ use Random\RandomException;
 
 function get_cardlength(): int
 {
-    $len = (new Table("cc_config", ["config_value"]))
-        ->getValue(["config_key" => "interval_len_cardnumber"]);
+    $len = Connection::getConnection()->table("cc_config")
+        ->where("config_key", "interval_len_cardnumber")
+        ->value("config_value");
     if ($len) {
         $len = min(split_data($len) ?: [10]);
     } else {
@@ -78,22 +79,21 @@ function split_data(?string $values): array
 /**
  * a2b_round: specific function to use the same precision everywhere
  *
- * @param int|float|null $number
+ * @param float|int|null $number
  * @param int $PRECISION
  * @return float
  */
-function a2b_round($number, int $PRECISION = 6): float
+function a2b_round(float|int|null $number, int $PRECISION = 6): float
 {
-
     return round($number ?? 0, $PRECISION);
 }
 
 /**
  * a2b_mail - function mail used in a2billing
  *
- * @throws \PHPMailer\PHPMailer\Exception
+ * @throws PHPMailerException
  */
-function a2b_mail($to, $subject, $mail_content, $from = 'root@localhost', $fromname = '', $contenttype = 'multipart/alternative')
+function a2b_mail($to, $subject, $mail_content, $from = 'root@localhost', $fromname = '', $contenttype = 'multipart/alternative'): void
 {
 
     $mail = new PHPMailer(true);
@@ -135,32 +135,33 @@ function a2b_mail($to, $subject, $mail_content, $from = 'root@localhost', $fromn
  */
 function get_currencies(): array
 {
-    $currencies_list = [];
-    $result = (new Table("cc_currencies", ["currency", "name", "value"]))->getRows();
-    array_walk(
-        $result,
-        function ($v) use (&$currencies_list) {
-            $currencies_list[$v["currency"]] = $v;
-        }
-    );
-
     // these are always at the top of the list
-    $top_curr = [
+    $top_curr =[
         strtoupper(BASE_CURRENCY), 'USD', 'EUR', 'GBP', 'CAD', 'AUD', 'HKD',
         'JPY', 'NZD', 'SGD', 'TWD', 'PLN', 'SEK', 'DKK', 'CHF', 'COP', 'MXN', 'CLP',
     ];
 
-    return array_replace(array_flip($top_curr), $currencies_list);
+    return Connection::getConnection()
+        ->table("cc_currencies")
+        ->select(["currency", "name", "value"])
+        ->orderBy("currency")
+        ->get()
+        ->keyBy("currency")
+        ->sortBy(function ($v, $k) use ($top_curr) {
+            $i = array_search($k, $top_curr);
+            return $i === false ? 99999 : $i;
+        })
+        ->toArray();
 }
 
 /**
  * Do Currency Conversion.
  *
- * @param int|float $amount the amount to be converted.
+ * @param float|int $amount the amount to be converted.
  * @param string $from_cur Source Currency
  * @param string $to_cur Destination Currecny
  */
-function convert_currency($amount, string $from_cur, string $to_cur)
+function convert_currency(float|int $amount, string $from_cur, string $to_cur): float|int|string
 {
     if (!is_numeric($amount) || ($amount == 0)) {
         return 0;
@@ -183,7 +184,7 @@ function convert_currency($amount, string $from_cur, string $to_cur)
 /*
  * Write log into file
  */
-function write_log(string $logfile, string $output)
+function write_log(string $logfile, string $output): void
 {
     $result = true;
     if (!file_exists($logfile)) {
@@ -204,7 +205,7 @@ function write_log(string $logfile, string $output)
 /*
  * function getpost_ifset
  */
-function getpost_ifset(array $test_vars, ?array &$data = null)
+function getpost_ifset(array $test_vars, ?array &$data = null): void
 {
     foreach ($test_vars as $test_var) {
         if (!isset($_REQUEST[$test_var])) {
@@ -237,12 +238,12 @@ function getpost_ifset(array $test_vars, ?array &$data = null)
 /**
  * Used as callback for list/form elements
  *
- * @param float|null $value
+ * @param float|int|null $value
  * @param int|null $decimals
- * @param $currency
+ * @param string $currency
  * @return string
  */
-function get_money(?float $value, ?int $decimals = null, $currency = BASE_CURRENCY): string
+function get_money(float|int|null $value, ?int $decimals = null, string $currency = BASE_CURRENCY): string
 {
     $value ??= 0;
     if (class_exists("NumberFormatter")) {
@@ -334,10 +335,10 @@ function get_percent(?float $var): string
  * Rounds and formats a currency amount to four decimal places
  * Used as callback for list/form elements
  *
- * @param float|int|string $amt
+ * @param float|int|null $amt
  * @return string
  */
-function get_money_precise($amt): string
+function get_money_precise(float|int|null $amt): string
 {
     return get_money($amt, 4);
 }
@@ -349,8 +350,9 @@ function get_money_precise($amt): string
  */
 function get_monitorfile_link($value): string
 {
-    $MONITOR_PATH = (new Table("cc_config", ["config_value"]))
-        ->getValue(["config_key" => "monitor_path"]) ?: "/";
+    $MONITOR_PATH = Connection::getConnection()->table("cc_config")
+        ->where("config_key", "monitor_path")
+        ->value("config_value");
     $format_list = ['wav', 'gsm', 'mp3', 'sln', 'g723', 'g729'];
     $find_record = false;
     foreach ($format_list as $c_format) {
@@ -376,13 +378,14 @@ function get_monitorfile_link($value): string
 
 /**
  * Used as callback for list/form elements
- * @param string|int|null $id
+ * @param int|null $id
  * @return string
  */
 function get_refill_link(?int $id): string
 {
-    $credit = (new Table("cc_logrefill", ["credit"]))
-        ->getValue(["id" => $id ?? 0]);
+    $credit = Connection::getConnection()->table("cc_logrefill")
+        ->where("id", $id ?? 0)
+        ->value("credit");
 
     return is_null($credit)
         ? htmlspecialchars(_("n/a"))
@@ -396,13 +399,14 @@ function get_refill_link(?int $id): string
 
 /**
  * Used as callback for list/form elements
- * @param string|int|null $id
+ * @param int|null $id
  * @return string
  */
 function get_agent_refill_link(?int $id): string
 {
-    $credit = (new Table("cc_logrefill_agent", ["credit"]))
-        ->getValue(["id" => $id ?? 0]);
+    $credit = Connection::getConnection()->table("cc_logrefill_agent")
+        ->where("id", $id ?? 0)
+        ->value("credit");
 
     return is_null($credit)
         ? htmlspecialchars(_("n/a"))
@@ -416,7 +420,8 @@ function get_agent_refill_link(?int $id): string
 
 /**
  * Used as callback for list elements
- * @param string $value
+ *
+ * @param string|null $value
  * @return string
  */
 function format_phone_number(?string $value): string
@@ -474,14 +479,16 @@ function generate_unique_value($table = "cc_card", $len = 0, $field = "username"
     for ($k = 0; $k <= 200; $k++) {
         $card_gen = generate_random_value(str_repeat("#", $len));
 
-        (new Table($table, [$field]))->getValue([$field => $card_gen]);
+        $val = Connection::getConnection()->table($table)
+            ->where($field, $card_gen)
+            ->value($field);
         if (empty($val)) {
-
             return $card_gen;
         }
     }
     echo "ERROR : Impossible to generate a $field not yet used!";
-    exit ();
+
+    exit();
 }
 
 function gen_card_with_alias($length_cardnumber = null)
@@ -496,16 +503,16 @@ function gen_card_with_alias($length_cardnumber = null)
         $card_gen = generate_random_value(str_repeat("#", $length_cardnumber));
         $alias_gen = generate_random_value(str_repeat("#", $A2B->config['global']['len_aliasnumber'] ?? 10));
 
-        $val = (new Table("cc_card"))
-            ->getValue(
-                [["SUB", ["username" => ["IN", [$card_gen, $alias_gen]], "useralias" => ["IN", [$card_gen, $alias_gen]]], "OR"]],
-            );
-        if (is_null($val)) {
-
+        $val = Connection::getConnection()->table("cc_card")
+            ->whereIn("username", [$card_gen, $alias_gen])
+            ->orWhereIn("useralias", [$card_gen, $alias_gen])
+            ->count();
+        if ($val === 0) {
             return [$card_gen, $alias_gen];
         }
     }
     echo "ERROR : Impossible to generate a Cardnumber & Aliasnumber not yet used!";
+
     exit();
 }
 
@@ -542,15 +549,22 @@ function validate_upload(string $the_file, string $the_file_type): string
 
 function get_timezones(): array
 {
-    return (new Table("cc_timezone", ["gmtzone", "id"]))->getColumn();
+    return Connection::getConnection()
+        ->table("cc_timezone")
+        ->select(["gmtzone", "id"])
+        ->get()
+        ->mapWithKeys(fn ($v) => [$v["id"] => $v["gmtzone"]])
+        ->toArray();
 }
 
 function get_login_button($id): string
 {
     global $A2B;
 
-    $row = (new Table("cc_card", ["useralias", "userpass"]))
-        ->getRow(["id" => $id]);
+    $row = Connection::getConnection()->table("cc_card")
+        ->select(["useralias", "userpass"])
+        ->where("id", $id)
+        ->first();
     if (!$row) {
         return "";
     }
@@ -580,8 +594,9 @@ function get_login_button($id): string
 
 function create_help($text): string
 {
-    $result = (new Table("cc_config", "config_value"))
-        ->getValue(["config_key" => "show_help"]);
+    $result = Connection::getConnection()->table("cc_config")
+        ->where("config_key", "show_help")
+        ->value("config_value");
     if ($result !== "1") {
         return "";
     }
@@ -715,17 +730,21 @@ function sub_money(...$args): string
 }
 
 /**
- * @param int|string $date
+ * @param DateTimeInterface|string|null $date
  * @return string
  */
-function get_readable_date($date): string
+function get_readable_date(DateTimeInterface|string|null $date): string
 {
     if (empty($date)) {
         return _("N/A");
     }
     try {
-        return (new DateTime($date))->format("D, d M y H:i:s");
-    } catch (Exception $e) {
+        if (is_string($date)) {
+            $date = new DateTimeImmutable($date);
+        }
+
+        return $date->format("D, d M y H:i:s");
+    } catch (Exception) {
         return _("N/A");
     }
 }
@@ -739,7 +758,7 @@ function get_readable_date($date): string
 function graphToDataUri(Graph $graph): string {
     try {
         $resource = $graph->Stroke("__handle");
-    } catch (Exception $e) {
+    } catch (Exception) {
         // todo: error message?
         return "";
     }
@@ -769,9 +788,7 @@ function createBarPlot(array $data, Graph $graph = null): BarPlot
     $bplot->value->SetFormat("%d");
     $bplot->value->SetAlign("center");
     $bplot->value->Show();
-    if ($graph) {
-        $graph->Add($bplot);
-    }
+    $graph?->Add($bplot);
 
     return $bplot;
 }

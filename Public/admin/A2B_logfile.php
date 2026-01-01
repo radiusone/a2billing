@@ -131,7 +131,7 @@ if (isset($view_log)) {
         "<div class='row pb-3'><div class='col'><p>%s (%d Kb, last modified %s)</p><pre class='py-3'>%s</pre></div></div>",
         $f,
         filesize($f) / 1024,
-        get_readable_date(filemtime($f)),
+        get_readable_date(DateTimeImmutable::createFromFormat("U", filemtime($f))),
         implode("\n", $arr)
     );
 }

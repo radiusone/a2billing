@@ -77,7 +77,7 @@ define ("CSRF_SALT", $A2B->config['csrf']['csrf_token_salt'] ?? 'YOURSALT');
 // SETTING FOR REALTIME
 define ("USE_REALTIME", $A2B->config['global']['use_realtime'] ?? 0);
 
-define ("BASE_CURRENCY", $A2B->config['global']['base_currency'] ?? null);
+define ("BASE_CURRENCY", strval($A2B->config['global']['base_currency'] ?? "USD"));
 define ("MANAGER_HOST", $A2B->config['global']['manager_host'] ?? null);
 define ("MANAGER_USERNAME", $A2B->config['global']['manager_username'] ?? null);
 define ("MANAGER_SECRET", $A2B->config['global']['manager_secret'] ?? null);
