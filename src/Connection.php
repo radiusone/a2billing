@@ -60,7 +60,7 @@ class Connection
             $prop = (new ReflectionObject($conn->getConnection()))->getProperty("fetchMode");
             $prop->setAccessible(true);
             // match old defaults for now
-            $prop->setValue($conn->getConnection(), PDO::FETCH_ASSOC);
+            $prop->setValue($conn->getConnection(), PDO::FETCH_BOTH);
             $conn->setAsGlobal();
             self::$manager = $conn;
         }

@@ -193,13 +193,13 @@ class A2Billing
         if (function_exists('pcntl_signal')) {
             pcntl_signal(SIGHUP, [$this, "Hangupsignal"]);
         }
+        // populate the $DBHandle property
+        $this->DBHandle = Connection::getConnection();
         $this->agi = $agi;
         $this->rateEngine = new RateEngine($this);
         // populate the configuration object
         $this->idconfig = $idconfig ?? 1;
         $this->load_conf($optconfig);
-        // populate the $DBHandle property
-        $this->DBHandle = Connection::getConnection();
     }
 
     /* Init */
