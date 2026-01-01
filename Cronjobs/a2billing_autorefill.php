@@ -49,8 +49,6 @@ require_once __DIR__ . "/../common/lib/admin.defines.php";
 $pH = new ProcessHandler("/var/run/a2billing/a2billing_autorefill_pid.php");
 if ($pH->isActive()) {
     die(); // Already running!
-} else {
-    $pH->activate();
 }
 
 $groupcard = 1000;

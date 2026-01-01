@@ -70,8 +70,6 @@ include (dirname(__FILE__) . "/../common/lib/admin.defines.php");
 $pH= new ProcessHandler("/var/run/a2billing/a2billing_batch_billing_pid.php");
 if ($pH->isActive()) {
     die(); // Already running!
-} else {
-    $pH->activate();
 }
 
 //Flag to show the debuging information

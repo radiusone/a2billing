@@ -73,8 +73,6 @@ include (dirname(__FILE__) . "/../common/lib/admin.defines.php");
 $pH= new ProcessHandler("/var/run/a2billing/a2billing_batch_autodialer_pid.php");
 if ($pH->isActive()) {
     die(); // Already running!
-} else {
-    $pH->activate();
 }
 
 $verbose_level = 1;

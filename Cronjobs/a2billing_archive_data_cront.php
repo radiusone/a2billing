@@ -67,8 +67,6 @@ include (dirname(__FILE__) . "/../common/lib/admin.defines.php");
 $pH= new ProcessHandler("/var/run/a2billing/a2billing_archive_data_cront_pid.php");
 if ($pH->isActive()) {
     die(); // Already running!
-} else {
-    $pH->activate();
 }
 
 $A2B = new A2Billing();
