@@ -547,7 +547,7 @@ function get_login_button($id): string
 {
     global $A2B;
 
-    $row = (new Table("cc_card", ["useralias", "userpass"]))
+    $row = (new Table("cc_card", ["useralias", "uipass"]))
         ->getRow(["id" => $id]);
     if (!$row) {
         return "";
