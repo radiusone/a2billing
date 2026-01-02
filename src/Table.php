@@ -2,6 +2,9 @@
 
 namespace A2billing;
 
+use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Query\Expression;
+use Illuminate\Database\Query\JoinClause;
 use Profiler_Console as Console;
 use Throwable;
 
@@ -701,12 +704,15 @@ class Table
      *         ["t2" => ["INNER", ["t1.col", "<", "t2.col"]]] gives "INNER JOIN t2 ON (t1.col < t2.col)"
      *         ["t2" => [["t1.col", "=", "t2.col"], "t1.col2", "t2.col2"]] gives "LEFT JOIN t2 ON (t1.col = t2.col AND t1.col2 = t2.col2)"
      *
+     * @param array<string,string|string[]>|null $joins an array of joins to process, if not using $this->joins
+     * @param Builder|null $builder a query builder instance to add the joins to
      * @return string
      */
-    private function processJoinedTables(): string
+    public function processJoinedTables(?array $joins = null, ?Builder $builder = null): string
     {
-        $joins = [];
-        foreach ($this->joins as $table => $conditions) {
+        $joins ??= $this->joins;
+        $return = [];
+        foreach ($joins as $table => $conditions) {
             $type = "LEFT";
             $join_types = [
                 "inner", "cross", "left", "right", "left outer", "right outer",
@@ -716,35 +722,44 @@ class Table
             if (is_string($conditions[0]) && in_array(strtolower($conditions[0]), $join_types)) {
                 $type = strtoupper(array_shift($conditions));
             }
+            $joinclause = $builder ? new JoinClause($builder, $type, $table) : null;
             $table = $this->quote_identifier($table);
             $condition_clauses = [];
             for ($i = 0; $i < count($conditions); $i++) {
                 $condition = $conditions[$i];
                 if (is_array($condition) && count($condition) >= 2 && count($condition) <= 3) {
+                    $col1j = $condition[0];
                     $col1 = $this->quote_identifier($condition[0]);
                     $operator = count($condition) > 2 ? $condition[1] : "=";
-                    $col2 = count($condition) > 2 ? $condition[2] : $condition[1];
+                    $col2 = $col2j = count($condition) > 2 ? $condition[2] : $condition[1];
                     // if it comes back from quote_identifer() unchanged, leave it alone
                     if (($quoted = $this->quote_identifier($col2)) !== $col2) {
                         $col2 = $quoted;
+                        $col2j = new Expression($quoted);
                     }
                 } elseif (is_string($condition) && is_string($conditions[$i + 1] ?? null)) {
+                    $col1j = $condition;
                     $col1 = $this->quote_identifier($condition);
                     $operator = "=";
-                    $col2 = $conditions[$i + 1];
+                    $col2 =$col2j = $conditions[$i + 1];
                     if (($quoted = $this->quote_identifier($col2)) !== $col2) {
                         $col2 = $quoted;
+                        $col2j = new Expression($quoted);
                     }
                     $i++;
                 } else {
                     continue;
                 }
                 $condition_clauses[] = "$col1 $operator $col2";
+                $joinclause?->on($col1j, $operator, $col2j);
             }
             $condition_string = implode(" AND ", $condition_clauses);
-            $joins[] = "$type JOIN $table ON ($condition_string)";
+            $return[] = "$type JOIN $table ON ($condition_string)";
+            if ($builder) {
+                $builder->joins[] = $joinclause;
+            }
         }
 
-        return implode(" ", $joins);
+        return implode(" ", $return);
     }
 }
