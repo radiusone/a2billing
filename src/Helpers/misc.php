@@ -562,7 +562,7 @@ function get_login_button($id): string
     global $A2B;
 
     $row = Connection::getConnection()->table("cc_card")
-        ->select(["useralias", "userpass"])
+        ->select(["useralias", "uipass"])
         ->where("id", $id)
         ->first();
     if (!$row) {
