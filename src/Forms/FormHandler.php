@@ -1497,7 +1497,7 @@ class FormHandler
         foreach ($this->FG_EDIT_FORM_ELEMENTS as &$row) {
             $field = $row["name"] ?? "";
             $attr = $row["attributes"] ?? [];
-            if (empty($field) || array_key_exists("disabled", $attr) || !array_key_exists($field, $processed)) {
+            if ($field === "" || array_key_exists("disabled", $attr) || !array_key_exists($field, $processed)) {
                 continue;
             }
 
