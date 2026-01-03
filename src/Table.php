@@ -243,14 +243,12 @@ class Table
         $offset_sql = $offset ? "OFFSET $offset" : "";
 
         $query = "SELECT $fields FROM $table WHERE $where $group_sql $order_sql $limit_sql $offset_sql";
-        class_exists(Console::class) && Console::logQuery($query);
         try {
             $result = $this->connection->select($query, $params);
         } catch (Throwable $e) {
             $this->error = $e->getMessage();
             $result = [];
         }
-        class_exists(Console::class) && Console::logQuery($query);
 
         return $result;
     }
@@ -411,7 +409,6 @@ class Table
             $parameters = [];
             $placeholders = implode(",", array_map($value_callback, $values));
             $query = "INSERT INTO $table ($fields) VALUES ($placeholders)";
-            class_exists(Console::class) && Console::logQuery($query);
             try {
                 $result = $this->connection->insert($query, $parameters);
                 $id = $this->connection->getRawPdo()->lastInsertId();
@@ -419,7 +416,6 @@ class Table
                 $this->error = $e->getMessage();
                 $result = false;
             }
-            class_exists(Console::class) && Console::logQuery($query);
             if ($result === false) {
                 return $counter;
             }
@@ -443,14 +439,12 @@ class Table
         $source_table = $this->quote_identifier($source->table);
         $where = $this->processWhereClauseArray($conditions, $params);
         $query = "INSERT INTO $table SELECT $source_fields FROM $source_table WHERE $where";
-        class_exists(Console::class) && Console::logQuery($query);
         try {
             $result = $this->connection->affectingStatement($query, $params);
         } catch (Throwable $e) {
             $result = 0;
             $this->error = $e->getMessage();
         }
-        class_exists(Console::class) && Console::logQuery($query);
 
         return $result;
     }
@@ -488,14 +482,12 @@ class Table
         $where = $this->processWhereClauseArray($conditions, $parameters);
 
         $query = "UPDATE $table SET $updates WHERE $where";
-        class_exists(Console::class) && Console::logQuery($query);
         try {
             $result = $this->connection->update($query, $parameters);
         } catch (Throwable $e) {
             $this->error = $e->getMessage();
             $result = 0;
         }
-        class_exists(Console::class) && Console::logQuery($query);
 
         return $result > 0;
     }
@@ -533,14 +525,12 @@ class Table
         if ($limit) {
             $query .= " LIMIT $limit";
         }
-        class_exists(Console::class) && Console::logQuery($query);
         try {
             $result = $this->connection->delete($query, $params);
         } catch (Throwable $e) {
             $this->error = $e->getMessage();
             $result = 0;
         }
-        class_exists(Console::class) && Console::logQuery($query);
 
         return $result > 0;
     }

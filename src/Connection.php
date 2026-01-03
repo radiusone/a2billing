@@ -3,7 +3,10 @@
 namespace A2billing;
 
 use Illuminate\Database\Capsule\Manager;
+use Illuminate\Database\Events\QueryExecuted;
+use Illuminate\Events\Dispatcher;
 use PDO;
+use Profiler_Console as Console;
 use ReflectionObject;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -62,6 +65,13 @@ class Connection
             // match old defaults for now
             $prop->setValue($conn->getConnection(), PDO::FETCH_BOTH);
             $conn->setAsGlobal();
+            if (class_exists(Dispatcher::class) && class_exists(Console::class)) {
+                $conn->getConnection()->enableQueryLog();
+                $conn->getConnection()->setEventDispatcher(new Dispatcher($conn->getContainer()));
+                $conn->getConnection()->listen(function (QueryExecuted $e) {
+                    Console::logQueryManually($e->toRawSql(), null, 0, $e->time * 1000);
+                });
+            }
             self::$manager = $conn;
         }
 

@@ -53,6 +53,8 @@
     "minimum-stability": "stable",
     "prefer-stable" : true,
     "require-dev": {
-        "dubcanada/php-profiler": "dev-master"
+        "dubcanada/php-profiler": "dev-master",
+        "illuminate/events": "^12.0",
+        "symfony/var-dumper": "^v7.0"
     }
 }
