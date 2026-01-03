@@ -69,7 +69,7 @@ class Connection
                 $conn->getConnection()->enableQueryLog();
                 $conn->getConnection()->setEventDispatcher(new Dispatcher($conn->getContainer()));
                 $conn->getConnection()->listen(function (QueryExecuted $e) {
-                    Console::logQueryManually($e->toRawSql(), null, 0, $e->time * 1000);
+                    Console::logQueryManually($e->toRawSql(), null, 0, $e->time);
                 });
             }
             self::$manager = $conn;
