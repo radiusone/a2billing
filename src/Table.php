@@ -5,7 +5,6 @@ namespace A2billing;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Database\Query\JoinClause;
-use Profiler_Console as Console;
 use Throwable;
 
 /**
@@ -57,8 +56,11 @@ class Table
     public ?string $table = null;
     public array $joins = [];
     public string $errstr = '';
-    public array $FK_TABLES = [];
-    public ?array $FK_EDITION_CLAUSE = null;
+
+    /** @var array<string,string> foreign key columns indexed by table  */
+    public array $foreign_keys = [];
+
+    // WTF???
     // FALSE if you want to delete the dependent Records, TRUE if you want to update
     // Dependent Records to -1
     public bool $FK_DELETE = true;
@@ -103,19 +105,15 @@ class Table
      * Configure the table for deleting records using (fake) foreign keys
      *
      * @param array $fk_Tables tables that refer back to the current table
-     * @param array $fk_Fields fields in the foreign tables that need updating/deleting
      * @param int|null $id_Value the value to check for in foreign tables when updating/deleting
      * @param bool $fk_delete whether to delete or update (with -1) foreign tables
      * @return void
      */
-    public function setDeleteFk(array $fk_Tables = [], array $fk_Fields = [], int $id_Value = null, bool $fk_delete = true)
+    public function setDeleteFk(array $fk_Tables = [], int $id_Value = null, bool $fk_delete = true)
     {
-        if (count($fk_Tables) === count($fk_Fields)) {
-            $this->FK_TABLES         = $fk_Tables;
-            $this->FK_EDITION_CLAUSE = $fk_Fields;
-            $this->FK_DELETE         = $fk_delete;
-            $this->FK_ID_VALUE       = $id_Value;
-        }
+        $this->foreign_keys         = $fk_Tables;
+        $this->FK_DELETE         = $fk_delete;
+        $this->FK_ID_VALUE       = $id_Value;
     }
 
     public function quote_identifier(?string $identifier): ?string
@@ -502,9 +500,9 @@ class Table
     public function deleteRow(array $conditions = [], int $limit = 0): bool
     {
         // temporary until proper foreign keys are set up
-        foreach ($this->FK_TABLES as $i=>$table) {
+        foreach ($this->foreign_keys as $table => $column) {
             $table = $this->quote_identifier($table);
-            $local_key = $this->quote_identifier($this->FK_EDITION_CLAUSE[$i]);
+            $local_key = $this->quote_identifier($column);
             $foreign_key = $this->FK_ID_VALUE;
             if ($this->FK_DELETE === true) {
                 $query = "DELETE FROM $table WHERE $local_key = ?";

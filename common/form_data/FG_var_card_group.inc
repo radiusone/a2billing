@@ -45,8 +45,7 @@ $HD_Form->list_query_order_columns = ["name"];
 $HD_Form->FG_FK_DELETE_ALLOWED = true;
 $HD_Form->FG_FK_DELETE_CONFIRM = true;
 $HD_Form->FG_FK_WARNONLY = true;
-$HD_Form->FG_FK_TABLENAMES = ["cc_card"];
-$HD_Form->FG_FK_EDITION_CLAUSE = ["id_group"];
+$HD_Form->foreign_keys = ["cc_card" => "id_group"];
 
 $HD_Form->delete_message_confirm_fk = _("You have some cards using this Customers Group! Please comfirm that you really want to remove this Customers Group ? ");
 

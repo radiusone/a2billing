@@ -49,8 +49,7 @@ if (!empty($agi_conf)) {
 
 $HD_Form = new FormHandler("cc_config_group", _("Configuration group"));
 
-$HD_Form->FG_FK_TABLENAMES = ["cc_config"];
-$HD_Form->FG_FK_EDITION_CLAUSE = ["config_group_id"];
+$HD_Form->foreign_keys = ["cc_config" => "config_group_id"];
 $HD_Form->FG_FK_DELETE_ALLOWED = true;
 
 $HD_Form->help_text = create_help(_("This action will generate a new agi-conf configuration group, copying configurations from the first agi-conf group found."));

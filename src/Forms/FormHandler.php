@@ -275,10 +275,7 @@ class FormHandler
     public bool $FG_FK_DELETE_ALLOWED = false;
 
     // Foreign Key Tables
-    public array $FG_FK_TABLENAMES = [];
-
-    //Foreign Key Field Names
-    public array $FG_FK_EDITION_CLAUSE = [];
+    public array $foreign_keys = [];
 
     //Foreign Key Delete Message Display, it will display the confirm delete dialog if there is some
     //some detail table exists. depends on the values of FG_FK_DELETE_ALLOWED
@@ -1689,12 +1686,11 @@ class FormHandler
         $processed = $this->getProcessed();  //$processed['firstname']
         $this->all_fields_valid = true;
 
-        $tableCount = count($this->FG_FK_TABLENAMES);
-        $clauseCount = count($this->FG_FK_EDITION_CLAUSE);
+        $tableCount = count($this->foreign_keys);
 
         $instance_table = new Table($this->FG_QUERY_TABLE_NAME, "*", $this->query_table_joins);
-        if ($tableCount === $clauseCount && $clauseCount > 0 && $this->FG_FK_DELETE_ALLOWED && !empty($processed['id'])) {
-            $instance_table->setDeleteFk($this->FG_FK_TABLENAMES, $this->FG_FK_EDITION_CLAUSE, $processed["id"], $this->FG_FK_WARNONLY);
+        if ($tableCount > 0 && $this->FG_FK_DELETE_ALLOWED && !empty($processed['id'])) {
+            $instance_table->setDeleteFk($this->foreign_keys, $processed["id"], $this->FG_FK_WARNONLY);
         }
         $instance_table->FK_DELETE = !$this->FG_FK_WARNONLY;
 
@@ -1759,15 +1755,13 @@ class FormHandler
     public function check_child_records(): bool
     {
         $processed = $this->getProcessed();
-        $tableCount = count($this->FG_FK_TABLENAMES);
-        $clauseCount = count($this->FG_FK_EDITION_CLAUSE);
-        if (empty($this->FG_FK_TABLENAMES) || empty($processed["id"]) || $tableCount !== $clauseCount) {
+        if (empty($this->foreign_keys) || empty($processed["id"])) {
             return false;
         }
         $rowcount = 0;
-        foreach ($this->FG_FK_TABLENAMES as $i => $table) {
+        foreach ($this->foreign_keys as $table => $column) {
             $instance_table = new Table($table);
-            $rowcount += $instance_table->countRows([$this->FG_FK_EDITION_CLAUSE[$i] => $processed['id']]);
+            $rowcount += $instance_table->countRows([$column => $processed['id']]);
         }
         $this->FG_FK_RECORDS_COUNT = $rowcount;
 

@@ -46,8 +46,7 @@ $HD_Form->AddListTopButton(null, null, "boxes");
 $HD_Form->FG_FK_DELETE_ALLOWED = true;
 $HD_Form->FG_FK_DELETE_CONFIRM = true;
 $HD_Form->FG_FK_WARNONLY = true;
-$HD_Form->FG_FK_TABLENAMES = ["cc_ticket"];
-$HD_Form->FG_FK_EDITION_CLAUSE = ["id_component"];
+$HD_Form->foreign_keys = ["cc_ticket" => "id_component"];
 $HD_Form->delete_message_confirm_fk = _("You have some tickets using this Support Component! Please comfirm that you really want to remove this Support Component? ");
 
 $HD_Form->help_text = create_help(_("Here you can see all components which you use to handle the support task. You can use components to categorise the subject of the ticket. i.e : Tarification, Payment"));

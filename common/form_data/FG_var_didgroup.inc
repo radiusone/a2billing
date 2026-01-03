@@ -45,8 +45,7 @@ $HD_Form->AddListTopButton(null, null,"telephone-inbound-fill");
 $HD_Form->FG_FK_DELETE_ALLOWED = true;
 $HD_Form->FG_FK_DELETE_CONFIRM = true;
 $HD_Form->FG_FK_WARNONLY = true;
-$HD_Form->FG_FK_TABLENAMES = ["cc_card"];
-$HD_Form->FG_FK_EDITION_CLAUSE = ["id_didgroup"];
+$HD_Form->foreign_keys = ["cc_card" => "id_didgroup"];
 $HD_Form->delete_message_confirm_fk = _("You have some cards using this DID Group! Please comfirm that you really want to remove this DID Group ? ");
 
 $HD_Form->list_help_text = create_help(

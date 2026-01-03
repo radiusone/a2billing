@@ -56,8 +56,7 @@ $HD_Form->list_help_text = create_help(
 $HD_Form->FG_FK_DELETE_ALLOWED = true;
 $HD_Form->FG_FK_DELETE_CONFIRM = true;
 $HD_Form->FG_FK_WARNONLY = true;
-$HD_Form->FG_FK_TABLENAMES = ["cc_card"];
-$HD_Form->FG_FK_EDITION_CLAUSE = ["tariff"];
+$HD_Form->foreign_keys = ["cc_card" => "tariff"];
 $HD_Form->delete_message_confirm_fk = _("You have some cards using this Call Plan! Please comfirm that you really want to remove this Call Plan ? ");
 
 // LCD :the cheapest Provider for a given destination number

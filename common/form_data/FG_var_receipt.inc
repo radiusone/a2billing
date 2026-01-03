@@ -65,8 +65,7 @@ $HD_Form->list_query_group_columns = ["cc_receipt.id"];
 $HD_Form->FG_FK_DELETE_ALLOWED = true;
 $HD_Form->FG_FK_DELETE_CONFIRM = true;
 $HD_Form->FG_FK_WARNONLY = true;
-$HD_Form->FG_FK_TABLENAMES = ["cc_receipt_item"];
-$HD_Form->FG_FK_EDITION_CLAUSE = ["id_receipt"];
+$HD_Form->foreign_keys = ["cc_receipt_item" => "id_receipt"];
 
 $HD_Form->FG_ENABLE_INFO_BUTTON = true;
 $HD_Form->FG_INFO_BUTTON_LINK = "A2B_receipt_view.php?id=";

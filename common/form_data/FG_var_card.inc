@@ -81,8 +81,13 @@ if (is_agent()) {
 $HD_Form->search_session_key = 'entity_card_selection';
 $HD_Form->FG_FK_DELETE_CONFIRM = true;
 $HD_Form->FG_FK_DELETE_ALLOWED = !is_customer();
-$HD_Form->FG_FK_TABLENAMES = ['cc_iax_buddies', 'cc_sip_buddies', 'cc_callerid', 'cc_card_history', 'cc_status_log'];
-$HD_Form->FG_FK_EDITION_CLAUSE = ["id_cc_card", "id_cc_card", "id_cc_card", "id_cc_card", "id_cc_card"];
+$HD_Form->foreign_keys = [
+    "cc_iax_buddies" => "id_cc_card",
+    "cc_sip_buddies" => "id_cc_card",
+    "cc_callerid" => "id_cc_card",
+    "cc_card_history" => "id_cc_card",
+    "cc_status_log" => "id_cc_card",
+];
 // DEFINE IF WE WANT TO DELETE THE CARD OR NOT
 $HD_Form->FG_FK_WARNONLY = !($A2B->config['webui']['delete_fk_card'] ?? true);
 

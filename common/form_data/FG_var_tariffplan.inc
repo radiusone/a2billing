@@ -47,8 +47,7 @@ $HD_Form->AddListTopButton(null, null, "tag");
 
 $HD_Form->FG_FK_DELETE_ALLOWED = true;
 $HD_Form->FG_FK_DELETE_CONFIRM = true;
-$HD_Form->FG_FK_TABLENAMES = ["cc_ratecard"];
-$HD_Form->FG_FK_EDITION_CLAUSE = ["idtariffplan"];
+$HD_Form->foreign_keys = ["cc_ratecard" => "idtariffplan"];
 $HD_Form->delete_message_confirm_fk = _("You are going as well to remove all the rates attached to this ratecard! Please comfirm that you really want to remove this ratecard and those rates ? ");
 
 $HD_Form->add_help_text = $HD_Form->edit_help_text = create_help(
