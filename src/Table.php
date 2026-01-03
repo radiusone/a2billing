@@ -57,14 +57,11 @@ class Table
     public array $joins = [];
     public string $errstr = '';
 
-    /** @var array<string,string> foreign key columns indexed by table  */
-    public array $foreign_keys = [];
+    /** @var array<string,string> foreign key columns that will be deleted, indexed by table */
+    protected array $foreign_key_deletes = [];
 
-    // WTF???
-    // FALSE if you want to delete the dependent Records, TRUE if you want to update
-    // Dependent Records to -1
-    public bool $FK_DELETE = true;
-    public int $FK_ID_VALUE = 0;
+    /** @var int the local ID that foreign columns will be checked for before delete */
+    protected int $foreign_key_value = 0;
 
     public string $db_type = 'mysql';
 
@@ -109,11 +106,10 @@ class Table
      * @param bool $fk_delete whether to delete or update (with -1) foreign tables
      * @return void
      */
-    public function setDeleteFk(array $fk_Tables = [], int $id_Value = null, bool $fk_delete = true)
+    public function setDeleteFk(array $fk_Tables = [], int $id_Value = null): void
     {
-        $this->foreign_keys         = $fk_Tables;
-        $this->FK_DELETE         = $fk_delete;
-        $this->FK_ID_VALUE       = $id_Value;
+        $this->foreign_key_deletes = $fk_Tables;
+        $this->foreign_key_value = $id_Value;
     }
 
     public function quote_identifier(?string $identifier): ?string
@@ -499,18 +495,13 @@ class Table
      */
     public function deleteRow(array $conditions = [], int $limit = 0): bool
     {
-        // temporary until proper foreign keys are set up
-        foreach ($this->foreign_keys as $table => $column) {
+        // override database's non-destructive foreign key handling
+        foreach ($this->foreign_key_deletes as $table => $column) {
             $table = $this->quote_identifier($table);
-            $local_key = $this->quote_identifier($column);
-            $foreign_key = $this->FK_ID_VALUE;
-            if ($this->FK_DELETE === true) {
-                $query = "DELETE FROM $table WHERE $local_key = ?";
-            } else {
-                $query = "UPDATE $table SET $local_key = -1 WHERE $local_key = ?";
-            }
+            $column = $this->quote_identifier($column);
+            $query = "DELETE FROM $table WHERE $column = ?";
             try {
-                $this->connection->delete($query, [$foreign_key]);
+                $this->connection->delete($query, [$this->foreign_key_value]);
             } catch (Throwable $e) {
                 $this->error = $e->getMessage();
             }

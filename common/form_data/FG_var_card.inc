@@ -79,19 +79,18 @@ if (is_agent()) {
     $HD_Form->list_query_conditions["cc_card.id"] = Customer::id();
 }
 $HD_Form->search_session_key = 'entity_card_selection';
-$HD_Form->FG_FK_DELETE_CONFIRM = true;
-$HD_Form->FG_FK_DELETE_ALLOWED = !is_customer();
+// todo: there are probably more than this
 $HD_Form->foreign_keys = [
-    "cc_iax_buddies" => "id_cc_card",
-    "cc_sip_buddies" => "id_cc_card",
-    "cc_callerid" => "id_cc_card",
     "cc_card_history" => "id_cc_card",
     "cc_status_log" => "id_cc_card",
 ];
-// DEFINE IF WE WANT TO DELETE THE CARD OR NOT
-$HD_Form->FG_FK_WARNONLY = !($A2B->config['webui']['delete_fk_card'] ?? true);
+if ($A2B->config['webui']['delete_fk_card'] ?? true) {
+    $HD_Form->fk_force_delete = true;
+    $HD_Form->fk_confirm_delete = $HD_Form::CONFIRM_DELETE;
+    $HD_Form->foreign_keys["cc_callerid"] = "id_cc_card";
+    $HD_Form->foreign_keys["cc_iax_buddies"] = "id_cc_card";
+    $HD_Form->foreign_keys["cc_sip_buddies"] = "id_cc_card";
 
-if (!$HD_Form->FG_FK_WARNONLY) {
     // WE WILL DELETE THE FK
     $HD_Form->delete_message_confirm_fk = _("You are going as well to remove all the SIP/IAX accounts & CallerIDs attached to this card! Please confirm that you really want to remove this card ? ");
 } else {

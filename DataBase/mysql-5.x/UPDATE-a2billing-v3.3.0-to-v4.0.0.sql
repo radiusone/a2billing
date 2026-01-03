@@ -23,8 +23,8 @@ ALTER TABLE cc_card_history ADD CONSTRAINT fk_cc_card_history_cc_card FOREIGN KE
 UPDATE cc_iax_buddies SET id_cc_card = NULL WHERE id_cc_card = -1;
 ALTER TABLE cc_iax_buddies ADD CONSTRAINT fk_cc_iax_buddies_cc_card FOREIGN KEY (id_cc_card) REFERENCES cc_card(id) ON DELETE SET NULL ON UPDATE CASCADE;
 
-UPDATE cc_invoice_item SET id_invoice = NULL WHERE id_invoice = -1;
-ALTER TABLE cc_invoice_item ADD CONSTRAINT fk_cc_invoice_item_cc_invoice FOREIGN KEY (id_invoice) REFERENCES cc_invoice(id) ON DELETE SET NULL ON UPDATE CASCADE;
+DELETE FROM cc_invoice_item WHERE id_invoice = -1;
+ALTER TABLE cc_invoice_item ADD CONSTRAINT fk_cc_invoice_item_cc_invoice FOREIGN KEY (id_invoice) REFERENCES cc_invoice(id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 UPDATE cc_outbound_cid_list SET outbound_cid_group = NULL WHERE outbound_cid_group = -1;
 ALTER TABLE cc_outbound_cid_list ADD CONSTRAINT fk_cc_outbound_cid_list_cc_outbound_cid_group FOREIGN KEY (outbound_cid_group) REFERENCES cc_outbound_cid_group(id) ON DELETE SET NULL ON UPDATE CASCADE;
@@ -34,8 +34,8 @@ UPDATE cc_ratecard SET idtariffplan = NULL WHERE idtariffplan = -1;
 ALTER TABLE cc_ratecard ADD CONSTRAINT fk_cc_ratecard_cc_tariffplan FOREIGN KEY (idtariffplan) REFERENCES cc_tariffplan(id) ON DELETE SET NULL ON UPDATE CASCADE,
     ADD CONSTRAINT fk_cc_ratecard_cc_trunk FOREIGN KEY (id_trunk) REFERENCES cc_trunk(id_trunk) ON DELETE SET NULL ON UPDATE CASCADE;
 
-UPDATE cc_receipt_item SET id_receipt = NULL WHERE id_receipt = -1;
-ALTER TABLE cc_receipt_item ADD CONSTRAINT fk_cc_receipt_item_cc_receipt FOREIGN KEY (id_receipt) REFERENCES cc_receipt(id) ON DELETE SET NULL ON UPDATE CASCADE;
+DELETE FROM cc_receipt_item WHERE id_receipt = -1;
+ALTER TABLE cc_receipt_item ADD CONSTRAINT fk_cc_receipt_item_cc_receipt FOREIGN KEY (id_receipt) REFERENCES cc_receipt(id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 UPDATE cc_sip_buddies SET id_cc_card = NULL WHERE id_cc_card = -1;
 ALTER TABLE cc_sip_buddies ADD CONSTRAINT fk_cc_sip_buddies_cc_card FOREIGN KEY (id_cc_card) REFERENCES cc_card(id) ON DELETE SET NULL ON UPDATE CASCADE;
@@ -49,8 +49,8 @@ ALTER TABLE cc_support_component ADD CONSTRAINT fk_cc_support_component_cc_suppo
 UPDATE cc_ticket SET id_component = NULL WHERE id_component = -1;
 ALTER TABLE cc_ticket ADD CONSTRAINT fk_cc_ticket_cc_support_component FOREIGN KEY (id_component) REFERENCES cc_support_component(id) ON DELETE SET NULL ON UPDATE CASCADE;
 
-UPDATE cc_ticket_comment SET id_ticket = NULL WHERE id_ticket = -1;
-ALTER TABLE cc_ticket_comment ADD CONSTRAINT fk_cc_ticket_comment_cc_ticket FOREIGN KEY (id_ticket) REFERENCES cc_ticket(id) ON DELETE SET NULL ON UPDATE CASCADE;
+DELETE FROM cc_ticket_comment WHERE id_ticket = -1;
+ALTER TABLE cc_ticket_comment ADD CONSTRAINT fk_cc_ticket_comment_cc_ticket FOREIGN KEY (id_ticket) REFERENCES cc_ticket(id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 
 
@@ -176,8 +176,8 @@ ALTER TABLE cc_charge ADD CONSTRAINT fk_cc_charge_cc_card FOREIGN KEY (id_cc_car
     ADD CONSTRAINT fk_cc_charge_cc_card_subscription FOREIGN KEY (id_cc_card_subscription) REFERENCES cc_card_subscription(id) ON DELETE SET NULL ON UPDATE CASCADE,
     ADD CONSTRAINT fk_cc_charge_cc_did FOREIGN KEY (id_cc_did) REFERENCES cc_did(id) ON DELETE SET NULL ON UPDATE CASCADE;
 
-UPDATE cc_config SET config_group_id = NULL WHERE config_group_id = -1;
-ALTER TABLE cc_config ADD CONSTRAINT fk_cc_config_cc_config_group FOREIGN KEY (config_group_id) REFERENCES cc_config_group(id) ON DELETE SET NULL ON UPDATE CASCADE;
+DELETE FROM cc_config WHERE config_group_id = -1;
+ALTER TABLE cc_config ADD CONSTRAINT fk_cc_config_cc_config_group FOREIGN KEY (config_group_id) REFERENCES cc_config_group(id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 UPDATE cc_did SET id_cc_country = NULL WHERE id_cc_country = -1;
 UPDATE cc_did SET id_cc_didgroup = NULL WHERE id_cc_didgroup = -1;

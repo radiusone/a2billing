@@ -32,8 +32,11 @@ namespace A2billing\Forms;
             <p>
                 <?= sprintf(ngettext("You have %d dependent record.", "You have %d dependent records.", $processed["fk_count"]), $processed["fk_count"]) ?>
             </p>
+            <?php if($form->fk_confirm_delete === $form::CONFIRM_DELETE): ?><p>
+                <?= _("All dependent records will be permanently deleted") ?>
+            </p><?php endif ?>
             <p>
-                <?= $form -> delete_message_confirm_fk ?>
+                <?= $form->delete_message_confirm_fk ?>
             </p>
         </div>
     </div>
@@ -46,11 +49,11 @@ namespace A2billing\Forms;
 
 <?php else: ?>
 
-    <?php if ($form->FG_FK_RECORDS_COUNT > 0 && $form->FG_FK_DELETE_ALLOWED && $form->FG_FK_DELETE_CONFIRM): ?>
-    <input type="hidden" name="fk_count" value="<?= $form->FG_FK_RECORDS_COUNT ?>">
-	<input type="hidden" name="form_action" value="ask-del-confirm">
+    <?php if ($form->fk_confirm_delete === $form::CONFIRM_NONE || $form->fk_record_count === 0): ?>
+    <input type="hidden" name="form_action" value="delete"/>
     <?php else: ?>
-    <input type="hidden" name="form_action" value="delete">
+    <input type="hidden" name="fk_count" value="<?= $form->fk_record_count ?>"/>
+    <input type="hidden" name="form_action" value="ask-del-confirm"/>
     <?php endif ?>
 
     <?php foreach ($form->FG_EDIT_QUERY_HIDDEN_INPUTS as $name => $value): ?>

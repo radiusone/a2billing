@@ -1,6 +1,5 @@
 <?php
 
-use A2billing\Admin;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 use A2billing\Table;
@@ -53,9 +52,6 @@ $HD_Form->list_help_text = create_help(
     _("List of Call Plans, a Call Plan is a collection of ratecards. You can click on edit to add new ratecards to the Call Plan")
 );
 
-$HD_Form->FG_FK_DELETE_ALLOWED = true;
-$HD_Form->FG_FK_DELETE_CONFIRM = true;
-$HD_Form->FG_FK_WARNONLY = true;
 $HD_Form->foreign_keys = ["cc_card" => "tariff"];
 $HD_Form->delete_message_confirm_fk = _("You have some cards using this Call Plan! Please comfirm that you really want to remove this Call Plan ? ");
 

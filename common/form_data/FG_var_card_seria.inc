@@ -1,6 +1,5 @@
 <?php
 
-use A2billing\Admin;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 
@@ -40,7 +39,6 @@ $HD_Form = new FormHandler("cc_card_seria", _("Card series"));
 
 $HD_Form->list_query_order_columns = ["name"];
 
-$HD_Form->FG_FK_DELETE_CONFIRM = true;
 $HD_Form->foreign_keys = ["cc_card" => "id_seria"];
 $HD_Form->delete_message_confirm_fk = _("You have some cards using this series! Please comfirm that you really want to remove this series.");
 

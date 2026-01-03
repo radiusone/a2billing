@@ -1,6 +1,5 @@
 <?php
 
-use A2billing\Admin;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 
@@ -43,11 +42,6 @@ $HD_Form->list_query_order_direction = "DESC";
 
 $HD_Form->AddListTopButton(null, null, "telephone-outbound-fill");
 
-// Code Here for Deleting the Dependent Records
-// Dependent Tables
-$HD_Form->FG_FK_DELETE_ALLOWED = true;
-$HD_Form->FG_FK_DELETE_CONFIRM = true;
-$HD_Form->FG_FK_WARNONLY = true;
 $HD_Form->foreign_keys = ["cc_outbound_cid_list" => "outbound_cid_group"];
 $HD_Form->delete_message_confirm_fk = _("You have some CID using this CID Group! Please comfirm that you really want to remove this CID Group ? ");
 

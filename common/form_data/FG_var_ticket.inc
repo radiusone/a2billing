@@ -117,11 +117,6 @@ if (is_customer()) {
     $HD_Form->update_query_conditions["cc_ticket.creator"] = Customer::id();
 }
 
-$HD_Form->FG_FK_DELETE_ALLOWED = is_admin();
-$HD_Form->FG_FK_DELETE_CONFIRM = true;
-$HD_Form->FG_FK_WARNONLY = true;
-$HD_Form->foreign_keys = ["cc_ticket_comment" => "id_ticket"];
-
 if (!is_customer()) {
     $HD_Form->AddListTopButton("?form_action=ask-add&ticket_type=$ticket_type");
     $HD_Form->AddListTopButton(

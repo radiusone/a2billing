@@ -1,6 +1,5 @@
 <?php
 
-use A2billing\Admin;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 use A2billing\Table;
@@ -45,10 +44,8 @@ $HD_Form->list_query_order_columns = ["tariffname"];
 
 $HD_Form->AddListTopButton(null, null, "tag");
 
-$HD_Form->FG_FK_DELETE_ALLOWED = true;
-$HD_Form->FG_FK_DELETE_CONFIRM = true;
 $HD_Form->foreign_keys = ["cc_ratecard" => "idtariffplan"];
-$HD_Form->delete_message_confirm_fk = _("You are going as well to remove all the rates attached to this ratecard! Please comfirm that you really want to remove this ratecard and those rates ? ");
+$HD_Form->delete_message_confirm_fk = _("There are still rates attached to this ratecard! Please comfirm that you really want to remove this ratecard? ");
 
 $HD_Form->add_help_text = $HD_Form->edit_help_text = create_help(
     _("A ratecard is a set of rates defined and applied according to the dialling prefix, for instance 441 & 442 : UK Landline.")

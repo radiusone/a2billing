@@ -271,21 +271,37 @@ class FormHandler
     /** @var callable|null Static method of FormBO class executed after editing */
     public $FG_ADDITIONAL_FUNCTION_AFTER_EDITION = null;
 
-    /** @var bool not sure what this means, but I'm confident it would go away with proper foreign keys */
-    public bool $FG_FK_DELETE_ALLOWED = false;
-
-    // Foreign Key Tables
+    /**
+     * Foreign keys indexed by table
+     * When set, and matching rows are found, the user may be warned before
+     * deleting a child record, depending on $fk_confirm_delete. Behaviour
+     * during delete depends on the value of $fk_full_delete
+     *
+     * @var array<string,string>
+     */
     public array $foreign_keys = [];
 
-    //Foreign Key Delete Message Display, it will display the confirm delete dialog if there is some
-    //some detail table exists. depends on the values of FG_FK_DELETE_ALLOWED
-    public bool $FG_FK_DELETE_CONFIRM = false;
+    /**
+     * Delete child records with the parent
+     * When true, any matching rows defined in $foreign_keys will be deleted
+     * with the child record. When false, all DB-defined foreign keys are
+     * handled per the table definition. This is only here because there's a
+     * config setting to set behaviour when deleting cards
+     *
+     * @var bool
+     */
+    public bool $fk_force_delete = false;
 
-    //Foreign Key Records Count
-    public int $FG_FK_RECORDS_COUNT = 0;
+    /** @var int number of child records found for the current record */
+    public int $fk_record_count = 0;
 
-    //Foreign Key Exists so Warn only not to delete ,,Boolean
-    public bool $FG_FK_WARNONLY = false;
+    /**
+     * Show a message to the user confirming to proceed with deletion of
+     * the current record when child records are found
+     *
+     * @var self::CONFIRM_*
+     */
+    public int $fk_confirm_delete = self::CONFIRM_WARN;
 
     // Delete Message for FK
     public string $delete_message_confirm_fk;
@@ -1686,13 +1702,10 @@ class FormHandler
         $processed = $this->getProcessed();  //$processed['firstname']
         $this->all_fields_valid = true;
 
-        $tableCount = count($this->foreign_keys);
-
         $instance_table = new Table($this->FG_QUERY_TABLE_NAME, "*", $this->query_table_joins);
-        if ($tableCount > 0 && $this->FG_FK_DELETE_ALLOWED && !empty($processed['id'])) {
-            $instance_table->setDeleteFk($this->foreign_keys, $processed["id"], $this->FG_FK_WARNONLY);
+        if ($this->fk_force_delete && !empty($processed['id'])) {
+            $instance_table->setDeleteFk($this->foreign_keys, $processed["id"]);
         }
-        $instance_table->FK_DELETE = !$this->FG_FK_WARNONLY;
 
         $this->QUERY_RESULT = $instance_table->deleteRow($this->update_query_conditions);
         if ($this->QUERY_RESULT) {
@@ -1763,7 +1776,7 @@ class FormHandler
             $instance_table = new Table($table);
             $rowcount += $instance_table->countRows([$column => $processed['id']]);
         }
-        $this->FG_FK_RECORDS_COUNT = $rowcount;
+        $this->fk_record_count = $rowcount;
 
         return ($rowcount > 0);
     }

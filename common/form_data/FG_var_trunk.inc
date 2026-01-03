@@ -1,6 +1,5 @@
 <?php
 
-use A2billing\Admin;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 use A2billing\Table;
@@ -50,9 +49,6 @@ $HD_Form->list_query_order_columns = ["id_trunk"];
 $HD_Form->update_query_conditions = ["id_trunk" => "%id"];
 
 // Dependent Tables
-$HD_Form->FG_FK_DELETE_ALLOWED = true;
-$HD_Form->FG_FK_DELETE_CONFIRM = true;
-$HD_Form->FG_FK_WARNONLY = true;
 $HD_Form->foreign_keys = ["cc_ratecard" => "id_trunk"];
 $HD_Form->delete_message_confirm_fk = _("You have some rates attached to this Trunk! Please comfirm that you really want to remove this Trunk? ");
 

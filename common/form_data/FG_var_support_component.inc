@@ -1,6 +1,5 @@
 <?php
 
-use A2billing\Admin;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 use A2billing\Table;
@@ -43,9 +42,6 @@ $HD_Form->list_query_order_columns = ["name"];
 
 $HD_Form->AddListTopButton(null, null, "boxes");
 
-$HD_Form->FG_FK_DELETE_ALLOWED = true;
-$HD_Form->FG_FK_DELETE_CONFIRM = true;
-$HD_Form->FG_FK_WARNONLY = true;
 $HD_Form->foreign_keys = ["cc_ticket" => "id_component"];
 $HD_Form->delete_message_confirm_fk = _("You have some tickets using this Support Component! Please comfirm that you really want to remove this Support Component? ");
 
