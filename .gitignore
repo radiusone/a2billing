@@ -11,3 +11,4 @@
 
 # Composer
 /vendor/
+composer.lock
