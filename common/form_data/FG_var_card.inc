@@ -400,7 +400,7 @@ if ($popup_select) {
             new Table("cc_card_seria", ["name", "id"]),
             [],
             "",
-            [-1 => _("NOT DEFINED")]
+            ["" => _("NOT DEFINED")]
         );
     }
 
@@ -583,7 +583,7 @@ if ($popup_select) {
         new Table("cc_didgroup", ["didgroupname", "id"]),
         [],
         "",
-        [-1 => _("NOT DEFINED")]
+        ["" => _("NOT DEFINED")]
     );
 
     $HD_Form->AddEditSelect(_("Language"), "language", $language_list);
@@ -684,7 +684,7 @@ if ($popup_select) {
         new Table("cc_campaign", ["name", "id"]),
         [],
         "",
-        [-1 => _("NOT DEFINED")]
+        ["" => _("NOT DEFINED")]
     );
 
     $HD_Form->AddEditElement(
@@ -917,7 +917,7 @@ if ($popup_select) {
             }
 
             $who = Notification::$UNKNOWN;
-            $who_id = -1;
+            $who_id = "";
             if (is_admin()) {
                 $who = Notification::$ADMIN;
                 $who_id = Admin::id();

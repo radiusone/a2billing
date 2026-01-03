@@ -111,7 +111,7 @@ $HD_Form->AddEditSqlSelect(
     new Table("cc_agent", ["CONCAT(login, ' - ', firstname, ' ', lastname)", "id"]),
     [],
     "",
-    [-1 => _("NONE")]
+    ["" => _("NONE")]
 );
 
 $HD_Form->AddEditSelect(

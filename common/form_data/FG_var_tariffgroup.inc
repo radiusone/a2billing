@@ -100,7 +100,7 @@ $HD_Form->AddEditSqlSelect(
     new Table("cc_package_offer", ["label", "id"]),
     [],
     "",
-    [-1 => _("NOT DEFINED")],
+    ["" => _("NOT DEFINED")],
     _("Set the Package Group offer if you wish to use one with this Call Plan")
 );
 

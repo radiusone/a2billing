@@ -76,7 +76,7 @@ $HD_Form->AddEditSqlSelect(
     new Table("cc_subscription_service", ["label", "id"]),
     [],
     "",
-    [-1 => _("NOT DEFINED")]
+    ["" => _("NOT DEFINED")]
 );
 
 $date_attr = ["maxlength" => 40];

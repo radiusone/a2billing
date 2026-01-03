@@ -85,7 +85,7 @@ $HD_Form->AddEditSqlSelect(
     new Table("cc_subscription_service", ["CONCAT(label, ' - ', fee, '$CURRENCY'", "id"]),
     [],
     "",
-    [-1 => _("NONE")]
+    ["" => _("NONE")]
 );
 
 $HD_Form->AddEditTextarea(

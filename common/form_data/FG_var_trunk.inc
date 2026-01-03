@@ -108,7 +108,7 @@ $HD_Form->AddEditSqlSelect(
     new Table("cc_provider", ["provider_name", "id"]),
     [],
     "",
-    [-1 => _("NOT DEFINED")]
+    ["" => _("NOT DEFINED")]
 );
 
 $HD_Form->AddEditElement(
@@ -171,7 +171,7 @@ $HD_Form->AddEditSqlSelect(
     new Table("cc_trunk", ["trunkcode", "id_trunk"]),
     [],
     "",
-    [-1 => _("NOT DEFINED")],
+    ["" => _("NOT DEFINED")],
     _("You can define another trunk in case of failover!")
 );
 
