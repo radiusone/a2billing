@@ -6,7 +6,7 @@ use Illuminate\Database\Capsule\Manager;
 use Illuminate\Database\Events\QueryExecuted;
 use Illuminate\Events\Dispatcher;
 use PDO;
-use Profiler_Console as Console;
+use PhpProfiler\Console;
 use ReflectionObject;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */

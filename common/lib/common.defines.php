@@ -1,7 +1,7 @@
 <?php
 
 use A2billing\A2Billing;
-use Profiler_Profiler as Profiler;
+use PhpProfiler\Profiler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -38,7 +38,9 @@ use Profiler_Profiler as Profiler;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
-// $profiler = new Profiler();
+if (class_exists(Profiler::class)) {
+    $profiler = new Profiler();
+}
 
 // LOAD THE CONFIGURATION
 $A2B = new A2Billing();

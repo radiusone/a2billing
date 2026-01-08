@@ -5,7 +5,7 @@ namespace A2billing\Forms;
 use A2billing\Admin;
 use A2billing\Logger;
 use A2billing\Table;
-use Profiler_Console as Console;
+use PhpProfiler\Console;
 use const PASSWORD_DEFAULT;
 
 /***************************************************************************
