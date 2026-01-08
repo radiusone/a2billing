@@ -3,9 +3,12 @@
 namespace A2billing\Forms;
 
 use A2billing\Admin;
+use A2billing\Connection;
 use A2billing\Logger;
 use A2billing\Table;
+use Illuminate\Database\Query\Builder;
 use PhpProfiler\Console;
+use Throwable;
 use const PASSWORD_DEFAULT;
 
 /***************************************************************************
@@ -26,6 +29,9 @@ use const PASSWORD_DEFAULT;
  ****************************************************************************/
 class FormHandler
 {
+    public const CONFIRM_NONE = 0;
+    public const CONFIRM_WARN = 1;
+    public const CONFIRM_DELETE = 2;
     private static self $Instance;
 
     /**
@@ -35,6 +41,9 @@ class FormHandler
 
     /** @var bool if the current submission has passed all validation checks */
     public bool $all_fields_valid = true;
+
+    /** @var Builder the query builder instance used for DB access */
+    protected Builder $query_builder;
 
     /** @var bool|int The result of a non-select query (bool for update and delete, inserted ID for insert) */
     public $QUERY_RESULT = false;
@@ -296,8 +305,9 @@ class FormHandler
     public int $fk_record_count = 0;
 
     /**
-     * Show a message to the user confirming to proceed with deletion of
-     * the current record when child records are found
+     * If 1 or 2, show a message to the user confirming to proceed with
+     * deletion of the current record when child records are found. (If
+     * 2, the message includes text about permanent deletion.)
      *
      * @var self::CONFIRM_*
      */
@@ -316,8 +326,9 @@ class FormHandler
      * @param string $instance_name a label for the object
      * @param string $primary_key the primary key of the table (if joining tables, make sure it's unambiguous)
      * @param array<string,array<string>> $joins a list of joins formatted for use by Table::processJoinedTables()
+     * @param Builder|null $builder a custom query builder instance (eventually will replace the other parameters)
      */
-    public function __construct(string $tablename, string $instance_name, string $primary_key = "id", array $joins = [])
+    public function __construct(string $tablename, string $instance_name, string $primary_key = "id", array $joins = [], ?Builder $builder = null)
     {
         if (class_exists(Console::class)) {
             Console::log('Construct FormHandler');
@@ -333,6 +344,17 @@ class FormHandler
             $this->update_query_conditions = [$primary_key => "%id"];
         }
         $this->query_table_joins = $joins;
+
+        if (is_null($builder)) {
+            $this->query_builder = Connection::getConnection()
+                ->table($tablename)
+                ->orderBy($primary_key);
+            if ($joins) {
+                (new Table())->processJoinedTables($joins, $this->query_builder);
+            }
+        } else {
+            $this->query_builder = $builder;
+        }
 
         if (strtolower($_SERVER["REQUEST_METHOD"]) === "post") {
             $posted_token = $_POST["csrf_token"] ?? "";
@@ -407,7 +429,7 @@ class FormHandler
 
         if (class_exists(Console::class)) {
             Console::log('FormHandler -> init');
-            Console::logMemory(false, 'FormHandler -> init : Line ' . __LINE__);
+            Console::logMemory(null, 'FormHandler -> init : Line ' . __LINE__);
             Console::logSpeed('FormHandler -> init : Line ' . __LINE__);
         }
 
@@ -1188,18 +1210,23 @@ class FormHandler
         switch ($processed[$operator] ?? null) {
             default:
                 $this->list_query_conditions[] = ["SUB", [$left_column => $val]];
+                $this->query_builder->where($left_column, $val);
                 break;
             case 2:
                 $this->list_query_conditions[] = ["SUB", [$left_column => ["<=", $val]]];
+                $this->query_builder->where($left_column, "<=", $val);
                 break;
             case 3:
                 $this->list_query_conditions[] = ["SUB", [$left_column => ["<", $val]]];
+                $this->query_builder->where($left_column, "<", $val);
                 break;
             case 4:
                 $this->list_query_conditions[] = ["SUB", [$left_column => [">", $val]]];
+                $this->query_builder->where($left_column, ">", $val);
                 break;
             case 5:
                 $this->list_query_conditions[] = ["SUB", [$left_column => [">=", $val]]];
+                $this->query_builder->where($left_column, ">=", $val);
                 break;
         }
     }
@@ -1230,15 +1257,19 @@ class FormHandler
         switch ($op ?? null) {
             case 1:
                 $this->list_query_conditions[$column] = $val;
+                $this->query_builder->where($column, $val);
                 break;
             case 2:
                 $this->list_query_conditions[$column] = [$LIKE, "$val%"];
+                $this->query_builder->whereLike($column, "$val%");
                 break;
             default:
                 $this->list_query_conditions[$column] = [$LIKE, "%$val%"];
+                $this->query_builder->whereLike($column, "%$val%");
                 break;
             case 4:
                 $this->list_query_conditions[$column] = [$LIKE, "%$val"];
+                $this->query_builder->whereLike($column, "%$val");
                 break;
         }
     }
@@ -1319,11 +1350,16 @@ class FormHandler
             $form_action === "ask-edit" || $form_action === "add-content" || $form_action === "del-content" ||
             $form_action === "ask-del-confirm"
         ) {
+            $dir = "asc";
+            if (in_array(strtolower($processed["sens"] ?? ""), ["asc", "desc"])) {
+                $dir = $processed["sens"];
+                $this->list_query_order_direction = $dir;
+            }
             if (!empty($processed["order"])) {
                 $this->list_query_order_columns = array_filter([$processed['order']]);
-            }
-            if (in_array(strtolower($processed["sens"] ?? ""), ["asc", "desc"])) {
-                $this->list_query_order_direction = $processed["sens"];
+                foreach (array_filter([$processed['order']]) as $order) {
+                    $this->query_builder->orderBy($order, $dir);
+                }
             }
 
             $current_page = (int)($processed["current_page"] ?? 0);
@@ -1355,17 +1391,17 @@ class FormHandler
                     $this->Delete_Selected();
                 }
 
-                $instance_table = new Table($this->FG_QUERY_TABLE_NAME, $this->list_query_columns, $this->query_table_joins);
-                $list = $instance_table->getRows(
-                    $this->list_query_conditions,
-                    $this->list_query_order_columns,
-                    $this->list_query_order_direction,
-                    $this->list_query_group_columns,
-                    $this->FG_LIST_VIEW_PAGE_SIZE,
-                    $current_page * $this->FG_LIST_VIEW_PAGE_SIZE
-                );
+                $instance_table = $this->query_builder
+                    ->select($this->list_query_columns)
+                    ->groupBy(...$this->list_query_group_columns)
+                    ->limit($this->FG_LIST_VIEW_PAGE_SIZE)
+                    ->offset($current_page * $this->FG_LIST_VIEW_PAGE_SIZE);
+                try {
+                    $list = $instance_table->get()->toArray();
 
-                $this->FG_LIST_VIEW_ROW_COUNT = $instance_table->countRows($this->list_query_conditions, $this->list_query_group_columns);
+                    $this->FG_LIST_VIEW_ROW_COUNT = $instance_table->count();
+                } catch (Throwable) {
+                }
 
                 if ($this->FG_LIST_VIEW_ROW_COUNT <= $this->FG_LIST_VIEW_PAGE_SIZE) {
                     $this->FG_LIST_VIEW_PAGE_COUNT = 1;
@@ -1383,12 +1419,14 @@ class FormHandler
                     "name"
                 );
 
-                $instance_table = new Table($this->FG_QUERY_TABLE_NAME, $cols, $this->query_table_joins);
-                $list = $instance_table->getRows($this->update_query_conditions);
+                try {
+                    $list = $this->query_builder->select($cols)->get()->toArray();
+                } catch (Throwable) {
+                }
 
                 //PATCH TO CLEAN THE IMPORT OF PASSWORD FROM THE DATABASE
                 $index = array_search("pwd_encoded", $cols);
-                if ($index !== false) {
+                if ($index !== false && count($list) > 0) {
                     $list[0][$index] = "";
                     $list[0]["pwd_encoded"] = "";
                 }
@@ -1419,6 +1457,7 @@ class FormHandler
             $val = $processed["filterprefix$i"] ?? "";
             if ($val) {
                 $this->list_query_conditions[$filter["column"]] = ["LIKE", "$val%"];
+                $this->query_builder->whereLike($filter["column"], "$val%");
             }
         }
 
@@ -1491,8 +1530,11 @@ class FormHandler
      ******************************************/
     public function Delete_Selected()
     {
-        $instance_table = new Table($this->FG_QUERY_TABLE_NAME, ["*"], $this->query_table_joins);
-        $instance_table->deleteRow($this->list_query_conditions);
+        try {
+            $this->query_builder->delete();
+        } catch (Throwable $e) {
+            $this->delete_message_error .= " " . $e->getMessage();
+        }
     }
 
     /**
@@ -1504,13 +1546,11 @@ class FormHandler
         $this->all_fields_valid = true;
         $values = [];
         $arr_value_to_import = [];
-        // ignore the joins since we're doing an insert
-        $instance_table = new Table($this->FG_QUERY_TABLE_NAME);
 
         foreach ($this->FG_EDIT_FORM_ELEMENTS as &$row) {
             $field = $row["name"] ?? "";
             $attr = $row["attributes"] ?? [];
-            if (empty($field) || array_key_exists("disabled", $attr) || !array_key_exists($field, $processed)) {
+            if ($field === "" || array_key_exists("disabled", $attr) || !array_key_exists($field, $processed)) {
                 continue;
             }
 
@@ -1564,25 +1604,26 @@ class FormHandler
         if (($key = array_search("%check_array%", $values)) !== false) {
             foreach ($arr_value_to_import[$key] as $array_value) {
                 $values[$key] = $array_value;
-                $result = $instance_table->addRow(
-                    $values,
-                    $this->FG_QUERY_PRIMARY_KEY,
-                    $id
-                );
-                // CALL DEFINED FUNCTION AFTER THE ACTION ADDITION
-                if ($result && is_callable($this->FG_ADDITIONAL_FUNCTION_AFTER_ADD)) {
-                    ($this->FG_ADDITIONAL_FUNCTION_AFTER_ADD)($id);
+                try {
+                    $id = $this->query_builder->insertGetId($values);
+                    // CALL DEFINED FUNCTION AFTER THE ACTION ADDITION
+                    if (is_callable($this->FG_ADDITIONAL_FUNCTION_AFTER_ADD)) {
+                        ($this->FG_ADDITIONAL_FUNCTION_AFTER_ADD)($id);
+                    }
+                } catch (Throwable $e) {
+                    $this->add_message_error .= " " . $e->getMessage();
+                    break;
                 }
             }
         } else {
-            $result = $instance_table->addRow(
-                $values,
-                $this->FG_QUERY_PRIMARY_KEY,
-                $id
-            );
-            // CALL DEFINED FUNCTION AFTER THE ACTION ADDITION
-            if ($result && is_callable($this->FG_ADDITIONAL_FUNCTION_AFTER_ADD)) {
-                ($this->FG_ADDITIONAL_FUNCTION_AFTER_ADD)($id);
+            try {
+                $id = $this->query_builder->insertGetId($values);
+                // CALL DEFINED FUNCTION AFTER THE ACTION ADDITION
+                if (is_callable($this->FG_ADDITIONAL_FUNCTION_AFTER_ADD)) {
+                    ($this->FG_ADDITIONAL_FUNCTION_AFTER_ADD)($id);
+                }
+            } catch (Throwable $e) {
+                $this->add_message_error .= " " . $e->getMessage();
             }
         }
         $this->QUERY_RESULT = $id ?: false;
@@ -1602,8 +1643,6 @@ class FormHandler
                 );
             }
             $this->gotoLocation($this->FG_LOCATION_AFTER_ADD ?? "?form_action=ask-edit&id=", $this->QUERY_RESULT);
-        } else {
-            $this->add_message_error .= (" " . _("There was a database error."));
         }
     }
 
@@ -1617,7 +1656,6 @@ class FormHandler
         $processed = $this->getProcessed();  //$processed['firstname']
         $this->all_fields_valid = true;
         $values = [];
-        $instance_table = new Table($this->FG_QUERY_TABLE_NAME, "*", $this->query_table_joins);
 
         foreach ($this->FG_EDIT_FORM_ELEMENTS as &$row) {
             $field = $row["name"] ?? "";
@@ -1663,10 +1701,10 @@ class FormHandler
             ($this->FG_ADDITIONAL_FUNCTION_BEFORE_EDITION)($processed["id"]);
         }
 
-        $this->QUERY_RESULT = $instance_table->updateRow(
-            $values,
-            $this->update_query_conditions
-        );
+        try {
+            $this->QUERY_RESULT = $this->query_builder->update($values);
+        } catch (Throwable) {
+        }
 
         if ($this->QUERY_RESULT) {
             if ($this->FG_ENABLE_LOG) {
