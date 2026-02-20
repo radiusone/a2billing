@@ -682,15 +682,6 @@ if ($popup_select) {
         "NO"
     );
 
-    $HD_Form->AddEditSqlSelect(
-        _("Campaign"),
-        "id_campaign",
-        new Table("cc_campaign", ["name", "id"]),
-        [],
-        "",
-        ["" => _("NOT DEFINED")]
-    );
-
     $HD_Form->AddEditElement(
         _("First use date"),
         "firstusedate",

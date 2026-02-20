@@ -144,8 +144,6 @@ class A2Billing
     public string $cardholder_firstname;
     public string $cardholder_email;
     public string $cardholder_uipass;
-    /** @var int seems this is never read, only set */
-    public int $id_campaign;
     public int $id_card;
     public string $useralias;
     public string $countryprefix;
@@ -2458,72 +2456,6 @@ class A2Billing
         }
     }
 
-    public function update_callback_campaign()
-    {
-        $now = time();
-        $username = $this->agi->get_variable("USERNAME", true) ?? "";
-        $userid = $this->agi->get_variable("USERID", true) ?? "";
-        $called = $this->agi->get_variable("CALLED", true) ?? "";
-        $phonenumber_id = $this->agi->get_variable("PHONENUMBER_ID", true) ?? "";
-        $campaign_id = $this->agi->get_variable("CAMPAIGN_ID", true) ?? "";
-        $this->debug(self::DEBUG, "[MODE CAMPAIGN CALLBACK: USERNAME=$username USERID=$userid ]");
-
-        $query = <<< SQL
-            SELECT cc_campaign_config.flatrate, cc_campaign_config.context
-            FROM cc_card
-                JOIN cc_card_group ON cc_card.id_group = cc_card_group.id
-                JOIN cc_campaignconf_cardgroup ON cc_campaignconf_cardgroup.id_card_group = cc_card_group.id
-                JOIN cc_campaign_config ON cc_campaign_config.id = cc_campaignconf_cardgroup.id_campaign_config
-                JOIN cc_campaign ON cc_campaign.id_campaign_config = cc_campaign_config.id
-            WHERE cc_card.id = ?
-                AND cc_campaign.id = ?
-            SQL;
-        $params = [$userid, $campaign_id];
-        $row = $this->DBHandle->selectOne($query, $params);
-        $this->debug(self::DEBUG, "Query: $query", $params, $row);
-
-        $cost = 0;
-        if ($row !== false && !is_null($row)) {
-            $cost = $row["flatrate"];
-            $context = $row["context"];
-        }
-
-        if (empty($context)) {
-            $context = $this->config["callback"]['context_campaign_callback'];
-        }
-
-        //update balance
-        $query = "UPDATE cc_card SET credit = credit + ?, lastuse = CURRENT_TIMESTAMP WHERE username = ?";
-        $params = [a2b_round($cost), $username];
-        $this->DBHandle->update($query, $params);
-        $this->debug(self::DEBUG, "Query: $query", $params);
-
-        //dial other context
-        $this->agi->set_variable('CALLERID(name)', $phonenumber_id . ',' . $campaign_id);
-        $this->debug(self::DEBUG, "[CONTEXT TO CALL : " . $context . "]");
-        $this->agi->exec_dial("local", "1@" . $context);
-
-        $duration = time() - $now;
-        ///create campaign cdr
-        $query = <<< SQL
-            INSERT INTO cc_call (
-                uniqueid, sessionid, card_id, calledstation, sipiax, sessionbill, sessiontime, stoptime, starttime $this->CDR_CUSTOM_SQL
-            )
-            VALUES (?, ?, ?, ?, 6, ?, ?, CURRENT_TIMESTAMP , CURRENT_TIMESTAMP - INTERVAL ? SECOND $this->CDR_CUSTOM_VAL)
-            SQL;
-        $params = [
-            $this->uniqueid,
-            $this->channel,
-            $userid,
-            $called,
-            $cost,
-            $duration,
-            $duration,
-        ];
-        $this->DBHandle->insert($query, $params);
-        $this->debug(self::DEBUG, "Query: $query", $params);
-    }
-
     public function callingcard_ivr_authenticate(): bool
     {
         $authentication = false;
@@ -2545,7 +2477,7 @@ class A2Billing
                     cc_card.simultaccess, cc_card.typepaid, cc_card.creditlimit, cc_card.language, cc_card.username, removeinterprefix,
                     cc_card.redial, enableexpire, UNIX_TIMESTAMP(expirationdate) AS expiryts, expiredays, nbused,
                     UNIX_TIMESTAMP(firstusedate) AS firstts, UNIX_TIMESTAMP(cc_card.creationdate) AS createts, cc_card.currency,
-                    cc_card.lastname, cc_card.firstname, cc_card.email, cc_card.uipass, cc_card.id_campaign, cc_card.id AS id_card,
+                    cc_card.lastname, cc_card.firstname, cc_card.email, cc_card.uipass, cc_card.id AS id_card,
                     useralias, cc_card.status, cc_card.voicemail_permitted, cc_card.voicemail_activated, cc_card.restriction,
                     cc_country.countryprefix
                 FROM cc_callerid 
@@ -2668,7 +2600,6 @@ class A2Billing
                 $this->cardholder_firstname = $row["firstname"];
                 $this->cardholder_email     = $row["email"];
                 $this->cardholder_uipass    = $row["uipass"];
-                $this->id_campaign          = (int)$row["id_campaign"];
                 $this->id_card              = (int)$row["id_card"];
                 $this->useralias            = $row["useralias"];
                 $this->status               = (int)$row["status"];
@@ -2782,7 +2713,7 @@ class A2Billing
                             redial, enableexpire, UNIX_TIMESTAMP(expirationdate) AS expiryts, expiredays, nbused, 
                             UNIX_TIMESTAMP(firstusedate) AS firstts, UNIX_TIMESTAMP(cc_card.creationdate) AS createts,
                             cc_card.currency, cc_card.lastname, cc_card.firstname, cc_card.email, cc_card.uipass,
-                            cc_card.id_campaign, cc_card.id AS id_card, useralias, status, voicemail_permitted,
+                            cc_card.id AS id_card, useralias, status, voicemail_permitted,
                             voicemail_activated, cc_card.restriction, cc_country.countryprefix
                         FROM cc_card
                             LEFT JOIN cc_tariffgroup ON tariff = cc_tariffgroup.id
@@ -2837,7 +2768,6 @@ class A2Billing
                     $this->cardholder_firstname = $row["firstname"];
                     $this->cardholder_email     = $row["email"];
                     $this->cardholder_uipass    = $row["uipass"];
-                    $this->id_campaign          = (int)$row["id_campaign"];
                     $this->id_card              = (int)$row["id_card"];
                     $this->useralias            = $row["useralias"];
                     $this->status               = (int)$row["status"];
@@ -2969,7 +2899,7 @@ class A2Billing
                     SELECT credit, tariff, inuse, simultaccess, typepaid, creditlimit, language, removeinterprefix, redial, enableexpire,
                         UNIX_TIMESTAMP(expirationdate) AS expiryts, expiredays, nbused, UNIX_TIMESTAMP(firstusedate) AS firstts,
                         UNIX_TIMESTAMP(cc_card.creationdate) AS createts, cc_card.currency, cc_card.lastname, cc_card.firstname,
-                        cc_card.email, cc_card.uipass, cc_card.id_campaign, cc_card.id AS id_card, useralias, status, voicemail_permitted,
+                        cc_card.email, cc_card.uipass, cc_card.id AS id_card, useralias, status, voicemail_permitted,
                         voicemail_activated, cc_card.restriction, cc_country.countryprefix
                     FROM cc_card
                         LEFT JOIN cc_tariffgroup ON tariff = cc_tariffgroup.id
@@ -3023,7 +2953,6 @@ class A2Billing
                 $this->cardholder_firstname = $row["firstname"];
                 $this->cardholder_email     = $row["email"];
                 $this->cardholder_uipass    = $row["uipass"];
-                $this->id_campaign          = (int)$row["id_campaign"];
                 $this->id_card              = (int)$row["id_card"];
                 $this->useralias            = $row["useralias"];
                 $this->status               = (int)$row["status"];
@@ -3152,7 +3081,7 @@ class A2Billing
             SELECT credit, tariff, inuse, simultaccess, typepaid, creditlimit, language, removeinterprefix, redial, enableexpire,
                 UNIX_TIMESTAMP(expirationdate) AS expiryts, expiredays, nbused, UNIX_TIMESTAMP(firstusedate) AS firstts,
                 UNIX_TIMESTAMP(cc_card.creationdate) AS createts, cc_card.currency, cc_card.lastname, cc_card.firstname,
-                cc_card.email, cc_card.uipass, cc_card.id_campaign, status, voicemail_permitted, voicemail_activated, 
+                cc_card.email, cc_card.uipass, status, voicemail_permitted, voicemail_activated, 
                 cc_card.restriction, cc_country.countryprefix
             FROM cc_card
                 LEFT JOIN cc_tariffgroup ON tariff = cc_tariffgroup.id
@@ -3192,7 +3121,6 @@ class A2Billing
         $this->cardholder_firstname = $row["firstname"];
         $this->cardholder_email     = $row["email"];
         $this->cardholder_uipass    = $row["uipass"];
-        $this->id_campaign          = (int)$row["id_campaign"];
         $this->status               = (int)$row["status"];
         $this->voicemail            = $row["voicemail_permitted"] && $row["voicemail_activated"];
         $this->restriction          = (int)$row["restriction"];

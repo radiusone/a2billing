@@ -6,6 +6,12 @@ DELETE FROM cc_config WHERE config_key = 'cache_enabled' OR config_key = 'cache_
 ALTER TABLE cc_agent_commission DROP COLUMN IF EXISTS id_payment;
 DROP TABLE IF EXISTS cc_invoice_payment;
 
+-- the page said "campaigns" are unused, so lets remove them
+ALTER TABLE cc_card DROP COLUMN IF EXISTS id_campaign;
+ALTER TABLE cc_card_archive DROP COLUMN IF EXISTS id_campaign;
+DROP TABLE IF EXISTS cc_campaign, cc_campaign_config, cc_campaign_phonebook, cc_campaign_phonestatus, cc_campaignconf_cardgroup;
+DELETE FROM cc_config WHERE config_key = 'context_campaign_callback' OR config_key = 'default_context_campaign';
+
 -- a database structure that isn't from 2002‽
 UPDATE cc_callerid SET id_cc_card = NULL WHERE id_cc_card = -1;
 ALTER TABLE cc_callerid ADD CONSTRAINT fk_cc_callerid_cc_card FOREIGN KEY (id_cc_card) REFERENCES cc_card(id) ON DELETE SET NULL ON UPDATE CASCADE;
@@ -120,34 +126,8 @@ UPDATE cc_callback_spool SET id_server_group = NULL WHERE id_server_group = -1;
 ALTER TABLE cc_callback_spool ADD CONSTRAINT fk_cc_callback_spool_cc_server FOREIGN KEY (id_server) REFERENCES cc_server_manager(id) ON DELETE SET NULL ON UPDATE CASCADE,
     ADD CONSTRAINT fk_cc_callback_spool_cc_server_group FOREIGN KEY (id_server_group) REFERENCES cc_server_group(id) ON DELETE SET NULL ON UPDATE CASCADE;
 
-UPDATE cc_campaign SET id_campaign_config = NULL WHERE id_campaign_config = -1;
-UPDATE cc_campaign SET id_card = NULL WHERE id_card = -1;
-UPDATE cc_campaign SET id_cid_group = NULL WHERE id_cid_group = -1;
-ALTER TABLE cc_campaign ADD CONSTRAINT fk_cc_campaign_cc_campaign_config FOREIGN KEY (id_campaign_config) REFERENCES cc_campaign_config(id) ON DELETE SET NULL ON UPDATE CASCADE,
-    ADD CONSTRAINT fk_cc_campaign_cc_card FOREIGN KEY (id_card) REFERENCES cc_card(id) ON DELETE SET NULL ON UPDATE CASCADE,
-    ADD CONSTRAINT fk_cc_campaign_cc_outbound_cid_group FOREIGN KEY (id_cid_group) REFERENCES cc_outbound_cid_group(id) ON DELETE SET NULL ON UPDATE CASCADE;
-
-UPDATE cc_campaign_phonebook SET id_campaign = NULL WHERE id_campaign = -1;
-UPDATE cc_campaign_phonebook SET id_phonebook = NULL WHERE id_phonebook = -1;
-ALTER TABLE cc_campaign_phonebook ADD CONSTRAINT fk_cc_campaign_phonebook_cc_campaign FOREIGN KEY (id_campaign) REFERENCES cc_campaign(id) ON DELETE SET NULL ON UPDATE CASCADE,
-    ADD CONSTRAINT fk_cc_campaign_phonebook_cc_phonebook FOREIGN KEY (id_phonebook) REFERENCES cc_phonebook(id) ON DELETE SET NULL ON UPDATE CASCADE;
-
-UPDATE cc_campaign_phonestatus SET id_callback = NULL WHERE id_callback = -1;
-UPDATE cc_campaign_phonestatus SET id_campaign = NULL WHERE id_campaign = -1;
-UPDATE cc_campaign_phonestatus SET id_phonenumber = NULL WHERE id_phonenumber = -1;
-ALTER TABLE cc_campaign_phonestatus ADD CONSTRAINT fk_cc_campaign_phonestatus_cc_callback_spool FOREIGN KEY (id_callback) REFERENCES cc_callback_spool(id) ON DELETE SET NULL ON UPDATE CASCADE,
-    ADD CONSTRAINT fk_cc_campaign_phonestatus_cc_campaign FOREIGN KEY (id_campaign) REFERENCES cc_campaign(id) ON DELETE SET NULL ON UPDATE CASCADE,
-    ADD CONSTRAINT fk_cc_campaign_phonestatus_cc_phonenumber FOREIGN KEY (id_phonenumber) REFERENCES cc_phonenumber(id) ON DELETE SET NULL ON UPDATE CASCADE;
-
-UPDATE cc_campaignconf_cardgroup SET id_campaign_config = NULL WHERE id_campaign_config = -1;
-UPDATE cc_campaignconf_cardgroup SET id_card_group = NULL WHERE id_card_group = -1;
-ALTER TABLE cc_campaignconf_cardgroup ADD CONSTRAINT fk_cc_campaignconf_cardgroup_cc_campaign_config FOREIGN KEY (id_campaign_config) REFERENCES cc_campaign_config(id) ON DELETE SET NULL ON UPDATE CASCADE,
-    ADD CONSTRAINT fk_cc_campaignconf_cardgroup_cc_card_group FOREIGN KEY (id_card_group) REFERENCES cc_card_group(id) ON DELETE SET NULL ON UPDATE CASCADE;
-
-UPDATE cc_card SET id_campaign = NULL WHERE id_campaign = -1;
 UPDATE cc_card SET id_timezone = NULL WHERE id_timezone = -1;
-ALTER TABLE cc_card ADD CONSTRAINT fk_cc_card_cc_campaign FOREIGN KEY (id_campaign) REFERENCES cc_campaign(id) ON DELETE SET NULL ON UPDATE CASCADE,
-    ADD CONSTRAINT fk_cc_card_cc_timezone FOREIGN KEY (id_timezone) REFERENCES cc_timezone(id) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE cc_card ADD CONSTRAINT fk_cc_card_cc_timezone FOREIGN KEY (id_timezone) REFERENCES cc_timezone(id) ON DELETE SET NULL ON UPDATE CASCADE;
 
 UPDATE cc_card_group SET id_agent = NULL WHERE id_agent = -1;
 ALTER TABLE cc_card_group ADD CONSTRAINT fk_cc_card_group_cc_agent FOREIGN KEY (id_agent) REFERENCES cc_agent(id) ON DELETE SET NULL ON UPDATE CASCADE;

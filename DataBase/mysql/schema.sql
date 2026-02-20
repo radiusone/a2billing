@@ -290,89 +290,6 @@ CREATE TABLE `cc_callerid` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Table structure for table `cc_campaign`
---
-
-DROP TABLE IF EXISTS `cc_campaign`;
-CREATE TABLE `cc_campaign` (
-    `id` bigint NOT NULL AUTO_INCREMENT,
-    `name` varchar(50) NOT NULL,
-    `creationdate` datetime NOT NULL DEFAULT current_timestamp(),
-    `startingdate` datetime DEFAULT NULL,
-    `expirationdate` datetime DEFAULT NULL,
-    `description` mediumtext DEFAULT NULL,
-    `id_card` bigint DEFAULT NULL,
-    `secondusedreal` int DEFAULT 0,
-    `nb_callmade` int DEFAULT 0,
-    `status` int NOT NULL DEFAULT 1,
-    `frequency` int NOT NULL DEFAULT 20,
-    `forward_number` varchar(50) DEFAULT NULL,
-    `daily_start_time` time NOT NULL DEFAULT '10:00:00',
-    `daily_stop_time` time NOT NULL DEFAULT '18:00:00',
-    `monday` tinyint NOT NULL DEFAULT 1,
-    `tuesday` tinyint NOT NULL DEFAULT 1,
-    `wednesday` tinyint NOT NULL DEFAULT 1,
-    `thursday` tinyint NOT NULL DEFAULT 1,
-    `friday` tinyint NOT NULL DEFAULT 1,
-    `saturday` tinyint NOT NULL DEFAULT 0,
-    `sunday` tinyint NOT NULL DEFAULT 0,
-    `id_cid_group` bigint DEFAULT NULL,
-    `id_campaign_config` bigint DEFAULT NULL,
-    PRIMARY KEY (`id`),
-    UNIQUE KEY (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Table structure for table `cc_campaign_config`
---
-
-DROP TABLE IF EXISTS `cc_campaign_config`;
-CREATE TABLE `cc_campaign_config` (
-    `id` bigint NOT NULL AUTO_INCREMENT,
-    `name` varchar(40) NOT NULL,
-    `flatrate` decimal(15,5) NOT NULL DEFAULT 0.00000,
-    `context` varchar(40) NOT NULL,
-    `description` mediumtext DEFAULT NULL,
-    PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Table structure for table `cc_campaign_phonebook`
---
-
-DROP TABLE IF EXISTS `cc_campaign_phonebook`;
-CREATE TABLE `cc_campaign_phonebook` (
-    `id_campaign` bigint NOT NULL,
-    `id_phonebook` bigint NOT NULL,
-    PRIMARY KEY (`id_campaign`,`id_phonebook`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Table structure for table `cc_campaign_phonestatus`
---
-
-DROP TABLE IF EXISTS `cc_campaign_phonestatus`;
-CREATE TABLE `cc_campaign_phonestatus` (
-    `id_phonenumber` bigint NOT NULL,
-    `id_campaign` bigint NOT NULL,
-    `id_callback` bigint DEFAULT NULL,
-    `status` int NOT NULL DEFAULT 0,
-    `lastuse` datetime NOT NULL DEFAULT current_timestamp(),
-    PRIMARY KEY (`id_phonenumber`,`id_campaign`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Table structure for table `cc_campaignconf_cardgroup`
---
-
-DROP TABLE IF EXISTS `cc_campaignconf_cardgroup`;
-CREATE TABLE `cc_campaignconf_cardgroup` (
-    `id_campaign_config` bigint NOT NULL,
-    `id_card_group` bigint NOT NULL,
-    PRIMARY KEY (`id_campaign_config`,`id_card_group`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
 -- Table structure for table `cc_card`
 --
 
@@ -415,7 +332,6 @@ CREATE TABLE `cc_card` (
     `redial` varchar(50) NOT NULL DEFAULT '',
     `runservice` int DEFAULT 0,
     `nbservice` int DEFAULT 0,
-    `id_campaign` bigint DEFAULT NULL,
     `num_trials_done` bigint DEFAULT 0,
     `vat` decimal(15,5) NOT NULL DEFAULT 0,
     `servicelastrun` datetime DEFAULT NULL,
@@ -513,7 +429,6 @@ CREATE TABLE `cc_card_archive` (
     `redial` varchar(50) NOT NULL DEFAULT '',
     `runservice` int DEFAULT 0,
     `nbservice` int DEFAULT 0,
-    `id_campaign` bigint DEFAULT NULL,
     `num_trials_done` bigint DEFAULT 0,
     `vat` decimal(15,5) NOT NULL DEFAULT 0,
     `servicelastrun` datetime DEFAULT NULL,

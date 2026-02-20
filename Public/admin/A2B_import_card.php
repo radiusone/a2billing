@@ -240,7 +240,6 @@ require_once __DIR__ . "/templates/main.php";
                     <option value="sip_buddy">sip_buddy</option>
                     <option value="iax_buddy">iax_buddy</option>
                     <option value="language">language - <?= _("Language") ?></option>
-                    <option value="id_campaign">id_campaign - <?= _("Campaign ID") ?></option>
                     <option value="vat">vat - <?= _("VAT rate") ?></option>
                     <option value="initialbalance">initalbalance - <?= _("Initial balance") ?></option>
                     <option value="invoiceday">invoiceday - <?= _("Invoice day") ?></option>

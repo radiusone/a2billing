@@ -663,10 +663,6 @@ if ($mode === "standard") {
     $A2B->write_log("[STOP - EXIT]");
     exit();
 
-// MODE CAMPAIGN-CALLBACK
-} elseif ($mode === "campaign-callback") {
-    $A2B->update_callback_campaign();
-
 // MODE cid-callback & cid-prompt-callback
 } elseif ($mode === "cid-callback" || $mode === "cid-prompt-callback") {
 
