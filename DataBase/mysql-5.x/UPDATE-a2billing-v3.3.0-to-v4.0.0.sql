@@ -13,6 +13,34 @@ DROP TABLE IF EXISTS cc_campaign, cc_campaign_config, cc_campaign_phonebook, cc_
 DELETE FROM cc_config WHERE config_key = 'context_campaign_callback' OR config_key = 'default_context_campaign';
 
 -- a database structure that isn't from 2002‽
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- primary keys
+ALTER TABLE cc_agent_tariffgroup DROP PRIMARY KEY;
+ALTER TABLE cc_agent_tariffgroup ADD UNIQUE INDEX (id_agent, id_tariffgroup);
+ALTER TABLE cc_agent_tariffgroup MODIFY id_agent BIGINT NULL DEFAULT NULL;
+ALTER TABLE cc_agent_tariffgroup MODIFY id_tariffgroup BIGINT NULL DEFAULT NULL;
+
+ALTER TABLE cc_cardgroup_service DROP PRIMARY KEY;
+ALTER TABLE cc_cardgroup_service ADD UNIQUE INDEX (id_card_group, id_service);
+ALTER TABLE cc_cardgroup_service MODIFY id_card_group BIGINT NULL DEFAULT NULL;
+ALTER TABLE cc_cardgroup_service MODIFY id_service BIGINT NULL DEFAULT NULL;
+
+ALTER TABLE cc_notification_admin DROP PRIMARY KEY;
+ALTER TABLE cc_notification_admin ADD UNIQUE INDEX (id_admin, id_notification);
+ALTER TABLE cc_notification_admin MODIFY id_admin BIGINT NULL DEFAULT NULL;
+ALTER TABLE cc_notification_admin MODIFY id_notification BIGINT NULL DEFAULT NULL;
+
+ALTER TABLE cc_packgroup_package DROP PRIMARY KEY;
+ALTER TABLE cc_packgroup_package ADD UNIQUE INDEX (packagegroup_id, package_id);
+ALTER TABLE cc_packgroup_package MODIFY packagegroup_id BIGINT NULL DEFAULT NULL;
+ALTER TABLE cc_packgroup_package MODIFY package_id BIGINT NULL DEFAULT NULL;
+
+ALTER TABLE cc_tariffgroup_plan DROP PRIMARY KEY;
+ALTER TABLE cc_tariffgroup_plan ADD UNIQUE INDEX (idtariffgroup, idtariffplan);
+ALTER TABLE cc_tariffgroup_plan MODIFY idtariffgroup BIGINT NULL DEFAULT NULL;
+ALTER TABLE cc_tariffgroup_plan MODIFY idtariffplan BIGINT NULL DEFAULT NULL;
+
 UPDATE cc_callerid SET id_cc_card = NULL WHERE id_cc_card = -1;
 ALTER TABLE cc_callerid ADD CONSTRAINT fk_cc_callerid_cc_card FOREIGN KEY (id_cc_card) REFERENCES cc_card(id) ON DELETE SET NULL ON UPDATE CASCADE;
 
@@ -262,3 +290,5 @@ ALTER TABLE cc_tariffplan ADD CONSTRAINT fk_cc_tariffplan_cc_card FOREIGN KEY (i
 
 UPDATE cc_trunk SET id_provider = NULL WHERE id_provider = -1;
 ALTER TABLE cc_trunk ADD CONSTRAINT fk_cc_trunk_cc_provider FOREIGN KEY (id_provider) REFERENCES cc_provider(id) ON DELETE SET NULL ON UPDATE CASCADE;
+
+SET FOREIGN_KEY_CHECKS = 1;
