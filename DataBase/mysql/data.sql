@@ -166,7 +166,7 @@ INSERT INTO `cc_config` (`config_title`, `config_key`, `config_value`, `config_d
     ('IVR Voucher Refill','ivr_voucher','0','enable the option to refill card with voucher in IVR (values : YES - NO) .',1,'yes,no',11),
     ('IVR Voucher Prefix','ivr_voucher_prefix','8','if ivr_voucher is active, you can define a prefix for the voucher number to refill your card, values : number - don\'t forget to change prepaid-refill_card_with_voucher audio accordingly .',0,NULL,11),
     ('IVR Low Credit','jump_voucher_if_min_credit','0','When the user credit are below the minimum credit to call min_credit jump directly to the voucher IVR menu  (values: YES - NO) .',1,'yes,no',11),
-    ('Dial Command Params','dialcommand_param',',60,HRrL(%timeout%:61000:30000)','More information about the Dial : http://voip-info.org/wiki-Asterisk+cmd+dial<br>30 :  The timeout parameter is optional. If not specifed, the Dial command will wait indefinitely, exiting only when the originating channel hangs up, or all the dialed channels return a busy or error condition. Otherwise it specifies a maximum time, in seconds, that the Dial command is to wait for a channel to answer.<br>H: Allow the caller to hang up by dialing * <br>r: Generate a ringing tone for the calling part',0,NULL,11),
+    ('Dial Command Params','dialcommand_param',',60,HRrL(%timeout%:61000:30000)','More information about the Dial : https://docs.asterisk.org/Latest_API/API_Documentation/Dialplan_Applications/Dial/<br>30 :  The timeout parameter is optional. If not specifed, the Dial command will wait indefinitely, exiting only when the originating channel hangs up, or all the dialed channels return a busy or error condition. Otherwise it specifies a maximum time, in seconds, that the Dial command is to wait for a channel to answer.<br>H: Allow the caller to hang up by dialing * <br>r: Generate a ringing tone for the calling part',0,NULL,11),
     ('SIP/IAX Dial Command Params','dialcommand_param_sipiax_friend',',60,HiL(3600000:61000:30000)','by default (3600000  =  1HOUR MAX CALL).',0,NULL,11),
     ('Outbound Call','switchdialcommand','0','Define the order to make the outbound call<br>YES -> SIP/dialedphonenumber@gateway_ip - NO  SIP/gateway_ip/dialedphonenumber<br>Both should work exactly the same but i experimented one case when gateway was supporting dialedphonenumber@gateway_ip, So in case of trouble, try it out.',1,'yes,no',11),
     ('Failover Retry Limit','failover_recursive_limit','2','failover recursive search - define how many time we want to authorize the research of the failover trunk when a call fails (value : 0 - 20) .',0,NULL,11),
@@ -363,9 +363,7 @@ INSERT INTO `cc_country` (`countrycode`, `countryprefix`, `countryname`) VALUES
 ('UKR', 380, 'Ukraine'), ('ARE', 971, 'United Arab Emirates'), ('GBR', 44, 'United Kingdom of Great Britain and Northern Ireland'), ('TZA', 255, 'United Republic of Tanzania'), ('UMI', 1, 'United States Minor Outlying Islands'),
 ('USA', 1, 'United States of America'), ('VIR', 1340, 'United States Virgin Islands'), ('URY', 598, 'Uruguay'), ('UZB', 998, 'Uzbekistan'), ('VUT', 678, 'Vanuatu'),
 ('VEN', 58, 'Venezuela (Bolivarian Republic of)'), ('VNM', 84, 'Viet Nam'), ('WLF', 681, 'Wallis and Futuna Islands'), ('ESH', 212, 'Western Sahara'), ('ESH', 212, 'Western Sahara'),
-('YEM', 967, 'Yemen'),
-('ZMB', 260, 'Zambia'),
-('ZWE', 263, 'Zimbabwe');
+('YEM', 967, 'Yemen'), ('ZMB', 260, 'Zambia'), ('ZWE', 263, 'Zimbabwe');
 ALTER TABLE `cc_country` ENABLE KEYS;
 
 LOCK TABLES `cc_iso639` WRITE;
@@ -29088,10 +29086,10 @@ ALTER TABLE `cc_prefix` ENABLE KEYS;
 LOCK TABLES `cc_templatemail` WRITE;
 ALTER TABLE `cc_templatemail` DISABLE KEYS;
 INSERT INTO `cc_templatemail` (`id_language`, `mailtype`, `fromemail`, `fromname`, `subject`, `messagetext`) VALUES
-    ('en','signup','info@example.com','COMPANY NAME','SIGNUP CONFIRMATION','\nThank you for registering with us\n\nPlease click on below link to activate your account.\n\nhttp://customer.example.com/activate.php?key=$loginkey$\n\nPlease make sure you active your account by making payment to us either by\ncredit card, wire transfer, money order, cheque, and western union money\ntransfer, money Gram, and Pay pal.\n\n\nKind regards,\nYourDomain\n'),
-    ('en','reminder','info@example.com','COMPANY NAME','Your COMPANY NAME account $cardnumber$ is low on credit ($currency$ $c','\n\nYour COMPANY NAME Account number $cardnumber$ is running low on credit.\n\nThere is currently only $creditcurrency$ $currency$ left on your account which is lower than the warning level defined ($credit_notification$)\n\n\nPlease top up your account ASAP to ensure continued service\n\nIf you no longer wish to receive these notifications or would like to change the balance amount at which these warnings are generated,\nplease connect on your myaccount panel and change the appropriate parameters\n\n\nyour account information :\nYour account number for VOIP authentication : $cardnumber$\n\nhttp://myaccount.example.com/\nYour account login : $login$\nYour account password : $password$\n\n\nThanks,\n/COMPANY NAME Team\n-------------------------------------\nhttp://www.example.com\n '),
-    ('en','forgetpassword','info@example.com','COMPANY NAME','Login Information','Your login information is as below:\n\nYour account is $cardnumber$\n\nYour password is $password$\n\nYour login is $login$\n\nhttp://example.com/A2BCustomer_UI/\n\nKind regards,\nYourDomain\n'),
-    ('en','signupconfirmed','info@example.com','COMPANY NAME','SIGNUP CONFIRMATION','Thank you for registering with us\n\nPlease make sure you active your account by making payment to us either by\ncredit card, wire transfer, money order, cheque, and western union money\ntransfer, money Gram, and Pay pal.\n\nYour account is $cardnumber$\n\nYour password is $password$\n\nTo go to your account :\nhttp://example.com/customer/\n\nKind regards,\nYourDomain\n'),
+    ('en','signup','info@example.com','COMPANY NAME','SIGNUP CONFIRMATION','\nThank you for registering with us\n\nPlease click on below link to activate your account.\n\nhttps://customer.example.com/activate.php?key=$loginkey$\n\nPlease make sure you active your account by making payment to us either by\ncredit card, wire transfer, money order, cheque, and western union money\ntransfer, money Gram, and Pay pal.\n\n\nKind regards,\nYourDomain\n'),
+    ('en','reminder','info@example.com','COMPANY NAME','Your COMPANY NAME account $cardnumber$ is low on credit ($currency$ $c','\n\nYour COMPANY NAME Account number $cardnumber$ is running low on credit.\n\nThere is currently only $creditcurrency$ $currency$ left on your account which is lower than the warning level defined ($credit_notification$)\n\n\nPlease top up your account ASAP to ensure continued service\n\nIf you no longer wish to receive these notifications or would like to change the balance amount at which these warnings are generated,\nplease connect on your myaccount panel and change the appropriate parameters\n\n\nyour account information :\nYour account number for VOIP authentication : $cardnumber$\n\nhttps://myaccount.example.com/\nYour account login : $login$\nYour account password : $password$\n\n\nThanks,\n/COMPANY NAME Team\n-------------------------------------\nhttps://www.example.com\n '),
+    ('en','forgetpassword','info@example.com','COMPANY NAME','Login Information','Your login information is as below:\n\nYour account is $cardnumber$\n\nYour password is $password$\n\nYour login is $login$\n\nhttps://example.com/A2BCustomer_UI/\n\nKind regards,\nYourDomain\n'),
+    ('en','signupconfirmed','info@example.com','COMPANY NAME','SIGNUP CONFIRMATION','Thank you for registering with us\n\nPlease make sure you active your account by making payment to us either by\ncredit card, wire transfer, money order, cheque, and western union money\ntransfer, money Gram, and Pay pal.\n\nYour account is $cardnumber$\n\nYour password is $password$\n\nTo go to your account :\nhttps://example.com/customer/\n\nKind regards,\nYourDomain\n'),
     ('en','epaymentverify','info@example.com','COMPANY NAME','Epayment Gateway Security Verification Failed','Dear Administrator\n\nPlease check the Epayment Log, System has logged a Epayment Security failure. that may be a possible attack on epayment processing.\n\nTime of Transaction: $time$\nPayment Gateway: $paymentgateway$\nAmount: $itemAmount$\n\n\n\nKind regards,\nYourDomain\n'),
     ('en','payment','info@example.com','COMPANY NAME','PAYMENT CONFIRMATION','Thank you for shopping at COMPANY NAME.\n\nShopping details is as below.\n\nItem Name = <b>$itemName$</b>\nItem ID = <b>$itemID$</b>\nAmount = <b>$itemAmount$</b>\nPayment Method = <b>$paymentMethod$</b>\nStatus = <b>$paymentStatus$</b>\n\n\nKind regards,\nYourDomain\n'),
     ('en','did_paid','info@example.com','COMPANY NAME','DID notification - ($did$)','BALANCE REMAINING $balance_remaining$ $base_currency$\n\nAn automatic taking away of : $did_cost$ $base_currency$ has been carry out of your account to pay your DID ($did$)\n\nMonthly cost for DID : $did_cost$ $base_currency$\n\n'),
@@ -29099,7 +29097,7 @@ INSERT INTO `cc_templatemail` (`id_language`, `mailtype`, `fromemail`, `fromname
     ('en','did_released','info@example.com','COMPANY NAME','DID released - ($did$)','The DID $did$ has been automatically released!\n\n'),
     ('en','new_ticket','info@example.com','COMPANY NAME','Support Ticket #$ticket_id$','New Ticket Open (#$ticket_id$) From $ticket_owner$.\n Title : $ticket_title$\n Priority : $ticket_priority$ \n Status : $ticket_status$ \n Description : $ticket_description$ \n'),
     ('en','modify_ticket','info@example.com','COMPANY NAME','Support Ticket #$ticket_id$','Ticket modified (#$ticket_id$) By $comment_creator$.\n Ticket Status -> $ticket_status$\n Description : $comment_description$ \n'),
-    ('en','invoice_to_pay','info@example.com','COMPANY NAME','Invoice to pay Ref: $invoice_reference$','New Invoice send with the reference : $invoice_reference$ .\n \n    Title : $invoice_title$ .\n Description : $invoice_description$\n \n    TOTAL (exclude VAT) : $invoice_total$  $base_currency$\n TOTAL (invclude VAT) : $invoice_total_vat$ $base_currency$ \n\n \n    TOTAL TO PAY : $invoice_total_vat$ $base_currency$\n\n \n    You can check and pay this invoice by your account on the web interface : http://example.com/customer/  '),
+    ('en','invoice_to_pay','info@example.com','COMPANY NAME','Invoice to pay Ref: $invoice_reference$','New Invoice send with the reference : $invoice_reference$ .\n \n    Title : $invoice_title$ .\n Description : $invoice_description$\n \n    TOTAL (exclude VAT) : $invoice_total$  $base_currency$\n TOTAL (invclude VAT) : $invoice_total_vat$ $base_currency$ \n\n \n    TOTAL TO PAY : $invoice_total_vat$ $base_currency$\n\n \n    You can check and pay this invoice by your account on the web interface : https://example.com/customer/  '),
     ('en','subscription_paid','info@example.com','COMPANY NAME','Subscription notification - $subscription_label$ ($subscription_id$)','BALANCE  $credit$ $base_currency$\n\n\nA decrement of: $subscription_fee$ $base_currency$ has removed from your account to pay your service. ($subscription_label$)\n\n\nthe monthly cost is : $subscription_fee$\n\n'),
     ('en','subscription_unpaid','info@example.com','COMPANY NAME','Subscription notification - $subscription_label$ ($subscription_id$)','BALANCE $credit$ $base_currency$\n\n\nYou do not have enough credit to pay your subscription,($subscription_label$), the monthly cost is : $subscription_fee$ $base_currency$\n\n\nYou have $days_remaining$ days to pay the invoice (REF: $invoice_ref$ ) or your service may cease \n\n'),
     ('en','subscription_disable_card','info@example.com','COMPANY NAME','Service deactivated - unpaid service $subscription_label$ ($subscription_id$)','The account has been automatically deactivated until the invoice is settled.\n\n');
@@ -29134,7 +29132,7 @@ INSERT INTO `cc_timezone` (`gmtzone`, `zone`) VALUES
     ('(GMT-01:00) Azores', 'Atlantic/Azores'),
     ('(GMT-01:00) Cabo Verde', 'Atlantic/Cape_Verde'),
     ('(GMT) Casablanca, Monrovia', 'Africa/Monrovia'),
-    ('(GMT) Dublin, Edinburgh, Lisbon, London', 'GMT', 0, 'Europe/London'),
+    ('(GMT) Dublin, Edinburgh, Lisbon, London', 'Europe/London'),
     ('(GMT+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna', 'Europe/Berlin'),
     ('(GMT+01:00) Belgrade, Bratislava, Budapest, Ljubljana, Prague', 'Europe/Budapest'),
     ('(GMT+01:00) Brussels, Copenhagen, Madrid, Paris', 'Europe/Paris'),
@@ -29180,9 +29178,9 @@ INSERT INTO `cc_timezone` (`gmtzone`, `zone`) VALUES
     ('(GMT+10:00) Hobart', 'Australia/Hobart'),
     ('(GMT+10:00) Vladivostok', 'Asia/Vladivostok'),
     ('(GMT+11:00) Magadan, Solomon Is., New Caledonia', 'Pacific/Norfolk'),
-    ('(GMT+12:00) Auckland, Wellington', 'GMT+1200', 43200, 'Pacific/Auckland'),
+    ('(GMT+12:00) Auckland, Wellington', 'Pacific/Auckland'),
     ('(GMT+12:00) Fiji, Kamchatka, Marshall Is.', 'Pacific/Fiji'),
-    ('(GMT+13:00) Nukuʻalofa', 'Pacific/Tongatapu'),
+    ('(GMT+13:00) Nukuʻalofa', 'Pacific/Tongatapu');
 ALTER TABLE `cc_timezone` ENABLE KEYS;
 
 LOCK TABLES `cc_ui_authen` WRITE;
@@ -29195,7 +29193,7 @@ ALTER TABLE `cc_ui_authen` ENABLE KEYS;
 LOCK TABLES `cc_version` WRITE;
 ALTER TABLE `cc_version` DISABLE KEYS;
 INSERT INTO `cc_version` (`version`) VALUES
-    ('3.1.0');
+    ('4.0.0');
 ALTER TABLE `cc_version` ENABLE KEYS;
 
 UNLOCK TABLES;

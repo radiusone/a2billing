@@ -7,6 +7,10 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 ;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' ;
 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 ;
 
+CREATE DATABASE IF NOT EXISTS `mya2billing` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ;
+
+USE `mya2billing`;
+
 --
 -- Table structure for table `cc_agent`
 --
@@ -44,7 +48,8 @@ CREATE TABLE `cc_agent` (
     `threshold_remittance` decimal(15,5) NOT NULL,
     `bank_info` mediumtext DEFAULT NULL,
     PRIMARY KEY (`id`),
-    UNIQUE KEY (`login`)
+    UNIQUE KEY (`login`),
+    CONSTRAINT `fk_cc_agent_cc_tariffgroup` FOREIGN KEY (`id_tariffgroup`) REFERENCES `cc_tariffgroup` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -54,7 +59,6 @@ CREATE TABLE `cc_agent` (
 DROP TABLE IF EXISTS `cc_agent_commission`;
 CREATE TABLE `cc_agent_commission` (
     `id` bigint NOT NULL AUTO_INCREMENT,
-    `id_payment` bigint DEFAULT NULL,
     `id_card` bigint DEFAULT NULL,
     `date` datetime NOT NULL DEFAULT current_timestamp(),
     `amount` decimal(15,5) NOT NULL,
@@ -62,7 +66,9 @@ CREATE TABLE `cc_agent_commission` (
     `id_agent` bigint DEFAULT NULL,
     `commission_type` tinyint NOT NULL,
     `commission_percent` decimal(10,4) NOT NULL,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fk_cc_agent_commission_cc_agent` FOREIGN KEY (`id_agent`) REFERENCES `cc_agent` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `fk_cc_agent_commission_cc_card` FOREIGN KEY (`id_card`) REFERENCES `cc_card` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -77,7 +83,10 @@ CREATE TABLE `cc_agent_signup` (
     `id_tariffgroup` bigint DEFAULT NULL,
     `id_group` bigint DEFAULT NULL,
     PRIMARY KEY (`id`),
-    UNIQUE KEY (`code`)
+    UNIQUE KEY (`code`),
+    CONSTRAINT `fk_cc_agent_signup_cc_agent` FOREIGN KEY (`id_agent`) REFERENCES `cc_agent` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `fk_cc_agent_signup_cc_card_group` FOREIGN KEY (`id_group`) REFERENCES `cc_card_group` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `fk_cc_agent_signup_cc_tariffgroup` FOREIGN KEY (`id_tariffgroup`) REFERENCES `cc_tariffgroup` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -86,9 +95,11 @@ CREATE TABLE `cc_agent_signup` (
 
 DROP TABLE IF EXISTS `cc_agent_tariffgroup`;
 CREATE TABLE `cc_agent_tariffgroup` (
-    `id_agent` bigint NOT NULL,
-    `id_tariffgroup` bigint NOT NULL,
-    PRIMARY KEY (`id_agent`,`id_tariffgroup`)
+    `id_agent` bigint DEFAULT NULL,
+    `id_tariffgroup` bigint DEFAULT NULL,
+    UNIQUE KEY (`id_agent`,`id_tariffgroup`),
+    CONSTRAINT `fk_cc_agent_tariffgroup_cc_agent` FOREIGN KEY (`id_agent`) REFERENCES `cc_agent` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `fk_cc_agent_tariffgroup_cc_tariffgroup` FOREIGN KEY (`id_tariffgroup`) REFERENCES `cc_tariffgroup` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -102,7 +113,7 @@ CREATE TABLE `cc_alarm` (
     `periode` int NOT NULL DEFAULT 1,
     `type` int NOT NULL DEFAULT 1,
     `maxvalue` decimal(15,5) NOT NULL,
-    `minvalue` decimal(15,5) NOT NULL DEFAULT -1,
+    `minvalue` decimal(15,5) NOT NULL DEFAULT -1.00000,
     `id_trunk` bigint DEFAULT NULL,
     `status` int NOT NULL DEFAULT 0,
     `numberofrun` int NOT NULL DEFAULT 0,
@@ -110,7 +121,8 @@ CREATE TABLE `cc_alarm` (
     `datecreate` datetime NOT NULL DEFAULT current_timestamp(),
     `datelastrun` datetime DEFAULT NULL,
     `emailreport` varchar(50) DEFAULT NULL,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fk_cc_alarm_cc_trunk` FOREIGN KEY (`id_trunk`) REFERENCES `cc_trunk` (`id_trunk`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -123,7 +135,8 @@ CREATE TABLE `cc_alarm_report` (
     `cc_alarm_id` bigint DEFAULT NULL,
     `calculatedvalue` decimal(15,5) NOT NULL,
     `daterun` datetime NOT NULL DEFAULT current_timestamp(),
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fk_cc_alarm_report_cc_alarm` FOREIGN KEY (`cc_alarm_id`) REFERENCES `cc_alarm` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -164,7 +177,9 @@ CREATE TABLE `cc_billing_customer` (
     `date` datetime NOT NULL DEFAULT current_timestamp(),
     `id_invoice` bigint DEFAULT NULL,
     `start_date` datetime DEFAULT NULL,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fk_cc_billing_customer_cc_card` FOREIGN KEY (`id_card`) REFERENCES `cc_card` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `fk_cc_billing_customer_cc_invoice` FOREIGN KEY (`id_invoice`) REFERENCES `cc_invoice` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -201,7 +216,14 @@ CREATE TABLE `cc_call` (
     PRIMARY KEY (`id`),
     KEY (`starttime`),
     KEY (`calledstation`),
-    KEY (`terminatecauseid`)
+    KEY (`terminatecauseid`),
+    CONSTRAINT `fk_cc_call_cc_card` FOREIGN KEY (`card_id`) REFERENCES `cc_card` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `fk_cc_call_cc_card_package_offer` FOREIGN KEY (`id_card_package_offer`) REFERENCES `cc_card_package_offer` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `fk_cc_call_cc_did` FOREIGN KEY (`id_did`) REFERENCES `cc_did` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `fk_cc_call_cc_ratecard` FOREIGN KEY (`id_ratecard`) REFERENCES `cc_ratecard` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `fk_cc_call_cc_tariffgroup` FOREIGN KEY (`id_tariffgroup`) REFERENCES `cc_tariffgroup` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `fk_cc_call_cc_tariffplan` FOREIGN KEY (`id_tariffplan`) REFERENCES `cc_tariffplan` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `fk_cc_call_cc_trunk` FOREIGN KEY (`id_trunk`) REFERENCES `cc_trunk` (`id_trunk`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -238,7 +260,14 @@ CREATE TABLE `cc_call_archive` (
     PRIMARY KEY (`id`),
     KEY (`starttime`),
     KEY (`calledstation`),
-    KEY (`terminatecauseid`)
+    KEY (`terminatecauseid`),
+    CONSTRAINT `fk_cc_call_archive_cc_card` FOREIGN KEY (`card_id`) REFERENCES `cc_card` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `fk_cc_call_archive_cc_card_package_offer` FOREIGN KEY (`id_card_package_offer`) REFERENCES `cc_card_package_offer` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `fk_cc_call_archive_cc_did` FOREIGN KEY (`id_did`) REFERENCES `cc_did` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `fk_cc_call_archive_cc_ratecard` FOREIGN KEY (`id_ratecard`) REFERENCES `cc_ratecard` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `fk_cc_call_archive_cc_tariffgroup` FOREIGN KEY (`id_tariffgroup`) REFERENCES `cc_tariffgroup` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `fk_cc_call_archive_cc_tariffplan` FOREIGN KEY (`id_tariffplan`) REFERENCES `cc_tariffplan` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `fk_cc_call_archive_cc_trunk` FOREIGN KEY (`id_trunk`) REFERENCES `cc_trunk` (`id_trunk`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -272,7 +301,9 @@ CREATE TABLE `cc_callback_spool` (
     `id_server` bigint DEFAULT NULL,
     `id_server_group` bigint DEFAULT NULL,
     PRIMARY KEY (`id`),
-    UNIQUE KEY (`uniqueid`)
+    UNIQUE KEY (`uniqueid`),
+    CONSTRAINT `fk_cc_callback_spool_cc_server` FOREIGN KEY (`id_server`) REFERENCES `cc_server_manager` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `fk_cc_callback_spool_cc_server_group` FOREIGN KEY (`id_server_group`) REFERENCES `cc_server_group` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -286,7 +317,8 @@ CREATE TABLE `cc_callerid` (
     `id_cc_card` bigint DEFAULT NULL,
     `activated` varchar(1) NOT NULL DEFAULT 't',
     PRIMARY KEY (`id`),
-    UNIQUE KEY (`cid`)
+    UNIQUE KEY (`cid`),
+    CONSTRAINT `fk_cc_callerid_cc_card` FOREIGN KEY (`id_cc_card`) REFERENCES `cc_card` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -333,7 +365,7 @@ CREATE TABLE `cc_card` (
     `runservice` int DEFAULT 0,
     `nbservice` int DEFAULT 0,
     `num_trials_done` bigint DEFAULT 0,
-    `vat` decimal(15,5) NOT NULL DEFAULT 0,
+    `vat` decimal(15,5) NOT NULL DEFAULT 0.00000,
     `servicelastrun` datetime DEFAULT NULL,
     `initialbalance` decimal(15,5) NOT NULL DEFAULT 0.00000,
     `invoiceday` int DEFAULT 1,
@@ -363,7 +395,12 @@ CREATE TABLE `cc_card` (
     PRIMARY KEY (`id`),
     UNIQUE KEY (`username`),
     UNIQUE KEY (`useralias`),
-    KEY (`creationdate`)
+    KEY (`creationdate`),
+    KEY (`username`),
+    CONSTRAINT `fk_cc_card_cc_card_group` FOREIGN KEY (`id_group`) REFERENCES `cc_card_group` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `fk_cc_card_cc_card_seria` FOREIGN KEY (`id_seria`) REFERENCES `cc_card_seria` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `fk_cc_card_cc_tariffgroup` FOREIGN KEY (`tariff`) REFERENCES `cc_tariffgroup` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `fk_cc_card_cc_timezone` FOREIGN KEY (`id_timezone`) REFERENCES `cc_timezone` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 DELIMITER ;;
@@ -430,7 +467,7 @@ CREATE TABLE `cc_card_archive` (
     `runservice` int DEFAULT 0,
     `nbservice` int DEFAULT 0,
     `num_trials_done` bigint DEFAULT 0,
-    `vat` decimal(15,5) NOT NULL DEFAULT 0,
+    `vat` decimal(15,5) NOT NULL DEFAULT 0.00000,
     `servicelastrun` datetime DEFAULT NULL,
     `initialbalance` decimal(15,5) NOT NULL DEFAULT 0.00000,
     `invoiceday` int DEFAULT 1,
@@ -475,7 +512,8 @@ CREATE TABLE `cc_card_group` (
     `users_perms` int NOT NULL DEFAULT 0,
     `id_agent` bigint DEFAULT NULL,
     `provisioning` varchar(200) DEFAULT NULL,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fk_cc_card_group_cc_agent` FOREIGN KEY (`id_agent`) REFERENCES `cc_agent` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -488,7 +526,8 @@ CREATE TABLE `cc_card_history` (
     `id_cc_card` bigint DEFAULT NULL,
     `datecreated` datetime NOT NULL DEFAULT current_timestamp(),
     `description` text DEFAULT NULL,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fk_cc_card_history_cc_card` FOREIGN KEY (`id_cc_card`) REFERENCES `cc_card` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -505,7 +544,9 @@ CREATE TABLE `cc_card_package_offer` (
     PRIMARY KEY (`id`),
     KEY (`id_cc_card`),
     KEY (`id_cc_package_offer`),
-    KEY (`date_consumption`)
+    KEY (`date_consumption`),
+    CONSTRAINT `fk_cc_card_package_offer_cc_card` FOREIGN KEY (`id_cc_card`) REFERENCES `cc_card` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `fk_cc_card_package_offer_cc_package_offer` FOREIGN KEY (`id_cc_package_offer`) REFERENCES `cc_package_offer` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -538,7 +579,9 @@ CREATE TABLE `cc_card_subscription` (
     `last_run` datetime DEFAULT NULL,
     `next_billing_date` datetime DEFAULT NULL,
     `limit_pay_date` datetime DEFAULT NULL,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fk_cc_card_subscription_cc_card` FOREIGN KEY (`id_cc_card`) REFERENCES `cc_card` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `fk_cc_card_subscription_cc_subscription_service` FOREIGN KEY (`id_subscription_fee`) REFERENCES `cc_subscription_service` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -547,9 +590,11 @@ CREATE TABLE `cc_card_subscription` (
 
 DROP TABLE IF EXISTS `cc_cardgroup_service`;
 CREATE TABLE `cc_cardgroup_service` (
-    `id_card_group` bigint NOT NULL,
-    `id_service` bigint NOT NULL,
-    PRIMARY KEY (`id_card_group`,`id_service`)
+    `id_card_group` bigint DEFAULT NULL,
+    `id_service` bigint DEFAULT NULL,
+    UNIQUE KEY (`id_card_group`,`id_service`),
+    CONSTRAINT `fk_cc_cardgroup_service_cc_card_group` FOREIGN KEY (`id_card_group`) REFERENCES `cc_card_group` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `fk_cc_cardgroup_service_cc_service` FOREIGN KEY (`id_service`) REFERENCES `cc_service` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -562,7 +607,7 @@ CREATE TABLE `cc_charge` (
     `id_cc_card` bigint DEFAULT NULL,
     `iduser` bigint DEFAULT NULL,
     `creationdate` datetime NOT NULL DEFAULT current_timestamp(),
-    `amount` decimal(15,5) NOT NULL DEFAULT 0,
+    `amount` decimal(15,5) NOT NULL DEFAULT 0.00000,
     `chargetype` int DEFAULT 0,
     `description` mediumtext DEFAULT NULL,
     `id_cc_did` bigint DEFAULT NULL,
@@ -573,7 +618,11 @@ CREATE TABLE `cc_charge` (
     `invoiced_status` tinyint NOT NULL DEFAULT 0,
     PRIMARY KEY (`id`),
     KEY (`id_cc_card`),
-    KEY (`creationdate`)
+    KEY (`creationdate`),
+    CONSTRAINT `fk_cc_charge_cc_card` FOREIGN KEY (`id_cc_card`) REFERENCES `cc_card` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `fk_cc_charge_cc_card_subscription` FOREIGN KEY (`id_cc_card_subscription`) REFERENCES `cc_card_subscription` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `fk_cc_charge_cc_did` FOREIGN KEY (`id_cc_did`) REFERENCES `cc_did` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `fk_cc_charge_cc_ui_authen` FOREIGN KEY (`iduser`) REFERENCES `cc_ui_authen` (`userid`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -582,7 +631,7 @@ CREATE TABLE `cc_charge` (
 
 DROP TABLE IF EXISTS `cc_config`;
 CREATE TABLE `cc_config` (
-    `id` int NOT NULL AUTO_INCREMENT,
+    `id` bigint NOT NULL AUTO_INCREMENT,
     `config_title` varchar(100) DEFAULT NULL,
     `config_key` varchar(100) DEFAULT NULL,
     `config_value` varchar(200) DEFAULT NULL,
@@ -590,7 +639,8 @@ CREATE TABLE `cc_config` (
     `config_valuetype` int NOT NULL DEFAULT 0,
     `config_listvalues` varchar(100) DEFAULT NULL,
     `config_group_id` bigint DEFAULT NULL,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fk_cc_config_cc_config_group` FOREIGN KEY (`config_group_id`) REFERENCES `cc_config_group` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -654,7 +704,7 @@ CREATE TABLE `cc_did` (
     `description` mediumtext DEFAULT NULL,
     `secondusedreal` int DEFAULT 0,
     `billingtype` int DEFAULT 0,
-    `fixrate` decimal(15,5) NOT NULL DEFAULT 0,
+    `fixrate` decimal(15,5) NOT NULL DEFAULT 0.00000,
     `connection_charge` decimal(15,5) NOT NULL DEFAULT 0.00000,
     `selling_rate` decimal(15,5) NOT NULL DEFAULT 0.00000,
     `aleg_carrier_connect_charge` decimal(15,5) NOT NULL DEFAULT 0.00000,
@@ -675,7 +725,9 @@ CREATE TABLE `cc_did` (
     `aleg_retail_initblock_offp` int NOT NULL DEFAULT 0,
     `aleg_retail_increment_offp` int NOT NULL DEFAULT 0,
     PRIMARY KEY (`id`),
-    UNIQUE KEY (`did`)
+    UNIQUE KEY (`did`),
+    CONSTRAINT `fk_cc_did_cc_country` FOREIGN KEY (`id_cc_country`) REFERENCES `cc_country` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `fk_cc_did_cc_didgroup` FOREIGN KEY (`id_cc_didgroup`) REFERENCES `cc_didgroup` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -694,7 +746,9 @@ CREATE TABLE `cc_did_destination` (
     `secondusedreal` int DEFAULT 0,
     `voip_call` int DEFAULT 0,
     `validated` int DEFAULT 0,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fk_cc_did_destination_cc_card` FOREIGN KEY (`id_cc_card`) REFERENCES `cc_card` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `fk_cc_did_destination_cc_did` FOREIGN KEY (`id_cc_did`) REFERENCES `cc_did` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -711,7 +765,9 @@ CREATE TABLE `cc_did_use` (
     `activated` int DEFAULT 0,
     `month_payed` int DEFAULT 0,
     `reminded` tinyint NOT NULL DEFAULT 0,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fk_cc_did_use_cc_card` FOREIGN KEY (`id_cc_card`) REFERENCES `cc_card` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `fk_cc_did_use_cc_did` FOREIGN KEY (`id_did`) REFERENCES `cc_did` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -790,7 +846,8 @@ CREATE TABLE `cc_iax_buddies` (
     KEY (`name`,`host`),
     KEY (`name`,`ipaddr`,`port`),
     KEY (`ipaddr`,`port`),
-    KEY (`host`,`port`)
+    KEY (`host`,`port`),
+    CONSTRAINT `fk_cc_iax_buddies_cc_card` FOREIGN KEY (`id_cc_card`) REFERENCES `cc_card` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -808,7 +865,8 @@ CREATE TABLE `cc_invoice` (
     `title` varchar(50) NOT NULL,
     `description` mediumtext NOT NULL,
     PRIMARY KEY (`id`),
-    UNIQUE KEY (`reference`)
+    UNIQUE KEY (`reference`),
+    CONSTRAINT `fk_cc_invoice_cc_card` FOREIGN KEY (`id_card`) REFERENCES `cc_card` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -825,18 +883,9 @@ CREATE TABLE `cc_invoice_item` (
     `description` mediumtext NOT NULL,
     `id_ext` bigint DEFAULT NULL,
     `type_ext` varchar(10) DEFAULT NULL,
-    PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Table structure for table `cc_invoice_payment`
---
-
-DROP TABLE IF EXISTS `cc_invoice_payment`;
-CREATE TABLE `cc_invoice_payment` (
-    `id_invoice` bigint NOT NULL,
-    `id_payment` bigint NOT NULL,
-    PRIMARY KEY (`id_invoice`,`id_payment`)
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fk_cc_invoice_item_cc_billing_customer` FOREIGN KEY (`id_ext`) REFERENCES `cc_billing_customer` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `fk_cc_invoice_item_cc_invoice` FOREIGN KEY (`id_invoice`) REFERENCES `cc_invoice` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -869,7 +918,10 @@ CREATE TABLE `cc_logpayment` (
     `payment_type` tinyint NOT NULL DEFAULT 0,
     `added_commission` tinyint NOT NULL DEFAULT 0,
     `agent_id` bigint DEFAULT NULL,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fk_cc_logpayment_cc_agent` FOREIGN KEY (`agent_id`) REFERENCES `cc_agent` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `fk_cc_logpayment_cc_card` FOREIGN KEY (`card_id`) REFERENCES `cc_card` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `fk_cc_logpayment_cc_logrefill` FOREIGN KEY (`id_logrefill`) REFERENCES `cc_logrefill` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -886,7 +938,9 @@ CREATE TABLE `cc_logpayment_agent` (
     `description` mediumtext DEFAULT NULL,
     `added_refill` tinyint NOT NULL DEFAULT 0,
     `payment_type` tinyint NOT NULL DEFAULT 0,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fk_cc_logpayment_agent_cc_agent` FOREIGN KEY (`agent_id`) REFERENCES `cc_agent` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `fk_cc_logpayment_agent_cc_logrefill` FOREIGN KEY (`id_logrefill`) REFERENCES `cc_logrefill` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -903,7 +957,9 @@ CREATE TABLE `cc_logrefill` (
     `refill_type` tinyint NOT NULL DEFAULT 0,
     `added_invoice` tinyint NOT NULL DEFAULT 0,
     `agent_id` bigint DEFAULT NULL,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fk_cc_logrefill_cc_agent` FOREIGN KEY (`agent_id`) REFERENCES `cc_agent` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `fk_cc_logrefill_cc_card` FOREIGN KEY (`card_id`) REFERENCES `cc_card` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -918,7 +974,8 @@ CREATE TABLE `cc_logrefill_agent` (
     `agent_id` bigint DEFAULT NULL,
     `description` mediumtext DEFAULT NULL,
     `refill_type` tinyint NOT NULL DEFAULT 0,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fk_cc_logrefill_agent_cc_agent` FOREIGN KEY (`agent_id`) REFERENCES `cc_agent` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -933,7 +990,8 @@ CREATE TABLE `cc_message_agent` (
     `type` tinyint NOT NULL DEFAULT 0,
     `logo` tinyint NOT NULL DEFAULT 1,
     `order_display` int NOT NULL,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fk_cc_message_agent_cc_agent` FOREIGN KEY (`id_agent`) REFERENCES `cc_agent` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -977,10 +1035,12 @@ CREATE TABLE `cc_notification` (
 
 DROP TABLE IF EXISTS `cc_notification_admin`;
 CREATE TABLE `cc_notification_admin` (
-    `id_notification` bigint NOT NULL,
-    `id_admin` bigint NOT NULL,
+    `id_notification` bigint DEFAULT NULL,
+    `id_admin` bigint DEFAULT NULL,
     `viewed` tinyint NOT NULL DEFAULT 0,
-    PRIMARY KEY (`id_notification`,`id_admin`)
+    UNIQUE KEY (`id_admin`,`id_notification`),
+    CONSTRAINT `fk_cc_notification_admin_cc_notification` FOREIGN KEY (`id_notification`) REFERENCES `cc_notification` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `fk_cc_notification_admin_cc_ui_authen` FOREIGN KEY (`id_admin`) REFERENCES `cc_ui_authen` (`userid`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -1006,7 +1066,8 @@ CREATE TABLE `cc_outbound_cid_list` (
     `cid` varchar(100) DEFAULT NULL,
     `activated` int NOT NULL DEFAULT 0,
     `creationdate` datetime NOT NULL DEFAULT current_timestamp(),
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fk_cc_outbound_cid_list_cc_outbound_cid_group` FOREIGN KEY (`outbound_cid_group`) REFERENCES `cc_outbound_cid_group` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -1054,9 +1115,11 @@ CREATE TABLE `cc_package_rate` (
 
 DROP TABLE IF EXISTS `cc_packgroup_package`;
 CREATE TABLE `cc_packgroup_package` (
-    `packagegroup_id` bigint NOT NULL,
-    `package_id` bigint NOT NULL,
-    PRIMARY KEY (`packagegroup_id`,`package_id`)
+    `packagegroup_id` bigint DEFAULT NULL,
+    `package_id` bigint DEFAULT NULL,
+    UNIQUE KEY (`packagegroup_id`,`package_id`),
+    CONSTRAINT `fk_cc_packgroup_package_cc_package_group` FOREIGN KEY (`packagegroup_id`) REFERENCES `cc_package_group` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `fk_cc_packgroup_package_cc_package_offer` FOREIGN KEY (`package_id`) REFERENCES `cc_package_offer` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -1069,7 +1132,8 @@ CREATE TABLE `cc_phonebook` (
     `name` varchar(30) NOT NULL,
     `description` mediumtext DEFAULT NULL,
     `id_card` bigint DEFAULT NULL,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fk_cc_phonebook_cc_card` FOREIGN KEY (`id_card`) REFERENCES `cc_card` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -1086,7 +1150,8 @@ CREATE TABLE `cc_phonenumber` (
     `status` smallint NOT NULL DEFAULT 1,
     `info` mediumtext DEFAULT NULL,
     `amount` int NOT NULL DEFAULT 0,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fk_cc_phonenumber_cc_phonebook` FOREIGN KEY (`id_phonebook`) REFERENCES `cc_phonebook` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -1140,8 +1205,8 @@ CREATE TABLE `cc_ratecard` (
     `chargeb` decimal(15,5) NOT NULL DEFAULT 0.00000,
     `timechargeb` int NOT NULL DEFAULT 0,
     `billingblockb` int NOT NULL DEFAULT 0,
-    `stepchargec` decimal(15,5) NOT NULL DEFAULT 0,
-    `chargec` decimal(15,5) NOT NULL DEFAULT 0,
+    `stepchargec` decimal(15,5) NOT NULL DEFAULT 0.00000,
+    `chargec` decimal(15,5) NOT NULL DEFAULT 0.00000,
     `timechargec` int NOT NULL DEFAULT 0,
     `billingblockc` int NOT NULL DEFAULT 0,
     `startdate` datetime NOT NULL DEFAULT current_timestamp(),
@@ -1164,7 +1229,10 @@ CREATE TABLE `cc_ratecard` (
     `destination` bigint NOT NULL,
     PRIMARY KEY (`id`),
     KEY (`dialprefix`),
-    KEY (`idtariffplan`)
+    KEY (`idtariffplan`),
+    CONSTRAINT `fk_cc_ratecard_cc_outbound_cid_group` FOREIGN KEY (`id_outbound_cidgroup`) REFERENCES `cc_outbound_cid_group` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `fk_cc_ratecard_cc_tariffplan` FOREIGN KEY (`idtariffplan`) REFERENCES `cc_tariffplan` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `fk_cc_ratecard_cc_trunk` FOREIGN KEY (`id_trunk`) REFERENCES `cc_trunk` (`id_trunk`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 DELIMITER ;;
@@ -1195,7 +1263,8 @@ CREATE TABLE `cc_receipt` (
     `title` varchar(50) NOT NULL,
     `description` mediumtext NOT NULL,
     `status` tinyint NOT NULL DEFAULT 0,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fk_cc_receipt_cc_card` FOREIGN KEY (`id_card`) REFERENCES `cc_card` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -1211,7 +1280,8 @@ CREATE TABLE `cc_receipt_item` (
     `description` mediumtext NOT NULL,
     `id_ext` bigint DEFAULT NULL,
     `type_ext` varchar(10) DEFAULT NULL,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fk_cc_receipt_item_cc_receipt` FOREIGN KEY (`id_receipt`) REFERENCES `cc_receipt` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -1226,7 +1296,8 @@ CREATE TABLE `cc_remittance_request` (
     `type` tinyint NOT NULL,
     `date` datetime NOT NULL DEFAULT current_timestamp(),
     `status` tinyint NOT NULL DEFAULT 0,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fk_cc_remittance_request_cc_agent` FOREIGN KEY (`id_agent`) REFERENCES `cc_agent` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -1238,7 +1309,8 @@ CREATE TABLE `cc_restricted_phonenumber` (
     `id` bigint NOT NULL AUTO_INCREMENT,
     `number` varchar(50) NOT NULL,
     `id_card` bigint DEFAULT NULL,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fk_cc_restricted_phonenumber_cc_card` FOREIGN KEY (`id_card`) REFERENCES `cc_card` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -1266,7 +1338,8 @@ CREATE TABLE `cc_server_manager` (
     `manager_username` varchar(50) DEFAULT NULL,
     `manager_secret` varchar(50) DEFAULT NULL,
     `lasttime_used` datetime NOT NULL DEFAULT current_timestamp(),
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fk_cc_server_manager_cc_server_group` FOREIGN KEY (`id_group`) REFERENCES `cc_server_group` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -1288,7 +1361,7 @@ CREATE TABLE `cc_service` (
     `datecreate` datetime NOT NULL DEFAULT current_timestamp(),
     `datelastrun` datetime DEFAULT NULL,
     `emailreport` varchar(100) NOT NULL,
-    `totalcredit` decimal(15,5) NOT NULL DEFAULT 0,
+    `totalcredit` decimal(15,5) NOT NULL DEFAULT 0.00000,
     `totalcardperform` int NOT NULL DEFAULT 0,
     `operate_mode` tinyint DEFAULT 0,
     `dialplan` int DEFAULT 0,
@@ -1307,7 +1380,8 @@ CREATE TABLE `cc_service_report` (
     `daterun` datetime NOT NULL DEFAULT current_timestamp(),
     `totalcardperform` int DEFAULT NULL,
     `totalcredit` decimal(15,5) DEFAULT NULL,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fk_cc_service_report_cc_service` FOREIGN KEY (`cc_service_id`) REFERENCES `cc_service` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -1382,7 +1456,8 @@ CREATE TABLE `cc_sip_buddies` (
     KEY (`ipaddr`),
     KEY (`port`),
     KEY (`host`,`port`),
-    KEY (`ipaddr`,`port`)
+    KEY (`ipaddr`,`port`),
+    CONSTRAINT `fk_cc_sip_buddies_cc_card` FOREIGN KEY (`id_cc_card`) REFERENCES `cc_card` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -1398,7 +1473,8 @@ CREATE TABLE `cc_speeddial` (
     `speeddial` int DEFAULT 0,
     `creationdate` datetime NOT NULL DEFAULT current_timestamp(),
     PRIMARY KEY (`id`),
-    UNIQUE KEY (`id_cc_card`,`speeddial`)
+    UNIQUE KEY (`id_cc_card`,`speeddial`),
+    CONSTRAINT `fk_cc_speeddial_cc_card` FOREIGN KEY (`id_cc_card`) REFERENCES `cc_card` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -1411,7 +1487,8 @@ CREATE TABLE `cc_status_log` (
     `status` int NOT NULL,
     `id_cc_card` bigint DEFAULT NULL,
     `updated_date` datetime NOT NULL DEFAULT current_timestamp(),
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fk_cc_status_log_cc_card` FOREIGN KEY (`id_cc_card`) REFERENCES `cc_card` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -1422,13 +1499,13 @@ DROP TABLE IF EXISTS `cc_subscription_service`;
 CREATE TABLE `cc_subscription_service` (
     `id` bigint NOT NULL AUTO_INCREMENT,
     `label` varchar(200) NOT NULL,
-    `fee` decimal(15,5) NOT NULL DEFAULT 0,
+    `fee` decimal(15,5) NOT NULL DEFAULT 0.00000,
     `status` int NOT NULL DEFAULT 0,
     `numberofrun` int NOT NULL DEFAULT 0,
     `datecreate` datetime NOT NULL DEFAULT current_timestamp(),
     `datelastrun` datetime DEFAULT NULL,
     `emailreport` varchar(100) NOT NULL,
-    `totalcredit` decimal(15,5) NOT NULL DEFAULT 0,
+    `totalcredit` decimal(15,5) NOT NULL DEFAULT 0.00000,
     `totalcardperform` int NOT NULL DEFAULT 0,
     `startdate` datetime DEFAULT NULL,
     `stopdate` datetime DEFAULT NULL,
@@ -1447,7 +1524,9 @@ CREATE TABLE `cc_subscription_signup` (
     `description` varchar(500) DEFAULT NULL,
     `enable` tinyint NOT NULL DEFAULT 1,
     `id_callplan` bigint DEFAULT NULL,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fk_cc_subscription_signup_cc_callplan` FOREIGN KEY (`id_callplan`) REFERENCES `cc_tariffgroup` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `fk_cc_subscription_signup_cc_subscription` FOREIGN KEY (`id_subscription`) REFERENCES `cc_subscription_service` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -1474,7 +1553,8 @@ CREATE TABLE `cc_support_component` (
     `name` varchar(50) NOT NULL,
     `activated` smallint NOT NULL DEFAULT 1,
     `type_user` tinyint NOT NULL DEFAULT 2,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fk_cc_support_component_cc_support` FOREIGN KEY (`id_support`) REFERENCES `cc_support` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -1511,7 +1591,9 @@ CREATE TABLE `cc_tariffgroup` (
     `creationdate` datetime NOT NULL DEFAULT current_timestamp(),
     `removeinterprefix` int NOT NULL DEFAULT 0,
     `id_cc_package_offer` bigint DEFAULT NULL,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fk_cc_tariffgroup_cc_package_offer` FOREIGN KEY (`id_cc_package_offer`) REFERENCES `cc_package_offer` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `fk_cc_tariffgroup_cc_tariffplan` FOREIGN KEY (`idtariffplan`) REFERENCES `cc_tariffplan` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -1520,9 +1602,11 @@ CREATE TABLE `cc_tariffgroup` (
 
 DROP TABLE IF EXISTS `cc_tariffgroup_plan`;
 CREATE TABLE `cc_tariffgroup_plan` (
-    `idtariffgroup` bigint NOT NULL,
-    `idtariffplan` bigint NOT NULL,
-    PRIMARY KEY (`idtariffgroup`,`idtariffplan`)
+    `idtariffgroup` bigint DEFAULT NULL,
+    `idtariffplan` bigint DEFAULT NULL,
+    UNIQUE KEY (`idtariffgroup`,`idtariffplan`),
+    CONSTRAINT `fk_cc_tariffgroup_plan_cc_tariffgroup` FOREIGN KEY (`idtariffgroup`) REFERENCES `cc_tariffgroup` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `fk_cc_tariffgroup_plan_cc_tariffplan` FOREIGN KEY (`idtariffplan`) REFERENCES `cc_tariffplan` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -1547,7 +1631,9 @@ CREATE TABLE `cc_tariffplan` (
     `dnidprefix` varchar(30) NOT NULL DEFAULT 'all',
     `calleridprefix` varchar(30) NOT NULL DEFAULT 'all',
     PRIMARY KEY (`id`),
-    UNIQUE KEY (`iduser`,`tariffname`)
+    UNIQUE KEY (`iduser`,`tariffname`),
+    CONSTRAINT `fk_cc_tariffplan_cc_card` FOREIGN KEY (`iduser`) REFERENCES `cc_ui_authen` (`userid`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `fk_cc_tariffplan_cc_trunk` FOREIGN KEY (`id_trunk`) REFERENCES `cc_trunk` (`id_trunk`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -1586,7 +1672,8 @@ CREATE TABLE `cc_ticket` (
     `viewed_cust` tinyint NOT NULL DEFAULT 1,
     `viewed_agent` tinyint NOT NULL DEFAULT 1,
     `viewed_admin` tinyint NOT NULL DEFAULT 1,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fk_cc_ticket_cc_support_component` FOREIGN KEY (`id_component`) REFERENCES `cc_support_component` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -1604,7 +1691,8 @@ CREATE TABLE `cc_ticket_comment` (
     `viewed_cust` tinyint NOT NULL DEFAULT 1,
     `viewed_agent` tinyint NOT NULL DEFAULT 1,
     `viewed_admin` tinyint NOT NULL DEFAULT 1,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fk_cc_ticket_comment_cc_ticket` FOREIGN KEY (`id_ticket`) REFERENCES `cc_ticket` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -1615,7 +1703,7 @@ DROP TABLE IF EXISTS `cc_timezone`;
 CREATE TABLE `cc_timezone` (
     `id` bigint NOT NULL AUTO_INCREMENT,
     `gmtzone` varchar(255) DEFAULT NULL,
-    `zone` VARCHAR(64),
+    `zone` varchar(64),
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -1642,7 +1730,8 @@ CREATE TABLE `cc_trunk` (
     `maxuse` int DEFAULT -1,
     `status` int DEFAULT 1,
     `if_max_use` int DEFAULT 0,
-    PRIMARY KEY (`id_trunk`)
+    PRIMARY KEY (`id_trunk`),
+    CONSTRAINT `fk_cc_trunk_cc_provider` FOREIGN KEY (`id_provider`) REFERENCES `cc_provider` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -1693,7 +1782,7 @@ CREATE TABLE `cc_voucher` (
     `voucher` varchar(50) NOT NULL,
     `usedcardnumber` varchar(50) DEFAULT NULL,
     `tag` varchar(50) DEFAULT NULL,
-    `credit` decimal(15,5) NOT NULL DEFAULT 0,
+    `credit` decimal(15,5) NOT NULL DEFAULT 0.00000,
     `available` bool NOT NULL DEFAULT 1,
     `currency` varchar(3) DEFAULT 'USD',
     PRIMARY KEY (`id`),
