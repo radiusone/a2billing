@@ -180,7 +180,7 @@ UPDATE cc_charge SET id_cc_card_subscription = NULL WHERE id_cc_card_subscriptio
 UPDATE cc_charge SET id_cc_did = NULL WHERE id_cc_did = -1;
 UPDATE cc_charge SET iduser = NULL WHERE iduser = -1;
 ALTER TABLE cc_charge ADD CONSTRAINT fk_cc_charge_cc_card FOREIGN KEY (id_cc_card) REFERENCES cc_card(id) ON DELETE SET NULL ON UPDATE CASCADE,
-    ADD CONSTRAINT fk_cc_charge_cc_card FOREIGN KEY (iduser) REFERENCES cc_ui_authen(userid) ON DELETE SET NULL ON UPDATE CASCADE,
+    ADD CONSTRAINT fk_cc_charge_cc_ui_authen FOREIGN KEY (iduser) REFERENCES cc_ui_authen(userid) ON DELETE SET NULL ON UPDATE CASCADE,
     ADD CONSTRAINT fk_cc_charge_cc_card_subscription FOREIGN KEY (id_cc_card_subscription) REFERENCES cc_card_subscription(id) ON DELETE SET NULL ON UPDATE CASCADE,
     ADD CONSTRAINT fk_cc_charge_cc_did FOREIGN KEY (id_cc_did) REFERENCES cc_did(id) ON DELETE SET NULL ON UPDATE CASCADE;
 
