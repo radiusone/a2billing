@@ -2219,11 +2219,12 @@ class A2Billing
 
     /*
     * Function to generate a cardnumber
+     * @todo: use proper random function
     */
     public function MDP(int $chrs = 10): string
     {
         $pwd = "";
-        mt_srand((double) microtime() * 1000000);
+        mt_srand(microtime(true) * 1000000);
         while (strlen($pwd) < $chrs) {
             $chr = chr(mt_rand(0, 255));
             if (preg_match("/^[0-9]$/i", $chr)) {

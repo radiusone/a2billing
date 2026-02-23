@@ -778,7 +778,7 @@ function graphToDataUri(Graph $graph): string {
  * @param Graph|null $graph if supplied, plot will be appended to this graph
  * @return BarPlot
  */
-function createBarPlot(array $data, Graph $graph = null): BarPlot
+function createBarPlot(array $data, Graph|null $graph = null): BarPlot
 {
     $bplot = new BarPlot(array_values($data));
     $bplot->SetColor("yellow@0.3");
@@ -799,7 +799,7 @@ function createBarPlot(array $data, Graph $graph = null): BarPlot
  * @param Graph|null $graph the graph object will be created if not passed
  * @return Graph
  */
-function createBarGraph(array $data, string $title, Graph $graph = null): Graph
+function createBarGraph(array $data, string $title, Graph|null $graph = null): Graph
 {
     $graph ??= createBarGraphBody($title);
 

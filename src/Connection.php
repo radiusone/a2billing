@@ -61,7 +61,6 @@ class Connection
                 "collation" => "utf8mb4_unicode_ci"
             ]);
             $prop = (new ReflectionObject($conn->getConnection()))->getProperty("fetchMode");
-            $prop->setAccessible(true);
             // match old defaults for now
             $prop->setValue($conn->getConnection(), PDO::FETCH_BOTH);
             $conn->setAsGlobal();
