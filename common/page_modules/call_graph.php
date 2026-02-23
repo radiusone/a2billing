@@ -40,7 +40,11 @@ $totalsuccess = array_sum(array_column($list_total_day, "success_calls"));
 $widthbar = 0;
 
 $total_tmc = ($resulttype ?? "min") === "min"
-    ? sprintf("%02d:%02d", intval(($totalminutes / $totalcall) / 60), ($totalminutes / $totalcall) % 60)
+    ? sprintf(
+        "%02d:%02d",
+        intval(($totalminutes / $totalcall) / 60),
+        intval($totalminutes / $totalcall) % 60
+    )
     : intval($totalminutes / $totalcall);
 
 $totalminutes = sprintf("%02d:%02d", intval($totalminutes / 60), $totalminutes % 60);

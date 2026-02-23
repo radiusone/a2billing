@@ -481,7 +481,7 @@ class FormHandler
      * @param bool $sortable whether or not to allow sort
      * @return self
      */
-    public function AddListValue(string $label, string $field, callable $callback = null, array $arguments = [], bool $sortable = true): self
+    public function AddListValue(string $label, string $field, ?callable $callback = null, array $arguments = [], bool $sortable = true): self
     {
         if ($field) {
             $this->list_query_columns[] = $field;
@@ -597,7 +597,7 @@ class FormHandler
         ?callable $validator = null,
         string $error_message = "",
         string $check_emptyvalue = "",
-        callable $custom_function = null // only used in FG_var_config.inc to convert 0/1 to yes/no
+        ?callable $custom_function = null // only used in FG_var_config.inc to convert 0/1 to yes/no
     )
     {
         $el = [
@@ -1238,7 +1238,7 @@ class FormHandler
      * @param string|null $like_type post field name of the operator: 1=equal (default) 2=starts with 3=contains 4=ends with
      * @return void
      */
-    public function do_field(string $column, string $like_type = null): void
+    public function do_field(string $column, ?string $like_type = null): void
     {
         $processed = $this->getProcessed();
 
@@ -1960,7 +1960,7 @@ class FormHandler
         echo new SearchForm($this, $processed, $full_modal, $with_hide_button);
     }
 
-    public function create_search_button(string $content = null): string
+    public function create_search_button(?string $content = null): string
     {
         $processed = $this->getProcessed();
         $class = "btn-outline-primary";
@@ -2176,7 +2176,7 @@ class FormHandler
      * @return void
      */
     public function setup_export(
-        string $session_key = null,
+        ?string $session_key = null,
         bool $export_csv = true,
         bool $export_xml = true,
         ?array $columns = null,
