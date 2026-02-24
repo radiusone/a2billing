@@ -715,6 +715,7 @@ class FormHandler
      * @param string $form_text_bottom Text to display below the form input
      * @param array<string,mixed> $html_attributes HTML attributes for the input
      * @param string $error_message A message to show if validation fails
+     * @param array<string,mixed> $first_option array containing a value and label (k/v) for the first options in the list
      * @return void
      */
     public function AddEditSelect(
@@ -724,7 +725,8 @@ class FormHandler
                $default_value = "",
         string $form_text_bottom = "",
         array $html_attributes = [],
-        string $error_message = ""
+        string $error_message = "",
+        array $first_option = [],
     ): void
     {
         $el = [
@@ -736,7 +738,7 @@ class FormHandler
             "error" => $error_message,
             "select_type" => "LIST",
             "select_fields" => $options,
-            "first_option" => [],
+            "first_option" => $first_option,
             "comment" => $form_text_bottom,
             "validation_err" => true,
         ];
