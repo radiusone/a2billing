@@ -510,6 +510,9 @@ if ($popup_select) {
         get_timezones(),
         "",
         _("Leave blank to use system default") . " " . (new DateTime())->getTimezone()->getName(),
+        [],
+        "",
+        ["" => ""]
     );
 
     if (is_customer()) {
