@@ -1672,11 +1672,11 @@ class FormHandler
             if (array_key_exists("multiple", $attr) && is_array($processed[$field])) {
                 $values[$field] = (int)array_sum($processed[$field]);
             }
-            if (!empty($row["validator"])) {
+            if (is_callable($row["validator"])) {
                 if ($processed[$field] === "" && str_starts_with($row["check_empty"] ?? "", "NO")) {
                     $row["validation_err"] = true;
                 } else {
-                    $result = call_user_func($row["validator"], $processed[$field]);
+                    $result = $row["validator"]($processed[$field]);
                     $row["validation_err"] = $result;
                     if ($result !== true) {
                         $this->all_fields_valid = false;
