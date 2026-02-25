@@ -44,13 +44,13 @@ set_time_limit(0);
 
 Admin::checkPageAccess(Admin::ACX_DID);
 
-getpost_ifset(["search_sources", "task", "uploadedfile_name", "id_cc_didgroup", "id_cc_country"]);
+getpost_ifset(["search_sources", "task", "uploadedfile_name", "id_cc_didgroup", "country"]);
 /**
  * @var string $search_sources
  * @var string $task
  * @var string $uploadedfile_name
  * @var numeric-string $id_cc_didgroup
- * @var numeric-string $id_cc_country
+ * @var string $country
  */
 
 $search_sources ??= "nochange";
@@ -63,7 +63,7 @@ $field_names = [
 if ($search_sources !== "nochange") {
     $field_names = array_merge($field_names, explode("|", $search_sources));
 }
-$field_names = array_merge($field_names, ["id_cc_didgroup", "id_cc_country"]);
+$field_names = array_merge($field_names, ["id_cc_didgroup", "country"]);
 
 $nb_imported = 0;
 $import_time = 0;
@@ -73,7 +73,7 @@ $import_error = "";
 
 $group_list = (new Table("cc_didgroup", ["didgroupname", "id"]))
     ->getColumn();
-$country_list = (new Table("cc_country", ["countryname", "id"]))
+$country_list = (new Table("cc_country", ["countryname", "countrycode"]))
     ->getColumn();
 
 if ($task) {
@@ -102,7 +102,7 @@ if ($task) {
             continue;
         }
         $values = str_getcsv($line, ",", "\"", "");
-        $values = array_merge($values, [$id_cc_didgroup, $id_cc_country]);
+        $values = array_merge($values, [$id_cc_didgroup, $country]);
         if (count($values) !== count($field_names)) {
             continue;
         }
@@ -129,7 +129,7 @@ if ($task) {
     $import_time = $stop_time - $start_time;
 } else {
     $id_cc_didgroup ??= 0;
-    $id_cc_country ??= 0;
+    $country ??= "";
     $my_max_file_size = (int)MY_MAX_FILE_SIZE_IMPORT;
 
     echo create_help(_("You can import lists of DIDs using a CSV file."));
@@ -180,7 +180,7 @@ require_once __DIR__ . "/templates/main.php";
             <input type="hidden" name="search_sources" value="<?= $search_sources ?>"/>
             <input type="hidden" name="uploadedfile_name" value="<?= $the_file ?>"/>
             <input type="hidden" name="id_cc_didgroup" value="<?= $id_cc_didgroup ?>"/>
-            <input type="hidden" name="id_cc_country" value="<?= $id_cc_country ?>"/>
+            <input type="hidden" name="country" value="<?= $country ?>"/>
             <input type="hidden" name="task" value="upload">
             <p><?= _("Confirm the data is correct, or press cancel to return to the previous page.") ?></p>
             <button class="btn btn-primary" type="submit"><?= _("Import") ?></button>
@@ -232,11 +232,11 @@ require_once __DIR__ . "/templates/main.php";
             </select>
         </div>
         <div class="col-6">
-            <label class="form-label" for="id_cc_country"><?= _("Choose a country to use") ?></label>
-            <select id="id_cc_country" name="id_cc_country" class="form-select">
+            <label class="form-label" for="country"><?= _("Choose a country to use") ?></label>
+            <select id="country" name="country" class="form-select">
                 <option value=""><?= _("Use rate card default") ?></option>
-                <?php foreach ($country_list as $id => $country): ?>
-                <option value="<?= $id ?>" <?= $id == $id_cc_country ? "checked=\"checked\"" : "" ?>><?= htmlspecialchars($country) ?></option>
+                <?php foreach ($country_list as $countrycode => $countryname): ?>
+                <option value="<?= $countrycode ?>" <?= $countrycode == $country ? "checked=\"checked\"" : "" ?>><?= htmlspecialchars($countryname) ?></option>
                 <?php endforeach ?>
             </select>
         </div>

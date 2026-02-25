@@ -1,3 +1,5 @@
+SET FOREIGN_KEY_CHECKS = 0;
+
 UPDATE cc_version SET version = '4.0.0' LIMIT 1;
 
 DELETE FROM cc_config WHERE config_key = 'cache_enabled' OR config_key = 'cache_path';
@@ -17,34 +19,47 @@ ALTER TABLE cc_card DROP COLUMN IF EXISTS traffic, DROP COLUMN IF EXISTS traffic
 ALTER TABLE cc_card_archive DROP COLUMN IF EXISTS traffic, DROP COLUMN IF EXISTS traffic_target;
 DELETE FROM cc_config WHERE config_key = 'field_traffic' OR config_key = 'field_traffic_target';
 
+-- use country code as pk, it allows for easier updates
+ALTER TABLE cc_did ADD IF NOT EXISTS country varchar(3) AFTER id_cc_country;
+UPDATE cc_did SET country = (SELECT countrycode FROM cc_country WHERE id = id_cc_country);
+ALTER TABLE cc_did DROP COLUMN IF EXISTS id_cc_country;
+ALTER TABLE cc_country
+    DROP PRIMARY KEY,
+    DROP COLUMN IF EXISTS id,
+    MODIFY COLUMN countrycode varchar(3) NOT NULL PRIMARY KEY;
+
 -- a database structure that isn't from 2002‽
-SET FOREIGN_KEY_CHECKS = 0;
 
 -- primary keys
-ALTER TABLE cc_agent_tariffgroup DROP PRIMARY KEY;
-ALTER TABLE cc_agent_tariffgroup ADD UNIQUE INDEX (id_agent, id_tariffgroup);
-ALTER TABLE cc_agent_tariffgroup MODIFY id_agent BIGINT NULL DEFAULT NULL;
-ALTER TABLE cc_agent_tariffgroup MODIFY id_tariffgroup BIGINT NULL DEFAULT NULL;
+ALTER TABLE cc_agent_tariffgroup
+    DROP PRIMARY KEY,
+    ADD UNIQUE INDEX (id_agent, id_tariffgroup),
+    MODIFY id_agent BIGINT NULL DEFAULT NULL,
+    MODIFY id_tariffgroup BIGINT NULL DEFAULT NULL;
 
-ALTER TABLE cc_cardgroup_service DROP PRIMARY KEY;
-ALTER TABLE cc_cardgroup_service ADD UNIQUE INDEX (id_card_group, id_service);
-ALTER TABLE cc_cardgroup_service MODIFY id_card_group BIGINT NULL DEFAULT NULL;
-ALTER TABLE cc_cardgroup_service MODIFY id_service BIGINT NULL DEFAULT NULL;
+ALTER TABLE cc_cardgroup_service
+    DROP PRIMARY KEY,
+    ADD UNIQUE INDEX (id_card_group, id_service),
+    MODIFY id_card_group BIGINT NULL DEFAULT NULL,
+    MODIFY id_service BIGINT NULL DEFAULT NULL;
 
-ALTER TABLE cc_notification_admin DROP PRIMARY KEY;
-ALTER TABLE cc_notification_admin ADD UNIQUE INDEX (id_admin, id_notification);
-ALTER TABLE cc_notification_admin MODIFY id_admin BIGINT NULL DEFAULT NULL;
-ALTER TABLE cc_notification_admin MODIFY id_notification BIGINT NULL DEFAULT NULL;
+ALTER TABLE cc_notification_admin
+    DROP PRIMARY KEY,
+    ADD UNIQUE INDEX (id_admin, id_notification),
+    MODIFY id_admin BIGINT NULL DEFAULT NULL,
+    MODIFY id_notification BIGINT NULL DEFAULT NULL;
 
-ALTER TABLE cc_packgroup_package DROP PRIMARY KEY;
-ALTER TABLE cc_packgroup_package ADD UNIQUE INDEX (packagegroup_id, package_id);
-ALTER TABLE cc_packgroup_package MODIFY packagegroup_id BIGINT NULL DEFAULT NULL;
-ALTER TABLE cc_packgroup_package MODIFY package_id BIGINT NULL DEFAULT NULL;
+ALTER TABLE cc_packgroup_package
+    DROP PRIMARY KEY,
+    ADD UNIQUE INDEX (packagegroup_id, package_id),
+    MODIFY packagegroup_id BIGINT NULL DEFAULT NULL,
+    MODIFY package_id BIGINT NULL DEFAULT NULL;
 
-ALTER TABLE cc_tariffgroup_plan DROP PRIMARY KEY;
-ALTER TABLE cc_tariffgroup_plan ADD UNIQUE INDEX (idtariffgroup, idtariffplan);
-ALTER TABLE cc_tariffgroup_plan MODIFY idtariffgroup BIGINT NULL DEFAULT NULL;
-ALTER TABLE cc_tariffgroup_plan MODIFY idtariffplan BIGINT NULL DEFAULT NULL;
+ALTER TABLE cc_tariffgroup_plan
+    DROP PRIMARY KEY,
+    ADD UNIQUE INDEX (idtariffgroup, idtariffplan),
+    MODIFY idtariffgroup BIGINT NULL DEFAULT NULL,
+    MODIFY idtariffplan BIGINT NULL DEFAULT NULL;
 
 UPDATE cc_callerid SET id_cc_card = NULL WHERE id_cc_card = -1;
 ALTER TABLE cc_callerid
@@ -53,10 +68,13 @@ ALTER TABLE cc_callerid
 UPDATE cc_card SET id_group = NULL WHERE id_group = -1;
 UPDATE cc_card SET id_seria = NULL WHERE id_seria = -1;
 UPDATE cc_card SET tariff = NULL WHERE tariff = -1;
+UPDATE cc_card SET country = NULL WHERE country = '';
 ALTER TABLE cc_card
     ADD CONSTRAINT fk_cc_card_cc_card_group FOREIGN KEY (id_group) REFERENCES cc_card_group(id) ON DELETE SET NULL ON UPDATE CASCADE,
     ADD CONSTRAINT fk_cc_card_cc_card_seria FOREIGN KEY (id_seria) REFERENCES cc_card_seria(id) ON DELETE SET NULL ON UPDATE CASCADE,
-    ADD CONSTRAINT fk_cc_card_cc_tariffgroup FOREIGN KEY (tariff) REFERENCES cc_tariffgroup(id) ON DELETE SET NULL ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_cc_card_cc_tariffgroup FOREIGN KEY (tariff) REFERENCES cc_tariffgroup(id) ON DELETE SET NULL ON UPDATE CASCADE,
+    MODIFY COLUMN country varchar(3),
+    ADD CONSTRAINT fk_cc_card_cc_country FOREIGN KEY (country) REFERENCES cc_country(countrycode) ON DELETE SET NULL ON UPDATE CASCADE;
 
 UPDATE cc_card_history SET id_cc_card = NULL WHERE id_cc_card = -1;
 ALTER TABLE cc_card_history
@@ -220,10 +238,9 @@ DELETE FROM cc_config WHERE config_group_id = -1;
 ALTER TABLE cc_config
     ADD CONSTRAINT fk_cc_config_cc_config_group FOREIGN KEY (config_group_id) REFERENCES cc_config_group(id) ON DELETE CASCADE ON UPDATE CASCADE;
 
-UPDATE cc_did SET id_cc_country = NULL WHERE id_cc_country = -1;
 UPDATE cc_did SET id_cc_didgroup = NULL WHERE id_cc_didgroup = -1;
 ALTER TABLE cc_did
-    ADD CONSTRAINT fk_cc_did_cc_country FOREIGN KEY (id_cc_country) REFERENCES cc_country(id) ON DELETE SET NULL ON UPDATE CASCADE,
+    ADD CONSTRAINT fk_cc_did_cc_country FOREIGN KEY (country) REFERENCES cc_country(countrycode) ON DELETE SET NULL ON UPDATE CASCADE,
     ADD CONSTRAINT fk_cc_did_cc_didgroup FOREIGN KEY (id_cc_didgroup) REFERENCES cc_didgroup(id) ON DELETE SET NULL ON UPDATE CASCADE;
 
 UPDATE cc_did_destination SET id_cc_card = NULL WHERE id_cc_card = -1;
@@ -351,3 +368,66 @@ ALTER TABLE cc_trunk
     ADD CONSTRAINT fk_cc_trunk_cc_provider FOREIGN KEY (id_provider) REFERENCES cc_provider(id) ON DELETE SET NULL ON UPDATE CASCADE;
 
 SET FOREIGN_KEY_CHECKS = 1;
+
+REPLACE INTO cc_country VALUES
+    ('ABW', 297, 'Aruba'), ('AFG', 93, 'Afghanistan'), ('AGO', 244, 'Angola'), ('AIA', 1264, 'Anguilla'), ('ALA', 358, 'Åland Islands'),
+    ('ALB', 355, 'Albania'), ('AND', 376, 'Andorra'), ('ARE', 971, 'United Arab Emirates'), ('ARG', 54, 'Argentina'), ('ARM', 374, 'Armenia'),
+    ('ASM', 1684, 'American Samoa'), ('ATA', 672, 'Antarctica'), ('ATF', 262, 'French Southern Territories'), ('ATG', 1268, 'Antigua and Barbuda'), ('AUS', 61, 'Australia'),
+    ('AUT', 43, 'Austria'), ('AZE', 994, 'Azerbaijan'), ('BDI', 257, 'Burundi'), ('BEL', 32, 'Belgium'), ('BEN', 229, 'Benin'),
+    ('BES', 599, 'Bonaire, Sint Eustatius and Saba'), ('BFA', 226, 'Burkina Faso'), ('BGD', 880, 'Bangladesh'), ('BGR', 359, 'Bulgaria'), ('BHR', 973, 'Bahrain'),
+    ('BHS', 1242, 'Bahamas'), ('BIH', 387, 'Bosnia and Herzegovina'), ('BLM', 590, 'Saint Barthélemy'), ('BLR', 375, 'Belarus'), ('BLZ', 501, 'Belize'),
+    ('BMU', 1441, 'Bermuda'), ('BOL', 591, 'Bolivia'), ('BRA', 55, 'Brazil'), ('BRB', 1246, 'Barbados'), ('BRN', 673, 'Brunei Darussalam'),
+    ('BTN', 975, 'Bhutan'), ('BVT', 47, 'Bouvet Island'), ('BWA', 267, 'Botswana'), ('CAF', 236, 'Central African Republic'), ('CAN', 1, 'Canada'),
+    ('CCK', 61, 'Cocos Islands'), ('CHE', 41, 'Switzerland'), ('CHL', 56, 'Chile'), ('CHN', 86, 'China'), ('CIV', 225, 'Ivory Coast'),
+    ('CMR', 237, 'Cameroon'), ('COD', 243, 'Democratic Republic of the Congo'), ('COG', 242, 'Congo'), ('COK', 682, 'Cook Islands'), ('COL', 57, 'Colombia'),
+    ('COM', 269, 'Comoros'), ('CPV', 238, 'Cabo Verde'), ('CRI', 506, 'Costa Rica'), ('CUB', 53, 'Cuba'), ('CUW', 599, 'Curaçao'),
+    ('CXR', 61, 'Christmas Island'), ('CYM', 1345, 'Cayman Islands'), ('CYP', 357, 'Cyprus'), ('CZE', 420, 'Czechia'), ('DEU', 49, 'Germany'),
+    ('DJI', 253, 'Djibouti'), ('DMA', 1767, 'Dominica'), ('DNK', 45, 'Denmark'), ('DOM', 1809, 'Dominican Republic'), ('DZA', 213, 'Algeria'),
+    ('ECU', 593, 'Ecuador'), ('EGY', 20, 'Egypt'), ('ERI', 291, 'Eritrea'), ('ESH', 212, 'Western Sahara'), ('ESP', 34, 'Spain'),
+    ('EST', 372, 'Estonia'), ('ETH', 251, 'Ethiopia'), ('FIN', 358, 'Finland'), ('FJI', 679, 'Fiji'), ('FLK', 500, 'Falkland Islands'),
+    ('FRA', 33, 'France'), ('FRO', 298, 'Faroe Islands'), ('FSM', 691, 'Federated States of Micronesia'), ('GAB', 241, 'Gabon'), ('GBR', 44, 'United Kingdom'),
+    ('GEO', 995, 'Georgia'), ('GGY', 44, 'Guernsey'), ('GHA', 233, 'Ghana'), ('GIB', 350, 'Gibraltar'), ('GIN', 224, 'Guinea'),
+    ('GLP', 590, 'Guadeloupe'), ('GMB', 220, 'Gambia'), ('GNB', 245, 'Guinea-Bissau'), ('GNQ', 240, 'Equatorial Guinea'), ('GRC', 30, 'Greece'),
+    ('GRD', 1473, 'Grenada'), ('GRL', 299, 'Greenland'), ('GTM', 502, 'Guatemala'), ('GUF', 594, 'French Guiana'), ('GUM', 1671, 'Guam'),
+    ('GUY', 592, 'Guyana'), ('HKG', 852, 'Hong Kong'), ('HMD', 672, 'Heard and McDonald Islands'), ('HND', 504, 'Honduras'), ('HRV', 385, 'Croatia'),
+    ('HTI', 509, 'Haiti'), ('HUN', 36, 'Hungary'), ('IDN', 62, 'Indonesia'), ('IMN', 44, 'Isle of Man'), ('IND', 91, 'India'),
+    ('IOT', 246, 'British Indian Ocean Territory'), ('IRL', 353, 'Ireland'), ('IRN', 98, 'Iran'), ('IRQ', 964, 'Iraq'), ('ISL', 354, 'Iceland'),
+    ('ISR', 972, 'Israel'), ('ITA', 39, 'Italy'), ('JAM', 1876, 'Jamaica'), ('JEY', 44, 'Jersey'), ('JOR', 962, 'Jordan'),
+    ('JPN', 81, 'Japan'), ('KAZ', 7, 'Kazakhstan'), ('KEN', 254, 'Kenya'), ('KGZ', 996, 'Kyrgyzstan'), ('KHM', 855, 'Cambodia'),
+    ('KIR', 686, 'Kiribati'), ('KNA', 1869, 'Saint Kitts and Nevis'), ('KOR', 82, 'Republic of Korea'), ('KWT', 965, 'Kuwait'), ('LAO', 856, 'Laos'),
+    ('LBN', 961, 'Lebanon'), ('LBR', 231, 'Liberia'), ('LBY', 218, 'Libya'), ('LCA', 1758, 'Saint Lucia'), ('LIE', 423, 'Liechtenstein'),
+    ('LKA', 94, 'Sri Lanka'), ('LSO', 266, 'Lesotho'), ('LTU', 370, 'Lithuania'), ('LUX', 352, 'Luxembourg'), ('LVA', 371, 'Latvia'),
+    ('MAC', 853, 'Macao'), ('MAF', 590, 'Saint Martin'), ('MAR', 212, 'Morocco'), ('MCO', 377, 'Monaco'), ('MDA', 373, 'Moldova'),
+    ('MDG', 261, 'Madagascar'), ('MDV', 960, 'Maldives'), ('MEX', 52, 'Mexico'), ('MHL', 692, 'Marshall Islands'), ('MKD', 389, 'North Macedonia'),
+    ('MLI', 223, 'Mali'), ('MLT', 356, 'Malta'), ('MMR', 95, 'Myanmar'), ('MNE', 382, 'Montenegro'), ('MNG', 976, 'Mongolia'),
+    ('MNP', 1670, 'Northern Mariana Islands'), ('MOZ', 258, 'Mozambique'), ('MRT', 222, 'Mauritania'), ('MSR', 1664, 'Montserrat'), ('MTQ', 596, 'Martinique'),
+    ('MUS', 230, 'Mauritius'), ('MWI', 265, 'Malawi'), ('MYS', 60, 'Malaysia'), ('MYT', 262, 'Mayotte'), ('NAM', 264, 'Namibia'),
+    ('NCL', 687, 'New Caledonia'), ('NER', 227, 'Niger'), ('NFK', 672, 'Norfolk Island'), ('NGA', 234, 'Nigeria'), ('NIC', 505, 'Nicaragua'),
+    ('NIU', 683, 'Niue'), ('NLD', 31, 'Netherlands'), ('NOR', 47, 'Norway'), ('NPL', 977, 'Nepal'), ('NRU', 674, 'Nauru'),
+    ('NZL', 64, 'New Zealand Aotearoa'), ('OMN', 968, 'Oman'), ('PAK', 92, 'Pakistan'), ('PAN', 507, 'Panama'), ('PCN', 870, 'Pitcairn'),
+    ('PER', 51, 'Peru'), ('PHL', 63, 'Philippines'), ('PLW', 680, 'Palau'), ('PNG', 675, 'Papua New Guinea'), ('POL', 48, 'Poland'),
+    ('PRI', 1, 'Puerto Rico'), ('PRK', 850, 'Democratic People\'s Republic of Korea'), ('PRT', 351, 'Portugal'), ('PRY', 595, 'Paraguay'), ('PSE', 970, 'Palestine'),
+    ('PYF', 689, 'French Polynesia'), ('QAT', 974, 'Qatar'), ('REU', 262, 'Réunion'), ('ROU', 40, 'Romania'), ('RUS', 7, 'Russian Federation'),
+    ('RWA', 250, 'Rwanda'), ('SAU', 966, 'Saudi Arabia'), ('SDN', 249, 'Sudan'), ('SEN', 221, 'Senegal'), ('SGP', 65, 'Singapore'),
+    ('SGS', 500, 'South Georgia and the South Sandwich Islands'), ('SHN', 290, 'Saint Helena, Ascension and Tristan de Cunha'), ('SJM', 47, 'Svalbard and Jan Mayen'), ('SLB', 677, 'Solomon Islands'), ('SLE', 232, 'Sierra Leone'),
+    ('SLV', 503, 'El Salvador'), ('SMR', 378, 'San Marino'), ('SOM', 252, 'Somalia'), ('SPM', 508, 'Saint Pierre and Miquelon'), ('SRB', 381, 'Serbia'),
+    ('SSD', 211, 'South Sudan'), ('STP', 239, 'Sao Tome and Principe'), ('SUR', 597, 'Suriname'), ('SVK', 421, 'Slovakia'), ('SVN', 386, 'Slovenia'),
+    ('SWE', 46, 'Sweden'), ('SWZ', 268, 'Eswatini'), ('SXM', 1721, 'Sint Maarten'), ('SYC', 248, 'Seychelles'), ('SYR', 963, 'Syria'),
+    ('TCA', 1649, 'Turks and Caicos Islands'), ('TCD', 235, 'Chad'), ('TGO', 228, 'Togo'), ('THA', 66, 'Thailand'), ('TJK', 992, 'Tajikistan'),
+    ('TKL', 690, 'Tokelau'), ('TKM', 993, 'Turkmenistan'), ('TLS', 670, 'Timor-Leste'), ('TON', 676, 'Tonga'), ('TTO', 1868, 'Trinidad and Tobago'),
+    ('TUN', 216, 'Tunisia'), ('TUR', 90, 'Turkey'), ('TUV', 688, 'Tuvalu'), ('TWN', 886, 'Taiwan'), ('TZA', 255, 'Tanzania'),
+    ('UGA', 256, 'Uganda'), ('UKR', 380, 'Ukraine'), ('UMI', 1, 'United States Minor Outlying Islands'), ('URY', 598, 'Uruguay'), ('USA', 1, 'United States of America'),
+    ('UZB', 998, 'Uzbekistan'), ('VAT', 3906, 'Vatican City'), ('VCT', 1784, 'Saint Vincent and the Grenadines'), ('VEN', 58, 'Venezuela'), ('VGB', 1284, 'British Virgin Islands'),
+    ('VIR', 1340, 'United States Virgin Islands'), ('VNM', 84, 'Viet Nam'), ('VUT', 678, 'Vanuatu'), ('WLF', 681, 'Wallis and Futuna Islands'), ('WSM', 685, 'Samoa'),
+    ('XKX', 383, 'Kosovo'), ('YEM', 967, 'Yemen'), ('ZAF', 27, 'South Africa'), ('ZMB', 260, 'Zambia'), ('ZWE', 263, 'Zimbabwe');
+
+-- invalid entries, left here for old records
+REPLACE INTO cc_country VALUES
+    ('ANT', 599, 'Netherlands Antilles (obsolete)'),
+    ('ASC', 247, 'Ascenscion Island (obsolete)'),
+    ('CPT', 0, 'Clipperton Island (obsolete)'),
+    ('DGA', 246, 'Diego Garcia (obsolete)'),
+    ('TAA', 290, 'Tristan da Cunha (obsolete)'),
+    ('TMP', 670, 'East Timor (obsolete)'),
+    ('UNK', 383, 'Kosovo (obsolete)'),
+    ('XNM', 870, 'Inmarsat (obsolete)');

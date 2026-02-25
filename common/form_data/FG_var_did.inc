@@ -77,7 +77,7 @@ $HD_Form->AddListValue(_("Customer"), "iduser", [Customer::class, "getName"]);
 $HD_Form->AddListMapping(_("Billing"), "billingtype", getBillingTypeShortList());
 $HD_Form->AddListValue(_("Start date"), "startingdate");
 $HD_Form->AddListSqlMapping(_("DID group"), "id_cc_didgroup", new Table("cc_didgroup", ["id", "didgroupname"]));
-$HD_Form->AddListSqlMapping(_("Country"), "id_cc_country", new Table("cc_country", ["id", "countryname"]));
+$HD_Form->AddListSqlMapping(_("Country"), "country", new Table("cc_country", ["countrycode", "countryname"]));
 $HD_Form->AddListMapping(_("Active"), "activated", $yesno);
 $HD_Form->AddListValue(abbr(_("Min"), _("Minutes Used")), "secondusedreal", "get_minute");
 $HD_Form->AddListMapping(abbr(_("Res"), _("Reserved")), "reserved", $yesno);
@@ -141,8 +141,8 @@ $HD_Form->AddEditSqlSelect(
 
 $HD_Form->AddEditSqlSelect(
     _("COUNTRY"),
-    "id_cc_country",
-    new Table("cc_country", ["countryname", "id"])
+    "country",
+    new Table("cc_country", ["countryname", "countrycode"])
 );
 
 $HD_Form->AddEditRadio(

@@ -60,7 +60,7 @@ $yesno = getYesNoList();
 
 $HD_Form->AddListValue(_("DID"), "did", "format_phone_number");
 $HD_Form->AddListValue(_("Start date"), "startingdate");
-$HD_Form->AddListSqlMapping(_("Country"), "id_cc_country", new Table("cc_country", ["id", "countryname"]));
+$HD_Form->AddListSqlMapping(_("Country"), "country", new Table("cc_country", ["countrycode", "countryname"]));
 $HD_Form->AddListMapping(_("Active"), "activated", $yesno);
 $HD_Form->AddListValue(_("Minutes used"), "secondusedreal", "get_minute");
 $HD_Form->AddListValue(_("Monthly rate"), "fixrate");

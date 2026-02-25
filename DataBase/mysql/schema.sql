@@ -658,11 +658,10 @@ CREATE TABLE `cc_config_group` (
 
 DROP TABLE IF EXISTS `cc_country`;
 CREATE TABLE `cc_country` (
-    `id` bigint NOT NULL AUTO_INCREMENT,
-    `countrycode` varchar(80) NOT NULL,
+    `countrycode` varchar(3) NOT NULL,
     `countryprefix` varchar(80) NOT NULL,
     `countryname` varchar(80) NOT NULL,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`countrycode`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -689,7 +688,7 @@ DROP TABLE IF EXISTS `cc_did`;
 CREATE TABLE `cc_did` (
     `id` bigint NOT NULL AUTO_INCREMENT,
     `id_cc_didgroup` bigint DEFAULT NULL,
-    `id_cc_country` bigint DEFAULT NULL,
+    `country` varchar(3) DEFAULT NULL,
     `activated` int NOT NULL DEFAULT 1,
     `reserved` int DEFAULT 0,
     `iduser` bigint NOT NULL DEFAULT 0,
@@ -722,7 +721,7 @@ CREATE TABLE `cc_did` (
     `aleg_retail_increment_offp` int NOT NULL DEFAULT 0,
     PRIMARY KEY (`id`),
     UNIQUE KEY (`did`),
-    CONSTRAINT `fk_cc_did_cc_country` FOREIGN KEY (`id_cc_country`) REFERENCES `cc_country` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `fk_cc_did_cc_country` FOREIGN KEY (`country`) REFERENCES `cc_country` (`countrycode`) ON DELETE SET NULL ON UPDATE CASCADE,
     CONSTRAINT `fk_cc_did_cc_didgroup` FOREIGN KEY (`id_cc_didgroup`) REFERENCES `cc_didgroup` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
