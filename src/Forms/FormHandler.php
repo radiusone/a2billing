@@ -43,7 +43,7 @@ class FormHandler
     public bool $all_fields_valid = true;
 
     /** @var Builder the query builder instance used for DB access */
-    protected Builder $query_builder;
+    public Builder $query_builder;
 
     /** @var bool|int The result of a non-select query (bool for update and delete, inserted ID for insert) */
     public $QUERY_RESULT = false;
@@ -328,7 +328,7 @@ class FormHandler
      * @param array<string,array<string>> $joins a list of joins formatted for use by Table::processJoinedTables()
      * @param Builder|null $builder a custom query builder instance (eventually will replace the other parameters)
      */
-    public function __construct(string $tablename, string $instance_name, string $primary_key = "id", array $joins = [], ?Builder $builder = null)
+    public function __construct(string $tablename, string $instance_name, string $primary_key = "", array $joins = [], ?Builder $builder = null)
     {
         if (class_exists(Console::class)) {
             Console::log('Construct FormHandler');
@@ -338,11 +338,13 @@ class FormHandler
         self::$Instance = $this;
         $this->FG_QUERY_TABLE_NAME = $tablename;
         $this->FG_INSTANCE_NAME = $instance_name;
-        $this->FG_QUERY_PRIMARY_KEY = $primary_key;
-        if ($primary_key !== "id") {
+        if ($primary_key !== "") {
             $this->list_query_order_columns = [$primary_key];
             $this->update_query_conditions = [$primary_key => "%id"];
+        } else {
+            $primary_key = "$tablename.id";
         }
+        $this->FG_QUERY_PRIMARY_KEY = $primary_key;
         $this->query_table_joins = $joins;
 
         if (is_null($builder)) {
@@ -1329,6 +1331,8 @@ class FormHandler
         }
 
         if (!empty($processed["id"])) {
+            // insert the id as a condition for updates or showing an item ("ask-edit")
+            $this->query_builder->where($this->FG_QUERY_PRIMARY_KEY, $processed["id"]);
             $this->update_query_conditions = array_map(
                 fn ($v) => str_replace("%id", $processed["id"], $v),
                 $this->update_query_conditions
@@ -1388,10 +1392,16 @@ class FormHandler
             }
 
             if ($form_action === "list") {
-                if (!in_array("$this->FG_QUERY_PRIMARY_KEY AS instance_primary_key", $this->list_query_columns)) {
-                    // instance_primary_key is used to fill in links for edit/delete buttons
-                    $this->list_query_columns[] = "$this->FG_QUERY_PRIMARY_KEY AS instance_primary_key";
+                foreach ($this->list_query_columns as $col) {
+                    // list columns and searches can have complex expressions
+                    if (preg_match("/^[\w.]+( AS \w+)?$/i", $col)) {
+                        $this->query_builder->addSelect($col);
+                    } else {
+                        $this->query_builder->selectRaw($col);
+                    }
                 }
+                // instance_primary_key is used to fill in links for edit/delete buttons
+                $this->query_builder->addSelect("$this->FG_QUERY_PRIMARY_KEY AS instance_primary_key");
 
                 $this->prepare_list_subselection($form_action);
 
@@ -1401,7 +1411,6 @@ class FormHandler
                 }
 
                 $instance_table = $this->query_builder
-                    ->select($this->list_query_columns)
                     ->groupBy(...$this->list_query_group_columns)
                     ->limit($this->FG_LIST_VIEW_PAGE_SIZE)
                     ->offset($current_page * $this->FG_LIST_VIEW_PAGE_SIZE);
