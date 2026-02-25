@@ -661,7 +661,9 @@ class FormHandler
      * @param (callable(array):array)|null $callback the callback is passed the DB row array,
      * indices 0 and 1 of the return are used to create the option label and value, otherwise
      * first two indices of the database array are used
+     * @param (callable(string):(string|true))|null $validator A validation method that returns true or an error message
      * @return void
+     * @todo do we need separate sql selects when it's easy to pull options into an array?
      */
     public function AddEditSqlSelect(
         string $label_text,
@@ -673,7 +675,8 @@ class FormHandler
         string $form_text_bottom = "",
         array $html_attributes = [],
         string $error_message = "",
-        ?callable $callback = null
+        ?callable $callback = null,
+        ?callable $validator = null
     ): void
     {
         $options = [];
@@ -697,6 +700,7 @@ class FormHandler
             "select_fields" => $options,
             "first_option" => $first_option,
             "comment" => $form_text_bottom,
+            "validator" => $validator,
             "validation_err" => true,
         ];
 
