@@ -583,10 +583,10 @@ class FormHandler
      * @param string $fieldname The form input name
      * @param string $form_text_bottom Text to display below the form input
      * @param array<string,mixed> $html_attributes HTML attributes for the input
-     * @param callable<string>|null $validator A validation method that returns true or an error message
+     * @param (callable(string):(string|true))|null $validator A validation method that returns true or an error message
      * @param string $error_message A message to show if validation fails
      * @param string $check_emptyvalue If set to "NO", empty values are not validated; if set to "NO-NULL" empty values are added to the SQL query as NULL
-     * @param callable<string>|null $custom_function A callback to run the value through before displaying it
+     * @param callable(string):string|null $custom_function A callback to run the value through before displaying it
      * @return void
      */
     public function AddEditElement(
@@ -658,7 +658,7 @@ class FormHandler
      * @param string $form_text_bottom Text to display below the form input
      * @param array<string,mixed> $html_attributes HTML attributes for the input
      * @param string $error_message A message to show if validation fails
-     * @param callable(array ):array|null $callback the callback is passed the DB row array,
+     * @param (callable(array):array)|null $callback the callback is passed the DB row array,
      * indices 0 and 1 of the return are used to create the option label and value, otherwise
      * first two indices of the database array are used
      * @return void
@@ -716,17 +716,19 @@ class FormHandler
      * @param array<string,mixed> $html_attributes HTML attributes for the input
      * @param string $error_message A message to show if validation fails
      * @param array<string,mixed> $first_option array containing a value and label (k/v) for the first options in the list
+     * @param (callable(string):(string|true))|null $validator A validation method that returns true or an error message
      * @return void
      */
     public function AddEditSelect(
         string $label_text,
         string $fieldname,
-        array  $options,
-               $default_value = "",
+        array $options,
+        string|int $default_value = "",
         string $form_text_bottom = "",
         array $html_attributes = [],
         string $error_message = "",
         array $first_option = [],
+        ?callable $validator = null,
     ): void
     {
         $el = [
@@ -740,6 +742,7 @@ class FormHandler
             "select_fields" => $options,
             "first_option" => $first_option,
             "comment" => $form_text_bottom,
+            "validator" => $validator,
             "validation_err" => true,
         ];
 
@@ -795,7 +798,7 @@ class FormHandler
      * @param string $href The address of the popup
      * @param string $form_text_bottom Text to display below the form input
      * @param array $html_attributes HTML attributes for the input
-     * @param callable<string>|null $validator A validation method that returns true or an error message
+     * @param (callable(string):(string|true))|null $validator A validation method that returns true or an error message
      * @param string $error_message A message to show if validation fails
      * @return void
      */
@@ -836,7 +839,7 @@ class FormHandler
      * @param Table $table the table to use for display of existing records
      * @param string $insert_column the text column to edit
      * @param string $foreign_key new records will be created with this column set to the object's PK
-     * @param callable|null $validator A callback to validate the value before saving it
+     * @param (callable(string):(string|true))|null $validator A validation method that returns true or an error message
      * @param bool $multiline Determines whether to use <input> or <textarea>
      * @param bool $select Determines whether to use a <select> element
      * @param Table|null $pivot_table If set, $table is only used for display; $pivot table is used for updates
@@ -884,7 +887,7 @@ class FormHandler
      * @param array $html_attributes HTML attributes for the input
      * @param string $error_message A message to show if validation fails
      * @param string $default_value When adding (not editing) the value of the input
-     * @param callable<string>|null $validator A validation method that returns true or an error message
+     * @param (callable(string):(string|true))|null $validator A validation method that returns true or an error message
      * @return void
      */
     public function AddEditTextarea(
