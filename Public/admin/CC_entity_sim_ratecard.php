@@ -45,7 +45,7 @@ require_once __DIR__ . "/../../common/lib/admin.defines.php";
 
 Admin::checkPageAccess(Admin::ACX_RATECARD);
 
-getpost_ifset(['posted', 'tariffplan', 'balance', 'id_cc_card', 'called' , 'accountcode']);
+getpost_ifset(['posted', 'tariffplan', 'balance', 'id_cc_card', 'called', 'accountcode']);
 /**
  * @var string $posted
  * @var string $tariffplan
@@ -57,43 +57,41 @@ getpost_ifset(['posted', 'tariffplan', 'balance', 'id_cc_card', 'called' , 'acco
 
 $error_msg = "";
 
-if ($called && ($id_cc_card > 0 || $accountcode > 0)) {
-    if ($accountcode > 0) {
+if (is_numeric($called ?? null) && (!empty($id_cc_card) || !empty($accountcode))) {
+    if (!empty($accountcode) && empty($id_cc_card)) {
         $list_tariff_card = (new Table("cc_card", "username, id"))->getRow(["username" => $accountcode]);
         if ($list_tariff_card) {
             $id_cc_card = $list_tariff_card["id"] ?? 0;
         }
     }
 
-    if (!empty($called) && is_numeric($called)) {
-        $num = 0;
-        $card = (new Table("cc_card", "username, tariff, credit"))->getRow(["id" => $id_cc_card]);
-        if (empty($card)) {
-            $error_msg = '<span style="color:red; font-weight: bold">' . _("Card lookup error") . '</span>';
-        } else {
-            $A2B->cardnumber = $card["username"];
+    $num = 0;
+    $card = (new Table("cc_card", "username, tariff, credit"))->getRow(["id" => $id_cc_card]);
+    if (empty($card)) {
+        $error_msg = '<span style="color:red; font-weight: bold">' . _("Card lookup error") . '</span>';
+    } else {
+        $A2B->cardnumber = $card["username"];
 
-            if ($A2B->callingcard_ivr_authenticate_light($error_msg, (int)$balance)) {
-                $RateEngine = $A2B->rateEngine();
+        if ($A2B->callingcard_ivr_authenticate_light($error_msg, (int)$balance)) {
+            $RateEngine = $A2B->rateEngine();
 
-                // LOOKUP RATE : FIND A RATE FOR THIS DESTINATION
-                $A2B->agiconfig['accountcode'] = $A2B->cardnumber;
-                $A2B->agiconfig['use_dnid'] = 1;
-                $A2B->agiconfig['say_timetocall'] = 0;
-                $A2B->dnid = $A2B->destination = $called;
+            // LOOKUP RATE : FIND A RATE FOR THIS DESTINATION
+            $A2B->agiconfig['accountcode'] = $A2B->cardnumber;
+            $A2B->agiconfig['use_dnid'] = 1;
+            $A2B->agiconfig['say_timetocall'] = 0;
+            $A2B->dnid = $A2B->destination = $called;
 
-                if ($A2B->removeinterprefix) {
-                    $A2B->destination = $A2B->apply_rules($A2B->destination);
-                }
+            if ($A2B->removeinterprefix) {
+                $A2B->destination = $A2B->apply_rules($A2B->destination);
+            }
 
-                $resfindrate = $RateEngine->rate_engine_findrates($A2B->destination, (int)$card["tariff"]);
+            $resfindrate = $RateEngine->rate_engine_findrates($A2B->destination, (int)$card["tariff"]);
 
-                // IF FIND RATE
-                if ($resfindrate) {
-                    $res_all_calcultimeout = $RateEngine->rate_engine_all_calcultimeout($A2B->credit);
-                } else {
-                    $error_msg = '<span style="color:red; font-weight: bold">' . _("No matching rate found") . '</span>';
-                }
+            // IF FIND RATE
+            if ($resfindrate) {
+                $res_all_calcultimeout = $RateEngine->rate_engine_all_calcultimeout($A2B->credit);
+            } else {
+                $error_msg = '<span style="color:red; font-weight: bold">' . _("No matching rate found") . '</span>';
             }
         }
     }
