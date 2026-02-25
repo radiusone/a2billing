@@ -370,7 +370,7 @@ ALTER TABLE cc_trunk
 SET FOREIGN_KEY_CHECKS = 1;
 
 -- refresh data
-REPLACE INTO cc_country VALUES
+INSERT INTO cc_country VALUES
     ('ABW', 297, 'Aruba'), ('AFG', 93, 'Afghanistan'), ('AGO', 244, 'Angola'), ('AIA', 1264, 'Anguilla'), ('ALA', 358, 'Åland Islands'),
     ('ALB', 355, 'Albania'), ('AND', 376, 'Andorra'), ('ARE', 971, 'United Arab Emirates'), ('ARG', 54, 'Argentina'), ('ARM', 374, 'Armenia'),
     ('ASM', 1684, 'American Samoa'), ('ATA', 672, 'Antarctica'), ('ATF', 262, 'French Southern Territories'), ('ATG', 1268, 'Antigua and Barbuda'), ('AUS', 61, 'Australia'),
@@ -420,10 +420,11 @@ REPLACE INTO cc_country VALUES
     ('UGA', 256, 'Uganda'), ('UKR', 380, 'Ukraine'), ('UMI', 1, 'United States Minor Outlying Islands'), ('URY', 598, 'Uruguay'), ('USA', 1, 'United States of America'),
     ('UZB', 998, 'Uzbekistan'), ('VAT', 3906, 'Vatican City'), ('VCT', 1784, 'Saint Vincent and the Grenadines'), ('VEN', 58, 'Venezuela'), ('VGB', 1284, 'British Virgin Islands'),
     ('VIR', 1340, 'United States Virgin Islands'), ('VNM', 84, 'Viet Nam'), ('VUT', 678, 'Vanuatu'), ('WLF', 681, 'Wallis and Futuna Islands'), ('WSM', 685, 'Samoa'),
-    ('XKX', 383, 'Kosovo'), ('YEM', 967, 'Yemen'), ('ZAF', 27, 'South Africa'), ('ZMB', 260, 'Zambia'), ('ZWE', 263, 'Zimbabwe');
+    ('XKX', 383, 'Kosovo'), ('YEM', 967, 'Yemen'), ('ZAF', 27, 'South Africa'), ('ZMB', 260, 'Zambia'), ('ZWE', 263, 'Zimbabwe')
+ON DUPLICATE KEY UPDATE countryprefix = VALUES(countryprefix), countryname = VALUES(countryname);
 
 -- invalid entries, left here for old records
-REPLACE INTO cc_country VALUES
+INSERT INTO cc_country VALUES
     ('ANT', 599, 'Netherlands Antilles (obsolete)'),
     ('ASC', 247, 'Ascenscion Island (obsolete)'),
     ('CPT', 0, 'Clipperton Island (obsolete)'),
@@ -431,12 +432,13 @@ REPLACE INTO cc_country VALUES
     ('TAA', 290, 'Tristan da Cunha (obsolete)'),
     ('TMP', 670, 'East Timor (obsolete)'),
     ('UNK', 383, 'Kosovo (obsolete)'),
-    ('XNM', 870, 'Inmarsat (obsolete)');
+    ('XNM', 870, 'Inmarsat (obsolete)')
+ON DUPLICATE KEY UPDATE countryprefix = VALUES(countryprefix), countryname = VALUES(countryname);
 
 -- unused
 ALTER TABLE cc_iso639 DROP COLUMN IF EXISTS lname, DROP COLUMN IF EXISTS charset, MODIFY COLUMN name varchar(64);
 -- refresh data
-REPLACE INTO cc_iso639 VALUES
+INSERT INTO cc_iso639 VALUES
     ('aa', 'Afar'), ('ab', 'Abkhazian'), ('ae', 'Avestan'), ('af', 'Afrikaans'), ('ak', 'Akan'),
     ('am', 'Amharic'), ('an', 'Aragonese'), ('ar', 'Arabic'), ('as', 'Assamese'), ('av', 'Avaric'),
     ('ay', 'Aymara'), ('az', 'Azerbaijani'), ('ba', 'Bashkir'), ('be', 'Belarusian'), ('bg', 'Bulgarian'),
@@ -473,10 +475,12 @@ REPLACE INTO cc_iso639 VALUES
     ('ts', 'Tsonga'), ('tt', 'Tatar'), ('tw', 'Twi'), ('ty', 'Tahitian'), ('ug', 'Uighur, Uyghur'),
     ('uk', 'Ukrainian'), ('ur', 'Urdu'), ('uz', 'Uzbek'), ('ve', 'Venda'), ('vi', 'Vietnamese'),
     ('vo', 'Volapük'), ('wa', 'Walloon'), ('wo', 'Wolof'), ('xh', 'Xhosa'), ('yi', 'Yiddish'),
-    ('yo', 'Yoruba'), ('za', 'Zhuang, Chuang'), ('zh', 'Chinese'), ('zu', 'Zulu');
+    ('yo', 'Yoruba'), ('za', 'Zhuang, Chuang'), ('zh', 'Chinese'), ('zu', 'Zulu')
+ON DUPLICATE KEY UPDATE name = VALUES(name);
 
 -- invalid entries, left here for old records
-REPLACE INTO cc_iso639 VALUES
+INSERT INTO cc_iso639 VALUES
     ('bh', 'Bihari (obsolete)'),
     ('mo', 'Moldovan (obsolete)'),
-    ('sh', 'Serbo-Croatian (obsolete)');
+    ('sh', 'Serbo-Croatian (obsolete)')
+ON DUPLICATE KEY UPDATE name = VALUES(name);
