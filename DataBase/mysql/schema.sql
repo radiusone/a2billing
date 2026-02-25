@@ -891,10 +891,7 @@ DROP TABLE IF EXISTS `cc_iso639`;
 CREATE TABLE `cc_iso639` (
     `code` varchar(2) NOT NULL,
     `name` varchar(16) NOT NULL,
-    `lname` varchar(16) DEFAULT NULL,
-    `charset` varchar(16) NOT NULL DEFAULT 'ISO-8859-1',
-    PRIMARY KEY (`code`),
-    UNIQUE KEY (`name`)
+    PRIMARY KEY (`code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --

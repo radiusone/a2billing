@@ -369,6 +369,7 @@ ALTER TABLE cc_trunk
 
 SET FOREIGN_KEY_CHECKS = 1;
 
+-- refresh data
 REPLACE INTO cc_country VALUES
     ('ABW', 297, 'Aruba'), ('AFG', 93, 'Afghanistan'), ('AGO', 244, 'Angola'), ('AIA', 1264, 'Anguilla'), ('ALA', 358, 'Åland Islands'),
     ('ALB', 355, 'Albania'), ('AND', 376, 'Andorra'), ('ARE', 971, 'United Arab Emirates'), ('ARG', 54, 'Argentina'), ('ARM', 374, 'Armenia'),
@@ -431,3 +432,51 @@ REPLACE INTO cc_country VALUES
     ('TMP', 670, 'East Timor (obsolete)'),
     ('UNK', 383, 'Kosovo (obsolete)'),
     ('XNM', 870, 'Inmarsat (obsolete)');
+
+-- unused
+ALTER TABLE cc_iso639 DROP COLUMN IF EXISTS lname, DROP COLUMN IF EXISTS charset, MODIFY COLUMN name varchar(64);
+-- refresh data
+REPLACE INTO cc_iso639 VALUES
+    ('aa', 'Afar'), ('ab', 'Abkhazian'), ('ae', 'Avestan'), ('af', 'Afrikaans'), ('ak', 'Akan'),
+    ('am', 'Amharic'), ('an', 'Aragonese'), ('ar', 'Arabic'), ('as', 'Assamese'), ('av', 'Avaric'),
+    ('ay', 'Aymara'), ('az', 'Azerbaijani'), ('ba', 'Bashkir'), ('be', 'Belarusian'), ('bg', 'Bulgarian'),
+    ('bi', 'Bislama'), ('bm', 'Bambara'), ('bn', 'Bengali'), ('bo', 'Tibetan'), ('br', 'Breton'),
+    ('bs', 'Bosnian'), ('ca', 'Catalan, Valencian'), ('ce', 'Chechen'), ('ch', 'Chamorro'), ('co', 'Corsican'),
+    ('cr', 'Cree'), ('cs', 'Czech'), ('cu', 'Church Slavonic, Old Slavonic, Old Church Slavonic'), ('cv', 'Chuvash'), ('cy', 'Welsh'),
+    ('da', 'Danish'), ('de', 'German'), ('dv', 'Divehi, Dhivehi, Maldivian'), ('dz', 'Dzongkha'), ('ee', 'Ewe'),
+    ('el', 'Greek, Modern (1453–)'), ('en', 'English'), ('eo', 'Esperanto'), ('es', 'Spanish, Castilian'), ('et', 'Estonian'),
+    ('eu', 'Basque'), ('fa', 'Persian'), ('ff', 'Fulah'), ('fi', 'Finnish'), ('fj', 'Fijian'),
+    ('fo', 'Faroese'), ('fr', 'French'), ('fy', 'Western Frisian'), ('ga', 'Irish'), ('gd', 'Gaelic, Scottish Gaelic'),
+    ('gl', 'Galician'), ('gn', 'Guarani'), ('gu', 'Gujarati'), ('gv', 'Manx'), ('ha', 'Hausa'),
+    ('he', 'Hebrew'), ('hi', 'Hindi'), ('ho', 'Hiri Motu'), ('hr', 'Croatian'), ('ht', 'Haitian, Haitian Creole'),
+    ('hu', 'Hungarian'), ('hw', 'Hawaiian'), ('hy', 'Armenian'), ('hz', 'Herero'), ('ia', 'Interlingua (IALA)'),
+    ('id', 'Indonesian'), ('ie', 'Interlingue, Occidental'), ('ig', 'Igbo'), ('ii', 'Sichuan Yi, Nuosu'), ('ik', 'Inupiaq'),
+    ('io', 'Ido'), ('is', 'Icelandic'), ('it', 'Italian'), ('iu', 'Inuktitut'), ('ja', 'Japanese'),
+    ('jv', 'Javanese'), ('ka', 'Georgian'), ('kg', 'Kongo'), ('ki', 'Kikuyu, Gikuyu'), ('kj', 'Kuanyama, Kwanyama'),
+    ('kk', 'Kazakh'), ('kl', 'Kalaallisut, Greenlandic'), ('km', 'Central Khmer'), ('kn', 'Kannada'), ('ko', 'Korean'),
+    ('kr', 'Kanuri'), ('ks', 'Kashmiri'), ('ku', 'Kurdish'), ('kv', 'Komi'), ('kw', 'Cornish'),
+    ('ky', 'Kyrgyz, Kirghiz'), ('la', 'Latin'), ('lb', 'Luxembourgish, Letzeburgesch'), ('lg', 'Ganda'), ('li', 'Limburgan, Limburger, Limburgish'),
+    ('ln', 'Lingala'), ('lo', 'Lao'), ('lt', 'Lithuanian'), ('lu', 'Luba-Katanga'), ('lv', 'Latvian'),
+    ('mg', 'Malagasy'), ('mh', 'Marshallese'), ('mi', 'Maori'), ('mk', 'Macedonian'), ('ml', 'Malayalam'),
+    ('mn', 'Mongolian'), ('mr', 'Marathi'), ('ms', 'Malay'), ('mt', 'Maltese'), ('my', 'Burmese'),
+    ('na', 'Nauru'), ('nb', 'Norwegian Bokmål'), ('nd', 'North Ndebele'), ('ne', 'Nepali'), ('ng', 'Ndonga'),
+    ('nl', 'Dutch, Flemish'), ('nn', 'Norwegian Nynorsk'), ('no', 'Norwegian'), ('nr', 'South Ndebele'), ('nv', 'Navajo, Navaho'),
+    ('ny', 'Chichewa, Chewa, Nyanja'), ('oc', 'Occitan'), ('oj', 'Ojibwa'), ('om', 'Oromo'), ('or', 'Oriya'),
+    ('os', 'Ossetian, Ossetic'), ('pa', 'Punjabi, Panjabi'), ('pi', 'Pali'), ('pl', 'Polish'), ('ps', 'Pashto, Pushto'),
+    ('pt', 'Portuguese'), ('qu', 'Quechua'), ('rm', 'Romansh'), ('rn', 'Rundi'), ('ro', 'Romanian, Moldavian, Moldovan'),
+    ('ru', 'Russian'), ('rw', 'Kinyarwanda'), ('sa', 'Sanskrit'), ('sc', 'Sardinian'), ('sd', 'Sindhi'),
+    ('se', 'Northern Sami'), ('sg', 'Sango'), ('si', 'Sinhala, Sinhalese'), ('sk', 'Slovak'), ('sl', 'Slovenian'),
+    ('sm', 'Samoan'), ('sn', 'Shona'), ('so', 'Somali'), ('sq', 'Albanian'), ('sr', 'Serbian'),
+    ('ss', 'Swati'), ('st', 'Southern Sotho'), ('su', 'Sundanese'), ('sv', 'Swedish'), ('sw', 'Swahili'),
+    ('ta', 'Tamil'), ('te', 'Telugu'), ('tg', 'Tajik'), ('th', 'Thai'), ('ti', 'Tigrinya'),
+    ('tk', 'Turkmen'), ('tl', 'Tagalog'), ('tn', 'Tswana'), ('to', 'Tonga (Tonga Islands)'), ('tr', 'Turkish'),
+    ('ts', 'Tsonga'), ('tt', 'Tatar'), ('tw', 'Twi'), ('ty', 'Tahitian'), ('ug', 'Uighur, Uyghur'),
+    ('uk', 'Ukrainian'), ('ur', 'Urdu'), ('uz', 'Uzbek'), ('ve', 'Venda'), ('vi', 'Vietnamese'),
+    ('vo', 'Volapük'), ('wa', 'Walloon'), ('wo', 'Wolof'), ('xh', 'Xhosa'), ('yi', 'Yiddish'),
+    ('yo', 'Yoruba'), ('za', 'Zhuang, Chuang'), ('zh', 'Chinese'), ('zu', 'Zulu');
+
+-- invalid entries, left here for old records
+REPLACE INTO cc_iso639 VALUES
+    ('bh', 'Bihari (obsolete)'),
+    ('mo', 'Moldovan (obsolete)'),
+    ('sh', 'Serbo-Croatian (obsolete)');
