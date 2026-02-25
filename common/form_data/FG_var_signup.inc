@@ -256,28 +256,6 @@ if ($A2B->config["signup"]['field_VAT_RN'] ?? 0)  {
     );
 }
 
-if ($A2B->config["signup"]['field_traffic'] ?? 0)  {
-    $HD_Form->AddEditElement(
-        gettext("TRAFFIC PER MONTH"),
-        "traffic",
-        "",
-        ["maxlength" => 20],
-        [Validator::class, "numeric"],
-        gettext("Insert the traffic per month for this customer"),
-        "NO"
-    );
-}
-
-if ($A2B->config["signup"]['field_traffic_target'] ?? 0)  {
-    $HD_Form->AddEditTextarea(
-        gettext("TARGET TRAFFIC"),
-        "traffic_target",
-        "",
-        ["rows" => 4],
-        gettext("Insert the target traffic description")
-    );
-}
-
 if ($A2B->config["signup"]['enable_captcha'] ?? 0) {
     $HD_Form->AddEditElement(
         gettext("VERIFICATION"),

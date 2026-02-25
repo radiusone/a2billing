@@ -245,8 +245,6 @@ INSERT INTO `cc_config` (`config_title`, `config_key`, `config_value`, `config_d
     ('Company Name Field','field_company','1','Enable The Company Name Field - Yes 1 - No 0. ',1,'yes,no',6),
     ('Company Website Field','field_company_website','1','Enable The Company Website Field - Yes 1 - No 0. ',1,'yes,no',6),
     ('VAT Registration Number Field','field_VAT_RN','1','Enable The VAT Registration Number Field - Yes 1 - No 0. ',1,'yes,no',6),
-    ('Traffic Field','field_traffic','1','Enable The Traffic Field - Yes 1 - No 0. ',1,'yes,no',6),
-    ('Traffic Target Field','field_traffic_target','1','Enable The Traffic Target Field - Yes 1 - No 0. ',1,'yes,no',6),
     ('IVR Locking option','ivr_enable_locking_option','0','Enable the IVR which allow the users to lock their account with an extra lock code.',1,'yes,no',11),
     ('IVR Account Information','ivr_enable_account_information','0','Enable the IVR which allow the users to retrieve different information about their account.',1,'yes,no',11),
     ('IVR Speed Dial','ivr_enable_ivr_speeddial','0','Enable the IVR which allow the users add speed dial.',1,'yes,no',11),

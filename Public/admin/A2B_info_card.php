@@ -237,14 +237,6 @@ echo get_login_button ($id);
                     <th scope="row"><?= _("Tax number") ?></th>
                     <td><?= $card["vat_rn"] ?></td>
                 </tr>
-                <tr>
-                    <th scope="row"><?= _("Traffic per month") ?></th>
-                    <td><?= $card["traffic"] ?></td>
-                </tr>
-                <tr>
-                    <th scope="row"><?= _("Traffic target") ?></th>
-                    <td><?= $card["traffic_target"] ?></td>
-                </tr>
             </tbody>
         </table>
     </div>

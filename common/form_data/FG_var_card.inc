@@ -824,26 +824,6 @@ if ($popup_select) {
 
     $HD_Form->AddEditSelect(_("Discount"), "discount", $discount_list);
 
-    $HD_Form->AddEditSection(_("Traffic Targets"));
-
-    $HD_Form->AddEditElement(
-        _("Monthly traffic target"),
-        "traffic",
-        "",
-        ["maxlength" => 20],
-        [Validator::class, "numeric"],
-        _("Insert the traffic per month for this customer"),
-        "NO"
-    );
-
-    $HD_Form->AddEditTextarea(
-        _("Traffic target"),
-        "traffic_target",
-        "",
-        ["rows" => 4],
-        _("Insert the target traffic description")
-    );
-
     $HD_Form->AddEditSection(_("Restricted Numbers"));
 
     $HD_Form->AddEditSelect(

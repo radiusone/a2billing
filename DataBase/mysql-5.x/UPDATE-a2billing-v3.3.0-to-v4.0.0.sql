@@ -12,6 +12,11 @@ ALTER TABLE cc_card_archive DROP COLUMN IF EXISTS id_campaign;
 DROP TABLE IF EXISTS cc_campaign, cc_campaign_config, cc_campaign_phonebook, cc_campaign_phonestatus, cc_campaignconf_cardgroup;
 DELETE FROM cc_config WHERE config_key = 'context_campaign_callback' OR config_key = 'default_context_campaign';
 
+-- unused (never used?)
+ALTER TABLE cc_card DROP COLUMN IF EXISTS traffic, DROP COLUMN IF EXISTS traffic_target;
+ALTER TABLE cc_card_archive DROP COLUMN IF EXISTS traffic, DROP COLUMN IF EXISTS traffic_target;
+DELETE FROM cc_config WHERE config_key = 'field_traffic' OR config_key = 'field_traffic_target';
+
 -- a database structure that isn't from 2002‽
 SET FOREIGN_KEY_CHECKS = 0;
 
