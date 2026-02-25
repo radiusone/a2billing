@@ -10,7 +10,7 @@ class Validator
      * @param string $value
      * @return string|true
      */
-    public static function min3Chars(string $value)
+    public static function min3Chars(string $value): bool|string
     {
         return strlen($value) >= 3
             ?: sprintf(_("(must be at least %d characters)"), 3);
@@ -20,9 +20,9 @@ class Validator
      * validate_field 1
      *
      * @param string $value
-     * @return bool|string
+     * @return string|true
      */
-    public static function email(string $value)
+    public static function email(string $value): bool|string
     {
         return filter_var($value, FILTER_VALIDATE_EMAIL) === $value
             ?: _("(must be a valid email address");
@@ -32,9 +32,9 @@ class Validator
      * validate_field 3
      *
      * @param string $value
-     * @return bool|string
+     * @return string|true
      */
-    public static function min4Chars(string $value)
+    public static function min4Chars(string $value): bool|string
     {
         return strlen($value) >= 4
             ?: sprintf(_("(must be at least %d characters)"), 4);
@@ -44,9 +44,9 @@ class Validator
      * validate_field 4
      *
      * @param string $value
-     * @return bool|string
+     * @return string|true
      */
-    public static function numeric(string $value)
+    public static function numeric(string $value): bool|string
     {
         return preg_match("/^[0-9]+$/", $value) === 1
             ?: _("(must consist only of numbers)");
@@ -56,9 +56,9 @@ class Validator
      * validate_field 5
      *
      * @param string $value
-     * @return bool|string
+     * @return string|true
      */
-    public static function date(string $value)
+    public static function date(string $value): bool|string
     {
         return (
             preg_match("/^(19|20)[0-9]{2}(\\b)(0[1-9]|1[0-2])\\2(0[1-9]|[12][0-9]|3[01])$/", $value, $m)
@@ -71,9 +71,9 @@ class Validator
      * validate_field 7
      *
      * @param string $value
-     * @return bool|string
+     * @return string|true
      */
-    public static function min8DigitLike(string $value)
+    public static function min8DigitLike(string $value): bool|string
     {
         return preg_match("/^[0-9][0-9. \\/-]{6,}[0-9]$/", $value) === 1
             ?: _("(must be a number at least 8 digits long – can include dots, dashes, or spaces)");
@@ -83,9 +83,9 @@ class Validator
      * validate_field 8
      *
      * @param string $value
-     * @return bool|string
+     * @return string|true
      */
-    public static function min5Chars(string $value)
+    public static function min5Chars(string $value): bool|string
     {
         return strlen($value) >= 5
             ?: sprintf(_("(must be at least %d characters)"), 5);
@@ -95,9 +95,9 @@ class Validator
      * validate_field 9
      *
      * @param string $value
-     * @return bool|string
+     * @return string|true
      */
-    public static function min1Char(string $value)
+    public static function min1Char(string $value): bool|string
     {
         return strlen($value) >= 1
             ?: _("(must be at least 1 character)");
@@ -107,9 +107,9 @@ class Validator
      * validate_field 10
      *
      * @param string $value
-     * @return bool|string
+     * @return string|true
      */
-    public static function dateTime(string $value)
+    public static function dateTime(string $value): bool|string
     {
         return (
             preg_match("/^((?:19|20)[0-9]{2})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01]) ([01][0-9]|2[0-3]):([0-5][0-9])(:[0-5][0-9])?$/", $value, $m)
@@ -123,9 +123,9 @@ class Validator
      * validate_field 11
      *
      * @param string $value
-     * @return bool|string
+     * @return string|true
      */
-    public static function min2Chars(string $value)
+    public static function min2Chars(string $value): bool|string
     {
         return strlen($value) >= 2
             ?: sprintf(_("(must be at least %d characters)"), 2);
@@ -135,9 +135,9 @@ class Validator
      * validate_field 12
      *
      * @param string $value
-     * @return bool|string
+     * @return string|true
      */
-    public static function number(string $value)
+    public static function number(string $value): bool|string
     {
         return preg_match("/^-?[0-9]*?\\.?[0-9]+$/", $value) === 1
             ?: _("(must be a number – use . for decimals)");
@@ -147,9 +147,9 @@ class Validator
      * validate_field 13
      *
      * @param string $value
-     * @return bool|string
+     * @return string|true
      */
-    public static function asteriskExtension(string $value)
+    public static function asteriskExtension(string $value): bool|string
     {
         return preg_match("/^(defaultprefix|[-,0-9]+|_(\[\\d+(-\\d+)?]|[0-9XZN])+[.!]?)$/", $value) === 1
             ?: _("(must be a number, Asterisk pattern, or the special value 'defaultprefix')");
@@ -159,9 +159,9 @@ class Validator
      * validate_field 14
      *
      * @param string $value
-     * @return bool|string
+     * @return string|true
      */
-    public static function numericOrAll(string $value)
+    public static function numericOrAll(string $value): bool|string
     {
         return preg_match("/^([0-9]+|all)$/", $value) === 1
             ?: _("(must be digits or the special value 'all')");
@@ -171,9 +171,9 @@ class Validator
      * validate_field 15
      *
      * @param string $value
-     * @return bool|string
+     * @return string|true
      */
-    public static function time(string $value)
+    public static function time(string $value): bool|string
     {
         return preg_match("/^([01][0-9]|2[0-3]):([0-5][0-9])$/", $value) === 1
             ?: _("(must be a time in hh:mm format");
@@ -183,9 +183,9 @@ class Validator
      * validate_field 17
      *
      * @param string $value
-     * @return bool|string
+     * @return string|true
      */
-    public static function min8Chars(string $value)
+    public static function min8Chars(string $value): bool|string
     {
         return strlen($value) >= 8
             ?: sprintf(_("(must be at least %d characters)"), 8);
@@ -193,9 +193,9 @@ class Validator
 
     /**
      * @param string $value
-     * @return bool|string
+     * @return string|true
      */
-    public static function min8CharsOptional(string $value)
+    public static function min8CharsOptional(string $value): bool|string
     {
         return $value === "" || strlen($value) >= 8
             ?: sprintf(_("(must be at least %d characters)"), 8);
@@ -205,9 +205,9 @@ class Validator
      * validate_field 18
      *
      * @param string $value
-     * @return bool|string
+     * @return string|true
      */
-    public static function phoneNumber(string $value)
+    public static function phoneNumber(string $value): bool|string
     {
         return preg_match("/^\\+[1-9][0-9]{5,14}$/", $value) === 1
             ?: _("(must be a phone number starting with +)");
@@ -217,9 +217,9 @@ class Validator
      * validate_field 19
      *
      * @param string $value
-     * @return bool|string
+     * @return string|true
      */
-    public static function captcha(string $value)
+    public static function captcha(string $value): bool|string
     {
         return $value === (string)$_SESSION["captcha_code"]
             ?: _("(must be at least 6 letters and/or numbers)");
@@ -229,9 +229,9 @@ class Validator
      * validate_field 20
      *
      * @param string $value
-     * @return bool|string
+     * @return string|true
      */
-    public static function timeSeconds(string $value)
+    public static function timeSeconds(string $value): bool|string
     {
         return preg_match("/^([01][0-9]|2[0-3])(:[0-5][0-9]){2}$/", $value) === 1
             ?: _("(must be a time in hh:mm:ss format");
@@ -241,11 +241,27 @@ class Validator
      * validate_field 21
      *
      * @param string $value
-     * @return bool|string
+     * @return string|true
      */
-    public static function percentage(string $value)
+    public static function percentage(string $value): bool|string
     {
         return (is_numeric($value) && $value >= 0 && $value <= 100)
             ?: _("(must be a number between 0 and 100 – use . for decimal)");
+    }
+
+    /**
+     * Field must be a numeric value, empty is set to null
+     *
+     * @param string $value
+     * @return string|true
+     */
+    public static function foreignKey(string &$value): bool|string
+    {
+        if ($value === "") {
+            $value = null;
+            return true;
+        }
+
+        return self::numeric($value);
     }
 }
