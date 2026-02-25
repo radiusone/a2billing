@@ -1,32 +1,28 @@
 <?php
 
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
-use A2billing\Table;
 
 /**
  * @var FormHandler $HD_Form
  */
 
-$table = new Table(
-    "cc_call",
-    [
-        "DATE(cc_call.starttime) AS day",
-        "SUM(cc_call.sessiontime) AS calltime",
-        "COUNT(*) AS nbcall",
-        "SUM(cc_call.buycost + 0) AS buy",
-        "SUM(cc_call.sessionbill + 0) AS sell",
-        "CASE WHEN SUM(sessionbill) != 0 THEN (SUM(sessionbill) - SUM(buycost)) / SUM(sessionbill) * 100 ELSE 0 END AS margin",
-        "CASE WHEN SUM(buycost) != 0 THEN (SUM(sessionbill) - SUM(buycost)) / SUM(buycost) * 100 ELSE 0 END AS markup",
-        "SUM(CASE WHEN cc_call.sessiontime > 0 THEN 1 ELSE 0 END) AS success_calls",
-    ],
-    ["cc_trunk" => ["cc_call.id_trunk", "cc_trunk.id_trunk"]]
-);
-$list_total_day = $table->getRows(
-    $HD_Form->list_query_conditions,
-    ["day"],
-    "ASC",
-    ["day"]
-);
+$graph_builder = Connection::getConnection()
+    ->table("cc_call")
+    ->selectRaw("DATE(cc_call.starttime) AS day")
+    ->selectRaw("SUM(cc_call.sessiontime) AS calltime")
+    ->selectRaw("COUNT(*) AS nbcall")
+    ->selectRaw("SUM(cc_call.buycost + 0) AS buy")
+    ->selectRaw("SUM(cc_call.sessionbill + 0) AS sell")
+    ->selectRaw("CASE WHEN SUM(sessionbill) != 0 THEN (SUM(sessionbill) - SUM(buycost)) / SUM(sessionbill) * 100 ELSE 0 END AS margin")
+    ->selectRaw("CASE WHEN SUM(buycost) != 0 THEN (SUM(sessionbill) - SUM(buycost)) / SUM(buycost) * 100 ELSE 0 END AS markup")
+    ->selectRaw("SUM(CASE WHEN cc_call.sessiontime > 0 THEN 1 ELSE 0 END) AS success_calls")
+    ->leftJoin("cc_trunk", "cc_call.id_trunk", "cc_trunk.id_trunk");
+
+// copy conditions from the search form
+$graph_builder->wheres = $HD_Form->query_builder->wheres;
+$graph_builder->bindings["where"] = $HD_Form->query_builder->bindings["where"];
+$list_total_day = $graph_builder->orderBy("day")->groupBy("day")->get()->toArray();
 
 if (!count($list_total_day)) {
     return;

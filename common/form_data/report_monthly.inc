@@ -1,7 +1,7 @@
 <?php
 
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
-use A2billing\Table;
 use Amenadiel\JpGraph\Graph\Graph;
 use Amenadiel\JpGraph\Graph\PieGraph;
 use Amenadiel\JpGraph\Plot\PiePlot3D;
@@ -12,21 +12,21 @@ getpost_ifset(["starttime", "relative_months"]);
  * @var numeric-string|null $relative_months
  */
 
+$builder = Connection::getConnection()
+    ->table("cc_call")
+    ->leftJoin("cc_trunk", "cc_call.id_trunk", "cc_trunk.id_trunk")
+    ->selectRaw("SUM(sessiontime) AS time")
+    ->selectRaw("SUM(sessionbill - buycost) AS profit")
+    ->selectRaw("SUM(sessionbill) AS revenue")
+    ->selectRaw("SUM(buycost) AS cost")
+    ->selectRaw("SUBSTRING(starttime, 1, 4) AS year")
+    ->selectRaw("SUBSTRING(starttime, 6, 2) AS month");
+
 $HD_Form = new FormHandler(
     "cc_call",
     "Call Load Report",
-    "cc_call.id",
-    ["cc_trunk" => ["cc_call.id_trunk", "cc_trunk.id_trunk"]]
+    builder: $builder
 );
-$HD_Form->FG_LIST_VIEW_PAGE_SIZE = 5000;
-$HD_Form->list_query_columns = [
-    "SUM(sessiontime) AS time",
-    "SUM(sessionbill - buycost) AS profit",
-    "SUM(sessionbill) AS revenue",
-    "SUM(buycost) AS cost",
-    "SUBSTRING(starttime, 1, 4) AS year",
-    "SUBSTRING(starttime, 6, 2) AS month"
-];
 
 $months = array_combine(
     range(1, 12),
@@ -47,22 +47,30 @@ $HD_Form->AddSearchTextInput(_("Called number"), "calledstation");
 
 $HD_Form->search_delete_enabled = false;
 
+// rely on form code to add conditions based on search inputs
 $HD_Form->prepare_list_subselection("list");
 
-$conditions = $HD_Form->list_query_conditions;
-$end = new DateTimeImmutable($starttime ?? "this month");
-$endtime = $end->format("Y-m-d");
+// get the builder which now has conditions set
+$builder = $HD_Form->query_builder;
+
+// remove the existing starttime condition
+$key = array_find_key($builder->wheres, fn ($v, $k) => $v["column"] === "starttime");
+unset($builder->wheres[$key]);
+if ($key !== null) {
+    array_splice($builder->bindings["where"], $key, 1);
+}
+// replace with a date range
+$end = (new DateTimeImmutable($starttime ?? "this month"))->setTime(23, 59, 59);
 $relative_months ??= "2";
-$starttime = $end->modify("-$relative_months months")->format("Y-m-d");
-unset($conditions["starttime"]);
-$conditions[] = [
-    "SUB",
-    ["starttime" => [[">=", $starttime], ["<", $endtime]]]
-];
+$start = $end->modify("-$relative_months months")->setTime(0, 0);
+$builder->whereBetween("starttime", [$start, $end]);
 
-$call_list = (new Table($HD_Form->FG_QUERY_TABLE_NAME, $HD_Form->list_query_columns, $HD_Form->query_table_joins))
-    ->getRows($conditions, ["month"], "DESC", ["month"]);
-
+$call_list = $builder
+    ->orderBy("year", "desc")
+    ->orderBy("month", "desc")
+    ->groupBy("month")
+    ->get();
+dump($call_list);
 $time_data = [];
 $time_legend = [];
 $profit_data = [];
@@ -74,11 +82,11 @@ $cost_legend = [];
 foreach ($call_list as $call) {
     $date = DateTime::createFromFormat("Ym", $call["year"] . $call["month"])->format("M Y");
     $time_data[] = $call["time"];
-    $time_legend[] = sprintf("%s: %d min", $date, $call["time"]);
+    $time_legend[] = sprintf("%s: %s min", $date, get_minute($call["time"]));
     $profit_data[] = $call["profit"];
     $profit_legend[] = sprintf("%s: %s", $date, get_money($call["profit"]));
     $revenue_data[] = $call["revenue"];
-    $profit_legend[] = sprintf("%s: %s", $date, get_money($call["revenue"]));
+    $revenue_legend[] = sprintf("%s: %s", $date, get_money($call["revenue"]));
     $cost_data[] = $call["cost"];
     $cost_legend[] = sprintf("%s: %s", $date, get_money($call["cost"]));
 }

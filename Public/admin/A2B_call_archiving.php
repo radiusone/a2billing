@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 use A2billing\Table;
@@ -81,20 +82,20 @@ $id_trunk = (int)($id_trunk ?? 0);
 $id_ratecard = (int)($id_ratecard ?? 0);
 $form_action ??= "list";
 
+$builder = Connection::getConnection()
+    ->table("cc_call")
+    ->leftJoin("cc_trunk", "cc_call.id_trunk", "cc_trunk.id_trunk")
+    ->leftJoin("cc_prefix", "cc_call.destination", "cc_prefix.prefix")
+    ->orderBy("starttime", "desc");
+
 $HD_Form = new FormHandler(
     "cc_call",
     _("Calls"),
-    "cc_call.id",
-    [
-        "cc_trunk" => ["cc_call.id_trunk", "cc_trunk.id_trunk"],
-        "cc_prefix" => ["cc_call.destination", "cc_prefix.prefix"]
-    ]
+    builder: $builder
 );
 
 $HD_Form->init();
 
-$HD_Form->list_query_order_columns = ["starttime"];
-$HD_Form->list_query_order_direction = "DESC";
 $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 30;
 $HD_Form->FG_QUERY_PRIMARY_KEY = "cc_call.id";
 $HD_Form->list_message_empty = _("No matching calls found; use the fields above to refine your search.");
@@ -119,7 +120,7 @@ if (!empty($src)) {
         case "3": $src = "%$src%"; break;
         case "4": $src = "%$src"; break;
     }
-    $HD_Form->list_query_conditions["src"] = [$op, $src];
+    $HD_Form->query_builder->where("src", $op, $src);
 }
 if (!empty($dst)) {
     $op = "LIKE";
@@ -129,63 +130,53 @@ if (!empty($dst)) {
         case "3": $dst = "%$dst%"; break;
         case "4": $dst = "%$dst"; break;
     }
-    $HD_Form->list_query_conditions["dst"] = [$op, $dst];
+    $HD_Form->query_builder->where("calledstation", $op, $dst);
 }
 
 if (($enable_starttime_start && !empty($starttime_start)) || ($enable_starttime_end && !empty($starttime_end))) {
     if ($enable_starttime_start && !empty($starttime_start)) {
-        $HD_Form->list_query_conditions[] = ["SUB", ["starttime" => [">=", $starttime_start]]];
+        $HD_Form->query_builder->where("starttime", ">=", $starttime_start);
     }
     if ($enable_starttime_end && !empty($starttime_end)) {
-        $HD_Form->list_query_conditions[] = ["SUB", ["starttime" => ["<=", "$starttime_end 23:59:59"]]];
+        $HD_Form->query_builder->where("starttime", "<=", $starttime_end);
     }
 } elseif ($enable_starttime_end_relative && !empty($starttime_end_relative)) {
-    $HD_Form->list_query_conditions["starttime"] = ["<=", "$starttime_end_relative 23:59:59"];
+    $HD_Form->query_builder->where("starttime", "<=", "$starttime_end_relative 23:59:59");
 }
 
 if (!empty($card_id)) {
-    $HD_Form->list_query_conditions["card_id"] = $card_id;
+    $HD_Form->query_builder->where("card_id", $card_id);
 }
 if (is_admin()) {
     if ($id_provider > 0) {
-        $HD_Form->list_query_conditions["id_provider"] = $id_provider;
+        $HD_Form->query_builder->where("id_provider", $id_provider);
     }
     if ($id_trunk > 0) {
-        $HD_Form->list_query_conditions["id_trunk"] = $id_trunk;
+        $HD_Form->query_builder->where("id_trunk", $id_trunk);
     }
     if ($id_tariffgroup > 0) {
-        $HD_Form->list_query_conditions["id_tariffgroup"] = $id_tariffgroup;
+        $HD_Form->query_builder->where("id_tariffgroup", $id_tariffgroup);
     }
     if ($id_ratecard > 0) {
-        $HD_Form->list_query_conditions["id_ratecard"] = $id_ratecard;
+        $HD_Form->query_builder->where("id_ratecard", $id_ratecard);
     }
 }
 
 if (($calltype ?? "answered") === "answered") {
-    $HD_Form->list_query_conditions["terminatecauseid"] = 1;
-}
-
-if (empty($HD_Form->list_query_conditions)) {
-    $HD_Form->list_query_conditions["starttime"] = [">=", "CURRENT_TIMESTAMP()"];
+    $HD_Form->query_builder->where("terminatecauseid", 1);
 }
 
 $archive_message = "";
 if ($posted_archive === true) {
-    (new Table())->begin();
-    $res = (new Table("cc_call_archive"))->addRowsFromSelect(new Table("cc_call"), $HD_Form->list_query_conditions);
-    if ($res) {
-        $res = (new Table("cc_call"))->deleteRow($HD_Form->list_query_conditions);
-        if ($res) {
-            (new Table())->end();
-        } else {
-            (new Table())->abort();
-        }
-    } else {
-        (new Table())->abort();
-    }
-    if ($res) {
+    try {
+        $builder = Connection::getConnection();
+        $builder->transaction(function () use ($builder, $HD_Form)
+        {
+            $builder->query()->insertUsing(['*'], $HD_Form->query_builder);
+            $HD_Form->query_builder->delete();
+        });
         $HD_Form->list_message_empty = _("The data has been successfully archived");
-    } else {
+    } catch (Throwable) {
         $archive_message = _("There was an error archiving the data");
     }
 }

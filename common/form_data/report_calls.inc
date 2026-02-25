@@ -1,20 +1,23 @@
 <?php
 
 use A2billing\Agent;
+use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 use A2billing\Table;
 
+$builder = Connection::getConnection()
+    ->table("cc_call")
+    ->join("cc_trunk", "cc_call.id_trunk", "=", "cc_trunk.id_trunk", "left outer")
+    ->join("cc_ratecard", "cc_call.id_ratecard", "=", "cc_ratecard.id", "left outer")
+    ->join("cc_card", "cc_call.card_id", "=", "cc_card.id", "left outer")
+    ->leftJoin("cc_card_group", "cc_card.id_group", "cc_card_group.id")
+    ->orderBy("cc_call.starttime", "desc");
+
 $HD_Form = new FormHandler(
     "cc_call",
     gettext("CDR"),
-    "cc_call.id",
-    [
-        "cc_trunk" => ["LEFT OUTER", "cc_call.id_trunk", "cc_trunk.id_trunk"],
-        "cc_ratecard" => ["LEFT OUTER", "cc_call.id_ratecard", "cc_ratecard.id"],
-        "cc_card" => ["LEFT OUTER", "cc_call.card_id", "cc_card.id"],
-        "cc_card_group" => ["cc_card.id_group", "cc_card_group.id"],
-    ]
+    builder: $builder
 );
 
 $dialstatus_list = getDialStatusList();
@@ -71,9 +74,6 @@ $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 25;
 
 $HD_Form->list_message_intro = _("Call Logs");
 
-$HD_Form->list_query_order_columns = ["cc_call.starttime"];
-$HD_Form->list_query_order_direction = "DESC";
-
 $HD_Form->search_form_enabled = true;
 $HD_Form->search_session_key = 'call_log_selection';
 $HD_Form->search_form_title = gettext('Define specific criteria to search for call records');
@@ -109,13 +109,13 @@ $HD_Form->FG_FILTER_SEARCH_FORM_SELECT_INPUTS[] = [_("Time unit"), false, "choos
 $HD_Form->search_delete_enabled = false;
 
 $HD_Form->prepare_list_subselection("list");
-if (empty($HD_Form->list_query_conditions)) {
-    $date = (new DateTime("-1 day"))->format("Y-m-d H:i:s");
-    $HD_Form->list_query_conditions["cc_call.starttime"] = [">=", $date];
-    $HD_Form->list_query_conditions["terminatecauseid"] = 1;
+if (empty($HD_Form->query_builder->wheres)) {
+    $HD_Form->query_builder
+        ->where("cc_call.starttime", ">=", new DateTime("-1 day"))
+        ->where("terminatecauseid", 1);
 }
 if (is_agent()) {
-    $HD_Form->list_query_conditions["cc_card_group.id_agent"] = Agent::id();
+    $HD_Form->query_builder->where("cc_card_group.id_agent", Agent::id());
 } elseif (is_customer()) {
-    $HD_Form->list_query_conditions["cc_call.card_id"] = Customer::id();
+    $HD_Form->query_builder->where("cc_call.card_id", Customer::id());
 }

@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 use A2billing\Table;
@@ -119,26 +120,15 @@ $HD_Form->prepare_list_subselection('list');
 
 $archive_message = "";
 if ($posted_archive) {
-    $condition = [];
-    if (!$archive_all) {
-        $condition = $HD_Form->list_query_conditions;
-    }
-    (new Table())->begin();
-    $res = (new Table("cc_card_archive"))
-        ->addRowsFromSelect(new Table("cc_card"), $condition);
-    if ($res) {
-        $res = (new Table("cc_card"))->deleteRow($condition);
-        if ($res) {
-            (new Table())->end();
-        } else {
-            (new Table())->abort();
-        }
-    } else {
-        (new Table())->abort();
-    }
-    if ($res) {
+    try {
+        Connection::getConnection()->transaction(function () use ($archive_all, $HD_Form) {
+            $conn = Connection::getConnection();
+            $sub = $archive_all ? $conn->table("cc_card") : $HD_Form->query_builder;
+            $conn->table("cc_card_archive")->insertUsing(["*"], $sub);
+            $sub->delete();
+        });
         $HD_Form->list_message_empty = _("The data has been successfully archived");
-    } else {
+    } catch (Throwable) {
         $archive_message = _("There was an error archiving the data");
     }
 }

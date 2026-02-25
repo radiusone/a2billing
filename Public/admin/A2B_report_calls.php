@@ -2,9 +2,7 @@
 
 use A2billing\A2Billing;
 use A2billing\Admin;
-use A2billing\Customer;
 use A2billing\Forms\FormHandler;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 

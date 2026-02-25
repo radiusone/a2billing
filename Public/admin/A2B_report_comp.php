@@ -1,8 +1,8 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
-use A2billing\Table;
 use Amenadiel\JpGraph\Plot\LinePlot;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -50,24 +50,23 @@ getpost_ifset(["starttime", "relative_days", "graph_type"]);
  * @var string|null $graph_type
  */
 
+$builder = Connection::getConnection()
+    ->table("cc_call")
+    ->leftJoin("cc_trunk", "cc_call.id_trunk", "cc_trunk.id_trunk")
+    ->select(["sessiontime", "starttime"])
+    ->selectRaw("sessionbill - buycost AS profit")
+    ->selectRaw("sessionbill AS revenue")
+    ->selectRaw("buycost AS cost")
+    ->selectRaw("SUBSTRING(starttime, 1, 4) AS year")
+    ->selectRaw("SUBSTRING(starttime, 6, 2) AS month")
+    ->selectRaw("SUBSTRING(starttime, 9, 2) AS day")
+    ->selectRaw("SUBSTRING(starttime, 12, 2) AS hour");
+
 $HD_Form = new FormHandler(
     "cc_call",
     "Call Comparison Report",
-    "cc_call.id",
-    ["cc_trunk" => ["cc_call.id_trunk", "cc_trunk.id_trunk"]]
+    builder: $builder
 );
-$HD_Form->FG_LIST_VIEW_PAGE_SIZE = 5000;
-$HD_Form->list_query_columns = [
-    "sessiontime",
-    "`sessionbill` - `buycost` AS profit",
-    "sessionbill AS revenue",
-    "buycost AS cost",
-    "starttime",
-    "SUBSTRING(starttime, 1, 4) AS year",
-    "SUBSTRING(starttime, 6, 2) AS month",
-    "SUBSTRING(starttime, 9, 2) AS day",
-    "SUBSTRING(starttime, 12, 2) AS hour",
-];
 
 $days = array_combine(
     range(1, 7),
@@ -99,17 +98,17 @@ $HD_Form->search_delete_enabled = false;
 
 $HD_Form->prepare_list_subselection("list");
 
-$conditions = $HD_Form->list_query_conditions;
-$end = new DateTimeImmutable($starttime ?? "now");
-$endtime = $end->format("Y-m-d");
+// remove the existing starttime condition
+$key = array_find_key($HD_Form->query_builder->wheres, fn ($v, $k) => $v["column"] === "starttime");
+if ($key !== null) {
+    unset($HD_Form->query_builder->wheres[$key]);
+    array_splice($HD_Form->query_builder->bindings["where"], $key, 1);
+}
+// replace with a date range
+$end = (new DateTimeImmutable($starttime ?? "now"))->setTime(23, 59, 59);
 $relative_days ??= "2";
-$starttime = $end->modify("-$relative_days days")->format("Y-m-d");
-unset($conditions["starttime"]);
-$conditions[] = [
-    "SUB",
-    ["starttime" => [[">=", $starttime], ["<", $endtime]]]
-];
-$HD_Form->list_query_conditions = $conditions;
+$start = $end->modify("-$relative_days days")->setTime(0, 0);
+$HD_Form->query_builder->whereBetween("starttime", [$start, $end]);
 
 require_once __DIR__ . "/templates/main.php";
 
@@ -118,15 +117,14 @@ $HD_Form->create_toppage("list");
 
 require_once __DIR__ . "/../../common/page_modules/call_graph.php";
 
-$call_list = (new Table($HD_Form->FG_QUERY_TABLE_NAME, $HD_Form->list_query_columns, $HD_Form->query_table_joins))
-    ->getRows($HD_Form->list_query_conditions, ["starttime"], "DESC");
+$call_list = $HD_Form->query_builder->orderBy("starttime", "desc")->get();
 
 $graph_data = [];
 $legends = [];
 $max = 0;
 foreach ($call_list as $call) {
-    $day = $call["day"];
-    $hour = $call["hour"];
+    $day = intval($call["day"]);
+    $hour = intval($call["hour"]);
     for ($i = 0; $i <= 23; $i++) {
         $graph_data[$day]["minutes"][$i] ??= 0;
         $graph_data[$day]["calls"][$i] ??= 0;
