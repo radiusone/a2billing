@@ -395,16 +395,16 @@ if ($popup_select) {
             _("Group"),
             "id_group",
             new Table("cc_card_group", ["name", "id"]),
-            is_admin() ? [] : ["id_agent" => Agent::id()]
+            is_admin() ? [] : ["id_agent" => Agent::id()],
+            validator: [Validator::class, "foreignKey"]
         );
 
         $HD_Form->AddEditSqlSelect(
             _("Card series"),
             "id_seria",
             new Table("cc_card_seria", ["name", "id"]),
-            [],
-            "",
-            ["" => _("NOT DEFINED")]
+            first_option: ["" => _("NOT DEFINED")],
+            validator: [Validator::class, "foreignKey"]
         );
     }
 
@@ -508,13 +508,13 @@ if ($popup_select) {
         "NO"
     );
 
-    $HD_Form->AddEditSelect(
+    $HD_Form->AddEditSqlSelect(
         _("Timezone"),
         "id_timezone",
-        get_timezones(),
-        "",
-        _("Leave blank to use system default") . " " . (new DateTime())->getTimezone()->getName(),
-        first_option: ["" => ""]
+        new Table("cc_timezone", ["gmtzone", "id"]),
+        first_option: ["" => ""],
+        form_text_bottom: ("Leave blank to use system default") . " " . (new DateTime())->getTimezone()->getName(),
+        validator: [Validator::class, "foreignKey"]
     );
 
     if (is_customer()) {
@@ -586,9 +586,8 @@ if ($popup_select) {
         _("DID group"),
         "id_didgroup",
         new Table("cc_didgroup", ["didgroupname", "id"]),
-        [],
-        "",
-        ["" => _("NOT DEFINED")]
+        first_option: ["" => _("NOT DEFINED")],
+        validator: [Validator::class, "foreignKey"]
     );
 
     $HD_Form->AddEditSelect(_("Language"), "language", $language_list);
