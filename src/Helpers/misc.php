@@ -5,7 +5,6 @@ use A2billing\Table;
 use Amenadiel\JpGraph\Graph\Graph;
 use Amenadiel\JpGraph\Plot\BarPlot;
 use PHPMailer\PHPMailer\PHPMailer;
-use Random\RandomException;
 
 /**
  * This file is part of A2Billing (http://www.a2billing.net/)
@@ -444,14 +443,14 @@ function generate_random_value(string $format): string
         if ($char === "#") {
             try {
                 $output .= random_int(0, 9);
-            } catch (RandomException) {
+            } catch (Exception $e) {
                 $output .= rand(0, 9);
             }
         } elseif ($char = "X") {
             do {
                 try {
                     $randint = random_int(48, 122);
-                } catch (RandomException) {
+                } catch (Exception $e) {
                     $randint = rand(48, 122);
                 }
                 $chr = chr($randint);
