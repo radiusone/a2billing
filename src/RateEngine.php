@@ -4,8 +4,6 @@ namespace A2billing;
 
 use A2billing\PhpAgi\Agi;
 use DateTime;
-use PDO;
-use Throwable;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -396,7 +394,7 @@ class RateEngine
         RATE ENGINE - CALCUL TIMEOUT
         * CALCUL THE DURATION ALLOWED FOR THE CALLER TO THIS NUMBER
     */
-    public function rate_engine_all_calcultimeout(int $credit): bool
+    public function rate_engine_all_calcultimeout(float|int $credit): bool
     {
         $this->a2b->debug(A2Billing::DEBUG, "[CC_RATE_ENGINE_ALL_CALCULTIMEOUT ($credit)]");
         if (count($this->ratecard_obj) === 0) {
@@ -419,7 +417,7 @@ class RateEngine
      *   RATE ENGINE - CALCUL TIMEOUT
      * CALCUL THE DURATION ALLOWED FOR THE CALLER TO THIS NUMBER
      */
-    public function rate_engine_calcultimeout(int $credit, int $K = 0)
+    public function rate_engine_calcultimeout(float|int $credit, int $K = 0)
     {
         $ratecard                 = $this->ratecard_obj[$K];
         $rateinitial              = a2b_round(abs($ratecard["rateinitial"]));
