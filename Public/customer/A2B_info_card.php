@@ -37,7 +37,7 @@ use A2billing\Table;
  *
 **/
 
-require_once __DIR__ . "/../common/lib/customer.defines.php";
+require_once __DIR__ . "/../../common/lib/customer.defines.php";
 /**
  * @var A2Billing $A2B
  */

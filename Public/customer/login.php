@@ -1,6 +1,5 @@
 <?php
 
-use A2billing\A2Billing;
 use A2billing\Customer;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -36,7 +35,7 @@ use A2billing\Customer;
 *
 **/
 
-require_once __DIR__ . "/../common/lib/customer.defines.php";
+require_once __DIR__ . "/../../common/lib/customer.defines.php";
 
 getpost_ifset (["pr_login", "pr_password"]);
 /**

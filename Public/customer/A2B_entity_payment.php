@@ -34,8 +34,8 @@ use A2billing\Forms\FormHandler;
  *
  */
 
-require_once __DIR__ . "/../common/lib/customer.defines.php";
-require_once __DIR__ . "/../common/form_data/FG_var_payment.inc";
+require_once __DIR__ . "/../../common/lib/customer.defines.php";
+require_once __DIR__ . "/../../common/form_data/FG_var_payment.inc";
 /**
  * @var FormHandler $HD_Form
  */

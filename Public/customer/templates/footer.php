@@ -10,7 +10,7 @@
 
         </div> <!-- div.container -->
         <?php !empty($profiler) && $profiler->display() ?>
-        <script src="common/bootstrap/js/bootstrap.bundle.min.js"></script>
-        <script src="common/common.js"></script>
+        <script src="/common/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="/common/common.js"></script>
     </body>
 </html>

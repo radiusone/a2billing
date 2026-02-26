@@ -3,7 +3,7 @@
 use A2billing\Customer;
 
 require_once("header.php");
-require_once __DIR__ . "/../../common/lib/customer.defines.php";
+require_once __DIR__ . "/../../../common/lib/customer.defines.php";
 /**
  * @var numeric-string $popup_select
  * @var int|null $menu_section

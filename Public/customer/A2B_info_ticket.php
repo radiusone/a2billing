@@ -36,7 +36,7 @@ use A2billing\Ticket;
 **/
 
 $menu_section = 7;
-require_once __DIR__ . "/../common/lib/customer.defines.php";
+require_once __DIR__ . "/../../common/lib/customer.defines.php";
 
 Customer::checkPageAccess(Customer::ACX_SUPPORT);
 

@@ -40,8 +40,8 @@ use A2billing\Table;
 **/
 
 $menu_section = 8;
-require_once __DIR__ . "/../common/lib/customer.defines.php";
-require_once __DIR__ . "/../common/form_data/FG_var_customer_did.inc";
+require_once __DIR__ . "/../../common/lib/customer.defines.php";
+require_once __DIR__ . "/../../common/form_data/FG_var_customer_did.inc";
 /**
  * @var FormHandler $HD_Form
  */

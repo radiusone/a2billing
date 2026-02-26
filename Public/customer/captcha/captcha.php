@@ -1,6 +1,6 @@
 <?php
 
-require_once "../../common/lib/customer.defines.php";
+require_once __DIR__ . "/../../../common/lib/customer.defines.php";
 
 $code = generate_random_value("XXXXXX");
 $_SESSION["captcha_code"] = $code;

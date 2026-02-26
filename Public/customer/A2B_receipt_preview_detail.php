@@ -38,7 +38,7 @@ use A2billing\Table;
  **/
 
 $menu_section = 5;
-require_once __DIR__ . "/../common/lib/customer.defines.php";
+require_once __DIR__ . "/../../common/lib/customer.defines.php";
 
 Customer::checkPageAccess(Customer::ACX_INVOICES);
 

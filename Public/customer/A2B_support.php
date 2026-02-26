@@ -1,13 +1,7 @@
 <?php
 
-use A2billing\A2bMailException;
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
-use A2billing\Mail;
-use A2billing\Notification;
-use A2billing\NotificationsDAO;
-use A2billing\Table;
-use A2billing\Ticket;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -42,8 +36,8 @@ use A2billing\Ticket;
  *
 **/
 
-require_once __DIR__ . "/../common/lib/customer.defines.php";
-require_once __DIR__ . "/../common/form_data/FG_var_ticket.inc";
+require_once __DIR__ . "/../../common/lib/customer.defines.php";
+require_once __DIR__ . "/../../common/form_data/FG_var_ticket.inc";
 /**
  * @var FormHandler $HD_Form
  */

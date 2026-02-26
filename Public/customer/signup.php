@@ -35,8 +35,8 @@ use A2billing\Table;
  *
  */
 
-require_once __DIR__ . "/../common/lib/customer.defines.php";
-require_once __DIR__ . "/../common/form_data/FG_var_signup.inc";
+require_once __DIR__ . "/../../common/lib/customer.defines.php";
+require_once __DIR__ . "/../../common/form_data/FG_var_signup.inc";
 /**
  * @var A2Billing $A2B
  * @var FormHandler $HD_Form

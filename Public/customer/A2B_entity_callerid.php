@@ -2,7 +2,6 @@
 
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -37,8 +36,8 @@ use A2billing\Table;
  *
 **/
 
-require_once __DIR__ . "/../common/lib/customer.defines.php";
-require_once __DIR__ . "/../common/form_data/FG_var_callerid.inc";
+require_once __DIR__ . "/../../common/lib/customer.defines.php";
+require_once __DIR__ . "/../../common/form_data/FG_var_callerid.inc";
 /**
  * @var FormHandler $HD_Form
  */

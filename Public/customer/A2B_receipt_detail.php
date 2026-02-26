@@ -36,7 +36,7 @@ use A2billing\Payments\Receipt;
  *
 **/
 
-require_once __DIR__ . "/../common/lib/customer.defines.php";
+require_once __DIR__ . "/../../common/lib/customer.defines.php";
 
 Customer::checkPageAccess(Customer::ACX_INVOICES);
 

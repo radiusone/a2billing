@@ -37,8 +37,8 @@ use A2billing\Forms\FormHandler;
 **/
 
 $menu_section = 5;
-require_once __DIR__ . "/../common/lib/customer.defines.php";
-require_once __DIR__ . "/../common/form_data/FG_var_invoice.inc";
+require_once __DIR__ . "/../../common/lib/customer.defines.php";
+require_once __DIR__ . "/../../common/form_data/FG_var_invoice.inc";
 /**
  * @var FormHandler $HD_Form
  */

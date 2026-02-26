@@ -35,8 +35,8 @@ use A2billing\Table;
  *
  */
 
-require_once __DIR__ . "/../common/lib/customer.defines.php";
-require_once __DIR__ . "/../common/form_data/FG_var_voucher.inc";
+require_once __DIR__ . "/../../common/lib/customer.defines.php";
+require_once __DIR__ . "/../../common/form_data/FG_var_voucher.inc";
 /**
  * @var FormHandler $HD_Form
  */
