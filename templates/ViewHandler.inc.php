@@ -80,10 +80,10 @@ namespace A2billing\Forms;
                         <?php if ($column["sortable"]): ?>
                         <?php
                             $sort_params["order"] = $column["field"]; //todo: use the column index instead?
-                            $sort_params["sens"] = $form->list_query_order_direction === "ASC" ?  "DESC" : "ASC";
+                            $sort_params["sens"] = ($form->query_builder->orders[0]["direction"] ?? "") === "asc" ?  "desc" : "asc";
                         ?>
                         <a
-                            class="sort <?= $form->list_query_order_columns[0] === $column["field"] ? strtolower($form->list_query_order_direction) : "" ?>"
+                            class="sort <?= ($form->query_builder->orders[0]["column"] ?? "") === $column["field"] ? $form->query_builder->orders[0]["direction"] : "" ?>"
                             href="<?= "?" . http_build_query($sort_params, "", "&amp;") ?>"
                         >
                         <?php endif ?>
@@ -106,7 +106,7 @@ namespace A2billing\Forms;
                 <tr>
                 <?php foreach($form->FG_LIST_TABLE_CELLS as $j => $column):
                     if ($column["type"] === "list") {
-                        $record_display = ($column["options"][$row[$j]] ?? null) ?: _("n/a");
+                        $record_display = ($column["options"][$row[$j] ?? ""] ?? null) ?: _("n/a");
                     } else {
                         $record_display = $row[$j];
                     }
