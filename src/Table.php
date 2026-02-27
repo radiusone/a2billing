@@ -53,8 +53,6 @@ use Throwable;
 class Table
 {
     public array $fields = [];
-    public ?string $table = null;
-    public array $joins = [];
     public string $errstr = '';
 
     /** @var array<string,string> foreign key columns that will be deleted, indexed by table */
@@ -74,9 +72,12 @@ class Table
      * @param array|string $list_fields when selecting, what fields will be selected
      * @param array $joins tables to join to the query; see Table::processJoinedTables() for usage
      */
-    public function __construct(string $table = null, $list_fields = [], array $joins = [])
+    public function __construct(
+        public ?string $table = null,
+        array|string $list_fields = [],
+        public array $joins = []
+    )
     {
-        $this->table = $table;
         if (is_string($list_fields)) {
             $list_fields = explode(",", $list_fields);
             array_walk($list_fields, "trim");
@@ -86,7 +87,6 @@ class Table
             $list_fields = ["*"];
         }
         $this->fields = $list_fields;
-        $this->joins = $joins;
         if (defined("DB_TYPE") && DB_TYPE === 'postgres') {
             $this->db_type = "postgres";
         }
@@ -103,10 +103,9 @@ class Table
      *
      * @param array $fk_Tables tables that refer back to the current table
      * @param int|null $id_Value the value to check for in foreign tables when updating/deleting
-     * @param bool $fk_delete whether to delete or update (with -1) foreign tables
      * @return void
      */
-    public function setDeleteFk(array $fk_Tables = [], int $id_Value = null): void
+    public function setDeleteFk(array $fk_Tables = [], ?int $id_Value = null): void
     {
         $this->foreign_key_deletes = $fk_Tables;
         $this->foreign_key_value = $id_Value;
@@ -588,7 +587,7 @@ class Table
      * @param array $params query parameters for the prepared statement
      * @return string the query with placeholders
      */
-    private function processConditionClauseArray(string $col, $condition, array &$params): string
+    private function processConditionClauseArray(string $col, mixed $condition, array &$params): string
     {
         $col = $this->quote_identifier($col);
         if (is_array($condition) && count($condition) === 1) {
