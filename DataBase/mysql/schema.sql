@@ -19,7 +19,7 @@ DROP TABLE IF EXISTS `cc_agent`;
 CREATE TABLE `cc_agent` (
     `id` bigint NOT NULL AUTO_INCREMENT,
     `datecreation` datetime NOT NULL DEFAULT current_timestamp(),
-    `active` varchar(1) NOT NULL DEFAULT 'f',
+    `active` tinyint NOT NULL DEFAULT 0,
     `login` varchar(20) NOT NULL,
     `pwd_encoded` varchar(250) NOT NULL,
     `location` text DEFAULT NULL,
@@ -315,7 +315,7 @@ CREATE TABLE `cc_callerid` (
     `id` bigint NOT NULL AUTO_INCREMENT,
     `cid` varchar(100) NOT NULL,
     `id_cc_card` bigint DEFAULT NULL,
-    `activated` varchar(1) NOT NULL DEFAULT 't',
+    `activated` tinyint NOT NULL DEFAULT 1,
     PRIMARY KEY (`id`),
     UNIQUE KEY (`cid`),
     CONSTRAINT `fk_cc_callerid_cc_card` FOREIGN KEY (`id_cc_card`) REFERENCES `cc_card` (`id`) ON DELETE SET NULL ON UPDATE CASCADE

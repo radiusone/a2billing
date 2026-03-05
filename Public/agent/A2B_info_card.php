@@ -252,7 +252,7 @@ echo get_login_button ($id);
                 <?php foreach ($callerid as $cid): ?>
                 <tr>
                     <td><?= $cid["cid"] ?></td>
-                    <td><?= getActivationTrueFalseList()[$cid["activated"]] ?></td>
+                    <td><?= getActivationList()[$cid["activated"]] ?></td>
                 </tr>
                 <?php endforeach ?>
             </tbody>

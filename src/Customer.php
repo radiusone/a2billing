@@ -257,7 +257,7 @@ class Customer extends User
         );
         $row = $table->getRow([["SUB", ["email" => $user, "useralias" => $user], "OR"]]);
 
-        return (in_array($row["status"] ?? "", ["t", 1, 8]) && "$row[uipass]" === "$pass")
+        return (in_array($row["status"] ?? "", [1, 8]) && "$row[uipass]" === "$pass")
             ? $row
             : false;
     }

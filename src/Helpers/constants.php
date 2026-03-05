@@ -64,17 +64,6 @@ function getActivationList(): array
 }
 
 /**
- * @return array<string,string>
- */
-function getActivationTrueFalseList(): array
-{
-    return [
-        "t" => _("Active"),
-        "f" => _("Inactive"),
-    ];
-}
-
-/**
  * @return string[]
  */
 function getBillingTypeList(): array

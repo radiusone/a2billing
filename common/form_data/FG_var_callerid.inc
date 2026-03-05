@@ -67,7 +67,7 @@ if (is_customer()) {
     $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
     $HD_Form->add_help_text = _("You can add your home phone or cellphone number below to allow you to call in, be automatically recognized, and use your telephony services without having to enter your PIN.");
     $HD_Form->AddListValue(_("CALLERID"), "cid")
-        ->AddListMapping(_("ACTIVATED"), "cc_callerid.activated", getActivationTrueFalseList());
+        ->AddListMapping(_("ACTIVATED"), "cc_callerid.activated", getActivationList());
 } else {
     $HD_Form->AddListTopButton();
 
@@ -96,7 +96,7 @@ if (is_customer()) {
         ->AddListValue(_("ACCOUNT NUMBER"), "cc_card.username", [Customer::class, "getLinkFromUsername"])
         // todo: table can't be sorted by customer name
         ->AddListValue(_("CUSTOMER NAME"), "id_cc_card", [Customer::class, "getName"])
-        ->AddListMapping(_("ACTIVATED"), "cc_callerid.activated", getActivationTrueFalseList())
+        ->AddListMapping(_("ACTIVATED"), "cc_callerid.activated", getActivationList())
         ->AddListHiddenValue("id_cc_card");
 
     $HD_Form->FG_ENABLE_ADD_BUTTON = true;
@@ -116,8 +116,8 @@ $HD_Form->AddEditElement(
 $HD_Form->AddEditRadio(
     _("ACTIVATED"),
     "activated",
-    getActivationTrueFalseList(),
-    "t",
+    getActivationList(),
+    "1",
     "",
     [],
     _("Choose if you want to activate this caller ID")

@@ -97,14 +97,14 @@ $yesno = getYesNoList();
 $currency_list = getCurrenciesList();
 
 if ($popup_select) {
-	$HD_Form->AddListValue(_("ID"), "id")
+    $HD_Form->AddListValue(_("ID"), "id")
         ->AddListValue(_("LOGIN"), "login")
         ->AddListValue(_("FIRST NAME"), "firstname")
         ->AddListValue(_("LAST NAME"), "lastname")
         ->AddListValue(_("CURRENCY"), "currency")
         ->AddListMapping(_("ACTIVE"), "active", $yesno);
 } else {
-	$HD_Form->AddListValue(_("ID"), "id")
+    $HD_Form->AddListValue(_("ID"), "id")
         ->AddListValue(_("DATE"), "datecreation")
         ->AddListValue(_("LOGIN"), "login")
         ->AddListValue(_("FIRST NAME"), "firstname")
@@ -116,7 +116,7 @@ if ($popup_select) {
 }
 
 if ($popup_select) {
-	$HD_Form->FG_LIST_VIEW_PAGE_SIZE = 7;
+    $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 7;
     $HD_Form->AddListSelectActionButton("javascript:sendValue('|param|')");
 } elseif (Admin::allowed(Admin::ACX_MODIFY_AGENTS) || Agent::allowed(Agent::ACX_MYACCOUNT)) {
     $HD_Form->FG_ENABLE_EDIT_BUTTON = true;

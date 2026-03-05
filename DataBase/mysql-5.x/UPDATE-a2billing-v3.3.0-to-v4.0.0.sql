@@ -19,6 +19,12 @@ ALTER TABLE cc_card DROP COLUMN IF EXISTS traffic, DROP COLUMN IF EXISTS traffic
 ALTER TABLE cc_card_archive DROP COLUMN IF EXISTS traffic, DROP COLUMN IF EXISTS traffic_target;
 DELETE FROM cc_config WHERE config_key = 'field_traffic' OR config_key = 'field_traffic_target';
 
+-- this should be a 0/1 not t/f/'0'/'1'/???
+UPDATE cc_agent SET active = IF(active = 't' OR active = 1, 1, 0);
+ALTER TABLE cc_agent MODIFY COLUMN active tinyint NOT NULL DEFAULT 0;
+UPDATE cc_callerid SET activated = IF(activated = 't' OR activated = 1, 1, 0);
+ALTER TABLE cc_callerid MODIFY COLUMN activated tinyint NOT NULL DEFAULT 1;
+
 -- use country code as pk, it allows for easier updates
 ALTER TABLE cc_did ADD IF NOT EXISTS country varchar(3) AFTER id_cc_country;
 UPDATE cc_did SET country = (SELECT countrycode FROM cc_country WHERE id = id_cc_country);

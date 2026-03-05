@@ -2,7 +2,6 @@
 
 use A2billing\Agent;
 use A2billing\Logger;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 

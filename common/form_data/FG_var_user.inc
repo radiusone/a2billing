@@ -64,6 +64,7 @@ $HD_Form->add_help_text = create_help(_("Add administrator."));
 $HD_Form->list_help_text = create_help(_("Administrators - this shows a list of all the Administrators who have access to the Administrator interface."));
 
 $HD_Form->list_query_conditions["groupid"] = $groupID;
+$HD_Form->query_builder->where("groupid", $groupID);
 
 $HD_Form->AddListValue(_("User ID"), "userid");
 $HD_Form->AddListValue(_("Login"), "login");

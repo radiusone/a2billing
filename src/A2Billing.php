@@ -377,7 +377,7 @@ class A2Billing
         $default["signup"]["enable_signup"] = '1';
         $default["signup"]["credit"] = '0';
         $default["signup"]["tariff"] = '8';
-        $default["signup"]["activated"] = 't';
+        $default["signup"]["activated"] = '1';
         $default["signup"]["simultaccess"] = '0';
         $default["signup"]["typepaid"] = '0';
         $default["signup"]["creditlimit"] = '0';
@@ -2349,8 +2349,7 @@ class A2Billing
                 SELECT cc_callerid.cid
                 FROM cc_callerid
                     JOIN cc_card ON cc_callerid.id_cc_card = cc_card.id
-                WHERE (cc_callerid.activated = 1 OR cc_callerid.activated = 't')
-                    AND cc_card.username = ?
+                WHERE cc_callerid.activated = 1 AND cc_card.username = ?
                 ORDER BY 1
                 SQL;
             $params = [$this->username];
@@ -2364,7 +2363,7 @@ class A2Billing
                 FROM cc_did
                     JOIN cc_did_destination ON cc_did_destination.id_cc_did = cc_did.id
                     JOIN cc_card ON cc_did_destination.id_cc_card = cc_card.id
-                WHERE (cc_did.activated = 1 OR cc_did.activated = 't')
+                WHERE cc_did.activated = 1
                     AND cc_did_destination.activated = 1
                     AND cc_did.startingdate <= CURRENT_TIMESTAMP
                     AND cc_did.expirationdate >= CURRENT_TIMESTAMP
@@ -2618,7 +2617,7 @@ class A2Billing
                     $this->credit = $this->credit + $this->creditlimit;
                 }
                 // CHECK IF CALLERID ACTIVATED
-                if ($cid_active !== "t" && $cid_active !== "1") {
+                if ((int)$cid_active !== 1) {
                     $prompt = "prepaid-auth-fail";
                 }
 
