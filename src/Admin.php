@@ -96,8 +96,11 @@ class Admin extends User
         if (empty($id)) {
             return $na;
         }
-        $row = (new Table("cc_ui_authen", ["name", "login"]))
-            ->getRow(["userid" => $id]);
+        $row = Connection::getConnection()
+            ->table("cc_ui_authen")
+            ->select(["name", "login"])
+            ->where("userid", $id)
+            ->first();
         if ($row) {
             return sprintf("%s (%s)", $row["name"], $row["login"]);
         }
@@ -120,7 +123,7 @@ class Admin extends User
      * @param string $pass
      * @return false|array<string,string>
      */
-    public static function checkLogin(string $user, string $pass)
+    public static function checkLogin(string $user, string $pass): array|false
     {
         $user = trim($user);
         $pass = trim($pass);
@@ -129,28 +132,16 @@ class Admin extends User
             return false;
         }
 
-        $table = new Table(
-            "cc_ui_authen",
-            ["userid", "perms", "confaddcust", "groupid", "login", "pwd_encoded"]
-        );
-        $row = $table->getRow(["login" => $user]);
+        $row = Connection::getConnection()
+            ->table("cc_ui_authen")
+            ->select(["userid", "perms", "confaddcust", "groupid", "login", "pwd_encoded"])
+            ->where("login", $user)
+            ->first();
 
-        if ($row) {
-            if (password_verify($pass, $row["pwd_encoded"])) {
-                return $row;
-            }
-            // fallback to legacy authentication
-            if (hash("whirlpool", $pass) === $row["pwd_encoded"]) {
-                $table->updateRow(
-                    ["pwd_encoded" => password_hash($pass, PASSWORD_DEFAULT)],
-                    ["login" => $user]
-                );
-
-                return $row;
-            }
+        if ($row && password_verify($pass, $row["pwd_encoded"])) {
+            return (array)$row;
         }
 
         return false;
     }
-
 }

@@ -77,8 +77,11 @@ class Agent extends User
         if (empty($id) || !is_numeric($id)) {
             return $na;
         }
-        $row = (new Table("cc_agent", ["login", "firstname", "lastname"]))
-            ->getRow(["id" => $id]);
+        $row = Connection::getConnection()
+            ->table("cc_agent")
+            ->select(["login", "firstname", "lastname"])
+            ->where("id", $id)
+            ->first();
         if (!$row) {
             return $na;
         }
@@ -111,7 +114,7 @@ class Agent extends User
      * @param string $pass
      * @return false|string[]
      */
-    public static function checkLogin(string $user, string $pass)
+    public static function checkLogin(string $user, string $pass): array|false
     {
         $user = trim($user);
         $pass = trim($pass);
@@ -120,26 +123,15 @@ class Agent extends User
             return false;
         }
 
-        $table = new Table("cc_agent", ["id", "perms", "active", "currency", "vat", "pwd_encoded"]);
-        $row = $table->getRow(["login" => $user]);
+        $row = Connection::getConnection()
+            ->table("cc_agent")
+            ->select(["id", "perms", "active", "currency", "vat", "pwd_encoded"])
+            ->where("active", 1)
+            ->where("login", $user)
+            ->first();
 
-        if ($row) {
-            if ($row["active"] !== "t" && $row["active"] !== "1") {
-                return false;
-            }
-            if (password_verify($pass, $row["pwd_encoded"])) {
-                return $row;
-            }
-            // fallback to ugly legacy authentication
-            $filterpass = htmlspecialchars($pass);
-            if (hash("whirlpool", $filterpass) === $row["pwd_encoded"] || $filterpass === $row["pwd_encoded"]) {
-                $table->updateRow(
-                    ["pwd_encoded" => password_hash($pass, PASSWORD_DEFAULT)],
-                    ["login" => $user]
-                );
-
-                return $row;
-            }
+        if ($row && password_verify($pass, $row["pwd_encoded"])) {
+            return (array)$row;
         }
 
         return false;
