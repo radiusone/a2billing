@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Table;
 
@@ -39,8 +40,9 @@ use A2billing\Table;
 require_once __DIR__ . "/../../common/lib/customer.defines.php";
 
 Customer::checkPageAccess(Customer::ACX_SIMULATOR);
-$customer_info = (new Table("cc_card", ["id", "username", "status", "tariff", "credit", "currency"]))
-    ->getRow(["username" => Customer::card()]);
+$customer_info = Connection::getConnection("cc_card", "id", "username", "status", "tariff", "credit", "currency")
+    ->where("username", Customer::card())
+    ->first();
 
 if (!$customer_info || ($customer_info["status"] != "1" && $customer_info["status"] != "8")) {
     Header("HTTP/1.0 401 Unauthorized");

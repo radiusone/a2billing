@@ -1,8 +1,10 @@
 <?php
 namespace A2billing\Payments;
 
+use A2billing\Connection;
 use A2billing\Table;
 use DateTime;
+use Illuminate\Database\Query\Builder;
 
 class Receipt extends PaymentDocument
 {
@@ -93,18 +95,25 @@ class Receipt extends PaymentDocument
                 continue;
             }
 
-            $billing = (new Table("cc_billing_customer", ["date", "start_date"]))
-                ->getRow(["id" => $value->getExtId()]);
-            if (count($billing) === 0) {
+            $billing = Connection::getConnection("cc_billing_customer", "date", "start_date")
+                ->where("id", $value->getExtId())
+                ->first();
+            if (!$billing) {
                 continue;
             }
 
-            $conditions = ["card_id" => $this->card, "stoptime" => ["<", $billing["date"]]];
-            if (!empty($billing["start_date"])) {
-                $conditions["stoptime"] = [">=", $billing["start_date"]];
-            }
+            $calls = Connection::getConnection("cc_call")
+                ->where("card_id", $this->card)
+                ->where("stoptime", "<", $billing["date"])
+                ->when(
+                    !empty($billing["start_date"]),
+                    fn (Builder $q) => $q->where("stoptime", ">=", $billing["start_date"])
+                )
+                ->orderBy("date", "DESC")
+                ->limit($nb)
+                ->offset($begin)
+                ->get();
 
-            $calls = (new Table("cc_call"))->getRows($conditions, ["date"], "desc", [], $nb, $begin);
             foreach ($calls as $call) {
                 $duration = get_timespan($call["sessiontiome"]);
                 $item = ReceiptItem::create(

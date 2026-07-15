@@ -87,8 +87,9 @@ class Customer extends User
         if (empty($id) || !is_numeric($id)) {
             return $na;
         }
-        $row = (new Table("cc_card", ["username", "firstname", "lastname"]))
-            ->getRow(["id" => $id]);
+        $row = Connection::getConnection("cc_card", "username", "firstname", "lastname")
+            ->where("id", $id)
+            ->first();
         if (!$row) {
             return $na;
         }
@@ -118,8 +119,9 @@ class Customer extends User
         if (empty($id) || !is_numeric($id)) {
             return $na;
         }
-        $row = (new Table("cc_card", ["username", "firstname", "lastname"]))
-            ->getRow(["id" => $id]);
+        $row = Connection::getConnection("cc_card", "username", "firstname", "lastname")
+            ->where("id", $id)
+            ->first();
         if (!$row) {
             return $na;
         }
@@ -146,8 +148,9 @@ class Customer extends User
         if (empty($username) || !is_numeric($username)) {
             return $na;
         }
-        $row = (new Table("cc_card", ["id", "firstname", "lastname"]))
-            ->getRow(["username" => $username]);
+        $row = Connection::getConnection("cc_card", "id", "firstname", "lastname")
+            ->where("username", $username)
+            ->first();
         if (!$row) {
             return $na;
         }
@@ -191,8 +194,9 @@ class Customer extends User
         if (empty($id) || !is_numeric($id)) {
             return $na;
         }
-        $row = (new Table("cc_card", ["username", "firstname", "lastname"]))
-            ->getRow(["id" => $id]);
+        $row = Connection::getConnection("cc_card", "username", "firstname", "lastname")
+            ->where("id", $id)
+            ->first();
         if (!$row) {
             return $na;
         }

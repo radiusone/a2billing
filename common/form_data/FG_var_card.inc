@@ -3,6 +3,7 @@
 use A2billing\A2Billing;
 use A2billing\Admin;
 use A2billing\Agent;
+use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Forms\FormBO;
 use A2billing\Forms\FormHandler;
@@ -873,8 +874,9 @@ if ($popup_select) {
     $HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_EDITION = [FormBO::class, "create_status_log"];
 
     if ($form_action === "ask-edit" || $form_action === "delete") {
-        $result_card = (new Table("cc_card", ["status", "sip_buddy", "iax_buddy"]))
-            ->getRow(["id" => $id]);
+        $result_card = Connection::getConnection("cc_card", "status", "sip_buddy", "iax_buddy")
+            ->where("id", $id)
+            ->first();
 
         if ($form_action === "ask-edit") {
             $HD_Form->FG_EDIT_FORM_HIDDEN_INPUTS["oldstatus"] = $result_card["status"] ?? "";

@@ -1,6 +1,6 @@
 <?php
 
-use A2billing\Admin;
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 use A2billing\Table;
 
@@ -45,7 +45,9 @@ getpost_ifset(["id", "group_title"]);
 $form_action ??= "list";
 
 if (isset($group_title)) {
-    $group_id = (new Table("cc_config_group", ["id"]))->getValue(["group_title" => $group_title]);
+    $group_id = Connection::getConnection("cc_config_group")
+        ->where("group_title", $group_title)
+        ->value("id");
     if ($group_id) {
         header("Location: A2B_entity_config.php?form-action=list&posted_search=1&config_group_id=$group_id");
         die();
@@ -79,8 +81,9 @@ if ($form_action === "list") {
     $HD_Form = new FormHandler("cc_config", _("Configuration"));
 
     if ($form_action === "ask-edit") {
-        $result = (new Table("cc_config", ["config_valuetype", "config_listvalues"]))
-            ->getRow(["id" => $id]);
+        $result = Connection::getConnection("cc_config", "config_valuetype", "config_listvalues")
+            ->where("id", $id)
+            ->first();
         switch ($result["config_valuetype"]) {
             case 2:
                 $value_select = array_combine(

@@ -2,9 +2,9 @@
 
 use A2billing\Agent;
 use A2billing\A2Billing;
+use A2billing\Connection;
 use A2billing\Notification;
 use A2billing\NotificationsDAO;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -59,8 +59,9 @@ getpost_ifset(["amount","remittance_type","action"]);
  * @var string|null $action
  */
 
-$agent_info = (new Table("cc_agent", ["credit", "currency", "com_balance", "threshold_remittance", "firstname", "lastname", "address", "bank_info"]))
-    ->getRow(["id" => Agent::id()]);
+$agent_info = Connection::getConnection("cc_agent", "credit", "currency", "com_balance", "threshold_remittance", "firstname", "lastname", "address", "bank_info")
+    ->where("id", Agent::id())
+    ->first();
 if (!$agent_info) {
     exit();
 }
@@ -76,8 +77,9 @@ $credit_cur = $agent_info['credit'] / $mycur;
 $commision_bal_cur = $agent_info['com_balance'] / $mycur;
 $threshold_cur = $agent_info['threshold_remittance'] / $mycur;
 
-$result = (new Table("cc_remittance_request", "amount"))
-    ->getValue(["id_agent" => Agent::id(), "status" => 0]);
+$result = Connection::getConnection("cc_remittance_request")
+    ->where(["id_agent" => Agent::id(), "status" => 0])
+    ->value("amount");
 
 if ($result) {
     $remittance_in_progress = true;
@@ -110,11 +112,10 @@ if (!$remittance_in_progress && ($action === "check" || $action === "add")) {
 
     if ($action === "add" && empty($err_msg)) {
         $type = $remittance_type == "BANK" ? 1 : 0;
-        $insert = (new Table("cc_remittance_request"))
-            ->addRow(
+        $id = Connection::getConnection("cc_remittance_request")
+            ->insertGetId(
                 ["id_agent" => Agent::id(), "amount" => $amount_gobal_cur, "type" => $type],
                 "id",
-                $id
             );
         NotificationsDAO::addNotification(
             "remittance_added_agent",
