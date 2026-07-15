@@ -2,6 +2,7 @@
 
 use A2billing\Admin;
 use A2billing\Agent;
+use A2billing\Connection;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -55,7 +56,9 @@ if (empty($id)) {
     header("Location: A2B_entity_logrefill.php");
 }
 
-$remittance = (new Table("cc_remittance_request"))->getRow(["id" => $id]);
+$remittance = Connection::getConnection("cc_remittance_request")
+    ->where("id", $id)
+    ->first();
 
 if (!$remittance) {
     header("Location: A2B_entity_remittance_request.php");

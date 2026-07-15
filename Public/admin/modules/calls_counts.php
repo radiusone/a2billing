@@ -1,7 +1,7 @@
 <?php
 
 use A2billing\Admin;
-use A2billing\Table;
+use A2billing\Connection;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -48,14 +48,12 @@ getpost_ifset(["type", "view_type"]);
 $view_type ??= "days";
 $checkdate_month = (new DateTime('midnight first day of this month -6 months 15 days'))->format("Y-m-d");
 $checkdate_day = (new DateTime('midnight -10 days'))->format("Y-m-d");
-
-$result = (new Table("cc_call", ["terminatecauseid", "COUNT(*) AS ct"]))
-    ->getRows(
-        ["starttime" => ["BETWEEN", [$view_type === "month" ? $checkdate_month : $checkdate_day, "CURRENT_TIMESTAMP"]]],
-        [],
-        "ASC",
-        ["terminatecauseid"]
-    );
+$result = Connection::getConnection("cc_call", "terminatecauseid")
+    ->selectRaw("COUNT(*) AS ct")
+    ->where("starttime", ">=", $view_type === "month" ? $checkdate_month : $checkdate_day)
+    ->wherePast("starttime")
+    ->groupBy("terminatecauseid")
+    ->get();
 
 $counts = [0, 0, 0, 0, 0, 0, 0];
 foreach ($result as $row) {
@@ -64,8 +62,13 @@ foreach ($result as $row) {
 }
 $count_total = array_sum($counts);
 
-$row = (new Table("cc_call", ["SUM(sessiontime) AS sessiontime", "SUM(sessionbill) AS sessionbill", "SUM(buycost) AS buycost"]))
-    ->getRow(["starttime" => ["BETWEEN", [$view_type === "month" ? $checkdate_month : $checkdate_day, "CURRENT_TIMESTAMP"]]]);
+$row = Connection::getConnection("cc_call")
+    ->selectRaw("SUM(sessiontime) AS sessiontime")
+    ->selectRaw("SUM(sessionbill) AS sessionbill")
+    ->selectRaw("SUM(buycost) AS buycost")
+    ->where("starttime", ">=", $view_type === "month" ? $checkdate_month : $checkdate_day)
+    ->wherePast("starttime")
+    ->first();
 $call_times = $row["sessiontime"] ?? 0;
 $call_sell = get_money($row["sessionbill"] ?? 0);
 $call_buy = get_money($row["buycost"] ?? 0);

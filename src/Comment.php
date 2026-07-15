@@ -28,7 +28,9 @@ class Comment
 
     public static function getComment(int $id): ?self
     {
-        $result = (new Table("cc_ticket_comment"))->getRow(["id" => $id]);
+        $result = Connection::getConnection("cc_ticket_comment")
+            ->where("id", $id)
+            ->first();
         if (!$result) {
             return null;
         }
@@ -46,17 +48,23 @@ class Comment
 
         if (!empty($creatorid)) {
             if ($creator_type === self::ADMIN) {
-                $user = (new Table("cc_ui_authen"))->getRow(["userid" => $creatorid]);
+                $user = Connection::getConnection("cc_ui_authen")
+                    ->where("userid", $creatorid)
+                    ->first();
                 if ($user) {
                     $comment->setCreatorname(_("(ADMINISTRATOR) ") . $user["name"]);
                 }
             } elseif ($creator_type === self::CUSTOMER) {
-                $user = (new Table("cc_card"))->getRow(["id" => $creatorid]);
+                $user = Connection::getConnection("cc_card")
+                    ->where("id", $creatorid)
+                    ->first();
                 if ($user) {
                     $comment->setCreatorname($user["lastname"] . " " . $user["firstname"]);
                 }
             } elseif ($creator_type === self::AGENT) {
-                $user = (new Table("cc_agent"))->getRow(["id" => $creatorid]);
+                $user = Connection::getConnection("cc_agent")
+                    ->where("id", $creatorid)
+                    ->first();
                 if ($user) {
                     $comment->setCreatorname(_("(AGENT)") . " " . $user["firstname"] . " " . $user["lastname"]);
                 }
@@ -112,8 +120,9 @@ class Comment
                 return false;
         }
 
-        return (new Table("cc_ticket_comment"))
-            ->updateRow($value, ["id" => $this->id]);
+        return Connection::getConnection("cc_ticket_comment")
+            ->where("id", $this->id)
+            ->update($value) > 0;
     }
 
     public function getCreationdate()

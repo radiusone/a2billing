@@ -1,7 +1,7 @@
 <?php
 
 use A2billing\Admin;
-use A2billing\Table;
+use A2billing\Connection;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -50,8 +50,12 @@ if (empty($id)) {
     header("Location: A2B_entity_service.php");
 }
 
-$service = (new Table("cc_service"))->getRow(["id" => $id]);
-$items = (new Table("cc_service_report"))->getRows(["cc_service_id" => $id]);
+$service = Connection::getConnection("cc_service")
+    ->where("id", $id)
+    ->first();
+$items = Connection::getConnection("cc_service_report")
+    ->where("cc_service_id", $id)
+    ->get();
 
 if (empty($service)) {
     header("Location: A2B_entity_service.php");

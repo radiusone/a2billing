@@ -42,8 +42,10 @@ class Ticket
 
     public function __construct(int $id)
     {
-        $value = (new Table("cc_ticket"))->getRow(["id" => $id]);
-        if (count($value)) {
+        $value = Connection::getConnection("cc_ticket")
+            ->where("id", $id)
+            ->first();
+        if ($value) {
             $this->id = (int)$value["id"];
             $this->creatorid = (int)$value["creator"];
             $this->description = $value["description"];
@@ -61,8 +63,10 @@ class Ticket
             $this->creator_type = (int)$value["creator_type"];
             switch ($this->creator_type) {
                 case self::CUSTOMER:
-                    $value = (new Table("cc_card"))->getRow(["id" => $this->creatorid]);
-                    if (count($value)) {
+                    $value = Connection::getConnection("cc_card")
+                        ->where("id", $this->creatorid)
+                        ->first();
+                    if ($value) {
                         $this->creator_name = $value["lastname"] . " " . $value["firstname"];
                         $this->creator_login = $value["username"];
                         $this->creator_firstname = $value["firstname"];
@@ -72,8 +76,10 @@ class Ticket
                     }
                     break;
                 case self::AGENT:
-                    $value = (new Table("cc_agent"))->getRow(["id" => $this->creatorid]);
-                    if (count($value)) {
+                    $value = Connection::getConnection("cc_agent")
+                        ->where("id", $this->creatorid)
+                        ->first();
+                    if ($value) {
                         $this->creator_name = _("(AGENT)") . " " . $value["firstname"] . " " . $value["lastname"];
                         $this->creator_login = $value["login"];
                         $this->creator_firstname = $value["firstname"];
@@ -86,14 +92,12 @@ class Ticket
         }
 
         if (!empty($this->componentid)) {
-            $component_table = new Table(
-                "cc_support_component",
-                "cc_support_component.name,email,language",
-                ["cc_support" => ["id_support", "cc_support.id"]]
-            );
-            $value = $component_table->getRow(["cc_support_component.id" => $this->componentid]);
+            $value = Connection::getConnection("cc_support_component", "cc_support_component.name", "email", "language")
+                ->leftJoin("cc_support", "id_support", "cc_support.id")
+                ->where("cc_support_component.id", $this->componentid)
+                ->first();
 
-            if (count($value)) {
+            if ($value) {
                 $this->componentname = $value["name"];
                 $this->supportbox_email = $value["email"];
                 $this->supportbox_language = $value["language"];
@@ -103,7 +107,9 @@ class Ticket
 
     public static function getTicket(int $id): ?self
     {
-        $result = (new Table("cc_ticket"))->getRow(["id" => $id]);
+        $result = Connection::getConnection("cc_ticket")
+            ->where("id", $id)
+            ->first();
         if (!$result) {
             return null;
         }
@@ -147,7 +153,9 @@ class Ticket
             return false;
         }
 
-        return (new Table("cc_ticket"))->updateRow(["status" => $status]);
+        return Connection::getConnection("cc_ticket")
+            ->where("id", $this->id)
+            ->update(["status" => $status]);
     }
 
     /**
@@ -186,9 +194,9 @@ class Ticket
                 return false;
         }
 
-        return (new Table("cc_ticket"))
-            ->updateRow($value, ["id" => $this->id]);
-
+        return Connection::getConnection("cc_ticket")
+            ->where("id", $this->id)
+            ->update($value) > 0;
     }
 
     public function getPriorityDisplay(): string
@@ -235,14 +243,12 @@ class Ticket
      */
     public function loadComments(): array
     {
-        $result = [];
-        $return = (new Table("cc_ticket_comment", "id"))
-            ->getRows(["id_ticket" => $this->id], ["date"], "DESC");
-        foreach ($return as $value) {
-            $result[] = Comment::getComment($value["id"]);
-        }
-
-        return $result;
+        return Connection::getConnection("cc_ticket_comment", "id")
+            ->where("id_ticket", $this->id)
+            ->orderBy("date", "DESC")
+            ->pluck("id")
+            ->map(fn ($v) => Comment::getComment($v))
+            ->toArray();
     }
 
     public function insertComment(string $desc, int $creator, int $creator_type)
@@ -261,24 +267,31 @@ class Ticket
             default:
                 return;
         }
-        (new Table("cc_ticket_comment"))->addRow($values);
+        Connection::getConnection("cc_ticket_comment")
+            ->insert($values);
 
         $owner_comment = "";
         switch ($creator_type) {
             case Comment::CUSTOMER:
-                $value = (new Table("cc_card"))->getRow(["id" => $creator]);
+                $value = Connection::getConnection("cc_card")
+                    ->where("id", $creator)
+                    ->first();
                 if ($value) {
                     $owner_comment = $value["lastname"] . " " . $value["firstname"];
                 }
                 break;
             case Comment::ADMIN:
-                $value = (new Table("cc_ui_authen"))->getRow(["userid" => $creator]);
+                $value = Connection::getConnection("cc_ui_authen")
+                    ->where("userid", $creator)
+                    ->first();
                 if ($value) {
                     $owner_comment = _("(ADMINISTRATOR) ") . $value["login"];
                 }
                 break;
             case Comment::AGENT:
-                $value = (new Table("cc_agent"))->getRow(["id" => $creator]);
+                $value = Connection::getConnection("cc_agent")
+                    ->where("id", $creator)
+                    ->first();
                 if ($value) {
                     $owner_comment = _("(AGENT) ") . $value["login"] . " - " . $value["firstname"] . " " . $value["lastname"];
                 }

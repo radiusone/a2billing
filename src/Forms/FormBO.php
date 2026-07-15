@@ -4,6 +4,7 @@ namespace A2billing\Forms;
 
 use A2billing\A2bMailException;
 use A2billing\Agent;
+use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Mail;
 use A2billing\Notification;
@@ -31,21 +32,23 @@ class FormBO
     public static function is_did_in_use($did_id)
     {
         $form = FormHandler::GetInstance();
-        $id_cc_card = (new Table("cc_did_use", "id_cc_card"))
-            ->getValue(["id_did" => $did_id, "releasedate" => null, "activated" => 1]);
+        $id_cc_card = Connection::getConnection("cc_did_use")
+            ->where(["id_did" => $did_id, "releasedate" => null, "activated" => 1])
+            ->value("id_cc_card");
         if (empty($id_cc_card)) {
             return;
         }
         if (is_customer()) {
-            $destinations = (new Table("cc_did_destination", ["destination"]))
-                ->getRows(["id_cc_did" => $did_id, "id_cc_card" => Customer::id(), "activated" => 1]);
+            $destinations = Connection::getConnection("cc_did_destination", "destination")
+                ->where(["id_cc_did" => $did_id, "id_cc_card" => Customer::id(), "activated" => 1])
+                ->get();
             if (empty($destinations)) {
                 return;
             }
             $form->delete_message_intro = sprintf(
             _("This DID is in use for the following %s. If you really want remove this DID, click on the delete button: %s"),
                 ngettext(_("destination"), _("destinations"), count($destinations)),
-                implode(", ", array_column($destinations, "destination"))
+                $destinations->implode("destination", ", ")
             );
 
             return;

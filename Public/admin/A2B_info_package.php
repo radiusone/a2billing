@@ -1,7 +1,7 @@
 <?php
 
 use A2billing\Admin;
-use A2billing\Table;
+use A2billing\Connection;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -49,7 +49,9 @@ getpost_ifset(["id", "delallrate", "delrate", "addrate"]);
  * @var numeric-string|null $addrate
  */
 
-$package = (new Table("cc_package_offer"))->getRow(["id" => $id ?? 0]);
+$package = Connection::getConnection("cc_package_offer")
+    ->where("id", $id ?? 0)
+    ->first();
 if (!$package) {
     header("Location: A2B_entity_package.php");
 }
@@ -65,57 +67,64 @@ getpost_ifset(["addbatchrate", "id_trunk", "id_tariffplan", "tag", "prefix", "rb
  * @var numeric-string|null $rbPrefix
  */
 if ($addbatchrate ?? false) {
-    $rates_clauses = [];
+    $rates_query = Connection::getConnection("cc_ratecard")
+        ->selectRaw("$id AS package_id")
+        ->addSelect("id AS rate_id");
     if ((int)($id_trunk ?? "0")) {
-        $rates_clauses["id_trunk"] = $id_trunk;
+        $rates_query->where("id_trunk", $id_trunk);
     }
     if ((int)($id_tariffplan ?? "0")) {
-        $rates_clauses["idtariffplan"] = $id_tariffplan;
+        $rates_query->where("idtariffplan", $id_tariffplan);
     }
     if ($tag ?? "") {
-        $rates_clauses["tag"] = $tag;
+        $rates_query->where("tag", $tag);
     }
     if (($prefix ?? "") && ($rbPrefix ?? "0")) {
         switch ($rbPrefix) {
-            case 1: $rates_clauses["dialprefix"] = $prefix; break;
-            case 2: $rates_clauses["dialprefix"] = ["LIKE", "$prefix%"]; break;
-            case 3: $rates_clauses["dialprefix"] = ["LIKE", "%$prefix%"]; break;
-            case 4: $rates_clauses["dialprefix"] = ["LIKE", "%$prefix"]; break;
-            case 5: $rates_clauses["dialprefix"] = ["IN", split_data($prefix)]; break;
+            case 1: $rates_query->where("dialprefix", $prefix); break;
+            case 2: $rates_query->whereLike("dialprefix", "$prefix%"); break;
+            case 3: $rates_query->whereLike("dialprefix", "%$prefix%"); break;
+            case 4: $rates_query->whereLike("dialprefix", "%$prefix"); break;
+            case 5: $rates_query->whereIn("dialprefix", split_data($prefix)); break;
         }
     }
-    (new Table("cc_package_rate", ["package_id", "rate_id"]))
-        ->addRowsFromSelect(new Table("cc_ratecard", [$id, "id"]), $rates_clauses);
+    Connection::getConnection("cc_package_rate")
+        ->insertUsing(
+            ["package_id", "rate_id"],
+            $rates_query
+        );
     header("Location: A2B_info_package.php?id=$id");
 }
 
 if (is_numeric($addrate ?? null)) {
-    (new Table("cc_package_rate"))->addRow(["package_id" => $id, "rate_id" => $addrate]);
+    Connection::getConnection("cc_package_rate")
+        ->insert(["package_id" => $id, "rate_id" => $addrate]);
     header("Location: A2B_info_package.php?id=$id");
 }
 
 if (is_numeric($delrate ?? null)) {
-    (new Table("cc_package_rate"))->deleteRow(["package_id" => $id, "rate_id" => ["IN", $delrate]]);
+    Connection::getConnection("cc_package_rate")
+        ->where(["package_id" => $id, "rate_id", $delrate])
+        ->delete();
     header("Location: A2B_info_package.php?id=$id");
 }
 
 if ($delallrate ?? false) {
-    (new Table("cc_package_rate"))->deleteRow(["package_id" => $id]);
+    Connection::getConnection("cc_package_rate")
+        ->where("package_id", $id)
+        ->delete();
     header("Location: A2B_info_package.php?id=$id");
 }
 
 require_once __DIR__ . "/templates/main.php";
 
 //load rates
-$table_rates = new Table(
-    "cc_package_rate",
-    ["DISTINCT cc_ratecard.id", "cc_prefix.destination", "cc_ratecard.dialprefix"],
-    [
-        "cc_ratecard" => ["cc_ratecard.id", "cc_package_rate.rate_id"],
-        "cc_prefix" => ["cc_prefix.prefix", "cc_ratecard.destination"],
-    ]
-);
-$result_rates = $table_rates->getRows(["cc_package_rate.package_id" => $id]);
+$result_rates = Connection::getConnection("cc_package_rate", "cc_ratecard.id", "cc_prefix.destination", "cc_ratecard.dialprefix")
+    ->distinct()
+    ->leftJoin("cc_ratecard", "cc_ratecard.id", "cc_package_rate.rate_id")
+    ->leftJoin("cc_prefix", "cc_prefix.prefix", "cc_ratecard.destination")
+    ->where("cc_package_rate.package_id", $id)
+    ->get();
 ?>
 <div class="row pb-3">
     <div class="col-2">

@@ -2,7 +2,7 @@
 
 use A2billing\A2Billing;
 use A2billing\Admin;
-use A2billing\Table;
+use A2billing\Connection;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -59,14 +59,18 @@ $error_msg = "";
 
 if (is_numeric($called ?? null) && (!empty($id_cc_card) || !empty($accountcode))) {
     if (!empty($accountcode) && empty($id_cc_card)) {
-        $list_tariff_card = (new Table("cc_card", "username, id"))->getRow(["username" => $accountcode]);
+        $list_tariff_card = Connection::getConnection("cc_card", "username", "id")
+            ->where("username", $accountcode)
+            ->first();
         if ($list_tariff_card) {
             $id_cc_card = $list_tariff_card["id"] ?? 0;
         }
     }
 
     $num = 0;
-    $card = (new Table("cc_card", "username, tariff, credit"))->getRow(["id" => $id_cc_card]);
+    $card = Connection::getConnection("cc_card", "username", "tariff", "credit")
+        ->where("id", $id_cc_card)
+        ->first();
     if (empty($card)) {
         $error_msg = '<span style="color:red; font-weight: bold">' . _("Card lookup error") . '</span>';
     } else {
@@ -206,7 +210,7 @@ if (!empty($RateEngine->ratecard_obj)) {
             <?php endif ?>
                 <tr>
                     <th scope="row"><?= _("Destination") ?></th>
-                    <td><?= (new Table("cc_prefix", "destination"))->getRow(["prefix" => $ratecard["destination"]])["destination"] ?? "" ?></td>
+                    <td><?= Connection::getConnection("cc_prefix", "destination")->where("prefix", $ratecard["destination"])->first()["destination"] ?? "" ?></td>
                 </tr>
             <?php foreach ($arr_ratecard as $col => $label): ?>
                 <tr>

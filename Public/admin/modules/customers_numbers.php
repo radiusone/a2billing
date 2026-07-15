@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Connection;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -35,14 +36,14 @@ use A2billing\Admin;
  *
 **/
 
-use A2billing\Table;
-
 require_once __DIR__ . "/../../../common/lib/admin.defines.php";
 
 Admin::checkPageAccess(Admin::ACX_DASHBOARD);
 
-$result = (new Table("cc_card", ["status", "COUNT(*) AS ct"]))
-    ->getRows([], [], "ASC", ["status"]);
+$result = Connection::getConnection("cc_card", "status")
+    ->selectRaw("COUNT(*) AS ct")
+    ->groupBy("status")
+    ->get();
 $count_total = 0;
 $states = [0, 0, 0, 0, 0, 0, 0];
 foreach ($result as $row) {

@@ -1,8 +1,8 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -56,9 +56,10 @@ getpost_ifset(["popup_select", "form_action", "action", "id"]);
 
 if ($action === "load") {
     if (!empty($id)) {
-        $result = (new Table("cc_templatemail", "messagetext, fromemail, fromname, subject"))
-            ->getRow(["id" => $id]);
-        $result = array_filter($result, fn ($k) => !is_numeric($k), ARRAY_FILTER_USE_KEY);
+        $result = Connection::getConnection("cc_templatemail", "messagetext", "fromemail", "fromname", "subject")
+            ->where("id", $id)
+            ->first();
+        $result = array_filter((array)$result, fn ($k) => !is_numeric($k), ARRAY_FILTER_USE_KEY);
         header("Content-Type: application/json");
         echo json_encode($result);
     }

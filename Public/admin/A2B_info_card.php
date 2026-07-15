@@ -1,7 +1,7 @@
 <?php
 
 use A2billing\Admin;
-use A2billing\Table;
+use A2billing\Connection;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -50,31 +50,45 @@ if (empty($id)) {
     header("Location: A2B_entity_card.php");
 }
 
-$card = (new Table("cc_card"))->getRow(["id" => $id]);
+$card = Connection::getConnection("cc_card")
+    ->where("id", $id)
+    ->first();
 if (empty($card)) {
     header("Location: A2B_entity_card.php");
 }
 
-$callerid = (new Table("cc_callerid", ["cid", "activated"]))->getRows(["id_cc_card" => $id]);
-$speeddial = (new Table("cc_speeddial", ["speeddial", "name", "phone"]))->getRows(["id_cc_card" => $id]);
-$voipconf = (new Table("cc_sip_buddies", ["type", "username", "secret"]))->getRows(["id_cc_card" => $id]);
-$voipconf += (new Table("cc_iax_buddies", ["type", "username", "secret"]))->getRows(["id_cc_card" => $id]);
-$subscriptions = (new Table(
-    "cc_card_subscription AS cs",
-    ["cs.id", "cs.startdate", "product_name", "fee"],
-    ["cc_subscription_service AS ss" => ["cs.id_subscription_fee", "ss.id"]]
-))
-    ->getRows(["id_cc_card" => $id], ["startdate"], "DESC");
-$payments = (new Table("cc_logpayment", ["id", "date", "payment", "description", "id_logrefill"]))
-    ->getRows(["card_id" => $id], ["date"], "DESC", [], 10);
-$refills = (new Table("cc_logrefill", ["id", "date", "credit", "description"]))
-    ->getRows(["card_id" => $id], ["date"], "DESC", [], 10);
-$dids = (new Table(
-    "cc_did_destination",
-    ["did", "cc_did.activated", "voip_call"],
-    ["cc_did" => ["id_cc_did", "cc_did.id"]]
-))
-    ->getRows(["cc_did_destination.id_cc_card" => $id]);
+$callerid = Connection::getConnection("cc_callerid", "cid", "activated")
+    ->where("id_cc_card", $id)
+    ->get();
+$speeddial = Connection::getConnection("cc_speeddial", "speeddial", "name", "phone")
+    ->where("id_cc_card", $id)
+    ->get();
+$voipconf = Connection::getConnection("cc_sip_buddies", "type", "username", "secret")
+    ->where("id_cc_card", $id)
+    ->union(
+            Connection::getConnection("cc_iax_buddies", "type", "username", "secret")
+                ->where("id_cc_card", $id)
+    )
+    ->get();
+$subscriptions = Connection::getConnection("cc_card_subscription AS cs", "cs.id", "cs.startdate", "product_name", "fee")
+    ->leftJoin("cc_subscription_service AS ss", "cs.id_subscription_fee", "ss.id")
+    ->where("id_cc_card", $id)
+    ->orderBy("startdate", "DESC")
+    ->get();
+$payments = Connection::getConnection("cc_logpayment", "id", "date", "payment", "description", "id_logrefill")
+    ->where("card_id", $id)
+    ->orderBy("date", "DESC")
+    ->limit(10)
+    ->get();
+$refills = Connection::getConnection("cc_logrefill", "id", "date", "credit", "description")
+    ->where("card_id", $id)
+    ->orderBy("date", "DESC")
+    ->limit(10)
+    ->get();
+$dids = Connection::getConnection("cc_did_destination", "did", "cc_did.activated", "voip_call")
+    ->leftJoin("cc_did", "id_cc_did", "cc_did.id")
+    ->where("cc_did_destination.id_cc_card", $id)
+    ->get();
 
 require_once __DIR__ . "/templates/main.php";
 echo get_login_button ($id);

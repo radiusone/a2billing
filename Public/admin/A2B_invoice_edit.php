@@ -1,11 +1,11 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Forms\Validator;
 use A2billing\Payments\Invoice;
 use A2billing\Payments\InvoiceItem;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -100,18 +100,17 @@ switch ($action) {
 
     case "delete":
         if (!empty($idc)) {
-            $table = new Table("cc_invoice_item");
-            $table->deleteRow(["id" => $idc]);
+            Connection::getConnection("cc_invoice_item")
+                ->where("id", $idc)
+                ->delete();
         }
         header("Location: A2B_invoice_edit.php?id=$id");
         break;
 }
 
-$table = new Table("cc_invoice", "*", ["cc_card" => ["cc_invoice.card_id", "cc_card.id"]]);
-
-$result_vat = (new Table("cc_card", "vat"))
-    ->getRow(["id" => $invoice->getCard()]);
-$card_vat =  $result_vat["vat"];
+$card_vat = Connection::getConnection("cc_card")
+    ->where("id", $invoice->getCard())
+    ->value("vat");
 
 require_once __DIR__ . "/templates/main.php";
 

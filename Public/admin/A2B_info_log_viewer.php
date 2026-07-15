@@ -1,7 +1,7 @@
 <?php
 
 use A2billing\Admin;
-use A2billing\Table;
+use A2billing\Connection;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -50,7 +50,9 @@ if (empty($id)) {
     header("Location: A2B_entity_log_viewer.php");
 }
 
-$log = (new Table("cc_system_log"))->getRow(["id" => $id]);
+$log = Connection::getConnection("cc_system_log")
+    ->where("id", $id)
+    ->first();
 
 if (empty($log)) {
     header("Location: A2B_entity_log_viewer.php");

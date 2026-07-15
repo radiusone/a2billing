@@ -1,7 +1,7 @@
 <?php
 namespace A2billing\Payments;
 
-use A2billing\Table;
+use A2billing\Connection;
 use DateTime;
 
 class ReceiptItem extends PaymentDocumentItem
@@ -21,7 +21,9 @@ class ReceiptItem extends PaymentDocumentItem
         if (is_null($id)) {
             return;
         }
-        $result = (new Table("cc_receipt_item"))->getRow(["id" => $id]);
+        $result = Connection::getConnection("cc_receipt_item")
+            ->where("id", $id)
+            ->first();
         $this->id = $id;
         $this->receipt_id = (int)$result["id_receipt"];
         $this->description = $desc ?? $result["description"];

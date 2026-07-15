@@ -1,8 +1,8 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -56,11 +56,13 @@ $id ??= null;
 
 if ($action === "accept") {
     if (is_numeric($id)) {
-        (new Table("cc_remittance_request"))
-            ->updateRow(["status" => 1], ["id" => $id]);
+        Connection::getConnection("cc_remittance_request")
+            ->where("id", $id)
+            ->update(["status" => 1]);
 
-        $result = (new Table("cc_remittance_request"))
-            ->getRow(["id" => $id]);
+        $result = Connection::getConnection("cc_remittance_request")
+            ->where("id", $id)
+            ->first();
 
         $type = $result["type"];
         $agent_id = $result["id_agent"];
@@ -68,8 +70,8 @@ if ($action === "accept") {
 
         if ($type === "0") {
             // insert refill
-            (new Table("cc_logrefill_agent"))
-                ->addRow(
+            Connection::getConnection("cc_logrefill_agent")
+                ->insert(
                     [
                         "credit" => $credit,
                         "agent_id" => $agent_id,
@@ -78,25 +80,22 @@ if ($action === "accept") {
                 );
 
             //REFILL... UPDATE AGENT
-            (new Table("cc_agent"))
-                ->updateRow(
-                    ["credit" => ["credit + ?", $credit], "com_balance" => ["com_balance - ?", $credit]],
-                    ["id" => $agent_id]
-                );
+            Connection::getConnection("cc_agent")
+                ->where("id", $agent_id)
+                ->incrementEach(["credit" => $credit, "com_balance" => $credit * -1]);
         } else {
             //UPDATE AGENT
-            (new Table("cc_agent"))
-                ->updateRow(
-                    ["com_balance" => ["com_balance - ?", $credit]],
-                    ["id" => $agent_id]
-                );
+            Connection::getConnection("cc_agent")
+                ->where("id", $agent_id)
+                ->decrement("com_balance", $credit);
         }
     }
     die();
 } elseif ($action === "refuse") {
     if (is_numeric($id)) {
-        (new Table("cc_remittance_request"))
-            ->updateRow(["status" => 2], ["id" => $id]);
+        Connection::getConnection("cc_remittance_request")
+            ->where("id", $id)
+            ->update(["status" => 2]);
     }
     die();
 }

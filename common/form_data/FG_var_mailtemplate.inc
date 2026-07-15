@@ -1,6 +1,6 @@
 <?php
 
-use A2billing\Admin;
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 use A2billing\Mail;
@@ -154,7 +154,9 @@ $HD_Form->AddSearchSqlSelectInput(_("Select language"), "id_language", new Table
 
 $source = [];
 if ($form_action === "ask-add" && !empty($from_id)) {
-    $source = (new Table("cc_templatemail"))->getRow(["id" => $from_id]);
+    $source = Connection::getConnection("cc_templatemail")
+        ->where("id", $from_id)
+        ->first();
 }
 $HD_Form->AddEditSelect(
     _("MAIL TYPE"),

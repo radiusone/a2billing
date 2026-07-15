@@ -1,7 +1,7 @@
 <?php
 namespace A2billing\Payments;
 
-use A2billing\Table;
+use A2billing\Connection;
 
 class InvoiceItem extends PaymentDocumentItem
 {
@@ -22,7 +22,9 @@ class InvoiceItem extends PaymentDocumentItem
         if (is_null($id)) {
             return;
         }
-        $result = (new Table("cc_invoice_item"))->getRow(["id" => $id]);
+        $result = Connection::getConnection("cc_invoice_item")
+            ->where("id", $id)
+            ->first();
         $this->id = $id;
         $this->invoice_id = (int)$result["id_invoice"];
         $this->description = $desc ?? $result["description"];

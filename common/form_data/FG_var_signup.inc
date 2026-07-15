@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\A2Billing;
+use A2billing\Connection;
 use A2billing\Forms\FormBO;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
@@ -57,15 +58,11 @@ $tariffid = null;
 $_SESSION["key"] = $agentkey = $key ?? $_SESSION["key"] ?? null;
 
 if ($agentkey) {
-	$table_key = new Table(
-        "cc_agent_signup AS s",
-        ["g.id AS id_group", "t.id_tariffgroup"],
-        [
-            "cc_agent_tariffgroup AS t" => ["s.id_agent", "t.id_agent"],
-            "cc_card_group AS g" => ["s.id_group", "g.id"],
-        ]
-    );
-	$data = $table_key->getRow(["code" => $agentkey]);
+	$data = Connection::getConnection("cc_agent_signup AS s", "g.id AS id_group", "t.id_tariffgroup")
+        ->leftJoin("cc_agent_tariffgroup AS t", "s.id_agent", "t.id_agent")
+        ->leftJoin("cc_card_group AS g", "s.id_group", "g.id")
+        ->where("code", $agentkey)
+        ->first();
 	if ($data) {
         // check if groupid and tarif in already in this agent
 		$groupid = $data['id_group'] ?? 0;
@@ -76,8 +73,9 @@ if ($agentkey) {
 $callPlan_list = [];
 if (!$tariffid) {
 	$callPlan_idlist = explode(",", $A2B->config["signup"]['callplan_id_list'] ?? "");
-	$callPlan_list = (new Table("cc_tariffgroup", ["tariffgroupname", "id"]))
-        ->getRows(["id" => ["in", array_map("trim", $callPlan_idlist)]]);
+	$callPlan_list = Connection::getConnection("cc_tariffgroup", "tariffgroupname", "id")
+        ->whereIn("id", array_map("trim", $callPlan_idlist))
+        ->get();
 
 	if (!$callPlan_list) {
 		exit (gettext("No Call Plan id are defined"));
@@ -307,8 +305,9 @@ if ($form_action === "add") {
 
     // If Service - find the callplan associate
     if (is_numeric($subscriber_signup)) {
-        $table_subscribe = new Table("cc_subscription_signup", "id_callplan");
-        $id_callplan = $table_subscribe->getValue(["id" => $subscriber_signup]);
+        $id_callplan = Connection::getConnection("cc_subscription_signup")
+            ->where("id", $subscriber_signup)
+            ->value("id_callplan");
         $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["tariff"] = $id_callplan ?? "";
         $HD_Form->FG_ADD_FORM_HIDDEN_INPUTS["subscriber_signup"] = $subscriber_signup;
     }
