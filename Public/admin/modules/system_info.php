@@ -47,7 +47,7 @@ $version = $release["VERSION_ID"] ?? null;
 $name = $release["ID"] ?? null;
 
 if (!$OS && is_executable("/usr/bin/lsb_release")) {
-    $OS = trim(`lsb_release -s -d`);
+    $OS = trim(exec("lsb_release -s -d"));
 } elseif (is_readable("/etc/redhat-release")) {
     $OS = file_get_contents("/etc/redhat-release");
 }
@@ -60,13 +60,13 @@ if ($OS && $version && $name === "debian") {
     }
 }
 
-$kernel = `uname -r`;
+$kernel = exec("uname -r");
 
 $UI = COPYRIGHT;
 $UI_path = substr(__DIR__, 0, strrpos(__DIR__, "Public/admin/modules"));
 $mysql = Connection::getConnection()->scalar("SELECT VERSION()");
 $database = (new Table("cc_version", "version"))->getValue();
-$asterisk = str_replace("Asterisk ", "", `asterisk -V`);
+$asterisk = str_replace("Asterisk ", "", exec("asterisk -V"));
 $php = phpversion();
 $server_name = $_SERVER["SERVER_NAME"];
 
