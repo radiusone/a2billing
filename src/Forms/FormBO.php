@@ -15,7 +15,6 @@ use A2billing\Payments\PaymentDocument;
 use A2billing\Payments\Receipt;
 use A2billing\Payments\ReceiptItem;
 use A2billing\Realtime;
-use A2billing\Table;
 use A2billing\Ticket;
 use DateTimeImmutable;
 use Exception;
@@ -67,12 +66,10 @@ class FormBO
      */
     public static function did_use_delete($did_id): void
     {
-        (new Table("cc_did_use"))
-            ->updateRow(
-                ["releasedate" => "CURRENT_TIMESTAMP"],
-                ["id_did" => $did_id, "releasedate" => null]
-        );
-        (new Table("cc_did_destination"))->deleteRow(["id_cc_did" => $did_id]);
+        Connection::getConnection("cc_did_use")
+            ->where(["id_did" => $did_id, "releasedate" => null])
+            ->update(["releasedate" => Connection::getConnection()->raw("CURRENT_TIMESTAMP")]);
+        Connection::getConnection("cc_did_destination")->where("id_cc_did", $did_id)->delete();
     }
 
     /**
@@ -85,8 +82,8 @@ class FormBO
     {
         $form = FormHandler::GetInstance();
         $processed = $form->getProcessed();
-        (new Table("cc_did_use"))
-            ->addRow(["id_did" => $did_id, "activated" => $processed["activated"] ?? 0]);
+        Connection::getConnection("cc_did_use")
+            ->insert(["id_did" => $did_id, "activated" => $processed["activated"] ?? 0]);
     }
 
     /**
@@ -104,8 +101,8 @@ class FormBO
         if ("$oldstatus" === "$status") {
             return;
         }
-        (new Table("cc_status_log"))
-            ->addRow(["status" => $status, "id_cc_card" => $card_id]);
+        Connection::getConnection("cc_status_log")
+            ->insert(["status" => $status, "id_cc_card" => $card_id]);
     }
 
     /**
@@ -125,34 +122,22 @@ class FormBO
         $component_id = $processed['id_component'];
 
         if ((int)$processed["creator_type"] === Ticket::CUSTOMER) {
-            $table = new Table(
-                "cc_card",
-                ["username", "firstname", "lastname", "language", "email"]
-            );
+            $qb = Connection::getConnection("cc_card", "username", "firstname", "lastname", "language", "email");
         } elseif ((int)$processed["creator_type"] === Ticket::AGENT) {
-            $table = new Table(
-                "cc_agent",
-                ["login AS username", "firstname", "lastname", "language", "email"]
-            );
+            $qb = Connection::getConnection("cc_agent", "login AS username", "firstname", "lastname", "language", "email");
         } elseif ((int)$processed["creator_type"] === Ticket::ADMIN) {
-            $table = new Table(
-                "cc_ui_authen",
-                [
-                    "userid AS id",
-                    "login AS username",
-                    "SUBSTRING(name FROM 1 FOR POSITION(' ' IN name) AS firstname",
-                    "SUBSTRING(name FROM POSITION(' ' IN name) + 1) AS lastname",
-                    "'en' AS language",
-                    "email"
-                ]
-            );
+            $qb = Connection::getConnection("cc_ui_authen", "userid AS id", "login AS username")
+                ->selectRaw("SUBSTRING(name FROM 1 FOR POSITION(' ' IN name) AS firstname")
+                ->selectRaw("SUBSTRING(name FROM POSITION(' ' IN name) + 1) AS lastname")
+                ->selectRaw("? AS language", ["en"])
+                ->addSelect("email");
         } else {
             return;
         }
 
         $owner = "";
-        $result = $table->getRow(["id" => $card_id]);
-        if (!empty($result["email"])) {
+        $result = $qb->where("id", $card_id)->first();
+        if ($result && !empty($result["email"])) {
             $owner = $result['username'] . " (" . $result['firstname'] . " " . $result['lastname'] . ")";
             try {
                 self::send_new_ticket_email(
@@ -169,15 +154,12 @@ class FormBO
             }
         }
 
-        $component_table = new Table(
-            "cc_support_component",
-            ["email", "language"],
-            ["cc_support" => ["id_support", "cc_support.id"]]
-        );
-        $result = $component_table
-            ->getRow(["cc_support_component.id" => $component_id]);
+        $result = Connection::getConnection("cc_support_component", "email", "language")
+            ->leftJoin("cc_support", "id_support", "cc_support.id")
+            ->where("cc_support_component.id", $component_id)
+            ->first();
 
-        if (!empty($result["email"])) {
+        if ($result && !empty($result["email"])) {
             try {
                 self::send_new_ticket_email(
                     $owner,
@@ -224,8 +206,9 @@ class FormBO
         $agent_id = $processed['agent_id'];
 
         //REFILL CARD .. UPADTE AGENT
-        (new Table("cc_agent"))
-            ->updateRow(["credit" => ["credit + ?", $credit]], ["id" => $agent_id]);
+        Connection::getConnection("cc_agent")
+            ->where("id", $agent_id)
+            ->increment("credit", $credit);
     }
 
     /**
@@ -242,8 +225,8 @@ class FormBO
 
         if ($credit > 0) {
             $description = _("CREATION AGENT REFILL");
-            (new Table("cc_log_refill_agent"))
-                ->addRow(compact("credit", "agent_id", "description"));
+            Connection::getConnection("cc_log_refill_agent")
+                ->insert(compact("credit", "agent_id", "description"));
         }
     }
 
@@ -268,8 +251,9 @@ class FormBO
         $form = FormHandler::GetInstance();
         $processed = $form->getProcessed();
         $subscriber = $processed["subscriber_signup"];
-        $sub = (new Table("cc_subscription_service", ["id", "fee", "label"]))
-            ->getRow(["id" => $subscriber]);
+        $sub = Connection::getConnection("cc_subscription_service", "id", "fee", "label")
+            ->where("id", $subscriber)
+            ->first();
 
         if (is_numeric($subscriber) && $sub && $sub["fee"] > 0) {
             $amount = $sub["fee"];
@@ -293,10 +277,11 @@ class FormBO
             }
             $next_bill_date = $next_limite_pay_date->modify("+$billdaybefor_anniversery days");
 
-            (new Table("cc_card"))
-                ->updateRow(["status" => 8], ["id" => $id_card]);
-            (new Table("cc_card_subscription"))
-                ->addRow(
+            Connection::getConnection("cc_card")
+                ->where("id", $id_card)
+                ->update(["status" => 8]);
+            $id_card_subscription = Connection::getConnection("cc_card_subscription")
+                ->insertGetId(
                     [
                         "id_cc_card" => $id_card,
                         "id_subscription_fee" => $subscriber,
@@ -307,8 +292,7 @@ class FormBO
                         "limit_pay_date" => $limite_pay_date,
                         "last_run" => $startdate
                     ],
-                    "id",
-                    $id_card_subscription
+                    "id"
                 );
 
             $reference = Invoice::generateReference();
@@ -329,16 +313,14 @@ class FormBO
             }
 
             //insert charge
-            (new Table("cc_charge"))
-                ->addRow(
-                    [
-                        "id_cc_card" => $id_card,
-                        "amount" => $amount,
-                        "chargetype" => 3,
-                        "id_cc_card_subscription" => $sub["id"],
-                        "invoiced_status" => 1,
-                    ]
-                );
+            Connection::getConnection("cc_charge")
+                ->insert([
+                    "id_cc_card" => $id_card,
+                    "amount" => $amount,
+                    "chargetype" => 3,
+                    "id_cc_card_subscription" => $sub["id"],
+                    "invoiced_status" => 1,
+                ]);
 
             $mail = new Mail(Mail::$TYPE_SUBSCRIPTION_UNPAID,$id_card);
             // what's this???
@@ -377,22 +359,19 @@ class FormBO
         $id_agent = $processed["id_agent"];
         if (!empty($id_agent)) {
             //update record with agent commission
-            $table_agent = new Table('cc_agent', 'commission');
-            $agent_com = $table_agent->getValue(["id" => $id_agent]) ?? 0;
+            $agent_com = Connection::getConnection("cc_agent")
+                ->where("id", $id_agent)
+                ->value("commission") ?? 0;
             // todo: this should be a negative check?
             if (empty($agent_com)) {
-                (new Table("cc_agent_commission"))
-                    ->updateRow(
-                        ["commission_percent" => $agent_com],
-                        ["id" => $agent_commission_id]
-                    );
+                Connection::getConnection("cc_agent_commission")
+                    ->where("id", $agent_commission_id)
+                    ->update(["commission_percent" => $agent_com]);
             }
             $amount = $processed['amount'];
-            $sign = $amount > 0 ? "+" : "-";
-            $table_agent->updateRow(
-                ["com_balance" => ["com_balance $sign ?", abs($amount)]],
-                ["id" => $id_agent]
-            );
+            Connection::getConnection("cc_agent")
+                ->where("id", $id_agent)
+                ->increment("com_balance", $amount);
         }
     }
 
@@ -412,8 +391,8 @@ class FormBO
 
         if ($credit) {
             $description = _("CREATION CARD REFILL");
-            (new Table("cc_logrefill"))
-                ->addRow(compact("credit", "card_id", "description"));
+            Connection::getConnection("cc_logrefill")
+                ->insert(compact("credit", "card_id", "description"));
         }
 
         self::create_lock_card($card_id);
@@ -427,27 +406,29 @@ class FormBO
      */
     public static function processing_card_del_agent($card_id)
     {
-        $credit = (new Table("cc_card"))->getValue(["id" => $card_id]);
+        $credit = Connection::getConnection("cc_card")
+            ->where("id", $card_id)
+            ->value("credit");
         if ($credit != 0) {
-            $sign = $credit > 0 ? "+" : "-";
-            (new Table("cc_agent"))
-                ->updateRow(["credit" => ["credit $sign ?", abs($credit)]], ["id" => Agent::id()]);
+            Connection::getConnection("cc_agent")
+                ->where("id", Agent::id())
+                ->increment("credit", $credit);
 
             $description = gettext("DELETION CARD REFILL");
             $correction = 0 - $credit;
-            (new Table("cc_logrefill"))
-                ->addRow(["credit" => $correction, "card_id" => $card_id, "refill_type" => 1, "description" => $description]);
+            Connection::getConnection("cc_logrefill")
+                ->insert(["credit" => $correction, "card_id" => $card_id, "refill_type" => 1, "description" => $description]);
             if ($credit > 0) {
-                $table = new Table(
-                    "cc_card",
-                    ["id_agent"],
-                    ["cc_card_group" => ["cc_card.id_group", "cc_card_group.id"]]
-                );
-                $id_agent = $table->getValue(["cc_card.id" => $card_id]);
+                $id_agent = Connection::getConnection("cc_card")
+                    ->leftJoin("cc_card_group", "cc_card.id_group", "cc_card_group.id")
+                    ->where("cc_card.id", $card_id)
+                    ->value("id_agent");
 
                 if ($id_agent) {
                     // test if the agent exist and get its commission
-                    $comm = (new Table("cc_agent", ["commission"]))->getValue(["id" => $id_agent]);
+                    $comm = Connection::getConnection("cc_agent")
+                        ->where("id", $id_agent)
+                        ->value("commission");
                     if ($comm) {
                         $commission = a2b_round($credit * ($comm / 100));
                         $description = sprintf(
@@ -457,8 +438,8 @@ class FormBO
                             sprintf(_("Amount: %s"), get_money($credit)),
                             sprintf(_("Commission applied: %s"), get_percent($comm))
                         );
-                        (new Table("cc_agent_commission"))
-                            ->addRow(
+                        Connection::getConnection("cc_agent_commission")
+                            ->insert(
                                 [
                                     "id_payment" => -1,
                                     "id_card" => $card_id,
@@ -468,11 +449,9 @@ class FormBO
                                 ]
                             );
 
-                        (new Table("cc_agent"))
-                            ->updateRow(
-                                ["com_balance" => ["com_balance - ?", $commission]],
-                                ["id" => $id_agent]
-                            );
+                        Connection::getConnection("cc_agent")
+                            ->where("id", $id_agent)
+                            ->decrement("com_balance", $commission);
                     }
                 }
             }
@@ -502,8 +481,9 @@ class FormBO
         $credit = $processed["credit"];
         $card_id = $processed["card_id"];
 
-        (new Table("cc_card"))
-            ->updateRow(["credit" => ["credit + ?", $credit]], ["id" => $card_id]);
+        Connection::getConnection("cc_card")
+            ->where("id", $card_id)
+            ->increment("credit", $credit);
 
         //add invoice
         if (!$processed['added_invoice']) {
@@ -521,7 +501,7 @@ class FormBO
         //load vat of this card
         if ($invoice->save()) {
             $description = $processed['description'];
-            $vat = (new Table("cc_card", ["vat"]))->getValue(["id" => $card_id]) ?? 0;
+            $vat = Connection::getConnection("cc_card")->where("id", $card_id)->value("vat") ?? 0;
             $item = InvoiceItem::create($invoice, $description, $date, $credit, $vat);
             $item->save();
         }
@@ -545,12 +525,11 @@ class FormBO
         // the DID is used by an other user, we might want to change
         // the DID is new nothing in cc_did_use
 
-        $did_table = new Table(
-            "cc_did_use",
-            ["cc_did_use.id", "id_cc_card", "fixrate", "billingtype", "releasedate"],
-            ["cc_did" => ["cc_did_use.id_did", "cc_did.id"]]
-        );
-        $did = $did_table->getRow(["id_did" => $id_cc_did], ["cc_did_use.id"], "desc");
+        $did = Connection::getConnection("cc_did_use", "cc_did_use.id", "id_cc_card", "fixrate", "billingtype", "releasedate")
+            ->leftJoin("cc_did", "cc_did_use.id_did", "cc_did.id")
+            ->where("id_did", $id_cc_did)
+            ->orderBy("cc_did_use.id", "DESC")
+            ->first();
         if ($did) {
             // check the id_cc_card, if id_cc_card is null it means it has been released
             // otherwise did_is used without a registered card
@@ -564,22 +543,25 @@ class FormBO
             // The did ownership has changed and we need to update. (regardless of how it's billed)
             if ($did['billingtype'] == 0 || $did['billingtype'] == 1) {
                 $rate = $did['fixrate'];
-                (new Table("cc_charge"))
-                    ->addRow(["id_cc_card" => $id_cc_card, "amount" => $rate, "chargetype" => 2, "id_cc_did" => $id_cc_did]);
+                Connection::getConnection("cc_charge")
+                    ->insert(["id_cc_card" => $id_cc_card, "amount" => $rate, "chargetype" => 2, "id_cc_did" => $id_cc_did]);
 
-                (new Table("cc_card"))
-                    ->updateRow(["credit" => ["credit - ?", $rate]], ["id" => $id_cc_card]);
+                Connection::getConnection("cc_card")
+                    ->where("id", $id_cc_card)
+                    ->decrement("credit", $rate);
             }
 
-            (new Table("cc_did"))
-                ->updateRow(["iduser" => $id_cc_card, "reserved" => 1], ["id" => $id_cc_did]);
+            Connection::getConnection("cc_did")
+                ->where("id", $id_cc_did)
+                ->update(["iduser" => $id_cc_card, "reserved" => 1]);
 
-            (new Table("cc_did_use"))
-                ->updateRow(["releasedate" => "CURRENT_TIMESTAMP"], ["id_did" => $id_cc_did, "activated" => 0]);
+            Connection::getConnection("cc_did_use")
+                ->where(["id_did" => $id_cc_did, "activated" => 0])
+                ->update(["releasedate" => Connection::getConnection()->raw("CURRENT_TIMESTAMP")]);
 
             // Should we do something special when billing != 0 or 1?
-            (new Table("cc_did_use"))
-                ->addRow(["activated" => 1, "id_cc_card" => $id_cc_card, "id_did" => $id_cc_did, "month_payed" => 1]);
+            Connection::getConnection("cc_did_use")
+                ->insert(["activated" => 1, "id_cc_card" => $id_cc_card, "id_did" => $id_cc_did, "month_payed" => 1]);
         }
         // else existing_owner_id is already correctly set due to prior destinations on the same DID
     }
@@ -593,25 +575,27 @@ class FormBO
      */
     public static function did_destination_del($did_destination_id)
     {
-        $row = (new Table(
-            "cc_did_destination AS t1",
-            ["t1.id_cc_did AS did_id", "COUNT(*) AS destination_count"],
-            ["cc_did_destination AS t2" => ["t1.id_cc_did", "t2.id_cc_did"]]
-        ))->getRow(["t2.id" => $did_destination_id]);
+        $row = Connection::getConnection("cc_did_destination AS t1", "t1.id_cc_did AS did_id")
+            ->selectRaw("COUNT(*) AS destination_count")
+            ->leftJoin("cc_did_destination AS t2", "t1.id_cc_did", "t2.id_cc_did")
+            ->where("t2.id", $did_destination_id)
+            ->first();
 
         if ($row && $row["destination_count"] < 2) {
             // Only remove did from card if this is the LAST destination connecting the two.
             // < 2, not 1 because destination is deleted after this call.
             $choose_did = $row['did_id'];
 
-            (new Table("cc_did"))
-                ->updateRow(["iduser" => 0, "reserved" => 0], ["id" => $choose_did]);
+            Connection::getConnection("cc_did")
+                ->where("id", $choose_did)
+                ->update(["iduser" => 0, "reserved" => 0]);
 
-            (new Table("cc_did_use"))
-                ->updateRow(["releasedate" => "CURRENT_TIMESTAMP"], ["id_did" => $choose_did, "activated" => 1]);
+            Connection::getConnection("cc_did_use")
+                ->where(["id_did" => $choose_did, "activated" => 1])
+                ->update(["releasedate" => Connection::getConnection()->raw("CURRENT_TIMESTAMP")]);
 
-            (new Table("cc_did_use"))
-                ->addRow(["activated" => 0, "id_did" => $choose_did]);
+            Connection::getConnection("cc_did_use")
+                ->insert(["activated" => 0, "id_did" => $choose_did]);
         }
     }
 
@@ -632,24 +616,30 @@ class FormBO
         $date = date("Y-m-d h:i:s");
 
         //GET VAT
-        $card_table = new Table("cc_card", ["vat", "typepaid", "credit"]);
-        $card_result = $card_table->getRow(["id" => $card_id]);
+        $card_result = Connection::getConnection("cc_card", "vat", "typepaid", "credit")
+            ->where("id", $card_id)
+            ->first();
         $vat = $card_result["vat"] ?? 0;
 
         // FIND THE LAST BILLING for this card
-        $last_billing_date = (new Table("cc_billing_customer", ["date"]))
-            ->getValue(
-                ["id_card" => $card_id, "id" => ["!=", $new_billing]],
-                ["date"],
-                "desc"
-            );
-        $call_conditions = ["card_id" => $card_id, "stop_time" => ["<", $date_bill]];
-        $charge_conditions = ["id_cc_card" => $card_id, "creationdate" => ["<", $date_bill], "charged_status" => 1];
+        $last_billing_date = Connection::getConnection("cc_billing_customer")
+            ->where("id_card", $card_id)
+            ->where("id", "!=", $new_billing)
+            ->orderBy("date", "DESC")
+            ->value("date");
+        $call_qb = Connection::getConnection("cc_call")
+            ->selectRaw("COALESCE(SUM(sessionbill), 0) AS amt")
+            ->where("card_id", $card_id)
+            ->where("stop_time", "<", $date_bill);
+        $charge_qb = Connection::getConnection("cc_charge", "id", "amount", "description", "creationdate")
+            ->where("id_cc_card", $card_id)
+            ->where("creationdate", "<", $date_bill)
+            ->where("charged_status", 1);
         $start_date = null;
 
         if ($last_billing_date) {
-            $call_conditions["stoptime"] = [">=", $last_billing_date];
-            $charge_conditions["creationdate"] = [">=", $last_billing_date];
+            $call_qb->where("stoptime", ">=", $last_billing_date);
+            $charge_qb->where("creationdate", ">=", $last_billing_date);
             $desc_billing = sprintf(_("Call costs between %s and %s"), $last_billing_date, $date_bill);
             $desc_billing_postpaid = sprintf(_("Charges between %s and %s"), substr($last_billing_date, 0, 10), $date_bill);
             $start_date = $last_billing_date;
@@ -658,26 +648,26 @@ class FormBO
             $desc_billing_postpaid = sprintf(_("Amount for period before %s"), $date_bill);
         }
 
-        $invoice_table = new Table(
-            "cc_billing_customer",
-            ["SUM(items.total_price) AS total"],
-            [
-                "cc_invoice" => ["cc_billing_customer.id_invoice", "cc_invoice.id"],
-                "(SELECT id_invoice, ROUND(SUM(price), 2) AS total_price FROM cc_invoice_item WHERE type_ext = 'POSTPAID' GROUP BY id_invoice ) AS items" => ["cc_invoice.id", "items.id_invoice"],
-            ]
-        );
-        $lastpostpaid_amount = $invoice_table->getValue(
-            [
-                "cc_billing_customer.id_card" => $card_id,
-                "cc_invoice.paid_status" => Invoice::PAIDSTATUS_UNPAID,
-                "cc_billing_customer.id" => ["!=", $new_billing]
-            ],
-            ["cc_invoice.date"],
-            "desc"
-        ) ?? 0;
+        $lastpostpaid_amount = Connection::getConnection("cc_billing_customer")
+            ->selectRaw("SUM(items.total_price) AS total")
+            ->leftJoin("cc_invoice", "cc_billing_customer.id_invoice", "cc_invoice.id")
+            ->leftJoinSub(
+                Connection::getConnection("cc_invoice_item", "id_invoice")
+                    ->selectRaw("ROUND(SUM(price), 2) AS total_price")
+                    ->where("type_ext", "POSTPAID")
+                    ->groupBy("id_invoice"),
+                "items",
+                "cc_invoice.id",
+                "items.id_invoice"
+            )
+            ->where("cc_billing_customer.id_card", $card_id)
+            ->where("cc_invoice.paid_status", Invoice::PAIDSTATUS_UNPAID)
+            ->where("cc_billing_customer.id", "!=", $new_billing)
+            ->orderBy("cc_invoice.date", "DESC")
+            ->value("total") ?? 0;
 
-        $call_table = new Table("cc_call", ["COALESCE(SUM(sessionbill), 0)"]);
-        $amount_calls = $call_table->getValue($call_conditions);
+        $amount_calls = $call_qb->value("amt");
+
         // COMMON BEHAVIOUR FOR PREPAID AND POSTPAID ... GENERATE A RECEIPT FOR THE CALLS OF THE MONTH
         if ($amount_calls) {
             /// create receipt
@@ -691,8 +681,7 @@ class FormBO
         }
 
         // GENERATE RECEIPT FOR CHARGE ALREADY CHARGED
-        $charges_table = new Table("cc_charge", ["id", "amount", "description", "creationdate"]);
-        $charges = $charges_table->getRows($charge_conditions);
+        $charges = $charge_qb->clone()->get();
         if (count($charges)) {
             $title = _("SUMMARY OF CHARGES");
             $description = _("Summary of the charge charged since the last billing.");
@@ -708,9 +697,9 @@ class FormBO
         $total = 0;
         $total_vat = 0;
         // GENERATE INVOICE FOR CHARGE NOT YET CHARGED
-        $charge_conditions["charged_status"] = 0;
-        $charge_conditions["invoiced_status"] = 0;
-        $charges = (new Table("cc_charge"))->getRows($charge_conditions);
+        $charge_qb->where("charged_status", 0);
+        $charge_qb->where("invoiced_status", 0);
+        $charges = $charge_qb->get();
         $invoice = new Invoice(null);
         if (count($charges)) {
             $reference = Invoice::generateReference();
@@ -754,7 +743,9 @@ class FormBO
             if ($start_date) {
                 $values["start_date"] = $start_date;
             }
-            (new Table("cc_billing_customer"))->updateRow($values, ["id" => $new_billing]);
+            Connection::getConnection("cc_billing_customer")
+                ->where("id", $new_billing)
+                ->update($values);
 
             //Send a mail for invoice to pay
             $total = round($total,2);
@@ -806,19 +797,25 @@ class FormBO
             // CREATE REFILL
             $refill_type = (int)$processed['payment_type'];
             $description = $processed['description'];
-            $vat = (new Table("cc_card", "vat"))->getValue(["id" => $card_id]) ?? 0;
+            $vat = Connection::getConnection("cc_card")
+                ->where("id", $card_id)
+                ->value("vat") ?? 0;
             $credit = $amount / (1 + $vat / 100);
 
             $insert_values = compact("date", "credit", "card_id", "refill_type", "description");
-            (new Table("cc_logrefill"))->addRow($insert_values, "id", $id_refill);
+            $id_refill = Connection::getConnection("cc_logrefill")
+                ->insertGetId($insert_values, "id");
 
             // REFILL CARD - UPDATE CARD
-            $insert_values = ["credit" => ["credit + ?", $credit]];
-            (new Table("cc_card"))->updateRow($insert_values, ["id" => $card_id]);
+            Connection::getConnection("cc_card")
+                ->where("id", $card_id)
+                ->increment("credit", $credit);
 
             // LINK THE REFILL TO THE PAYMENT .. UPADTE PAYMENT
             $insert_values = ["id_logrefill" => $id_refill];
-            (new Table("cc_logpayment"))->updateRow($insert_values, ["id" => $id_payment]);
+            Connection::getConnection("cc_logpayment")
+                ->where("id", $id_payment)
+                ->update($insert_values);
 
             // Create invoice associated
             $refills = getRefillType_List();
@@ -828,8 +825,8 @@ class FormBO
             $invoice = Invoice::create($card_id, $description, $title, $reference, PaymentDocument::STATUS_CLOSED, Invoice::PAIDSTATUS_PAID, $date);
             if ($invoice->save()) {
                 //add payment to this invoice
-                (new Table("cc_invoice_payment"))
-                    ->addRow(["id_invoice" => $invoice->id, "id_payment" => $id_payment]);
+                Connection::getConnection("cc_invoice_payment")
+                    ->insert(["id_invoice" => $invoice->id, "id_payment" => $id_payment]);
                 $item = InvoiceItem::create($invoice, $description, $date, $credit, $vat);
                 $item->save();
             }
@@ -838,20 +835,25 @@ class FormBO
         if (!$processed["added_commission"]) {
             return;
         }
-        $table = new Table("cc_card", "id_agent", ["cc_card_group" => ["cc_card.id_group", "cc_card_group.id"]]);
-        $id_agent = $table->getValue(["cc_card.id" => $card_id]);
+        $id_agent = Connection::getConnection("cc_card")
+            ->leftJoin("cc_card_group", "cc_card.id_group", "cc_card_group.id")
+            ->where("cc_card.id", $card_id)
+            ->value("id_agent");
 
         if ($id_agent) {
             // update refill & payment to keep a trace of agent in the timeline
             if (!empty($id_refill)) {
-                (new Table("cc_logrefill"))
-                    ->updateRow(["agent_id" => $id_agent], ["id" => $id_refill]);
+                Connection::getConnection("cc_logrefill")
+                    ->where("id", $id_refill)
+                    ->update(["agent_id" => $id_agent]);
             }
-            (new Table("cc_logpayment"))
-                ->updateRow(["agent_id" => $id_agent], ["id" => $id_payment]);
+            Connection::getConnection("cc_logpayment")
+                ->where("id", $id_payment)
+                ->update(["agent_id" => $id_agent]);
 
-            $comm = (new Table("cc_agent", ["commission"]))
-                ->getValue(["id" => $id_agent]);
+            $comm = Connection::getConnection("cc_agent")
+                ->where("id", $id_agent)
+                ->value("commission") ?? 0;
 
             if ($comm) {
                 $commission = $amount * ($comm / 100);
@@ -871,12 +873,11 @@ class FormBO
                     "description" => $description,
                     "id_agent" => $id_agent
                 ];
-                (new Table("cc_agent_commission"))->addRow($insert_values);
-                (new Table("cc_agent"))
-                    ->updateRow(
-                        ["com_balance" => ["com_balance + ?", $commission]],
-                        ["id" => $id_agent]
-                    );
+                Connection::getConnection("cc_agent_commission")
+                    ->insert($insert_values);
+                Connection::getConnection("cc_agent")
+                    ->where("id", $id_agent)
+                    ->increment("com_balance", $commission);
             }
         }
     }
@@ -901,20 +902,21 @@ class FormBO
         $refill_type = $processed["payment_type"];
         $description = $processed["description"];
         //CREATE REFILL
-        (new Table("cc_logrefill_agent"))
-            ->addRow(
+        $id_refill = Connection::getConnection("cc_logrefill_agent")
+            ->insertGetId(
                 compact("date", "credit", "agent_id", "refill_type", "description"),
-                "id",
-                $id_refill
+                "id"
             );
 
         //REFILL AGENT .. UPADTE AGENT
-        (new Table("cc_agent"))
-            ->updateRow(["credit" => ["credit + ?", $credit]], ["id" => $agent_id]);
+        Connection::getConnection("cc_agent")
+            ->where("id", $agent_id)
+            ->increment("credit", $credit);
 
         //LINK THE REFILL TO THE PAYMENT .. UPADTE PAYMENT
-        (new Table("cc_logpayment_agent"))
-            ->updateRow(["id_logrefill" => $id_refill], ["id" => $id_payment]);
+        Connection::getConnection("cc_logpayment_agent")
+            ->where("id", $id_payment)
+            ->update(["id_logrefill" => $id_refill]);
     }
 
     /**
@@ -979,8 +981,9 @@ class FormBO
         if (!$processed["block"]) {
             return;
         }
-        (new Table("cc_card"))
-            ->updateRow(["lock_date" => "CURRENT_TIMESTAMP"], ["id" => $card_id]);
+        Connection::getConnection("cc_card")
+            ->where("id", $card_id)
+            ->update(["lock_date" => Connection::getConnection()->raw("CURRENT_TIMESTAMP")]);
     }
 
     /**
@@ -992,11 +995,13 @@ class FormBO
     {
         $form = FormHandler::GetInstance();
         $processed = $form->getProcessed();
-        $instance_sub_table = new Table("cc_card", ["block"]);
-        $card_lock_info = $instance_sub_table->getValue(["id" => $card]);
+        $card_lock_info = Connection::getConnection("cc_card")
+            ->where("id", $card)
+            ->value("block");
         if ($card_lock_info != $processed["block"] && $processed["block"] == 1) {
-            $instance_sub_table
-                ->updateRow(["lock_date" => "CURRENT_TIMESTAMP"], ["id" => $card]);
+            Connection::getConnection("cc_card")
+                ->where("id", $card)
+                ->update(["lock_date" => Connection::getConnection()->raw("CURRENT_TIMESTAMP")]);
         }
     }
 }
