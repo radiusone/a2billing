@@ -3,7 +3,6 @@
 use A2billing\A2Billing;
 use A2billing\Connection;
 use A2billing\Forms\FormHandler;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -150,8 +149,8 @@ if ($form_action === "add" && !empty($path)) {
     $uploadfile = $uploaddir . basename($_FILES['databasebackup']['name']);
 
     if (move_uploaded_file($_FILES['databasebackup']['tmp_name'], $uploadfile)) {
-        (new Table("cc_backup"))
-            ->addRow(["name" => "Custom" . date("Ymd-His"), "path" => $uploadfile]);
+        Connection::getConnection("cc_backup")
+            ->insert(["name" => "Custom" . date("Ymd-His"), "path" => $uploadfile]);
     } else {
         $error_upload = _("Error uploading file");
     }

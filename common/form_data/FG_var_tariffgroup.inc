@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 use A2billing\Table;
@@ -109,7 +110,7 @@ $HD_Form->AddEditRadio(
     _("Define if the international prefix will be removed to check the rate.")
 );
 
-$numrow = (new Table("cc_tariffplan"))->countRows();
+$numrow = Connection::getConnection("cc_tariffplan")->count();
 if ($numrow > 0) {
     $HD_Form->AddEditHasMany(
         _("Ratecard"),

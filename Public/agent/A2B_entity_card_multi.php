@@ -2,9 +2,9 @@
 
 use A2billing\A2Billing;
 use A2billing\Agent;
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 use A2billing\Realtime;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -116,13 +116,13 @@ if ($nb_to_create > 0 && $action === "generate" && count($errors) === 0) {
         [$accountnumber, $useralias] = gen_card_with_alias($cardnumber_length);
         $passui_secret = generate_random_value("#####XXXXXXXXXX#####");
 
-        (new Table("cc_card"))->addRow([
+        $id_cc_card = Connection::getConnection("cc_card")->insertGetId([
             "username" => $accountnumber, "useralias" => $useralias, "tariff" => $choose_tariff, "lastname" => $gen_id,
             "simultaccess" => $choose_simultaccess, "currency" => $choose_currency, "typepaid" => $choose_typepaid,
             "creditlimit" => $creditlimit, "enableexpire" => $enableexpire, "expirationdate" => $expirationdate,
             "expiredays" => $expiredays, "uipass" => $passui_secret, "runservice" => $runservice, "tag" => $tag,
             "id_group" => $id_group, "discount" => $discount, "sip_buddy" => $sip_buddy, "iax_buddy" => $iax_buddy
-        ], "id", $id_cc_card);
+        ], "id");
 
         if (!empty($sip) || !empty($iax)) {
             Realtime::insert_voip_config((bool)$sip, (bool)$iax, $id_cc_card, $accountnumber, $passui_secret);
@@ -152,10 +152,13 @@ $HD_Form->list_help_text = create_help(
 );
 $HD_Form->create_toppage($form_action);
 
-$list_tariff = (new Table("cc_tariffgroup", ["tariffgroupname", "id"], ["cc_agent_tariffgroup" => ["cc_agent_tariffgroup.id_tariffgroup", "cc_tariffgroup.id"]]))
-    ->getColumn(["cc_agent_tariffgroup.id_agent" => Agent::id()]);
-$list_group = (new Table("cc_card_group", ["name", "id"]))
-    ->getColumn(["id_agent" => Agent::id()]);
+$list_tariff = Connection::getConnection("cc_tariffgroup")
+    ->leftJoin("cc_agent_tariffgroup", "cc_agent_tariffgroup.id_tariffgroup", "cc_tariffgroup.id")
+    ->where("cc_agent_tariffgroup.id_agent", Agent::id())
+    ->pluck("tariffgroupname", "id");
+$list_group = Connection::getConnection("cc_card_group")
+    ->where("id_agent", Agent::id())
+    ->pluck("name", "id");
 
 // FORM FOR THE GENERATION
 ?>

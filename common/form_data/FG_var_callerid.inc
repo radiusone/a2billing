@@ -2,10 +2,10 @@
 
 use A2billing\A2Billing;
 use A2billing\Agent;
+use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -56,8 +56,9 @@ if (is_customer()) {
 }
 
 if (is_customer()) {
-    $cid_count = (new Table("cc_callerid"))
-        ->countRows(["id_cc_card" => Customer::id()]);
+    $cid_count = Connection::getConnection("cc_callerid")
+        ->where("id_cc_card", Customer::id())
+        ->count();
     if ($cid_count < $A2B->config["webcustomerui"]['limit_callerid']) {
         $HD_Form->AddListTopButton();
         $HD_Form->FG_ENABLE_ADD_BUTTON = true;

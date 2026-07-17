@@ -1,8 +1,8 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Connection;
 use A2billing\Payments\Receipt;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -53,21 +53,19 @@ $receipt = new Receipt($id ?? 0);
 if (empty($receipt->card)) {
     header("Location: A2B_entity_receipt.php?form_action=list");
 }
-$card = (new Table("cc_card", "*", ["cc_country" => ["country", "countrycode"]]))
-    ->getRow(["cc_card.id" => $receipt->card]);
-
+$card = Connection::getConnection("cc_card")
+    ->leftJoin("cc_country", "country", "countrycode")
+    ->where("cc_card.id", $receipt->card)
+    ->first();
 if (empty($card)) {
     echo "Customer doesn't exist or is not correctly defined for this receipt !";
     die();
 }
 
-$table = new Table(
-    "cc_config",
-    ["config_value", "config_key"],
-    ["cc_config_group" => ["cc_config.config_group_id", "cc_config_group.id"]]
-);
-$receipt_conf = $table->getColumn(["group_title" => "invoice"]);
-
+$receipt_conf = Connection::getConnection("cc_config")
+    ->leftJoin("cc_config_group", "cc_config.config_group_id", "cc_config_group.id")
+    ->where("group_title", "invoice")
+    ->pluck("config_value", "config_key");
 $curr = strtoupper($curr ?? BASE_CURRENCY);
 $total = 0;
 

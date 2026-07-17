@@ -1,11 +1,11 @@
 <?php
 
+use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Payments\Invoice;
 use A2billing\Payments\InvoiceItem;
 use A2billing\Payments\Receipt;
 use A2billing\Payments\ReceiptItem;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -47,8 +47,10 @@ Customer::checkPageAccess(Customer::ACX_INVOICES);
 
 $card_id = Customer::id();
 
-$card = (new Table("cc_card", ["*"], ["cc_country" => ["country", "countrycode"]]))
-    ->getRow(["cc_card.id" => $card_id]);
+$card = Connection::getConnection("cc_card")
+    ->leftJoin("cc_country", "country", "countrycode")
+    ->where("cc_card.id", Customer::id())
+    ->first();
 
 $vat = $card["vat"];
 $typepaid = $card["typepaid"];
@@ -56,24 +58,28 @@ $credit = $card["credit"];
 
 //find the last billing
 $now = (new DateTimeImmutable())->format("Y-m-d H:i:s");
-$last_bill_date = (new Table('cc_billing_customer', ["date"]))
-    ->getValue(["id_card" => $card_id], ["date"], "desc");
-$clause_call_billing = ["card_id" => $card_id];
-$clause_charge = ["id_cc_card" => $card_id];
+$last_bill_date = Connection::getConnection("cc_billing_customer")
+    ->where("id_card", $card_id)
+    ->orderBy("date", "DESC")
+    ->value("date");
+$table_call = Connection::getConnection("cc_call")
+    ->selectRaw("COALESCE(SUM(sessionbill), 0) AS sessionbill")
+    ->where("card_id", $card_id);
+$table_charge = Connection::getConnection("cc_charge")
+    ->where("id_cc_card", $card_id);
 
 if (!empty($last_bill_date)) {
-    $clause_call_billing["stoptime"] = ["BETWEEN", [$last_bill_date, $now]];
-    $clause_charge["creationdate"] = ["BETWEEN", [$last_bill_date, $now]];
+    $table_call->whereBetween("stoptime", [$last_bill_date, $now]);
+    $table_charge->whereBetween("creationdate", [$last_bill_date, $now]);
     $desc_billing = sprintf(_("Cost of calls between %s and %s"), Customer::date($last_bill_date)->format("Y-m-d H:i:s"), Customer::date($now)->format("Y-m-d H:i:s"));
     $desc_billing_postpaid = sprintf(_("Amount for period between %s and %s"), Customer::date($now)->format("Y-m-d H:i:s"), Customer::date($last_bill_date)->format("Y-m-d H:i:s"));
 } else {
-    $clause_call_billing["stoptime"] = ["<", $now];
-    $clause_charge["creationdate"] = ["<", $now];
+    $table_call->where("stoptime", "<", $now);
+    $table_call->where("creationdate", "<", $now);
     $desc_billing = sprintf(_("Cost of calls before %s"), Customer::date($now)->format("Y-m-d H:i:s"));
     $desc_billing_postpaid = "";
 }
-$calls_price = (new Table('cc_call', ['COALESCE(SUM(sessionbill),0)']))
-    ->getValue($clause_call_billing);
+$calls_price = $table_charge->value("sessionbill");
 $receipt = Receipt::create($card_id, _("Summary of the charge charged since the last billing."));
 $invoice = Invoice::create($card_id, _("This invoice is for some charges unpaid since the last billing, and for the negative balance."));
 
@@ -82,8 +88,7 @@ if ($calls_price) {
     $receipt->items[] = ReceiptItem::create(null, $desc_billing, floatval($calls_price), $now, 'CALLS');
 }
 
-$table_charge = new Table("cc_charge", ["description", "creationdate", "amount", "charged_status", "invoiced_status"]);
-$result =  $table_charge->getRows($clause_charge);
+$result = $table_charge->get();
 foreach ($result as $charge) {
     if ((int)$charge["charged_status"] === 1) {
         // GENERATE RECEIPT FOR CHARGE ALREADY CHARGED
@@ -118,12 +123,10 @@ if ((int)$typepaid === 1 && $credit < 0) {
     );
 }
 
-$table = new Table(
-    "cc_config",
-    ["config_value", "config_key"],
-    ["cc_config_group" => ["cc_config.config_group_id", "cc_config_group.id"]]
-);
-$invoice_conf = $table->getColumn(["group_title" => "invoice"]);
+$invoice_conf = Connection::getConnection("cc_config")
+    ->leftJoin("cc_config_group", "cc_config.config_group_id", "cc_config_group.id")
+    ->where("group_title", "invoice")
+    ->pluck("config_value", "config_key");
 
 require_once __DIR__ . "/templates/main.php";
 

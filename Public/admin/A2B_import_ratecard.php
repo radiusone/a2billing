@@ -1,8 +1,9 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Connection;
 use A2billing\Logger;
-use A2billing\Table;
+use Illuminate\Database\Query\Builder;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -144,14 +145,14 @@ if ($task) {
     }
 
     if ($task === "upload") {
-        $table = new Table("cc_ratecard");
-        $result = $table->addRows($insert_data);
+        $qb = Connection::getConnection("cc_ratecard");
+        $result = $qb->insert($insert_data);
         if (!$result) {
-            $import_error = $table->getLastError();
+            $import_error = implode(" ", $qb->getRawPdo()->errorInfo());
         } else {
             $nb_imported = count($insert_data);
             Logger::insertLog(Admin::id(), 2, "RATES IMPORTED", $nb_imported . " New RATES Imported Successfully", '', $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI']);
-            (new Table("cc_prefix"))->addRows($prefix_values, "prefix", $id, true);
+            Connection::getConnection("cc_prefix")->updateOrInsert($prefix_values);
         }
     }
     $stop_time = microtime(true);
@@ -160,14 +161,19 @@ if ($task) {
     $my_max_file_size = (int)MY_MAX_FILE_SIZE_IMPORT;
 
     // GET CALLPLAN LIST
-    $where = [
-        ["SUB", ["startingdate" => [[null], ["<", "CURRENT_TIMESTAMP"]]], "OR"],
-        ["SUB", ["expirationdate" => [[null], [">", "CURRENT_TIMESTAMP"]]], "OR"],
-    ];
-    $list_tariffname = (new Table("cc_tariffplan", ["tariffname", "id"]))->getColumn($where);
+    $list_tariffname = Connection::getConnection("cc_tariffplan")
+        ->where(function (Builder $q) {
+            $q->wherePast("startingdate")->orWhereNull("startingdate");
+        })
+        ->where(function (Builder $q) {
+            $q->whereFuture("expirationdate")->orWhereNull("expirationdate");
+        })
+        ->pluck("tariffname", "id");
 
     // GET TRUNK LIST
-    $list_trunk = (new Table("cc_trunk", ["trunkcode", "id_trunk"]))->getColumn(["status" => 1]);
+    $list_trunk = Connection::getConnection("cc_trunk")
+        ->where("status", 1)
+        ->pluck("trunkcode", "id_trunk");
 
     echo create_help(
         _("This section is a utility to import ratecards from a CSV file.")

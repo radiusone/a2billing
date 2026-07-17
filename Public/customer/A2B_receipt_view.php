@@ -1,8 +1,8 @@
 <?php
 
+use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Payments\Receipt;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -58,8 +58,10 @@ if ($receipt->getCard() !== Customer::id()) {
     die();
 }
 //load customer
-$card = (new Table("cc_card", "*", ["cc_country" => ["country", "countrycode"]]))
-    ->getRow(["cc_card.id" => Customer::id()]);
+$card = Connection::getConnection("cc_card")
+    ->leftJoin("cc_country", "country", "countrycode")
+    ->where("cc_card.id", Customer::id())
+    ->first();
 
 if (empty($card)) {
     echo "Customer doesn't exist or is not correctly defined for this receipt !";
@@ -68,12 +70,10 @@ if (empty($card)) {
 
 require_once __DIR__ . "/templates/main.php";
 //Load receipt conf
-$table = new Table(
-    "cc_config",
-    ["config_value", "config_key"],
-    ["cc_config_group" => ["cc_config.config_group_id", "cc_config_group.id"]]
-);
-$receipt_conf = $table->getColumn(["group_title" => "invoice"]);
+$receipt_conf = Connection::getConnection("cc_config")
+    ->leftJoin("cc_config_group", "cc_config.config_group_id", "cc_config_group.id")
+    ->where("group_title", "invoice")
+    ->pluck("config_value", "config_key");
 
 //Currencies check
 $curr = $card['currency'];

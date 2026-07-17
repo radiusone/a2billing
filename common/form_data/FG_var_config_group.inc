@@ -1,7 +1,7 @@
 <?php
 
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -80,17 +80,17 @@ $HD_Form->AddListTopButton("A2B_entity_config_generate_confirm.php", _("Add new 
 function add_agi_confx(string $group_title, ?string $from_conf): void
 {
     $group_description = 'This configuration group handles the AGI Configuration.';
-    (new Table("cc_config_group"))
-        ->addRow(compact("group_title", "group_description"), "id", $group_id);
+    $group_id = Connection::getConnection("cc_config_group")
+        ->insertGetId(compact("group_title", "group_description"), "id");
     if (!empty($from_conf)) {
-        (new Table("cc_config"))
-            ->addRowsFromSelect(
-                new Table(
-                    "cc_config AS c",
-                    ["config_title", "config_key", "config_value", "config_description", "config_valuetype", "$group_id AS config_group_id", "config_listvalues"],
-                    ["cc_config_group AS g" => ["c.config_group_id", "g.id"]]
-                ),
-                ["group_title" => $from_conf]
+        Connection::getConnection("cc_config")
+            ->insertUsing(
+                ["config_title", "config_key", "config_value", "config_description", "config_valuetype", "config_group_id", "config_listvalues"],
+                Connection::getConnection("cc_config AS c", "config_title", "config_key", "config_value", "config_description", "config_valuetype")
+                    ->leftJoin("cc_config_group AS g", "c.config_group_id", "g.id")
+                    ->selectRaw("$group_id AS config_group_id")
+                    ->addSelect("config_listvalues")
+                    ->where("group_title", $from_conf)
             );
     }
 }
