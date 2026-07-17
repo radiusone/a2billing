@@ -98,8 +98,8 @@ if ($mode === 'standard') {
 
     //GET MONITORING SETTINGS
     $arr_monitor = $db->table("cc_monitor")
-        ->select(["dial_code", "label", "text_intro", "query_type", "query", "result_type"])
-        ->where(["enable" => 1])
+        ->select("dial_code", "label", "text_intro", "query_type", "query", "result_type")
+        ->where("enable", 1)
         ->get()
         ->keyBy("dial_code");
 

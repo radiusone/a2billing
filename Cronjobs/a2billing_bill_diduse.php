@@ -99,7 +99,7 @@ if (!$db) {
 // CHECK THE CARD WITH DID'S
 
 $result = $db->table("cc_did_use")
-    ->select(["id_did", "reservationdate", "month_payed", "fixrate", "cc_card.id", "credit", "email", "did", "typepaid", "creditlimit", "reminded"])
+    ->select("id_did", "reservationdate", "month_payed", "fixrate", "cc_card.id", "credit", "email", "did", "typepaid", "creditlimit", "reminded")
     ->join("cc_card", "cc_card.id", "id_cc_card")
     ->join("cc_did", "id_did", "cc_did.id")
     ->where(

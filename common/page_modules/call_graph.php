@@ -7,8 +7,7 @@ use A2billing\Forms\FormHandler;
  * @var FormHandler $HD_Form
  */
 
-$graph_builder = Connection::getConnection()
-    ->table("cc_call")
+$graph_builder = Connection::getConnection("cc_call")
     ->selectRaw("DATE(cc_call.starttime) AS day")
     ->selectRaw("SUM(cc_call.sessiontime) AS calltime")
     ->selectRaw("COUNT(*) AS nbcall")

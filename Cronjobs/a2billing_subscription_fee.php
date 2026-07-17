@@ -98,10 +98,10 @@ if (!$db) {
 }
 
 $instance_table = $db->table("cc_card", "c")
-    ->select([
+    ->select(
         "c.id AS card_id", "ss.id AS service_id", "cs.id AS card_subscription_id", "ss.label", "ss.fee", "ss.emailreport",
         "cs.startdate", "cs.paid_status", "cs.last_run", "cs.next_billing_date", "cs.limit_pay_date", "cs.product_name",
-    ])
+    )
     ->join("cc_card_subscription cs", "c.id", "cs.id_cc_card")
     ->join("cc_subscription_service ss", "cs.id_subscription_fee", "ss.id");
 /*

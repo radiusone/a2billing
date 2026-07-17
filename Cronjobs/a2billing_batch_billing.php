@@ -122,7 +122,7 @@ for ($page = 0; $page < $nbpagemax; $page++) {
         echo "$page <= $nbpagemax \n";
     }
     $resmax = $db->table("cc_card")
-        ->select(["id", "vat", "invoiceday", "typepaid", "credit"])
+        ->select("id", "vat", "invoiceday", "typepaid", "credit")
         ->limit($page)->offset($page * $groupcard)
         ->get();
 
@@ -164,7 +164,7 @@ for ($page = 0; $page < $nbpagemax; $page++) {
 
         // FIND THE LAST BILLING
         $billing_table = $db->table('cc_billing_customer')
-            ->select(['id', 'date', 'id_invoice'])
+            ->select('id', 'date', 'id_invoice')
             ->where("id_card", $card_id)
             ->orderBy("date", "desc");
 
@@ -198,7 +198,7 @@ for ($page = 0; $page < $nbpagemax; $page++) {
 
         // RETRIEVE THE LAST POSTPAID AMOUNT -SUM OF ALL INVOICE ITEMS UNPAID FOR A POSTPAID USER
         $lastpostpaid_amount = $db->table("cc_billing_customer")
-            ->select(["SUM(items.total_price) as total"])
+            ->selectRaw("SUM(items.total_price) as total")
             ->leftJoin("cc_invoice", "cc_billing_customer.id_invoice", "cc_invoice.id")
             ->joinSub(
                 $db->table("cc_invoice_item")->select("id_invoice")->selectRaw("SUM(price) AS total_price")->where("type_ext", "POSTPAID")->groupBy("id_invoice"),

@@ -5,8 +5,7 @@ use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 
-$builder = Connection::getConnection()
-    ->table("cc_card_history")
+$builder = Connection::getConnection("cc_card_history")
     ->leftJoin("cc_card", "cc_card_history.id_cc_card", "cc_card.id")
     ->leftJoin("cc_card_group", "cc_card.id_group", "cc_card_group.id")
     ->orderBy("cc_card_history.datecreated", "desc");

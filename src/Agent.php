@@ -77,9 +77,7 @@ class Agent extends User
         if (empty($id) || !is_numeric($id)) {
             return $na;
         }
-        $row = Connection::getConnection()
-            ->table("cc_agent")
-            ->select(["login", "firstname", "lastname"])
+        $row = Connection::getConnection("cc_agent", "login", "firstname", "lastname")
             ->where("id", $id)
             ->first();
         if (!$row) {
@@ -123,9 +121,7 @@ class Agent extends User
             return false;
         }
 
-        $row = Connection::getConnection()
-            ->table("cc_agent")
-            ->select(["id", "perms", "active", "currency", "vat", "pwd_encoded"])
+        $row = Connection::getConnection("cc_agent", "id", "perms", "active", "currency", "vat", "pwd_encoded")
             ->where("active", 1)
             ->where("login", $user)
             ->first();

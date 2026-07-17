@@ -40,7 +40,7 @@ use Random\RandomException;
 
 function get_cardlength(): int
 {
-    $len = Connection::getConnection()->table("cc_config")
+    $len = Connection::getConnection("cc_config")
         ->where("config_key", "interval_len_cardnumber")
         ->value("config_value");
     if ($len) {
@@ -141,9 +141,7 @@ function get_currencies(): array
         'JPY', 'NZD', 'SGD', 'TWD', 'PLN', 'SEK', 'DKK', 'CHF', 'COP', 'MXN', 'CLP',
     ];
 
-    return Connection::getConnection()
-        ->table("cc_currencies")
-        ->select(["currency", "name", "value"])
+    return Connection::getConnection("cc_currencies", "currency", "name", "value")
         ->orderBy("currency")
         ->get()
         ->keyBy("currency")
@@ -350,7 +348,7 @@ function get_money_precise(float|int|null $amt): string
  */
 function get_monitorfile_link($value): string
 {
-    $MONITOR_PATH = Connection::getConnection()->table("cc_config")
+    $MONITOR_PATH = Connection::getConnection("cc_config")
         ->where("config_key", "monitor_path")
         ->value("config_value");
     $format_list = ['wav', 'gsm', 'mp3', 'sln', 'g723', 'g729'];
@@ -383,7 +381,7 @@ function get_monitorfile_link($value): string
  */
 function get_refill_link(?int $id): string
 {
-    $credit = Connection::getConnection()->table("cc_logrefill")
+    $credit = Connection::getConnection("cc_logrefill")
         ->where("id", $id ?? 0)
         ->value("credit");
 
@@ -404,7 +402,7 @@ function get_refill_link(?int $id): string
  */
 function get_agent_refill_link(?int $id): string
 {
-    $credit = Connection::getConnection()->table("cc_logrefill_agent")
+    $credit = Connection::getConnection("cc_logrefill_agent")
         ->where("id", $id ?? 0)
         ->value("credit");
 
@@ -479,7 +477,7 @@ function generate_unique_value($table = "cc_card", $len = 0, $field = "username"
     for ($k = 0; $k <= 200; $k++) {
         $card_gen = generate_random_value(str_repeat("#", $len));
 
-        $val = Connection::getConnection()->table($table)
+        $val = Connection::getConnection($table)
             ->where($field, $card_gen)
             ->value($field);
         if (empty($val)) {
@@ -503,7 +501,7 @@ function gen_card_with_alias($length_cardnumber = null)
         $card_gen = generate_random_value(str_repeat("#", $length_cardnumber));
         $alias_gen = generate_random_value(str_repeat("#", $A2B->config['global']['len_aliasnumber'] ?? 10));
 
-        $val = Connection::getConnection()->table("cc_card")
+        $val = Connection::getConnection("cc_card")
             ->whereIn("username", [$card_gen, $alias_gen])
             ->orWhereIn("useralias", [$card_gen, $alias_gen])
             ->count();
@@ -549,11 +547,7 @@ function validate_upload(string $the_file, string $the_file_type): string
 
 function get_timezones(): array
 {
-    return Connection::getConnection()
-        ->table("cc_timezone")
-        ->select(["gmtzone", "id"])
-        ->get()
-        ->mapWithKeys(fn ($v) => [$v["id"] => $v["gmtzone"]])
+    return Connection::getConnection("cc_timezone")->pluck("gmtzone", "id")
         ->toArray();
 }
 
@@ -561,8 +555,7 @@ function get_login_button($id): string
 {
     global $A2B;
 
-    $row = Connection::getConnection()->table("cc_card")
-        ->select(["useralias", "uipass"])
+    $row = Connection::getConnection("cc_card", "useralias", "uipass")
         ->where("id", $id)
         ->first();
     if (!$row) {
@@ -594,7 +587,7 @@ function get_login_button($id): string
 
 function create_help($text): string
 {
-    $result = Connection::getConnection()->table("cc_config")
+    $result = Connection::getConnection("cc_config")
         ->where("config_key", "show_help")
         ->value("config_value");
     if ($result !== "1") {

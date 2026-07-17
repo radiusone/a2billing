@@ -348,8 +348,7 @@ class FormHandler
         $this->query_table_joins = $joins;
 
         if (is_null($builder)) {
-            $this->query_builder = Connection::getConnection()
-                ->table($tablename)
+            $this->query_builder = Connection::getConnection($tablename)
                 ->orderBy($primary_key);
             if ($joins) {
                 (new Table())->processJoinedTables($joins, $this->query_builder);

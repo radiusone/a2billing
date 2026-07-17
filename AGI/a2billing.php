@@ -1271,7 +1271,7 @@ function insert_callback(A2Billing $A2B, string $uniqueid, string $channel, stri
         "timeout" => $timeout,
     ];
     $A2B->debug(A2Billing::DEBUG, "[CALLBACK-ALL : INSERT CALLBACK REQUEST IN SPOOL : PARAMS=" . json_encode($params) . "]");
-    $res = Connection::getConnection()->table("cc_callback_spool")->insert($params);
+    $res = Connection::getConnection("cc_callback_spool")->insert($params);
 
     if (!$res) {
         $error_msg = "Cannot insert the callback request in the spool!";

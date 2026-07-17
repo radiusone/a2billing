@@ -82,8 +82,7 @@ $id_trunk = (int)($id_trunk ?? 0);
 $id_ratecard = (int)($id_ratecard ?? 0);
 $form_action ??= "list";
 
-$builder = Connection::getConnection()
-    ->table("cc_call")
+$builder = Connection::getConnection("cc_call")
     ->leftJoin("cc_trunk", "cc_call.id_trunk", "cc_trunk.id_trunk")
     ->leftJoin("cc_prefix", "cc_call.destination", "cc_prefix.prefix")
     ->orderBy("starttime", "desc");

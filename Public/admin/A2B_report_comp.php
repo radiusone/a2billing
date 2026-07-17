@@ -50,10 +50,8 @@ getpost_ifset(["starttime", "relative_days", "graph_type"]);
  * @var string|null $graph_type
  */
 
-$builder = Connection::getConnection()
-    ->table("cc_call")
+$builder = Connection::getConnection("cc_call", "sessiontime", "starttime")
     ->leftJoin("cc_trunk", "cc_call.id_trunk", "cc_trunk.id_trunk")
-    ->select(["sessiontime", "starttime"])
     ->selectRaw("sessionbill - buycost AS profit")
     ->selectRaw("sessionbill AS revenue")
     ->selectRaw("buycost AS cost")

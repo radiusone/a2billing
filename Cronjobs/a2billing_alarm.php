@@ -91,7 +91,7 @@ if (!$db) {
 
 // CHECK THE ALARMS
 $result = $db->table("cc_alarm")
-    ->select(["id", "name", "periode", "type", "maxvalue", "minvalue", "id_trunk", "status", "numberofrun", "datecreate", "datelastrun", "emailreport"])
+    ->select("id", "name", "periode", "type", "maxvalue", "minvalue", "id_trunk", "status", "numberofrun", "datecreate", "datelastrun", "emailreport")
     ->where("status", 1)
     ->get();
 if ($verbose_level >= 1) {
@@ -111,7 +111,7 @@ $now = new DateTimeImmutable();
 
 // BROWSE THROUGH THE ALARMS
 foreach ($result as $myalarm) {
-    $query = $db->table("cc_call")->select(["terminatecauseid", "sessiontime"]);
+    $query = $db->table("cc_call")->select("terminatecauseid", "sessiontime");
     $lastrun = empty($myalarm["datelastrun"])
         ? null
         : new DateTimeImmutable($myalarm["datelastrun"]);

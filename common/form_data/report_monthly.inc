@@ -12,8 +12,7 @@ getpost_ifset(["starttime", "relative_months"]);
  * @var numeric-string|null $relative_months
  */
 
-$builder = Connection::getConnection()
-    ->table("cc_call")
+$builder = Connection::getConnection("cc_call")
     ->leftJoin("cc_trunk", "cc_call.id_trunk", "cc_trunk.id_trunk")
     ->selectRaw("SUM(sessiontime) AS time")
     ->selectRaw("SUM(sessionbill - buycost) AS profit")

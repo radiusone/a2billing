@@ -6,8 +6,7 @@ use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 use A2billing\Table;
 
-$builder = Connection::getConnection()
-    ->table("cc_call")
+$builder = Connection::getConnection("cc_call")
     ->join("cc_trunk", "cc_call.id_trunk", "=", "cc_trunk.id_trunk", "left outer")
     ->join("cc_ratecard", "cc_call.id_ratecard", "=", "cc_ratecard.id", "left outer")
     ->join("cc_card", "cc_call.card_id", "=", "cc_card.id", "left outer")

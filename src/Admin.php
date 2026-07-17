@@ -96,9 +96,7 @@ class Admin extends User
         if (empty($id)) {
             return $na;
         }
-        $row = Connection::getConnection()
-            ->table("cc_ui_authen")
-            ->select(["name", "login"])
+        $row = Connection::getConnection("cc_ui_authen", "name", "login")
             ->where("userid", $id)
             ->first();
         if ($row) {
@@ -132,9 +130,7 @@ class Admin extends User
             return false;
         }
 
-        $row = Connection::getConnection()
-            ->table("cc_ui_authen")
-            ->select(["userid", "perms", "confaddcust", "groupid", "login", "pwd_encoded"])
+        $row = Connection::getConnection("cc_ui_authen", "userid", "perms", "confaddcust", "groupid", "login", "pwd_encoded")
             ->where("login", $user)
             ->first();
 

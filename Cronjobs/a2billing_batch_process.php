@@ -104,10 +104,10 @@ $service_lastrun = "";
 
 $result = $db->table("cc_service")
     ->distinct()
-    ->select([
+    ->select(
         "id", "name", "amount", "period", "rule", "daynumber", "stopmode", "maxnumbercycle", "status", "numberofrun",
         "datecreate", "datelastrun", "emailreport", "totalcredit", "totalcardperform", "dialplan", "operate_mode", "use_group",
-    ])
+    )
     ->where(["status" => 1, ["datelastrun", "<", $now->sub($interval)]])
     ->orderBy("id", "DESC")
     ->get();
@@ -146,7 +146,7 @@ foreach ($result as $myservice) {
         echo "[ rule $rule  $rule_day ]";
 
     $card_table = $db->table("cc_card")
-        ->select(["id", "credit", "nbservice", "lastuse", "username", "servicelastrun", "email"]);
+        ->select("id", "credit", "nbservice", "lastuse", "username", "servicelastrun", "email");
 
     if ($use_group === 0) {
         $card_table->leftJoin("cc_cardgroup_service", "id_group", "id_card_group")
