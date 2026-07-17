@@ -2,9 +2,9 @@
 
 use A2billing\Admin;
 use A2billing\A2Billing;
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 use A2billing\Realtime;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -127,19 +127,19 @@ if ($nb_to_create > 0 && $action === "generate" && count($errors) === 0) {
         [$accountnumber, $useralias] = gen_card_with_alias($cardnumber_length);
         $passui_secret = generate_random_value("#####XXXXXXXXXX#####");
 
-        (new Table("cc_card"))->addRow([
+        $id_cc_card = Connection::getConnection("cc_card")->insertGetId([
             "username" => $accountnumber, "useralias" => $useralias, "credit" => $addcredit, "tariff" => $choose_tariff,
             "lastname" => $gen_id, "country" => $id_country, "simultaccess" => $choose_simultaccess, "currency" => $choose_currency,
             "typepaid" => $choose_typepaid, "creditlimit" => $creditlimit, "enableexpire" => $enableexpire,
             "expirationdate" => $expirationdate, "expiredays" => $expiredays, "uipass" => $passui_secret, "runservice" => $runservice,
             "tag" => $tag, "id_group" => $id_group, "discount" => $discount, "id_seria" => $id_seria, "id_didgroup" => $id_didgroup,
             "sip_buddy" => $sip_buddy, "iax_buddy" => $iax_buddy, "vat" => $vat,
-        ], "id", $id_cc_card);
+        ], "id");
 
         //create refill for each cards
         if ($addcredit > 0) {
-            (new Table("cc_logrefill"))
-                ->addRow(["credit" => $addcredit, "card_id" => $id_cc_card, "description" => _("CREATION CARD REFILL")]);
+            Connection::getConnection("cc_logrefill")
+                ->insert(["credit" => $addcredit, "card_id" => $id_cc_card, "description" => _("CREATION CARD REFILL")]);
         }
 
         if (isset($sip) || isset($iax)) {
@@ -172,11 +172,11 @@ $HD_Form->list_help_text = create_help(
 );
 $HD_Form->create_toppage($form_action);
 
-$list_tariff = (new Table("cc_tariffgroup", ["tariffgroupname", "id"]))->getColumn();
-$list_group = (new Table("cc_card_group", ["name", "id"]))->getColumn();
-$list_seria = (new Table("cc_card_seria", ["name", "id"]))->getColumn();
-$list_didgroup = (new Table("cc_didgroup", ["didgroupname", "id"]))->getColumn();
-$list_country = (new Table("cc_country", ["countryname", "countrycode"]))->getColumn();
+$list_tariff = Connection::getConnection("cc_tariffgroup")->pluck("tariffgroupname", "id");
+$list_group = Connection::getConnection("cc_card_group")->pluck("name", "id");
+$list_seria = Connection::getConnection("cc_card_seria")->pluck("name", "id");
+$list_didgroup = Connection::getConnection("cc_didgroup")->pluck("didgroupname", "id");
+$list_country = Connection::getConnection("cc_country")->pluck("countryname", "countrycode");
 
 // FORM FOR THE GENERATION
 ?>

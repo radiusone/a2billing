@@ -2,6 +2,7 @@
 
 use A2billing\A2Billing;
 use A2billing\Admin;
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 use A2billing\Table;
 
@@ -110,6 +111,7 @@ if (($bu["batchupdate"] ?? false) && is_array($bu["check"])) {
     $selected_updates = array_keys($bu["check"]);
 
     $HD_Form->prepare_list_subselection('list');
+    $rates_qb = $HD_Form->query_builder->clone();
 
     $sql_sets = [];
     $sql_params = [];
@@ -154,10 +156,12 @@ $form_action ??= "list";
 
 $list = $HD_Form->perform_action($form_action);
 
-$list_tariffname = (new Table("cc_tariffplan", ["tariffname", "id"]))->getColumn();
-$list_trunk = (new Table("cc_trunk", ["CONCAT(trunkcode, ' (', providerip, ')')", "id_trunk"]))->getColumn();
-$list_cid_group = (new Table("cc_outbound_cid_group", ["group_name", "id"]))->getColumn();
-$list_tariffgroup = (new Table("cc_tariffgroup", ["tariffgroupname", "id"]))->getColumn();
+$list_tariffname = Connection::getConnection("cc_tariffplan")->pluck("tariffname", "id");
+$list_trunk = Connection::getConnection("cc_trunk", "id_trunk")
+    ->selectRaw("CONCAT(trunkcode, ' (', providerip, ')') AS trunk")
+    ->pluck("trunk", "id_trunk");
+$list_cid_group = Connection::getConnection("cc_outbound_cid_group")->pluck("group_name", "id");
+$list_tariffgroup = Connection::getConnection("cc_tariffgroup")->pluck("tariffgroupname", "id");
 
 require_once __DIR__ . "/templates/main.php";
 

@@ -1,10 +1,9 @@
 <?php
 
-use A2billing\Admin;
+use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -104,7 +103,9 @@ $HD_Form_c->AddEditPopup(
 
 $amt_attr = ["maxlength" => 20];
 if ($form_action === "ask-add" && !empty($id_did)) {
-    $amt_attr["value"] = (new Table("cc_did", ["fixrate"]))->getValue(["id" => $id_did]) ?? 0;
+    $amt_attr["value"] = Connection::getConnection("cc_did")
+        ->where("id", $id_did)
+        ->value("fixrate") ?? 0;
 }
 $HD_Form_c->AddEditElement(
     _("AMOUNT"),

@@ -1,7 +1,7 @@
 <?php
 
+use A2billing\Connection;
 use A2billing\Customer;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -46,7 +46,9 @@ $FG_DEBUG = 0;
 $color_msg = 'red';
 
 
-$status = (new Table("cc_card", ["status"]))->getValue(["username" => Customer::card()]);
+$status = Connection::getConnection("cc_card")
+    ->where("username", Customer::card())
+    ->value("status");
 
 if (!$status || ($status != "1" && $status != "8")) {
     Header("HTTP/1.0 401 Unauthorized");
@@ -140,12 +142,11 @@ if ($callback) {
 
                     $variable = "CALLED=$called,CALLING=$calling,CBID=$uniqueid,LEG=".$A2B->cardnumber;
 
-                    $res = (new Table("cc_callback_spool"))
-                        ->addRow(compact(
+                    $res = Connection::getConnection("cc_callback_spool")
+                        ->insert(compact(
                             "uniqueid", "status", "server_ip", "num_attempt", "channel", "exten", "context", "priority",
                             "variable", "id_server_group", "callback_time", "account", "callerid", "timeout"
                         ));
-
                     if (!$res) {
                         $error_msg= gettext("Cannot insert the callback request in the spool!");
                     } else {

@@ -2,6 +2,7 @@
 
 use A2billing\A2Billing;
 use A2billing\Admin;
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 use A2billing\Table;
 
@@ -94,8 +95,7 @@ if ($batchupdate == 1 && count($check)) {
     }
     if (isset($check["upd_credit"]) && strlen($update_fields["credit"] ?? "") > 0) {
         // we will be updating card credit, prepare the refill query
-        $current_cards = (new Table("cc_card", ["id", "credit"]))
-            ->getRows($HD_Form->list_query_conditions);
+        $current_cards = $HD_Form->query_builder->clone()->select("cc_card.id", "cc_card.credit")->get();
         $refill_cards = [];
         foreach ($current_cards as $v) {
             switch ($type["upd_credit"]) {
@@ -154,7 +154,7 @@ if ($batchupdate == 1 && count($check)) {
     } else {
         $update_msg = _('The batch update has been successfully perform!');
         if (!empty($refill_cards)) {
-            if ((new Table("cc_logrefill"))->addRows($refill_cards) === 0) {
+            if (Connection::getConnection("cc_logrefill")->insert($refill_cards) === false) {
                 $update_msg = _('Could not perform refill log for the batch update!');
             }
         }
@@ -170,13 +170,13 @@ require_once __DIR__ . "/templates/main.php";
 
 <?php if ($form_action === "list" && !$popup_select) {
     // populate some lists for the batch update settings
-    $list_tariff = (new Table("cc_tariffgroup", ["tariffgroupname", "id"]))->getColumn();
-    $list_group = (new Table("cc_card_group", ["name", "id"]))->getColumn();
-    $list_seria = (new Table("cc_card_seria", ["name", "id"]))->getColumn();
+    $list_tariff = Connection::getConnection("cc_tariffgroup")->pluck("tariffgroupname", "id");
+    $list_group = Connection::getConnection("cc_card_group")->pluck("name", "id");
+    $list_group = Connection::getConnection("cc_card_seria")->pluck("name", "id");
     $list_refill_type = getRefillType_List();
     $list_refill_type[-1] = _("NO REFILL");
     ksort($list_refill_type);
-    $list_country = (new Table("cc_country", ["countryname", "countrycode"]))->getColumn();
+    $list_country = Connection::getConnection("cc_country")->pluck("countryname", "countrycode");
 
 ?>
 

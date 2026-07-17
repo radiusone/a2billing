@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\A2Billing;
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 use A2billing\Table;
 
@@ -99,12 +100,16 @@ if ($form_action === "add" && !empty($path)) {
         $HD_Form->add_message_result .= _("An error occur when the system tried to compress the backup realized.") . "<br>" . _("Please check yours system settings for the backup section ");
     }
 } elseif ($form_action === "delete") {
-    $path = (new Table("cc_backup", ["path"]))->getValue(["id" => $id]);
+    $path = Connection::getConnection("cc_backup")
+        ->where("id", $id)
+        ->value("path");
     if (!is_readable($path) || !unlink($path)) {
         echo _("Error deleting file");
     }
 } elseif ($form_action === "restore") {
-    $path = (new Table("cc_backup", ["path"]))->getValue(["id" => $id]);
+    $path = Connection::getConnection("cc_backup")
+        ->where("id", $id)
+        ->value("path");
 
     if (str_ends_with($path, ".gz")) {
         // WE NEED TO GZIP
@@ -126,7 +131,9 @@ if ($form_action === "add" && !empty($path)) {
 
     exec($run_restore);
 } elseif ($form_action === "download") {
-    $path = (new Table("cc_backup", ["path"]))->getValue(["id" => $id]);
+    $path = Connection::getConnection("cc_backup")
+        ->where("id", $id)
+        ->value("path");
     if (is_readable($path)) {
         $filename = basename($path);
         $len = filesize($path);

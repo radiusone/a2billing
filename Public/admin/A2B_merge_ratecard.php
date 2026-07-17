@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 use A2billing\Table;
 
@@ -100,26 +101,27 @@ if (!empty($posted)) {
             $condition = json_decode($_SESSION['search_ratecard']);
         }
 
-        $instance_table = new Table("cc_ratecard", ["id"]);
-
         $source_result = (new Table("cc_ratecard", $fieldtomerge))->getRows(
             $condition,
             ["dialprefix", "id"]
         );
 
         foreach ($source_result as $source_rate) {
-            $check = $instance_table->getValue(
-                ["idtariffplan" => $ratecard_des_val, "dialprefix" => $source_rate["dialprefix"], "is_merged" => 0],
-                ["dialprefix", "id"]
-            );
+            $check = Connection::getConnection("cc_ratecard")
+                ->where(["idtariffplan" => $ratecard_des_val, "dialprefix" => $source_rate["dialprefix"], "is_merged" => 0])
+                ->orderBy("dialprefix")
+                ->orderBy("id")
+                ->value("id");
             if ($check) {
                 // so not actually "merging" but updating dest from source only if the dialprefix already exists
                 $count++;
                 $source_rate["is_merged"] = 1;
-                $instance_table->updateRow($source_rate, ["id" => $check]);
+                Connection::getConnection("cc_ratecard")
+                    ->where("id", $check)
+                    ->update($source_rate);
             }
         }
-        $instance_table->updateRow(["is_merged" => 0]);
+        Connection::getConnection("cc_ratecard")->update(["is_merged", 0]);
 
         if($count > 0) {
             $msgs[] = sprintf(_("Ratecard is successfully merged, %d records updated."), $count);
@@ -145,7 +147,7 @@ $HD_Form->prepare_list_subselection($form_action = "list");
 $list = $HD_Form->perform_action($form_action);
 $_SESSION['search_ratecard'] = json_encode($HD_Form->list_query_conditions);
 
-$list_tariffname = (new Table("cc_tariffplan", ["tariffname", "id"]))->getColumn();
+$list_tariffname = Connection::getConnection("cc_tariffplan")->pluck("tariffname", "id");
 
 require_once __DIR__ . "/templates/main.php";
 $HD_Form->create_search_form();

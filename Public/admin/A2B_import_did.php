@@ -1,8 +1,8 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Connection;
 use A2billing\Logger;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -71,10 +71,8 @@ $the_file = "";
 $assoc_csv = [];
 $import_error = "";
 
-$group_list = (new Table("cc_didgroup", ["didgroupname", "id"]))
-    ->getColumn();
-$country_list = (new Table("cc_country", ["countryname", "countrycode"]))
-    ->getColumn();
+$group_list = Connection::getConnection("cc_didgroup")->pluck("didgroupname", "id");
+$country_list = Connection::getConnection("cc_country")->pluck("countryname", "countrycode");
 
 if ($task) {
     $start_time = microtime(true);
@@ -121,7 +119,7 @@ if ($task) {
     }
 
     if ($task === "upload") {
-        (new Table("cc_did"))->addRows($insert_data);
+        Connection::getConnection("cc_did")->insert($insert_data);
         $nb_imported = count($insert_data);
         Logger::insertLog(Admin::id(), 2, "DIDs IMPORTED", $nb_imported." New DIDs Imported Successfully", '', $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI']);
     }

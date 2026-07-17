@@ -1,10 +1,10 @@
 <?php
 
 use A2billing\A2bMailException;
+use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 use A2billing\Mail;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -56,17 +56,22 @@ if ($form_action === "add") {
     // we don't want to actually add a DID, so intercept this
     /** @var numeric-string|null $did_id */
     getpost_ifset(["did_id"]);
-    $rate = (new Table("cc_did", ["fixrate"]))->getValue(["id" => $did_id]);
-    (new Table("cc_charge"))
-        ->addRow(["id_cc_card" => Customer::id(), "amount" => abs($rate), "chargetype" => 2, "id_cc_did" => $did_id]);
-    (new Table("cc_did"))
-        ->updateRow(["iduser" => Customer::id(), "reserved" => 1], ["id" => $did_id]);
-    (new Table("cc_card"))
-        ->updateRow(["credit" => ["credit - ?", abs($rate)]], ["id" => Customer::id()]);
-    (new Table("cc_did_use"))
-        ->updateRow(["releasedate" => "CURRENT_TIMESTAMP"], ["id_did" => $did_id, "activated" => 0]);
-    (new Table("cc_did_use"))
-        ->addRow(["activated" => 1, "id_cc_card" => Customer::id(), "id_did" => $did_id, "month_payed" => 1]);
+    $rate = Connection::getConnection("cc_did")
+        ->where("id", $did_id)
+        ->value("fixrate");
+    Connection::getConnection("cc_charge")
+        ->insert(["id_cc_card" => Customer::id(), "amount" => abs($rate), "chargetype" => 2, "id_cc_did" => $did_id]);
+    Connection::getConnection("cc_did")
+        ->where("id", $did_id)
+        ->update(["iduser" => Customer::id(), "reserved" => 1]);
+    Connection::getConnection("cc_card")
+        ->where("id", Customer::id())
+        ->decrement("credit", abs($rate));
+    Connection::getConnection("cc_did_use")
+        ->where(["id_did" => $did_id, "activated" => 0])
+        ->update(["releasedate" => Connection::getConnection()->raw("CURRENT_TIMESTAMP")]);
+    Connection::getConnection("cc_did_use")
+        ->insert(["activated" => 1, "id_cc_card" => Customer::id(), "id_did" => $did_id, "month_payed" => 1]);
 
     $message = _("The DID has been added to your account");
     $form_action = "list";
@@ -74,21 +79,23 @@ if ($form_action === "add") {
     // we don't want to actually delete a DID, so intercept this
     /** @var numeric-string|null $id */
     getpost_ifset(["id"]);
-    (new Table("cc_did"))
-        ->updateRow(["iduser" => 0, "reserved" => 0], ["id" => $id]);
-    (new Table("cc_did_use"))
-        ->updateRow(
-            ["releasedate" => "CURRENT_TIMESTAMP", "activated" => 0],
-            ["id_cc_card" => Customer::id(), "id_did" => $id, "activated" => 1]
-        );
+    Connection::getConnection("cc_did")
+        ->where("id", $id)
+        ->update(["iduser" => 0, "reserved" => 0]);
+    Connection::getConnection("cc_did_use")
+        ->where(["id_cc_card" => Customer::id(), "id_did" => $id, "activated" => 1])
+        ->update(["releasedate" => Connection::getConnection()->raw("CURRENT_TIMESTAMP"), "activated" => 0]);
     // why ???
-    (new Table("cc_did_use"))
-        ->addRow(["id_did" => $id, "activated" => 0]);
-    (new Table("cc_did_destination"))
-        ->deleteRow(["id_cc_did" => $id, "id_cc_card" => Customer::id()]);
+    Connection::getConnection("cc_did_use")
+        ->insert(["id_did" => $id, "activated" => 0]);
+    Connection::getConnection("cc_did_destination")
+        ->where(["id_cc_did" => $id, "id_cc_card" => Customer::id()])
+        ->delete();
 
     // not sure why there's a mail for release but not add
-    $did = (new Table("cc_did", ["did"]))->getValue(["id" => $id]);
+    $did = Connection::getConnection("cc_did")
+        ->where("id", $id)
+        ->value("did");
     try {
         $mail = new Mail(Mail::$TYPE_DID_RELEASED,Customer::id());
         $mail->replaceInEmail(Mail::$DID_NUMBER_KEY, $did);
