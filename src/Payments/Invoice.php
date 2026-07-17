@@ -1,8 +1,9 @@
 <?php
 namespace A2billing\Payments;
 
-use A2billing\Table;
+use A2billing\Connection;
 use DateTime;
+use Illuminate\Database\Query\Builder;
 
 class Invoice extends PaymentDocument
 {
@@ -37,11 +38,9 @@ class Invoice extends PaymentDocument
         if (is_null($id)) {
             return;
         }
-        $value = (new Table(
-            "cc_invoice",
-            ["id", "id_card", "description", "title", "status", "paid_status", "date", "reference"]
-        ))
-            ->getRow(["id" => $id]);
+        $value = Connection::getConnection("cc_invoice", "id", "id_card", "description", "title", "status", "paid_status", "date", "reference")
+            ->where("id", $id)
+            ->first();
         $this->id = (int)$value["id"];
         $this->card = (int)$value["id_card"];
         $this->description = $description ?? $value["description"];
@@ -105,37 +104,37 @@ class Invoice extends PaymentDocument
         if (is_null($this->id)) {
             return [];
         }
-        $result = [];
-        $instance_sub_table = new Table("cc_invoice_item", ["id"]);
-        $return = $instance_sub_table->getRows(["id_invoice" => $this->id]);
-        foreach ($return as $value) {
-            $result[] = new InvoiceItem($value["id"]);
-        }
-
-        return $result;
+        return Connection::getConnection("cc_invoice_item")
+            ->where("id_invoice", $this->id)
+            ->pluck("id")
+            ->map(fn ($v) => new InvoiceItem($v))
+            ->toArray();
     }
 
     public function loadDetailledItems(): array
     {
         $result = [];
         foreach ($this->items as $value) {
-            if (empty($value["id_ext"]) || $value["type_ext"] !== "CALLS") {
+            /** @var PaymentDocumentItem $value */
+            if (empty($value->getExtId()) || $value->getExtType() !== "CALLS") {
                 $result[] = $value;
                 continue;
             }
 
-            $billing = (new Table("cc_billing_customer", ["date", "start_date"]))
-                ->getRow(["id" => $value["id_ext"]]);
-            if (count($billing) === 0) {
+            $billing = Connection::getConnection("cc_billing_customer", "date", "start_date")
+                ->where("id", $value->getExtId())
+                ->first();
+            if (!$billing) {
                 continue;
             }
 
-            $conditions = ["card_id" => $this->card, "stoptime" => ["<", $billing["date"]]];
-            if (!empty($billing["start_date"])) {
-                $conditions["stoptime"] = [">=", $billing["start_date"]];
-            }
-
-            $calls = (new Table("cc_call"))->getRows($conditions);
+            $calls = Connection::getConnection("cc_call")
+                ->where(["card_id" => $this->card, "stoptime" => ["<", $billing["date"]]])
+                ->when(
+                    !empty($billing["start_date"]),
+                    fn (Builder $q) => $q->where("stoptime", ">=", $billing["start_date"])
+                )
+                ->get();
             foreach ($calls as $call) {
                 $duration = get_timespan($call["sessiontiome"]);
                 $item = InvoiceItem::create(
@@ -157,12 +156,13 @@ class Invoice extends PaymentDocument
         if (empty($this->id)) {
             return null;
         }
-        $table = new Table(
-            "cc_invoice_payment",
-            "*",
-            ["cc_logpayment" => ["cc_invoice_payment.id_payment", "cc_logpayment.id"]]
-        );
-        return $table->getRows(["id_invoice" => $this->id], ["date"]);
+
+        return Connection::getConnection("cc_invoice_payment")
+            ->leftJoin("cc_logpayment", "cc_invoice_payment.id_payment", "cc_logpayment.id")
+            ->where("id_invoice", $this->id)
+            ->orderBy("date")
+            ->get()
+            ->toArray();
     }
 
     public function delPayment($idpayment): bool
@@ -170,8 +170,10 @@ class Invoice extends PaymentDocument
         if (is_null($this->id)) {
             return false;
         }
-        return (new Table("cc_invoice_payment"))
-            ->deleteRow(["id_invoice" => $this->id, "id_payment" => $idpayment]);
+
+        return Connection::getConnection("cc_invoice_payment")
+            ->where(["id_invoice" => $this->id, "id_payment" => $idpayment])
+            ->delete();
     }
 
     public function addPayment($idpayment): bool
@@ -179,8 +181,9 @@ class Invoice extends PaymentDocument
         if (is_null($this->id)) {
             return false;
         }
-        return (new Table("cc_invoice_payment"))
-            ->addRow(["id_invoice" => $this->id, "id_payment" => $idpayment]);
+
+        return Connection::getConnection("cc_invoice_payment")
+            ->insert(["id_invoice" => $this->id, "id_payment" => $idpayment]);
     }
 
     public function changeStatus(int $status): bool
@@ -188,20 +191,18 @@ class Invoice extends PaymentDocument
         if (is_null($this->id)) {
             return false;
         }
-        $result = (new Table("cc_invoice"))
-            ->updateRow(["paid_status" => $status], ["id" => $this->id]);
+        $result = Connection::getConnection("cc_invoice")
+            ->where("id", $this->id)
+            ->update(["paid_status" => $status]);
         if ($this->paid_status !== $status) {
             foreach ($this->items as $item) {
                 if ($item->getExtType() === "DID" && $item->getExtId()) {
-                    $result = (new Table("cc_did_use"))
-                        ->updateRow(
-                            [
-                                "reminded" => $status ? 0 : 1,
-                                "month_payed" => $status
-                                    ? ["month_payed - ?", "1"]
-                                    : ["month_payed + ?", "1"]
-                            ],
-                            ["id_did" => $item->getExtId(), "activated" => 1]
+                    Connection::getConnection("cc_did_use")
+                        ->where(["id_did" => $item->getExtId(), "activated" => 1])
+                        ->when(
+                            $status,
+                            fn (Builder $q) => $q->decrement("month_payed", 1, ["reminded" => 0]),
+                            fn (Builder $q) => $q->increment("month_payed", 1, ["reminded" => 1])
                         );
                 }
             }
@@ -236,12 +237,10 @@ class Invoice extends PaymentDocument
     public static function generateReference(): string
     {
         $year = date("Y");
-        $table = new Table(
-            "cc_config",
-            ["cc_config.id", "config_value"],
-            ["cc_config_group" => ["cc_config.config_group_id", "cc_config_group.id"]]
-        );
-        $row = $table->getRow(["config_key" => "next_number", "group_title" => "invoice"]);
+        $row = Connection::getConnection("cc_config", "cc_config.id", "config_value")
+            ->leftJoin("cc_config_group", "cc_config.config_group_id", "cc_config_group.id")
+            ->where(["config_key" => "next_number", "group_title" => "invoice"])
+            ->first();
         $conf_id = $row["id"];
         $invoice_num = $row["config_value"];
 

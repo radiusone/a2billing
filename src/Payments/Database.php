@@ -2,7 +2,7 @@
 
 namespace A2billing\Payments;
 
-use A2billing\Table;
+use A2billing\Connection;
 
 trait Database
 {
@@ -10,15 +10,15 @@ trait Database
 
     protected function saveOrUpdate(array $values): bool
     {
-        $table = new Table($this->table);
         if ($this->id) {
-            return $table->updateRow($values, ["id" => $this->id]);
+            return Connection::getConnection($this->table)
+                ->where("id", $this->id)
+                ->update($values) > 0;
         } else {
-            $id = null;
-            $result = $table->addRow($values, "id", $id);
-            $this->id = $id;
+            $this->id = Connection::getConnection($this->table)
+                ->insertGetId($values, "id") ?: null;
 
-            return $result;
+            return !is_null($this->id);
         }
     }
 }

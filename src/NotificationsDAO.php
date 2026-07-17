@@ -2,7 +2,7 @@
 
 namespace A2billing;
 
-/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
+use Illuminate\Database\Query\Builder;
 
 /**
  * This file is part of A2Billing (http://www.a2billing.net/)
@@ -56,9 +56,8 @@ class NotificationsDAO
         int $link_id = null
     ): bool
     {
-        $table = new Table("cc_notification");
 
-        return $table->addRow([
+        return Connection::getConnection("cc_notification")->insert([
             "key_value" => $key,
             "priority" => $priority,
             "from_type" => $from_type,
@@ -76,8 +75,8 @@ class NotificationsDAO
      */
     public static function deleteNotification(int $id): bool
     {
-        if ((new Table("cc_notification_admin"))->deleteRow(["id_notification" => $id])) {
-            if ((new Table("cc_notification"))->deleteRow(["id" => $id])) {
+        if (Connection::getConnection("cc_notification_admin")->where(["id_notification" => $id])->delete()) {
+            if (Connection::getConnection("cc_notification")->where(["id" => $id])->delete()) {
                 return true;
             }
         }
@@ -94,8 +93,8 @@ class NotificationsDAO
      */
     public static function markNotificationRead(int $notification_id, int $admin_id = 0): bool
     {
-        return (new Table("cc_notification_admin"))
-            ->addRow(
+        return Connection::getConnection("cc_notification_admin")
+            ->insert(
                 [
                     "id_notification" => $notification_id,
                     "id_admin" => $admin_id,
@@ -110,9 +109,7 @@ class NotificationsDAO
      */
     public static function getNotificationCount(): int
     {
-        $table = new Table("cc_notification");
-
-        return $table->countRows();
+        return Connection::getConnection("cc_notification")->count();
     }
 
     /**
@@ -123,19 +120,11 @@ class NotificationsDAO
      */
     public static function hasUnreadNotifications(int $admin_id): bool
     {
-        $table = new Table(
-            "cc_notification",
-            "*",
-            [
-                "cc_notification_admin" => [
-                    ["cc_notification.id", "cc_notification_admin.id_notification"],
-                    ["cc_notification_admin.id_admin", $admin_id],
-                ]
-            ]
-        );
-        $return = $table->countRows(["viewed" => null]);
-
-        return $return > 0;
+        return Connection::getConnection("cc_notification")
+            ->leftJoin("cc_notification_admin", "cc_notification.id", "cc_notification_admin.id_notification")
+            ->where("cc_notification_admin.id_admin", $admin_id)
+            ->whereNull("viewed")
+            ->exists();
     }
 
     /**
@@ -148,25 +137,15 @@ class NotificationsDAO
      */
     public static function getNotifications(int $admin_id = 0, int $current_page = 0, int $page_count = 10): array
     {
-        $joins = [
-            "cc_notification_admin" => [["cc_notification.id", "cc_notification_admin.id_notification"]]
-        ];
-        if ($admin_id) {
-            $joins["cc_notification_admin"][] = ["id_admin", $admin_id];
-        }
-        $table = new Table("cc_notification", "*", $joins);
-        $return = $table->getRows(
-            [],
-            ["date", "id"],
-            "DESC",
-            [],
-            $page_count,
-            ($current_page - 1) * $page_count
-        );
-
-        $list = [];
-        foreach ($return as $record) {
-            $list[] = new Notification(
+        return Connection::getConnection("cc_notification")
+            ->leftJoin("cc_notification_admin", "cc_notification.id", "cc_notification_admin.id_notification")
+            ->when($admin_id, fn (Builder $q) => $q->where("cc_notification_admin.id_admin", $admin_id))
+            ->orderBy("date", "DESC")
+            ->orderBy("id", "DESC")
+            ->limit($page_count)
+            ->offset(($current_page - 1) * $page_count)
+            ->get()
+            ->map(fn ($record) => new Notification(
                 (int)$record["id"],
                 $record["date"],
                 $record["key_value"],
@@ -176,9 +155,7 @@ class NotificationsDAO
                 (int)$record["link_id"],
                 $record["link_type"],
                 empty($record["viewed"])
-            );
-        }
-
-        return $list;
+            ))
+            ->toArray();
     }
 }

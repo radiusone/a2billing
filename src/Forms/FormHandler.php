@@ -1826,8 +1826,9 @@ class FormHandler
         }
         $rowcount = 0;
         foreach ($this->foreign_keys as $table => $column) {
-            $instance_table = new Table($table);
-            $rowcount += $instance_table->countRows([$column => $processed['id']]);
+            $rowcount += Connection::getConnection($table)
+                ->where($column, $processed['id'])
+                ->count();
         }
         $this->fk_record_count = $rowcount;
 

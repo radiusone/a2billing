@@ -133,37 +133,27 @@ class Mail
     public function __construct($type, $id_card = null, $lg = null, $msg = null, $title = null)
     {
         if (!empty($type)) {
-            $tmpl_table = new Table("cc_templatemail", "*");
-            $tmpl_clause = ["mailtype" => $type];
-            $order = null;
-            $order_field = "";
+            $tmpl_table = Connection::getConnection("cc_templatemail")
+                ->where("mailtype", $type);
             if (!empty ($lg)) {
-                $tmpl_clause["id_language"] = ["IN", [$lg, 'en']];
-                $order_field = 'id_language';
-                if (strcasecmp($lg, 'en') < 0) {
-                    $order = 'ASC';
-                } else {
-                    $order = 'DESC';
-                }
+                $tmpl_table->whereIn("id_language", [$lg, "en"]);
+                $tmpl_table->orderBy(
+                    "id_language",
+                    strcasecmp($lg, "en") < 0 ? "ASC" : "DESC"
+                );
             } elseif (is_numeric($id_card)) {
-                $card_table = new Table("cc_card", ["*", "CASE WHEN typepaid = 1 AND creditlimit IS NOT NULL THEN credit + creditlimit ELSE credit END AS real_credit"]);
-                $card_clause = ["id" => $id_card];
-                $result_card = $card_table->getRow($card_clause);
-                if ($result_card) {
-                    $card = $result_card;
-                    $language = $card['language'];
-                }
+                $language = Connection::getConnection("cc_card")
+                    ->where("id", $id_card)
+                    ->value("language");
                 if (!empty ($language)) {
-                    $tmpl_clause["id_language"] = ["IN", [$lg, 'en']];
-                    $order_field = 'id_language';
-                    if (strcasecmp($language, 'en') < 0) {
-                        $order = 'ASC';
-                    } else {
-                        $order = 'DESC';
-                    }
+                    $tmpl_table->whereIn("id_language", [$language, "en"]);
+                    $tmpl_table->orderBy(
+                        "id_language",
+                        strcasecmp($language, "en") < 0 ? "ASC" : "DESC"
+                    );
                 }
             }
-            $result_tmpl = $tmpl_table->getRow($tmpl_clause, [$order_field], $order);
+            $result_tmpl = $tmpl_table->first();
             if ($result_tmpl) {
                 $mail_tmpl = $result_tmpl;
                 $this->message = $mail_tmpl['messagetext'];
@@ -183,15 +173,12 @@ class Mail
         if (!empty($this->message) || !empty($this->title)) {
             if (is_numeric($id_card)) {
                 $this->id_card = $id_card;
-                if (!isset($card)) {
-                    $card_table = new Table("cc_card", ["*", "CASE WHEN typepaid = 1 AND creditlimit IS NOT NULL THEN credit + creditlimit ELSE credit END AS real_credit"]);
-                    $card_clause = ["id" => $id_card];
-                    $result_card = $card_table->getRow($card_clause);
-                    if ($result_card) {
-                        $card = $result_card;
-                    } else {
-                        return;
-                    }
+                $card = Connection::getConnection("cc_card")
+                    ->selectRaw("CASE WHEN typepaid = 1 AND creditlimit IS NOT NULL THEN credit + creditlimit ELSE credit END AS real_credit")
+                    ->where("id", $id_card)
+                    ->first();
+                if (!$card) {
+                    return;
                 }
                 $credit = $card['real_credit'];
                 $credit = round($credit, 3);

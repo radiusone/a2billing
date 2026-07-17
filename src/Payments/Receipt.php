@@ -2,7 +2,6 @@
 namespace A2billing\Payments;
 
 use A2billing\Connection;
-use A2billing\Table;
 use DateTime;
 use Illuminate\Database\Query\Builder;
 
@@ -15,12 +14,10 @@ class Receipt extends PaymentDocument
         if (is_null($id)) {
             return;
         }
-        $value = (new Table(
-            "cc_receipt",
-            ["cc_receipt.id", "id_card", "description", "title", "date", "cc_receipt.status", "username"],
-            ["cc_card" => ["cc_receipt.id_card", "cc_card.id"]]
-        ))
-            ->getRow(["cc_receipt.id" => $id]);
+        $value = Connection::getConnection("cc_receipt", "cc_receipt.id", "id_card", "description", "title", "date", "cc_receipt.status", "username")
+            ->leftJoin("cc_card", "cc_receipt.id_card", "cc_card.id")
+            ->where("cc_receipt.id", $id)
+            ->first();
         $this->id = (int)$value["id"];
         $this->card = (int)$value["id_card"];
         $this->date = $value["date"];
@@ -68,14 +65,11 @@ class Receipt extends PaymentDocument
             return [];
         }
 
-        $result = [];
-        $instance_sub_table = new Table("cc_receipt_item", ["id"]);
-        $return = $instance_sub_table->getColumn(["id_receipt" => $this->id]);
-        foreach ($return as $id) {
-            $result[] = new ReceiptItem($id);
-        }
-
-        return $result;
+        return Connection::getConnection("cc_receipt_item")
+            ->where("id_receipt", $this->id)
+            ->pluck("id")
+            ->map(fn ($v) => new ReceiptItem($v))
+            ->toArray();
     }
 
     /**

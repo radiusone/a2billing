@@ -76,8 +76,7 @@ class Realtime
             $cols = $sip_cols;
         }
 
-        $instance_table = new Table($table_name, $cols);
-        $list_friend = $instance_table->getRows();
+        $list_friend = Connection::getConnection($table_name, ...$cols)->get();
         // todo: once all queries are associative this won't be needed
         array_walk(
             $list_friend,
@@ -186,12 +185,12 @@ class Realtime
         ];
 
         if ($sip) {
-            (new Table("cc_sip_buddies"))->addRow($values);
+            Connection::getConnection("cc_sip_buddies")->insert($values);
         }
 
         if ($iax) {
             unset($values["dtmfmode"], $values["nat"]);
-            (new Table("cc_iax_buddies"))->addRow($values);
+            Connection::getConnection("cc_iax_buddies")->insert($values);
         }
     }
 }

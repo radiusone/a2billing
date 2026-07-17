@@ -251,18 +251,15 @@ class Customer extends User
             return false;
         }
 
-        $table = new Table(
-            "cc_card",
-            ["username", "credit", "status", "cc_card.id", "id_didgroup", "tariff", "vat", "zone", "voicemail_permitted", "voicemail_activated", "users_perms", "currency", "uipass"],
-            [
-                "cc_timezone" => ["id_timezone", "cc_timezone.id"],
-                "cc_card_group" => ["id_group", "cc_card_group.id"]
-            ]
-        );
-        $row = $table->getRow([["SUB", ["email" => $user, "useralias" => $user], "OR"]]);
+        $row = Connection::getConnection("cc_card", "username", "credit", "status", "cc_card.id", "id_didgroup", "tariff", "vat", "zone", "voicemail_permitted", "voicemail_activated", "users_perms", "currency", "uipass")
+            ->leftJoin("cc_timezone", "id_timezone", "cc_timezone.id")
+            ->leftJoin("cc_card_group", "id_group", "cc_card_group.id")
+            ->where("email", $user)
+            ->orWhere("useralias", $user)
+            ->first();
 
-        return (in_array($row["status"] ?? "", [1, 8]) && "$row[uipass]" === "$pass")
-            ? $row
+        return ($row && in_array($row["status"] ?? "", [1, 8]) && "$row[uipass]" === "$pass")
+            ? (array)$row
             : false;
     }
 }

@@ -55,6 +55,7 @@ class Logger
             $columns[] = "agent";
             $params[] = 1;
         }
-        (new Table("cc_system_log"))->addRow(array_combine($columns, $params));
+        Connection::getConnection("cc_system_log")
+            ->insert(array_combine($columns, $params));
     }
 }
