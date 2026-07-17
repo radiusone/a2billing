@@ -2,7 +2,7 @@
 
 use A2billing\A2Billing;
 use A2billing\Agent;
-use A2billing\Table;
+use A2billing\Connection;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -44,15 +44,20 @@ require_once __DIR__ . "/../../common/lib/agent.defines.php";
 
 Agent::checkPageAccess(Agent::ACX_ACCESS);
 
-$table = new Table(
+$agent_info = Connection::getConnection(
     "cc_agent",
-    [
-        "credit", "currency", "lastname", "firstname", "address", "city", "state", "country",
+    "credit", "currency", "lastname", "firstname", "address", "city", "state", "country",
         "zipcode", "phone", "email", "fax", "cc_agent.id", "com_balance", "threshold_remittance",
-        "(SELECT COALESCE(SUM(amount), 0) FROM cc_remittance_request WHERE status = 0 AND id_agent = cc_agent.id) AS remit"
-    ],
-);
-$agent_info = $table->getRow(["id" => Agent::id()]);
+)
+    ->selectSub(
+        Connection::getConnection("cc_remittance_request")
+            ->selectRaw("COALESCE(SUM(amount), 0)")
+            ->where("status", 0)
+            ->whereColumn("id_agent", "cc_agent.id"),
+        "remit"
+    )
+    ->where("id", Agent::id())
+    ->first();
 if (!$agent_info) {
     exit();
 }

@@ -3,6 +3,7 @@
 use A2billing\A2Billing;
 use A2billing\A2bMailException;
 use A2billing\Admin;
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 use A2billing\Mail;
 use A2billing\Table;
@@ -74,7 +75,7 @@ getpost_ifset(["id", "subject", "message", "from", "fromname", "submit"]);
 $HD_Form = new FormHandler("cc_card", "Card");
 $HD_Form->search_session_key = 'entity_card_selection_mail';
 $HD_Form->init();
-$instance_cus_table = new Table("cc_card", ["id", "email"]);
+$instance_cus_table = $HD_Form->query_builder->clone()->select("id", "email");
 
 $cardstatus_list = getCardStatus_List();
 $currencies_list = getCurrenciesList();
@@ -107,14 +108,13 @@ $HD_Form->edit_message_intro = sprintf(
 );
 $HD_Form->help_text = _("Here you can email a message to all of your users. To do this, an email will be sent out to the administrative email address supplied, with a blind carbon copy sent to all recipients. If you are emailing a large group of people please be patient after submitting and do not stop the page halfway through. It is normal for a mass emailing to take a long time and you will be notified when the script has completed.");
 
-$conditions = $HD_Form->list_query_conditions;
-$conditions["email"] = ["<>", ""];
+$instance_cus_table->where("email", "!=", "");
 if (isset($id)) {
-    $conditions["id"] = $id;
+    $instance_cus_table->where("id", $id);
 }
-$list_customer = $instance_cus_table->getRows($conditions, [], "ASC", [], $limit_massmail);
+$list_customer = $instance_cus_table->limit($limit_massmail)->get();
 
-$nb_customer = sizeof($list_customer);
+$nb_customer = count($list_customer);
 
 if (isset($submit)) {
     $start = hrtime(true);

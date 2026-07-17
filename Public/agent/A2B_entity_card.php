@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Agent;
+use A2billing\Connection;
 use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -53,9 +54,10 @@ if ($form_action=="ask-delete") {
 // SECURTY CHECK FOR AGENT
 if ($form_action != "list" && isset($id)) {
     if (!empty($id)&& $id>0) {
-        $table_agent_security = new Table("cc_card LEFT JOIN cc_card_group ON cc_card.id_group=cc_card_group.id ", " cc_card_group.id_agent");
-        $clause_agent_security = ["cc_card.id" => $id];
-        $result_security= $table_agent_security -> getValue ($clause_agent_security);
+        $result_security = Connection::getConnection("cc_card")
+            ->leftJoin("cc_card_group", "cc_card.id_group", "cc_card_group.id")
+            ->where("cc_card.id", $id)
+            ->value("cc_card_group.id_agent");
         if ($result_security != Agent::id()) {
             Header ("Location: A2B_entity_card.php?section=1");
             die();
@@ -108,7 +110,9 @@ if ($batchupdate == 1 && is_array($check)) {
         }
     }
 
-    $res = (new Table("cc_card"))->updateRow($values, $HD_Form->list_query_conditions);
+    $qb = $HD_Form->query_builder->clone();
+    $qb->joins = null;
+    $res = $qb->update($values);
 
     if (! $res) {
         $update_msg = '<p style="text-align:center; font-weight: bold; color: red">' . gettext('Could not perform the batch update!') . '</p>';
@@ -121,50 +125,48 @@ if ($batchupdate == 1 && is_array($check)) {
 
 if (($form_action == "addcredit") && ($addcredit > 0) && ($id > 0 || $cardnumber > 0)) {
 
-    $instance_table = new Table("cc_card", "username, id");
-
     if ($cardnumber>0) {
         /* CHECK IF THE CARDNUMBER IS ON THE DATABASE */
-        $FG_TABLE_CLAUSE_card = ["username=" => $cardnumber];
-        $list_tariff_card = $instance_table -> getRow ($FG_TABLE_CLAUSE_card);
+        $list_tariff_card = Connection::getConnection("cc_card", "username", "id")
+            ->where("username", $cardnumber)
+            ->first();
         if ($cardnumber == $list_tariff_card["username"]) $id = $list_tariff_card["id"];
     }
 
     if ($id > 0) {
 
-        $instance_check_card_agent = new Table("cc_card LEFT JOIN cc_card_group ON cc_card.id_group=cc_card_group.id", " cc_card_group.id_agent");
-        $FG_TABLE_CLAUSE_check = ["cc_card.id" => $id];
-        $list_check= $instance_check_card_agent -> getValue($FG_TABLE_CLAUSE_check);
+        $list_check = Connection::getConnection("cc_card")
+            ->leftJoin("cc_card_group", "cc_card.id_group", "cc_card_group.id")
+            ->where("cc_card.id", $id)
+            ->value("cc_card_group.id_agent");
         if ($list_check == Agent::id()) {
 
             //check if enought credit
-            $instance_table_agent = new Table("cc_agent", ["credit", "currency"]);
-            $FG_TABLE_CLAUSE_AGENT = ["id" => Agent::id()];
-            $agent_info = $instance_table_agent->getRow($FG_TABLE_CLAUSE_AGENT);
+            $agent_info = Connection::getConnection("cc_agent", "credit", "currency", "commission")
+                ->where("id", Agent::id())
+                ->first();
             $credit_agent = $agent_info["credit"];
             if ($credit_agent >= $addcredit) {
                //Substract credit for agent
-                $param_update_agent = ["credit" => ["credit - ?", $addcredit]];
-                $instance_table_agent->updateRow($param_update_agent, $FG_TABLE_CLAUSE_AGENT);
+                Connection::getConnection("cc_agent")
+                    ->where("id", Agent::id())
+                    ->decrement("credit", $addcredit);
 
                // Add credit to Customer
-                $param_update = ["credit" => ["credit + ?", $addcredit]];
+                Connection::getConnection("cc_card")
+                    ->where("id", $id)
+                    ->increment("credit", $addcredit);
 
-                $FG_EDITION_CLAUSE = ["id" => $id]; // AND id_agent=".Agent::id();
-
-                $instance_table = new Table("cc_card", "username, id");
-                $instance_table->updateRow($param_update, $FG_EDITION_CLAUSE);
-
-                $update_msg ='<span style="color:green; font-weight: bold">' . gettext("Refill executed ") . '</span>';
+                $description = _("Refill executed");
+                $update_msg ='<span style="color:green; font-weight: bold">' . $description . '</span>';
                 $id_agent = Agent::id();
-                $instance_sub_table = new Table("cc_logrefill");
-                $values = ["credit" => $addcredit, "card_id" => $id, "description" => $description, "refill_type" => 3, "agent_id" => $id_agent];
-                $instance_sub_table->addRow($values, "id", $id_refill);
+                $id_refill = Connection::getConnection("cc_logrefill")
+                    ->insertGetId(
+                        ["credit" => $addcredit, "card_id" => $id, "description" => $description, "refill_type" => 3, "agent_id" => $id_agent],
+                        "id"
+                    );
 
-                $agent_table = new Table("cc_agent", "commission");
-
-                $agent_clause = ["id" => $id_agent];
-                $commission_amt = $agent_table -> getValue($agent_clause) ?? 0;
+                $commission_amt = $agent_info["commission"] ?? 0;
 
                 if ($commission_amt) {
                     $commission = a2b_round($addcredit * ($commission_amt/100));
@@ -173,18 +175,14 @@ if (($form_action == "addcredit") && ($addcredit > 0) && ($id > 0 || $cardnumber
                     $description_commission.= "\nID REFILL : ".$id_refill;
                     $description_commission.= "\REFILL AMOUNT: ".$addcredit;
                     $description_commission.= "\nCOMMISSION APPLIED: ".$commission_amt;
-                    $commission_table = new Table("cc_agent_commission");
-                    $values = ["id_payment" => -1, "id_card" => $id, "amount" => $commission, "description" => $description_commission, "id_agent" => $id_agent];
-                    $commission_table->addRow($values, "id", $id_commission);
-                    $table_agent = new Table('cc_agent');
-                    $param_update_agent = ["com_balance" => ["com_balance + ?", $commission]];
-                    $clause_update_agent = ["id" => $id_agent];
-                    $table_agent->updateRow($param_update_agent, $clause_update_agent);
-                }
-
-
-                if (!$id_refill) {
-                    $update_msg ="<b>".$instance_sub_table -> errstr."</b>";
+                    $id_commission = Connection::getConnection("cc_agent_commission")
+                        ->insertGetId(
+                            ["id_payment" => -1, "id_card" => $id, "amount" => $commission, "description" => $description_commission, "id_agent" => $id_agent],
+                            "id"
+                        );
+                    Connection::getConnection("cc_agent")
+                        ->where("id", $id_agent)
+                        ->increment("com_balance", $commission);
                 }
 
             } else {

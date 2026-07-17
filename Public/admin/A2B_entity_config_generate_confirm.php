@@ -1,7 +1,7 @@
 <?php
 
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -51,24 +51,25 @@ require_once __DIR__ . "/templates/main.php";
 
 $HD_Form->create_toppage($form_action);
 
-$table = new Table(
+$config = Connection::getConnection(
     "cc_config",
-    [
         "config_title",
         "config_key",
         "config_value",
         "config_description",
-        "(SELECT CONCAT('agi-conf', REPLACE(MAX(group_title), 'agi-conf', '') + 1) FROM cc_config_group WHERE group_title LIKE 'agi-conf%') AS new_title",
-    ],
-    ["cc_config_group" => ["config_group_id", "cc_config_group.id"]]
-);
-$config = $table->getRows(
-    ["group_title" => "agi-conf1"],
-    ["config_key"],
-    "ASC",
-    [],
-    20
-);
+)
+    ->selectSub(
+        Connection::getConnection("cc_config_group")
+            ->selectRaw("CONCAT('agi-conf', REPLACE(MAX(group_title), 'agi-conf', '') + 1)")
+            ->whereLike("group_title", "agi-conf%"),
+        "new_title"
+    )
+    ->leftJoin("cc_config_group", "config_group_id", "cc_config_group.id")
+    ->where("group_title", "agi-conf1")
+    ->orderBy("config_key")
+    ->limit(20)
+    ->get();
+
 if (count($config)) {
     $new_group_title = $config[0]["new_title"] ?? "";
 ?>

@@ -52,8 +52,8 @@ class NotificationsDAO
         int $priority,
         int $from_type,
         int $from_id = 0,
-        int $link_type = null,
-        int $link_id = null
+        int|null $link_type = null,
+        int|null $link_id = null
     ): bool
     {
 

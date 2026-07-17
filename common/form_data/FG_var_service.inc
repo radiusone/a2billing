@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 use A2billing\Table;
@@ -190,7 +191,7 @@ $HD_Form->AddEditSelect(
     _("Select first option(default) to manualy select groups or select second option to use service for any group, discarding list below")
 );
 
-$numrow = (new Table("cc_card_group"))->countRows();
+$numrow = Connection::getConnection("cc_card_group")->count();
 
 if ($numrow > 0) {
     $HD_Form->AddEditHasMany(

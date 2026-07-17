@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Agent;
+use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Forms\FormBO;
 use A2billing\Forms\FormHandler;
@@ -190,9 +191,9 @@ if ($ticket_type === "agent") {
 } elseif (!is_customer()) {
     $creator_attr = [];
     if ($form_action === 'ask-add' && !empty($username)) {
-        $row = (new Table("cc_card", "id"))
-            ->getRow(["username" => $username]);
-        $creator_attr["value"] = $row["id"] ?? "";
+        $creator_attr["value"] = Connection::getConnection("cc_card")
+            ->where("username", $username)
+            ->value("id") ?? "";
     }
     $HD_Form->AddEditPopup(
         _("CREATOR"),

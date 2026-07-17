@@ -144,8 +144,8 @@ if (($bu["batchupdate"] ?? false) && is_array($bu["check"])) {
         }
     }
 
-    $result = (new Table("cc_ratecard"))->updateRow($values, $HD_Form->list_query_conditions);
-    if ($result === false) {
+    $result = $HD_Form->query_builder->clone()->update($values);
+    if (!$result) {
         $update_msg = "<div class='alert alert-danger'>" . _("Could not perform the batch update") . "</div>";
     } else {
         $update_msg = "<div class='alert alert-success'>" . _("The batch update has been successfully performed") . "</div>";

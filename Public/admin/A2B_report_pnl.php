@@ -309,14 +309,16 @@ $db->statement("SET autocommit = 0");
 $db->statement("CREATE TEMPORARY TABLE pnl_report AS $QUERY");
 
 function linktonext_1($value) {
-    $inst_table = new Table("cc_card_group", "id");
-    $id = $inst_table->getValue(["name" => $value]) ?? 0;
+    $id = Connection::getConnection("cc_card_group")
+        ->where("name", $value)
+        ->value("id") ?? 0;
     return $id ? "<a href=\"?group_id=$id&report_type=1\">$value</a>" : $value;
 }
 
 function linktonext_2($value) {
-    $inst_table = new Table("cc_tariffgroup", "id");
-    $id = $inst_table->getValue (["tariffgroupname" => $value]) ?? 0;
+    $id = Connection::getConnection("cc_tariffgroup")
+        ->where("tariffgroupname", $value)
+        ->value("id") ?? 0;
     return $id ? "<a href=\"?group_id=$id&report_type=2\">$value</a>" : $value;
 }
 
@@ -377,15 +379,25 @@ $HD_Form->setup_export(
 $HD_Form->create_form($form_action, $list) ;
 
 // create the totals row
-$row = (new Table(
-    "pnl_report",
-    ["SUM(call_count) AS call_count", "SUM(time_minutes) AS time_minutes", "SUM(toll_free_buy_cost) AS toll_free_buy_cost",
-    "SUM(pay_phone_buy_cost) AS pay_phone_buy_cost", "SUM(orig_only) AS orig_only", "SUM(credits) AS credits",
-    "SUM(orig_total) AS orig_total", "SUM(toll_free_sell_cost) AS toll_free_sell_cost", "SUM(pay_phone_sell_cost) AS pay_phone_sell_cost",
-    "SUM(term_only) AS term_only", "SUM(charges) AS charges", "SUM(term_total) AS term_total", "SUM(first_use) AS first_use",
-    "(1 - SUM(net_revenue) / SUM(term_total)) * 100 AS average_discount", "SUM(net_revenue) AS net_revenue",
-    "CASE WHEN SUM(net_revenue) != 0 THEN SUM(profit) / SUM(net_revenue) * 100 ELSE NULL AS margin", "SUM(profit) AS profit"]
-))->getRow();
+$row = Connection::getConnection("pnl_report")
+    ->selectRaw("SUM(call_count) AS call_count")
+    ->selectRaw("SUM(time_minutes) AS time_minutes")
+    ->selectRaw("SUM(toll_free_buy_cost) AS toll_free_buy_cost")
+    ->selectRaw("SUM(pay_phone_buy_cost) AS pay_phone_buy_cost")
+    ->selectRaw("SUM(orig_only) AS orig_only")
+    ->selectRaw("SUM(credits) AS credits")
+    ->selectRaw("SUM(orig_total) AS orig_total")
+    ->selectRaw("SUM(toll_free_sell_cost) AS toll_free_sell_cost")
+    ->selectRaw("SUM(pay_phone_sell_cost) AS pay_phone_sell_cost")
+    ->selectRaw("SUM(term_only) AS term_only")
+    ->selectRaw("SUM(charges) AS charges")
+    ->selectRaw("SUM(term_total) AS term_total")
+    ->selectRaw("SUM(first_use) AS first_use")
+    ->selectRaw("(1 - SUM(net_revenue) / SUM(term_total)) * 100 AS average_discount")
+    ->selectRaw("SUM(net_revenue) AS net_revenue")
+    ->selectRaw("CASE WHEN SUM(net_revenue) != 0 THEN SUM(profit) / SUM(net_revenue) * 100 ELSE NULL AS margin")
+    ->selectRaw("SUM(profit) AS profit")
+    ->first();
 ?>
 
 <?php if ($row): ?>

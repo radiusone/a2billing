@@ -87,17 +87,19 @@ $HD_Form->create_toppage($form_action);
 $HD_Form->setup_export("pr_export_package_report");
 $HD_Form->create_form("list", $list);
 
-$table = new Table(
-    "cc_card_package_offer",
-    ["DATE(date_consumption) AS day", "SUM(used_secondes) AS used_secondes", "COUNT(*) AS nbcall"]
-);
-$list_total_day = $table->getRows($HD_Form->list_query_conditions, ["day"], "ASC", ["day"]);
+$list_total_day = $HD_Form->query_builder->clone()
+    ->selectRaw("DATE(date_consumption) AS day")
+    ->selectRaw("SUM(used_secondes) AS used_secondes")
+    ->selectRaw("COUNT(*) AS nbcall")
+    ->orderBy("day")
+    ->groupBy("day")
+    ->get();
 
 if (count($list_total_day)):
-    $mmax = max(array_column($list_total_day, "used_secondes"));
+    $mmax = $list_total_day->max("used_secondes");
     $widthbar = 0;
-    $totalminutes = array_sum(array_column($list_total_day, "used_secondes"));
-    $totalcall = array_sum(array_column($list_total_day, "nbcall"));
+    $totalminutes = $list_total_day->sum("used_secondes");
+    $totalcall = $list_total_day->sum("nbcall");
     $averageminutes = $totalminutes / $totalcall;
 
 ?>

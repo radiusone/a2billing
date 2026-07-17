@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Connection;
 use A2billing\Logger;
 use A2billing\Table;
 
@@ -117,7 +118,7 @@ if ($task) {
     }
 
     if ($task === "upload") {
-        (new Table("cc_card"))->addRows($insert_data);
+        Connection::getConnection("cc_card")->insert($insert_data);
         $nb_imported = count($insert_data);
         Logger::insertLog(Admin::id(), 2, "CARDs IMPORTED", $nb_imported." New CARDS Imported Successfully", '', $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_URI']);
     }

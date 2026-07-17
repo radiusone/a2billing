@@ -111,8 +111,8 @@ write_log($log, basename(__FILE__) . ' line:' . __LINE__ . "[Auto Refill finish]
 
 if ($totalcredit !== 0) {
 // INSERT REPORT SERVICE INTO THE DATABASE
-    (new Table("cc_autorefill_report"))
-        ->addRow(["totalcardperform" => $totalcardperform, "totalcredit" => $totalcredit]);
+    Connection::getConnection("cc_autorefill_report")
+        ->insert(["totalcardperform" => $totalcardperform, "totalcredit" => $totalcredit]);
     write_log($log, basename(__FILE__) . ' line:' . __LINE__ . "[Service report : 'totalcardperform=$totalcardperform', 'totalcredit=$totalcredit']");
 }
 

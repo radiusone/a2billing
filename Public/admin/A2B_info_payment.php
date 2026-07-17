@@ -2,8 +2,8 @@
 
 use A2billing\Admin;
 use A2billing\Agent;
+use A2billing\Connection;
 use A2billing\Customer;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -60,7 +60,9 @@ if (empty($id)) {
     header("Location: $page");
 }
 
-$payment = (new Table($type === "agent" ? "cc_logpayment_agent" : "cc_logpayment"))->getRow(["id" => $id]);
+$payment = Connection::getConnection($type === "agent" ? "cc_logpayment_agent" : "cc_logpayment")
+    ->where("id", $id)
+    ->first();
 if (empty($payment)) {
     header("Location: $page");
 }

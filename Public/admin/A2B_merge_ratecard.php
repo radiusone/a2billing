@@ -101,6 +101,7 @@ if (!empty($posted)) {
             $condition = json_decode($_SESSION['search_ratecard']);
         }
 
+        /* TODO: move session stored filter to something QB can work with */
         $source_result = (new Table("cc_ratecard", $fieldtomerge))->getRows(
             $condition,
             ["dialprefix", "id"]

@@ -1,8 +1,8 @@
 <?php
 
 use A2billing\Admin;
-
-/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
+use A2billing\Connection;
+use Illuminate\Database\Query\Builder;
 
 /**
  * This file is part of A2Billing (http://www.a2billing.net/)
@@ -35,8 +35,6 @@ use A2billing\Admin;
  *
 **/
 
-use A2billing\Table;
-
 require_once __DIR__ . "/../../../common/lib/admin.defines.php";
 
 Admin::checkPageAccess(Admin::ACX_DASHBOARD);
@@ -50,20 +48,30 @@ getpost_ifset(["type", "view_type"]);
 if (!empty($type) && !empty($view_type)) {
     $format = "";
     $data = [];
-    $table = "cc_call";
-    $period_column = "starttime";
 
-    $checkdate_month = (new DateTime('midnight first day of this month -6 months 15 days'))->format("Y-m-d");
-    $checkdate_day = (new DateTime('midnight -10 days'))->format("Y-m-d");
+    $checkdate = $view_type === "month"
+        ? (new DateTime('midnight first day of this month -6 months 15 days'))
+        : (new DateTime('midnight -10 days'));
+
+    $qb = Connection::getConnection("cc_call")
+        ->when(
+            $view_type === "month",
+            fn (Builder $q) => $q->selectRaw("CONCAT(CAST(starttime AS VARCHAR(8)), '01') AS period"),
+            fn (Builder $q) => $q->selectRaw("CAST(starttime AS VARCHAR(10)) AS period")
+        )
+        ->where("starttime", ">=", $checkdate)
+        ->wherePast("starttime")
+        ->orderBy("period")
+        ->groupBy("period");
 
     switch ($type) {
         case "call_answer":
             $agg_column = "COUNT(*)";
-            $conditions["terminatecauseid"] = 1;
+            $qb->where("terminatecauseid", 1);
             break;
         case "call_incomplet":
             $agg_column = "COUNT(*)";
-            $conditions["terminatecauseid"] = ["!=", 1];
+            $qb->where("terminatecauseid", "!=", 1);
             break;
         case "call_times":
             $agg_column = "SUM(sessiontime)";
@@ -85,13 +93,9 @@ if (!empty($type) && !empty($view_type)) {
             die();
     }
 
-    $columns = $view_type === "month"
-        ? ["CONCAT(CAST($period_column AS VARCHAR(8)), '01') AS period", "$agg_column AS agg"]
-        : ["CAST($period_column AS VARCHAR(10)) AS period", "$agg_column AS agg"];
-    $conditions = [$period_column => ["BETWEEN", [$view_type === "month" ? $checkdate_month : $checkdate_day, "CURRENT_TIMESTAMP"]]];
+    $result = $qb->selectRaw("$agg_column AS agg")
+        ->get() ?: [["period" => 0, "agg" => 0]];
 
-    $result = (new Table($table, $columns))
-        ->getRows($conditions, ["period"], "ASC", ["period"]) ?: [["period" => 0, "agg" => 0]];
     foreach ($result as $row) {
         $period = DateTime::createFromFormat("Y-m-d", $row["period"]);
         $data[] = [

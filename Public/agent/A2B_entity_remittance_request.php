@@ -1,8 +1,8 @@
 <?php
 
 use A2billing\Agent;
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -54,8 +54,9 @@ $action ??= "";
 $id ??= null;
 
 if ($action === "cancel" && $id) {
-    (new Table("cc_remittance_request"))
-        ->updateRow(["status" => 3], ["id" => $id, "id_agent" => Agent::id()]);
+    Connection::getConnection("cc_remittance_request")
+        ->where(["id" => $id, "id_agent" => Agent::id()])
+        ->update(["status" => 3]);
     die();
 }
 $HD_Form->init();

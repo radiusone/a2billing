@@ -1,8 +1,8 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -56,8 +56,9 @@ $id ??= null;
 
 if ($action === "lock") {
     if (is_numeric($id)) {
-        (new Table("cc_receipt"))
-            ->updateRow(["status" => 1], ["id" => $id]);
+        Connection::getConnection("cc_receipt")
+            ->where("id", $id)
+            ->update(["status" => 1]);
     }
     die();
 }

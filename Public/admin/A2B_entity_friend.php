@@ -3,10 +3,10 @@
 use A2billing\A2Billing;
 use A2billing\Admin;
 use A2billing\Agent;
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 use A2billing\NotificationsDAO;
 use A2billing\Notification;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -94,7 +94,7 @@ if ($batchupdate === "1" && count($check)) {
         }
         $updates[$col] = $val;
     }
-    if (!(new Table($HD_Form->FG_QUERY_TABLE_NAME))->updateRow($updates, $HD_Form->list_query_conditions)) {
+    if (!$HD_Form->query_builder->clone()->update($updates)) {
         $update_msg = _('Could not perform the batch update!');
     } else {
         $update_msg = _('The batch update has been successfully perform!');
@@ -121,11 +121,13 @@ if ($batchupdate === "1" && count($check)) {
         NotificationsDAO::addNotification($key, Notification::$HIGH, $who, $who_id);
     }
 
-    (new Table("cc_card"))
-        ->updateRow($friend_param_update, ["id" => $id_cc_card]);
+    Connection::getConnection("cc_card")
+        ->where("id", $id_cc_card)
+        ->update($friend_param_update);
 
-    $list_friend = (new Table($HD_Form->FG_QUERY_TABLE_NAME))
-        ->getRows(["id_cc_card" => $id_cc_card]);
+    $list_friend = Connection::getConnection($HD_Form->FG_QUERY_TABLE_NAME)
+        ->where("id_cc_card", $id_cc_card)
+        ->get();
 
     if (count($list_friend)) {
         header("Location: A2B_entity_card.php?voip_type=card&id=");

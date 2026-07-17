@@ -93,7 +93,7 @@ if ($batchupdate == 1 && count($check)) {
         // html datetime input sends as 2022-02-21T13:40
         $update_fields["expirationdate"] = str_replace("T", " ", $update_fields["expirationdate"]);
     }
-    if (isset($check["upd_credit"]) && strlen($update_fields["credit"] ?? "") > 0) {
+    if (strlen($update_fields["credit"] ?? "") > 0) {
         // we will be updating card credit, prepare the refill query
         $current_cards = $HD_Form->query_builder->clone()->select("cc_card.id", "cc_card.credit")->get();
         $refill_cards = [];
@@ -125,31 +125,28 @@ if ($batchupdate == 1 && count($check)) {
             ];
         }
     }
+    unset($update_fields["description"], $update_fields["refill_type"]);
 
     $updates = [];
-    foreach (array_keys($check) as $ch) {
-        // remove "upd_"
-        $col = substr($ch, 4);
-        $val = $update_fields[$col] ?? null;
-        if (is_null($val)) {
-            continue;
-        }
-        if (($mode[$ch] ?? 1) == 1) {
+    foreach ($update_fields as $col => $val) {
+        if (($mode["upd_$col"] ?? 1) == 1) {
             // Standard update mode
             $updates[$col] = $val;
-        } elseif ($mode[$ch] == 2) {
+        } elseif ($mode["upd_$col"] == 2) {
             // Mode 2 - Equal - Add - Subtract
-            if (($type[$ch] ?? 1) == 1) {
+            if (($type["upd_$col"] ?? 1) == 1) {
                 $updates[$col] = $val;
-            } elseif ($type[$ch] == 2) {
-                $updates[$col] = ["`$col` + ?", $val];
-            } elseif ($type[$ch] == 3) {
-                $updates[$col] = ["`$col` - ?", $val];
+            } elseif ($type["upd_$col"] == 2 && is_numeric($val)) {
+                $updates[$col] = Connection::getConnection()->raw("`$col` + $val");
+            } elseif ($type["upd_$col"] == 3 && is_numeric($val)) {
+                $updates[$col] = Connection::getConnection()->raw("`$col` - $val");
             }
         }
     }
 
-    if (!(new Table("cc_card"))->updateRow($updates, $HD_Form->list_query_conditions)) {
+    $qb = $HD_Form->query_builder->clone();
+    $qb->joins = null;
+    if (!$qb->update($updates)) {
         $update_msg = _('Could not perform the batch update!');
     } else {
         $update_msg = _('The batch update has been successfully perform!');

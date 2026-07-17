@@ -1,7 +1,7 @@
 <?php
 
 use A2billing\Admin;
-use A2billing\Table;
+use A2billing\Connection;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -54,14 +54,14 @@ if ($form_action == "ask-modif") {
     if ($OldPassword === "" || $NewPassword === "" || strlen($NewPassword) < 8 || $NewPassword !== $NewPassword2) {
         $msg = '<p class="alert alert-danger">' . _("Check entries, ensure new password is at least 8 characters") . '</p>';
     } else {
-        $table = new Table("cc_ui_authen", ["pwd_encoded"]);
-        $result = $table->getValue(["userid" => Admin::id()]);
+        $result = Connection::getConnection("cc_ui_authen")
+            ->where("userid", Admin::id())
+            ->value("pwd_encoded");
 
         if (password_verify($OldPassword, $result)) {
-            $result = $table->updateRow(
-                ["pwd_encoded" => password_hash($NewPassword, PASSWORD_DEFAULT)],
-                ["userid" => Admin::id()]
-            );
+            $result = Connection::getConnection("cc_ui_authen")
+                ->where("userid", Admin::id())
+                ->update(["pwd_encoded" => password_hash($NewPassword, PASSWORD_DEFAULT)]);
             if ($result) {
                 $msg = '<p class="alert alert-success">' . _("Your password has been updated") . '</p>';
             } else {

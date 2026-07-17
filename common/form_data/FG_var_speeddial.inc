@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
@@ -73,8 +74,9 @@ if (!is_customer()) {
     $HD_Form->FG_ENABLE_ADD_BUTTON = true;
     $HD_Form->AddListTopButton();
 } else {
-    $sd_count = (new Table("cc_speeddial"))
-        ->countRows(["id_cc_card" => Customer::id()]);
+    $sd_count = Connection::getConnection("cc_speeddial")
+        ->where("id_cc_card", Customer::id())
+        ->count();
     if ($sd_count < 10) {
         $HD_Form->AddListTopButton();
     }

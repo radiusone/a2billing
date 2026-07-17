@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 use A2billing\Table;
 
@@ -74,14 +75,17 @@ if ($action === "ask_release") {
         </form>
         HTML;
 } elseif ($action === "confirmed_release") {
-    (new Table("cc_did"))
-        ->updateRow(["iduser" => 0, "reserved" => 0], ["id" => $did]);
-    (new Table("cc_did_use"))
-        ->updateRow(["releasedate" => "CURRENT_TIMESTAMP"], ["id_did" => $did, "activated" => 1]);
-    (new Table("cc_did_use"))
-        ->addRow(["activated" => 0, "id_did" => $did]);
-    (new Table("cc_did_destination"))
-        ->deleteRow(["id_cc_did" => $did]);
+    Connection::getConnection("cc_did")
+        ->where("id", $did)
+        ->update(["iduser" => 0, "reserved" => 0]);
+    Connection::getConnection("cc_did_use")
+        ->where(["id_did" => $did, "activated" => 1])
+        ->update(["releasedate" => Connection::getConnection()->raw("CURRENT_TIMESTAMP")]);
+    Connection::getConnection("cc_did_use")
+        ->insert(["activated" => 0, "id_did" => $did]);
+    Connection::getConnection("cc_did_destination")
+        ->where("id_cc_did", $did)
+        ->delete();
 }
 
 if ($action !== "ask_release") {

@@ -1,8 +1,8 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -55,7 +55,9 @@ getpost_ifset(['id', 'action']);
 
 if (($action ?? "") === "lock" && is_numeric($id ?? "")) {
     // called by XHR
-    (new Table("cc_invoice"))->updateRow(["status" => 1], ["id" => $id]);
+    Connection::getConnection("cc_invoice")
+        ->where("id", $id)
+        ->update(["status" => 1]);
     die();
 }
 

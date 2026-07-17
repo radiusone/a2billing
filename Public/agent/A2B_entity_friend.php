@@ -2,8 +2,8 @@
 
 use A2billing\A2Billing;
 use A2billing\Agent;
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
-use A2billing\Table;
 use A2billing\NotificationsDAO;
 use A2billing\Notification;
 
@@ -83,11 +83,13 @@ if (!empty($id_cc_card) && ($form_action === "add_sip" || $form_action === "add_
         NotificationsDAO::addNotification($key,Notification::$HIGH,$who,$who_id);
     }
 
-    $instance_table_friend = new Table('cc_card');
-    $instance_table_friend->updateRow($friend_param_update, ["id" => $id_cc_card]);
+    Connection::getConnection("cc_card")
+        ->where("id", $id_cc_card)
+        ->update($friend_param_update);
 
-    $instance_table_friend = new Table($TABLE_BUDDY);
-    $list_friend = $instance_table_friend->getRows(["id_cc_card" => $id_cc_card]);
+    $list_friend = Connection::getConnection($TABLE_BUDDY)
+        ->where("id_cc_card", $id_cc_card)
+        ->exists();
 
     if ($list_friend) {
         header("Location: A2B_entity_card.php?id=$id_cc_card");

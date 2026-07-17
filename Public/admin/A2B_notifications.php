@@ -1,7 +1,7 @@
 <?php
 
 use A2billing\Admin;
-use A2billing\Table;
+use A2billing\Connection;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -69,8 +69,9 @@ echo create_help(_("The Notification component is responsible for informing the 
 <?php
 // Load the list of values in the config table ! key=values_notifications
 $key= "cron_notifications";
-$instance_config_table = new Table("cc_config", "id, config_value");
-$return = $instance_config_table->getRow(["config_key" => $key]);
+$return = Connection::getConnection("cc_config", "id", "config_value")
+    ->where("config_key", $key)
+    ->first();
 
 if ($return) {
     $id_config = $return["id"];
@@ -106,8 +107,9 @@ if ($return) {
 
 // Load the list of values in the config table ! key=values_notifications
 $key= "values_notifications";
-$instance_config_table = new Table("cc_config", "id, config_value");
-$return = $instance_config_table->getRow(["config_key" => $key]);
+$return = Connection::getConnection("cc_config", "id", "config_value")
+    ->where("config_key", $key)
+    ->first();
 
 if ($return) {
     $id_config = $return["id"];
@@ -144,8 +146,9 @@ if ($return) {
 <?php
 // Load the list of values in the config table ! key=values_notifications
 $key= "delay_notifications";
-$instance_config_table = new Table("cc_config", "id, config_value");
-$return = $instance_config_table->getRow(["config_key" => $key]);
+$return = Connection::getConnection("cc_config", "id", "config_value")
+    ->where("config_key", $key)
+    ->first();
 
 if ($return) {
     $id_config = $return["id"];

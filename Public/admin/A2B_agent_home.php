@@ -1,7 +1,7 @@
 <?php
 
 use A2billing\Admin;
-use A2billing\Table;
+use A2billing\Connection;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -63,20 +63,21 @@ if (in_array($action, ["down", "up", "delete"]) && !is_numeric($id_msg)) {
     echo "false";
     die();
 }
-$table = new Table("cc_message_agent", ["order_display", "id", "id_agent", "message", "type", "logo"]);
 
 switch ($action) {
     case "add":
-        $count = $table->countRows(["id_agent" => $id]);
-        $result = (new Table("cc_message_agent"))
-            ->addRow(["id_agent" => $id, "type" => $type, "message" => $message, "order_display" => $count, "logo" => $logo]);
+        $count = Connection::getConnection("cc_message_agent")->where("id_agent", $id)->count();
+        $result = Connection::getConnection("cc_message_agent")
+            ->insert(["id_agent" => $id, "type" => $type, "message" => $message, "order_display" => $count, "logo" => $logo]);
         $result_param = $result ? "success" : "faild";
         header("Location: A2B_agent_home.php?id=$id&result=$result_param");
         die();
 
     case "ask-edit":
         if (is_numeric($id_msg)) {
-            $row = $table->getRow(["id" => $id_msg]);
+            $row = Connection::getConnection("cc_message_agent", "message", "type", "logo")
+                ->where("id", $id_msg)
+                ->first();
             if ($row) {
                 $message = $row['message'];
                 $type = $row['type'];
@@ -89,37 +90,58 @@ switch ($action) {
     case "edit":
         $result_param = false;
         if (is_numeric($id_msg)) {
-            $result = $table->updateRow(["type" => $type, "message" => $message, "logo" => $logo], ["id" => $id_msg]);
+            $result = Connection::getConnection("cc_message_agent")
+                ->where("id", $id_msg)
+                ->update(["type" => $type, "message" => $message, "logo" => $logo]);
             $result_param = $result ? "success" : "faild";
         }
         header("Location: A2B_agent_home.php?id=$id&result=$result_param");
         die();
 
     case "delete":
-        $order = $table->getValue(["id" => $id_msg]);
-        if ($order !== false) {
-            $table->deleteRow(["id" => $id_msg]);
-            $table->updateRow(["order_display" => ["order_display - ?", 1]], ["id_agent" => $id, "order_display" => [">", $order]]);
+        $order = Connection::getConnection("cc_message_agent")
+            ->where("id", $id_msg)
+            ->value("order_display");
+        if ($order) {
+            Connection::getConnection("cc_message_agent")
+                ->where("id", $id_msg)
+                ->delete();
+            Connection::getConnection("cc_message_agent")
+                ->where("id_agent", $id)
+                ->where("order_display", ">", $order)
+                ->decrement("order_display");
             die("true");
         }
         http_response_code(500);
         die("false");
 
     case "up":
-        $order = $table->getValue(["id" => $id_msg]);
+        $order = Connection::getConnection("cc_message_agent")
+            ->where("id", $id_msg)
+            ->value("order_display");
         if ($order) {
-            $table->updateRow(["order_display" => ["order_display + ?", 1]], ["id_agent" => $id, "order_display" => $order - 1]);
-            $table->updateRow(["order_display" => ["order_display - ?", 1]], ["id_agent" => $id, "order_display" => $order, "id" => $id_msg]);
+            Connection::getConnection("cc_message_agent")
+                ->where(["id_agent" => $id, "order_display" => $order - 1])
+                ->increment("order_display");
+            Connection::getConnection("cc_message_agent")
+                ->where(["id_agent" => $id, "order_display" => $order, "id" => $id_msg])
+                ->decrement("order_display");
             die("true");
         }
         http_response_code(500);
         die("false");
 
     case "down":
-        $order = $table->getValue(["id" => $id_msg]);
-        if ($order !== false) {
-            $table->updateRow(["order_display" => ["order_display - ?", 1]], ["id_agent" => $id, "order_display" => $order + 1]);
-            $table->updateRow(["order_display" => ["order_display + ?", 1]], ["id_agent" => $id, "order_display" => $order, "id" => $id_msg]);
+        $order = Connection::getConnection("cc_message_agent")
+            ->where("id", $id_msg)
+            ->value("order_display");
+        if ($order) {
+            Connection::getConnection("cc_message_agent")
+                ->where(["id_agent" => $id, "order_display" => $order + 1])
+                ->decrement("order_display");
+            Connection::getConnection("cc_message_agent")
+                ->where(["id_agent" => $id, "order_display" => $order, "id" => $id_msg])
+                ->increment("order_display");
             die("true");
         }
         http_response_code(500);
@@ -131,7 +153,9 @@ switch ($action) {
 }
 
 
-$messages = $table->getRows(["id_agent" => $id]);
+$messages = Connection::getConnection("cc_message_agent", "order_display", "id", "id_agent", "message", "type", "logo")
+    ->where(["id_agent" => $id])
+    ->get();
 
 require_once __DIR__ . "/templates/main.php";
 $message_types = getMsgTypeList();

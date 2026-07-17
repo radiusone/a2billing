@@ -61,8 +61,6 @@ $HD_Form = new FormHandler(
 $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 5000;
 $HD_Form->list_query_columns = ["starttime", "sessiontime"];
 
-$instance_table_graph = new Table("cc_call", ["starttime", "sessiontime"]);
-
 $hours = range(0, 23);
 $hours = array_combine($hours, array_map(fn ($v) => sprintf("%02d:00 to %02d:00", $v, $v + 1), $hours));
 $types = ["watch-call" => _("Watch Calls"), "fluctuation" => _("Fluctuation")];
@@ -147,6 +145,7 @@ $cols = [
     "sessiontime"
 ];
 // replace searched date with the specific time
+/* TODO: figure out a neat way to unset a condition so we can clone the QB instance */
 $conditions = $HD_Form->list_query_conditions;
 unset($conditions["starttime"]);
 $conditions[] = [
@@ -155,7 +154,6 @@ $conditions[] = [
 ];
 $call_list = (new Table($HD_Form->FG_QUERY_TABLE_NAME, $cols, $HD_Form->query_table_joins))
     ->getRows($conditions, ["starttime"]);
-
 $empty_minutes = array_combine(
     array_map(fn ($v) => sprintf("%02d", $v), range(0, 59)),
     array_fill(0, 60, null)

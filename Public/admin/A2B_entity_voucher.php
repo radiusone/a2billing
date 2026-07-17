@@ -2,8 +2,8 @@
 
 use A2billing\A2Billing;
 use A2billing\Admin;
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -98,7 +98,7 @@ if ($action === "batchupdate" && is_array($check)) {
         }
     }
 
-    if (!(new Table("cc_voucher"))->updateRow($updates, $HD_Form->list_query_conditions)) {
+    if (!$HD_Form->query_builder->clone()->update($updates)) {
         $update_msg = _('Could not perform the batch update!');
     } else {
         $update_msg = _('The batch update has been successfully perform!');
@@ -109,7 +109,6 @@ if ($action === "batchupdate" && is_array($check)) {
 if ($action === "generate") {
     $gen = [];
     getpost_ifset(["count", "length", "credit", "currency", "expirationdate", "tag"], $gen);
-    $table = new Table("cc_voucher");
     $count = $gen["count"] ?? 0;
     $length = $gen["length"] ?? 0;
     unset($gen["count"], $gen["length"]);
@@ -119,7 +118,8 @@ if ($action === "generate") {
         if (isset($gen["expirationdate"])) {
             $gen["expirationdate"] = str_replace('T', ' ', $gen["expirationdate"]);
         }
-        $table->addRow($gen);
+        Connection::getConnection("cc_voucher")
+            ->insert($gen);
     }
 }
 

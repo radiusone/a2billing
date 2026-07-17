@@ -1,11 +1,11 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Forms\Validator;
 use A2billing\Payments\Receipt;
 use A2billing\Payments\ReceiptItem;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -97,8 +97,9 @@ switch ($action) {
 
     case "delete":
         if (!empty($idc)) {
-            $table = new Table("cc_receipt_item");
-            $table->deleteRow(["id" => $idc]);
+            Connection::getConnection("cc_receipt_item")
+                ->where("id", $idc)
+                ->delete();
         }
         header("Location: A2B_receipt_edit.php?id=$id");
         break;

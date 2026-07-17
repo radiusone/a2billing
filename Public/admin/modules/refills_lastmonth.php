@@ -1,7 +1,8 @@
 <?php
 
 use A2billing\Admin;
-use A2billing\Table;
+use A2billing\Connection;
+use Illuminate\Database\Query\Builder;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -49,31 +50,34 @@ getpost_ifset(["type", "view_type"]);
 if (!empty($type) && !empty($view_type)) {
     $format = "";
     $data = [];
-    $table = "cc_logrefill";
-    $period_column = "date";
 
-    $checkdate_month = (new DateTime('midnight first day of this month -6 months 15 days'))->format("Y-m-d");
-    $checkdate_day = (new DateTime('midnight -10 days'))->format("Y-m-d");
+    $checkdate = $view_type === "month"
+        ? (new DateTime('midnight first day of this month -6 months 15 days'))
+        : (new DateTime('midnight -10 days'));
+
+    $qb = Connection::getConnection("cc_logrefill")
+        ->when(
+            $view_type === "month",
+            fn (Builder $q) => $q->selectRaw("CONCAT(CAST(date AS VARCHAR(8)), '01') AS period"),
+            fn (Builder $q) => $q->selectRaw("CAST(date AS VARCHAR(10)) AS period"),
+        )
+        ->where("date", ">", $checkdate)
+        ->wherePast("date")
+        ->orderBy("period")
+        ->groupBy("period");
 
     switch ($type) {
         case "refills_count":
-            $agg_column = "COUNT(*)";
+            $qb->selectRaw("COUNT(*) AS agg");
             break;
         case "refills_amount":
-            $agg_column = "SUM(credit)";
+            $qb->selectRaw("SUM(credit) AS agg");
             $format = "money";
             break;
         default:
             die();
     }
-
-    $columns = $view_type === "month"
-        ? ["CONCAT(CAST($period_column AS VARCHAR(8)), '01') AS period", "$agg_column AS agg"]
-        : ["CAST($period_column AS VARCHAR(10)) AS period", "$agg_column AS agg"];
-    $conditions = [$period_column => ["BETWEEN", [$view_type === "month" ? $checkdate_month : $checkdate_day, "CURRENT_TIMESTAMP"]]];
-
-    $result = (new Table($table, $columns))
-        ->getRows($conditions, ["period"], "ASC", ["period"]) ?: [["period" => 0, "agg" => 0]];
+    $result = $qb->get() ?: [["period" => 0, "agg" => 0]];
     foreach ($result as $row) {
         $period = DateTime::createFromFormat("Y-m-d", $row["period"]);
         $data[] = [
