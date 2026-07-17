@@ -19,7 +19,9 @@ namespace A2billing\Forms;
     <form method="get" action="<?= $_SERVER["PHP_SELF"] ?>" class="col">
         <input type="hidden" name="form_action" value="list"/>
         <?php foreach ($query_params as $key => $val): ?>
+            <?php if (!empty($key) && !is_array($val)): ?>
         <input type="hidden" name="<?= $key ?>" value="<?= $val ?>"/>
+            <?php endif ?>
         <?php endforeach ?>
         <?php foreach ($processed as $key => $val): ?>
             <?php if (!empty($key) && $key !== 'current_page' && $key !== 'id' && !is_array($val)): ?>
@@ -257,10 +259,12 @@ namespace A2billing\Forms;
             <input type="hidden" name="form_action" value="list"/>
             <input type="hidden" name="current_page" value="0"/>
             <?php foreach ($query_params as $key => $val): ?>
+                <?php if (!empty($key) && !is_array($val)): ?>
             <input type="hidden" name="<?= $key ?>" value="<?= $val ?>"/>
+                <?php endif ?>
             <?php endforeach ?>
             <?php foreach ($processed as $key => $val): ?>
-                <?php if ($key !== 'current_page' && $key !== 'id'): ?>
+                <?php if (!empty($key) && $key !== 'current_page' && $key !== 'id' && !is_array($val)): ?>
                     <input type="hidden" name="<?= $key ?>" value="<?= $val ?>">
                 <?php endif ?>
             <?php endforeach ?>
