@@ -3,10 +3,13 @@
 namespace A2billing;
 
 use Illuminate\Database\Capsule\Manager;
+use Illuminate\Database\Connection as IlluminateConnection;
 use Illuminate\Database\Events\QueryExecuted;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Events\Dispatcher;
 use PDO;
 use PhpProfiler\Console;
+use ReflectionException;
 use ReflectionObject;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -45,7 +48,12 @@ class Connection
 {
     private static Manager $manager;
 
-    public static function getConnection(): \Illuminate\Database\Connection
+    /**
+     * @param string|null $table if set, get a query builder instance for this table
+     * @param mixed $columns if set, the columns to select from the table
+     * @return ($table is null ? IlluminateConnection : Builder)
+     */
+    public static function getConnection(string|null $table = null, mixed ...$columns): IlluminateConnection|Builder
     {
         if (!isset(self::$manager)) {
             $config = A2Billing::parseConfigurationFile();
@@ -60,9 +68,11 @@ class Connection
                 "charset" => "utf8mb4",
                 "collation" => "utf8mb4_unicode_ci"
             ]);
-            $prop = (new ReflectionObject($conn->getConnection()))->getProperty("fetchMode");
-            // match old defaults for now
-            $prop->setValue($conn->getConnection(), PDO::FETCH_BOTH);
+            try {
+                $prop = (new ReflectionObject($conn->getConnection()))->getProperty("fetchMode");
+                // match old defaults for now
+                $prop->setValue($conn->getConnection(), PDO::FETCH_BOTH);
+            } catch (ReflectionException) {}
             $conn->setAsGlobal();
             if (class_exists(Dispatcher::class) && class_exists(Console::class)) {
                 $conn->getConnection()->enableQueryLog();
@@ -74,6 +84,12 @@ class Connection
             self::$manager = $conn;
         }
 
-        return self::$manager->getConnection();
+        if (!$table) {
+            return self::$manager->getConnection();
+        }
+
+        $builder = self::$manager->getConnection()->table($table);
+
+        return $columns ? $builder->select($columns) : $builder;
     }
 }
