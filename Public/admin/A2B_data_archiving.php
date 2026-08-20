@@ -5,6 +5,7 @@ use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 use A2billing\Table;
+use Illuminate\Database\Query\Builder;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -121,12 +122,12 @@ $HD_Form->prepare_list_subselection('list');
 $archive_message = "";
 if ($posted_archive) {
     try {
-        Connection::getConnection()->transaction(function () use ($archive_all, $HD_Form) {
-            $conn = Connection::getConnection();
-            $sub = $archive_all ? $conn->table("cc_card") : $HD_Form->query_builder;
-            $conn->table("cc_card_archive")->insertUsing(["*"], $sub);
-            $sub->delete();
-        });
+        Connection::getConnection("cc_card_archive")
+            ->transaction(function (Builder $builder) use ($archive_all, $HD_Form) {
+                $sub = $archive_all ? Connection::getConnection("cc_card") : $HD_Form->query_builder;
+                $builder->insertUsing(["*"], $sub);
+                $sub->delete();
+            });
         $HD_Form->list_message_empty = _("The data has been successfully archived");
     } catch (Throwable) {
         $archive_message = _("There was an error archiving the data");

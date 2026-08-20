@@ -4,7 +4,7 @@ use A2billing\Admin;
 use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
-use A2billing\Table;
+use Illuminate\Database\Query\Builder;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -168,12 +168,11 @@ if (($calltype ?? "answered") === "answered") {
 $archive_message = "";
 if ($posted_archive === true) {
     try {
-        $builder = Connection::getConnection();
-        $builder->transaction(function () use ($builder, $HD_Form)
-        {
-            $builder->query()->insertUsing(['*'], $HD_Form->query_builder);
-            $HD_Form->query_builder->delete();
-        });
+        Connection::getConnection("cc_call_archive")
+            ->transaction(function (Builder $builder) use ($HD_Form) {
+                $builder->insertUsing(['*'], $HD_Form->query_builder);
+                $HD_Form->query_builder->delete();
+            });
         $HD_Form->list_message_empty = _("The data has been successfully archived");
     } catch (Throwable) {
         $archive_message = _("There was an error archiving the data");
