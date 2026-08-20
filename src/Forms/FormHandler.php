@@ -401,6 +401,21 @@ class FormHandler
         $this->delete_message_confirm_fk = _("Are you sure you want to delete all records connected to this instance?");
     }
 
+    public function cloneQueryBuilder(bool $conditions = true, bool $joins = false): Builder
+    {
+        $builder = $this->query_builder->clone();
+        if ($joins === false) {
+            $builder->joins = null;
+            $builder->bindings["join"] = [];
+        }
+        if ($conditions === false) {
+            $builder->wheres = [];
+            $builder->bindings["where"] = [];
+        }
+
+        return $builder;
+    }
+
     /*
     * Generate a csrf token
     */
