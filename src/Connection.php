@@ -66,7 +66,7 @@ class Connection
                 "password" => $config["database"]["password"] ?? "a2billing",
                 "database" => $config["database"]["dbname"] ?? "a2billing",
                 "charset" => "utf8mb4",
-                "collation" => "utf8mb4_unicode_ci"
+                "collation" => "utf8mb4_unicode_ci",
             ]);
             try {
                 $prop = (new ReflectionObject($conn->getConnection()))->getProperty("fetchMode");
@@ -83,6 +83,25 @@ class Connection
             }
             self::$manager = $conn;
         }
+
+        Builder::macro("removeWhere", function(string $column, int $offset = 0): Builder {
+            $stripWhere = function(Builder $builder, int $key) {
+                array_splice($builder->wheres, $key, 1);
+                array_splice($builder->bindings["where"], $key, 1);
+            };
+            /** @var Builder $this */
+            foreach ($this->wheres as $k => $w) {
+                $k += $offset;
+                if (($w["column"] ?? null) === $column) {
+                    $stripWhere($this, $k);
+                } elseif ($w["type"] === "Nested" && ($nested = $w["query"] ?? null)) {
+                    /** @var Builder $nested */
+                    $nested->removeWhere($column, $k);
+                }
+            }
+
+            return $this;
+        });
 
         if (!$table) {
             return self::$manager->getConnection();
