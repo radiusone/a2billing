@@ -97,11 +97,7 @@ $HD_Form->search_delete_enabled = false;
 $HD_Form->prepare_list_subselection("list");
 
 // remove the existing starttime condition
-$key = array_find_key($HD_Form->query_builder->wheres, fn ($v, $k) => $v["column"] === "starttime");
-if ($key !== null) {
-    unset($HD_Form->query_builder->wheres[$key]);
-    array_splice($HD_Form->query_builder->bindings["where"], $key, 1);
-}
+$HD_Form->query_builder->removeWhere("starttime");
 // replace with a date range
 $end = (new DateTimeImmutable($starttime ?? "now"))->setTime(23, 59, 59);
 $relative_days ??= "2";
