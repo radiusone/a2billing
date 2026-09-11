@@ -855,7 +855,7 @@ class A2Billing
             $params = [$this->destination];
             $row = $this->DBHandle->selectOne($query, $params);
             $this->debug(self::DEBUG, "Query: $query", $params, $row);
-            if ($row !== false && $row !== []) {
+            if ($row !== null) {
                 $iscall2did = true;
             }
         }
