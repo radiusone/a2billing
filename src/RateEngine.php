@@ -1486,23 +1486,23 @@ class RateEngine
             $destination = $old_destination;
             $this->usedtrunk = (int)$ratecard["rt_id_trunk"];
             if ($this->usedtrunk !== -1) {
-                $prefix         = $ratecard["rt_trunkprefix"];
+                $prefix         = $ratecard["rt_trunkprefix"] ?? "";
                 $tech           = $ratecard["rt_providertech"];
                 $ipaddress      = $ratecard["rt_providerip"];
-                $removeprefix   = $ratecard["rt_removeprefix"];
-                $failover_trunk = (int)$ratecard["rt_failover_trunk"];
-                $addparameter   = $ratecard["rt_addparameter_trunk"];
+                $removeprefix   = $ratecard["rt_removeprefix"] ?? "";
+                $failover_trunk = (int)($ratecard["rt_failover_trunk"] ?? -1);
+                $addparameter   = $ratecard["rt_addparameter_trunk"] ?? "";
                 $inuse          = (int)$ratecard["rt_inuse"];
                 $maxuse         = (int)$ratecard["rt_maxuse"];
                 $ifmaxuse       = (int)$ratecard["rt_if_max_use"];
             } else {
                 $this->usedtrunk = (int)$ratecard["tp_id_trunk"];
-                $prefix         = $ratecard["tp_trunkprefix"];
+                $prefix         = $ratecard["tp_trunkprefix"] ?? "";
                 $tech           = $ratecard["tp_providertech"];
                 $ipaddress      = $ratecard["tp_providerip"];
-                $removeprefix   = $ratecard["tp_removeprefix"];
-                $failover_trunk = (int)$ratecard["tp_failover_trunk"];
-                $addparameter   = $ratecard["tp_addparameter_trunk"];
+                $removeprefix   = $ratecard["tp_removeprefix"] ?? "";
+                $failover_trunk = (int)($ratecard["tp_failover_trunk"] ?? -1);
+                $addparameter   = $ratecard["tp_addparameter_trunk"] ?? "";
                 $inuse          = (int)$ratecard["tp_inuse"];
                 $maxuse         = (int)$ratecard["tp_maxuse"];
                 $ifmaxuse       = (int)$ratecard["tp_if_max_use"];
