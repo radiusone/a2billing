@@ -539,8 +539,19 @@ function validate_upload(string $the_file, string $the_file_type): string
 
 function get_timezones(): array
 {
-    return Connection::getConnection("cc_timezone")->pluck("gmtzone", "id")
+    $tz = Connection::getConnection("cc_timezone")->pluck("gmtzone", "id")
         ->toArray();
+
+    uasort($tz, function (string $a, string $b) {
+        $at = str_starts_with($a, '(GMT)') ? 0 : substr($a, 4, 3);
+        $bt = str_starts_with($b, '(GMT)') ? 0 : substr($b, 4, 3);
+
+        return $at === $bt
+            ? $a <=> $b
+            : intval($at) <=> intval($bt);
+    });
+
+    return $tz;
 }
 
 function get_login_button($id): string
