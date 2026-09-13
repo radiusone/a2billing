@@ -166,7 +166,7 @@ INSERT INTO `cc_config` (`config_title`, `config_key`, `config_value`, `config_d
     ('IVR Voucher Refill','ivr_voucher','0','enable the option to refill card with voucher in IVR (values : YES - NO) .',1,'yes,no',11),
     ('IVR Voucher Prefix','ivr_voucher_prefix','8','if ivr_voucher is active, you can define a prefix for the voucher number to refill your card, values : number - don\'t forget to change prepaid-refill_card_with_voucher audio accordingly .',0,NULL,11),
     ('IVR Low Credit','jump_voucher_if_min_credit','0','When the user credit are below the minimum credit to call min_credit jump directly to the voucher IVR menu  (values: YES - NO) .',1,'yes,no',11),
-    ('Dial Command Params','dialcommand_param',',60,HRrL(%timeout%:61000:30000)','More information about the Dial : http://voip-info.org/wiki-Asterisk+cmd+dial<br>30 :  The timeout parameter is optional. If not specifed, the Dial command will wait indefinitely, exiting only when the originating channel hangs up, or all the dialed channels return a busy or error condition. Otherwise it specifies a maximum time, in seconds, that the Dial command is to wait for a channel to answer.<br>H: Allow the caller to hang up by dialing * <br>r: Generate a ringing tone for the calling part',0,NULL,11),
+    ('Dial Command Params','dialcommand_param',',60,HRrL(%timeout%:61000:30000)','More information about the Dial : https://docs.asterisk.org/Asterisk_22_Documentation/API_Documentation/Dialplan_Applications/Dial/<br>30 :  The timeout parameter is optional. If not specifed, the Dial command will wait indefinitely, exiting only when the originating channel hangs up, or all the dialed channels return a busy or error condition. Otherwise it specifies a maximum time, in seconds, that the Dial command is to wait for a channel to answer.<br>H: Allow the caller to hang up by dialing * <br>r: Generate a ringing tone for the calling part',0,NULL,11),
     ('SIP/IAX Dial Command Params','dialcommand_param_sipiax_friend',',60,HiL(3600000:61000:30000)','by default (3600000  =  1HOUR MAX CALL).',0,NULL,11),
     ('Outbound Call','switchdialcommand','0','Define the order to make the outbound call<br>YES -> SIP/dialedphonenumber@gateway_ip - NO  SIP/gateway_ip/dialedphonenumber<br>Both should work exactly the same but i experimented one case when gateway was supporting dialedphonenumber@gateway_ip, So in case of trouble, try it out.',1,'yes,no',11),
     ('Failover Retry Limit','failover_recursive_limit','2','failover recursive search - define how many time we want to authorize the research of the failover trunk when a call fails (value : 0 - 20) .',0,NULL,11),
@@ -29116,16 +29116,20 @@ INSERT INTO `cc_timezone` (`gmtzone`, `zone`) VALUES
     ('(GMT-11:00) Midway Island, Samoa', 'Pacific/Samoa'),
     ('(GMT-10:00) Hawaii', 'Pacific/Honolulu'),
     ('(GMT-09:00) Alaska', 'America/Anchorage'),
-    ('(GMT-08:00) Pacific Time (US & Canada) Tijuana', 'America/Los_Angeles'),
+    ('(GMT-08:00) Pacific Time (US), Tijuana', 'America/Los_Angeles'),
+    ('(GMT-07:00) Pacific Time (Canada)', 'America/Vancouver'),
     ('(GMT-07:00) Arizona', 'America/Phoenix'),
     ('(GMT-07:00) Chihuahua, La Paz, Mazatlan', 'America/Mazatlan'),
-    ('(GMT-07:00) Mountain Time(US & Canada)', 'America/Denver'),
+    ('(GMT-07:00) Mountain Time (US)', 'America/Denver'),
     ('(GMT-06:00) Central America', 'America/Guatemala'),
-    ('(GMT-06:00) Central Time (US & Canada)', 'America/Chicago'),
+    ('(GMT-06:00) Alberta Time', 'America/Edmonton'),
+    ('(GMT-06:00) Central Time (Canada)', 'America/Winnipeg'),
+    ('(GMT-06:00) Central Time (US)', 'America/Chicago'),
     ('(GMT-06:00) Guadalajara, Mexico City, Monterrey', 'America/Mexico_City'),
     ('(GMT-06:00) Saskatchewan', 'America/Regina'),
     ('(GMT-05:00) Bogota, Lima, Quito', 'America/Bogota'),
-    ('(GMT-05:00) Eastern Time (US & Canada)', 'America/New_York'),
+    ('(GMT-05:00) Eastern Time (Canada)', 'America/Toronto'),
+    ('(GMT-05:00) Eastern Time (US)', 'America/New_York'),
     ('(GMT-05:00) Indiana (East)', 'America/Indiana/Indianapolis'),
     ('(GMT-04:00) Atlantic Time (Canada)', 'America/Halifax'),
     ('(GMT-04:00) Caracas, La Paz', 'America/Caracas'),
@@ -29138,7 +29142,8 @@ INSERT INTO `cc_timezone` (`gmtzone`, `zone`) VALUES
     ('(GMT-01:00) Azores', 'Atlantic/Azores'),
     ('(GMT-01:00) Cabo Verde', 'Atlantic/Cape_Verde'),
     ('(GMT) Casablanca, Monrovia', 'Africa/Monrovia'),
-    ('(GMT) Dublin, Edinburgh, Lisbon, London', 'GMT', 0, 'Europe/London'),
+    ('(GMT) Dublin, Edinburgh, Lisbon, London', 'Europe/London'),
+    ('(GMT) Iceland', 'Atlantic/Reykjavik'),
     ('(GMT+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna', 'Europe/Berlin'),
     ('(GMT+01:00) Belgrade, Bratislava, Budapest, Ljubljana, Prague', 'Europe/Budapest'),
     ('(GMT+01:00) Brussels, Copenhagen, Madrid, Paris', 'Europe/Paris'),
@@ -29184,9 +29189,9 @@ INSERT INTO `cc_timezone` (`gmtzone`, `zone`) VALUES
     ('(GMT+10:00) Hobart', 'Australia/Hobart'),
     ('(GMT+10:00) Vladivostok', 'Asia/Vladivostok'),
     ('(GMT+11:00) Magadan, Solomon Is., New Caledonia', 'Pacific/Norfolk'),
-    ('(GMT+12:00) Auckland, Wellington', 'GMT+1200', 43200, 'Pacific/Auckland'),
+    ('(GMT+12:00) Auckland, Wellington', 'Pacific/Auckland'),
     ('(GMT+12:00) Fiji, Kamchatka, Marshall Is.', 'Pacific/Fiji'),
-    ('(GMT+13:00) Nukuʻalofa', 'Pacific/Tongatapu'),
+    ('(GMT+13:00) Nukuʻalofa', 'Pacific/Tongatapu');
 ALTER TABLE `cc_timezone` ENABLE KEYS;
 
 LOCK TABLES `cc_ui_authen` WRITE;
@@ -29199,7 +29204,7 @@ ALTER TABLE `cc_ui_authen` ENABLE KEYS;
 LOCK TABLES `cc_version` WRITE;
 ALTER TABLE `cc_version` DISABLE KEYS;
 INSERT INTO `cc_version` (`version`) VALUES
-    ('3.1.0');
+    ('3.3.2');
 ALTER TABLE `cc_version` ENABLE KEYS;
 
 UNLOCK TABLES;
