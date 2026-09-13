@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Forms\FormBO;
 use A2billing\Forms\FormHandler;
@@ -136,13 +137,13 @@ $HD_Form->AddEditElement(
 $HD_Form->AddEditSqlSelect(
     _("DIDGROUP"),
     "id_cc_didgroup",
-    new Table("cc_didgroup", ["didgroupname", "id"])
+    Connection::getConnection("cc_didgroup", "didgroupname", "id")
 );
 
 $HD_Form->AddEditSqlSelect(
     _("COUNTRY"),
     "country",
-    new Table("cc_country", ["countryname", "countrycode"])
+    Connection::getConnection("cc_country", "countryname", "countrycode")
 );
 
 $HD_Form->AddEditRadio(

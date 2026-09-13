@@ -5,7 +5,6 @@ use A2billing\Connection;
 use A2billing\Forms\FormBO;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -170,8 +169,7 @@ if ($A2B->config["signup"]['field_country'] ?? 0)  {
     $HD_Form->AddEditSqlSelect(
         gettext("COUNTRY"),
         "country",
-        new Table("cc_country", ["countryname", "countrycode"]),
-        [],
+        Connection::getConnection("cc_country", "countryname", "countrycode"),
         $form_action === "ask-add" ? "CAN" : ""
     );
     $country_editFG = "country,";

@@ -395,15 +395,15 @@ if ($popup_select) {
         $HD_Form->AddEditSqlSelect(
             _("Group"),
             "id_group",
-            new Table("cc_card_group", ["name", "id"]),
-            is_admin() ? [] : ["id_agent" => Agent::id()],
+            Connection::getConnection("cc_card_group", "name", "id")
+                ->when(is_admin(), fn ($q) => $q->where("id_agent", Agent::id())),
             validator: [Validator::class, "foreignKey"]
         );
 
         $HD_Form->AddEditSqlSelect(
             _("Card series"),
             "id_seria",
-            new Table("cc_card_seria", ["name", "id"]),
+            Connection::getConnection("cc_card_seria", "name", "id"),
             first_option: ["" => _("NOT DEFINED")],
             validator: [Validator::class, "foreignKey"]
         );
@@ -474,8 +474,7 @@ if ($popup_select) {
     $HD_Form->AddEditSqlSelect(
         _("Country"),
         "country",
-        new Table("cc_country", ["countryname", "countrycode"]),
-        [],
+        Connection::getConnection("cc_country", "countryname", "countrycode"),
         $form_action === "ask-add" ? "USA" : ""
     );
 
@@ -509,12 +508,12 @@ if ($popup_select) {
         "NO"
     );
 
-    $HD_Form->AddEditSqlSelect(
+    $HD_Form->AddEditSelect(
         _("Timezone"),
         "id_timezone",
-        new Table("cc_timezone", ["gmtzone", "id"]),
-        first_option: ["" => ""],
+        get_timezones(),
         form_text_bottom: ("Leave blank to use system default") . " " . (new DateTime())->getTimezone()->getName(),
+        first_option: ["" => ""],
         validator: [Validator::class, "foreignKey"]
     );
 
@@ -572,21 +571,19 @@ if ($popup_select) {
         $HD_Form->AddEditSqlSelect(
             _("Call plan"),
             "tariff",
-            new Table("cc_tariffgroup", ["tariffgroupname", "id"], is_admin() ? []
-                : ["cc_agent_tariffgroup" => ["cc_tariffgroup.id", "cc_agent_tariffgroup.id_tariffgroup"]]),
-            is_admin()
-                ? []
-                : ["cc_agent_tariffgroup.id_agent" => Agent::id()],
-            "",
-            [],
-            _("Changing the call plan will result in the free minutes or free calls package being reset.")
+            Connection::getConnection("cc_tariffgroup", "tariffgroupname", "id")
+                ->when(is_admin(), function ($q) {
+                    $q->leftJoin("cc_agent_tariffgroup", "cc_tariffgroup.id", "cc_agent_tariffgroup.id_tariffgroup")
+                        ->where("cc_agent_tariffgroup.id_agent", Agent::id());
+                }),
+            form_text_bottom: _("Changing the call plan will result in the free minutes or free calls package being reset.")
         );
     }
 
     $HD_Form->AddEditSqlSelect(
         _("DID group"),
         "id_didgroup",
-        new Table("cc_didgroup", ["didgroupname", "id"]),
+        Connection::getConnection("cc_didgroup", "didgroupname", "id"),
         first_option: ["" => _("NOT DEFINED")],
         validator: [Validator::class, "foreignKey"]
     );

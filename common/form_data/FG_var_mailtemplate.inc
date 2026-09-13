@@ -168,13 +168,9 @@ $HD_Form->AddEditSelect(
 $HD_Form->AddEditSqlSelect(
     _("LANGUAGE"),
     "id_language",
-    new Table("cc_iso639", ["name", "code"]),
-    [],
+    Connection::getConnection("cc_iso639", "name", "code"),
     $source["id_language"] ?? "en",
-    [],
-    "",
-    [],
-    _("Insert the mail id language")
+    error_message: _("Insert the mail id language")
 );
 
 

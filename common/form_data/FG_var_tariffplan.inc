@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 use A2billing\Table;
@@ -108,7 +109,7 @@ $HD_Form->AddEditElement(
 $HD_Form->AddEditSqlSelect(
     _("TRUNK"),
     "id_trunk",
-    new Table("cc_trunk", ["trunkcode", "id_trunk"])
+    Connection::getConnection("cc_trunk", "trunkcode", "id_trunk")
 );
 
 $HD_Form->AddEditTextarea(

@@ -93,8 +93,7 @@ $HD_Form->AddEditSelect(_("LC TYPE"), "lcrtype", $lcrtype_list);
 $HD_Form->AddEditSqlSelect(
     _("PACKAGE"),
     "id_cc_package_offer",
-    new Table("cc_package_offer", ["label", "id"]),
-    [],
+    Connection::getConnection("cc_package_offer", "label", "id"),
     "",
     ["" => _("NOT DEFINED")],
     _("Set the Package Group offer if you wish to use one with this Call Plan")

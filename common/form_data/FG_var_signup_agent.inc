@@ -2,8 +2,10 @@
 
 use A2billing\A2Billing;
 use A2billing\Agent;
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 use A2billing\Table;
+use Illuminate\Support\Facades\DB;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -77,8 +79,7 @@ if (is_admin()) {
     $HD_Form->AddEditSqlSelect(
         _("Agent"),
         "id_agent",
-        new Table("cc_agent", ["CONCAT(login, ' - ', firstname, ' ', lastname)", "id"]),
-        [],
+        Connection::getConnection("cc_agent", DB::raw("CONCAT(login, ' - ', firstname, ' ', lastname)"), "id"),
         $id_agent,
         ["" => _("Select agent")],
         "",
@@ -92,12 +93,9 @@ if ($id_agent && ($form_action === "ask-add" || $form_action === "add") || $form
     $HD_Form->AddEditSqlSelect(
         _("Call Plan"),
         "id_tariffgroup",
-        new Table("cc_tariffgroup", ["tariffgroupname", "id"], [
-            "cc_agent_tariffgroup" => [
-                "cc_tariffgroup.id", "cc_agent_tariffgroup.id_tariffgroup"
-            ]
-        ]),
-        $form_action === "ask-delete" ? [] : ["id_agent" => $id_agent],
+        Connection::getConnection("cc_tariffgroup", "tariffgroupname", "id")
+            ->leftJoin("cc_agent_tariffgroup", "cc_tariffgroup.id", "cc_agent_tariffgroup.id_tariffgroup")
+            ->when($form_action !== "ask-delete", fn ($q) => $q->where("id_agent", $id_agent)),
         "",
         ["" => _("Select call plan")],
         "",
@@ -107,8 +105,8 @@ if ($id_agent && ($form_action === "ask-add" || $form_action === "add") || $form
     $HD_Form->AddEditSqlSelect(
         _("Customer Group"),
         "id_group",
-        new Table("cc_card_group", ["name", "id"]),
-        $form_action === "ask-delete" ? [] : ["id_agent" => $id_agent],
+        Connection::getConnection("cc_card_group", "name", "id")
+            ->when($form_action !== "ask-delete", fn ($q) => $q->where("id_agent", $id_agent)),
         "",
         ["" => _("Select group")],
         "",

@@ -1,6 +1,6 @@
 <?php
 
-use A2billing\Admin;
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 use A2billing\Table;
 
@@ -72,7 +72,7 @@ $HD_Form->AddEditTextarea(
 $HD_Form->AddEditSqlSelect(
     _("CIDGROUP"),
     "outbound_cid_group",
-    new Table("cc_outbound_cid_group", ["group_name", "id"])
+    Connection::getConnection("cc_outbound_cid_group", "group_name", "id")
 );
 
 $HD_Form->AddEditRadio(

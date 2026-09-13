@@ -1,9 +1,10 @@
 <?php
 
-use A2billing\Admin;
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 use A2billing\Table;
+use Illuminate\Support\Facades\DB;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -82,8 +83,7 @@ $CURRENCY = strtoupper(BASE_CURRENCY);
 $HD_Form->AddEditSqlSelect(
     _("SUBSCRIPTION OPTIONS"),
     "id_subscription",
-    new Table("cc_subscription_service", ["CONCAT(label, ' - ', fee, '$CURRENCY'", "id"]),
-    [],
+    Connection::getConnection("cc_subscription_service", DB::raw("CONCAT(label, ' - ', fee, '$CURRENCY'"), "id"),
     "",
     ["" => _("NONE")]
 );
@@ -99,8 +99,7 @@ $HD_Form->AddEditTextarea(
 $HD_Form->AddEditSqlSelect(
     _("CALL PLAN"),
     "id_callplan",
-    new Table("cc_tariffgroup", ["tariffgroupname", "id"]),
-    [],
+    Connection::getConnection("cc_tariffgroup", ["tariffgroupname", "id"]),
     "",
     [],
     _("Define the callplan to associate to your Subscription")

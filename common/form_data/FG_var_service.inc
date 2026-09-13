@@ -1,6 +1,5 @@
 <?php
 
-use A2billing\Admin;
 use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
@@ -169,8 +168,7 @@ $HD_Form->AddEditElement(
 $HD_Form->AddEditSqlSelect(
     _("CALL PLAN"),
     "dialplan",
-    new Table("cc_tariffgroup", ["tariffgroupname", "id"]),
-    [],
+    Connection::getConnection("cc_tariffgroup", "tariffgroupname", "id"),
     "",
     [0 => _("ANY")]
 );

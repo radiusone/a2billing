@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 use A2billing\Table;
@@ -100,8 +101,7 @@ if ($popup_select) {
 $HD_Form->AddEditSqlSelect(
     _("VOIP PROVIDER"),
     "id_provider",
-    new Table("cc_provider", ["provider_name", "id"]),
-    [],
+    Connection::getConnection("cc_provider", "provider_name", "id"),
     "",
     ["" => _("NOT DEFINED")]
 );
@@ -163,8 +163,7 @@ $HD_Form->AddEditElement(
 $HD_Form->AddEditSqlSelect(
     _("FAILOVER TRUNK"),
     "failover_trunk",
-    new Table("cc_trunk", ["trunkcode", "id_trunk"]),
-    [],
+    Connection::getConnection("cc_trunk", "trunkcode", "id_trunk"),
     "",
     ["" => _("NOT DEFINED")],
     _("You can define another trunk in case of failover!")

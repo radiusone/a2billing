@@ -115,13 +115,10 @@ $readonly = ($form_action === "ask-add" || $form_action === "add")
 $HD_Form->AddEditSqlSelect(
     _("GROUP"),
     "config_group_id",
-    new Table("cc_config_group", ["group_title", "id"]),
-    [],
-    "",
-    [],
-    _("Group Name of the configuration variable"),
-    $readonly,
-    _("This is the group of the configuration. Not editable!")
+    Connection::getConnection("cc_config_group", "group_title", "id"),
+    form_text_bottom: _("Group Name of the configuration variable"),
+    html_attributes: $readonly,
+    error_message: _("This is the group of the configuration. Not editable!")
 );
 
 $HD_Form->AddEditElement(

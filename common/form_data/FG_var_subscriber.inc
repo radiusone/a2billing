@@ -1,6 +1,6 @@
 <?php
 
-use A2billing\Admin;
+use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
@@ -73,8 +73,7 @@ $HD_Form->AddEditPopup(
 $HD_Form->AddEditSqlSelect(
     _("ID SUBSCRIPTION SERVICE"),
     "id_subscription_fee",
-    new Table("cc_subscription_service", ["label", "id"]),
-    [],
+    Connection::getConnection("cc_subscription_service", "label", "id"),
     "",
     ["" => _("NOT DEFINED")]
 );

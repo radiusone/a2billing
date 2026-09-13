@@ -1,10 +1,10 @@
 <?php
 
+use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Forms\FormBO;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
-use A2billing\Table;
 
 /**
  * This file is part of A2Billing (http://www.a2billing.net/)
@@ -99,37 +99,36 @@ if (!is_customer() && $form_action !== "ask-edit" && $form_action !== "edit") {
         _("Insert the Customer ID")
     );
 
-    $HD_Form->AddEditSqlSelect(_("DID"), "id_cc_did", new Table("cc_did", ["did", "id"]));
+    $HD_Form->AddEditSqlSelect(
+        _("DID"),
+        "id_cc_did",
+        Connection::getConnection("cc_did", "did", "id")
+    );
 } elseif ($form_action !== "ask-edit" && $form_action !== "edit") {
     $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["id_cc_card"] = Customer::id();
 
     $HD_Form->AddEditSqlSelect(
         _("Use an existing DID"),
         "id_cc_did",
-        new Table("cc_did", ["did", "id"]),
-        ["iduser" => Customer::id()],
-        "",
-        ["" => ""],
-        "",
-        ["id" => "id_cc_did_old"],
-        "",
-        fn (array $row) => [format_phone_number($row["did"]), $row["id"]]
+        Connection::getConnection("cc_did", "did", "id")
+            ->where("iduser", Customer::id()),
+        first_option: ["" => ""],
+        html_attributes: ["id" => "id_cc_did_old"],
+        callback: fn (array $row) => [format_phone_number($row["did"]), $row["id"]]
     );
 
     $HD_Form->AddEditSqlSelect(
         _("Add a new DID"),
         "id_cc_did",
-        new Table(
+        Connection::getConnection(
             "cc_did",
-            ["id", "did", "fixrate", "connection_charge", "selling_rate", "aleg_retail_connect_charge", "aleg_retail_cost_min"]
-        ),
-        ["id_cc_didgroup" => $_SESSION["id_didgroup"], "reserved" => 0],
-        "",
-        ["" => ""],
-        "",
-        ["id" => "id_cc_did_new"],
-        "",
-        function (array $row) {
+            "id", "did", "fixrate", "connection_charge", "selling_rate",
+            "aleg_retail_connect_charge", "aleg_retail_cost_min"
+        )
+            ->where(["id_cc_didgroup" => $_SESSION["id_didgroup"], "reserved" => 0]),
+        first_option: ["" => ""],
+        html_attributes: ["id" => "id_cc_did_new"],
+        callback: function (array $row) {
             $text = format_phone_number($row["did"]) . " (";
             if ($row["fixrate"] > 0) {
                 $text .= sprintf(_("Monthly: %s"), get_money($row["fixrate"]));

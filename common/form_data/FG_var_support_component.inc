@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 use A2billing\Table;
@@ -82,7 +83,7 @@ $HD_Form->AddEditRadio(
 $HD_Form->AddEditSqlSelect(
     _("Support Box"),
     "id_support",
-    new Table("cc_support", ["name", "id"])
+    Connection::getConnection("cc_support", "name", "id")
 );
 
 $HD_Form->AddEditSelect(

@@ -2,6 +2,7 @@
 
 use A2billing\A2Billing;
 use A2billing\Agent;
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 use A2billing\Table;
@@ -185,7 +186,11 @@ if (is_admin()) {
         ["id_agent" => Agent::id()]
     );
 }
-$HD_Form->AddEditSqlSelect(_("Rate Card"), "idtariffplan", new Table("cc_tariffplan", ["tariffname", "id"]));
+$HD_Form->AddEditSqlSelect(
+    _("Rate Card"),
+    "idtariffplan",
+    Connection::getConnection("cc_tariffplan", "tariffname", "id")
+);
 
 $HD_Form->AddEditElement(
     _("Dialing Prefix"),
@@ -558,21 +563,17 @@ $HD_Form->AddEditElement(
 $HD_Form->AddEditSqlSelect(
     _("Trunk"),
     "id_trunk",
-    new Table("cc_trunk", ["trunkcode", "id_trunk"]),
-    [],
-    "",
-    ["" => _("NOT DEFINED")],
-    _("Set the trunk to use for this destination, or NOT DEFINED to use the rate card trunk.")
+    Connection::getConnection("cc_trunk", "trunkcode", "id_trunk"),
+    first_option: ["" => _("NOT DEFINED")],
+    form_text_bottom: _("Set the trunk to use for this destination, or NOT DEFINED to use the rate card trunk.")
 );
 
 $HD_Form->AddEditSqlSelect(
     _("CID Group"),
     "id_outbound_cidgroup",
-    new Table("cc_outbound_cid_group", ["group_name", "id"]),
-    [],
-    "",
-    ["" => _("NOT DEFINED")],
-    _("Set the Outgoing CID Group to use for this destination.")
+    Connection::getConnection("cc_outbound_cid_group", "group_name", "id"),
+    first_option: ["" => _("NOT DEFINED")],
+    form_text_bottom: _("Set the Outgoing CID Group to use for this destination.")
 );
 
 $HD_Form->AddEditElement(

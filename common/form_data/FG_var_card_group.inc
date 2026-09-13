@@ -1,9 +1,10 @@
 <?php
 
+use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
-use A2billing\Table;
+use Illuminate\Support\Facades\DB;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -102,10 +103,8 @@ $HD_Form->AddEditTextarea(
 $HD_Form->AddEditSqlSelect(
     _("Agent"),
     "id_agent",
-    new Table("cc_agent", ["CONCAT(login, ' - ', firstname, ' ', lastname)", "id"]),
-    [],
-    "",
-    ["" => _("NONE")]
+    Connection::getConnection("cc_agent", DB::raw("CONCAT(login, ' - ', firstname, ' ', lastname)"), "id"),
+    first_option: ["" => _("NONE")]
 );
 
 $HD_Form->AddEditSelect(

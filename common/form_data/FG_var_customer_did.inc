@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Forms\FormBO;
 use A2billing\Forms\FormHandler;
@@ -74,17 +75,14 @@ if ($form_action === "ask-add" || $form_action === "add") {
     $HD_Form->AddEditSqlSelect(
         _("Add a new DID"),
         "did_id",
-        new Table(
+        Connection::getConnection(
             "cc_did",
-            ["id", "did", "fixrate", "connection_charge", "selling_rate", "aleg_retail_connect_charge", "aleg_retail_cost_min"]
-        ),
-        ["id_cc_didgroup" => $_SESSION["id_didgroup"], "reserved" => 0],
-        "",
-        ["" => ""],
-        "",
-        [],
-        "",
-        function (array $row) {
+            "id", "did", "fixrate", "connection_charge", "selling_rate",
+            "aleg_retail_connect_charge", "aleg_retail_cost_min"
+        )
+            ->where(["id_cc_didgroup" => $_SESSION["id_didgroup"], "reserved" => 0]),
+        first_option: ["" => ""],
+        callback: function (array $row) {
             $text = format_phone_number($row["did"]) . " (";
             if ($row["fixrate"] > 0) {
                 $text .= sprintf(_("Monthly: %s"), get_money($row["fixrate"]));

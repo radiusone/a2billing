@@ -1,6 +1,6 @@
 <?php
 
-use A2billing\Admin;
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 use A2billing\Table;
@@ -71,7 +71,7 @@ $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form->AddEditSqlSelect(
     _("SERVER GROUP"),
     "id_server_group",
-    new Table("cc_server_group", ["name", "id"])
+    Connection::getConnection("cc_server_group", "name", "id")
 );
 
 $HD_Form->AddEditElement(
