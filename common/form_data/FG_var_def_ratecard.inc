@@ -5,7 +5,6 @@ use A2billing\Agent;
 use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -172,18 +171,15 @@ if (is_admin()) {
 }
 $HD_Form->AddSearchComparisonInput(_("Sell Rate"), 'rateinitial');
 if (is_admin()) {
-    $HD_Form->AddSearchSqlSelectInput(_("Trunk"), "id_trunk", new Table("cc_trunk", ["trunkcode", "id_trunk"]));
-    $HD_Form->AddSearchSqlSelectInput(_("Rate Card"), "idtariffplan", new Table("cc_tariffplan", ["tariffname", "id"]));
+    $HD_Form->AddSearchSqlSelectInput(_("Trunk"), "id_trunk", Connection::getConnection("cc_trunk", "trunkcode", "id_trunk"));
+    $HD_Form->AddSearchSqlSelectInput(_("Rate Card"), "idtariffplan", Connection::getConnection("cc_tariffplan", "tariffname", "id"));
 } elseif (is_agent()) {
     $HD_Form->AddSearchSqlSelectInput(
         _("Call Plan"),
         "tariffgroup_id",
-        new Table(
-            "cc_tariffgroup",
-            ["id", "tariffgroupname"],
-            ["cc_agent_tariffgroup" => ["cc_tariffgroup.id", "cc_agent_tariffgroup.id_tariffgroup"]]
-        ),
-        ["id_agent" => Agent::id()]
+        Connection::getConnection("cc_tariffgroup", "id", "tariffgroupname")
+            ->leftJoin("cc_agent_tariffgroup", "cc_tariffgroup.id", "cc_agent_tariffgroup.id_tariffgroup")
+            ->where("id_agent", Agent::id())
     );
 }
 $HD_Form->AddEditSqlSelect(

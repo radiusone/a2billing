@@ -4,7 +4,6 @@ use A2billing\Admin;
 use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
-use A2billing\Table;
 use Illuminate\Database\Query\Builder;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -101,10 +100,10 @@ $HD_Form->AddSearchComparisonInput(_("Credit"), 'credit');
 $HD_Form->AddSearchComparisonInput(_("In use"), 'inuse');
 
 $HD_Form->AddSearchSelectInput(_("Language"), "language", $language_list);
-$HD_Form->AddSearchSqlSelectInput(_("Rate plan"), "tariff", new Table("cc_tariffgroup", ["tariffgroupname", "id"]));
+$HD_Form->AddSearchSqlSelectInput(_("Rate plan"), "tariff", Connection::getConnection("cc_tariffgroup", "tariffgroupname", "id"));
 $HD_Form->AddSearchSelectInput(_("Status"), "status", $cardstatus_list);
 $HD_Form->AddSearchSelectInput(_("Access"), "simultaccess", $simultaccess_list);
-$HD_Form->AddSearchSqlSelectInput(_("Group"), "id_group", new Table("cc_card_group", ["name", "id"]));
+$HD_Form->AddSearchSqlSelectInput(_("Group"), "id_group", Connection::getConnection("cc_card_group", "name", "id"));
 $HD_Form->AddSearchSelectInput(_("Currency"), "currency", $currency_list);
 
 if ($posted_search === true && $posted_archive === false) {

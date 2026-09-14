@@ -11,6 +11,7 @@ use A2billing\Forms\Validator;
 use A2billing\Notification;
 use A2billing\NotificationsDAO;
 use A2billing\Table;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @var A2Billing $A2B
@@ -278,15 +279,15 @@ if ($popup_select) {
     $HD_Form->AddSearchComparisonInput(_("Balance"), "cc_card.credit");
     $HD_Form->AddSearchComparisonInput(_("In use"), "inuse");
 
-    $HD_Form->AddSearchSqlSelectInput(_("Card series"), "id_seria", new Table("cc_card_seria", ["name", "id"]));
+    $HD_Form->AddSearchSqlSelectInput(_("Card series"), "id_seria", Connection::getConnection("cc_card_seria", "name", "id"));
     $HD_Form->AddSearchSelectInput(_("Language"), "cc_card.language", $language_list);
-    $HD_Form->AddSearchSqlSelectInput(_("Call plan"), "tariff", new Table("cc_tariffgroup", ["tariffgroupname", "id"]));
+    $HD_Form->AddSearchSqlSelectInput(_("Call plan"), "tariff", Connection::getConnection("cc_tariffgroup", "tariffgroupname", "id"));
     $HD_Form->AddSearchSelectInput(_("Status"), "status", $cardstatus_list);
     $HD_Form->AddSearchSelectInput(_("Access"), "simultaccess", $simultaccess_list);
-    $HD_Form->AddSearchSqlSelectInput(_("Group"), "id_group", new Table("cc_card_group", ["name", "id"]));
+    $HD_Form->AddSearchSqlSelectInput(_("Group"), "id_group", Connection::getConnection("cc_card_group", "name", "id"));
     $HD_Form->AddSearchSelectInput(_("Currency"), "cc_card.currency", getCurrenciesList());
     $HD_Form->AddSearchSelectInput(_("Account type"), "typepaid", $typepaid_list);
-    $HD_Form->AddSearchSqlSelectInput(_("Agent"), "id_agent", new Table("cc_agent", ["CONCAT(firstname, ' ', lastname)", "id"]));
+    $HD_Form->AddSearchSqlSelectInput(_("Agent"), "id_agent", Connection::getConnection("cc_agent", DB::raw("CONCAT(firstname, ' ', lastname)"), "id"));
 
     $HD_Form->FG_ENABLE_INFO_BUTTON = true;
     $HD_Form->FG_INFO_BUTTON_LINK = "A2B_info_card.php?id=";

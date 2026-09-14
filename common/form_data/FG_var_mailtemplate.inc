@@ -4,7 +4,6 @@ use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 use A2billing\Mail;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -150,7 +149,7 @@ if ((int)$popup_select >= 1) {
 }
 
 $HD_Form->search_form_enabled = true;
-$HD_Form->AddSearchSqlSelectInput(_("Select language"), "id_language", new Table("cc_iso639", ["name", "code"]));
+$HD_Form->AddSearchSqlSelectInput(_("Select language"), "id_language", Connection::getConnection("cc_iso639", "name", "code"));
 
 $source = [];
 if ($form_action === "ask-add" && !empty($from_id)) {

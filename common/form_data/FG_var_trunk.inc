@@ -3,7 +3,6 @@
 use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
-use A2billing\Table;
 
 /**
  * @var numeric-string $popup_select
@@ -85,7 +84,7 @@ if ($popup_select) {
 $HD_Form->search_form_enabled = true;
 $HD_Form->search_form_title = _("Search");
 $HD_Form->AddSearchTextInput(_("IP or Host"), 'providerip');
-$HD_Form->AddSearchSqlSelectInput(_("Provider"), "id_provider", new Table("cc_provider", ["provider_name", "id"]));
+$HD_Form->AddSearchSqlSelectInput(_("Provider"), "id_provider", Connection::getConnection("cc_provider", "provider_name", "id"));
 $HD_Form->AddSearchSelectInput(_("Status"), "status", [_("Inactive"), _("Active")]);
 
 if ($popup_select) {

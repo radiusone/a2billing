@@ -174,7 +174,7 @@ class FormHandler
      * @var array{array{
      *     type: string,
      *     label: string,
-     *     table: Table,
+     *     table: Builder,
      *     insert: string,
      *     foreign_key: string,
      *     section: string,
@@ -1034,19 +1034,17 @@ class FormHandler
      *
      * @param string $label the label of the element
      * @param string $name the name of the element, and also the database column queried
-     * @param Table $table a database object; first 2 columns will be used for content and value
-     * @param array<array-key,string|string[]> $conditions any conditions to apply to the query
+     * @param Builder $table a database object; first 2 columns will be used for content and value
      * @return void
      */
     public function AddSearchSqlSelectInput(
         string $label,
         string $name,
-        Table $table,
-        array $conditions = []
+        Builder $table
     )
     {
         $name = str_replace(".", "^^", $name);
-        $options = $table->getColumn($conditions);
+        $options = $table->get()->mapWithKeys(fn ($row) => [$row[1] => $row[0]]);
 
         $this->search_form_elements[] = [
             "label" => $label,

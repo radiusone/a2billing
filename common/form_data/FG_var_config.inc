@@ -2,7 +2,6 @@
 
 use A2billing\Connection;
 use A2billing\Forms\FormHandler;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -106,7 +105,7 @@ $HD_Form->search_delete_enabled = false;
 $HD_Form->AddSearchTextInput(_("Value"), "config_value");
 $HD_Form->AddSearchTextInput(_("Key"), "config_key");
 $HD_Form->AddSearchTextInput(_("Description"), "config_description");
-$HD_Form->AddSearchSqlSelectInput(_("Select config group"), "config_group_id", new Table("cc_config_group", ["group_title", "id"]));
+$HD_Form->AddSearchSqlSelectInput(_("Select config group"), "config_group_id", Connection::getConnection("cc_config_group", "group_title", "id"));
 
 $readonly = ($form_action === "ask-add" || $form_action === "add")
     ? []

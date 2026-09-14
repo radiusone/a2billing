@@ -1,11 +1,11 @@
 <?php
 
+use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Forms\FormBO;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 use A2billing\Payments\Invoice;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -142,7 +142,7 @@ if (!$popup_select && !is_customer()) {
     $HD_Form->AddSearchComparisonInput(_("AMOUNT INCL VAT"), 'total_price');
 
     $HD_Form->AddSearchSelectInput(_("PAYMENT TYPE"), "typepaid", $typepaid_list);
-    $HD_Form->AddSearchSqlSelectInput(_("CALL PLAN"), "tariff", new Table("cc_tariffgroup", ["tariffgroupname", "id"]));
+    $HD_Form->AddSearchSqlSelectInput(_("CALL PLAN"), "tariff", Connection::getConnection("cc_tariffgroup", "tariffgroupname", "id"));
     $HD_Form->AddSearchSelectInput(_("INVOICE DAY"), "invoiceday", $invoiceday_list);
     $HD_Form->AddSearchSelectInput(_("PAID STATUS"), "paid_status", $paid_status_list);
 }

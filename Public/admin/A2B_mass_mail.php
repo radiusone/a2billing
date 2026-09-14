@@ -6,7 +6,6 @@ use A2billing\Admin;
 use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 use A2billing\Mail;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -95,7 +94,7 @@ $HD_Form->AddSearchComparisonInput(gettext("CREDIT"), 'credit');
 $HD_Form->AddSearchComparisonInput(gettext("INUSE"), 'inuse');
 
 $HD_Form->AddSearchSelectInput(gettext("SELECT LANGUAGE"), "language", $language_list);
-$HD_Form->AddSearchSqlSelectInput(gettext("SELECT TARIFF"), "tariff", new Table("cc_tariffgroup", ["tariffgroupname", "id"]));
+$HD_Form->AddSearchSqlSelectInput(gettext("SELECT TARIFF"), "tariff", Connection::getConnection("cc_tariffgroup", "tariffgroupname", "id"));
 $HD_Form->AddSearchSelectInput(gettext("SELECT STATUS"), "status", $cardstatus_list);
 $HD_Form->AddSearchSelectInput(gettext("SELECT ACCESS"), "simultaccess", $simultaccess_list);
 $HD_Form->AddSearchSelectInput(gettext("SELECT CURRENCY"), "currency", $currencies_list);
