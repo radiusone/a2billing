@@ -138,8 +138,8 @@ if (!$popup_select && is_admin()) {
         ->AddListValue(_("Stop"), "stopdate")
         ->AddListValue(abbr(_("Init."), _("Initial Billing Block")), "initblock")
         ->AddListValue(abbr(_("Conn."), _("Connect Charge")), "connectcharge", "get_money")
-        ->AddListSqlMapping(_("Trunk"), "id_trunk", new Table("cc_trunk", ["id_trunk", "trunkcode"]))
-        ->AddListSqlMapping(_("Rate Card"), "idtariffplan", new Table("cc_tariffplan", ["id", "tariffname"]));
+        ->AddListSqlMapping(_("Trunk"), "id_trunk", Connection::getConnection("cc_trunk", "id_trunk", "trunkcode"))
+        ->AddListSqlMapping(_("Rate Card"), "idtariffplan", Connection::getConnection("cc_tariffplan", "id", "tariffname"));
     $HD_Form->AddListTopButton();
     $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
     $HD_Form->FG_ENABLE_DELETE_BUTTON = true;

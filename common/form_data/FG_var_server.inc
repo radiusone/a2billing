@@ -3,7 +3,6 @@
 use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -46,7 +45,7 @@ $HD_Form->help_text = create_help(
 );
 
 $HD_Form->AddListValue(_("ID"), "id_group");
-$HD_Form->AddListSqlMapping(_("Group"), "id_group", new Table("cc_server_group", ["id", "name"]));
+$HD_Form->AddListSqlMapping(_("Group"), "id_group", Connection::getConnection("cc_server_group", "id", "name"));
 $HD_Form->AddListValue(_("Hostname"), "server_ip");
 $HD_Form->AddListValue(_("Manager host"), "manager_host");
 $HD_Form->AddListValue(_("Manager username"), "manager_username");

@@ -4,7 +4,6 @@ use A2billing\A2Billing;
 use A2billing\Agent;
 use A2billing\Connection;
 use A2billing\Forms\FormHandler;
-use A2billing\Table;
 use Illuminate\Support\Facades\DB;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -63,8 +62,8 @@ $HD_Form->AddListValue(_("Key"), "code");
 if (is_admin()) {
     $HD_Form->AddListValue(_("Agent"), "id_agent", [Agent::class, "getName"]);
 }
-$HD_Form->AddListSqlMapping(_("Call plan"), "id_tariffgroup", new Table("cc_tariffgroup", ["id", "tariffgroupname"]));
-$HD_Form->AddListSqlMapping(_("Group"), "id_group", new Table("cc_card_group", ["id" , "name"]));
+$HD_Form->AddListSqlMapping(_("Call plan"), "id_tariffgroup", Connection::getConnection("cc_tariffgroup", "id", "tariffgroupname"));
+$HD_Form->AddListSqlMapping(_("Group"), "id_group", Connection::getConnection("cc_card_group", "id", "name"));
 
 $url = htmlspecialchars(json_encode($A2B->config["signup"]["urlcustomerinterface"]));
 $HD_Form->AddListActionButton(

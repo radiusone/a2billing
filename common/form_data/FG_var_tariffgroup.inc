@@ -67,7 +67,7 @@ if (!$popup_select) {
     $HD_Form->AddListValue(_("Creation date"), "creationdate");
 }
 $HD_Form->AddListMapping(abbr(_("LCR"), _("Least cost routing type")), "lcrtype", $lcrtype_list_short);
-$HD_Form->AddListSqlMapping(_("Package"), "id_cc_package_offer", new Table("cc_package_offer", ["id", "label"]));
+$HD_Form->AddListSqlMapping(_("Package"), "id_cc_package_offer", Connection::getConnection("cc_package_offer", "id", "label"));
 $HD_Form->AddListMapping(_("Prefix"), "removeinterprefix", $inter_prefix_list_short);
 if ($popup_select) {
 	$HD_Form->FG_LIST_VIEW_PAGE_SIZE = 7;

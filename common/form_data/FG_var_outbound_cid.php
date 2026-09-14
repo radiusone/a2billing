@@ -2,7 +2,6 @@
 
 use A2billing\Connection;
 use A2billing\Forms\FormHandler;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -51,7 +50,7 @@ $HD_Form->list_help_text = create_help(_("Outbound CID list. CID can be added by
 $HD_Form->help_text = create_help(_("Outbound CID offers customers a number which will be selected randomly for a ratecard for outgoing calls"));
 
 $HD_Form -> AddListValue(_("CID"), "cid");
-$HD_Form -> AddListSqlMapping(_("CIDGROUP"), "outbound_cid_group", new Table("cc_outbound_cid_group", ["id", "group_name"]));
+$HD_Form -> AddListSqlMapping(_("CIDGROUP"), "outbound_cid_group", Connection::getConnection("cc_outbound_cid_group", "id", "group_name"));
 $HD_Form -> AddListMapping(_("STATUS"), "activated", getActivationList());
 
 $HD_Form -> FG_ENABLE_ADD_BUTTON = true;

@@ -4,7 +4,6 @@ use A2billing\Agent;
 use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
-use A2billing\Table;
 
 $builder = Connection::getConnection("cc_call")
     ->join("cc_trunk", "cc_call.id_trunk", "=", "cc_trunk.id_trunk", "left outer")
@@ -39,7 +38,7 @@ if (is_admin() || is_agent()) {
     $HD_Form->AddListValue(_("DNID"), "dnid", "format_phone_number");
 }
 $HD_Form->AddListValue(_("Called number"), "calledstation", "format_phone_number");
-$HD_Form->AddListSqlMapping(_("Destination"), "cc_call.destination", new Table("cc_prefix", ["prefix", "destination"]));
+$HD_Form->AddListSqlMapping(_("Destination"), "cc_call.destination", Connection::getConnection("cc_prefix", "prefix", "destination"));
 if (is_admin()) {
     $HD_Form->AddListValue(_("Buy rate"), "buyrate", "get_money_precise");
 }

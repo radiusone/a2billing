@@ -69,14 +69,14 @@ $HD_Form->help_text = create_help(
 if ($popup_select) {
 	$HD_Form->AddListValue(_("ID"), "id_trunk");
 	$HD_Form->AddListValue(_("Label"), "trunkcode");
-	$HD_Form->AddListSqlMapping(_("Provider"), "id_provider", new Table("cc_provider", ["id", "provider_name"]));
+	$HD_Form->AddListSqlMapping(_("Provider"), "id_provider", Connection::getConnection("cc_provider", "id", "provider_name"));
 } else {
     $HD_Form->AddListValue(_("Label"), "trunkcode");
 	$HD_Form->AddListValue(abbr(_("+"), _("Added prefix")), "trunkprefix");
 	$HD_Form->AddListValue(abbr(_("-"), _("Removed prefix")), "removeprefix");
 	$HD_Form->AddListValue(_("Tech"), "providertech");
 	$HD_Form->AddListValue(_("Host"), "providerip");
-    $HD_Form->AddListSqlMapping(_("Provider"), "id_provider", new Table("cc_provider", ["id", "provider_name"]));
+    $HD_Form->AddListSqlMapping(_("Provider"), "id_provider", Connection::getConnection("cc_provider", "id", "provider_name"));
 	$HD_Form->AddListValue(abbr(_("Min"), _("Minutes used")), "secondusedreal", "get_minute");
 	$HD_Form->AddListMapping(_("Status"), "status", getActivationList());
 	$HD_Form->AddListValue(_("Max use"), "maxuse");

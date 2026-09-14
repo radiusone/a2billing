@@ -4,7 +4,6 @@ use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Forms\FormBO;
 use A2billing\Forms\FormHandler;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -61,7 +60,7 @@ $yesno = getYesNoList();
 
 $HD_Form->AddListValue(_("DID"), "did", "format_phone_number");
 $HD_Form->AddListValue(_("Start date"), "startingdate");
-$HD_Form->AddListSqlMapping(_("Country"), "country", new Table("cc_country", ["countrycode", "countryname"]));
+$HD_Form->AddListSqlMapping(_("Country"), "country", Connection::getConnection("cc_country", "countrycode", "countryname"));
 $HD_Form->AddListMapping(_("Active"), "activated", $yesno);
 $HD_Form->AddListValue(_("Minutes used"), "secondusedreal", "get_minute");
 $HD_Form->AddListValue(_("Monthly rate"), "fixrate");

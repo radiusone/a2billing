@@ -1,9 +1,9 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -78,7 +78,7 @@ if ($groupbyday) {
 if ($displaytop === "card_id") {
     $HD_Form->AddListValue(_("Account number"), "card_id", [Customer::class, "getUsername"]);
 } else {
-    $HD_Form->AddListSqlMapping(_("Destination"), "destination", new Table("cc_prefix", ["prefix", "destination"]));
+    $HD_Form->AddListSqlMapping(_("Destination"), "destination", Connection::getConnection("cc_prefix", "prefix", "destination"));
 }
 $HD_Form->AddListValue(_("Duration"), "SUM(real_sessiontime)", "get_minute");
 $HD_Form->AddListValue(_("Sell"), "SUM(sessionbill)", "get_money_precise");

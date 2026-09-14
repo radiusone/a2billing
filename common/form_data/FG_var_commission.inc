@@ -1,11 +1,11 @@
 <?php
 
 use A2billing\Agent;
+use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Forms\FormBO;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -79,8 +79,7 @@ $HD_Form->AddListValue(_("Description"), "description");
 $HD_Form->AddListSqlMapping(
     _("Link to payment"),
     "id_payment",
-    new Table("cc_logpayment", ["id", "payment"]),
-    [],
+    Connection::getConnection("cc_logpayment", "id", "payment"),
     "A2B_entity_payment.php?form_action=ask-edit&id="
 );
 

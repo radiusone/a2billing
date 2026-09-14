@@ -6,8 +6,8 @@ use A2billing\Customer;
 use A2billing\Forms\FormBO;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
-use A2billing\Table;
 use A2billing\Ticket;
+use Illuminate\Support\Facades\DB;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -143,7 +143,11 @@ if (is_admin() || (is_agent() && $ticket_type === "user")) {
     $HD_Form->AddListSqlMapping(
         $ticket_type === "agent" ? _("Agent") : _("Customer"),
         "creator",
-        new Table($ticket_type === "agent" ? "cc_agent" : "cc_card", ["id", "CONCAT(firstname, ' ', lastname)"])
+        Connection::getConnection(
+            $ticket_type === "agent" ? "cc_agent" : "cc_card",
+            "id",
+            DB::raw("CONCAT(firstname, ' ', lastname)")
+        )
     );
     $HD_Form->AddListValue(_("Account number"), "creator", [Customer::class, "getUsername"]);
 }
@@ -152,7 +156,7 @@ if (is_admin() && $ticket_type === "agent") {
 }
 $HD_Form->AddListValue(_("Title"), "title");
 $HD_Form->AddListValue(_("Creation date"), "cc_ticket.creationdate");
-$HD_Form->AddListSqlMapping(_("Component"), "id_component", new Table("cc_support_component", ["id", "name"]));
+$HD_Form->AddListSqlMapping(_("Component"), "id_component", Connection::getConnection("cc_support_component", "id", "name"));
 $HD_Form->AddListMapping(_("Priority"), "priority", $priority_list);
 $HD_Form->AddListMapping(_("Viewed"), "v.viewed", $viewed_list, false);
 $HD_Form->AddListMapping(_("Status"), "cc_ticket.status", $status_list);

@@ -1,9 +1,8 @@
 <?php
 
-use A2billing\Admin;
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -43,7 +42,7 @@ $HD_Form = new FormHandler("cc_call", _("Call"));
 
 $HD_Form->AddListValue(_("ID"), "id");
 $HD_Form->AddListValue(_("Called station"), "calledstation");
-$HD_Form->AddListSqlMapping(_("Account"), "card_id", new Table("cc_card", ["username,id"]), [], "A2B_entity_card.php?form-action=ask-edit&id=");
+$HD_Form->AddListSqlMapping(_("Account"), "card_id", Connection::getConnection("cc_card", "username", "id"), "A2B_entity_card.php?form-action=ask-edit&id=");
 
 $HD_Form->FG_ENABLE_ADD_BUTTON = false;
 $HD_Form->FG_ENABLE_EDIT_BUTTON = false;

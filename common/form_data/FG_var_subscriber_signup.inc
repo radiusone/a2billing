@@ -3,7 +3,6 @@
 use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
-use A2billing\Table;
 use Illuminate\Support\Facades\DB;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -51,8 +50,8 @@ $activated_list = getActivationList();
 $HD_Form->AddListValue(_("Label"), "label");
 $HD_Form->AddListMapping(_("Activity"), "enable", $activated_list);
 $HD_Form->AddListValue(_("Description"), "description");
-$HD_Form->AddListSqlMapping(_("Service"), "id_subscription", new Table("cc_subscription_service", ["id", "label"]));
-$HD_Form->AddListSqlMapping(_("Call plan"), "id_callplan", new Table("cc_tariffgroup", ["id", "tariffgroupname"]));
+$HD_Form->AddListSqlMapping(_("Service"), "id_subscription", Connection::getConnection("cc_subscription_service", "id", "label"));
+$HD_Form->AddListSqlMapping(_("Call plan"), "id_callplan", Connection::getConnection("cc_tariffgroup", "id", "tariffgroupname"));
 
 $HD_Form->list_message_empty  = _("NO SUBSCRIPTION IN SIGNUP CREATED!");
 

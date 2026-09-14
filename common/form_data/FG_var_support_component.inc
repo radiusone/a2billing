@@ -3,7 +3,6 @@
 use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -55,7 +54,7 @@ $HD_Form->AddListValue(_("ID"), "id");
 $HD_Form->AddListValue(_("Name"), "name");
 $HD_Form->AddListMapping(_("Activated"), "activated", $activated_list);
 $HD_Form->AddListMapping(_("User type"), "type_user", $user_type);
-$HD_Form->AddListSqlMapping(_("Support box"), "id_support", new Table("cc_support", ["id", "name"]));
+$HD_Form->AddListSqlMapping(_("Support box"), "id_support", Connection::getConnection("cc_support", "id", "name"));
 
 $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form->FG_ENABLE_DELETE_BUTTON = true;

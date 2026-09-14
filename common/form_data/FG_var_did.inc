@@ -5,7 +5,6 @@ use A2billing\Customer;
 use A2billing\Forms\FormBO;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -77,8 +76,8 @@ $HD_Form->AddListValue(_("DID"), "did", "format_phone_number");
 $HD_Form->AddListValue(_("Customer"), "iduser", [Customer::class, "getName"]);
 $HD_Form->AddListMapping(_("Billing"), "billingtype", getBillingTypeShortList());
 $HD_Form->AddListValue(_("Start date"), "startingdate");
-$HD_Form->AddListSqlMapping(_("DID group"), "id_cc_didgroup", new Table("cc_didgroup", ["id", "didgroupname"]));
-$HD_Form->AddListSqlMapping(_("Country"), "country", new Table("cc_country", ["countrycode", "countryname"]));
+$HD_Form->AddListSqlMapping(_("DID group"), "id_cc_didgroup", Connection::getConnection("cc_didgroup", "id", "didgroupname"));
+$HD_Form->AddListSqlMapping(_("Country"), "country", Connection::getConnection("cc_country", "countrycode", "countryname"));
 $HD_Form->AddListMapping(_("Active"), "activated", $yesno);
 $HD_Form->AddListValue(abbr(_("Min"), _("Minutes Used")), "secondusedreal", "get_minute");
 $HD_Form->AddListMapping(abbr(_("Res"), _("Reserved")), "reserved", $yesno);

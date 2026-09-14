@@ -3,7 +3,6 @@
 use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -62,7 +61,7 @@ $HD_Form->AddListValue(_("CALLBACK TIME"), "callback_time");
 $HD_Form->AddListValue(_("LAST_ATTEMPT"), "last_attempt_time");
 $HD_Form->AddListValue(_("CHANNEL"), "channel");
 $HD_Form->AddListValue(_("CONTEXT"), "context");
-$HD_Form->AddListSqlMapping(_("SERVER"), "id_server", new Table("cc_server_manager", ["id", "server_ip"]));
+$HD_Form->AddListSqlMapping(_("SERVER"), "id_server", Connection::getConnection("cc_server_manager", "id", "server_ip"));
 
 $HD_Form->FG_ENABLE_ADD_BUTTON = true;
 $HD_Form->FG_ENABLE_EDIT_BUTTON = true;

@@ -192,13 +192,13 @@ foreach ($show_list as $field) {
             $HD_Form->AddListValue(_("Web login"), "useralias");
             break;
         case "id_seria":
-            $HD_Form->AddListSqlMapping(_("Series"), "id_seria", new Table("cc_card_seria", ["id", "name"]));
+            $HD_Form->AddListSqlMapping(_("Series"), "id_seria", Connection::getConnection("cc_card_seria", "id", "name"));
             break;
         case "serial":
             $HD_Form->AddListValue(_("Serial #"), "serial", "str_pad", ["%X", (int)$serial_pad_length, 0, STR_PAD_LEFT]);
             break;
         case "tariff":
-            $HD_Form->AddListSqlMapping(_("Call Plan"), "tariff", new Table("cc_tariffgroup", ["id", "tariffgroupname"]));
+            $HD_Form->AddListSqlMapping(_("Call Plan"), "tariff", Connection::getConnection("cc_tariffgroup", "id", "tariffgroupname"));
             break;
         case "status":
             $HD_Form->AddListMapping(_("Status"), "status", getCardStatus_Acronym_List());

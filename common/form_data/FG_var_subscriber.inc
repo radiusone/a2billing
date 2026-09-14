@@ -4,7 +4,6 @@ use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -51,7 +50,7 @@ $HD_Form->AddListTopButton(null, null, "box-seam");
 $HD_Form->help_text = create_help(_("SUBSCRIBER - You can make customers subscribe for any subscription and for a certain time."));
 
 $HD_Form->AddListValue(_("Account"), "id_cc_card", [Customer::class, "getUsername"]);
-$HD_Form->AddListSqlMapping(_("Service"), "id_subscription_fee", new Table("cc_subscription_service", ["id", "label"]));
+$HD_Form->AddListSqlMapping(_("Service"), "id_subscription_fee", Connection::getConnection("cc_subscription_service", "id", "label"));
 $HD_Form->AddListValue(_("Start date"), "startdate");
 $HD_Form->AddListValue(_("Stop date"), "stopdate");
 $HD_Form->AddListValue(_("Product"), "product_name");

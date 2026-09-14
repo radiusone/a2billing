@@ -545,8 +545,7 @@ class FormHandler
      *
      * @param string $label the table column header
      * @param string $field the database column name
-     * @param Table $table a database object; first 2 columns will be used for raw and translated values
-     * @param array $conditions an array of conditions to pass to $table->getRows()
+     * @param Builder $table a database object; first 2 columns will be used for raw and translated values
      * @param string $url if provided, the cell will be a link to this URL with the first column value appended
      * @param bool $sortable whether or not to allow sort (note, will be done on raw value)
      * @return self
@@ -554,20 +553,13 @@ class FormHandler
     public function AddListSqlMapping(
         string $label,
         string $field,
-        Table $table,
-        array $conditions = [],
+        Builder $table,
         string $url = "",
         bool $sortable = true
     ): self
     {
-        if ($field) {
-            $this->list_query_columns[] = $field;
-        }
-        $result = $table->getRows($conditions);
-        $map = array_combine(
-            array_column($result, 0),
-            array_column($result, 1)
-        );
+        $this->list_query_columns[] = $field;
+        $map = $table->get()->mapWithKeys(fn ($row) => [$row[0] => $row[1]]);
 
         $this->FG_LIST_TABLE_CELLS[] = [
             "type" => "list",
