@@ -6,6 +6,7 @@ use A2billing\Forms\FormBO;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 use A2billing\Payments\Invoice;
+use Illuminate\Database\Query\Builder;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -44,15 +45,24 @@ $popup_select ??= "";
 
 $form_action ??= "list";
 $col6_open = sprintf("'|col6|' === '%s'", _("OPEN"));
-$join_key = "(SELECT id_invoice, SUM(ROUND(price * (1 + vat / 100), 2)) AS total_price FROM cc_invoice_item GROUP BY id_invoice) AS items";
 
 $HD_Form = new FormHandler(
     "cc_invoice",
     "Invoice",
     "cc_invoice.id",
-    $form_action !== "list"
-        ? []
-        : [$join_key => ["cc_invoice.id", "items.id_invoice"]]
+    Connection::getConnection("cc_invoice")
+        ->when(
+            $form_action === "list",
+            fn (Builder $q) => $q->leftJoinSub(
+                Connection::getConnection("cc_invoice_item")
+                    ->select("id_invoice")
+                    ->selectRaw("SUM(ROUND(price * (1 + vat / 100), 2)) AS total_price")
+                    ->groupBy("id_invoice"),
+                "items",
+                "cc_invoice.id",
+                "items.id_invoice"
+            )
+        )
 );
 if (is_customer()) {
     $HD_Form->list_query_conditions["id_card"] = Customer::id();

@@ -2,6 +2,7 @@
 
 use A2billing\Admin;
 use A2billing\Agent;
+use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Forms\FormBO;
 use A2billing\Forms\FormHandler;
@@ -54,7 +55,9 @@ if (is_admin()) {
         "cc_logrefill",
         _("Refill"),
         "cc_logrefill.id",
-        ["cc_card" => ["cc_card.id", "cc_logrefill.card_id"], "cc_card_group" => ["cc_card.id_group", "cc_card_group.id"]]
+        Connection::getConnection("cc_logrefill")
+            ->leftJoin("cc_card", "cc_card.id", "cc_logrefill.card_id")
+            ->leftJoin("cc_card_group", "cc_card.id_group", "cc_card_group.id")
     );
     $HD_Form->list_query_conditions["cc_card_group.id_agent"] = Agent::id();
 }

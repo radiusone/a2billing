@@ -1,6 +1,6 @@
 <?php
 
-use A2billing\Admin;
+use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 
@@ -47,7 +47,8 @@ $HD_Form = new FormHandler(
     "cc_did_use",
     _("DID usage"),
     "cc_did_use.id",
-    ["cc_did" => ["cc_did_use.id_did", "cc_did.id"]]
+    Connection::getConnection("cc_did_use")
+        ->leftJoin("cc_did", "cc_did_use.id_did", "cc_did.id")
 );
 $HD_Form->list_query_order_columns = ["reservationdate"];
 $HD_Form->list_query_order_direction = "DESC";

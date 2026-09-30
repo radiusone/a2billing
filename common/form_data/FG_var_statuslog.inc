@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 
@@ -39,7 +40,8 @@ $HD_Form = new FormHandler(
     "cc_status_log",
     _("Status Log"),
     "cc_status_log.id",
-    ["cc_card" => ["cc_card.id", "cc_status_log.id_cc_card"]]
+    Connection::getConnection("cc_status_log")
+        ->leftJoin("cc_card", "cc_card.id", "cc_status_log.id_cc_card")
 );
 
 $HD_Form->list_query_order_columns = ["updated_date"];

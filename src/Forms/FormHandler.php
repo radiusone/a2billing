@@ -68,9 +68,6 @@ class FormHandler
     /** The primary key column of the table */
     public string $FG_QUERY_PRIMARY_KEY = 'id';
 
-    /** @var array[] Tables to join to the query; ["t2" => ["t1.col", "=", "t2.col"]] gives "LEFT JOIN t2 ON (t1.col = t2.col)" */
-    public array $query_table_joins;
-
     /** @var array list of columns from the SQL query to display in the list */
     public array $list_query_columns = [];
 
@@ -326,10 +323,9 @@ class FormHandler
      * @param string $tablename the table name of the object we're working with
      * @param string $instance_name a label for the object
      * @param string $primary_key the primary key of the table (if joining tables, make sure it's unambiguous)
-     * @param array<string,array<string>> $joins a list of joins formatted for use by Table::processJoinedTables()
      * @param Builder|null $builder a custom query builder instance (eventually will replace the other parameters)
      */
-    public function __construct(string $tablename, string $instance_name, string $primary_key = "", array $joins = [], ?Builder $builder = null)
+    public function __construct(string $tablename, string $instance_name, string $primary_key = "", ?Builder $builder = null)
     {
         if (class_exists(Console::class)) {
             Console::log('Construct FormHandler');
@@ -346,14 +342,10 @@ class FormHandler
             $primary_key = "$tablename.id";
         }
         $this->FG_QUERY_PRIMARY_KEY = $primary_key;
-        $this->query_table_joins = $joins;
 
         if (is_null($builder)) {
             $this->query_builder = Connection::getConnection($tablename)
                 ->orderBy($primary_key);
-            if ($joins) {
-                (new Table())->processJoinedTables($joins, $this->query_builder);
-            }
         } else {
             $this->query_builder = $builder;
         }
@@ -1759,12 +1751,7 @@ class FormHandler
         $processed = $this->getProcessed();  //$processed['firstname']
         $this->all_fields_valid = true;
 
-        $instance_table = new Table($this->FG_QUERY_TABLE_NAME, "*", $this->query_table_joins);
-        if ($this->fk_force_delete && !empty($processed['id'])) {
-            $instance_table->setDeleteFk($this->foreign_keys, $processed["id"]);
-        }
-
-        $this->QUERY_RESULT = $instance_table->deleteRow($this->update_query_conditions);
+        $this->QUERY_RESULT = $this->query_builder->limit(1)->delete($this->update_query_conditions);
         if ($this->QUERY_RESULT) {
             if ($this->FG_ENABLE_LOG) {
                 Logger::insertLog(
@@ -2185,6 +2172,7 @@ class FormHandler
      * This must be run after FormHandler::prepare_list_subselection which
      * sets up the condition and order properties
      *
+     * @todo: use query builder
      * @param string|null $session_key
      * @param bool $export_csv
      * @param bool $export_xml
@@ -2216,7 +2204,7 @@ class FormHandler
 
         $columns ??= $this->list_query_columns;
         $table ??= $this->FG_QUERY_TABLE_NAME;
-        $joins ??= $this->query_table_joins;
+        $joins ??= [];
         $conditions ??= $this->list_query_conditions;
         $group ??= $this->list_query_group_columns;
         $order ??= $this->list_query_order_columns;

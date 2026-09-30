@@ -5,6 +5,7 @@ use A2billing\Customer;
 use A2billing\Forms\FormBO;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
+use Illuminate\Database\Query\Builder;
 
 /**
  * This file is part of A2Billing (http://www.a2billing.net/)
@@ -41,9 +42,11 @@ $HD_Form = new FormHandler(
     "cc_did_destination",
     _("DID Destination"),
     "cc_did_destination.id",
-    $form_action === "list"
-        ? ["cc_did" => ["cc_did.id", "cc_did_destination.id_cc_did"]]
-        : []
+    Connection::getConnection("cc_did_destination")
+        ->when(
+            $form_action === "list",
+            fn (Builder $q) => $q->leftJoin("cc_did", "cc_did.id", "cc_did_destination.id_cc_did")
+        )
 );
 
 $HD_Form->list_query_order_columns = ["destination"];

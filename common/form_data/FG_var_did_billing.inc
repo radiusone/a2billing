@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -38,10 +39,10 @@ $HD_Form = new FormHandler(
     "cc_call",
     _("DID billing"),
     "cc_did.id",
-    [
-        "cc_did" => ["INNER", "cc_did.id", "cc_call.id_did"],
-        "cc_card" => ["INNER", "cc_card.id", "cc_call.card_id"]
-    ]
+    Connection::getConnection("cc_call")
+        // default inner join
+        ->join("cc_did", "cc_did.id", "cc_call.id_did")
+        ->join("cc_card", "cc_card.id", "cc_call.card_id")
 );
 
 $HD_Form->list_query_order_columns = ["date"];

@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Agent;
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -48,31 +49,36 @@ if ($type === "payment") {
         "cc_logpayment",
         _("Payments"),
         "cc_logpayment.id",
-        [
-            "cc_card" => ["cc_logpayment.card_id", "cc_card.id"],
-            "cc_card_group" => ["cc_card.id_group", "cc_card_group.id"],
-        ]
+        Connection::getConnection("cc_logpayment")
+            ->leftJoin("cc_card", "cc_logpayment.card_id", "cc_card.id")
+            ->leftJoin("cc_card_group", "cc_card.id_group", "cc_card_group.id")
     );
     if (is_agent()) {
         $HD_Form->list_query_conditions["cc_card_group.id_agent"] = Agent::id();
     }
     $HD_Form->list_query_conditions["cc_logpayment.card_id"] = $id;
     $HD_Form->list_query_order_columns = ["date"];
-	$HD_Form->list_query_order_direction = "DESC";
+    $HD_Form->list_query_order_direction = "DESC";
 
-	$HD_Form->AddListValue(_("Date"), "cc_logpayment.date");
-	$HD_Form->AddListValue(_("Amount"), "cc_logpayment.payment");
+    $HD_Form->AddListValue(_("Date"), "cc_logpayment.date");
+    $HD_Form->AddListValue(_("Amount"), "cc_logpayment.payment");
 } else {
-    $join = "(SELECT id_invoice, SUM(price * (1 + (vat / 100))) AS total_price FROM cc_invoice_item GROUP BY id_invoice) AS items";
-	$HD_Form = new FormHandler(
+    $HD_Form = new FormHandler(
         "cc_invoice",
         _("Invoice"),
         "cc_invoice.id",
-        [
-            "$join" => ["items.id_invoice", "cc_invoice.id"],
-            "cc_card" => ["cc_invoice.id_card", "cc_card.id"],
-            "cc_card_group" => ["cc_card.id_group", "cc_card_group.id"],
-        ]
+        builder: Connection::getConnection("cc_invoice")
+            ->leftJoinSub(
+                Connection::getConnection("cc_invoice_item")
+                    ->select("id_invoice")
+                    ->selectRaw("SUM(price * (1 + (vat / 100))) AS total_price")
+                    ->groupBy("id_invoice"),
+                "items",
+                "items.id_invoice",
+                "cc_invoice.id"
+            )
+            ->leftJoin("cc_card", "cc_invoice.id_card", "cc_card.id")
+            ->leftJoin("cc_card_group", "cc_card.id_group", "cc_card_group.id")
     );
     if (is_agent()) {
         $HD_Form->list_query_conditions["cc_card_group.id_agent"] = Agent::id();
@@ -81,6 +87,6 @@ if ($type === "payment") {
     $HD_Form->list_query_order_columns = ["date"];
     $HD_Form->list_query_order_direction = "DESC";
 
-	$HD_Form->AddListValue(_("Date"), "date");
-	$HD_Form->AddListValue(_("Amount (incl VAT)"), "total_price", "get_money");
+    $HD_Form->AddListValue(_("Date"), "date");
+    $HD_Form->AddListValue(_("Amount (incl VAT)"), "total_price", "get_money");
 }

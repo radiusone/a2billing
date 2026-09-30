@@ -1,6 +1,6 @@
 <?php
 
-use A2billing\Admin;
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -39,7 +39,8 @@ $HD_Form = new FormHandler(
     "cc_system_log",
     _("Log"),
     "cc_system_log.id",
-    ["cc_ui_authen" => ["cc_system_log.iduser", "cc_ui_authen.userid"]]
+    Connection::getConnection("cc_system_log")
+        ->leftJoin("cc_ui_authen", "cc_system_log.iduser", "cc_ui_authen.userid")
 );
 
 $HD_Form->list_query_order_columns = ["creationdate"];
@@ -61,7 +62,7 @@ $HD_Form->search_session_key = "var_log_viewer";
 $HD_Form->search_delete_enabled = false;
 $HD_Form->AddSearchDateInput(_("Date"), "creationdate");
 $HD_Form->AddSearchPopupInput(_("Administrator"), "iduser", "A2B_entity_user.php");
-$HD_Form->AddSearchSelectInput(_("Log level"),"loglevel", [[1, _("Info")], [2, _("Notice")], [3, _("Warning")]]);
+$HD_Form->AddSearchSelectInput(_("Log level"),"loglevel", [1 => _("Info"), 2 => _("Notice"), 3 => _("Warning")]);
 
 $HD_Form->list_message_empty = _("No log entries found");
 $HD_Form->FG_ENABLE_EDIT_BUTTON = false;

@@ -1,6 +1,6 @@
 <?php
 
-use A2billing\Admin;
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -51,7 +51,8 @@ $HD_Form = new FormHandler(
     "cc_logpayment",
     _("Payment"),
     "id",
-    ["cc_invoice_payment" => ["cc_logpayment.id", "cc_invoice_payment.id_payment"]]
+    Connection::getConnection("cc_logpayment")
+        ->leftJoin("cc_invoice_payment", "cc_logpayment.id", "cc_invoice_payment.id_payment")
 );
 
 $HD_Form->list_query_order_columns = ["date"];

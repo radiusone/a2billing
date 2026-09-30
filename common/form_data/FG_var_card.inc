@@ -10,6 +10,7 @@ use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 use A2billing\Notification;
 use A2billing\NotificationsDAO;
+use Illuminate\Database\Query\Builder;
 
 /**
  * @var A2Billing $A2B
@@ -66,10 +67,12 @@ $HD_Form = new FormHandler(
     "cc_card",
     _("Card"),
     "cc_card.id",
-    $form_action === "list" ? [
-        "cc_card_group" => ["cc_card.id_group", "cc_card_group.id"],
-        "cc_agent" => ["cc_card_group.id_agent", "cc_agent.id"],
-    ] : []
+    Connection::getConnection("cc_card")
+        ->when(
+            $form_action === "list",
+            fn (Builder $q) => $q->leftJoin("cc_card_group", "cc_card.id_group", "cc_card_group.id")
+                ->leftJoin("cc_agent", "cc_card_group.id_agent", "cc_agent.id")
+        )
 );
 
 if (is_agent()) {

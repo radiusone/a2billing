@@ -2,9 +2,11 @@
 
 use A2billing\Admin;
 use A2billing\Agent;
+use A2billing\Connection;
 use A2billing\Forms\FormBO;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
+use Illuminate\Database\Query\Builder;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -49,12 +51,12 @@ $HD_Form = new FormHandler(
     "cc_logpayment_agent", 
     _("Agent Payment"),
     "cc_logpayment_agent.id",
-    $form_action === "list"
-        ? [
-            "cc_agent" => ["cc_agent.id", "cc_logpayment_agent.agent_id"],
-            "cc_logrefill_agent" => ["cc_agent.id", "cc_logrefill_agent.agent_id"],
-        ]
-        : []
+    Connection::getConnection("cc_logpayment_agent")
+        ->when(
+            $form_action === "list",
+            fn (Builder $q) => $q->leftJoin("cc_agent", "cc_agent.id", "cc_logpayment_agent.agent_id")
+                ->leftJoin("cc_logrefill_agent", "cc_agent.id", "cc_logrefill_agent.agent_id")
+        )
 );
 if (is_agent()) {
     $HD_Form->list_query_conditions["cc_agent.id"] = Agent::id();

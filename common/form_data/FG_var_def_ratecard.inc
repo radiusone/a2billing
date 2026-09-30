@@ -5,6 +5,7 @@ use A2billing\Agent;
 use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
+use Illuminate\Database\Query\Builder;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -62,9 +63,11 @@ if (is_admin()) {
         "cc_ratecard",
         _("Rates"),
         "id",
-        $form_action === "list" && !isset($deleteselected)
-            ? ["cc_prefix" => ["prefix", "cc_ratecard.destination"]]
-            : []
+        Connection::getConnection("cc_ratecard")
+            ->when(
+                $form_action === "list" && !isset($deleteselected),
+                fn (Builder $q) => $q->leftJoin("cc_prefix", "prefix", "cc_ratecard.destination")
+            )
     );
     $use_lcr_callplan = false;
 } elseif (is_agent()) {
@@ -72,7 +75,8 @@ if (is_admin()) {
         "cc_callplan_lcr",
         _("Rates"),
         "id",
-        ["cc_agent_tariffgroup" => ["cc_callplan_lcr.tariffgroup_id", "cc_agent_tariffgroup.id_tariffgroup"]]
+        builder: Connection::getConnection("cc_callplan_lcr")
+            ->leftJoin("cc_agent_tariffgroup", "cc_callplan_lcr.tariffgroup_id", "cc_agent_tariffgroup.id_tariffgroup")
     );
     $HD_Form->list_query_conditions["cc_agent_tariffgroup.id_agent"] = Agent::id();
     $HD_Form->list_query_group_columns = ["dialprefix"];
@@ -99,8 +103,7 @@ if (!empty($cancelsearch_callplanlcr) || (isset($posted) && empty($tariffgroup))
 if ((!empty($tariffgroup) || !empty($_SESSION['def_ratecard_tariffgroup'])) && $form_action === "list") {
     // "Export call plan with LCR" is active, whatever that means
     // It certainly isn't "exporting" anything
-    $HD_Form->FG_QUERY_TABLE_NAME = "cc_callplan_lcr";
-    $HD_Form->query_table_joins = [];
+    $HD_Form->query_builder = Connection::getConnection("cc_callplan_lcr");
     $use_lcr_callplan = true;
     $HD_Form->list_query_group_columns = ["dialprefix"];
     $tariffgroup = (int)($tariffgroup ?? $_SESSION["def_ratecard_tariffgroup"]);

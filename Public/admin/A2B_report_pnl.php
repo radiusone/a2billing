@@ -395,7 +395,7 @@ $row = Connection::getConnection("pnl_report")
     ->selectRaw("SUM(first_use) AS first_use")
     ->selectRaw("(1 - SUM(net_revenue) / SUM(term_total)) * 100 AS average_discount")
     ->selectRaw("SUM(net_revenue) AS net_revenue")
-    ->selectRaw("CASE WHEN SUM(net_revenue) != 0 THEN SUM(profit) / SUM(net_revenue) * 100 ELSE NULL AS margin")
+    ->selectRaw("CASE WHEN SUM(net_revenue) != 0 THEN SUM(profit) / SUM(net_revenue) * 100 ELSE NULL END AS margin")
     ->selectRaw("SUM(profit) AS profit")
     ->first();
 ?>

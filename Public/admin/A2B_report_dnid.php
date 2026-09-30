@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -53,9 +54,8 @@ $HD_Form = new FormHandler(
     "cc_call",
     gettext("CDR"),
     "cc_call.id",
-    [
-        "cc_ratecard" => ["LEFT OUTER", "cc_call.id_ratecard", "cc_ratecard.id"],
-    ]
+    Connection::getConnection("cc_call")
+        ->join("cc_ratecard", "cc_call.id_ratecard", "cc_ratecard.id", type: "left outer"),
 );
 $HD_Form->init();
 

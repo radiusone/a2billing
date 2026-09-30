@@ -56,7 +56,8 @@ $HD_Form_c = new FormHandler(
     "cc_charge",
     _("Charge"),
     "cc_charge.id",
-    ["cc_card" => ["cc_charge.id_cc_card", "cc_card.id"]]
+    Connection::getConnection("cc_charge")
+        ->leftJoin("cc_card", "cc_charge.id_cc_card", "cc_card.id")
 );
 
 if ($wantinclude) {

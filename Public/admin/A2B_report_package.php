@@ -46,10 +46,9 @@ $HD_Form = new FormHandler(
     "cc_card_package_offer",
     _("Package Usage"),
     "cc_card_package_offer.id",
-    [
-        "cc_card" => ["cc_card_package_offer.id_cc_card", "cc_card.id"],
-        "cc_package_offer" => ["cc_card_package_offer.id_cc_package_offer", "cc_package_offer.id"]
-    ]
+    Connection::getConnection("cc_card_package_offer")
+        ->leftJoin("cc_card", "cc_card_package_offer.id_cc_card", "cc_card.id")
+        ->leftJoin("cc_package_offer", "cc_card_package_offer.id_cc_package_offer", "cc_package_offer.id")
 );
 $HD_Form->list_query_order_columns = ["date_consumption"];
 $HD_Form->list_query_order_direction = "DESC";

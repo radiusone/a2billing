@@ -59,7 +59,8 @@ if ($form_action === "list") {
         "cc_config",
         _("Configuration"),
         "cc_config.id",
-        ["cc_config_group" => ["cc_config.config_group_id", "cc_config_group.id"]]
+        Connection::getConnection("cc_config")
+            ->leftJoin("cc_config_group", "cc_config.config_group_id", "cc_config_group.id")
     );
     $HD_Form->list_query_order_columns = ["group_title", "config_key"];
     $HD_Form->FG_QUERY_PRIMARY_KEY = "cc_config.id";
@@ -83,19 +84,14 @@ if ($form_action === "list") {
         $result = Connection::getConnection("cc_config", "config_valuetype", "config_listvalues")
             ->where("id", $id)
             ->first();
-        switch ($result["config_valuetype"]) {
-            case 2:
-                $value_select = array_combine(
-                    explode(",", $result["config_listvalues"]),
-                    explode(",", $result["config_listvalues"])
-                );
-                break;
-            case 1:
-                $value_select = getYesNoList();
-                break;
-            default:
-                $value_select = null;
-        }
+        $value_select = match ($result["config_valuetype"]) {
+            2 => array_combine(
+                explode(",", $result["config_listvalues"]),
+                explode(",", $result["config_listvalues"])
+            ),
+            1 => getYesNoList(),
+            default => null,
+        };
     }
 }
 

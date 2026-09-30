@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Agent;
+use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 
@@ -40,12 +41,11 @@ $HD_Form = new FormHandler(
     "cc_card",
     _("Card"),
     "cc_card.id",
-    [
-        "cc_invoice" => ["cc_card.id", "cc_invoice.id_card"],
-        "cc_invoice_item" => ["cc_invoice.id", "cc_invoice_item.id_invoice"],
-        "cc_logpayment" => ["cc_card.id", "cc_logpayment.card_id"],
-        "cc_card_group" => ["cc_card.id_group", "cc_card_group.id"],
-    ],
+    Connection::getConnection("cc_card")
+        ->leftJoin("cc_invoice", "cc_card.id", "cc_invoice.id_card")
+        ->leftJoin("cc_invoice_item", "cc_invoice.id", "cc_invoice_item.id_invoice")
+        ->leftJoin("cc_logpayment", "cc_card.id", "cc_logpayment.card_id")
+        ->leftJoin("cc_card_group", "cc_card.id_group", "cc_card_group.id")
 );
 
 $HD_Form->list_query_group_columns = ["cc_card.id"];

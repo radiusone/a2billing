@@ -1,7 +1,7 @@
 <?php
 
-use A2billing\Admin;
 use A2billing\Agent;
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -40,12 +40,11 @@ $HD_Form = new FormHandler(
     "cc_agent",
     _("Agent"),
     "cc_agent.id",
-    [
-        "cc_agent_commission" => ["cc_agent.id", "cc_agent_commission.id_agent"],
-        "cc_logrefill" => ["cc_agent.id", "cc_logrefill.agent_id"],
-        "cc_logrefill_agent" => ["cc_agent.id", "cc_logrefill_agent.agent_id"],
-        "cc_logpayment_agent" => ["cc_agent.id", "cc_logpayment_agent.agent_id"],
-    ]
+    Connection::getConnection("cc_agent")
+        ->leftJoin("cc_agent_commission", "cc_agent.id", "cc_agent_commission.id_agent")
+        ->leftJoin("cc_logrefill", "cc_agent.id", "cc_logrefill.agent_id")
+        ->leftJoin("cc_logrefill_agent", "cc_agent.id", "cc_logrefill_agent.agent_id")
+        ->leftJoin("cc_logpayment_agent", "cc_agent.id", "cc_logpayment_agent.agent_id")
 );
 
 $HD_Form->AddListValue(_("Agent"), "cc_agent.id",[Agent::class, "getName"]);

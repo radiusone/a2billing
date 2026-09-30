@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Agent;
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -39,7 +40,8 @@ $HD_Form = new FormHandler(
     "cc_remittance_request",
     _("Remittance Request Agent"),
     "cc_remittance_request.id",
-    ["cc_agent" => ["cc_remittance_request.id_agent", "cc_agent.id"]]
+    Connection::getConnection("cc_remittance_request")
+        ->leftJoin("cc_agent", "cc_remittance_request.id_agent", "cc_agent.id")
 );
 if (is_agent()) {
     $HD_Form->list_query_conditions["id_agent"] = Agent::id();

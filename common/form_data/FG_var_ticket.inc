@@ -61,51 +61,41 @@ $HD_Form = new FormHandler(
 );
 
 if ($form_action === "list") {
+    $virtual = null;
     if (is_admin()) {
-        $virtual = <<< SQL
-        SELECT aa.id, CASE WHEN MAX(aa.viewed_admin) = 1 OR SUM(bb.viewed_admin) > 0 THEN 1 ELSE 0 END AS viewed
-        FROM cc_ticket aa
-        LEFT JOIN cc_ticket_comment bb ON aa.id = bb.id_ticket
-        GROUP BY aa.id
-        SQL;
+        $virtual = Connection::getConnection("cc_ticket aa", "aa.id")
+            ->selectRaw("CASE WHEN MAX(aa.viewed_admin) = 1 OR SUM(bb.viewed_admin) > 0 THEN 1 ELSE 0 END AS viewed")
+            ->leftJoin("cc_ticket_comment bb", "aa.id", "bb.id_ticket")
+            ->groupBy("aa.id");
     } elseif (is_agent() && $ticket_type === "agent") {
-        $agent_id = Agent::id();
-        $virtual = <<< SQL
-        SELECT aa.id, CASE WHEN MAX(aa.viewed_agent) = 1 OR SUM(bb.viewed_agent) > 0 THEN 1 ELSE 0 END AS viewed
-        FROM cc_ticket aa
-        LEFT JOIN cc_ticket_comment bb ON aa.id = bb.id_ticket
-        WHERE aa.creator = $agent_id
-        GROUP BY aa.id
-        SQL;
+        $virtual = Connection::getConnection("cc_ticket aa", "aa.id")
+            ->selectRaw("CASE WHEN MAX(aa.viewed_agent) = 1 OR SUM(bb.viewed_agent) > 0 THEN 1 ELSE 0 END AS viewed")
+            ->leftJoin("cc_ticket_comment bb", "aa.id", "bb.id_ticket")
+            ->where("aa.creator", Agent::id())
+            ->groupBy("aa.id");
     } elseif (is_agent()) {
-        $agent_id = Agent::id();
-        $virtual = <<< SQL
-        SELECT aa.id, CASE WHEN MAX(aa.viewed_agent) = 1 OR SUM(bb.viewed_agent) > 0 THEN 1 ELSE 0 END AS viewed
-        FROM cc_ticket aa
-        LEFT JOIN cc_ticket_comment bb ON aa.id = bb.id_ticket
-        LEFT JOIN cc_card dd ON dd.id = aa.creator
-        LEFT JOIN cc_card_group ee ON dd.id_group = ee.id
-        WHERE ee.id_agent = $agent_id
-        GROUP BY aa.id
-        SQL;
+        $virtual = Connection::getConnection("cc_ticket aa", "aa.id")
+            ->selectRaw("CASE WHEN MAX(aa.viewed_agent) = 1 OR SUM(bb.viewed_agent) > 0 THEN 1 ELSE 0 END AS viewed")
+            ->leftJoin("cc_ticket_comment bb", "aa.id", "bb.id_ticket")
+            ->leftJoin("cc_card dd", "dd.id", "aa.creator")
+            ->leftJoin("cc_card_gorup ee", "dd.id_group", "ee.id")
+            ->where("ee.id_agent", Agent::id())
+            ->groupBy("aa.id");
     } elseif (is_customer()) {
-        $creator_type = Ticket::CUSTOMER;
-        $card_id = Customer::id();
-        $virtual = <<< SQL
-        SELECT aa.id, CASE WHEN MAX(aa.viewed_cust) = 1 OR SUM(bb.viewed_cust) > 0 THEN 1 ELSE 0 END as viewed
-        FROM cc_ticket aa
-        LEFT JOIN cc_ticket_comment bb ON aa.id = bb.id_ticket
-        WHERE aa.creator_type = $creator_type AND aa.creator = $card_id
-        GROUP BY aa.id
-        SQL;
+        $virtual = Connection::getConnection("cc_ticket aa", "aa.id")
+            ->selectRaw("CASE WHEN MAX(aa.viewed_cust) = 1 OR SUM(bb.viewed_cust) > 0 THEN 1 ELSE 0 END as viewed")
+            ->leftJoin("cc_ticket_comment bb", "aa.id", "bb.id_ticket")
+            ->where("aa.creator_type", Ticket::CUSTOMER)
+            ->where("aa.creator", Customer::id())
+            ->groupBy("aa.id");
     }
-    $HD_Form->query_table_joins = [
-        "($virtual) AS v" => ["cc_ticket.id", "v.id"],
-    ];
+    if ($virtual) {
+        $HD_Form->query_builder->leftJoinSub($virtual, "v", "cc_ticket_id", "v.id");
+    }
     if ($ticket_type === "agent") {
-        $HD_Form->query_table_joins["cc_agent"] = ["cc_agent.id", "creator"];
+        $HD_Form->query_builder->leftJoin("cc_agent", "cc_agent.id", "creator");
     } else {
-        $HD_Form->query_table_joins["cc_card"] = ["cc_card.id", "creator"];
+        $HD_Form->query_builder->leftJoin("cc_card", "cc_card.id", "creator");
     }
 }
 

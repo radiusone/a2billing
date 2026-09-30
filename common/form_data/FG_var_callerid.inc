@@ -47,7 +47,9 @@ $HD_Form = new FormHandler(
     "cc_callerid",
     _("Caller ID"),
     "cc_callerid.id",
-    ["cc_card" => ["cc_card.id", "cc_callerid.id_cc_card"], "cc_card_group" => ["cc_card.id_group", "cc_card_group.id"]]
+    Connection::getConnection("cc_callerid")
+        ->leftJoin("cc_card", "cc_card.id", "cc_callerid.id_cc_card")
+        ->leftJoin("cc_card_group", "cc_card.id_group", "cc_card_group.id")
 );
 if (is_customer()) {
     $HD_Form->list_query_conditions["cc_callerid.id_cc_card"] = Customer::id();

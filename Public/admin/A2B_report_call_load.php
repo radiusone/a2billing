@@ -1,10 +1,8 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
-use A2billing\Table;
-use Amenadiel\JpGraph\Graph\Graph;
-use Amenadiel\JpGraph\Plot\BarPlot;
 use Amenadiel\JpGraph\Plot\LinePlot;
 use Amenadiel\JpGraph\Util\RGB;
 
@@ -56,7 +54,8 @@ $HD_Form = new FormHandler(
     "cc_call",
     "Call Load Report",
     "cc_call.id",
-    ["cc_trunk" => ["cc_call.id_trunk", "cc_trunk.id_trunk"]]
+    Connection::getConnection("cc_call")
+        ->leftJoin("cc_trunk", "cc_call.id_trunk", "cc_trunk.id_trunk")
 );
 $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 5000;
 $HD_Form->list_query_columns = ["starttime", "sessiontime"];
@@ -97,9 +96,14 @@ $basic_chart = true;
 require_once __DIR__ . "/../../common/page_modules/call_graph.php";
 
 // create full day bargraph
-$cols = ["SUBSTRING(starttime, 0, 10) AS date", "SUBSTRING(starttime, 12, 2) AS hour", "COUNT(id) AS call_count", "SUM(sessiontime) AS call_time"];
-$call_list = (new Table($HD_Form->FG_QUERY_TABLE_NAME, $cols, $HD_Form->query_table_joins))
-    ->getRows($HD_Form->list_query_conditions, [], "ASC", ["HOUR(starttime)"]);
+$call_list = $HD_Form->query_builder
+    ->clone()
+    ->selectRaw("SUBSTRING(starttime, 0, 10) AS date")
+    ->selectRaw("SUBSTRING(starttime, 12, 2) AS hour")
+    ->selectRaw("COUNT(id) AS call_count")
+    ->selectRaw("SUM(sessiontime) AS call_time")
+    ->groupByRaw("HOUR(starttime)")
+    ->get();
 $graph_data = array_combine(
     array_map(fn ($v) => sprintf("%02d", $v), range(0, 23)),
     array_fill(0, 24, 0)
@@ -113,7 +117,7 @@ $graph = createBarGraph(
     sprintf(
         "%s - %d calls",
         $starttime,
-        array_sum(array_column($call_list, "call_count"))
+        $call_list->sum("call_count")
     )
 );
 ?>
@@ -128,32 +132,28 @@ $graph = createBarGraph(
 </div>
 
 <?php
-if (!isset($hour_detail)) {
+if ($hour_detail === "") {
     require_once __DIR__ . "/templates/footer.php";
     exit;
 }
 
 // create hour detail bargraph
-$cols = [
-    "SUBSTRING(starttime, 0, 10) AS date",
-    "SUBSTRING(starttime, 12, 2) AS hour_start",
-    "SUBSTRING(starttime, 15, 2) AS minute_start",
-    "REPLACE(SUBSTRING(starttime, 15, 5), ':', '') AS ms_start",
-    "SUBSTRING(starttime + INTERVAL sessiontime SECOND, 12, 2) AS hour_end",
-    "SUBSTRING(starttime + INTERVAL sessiontime SECOND, 15, 2) AS minute_end",
-    "REPLACE(SUBSTRING(starttime + INTERVAL sessiontime SECOND, 15, 5), ':', '') AS ms_end",
-    "sessiontime"
-];
 // replace searched date with the specific time
-/* TODO: figure out a neat way to unset a condition so we can clone the QB instance */
-$conditions = $HD_Form->list_query_conditions;
-unset($conditions["starttime"]);
-$conditions[] = [
-    "SUB",
-    ["starttime" => [[">=", "$starttime $hour_detail:00:00"], ["<=", "$starttime $hour_detail:59:59"]]]
-];
-$call_list = (new Table($HD_Form->FG_QUERY_TABLE_NAME, $cols, $HD_Form->query_table_joins))
-    ->getRows($conditions, ["starttime"]);
+$call_list = $HD_Form->query_builder
+    ->clone()
+    ->select("sessiontime")
+    ->selectRaw("SUBSTRING(starttime, 0, 10) AS date")
+    ->selectRaw("SUBSTRING(starttime, 12, 2) AS hour_start")
+    ->selectRaw("SUBSTRING(starttime, 15, 2) AS minute_start")
+    ->selectRaw("REPLACE(SUBSTRING(starttime, 15, 5), ':', '') AS ms_start")
+    ->selectRaw("SUBSTRING(starttime + INTERVAL sessiontime SECOND, 12, 2) AS hour_end")
+    ->selectRaw("SUBSTRING(starttime + INTERVAL sessiontime SECOND, 15, 2) AS minute_end")
+    ->selectRaw("REPLACE(SUBSTRING(starttime + INTERVAL sessiontime SECOND, 15, 5), ':', '') AS ms_end")
+    ->removeWhere("starttime")
+    ->where("starttime", ">=", "$starttime $hour_detail:00:00")
+    ->where("starttime", "<=", "$starttime $hour_detail:59:59")
+    ->orderBy("starttime")
+    ->get();
 $empty_minutes = array_combine(
     array_map(fn ($v) => sprintf("%02d", $v), range(0, 59)),
     array_fill(0, 60, null)
@@ -223,5 +223,6 @@ if ($hour_detail_type === "fluctuation") {
 </div>
 
 <?php
+echo "xxx";
 require_once __DIR__ . "/templates/footer.php";
 

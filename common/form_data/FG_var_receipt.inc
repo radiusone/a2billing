@@ -1,8 +1,10 @@
 <?php
 
+use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
+use Illuminate\Database\Query\Builder;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -38,14 +40,24 @@ use A2billing\Forms\Validator;
 
 $form_action ??= "list";
 if (is_customer()) {
-    $join_key = "(SELECT id_receipt, SUM(price) AS total_price FROM cc_receipt_items GROUP BY id_receipt) AS items";
     $HD_Form = new FormHandler(
         "cc_receipt",
         _("Receipt"),
         "cc_receipt.id",
-        $form_action === "list"
-            ? ["cc_card" => ["cc_card.id", "cc_receipt.id_card"], $join_key => ["cc_receipt.id", "items.id_receipt"]]
-            : []
+        Connection::getConnection("cc_receipt")
+            ->when(
+                $form_action === "list",
+                fn (Builder $q) => $q->leftJoin("cc_card", "cc_card.id", "cc_receipt.id_card")
+                    ->leftJoinSub(
+                        Connection::getConnection("cc_receipt")
+                            ->select("id_receipt")
+                            ->selectRaw("SUM(price) AS total_price")
+                            ->groupBy("id_receipt"),
+                        "items",
+                        "cc_receipt.id",
+                        "items.id_receipt"
+                    )
+            )
     );
     $HD_Form->list_query_conditions["id_card"] = Customer::id();
 } else {
@@ -53,9 +65,11 @@ if (is_customer()) {
         "cc_receipt",
         _("Receipt"),
         "cc_receipt.id",
-        $form_action === "list"
-            ? ["cc_receipt_item" => ["cc_receipt_item.id_receipt", "cc_receipt.id"]]
-            : []
+        Connection::getConnection("cc_receipt")
+            ->when(
+                $form_action === "list",
+                fn (Builder $q) => $q->leftJoin("cc_receipt_item", "cc_receipt_item.id_receipt", "cc_receipt.id")
+            )
     );
 }
 $HD_Form->list_query_order_columns = ["date"];

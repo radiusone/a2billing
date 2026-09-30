@@ -1,10 +1,11 @@
 <?php
 
-use A2billing\Admin;
+use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Forms\FormBO;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
+use Illuminate\Database\Query\Builder;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -44,9 +45,11 @@ $HD_Form = new FormHandler(
     "cc_billing_customer", 
     _("Billing"),
     "cc_billing_customer.id",
-    $form_action === "list"
-        ? ["cc_card" => ["cc_card.id", "id_card"]]
-        : []
+    Connection::getConnection("cc_billing_customer")
+        ->when(
+            $form_action === "list",
+            fn (Builder $q) => $q->leftJoin("cc_card", "cc_card.id", "id_card")
+        )
 );
 
 $HD_Form->list_query_order_direction = "DESC";

@@ -1,7 +1,9 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
+use Illuminate\Database\Query\JoinClause;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -45,10 +47,15 @@ $HD_Form = new FormHandler(
     "cc_call",
     _("Trunk Report"),
     "cc_call.id",
-    [
-        "cc_call AS answered" => [["cc_call.id", "answered.id"], ["answered.terminatecauseid", 1]],
-        "cc_call AS cic" =>  [["cc_call.id", "cic.id"], ["cic.real_sessiontime", "<", 10]]
-    ]
+    Connection::getConnection("cc_call")
+        ->leftJoin(
+            "cc_call AS answered",
+            fn (JoinClause $j) => $j->on("cc_call.id", "answered.id")->on("answered.terminatecauseid", 1)
+        )
+        ->leftJoin(
+            "cc_call AS cic",
+            fn (JoinClause $j) => $j->on("cc_call.id", "cic.id")->on("cic.real_sessiontime", "<", 10)
+        )
 );
 
 $HD_Form->AddListValue(abbr(_("ASR"), _("Answer ratio")), "COUNT(answered.id) / COUNT(cc_call.id) AS asr");
