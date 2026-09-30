@@ -67,9 +67,6 @@ class FormHandler
     /** The primary key column of the table */
     public string $FG_QUERY_PRIMARY_KEY = 'id';
 
-    /** @var array list of columns from the SQL query to display in the list */
-    public array $list_query_columns = [];
-
     /** @var array columns/values to be used as a condition in list queries */
     public array $list_query_conditions = [];
 
@@ -492,7 +489,7 @@ class FormHandler
     public function AddListValue(string $label, string $field, ?callable $callback = null, array $arguments = [], bool $sortable = true): self
     {
         if ($field) {
-            $this->list_query_columns[] = $field;
+            $this->query_builder->addSelect($field);
         }
         $this->FG_LIST_TABLE_CELLS[] = [
             "type" => "",
@@ -518,7 +515,7 @@ class FormHandler
     public function AddListMapping(string $label, string $field, array $map, bool $sortable = true): self
     {
         if ($field) {
-            $this->list_query_columns[] = $field;
+            $this->query_builder->addSelect($field);
         }
         $this->FG_LIST_TABLE_CELLS[] = [
             "type" => "list",
@@ -549,7 +546,7 @@ class FormHandler
         bool $sortable = true
     ): self
     {
-        $this->list_query_columns[] = $field;
+        $this->query_builder->addSelect($field);
         $map = $table->get()->mapWithKeys(fn ($row) => [$row[0] => $row[1]]);
 
         $this->FG_LIST_TABLE_CELLS[] = [
@@ -573,7 +570,7 @@ class FormHandler
      */
     public function AddListHiddenValue(string $field): self
     {
-        $this->list_query_columns[] = $field;
+        $this->query_builder->addSelect($field);
 
         return $this;
     }
@@ -1386,14 +1383,6 @@ class FormHandler
             }
 
             if ($form_action === "list") {
-                foreach ($this->list_query_columns as $col) {
-                    // list columns and searches can have complex expressions
-                    if (preg_match("/^[\w.]+( AS \w+)?$/i", $col)) {
-                        $this->query_builder->addSelect($col);
-                    } else {
-                        $this->query_builder->selectRaw($col);
-                    }
-                }
                 // instance_primary_key is used to fill in links for edit/delete buttons
                 $this->query_builder->addSelect("$this->FG_QUERY_PRIMARY_KEY AS instance_primary_key");
 

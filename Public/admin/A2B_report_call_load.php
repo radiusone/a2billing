@@ -55,10 +55,10 @@ $HD_Form = new FormHandler(
     "Call Load Report",
     "cc_call.id",
     Connection::getConnection("cc_call")
+        ->select("starttime", "sessiontime")
         ->leftJoin("cc_trunk", "cc_call.id_trunk", "cc_trunk.id_trunk")
 );
 $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 5000;
-$HD_Form->list_query_columns = ["starttime", "sessiontime"];
 
 $hours = range(0, 23);
 $hours = array_combine($hours, array_map(fn ($v) => sprintf("%02d:00 to %02d:00", $v, $v + 1), $hours));
