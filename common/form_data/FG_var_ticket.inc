@@ -7,7 +7,6 @@ use A2billing\Forms\FormBO;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 use A2billing\Ticket;
-use Illuminate\Support\Facades\DB;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -146,7 +145,7 @@ if (is_admin() || (is_agent() && $ticket_type === "user")) {
         Connection::getConnection(
             $ticket_type === "agent" ? "cc_agent" : "cc_card",
             "id",
-            DB::raw("CONCAT(firstname, ' ', lastname)")
+            Connection::getConnection()->raw("CONCAT(firstname, ' ', lastname)")
         )
     );
     $HD_Form->AddListValue(_("Account number"), "creator", [Customer::class, "getUsername"]);

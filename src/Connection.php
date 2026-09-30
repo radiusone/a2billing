@@ -2,6 +2,7 @@
 
 namespace A2billing;
 
+use Illuminate\Contracts\Database\Query\Expression;
 use Illuminate\Database\Capsule\Manager;
 use Illuminate\Database\Connection as IlluminateConnection;
 use Illuminate\Database\Events\QueryExecuted;
@@ -50,10 +51,10 @@ class Connection
 
     /**
      * @param string|null $table if set, get a query builder instance for this table
-     * @param mixed $columns if set, the columns to select from the table
+     * @param Expression|string ...$columns if set, the columns to select from the table
      * @return ($table is null ? IlluminateConnection : Builder)
      */
-    public static function getConnection(string|null $table = null, mixed ...$columns): IlluminateConnection|Builder
+    public static function getConnection(string|null $table = null, Expression|string ...$columns): IlluminateConnection|Builder
     {
         if (!isset(self::$manager)) {
             $config = A2Billing::parseConfigurationFile();

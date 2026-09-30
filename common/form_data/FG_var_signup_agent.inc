@@ -4,7 +4,6 @@ use A2billing\A2Billing;
 use A2billing\Agent;
 use A2billing\Connection;
 use A2billing\Forms\FormHandler;
-use Illuminate\Support\Facades\DB;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -78,7 +77,11 @@ if (is_admin()) {
     $HD_Form->AddEditSqlSelect(
         _("Agent"),
         "id_agent",
-        Connection::getConnection("cc_agent", DB::raw("CONCAT(login, ' - ', firstname, ' ', lastname)"), "id"),
+        Connection::getConnection(
+            "cc_agent",
+            Connection::getConnection()->raw("CONCAT(login, ' - ', firstname, ' ', lastname)"),
+            "id"
+        ),
         $id_agent,
         ["" => _("Select agent")],
         "",
