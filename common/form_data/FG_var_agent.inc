@@ -2,10 +2,10 @@
 
 use A2billing\Admin;
 use A2billing\Agent;
+use A2billing\Connection;
 use A2billing\Forms\FormBO;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -336,17 +336,14 @@ if ($popup_select) {
 
         $HD_Form->AddEditHasMany(
             _("Call plans"),
-            new Table(
-                "cc_tariffgroup",
-                ["cc_tariffgroup.id", "cc_tariffgroup.tariffgroupname"],
-                ["cc_agent_tariffgroup" => ["cc_tariffgroup.id", "cc_agent_tariffgroup.id_tariffgroup"]]
-            ),
+            Connection::getConnection("cc_tariffgroup", "cc_tariffgroup.id", "cc_tariffgroup.tariffgroupname")
+                ->leftJoin("cc_agent_tariffgroup", "cc_tariffgroup.id", "cc_agent_tariffgroup.id_tariffgroup"),
             "id_tariffgroup",
             "id_agent",
             null,
             false,
             true,
-            new Table("cc_agent_tariffgroup")
+            "cc_agent_tariffgroup"
         );
 
         $HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = [FormBO::class, "creation_agent_refill"];

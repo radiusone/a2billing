@@ -10,8 +10,6 @@ use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 use A2billing\Notification;
 use A2billing\NotificationsDAO;
-use A2billing\Table;
-use Illuminate\Support\Facades\DB;
 
 /**
  * @var A2Billing $A2B
@@ -287,7 +285,7 @@ if ($popup_select) {
     $HD_Form->AddSearchSqlSelectInput(_("Group"), "id_group", Connection::getConnection("cc_card_group", "name", "id"));
     $HD_Form->AddSearchSelectInput(_("Currency"), "cc_card.currency", getCurrenciesList());
     $HD_Form->AddSearchSelectInput(_("Account type"), "typepaid", $typepaid_list);
-    $HD_Form->AddSearchSqlSelectInput(_("Agent"), "id_agent", Connection::getConnection("cc_agent", DB::raw("CONCAT(firstname, ' ', lastname)"), "id"));
+    $HD_Form->AddSearchSqlSelectInput(_("Agent"), "id_agent", Connection::getConnection("cc_agent", Connection::getConnection()->raw("CONCAT(firstname, ' ', lastname)"), "id"));
 
     $HD_Form->FG_ENABLE_INFO_BUTTON = true;
     $HD_Form->FG_INFO_BUTTON_LINK = "A2B_info_card.php?id=";
@@ -833,7 +831,7 @@ if ($popup_select) {
 
     $HD_Form->AddEditHasMany(
         _("Call restriction list"),
-        new Table("cc_restricted_phonenumber", ["id", "number"]),
+        Connection::getConnection("cc_restricted_phonenumber", "id", "number"),
         "number",
         "id_card",
         [Validator::class, "numeric"]
@@ -842,7 +840,7 @@ if ($popup_select) {
     $HD_Form->AddEditSection("Caller ID / Customer History");
     $HD_Form->AddEditHasMany(
         _("Caller ID"),
-        new Table("cc_callerid", ["id", "cid"]),
+        Connection::getConnection("cc_callerid", "id", "cid"),
         "cid",
         "id_cc_card",
         [Validator::class, "min3Chars"]
@@ -850,10 +848,7 @@ if ($popup_select) {
 
     $HD_Form->AddEditHasMany(
         _("Customer history"),
-        new Table(
-            "cc_card_history",
-            ["id", "CONCAT('(', datecreated, ') ', description)"]
-        ),
+        Connection::getConnection("cc_card_history", "id", Connection::getConnection()->raw("CONCAT('(', datecreated, ') ', description)")),
         "description",
         "id_cc_card",
         [Validator::class, "min3Chars"],

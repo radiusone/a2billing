@@ -3,7 +3,6 @@
 use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -194,16 +193,13 @@ $numrow = Connection::getConnection("cc_card_group")->count();
 if ($numrow > 0) {
     $HD_Form->AddEditHasMany(
         _("Card Group"),
-        new Table(
-            "cc_card_group",
-            ["id", "name"],
-            ["cc_cardgroup_service" => ["cc_card_group.id", "cc_cardgroup_service.id_card_group"]]
-        ),
+        Connection::getConnection("cc_card_group", "id", "name")
+            ->leftJoin("cc_cardgroup_service", "cc_card_group.id", "cc_cardgroup_service.id_card_group"),
         "id_card_group",
         "id_service",
         null,
         false,
         true,
-        new Table("cc_cardgroup_service")
+        "cc_cardgroup_service"
     );
 }

@@ -3,7 +3,7 @@
 use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
-use A2billing\Table;
+use Illuminate\Database\Query\Builder;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -113,17 +113,19 @@ $numrow = Connection::getConnection("cc_tariffplan")->count();
 if ($numrow > 0) {
     $HD_Form->AddEditHasMany(
         _("Ratecard"),
-        new Table(
+        Connection::getConnection(
             "cc_tariffplan",
-            ["cc_tariffplan.id", "cc_tariffplan.tariffname"],
-            ["cc_tariffgroup_plan" => ["cc_tariffplan.id", "cc_tariffgroup_plan.idtariffplan"]]
-        ),
+            "cc_tariffplan.id", "cc_tariffplan.tariffname"
+        )
+            ->leftJoin("cc_tariffgroup_plan", "cc_tariffplan.id", "cc_tariffgroup_plan.idtariffplan")
+            ->where(fn (Builder $q) => $q->whereFuture("expirationdate")->orWhereNull("expirationdate"))
+            ->where(fn (Builder $q) => $q->wherePast("startingdate")->orWhereNull("startingdate")),
         "idtariffplan",
         "idtariffgroup",
         null,
         false,
         true,
-        new Table("cc_tariffgroup_plan")
+        "cc_tariffgroup_plan"
     );
 }
 

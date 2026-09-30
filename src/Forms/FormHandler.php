@@ -843,34 +843,38 @@ class FormHandler
      * Create a multi-part component to insert a record into a foreign table
      *
      * @param string $label The label text
-     * @param Table $table the table to use for display of existing records
+     * @param Builder $table the table to use for display of existing records
      * @param string $insert_column the text column to edit
      * @param string $foreign_key new records will be created with this column set to the object's PK
      * @param (callable(string):(string|true))|null $validator A validation method that returns true or an error message
      * @param bool $multiline Determines whether to use <input> or <textarea>
      * @param bool $select Determines whether to use a <select> element
-     * @param Table|null $pivot_table If set, $table is only used for display; $pivot table is used for updates
+     * @param string|null $pivot_table If set, $table is only used for display; $pivot table is used for updates
      * @return void
      * @see perform_add_content()
      * @see perform_del_content()
      */
     public function AddEditHasMany(
         string $label,
-        Table $table,
+        Builder $table,
         string $insert_column,
         string $foreign_key,
         ?callable $validator = null,
         bool $multiline = false,
         bool $select = false,
-        ?Table $pivot_table = null
+        ?string $pivot_table = null
     ): void
     {
-        $index = $table->table . "." . $insert_column;
+        $index = $table->from . "." . $insert_column;
         $el = [
             "type" => "HAS_MANY",
             "label" => $label,
             "name" => $index,
             "table" => $table,
+            "cols" => array_map(
+                fn ($v) => substr($v, (strpos($v, ".") ?: -1) + 1),
+                $table->getColumns()
+            ),
             "insert" => $insert_column,
             "foreign_key" => $foreign_key,
             "multiline" => $multiline,
@@ -1841,15 +1845,17 @@ class FormHandler
      * @var string $index the index within $this->FG_EDIT_FORM_ELEMENTS
      * @var int $id the id of the object to be used as foreign key
      */
-    public function perform_add_content(string $index, int $id)
+    public function perform_add_content(string $index, int $id): void
     {
         $entry = $this->FG_EDIT_FORM_ELEMENTS[$index];
         if (empty($entry["table"])) {
             return;
         }
         $processed = $this->getProcessed();
-        /** @var Table $table */
-        $table = $entry["pivot_table"] ?? $entry["table"];
+        /** @var Builder $table */
+        $table = is_null($entry["pivot_table"])
+            ? $entry["table"]
+            : Connection::getConnection($entry["pivot_table"]);
         $column = $entry["insert"];
         $value = $processed["add-content-value"];
         if (is_callable($entry["validator"] ?? null)) {
@@ -1862,7 +1868,7 @@ class FormHandler
             }
         }
         $foreign_key = $entry["foreign_key"];
-        $table->addRow([$column => $value, $foreign_key => $id]);
+        $table->insert([$column => $value, $foreign_key => $id]);
     }
 
 
@@ -1880,17 +1886,17 @@ class FormHandler
         }
 
         $processed = $this->getProcessed();
-        /** @var Table $table */
         if (!empty($entry["pivot_table"])) {
-            $table = $entry["pivot_table"];
+            $table = Connection::getConnection($entry["pivot_table"]);
             $column = $entry["insert"];
         } else {
+            /** @var Builder $table */
             $table = $entry["table"];
-            $column = $table->fields[0];
+            $column = $table->columns[0];
         }
         $value = $processed["del-content-value"];
         $foreign_key = $entry["foreign_key"];
-        $table->deleteRow([$column => $value, $foreign_key => $id]);
+        $table->where([$column => $value, $foreign_key => $id])->delete();
     }
 
 

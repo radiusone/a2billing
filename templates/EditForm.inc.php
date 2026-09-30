@@ -177,33 +177,34 @@ use DateTime;
             <?php break ?>
 
         <?php case "HAS_MANY": ?>
-            <?php $entries = $row["table"]->getRows([$row["foreign_key"] => $processed["id"]]) ?>
+            <?php $entries = $row["table"]->clone()->where($row["foreign_key"], $processed["id"])->get() ?>
             <ul class="list-group" aria-labelledby="item<?=$i?>_label">
             <?php foreach ($entries as $entry): ?>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <?= $entry[1] ?>
+                    <?= $entry[$row["cols"][1]] ?>
                     <button
                         type="button"
                         class="btn btn-sm btn-primary has-many-delete"
                         data-index="<?= $i ?>"
-                        data-value="<?= $entry[0] ?>"
+                        data-value="<?= $entry[$row["cols"][0]] ?>"
                     ><?= $form->delete_button_text ?></button>
                 </li>
             <?php endforeach ?>
             <?php if (!empty($row["select"])): ?>
                 <?php
-                $res = $row["table"]->getRows();
-                $options = array_combine(array_column($res, 0), array_column($res, 1));
-                $options = array_filter($options, fn ($k) => !in_array($k, array_column($entries, 0)), ARRAY_FILTER_USE_KEY);
+                $options = $row["table"]
+                    ->clone()
+                    ->whereNotIn($row["cols"][0], $entries->pluck($row["cols"][0]))
+                    ->pluck($row["cols"][1], $row["cols"][0]);
                 ?>
                 <?php if (count($options)): ?>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     <div class="flex-grow-1 me-3">
-                        <label for="<?= $row["table"]->table ?>_<?= $row["insert"] ?>" class="form-label">
+                        <label for="<?= $row["name"] ?>" class="form-label">
                             <?= _("Add a new entry") ?>
                         </label>
                         <select
-                            id="<?= $row["table"]->table ?>_<?= $row["insert"] ?>"
+                            id="<?= $row["name"] ?>"
                             class="form-select form-select-sm"
                     <?php if (count($options) === 1): ?>
                             multiple="multiple"
@@ -220,25 +221,25 @@ use DateTime;
                             type="button"
                             class="btn btn-sm btn-primary has-many-add"
                             data-index="<?= $i ?>"
-                            data-input-id="<?= $row["table"]->table ?>_<?= $row["insert"] ?>"
+                            data-input-id="<?= $row["name"] ?>"
                     ><?= $form->add_button_text ?> <?= $row["label"] ?></button>
                 </li>
                 <?php endif ?>
             <?php else: ?>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     <div class="flex-grow-1 me-3">
-                        <label for="<?= $row["table"]->table ?>_<?= $row["insert"] ?>" class="form-label"><?= sprintf(_("Add a new %s"), $row["label"]) ?></label>
+                        <label for="<?= $row["name"] ?>" class="form-label"><?= sprintf(_("Add a new %s"), $row["label"]) ?></label>
                 <?php if ($row["multiline"]): ?>
-                        <textarea id="<?= $row["table"]->table ?>_<?= $row["insert"] ?>" class="form-control form-control-sm" rows="5"></textarea>
+                        <textarea id="<?= $row["name"] ?>" class="form-control form-control-sm" rows="5"></textarea>
                 <?php else: ?>
-                        <input id="<?= $row["table"]->table ?>_<?= $row["insert"] ?>" class="form-control form-control-sm"/>
+                        <input id="<?= $row["name"] ?>" class="form-control form-control-sm"/>
                 <?php endif ?>
                     </div>
                     <button
                         type="button"
                         class="btn btn-sm btn-primary has-many-add"
                         data-index="<?= $i ?>"
-                        data-input-id="<?= $row["table"]->table ?>_<?= $row["insert"] ?>"
+                        data-input-id="<?= $row["name"] ?>"
                     ><?= $form->add_button_text ?> <?= $row["label"] ?></button>
                 </li>
             <?php endif ?>
