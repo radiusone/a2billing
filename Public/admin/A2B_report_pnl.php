@@ -373,8 +373,6 @@ $HD_Form->setup_export(
     false,
     false,
     // todo: this is broken for now because it's using a temp table
-    ["*"],
-    "pnl_report"
 );
 $HD_Form->create_form($form_action, $list) ;
 

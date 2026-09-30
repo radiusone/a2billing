@@ -5,7 +5,6 @@ namespace A2billing\Forms;
 use A2billing\Admin;
 use A2billing\Connection;
 use A2billing\Logger;
-use A2billing\Table;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
 use PhpProfiler\Console;
@@ -2172,45 +2171,29 @@ class FormHandler
      * This must be run after FormHandler::prepare_list_subselection which
      * sets up the condition and order properties
      *
-     * @todo: use query builder
-     * @param string|null $session_key
+     * @param string $session_key
      * @param bool $export_csv
      * @param bool $export_xml
      * @param array|null $columns
-     * @param string|null $table
-     * @param array|null $joins
-     * @param array|null $conditions
-     * @param array|null $order
-     * @param string|null $direction
-     * @param array|null $group
      * @return void
      */
     public function setup_export(
-        ?string $session_key = null,
+        string $session_key,
         bool $export_csv = true,
         bool $export_xml = true,
-        ?array $columns = null,
-        ?string $table = null,
-        ?array $joins = null,
-        ?array $conditions = null,
-        ?array $order = null,
-        ?string $direction = null,
-        ?array $group = null
+        ?array $columns = null
     ): void
     {
-        $this->export_session_key = $session_key ?? "export_data";
+        $this->export_session_key = $session_key;
         $this->export_enable_csv = $export_csv;
         $this->export_enable_xml = $export_xml;
+        $qb = $this->query_builder->clone();
+        if ($columns) {
+            $qb->select($columns);
+        }
+        $sql = $qb->toRawSql();
 
-        $columns ??= $this->list_query_columns;
-        $table ??= $this->FG_QUERY_TABLE_NAME;
-        $joins ??= [];
-        $conditions ??= $this->list_query_conditions;
-        $group ??= $this->list_query_group_columns;
-        $order ??= $this->list_query_order_columns;
-        $direction ??= $this->list_query_order_direction;
-
-        $_SESSION[$this->export_session_key] = [$columns, $table, $joins, $conditions, $group, $order, $direction];
+        $_SESSION[$this->export_session_key] = $sql;
     }
 
     /**

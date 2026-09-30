@@ -519,7 +519,7 @@ endif;
 
 $HD_Form->create_toppage($form_action);
 $export_columns = array_map(
-    fn ($v) => "`cc_ratecard`.`" . trim(str_replace("`", "", $v)) . "`",
+    fn ($v) => "`cc_ratecard`.`" . preg_replace("/\W/", "", $v) . "`",
     explode(",", $A2B->config['webui']['rate_export_field_list'] ?? "")
 );
 if (

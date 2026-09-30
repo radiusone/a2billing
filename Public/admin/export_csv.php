@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Connection;
 use A2billing\Logger;
 use A2billing\Table;
 
@@ -46,19 +47,16 @@ getpost_ifset(["export_session", "export_type"]);
 $export_session ??= "export_data";
 $export_type ??= "csv";
 
-if (!is_array($_SESSION[$export_session])) {
+if (empty($_SESSION[$export_session])) {
     echo gettext("ERROR CSV EXPORT");
 } else {
-    [$columns, $table, $joins, $conditions, $group, $order, $direction] = $_SESSION[$export_session];
+    $export_data = Connection::getConnection()->select($_SESSION[$export_session]);
 
     $date = (new DateTime())->format("Y-m-d");
     $myfileName = "dump $date.$export_type";
 
-    $table = new Table($table, $columns, $joins);
-    $export_data = $table->getRows($conditions, $order, $direction, $group);
-
     if (empty($export_data)) {
-        if ($err = $table->getLastError()) {
+        if ($err = Connection::getConnection()->getPdo()->errorCode()) {
             $export_data = [["error" => $err]];
         }
     }
@@ -73,6 +71,7 @@ if (!is_array($_SESSION[$export_session])) {
         header("Content-Type: text/csv");
         header("Content-Disposition: attachment;filename=$myfileName");
         $out = fopen("php://output", "w");
+        fputcsv($out, array_keys($export_data[0]), ",", "\"", "");
         foreach ($export_data as $line) {
             fputcsv($out, $line, ",", "\"", "");
         }

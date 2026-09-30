@@ -442,7 +442,7 @@ $list_country = Connection::getConnection("cc_country")->pluck("countryname", "c
 
 <?php
 $export_columns = array_map(
-    fn ($v) => "`cc_card`.`" . trim(str_replace("`", "", $v)) . "`",
+    fn ($v) => "`cc_card`.`" . preg_replace("/\W/", "", $v) . "`",
     explode(",", $A2B->config['webui']['card_export_field_list'] ?? "")
 );
 $HD_Form->setup_export(
