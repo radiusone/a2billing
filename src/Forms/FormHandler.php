@@ -1328,11 +1328,7 @@ class FormHandler
         }
 
         $list = [];
-        if (
-            $form_action === "list" || $form_action === "edit" || $form_action === "ask-delete" ||
-            $form_action === "ask-edit" || $form_action === "add-content" || $form_action === "del-content" ||
-            $form_action === "ask-del-confirm"
-        ) {
+        if ($form_action === "list") {
             $dir = "asc";
             if (in_array(strtolower($processed["sens"] ?? ""), ["asc", "desc"])) {
                 $dir = $processed["sens"];
@@ -1359,54 +1355,56 @@ class FormHandler
                 $_SESSION[$this->FG_QUERY_TABLE_NAME . "-displaylimit"] = $this->FG_LIST_VIEW_PAGE_SIZE;
             }
 
-            if ($form_action === "list") {
-                // instance_primary_key is used to fill in links for edit/delete buttons
-                $this->query_builder->addSelect("$this->FG_QUERY_PRIMARY_KEY AS instance_primary_key");
+            // instance_primary_key is used to fill in links for edit/delete buttons
+            $this->query_builder->addSelect("$this->FG_QUERY_PRIMARY_KEY AS instance_primary_key");
 
-                $this->prepare_list_subselection($form_action);
+            $this->prepare_list_subselection($form_action);
 
-                // Code here to call the Delete Selected items Fucntion
-                if (isset($processed['deleteselected'])) {
-                    $this->Delete_Selected();
-                }
+            // Code here to call the Delete Selected items Fucntion
+            if (isset($processed['deleteselected'])) {
+                $this->Delete_Selected();
+            }
 
-                $instance_table = $this->query_builder
-                    ->limit($this->FG_LIST_VIEW_PAGE_SIZE)
-                    ->offset($current_page * $this->FG_LIST_VIEW_PAGE_SIZE);
-                try {
-                    $list = $instance_table->get()->toArray();
+            $instance_table = $this->query_builder
+                ->limit($this->FG_LIST_VIEW_PAGE_SIZE)
+                ->offset($current_page * $this->FG_LIST_VIEW_PAGE_SIZE);
+            try {
+                $list = $instance_table->get()->toArray();
 
-                    $this->FG_LIST_VIEW_ROW_COUNT = $instance_table->count();
-                } catch (Throwable) {
-                }
+            $this->FG_LIST_VIEW_ROW_COUNT = $instance_table->count();
+            } catch (Throwable) {
+            }
 
-                if ($this->FG_LIST_VIEW_ROW_COUNT <= $this->FG_LIST_VIEW_PAGE_SIZE) {
-                    $this->FG_LIST_VIEW_PAGE_COUNT = 1;
-                } else {
-                    $this->FG_LIST_VIEW_PAGE_COUNT = ceil($this->FG_LIST_VIEW_ROW_COUNT / $this->FG_LIST_VIEW_PAGE_SIZE);
-                }
+            if ($this->FG_LIST_VIEW_ROW_COUNT <= $this->FG_LIST_VIEW_PAGE_SIZE) {
+                $this->FG_LIST_VIEW_PAGE_COUNT = 1;
             } else {
-                $cols = array_column(
-                    array_filter(
-                        $this->FG_EDIT_FORM_ELEMENTS,
-                        // "has many" have a fake index, some fields may have a numeric one
-                        fn ($v, $k) => $v["type"] !== "HAS_MANY" && !is_numeric($k),
-                        ARRAY_FILTER_USE_BOTH
-                    ),
-                    "name"
-                );
+                $this->FG_LIST_VIEW_PAGE_COUNT = ceil($this->FG_LIST_VIEW_ROW_COUNT / $this->FG_LIST_VIEW_PAGE_SIZE);
+            }
+        } elseif (
+            $form_action === "edit" || $form_action === "ask-delete" ||
+            $form_action === "ask-edit" || $form_action === "add-content" || $form_action === "del-content" ||
+            $form_action === "ask-del-confirm"
+        ) {
+            $cols = array_column(
+                array_filter(
+                    $this->FG_EDIT_FORM_ELEMENTS,
+                    // "has many" have a fake index, some fields may have a numeric one
+                    fn ($v, $k) => $v["type"] !== "HAS_MANY" && !is_numeric($k),
+                    ARRAY_FILTER_USE_BOTH
+                ),
+                "name"
+            );
 
-                try {
-                    $list = $this->query_builder->select($cols)->get()->toArray();
-                } catch (Throwable) {
-                }
+            try {
+                $list = $this->query_builder->select($cols)->get()->toArray();
+            } catch (Throwable) {
+            }
 
-                //PATCH TO CLEAN THE IMPORT OF PASSWORD FROM THE DATABASE
-                $index = array_search("pwd_encoded", $cols);
-                if ($index !== false && count($list) > 0) {
-                    $list[0][$index] = "";
-                    $list[0]["pwd_encoded"] = "";
-                }
+            //PATCH TO CLEAN THE IMPORT OF PASSWORD FROM THE DATABASE
+            $index = array_search("pwd_encoded", $cols);
+            if ($index !== false && count($list) > 0) {
+                $list[0][$index] = "";
+                $list[0]["pwd_encoded"] = "";
             }
         }
 
