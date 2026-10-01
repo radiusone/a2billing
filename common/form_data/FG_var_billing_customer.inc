@@ -50,9 +50,8 @@ $HD_Form = new FormHandler(
             $form_action === "list",
             fn (Builder $q) => $q->leftJoin("cc_card", "cc_card.id", "id_card")
         )
+        ->orderBy("cc_billing_customer.id", "DESC")
 );
-
-$HD_Form->list_query_order_direction = "DESC";
 
 $HD_Form->AddListTopButton("A2B_entity_billing_customer.php?form_action=ask-add", _("Add Billing"), "clock-fill");
 

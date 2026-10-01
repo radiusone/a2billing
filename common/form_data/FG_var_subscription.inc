@@ -1,6 +1,6 @@
 <?php
 
-use A2billing\Admin;
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 
@@ -38,9 +38,11 @@ use A2billing\Forms\Validator;
 
 $form_action ??= "list";
 
-$HD_Form = new FormHandler("cc_subscription_service", _("Subscription Service"));
-
-$HD_Form->list_query_order_direction = "DESC";
+$HD_Form = new FormHandler(
+    "cc_subscription_service",
+    _("Subscription Service"),
+    builder: Connection::getConnection("cc_subscription_service")->latest("datecreate")
+);
 
 $HD_Form->AddListTopButton(null, null, "box-seam");
 

@@ -67,9 +67,6 @@ class FormHandler
     /** The primary key column of the table */
     public string $FG_QUERY_PRIMARY_KEY = 'id';
 
-    /** @var string Direction (ASC or DESC) for the list display query ordering */
-    public string $list_query_order_direction = "ASC";
-
     /** @var array Data used to build the list view table */
     public array $FG_LIST_TABLE_CELLS = [];
 
@@ -1339,7 +1336,6 @@ class FormHandler
             $dir = "asc";
             if (in_array(strtolower($processed["sens"] ?? ""), ["asc", "desc"])) {
                 $dir = $processed["sens"];
-                $this->list_query_order_direction = $dir;
             }
             if (!empty($processed["order"])) {
                 foreach (array_filter([$processed['order']]) as $order) {

@@ -68,8 +68,8 @@ $HD_Form = new FormHandler(
             fn (Builder $q) => $q->where("id_card", Customer::id())
                 ->where("status", Invoice::PAIDSTATUS_PAID)
         )
+        ->latest("date")
 );
-$HD_Form->list_query_order_direction = "DESC";
 
 $HD_Form->FG_ENABLE_INFO_BUTTON = true;
 $HD_Form->FG_INFO_BUTTON_LINK = "A2B_invoice_view.php?id=";

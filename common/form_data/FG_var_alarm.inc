@@ -1,6 +1,6 @@
 <?php
 
-use A2billing\Admin;
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 
@@ -36,9 +36,11 @@ use A2billing\Forms\Validator;
  *
 **/
 
-$HD_Form = new FormHandler("cc_alarm", _("Alarms"));
-
-$HD_Form->list_query_order_direction = "DESC";
+$HD_Form = new FormHandler(
+    "cc_alarm",
+    _("Alarms"),
+    builder: Connection::getConnection("cc_alarm")->orderBy("id", "DESC")
+);
 
 $HD_Form->AddListTopButton("A2B_entity_alarm.php?form_action=ask-add", _("Add Alarm"), "bell-fill");
 

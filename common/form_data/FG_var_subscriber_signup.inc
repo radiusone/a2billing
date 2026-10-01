@@ -36,9 +36,11 @@ use A2billing\Forms\Validator;
  *
 **/
 
-$HD_Form = new FormHandler("cc_subscription_signup", _("Subscription in Signup"));
-
-$HD_Form->list_query_order_direction = "DESC";
+$HD_Form = new FormHandler(
+    "cc_subscription_signup",
+    _("Subscription in Signup"),
+    builder: Connection::getConnection("cc_subscription_signup")->orderBy("id", "DESC")
+);
 
 $HD_Form->AddListTopButton(null, null, "box-seam");
 
@@ -101,7 +103,7 @@ $HD_Form->AddEditTextarea(
 $HD_Form->AddEditSqlSelect(
     _("CALL PLAN"),
     "id_callplan",
-    Connection::getConnection("cc_tariffgroup", ["tariffgroupname", "id"]),
+    Connection::getConnection("cc_tariffgroup", "tariffgroupname", "id"),
     "",
     [],
     _("Define the callplan to associate to your Subscription")

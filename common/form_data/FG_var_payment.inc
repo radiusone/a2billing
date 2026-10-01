@@ -66,6 +66,7 @@ $HD_Form = new FormHandler(
             is_customer(),
             fn (Builder $q) => $q->where("card_id", Customer::id())
         )
+        ->latest("date")
 );
 if (is_agent()) {
     $HD_Form->help_text = create_help(_("Payment history - The section below allows you to add payments against a customer. Note that this does not change the balance on the card. Click refill under customer list to top-up a card."));
@@ -74,10 +75,8 @@ if (is_agent()) {
 } else {
     $HD_Form->help_text = create_help(_("Payment history - The section below allows you to add payments against a customer. Note that this does not change the balance on the account. Click on 'create associate refill' when you create a payment to top-up an account."));
 }
-$HD_Form->list_query_order_direction = "DESC";
-
 if (Admin::allowed(Admin::ACX_MODIFY_PAYMENTS)) {
-	$HD_Form->AddListTopButton(null, null, "cash-stack text-success");
+    $HD_Form->AddListTopButton(null, null, "cash-stack text-success");
 }
 
 $list_refill_type = getRefillType_List();
@@ -113,9 +112,9 @@ if (!$popup_select && !is_customer()) {
 }
 
 if (Admin::allowed(Admin::ACX_MODIFY_PAYMENTS) && !$popup_select) {
-	$HD_Form->FG_ENABLE_ADD_BUTTON = true;
-	$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
-	$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
+    $HD_Form->FG_ENABLE_ADD_BUTTON = true;
+    $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
+    $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 
     $HD_Form->AddEditPopup(
         _("CUSTOMER ID"),

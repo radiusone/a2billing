@@ -36,9 +36,11 @@ use A2billing\Forms\Validator;
  *
 **/
 
-$HD_Form = new FormHandler("cc_service", _("Recurring Service"));
-
-$HD_Form->list_query_order_direction = "DESC";
+$HD_Form = new FormHandler(
+    "cc_service",
+    _("Recurring Service"),
+    builder: Connection::getConnection("cc_service")->latest("datecreate")
+);
 
 $HD_Form->AddListTopButton(null, null, "alarm-fill");
 

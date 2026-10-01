@@ -7,6 +7,7 @@ use A2billing\Customer;
 use A2billing\Forms\FormBO;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
+use Illuminate\Database\Query\Builder;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -48,24 +49,21 @@ getpost_ifset(["card_id"]);
  */
 $form_action ??= "list";
 
-if (is_admin()) {
-    $HD_Form = new FormHandler("cc_logrefill", _("Refill"));
-} else {
-    $HD_Form = new FormHandler(
-        "cc_logrefill",
-        _("Refill"),
-        "cc_logrefill.id",
-        Connection::getConnection("cc_logrefill")
-            ->leftJoin("cc_card", "cc_card.id", "cc_logrefill.card_id")
-            ->leftJoin("cc_card_group", "cc_card.id_group", "cc_card_group.id")
-            ->where("cc_card_group.id_agent", Agent::id())
-    );
-}
-
-$HD_Form->list_query_order_direction = "DESC";
+$HD_Form = new FormHandler(
+    "cc_logrefill",
+    _("Refill"),
+    "cc_logrefill.id",
+    Connection::getConnection("cc_logrefill")
+        ->when(is_agent(), function (Builder $q) {
+            $q->leftJoin("cc_card", "cc_card.id", "cc_logrefill.card_id")
+                ->leftJoin("cc_card_group", "cc_card.id_group", "cc_card_group.id")
+                ->where("cc_card_group.id_agent", Agent::id());
+        })
+        ->latest("date")
+);
 
 if (Admin::allowed(Admin::ACX_MODIFY_REFILLS)) {
-	$HD_Form->AddListTopButton("A2B_entity_logrefill.php?form_action=ask-add", _("Add Refill"));
+    $HD_Form->AddListTopButton("A2B_entity_logrefill.php?form_action=ask-add", _("Add Refill"));
 }
 
 $HD_Form->help_text = create_help(
@@ -102,8 +100,8 @@ $HD_Form->AddListFilter("username", _("Account number"));
 
 // what is the point of this, if editing or deleting a refill doesn't change the card balance?
 if (Admin::allowed(Admin::ACX_MODIFY_REFILLS)) {
-	$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
-	$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
+    $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
+    $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 
     $HD_Form->AddEditPopup(
         _("CUSTOMER ID"),
