@@ -47,6 +47,7 @@ $HD_Form = new FormHandler(
     "cc_tariffgroup",
     _("Call Plan"),
     builder: Connection::getConnection("cc_tariffgroup")->orderBy("tariffgroupname")
+        ->when($popup_select, fn (Builder $q) => $q->limit(7))
 );
 
 $HD_Form->AddListTopButton(null, null, "tags");
@@ -72,13 +73,11 @@ $HD_Form->AddListMapping(abbr(_("LCR"), _("Least cost routing type")), "lcrtype"
 $HD_Form->AddListSqlMapping(_("Package"), "id_cc_package_offer", Connection::getConnection("cc_package_offer", "id", "label"));
 $HD_Form->AddListMapping(_("Prefix"), "removeinterprefix", $inter_prefix_list_short);
 if ($popup_select) {
-	$HD_Form->FG_LIST_VIEW_PAGE_SIZE = 7;
-
     $HD_Form->AddListSelectActionButton("javascript:sendValue('|param|')");
 } else {
-	$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
-	$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
-	$HD_Form->FG_ENABLE_ADD_BUTTON = true;
+    $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
+    $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
+    $HD_Form->FG_ENABLE_ADD_BUTTON = true;
 }
 
 $HD_Form->AddEditElement(

@@ -82,21 +82,19 @@ $id_trunk = (int)($id_trunk ?? 0);
 $id_ratecard = (int)($id_ratecard ?? 0);
 $form_action ??= "list";
 
-$builder = Connection::getConnection("cc_call")
-    ->leftJoin("cc_trunk", "cc_call.id_trunk", "cc_trunk.id_trunk")
-    ->leftJoin("cc_prefix", "cc_call.destination", "cc_prefix.prefix")
-    ->orderBy("starttime", "desc");
-
 $HD_Form = new FormHandler(
     "cc_call",
     _("Calls"),
-    builder: $builder
+    "cc_call.id",
+    Connection::getConnection("cc_call")
+        ->leftJoin("cc_trunk", "cc_call.id_trunk", "cc_trunk.id_trunk")
+        ->leftJoin("cc_prefix", "cc_call.destination", "cc_prefix.prefix")
+        ->latest("starttime")
+        ->limit(30)
 );
 
 $HD_Form->init();
 
-$HD_Form->FG_LIST_VIEW_PAGE_SIZE = 30;
-$HD_Form->FG_QUERY_PRIMARY_KEY = "cc_call.id";
 $HD_Form->list_message_empty = _("No matching calls found; use the fields above to refine your search.");
 
 $HD_Form->AddListValue(_("Calldate"), "starttime");
@@ -168,6 +166,7 @@ if (($calltype ?? "answered") === "answered") {
 $archive_message = "";
 if ($posted_archive === true) {
     try {
+        $HD_Form->query_builder->limit = null;
         Connection::getConnection("cc_call_archive")
             ->transaction(function (Builder $builder) use ($HD_Form) {
                 $builder->insertUsing(['*'], $HD_Form->query_builder);

@@ -5,22 +5,19 @@ use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 
-$builder = Connection::getConnection("cc_card_history")
-    ->leftJoin("cc_card", "cc_card_history.id_cc_card", "cc_card.id")
-    ->leftJoin("cc_card_group", "cc_card.id_group", "cc_card_group.id")
-    ->orderBy("cc_card_history.datecreated", "desc");
-
 $HD_Form = new FormHandler(
     "cc_card_history",
     _("Card History"),
-    builder: $builder
+    builder: Connection::getConnection("cc_card_history")
+        ->leftJoin("cc_card", "cc_card_history.id_cc_card", "cc_card.id")
+        ->leftJoin("cc_card_group", "cc_card.id_group", "cc_card_group.id")
+        ->orderBy("cc_card_history.datecreated", "desc")
+        ->limit(25)
 );
 
 $HD_Form->AddListValue(_("Account number"), "cc_card.username", [Customer::class, "getLinkFromUsername"]);
 $HD_Form->AddListValue(_("Date"), "cc_card_history.datecreated");
 $HD_Form->AddListValue(_("Description"), "cc_card_history.description");
-
-$HD_Form->FG_LIST_VIEW_PAGE_SIZE = 25;
 
 $HD_Form->search_form_enabled = true;
 $HD_Form->search_delete_enabled = false;

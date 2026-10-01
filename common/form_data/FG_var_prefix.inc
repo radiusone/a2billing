@@ -2,6 +2,7 @@
 
 use A2billing\Connection;
 use A2billing\Forms\FormHandler;
+use Illuminate\Database\Query\Builder;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -46,6 +47,7 @@ $HD_Form = new FormHandler(
     _("Prefix"),
     "prefix",
     Connection::getConnection("cc_prefix")->orderBy("destination")
+        ->when($popup_select, fn (Builder $q) => $q->limit(7))
 );
 
 $HD_Form->AddListTopButton(null, null, "geo-alt-fill");
@@ -56,12 +58,11 @@ $HD_Form->AddListValue(_("Prefix"), "prefix");
 $HD_Form->AddListValue(_("Destination"), "destination");
 
 if ($popup_select) {
-	$HD_Form->FG_LIST_VIEW_PAGE_SIZE = 7;
     $HD_Form->AddListSelectActionButton("javascript:sendValue('|param|')");
 } else {
-	$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
-	$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
-	$HD_Form->FG_ENABLE_ADD_BUTTON = true;
+    $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
+    $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
+    $HD_Form->FG_ENABLE_ADD_BUTTON = true;
 }
 
 $HD_Form->AddEditElement(

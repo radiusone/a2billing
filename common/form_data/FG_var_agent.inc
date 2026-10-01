@@ -52,6 +52,7 @@ $HD_Form = new FormHandler(
     builder: Connection::getConnection("cc_agent")
         ->when(is_agent(), fn (Builder $q) => $q->where("id", Agent::id()))
         ->orderBy("datecreation")
+        ->when($popup_select, fn (Builder $q) => $q->limit(7))
 );
 if (is_agent()) {
     $HD_Form->update_query_conditions = ["id" => Agent::id()];
@@ -121,7 +122,6 @@ if ($popup_select) {
 }
 
 if ($popup_select) {
-    $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 7;
     $HD_Form->AddListSelectActionButton("javascript:sendValue('|param|')");
 } elseif (Admin::allowed(Admin::ACX_MODIFY_AGENTS) || Agent::allowed(Agent::ACX_MYACCOUNT)) {
     $HD_Form->FG_ENABLE_EDIT_BUTTON = true;

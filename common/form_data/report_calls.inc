@@ -5,17 +5,16 @@ use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 
-$builder = Connection::getConnection("cc_call")
-    ->join("cc_trunk", "cc_call.id_trunk", "=", "cc_trunk.id_trunk", "left outer")
-    ->join("cc_ratecard", "cc_call.id_ratecard", "=", "cc_ratecard.id", "left outer")
-    ->join("cc_card", "cc_call.card_id", "=", "cc_card.id", "left outer")
-    ->leftJoin("cc_card_group", "cc_card.id_group", "cc_card_group.id")
-    ->orderBy("cc_call.starttime", "desc");
-
 $HD_Form = new FormHandler(
     "cc_call",
     gettext("CDR"),
-    builder: $builder
+    builder: Connection::getConnection("cc_call")
+        ->join("cc_trunk", "cc_call.id_trunk", "=", "cc_trunk.id_trunk", "left outer")
+        ->join("cc_ratecard", "cc_call.id_ratecard", "=", "cc_ratecard.id", "left outer")
+        ->join("cc_card", "cc_call.card_id", "=", "cc_card.id", "left outer")
+        ->leftJoin("cc_card_group", "cc_card.id_group", "cc_card_group.id")
+        ->orderBy("cc_call.starttime", "desc")
+        ->limit(25)
 );
 
 $dialstatus_list = getDialStatusList();
@@ -67,9 +66,6 @@ if ($A2B->config['webui']['link_audio_file'] ?? false) {
     // TODO: figure out how this works, move it into this file with custom button
     $HD_Form->AddListValue(_("Audio"), "uniqueid", "get_monitorfile_link", [], false);
 }
-
-$HD_Form->FG_LIST_VIEW_PAGE_SIZE = 25;
-
 $HD_Form->list_message_intro = _("Call Logs");
 
 $HD_Form->search_form_enabled = true;

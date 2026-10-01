@@ -58,6 +58,7 @@ $HD_Form = new FormHandler(
         ->join("cc_ratecard", "cc_call.id_ratecard", "cc_ratecard.id", type: "left outer")
         ->groupBy("dnid")
         ->orderBy("dnid")
+        ->limit(25)
 );
 $HD_Form->init();
 
@@ -80,8 +81,6 @@ $HD_Form->AddListValue(_("Avg sell"), "AVG(rateinitial)", "get_money_precise");
 $HD_Form->AddListValue(_("Duration"), "SUM(sessiontime)", "get_minute");
 $HD_Form->AddListValue(_("Buy"), "SUM(buycost)", "get_money_precise");
 $HD_Form->AddListValue(_("Sell"), "SUM(sessionbill)", "get_money_precise");
-
-$HD_Form->FG_LIST_VIEW_PAGE_SIZE = 25;
 
 $HD_Form->list_message_intro = _("DNID Report");
 

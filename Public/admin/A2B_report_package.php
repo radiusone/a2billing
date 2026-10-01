@@ -51,8 +51,8 @@ $HD_Form = new FormHandler(
         ->leftJoin("cc_package_offer", "cc_card_package_offer.id_cc_package_offer", "cc_package_offer.id")
         ->groupBy("id_cc_card", "id_cc_package_offer")
         ->latest("date_consumption")
+        ->limit(25)
 );
-$HD_Form->FG_LIST_VIEW_PAGE_SIZE = 25;
 
 $HD_Form->AddListValue(_("Card number"), "username");
 $HD_Form->AddListValue(_("Package"), "label");

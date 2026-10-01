@@ -63,9 +63,8 @@ if ($form_action === "list") {
             ->leftJoin("cc_config_group", "cc_config.config_group_id", "cc_config_group.id")
             ->orderBy("group_title")
             ->orderBy("config_key")
+            ->limit(25)
     );
-    $HD_Form->FG_QUERY_PRIMARY_KEY = "cc_config.id";
-    $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 25;
     $HD_Form->FG_ENABLE_ADD_BUTTON = true;
     $HD_Form->AddListTopButton();
 

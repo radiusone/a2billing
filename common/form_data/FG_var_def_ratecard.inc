@@ -68,6 +68,7 @@ if (is_admin()) {
                 $form_action === "list" && !isset($deleteselected),
                 fn (Builder $q) => $q->leftJoin("cc_prefix", "prefix", "cc_ratecard.destination")
             )
+            ->when($popup_select, fn (Builder $q) => $q->limit(7))
     );
     $use_lcr_callplan = false;
 } elseif (is_agent()) {
@@ -157,7 +158,6 @@ if (!$popup_select && is_admin()) {
 }
 
 if ($popup_select) {
-    $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 7;
     $HD_Form->AddListSelectActionButton("javascript:sendRateToPackage('|param|')");
 } else {
     $HD_Form->AddListFilter("dialprefix", _("Dial Prefix"));

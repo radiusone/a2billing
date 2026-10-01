@@ -94,8 +94,6 @@ class FormHandler
     /** @var string Code which is eval'd to decide whether to show the edit button */
     public string $FG_EDIT_BUTTON_CONDITION = '';
 
-    /** @var int Size of pages for the list view */
-    public int $FG_LIST_VIEW_PAGE_SIZE = 10;
     /** @var int Number of pages in the current list view */
     public int $FG_LIST_VIEW_PAGE_COUNT = 0;
     /** @var int Number of rows in the current list view */
@@ -1341,18 +1339,25 @@ class FormHandler
 
             $current_page = (int)($processed["current_page"] ?? 0);
 
+            // default page size
+            $this->query_builder->limit ??= 10;
+            $current_size = 0;
+            // check for existing custom size
             $session_limit = $this->FG_QUERY_TABLE_NAME . "-displaylimit";
             if (array_key_exists($session_limit, $_SESSION) && (int)$_SESSION[$session_limit]) {
-                $this->FG_LIST_VIEW_PAGE_SIZE = (int)$_SESSION[$session_limit];
+                $current_size = (int)$_SESSION[$session_limit];
             }
-
+            // check for newly posted custom size
             if (!empty($processed['mydisplaylimit'])) {
                 if ($processed['mydisplaylimit'] === 'ALL') {
-                    $this->FG_LIST_VIEW_PAGE_SIZE = 5000;
+                    $current_size = 5000;
                 } elseif ((int)$processed['mydisplaylimit'] > 0) {
-                    $this->FG_LIST_VIEW_PAGE_SIZE = (int)$processed['mydisplaylimit'];
+                    $current_size = (int)$processed['mydisplaylimit'];
                 }
-                $_SESSION[$this->FG_QUERY_TABLE_NAME . "-displaylimit"] = $this->FG_LIST_VIEW_PAGE_SIZE;
+                $_SESSION[$session_limit] = $current_size;
+            }
+            if ($current_size) {
+                $this->query_builder->limit($current_size);
             }
 
             // instance_primary_key is used to fill in links for edit/delete buttons
@@ -1365,20 +1370,13 @@ class FormHandler
                 $this->Delete_Selected();
             }
 
-            $instance_table = $this->query_builder
-                ->limit($this->FG_LIST_VIEW_PAGE_SIZE)
-                ->offset($current_page * $this->FG_LIST_VIEW_PAGE_SIZE);
-            try {
-                $list = $instance_table->get()->toArray();
+            $list = $this->query_builder->offset($current_page * $current_size)->get()->toArray();
+            $this->FG_LIST_VIEW_ROW_COUNT = count($list);
 
-            $this->FG_LIST_VIEW_ROW_COUNT = $instance_table->count();
-            } catch (Throwable) {
-            }
-
-            if ($this->FG_LIST_VIEW_ROW_COUNT <= $this->FG_LIST_VIEW_PAGE_SIZE) {
+            if ($this->FG_LIST_VIEW_ROW_COUNT <= $current_size) {
                 $this->FG_LIST_VIEW_PAGE_COUNT = 1;
             } else {
-                $this->FG_LIST_VIEW_PAGE_COUNT = ceil($this->FG_LIST_VIEW_ROW_COUNT / $this->FG_LIST_VIEW_PAGE_SIZE);
+                $this->FG_LIST_VIEW_PAGE_COUNT = ceil($this->FG_LIST_VIEW_ROW_COUNT / $current_size);
             }
         } elseif (
             $form_action === "edit" || $form_action === "ask-delete" ||
@@ -1400,7 +1398,7 @@ class FormHandler
             } catch (Throwable) {
             }
 
-            //PATCH TO CLEAN THE IMPORT OF PASSWORD FROM THE DATABASE
+            // don't display the hashed password in the text box
             $index = array_search("pwd_encoded", $cols);
             if ($index !== false && count($list) > 0) {
                 $list[0][$index] = "";
@@ -2153,6 +2151,7 @@ class FormHandler
         if ($columns) {
             $qb->select($columns);
         }
+        $qb->limit = null;
         $sql = $qb->toRawSql();
 
         $_SESSION[$this->export_session_key] = $sql;

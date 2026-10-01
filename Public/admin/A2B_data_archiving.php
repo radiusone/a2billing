@@ -57,7 +57,11 @@ $posted_search = (bool)($posted_search ?? false);
 $posted_archive = (bool)($posted_archive ?? false);
 $archive_all = (bool)($archive_all ?? false);
 
-$HD_Form = new FormHandler("cc_card", "Customer");
+$HD_Form = new FormHandler(
+    "cc_card",
+    "Customer",
+    builder: Connection::getConnection("cc_card")->limit(30)
+);
 $HD_Form->init();
 
 $HD_Form->search_session_key = "entity_archiving_selection";
@@ -81,7 +85,6 @@ $HD_Form->AddListMapping(_("IAX"), "iax_buddy", $yesno_list);
 $HD_Form->AddListValue(_("Calls"), "nbused");
 
 $HD_Form->list_message_empty  = _("NO CUSTOMER SEARCHED!");
-$HD_Form->FG_LIST_VIEW_PAGE_SIZE = 30;
 
 $HD_Form->search_form_enabled = true;
 $HD_Form->search_delete_enabled = false;
@@ -120,6 +123,7 @@ $HD_Form->prepare_list_subselection('list');
 
 $archive_message = "";
 if ($posted_archive) {
+    $HD_Form->query_builder->limit = null;
     try {
         Connection::getConnection("cc_card_archive")
             ->transaction(function (Builder $builder) use ($archive_all, $HD_Form) {

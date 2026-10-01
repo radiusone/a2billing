@@ -3,6 +3,7 @@
 use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
+use Illuminate\Database\Query\Builder;
 
 /**
  * @var numeric-string $popup_select
@@ -43,7 +44,13 @@ use A2billing\Forms\Validator;
  *
 **/
 
-$HD_Form = new FormHandler("cc_trunk", _("Trunk"), "id_trunk");
+$HD_Form = new FormHandler(
+    "cc_trunk",
+    _("Trunk"),
+    "id_trunk",
+    Connection::getConnection("cc_trunk")
+        ->when($popup_select, fn (Builder $q) => $q->limit(7))
+);
 
 // Dependent Tables
 $HD_Form->foreign_keys = ["cc_ratecard" => "id_trunk"];
@@ -63,19 +70,19 @@ $HD_Form->help_text = create_help(
 );
 
 if ($popup_select) {
-	$HD_Form->AddListValue(_("ID"), "id_trunk");
-	$HD_Form->AddListValue(_("Label"), "trunkcode");
-	$HD_Form->AddListSqlMapping(_("Provider"), "id_provider", Connection::getConnection("cc_provider", "id", "provider_name"));
+    $HD_Form->AddListValue(_("ID"), "id_trunk");
+    $HD_Form->AddListValue(_("Label"), "trunkcode");
+    $HD_Form->AddListSqlMapping(_("Provider"), "id_provider", Connection::getConnection("cc_provider", "id", "provider_name"));
 } else {
     $HD_Form->AddListValue(_("Label"), "trunkcode");
-	$HD_Form->AddListValue(abbr(_("+"), _("Added prefix")), "trunkprefix");
-	$HD_Form->AddListValue(abbr(_("-"), _("Removed prefix")), "removeprefix");
-	$HD_Form->AddListValue(_("Tech"), "providertech");
-	$HD_Form->AddListValue(_("Host"), "providerip");
+    $HD_Form->AddListValue(abbr(_("+"), _("Added prefix")), "trunkprefix");
+    $HD_Form->AddListValue(abbr(_("-"), _("Removed prefix")), "removeprefix");
+    $HD_Form->AddListValue(_("Tech"), "providertech");
+    $HD_Form->AddListValue(_("Host"), "providerip");
     $HD_Form->AddListSqlMapping(_("Provider"), "id_provider", Connection::getConnection("cc_provider", "id", "provider_name"));
-	$HD_Form->AddListValue(abbr(_("Min"), _("Minutes used")), "secondusedreal", "get_minute");
-	$HD_Form->AddListMapping(_("Status"), "status", getActivationList());
-	$HD_Form->AddListValue(_("Max use"), "maxuse");
+    $HD_Form->AddListValue(abbr(_("Min"), _("Minutes used")), "secondusedreal", "get_minute");
+    $HD_Form->AddListMapping(_("Status"), "status", getActivationList());
+    $HD_Form->AddListValue(_("Max use"), "maxuse");
 }
 
 $HD_Form->search_form_enabled = true;
@@ -85,12 +92,11 @@ $HD_Form->AddSearchSqlSelectInput(_("Provider"), "id_provider", Connection::getC
 $HD_Form->AddSearchSelectInput(_("Status"), "status", [_("Inactive"), _("Active")]);
 
 if ($popup_select) {
-	$HD_Form->FG_LIST_VIEW_PAGE_SIZE = 7;
     $HD_Form->AddListSelectActionButton("javascript:sendValue('|param|')");
 } else {
-	$HD_Form->FG_ENABLE_EDIT_BUTTON = true;
-	$HD_Form->FG_ENABLE_DELETE_BUTTON = true;
-	$HD_Form->FG_ENABLE_ADD_BUTTON = true;
+    $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
+    $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
+    $HD_Form->FG_ENABLE_ADD_BUTTON = true;
 }
 
 

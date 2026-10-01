@@ -75,6 +75,7 @@ $HD_Form = new FormHandler(
         )
         ->when(is_agent(), fn (Builder $q) => $q->where("id_agent", Agent::id()))
         ->when(is_customer(), fn (Builder $q) => $q->where("cc_card.id", Customer::id()))
+        ->when($popup_select, fn (Builder $q) => $q->limit(6))
 );
 $HD_Form->search_session_key = 'entity_card_selection';
 // todo: there are probably more than this
@@ -249,7 +250,6 @@ $HD_Form->FG_ENABLE_DELETE_BUTTON = !$popup_select && (Admin::allowed(Admin::ACX
 
 if ($popup_select) {
     // popup window
-    $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 6;
     switch ($popup_select) {
         case 1: $HD_Form->AddListSelectActionButton("javascript:sendValue('|param|')"); break;
         // username is always first column on popups
@@ -258,7 +258,6 @@ if ($popup_select) {
         case 3: $HD_Form->AddListSelectActionButton("javascript:sendValue('|param|', '|col0|', 'accountcode')"); break;
     }
 } elseif ($form_action === "list") {
-    $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 10;
     $HD_Form->search_form_enabled = true;
 
     $HD_Form->search_form_title = _("Define specific criteria to search for cards created.");
