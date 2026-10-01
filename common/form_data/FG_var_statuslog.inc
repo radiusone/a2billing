@@ -42,10 +42,8 @@ $HD_Form = new FormHandler(
     "cc_status_log.id",
     Connection::getConnection("cc_status_log")
         ->leftJoin("cc_card", "cc_card.id", "cc_status_log.id_cc_card")
+        ->latest("updated_date")
 );
-
-$HD_Form->list_query_order_columns = ["updated_date"];
-$HD_Form->list_query_order_direction = "DESC";
 
 $HD_Form->help_text = create_help(
     _("Status logs help you to keep track of the status of all customers. The status can be 'New, Active, Cancelled, Reserved, Waiting-MailConfirmation and Expired.")

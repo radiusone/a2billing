@@ -45,9 +45,6 @@ use A2billing\Forms\Validator;
 
 $HD_Form = new FormHandler("cc_trunk", _("Trunk"), "id_trunk");
 
-$HD_Form->list_query_order_columns = ["id_trunk"];
-$HD_Form->update_query_conditions = ["id_trunk" => "%id"];
-
 // Dependent Tables
 $HD_Form->foreign_keys = ["cc_ratecard" => "id_trunk"];
 $HD_Form->delete_message_confirm_fk = _("You have some rates attached to this Trunk! Please comfirm that you really want to remove this Trunk? ");

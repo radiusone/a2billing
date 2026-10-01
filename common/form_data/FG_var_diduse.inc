@@ -50,9 +50,8 @@ $HD_Form = new FormHandler(
     "cc_did_use.id",
     Connection::getConnection("cc_did_use")
         ->leftJoin("cc_did", "cc_did_use.id_did", "cc_did.id")
+        ->latest("reservationdate")
 );
-$HD_Form->list_query_order_columns = ["reservationdate"];
-$HD_Form->list_query_order_direction = "DESC";
 
 if ((!empty($posted_search) && !empty($inuse)) || empty($posted_search)) {
     $HD_Form->query_builder->whereNull("releasedate");

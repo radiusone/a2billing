@@ -47,11 +47,8 @@ $HD_Form = new FormHandler(
     "cc_speeddial.id",
     Connection::getConnection("cc_speeddial")
         ->when(is_customer(), fn (Builder $q) => $q->where("id_cc_card", Customer::id()))
+        ->latest("creationdate")
 );
-
-$HD_Form->list_query_order_columns = ["creationdate"];
-$HD_Form->list_query_order_direction = "DESC";
-
 
 if (is_customer()) {
     $HD_Form->help_text = create_help(_("Map single digit to your most dialed numbers."));

@@ -4,6 +4,7 @@ use A2billing\Admin;
 use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
+use Illuminate\Database\Query\Builder;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -53,24 +54,28 @@ $displaytop ??= "card_id";
 $groupbyday ??= null;
 $posted_search ??= 0;
 
-$HD_Form = new FormHandler("cc_call", _("Call Count Report"));
+$HD_Form = new FormHandler(
+    "cc_call",
+    _("Call Count Report"),
+    builder: Connection::getConnection("cc_call")
+        ->when(
+            $displaytop === "card_id" || $displaytop === "destination",
+            fn (Builder $q) => $q->groupBy($displaytop)
+        )
+        ->when(
+            $groupbyday,
+            fn (Builder $q) => $q->groupByRaw("DATE(starttime)")->orderByRaw("DATE(starttime) DESC"),
+            fn (Builder $q) => $q->orderByRaw("COUNT(*) DESC")
+        )
+);
 
 if ($displaytop === "card_id") {
-    $HD_Form->list_query_group_columns = ["card_id"];
     $HD_Form->list_message_intro = $groupbyday ? _("Top users by day") : _("Top users");
 } elseif ($displaytop === "destination") {
-    $HD_Form->list_query_group_columns = ["destination"];
     $HD_Form->list_message_intro = $groupbyday ? _("Top destinations by day") : _("Top destinations");
 } else {
     $displaytop = null;
 }
-if ($groupbyday) {
-    $HD_Form->list_query_group_columns[] = "DATE(starttime)";
-    $HD_Form->list_query_order_columns = ["DATE(starttime)"];
-} else {
-    $HD_Form->list_query_order_columns = ["COUNT(*)"];
-}
-$HD_Form->list_query_order_direction = "DESC";
 
 if ($groupbyday) {
     $HD_Form->AddListValue(_("Date"), "DATE(starttime)");

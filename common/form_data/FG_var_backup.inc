@@ -45,7 +45,11 @@ getpost_ifset(["path", "id"]);
  * @var string $path
  * @var numeric-string|null $id
  */
-$HD_Form = new FormHandler("cc_backup", "Backup");
+$HD_Form = new FormHandler(
+    "cc_backup",
+    "Backup",
+    builder: Connection::getConnection("cc_backup")->orderBy("name")
+);
 
 $form_action ??= "list";
 
@@ -155,8 +159,6 @@ if ($form_action === "add" && !empty($path)) {
         $error_upload = _("Error uploading file");
     }
 }
-
-$HD_Form->list_query_order_columns = ["name"];
 
 $HD_Form->help_text = create_help(
     _("This section will allow you to backup an existing database context. The Backup process will export the whole database, so you can restore it later.")

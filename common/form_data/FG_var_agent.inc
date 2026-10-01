@@ -6,6 +6,7 @@ use A2billing\Connection;
 use A2billing\Forms\FormBO;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
+use Illuminate\Database\Query\Builder;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -45,12 +46,16 @@ getpost_ifset(["form_action", "popup_select"]);
  * @var string $popup_select
  */
 
-$HD_Form = new FormHandler("cc_agent", is_admin() ? _("Agent") : _("personal information"));
+$HD_Form = new FormHandler(
+    "cc_agent",
+    is_admin() ? _("Agent") : _("personal information"),
+    builder: Connection::getConnection("cc_agent")
+        ->when(is_agent(), fn (Builder $q) => $q->where("id", Agent::id()))
+        ->orderBy("datecreation")
+);
 if (is_agent()) {
     $HD_Form->update_query_conditions = ["id" => Agent::id()];
 }
-
-$HD_Form->list_query_order_columns = ["datecreation"];
 
 if (is_admin()) {
     $HD_Form->AddListTopButton("A2B_entity_agent.php?form_action=ask-add&groupID=0");

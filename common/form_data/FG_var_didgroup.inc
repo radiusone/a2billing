@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 
@@ -35,9 +36,11 @@ use A2billing\Forms\Validator;
  *
 **/
 
-$HD_Form = new FormHandler("cc_didgroup", _("DID Group"));
-
-$HD_Form->list_query_order_columns = ["didgroupname"];
+$HD_Form = new FormHandler(
+    "cc_didgroup",
+    _("DID Group"),
+    builder: Connection::getConnection("cc_didgroup")->orderBy("didgroupname")
+);
 
 $HD_Form->AddListTopButton(null, null,"telephone-inbound-fill");
 

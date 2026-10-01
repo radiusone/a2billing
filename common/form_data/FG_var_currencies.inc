@@ -1,6 +1,6 @@
 <?php
 
-use A2billing\Admin;
+use A2billing\Connection;
 use A2billing\Forms\FormBO;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
@@ -37,9 +37,12 @@ use A2billing\Forms\Validator;
  *
 **/
 
-$HD_Form = new FormHandler("cc_currencies", _("Currencies"));
+$HD_Form = new FormHandler(
+    "cc_currencies",
+    _("Currencies"),
+    builder: Connection::getConnection("cc_currencies")->orderBy("currency")
+);
 
-$HD_Form->list_query_order_columns = ["currency"];
 $HD_Form->AddListTopButton("A2B_currencies.php?form_action=ask-add", _("Add Rate"), "currency-exchange");
 
 $HD_Form->AddListValue(_("Currency"), "currency");

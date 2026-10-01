@@ -38,9 +38,11 @@ use A2billing\Forms\Validator;
 
 $form_action ??= "list";
 
-$HD_Form = new FormHandler("cc_tariffplan", _("Ratecard"));
-
-$HD_Form->list_query_order_columns = ["tariffname"];
+$HD_Form = new FormHandler(
+    "cc_tariffplan",
+    _("Ratecard"),
+    builder: Connection::getConnection("cc_tariffplan")->orderBy("tariffname")
+);
 
 $HD_Form->AddListTopButton(null, null, "tag");
 

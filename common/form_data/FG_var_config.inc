@@ -61,8 +61,9 @@ if ($form_action === "list") {
         "cc_config.id",
         Connection::getConnection("cc_config")
             ->leftJoin("cc_config_group", "cc_config.config_group_id", "cc_config_group.id")
+            ->orderBy("group_title")
+            ->orderBy("config_key")
     );
-    $HD_Form->list_query_order_columns = ["group_title", "config_key"];
     $HD_Form->FG_QUERY_PRIMARY_KEY = "cc_config.id";
     $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 25;
     $HD_Form->FG_ENABLE_ADD_BUTTON = true;

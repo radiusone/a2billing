@@ -56,9 +56,8 @@ $HD_Form = new FormHandler(
     _("Agent Commission"),
     builder: Connection::getConnection("cc_agent_commission")
         ->when(is_agent(), fn (Builder $q) => $q->where("id_agent", Agent::id()))
+        ->latest("date")
 );
-$HD_Form->list_query_order_columns = ["date"];
-$HD_Form->list_query_order_direction = "desc";
 
 if (is_admin()) {
     $HD_Form->FG_ENABLE_ADD_BUTTON = true;

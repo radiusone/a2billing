@@ -58,10 +58,8 @@ $HD_Form = new FormHandler(
         ->when($card, fn (Builder $q) => $q->where("card_id", $card))
         // don't include ones already applied
         ->when($invoice, fn (Builder $q) => $q->whereNull("id_invoice"))
+        ->latest("date")
 );
-
-$HD_Form->list_query_order_columns = ["date"];
-$HD_Form->list_query_order_direction = "DESC";
 
 $HD_Form->AddListValue(_("Date"), "date");
 $HD_Form->AddListValue(_("Amount"), "payment", "get_money");

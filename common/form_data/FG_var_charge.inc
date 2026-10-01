@@ -4,6 +4,7 @@ use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
+use Illuminate\Database\Query\Builder;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -58,14 +59,12 @@ $HD_Form_c = new FormHandler(
     "cc_charge.id",
     Connection::getConnection("cc_charge")
         ->leftJoin("cc_card", "cc_charge.id_cc_card", "cc_card.id")
+    ->when(
+        $wantinclude,
+        fn (Builder $q) => $q->latest("cc_charge.creationdate"),
+        fn (Builder $q) => $q->orderBy("id_cc_card")
+    )
 );
-
-if ($wantinclude) {
-    $HD_Form_c->list_query_order_columns = ["cc_charge.creationdate"];
-    $HD_Form_c->list_query_order_direction = "DESC";
-} else {
-    $HD_Form_c->list_query_order_columns = ["id_cc_card"];
-}
 $HD_Form_c->AddListTopButton("A2B_entity_charge.php?form_action=ask-add", null, "cash text-success");
 
 $HD_Form_c->help_text = create_help(

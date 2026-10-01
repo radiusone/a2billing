@@ -58,9 +58,8 @@ if ($type === "payment") {
                 fn (Builder $q) => $q->where("cc_card_group.id_agent", Agent::id())
             )
             ->where("cc_logpayment.card_id", $id)
+            ->latest("date")
     );
-    $HD_Form->list_query_order_columns = ["date"];
-    $HD_Form->list_query_order_direction = "DESC";
 
     $HD_Form->AddListValue(_("Date"), "cc_logpayment.date");
     $HD_Form->AddListValue(_("Amount"), "cc_logpayment.payment");
@@ -86,9 +85,8 @@ if ($type === "payment") {
                 fn (Builder $q) => $q->where("cc_card_group.id_agent", Agent::id())
             )
             ->where("cc_invoice.id_card", $id)
+            ->latest("date")
     );
-    $HD_Form->list_query_order_columns = ["date"];
-    $HD_Form->list_query_order_direction = "DESC";
 
     $HD_Form->AddListValue(_("Date"), "date");
     $HD_Form->AddListValue(_("Amount (incl VAT)"), "total_price", "get_money");

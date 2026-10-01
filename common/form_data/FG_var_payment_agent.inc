@@ -58,10 +58,8 @@ $HD_Form = new FormHandler(
                 ->leftJoin("cc_logrefill_agent", "cc_agent.id", "cc_logrefill_agent.agent_id")
         )
         ->when(is_agent(), fn (Builder $q) => $q->where("cc_agent.id", Agent::id()))
+        ->latest("date")
 );
-
-$HD_Form->list_query_order_columns = ["date"];
-$HD_Form->list_query_order_direction = "DESC";
 
 if (is_admin()) {
     $HD_Form->FG_ENABLE_ADD_BUTTON = true;

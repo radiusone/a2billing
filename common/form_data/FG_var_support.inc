@@ -1,5 +1,6 @@
 <?php
 
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 
@@ -35,9 +36,11 @@ use A2billing\Forms\Validator;
  *
 **/
 
-$HD_Form = new FormHandler("cc_support", _("Support Box"));
-
-$HD_Form->list_query_order_columns = ["name"];
+$HD_Form = new FormHandler(
+    "cc_support",
+    _("Support Box"),
+    builder: Connection::getConnection("cc_support")->orderBy("name")
+);
 
 $HD_Form->AddListTopButton(null, null, "inbox-fill");
 

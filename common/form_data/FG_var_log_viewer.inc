@@ -41,10 +41,8 @@ $HD_Form = new FormHandler(
     "cc_system_log.id",
     Connection::getConnection("cc_system_log")
         ->leftJoin("cc_ui_authen", "cc_system_log.iduser", "cc_ui_authen.userid")
+        ->latest("creationdate")
 );
-
-$HD_Form->list_query_order_columns = ["creationdate"];
-$HD_Form->list_query_order_direction = "DESC";
 
 $HD_Form->help_text = create_help(_("The system log helps you track all events on your application. Log levels are the Importance Levels for the events - 1 is lowest level and 3 is highest level. 1 is used for Login, Logout and Page Visit. 2 is used for Add, Import, Export. 3 is for Update and Delete."));
 

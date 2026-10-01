@@ -67,12 +67,6 @@ class FormHandler
     /** The primary key column of the table */
     public string $FG_QUERY_PRIMARY_KEY = 'id';
 
-    /** @var array List of columns for the list display query to be grouped by */
-    public array $list_query_group_columns = [];
-
-    /** @var array List of columns for the list display query to be ordered by */
-    public array $list_query_order_columns = [];
-
     /** @var string Direction (ASC or DESC) for the list display query ordering */
     public string $list_query_order_direction = "ASC";
 
@@ -329,7 +323,6 @@ class FormHandler
         $this->FG_QUERY_TABLE_NAME = $tablename;
         $this->FG_INSTANCE_NAME = $instance_name;
         if ($primary_key !== "") {
-            $this->list_query_order_columns = [$primary_key];
             $this->update_query_conditions = [$primary_key => "%id"];
         } else {
             $primary_key = "$tablename.id";
@@ -342,6 +335,7 @@ class FormHandler
         } else {
             $this->query_builder = $builder;
         }
+        $this->query_builder->orderBy($primary_key);
 
         if (strtolower($_SERVER["REQUEST_METHOD"]) === "post") {
             $posted_token = $_POST["csrf_token"] ?? "";
@@ -1348,7 +1342,6 @@ class FormHandler
                 $this->list_query_order_direction = $dir;
             }
             if (!empty($processed["order"])) {
-                $this->list_query_order_columns = array_filter([$processed['order']]);
                 foreach (array_filter([$processed['order']]) as $order) {
                     $this->query_builder->orderBy($order, $dir);
                 }
@@ -1382,7 +1375,6 @@ class FormHandler
                 }
 
                 $instance_table = $this->query_builder
-                    ->groupBy(...$this->list_query_group_columns)
                     ->limit($this->FG_LIST_VIEW_PAGE_SIZE)
                     ->offset($current_page * $this->FG_LIST_VIEW_PAGE_SIZE);
                 try {

@@ -55,7 +55,9 @@ $HD_Form = new FormHandler(
     gettext("CDR"),
     "cc_call.id",
     Connection::getConnection("cc_call")
-        ->join("cc_ratecard", "cc_call.id_ratecard", "cc_ratecard.id", type: "left outer"),
+        ->join("cc_ratecard", "cc_call.id_ratecard", "cc_ratecard.id", type: "left outer")
+        ->groupBy("dnid")
+        ->orderBy("dnid")
 );
 $HD_Form->init();
 
@@ -82,9 +84,6 @@ $HD_Form->AddListValue(_("Sell"), "SUM(sessionbill)", "get_money_precise");
 $HD_Form->FG_LIST_VIEW_PAGE_SIZE = 25;
 
 $HD_Form->list_message_intro = _("DNID Report");
-
-$HD_Form->list_query_order_columns = ["dnid"];
-$HD_Form->list_query_group_columns = ["dnid"];
 
 $HD_Form->search_form_enabled = true;
 $HD_Form->search_session_key = "dnid_selection";

@@ -78,8 +78,8 @@ if (is_admin()) {
         builder: Connection::getConnection("cc_callplan_lcr")
             ->leftJoin("cc_agent_tariffgroup", "cc_callplan_lcr.tariffgroup_id", "cc_agent_tariffgroup.id_tariffgroup")
             ->where("cc_agent_tariffgroup.id_agent", Agent::id())
+            ->groupBy("dialprefix")
     );
-    $HD_Form->list_query_group_columns = ["dialprefix"];
     $use_lcr_callplan = true;
 } else {
     $HD_Form = new FormHandler(
@@ -87,8 +87,8 @@ if (is_admin()) {
         _("Rates"),
         builder: Connection::getConnection("cc_callplan_lcr")
             ->where("tariffgroup_id", $_SESSION["tariff"])
+            ->groupBy("dialprefix")
     );
-    $HD_Form ->list_query_group_columns = ["dialprefix"];
     $letter ??= "";
     if ($letter) {
         if ($letter === "1") {
@@ -107,12 +107,12 @@ if (!empty($cancelsearch_callplanlcr) || (isset($posted) && empty($tariffgroup))
 if ((!empty($tariffgroup) || !empty($_SESSION['def_ratecard_tariffgroup'])) && $form_action === "list") {
     // "Export call plan with LCR" is active, whatever that means
     // It certainly isn't "exporting" anything
-    $HD_Form->query_builder = Connection::getConnection("cc_callplan_lcr");
     $use_lcr_callplan = true;
-    $HD_Form->list_query_group_columns = ["dialprefix"];
     $tariffgroup = (int)($tariffgroup ?? $_SESSION["def_ratecard_tariffgroup"]);
-    $HD_Form->query_builder->where("tariffgroup_id", $tariffgroup);
     $_SESSION['def_ratecard_tariffgroup'] = $tariffgroup;
+    $HD_Form->query_builder = Connection::getConnection("cc_callplan_lcr")
+        ->groupBy("dialprefix")
+        ->where("tariffgroup_id", $tariffgroup);
 }
 
 if ($A2B->config["webui"]["hide_expired_rates"]) {
@@ -120,7 +120,7 @@ if ($A2B->config["webui"]["hide_expired_rates"]) {
     $HD_Form->query_builder->where(fn (Builder $q) => $q->whereNull("stopdate")->orWhereFuture("stopdate"));
 }
 
-$HD_Form->list_query_order_columns = ["dialprefix"];
+$HD_Form->query_builder->orderBy("dialprefix");
 $HD_Form->search_session_key = "entity_ratecard_selection";
 
 $HD_Form->add_help_text = $HD_Form->edit_help_text = create_help(

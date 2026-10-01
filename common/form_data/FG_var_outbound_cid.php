@@ -39,10 +39,11 @@ use A2billing\Forms\FormHandler;
  * @var string $form_action
  */
 
-$HD_Form = new FormHandler("cc_outbound_cid_list", _("CallerID"));
-
-$HD_Form ->list_query_order_columns = ["cid"];
-$HD_Form -> list_query_order_direction = "DESC";
+$HD_Form = new FormHandler(
+    "cc_outbound_cid_list",
+    _("CallerID"),
+    builder: Connection::getConnection("cc_outbound_cid_list")->orderBy("cid", "DESC")
+);
 
 $HD_Form->AddListTopButton(null, null, "telephone-outbound-fill");
 

@@ -62,6 +62,7 @@ $HD_Form = new FormHandler(
     Connection::getConnection("cc_ticket")
         ->where("cc_ticket.creator_type", $ticket_type === "agent" ? Ticket::AGENT : Ticket::CUSTOMER)
         ->when(is_customer(), fn (Builder $q) => $q->where("cc_ticket.creator", Customer::id()))
+        ->latest("cc_ticket.creationdate")
 );
 
 if ($form_action === "list") {
@@ -104,8 +105,6 @@ if ($form_action === "list") {
     );
 }
 
-$HD_Form->list_query_order_columns = ["cc_ticket.creationdate"];
-$HD_Form->list_query_order_direction = "DESC";
 if (is_customer()) {
     $HD_Form->update_query_conditions["cc_ticket.creator"] = Customer::id();
 }

@@ -1,6 +1,6 @@
 <?php
 
-use A2billing\Admin;
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -41,9 +41,12 @@ use A2billing\Forms\FormHandler;
  * @var string $popup_fieldname
  */
 
-$HD_Form = new FormHandler("cc_prefix", _("Prefix"), "prefix");
-
-$HD_Form->list_query_order_columns = ["destination"];
+$HD_Form = new FormHandler(
+    "cc_prefix",
+    _("Prefix"),
+    "prefix",
+    Connection::getConnection("cc_prefix")->orderBy("destination")
+);
 
 $HD_Form->AddListTopButton(null, null, "geo-alt-fill");
 

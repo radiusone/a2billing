@@ -45,10 +45,9 @@ $HD_Form = new FormHandler(
     "DID",
     builder: Connection::getConnection("cc_did")
         ->where("iduser", Customer::id())
+        ->orderBy("did", "DESC")
 );
 $HD_Form->update_query_conditions["iduser"] = Customer::id();
-$HD_Form->list_query_order_columns = ["did"];
-$HD_Form->list_query_order_direction = "DESC";
 $HD_Form->FG_ADDITIONAL_FUNCTION_BEFORE_DELETE = [FormBO::class, "is_did_in_use"];
 $HD_Form->add_message_intro = _("Be sure to note any one-time and recurring charges before adding this DID to your account");
 $HD_Form->delete_message_intro = sprintf(

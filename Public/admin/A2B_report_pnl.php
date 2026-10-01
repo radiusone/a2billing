@@ -322,7 +322,11 @@ function linktonext_2($value) {
     return $id ? "<a href=\"?group_id=$id&report_type=2\">$value</a>" : $value;
 }
 
-$HD_Form = new FormHandler("pnl_report", "PNL Report");
+$HD_Form = new FormHandler(
+    "pnl_report",
+    "PNL Report",
+    builder: Connection::getConnection("pnl_report")->orderBy("name")
+);
 
 $HD_Form->init();
 
@@ -352,7 +356,6 @@ $HD_Form->AddListValue(gettext("Avg Discount"), "discount", "get_percent");
 $HD_Form->AddListValue(gettext("Net Revenue"), "net_revenue", "get_money");
 $HD_Form->AddListValue(gettext("Margin"), "margin", "get_percent");
 $HD_Form->AddListValue(gettext("Total Profit"), "profit", "get_money");
-$HD_Form->list_query_order_columns = ["name"];
 
 $HD_Form->AddSearchDateInput(_("Date"), "starttime");
 $HD_Form->AddSearchRelativeDateInput(_("Date"), "starttime", true, false);

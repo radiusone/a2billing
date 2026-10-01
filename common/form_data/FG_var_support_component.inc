@@ -36,9 +36,11 @@ use A2billing\Forms\Validator;
  *
 **/
 
-$HD_Form = new FormHandler("cc_support_component", _("Support Component"));
-
-$HD_Form->list_query_order_columns = ["name"];
+$HD_Form = new FormHandler(
+    "cc_support_component",
+    _("Support Component"),
+    builder: Connection::getConnection("cc_support_component")->orderBy("name")
+);
 
 $HD_Form->AddListTopButton(null, null, "boxes");
 

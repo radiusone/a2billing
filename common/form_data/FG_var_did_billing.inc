@@ -44,10 +44,10 @@ $HD_Form = new FormHandler(
         ->join("cc_did", "cc_did.id", "cc_call.id_did")
         ->join("cc_card", "cc_card.id", "cc_call.card_id")
         ->whereIn("sipiax", [2, 3])
+        ->groupBy("cc_card.username", "cc_did.did")
+        ->groupByRaw("DATE(starttime)")
+        ->latest("date")
 );
-
-$HD_Form->list_query_order_columns = ["date"];
-$HD_Form->list_query_order_direction = "DESC";
 
 $HD_Form->help_text = create_help(
     _("DID list and billing list.")
@@ -60,8 +60,6 @@ $HD_Form->AddListValue(_("NB_CALL"), "COUNT(*) AS nb_call");
 $HD_Form->AddListValue(_("TOTAL_DURATION"), "SUM(sessiontime) AS t_time", "get_minute");
 $HD_Form->AddListValue(_("TOTAL_COST"), "SUM(sessionbill) AS t_cost", "get_money");
 $HD_Form->AddListValue(_("CARDNUMBER"), "username");
-
-$HD_Form->list_query_group_columns = ["cc_card.username", "cc_did.did", "DATE(starttime)"];
 
 $HD_Form->FG_ENABLE_EDIT_BUTTON = false;
 $HD_Form->FG_ENABLE_DELETE_BUTTON = false;

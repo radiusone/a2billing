@@ -2,6 +2,7 @@
 
 use A2billing\Admin;
 use A2billing\Agent;
+use A2billing\Connection;
 use A2billing\Forms\FormBO;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
@@ -46,12 +47,10 @@ use Illuminate\Database\Query\Builder;
 $HD_Form = new FormHandler(
     "cc_logrefill_agent",
     "Agent Refill",
-    builder: \A2billing\Connection::getConnection("cc_logrefill_agent")
+    builder: Connection::getConnection("cc_logrefill_agent")
         ->when(is_agent(), fn (Builder $q) => $q->where("agent_id", Agent::id()))
+        ->latest("date")
 );
-
-$HD_Form->list_query_order_columns = ["date"];
-$HD_Form->list_query_order_direction = "DESC";
 
 if (is_admin()) {
     $HD_Form->AddListTopButton("A2B_entity_logrefill_agent.php?form_action=ask-add", _("Add Refill"));

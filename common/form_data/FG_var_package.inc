@@ -1,6 +1,6 @@
 <?php
 
-use A2billing\Admin;
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 
@@ -38,9 +38,12 @@ use A2billing\Forms\Validator;
 
 $form_action ??= "list";
 
-$HD_Form = new FormHandler("cc_package_offer", _("Package"));
+$HD_Form = new FormHandler(
+    "cc_package_offer",
+    _("Package"),
+    builder: Connection::getConnection("cc_package_offer")->orderBy("label")
+);
 
-$HD_Form->list_query_order_columns = ["label"];
 $HD_Form->AddListTopButton(null, null, "box-seam");
 
 $HD_Form->help_text = create_help(_("PACKAGES SYSTEM - FREE MINUTES, etc..."));

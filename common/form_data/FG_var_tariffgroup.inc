@@ -43,9 +43,11 @@ use Illuminate\Database\Query\Builder;
  * @var string $popup_fieldname
  */
 
-$HD_Form = new FormHandler("cc_tariffgroup", _("Call Plan"));
-
-$HD_Form->list_query_order_columns = ["tariffgroupname"];
+$HD_Form = new FormHandler(
+    "cc_tariffgroup",
+    _("Call Plan"),
+    builder: Connection::getConnection("cc_tariffgroup")->orderBy("tariffgroupname")
+);
 
 $HD_Form->AddListTopButton(null, null, "tags");
 

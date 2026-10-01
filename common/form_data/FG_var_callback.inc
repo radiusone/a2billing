@@ -40,9 +40,11 @@ use A2billing\Forms\Validator;
  * @var string $form_action
  */
 
-$HD_Form = new FormHandler("cc_callback_spool", _("Callback"));
-$HD_Form->list_query_order_columns = ["entry_time"];
-$HD_Form->list_query_order_direction  = "DESC";
+$HD_Form = new FormHandler(
+    "cc_callback_spool",
+    _("Callback"),
+    builder: Connection::getConnection("cc_callback_spool")->latest("entry_time")
+);
 
 $HD_Form->AddListTopButton(null, null, "telephone-outbound-fill");
 

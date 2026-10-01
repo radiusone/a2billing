@@ -59,6 +59,8 @@ if (is_customer()) {
                     )
             )
             ->where("id_card", Customer::id())
+            ->groupBy("cc_receipt.id")
+            ->orderBy("date", "desc")
     );
 } else {
     $HD_Form = new FormHandler(
@@ -70,11 +72,10 @@ if (is_customer()) {
                 $form_action === "list",
                 fn (Builder $q) => $q->leftJoin("cc_receipt_item", "cc_receipt_item.id_receipt", "cc_receipt.id")
             )
+            ->groupBy("cc_receipt.id")
+            ->latest("date")
     );
 }
-$HD_Form->list_query_order_columns = ["date"];
-$HD_Form->list_query_order_direction = "DESC";
-$HD_Form->list_query_group_columns = ["cc_receipt.id"];
 
 $HD_Form->FG_ENABLE_INFO_BUTTON = true;
 $HD_Form->FG_INFO_BUTTON_LINK = "A2B_receipt_view.php?id=";

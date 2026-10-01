@@ -48,10 +48,9 @@ $HD_Form = new FormHandler(
             fn (Builder $q) => $q->leftJoin("cc_did", "cc_did.id", "cc_did_destination.id_cc_did")
         )
         ->when(is_customer(), fn (Builder $q) => $q->where("id_cc_card", Customer::id()))
+        ->orderBy("destination", "DESC")
 );
 
-$HD_Form->list_query_order_columns = ["destination"];
-$HD_Form->list_query_order_direction = "DESC";
 if (is_customer()) {
     $HD_Form->update_query_conditions["id_cc_card"] = Customer::id();
 }

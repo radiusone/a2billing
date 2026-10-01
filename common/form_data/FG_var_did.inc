@@ -51,12 +51,14 @@ getpost_ifset(['id', 'did', 'fixrate']);
  * @var string $fixrate
  */
 
-$HD_Form = new FormHandler("cc_did", "DID");
+$HD_Form = new FormHandler(
+    "cc_did",
+    "DID",
+    builder: Connection::getConnection("cc_did")->orderBy("did", "DESC")
+);
 
 $HD_Form->AddListTopButton("A2B_entity_did.php?form_action=ask-add", _("Add DID"), "telephone-inbound-fill");
 
-$HD_Form->list_query_order_columns = ["did"];
-$HD_Form->list_query_order_direction = "DESC";
 $HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_ADD = [FormBO::class, "add_did_use"];
 $HD_Form->FG_ADDITIONAL_FUNCTION_AFTER_DELETE = [FormBO::class, "did_use_delete"];
 $HD_Form->FG_ADDITIONAL_FUNCTION_BEFORE_DELETE = [FormBO::class, "is_did_in_use"];

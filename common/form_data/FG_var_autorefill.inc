@@ -1,6 +1,6 @@
 <?php
 
-use A2billing\Admin;
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
@@ -35,9 +35,11 @@ use A2billing\Forms\FormHandler;
  *
 **/
 
-$HD_Form = new FormHandler("cc_autorefill_report", "AutoRefill Report");
-$HD_Form->list_query_order_columns = ["daterun"];
-$HD_Form->list_query_order_direction = "DESC";
+$HD_Form = new FormHandler(
+    "cc_autorefill_report",
+    "AutoRefill Report",
+    builder: Connection::getConnection("cc_autofill_report")->latest("daterun")
+);
 
 $HD_Form->help_text = create_help(_("Auto Refill report."));
 
