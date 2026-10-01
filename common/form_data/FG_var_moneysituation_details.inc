@@ -3,6 +3,7 @@
 use A2billing\Agent;
 use A2billing\Connection;
 use A2billing\Forms\FormHandler;
+use Illuminate\Database\Query\Builder;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -52,11 +53,12 @@ if ($type === "payment") {
         Connection::getConnection("cc_logpayment")
             ->leftJoin("cc_card", "cc_logpayment.card_id", "cc_card.id")
             ->leftJoin("cc_card_group", "cc_card.id_group", "cc_card_group.id")
+            ->when(
+                is_agent(),
+                fn (Builder $q) => $q->where("cc_card_group.id_agent", Agent::id())
+            )
+            ->where("cc_logpayment.card_id", $id)
     );
-    if (is_agent()) {
-        $HD_Form->list_query_conditions["cc_card_group.id_agent"] = Agent::id();
-    }
-    $HD_Form->list_query_conditions["cc_logpayment.card_id"] = $id;
     $HD_Form->list_query_order_columns = ["date"];
     $HD_Form->list_query_order_direction = "DESC";
 
@@ -79,11 +81,12 @@ if ($type === "payment") {
             )
             ->leftJoin("cc_card", "cc_invoice.id_card", "cc_card.id")
             ->leftJoin("cc_card_group", "cc_card.id_group", "cc_card_group.id")
+            ->when(
+                is_agent(),
+                fn (Builder $q) => $q->where("cc_card_group.id_agent", Agent::id())
+            )
+            ->where("cc_invoice.id_card", $id)
     );
-    if (is_agent()) {
-        $HD_Form->list_query_conditions["cc_card_group.id_agent"] = Agent::id();
-    }
-    $HD_Form->list_query_conditions["cc_invoice.id_card"] = $id;
     $HD_Form->list_query_order_columns = ["date"];
     $HD_Form->list_query_order_direction = "DESC";
 

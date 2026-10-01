@@ -6,6 +6,7 @@ use A2billing\Customer;
 use A2billing\Forms\FormBO;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
+use Illuminate\Database\Query\Builder;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -50,10 +51,12 @@ getpost_ifset(["id_card"]);
 
 $form_action ??= "list";
 
-$HD_Form = new FormHandler("cc_agent_commission", _("Agent Commission"));
-if (is_agent()) {
-    $HD_Form->list_query_conditions["id_agent"] = Agent::id();
-}
+$HD_Form = new FormHandler(
+    "cc_agent_commission",
+    _("Agent Commission"),
+    builder: Connection::getConnection("cc_agent_commission")
+        ->when(is_agent(), fn (Builder $q) => $q->where("id_agent", Agent::id()))
+);
 $HD_Form->list_query_order_columns = ["date"];
 $HD_Form->list_query_order_direction = "desc";
 

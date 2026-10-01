@@ -57,10 +57,8 @@ $HD_Form = new FormHandler(
             fn (Builder $q) => $q->leftJoin("cc_agent", "cc_agent.id", "cc_logpayment_agent.agent_id")
                 ->leftJoin("cc_logrefill_agent", "cc_agent.id", "cc_logrefill_agent.agent_id")
         )
+        ->when(is_agent(), fn (Builder $q) => $q->where("cc_agent.id", Agent::id()))
 );
-if (is_agent()) {
-    $HD_Form->list_query_conditions["cc_agent.id"] = Agent::id();
-}
 
 $HD_Form->list_query_order_columns = ["date"];
 $HD_Form->list_query_order_direction = "DESC";

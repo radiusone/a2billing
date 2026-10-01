@@ -3,6 +3,7 @@
 use A2billing\Agent;
 use A2billing\Connection;
 use A2billing\Forms\FormHandler;
+use Illuminate\Database\Query\Builder;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -42,10 +43,8 @@ $HD_Form = new FormHandler(
     "cc_remittance_request.id",
     Connection::getConnection("cc_remittance_request")
         ->leftJoin("cc_agent", "cc_remittance_request.id_agent", "cc_agent.id")
+        ->when(is_agent(), fn (Builder $q) => $q->where("id_agent", Agent::id()))
 );
-if (is_agent()) {
-    $HD_Form->list_query_conditions["id_agent"] = Agent::id();
-}
 
 $HD_Form->list_query_order_columns = ["date"];
 $HD_Form->list_query_order_direction = "DESC";

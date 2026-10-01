@@ -7,6 +7,7 @@ use A2billing\Customer;
 use A2billing\Forms\FormBO;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
+use Illuminate\Database\Query\Builder;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -57,12 +58,18 @@ $HD_Form = new FormHandler(
     Connection::getConnection("cc_logpayment")
         ->leftJoin("cc_card", "cc_card.id", "cc_logpayment.card_id")
         ->leftJoin("cc_card_group", "cc_card.id_group", "cc_card_group.id")
+        ->when(
+            is_agent(),
+            fn (Builder $q) => $q->where("cc_card_group.id_agent", Agent::id())
+        )
+        ->when(
+            is_customer(),
+            fn (Builder $q) => $q->where("card_id", Customer::id())
+        )
 );
 if (is_agent()) {
-    $HD_Form->list_query_conditions["cc_card_group.id_agent"] = Agent::id();
     $HD_Form->help_text = create_help(_("Payment history - The section below allows you to add payments against a customer. Note that this does not change the balance on the card. Click refill under customer list to top-up a card."));
 } elseif (is_customer()) {
-    $HD_Form->list_query_conditions["card_id"] = Customer::id();
     $HD_Form->help_text = create_help(_("Payment history - Record of payments made."));
 } else {
     $HD_Form->help_text = create_help(_("Payment history - The section below allows you to add payments against a customer. Note that this does not change the balance on the account. Click on 'create associate refill' when you create a payment to top-up an account."));

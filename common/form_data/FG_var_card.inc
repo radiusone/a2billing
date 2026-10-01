@@ -73,14 +73,9 @@ $HD_Form = new FormHandler(
             fn (Builder $q) => $q->leftJoin("cc_card_group", "cc_card.id_group", "cc_card_group.id")
                 ->leftJoin("cc_agent", "cc_card_group.id_agent", "cc_agent.id")
         )
+        ->when(is_agent(), fn (Builder $q) => $q->where("id_agent", Agent::id()))
+        ->when(is_customer(), fn (Builder $q) => $q->where("cc_card.id", Customer::id()))
 );
-
-if (is_agent()) {
-    $HD_Form->list_query_conditions["id_agent"] = Agent::id();
-} elseif (is_customer()) {
-    // shouldn't be needed, but just in case
-    $HD_Form->list_query_conditions["cc_card.id"] = Customer::id();
-}
 $HD_Form->search_session_key = 'entity_card_selection';
 // todo: there are probably more than this
 $HD_Form->foreign_keys = [

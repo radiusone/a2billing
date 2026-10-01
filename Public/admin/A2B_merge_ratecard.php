@@ -4,6 +4,7 @@ use A2billing\Admin;
 use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 use A2billing\Table;
+use Illuminate\Database\Query\Builder;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -97,15 +98,9 @@ if (!empty($posted)) {
         $count = 0;
         $fieldtomerge[] = "dialprefix";
 
-        if (!empty($_SESSION['search_ratecard'])) {
-            $condition = json_decode($_SESSION['search_ratecard']);
-        }
-
-        /* TODO: move session stored filter to something QB can work with */
-        $source_result = (new Table("cc_ratecard", $fieldtomerge))->getRows(
-            $condition,
-            ["dialprefix", "id"]
-        );
+        /** @var Builder $qb */
+        $qb = $_SESSION['search_ratecard'];
+        $source_result = $qb->select($fieldtomerge)->orderBy("dialprefix")->orderBy("id")->get();
 
         foreach ($source_result as $source_rate) {
             $check = Connection::getConnection("cc_ratecard")
@@ -131,7 +126,7 @@ if (!empty($posted)) {
             $msgs[] = _("Ratecard is not merged, please try again with different search criteria.");
         }
     }
-    $_SESSION['search_ratecard'] = "";
+    $_SESSION['search_ratecard'] = null;
 }
 
 $HD_Form->search_form_enabled = true;
@@ -146,7 +141,7 @@ $HD_Form->AddSearchSqlSelectInput('SELECT TRUNK', "id_trunk", Connection::getCon
 $HD_Form->AddSearchSqlSelectInput("Source Ratecard", "idtariffplan", Connection::getConnection("cc_tariffplan", "tariffname", "id"));
 $HD_Form->prepare_list_subselection($form_action = "list");
 $list = $HD_Form->perform_action($form_action);
-$_SESSION['search_ratecard'] = json_encode($HD_Form->list_query_conditions);
+$_SESSION['search_ratecard'] = $HD_Form->query_builder;
 
 $list_tariffname = Connection::getConnection("cc_tariffplan")->pluck("tariffname", "id");
 

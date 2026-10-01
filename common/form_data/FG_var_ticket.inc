@@ -7,6 +7,7 @@ use A2billing\Forms\FormBO;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 use A2billing\Ticket;
+use Illuminate\Database\Query\Builder;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -57,7 +58,10 @@ $form_action ??= "list";
 $HD_Form = new FormHandler(
     "cc_ticket",
     $ticket_type === "agent" ? _("Agent Ticket") : _("User Ticket"),
-    "cc_ticket.id"
+    "cc_ticket.id",
+    Connection::getConnection("cc_ticket")
+        ->where("cc_ticket.creator_type", $ticket_type === "agent" ? Ticket::AGENT : Ticket::CUSTOMER)
+        ->when(is_customer(), fn (Builder $q) => $q->where("cc_ticket.creator", Customer::id()))
 );
 
 if ($form_action === "list") {
@@ -89,21 +93,20 @@ if ($form_action === "list") {
             ->where("aa.creator", Customer::id())
             ->groupBy("aa.id");
     }
-    if ($virtual) {
-        $HD_Form->query_builder->leftJoinSub($virtual, "v", "cc_ticket_id", "v.id");
-    }
-    if ($ticket_type === "agent") {
-        $HD_Form->query_builder->leftJoin("cc_agent", "cc_agent.id", "creator");
-    } else {
-        $HD_Form->query_builder->leftJoin("cc_card", "cc_card.id", "creator");
-    }
+    $HD_Form->query_builder->when(
+        $virtual,
+        fn (Builder $q) => $q->leftJoinSub($virtual, "v", "cc_ticket_id", "v.id")
+    );
+    $HD_Form->query_builder->when(
+        $ticket_type === "agent",
+        fn (Builder $q) => $q->leftJoin("cc_agent", "cc_agent.id", "creator"),
+        fn (Builder $q) => $q->leftJoin("cc_card", "cc_card.id", "creator")
+    );
 }
 
 $HD_Form->list_query_order_columns = ["cc_ticket.creationdate"];
 $HD_Form->list_query_order_direction = "DESC";
-$HD_Form->list_query_conditions["cc_ticket.creator_type"] = $ticket_type === "agent" ? Ticket::AGENT : Ticket::CUSTOMER;
 if (is_customer()) {
-    $HD_Form->list_query_conditions["cc_ticket.creator"] = Customer::id();
     $HD_Form->update_query_conditions["cc_ticket.creator"] = Customer::id();
 }
 

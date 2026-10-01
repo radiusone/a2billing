@@ -58,8 +58,8 @@ if (is_customer()) {
                         "items.id_receipt"
                     )
             )
+            ->where("id_card", Customer::id())
     );
-    $HD_Form->list_query_conditions["id_card"] = Customer::id();
 } else {
     $HD_Form = new FormHandler(
         "cc_receipt",

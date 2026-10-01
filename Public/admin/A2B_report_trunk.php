@@ -73,9 +73,9 @@ $HD_Form->AddSearchPopupInput(_("Trunk"), "cc_call.id_trunk", "A2B_entity_trunk.
 
 $form_action = "list";
 $HD_Form->prepare_list_subselection($form_action);
-if (empty($HD_Form->list_query_conditions)) {
+if (empty($HD_Form->query_builder->wheres)) {
     $date = (new DateTime("-1 day"))->format("Y-m-d");
-    $HD_Form->list_query_conditions["cc_call.starttime"] = [">=", $date];
+    $HD_Form->query_builder->where("cc_call.starttime", ">=", $date);
 }
 
 $list = $HD_Form->perform_action($form_action);

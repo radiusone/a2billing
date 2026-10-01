@@ -1,6 +1,8 @@
 <?php
 
 use A2billing\A2Billing;
+use A2billing\Connection;
+use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 
@@ -47,8 +49,13 @@ getpost_ifset(["id", "email_notification", "credit_notification", "notify_email"
  * @var string|null $message
  */
 
-$HD_Form = new FormHandler("cc_card", "Card");
-$HD_Form->list_query_conditions = $HD_Form->update_query_conditions = ["id" => Customer::id()];
+$HD_Form = new FormHandler(
+    "cc_card",
+    "Card",
+    builder: Connection::getConnection("cc_card")
+        ->where("id", Customer::id())
+);
+$HD_Form->update_query_conditions = ["id" => Customer::id()];
 
 $HD_Form->FG_ENABLE_EDIT_BUTTON = true;
 $HD_Form->help_text = _("Notification settings.") . '<br>' . _("You can update your notification settings here.");

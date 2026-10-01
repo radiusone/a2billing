@@ -70,13 +70,14 @@ $HD_Form = new FormHandler(
             $form_action === "list",
             fn (Builder $q) => $q->leftJoin("cc_card", "$table.id_cc_card", "cc_card.id")
         )
+        ->when(
+            is_agent(),
+            fn (Builder $q) => $q->leftJoin("cc_card_group", "cc_card.id_group", "cc_card_group.id")
+                ->where("cc_card_group.id_agent", Agent::id())
+        )
 );
 if (is_agent()) {
-    $HD_Form->query_builder
-        ->leftJoin("cc_card_group", "cc_card.id_group", "cc_card_group.id");
-    $HD_Form->list_query_conditions["cc_card_group.id_agent"]
-        = $HD_Form->update_query_conditions["cc_card_group.id_agent"]
-        = Agent::id();
+    $HD_Form->update_query_conditions["cc_card_group.id_agent"] = Agent::id();
 }
 $HD_Form->list_help_text = create_help(
     _("SIP and IAX Config will create a SIP or IAX entry on the Asterisk server, so that a customer can set up a SIP or IAX client to connect directly to the asterisk server without the need to enter an account and pin each time a call is made. When done, click on the CONFIRM DATA button, then click reload to apply the changes on the Asterisk server.<br>")
@@ -103,7 +104,7 @@ $HD_Form->AddListTopButton(
 );
 
 if (($friend_id ?? "all") !== "all") {
-    $HD_Form->list_query_conditions["$table.name"] = $friend_id;
+    $HD_Form->query_builder->where("$table.name", $friend_id);
 }
 
 $HD_Form->FG_ENABLE_EDIT_BUTTON = true;

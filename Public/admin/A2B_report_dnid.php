@@ -109,9 +109,9 @@ $HD_Form->search_delete_enabled = false;
 
 $form_action ??= "list";
 $HD_Form->prepare_list_subselection('list');
-if (empty($HD_Form->list_query_conditions)) {
+if (empty($HD_Form->query_builder->wheres)) {
     $date = (new DateTime("-1 day"))->format("Y-m-d H:i:s");
-    $HD_Form->list_query_conditions["cc_call.starttime"] = [">=", $date];
+    $HD_Form->query_builder->where("cc_call.starttime", ">=", $date);
 }
 
 $list = $HD_Form->perform_action($form_action);

@@ -6,6 +6,7 @@ use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
+use Illuminate\Database\Query\Builder;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -50,13 +51,9 @@ $HD_Form = new FormHandler(
     Connection::getConnection("cc_callerid")
         ->leftJoin("cc_card", "cc_card.id", "cc_callerid.id_cc_card")
         ->leftJoin("cc_card_group", "cc_card.id_group", "cc_card_group.id")
+        ->when(is_customer(), fn (Builder $q) => $q->where("cc_callerid.id_cc_card", Customer::id()))
+        ->when(is_agent(), fn (Builder $q) => $q->where("cc_card_group.id_agent", Agent::id()))
 );
-if (is_customer()) {
-    $HD_Form->list_query_conditions["cc_callerid.id_cc_card"] = Customer::id();
-} elseif (is_agent()) {
-    $HD_Form->list_query_conditions["cc_card_group.id_agent"] = Agent::id();
-}
-
 if (is_customer()) {
     $cid_count = Connection::getConnection("cc_callerid")
         ->where("id_cc_card", Customer::id())

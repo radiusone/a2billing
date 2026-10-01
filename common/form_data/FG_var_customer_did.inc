@@ -40,8 +40,13 @@ use A2billing\Forms\FormHandler;
  * @var string $form_action
  */
 
-$HD_Form = new FormHandler("cc_did", "DID");
-$HD_Form->list_query_conditions["iduser"] = $HD_Form->update_query_conditions["iduser"] = Customer::id();
+$HD_Form = new FormHandler(
+    "cc_did",
+    "DID",
+    builder: Connection::getConnection("cc_did")
+        ->where("iduser", Customer::id())
+);
+$HD_Form->update_query_conditions["iduser"] = Customer::id();
 $HD_Form->list_query_order_columns = ["did"];
 $HD_Form->list_query_order_direction = "DESC";
 $HD_Form->FG_ADDITIONAL_FUNCTION_BEFORE_DELETE = [FormBO::class, "is_did_in_use"];

@@ -5,6 +5,7 @@ use A2billing\Agent;
 use A2billing\Forms\FormBO;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
+use Illuminate\Database\Query\Builder;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -42,10 +43,12 @@ use A2billing\Forms\Validator;
  * @var numeric-string|null $popup_select
  */
 
-$HD_Form = new FormHandler("cc_logrefill_agent", "Agent Refill");
-if (is_agent()) {
-    $HD_Form->list_query_conditions["agent_id"] = Agent::id();
-}
+$HD_Form = new FormHandler(
+    "cc_logrefill_agent",
+    "Agent Refill",
+    builder: \A2billing\Connection::getConnection("cc_logrefill_agent")
+        ->when(is_agent(), fn (Builder $q) => $q->where("agent_id", Agent::id()))
+);
 
 $HD_Form->list_query_order_columns = ["date"];
 $HD_Form->list_query_order_direction = "DESC";

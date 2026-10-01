@@ -63,12 +63,12 @@ $HD_Form = new FormHandler(
                 "items.id_invoice"
             )
         )
+        ->when(
+            is_customer(),
+            fn (Builder $q) => $q->where("id_card", Customer::id())
+                ->where("status", Invoice::PAIDSTATUS_PAID)
+        )
 );
-if (is_customer()) {
-    $HD_Form->list_query_conditions["id_card"] = Customer::id();
-    // original code set this, but why limit it to paid invoices?
-    $HD_Form->list_query_conditions["status"] = Invoice::PAIDSTATUS_PAID;
-}
 $HD_Form->list_query_order_direction = "DESC";
 
 $HD_Form->FG_ENABLE_INFO_BUTTON = true;

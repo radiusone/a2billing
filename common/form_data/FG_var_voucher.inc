@@ -1,9 +1,11 @@
 <?php
 
 use A2billing\A2Billing;
+use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
+use Illuminate\Database\Query\Builder;
 
 /**
  * This file is part of A2Billing (http://www.a2billing.net/)
@@ -39,13 +41,17 @@ use A2billing\Forms\Validator;
  * @var A2Billing $A2B
  */
 
-$HD_Form = new FormHandler("cc_voucher", _("Voucher"));
+$HD_Form = new FormHandler(
+    "cc_voucher",
+    _("Voucher"),
+    builder: Connection::getConnection("cc_voucher")
+        ->when(is_customer(), fn (Builder $q) => $q->->where("usedcardnumber", Customer::card()))
+);
 
 $currency_list = getCurrenciesList();
 $yesno_list = getYesNoList();
 
 if (is_customer()) {
-    $HD_Form->list_query_conditions["usedcardnumber"] = Customer::card();
     $HD_Form->list_help_text = create_help(_("Enter your voucher number to top up your card."));
 } else {
     $HD_Form->AddListTopButton(null, null, "postcard-heart");

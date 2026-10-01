@@ -67,9 +67,6 @@ class FormHandler
     /** The primary key column of the table */
     public string $FG_QUERY_PRIMARY_KEY = 'id';
 
-    /** @var array columns/values to be used as a condition in list queries */
-    public array $list_query_conditions = [];
-
     /** @var array List of columns for the list display query to be grouped by */
     public array $list_query_group_columns = [];
 
@@ -1211,23 +1208,18 @@ class FormHandler
         $val = $processed[$post_field];
         switch ($processed[$operator] ?? null) {
             default:
-                $this->list_query_conditions[] = ["SUB", [$left_column => $val]];
                 $this->query_builder->where($left_column, $val);
                 break;
             case 2:
-                $this->list_query_conditions[] = ["SUB", [$left_column => ["<=", $val]]];
                 $this->query_builder->where($left_column, "<=", $val);
                 break;
             case 3:
-                $this->list_query_conditions[] = ["SUB", [$left_column => ["<", $val]]];
                 $this->query_builder->where($left_column, "<", $val);
                 break;
             case 4:
-                $this->list_query_conditions[] = ["SUB", [$left_column => [">", $val]]];
                 $this->query_builder->where($left_column, ">", $val);
                 break;
             case 5:
-                $this->list_query_conditions[] = ["SUB", [$left_column => [">=", $val]]];
                 $this->query_builder->where($left_column, ">=", $val);
                 break;
         }
@@ -1258,19 +1250,15 @@ class FormHandler
 
         switch ($op ?? null) {
             case 1:
-                $this->list_query_conditions[$column] = $val;
                 $this->query_builder->where($column, $val);
                 break;
             case 2:
-                $this->list_query_conditions[$column] = [$LIKE, "$val%"];
                 $this->query_builder->whereLike($column, "$val%");
                 break;
             default:
-                $this->list_query_conditions[$column] = [$LIKE, "%$val%"];
                 $this->query_builder->whereLike($column, "%$val%");
                 break;
             case 4:
-                $this->list_query_conditions[$column] = [$LIKE, "%$val"];
                 $this->query_builder->whereLike($column, "%$val");
                 break;
         }
@@ -1457,7 +1445,6 @@ class FormHandler
         foreach ($this->list_filters as $i => $filter) {
             $val = $processed["filterprefix$i"] ?? "";
             if ($val) {
-                $this->list_query_conditions[$filter["column"]] = ["LIKE", "$val%"];
                 $this->query_builder->whereLike($filter["column"], "$val%");
             }
         }

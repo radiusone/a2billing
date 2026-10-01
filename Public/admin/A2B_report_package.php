@@ -71,9 +71,9 @@ $HD_Form->AddSearchDateInput(_("Date"), "date_consumption");
 
 $form_action = "list";
 $HD_Form->prepare_list_subselection($form_action);
-if (empty($HD_Form->list_query_conditions)) {
+if (empty($HD_Form->query_builder->wheres)) {
     $date = (new DateTime("-1 day"))->format("Y-m-d");
-    $HD_Form->list_query_conditions["date_consumption"] = [">=", $date];
+    $HD_Form->query_builder->where("date_consumption", ">=", $date);
 }
 
 $list = $HD_Form->perform_action($form_action);

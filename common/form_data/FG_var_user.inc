@@ -1,6 +1,7 @@
 <?php
 
 use A2billing\Admin;
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 
@@ -46,25 +47,23 @@ getpost_ifset(['groupID', 'popup_select']);
 
 if ($groupID !== "0" && $groupID !== "1") {
     header("HTTP/1.0 400 Bad Request");
-	die();
+    die();
 }
 $subadmin = $groupID > 0;
 
 $HD_Form = new FormHandler(
     "cc_ui_authen",
     $subadmin ? _("Sub-administrator") : _("Administrator"),
-    "userid"
+    "userid",
+    Connection::getConnection("cc_ui_authen")
+        ->where("groupid", $groupID)
+        ->orderBy("login")
 );
-
-$HD_Form->list_query_order_columns = ["login"];
 
 $HD_Form->AddListTopButton("A2B_entity_user.php?form_action=ask-add&amp;groupID=$groupID", null, "person-fill");
 
 $HD_Form->add_help_text = create_help(_("Add administrator."));
 $HD_Form->list_help_text = create_help(_("Administrators - this shows a list of all the Administrators who have access to the Administrator interface."));
-
-$HD_Form->list_query_conditions["groupid"] = $groupID;
-$HD_Form->query_builder->where("groupid", $groupID);
 
 $HD_Form->AddListValue(_("User ID"), "userid");
 $HD_Form->AddListValue(_("Login"), "login");

@@ -5,6 +5,7 @@ use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 use A2billing\Forms\Validator;
 use A2billing\Table;
+use Illuminate\Database\Query\Builder;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -43,11 +44,10 @@ $form_action ??= "list";
 $HD_Form = new FormHandler(
     "cc_speeddial",
     _("Speed Dial"),
-    "cc_speeddial.id"
+    "cc_speeddial.id",
+    Connection::getConnection("cc_speeddial")
+        ->when(is_customer(), fn (Builder $q) => $q->where("id_cc_card", Customer::id()))
 );
-if (is_customer()) {
-    $HD_Form->list_query_conditions["id_cc_card"] = Customer::id();
-}
 
 $HD_Form->list_query_order_columns = ["creationdate"];
 $HD_Form->list_query_order_direction = "DESC";

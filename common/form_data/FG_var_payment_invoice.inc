@@ -2,6 +2,7 @@
 
 use A2billing\Connection;
 use A2billing\Forms\FormHandler;
+use Illuminate\Database\Query\Builder;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -53,18 +54,14 @@ $HD_Form = new FormHandler(
     "id",
     Connection::getConnection("cc_logpayment")
         ->leftJoin("cc_invoice_payment", "cc_logpayment.id", "cc_invoice_payment.id_payment")
+        // only include this user's payments
+        ->when($card, fn (Builder $q) => $q->where("card_id", $card))
+        // don't include ones already applied
+        ->when($invoice, fn (Builder $q) => $q->whereNull("id_invoice"))
 );
 
 $HD_Form->list_query_order_columns = ["date"];
 $HD_Form->list_query_order_direction = "DESC";
-if (!empty($card)) {
-    // only include this user's payments
-    $HD_Form->list_query_conditions["card_id"] = $card;
-}
-if (!empty($invoice)) {
-    // don't include ones already applied
-    $HD_Form->list_query_conditions["id_invoice"] = null;
-}
 
 $HD_Form->AddListValue(_("Date"), "date");
 $HD_Form->AddListValue(_("Amount"), "payment", "get_money");

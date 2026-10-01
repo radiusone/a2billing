@@ -58,8 +58,8 @@ if (is_admin()) {
         Connection::getConnection("cc_logrefill")
             ->leftJoin("cc_card", "cc_card.id", "cc_logrefill.card_id")
             ->leftJoin("cc_card_group", "cc_card.id_group", "cc_card_group.id")
+            ->where("cc_card_group.id_agent", Agent::id())
     );
-    $HD_Form->list_query_conditions["cc_card_group.id_agent"] = Agent::id();
 }
 
 $HD_Form->list_query_order_direction = "DESC";

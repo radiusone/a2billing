@@ -43,11 +43,11 @@ $HD_Form = new FormHandler(
         // default inner join
         ->join("cc_did", "cc_did.id", "cc_call.id_did")
         ->join("cc_card", "cc_card.id", "cc_call.card_id")
+        ->whereIn("sipiax", [2, 3])
 );
 
 $HD_Form->list_query_order_columns = ["date"];
 $HD_Form->list_query_order_direction = "DESC";
-$HD_Form->list_query_conditions["sipiax"] = ["IN", [2, 3]];
 
 $HD_Form->help_text = create_help(
     _("DID list and billing list.")

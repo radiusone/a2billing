@@ -77,20 +77,24 @@ if (is_admin()) {
         "id",
         builder: Connection::getConnection("cc_callplan_lcr")
             ->leftJoin("cc_agent_tariffgroup", "cc_callplan_lcr.tariffgroup_id", "cc_agent_tariffgroup.id_tariffgroup")
+            ->where("cc_agent_tariffgroup.id_agent", Agent::id())
     );
-    $HD_Form->list_query_conditions["cc_agent_tariffgroup.id_agent"] = Agent::id();
     $HD_Form->list_query_group_columns = ["dialprefix"];
     $use_lcr_callplan = true;
 } else {
-    $HD_Form = new FormHandler("cc_callplan_lcr", _("Rates"));
-    $HD_Form->list_query_conditions["tariffgroup_id"] = $_SESSION["tariff"];
+    $HD_Form = new FormHandler(
+        "cc_callplan_lcr",
+        _("Rates"),
+        builder: Connection::getConnection("cc_callplan_lcr")
+            ->where("tariffgroup_id", $_SESSION["tariff"])
+    );
     $HD_Form ->list_query_group_columns = ["dialprefix"];
     $letter ??= "";
     if ($letter) {
         if ($letter === "1") {
-            $HD_Form->list_query_conditions["SUBSTRING(`destination`, 1, 1)"] = ["IN", ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']];
+            $HD_Form->query_builder->whereRaw("SUBSTRING(destination, 1, 1) IN (0, 1, 2, 3, 4, 5, 6, 7, 8, 9)");
         } else {
-            $HD_Form->list_query_conditions["LOWER(SUBSTRING(`destination`, 1, 1))"] = strtolower($letter);
+            $HD_Form->query_builder->whereRaw("SUBSTRING(destination, 1, 1) = ?", [$letter]);
         }
     }
     $use_lcr_callplan = true;
@@ -107,13 +111,13 @@ if ((!empty($tariffgroup) || !empty($_SESSION['def_ratecard_tariffgroup'])) && $
     $use_lcr_callplan = true;
     $HD_Form->list_query_group_columns = ["dialprefix"];
     $tariffgroup = (int)($tariffgroup ?? $_SESSION["def_ratecard_tariffgroup"]);
-    $HD_Form->list_query_conditions["tariffgroup_id"] = $tariffgroup;
+    $HD_Form->query_builder->where("tariffgroup_id", $tariffgroup);
     $_SESSION['def_ratecard_tariffgroup'] = $tariffgroup;
 }
 
 if ($A2B->config["webui"]["hide_expired_rates"]) {
-    $HD_Form->list_query_conditions[] = ["SUB", ["startdate" => [[null], ["<", "CURRENT_TIMESTAMP"]]], "OR"];
-    $HD_Form->list_query_conditions[] = ["SUB", ["stopdate" => [[null], [">", "CURRENT_TIMESTAMP"]]], "OR"];
+    $HD_Form->query_builder->where(fn (Builder $q) => $q->whereNull("startdate")->orWherePast("startdate"));
+    $HD_Form->query_builder->where(fn (Builder $q) => $q->whereNull("stopdate")->orWhereFuture("stopdate"));
 }
 
 $HD_Form->list_query_order_columns = ["dialprefix"];

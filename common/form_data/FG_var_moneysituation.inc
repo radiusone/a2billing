@@ -4,6 +4,7 @@ use A2billing\Agent;
 use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
+use Illuminate\Database\Query\Builder;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -46,13 +47,14 @@ $HD_Form = new FormHandler(
         ->leftJoin("cc_invoice_item", "cc_invoice.id", "cc_invoice_item.id_invoice")
         ->leftJoin("cc_logpayment", "cc_card.id", "cc_logpayment.card_id")
         ->leftJoin("cc_card_group", "cc_card.id_group", "cc_card_group.id")
+        ->when(
+            is_agent(),
+            fn (Builder $q) => $q->where("cc_card_group.id_agent", Agent::id())
+        )
 );
 
 $HD_Form->list_query_group_columns = ["cc_card.id"];
 $HD_Form->list_query_order_columns = ["cc_card.id"];
-if (is_agent()) {
-    $HD_Form->list_query_conditions["cc_card_group.id_agent"] = Agent::id();
-}
 
 $HD_Form->help_text = create_help(
     _("This screen shows refills and payments made against each account, along with the current credit on each account. The initial amount of credit applied to the account is not included. The amount owing is calculated by subtracting payments from refills")

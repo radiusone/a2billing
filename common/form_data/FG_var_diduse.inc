@@ -3,6 +3,7 @@
 use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
+use Illuminate\Database\Query\Builder;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -54,8 +55,8 @@ $HD_Form->list_query_order_columns = ["reservationdate"];
 $HD_Form->list_query_order_direction = "DESC";
 
 if ((!empty($posted_search) && !empty($inuse)) || empty($posted_search)) {
-    $HD_Form->list_query_conditions[] = ["SUB", ["releasedate" => [[null], ["<", "1984-01-01"]]], "OR"];
-    $HD_Form->list_query_conditions["cc_did_use.activated"] = 1;
+    $HD_Form->query_builder->whereNull("releasedate");
+    $HD_Form->query_builder->where("cc_did_use.activated", 1);
     $HD_Form->AddListActionButton(
         "A2B_entity_did_use.php?action=ask_release&did=|col5|",
         _("Release this did"),
