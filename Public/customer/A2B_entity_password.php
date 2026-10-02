@@ -1,7 +1,7 @@
 <?php
 
+use A2billing\Connection;
 use A2billing\Customer;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -45,12 +45,10 @@ Customer::checkPageAccess(Customer::ACX_PASSWORD);
 getpost_ifset(array('NewPassword','OldPassword'));
 
 if ($form_action=="ask-modif") {
-    $instance_sub_table = new Table('cc_card', "id");
-    $check_old_pwd = ["id" => Customer::id(),  "uipass" => $OldPassword];
-    $result_check=$instance_sub_table -> getRow ($check_old_pwd);
-    if ($result_check) {
-        (new Table("cc_card"))->updateRow(["uipass" => $NewPassword], ["id" => Customer::id()]);
-    }
+    $result_check = Connection::getConnection("cc_card")
+        ->where("uipass", $OldPassword)
+        ->where("id", Customer::id())
+        ->update(["uipass" => $NewPassword]);
 }
 // #### HEADER SECTION
 require_once __DIR__ . "/templates/main.php";
@@ -95,7 +93,7 @@ function CheckPassword()
 <center>
 <?php
 if ($form_action=="ask-modif") {
-    if (is_array($result_check)) {
+    if ($result_check) {
         echo '<font color="green">'.gettext("Your password is updated successfully.").'</font><br>';
     } else {
         echo '<font color="red">'.gettext("Your old password is wrong.").'</font><br>';

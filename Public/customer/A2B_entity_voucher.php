@@ -1,8 +1,8 @@
 <?php
 
+use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
-use A2billing\Table;
 
 /**
  * This file is part of A2Billing (http://www.a2billing.net/)
@@ -53,15 +53,20 @@ $success = "";
 $error = "";
 
 if (!empty($voucher)) {
-    $result = (new Table("cc_voucher", ["currency", "credit"]))
-        ->getRow(["expirationdate" =>  [">=", "CURRENT_TIMESTAMP"], "available" => 1, "voucher" => $voucher]);
+    $result = Connection::getConnection("cc_voucher", "currency", "credit")
+        ->whereFuture("expirationdate")
+        ->where("available", 1)
+        ->where("voucher", $voucher)
+        ->first();
 
     if ($result) {
         $credit = convert_currency($result["credit"], $result["currency"], BASE_CURRENCY);
-        (new Table("cc_voucher"))
-            ->updateRow(["available" => 0, "usedcardnumber" => Customer::card(), "usedate" => "CURRENT_TIMESTAMP"], ["voucher" => $voucher]);
-        (new Table("cc_card"))
-            ->updateRow(["credit" => ["credit + ?", $credit]], ["username" => Customer::card()]);
+        Connection::getConnection("cc_voucher")
+            ->where("voucher", $voucher)
+            ->update(["available" => 0, "usedcardnumber" => Customer::card(), "usedate" => Connection::getConnection()->raw("CURRENT_TIMESTAMP")]);
+        Connection::getConnection("cc_card")
+            ->where("username", Customer::card())
+            ->increment("credit", $credit);
         $success = sprintf(_("The voucher %s has been processed; we added %s to your account"), $voucher, get_money($credit));
     } else {
         sleep(2);

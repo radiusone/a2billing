@@ -1,8 +1,8 @@
 <?php
 
 use A2billing\A2Billing;
+use A2billing\Connection;
 use A2billing\Customer;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -44,18 +44,12 @@ require_once __DIR__ . "/../../common/lib/customer.defines.php";
 
 Customer::checkPageAccess(Customer::ACX_ACCESS);
 
-$inst_table = new Table();
-
-$table = new Table(
-    "cc_card",
-    ["cc_card.*", "cc_package_offer.label", "cc_package_offer.packagetype", "cc_package_offer.freetimetocall"],
-    [
-        "cc_tariffgroup" => ["cc_card.tariff", "cc_tariffgroup.id"],
-        "cc_package_offer" => ["cc_tariffgroup.id_cc_package_offer", "cc_package_offer.id"],
-    ]
-);
-$customer_info = $table->getRow(["cc_card.id" => Customer::id()]);
-
+$customer_info = Connection::getConnection("cc_card")
+    ->select("cc_card.*", "cc_package_offer.label", "cc_package_offer.packagetype", "cc_package_offer.freetimetocall")
+    ->leftJoin("cc_tariffgroup", "cc_card.tariff", "cc_tariffgroup.id")
+    ->leftJoin("cc_package_offer", "cc_tariffgroup.id_cc_package_offer", "cc_package_offer.id")
+    ->where("cc_card.id", Customer::id())
+    ->first();
 if (!$customer_info) {
     echo gettext("Error loading your account information!");
     exit ();

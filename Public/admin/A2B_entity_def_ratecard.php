@@ -4,7 +4,6 @@ use A2billing\A2Billing;
 use A2billing\Admin;
 use A2billing\Connection;
 use A2billing\Forms\FormHandler;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -121,7 +120,7 @@ if (($bu["batchupdate"] ?? false) && is_array($bu["check"])) {
         if (!array_key_exists($ind_field, $bu)) {
             continue;
         }
-        $col = (new Table())->quote_identifier(substr($ind_field,4));
+        $col = preg_replace("/\W/", "", substr($ind_field,4));
         $val = $bu[$ind_field];
         $mode = $bu["mode"][$ind_field] ?? "1";
         $type = $bu["type"][$ind_field] ?? "1";

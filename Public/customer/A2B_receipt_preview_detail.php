@@ -1,8 +1,9 @@
 <?php
 
+use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Payments\ReceiptItem;
-use A2billing\Table;
+use Illuminate\Database\Query\Builder;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -62,12 +63,10 @@ function loadDetailledItems(?string $startdate = null, int $begin = 0, int $nb =
     $result = [];
     $card_id = Customer::id();
 
-    $call_table = new Table("cc_call", ["starttime AS itemdate", "sessiontime", "calledstation", "sessionbill"]);
-    $call_clause = ["card_id" => $card_id];
-    if(!empty($startdate)) {
-        $call_clause["stoptime"] = [">=", $startdate];
-    }
-    $return_calls = $call_table->getRows($call_clause);
+    $return_calls = Connection::getConnection("cc_call", "starttime AS itemdate", "sessiontime", "calledstation", "sessionbill")
+        ->where("card_id", $card_id)
+        ->when($startdate, fn (Builder $q) => $q->where("stoptime", ">=", $startdate))
+        ->get();
     foreach ($return_calls as $call) {
         $result[] = ReceiptItem::create(
             null,
@@ -77,12 +76,11 @@ function loadDetailledItems(?string $startdate = null, int $begin = 0, int $nb =
         );
     }
 
-    $charge_table = new Table("cc_charge", ["description", "creationdate AS itemdate", "amount"]);
-    $clause_charge = ["id_cc_card" => $card_id, "charged_status" => 1];
-    if(!empty($startdate)) {
-        $clause_charge["itemdate"] = [">=", $startdate];
-    }
-    $return_charges = $charge_table->getRows($clause_charge);
+    $return_charges = Connection::getConnection("cc_charge", "description", "creationdate AS itemdate", "amount")
+        ->where("id_cc_card", $card_id)
+        ->where("charged_status", 1)
+        ->when($startdate, fn (Builder $q) => $q->where("itemdate", ">=", $startdate))
+        ->get();
     foreach ($return_charges as $charge) {
         $result[] = ReceiptItem::create(
             null,
@@ -101,19 +99,21 @@ function loadDetailledItems(?string $startdate = null, int $begin = 0, int $nb =
 function nbDetailledItems(?string $startdate): int
 {
     $card_id = Customer::id();
-    $call_table = new Table("cc_call");
-    $call_clause = ["card_id" => $card_id];
-    if(!empty($startdate)) {
-        $call_clause["stoptime"] = [">=", $startdate];
-    }
-    $i = $call_table->countRows($call_clause);
-
-    $charge_table = new Table("cc_charge");
-    $clause_charge = ["id_cc_card" => $card_id, "charged_status" => 1];
-    if(!empty($startdate)) {
-        $clause_charge["creationdate"] = [">=", $startdate];
-    }
-    $i += $charge_table->countRows($clause_charge);
+    $i = Connection::getConnection("cc_call")
+        ->where("card_id", $card_id)
+        ->when(
+            $startdate,
+            fn (Builder $q) => $q->where("stoptime", ">=", $startdate)
+        )
+        ->count();
+    $i += Connection::getConnection("cc_charge")
+        ->where("id_cc_card", $card_id)
+        ->where("charged_status", 1)
+        ->when(
+            $startdate,
+            fn (Builder $q) => $q->where("creationdate", ">=", $startdate)
+        )
+        ->count();
 
     return $i;
 }
@@ -121,26 +121,31 @@ function nbDetailledItems(?string $startdate): int
 function SumDetailledItems(?string $startdate): int
 {
     $card_id = Customer::id();
-    $call_table = new Table("cc_call", ["SUM(sessionbill)"]);
-    $call_clause = ["card_id" => $card_id];
-    if(!empty($startdate)) {
-        $call_clause["stoptime"] = [">=", $startdate];
-    }
-    $i = intval($call_table->getValue($call_clause) ?? 0);
+    $i = Connection::getConnection("cc_call")
+        ->selectRaw("SUM(sessionbill) AS amt")
+        ->where("card_id", $card_id)
+        ->when(
+            $startdate,
+            fn (Builder $q) => $q->where("stoptime", ">=", $startdate)
+        )
+        ->value("amt") ?? 0;
+    $i += Connection::getConnection("cc_charge")
+        ->selectRaw("SUM(charge) AS amt")
+        ->where("id_cc_card", $card_id)
+        ->where("charged_status", 1)
+        ->when(
+            $startdate,
+            fn (Builder $q) => $q->where("creationdate", ">=", $startdate)
+        )
+        ->value("amt") ?? 0;
 
-    $charge_table = new Table("cc_charge", ["SUM(amount)"]);
-    $clause_charge = ["id_cc_card" => $card_id, "charged_status" => 1];
-    if(!empty($startdate)) {
-        $clause_charge["creationdate"] = [">=", $startdate];
-    }
-    $i += intval($charge_table->getValue($clause_charge) ?? 0);
-
-    return $i;
+    return (int)$i;
 }
 
-$billing_table = new Table('cc_billing_customer', ['date']);
-$start_date = $billing_table->getValue(["id_card" => Customer::id()], ["date"], "desc");
-
+$start_date = Connection::getConnection("cc_billing_customer")
+    ->where("id_card", Customer::id())
+    ->latest("date")
+    ->value("date");
 $nbitems = nbDetailledItems($start_date);
 $nb_by_page = 100;
 $nb_page = ceil($nbitems / $nb_by_page);

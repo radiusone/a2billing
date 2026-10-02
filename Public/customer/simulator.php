@@ -2,7 +2,6 @@
 
 use A2billing\Connection;
 use A2billing\Customer;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -102,10 +101,6 @@ if ($called && $id_cc_card) {
 
 /**************************************************************/
 
-$instance_table_tariffname = new Table("cc_tariffplan", ["id", "tariffname"]);
-$list_tariffname = $instance_table_tariffname->getRows([], ["tariffname"]);
-$nb_tariffname = count($list_tariffname);
-
 require_once __DIR__ . "/templates/main.php";
 
 // #### HELP SECTION
@@ -172,8 +167,9 @@ $FG_TABLE_ALTERNATE_ROW_COLOR[1]='#EEE9E9';
         <?php
         for ($j=0;$j<count($RateEngine->ratecard_obj);$j++) {
 
-            $destination = (new Table("cc_prefix", ["destination"]))
-                ->getValue(["prefix" => $RateEngine->ratecard_obj[$j]["destination"]]);
+            $destination = Connection::getConnection("cc_prefix")
+                ->where("prefix", $RateEngine->ratecard_obj[$j]["destination"])
+                ->value("destination");
         ?>
             <TR>
               <td height="15" bgcolor="" style="padding-left: 5px;" colspan="2">

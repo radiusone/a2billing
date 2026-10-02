@@ -1,7 +1,7 @@
 <?php
 
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
-use A2billing\Table;
 use A2billing\Mail;
 use A2billing\A2bMailException;
 
@@ -65,12 +65,17 @@ if (empty ($key))
     $key = null;
 
 $result = null;
-$instance_sub_table = new Table('cc_card', "username, lastname, firstname, email, uipass, credit, useralias AS cardalias, loginkey, status, id AS idcard");
+$instance_sub_table = Connection::getConnection(
+    "cc_card",
+    "username", "lastname", "firstname", "email", "uipass", "credit", "useralias AS cardalias", "loginkey", "status", "id AS idcard"
+);
 $QUERY = ["loginkey" => $key];
-$list = $instance_sub_table->getRow($QUERY);
-
+$list = $instance_sub_table->where($QUERY)->first();
 if (isset ($key) && $list["status"] != "1") {
-    $result = (new Table("cc_card"))->updateRow(["status" => $A2B->config["signup"]['activated'] ? 1 : 2], ["status" => ["IN", [2, 3]], "loginkey" => $key]);
+    $result = Connection::getConnection("cc_card")
+        ->whereIn("status",[2, 3])
+        ->where("loginkey", $key)
+        ->update(["status" => $A2B->config["signup"]['activated'] ? 1 : 2]);
 }
 
 if ($list["status"] != "1" && $result) {

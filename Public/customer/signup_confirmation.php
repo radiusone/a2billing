@@ -1,8 +1,8 @@
 <?php
 
+use A2billing\Connection;
 use A2billing\Mail;
 use A2billing\A2bMailException;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -75,8 +75,9 @@ try {
     exit ();
 }
 
-$list = (new Table("cc_card", ["username", "lastname", "firstname", "email", "uipass", "useralias"]))
-    ->getRow(["id" => $_SESSION["id_signup"]]);
+$list = Connection::getConnection("cc_card", "username", "lastname", "firstname", "email", "uipass", "useralias")
+    ->where("id", $_SESSION["id_signup"])
+    ->first();
 if (!$list) {
     echo "<br>" . gettext("Error : No such user found in database");
     exit ();

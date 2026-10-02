@@ -1,8 +1,7 @@
 <?php
 
 use A2billing\Agent;
-use A2billing\Logger;
-use A2billing\Table;
+use A2billing\Connection;
 
 /**
  * This file is part of A2Billing (http://www.a2billing.net/)
@@ -41,8 +40,10 @@ Agent::checkPageAccess(Agent::ACX_ACCESS);
 
 require_once __DIR__ . "/templates/main.php";
 
-$table_message = new Table("cc_message_agent");
-$messages = $table_message->getRows(["id_agent" => Agent::id()], ["order_display"]);
+$messages = Connection::getConnection("cc_message_agent")
+    ->where("id_agent", Agent::id())
+    ->orderBy("order_display")
+    ->get();
 $message_types = ["alert-info", "alert-success", "alert-warning", "alert-danger"];
 $message_logos = ["bi-info-circle-fill text-info", "bi-check-circle-fill text-success", "bi-exclamation-circle-fill text-warning", "bi-x-circle-fill text-danger"];
 ?>

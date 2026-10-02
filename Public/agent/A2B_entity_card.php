@@ -2,7 +2,6 @@
 
 use A2billing\Agent;
 use A2billing\Connection;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -92,7 +91,7 @@ if ($batchupdate == 1 && is_array($check)) {
         if (!in_array($ind_field, $authorized_field)) {
             continue;
         }
-        $myfield = (new Table())->quote_identifier(substr($ind_field,4));
+        $myfield = preg_replace("/\W/", "", substr($ind_field,4));
         $val = $$ind_field;
 
         // Standard update mode

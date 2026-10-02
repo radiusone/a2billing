@@ -1,8 +1,8 @@
 <?php
 
 use A2billing\A2Billing;
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
-use A2billing\Table;
 
 /**
  * This file is part of A2Billing (http://www.a2billing.net/)
@@ -57,7 +57,7 @@ $subscriber_signup ??= "";
 
 if (!is_numeric($subscriber_signup)) {
     //check subscriber_signup
-    $check_subscriber = (new Table("cc_subscription_signup"))->countRows();
+    $check_subscriber = Connection::getConnection("cc_subscription_signup")->count();
     if ($check_subscriber) {
         header("Location: signup_service.php");
         die();

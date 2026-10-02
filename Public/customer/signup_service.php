@@ -1,7 +1,7 @@
 <?php
 
+use A2billing\Connection;
 use A2billing\Forms\FormHandler;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -48,10 +48,9 @@ $HD_Form = new FormHandler();
 $HD_Form->init();
 
 //check subscriber
-$table_subscriber = new Table("cc_subscription_signup");
-$clause_subscriber = ["enable" => 1];
-$result_subscriber = $table_subscriber->getRows($clause_subscriber);
-
+$result_subscriber = Connection::getConnection("cc_subscription_signup")
+    ->where("enable", 1)
+    ->get();
 // #### HEADER SECTION
 require_once __DIR__ . "/templates/signup_header.php";
 

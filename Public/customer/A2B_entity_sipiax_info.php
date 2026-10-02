@@ -1,8 +1,8 @@
 <?php
 
 use A2billing\A2Billing;
+use A2billing\Connection;
 use A2billing\Customer;
-use A2billing\Table;
 
 /**
  * This file is part of A2Billing (http://www.a2billing.net/)
@@ -58,8 +58,9 @@ if ($configtype === "IAX") {
     $table = "cc_sip_buddies";
 }
 
-$sip_iax_data = (new Table($table, ["id", "username", "secret", "disallow", "allow", "type", "host", "context"]))
-    ->getRow(["id_cc_card" => Customer::id()]);
+$sip_iax_data = Connection::getConnection($table, "id", "username", "secret", "disallow", "allow", "type", "host", "context")
+    ->where("id_cc_card", Customer::id())
+    ->first();
 
 //Additonal parameters
 $additional_sip = explode("|", $A2B->config['sip-iax-info']['sip_additional_parameters'] ?? "");

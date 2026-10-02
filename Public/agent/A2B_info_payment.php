@@ -1,8 +1,8 @@
 <?php
 
 use A2billing\Agent;
+use A2billing\Connection;
 use A2billing\Customer;
-use A2billing\Table;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -55,17 +55,17 @@ if (empty($id)) {
 }
 
 if ($type === "agent") {
-    $table = new Table("cc_logpayment_agent");
-    $cond = ["agent_id" => Agent::id(), "id" => $id];
+    $table = Connection::getConnection("cc_logpayment_agent")
+        ->where("agent_id", Agent::id())
+        ->where("id", $id);
 } else {
-    $table = new Table(
-        "cc_logpayment",
-        ["*"],
-        ["cc_card" => ["cc_card.id", "cc_logpayment.card_id"], "cc_card_group" => ["cc_card.id_group", "cc_card_group.id"]]
-    );
-    $cond = ["cc_card_group.id_agent" => Agent::id(), "cc_logpayment.id" => $id];
+    $table = Connection::getConnection("cc_logpayment")
+        ->leftJoin("cc_card", "cc_card.id", "cc_logpayment.card_id")
+        ->leftJoin("cc_card_group", "cc_card.id_group", "cc_card_group.id")
+        ->where("cc_card_group.id_agent", Agent::id())
+        ->where("cc_logpayment.id", $id);
 }
-$payment = $table->getRow($cond);
+$payment = $table->first();
 
 if (empty($payment)) {
     header("Location: $page");
