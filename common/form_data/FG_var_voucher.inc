@@ -45,7 +45,7 @@ $HD_Form = new FormHandler(
     "cc_voucher",
     _("Voucher"),
     builder: Connection::getConnection("cc_voucher")
-        ->when(is_customer(), fn (Builder $q) => $q->->where("usedcardnumber", Customer::card()))
+        ->when(is_customer(), fn (Builder $q) => $q->where("usedcardnumber", Customer::card()))
 );
 
 $currency_list = getCurrenciesList();
@@ -97,7 +97,7 @@ $HD_Form->FG_ENABLE_ADD_BUTTON = !is_customer();
 
 $vouch_attr = ["readonly" => "readonly", "maxlength" => 40];
 if ($form_action === "ask-add") {
-    $vouch_attr["value"] = generate_unique_value($HD_Form->FG_QUERY_TABLE_NAME, $A2B->config['global']['len_voucher'] ?? 0, "voucher");
+    $vouch_attr["value"] = generate_unique_value("cc_voucher", $A2B->config['global']['len_voucher'] ?? 0, "voucher");
 }
 $HD_Form->AddEditElement(
     _("VOUCHER"),

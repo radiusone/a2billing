@@ -50,10 +50,10 @@ $HD_Form = new FormHandler(
 $HD_Form->AddListValue(_("Agent"), "cc_agent.id",[Agent::class, "getName"]);
 $HD_Form->AddListValue(_("Credit"), "cc_agent.credit", "get_money");
 $HD_Form->AddListValue(abbr(_("Bal"), _("Commission balance")), "com_balance", "get_money");
-$HD_Form->AddListValue(abbr(_("Total"), _("Total commission accrued")), "SUM(cc_agent_commission.amount)", "get_money");
-$HD_Form->AddListValue(abbr(_("Refills"), _("Total customer refill amount")), "SUM(cc_logrefill.credit)", "get_money");
-$HD_Form->AddListValue(abbr(_("Agent refills"), _("Total agent refill amount")), "SUM(cc_logrefill_agent.credit)", "get_money");
-$HD_Form->AddListValue(abbr(_("Payments"), _("Total payments taken")), "SUM(cc_logpayment_agent.payment)", "get_money");
+$HD_Form->AddListValue(abbr(_("Total"), _("Total commission accrued")), Connection::getConnection()->raw("SUM(cc_agent_commission.amount)"), "get_money");
+$HD_Form->AddListValue(abbr(_("Refills"), _("Total customer refill amount")), Connection::getConnection()->raw("SUM(cc_logrefill.credit)"), "get_money");
+$HD_Form->AddListValue(abbr(_("Agent refills"), _("Total agent refill amount")), Connection::getConnection()->raw("SUM(cc_logrefill_agent.credit)"), "get_money");
+$HD_Form->AddListValue(abbr(_("Payments"), _("Total payments taken")), Connection::getConnection()->raw("SUM(cc_logpayment_agent.payment)"), "get_money");
 
 $HD_Form->search_form_enabled = true;
 $HD_Form->search_session_key = "agent_situation";

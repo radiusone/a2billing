@@ -75,12 +75,12 @@ $calltype_list = [
 ];
 
 $HD_Form->AddListValue(_("DNID"), "dnid", "format_phone_number");
-$HD_Form->AddListValue(_("Count"), "COUNT(*)");
-$HD_Form->AddListValue(_("Avg buy"), "AVG(buyrate)", "get_money_precise");
-$HD_Form->AddListValue(_("Avg sell"), "AVG(rateinitial)", "get_money_precise");
-$HD_Form->AddListValue(_("Duration"), "SUM(sessiontime)", "get_minute");
-$HD_Form->AddListValue(_("Buy"), "SUM(buycost)", "get_money_precise");
-$HD_Form->AddListValue(_("Sell"), "SUM(sessionbill)", "get_money_precise");
+$HD_Form->AddListValue(_("Count"), Connection::getConnection()->raw("COUNT(*)"));
+$HD_Form->AddListValue(_("Avg buy"), Connection::getConnection()->raw("AVG(buyrate)"), "get_money_precise");
+$HD_Form->AddListValue(_("Avg sell"), Connection::getConnection()->raw("AVG(rateinitial)"), "get_money_precise");
+$HD_Form->AddListValue(_("Duration"), Connection::getConnection()->raw("SUM(sessiontime)"), "get_minute");
+$HD_Form->AddListValue(_("Buy"), Connection::getConnection()->raw("SUM(buycost)"), "get_money_precise");
+$HD_Form->AddListValue(_("Sell"), Connection::getConnection()->raw("SUM(sessionbill)"), "get_money_precise");
 
 $HD_Form->list_message_intro = _("DNID Report");
 

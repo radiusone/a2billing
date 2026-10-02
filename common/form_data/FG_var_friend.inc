@@ -125,7 +125,7 @@ $HD_Form->AddEditPopup(
 
 $name_attr = ["maxlength" => 40];
 if ($form_action === "ask-add") {
-    $name_attr["value"] = generate_unique_value($HD_Form->FG_QUERY_TABLE_NAME);
+    $name_attr["value"] = generate_unique_value($table);
 }
 $HD_Form->AddEditElement(
     _("NAME"),

@@ -229,7 +229,7 @@ foreach ($show_list as $field) {
             $HD_Form->AddListValue(_("Discount"), "discount", "get_percent");
             break;
         case "callerid":
-            $HD_Form->AddListValue(_("Caller ID"), "(SELECT GROUP_CONCAT(cid SEPARATOR '<br/>') FROM cc_callerid WHERE id_cc_card = cc_card.id) AS callerid");
+            $HD_Form->AddListValue(_("Caller ID"), Connection::getConnection()->raw("(SELECT GROUP_CONCAT(cid SEPARATOR '<br/>') FROM cc_callerid WHERE id_cc_card = cc_card.id) AS callerid"));
             break;
         default:
             continue(2);

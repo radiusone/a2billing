@@ -6,6 +6,7 @@ use A2billing\Admin;
 use A2billing\Connection;
 use A2billing\Logger;
 use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Query\Expression;
 use Illuminate\Support\Collection;
 use PhpProfiler\Console;
 use Throwable;
@@ -464,7 +465,7 @@ class FormHandler
      * Add a plain value to the list table view
      *
      * @param string $label the table column header
-     * @param string $field the database column name
+     * @param string|Expression $field the database column name
      * @param callable|null $callback a function that is passed the value (or the provided arguments) before display
      * @param array $arguments if provided, arguments to the function
      *                          %[0-9]+ are replaced with the given row values
@@ -472,7 +473,7 @@ class FormHandler
      * @param bool $sortable whether or not to allow sort
      * @return self
      */
-    public function AddListValue(string $label, string $field, ?callable $callback = null, array $arguments = [], bool $sortable = true): self
+    public function AddListValue(string $label, string|Expression $field, ?callable $callback = null, array $arguments = [], bool $sortable = true): self
     {
         if ($field) {
             $this->query_builder->addSelect($field);
@@ -518,7 +519,7 @@ class FormHandler
      * Adds a mapping to the list view table that does a lookup to translate a DB value to a pretty one
      *
      * @param string $label the table column header
-     * @param string $field the database column name
+     * @param string|Expression $field the database column name
      * @param Builder $table a database object; first 2 columns will be used for raw and translated values
      * @param string $url if provided, the cell will be a link to this URL with the first column value appended
      * @param bool $sortable whether or not to allow sort (note, will be done on raw value)
@@ -526,7 +527,7 @@ class FormHandler
      */
     public function AddListSqlMapping(
         string $label,
-        string $field,
+        string|Expression $field,
         Builder $table,
         string $url = "",
         bool $sortable = true
@@ -551,10 +552,10 @@ class FormHandler
      * Add a column to the database query for use in callback
      * arguments (%n) or action button conditions (|coln|)
      *
-     * @param string $field
+     * @param string|Expression $field
      * @return $this
      */
-    public function AddListHiddenValue(string $field): self
+    public function AddListHiddenValue(string|Expression $field): self
     {
         $this->query_builder->addSelect($field);
 
@@ -1376,7 +1377,7 @@ class FormHandler
             if ($this->FG_LIST_VIEW_ROW_COUNT <= $current_size) {
                 $this->FG_LIST_VIEW_PAGE_COUNT = 1;
             } else {
-                $this->FG_LIST_VIEW_PAGE_COUNT = ceil($this->FG_LIST_VIEW_ROW_COUNT / $current_size);
+                $this->FG_LIST_VIEW_PAGE_COUNT = ceil($this->FG_LIST_VIEW_ROW_COUNT / $this->query_builder->limit);
             }
         } elseif (
             $form_action === "edit" || $form_action === "ask-delete" ||

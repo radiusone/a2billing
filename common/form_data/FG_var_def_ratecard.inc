@@ -138,7 +138,7 @@ $HD_Form->AddListValue(_("Destination"), $use_lcr_callplan ? "destination" : "cc
 if (is_admin()) {
     $HD_Form->AddListValue(abbr(_("Buy"), _("Buy Rate")), "buyrate", "get_money_precise");
 }
-$HD_Form->AddListValue(abbr(_("Sell"), _("Sell Rate")), $use_lcr_callplan ? "MIN(rateinitial)" : "rateinitial", "get_money_precise");
+$HD_Form->AddListValue(abbr(_("Sell"), _("Sell Rate")), $use_lcr_callplan ? Connection::getConnection()->raw("MIN(rateinitial)") : "rateinitial", "get_money_precise");
 
 if (!$popup_select && is_admin()) {
     $HD_Form->AddListValue(_("Start"), "startdate")

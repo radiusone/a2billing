@@ -108,9 +108,11 @@ if ($batchupdate === "1" && count($check)) {
      */
 
     if ($form_action === "add_sip") {
+        $table = "cc_sip_buddies";
         $friend_param_update = ["sip_buddy" => 1];
         $key = "sip_changed";
     } else {
+        $table = "cc_iax_buddies";
         $friend_param_update = ["iax_buddy" => 1];
         $key = "iax_changed";
     }
@@ -125,7 +127,7 @@ if ($batchupdate === "1" && count($check)) {
         ->where("id", $id_cc_card)
         ->update($friend_param_update);
 
-    $list_friend = Connection::getConnection($HD_Form->FG_QUERY_TABLE_NAME)
+    $list_friend = Connection::getConnection($table)
         ->where("id_cc_card", $id_cc_card)
         ->get();
 

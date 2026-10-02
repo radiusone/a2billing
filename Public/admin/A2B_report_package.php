@@ -56,8 +56,8 @@ $HD_Form = new FormHandler(
 
 $HD_Form->AddListValue(_("Card number"), "username");
 $HD_Form->AddListValue(_("Package"), "label");
-$HD_Form->AddListValue(_("Minutes"), "SUM(used_secondes)", "get_minute");
-$HD_Form->AddListValue(_("Calls"), "COUNT(*)");
+$HD_Form->AddListValue(_("Minutes"), Connection::getConnection()->raw("SUM(used_secondes)"), "get_minute");
+$HD_Form->AddListValue(_("Calls"), Connection::getConnection()->raw("COUNT(*)"));
 
 $HD_Form->search_form_enabled = true;
 $HD_Form->search_session_key = 'package_report_selection';

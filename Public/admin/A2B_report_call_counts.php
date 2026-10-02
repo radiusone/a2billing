@@ -78,18 +78,18 @@ if ($displaytop === "card_id") {
 }
 
 if ($groupbyday) {
-    $HD_Form->AddListValue(_("Date"), "DATE(starttime)");
+    $HD_Form->AddListValue(_("Date"), Connection::getConnection()->raw("DATE(starttime)"));
 }
 if ($displaytop === "card_id") {
     $HD_Form->AddListValue(_("Account number"), "card_id", [Customer::class, "getUsername"]);
 } else {
     $HD_Form->AddListSqlMapping(_("Destination"), "destination", Connection::getConnection("cc_prefix", "prefix", "destination"));
 }
-$HD_Form->AddListValue(_("Duration"), "SUM(real_sessiontime)", "get_minute");
-$HD_Form->AddListValue(_("Sell"), "SUM(sessionbill)", "get_money_precise");
-$HD_Form->AddListValue(_("Buy"), "SUM(buycost)", "get_money_precise");
-$HD_Form->AddListValue(_("Calls"), "COUNT(*)");
-$HD_Form->AddListHiddenValue("DATE(starttime) AS day");
+$HD_Form->AddListValue(_("Duration"), Connection::getConnection()->raw("SUM(real_sessiontime)"), "get_minute");
+$HD_Form->AddListValue(_("Sell"), Connection::getConnection()->raw("SUM(sessionbill)"), "get_money_precise");
+$HD_Form->AddListValue(_("Buy"), Connection::getConnection()->raw("SUM(buycost)"), "get_money_precise");
+$HD_Form->AddListValue(_("Calls"), Connection::getConnection()->raw("COUNT(*)"));
+$HD_Form->AddListHiddenValue(Connection::getConnection()->raw("DATE(starttime) AS day"));
 
 $HD_Form->search_form_enabled = true;
 $HD_Form->AddSearchDateInput(_("Date"), "starttime");

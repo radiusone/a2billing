@@ -50,10 +50,10 @@ Admin::checkPageAccess(Admin::ACX_BILLING);
 $HD_Form_c->init();
 
 if (!empty($id)) {
-    $HD_Form_c->update_query_conditions[$HD_Form_c->FG_QUERY_PRIMARY_KEY] = str_replace(
+    $HD_Form_c->update_query_conditions["cc_charge.id"] = str_replace(
         "%id",
         $id,
-        $HD_Form_c->update_query_conditions[$HD_Form_c->FG_QUERY_PRIMARY_KEY]
+        $HD_Form_c->update_query_conditions["cc_charge.id"]
     );
 }
 
@@ -61,9 +61,7 @@ $form_action ??= "list";
 $list = $HD_Form_c->perform_action($form_action);
 
 if (!$wantinclude) {
-    // #### HEADER SECTION
     require_once __DIR__ . "/templates/main.php";
-    // #### TOP SECTION PAGE
     $HD_Form_c->create_toppage($form_action);
 }
 

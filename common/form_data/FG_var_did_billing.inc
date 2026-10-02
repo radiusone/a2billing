@@ -54,11 +54,11 @@ $HD_Form->help_text = create_help(
     . _("You will see which customers have used your DIDs in past months and the traffic (amount of seconds).")
 );
 
-$HD_Form->AddListValue(_("DATE"), "DATE(starttime) AS date");
+$HD_Form->AddListValue(_("DATE"), Connection::getConnection()->raw("DATE(starttime) AS date"));
 $HD_Form->AddListValue(_("DID"), "cc_did.did");
-$HD_Form->AddListValue(_("NB_CALL"), "COUNT(*) AS nb_call");
-$HD_Form->AddListValue(_("TOTAL_DURATION"), "SUM(sessiontime) AS t_time", "get_minute");
-$HD_Form->AddListValue(_("TOTAL_COST"), "SUM(sessionbill) AS t_cost", "get_money");
+$HD_Form->AddListValue(_("NB_CALL"), Connection::getConnection()->raw("COUNT(*) AS nb_call"));
+$HD_Form->AddListValue(_("TOTAL_DURATION"), Connection::getConnection()->raw("SUM(sessiontime) AS t_time"), "get_minute");
+$HD_Form->AddListValue(_("TOTAL_COST"), Connection::getConnection()->raw("SUM(sessionbill) AS t_cost"), "get_money");
 $HD_Form->AddListValue(_("CARDNUMBER"), "username");
 
 $HD_Form->FG_ENABLE_EDIT_BUTTON = false;
