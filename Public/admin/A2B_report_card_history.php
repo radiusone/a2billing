@@ -1,8 +1,6 @@
 <?php
 
 use A2billing\Admin;
-use A2billing\Agent;
-use A2billing\Customer;
 use A2billing\Forms\FormHandler;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */

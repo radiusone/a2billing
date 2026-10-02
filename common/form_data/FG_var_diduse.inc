@@ -3,7 +3,6 @@
 use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Forms\FormHandler;
-use Illuminate\Database\Query\Builder;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 

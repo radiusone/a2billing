@@ -2,8 +2,6 @@
 
 namespace A2billing\Payments;
 
-use A2billing\Table;
-
 abstract class PaymentDocumentItem
 {
     public ?int $id = null;

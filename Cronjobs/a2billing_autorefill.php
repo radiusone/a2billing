@@ -6,7 +6,6 @@ use A2billing\A2bMailException;
 use A2billing\Connection;
 use A2billing\Mail;
 use A2billing\ProcessHandler;
-use A2billing\Table;
 use Illuminate\Database\Query\Builder;
 
 /**
