@@ -4,6 +4,7 @@ use A2billing\A2Billing;
 use A2billing\Admin;
 use A2billing\Connection;
 use A2billing\Forms\FormHandler;
+use Illuminate\Database\Query\Builder;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -82,43 +83,38 @@ if ($batchupdate == 1 && count($check)) {
         ],
         $uf
     );
-    $update_fields = [];
-    foreach ($uf as $k => $v) {
-        $k = substr($k, 4);
-        $update_fields[$k] = $v;
-    }
+    $update_fields = collect($uf)
+        ->mapWithKeys(fn ($v, $k) =>[substr($k, 4) => $v])
+        ->toArray();
 
     if (!empty($update_fields["expirationdate"])) {
         // html datetime input sends as 2022-02-21T13:40
         $update_fields["expirationdate"] = str_replace("T", " ", $update_fields["expirationdate"]);
     }
-    if (strlen($update_fields["credit"] ?? "") > 0) {
-        // we will be updating card credit, prepare the refill query
-        $current_cards = $HD_Form->query_builder->clone()->select("cc_card.id", "cc_card.credit")->get();
-        $refill_cards = [];
-        foreach ($current_cards as $v) {
-            switch ($type["upd_credit"]) {
+
+    $refill_cards = [];
+    $update_fields["credit"] = preg_replace("/[^0-9.-]/", "", $update_fields["credit"] ?? "");
+    $update_fields["refill_type"] ??= -1;
+    if ($update_fields["refill_type"] > 0 && strlen($update_fields["credit"]) > 0) {
+        $current_cards = $HD_Form->query_builder
+            ->clone()
+            ->when(
+                $type["upd_credit"] === 1,
+                // no refill entries if the credit doesn't change
+                fn (Builder $q) => $q->whereRaw("$update_fields[credit] - `credit` != 0"))
+            ->pluck("cc_card.id");
+        foreach ($current_cards as $card_id) {
+            $credit = match($type["upd_credit"] ?? "1") {
                 // set value
-                case 1:
-                default:
-                    if ((float)$update_fields["credit"] === (float)$v["credit"]) {
-                        // no refill entries if the credit doesn't change
-                        continue(2);
-                    }
-                    $credit = (float)$update_fields["credit"] - $v["credit"];
-                    break;
+                "1" => Connection::getConnection()->raw("$update_fields[credit] - `credit`"),
                 // add
-                case 2:
-                    $credit = (float)$update_fields["credit"];
-                    break;
+                "2" => $update_fields["credit"],
                 // subtract
-                case 3:
-                    $credit = (float)$update_fields["credit"] * -1;
-                    break;
-            }
+                "3" => $update_fields["credit"] * -1,
+            };
             $refill_cards[] = [
                 "credit" => $credit,
-                "card_id" => $v["id"],
+                "card_id" => $card_id,
                 "description" => $update_fields["description"],
                 "refill_type" => $update_fields["refill_type"],
             ];
@@ -128,22 +124,22 @@ if ($batchupdate == 1 && count($check)) {
 
     $updates = [];
     foreach ($update_fields as $col => $val) {
-        if (($mode["upd_$col"] ?? 1) == 1) {
+        if (($mode["upd_$col"] ?? "1") === "1") {
             // Standard update mode
             $updates[$col] = $val;
-        } elseif ($mode["upd_$col"] == 2) {
+        } elseif ($mode["upd_$col"] === "2") {
             // Mode 2 - Equal - Add - Subtract
-            if (($type["upd_$col"] ?? 1) == 1) {
-                $updates[$col] = $val;
-            } elseif ($type["upd_$col"] == 2 && is_numeric($val)) {
-                $updates[$col] = Connection::getConnection()->raw("`$col` + $val");
-            } elseif ($type["upd_$col"] == 3 && is_numeric($val)) {
-                $updates[$col] = Connection::getConnection()->raw("`$col` - $val");
-            }
+            $val = preg_replace("/[^0-9.-]/", "", $val);
+            $updates[$col] = match($type["upd_$col"] ?? "1") {
+                "1" => $val,
+                "2" => Connection::getConnection()->raw("`$col` + $val"),
+                "3" => Connection::getConnection()->raw("`$col` - $val"),
+            };
         }
     }
 
     $qb = $HD_Form->query_builder->clone();
+    $qb->limit = null;
     $qb->joins = null;
     if (!$qb->update($updates)) {
         $update_msg = _('Could not perform the batch update!');
@@ -169,6 +165,7 @@ require_once __DIR__ . "/templates/main.php";
     $list_tariff = Connection::getConnection("cc_tariffgroup")->pluck("tariffgroupname", "id");
     $list_group = Connection::getConnection("cc_card_group")->pluck("name", "id");
     $list_group = Connection::getConnection("cc_card_seria")->pluck("name", "id");
+    $list_seria = Connection::getConnection("cc_card_seria")->pluck("name", "id");
     $list_refill_type = getRefillType_List();
     $list_refill_type[-1] = _("NO REFILL");
     ksort($list_refill_type);

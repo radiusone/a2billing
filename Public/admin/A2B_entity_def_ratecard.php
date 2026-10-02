@@ -111,9 +111,7 @@ if (($bu["batchupdate"] ?? false) && is_array($bu["check"])) {
 
     $HD_Form->prepare_list_subselection('list');
     $rates_qb = $HD_Form->query_builder->clone();
-
-    $sql_sets = [];
-    $sql_params = [];
+    $rates_qb->limit = null;
     $values = [];
 
     foreach ($selected_updates as $ind_field) {
@@ -132,18 +130,23 @@ if (($bu["batchupdate"] ?? false) && is_array($bu["check"])) {
         } elseif ($mode === "2" && $type === "1") {
             $values[$col] = $val;
         } elseif ($mode === "2") {
-            if ($type === "3") {
-                $val = -$val;
-            }
             if (str_ends_with($val, "%")) {
-                $values[$col] = ["ROUND($col + ($col * (? / 100)), 4)", str_replace("%", "", $val)];
+                $val = preg_replace("/[^0-9.-]/", "", $val);
+                if ($type === "3") {
+                    $val = -$val;
+                }
+                $values[$col] = Connection::getConnection()->raw("ROUND(`$col` + (`$col` * ($val / 100)), 4)");
             } else {
-                $values[$col] = ["$col + ?", $val];
+                $val = preg_replace("/[^0-9.-]/", "", $val);
+                if ($type === "3") {
+                    $val = -$val;
+                }
+                $values[$col] = Connection::getConnection()->raw("`$col` + $val");
             }
         }
     }
 
-    $result = $HD_Form->query_builder->clone()->update($values);
+    $result = $rates_qb->update($values);
     if (!$result) {
         $update_msg = "<div class='alert alert-danger'>" . _("Could not perform the batch update") . "</div>";
     } else {

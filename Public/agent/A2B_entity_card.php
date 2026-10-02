@@ -1,7 +1,10 @@
 <?php
 
+use A2billing\A2Billing;
 use A2billing\Agent;
 use A2billing\Connection;
+use A2billing\Forms\FormHandler;
+use Illuminate\Database\Connection as Db;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -39,176 +42,186 @@ use A2billing\Connection;
 $menu_section = 1;
 require_once __DIR__ . "/../../common/lib/agent.defines.php";
 require_once __DIR__ . "/../../common/form_data/FG_var_card.inc";
+/**
+ * @var A2Billing $A2B
+ * @var FormHandler $HD_Form
+ * @var array $cardstatus_list
+ * @var array $language_list
+ * @var string $cardnumber_length
+ * @var string $popup_select
+ * @var string $popup_formname
+ * @var string $popup_fieldname
+ */
 
 Agent::checkPageAccess(Agent::ACX_CUSTOMER);
+$form_action ??= "list";
 
-if ($form_action=="ask-edit") {
+if ($form_action === "ask-edit") {
     Agent::checkPageAccess(Agent::ACX_EDIT_CUSTOMER);
 }
 
-if ($form_action=="ask-delete") {
+if ($form_action === "ask-delete") {
     Agent::checkPageAccess(Agent::ACX_DELETE_CUSTOMER);
 }
 
 // SECURTY CHECK FOR AGENT
-if ($form_action != "list" && isset($id)) {
-    if (!empty($id)&& $id>0) {
-        $result_security = Connection::getConnection("cc_card")
-            ->leftJoin("cc_card_group", "cc_card.id_group", "cc_card_group.id")
-            ->where("cc_card.id", $id)
-            ->value("cc_card_group.id_agent");
-        if ($result_security != Agent::id()) {
-            Header ("Location: A2B_entity_card.php?section=1");
-            die();
-        }
+if ($form_action !== "list" && !empty($id)) {
+    $result_security = Connection::getConnection("cc_card")
+        ->leftJoin("cc_card_group", "cc_card.id_group", "cc_card_group.id")
+        ->where("cc_card.id", $id)
+        ->value("cc_card_group.id_agent");
+    if ($result_security != Agent::id()) {
+        header("Location: A2B_entity_card.php?section=1");
+        die();
     }
 }
 $HD_Form -> init();
 
 /********************************* BATCH UPDATE ***********************************/
-getpost_ifset(array('popup_select', 'popup_formname', 'popup_fieldname', 'upd_inuse', 'upd_status', 'upd_language', 'upd_tariff', 'upd_credit', 'upd_credittype', 'upd_simultaccess', 'upd_currency', 'upd_typepaid', 'upd_creditlimit', 'upd_enableexpire', 'upd_expirationdate', 'upd_expiredays', 'upd_runservice', 'upd_runservice', 'batchupdate', 'check', 'type', 'mode', 'addcredit', 'cardnumber','description'));
+getpost_ifset(['batchupdate', 'check', 'type', 'mode']);
+
+/**
+ * @var string $batchupdate
+ * @var array $check
+ * @var array $type
+ * @var array $mode
+ */
+$batchupdate ??= 0;
+$check ??= [];
+$type ??= [];
+$mode ??= [];
 
 // CHECK IF REQUEST OF BATCH UPDATE
-if ($batchupdate == 1 && is_array($check)) {
-
+if ($batchupdate == 1 && count($check)) {
     $HD_Form->prepare_list_subselection('list');
 
-    $authorized_field = [
-        "upd_inuse",
-        "upd_status",
-        "upd_language",
-        "upd_simultaccess",
-        "upd_currency",
-        "upd_enableexpire",
-        "upd_expirationdate",
-        "upd_expiredays",
-        "upd_runservice"
-    ];
+    $uf = [];
+    getpost_ifset(
+        [
+            "upd_inuse",
+            "upd_status",
+            "upd_language",
+            "upd_simultaccess",
+            "upd_currency",
+            "upd_enableexpire",
+            "upd_expirationdate",
+            "upd_expiredays",
+            "upd_runservice"
+        ],
+        $uf
+    );
+    $update_fields = collect($uf)
+        ->mapWithKeys(fn ($v, $k) =>[substr($k, 4) => $v])
+        ->toArray();
 
-    // Array ( [upd_simultaccess] => on [upd_currency] => on )
-    $values = [];
-    foreach ($check as $ind_field => $ind_val) {
-        if (!in_array($ind_field, $authorized_field)) {
-            continue;
-        }
-        $myfield = preg_replace("/\W/", "", substr($ind_field,4));
-        $val = $$ind_field;
+    if (!empty($update_fields["expirationdate"])) {
+        // html datetime input sends as 2022-02-21T13:40
+        $update_fields["expirationdate"] = str_replace("T", " ", $update_fields["expirationdate"]);
+    }
 
-        // Standard update mode
-        if (($mode[$ind_field] ?? 1) == 1) {
-            $values[$myfield] = $type[$ind_field] ?? $val;
+    $updates = [];
+    foreach ($update_fields as $col => $val) {
+        if (($mode["upd_$col"] ?? "1") === "1") {
+            // Standard update mode
+            $updates[$col] = $val;
+        } elseif ($mode["upd_$col"] === "2") {
             // Mode 2 - Equal - Add - Subtract
-        } elseif ($mode[$ind_field] == 2) {
-            if (($type[$ind_field] ?? 1) == 1) {
-                $values[$myfield] = $val;
-            } elseif ($type[$ind_field] == 2) {
-                $values[$myfield] = ["$myfield + ?", $val];
-            } elseif ($type[$ind_field] == 3) {
-                $values[$myfield] = ["$myfield - ?", $val];
-            }
+            $val = preg_replace("/[^0-9.-]/", "", $val);
+            $updates[$col] = match($type["upd_$col"] ?? "1") {
+                "1" => $val,
+                "2" => Connection::getConnection()->raw("`$col` + $val"),
+                "3" => Connection::getConnection()->raw("`$col` - $val"),
+            };
         }
     }
 
     $qb = $HD_Form->query_builder->clone();
+    $qb->limit = null;
     $qb->joins = null;
-    $res = $qb->update($values);
-
-    if (! $res) {
-        $update_msg = '<p style="text-align:center; font-weight: bold; color: red">' . gettext('Could not perform the batch update!') . '</p>';
+    if (!$qb->update($updates)) {
+        $update_msg = _('Could not perform the batch update!');
     } else {
-        $update_msg = '<p style="text-align:center; font-weight: bold; color: green">' . gettext('The batch update has been successfully perform!') . '</p>';
+        $update_msg = _('The batch update has been successfully perform!');
     }
-
 }
 /********************************* END BATCH UPDATE ***********************************/
-
-if (($form_action == "addcredit") && ($addcredit > 0) && ($id > 0 || $cardnumber > 0)) {
-
-    if ($cardnumber>0) {
-        /* CHECK IF THE CARDNUMBER IS ON THE DATABASE */
-        $list_tariff_card = Connection::getConnection("cc_card", "username", "id")
-            ->where("username", $cardnumber)
-            ->first();
-        if ($cardnumber == $list_tariff_card["username"]) $id = $list_tariff_card["id"];
-    }
-
-    if ($id > 0) {
-
-        $list_check = Connection::getConnection("cc_card")
-            ->leftJoin("cc_card_group", "cc_card.id_group", "cc_card_group.id")
-            ->where("cc_card.id", $id)
-            ->value("cc_card_group.id_agent");
-        if ($list_check == Agent::id()) {
-
-            //check if enought credit
-            $agent_info = Connection::getConnection("cc_agent", "credit", "currency", "commission")
-                ->where("id", Agent::id())
-                ->first();
-            $credit_agent = $agent_info["credit"];
-            if ($credit_agent >= $addcredit) {
-               //Substract credit for agent
-                Connection::getConnection("cc_agent")
+getpost_ifset([
+    'addcredit',
+    'description',
+]);
+/**
+ * @var string $addcredit
+ * @var string $description
+ */
+if ($form_action === "addcredit" && !empty($addcredit) && !empty($id)) {
+    $agent_info = Connection::getConnection("cc_card")
+        ->select("cc_agent.id", "cc_agent.credit", "cc_agent.currency", "cc_agent.commission")
+        ->leftJoin("cc_card_group", "cc_card.id_group", "cc_card_group.id")
+        ->leftJoin("cc_agent", "cc_card_group.id_agent", "cc_agent.id")
+        ->where("cc_card.id", $id)
+        ->where("cc_agent.id", Agent::id())
+        ->first();
+    if ($agent_info) {
+        $description ??= _("Refill executed");
+        $credit_agent = $agent_info["credit"] ?? 0;
+        $commission_amt = $agent_info["commission"] ?? 0;
+        if ($credit_agent >= $addcredit) {
+            $id_refill = null;
+            Connection::getConnection()->transaction(function (Db $conn) use ($id, $addcredit, $description, &$id_refill, $commission_amt) {
+                //Substract credit for agent
+                $conn->table("cc_agent")
                     ->where("id", Agent::id())
                     ->decrement("credit", $addcredit);
-
-               // Add credit to Customer
-                Connection::getConnection("cc_card")
+                // Add credit to Customer
+                $conn->table("cc_card")
                     ->where("id", $id)
                     ->increment("credit", $addcredit);
-
-                $description = _("Refill executed");
-                $update_msg ='<span style="color:green; font-weight: bold">' . $description . '</span>';
-                $id_agent = Agent::id();
-                $id_refill = Connection::getConnection("cc_logrefill")
+                $id_refill = $conn->table("cc_logrefill")
                     ->insertGetId(
-                        ["credit" => $addcredit, "card_id" => $id, "description" => $description, "refill_type" => 3, "agent_id" => $id_agent],
+                        [
+                            "credit" => $addcredit,
+                            "card_id" => $id,
+                            "description" => $description,
+                            "refill_type" => 3,
+                            "agent_id" => Agent::id(),
+                        ],
                         "id"
                     );
-
-                $commission_amt = $agent_info["commission"] ?? 0;
-
                 if ($commission_amt) {
-                    $commission = a2b_round($addcredit * ($commission_amt/100));
-                    $description_commission = gettext("GENERATED COMMISSION OF AN CUSTOMER REFILLED BY AN AGENT!");
-                    $description_commission.= "\nID CARD : ".$id;
-                    $description_commission.= "\nID REFILL : ".$id_refill;
-                    $description_commission.= "\REFILL AMOUNT: ".$addcredit;
-                    $description_commission.= "\nCOMMISSION APPLIED: ".$commission_amt;
-                    $id_commission = Connection::getConnection("cc_agent_commission")
-                        ->insertGetId(
-                            ["id_payment" => -1, "id_card" => $id, "amount" => $commission, "description" => $description_commission, "id_agent" => $id_agent],
-                            "id"
+                    $commission = a2b_round($addcredit * ($commission_amt / 100));
+                    $description_commission = __("GENERATED COMMISSION OF A CUSTOMER REFILLED BY AN AGENT!");
+                    $description_commission.= "\nID CARD : $id";
+                    $description_commission.= "\nID REFILL : $id_refill";
+                    $description_commission.= "\nREFILL AMOUNT: $addcredit";
+                    $description_commission.= "\nCOMMISSION APPLIED: $commission_amt";
+                    $conn->table("cc_agent_commission")
+                        ->insert([
+                            "id_payment" => null,
+                            "id_card" => $id,
+                            "amount" => $commission,
+                            "description" => $description_commission,
+                            "id_agent" => Agent::id()
+                        ],
                         );
-                    Connection::getConnection("cc_agent")
-                        ->where("id", $id_agent)
+                    $conn->table("cc_agent")
+                        ->where("id", Agent::id())
                         ->increment("com_balance", $commission);
                 }
+            });
 
-            } else {
-
-                $currencies_list = get_currencies();
-
-                if (!isset($currencies_list[strtoupper($agent_info["currency"])]["value"]) || !is_numeric($currencies_list[strtoupper($agent_info["currency"])]["value"]))
-                    $mycur = 1;
-                else
-                    $mycur = $currencies_list[strtoupper($agent_info["currency"])]["value"];
-
-                $credit_cur = $agent_info["credit"] / $mycur;
-                $credit_cur = round($credit_cur,3);
-
-                $update_msg ='<span style="font-weight: bold; color: red">' . gettext("You don't have enough credit to do this refill. You have ") . $credit_cur . ' ' . $agent_info["currency"] . ' </span>';
-            }
-
+            $update_msg ='<span style="color:green; font-weight: bold">' . $description . '</span>';
         } else {
-                $update_msg ='<span style="font-weight: bold; color: red">' . gettext("Impossible to refill this card ") . '</span>';
+            $credit_cur = convert_currency($agent_info["credit"], $agent_info["currency"], BASE_CURRENCY);
+            $update_msg ='<span style="font-weight: bold; color: red">' . gettext("You don't have enough credit to do this refill. You have ") . $credit_cur . ' ' . $agent_info["currency"] . ' </span>';
         }
+    } else {
+        $update_msg ='<span style="font-weight: bold; color: red">' . gettext("Impossible to refill this card ") . '</span>';
     }
 }
 
-if ($form_action == "addcredit")
-    $form_action='list';
-
-$form_action ??= "list";
+if ($form_action === "addcredit") {
+    $form_action = 'list';
+}
 
 $list = $HD_Form -> perform_action($form_action);
 
@@ -304,10 +317,6 @@ if ($form_action=='list' && !($popup_select>=1)) {
             <tr><td align="center">
                <?php echo gettext("CARD ID");?>	 :<input class="form_input_text" name="choose_list" onfocus="clear_textbox2();" size="18" maxlength="16" value="enter ID Card">
                     <a href="A2B_entity_card.php" data-uri-extra="&nodisplay=1" class="btn btn-primary popup_trigger" aria-label="open a popup to select an item">&gt;</a>
-                       <?php echo gettext("or");?>
-            </td></tr>
-            <tr><td align="center">
-                &nbsp; <?php echo gettext("CARDNUMBER");?>&nbsp;:<input class="form_input_text" name="cardnumber" onfocus="clear_textbox();" size="18" maxlength="16" value="enter cardnumber">
             </td></tr>
             </table>
         </td>

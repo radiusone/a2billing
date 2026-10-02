@@ -1372,7 +1372,7 @@ class FormHandler
             }
 
             $list = $this->query_builder->offset($current_page * $current_size)->get()->toArray();
-            $this->FG_LIST_VIEW_ROW_COUNT = count($list);
+            $this->FG_LIST_VIEW_ROW_COUNT = $this->query_builder->count();
 
             if ($this->FG_LIST_VIEW_ROW_COUNT <= $current_size) {
                 $this->FG_LIST_VIEW_PAGE_COUNT = 1;
