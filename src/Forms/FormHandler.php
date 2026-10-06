@@ -1400,9 +1400,7 @@ class FormHandler
             }
 
             // don't display the hashed password in the text box
-            $index = array_search("pwd_encoded", $cols);
-            if ($index !== false && count($list) > 0) {
-                $list[0][$index] = "";
+            if (count($list) > 0 && array_key_exists("pwd_encoded", $list[0])) {
                 $list[0]["pwd_encoded"] = "";
             }
         }
@@ -1642,13 +1640,12 @@ class FormHandler
             $row["validation_err"] = true;
             $row["check_empty"] ??= "";
             if (is_callable($row["validator"] ?? null)) {
-                if ($processed[$field] !== "" || $row["check_empty"] === "") {
-                    $row["validation_err"] = $row["validator"]($processed[$field]);
-                    if ($row["validation_err"] !== true) {
-                        $this->all_fields_valid = false;
-                        $form_action = "ask-edit";
-                        continue;
-                    }
+                $valerr = $row["validator"]($processed[$field]);
+                if (($processed[$field] !== "" || $row["check_empty"] === "") && $valerr !== true) {
+                    $row["validation_err"] = $valerr;
+                    $this->all_fields_valid = false;
+                    $form_action = "ask-edit";
+                    continue;
                 }
             }
             if ($processed[$field] === "" && $row["check_empty"] === "NO-NULL") {
