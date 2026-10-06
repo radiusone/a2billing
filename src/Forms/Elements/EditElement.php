@@ -65,7 +65,7 @@ abstract class EditElement implements ArrayAccess
         if (!$this->valid) {
             $this->attributes["class"] .= " is-invalid";
         }
-        $this->attributes["id"] ??= $this->name;
+        $this->attributes["id"] ??= $this->name ?? "";
 
         $return = "";
         foreach ($this->attributes as $attribute => $value) {
@@ -98,10 +98,14 @@ abstract class EditElement implements ArrayAccess
         if ($this->help_text) {
             $help = sprintf("<div class=\"form-text\">%s</div>", $this->help_text);
         }
+        $for = "";
+        if ($this->attributes["id"] ?? "") {
+            $for = "for=\"{$this->attributes["id"]}\"";
+        }
 
         return <<< HTML
         <div class="row mb-3">
-            <label id="item{$i}_label" for="{$this->attributes["id"]}" class="col-3 col-form-label">
+            <label id="item{$i}_label" for="$for" class="col-3 col-form-label">
                 $this->label
             </label>
             <div class="col">

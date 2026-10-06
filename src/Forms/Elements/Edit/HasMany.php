@@ -76,7 +76,7 @@ class HasMany extends EditElement
             $size = 0;
             $opts = $this->builder
                 ->clone()
-                ->whereNotIn($columns[0], $entries->pluck($columns[0]))
+                ->whereNotIn($columns[0], $entries->keys())
                 ->pluck($columns[1], $columns[0])
                 ->implode(function ($entry, $index) use (&$size) {
                     $size++;
