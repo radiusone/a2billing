@@ -124,8 +124,7 @@ $HD_Form->AddEditRadio(
 );
 
 if (is_customer()) {
-    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["id_cc_card"] = Customer::id();
-    $HD_Form->FG_EDIT_QUERY_HIDDEN_INPUTS["id_cc_card"] = Customer::id();
+    $HD_Form->AddEditHidden("id_cc_card", Customer::id());
 } else {
     $HD_Form->AddEditPopup(
         _("CARD ID"),

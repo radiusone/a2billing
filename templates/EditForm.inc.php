@@ -21,10 +21,6 @@ use DateTime;
     <input type="hidden" name="sens" value="<?= $processed["sens"] ?? "" ?>"/>
     <?= $form->csrf_inputs() ?>
 
-    <?php foreach ($form->FG_EDIT_QUERY_HIDDEN_INPUTS as $name => $value): ?>
-    <input type="hidden" name="<?= htmlspecialchars($name) ?>" value="<?= htmlspecialchars($value ?? "") ?>"/>
-    <?php endforeach ?>
-
     <?php foreach ($form->FG_EDIT_FORM_ELEMENTS as $i=> $row): ?>
         <?php if (!empty($row["section_name"])): ?>
     <div class="row mb-3 border-bottom">

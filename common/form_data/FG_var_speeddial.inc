@@ -103,8 +103,7 @@ $HD_Form->AddEditElement(
 );
 
 if (is_customer()) {
-    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["id_cc_card"] = Customer::id();
-    $HD_Form->FG_EDIT_QUERY_HIDDEN_INPUTS["id_cc_card"] = Customer::id();
+    $HD_Form->AddEditHidden("id_cc_card", Customer::id());
     $HD_Form->update_query_conditions["id_cc_card"] = Customer::id();
     $HD_Form->FG_LOCATION_AFTER_EDIT = $HD_Form->FG_LOCATION_AFTER_ADD = "?form_action=list";
 } else {

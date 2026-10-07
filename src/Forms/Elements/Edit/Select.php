@@ -87,7 +87,7 @@ class Select extends EditElement
                 "<option value=\"%s\" %s>%s</option>",
                 htmlspecialchars($k),
                 $sel,
-                htmlspecialchars($v)
+                htmlspecialchars("$v")
             );
         }
 

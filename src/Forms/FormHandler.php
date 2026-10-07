@@ -4,6 +4,7 @@ namespace A2billing\Forms;
 
 use A2billing\Admin;
 use A2billing\Connection;
+use A2billing\Forms\Elements\Edit\Hidden;
 use A2billing\Logger;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Query\Expression;
@@ -176,9 +177,6 @@ class FormHandler
      * @todo only used in customer/form_data/FG_var_signup.inc
      */
     public array $FG_ADD_FORM_HIDDEN_INPUTS = [];
-    /** @var array list of key/value pairs that will be added to the edit form AND the SQL query */
-
-    public array $FG_EDIT_QUERY_HIDDEN_INPUTS = [];
 
     /** @var array list of key/value pairs that will be added to the add form AND the SQL query */
     public array $FG_ADD_QUERY_HIDDEN_INPUTS = [];
@@ -896,7 +894,18 @@ class FormHandler
         }
     }
 
-    public function AddEditSection(string $label)
+    public function AddEditHidden(string $fieldname, string $value): void
+    {
+        $el = new Hidden($fieldname, $value);
+
+        if (array_key_exists($fieldname, $this->FG_EDIT_FORM_ELEMENTS)) {
+            $this->FG_EDIT_FORM_ELEMENTS[] = $el;
+        } else {
+            $this->FG_EDIT_FORM_ELEMENTS[$fieldname] = $el;
+        }
+    }
+
+    public function AddEditSection(string $label): void
     {
         $this->FG_EDIT_FORM_ELEMENTS[] = ["type" => "SECTION", "section_name" => $label, "name" => ""];
     }
@@ -1650,10 +1659,6 @@ class FormHandler
         if ($this->all_fields_valid === false) {
             $this->QUERY_RESULT = false;
             return;
-        }
-
-        foreach ($this->FG_EDIT_QUERY_HIDDEN_INPUTS as $name => $value) {
-            $values[$name] = $value;
         }
 
         if (is_callable($this->FG_ADDITIONAL_FUNCTION_BEFORE_EDIT)) {

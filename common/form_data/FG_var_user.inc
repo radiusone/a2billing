@@ -142,8 +142,7 @@ if ($subadmin) {
     );
 } else {
     // 32 bits max permission value
-    $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["perms"] = pow(2, 32) - 1;
-    $HD_Form->FG_EDIT_QUERY_HIDDEN_INPUTS["perms"] = pow(2, 32) - 1;
+    $HD_Form->AddEditHidden("perms", pow(2, 32) - 1);
 }
 
 $HD_Form->AddEditElement(
@@ -226,8 +225,7 @@ $HD_Form->AddEditElement(
     null,
     _("Insert the email"));
 
-$HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["groupID"] = $groupID;
-$HD_Form->FG_EDIT_QUERY_HIDDEN_INPUTS["groupID"] = $groupID;
+$HD_Form->AddEditHidden("groupID", $groupID);
 
 $HD_Form->add_message_intro = "";
 
