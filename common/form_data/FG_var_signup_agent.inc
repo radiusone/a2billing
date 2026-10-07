@@ -4,6 +4,7 @@ use A2billing\A2Billing;
 use A2billing\Agent;
 use A2billing\Connection;
 use A2billing\Forms\FormHandler;
+use A2billing\Forms\Validator;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -79,13 +80,14 @@ if (is_admin()) {
         "id_agent",
         Connection::getConnection(
             "cc_agent",
-            Connection::getConnection()->raw("CONCAT(login, ' - ', firstname, ' ', lastname)"),
+            Connection::getConnection()->raw("CONCAT(login, IF(lastname IS NULL, '', CONCAT(' - ', lastname, IF(firstname IS NULL, '', CONCAT(', ', firstname)))))"),
             "id"
         ),
         $id_agent,
         ["" => _("Select agent")],
         "",
-        ["required" => "required"]
+        ["required" => "required"],
+        validator: [Validator::class, "requiredForeignKey"],
     );
 } else {
     $id_agent = Agent::id();
@@ -101,7 +103,8 @@ if ($id_agent && ($form_action === "ask-add" || $form_action === "add") || $form
         "",
         ["" => _("Select call plan")],
         "",
-        ["required" => "required"]
+        ["required" => "required"],
+        validator: [Validator::class, "requiredForeignKey"],
     );
 
     $HD_Form->AddEditSqlSelect(
@@ -112,7 +115,8 @@ if ($id_agent && ($form_action === "ask-add" || $form_action === "add") || $form
         "",
         ["" => _("Select group")],
         "",
-        ["required" => "required"]
+        ["required" => "required"],
+        validator: [Validator::class, "requiredForeignKey"],
     );
 
     if ($form_action === "ask-delete") {

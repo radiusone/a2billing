@@ -89,7 +89,8 @@ $HD_Form->AddEditSqlSelect(
         "id"
     ),
     "",
-    ["" => _("NONE")]
+    ["" => _("NONE")],
+    validator: [Validator::class, "foreignKey"],
 );
 
 $HD_Form->AddEditTextarea(
@@ -106,5 +107,6 @@ $HD_Form->AddEditSqlSelect(
     Connection::getConnection("cc_tariffgroup", "tariffgroupname", "id"),
     "",
     [],
-    _("Define the callplan to associate to your Subscription")
+    _("Define the callplan to associate to your Subscription"),
+    validator: [Validator::class, "foreignKey"],
 );

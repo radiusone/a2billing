@@ -74,7 +74,8 @@ $HD_Form->AddEditSqlSelect(
     "id_subscription_fee",
     Connection::getConnection("cc_subscription_service", "label", "id"),
     "",
-    ["" => _("NOT DEFINED")]
+    ["" => _("NOT DEFINED")],
+    validator: [Validator::class, "foreignKey"],
 );
 
 $date_attr = ["maxlength" => 40];

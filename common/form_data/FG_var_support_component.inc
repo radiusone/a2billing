@@ -84,7 +84,8 @@ $HD_Form->AddEditRadio(
 $HD_Form->AddEditSqlSelect(
     _("Support Box"),
     "id_support",
-    Connection::getConnection("cc_support", "name", "id")
+    Connection::getConnection("cc_support", "name", "id"),
+    validator: [Validator::class, "requiredForeignKey"],
 );
 
 $HD_Form->AddEditSelect(

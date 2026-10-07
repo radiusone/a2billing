@@ -170,8 +170,8 @@ $HD_Form->AddEditSqlSelect(
     _("CALL PLAN"),
     "dialplan",
     Connection::getConnection("cc_tariffgroup", "tariffgroupname", "id"),
-    "",
-    [0 => _("ANY")]
+    first_option: [0 => _("ANY")],
+    validator: [Validator::class, "foreignKey"],
 );
 
 $HD_Form->AddEditSelect(

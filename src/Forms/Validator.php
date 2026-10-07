@@ -264,4 +264,10 @@ class Validator
 
         return self::numeric($value);
     }
+
+    public static function requiredForeignKey(string $value): bool|string
+    {
+        return (is_numeric($value) && $value >= 0)
+            ?: _("(must be a valid foreign key value)");
+    }
 }

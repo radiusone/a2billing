@@ -2,6 +2,7 @@
 
 use A2billing\Connection;
 use A2billing\Forms\FormHandler;
+use A2billing\Forms\Validator;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -113,7 +114,8 @@ $HD_Form->AddEditSqlSelect(
     Connection::getConnection("cc_config_group", "group_title", "id"),
     form_text_bottom: _("Group Name of the configuration variable"),
     html_attributes: $readonly,
-    error_message: _("This is the group of the configuration. Not editable!")
+    error_message: _("This is the group of the configuration. Not editable!"),
+    validator: [Validator::class, "foreignKey"],
 );
 
 $HD_Form->AddEditElement(

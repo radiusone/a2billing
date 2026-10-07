@@ -138,7 +138,8 @@ $HD_Form->AddEditElement(
 $HD_Form->AddEditSqlSelect(
     _("DIDGROUP"),
     "id_cc_didgroup",
-    Connection::getConnection("cc_didgroup", "didgroupname", "id")
+    Connection::getConnection("cc_didgroup", "didgroupname", "id"),
+    validator: [Validator::class, "foreignKey"],
 );
 
 $HD_Form->AddEditSqlSelect(

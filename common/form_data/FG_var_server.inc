@@ -58,7 +58,8 @@ $HD_Form->FG_ENABLE_DELETE_BUTTON = true;
 $HD_Form->AddEditSqlSelect(
     _("SERVER GROUP"),
     "id_group",
-    Connection::getConnection("cc_server_group", "name", "id")
+    Connection::getConnection("cc_server_group", "name", "id"),
+    validator: [Validator::class, "foreignKey"],
 );
 
 $HD_Form->AddEditElement(

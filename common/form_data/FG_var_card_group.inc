@@ -106,10 +106,11 @@ $HD_Form->AddEditSqlSelect(
     "id_agent",
     Connection::getConnection(
         "cc_agent",
-        Connection::getConnection()->raw("CONCAT(login, ' - ', firstname, ' ', lastname)"),
+        Connection::getConnection()->raw("CONCAT(login, IF(lastname IS NULL, '', CONCAT(' - ', lastname, IF(firstname IS NULL, '', CONCAT(', ', firstname)))))"),
         "id"
     ),
-    first_option: ["" => _("NONE")]
+    first_option: ["" => _("NONE")],
+    validator: [Validator::class, "foreignKey"],
 );
 
 $HD_Form->AddEditSelect(

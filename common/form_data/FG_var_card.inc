@@ -572,7 +572,8 @@ if ($popup_select) {
                     $q->leftJoin("cc_agent_tariffgroup", "cc_tariffgroup.id", "cc_agent_tariffgroup.id_tariffgroup")
                         ->where("cc_agent_tariffgroup.id_agent", Agent::id());
                 }),
-            form_text_bottom: _("Changing the call plan will result in the free minutes or free calls package being reset.")
+            form_text_bottom: _("Changing the call plan will result in the free minutes or free calls package being reset."),
+            validator: [Validator::class, "requiredForeignKey"],
         );
     }
 

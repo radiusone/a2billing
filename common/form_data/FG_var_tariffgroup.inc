@@ -97,7 +97,8 @@ $HD_Form->AddEditSqlSelect(
     Connection::getConnection("cc_package_offer", "label", "id"),
     "",
     ["" => _("NOT DEFINED")],
-    _("Set the Package Group offer if you wish to use one with this Call Plan")
+    _("Set the Package Group offer if you wish to use one with this Call Plan"),
+    validator: [Validator::class, "foreignKey"],
 );
 
 $HD_Form->AddEditRadio(

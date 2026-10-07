@@ -110,7 +110,8 @@ $HD_Form->AddEditElement(
 $HD_Form->AddEditSqlSelect(
     _("TRUNK"),
     "id_trunk",
-    Connection::getConnection("cc_trunk", "trunkcode", "id_trunk")
+    Connection::getConnection("cc_trunk", "trunkcode", "id_trunk"),
+    validator: [Validator::class, "requiredForeignKey"],
 );
 
 $HD_Form->AddEditTextarea(

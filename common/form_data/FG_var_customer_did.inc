@@ -4,6 +4,7 @@ use A2billing\Connection;
 use A2billing\Customer;
 use A2billing\Forms\FormBO;
 use A2billing\Forms\FormHandler;
+use A2billing\Forms\Validator;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -110,7 +111,8 @@ if ($form_action === "ask-add" || $form_action === "add") {
             $text = str_replace(" ()", "", trim($text) . ")");
 
             return [$text, $row["id"]];
-        }
+        },
+        validator: [Validator::class, "foreignKey"],
     );
 } elseif ($form_action === "ask-delete" || $form_action === "delete") {
     $HD_Form->AddEditElement(_("DID"), "did");

@@ -105,7 +105,8 @@ $HD_Form->AddEditSqlSelect(
     "id_provider",
     Connection::getConnection("cc_provider", "provider_name", "id"),
     "",
-    ["" => _("NOT DEFINED")]
+    ["" => _("NOT DEFINED")],
+    validator: [Validator::class, "foreignKey"],
 );
 
 $HD_Form->AddEditElement(
@@ -168,7 +169,8 @@ $HD_Form->AddEditSqlSelect(
     Connection::getConnection("cc_trunk", "trunkcode", "id_trunk"),
     "",
     ["" => _("NOT DEFINED")],
-    _("You can define another trunk in case of failover!")
+    _("You can define another trunk in case of failover!"),
+    validator: [Validator::class, "foreignKey"],
 );
 
 $inuse_attr = ["maxlength" => 30];

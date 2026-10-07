@@ -97,14 +97,15 @@ if (!is_customer() && $form_action !== "ask-edit" && $form_action !== "edit") {
         "A2B_entity_card.php",
         _("Select the Customer ID"),
         [],
-        [Validator::class, "numeric"],
-        _("Insert the Customer ID")
+        [Validator::class, "requiredForeignKey"],
+        _("Insert the Customer ID"),
     );
 
     $HD_Form->AddEditSqlSelect(
         _("DID"),
         "id_cc_did",
-        Connection::getConnection("cc_did", "did", "id")
+        Connection::getConnection("cc_did", "did", "id"),
+        validator: [Validator::class, "requiredForeignKey"],
     );
 } elseif ($form_action !== "ask-edit" && $form_action !== "edit") {
     $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["id_cc_card"] = Customer::id();
@@ -116,7 +117,8 @@ if (!is_customer() && $form_action !== "ask-edit" && $form_action !== "edit") {
             ->where("iduser", Customer::id()),
         first_option: ["" => ""],
         html_attributes: ["id" => "id_cc_did_old"],
-        callback: fn (array $row) => [format_phone_number($row["did"]), $row["id"]]
+        callback: fn (array $row) => [format_phone_number($row["did"]), $row["id"]],
+        validator: [Validator::class, "foreignKey"],
     );
 
     $HD_Form->AddEditSqlSelect(
@@ -155,7 +157,8 @@ if (!is_customer() && $form_action !== "ask-edit" && $form_action !== "edit") {
             $text = str_replace(" ()", "", trim($text) . ")");
 
             return [$text, $row["id"]];
-        }
+        },
+        validator: [Validator::class, "foreignKey"],
     );
 }
 

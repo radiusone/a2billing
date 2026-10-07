@@ -2,6 +2,7 @@
 
 use A2billing\Connection;
 use A2billing\Forms\FormHandler;
+use A2billing\Forms\Validator;
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
@@ -72,7 +73,8 @@ $HD_Form->AddEditTextarea(
 $HD_Form->AddEditSqlSelect(
     _("CIDGROUP"),
     "outbound_cid_group",
-    Connection::getConnection("cc_outbound_cid_group", "group_name", "id")
+    Connection::getConnection("cc_outbound_cid_group", "group_name", "id"),
+    validator: [Validator::class, "foreignKey"],
 );
 
 $HD_Form->AddEditRadio(

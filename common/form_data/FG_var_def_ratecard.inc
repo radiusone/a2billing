@@ -192,7 +192,8 @@ if (is_admin()) {
 $HD_Form->AddEditSqlSelect(
     _("Rate Card"),
     "idtariffplan",
-    Connection::getConnection("cc_tariffplan", "tariffname", "id")
+    Connection::getConnection("cc_tariffplan", "tariffname", "id"),
+    validator: [Validator::class, "requiredForeignKey"],
 );
 
 $HD_Form->AddEditElement(
@@ -568,7 +569,8 @@ $HD_Form->AddEditSqlSelect(
     "id_trunk",
     Connection::getConnection("cc_trunk", "trunkcode", "id_trunk"),
     first_option: ["" => _("NOT DEFINED")],
-    form_text_bottom: _("Set the trunk to use for this destination, or NOT DEFINED to use the rate card trunk.")
+    form_text_bottom: _("Set the trunk to use for this destination, or NOT DEFINED to use the rate card trunk."),
+    validator: [Validator::class, "foreignKey"],
 );
 
 $HD_Form->AddEditSqlSelect(
@@ -576,7 +578,8 @@ $HD_Form->AddEditSqlSelect(
     "id_outbound_cidgroup",
     Connection::getConnection("cc_outbound_cid_group", "group_name", "id"),
     first_option: ["" => _("NOT DEFINED")],
-    form_text_bottom: _("Set the Outgoing CID Group to use for this destination.")
+    form_text_bottom: _("Set the Outgoing CID Group to use for this destination."),
+    validator: [Validator::class, "foreignKey"],
 );
 
 $HD_Form->AddEditElement(
