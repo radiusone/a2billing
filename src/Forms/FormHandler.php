@@ -172,12 +172,6 @@ class FormHandler
     /** @var array columns/values to be used as a condition in update/delete queries as well as fetching for edits */
     public array $update_query_conditions = ["id" => "%id"];
 
-    /**
-     * @var array list of key/value pairs that will be added to the add form as hidden inputs
-     * @todo only used in customer/form_data/FG_var_signup.inc
-     */
-    public array $FG_ADD_FORM_HIDDEN_INPUTS = [];
-
     /** @var array list of key/value pairs that will be added to the add form AND the SQL query */
     public array $FG_ADD_QUERY_HIDDEN_INPUTS = [];
 

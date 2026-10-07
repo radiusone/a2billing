@@ -249,9 +249,7 @@ class FormBO
         }
 
         // create subscriptions
-        $form = FormHandler::GetInstance();
-        $processed = $form->getProcessed();
-        $subscriber = $processed["subscriber_signup"];
+        $subscriber = $_SESSION["subscriber_signup"];
         $sub = Connection::getConnection("cc_subscription_service", "id", "fee", "label")
             ->where("id", $subscriber)
             ->first();

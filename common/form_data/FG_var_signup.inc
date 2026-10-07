@@ -53,8 +53,9 @@ $HD_Form->FG_ENABLE_ADD_BUTTON = true;
 $form_action ??= "ask-add";
 $groupid = null;
 $tariffid = null;
-
-$_SESSION["key"] = $agentkey = $key ?? $_SESSION["key"] ?? null;
+$subscriber_signup ??= "";
+$_SESSION["subscriber_signup"] = $subscriber_signup;
+$_SESSION["key"] = $agentkey = ($key ?? $_SESSION["key"] ?? null);
 
 if ($agentkey) {
 	$data = Connection::getConnection("cc_agent_signup AS s", "g.id AS id_group", "t.id_tariffgroup")
@@ -299,15 +300,12 @@ if ($form_action === "add") {
         } elseif ($tariffid) {
             $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["tariff"] = $tariffid;
         }
-    }
-
-    // If Service - find the callplan associate
-    if (is_numeric($subscriber_signup)) {
+    } else {
+        // If Service - find the callplan associate
         $id_callplan = Connection::getConnection("cc_subscription_signup")
             ->where("id", $subscriber_signup)
             ->value("id_callplan");
         $HD_Form->FG_ADD_QUERY_HIDDEN_INPUTS["tariff"] = $id_callplan ?? "";
-        $HD_Form->FG_ADD_FORM_HIDDEN_INPUTS["subscriber_signup"] = $subscriber_signup;
     }
 
     $HD_Form->REALTIME_SIP_IAX_INFO = ["username" => $cardnumber, "secret" => $pass];

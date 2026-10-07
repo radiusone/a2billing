@@ -20,10 +20,6 @@ use DateTime;
     <input type="hidden" name="<?= htmlspecialchars($name) ?>" value="<?= htmlspecialchars($value) ?>"/>
 <?php endforeach ?>
 
-<?php foreach ($form->FG_ADD_FORM_HIDDEN_INPUTS as $name => $value): ?>
-    <input type="hidden" name="<?= htmlspecialchars($name) ?>" value="<?= htmlspecialchars($value) ?>"/>
-<?php endforeach ?>
-
 <?php foreach ($form->FG_EDIT_FORM_ELEMENTS as $i=>$row):?>
     <?php if ($row["type"] === "HAS_MANY") {continue;} ?>
     <?php if (!empty($row["section_name"])): ?>
